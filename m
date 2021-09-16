@@ -2,199 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4387140DF26
-	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 18:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BCC40E135
+	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 18:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbhIPQHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Sep 2021 12:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237333AbhIPQGc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Sep 2021 12:06:32 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD77C0613EF;
-        Thu, 16 Sep 2021 09:05:05 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6DA6562AB;
-        Thu, 16 Sep 2021 16:05:04 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6DA6562AB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1631808304; bh=wzNtMJKokFmLgOuIFA0ILBc2XeK47jlw461ubvXpbKE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=QS5pPgcDbft5c0wT/Lv436lEzo/arfZ1DhLP2fXXgDAY6NCLKi/YQOx2HDCoKH1my
-         u8acRBMD022qdE+z1gftZDzn+F5nPpwxYAXLrj4Ngc2700/PRCYlgvgKvYaI0IwPUi
-         nTJuc6pzjJAFdLhYnwb7yl7CFGco0MyLGmHB+ft7Mdf2p8bShHnnKHJJjMl6QL4yWD
-         lrdVwB7T1peJi6TmrRZkMRQfRG6v5klas8FBe8ZATxBcRIL3aiZeb5Dcnk+z5sx+bn
-         IKlww33RUPuEfZGKflR9O1krKNXQGn9/ywhhTll06q8ohgrlbK0CMclKD6vw+lcnjG
-         aZtBpW4sSjYIw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     daniel@iogearbox.net, kuba@kernel.org, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next] bpf: Document BPF licensing.
-In-Reply-To: <20210916032104.35822-1-alexei.starovoitov@gmail.com>
-References: <20210916032104.35822-1-alexei.starovoitov@gmail.com>
-Date:   Thu, 16 Sep 2021 10:05:03 -0600
-Message-ID: <87bl4s7bgw.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S242460AbhIPQ20 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Sep 2021 12:28:26 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46528 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241904AbhIPQ0Z (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Sep 2021 12:26:25 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GFguOj013873
+        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 09:25:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=2cu7M1XN333AkrNxBZ+o94KMysrS0P569VxSX016dYs=;
+ b=MmSzQSdYuaRZErA8QQfKCZ53aYn18ZMDL8gL52P/NhIrjfjtNqMwVirmE67jRFNTL9mm
+ MucMu6kpamO+SU8TJUBSLs5UAoyPOol6159hKnVHnqvh7LCGeQmoJ/vY89C/CL8RoeHw
+ 51zu/nFJvjeWwCIngsKYyrHW0Kui7SYlLSA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b47j40x4p-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 09:25:04 -0700
+Received: from intmgw001.46.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 16 Sep 2021 09:25:03 -0700
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 24B69BE68AA8; Thu, 16 Sep 2021 09:25:02 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+CC:     Mel Gorman <mgorman@techsingularity.net>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
+Subject: [PATCH rfc 0/6] Scheduler BPF
+Date:   Thu, 16 Sep 2021 09:24:45 -0700
+Message-ID: <20210916162451.709260-1-guro@fb.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210915213550.3696532-1-guro@fb.com>
+References: <20210915213550.3696532-1-guro@fb.com>
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: vpH0i9WiJUK0nruaU4LW9Caxrzw4MqRE
+X-Proofpoint-GUID: vpH0i9WiJUK0nruaU4LW9Caxrzw4MqRE
 Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-16_04,2021-09-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ mlxlogscore=824 bulkscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+ spamscore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109160098
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+There is a long history of distro people, system administrators, and
+application owners tuning the CFS settings in /proc/sys, which are now
+in debugfs. Looking at what these settings actually did, it ended up
+boiling down to changing the likelihood of task preemption, or
+disabling it by setting the wakeup_granularity_ns to more than half of
+the latency_ns. The other settings didn't really do much for
+performance.
 
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Document and clarify BPF licensing.
+In other words, some our workloads benefit by having long running tasks
+preempted by tasks handling short running requests, and some workloads
+that run only short term requests which benefit from never being preempted.
 
-Two trivial things that have nothing to do with the actual content...
+This leads to a few observations and ideas:
+- Different workloads want different policies. Being able to configure
+  the policy per workload could be useful.
+- A workload that benefits from not being preempted itself could still
+  benefit from preempting (low priority) background system tasks.
+- It would be useful to quickly (and safely) experiment with different
+  policies in production, without having to shut down applications or reboot
+  systems, to determine what the policies for different workloads should be.
+- Only a few workloads are large and sensitive enough to merit their own
+  policy tweaks. CFS by itself should be good enough for everything else,
+  and we probably do not want policy tweaks to be a replacement for anything
+  CFS does.
 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-> Acked-by: Joe Stringer <joe@cilium.io>
-> Acked-by: Lorenz Bauer <lmb@cloudflare.com>
-> Acked-by: Dave Thaler <dthaler@microsoft.com>
-> ---
->  Documentation/bpf/bpf_licensing.rst | 91 +++++++++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
->  create mode 100644 Documentation/bpf/bpf_licensing.rst
+This leads to BPF hooks, which have been successfully used in various
+kernel subsystems to provide a way for external code to (safely)
+change a few kernel decisions. BPF tooling makes this pretty easy to do,
+and the people deploying BPF scripts are already quite used to updating them
+for new kernel versions.
 
-When you add a new file you need to put it into index.rst as well so it
-gets pulled into the docs build.
+This patchset aims to start a discussion about potential applications of BPF
+to the scheduler. It also aims to land some very basic BPF infrastructure
+necessary to add new BPF hooks to the scheduler, a minimal set of useful
+helpers, corresponding libbpf changes, etc.
 
-> diff --git a/Documentation/bpf/bpf_licensing.rst b/Documentation/bpf/bpf_=
-licensing.rst
-> new file mode 100644
-> index 000000000000..62391923af07
-> --- /dev/null
-> +++ b/Documentation/bpf/bpf_licensing.rst
-> @@ -0,0 +1,91 @@
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +BPF licensing
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Background
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +* Classic BPF was BSD licensed
-> +
-> +"BPF" was originally introduced as BSD Packet Filter in
-> +http://www.tcpdump.org/papers/bpf-usenix93.pdf. The corresponding instru=
-ction
-> +set and its implementation came from BSD with BSD license. That original
-> +instruction set is now known as "classic BPF".
-> +
-> +However an instruction set is a specification for machine-language inter=
-action,
-> +similar to a programming language.  It is not a code. Therefore, the
-> +application of a BSD license may be misleading in a certain context, as =
-the
-> +instruction set may enjoy no copyright protection.
-> +
-> +* eBPF (extended BPF) instruction set continues to be BSD
-> +
-> +In 2014, the classic BPF instruction set was significantly extended. We
-> +typically refer to this instruction set as eBPF to disambiguate it from =
-cBPF.
-> +The eBPF instruction set is still BSD licensed.
-> +
-> +Implementations of eBPF
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Using the eBPF instruction set requires implementing code in both kernel=
- space
-> +and user space.
-> +
-> +In Linux Kernel
-> +---------------
-> +
-> +The reference implementations of the eBPF interpreter and various just-i=
-n-time
-> +compilers are part of Linux and are GPLv2 licensed. The implementation of
-> +eBPF helper functions is also GPLv2 licensed. Interpreters, JITs, helper=
-s,
-> +and verifiers are called eBPF runtime.
-> +
-> +In User Space
-> +-------------
-> +
-> +There are also implementations of eBPF runtime (interpreter, JITs, helper
-> +functions) under
-> +Apache2 (https://github.com/iovisor/ubpf),
-> +MIT (https://github.com/qmonnet/rbpf), and
-> +BSD (https://github.com/DPDK/dpdk/blob/main/lib/librte_bpf).
-> +
-> +In HW
-> +-----
-> +
-> +The HW can choose to execute eBPF instruction natively and provide eBPF =
-runtime
-> +in HW or via the use of implementing firmware with a proprietary license.
-> +
-> +In other operating systems
-> +--------------------------
-> +
-> +Other kernels or user space implementations of eBPF instruction set and =
-runtime
-> +can have proprietary licenses.
-> +
-> +Using BPF programs in the Linux kernel
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Linux Kernel (while being GPLv2) allows linking of proprietary kernel mo=
-dules
-> +under these rules:
-> +https://www.kernel.org/doc/html/latest/process/license-rules.html#id1
+Our very first experiments with using BPF in CFS look very promising. We're
+at a very early stage, however already have seen a nice latency and ~1% RPS
+wins for our (Facebook's) main web workload.
 
-I would just write this as Documentation/process/license-rules.rst.  The
-HTML docs build will link it automatically, and readers of the plain-text
-file will know where to go.
+As I know, Google is working on a more radical approach [2]: they aim to mo=
+ve
+the scheduling code into userspace. It seems that their core motivation is
+somewhat similar: to make the scheduler changes easier to develop, validate
+and deploy. Even though their approach is different, they also use BPF for
+speeding up some hot paths. I think the suggested infrastructure can serve
+their purpose too.
 
-> +When a kernel module is loaded, the linux kernel checks which functions =
-it
-> +intends to use. If any function is marked as "GPL only," the correspondi=
-ng
-> +module or program has to have GPL compatible license.
-> +
-> +Loading BPF program into the Linux kernel is similar to loading a kernel
-> +module. BPF is loaded at run time and not statically linked to the Linux
-> +kernel. BPF program loading follows the same license checking rules as k=
-ernel
-> +modules. BPF programs can be proprietary if they don't use "GPL only" BPF
-> +helper functions.
-> +
-> +Further, some BPF program types - Linux Security Modules (LSM) and TCP
-> +Congestion Control (struct_ops), as of Aug 2021 - are required to be GPL
-> +compatible even if they don't use "GPL only" helper functions directly. =
-The
-> +registration step of LSM and TCP congestion control modules of the Linux
-> +kernel is done through EXPORT_SYMBOL_GPL kernel functions. In that sense=
- LSM
-> +and struct_ops BPF programs are implicitly calling "GPL only" functions.
-> +The same restriction applies to BPF programs that call kernel functions
-> +directly via unstable interface also known as "kfunc".
-> +
-> +Packaging BPF programs with user space applications
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> +
-> +Generally, proprietary-licensed applications and GPL licensed BPF progra=
-ms
-> +written for the Linux kernel in the same package can co-exist because th=
-ey are
-> +separate executable processes. This applies to both cBPF and eBPF progra=
-ms.
-> --=20
-> 2.30.2
+An example of an userspace part, which loads some simple hooks is available
+here [3]. It's very simple, provided only to simplify playing with the prov=
+ided
+kernel patches.
 
-Thanks,
 
-jon
+[1] c722f35b513f ("sched/fair: Bring back select_idle_smt(), but differentl=
+y")
+[2] Google's ghOSt: https://linuxplumbersconf.org/event/11/contributions/95=
+4/
+[3] https://github.com/rgushchin/atc
+
+
+Roman Gushchin (6):
+  bpf: sched: basic infrastructure for scheduler bpf
+  bpf: sched: add convenient helpers to identify sched entities
+  bpf: sched: introduce bpf_sched_enable()
+  sched: cfs: add bpf hooks to control wakeup and tick preemption
+  libbpf: add support for scheduler bpf programs
+  bpftool: recognize scheduler programs
+
+ include/linux/bpf_sched.h       |  53 ++++++++++++
+ include/linux/bpf_types.h       |   3 +
+ include/linux/sched_hook_defs.h |   4 +
+ include/uapi/linux/bpf.h        |  25 ++++++
+ kernel/bpf/btf.c                |   1 +
+ kernel/bpf/syscall.c            |  21 ++++-
+ kernel/bpf/trampoline.c         |   1 +
+ kernel/bpf/verifier.c           |   9 ++-
+ kernel/sched/Makefile           |   1 +
+ kernel/sched/bpf_sched.c        | 138 ++++++++++++++++++++++++++++++++
+ kernel/sched/fair.c             |  27 +++++++
+ scripts/bpf_doc.py              |   2 +
+ tools/bpf/bpftool/common.c      |   1 +
+ tools/bpf/bpftool/prog.c        |   1 +
+ tools/include/uapi/linux/bpf.h  |  25 ++++++
+ tools/lib/bpf/libbpf.c          |  27 ++++++-
+ tools/lib/bpf/libbpf.h          |   4 +
+ tools/lib/bpf/libbpf.map        |   3 +
+ 18 files changed, 341 insertions(+), 5 deletions(-)
+ create mode 100644 include/linux/bpf_sched.h
+ create mode 100644 include/linux/sched_hook_defs.h
+ create mode 100644 kernel/sched/bpf_sched.c
+
+--=20
+2.31.1
+
