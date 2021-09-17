@@ -2,245 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C956C40F9E2
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 16:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8795140FABD
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 16:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239370AbhIQOFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 10:05:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9890 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237812AbhIQOFI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:05:08 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H9wYH4cV1z8xfX;
-        Fri, 17 Sep 2021 21:59:15 +0800 (CST)
-Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+        id S231994AbhIQOup (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 10:50:45 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31960 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231626AbhIQOuo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 17 Sep 2021 10:50:44 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18HEdlWV017891;
+        Fri, 17 Sep 2021 07:48:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=IWTROyg+fkKQ8c8VDjhBTrm45xGb+w4PncLC70LAO4Y=;
+ b=OM6Qnlly96RsYvy/H4EzLh7MeoBT0XTGUALMWxuX2iUiTr5O/mv7qH8MzhxG3v3mFyGJ
+ 7Q1BaMz2SNiwUD8bEWeG09f1yt3GhkOUt7PCW5ixGoFJVsHwdaNcfSZ7eGWoq7Py0e5m
+ eMdaBxrHJ0dkqOpun/A+O+SaAhNVmH0/du0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3b4gxhv9dx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 17 Sep 2021 07:48:58 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 17 Sep 2021 22:03:44 +0800
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 17 Sep 2021 22:03:43 +0800
-Subject: Re: [PATCH 3/3] bpf/selftests: add test for writable bare tracepoint
-To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>
+ 15.1.2308.14; Fri, 17 Sep 2021 07:48:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rua4c+UCSqIxzV9iPj+L/ChYR1jwWGmxSrs2p+0pqzFdU9b0fflq56yY2335040irqqp+R/BvvVq0hilUHxGP5pIIT66zLZLlaI33WKOqZxgcgYCU8DpyzI+aDbdt8GMzOcqDo6EfCj8QXxFDgh6mJ+ANybVAbBclyoB+Rt3eeeU3pb3wzvAKVVyUP+DXACEW8MHZSOrCyWdGGYZR/EtgwO0Zhl+QwwKFOcUu6S9nZVKcR7Z2qRE3MTywxIJJPbXSYJIrUw0VfdnfMEtpq5FXyAvVfILl5UcoE6+5v6JjZkVGRB3yJF9u5XkifMoslemx7vrzQCoslu9WUXHPpsWOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=IWTROyg+fkKQ8c8VDjhBTrm45xGb+w4PncLC70LAO4Y=;
+ b=kDKzHVibGktTANPZ7KeCvCbEBceIsJ4w8PUlG+9+kQDzLPtp6RonGBpu5844qhDtOOBMZvZRnAlwhUtrJV7RqLE4PaX7unC2J5xtFAf9tEumzUJmDMqV0Vi0jXZ/dtsQ9SbggpkSmKQXLwN9Vft7jt0vYS4okqoYV5QIogI2F2Ozq1au1buCBK7Q0CAiV92l2uAIFR8CM+ode0pg0RE4AxEYDHUaZQqJNeE32AWONJOF/MgAoDdNK6+OawfUnF1M9GNqWySN2lNffjqYb4beGezFJJ/pyiQQkUgWZZ4UeqO3xUBr6NgGbakEgk1lZuSD8IYjBTvqaw3BjcfdXx/WBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4500.namprd15.prod.outlook.com (2603:10b6:806:19b::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Fri, 17 Sep
+ 2021 14:48:55 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
+ 14:48:55 +0000
+Subject: Re: [PATCH 1/3] bpf: support writable context for bare tracepoint
+To:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>
 CC:     Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
         <netdev@vger.kernel.org>
 References: <20210916135511.3787194-1-houtao1@huawei.com>
- <20210916135511.3787194-4-houtao1@huawei.com>
- <c70c0a07-a337-1710-fae7-41ab77f75544@fb.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <24ffb298-7638-4771-1f3b-5415258ad768@huawei.com>
-Date:   Fri, 17 Sep 2021 22:03:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <c70c0a07-a337-1710-fae7-41ab77f75544@fb.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+ <20210916135511.3787194-2-houtao1@huawei.com>
+ <9cbbb8b4-f3e3-cd2d-a1cc-e086e7d28946@fb.com>
+ <b76d4051-abff-5e75-c812-41c6f283327f@huawei.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <3001e875-9a74-8e22-3a7c-be3d280cd866@fb.com>
+Date:   Fri, 17 Sep 2021 07:48:53 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <b76d4051-abff-5e75-c812-41c6f283327f@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR01CA0011.prod.exchangelabs.com (2603:10b6:a02:80::24)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+MIME-Version: 1.0
+Received: from [IPv6:2620:10d:c085:21e8::1426] (2620:10d:c090:400::5:ad12) by BYAPR01CA0011.prod.exchangelabs.com (2603:10b6:a02:80::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Fri, 17 Sep 2021 14:48:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7a975074-7e7c-47a0-2253-08d979ea45f4
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4500:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4500DBAF02621A7DF3971706D3DD9@SA1PR15MB4500.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rAQhCg0vmKe7aIImETQc1bqr/NL3SQTrySg16SUTl7TkOZ+DfmGXPoaw5ZFdYaY/M5Ku5h18xaZJRr3YqNLy+cC2eVTDcO2JnKkJwjAcxw8ks2VbQ3DrjEUjGtR4anlLCj4eghsoWIl1e520cAsJ/Vk4tHPnirPtwZwOBFyh9hGd8IBUKVHef/EK1J4w8CBSGVi9RxTF7kzHJruo6AjNFmr9bk+LXFtrqANdSwv6QnrIEzEAMXl+yR/cJ5ZO1/aTo7EL0QI0BsGbi/5563kKyEoXBR+wqCfMzEXivIVFgEWotHuwna4/elgDR/PDEQKmdq59AEO3l7nuWBkw46ncfDZJdUBC3oDMLiV1dan7X91gJCICpv667vAGwQgMjxWwf7Y/GdY5+wrLuT+X0/vIxCkLjtZ4s/DOhnAzKfqygP51QNc3d5n1hFilVTHcbxsqoNU/RgODe2wWwElcCuxvlbya+KmE6dbrU4fJ5Wiw05vcyALsryVCFy4lUyVwzQdTsnW0zzql727et00tMMrCf/+kF+isVorehD9MZBzD0m8DImo+AL+7JJEcpfBczXlPsO8ljgHGgbfTiodcHe5EIFEVMN7tox+lalZ1P9kitBKQf6E1CurMDcB846unX2IjolLnQu7yKaBqzqEMlG0skQAqZElxnpJIvfvafE0ZvHjXjyeIQuA4rOXCofeX/V96OwaWX0zN2K6xV8cZn0VKmA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(110136005)(53546011)(6486002)(66946007)(66556008)(186003)(316002)(31686004)(36756003)(54906003)(4326008)(2616005)(86362001)(508600001)(5660300002)(83380400001)(2906002)(8676002)(52116002)(8936002)(38100700002)(31696002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OEZhREg3Z0MvZXNFWUVsOXRzVFJ1VzBwNVVWR3RKekdPRWp0UlZ6blZmVm9j?=
+ =?utf-8?B?T3NjQ3hNRDJseVpuTTN5dUxIT0VjREtKZFhVSFJObHE4dlZqeXExaWJqWG5I?=
+ =?utf-8?B?QmpWYWVJREVnMEd0SlIyeFNkamxSMThRaEZzRTVJWmxtVGVnalVENkNBNHUr?=
+ =?utf-8?B?N0xsaEd4a0F2Tk8vbXB0dURVKzRMc3ZOaE1QUVBDQzI2VkVpZDFHYzFObFRR?=
+ =?utf-8?B?eEV5N1BUZUhubVllMWhlMmFTZ0xUcEV0ZEhXanFyKy8yWEtFMjV4TDR4MkJ5?=
+ =?utf-8?B?YVV3UmdjU0hmcUtHUVREY1pNTTg1RGpUMFB3N1NJMFhoQm9FVWZSZlBDa0Vn?=
+ =?utf-8?B?OXR4VkVQdGtaVXVMM1BWZHZ5ajJQRFVPVCtBeGtBM1dJQ3FJU1hVM1ZqTzVG?=
+ =?utf-8?B?UWZYK0hkRCtOc3FmYUU0cU5MNGpESFBvUzFOQnJkbmFvZkZCZ25MM0Y5WmRT?=
+ =?utf-8?B?Uml5dEJXd0EwbjVaV1hQZ3VIZkVkM2ZobGFnbWtTekR4QTdMWFVQT2paVnE1?=
+ =?utf-8?B?UkpOSlRvcjgzSmRiQnRGd0FSQWlrVHA4V1ZYZEZvVkl0VjQzVXNNRDNIR3E4?=
+ =?utf-8?B?OTcyTWt2ZmlDQzMzK3FtR2FXN2ROTDRsSnlBUTE0S04wZTZrSkJ1V2NWQWxI?=
+ =?utf-8?B?RkZUZVNlQXR6R0dUVEhEOWJ1QkpmVGtVL2QzUVQzN1FvTVVuTW4wMkRMaGp0?=
+ =?utf-8?B?czlVYzdLTlQ5SE51VURJbDRGWDRsWFdEczB1cFFOL2Y1QVNTMkRkbTZrbmIy?=
+ =?utf-8?B?SHBad1lVNGN4T2NZZWRKZEtzaUNmU3k5Q2NhaGRLS0tQMUs1Zk82UngzZjFM?=
+ =?utf-8?B?WVpWTVJXSS85cGREYUdSNmIwZ0tlUXNzd2ZFQUlOa3lQZjdmRkRHYVZWU2Ix?=
+ =?utf-8?B?ZXl1U0dhSTlmM0tZaVMxcURKZHlLQmdtUHQ3ODAxMk50L3hReEpmZys1d0lL?=
+ =?utf-8?B?TTBiY2FCRGVJUjN2aEUweGxZME5qVkRMSDNyMXlac3lFbEI3ZXV5VzZJY0Y5?=
+ =?utf-8?B?cGV4SWN1TExQUHUxbEF5bTA5cytBajdSZXFPcCtUbVRIMmhFQk9FSGlsdHNm?=
+ =?utf-8?B?dG02NHZ6bmNHUUlIbzVpN2lHM0hPQ0Zub2dMSnhEUlZFdHJ1bE83NHRFRTdt?=
+ =?utf-8?B?WlNuYTVPSXV5ZnEwMkNnK3B6TGxzMTRRY3d1YSt5ZmVFTFI3RFBUSHJIOG82?=
+ =?utf-8?B?QndvK21ZMGxIY05GYVNUcHM1blBNNnpzWWRPYVFMMWh5Y2p0UkhESHZZaHJG?=
+ =?utf-8?B?QjQvOVdUaVg3RlRyQkF1OGdSR2p2TERndHFESnl4ODZzNGc4OXFKQTc5ckVG?=
+ =?utf-8?B?TGRTQVAwTnZoTkh5UUcvcjBmS1hlN01XVzFFZ0lIUmpMT01BckR5SHFjeVpX?=
+ =?utf-8?B?ekhLd1BydmZBZEZmdUYwQUZ0V3o4WVZja3NQa3JEYUV4NG5IYWtLUDF3cmNy?=
+ =?utf-8?B?OXZPazVOaFljMWllN2xUVlN4T0cwVDd3R1ZPbFBMaFBBYkZlR1ZuMGlIa3gy?=
+ =?utf-8?B?bkk3VFNQd3poZ08reDZBWVFHY1ZVZG9WMndCMlkwcFFDMGxsd1NUdVhUdFBS?=
+ =?utf-8?B?R241WWMyREpCV3hLZXVkTVd1TmFaZDIrTVFNdmZoVzVpMUpodVFaTGlMVnRj?=
+ =?utf-8?B?aEJWNzQrU2RMckdtdStBVTZjRE9Pd29MRWcxQ25OZlk4QlM0VTdiTEhhQUMv?=
+ =?utf-8?B?WUV3b0NmeWFQOG1HcmUwc1pXSzBRUm03RVQzR0NaYkRuU2hSMzhsd1hYWGIw?=
+ =?utf-8?B?Z0MrS01UQTRvUXRwQzhxSlhYTzhDS0p2eGduM25VUVZ0NG9IenB0Y3lsblFL?=
+ =?utf-8?B?NVRoTGVhdTVHZnZYSUNaQT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a975074-7e7c-47a0-2253-08d979ea45f4
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 14:48:55.6059
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ULVMIQy6kF1m+oGMm0E792HOjjdv4qYLSL/YW7athzMrKIaF7+mA6DNd9tssqrIc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4500
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: 0LBeHsylIs5WAhQHpm6MR4skkm0tmNQ5
+X-Proofpoint-GUID: 0LBeHsylIs5WAhQHpm6MR4skkm0tmNQ5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-17_06,2021-09-17_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ priorityscore=1501 spamscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109170094
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
 
-On 9/17/2021 7:46 AM, Yonghong Song wrote:
->
->
-> On 9/16/21 6:55 AM, Hou Tao wrote:
->> Add a writable bare tracepoint in bpf_testmod module, and
->> trigger its calling when reading /sys/kernel/bpf_testmod
->> with a specific buffer length.
->
-> The patch cannot be applied cleanly with bpf-next tree.
-> Please rebase and resubmit.
-Will do
->
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>   .../bpf/bpf_testmod/bpf_testmod-events.h      | 15 +++++++
->>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 10 +++++
->>   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 +++
->>   .../selftests/bpf/prog_tests/module_attach.c  | 40 ++++++++++++++++++-
->>   .../selftests/bpf/progs/test_module_attach.c  | 14 +++++++
->>   5 files changed, 82 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
->> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
->> index 89c6d58e5dd6..11ee801e75e7 100644
->> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
->> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
->> @@ -34,6 +34,21 @@ DECLARE_TRACE(bpf_testmod_test_write_bare,
->>       TP_ARGS(task, ctx)
->>   );
->>   +#undef BPF_TESTMOD_DECLARE_TRACE
->> +#ifdef DECLARE_TRACE_WRITABLE
->> +#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
->> +    DECLARE_TRACE_WRITABLE(call, PARAMS(proto), PARAMS(args), size)
->> +#else
->> +#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
->> +    DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
->> +#endif
->> +
->> +BPF_TESTMOD_DECLARE_TRACE(bpf_testmod_test_writable_bare,
->> +    TP_PROTO(struct bpf_testmod_test_writable_ctx *ctx),
->> +    TP_ARGS(ctx),
->> +    sizeof(struct bpf_testmod_test_writable_ctx)
->> +);
->> +
->>   #endif /* _BPF_TESTMOD_EVENTS_H */
->>     #undef TRACE_INCLUDE_PATH
->> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> index 141d8da687d2..3d3fb16eaf8c 100644
->> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> @@ -26,6 +26,16 @@ bpf_testmod_test_read(struct file *file, struct kobject
->> *kobj,
->>         trace_bpf_testmod_test_read(current, &ctx);
->>   +    /* Magic number to enable writable tp */
->> +    if (len == 1024) {
->> +        struct bpf_testmod_test_writable_ctx writable = {
->> +            .val = 1024,
->> +        };
->> +        trace_bpf_testmod_test_writable_bare(&writable);
->> +        if (writable.ret)
->> +            return snprintf(buf, len, "%d\n", writable.val);
->> +    }
->> +
->>       return -EIO; /* always fail */
->>   }
->>   EXPORT_SYMBOL(bpf_testmod_test_read);
->> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
->> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
->> index b3892dc40111..553d94214aa6 100644
->> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
->> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
->> @@ -17,4 +17,9 @@ struct bpf_testmod_test_write_ctx {
->>       size_t len;
->>   };
->>   +struct bpf_testmod_test_writable_ctx {
->> +    bool ret;
->> +    int val;
->> +};
->> +
->>   #endif /* _BPF_TESTMOD_H */
->> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c
->> b/tools/testing/selftests/bpf/prog_tests/module_attach.c
->> index d85a69b7ce44..5565bcab1531 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
->> @@ -6,11 +6,39 @@
->>     static int duration;
->>   +#define BPF_TESTMOD_PATH "/sys/kernel/bpf_testmod"
->> +
->> +static int trigger_module_test_writable(int *val)
->> +{
->> +    int fd, err;
->> +    char buf[1025];
->
-> Not critical, but do you need such a big stack size?
-> Maybe smaller one?
-65 is also fine.
->
->> +    ssize_t rd;
->> +
->> +    fd = open(BPF_TESTMOD_PATH, O_RDONLY);
->> +    err = -errno;
->> +    if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
->> +        return err;
->> +
->> +    rd = read(fd, buf, sizeof(buf) - 1);
->> +    err = rd < 0 ? -errno : -EIO;
->> +    if (CHECK(rd <= 0, "testmod_file_read", "failed: %d\n", err)) {
->
-> Please use ASSERT_* macros. You can take a look at other self tests.
-The reason using CHECK instead of ASSERT is we can output the errno
-if read() fails.
->> +        close(fd);
->> +        return err;
->> +    }
->
-> Put one blank line here and remove the following three blank lines.
-Will do.
->
->> +    buf[rd] = '\0';
->> +
->> +    *val = strtol(buf, NULL, 0);
->> +
->> +    close(fd);
->> +
->> +    return 0;
->> +}
->> +
->>   static int trigger_module_test_read(int read_sz)
->>   {
->>       int fd, err;
->>   -    fd = open("/sys/kernel/bpf_testmod", O_RDONLY);
->> +    fd = open(BPF_TESTMOD_PATH, O_RDONLY);
->>       err = -errno;
->>       if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
->>           return err;
->> @@ -32,7 +60,7 @@ static int trigger_module_test_write(int write_sz)
->>       memset(buf, 'a', write_sz);
->>       buf[write_sz-1] = '\0';
->>   -    fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
->> +    fd = open(BPF_TESTMOD_PATH, O_WRONLY);
->>       err = -errno;
->>       if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err)) {
->>           free(buf);
->> @@ -58,6 +86,7 @@ void test_module_attach(void)
->>       struct test_module_attach__bss *bss;
->>       struct bpf_link *link;
->>       int err;
->> +    int writable_val;
->>         skel = test_module_attach__open();
->>       if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
->> @@ -90,6 +119,13 @@ void test_module_attach(void)
->>       ASSERT_EQ(bss->fexit_ret, -EIO, "fexit_tet");
->>       ASSERT_EQ(bss->fmod_ret_read_sz, READ_SZ, "fmod_ret");
->>   +    bss->raw_tp_writable_bare_ret = 1;
->> +    bss->raw_tp_writable_bare_val = 511;
->> +    writable_val = 0;
->> +    ASSERT_OK(trigger_module_test_writable(&writable_val), "trigger_writable");
->> +    ASSERT_EQ(bss->raw_tp_writable_bare_in_val, 1024, "writable_test");
->> +    ASSERT_EQ(bss->raw_tp_writable_bare_val, writable_val, "writable_test");
->> +
->>       test_module_attach__detach(skel);
->>         /* attach fentry/fexit and make sure it get's module reference */
->> diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c
->> b/tools/testing/selftests/bpf/progs/test_module_attach.c
->> index bd37ceec5587..4f5c780fcd21 100644
->> --- a/tools/testing/selftests/bpf/progs/test_module_attach.c
->> +++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
->> @@ -27,6 +27,20 @@ int BPF_PROG(handle_raw_tp_bare,
->>       return 0;
->>   }
->>   +int raw_tp_writable_bare_in_val = 0;
->> +int raw_tp_writable_bare_ret = 0;
->> +int raw_tp_writable_bare_val = 0;
->> +
->> +SEC("raw_tp_writable/bpf_testmod_test_writable_bare")
->> +int BPF_PROG(handle_raw_tp_writable_bare,
->> +         struct bpf_testmod_test_writable_ctx *writable)
->> +{
->> +    raw_tp_writable_bare_in_val = writable->val;
->> +    writable->ret = raw_tp_writable_bare_ret;
->> +    writable->val = raw_tp_writable_bare_val;
->> +    return 0;
->> +}
->> +
->>   __u32 tp_btf_read_sz = 0;
->>     SEC("tp_btf/bpf_testmod_test_read")
->>
-> .
 
+On 9/17/21 6:45 AM, Hou Tao wrote:
+> Hi,
+> 
+> On 9/17/2021 7:16 AM, Yonghong Song wrote:
+>>
+>>
+>> On 9/16/21 6:55 AM, Hou Tao wrote:
+>>> Commit 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
+>>> supports writable context for tracepoint, but it misses the support
+>>> for bare tracepoint which has no associated trace event.
+>>>
+>>> Bare tracepoint is defined by DECLARE_TRACE(), so adding a corresponding
+>>> DECLARE_TRACE_WRITABLE() macro to generate a definition in __bpf_raw_tp_map
+>>> section for bare tracepoint in a similar way to DEFINE_TRACE_WRITABLE().
+>>>
+>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>> ---
+>>>    include/trace/bpf_probe.h | 19 +++++++++++++++----
+>>>    1 file changed, 15 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+>>> index a23be89119aa..d08ee1060d82 100644
+>>> --- a/include/trace/bpf_probe.h
+>>> +++ b/include/trace/bpf_probe.h
+>>> @@ -93,8 +93,7 @@ __section("__bpf_raw_tp_map") = {                    \
+>>>      #define FIRST(x, ...) x
+>>>    -#undef DEFINE_EVENT_WRITABLE
+>>> -#define DEFINE_EVENT_WRITABLE(template, call, proto, args, size)    \
+>>> +#define __CHECK_WRITABLE_BUF_SIZE(call, proto, args, size)        \
+>>>    static inline void bpf_test_buffer_##call(void)                \
+>>>    {                                    \
+>>>        /* BUILD_BUG_ON() is ignored if the code is completely eliminated, but \
+>>> @@ -103,8 +102,12 @@ static inline void
+>>> bpf_test_buffer_##call(void)                \
+>>>         */                                \
+>>>        FIRST(proto);                            \
+>>>        (void)BUILD_BUG_ON_ZERO(size != sizeof(*FIRST(args)));        \
+>>> -}                                    \
+>>> -__DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
+>>> +}
+>>> +
+>>> +#undef DEFINE_EVENT_WRITABLE
+>>> +#define DEFINE_EVENT_WRITABLE(template, call, proto, args, size) \
+>>> +    __CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
+>>> +    __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
+>>>      #undef DEFINE_EVENT
+>>>    #define DEFINE_EVENT(template, call, proto, args)            \
+>>> @@ -119,10 +122,18 @@ __DEFINE_EVENT(template, call, PARAMS(proto),
+>>> PARAMS(args), size)
+>>>        __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))        \
+>>>        __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
+>>>    +#undef DECLARE_TRACE_WRITABLE
+>>> +#define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
+>>> +    __CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
+>>> +    __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args)) \
+>>> +    __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), size)
+>>> +
+>>>    #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>>>      #undef DEFINE_EVENT_WRITABLE
+>>> +#undef DECLARE_TRACE_WRITABLE
+>>>    #undef __DEFINE_EVENT
+>>> +#undef __CHECK_WRITABLE_BUF_SIZE
+>>
+>> Put "#undef __CHECK_WRITABLE_BUF_SIZE" right after "#undef
+>> DECLARE_TRACE_WRITABLE" since they are related to each other
+>> and also they are in correct reverse order w.r.t. __DEFINE_EVENT?
+> If considering __CHECK_WRITABLE_BUF_SIZE is used in both DECLARE_TRACE_WRITABLE and
+> DEFINE_EVENT_WRITABLE and the order of definitions, is the following order better ?
+> 
+> #undef DECLARE_TRACE_WRITABLE
+> #undef DEFINE_EVENT_WRITABLE
+> #undef __CHECK_WRITABLE_BUF_SIZE
+
+This should be okay.
+
+> 
+>>
+>>>    #undef FIRST
+>>>      #endif /* CONFIG_BPF_EVENTS */
+>>>
+>> .
+> 
