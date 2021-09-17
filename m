@@ -2,90 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1E040FD94
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED0640FD93
 	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 18:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240185AbhIQQLc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S229890AbhIQQLc (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 17 Sep 2021 12:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242657AbhIQQLb (ORCPT <rfc822;bpf@vger.kernel.org>);
+Received: from mail.kernel.org ([198.145.29.99]:53548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240185AbhIQQLb (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 17 Sep 2021 12:11:31 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393EBC061574
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 09:10:09 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n2so3890965plk.12
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 09:10:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IcnzGazGSZzLmzdloUvkWwTMv7VR3Sjghoge1JYAIdM=;
-        b=FyLQDVClsZvjq2OxZJFDgb9XkrliSM/wX2o7OlHnI8O/1hsqPWUdfhD2thcwsI/L1K
-         mJsjw7QzQ1rWOk4GU7F7xbVjmIpi8ASYjDpBY4GKrFQ2cs4RwzfrA4AdXCZNaoBPSpDZ
-         +3AaWkf5vP8Tmwy0fa2rGqCHhbt3SIAakhM5D9hKeam9oK2Vv51ekQ0lME+JesKoizlL
-         lFJzdDDuuE/L5zoqUxUVM3SwUFjyEVlqzJWH2s/3FyfjsXgWqKZvINJpVa7EhuH3w2FP
-         RuPH0DLgyZ+G4w6aXU0TDkIu4L8BMxGEPuFsarBSv7U8Xs7TUynw37FDxA9mxA2jVdBC
-         jWpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IcnzGazGSZzLmzdloUvkWwTMv7VR3Sjghoge1JYAIdM=;
-        b=SQFQHbV2sWK29cuJYJS2Lk/WTQHGNAweFT9XP8vYtxKNnYSS7YZUDKsjH5rLzhbNPq
-         pGyHp00+8b+vqyZWYf3l/dGL4G17AqSwlpBVM8ywlD/4QB/3FGNEShi3xApSrI+MdKjl
-         IijwjJCXq6e9FFVtia21hGxx2Xb2mj6bkOcAcMY5qwTrMmsYk5yLqichXWjkXx7f9hKm
-         NG4Zz15GvU9Q1m+OtJuqADra4Tp5yy4E97uuKmtuxenspKwKVg6U2erkJ368zlOCHXjI
-         P7XFgjyO+BZGRMfUAL3/nCOteRdDWrQbtVa0ZyIiFoUA1531s32ovgNr+SY/IxZpcV2r
-         3pTA==
-X-Gm-Message-State: AOAM530w9NPMYHCRv+QkHja/MDFqR8YomXeE3gaCevWjvEc7ObbCNjpQ
-        HU9dsFmsc2c1YoWrA7nLYkfqluI90t+GF/Bfb1c=
-X-Google-Smtp-Source: ABdhPJxWuqIG3akyLaccaxAiJHr2IGqkFdxv14OKDPI76lbfPJXGzbm4KCufgZldtLXvIR3SaEYijPMiDKwE0k+YiZg=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr10444111pll.22.1631895008705; Fri, 17
- Sep 2021 09:10:08 -0700 (PDT)
+Received: by mail.kernel.org (Postfix) with ESMTPS id DB64061212;
+        Fri, 17 Sep 2021 16:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631895008;
+        bh=VRsQBviTr6s946tbfZg17fNfnUqHErYSmRigkoPwBPI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NM/0WeudiYnqrEimRHM0YN6R09Zg2EOiwHgzuqeXUkaAsOCUPp4OKSsS2YE9V67BR
+         eAge2JhV5VT/wG5MttEEjT8K08Xh5MtkAfUL2xuC5c3TZ9+q1CC34t2RrAWRQyhv/m
+         v3PWYXk/mWWzyybqDMmOo0ch03V/Xa5p1RLJVv+7A58QfuKdIgb2iWMUDbDnajZRH5
+         gmRIHTLYCzA5k6kCy6mg7RWfUhAeb4V7/AJI8MNH8RIj7UAxRCsIR2WI3d4Wu9vqzd
+         JbugbaA+nnM2IlwwNbNUWgKngGUOhKcIYx8IMFljytvcKVNVB0+K1g5DzFPILBvqGh
+         PWgkZldvWkP3g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D21E4609AD;
+        Fri, 17 Sep 2021 16:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210916015836.1248906-1-andrii@kernel.org> <20210916015836.1248906-5-andrii@kernel.org>
- <1334565d-4810-1ded-504b-180a7b124473@fb.com>
-In-Reply-To: <1334565d-4810-1ded-504b-180a7b124473@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 17 Sep 2021 09:09:57 -0700
-Message-ID: <CAADnVQK8hdbEQ0iO7X0pr_xAet-=nC0DhwkE2Kid9FrG72hD2Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/7] libbpf: allow skipping attach_func_name in bpf_program__set_attach_target()
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/7] Improve set_attach_target() and deprecate
+ open_opts.attach_prog_fd
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163189500885.20217.13882482710541336384.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Sep 2021 16:10:08 +0000
+References: <20210916015836.1248906-1-andrii@kernel.org>
+In-Reply-To: <20210916015836.1248906-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 9:17 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 9/15/21 6:58 PM, Andrii Nakryiko wrote:
-> > Allow to use bpf_program__set_attach_target to only set target attach
-> > program FD, while letting libbpf to use target attach function name from
-> > SEC() definition. This might be useful for some scenarios where
-> > bpf_object contains multiple related freplace BPF programs intended to
-> > replace different sub-programs in target BPF program. In such case all
-> > programs will have the same attach_prog_fd, but different
-> > attach_func_name. It's conveninent to specify such target function names
->
-> typo: conveninent => convenient
->
-> > declaratively in SEC() definitions, but attach_prog_fd is a dynamic
-> > runtime setting.
-> >
-> > To simplify such scenario, allow bpf_program__set_attach_target() to
-> > delay BTF ID resolution till the BPF program load time by providing NULL
-> > attach_func_name. In that case the behavior will be similar to using
-> > bpf_object_open_opts.attach_prog_fd (which is marked deprecated since
-> > v0.7), but has the benefit of allowing more control by user in what is
-> > attached to what. Such setup allows having BPF programs attached to
-> > different target attach_prog_fd with target funtions still declaratively
+Hello:
 
-Applied with "conveninent" and "funtions" typos fixed.
+This series was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Wed, 15 Sep 2021 18:58:29 -0700 you wrote:
+> This patch set deprecates bpf_object_open_opts.attach_prog_fd (in libbpf 0.7+)
+> by extending bpf_program__set_attach_target() to support some more flexible
+> scenarios. Existing fexit_bpf2bpf selftest is updated accordingly to not use
+> deprecated APIs.
+> 
+> While at it, also deprecate no-op relaxed_core_relocs option (they are always
+> "relaxed").
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,1/7] libbpf: use pre-setup sec_def in libbpf_find_attach_btf_id()
+    https://git.kernel.org/bpf/bpf-next/c/f11f86a3931b
+  - [bpf-next,2/7] selftests/bpf: stop using relaxed_core_relocs which has no effect
+    https://git.kernel.org/bpf/bpf-next/c/23a7baaa9388
+  - [bpf-next,3/7] libbpf: deprecated bpf_object_open_opts.relaxed_core_relocs
+    https://git.kernel.org/bpf/bpf-next/c/277641859e83
+  - [bpf-next,4/7] libbpf: allow skipping attach_func_name in bpf_program__set_attach_target()
+    https://git.kernel.org/bpf/bpf-next/c/2d5ec1c66e25
+  - [bpf-next,5/7] selftests/bpf: switch fexit_bpf2bpf selftest to set_attach_target() API
+    https://git.kernel.org/bpf/bpf-next/c/60aed22076b0
+  - [bpf-next,6/7] libbpf: schedule open_opts.attach_prog_fd deprecation since v0.7
+    https://git.kernel.org/bpf/bpf-next/c/91b555d73e53
+  - [bpf-next,7/7] libbpf: constify all high-level program attach APIs
+    https://git.kernel.org/bpf/bpf-next/c/942025c9f37e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
