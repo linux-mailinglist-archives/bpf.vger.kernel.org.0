@@ -2,83 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD48410154
-	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 00:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB08141017B
+	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 00:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344756AbhIQWgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 18:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbhIQWgB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:36:01 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B95EC061574;
-        Fri, 17 Sep 2021 15:34:38 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id h29so11912470ila.2;
-        Fri, 17 Sep 2021 15:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=rzVScc/3fhxtLP4lpidcQPT7ZyYnaMhrA6du6nm5lkE=;
-        b=DiCyntqNleRWupMrnr+b5Ruvq0fYk874Zi0OoUAw7wPJNAdDWvLdpS+2ebLboWw5k3
-         aQbljm/j4ugc8FSjVtaWR9xvR+aUEoenOgPFKL/XgHPcodPOu37pyQFEx2ZQ9vz7WV1R
-         DDVN0F2NkakA83/mpKRVBNZX5tktCB1WAAAE5N1VM0p42cIFNyN2BI0JezPsFivnq/nb
-         7vgC76bEdyl4QE3JBAiiSjNNYXZItfua+TUPFyhDq+SiYfNUBLQo6F+g86bgSkxbD/zD
-         Ey2FQRPW408yvaWqg+nkW/Qs51T4gs6LxbizCSbRzBhArhYCnvpEkiNlJs30nwEc8KrY
-         2OfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=rzVScc/3fhxtLP4lpidcQPT7ZyYnaMhrA6du6nm5lkE=;
-        b=kaD6PrsZuKywrqGUYhvbCSUc/Aq2+WhyfWSFGn9NNrn/MJLQ+vIG516PwM12sIc5Nv
-         +D9fayRAoLeFdYoZ7UTanxqQW5eVfGtGNY1Kt7vtfPw+asnWfckbGYCpP0/TC8AmmntV
-         0bLRdzRScx8CwqHSYQFSH4vQY6SbCBTznCMnqz7CoEZVz8r9uiWzK0/xJFsk6Q/uN6mc
-         sjzBCzsQsi0A39XC+HIEsREaJR+5CwXP7QSSQePVMjWXfAxm8uDqSGVkq/isnjzwN+PZ
-         pILJfFoEuM0y92iUnphVPFzrfyDgMWN9y/S1QUD+mJVXysXRqQAEF9j30jbsA6+K9KnI
-         Tz+g==
-X-Gm-Message-State: AOAM531iaE1fH62oe+ddDEO4er1PjXL3itSVW1rnhLEEaehhbPenAJdK
-        fQKgeN3ZEjtNajxRMvr/RLg=
-X-Google-Smtp-Source: ABdhPJzO/UwzioGL+88d2ZKgwGyqGd0ooIXS/evyvAW1pwmV/JiA9IO7K3L0PgUHe1Fw6PfELbPFmA==
-X-Received: by 2002:a92:bf01:: with SMTP id z1mr9265689ilh.155.1631918078114;
-        Fri, 17 Sep 2021 15:34:38 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id i14sm4092619iog.47.2021.09.17.15.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 15:34:37 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 15:34:29 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Liu Jian <liujian56@huawei.com>, john.fastabend@gmail.com,
-        daniel@iogearbox.net, jakub@cloudflare.com, lmb@cloudflare.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     liujian56@huawei.com
-Message-ID: <614517f5ed44e_8d5120847@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210917013222.74225-1-liujian56@huawei.com>
-References: <20210917013222.74225-1-liujian56@huawei.com>
-Subject: RE: [PATCH v2] skmsg: lose offset info in sk_psock_skb_ingress
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S235369AbhIQWts (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 18:49:48 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44432 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236208AbhIQWts (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 17 Sep 2021 18:49:48 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18HJOYYi021538
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:48:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=+YXihBOMhiSG+piFiJGD8LrHHDzlghSOhQNudXvTfQA=;
+ b=mfSp63QvOV8DHKTM43D7BuMQIswZ9lkP6SM47iOMjoQdGFNV9ZpH9mq0IMWQ7o4TGhSF
+ P+RmLlxH5O+pNRe9PZPkxPXNvu/GY+pt5hzS9+POxguZZtw1nlcYYRd+GHI2NZLdd2J1
+ Oqi/gXGgX7wEnzNXLUFYYi8hdLGbVhUJ1BQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 3b4rrnmu1d-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:48:25 -0700
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Fri, 17 Sep 2021 15:48:24 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id B823E75B5A17; Fri, 17 Sep 2021 15:48:18 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <dwarves@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH dwarves] libbpf: Get latest libbpf
+Date:   Fri, 17 Sep 2021 15:48:18 -0700
+Message-ID: <20210917224818.733897-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: GgLQGlSP-2HEaCsooK9py8IXBbfqAf-r
+X-Proofpoint-GUID: GgLQGlSP-2HEaCsooK9py8IXBbfqAf-r
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-17_09,2021-09-17_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ adultscore=0 malwarescore=0 impostorscore=0 spamscore=0 phishscore=0
+ bulkscore=0 mlxlogscore=905 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109170135
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Liu Jian wrote:
-> If sockmap enable strparser, there are lose offset info in
-> sk_psock_skb_ingress. If the length determined by parse_msg function
-> is not skb->len, the skb will be converted to sk_msg multiple times,
-> and userspace app will get the data multiple times.
-> 
-> Fix this by get the offset and length from strp_msg.
-> 
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> ---
-> v1->v2: fix build error when disable CONFIG_BPF_STREAM_PARSER
-> 
+Latest upstream LLVM now supports to emit btf_tag to
+dwarf ([1]) and the kernel support for btf_tag is also
+landed ([2]). Sync with latest libbpf which has
+btf_tag support. Next step will be to implement
+dwarf -> btf conversion for btf_tag.
 
-LGTM thanks.
+ [1] https://reviews.llvm.org/D106621
+ [2] https://lore.kernel.org/bpf/20210914223015.245546-1-yhs@fb.com
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ lib/bpf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/bpf b/lib/bpf
+index 986962f..980777c 160000
+--- a/lib/bpf
++++ b/lib/bpf
+@@ -1 +1 @@
+-Subproject commit 986962fade5dfa89c2890f3854eb040d2a64ab38
++Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
+--=20
+2.30.2
+
