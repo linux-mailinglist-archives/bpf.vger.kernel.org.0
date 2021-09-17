@@ -2,125 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15089410102
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3581D410104
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244638AbhIQV7R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 17:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244153AbhIQV7R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:59:17 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC23FC061574
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:57:54 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id j1so7844057pjv.3
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ua8PrUJUNaVBGGr8bTLUlc76LG8OFg5OFWYh/tNoyG4=;
-        b=o9AiexYpcorFqggWVXvN46SGwD0hncmZp97j9cGQns9f4QwrDiXS6h7R6KTBxlxu1l
-         C/2FPUY08ijqumVPHVanLiN3QIYemgY1JyHoGzIjPGj5I49dX2hDYqxp2ECFO2eLbL7d
-         hequRprdyR34jyRxIV9sf5eN+xF5vC2MT4WB0iDVnZjSju+x8o0M8tCr60XJFjoiRBl6
-         3YI5xKLi6xubfHyskRvon2xVsNxhTidSmZE3iR/qFHxs5gEwtpLHjEXdNwHplhvX7tjF
-         iamNPPcwusfmy4sLbDppFDS6GwFA9Erl/nTd5r6YO9fR8tvs3dRWGXfj5L6n4Za3lbNV
-         teYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ua8PrUJUNaVBGGr8bTLUlc76LG8OFg5OFWYh/tNoyG4=;
-        b=zv5mK1t6ZzyHRtDXuWQyBsN7FFrD0UDSGCMoYTO+PgxK5M1iL4sNfTvEYtQ63JOToG
-         J0Vuoy357Awmqehx360RN+LNKnCGLDF0Ht9BE49dItRurReVAg+zGv6FUJ2iJiBjGuJS
-         D4bTojKr0x+Mtyl4Jzt3II0y4aFWjWb5HHMG5Vmu0mJheQcXIRgGVjbrt35MzEId5H++
-         Enm7jvVl6gpJ7YJNzxZU5wQuj9UY6zJox/VXngdBfsMyhfeYOPQ8k0CKIFNn3uy6yH0e
-         KIG5xOFSA9FNtmtZ3s4sIaItoM6yzLexN+pUSq9JFtRQnOId0iZ42J+f+PiUHRQQaKB9
-         0dJw==
-X-Gm-Message-State: AOAM531xsX2/PxqOAr8irgTRmsidmv0SHVceL5pxMFCCYpJDIAl0betT
-        NwxAUlkk8zlyMNyV9tsTses=
-X-Google-Smtp-Source: ABdhPJzUEIMpn0eVJKE9Qea3rF8FZxWVYUzvtX9jVllY7TWic4PvxZ8IylBlRZ2MlbwqUzKGu+L4lQ==
-X-Received: by 2002:a17:90a:b795:: with SMTP id m21mr14718706pjr.143.1631915874271;
-        Fri, 17 Sep 2021 14:57:54 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([2620:10d:c090:500::6:db29])
-        by smtp.gmail.com with ESMTPSA id g12sm11454366pja.28.2021.09.17.14.57.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Sep 2021 14:57:53 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
-        lmb@cloudflare.com, mcroce@microsoft.com, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH RFC bpf-next 10/10] selftests/bpf: Convert map_ptr_kern test to use light skeleton.
-Date:   Fri, 17 Sep 2021 14:57:21 -0700
-Message-Id: <20210917215721.43491-11-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210917215721.43491-1-alexei.starovoitov@gmail.com>
-References: <20210917215721.43491-1-alexei.starovoitov@gmail.com>
+        id S234640AbhIQWBN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 18:01:13 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35142 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhIQWBN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 18:01:13 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mRLta-0003vX-Rc; Fri, 17 Sep 2021 23:59:46 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mRLta-000XXb-Ga; Fri, 17 Sep 2021 23:59:46 +0200
+Subject: Re: [syzbot] general protection fault in bpf_skb_cgroup_id
+To:     syzbot <syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <000000000000f152a305cc374d7b@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a0ad330c-3caa-5c56-3f1c-c600fe6dacbe@iogearbox.net>
+Date:   Fri, 17 Sep 2021 23:59:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <000000000000f152a305cc374d7b@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26297/Thu Sep 16 15:59:37 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On 9/17/21 11:06 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kern..
+> git tree:       bpf
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15089853300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
+> dashboard link: https://syzkaller.appspot.com/bug?extid=33f36d0754d4c5c0e102
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14dbd7ed300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1586f83b300000
+> 
+> Bisection is inconclusive: the first bad commit could be any of:
+> 
+> 0e6491b55970 bpf: Add oversize check before call kvcalloc()
+> 2f1aaf3ea666 bpf, mm: Fix lockdep warning triggered by stack_map_get_build_id_offset()
+> 8520e224f547 bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode
+> 3a029e1f3d6e selftests/bpf: Fix build of task_pt_regs test for arm64
+> d8079d8026f8 bpf, selftests: Add cgroup v1 net_cls classid helpers
+> 43d2b88c29f2 bpf, selftests: Add test case for mixed cgroup v1/v2
+> 49ca6153208f bpf: Relicense disassembler as GPL-2.0-only OR BSD-2-Clause
+> 2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16b5ccdd300000
 
-To exercise CO-RE in the kernel further convert map_ptr_kern
-test to light skeleton.
+I'll take a look at the report.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- tools/testing/selftests/bpf/Makefile             | 2 +-
- tools/testing/selftests/bpf/prog_tests/map_ptr.c | 8 +++-----
- 2 files changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 81031c8bdcb8..390e9875a13e 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -316,7 +316,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- 
- LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
- 	test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
--	trace_vprintk.c	kfunc_call_test_subprog.c
-+	trace_vprintk.c	kfunc_call_test_subprog.c map_ptr_kern.c
- SKEL_BLACKLIST += $$(LSKELS)
- 
- test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_ptr.c b/tools/testing/selftests/bpf/prog_tests/map_ptr.c
-index 4972f92205c7..62369f8ae124 100644
---- a/tools/testing/selftests/bpf/prog_tests/map_ptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/map_ptr.c
-@@ -4,7 +4,7 @@
- #include <test_progs.h>
- #include <network_helpers.h>
- 
--#include "map_ptr_kern.skel.h"
-+#include "map_ptr_kern.lskel.h"
- 
- void test_map_ptr(void)
- {
-@@ -18,9 +18,7 @@ void test_map_ptr(void)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
--	err = bpf_map__set_max_entries(skel->maps.m_ringbuf, page_size);
--	if (!ASSERT_OK(err, "bpf_map__set_max_entries"))
--		goto cleanup;
-+	skel->maps.m_ringbuf.max_entries = page_size;
- 
- 	err = map_ptr_kern__load(skel);
- 	if (!ASSERT_OK(err, "skel_load"))
-@@ -28,7 +26,7 @@ void test_map_ptr(void)
- 
- 	skel->bss->page_size = page_size;
- 
--	err = bpf_prog_test_run(bpf_program__fd(skel->progs.cg_skb), 1, &pkt_v4,
-+	err = bpf_prog_test_run(skel->progs.cg_skb.prog_fd, 1, &pkt_v4,
- 				sizeof(pkt_v4), buf, NULL, &retval, NULL);
- 
- 	if (CHECK(err, "test_run", "err=%d errno=%d\n", err, errno))
--- 
-2.30.2
-
+Thanks,
+Daniel
