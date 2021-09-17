@@ -2,165 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F3641008B
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014ED41009B
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244441AbhIQVHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 17:07:50 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:42910 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244479AbhIQVHt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:07:49 -0400
-Received: by mail-io1-f69.google.com with SMTP id i78-20020a6b3b51000000b005b8dd0f9e76so22099217ioa.9
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:06:26 -0700 (PDT)
+        id S240383AbhIQVMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 17:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238205AbhIQVMR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 17:12:17 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA84C061574
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:10:55 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id t4so21627772qkb.9
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YL2MafRhxOugSSRC4qheDkm60e9kGDfVJr78L6XpsLE=;
+        b=K8VFqzImXDWONwltEYeOhiN3KQYMLsoUYddW7/tuKzB7ffjrvCGYx9n2InXGdEDnZ2
+         x9u++CE2pOND4wlYFLOFjsCGrPt/0wxZ5owGX6dIu/v1sCvrsDESYl3U9XQLdizSpLSW
+         bRxsm/XwHkZTahKHyakLFy3tNLK7cAampqgSsxB2/VzBlMMwA713au/8iRZTt+HHbIQV
+         +5hnuvQ2K3e/kCPI1L05JqXek/wWt7bhOIdqoZHFuqld/G0QxMQz1o9U9jztwCzjXkB5
+         4LXRkeKFw56kf6f3aD71BkXhiiddGM7BQtJJFQeSZk4sgK8T7QwkbU+1KtJpdxbed2ZW
+         tFSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2WmomhkD51wIWOOU3RkzQPqwZsHbNfmPQ1ty9n1eE5c=;
-        b=JUIUNDPJlhJ+h5b+ywN0l0ToVraHUGsT8RCnGIQJVTpnnk/ZwJFdxlzZgTk7W2Wph1
-         EP6zvxldUwDgy2toxZK3oN/cJlGLn87uGz8GykxyX9LSWxKo7W0zBZ+2NAq0qmaw4rKO
-         esAsQRIAkMDz9onEiQGhQEujG45wyQKL2nvAXwLtXuhAf++X7tK8TMT2ufjyWFBnDPi0
-         AwbT3tnTUsD/rOigekHbU5QJIgx7Hu+BxhToFKOJE5Ah0iz7K5gtzyxz/MOJao1KEgbt
-         J9Jv6ijmzyEdpT2GTc4vR3/G6wXhN2FB0QQU3MZu1HWsUWhml103wNnLNhTkfjhntOxd
-         VdAg==
-X-Gm-Message-State: AOAM532mIPkeKxI8/5B4VFfxd79MRZWO8Y+x8edspr99W5HxFyF1cKbh
-        6oJue/WTCtG9N5pyf2ShvG1hg433Ya63ZeRJLZLCSTB8s9B9
-X-Google-Smtp-Source: ABdhPJwcXY4hOe4rF5uMBVJqp8pZYf8i7SorzdJZH1w9phoM0nqDf8CL6+KmIFofF8111goxRfs/n3y5uL7i6sJ0Oe2dd7xtrwjG
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YL2MafRhxOugSSRC4qheDkm60e9kGDfVJr78L6XpsLE=;
+        b=MhhI22B8oua3QHc5bygc25Ngf5cnQiM3YB+AhJuf94Xq2bLnsSAxgnFXcJGchXX8Ed
+         VQeQhBUa0xaSyYVHFCBFVfCmkt4x550d9U4zonMr4/YfA8ZRC60SgEzY3ZcwFU5hRPWx
+         DkC4fdL0uz3iYKeLa7E2wTQ1ScU8NFpU/r1jfE9MSWlCHtEnvp3YPAkiN9P/sZ0RHpdE
+         7OaIDmeux6bQ5eu42lCI47ubAkzNZ3m3ZQjjUovN99KKld3463EqY1/E3xODbMtI/f7e
+         vhTnvOYDk8D+ss78oZBeGAqyF14jV8bGzS43hJR8BJ+s3jbFnKWbotzNEbmD2EJEwBCW
+         hCmw==
+X-Gm-Message-State: AOAM533I2rVe2kvG2BWWzBxM28EIJdxSVBygroPMWlbnGa2r6vIbbh4J
+        jw4NRnBZuERc9y+qYnsmUbswl6cStZNuTjh7l4q0lOV9
+X-Google-Smtp-Source: ABdhPJyD/kAW4iMpHuw8k1F9BM7PiPN92VPDuL/PZ0opJTxxs91skP4aQeAgsv0G8ADXjY/H4Y5s5PjwCE/lqkHZqjQ=
+X-Received: by 2002:a25:1bc5:: with SMTP id b188mr15850239ybb.267.1631913054057;
+ Fri, 17 Sep 2021 14:10:54 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c7af:: with SMTP id f15mr9420398ilk.64.1631912786480;
- Fri, 17 Sep 2021 14:06:26 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 14:06:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f152a305cc374d7b@google.com>
-Subject: [syzbot] general protection fault in bpf_skb_cgroup_id
-From:   syzbot <syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20210916032641.1413293-1-fallentree@fb.com> <20210916032641.1413293-3-fallentree@fb.com>
+In-Reply-To: <20210916032641.1413293-3-fallentree@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 17 Sep 2021 14:10:42 -0700
+Message-ID: <CAEf4BzZ2JTH8cCVpNvtZuBF46upz9_yp5eNc8v_uHMaZ4fOy4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 2/3] selftests/bpf: add per worker cgroup suffix
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yucong Sun <sunyucong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Wed, Sep 15, 2021 at 8:26 PM Yucong Sun <fallentree@fb.com> wrote:
+>
+> From: Yucong Sun <sunyucong@gmail.com>
+>
+> This patch allows each worker to use a unique cgroup base directory, thus
+> allowing tests that uses cgroups to run concurrently.
+>
+> Signed-off-by: Yucong Sun <sunyucong@gmail.com>
+> ---
 
-syzbot found the following issue on:
+What if we always set the prefix to be a PID of the process?
 
-HEAD commit:    2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=15089853300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=33f36d0754d4c5c0e102
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14dbd7ed300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1586f83b300000
+BTW, Daniel mentioned that this might need some rebasing and conflict
+resolution due to his patch in bpf tree, which is now merged into
+bpf-next tree.
 
-Bisection is inconclusive: the first bad commit could be any of:
-
-0e6491b55970 bpf: Add oversize check before call kvcalloc()
-2f1aaf3ea666 bpf, mm: Fix lockdep warning triggered by stack_map_get_build_id_offset()
-8520e224f547 bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode
-3a029e1f3d6e selftests/bpf: Fix build of task_pt_regs test for arm64
-d8079d8026f8 bpf, selftests: Add cgroup v1 net_cls classid helpers
-43d2b88c29f2 bpf, selftests: Add test case for mixed cgroup v1/v2
-49ca6153208f bpf: Relicense disassembler as GPL-2.0-only OR BSD-2-Clause
-2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16b5ccdd300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000029: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000148-0x000000000000014f]
-CPU: 1 PID: 8436 Comm: syz-executor679 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:cgroup_id include/linux/cgroup.h:312 [inline]
-RIP: 0010:__bpf_sk_cgroup_id net/core/filter.c:4468 [inline]
-RIP: 0010:____bpf_skb_cgroup_id net/core/filter.c:4473 [inline]
-RIP: 0010:bpf_skb_cgroup_id+0x138/0x210 net/core/filter.c:4471
-Code: 03 80 3c 02 00 0f 85 cc 00 00 00 48 8b 9b 58 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 48 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 00 00 00 48 8b 9b 48 01 00 00 48 b8 00 00 00
-RSP: 0018:ffffc9000184f9c0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000029 RSI: ffffffff8728f537 RDI: 0000000000000148
-RBP: 0000000000000080 R08: 0000000000000000 R09: 0000000000000007
-R10: ffffffff8728f52a R11: 000000000000001f R12: 0000000000000007
-R13: ffffc90000e6a000 R14: ffffc9000184fc30 R15: ffffc90000e6a048
-FS:  0000000000f5e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200004c0 CR3: 000000001d929000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- bpf_prog_3a33f00dea259162+0x10/0xfa8
- bpf_dispatcher_nop_func include/linux/bpf.h:717 [inline]
- __bpf_prog_run include/linux/filter.h:624 [inline]
- bpf_prog_run include/linux/filter.h:631 [inline]
- bpf_test_run+0x381/0xa30 net/bpf/test_run.c:119
- bpf_prog_test_run_skb+0xac5/0x1d20 net/bpf/test_run.c:657
- bpf_prog_test_run kernel/bpf/syscall.c:3307 [inline]
- __sys_bpf+0x2137/0x5df0 kernel/bpf/syscall.c:4605
- __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f009
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcff384d88 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f009
-RDX: 0000000000000028 RSI: 0000000020000440 RDI: 000000000000000a
-RBP: 0000000000402ff0 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403080
-R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
-Modules linked in:
----[ end trace d161abccc2184019 ]---
-RIP: 0010:cgroup_id include/linux/cgroup.h:312 [inline]
-RIP: 0010:__bpf_sk_cgroup_id net/core/filter.c:4468 [inline]
-RIP: 0010:____bpf_skb_cgroup_id net/core/filter.c:4473 [inline]
-RIP: 0010:bpf_skb_cgroup_id+0x138/0x210 net/core/filter.c:4471
-Code: 03 80 3c 02 00 0f 85 cc 00 00 00 48 8b 9b 58 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 48 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 00 00 00 48 8b 9b 48 01 00 00 48 b8 00 00 00
-RSP: 0018:ffffc9000184f9c0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000029 RSI: ffffffff8728f537 RDI: 0000000000000148
-RBP: 0000000000000080 R08: 0000000000000000 R09: 0000000000000007
-R10: ffffffff8728f52a R11: 000000000000001f R12: 0000000000000007
-R13: ffffc90000e6a000 R14: ffffc9000184fc30 R15: ffffc90000e6a048
-FS:  0000000000f5e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200004c0 CR3: 000000001d929000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   4:	0f 85 cc 00 00 00    	jne    0xd6
-   a:	48 8b 9b 58 04 00 00 	mov    0x458(%rbx),%rbx
-  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  18:	fc ff df
-  1b:	48 8d bb 48 01 00 00 	lea    0x148(%rbx),%rdi
-  22:	48 89 fa             	mov    %rdi,%rdx
-  25:	48 c1 ea 03          	shr    $0x3,%rdx
-* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2d:	0f 85 ad 00 00 00    	jne    0xe0
-  33:	48 8b 9b 48 01 00 00 	mov    0x148(%rbx),%rbx
-  3a:	48                   	rex.W
-  3b:	b8                   	.byte 0xb8
-  3c:	00 00                	add    %al,(%rax)
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>  tools/testing/selftests/bpf/cgroup_helpers.c | 5 +++--
+>  tools/testing/selftests/bpf/cgroup_helpers.h | 1 +
+>  tools/testing/selftests/bpf/test_progs.c     | 5 +++++
+>  3 files changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+> index 033051717ba5..a0429f0d6db2 100644
+> --- a/tools/testing/selftests/bpf/cgroup_helpers.c
+> +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+> @@ -29,9 +29,10 @@
+>  #define WALK_FD_LIMIT                  16
+>  #define CGROUP_MOUNT_PATH              "/mnt"
+>  #define CGROUP_WORK_DIR                        "/cgroup-test-work-dir"
+> +const char *CGROUP_WORK_DIR_SUFFIX = "";
+>  #define format_cgroup_path(buf, path) \
+> -       snprintf(buf, sizeof(buf), "%s%s%s", CGROUP_MOUNT_PATH, \
+> -                CGROUP_WORK_DIR, path)
+> +       snprintf(buf, sizeof(buf), "%s%s%s%s", CGROUP_MOUNT_PATH, \
+> +       CGROUP_WORK_DIR, CGROUP_WORK_DIR_SUFFIX, path)
+>
+>  /**
+>   * enable_all_controllers() - Enable all available cgroup v2 controllers
+> diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
+> index 5fe3d88e4f0d..5657aba02161 100644
+> --- a/tools/testing/selftests/bpf/cgroup_helpers.h
+> +++ b/tools/testing/selftests/bpf/cgroup_helpers.h
+> @@ -16,4 +16,5 @@ int setup_cgroup_environment(void);
+>  void cleanup_cgroup_environment(void);
+>  unsigned long long get_cgroup_id(const char *path);
+>
+> +extern const char *CGROUP_WORK_DIR_SUFFIX;
+>  #endif
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 36f130455b2f..77ed9204cc4a 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -1157,6 +1157,11 @@ static int server_main(void)
+>
+>  static int worker_main(int sock)
+>  {
+> +       static char suffix[16];
+> +
+> +       sprintf(suffix, "%d", env.worker_id);
+> +       CGROUP_WORK_DIR_SUFFIX = suffix;
+> +
+>         save_netns();
+>
+>         while (true) {
+> --
+> 2.30.2
+>
