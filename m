@@ -2,191 +2,371 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D1340EEDD
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 03:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF8640EF22
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 04:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242432AbhIQBj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Sep 2021 21:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236351AbhIQBj7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Sep 2021 21:39:59 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21904C061574
-        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 18:38:38 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id f22so12533689qkm.5
-        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 18:38:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/TpARtOiukxm9KcDE9LGiMBmRMbHgYJxAgEUpeRwtF8=;
-        b=F9mWWxhR8CvhQc3bB/XO27BPD32iq6WPas2nEsp+eVTOGKwdKBdH0Mj6WD17KN6KMh
-         XvXohjCDvi6E/d7CdMjsEzLdqR/bri4JTFZ7dZzq9vO+uM6NeNH+E/wMlpzt5QxIOpX/
-         nWnhxnK8XCUTQuVDis60zP8tweUXxradu9rdLYF5Tb8RNDHLeiYJzlYvutbMuKFG+G3v
-         aoVqWJ7BFcoOfhOQyUx0vHXuGN2Pqbv7+Q2tysWZVpMsumlyOlkZVjyjCqdZBRJ7iWi4
-         0RGVikRPfrDZsj/0hs1H+HJnaSh7/tAKdv8p2yZej0GOuT6e+M/0Sky3UERN4pE57279
-         abjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/TpARtOiukxm9KcDE9LGiMBmRMbHgYJxAgEUpeRwtF8=;
-        b=JT+F8wpmHfn8QKNhvBwU32kG3qBCCx098+Wni2QtYtBVvaxo4qdj0qKhQVkYH9rYr5
-         jlDye7OkU6c3pCoDahYVuYGRS3FmvJ6MqQHJjOmlgIsWU2oQmXWL7tQguwtoWDzbfFhQ
-         bqCpRF5IUMOzw3vd1MgoT/u3DskjwFo7xlGEObnBpXjIoaqrf18Bjl7K7YyXIliN45Fw
-         7q8KF3WUelFETrQrNuWAnszyfJFNCoadhkJXJGvW9qX0YLRdMDpFlJH1/nCf9X9DOjHX
-         +gmXrkK44OfmVPo0w6hJgx8g5/1wFp3lt+vY9hgF6FSFg82dJplTCFjc9b+Uu5bu3r4C
-         S4Cg==
-X-Gm-Message-State: AOAM533ITK/3dexyOuIouwwYLwsUdi4MxlDru5s1l6kBXnaWrVxywULe
-        er967uEgOaLxU/Hl9MLdtmPyeAN5P3NYcpFEqW7AEA==
-X-Google-Smtp-Source: ABdhPJweDHuOKBDk0CWkDfcs2TF1VC38roGNwtgcB6Glq0GidXYg5ggQDv7DqY46vzZWVKciWcF27OI4uRbPt1bcT/U=
-X-Received: by 2002:a25:afd3:: with SMTP id d19mr10695675ybj.78.1631842716888;
- Thu, 16 Sep 2021 18:38:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <CACkBjsb5gtv5q8XdvL0QkK19GmifydqZ9MrvaAjG7m0YveWKOQ@mail.gmail.com>
-In-Reply-To: <CACkBjsb5gtv5q8XdvL0QkK19GmifydqZ9MrvaAjG7m0YveWKOQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 16 Sep 2021 18:38:25 -0700
-Message-ID: <CANn89i+Q+qTtexsu4HgmPEnZu09uu7o+tW_vZ-CftZocCji0OQ@mail.gmail.com>
-Subject: Re: WARNING in skb_try_coalesce
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        id S238457AbhIQCQx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Sep 2021 22:16:53 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51535 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229775AbhIQCQx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Sep 2021 22:16:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UodVsWd_1631844926;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UodVsWd_1631844926)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 17 Sep 2021 10:15:28 +0800
+Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+ <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
+ <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+ <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
+ <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
+ <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
+ <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
+ <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
+ <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
+ <YUL6R5AH6WNxu5sH@hirez.programming.kicks-ass.net>
+ <YUMWLdijs8vSkRjo@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <5bcb1761-14d4-47ed-a8d5-fccf8110d3a1@linux.alibaba.com>
+Date:   Fri, 17 Sep 2021 10:15:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YUMWLdijs8vSkRjo@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 6:35 PM Hao Sun <sunhao.th@gmail.com> wrote:
->
-> Hello,
->
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
->
 
-This is a known problem, caused by recent changes from Vasily Averin.
 
-Thanks
+On 2021/9/16 下午6:02, Peter Zijlstra wrote:
+> On Thu, Sep 16, 2021 at 10:03:19AM +0200, Peter Zijlstra wrote:
+> 
+>> Oh, I'm an idiot... yes it tries to read regs the stack, but clearly
+>> that won't work for the guard page.
+> 
+> OK, extended it to also cover task and IRQ stacks. get_stack_info()
+> doesn't seem to know about SOFTIRQ stacks on 64bit, might have to look
+> into that next.
+> 
+> Andy, what's the story with page_fault_oops(), according to the comment
+> in exc_double_fault() actual stack overflows will always hit #DF.
 
-> HEAD commit: ff1ffd71d5f0 Merge tag 'hyperv-fixes-signed-20210915
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/108QvdldUg5-0Gc1q1OiJA4HqGmTTFK7a/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1zXpDhs-IdE7tX17B7MhaYP0VGUfP6m9B/view?usp=sharing
->
-> Sorry, I don't have a reproducer for this crash, hope the symbolized
-> report can help.
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 3 PID: 0 at net/core/skbuff.c:5412
-> skb_try_coalesce+0x11c6/0x1570 net/core/skbuff.c:5412
-> Modules linked in:
-> CPU: 3 PID: 0 Comm: swapper/3 Not tainted 5.15.0-rc1+ #6
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> 1.13.0-1ubuntu1.1 04/01/2014
-> RIP: 0010:skb_try_coalesce+0x11c6/0x1570 net/core/skbuff.c:5412
-> Code: 00 48 c1 e0 2a 48 c1 ea 03 80 3c 02 00 0f 85 50 01 00 00 49 8b
-> 84 24 c8 00 00 00 48 89 44 24 50 e9 4f f5 ff ff e8 4a b6 62 fa <0f> 0b
-> e9 6c f9 ff ff e8 3e b6 62 fa 48 8b 44 24 78 48 8d 70 ff 48
-> RSP: 0018:ffffc900008a0368 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 00000000fffffea8 RCX: ffff888100159c80
-> RDX: 0000000000000000 RSI: ffff888100159c80 RDI: 0000000000000002
-> RBP: ffff88801a2b3400 R08: ffffffff87139896 R09: 00000000fffffea8
-> R10: 0000000000000004 R11: ffffed1002fdfa89 R12: ffff88802be90780
-> R13: ffff888017595ac0 R14: ffff88802be907fe R15: 0000000000000028
-> FS:  0000000000000000(0000) GS:ffff888135d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055b9f8f7c488 CR3: 0000000111612000 CR4: 0000000000350ee0
-> DR0: 00000000200002c0 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-> Call Trace:
->  <IRQ>
->  tcp_try_coalesce net/ipv4/tcp_input.c:4642 [inline]
->  tcp_try_coalesce+0x393/0x920 net/ipv4/tcp_input.c:4621
->  tcp_queue_rcv+0x8a/0x710 net/ipv4/tcp_input.c:4905
->  tcp_data_queue+0xb78/0x49e0 net/ipv4/tcp_input.c:5016
->  tcp_rcv_established+0x944/0x2040 net/ipv4/tcp_input.c:5928
->  tcp_v4_do_rcv+0x65e/0xb20 net/ipv4/tcp_ipv4.c:1694
->  tcp_v4_rcv+0x37b4/0x4580 net/ipv4/tcp_ipv4.c:2087
->  ip_protocol_deliver_rcu+0xa7/0xed0 net/ipv4/ip_input.c:204
->  ip_local_deliver_finish+0x207/0x370 net/ipv4/ip_input.c:231
->  NF_HOOK include/linux/netfilter.h:307 [inline]
->  NF_HOOK include/linux/netfilter.h:301 [inline]
->  ip_local_deliver+0x1c5/0x4e0 net/ipv4/ip_input.c:252
->  dst_input include/net/dst.h:460 [inline]
->  ip_rcv_finish+0x1da/0x2f0 net/ipv4/ip_input.c:429
->  NF_HOOK include/linux/netfilter.h:307 [inline]
->  NF_HOOK include/linux/netfilter.h:301 [inline]
->  ip_rcv+0xcd/0x3b0 net/ipv4/ip_input.c:540
->  deliver_skb net/core/dev.c:2212 [inline]
->  deliver_ptype_list_skb net/core/dev.c:2227 [inline]
->  __netif_receive_skb_core+0x179d/0x3940 net/core/dev.c:5392
->  __netif_receive_skb_one_core+0xae/0x180 net/core/dev.c:5434
->  __netif_receive_skb+0x24/0x1c0 net/core/dev.c:5550
->  process_backlog+0x223/0x770 net/core/dev.c:6427
->  __napi_poll+0xb3/0x630 net/core/dev.c:6982
->  napi_poll net/core/dev.c:7049 [inline]
->  net_rx_action+0x823/0xbc0 net/core/dev.c:7136
->  __do_softirq+0x1d7/0x93b kernel/softirq.c:558
->  invoke_softirq kernel/softirq.c:432 [inline]
->  __irq_exit_rcu kernel/softirq.c:636 [inline]
->  irq_exit_rcu+0xf2/0x130 kernel/softirq.c:648
->  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
->  </IRQ>
->  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-> RIP: 0010:default_idle+0xb/0x10 arch/x86/kernel/process.c:717
-> Code: 3b 5f 88 f8 e9 6f fe ff ff e8 31 5f 88 f8 e9 3d fe ff ff e8 f7
-> 30 fd ff cc cc cc cc cc cc cc eb 07 0f 00 2d a7 bf 50 00 fb f4 <c3> 0f
-> 1f 40 00 41 54 be 08 00 00 00 53 65 48 8b 1c 25 40 f0 01 00
-> RSP: 0018:ffffc90000777de0 EFLAGS: 00000206
-> RAX: 000000000090b2d1 RBX: 0000000000000003 RCX: ffffffff8932aef2
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-> RBP: 0000000000000003 R08: 0000000000000001 R09: ffffed1026ba6542
-> R10: ffff888135d32a0b R11: ffffed1026ba6541 R12: 0000000000000003
-> R13: 0000000000000003 R14: ffffffff8d6dbbd0 R15: 0000000000000000
->  default_idle_call+0xc4/0x420 kernel/sched/idle.c:112
->  cpuidle_idle_call kernel/sched/idle.c:194 [inline]
->  do_idle+0x3f9/0x570 kernel/sched/idle.c:306
->  cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:403
->  start_secondary+0x227/0x2f0 arch/x86/kernel/smpboot.c:270
->  secondary_startup_64_no_verify+0xb0/0xbb
-> ----------------
-> Code disassembly (best guess):
->    0: 3b 5f 88              cmp    -0x78(%rdi),%ebx
->    3: f8                    clc
->    4: e9 6f fe ff ff        jmpq   0xfffffe78
->    9: e8 31 5f 88 f8        callq  0xf8885f3f
->    e: e9 3d fe ff ff        jmpq   0xfffffe50
->   13: e8 f7 30 fd ff        callq  0xfffd310f
->   18: cc                    int3
->   19: cc                    int3
->   1a: cc                    int3
->   1b: cc                    int3
->   1c: cc                    int3
->   1d: cc                    int3
->   1e: cc                    int3
->   1f: eb 07                jmp    0x28
->   21: 0f 00 2d a7 bf 50 00 verw   0x50bfa7(%rip)        # 0x50bfcf
->   28: fb                    sti
->   29: f4                    hlt
-> * 2a: c3                    retq <-- trapping instruction
->   2b: 0f 1f 40 00          nopl   0x0(%rax)
->   2f: 41 54                push   %r12
->   31: be 08 00 00 00        mov    $0x8,%esi
->   36: 53                    push   %rbx
->   37: 65 48 8b 1c 25 40 f0 mov    %gs:0x1f040,%rbx
->   3e: 01 00
+Just give this one a test, still not working properly...
+
+[   51.016033][    C0] traps: PANIC: double fault, error_code: 0x0
+[   51.016047][    C0] double fault: 0000 [#1] SMP PTI
+[   51.016054][    C0] CPU: 0 PID: 761 Comm: a.out Not tainted 5.14.0-next-20210913+ #543
+[   51.016061][    C0] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+[   51.016065][    C0] RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+[   51.016079][    C0] Code: 48 03 43 28 48 8b 0c 24 bb 01 00 00 00 4c 29 f0 48 39 c8 48 0f 47 c1 49 89 45 08 e9 48 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 <55> 53 e8 09 20 f2 ff 48 c7 c2 20 4d 03 00 65 48 03 15 5a 3b d2 7e
+[   51.016086][    C0] RSP: 0018:fffffe000000b000 EFLAGS: 00010046
+[   51.016093][    C0] RAX: 0000000080120008 RBX: fffffe000000b050 RCX: 0000000000000000
+[   51.016097][    C0] RDX: ffff888106c3c300 RSI: ffffffff81269031 RDI: 000000000000001c
+[   51.016102][    C0] RBP: 000000000000001c R08: 0000000000000001 R09: 0000000000000000
+[   51.016106][    C0] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[   51.016109][    C0] R13: fffffe000000b044 R14: 0000000000000001 R15: 0000000000000001
+[   51.016113][    C0] FS:  00007f0cfd961740(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+[   51.016120][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   51.016124][    C0] CR2: fffffe000000aff8 CR3: 0000000105ecc001 CR4: 00000000003606f0
+[   51.016129][    C0] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   51.016132][    C0] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   51.016136][    C0] Call Trace:
+[   51.016139][    C0]  <TASK>
+[   51.016141][    C0]  </TASK>
+[   51.016144][    C0] Modules linked in:
+[   51.042436][    C0] ---[ end trace 5c102ce76b073dcf ]---
+[   51.042440][    C0] RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+[   51.042450][    C0] Code: 48 03 43 28 48 8b 0c 24 bb 01 00 00 00 4c 29 f0 48 39 c8 48 0f 47 c1 49 89 45 08 e9 48 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 <55> 53 e8 09 20 f2 ff 48 c7 c2 20 4d 03 00 65 48 03 15 5a 3b d2 7e
+[   51.042457][    C0] RSP: 0018:fffffe000000b000 EFLAGS: 00010046
+[   51.042462][    C0] RAX: 0000000080120008 RBX: fffffe000000b050 RCX: 0000000000000000
+[   51.042466][    C0] RDX: ffff888106c3c300 RSI: ffffffff81269031 RDI: 000000000000001c
+[   51.042470][    C0] RBP: 000000000000001c R08: 0000000000000001 R09: 0000000000000000
+[   51.042479][    C0] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[   51.042483][    C0] R13: fffffe000000b044 R14: 0000000000000001 R15: 0000000000000001
+[   51.042487][    C0] FS:  00007f0cfd961740(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+[   51.042493][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   51.042497][    C0] CR2: fffffe000000aff8 CR3: 0000000105ecc001 CR4: 00000000003606f0
+[   51.042501][    C0] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   51.042505][    C0] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   51.042510][    C0] Kernel panic - not syncing: Fatal exception in interrupt
+[   51.042917][    C0] Kernel Offset: disabled
+
+Regards,
+Michael Wang
+
+
+> 
+> ---
+> diff --git a/arch/x86/include/asm/cpu_entry_area.h b/arch/x86/include/asm/cpu_entry_area.h
+> index 3d52b094850a..c4e92462c2b4 100644
+> --- a/arch/x86/include/asm/cpu_entry_area.h
+> +++ b/arch/x86/include/asm/cpu_entry_area.h
+> @@ -61,6 +61,9 @@ enum exception_stack_ordering {
+>  #define CEA_ESTACK_OFFS(st)					\
+>  	offsetof(struct cea_exception_stacks, st## _stack)
+>  
+> +#define CEA_EGUARD_OFFS(st)					\
+> +	offsetof(struct cea_exception_stacks, st## _stack_guard)
+> +
+>  #define CEA_ESTACK_PAGES					\
+>  	(sizeof(struct cea_exception_stacks) / PAGE_SIZE)
+>  
+> diff --git a/arch/x86/include/asm/stacktrace.h b/arch/x86/include/asm/stacktrace.h
+> index f248eb2ac2d4..8ff346579330 100644
+> --- a/arch/x86/include/asm/stacktrace.h
+> +++ b/arch/x86/include/asm/stacktrace.h
+> @@ -14,13 +14,14 @@
+>  #include <asm/switch_to.h>
+>  
+>  enum stack_type {
+> -	STACK_TYPE_UNKNOWN,
+> +	STACK_TYPE_UNKNOWN = 0,
+>  	STACK_TYPE_TASK,
+>  	STACK_TYPE_IRQ,
+>  	STACK_TYPE_SOFTIRQ,
+>  	STACK_TYPE_ENTRY,
+>  	STACK_TYPE_EXCEPTION,
+>  	STACK_TYPE_EXCEPTION_LAST = STACK_TYPE_EXCEPTION + N_EXCEPTION_STACKS-1,
+> +	STACK_TYPE_GUARD = 0x80,
+>  };
+>  
+>  struct stack_info {
+> @@ -31,6 +32,15 @@ struct stack_info {
+>  bool in_task_stack(unsigned long *stack, struct task_struct *task,
+>  		   struct stack_info *info);
+>  
+> +static __always_inline bool in_stack_guard(void *addr, void *begin, void *end)
+> +{
+> +#ifdef CONFIG_VMAP_STACK
+> +	if (addr > (begin - PAGE_SIZE))
+> +		return true;
+> +#endif
+> +	return false;
+> +}
+> +
+>  bool in_entry_stack(unsigned long *stack, struct stack_info *info);
+>  
+>  int get_stack_info(unsigned long *stack, struct task_struct *task,
+> diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+> index ea4fe192189d..91b406fe2a39 100644
+> --- a/arch/x86/kernel/dumpstack.c
+> +++ b/arch/x86/kernel/dumpstack.c
+> @@ -32,12 +32,19 @@ static struct pt_regs exec_summary_regs;
+>  bool noinstr in_task_stack(unsigned long *stack, struct task_struct *task,
+>  			   struct stack_info *info)
+>  {
+> -	unsigned long *begin = task_stack_page(task);
+> -	unsigned long *end   = task_stack_page(task) + THREAD_SIZE;
+> -
+> -	if (stack < begin || stack >= end)
+> +	void *begin = task_stack_page(task);
+> +	void *end   = begin + THREAD_SIZE;
+> +	int type    = STACK_TYPE_TASK;
+> +
+> +	if ((void *)stack < begin || (void *)stack >= end) {
+> +		if (in_stack_guard(stack, begin, end)) {
+> +			type |= STACK_TYPE_GUARD;
+> +			goto fill_info;
+> +		}
+>  		return false;
+> +	}
+>  
+> +fill_info:
+>  	info->type	= STACK_TYPE_TASK;
+>  	info->begin	= begin;
+>  	info->end	= end;
+> @@ -50,14 +57,20 @@ bool noinstr in_task_stack(unsigned long *stack, struct task_struct *task,
+>  bool noinstr in_entry_stack(unsigned long *stack, struct stack_info *info)
+>  {
+>  	struct entry_stack *ss = cpu_entry_stack(smp_processor_id());
+> -
+> +	int type = STACK_TYPE_ENTRY;
+>  	void *begin = ss;
+>  	void *end = ss + 1;
+>  
+> -	if ((void *)stack < begin || (void *)stack >= end)
+> +	if ((void *)stack < begin || (void *)stack >= end) {
+> +		if (in_stack_guard(stack, begin, end)) {
+> +			type |= STACK_TYPE_GUARD;
+> +			goto fill_info;
+> +		}
+>  		return false;
+> +	}
+>  
+> -	info->type	= STACK_TYPE_ENTRY;
+> +fill_info:
+> +	info->type	= type;
+>  	info->begin	= begin;
+>  	info->end	= end;
+>  	info->next_sp	= NULL;
+> diff --git a/arch/x86/kernel/dumpstack_64.c b/arch/x86/kernel/dumpstack_64.c
+> index 5601b95944fa..3634bdf9ab36 100644
+> --- a/arch/x86/kernel/dumpstack_64.c
+> +++ b/arch/x86/kernel/dumpstack_64.c
+> @@ -32,9 +32,15 @@ const char *stack_type_name(enum stack_type type)
+>  {
+>  	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
+>  
+> +	if (type == STACK_TYPE_TASK)
+> +		return "TASK";
+> +
+>  	if (type == STACK_TYPE_IRQ)
+>  		return "IRQ";
+>  
+> +	if (type == STACK_TYPE_SOFTIRQ)
+> +		return "SOFTIRQ";
+> +
+>  	if (type == STACK_TYPE_ENTRY) {
+>  		/*
+>  		 * On 64-bit, we have a generic entry stack that we
+> @@ -63,6 +69,11 @@ struct estack_pages {
+>  };
+>  
+>  #define EPAGERANGE(st)							\
+> +	[PFN_DOWN(CEA_EGUARD_OFFS(st))] = {				\
+> +		.offs	= CEA_EGUARD_OFFS(st),				\
+> +		.size	= PAGE_SIZE,					\
+> +		.type	= STACK_TYPE_GUARD +				\
+> +			  STACK_TYPE_EXCEPTION + ESTACK_ ##st, },	\
+>  	[PFN_DOWN(CEA_ESTACK_OFFS(st)) ...				\
+>  	 PFN_DOWN(CEA_ESTACK_OFFS(st) + CEA_ESTACK_SIZE(st) - 1)] = {	\
+>  		.offs	= CEA_ESTACK_OFFS(st),				\
+> @@ -111,7 +122,7 @@ static __always_inline bool in_exception_stack(unsigned long *stack, struct stac
+>  	k = (stk - begin) >> PAGE_SHIFT;
+>  	/* Lookup the page descriptor */
+>  	ep = &estack_pages[k];
+> -	/* Guard page? */
+> +	/* unknown entry */
+>  	if (!ep->size)
+>  		return false;
+>  
+> @@ -122,7 +133,12 @@ static __always_inline bool in_exception_stack(unsigned long *stack, struct stac
+>  	info->type	= ep->type;
+>  	info->begin	= (unsigned long *)begin;
+>  	info->end	= (unsigned long *)end;
+> -	info->next_sp	= (unsigned long *)regs->sp;
+> +	info->next_sp	= NULL;
+> +
+> +	/* Can't read regs from a guard page. */
+> +	if (!(ep->type & STACK_TYPE_GUARD))
+> +		info->next_sp = (unsigned long *)regs->sp;
+> +
+>  	return true;
+>  }
+>  
+> @@ -130,6 +146,7 @@ static __always_inline bool in_irq_stack(unsigned long *stack, struct stack_info
+>  {
+>  	unsigned long *end = (unsigned long *)this_cpu_read(hardirq_stack_ptr);
+>  	unsigned long *begin;
+> +	int type = STACK_TYPE_IRQ;
+>  
+>  	/*
+>  	 * @end points directly to the top most stack entry to avoid a -8
+> @@ -144,19 +161,27 @@ static __always_inline bool in_irq_stack(unsigned long *stack, struct stack_info
+>  	 * final operation is 'popq %rsp' which means after that RSP points
+>  	 * to the original stack and not to @end.
+>  	 */
+> -	if (stack < begin || stack >= end)
+> +	if (stack < begin || stack >= end) {
+> +		if (in_stack_guard(stack, begin, end)) {
+> +			type |= STACK_TYPE_GUARD;
+> +			goto fill_info;
+> +		}
+>  		return false;
+> +	}
+>  
+> -	info->type	= STACK_TYPE_IRQ;
+> +fill_info:
+> +	info->type	= type;
+>  	info->begin	= begin;
+>  	info->end	= end;
+> +	info->next_sp	= NULL;
+>  
+>  	/*
+>  	 * The next stack pointer is stored at the top of the irq stack
+>  	 * before switching to the irq stack. Actual stack entries are all
+>  	 * below that.
+>  	 */
+> -	info->next_sp = (unsigned long *)*(end - 1);
+> +	if (!(type & STACK_TYPE_GUARD))
+> +		info->next_sp = (unsigned long *)*(end - 1);
+>  
+>  	return true;
+>  }
+> @@ -193,6 +218,9 @@ int get_stack_info(unsigned long *stack, struct task_struct *task,
+>  	if (!get_stack_info_noinstr(stack, task, info))
+>  		goto unknown;
+>  
+> +	if (info->type & STACK_TYPE_GUARD)
+> +		goto unknown;
+> +
+>  	/*
+>  	 * Make sure we don't iterate through any given stack more than once.
+>  	 * If it comes up a second time then there's something wrong going on:
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index a58800973aed..80f6d8d735eb 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -353,6 +353,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+>  
+>  #ifdef CONFIG_VMAP_STACK
+>  	unsigned long address = read_cr2();
+> +	struct stack_info info;
+>  #endif
+>  
+>  #ifdef CONFIG_X86_ESPFIX64
+> @@ -455,9 +456,11 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+>  	 * stack even if the actual trigger for the double fault was
+>  	 * something else.
+>  	 */
+> -	if ((unsigned long)task_stack_page(tsk) - 1 - address < PAGE_SIZE) {
+> -		handle_stack_overflow("kernel stack overflow (double-fault)",
+> -				      regs, address);
+> +	if (get_stack_info_noinstr((void *)address, current, &info) &&
+> +	    info.type & STACK_TYPE_GUARD) {
+> +		const char *name = stack_type_name(info.type & ~STACK_TYPE_GUARD);
+> +		pr_emerg("BUG: %s stack guard hit at %p (stack is %p..%p)\n",
+> +			 name, (void *)address, info.begin, info.end);
+>  	}
+>  #endif
+>  
+> @@ -708,7 +711,9 @@ asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *r
+>  	sp    = regs->sp;
+>  	stack = (unsigned long *)sp;
+>  
+> -	if (!get_stack_info_noinstr(stack, current, &info) || info.type == STACK_TYPE_ENTRY ||
+> +	if (!get_stack_info_noinstr(stack, current, &info) ||
+> +	    info.type & STACK_TYPE_GUARD ||
+> +	    info.type == STACK_TYPE_ENTRY ||
+>  	    info.type >= STACK_TYPE_EXCEPTION_LAST)
+>  		sp = __this_cpu_ist_top_va(VC2);
+>  
+> 
