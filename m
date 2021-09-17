@@ -2,259 +2,454 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3323140FF07
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 20:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8419940FF0E
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 20:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238078AbhIQSJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 14:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S239009AbhIQSOo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 14:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbhIQSJg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 14:09:36 -0400
+        with ESMTP id S233022AbhIQSOn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 14:14:43 -0400
 Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3682CC061574
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 11:08:14 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id ay33so20018360qkb.10
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 11:08:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4124DC061574
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 11:13:21 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id c10so20120464qko.11
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 11:13:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=evU2F572MFeiyQEbp/9Wida5qV/d2wb3L+Aks8fSC9k=;
-        b=RwTmdhJsUbhnZv424CyACZjZh20n6xKHjANTSKfNV5Lmqc7u+eVskLLf0IRSJs5+ar
-         +1HK45NWeaf9xqWKtgzsCrXJ6kD1J44rvL027JbBQh7wX7hdqgoihgpHnAdOc/eKsRVp
-         sEkXOuLk4nv5nxfc6WT3sywyeB60wf815bxesFOgniiz/U7keHdFPoiEVjyGiDKOsfEc
-         dtVUL+OW4R8RQBHWzBG9UQ5MrG34cCdapryh7XyiLEly8fNCwa9w0KbANLbkXEJ3SIKz
-         dLopOF1FYnhvF9NNOF7uvwlyWob5RUzhq/9Wv8NKDblFJlJdW6eRpb7sgWVm9jrZLBT8
-         P95Q==
+         :cc:content-transfer-encoding;
+        bh=5qzz7bz1pnwZOYOXUX9ktz0GSlfwABzZt25R5ZZyb9Y=;
+        b=cJeNEVNTRxAvT8+B9o1UNnTU4S39Yib81HjImxz99g3sJLC2SXrrOskB2JcRNzbwMe
+         flfemueJq4kTv2qcB4x+P4Jw5y1sQnZUwaxnLTY4d9faE1GYOamlQUT/dnQDSpS53g2T
+         tmJKpDli8/CgbIQJh6lYCc0dYgLcKAq2RPuFyQJoH3NTbMPovbKSZvxm2XyohsRZd1jD
+         xcssX/n8Iwtk62V3v6v9y0pyrZd6+EB0nxOBaoO1oQTsVf76qkqV7zE7bS5BECMPxrGh
+         uDBHIA51SoXMJqkgazp0FMkOkCGTgfw4TT1mTfPsW4VwDmRQ57tH7vDbSfXebuSwKDA2
+         cmgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=evU2F572MFeiyQEbp/9Wida5qV/d2wb3L+Aks8fSC9k=;
-        b=PTuQrLeFXzkZiqBb/N9OLHMMGFIOjb9lKf/UwO0pPv9GdQmXmzjwY8eLGyKW52CEF4
-         v2s7qKo3T4N3mza0h7yfRhbUlrWcDqze83aoWnlkK8nQWVIzwOV4GoR/+cwxIk3m2UXk
-         k0MU7p+eVUt9V0YdxGds9aDphutXFCm2aCrL3lN2mlc0oAjq0xD2AF0dLrzLXnShKvSm
-         0ZMnTxU/bbATwUbsAbguZi/R7Kb3AXTO7hNlP1XfKwtUxmb5pzuMXjCMZy+slt4uqjZe
-         k4HM8lKAusp8Re0TtDEvCDTfgNi1mk3E/l+7jtOlme3o+PgSvQuDP3qxcA0wxwc2Mg3V
-         FhMg==
-X-Gm-Message-State: AOAM532NtWfq2P2MIiYkprq4BbdSo5gJD+6/ZeKAeWD4ZYoyj+bsb49O
-        h4HngvzblubFI2d5UORMdIEYQUIdRB11oYKRoeI=
-X-Google-Smtp-Source: ABdhPJywTGZ4w/J1sSGzB3FdLe2U6s7jl6eM8dYJ1t37d8sqJVuedTf1zJiXfD23yXRU2TQ0OwJmlPrunvJlw7Oeypo=
-X-Received: by 2002:a25:47c4:: with SMTP id u187mr16245941yba.225.1631902093248;
- Fri, 17 Sep 2021 11:08:13 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5qzz7bz1pnwZOYOXUX9ktz0GSlfwABzZt25R5ZZyb9Y=;
+        b=aAOj0vJ2A9RC/RSPwkwWcd9eOpJnas5aQy2dKiWOV1dQ0TdzM1lJXBQe8kFujWXJ9A
+         rVNcxLe/p4l16B9e7gLF8Fx6GpWzlZkvJtRK333tq0fN2Qet0jM2n91+Pju4TwgWdMME
+         ocGcPEKALR1Jtl0liI533wxw+IGdsspwgRcF7hDniTfcV8iyUT2zPlYktte43c15Z8WP
+         UiEQFfByPkaN+5kS4mB8Am6lOd/4ywC/VA3fw2s82vFnO1i2RQeQZysrlSvDR005RyRe
+         N7613Qm9Dk493dNUovROZ1ugIby6AOoAashUcUcKSY1C+RIAYxphJXy93b50N0Z2p22B
+         PUmg==
+X-Gm-Message-State: AOAM530rWM2/1Mq29zWnURIip1Rkhmu0M0N2Nmg0N0CH9b7TAAov1Q+8
+        Hn01/oInOzg8OMZok3kDbw3+zU1HX/qM2MQkWFI=
+X-Google-Smtp-Source: ABdhPJwuJ6bpsIYfT6og0pCHVQg5rfjjWupxt16VFJNkNbbgFtqivvP1ibpJ9acTXNfNAeWGRW73z6k05AN3R8eKatY=
+X-Received: by 2002:a05:6902:724:: with SMTP id l4mr13834383ybt.433.1631902400338;
+ Fri, 17 Sep 2021 11:13:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210917061020.821711-1-andrii@kernel.org> <20210917061020.821711-6-andrii@kernel.org>
- <YUTQHir6qZZHUNZm@google.com>
-In-Reply-To: <YUTQHir6qZZHUNZm@google.com>
+References: <20210917061020.821711-1-andrii@kernel.org> <20210917061020.821711-9-andrii@kernel.org>
+ <YUTP20fF5wx0LbxQ@google.com>
+In-Reply-To: <YUTP20fF5wx0LbxQ@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Sep 2021 11:08:02 -0700
-Message-ID: <CAEf4Bzb7hD6kYKaS7CnMbPsZ1wfqLOY-DX4RAFTAwwdmzMT1ig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/9] libbpf: reduce reliance of attach_fns on
- sec_def internals
+Date:   Fri, 17 Sep 2021 11:13:09 -0700
+Message-ID: <CAEf4BzYV1YpYojN4STU=wB9G19n_JdXoMsxFeSkM43GeS6ATMg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 8/9] libbpf: add opt-in strict BPF program
+ section name handling logic
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 10:28 AM <sdf@google.com> wrote:
+On Fri, Sep 17, 2021 at 10:26 AM <sdf@google.com> wrote:
 >
 > On 09/16, Andrii Nakryiko wrote:
-> > Move closer to not relying on bpf_sec_def internals that won't be part
-> > of public API, when pluggable SEC() handlers will be allowed. Drop
-> > pre-calculated prefix length, and in various helpers don't rely on this
-> > prefix length availability. Also minimize reliance on knowing
-> > bpf_sec_def's prefix for few places where section prefix shortcuts are
-> > supported (e.g., tp vs tracepoint, raw_tp vs raw_tracepoint).
+> > Implement strict ELF section name handling for BPF programs. It utilize=
+s
+> > `libbpf_set_strict_mode()` framework and adds new flag:
+> > LIBBPF_STRICT_SEC_NAME.
 >
-> > Given checking some string for having a given string-constant prefix is
-> > such a common operation and so annoying to be done with pure C code, add
-> > a small macro helper, str_has_pfx(), and reuse it throughout libbpf.c
-> > where prefix comparison is performed. With __builtin_constant_p() it's
-> > possible to have a convenient helper that checks some string for having
-> > a given prefix, where prefix is either string literal (or compile-time
-> > known string due to compiler optimization) or just a runtime string
-> > pointer, which is quite convenient and saves a lot of typing and string
-> > literal duplication.
+> > If this flag is set, libbpf will enforce exact section name matching fo=
+r
+> > a lot of program types that previously allowed just partial prefix
+> > match. E.g., if previously SEC("xdp_whatever_i_want") was allowed, now
+> > in strict mode only SEC("xdp") will be accepted, which makes SEC("")
+> > definitions cleaner and more structured. SEC() now won't be used as yet
+> > another way to uniquely encode BPF program identifier (for that
+> > C function name is better and is guaranteed to be unique within
+> > bpf_object). Now SEC() is strictly BPF program type and, depending on
+> > program type, extra load/attach parameter specification.
+>
+> > Libbpf completely supports multiple BPF programs in the same ELF
+> > section, so multiple BPF programs of the same type/specification easily
+> > co-exist together within the same bpf_object scope.
+>
+> > Additionally, a new (for now internal) convention is introduced: sectio=
+n
+> > name that can be a stand-alone exact BPF program type specificator, but
+> > also could have extra parameters after '/' delimiter. An example of suc=
+h
+> > section is "struct_ops", which can be specified by itself, but also
+> > allows to specify the intended operation to be attached to, e.g.,
+> > "struct_ops/dctcp_init". Note, that "struct_ops_some_op" is not allowed=
+.
+> > Such section definition is specified as "struct_ops+".
+>
+> > This change is part of libbpf 1.0 effort ([0], [1]).
+>
+> >    [0] Closes: https://github.com/libbpf/libbpf/issues/271
+> >    [1]
+> > https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#stricter=
+-and-more-uniform-bpf-program-section-name-sec-handling
 >
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
-> >   tools/lib/bpf/libbpf.c          | 41 ++++++++++++++++++---------------
-> >   tools/lib/bpf/libbpf_internal.h |  7 ++++++
-> >   2 files changed, 30 insertions(+), 18 deletions(-)
+> >   tools/lib/bpf/libbpf.c        | 135 ++++++++++++++++++++++-----------=
+-
+> >   tools/lib/bpf/libbpf_legacy.h |   9 +++
+> >   2 files changed, 98 insertions(+), 46 deletions(-)
 >
 > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 8ab2edbf7a3b..52c398fae0af 100644
+> > index 56082865ceff..f0846f609e26 100644
 > > --- a/tools/lib/bpf/libbpf.c
 > > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -226,7 +226,6 @@ typedef struct bpf_link *(*attach_fn_t)(const struct
-> > bpf_program *prog, long coo
+> > @@ -232,6 +232,7 @@ enum sec_def_flags {
+> >       SEC_ATTACHABLE_OPT =3D SEC_ATTACHABLE | SEC_EXP_ATTACH_OPT,
+> >       SEC_ATTACH_BTF =3D 4,
+> >       SEC_SLEEPABLE =3D 8,
+> > +     SEC_SLOPPY_PFX =3D 16, /* allow non-strict prefix matching */
+> >   };
 >
 > >   struct bpf_sec_def {
-> >       const char *sec;
-> > -     size_t len;
-> >       enum bpf_prog_type prog_type;
-> >       enum bpf_attach_type expected_attach_type;
-> >       bool is_exp_attach_type_optional;
-> > @@ -1671,7 +1670,7 @@ static int bpf_object__process_kconfig_line(struct
-> > bpf_object *obj,
-> >       void *ext_val;
-> >       __u64 num;
+> > @@ -7976,15 +7977,15 @@ static struct bpf_link *attach_lsm(const struct
+> > bpf_program *prog, long cookie);
+> >   static struct bpf_link *attach_iter(const struct bpf_program *prog, l=
+ong
+> > cookie);
 >
-> > -     if (strncmp(buf, "CONFIG_", 7))
-> > +     if (!str_has_pfx(buf, "CONFIG_"))
-> >               return 0;
+> >   static const struct bpf_sec_def section_defs[] =3D {
+> > -     SEC_DEF("socket",               SOCKET_FILTER, 0, SEC_NONE),
+> > -     SEC_DEF("sk_reuseport/migrate", SK_REUSEPORT,
+> > BPF_SK_REUSEPORT_SELECT_OR_MIGRATE, SEC_ATTACHABLE),
+> > -     SEC_DEF("sk_reuseport",         SK_REUSEPORT, BPF_SK_REUSEPORT_SE=
+LECT,
+> > SEC_ATTACHABLE),
+> > +     SEC_DEF("socket",               SOCKET_FILTER, 0, SEC_SLOPPY_PFX)=
+,
+> > +     SEC_DEF("sk_reuseport/migrate", SK_REUSEPORT,
+> > BPF_SK_REUSEPORT_SELECT_OR_MIGRATE, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("sk_reuseport",         SK_REUSEPORT, BPF_SK_REUSEPORT_SE=
+LECT,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> >       SEC_DEF("kprobe/",              KPROBE, 0, SEC_NONE, attach_kprob=
+e),
+> >       SEC_DEF("uprobe/",              KPROBE, 0, SEC_NONE),
+> >       SEC_DEF("kretprobe/",           KPROBE, 0, SEC_NONE, attach_kprob=
+e),
+> >       SEC_DEF("uretprobe/",           KPROBE, 0, SEC_NONE),
+> > -     SEC_DEF("classifier",           SCHED_CLS, 0, SEC_NONE),
+> > -     SEC_DEF("action",               SCHED_ACT, 0, SEC_NONE),
+> > +     SEC_DEF("classifier",           SCHED_CLS, 0, SEC_SLOPPY_PFX),
+> > +     SEC_DEF("action",               SCHED_ACT, 0, SEC_SLOPPY_PFX),
+> >       SEC_DEF("tracepoint/",          TRACEPOINT, 0, SEC_NONE, attach_t=
+p),
+> >       SEC_DEF("tp/",                  TRACEPOINT, 0, SEC_NONE, attach_t=
+p),
+> >       SEC_DEF("raw_tracepoint/",      RAW_TRACEPOINT, 0, SEC_NONE, atta=
+ch_raw_tp),
+> > @@ -8003,44 +8004,44 @@ static const struct bpf_sec_def section_defs[] =
+=3D {
+> >       SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
+> >       SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHAB=
+LE),
+> >       SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHAB=
+LE),
+> > -     SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT)=
+,
+> > -     SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_NONE),
+> > -     SEC_DEF("lwt_in",               LWT_IN, 0, SEC_NONE),
+> > -     SEC_DEF("lwt_out",              LWT_OUT, 0, SEC_NONE),
+> > -     SEC_DEF("lwt_xmit",             LWT_XMIT, 0, SEC_NONE),
+> > -     SEC_DEF("lwt_seg6local",        LWT_SEG6LOCAL, 0, SEC_NONE),
+> > -     SEC_DEF("cgroup_skb/ingress",   CGROUP_SKB, BPF_CGROUP_INET_INGRE=
+SS,
+> > SEC_ATTACHABLE_OPT),
+> > -     SEC_DEF("cgroup_skb/egress",    CGROUP_SKB, BPF_CGROUP_INET_EGRES=
+S,
+> > SEC_ATTACHABLE_OPT),
+> > -     SEC_DEF("cgroup/skb",           CGROUP_SKB, 0, SEC_NONE),
+> > -     SEC_DEF("cgroup/sock_create",   CGROUP_SOCK, BPF_CGROUP_INET_SOCK=
+_CREATE,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/sock_release",  CGROUP_SOCK,
+> > BPF_CGROUP_INET_SOCK_RELEASE, SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/sock",          CGROUP_SOCK, BPF_CGROUP_INET_SOCK=
+_CREATE,
+> > SEC_ATTACHABLE_OPT),
+> > -     SEC_DEF("cgroup/post_bind4",    CGROUP_SOCK, BPF_CGROUP_INET4_POS=
+T_BIND,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/post_bind6",    CGROUP_SOCK, BPF_CGROUP_INET6_POS=
+T_BIND,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/dev",           CGROUP_DEVICE, BPF_CGROUP_DEVICE,
+> > SEC_ATTACHABLE_OPT),
+> > -     SEC_DEF("sockops",              SOCK_OPS, BPF_CGROUP_SOCK_OPS, SE=
+C_ATTACHABLE_OPT),
+> > -     SEC_DEF("sk_skb/stream_parser", SK_SKB, BPF_SK_SKB_STREAM_PARSER,
+> > SEC_ATTACHABLE_OPT),
+> > -     SEC_DEF("sk_skb/stream_verdict",SK_SKB, BPF_SK_SKB_STREAM_VERDICT=
+,
+> > SEC_ATTACHABLE_OPT),
+> > -     SEC_DEF("sk_skb",               SK_SKB, 0, SEC_NONE),
+> > -     SEC_DEF("sk_msg",               SK_MSG, BPF_SK_MSG_VERDICT, SEC_A=
+TTACHABLE_OPT),
+> > -     SEC_DEF("lirc_mode2",           LIRC_MODE2, BPF_LIRC_MODE2, SEC_A=
+TTACHABLE_OPT),
+> > -     SEC_DEF("flow_dissector",       FLOW_DISSECTOR, BPF_FLOW_DISSECTO=
+R,
+> > SEC_ATTACHABLE_OPT),
+> > -     SEC_DEF("cgroup/bind4",         CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+4_BIND,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/bind6",         CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+6_BIND,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/connect4",      CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+4_CONNECT,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/connect6",      CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+6_CONNECT,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/sendmsg4",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP4=
+_SENDMSG,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/sendmsg6",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP6=
+_SENDMSG,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/recvmsg4",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP4=
+_RECVMSG,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/recvmsg6",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP6=
+_RECVMSG,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/getpeername4",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET4_GETPEERNAME, SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/getpeername6",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET6_GETPEERNAME, SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/getsockname4",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET4_GETSOCKNAME, SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/getsockname6",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET6_GETSOCKNAME, SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/sysctl",        CGROUP_SYSCTL, BPF_CGROUP_SYSCTL,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/getsockopt",    CGROUP_SOCKOPT, BPF_CGROUP_GETSOC=
+KOPT,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("cgroup/setsockopt",    CGROUP_SOCKOPT, BPF_CGROUP_SETSOC=
+KOPT,
+> > SEC_ATTACHABLE),
+> > -     SEC_DEF("struct_ops",           STRUCT_OPS, 0, SEC_NONE),
+> > +     SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT =
+| SEC_SLOPPY_PFX),
+> > +     SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_SLOPPY_PFX),
+> > +     SEC_DEF("lwt_in",               LWT_IN, 0, SEC_SLOPPY_PFX),
+> > +     SEC_DEF("lwt_out",              LWT_OUT, 0, SEC_SLOPPY_PFX),
+> > +     SEC_DEF("lwt_xmit",             LWT_XMIT, 0, SEC_SLOPPY_PFX),
+> > +     SEC_DEF("lwt_seg6local",        LWT_SEG6LOCAL, 0, SEC_SLOPPY_PFX)=
+,
+> > +     SEC_DEF("cgroup_skb/ingress",   CGROUP_SKB, BPF_CGROUP_INET_INGRE=
+SS,
+> > SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup_skb/egress",    CGROUP_SKB, BPF_CGROUP_INET_EGRES=
+S,
+> > SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/skb",           CGROUP_SKB, 0, SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/sock_create",   CGROUP_SOCK, BPF_CGROUP_INET_SOCK=
+_CREATE,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/sock_release",  CGROUP_SOCK,
+> > BPF_CGROUP_INET_SOCK_RELEASE, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/sock",          CGROUP_SOCK, BPF_CGROUP_INET_SOCK=
+_CREATE,
+> > SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/post_bind4",    CGROUP_SOCK, BPF_CGROUP_INET4_POS=
+T_BIND,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/post_bind6",    CGROUP_SOCK, BPF_CGROUP_INET6_POS=
+T_BIND,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/dev",           CGROUP_DEVICE, BPF_CGROUP_DEVICE,
+> > SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("sockops",              SOCK_OPS, BPF_CGROUP_SOCK_OPS, SE=
+C_ATTACHABLE_OPT |
+> > SEC_SLOPPY_PFX),
+> > +     SEC_DEF("sk_skb/stream_parser", SK_SKB, BPF_SK_SKB_STREAM_PARSER,
+> > SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("sk_skb/stream_verdict",SK_SKB, BPF_SK_SKB_STREAM_VERDICT=
+,
+> > SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("sk_skb",               SK_SKB, 0, SEC_SLOPPY_PFX),
+> > +     SEC_DEF("sk_msg",               SK_MSG, BPF_SK_MSG_VERDICT, SEC_A=
+TTACHABLE_OPT |
+> > SEC_SLOPPY_PFX),
+> > +     SEC_DEF("lirc_mode2",           LIRC_MODE2, BPF_LIRC_MODE2, SEC_A=
+TTACHABLE_OPT |
+> > SEC_SLOPPY_PFX),
+> > +     SEC_DEF("flow_dissector",       FLOW_DISSECTOR, BPF_FLOW_DISSECTO=
+R,
+> > SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/bind4",         CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+4_BIND,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/bind6",         CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+6_BIND,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/connect4",      CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+4_CONNECT,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/connect6",      CGROUP_SOCK_ADDR, BPF_CGROUP_INET=
+6_CONNECT,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/sendmsg4",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP4=
+_SENDMSG,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/sendmsg6",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP6=
+_SENDMSG,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/recvmsg4",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP4=
+_RECVMSG,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/recvmsg6",      CGROUP_SOCK_ADDR, BPF_CGROUP_UDP6=
+_RECVMSG,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/getpeername4",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET4_GETPEERNAME, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/getpeername6",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET6_GETPEERNAME, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/getsockname4",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET4_GETSOCKNAME, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/getsockname6",  CGROUP_SOCK_ADDR,
+> > BPF_CGROUP_INET6_GETSOCKNAME, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/sysctl",        CGROUP_SYSCTL, BPF_CGROUP_SYSCTL,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/getsockopt",    CGROUP_SOCKOPT, BPF_CGROUP_GETSOC=
+KOPT,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("cgroup/setsockopt",    CGROUP_SOCKOPT, BPF_CGROUP_SETSOC=
+KOPT,
+> > SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> > +     SEC_DEF("struct_ops+",          STRUCT_OPS, 0, SEC_NONE),
+> >       SEC_DEF("sk_lookup/",           SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATT=
+ACHABLE),
+> >   };
 >
-> >       sep = strchr(buf, '=');
-> > @@ -2919,7 +2918,7 @@ static Elf_Data *elf_sec_data(const struct
-> > bpf_object *obj, Elf_Scn *scn)
-> >   static bool is_sec_name_dwarf(const char *name)
+> > @@ -8048,11 +8049,53 @@ static const struct bpf_sec_def section_defs[] =
+=3D {
+>
+> >   static const struct bpf_sec_def *find_sec_def(const char *sec_name)
 > >   {
-> >       /* approximation, but the actual list is too long */
-> > -     return strncmp(name, ".debug_", sizeof(".debug_") - 1) == 0;
-> > +     return str_has_pfx(name, ".debug_");
-> >   }
+> > -     int i, n =3D ARRAY_SIZE(section_defs);
+> > +     const struct bpf_sec_def *sec_def;
+> > +     enum sec_def_flags sec_flags;
+> > +     int i, n =3D ARRAY_SIZE(section_defs), len;
+> > +     bool strict =3D libbpf_mode & LIBBPF_STRICT_SEC_NAME;
 >
-> >   static bool ignore_elf_section(GElf_Shdr *hdr, const char *name)
-> > @@ -2941,7 +2940,7 @@ static bool ignore_elf_section(GElf_Shdr *hdr,
-> > const char *name)
-> >       if (is_sec_name_dwarf(name))
-> >               return true;
->
-> > -     if (strncmp(name, ".rel", sizeof(".rel") - 1) == 0) {
-> > +     if (str_has_pfx(name, ".rel")) {
-> >               name += sizeof(".rel") - 1;
-> >               /* DWARF section relocations */
-> >               if (is_sec_name_dwarf(name))
-> > @@ -6890,8 +6889,7 @@ static int bpf_object__resolve_externs(struct
-> > bpf_object *obj,
-> >                       if (err)
-> >                               return err;
-> >                       pr_debug("extern (kcfg) %s=0x%x\n", ext->name, kver);
-> > -             } else if (ext->type == EXT_KCFG &&
-> > -                        strncmp(ext->name, "CONFIG_", 7) == 0) {
-> > +             } else if (ext->type == EXT_KCFG && str_has_pfx(ext->name, "CONFIG_"))
-> > {
-> >                       need_config = true;
-> >               } else if (ext->type == EXT_KSYM) {
-> >                       if (ext->ksym.type_id)
-> > @@ -7955,7 +7953,6 @@ void bpf_program__set_expected_attach_type(struct
-> > bpf_program *prog,
-> >                         attachable, attach_btf)                           \
-> >       {                                                                   \
-> >               .sec = string,                                              \
-> > -             .len = sizeof(string) - 1,                                  \
-> >               .prog_type = ptype,                                         \
-> >               .expected_attach_type = eatype,                             \
-> >               .is_exp_attach_type_optional = eatype_optional,             \
-> > @@ -7986,7 +7983,6 @@ void bpf_program__set_expected_attach_type(struct
-> > bpf_program *prog,
->
-> >   #define SEC_DEF(sec_pfx, ptype, ...) {                                          \
-> >       .sec = sec_pfx,                                                     \
-> > -     .len = sizeof(sec_pfx) - 1,                                         \
-> >       .prog_type = BPF_PROG_TYPE_##ptype,                                 \
-> >       .preload_fn = libbpf_preload_prog,                                  \
-> >       __VA_ARGS__                                                         \
-> > @@ -8160,10 +8156,8 @@ static const struct bpf_sec_def
-> > *find_sec_def(const char *sec_name)
-> >       int i, n = ARRAY_SIZE(section_defs);
->
-> >       for (i = 0; i < n; i++) {
-> > -             if (strncmp(sec_name,
-> > -                         section_defs[i].sec, section_defs[i].len))
-> > -                     continue;
-> > -             return &section_defs[i];
-> > +             if (str_has_pfx(sec_name, section_defs[i].sec))
-> > +                     return &section_defs[i];
+> >       for (i =3D 0; i < n; i++) {
+> > -             if (str_has_pfx(sec_name, section_defs[i].sec))
+> > -                     return &section_defs[i];
+> > +             sec_def =3D &section_defs[i];
+> > +             sec_flags =3D sec_def->cookie;
+> > +             len =3D strlen(sec_def->sec);
+> > +
+> > +             /* "type/" always has to have proper SEC("type/extras") f=
+orm */
+> > +             if (sec_def->sec[len - 1] =3D=3D '/') {
+> > +                     if (str_has_pfx(sec_name, sec_def->sec))
+> > +                             return sec_def;
+> > +                     continue;
+> > +             }
+> > +
+> > +             /* "type+" means it can be either exact SEC("type") or
+> > +              * well-formed SEC("type/extras") with proper '/' separat=
+or
+> > +              */
+> > +             if (sec_def->sec[len - 1] =3D=3D '+') {
+> > +                     len--;
+> > +                     /* not even a prefix */
+> > +                     if (strncmp(sec_name, sec_def->sec, len) !=3D 0)
+> > +                             continue;
+> > +                     /* exact match or has '/' separator */
+> > +                     if (sec_name[len] =3D=3D '\0' || sec_name[len] =
+=3D=3D '/')
+> > +                             return sec_def;
+> > +                     continue;
+> > +             }
+> > +
+> > +             /* SEC_SLOPPY_PFX definitions are allowed to be just pref=
+ix
+> > +              * matches, unless strict section name mode
+> > +              * (LIBBPF_STRICT_SEC_NAME) is enabled, in which case the
+> > +              * match has to be exact.
+> > +              */
+> > +             if ((sec_flags & SEC_SLOPPY_PFX) && !strict)  {
+> > +                     if (str_has_pfx(sec_name, sec_def->sec))
+> > +                             return sec_def;
+> > +                     continue;
+> > +             }
+> > +
+> > +             /* Definitions not marked SEC_SLOPPY_PFX (e.g.,
+> > +              * SEC("syscall")) are exact matches in both modes.
+> > +              */
+> > +             if (strcmp(sec_name, sec_def->sec) =3D=3D 0)
+> > +                     return sec_def;
 > >       }
 > >       return NULL;
 > >   }
-> > @@ -8517,7 +8511,7 @@ static int libbpf_find_attach_btf_id(struct
-> > bpf_program *prog, int *btf_obj_fd,
-> >                       prog->sec_name);
-> >               return -ESRCH;
-> >       }
-> > -     attach_name = prog->sec_name + prog->sec_def->len;
-> > +     attach_name = prog->sec_name + strlen(prog->sec_def->sec);
+> > diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legac=
+y.h
+> > index df0d03dcffab..74e6f860f703 100644
+> > --- a/tools/lib/bpf/libbpf_legacy.h
+> > +++ b/tools/lib/bpf/libbpf_legacy.h
+> > @@ -46,6 +46,15 @@ enum libbpf_strict_mode {
+> >        */
+> >       LIBBPF_STRICT_DIRECT_ERRS =3D 0x02,
 >
-> >       /* BPF program's BTF ID */
-> >       if (attach_prog_fd) {
-> > @@ -9454,8 +9448,11 @@ static struct bpf_link *attach_kprobe(const struct
-> > bpf_program *prog, long cooki
-> >       char *func;
-> >       int n, err;
+> > +     /*
+> > +      * Enforce strict BPF program section (SEC()) names.
+> > +      * E.g., while prefiously SEC("xdp_whatever") or SEC("perf_event_=
+blah")
+> > were
+> > +      * allowed, with LIBBPF_STRICT_SEC_PREFIX this will become
+> > +      * unrecognized by libbpf and would have to be just SEC("xdp") an=
+d
+> > +      * SEC("xdp") and SEC("perf_event").
+> > +      */
+> > +     LIBBPF_STRICT_SEC_NAME =3D 0x04,
 >
-> > -     func_name = prog->sec_name + prog->sec_def->len;
-> > -     opts.retprobe = strcmp(prog->sec_def->sec, "kretprobe/") == 0;
-> > +     opts.retprobe = str_has_pfx(prog->sec_name, "kretprobe/");
-> > +     if (opts.retprobe)
-> > +             func_name = prog->sec_name + sizeof("kretprobe/") - 1;
-> > +     else
-> > +             func_name = prog->sec_name + sizeof("kprobe/") - 1;
->
-> >       n = sscanf(func_name, "%m[a-zA-Z0-9_.]+%li", &func, &offset);
-> >       if (n < 1) {
-> > @@ -9627,8 +9624,11 @@ static struct bpf_link *attach_tp(const struct
-> > bpf_program *prog, long cookie)
-> >       if (!sec_name)
-> >               return libbpf_err_ptr(-ENOMEM);
->
-> > -     /* extract "tp/<category>/<name>" */
-> > -     tp_cat = sec_name + prog->sec_def->len;
-> > +     /* extract "tp/<category>/<name>" or "tracepoint/<category>/<name>" */
-> > +     if (str_has_pfx(prog->sec_name, "tp/"))
-> > +             tp_cat = sec_name + sizeof("tp/") - 1;
-> > +     else
-> > +             tp_cat = sec_name + sizeof("tracepoint/") - 1;
-> >       tp_name = strchr(tp_cat, '/');
-> >       if (!tp_name) {
-> >               free(sec_name);
-> > @@ -9674,7 +9674,12 @@ struct bpf_link
-> > *bpf_program__attach_raw_tracepoint(const struct bpf_program *pr
->
-> >   static struct bpf_link *attach_raw_tp(const struct bpf_program *prog,
-> > long cookie)
-> >   {
-> > -     const char *tp_name = prog->sec_name + prog->sec_def->len;
-> > +     const char *tp_name;
-> > +
-> > +     if (str_has_pfx(prog->sec_name, "raw_tp/"))
-> > +             tp_name = prog->sec_name + sizeof("raw_tp/") - 1;
-> > +     else
-> > +             tp_name = prog->sec_name + sizeof("raw_tracepoint/") - 1;
->
-> >       return bpf_program__attach_raw_tracepoint(prog, tp_name);
-> >   }
-> > diff --git a/tools/lib/bpf/libbpf_internal.h
-> > b/tools/lib/bpf/libbpf_internal.h
-> > index ceb0c98979bc..ec79400517d4 100644
-> > --- a/tools/lib/bpf/libbpf_internal.h
-> > +++ b/tools/lib/bpf/libbpf_internal.h
-> > @@ -89,6 +89,13 @@
-> >       (offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
-> >   #endif
->
-> > +/* Check whether a string `str` has prefix `pfx`, regardless if `pfx` is
-> > + * a string literal known at compilation time or char * pointer known
-> > only at
-> > + * runtime.
-> > + */
-> > +#define str_has_pfx(str, pfx) \
-> > +     (strncmp(str, pfx, __builtin_constant_p(pfx) ? sizeof(pfx) - 1 :
-> > strlen(pfx)) == 0)
-> > +
->
-> Nit: maybe 'starts_with'? c++ has that in stdlib and iirc python also
-> has either starts_with or statswith.
+> To clarify: I'm assuming, as discussed, we'll still support that old,
+> non-conforming naming in libbpf 1.0, right? It just won't be enabled
+> by default.
 
-And C has strcmp, strncmp, strstr... I didn't want to do strpfxcmp or
-something like that, but it also doesn't matter as it's an internal
-helper. "starts_with" doesn't communicate that we are dealing with
-strings and not just some arrays of elements. So I'd rather keep it
-named as is.
+No, we won't. All those opt-in strict flags will be turned on
+permanently in libbpf 1.0. But I'm adding an ability to provide custom
+callbacks to handle whatever (reasonable) BPF program section names.
+So if someone has a real important case needing custom handling, it's
+not a big problem to implement that logic on their own. If someone is
+just resisting making their code conforming, well... Stay on the old
+fixed version, write a callback, or just do the mechanical rename, how
+hard can that be? We are dropping bpf_program__find_program_by_title()
+in libbpf 1.0, that API is meaningless with multiple programs per
+section, so you'd have to update your logic to either skeleton or
+bpf_program__find_program_by_name() anyways.
+
+>
+> Btw, forgot to update you, I've enabled LIBBPF_STRICT_DIRECT_ERRS and
+> LIBBPF_STRICT_CLEAN_PTRS and everything seems to be working fine =F0=9F=
+=A4=9E
+
+Great! The problem is that you would see the difference only when
+actual runtime failure happens. So I'd still recommend auditing the
+code, if possible.
