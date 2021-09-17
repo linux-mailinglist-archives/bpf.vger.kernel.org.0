@@ -2,104 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B3340FE50
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 19:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3110040FE82
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 19:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239452AbhIQRDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 13:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
+        id S232918AbhIQRTU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 13:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233746AbhIQRC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 13:02:57 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7380DC061574
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 10:01:33 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id s16so1521036pfk.0
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 10:01:33 -0700 (PDT)
+        with ESMTP id S232173AbhIQRTU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 13:19:20 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FADFC061574;
+        Fri, 17 Sep 2021 10:17:58 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id c7so14146442qka.2;
+        Fri, 17 Sep 2021 10:17:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xpgvaxoIQzFP4B3YYCE8MOwTySnLM1z8uCPoQY3j8do=;
-        b=SP26SuNdmxsB8XboFoL9MPbIQmSRvwbNMDDVz3y5bijpe4THkvdFZaKxjGVfrDapJ6
-         CqF+ssZtMXrmEbX6LzgxkcCo0M3U6ICNOQt/kSrEnpMppbOK/7DIZx3+N9PdH3hzLhi+
-         dijxr0K1/Z/lNVKXP/xUnk2Hy9ju4Eux8FIhKH8g/vYp5douLPK9iSjzlhOZgl14MtzT
-         xFJDlVFZg3JORUCRfMYl9tipzcY0ZR5UqPpWOytJW7DBzIQ7wZ8dPm/0JPsqTgf+a5Cl
-         gbXVQx5ntOwTZAR8GV6yl7MGJGaqKOvrrLge+HIuuaTS/vcy+w41rIjqw8NOxIth/1JS
-         BjkA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=40fDEg3fABnjTm2Jeh1ku9dFDScBQkyGxaPi+SrGI08=;
+        b=GbjCn6xIGP18QKsyjQ75a+2uuzkA7jodKc8CftKHKkWgQWG2S6k7S7GRF5cwQC43Tw
+         x4EiDuMqtlpoXk87DL2KldWpMbR1KJpcfTPBRj/2ztLH2Ejhd7+CekUaOPOp6zmK9D+V
+         HO0PTMr3/bRqoBSFdO7kAujOnhHi0GiKmidc63hbCW+Q9yrEwiR9Z13Kzd3RaOGVSRjL
+         87WHiPeEtbQkV4FPHug+fkK1ZnjnHeBfKzG9JJACkJHvQHY/7p+n7ucDfuvKoVYrTQd2
+         7Zx20w0zYEbnNZ7moeuE1VQBwQcWmTTaYkkR6BmeNIuyEqdvE1riMUxABU8xUxlMKxky
+         Fzhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xpgvaxoIQzFP4B3YYCE8MOwTySnLM1z8uCPoQY3j8do=;
-        b=P+DAEjV7ktN2ajh1nXLuqTZAHSlJNakDnsRJjbcOxFWQ23jVe5XUgGkfmdV4JOUKRg
-         sMy59wYPc4nxttP3P3CZl4Jx8Q2wu3Yu/7+8z0QCi2/Yfj30uSlzpAX7q6McXin3rd0F
-         d7VT3CLRXgSM2XhEMmaNawxP0IEgWdd569cbJ22IsEJVgM7WdadC3/KVpjyDQVcSKc/r
-         /Wjww3yEVWonI/c8W3Vus24dPu0G2CcFUJH4iCUUK9YtmCraA6N0SBuFUB8HXTzQK+Nc
-         4dCE0RMReESIWvfdiWggwx5kDrq+HKGHx0+QMSGCtxqqe27z8+p6cDTFaUT7vQD3eGvY
-         PoIQ==
-X-Gm-Message-State: AOAM532/UBT4d2fCiAif2SaSxyQVq27tsCjY5IR6lfL2W3RPAoI1H+fr
-        3b1A7fqSzdvhHkTRSX7kjgE=
-X-Google-Smtp-Source: ABdhPJzODHvKjEdoOb7EE85SVPrxXPgnVG4lZ9Cy8X32iPWm7fWSafxnSpJK6KDSq6Qf+w3is1mZkA==
-X-Received: by 2002:aa7:825a:0:b0:43e:124e:5c1e with SMTP id e26-20020aa7825a000000b0043e124e5c1emr11564869pfn.76.1631898092760;
-        Fri, 17 Sep 2021 10:01:32 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:500::6:db29])
-        by smtp.gmail.com with ESMTPSA id z17sm6769859pfj.185.2021.09.17.10.01.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 10:01:32 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 10:01:30 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Joanne Koong <joannekoong@fb.com>
-Cc:     bpf@vger.kernel.org, Kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: Add bloom filter map implementation
-Message-ID: <20210917170130.njmm3dm65ftd76vo@ast-mbp>
-References: <20210914040433.3184308-1-joannekoong@fb.com>
- <20210914040433.3184308-2-joannekoong@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=40fDEg3fABnjTm2Jeh1ku9dFDScBQkyGxaPi+SrGI08=;
+        b=Z1mVBN8BgDtgw6G45Abazg4OjGh7rJ1/hWPNq8G+Fk04AAJRDibDRuFVbA9SW+S7j0
+         vYYUHwPPGF+s6GKQNUKIAqY65Ur714hX+5t+zkownBORQ1hNhdtfvUZlwisof8izeM9m
+         jz6nxVSazgh4vStHJQj/WWVRpSiLKICcVhNLXgLN5UgZXpBBzqs3pccDgZJlUOWyduMw
+         ASdgHBx8UXIIaLkMrFNvqtX9WkaoLrtkmsH0KZKKwHf2dL2mehnrQJbdNkVoPiSBRohZ
+         Cj94kScSj/zb2RMN7taqQQr5ApDcIWB89zlqbJmZDisv/GOPm/YZu/yVU9vO35SSi8Ha
+         5T3g==
+X-Gm-Message-State: AOAM532aY4EX5OJumpTAvjTyXqqFCuvbjWIZK5agdX1VY+aEPxtsmic1
+        mT2rPdwtc20y7yoggjZsg7ZwWR7HxlNlBPjVm9L1S8Dm
+X-Google-Smtp-Source: ABdhPJyGl6QvysJfh5QnTncuKTK9qBA1RXZO68+G0cToZkCIWY3mJF0VImgBstLSGjhj9D27kdeyXXB+1Azs2dHhsgw=
+X-Received: by 2002:a25:fc5:: with SMTP id 188mr14498879ybp.51.1631899077169;
+ Fri, 17 Sep 2021 10:17:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914040433.3184308-2-joannekoong@fb.com>
+References: <cover.1631785820.git.mchehab+huawei@kernel.org> <803e3a74d7f9b5fe23e4f8222af0e6629d1cd76a.1631785820.git.mchehab+huawei@kernel.org>
+In-Reply-To: <803e3a74d7f9b5fe23e4f8222af0e6629d1cd76a.1631785820.git.mchehab+huawei@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 17 Sep 2021 10:17:46 -0700
+Message-ID: <CAEf4BzaULanV_QFbZxA=f-vYZ5LrFZji1Nwq3xn68qO08AHQpw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/23] tools: bpftool: update bpftool-map.rst reference
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Beckett <david.beckett@netronome.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 09:04:30PM -0700, Joanne Koong wrote:
-> +
-> +/* For bloom filter maps, the next 4 bits represent how many hashes to use.
-> + * The maximum number of hash functions supported is 15. If this is not set,
-> + * the default number of hash functions used will be 5.
-> + */
-> +	BPF_F_BLOOM_FILTER_HASH_BIT_1 = (1U << 13),
-> +	BPF_F_BLOOM_FILTER_HASH_BIT_2 = (1U << 14),
-> +	BPF_F_BLOOM_FILTER_HASH_BIT_3 = (1U << 15),
-> +	BPF_F_BLOOM_FILTER_HASH_BIT_4 = (1U << 16),
+On Thu, Sep 16, 2021 at 2:55 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> The file name: Documentation/bpftool-map.rst
+> should be, instead: tools/bpf/bpftool/Documentation/bpftool-map.rst.
+>
+> Update its cross-reference accordingly.
+>
+> Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
+> Fixes: ff69c21a85a4 ("tools: bpftool: add documentation")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> index 27a2c369a798..2d7eb683bd5a 100755
+> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> @@ -383,7 +383,7 @@ class ManMapExtractor(ManPageExtractor):
+>      """
+>      An extractor for bpftool-map.rst.
+>      """
+> -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-map.rst')
+> +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-map.rst')
 
-The bit selection is unintuitive.
-Since key_size has to be zero may be used that instead to indicate the number of hash
-functions in the rare case when 5 is not good enough?
-Or use inner_map_fd since there is no possibility of having an inner map in bloomfilter.
-It could be a union:
-    __u32   max_entries;    /* max number of entries in a map */
-    __u32   map_flags;      /* BPF_MAP_CREATE related
-                             * flags defined above.
-                             */
-    union {
-       __u32  inner_map_fd;   /* fd pointing to the inner map */
-       __u32  nr_hash_funcs;  /* or number of hash functions */
-    };
-    __u32   numa_node;      /* numa node */
+this is wrong, BPFTOOL_DIR already includes "tools/bpf/bpftool" part.
+Did you test this? There are many places where BPFTOOL_DIR is joined
+with bpftool-local file paths, you haven't updated them. So I assume
+this was done blindly with some sort of script? Please be careful with
+such changes.
 
-> +struct bpf_bloom_filter {
-> +	struct bpf_map map;
-> +	u32 bit_array_mask;
-> +	u32 hash_seed;
-> +	/* If the size of the values in the bloom filter is u32 aligned,
-> +	 * then it is more performant to use jhash2 as the underlying hash
-> +	 * function, else we use jhash. This tracks the number of u32s
-> +	 * in an u32-aligned value size. If the value size is not u32 aligned,
-> +	 * this will be 0.
-> +	 */
-> +	u32 aligned_u32_count;
-
-what is the performance difference?
-May be we enforce 4-byte sized value for simplicity?
+>
+>      def get_map_types(self):
+>          return self.get_rst_list('TYPE')
+> --
+> 2.31.1
+>
