@@ -2,150 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02A7410120
-	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 00:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738EC41013F
+	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 00:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244668AbhIQWJc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 18:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
+        id S242673AbhIQWdn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 18:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239448AbhIQWJa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:09:30 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89595C061574;
-        Fri, 17 Sep 2021 15:08:07 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id s20so5404411ioa.4;
-        Fri, 17 Sep 2021 15:08:07 -0700 (PDT)
+        with ESMTP id S239654AbhIQWdm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 18:33:42 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2860AC061764
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:32:19 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id g8so35375331edt.7
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=hHNA+ZVHahorxX08neiIMjZ3hODgLZ2sH2//vaCpU+w=;
-        b=Ajz857d51NQdcTNRD2xupp0COfxe8sf46xOP0dJ8dnEaSjd+4WUmLEt9DAfy6VJKDO
-         /Q95sghCCPfQB6PRGlxSN4O67vwj8fCjRz7xBUDjuzdSwn1N+IibwWB92M2ebOZY/jFZ
-         EY/5fTrZPHYzEkA7yr2a/ui1sreg1s5XfNVi3eWA9gGh5/PxwoMQrclihgmzdmbvE9Kj
-         IJM/OOiTbUVXhD5aWHPBwqWbHlgylyOf+bPY9//7PfS+hgSGK/SPhJb0fZUrhRbUM5BD
-         rg+PxeXg5M1ZhySg7rKfK+BRdEvHGJVI5zvEaG43ubfc2uDkY0MdIQEOGlvFvxohJemw
-         PRxg==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=KoseWHC1X1eUmhKmXE//peQwxmYp0XripPbl2Zk3A1o=;
+        b=qa88MURb4sk+pMEoYAwUTLZGPZ0ZEl6oRZa9c73P2gu9jhuUyuZol9xQf47OZgGXrQ
+         5vk5avTPF48Yu7VZwyhwuossjEpEA0nLB/Pjak79WRa8HX4dtYwo2rzsYNS5ZWOMexAP
+         LJM2amQb/MPrYf6ViCRJ5iGQbEWRZjb4twP5DbJCxbyrhGd+VKQTtgNZ10fS14xxgn5Y
+         PfZMZPvjGrfQBOgUfIIlxO200QC+8lZQPtPVYN/qntR+oPspAP4HNKyEWZwFSDSw99hz
+         wOOovh8+jX3q6Wv12lfv9RItfPrVaM95x1J+ygwNcH/+nARh1mKSzUZJ5yvKMvv8bQCl
+         3AmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=hHNA+ZVHahorxX08neiIMjZ3hODgLZ2sH2//vaCpU+w=;
-        b=cPKqampJlxu/BlqtEB+Opiy3kVeFPsri76atrYBbkuj+hW25d1GA9ni1XaUtaVZUHC
-         9him63i/tXqylSNvNdcQrKBZ6e/IgEHX14lMVayawjL97FYj1VBAXNlG+zp2dBvMjKRY
-         E6GnSxbt8Zofg9V0BRYNv47egBIU2OQGV6LPOM4QRJMFfGvOciQNdbyw3MYIHEt03MLi
-         pVMBkC/r86Ls9ZIpCR88r3HJdVCfosjyg9Fvwlsdy9R/Bp/SWHq1nx/b0MzY4wQ2W5lx
-         BDrF3foYn2sLdy84sesRz6k0zFVQH5A+rXdMsxHKVXcgYacFU18WbLCG3GZbrWrbIs37
-         0dhw==
-X-Gm-Message-State: AOAM532JxdfY7pH8tyCsr73JEY3z2iEZ675cC8ll6mikcfQWJymz29is
-        rKSvqNwkrefrJwrz66Q8ut8=
-X-Google-Smtp-Source: ABdhPJy6C+EcpVxHCUrZ0SWf5PUGt/WeaDw1j/ti4gcPX9YWu1UFZ6iz62dpz5oVRkDQ12CW8mWfBQ==
-X-Received: by 2002:a5d:8505:: with SMTP id q5mr10165989ion.53.1631916486897;
-        Fri, 17 Sep 2021 15:08:06 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id h9sm4113116ioz.30.2021.09.17.15.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 15:08:06 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 15:07:56 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        tirthendu.sarkar@intel.com,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Message-ID: <614511bc3408b_8d5120862@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAADnVQKbrkOxfNoixUx-RLJEWULJLyhqjZ=M_X2cFG_APwNyCg@mail.gmail.com>
-References: <cover.1631289870.git.lorenzo@kernel.org>
- <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YUSrWiWh57Ys7UdB@lore-desk>
- <20210917113310.4be9b586@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQL15NAqbswXedF0r2om8SOiMQE80OSjbyCA56s-B4y8zA@mail.gmail.com>
- <20210917120053.1ec617c2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQKbrkOxfNoixUx-RLJEWULJLyhqjZ=M_X2cFG_APwNyCg@mail.gmail.com>
-Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer
- support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=KoseWHC1X1eUmhKmXE//peQwxmYp0XripPbl2Zk3A1o=;
+        b=rvQSb9QUDpvUFXFfwGKZ/9V5LClHdPc40N5c9g8qDxz8IxDgyGy3exm89tmHGEMAcg
+         jHYEtjGtPBgBChKLmPo5uh6KBEeVEU1pUctijY4NqPD2buBFPnSkBM1Xw+bD2OtL2QVI
+         wYUXTJ9H0PJP4LjMEdCDorEr2cmlWmUpFzxzEyQTjI/xxVVKMALVgI8xuu8wTrTxggHn
+         kJ/vTdSHBr5qX6IUYzh8q78/jXyBMtX9UOMiu9zfTGLqyXnUqegQq20ty4lIdjyJsZMJ
+         ++juuAUOyaA77iA7b3UDXFtTwHPHsMyg3L0Il1sYrBtMPi9b/jwcJvOkFfYUwvQCPzeL
+         vfGA==
+X-Gm-Message-State: AOAM531h7bttqBUIyuc5aDIU4TsrkYJNTjGdVsmL85I6ShDDYt1X/hGL
+        sCzr7oy7FxVnpJxi4DwMutX7BI68WwOl064Tv0c=
+X-Google-Smtp-Source: ABdhPJxLacF16DIvaE2u6QedqjB/zurnbN5Q7GLKo2rXTm+lNfIImo3M1Yu9Y2SK1T5FupocR+fo1Sjj16LykjLormo=
+X-Received: by 2002:a50:da84:: with SMTP id q4mr12828513edj.1.1631917937688;
+ Fri, 17 Sep 2021 15:32:17 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:aa7:cc0d:0:0:0:0:0 with HTTP; Fri, 17 Sep 2021 15:32:17
+ -0700 (PDT)
+Reply-To: mstheresaheidi8@gmail.com
+From:   Mr Theresa Heidi <buydpt.nemery.fr@gmail.com>
+Date:   Fri, 17 Sep 2021 22:32:17 +0000
+Message-ID: <CAOHrsnZw1nC0ffGOMXVVd7dBWK87p5bEMCNCQioHTWFwF2o4xw@mail.gmail.com>
+Subject: Urgent Help From Hospital!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Fri, Sep 17, 2021 at 12:00 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Fri, 17 Sep 2021 11:43:07 -0700 Alexei Starovoitov wrote:
-> > > > If bpf_xdp_load_bytes() / bpf_xdp_store_bytes() works for most we
-> > > > can start with that. In all honesty I don't know what the exact
-> > > > use cases for looking at data are, either. I'm primarily worried
-> > > > about exposing the kernel internals too early.
-> > >
-> > > I don't mind the xdp equivalent of skb_load_bytes,
-> > > but skb_header_pointer() idea is superior.
-> > > When we did xdp with data/data_end there was no refine_retval_range
-> > > concept in the verifier (iirc or we just missed that opportunity).
-> > > We'd need something more advanced: a pointer with valid range
-> > > refined by input argument 'len' or NULL.
-> > > The verifier doesn't have such thing yet, but it fits as a combination of
-> > > value_or_null plus refine_retval_range.
-> > > The bpf_xdp_header_pointer() and bpf_skb_header_pointer()
-> > > would probably simplify bpf programs as well.
-> > > There would be no need to deal with data/data_end.
-> >
-> > What are your thoughts on inlining? Can we inline the common case
-> > of the header being in the "head"? Otherwise data/end comparisons
-> > would be faster.
-> 
-> Yeah. It can be inlined by the verifier.
-> It would still look like a call from bpf prog pov with llvm doing spill/fill
-> of scratched regs, but it's minor.
-> 
-> Also we can use the same bpf_header_pointer(ctx, ...)
-> helper for both xdp and skb program types. They will have different
-> implementation underneath, but this might make possible writing bpf
-> programs that could work in both xdp and skb context.
-> I believe cilium has fancy macros to achieve that.
+Dear Beloved One,
 
-Hi,
+CHARITY DONATION Please read carefully, I know it is true that this
+letter may come to you as a surprise. I came across your e-mail
+contact through a private search while in need of your assistance. I
+am writing this mail to you with heavy sorrow in my heart, I have
+chose to reach you through Internet because it still remains the
+fastest medium of communication.
 
-First a header_pointer() logic that works across skb and xdp seems like
-a great idea to me. I wonder though if instead of doing the copy
-into a new buffer for offset past the initial frag like what is done in
-skb_header_pointer could we just walk the frags and point at the new offset.
-This is what we do on the socket side with bpf_msg_pull-data() for example.
-For XDP it should also work. The skb case would depend on clone state
-and things so might be a bit more tricky there.
+My Name is Mrs. Theresa Heidi I am native France currently
+hospitalized in a private hospital here in Israel as a result of lungs
+cancer I am 62 years old and I was diagnosed of lungs cancer for about
+4 years ago, immediately after the death of my husband, who has left
+me everything he worked for. I'm with my laptop in a hospital here in
+where I have been undergoing treatment for cancer of the lungs. I have
+some funds inherited from my late husband, the sum of Two Million Five
+Hundred Thousand Dollars Only (USD$2,500,000,00).Now it's clear that
+I=E2=80=99m approaching the last-days of my life and I don't think I need t=
+his
+money anymore. My doctor made me to understand that I would not last
+for the period of one year due to Lungs cancer problem.
 
-This has the advantage of only doing the copy when its necessary. This
-can be useful for example when reading the tail of an IPsec packet. With
-blind copy most packets will get hit with a copy. By just writing the
-pkt->data and pkt->data_end we can avoid this case.
+This money is still with the foreign bank and the management wrote me
+as the true owner to come forward to receive the money or rather issue
+a letter of authorization to somebody to receive it on my behalf since
+I can't come over because of my illness. Failure to act the bank may
+get fund confiscated for keeping it so long.
 
-Lorenz originally implemented something similar earlier and we had the
-refine retval logic. It failed on no-alu32 for some reason we could
-revisit. I didn't mind the current help returning with data pointer set
-to the start of the frag so we stopped following up on it.
+I decided to contact you if you maybe willing and interested to help
+me withdraw this money from the foreign bank then use the funds for
+Charity works in helping the less privileged and also to fight against
+Covid-19 Pandemic in the society. I want you to handle these trust
+funds in good faith before anything happens to me. This is not a
+stolen money and there are no dangers involved is 100% risk free with
+full legal proof.
 
-I agree though the current implementation puts a lot on the BPF writer.
-So getting both cases covered, I want to take pains in my BPF prog
-to avoid copies and I just want these bytes handled behind a single
-helper seems good to me.
+I want you to take 45% of the total money for your personal used while
+55% of the money will go to charity work. I will appreciate your
+utmost trust and confidentiality in this matter to accomplish my heart
+desire, as I don't want anything that will jeopardize my last wish. I
+am very sorry if you received this letter in your spam, is due to
+recent connection error here in the country.
 
-Thanks,
-John
+Yours Beloved Sister.
+Mrs. Theresa Heidi
