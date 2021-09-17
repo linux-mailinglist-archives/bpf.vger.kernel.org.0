@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF66410088
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F3641008B
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244697AbhIQVHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S244441AbhIQVHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 17 Sep 2021 17:07:50 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:39735 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244492AbhIQVHt (ORCPT <rfc822;bpf@vger.kernel.org>);
+Received: from mail-io1-f69.google.com ([209.85.166.69]:42910 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244479AbhIQVHt (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 17 Sep 2021 17:07:49 -0400
-Received: by mail-io1-f70.google.com with SMTP id a17-20020a5d89d1000000b005c2233d0074so22138157iot.6
+Received: by mail-io1-f69.google.com with SMTP id i78-20020a6b3b51000000b005b8dd0f9e76so22099217ioa.9
         for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:06:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=IRUxZF+30/m7CRt35/mILrxgjdobMDTrqZYv4sIXjd0=;
-        b=cImnTjxc1bqAHif+yjS8PEqsI7NPiOJ5FuCdmOit6wMavFWlB+np9xZD9PUo5Ocy84
-         RQkrYC6g30gGWhhWDga+H1jrPpc4xNUvYMe/br3OWzc30FSMT1cVM/R3sVE/Jg1HK3h7
-         eymLSHNlElTqZM4DK1jmaNkZxkdbRoEyT6JMdi1e5gioelLWsGBOYLDRJSEC43Ob3hkS
-         XFjE8mSQRfEU44sCah/KIpO7YzmWaS9tShAPu67OCEDaUmtEcj8ajP0h0bBL/7kFaJ1g
-         dcTrn6s03OQNonNdz3FdmmfFvPhNCsuDYr0FyXUA3nzOZJFhD1EvhodKHKA5gNO+6VBu
-         vvMQ==
-X-Gm-Message-State: AOAM530Z/fhMZL2jlK6oamBqe5+GM2fQGSUxIenS3pKdFB8fj5TowCWr
-        DH9KFyF7LxadGoTCY7ylN9KcUBsCbqeFLfr/DyH9idXrR508
-X-Google-Smtp-Source: ABdhPJzPsJaQKftJlrcXPNrknVhwc024yZnQuE8x7qN80OwVYrERfE3JbKhh5gDn7RkzCrSiNFo1WWpGjz61HC+tFI8TmE1GYLwF
+        bh=2WmomhkD51wIWOOU3RkzQPqwZsHbNfmPQ1ty9n1eE5c=;
+        b=JUIUNDPJlhJ+h5b+ywN0l0ToVraHUGsT8RCnGIQJVTpnnk/ZwJFdxlzZgTk7W2Wph1
+         EP6zvxldUwDgy2toxZK3oN/cJlGLn87uGz8GykxyX9LSWxKo7W0zBZ+2NAq0qmaw4rKO
+         esAsQRIAkMDz9onEiQGhQEujG45wyQKL2nvAXwLtXuhAf++X7tK8TMT2ufjyWFBnDPi0
+         AwbT3tnTUsD/rOigekHbU5QJIgx7Hu+BxhToFKOJE5Ah0iz7K5gtzyxz/MOJao1KEgbt
+         J9Jv6ijmzyEdpT2GTc4vR3/G6wXhN2FB0QQU3MZu1HWsUWhml103wNnLNhTkfjhntOxd
+         VdAg==
+X-Gm-Message-State: AOAM532mIPkeKxI8/5B4VFfxd79MRZWO8Y+x8edspr99W5HxFyF1cKbh
+        6oJue/WTCtG9N5pyf2ShvG1hg433Ya63ZeRJLZLCSTB8s9B9
+X-Google-Smtp-Source: ABdhPJwcXY4hOe4rF5uMBVJqp8pZYf8i7SorzdJZH1w9phoM0nqDf8CL6+KmIFofF8111goxRfs/n3y5uL7i6sJ0Oe2dd7xtrwjG
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:408f:: with SMTP id m15mr10416038jam.94.1631912786232;
+X-Received: by 2002:a92:c7af:: with SMTP id f15mr9420398ilk.64.1631912786480;
  Fri, 17 Sep 2021 14:06:26 -0700 (PDT)
 Date:   Fri, 17 Sep 2021 14:06:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ed8c2e05cc374dd3@google.com>
-Subject: [syzbot] general protection fault in bpf_skb_ancestor_cgroup_id
-From:   syzbot <syzbot+664b58e9a40fbb2cec71@syzkaller.appspotmail.com>
+Message-ID: <000000000000f152a305cc374d7b@google.com>
+Subject: [syzbot] general protection fault in bpf_skb_cgroup_id
+From:   syzbot <syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com>
 To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
         daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
         john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
@@ -52,38 +52,51 @@ syzbot found the following issue on:
 
 HEAD commit:    2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kern..
 git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=10732da5300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15089853300000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=664b58e9a40fbb2cec71
+dashboard link: https://syzkaller.appspot.com/bug?extid=33f36d0754d4c5c0e102
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11834d43300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=169a6273300000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14dbd7ed300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1586f83b300000
+
+Bisection is inconclusive: the first bad commit could be any of:
+
+0e6491b55970 bpf: Add oversize check before call kvcalloc()
+2f1aaf3ea666 bpf, mm: Fix lockdep warning triggered by stack_map_get_build_id_offset()
+8520e224f547 bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode
+3a029e1f3d6e selftests/bpf: Fix build of task_pt_regs test for arm64
+d8079d8026f8 bpf, selftests: Add cgroup v1 net_cls classid helpers
+43d2b88c29f2 bpf, selftests: Add test case for mixed cgroup v1/v2
+49ca6153208f bpf: Relicense disassembler as GPL-2.0-only OR BSD-2-Clause
+2865ba82476a Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16b5ccdd300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+664b58e9a40fbb2cec71@syzkaller.appspotmail.com
+Reported-by: syzbot+33f36d0754d4c5c0e102@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000024: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000120-0x0000000000000127]
-CPU: 0 PID: 8406 Comm: syz-executor074 Not tainted 5.14.0-syzkaller #0
+general protection fault, probably for non-canonical address 0xdffffc0000000029: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000148-0x000000000000014f]
+CPU: 1 PID: 8436 Comm: syz-executor679 Not tainted 5.14.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:cgroup_ancestor include/linux/cgroup.h:593 [inline]
-RIP: 0010:__bpf_sk_ancestor_cgroup_id net/core/filter.c:4494 [inline]
-RIP: 0010:____bpf_skb_ancestor_cgroup_id net/core/filter.c:4504 [inline]
-RIP: 0010:bpf_skb_ancestor_cgroup_id+0x152/0x300 net/core/filter.c:4501
-Code: 03 80 3c 02 00 0f 85 9f 01 00 00 48 8b 9b 58 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 20 01 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 48 01 00 00 8b ab 20 01 00 00
-RSP: 0018:ffffc9000101f828 EFLAGS: 00010206
+RIP: 0010:cgroup_id include/linux/cgroup.h:312 [inline]
+RIP: 0010:__bpf_sk_cgroup_id net/core/filter.c:4468 [inline]
+RIP: 0010:____bpf_skb_cgroup_id net/core/filter.c:4473 [inline]
+RIP: 0010:bpf_skb_cgroup_id+0x138/0x210 net/core/filter.c:4471
+Code: 03 80 3c 02 00 0f 85 cc 00 00 00 48 8b 9b 58 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 48 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 00 00 00 48 8b 9b 48 01 00 00 48 b8 00 00 00
+RSP: 0018:ffffc9000184f9c0 EFLAGS: 00010202
 RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000024 RSI: ffffffff87291cee RDI: 0000000000000120
+RDX: 0000000000000029 RSI: ffffffff8728f537 RDI: 0000000000000148
 RBP: 0000000000000080 R08: 0000000000000000 R09: 0000000000000007
-R10: ffffffff87291cd1 R11: 000000000000001f R12: fffffffffffffe00
-R13: 00000000fffffe00 R14: ffffc9000101fc30 R15: ffffc90000e48048
-FS:  0000000001234300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+R10: ffffffff8728f52a R11: 000000000000001f R12: 0000000000000007
+R13: ffffc90000e6a000 R14: ffffc9000184fc30 R15: ffffc90000e6a048
+FS:  0000000000f5e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000200 CR3: 000000007193e000 CR4: 00000000001506f0
+CR2: 00000000200004c0 CR3: 000000001d929000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- bpf_prog_dcdd7aeecda69f3f+0x54/0x690
+ bpf_prog_3a33f00dea259162+0x10/0xfa8
  bpf_dispatcher_nop_func include/linux/bpf.h:717 [inline]
  __bpf_prog_run include/linux/filter.h:624 [inline]
  bpf_prog_run include/linux/filter.h:631 [inline]
@@ -97,48 +110,48 @@ Call Trace:
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f059
+RIP: 0033:0x43f009
 Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc82a88608 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f059
-RDX: 0000000000000040 RSI: 0000000020000280 RDI: 000000000000000a
-RBP: 0000000000403040 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004030d0
+RSP: 002b:00007ffcff384d88 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f009
+RDX: 0000000000000028 RSI: 0000000020000440 RDI: 000000000000000a
+RBP: 0000000000402ff0 R08: 0000000000000000 R09: 0000000000400488
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403080
 R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
 Modules linked in:
----[ end trace 55d65f18b4ef47bb ]---
-RIP: 0010:cgroup_ancestor include/linux/cgroup.h:593 [inline]
-RIP: 0010:__bpf_sk_ancestor_cgroup_id net/core/filter.c:4494 [inline]
-RIP: 0010:____bpf_skb_ancestor_cgroup_id net/core/filter.c:4504 [inline]
-RIP: 0010:bpf_skb_ancestor_cgroup_id+0x152/0x300 net/core/filter.c:4501
-Code: 03 80 3c 02 00 0f 85 9f 01 00 00 48 8b 9b 58 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 20 01 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 48 01 00 00 8b ab 20 01 00 00
-RSP: 0018:ffffc9000101f828 EFLAGS: 00010206
+---[ end trace d161abccc2184019 ]---
+RIP: 0010:cgroup_id include/linux/cgroup.h:312 [inline]
+RIP: 0010:__bpf_sk_cgroup_id net/core/filter.c:4468 [inline]
+RIP: 0010:____bpf_skb_cgroup_id net/core/filter.c:4473 [inline]
+RIP: 0010:bpf_skb_cgroup_id+0x138/0x210 net/core/filter.c:4471
+Code: 03 80 3c 02 00 0f 85 cc 00 00 00 48 8b 9b 58 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 48 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ad 00 00 00 48 8b 9b 48 01 00 00 48 b8 00 00 00
+RSP: 0018:ffffc9000184f9c0 EFLAGS: 00010202
 RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000024 RSI: ffffffff87291cee RDI: 0000000000000120
+RDX: 0000000000000029 RSI: ffffffff8728f537 RDI: 0000000000000148
 RBP: 0000000000000080 R08: 0000000000000000 R09: 0000000000000007
-R10: ffffffff87291cd1 R11: 000000000000001f R12: fffffffffffffe00
-R13: 00000000fffffe00 R14: ffffc9000101fc30 R15: ffffc90000e48048
-FS:  0000000001234300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+R10: ffffffff8728f52a R11: 000000000000001f R12: 0000000000000007
+R13: ffffc90000e6a000 R14: ffffc9000184fc30 R15: ffffc90000e6a048
+FS:  0000000000f5e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb37a158740 CR3: 000000007193e000 CR4: 00000000001506f0
+CR2: 00000000200004c0 CR3: 000000001d929000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 ----------------
-Code disassembly (best guess):
-   0:	03 80 3c 02 00 0f    	add    0xf00023c(%rax),%eax
-   6:	85 9f 01 00 00 48    	test   %ebx,0x48000001(%rdi)
-   c:	8b 9b 58 04 00 00    	mov    0x458(%rbx),%ebx
-  12:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  19:	fc ff df
-  1c:	48 8d bb 20 01 00 00 	lea    0x120(%rbx),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
-  2e:	84 c0                	test   %al,%al
-  30:	74 08                	je     0x3a
-  32:	3c 03                	cmp    $0x3,%al
-  34:	0f 8e 48 01 00 00    	jle    0x182
-  3a:	8b ab 20 01 00 00    	mov    0x120(%rbx),%ebp
+Code disassembly (best guess), 1 bytes skipped:
+   0:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   4:	0f 85 cc 00 00 00    	jne    0xd6
+   a:	48 8b 9b 58 04 00 00 	mov    0x458(%rbx),%rbx
+  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  18:	fc ff df
+  1b:	48 8d bb 48 01 00 00 	lea    0x148(%rbx),%rdi
+  22:	48 89 fa             	mov    %rdi,%rdx
+  25:	48 c1 ea 03          	shr    $0x3,%rdx
+* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2d:	0f 85 ad 00 00 00    	jne    0xe0
+  33:	48 8b 9b 48 01 00 00 	mov    0x148(%rbx),%rbx
+  3a:	48                   	rex.W
+  3b:	b8                   	.byte 0xb8
+  3c:	00 00                	add    %al,(%rax)
 
 
 ---
@@ -148,5 +161,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
