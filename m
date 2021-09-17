@@ -2,104 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738EC41013F
-	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 00:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD48410154
+	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 00:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242673AbhIQWdn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 18:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        id S1344756AbhIQWgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 18:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239654AbhIQWdm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 18:33:42 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2860AC061764
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:32:19 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id g8so35375331edt.7
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:32:19 -0700 (PDT)
+        with ESMTP id S231624AbhIQWgB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 18:36:01 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B95EC061574;
+        Fri, 17 Sep 2021 15:34:38 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id h29so11912470ila.2;
+        Fri, 17 Sep 2021 15:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=KoseWHC1X1eUmhKmXE//peQwxmYp0XripPbl2Zk3A1o=;
-        b=qa88MURb4sk+pMEoYAwUTLZGPZ0ZEl6oRZa9c73P2gu9jhuUyuZol9xQf47OZgGXrQ
-         5vk5avTPF48Yu7VZwyhwuossjEpEA0nLB/Pjak79WRa8HX4dtYwo2rzsYNS5ZWOMexAP
-         LJM2amQb/MPrYf6ViCRJ5iGQbEWRZjb4twP5DbJCxbyrhGd+VKQTtgNZ10fS14xxgn5Y
-         PfZMZPvjGrfQBOgUfIIlxO200QC+8lZQPtPVYN/qntR+oPspAP4HNKyEWZwFSDSw99hz
-         wOOovh8+jX3q6Wv12lfv9RItfPrVaM95x1J+ygwNcH/+nARh1mKSzUZJ5yvKMvv8bQCl
-         3AmQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=rzVScc/3fhxtLP4lpidcQPT7ZyYnaMhrA6du6nm5lkE=;
+        b=DiCyntqNleRWupMrnr+b5Ruvq0fYk874Zi0OoUAw7wPJNAdDWvLdpS+2ebLboWw5k3
+         aQbljm/j4ugc8FSjVtaWR9xvR+aUEoenOgPFKL/XgHPcodPOu37pyQFEx2ZQ9vz7WV1R
+         DDVN0F2NkakA83/mpKRVBNZX5tktCB1WAAAE5N1VM0p42cIFNyN2BI0JezPsFivnq/nb
+         7vgC76bEdyl4QE3JBAiiSjNNYXZItfua+TUPFyhDq+SiYfNUBLQo6F+g86bgSkxbD/zD
+         Ey2FQRPW408yvaWqg+nkW/Qs51T4gs6LxbizCSbRzBhArhYCnvpEkiNlJs30nwEc8KrY
+         2OfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=KoseWHC1X1eUmhKmXE//peQwxmYp0XripPbl2Zk3A1o=;
-        b=rvQSb9QUDpvUFXFfwGKZ/9V5LClHdPc40N5c9g8qDxz8IxDgyGy3exm89tmHGEMAcg
-         jHYEtjGtPBgBChKLmPo5uh6KBEeVEU1pUctijY4NqPD2buBFPnSkBM1Xw+bD2OtL2QVI
-         wYUXTJ9H0PJP4LjMEdCDorEr2cmlWmUpFzxzEyQTjI/xxVVKMALVgI8xuu8wTrTxggHn
-         kJ/vTdSHBr5qX6IUYzh8q78/jXyBMtX9UOMiu9zfTGLqyXnUqegQq20ty4lIdjyJsZMJ
-         ++juuAUOyaA77iA7b3UDXFtTwHPHsMyg3L0Il1sYrBtMPi9b/jwcJvOkFfYUwvQCPzeL
-         vfGA==
-X-Gm-Message-State: AOAM531h7bttqBUIyuc5aDIU4TsrkYJNTjGdVsmL85I6ShDDYt1X/hGL
-        sCzr7oy7FxVnpJxi4DwMutX7BI68WwOl064Tv0c=
-X-Google-Smtp-Source: ABdhPJxLacF16DIvaE2u6QedqjB/zurnbN5Q7GLKo2rXTm+lNfIImo3M1Yu9Y2SK1T5FupocR+fo1Sjj16LykjLormo=
-X-Received: by 2002:a50:da84:: with SMTP id q4mr12828513edj.1.1631917937688;
- Fri, 17 Sep 2021 15:32:17 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:aa7:cc0d:0:0:0:0:0 with HTTP; Fri, 17 Sep 2021 15:32:17
- -0700 (PDT)
-Reply-To: mstheresaheidi8@gmail.com
-From:   Mr Theresa Heidi <buydpt.nemery.fr@gmail.com>
-Date:   Fri, 17 Sep 2021 22:32:17 +0000
-Message-ID: <CAOHrsnZw1nC0ffGOMXVVd7dBWK87p5bEMCNCQioHTWFwF2o4xw@mail.gmail.com>
-Subject: Urgent Help From Hospital!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=rzVScc/3fhxtLP4lpidcQPT7ZyYnaMhrA6du6nm5lkE=;
+        b=kaD6PrsZuKywrqGUYhvbCSUc/Aq2+WhyfWSFGn9NNrn/MJLQ+vIG516PwM12sIc5Nv
+         +D9fayRAoLeFdYoZ7UTanxqQW5eVfGtGNY1Kt7vtfPw+asnWfckbGYCpP0/TC8AmmntV
+         0bLRdzRScx8CwqHSYQFSH4vQY6SbCBTznCMnqz7CoEZVz8r9uiWzK0/xJFsk6Q/uN6mc
+         sjzBCzsQsi0A39XC+HIEsREaJR+5CwXP7QSSQePVMjWXfAxm8uDqSGVkq/isnjzwN+PZ
+         pILJfFoEuM0y92iUnphVPFzrfyDgMWN9y/S1QUD+mJVXysXRqQAEF9j30jbsA6+K9KnI
+         Tz+g==
+X-Gm-Message-State: AOAM531iaE1fH62oe+ddDEO4er1PjXL3itSVW1rnhLEEaehhbPenAJdK
+        fQKgeN3ZEjtNajxRMvr/RLg=
+X-Google-Smtp-Source: ABdhPJzO/UwzioGL+88d2ZKgwGyqGd0ooIXS/evyvAW1pwmV/JiA9IO7K3L0PgUHe1Fw6PfELbPFmA==
+X-Received: by 2002:a92:bf01:: with SMTP id z1mr9265689ilh.155.1631918078114;
+        Fri, 17 Sep 2021 15:34:38 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id i14sm4092619iog.47.2021.09.17.15.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 15:34:37 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 15:34:29 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Liu Jian <liujian56@huawei.com>, john.fastabend@gmail.com,
+        daniel@iogearbox.net, jakub@cloudflare.com, lmb@cloudflare.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     liujian56@huawei.com
+Message-ID: <614517f5ed44e_8d5120847@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210917013222.74225-1-liujian56@huawei.com>
+References: <20210917013222.74225-1-liujian56@huawei.com>
+Subject: RE: [PATCH v2] skmsg: lose offset info in sk_psock_skb_ingress
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Beloved One,
+Liu Jian wrote:
+> If sockmap enable strparser, there are lose offset info in
+> sk_psock_skb_ingress. If the length determined by parse_msg function
+> is not skb->len, the skb will be converted to sk_msg multiple times,
+> and userspace app will get the data multiple times.
+> 
+> Fix this by get the offset and length from strp_msg.
+> 
+> Signed-off-by: Liu Jian <liujian56@huawei.com>
+> ---
+> v1->v2: fix build error when disable CONFIG_BPF_STREAM_PARSER
+> 
 
-CHARITY DONATION Please read carefully, I know it is true that this
-letter may come to you as a surprise. I came across your e-mail
-contact through a private search while in need of your assistance. I
-am writing this mail to you with heavy sorrow in my heart, I have
-chose to reach you through Internet because it still remains the
-fastest medium of communication.
+LGTM thanks.
 
-My Name is Mrs. Theresa Heidi I am native France currently
-hospitalized in a private hospital here in Israel as a result of lungs
-cancer I am 62 years old and I was diagnosed of lungs cancer for about
-4 years ago, immediately after the death of my husband, who has left
-me everything he worked for. I'm with my laptop in a hospital here in
-where I have been undergoing treatment for cancer of the lungs. I have
-some funds inherited from my late husband, the sum of Two Million Five
-Hundred Thousand Dollars Only (USD$2,500,000,00).Now it's clear that
-I=E2=80=99m approaching the last-days of my life and I don't think I need t=
-his
-money anymore. My doctor made me to understand that I would not last
-for the period of one year due to Lungs cancer problem.
-
-This money is still with the foreign bank and the management wrote me
-as the true owner to come forward to receive the money or rather issue
-a letter of authorization to somebody to receive it on my behalf since
-I can't come over because of my illness. Failure to act the bank may
-get fund confiscated for keeping it so long.
-
-I decided to contact you if you maybe willing and interested to help
-me withdraw this money from the foreign bank then use the funds for
-Charity works in helping the less privileged and also to fight against
-Covid-19 Pandemic in the society. I want you to handle these trust
-funds in good faith before anything happens to me. This is not a
-stolen money and there are no dangers involved is 100% risk free with
-full legal proof.
-
-I want you to take 45% of the total money for your personal used while
-55% of the money will go to charity work. I will appreciate your
-utmost trust and confidentiality in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish. I
-am very sorry if you received this letter in your spam, is due to
-recent connection error here in the country.
-
-Yours Beloved Sister.
-Mrs. Theresa Heidi
+Acked-by: John Fastabend <john.fastabend@gmail.com>
