@@ -2,145 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B79340FE3B
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 18:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B3340FE50
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 19:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245120AbhIQQ7X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 12:59:23 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:37113 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244998AbhIQQ7T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:59:19 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HB0WS0Bk0z9sTL;
-        Fri, 17 Sep 2021 18:57:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Q-t8XLaWNuNY; Fri, 17 Sep 2021 18:57:55 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HB0WR6B2dz9sT0;
-        Fri, 17 Sep 2021 18:57:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BB3DE8B799;
-        Fri, 17 Sep 2021 18:57:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id TA_mV7fAT1MU; Fri, 17 Sep 2021 18:57:55 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.36])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 975A58B768;
-        Fri, 17 Sep 2021 18:57:54 +0200 (CEST)
-Subject: Re: [PATCH v2 8/8] bpf ppc32: Add addr > TASK_SIZE_MAX explicit check
-To:     Hari Bathini <hbathini@linux.ibm.com>, naveen.n.rao@linux.ibm.com,
-        mpe@ellerman.id.au, ast@kernel.org, daniel@iogearbox.net
-Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210917153047.177141-1-hbathini@linux.ibm.com>
- <20210917153047.177141-9-hbathini@linux.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <cc61ff09-dd94-64d1-7c8b-4b628c1e8de2@csgroup.eu>
-Date:   Fri, 17 Sep 2021 18:57:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239452AbhIQRDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 13:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233746AbhIQRC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 13:02:57 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7380DC061574
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 10:01:33 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id s16so1521036pfk.0
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 10:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xpgvaxoIQzFP4B3YYCE8MOwTySnLM1z8uCPoQY3j8do=;
+        b=SP26SuNdmxsB8XboFoL9MPbIQmSRvwbNMDDVz3y5bijpe4THkvdFZaKxjGVfrDapJ6
+         CqF+ssZtMXrmEbX6LzgxkcCo0M3U6ICNOQt/kSrEnpMppbOK/7DIZx3+N9PdH3hzLhi+
+         dijxr0K1/Z/lNVKXP/xUnk2Hy9ju4Eux8FIhKH8g/vYp5douLPK9iSjzlhOZgl14MtzT
+         xFJDlVFZg3JORUCRfMYl9tipzcY0ZR5UqPpWOytJW7DBzIQ7wZ8dPm/0JPsqTgf+a5Cl
+         gbXVQx5ntOwTZAR8GV6yl7MGJGaqKOvrrLge+HIuuaTS/vcy+w41rIjqw8NOxIth/1JS
+         BjkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xpgvaxoIQzFP4B3YYCE8MOwTySnLM1z8uCPoQY3j8do=;
+        b=P+DAEjV7ktN2ajh1nXLuqTZAHSlJNakDnsRJjbcOxFWQ23jVe5XUgGkfmdV4JOUKRg
+         sMy59wYPc4nxttP3P3CZl4Jx8Q2wu3Yu/7+8z0QCi2/Yfj30uSlzpAX7q6McXin3rd0F
+         d7VT3CLRXgSM2XhEMmaNawxP0IEgWdd569cbJ22IsEJVgM7WdadC3/KVpjyDQVcSKc/r
+         /Wjww3yEVWonI/c8W3Vus24dPu0G2CcFUJH4iCUUK9YtmCraA6N0SBuFUB8HXTzQK+Nc
+         4dCE0RMReESIWvfdiWggwx5kDrq+HKGHx0+QMSGCtxqqe27z8+p6cDTFaUT7vQD3eGvY
+         PoIQ==
+X-Gm-Message-State: AOAM532/UBT4d2fCiAif2SaSxyQVq27tsCjY5IR6lfL2W3RPAoI1H+fr
+        3b1A7fqSzdvhHkTRSX7kjgE=
+X-Google-Smtp-Source: ABdhPJzODHvKjEdoOb7EE85SVPrxXPgnVG4lZ9Cy8X32iPWm7fWSafxnSpJK6KDSq6Qf+w3is1mZkA==
+X-Received: by 2002:aa7:825a:0:b0:43e:124e:5c1e with SMTP id e26-20020aa7825a000000b0043e124e5c1emr11564869pfn.76.1631898092760;
+        Fri, 17 Sep 2021 10:01:32 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:500::6:db29])
+        by smtp.gmail.com with ESMTPSA id z17sm6769859pfj.185.2021.09.17.10.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 10:01:32 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 10:01:30 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Joanne Koong <joannekoong@fb.com>
+Cc:     bpf@vger.kernel.org, Kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: Add bloom filter map implementation
+Message-ID: <20210917170130.njmm3dm65ftd76vo@ast-mbp>
+References: <20210914040433.3184308-1-joannekoong@fb.com>
+ <20210914040433.3184308-2-joannekoong@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <20210917153047.177141-9-hbathini@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914040433.3184308-2-joannekoong@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-Le 17/09/2021 à 17:30, Hari Bathini a écrit :
-> With KUAP enabled, any kernel code which wants to access userspace
-> needs to be surrounded by disable-enable KUAP. But that is not
-> happening for BPF_PROBE_MEM load instruction. Though PPC32 does not
-> support read protection, considering the fact that PTR_TO_BTF_ID
-> (which uses BPF_PROBE_MEM mode) could either be a valid kernel pointer
-> or NULL but should never be a pointer to userspace address, execute
-> BPF_PROBE_MEM load only if addr > TASK_SIZE_MAX, otherwise set
-> dst_reg=0 and move on.
-
-Same comment as patch 6.
-
-> 
-> This will catch NULL, valid or invalid userspace pointers. Only bad
-> kernel pointer will be handled by BPF exception table.
-> 
-> [Alexei suggested for x86]
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-> ---
-> 
-> Changes in v2:
-> * New patch to handle bad userspace pointers on PPC32.
-> 
-> 
->   arch/powerpc/net/bpf_jit_comp32.c | 39 +++++++++++++++++++++++++++++++
->   1 file changed, 39 insertions(+)
-> 
-> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-> index c6262289dcc4..faa8047fcf4a 100644
-> --- a/arch/powerpc/net/bpf_jit_comp32.c
-> +++ b/arch/powerpc/net/bpf_jit_comp32.c
-> @@ -821,6 +821,45 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->   		/* dst = *(u64 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_DW:
->   		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
-> +			/*
-> +			 * As PTR_TO_BTF_ID that uses BPF_PROBE_MEM mode could either be a valid
-> +			 * kernel pointer or NULL but not a userspace address, execute BPF_PROBE_MEM
-> +			 * load only if addr > TASK_SIZE_MAX, otherwise set dst_reg=0 and move on.
-> +			 */
-> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-> +				bool extra_insn_needed = false;
-> +				unsigned int adjusted_idx;
+On Mon, Sep 13, 2021 at 09:04:30PM -0700, Joanne Koong wrote:
 > +
-> +				/*
-> +				 * For BPF_DW case, "li reg_h,0" would be needed when
-> +				 * !fp->aux->verifier_zext. Adjust conditional branch'ing
-> +				 * address accordingly.
-> +				 */
-> +				if ((size == BPF_DW) && !fp->aux->verifier_zext)
-> +					extra_insn_needed = true;
+> +/* For bloom filter maps, the next 4 bits represent how many hashes to use.
+> + * The maximum number of hash functions supported is 15. If this is not set,
+> + * the default number of hash functions used will be 5.
+> + */
+> +	BPF_F_BLOOM_FILTER_HASH_BIT_1 = (1U << 13),
+> +	BPF_F_BLOOM_FILTER_HASH_BIT_2 = (1U << 14),
+> +	BPF_F_BLOOM_FILTER_HASH_BIT_3 = (1U << 15),
+> +	BPF_F_BLOOM_FILTER_HASH_BIT_4 = (1U << 16),
 
-Don't make it too complicated. That's a fallback that should never 
-happen, no need to optimise. You can put that instruction all the time 
-(or put a NOP) and keep the jumps always the same.
+The bit selection is unintuitive.
+Since key_size has to be zero may be used that instead to indicate the number of hash
+functions in the rare case when 5 is not good enough?
+Or use inner_map_fd since there is no possibility of having an inner map in bloomfilter.
+It could be a union:
+    __u32   max_entries;    /* max number of entries in a map */
+    __u32   map_flags;      /* BPF_MAP_CREATE related
+                             * flags defined above.
+                             */
+    union {
+       __u32  inner_map_fd;   /* fd pointing to the inner map */
+       __u32  nr_hash_funcs;  /* or number of hash functions */
+    };
+    __u32   numa_node;      /* numa node */
 
-> +
-> +				/*
-> +				 * Need to jump two instructions instead of one for BPF_DW case
-> +				 * as there are two load instructions for dst_reg_h & dst_reg
-> +				 * respectively.
-> +				 */
-> +				adjusted_idx = (size == BPF_DW) ? 1 : 0;
+> +struct bpf_bloom_filter {
+> +	struct bpf_map map;
+> +	u32 bit_array_mask;
+> +	u32 hash_seed;
+> +	/* If the size of the values in the bloom filter is u32 aligned,
+> +	 * then it is more performant to use jhash2 as the underlying hash
+> +	 * function, else we use jhash. This tracks the number of u32s
+> +	 * in an u32-aligned value size. If the value size is not u32 aligned,
+> +	 * this will be 0.
+> +	 */
+> +	u32 aligned_u32_count;
 
-Same comment as patch 6, drop adjusted_idx and do an if/else directly 
-for the PPC_JMP.
-
-> +
-> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG], src_reg, off));
-> +				PPC_LI32(_R0, TASK_SIZE_MAX);
-> +				EMIT(PPC_RAW_CMPLW(b2p[TMP_REG], _R0));
-> +				PPC_BCC(COND_GT, (ctx->idx + 4 + (extra_insn_needed ? 1 : 0)) * 4);
-> +				EMIT(PPC_RAW_LI(dst_reg, 0));
-> +				/*
-> +				 * Note that "li reg_h,0" is emitted for BPF_B/H/W case,
-> +				 * if necessary. So, jump there insted of emitting an
-> +				 * additional "li reg_h,0" instruction.
-> +				 */
-> +				if (extra_insn_needed)
-> +					EMIT(PPC_RAW_LI(dst_reg_h, 0));
-> +				PPC_JMP((ctx->idx + 2 + adjusted_idx) * 4);
-> +			}
-> +
->   			switch (size) {
->   			case BPF_B:
->   				EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
-> 
+what is the performance difference?
+May be we enforce 4-byte sized value for simplicity?
