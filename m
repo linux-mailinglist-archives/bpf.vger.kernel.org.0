@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA735410100
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252A3410101
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 23:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244549AbhIQV7L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 17:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
+        id S244564AbhIQV7O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 17:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244153AbhIQV7L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 17:59:11 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95DBC061574
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:57:48 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 17so10881296pgp.4
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:57:48 -0700 (PDT)
+        with ESMTP id S244153AbhIQV7O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 17:59:14 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C018EC061574
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:57:51 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so10970868pjc.3
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 14:57:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+4MUqUUAoYMJSrBhvzAduQ1/byk3PDzCXSpwhZzvGZ8=;
-        b=lfnFp2E2MLB6jgwkz/ZN2IB6gHxVfCIs455JnvlJBk3bK8u/RYq5XMwL8t2clKjmrh
-         3m1q8DanxeckY/8lDbA3V3ibrTILZuvecGzhjw+SGIjkzOhvlFjfu7nQwqd+/xd9Ucd/
-         TTm79hJmKCPJWLXdq5XyKrBc3sklPw/D4dYfIA10jUyiTkFP34YcfyXT/d04w2bWnG5h
-         svYgsDID0RkGRXrUH4E6iMPT406G9Y6LeZGgj2G9CpI0/GnR8uLaGdsclCfBHlmOR5XC
-         ZWfCrvalzqUVSovT5MDwIKpqHhE+MvSG2njXJ7vFxAT9Fz7upUaw9vNnmp23nvlnh4DB
-         LtMw==
+        bh=pf9KWTCRmuNvQZMe/iXAdPWIplRtRVUJi31P0ie9MRo=;
+        b=YloAcEKWNB0hqQo60VZJigxRgdzjnxNV43xADBuG0clq0EOmb7+4C3FZ0zQ3Me9bZv
+         xFBIlnzXTTZ+yyKSAOYNVQKe7+s4U0+9Q6Gp2F8VZyCIzVn8Zc8phpz4tM5QHBPQnzoe
+         3lim5yG9lEvRG7WfCJVfZV+puPzVSv9UWd+u/EHGiT/E1KI5iWTdk4ngU0iEW+EEPbzu
+         GKWdCY5EKUCtLdlFWftx48qvlzAuWcDyqkaKlrJm6GixEjWzuoL9FPvmFbLUUAQQ3GIR
+         CgEZs8FKKL4GLxmEcinWdQH1pmYyirSspjLOes5YZSZZZb0e9Qb4nlwUkRTn+Lc/yM3R
+         EWog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+4MUqUUAoYMJSrBhvzAduQ1/byk3PDzCXSpwhZzvGZ8=;
-        b=Z3rSuS5ZVF+j+yBFG5zzegvAS1QWven0Lm+/DabFciEfmbPyceyzVyEQNWwZq7iiJV
-         xfGeg37SDOlDXU9hem34h1onZygrdnf/DZ5W6zak9ItlCrv0/GFZPv0ToPuUvLjSl73+
-         29UZxnofIGtLPzr7eYFtEDoQDQXXc3SXdVoyjvV8xyemDWcKPxJ0OgQH1cKWDh1o8N3F
-         /kfy1w9LhDSaYmmfEooRpdvlraklpuNLMWv0uFqx5JPU5r4HujP12TSP++SBvpQLl0El
-         ZLkLl+MOuCebvkRBeUAtb9esu20lJzkAB3cgqXElT/u7PXG+D3F7kSktjmGwYf+qTQRs
-         TIZQ==
-X-Gm-Message-State: AOAM531V3doA1+unsoQrSUWrnPktloXQ8/EAqZLjtKZEQbTILugPe2ev
-        DJipTuB74PJl6XnakmD1u/8=
-X-Google-Smtp-Source: ABdhPJzdX7Z+Wn+RhxslkAst3OyLbx2QwiHvnuHBIl84OP95LTp274+H//W3kj8h/eGn4AM5z7ywLA==
-X-Received: by 2002:a63:d814:: with SMTP id b20mr11936567pgh.268.1631915868185;
-        Fri, 17 Sep 2021 14:57:48 -0700 (PDT)
+        bh=pf9KWTCRmuNvQZMe/iXAdPWIplRtRVUJi31P0ie9MRo=;
+        b=yTEDFNEEYCzBjf1c03ctaFZObP4rlh1RfY3Oey8HVUmzhdxPwcAMDZ6rKvErEMwmf6
+         UFpxrlKTiw9dtgMZg3sZacK5gW84iVXaD2E3EUG8A8RLn3hX57zcTw/oKQNo/6bzhySr
+         K5DpXA0C4FPHTRscSc8wt9/zVvYdKqixG3v79aaz9T2C5/eUBImwcw1+B4OfJiKvVR6J
+         BM8mqcaFPVrhxqL1rBkeCVkl2CaYHj/vlrJ+uTRZ1+yrG2Yptpw1OYKPlcya4t/i/Jxc
+         TcrIGa3MINyiG7GAnkH5ETlmjo4fE9WbTn2VpZu8UU0IXrgpLq/15vGbclfZV4wXfPqu
+         FMrQ==
+X-Gm-Message-State: AOAM531pd6CoydfOlhz84Y50T6DQLqfqs9P3f3C265fsuAqoNcIcG31g
+        nsPEMCjm14Nlsg2hnO1Md3s=
+X-Google-Smtp-Source: ABdhPJzQVpV35DY0nHchkglnQ/pcW+vKMIaBDaxizWU5o/J100izxYW/Sl4OlyaapSWihFamLsf9Jg==
+X-Received: by 2002:a17:90b:4b47:: with SMTP id mi7mr23883361pjb.198.1631915871265;
+        Fri, 17 Sep 2021 14:57:51 -0700 (PDT)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:500::6:db29])
-        by smtp.gmail.com with ESMTPSA id d4sm6809230pfv.21.2021.09.17.14.57.47
+        by smtp.gmail.com with ESMTPSA id x1sm7310981pfc.53.2021.09.17.14.57.50
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Sep 2021 14:57:47 -0700 (PDT)
+        Fri, 17 Sep 2021 14:57:50 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
         lmb@cloudflare.com, mcroce@microsoft.com, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH RFC bpf-next 08/10] selftests/bpf: Convert kfunc test with CO-RE to lskel.
-Date:   Fri, 17 Sep 2021 14:57:19 -0700
-Message-Id: <20210917215721.43491-9-alexei.starovoitov@gmail.com>
+Subject: [PATCH RFC bpf-next 09/10] selftests/bpf: Improve inner_map test coverage.
+Date:   Fri, 17 Sep 2021 14:57:20 -0700
+Message-Id: <20210917215721.43491-10-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210917215721.43491-1-alexei.starovoitov@gmail.com>
 References: <20210917215721.43491-1-alexei.starovoitov@gmail.com>
@@ -66,49 +66,67 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Convert kfunc_call_test_subprog to light skeleton.
+Check that hash and array inner maps are properly initialized.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile                | 2 +-
- tools/testing/selftests/bpf/prog_tests/kfunc_call.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/progs/map_ptr_kern.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 326ea75ce99e..81031c8bdcb8 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -316,7 +316,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+index d1d304c980f0..b9b7342763c3 100644
+--- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
++++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+@@ -334,9 +334,11 @@ static inline int check_lpm_trie(void)
+ 	return 1;
+ }
  
- LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
- 	test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
--	trace_vprintk.c
-+	trace_vprintk.c	kfunc_call_test_subprog.c
- SKEL_BLACKLIST += $$(LSKELS)
- 
- test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-index 9611f2bc50df..01bd11f04dc6 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-@@ -3,7 +3,7 @@
- #include <test_progs.h>
- #include <network_helpers.h>
- #include "kfunc_call_test.lskel.h"
--#include "kfunc_call_test_subprog.skel.h"
-+#include "kfunc_call_test_subprog.lskel.h"
- 
- static void test_main(void)
++#define INNER_MAX_ENTRIES 1234
++
+ struct inner_map {
+ 	__uint(type, BPF_MAP_TYPE_ARRAY);
+-	__uint(max_entries, 1);
++	__uint(max_entries, INNER_MAX_ENTRIES);
+ 	__type(key, __u32);
+ 	__type(value, __u32);
+ } inner_map SEC(".maps");
+@@ -348,7 +350,7 @@ struct {
+ 	__type(value, __u32);
+ 	__array(values, struct {
+ 		__uint(type, BPF_MAP_TYPE_ARRAY);
+-		__uint(max_entries, 1);
++		__uint(max_entries, INNER_MAX_ENTRIES);
+ 		__type(key, __u32);
+ 		__type(value, __u32);
+ 	});
+@@ -360,8 +362,13 @@ static inline int check_array_of_maps(void)
  {
-@@ -38,7 +38,7 @@ static void test_subprog(void)
- 	if (!ASSERT_OK_PTR(skel, "skel"))
- 		return;
+ 	struct bpf_array *array_of_maps = (struct bpf_array *)&m_array_of_maps;
+ 	struct bpf_map *map = (struct bpf_map *)&m_array_of_maps;
++	struct bpf_array *inner_map;
++	int key = 0;
  
--	prog_fd = bpf_program__fd(skel->progs.kfunc_call_test1);
-+	prog_fd = skel->progs.kfunc_call_test1.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
- 				NULL, NULL, (__u32 *)&retval, NULL);
- 	ASSERT_OK(err, "bpf_prog_test_run(test1)");
+ 	VERIFY(check_default(&array_of_maps->map, map));
++	inner_map = bpf_map_lookup_elem(array_of_maps, &key);
++	VERIFY(inner_map != 0);
++	VERIFY(inner_map->map.max_entries == INNER_MAX_ENTRIES);
+ 
+ 	return 1;
+ }
+@@ -382,8 +389,13 @@ static inline int check_hash_of_maps(void)
+ {
+ 	struct bpf_htab *hash_of_maps = (struct bpf_htab *)&m_hash_of_maps;
+ 	struct bpf_map *map = (struct bpf_map *)&m_hash_of_maps;
++	struct bpf_htab *inner_map;
++	int key = 2;
+ 
+ 	VERIFY(check_default(&hash_of_maps->map, map));
++	inner_map = bpf_map_lookup_elem(hash_of_maps, &key);
++	VERIFY(inner_map != 0);
++	VERIFY(inner_map->map.max_entries == INNER_MAX_ENTRIES);
+ 
+ 	return 1;
+ }
 -- 
 2.30.2
 
