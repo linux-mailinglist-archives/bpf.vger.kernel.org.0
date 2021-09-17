@@ -2,75 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EC440F8C0
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 15:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDAF40F97B
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 15:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238205AbhIQNFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 09:05:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235210AbhIQNFE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:05:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1BC660F48;
-        Fri, 17 Sep 2021 13:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631883822;
-        bh=Zpqs4tz9LSG5D1zsE7TxY7t0vDwPKj/dDbqUqK/0F2Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G2Zw3EbJo/5JrGm5QUHv3divBA1bX88bgMI0RPSgQnvjwOIT5UdndwEQf95byvJiw
-         w0UEMYc/012wLqPP8p0bU+O/rXkHT79jE6Q7AjvHrdRB0IJrsYLAnuVzWmYUeyedQO
-         TLOyYpzG6bZpmQ21snCqRpB8qCh7ZBR9fJeyU67zkKJ6mZb98wdBibePOfuHoQ3/PB
-         izprXbk2WrKEYuQd5pyfPPgSvWAiEaGQ44HA7aoWl8QofgnIfeyr3yUVZXQwBEdXok
-         FtcKPtyR2p2rLuewCgvC1mWTRZHWO6m90TLWQcYubn+eKnexXlVHuSD0KeENtdoOsC
-         aDiaCCvjrgnTQ==
-Date:   Fri, 17 Sep 2021 06:03:40 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v14 bpf-next 10/18] bpf: add multi-buff support to the
- bpf_xdp_adjust_tail() API
-Message-ID: <20210917060340.12e87d55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YURnxr89pcasiplc@lore-desk>
-References: <cover.1631289870.git.lorenzo@kernel.org>
-        <e07aa987d148c168f1ac95a315d45e24e58c54f5.1631289870.git.lorenzo@kernel.org>
-        <20210916095544.50978cd0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YURnxr89pcasiplc@lore-desk>
+        id S234806AbhIQNrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 09:47:10 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9743 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234565AbhIQNrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:47:09 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H9wDT4glJzW96L;
+        Fri, 17 Sep 2021 21:44:41 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 17 Sep 2021 21:45:45 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 17 Sep 2021 21:45:44 +0800
+Subject: Re: [PATCH 1/3] bpf: support writable context for bare tracepoint
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+References: <20210916135511.3787194-1-houtao1@huawei.com>
+ <20210916135511.3787194-2-houtao1@huawei.com>
+ <9cbbb8b4-f3e3-cd2d-a1cc-e086e7d28946@fb.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <b76d4051-abff-5e75-c812-41c6f283327f@huawei.com>
+Date:   Fri, 17 Sep 2021 21:45:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <9cbbb8b4-f3e3-cd2d-a1cc-e086e7d28946@fb.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Sep 2021 12:02:46 +0200 Lorenzo Bianconi wrote:
-> > > +static inline unsigned int xdp_get_frag_tailroom(const skb_frag_t *frag)
-> > > +{
-> > > +	struct page *page = skb_frag_page(frag);
-> > > +
-> > > +	return page_size(page) - skb_frag_size(frag) - skb_frag_off(frag);
-> > > +}  
-> > 
-> > How do we deal with NICs which can pack multiple skbs into a page frag?
-> > skb_shared_info field to mark the end of last fragment? Just want to make 
-> > sure there is a path to supporting such designs.  
-> 
-> I guess here, intead of using page_size(page) we can rely on xdp_buff->frame_sz
-> or even on skb_shared_info()->xdp_frag_truesize (assuming all fragments from a
-> given hw have the same truesize, but I think this is something we can rely on)
-> 
-> static inline unsigned int xdp_get_frag_tailroom(struct xdp_buff *xdp,
-> 						 const skb_frag_t *frag)
-> {
-> 	return xdp->frame_sz - skb_frag_size(frag) - skb_frag_off(frag);
-> }
-> 
-> what do you think?
+Hi,
 
-Could work! We'd need to document the semantics of frame_sz for mb
-frames clearly but I don't see why not. 
+On 9/17/2021 7:16 AM, Yonghong Song wrote:
+>
+>
+> On 9/16/21 6:55 AM, Hou Tao wrote:
+>> Commit 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
+>> supports writable context for tracepoint, but it misses the support
+>> for bare tracepoint which has no associated trace event.
+>>
+>> Bare tracepoint is defined by DECLARE_TRACE(), so adding a corresponding
+>> DECLARE_TRACE_WRITABLE() macro to generate a definition in __bpf_raw_tp_map
+>> section for bare tracepoint in a similar way to DEFINE_TRACE_WRITABLE().
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>   include/trace/bpf_probe.h | 19 +++++++++++++++----
+>>   1 file changed, 15 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+>> index a23be89119aa..d08ee1060d82 100644
+>> --- a/include/trace/bpf_probe.h
+>> +++ b/include/trace/bpf_probe.h
+>> @@ -93,8 +93,7 @@ __section("__bpf_raw_tp_map") = {                    \
+>>     #define FIRST(x, ...) x
+>>   -#undef DEFINE_EVENT_WRITABLE
+>> -#define DEFINE_EVENT_WRITABLE(template, call, proto, args, size)    \
+>> +#define __CHECK_WRITABLE_BUF_SIZE(call, proto, args, size)        \
+>>   static inline void bpf_test_buffer_##call(void)                \
+>>   {                                    \
+>>       /* BUILD_BUG_ON() is ignored if the code is completely eliminated, but \
+>> @@ -103,8 +102,12 @@ static inline void
+>> bpf_test_buffer_##call(void)                \
+>>        */                                \
+>>       FIRST(proto);                            \
+>>       (void)BUILD_BUG_ON_ZERO(size != sizeof(*FIRST(args)));        \
+>> -}                                    \
+>> -__DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
+>> +}
+>> +
+>> +#undef DEFINE_EVENT_WRITABLE
+>> +#define DEFINE_EVENT_WRITABLE(template, call, proto, args, size) \
+>> +    __CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
+>> +    __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
+>>     #undef DEFINE_EVENT
+>>   #define DEFINE_EVENT(template, call, proto, args)            \
+>> @@ -119,10 +122,18 @@ __DEFINE_EVENT(template, call, PARAMS(proto),
+>> PARAMS(args), size)
+>>       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))        \
+>>       __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
+>>   +#undef DECLARE_TRACE_WRITABLE
+>> +#define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
+>> +    __CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
+>> +    __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args)) \
+>> +    __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), size)
+>> +
+>>   #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>>     #undef DEFINE_EVENT_WRITABLE
+>> +#undef DECLARE_TRACE_WRITABLE
+>>   #undef __DEFINE_EVENT
+>> +#undef __CHECK_WRITABLE_BUF_SIZE
+>
+> Put "#undef __CHECK_WRITABLE_BUF_SIZE" right after "#undef
+> DECLARE_TRACE_WRITABLE" since they are related to each other
+> and also they are in correct reverse order w.r.t. __DEFINE_EVENT?
+If considering __CHECK_WRITABLE_BUF_SIZE is used in both DECLARE_TRACE_WRITABLE and
+DEFINE_EVENT_WRITABLE and the order of definitions, is the following order better ?
+
+#undef DECLARE_TRACE_WRITABLE
+#undef DEFINE_EVENT_WRITABLE
+#undef __CHECK_WRITABLE_BUF_SIZE
+
+>
+>>   #undef FIRST
+>>     #endif /* CONFIG_BPF_EVENTS */
+>>
+> .
+
