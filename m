@@ -2,105 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD7540F5CB
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 12:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EC440F8C0
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 15:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242436AbhIQKXM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 06:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbhIQKXL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:23:11 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDCEC061574;
-        Fri, 17 Sep 2021 03:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=tXuvGtUhPelbuiVZG2SNVQ8ZT1r2eKoLQS+KhKnonao=; b=PaRI/wYSpd33GMaNUg4dwwwk35
-        9S41jv+5rzPsKoTxYZxGlyQAdrm6dO4hDxUUs3Vad29idB67/Eaa2y03aKl3S2n7QNINtwcBBriZl
-        Y7eNE5PfDO6bvhKaGheKZDqmNM9fxxFeDHhK/iCv9MOEApKCWxQyFP8zpSBhmXkHJ4CExmJZMsQXA
-        RRuyb537witKbV95bH/YRy3CmCGT7md1TknQPBBmZhVC+e9MHT4t2WzLUc8XE2W30BMG4DjknF1aC
-        GR+YkplWVrACOzDKH1j7nnHCpYSA1m0rC4bZJQqrD6dhBD5G3n4J2FgqKOE8iBso0MTNh9jRCy7+5
-        lLiuUbNw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mRAzo-003qSp-Fs; Fri, 17 Sep 2021 10:21:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD570300260;
-        Fri, 17 Sep 2021 12:21:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B3FE92133B3D3; Fri, 17 Sep 2021 12:21:24 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 12:21:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
-Message-ID: <YURsJGaB0vKgPT8x@hirez.programming.kicks-ass.net>
-References: <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
- <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
- <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
- <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
- <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
- <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
- <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
- <YUL6R5AH6WNxu5sH@hirez.programming.kicks-ass.net>
- <YUMWLdijs8vSkRjo@hirez.programming.kicks-ass.net>
- <a11f43d2-f12e-18c2-65d4-debd8d085fa8@linux.alibaba.com>
+        id S238205AbhIQNFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 09:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235210AbhIQNFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 09:05:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1BC660F48;
+        Fri, 17 Sep 2021 13:03:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631883822;
+        bh=Zpqs4tz9LSG5D1zsE7TxY7t0vDwPKj/dDbqUqK/0F2Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G2Zw3EbJo/5JrGm5QUHv3divBA1bX88bgMI0RPSgQnvjwOIT5UdndwEQf95byvJiw
+         w0UEMYc/012wLqPP8p0bU+O/rXkHT79jE6Q7AjvHrdRB0IJrsYLAnuVzWmYUeyedQO
+         TLOyYpzG6bZpmQ21snCqRpB8qCh7ZBR9fJeyU67zkKJ6mZb98wdBibePOfuHoQ3/PB
+         izprXbk2WrKEYuQd5pyfPPgSvWAiEaGQ44HA7aoWl8QofgnIfeyr3yUVZXQwBEdXok
+         FtcKPtyR2p2rLuewCgvC1mWTRZHWO6m90TLWQcYubn+eKnexXlVHuSD0KeENtdoOsC
+         aDiaCCvjrgnTQ==
+Date:   Fri, 17 Sep 2021 06:03:40 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: Re: [PATCH v14 bpf-next 10/18] bpf: add multi-buff support to the
+ bpf_xdp_adjust_tail() API
+Message-ID: <20210917060340.12e87d55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YURnxr89pcasiplc@lore-desk>
+References: <cover.1631289870.git.lorenzo@kernel.org>
+        <e07aa987d148c168f1ac95a315d45e24e58c54f5.1631289870.git.lorenzo@kernel.org>
+        <20210916095544.50978cd0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YURnxr89pcasiplc@lore-desk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a11f43d2-f12e-18c2-65d4-debd8d085fa8@linux.alibaba.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:02:07AM +0800, 王贇 wrote:
+On Fri, 17 Sep 2021 12:02:46 +0200 Lorenzo Bianconi wrote:
+> > > +static inline unsigned int xdp_get_frag_tailroom(const skb_frag_t *frag)
+> > > +{
+> > > +	struct page *page = skb_frag_page(frag);
+> > > +
+> > > +	return page_size(page) - skb_frag_size(frag) - skb_frag_off(frag);
+> > > +}  
+> > 
+> > How do we deal with NICs which can pack multiple skbs into a page frag?
+> > skb_shared_info field to mark the end of last fragment? Just want to make 
+> > sure there is a path to supporting such designs.  
 > 
+> I guess here, intead of using page_size(page) we can rely on xdp_buff->frame_sz
+> or even on skb_shared_info()->xdp_frag_truesize (assuming all fragments from a
+> given hw have the same truesize, but I think this is something we can rely on)
 > 
-> On 2021/9/16 下午6:02, Peter Zijlstra wrote:
-> [snip]
-> >  
-> > +static __always_inline bool in_stack_guard(void *addr, void *begin, void *end)
-> > +{
-> > +#ifdef CONFIG_VMAP_STACK
-> > +	if (addr > (begin - PAGE_SIZE))
-> > +		return true;
+> static inline unsigned int xdp_get_frag_tailroom(struct xdp_buff *xdp,
+> 						 const skb_frag_t *frag)
+> {
+> 	return xdp->frame_sz - skb_frag_size(frag) - skb_frag_off(frag);
+> }
 > 
-> After fix this logical as:
-> 
->   addr >= (begin - PAGE_SIZE) && addr < begin
-> 
-> it's working.
+> what do you think?
 
-Shees, I seem to have a knack for getting it wrong, don't I. Thanks!
-
-Anyway, I'll ammend the commit locally, but I'd really like some
-feedback from Andy, who wrote all that VIRT_STACK stuff in the first
-place.
+Could work! We'd need to document the semantics of frame_sz for mb
+frames clearly but I don't see why not. 
