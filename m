@@ -2,162 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493F640FAC7
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 16:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4CA40FC34
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 17:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbhIQOwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 10:52:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238266AbhIQOwe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:52:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C77C60FED;
-        Fri, 17 Sep 2021 14:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631890271;
-        bh=w2FcaLZBhWjv4VzM7AXLSn21yNm1APIXPTRFoygpwvI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RcGisOuGH71sY5ZPHJgCIWJ8+iDhKARmTQUE+Z01ofy3DeqEFZdurr5BuN/khpufJ
-         ZbgkoRBhqTlkda333rLGEtPxk+EF2k+4qDKdPyUlzCPFbkkOolZYfSUAS+RLC+XtmX
-         RqunVSrbCl+fAU8O6CznrfXTbevGl3fS+2KIKw262hMNXgg64x5Y4dpN1/TPovul8f
-         E5JAobJfTfb7ga6vyibbqh9dmIGz5MQaHAg09Dxdwge+zW50rmv80jMio/b0iW9QRw
-         huCRGU8absykC7DG2fhMSTtJ5s/zbKMREA25y12f4fOUfL+VDtfOEWGU2JBS46YMAo
-         hILmFTgq1MyzA==
-Date:   Fri, 17 Sep 2021 16:51:06 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <YUSrWiWh57Ys7UdB@lore-desk>
-References: <cover.1631289870.git.lorenzo@kernel.org>
- <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S232484AbhIQP1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 11:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhIQP1H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 11:27:07 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E9EC061574
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 08:25:45 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id a66so18569003qkc.1
+        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 08:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jVUEelYalD49PkvgEAlzZ2QOJXUR+TuEpNoG41P85Mc=;
+        b=c3SaSyVViZXKmAb4AHxishOpHHKiN85iFoiUPkUmCcaV7c0CP762eRNonwrPoAK57N
+         9eYphDo1M8CiOGAvx2XfQbniCdKVpDrM9OZfLdDnH+WBrH1cK274FRWWiYimlwaNXU+p
+         XUUcbvytlBhmfnD3cM27CfFImaqDP6imsWXW+K9UwGIOghhvxcoRvyM2WOtTfYudyp0D
+         zfDNi1yLyep2LCmB82F1sBRHiivy4D8rHUKCQbWjHesf0wjJ8XyWzIqrJ3G7Xzr8WaqM
+         15cTzZieqRvqxEAzDF0B+hg8z8PdcpXPUhTxcbtu64G9GQzDDmg/VMWj1ZkOuihQHuP/
+         SAgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jVUEelYalD49PkvgEAlzZ2QOJXUR+TuEpNoG41P85Mc=;
+        b=5r0Cn5YwLNwPbq3DhYf9rb2c5M56baLfBcG0Ij8YV1ZK0KRVjDkQAqYtNZ2eeRHWSE
+         xWXrQ1SgJV3PIPLgxwSvsXNKI4nd8/+t+Ss2UHsh4pjUfxGP0lsj8FTq9bn00vlMDw+t
+         Wzs2Nj14ZyqG6Aot6/dOdkQhVI53ek5mDcJgkXX04NgkjKYr9U+S8AylpTUdpoWvcZMf
+         Kxy4ipfBvqfHm2EflreZfmY4xQ111Rs53xoWGbDonr/2GyVnyODTogOgMQ5U10YTSzYU
+         8T7QKssWNHyYhkFubM9ITmmP1xpkerVe1aOR2iOKg457LL9b3H6vCdLR+lOlMEllUoSh
+         xgbA==
+X-Gm-Message-State: AOAM531IoU31VJBlLQ1PGMNhNfwF6TzOtd6VFjgfKkY0tZmbT5V87OhU
+        rdCg52vfwBkr7e+abg6G5uA=
+X-Google-Smtp-Source: ABdhPJwIwJI1FNjOZbjT6mpSgrEKGxab6a8CpyFdBTPx01KHf/2RUFp2RDIpagrN24PD8ybnWW/rSw==
+X-Received: by 2002:a05:620a:2e4:: with SMTP id a4mr10911572qko.288.1631892344115;
+        Fri, 17 Sep 2021 08:25:44 -0700 (PDT)
+Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
+        by smtp.gmail.com with ESMTPSA id r140sm4974757qke.15.2021.09.17.08.25.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 08:25:43 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     andrii@kernel.org
+Cc:     bpf@vger.kernel.org, grantseltzer@gmail.com
+Subject: [PATCH bpf-next] libbpf: Add doc comments in libb.h
+Date:   Fri, 17 Sep 2021 11:23:01 -0400
+Message-Id: <20210917152300.13978-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9zAs7T1175FknEoo"
-Content-Disposition: inline
-In-Reply-To: <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Grant Seltzer <grantseltzer@gmail.com>
 
---9zAs7T1175FknEoo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This adds comments above functions in libbpf.h which document
+their uses. These comments are of a format that doxygen and sphinx
+can pick up and render. These are rendered by libbpf.readthedocs.org
 
-> On Fri, 10 Sep 2021 18:14:06 +0200 Lorenzo Bianconi wrote:
-> > The two following ebpf helpers (and related selftests) has been introdu=
-ced:
-> > - bpf_xdp_adjust_data:
-> >   Move xdp_md->data and xdp_md->data_end pointers in subsequent fragmen=
-ts
-> >   according to the offset provided by the ebpf program. This helper can=
- be
-> >   used to read/write values in frame payload.
-> > - bpf_xdp_get_buff_len:
-> >   Return the total frame size (linear + paged parts)
->=20
-> > More info about the main idea behind this approach can be found here [1=
-][2].
->=20
-> Is there much critique of the skb helpers we have? My intuition would
-> be to follow a similar paradigm from the API perspective. It may seem
-> trivial to us to switch between the two but "normal" users could easily
-> be confused.
->=20
-> By skb paradigm I mean skb_pull_data() and bpf_skb_load/store_bytes().
->=20
-> Alternatively how about we produce a variation on skb_header_pointer()
-> (use on-stack buffer or direct access if the entire region is in one
-> frag).
->=20
-> bpf_xdp_adjust_data() seems to add cost to helpers and TBH I'm not sure
-> how practical it would be to applications. My understanding is that the
-> application is not supposed to make assumptions about the fragment
-> geometry, meaning data can be split at any point. Parsing data
-> arbitrarily split into buffers is hard if pull() is not an option, let
-> alone making such parsing provably correct.
->=20
-> Won't applications end up building something like skb_header_pointer()
-> based on bpf_xdp_adjust_data(), anyway? In which case why don't we
-> provide them what they need?
+These doc comments are for:
+- bpf_object__find_map_by_name()
+- bpf_map__fd()
+- bpf_map__is_internal()
+- libbpf_get_error()
+- libbpf_num_possible_cpus()
 
-Please correct me if I am wrong, here you mean in bpf_xdp_adjust_data()
-we are moving the logic to read/write data across fragment boundaries
-to the caller. Right.
-I do not have a clear view about what could be a real use-case for the help=
-er
-(maybe John can help on this), but similar to what you are suggesting, what
-about doing something like bpf_skb_load/store_bytes()?
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+---
+ tools/lib/bpf/libbpf.h | 58 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 50 insertions(+), 8 deletions(-)
 
-- bpf_xdp_load_bytes(struct xdp_buff *xdp_md, u32 offset, u32 len,
-		     void *data)
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 2f6f0e15d1e7..27a5ebf56d19 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -478,9 +478,14 @@ struct bpf_map_def {
+ 	unsigned int map_flags;
+ };
+ 
+-/*
+- * The 'struct bpf_map' in include/linux/bpf.h is internal to the kernel,
+- * so no need to worry about a name clash.
++/**
++ * @brief **bpf_object__find_map_by_name()** returns a pointer to the
++ * specified bpf map in the bpf object if that map exists, and returns
++ * NULL if not. It sets errno in case of error.
++ * @param obj bpf object
++ * @param name name of the bpf map
++ * @return the address of the map within the bpf object, or NULL if it
++ * does not exist
+  */
+ LIBBPF_API struct bpf_map *
+ bpf_object__find_map_by_name(const struct bpf_object *obj, const char *name);
+@@ -506,7 +511,15 @@ bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
+ LIBBPF_API struct bpf_map *
+ bpf_map__prev(const struct bpf_map *map, const struct bpf_object *obj);
+ 
+-/* get/set map FD */
++/**
++ * @brief **bpf_map__fd()** gets the file descriptor of the passed
++ * bpf map
++ * @param map the bpf map instance
++ * @return the file descriptor or in case of an error, EINVAL
++ *
++ * errno should be checked after this call, it will be EINVAL in
++ * case of error.
++ */
+ LIBBPF_API int bpf_map__fd(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__reuse_fd(struct bpf_map *map, int fd);
+ /* get map definition */
+@@ -547,6 +560,15 @@ LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
+ 					  const void *data, size_t size);
+ LIBBPF_API const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize);
+ LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
++
++/**
++ * @brief **bpf_map__is_internal()** tells the caller whether or not
++ * the passed map is a special internal map
++ * @param map reference to the bpf_map
++ * @return true if the map is an internal map, false if not
++ *
++ * See the enum `libbpf_map_type` for listing of the types
++ */
+ LIBBPF_API bool bpf_map__is_internal(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__set_pin_path(struct bpf_map *map, const char *path);
+ LIBBPF_API const char *bpf_map__get_pin_path(const struct bpf_map *map);
+@@ -558,6 +580,24 @@ LIBBPF_API int bpf_map__unpin(struct bpf_map *map, const char *path);
+ LIBBPF_API int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd);
+ LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
+ 
++/**
++ * @brief **libbpf_get_error()** extracts the error code from the passed
++ * pointer
++ * @param ptr pointer returned from libbpf API function
++ * @return error code
++ *
++ * Many libbpf API functions which return pointers have logic to encode error
++ * codes as pointers, and do not return NULL. Meaning **libbpf_get_error()**
++ * should be used on the return value from these functions. Consult the
++ * individual functions documentation to verify if this logic applies.
++ *
++ * For these API functions, if `libbpf_set_strict_mode(LIBBPF_STRICT_CLEAN_PTRS)`
++ * is enabled, NULL is returned on error instead.
++ *
++ * If ptr == NULL, then errno should be already set by the failing
++ * API, because libbpf never returns NULL on success and it now always
++ * sets errno on error.
++ */
+ LIBBPF_API long libbpf_get_error(const void *ptr);
+ 
+ struct bpf_prog_load_attr {
+@@ -822,9 +862,12 @@ bpf_program__bpil_addr_to_offs(struct bpf_prog_info_linear *info_linear);
+ LIBBPF_API void
+ bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear);
+ 
+-/*
+- * A helper function to get the number of possible CPUs before looking up
+- * per-CPU maps. Negative errno is returned on failure.
++/**
++ * @brief **libbpf_num_possible_cpus()** is helper function to get the
++ * number of possible CPUs before looking up per-CPU maps.
++ * @return number of possible CPUs
++ *
++ * Negative errno is returned on failure.
+  *
+  * Example usage:
+  *
+@@ -834,7 +877,6 @@ bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear);
+  *     }
+  *     long values[ncpus];
+  *     bpf_map_lookup_elem(per_cpu_map_fd, key, values);
+- *
+  */
+ LIBBPF_API int libbpf_num_possible_cpus(void);
+ 
+-- 
+2.31.1
 
-- bpf_xdp_store_bytes(struct xdp_buff *xdp_md, u32 offset, u32 len,
-		      void *data)
-
-the helper can take care of reading/writing across fragment boundaries
-and remove any layout info from the caller. The only downside here
-(as for bpf_skb_load/store_bytes()) is we need to copy. But in a
-real application, is it actually an issue? (since we have much less
-pps for xdp multi-buff).
-Moreover I do not know if this solution will requires some verifier
-changes.
-
-@John: can this approach works in your use-case?
-
-Anyway I think we should try to get everyone on the same page here since the
-helper can change according to specific use-case. Since this series is on t=
-he
-agenda for LPC next week, I hope you and others who have an opinion about t=
-his
-will find the time to come and discuss it during the conference :)
-
-Regards,
-Lorenzo
->=20
-> say:=20
->=20
-> void *xdp_mb_pointer(struct xdp_buff *xdp_md, u32 flags,=20
->                      u32 offset, u32 len, void *stack_buf)
->=20
-> flags and offset can be squashed into one u64 as needed. Helper returns
-> pointer to packet data, either real one or stack_buf. Verifier has to
-> be taught that the return value is NULL or a pointer which is safe with
-> offsets up to @len.
->=20
-> If the reason for access is write we'd also need:
->=20
-> void *xdp_mb_pointer_flush(struct xdp_buff *xdp_md, u32 flags,=20
->                            u32 offset, u32 len, void *stack_buf)
->=20
-> Same inputs, if stack buffer was used it does write back, otherwise nop.
->=20
-> Sorry for the longish email if I'm missing something obvious and/or
-> discussed earlier.
->=20
->=20
-> The other thing I wanted to double check - was the decision on program
-> compatibility made? Is a new program type an option? It'd be extremely
-> useful operationally to be able to depend on kernel enforcement.
-
---9zAs7T1175FknEoo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYUSrVwAKCRA6cBh0uS2t
-rF61AQDmLDR/YEhJelyYt5ru1sfHdYDFeMrAQg0pUkMfQre4cgD9HrfchWKfueHb
-L9Kfn64WQALh9pnAThjpNblMNpJbNwg=
-=qpc4
------END PGP SIGNATURE-----
-
---9zAs7T1175FknEoo--
