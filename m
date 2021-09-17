@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDAF40F97B
-	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 15:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C956C40F9E2
+	for <lists+bpf@lfdr.de>; Fri, 17 Sep 2021 16:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhIQNrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 09:47:10 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9743 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234565AbhIQNrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 09:47:09 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H9wDT4glJzW96L;
-        Fri, 17 Sep 2021 21:44:41 +0800 (CST)
+        id S239370AbhIQOFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 10:05:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9890 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237812AbhIQOFI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 10:05:08 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H9wYH4cV1z8xfX;
+        Fri, 17 Sep 2021 21:59:15 +0800 (CST)
 Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 17 Sep 2021 21:45:45 +0800
+ 15.1.2308.8; Fri, 17 Sep 2021 22:03:44 +0800
 Received: from [10.174.176.117] (10.174.176.117) by
  dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 17 Sep 2021 21:45:44 +0800
-Subject: Re: [PATCH 1/3] bpf: support writable context for bare tracepoint
+ 15.1.2308.8; Fri, 17 Sep 2021 22:03:43 +0800
+Subject: Re: [PATCH 3/3] bpf/selftests: add test for writable bare tracepoint
 To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>
 CC:     Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -30,20 +30,20 @@ CC:     Daniel Borkmann <daniel@iogearbox.net>,
         Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
         <netdev@vger.kernel.org>
 References: <20210916135511.3787194-1-houtao1@huawei.com>
- <20210916135511.3787194-2-houtao1@huawei.com>
- <9cbbb8b4-f3e3-cd2d-a1cc-e086e7d28946@fb.com>
+ <20210916135511.3787194-4-houtao1@huawei.com>
+ <c70c0a07-a337-1710-fae7-41ab77f75544@fb.com>
 From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <b76d4051-abff-5e75-c812-41c6f283327f@huawei.com>
-Date:   Fri, 17 Sep 2021 21:45:44 +0800
+Message-ID: <24ffb298-7638-4771-1f3b-5415258ad768@huawei.com>
+Date:   Fri, 17 Sep 2021 22:03:43 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <9cbbb8b4-f3e3-cd2d-a1cc-e086e7d28946@fb.com>
+In-Reply-To: <c70c0a07-a337-1710-fae7-41ab77f75544@fb.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -52,79 +52,195 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hi,
 
-On 9/17/2021 7:16 AM, Yonghong Song wrote:
+On 9/17/2021 7:46 AM, Yonghong Song wrote:
 >
 >
 > On 9/16/21 6:55 AM, Hou Tao wrote:
->> Commit 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
->> supports writable context for tracepoint, but it misses the support
->> for bare tracepoint which has no associated trace event.
->>
->> Bare tracepoint is defined by DECLARE_TRACE(), so adding a corresponding
->> DECLARE_TRACE_WRITABLE() macro to generate a definition in __bpf_raw_tp_map
->> section for bare tracepoint in a similar way to DEFINE_TRACE_WRITABLE().
+>> Add a writable bare tracepoint in bpf_testmod module, and
+>> trigger its calling when reading /sys/kernel/bpf_testmod
+>> with a specific buffer length.
+>
+> The patch cannot be applied cleanly with bpf-next tree.
+> Please rebase and resubmit.
+Will do
+>
 >>
 >> Signed-off-by: Hou Tao <houtao1@huawei.com>
 >> ---
->>   include/trace/bpf_probe.h | 19 +++++++++++++++----
->>   1 file changed, 15 insertions(+), 4 deletions(-)
+>>   .../bpf/bpf_testmod/bpf_testmod-events.h      | 15 +++++++
+>>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 10 +++++
+>>   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 +++
+>>   .../selftests/bpf/prog_tests/module_attach.c  | 40 ++++++++++++++++++-
+>>   .../selftests/bpf/progs/test_module_attach.c  | 14 +++++++
+>>   5 files changed, 82 insertions(+), 2 deletions(-)
 >>
->> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
->> index a23be89119aa..d08ee1060d82 100644
->> --- a/include/trace/bpf_probe.h
->> +++ b/include/trace/bpf_probe.h
->> @@ -93,8 +93,7 @@ __section("__bpf_raw_tp_map") = {                    \
->>     #define FIRST(x, ...) x
->>   -#undef DEFINE_EVENT_WRITABLE
->> -#define DEFINE_EVENT_WRITABLE(template, call, proto, args, size)    \
->> +#define __CHECK_WRITABLE_BUF_SIZE(call, proto, args, size)        \
->>   static inline void bpf_test_buffer_##call(void)                \
->>   {                                    \
->>       /* BUILD_BUG_ON() is ignored if the code is completely eliminated, but \
->> @@ -103,8 +102,12 @@ static inline void
->> bpf_test_buffer_##call(void)                \
->>        */                                \
->>       FIRST(proto);                            \
->>       (void)BUILD_BUG_ON_ZERO(size != sizeof(*FIRST(args)));        \
->> -}                                    \
->> -__DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
+>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>> index 89c6d58e5dd6..11ee801e75e7 100644
+>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>> @@ -34,6 +34,21 @@ DECLARE_TRACE(bpf_testmod_test_write_bare,
+>>       TP_ARGS(task, ctx)
+>>   );
+>>   +#undef BPF_TESTMOD_DECLARE_TRACE
+>> +#ifdef DECLARE_TRACE_WRITABLE
+>> +#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
+>> +    DECLARE_TRACE_WRITABLE(call, PARAMS(proto), PARAMS(args), size)
+>> +#else
+>> +#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
+>> +    DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
+>> +#endif
+>> +
+>> +BPF_TESTMOD_DECLARE_TRACE(bpf_testmod_test_writable_bare,
+>> +    TP_PROTO(struct bpf_testmod_test_writable_ctx *ctx),
+>> +    TP_ARGS(ctx),
+>> +    sizeof(struct bpf_testmod_test_writable_ctx)
+>> +);
+>> +
+>>   #endif /* _BPF_TESTMOD_EVENTS_H */
+>>     #undef TRACE_INCLUDE_PATH
+>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> index 141d8da687d2..3d3fb16eaf8c 100644
+>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> @@ -26,6 +26,16 @@ bpf_testmod_test_read(struct file *file, struct kobject
+>> *kobj,
+>>         trace_bpf_testmod_test_read(current, &ctx);
+>>   +    /* Magic number to enable writable tp */
+>> +    if (len == 1024) {
+>> +        struct bpf_testmod_test_writable_ctx writable = {
+>> +            .val = 1024,
+>> +        };
+>> +        trace_bpf_testmod_test_writable_bare(&writable);
+>> +        if (writable.ret)
+>> +            return snprintf(buf, len, "%d\n", writable.val);
+>> +    }
+>> +
+>>       return -EIO; /* always fail */
+>>   }
+>>   EXPORT_SYMBOL(bpf_testmod_test_read);
+>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>> index b3892dc40111..553d94214aa6 100644
+>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>> @@ -17,4 +17,9 @@ struct bpf_testmod_test_write_ctx {
+>>       size_t len;
+>>   };
+>>   +struct bpf_testmod_test_writable_ctx {
+>> +    bool ret;
+>> +    int val;
+>> +};
+>> +
+>>   #endif /* _BPF_TESTMOD_H */
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c
+>> b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+>> index d85a69b7ce44..5565bcab1531 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+>> @@ -6,11 +6,39 @@
+>>     static int duration;
+>>   +#define BPF_TESTMOD_PATH "/sys/kernel/bpf_testmod"
+>> +
+>> +static int trigger_module_test_writable(int *val)
+>> +{
+>> +    int fd, err;
+>> +    char buf[1025];
+>
+> Not critical, but do you need such a big stack size?
+> Maybe smaller one?
+65 is also fine.
+>
+>> +    ssize_t rd;
+>> +
+>> +    fd = open(BPF_TESTMOD_PATH, O_RDONLY);
+>> +    err = -errno;
+>> +    if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
+>> +        return err;
+>> +
+>> +    rd = read(fd, buf, sizeof(buf) - 1);
+>> +    err = rd < 0 ? -errno : -EIO;
+>> +    if (CHECK(rd <= 0, "testmod_file_read", "failed: %d\n", err)) {
+>
+> Please use ASSERT_* macros. You can take a look at other self tests.
+The reason using CHECK instead of ASSERT is we can output the errno
+if read() fails.
+>> +        close(fd);
+>> +        return err;
+>> +    }
+>
+> Put one blank line here and remove the following three blank lines.
+Will do.
+>
+>> +    buf[rd] = '\0';
+>> +
+>> +    *val = strtol(buf, NULL, 0);
+>> +
+>> +    close(fd);
+>> +
+>> +    return 0;
 >> +}
 >> +
->> +#undef DEFINE_EVENT_WRITABLE
->> +#define DEFINE_EVENT_WRITABLE(template, call, proto, args, size) \
->> +    __CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
->> +    __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
->>     #undef DEFINE_EVENT
->>   #define DEFINE_EVENT(template, call, proto, args)            \
->> @@ -119,10 +122,18 @@ __DEFINE_EVENT(template, call, PARAMS(proto),
->> PARAMS(args), size)
->>       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))        \
->>       __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
->>   +#undef DECLARE_TRACE_WRITABLE
->> +#define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
->> +    __CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
->> +    __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args)) \
->> +    __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), size)
+>>   static int trigger_module_test_read(int read_sz)
+>>   {
+>>       int fd, err;
+>>   -    fd = open("/sys/kernel/bpf_testmod", O_RDONLY);
+>> +    fd = open(BPF_TESTMOD_PATH, O_RDONLY);
+>>       err = -errno;
+>>       if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
+>>           return err;
+>> @@ -32,7 +60,7 @@ static int trigger_module_test_write(int write_sz)
+>>       memset(buf, 'a', write_sz);
+>>       buf[write_sz-1] = '\0';
+>>   -    fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
+>> +    fd = open(BPF_TESTMOD_PATH, O_WRONLY);
+>>       err = -errno;
+>>       if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err)) {
+>>           free(buf);
+>> @@ -58,6 +86,7 @@ void test_module_attach(void)
+>>       struct test_module_attach__bss *bss;
+>>       struct bpf_link *link;
+>>       int err;
+>> +    int writable_val;
+>>         skel = test_module_attach__open();
+>>       if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+>> @@ -90,6 +119,13 @@ void test_module_attach(void)
+>>       ASSERT_EQ(bss->fexit_ret, -EIO, "fexit_tet");
+>>       ASSERT_EQ(bss->fmod_ret_read_sz, READ_SZ, "fmod_ret");
+>>   +    bss->raw_tp_writable_bare_ret = 1;
+>> +    bss->raw_tp_writable_bare_val = 511;
+>> +    writable_val = 0;
+>> +    ASSERT_OK(trigger_module_test_writable(&writable_val), "trigger_writable");
+>> +    ASSERT_EQ(bss->raw_tp_writable_bare_in_val, 1024, "writable_test");
+>> +    ASSERT_EQ(bss->raw_tp_writable_bare_val, writable_val, "writable_test");
 >> +
->>   #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
->>     #undef DEFINE_EVENT_WRITABLE
->> +#undef DECLARE_TRACE_WRITABLE
->>   #undef __DEFINE_EVENT
->> +#undef __CHECK_WRITABLE_BUF_SIZE
->
-> Put "#undef __CHECK_WRITABLE_BUF_SIZE" right after "#undef
-> DECLARE_TRACE_WRITABLE" since they are related to each other
-> and also they are in correct reverse order w.r.t. __DEFINE_EVENT?
-If considering __CHECK_WRITABLE_BUF_SIZE is used in both DECLARE_TRACE_WRITABLE and
-DEFINE_EVENT_WRITABLE and the order of definitions, is the following order better ?
-
-#undef DECLARE_TRACE_WRITABLE
-#undef DEFINE_EVENT_WRITABLE
-#undef __CHECK_WRITABLE_BUF_SIZE
-
->
->>   #undef FIRST
->>     #endif /* CONFIG_BPF_EVENTS */
+>>       test_module_attach__detach(skel);
+>>         /* attach fentry/fexit and make sure it get's module reference */
+>> diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c
+>> b/tools/testing/selftests/bpf/progs/test_module_attach.c
+>> index bd37ceec5587..4f5c780fcd21 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_module_attach.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
+>> @@ -27,6 +27,20 @@ int BPF_PROG(handle_raw_tp_bare,
+>>       return 0;
+>>   }
+>>   +int raw_tp_writable_bare_in_val = 0;
+>> +int raw_tp_writable_bare_ret = 0;
+>> +int raw_tp_writable_bare_val = 0;
+>> +
+>> +SEC("raw_tp_writable/bpf_testmod_test_writable_bare")
+>> +int BPF_PROG(handle_raw_tp_writable_bare,
+>> +         struct bpf_testmod_test_writable_ctx *writable)
+>> +{
+>> +    raw_tp_writable_bare_in_val = writable->val;
+>> +    writable->ret = raw_tp_writable_bare_ret;
+>> +    writable->val = raw_tp_writable_bare_val;
+>> +    return 0;
+>> +}
+>> +
+>>   __u32 tp_btf_read_sz = 0;
+>>     SEC("tp_btf/bpf_testmod_test_read")
 >>
 > .
 
