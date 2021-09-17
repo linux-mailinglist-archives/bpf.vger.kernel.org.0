@@ -2,86 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB08141017B
-	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 00:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C76410190
+	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 01:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhIQWts (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 18:49:48 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44432 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236208AbhIQWts (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 17 Sep 2021 18:49:48 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18HJOYYi021538
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:48:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=+YXihBOMhiSG+piFiJGD8LrHHDzlghSOhQNudXvTfQA=;
- b=mfSp63QvOV8DHKTM43D7BuMQIswZ9lkP6SM47iOMjoQdGFNV9ZpH9mq0IMWQ7o4TGhSF
- P+RmLlxH5O+pNRe9PZPkxPXNvu/GY+pt5hzS9+POxguZZtw1nlcYYRd+GHI2NZLdd2J1
- Oqi/gXGgX7wEnzNXLUFYYi8hdLGbVhUJ1BQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3b4rrnmu1d-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 17 Sep 2021 15:48:25 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 17 Sep 2021 15:48:24 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id B823E75B5A17; Fri, 17 Sep 2021 15:48:18 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <dwarves@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH dwarves] libbpf: Get latest libbpf
-Date:   Fri, 17 Sep 2021 15:48:18 -0700
-Message-ID: <20210917224818.733897-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: GgLQGlSP-2HEaCsooK9py8IXBbfqAf-r
-X-Proofpoint-GUID: GgLQGlSP-2HEaCsooK9py8IXBbfqAf-r
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S229929AbhIQXCB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 19:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245611AbhIQXCB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 19:02:01 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E47DC061574;
+        Fri, 17 Sep 2021 16:00:37 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id m26so10567416pff.3;
+        Fri, 17 Sep 2021 16:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sfReti7a83D3VGk5l/sH9Oiuc/+dmaGav6YFwsSinKc=;
+        b=N5T3zAyKWHKjCh8YJqYdH5TEoqJTPVNOIj7zcOxerZGX3VFNRxLRAe0PMMKZP/4slC
+         6EodiMO9zHOEDR6LipScNpyAYeu4IlRRys+4Yws3r9CWUjtBZ4R3qPctFpK7/PfbfwzO
+         3sWfStJ08fiMV9PpP2bY6f3TYDX1FoFuRRyzjPczKgSkKTyZqPDgpdqm7i3fMEkT/h4H
+         iadJmUMSbHbpgu7P/pCtdv6l5A9ajtEbb4YxEeLvrFHEaAUovJOYriH2m/MtdJoRqQs6
+         Oed0LRLy5/z0FSinJT8FLQoUZHyzE4KiMbeLBlzMs8/udfd/T5oebMmgTeUXdQ0b6P07
+         asog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sfReti7a83D3VGk5l/sH9Oiuc/+dmaGav6YFwsSinKc=;
+        b=NOKx0gsdGDGm9OP4J7V8vurXAArKw8qw1VCxXHp8VBbJ74men3Wv0AkxZpMyfR0mM9
+         KaxHeQ3HyfDYCZ9eX0seqnS/fJoJtjZUde7qwzt0L+mHdcBJpkQu+z9k39Rt/7x6tK2i
+         AZ8JbmbJu6Jx+QudZsO0X0U8hlc8NVVGPnpcIlOz90JFEjXsS4gCvpUW5wXBNNsdeRLP
+         V5gPvxuht8ZyAY95FcX97x15viOvkMItYlVqN89Qp2hqcLUgRCt6DoPcZR2xqWZhtVHH
+         3FtXXuvoVzj4WnFO5gMswucMayUUlV9OSHAHq60aH9/Ptrj0riMxxRw9vveWRHn8951j
+         D3aA==
+X-Gm-Message-State: AOAM530X1nUaewVOZ9fw+AlHc5GyuG0FXrGV54tosS/uTCGjpY3kFkKH
+        ucZFhF4pn57VmN2NsaDbEU7ecxXJ2Wk=
+X-Google-Smtp-Source: ABdhPJy057EE88i2UOc1JXm3kZxcFovzh8j0N0/5CGxZ9T+nbu4kr8v1HjWRYIolYAXH2ivgIUnu6w==
+X-Received: by 2002:a63:790b:: with SMTP id u11mr11819433pgc.71.1631919636770;
+        Fri, 17 Sep 2021 16:00:36 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([2620:10d:c090:500::6:db29])
+        by smtp.gmail.com with ESMTPSA id v25sm6768312pfm.202.2021.09.17.16.00.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 17 Sep 2021 16:00:36 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 bpf-next] bpf: Document BPF licensing.
+Date:   Fri, 17 Sep 2021 16:00:34 -0700
+Message-Id: <20210917230034.51080-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-17_09,2021-09-17_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- adultscore=0 malwarescore=0 impostorscore=0 spamscore=0 phishscore=0
- bulkscore=0 mlxlogscore=905 clxscore=1015 suspectscore=0
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109030001 definitions=main-2109170135
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Latest upstream LLVM now supports to emit btf_tag to
-dwarf ([1]) and the kernel support for btf_tag is also
-landed ([2]). Sync with latest libbpf which has
-btf_tag support. Next step will be to implement
-dwarf -> btf conversion for btf_tag.
+From: Alexei Starovoitov <ast@kernel.org>
 
- [1] https://reviews.llvm.org/D106621
- [2] https://lore.kernel.org/bpf/20210914223015.245546-1-yhs@fb.com
+Document and clarify BPF licensing.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Joe Stringer <joe@cilium.io>
+Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+Acked-by: Dave Thaler <dthaler@microsoft.com>
+Acked-by: Stephen Hemminger <stephen@networkplumber.org>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: KP Singh <kpsingh@kernel.org>
+
 ---
- lib/bpf | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1->V2: Address Jonathan's feedback. Add Acks.
+---
+ Documentation/bpf/bpf_licensing.rst | 92 +++++++++++++++++++++++++++++
+ Documentation/bpf/index.rst         |  9 +++
+ 2 files changed, 101 insertions(+)
+ create mode 100644 Documentation/bpf/bpf_licensing.rst
 
-diff --git a/lib/bpf b/lib/bpf
-index 986962f..980777c 160000
---- a/lib/bpf
-+++ b/lib/bpf
-@@ -1 +1 @@
--Subproject commit 986962fade5dfa89c2890f3854eb040d2a64ab38
-+Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
---=20
+diff --git a/Documentation/bpf/bpf_licensing.rst b/Documentation/bpf/bpf_licensing.rst
+new file mode 100644
+index 000000000000..b19c433f41d2
+--- /dev/null
++++ b/Documentation/bpf/bpf_licensing.rst
+@@ -0,0 +1,92 @@
++=============
++BPF licensing
++=============
++
++Background
++==========
++
++* Classic BPF was BSD licensed
++
++"BPF" was originally introduced as BSD Packet Filter in
++http://www.tcpdump.org/papers/bpf-usenix93.pdf. The corresponding instruction
++set and its implementation came from BSD with BSD license. That original
++instruction set is now known as "classic BPF".
++
++However an instruction set is a specification for machine-language interaction,
++similar to a programming language.  It is not a code. Therefore, the
++application of a BSD license may be misleading in a certain context, as the
++instruction set may enjoy no copyright protection.
++
++* eBPF (extended BPF) instruction set continues to be BSD
++
++In 2014, the classic BPF instruction set was significantly extended. We
++typically refer to this instruction set as eBPF to disambiguate it from cBPF.
++The eBPF instruction set is still BSD licensed.
++
++Implementations of eBPF
++=======================
++
++Using the eBPF instruction set requires implementing code in both kernel space
++and user space.
++
++In Linux Kernel
++---------------
++
++The reference implementations of the eBPF interpreter and various just-in-time
++compilers are part of Linux and are GPLv2 licensed. The implementation of
++eBPF helper functions is also GPLv2 licensed. Interpreters, JITs, helpers,
++and verifiers are called eBPF runtime.
++
++In User Space
++-------------
++
++There are also implementations of eBPF runtime (interpreter, JITs, helper
++functions) under
++Apache2 (https://github.com/iovisor/ubpf),
++MIT (https://github.com/qmonnet/rbpf), and
++BSD (https://github.com/DPDK/dpdk/blob/main/lib/librte_bpf).
++
++In HW
++-----
++
++The HW can choose to execute eBPF instruction natively and provide eBPF runtime
++in HW or via the use of implementing firmware with a proprietary license.
++
++In other operating systems
++--------------------------
++
++Other kernels or user space implementations of eBPF instruction set and runtime
++can have proprietary licenses.
++
++Using BPF programs in the Linux kernel
++======================================
++
++Linux Kernel (while being GPLv2) allows linking of proprietary kernel modules
++under these rules:
++Documentation/process/license-rules.rst
++
++When a kernel module is loaded, the linux kernel checks which functions it
++intends to use. If any function is marked as "GPL only," the corresponding
++module or program has to have GPL compatible license.
++
++Loading BPF program into the Linux kernel is similar to loading a kernel
++module. BPF is loaded at run time and not statically linked to the Linux
++kernel. BPF program loading follows the same license checking rules as kernel
++modules. BPF programs can be proprietary if they don't use "GPL only" BPF
++helper functions.
++
++Further, some BPF program types - Linux Security Modules (LSM) and TCP
++Congestion Control (struct_ops), as of Aug 2021 - are required to be GPL
++compatible even if they don't use "GPL only" helper functions directly. The
++registration step of LSM and TCP congestion control modules of the Linux
++kernel is done through EXPORT_SYMBOL_GPL kernel functions. In that sense LSM
++and struct_ops BPF programs are implicitly calling "GPL only" functions.
++The same restriction applies to BPF programs that call kernel functions
++directly via unstable interface also known as "kfunc".
++
++Packaging BPF programs with user space applications
++====================================================
++
++Generally, proprietary-licensed applications and GPL licensed BPF programs
++written for the Linux kernel in the same package can co-exist because they are
++separate executable processes. This applies to both cBPF and eBPF programs.
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 1ceb5d704a97..37f273a7e8b6 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -82,6 +82,15 @@ Testing and debugging BPF
+    s390
+ 
+ 
++Licensing
++=========
++
++.. toctree::
++   :maxdepth: 1
++
++   bpf_licensing
++
++
+ Other
+ =====
+ 
+-- 
 2.30.2
 
