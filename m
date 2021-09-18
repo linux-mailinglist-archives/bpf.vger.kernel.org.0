@@ -2,215 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404E84102CB
-	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 03:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4A64102DD
+	for <lists+bpf@lfdr.de>; Sat, 18 Sep 2021 04:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237816AbhIRB5X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Sep 2021 21:57:23 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9891 "EHLO
+        id S236744AbhIRCEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Sep 2021 22:04:35 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15435 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236829AbhIRB5W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Sep 2021 21:57:22 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HBDM514Ltz8td8;
-        Sat, 18 Sep 2021 09:51:29 +0800 (CST)
+        with ESMTP id S230465AbhIRCEf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Sep 2021 22:04:35 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HBDWp4ZfbzRH8x;
+        Sat, 18 Sep 2021 09:59:02 +0800 (CST)
 Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 18 Sep 2021 09:55:57 +0800
-Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
- (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 18 Sep
- 2021 09:55:57 +0800
+ 15.1.2308.8; Sat, 18 Sep 2021 10:03:10 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 18 Sep 2021 10:03:09 +0800
+Subject: Re: [RFC PATCH bpf-next 1/3] bpf: add dummy BPF STRUCT_OPS for test
+ purpose
+To:     Martin KaFai Lau <kafai@fb.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <20210915033753.1201597-1-houtao1@huawei.com>
+ <20210915033753.1201597-2-houtao1@huawei.com>
+ <20210915205837.3v77ajauw4nnhnc2@kafai-mbp.dhcp.thefacebook.com>
 From:   Hou Tao <houtao1@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <houtao1@huawei.com>
-Subject: [PATCH bpf-next v2 3/3] bpf/selftests: add test for writable bare tracepoint
-Date:   Sat, 18 Sep 2021 10:09:58 +0800
-Message-ID: <20210918020958.1167652-4-houtao1@huawei.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210918020958.1167652-1-houtao1@huawei.com>
-References: <20210918020958.1167652-1-houtao1@huawei.com>
+Message-ID: <0423fe89-496a-e30c-dec8-9de992d9525b@huawei.com>
+Date:   Sat, 18 Sep 2021 10:03:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+In-Reply-To: <20210915205837.3v77ajauw4nnhnc2@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a writable bare tracepoint in bpf_testmod module, and
-trigger its calling when reading /sys/kernel/bpf_testmod
-with a specific buffer length. The reading will return
-the value in writable context if the early return flag
-is enabled in writable context.
+Hi,
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/bpf_testmod/bpf_testmod-events.h      | 15 ++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 10 ++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 +++
- .../selftests/bpf/prog_tests/module_attach.c  | 36 +++++++++++++++++++
- .../selftests/bpf/progs/test_module_attach.c  | 14 ++++++++
- 5 files changed, 80 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-index 89c6d58e5dd6..11ee801e75e7 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-@@ -34,6 +34,21 @@ DECLARE_TRACE(bpf_testmod_test_write_bare,
- 	TP_ARGS(task, ctx)
- );
- 
-+#undef BPF_TESTMOD_DECLARE_TRACE
-+#ifdef DECLARE_TRACE_WRITABLE
-+#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
-+	DECLARE_TRACE_WRITABLE(call, PARAMS(proto), PARAMS(args), size)
-+#else
-+#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
-+	DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
-+#endif
-+
-+BPF_TESTMOD_DECLARE_TRACE(bpf_testmod_test_writable_bare,
-+	TP_PROTO(struct bpf_testmod_test_writable_ctx *ctx),
-+	TP_ARGS(ctx),
-+	sizeof(struct bpf_testmod_test_writable_ctx)
-+);
-+
- #endif /* _BPF_TESTMOD_EVENTS_H */
- 
- #undef TRACE_INCLUDE_PATH
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 50fc5561110a..1cc1d315ccf5 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -42,6 +42,16 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 	if (bpf_testmod_loop_test(101) > 100)
- 		trace_bpf_testmod_test_read(current, &ctx);
- 
-+	/* Magic number to enable writable tp */
-+	if (len == 64) {
-+		struct bpf_testmod_test_writable_ctx writable = {
-+			.val = 1024,
-+		};
-+		trace_bpf_testmod_test_writable_bare(&writable);
-+		if (writable.early_ret)
-+			return snprintf(buf, len, "%d\n", writable.val);
-+	}
-+
- 	return -EIO; /* always fail */
- }
- EXPORT_SYMBOL(bpf_testmod_test_read);
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index b3892dc40111..0d71e2607832 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -17,4 +17,9 @@ struct bpf_testmod_test_write_ctx {
- 	size_t len;
- };
- 
-+struct bpf_testmod_test_writable_ctx {
-+	bool early_ret;
-+	int val;
-+};
-+
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-index 1797a6e4d6d8..e9c12d8cb457 100644
---- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-@@ -2,10 +2,37 @@
- /* Copyright (c) 2020 Facebook */
- 
- #include <test_progs.h>
-+#include <stdbool.h>
- #include "test_module_attach.skel.h"
- 
- static int duration;
- 
-+static int trigger_module_test_writable(int *val)
-+{
-+	int fd, err;
-+	char buf[65];
-+	ssize_t rd;
-+
-+	fd = open("/sys/kernel/bpf_testmod", O_RDONLY);
-+	err = -errno;
-+	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
-+		return err;
-+
-+	rd = read(fd, buf, sizeof(buf) - 1);
-+	err = rd < 0 ? -errno : -ENODATA;
-+	if (CHECK(rd <= 0, "testmod_file_rd_val", "failed: rd %zd errno %d\n",
-+		  rd, errno)) {
-+		close(fd);
-+		return err;
-+	}
-+
-+	buf[rd] = '\0';
-+	*val = strtol(buf, NULL, 0);
-+	close(fd);
-+
-+	return 0;
-+}
-+
- static int delete_module(const char *name, int flags)
- {
- 	return syscall(__NR_delete_module, name, flags);
-@@ -19,6 +46,7 @@ void test_module_attach(void)
- 	struct test_module_attach__bss *bss;
- 	struct bpf_link *link;
- 	int err;
-+	int writable_val = 0;
- 
- 	skel = test_module_attach__open();
- 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-@@ -51,6 +79,14 @@ void test_module_attach(void)
- 	ASSERT_EQ(bss->fexit_ret, -EIO, "fexit_tet");
- 	ASSERT_EQ(bss->fmod_ret_read_sz, READ_SZ, "fmod_ret");
- 
-+	bss->raw_tp_writable_bare_early_ret = true;
-+	bss->raw_tp_writable_bare_out_val = 0xf1f2f3f4;
-+	ASSERT_OK(trigger_module_test_writable(&writable_val),
-+		  "trigger_writable");
-+	ASSERT_EQ(bss->raw_tp_writable_bare_in_val, 1024, "writable_test");
-+	ASSERT_EQ(bss->raw_tp_writable_bare_out_val, writable_val,
-+		  "writable_test");
-+
- 	test_module_attach__detach(skel);
- 
- 	/* attach fentry/fexit and make sure it get's module reference */
-diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
-index bd37ceec5587..c7a97d268ce3 100644
---- a/tools/testing/selftests/bpf/progs/test_module_attach.c
-+++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
-@@ -27,6 +27,20 @@ int BPF_PROG(handle_raw_tp_bare,
- 	return 0;
- }
- 
-+int raw_tp_writable_bare_in_val = 0;
-+int raw_tp_writable_bare_early_ret = 0;
-+int raw_tp_writable_bare_out_val = 0;
-+
-+SEC("raw_tp_writable/bpf_testmod_test_writable_bare")
-+int BPF_PROG(handle_raw_tp_writable_bare,
-+	     struct bpf_testmod_test_writable_ctx *writable)
-+{
-+	raw_tp_writable_bare_in_val = writable->val;
-+	writable->early_ret = raw_tp_writable_bare_early_ret;
-+	writable->val = raw_tp_writable_bare_out_val;
-+	return 0;
-+}
-+
- __u32 tp_btf_read_sz = 0;
- 
- SEC("tp_btf/bpf_testmod_test_read")
--- 
-2.29.2
+On 9/16/2021 4:58 AM, Martin KaFai Lau wrote:
+> On Wed, Sep 15, 2021 at 11:37:51AM +0800, Hou Tao wrote:
+>> Currently the test of BPF STRUCT_OPS depends on the specific bpf
+>> implementation of tcp_congestion_ops, and it can not cover all
+>> basic functionalities (e.g, return value handling), so introduce
+>> a dummy BPF STRUCT_OPS for test purpose.
+>>
+>> Dummy BPF STRUCT_OPS may not being needed for release kernel, so
+>> adding a kconfig option BPF_DUMMY_STRUCT_OPS to enable it separatedly.
+> Thanks for the patches !
+>
+>> diff --git a/include/linux/bpf_dummy_ops.h b/include/linux/bpf_dummy_ops.h
+>> new file mode 100644
+>> index 000000000000..b2aad3e6e2fe
+>> --- /dev/null
+>> +++ b/include/linux/bpf_dummy_ops.h
+>> @@ -0,0 +1,28 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (C) 2021. Huawei Technologies Co., Ltd
+>> + */
+>> +#ifndef _BPF_DUMMY_OPS_H
+>> +#define _BPF_DUMMY_OPS_H
+>> +
+>> +#ifdef CONFIG_BPF_DUMMY_STRUCT_OPS
+>> +#include <linux/module.h>
+>> +
+>> +struct bpf_dummy_ops_state {
+>> +	int val;
+>> +};
+>> +
+>> +struct bpf_dummy_ops {
+>> +	int (*init)(struct bpf_dummy_ops_state *state);
+>> +	struct module *owner;
+>> +};
+>> +
+>> +extern struct bpf_dummy_ops *bpf_get_dummy_ops(void);
+>> +extern void bpf_put_dummy_ops(struct bpf_dummy_ops *ops);
+>> +#else
+>> +struct bpf_dummy_ops {}；
+> This ';' looks different ;)
+>
+> It probably has dodged the compiler due to the kconfig.
+> I think CONFIG_BPF_DUMMY_STRUCT_OPS and the bpf_(get|put)_dummy_ops
+> are not needed.  More on this later.
+>
+>> diff --git a/kernel/bpf/bpf_dummy_struct_ops.c b/kernel/bpf/bpf_dummy_struct_ops.c
+>> new file mode 100644
+>> index 000000000000..f76c4a3733f0
+>> --- /dev/null
+>> +++ b/kernel/bpf/bpf_dummy_struct_ops.c
+>> @@ -0,0 +1,173 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) 2021. Huawei Technologies Co., Ltd
+>> + */
+>> +#include <linux/kernel.h>
+>> +#include <linux/spinlock.h>
+>> +#include <linux/bpf_verifier.h>
+>> +#include <linux/bpf.h>
+>> +#include <linux/btf.h>
+>> +#include <linux/bpf_dummy_ops.h>
+>> +
+>> +static struct bpf_dummy_ops *bpf_dummy_ops_singletion;
+>> +static DEFINE_SPINLOCK(bpf_dummy_ops_lock);
+>> +
+>> +static const struct btf_type *dummy_ops_state;
+>> +
+>> +struct bpf_dummy_ops *bpf_get_dummy_ops(void)
+>> +{
+>> +	struct bpf_dummy_ops *ops;
+>> +
+>> +	spin_lock(&bpf_dummy_ops_lock);
+>> +	ops = bpf_dummy_ops_singletion;
+>> +	if (ops && !bpf_try_module_get(ops, ops->owner))
+>> +		ops = NULL;
+>> +	spin_unlock(&bpf_dummy_ops_lock);
+>> +
+>> +	return ops ? ops : ERR_PTR(-ENXIO);
+>> +}
+>> +EXPORT_SYMBOL_GPL(bpf_get_dummy_ops);
+>> +
+>> +void bpf_put_dummy_ops(struct bpf_dummy_ops *ops)
+>> +{
+>> +	bpf_module_put(ops, ops->owner);
+>> +}
+>> +EXPORT_SYMBOL_GPL(bpf_put_dummy_ops);
+> [ ... ]
+>
+>> +static int bpf_dummy_reg(void *kdata)
+>> +{
+>> +	struct bpf_dummy_ops *ops = kdata;
+>> +	int err = 0;
+>> +
+>> +	spin_lock(&bpf_dummy_ops_lock);
+>> +	if (!bpf_dummy_ops_singletion)
+>> +		bpf_dummy_ops_singletion = ops;
+>> +	else
+>> +		err = -EEXIST;
+>> +	spin_unlock(&bpf_dummy_ops_lock);
+>> +
+>> +	return err;
+>> +}
+> I don't think we are interested in testing register/unregister
+> a struct_ops.  This common infra logic should have already
+> been covered by bpf_tcp_ca.   Lets see if it can be avoided
+> such that the above singleton instance and EXPORT_SYMBOL_GPL
+> can also be removed.
+>
+> It can reuse the bpf_prog_test_run() which can run a particular
+> bpf prog.  Then it allows a flexible way to select which prog
+> to call instead of creating a file and then triggering individual
+> prog by writing a name string into this new file.
+>
+> For bpf_prog_test_run(),  it needs a ".test_run" implementation in
+> "const struct bpf_prog_ops bpf_struct_ops_prog_ops".
+> This to-be-implemented  ".test_run" can check the prog->aux->attach_btf_id
+> to ensure it is the bpf_dummy_ops.  The prog->expected_attach_type can
+> tell which "func" ptr within the bpf_dummy_ops and then ".test_run" will
+> know how to call it.  The extra thing for the struct_ops's ".test_run" is
+> to first call arch_prepare_bpf_trampoline() to prepare the trampoline
+> before calling into the bpf prog.
+>
+> You can take a look at the other ".test_run" implementations,
+> e.g. bpf_prog_test_run_skb() and bpf_prog_test_run_tracing().
+>
+> test_skb_pkt_end.c and fentry_test.c (likely others also) can be
+> used as reference for prog_tests/ purpose.  For the dummy_ops test in
+> prog_tests/, it does not need to call bpf_map__attach_struct_ops() since
+> there is no need to reg().  Instead, directly bpf_prog_test_run() to
+> exercise each prog in bpf_dummy_ops.skel.h.
+>
+> bpf_dummy_init_member() should return -ENOTSUPP.
+> bpf_dummy_reg() and bpf_dummy_unreg() should then be never called.
+>
+> bpf_dummy_struct_ops.c should be moved into net/bpf/.
+> No need to have CONFIG_BPF_DUMMY_STRUCT_OPS.  In the future, a generic one
+> could be created for the test_run related codes, if there is a need.
+Will do and thanks for your suggestions.
+>> +
+>> +static void bpf_dummy_unreg(void *kdata)
+>> +{
+>> +	struct bpf_dummy_ops *ops = kdata;
+>> +
+>> +	spin_lock(&bpf_dummy_ops_lock);
+>> +	if (bpf_dummy_ops_singletion == ops)
+>> +		bpf_dummy_ops_singletion = NULL;
+>> +	else
+>> +		WARN_ON(1);
+>> +	spin_unlock(&bpf_dummy_ops_lock);
+>> +}
+>> +
+>> +extern struct bpf_struct_ops bpf_bpf_dummy_ops;
+>> +
+>> +struct bpf_struct_ops bpf_bpf_dummy_ops = {
+>> +	.verifier_ops = &bpf_dummy_verifier_ops,
+>> +	.init = bpf_dummy_init,
+>> +	.init_member = bpf_dummy_init_member,
+>> +	.check_member = bpf_dummy_check_member,
+>> +	.reg = bpf_dummy_reg,
+>> +	.unreg = bpf_dummy_unreg,
+>> +	.name = "bpf_dummy_ops",
+>> +};
+> .
 
