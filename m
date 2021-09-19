@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B6E41090D
+	by mail.lfdr.de (Postfix) with ESMTP id AE31F41090E
 	for <lists+bpf@lfdr.de>; Sun, 19 Sep 2021 03:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhISBpZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Sep 2021 21:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        id S229814AbhISBsD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Sep 2021 21:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234774AbhISBpZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Sep 2021 21:45:25 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD9FC061574
-        for <bpf@vger.kernel.org>; Sat, 18 Sep 2021 18:44:00 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id h17so45767114edj.6
-        for <bpf@vger.kernel.org>; Sat, 18 Sep 2021 18:44:00 -0700 (PDT)
+        with ESMTP id S229542AbhISBsD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Sep 2021 21:48:03 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74144C061574
+        for <bpf@vger.kernel.org>; Sat, 18 Sep 2021 18:46:38 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id eg28so22806902edb.1
+        for <bpf@vger.kernel.org>; Sat, 18 Sep 2021 18:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=W0QLxQ44vVdwZyRsuesKOjbtGK9dnJJ7dY7LnW4kzBo=;
-        b=TukgBGc8zbH6qjEYCSwksy/zo4/8BsX0442f+PXRX8wD38Pt6cLJkJAgpMWaoBD45C
-         mQxmHj1yhg1ELBxSzlS7LCm14jgvXQ01zMM+H3cvsbeRu4I4CKu8+vv0a4ab6U7GUqtq
-         mhdHqQazM+OuCzaCjnWmmxhU2SdY9/CDPXLzFke2ugDvArDzMxnJNlBRAiTgWiojMj9o
-         za+0agwojLEqnqqRYnLtPqmQ4D58DobotgSYHIF+kXKKGh0ByXrMeyTBibr7Gsdl9XSX
-         fRyNZdPn+T2EHLRnk66H/n+04Ia0CZc9FldRyIqE72m/FUsod/scI5bhaGojTlfdHb3o
-         trcQ==
+        bh=IJEZ06bjYLoyedco4uzVMz2WNbzxKahqFY169ygO2B4=;
+        b=ITWEY4nqVkzzwF4+T52QQhk9ns/Vc7RIBYWnIRNqlG33jut+cW40Xr0oxO3FYHMPE8
+         bSWBBkJ3Hfvz9qj758wqEqDdzlYYcihaDJmHv5vq57o+wz2GkdxJkciytPRaAGp8DMXy
+         E1zY4MTTb7KsSjXBsMxlWGfsEs6nC8x2yJmDuLSmhwh+QPizr8xhW5JvrFEeig1JKF2S
+         3AsTr5gMDNcfVTtWBzd6OVz8Q7YWTFDU1M/vQ1E+eKqzswJblm0TnZCdCYqcaLSY7RNt
+         q8A6qDN7votJ6rlZyu8C2EDSlBT6xAnGZoRzvy6KK9alUz5AgZiGK2frNGENRtvayybs
+         8ZDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=W0QLxQ44vVdwZyRsuesKOjbtGK9dnJJ7dY7LnW4kzBo=;
-        b=PcgEPBGgJIGSgfCy1nA9/b9mhJ66CyEmeA6aFx6OvwxaeuRDB5IjuZXjRpSFZ/lLgS
-         1Ymjjzz/VndUsz7yAKwf78zT75kHQs+0Tup3+sCACK+RztwhTHsb2YVgNv4trh5sxyDA
-         57VTFR200GeBodedw4Sbfc+2cePJkAtrwo0NQFd+xradJG+XewZqvoGxKh8b87yLtOgr
-         ACLGAnn9Y7AYbbeCVUd12gLynCorUgrQcbqipvjgyIhIR5dZBfiY+grywmwG16PC4rBa
-         /m8VidxFVviskQTYriJuMN+oqL4RvN0wMgtyTA5z7dSZ5rwRr9tj7uagjWqGO2QGOXp7
-         UVqQ==
-X-Gm-Message-State: AOAM532JqfQIvU1YTHCq6JlzFZt015Xbfyj3vgNQ5k+AxQRc8pq/mk9z
-        CGso3/wjhoy3rx0Avv3IoPDAD19Xq8hyC4yci3bi3XRaxJ4=
-X-Google-Smtp-Source: ABdhPJzolqL4SSxqezHyiqluC/+qM2xEHFNi9BJOdjzB6kvbh5RnCqXtXyHYpgKCk2Mqj9TpX+QW3qULKYecav+Nb4c=
-X-Received: by 2002:a50:ba84:: with SMTP id x4mr21338370ede.376.1632015839168;
- Sat, 18 Sep 2021 18:43:59 -0700 (PDT)
+        bh=IJEZ06bjYLoyedco4uzVMz2WNbzxKahqFY169ygO2B4=;
+        b=GbByJYe5conIcN8beMjNaIMOcUoQKQBSRx33mpeN4S2Hl9RNgazsyEe3E+V0kZz05S
+         3jZ6Hn29FldbfS7nvma1kyplBeiQPwTbjrWI2QpYSc43XIogc6DuxQ7jNQ6WUQHozSh8
+         J443IEQtpvQPxlZKiIYpy3QrAOJ+kEA3HKPQfSgJ+xYDZfx5iNVWBVLd+AQ9s7DWvgnb
+         lgpgTxk7DS7YFLSBT2iXB0DAWCOD668N9lq6EyuVeB+HKt/uedWCztios9rwHo4Vc0L+
+         xsggMxQlo0NPoUgwpaQulxUZi6rc2asGBCHXhqeHjHf9+2+M0r1cEMECp8dyZeXkoTzA
+         Y7xQ==
+X-Gm-Message-State: AOAM5303NWxX1BQgEIvAJQESS6xs7wKxRxkr9HNyqhPi39hXYcm8SMf+
+        +lYfg9nayfOwVoNiKbqGc5ldrneyDo919m3+w748juxx0gQ=
+X-Google-Smtp-Source: ABdhPJxn7rsQ0qVB1R8khHIiyMhZlzVqVoVTxCFKDHzfyDnfxfABBA0DpeHf7cJC1Tbdw4VIK5AsBsTAkXC7PpzKJrs=
+X-Received: by 2002:a17:906:85d8:: with SMTP id i24mr20672167ejy.451.1632015996952;
+ Sat, 18 Sep 2021 18:46:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <a1ae15c8-f43c-c382-a7e0-10d3fedb6a@gmail.com> <CAK3+h2z+V1VNiGsNPHsyLZqdTwEsWMF9QnXZT2mi30dkb2xBXA@mail.gmail.com>
- <8af534e8-c327-a76-c4b5-ba2ae882b3ae@gmail.com> <7ba1fa1f-be6-1fa2-1877-12f7b707b65@gmail.com>
- <441e955a-0e2a-5956-2e91-e1fcaa4622aa@fb.com> <CAK3+h2w=CO8vvo_Td=w08zKxfko1DA96xk4fvCXvUA1wLZvOMA@mail.gmail.com>
- <e1a2904f-1b43-e1a8-e20d-0449798274bb@fb.com> <CAK3+h2z=qxzDm=-isjuM01n8Mt5NpoAHCkwHNzOWFXNMAczUdw@mail.gmail.com>
- <CAK3+h2yDOFAK8bNQu4Y_=O_QGQ3CrMd0NSrGahv3NXbJkDB92Q@mail.gmail.com>
-In-Reply-To: <CAK3+h2yDOFAK8bNQu4Y_=O_QGQ3CrMd0NSrGahv3NXbJkDB92Q@mail.gmail.com>
+References: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com>
+ <92121d33-4a45-b27a-e3cd-e54232924583@fb.com> <79e4924c-e581-47dd-875c-6fd72e85dfac@gmail.com>
+ <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com> <85caf3b3-868-7085-f4df-89df7930ad9b@gmail.com>
+ <ce2ea7e8-0443-3e78-6cf8-d3105f729646@fb.com> <64cd3e3e-3b6-52b2-f176-9075f4804b7a@gmail.com>
+ <497fc0fe-8036-8b79-2c6e-495f2a7b0ae@gmail.com> <CAK3+h2xv-EZH9afEymGqKdwHozHHu=XHJYKispFSixYxz7YVLQ@mail.gmail.com>
+ <CAK3+h2zW5ZgnXu0_iMHUMLxmgVd2EAoRFuwAEKVkJwOnxSp56g@mail.gmail.com>
+ <efbbc4bc-5513-82d4-4f00-28c690653509@fb.com> <CAK3+h2xP0_9WgqDbfRC-rzkOSv2FKKsNjHmPvTFy9xALwgw3AA@mail.gmail.com>
+In-Reply-To: <CAK3+h2xP0_9WgqDbfRC-rzkOSv2FKKsNjHmPvTFy9xALwgw3AA@mail.gmail.com>
 From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Sat, 18 Sep 2021 18:43:48 -0700
-Message-ID: <CAK3+h2yYvf9UFjCZ6pmG2yd=ePA0oR1BRyo4GChVyNUyw3o4_g@mail.gmail.com>
-Subject: Re: Prog section rejected: Argument list too long (7)!
+Date:   Sat, 18 Sep 2021 18:46:25 -0700
+Message-ID: <CAK3+h2wy62A_BAKpuXOsz0Rv45vMwDLgbGaDVL6UQ1ZkDXNA8A@mail.gmail.com>
+Subject: Re: R1 invalid mem access 'inv'
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -61,111 +63,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 10:35 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+On Thu, Jul 15, 2021 at 6:33 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
 >
-> On Sun, Jul 25, 2021 at 8:49 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> Thanks Yonghong for looking into this.
+>
+> On Tue, Jul 13, 2021 at 8:46 AM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > On Sun, Jul 25, 2021 at 7:39 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> > On 7/12/21 4:38 PM, Vincent Li wrote:
+> > > Hi Yonghong,
 > > >
 > > >
 > > >
-> > > On 7/25/21 6:14 PM, Vincent Li wrote:
-> > > > On Sun, Jul 25, 2021 at 6:01 PM Yonghong Song <yhs@fb.com> wrote:
-> > > >>
-> > > >>
-> > > >>
-> > > >> On 7/25/21 8:22 AM, Vincent Li wrote:
-> > > >>>
-> > > >>>
-> > > >>>
-> > > >>> On Sat, 24 Jul 2021, Vincent Li wrote:
-> > > >>>
-> > > >>>>
-> > > >>>>
-> > > >>>> On Sat, 24 Jul 2021, Vincent Li wrote:
-> > > >>>>
-> > > >>>>> On Fri, Jul 23, 2021 at 7:17 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> > > >>>>>>
-> > > >>>>>>
-> > > >>>>>> Hi BPF experts,
-> > > >>>>>>
-> > > >>>>>> I have a cilium PR https://github.com/cilium/cilium/pull/16916 that
-> > > >>>>>> failed to pass verifier in kernel 4.19, the error is like:
-> > > >>>>>>
-> > > >>>>>> level=warning msg="Prog section '2/7' rejected: Argument list too long
-> > > >>>>>> (7)!" subsys=datapath-loader
-> > > >>>>>> level=warning msg=" - Type:         3" subsys=datapath-loader
-> > > >>>>>> level=warning msg=" - Attach Type:  0" subsys=datapath-loader
-> > > >>>>>> level=warning msg=" - Instructions: 4578 (482 over limit)"
-> > > >>>>>> subsys=datapath-loader
-> > > >>>>>> level=warning msg=" - License:      GPL" subsys=datapath-loader
-> > > >>>>>> level=warning subsys=datapath-loader
-> > > >>>>>> level=warning msg="Verifier analysis:" subsys=datapath-loader
-> > > >>>>>> level=warning subsys=datapath-loader
-> > > >>>>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> > > >>>>>> level=warning msg="Unable to load program" subsys=datapath-loader
-> > > >>>>>>
-> > > >>>>>> then I tried to run the PR locally in my dev machine with custom upstream
-> > > >>>>>> kernel version, I narrowed the issue down to between upstream kernel
-> > > >>>>>> version 5.7 and 5.8, in 5.7, it failed with:
-> > > >>>>>
-> > > >>>>> I further narrow it down to between 5.7 and 5.8-rc1 release, but still
-> > > >>>>> no clue which commits in 5.8-rc1 resolved the issue
-> > > >>>>>
-> > > >>>>>>
-> > > >>>>>> level=warning msg="processed 50 insns (limit 1000000) max_states_per_insn
-> > > >>>>>> 0 total_states 1 peak_states 1 mark_read 1" subsys=datapath-loader
-> > > >>>>>> level=warning subsys=datapath-loader
-> > > >>>>>> level=warning msg="Log buffer too small to dump verifier log 16777215
-> > > >>>>>> bytes (9 tries)!" subsys=datapath-loader
-> > > >>
-> > > >> The error message is "Log buffer too small to dump verifier log 16777215
-> > > >> bytes (9 tries)!".
-> > > >>
-> > > >> Commit 6f8a57ccf8511724e6f48d732cb2940889789ab2 made the default log
-> > > >> much shorter. So it fixed the above log buffer too small issue.
-> > > >>
-> > > >
-> > > > Thank you for the confirmation, after I remove 'verbose' log, indeed
-> > > > the problem went away for kernel 5.x- 5.8, but the
-> > > > "Prog section '2/7' rejected: Argument list too long.." issue
-> > > > persisted even after I remove the "verbose" logging
-> > > > for kernel version 4.19, any clue on that?
+> > > On Fri, Jun 18, 2021 at 12:58 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> > >>
+> > >> Hi Yonghong,
+> > >>
+> > >> I attached the full verifier log and BPF bytecode just in case it is
+> > >> obvious to you, if it is not, that is ok. I tried to make sense out of
+> > >> it and I failed due to my limited knowledge about BPF :)
+> > >>
 > > >
-> > > No, I don't.
+> > > I followed your clue on investigating how fp-200=pkt changed to
+> > > fp-200=inv in https://github.com/cilium/cilium/issues/16517#issuecomment-873522146
+> > > with previous attached complete bpf verifier log and bpf bytecode, it
+> > > eventually comes to following
 > > >
-> > > You need to have detailed verifier log. In verifier, there are quite
-> > > some places which returns -E2BIG.
+> > > 0000000000004948 :
+> > >      2345: bf a3 00 00 00 00 00 00 r3 = r10
+> > >      2346: 07 03 00 00 d0 ff ff ff r3 += -48
+> > >      2347: b7 08 00 00 06 00 00 00 r8 = 6
+> > > ; return ctx_store_bytes(ctx, off, mac, ETH_ALEN, 0);
+> > >      2348: bf 61 00 00 00 00 00 00 r1 = r6
+> > >      2349: b7 02 00 00 00 00 00 00 r2 = 0
+> > >      2350: b7 04 00 00 06 00 00 00 r4 = 6
+> > >      2351: b7 05 00 00 00 00 00 00 r5 = 0
+> > >      2352: 85 00 00 00 09 00 00 00 call 9
+> > >      2353: 67 00 00 00 20 00 00 00 r0 <<= 32
+> > >      2354: c7 00 00 00 20 00 00 00 r0 s>>= 32
+> > > ; if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
+> > >      2355: c5 00 54 00 00 00 00 00 if r0 s< 0 goto +84
 > > >
-> > I will do another round of bisect,  correct myself, the "The argument
-> > list too long" occurred in 5.1, but not in 5.2
+> > > my new code is eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0;
+> > > that is what i copied from other part of cilium code, eth_store_daddr
+> > > is:
+> > >
+> > > static __always_inline int eth_store_daddr(struct __ctx_buff *ctx,
+> > >
+> > >                                             const __u8 *mac, int off)
+> > > {
+> > > #if !CTX_DIRECT_WRITE_OK
+> > >          return eth_store_daddr_aligned(ctx, mac, off);
+> > > #else
+> > > ......
+> > > }
+> > >
+> > > and eth_store_daddr_aligned is
+> > >
+> > > static __always_inline int eth_store_daddr_aligned(struct __ctx_buff *ctx,
+> > >
+> > >                                                     const __u8 *mac, int off)
+> > > {
+> > >          return ctx_store_bytes(ctx, off, mac, ETH_ALEN, 0);
+> > > }
+> > >
+> > > Joe  from Cilium raised an interesting question on why the compiler
+> > > put ctx_store_bytes() before  if (eth_store_daddr(ctx, (__u8 *)
+> > > &vtep_mac.addr, 0) < 0),
+> > > that seems to have  fp-200=pkt changed to fp-200=inv, and indeed if I
+> > > skip the eth_store_daddr_aligned call, the issue is resolved, do you
+> > > have clue on why compiler does that?
+> >
+> > This is expected. After inlining, you got
+> >     if (ctx_store_bytes(...) < 0) ...
+> >
+> > So you need to do
+> >     ctx_store_bytes(...)
+> > first and then do the if condition.
+> >
 >
-> It looks to be this commit fixed the issue
-> commit c04c0d2b968ac45d6ef020316808ef6c82325a82 (HEAD)
-> Author: Alexei Starovoitov <ast@kernel.org>
-> Date:   Mon Apr 1 21:27:45 2019 -0700
->     bpf: increase complexity limit and maximum program size
+> I got workaround which is not to use eth_store_daddr_aligned, but use
+> __builtin_memcpy() according to
+> cilium commit 9c857217834 (bpf: optimized memcpy/memzero with dw-wide copies)
+>
+> > Looking at the issue at https://github.com/cilium/cilium/issues/16517,
+> > the reason seems due to xdp_store_bytes/skb_store_bytes.
+> > When these helpers write some data into the stack based buffer, they
+> > invalidate some stack contents. I don't know whether it is a false
+> > postive case or not, i.e., the verifier invalidates the wrong stack
+> > location conservatively. This needs further investigation.
+> >
+> glad to know it is not something silly that I am doing, hope it can be
+> figured out eventually someday :)
 >
 > >
-> > > >
-> > > >
-> > > >>>>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> > > >>>>>> level=warning msg="Unable to load program" subsys=datapath-loader
-> > > >>>>>>
-> > > >>>>>> 5.8 works fine.
-> > > >>>>>>
-> > > >>>>>> What difference between 5.7 and 5.8 to cause this verifier problem, I
-> > > >>>>>> tried to git log v5.7..v5.8 kernel/bpf/verifier, I could not see commits
-> > > >>>>>> that would make the difference with my limited BPF knowledge. Any clue
-> > > >>>>>> would be appreciated!
-> > > >>>>
-> > > >>>> I have git bisected to this commit:
-> > > [...]
+> > >
+> > > I have more follow-up in https://github.com/cilium/cilium/issues/16517
+> > > if you are interested to know the full picture.
+> > >
+> > > Appreciate it very much if you have time to look at it :)
+> > >
+> > > Vincent
+> > >
 
-Finally bring an end to my long time mystery issue of using
-eth_store_daddr() result in
-"invalid mem access", I need to initialize the mac address variable
-with 0, uninitialized variable
-also cause "invalid read from stack off" in kernel 4.9, but not
+oops, I meant to this one, Finally bring an end to my long time
+mystery issue of using
+eth_store_daddr() result in "invalid mem access", I need to initialize
+the mac address variable
+with 0, uninitialized variable also cause "invalid read from stack
+off" in kernel 4.9, but not
 version above 4.9.
 https://github.com/cilium/cilium/pull/17370#issuecomment-922396415
