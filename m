@@ -2,211 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF4D4115CE
-	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 15:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9031E411694
+	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 16:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237011AbhITNap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Sep 2021 09:30:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37122 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237112AbhITNai (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 09:30:38 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KDD1mC022010;
-        Mon, 20 Sep 2021 09:28:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=xgT5YD3UxBnXVsri9sxzcL9itRY6pX+a3Msv567DtkM=;
- b=SMD7ir+JALlj8+aC7tSkZPH3Wj2jvIYaSZJ73Pg5vToZMbDgUxKUaGD2PRbDJTHy11Gs
- fO2e9aDC1+KB0xQN8ld3V2QD3/Pj1GN+ipYzvUTSfeMcLltOYwasFe46bS3bXd4fuEo5
- JLRr4wGR3uIpOU5AYL+JIYvt8OFNH91ZXjWKl4Yq3PMvM+3xatY46TlI0vLnW/6OqBn5
- ypXZJBqH2XSnv6vaPQeq+4R+Yz55Td6MrfpbJC2M0BDazQvtvm2qmePXm6EtXhN/+2Ui
- +zoHVNv8Dc/GnvKS73Mkj3ZZ6omJJD3pAQcOAw0PF7jNouhtb+TN+9t7BaaLXD7pPpcy xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b6rfrkn5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 09:28:40 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18KDD5Dm022569;
-        Mon, 20 Sep 2021 09:28:39 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b6rfrkn4u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 09:28:39 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18KDD6Ij012146;
-        Mon, 20 Sep 2021 13:28:37 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3b57r8gwfc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 13:28:37 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18KDSYMh29884746
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Sep 2021 13:28:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 98FE9A406D;
-        Mon, 20 Sep 2021 13:28:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 942F5A404D;
-        Mon, 20 Sep 2021 13:28:29 +0000 (GMT)
-Received: from [9.43.114.206] (unknown [9.43.114.206])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Sep 2021 13:28:29 +0000 (GMT)
-Message-ID: <4710b971-12f0-e6cc-545a-9c7ee96d6057@linux.ibm.com>
-Date:   Mon, 20 Sep 2021 18:58:28 +0530
+        id S235688AbhITORE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Sep 2021 10:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234976AbhITOQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:16:59 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F373C061574;
+        Mon, 20 Sep 2021 07:15:32 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id h3so17485931pgb.7;
+        Mon, 20 Sep 2021 07:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QKSUQraS6iuG2zJuLzmHU4cr6K2UGSWLQeXVqO8AWbw=;
+        b=Jp9iBtsrFlKOXP2h4aJuBhosmJLShS/J8XbzOnKUHpdVjehiVvoYV2zPaEOvfVpCuL
+         DkGqCTNYMaWerCaNcHKd8ajTyB6jzPWlj8bYFXr3EEruNL6X+M6M+80ow4EPfW63zJud
+         kkHaHe82h+xJFm6mgEXd6nZQLNS4LZv5C8zMUom3Zt8+6V1/qdE/gJ2+8PcmtReJ/WsX
+         nE93DJlq8nBDinLdXRZ+dUCONmWefd3EIZfUGbjYRbg+wFXtE0tkOWWZeolwFnXBoNpf
+         OdAmb/vl33tXuyaXDszy5XDYXSpEzCPY3aI/ocJHPz8HZhE02F9WesWUMb4Kcwppi62/
+         7s1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QKSUQraS6iuG2zJuLzmHU4cr6K2UGSWLQeXVqO8AWbw=;
+        b=JthgeR263kvfPHvlTidT0uQoSt3BkuMRXfxknlhjIF6TJVxJKSKmeVmEcq6easwKis
+         x0UyGzwJhKxGl7vTGsXOxn3a6AVYayOqOYSrH7GShpZxjBLPrZ0QlKxw/GRruZl85ZfG
+         I//5JWJ3huUq796CC2D33F1q+ahr0BAiUG9QppkSUSY57v/f8Y5c1EpsD1unInzCK5cl
+         vbITYX3JtFv9gERjwyVvB1agaemDaXMFEm1d3L77G/zHDcRc/+tMDkLBwtURVE/Ri1T+
+         KMVtis2jDrgkY7Tvtii6JP3GHRP1bCmnC/LjWSLnKqSBEjLllmp9pKUXHpffny1nn5Kn
+         OKlA==
+X-Gm-Message-State: AOAM533EBu0GcKUgdQjCJQPskkJ6Nr0cNlPHypK+ZIa2H5yq7mO79P8O
+        fecRvM9lN+4n/49iWjIpiqN0bWKOSZUcew==
+X-Google-Smtp-Source: ABdhPJxv1Vv43vQ9BXK+lAwNISvxmYCpPIjqnjnbAPW8VVpkhDp4rl8rFeRjSclzAWnI7v/ml20nTw==
+X-Received: by 2002:a63:8c50:: with SMTP id q16mr10057464pgn.315.1632147331530;
+        Mon, 20 Sep 2021 07:15:31 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
+        by smtp.gmail.com with ESMTPSA id v9sm15590120pga.82.2021.09.20.07.15.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 07:15:31 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf-next v4 00/11] Support kernel module function calls from eBPF
+Date:   Mon, 20 Sep 2021 19:45:15 +0530
+Message-Id: <20210920141526.3940002-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 3/8] bpf powerpc: refactor JIT compiler code
-Content-Language: en-US
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210917153047.177141-1-hbathini@linux.ibm.com>
- <20210917153047.177141-4-hbathini@linux.ibm.com>
- <b73d67d5-3ec3-c618-7f4c-ffdd71650e7e@csgroup.eu>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <b73d67d5-3ec3-c618-7f4c-ffdd71650e7e@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5125; h=from:subject; bh=fc6S96SkwpVg0narLCcJASaAPTiomC+NYhFq1Ws1Vwo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhSJaDElvTdex9z90BKxo1fes7ZuFFcIOnYdtPE4Oi XamN9FqJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYUiWgwAKCRBM4MiGSL8RynUqD/ 4iG2hBK6gOBjeNjbypeHsiKV8ZZUUejX2e2p2Z3KityM03c1EUUmT6tvJ3jU3dV9lU7fl93OD+VO2I /HkwG2arvHrjOI7A4QHN4MtIFkqL/UuxEYO+0k82nmLfTNXcgjwA+r89r7cPBE9XD9fwv20ZiIX8+y /luYLU/94qAN/a3xFcpi1rYToQ9Xe9MtPGoxUOxTOZTq+imhVHoAoY01hDZ72URZgdiIWmexfJ6HAK qY7jgk4QDA8We4Q0DkRnozEVNGYKy1vESCpev1mFp0TiNfRQA1b7Zedb34izokT95lIatmIVQYFlJl s5plWNfN6Ema4Cyeu0E8nxk51lyfYGbyx8XtCBWGRP4lbgyaJOb/FLZ0Zl2ji/UPu7rYKeJpjtMbxm d/kAQJJC856XswkddKMPGkBfrq5IMVYi4nnVE/+EGkGwXts/45raSTn+j8tW9Z90wj1p1CezSh8fRy UV8jakvTBFbVJHaD2hehnj8cFltF4RBGADjP5vrAZHRN87W8eHkoHt5tCjQMghqlyPaL0sDSeOgmCM LcKyUDFvo2x3AER0L/v+2byu/PuBb6CUhwxDHDMkgD4koX3GG0F0IfsOibHTRCPTFOqhRBNxvOgTQ0 PD/sx+v3GP44RQ1CIhJq++2u3FJCp+bn0HkofFLUS44+6DE7jZxAedYi31nw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Xh5bJFO4xu8Jz_AF2mhhttQ4q-7NC0PV
-X-Proofpoint-ORIG-GUID: _19XF3e6ajpK5myoVRHFjw2ul01moovs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 adultscore=0 clxscore=1015 bulkscore=0
- suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109030001 definitions=main-2109200084
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Christophe,
+This set enables kernel module function calls, and also modifies verifier logic
+to permit invalid kernel function calls as long as they are pruned as part of
+dead code elimination. This is done to provide better runtime portability for
+BPF objects, which can conditionally disable parts of code that are pruned later
+by the verifier (e.g. const volatile vars, kconfig options). libbpf
+modifications are made along with kernel changes to support module function
+calls. The set includes gen_loader support for emitting kfunc relocations.
 
-Thanks for reviewing the series.
+It also converts TCP congestion control objects to use the module kfunc support
+instead of relying on IS_BUILTIN ifdef.
 
-On 17/09/21 9:40 pm, Christophe Leroy wrote:
-> 
-> 
-> Le 17/09/2021 à 17:30, Hari Bathini a écrit :
->> Refactor powerpc JITing. This simplifies adding BPF_PROBE_MEM support.
-> 
-> Could you describe a bit more what you are refactoring exactly ?
+Changelog:
+----------
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20210915050943.679062-1-memxor@gmail.com
 
-I am trying to do more than BPF_PROBE_MEM needs. Will keep the changes 
-minimal (BPF_PROBE_MEM specific) and update the changelog..
+ * Address comments from Alexei
+   * Drop MAX_BPF_STACK change, instead move map_fd and BTF fd to BPF array map
+     and pass fd_array using BPF_PSEUDO_MAP_IDX_VALUE
+ * Address comments from Andrii
+   * Fix selftest to store to variable for observing function call instead of
+     printk and polluting CI logs
+ * Drop use of raw_tp for testing, instead reuse classifier based prog_test_run
+ * Drop index + 1 based insn->off convention for kfunc module calls
+ * Expand selftests to cover more corner cases
+ * Misc cleanups
 
-> 
-> 
->>
->> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
->> ---
->>
->> Changes in v2:
->> * New patch to refactor a bit of JITing code.
->>
->>
->>   arch/powerpc/net/bpf_jit_comp32.c | 50 +++++++++++---------
->>   arch/powerpc/net/bpf_jit_comp64.c | 76 ++++++++++++++++---------------
->>   2 files changed, 68 insertions(+), 58 deletions(-)
->>
->> diff --git a/arch/powerpc/net/bpf_jit_comp32.c 
->> b/arch/powerpc/net/bpf_jit_comp32.c
->> index b60b59426a24..c8ae14c316e3 100644
->> --- a/arch/powerpc/net/bpf_jit_comp32.c
->> +++ b/arch/powerpc/net/bpf_jit_comp32.c
->> @@ -276,17 +276,17 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 
->> *image, struct codegen_context *
->>       u32 exit_addr = addrs[flen];
->>       for (i = 0; i < flen; i++) {
->> -        u32 code = insn[i].code;
->>           u32 dst_reg = bpf_to_ppc(ctx, insn[i].dst_reg);
->> -        u32 dst_reg_h = dst_reg - 1;
->>           u32 src_reg = bpf_to_ppc(ctx, insn[i].src_reg);
->> -        u32 src_reg_h = src_reg - 1;
->>           u32 tmp_reg = bpf_to_ppc(ctx, TMP_REG);
->> +        u32 true_cond, code = insn[i].code;
->> +        u32 dst_reg_h = dst_reg - 1;
->> +        u32 src_reg_h = src_reg - 1;
-> 
-> All changes above seems unneeded and not linked to the current patch. 
-> Please leave cosmetic changes outside and focus on necessary changes.
-> 
->> +        u32 size = BPF_SIZE(code);
->>           s16 off = insn[i].off;
->>           s32 imm = insn[i].imm;
->>           bool func_addr_fixed;
->>           u64 func_addr;
->> -        u32 true_cond;
->>           /*
->>            * addrs[] maps a BPF bytecode address into a real offset from
->> @@ -809,25 +809,33 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 
->> *image, struct codegen_context *
->>           /*
->>            * BPF_LDX
->>            */
->> -        case BPF_LDX | BPF_MEM | BPF_B: /* dst = *(u8 *)(ul) (src + 
->> off) */
->> -            EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
->> -            if (!fp->aux->verifier_zext)
->> -                EMIT(PPC_RAW_LI(dst_reg_h, 0));
->> -            break;
->> -        case BPF_LDX | BPF_MEM | BPF_H: /* dst = *(u16 *)(ul) (src + 
->> off) */
->> -            EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
->> -            if (!fp->aux->verifier_zext)
->> -                EMIT(PPC_RAW_LI(dst_reg_h, 0));
->> -            break;
->> -        case BPF_LDX | BPF_MEM | BPF_W: /* dst = *(u32 *)(ul) (src + 
->> off) */
->> -            EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
->> -            if (!fp->aux->verifier_zext)
->> +        /* dst = *(u8 *)(ul) (src + off) */
->> +        case BPF_LDX | BPF_MEM | BPF_B:
->> +        /* dst = *(u16 *)(ul) (src + off) */
->> +        case BPF_LDX | BPF_MEM | BPF_H:
->> +        /* dst = *(u32 *)(ul) (src + off) */
->> +        case BPF_LDX | BPF_MEM | BPF_W:
->> +        /* dst = *(u64 *)(ul) (src + off) */
->> +        case BPF_LDX | BPF_MEM | BPF_DW:
-> Why changing the location of the comments ? I found it more readable 
-> before.
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20210914123750.460750-1-memxor@gmail.com
 
-Sure. I will revert that change.
+ * Fix issues pointed out by Kernel Test Robot
+ * Fix find_kfunc_desc to also take offset into consideration when comparing
 
->> +            switch (size) {
->> +            case BPF_B:
->> +                EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
->> +                break;
->> +            case BPF_H:
->> +                EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
->> +                break;
->> +            case BPF_W:
->> +                EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
->> +                break;
->> +            case BPF_DW:
->> +                EMIT(PPC_RAW_LWZ(dst_reg_h, src_reg, off));
->> +                EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off + 4));
->> +                break;
->> +            }
-> 
-> BPF_B, BPF_H, ... are not part of an enum. Are you sure GCC is happy to 
-> have no default ?
+RFC v1 -> v2
+v1: https://lore.kernel.org/bpf/20210830173424.1385796-1-memxor@gmail.com
 
-I used gcc 10.3 for ppc32 & gcc 8.3 for ppc64. No warnings.
-Though, no harm adding the below, I guess..
+ * Address comments from Alexei
+   * Reuse fd_array instead of introducing kfunc_btf_fds array
+   * Take btf and module reference as needed, instead of preloading
+   * Add BTF_KIND_FUNC relocation support to gen_loader infrastructure
+ * Address comments from Andrii
+   * Drop hashmap in libbpf for finding index of existing BTF in fd_array
+   * Preserve invalid kfunc calls only when the symbol is weak
+ * Adjust verifier selftests
 
-	default:
-		break;
+Kumar Kartikeya Dwivedi (11):
+  bpf: Introduce BPF support for kernel module function calls
+  bpf: Be conservative while processing invalid kfunc calls
+  bpf: btf: Introduce helpers for dynamic BTF set registration
+  tools: Allow specifying base BTF file in resolve_btfids
+  bpf: Enable TCP congestion control kfunc from modules
+  libbpf: Support kernel module function calls
+  libbpf: Resolve invalid weak kfunc calls with imm = 0, off = 0
+  libbpf: Update gen_loader to emit BTF_KIND_FUNC relocations
+  tools: bpftool: Add separate fd_array map support for light skeleton
+  libbpf: Fix skel_internal.h to set errno on loader retval < 0
+  bpf: selftests: Add selftests for module kfunc support
 
-Thanks
-Hari
+ include/linux/bpf.h                           |   8 +-
+ include/linux/bpf_verifier.h                  |   2 +
+ include/linux/bpfptr.h                        |   1 +
+ include/linux/btf.h                           |  37 +++
+ kernel/bpf/btf.c                              |  56 +++++
+ kernel/bpf/core.c                             |   4 +
+ kernel/bpf/verifier.c                         | 220 ++++++++++++++---
+ net/bpf/test_run.c                            |   7 +-
+ net/ipv4/bpf_tcp_ca.c                         |  36 +--
+ net/ipv4/tcp_bbr.c                            |  28 ++-
+ net/ipv4/tcp_cubic.c                          |  26 +-
+ net/ipv4/tcp_dctcp.c                          |  26 +-
+ scripts/Makefile.modfinal                     |   1 +
+ tools/bpf/bpftool/gen.c                       |   3 +-
+ tools/bpf/bpftool/prog.c                      |   1 +
+ tools/bpf/resolve_btfids/main.c               |  19 +-
+ tools/lib/bpf/bpf.c                           |   1 +
+ tools/lib/bpf/bpf_gen_internal.h              |  16 +-
+ tools/lib/bpf/gen_loader.c                    | 222 +++++++++++++++---
+ tools/lib/bpf/libbpf.c                        |  83 +++++--
+ tools/lib/bpf/libbpf.h                        |   1 +
+ tools/lib/bpf/libbpf_internal.h               |   1 +
+ tools/lib/bpf/skel_internal.h                 |  33 ++-
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  26 +-
+ .../selftests/bpf/prog_tests/ksyms_module.c   |  52 ++--
+ .../bpf/prog_tests/ksyms_module_libbpf.c      |  44 ++++
+ .../selftests/bpf/progs/test_ksyms_module.c   |  41 +++-
+ .../bpf/progs/test_ksyms_module_fail.c        |  29 +++
+ .../progs/test_ksyms_module_fail_toomany.c    |  19 ++
+ .../bpf/progs/test_ksyms_module_libbpf.c      |  71 ++++++
+ .../bpf/progs/test_ksyms_module_util.h        |  48 ++++
+ 32 files changed, 1014 insertions(+), 153 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_module_libbpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_fail_toomany.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_libbpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_util.h
+
+-- 
+2.33.0
+
