@@ -2,252 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2BA410E08
-	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 02:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93271410E23
+	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 03:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhITAhd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Sep 2021 20:37:33 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47058 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231184AbhITAhc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 19 Sep 2021 20:37:32 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18JLtRou024457
-        for <bpf@vger.kernel.org>; Sun, 19 Sep 2021 17:36:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=9VQyStCTIpN2V7DuTKVdnYTvAg9AedK0DIijs0MvQ5Q=;
- b=kEO7Iv04iWYMHQObyvuuN9nbL+oL8YusCjM9SlbrLJMXwCAz6/HDQ3gtkjhCznR89/cP
- GlrolYpL8+iVlMoS94HWvlWIRiEkox5nunMmsilvIJcaZMe1ERVOwD5Jxc4UiYLlk+fB
- C+7mjOTzsG5UwgEKN9Ruq0NDVdrOfGzWqXk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b5dn1pff7-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 19 Sep 2021 17:36:05 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Sun, 19 Sep 2021 17:36:04 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 8A79277132AC; Sun, 19 Sep 2021 17:35:55 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <dwarves@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH dwarves 2/2] btf_encoder: generate BTF_KIND_TAG from llvm annotations
-Date:   Sun, 19 Sep 2021 17:35:55 -0700
-Message-ID: <20210920003555.3525533-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210920003545.3524231-1-yhs@fb.com>
-References: <20210920003545.3524231-1-yhs@fb.com>
+        id S231330AbhITBPn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Sep 2021 21:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231318AbhITBPn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Sep 2021 21:15:43 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2A8C061574;
+        Sun, 19 Sep 2021 18:14:17 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id j6so14735433pfa.4;
+        Sun, 19 Sep 2021 18:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oRSRcDxtN/Ll6J7EsviEMpFneSzICU8Oj1/Q6JuhQIU=;
+        b=cE0k4oLUY/m6MQVOxb/KYAL8TZm20cj3jwE9ZFqCwQCTc0pMrF2B8WeajWYwWYDXYs
+         7GS56xu0I6n+Xh9upVjbL1UYiKUfr/nMUMT+8UPHQQJxK9p8gJxN0gCI+SY2g/4Xsl81
+         AtOoaJC+XAc8ubMhz/CpgZtUk68lAa7ktZgF9BSM0IOiy1W5R6bHp0G5mte02wjf92Ok
+         KEfVAM2lKYpFooxu+J8XV0xFQfnEpIYFL9/agTgMGWuMw/btzt+S7GZF/4wWE81TXRwC
+         bW8qaO4PfzurtV60uB2c0qSel8ynlKo/+qBiSgYXuZA9tLkQjmO2jjOd4coHSzLVDcZq
+         u9yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oRSRcDxtN/Ll6J7EsviEMpFneSzICU8Oj1/Q6JuhQIU=;
+        b=41H2OTcL/I9cLJGTH7e+VukENW3sbY4WJOfgOhWk0xOAFCVBVcoWJKnBdacm0K11/1
+         nkc2Mk/lZlHAmXEzx9pByeIZtLxSZ8cfMZYDhWBOTLNV2mjc+QfNvmuEz93CR4Ldt3iA
+         +zeZAgxoTHRz+q9wOOxca+XRxST1uo7C3yRs3odxMZ57ahYAcgT8aB1dD90CU85Iy0xC
+         B3hAEYxjCVaIAl2VCCiXr/GmPwasvO2k+SzhUsz6dga6UqU9g/aCIv+fD+KsUAW/r0sw
+         HOn1lhYjThxxrzROtstvQJuay1RBN0jyQLgqFWle6fSKhyQxwrxDjZFkZ5Vdv+8UMgPw
+         A1UA==
+X-Gm-Message-State: AOAM532tsJ2cwghwu+lwZybw39VGiqwlOYujjk+u6LEVFbNvD1hun2LX
+        /mFPU9cW0U00L4vYDL9b4KilmGIMTyw8EoTxgI0=
+X-Google-Smtp-Source: ABdhPJz9gqbQdMZpXCD3dv5VfRuGlJfT+HkKzkTncnCxr+thQCCIH5ga9+Rl/gG6yqZPVvxZ8O2RuFOwzxH83E10qao=
+X-Received: by 2002:a63:6f82:: with SMTP id k124mr16716550pgc.218.1632100456597;
+ Sun, 19 Sep 2021 18:14:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: EFlLwWKs7JTDfmH47FYjPHf-qaLZG7GO
-X-Proofpoint-ORIG-GUID: EFlLwWKs7JTDfmH47FYjPHf-qaLZG7GO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-19_07,2021-09-17_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 phishscore=0 clxscore=1015 impostorscore=0 spamscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109200001
-X-FB-Internal: deliver
+References: <20210917013222.74225-1-liujian56@huawei.com>
+In-Reply-To: <20210917013222.74225-1-liujian56@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sun, 19 Sep 2021 18:14:05 -0700
+Message-ID: <CAM_iQpUpUdd-SnrLOffVoGnW3ocKxDtefUAjktEs1KxE2-Gmvw@mail.gmail.com>
+Subject: Re: [PATCH v2] skmsg: lose offset info in sk_psock_skb_ingress
+To:     Liu Jian <liujian56@huawei.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following is an example with latest upstream clang:
-  $ cat t.c
-  #define __tag1 __attribute__((btf_tag("tag1")))
-  #define __tag2 __attribute__((btf_tag("tag2")))
+On Fri, Sep 17, 2021 at 3:05 AM Liu Jian <liujian56@huawei.com> wrote:
+> @@ -624,6 +635,13 @@ static void sk_psock_backlog(struct work_struct *work)
+>         while ((skb = skb_dequeue(&psock->ingress_skb))) {
+>                 len = skb->len;
+>                 off = 0;
+> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+> +               if (psock->sk->sk_data_ready == sk_psock_strp_data_ready) {
+> +                       stm = strp_msg(skb);
+> +                       off = stm->offset;
+> +                       len = stm->full_len;
+> +               }
+> +#endif
 
-  struct t {
-          int a:1 __tag1;
-          int b __tag2;
-  } __tag1 __tag2;
+How does this work? You are testing psock->sk->sk_data_ready here
+but it is already the dest sock here, so, if we redirect a strp_msg() from
+strp socket to non-strp socket, this does not work at all?
 
-  int g __tag1 __attribute__((section(".data..percpu")));
+And this code looks ugly itself. If you want to distinguish this type of
+packet from others, you can add a bit in, for example skb->_sk_redir.
 
-  int __tag1 foo(struct t *a1, int a2 __tag2) {
-    return a1->b + a2 + g;
-  }
-
-  $ clang -O2 -g -c t.c
-  $ pahole -JV t.o
-  Found per-CPU symbol 'g' at address 0x0
-  Found 1 per-CPU variables!
-  Found 1 functions!
-  File t.o:
-  [1] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
-  [2] PTR (anon) type_id=3D3
-  [3] STRUCT t size=3D8
-        a type_id=3D1 bitfield_size=3D1 bits_offset=3D0
-        b type_id=3D1 bitfield_size=3D0 bits_offset=3D32
-  [4] TAG tag1 type_id=3D3 component_idx=3D0
-  [5] TAG tag2 type_id=3D3 component_idx=3D1
-  [6] TAG tag1 type_id=3D3 component_idx=3D-1
-  [7] TAG tag2 type_id=3D3 component_idx=3D-1
-  [8] FUNC_PROTO (anon) return=3D1 args=3D(2 a1, 1 a2)
-  [9] FUNC foo type_id=3D8
-  [10] TAG tag2 type_id=3D9 component_idx=3D1
-  [11] TAG tag1 type_id=3D9 component_idx=3D-1
-  search cu 't.c' for percpu global variables.
-  Variable 'g' from CU 't.c' at address 0x0 encoded
-  [12] VAR g type=3D1 linkage=3D1
-  [13] TAG tag1 type_id=3D12 component_idx=3D-1
-  [14] DATASEC .data..percpu size=3D4 vlen=3D1
-        type=3D12 offset=3D0 size=3D4
-  $ ...
-
-With additional option --skip_encoding_btf_tag, pahole doesn't
-generate BTF_KIND_TAGs any more.
-  $ pahole -JV --skip_encoding_btf_tag t.o
-  Found per-CPU symbol 'g' at address 0x0
-  Found 1 per-CPU variables!
-  Found 1 functions!
-  File t.o:
-  [1] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
-  [2] PTR (anon) type_id=3D3
-  [3] STRUCT t size=3D8
-        a type_id=3D1 bitfield_size=3D1 bits_offset=3D0
-        b type_id=3D1 bitfield_size=3D0 bits_offset=3D32
-  [4] FUNC_PROTO (anon) return=3D1 args=3D(2 a1, 1 a2)
-  [5] FUNC foo type_id=3D4
-  search cu 't.c' for percpu global variables.
-  Variable 'g' from CU 't.c' at address 0x0 encoded
-  [6] VAR g type=3D1 linkage=3D1
-  [7] DATASEC .data..percpu size=3D4 vlen=3D1
-        type=3D6 offset=3D0 size=3D4
-  $ ...
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- btf_encoder.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 1b4e83d..e983750 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -141,6 +141,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] =
-=3D {
- 	[BTF_KIND_VAR]          =3D "VAR",
- 	[BTF_KIND_DATASEC]      =3D "DATASEC",
- 	[BTF_KIND_FLOAT]        =3D "FLOAT",
-+	[BTF_KIND_TAG]          =3D "TAG",
- };
-=20
- static const char *btf__printable_name(const struct btf *btf, uint32_t o=
-ffset)
-@@ -644,6 +645,26 @@ static int32_t btf_encoder__add_datasec(struct btf_e=
-ncoder *encoder, const char
- 	return id;
- }
-=20
-+static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const c=
-har *value, uint32_t type,
-+				    int component_idx)
-+{
-+	struct btf *btf =3D encoder->btf;
-+	const struct btf_type *t;
-+	int32_t id;
-+
-+	id =3D btf__add_tag(btf, value, type, component_idx);
-+	if (id > 0) {
-+		t =3D btf__type_by_id(btf, id);
-+		btf_encoder__log_type(encoder, t, false, true, "type_id=3D%u component=
-_idx=3D%d",
-+				      t->type, component_idx);
-+	} else {
-+		btf__log_err(btf, BTF_KIND_TAG, value, true, "component_idx=3D%d Error=
- emitting BTF type",
-+			     component_idx);
-+	}
-+
-+	return id;
-+}
-+
- /*
-  * This corresponds to the same macro defined in
-  * include/linux/kallsyms.h
-@@ -1158,6 +1179,7 @@ static int btf_encoder__encode_cu_variables(struct =
-btf_encoder *encoder, struct
- 		struct variable *var =3D tag__variable(pos);
- 		uint32_t size, type, linkage;
- 		const char *name, *dwarf_name;
-+		struct llvm_annotation *annot;
- 		const struct tag *tag;
- 		uint64_t addr;
- 		int id;
-@@ -1244,6 +1266,10 @@ static int btf_encoder__encode_cu_variables(struct=
- btf_encoder *encoder, struct
- 			goto out;
- 		}
-=20
-+		list_for_each_entry(annot, &var->annots, node) {
-+			btf_encoder__add_tag(encoder, annot->value, id, annot->component_idx)=
-;
-+		}
-+
- 		/*
- 		 * add a BTF_VAR_SECINFO in encoder->percpu_secinfo, which will be add=
-ed into
- 		 * encoder->types later when we add BTF_VAR_DATASEC.
-@@ -1359,6 +1385,7 @@ void btf_encoder__delete(struct btf_encoder *encode=
-r)
- int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu)
- {
- 	uint32_t type_id_off =3D btf__get_nr_types(encoder->btf);
-+	struct llvm_annotation *annot;
- 	uint32_t core_id;
- 	struct function *fn;
- 	struct tag *pos;
-@@ -1396,6 +1423,20 @@ int btf_encoder__encode_cu(struct btf_encoder *enc=
-oder, struct cu *cu)
- 		encoder->has_index_type =3D true;
- 	}
-=20
-+	cu__for_each_type(cu, core_id, pos) {
-+		struct namespace *ns;
-+		int btf_type_id;
-+
-+		if (pos->tag !=3D DW_TAG_structure_type && pos->tag !=3D DW_TAG_union_=
-type)
-+			continue;
-+
-+		btf_type_id =3D type_id_off + core_id;
-+		ns =3D tag__namespace(pos);
-+		list_for_each_entry(annot, &ns->annots, node) {
-+			btf_encoder__add_tag(encoder, annot->value, btf_type_id, annot->compo=
-nent_idx);
-+		}
-+	}
-+
- 	cu__for_each_function(cu, core_id, fn) {
- 		int btf_fnproto_id, btf_fn_id;
- 		const char *name;
-@@ -1436,6 +1477,10 @@ int btf_encoder__encode_cu(struct btf_encoder *enc=
-oder, struct cu *cu)
- 			printf("error: failed to encode function '%s'\n", function__name(fn))=
-;
- 			goto out;
- 		}
-+
-+		list_for_each_entry(annot, &fn->annots, node) {
-+			btf_encoder__add_tag(encoder, annot->value, btf_fn_id, annot->compone=
-nt_idx);
-+		}
- 	}
-=20
- 	if (!encoder->skip_encoding_vars)
---=20
-2.30.2
-
+Thanks.
