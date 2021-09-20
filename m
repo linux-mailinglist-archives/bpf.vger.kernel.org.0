@@ -2,268 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33C6412951
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 01:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090E7412983
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 01:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238949AbhITXUG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 20 Sep 2021 19:20:06 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49720 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238967AbhITXSG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 19:18:06 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KHwREp005276
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:16:38 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b6v27u3ra-5
+        id S235363AbhITXrD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 20 Sep 2021 19:47:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34938 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233933AbhITXpC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 19:45:02 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KHwJbr022799
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:43:26 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b6mkmwn3h-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:16:38 -0700
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:43:26 -0700
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 20 Sep 2021 16:16:36 -0700
+ 15.1.2308.14; Mon, 20 Sep 2021 16:43:23 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id C92CE487A9E6; Mon, 20 Sep 2021 16:16:32 -0700 (PDT)
+        id CDA454881FD8; Mon, 20 Sep 2021 16:43:22 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 4/4] libbpf: add legacy uprobe attaching support
-Date:   Mon, 20 Sep 2021 16:16:17 -0700
-Message-ID: <20210920231617.3141867-5-andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 0/9] libbpf: stricter BPF program section name handling
+Date:   Mon, 20 Sep 2021 16:43:11 -0700
+Message-ID: <20210920234320.3312820-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210920231617.3141867-1-andrii@kernel.org>
-References: <20210920231617.3141867-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: 9rT_4ZyArzL9E1UEN2tOTcB-PkpPmQSq
-X-Proofpoint-ORIG-GUID: 9rT_4ZyArzL9E1UEN2tOTcB-PkpPmQSq
+X-Proofpoint-GUID: Fhu19MIPlGWJQswxKBn7B5GSPVQrBrGo
+X-Proofpoint-ORIG-GUID: Fhu19MIPlGWJQswxKBn7B5GSPVQrBrGo
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
- phishscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109200135
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 suspectscore=0 spamscore=0 clxscore=1034 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109200137
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similarly to recently added legacy kprobe attach interface support
-through tracefs, support attaching uprobes using the legacy interface if
-host kernel doesn't support newer FD-based interface.
+Implement opt-in stricter BPF program section name (SEC()) handling logic. For
+a lot of supported ELF section names, enforce exact section name match with no
+arbitrary characters added at the end. See patch #8 for more details.
 
-For uprobes event name consists of "libbpf_" prefix, PID, sanitized
-binary path and offset within that binary. Structuraly the code is
-aligned with kprobe logic refactoring in previous patch. struct
-bpf_link_perf is re-used and all the same legacy_probe_name and
-legacy_is_retprobe fields are used to ensure proper cleanup on
-bpf_link__destroy().
+To allow this, first three patches clean up and preventively fix selftests,
+normalizing existing SEC() usage across multiple selftests. While at it those
+patches also reduce the amount of remaining bpf_object__find_program_by_title()
+uses, which should be completely removed soon, given it's an API with
+ambiguous semantics and will be deprecated and eventually removed in libbpf 1.0.
 
-Users should be aware, though, that on old kernels which don't support
-FD-based interface for kprobe/uprobe attachment, if the application
-crashes before bpf_link__destroy() is called, uprobe legacy
-events will be left in tracefs. This is the same limitation as with
-legacy kprobe interfaces.
+Last patch is also fixing "sk_lookup/" definition to not require and not allow
+extra "/blah" parts after it, which serve no meaning.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 130 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 122 insertions(+), 8 deletions(-)
+All the other patches are gradual internal libbpf changes to:
+  - allow this optional strict logic for ELF section name handling;
+  - allow new use case (for now for "struct_ops", but that could be extended
+    to, say, freplace definitions), in which it can be used stand-alone to
+    specify just type (SEC("struct_ops")), or also accept extra parameters
+    which can be utilized by libbpf to either get more data or double-check
+    valid use (e.g., SEC("struct_ops/dctcp_init") to specify desired
+    struct_ops operation that is supposed to be implemented);
+  - get libbpf's internal logic ready to allow other libraries and
+    applications to specify their custom handlers for ELF section name for BPF
+    programs. All the pieces are in place, the only thing preventing making
+    this as public libbpf API is reliance on internal type for specifying BPF
+    program load attributes. The work is planned to revamp related low-level
+    libbpf APIs, at which point it will be possible to just re-use such new
+    types for coordination between libbpf and custom handlers.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index aa842f0721cb..ef5db34bf913 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9021,6 +9021,7 @@ struct bpf_link_perf {
- };
- 
- static int remove_kprobe_event_legacy(const char *probe_name, bool retprobe);
-+static int remove_uprobe_event_legacy(const char *probe_name, bool retprobe);
- 
- static int bpf_link_perf_detach(struct bpf_link *link)
- {
-@@ -9034,11 +9035,14 @@ static int bpf_link_perf_detach(struct bpf_link *link)
- 		close(perf_link->perf_event_fd);
- 	close(link->fd);
- 
--	/* legacy kprobe needs to be removed after perf event fd closure */
-+	/* legacy uprobe/kprobe needs to be removed after perf event fd closure */
- 	if (perf_link->legacy_probe_name) {
- 		if (perf_link->legacy_is_kprobe) {
- 			err = remove_kprobe_event_legacy(perf_link->legacy_probe_name,
- 							 perf_link->legacy_is_retprobe);
-+		} else {
-+			err = remove_uprobe_event_legacy(perf_link->legacy_probe_name,
-+							 perf_link->legacy_is_retprobe);
- 		}
- 	}
- 
-@@ -9450,17 +9454,96 @@ static struct bpf_link *attach_kprobe(const struct bpf_program *prog)
- 	return link;
- }
- 
-+static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
-+					 const char *binary_path, uint64_t offset)
-+{
-+	int i;
-+
-+	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(), binary_path, (size_t)offset);
-+
-+	/* sanitize binary_path in the probe name */
-+	for (i = 0; buf[i]; i++) {
-+		if (!isalnum(buf[i]))
-+			buf[i] = '_';
-+	}
-+}
-+
-+static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
-+					  const char *binary_path, size_t offset)
-+{
-+	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-+
-+	return append_to_file(file, "%c:%s/%s %s:0x%zx",
-+			      retprobe ? 'r' : 'p',
-+			      retprobe ? "uretprobes" : "uprobes",
-+			      probe_name, binary_path, offset);
-+}
-+
-+static inline int remove_uprobe_event_legacy(const char *probe_name, bool retprobe)
-+{
-+	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-+
-+	return append_to_file(file, "-:%s/%s", retprobe ? "uretprobes" : "uprobes", probe_name);
-+}
-+
-+static int determine_uprobe_perf_type_legacy(const char *probe_name, bool retprobe)
-+{
-+	char file[512];
-+
-+	snprintf(file, sizeof(file),
-+		 "/sys/kernel/debug/tracing/events/%s/%s/id",
-+		 retprobe ? "uretprobes" : "uprobes", probe_name);
-+
-+	return parse_uint_from_file(file, "%d\n");
-+}
-+
-+static int perf_event_uprobe_open_legacy(const char *probe_name, bool retprobe,
-+					 const char *binary_path, size_t offset, int pid)
-+{
-+	struct perf_event_attr attr;
-+	int type, pfd, err;
-+
-+	err = add_uprobe_event_legacy(probe_name, retprobe, binary_path, offset);
-+	if (err < 0) {
-+		pr_warn("failed to add legacy uprobe event for %s:0x%zx: %d\n",
-+			binary_path, (size_t)offset, err);
-+		return err;
-+	}
-+	type = determine_uprobe_perf_type_legacy(probe_name, retprobe);
-+	if (type < 0) {
-+		pr_warn("failed to determine legacy uprobe event id for %s:0x%zx: %d\n",
-+			binary_path, offset, err);
-+		return type;
-+	}
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.config = type;
-+	attr.type = PERF_TYPE_TRACEPOINT;
-+
-+	pfd = syscall(__NR_perf_event_open, &attr,
-+		      pid < 0 ? -1 : pid, /* pid */
-+		      pid == -1 ? 0 : -1, /* cpu */
-+		      -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
-+	if (pfd < 0) {
-+		err = -errno;
-+		pr_warn("legacy uprobe perf_event_open() failed: %d\n", err);
-+		return err;
-+	}
-+	return pfd;
-+}
-+
- LIBBPF_API struct bpf_link *
- bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 				const char *binary_path, size_t func_offset,
- 				const struct bpf_uprobe_opts *opts)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
--	char errmsg[STRERR_BUFSIZE];
-+	char errmsg[STRERR_BUFSIZE], *legacy_probe = NULL;
- 	struct bpf_link *link;
- 	size_t ref_ctr_off;
- 	int pfd, err;
--	bool retprobe;
-+	bool retprobe, legacy;
- 
- 	if (!OPTS_VALID(opts, bpf_uprobe_opts))
- 		return libbpf_err_ptr(-EINVAL);
-@@ -9469,15 +9552,35 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 	ref_ctr_off = OPTS_GET(opts, ref_ctr_offset, 0);
- 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
- 
--	pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
--				    func_offset, pid, ref_ctr_off);
-+	legacy = determine_uprobe_perf_type() < 0;
-+	if (!legacy) {
-+		pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
-+					    func_offset, pid, ref_ctr_off);
-+	} else {
-+		char probe_name[512];
-+
-+		if (ref_ctr_off)
-+			return libbpf_err_ptr(-EINVAL);
-+
-+		gen_uprobe_legacy_event_name(probe_name, sizeof(probe_name),
-+					     binary_path, func_offset);
-+
-+		legacy_probe = strdup(probe_name);
-+		if (!legacy_probe)
-+			return libbpf_err_ptr(-ENOMEM);
-+
-+		pfd = perf_event_uprobe_open_legacy(legacy_probe, retprobe,
-+						    binary_path, func_offset, pid);
-+	}
- 	if (pfd < 0) {
-+		err = -errno;
- 		pr_warn("prog '%s': failed to create %s '%s:0x%zx' perf event: %s\n",
- 			prog->name, retprobe ? "uretprobe" : "uprobe",
- 			binary_path, func_offset,
--			libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
--		return libbpf_err_ptr(pfd);
-+			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-+		goto err_out;
- 	}
-+
- 	link = bpf_program__attach_perf_event_opts(prog, pfd, &pe_opts);
- 	err = libbpf_get_error(link);
- 	if (err) {
-@@ -9486,9 +9589,20 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 			prog->name, retprobe ? "uretprobe" : "uprobe",
- 			binary_path, func_offset,
- 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
--		return libbpf_err_ptr(err);
-+		goto err_out;
-+	}
-+	if (legacy) {
-+		struct bpf_link_perf *perf_link = container_of(link, struct bpf_link_perf, link);
-+
-+		perf_link->legacy_probe_name = legacy_probe;
-+		perf_link->legacy_is_kprobe = false;
-+		perf_link->legacy_is_retprobe = retprobe;
- 	}
- 	return link;
-+err_out:
-+	free(legacy_probe);
-+	return libbpf_err_ptr(err);
-+
- }
- 
- struct bpf_link *bpf_program__attach_uprobe(const struct bpf_program *prog,
+These changes are a part of libbpf 1.0 effort ([0]). They are also intended to
+be applied on top of the previous preparatory series [1], so currently CI will
+be failing to apply them to bpf-next until that patch set is landed. Once it
+is landed, kernel-patches daemon will automatically retest this patch set.
+
+  [0] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#stricter-and-more-uniform-bpf-program-section-name-sec-handling
+  [1] https://patchwork.kernel.org/project/netdevbpf/list/?series=547675&state=*
+
+v1->v2:
+  - rebase onto latest bpf-next and resolve merge conflicts w/ Dave's changes.
+
+Andrii Nakryiko (9):
+  selftests/bpf: normalize XDP section names in selftests
+  selftests/bpf: normalize SEC("classifier") usage
+  selftests/bpf: normalize all the rest SEC() uses
+  libbpf: refactor internal sec_def handling to enable pluggability
+  libbpf: reduce reliance of attach_fns on sec_def internals
+  libbpf: refactor ELF section handler definitions
+  libbpf: complete SEC() table unification for
+    BPF_APROG_SEC/BPF_EAPROG_SEC
+  libbpf: add opt-in strict BPF program section name handling logic
+  selftests/bpf: switch sk_lookup selftests to strict SEC("sk_lookup")
+    use
+
+ tools/lib/bpf/libbpf.c                        | 506 +++++++++---------
+ tools/lib/bpf/libbpf_internal.h               |   7 +
+ tools/lib/bpf/libbpf_legacy.h                 |   9 +
+ .../selftests/bpf/prog_tests/flow_dissector.c |   4 +-
+ .../bpf/prog_tests/reference_tracking.c       |  22 +-
+ .../selftests/bpf/prog_tests/sk_assign.c      |   2 +-
+ .../selftests/bpf/prog_tests/sockopt_multi.c  |  30 +-
+ .../selftests/bpf/prog_tests/tailcalls.c      |  58 +-
+ tools/testing/selftests/bpf/progs/bpf_flow.c  |   3 +-
+ .../bpf/progs/cg_storage_multi_isolated.c     |   4 +-
+ .../bpf/progs/cg_storage_multi_shared.c       |   4 +-
+ .../testing/selftests/bpf/progs/skb_pkt_end.c |   2 +-
+ .../selftests/bpf/progs/sockopt_multi.c       |   5 +-
+ tools/testing/selftests/bpf/progs/tailcall1.c |   5 +-
+ tools/testing/selftests/bpf/progs/tailcall2.c |  21 +-
+ tools/testing/selftests/bpf/progs/tailcall3.c |   5 +-
+ tools/testing/selftests/bpf/progs/tailcall4.c |   5 +-
+ tools/testing/selftests/bpf/progs/tailcall5.c |   5 +-
+ tools/testing/selftests/bpf/progs/tailcall6.c |   4 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf1.c   |   5 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf2.c   |   5 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf3.c   |   9 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf4.c   |  13 +-
+ .../bpf/progs/test_btf_skc_cls_ingress.c      |   2 +-
+ .../selftests/bpf/progs/test_cgroup_link.c    |   4 +-
+ .../selftests/bpf/progs/test_cls_redirect.c   |   2 +-
+ .../selftests/bpf/progs/test_global_data.c    |   2 +-
+ .../selftests/bpf/progs/test_global_func1.c   |   2 +-
+ .../selftests/bpf/progs/test_global_func3.c   |   2 +-
+ .../selftests/bpf/progs/test_global_func5.c   |   2 +-
+ .../selftests/bpf/progs/test_global_func6.c   |   2 +-
+ .../selftests/bpf/progs/test_global_func7.c   |   2 +-
+ .../selftests/bpf/progs/test_map_in_map.c     |   2 +-
+ .../bpf/progs/test_misc_tcp_hdr_options.c     |   2 +-
+ .../selftests/bpf/progs/test_pkt_access.c     |   2 +-
+ .../selftests/bpf/progs/test_pkt_md_access.c  |   4 +-
+ .../selftests/bpf/progs/test_sk_assign.c      |   3 +-
+ .../selftests/bpf/progs/test_sk_lookup.c      |  44 +-
+ .../selftests/bpf/progs/test_sk_lookup_kern.c |  37 +-
+ .../selftests/bpf/progs/test_skb_helpers.c    |   2 +-
+ .../selftests/bpf/progs/test_sockmap_listen.c |   2 +-
+ .../progs/test_sockmap_skb_verdict_attach.c   |   2 +-
+ .../selftests/bpf/progs/test_sockmap_update.c |   2 +-
+ .../selftests/bpf/progs/test_tc_neigh.c       |   6 +-
+ .../selftests/bpf/progs/test_tc_neigh_fib.c   |   6 +-
+ .../selftests/bpf/progs/test_tc_peer.c        |  10 +-
+ .../bpf/progs/test_tcp_check_syncookie_kern.c |   4 +-
+ .../bpf/progs/test_tcp_hdr_options.c          |   2 +-
+ tools/testing/selftests/bpf/progs/test_xdp.c  |   2 +-
+ .../bpf/progs/test_xdp_adjust_tail_grow.c     |   2 +-
+ .../bpf/progs/test_xdp_adjust_tail_shrink.c   |   4 +-
+ .../bpf/progs/test_xdp_devmap_helpers.c       |   2 +-
+ .../selftests/bpf/progs/test_xdp_link.c       |   2 +-
+ .../selftests/bpf/progs/test_xdp_loop.c       |   2 +-
+ .../selftests/bpf/progs/test_xdp_noinline.c   |   4 +-
+ .../bpf/progs/test_xdp_with_cpumap_helpers.c  |   4 +-
+ .../bpf/progs/test_xdp_with_devmap_helpers.c  |   4 +-
+ tools/testing/selftests/bpf/progs/xdp_dummy.c |   2 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |   4 +-
+ .../testing/selftests/bpf/progs/xdping_kern.c |   4 +-
+ .../selftests/bpf/test_tcp_check_syncookie.sh |   4 +-
+ .../selftests/bpf/test_xdp_redirect.sh        |   4 +-
+ .../selftests/bpf/test_xdp_redirect_multi.sh  |   2 +-
+ tools/testing/selftests/bpf/test_xdp_veth.sh  |   4 +-
+ tools/testing/selftests/bpf/xdping.c          |   6 +-
+ 65 files changed, 463 insertions(+), 476 deletions(-)
+
 -- 
 2.30.2
 
