@@ -2,207 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6652412AD9
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 03:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4478412AD8
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 03:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240737AbhIUCAx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Sep 2021 22:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        id S240706AbhIUCAw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Sep 2021 22:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237156AbhIUBwr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:52:47 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3AAC0386FC
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:21:21 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id 73so43472023qki.4
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:21:21 -0700 (PDT)
+        with ESMTP id S237138AbhIUBwp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Sep 2021 21:52:45 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8EEC0363F0
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:23:20 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id m21so48200631qkm.13
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 16:23:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=znh9ggZizMwDhKAV9Ni97xVIQID9gP6YfoS3LZVvffg=;
-        b=N8ZSpG7C6mN0SQeR7680td5NGAFslnD4wwN1QolFW95kOU8f01aiVDII1nd96YX0zq
-         tYEjYTSEJ69SGgfilLKPpOyt3hXuZkdSr64beccuZjyCmSlymxCAQAJYB2FZEGIJvcKW
-         E8W6p1KVv9DIc0xoYDs5/5cT6YmnWNSj6NEVr57t9Ab8ULlVDvRVnRvUlSUVuSlFOfGo
-         /A17gnCaG8Mm/oSu5/UhTPQg9hNrL2i4vnXzlyXKdCoYzUn4Jw2SnvGH4oKACYAPBTzA
-         6qny694uMuIWjVF8+pyYtiZUdqnJ7l/bM2cc1JUs7nP/Ycxq/LwTn0m9LJHdQ+uWFull
-         Gm5w==
+        bh=iY6x3M+TDDR2/wyB4ZLyz97xWlAqzYMqrWbj2WDiXRc=;
+        b=fA9rb5ehp2Vqv3pKmyvYshSXOTs1nbUS8fDUZOQRlg2GQNmbZbnu2rJNOAiQe/W7Sz
+         p4IzK/pDIPZNIHMwJWdq0rzcr2eha1ImUDKAoPEbqp5QQRQsXaX/EktBh30PEdv2b524
+         gZRrBoiAJAl+Du451aur18m1AAg9qc81+Z8aEALmfapU0WUK1gdzDZ2WS30R23JxKvGc
+         SzHlvQ0jWdnWqZKwjJQMRMg2Trcwm9sFXylQM2L8nCFJ2YoYwNqC05weF3anQJweJtFx
+         dQnVQnUr8vVvH6cXNqaP02hrnMldUmS5AYDy9mMO+xxfWIgDBLJzCU/xOLsgbQr46gQL
+         MWPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=znh9ggZizMwDhKAV9Ni97xVIQID9gP6YfoS3LZVvffg=;
-        b=bXhE6JEcGPDR77YZO+52D+VJ+U+xtyFQUJ6UldZidKSlj6S3DNv6ScHANdwWQlUexp
-         /FaPKKlaDdn+p2UdPRwuBQbBAHmt1ALgrLA2qOkpdXPrjMQkbqt3052bqJzA+RBlEbd0
-         vBtnlN/4VUjoy/lzPjJ1TU42Qr835KdLLxYQbqUB75Be0vyXGxFcbz2ArxvaNbXQ2O95
-         sJgV++F5HfiiDXCmYKtAoOhNEp5FfljAbwMZWOXOfHHeMXlZsRxCtg9H+Gm9qvmrpXoq
-         fOwJ1ebLuVE0ygIWxL/uBYfrIVi3mgbGnX6yOON5u7R93/aK2scZxtcvLyvtChtxUdKp
-         NsxA==
-X-Gm-Message-State: AOAM530gQ0WAZUs2SPrRCSGcY/moBsVBHcsNUIPqFuiCn8ryPP5ge9m8
-        S5iS2z1Xs1Z/RrfDmVBcct9biDO9LqSuResFxGw=
-X-Google-Smtp-Source: ABdhPJyVoVQBXjUMvWz68EcBWd22uXQ3Tvd7Y1AoPTM616Y5BbvZ0Xo5IDxlKWuYzMIQ8VLDPZe3peiKekUOdyxEKI4=
-X-Received: by 2002:a25:47c4:: with SMTP id u187mr37048023yba.225.1632180080962;
- Mon, 20 Sep 2021 16:21:20 -0700 (PDT)
+        bh=iY6x3M+TDDR2/wyB4ZLyz97xWlAqzYMqrWbj2WDiXRc=;
+        b=QI5w+QXPm159AuJZDmitz/tzPVHHWeXSab2mnui9kyVp/goNNau0SX2Nlm2nd5HNbs
+         4sxzoZKE7Lhq3u8uLJuSfWuxNL5Kmdqk/6vEjX0XnFZvexgOC/MJL5jqzu7Rk0WmGNzu
+         x8sAgq1ENJZp8mALfmLMybrLz+8i/L6duAtjxQ2xLiOVhWRkkAriuxCPAxQbHGv7Oc+A
+         BfbDnMUO1pHsWTzwguZy7mQQl9FhCQd4/QAVsEUaBEoioHPeMKoZi67LWT+GkVRcWWBx
+         y0zZoIn2LanRRyEt0ILxPVKIEiM5WuGRWeRxxyI0X6c5lkuZKaSaiZ1BcWxRrPDjvE5v
+         cg7Q==
+X-Gm-Message-State: AOAM533tvG/wXIQbJU7X+6xhFOp65Woti+Y+FhuuGS2MzLUITH5WaVzG
+        oX2m42NndwzR2JbzeJ8HsbJPxzyzSIxvog2/cAM0mjcnHxs=
+X-Google-Smtp-Source: ABdhPJxlL6rQ37DPxyvUhZxB7SwUZT5UvXyZRiiGT3lfGvZ1Z0UBYf31L390HNA3Zp3fJ9M/LQn84rgYb2NPKTFLk6Y=
+X-Received: by 2002:a25:1884:: with SMTP id 126mr17858312yby.114.1632180199166;
+ Mon, 20 Sep 2021 16:23:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914040433.3184308-1-joannekoong@fb.com> <20210914040433.3184308-2-joannekoong@fb.com>
- <20210917170130.njmm3dm65ftd76vo@ast-mbp> <CAEf4BzaA2QCmcc0nZqNbAqMdabqhjE5X_Nh59QjP8kd=iGH5GA@mail.gmail.com>
- <17d7b319-01d0-163e-57b6-c385d38cc9ad@fb.com>
-In-Reply-To: <17d7b319-01d0-163e-57b6-c385d38cc9ad@fb.com>
+References: <20210920181959.1565954-1-andrii@kernel.org> <20210920181959.1565954-2-andrii@kernel.org>
+In-Reply-To: <20210920181959.1565954-2-andrii@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 20 Sep 2021 16:21:09 -0700
-Message-ID: <CAEf4BzYRZM7Oi_CY=trjvefkavt5dwfF-Zu2GKihhfpeopGAnw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: Add bloom filter map implementation
-To:     Joanne Koong <joannekoong@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
+Date:   Mon, 20 Sep 2021 16:23:08 -0700
+Message-ID: <CAEf4BzZK=eMsuDcpey-tTYMVYtWZ5obuRdA-t6V4EGs_-RGf5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] libbpf: fix legacy kprobe event creation FD
+ error handling
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 3:52 PM Joanne Koong <joannekoong@fb.com> wrote:
+On Mon, Sep 20, 2021 at 11:20 AM Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> My previous email replied to Alexei's email before I saw Andrii's new
-> email, so please
-> feel free to disregard my previous email.
+> open() returns -1 on error, not zero FD. Fix the error handling logic.
+> Reported by Coverity statis analysis.
+>
+> Fixes: ca304b40c20d ("libbpf: Introduce legacy kprobe events support")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-Never got that reply of yours. Alexei's email arrived a few hours
-after I've already replied to you. It was a time warp anomaly :)
+This patch is superseded by a new patch series ([0]), please don't apply.
 
->
-> On 9/20/21 1:58 PM, Andrii Nakryiko wrote:
->
-> > On Fri, Sep 17, 2021 at 6:08 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >> On Mon, Sep 13, 2021 at 09:04:30PM -0700, Joanne Koong wrote:
-> >>> +
-> >>> +/* For bloom filter maps, the next 4 bits represent how many hashes to use.
-> >>> + * The maximum number of hash functions supported is 15. If this is not set,
-> >>> + * the default number of hash functions used will be 5.
-> >>> + */
-> >>> +     BPF_F_BLOOM_FILTER_HASH_BIT_1 = (1U << 13),
-> >>> +     BPF_F_BLOOM_FILTER_HASH_BIT_2 = (1U << 14),
-> >>> +     BPF_F_BLOOM_FILTER_HASH_BIT_3 = (1U << 15),
-> >>> +     BPF_F_BLOOM_FILTER_HASH_BIT_4 = (1U << 16),
-> >> The bit selection is unintuitive.
-> >> Since key_size has to be zero may be used that instead to indicate the number of hash
-> >> functions in the rare case when 5 is not good enough?
-> > Hm... I was initially thinking about proposing something like that,
-> > but it felt a bit ugly at the time. But now thinking about this a bit
-> > more, I think this would be a bit more meaningful if we change the
-> > terminology a bit. Instead of saying that Bloom filter has values and
-> > no keys, we actually have keys and no values. So all those bytes that
-> > are hashed are treated as keys (which is actually how sets are
-> > implemented on top of maps, where you have keys and no values, or at
-> > least the value is always true).
-> >
-> > So with that we'll have key/key_size to specify number of bytes that
-> > needs to be hashed (and it's type info). And then we can squint a bit
-> > and say that number of hashes are specified by value_size, as in
-> > values are those nr_hash bits that we set in Bloom filter.
-> >
-> > Still a bit of terminology stretch, but won't necessitate those
-> > specialized fields just for Bloom filter map. But if default value is
-> > going to be good enough for most cases and most cases won't need to
-> > adjust number of hashes, this seems to be pretty clean to me.
->
-> With having bloom filter map keys instead of values,  I think this would
-> lead to messier code in the kernel for handling map_lookup_elem
-> and map_update_elem calls, due to the fact that the bloom filter map
-> is a non-associative map and the current APIs for non-associative map types
-> (peek_elem/push_elem/pop_elem) all have the map data as the value and
-> not the key.
->
-> For example, for map_update_elem, the API from the eBPF program side is
->
-> int (*map_update_elem)(struct bpf_map *map, void *key, void *value, u64
-> flags);
->
-> This would require us to either
->
-> a) Add some custom logic in syscall.c so that we bypass the
-> copy_from_bpfptr call on
-> bloom filter map values (necessary because memcpying 0 bytes still
-> requires the src pointer
-> to be valid), which would allow us to pass in a NULL value
->
-> b) Add a new function like
->
-> int (*map_push_key)(struct bpf_map *map, void *key, u64 flags)
->
-> that eBPF programs can call instead of map_update_elem.
->
-> or
->
-> c) Try to repurpose the existing map_push_elem API by passing in the key
-> instead of the value,
-> which would lead to inconsistent use of the API
->
-> I think if we could change the non-associative map types (currently only
-> stack maps and queue
-> maps, I believe) to have their data be a key instead of a value, and
-> have the pop/peek APIs use
-> keys instead of values, then this would be cleaner, since we could then
-> just use the existing peek/pop
-> APIs.
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=550083&state=*
 
-I don't think we can change existing map APIs anymore, unfortunately.
-
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> >> Or use inner_map_fd since there is no possibility of having an inner map in bloomfilter.
-> >> It could be a union:
-> >>      __u32   max_entries;    /* max number of entries in a map */
-> >>      __u32   map_flags;      /* BPF_MAP_CREATE related
-> >>                               * flags defined above.
-> >>                               */
-> >>      union {
-> >>         __u32  inner_map_fd;   /* fd pointing to the inner map */
-> >>         __u32  nr_hash_funcs;  /* or number of hash functions */
-> >>      };
-> > This works as well. A bit more Bloom filter-only terminology
-> > throughout UAPI and libbpf, but I'd be fine with that as well.
-> >
-> Great, it looks like this is the consensus - I will go with this option
-> for v3!
-> >>      __u32   numa_node;      /* numa node */
-> >>
-> >>> +struct bpf_bloom_filter {
-> >>> +     struct bpf_map map;
-> >>> +     u32 bit_array_mask;
-> >>> +     u32 hash_seed;
-> >>> +     /* If the size of the values in the bloom filter is u32 aligned,
-> >>> +      * then it is more performant to use jhash2 as the underlying hash
-> >>> +      * function, else we use jhash. This tracks the number of u32s
-> >>> +      * in an u32-aligned value size. If the value size is not u32 aligned,
-> >>> +      * this will be 0.
-> >>> +      */
-> >>> +     u32 aligned_u32_count;
-> >> what is the performance difference?
-> >> May be we enforce 4-byte sized value for simplicity?
-> > This might be a bit too surprising, especially if keys are just some
-> > strings, where people might not expect that it has to 4-byte multiple
-> > size. And debugging this without extra tooling (like retsnoop) is
-> > going to be nightmarish.
-> >
-> > If the performance diff is huge and that if/else logic is
-> > unacceptable, we can also internally pad with up to 3 zero bytes and
-> > include those into the hash.
-> I think the if/else logic is unavoidable if we support non 4-byte
-> aligned value sizes,
-> unless we are okay with truncating any remainder bytes of non 4-byte
-> aligned values
-> and stipulating that a bloom filter map value size has to be greater
-> than 4 bytes (these
-> conditions would allow us to use jhash2 for every value without an
-> if/else check). If we
-> internally pad, we will have to pad on every update and lookup, which
-> would also
-> require an if/else.
-> Thanks for the comments and reviews, Alexei and Andrii. They are much
-> appreciated!
-
-I don't think truncation is an option. And I also forgot that we don't
-really store values, so there is nothing to pad, really. So yeah, I'd
-keep it as is, especially if that is not expensive (which I assume
-it's not). As I mentioned before, that logic can be encapsulated in a
-dedicated helper function and reused in a few places.
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6d2f12db6034..761497be6ffc 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9036,7 +9036,7 @@ static int poke_kprobe_events(bool add, const char *name, bool retprobe, uint64_
+>         }
+>
+>         fd = open(file, O_WRONLY | O_APPEND, 0);
+> -       if (!fd)
+> +       if (fd < 0)
+>                 return -errno;
+>         ret = write(fd, cmd, strlen(cmd));
+>         if (ret < 0)
+> --
+> 2.30.2
+>
