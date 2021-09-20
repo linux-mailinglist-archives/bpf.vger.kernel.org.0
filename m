@@ -2,138 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AAD41260F
-	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 20:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E3941235C
+	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 20:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385985AbhITSxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Sep 2021 14:53:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1385893AbhITSwh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:52:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D955611AE;
-        Mon, 20 Sep 2021 18:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632160937;
-        bh=as2gxVfvnJaxy4koQagKxvEP7kyTEN8JfpEklpWnlp0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Q0n9A9GEUlQmIbkRUHCSHnVJseX4zDUujb6T+1aOhk/8Vo33P7W1mnucZEQ+50qh0
-         jYxG+4nqRxyVT3rJXI10DHLC24Qzl9fZwh5KxETz5mRMkxS9dXqtJaHYi4Y0PQtS71
-         AMLIcj5y7I/nTZ4YnuqAq3JzBUn/+N16P8vTKVzkPPPEB4rOoSje8ZfhxDCXNBjy9d
-         ZkMVDtNRwywAQhndFj57TErGvkVYuQzg4GSYkEm5kSc/mwPz/xK0y/iNcZD9ko6cNI
-         BZXtgpm+mcbG/VFvlUFeVmosB4BD+AJl1WE+VusgFJaHKLPjXXPUMD2ezLMMVQ0eb1
-         q79Wm7dDsZbdQ==
-Date:   Mon, 20 Sep 2021 11:02:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        tirthendu.sarkar@intel.com
-Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <20210920110216.4c54c9a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <8735q25ccg.fsf@toke.dk>
-References: <cover.1631289870.git.lorenzo@kernel.org>
-        <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YUSrWiWh57Ys7UdB@lore-desk>
-        <20210917113310.4be9b586@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAADnVQL15NAqbswXedF0r2om8SOiMQE80OSjbyCA56s-B4y8zA@mail.gmail.com>
-        <20210917120053.1ec617c2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAADnVQKbrkOxfNoixUx-RLJEWULJLyhqjZ=M_X2cFG_APwNyCg@mail.gmail.com>
-        <614511bc3408b_8d5120862@john-XPS-13-9370.notmuch>
-        <8735q25ccg.fsf@toke.dk>
+        id S1346842AbhITSXg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 20 Sep 2021 14:23:36 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48734 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1351888AbhITSVe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 14:21:34 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18KHwCho002000
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 11:20:07 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 3b6ng8kt37-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 11:20:07 -0700
+Received: from intmgw002.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Mon, 20 Sep 2021 11:20:05 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id D9C4F48340DC; Mon, 20 Sep 2021 11:19:59 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 1/2] libbpf: fix memory leak in legacy kprobe attach logic
+Date:   Mon, 20 Sep 2021 11:19:58 -0700
+Message-ID: <20210920181959.1565954-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: zI5oHx6-M8Cy65rzqJixODgD7jKdt-Kq
+X-Proofpoint-ORIG-GUID: zI5oHx6-M8Cy65rzqJixODgD7jKdt-Kq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
+ mlxlogscore=942 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109200109
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 18 Sep 2021 13:53:35 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> I'm OK with a bpf_header_pointer()-type helper - I quite like the
-> in-kernel version of this for SKBs, so replicating it as a BPF helper
-> would be great. But I'm a little worried about taking a performance hit.
->=20
-> I.e., if you do:
->=20
-> ptr =3D bpf_header_pointer(pkt, offset, len, stack_ptr)
-> *ptr =3D xxx;
->=20
-> then, if the helper ended up copying the data into the stack pointer,
-> you didn't actually change anything in the packet, so you need to do a
-> writeback.
->=20
-> Jakub suggested up-thread that this should be done with some kind of
-> flush() helper. But you don't know whether the header_pointer()-helper
-> copied the data, so you always need to call the flush() helper, which
-> will incur overhead. If the verifier can in-line the helpers that will
-> lower it, but will it be enough to make it negligible?
+In some error scenarios legacy_probe string won't be free()'d. Fix this.
+This was reported by Coverity static analysis.
 
-Depends on the assumptions the program otherwise makes, right?
+Fixes: ca304b40c20d ("libbpf: Introduce legacy kprobe events support")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-For reading I'd expect a *layout-independent* TC program would=20
-replace approximately:
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index da65a1666a5e..6d2f12db6034 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9365,10 +9365,11 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
+ 						    offset, -1 /* pid */);
+ 	}
+ 	if (pfd < 0) {
++		err = pfd;
+ 		pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
+ 			prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
+-			libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+-		return libbpf_err_ptr(pfd);
++			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		goto err_out;
+ 	}
+ 	link = bpf_program__attach_perf_event_opts(prog, pfd, &pe_opts);
+ 	err = libbpf_get_error(link);
+@@ -9377,7 +9378,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
+ 		pr_warn("prog '%s': failed to attach to %s '%s': %s\n",
+ 			prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
+ 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+-		return libbpf_err_ptr(err);
++		goto err_out;
+ 	}
+ 	if (legacy) {
+ 		struct bpf_link_perf *perf_link = container_of(link, struct bpf_link_perf, link);
+@@ -9387,6 +9388,9 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
+ 	}
+ 
+ 	return link;
++err_out:
++	free(legacy_probe);
++	return libbpf_err_ptr(err);
+ }
+ 
+ struct bpf_link *bpf_program__attach_kprobe(const struct bpf_program *prog,
+-- 
+2.30.2
 
-ptr =3D <some_ptr>;
-if (ptr + CONST >=3D md->ptr_end)
-	if (bpf_pull_data(md, off + CONST))
-		return DROP;
-	ptr =3D <some_ptr>;
-	if (ptr + CONST >=3D md->ptr_end)
-		return DROP; /* da hell? */
-}
-
-With this (pre-inlining):
-
-ptr =3D bpf_header_pointer(md, offset, len, stack);
-if (!ptr)
-	return DROP;
-
-Post-inlining (assuming static validation of args to prevent wraps):
-
-if (md->ptr + args->off + args->len < md->ptr_end)
-	ptr =3D md->ptr + args->off;
-else
-	ptr =3D __bpf_header_pointer(md, offset, len, stack);
-if (!ptr)
-	return DROP;
-
-But that's based on guesswork so perhaps I'm off base.
-
-
-Regarding the flush() I was expecting that most progs will not modify
-the packet (or at least won't modify most headers they load) so no
-point paying the price of tracking changes auto-magically.
-
-In fact I don't think there is anything infra can do better for
-flushing than the prog itself:
-
-	bool mod =3D false;
-
-	ptr =3D bpf_header_pointer(...);
-	...
-	if (some_cond(...)) {
-		change_packet(...);
-		mod =3D true;
-	}
-	...
-	if (mod)
-		bpf_header_pointer_flush();
-
-
-is simple enough.. to me.
