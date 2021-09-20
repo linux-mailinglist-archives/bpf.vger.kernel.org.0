@@ -2,106 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E23D41178C
-	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 16:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A684117EC
+	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 17:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241010AbhITOw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Sep 2021 10:52:28 -0400
-Received: from mout.perfora.net ([74.208.4.196]:54421 "EHLO mout.perfora.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241028AbhITOwM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:52:12 -0400
-Received: from toolbox.cardiotech.int ([81.221.236.183]) by mrelay.perfora.net
- (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1Mjjrb-1n8q2D1Ot1-00lCrF;
- Mon, 20 Sep 2021 16:50:10 +0200
-From:   Marcel Ziswiler <marcel@ziswiler.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S232462AbhITPNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Sep 2021 11:13:01 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58336 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232118AbhITPNA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 11:13:00 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KALmaZ019090
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 08:11:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=9/8mcYEeeNNKtnM5oQISRIsSerLVdZaWFVzA7XmsXB0=;
+ b=d23QMmtbEryMCxQ+3RPfeOojdOzxlg8XHpKJH4RjNXOh7p2O/mZJcgHGSluPFu820vdw
+ g7XRGwDp9a6ELU58Y/Jj5qtsZ4hhx7wi9ycKI4/FW9L5hZyubLti0wRea7Vj5Zj03dwQ
+ P6AkdUWlyNdlJubaVgZK59OVwVG9nXTDNno= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b6d2k46w0-18
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 08:11:33 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Mon, 20 Sep 2021 08:11:29 -0700
+Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
+        id 64A146E18CB8; Mon, 20 Sep 2021 08:11:22 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Otavio Salvador <otavio@ossystems.com.br>,
-        Pascal Zimmermann <pzimmermann@dh-electronics.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v4 6/9] ARM: imx_v6_v7_defconfig: enable bpf syscall and cgroup bpf
-Date:   Mon, 20 Sep 2021 16:49:35 +0200
-Message-Id: <20210920144938.314588-7-marcel@ziswiler.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210920144938.314588-1-marcel@ziswiler.com>
-References: <20210920144938.314588-1-marcel@ziswiler.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [RFC PATCH bpf-next 0/2] bpf: keep track of prog verification stats
+Date:   Mon, 20 Sep 2021 08:11:10 -0700
+Message-ID: <20210920151112.3770991-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:2X/SNXi3Lmk1Ia0b42n9eWIMa40a0ZupsaW5tY7CHbXXHbe9eAF
- v/DBKmFy02usMjtk/gojrg8Ca+ReMNg/FZFr03O1lJXU2Kf5U0c+mS7cdiHzErEWGuJ/izz
- jxZEc2CWt5bTcehJamguMU+3YR4fV3L3BpPWWD1sIc+82dx4AtUc+Z1GX2BLqlFeiAxGFRs
- Nku6I6DqsT3ArLvxAuwaw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:x+gGuuTIlMY=:8+TA1j6FYwJXvc+iFXc1fe
- viLxkkSVK6LDO46ypj5VT+h8IeRXfAvxSKeQlQxgeSD73oeGP0uzJtH7Boe8eugdcH4W27vb3
- 3LriU7IWTnuiYkxPPjDkda8Nh/DiTQSBr20ggclD05Vrf2Y/22QaikpiQtBnnOCpndl5V5l9V
- j6WFA2YMaMXepfl4lNn+s4pYR1qQ0iPkli+F4pLTdMh8jYJfQJActxaD250gKAsDocvF9yfgs
- c8Qy4mezCN1noBGjJmCJVCXxJ8O91oWHhEV8lz2vHQXnxVDpJEDDkr44ks/yD5zL73sFQHHlA
- n9DihAV/KPgtQeihRLFhldvBbX57C6NwxKQ8mrnxNjoZhUzntlX/uI+2KITT/FpREjdK4uMyP
- 4CklpCCMcg9p1MTQtspq/fkcN1S8plZtK/MxlzCWvKpHWEVAcRTFmU6Vytkir47ELVTJtvCBe
- pk97U0QIFe7Um5tlq5Hd5neZ/kTNCUrFPWbuRjPGbuGZ0/69EqkNQhxzMzNPIlOgaoo/CMutO
- 9V3Tl0+VOW3huVXMRZNIFNIrX5bwDQ8b2mly8JmnVH9hzsf1sbJyAxCXCcqfTv+ZWG+RQm/zV
- fafscOJzZFiIBPTQAfSTznmCbOjivW+Oc1bxQaUERVNCIEaKqQTu64gcMwEGbj7Gmz6sj8vsz
- 8GG9cj1n8OH1Wg+fC4QNlrwlAzwRDdSpBeOei2NTBUqbO7agGxIdMbxh5yyaW9bktRFqcwHHt
- Il+Tfmic7Qd4gSXQWqQsAnAoeP7Yp4otqoyeHQ==
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: ohjpW2XbQrBljk0Qdr1YjMtJ6hfuntYJ
+X-Proofpoint-GUID: ohjpW2XbQrBljk0Qdr1YjMtJ6hfuntYJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 impostorscore=0 adultscore=0
+ mlxscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109200098
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+The verifier currently logs some useful statistics in
+print_verification_stats. Although the text log is an effective feedback
+tool for an engineer iterating on a single application, it would also be
+useful to enable tracking these stats in a more structured form for
+fleetwide or historical analysis, which this patchset attempts to do.
 
-Enable CONFIG_BPF_SYSCALL and CONFIG_CGROUP_BPF to allow for systemd
-interoperability. This avoids the following failure on boot:
+A concrete motivating usecase which came up in recent weeks:
 
-[   10.615914] systemd[1]: system-getty.slice: unit configures an IP
- firewall, but the local system does not support BPF/cgroup firewalling.
+A team owns a complex BPF program, with various folks extending its
+functionality over the years. An engineer tries to make a relatively
+simple addition but encounters "BPF program is too large. Processed
+1000001 insn".=20
 
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Their changes bumped the processed insns from 700k to over the limit and
+there's no obvious way to simplify. They must now consider a large
+refactor in order to incorporate the new feature. What if there was some
+previous change which bumped processed insns from 200k->700k which
+_could_ be modified to stress verifier less? Tracking historical
+verifier stats for each version of the program over the years would
+reduce manual work necessary to find such a change.
 
----
 
-(no changes since v3)
+Although parsing the text log could work for this scenario, a solution
+that's resilient to log format and other verifier changes would be
+preferable.
 
-Changes in v3:
-- Add Fabio's reviewed-by. Thanks!
+This patchset adds a bpf_prog_verif_stats struct - containing the same
+data logged by print_verification_stats - which can be retrieved as part
+of bpf_prog_info. Looking for general feedback on approach and a few
+specific areas before fleshing it out further:
 
- arch/arm/configs/imx_v6_v7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+* None of my usecases require storing verif_stats for the lifetime of a
+  loaded prog, but adding to bpf_prog_aux felt more correct than trying
+  to pass verif_stats back as part of BPF_PROG_LOAD
+* The verif_stats are probably not generally useful enough to warrant
+  inclusion in fdinfo, but hoping to get confirmation before removing
+  that change in patch 1
+* processed_insn, verification_time, and total_states are immediately
+  useful for me, rest were added for parity with
+	print_verification_stats. Can remove.
+* Perhaps a version field would be useful in verif_stats in case future
+  verifier changes make some current stats meaningless
+* Note: stack_depth stat was intentionally skipped to keep patch 1
+  simple. Will add if approach looks good.
 
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index c0008b7faf2ce..3e58c76763563 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -2,11 +2,13 @@ CONFIG_KERNEL_LZO=y
- CONFIG_SYSVIPC=y
- CONFIG_NO_HZ=y
- CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_BPF_SYSCALL=y
- CONFIG_PREEMPT_VOLUNTARY=y
- CONFIG_IKCONFIG=y
- CONFIG_IKCONFIG_PROC=y
- CONFIG_LOG_BUF_SHIFT=18
- CONFIG_CGROUPS=y
-+CONFIG_CGROUP_BPF=y
- CONFIG_RELAY=y
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_EXPERT=y
--- 
-2.26.2
+Dave Marchevsky (2):
+  bpf: add verifier stats to bpf_prog_info and fdinfo
+  selftests/bpf: add verif_stats test
+
+ include/linux/bpf.h                           |  1 +
+ include/uapi/linux/bpf.h                      | 10 ++++++
+ kernel/bpf/syscall.c                          | 20 +++++++++--
+ kernel/bpf/verifier.c                         | 13 +++++++
+ tools/include/uapi/linux/bpf.h                | 10 ++++++
+ .../selftests/bpf/prog_tests/verif_stats.c    | 34 +++++++++++++++++++
+ 6 files changed, 86 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verif_stats.c
+
+--=20
+2.30.2
 
