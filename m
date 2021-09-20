@@ -2,79 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1537C41235B
-	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 20:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0FE4127B2
+	for <lists+bpf@lfdr.de>; Mon, 20 Sep 2021 23:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351936AbhITSXe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 20 Sep 2021 14:23:34 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44084 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1351879AbhITSVd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 14:21:33 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18KHwChl002000
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 11:20:06 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3b6ng8kt37-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 11:20:06 -0700
-Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 20 Sep 2021 11:20:04 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id EACDF48340DE; Mon, 20 Sep 2021 11:20:01 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/2] libbpf: fix legacy kprobe event creation FD error handling
-Date:   Mon, 20 Sep 2021 11:19:59 -0700
-Message-ID: <20210920181959.1565954-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210920181959.1565954-1-andrii@kernel.org>
-References: <20210920181959.1565954-1-andrii@kernel.org>
+        id S232066AbhITVFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Sep 2021 17:05:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55569 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233511AbhITVDW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 17:03:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632171714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FJhRY3ScCS/OW3g/SnAzyATsFxCUBetBM+BcPbwPq1A=;
+        b=Ig9od6hSHj+Qq/98u4oxKqL1PU/QgfyCSMFdbqHoq3dd6dQOcjmFBVHOepX/MuFBUwnNod
+        Xj1dIdKt132HbYk6o2tCJsQ2F73te1BXJftaasqIJOG5l+HBzzCOeV1PjldroLOq3nY0/L
+        nO5gtwuBvefyzmZWsJKfu4WWshby3Xk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-07HDg6xfOh-PI6zMkIQvFA-1; Mon, 20 Sep 2021 17:01:53 -0400
+X-MC-Unique: 07HDg6xfOh-PI6zMkIQvFA-1
+Received: by mail-ed1-f71.google.com with SMTP id o23-20020a509b17000000b003d739e2931dso15214355edi.4
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 14:01:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=FJhRY3ScCS/OW3g/SnAzyATsFxCUBetBM+BcPbwPq1A=;
+        b=MiqgyJPx+rONGmPYDtux2SPBqTDv0JX/EW6HLeTofE6Q4KBWZbPYUEkOXiDOSvwkqs
+         6+VYO2WlR/5Cp3v7uNH0I9hf2vtZ0l11pQs0R0k3JWZuhk6c/SE6MTPxe1myItGC8v/J
+         dm9666XR+WTTEWEzq+V1PEqt3xfZLuGKv85NroDw11sJOVEKLxjQKysLp7fSQ7IeDbJa
+         LkNZrSmfERnLrJMplUnWN6UYK+TDMTWO284d8gEon8ydQ9KVeeMBMfc++hP+EJqv+C6k
+         XiymPd8apvKq16geI7F1MQdA0crKoe1JXG5gjOG335+osUbZc5eNWXh22O96zLq9kQl7
+         i8QA==
+X-Gm-Message-State: AOAM531NOVEAtLxtiFc3LDPg6xw5xwo5dijyNMCMh6jOY2SLiCmQRFNJ
+        R2uL8Y389JDKZBbJQPVxOEKX08wMqRbocp6BAuzexDwa2T4CDNSVMQGpO54XWzz3MNZNWxq8sqq
+        fRyIS2llisd89
+X-Received: by 2002:a17:906:5acb:: with SMTP id x11mr29714563ejs.514.1632171710988;
+        Mon, 20 Sep 2021 14:01:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsrOkvmwXPPtt6w9FAHvV7gkFkoag2FKG/BEtVNHX9WDhrUGDvH76vd0eBRRdpEvhdQF7SIA==
+X-Received: by 2002:a17:906:5acb:: with SMTP id x11mr29714442ejs.514.1632171709572;
+        Mon, 20 Sep 2021 14:01:49 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 90sm7471394edc.36.2021.09.20.14.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 14:01:49 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8016D18034A; Mon, 20 Sep 2021 23:01:48 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer
+ support
+In-Reply-To: <20210920110216.4c54c9a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <cover.1631289870.git.lorenzo@kernel.org>
+ <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YUSrWiWh57Ys7UdB@lore-desk>
+ <20210917113310.4be9b586@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQL15NAqbswXedF0r2om8SOiMQE80OSjbyCA56s-B4y8zA@mail.gmail.com>
+ <20210917120053.1ec617c2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQKbrkOxfNoixUx-RLJEWULJLyhqjZ=M_X2cFG_APwNyCg@mail.gmail.com>
+ <614511bc3408b_8d5120862@john-XPS-13-9370.notmuch>
+ <8735q25ccg.fsf@toke.dk>
+ <20210920110216.4c54c9a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 20 Sep 2021 23:01:48 +0200
+Message-ID: <87lf3r3qrn.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: _knJbdgpz9uB8OF4tHu0GsTKKpdH65aF
-X-Proofpoint-ORIG-GUID: _knJbdgpz9uB8OF4tHu0GsTKKpdH65aF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
- mlxlogscore=867 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109200109
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-open() returns -1 on error, not zero FD. Fix the error handling logic.
-Reported by Coverity statis analysis.
+Jakub Kicinski <kuba@kernel.org> writes:
 
-Fixes: ca304b40c20d ("libbpf: Introduce legacy kprobe events support")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Sat, 18 Sep 2021 13:53:35 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> I'm OK with a bpf_header_pointer()-type helper - I quite like the
+>> in-kernel version of this for SKBs, so replicating it as a BPF helper
+>> would be great. But I'm a little worried about taking a performance hit.
+>>=20
+>> I.e., if you do:
+>>=20
+>> ptr =3D bpf_header_pointer(pkt, offset, len, stack_ptr)
+>> *ptr =3D xxx;
+>>=20
+>> then, if the helper ended up copying the data into the stack pointer,
+>> you didn't actually change anything in the packet, so you need to do a
+>> writeback.
+>>=20
+>> Jakub suggested up-thread that this should be done with some kind of
+>> flush() helper. But you don't know whether the header_pointer()-helper
+>> copied the data, so you always need to call the flush() helper, which
+>> will incur overhead. If the verifier can in-line the helpers that will
+>> lower it, but will it be enough to make it negligible?
+>
+> Depends on the assumptions the program otherwise makes, right?
+>
+> For reading I'd expect a *layout-independent* TC program would=20
+> replace approximately:
+>
+> ptr =3D <some_ptr>;
+> if (ptr + CONST >=3D md->ptr_end)
+> 	if (bpf_pull_data(md, off + CONST))
+> 		return DROP;
+> 	ptr =3D <some_ptr>;
+> 	if (ptr + CONST >=3D md->ptr_end)
+> 		return DROP; /* da hell? */
+> }
+>
+> With this (pre-inlining):
+>
+> ptr =3D bpf_header_pointer(md, offset, len, stack);
+> if (!ptr)
+> 	return DROP;
+>
+> Post-inlining (assuming static validation of args to prevent wraps):
+>
+> if (md->ptr + args->off + args->len < md->ptr_end)
+> 	ptr =3D md->ptr + args->off;
+> else
+> 	ptr =3D __bpf_header_pointer(md, offset, len, stack);
+> if (!ptr)
+> 	return DROP;
+>
+> But that's based on guesswork so perhaps I'm off base.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6d2f12db6034..761497be6ffc 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9036,7 +9036,7 @@ static int poke_kprobe_events(bool add, const char *name, bool retprobe, uint64_
- 	}
- 
- 	fd = open(file, O_WRONLY | O_APPEND, 0);
--	if (!fd)
-+	if (fd < 0)
- 		return -errno;
- 	ret = write(fd, cmd, strlen(cmd));
- 	if (ret < 0)
--- 
-2.30.2
+Yeah, that's more or less what I was thinking...
+
+> Regarding the flush() I was expecting that most progs will not modify
+> the packet (or at least won't modify most headers they load) so no
+> point paying the price of tracking changes auto-magically.
+
+... but I guess my mental model assumed that packet writes would be just
+as frequent as reads, in which case it would be a win if you could amend
+your example like:
+
+> In fact I don't think there is anything infra can do better for
+> flushing than the prog itself:
+>
+> 	bool mod =3D false;
+>
+> 	ptr =3D bpf_header_pointer(...);
+> 	...
+> 	if (some_cond(...)) {
+> 		change_packet(...);
+> 		mod =3D true;
+> 	}
+> 	...
+> 	if (mod)
+
+to have an additional check like:
+
+if (mod && ptr =3D=3D stack)
+
+(or something to that effect). No?
+
+-Toke
+
+> 		bpf_header_pointer_flush();
+>
+>
+> is simple enough.. to me.
 
