@@ -2,182 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E07E413A08
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 20:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A75413A7D
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 21:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbhIUSYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 14:24:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29180 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232752AbhIUSYa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 14:24:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632248581;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fCioJD4GXQ8rL7BZ9hZH89l38r2D+NX3fPR72Eu5Xs4=;
-        b=iNghnsdLyIUMOYVls5OwNsyn7eWPJuG9nbeNxvY6eVh39O3+rKXaQyyjqMkvm+HtO6wLi6
-        0jj4dNu/WpdM4Mx8y3sYTOovBzjqRSHT9KWxa6rTtI+JV56ijyKNDfoj9sYlTHzGUlhydM
-        74S8STpH/eumctgQYqh6+S0I+yXBFJM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-3tYSEVvWO5eZx8bxbTiFFg-1; Tue, 21 Sep 2021 14:22:59 -0400
-X-MC-Unique: 3tYSEVvWO5eZx8bxbTiFFg-1
-Received: by mail-ed1-f72.google.com with SMTP id o23-20020a509b17000000b003d739e2931dso18259939edi.4
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 11:22:59 -0700 (PDT)
+        id S234073AbhIUTGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 15:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234063AbhIUTGV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:06:21 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AA2C061574;
+        Tue, 21 Sep 2021 12:04:53 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id w19so393924pfn.12;
+        Tue, 21 Sep 2021 12:04:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SNKCbu5nohcKOUFVbifwjUrtcDWnN9l/kTL1GaMnGSs=;
+        b=paFMYfzawPJ0AhztgGBomodzUWidIFLkKKSthJhaQNPcwh7/tV6MA7HdSOJ7w5bMRz
+         BKgWsMQs+1X6SRxRMRionmwp47vJ+nwcagF/5yFB4yOYqjGxSiRyvU9wNBD0ry1RVWll
+         UhM/RNDR9UANxYS+U2JW7tn6e1Yp5js0l9dLibpSHb6wXTG/31FXtXxC4gTE7LMiSSPG
+         DvBqXmgKwlWjyqwfFNngsycHW5OmsIGWtwomhJww4uu/GYR+kfk5bwCZ0rJjWcknveDR
+         iaUw+4Z5NXFstqRKi/B3viee97fz2QkjmfB7O1cIjujhtiWPlMSGqdBDjRbDooRGMxkI
+         HCvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=fCioJD4GXQ8rL7BZ9hZH89l38r2D+NX3fPR72Eu5Xs4=;
-        b=Vpe9UqoNvKxOfKgE6oulMZKfGY7MJaPaPIhFLJ4oG4IQE24yP+wIE8qhf9OKT5W5o5
-         m2UHO3EmL9ajNU9ISZ8U+Y6ff9IbXUAfq04ySRLfdSHI5ee/Jplaf/a/kSgMVvtNmDXQ
-         AIEF4pTdsIKvR1xj05QlvnwjKVaUOa5ThoaGt21vwAPTCVWnCLtyX0RqlCH51tD01cE0
-         9AbZvFcP8T8pnjou+FbOLoWGot2bucJZHBmeukvJ6ripKvnthRRGQtJuG4pE6WbsEPFV
-         12I/Nn/7g6DIOZbWfWxYc38MLo4Oo/37IsunZgbKyByxsUUmVBMFXFGpQbUZzTkJk2ks
-         84aA==
-X-Gm-Message-State: AOAM533zjJTZteTKVZIzMb3yQ/NFKCqKBgXbFhZXcFQLqaNjwJI7WyV6
-        E19MZj7ugYCaOALPhWqJXbP74KVmj6bzeGxqy5pP2pZ1jYvxTxrBBPKZMlS3FrJUn4kE4CKiq0t
-        gOzmfDotOqciq
-X-Received: by 2002:a05:6402:c8b:: with SMTP id cm11mr36945306edb.368.1632248577189;
-        Tue, 21 Sep 2021 11:22:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWZnPEEIEkqbkx5GE9LEeskOMg0msXbBPJpqTSqI4kp6TMb1xb7FdR2kHCNqXGcCixoh2+nw==
-X-Received: by 2002:a05:6402:c8b:: with SMTP id cm11mr36945152edb.368.1632248575740;
-        Tue, 21 Sep 2021 11:22:55 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id c17sm8760153edu.11.2021.09.21.11.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 11:22:55 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 87F3118034A; Tue, 21 Sep 2021 20:22:53 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Zvi Effron <zeffron@riotgames.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Lorenzo Bianconi <lbianconi@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: Redux: Backwards compatibility for XDP multi-buff
-In-Reply-To: <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
-References: <87o88l3oc4.fsf@toke.dk>
- <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 21 Sep 2021 20:22:53 +0200
-Message-ID: <87ilyt3i0y.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SNKCbu5nohcKOUFVbifwjUrtcDWnN9l/kTL1GaMnGSs=;
+        b=HA4sPu2N/p667Kn+ZlEF/ffBc2ynT4ndQQjGiNDYRioQtjyvFGcXADCItvGcDNUKxQ
+         UJcVShw6A7H+p3LYFlSJNRIQnyajPt/MI1YpuB+7WyYhG3WXDJzZLAiPx0WYUEr3uKLW
+         Muo5hSjrPWT0VWhworUcbUOg5TvVqCsVZpdGprMcU3kS63KbH++vW7nw9F+6sV57pAL8
+         goW0tmzmukMI2R6IvEwaBo/RDkzN3hfR3iiI3xq/2QX/HjTgDfMnUH8sE4RE9mek6TU3
+         eVItRncxW6CkXgPz4f7F6R4wueXtutN0OZbBfCoIeJHRnxNhqxWvcNozxjw3CmjSuYAk
+         6TsQ==
+X-Gm-Message-State: AOAM5313f6VWW1sIHZguB53bzh733UzMIbzfNdThsf3Skf8TDbk+ClJz
+        NTRDzzyxxTnrSClL5++EIs2ih7Ko8ejI0yIzCbQ=
+X-Google-Smtp-Source: ABdhPJzP8GXcED7uWnz91KpAZ1nwyMbko6aPotNm7Iuj7TTd86Xz3xmJ7YjQkzwvNiS/OOnv/X/qzJpt47CFwNOnSbE=
+X-Received: by 2002:a63:3483:: with SMTP id b125mr9531975pga.35.1632251092425;
+ Tue, 21 Sep 2021 12:04:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210920141526.3940002-1-memxor@gmail.com> <20210920141526.3940002-9-memxor@gmail.com>
+ <CAADnVQKjoCLNYBwDvLjgG9cYxrZyhw1Bgvm0yzH0gUWQLNtZnw@mail.gmail.com> <20210921045022.s5mofmkgrkh6inva@apollo.localdomain>
+In-Reply-To: <20210921045022.s5mofmkgrkh6inva@apollo.localdomain>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 21 Sep 2021 12:04:41 -0700
+Message-ID: <CAADnVQKqk-HNSeSkHmqSL8LGuG9QgwK0qS5ef-6NTq2ihZ2y4g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 08/11] libbpf: Update gen_loader to emit
+ BTF_KIND_FUNC relocations
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zvi Effron <zeffron@riotgames.com> writes:
-
-> On Tue, Sep 21, 2021 at 9:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Hi Lorenz (Cc. the other people who participated in today's discussion)
->>
->> Following our discussion at the LPC session today, I dug up my previous
->> summary of the issue and some possible solutions[0]. Seems no on
->> actually replied last time, which is why we went with the "do nothing"
->> approach, I suppose. I'm including the full text of the original email
->> below; please take a look, and let's see if we can converge on a
->> consensus here.
->>
->> First off, a problem description: If an existing XDP program is exposed
->> to an xdp_buff that is really a multi-buffer, while it will continue to
->> run, it may end up with subtle and hard-to-debug bugs: If it's parsing
->> the packet it'll only see part of the payload and not be aware of that
->> fact, and if it's calculating the packet length, that will also only be
->> wrong (only counting the first fragment).
->>
->> So what to do about this? First of all, to do anything about it, XDP
->> programs need to be able to declare themselves "multi-buffer aware" (but
->> see point 1 below). We could try to auto-detect it in the verifier by
->> which helpers the program is using, but since existing programs could be
->> perfectly happy to just keep running, it probably needs to be something
->> the program communicates explicitly. One option is to use the
->> expected_attach_type to encode this; programs can then declare it in the
->> source by section name, or the userspace loader can set the type for
->> existing programs if needed.
->>
->> With this, the kernel will know if a given XDP program is multi-buff
->> aware and can decide what to do with that information. For this we came
->> up with basically three options:
->>
->> 1. Do nothing. This would make it up to users / sysadmins to avoid
->>    anything breaking by manually making sure to not enable multi-buffer
->>    support while loading any XDP programs that will malfunction if
->>    presented with an mb frame. This will probably break in interesting
->>    ways, but it's nice and simple from an implementation PoV. With this
->>    we don't need the declaration discussed above either.
->>
->> 2. Add a check at runtime and drop the frames if they are mb-enabled and
->>    the program doesn't understand it. This is relatively simple to
->>    implement, but it also makes for difficult-to-understand issues (why
->>    are my packets suddenly being dropped?), and it will incur runtime
->>    overhead.
->>
->> 3. Reject loading of programs that are not MB-aware when running in an
->>    MB-enabled mode. This would make things break in more obvious ways,
->>    and still allow a userspace loader to declare a program "MB-aware" to
->>    force it to run if necessary. The problem then becomes at what level
->>    to block this?
->>
+On Mon, Sep 20, 2021 at 9:50 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> I think there's another potential problem with this as well: what happens=
- to
-> already loaded programs that are not MB-aware? Are they forcibly unloaded?
-
-I'd say probably the opposite: You can't toggle whatever switch we end
-up with if there are any non-MB-aware programs (you'd have to unload
-them first)...
-
->>    Doing this at the driver level is not enough: while a particular
->>    driver knows if it's running in multi-buff mode, we can't know for
->>    sure if a particular XDP program is multi-buff aware at attach time:
->>    it could be tail-calling other programs, or redirecting packets to
->>    another interface where it will be processed by a non-MB aware
->>    program.
->>
->>    So another option is to make it a global toggle: e.g., create a new
->>    sysctl to enable multi-buffer. If this is set, reject loading any XDP
->>    program that doesn't support multi-buffer mode, and if it's unset,
->>    disable multi-buffer mode in all drivers. This will make it explicit
->>    when the multi-buffer mode is used, and prevent any accidental subtle
->>    malfunction of existing XDP programs. The drawback is that it's a
->>    mode switch, so more configuration complexity.
->>
+> On Tue, Sep 21, 2021 at 06:27:16AM IST, Alexei Starovoitov wrote:
+> > On Mon, Sep 20, 2021 at 7:15 AM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > This change updates the BPF syscall loader to relocate BTF_KIND_FUNC
+> > > relocations, with support for weak kfunc relocations. The next commit
+> > > adds bpftool supports to set up the fd_array_sz parameter for light
+> > > skeleton.
+> > >
+> > > A second map for keeping fds is used instead of adding fds to existing
+> > > loader.map because of following reasons:
+> >
+> > but it complicates signing bpf progs a lot.
+> >
 >
-> Could we combine the last two bits here into a global toggle that doesn't
-> require a sysctl? If any driver is put into multi-buffer mode, then the s=
-ystem
-> switches to requiring all programs be multi-buffer? When the last multi-b=
-uffer
-> enabled driver switches out of multi-buffer, remove the system-wide
-> restriction?
+> Can you explain this in short? (Just want to understand why it would be
+> problem).
 
-Well, the trouble here is that we don't necessarily have an explicit
-"multi-buf mode" for devices. For instance, you could raise the MTU of a
-device without it necessarily involving any XDP multi-buffer stuff (if
-you're not running XDP on that device). So if we did turn "raising the
-MTU" into such a mode switch, we would end up blocking any MTU changes
-if any XDP programs are loaded. Or having an MTU change cause a
-force-unload of all XDP programs.
+The signing idea (and light skeleton too) rely on two matching blocks:
+signed map and signed prog that operates on this map.
+They have to match and be technically part of single logical signature
+that consists of two pieces.
+The second map doesn't quite fit this model. Especially since it's an empty
+map and it is there for temporary use during execution of the loader prog.
+That fd_array_sz value would somehow need to be part of the signature.
+Adding a 3rd non-generic component to a signature has consequences
+to the whole signing process.
+The loader prog could have created this temp map on its own
+without asking bpf_load_and_run() to do it and without exposing it
+into a signature.
+Anyway the signed bpf progs may get solved differently with the latest John
+proposal, but that's a different discussion.
+The light skeleton minimalizm is its main advantage. Keeping it two
+pieces: one map and one prog is its main selling point.
 
-Neither of those are desirable outcomes, I think; and if we add a
-separate "XDP multi-buff" switch, we might as well make it system-wide?
+> > > If reserving an area for map and BTF fds, we would waste the remaining
+> > > of (MAX_USED_MAPS + MAX_KFUNC_DESCS) * sizeof(int), which in most cases
+> > > will be unused by the program. Also, we must place some limit on the
+> > > amount of map and BTF fds a program can possibly open.
+> >
+> > That is just (256 + 64)*4 bytes of data. Really not much.
+> > I wouldn't worry about reserving this space.
+> >
+>
+> Ok, I'll probably go with this now, I didn't realise a separate fd would be
+> prohibitive for the signing case, so I thought it would nice to lift the
+> limiation on number of map_fds by packing fd_array fds in another map.
+>
+> > > If setting gen->fd_array to first map_fd offset, and then just finding
+> > > the offset relative to this (for later BTF fds), such that they can be
+> > > packed without wasting space, we run the risk of unnecessarily running
+> > > out of valid offset for emit_relo stage (for kfuncs), because gen map
+> > > creation and relocation stages are separated by other steps that can add
+> > > lots of data (including bpf_object__populate_internal_map). It is also
+> > > prone to break silently if features are added between map and BTF fd
+> > > emits that possibly add more data (just ~128KB to break BTF fd, since
+> > > insn->off allows for INT16_MAX (32767) * 4 bytes).
+> >
+> > I don't follow this logic.
+> >
+> > > Both of these issues are compounded by the fact that data map is shared
+> > > by all programs, so it is easy to end up with invalid offset for BTF fd.
+> >
+> > I don't follow this either. There is only one map and one program.
+> > What sharing are you talking about?
+>
+> What I saw was that the sequence of calls is like this:
+> bpf_gen__map_create
+> add_data - from first emit we add map_fd, we also store gen->fd_array
+> then libbpf would call bpf_object__populate_internal_map
+> which calls bpf_gen__map_update_elem, which also does add_data (can be of
+> arbitrary sizes).
+>
+> emit_relos happens relatively at the end.
+> For each program in the object, this sequence can be repeated, such that the
+> add_data that we do in emit_relos, relative offset from gen->fd_array offset
+> can end up becoming big enough (as all programs in object add data to same map),
+> while gen->fd_array comes from first map creation.
 
-> Regarding my above question, if non-MB-aware XDP programs are not forcibly
-> unloaded, then a global toggle is also insufficient. An existing non-MB-a=
-ware
-> XDP program would still beed to be rejected at attach time by the
-> driver.
-
-See above.
-
--Toke
-
+You've meant to use fd_array as a very very sparse array
+with giant gaps between valid map_fds and btf_fds. Now I see it :)
+Indeed in such a case there is a risk of running out of 16-bit in bpf_insn->off.
+Reserving (256 + 64)*4 in the beginning of the data map should solve it, right?
+The loader prog can create a 2nd auxiliary map on the fly,
+but it seems easier and simpler to just reserve this space in one and only map.
