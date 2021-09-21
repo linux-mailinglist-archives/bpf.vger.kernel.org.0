@@ -2,268 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BD9413BEF
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E423413BF6
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235206AbhIUVFA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 21 Sep 2021 17:05:00 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57674 "EHLO
+        id S232981AbhIUVHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 17:07:02 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15960 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235218AbhIUVE6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 17:04:58 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LH9rbD023050
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:03:29 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b7apg55vf-5
+        by vger.kernel.org with ESMTP id S232718AbhIUVHB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 17:07:01 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LHA1H8020969
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:05:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=30+gXXvkNRZwBmM+QUEMzcWZad0B3FYUW4IDlH0C76A=;
+ b=Hku7LgZ0rOgZUcao178/AmNLvhbNzO9ZyF1DRwyW/ntIiKnD7fCTgc4riUrHC4nsqO4l
+ K/lwDvvFSEBrtYPQpuQKAXG1FgNi64BoKMtxRPWht0Hpg7UMnrVuVvAFhQ0iI0+dzlsG
+ +4bMecPjUHO/cb4VTwBJStDZxutTq/UBiNk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b79q5nc32-10
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:03:29 -0700
-Received: from intmgw002.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:05:32 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 21 Sep 2021 14:00:47 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 5781A49ACF09; Tue, 21 Sep 2021 14:00:46 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 4/4] libbpf: add legacy uprobe attaching support
-Date:   Tue, 21 Sep 2021 14:00:36 -0700
-Message-ID: <20210921210036.1545557-5-andrii@kernel.org>
+ 15.1.2308.14; Tue, 21 Sep 2021 14:04:47 -0700
+Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
+        id 4ACE82AC130F; Tue, 21 Sep 2021 14:04:46 -0700 (PDT)
+From:   Joanne Koong <joannekoong@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
+Subject: [PATCH v3 bpf-next 0/5] Implement bloom filter map
+Date:   Tue, 21 Sep 2021 14:02:20 -0700
+Message-ID: <20210921210225.4095056-1-joannekoong@fb.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210921210036.1545557-1-andrii@kernel.org>
-References: <20210921210036.1545557-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: YNIc62TtPr_dmp6q0xWhQZ52LRKk42Vh
-X-Proofpoint-GUID: YNIc62TtPr_dmp6q0xWhQZ52LRKk42Vh
+X-Proofpoint-GUID: TLE6rmngUTfvNuXrKvm_-V3Mu35SGOG9
+X-Proofpoint-ORIG-GUID: TLE6rmngUTfvNuXrKvm_-V3Mu35SGOG9
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-21_06,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 suspectscore=0
- clxscore=1015 malwarescore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109030001 definitions=main-2109210125
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=894 clxscore=1015
+ spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109210125
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similarly to recently added legacy kprobe attach interface support
-through tracefs, support attaching uprobes using the legacy interface if
-host kernel doesn't support newer FD-based interface.
+This patchset adds a new kind of bpf map: the bloom filter map.
+Bloom filters are a space-efficient probabilistic data structure
+used to quickly test whether an element exists in a set.
+For a brief overview about how bloom filters work,
+https://en.wikipedia.org/wiki/Bloom_filter
+may be helpful.
 
-For uprobes event name consists of "libbpf_" prefix, PID, sanitized
-binary path and offset within that binary. Structuraly the code is
-aligned with kprobe logic refactoring in previous patch. struct
-bpf_link_perf is re-used and all the same legacy_probe_name and
-legacy_is_retprobe fields are used to ensure proper cleanup on
-bpf_link__destroy().
+One example use-case is an application leveraging a bloom filter
+map to determine whether a computationally expensive hashmap
+lookup can be avoided. If the element was not found in the bloom
+filter map, the hashmap lookup can be skipped.
 
-Users should be aware, though, that on old kernels which don't support
-FD-based interface for kprobe/uprobe attachment, if the application
-crashes before bpf_link__destroy() is called, uprobe legacy
-events will be left in tracefs. This is the same limitation as with
-legacy kprobe interfaces.
+This patchset includes benchmarks for testing the performance of
+the bloom filter for different entry sizes and different number of
+hash functions used, as well as comparisons for hashmap lookups
+with vs. without the bloom filter.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 130 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 122 insertions(+), 8 deletions(-)
+v2 -> v3:
+* Add libbpf changes for supporting nr_hash_funcs, instead of passing the
+number of hash functions through map_flags.
+* Separate the hashing logic in kernel/bpf/bloom_filter.c into a helper
+function
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index aa842f0721cb..ef5db34bf913 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9021,6 +9021,7 @@ struct bpf_link_perf {
- };
- 
- static int remove_kprobe_event_legacy(const char *probe_name, bool retprobe);
-+static int remove_uprobe_event_legacy(const char *probe_name, bool retprobe);
- 
- static int bpf_link_perf_detach(struct bpf_link *link)
- {
-@@ -9034,11 +9035,14 @@ static int bpf_link_perf_detach(struct bpf_link *link)
- 		close(perf_link->perf_event_fd);
- 	close(link->fd);
- 
--	/* legacy kprobe needs to be removed after perf event fd closure */
-+	/* legacy uprobe/kprobe needs to be removed after perf event fd closure */
- 	if (perf_link->legacy_probe_name) {
- 		if (perf_link->legacy_is_kprobe) {
- 			err = remove_kprobe_event_legacy(perf_link->legacy_probe_name,
- 							 perf_link->legacy_is_retprobe);
-+		} else {
-+			err = remove_uprobe_event_legacy(perf_link->legacy_probe_name,
-+							 perf_link->legacy_is_retprobe);
- 		}
- 	}
- 
-@@ -9450,17 +9454,96 @@ static struct bpf_link *attach_kprobe(const struct bpf_program *prog)
- 	return link;
- }
- 
-+static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
-+					 const char *binary_path, uint64_t offset)
-+{
-+	int i;
-+
-+	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(), binary_path, (size_t)offset);
-+
-+	/* sanitize binary_path in the probe name */
-+	for (i = 0; buf[i]; i++) {
-+		if (!isalnum(buf[i]))
-+			buf[i] = '_';
-+	}
-+}
-+
-+static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
-+					  const char *binary_path, size_t offset)
-+{
-+	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-+
-+	return append_to_file(file, "%c:%s/%s %s:0x%zx",
-+			      retprobe ? 'r' : 'p',
-+			      retprobe ? "uretprobes" : "uprobes",
-+			      probe_name, binary_path, offset);
-+}
-+
-+static inline int remove_uprobe_event_legacy(const char *probe_name, bool retprobe)
-+{
-+	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-+
-+	return append_to_file(file, "-:%s/%s", retprobe ? "uretprobes" : "uprobes", probe_name);
-+}
-+
-+static int determine_uprobe_perf_type_legacy(const char *probe_name, bool retprobe)
-+{
-+	char file[512];
-+
-+	snprintf(file, sizeof(file),
-+		 "/sys/kernel/debug/tracing/events/%s/%s/id",
-+		 retprobe ? "uretprobes" : "uprobes", probe_name);
-+
-+	return parse_uint_from_file(file, "%d\n");
-+}
-+
-+static int perf_event_uprobe_open_legacy(const char *probe_name, bool retprobe,
-+					 const char *binary_path, size_t offset, int pid)
-+{
-+	struct perf_event_attr attr;
-+	int type, pfd, err;
-+
-+	err = add_uprobe_event_legacy(probe_name, retprobe, binary_path, offset);
-+	if (err < 0) {
-+		pr_warn("failed to add legacy uprobe event for %s:0x%zx: %d\n",
-+			binary_path, (size_t)offset, err);
-+		return err;
-+	}
-+	type = determine_uprobe_perf_type_legacy(probe_name, retprobe);
-+	if (type < 0) {
-+		pr_warn("failed to determine legacy uprobe event id for %s:0x%zx: %d\n",
-+			binary_path, offset, err);
-+		return type;
-+	}
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.config = type;
-+	attr.type = PERF_TYPE_TRACEPOINT;
-+
-+	pfd = syscall(__NR_perf_event_open, &attr,
-+		      pid < 0 ? -1 : pid, /* pid */
-+		      pid == -1 ? 0 : -1, /* cpu */
-+		      -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
-+	if (pfd < 0) {
-+		err = -errno;
-+		pr_warn("legacy uprobe perf_event_open() failed: %d\n", err);
-+		return err;
-+	}
-+	return pfd;
-+}
-+
- LIBBPF_API struct bpf_link *
- bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 				const char *binary_path, size_t func_offset,
- 				const struct bpf_uprobe_opts *opts)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
--	char errmsg[STRERR_BUFSIZE];
-+	char errmsg[STRERR_BUFSIZE], *legacy_probe = NULL;
- 	struct bpf_link *link;
- 	size_t ref_ctr_off;
- 	int pfd, err;
--	bool retprobe;
-+	bool retprobe, legacy;
- 
- 	if (!OPTS_VALID(opts, bpf_uprobe_opts))
- 		return libbpf_err_ptr(-EINVAL);
-@@ -9469,15 +9552,35 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 	ref_ctr_off = OPTS_GET(opts, ref_ctr_offset, 0);
- 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
- 
--	pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
--				    func_offset, pid, ref_ctr_off);
-+	legacy = determine_uprobe_perf_type() < 0;
-+	if (!legacy) {
-+		pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
-+					    func_offset, pid, ref_ctr_off);
-+	} else {
-+		char probe_name[512];
-+
-+		if (ref_ctr_off)
-+			return libbpf_err_ptr(-EINVAL);
-+
-+		gen_uprobe_legacy_event_name(probe_name, sizeof(probe_name),
-+					     binary_path, func_offset);
-+
-+		legacy_probe = strdup(probe_name);
-+		if (!legacy_probe)
-+			return libbpf_err_ptr(-ENOMEM);
-+
-+		pfd = perf_event_uprobe_open_legacy(legacy_probe, retprobe,
-+						    binary_path, func_offset, pid);
-+	}
- 	if (pfd < 0) {
-+		err = -errno;
- 		pr_warn("prog '%s': failed to create %s '%s:0x%zx' perf event: %s\n",
- 			prog->name, retprobe ? "uretprobe" : "uprobe",
- 			binary_path, func_offset,
--			libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
--		return libbpf_err_ptr(pfd);
-+			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-+		goto err_out;
- 	}
-+
- 	link = bpf_program__attach_perf_event_opts(prog, pfd, &pe_opts);
- 	err = libbpf_get_error(link);
- 	if (err) {
-@@ -9486,9 +9589,20 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
- 			prog->name, retprobe ? "uretprobe" : "uprobe",
- 			binary_path, func_offset,
- 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
--		return libbpf_err_ptr(err);
-+		goto err_out;
-+	}
-+	if (legacy) {
-+		struct bpf_link_perf *perf_link = container_of(link, struct bpf_link_perf, link);
-+
-+		perf_link->legacy_probe_name = legacy_probe;
-+		perf_link->legacy_is_kprobe = false;
-+		perf_link->legacy_is_retprobe = retprobe;
- 	}
- 	return link;
-+err_out:
-+	free(legacy_probe);
-+	return libbpf_err_ptr(err);
-+
- }
- 
- struct bpf_link *bpf_program__attach_uprobe(const struct bpf_program *prog,
--- 
+v1 -> v2:
+* Remove libbpf changes, and pass the number of hash functions through
+map_flags instead.
+* Default to using 5 hash functions if no number of hash functions
+is specified.
+* Use set_bit instead of spinlocks in the bloom filter bitmap. This
+improved the speed significantly. For example, using 5 hash functions
+with 100k entries, there was roughly a 35% speed increase.
+* Use jhash2 (instead of jhash) for u32-aligned value sizes. This
+increased the speed by roughly 5 to 15%. When using jhash2 on value
+sizes non-u32 aligned (truncating any remainder bits), there was not
+a noticeable difference.
+* Add test for using the bloom filter as an inner map.
+* Reran the benchmarks, updated the commit messages to correspond to
+the new results.
+
+
+Joanne Koong (5):
+  bpf: Add bloom filter map implementation
+  libbpf: Allow the number of hashes in bloom filter maps to be
+    configurable
+  selftests/bpf: Add bloom filter map test cases
+  bpf/benchs: Add benchmark test for bloom filter maps
+  bpf/benchs: Add benchmarks for comparing hashmap lookups with vs.
+    without bloom filter
+
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |   6 +-
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bloom_filter.c                     | 185 +++++++++
+ kernel/bpf/syscall.c                          |  14 +-
+ kernel/bpf/verifier.c                         |  19 +-
+ tools/include/uapi/linux/bpf.h                |   6 +-
+ tools/lib/bpf/bpf.c                           |   2 +
+ tools/lib/bpf/bpf.h                           |   1 +
+ tools/lib/bpf/libbpf.c                        |  32 +-
+ tools/lib/bpf/libbpf.h                        |   2 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_internal.h               |   4 +-
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/bench.c           |  57 ++-
+ tools/testing/selftests/bpf/bench.h           |   3 +
+ .../bpf/benchs/bench_bloom_filter_map.c       | 384 ++++++++++++++++++
+ .../bpf/benchs/run_bench_bloom_filter_map.sh  |  43 ++
+ .../bpf/benchs/run_bench_ringbufs.sh          |  30 +-
+ .../selftests/bpf/benchs/run_common.sh        |  60 +++
+ .../bpf/prog_tests/bloom_filter_map.c         | 177 ++++++++
+ .../selftests/bpf/progs/bloom_filter_map.c    | 157 +++++++
+ 22 files changed, 1142 insertions(+), 48 deletions(-)
+ create mode 100644 kernel/bpf/bloom_filter.c
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bloom_filter_m=
+ap.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bloom_filt=
+er_map.sh
+ create mode 100644 tools/testing/selftests/bpf/benchs/run_common.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bloom_filter_map=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bloom_filter_map.c
+
+--=20
 2.30.2
 
