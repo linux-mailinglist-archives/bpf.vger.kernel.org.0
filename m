@@ -2,113 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A43413D12
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F8A413D20
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235826AbhIUVzs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 17:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S235722AbhIUV7b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 17:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235827AbhIUVzQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:55:16 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B595EC0613E0;
-        Tue, 21 Sep 2021 14:53:40 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c7so2656687qka.2;
-        Tue, 21 Sep 2021 14:53:40 -0700 (PDT)
+        with ESMTP id S235815AbhIUV72 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:59:28 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0DDC061762;
+        Tue, 21 Sep 2021 14:57:54 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id d207so2868113qkg.0;
+        Tue, 21 Sep 2021 14:57:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JuZKNp3WhYi3DR7rWgOF+IrjERPbP8+GlVOGLjF2wg8=;
-        b=I1bWPamr9byNu+TXuCSjpcBvbqVnLblH8O/4HbHCfZPBaxUzOpFLPfaplTshTVE1w5
-         euu14xzCl14Vs3JJzyOkNVnNYFIjvPS9rXnJYSPV48LOVurjgLcimQcW9oWEqhwqMzUX
-         uGHjP/fhRYHU2CfTrPXMmxYvL6zB28vj6d1D62eebcgsdlQDhqGeHQxgEku6gzyCRgw+
-         w3VhFoGTJgCqKdFKxqdJkdQV+y8PXqclUtA30LAFbtDx6bzhgnRDfRhoCt3y6XBCKpr4
-         m8g76m3niOeD8nOxuwv9ZduLzeTJv1O6l/9+WKf6F6zM0xA8QkHtr2H4N7vyzo2OkOKL
-         a7qw==
+        bh=aEJSiqyogr4SM4A4lDqjWLxllEFvyQtngCbOv9PrjxM=;
+        b=h1EZ8S2Jp1p/lzEMg68zl/3Xo9HGjF+edGhOFJSKw6aMxsmrZ5ZZTta75fr5ZTyBwr
+         p6BCQ5ATN/Dz3KncByhpPMKtq3fP7r08imNz9k31OU8uLVuRY/aQLkxpueGYA5ke3LZp
+         8cxiCroH2wgGo6rSxO/v5I0iY/TYAg7ZitHuTvHQ28npEBMavAHOvJs0cCLrf2zfNzFO
+         bdApcP874oK0+DYxl0wY4nS3ciX+ohCq7e2dBKOlts3u4h4Di2FhSdLJ4B59lVAqi7H1
+         2mAvEGGNhmBt7m+rJYhoJkcbKLNzIUpSTo4yL5hr6KNoJO+jKHFG9n6FkYDVdvmsq8S3
+         s3bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JuZKNp3WhYi3DR7rWgOF+IrjERPbP8+GlVOGLjF2wg8=;
-        b=w500GvDHWqpsmATLkSH6DPn+d0Yp5hdcEZD/4ziocfn7ABfc14KK+8oZFtgEP8g/bI
-         Q9qRPHB3uAQ5fFHxJTZYshYX9sRUcmT+KpiDeKdORDVG+ftBJkEnZ6O6rw/XZwP6KnWV
-         XtCJr5yCpkCmCaIAZ8BQrr1199Wov72yZyHEDwiQDbIM6n9i4LnCuGY5ycCzM5UBO41q
-         GCwomlnTodtTTevxAoxOzDtPHSwCeG+Oubd3+CErQiEmTXmrvYf+Ztj5Qx7QQ/GLOxgE
-         UZoPUZhXzY/61KFHWhe+UZhvIZPaSyT7HTbTekS9XIwwZyzAbJOWiNB/DGzccftbvmcu
-         9GZw==
-X-Gm-Message-State: AOAM5315Mbl0Ylfr+7Y8yqCX8OhlCF1yC5LSthX4KQDzz0xKXM/v3E4c
-        fyDtr2FspR+rDeox11YFGJ86nt35Urwisqd3kyzrobH7720=
-X-Google-Smtp-Source: ABdhPJwck3quzywdfaTdDtVJvU3YI5hKnN+XHO0+UnqxN/IrDD9LYBFkIn1HuEsC4KgEEf08AtFBuL/MoYtNXKr8KR0=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr41577491ybj.504.1632261219941;
- Tue, 21 Sep 2021 14:53:39 -0700 (PDT)
+        bh=aEJSiqyogr4SM4A4lDqjWLxllEFvyQtngCbOv9PrjxM=;
+        b=C76BoWHLY5u5XAMK9oUoffeRPAifd5Lma+YvYDnL7HeV7DLFPxRLvL8Iz1LkiCS5Mi
+         ZsITYikhU3dpznz9eIGG4EhJVGfTogYRqFXRyHhDO/dZcSbnN0QlGyly1YsKnIw8hjly
+         tNnulNYUfBa8LDNDWMXS1jxFvIsf1rykHB59Xhi5Sl6Q4zADE45BbOnaBS96wzj0AYYX
+         GSvNcZtIseDpMz3ukfGE5+/dzdoA6iZDOohW2HfzIKOH2LrUG5cnYx5OcpKBp7OPknVX
+         F90Xkl1LqxlgY+1U3uVCLBJpDyU6K5rBg4CwEn9xZ8stDVba/wY4RonGDje+gNEZGeSP
+         XjXw==
+X-Gm-Message-State: AOAM530X3aX0j8UU0pZ6Vf7US9LTVgC97z3ykYlMmD2ncIoKBJBaLakK
+        fROOsyPaKhZnOBsdikgMJRUYsGMPWehFS8s63xMFuPP74ro=
+X-Google-Smtp-Source: ABdhPJxbrju1AXc5iym3fn2w2b2woWDfdHBY8/lGj5PRdkqZqgbnKk6eAtClRn1rNQaPn1hoSWGZyvYDf1jaKIRTfBw=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr41595206ybj.504.1632261473577;
+ Tue, 21 Sep 2021 14:57:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210918020958.1167652-1-houtao1@huawei.com> <20210918020958.1167652-4-houtao1@huawei.com>
-In-Reply-To: <20210918020958.1167652-4-houtao1@huawei.com>
+References: <20210920003545.3524231-1-yhs@fb.com> <20210920003550.3525047-1-yhs@fb.com>
+In-Reply-To: <20210920003550.3525047-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 14:53:28 -0700
-Message-ID: <CAEf4BzbstXqV+oH8uBHDDSgSzOY722jv3SsYt+cZCW9Ebwk8+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpf/selftests: add test for writable bare tracepoint
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+Date:   Tue, 21 Sep 2021 14:57:42 -0700
+Message-ID: <CAEf4BzY7LxXZ2E0aezVPykDhXvEGeiLFWojirVNBLJ2j0qU2=w@mail.gmail.com>
+Subject: Re: [PATCH dwarves 1/2] dwarf_loader: parse dwarf tag DW_TAG_LLVM_annotation
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 6:56 PM Hou Tao <houtao1@huawei.com> wrote:
+On Sun, Sep 19, 2021 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Add a writable bare tracepoint in bpf_testmod module, and
-> trigger its calling when reading /sys/kernel/bpf_testmod
-> with a specific buffer length. The reading will return
-> the value in writable context if the early return flag
-> is enabled in writable context.
+> Parse dwarf tag DW_TAG_LLVM_annotation. Only record
+> annotations with btf_tag name which corresponds to
+> btf_tag attributes in C code. Such information will
+> be used later by btf_encoder for BTF conversion.
 >
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> LLVM implementation only supports btf_tag annotations
+> on struct/union, func, func parameter and variable ([1]).
+> So we only check existence of corresponding DW tags
+> in these places. A flag "--skip_encoding_btf_tag"
+> is introduced if for whatever reason this feature
+> needs to be disabled.
+>
+>  [1] https://reviews.llvm.org/D106614
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  .../bpf/bpf_testmod/bpf_testmod-events.h      | 15 ++++++++
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 10 ++++++
->  .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 +++
->  .../selftests/bpf/prog_tests/module_attach.c  | 36 +++++++++++++++++++
->  .../selftests/bpf/progs/test_module_attach.c  | 14 ++++++++
->  5 files changed, 80 insertions(+)
+
+LGTM.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  dwarf_loader.c | 85 ++++++++++++++++++++++++++++++++++++++++++++++----
+>  dwarves.h      | 10 ++++++
+>  pahole.c       |  8 +++++
+>  3 files changed, 97 insertions(+), 6 deletions(-)
 >
-
-[...]
-
-> +static int trigger_module_test_writable(int *val)
-> +{
-> +       int fd, err;
-> +       char buf[65];
-> +       ssize_t rd;
-> +
-> +       fd = open("/sys/kernel/bpf_testmod", O_RDONLY);
-> +       err = -errno;
-> +       if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
-> +               return err;
-> +
-> +       rd = read(fd, buf, sizeof(buf) - 1);
-> +       err = rd < 0 ? -errno : -ENODATA;
-> +       if (CHECK(rd <= 0, "testmod_file_rd_val", "failed: rd %zd errno %d\n",
-> +                 rd, errno)) {
-> +               close(fd);
-> +               return err;
-> +       }
-> +
-
-please use ASSERT_xxx() consistently
-
-> +       buf[rd] = '\0';
-> +       *val = strtol(buf, NULL, 0);
-> +       close(fd);
-> +
-> +       return 0;
-> +}
-> +
 
 [...]
