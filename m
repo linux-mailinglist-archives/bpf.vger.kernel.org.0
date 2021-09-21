@@ -2,139 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADDD413DCD
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 01:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CA7413DD5
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 01:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbhIUXEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 19:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
+        id S229795AbhIUXKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 19:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhIUXEY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:04:24 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A4CC061574;
-        Tue, 21 Sep 2021 16:02:55 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id 73so3123035qki.4;
-        Tue, 21 Sep 2021 16:02:55 -0700 (PDT)
+        with ESMTP id S229576AbhIUXKk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:10:40 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5697FC061574
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:09:11 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id t4so2890884qkb.9
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hKQQwmeziLQV3Zl8Z6GcoEmhM45LZd29KWKMsYh23DE=;
-        b=ahCBou0Zc5Zw0Ae4Zgdi+EF+F4azkDGzbS9dBhFYXf+aRUXuXznNpCHOnDr0bf4rCA
-         fCpAMCTC/3WwAo3sBtLHLUBdtKsHw2pmWh6WksKV2eZDtziH/5INZQxuPBvA6/Lye++Y
-         K0ZPSINcjVdf5C7zLAf++qrHvUP14jM9lKee8lr2Et7z9w3g3j2h7nOZTm849oBmN8cM
-         YyrYMP/AtgTAQGQnF0ZUC3y2gVf1kjT0IYtDEch1+J7kFDiQCf3cLiNFdpKz6fgl5K5/
-         8hz7E3G1X7d8nHRKNXJIPSHmAx89XaCQTLTgfolsiAsPGTbpiihNEDITRRJRcK2/HhFQ
-         gDFQ==
+        bh=NoY1MvjodBHwsp1sLEQd5Il8otRonscwa0g/4GtFFjk=;
+        b=Ha2EnFGyP/tqVmcTclWU45AjtHfe79n/i0El8A8XGzGHtvkN8Vy6DNRAjtSskRvC6h
+         NXF0PA9VSniXUiMbxsjRpaAmK/hnOr/K/sohKPh1J6efn9jfkNZWD7NaAiom2iLa+4Os
+         vX6jdjVeSd4BylI9EKkBAYNRoq5JmhYVJ5N/qhVeBy2IYbGbLeQoKbK535QxK14XZeAB
+         XBBbDHebWiZERlx+tdVpNku2ZZnsRA3YrrqFRStjuUp0HJQYFoEhpNzXCDYg60aB6YRF
+         WucXNbdaaTuTLcusW3LrkxTCejv7R9ylz2y+nGO3heQiGn7tQWzAMJHPOmlAqEFAg0oS
+         hiew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hKQQwmeziLQV3Zl8Z6GcoEmhM45LZd29KWKMsYh23DE=;
-        b=ov+8TzkLdlp78uDreYd9n/agDzwglM16cK+f5qxc2mUKNjjo2HZ5ZvZV+FQ3jD+8SP
-         uub9c1PGR2hF7JMaKEtAIeRYonkEUnazgNo22Y5FX8UcVyg8RSh+7nYgo2MlltAvWqiC
-         GMY6JWx3KyFthOh42vBghrlx1nfumuKgKW25VB8cuwNiNj/MMjH8aGa/vQPFkzH0xc90
-         zgYQES2Jasmi3Sd47GBg+5qCg53/rGGpn+QILu2GzaHjOTnWY+uejDIPQkmZjsuGjZUX
-         1l63bdGVbPCO/Du897RTuAn+ISqXTpA3TOIfMLnPwFF555+Jj5wUKmSSFq7t4TIWznRO
-         vIPw==
-X-Gm-Message-State: AOAM533MX2Zm3zqGpGfm9kTsjXQUBL+ecLOkreLE3ml31xMNftMndRxW
-        ov8j8t4Nlox5X49dVReGYkZ76XrDv+a+iP92VIw=
-X-Google-Smtp-Source: ABdhPJzZUkzfuWUQgF9JMzt8Ys1MIQz7T6Bzuq1WGLycqAXY3BsfCDksBmnUdTuJHyvV+4JspIBIfNIANPei3Le+gUY=
-X-Received: by 2002:a25:47c4:: with SMTP id u187mr44409544yba.225.1632265374225;
- Tue, 21 Sep 2021 16:02:54 -0700 (PDT)
+        bh=NoY1MvjodBHwsp1sLEQd5Il8otRonscwa0g/4GtFFjk=;
+        b=pv/4pqoopYDH9D2C2t2DLlkK+oEgUqvq/uqqJW1JpNOEk2w9HeuuzD1eehpVR9emo0
+         7us211zkR0llBLsqqQz3GNdY8llvTptHjZmzUV2/Fahi9LEY52huFrmg05cQWBtJ7KxM
+         n39TI+KGhSy6SdWpGDLf0m91mGMbSKyrM3pKKVXsSq2jLe4VhilD2Ng3ytzfWFEf52Ec
+         YgzUQxbidP6brxcCBFvvdd3DGm542lGfyUg00oiJlG6ZFfiaSDwt5h5UztEHtV2fsZVw
+         2Fdxh5pqNACkvCZWpJS+yyQVgLJHnSwqV6OPa8edYZnvLiGPCkeibAOPKkHkHqX/JYEB
+         vVJQ==
+X-Gm-Message-State: AOAM533wSuA87d1/Kt+nFU9IKNoMKRhUl7AnGakIQ97kkK3686BemNC/
+        RSqsuBEgkZwTGrL39//sdNC3U3guR2CrLsBJntpZk2A+
+X-Google-Smtp-Source: ABdhPJzpUZ7xILHNCniNJpYrmFS2xXw4e2L4f8ltH+oZkwvr3D01Fl1qemD+R7EVO6O8NNC/TKkWjaoxALVyn321sLI=
+X-Received: by 2002:a25:1884:: with SMTP id 126mr24764992yby.114.1632265750513;
+ Tue, 21 Sep 2021 16:09:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920141526.3940002-1-memxor@gmail.com> <20210920141526.3940002-6-memxor@gmail.com>
- <CAEf4BzY7EVKv66CZ9KfefDopWDPL7xQCgLxq=oDS3eLKusAHWA@mail.gmail.com> <20210921222348.4k6lg6jb73qcfpok@apollo.localdomain>
-In-Reply-To: <20210921222348.4k6lg6jb73qcfpok@apollo.localdomain>
+References: <20210920234320.3312820-1-andrii@kernel.org> <20210920234320.3312820-2-andrii@kernel.org>
+ <4ab8049e-7e06-17b3-56ab-f1776cdf5e5e@fb.com>
+In-Reply-To: <4ab8049e-7e06-17b3-56ab-f1776cdf5e5e@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 16:02:42 -0700
-Message-ID: <CAEf4BzZKXWPV-nE+AiNsujnEuGXOjG+cHzmSaSpthBPA4aEcPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 05/11] bpf: Enable TCP congestion control
- kfunc from modules
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 21 Sep 2021 16:08:59 -0700
+Message-ID: <CAEf4BzbV7M5Uhsw+OtE+JdaJ17ragpfyKXAT9=1yoec4jhq4nA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/9] selftests/bpf: normalize XDP section
+ names in selftests
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 3:23 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Mon, Sep 20, 2021 at 9:55 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
 >
-> On Wed, Sep 22, 2021 at 03:48:55AM IST, Andrii Nakryiko wrote:
-> > On Mon, Sep 20, 2021 at 7:15 AM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > This commit moves BTF ID lookup into the newly added registration
-> > > helper, in a way that the bbr, cubic, and dctcp implementation set up
-> > > their sets in the bpf_tcp_ca kfunc_btf_set list, while the ones not
-> > > dependent on modules are looked up from the wrapper function.
-> > >
-> > > This lifts the restriction for them to be compiled as built in objects,
-> > > and can be loaded as modules if required. Also modify Makefile.modfinal
-> > > to resolve_btfids in TCP congestion control modules if the config option
-> > > is set, using the base BTF support added in the previous commit.
-> > >
-> > > See following commits for background on use of:
-> > >
-> > >  CONFIG_X86 ifdef:
-> > >  569c484f9995 (bpf: Limit static tcp-cc functions in the .BTF_ids list to x86)
-> > >
-> > >  CONFIG_DYNAMIC_FTRACE ifdef:
-> > >  7aae231ac93b (bpf: tcp: Limit calling some tcp cc functions to CONFIG_DYNAMIC_FTRACE)
-> > >
-> > > [ resolve_btfids uses --no-fail because some crypto kernel modules
-> > >   under arch/x86/crypto generated from ASM do not have the .BTF sections ]
-> > >
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> > >  include/linux/btf.h       |  4 ++++
-> > >  kernel/bpf/btf.c          |  3 +++
-> > >  net/ipv4/bpf_tcp_ca.c     | 34 +++-------------------------------
-> > >  net/ipv4/tcp_bbr.c        | 28 +++++++++++++++++++++++++++-
-> > >  net/ipv4/tcp_cubic.c      | 26 +++++++++++++++++++++++++-
-> > >  net/ipv4/tcp_dctcp.c      | 26 +++++++++++++++++++++++++-
-> > >  scripts/Makefile.modfinal |  1 +
-> > >  7 files changed, 88 insertions(+), 34 deletions(-)
-> > >
+> On 9/20/21 7:43 PM, Andrii Nakryiko wrote:
+> > Convert almost all SEC("xdp_blah") uses to strict SEC("xdp") to comply
+> > with strict libbpf 1.0 logic of exact section name match for XDP program
+> > types. There is only one exception, which is only tested through
+> > iproute2 and defines multiple XDP programs within the same BPF object.
+> > Given iproute2 still works in non-strict libbpf mode and it doesn't have
+> > means to specify XDP programs by its name (not section name/title),
+> > leave that single file alone for now until iproute2 gains lookup by
+> > function/program name.
 > >
-> > [...]
-> >
-> > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > > index ff805777431c..b4f83533eda6 100644
-> > > --- a/scripts/Makefile.modfinal
-> > > +++ b/scripts/Makefile.modfinal
-> > > @@ -41,6 +41,7 @@ quiet_cmd_btf_ko = BTF [M] $@
-> > >        cmd_btf_ko =                                                     \
-> > >         if [ -f vmlinux ]; then                                         \
-> > >                 LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
-> > > +               $(RESOLVE_BTFIDS) --no-fail -s vmlinux $@;              \
-> >
-> > I think I've asked that before, but I don't remember this being
-> > answered. Why is this --no-fail?
-> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
 >
-> Sorry, the first time, I missed that mail, and then it was too late so I decided
-> to put the reason in the commit message above.
+> Aside from a checkpatch nit which you didn't cause, LGTM. Some general
+> comments follow as well, but aren't directly related to the patch.
 >
-> > > [ resolve_btfids uses --no-fail because some crypto kernel modules
-> > >   under arch/x86/crypto generated from ASM do not have the .BTF sections ]
+> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
 >
-> I could add a mode that fails only when processing a .BTF section present in
-> object fails, would that be better?
+> >  tools/testing/selftests/bpf/progs/test_map_in_map.c         | 2 +-
+> >  .../selftests/bpf/progs/test_tcp_check_syncookie_kern.c     | 2 +-
+> >  tools/testing/selftests/bpf/progs/test_xdp.c                | 2 +-
+> >  .../testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c | 2 +-
+> >  .../selftests/bpf/progs/test_xdp_adjust_tail_shrink.c       | 4 +---
+> >  tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c | 2 +-
+> >  tools/testing/selftests/bpf/progs/test_xdp_link.c           | 2 +-
+> >  tools/testing/selftests/bpf/progs/test_xdp_loop.c           | 2 +-
+> >  tools/testing/selftests/bpf/progs/test_xdp_noinline.c       | 4 ++--
+> >  .../selftests/bpf/progs/test_xdp_with_cpumap_helpers.c      | 4 ++--
+> >  .../selftests/bpf/progs/test_xdp_with_devmap_helpers.c      | 4 ++--
+> >  tools/testing/selftests/bpf/progs/xdp_dummy.c               | 2 +-
+> >  tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c | 4 ++--
+> >  tools/testing/selftests/bpf/progs/xdping_kern.c             | 4 ++--
+> >  tools/testing/selftests/bpf/test_tcp_check_syncookie.sh     | 2 +-
+> >  tools/testing/selftests/bpf/test_xdp_redirect.sh            | 4 ++--
+> >  tools/testing/selftests/bpf/test_xdp_redirect_multi.sh      | 2 +-
+> >  tools/testing/selftests/bpf/test_xdp_veth.sh                | 4 ++--
+> >  tools/testing/selftests/bpf/xdping.c                        | 6 +++---
+>
+> Doesn't look like the test_...sh's here are run by the CI. Confirmed they
+> (as well as test_xdping.sh) all passed for me. My test VM isn't doing anything
+> special networking-wise, so maybe it's not too difficult to add these to CI.
 
-Oh, missed [ ] part in the commit message. But yeah, it feels like it
-shouldn't be an error if the module legitimately doesn't have a .BTF
-section. Is it an error right now? cc Jiri, maybe that was intentional
+Thanks for confirming. Yes, they are not run in CI, we only run
+test_progs, test_verifier and test_maps. Instead of adding all those
+small scripts to be run by CI, we are encouraging everyone to converge
+on test_progs, because that's where we invest efforts to make it a
+universal test runner for BPF needs. So I'd say let's convert them to
+test_progs framework instead.
 
 >
-> --
-> Kartikeya
+> >  19 files changed, 28 insertions(+), 30 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map.c b/tools/testing/selftests/bpf/progs/test_map_in_map.c
+> > index 1cfeb940cf9f..5f0e0bfc151e 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_map_in_map.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_map_in_map.c
+> > @@ -23,7 +23,7 @@ struct {
+
+[...]
+
+> >       void *data_end = (void *)(long)xdp->data_end;
+> > diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
+> > index 22065a9cfb25..b7448253d135 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
+> > @@ -9,9 +9,7 @@
+> >  #include <linux/if_ether.h>
+> >  #include <bpf/bpf_helpers.h>
+> >
+> > -int _version SEC("version") = 1;
+> > -
+>
+> Didn't realize this was meant to specify kernel version for compat, and that
+> it no longer does anything anyways. Maybe this should be removed from all
+> selftests + examples to make this more obvious?
+
+Yes, it should, but perhaps in a separate clean up series. Except I'd
+leave it for BPF static linker testing, of course.
+
+>
+> > -SEC("xdp_adjust_tail_shrink")
+> > +SEC("xdp")
+> >  int _xdp_adjust_tail_shrink(struct xdp_md *xdp)
+> >  {
+> >       void *data_end = (void *)(long)xdp->data_end;
+> > diff --git a/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c
+> > index b360ba2bd441..807bf895f42c 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c
+
+Note, it's generally a good idea to trim irrelevant parts in your
+reply making it easier to see one's replies among the wall of text,
+especially outside of gmail UI.
+
+[...]
+
+> > diff --git a/tools/testing/selftests/bpf/xdping.c b/tools/testing/selftests/bpf/xdping.c
+> > index 842d9155d36c..f9798ead20a9 100644
+> > --- a/tools/testing/selftests/bpf/xdping.c
+> > +++ b/tools/testing/selftests/bpf/xdping.c
+> > @@ -178,9 +178,9 @@ int main(int argc, char **argv)
+> >               return 1;
+> >       }
+> >
+> > -     main_prog = bpf_object__find_program_by_title(obj,
+> > -                                                   server ? "xdpserver" :
+> > -                                                            "xdpclient");
+> > +     main_prog = bpf_object__find_program_by_name(obj,
+> > +                                                   server ? "xdping_server" :
+> > +                                                            "xdping_client");
+>
+> checkpatch doesn't like the text alignment here, not that you changed it
+
+yeah, me neither, but not worth re-spin just for this :)
+
+>
+> >       if (main_prog)
+> >               prog_fd = bpf_program__fd(main_prog);
+> >       if (!main_prog || prog_fd < 0) {
+> >
+>
+>
