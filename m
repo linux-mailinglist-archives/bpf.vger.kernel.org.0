@@ -2,84 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F20F413673
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 17:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E414136AE
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 17:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234139AbhIUPss (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 11:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S229566AbhIUPxr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 11:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234031AbhIUPss (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:48:48 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98298C061574
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 08:47:19 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bk29so55641927qkb.8
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 08:47:19 -0700 (PDT)
+        with ESMTP id S234190AbhIUPxq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:53:46 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B117DC061574
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 08:52:17 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id b20so24920892lfv.3
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 08:52:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pWMTKLyj6T/GPciDDD2Ln6viqKV6fCtTl0u+Q+i6eUA=;
-        b=VO7DHLq8nO+KTg0XbBaSBivv96JmlUQBW069Zc/BVs12qGFzgcfkP1D1WXfana0oYl
-         /WqVXlCTWz8meyCpPRtGVdyo5bkLBD5pOOeLsqBTVYxLz6tUJFRQyZJqksguiBXrb1Yj
-         rAqOfuEpqB/SXFZ/eBGlIOV8ThV3jCBjHtwNnQoh/DjtTNobQoyG8dBu2b7cixzTkgC6
-         St/JDNufCVUyC/vTjifYW/CiQ3qqJpsRwrgOhSZuQgsdO8BYuUngIWQXCCLUJqXt01zr
-         vl9bzT4WHy7T09OmrYcSGVsiYUlqBNoOOHI+GO9Z46/bbIlTF2F/8YX8wPBUaUsbH1iJ
-         R91A==
+        bh=Ksngeam0Xf2lt6zbmcmQsyjfYbHt+0kmGquFy1tUzlI=;
+        b=VPDTSHaxi3TsbVwWuceuSLk9aYTqZBIZUsmCbR+kQufFPSKF3LXXGG+B2pSDJ5sSAk
+         FKiW6zIKSKWoIHfwnSEkLD2o76eD6NMuqf0mCqeYBi1wmDL7NK64OIiLFprOHFh4bhu0
+         Ar9oCVQy7eM+V6x4AEEmkFBQCVQRifhfxnRq4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pWMTKLyj6T/GPciDDD2Ln6viqKV6fCtTl0u+Q+i6eUA=;
-        b=VPM1IPuLImwUB82nQNZIlVHAaAQ7dTAqtsMmKIh+XgLTwfuvS7dL1u+GMluADbbQlJ
-         r+qkCOekPZ9MCfGqciydg98YCp3fMGeRdiCmBUW60r11Vu8wUP+J4TOW119yoGzAnBDb
-         Q/Ft4g+W+BgNtWQpr+NzTXTpt2Y8F2su0uPzJhR8vGwp52NJhns0ysey8jww0UjkcM32
-         iGWRYkNSjDjFreChOD2VlVRiFLG2D43d8ydbWdYDlP2duro7wlfIAznRRePqUnxCRuB4
-         DgWfY18l1yhGUR6zhOdFWp54ptNRg7w6Q4efRfmv/xb3gdmkphE5ejrZjd76TCqEQ+oz
-         euEg==
-X-Gm-Message-State: AOAM532p2UyzEgSAOgJcUW9seu0cpsIo1ONc7KNEVnRMSLy8fWNCzv1t
-        n01hfjmO9zofgwi3983HVOiXa4jNG2J8wnJhKwgfDGxg
-X-Google-Smtp-Source: ABdhPJxCNrI5of8a+uTEU+JT0y7VRXDy19hKGJzPOMFVv4ZW/Afx2VOUPF6tpVWPE49AO+YpPgBRVOmmAgWCEhBXm9Q=
-X-Received: by 2002:a25:1884:: with SMTP id 126mr22422817yby.114.1632239237069;
- Tue, 21 Sep 2021 08:47:17 -0700 (PDT)
+        bh=Ksngeam0Xf2lt6zbmcmQsyjfYbHt+0kmGquFy1tUzlI=;
+        b=jwrovGJBsYKKXn4+XxFmNLm9+mbBeQj/xfNKVRE79gzbaBsQa4gjlAU2OPA6Sk1epu
+         A6xVdSxHnyGJM/D079bwUx3klYz/Oa6h82lZYOLMomxWesYm7POjppmtvQ0/jE8pN199
+         ynr1Vwvc8mnyQ5xlE8WZs9NSfnl7wcCLUSLWd8UFHF4YhtE0StGZpX/cy0IgYeNC/kUk
+         KF0Sahb1/exGpAWD5kl++DzrhUIbaTUmonyw3GmRslwjVFDNOW9EVVH25UepTtDf7CPq
+         12rWDn91jfJM7XNJObczP6bEPoKoUhGGM9CV0oeKzhbq3a/VaSc/1nfAVWh9kraFIW+p
+         SGOg==
+X-Gm-Message-State: AOAM530I7wSJsAHxZaT54vXZVWIAHSpycRzgww3x9eq1biknh34OFAtB
+        0ofGFXP433pC+v3ZdKVIl6iG95uEtgm7DmdbLzpc2A==
+X-Google-Smtp-Source: ABdhPJxqPBiZlmPvQNUtCGj7y27W1eFSuaDA7t8bzNlfSqNuTnVN+DTz7tU1+LntWKA4rkzB+kEvjoXGe/aR3dVt51A=
+X-Received: by 2002:ac2:4c45:: with SMTP id o5mr24876482lfk.620.1632239534457;
+ Tue, 21 Sep 2021 08:52:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210918031457.36204-1-grantseltzer@gmail.com>
-In-Reply-To: <20210918031457.36204-1-grantseltzer@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 08:47:06 -0700
-Message-ID: <CAEf4BzYqkThWJ+j0-SP1SbQg1SVg4CwPXkePey7AHuAxdX8bew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] libbpf: Add doc comments in libbpf.h
-To:     grantseltzer <grantseltzer@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <CACAyw9_TjUMu1s46X3jE3ubcszAW3yoj39ADADOFseL0x96MeQ@mail.gmail.com>
+ <CAADnVQKxmNDET97wfi-k7L_ot9WXDX7CnqPNe=wK=rXpQJDcyg@mail.gmail.com>
+In-Reply-To: <CAADnVQKxmNDET97wfi-k7L_ot9WXDX7CnqPNe=wK=rXpQJDcyg@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 21 Sep 2021 16:52:03 +0100
+Message-ID: <CACAyw9_1s2ZCBWTHvT-rGufW+-m3F722GvhHb_rSR3mEr2gfGA@mail.gmail.com>
+Subject: Re: bpf_jit_limit close shave
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 8:17 PM grantseltzer <grantseltzer@gmail.com> wrote:
+On Tue, 21 Sept 2021 at 15:34, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> From: Grant Seltzer <grantseltzer@gmail.com>
+> On Tue, Sep 21, 2021 at 4:50 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > Does it make sense to include !capable(CAP_BPF) in the check?
 >
-> This adds comments above functions in libbpf.h which document
-> their uses. These comments are of a format that doxygen and sphinx
-> can pick up and render. These are rendered by libbpf.readthedocs.org
->
-> These doc comments are for:
-> - bpf_object__find_map_by_name()
-> - bpf_map__fd()
-> - bpf_map__is_internal()
-> - libbpf_get_error()
-> - libbpf_num_possible_cpus()
->
-> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
-> ---
+> Good point. Makes sense to add CAP_BPF there.
+> Taking down critical networking infrastructure because of this limit
+> that supposed to apply to unpriv users only is scary indeed.
 
-Applied to bpf-next yesterday. Patchbot didn't notice, so I'm giving
-you a heads up.
+Ok, I'll send a patch. Can I add a Fixes: 2c78ee898d8f ("bpf:
+Implement CAP_BPF")?
 
->  tools/lib/bpf/libbpf.h | 66 +++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 58 insertions(+), 8 deletions(-)
+Another thought: move the check for bpf_capable before the
+atomic_long_add_return? This means we only track JIT allocations from
+unprivileged users. As it stands a privileged user can easily "lock
+out" unprivileged users, which on our set up is a real concern. We
+have several socket filters / SO_REUSEPORT programs which are
+critical, and also use lots of XDP from privileged processes as you
+know.
+
 >
+> > This limit reminds me a bit of the memlock issue, where a global limit
+> > causes coupling between independent systems / processes. Can we remove
+> > the limit in favour of something more fine grained?
+>
+> Right. Unfortunately memcg doesn't distinguish kernel module
+> memory vs any other memory. All types of memory are memory.
+> Regardless of whether its type is per-cpu, bpf map memory, bpf jit memory, etc.
+> That's the main reason for the independent knob for JITed memory.
+> Since it's a bit special. It's a crude knob. Certainly not perfect.
 
-[...]
+I'm missing context, how is JIT memory different from these other kinds of code?
+
+Lorenz
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
