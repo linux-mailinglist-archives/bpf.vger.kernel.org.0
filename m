@@ -2,101 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E414136AE
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 17:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFD24136F3
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 18:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbhIUPxr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 11:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234190AbhIUPxq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:53:46 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B117DC061574
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 08:52:17 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b20so24920892lfv.3
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 08:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ksngeam0Xf2lt6zbmcmQsyjfYbHt+0kmGquFy1tUzlI=;
-        b=VPDTSHaxi3TsbVwWuceuSLk9aYTqZBIZUsmCbR+kQufFPSKF3LXXGG+B2pSDJ5sSAk
-         FKiW6zIKSKWoIHfwnSEkLD2o76eD6NMuqf0mCqeYBi1wmDL7NK64OIiLFprOHFh4bhu0
-         Ar9oCVQy7eM+V6x4AEEmkFBQCVQRifhfxnRq4=
+        id S233612AbhIUQIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 12:08:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229804AbhIUQIM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 12:08:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632240403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=e6HK/BwJ2W5unsWLoV5gYLpF0WRIoMgAw8WXLr0AbN4=;
+        b=A0c+yeiADW6vltvBUpyZDbZ+CKg77cF9f+JG9bKXTbEk+98paZ9mHt4l4itpkh4DNQ64hm
+        NaDUaerMrJCpncedcI7cnfU79dxcXpWPGcYZTBiiol400qEQKcVdzytY3ARRwiUrD79Id/
+        uQBZPNzm7AH5zUW/Vge577DDYsph2N8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-E1gkSxVRMwO5o7u-VNrCyw-1; Tue, 21 Sep 2021 12:06:41 -0400
+X-MC-Unique: E1gkSxVRMwO5o7u-VNrCyw-1
+Received: by mail-ed1-f71.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso8234677edx.2
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 09:06:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ksngeam0Xf2lt6zbmcmQsyjfYbHt+0kmGquFy1tUzlI=;
-        b=jwrovGJBsYKKXn4+XxFmNLm9+mbBeQj/xfNKVRE79gzbaBsQa4gjlAU2OPA6Sk1epu
-         A6xVdSxHnyGJM/D079bwUx3klYz/Oa6h82lZYOLMomxWesYm7POjppmtvQ0/jE8pN199
-         ynr1Vwvc8mnyQ5xlE8WZs9NSfnl7wcCLUSLWd8UFHF4YhtE0StGZpX/cy0IgYeNC/kUk
-         KF0Sahb1/exGpAWD5kl++DzrhUIbaTUmonyw3GmRslwjVFDNOW9EVVH25UepTtDf7CPq
-         12rWDn91jfJM7XNJObczP6bEPoKoUhGGM9CV0oeKzhbq3a/VaSc/1nfAVWh9kraFIW+p
-         SGOg==
-X-Gm-Message-State: AOAM530I7wSJsAHxZaT54vXZVWIAHSpycRzgww3x9eq1biknh34OFAtB
-        0ofGFXP433pC+v3ZdKVIl6iG95uEtgm7DmdbLzpc2A==
-X-Google-Smtp-Source: ABdhPJxqPBiZlmPvQNUtCGj7y27W1eFSuaDA7t8bzNlfSqNuTnVN+DTz7tU1+LntWKA4rkzB+kEvjoXGe/aR3dVt51A=
-X-Received: by 2002:ac2:4c45:: with SMTP id o5mr24876482lfk.620.1632239534457;
- Tue, 21 Sep 2021 08:52:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <CACAyw9_TjUMu1s46X3jE3ubcszAW3yoj39ADADOFseL0x96MeQ@mail.gmail.com>
- <CAADnVQKxmNDET97wfi-k7L_ot9WXDX7CnqPNe=wK=rXpQJDcyg@mail.gmail.com>
-In-Reply-To: <CAADnVQKxmNDET97wfi-k7L_ot9WXDX7CnqPNe=wK=rXpQJDcyg@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 21 Sep 2021 16:52:03 +0100
-Message-ID: <CACAyw9_1s2ZCBWTHvT-rGufW+-m3F722GvhHb_rSR3mEr2gfGA@mail.gmail.com>
-Subject: Re: bpf_jit_limit close shave
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=e6HK/BwJ2W5unsWLoV5gYLpF0WRIoMgAw8WXLr0AbN4=;
+        b=YedMr+ei9mfT+jFictUVrE+7kIdrIW8i/NbMvQO/fvnHPfpNokHlxoaTFkzAOpO9HB
+         OdJ7m9IWeGPQ3hpi7ODDVyPJRdKfYaPZ7cqtMFEmazgs8WiOvUxRLbRyJrUdni/tL81H
+         bYP9HehTvuxRfWxz4tZSsKzzMBYOG7tyLiN1yZcop7r4F8JXWz8da6M66PflXeQHFj/J
+         tQAh6vWDEZQXnwafNBq6GieCF0oxJxWfDqs0rZS9bxdNODrgWvhcipl5NoXIcqodykrg
+         BEIq0+iLY5q4e7cz9/5fkn09wYXLZMlpA3xgNNyMrRW3PgLIwHcpDCpRiaFA0ahuKv/A
+         NwqA==
+X-Gm-Message-State: AOAM531sSBXI4Vt2XhVrJXhObr9pEq4h9IiC3v6nZkxH/DGtByKLGSBf
+        LsENSPC7be8z7aFCkaJTsc54pTycsDE1+1xdwh/e5ZN2GdkDz+0+5ZvQeXWJS6b3QZTs+7ojGCj
+        L0iExlRRrk/UC
+X-Received: by 2002:a17:906:c252:: with SMTP id bl18mr35058509ejb.519.1632240399564;
+        Tue, 21 Sep 2021 09:06:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKP5JCN4i445M+rwwYicc3/SOuXpCZJ0UAvZ30Yoj+JRFzogTvICCiMUFiFaJcF1lReqTxqA==
+X-Received: by 2002:a17:906:c252:: with SMTP id bl18mr35058327ejb.519.1632240397230;
+        Tue, 21 Sep 2021 09:06:37 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l7sm9045577edb.26.2021.09.21.09.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 09:06:36 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 67B2918034A; Tue, 21 Sep 2021 18:06:35 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Lorenzo Bianconi <lbianconi@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Redux: Backwards compatibility for XDP multi-buff
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 21 Sep 2021 18:06:35 +0200
+Message-ID: <87o88l3oc4.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 15:34, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Sep 21, 2021 at 4:50 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > Does it make sense to include !capable(CAP_BPF) in the check?
->
-> Good point. Makes sense to add CAP_BPF there.
-> Taking down critical networking infrastructure because of this limit
-> that supposed to apply to unpriv users only is scary indeed.
+Hi Lorenz (Cc. the other people who participated in today's discussion)
 
-Ok, I'll send a patch. Can I add a Fixes: 2c78ee898d8f ("bpf:
-Implement CAP_BPF")?
+Following our discussion at the LPC session today, I dug up my previous
+summary of the issue and some possible solutions[0]. Seems no on
+actually replied last time, which is why we went with the "do nothing"
+approach, I suppose. I'm including the full text of the original email
+below; please take a look, and let's see if we can converge on a
+consensus here.
 
-Another thought: move the check for bpf_capable before the
-atomic_long_add_return? This means we only track JIT allocations from
-unprivileged users. As it stands a privileged user can easily "lock
-out" unprivileged users, which on our set up is a real concern. We
-have several socket filters / SO_REUSEPORT programs which are
-critical, and also use lots of XDP from privileged processes as you
-know.
+First off, a problem description: If an existing XDP program is exposed
+to an xdp_buff that is really a multi-buffer, while it will continue to
+run, it may end up with subtle and hard-to-debug bugs: If it's parsing
+the packet it'll only see part of the payload and not be aware of that
+fact, and if it's calculating the packet length, that will also only be
+wrong (only counting the first fragment).
 
->
-> > This limit reminds me a bit of the memlock issue, where a global limit
-> > causes coupling between independent systems / processes. Can we remove
-> > the limit in favour of something more fine grained?
->
-> Right. Unfortunately memcg doesn't distinguish kernel module
-> memory vs any other memory. All types of memory are memory.
-> Regardless of whether its type is per-cpu, bpf map memory, bpf jit memory, etc.
-> That's the main reason for the independent knob for JITed memory.
-> Since it's a bit special. It's a crude knob. Certainly not perfect.
+So what to do about this? First of all, to do anything about it, XDP
+programs need to be able to declare themselves "multi-buffer aware" (but
+see point 1 below). We could try to auto-detect it in the verifier by
+which helpers the program is using, but since existing programs could be
+perfectly happy to just keep running, it probably needs to be something
+the program communicates explicitly. One option is to use the
+expected_attach_type to encode this; programs can then declare it in the
+source by section name, or the userspace loader can set the type for
+existing programs if needed.
 
-I'm missing context, how is JIT memory different from these other kinds of code?
+With this, the kernel will know if a given XDP program is multi-buff
+aware and can decide what to do with that information. For this we came
+up with basically three options:
 
-Lorenz
+1. Do nothing. This would make it up to users / sysadmins to avoid
+   anything breaking by manually making sure to not enable multi-buffer
+   support while loading any XDP programs that will malfunction if
+   presented with an mb frame. This will probably break in interesting
+   ways, but it's nice and simple from an implementation PoV. With this
+   we don't need the declaration discussed above either.
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2. Add a check at runtime and drop the frames if they are mb-enabled and
+   the program doesn't understand it. This is relatively simple to
+   implement, but it also makes for difficult-to-understand issues (why
+   are my packets suddenly being dropped?), and it will incur runtime
+   overhead.
 
-www.cloudflare.com
+3. Reject loading of programs that are not MB-aware when running in an
+   MB-enabled mode. This would make things break in more obvious ways,
+   and still allow a userspace loader to declare a program "MB-aware" to
+   force it to run if necessary. The problem then becomes at what level
+   to block this?
+
+   Doing this at the driver level is not enough: while a particular
+   driver knows if it's running in multi-buff mode, we can't know for
+   sure if a particular XDP program is multi-buff aware at attach time:
+   it could be tail-calling other programs, or redirecting packets to
+   another interface where it will be processed by a non-MB aware
+   program.
+
+   So another option is to make it a global toggle: e.g., create a new
+   sysctl to enable multi-buffer. If this is set, reject loading any XDP
+   program that doesn't support multi-buffer mode, and if it's unset,
+   disable multi-buffer mode in all drivers. This will make it explicit
+   when the multi-buffer mode is used, and prevent any accidental subtle
+   malfunction of existing XDP programs. The drawback is that it's a
+   mode switch, so more configuration complexity.
+
+None of these options are ideal, of course, but I hope the above
+explanation at least makes sense. If anyone has any better ideas (or can
+spot any flaws in the reasoning above) please don't hesitate to let us
+know!
+
+-Toke
+
+[0] https://lore.kernel.org/r/8735srxglb.fsf@toke.dk
+
