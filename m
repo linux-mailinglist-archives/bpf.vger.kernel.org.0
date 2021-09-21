@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B243413CC5
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A43413D12
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhIUVnq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 17:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
+        id S235826AbhIUVzs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 17:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235138AbhIUVnq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:43:46 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22775C061574;
-        Tue, 21 Sep 2021 14:42:17 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id b65so1989766qkc.13;
-        Tue, 21 Sep 2021 14:42:17 -0700 (PDT)
+        with ESMTP id S235827AbhIUVzQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:55:16 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B595EC0613E0;
+        Tue, 21 Sep 2021 14:53:40 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id c7so2656687qka.2;
+        Tue, 21 Sep 2021 14:53:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ro2YixzMDZ5dVPKfSw8tokOtOhrHNap6kjyBrMgwAAM=;
-        b=O3BhxXcuTAptGUsKz6UTeYzCS/vwEbuOQtCBDcTLXYN1giRf+RMFln6OMdT5Uly2VF
-         Tkq3X3JmKP7Zj1haW8g7xeNMzl0EhmezsxFITFZIOdLOXiA+Ew6l+r5mEQ+2oHVhxRv8
-         oj3bcNua0YmwNMYoNF1JpPVhzFWOKrmWZ2xFiU7KTQrmKj77TT9eMQ2jBfOlHMuizPtY
-         LowNZNSAO63fg38Ct+7o3GBqma9sAnTWmEtjmXySYRvFHdpr4jea/9CoOB8V2cMW4yuP
-         /3iFtHe0dTKvgEbcrgwENZi+mURaTR1VeTpTSxRakuOfEHd5RxLumELreW/7WYNMHO+O
-         yrvg==
+        bh=JuZKNp3WhYi3DR7rWgOF+IrjERPbP8+GlVOGLjF2wg8=;
+        b=I1bWPamr9byNu+TXuCSjpcBvbqVnLblH8O/4HbHCfZPBaxUzOpFLPfaplTshTVE1w5
+         euu14xzCl14Vs3JJzyOkNVnNYFIjvPS9rXnJYSPV48LOVurjgLcimQcW9oWEqhwqMzUX
+         uGHjP/fhRYHU2CfTrPXMmxYvL6zB28vj6d1D62eebcgsdlQDhqGeHQxgEku6gzyCRgw+
+         w3VhFoGTJgCqKdFKxqdJkdQV+y8PXqclUtA30LAFbtDx6bzhgnRDfRhoCt3y6XBCKpr4
+         m8g76m3niOeD8nOxuwv9ZduLzeTJv1O6l/9+WKf6F6zM0xA8QkHtr2H4N7vyzo2OkOKL
+         a7qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ro2YixzMDZ5dVPKfSw8tokOtOhrHNap6kjyBrMgwAAM=;
-        b=jyQN8D1OktfnkE8rKsBVPtaGLR1mi+YtCcrqZyTHx0q5osqiD/cPpcEjuyDKHqZkwI
-         iMyjWB+RS6pUVy0j/JtVREe0g3aSDbJ3BMVhKD69fAkI+NpZfLyHQyIFQg3rSOB6Iy/C
-         +X/qElWVwjOsRr7zQq+HvVtjFt/85TOu1xYk7E2da4Gz9NKrTWk/hjhwKbPRD++h198C
-         XXcUeXIigYDtsXIyXOk5dKHagnDCGcT2bgmVjg+nJ+f3eRybgIduILv5hQfI4Jbu17LQ
-         Lp62CGUBA+7ko5ePsCyyOE6Yhe5fz+x6P7vhJNdm0GWcF6DUbPSWDChwDOlkVOSeXhr9
-         +5Lw==
-X-Gm-Message-State: AOAM531FTsfenO82S/orgJXwPbrf8BfiZxD3Ysa5PXle4XbpcNvBQAPA
-        9FToM4jx/HERUlcrRE6vV9bo1dz1Uo/mf5RtbYM=
-X-Google-Smtp-Source: ABdhPJyonbyXlJtr8w6VPfAzWqyqqOC+Bzh/x/JR+aQF3MU1iIKZ/CXTfWqZ15V+hnI8GQIWvfVDGoOXKvkdHquTwZY=
-X-Received: by 2002:a25:83c6:: with SMTP id v6mr9787437ybm.2.1632260536348;
- Tue, 21 Sep 2021 14:42:16 -0700 (PDT)
+        bh=JuZKNp3WhYi3DR7rWgOF+IrjERPbP8+GlVOGLjF2wg8=;
+        b=w500GvDHWqpsmATLkSH6DPn+d0Yp5hdcEZD/4ziocfn7ABfc14KK+8oZFtgEP8g/bI
+         Q9qRPHB3uAQ5fFHxJTZYshYX9sRUcmT+KpiDeKdORDVG+ftBJkEnZ6O6rw/XZwP6KnWV
+         XtCJr5yCpkCmCaIAZ8BQrr1199Wov72yZyHEDwiQDbIM6n9i4LnCuGY5ycCzM5UBO41q
+         GCwomlnTodtTTevxAoxOzDtPHSwCeG+Oubd3+CErQiEmTXmrvYf+Ztj5Qx7QQ/GLOxgE
+         UZoPUZhXzY/61KFHWhe+UZhvIZPaSyT7HTbTekS9XIwwZyzAbJOWiNB/DGzccftbvmcu
+         9GZw==
+X-Gm-Message-State: AOAM5315Mbl0Ylfr+7Y8yqCX8OhlCF1yC5LSthX4KQDzz0xKXM/v3E4c
+        fyDtr2FspR+rDeox11YFGJ86nt35Urwisqd3kyzrobH7720=
+X-Google-Smtp-Source: ABdhPJwck3quzywdfaTdDtVJvU3YI5hKnN+XHO0+UnqxN/IrDD9LYBFkIn1HuEsC4KgEEf08AtFBuL/MoYtNXKr8KR0=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr41577491ybj.504.1632261219941;
+ Tue, 21 Sep 2021 14:53:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210918020958.1167652-1-houtao1@huawei.com> <20210918020958.1167652-3-houtao1@huawei.com>
-In-Reply-To: <20210918020958.1167652-3-houtao1@huawei.com>
+References: <20210918020958.1167652-1-houtao1@huawei.com> <20210918020958.1167652-4-houtao1@huawei.com>
+In-Reply-To: <20210918020958.1167652-4-houtao1@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 14:42:05 -0700
-Message-ID: <CAEf4BzaVaOiwkNgFQjwRfy9V_5NqiEyPMj-_AotO5TYeWiva3g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] libbpf: support detecting and attaching
- of writable tracepoint program
+Date:   Tue, 21 Sep 2021 14:53:28 -0700
+Message-ID: <CAEf4BzbstXqV+oH8uBHDDSgSzOY722jv3SsYt+cZCW9Ebwk8+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpf/selftests: add test for writable bare tracepoint
 To:     Hou Tao <houtao1@huawei.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,34 +63,52 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Sep 17, 2021 at 6:56 PM Hou Tao <houtao1@huawei.com> wrote:
 >
-> Program on writable tracepoint is BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
-> but its attachment is the same as BPF_PROG_TYPE_RAW_TRACEPOINT.
+> Add a writable bare tracepoint in bpf_testmod module, and
+> trigger its calling when reading /sys/kernel/bpf_testmod
+> with a specific buffer length. The reading will return
+> the value in writable context if the early return flag
+> is enabled in writable context.
 >
 > Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
->  tools/lib/bpf/libbpf.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  .../bpf/bpf_testmod/bpf_testmod-events.h      | 15 ++++++++
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 10 ++++++
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 +++
+>  .../selftests/bpf/prog_tests/module_attach.c  | 36 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_module_attach.c  | 14 ++++++++
+>  5 files changed, 80 insertions(+)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index da65a1666a5e..981fcdd95bdc 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -7976,6 +7976,10 @@ static const struct bpf_sec_def section_defs[] = {
->                 .attach_fn = attach_raw_tp),
->         SEC_DEF("raw_tp/", RAW_TRACEPOINT,
->                 .attach_fn = attach_raw_tp),
-> +       SEC_DEF("raw_tracepoint_writable/", RAW_TRACEPOINT_WRITABLE,
-> +               .attach_fn = attach_raw_tp),
-> +       SEC_DEF("raw_tp_writable/", RAW_TRACEPOINT_WRITABLE,
-> +               .attach_fn = attach_raw_tp),
 
-_writable is a bit mouthful, maybe we should do the same we did for
-"sleepable", just add ".w" suffix? So it will be "raw_tp.w/..."? Or
-does anyone feel it's too subtle?
+[...]
 
->         SEC_DEF("tp_btf/", TRACING,
->                 .expected_attach_type = BPF_TRACE_RAW_TP,
->                 .is_attach_btf = true,
-> --
-> 2.29.2
->
+> +static int trigger_module_test_writable(int *val)
+> +{
+> +       int fd, err;
+> +       char buf[65];
+> +       ssize_t rd;
+> +
+> +       fd = open("/sys/kernel/bpf_testmod", O_RDONLY);
+> +       err = -errno;
+> +       if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
+> +               return err;
+> +
+> +       rd = read(fd, buf, sizeof(buf) - 1);
+> +       err = rd < 0 ? -errno : -ENODATA;
+> +       if (CHECK(rd <= 0, "testmod_file_rd_val", "failed: rd %zd errno %d\n",
+> +                 rd, errno)) {
+> +               close(fd);
+> +               return err;
+> +       }
+> +
+
+please use ASSERT_xxx() consistently
+
+> +       buf[rd] = '\0';
+> +       *val = strtol(buf, NULL, 0);
+> +       close(fd);
+> +
+> +       return 0;
+> +}
+> +
+
+[...]
