@@ -2,114 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AD4413C8D
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B243413CC5
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbhIUVgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 17:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        id S235400AbhIUVnq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 17:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbhIUVgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:36:16 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC61C061574
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:34:47 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id f22so2323201qkm.5
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:34:47 -0700 (PDT)
+        with ESMTP id S235138AbhIUVnq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:43:46 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22775C061574;
+        Tue, 21 Sep 2021 14:42:17 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id b65so1989766qkc.13;
+        Tue, 21 Sep 2021 14:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=u2QmCRLlCudop2tt0V2Jd3SpsetYx3ib4Nkawx79DrA=;
-        b=BQGU4Ia8unX/3qkM+YcGs2GCYpmpBT4irzFcnL9AxW480hK98LCB/wPJqXBYqlHIOL
-         8dDcEqWOvNU0Y99u0mhqAbZuxaA+wIoR9c4YDaBo/sh9LUG5TUndj3TMxT+QnFWoqQMV
-         LomQgO6sznVKsSGB2s3oc3Vt5ckWr5PgDbsZquLBLm2uxMJAxPsN0J2Xc4YyzRYy+rUV
-         5DzKyJ/RqyLM5exyNxmBCSVQXp2WgtMAuSeOFm5LNwkpF1IPYZ+qpZdsiJu+Jv4uUMXw
-         8wejSLwVyeJvPPiSYwDldzLeBh+HhJ19LFMtKPCw6EqXUymxyoHYyDFf+RAXRvubEZSF
-         9gDA==
+        bh=ro2YixzMDZ5dVPKfSw8tokOtOhrHNap6kjyBrMgwAAM=;
+        b=O3BhxXcuTAptGUsKz6UTeYzCS/vwEbuOQtCBDcTLXYN1giRf+RMFln6OMdT5Uly2VF
+         Tkq3X3JmKP7Zj1haW8g7xeNMzl0EhmezsxFITFZIOdLOXiA+Ew6l+r5mEQ+2oHVhxRv8
+         oj3bcNua0YmwNMYoNF1JpPVhzFWOKrmWZ2xFiU7KTQrmKj77TT9eMQ2jBfOlHMuizPtY
+         LowNZNSAO63fg38Ct+7o3GBqma9sAnTWmEtjmXySYRvFHdpr4jea/9CoOB8V2cMW4yuP
+         /3iFtHe0dTKvgEbcrgwENZi+mURaTR1VeTpTSxRakuOfEHd5RxLumELreW/7WYNMHO+O
+         yrvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=u2QmCRLlCudop2tt0V2Jd3SpsetYx3ib4Nkawx79DrA=;
-        b=7Ig3Tj4EkzzM5W1A3PDFkGjWwlbXnYHmjCLdJDoaWTkWqfDtw6zTTn8PJXQyFX1UR/
-         U890p0M2h3tY/UKMUHKhiVf90H5ixmeC6qb8JwrtVkTCcQ+OZ7mnez/TeqCrB5uTD3gu
-         5UVRHENFlD3NONmCtgsO0g72SIUdxHRf8KR+igW26Llj/UNZK/RFPjbeQ5VGtvEDORoi
-         nNZ2bK9qKPgGaWI9XbVmsl2/LbKzWVcD5YYxGkONRSd6WUr1CnQ6lt9/lgfSC+ZaHK8F
-         XPVO11GzTUwx+yRqDH7Ua0XBLpV4T8Gbmc4SYmVJ81ugXNbqR+QlfTwJHrlRzuuQCMHO
-         uMtg==
-X-Gm-Message-State: AOAM5326W7uGBNxJTwXiOYvb+chl0FZzky5OOh9hPmBveO3hNRLznxO9
-        srbIRmEsBAjqisSDOyXTwjES/GO1JVXs4byn/Rc=
-X-Google-Smtp-Source: ABdhPJxtyTuXo9vO42Jt5sS7HrW4OQmEuJLoOqKuSdEwaGnf1JAhe61j7O492FQkKdOO7wH24otk/4B8X0kfopXidxk=
-X-Received: by 2002:a05:6902:724:: with SMTP id l4mr37281197ybt.433.1632260086751;
- Tue, 21 Sep 2021 14:34:46 -0700 (PDT)
+        bh=ro2YixzMDZ5dVPKfSw8tokOtOhrHNap6kjyBrMgwAAM=;
+        b=jyQN8D1OktfnkE8rKsBVPtaGLR1mi+YtCcrqZyTHx0q5osqiD/cPpcEjuyDKHqZkwI
+         iMyjWB+RS6pUVy0j/JtVREe0g3aSDbJ3BMVhKD69fAkI+NpZfLyHQyIFQg3rSOB6Iy/C
+         +X/qElWVwjOsRr7zQq+HvVtjFt/85TOu1xYk7E2da4Gz9NKrTWk/hjhwKbPRD++h198C
+         XXcUeXIigYDtsXIyXOk5dKHagnDCGcT2bgmVjg+nJ+f3eRybgIduILv5hQfI4Jbu17LQ
+         Lp62CGUBA+7ko5ePsCyyOE6Yhe5fz+x6P7vhJNdm0GWcF6DUbPSWDChwDOlkVOSeXhr9
+         +5Lw==
+X-Gm-Message-State: AOAM531FTsfenO82S/orgJXwPbrf8BfiZxD3Ysa5PXle4XbpcNvBQAPA
+        9FToM4jx/HERUlcrRE6vV9bo1dz1Uo/mf5RtbYM=
+X-Google-Smtp-Source: ABdhPJyonbyXlJtr8w6VPfAzWqyqqOC+Bzh/x/JR+aQF3MU1iIKZ/CXTfWqZ15V+hnI8GQIWvfVDGoOXKvkdHquTwZY=
+X-Received: by 2002:a25:83c6:: with SMTP id v6mr9787437ybm.2.1632260536348;
+ Tue, 21 Sep 2021 14:42:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210917215721.43491-1-alexei.starovoitov@gmail.com> <20210917215721.43491-5-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210917215721.43491-5-alexei.starovoitov@gmail.com>
+References: <20210918020958.1167652-1-houtao1@huawei.com> <20210918020958.1167652-3-houtao1@huawei.com>
+In-Reply-To: <20210918020958.1167652-3-houtao1@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 14:34:35 -0700
-Message-ID: <CAEf4BzYmayUDDkSoab-_A8c9Oo1OLX7KdqNQkfZz2Xsw_qLOEw@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 04/10] bpf: Add bpf_core_add_cands() and wire
- it into bpf_core_apply_relo_insn().
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+Date:   Tue, 21 Sep 2021 14:42:05 -0700
+Message-ID: <CAEf4BzaVaOiwkNgFQjwRfy9V_5NqiEyPMj-_AotO5TYeWiva3g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] libbpf: support detecting and attaching
+ of writable tracepoint program
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, mcroce@microsoft.com,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 2:57 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Sep 17, 2021 at 6:56 PM Hou Tao <houtao1@huawei.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> Program on writable tracepoint is BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
+> but its attachment is the same as BPF_PROG_TYPE_RAW_TRACEPOINT.
 >
-> Given BPF program's BTF perform a linear search through kernel BTFs for
-> a possible candidate.
-> Then wire the result into bpf_core_apply_relo_insn().
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
->  kernel/bpf/btf.c | 149 ++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 147 insertions(+), 2 deletions(-)
+>  tools/lib/bpf/libbpf.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index da65a1666a5e..981fcdd95bdc 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -7976,6 +7976,10 @@ static const struct bpf_sec_def section_defs[] = {
+>                 .attach_fn = attach_raw_tp),
+>         SEC_DEF("raw_tp/", RAW_TRACEPOINT,
+>                 .attach_fn = attach_raw_tp),
+> +       SEC_DEF("raw_tracepoint_writable/", RAW_TRACEPOINT_WRITABLE,
+> +               .attach_fn = attach_raw_tp),
+> +       SEC_DEF("raw_tp_writable/", RAW_TRACEPOINT_WRITABLE,
+> +               .attach_fn = attach_raw_tp),
 
-[...]
+_writable is a bit mouthful, maybe we should do the same we did for
+"sleepable", just add ".w" suffix? So it will be "raw_tp.w/..."? Or
+does anyone feel it's too subtle?
 
-> +       /* If candidate is not found in vmlinux's BTF then search in module's BTFs */
-> +       spin_lock_bh(&btf_idr_lock);
-> +       idr_for_each_entry(&btf_idr, mod_btf, id) {
-> +               if (!btf_is_module(mod_btf))
-> +                       continue;
-> +               /* linear search could be slow hence unlock/lock
-> +                * the IDR to avoiding holding it for too long
-> +                */
-> +               btf_get(mod_btf);
-> +               spin_unlock_bh(&btf_idr_lock);
-> +               err = bpf_core_add_cands(&local_cand, local_essent_len,
-> +                                        mod_btf,
-> +                                        btf_nr_types(main_btf),
-> +                                        cands);
-> +               if (err)
-> +                       btf_put(mod_btf);
-> +               goto err_out;
-
-this couldn't have worked properly for modules, missing {} ?
-
-> +               spin_lock_bh(&btf_idr_lock);
-> +               btf_put(mod_btf);
-> +       }
-> +       spin_unlock_bh(&btf_idr_lock);
-> +
-> +       return cands;
-> +err_out:
-> +       bpf_core_free_cands(cands);
-> +       return ERR_PTR(err);
-> +}
-> +
-
-[...]
+>         SEC_DEF("tp_btf/", TRACING,
+>                 .expected_attach_type = BPF_TRACE_RAW_TP,
+>                 .is_attach_btf = true,
+> --
+> 2.29.2
+>
