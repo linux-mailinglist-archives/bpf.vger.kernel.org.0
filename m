@@ -2,69 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38052413799
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 18:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694DE4137DE
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 18:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbhIUQdg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 12:33:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29185 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhIUQdg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 12:33:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632241927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4FzVI0NgAL+4GbDA10ag57a7YP2ulK19sMtingEyh9g=;
-        b=ceKb18Mac6pXR6X1aZegBhvEsBYAWeW5WtBVLJ61mTf/SqSDqhe6XpoMObctR04a1pbxO6
-        WgW9e5gUb1JD+r+Rj3eNwei5lae9eufz6hY1/PQdy25BF1JjTKrdzPhiITt+6zODQkfYHw
-        TurwN0P4GVOmSW+pMnR+GZslBtEhlO0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-DStJG2FmOzm3kPvqT-wuMg-1; Tue, 21 Sep 2021 12:32:04 -0400
-X-MC-Unique: DStJG2FmOzm3kPvqT-wuMg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CED9A9126F;
-        Tue, 21 Sep 2021 16:32:02 +0000 (UTC)
-Received: from localhost (unknown [10.40.194.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C16A6D985;
-        Tue, 21 Sep 2021 16:32:01 +0000 (UTC)
-Date:   Tue, 21 Sep 2021 18:31:59 +0200
-From:   Jiri Benc <jbenc@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        William Tu <u9012063@gmail.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] seltests: bpf: test_tunnel: use ip neigh
-Message-ID: <20210921183159.596a2662@redhat.com>
-In-Reply-To: <2f9554d2-c9c7-5c37-7df0-d011d80d7460@gmail.com>
-References: <40f24b9d3f0f53b5c44471b452f9a11f4d13b7af.1632236133.git.jbenc@redhat.com>
-        <2f9554d2-c9c7-5c37-7df0-d011d80d7460@gmail.com>
+        id S229904AbhIUQyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 12:54:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229601AbhIUQyN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:54:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A4F861166;
+        Tue, 21 Sep 2021 16:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632243164;
+        bh=B5TaZlSoiexuf9JW+GmbDksGW7N2p8txxfttQp+ewy8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mYIFUnjrhRTELU5t43Xmf8hspCMjsPiLg27aU+C1iYWgeRF7977b8u4ZF3WR4g3i0
+         N6A+q9t7a5vR8dY7qxnAGk374Lafpf/HPOqBZQpvsyMlZ9YiGEocn917fRJeJnzBhj
+         IquKGrfKWTCavP/HN16EiS6PsGhbfnC50MSIPhGs=
+Date:   Tue, 21 Sep 2021 18:52:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] get_abi.pl: Check for missing symbols at the ABI
+ specs
+Message-ID: <YUoN2m/OYHVLPrSl@kroah.com>
+References: <cover.1631957565.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1631957565.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 21 Sep 2021 09:23:06 -0600, David Ahern wrote:
-> I realize you are just following suit with this change, but ip can
-> change namespaces internally:
+On Sat, Sep 18, 2021 at 11:52:10AM +0200, Mauro Carvalho Chehab wrote:
+> Hi Greg,
 > 
-> ip -netns at_ns0 neigh add 10.1.1.200 lladdr 52:54:00:d9:02:00 dev $DEV_NS
+> Add a new feature at get_abi.pl to optionally check for existing symbols
+> under /sys that won't match a "What:" inside Documentation/ABI.
 > 
-> All of the 'ip netns exec ... ip ...' commands can be simplified.
+> Such feature is very useful to detect missing documentation for ABI.
+> 
+> This series brings a major speedup, plus it fixes a few border cases when
+> matching regexes that end with a ".*" or \d+.
+> 
+> patch 1 changes get_abi.pl logic to handle multiple What: lines, in
+> order to make the script more robust;
+> 
+> patch 2 adds the basic logic. It runs really quicky (up to 2
+> seconds), but it doesn't use sysfs softlinks.
+> 
+> Patch 3 adds support for parsing softlinks. It makes the script a
+> lot slower, making it take a couple of minutes to process the entire
+> sysfs files. It could be optimized in the future by using a graph,
+> but, for now, let's keep it simple.
+> 
+> Patch 4 adds an optional parameter to allow filtering the results
+> using a regex given by the user. When this parameter is used
+> (which should be the normal usecase), it will only try to find softlinks
+> if the sysfs node matches a regex.
+> 
+> Patch 5 improves the report by avoiding it to ignore What: that
+> ends with a wildcard.
+> 
+> Patch 6 is a minor speedup.  On a Dell Precision 5820, after patch 6, 
+> results are:
+> 
+> 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+> 
+> 	real	2m35.563s
+> 	user	2m34.346s
+> 	sys	0m1.220s
+> 	7595 undefined
+> 	896 undefined_symbols
+> 
+> Patch 7 makes a *huge* speedup: it basically switches a linear O(n^3)
+> search for links by a logic which handle symlinks using BFS. It
+> also addresses a border case that was making 'msi-irqs/\d+' regex to
+> be misparsed. 
+> 
+> After patch 7, it is 11 times faster:
+> 
+> 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+> 
+> 	real	0m14.137s
+> 	user	0m12.795s
+> 	sys	0m1.348s
+> 	7030 undefined
+> 	794 undefined_symbols
+> 
+> (the difference on the number of undefined symbols are due to the fix for
+> it to properly handle 'msi-irqs/\d+' regex)
+> 
+> -
+> 
+> While this series is independent from Documentation/ABI changes, it
+> works best when applied from this tree, which also contain ABI fixes
+> and a couple of additions of frequent missed symbols on my machine:
+> 
+>     https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_undefined_abi_v3
 
-I know and I don't like the superfluous exec, either. But that's
-something for a different patch. As you said, I'm just following what's
-already there. There's ton of different stuff that can be cleaned up in
-this and other selftests, unfortunately.
+I've taken all of these, but get_abi.pl seems to be stuck in an endless
+loop or something.  I gave up and stopped it after 14 minutes.  It had
+stopped printing out anything after finding all of the pci attributes
+that are not documented :)
 
- Jiri
+Anything I can do to help debug this?
 
+thanks,
+
+greg k-h
