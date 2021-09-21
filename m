@@ -2,227 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6F1413A99
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 21:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CB8413B0E
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 21:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhIUTT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 15:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
+        id S232584AbhIUUBP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 16:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhIUTT0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:19:26 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305C3C061574
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 12:17:57 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id v24so521329eda.3
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 12:17:57 -0700 (PDT)
+        with ESMTP id S229736AbhIUUBO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 16:01:14 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA40C061574
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 12:59:46 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id q68so169505pga.9
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 12:59:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riotgames.com; s=riotgames;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PMd93L89NYSvH94urHOISzem89NRj+7PHoHt6qu4LfE=;
-        b=Td+I4T+wRg9EOact5W1N6cGUwQwhWh21p/ZHiMlpV/qOCeboVnoBK7hmYvz1H36cOT
-         ejuAfiZGHntz2UjdjlLBrTZvUIEBpzGeY86MvpkhfnMiPWk5Rsso2oEm/B7AGbS5bUaO
-         B04XH2zs/wUmoXJnD0l1YSGcBoRdxlV3r6q1U=
+         :cc;
+        bh=W7AcCBZp9dh68XP5zT5AJDg/qUp48lzkRhRexRBvtq0=;
+        b=Z064YwPHVVaOZoqcX4HQrxbpt7Ls1fdHDGbbxsf8lWgVkiFNmjof0sQRBlHIEqkBzg
+         ieV2qoRH/2tkk97R6Q2ADkJGa2zCE7sW14hobJ25uojvYXKASvI/ko2Rrc7rg2KUnNv4
+         6Cyi55uEfE7h6fq396KmcGnfMTOq0NOjoAgaeKsLkrBfoLFKyFDDCHY6S3QllfsOc6Tw
+         tBPYAaABw0IVAC175zZt20Eql4P5GKrBd0lcPmaMMoFTMYGDYq7LePPVGL8V+DVc7zxC
+         M7+NL8/2xIn77Fqcv84RzevwRsb48VV7ZdW0wk1S5gQlKRPmEJ02eoAL6SMPF6dMpnVd
+         kaWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PMd93L89NYSvH94urHOISzem89NRj+7PHoHt6qu4LfE=;
-        b=R9VIuhQQ53PaZytfbdEVkXGnlnDaiKZGPOSPYDcmd0GZo8mzaptmIyVJsDVEi1tswI
-         RhJZzl1tlPAIn6zS8NncyhpJv5PEbyG1pasPJeeDG8vYl0/y8B9eKbmYGmnZH3+dGWCi
-         HeHs5b3ME9Fvpj+XM58nrhEBnbP5+ddvyu8kh9xrVsfrXR5kIIMI6jm18f0gjt23/zrj
-         0ZnsPmvauNZoHFRR3gP/jFlsy4I63xJ5jWXZEOXjOzE18ao7xXmPCrGkxgssQzDolkNj
-         To7hAmB4ai/g3WwY4AzCuPCtjM19D313+7IOMlAUaSd0oouuCby86ukvC/GNBx+8MrzO
-         sCqw==
-X-Gm-Message-State: AOAM530KOm4ULOtjMQb2zU0s6Rnj5n62+PWYuqCL8zXTxlXd3hr0HDoj
-        KMzx72B7H3AemPdMBkPAgem0norrz8vJwbbBQcOntq/TzDE7dMOx
-X-Google-Smtp-Source: ABdhPJyP6hqonPMSe+mSukHxsuQ90yCTfKGxBu/nAUVCsc7ye2y0hCWBpiT8XeggCPlsRoYeocV64XGpd5bOilIghLo=
-X-Received: by 2002:a17:907:244a:: with SMTP id yw10mr35989082ejb.571.1632251875496;
- Tue, 21 Sep 2021 12:17:55 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=W7AcCBZp9dh68XP5zT5AJDg/qUp48lzkRhRexRBvtq0=;
+        b=BlKx+5PazGZnsY+e5tIuLkHp1PGv6h+3yuYxmpN6ayW3C1ylxNTlod43j4HLgViJwG
+         O91j3R3rRHoOUwvbVi0ocByRO3E8Ej5qasmY3KTaEIsIZsjs3/l6qrWaljymCooUlHu1
+         Gpjen4PfAV6hIctIqyB8TIZc8qcAWRt3l8RVSpfpzYoXxtd+37WlPWNzntDq3Py1eMQ+
+         gdDEo2ciLAxHh0qSZQz9oj9FH0NNYkgj/ac9zHzypEFRmRQ6yX+QTxTKjZMxRAiDNhRS
+         /ibbHRT5SYMAP7vs669X5m3XqnV/YftQMltjmmO9flAjmjp9enxli4VziTEz1AtuRa+o
+         +ahg==
+X-Gm-Message-State: AOAM5317qDnKQ1pUwXSNF96bRIv1NLxqFHjUZihNdCqoUx3LBvBYnttB
+        dKs7EnK97u4zHqrIKQxH7M4tjVkrwUcmU6vIrqgV6/Y+
+X-Google-Smtp-Source: ABdhPJy65/nRnBcY8qgcM6fwFf4UsDIFHEJI9x6Hi+n4D40K27kymKVae3i7viDI8FsvlZ0h9KqIr1d7CKBQC1Jg9oM=
+X-Received: by 2002:a65:4008:: with SMTP id f8mr29214912pgp.310.1632254385488;
+ Tue, 21 Sep 2021 12:59:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <87o88l3oc4.fsf@toke.dk> <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
- <87ilyt3i0y.fsf@toke.dk>
-In-Reply-To: <87ilyt3i0y.fsf@toke.dk>
-From:   Zvi Effron <zeffron@riotgames.com>
-Date:   Tue, 21 Sep 2021 12:17:44 -0700
-Message-ID: <CAC1LvL3yQd_T5srJb78rGxv8YD-QND2aRgJ-p5vOQkbvrwJWSw@mail.gmail.com>
-Subject: Re: Redux: Backwards compatibility for XDP multi-buff
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Lorenzo Bianconi <lbianconi@redhat.com>,
+References: <CACAyw9_TjUMu1s46X3jE3ubcszAW3yoj39ADADOFseL0x96MeQ@mail.gmail.com>
+ <CAADnVQKxmNDET97wfi-k7L_ot9WXDX7CnqPNe=wK=rXpQJDcyg@mail.gmail.com>
+ <CACAyw9_1s2ZCBWTHvT-rGufW+-m3F722GvhHb_rSR3mEr2gfGA@mail.gmail.com> <CABEBQi=WfdJ-h+5+fgFXOptDWSk2Oe_V85gR90G2V+PQh9ME0A@mail.gmail.com>
+In-Reply-To: <CABEBQi=WfdJ-h+5+fgFXOptDWSk2Oe_V85gR90G2V+PQh9ME0A@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 21 Sep 2021 12:59:34 -0700
+Message-ID: <CAADnVQKX+ngPV=ZD9+Mm-odr=g-Neqm21TtxZ_rHpt+ybs-8RQ@mail.gmail.com>
+Subject: Re: bpf_jit_limit close shave
+To:     Frank Hofmann <fhofmann@cloudflare.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
+On Tue, Sep 21, 2021 at 12:11 PM Frank Hofmann <fhofmann@cloudflare.com> wrote:
 >
-> Zvi Effron <zeffron@riotgames.com> writes:
->
-> > On Tue, Sep 21, 2021 at 9:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
-> >>
-> >> Hi Lorenz (Cc. the other people who participated in today's discussion=
-)
-> >>
-> >> Following our discussion at the LPC session today, I dug up my previou=
-s
-> >> summary of the issue and some possible solutions[0]. Seems no on
-> >> actually replied last time, which is why we went with the "do nothing"
-> >> approach, I suppose. I'm including the full text of the original email
-> >> below; please take a look, and let's see if we can converge on a
-> >> consensus here.
-> >>
-> >> First off, a problem description: If an existing XDP program is expose=
-d
-> >> to an xdp_buff that is really a multi-buffer, while it will continue t=
-o
-> >> run, it may end up with subtle and hard-to-debug bugs: If it's parsing
-> >> the packet it'll only see part of the payload and not be aware of that
-> >> fact, and if it's calculating the packet length, that will also only b=
-e
-> >> wrong (only counting the first fragment).
-> >>
-> >> So what to do about this? First of all, to do anything about it, XDP
-> >> programs need to be able to declare themselves "multi-buffer aware" (b=
-ut
-> >> see point 1 below). We could try to auto-detect it in the verifier by
-> >> which helpers the program is using, but since existing programs could =
-be
-> >> perfectly happy to just keep running, it probably needs to be somethin=
-g
-> >> the program communicates explicitly. One option is to use the
-> >> expected_attach_type to encode this; programs can then declare it in t=
-he
-> >> source by section name, or the userspace loader can set the type for
-> >> existing programs if needed.
-> >>
-> >> With this, the kernel will know if a given XDP program is multi-buff
-> >> aware and can decide what to do with that information. For this we cam=
-e
-> >> up with basically three options:
-> >>
-> >> 1. Do nothing. This would make it up to users / sysadmins to avoid
-> >>    anything breaking by manually making sure to not enable multi-buffe=
-r
-> >>    support while loading any XDP programs that will malfunction if
-> >>    presented with an mb frame. This will probably break in interesting
-> >>    ways, but it's nice and simple from an implementation PoV. With thi=
-s
-> >>    we don't need the declaration discussed above either.
-> >>
-> >> 2. Add a check at runtime and drop the frames if they are mb-enabled a=
-nd
-> >>    the program doesn't understand it. This is relatively simple to
-> >>    implement, but it also makes for difficult-to-understand issues (wh=
-y
-> >>    are my packets suddenly being dropped?), and it will incur runtime
-> >>    overhead.
-> >>
-> >> 3. Reject loading of programs that are not MB-aware when running in an
-> >>    MB-enabled mode. This would make things break in more obvious ways,
-> >>    and still allow a userspace loader to declare a program "MB-aware" =
-to
-> >>    force it to run if necessary. The problem then becomes at what leve=
-l
-> >>    to block this?
-> >>
-> >
-> > I think there's another potential problem with this as well: what happe=
-ns to
-> > already loaded programs that are not MB-aware? Are they forcibly unload=
-ed?
->
-> I'd say probably the opposite: You can't toggle whatever switch we end
-> up with if there are any non-MB-aware programs (you'd have to unload
-> them first)...
->
+> Wouldn't that (updating the variable only for unpriv use) also make the leak impossible to notice that we ran into ?
 
-How would we communicate that issue? dmesg? I'm not very familiar with how
-sysctl change failure causes are communicated to users, so this might be a
-solved problem, but if I run `sysctl -w net.xdp.multibuffer 1` (or whatever
-ends up actually being the toggle) to active multi-buffer, and it fails bec=
-ause
-there's a loaded non-aware program, that seems like a potential for a lot o=
-f
-administrator pain.
+impossible?
+That jit limit is not there on older kernels and doesn't apply to root.
+How would you notice such a kernel bug in such conditions?
 
-> >>    Doing this at the driver level is not enough: while a particular
-> >>    driver knows if it's running in multi-buff mode, we can't know for
-> >>    sure if a particular XDP program is multi-buff aware at attach time=
-:
-> >>    it could be tail-calling other programs, or redirecting packets to
-> >>    another interface where it will be processed by a non-MB aware
-> >>    program.
-> >>
-> >>    So another option is to make it a global toggle: e.g., create a new
-> >>    sysctl to enable multi-buffer. If this is set, reject loading any X=
-DP
-> >>    program that doesn't support multi-buffer mode, and if it's unset,
-> >>    disable multi-buffer mode in all drivers. This will make it explici=
-t
-> >>    when the multi-buffer mode is used, and prevent any accidental subt=
-le
-> >>    malfunction of existing XDP programs. The drawback is that it's a
-> >>    mode switch, so more configuration complexity.
-> >>
-> >
-> > Could we combine the last two bits here into a global toggle that doesn=
-'t
-> > require a sysctl? If any driver is put into multi-buffer mode, then the=
- system
-> > switches to requiring all programs be multi-buffer? When the last multi=
--buffer
-> > enabled driver switches out of multi-buffer, remove the system-wide
-> > restriction?
+> (we have something near to a simple reproducer for https://www.spinics.net/lists/kernel/msg4029472.html ... need to extract the relevant parts of an app of ours, will update separately when there)
 >
-> Well, the trouble here is that we don't necessarily have an explicit
-> "multi-buf mode" for devices. For instance, you could raise the MTU of a
-> device without it necessarily involving any XDP multi-buffer stuff (if
-> you're not running XDP on that device). So if we did turn "raising the
-> MTU" into such a mode switch, we would end up blocking any MTU changes
-> if any XDP programs are loaded. Or having an MTU change cause a
-> force-unload of all XDP programs.
-
-Maybe I missed something then, but you had stated that "while a particular
-driver knows if it's running in multi-buff mode" so I assumed that the driv=
-er
-would be able to tell when to toggle the mode on.
-
-I had been thinking that when a driver turned multi-buffer off, it could
-trigger a check of all drivers, but that also seems like it could just be a
-global refcount of all the drivers that have requested multi-buffer mode. W=
-hen
-a driver enables multi-buffer for itself, it increments the refcount, and w=
-hen
-it disables, it decrements. A non-zero count means the system is in
-multi-buffer mode.
-
-Obviously this is more complex than just requiring the administrator to ena=
-ble
-the system-wide mode.
-
+> FrankH.
 >
-> Neither of those are desirable outcomes, I think; and if we add a
-> separate "XDP multi-buff" switch, we might as well make it system-wide?
->
-
-> > Regarding my above question, if non-MB-aware XDP programs are not forci=
-bly
-> > unloaded, then a global toggle is also insufficient. An existing non-MB=
--aware
-> > XDP program would still beed to be rejected at attach time by the
-> > driver.
->
-> See above.
->
-> -Toke
->
-
---Zvi
+> On Tue, Sep 21, 2021 at 4:52 PM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>>
+>> On Tue, 21 Sept 2021 at 15:34, Alexei Starovoitov
+>> <alexei.starovoitov@gmail.com> wrote:
+>> >
+>> > On Tue, Sep 21, 2021 at 4:50 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>> > >
+>> > > Does it make sense to include !capable(CAP_BPF) in the check?
+>> >
+>> > Good point. Makes sense to add CAP_BPF there.
+>> > Taking down critical networking infrastructure because of this limit
+>> > that supposed to apply to unpriv users only is scary indeed.
+>>
+>> Ok, I'll send a patch. Can I add a Fixes: 2c78ee898d8f ("bpf:
+>> Implement CAP_BPF")?
+>>
+>> Another thought: move the check for bpf_capable before the
+>> atomic_long_add_return? This means we only track JIT allocations from
+>> unprivileged users. As it stands a privileged user can easily "lock
+>> out" unprivileged users, which on our set up is a real concern. We
+>> have several socket filters / SO_REUSEPORT programs which are
+>> critical, and also use lots of XDP from privileged processes as you
+>> know.
+>>
+>> >
+>> > > This limit reminds me a bit of the memlock issue, where a global limit
+>> > > causes coupling between independent systems / processes. Can we remove
+>> > > the limit in favour of something more fine grained?
+>> >
+>> > Right. Unfortunately memcg doesn't distinguish kernel module
+>> > memory vs any other memory. All types of memory are memory.
+>> > Regardless of whether its type is per-cpu, bpf map memory, bpf jit memory, etc.
+>> > That's the main reason for the independent knob for JITed memory.
+>> > Since it's a bit special. It's a crude knob. Certainly not perfect.
+>>
+>> I'm missing context, how is JIT memory different from these other kinds of code?
+>>
+>> Lorenz
+>>
+>> --
+>> Lorenz Bauer  |  Systems Engineer
+>> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>>
+>> www.cloudflare.com
