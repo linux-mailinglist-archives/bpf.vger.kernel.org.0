@@ -2,105 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DC1412ADB
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 03:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4809E412A4D
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 03:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240789AbhIUCAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Sep 2021 22:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238530AbhIUB5o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:57:44 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAF5C08EA79;
-        Mon, 20 Sep 2021 17:57:28 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id p12-20020a17090adf8c00b0019c959bc795so1288465pjv.1;
-        Mon, 20 Sep 2021 17:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C9T7fESSoh8+qjTExbEsMsHHmHa36v14/SiTrX3dtRw=;
-        b=mXASDEFNIGC0eSTUEscsDYNYA9zANDrE+S0bOJRaggwZ1NhfSQwmw9uPHLVAKJHv+J
-         2I7arLLj4XOU0/EDQiLFIVJStjjnh8p/LcjdceKLqN6ciBi0pzZ7P9fJHySVpX0u20mh
-         T3AUNjtHM3GoDk3/GUphVR3LgVTOd17rTKCXuCsPjwqfmoan5p/1r/KU4bj2lQb1oUFb
-         z1r6iB5/+L9WlGhPKZd0qtzifEqVtyp3n/rfRpteJOOYBAP3b8EKe7eoT6lGA0v+X+h+
-         I08wQTCXQHHbiK77DeXEXt2l7CKQ1F2ocgFLCz18jpOgRxLkGcIokoaF3t4vH6vwYyAE
-         Xoog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C9T7fESSoh8+qjTExbEsMsHHmHa36v14/SiTrX3dtRw=;
-        b=FnR4hGVfKRUw25IWK1PZrPlMdUs+3onDvJUAMceOj9ah9iz57jMWW+tt6wKywtn/av
-         AQSXFU9LATmNHcDx7VwI1OjiLiEa1ApYrmeJGW2TT3WC3zMzPhRDnvjrIBzMUU5UX6AS
-         OgwYjGwOrjbXgpZzalt5mXLXlXKWwZlbQEwww2aDMWI/N1gr3g3pwwmSDg+vuT8eJS4O
-         I7fZ17asxyGWMHIhavfHSaMwGdz2ID8iCOykcayTriatHpVJ+t3qZwwdO9aEVX6tSJgg
-         wmuiqfKEmNfwINtV97Sr+wa/SOq6QOLH3iEjWjJo/L5iJiF27ZGVA+GYKj2ANT3Tvi2H
-         vw0Q==
-X-Gm-Message-State: AOAM5339LsT0OmWQniku8IaFTUay2IQrolM+6OrmggSSOFshRpulXegN
-        kK6l9vjy+H4iOI7OskZiNsrWqyr2CQBeS4sl2sY=
-X-Google-Smtp-Source: ABdhPJw4P8dRm8NXYPBPr2wdBJLrwhcA0M6gNgU5Ej1o01V80YKOSbEzSHpNcdKsGz4mZz4FrzsEVTX3IErnCjdR0Dw=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr25566330pll.22.1632185847754; Mon, 20
- Sep 2021 17:57:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920141526.3940002-1-memxor@gmail.com> <20210920141526.3940002-9-memxor@gmail.com>
-In-Reply-To: <20210920141526.3940002-9-memxor@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 20 Sep 2021 17:57:16 -0700
-Message-ID: <CAADnVQKjoCLNYBwDvLjgG9cYxrZyhw1Bgvm0yzH0gUWQLNtZnw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 08/11] libbpf: Update gen_loader to emit
- BTF_KIND_FUNC relocations
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S230048AbhIUBeV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Sep 2021 21:34:21 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44408 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230004AbhIUBch (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 21:32:37 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KHwM2T022907
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 18:31:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=jdtw8UrJYV2HtZCpgxLgHLH69Mo1hMKYMmGwSY9hARk=;
+ b=BMzr2/cLlOTjZibvMBftuL5y2k/oSfTTst3hjNCWk3jNr0jTBcekNl9jHY6O6KmMTXFY
+ qRyNOhPNptDQedCZ3USDlSA9bQ8NFGAh46wEFeM5pE8SIz18LS0RthQc4ImtQIblOryK
+ qgJw+pJvsAcB0JSOwjmRVIUF8C6/dUIYuMg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b6mkmx3rv-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 18:31:09 -0700
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Mon, 20 Sep 2021 18:31:07 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 636F52940D2A; Mon, 20 Sep 2021 18:31:02 -0700 (PDT)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH bpf-next 0/4] bpf: Support <8-byte scalar spill and refill
+Date:   Mon, 20 Sep 2021 18:31:02 -0700
+Message-ID: <20210921013102.1035356-1-kafai@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: FL0VidmxOgScdOBF9QSn1eDYL4k8TTAc
+X-Proofpoint-ORIG-GUID: FL0VidmxOgScdOBF9QSn1eDYL4k8TTAc
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_11,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=445 bulkscore=0
+ impostorscore=0 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109210006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 7:15 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> This change updates the BPF syscall loader to relocate BTF_KIND_FUNC
-> relocations, with support for weak kfunc relocations. The next commit
-> adds bpftool supports to set up the fd_array_sz parameter for light
-> skeleton.
->
-> A second map for keeping fds is used instead of adding fds to existing
-> loader.map because of following reasons:
+The verifier currently does not save the reg state when
+spilling <8byte bounded scalar to the stack.  The bpf program
+will be incorrectly rejected when this scalar is refilled to
+the reg and then used to offset into a packet header.
+The later patch has a simplified bpf prog from a real use case
+to demonstrate this case.  The current work around is
+to reparse the packet again such that this offset scalar
+is close to where the packet data will be accessed to
+avoid the spill.  Thus, the header is parsed twice.
 
-but it complicates signing bpf progs a lot.
+The llvm patch [1] will align the <8bytes spill to
+the 8-byte stack address.  This set is to make the necessary
+changes in verifier to support <8byte scalar spill and refill.
 
-> If reserving an area for map and BTF fds, we would waste the remaining
-> of (MAX_USED_MAPS + MAX_KFUNC_DESCS) * sizeof(int), which in most cases
-> will be unused by the program. Also, we must place some limit on the
-> amount of map and BTF fds a program can possibly open.
+[1] https://reviews.llvm.org/D109073
 
-That is just (256 + 64)*4 bytes of data. Really not much.
-I wouldn't worry about reserving this space.
+Martin KaFai Lau (4):
+  bpf: Check the other end of slot_type for STACK_SPILL
+  bpf: Support <8-byte scalar spill and refill
+  bpf: selftest: A bpf prog that has a 32bit scalar spill
+  bpf: selftest: Add verifier tests for <8-byte scalar spill and refill
 
-> If setting gen->fd_array to first map_fd offset, and then just finding
-> the offset relative to this (for later BTF fds), such that they can be
-> packed without wasting space, we run the risk of unnecessarily running
-> out of valid offset for emit_relo stage (for kfuncs), because gen map
-> creation and relocation stages are separated by other steps that can add
-> lots of data (including bpf_object__populate_internal_map). It is also
-> prone to break silently if features are added between map and BTF fd
-> emits that possibly add more data (just ~128KB to break BTF fd, since
-> insn->off allows for INT16_MAX (32767) * 4 bytes).
+ kernel/bpf/verifier.c                         |  97 ++++--
+ .../selftests/bpf/prog_tests/xdpwall.c        |  15 +
+ tools/testing/selftests/bpf/progs/xdpwall.c   | 302 ++++++++++++++++++
+ .../selftests/bpf/verifier/spill_fill.c       | 161 ++++++++++
+ 4 files changed, 549 insertions(+), 26 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdpwall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdpwall.c
 
-I don't follow this logic.
+--=20
+2.30.2
 
-> Both of these issues are compounded by the fact that data map is shared
-> by all programs, so it is easy to end up with invalid offset for BTF fd.
-
-I don't follow this either. There is only one map and one program.
-What sharing are you talking about?
