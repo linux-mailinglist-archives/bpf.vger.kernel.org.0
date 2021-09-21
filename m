@@ -2,311 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DDA413C01
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFAC413C5A
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235249AbhIUVJF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 17:09:05 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15012 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235238AbhIUVJB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 17:09:01 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LH9Akj029333
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:07:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=facebook;
- bh=EmzeAtdo76ZMDdi5RwkS7uQbxOLfRUYvIGZKKypOvXQ=;
- b=GmmfjbNzq4W54t+zQdtjjDiikDtXBGI58ClfEe+nCtdCHbZO2jUTY/OVFsYaOHaAllw9
- UTp/DPCTLqEEn3YCMv/+dEhM/BvhPQAsJhAku3KoCr2cjSDl75+2GUWV4VqIG+Sc8pJW
- FatjZL020UENjzaEtRIZ6/cDqQsIAw5vpM0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b7eygkq04-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:07:32 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 21 Sep 2021 14:05:30 -0700
-Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id A69202AC13DB; Tue, 21 Sep 2021 14:05:20 -0700 (PDT)
-From:   Joanne Koong <joannekoong@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH v3 bpf-next 5/5] bpf/benchs: Add benchmarks for comparing hashmap lookups with vs. without bloom filter
-Date:   Tue, 21 Sep 2021 14:02:25 -0700
-Message-ID: <20210921210225.4095056-6-joannekoong@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210921210225.4095056-1-joannekoong@fb.com>
-References: <20210921210225.4095056-1-joannekoong@fb.com>
+        id S229586AbhIUV0v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 17:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234493AbhIUV0s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:26:48 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82AFC061574
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:25:18 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 194so1910678qkj.11
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:25:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xwwJnqcN/z36PRqQLfEZmEbHYa3C4kaR0BRVN54o6rs=;
+        b=ey4isOZyNShbl0GYk8ZsQytTlA/I2FxWTV4DVKfuUdsaImjW5IxoH8p5ApdEmPAq8C
+         WNJBCQULyPKq4QPCJoR6+uzQH0a/HR+ZX6JI/uPm+39AEWE4LrLUbYdU92RQ6ZNLsNHt
+         eI1QEPQn6XJYKCGM8V5/CZIr7fDZjoJmCbyhrfoviLHxnW+i72kyjsD6QhJJORjf5ois
+         NFfCk6nUnqt+eq+2qRQdpdXAS8m5CaqBvZ65jZllQxjhl6VivXYhl6a2YHZgmeP2f2An
+         uRDNBeJrjNz1ZRPa9pFHJyCD1YIev1lhUO0f5Z4s3KZBAUGUu9amHNzO4+FHuLlfO2Xi
+         u2Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xwwJnqcN/z36PRqQLfEZmEbHYa3C4kaR0BRVN54o6rs=;
+        b=1b8mY27U0qxfxe6v+Gqj094WxzM6S80qt13DInUq3PXk8pHRzNy5qqn2r/V9b0J+kc
+         aIrCa48g1ObyIdF8i5IYyknZr7zktW1/SBUiWEpe5Ct2ad6wqxCM4G5qvzJ1ndk24V+s
+         7U43+Hve67zyC5rBiWmyGqWkOXmYD/WfVTBWx/SvZT/FGptMfdmWg5TFu6rYndY62oIo
+         QKVmw9Dj3cPtNSGHShp0m6Q1J1UfjTxkLXg+bT8WpTmrsWBa44BmX3lSBCfWLtvpAbFz
+         zWkEJmsqvDGTApdU+O9oRSfMxCiCynOo7j+5i3xr56oICcQjx5BPm4+qiKkmOgrnSed0
+         SIhQ==
+X-Gm-Message-State: AOAM532uWB+p7+F7f9T5N3hSz7LcQ2b9xs26msu1cOBEfiPX3kY31dfB
+        6mT2QdUc304AYW0xq8GG6ROp4hiXT95myiDNyakwqZK0Xf8=
+X-Google-Smtp-Source: ABdhPJymnvm/G6K0ua2vIYJiS13GEAmlInUD5y/q1eGf8wcO9ygJrpf02GKK4MpCQaW87Z1YHLLrp8A/FPRB7drCKM0=
+X-Received: by 2002:a25:fc5:: with SMTP id 188mr39357028ybp.51.1632259517974;
+ Tue, 21 Sep 2021 14:25:17 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210917215721.43491-1-alexei.starovoitov@gmail.com> <20210917215721.43491-2-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210917215721.43491-2-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 21 Sep 2021 14:25:06 -0700
+Message-ID: <CAEf4Bzav49LODFUQ1jw57C6RN56PPQRWOSkGi_j5n1FQcp4p8A@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 01/10] bpf: Prepare relo_core.c for kernel duty.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, mcroce@microsoft.com,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-FB-Source: Intern
-X-Proofpoint-GUID: iTay5s5KwyY_owLcR9QKe8NGWVnhsmrQ
-X-Proofpoint-ORIG-GUID: iTay5s5KwyY_owLcR9QKe8NGWVnhsmrQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-21_06,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- clxscore=1015 bulkscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
- spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109210125
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds benchmark tests for comparing the performance of hashmap
-lookups without the bloom filter vs. hashmap lookups with the bloom filte=
-r.
+On Fri, Sep 17, 2021 at 2:57 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Make relo_core.c to be compiled with kernel and with libbpf.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  include/linux/btf.h       | 89 +++++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/Makefile       |  4 ++
+>  kernel/bpf/btf.c          | 26 ++++++++++++
+>  tools/lib/bpf/relo_core.c | 72 ++++++++++++++++++++++++++++++-
+>  4 files changed, 189 insertions(+), 2 deletions(-)
+>
 
-Checking the bloom filter first for whether the element exists should
-overall enable a higher throughput for hashmap lookups, since if the
-element does not exist in the bloom filter, we can avoid a costly lookup =
-in
-the hashmap.
+[...]
 
-On average, using 5 hash functions in the bloom filter tended to perform
-the best across the widest range of different entry sizes. The benchmark
-results using 5 hash functions (running on 8 threads on a machine with on=
-e
-numa node, and taking the average of 3 runs) were roughly as follows:
+>  static inline u16 btf_func_linkage(const struct btf_type *t)
+>  {
+>         return BTF_INFO_VLEN(t->info);
+> @@ -193,6 +245,27 @@ static inline bool btf_type_kflag(const struct btf_type *t)
+>         return BTF_INFO_KFLAG(t->info);
+>  }
+>
+> +static inline struct btf_member *btf_members(const struct btf_type *t)
+> +{
+> +       return (struct btf_member *)(t + 1);
+> +}
+> +#ifdef RELO_CORE
 
-value_size =3D 4 bytes -
-	10k entries: 30% faster
-	50k entries: 50% faster
-	100k entries: 55% faster
-	500k entres: 80% faster
-	1 million entries: 120% faster
-	5 million entries: 135% faster
+ugh... seems like in most (if not all) cases kernel has member_idx
+available, so it will be a simple and mechanical change to use
+libbpf's member_idx implementation everywhere. Would allow #define
+RELO_CORE, unless you think it's useful for something else?
 
-value_size =3D 8 bytes -
-	10k entries: 35% faster
-	50k entries: 55% faster
-	100k entries: 70% faster
-	500k entres: 110% faster
-	1 million entries: 215% faster
-	5 million entries: 215% faster
+> +static inline u32 btf_member_bit_offset(const struct btf_type *t, u32 member_idx)
+> +{
+> +       const struct btf_member *m = btf_members(t) + member_idx;
+> +       bool kflag = btf_type_kflag(t);
+> +
+> +       return kflag ? BTF_MEMBER_BIT_OFFSET(m->offset) : m->offset;
+> +}
+> +
 
-value_size =3D 16 bytes -
-	10k entries: 5% slower
-	50k entries: 25% faster
-	100k entries: 35% faster
-	500k entres: 105% faster
-	1 million entries: 130% faster
-	5 million entries: 105% faster
+[...]
 
-value_size =3D 40 bytes -
-	10k entries: 5% slower
-	50k entries: 10% faster
-	100k entries: 20% faster
-	500k entres: 45% faster
-	1 million entries: 60% faster
-	5 million entries: 75% faster
+>  static inline const struct btf_var_secinfo *btf_type_var_secinfo(
+>                 const struct btf_type *t)
+>  {
+> @@ -222,6 +307,10 @@ static inline const struct btf_var_secinfo *btf_type_var_secinfo(
+>  struct bpf_prog;
+>
+>  const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id);
+> +static inline const struct btf_type *btf__type_by_id(const struct btf *btf, u32 type_id)
+> +{
+> +       return btf_type_by_id(btf, type_id);
+> +}
 
-Signed-off-by: Joanne Koong <joannekoong@fb.com>
----
- tools/testing/selftests/bpf/bench.c           | 22 ++++++++---
- .../bpf/benchs/bench_bloom_filter_map.c       | 39 +++++++++++++++++++
- .../bpf/benchs/run_bench_bloom_filter_map.sh  | 15 +++++++
- .../selftests/bpf/benchs/run_common.sh        | 12 ++++++
- 4 files changed, 83 insertions(+), 5 deletions(-)
+There is just one place in relo_core.c where btf__type_by_id()
+behavior matters, that's in bpf_core_apply_relo_insn() which validates
+that relocation info is valid. But we've already done that in
+bpf_core_apply_relo() anyways, so I think all relo_core.c uses can be
+just switched to btf_type_by_id(). So you don't need to add this tiny
+wrapper.
 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
-s/bpf/bench.c
-index 0bcbdb4405a3..7da1589a9fe0 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -92,20 +92,21 @@ void hits_drops_report_progress(int iter, struct benc=
-h_res *res, long delta_ns)
- 	printf("Iter %3d (%7.3lfus): ",
- 	       iter, (delta_ns - 1000000000) / 1000.0);
-=20
--	printf("hits %8.3lfM/s (%7.3lfM/prod), drops %8.3lfM/s\n",
--	       hits_per_sec, hits_per_prod, drops_per_sec);
-+	printf("hits %8.3lfM/s (%7.3lfM/prod), drops %8.3lfM/s, total operation=
-s %8.3lfM/s\n",
-+	       hits_per_sec, hits_per_prod, drops_per_sec, hits_per_sec + drops=
-_per_sec);
- }
-=20
- void hits_drops_report_final(struct bench_res res[], int res_cnt)
- {
- 	int i;
--	double hits_mean =3D 0.0, drops_mean =3D 0.0;
--	double hits_stddev =3D 0.0, drops_stddev =3D 0.0;
-+	double hits_mean =3D 0.0, drops_mean =3D 0.0, total_ops_mean =3D 0.0;
-+	double hits_stddev =3D 0.0, drops_stddev =3D 0.0, total_ops_stddev =3D =
-0.0;
-=20
- 	for (i =3D 0; i < res_cnt; i++) {
- 		hits_mean +=3D res[i].hits / 1000000.0 / (0.0 + res_cnt);
- 		drops_mean +=3D res[i].drops / 1000000.0 / (0.0 + res_cnt);
- 	}
-+	total_ops_mean =3D hits_mean + drops_mean;
-=20
- 	if (res_cnt > 1)  {
- 		for (i =3D 0; i < res_cnt; i++) {
-@@ -115,14 +116,21 @@ void hits_drops_report_final(struct bench_res res[]=
-, int res_cnt)
- 			drops_stddev +=3D (drops_mean - res[i].drops / 1000000.0) *
- 					(drops_mean - res[i].drops / 1000000.0) /
- 					(res_cnt - 1.0);
-+			total_ops_stddev +=3D (total_ops_mean -
-+					(res[i].hits + res[i].drops) / 1000000.0) *
-+					(total_ops_mean - (res[i].hits + res[i].drops) / 1000000.0)
-+					/ (res_cnt - 1.0);
- 		}
- 		hits_stddev =3D sqrt(hits_stddev);
- 		drops_stddev =3D sqrt(drops_stddev);
-+		total_ops_stddev =3D sqrt(total_ops_stddev);
- 	}
- 	printf("Summary: hits %8.3lf \u00B1 %5.3lfM/s (%7.3lfM/prod), ",
- 	       hits_mean, hits_stddev, hits_mean / env.producer_cnt);
--	printf("drops %8.3lf \u00B1 %5.3lfM/s\n",
-+	printf("drops %8.3lf \u00B1 %5.3lfM/s, ",
- 	       drops_mean, drops_stddev);
-+	printf("total operations %8.3lf \u00B1 %5.3lfM/s\n",
-+	       total_ops_mean, total_ops_stddev);
- }
-=20
- const char *argp_program_version =3D "benchmark";
-@@ -356,6 +364,8 @@ extern const struct bench bench_pb_libbpf;
- extern const struct bench bench_pb_custom;
- extern const struct bench bench_bloom_filter_map;
- extern const struct bench bench_bloom_filter_false_positive;
-+extern const struct bench bench_hashmap_without_bloom_filter;
-+extern const struct bench bench_hashmap_with_bloom_filter;
-=20
- static const struct bench *benchs[] =3D {
- 	&bench_count_global,
-@@ -379,6 +389,8 @@ static const struct bench *benchs[] =3D {
- 	&bench_pb_custom,
- 	&bench_bloom_filter_map,
- 	&bench_bloom_filter_false_positive,
-+	&bench_hashmap_without_bloom_filter,
-+	&bench_hashmap_with_bloom_filter,
- };
-=20
- static void setup_benchmark()
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c =
-b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-index 8b4cd9a52a88..7adf80be7292 100644
---- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-@@ -242,6 +242,23 @@ static void hashmap_lookup_setup(void)
- 	}
- }
-=20
-+static void hashmap_no_bloom_filter_setup(void)
-+{
-+	struct bpf_link *link;
-+
-+	ctx.skel =3D setup_skeleton();
-+
-+	ctx.skel->data->hashmap_use_bloom_filter =3D false;
-+
-+	populate_maps();
-+
-+	link =3D bpf_program__attach(ctx.skel->progs.prog_bloom_filter_hashmap_=
-lookup);
-+	if (!link) {
-+		fprintf(stderr, "failed to attach program!\n");
-+		exit(1);
-+	}
-+}
-+
- static void measure(struct bench_res *res)
- {
- 	long total_hits =3D 0, total_drops =3D 0, total_false_hits =3D 0;
-@@ -343,3 +360,25 @@ const struct bench bench_bloom_filter_false_positive=
- =3D {
- 	.report_progress =3D false_hits_report_progress,
- 	.report_final =3D false_hits_report_final,
- };
-+
-+const struct bench bench_hashmap_without_bloom_filter =3D {
-+	.name =3D "hashmap-without-bloom-filter",
-+	.validate =3D validate,
-+	.setup =3D hashmap_no_bloom_filter_setup,
-+	.producer_thread =3D producer,
-+	.consumer_thread =3D consumer,
-+	.measure =3D measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-+
-+const struct bench bench_hashmap_with_bloom_filter =3D {
-+	.name =3D "hashmap-with-bloom-filter",
-+	.validate =3D validate,
-+	.setup =3D hashmap_lookup_setup,
-+	.producer_thread =3D producer,
-+	.consumer_thread =3D consumer,
-+	.measure =3D measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_ma=
-p.sh b/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
-index 0dbbd85937e3..239c040b7aaa 100755
---- a/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
-@@ -26,3 +26,18 @@ header "Bloom filter map, multi-producer contention"
- for t in 1 2 3 4 8 12 16 20 24 28 32 36 40 44 48 52; do
- 	summarize "$t threads - " "$($RUN_BENCH -p $t bloom-filter-map)"
- done
-+
-+header "Hashmap without bloom filter vs. hashmap with bloom filter (thro=
-ughput, 8 threads)"
-+for h in {1..10}; do
-+subtitle "# hashes: $h"
-+	for e in 10000 50000 75000 100000 250000 500000 750000 1000000 2500000 =
-5000000; do
-+		printf "%'d entries -\n" $e
-+		printf "\t"
-+		summarize_total "Hashmap without bloom filter: " \
-+			"$($RUN_BENCH --nr_hash_funcs $h --nr_entries $e -p 8 hashmap-without=
--bloom-filter)"
-+		printf "\t"
-+		summarize_total "Hashmap with bloom filter: " \
-+			"$($RUN_BENCH --nr_hash_funcs $h --nr_entries $e -p 8 hashmap-with-bl=
-oom-filter)"
-+	done
-+	printf "\n"
-+done
-diff --git a/tools/testing/selftests/bpf/benchs/run_common.sh b/tools/tes=
-ting/selftests/bpf/benchs/run_common.sh
-index 670f23b037c4..9a16be78b180 100644
---- a/tools/testing/selftests/bpf/benchs/run_common.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_common.sh
-@@ -33,6 +33,11 @@ function percentage()
- 	echo "$*" | sed -E "s/.*Percentage\s=3D\s+([0-9]+\.[0-9]+).*/\1/"
- }
-=20
-+function total()
-+{
-+	echo "$*" | sed -E "s/.*total operations\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]=
-+\.[0-9]+M\/s).*/\1/"
-+}
-+
- function summarize()
- {
- 	bench=3D"$1"
-@@ -46,3 +51,10 @@ function summarize_percentage()
- 	summary=3D$(echo $2 | tail -n1)
- 	printf "%-20s %s%%\n" "$bench" "$(percentage $summary)"
- }
-+
-+function summarize_total()
-+{
-+	bench=3D"$1"
-+	summary=3D$(echo $2 | tail -n1)
-+	printf "%-20s %s\n" "$bench" "$(total $summary)"
-+}
---=20
-2.30.2
+>  const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+>  struct btf *btf_parse_vmlinux(void);
+>  struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 7f33098ca63f..3d5370c876b5 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -36,3 +36,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
+>  obj-${CONFIG_BPF_LSM} += bpf_lsm.o
+>  endif
+>  obj-$(CONFIG_BPF_PRELOAD) += preload/
+> +
+> +obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
+> +$(obj)/relo_core.o: $(srctree)/tools/lib/bpf/relo_core.c FORCE
+> +       $(call if_changed_rule,cc_o_c)
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index c3d605b22473..fa2c88f6ac4a 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6343,3 +6343,29 @@ const struct bpf_func_proto bpf_btf_find_by_name_kind_proto = {
+>  };
+>
+>  BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
+> +
+> +int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
+> +                             const struct btf *targ_btf, __u32 targ_id)
+> +{
 
+We chatted offline about bpf_core_types_are_compat() and how it's used
+in only one place. It's because fields have dedicated
+bpf_core_fields_are_compat(), which is non-recursive.
+
+> +       return -EOPNOTSUPP;
+> +}
+> +
+> +static bool bpf_core_is_flavor_sep(const char *s)
+> +{
+> +       /* check X___Y name pattern, where X and Y are not underscores */
+> +       return s[0] != '_' &&                                 /* X */
+> +              s[1] == '_' && s[2] == '_' && s[3] == '_' &&   /* ___ */
+> +              s[4] != '_';                                   /* Y */
+> +}
+> +
+
+[...]
