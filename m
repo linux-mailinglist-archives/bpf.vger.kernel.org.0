@@ -2,186 +2,491 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CA7413DD5
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 01:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E90413DD7
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 01:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhIUXKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 19:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S229842AbhIUXLy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 19:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhIUXKk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:10:40 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5697FC061574
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:09:11 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id t4so2890884qkb.9
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:09:11 -0700 (PDT)
+        with ESMTP id S229805AbhIUXLs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:11:48 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A24EC061574
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:10:19 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id v5so2586826edc.2
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:10:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=riotgames.com; s=riotgames;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NoY1MvjodBHwsp1sLEQd5Il8otRonscwa0g/4GtFFjk=;
-        b=Ha2EnFGyP/tqVmcTclWU45AjtHfe79n/i0El8A8XGzGHtvkN8Vy6DNRAjtSskRvC6h
-         NXF0PA9VSniXUiMbxsjRpaAmK/hnOr/K/sohKPh1J6efn9jfkNZWD7NaAiom2iLa+4Os
-         vX6jdjVeSd4BylI9EKkBAYNRoq5JmhYVJ5N/qhVeBy2IYbGbLeQoKbK535QxK14XZeAB
-         XBBbDHebWiZERlx+tdVpNku2ZZnsRA3YrrqFRStjuUp0HJQYFoEhpNzXCDYg60aB6YRF
-         WucXNbdaaTuTLcusW3LrkxTCejv7R9ylz2y+nGO3heQiGn7tQWzAMJHPOmlAqEFAg0oS
-         hiew==
+         :cc:content-transfer-encoding;
+        bh=6P3jIQG3qIv2oEfSozY9lMCq1e+rjwzC5dNVLEXquuk=;
+        b=OwihEpJWaBVDq6N+ZTtLdyYhc/vRhN23Mqm1zH1SejJnhatz7ZI33TjlLT2fJtTra4
+         TdWHEThPjzzvX9boLSwW1pR/obMUOYkTUZWHJ/M4WaqrJYGrbaNPxbgxKuMHWw836kqi
+         1pXqlcENFu7DYCNwvEhOGAnjS81XEZ2DJgGp8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NoY1MvjodBHwsp1sLEQd5Il8otRonscwa0g/4GtFFjk=;
-        b=pv/4pqoopYDH9D2C2t2DLlkK+oEgUqvq/uqqJW1JpNOEk2w9HeuuzD1eehpVR9emo0
-         7us211zkR0llBLsqqQz3GNdY8llvTptHjZmzUV2/Fahi9LEY52huFrmg05cQWBtJ7KxM
-         n39TI+KGhSy6SdWpGDLf0m91mGMbSKyrM3pKKVXsSq2jLe4VhilD2Ng3ytzfWFEf52Ec
-         YgzUQxbidP6brxcCBFvvdd3DGm542lGfyUg00oiJlG6ZFfiaSDwt5h5UztEHtV2fsZVw
-         2Fdxh5pqNACkvCZWpJS+yyQVgLJHnSwqV6OPa8edYZnvLiGPCkeibAOPKkHkHqX/JYEB
-         vVJQ==
-X-Gm-Message-State: AOAM533wSuA87d1/Kt+nFU9IKNoMKRhUl7AnGakIQ97kkK3686BemNC/
-        RSqsuBEgkZwTGrL39//sdNC3U3guR2CrLsBJntpZk2A+
-X-Google-Smtp-Source: ABdhPJzpUZ7xILHNCniNJpYrmFS2xXw4e2L4f8ltH+oZkwvr3D01Fl1qemD+R7EVO6O8NNC/TKkWjaoxALVyn321sLI=
-X-Received: by 2002:a25:1884:: with SMTP id 126mr24764992yby.114.1632265750513;
- Tue, 21 Sep 2021 16:09:10 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6P3jIQG3qIv2oEfSozY9lMCq1e+rjwzC5dNVLEXquuk=;
+        b=Q77L9h+8/j57HSedVZzEwkPgChxW552mzGOVye0+z6FjaBCToQ+ke6FC7eQLCTKfR/
+         Mb4Lm44+RoOiTI2RjGGJSIxwtEL3omQavDPnqCOai3IZEZw7HbGwFGtL9DLpRviDO3Uy
+         OyXO5m6/htTeMQAKWHPeXc7joZhLwEke3kqAJYsJ41EEwgZo1BTnWmBMNAcRkUdHTwg0
+         xMGrjDwRY1FTcyIDqdbF+OA3d9TpXfxEg3KDeF9BPnIuwb2bva+2sjOApyLCYLGRDOo/
+         f3DCtKcS8t8G/N5NAGQO1jObaP4Mmizhcj8ITauBTZsT1ezshabf/GyNXx4+OsqN8Wxt
+         zpnA==
+X-Gm-Message-State: AOAM532Gnt/wR50VTAh3ZK6fIO+NFm2ro0idjjBdaUriSf9cfkwCoZav
+        nuzr1YxDSExnJLWumFGNC+DrBnN+q074yUQJWxDalA==
+X-Google-Smtp-Source: ABdhPJwtBC1gS0LTuqrESz7jIY7fsHnmocIQwJCkNNUFI1cNXxJlIShr4MRfgfwvXqDLt5hPXZrDInQ1OGAGRIprp3k=
+X-Received: by 2002:a17:906:7f01:: with SMTP id d1mr37935423ejr.318.1632265817711;
+ Tue, 21 Sep 2021 16:10:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920234320.3312820-1-andrii@kernel.org> <20210920234320.3312820-2-andrii@kernel.org>
- <4ab8049e-7e06-17b3-56ab-f1776cdf5e5e@fb.com>
-In-Reply-To: <4ab8049e-7e06-17b3-56ab-f1776cdf5e5e@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 16:08:59 -0700
-Message-ID: <CAEf4BzbV7M5Uhsw+OtE+JdaJ17ragpfyKXAT9=1yoec4jhq4nA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/9] selftests/bpf: normalize XDP section
- names in selftests
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <87o88l3oc4.fsf@toke.dk> <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
+ <87ilyt3i0y.fsf@toke.dk> <CAC1LvL3yQd_T5srJb78rGxv8YD-QND2aRgJ-p5vOQkbvrwJWSw@mail.gmail.com>
+ <87fstx37bn.fsf@toke.dk>
+In-Reply-To: <87fstx37bn.fsf@toke.dk>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Tue, 21 Sep 2021 16:10:06 -0700
+Message-ID: <CAC1LvL1VArVCN4DoEDBReSPsALFtdpYVLVzzzA4wWa4DDYzCUw@mail.gmail.com>
+Subject: Re: Redux: Backwards compatibility for XDP multi-buff
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Lorenzo Bianconi <lbianconi@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 9:55 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Tue, Sep 21, 2021 at 3:14 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On 9/20/21 7:43 PM, Andrii Nakryiko wrote:
-> > Convert almost all SEC("xdp_blah") uses to strict SEC("xdp") to comply
-> > with strict libbpf 1.0 logic of exact section name match for XDP program
-> > types. There is only one exception, which is only tested through
-> > iproute2 and defines multiple XDP programs within the same BPF object.
-> > Given iproute2 still works in non-strict libbpf mode and it doesn't have
-> > means to specify XDP programs by its name (not section name/title),
-> > leave that single file alone for now until iproute2 gains lookup by
-> > function/program name.
+> Zvi Effron <zeffron@riotgames.com> writes:
+>
+> > On Tue, Sep 21, 2021 at 11:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+> >>
+> >> Zvi Effron <zeffron@riotgames.com> writes:
+> >>
+> >> > On Tue, Sep 21, 2021 at 9:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+> >> >>
+> >> >> Hi Lorenz (Cc. the other people who participated in today's discuss=
+ion)
+> >> >>
+> >> >> Following our discussion at the LPC session today, I dug up my prev=
+ious
+> >> >> summary of the issue and some possible solutions[0]. Seems no on
+> >> >> actually replied last time, which is why we went with the "do nothi=
+ng"
+> >> >> approach, I suppose. I'm including the full text of the original em=
+ail
+> >> >> below; please take a look, and let's see if we can converge on a
+> >> >> consensus here.
+> >> >>
+> >> >> First off, a problem description: If an existing XDP program is exp=
+osed
+> >> >> to an xdp_buff that is really a multi-buffer, while it will continu=
+e to
+> >> >> run, it may end up with subtle and hard-to-debug bugs: If it's pars=
+ing
+> >> >> the packet it'll only see part of the payload and not be aware of t=
+hat
+> >> >> fact, and if it's calculating the packet length, that will also onl=
+y be
+> >> >> wrong (only counting the first fragment).
+> >> >>
+> >> >> So what to do about this? First of all, to do anything about it, XD=
+P
+> >> >> programs need to be able to declare themselves "multi-buffer aware"=
+ (but
+> >> >> see point 1 below). We could try to auto-detect it in the verifier =
+by
+> >> >> which helpers the program is using, but since existing programs cou=
+ld be
+> >> >> perfectly happy to just keep running, it probably needs to be somet=
+hing
+> >> >> the program communicates explicitly. One option is to use the
+> >> >> expected_attach_type to encode this; programs can then declare it i=
+n the
+> >> >> source by section name, or the userspace loader can set the type fo=
+r
+> >> >> existing programs if needed.
+> >> >>
+> >> >> With this, the kernel will know if a given XDP program is multi-buf=
+f
+> >> >> aware and can decide what to do with that information. For this we =
+came
+> >> >> up with basically three options:
+> >> >>
+> >> >> 1. Do nothing. This would make it up to users / sysadmins to avoid
+> >> >>    anything breaking by manually making sure to not enable multi-bu=
+ffer
+> >> >>    support while loading any XDP programs that will malfunction if
+> >> >>    presented with an mb frame. This will probably break in interest=
+ing
+> >> >>    ways, but it's nice and simple from an implementation PoV. With =
+this
+> >> >>    we don't need the declaration discussed above either.
+> >> >>
+> >> >> 2. Add a check at runtime and drop the frames if they are mb-enable=
+d and
+> >> >>    the program doesn't understand it. This is relatively simple to
+> >> >>    implement, but it also makes for difficult-to-understand issues =
+(why
+> >> >>    are my packets suddenly being dropped?), and it will incur runti=
+me
+> >> >>    overhead.
+> >> >>
+> >> >> 3. Reject loading of programs that are not MB-aware when running in=
+ an
+> >> >>    MB-enabled mode. This would make things break in more obvious wa=
+ys,
+> >> >>    and still allow a userspace loader to declare a program "MB-awar=
+e" to
+> >> >>    force it to run if necessary. The problem then becomes at what l=
+evel
+> >> >>    to block this?
+> >> >>
+> >> >
+> >> > I think there's another potential problem with this as well: what ha=
+ppens to
+> >> > already loaded programs that are not MB-aware? Are they forcibly unl=
+oaded?
+> >>
+> >> I'd say probably the opposite: You can't toggle whatever switch we end
+> >> up with if there are any non-MB-aware programs (you'd have to unload
+> >> them first)...
+> >>
 > >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
+> > How would we communicate that issue? dmesg? I'm not very familiar with
+> > how sysctl change failure causes are communicated to users, so this
+> > might be a solved problem, but if I run `sysctl -w net.xdp.multibuffer
+> > 1` (or whatever ends up actually being the toggle) to active
+> > multi-buffer, and it fails because there's a loaded non-aware program,
+> > that seems like a potential for a lot of administrator pain.
 >
-> Aside from a checkpatch nit which you didn't cause, LGTM. Some general
-> comments follow as well, but aren't directly related to the patch.
+> Hmm, good question. Document that this only fails if there's a
+> non-mb-aware XDP program loaded? Or use some other mechanism with better
+> feedback?
 >
-> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
->
-> >  tools/testing/selftests/bpf/progs/test_map_in_map.c         | 2 +-
-> >  .../selftests/bpf/progs/test_tcp_check_syncookie_kern.c     | 2 +-
-> >  tools/testing/selftests/bpf/progs/test_xdp.c                | 2 +-
-> >  .../testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c | 2 +-
-> >  .../selftests/bpf/progs/test_xdp_adjust_tail_shrink.c       | 4 +---
-> >  tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c | 2 +-
-> >  tools/testing/selftests/bpf/progs/test_xdp_link.c           | 2 +-
-> >  tools/testing/selftests/bpf/progs/test_xdp_loop.c           | 2 +-
-> >  tools/testing/selftests/bpf/progs/test_xdp_noinline.c       | 4 ++--
-> >  .../selftests/bpf/progs/test_xdp_with_cpumap_helpers.c      | 4 ++--
-> >  .../selftests/bpf/progs/test_xdp_with_devmap_helpers.c      | 4 ++--
-> >  tools/testing/selftests/bpf/progs/xdp_dummy.c               | 2 +-
-> >  tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c | 4 ++--
-> >  tools/testing/selftests/bpf/progs/xdping_kern.c             | 4 ++--
-> >  tools/testing/selftests/bpf/test_tcp_check_syncookie.sh     | 2 +-
-> >  tools/testing/selftests/bpf/test_xdp_redirect.sh            | 4 ++--
-> >  tools/testing/selftests/bpf/test_xdp_redirect_multi.sh      | 2 +-
-> >  tools/testing/selftests/bpf/test_xdp_veth.sh                | 4 ++--
-> >  tools/testing/selftests/bpf/xdping.c                        | 6 +++---
->
-> Doesn't look like the test_...sh's here are run by the CI. Confirmed they
-> (as well as test_xdping.sh) all passed for me. My test VM isn't doing anything
-> special networking-wise, so maybe it's not too difficult to add these to CI.
-
-Thanks for confirming. Yes, they are not run in CI, we only run
-test_progs, test_verifier and test_maps. Instead of adding all those
-small scripts to be run by CI, we are encouraging everyone to converge
-on test_progs, because that's where we invest efforts to make it a
-universal test runner for BPF needs. So I'd say let's convert them to
-test_progs framework instead.
-
->
-> >  19 files changed, 28 insertions(+), 30 deletions(-)
+> >> >>    Doing this at the driver level is not enough: while a particular
+> >> >>    driver knows if it's running in multi-buff mode, we can't know f=
+or
+> >> >>    sure if a particular XDP program is multi-buff aware at attach t=
+ime:
+> >> >>    it could be tail-calling other programs, or redirecting packets =
+to
+> >> >>    another interface where it will be processed by a non-MB aware
+> >> >>    program.
+> >> >>
+> >> >>    So another option is to make it a global toggle: e.g., create a =
+new
+> >> >>    sysctl to enable multi-buffer. If this is set, reject loading an=
+y XDP
+> >> >>    program that doesn't support multi-buffer mode, and if it's unse=
+t,
+> >> >>    disable multi-buffer mode in all drivers. This will make it expl=
+icit
+> >> >>    when the multi-buffer mode is used, and prevent any accidental s=
+ubtle
+> >> >>    malfunction of existing XDP programs. The drawback is that it's =
+a
+> >> >>    mode switch, so more configuration complexity.
+> >> >>
+> >> >
+> >> > Could we combine the last two bits here into a global toggle that do=
+esn't
+> >> > require a sysctl? If any driver is put into multi-buffer mode, then =
+the system
+> >> > switches to requiring all programs be multi-buffer? When the last mu=
+lti-buffer
+> >> > enabled driver switches out of multi-buffer, remove the system-wide
+> >> > restriction?
+> >>
+> >> Well, the trouble here is that we don't necessarily have an explicit
+> >> "multi-buf mode" for devices. For instance, you could raise the MTU of=
+ a
+> >> device without it necessarily involving any XDP multi-buffer stuff (if
+> >> you're not running XDP on that device). So if we did turn "raising the
+> >> MTU" into such a mode switch, we would end up blocking any MTU changes
+> >> if any XDP programs are loaded. Or having an MTU change cause a
+> >> force-unload of all XDP programs.
 > >
-> > diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map.c b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-> > index 1cfeb940cf9f..5f0e0bfc151e 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_map_in_map.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-> > @@ -23,7 +23,7 @@ struct {
+> > Maybe I missed something then, but you had stated that "while a
+> > particular driver knows if it's running in multi-buff mode" so I
+> > assumed that the driver would be able to tell when to toggle the mode
+> > on.
+>
+> Well, a driver knows when it is attaching an XDP program whether it (the
+> driver) is configured in a way such that this XDP program could
+> encounter a multi-buf.
 
-[...]
+I know drivers sometimes reconfigure themselves when an XDP program is
+attached, but is there any information provided by the attach (other than t=
+hat
+an XDP program is attaching) that they use to make configuration decisions
+during that reconfiguration?
 
-> >       void *data_end = (void *)(long)xdp->data_end;
-> > diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-> > index 22065a9cfb25..b7448253d135 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-> > @@ -9,9 +9,7 @@
-> >  #include <linux/if_ether.h>
-> >  #include <bpf/bpf_helpers.h>
+Without modifying the driver to intentionally configure itself differently
+based on whether or not the program is mb-aware (which is believe is curren=
+tly
+not the case for any driver), won't the configuration of a driver be identi=
+cal
+post XDP attach regardless of whether or not the program is mb-aware or not=
+?
+
+I was thinking the driver would make it's mb-aware determination (and refco=
+unt
+adjustments) when its configuration changes for any reason that could
+potentially affect mb-aware status (mostly MTU adjustments, I suspect).
+
+>
+> > I had been thinking that when a driver turned multi-buffer off, it
+> > could trigger a check of all drivers, but that also seems like it
+> > could just be a global refcount of all the drivers that have requested
+> > multi-buffer mode. When a driver enables multi-buffer for itself, it
+> > increments the refcount, and when it disables, it decrements. A
+> > non-zero count means the system is in multi-buffer mode.
+>
+> I guess we could do a refcount-type thing when an multi-buf XDP program
+> is first attached (as per above). But I think it may be easier to just
+> do it at load-time, then, so it doesn't have to be in the driver, but
+> the BPF core could just enforce it.
+>
+> This would basically amount to a rule saying "you can't mix mb-aware and
+> non-mb-aware programs", and the first type to be loaded determines which
+> mode the system is in. This would be fairly simple to implement and
+> enforce, I suppose. The drawback is that it's potentially racy in the
+> order programs are loaded...
+>
+
+Accepting or rejecting at load time would definitely simplify things a bit.=
+ But
+I think the raciness is worse than just based on the first program to load.=
+ If
+we're doing refcounting at attach/detach time, then I can load an mb-aware =
+and
+an mb-unaware program before attaching anything. What do I do when I attach=
+ one
+of them? The other would be in violation.
+
+If instead of making the determination at attach time, we make it at load t=
+ime,
+I think it'd be better to go back to the sysctl controlling it, and simply =
+not
+allow changing the sysctl if any XDP program at all is loaded, as opposed t=
+o
+if a non-aware program is installed.
+
+Then we're back to the sysctl controlling whether or not mb-aware is requir=
+ed.
+We stil have a communication to the administrator problem, but it's simplif=
+ied
+a bit from "some loaded program doesn't comply" and having to track down wh=
+ich
+one to "there is an XDP program installed".
+
+> -Toke
+>
+
+Side note: how do extension programs fit into this? An extension program th=
+at's
+going to freplace a function in an XDP program (that receives the context)
+would also need to mb-aware or not, but not all extension programs can atta=
+ch
+to such functions, and we wouldn't want those programs to be impacted. Is t=
+his
+as simple as marking every XDP program and every extension program that tak=
+es
+an XDP context parameter as needing to be marked as mb-aware?
+
+--Zvi
+
+On Tue, Sep 21, 2021 at 3:14 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Zvi Effron <zeffron@riotgames.com> writes:
+>
+> > On Tue, Sep 21, 2021 at 11:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+> >>
+> >> Zvi Effron <zeffron@riotgames.com> writes:
+> >>
+> >> > On Tue, Sep 21, 2021 at 9:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+> >> >>
+> >> >> Hi Lorenz (Cc. the other people who participated in today's discuss=
+ion)
+> >> >>
+> >> >> Following our discussion at the LPC session today, I dug up my prev=
+ious
+> >> >> summary of the issue and some possible solutions[0]. Seems no on
+> >> >> actually replied last time, which is why we went with the "do nothi=
+ng"
+> >> >> approach, I suppose. I'm including the full text of the original em=
+ail
+> >> >> below; please take a look, and let's see if we can converge on a
+> >> >> consensus here.
+> >> >>
+> >> >> First off, a problem description: If an existing XDP program is exp=
+osed
+> >> >> to an xdp_buff that is really a multi-buffer, while it will continu=
+e to
+> >> >> run, it may end up with subtle and hard-to-debug bugs: If it's pars=
+ing
+> >> >> the packet it'll only see part of the payload and not be aware of t=
+hat
+> >> >> fact, and if it's calculating the packet length, that will also onl=
+y be
+> >> >> wrong (only counting the first fragment).
+> >> >>
+> >> >> So what to do about this? First of all, to do anything about it, XD=
+P
+> >> >> programs need to be able to declare themselves "multi-buffer aware"=
+ (but
+> >> >> see point 1 below). We could try to auto-detect it in the verifier =
+by
+> >> >> which helpers the program is using, but since existing programs cou=
+ld be
+> >> >> perfectly happy to just keep running, it probably needs to be somet=
+hing
+> >> >> the program communicates explicitly. One option is to use the
+> >> >> expected_attach_type to encode this; programs can then declare it i=
+n the
+> >> >> source by section name, or the userspace loader can set the type fo=
+r
+> >> >> existing programs if needed.
+> >> >>
+> >> >> With this, the kernel will know if a given XDP program is multi-buf=
+f
+> >> >> aware and can decide what to do with that information. For this we =
+came
+> >> >> up with basically three options:
+> >> >>
+> >> >> 1. Do nothing. This would make it up to users / sysadmins to avoid
+> >> >>    anything breaking by manually making sure to not enable multi-bu=
+ffer
+> >> >>    support while loading any XDP programs that will malfunction if
+> >> >>    presented with an mb frame. This will probably break in interest=
+ing
+> >> >>    ways, but it's nice and simple from an implementation PoV. With =
+this
+> >> >>    we don't need the declaration discussed above either.
+> >> >>
+> >> >> 2. Add a check at runtime and drop the frames if they are mb-enable=
+d and
+> >> >>    the program doesn't understand it. This is relatively simple to
+> >> >>    implement, but it also makes for difficult-to-understand issues =
+(why
+> >> >>    are my packets suddenly being dropped?), and it will incur runti=
+me
+> >> >>    overhead.
+> >> >>
+> >> >> 3. Reject loading of programs that are not MB-aware when running in=
+ an
+> >> >>    MB-enabled mode. This would make things break in more obvious wa=
+ys,
+> >> >>    and still allow a userspace loader to declare a program "MB-awar=
+e" to
+> >> >>    force it to run if necessary. The problem then becomes at what l=
+evel
+> >> >>    to block this?
+> >> >>
+> >> >
+> >> > I think there's another potential problem with this as well: what ha=
+ppens to
+> >> > already loaded programs that are not MB-aware? Are they forcibly unl=
+oaded?
+> >>
+> >> I'd say probably the opposite: You can't toggle whatever switch we end
+> >> up with if there are any non-MB-aware programs (you'd have to unload
+> >> them first)...
+> >>
 > >
-> > -int _version SEC("version") = 1;
-> > -
+> > How would we communicate that issue? dmesg? I'm not very familiar with
+> > how sysctl change failure causes are communicated to users, so this
+> > might be a solved problem, but if I run `sysctl -w net.xdp.multibuffer
+> > 1` (or whatever ends up actually being the toggle) to active
+> > multi-buffer, and it fails because there's a loaded non-aware program,
+> > that seems like a potential for a lot of administrator pain.
 >
-> Didn't realize this was meant to specify kernel version for compat, and that
-> it no longer does anything anyways. Maybe this should be removed from all
-> selftests + examples to make this more obvious?
-
-Yes, it should, but perhaps in a separate clean up series. Except I'd
-leave it for BPF static linker testing, of course.
-
+> Hmm, good question. Document that this only fails if there's a
+> non-mb-aware XDP program loaded? Or use some other mechanism with better
+> feedback?
 >
-> > -SEC("xdp_adjust_tail_shrink")
-> > +SEC("xdp")
-> >  int _xdp_adjust_tail_shrink(struct xdp_md *xdp)
-> >  {
-> >       void *data_end = (void *)(long)xdp->data_end;
-> > diff --git a/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c
-> > index b360ba2bd441..807bf895f42c 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c
-
-Note, it's generally a good idea to trim irrelevant parts in your
-reply making it easier to see one's replies among the wall of text,
-especially outside of gmail UI.
-
-[...]
-
-> > diff --git a/tools/testing/selftests/bpf/xdping.c b/tools/testing/selftests/bpf/xdping.c
-> > index 842d9155d36c..f9798ead20a9 100644
-> > --- a/tools/testing/selftests/bpf/xdping.c
-> > +++ b/tools/testing/selftests/bpf/xdping.c
-> > @@ -178,9 +178,9 @@ int main(int argc, char **argv)
-> >               return 1;
-> >       }
+> >> >>    Doing this at the driver level is not enough: while a particular
+> >> >>    driver knows if it's running in multi-buff mode, we can't know f=
+or
+> >> >>    sure if a particular XDP program is multi-buff aware at attach t=
+ime:
+> >> >>    it could be tail-calling other programs, or redirecting packets =
+to
+> >> >>    another interface where it will be processed by a non-MB aware
+> >> >>    program.
+> >> >>
+> >> >>    So another option is to make it a global toggle: e.g., create a =
+new
+> >> >>    sysctl to enable multi-buffer. If this is set, reject loading an=
+y XDP
+> >> >>    program that doesn't support multi-buffer mode, and if it's unse=
+t,
+> >> >>    disable multi-buffer mode in all drivers. This will make it expl=
+icit
+> >> >>    when the multi-buffer mode is used, and prevent any accidental s=
+ubtle
+> >> >>    malfunction of existing XDP programs. The drawback is that it's =
+a
+> >> >>    mode switch, so more configuration complexity.
+> >> >>
+> >> >
+> >> > Could we combine the last two bits here into a global toggle that do=
+esn't
+> >> > require a sysctl? If any driver is put into multi-buffer mode, then =
+the system
+> >> > switches to requiring all programs be multi-buffer? When the last mu=
+lti-buffer
+> >> > enabled driver switches out of multi-buffer, remove the system-wide
+> >> > restriction?
+> >>
+> >> Well, the trouble here is that we don't necessarily have an explicit
+> >> "multi-buf mode" for devices. For instance, you could raise the MTU of=
+ a
+> >> device without it necessarily involving any XDP multi-buffer stuff (if
+> >> you're not running XDP on that device). So if we did turn "raising the
+> >> MTU" into such a mode switch, we would end up blocking any MTU changes
+> >> if any XDP programs are loaded. Or having an MTU change cause a
+> >> force-unload of all XDP programs.
 > >
-> > -     main_prog = bpf_object__find_program_by_title(obj,
-> > -                                                   server ? "xdpserver" :
-> > -                                                            "xdpclient");
-> > +     main_prog = bpf_object__find_program_by_name(obj,
-> > +                                                   server ? "xdping_server" :
-> > +                                                            "xdping_client");
+> > Maybe I missed something then, but you had stated that "while a
+> > particular driver knows if it's running in multi-buff mode" so I
+> > assumed that the driver would be able to tell when to toggle the mode
+> > on.
 >
-> checkpatch doesn't like the text alignment here, not that you changed it
-
-yeah, me neither, but not worth re-spin just for this :)
-
+> Well, a driver knows when it is attaching an XDP program whether it (the
+> driver) is configured in a way such that this XDP program could
+> encounter a multi-buf.
 >
-> >       if (main_prog)
-> >               prog_fd = bpf_program__fd(main_prog);
-> >       if (!main_prog || prog_fd < 0) {
-> >
+> > I had been thinking that when a driver turned multi-buffer off, it
+> > could trigger a check of all drivers, but that also seems like it
+> > could just be a global refcount of all the drivers that have requested
+> > multi-buffer mode. When a driver enables multi-buffer for itself, it
+> > increments the refcount, and when it disables, it decrements. A
+> > non-zero count means the system is in multi-buffer mode.
 >
+> I guess we could do a refcount-type thing when an multi-buf XDP program
+> is first attached (as per above). But I think it may be easier to just
+> do it at load-time, then, so it doesn't have to be in the driver, but
+> the BPF core could just enforce it.
+>
+> This would basically amount to a rule saying "you can't mix mb-aware and
+> non-mb-aware programs", and the first type to be loaded determines which
+> mode the system is in. This would be fairly simple to implement and
+> enforce, I suppose. The drawback is that it's potentially racy in the
+> order programs are loaded...
+>
+> -Toke
 >
