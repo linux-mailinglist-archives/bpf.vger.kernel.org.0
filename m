@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5029A413BF3
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB47B413BF4
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 23:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhIUVGa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 17:06:30 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26112 "EHLO
+        id S233682AbhIUVGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 17:06:35 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22548 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232718AbhIUVG3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 17:06:29 -0400
+        by vger.kernel.org with ESMTP id S232718AbhIUVGf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 17:06:35 -0400
 Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LHAotT009206
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:05:01 -0700
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LHAuef009458
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:05:06 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=coES2FqfLYStZd0UcRFaI47R0IoHRXFlM74fSdU0oPM=;
- b=fXwps4SEPrvjKdcF8XZzGp573RpKxcluOabkRMO/337lrxNAozrmFfIoopjE4YU6RMSi
- 0m6bHDrjZ7KkgVT19LKUV4DCkW6MgtCIjTNaJmBN9VEV4oVtvsWznHMwrqAz9LSCoj4v
- Yk8oTyVsc+yPalZvT2M2cxFyxESgd5CWesA= 
+ bh=cRrjDAfVQasB8VZWTfA0fXLxj2ftoQtSP0ny/Dz1LfE=;
+ b=mxvVOEjxBRaxuz3i7rsoz6tVjYpqmrY6ysjZIjdj4ur7qm7pB4FtD6RF3C7VyAa/JDe5
+ daTLdFSW1guv5NVivPWwW0WIZlUUdEOt5zo2AV0AMFtEG51IRGKyjXf94B3P6RHlsRsz
+ JEXUaOc9p/pDNf39wggM3HSTHLcqsrbCTgo= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b7d744kbm-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3b7d744kc9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:05:00 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:208::f) by
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 14:05:06 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
  mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 21 Sep 2021 14:04:59 -0700
+ 15.1.2308.14; Tue, 21 Sep 2021 14:05:05 -0700
 Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id 840362AC134F; Tue, 21 Sep 2021 14:04:50 -0700 (PDT)
+        id 6556C2AC13AF; Tue, 21 Sep 2021 14:05:01 -0700 (PDT)
 From:   Joanne Koong <joannekoong@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
-Date:   Tue, 21 Sep 2021 14:02:21 -0700
-Message-ID: <20210921210225.4095056-2-joannekoong@fb.com>
+Subject: [PATCH v3 bpf-next 2/5] libbpf: Allow the number of hashes in bloom filter maps to be configurable
+Date:   Tue, 21 Sep 2021 14:02:22 -0700
+Message-ID: <20210921210225.4095056-3-joannekoong@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210921210225.4095056-1-joannekoong@fb.com>
 References: <20210921210225.4095056-1-joannekoong@fb.com>
@@ -45,8 +45,8 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: l5Omdl6EpMnd4GNb6fcyv4JELefQkeKB
-X-Proofpoint-GUID: l5Omdl6EpMnd4GNb6fcyv4JELefQkeKB
+X-Proofpoint-ORIG-GUID: ky-0mTr-Jl9_DJy07ZWpR4hBHwSSLp41
+X-Proofpoint-GUID: ky-0mTr-Jl9_DJy07ZWpR4hBHwSSLp41
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-21_06,2021-09-20_01,2020-04-07_01
@@ -60,414 +60,240 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bloom filters are a space-efficient probabilistic data structure
-used to quickly test whether an element exists in a set.
-In a bloom filter, false positives are possible whereas false
-negatives should never be.
+This patch adds the libbpf infrastructure that will allow the user to
+specify a configurable number of hash functions to use for the bloom
+filter map.
 
-This patch adds a bloom filter map for bpf programs.
-The bloom filter map supports peek (determining whether an element
-is present in the map) and push (adding an element to the map)
-operations.These operations are exposed to userspace applications
-through the already existing syscalls in the following way:
-
-BPF_MAP_LOOKUP_ELEM -> peek
-BPF_MAP_UPDATE_ELEM -> push
-
-The bloom filter map does not have keys, only values. In light of
-this, the bloom filter map's API matches that of queue stack maps:
-user applications use BPF_MAP_LOOKUP_ELEM/BPF_MAP_UPDATE_ELEM
-which correspond internally to bpf_map_peek_elem/bpf_map_push_elem,
-and bpf programs must use the bpf_map_peek_elem and bpf_map_push_elem
-APIs to query or add an element to the bloom filter map. When the
-bloom filter map is created, it must be created with a key_size of 0.
-
-For updates, the user will pass in the element to add to the map
-as the value, with a NULL key. For lookups, the user will pass in the
-element to query in the map as the value. In the verifier layer, this
-requires us to modify the argument type of a bloom filter's
-BPF_FUNC_map_peek_elem call to ARG_PTR_TO_MAP_VALUE; as well, in
-the syscall layer, we need to copy over the user value so that in
-bpf_map_peek_elem, we know which specific value to query.
-
-A few things to please take note of:
- * If there are any concurrent lookups + updates, the user is
-responsible for synchronizing this to ensure no false negative lookups
-occur.
- * The number of hashes to use for the bloom filter is configurable from
-userspace. If no number is specified, the default used will be 5 hash
-functions. The benchmarks later in this patchset can help compare the
-performance of using different number of hashes on different entry
-sizes. In general, using more hashes decreases the speed of a lookup,
-but increases the false positive rate of an element being detected in the
-bloom filter.
- * Deleting an element in the bloom filter map is not supported.
- * The bloom filter map may be used as an inner map.
- * The "max_entries" size that is specified at map creation time is used =
-to
-approximate a reasonable bitmap size for the bloom filter, and is not
-otherwise strictly enforced. If the user wishes to insert more entries in=
-to
-the bloom filter than "max_entries", they may do so but they should be
-aware that this may lead to a higher false positive rate.
+Please note that this patch does not enforce that a pinned bloom filter
+map may only be reused if the number of hash functions is the same. If
+they are not the same, the number of hash functions used will be the one
+that was set for the pinned map.
 
 Signed-off-by: Joanne Koong <joannekoong@fb.com>
 ---
- include/linux/bpf_types.h      |   1 +
- include/uapi/linux/bpf.h       |   1 +
- kernel/bpf/Makefile            |   2 +-
- kernel/bpf/bloom_filter.c      | 185 +++++++++++++++++++++++++++++++++
- kernel/bpf/syscall.c           |  14 ++-
- kernel/bpf/verifier.c          |  19 +++-
- tools/include/uapi/linux/bpf.h |   1 +
- 7 files changed, 217 insertions(+), 6 deletions(-)
- create mode 100644 kernel/bpf/bloom_filter.c
+ include/uapi/linux/bpf.h        |  5 ++++-
+ tools/include/uapi/linux/bpf.h  |  5 ++++-
+ tools/lib/bpf/bpf.c             |  2 ++
+ tools/lib/bpf/bpf.h             |  1 +
+ tools/lib/bpf/libbpf.c          | 32 +++++++++++++++++++++++++++-----
+ tools/lib/bpf/libbpf.h          |  2 ++
+ tools/lib/bpf/libbpf.map        |  1 +
+ tools/lib/bpf/libbpf_internal.h |  4 +++-
+ 8 files changed, 44 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-index 9c81724e4b98..c4424ac2fa02 100644
---- a/include/linux/bpf_types.h
-+++ b/include/linux/bpf_types.h
-@@ -125,6 +125,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK, stack_map_ops)
- BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
- #endif
- BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
-+BPF_MAP_TYPE(BPF_MAP_TYPE_BLOOM_FILTER, bloom_filter_map_ops)
-=20
- BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
- BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 6fc59d61937a..fec9fcfe0629 100644
+index fec9fcfe0629..2e3048488feb 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -906,6 +906,7 @@ enum bpf_map_type {
- 	BPF_MAP_TYPE_RINGBUF,
- 	BPF_MAP_TYPE_INODE_STORAGE,
- 	BPF_MAP_TYPE_TASK_STORAGE,
-+	BPF_MAP_TYPE_BLOOM_FILTER,
- };
-=20
- /* Note that tracing related programs such as
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 7f33098ca63f..cf6ca339f3cd 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -7,7 +7,7 @@ endif
- CFLAGS_core.o +=3D $(call cc-disable-warning, override-init) $(cflags-no=
-gcse-yy)
-=20
- obj-$(CONFIG_BPF_SYSCALL) +=3D syscall.o verifier.o inode.o helpers.o tn=
-um.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
--obj-$(CONFIG_BPF_SYSCALL) +=3D hashtab.o arraymap.o percpu_freelist.o bp=
-f_lru_list.o lpm_trie.o map_in_map.o
-+obj-$(CONFIG_BPF_SYSCALL) +=3D hashtab.o arraymap.o percpu_freelist.o bp=
-f_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
- obj-$(CONFIG_BPF_SYSCALL) +=3D local_storage.o queue_stack_maps.o ringbu=
-f.o
- obj-$(CONFIG_BPF_SYSCALL) +=3D bpf_local_storage.o bpf_task_storage.o
- obj-${CONFIG_BPF_LSM}	  +=3D bpf_inode_storage.o
-diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
-new file mode 100644
-index 000000000000..72254edb24f1
---- /dev/null
-+++ b/kernel/bpf/bloom_filter.c
-@@ -0,0 +1,185 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <linux/bitmap.h>
-+#include <linux/bpf.h>
-+#include <linux/err.h>
-+#include <linux/jhash.h>
-+#include <linux/random.h>
-+
-+#define BLOOM_FILTER_CREATE_FLAG_MASK \
-+	(BPF_F_NUMA_NODE | BPF_F_ZERO_SEED | BPF_F_ACCESS_MASK)
-+
-+struct bpf_bloom_filter {
-+	struct bpf_map map;
-+	u32 bit_array_mask;
-+	u32 hash_seed;
-+	/* If the size of the values in the bloom filter is u32 aligned,
-+	 * then it is more performant to use jhash2 as the underlying hash
-+	 * function, else we use jhash. This tracks the number of u32s
-+	 * in an u32-aligned value size. If the value size is not u32 aligned,
-+	 * this will be 0.
-+	 */
-+	u32 aligned_u32_count;
-+	u32 nr_hash_funcs;
-+	unsigned long bit_array[];
-+};
-+
-+static inline u32 hash(struct bpf_bloom_filter *bloom_filter, void *valu=
-e,
-+		       u64 value_size, u32 index)
-+{
-+	if (bloom_filter->aligned_u32_count)
-+		return jhash2(value, bloom_filter->aligned_u32_count,
-+			      bloom_filter->hash_seed + index) &
-+			bloom_filter->bit_array_mask;
-+
-+	return jhash(value, value_size, bloom_filter->hash_seed + index) &
-+		bloom_filter->bit_array_mask;
-+}
-+
-+static int bloom_filter_map_peek_elem(struct bpf_map *map, void *value)
-+{
-+	struct bpf_bloom_filter *bloom_filter =3D
-+		container_of(map, struct bpf_bloom_filter, map);
-+	u32 i;
-+
-+	for (i =3D 0; i < bloom_filter->nr_hash_funcs; i++) {
-+		if (!test_bit(hash(bloom_filter, value, map->value_size, i),
-+			      bloom_filter->bit_array))
-+			return -ENOENT;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct bpf_map *bloom_filter_map_alloc(union bpf_attr *attr)
-+{
-+	u32 nr_bits, bit_array_bytes, bit_array_mask;
-+	int numa_node =3D bpf_map_attr_numa_node(attr);
-+	struct bpf_bloom_filter *bloom_filter;
-+	u32 nr_hash_funcs;
-+
-+	if (!bpf_capable())
-+		return ERR_PTR(-EPERM);
-+
-+	if (attr->key_size !=3D 0 || attr->value_size =3D=3D 0 || attr->max_ent=
-ries =3D=3D 0 ||
-+	    attr->map_flags & ~BLOOM_FILTER_CREATE_FLAG_MASK ||
-+	    !bpf_map_flags_access_ok(attr->map_flags))
-+		return ERR_PTR(-EINVAL);
-+
-+	/* Default to 5 if no number of hash functions was specified */
-+	nr_hash_funcs =3D attr->nr_hash_funcs =3D=3D 0 ? 5 : attr->nr_hash_func=
-s;
-+
-+	/* For the bloom filter, the optimal bit array size that minimizes the
-+	 * false positive probability is n * k / ln(2) where n is the number of
-+	 * expected entries in the bloom filter and k is the number of hash
-+	 * functions. We use 7 / 5 to approximate 1 / ln(2).
-+	 *
-+	 * We round this up to the nearest power of two to enable more efficien=
-t
-+	 * hashing using bitmasks. The bitmask will be the bit array size - 1.
-+	 *
-+	 * If this overflows a u32, the bit array size will have 2^32 (4
-+	 * GB) bits.
-+	 */
-+	if (check_mul_overflow(attr->max_entries, nr_hash_funcs, &nr_bits) ||
-+	    check_mul_overflow(nr_bits / 5, (u32)7, &nr_bits) ||
-+	    nr_bits > (1UL << 31)) {
-+		/* The bit array size is 2^32 bits but to avoid overflowing the
-+		 * u32, we use BITS_TO_BYTES(U32_MAX), which will round up to the
-+		 * equivalent number of bytes
-+		 */
-+		bit_array_bytes =3D BITS_TO_BYTES(U32_MAX);
-+		bit_array_mask =3D U32_MAX;
-+	} else {
-+		if (nr_bits <=3D BITS_PER_LONG)
-+			nr_bits =3D BITS_PER_LONG;
-+		else
-+			nr_bits =3D roundup_pow_of_two(nr_bits);
-+		bit_array_bytes =3D BITS_TO_BYTES(nr_bits);
-+		bit_array_mask =3D nr_bits - 1;
-+	}
-+
-+	bit_array_bytes =3D roundup(bit_array_bytes, sizeof(unsigned long));
-+	bloom_filter =3D bpf_map_area_alloc(sizeof(*bloom_filter) + bit_array_b=
-ytes,
-+					  numa_node);
-+
-+	if (!bloom_filter)
-+		return ERR_PTR(-ENOMEM);
-+
-+	bpf_map_init_from_attr(&bloom_filter->map, attr);
-+
-+	bloom_filter->nr_hash_funcs =3D nr_hash_funcs;
-+	bloom_filter->bit_array_mask =3D bit_array_mask;
-+	if ((attr->value_size & (sizeof(u32) - 1)) =3D=3D 0)
-+		bloom_filter->aligned_u32_count =3D attr->value_size / sizeof(u32);
-+
-+	if (!(attr->map_flags & BPF_F_ZERO_SEED))
-+		bloom_filter->hash_seed =3D get_random_int();
-+
-+	return &bloom_filter->map;
-+}
-+
-+static void bloom_filter_map_free(struct bpf_map *map)
-+{
-+	struct bpf_bloom_filter *bloom_filter =3D
-+		container_of(map, struct bpf_bloom_filter, map);
-+
-+	bpf_map_area_free(bloom_filter);
-+}
-+
-+static int bloom_filter_map_push_elem(struct bpf_map *map, void *value,
-+				      u64 flags)
-+{
-+	struct bpf_bloom_filter *bloom_filter =3D
-+		container_of(map, struct bpf_bloom_filter, map);
-+	u32 i;
-+
-+	if (flags !=3D BPF_ANY)
-+		return -EINVAL;
-+
-+	for (i =3D 0; i < bloom_filter->nr_hash_funcs; i++)
-+		set_bit(hash(bloom_filter, value, map->value_size, i),
-+			bloom_filter->bit_array);
-+
-+	return 0;
-+}
-+
-+static void *bloom_filter_map_lookup_elem(struct bpf_map *map, void *key=
-)
-+{
-+	/* The eBPF program should use map_peek_elem instead */
-+	return ERR_PTR(-EINVAL);
-+}
-+
-+static int bloom_filter_map_update_elem(struct bpf_map *map, void *key,
-+					void *value, u64 flags)
-+{
-+	/* The eBPF program should use map_push_elem instead */
-+	return -EINVAL;
-+}
-+
-+static int bloom_filter_map_delete_elem(struct bpf_map *map, void *key)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static int bloom_filter_map_get_next_key(struct bpf_map *map, void *key,
-+					 void *next_key)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static int bloom_filter_map_btf_id;
-+const struct bpf_map_ops bloom_filter_map_ops =3D {
-+	.map_meta_equal =3D bpf_map_meta_equal,
-+	.map_alloc =3D bloom_filter_map_alloc,
-+	.map_free =3D bloom_filter_map_free,
-+	.map_push_elem =3D bloom_filter_map_push_elem,
-+	.map_peek_elem =3D bloom_filter_map_peek_elem,
-+	.map_lookup_elem =3D bloom_filter_map_lookup_elem,
-+	.map_update_elem =3D bloom_filter_map_update_elem,
-+	.map_delete_elem =3D bloom_filter_map_delete_elem,
-+	.map_get_next_key =3D bloom_filter_map_get_next_key,
-+	.map_check_btf =3D map_check_no_btf,
-+	.map_btf_name =3D "bpf_bloom_filter",
-+	.map_btf_id =3D &bloom_filter_map_btf_id,
-+};
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e50c0bfdb7d..9865b5b1e667 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -199,7 +199,8 @@ static int bpf_map_update_value(struct bpf_map *map, =
-struct fd f, void *key,
- 		err =3D bpf_fd_reuseport_array_update_elem(map, key, value,
- 							 flags);
- 	} else if (map->map_type =3D=3D BPF_MAP_TYPE_QUEUE ||
--		   map->map_type =3D=3D BPF_MAP_TYPE_STACK) {
-+		   map->map_type =3D=3D BPF_MAP_TYPE_STACK ||
-+		   map->map_type =3D=3D BPF_MAP_TYPE_BLOOM_FILTER) {
- 		err =3D map->ops->map_push_elem(map, value, flags);
- 	} else {
- 		rcu_read_lock();
-@@ -238,7 +239,8 @@ static int bpf_map_copy_value(struct bpf_map *map, vo=
-id *key, void *value,
- 	} else if (map->map_type =3D=3D BPF_MAP_TYPE_REUSEPORT_SOCKARRAY) {
- 		err =3D bpf_fd_reuseport_array_lookup_elem(map, key, value);
- 	} else if (map->map_type =3D=3D BPF_MAP_TYPE_QUEUE ||
--		   map->map_type =3D=3D BPF_MAP_TYPE_STACK) {
-+		   map->map_type =3D=3D BPF_MAP_TYPE_STACK ||
-+		   map->map_type =3D=3D BPF_MAP_TYPE_BLOOM_FILTER) {
- 		err =3D map->ops->map_peek_elem(map, value);
- 	} else if (map->map_type =3D=3D BPF_MAP_TYPE_STRUCT_OPS) {
- 		/* struct_ops map requires directly updating "value" */
-@@ -1080,6 +1082,14 @@ static int map_lookup_elem(union bpf_attr *attr)
- 	if (!value)
- 		goto free_key;
-=20
-+	if (map->map_type =3D=3D BPF_MAP_TYPE_BLOOM_FILTER) {
-+		if (copy_from_user(value, uvalue, value_size))
-+			err =3D -EFAULT;
-+		else
-+			err =3D bpf_map_copy_value(map, key, value, attr->flags);
-+		goto free_value;
-+	}
-+
- 	err =3D bpf_map_copy_value(map, key, value, attr->flags);
- 	if (err)
- 		goto free_value;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e76b55917905..fd2b7f9dccae 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4813,7 +4813,10 @@ static int resolve_map_arg_type(struct bpf_verifie=
-r_env *env,
- 			return -EINVAL;
- 		}
- 		break;
--
-+	case BPF_MAP_TYPE_BLOOM_FILTER:
-+		if (meta->func_id =3D=3D BPF_FUNC_map_peek_elem)
-+			*arg_type =3D ARG_PTR_TO_MAP_VALUE;
-+		break;
- 	default:
- 		break;
- 	}
-@@ -5388,6 +5391,11 @@ static int check_map_func_compatibility(struct bpf=
-_verifier_env *env,
- 		    func_id !=3D BPF_FUNC_task_storage_delete)
- 			goto error;
- 		break;
-+	case BPF_MAP_TYPE_BLOOM_FILTER:
-+		if (func_id !=3D BPF_FUNC_map_push_elem &&
-+		    func_id !=3D BPF_FUNC_map_peek_elem)
-+			goto error;
-+		break;
- 	default:
- 		break;
- 	}
-@@ -5455,13 +5463,18 @@ static int check_map_func_compatibility(struct bp=
-f_verifier_env *env,
- 		    map->map_type !=3D BPF_MAP_TYPE_SOCKHASH)
- 			goto error;
- 		break;
--	case BPF_FUNC_map_peek_elem:
- 	case BPF_FUNC_map_pop_elem:
--	case BPF_FUNC_map_push_elem:
- 		if (map->map_type !=3D BPF_MAP_TYPE_QUEUE &&
- 		    map->map_type !=3D BPF_MAP_TYPE_STACK)
- 			goto error;
- 		break;
-+	case BPF_FUNC_map_push_elem:
-+	case BPF_FUNC_map_peek_elem:
-+		if (map->map_type !=3D BPF_MAP_TYPE_QUEUE &&
-+		    map->map_type !=3D BPF_MAP_TYPE_STACK &&
-+		    map->map_type !=3D BPF_MAP_TYPE_BLOOM_FILTER)
-+			goto error;
-+		break;
- 	case BPF_FUNC_sk_storage_get:
- 	case BPF_FUNC_sk_storage_delete:
- 		if (map->map_type !=3D BPF_MAP_TYPE_SK_STORAGE)
+@@ -1262,7 +1262,10 @@ union bpf_attr {
+ 		__u32	map_flags;	/* BPF_MAP_CREATE related
+ 					 * flags defined above.
+ 					 */
+-		__u32	inner_map_fd;	/* fd pointing to the inner map */
++		union {
++			__u32	inner_map_fd;	/* fd pointing to the inner map */
++			__u32	nr_hash_funcs;  /* or number of hash functions */
++		};
+ 		__u32	numa_node;	/* numa node (effective only if
+ 					 * BPF_F_NUMA_NODE is set).
+ 					 */
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
 f.h
-index 6fc59d61937a..fec9fcfe0629 100644
+index fec9fcfe0629..2e3048488feb 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -906,6 +906,7 @@ enum bpf_map_type {
- 	BPF_MAP_TYPE_RINGBUF,
- 	BPF_MAP_TYPE_INODE_STORAGE,
- 	BPF_MAP_TYPE_TASK_STORAGE,
-+	BPF_MAP_TYPE_BLOOM_FILTER,
+@@ -1262,7 +1262,10 @@ union bpf_attr {
+ 		__u32	map_flags;	/* BPF_MAP_CREATE related
+ 					 * flags defined above.
+ 					 */
+-		__u32	inner_map_fd;	/* fd pointing to the inner map */
++		union {
++			__u32	inner_map_fd;	/* fd pointing to the inner map */
++			__u32	nr_hash_funcs;  /* or number of hash functions */
++		};
+ 		__u32	numa_node;	/* numa node (effective only if
+ 					 * BPF_F_NUMA_NODE is set).
+ 					 */
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 2401fad090c5..8a9dd4f6d6c8 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -100,6 +100,8 @@ int bpf_create_map_xattr(const struct bpf_create_map_=
+attr *create_attr)
+ 	if (attr.map_type =3D=3D BPF_MAP_TYPE_STRUCT_OPS)
+ 		attr.btf_vmlinux_value_type_id =3D
+ 			create_attr->btf_vmlinux_value_type_id;
++	else if (attr.map_type =3D=3D BPF_MAP_TYPE_BLOOM_FILTER)
++		attr.nr_hash_funcs =3D create_attr->nr_hash_funcs;
+ 	else
+ 		attr.inner_map_fd =3D create_attr->inner_map_fd;
+=20
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 6fffb3cdf39b..1194b6f01572 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -49,6 +49,7 @@ struct bpf_create_map_attr {
+ 	union {
+ 		__u32 inner_map_fd;
+ 		__u32 btf_vmlinux_value_type_id;
++		__u32 nr_hash_funcs;
+ 	};
  };
 =20
- /* Note that tracing related programs such as
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index da65a1666a5e..e51e68a07aaf 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -378,6 +378,7 @@ struct bpf_map {
+ 	char *pin_path;
+ 	bool pinned;
+ 	bool reused;
++	__u32 nr_hash_funcs;
+ };
+=20
+ enum extern_type {
+@@ -1291,6 +1292,11 @@ static bool bpf_map_type__is_map_in_map(enum bpf_m=
+ap_type type)
+ 	return false;
+ }
+=20
++static inline bool bpf_map__is_bloom_filter(const struct bpf_map *map)
++{
++	return map->def.type =3D=3D BPF_MAP_TYPE_BLOOM_FILTER;
++}
++
+ int bpf_object__section_size(const struct bpf_object *obj, const char *n=
+ame,
+ 			     __u32 *size)
+ {
+@@ -2238,6 +2244,10 @@ int parse_btf_map_def(const char *map_name, struct=
+ btf *btf,
+ 			}
+ 			map_def->pinning =3D val;
+ 			map_def->parts |=3D MAP_DEF_PINNING;
++		} else if (strcmp(name, "nr_hash_funcs") =3D=3D 0) {
++			if (!get_map_field_int(map_name, btf, m, &map_def->nr_hash_funcs))
++				return -EINVAL;
++			map_def->parts |=3D MAP_DEF_NR_HASH_FUNCS;
+ 		} else {
+ 			if (strict) {
+ 				pr_warn("map '%s': unknown field '%s'.\n", map_name, name);
+@@ -2266,6 +2276,7 @@ static void fill_map_from_def(struct bpf_map *map, =
+const struct btf_map_def *def
+ 	map->numa_node =3D def->numa_node;
+ 	map->btf_key_type_id =3D def->key_type_id;
+ 	map->btf_value_type_id =3D def->value_type_id;
++	map->nr_hash_funcs =3D def->nr_hash_funcs;
+=20
+ 	if (def->parts & MAP_DEF_MAP_TYPE)
+ 		pr_debug("map '%s': found type =3D %u.\n", map->name, def->map_type);
+@@ -2290,6 +2301,8 @@ static void fill_map_from_def(struct bpf_map *map, =
+const struct btf_map_def *def
+ 		pr_debug("map '%s': found pinning =3D %u.\n", map->name, def->pinning)=
+;
+ 	if (def->parts & MAP_DEF_NUMA_NODE)
+ 		pr_debug("map '%s': found numa_node =3D %u.\n", map->name, def->numa_n=
+ode);
++	if (def->parts & MAP_DEF_NR_HASH_FUNCS)
++		pr_debug("map '%s': found nr_hash_funcs =3D %u.\n", map->name, def->nr=
+_hash_funcs);
+=20
+ 	if (def->parts & MAP_DEF_INNER_MAP)
+ 		pr_debug("map '%s': found inner map definition.\n", map->name);
+@@ -4616,10 +4629,6 @@ static int bpf_object__create_map(struct bpf_objec=
+t *obj, struct bpf_map *map, b
+ 		create_attr.max_entries =3D def->max_entries;
+ 	}
+=20
+-	if (bpf_map__is_struct_ops(map))
+-		create_attr.btf_vmlinux_value_type_id =3D
+-			map->btf_vmlinux_value_type_id;
+-
+ 	create_attr.btf_fd =3D 0;
+ 	create_attr.btf_key_type_id =3D 0;
+ 	create_attr.btf_value_type_id =3D 0;
+@@ -4629,7 +4638,12 @@ static int bpf_object__create_map(struct bpf_objec=
+t *obj, struct bpf_map *map, b
+ 		create_attr.btf_value_type_id =3D map->btf_value_type_id;
+ 	}
+=20
+-	if (bpf_map_type__is_map_in_map(def->type)) {
++	if (bpf_map__is_struct_ops(map)) {
++		create_attr.btf_vmlinux_value_type_id =3D
++			map->btf_vmlinux_value_type_id;
++	} else if (bpf_map__is_bloom_filter(map)) {
++		create_attr.nr_hash_funcs =3D map->nr_hash_funcs;
++	} else if (bpf_map_type__is_map_in_map(def->type)) {
+ 		if (map->inner_map) {
+ 			err =3D bpf_object__create_map(obj, map->inner_map, true);
+ 			if (err) {
+@@ -8610,6 +8624,14 @@ int bpf_map__set_value_size(struct bpf_map *map, _=
+_u32 size)
+ 	return 0;
+ }
+=20
++int bpf_map__set_nr_hash_funcs(struct bpf_map *map, __u32 nr_hash_funcs)
++{
++	if (map->fd >=3D 0)
++		return libbpf_err(-EBUSY);
++	map->nr_hash_funcs =3D nr_hash_funcs;
++	return 0;
++}
++
+ __u32 bpf_map__btf_key_type_id(const struct bpf_map *map)
+ {
+ 	return map ? map->btf_key_type_id : 0;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index d0bedd673273..5c441744f766 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -550,6 +550,8 @@ LIBBPF_API __u32 bpf_map__btf_value_type_id(const str=
+uct bpf_map *map);
+ /* get/set map if_index */
+ LIBBPF_API __u32 bpf_map__ifindex(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__set_ifindex(struct bpf_map *map, __u32 ifindex);
++/* set nr_hash_funcs */
++LIBBPF_API int bpf_map__set_nr_hash_funcs(struct bpf_map *map, __u32 nr_=
+hash_funcs);
+=20
+ typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
+ LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 9e649cf9e771..ee0e1e7648f4 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -385,6 +385,7 @@ LIBBPF_0.5.0 {
+ 		btf__load_vmlinux_btf;
+ 		btf_dump__dump_type_data;
+ 		libbpf_set_strict_mode;
++		bpf_map__set_nr_hash_funcs;
+ } LIBBPF_0.4.0;
+=20
+ LIBBPF_0.6.0 {
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+index ceb0c98979bc..95dbbeba231f 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -186,8 +186,9 @@ enum map_def_parts {
+ 	MAP_DEF_NUMA_NODE	=3D 0x080,
+ 	MAP_DEF_PINNING		=3D 0x100,
+ 	MAP_DEF_INNER_MAP	=3D 0x200,
++	MAP_DEF_NR_HASH_FUNCS	=3D 0x400,
+=20
+-	MAP_DEF_ALL		=3D 0x3ff, /* combination of all above */
++	MAP_DEF_ALL		=3D 0x7ff, /* combination of all above */
+ };
+=20
+ struct btf_map_def {
+@@ -201,6 +202,7 @@ struct btf_map_def {
+ 	__u32 map_flags;
+ 	__u32 numa_node;
+ 	__u32 pinning;
++	__u32 nr_hash_funcs;
+ };
+=20
+ int parse_btf_map_def(const char *map_name, struct btf *btf,
 --=20
 2.30.2
 
