@@ -2,77 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAE2413B12
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 22:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440B0413B1C
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 22:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhIUUFo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 16:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
+        id S232910AbhIUUNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 16:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhIUUFn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:05:43 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A933C061574;
-        Tue, 21 Sep 2021 13:04:15 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id c4so179228pls.6;
-        Tue, 21 Sep 2021 13:04:15 -0700 (PDT)
+        with ESMTP id S229736AbhIUUNp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 16:13:45 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8E7C061574;
+        Tue, 21 Sep 2021 13:12:17 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 17so234480pgp.4;
+        Tue, 21 Sep 2021 13:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lKZE2FHQtQiFIRKvNjn0PTcUcwcfzMHpmLVl/TYiwAw=;
-        b=TyZo6YEEOrDTnMclGAoMvfyvROPXhC8ukvhObU4D0otO5ZBe589kYQZ+rVjchbN+DO
-         7TNuLjGJLlTbwyThsbZkl4CwUu6LVrBnIDkg5JrnNTkBunO6pKtxBhzsMyOxNNmuCrxx
-         3atrcSO/y7Xq1X9MRwixj71iSePQDP03V91FJclDTqSBJlwZr5DAPgqYXThgFRTZ6Aqz
-         Z/aToNfSCC5qEw+Jxg997Uds6VvzVRbrtGm4O+FtUl808oLjAo3cdnrmLfL+Bo0nKtlq
-         7/WdRQ640a5xixRP9Z0qJiYgTE6xC621ebzcx+ERbTfPezadlzPb/Gc+mxG9j3kl7Kau
-         aIIw==
+         :cc:content-transfer-encoding;
+        bh=p61fV+YPNEywapwVLSX3U6IkS8bYclMoOHe7cYi5X18=;
+        b=eIy54y+X5rgzItP7ZeWNXNshPCqA+89uCpiYem2Hhf29ySBVE3JPvC0IBj/zg6NEcz
+         RM6t6f5jaNo1Zbo/OrdJxxef5tuXOSk9m2sjb08mgBowxwXV4FMBcVzZkUUWiQzWWaBe
+         MOmblvVkMFYmlihUphw/7/NvX8GpP7VVjCBv3YgPB//ROnQwRC/v3LurUtOKRM+m+gzU
+         p1qFcsTqYsk+eT7FXDFPDZWYLAgPpZfsL9D5RJg11gLR+7lggtCII+YSsGoOADNZhClN
+         0TcHnp7tSKqGc+HYX/9gI7yUKEEjDHfPj0WPMeYtjTy4kdQ698TbtLRDFiZmoUbgWiez
+         sskQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lKZE2FHQtQiFIRKvNjn0PTcUcwcfzMHpmLVl/TYiwAw=;
-        b=2dUYUTFu6ytEDkQH5XImfqyHdSNEq/nLUMWFJQLWo39XwsQYgVIY5vksr/7jrhiuus
-         XBvSXdl/nQrAxcXWZWIuEIS0ajoeiXHHE77fnLWtyTBkU6dmP29i/YKSberldMzJsFz4
-         e8bqht2Y6v8icjtt8D7+3Ngo2dDjKmbS3HY9jxHshPAHLSbq0S72cyOtFPm/4XmO4adS
-         p4afoCLoMOA2+Wfe6uC8JXwTWSZ1APmoV2L44oOyD9fBvWwmDWX76kxdI/eUo1P8Brl5
-         BaAzYwfEvduNzzGP9nn2fMj0z7TjkAqWfnjm38n0uU/2wwaUOBiy+QvLJqDexYNPxFAS
-         DrLA==
-X-Gm-Message-State: AOAM532k+5k+pKyfAErGq6Vp+NO9L7TVMX1qgfO+GcdiH6VngMqJGCYo
-        h3Y99wnIfDaCX65TDbb3b1HLdO9SO4Os7W3ud/BeBbzbjxw=
-X-Google-Smtp-Source: ABdhPJza29uUy9VxesivMMQaXATmxuAxrF3+TBjW24FORIyv+O/fxkqYwjbDqsLeuR8lim6xa/xpWZrHf9sW+AiLdbk=
-X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr7228148pjj.122.1632254654363;
- Tue, 21 Sep 2021 13:04:14 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=p61fV+YPNEywapwVLSX3U6IkS8bYclMoOHe7cYi5X18=;
+        b=2XVjJB+YmhTWh1ckswSiCAS4b5qYHIQVtkK64SZwwqyHd+SgUtB/W99egvRBU5+ViU
+         n/V0bZcAAShmF03cbMc3Ng7ZWLMyAao+0k0KBirRpWLioGry87cuEwo5bWxve+Yy8VTs
+         prI4COPEtNLHpK5DBwEZkgKtgerIlk/Sux74iTobGFPyO5kWWHBd00xOLDeMhtwUtwQx
+         lUIvGJ33HOl56yW8TA8+vDSPnqCCqEtyJnI0asIK86ozG21BxGpj3L31g1if6TKYYUui
+         55Beqx6HPxRaK9K96BFFbPBBKE1AeHYMYgaLLIQi0TUU/NkLwYCIzlu3KbrhDPwlrU1j
+         jeKA==
+X-Gm-Message-State: AOAM531qz6Y28uk/mOjG64fPjk9OP0mawbkk/XD6JnPlpssnlOXBmPDQ
+        jUQfC7LwpuhXaORmgOz03uCkjqNCVSFlAGX07OM=
+X-Google-Smtp-Source: ABdhPJwSwTZ/v7tYZwxP/eM3wDvQUMohzR0Zg4VWVjePKQEqDpo6w9XNyrOfaoDKf0yf82Hoamb32jTBX+xN+eVpm2o=
+X-Received: by 2002:a63:5c51:: with SMTP id n17mr29849307pgm.376.1632255136460;
+ Tue, 21 Sep 2021 13:12:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAC1LvL0670CWq183g54w3HGsByjcBaBL2rrTP1PyTbbYfm76iw@mail.gmail.com>
-In-Reply-To: <CAC1LvL0670CWq183g54w3HGsByjcBaBL2rrTP1PyTbbYfm76iw@mail.gmail.com>
+References: <87o88l3oc4.fsf@toke.dk> <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
+ <87ilyt3i0y.fsf@toke.dk>
+In-Reply-To: <87ilyt3i0y.fsf@toke.dk>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 21 Sep 2021 13:04:03 -0700
-Message-ID: <CAADnVQJYmOrTq47r413WDcVurv8hL0zS4yUdgwghanA6ffxSXw@mail.gmail.com>
-Subject: Re: Pass a map to a global BPF function
-To:     Zvi Effron <zeffron@riotgames.com>, bpf <bpf@vger.kernel.org>
-Cc:     Xdp <xdp-newbies@vger.kernel.org>
+Date:   Tue, 21 Sep 2021 13:12:05 -0700
+Message-ID: <CAADnVQKi_u6yZnsxEagNTv-XWXtLPpXwURJH0FnGFRgt6weiww@mail.gmail.com>
+Subject: Re: Redux: Backwards compatibility for XDP multi-buff
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Zvi Effron <zeffron@riotgames.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Lorenzo Bianconi <lbianconi@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:44 AM Zvi Effron <zeffron@riotgames.com> wrote:
+On Tue, Sep 21, 2021 at 11:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
 >
-> Hi all,
+> Zvi Effron <zeffron@riotgames.com> writes:
 >
-> We have some map-of-arrays that we use for tracking labeled metrics in
-> our XDP code. The inner map tracks the metrics for a given label,
-> which is the key in the outer map.
+> > On Tue, Sep 21, 2021 at 9:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> Hi Lorenz (Cc. the other people who participated in today's discussion=
+)
+> >>
+> >> Following our discussion at the LPC session today, I dug up my previou=
+s
+> >> summary of the issue and some possible solutions[0]. Seems no on
+> >> actually replied last time, which is why we went with the "do nothing"
+> >> approach, I suppose. I'm including the full text of the original email
+> >> below; please take a look, and let's see if we can converge on a
+> >> consensus here.
+> >>
+> >> First off, a problem description: If an existing XDP program is expose=
+d
+> >> to an xdp_buff that is really a multi-buffer, while it will continue t=
+o
+> >> run, it may end up with subtle and hard-to-debug bugs: If it's parsing
+> >> the packet it'll only see part of the payload and not be aware of that
+> >> fact, and if it's calculating the packet length, that will also only b=
+e
+> >> wrong (only counting the first fragment).
+> >>
+> >> So what to do about this? First of all, to do anything about it, XDP
+> >> programs need to be able to declare themselves "multi-buffer aware" (b=
+ut
+> >> see point 1 below). We could try to auto-detect it in the verifier by
+> >> which helpers the program is using, but since existing programs could =
+be
+> >> perfectly happy to just keep running, it probably needs to be somethin=
+g
+> >> the program communicates explicitly. One option is to use the
+> >> expected_attach_type to encode this; programs can then declare it in t=
+he
+> >> source by section name, or the userspace loader can set the type for
+> >> existing programs if needed.
+> >>
+> >> With this, the kernel will know if a given XDP program is multi-buff
+> >> aware and can decide what to do with that information. For this we cam=
+e
+> >> up with basically three options:
+> >>
+> >> 1. Do nothing. This would make it up to users / sysadmins to avoid
+> >>    anything breaking by manually making sure to not enable multi-buffe=
+r
+> >>    support while loading any XDP programs that will malfunction if
+> >>    presented with an mb frame. This will probably break in interesting
+> >>    ways, but it's nice and simple from an implementation PoV. With thi=
+s
+> >>    we don't need the declaration discussed above either.
+> >>
+> >> 2. Add a check at runtime and drop the frames if they are mb-enabled a=
+nd
+> >>    the program doesn't understand it. This is relatively simple to
+> >>    implement, but it also makes for difficult-to-understand issues (wh=
+y
+> >>    are my packets suddenly being dropped?), and it will incur runtime
+> >>    overhead.
+> >>
+> >> 3. Reject loading of programs that are not MB-aware when running in an
+> >>    MB-enabled mode. This would make things break in more obvious ways,
+> >>    and still allow a userspace loader to declare a program "MB-aware" =
+to
+> >>    force it to run if necessary. The problem then becomes at what leve=
+l
+> >>    to block this?
+> >>
+> >
+> > I think there's another potential problem with this as well: what happe=
+ns to
+> > already loaded programs that are not MB-aware? Are they forcibly unload=
+ed?
 >
-> Our XDP code calls several global BPF functions (freplaced, so can't
-> be inlined). Currently, each global function has to make a lookup to
-> get the inner map to record its metrics. Now that non-context pointers
-> can be passed to global BPF functions, is it possible to pass maps to
-> these global functions?
+> I'd say probably the opposite: You can't toggle whatever switch we end
+> up with if there are any non-MB-aware programs (you'd have to unload
+> them first)...
+>
+> >>    Doing this at the driver level is not enough: while a particular
+> >>    driver knows if it's running in multi-buff mode, we can't know for
+> >>    sure if a particular XDP program is multi-buff aware at attach time=
+:
+> >>    it could be tail-calling other programs, or redirecting packets to
+> >>    another interface where it will be processed by a non-MB aware
+> >>    program.
+> >>
+> >>    So another option is to make it a global toggle: e.g., create a new
+> >>    sysctl to enable multi-buffer. If this is set, reject loading any X=
+DP
+> >>    program that doesn't support multi-buffer mode, and if it's unset,
+> >>    disable multi-buffer mode in all drivers. This will make it explici=
+t
+> >>    when the multi-buffer mode is used, and prevent any accidental subt=
+le
+> >>    malfunction of existing XDP programs. The drawback is that it's a
+> >>    mode switch, so more configuration complexity.
+> >>
+> >
+> > Could we combine the last two bits here into a global toggle that doesn=
+'t
+> > require a sysctl? If any driver is put into multi-buffer mode, then the=
+ system
+> > switches to requiring all programs be multi-buffer? When the last multi=
+-buffer
+> > enabled driver switches out of multi-buffer, remove the system-wide
+> > restriction?
+>
+> Well, the trouble here is that we don't necessarily have an explicit
+> "multi-buf mode" for devices. For instance, you could raise the MTU of a
+> device without it necessarily involving any XDP multi-buffer stuff (if
+> you're not running XDP on that device). So if we did turn "raising the
+> MTU" into such a mode switch, we would end up blocking any MTU changes
+> if any XDP programs are loaded. Or having an MTU change cause a
+> force-unload of all XDP programs.
 
-The program can pass a pointer to struct bpf_map and the verifier
-will recognize it as PTR_TO_BTF_ID.
-It won't be a CONST_PTR_TO_MAP, so secondary lookup won't be
-allowed, but if that's the desired use case then the verifier can be extended
-to recognize it.
+MTU change that bumps driver into multi-buf mode or enable
+the header split that also bumps it into multi-buf mode
+probably shouldn't be allowed when non-mb aware xdp prog is attached.
+That would be the simplest and least surprising behavior.
+Force unload could cause security issues.
+
+> Neither of those are desirable outcomes, I think; and if we add a
+> separate "XDP multi-buff" switch, we might as well make it system-wide?
+
+If we have an internal flag 'this driver supports multi-buf xdp' cannot we
+make xdp_redirect to linearize in case the packet is being redirected
+to non multi-buf aware driver (potentially with corresponding non mb aware =
+xdp
+progs attached) from mb aware driver?
