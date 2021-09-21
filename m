@@ -2,255 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66838412A44
-	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 03:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F40A412D68
+	for <lists+bpf@lfdr.de>; Tue, 21 Sep 2021 05:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhIUBdN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Sep 2021 21:33:13 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4484 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230413AbhIUBdH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Sep 2021 21:33:07 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KHwMcT028630
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 18:31:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=G6JlfMaj3ieCK0PRofb89XlBrM0Xdtah7XuApqlYmoY=;
- b=IxuFkfWbY7G9Yl+N/9fCvl4c35dwbfpVc/9GfnSjR4HYQ0nv+TBDGFjWYIhl01J4NgLQ
- zJXSdbIo2BDBoA0mDqX6rqD1cWpmu/x8rSN8WDQRU+4Inx69IyuodYOYC8zrj6uj+42v
- hOi6SA0a7CPZy/OuHD+lFkUvQqcCgK3b5bA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b6kt66b1v-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 18:31:38 -0700
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 20 Sep 2021 18:31:36 -0700
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id AA2332940D2A; Mon, 20 Sep 2021 18:31:29 -0700 (PDT)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S232378AbhIUD0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Sep 2021 23:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352137AbhIUClV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Sep 2021 22:41:21 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774E3C0613DE
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 19:32:37 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id z14-20020a17090a8b8e00b0019cc29ceef1so906888pjn.1
+        for <bpf@vger.kernel.org>; Mon, 20 Sep 2021 19:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Kh9m4MsiS5aI2YIIkSc7q5nTUFUakrir8LRIIqVUNec=;
+        b=Wk0DGPRtV9aFleftAiyyoOdH1EdwsyP4fwPNPCzbT8Ucs/Tvmj379NjXAU7E6NGDJN
+         H5CSmVObGptPI0ivz+G+pRMrWy06hhikY77FGYMpmOy+eQLbI4i0ut1w2guhUYRyhK1E
+         CT3aRnkF20s9FDWigHhDtfssDZcCDIWjV2zgTJ3EnxqksCV6gbsqFGUW4rxhWdRExF62
+         ++RdnTYZ+pglknIFbIsa3y+tO9VE9xHt31MjFE1qB1ofGZFOorDVR9mI8Z4VYY2ssrPs
+         Y47/Nnd7BPE9uhtTP6wq43fUfs7zStFcdvRHg19+Cv9VfR+ml8AL5ojR2dXtj1eufRyT
+         2V2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kh9m4MsiS5aI2YIIkSc7q5nTUFUakrir8LRIIqVUNec=;
+        b=rCJq1okTePtI25keIP11D5+HG/3HsxArDt9YoCbAPejkXjLkueMaIBJFdh+Dy3O++M
+         CwNCT/GfB3cye55a6P9cR1E95b3QQoZnbWP9w32zBaxanXfZ3KIthgJLZtjsf311WTm6
+         jbPMiIEAxSVrUwQTNktlCiGJ+tA2g0n4TJmBiuiRT0YbGQMuuDxuiSjrWQrFSDOT8HIW
+         FB846UqaC5mMY1Sbf/xsdIyaRyLIe5rxooMwq4SNxTJ6BLpl1IUIi2k1yqYC0GT+gmkQ
+         WN9yl+FBNbQ58YhxdO89xf1CwvRSpulGxXVm5fFIO6VyLpYeawl1zJ/uQT3grZ0c4qET
+         rNfA==
+X-Gm-Message-State: AOAM5319jhB1OACfYGgl+hsGwC9Vp+DJNtbaISfI0+2zS1RujbmW0QZ8
+        3uO/P/7YErpofssNB7fSdUwDREyBTKs=
+X-Google-Smtp-Source: ABdhPJwOQXMO44hgiyNrJoKo9lAr8TxDvL5PGwbadBLGgY6jPjZNaZfIm1mTAfCvMugKO6/hQCMeKQ==
+X-Received: by 2002:a17:902:d202:b0:13a:709b:dfb0 with SMTP id t2-20020a170902d20200b0013a709bdfb0mr25550666ply.34.1632191556751;
+        Mon, 20 Sep 2021 19:32:36 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:e78f])
+        by smtp.gmail.com with ESMTPSA id a4sm625683pjd.48.2021.09.20.19.32.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 19:32:36 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 19:32:34 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf-next 4/4] bpf: selftest: Add verifier tests for <8-byte scalar spill and refill
-Date:   Mon, 20 Sep 2021 18:31:29 -0700
-Message-ID: <20210921013129.1037825-1-kafai@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210921013102.1035356-1-kafai@fb.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: selftest: A bpf prog that has a 32bit
+ scalar spill
+Message-ID: <20210921023234.pjnby3s4q4o4agwe@ast-mbp>
 References: <20210921013102.1035356-1-kafai@fb.com>
+ <20210921013122.1037548-1-kafai@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: wQrEUaKF0LAbxpJmfQbLpUXnS4uEnMvo
-X-Proofpoint-GUID: wQrEUaKF0LAbxpJmfQbLpUXnS4uEnMvo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-20_11,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- malwarescore=0 bulkscore=0 adultscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 priorityscore=1501 spamscore=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109210006
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921013122.1037548-1-kafai@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a few verifier tests for <8-byte spill and refill.
+On Mon, Sep 20, 2021 at 06:31:22PM -0700, Martin KaFai Lau wrote:
+> It is a simplified example that can trigger a 32bit scalar spill.
+> The const scalar is refilled and added to a skb->data later.
+> Since the reg state of the 32bit scalar spill is not saved now,
+> adding the refilled reg to skb->data and then comparing it with
+> skb->data_end cannot verify the skb->data access.
+> 
+> With the earlier verifier patch and the llvm patch [1].  The verifier
+> can correctly verify the bpf prog.
 
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- .../selftests/bpf/verifier/spill_fill.c       | 161 ++++++++++++++++++
- 1 file changed, 161 insertions(+)
+Let's land llvm patch and wait until CI picks up the new llvm build?
+Please add a comment to selftests/bpf/README.rst that describes
+the failing test when llvm is old.
+I'm guessing there is no easier way to reliably skip the test
+in such situation, since failure to load might be the result
+of some future changes.
+llvm version check won't work either.
 
-diff --git a/tools/testing/selftests/bpf/verifier/spill_fill.c b/tools/te=
-sting/selftests/bpf/verifier/spill_fill.c
-index 0b943897aaf6..c9991c3f3bd2 100644
---- a/tools/testing/selftests/bpf/verifier/spill_fill.c
-+++ b/tools/testing/selftests/bpf/verifier/spill_fill.c
-@@ -104,3 +104,164 @@
- 	.result =3D ACCEPT,
- 	.retval =3D POINTER_VALUE,
- },
-+{
-+	"Spill and refill a u32 const scalar.  Offset to skb->data",
-+	.insns =3D {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data_end)),
-+	/* r4 =3D 20 */
-+	BPF_MOV32_IMM(BPF_REG_4, 20),
-+	/* *(u32 *)(r10 -8) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -8),
-+	/* r4 =3D *(u32 *)(r10 -8) */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_10, -8),
-+	/* r0 =3D r2 */
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
-+	/* r0 +=3D r4 R0=3Dpkt R2=3Dpkt R3=3Dpkt_end R4=3Dinv20 */
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_4),
-+	/* if (r0 > r3) R0=3Dpkt,off=3D20 R2=3Dpkt R3=3Dpkt_end R4=3Dinv20 */
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_0, BPF_REG_3, 1),
-+	/* r0 =3D *(u32 *)r2 R0=3Dpkt,off=3D20,r=3D20 R2=3Dpkt,r=3D20 R3=3Dpkt_=
-end R4=3Dinv20 */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D ACCEPT,
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+},
-+{
-+	"Spill a u32 const, refill from another half of the uninit u32 from the=
- stack",
-+	.insns =3D {
-+	/* r4 =3D 20 */
-+	BPF_MOV32_IMM(BPF_REG_4, 20),
-+	/* *(u32 *)(r10 -8) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -8),
-+	/* r4 =3D *(u32 *)(r10 -4) fp-8=3D????rrrr*/
-+	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_10, -4),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D REJECT,
-+	.errstr =3D "invalid read from stack off -4+0 size 4",
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+},
-+{
-+	"Spill a u32 const scalar.  Refill as u16.  Offset to skb->data",
-+	.insns =3D {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data_end)),
-+	/* r4 =3D 20 */
-+	BPF_MOV32_IMM(BPF_REG_4, 20),
-+	/* *(u32 *)(r10 -8) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -8),
-+	/* r4 =3D *(u16 *)(r10 -8) */
-+	BPF_LDX_MEM(BPF_H, BPF_REG_4, BPF_REG_10, -8),
-+	/* r0 =3D r2 */
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
-+	/* r0 +=3D r4 R0=3Dpkt R2=3Dpkt R3=3Dpkt_end R4=3Dinv,umax=3D65535 */
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_4),
-+	/* if (r0 > r3) R0=3Dpkt,umax=3D65535 R2=3Dpkt R3=3Dpkt_end R4=3Dinv,um=
-ax=3D65535 */
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_0, BPF_REG_3, 1),
-+	/* r0 =3D *(u32 *)r2 R0=3Dpkt,umax=3D65535 R2=3Dpkt R3=3Dpkt_end R4=3Di=
-nv20 */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D REJECT,
-+	.errstr =3D "invalid access to packet",
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+},
-+{
-+	"Spill a u32 const scalar.  Refill as u16 from fp-6.  Offset to skb->da=
-ta",
-+	.insns =3D {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data_end)),
-+	/* r4 =3D 20 */
-+	BPF_MOV32_IMM(BPF_REG_4, 20),
-+	/* *(u32 *)(r10 -8) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -8),
-+	/* r4 =3D *(u16 *)(r10 -6) */
-+	BPF_LDX_MEM(BPF_H, BPF_REG_4, BPF_REG_10, -6),
-+	/* r0 =3D r2 */
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
-+	/* r0 +=3D r4 R0=3Dpkt R2=3Dpkt R3=3Dpkt_end R4=3Dinv,umax=3D65535 */
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_4),
-+	/* if (r0 > r3) R0=3Dpkt,umax=3D65535 R2=3Dpkt R3=3Dpkt_end R4=3Dinv,um=
-ax=3D65535 */
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_0, BPF_REG_3, 1),
-+	/* r0 =3D *(u32 *)r2 R0=3Dpkt,umax=3D65535 R2=3Dpkt R3=3Dpkt_end R4=3Di=
-nv20 */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D REJECT,
-+	.errstr =3D "invalid access to packet",
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+},
-+{
-+	"Spill and refill a u32 const scalar at non 8byte aligned stack addr.  =
-Offset to skb->data",
-+	.insns =3D {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data_end)),
-+	/* r4 =3D 20 */
-+	BPF_MOV32_IMM(BPF_REG_4, 20),
-+	/* *(u32 *)(r10 -8) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -8),
-+	/* *(u32 *)(r10 -4) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -4),
-+	/* r4 =3D *(u32 *)(r10 -4),  */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_10, -4),
-+	/* r0 =3D r2 */
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
-+	/* r0 +=3D r4 R0=3Dpkt R2=3Dpkt R3=3Dpkt_end R4=3Dinv,umax=3DU32_MAX */
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_4),
-+	/* if (r0 > r3) R0=3Dpkt,umax=3DU32_MAX R2=3Dpkt R3=3Dpkt_end R4=3Dinv =
-*/
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_0, BPF_REG_3, 1),
-+	/* r0 =3D *(u32 *)r2 R0=3Dpkt,umax=3DU32_MAX R2=3Dpkt R3=3Dpkt_end R4=3D=
-inv */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D REJECT,
-+	.errstr =3D "invalid access to packet",
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+},
-+{
-+	"Spill and refill a umax=3D40 bounded scalar.  Offset to skb->data",
-+	.insns =3D {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data_end)),
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_4, BPF_REG_1,
-+		    offsetof(struct __sk_buff, tstamp)),
-+	BPF_JMP_IMM(BPF_JLE, BPF_REG_4, 40, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	/* *(u32 *)(r10 -8) =3D r4 R4=3Dinv,umax=3D40 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -8),
-+	/* r4 =3D (*u32 *)(r10 - 8) */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_10, -8),
-+	/* r2 +=3D r4 R2=3Dpkt R4=3Dinv,umax=3D40 */
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_4),
-+	/* r0 =3D r2 R2=3Dpkt,umax=3D40 R4=3Dinv,umax=3D40 */
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
-+	/* r2 +=3D 20 R0=3Dpkt,umax=3D40 R2=3Dpkt,umax=3D40 */
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, 20),
-+	/* if (r2 > r3) R0=3Dpkt,umax=3D40 R2=3Dpkt,off=3D20,umax=3D40 */
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_2, BPF_REG_3, 1),
-+	/* r0 =3D *(u32 *)r0 R0=3Dpkt,r=3D20,umax=3D40 R2=3Dpkt,off=3D20,r=3D20=
-,umax=3D40 */
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D ACCEPT,
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+},
---=20
-2.30.2
-
+the patch 2 looks correct to me. I couldn't spot any issue with the logic.
