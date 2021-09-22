@@ -2,340 +2,382 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288DF41513B
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 22:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EBE41516E
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 22:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237416AbhIVUP2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 16:15:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237325AbhIVUP1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Sep 2021 16:15:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632341636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2TgND3O47YKqQB8erfCc+1pnvuJnmgP/nvoFgpF0hAQ=;
-        b=EwGWxk259D/8AzaqAGEt/bohtrRNzSknclRsmA13yfgE0l/gHQODy6eSHMQjuUvVyflksJ
-        TB+9+iXfLNFkfbRu2VZ5tzdjTRwK5y7vp7EbsO5slwlWcDdxIPM/dCJ1usOdMTXV5yS5mi
-        VbcRCU6Ph4RkQpZ/Yd26wOynsPemmlc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-qNdsignVNjCMHC7rGfjWJQ-1; Wed, 22 Sep 2021 16:13:55 -0400
-X-MC-Unique: qNdsignVNjCMHC7rGfjWJQ-1
-Received: by mail-ed1-f71.google.com with SMTP id h24-20020a50cdd8000000b003d8005fe2f8so4453264edj.6
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 13:13:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=2TgND3O47YKqQB8erfCc+1pnvuJnmgP/nvoFgpF0hAQ=;
-        b=JzmzoK0hcpI4WYKIGrJH++U/hkKrcklXh+GvAqP7oeilbshEo5GMt5Dpac9HedNLf/
-         FKHCBuuu8264zZZRptibX5mB/2hodPkS58AOb82yyAq9+pQihNnVJRiGNig9bI0/AQC0
-         3EJyxTzS3B93Z/Xs3PbNYG/dDjmfF2jnzMIXA51gPZ2wshz61FJiaaBQCFmz5wqVSeJp
-         CqzeQ02JGOZ+6ripE1CdR85lvT1WSeR6fs2hdUsiOTmNRoVAw8gFySqoG6NplenMycrp
-         hUkIrU90aVHzS6L6uVUCPnQN9m+SS7l4dP7tRz231UyT1jBqRCFXMVXE8pZyqKqoqimd
-         Qllw==
-X-Gm-Message-State: AOAM530+cZyNygt6Puv1oiovZBEmlrDNX2reb+OoPZ0qPYxDtrudShWT
-        C5DF9pYBzfVYcQ2DgUiu5U+vGecaDA+Xdh6ra2tnWLFbYxu4RZnU8rx69nhurtH4sO5fq16mxBv
-        u3r+NcgvuHE+z
-X-Received: by 2002:a17:906:3148:: with SMTP id e8mr1164549eje.240.1632341633955;
-        Wed, 22 Sep 2021 13:13:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxVSRMxj/tvTIgTBYLMwT+RrqtHNCH++RQ6KkgnDWuQ6uU5uaLaE/VR/X+oJrE53+1Kc2XEyg==
-X-Received: by 2002:a17:906:3148:: with SMTP id e8mr1164509eje.240.1632341633542;
-        Wed, 22 Sep 2021 13:13:53 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 10sm1504790ejo.111.2021.09.22.13.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:13:53 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5F01F18034A; Wed, 22 Sep 2021 22:13:51 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Zvi Effron <zeffron@riotgames.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Lorenzo Bianconi <lbianconi@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: Redux: Backwards compatibility for XDP multi-buff
-In-Reply-To: <CAC1LvL1VArVCN4DoEDBReSPsALFtdpYVLVzzzA4wWa4DDYzCUw@mail.gmail.com>
-References: <87o88l3oc4.fsf@toke.dk>
- <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
- <87ilyt3i0y.fsf@toke.dk>
- <CAC1LvL3yQd_T5srJb78rGxv8YD-QND2aRgJ-p5vOQkbvrwJWSw@mail.gmail.com>
- <87fstx37bn.fsf@toke.dk>
- <CAC1LvL1VArVCN4DoEDBReSPsALFtdpYVLVzzzA4wWa4DDYzCUw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 22 Sep 2021 22:13:51 +0200
-Message-ID: <87h7ec1i80.fsf@toke.dk>
+        id S237636AbhIVUeH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 22 Sep 2021 16:34:07 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46566 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237626AbhIVUeH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Sep 2021 16:34:07 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18MIlNgV022611
+        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 13:32:36 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b86h0tj14-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 13:32:36 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 22 Sep 2021 13:32:32 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id A6AA54B04EB7; Wed, 22 Sep 2021 13:32:27 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <kafai@fb.com>, <joannekoong@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH RFC bpf-next 0/4] bpf_jhash_mem() and BPF Bloom filter implementation
+Date:   Wed, 22 Sep 2021 13:32:20 -0700
+Message-ID: <20210922203224.912809-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+Content-Type: text/plain; charset="UTF-8"
+X-FB-Internal: Safe
+X-FB-Source: Intern
+X-Proofpoint-GUID: SKCUED4akGWkh_EdjCojnUbRo0esyHkP
+X-Proofpoint-ORIG-GUID: SKCUED4akGWkh_EdjCojnUbRo0esyHkP
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-22_08,2021-09-22_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 bulkscore=0 impostorscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109220133
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zvi Effron <zeffron@riotgames.com> writes:
+This is a quick experiment on adding a hashing helper and buliding Bloom
+filter with pure BPF code with no extra kernel functionality (beyond generic
+hashing helper).
 
-> On Tue, Sep 21, 2021 at 3:14 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Zvi Effron <zeffron@riotgames.com> writes:
->>
->> > On Tue, Sep 21, 2021 at 11:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
-e@redhat.com> wrote:
->> >>
->> >> Zvi Effron <zeffron@riotgames.com> writes:
->> >>
->> >> > On Tue, Sep 21, 2021 at 9:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
->> >> >>
->> >> >> Hi Lorenz (Cc. the other people who participated in today's discus=
-sion)
->> >> >>
->> >> >> Following our discussion at the LPC session today, I dug up my pre=
-vious
->> >> >> summary of the issue and some possible solutions[0]. Seems no on
->> >> >> actually replied last time, which is why we went with the "do noth=
-ing"
->> >> >> approach, I suppose. I'm including the full text of the original e=
-mail
->> >> >> below; please take a look, and let's see if we can converge on a
->> >> >> consensus here.
->> >> >>
->> >> >> First off, a problem description: If an existing XDP program is ex=
-posed
->> >> >> to an xdp_buff that is really a multi-buffer, while it will contin=
-ue to
->> >> >> run, it may end up with subtle and hard-to-debug bugs: If it's par=
-sing
->> >> >> the packet it'll only see part of the payload and not be aware of =
-that
->> >> >> fact, and if it's calculating the packet length, that will also on=
-ly be
->> >> >> wrong (only counting the first fragment).
->> >> >>
->> >> >> So what to do about this? First of all, to do anything about it, X=
-DP
->> >> >> programs need to be able to declare themselves "multi-buffer aware=
-" (but
->> >> >> see point 1 below). We could try to auto-detect it in the verifier=
- by
->> >> >> which helpers the program is using, but since existing programs co=
-uld be
->> >> >> perfectly happy to just keep running, it probably needs to be some=
-thing
->> >> >> the program communicates explicitly. One option is to use the
->> >> >> expected_attach_type to encode this; programs can then declare it =
-in the
->> >> >> source by section name, or the userspace loader can set the type f=
-or
->> >> >> existing programs if needed.
->> >> >>
->> >> >> With this, the kernel will know if a given XDP program is multi-bu=
-ff
->> >> >> aware and can decide what to do with that information. For this we=
- came
->> >> >> up with basically three options:
->> >> >>
->> >> >> 1. Do nothing. This would make it up to users / sysadmins to avoid
->> >> >>    anything breaking by manually making sure to not enable multi-b=
-uffer
->> >> >>    support while loading any XDP programs that will malfunction if
->> >> >>    presented with an mb frame. This will probably break in interes=
-ting
->> >> >>    ways, but it's nice and simple from an implementation PoV. With=
- this
->> >> >>    we don't need the declaration discussed above either.
->> >> >>
->> >> >> 2. Add a check at runtime and drop the frames if they are mb-enabl=
-ed and
->> >> >>    the program doesn't understand it. This is relatively simple to
->> >> >>    implement, but it also makes for difficult-to-understand issues=
- (why
->> >> >>    are my packets suddenly being dropped?), and it will incur runt=
-ime
->> >> >>    overhead.
->> >> >>
->> >> >> 3. Reject loading of programs that are not MB-aware when running i=
-n an
->> >> >>    MB-enabled mode. This would make things break in more obvious w=
-ays,
->> >> >>    and still allow a userspace loader to declare a program "MB-awa=
-re" to
->> >> >>    force it to run if necessary. The problem then becomes at what =
-level
->> >> >>    to block this?
->> >> >>
->> >> >
->> >> > I think there's another potential problem with this as well: what h=
-appens to
->> >> > already loaded programs that are not MB-aware? Are they forcibly un=
-loaded?
->> >>
->> >> I'd say probably the opposite: You can't toggle whatever switch we end
->> >> up with if there are any non-MB-aware programs (you'd have to unload
->> >> them first)...
->> >>
->> >
->> > How would we communicate that issue? dmesg? I'm not very familiar with
->> > how sysctl change failure causes are communicated to users, so this
->> > might be a solved problem, but if I run `sysctl -w net.xdp.multibuffer
->> > 1` (or whatever ends up actually being the toggle) to active
->> > multi-buffer, and it fails because there's a loaded non-aware program,
->> > that seems like a potential for a lot of administrator pain.
->>
->> Hmm, good question. Document that this only fails if there's a
->> non-mb-aware XDP program loaded? Or use some other mechanism with better
->> feedback?
->>
->> >> >>    Doing this at the driver level is not enough: while a particular
->> >> >>    driver knows if it's running in multi-buff mode, we can't know =
-for
->> >> >>    sure if a particular XDP program is multi-buff aware at attach =
-time:
->> >> >>    it could be tail-calling other programs, or redirecting packets=
- to
->> >> >>    another interface where it will be processed by a non-MB aware
->> >> >>    program.
->> >> >>
->> >> >>    So another option is to make it a global toggle: e.g., create a=
- new
->> >> >>    sysctl to enable multi-buffer. If this is set, reject loading a=
-ny XDP
->> >> >>    program that doesn't support multi-buffer mode, and if it's uns=
-et,
->> >> >>    disable multi-buffer mode in all drivers. This will make it exp=
-licit
->> >> >>    when the multi-buffer mode is used, and prevent any accidental =
-subtle
->> >> >>    malfunction of existing XDP programs. The drawback is that it's=
- a
->> >> >>    mode switch, so more configuration complexity.
->> >> >>
->> >> >
->> >> > Could we combine the last two bits here into a global toggle that d=
-oesn't
->> >> > require a sysctl? If any driver is put into multi-buffer mode, then=
- the system
->> >> > switches to requiring all programs be multi-buffer? When the last m=
-ulti-buffer
->> >> > enabled driver switches out of multi-buffer, remove the system-wide
->> >> > restriction?
->> >>
->> >> Well, the trouble here is that we don't necessarily have an explicit
->> >> "multi-buf mode" for devices. For instance, you could raise the MTU o=
-f a
->> >> device without it necessarily involving any XDP multi-buffer stuff (if
->> >> you're not running XDP on that device). So if we did turn "raising the
->> >> MTU" into such a mode switch, we would end up blocking any MTU changes
->> >> if any XDP programs are loaded. Or having an MTU change cause a
->> >> force-unload of all XDP programs.
->> >
->> > Maybe I missed something then, but you had stated that "while a
->> > particular driver knows if it's running in multi-buff mode" so I
->> > assumed that the driver would be able to tell when to toggle the mode
->> > on.
->>
->> Well, a driver knows when it is attaching an XDP program whether it (the
->> driver) is configured in a way such that this XDP program could
->> encounter a multi-buf.
->
-> I know drivers sometimes reconfigure themselves when an XDP program is
-> attached, but is there any information provided by the attach (other than=
- that
-> an XDP program is attaching) that they use to make configuration decisions
-> during that reconfiguration?
->
-> Without modifying the driver to intentionally configure itself differently
-> based on whether or not the program is mb-aware (which is believe is curr=
-ently
-> not the case for any driver), won't the configuration of a driver be iden=
-tical
-> post XDP attach regardless of whether or not the program is mb-aware or n=
-ot?
->
-> I was thinking the driver would make it's mb-aware determination (and ref=
-count
-> adjustments) when its configuration changes for any reason that could
-> potentially affect mb-aware status (mostly MTU adjustments, I suspect).
->
->>
->> > I had been thinking that when a driver turned multi-buffer off, it
->> > could trigger a check of all drivers, but that also seems like it
->> > could just be a global refcount of all the drivers that have requested
->> > multi-buffer mode. When a driver enables multi-buffer for itself, it
->> > increments the refcount, and when it disables, it decrements. A
->> > non-zero count means the system is in multi-buffer mode.
->>
->> I guess we could do a refcount-type thing when an multi-buf XDP program
->> is first attached (as per above). But I think it may be easier to just
->> do it at load-time, then, so it doesn't have to be in the driver, but
->> the BPF core could just enforce it.
->>
->> This would basically amount to a rule saying "you can't mix mb-aware and
->> non-mb-aware programs", and the first type to be loaded determines which
->> mode the system is in. This would be fairly simple to implement and
->> enforce, I suppose. The drawback is that it's potentially racy in the
->> order programs are loaded...
->>
->
-> Accepting or rejecting at load time would definitely simplify things a bi=
-t. But
-> I think the raciness is worse than just based on the first program to loa=
-d. If
-> we're doing refcounting at attach/detach time, then I can load an mb-awar=
-e and
-> an mb-unaware program before attaching anything. What do I do when I atta=
-ch one
-> of them? The other would be in violation.
->
-> If instead of making the determination at attach time, we make it at load=
- time,
-> I think it'd be better to go back to the sysctl controlling it, and simpl=
-y not
-> allow changing the sysctl if any XDP program at all is loaded, as opposed=
- to
-> if a non-aware program is installed.
->
-> Then we're back to the sysctl controlling whether or not mb-aware is requ=
-ired.
-> We stil have a communication to the administrator problem, but it's simpl=
-ified
-> a bit from "some loaded program doesn't comply" and having to track down =
-which
-> one to "there is an XDP program installed".
+This is based on top of Joanne's series [0].
 
-Right, that does simplify things. But if we encode the "mb-aware"
-property in the program type (or sub-type, AKA expected_attach_type)
-discovering which program is blocking the toggle should be fairly
-simple, no?
+Patch 1 adds bpf_jhash_mem() helper. Patch 2 fixes existing benchmark to
+report valid and consistent benchmark results and reduce amount of overhead
+that stats counting itself causes. Patch 3 contains BPF-side implementation of
+Bloom filter based on global variables. Patch 4 completes the integration on
+user-space side. I split patch 3 and 4 to not distract from BPF-side changes.
 
->> -Toke
->>
->
-> Side note: how do extension programs fit into this? An extension program =
-that's
-> going to freplace a function in an XDP program (that receives the context)
-> would also need to mb-aware or not, but not all extension programs can at=
-tach
-> to such functions, and we wouldn't want those programs to be impacted. Is=
- this
-> as simple as marking every XDP program and every extension program that t=
-akes
-> an XDP context parameter as needing to be marked as mb-aware?
+Note that "Hashmap without bloom filter vs. hashmap with bloom filter"
+benchmark is still spending lots of time in just generating random values on
+BPF side, and it would be nice to optimize that and make it more reproducible
+to compare different implementations. But I ran out of steam for doing that,
+especially that I'm not sure this changes anything.
 
-Hmm, that's also a good question. I was mentally assuming that freplace
-programs could be limited by target type, which would mean that just
-encoding the "mb-aware" property in attach type would be enough. But I
-see that this is not, in fact, the case. Right now expected_attach_type
-is unpused for freplace programs, so we could use that if the kernel is
-to enforce this. Or we could make it up to the userspace loader to
-ensure this by whatever mechanism it wants. For libxdp that would mean
-setting the type of the dispatcher program based on the component
-program and refusing to mix those, for instance...
+The same benchmark also checks only short 8-byte keys, which is a valid use
+case, but not the only probably one, so would be nice to have that extended as
+well.
 
--Toke
+
+For reference, here are full benchmark results comparing in-kernel Bloom filter
+and custom BPF-implemented Bloom filter. I shortened the set of different
+combinations tested to reduce amount of time to wait for results.
+
+The results for "Hashmap without bloom filter vs. hashmap with bloom filter"
+are quite confusing, though. I spent a bit of time to try to find
+discrepancies. I confirmed that both implementations function correctly and
+match 100% of time in terms of positives/negatives. Pure Bloom filter reading
+benchmarks show a pretty small gap in performance with custom BPF
+implementation losing. The "Hashmap without bloom filter vs. hashmap with bloom
+filter" benchmark shows much bigger difference, though, which I wasn't able to
+completely explain, to be entirely honest.
+
+It's probably worth spending some more time investigating this, but I ran out
+of self-alloted time for this.
+
+
+Bloom filter map
+================
+        # threads: 1, # hashes: 1
+10,000 entries -
+        Total operations:    50.854 ± 0.134M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  31.36%
+        [CUSTOM] Total operations:  49.391 ± 0.123M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  31.37%
+100,000 entries -
+        Total operations:    50.969 ± 0.049M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  24.04%
+        [CUSTOM] Total operations:  49.135 ± 1.579M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  24.04%
+1,000,000 entries -
+        Total operations:    48.474 ± 1.619M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  27.50%
+        [CUSTOM] Total operations:  46.088 ± 0.776M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  27.50%
+
+        # threads: 1, # hashes: 3
+10,000 entries -
+        Total operations:    25.136 ± 0.011M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  4.71%
+        [CUSTOM] Total operations:  24.115 ± 0.014M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  4.77%
+100,000 entries -
+        Total operations:    25.045 ± 0.120M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  7.67%
+        [CUSTOM] Total operations:  23.028 ± 0.042M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  7.65%
+1,000,000 entries -
+        Total operations:    18.712 ± 0.406M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  2.64%
+        [CUSTOM] Total operations:  18.100 ± 0.422M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  2.64%
+
+        # threads: 1, # hashes: 5
+10,000 entries -
+        Total operations:    16.672 ± 0.011M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.32%
+        [CUSTOM] Total operations:  15.318 ± 0.014M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.32%
+100,000 entries -
+        Total operations:    16.540 ± 0.121M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.78%
+        [CUSTOM] Total operations:  15.189 ± 0.045M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.78%
+1,000,000 entries -
+        Total operations:    11.781 ± 0.192M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  1.79%
+        [CUSTOM] Total operations:  11.651 ± 0.012M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  1.79%
+
+        # threads: 1, # hashes: 10
+10,000 entries -
+        Total operations:    9.038 ± 0.052M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.00%
+        [CUSTOM] Total operations:  8.620 ± 0.008M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.00%
+100,000 entries -
+        Total operations:    8.076 ± 0.027M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.01%
+        [CUSTOM] Total operations:  7.261 ± 0.007M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.01%
+1,000,000 entries -
+        Total operations:    6.263 ± 0.041M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.03%
+        [CUSTOM] Total operations:  6.173 ± 0.013M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.03%
+
+        # threads: 4, # hashes: 1
+10,000 entries -
+        Total operations:    203.453 ± 0.161M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  31.28%
+        [CUSTOM] Total operations:  197.959 ± 0.051M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  31.34%
+100,000 entries -
+        Total operations:    203.887 ± 0.155M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  24.07%
+        [CUSTOM] Total operations:  197.476 ± 1.796M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  24.09%
+1,000,000 entries -
+        Total operations:    189.259 ± 0.473M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  27.50%
+        [CUSTOM] Total operations:  185.157 ± 0.346M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  27.48%
+
+        # threads: 4, # hashes: 3
+10,000 entries -
+        Total operations:    100.394 ± 0.062M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  4.76%
+        [CUSTOM] Total operations:  93.896 ± 0.104M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  4.75%
+100,000 entries -
+        Total operations:    100.382 ± 0.155M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  7.62%
+        [CUSTOM] Total operations:  93.460 ± 0.145M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  7.65%
+1,000,000 entries -
+        Total operations:    71.424 ± 0.710M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  2.65%
+        [CUSTOM] Total operations:  72.546 ± 0.228M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  2.65%
+
+        # threads: 4, # hashes: 5
+10,000 entries -
+        Total operations:    66.652 ± 0.116M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.32%
+        [CUSTOM] Total operations:  60.790 ± 0.454M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.33%
+100,000 entries -
+        Total operations:    66.401 ± 0.090M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.78%
+        [CUSTOM] Total operations:  61.066 ± 0.069M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.77%
+1,000,000 entries -
+        Total operations:    48.299 ± 0.369M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  1.79%
+        [CUSTOM] Total operations:  47.401 ± 0.347M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  1.79%
+
+        # threads: 4, # hashes: 10
+10,000 entries -
+        Total operations:    36.273 ± 0.030M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.00%
+        [CUSTOM] Total operations:  34.464 ± 0.073M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.00%
+100,000 entries -
+        Total operations:    32.525 ± 0.047M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.01%
+        [CUSTOM] Total operations:  29.516 ± 0.110M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.01%
+1,000,000 entries -
+        Total operations:    25.515 ± 0.405M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.03%
+        [CUSTOM] Total operations:  24.566 ± 0.189M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.03%
+
+        # threads: 8, # hashes: 1
+10,000 entries -
+        Total operations:    406.129 ± 2.262M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  31.45%
+        [CUSTOM] Total operations:  384.758 ± 0.379M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  31.24%
+100,000 entries -
+        Total operations:    407.817 ± 0.793M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  24.05%
+        [CUSTOM] Total operations:  394.745 ± 1.302M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  24.05%
+1,000,000 entries -
+        Total operations:    383.159 ± 0.289M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  27.49%
+        [CUSTOM] Total operations:  371.173 ± 0.454M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  27.49%
+
+        # threads: 8, # hashes: 3
+10,000 entries -
+        Total operations:    201.079 ± 0.183M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  4.69%
+        [CUSTOM] Total operations:  187.658 ± 0.544M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  4.74%
+100,000 entries -
+        Total operations:    199.826 ± 0.972M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  7.63%
+        [CUSTOM] Total operations:  185.415 ± 0.358M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  7.62%
+1,000,000 entries -
+        Total operations:    148.589 ± 1.320M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  2.65%
+        [CUSTOM] Total operations:  142.591 ± 4.825M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  2.64%
+
+        # threads: 8, # hashes: 5
+10,000 entries -
+        Total operations:    133.306 ± 0.468M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.32%
+        [CUSTOM] Total operations:  127.377 ± 0.271M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.32%
+100,000 entries -
+        Total operations:    132.915 ± 0.364M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.78%
+        [CUSTOM] Total operations:  123.722 ± 3.169M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.77%
+1,000,000 entries -
+        Total operations:    94.803 ± 3.240M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  1.79%
+        [CUSTOM] Total operations:  95.670 ± 2.624M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  1.79%
+
+        # threads: 8, # hashes: 10
+10,000 entries -
+        Total operations:    72.517 ± 0.083M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.00%
+        [CUSTOM] Total operations:  65.803 ± 0.069M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.00%
+100,000 entries -
+        Total operations:    65.533 ± 0.148M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.01%
+        [CUSTOM] Total operations:  59.908 ± 2.841M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.01%
+1,000,000 entries -
+        Total operations:    50.937 ± 0.105M/s (drops 0.000 ± 0.000M/s)
+        False positive rate:  0.03%
+        [CUSTOM] Total operations:  47.526 ± 1.044M/s (drops 0.000 ± 0.000M/s)
+        [CUSTOM] False positive rate:  0.03%
+
+
+Hashmap without bloom filter vs. hashmap with bloom filter (throughput, 8 threads)
+==================================================================================
+        # hashes: 1
+10,000 entries -
+        Hashmap without bloom filter:  123.919 ± 0.458M/s
+        Hashmap with bloom filter:  124.588 ± 0.450M/s
+        [CUSTOM] Hashmap with bloom filter:  106.838 ± 0.114M/s
+100,000 entries -
+        Hashmap without bloom filter:  93.708 ± 0.715M/s
+        Hashmap with bloom filter:  131.686 ± 1.272M/s
+        [CUSTOM] Hashmap with bloom filter:  105.649 ± 0.278M/s
+1,000,000 entries -
+        Hashmap without bloom filter:  40.040 ± 0.677M/s
+        Hashmap with bloom filter:  67.250 ± 0.506M/s
+        [CUSTOM] Hashmap with bloom filter:  58.356 ± 0.541M/s
+
+        # hashes: 3
+10,000 entries -
+        Hashmap without bloom filter:  123.882 ± 0.077M/s
+        Hashmap with bloom filter:  152.423 ± 0.061M/s
+        [CUSTOM] Hashmap with bloom filter:  126.021 ± 0.115M/s
+100,000 entries -
+        Hashmap without bloom filter:  94.291 ± 0.986M/s
+        Hashmap with bloom filter:  127.944 ± 0.825M/s
+        [CUSTOM] Hashmap with bloom filter:  106.943 ± 0.827M/s
+1,000,000 entries -
+        Hashmap without bloom filter:  40.183 ± 0.382M/s
+        Hashmap with bloom filter:  125.224 ± 0.266M/s
+        [CUSTOM] Hashmap with bloom filter:  89.717 ± 0.158M/s
+
+        # hashes: 5
+10,000 entries -
+        Hashmap without bloom filter:  120.510 ± 0.351M/s
+        Hashmap with bloom filter:  170.138 ± 0.088M/s
+        [CUSTOM] Hashmap with bloom filter:  136.006 ± 0.324M/s
+100,000 entries -
+        Hashmap without bloom filter:  94.774 ± 0.191M/s
+        Hashmap with bloom filter:  145.559 ± 0.687M/s
+        [CUSTOM] Hashmap with bloom filter:  117.073 ± 0.382M/s
+1,000,000 entries -
+        Hashmap without bloom filter:  40.004 ± 0.492M/s
+        Hashmap with bloom filter:  96.916 ± 0.148M/s
+        [CUSTOM] Hashmap with bloom filter:  78.485 ± 0.289M/s
+
+        # hashes: 10
+10,000 entries -
+        Hashmap without bloom filter:  124.034 ± 0.245M/s
+        Hashmap with bloom filter:  169.757 ± 0.336M/s
+        [CUSTOM] Hashmap with bloom filter:  134.634 ± 0.276M/s
+100,000 entries -
+        Hashmap without bloom filter:  94.872 ± 0.195M/s
+        Hashmap with bloom filter:  141.107 ± 0.780M/s
+        [CUSTOM] Hashmap with bloom filter:  109.279 ± 0.330M/s
+1,000,000 entries -
+        Hashmap without bloom filter:  40.215 ± 0.396M/s
+        Hashmap with bloom filter:  98.084 ± 0.267M/s
+        [CUSTOM] Hashmap with bloom filter:  78.579 ± 0.046M/s
+
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=550585&state=*
+
+Andrii Nakryiko (4):
+  bpf: add bpf_jhash_mem BPF helper
+  selftests/bpf: fix and optimize bloom filter bench
+  selftests/bpf: implement custom Bloom filter purely in BPF
+  selftests/bpf: integrate custom Bloom filter impl into benchs
+
+ include/uapi/linux/bpf.h                      |   8 +
+ kernel/bpf/helpers.c                          |  23 +++
+ tools/include/uapi/linux/bpf.h                |   8 +
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ tools/testing/selftests/bpf/bench.c           |   6 +
+ .../bpf/benchs/bench_bloom_filter_map.c       | 153 +++++++++++++++++-
+ .../bpf/benchs/run_bench_bloom_filter_map.sh  |  22 +--
+ .../selftests/bpf/benchs/run_common.sh        |   2 +-
+ .../selftests/bpf/progs/bloom_filter_map.c    | 125 ++++++++++++--
+ 9 files changed, 317 insertions(+), 32 deletions(-)
+
+-- 
+2.30.2
 
