@@ -2,272 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03ED0413F09
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 03:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE96A413F1B
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 03:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhIVBox (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 21:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhIVBox (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 21:44:53 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3172C061574;
-        Tue, 21 Sep 2021 18:43:23 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k23-20020a17090a591700b001976d2db364so1064371pji.2;
-        Tue, 21 Sep 2021 18:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=bdMsUIUP0bTAoQb9ko1bPls66QU/alJ+APqCEVb81b4=;
-        b=jOgHH8peKp3kUbD/tfBE5uyrQO3ytD+I8Jxsa/IyTHOZlDqBFO28H18IrXnBnLDo1v
-         7bkL6oSdwJYF4+L7NrbrYyE8Qsny5SCKLLzD7yxLQC5wPvpC+p6uNNIO5+c1GfGRxXlS
-         pe5E/6ZZTHwugODFSii5ncEpnSmD2flfNIsEf/RjOxZ7ylVjHrwprwUwfmkPzwx0en8r
-         XMP6n7we8Npmu5i8DOkzC6X+Loolou/KsfqDiofpRiP99FixQh2tG3iA8Z8bMxXnXftF
-         YeX/33sGMnrt6lM06SpY+bOch46W3Q9ar6jpEIc6Ew2ShHxR5+qNczoqj4CfX7vIyqZ0
-         MnpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=bdMsUIUP0bTAoQb9ko1bPls66QU/alJ+APqCEVb81b4=;
-        b=vpdw8/4WKB5qvBP0cUmm64nyBHhBd40Paj+IWzMHj5/NX2zKhHOl3Gp1g+x9hRHkB0
-         0dR0rkI/ywlGjrb+CfI3BWWwqu3NPGgj5Aa3IogsmO6Dlowju7GSXwuV5M+T3428ojbt
-         pSsvXT8rnfMvEJlPIX0V7Aou0BlSZImZ6QjjtDJ+V1DYiHsIZ1P6p1Lda4BNOsUwuGwX
-         sFAf7YfEB+1pjkwv6dIFZQ6znqQD7LZSNLwmoDZte52w6P9hKo/SyQO13NwOzJreKwe9
-         /ay/FIUbQRxmjru42Xp+gCdAAtqnu0y5JqUSV5lH6qSSQJGZmoE5QWYnKwcxM8hLfIYj
-         cYug==
-X-Gm-Message-State: AOAM531P3JREMRAzs3KmrKMYy4olUI0kRQw8gLdmAmpMT3RduVCEugzz
-        qGwdz+4wCUVznNJ+GGFTaA6584QJGKT+uySwnA==
-X-Google-Smtp-Source: ABdhPJyMXjQkQClvgYSkiZhUquBdBXQELMvSyJHfDkNR3yye14CUMrkEKkeasIpreu9MSnlSXLKDcM9zwePuJt8psAI=
-X-Received: by 2002:a17:902:d892:b0:138:abfd:ec7d with SMTP id
- b18-20020a170902d89200b00138abfdec7dmr30086182plz.15.1632275003136; Tue, 21
- Sep 2021 18:43:23 -0700 (PDT)
-MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 22 Sep 2021 09:43:11 +0800
-Message-ID: <CACkBjsZC-3nm8FVhVfCAyodxbKAbdxUriZimwdq3JHH1=sxNcw@mail.gmail.com>
-Subject: KASAN: use-after-free Read in tcp_write_timer_handler
-To:     davem@davemloft.net, dsahern@kernel.org,
-        Eric Dumazet <edumazet@google.com>, kuba@kernel.org,
-        netdev@vger.kernel.org, yoshfuji@linux-ipv6.org
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        songliubraving@fb.com, yhs@fb.com
+        id S232594AbhIVByv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 21:54:51 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63584 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232593AbhIVByv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 21:54:51 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LLEiQA020443;
+        Tue, 21 Sep 2021 18:53:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=q3I2hhcSM6gKPZkiK9wrmltteg/xze5ksYIQdkt5pb8=;
+ b=EItPLayeHGJJMmlC9uRnpixXbrmCS72v2Ka05kDWGOeBWmBnUtef2K+PXmzOxyce4BPq
+ ujHeksCGjN2jgswOIVkgR4HeBtHpgAQ92neChqz+JcGACfDfODwkfoW5z6m+9tVetvtY
+ yS8MdR2PAIfmyTEB/Kaj96quNj8y2cd7tYU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b7q4w1ek0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 21 Sep 2021 18:53:09 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 21 Sep 2021 18:53:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhgDgfKYOtV1Bml1oZwUFp1tIaly17oCZnb1w7qh+L6mZi91RgiUE8fyW0+03O8FLMCDjO8Qtl5TcoEykxd+z/LUxow8vOaxs4XEJm28qbqP8sScE86D1fVm5RZQPD1dSKgF5L0Js3s/ceB5YkvZBh0RKldOEjqcPj1Pm+SOUZhZn8hpKngXQsqNaSsyg6dX1VzYq66lUaDG+pdNzeGh5fYcr4oT5nk4wO3aQM/VjM2xxbokvn9hMcsZqqpdnbjIVu1SKoe43hIynGX9aE+E/y66g3fPw0ZIhmles7klixDFVgfzLR8rgDkDJcCVNLleL7luyNp3y+PetsBA2F3gog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=q3I2hhcSM6gKPZkiK9wrmltteg/xze5ksYIQdkt5pb8=;
+ b=HgiFgVpsnOJfqCyifnafPv6iFAaH4D5ZzwYKSAi6RQ7GN0D/pC4nD4dKBn29y5zi+M7T4E/aKJQuNEHJBiruM9tAkdbX0E6J8keSN4LM8R5AqL8ntY8p6ez5ELBk4l9642fJo0XHEM/2LSRxowYXALSc2aRga+hHRaFeUJhsjpMEY/l/wxogWiqpp8YdYihz7UV+mmnoYLdDgNiyZvGUXSF2CsepR7eDxtJUPWxIfl4tNoUrZkwZ7Iir4USRihk2tzDvO0wx2P+KpSqkDI2pXoXnkfLT9YloAuiiDDvx/wstDtD8QAWEa2fE3Est3pDhURPTbN7p+XeAWGbqd4Dpog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
+ by DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
+ 2021 01:53:07 +0000
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6]) by DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6%9]) with mapi id 15.20.4523.018; Wed, 22 Sep 2021
+ 01:53:07 +0000
+Message-ID: <1f3336f0-c789-71ab-1974-b280ce28da06@fb.com>
+Date:   Tue, 21 Sep 2021 21:53:05 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.1
+Subject: Re: [PATCH v2 bpf-next 8/9] libbpf: add opt-in strict BPF program
+ section name handling logic
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>
+References: <20210920234320.3312820-1-andrii@kernel.org>
+ <20210920234320.3312820-9-andrii@kernel.org>
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+In-Reply-To: <20210920234320.3312820-9-andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-ClientProxiedBy: MN2PR16CA0022.namprd16.prod.outlook.com
+ (2603:10b6:208:134::35) To DM6PR15MB4039.namprd15.prod.outlook.com
+ (2603:10b6:5:2b2::20)
+Received: from [IPV6:2620:10d:c0a8:11c1::12b6] (2620:10d:c091:480::1:d228) by MN2PR16CA0022.namprd16.prod.outlook.com (2603:10b6:208:134::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 22 Sep 2021 01:53:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f38b8f27-b4e7-4c4c-b712-08d97d6bb962
+X-MS-TrafficTypeDiagnostic: DM6PR15MB4039:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB40391130148B003F2F3612C1A0A29@DM6PR15MB4039.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: efBzsUOKqzonxbNO7Dbmgz6UTtRyaXzBf6TlofIJOmUN3cTlgFs94KLa0dDcRV3XNvXBslO01ALVE64dMJQarKGLigcKel1WyIQi+YENjX25+4eSh9PIRrc1KeUkeFxsbo15B+iSCPi8DUVFVCf61lGtR+NIqEUjbKSv1b5G0Cu/lpZpggL+78FcC9pKawfnSTU8uCoEyxVfSdSxiz3o++m3gUlelnn9UIjqgqVZavRpMDVKDkLqLEnTI2m6bikAbjViOUABYWC8ipYyODrGY6JdB7jccTE9HqXnpq7WTTvV7yGpobw56iTHO51ytMgnHqVa4KKwgr9yCxrm+DdmcEc5+Fb32uoJuQbGah6unhSoyEAayqosHWwv+xGh55xfW7DHhXBaDunCC+lz225OigZwqg6HQ80UBP0u9Hz+7wkkSDps4AnYWadHW5gmuLJSXSgxVxxLSOg4OHOs7vTiV7fi3SICB2ZRMPISKbAcz9p+e39n0TUCtuAnKS6vWFiEJIM2FT4XcuZc1dsBGb+vzZ7uf86aQr+kRpcVzOfFPqM9tin599V1vT28JMOLrYdhP9m+nOPHhieBBP2oF+U9LVZY1zubwD6zOGrb7FhTAWY0mKtiOl2Cv+udcGllb7MuDQa5fc60y3H97Bb5NQiVNDfzh0SgvDLCzoLrWvuk+DV+SAOm8oWZ23L6ulJGxgi7zdQKiF/DoQKb4+4jspcy44ELZJwSkyY7VtELyuEhdQ6LMN1CB9CE82NckmcFcQ3Ff6oDVWAQ21bDco6YRsE99RmKh7EaatO1S6qOH3QCLQFJY1nw90tl7gsp+QtmF1ISZvaNXuiFovhy+Y3AM0xzbhNTGv6GRJdjskOP4GRbTaw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(31686004)(966005)(6486002)(2616005)(86362001)(38100700002)(83380400001)(8676002)(31696002)(2906002)(66556008)(66476007)(66946007)(4326008)(508600001)(8936002)(5660300002)(53546011)(36756003)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SE8vdXVqcngxcVpkVFpCOWVNOUhyK1RTMm9UdTJOMUxpSUVOMWd3Y0dPSEs2?=
+ =?utf-8?B?aXRRVysxQ1FYblJQV0dkUFdBcDVOeWkyOHhtZWVtMjNPOTRUbmhzTDNUNlI4?=
+ =?utf-8?B?Mi9ESSsyL3BhbVRhMXhGOHpTT1VROWFiVnhOd0hpaGNsdkJMbzJ6b2lGNFAx?=
+ =?utf-8?B?WWE1bWZHV1FsbkEvUjk0c3YreGJOakxWcFNMK2xMZWFoVGNPSTRBc3Y2bnc4?=
+ =?utf-8?B?T3ZxeU9iTXRYY0Z5b0VVQm9IRG1XOGNUenI4S0d3dmdKb2EwUXBScCtvb2hW?=
+ =?utf-8?B?VXVQOUlaTFk4TlRLdUVYNjFoRWZmN3JlUnY4SkpvRGV6dzlKNFBJaDZTQ2to?=
+ =?utf-8?B?V25TS29qUzdPMXB2ajVFY1p4TlBGQ3RiNE1rcUplQ3VBaWNMTGhoTDdGL0F5?=
+ =?utf-8?B?K1NGODZPbzlUbG1XZXlSZCt6WEttZnQ2ZGExT3N0OE5CNklyN2FNcUdPNUgv?=
+ =?utf-8?B?L3c3WWhrT29tcGZBTFhHZW9rczFPM3FDRnVTMDRsZVU5QnordTRSdFQzNnIw?=
+ =?utf-8?B?YWhZRlJWRzYwb0RWQjVIU1V4NFpNZHdtUDZhb3BLWW5iYzJrbTNCY1NkRjln?=
+ =?utf-8?B?Qk9hNVI0a1lTOVZPZUxCL2drV01CT09OZFFIRHVtY0JYTFZ0R1lqM29pZUEy?=
+ =?utf-8?B?YWYvSk50SkNNbWtZb0lQVG5vUFAxN1dnb1JrV0J4dXJ3dm5sanV3QTc4bVB1?=
+ =?utf-8?B?b0k2L2VNN0YzbXBsekZVbHNlZytldG5sQm1GakFWMWxRMU5kYlFRUUFac0RC?=
+ =?utf-8?B?OW1iTFdpbDMwNjYzODNheU8yY0Z1YTVWYndOSHhTeEVibEtiWHNsZTBhNGFs?=
+ =?utf-8?B?b3o3VTRVMnp6VG50L3FvcGFXOVkzeHlNcVdOcnhid05FeEFLNlFGNHJQWFBR?=
+ =?utf-8?B?U0l6RzhMK3JnazQ5N3JNM3c3cDluZ3pTQmtsNGFsdTRzVUlmL2VIaTRvcldO?=
+ =?utf-8?B?Vmw1aEdJNTZXMEVxYmtSSCtTVzB3dkJRMnQ0UytMRGl2aktjNjdHK2N0YUFP?=
+ =?utf-8?B?ZkxPN1Q5SlJ0WGNSYmhqeEZBYlRBajBPc0ZpeWZMQ1c2YlZnWXZKMUZjRkhr?=
+ =?utf-8?B?OUJGUWhVY2NjbjJCK3I2NXNQVmYwN1F3K00rTGJUMG50bkMwYlhrTWk0UGFL?=
+ =?utf-8?B?TG9FbENOSk8xMnlSTGlQalhnWVd2VHFTazBxeVNUSjVNNjQ5OGFKV3kxeDU3?=
+ =?utf-8?B?WXdXaUc2Nk9qN3puVjNqWk9Ka29pMmsvbnV1NllZb0ZPSlRKdFlrOWRYdUdZ?=
+ =?utf-8?B?cElKcnZ0S0VZeTkrN3hqcStZSFRyVWd1b0d5WnloY1k5UXhEUVZCeG1vQ1BJ?=
+ =?utf-8?B?bGh6RllNQjJQTk84SVlOeDhSTTN5QVpQb3I0WmxEL1RJN0xTUFJCUXBsTHNE?=
+ =?utf-8?B?bS9GWnllRURLSzM2WmxxM3NLVUR2L096c3BhZkg5MzZ1S2hCVERwQjIyemMy?=
+ =?utf-8?B?TFAySi8yUlViQVNCU1poVm1Zc08yQVFlcFEvbEpmY2ZBaHBtQWJUcGV6Tldn?=
+ =?utf-8?B?UTlMalRUa3hzRCtVODMrNVQrcEZiWkh2Z1FUckFJM2h2Q0Y1VEVPeE5yS0F6?=
+ =?utf-8?B?SFYvMnpFTS9YVzMvT29mRnE4MG51akFUTjFCYjhBbXhWY2NVS0xPWittT0pv?=
+ =?utf-8?B?RGNHcWR1aThlZXhCZXgvQzI2Z3NYMlViektrM0d1bjd6Q0dvaVYyV1J4OVRT?=
+ =?utf-8?B?S1FCVndpL29ZK3NNeXdScExxUE1KbFVabmIydUYyS1lZcHZyKzVUL1M3Vkpq?=
+ =?utf-8?B?UzRZU0NPTGNET2tFak9Vek5PYkZ4MXJNNHY4RmtPS2lvTThEUjByeTNFYTRn?=
+ =?utf-8?B?Z1RrQUVzZ0JCeGV6ZEtXZz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f38b8f27-b4e7-4c4c-b712-08d97d6bb962
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 01:53:07.6396
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wszqb+mpjh0PoToiwsOHHvvkTDTfzOJMxJHp8q6DazK7bIkOehYfiGMNEkXsIvP7JHFwIbQ/nG8ZjbTieim3Qg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4039
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 2b4mZrs0eurfT3eIPUxXm_WiwVUsIp6I
+X-Proofpoint-ORIG-GUID: 2b4mZrs0eurfT3eIPUxXm_WiwVUsIp6I
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 spamscore=0 suspectscore=0
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
+ clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109220011
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 9/20/21 7:43 PM, Andrii Nakryiko wrote:   
+> Implement strict ELF section name handling for BPF programs. It utilizes
+> `libbpf_set_strict_mode()` framework and adds new flag: LIBBPF_STRICT_SEC_NAME.
+> 
+> If this flag is set, libbpf will enforce exact section name matching for
+> a lot of program types that previously allowed just partial prefix
+> match. E.g., if previously SEC("xdp_whatever_i_want") was allowed, now
+> in strict mode only SEC("xdp") will be accepted, which makes SEC("")
+> definitions cleaner and more structured. SEC() now won't be used as yet
+> another way to uniquely encode BPF program identifier (for that
+> C function name is better and is guaranteed to be unique within
+> bpf_object). Now SEC() is strictly BPF program type and, depending on
+> program type, extra load/attach parameter specification.
+> 
+> Libbpf completely supports multiple BPF programs in the same ELF
+> section, so multiple BPF programs of the same type/specification easily
+> co-exist together within the same bpf_object scope.
+> 
+> Additionally, a new (for now internal) convention is introduced: section
+> name that can be a stand-alone exact BPF program type specificator, but
+> also could have extra parameters after '/' delimiter. An example of such
+> section is "struct_ops", which can be specified by itself, but also
+> allows to specify the intended operation to be attached to, e.g.,
+> "struct_ops/dctcp_init". Note, that "struct_ops_some_op" is not allowed.
+> Such section definition is specified as "struct_ops+".
+> 
+> This change is part of libbpf 1.0 effort ([0], [1]).
+> 
+>   [0] Closes: https://github.com/libbpf/libbpf/issues/271
+>   [1] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#stricter-and-more-uniform-bpf-program-section-name-sec-handling
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c        | 135 ++++++++++++++++++++++------------
+>  tools/lib/bpf/libbpf_legacy.h |   9 +++
+>  2 files changed, 98 insertions(+), 46 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 56082865ceff..f0846f609e26 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -232,6 +232,7 @@ enum sec_def_flags {
+>  	SEC_ATTACHABLE_OPT = SEC_ATTACHABLE | SEC_EXP_ATTACH_OPT,
+>  	SEC_ATTACH_BTF = 4,
+>  	SEC_SLEEPABLE = 8,
+> +	SEC_SLOPPY_PFX = 16, /* allow non-strict prefix matching */
+>  };
+>  
+>  struct bpf_sec_def {
+> @@ -7976,15 +7977,15 @@ static struct bpf_link *attach_lsm(const struct bpf_program *prog, long cookie);
+>  static struct bpf_link *attach_iter(const struct bpf_program *prog, long cookie);
+>  
+>  static const struct bpf_sec_def section_defs[] = {
+> -	SEC_DEF("socket",		SOCKET_FILTER, 0, SEC_NONE),
+> -	SEC_DEF("sk_reuseport/migrate",	SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE, SEC_ATTACHABLE),
+> -	SEC_DEF("sk_reuseport",		SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT, SEC_ATTACHABLE),
+> +	SEC_DEF("socket",		SOCKET_FILTER, 0, SEC_SLOPPY_PFX),
+> +	SEC_DEF("sk_reuseport/migrate",	SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+> +	SEC_DEF("sk_reuseport",		SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+>  	SEC_DEF("kprobe/",		KPROBE,	0, SEC_NONE, attach_kprobe),
+>  	SEC_DEF("uprobe/",		KPROBE,	0, SEC_NONE),
+>  	SEC_DEF("kretprobe/",		KPROBE, 0, SEC_NONE, attach_kprobe),
+>  	SEC_DEF("uretprobe/",		KPROBE, 0, SEC_NONE),
+> -	SEC_DEF("classifier",		SCHED_CLS, 0, SEC_NONE),
+> -	SEC_DEF("action",		SCHED_ACT, 0, SEC_NONE),
+> +	SEC_DEF("classifier",		SCHED_CLS, 0, SEC_SLOPPY_PFX),
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+Feels like the mass SEC_NONE -> SEC_SLOPPY_PFX migration is obscuring some
+useful at-a-glance info. The equivalent SEC_NONE | SEC_SLOPPY_PFX would make
+reasoning about attach behavior easier IMO.
 
-HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1TvIf-dvfzbm8RKtYz9QHfPWixHnjIcFW/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9CdBus-Tz0/view?usp=sharing
-Similar report:
-https://syzkaller.appspot.com/bug?id=83d75b561d8b1b2529c635338ecfb7136261db11
+> +	SEC_DEF("action",		SCHED_ACT, 0, SEC_SLOPPY_PFX),
+>  	SEC_DEF("tracepoint/",		TRACEPOINT, 0, SEC_NONE, attach_tp),
+>  	SEC_DEF("tp/",			TRACEPOINT, 0, SEC_NONE, attach_tp),
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-
-==================================================================
-BUG: KASAN: use-after-free in tcp_probe_timer net/ipv4/tcp_timer.c:383 [inline]
-BUG: KASAN: use-after-free in tcp_write_timer_handler+0x8fd/0x940
-net/ipv4/tcp_timer.c:626
-Read of size 1 at addr ffff88802272a0d5 by task syz-executor/12060
-
-CPU: 2 PID: 12060 Comm: syz-executor Not tainted 5.15.0-rc1+ #10
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x93/0x334 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- tcp_probe_timer net/ipv4/tcp_timer.c:383 [inline]
- tcp_write_timer_handler+0x8fd/0x940 net/ipv4/tcp_timer.c:626
- tcp_write_timer+0xa2/0x2b0 net/ipv4/tcp_timer.c:642
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
- expire_timers kernel/time/timer.c:1466 [inline]
- __run_timers.part.0+0x6b0/0xa90 kernel/time/timer.c:1734
- __run_timers kernel/time/timer.c:1715 [inline]
- run_timer_softirq+0xb6/0x1d0 kernel/time/timer.c:1747
- __do_softirq+0x1d7/0x93b kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu kernel/softirq.c:636 [inline]
- irq_exit_rcu+0xf2/0x130 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:zap_pte_range mm/memory.c:1335 [inline]
-RIP: 0010:zap_pmd_range mm/memory.c:1481 [inline]
-RIP: 0010:zap_pud_range mm/memory.c:1510 [inline]
-RIP: 0010:zap_p4d_range mm/memory.c:1531 [inline]
-RIP: 0010:unmap_page_range+0xbdd/0x2da0 mm/memory.c:1552
-Code: 00 00 00 48 89 44 24 08 e9 8a f5 ff ff e8 4b 97 ca ff 48 8b 74
-24 08 4c 89 ea 48 8b 7c 24 48 e8 69 ec ff ff 48 83 7c 24 38 00 <49> 89
-c7 0f 85 02 15 00 00 e8 25 97 ca ff 48 8b 44 24 10 48 8d 68
-RSP: 0018:ffffc900092cf7a0 EFLAGS: 00000246
-RAX: ffffea000080c780 RBX: 0000000000000025 RCX: ffff888104079c80
-RDX: 0000000000000000 RSI: ffff888104079c80 RDI: 0000000000000002
-RBP: 0000000000000001 R08: ffffffff81aba2c6 R09: 000000000013ffff
-R10: 0000000000000006 R11: ffffed102080f390 R12: 0000000000000025
-R13: 000000002031e025 R14: dffffc0000000000 R15: 00000000004db000
- unmap_single_vma+0x198/0x310 mm/memory.c:1597
- unmap_vmas+0x16d/0x2f0 mm/memory.c:1629
- exit_mmap+0x1d0/0x650 mm/mmap.c:3171
- __mmput kernel/fork.c:1115 [inline]
- mmput+0x16d/0x440 kernel/fork.c:1136
- exit_mm kernel/exit.c:501 [inline]
- do_exit+0xad6/0x2dd0 kernel/exit.c:812
- do_group_exit+0x125/0x340 kernel/exit.c:922
- get_signal+0x4d5/0x25a0 kernel/signal.c:2868
- arch_do_signal_or_restart+0x2ed/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x192/0x2a0 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: Unable to access opcode bytes at RIP 0x4739a3.
-RSP: 002b:00007f4ef3c1bcd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
-RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 00007ffc59e0995f R14: 00007ffc59e09b00 R15: 00007f4ef3c1bdc0
-
-Allocated by task 10273:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0x83/0xb0 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook+0x4d/0x4b0 mm/slab.h:519
- slab_alloc_node mm/slub.c:3206 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x150/0x340 mm/slub.c:3219
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- net_alloc net/core/net_namespace.c:402 [inline]
- copy_net_ns+0xea/0x660 net/core/net_namespace.c:457
- create_new_namespaces.isra.0+0x3cb/0xae0 kernel/nsproxy.c:110
- unshare_nsproxy_namespaces+0xc8/0x1f0 kernel/nsproxy.c:226
- ksys_unshare+0x445/0x920 kernel/fork.c:3077
- __do_sys_unshare kernel/fork.c:3151 [inline]
- __se_sys_unshare kernel/fork.c:3149 [inline]
- __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3149
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888022729a40
- which belongs to the cache net_namespace of size 6464
-The buggy address is located 1685 bytes inside of
- 6464-byte region [ffff888022729a40, ffff88802272b380)
-The buggy address belongs to the page:
-page:ffffea000089ca00 refcount:1 mapcount:0 mapping:0000000000000000
-index:0xffff888022729a40 pfn:0x22728
-head:ffffea000089ca00 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 0000000000000000 dead000000000122 ffff888010e0c500
-raw: ffff888022729a40 0000000080040002 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask
-0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC),
-pid 9342, ts 177339275214, free_ts 174923780601
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook mm/page_alloc.c:2418 [inline]
- prep_new_page+0x1a5/0x240 mm/page_alloc.c:2424
- get_page_from_freelist+0x1f10/0x3b70 mm/page_alloc.c:4153
- __alloc_pages+0x306/0x6e0 mm/page_alloc.c:5375
- alloc_pages+0x115/0x240 mm/mempolicy.c:2197
- alloc_slab_page mm/slub.c:1763 [inline]
- allocate_slab mm/slub.c:1900 [inline]
- new_slab+0x34a/0x480 mm/slub.c:1963
- ___slab_alloc+0xa9f/0x10d0 mm/slub.c:2994
- __slab_alloc.isra.0+0x4d/0xa0 mm/slub.c:3081
- slab_alloc_node mm/slub.c:3172 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x31e/0x340 mm/slub.c:3219
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- net_alloc net/core/net_namespace.c:402 [inline]
- copy_net_ns+0xea/0x660 net/core/net_namespace.c:457
- create_new_namespaces.isra.0+0x3cb/0xae0 kernel/nsproxy.c:110
- copy_namespaces+0x391/0x450 kernel/nsproxy.c:178
- copy_process+0x2d37/0x73d0 kernel/fork.c:2197
- kernel_clone+0xe7/0x10d0 kernel/fork.c:2584
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2701
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1338 [inline]
- free_pcp_prepare+0x412/0x900 mm/page_alloc.c:1389
- free_unref_page_prepare mm/page_alloc.c:3315 [inline]
- free_unref_page+0x19/0x580 mm/page_alloc.c:3394
- __unfreeze_partials+0x340/0x360 mm/slub.c:2495
- qlink_free mm/kasan/quarantine.c:146 [inline]
- qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
- kasan_quarantine_reduce+0x13d/0x180 mm/kasan/quarantine.c:272
- __kasan_slab_alloc+0x95/0xb0 mm/kasan/common.c:444
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook+0x4d/0x4b0 mm/slab.h:519
- slab_alloc_node mm/slub.c:3206 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x150/0x340 mm/slub.c:3219
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- jbd2_alloc_handle include/linux/jbd2.h:1603 [inline]
- new_handle fs/jbd2/transaction.c:481 [inline]
- jbd2__journal_start fs/jbd2/transaction.c:508 [inline]
- jbd2__journal_start+0x191/0x920 fs/jbd2/transaction.c:490
- __ext4_journal_start_sb+0x3a8/0x4a0 fs/ext4/ext4_jbd2.c:105
- __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
- ext4_da_write_begin+0x4c5/0x1180 fs/ext4/inode.c:3002
- generic_perform_write+0x1fe/0x510 mm/filemap.c:3770
- ext4_buffered_write_iter+0x206/0x4c0 fs/ext4/file.c:269
- ext4_file_write_iter+0x42e/0x14a0 fs/ext4/file.c:680
- call_write_iter include/linux/fs.h:2163 [inline]
- do_iter_readv_writev+0x47b/0x750 fs/read_write.c:729
- do_iter_write fs/read_write.c:855 [inline]
- do_iter_write+0x18b/0x700 fs/read_write.c:836
-
-Memory state around the buggy address:
- ffff888022729f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802272a000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88802272a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                 ^
- ffff88802272a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802272a180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-----------------
-Code disassembly (best guess):
-   0: 00 00                add    %al,(%rax)
-   2: 00 48 89              add    %cl,-0x77(%rax)
-   5: 44 24 08              rex.R and $0x8,%al
-   8: e9 8a f5 ff ff        jmpq   0xfffff597
-   d: e8 4b 97 ca ff        callq  0xffca975d
-  12: 48 8b 74 24 08        mov    0x8(%rsp),%rsi
-  17: 4c 89 ea              mov    %r13,%rdx
-  1a: 48 8b 7c 24 48        mov    0x48(%rsp),%rdi
-  1f: e8 69 ec ff ff        callq  0xffffec8d
-  24: 48 83 7c 24 38 00    cmpq   $0x0,0x38(%rsp)
-* 2a: 49 89 c7              mov    %rax,%r15 <-- trapping instruction
-  2d: 0f 85 02 15 00 00    jne    0x1535
-  33: e8 25 97 ca ff        callq  0xffca975d
-  38: 48 8b 44 24 10        mov    0x10(%rsp),%rax
-  3d: 48                    rex.W
-  3e: 8d                    .byte 0x8d
-  3f: 68                    .byte 0x68
+[...]
