@@ -2,155 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5F04152B1
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 23:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFC34152EE
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 23:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238019AbhIVVZG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 17:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
+        id S238033AbhIVVkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 17:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236476AbhIVVZG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:25:06 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C25C061756
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 14:23:35 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id v10so10555857edj.10
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 14:23:35 -0700 (PDT)
+        with ESMTP id S238014AbhIVVj7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Sep 2021 17:39:59 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359D7C061574;
+        Wed, 22 Sep 2021 14:38:29 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id 194so14620644qkj.11;
+        Wed, 22 Sep 2021 14:38:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riotgames.com; s=riotgames;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=coLA4okrdb9Cycw07iDUhgI7uwuXao45fzQXmKwYAJ8=;
-        b=pIx6ai+dWyiNkJRb9d0HcWQDgBaZTqbmOAFYQeXtZfRrngbqs/9Y/9YMKmRiwHlFbd
-         dmW2SjaEl2YM8+Yisl5Ksju/0gFAgzrWIQ2elIQ3aKfQbBpT7FKZGuuxpXFi+RdtvI4J
-         GvdI4N4jtxo8pSAmafSf9U2mSAvdbkQcJea8A=
+         :cc;
+        bh=SyV2g5p70F83n1ov3tdAnjFS5uqWP0e/z7OmVWJ4YF0=;
+        b=YLph8sggXPL2HO8cbP21P7mEISpUU/+t5OMfhTcTkCO77moRFs0NWN03iL93RNBw43
+         Z4dz2A4SHW0fh2j7YwvQDcal2u8ITQpHJmCykR+kg6+RiOPo4//4ERENWI6tlUNiV+GO
+         vgDVkdtw347M4i4IM4hEiG1/qV3kzni5GKkqc3IfHT9ApgE+6hNo5njdRSVhjCW6tBH4
+         8KHEjAjVTxNSya2pktlFk05Yxdn7YO/Kk/o3K5whITdekyzN0FbsbcPkbK70SkNoTceE
+         f9Ok8o/yXsECSeInNtLkDh0xkMZ5sclAUYr8oKShcGvXZmAoqgV0OgV+JsOW5GExGDR0
+         ZHAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=coLA4okrdb9Cycw07iDUhgI7uwuXao45fzQXmKwYAJ8=;
-        b=4u48TIORNkH1ReGpYU+fLGyuYRi1yg8kteymSqECvqasDIu20oLvAqNMqbchH5sl+n
-         2GEuclmw2+Mh9mQFq37Ajvdt5DROm6a/7F87fxyrTbn+NfrXH0RfcFfYbif+Uv7Dzn1e
-         DgYHbKM5AAZ07iwgFI6+15V2lnebRCSLXasE5OGz4ieaOOzcEUOhgcPKOg+tFXctGOn7
-         VYGx3UChUikZrgAvxRECBE4UNBakWPw0uYaAuPCYAirht4dhS7RyOVSSn/bj4tGvkwU+
-         kfTq1X2lBeZg8au0X1QwdGK3/1IRfOTaTND2trqxn5rZDXZccUeqMFp4u/5zhQ2bXqkI
-         ymfA==
-X-Gm-Message-State: AOAM532ZFQft6j875ngOaD0ecvVDDJ4K/+sicFfjM+rnJMUOwtBFMNk7
-        i3Vt9ChgHvW66eeNf3z6zuAfAwx5Eq7S1MDEENfs1g==
-X-Google-Smtp-Source: ABdhPJwGF7B1JqPQ51i/57mUcsLvTma1rQKmyY99kJh2ke24tnMzgf7XsYx3DYE4mTsm8cUdbaAm7AG1PKk0iJAPsoI=
-X-Received: by 2002:a17:907:2d0b:: with SMTP id gs11mr1416079ejc.151.1632345814468;
- Wed, 22 Sep 2021 14:23:34 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=SyV2g5p70F83n1ov3tdAnjFS5uqWP0e/z7OmVWJ4YF0=;
+        b=GGkbNMThJotaXSWo+vWQdp9iJ4jWdipSzBncTnBwIlrPa4BIwAyuRGyF1EwsdYxNxf
+         Gcn9FkvNUH5I4qHT2yf02b3jpkOwn2UPgcX4YH8Npsf4Eo/qptJ/81bnH/kWauoO2AqC
+         uCNH/OtjTk6iJZZ7RtD6BVMNhOxLIJ67Tc0ZmFDHCyMHiiJkcvlQ5RkfbWCXb4ss/h6X
+         q8xeXpF/jlJLgULAXnGjnEB9m327IeprdnQiiGKFKs2yinUfOXmSR/Ngy+/F9RE+TO2l
+         PrLT/+ZuTYocWalHqcFu4+EvSF4hgesLeN0p57S0HMAq+cA5LOaHvsSCmwtIw8F/v58I
+         hppg==
+X-Gm-Message-State: AOAM532PhiMY4SW4wqyHRe1MI44GMxzhGR8r0aPCd+XHTR6Do6KvbEt3
+        QI7UPtnZrnAKmsW/50oAMtNG5Q8nRjDpxPOTduQ=
+X-Google-Smtp-Source: ABdhPJxThtwWJQZf+8T0KS8tQIVhRt0ddybxUdQ8e2uttYAC0sPXi/ZoM1kXstfhp/efqz0UU76Wr5wGzfc60hFScYM=
+X-Received: by 2002:a25:47c4:: with SMTP id u187mr1644370yba.225.1632346708354;
+ Wed, 22 Sep 2021 14:38:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <87o88l3oc4.fsf@toke.dk> <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
- <87ilyt3i0y.fsf@toke.dk> <CAADnVQKi_u6yZnsxEagNTv-XWXtLPpXwURJH0FnGFRgt6weiww@mail.gmail.com>
- <87czp13718.fsf@toke.dk> <20210921155118.439c0aa9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87mto41isy.fsf@toke.dk>
-In-Reply-To: <87mto41isy.fsf@toke.dk>
-From:   Zvi Effron <zeffron@riotgames.com>
-Date:   Wed, 22 Sep 2021 14:23:23 -0700
-Message-ID: <CAC1LvL2ZFHqqD4jkXdRNY0K-Sm-adb8OpQVcfv--aaQ+Z4j0EQ@mail.gmail.com>
-Subject: Re: Redux: Backwards compatibility for XDP multi-buff
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Lorenzo Bianconi <lbianconi@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20210922070748.21614-1-falakreyaz@gmail.com> <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
+In-Reply-To: <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 22 Sep 2021 14:38:17 -0700
+Message-ID: <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: Use sysconf to simplify libbpf_num_possible_cpus
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Muhammad Falak R Wani <falakreyaz@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 1:01 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Wed, Sep 22, 2021 at 2:22 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> Jakub Kicinski <kuba@kernel.org> writes:
->
-> > On Wed, 22 Sep 2021 00:20:19 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wro=
-te:
-> >> >> Neither of those are desirable outcomes, I think; and if we add a
-> >> >> separate "XDP multi-buff" switch, we might as well make it system-w=
-ide?
-> >> >
-> >> > If we have an internal flag 'this driver supports multi-buf xdp' can=
-not we
-> >> > make xdp_redirect to linearize in case the packet is being redirecte=
-d
-> >> > to non multi-buf aware driver (potentially with corresponding non mb=
- aware xdp
-> >> > progs attached) from mb aware driver?
-> >>
-> >> Hmm, the assumption that XDP frames take up at most one page has been
-> >> fundamental from the start of XDP. So what does linearise mean in this
-> >> context? If we get a 9k packet, should we dynamically allocate a
-> >> multi-page chunk of contiguous memory and copy the frame into that, or
-> >> were you thinking something else?
+> On 9/22/21 9:07 AM, Muhammad Falak R Wani wrote:
+> > Simplify libbpf_num_possible_cpus by using sysconf(_SC_NPROCESSORS_CONF)
+> > instead of parsing a file.
+> > This patch is a part ([0]) of libbpf-1.0 milestone.
 > >
-> > My $.02 would be to not care about redirect at all.
+> > [0] Closes: https://github.com/libbpf/libbpf/issues/383
 > >
-> > It's not like the user experience with redirect is anywhere close
-> > to amazing right now. Besides (with the exception of SW devices which
-> > will likely gain mb support quickly) mixed-HW setups are very rare.
-> > If the source of the redirect supports mb so will likely the target.
+> > Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+> > ---
+> >   tools/lib/bpf/libbpf.c | 17 ++++-------------
+> >   1 file changed, 4 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index ef5db34bf913..f1c0abe5b58d 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -10898,25 +10898,16 @@ int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz)
+> >
+> >   int libbpf_num_possible_cpus(void)
+> >   {
+> > -     static const char *fcpu = "/sys/devices/system/cpu/possible";
+> >       static int cpus;
+> > -     int err, n, i, tmp_cpus;
+> > -     bool *mask;
+> > +     int tmp_cpus;
+> >
+> >       tmp_cpus = READ_ONCE(cpus);
+> >       if (tmp_cpus > 0)
+> >               return tmp_cpus;
+> >
+> > -     err = parse_cpu_mask_file(fcpu, &mask, &n);
+> > -     if (err)
+> > -             return libbpf_err(err);
+> > -
+> > -     tmp_cpus = 0;
+> > -     for (i = 0; i < n; i++) {
+> > -             if (mask[i])
+> > -                     tmp_cpus++;
+> > -     }
+> > -     free(mask);
+> > +     tmp_cpus = sysconf(_SC_NPROCESSORS_CONF);
+> > +     if (tmp_cpus < 1)
+> > +             return libbpf_err(-EINVAL);
 >
-> It's not about device support it's about XDP program support: If I run
-> an MB-aware XDP program on a physical interface and redirect the (MB)
-> frame into a container, and there's an XDP program running inside that
-> container that isn't MB-aware, bugs will ensue. Doesn't matter if the
-> veth driver itself supports MB...
+> This approach is unfortunately broken, see also commit e00c7b216f34 ("bpf: fix
+> multiple issues in selftest suite and samples") for more details:
+
+Oh, that predates me. Thanks, Daniel!
+
+Sorry, Muhammad, seems like current implementation is there for a
+reason and will have to stay. Thanks a lot for working on this,
+though. Hopefully you can help with other issues, though.
+
+[...]
+
 >
-> We could leave that as a "don't do that, then" kind of thing, but that
-> was what we were proposing (as the "do nothing" option) and got some
-> pushback on, hence why we're having this conversation :)
+> Thanks,
+> Daniel
 >
-> -Toke
+> >       WRITE_ONCE(cpus, tmp_cpus);
+> >       return tmp_cpus;
+> >
 >
-
-I hadn't even considered the case of redirecting to a veth pair on the same
-system. I'm assuming from your statement that the buffers are passed direct=
-ly
-to the ingress inside the container and don't go through the sort of egress
-process they would if leaving the system? And I'm assuming that's as an
-optimization?
-
-I'm not sure that makes a difference, though. It's not about whether the
-driver's code is mb-capable, it's about whether the driver _as currently
-configured_ could generate multiple buffers. If it can, then only an mb-awa=
-re
-program should be able to be attached to it (and tail called from whatever'=
-s
-attached to it). If it can't, then there should be no way to have multiple
-buffers come to it.
-
-So in the situation you've described, either the veth driver should be in a
-state where it coalesces the multiple buffers into one, fragmenting the fra=
-me
-if necessary or drops the frame, or the program attached inside the contain=
-er
-would need to be mb-aware. I'm assuming with the veth driver as written, th=
-is
-might mean that all programs attached to the veth driver would need to be
-mb-aware, which is obviously undesirable.
-
-All of which significantly adds to the complexity to support mb-aware, so m=
-aybe
-this could be developed later? Initially we could have a sysctl toggling th=
-e
-state 0 single-buffer only, 1 multibuffer allowed. Then later we _could_ ad=
-d a
-state for dynamic control once all XDP supporting drivers support the neces=
-sary
-dynamic functionality (if ever). At that point we'd have actual experience =
-with
-the sysctl and could see how much of a burden having static control is.
-
-I may have been misinterpreting your use case though, and you were talking
-about the XDP program running on the egress side of the redirect? Is that w=
-hat
-you were talking about case?
-
---Zvi
