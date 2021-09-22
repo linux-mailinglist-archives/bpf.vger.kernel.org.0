@@ -2,217 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFAC413E2D
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 01:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E63413E34
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 02:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhIUX7X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 19:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        id S231324AbhIVAFH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 20:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhIUX7X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:59:23 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C28DC061574
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:57:54 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id p4so3638489qki.3
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 16:57:54 -0700 (PDT)
+        with ESMTP id S229824AbhIVAFH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 20:05:07 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20486C061574;
+        Tue, 21 Sep 2021 17:03:38 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id c7so3705519qka.2;
+        Tue, 21 Sep 2021 17:03:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0UaumyxZQ8hgRJEqk5WO6fWE8FSyHrc/zxJatMcodpY=;
-        b=SeA/ZmxFklQpIJLxNuKj8zOEtDm9d21FVb33Ify+spixiueVq9Rn+0Opvb/s7O9I+O
-         qIrfwYZrhO+5PDzlpZ+CRBwueWhsWyNLndhduKW0uKm/QF3GhTlnvmLSKEEr9OoLOpPc
-         HFPjNEbF07SBPR5wo12ys2uU1NRy1DVXSBoMR6J0dsgj3PwCL78yxJHkzP/+v3EDLdoy
-         cav5R3yOpv3rj5DgqeJaZnt6FO+apeUStxDjQgKEjVc+5afiX/oe0cwnL6UzyrPbl4as
-         5D3EprHcSZYfb11+FkGwYmaHTRCmb8cX0u334K1gbK1TdCgcWEBNrqvAIZTrDLgLLQz1
-         L/JA==
+        bh=UxYYd55ASNSt9/O57xslV8YObI2tPN6o5gcq6U54bto=;
+        b=mZfBVOCobu6R4xxTyfK53j1+YmkoZqc+fkz/aIQcs5v6awnpsq7oiD/NubnC81hBsJ
+         al+pJZP2SWSCxeD9+i5FSxqXhj83fyzd8ZxXeHs+86UlA140cXyyKspxGWprEpwE6+d/
+         UKIMS0u0ZPfaTSbtIrzyl2I9wCXEkCSDpAaUEwlveyNa9JtYP2YMw/C+NdtwsMqwB+Hp
+         htI6GVuhaTzFakjJWKHSIO4Cm1istF3aeQYchfj9VHp9RvVVJnFdGSj+mxIrHjKkON2q
+         n3SBjbrIGQy8qJOxqLRCwYg1cRh1p5eWPZjaQa8myj0LY/idIBpZrsPKAWq1rYGyAx0q
+         gf+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0UaumyxZQ8hgRJEqk5WO6fWE8FSyHrc/zxJatMcodpY=;
-        b=4r1bQuNVmIjzb1mOT7vamih8hzpslp9i8zL+NPf+eA5QYY27u1fBeOVaO3qXdXfP3F
-         lr2xMlBdilfK5hxgNcLKWL/Run5U3eBOLc5dptji4KTf4ssP7fVFwNjYF+EgbLA1eC0r
-         EpkwTfFjXtLZeioKe9UzKIlEQJ0Ke1SAEXDLBdOTPekA5nqC1tYIuR86Dxo4sweXAKyF
-         bYR8wp1saBx6rEcVTch5v/5tDPNYN3B0LGW8mrK5MnFi7fU/5xp+X3AetnqFj+IaX3oY
-         0WscZ5n55JhK4uWSj340XTD1x4uuYhtOgNd75f6onTxtQLsYRvRV7RkHRFIjAPV0/7xV
-         wucQ==
-X-Gm-Message-State: AOAM531HVPBQ5e4L/pBGKSe+80iJKle/Y9pQTVcwfULOy/XnoNM0QMWV
-        tiO37IouYg+V8NFLamUqbND71mveNPlXRoiIsso=
-X-Google-Smtp-Source: ABdhPJxagZHZN0Ie0ClOxz1aUBIrU/XsP+LI7xbfcfbaT22TxTtxAxkBiuqFjSF6DoBKlri2f9MUlTX7qPFo3pgjoi4=
-X-Received: by 2002:a25:fc5:: with SMTP id 188mr40005786ybp.51.1632268673775;
- Tue, 21 Sep 2021 16:57:53 -0700 (PDT)
+        bh=UxYYd55ASNSt9/O57xslV8YObI2tPN6o5gcq6U54bto=;
+        b=2wFCVVOiX4lJ28YMAfy4iXDK5LXnjum22kWyQezqINh/YEyz7Lm6U3qrCzU6JNERWe
+         tHt19djULH7PM6rItM6xuyo/MJOJjTbJyjOdK+0hjDGIe2BwEbAHEsqFxXSTTlTEDUO1
+         aDL0R5CGm2BvNIDZudIbH8x6cDTZOdmFrLPR9JpFJ9Q/4c1B883C57hocilv391EpuYu
+         SbxcRj1zRSKp0OcveFlBQiGrjISTj+6bCzRImbxYGsWMecBOveG22j3hU3GMmcQY9jnW
+         uBI0syop8NbLZMwYfo807UUJ5GMkkQxEynwcVMFCeCU0yv42pr7vufKh3gWgE9ztUflO
+         GhAA==
+X-Gm-Message-State: AOAM530/HFpLv9CDpte/CKxOi5pSZVCvZAKtyKoqhCfkS2vsJhcMJMFl
+        vr2+uzsdBaInj8tiKDLRW11ptq/sefPW64p8sbM=
+X-Google-Smtp-Source: ABdhPJwUfEENLA8R6bxy4Ru8dZQpoNY0o4H0h+0dtxvoOrfvyWkHbCbo/Rek2CO2xl/fkLTqDCGili0QQ+rDBN+0jpo=
+X-Received: by 2002:a25:fc5:: with SMTP id 188mr40033588ybp.51.1632269017210;
+ Tue, 21 Sep 2021 17:03:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210921210225.4095056-1-joannekoong@fb.com> <20210921210225.4095056-3-joannekoong@fb.com>
-In-Reply-To: <20210921210225.4095056-3-joannekoong@fb.com>
+References: <20210920141526.3940002-1-memxor@gmail.com> <20210920141526.3940002-12-memxor@gmail.com>
+ <CAEf4Bza5GxHb+=PQUOKWQ=BD3kCCEOYjDLKSdsPRZu468KAePg@mail.gmail.com> <20210921231320.pgmbhmh4bjgvxwvp@apollo.localdomain>
+In-Reply-To: <20210921231320.pgmbhmh4bjgvxwvp@apollo.localdomain>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 16:57:42 -0700
-Message-ID: <CAEf4BzYb1FioqRXTGZY+v0ScRSv_5jYdx7KOz47FUjAru8maeQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/5] libbpf: Allow the number of hashes in
- bloom filter maps to be configurable
-To:     Joanne Koong <joannekoong@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
+Date:   Tue, 21 Sep 2021 17:03:26 -0700
+Message-ID: <CAEf4BzaAjHNoEPFBCmPFQm_vqk_Tj0YYEF8X0ZX9RpmzeeJnhw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 11/11] bpf: selftests: Add selftests for
+ module kfunc support
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 2:30 PM Joanne Koong <joannekoong@fb.com> wrote:
+On Tue, Sep 21, 2021 at 4:13 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> This patch adds the libbpf infrastructure that will allow the user to
-> specify a configurable number of hash functions to use for the bloom
-> filter map.
+> On Wed, Sep 22, 2021 at 04:30:32AM IST, Andrii Nakryiko wrote:
+> > On Mon, Sep 20, 2021 at 7:16 AM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > This adds selftests that tests the success and failure path for modules
+> > > kfuncs (in presence of invalid kfunc calls) for both libbpf and
+> > > gen_loader. It also adds a prog_test kfunc_btf_id_list so that we can
+> > > add module BTF ID set from bpf_testmod.
+> > >
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  include/linux/btf.h                           |  2 +
+> > >  kernel/bpf/btf.c                              |  2 +
+> > >  net/bpf/test_run.c                            |  5 +-
+> > >  tools/testing/selftests/bpf/Makefile          |  5 +-
+> > >  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 26 ++++++-
+> > >  .../selftests/bpf/prog_tests/ksyms_module.c   | 52 ++++++++++----
+> > >  .../bpf/prog_tests/ksyms_module_libbpf.c      | 44 ++++++++++++
+> > >  .../selftests/bpf/progs/test_ksyms_module.c   | 41 ++++++++---
+> > >  .../bpf/progs/test_ksyms_module_fail.c        | 29 ++++++++
+> > >  .../progs/test_ksyms_module_fail_toomany.c    | 19 +++++
+> > >  .../bpf/progs/test_ksyms_module_libbpf.c      | 71 +++++++++++++++++++
+> > >  .../bpf/progs/test_ksyms_module_util.h        | 48 +++++++++++++
+> > >  12 files changed, 317 insertions(+), 27 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_module_libbpf.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_fail.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_fail_toomany.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_libbpf.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_util.h
+> > >
+> >
+> > [...]
+> >
+> > > @@ -243,7 +244,9 @@ BTF_SET_END(test_sk_kfunc_ids)
+> > >
+> > >  bool bpf_prog_test_check_kfunc_call(u32 kfunc_id, struct module *owner)
+> > >  {
+> > > -       return btf_id_set_contains(&test_sk_kfunc_ids, kfunc_id);
+> > > +       if (btf_id_set_contains(&test_sk_kfunc_ids, kfunc_id))
+> > > +               return true;
+> > > +       return __bpf_check_prog_test_kfunc_call(kfunc_id, owner);
+> > >  }
+> > >
+> > >  static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
+> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > > index 326ea75ce99e..d20ff0563120 100644
+> > > --- a/tools/testing/selftests/bpf/Makefile
+> > > +++ b/tools/testing/selftests/bpf/Makefile
+> > > @@ -174,6 +174,7 @@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_tes
+> > >         $(Q)$(RM) bpf_testmod/bpf_testmod.ko # force re-compilation
+> > >         $(Q)$(MAKE) $(submake_extras) -C bpf_testmod
+> > >         $(Q)cp bpf_testmod/bpf_testmod.ko $@
+> > > +       $(Q)$(RESOLVE_BTFIDS) -s ../../../../vmlinux bpf_testmod.ko
+> >
+> > $(VMLINUX_BTF) instead of "../../../../vmlinux", it will break
+> >
+> > >
+> > >  $(OUTPUT)/test_stub.o: test_stub.c $(BPFOBJ)
+> > >         $(call msg,CC,,$@)
+> > > @@ -315,8 +316,8 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
+> > >                 linked_vars.skel.h linked_maps.skel.h
+> > >
+> > >  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
+> > > -       test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
+> > > -       trace_vprintk.c
+> > > +       test_ksyms_module.c test_ksyms_module_fail.c test_ksyms_module_fail_toomany.c \
+> > > +       test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c
+> > >  SKEL_BLACKLIST += $$(LSKELS)
+> > >
+> >
+> > [...]
+> >
+> > > diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_module_util.h b/tools/testing/selftests/bpf/progs/test_ksyms_module_util.h
+> > > new file mode 100644
+> > > index 000000000000..3afa74841ae0
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/progs/test_ksyms_module_util.h
+> > > @@ -0,0 +1,48 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +#ifndef __KSYMS_MODULE_UTIL_H__
+> > > +#define __KSYMS_MODULE_UTIL_H__
+> > > +
+> > > +#define __KFUNC_NR_EXP(Y)                                                      \
+> > > +Y(0) Y(1) Y(2) Y(3) Y(4) Y(5) Y(6) Y(7) Y(8) Y(9) Y(10) Y(11) Y(12)            \
+> > > +Y(13) Y(14) Y(15) Y(16) Y(17) Y(18) Y(19) Y(20) Y(21) Y(22) Y(23)              \
+> > > +Y(24) Y(25) Y(26) Y(27) Y(28) Y(29) Y(30) Y(31) Y(32) Y(33) Y(34)              \
+> > > +Y(35) Y(36) Y(37) Y(38) Y(39) Y(40) Y(41) Y(42) Y(43) Y(44) Y(45)              \
+> > > +Y(46) Y(47) Y(48) Y(49) Y(50) Y(51) Y(52) Y(53) Y(54) Y(55) Y(56)              \
+> > > +Y(57) Y(58) Y(59) Y(60) Y(61) Y(62) Y(63) Y(64) Y(65) Y(66) Y(67)              \
+> > > +Y(68) Y(69) Y(70) Y(71) Y(72) Y(73) Y(74) Y(75) Y(76) Y(77) Y(78)              \
+> > > +Y(79) Y(80) Y(81) Y(82) Y(83) Y(84) Y(85) Y(86) Y(87) Y(88) Y(89)              \
+> > > +Y(90) Y(91) Y(92) Y(93) Y(94) Y(95) Y(96) Y(97) Y(98) Y(99) Y(100)             \
+> > > +Y(101) Y(102) Y(103) Y(104) Y(105) Y(106) Y(107) Y(108) Y(109) Y(110)          \
+> > > +Y(111) Y(112) Y(113) Y(114) Y(115) Y(116) Y(117) Y(118) Y(119) Y(120)          \
+> > > +Y(121) Y(122) Y(123) Y(124) Y(125) Y(126) Y(127) Y(128) Y(129) Y(130)          \
+> > > +Y(131) Y(132) Y(133) Y(134) Y(135) Y(136) Y(137) Y(138) Y(139) Y(140)          \
+> > > +Y(141) Y(142) Y(143) Y(144) Y(145) Y(146) Y(147) Y(148) Y(149) Y(150)          \
+> > > +Y(151) Y(152) Y(153) Y(154) Y(155) Y(156) Y(157) Y(158) Y(159) Y(160)          \
+> > > +Y(161) Y(162) Y(163) Y(164) Y(165) Y(166) Y(167) Y(168) Y(169) Y(170)          \
+> > > +Y(171) Y(172) Y(173) Y(174) Y(175) Y(176) Y(177) Y(178) Y(179) Y(180)          \
+> > > +Y(181) Y(182) Y(183) Y(184) Y(185) Y(186) Y(187) Y(188) Y(189) Y(190)          \
+> > > +Y(191) Y(192) Y(193) Y(194) Y(195) Y(196) Y(197) Y(198) Y(199) Y(200)          \
+> > > +Y(201) Y(202) Y(203) Y(204) Y(205) Y(206) Y(207) Y(208) Y(209) Y(210)          \
+> > > +Y(211) Y(212) Y(213) Y(214) Y(215) Y(216) Y(217) Y(218) Y(219) Y(220)          \
+> > > +Y(221) Y(222) Y(223) Y(224) Y(225) Y(226) Y(227) Y(228) Y(229) Y(230)          \
+> > > +Y(231) Y(232) Y(233) Y(234) Y(235) Y(236) Y(237) Y(238) Y(239) Y(240)          \
+> > > +Y(241) Y(242) Y(243) Y(244) Y(245) Y(246) Y(247) Y(248) Y(249) Y(250)          \
+> > > +Y(251) Y(252) Y(253) Y(254) Y(255)
+> > > +
+> > > +#define __KFUNC_A(nr) bpf_testmod_test_mod_kfunc_##nr();
+> > > +#define KFUNC_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_A)
+> > > +
+> > > +#define __KFUNC_B(nr) extern void bpf_testmod_test_mod_kfunc_##nr(void) __ksym;
+> > > +#define KFUNC_KSYM_DECLARE_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_B)
+> > > +
+> > > +#define __KFUNC_C(nr) noinline void bpf_testmod_test_mod_kfunc_##nr(void) {};
+> > > +#define KFUNC_DEFINE_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_C)
+> > > +
+> > > +#define __KFUNC_D(nr) BTF_ID(func, bpf_testmod_test_mod_kfunc_##nr)
+> > > +#define KFUNC_BTF_ID_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_D)
+> > > +
+> > > +#define __KFUNC_E(nr) bpf_testmod_test_mod_kfunc(nr);
+> > > +#define KFUNC_VALID_SAME_ONE __KFUNC_E(0)
+> > > +#define KFUNC_VALID_SAME_256 __KFUNC_NR_EXP(__KFUNC_E)
+> > > +
+> >
+> > This is pretty horrible... Wouldn't it be better to test limits like
 >
-> Please note that this patch does not enforce that a pinned bloom filter
-> map may only be reused if the number of hash functions is the same. If
-> they are not the same, the number of hash functions used will be the one
-> that was set for the pinned map.
+> Yeah, I actually thought about this a bit yesterday, we could also do:
+> (untested)
 >
-> Signed-off-by: Joanne Koong <joannekoong@fb.com>
-> ---
->  include/uapi/linux/bpf.h        |  5 ++++-
->  tools/include/uapi/linux/bpf.h  |  5 ++++-
->  tools/lib/bpf/bpf.c             |  2 ++
->  tools/lib/bpf/bpf.h             |  1 +
->  tools/lib/bpf/libbpf.c          | 32 +++++++++++++++++++++++++++-----
->  tools/lib/bpf/libbpf.h          |  2 ++
->  tools/lib/bpf/libbpf.map        |  1 +
->  tools/lib/bpf/libbpf_internal.h |  4 +++-
->  8 files changed, 44 insertions(+), 8 deletions(-)
+> #define X_0(x)
+> #define X_1(x) x X_0(x)
+> #define X_2(x) x X_1(x)
+> #define X_3(x) x X_2(x)
+> #define X_4(x) x X_3(x)
+> #define X_5(x) x X_4(x)
+> #define X_6(x) x X_5(x)
+> #define X_7(x) x X_6(x)
+> #define X_8(x) x X_7(x)
+> #define X_9(x) x X_8(x)
+> #define X_10(x) x X_9(x)
 >
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index fec9fcfe0629..2e3048488feb 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1262,7 +1262,10 @@ union bpf_attr {
->                 __u32   map_flags;      /* BPF_MAP_CREATE related
->                                          * flags defined above.
->                                          */
-> -               __u32   inner_map_fd;   /* fd pointing to the inner map */
-> +               union {
-> +                       __u32   inner_map_fd;   /* fd pointing to the inner map */
-> +                       __u32   nr_hash_funcs;  /* or number of hash functions */
-> +               };
->                 __u32   numa_node;      /* numa node (effective only if
->                                          * BPF_F_NUMA_NODE is set).
->                                          */
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index fec9fcfe0629..2e3048488feb 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1262,7 +1262,10 @@ union bpf_attr {
->                 __u32   map_flags;      /* BPF_MAP_CREATE related
->                                          * flags defined above.
->                                          */
-> -               __u32   inner_map_fd;   /* fd pointing to the inner map */
-> +               union {
-> +                       __u32   inner_map_fd;   /* fd pointing to the inner map */
-> +                       __u32   nr_hash_funcs;  /* or number of hash functions */
-> +               };
->                 __u32   numa_node;      /* numa node (effective only if
->                                          * BPF_F_NUMA_NODE is set).
->                                          */
-
-these changes should be part of patch 1, otherwise patch 1 leaves
-kernel in non-compilable state and breaks bisection
-
-
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 2401fad090c5..8a9dd4f6d6c8 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -100,6 +100,8 @@ int bpf_create_map_xattr(const struct bpf_create_map_attr *create_attr)
->         if (attr.map_type == BPF_MAP_TYPE_STRUCT_OPS)
->                 attr.btf_vmlinux_value_type_id =
->                         create_attr->btf_vmlinux_value_type_id;
-> +       else if (attr.map_type == BPF_MAP_TYPE_BLOOM_FILTER)
-> +               attr.nr_hash_funcs = create_attr->nr_hash_funcs;
->         else
->                 attr.inner_map_fd = create_attr->inner_map_fd;
+> Then, for generating 256 items
 >
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 6fffb3cdf39b..1194b6f01572 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -49,6 +49,7 @@ struct bpf_create_map_attr {
->         union {
->                 __u32 inner_map_fd;
->                 __u32 btf_vmlinux_value_type_id;
-> +               __u32 nr_hash_funcs;
->         };
->  };
+> X_2(X_10(X_10(foo))) X_5(X_10(foo)) X_6(foo)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index da65a1666a5e..e51e68a07aaf 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -378,6 +378,7 @@ struct bpf_map {
->         char *pin_path;
->         bool pinned;
->         bool reused;
-> +       __u32 nr_hash_funcs;
-
-nit: please keep it next to inner_map_fd field
-
->  };
+> ... which looks much better.
 >
->  enum extern_type {
-> @@ -1291,6 +1292,11 @@ static bool bpf_map_type__is_map_in_map(enum bpf_map_type type)
->         return false;
->  }
+> > this using the test_verifier approach, where we can craft a *short*
+> > sequence of instructions that will test all these limits?...
+> >
 >
-> +static inline bool bpf_map__is_bloom_filter(const struct bpf_map *map)
-> +{
-> +       return map->def.type == BPF_MAP_TYPE_BLOOM_FILTER;
-> +}
-
-this is used in only one place, it's ok to just open-code it
-
-> +
->  int bpf_object__section_size(const struct bpf_object *obj, const char *name,
->                              __u32 *size)
->  {
-
-[...]
-
-> @@ -8610,6 +8624,14 @@ int bpf_map__set_value_size(struct bpf_map *map, __u32 size)
->         return 0;
->  }
+> Hmm, good idea, I'd just need to fill in the BTF id dynamically at runtime,
+> but that should be possible.
 >
-> +int bpf_map__set_nr_hash_funcs(struct bpf_map *map, __u32 nr_hash_funcs)
-> +{
-> +       if (map->fd >= 0)
-> +               return libbpf_err(-EBUSY);
+> Though we still need to craft distinct calls (I am trying to test the limit
+> where insn->off is different for each case). Since we try to reuse index in both
+> gen_loader and libbpf, just generating same call 256 times would not be enough.
 
-should we disallow this for anything but BLOOM_FILTER?
-
-> +       map->nr_hash_funcs = nr_hash_funcs;
-> +       return 0;
-> +}
-> +
->  __u32 bpf_map__btf_key_type_id(const struct bpf_map *map)
->  {
->         return map ? map->btf_key_type_id : 0;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index d0bedd673273..5c441744f766 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -550,6 +550,8 @@ LIBBPF_API __u32 bpf_map__btf_value_type_id(const struct bpf_map *map);
->  /* get/set map if_index */
->  LIBBPF_API __u32 bpf_map__ifindex(const struct bpf_map *map);
->  LIBBPF_API int bpf_map__set_ifindex(struct bpf_map *map, __u32 ifindex);
-> +/* set nr_hash_funcs */
-> +LIBBPF_API int bpf_map__set_nr_hash_funcs(struct bpf_map *map, __u32 nr_hash_funcs);
-
-Let's not add this setter at all right now. Let's allow setting this
-from BPF source code only in BTF map definition. It's unlikely anyone
-would be setting the number of hash functions dynamically and I just
-hate the idea of this one-off setter just for one specific map type.
-We can always add it later if there really will be a need for that.
+You just need to generate one instruction with offset = 257 to test
+this. And separately one call with fd_array that has module BTF fd at
+fd_array[256] (to check that 256 is ok). Or am I missing something?
 
 >
->  typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
->  LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
-
-[...]
+> Let me know which one of the two you prefer.
+>
+> >
+> > > +#endif
+> > > --
+> > > 2.33.0
+> > >
+>
+> --
+> Kartikeya
