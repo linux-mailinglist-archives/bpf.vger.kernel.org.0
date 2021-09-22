@@ -2,135 +2,244 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6654143F3
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 10:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8B041452E
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 11:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbhIVIpP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 04:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233349AbhIVIpP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:45:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BCE46128E;
-        Wed, 22 Sep 2021 08:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632300225;
-        bh=wIX4Nyvh3NhY3C+0A3fE0uyB9IBDeFSOm7OFmITz9tI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CM4M2XN10RksxBCCApODxtQ2IPRq2c/vxmCmZV3YOE/940DtSnIcLvyKBKPrf6h5S
-         WMGmmNVyRc3N743l6mHHMjdXZ1q5CFPbtTdR8a6nilWKjCj8QELFY3fFO8E7VDd/A4
-         hmThC2566Pbe7I0An0kwPdtYEjjw1ehdvW0+WyWY=
-Date:   Wed, 22 Sep 2021 10:43:42 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] get_abi.pl: Check for missing symbols at the ABI
- specs
-Message-ID: <YUrsvgf3JXUPQ2Vo@kroah.com>
-References: <cover.1631957565.git.mchehab+huawei@kernel.org>
- <YUoN2m/OYHVLPrSl@kroah.com>
- <20210921201633.5e6128a0@coco.lan>
- <YUrCjhEYGXWU6M13@kroah.com>
- <YUrLqdCQyGaCc1XJ@kroah.com>
- <20210922093609.34d7bbca@coco.lan>
- <YUrlFjotiFTYKXOV@kroah.com>
+        id S234256AbhIVJeD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 05:34:03 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9901 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234202AbhIVJeD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Sep 2021 05:34:03 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HDtHz33QPz8yfm;
+        Wed, 22 Sep 2021 17:27:59 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 17:32:31 +0800
+Received: from huawei.com (10.175.101.6) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 22
+ Sep 2021 17:32:30 +0800
+From:   Liu Jian <liujian56@huawei.com>
+To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
+        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <xiyou.wangcong@gmail.com>
+CC:     <liujian56@huawei.com>
+Subject: [PATCH v3] skmsg: lose offset info in sk_psock_skb_ingress
+Date:   Wed, 22 Sep 2021 17:32:59 +0800
+Message-ID: <20210922093259.164013-1-liujian56@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUrlFjotiFTYKXOV@kroah.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:11:02AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Sep 22, 2021 at 09:36:09AM +0200, Mauro Carvalho Chehab wrote:
-> > It sounds it took quite a while handling iommu cap, which sounds weird, as
-> > it should be looking just 3 What expressions:
-> > 
-> > 	[07:43:06] What: /sys/class/iommu/.*/amd\-iommu/cap
-> > 	[07:43:06] What: /sys/class/iommu/.*/intel\-iommu/cap
-> > 	[07:43:06] What: /sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap
-> > 
-> > Maybe there was a memory starvation while running the script, causing
-> > swaps. Still, it is weird that it would happen there, as the hashes
-> > and arrays used at the script are all allocated before it starts the
-> > search logic. Here, the allocation part takes ~2 seconds.
-> 
-> No memory starvation here, this thing is a beast:
-> 	$ free -h
-> 	               total        used        free      shared  buff/cache   available
-> 	Mem:           251Gi        36Gi        13Gi       402Mi       202Gi       212Gi
-> 	Swap:          4.0Gi       182Mi       3.8Gi
-> 
-> 	$ nproc
-> 	64
-> 
-> 
-> > At least on my Dell Precision 5820 (12 cpu threads), the amount of memory it
-> > uses is not huge:
-> > 
-> >     $ /usr/bin/time -v ./scripts/get_abi.pl undefined >/dev/null
-> > 	Command being timed: "./scripts/get_abi.pl undefined"
-> > 	User time (seconds): 12.68
-> > 	System time (seconds): 1.29
-> > 	Percent of CPU this job got: 99%
-> > 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:13.98
-> > 	Average shared text size (kbytes): 0
-> > 	Average unshared data size (kbytes): 0
-> > 	Average stack size (kbytes): 0
-> > 	Average total size (kbytes): 0
-> > 	Maximum resident set size (kbytes): 212608
-> > 	Average resident set size (kbytes): 0
-> > 	Major (requiring I/O) page faults: 0
-> > 	Minor (reclaiming a frame) page faults: 52003
-> > 	Voluntary context switches: 1
-> > 	Involuntary context switches: 56
-> > 	Swaps: 0
-> > 	File system inputs: 0
-> > 	File system outputs: 0
-> > 	Socket messages sent: 0
-> > 	Socket messages received: 0
-> > 	Signals delivered: 0
-> > 	Page size (bytes): 4096
-> > 	Exit status: 0
-> > 
-> > Unfortunately, I don't have any amd-based machine here, but I'll
-> > try to run it later on a big arm server and see how it behaves.
-> 
-> I'll run that and get back to you in 30 minutes :)
+If sockmap enable strparser, there are lose offset info in
+sk_psock_skb_ingress. If the length determined by parse_msg function
+is not skb->len, the skb will be converted to sk_msg multiple times,
+and userspace app will get the data multiple times.
 
-$ /usr/bin/time -v ./scripts/get_abi.pl undefined > /dev/null
-	Command being timed: "./scripts/get_abi.pl undefined"
-	User time (seconds): 1756.94
-	System time (seconds): 0.76
-	Percent of CPU this job got: 99%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 29:18.94
-	Average shared text size (kbytes): 0
-	Average unshared data size (kbytes): 0
-	Average stack size (kbytes): 0
-	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 228116
-	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 55862
-	Voluntary context switches: 1
-	Involuntary context switches: 17205
-	Swaps: 0
-	File system inputs: 0
-	File system outputs: 0
-	Socket messages sent: 0
-	Socket messages received: 0
-	Signals delivered: 0
-	Page size (bytes): 4096
-	Exit status: 0
+Fix this by get the offset and length from strp_msg.
+And as Cong suggestion, add one bit in skb->_sk_redir to distinguish
+enable or disable strparser.
+
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+---
+v1->v2: fix build error when disable CONFIG_BPF_STREAM_PARSER
+v2->v3: Add one bit in skb->_sk_redir to distinguish enable or disable strparser
+
+ include/linux/skmsg.h | 18 ++++++++++++++--
+ net/core/skmsg.c      | 48 ++++++++++++++++++++++++++++++++++---------
+ 2 files changed, 54 insertions(+), 12 deletions(-)
+
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 14ab0c0bc924..74eb0e97b4bd 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -508,8 +508,22 @@ static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
+ 
+ #if IS_ENABLED(CONFIG_NET_SOCK_MSG)
+ 
+-/* We only have one bit so far. */
+-#define BPF_F_PTR_MASK ~(BPF_F_INGRESS)
++#define BPF_F_STRPARSER	(1UL << 1)
++
++/* We only have two bit so far. */
++#define BPF_F_PTR_MASK ~(BPF_F_INGRESS | BPF_F_STRPARSER)
++
++static inline bool skb_bpf_strparser(const struct sk_buff *skb)
++{
++	unsigned long sk_redir = skb->_sk_redir;
++
++	return sk_redir & BPF_F_STRPARSER;
++}
++
++static inline void skb_bpf_set_strparser(struct sk_buff *skb)
++{
++	skb->_sk_redir |= BPF_F_STRPARSER;
++}
+ 
+ static inline bool skb_bpf_ingress(const struct sk_buff *skb)
+ {
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 2d6249b28928..2faf2fa110f2 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -494,6 +494,7 @@ static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
+ }
+ 
+ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
++					u32 off, u32 len,
+ 					struct sk_psock *psock,
+ 					struct sock *sk,
+ 					struct sk_msg *msg)
+@@ -507,11 +508,11 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
+ 	 */
+ 	if (skb_linearize(skb))
+ 		return -EAGAIN;
+-	num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
++	num_sge = skb_to_sgvec(skb, msg->sg.data, off, len);
+ 	if (unlikely(num_sge < 0))
+ 		return num_sge;
+ 
+-	copied = skb->len;
++	copied = len;
+ 	msg->sg.start = 0;
+ 	msg->sg.size = copied;
+ 	msg->sg.end = num_sge;
+@@ -522,9 +523,11 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
+ 	return copied;
+ }
+ 
+-static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb);
++static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb,
++				     u32 off, u32 len);
+ 
+-static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
++static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
++				u32 off, u32 len)
+ {
+ 	struct sock *sk = psock->sk;
+ 	struct sk_msg *msg;
+@@ -535,7 +538,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
+ 	 * correctly.
+ 	 */
+ 	if (unlikely(skb->sk == sk))
+-		return sk_psock_skb_ingress_self(psock, skb);
++		return sk_psock_skb_ingress_self(psock, skb, off, len);
+ 	msg = sk_psock_create_ingress_msg(sk, skb);
+ 	if (!msg)
+ 		return -EAGAIN;
+@@ -547,7 +550,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
+ 	 * into user buffers.
+ 	 */
+ 	skb_set_owner_r(skb, sk);
+-	err = sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
++	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
+ 	if (err < 0)
+ 		kfree(msg);
+ 	return err;
+@@ -557,7 +560,8 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
+  * skb. In this case we do not need to check memory limits or skb_set_owner_r
+  * because the skb is already accounted for here.
+  */
+-static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb)
++static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb,
++				     u32 off, u32 len)
+ {
+ 	struct sk_msg *msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
+ 	struct sock *sk = psock->sk;
+@@ -567,7 +571,7 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
+ 		return -EAGAIN;
+ 	sk_msg_init(msg);
+ 	skb_set_owner_r(skb, sk);
+-	err = sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
++	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
+ 	if (err < 0)
+ 		kfree(msg);
+ 	return err;
+@@ -581,7 +585,7 @@ static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
+ 			return -EAGAIN;
+ 		return skb_send_sock(psock->sk, skb, off, len);
+ 	}
+-	return sk_psock_skb_ingress(psock, skb);
++	return sk_psock_skb_ingress(psock, skb, off, len);
+ }
+ 
+ static void sk_psock_skb_state(struct sk_psock *psock,
+@@ -604,6 +608,9 @@ static void sk_psock_backlog(struct work_struct *work)
+ {
+ 	struct sk_psock *psock = container_of(work, struct sk_psock, work);
+ 	struct sk_psock_work_state *state = &psock->work_state;
++#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
++	struct strp_msg *stm = NULL;
++#endif
+ 	struct sk_buff *skb = NULL;
+ 	bool ingress;
+ 	u32 len, off;
+@@ -624,6 +631,13 @@ static void sk_psock_backlog(struct work_struct *work)
+ 	while ((skb = skb_dequeue(&psock->ingress_skb))) {
+ 		len = skb->len;
+ 		off = 0;
++#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
++		if (skb_bpf_strparser(skb)) {
++			stm = strp_msg(skb);
++			off = stm->offset;
++			len = stm->full_len;
++		}
++#endif
+ start:
+ 		ingress = skb_bpf_ingress(skb);
+ 		skb_bpf_redirect_clear(skb);
+@@ -930,6 +944,10 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
+ {
+ 	struct sock *sk_other;
+ 	int err = 0;
++#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
++	struct strp_msg *stm = NULL;
++#endif
++	u32 len, off;
+ 
+ 	switch (verdict) {
+ 	case __SK_PASS:
+@@ -949,7 +967,16 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
+ 		 * retrying later from workqueue.
+ 		 */
+ 		if (skb_queue_empty(&psock->ingress_skb)) {
+-			err = sk_psock_skb_ingress_self(psock, skb);
++			len = skb->len;
++			off = 0;
++#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
++			if (skb_bpf_strparser(skb)) {
++				stm = strp_msg(skb);
++				off = stm->offset;
++				len = stm->full_len;
++			}
++#endif
++			err = sk_psock_skb_ingress_self(psock, skb, off, len);
+ 		}
+ 		if (err < 0) {
+ 			spin_lock_bh(&psock->ingress_lock);
+@@ -1018,6 +1045,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+ 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
+ 		skb->sk = NULL;
+ 	}
++	skb_bpf_set_strparser(skb);
+ 	sk_psock_verdict_apply(psock, skb, ret);
+ out:
+ 	rcu_read_unlock();
+-- 
+2.17.1
 
