@@ -2,90 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C919F414763
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 13:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBF1414FCC
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 20:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235455AbhIVLN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 07:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
+        id S237095AbhIVSZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 14:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbhIVLN1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:13:27 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEF7C061756
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 04:11:57 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q26so5582893wrc.7
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 04:11:57 -0700 (PDT)
+        with ESMTP id S237085AbhIVSZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Sep 2021 14:25:57 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9480BC061574;
+        Wed, 22 Sep 2021 11:24:27 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so5125183pjb.2;
+        Wed, 22 Sep 2021 11:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l4RZloahyjRG1N22DwCCx53LlP6k68dsBh8lyrVMOyo=;
-        b=gbswmujyBsd2CIJuI3gzzCLsbyFRnmyRBqDclILKZVritJh8jDMpBlnTOO0nocX0fp
-         zovRbA0fyZmPgqOOQ0nsexInmOgyXqDrjcdUBsd2RXmZu7p3acio55fC35YScnlktUIm
-         kHLMdb8Q4R0CA61qA3ED8wj5iB2eicH7aUeg0=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZJRpm13cdakrS6Fzw5NR01EAxv/9nnEsgvgZlcSKKX0=;
+        b=S3kBYM61iPBSlu5nshOiNUGgOxddc4NP92sDJNq6JKTEoPEk4FB3BuKS6aXN6CU5jr
+         OJgceaf31gs/Iv5PF1IsGm5xIuzTb9eMOvF3jHUOHidNVENAkPnmGaDC1WvBMwkL7fdK
+         M8Jla9IST1adVOt9VsFJy7pdn/obqgRTW8bV7IAdoZsYWjt3srzFyeROVGybpNrIvubI
+         G0Zeqklxzer9V8ALrFw52j+N4QkKrKhSMAETx6NdBqBKSKuTrWS26drTb9hBr+3BSfVR
+         PUIURefY2PFyUUFvJU2VDzjlzD3OxTf3BR4SsQ3sKzi7lL/KsbyNylOVubIpX0RVo3Ma
+         hJhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l4RZloahyjRG1N22DwCCx53LlP6k68dsBh8lyrVMOyo=;
-        b=cZLCMG0KyyF3jwmNnEEYOGtwULiEk/qpe0YVc1zoDgK9wcww+vilmEd8ElqSlc5+tm
-         nHUdXRdP/P93WWslhMIHD9nOmslU/1tQQY+8joeeFmx2y3n8dRTIMkq9yxMv+mIYs+qc
-         EMLu6utHyXITfr34etezVvmOjuzJ7qXIIKNlwzpE0YEdO5WbgY/sYxHPvRFYiPms8LW4
-         QHviQEVjy/eRNhHbJLkH6YARF9t7CbOtdwK7KONGc1XrZb/YUPShVth/KvNzpEi3zjPx
-         Vvcmg4PiwQUZvhbpo+P3F2JxBuCfjUzLxff0QAYGgJqdm9C0jX2TzuqNeOt8OUUYAjFL
-         J9TQ==
-X-Gm-Message-State: AOAM533B0ohIrz+uJpMgQ/hkKDCKn0rIJeGylUrazzteoqChnOGP2QJv
-        y9xIBR9Cjcet3utCHt15BsM6Ow==
-X-Google-Smtp-Source: ABdhPJxtHsOFHbiS/18610VQUz0RdN+h1oScAaTvhgCh5TQSBq2i0RtCNIFMgN7xQj9MNjrtbXENQg==
-X-Received: by 2002:a05:600c:3543:: with SMTP id i3mr9852341wmq.64.1632309115787;
-        Wed, 22 Sep 2021 04:11:55 -0700 (PDT)
-Received: from antares.. (5.a.d.0.d.e.5.9.1.b.e.2.d.e.9.c.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:c9ed:2eb1:95ed:da5])
-        by smtp.gmail.com with ESMTPSA id i9sm5966205wmi.44.2021.09.22.04.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 04:11:55 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] bpf: exempt CAP_BPF from checks against bpf_jit_limit
-Date:   Wed, 22 Sep 2021 12:11:52 +0100
-Message-Id: <20210922111153.19843-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZJRpm13cdakrS6Fzw5NR01EAxv/9nnEsgvgZlcSKKX0=;
+        b=ABTBNXs53WsTLZkkO5yVDk7tRZAlF/WtwJjyZ5fb7E+egHu61F67jy8r7kq829Fkro
+         5Ys8/fozNmBQLBsRUi3chY5WO6U4gphqIPmECDvQ8uqIoaGwtQVMHF3UCo2hehry4pNg
+         U+7OypFhlVjwKR0kqvAV4YhcN/kNJ1cUGfURl9DkT/Vi8iTqQ80OuSIiaQytKlQIqPnG
+         iA4nXZ9PD3rgjeSjSyWYp17njbLtYagZUOn599xNFlm5GoUGmiWM93ZX7/L4dqb5tewX
+         4FkPGvNUtoeLyRH6aT5evKACmQ8IUtgD32z8J26yAnrNapkyslPK+Z/IWEGM+LyRvYfj
+         9SLg==
+X-Gm-Message-State: AOAM532cWQpSranZ5I2cVKd7j9cAdwgrFJQpaby21aC1zYtkqYM5G6f5
+        1iK3sGaiOQ0mJz0Go3IUFQXbmyzJSnb4s2yoGk0=
+X-Google-Smtp-Source: ABdhPJywprkFW34mjGk6gCQTpCVTmOoU+79tHfJcwqzLi1lTwFa3OzvLmL99v/+HsfiGIBBdmfT7JCa4bB9fSS/2yTU=
+X-Received: by 2002:a17:90b:1c08:: with SMTP id oc8mr488987pjb.138.1632335066962;
+ Wed, 22 Sep 2021 11:24:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210920141526.3940002-1-memxor@gmail.com> <20210920141526.3940002-12-memxor@gmail.com>
+ <CAEf4Bza5GxHb+=PQUOKWQ=BD3kCCEOYjDLKSdsPRZu468KAePg@mail.gmail.com>
+ <20210921231320.pgmbhmh4bjgvxwvp@apollo.localdomain> <CAEf4BzaAjHNoEPFBCmPFQm_vqk_Tj0YYEF8X0ZX9RpmzeeJnhw@mail.gmail.com>
+ <20210922060608.fxdaeguiako4oixb@apollo.localdomain>
+In-Reply-To: <20210922060608.fxdaeguiako4oixb@apollo.localdomain>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Sep 2021 11:24:15 -0700
+Message-ID: <CAADnVQJb_mwxNRBdqaE_E=05V=YVHt5wrxSMigSYRMNvv4LWZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 11/11] bpf: selftests: Add selftests for
+ module kfunc support
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When introducing CAP_BPF, bpf_jit_charge_modmem was not changed to
-treat programs with CAP_BPF as privileged for the purpose of JIT
-memory allocation. This means that a program without CAP_BPF can
-block a program with CAP_BPF from loading a program.
+On Tue, Sep 21, 2021 at 11:06 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Wed, Sep 22, 2021 at 05:33:26AM IST, Andrii Nakryiko wrote:
+> > > [...]
+> > > Hmm, good idea, I'd just need to fill in the BTF id dynamically at runtime,
+> > > but that should be possible.
+> > >
+> > > Though we still need to craft distinct calls (I am trying to test the limit
+> > > where insn->off is different for each case). Since we try to reuse index in both
+> > > gen_loader and libbpf, just generating same call 256 times would not be enough.
+> >
+> > You just need to generate one instruction with offset = 257 to test
+> > this. And separately one call with fd_array that has module BTF fd at
+> > fd_array[256] (to check that 256 is ok). Or am I missing something?
+> >
+>
+> That won't be enough, if I just pass insn->imm = id, insn->off = 257, it becomes
+> first descriptor in kfunc_tab and kfunc_btf_tab. The total limit is 256, and
+> they are kept in sorted order by based on id and off for the first, off for the
+> second. So 256 different offs are needed (imm may be same actually), so that
+> both fill up.
 
-Fix this by checking bpf_capable in bpf_jit_charge_modmem.
-
-Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- kernel/bpf/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 6fddc13fe67f..ea8a468dbded 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -827,7 +827,7 @@ int bpf_jit_charge_modmem(u32 pages)
- {
- 	if (atomic_long_add_return(pages, &bpf_jit_current) >
- 	    (bpf_jit_limit >> PAGE_SHIFT)) {
--		if (!capable(CAP_SYS_ADMIN)) {
-+		if (!bpf_capable()) {
- 			atomic_long_sub(pages, &bpf_jit_current);
- 			return -EPERM;
- 		}
--- 
-2.30.2
-
+Just to test the 256 limit? I don't think it's necessary.
+afaik there is no test that exercises the 64 map limit.
