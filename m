@@ -2,80 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97802413F22
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 03:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEB3413F4A
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 04:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhIVB6b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 21:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232590AbhIVB6a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 21:58:30 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA35DC061756
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 18:57:00 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id t4so4085768qkb.9
-        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 18:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dNeVX2/AAU67gCQ2hLPQYiycq7pGX1S/cb+hnnulRMw=;
-        b=Hl16FOFhcPKOG3yu6QEh+1sf7oVY/P5Z6rCp241WQfOqSMZID/pCn1e66RwsiAj6+p
-         mQKSvbAI+fBwkeW59i9hjFY99JHNIklaNSmeFVpWLb+iZqsxPShD0uwDwyO29txT0tf2
-         vvV4brKiBtJ1KNRnM9cCx2B24t7Pe9udL7/qbQIOuNDk7uzde6GVNRKNSP2Zl4UTHwP9
-         eWX0ma/R8aurBgiNUi3tQu9HWfwU+lzyMk8quwUEvwGukDHqFo7HRCPJ+WwBYB6gTZpE
-         zcEV7F+KyARmpAhcwZzvbja6nuSNnbw2EHcO/vnhdxGxp9eg8Ebs+SBqcS16o0E14T7b
-         f0bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dNeVX2/AAU67gCQ2hLPQYiycq7pGX1S/cb+hnnulRMw=;
-        b=y6sopYY1v1eNrA3MDI6yJ+BfJP9eOVEborTSCdi/ejyYKgGIT10QjFT5xc0lbH1EAA
-         rxGwk4C1HWbnw4d3H41l89TGLQwYUCQ6GxE0FOoXDOE5+jj2X3lZyEQlguZx2Z0+Ns/Y
-         lRfF0iisv2uWWJZRxPmrLd2/dxfm84sdGOhWcIHwe4WStsBBDDKa3/GRtO1uTKCgnhx0
-         MjcL6EHxFKG/4bbViIDsZn6FSaGiwRq4j8qmZi9PFKMEHLTa7YmRooNK/xRgTxcG9aEA
-         uyKKhqgx8QzD60Jqz/Nf54d0yJOlDjqC4+TS4Bn5ubjWigYA0Z1xxja0h6wyd6UoI4be
-         HZrg==
-X-Gm-Message-State: AOAM530tBJG20vmCrGSpjDqQPc2B0Wnuitf/+KWAZbQETKF+fhhaLFbJ
-        OVk2FXcCh/PAHqTGSifhSTC9KLkFWh/SQIiEizws/A==
-X-Google-Smtp-Source: ABdhPJyXlKkrBRzP6q/7fl+IpzJt5IeM7h8bSIaNp6nmoNn0IbOQBmLhN0QxQ/wn+OIjISZduG5Xy0ElJHTvCUrXLpw=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr38459854ybq.328.1632275819299;
- Tue, 21 Sep 2021 18:56:59 -0700 (PDT)
+        id S229804AbhIVCPD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 22:15:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54712 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229693AbhIVCPD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Sep 2021 22:15:03 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LLHDiY030023
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 19:13:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=PeDNCnYFitH+YCnO9TBfSC89dObIlrQAqmBLoGkQ64M=;
+ b=GOAFceJl8Xu9RL9Qe3KDVCjcduKbAFk3RkolnU40fzi6NjfCkCqR7m+iVAiTMEGHxoNp
+ wECZgEsxQ4eD853nKgvUSFTuz1dOHRRtI/z/JN5zMS6ZnXrJbrN7eJpNTrEEqSL1fnjS
+ 4I+kEP82B4FVRLZ4Xp3irRAhMd7ECGfm+DE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b7q5wsh9q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 19:13:33 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 21 Sep 2021 19:13:32 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id B2DDE24E20A; Tue, 21 Sep 2021 19:13:21 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <dwarves@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH dwarves v2 0/2] generate BTF_KIND_TAG types from DW_TAG_LLVM_annotation dwarf tags
+Date:   Tue, 21 Sep 2021 19:13:21 -0700
+Message-ID: <20210922021321.2286360-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: 82krZ8UL7M9ZC4_EI1Cd0ipp5zX9bBX0
+X-Proofpoint-GUID: 82krZ8UL7M9ZC4_EI1Cd0ipp5zX9bBX0
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CACkBjsZC-3nm8FVhVfCAyodxbKAbdxUriZimwdq3JHH1=sxNcw@mail.gmail.com>
-In-Reply-To: <CACkBjsZC-3nm8FVhVfCAyodxbKAbdxUriZimwdq3JHH1=sxNcw@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 21 Sep 2021 18:56:48 -0700
-Message-ID: <CANn89iKVAcX2GnQwVbQLd+ADGRVdWtD07q7=Brw5HRSoc0K2PQ@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in tcp_write_timer_handler
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=641 impostorscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109220013
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 6:43 PM Hao Sun <sunhao.th@gmail.com> wrote:
->
-> Hello,
->
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
->
+LLVM has implemented btf_tag attribute ([1]) which intended
+to provide a "string" tag for struct/union or its member, var,
+a func or its parameter. Such a "string" tag will be encoded
+in dwarf. For non-BPF target like x86_64, pahole needs to
+convert those dwarf btf_tag annotations to BTF so kernel
+can utilize these "string" tags for bpf program verification, etc.
+=20=20=20=20=20=20=20=20
+Patch 1 enhanced dwarf_loader to encode DW_TAG_LLVM_annotation
+tags into internal data structure and Patch 2 will encode
+such information to BTF with BTF_KIND_TAGs.
 
-We have dozens of such reports provided already by syzbot.
+ [1] https://reviews.llvm.org/D106614
 
-If you do not provide a repro, there is little hope.
+Changelog:
+  v1 -> v2:
+    - handle returning error cases for btf_encoder__add_tag().
+
+Yonghong Song (2):
+  dwarf_loader: parse dwarf tag DW_TAG_LLVM_annotation
+  btf_encoder: generate BTF_KIND_TAG from llvm annotations
+
+ btf_encoder.c  | 63 ++++++++++++++++++++++++++++++++++++-
+ dwarf_loader.c | 85 ++++++++++++++++++++++++++++++++++++++++++++++----
+ dwarves.h      | 10 ++++++
+ pahole.c       |  8 +++++
+ 4 files changed, 159 insertions(+), 7 deletions(-)
+
+--=20
+2.30.2
+
