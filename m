@@ -2,245 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E63413E34
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 02:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CAE413E9A
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 02:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhIVAFH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Sep 2021 20:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
+        id S231367AbhIVAU6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Sep 2021 20:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhIVAFH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Sep 2021 20:05:07 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20486C061574;
-        Tue, 21 Sep 2021 17:03:38 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id c7so3705519qka.2;
-        Tue, 21 Sep 2021 17:03:38 -0700 (PDT)
+        with ESMTP id S230299AbhIVAU6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Sep 2021 20:20:58 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAAAC061574
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 17:19:29 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id t4so3407031qkb.9
+        for <bpf@vger.kernel.org>; Tue, 21 Sep 2021 17:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UxYYd55ASNSt9/O57xslV8YObI2tPN6o5gcq6U54bto=;
-        b=mZfBVOCobu6R4xxTyfK53j1+YmkoZqc+fkz/aIQcs5v6awnpsq7oiD/NubnC81hBsJ
-         al+pJZP2SWSCxeD9+i5FSxqXhj83fyzd8ZxXeHs+86UlA140cXyyKspxGWprEpwE6+d/
-         UKIMS0u0ZPfaTSbtIrzyl2I9wCXEkCSDpAaUEwlveyNa9JtYP2YMw/C+NdtwsMqwB+Hp
-         htI6GVuhaTzFakjJWKHSIO4Cm1istF3aeQYchfj9VHp9RvVVJnFdGSj+mxIrHjKkON2q
-         n3SBjbrIGQy8qJOxqLRCwYg1cRh1p5eWPZjaQa8myj0LY/idIBpZrsPKAWq1rYGyAx0q
-         gf+Q==
+         :cc:content-transfer-encoding;
+        bh=wGYoGb0BP2uosN/e0L73kDBkxA3Hi895DHAlNmetKJw=;
+        b=W9EJwNH51IzBFkPsvVs+FXDJPbTQceFc66jXSBfS3MyCPN74EUuTkAg20kNUVwbPGq
+         m+AMPYkZRCiWt0CMmmvG35eAfLCAxOOBsIkoh47hZenUkRLeyh1dxst6uHMOVU6TdUsC
+         2NbqO8gqAklh+YnyzyTK/ERqc6lhjqOCclxufMbbKWz+0dfStRx00G4CcIWW01cECA9t
+         rFmXJ5yBa6PPOfKs5S8EVZfXeCSXHXOuMMBDv/T8HfrRKhZkcuDOsvbGxiFIy79r4UPa
+         Xnu6jw98ceGXn8v2RfR8ueeAdDZ2BFiL5IxqUMiYsYtMruJRIgkHwb4mVKPweHuDYkUR
+         IZOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UxYYd55ASNSt9/O57xslV8YObI2tPN6o5gcq6U54bto=;
-        b=2wFCVVOiX4lJ28YMAfy4iXDK5LXnjum22kWyQezqINh/YEyz7Lm6U3qrCzU6JNERWe
-         tHt19djULH7PM6rItM6xuyo/MJOJjTbJyjOdK+0hjDGIe2BwEbAHEsqFxXSTTlTEDUO1
-         aDL0R5CGm2BvNIDZudIbH8x6cDTZOdmFrLPR9JpFJ9Q/4c1B883C57hocilv391EpuYu
-         SbxcRj1zRSKp0OcveFlBQiGrjISTj+6bCzRImbxYGsWMecBOveG22j3hU3GMmcQY9jnW
-         uBI0syop8NbLZMwYfo807UUJ5GMkkQxEynwcVMFCeCU0yv42pr7vufKh3gWgE9ztUflO
-         GhAA==
-X-Gm-Message-State: AOAM530/HFpLv9CDpte/CKxOi5pSZVCvZAKtyKoqhCfkS2vsJhcMJMFl
-        vr2+uzsdBaInj8tiKDLRW11ptq/sefPW64p8sbM=
-X-Google-Smtp-Source: ABdhPJwUfEENLA8R6bxy4Ru8dZQpoNY0o4H0h+0dtxvoOrfvyWkHbCbo/Rek2CO2xl/fkLTqDCGili0QQ+rDBN+0jpo=
-X-Received: by 2002:a25:fc5:: with SMTP id 188mr40033588ybp.51.1632269017210;
- Tue, 21 Sep 2021 17:03:37 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wGYoGb0BP2uosN/e0L73kDBkxA3Hi895DHAlNmetKJw=;
+        b=6uazdyayOViB/EDC2geuLNcZmmHYomb98bG083nScJ9G3djCfdZJOL0OGxdwb3Oiem
+         G2jxihl4luq3D5S45Z1XGboS2CoItJKb3wzBqctuslto2RE72ngM2TRmRJZJgQYVDm7K
+         GmNdN5466spZ01TtKSjd5NR4mfyGac5jxebkDK6Qf7vOy344SCXSHzeP/VLTxRYs884J
+         BM/C4ZpUC0wR0EI3dOe5wF6wxylnTqgdArb/Pc2udBLjaeUb/kYnUXwC26vpbkN2Hd7l
+         9zrYH/nGI5XyW5iMS2SxXTk2hwKDS+AHCVDQi/tX1K3E0zn56coaTW+XiyiEBJBrEc3j
+         YDWQ==
+X-Gm-Message-State: AOAM531fB6vN3JknYMn+Fznom033k8KFp+9ca4YxtTWGnQbask9GZ9ot
+        mc/W5n9mB5gTqdkgbWEPc+0MpU+Hh2HWz0IU8K0=
+X-Google-Smtp-Source: ABdhPJz4ZxefVm6vdNTZfTvig9lhHDO6I79dXMyV+qm5uQxvXHye5HXh9LJ76I3hxQcbbKfLOP1cnbrsNUrULkHzpQQ=
+X-Received: by 2002:a25:1884:: with SMTP id 126mr25072121yby.114.1632269968187;
+ Tue, 21 Sep 2021 17:19:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920141526.3940002-1-memxor@gmail.com> <20210920141526.3940002-12-memxor@gmail.com>
- <CAEf4Bza5GxHb+=PQUOKWQ=BD3kCCEOYjDLKSdsPRZu468KAePg@mail.gmail.com> <20210921231320.pgmbhmh4bjgvxwvp@apollo.localdomain>
-In-Reply-To: <20210921231320.pgmbhmh4bjgvxwvp@apollo.localdomain>
+References: <6850bdde-b660-5ed3-9749-2fc6c1c1d0b7@redhat.com> <20210914122231.1870-1-larysa.zaremba@intel.com>
+In-Reply-To: <20210914122231.1870-1-larysa.zaremba@intel.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Sep 2021 17:03:26 -0700
-Message-ID: <CAEf4BzaAjHNoEPFBCmPFQm_vqk_Tj0YYEF8X0ZX9RpmzeeJnhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 11/11] bpf: selftests: Add selftests for
- module kfunc support
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Tue, 21 Sep 2021 17:19:16 -0700
+Message-ID: <CAEf4BzZO=7MKWfx2OCwEc+sKkfPZYzaELuobi4q5p1bOKk4AQQ@mail.gmail.com>
+Subject: Re: XDP-hints as BTF early design discussion phase
+To:     Larysa Zaremba <larysa.zaremba@intel.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Toke Hoiland Jorgensen <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 4:13 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Sep 14, 2021 at 5:23 AM Larysa Zaremba <larysa.zaremba@intel.com> w=
+rote:
 >
-> On Wed, Sep 22, 2021 at 04:30:32AM IST, Andrii Nakryiko wrote:
-> > On Mon, Sep 20, 2021 at 7:16 AM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > This adds selftests that tests the success and failure path for modules
-> > > kfuncs (in presence of invalid kfunc calls) for both libbpf and
-> > > gen_loader. It also adds a prog_test kfunc_btf_id_list so that we can
-> > > add module BTF ID set from bpf_testmod.
-> > >
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> > >  include/linux/btf.h                           |  2 +
-> > >  kernel/bpf/btf.c                              |  2 +
-> > >  net/bpf/test_run.c                            |  5 +-
-> > >  tools/testing/selftests/bpf/Makefile          |  5 +-
-> > >  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 26 ++++++-
-> > >  .../selftests/bpf/prog_tests/ksyms_module.c   | 52 ++++++++++----
-> > >  .../bpf/prog_tests/ksyms_module_libbpf.c      | 44 ++++++++++++
-> > >  .../selftests/bpf/progs/test_ksyms_module.c   | 41 ++++++++---
-> > >  .../bpf/progs/test_ksyms_module_fail.c        | 29 ++++++++
-> > >  .../progs/test_ksyms_module_fail_toomany.c    | 19 +++++
-> > >  .../bpf/progs/test_ksyms_module_libbpf.c      | 71 +++++++++++++++++++
-> > >  .../bpf/progs/test_ksyms_module_util.h        | 48 +++++++++++++
-> > >  12 files changed, 317 insertions(+), 27 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_module_libbpf.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_fail.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_fail_toomany.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_libbpf.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module_util.h
-> > >
-> >
-> > [...]
-> >
-> > > @@ -243,7 +244,9 @@ BTF_SET_END(test_sk_kfunc_ids)
-> > >
-> > >  bool bpf_prog_test_check_kfunc_call(u32 kfunc_id, struct module *owner)
-> > >  {
-> > > -       return btf_id_set_contains(&test_sk_kfunc_ids, kfunc_id);
-> > > +       if (btf_id_set_contains(&test_sk_kfunc_ids, kfunc_id))
-> > > +               return true;
-> > > +       return __bpf_check_prog_test_kfunc_call(kfunc_id, owner);
-> > >  }
-> > >
-> > >  static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > index 326ea75ce99e..d20ff0563120 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -174,6 +174,7 @@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_tes
-> > >         $(Q)$(RM) bpf_testmod/bpf_testmod.ko # force re-compilation
-> > >         $(Q)$(MAKE) $(submake_extras) -C bpf_testmod
-> > >         $(Q)cp bpf_testmod/bpf_testmod.ko $@
-> > > +       $(Q)$(RESOLVE_BTFIDS) -s ../../../../vmlinux bpf_testmod.ko
-> >
-> > $(VMLINUX_BTF) instead of "../../../../vmlinux", it will break
-> >
-> > >
-> > >  $(OUTPUT)/test_stub.o: test_stub.c $(BPFOBJ)
-> > >         $(call msg,CC,,$@)
-> > > @@ -315,8 +316,8 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
-> > >                 linked_vars.skel.h linked_maps.skel.h
-> > >
-> > >  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
-> > > -       test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
-> > > -       trace_vprintk.c
-> > > +       test_ksyms_module.c test_ksyms_module_fail.c test_ksyms_module_fail_toomany.c \
-> > > +       test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c
-> > >  SKEL_BLACKLIST += $$(LSKELS)
-> > >
-> >
-> > [...]
-> >
-> > > diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_module_util.h b/tools/testing/selftests/bpf/progs/test_ksyms_module_util.h
-> > > new file mode 100644
-> > > index 000000000000..3afa74841ae0
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/test_ksyms_module_util.h
-> > > @@ -0,0 +1,48 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +#ifndef __KSYMS_MODULE_UTIL_H__
-> > > +#define __KSYMS_MODULE_UTIL_H__
-> > > +
-> > > +#define __KFUNC_NR_EXP(Y)                                                      \
-> > > +Y(0) Y(1) Y(2) Y(3) Y(4) Y(5) Y(6) Y(7) Y(8) Y(9) Y(10) Y(11) Y(12)            \
-> > > +Y(13) Y(14) Y(15) Y(16) Y(17) Y(18) Y(19) Y(20) Y(21) Y(22) Y(23)              \
-> > > +Y(24) Y(25) Y(26) Y(27) Y(28) Y(29) Y(30) Y(31) Y(32) Y(33) Y(34)              \
-> > > +Y(35) Y(36) Y(37) Y(38) Y(39) Y(40) Y(41) Y(42) Y(43) Y(44) Y(45)              \
-> > > +Y(46) Y(47) Y(48) Y(49) Y(50) Y(51) Y(52) Y(53) Y(54) Y(55) Y(56)              \
-> > > +Y(57) Y(58) Y(59) Y(60) Y(61) Y(62) Y(63) Y(64) Y(65) Y(66) Y(67)              \
-> > > +Y(68) Y(69) Y(70) Y(71) Y(72) Y(73) Y(74) Y(75) Y(76) Y(77) Y(78)              \
-> > > +Y(79) Y(80) Y(81) Y(82) Y(83) Y(84) Y(85) Y(86) Y(87) Y(88) Y(89)              \
-> > > +Y(90) Y(91) Y(92) Y(93) Y(94) Y(95) Y(96) Y(97) Y(98) Y(99) Y(100)             \
-> > > +Y(101) Y(102) Y(103) Y(104) Y(105) Y(106) Y(107) Y(108) Y(109) Y(110)          \
-> > > +Y(111) Y(112) Y(113) Y(114) Y(115) Y(116) Y(117) Y(118) Y(119) Y(120)          \
-> > > +Y(121) Y(122) Y(123) Y(124) Y(125) Y(126) Y(127) Y(128) Y(129) Y(130)          \
-> > > +Y(131) Y(132) Y(133) Y(134) Y(135) Y(136) Y(137) Y(138) Y(139) Y(140)          \
-> > > +Y(141) Y(142) Y(143) Y(144) Y(145) Y(146) Y(147) Y(148) Y(149) Y(150)          \
-> > > +Y(151) Y(152) Y(153) Y(154) Y(155) Y(156) Y(157) Y(158) Y(159) Y(160)          \
-> > > +Y(161) Y(162) Y(163) Y(164) Y(165) Y(166) Y(167) Y(168) Y(169) Y(170)          \
-> > > +Y(171) Y(172) Y(173) Y(174) Y(175) Y(176) Y(177) Y(178) Y(179) Y(180)          \
-> > > +Y(181) Y(182) Y(183) Y(184) Y(185) Y(186) Y(187) Y(188) Y(189) Y(190)          \
-> > > +Y(191) Y(192) Y(193) Y(194) Y(195) Y(196) Y(197) Y(198) Y(199) Y(200)          \
-> > > +Y(201) Y(202) Y(203) Y(204) Y(205) Y(206) Y(207) Y(208) Y(209) Y(210)          \
-> > > +Y(211) Y(212) Y(213) Y(214) Y(215) Y(216) Y(217) Y(218) Y(219) Y(220)          \
-> > > +Y(221) Y(222) Y(223) Y(224) Y(225) Y(226) Y(227) Y(228) Y(229) Y(230)          \
-> > > +Y(231) Y(232) Y(233) Y(234) Y(235) Y(236) Y(237) Y(238) Y(239) Y(240)          \
-> > > +Y(241) Y(242) Y(243) Y(244) Y(245) Y(246) Y(247) Y(248) Y(249) Y(250)          \
-> > > +Y(251) Y(252) Y(253) Y(254) Y(255)
-> > > +
-> > > +#define __KFUNC_A(nr) bpf_testmod_test_mod_kfunc_##nr();
-> > > +#define KFUNC_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_A)
-> > > +
-> > > +#define __KFUNC_B(nr) extern void bpf_testmod_test_mod_kfunc_##nr(void) __ksym;
-> > > +#define KFUNC_KSYM_DECLARE_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_B)
-> > > +
-> > > +#define __KFUNC_C(nr) noinline void bpf_testmod_test_mod_kfunc_##nr(void) {};
-> > > +#define KFUNC_DEFINE_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_C)
-> > > +
-> > > +#define __KFUNC_D(nr) BTF_ID(func, bpf_testmod_test_mod_kfunc_##nr)
-> > > +#define KFUNC_BTF_ID_VALID_DISTINCT_256 __KFUNC_NR_EXP(__KFUNC_D)
-> > > +
-> > > +#define __KFUNC_E(nr) bpf_testmod_test_mod_kfunc(nr);
-> > > +#define KFUNC_VALID_SAME_ONE __KFUNC_E(0)
-> > > +#define KFUNC_VALID_SAME_256 __KFUNC_NR_EXP(__KFUNC_E)
-> > > +
-> >
-> > This is pretty horrible... Wouldn't it be better to test limits like
+> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+> Date: Mon, 13 Sep 2021 13:35:04 +0200
 >
-> Yeah, I actually thought about this a bit yesterday, we could also do:
-> (untested)
+> > Trying to get started with XDP-hints again.
 >
-> #define X_0(x)
-> #define X_1(x) x X_0(x)
-> #define X_2(x) x X_1(x)
-> #define X_3(x) x X_2(x)
-> #define X_4(x) x X_3(x)
-> #define X_5(x) x X_4(x)
-> #define X_6(x) x X_5(x)
-> #define X_7(x) x X_6(x)
-> #define X_8(x) x X_7(x)
-> #define X_9(x) x X_8(x)
-> #define X_10(x) x X_9(x)
+> > The fundamental idea is that XDP-hints metadata struct's are defined by
+> > the kernel, preferably by the kernel module, and described via BTF. As
+> > BTF layout is defined by kernel, this means userspace (AF_XDP) and
+> > BPF-progs must adapt to layout (used by running kernel). This imply tha=
+t
+> > kernel is free to change layout.
 >
-> Then, for generating 256 items
+> > The BTF ID is exposed (to BPF-prog and AF_XDP) on per packet basis, to
+> > give kernel more freedom to change layout runtime. This push
+> > responsibility to userspace/BPF-prog of handling different layouts,
+> > which seems natural. For the kernel this solves many issues around
+> > concurrency and NIC config changes that affects BTF info available (e.g=
+.
+> > when BTF layout is allowed to change).
 >
-> X_2(X_10(X_10(foo))) X_5(X_10(foo)) X_6(foo)
+> Aside from generic XDP hints defined directly in kernel code,
+> it should be possible to define custom hints layout inside network driver=
+.
+> Kernel module BTF support[1][2] provides the means to do so.
 >
-> ... which looks much better.
+> As long as our XDP program is attached to interfaces serviced by a single=
+ driver
+> and BPF program uses hints layouts only from this particular driver + gen=
+eric,
+> there should be no problem, we can easily obtain a BTF type_id in BPF cod=
+e
+> and compare it to the one sent by driver,
+> because BTF type_ids are unique in such case (was discussed earlier).
 >
-> > this using the test_verifier approach, where we can craft a *short*
-> > sequence of instructions that will test all these limits?...
-> >
+> However, if we want a single program to use layouts from multiple drivers=
+,
+> we can=E2=80=99t do it so easily, because in such case same type_id can p=
+oint
+> to absolutely different types. Obviously, probability of both those types=
+ being
+> hints structures is extremely low,
+> but using type_id only would be at least inconsistent.
+> This generates the following issues:
 >
-> Hmm, good idea, I'd just need to fill in the BTF id dynamically at runtime,
-> but that should be possible.
->
-> Though we still need to craft distinct calls (I am trying to test the limit
-> where insn->off is different for each case). Since we try to reuse index in both
-> gen_loader and libbpf, just generating same call 256 times would not be enough.
+> 1.      We have to send both BTF ID and type_id in generic hints struct f=
+rom driver.
+>     This takes up precious space inside generic structure.
+>     The first solution we=E2=80=99ve came up with is not using full 64 bi=
+ts, but instead
+>     splitting 32 bits we already planned for type_id into for example,
+>     12 for BTF_ID and 20 for type_id. Feel free to suggest a better solut=
+ion.
+> 2.      BTF ID needs to be compared in BPF code too,
+>     but it=E2=80=99s not that easily obtained as type_id
+>     (through  bpf_core_type_id_kernel which expands to __builtin_btf_type=
+_id).
+>     This patch[3] suggests that at least at some point there was an inten=
+sion
+>     to return both BTF_ID and type_id in a single 64 bit integer.
+>     However, I=E2=80=99ve run a test and bpf_core_type_id_kernel does not=
+ seem
+>     to return anything on the most significant 32 bits.
+>     libbpf source also seems to patch only type_ids into program.
+>     Therefore I have a question to BPF CO-RE developers,
+>     do I understand the situation correctly?
+>     Is there any other existing way to obtain a BTF ID (not type_id)
+>     from type name inside BPF code?
 
-You just need to generate one instruction with offset = 257 to test
-this. And separately one call with fd_array that has module BTF fd at
-fd_array[256] (to check that 256 is ok). Or am I missing something?
+I've even posted a patch before that was resolving local BTF types to
+the module BTF FD/ID (that was one of the points of contention) and
+BTF type ID. See [0] for context. I think we never reached any
+conclusion and this never landed.
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201205025140.4=
+43115-1-andrii@kernel.org/
 
 >
-> Let me know which one of the two you prefer.
+> So I would like to ask for some suggestions in this situation.
 >
-> >
-> > > +#endif
-> > > --
-> > > 2.33.0
-> > >
 >
-> --
-> Kartikeya
+> > End-goal is to make it easier for kernel drivers can invent new layouts
+> > to suite new hardware features. Thus, we prefer a solution where
+> > XDP-hints metadata struct's are defined in the kernel module code.
+>
+>
+> > (Idea below ... please let us know what you think, wrong direction?)
+>
+> > Exploring kernel module code defining the XDP-hints metadata struct.
+>
+> > Kernel module BTFs are now[1][2] exposed through sysfs as
+> > /sys/kernel/btf/<module-name>. Thus, userspace can use libbpf
+> > btf__load_module_btf() and others BTF APIs. Started playing here[3].
+>
+> > Credit to Toke, who had an idea that drivers could "say" what struct's
+> > are available, by defining a union with a known name e.g.
+> > metadata_hints_avail' and have supported metadata struct's included in
+> > that union. Then we don't need new APIs for exporting these BTF-metadat=
+a
+> > struct's. To find struct names, we BTF walk this union.
+>
+>
+> > -Jesper
+>
+> --Larysa
+>
+> >   [1]
+> > https://lore.kernel.org/bpf/20201110011932.3201430-5-andrii@kernel.org/
+> >   [2] 36e68442d1af ("bpf: Load and verify kernel module BTFs") (Author:
+> > Andrii Nakryiko)
+> >   [3]
+> > https://github.com/xdp-project/bpf-examples/blob/master/BTF-playground/
+>
+> [1]
+> https://lwn.net/Articles/836249/
+> [2]
+> https://www.spinics.net/lists/netdev/msg702049.html
+> [3]
+> https://reviews.llvm.org/D91489
+>
+> ________________________________
+> Intel Technology Poland sp. z o.o.
+> ul. S=C5=82owackiego 173 | 80-298 Gda=C5=84sk | S=C4=85d Rejonowy Gda=C5=
+=84sk P=C3=B3=C5=82noc | VII Wydzia=C5=82 Gospodarczy Krajowego Rejestru S=
+=C4=85dowego - KRS 101882 | NIP 957-07-52-316 | Kapita=C5=82 zak=C5=82adowy=
+ 200.000 PLN.
+>
+> Ta wiadomo=C5=9B=C4=87 wraz z za=C5=82=C4=85cznikami jest przeznaczona dl=
+a okre=C5=9Blonego adresata i mo=C5=BCe zawiera=C4=87 informacje poufne. W =
+razie przypadkowego otrzymania tej wiadomo=C5=9Bci, prosimy o powiadomienie=
+ nadawcy oraz trwa=C5=82e jej usuni=C4=99cie; jakiekolwiek przegl=C4=85dani=
+e lub rozpowszechnianie jest zabronione.
+> This e-mail and any attachments may contain confidential material for the=
+ sole use of the intended recipient(s). If you are not the intended recipie=
+nt, please contact the sender and delete all copies; any review or distribu=
+tion by others is strictly prohibited.
