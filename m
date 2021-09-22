@@ -2,159 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E6441532E
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 00:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D24415332
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 00:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238183AbhIVWIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 18:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232149AbhIVWIc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:08:32 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBB0C061574
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 15:07:01 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id q81so11449609qke.5
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 15:07:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qpiuh4moabl3hDxZd90zt9HC9tlVM8R1WSNN3W1rx1A=;
-        b=Ug+bhTQk1cScglK7PMVKks4SrywkkjVy7JG6oWv4Qb+FfTkhw+an3CoInfvqCXsSf5
-         A8G0SkDNQuF8vxvZK3XMBUK9LfFXYIV7j1S1mXGyTblJgkXpoOnAfZBdNwmufM/Zd2fK
-         +QVcMgeXlIyxdXltc8ZhEM5ZbEXSXKa3kAO4DKydNd+Y9zGq216BL1W95xkrQfY1gl6e
-         HKgKOX90PDJONuJ8z8jzXZG74pos5t81vmVxotAPrKwivJS01KXfBuHXWMpd/RafZs89
-         uF6MrPGF7UWgBs7OfO1ABFYPrCGSLxHiLHODYI2p/ii76ogvmViUoDvdcaF9hYgRkeVY
-         XuVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qpiuh4moabl3hDxZd90zt9HC9tlVM8R1WSNN3W1rx1A=;
-        b=YmHM2kUV8VC6MoT90U9+PIRM4eOU5aLYQaxuFyn4TvXJsJIn/dNEj7ixDGWYebIIEJ
-         460WFgaWnJuSaTpFRdeBNz63h0rWIRxcpz6A2b0SvKZhtwnVBblRP/3UN7GGEESyCP3s
-         qL122mvpL1LzbeSzg72oi4feG8yb1x7W9LdGBP/IKcg07pXDPOiSjYBX9ZT6meW1FEK6
-         bKb7Zkd4/Io+pnbYJAGxjzyQ+0Xs6oD7Bbx5D5XiI9Bn1iQbQXVP4kdEkUS5jd2BUfsl
-         /3RfbaUBns0KuCvjEXwgEcZgO+0pkPOFV++i+YNfIGdI/BqnBUPxLz1YTq5HOfTUZeP0
-         IMuQ==
-X-Gm-Message-State: AOAM530WtDFnVTaOZj1cWb9qfdwOY5+gvwJpt71R1xK5QBwaamKLRUIM
-        TuLO3t/Vj3GvOu09BZWPnh+JdwSl9Fv8KTjxX0Rl/Mje
-X-Google-Smtp-Source: ABdhPJwv3jCMD566K+qjOXLW7BrnFfiQupB4HETbaGFQhgCTbMXhhrRKfQFZHL9uOYaMEzIv+Y54PBUD0rIRaNS0xJk=
-X-Received: by 2002:a25:fc5:: with SMTP id 188mr1626771ybp.51.1632348420683;
- Wed, 22 Sep 2021 15:07:00 -0700 (PDT)
+        id S235650AbhIVWK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 18:10:26 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63000 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232918AbhIVWK0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Sep 2021 18:10:26 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18MKlfSr011293;
+        Wed, 22 Sep 2021 15:08:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=4ZrPXBM6ZCVj6n+CbZDWciuKSFkiZE6LIRsk8xST7OA=;
+ b=MF8wZqO0LCEaKcQXb0Zd7zqDOpib85yFz9d2lgO+2j+PaUApA+dwR41syAXqaQMxwt28
+ Uo0HQ9pa3fJJstk+JM++CQGZRyassFRHdUC+BWJSxKj14cb65t4Lv0aJeZPpVrOfccQF
+ FtPVHh0kHpmnRE5CxBxm39ww6r522y5tOks= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b7q54gfrm-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 22 Sep 2021 15:08:54 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 22 Sep 2021 15:08:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XFsnB189Fo8+pQL7z1vhRN9VHbhuNHnZFy+cs7bMEJHAan3DlqVDO+3FpJ+sKBilRMKevGh+PLh0JoolSSbr+KXnZFA137qR6FY9TwwU7mqNMtjrv0RKE8O3rcnjXIoMztRvp1ydfrxFFlNmvYRI22aVeEr07XbbcdUnQnH+W8uqYwTPbgfWJ9dShsS/MHHk+i12/LJEHm9L04qvvtH2BQcjuJWKelFBejLJMXCszXWE0CPX3NMxzUTpgFLwMYGyOaV2x3T9ZoIeFR7qVZk+FemTgBV4Jx1BDHq3BhbxfAyLJU+pCUVbzLl3VQwBFSkBS3iTsR8EE1f/rutjhfeslg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=4ZrPXBM6ZCVj6n+CbZDWciuKSFkiZE6LIRsk8xST7OA=;
+ b=GfTgELb0WAHPodH8Twlytmu+JTXtVWdooM3sWakuZECBX6ygjD1JIJ7fHgX1HIlRmM1Pyl6fWUaeAh4HqkxHCgIYlCsXuAn/jXdZcg/zBC2dWYGZe5IAwsmmVfXyA7Sw52Qtc2G7iFPuzmNC+2fBS0AFkSmjcJQspE2jv0aiAPJC+PqmqQeZmIyUHr0bxRqOjhygREbkmX6mkKf10e3hGOoEh9EeGmjQhR5plGJuQxnHR25v0dt5+RGOul2oSmavgdvN79WNzXjAjytOQItHxeYaPXFSZwsozi9WtGSgQy/Je74nJGUKpA+zzYF1PJV/e4qGEdcJfCOzp0Wvb6n6NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SA0PR15MB3901.namprd15.prod.outlook.com (2603:10b6:806:8f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Wed, 22 Sep
+ 2021 22:08:48 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 22:08:48 +0000
+Date:   Wed, 22 Sep 2021 15:08:44 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
+Message-ID: <20210922220844.ihzoapwytaz2o7nn@kafai-mbp.dhcp.thefacebook.com>
+References: <20210921210225.4095056-1-joannekoong@fb.com>
+ <20210921210225.4095056-2-joannekoong@fb.com>
+ <CAEf4BzZfeGGv+gBbfBJq5W8eQESgdqeNaByk-agOgMaB8BjQhA@mail.gmail.com>
+ <517a137d-66aa-8aa8-a064-fad8ae0c7fa8@fb.com>
+ <20210922193827.ypqlt3ube4cbbp5a@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYi3VXdMctKVFsDqG+_nDTSGooJ2sSkF1FuKkqDKqc82g@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYi3VXdMctKVFsDqG+_nDTSGooJ2sSkF1FuKkqDKqc82g@mail.gmail.com>
+X-ClientProxiedBy: MN2PR02CA0033.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::46) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c091:480::1:1a34) by MN2PR02CA0033.namprd02.prod.outlook.com (2603:10b6:208:fc::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Wed, 22 Sep 2021 22:08:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ef7444f6-10d5-4f1c-67fe-08d97e158d2b
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3901:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3901ED568A2BB7C79CB07B04D5A29@SA0PR15MB3901.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g1ZaP/A/pQgua36yXD2fP4zThc7lynwdWwvblfCeEtoWNnUYBbU9Hw8aZC34RrcdxNfk6lXA4amW5Xvm7pa9bCrzTvx9aCOauzcUmueiSDMdmrKRWC0F7t2GY7F1Sj5/wkqiaEN5/JS0rQX3/WpYe4m9qDvHt52Mft+I+BbhrlRCCO+d3ZTpJdCtbV4jONmPouErPkCh3zBsgfDz+iS7u8GNFVngc+9yP+AvxVBd4nynyHFhikWVnuWbgEGosOv5lvypc1HrEVUZntFVwbZE0qBynXtIbEQUiR/0VW42OK1KthxvaJicMT37101fsmoyoBslikwcatNXabc9Q8O9cw/WdaRC/4UomvXbEL+NTn2uS8gACLYfUrW5HT6LCchg7fljs7ewjcjB6qgqQvpGSz9rsx8C05e74f12Zz8ZT85pb6XQfnpkOr6MR8Uskin0tY5ZMtr4FG5ccckYfIoUQnUeMpyi3vHZdb4/nKgrAZK2ESAd2sGEIADjOejhG5go7hbePegW1AqgpxDmyobNbT5Ig5qneNIsN/d27XiCYg5qvd/yNeGiS1Qz921IGbbc5yigzgHm6H3w8zln82CpxUAnT2sROkFR2qOZf6w72wSNjSWx+AsYnl/ngUoqnxHaA9GMtRZ3NzncCv8LdS68nxgOJ+r+2LLGxTScL1yyp60iuKCkBur5grL81Dz7bkEpkaZosat8tOXQsCnJBb/J0eA7Ahsm6DWDGiRtyAdyDYM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(316002)(8936002)(66476007)(1076003)(186003)(5660300002)(6506007)(66946007)(38100700002)(66556008)(508600001)(6916009)(966005)(8676002)(83380400001)(9686003)(7696005)(52116002)(4326008)(2906002)(86362001)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?g9MvxwVosAqicBauLDTBRZkp8u2CzBVzyBrtwtk34+WZqUhXHn3/jVbfeLKD?=
+ =?us-ascii?Q?8X9nPB9XlmQXLgV+oRdDZKxjvFymBN/sU+c3ImiCiequi7nI4e1Z8VubTyPW?=
+ =?us-ascii?Q?BlatMs+O5qzZUnD9fhFyVIiqVMhYl69ruZaXfQ6jkYbB5fnyWlQGZxw6qJT3?=
+ =?us-ascii?Q?a4C/ezH94H84+p6n2t63e1HtC/xebdxa6cIG6XOPvJzbga1DD9dlabwwgetc?=
+ =?us-ascii?Q?YfwuuK5xreGYJgrXh/ltfhTtOIZKiPIQyF0XA1GWS3pgNP0aZq63QfBE8hXV?=
+ =?us-ascii?Q?F3jJpw2/yn0IzF3kI+QIifbqm0md0x+tIvNXbj4jG79BxOGNZZhO/nwUbuUm?=
+ =?us-ascii?Q?1C0ml8tdDIv5WhmN/mzDo8YV57pjrqkMx9nb0j31LbHWWxkpoA43I81etXfH?=
+ =?us-ascii?Q?GVICRWY/iCbO3VOkFBvpQpgKiddy5XVLbFGwjJjezOKYduwvtCCfdL6iyBwA?=
+ =?us-ascii?Q?driNtH5R8euL4ywKZR35DequC3uiLtGglilx6xkxnY5vxa0vsMpJvBg/380i?=
+ =?us-ascii?Q?/8XXFYcN5qNlA8x7s1cVMmi4uvEkzCfbzl+SaIIKqaUoma9gBBLrT8wfgDD9?=
+ =?us-ascii?Q?pxJe7Lc4KneI56cJ0S1kDVzr9RxEeTer2q0Twgto0wJukaEKH6Clv1XGYmdg?=
+ =?us-ascii?Q?n72GD9DVGoRPcxP64a0gJL2FPbkXWheKMVchTLSbmhG9zi6pP4ozN8990ukS?=
+ =?us-ascii?Q?M3Tj26B8AIxBpddJtkY/8kKvVcGfgB02ts1FY9Pgh/1OJ8BH81ckID+JA6t+?=
+ =?us-ascii?Q?xpGoeRvAm+g4MZdK6fkSWxxI+d9ULOt0bj45ucd+WH5bk3oq9XRDROsd8O+D?=
+ =?us-ascii?Q?e5pVgLQBikg3++8KzTDGNRZGAv8jkElncL/NYrdr6kuk/dDZGwhDRGA5dBqn?=
+ =?us-ascii?Q?GzZRvo2b60ZIyJCjqWRrvNhoeK3wfKyUtIlfEtQudsUD+DgcmKIUP80b014D?=
+ =?us-ascii?Q?9mZBCOUl2WIfT24n/VFeE6JQ1/pOhZPPtau36Bsi2C82xF6HMdM0zsMKHG4n?=
+ =?us-ascii?Q?iLR2GTgbB9nBaalmC92AmZFV9Fw2gHXAeRHwjkd6XjcwKxjEa6GIldx5RgLF?=
+ =?us-ascii?Q?fhaQszxwzampWsZ8EDJbppId+gwZTvokKT3YoXtlWTVMx9IfqYLpZuK5rliJ?=
+ =?us-ascii?Q?8k9+AhYbDB8vhQ+6wo20SAoX4xPrFXkQY99/bXBVtJ7uO8ab3cov3T/40jUB?=
+ =?us-ascii?Q?daZ2/5f4xoLslx7wDt2b/JRiZ8G2bMnN3DXto23v5IRq3kV7bBksuqWnqNmP?=
+ =?us-ascii?Q?cfBw8c+hTSZZx/720ZAyy4i4xeAnRQ2o2TrH94MxcdY+SmQT825tdVQ9l3LT?=
+ =?us-ascii?Q?Ts/b6NMmHL5tc1qZjm3P+SicD21UgO9umQfA3Hvh3VnUkA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef7444f6-10d5-4f1c-67fe-08d97e158d2b
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 22:08:47.9760
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x3kLr2KnmQPtcNKfN6l6LnKuoeGNtI4k7GdVkvbEV9fHi7KLTXNxO6i5csHAp8qU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3901
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: qR247sLn7A0O5Fi2Z8cvboNnRFrVVHMr
+X-Proofpoint-GUID: qR247sLn7A0O5Fi2Z8cvboNnRFrVVHMr
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210920234320.3312820-1-andrii@kernel.org> <20210920234320.3312820-5-andrii@kernel.org>
- <2b9e2861-44ad-89bc-a2e9-04623f319a2a@fb.com>
-In-Reply-To: <2b9e2861-44ad-89bc-a2e9-04623f319a2a@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 22 Sep 2021 15:06:49 -0700
-Message-ID: <CAEf4BzbS1=D678_N4jk-RtZgNkQE8NuLDbbojAjf-pXAt9MV+A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/9] libbpf: refactor internal sec_def
- handling to enable pluggability
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-22_08,2021-09-22_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 clxscore=1015 phishscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109220141
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 5:42 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->
-> On 9/20/21 7:43 PM, Andrii Nakryiko wrote:
-> > Refactor internals of libbpf to allow adding custom SEC() handling logic
-> > easily from outside of libbpf. To that effect, each SEC()-handling
-> > registration sets mandatory program type/expected attach type for
-> > a given prefix and can provide three callbacks called at different
-> > points of BPF program lifetime:
-> >
-> >   - init callback for right after bpf_program is initialized and
-> >   prog_type/expected_attach_type is set. This happens during
-> >   bpf_object__open() step, close to the very end of constructing
-> >   bpf_object, so all the libbpf APIs for querying and updating
-> >   bpf_program properties should be available;
->
-> Do you have a usecase in mind that would set this? USDT?
+On Wed, Sep 22, 2021 at 01:52:12PM -0700, Andrii Nakryiko wrote:
+> > Agree that a generic hash helper is in general useful.  It may be
+> > useful in hashing the skb also.  The bpf prog only implementation could
+> > have more flexibility in configuring roundup to pow2 or not, how to hash,
+> > how many hashes, nr of bits ...etc.  In the mean time, the bpf prog and
+> 
+> Exactly. If I know better how many bits I need, I'll have to reverse
+> engineer kernel's heuristic to provide such max_entries values to
+> arrive at the desired amount of memory that Bloom filter will be
+> using.
+Good point. I don't think it needs to guess.  The formula is stable
+and publicly known also.  The formula comment from kernel/bpf/bloom_filter.c
+should be moved to the include/uapi/linux/bpf.h.
 
-Don't have specific use case in mind, but this callback gives the
-fully constructed `struct bpf_program` access to those custom
-callbacks, so if there is any additional book keeping/feature
-checking/whatever that needs to be done, this will be the earliest
-point where some library/framework will discover the program. Felt
-like an important addition, even if libbpf internally has no need for
-it (because libbpf can always access struct bpf_program through its
-own means).
+> > user space need to co-ordinate more and worry about more things,
+> > e.g. how to reuse a bloom filter with different nr_hashes,
+> > nr_bits, handle synchronization...etc.
+> 
+> Please see my RFC ([0]). I don't think there is much to coordinate. It
+> could be purely BPF-side code, or BPF + user-space initialization
+> code, depending on the need. It's a simple and beautiful algorithm,
+> which BPF is powerful enough to implement customly and easily.
+> 
+>   [0] https://lore.kernel.org/bpf/20210922203224.912809-1-andrii@kernel.org/T/#t
+In practice, the bloom filter will be populated only once by the userspace.
 
->
-> >   - pre-load callback is called right before BPF_PROG_LOAD command is
-> >   called in the kernel. This callbacks has ability to set both
-> >   bpf_program properties, as well as program load attributes, overriding
-> >   and augmenting the standard libbpf handling of them;
->
-> [...]
->
-> > @@ -6094,6 +6100,44 @@ static int bpf_object__sanitize_prog(struct bpf_object *obj, struct bpf_program
-> >       return 0;
-> >  }
+The future update will be done by map-in-map to replace the whole bloom filter.
+May be with more max_entries with more nr_hashes.  May be fewer
+max_entries with fewer nr_hashes.
+
+Currently, the continuous running bpf prog using this bloom filter does
+not need to worry about any change in the newer bloom filter
+configure/setup.
+
+I wonder how that may look like in the custom bpf bloom filter in the
+bench prog for the map-in-map usage.
+
+> 
 > >
-> > +static int libbpf_find_attach_btf_id(struct bpf_program *prog, int *btf_obj_fd, int *btf_type_id);
-> > +
-> > +/* this is called as prog->sec_def->preload_fn for libbpf-supported sec_defs */
-> > +static int libbpf_preload_prog(struct bpf_program *prog,
-> > +                            struct bpf_prog_load_params *attr, long cookie)
-> > +{
-> > +     /* old kernels might not support specifying expected_attach_type */
-> > +     if (prog->sec_def->is_exp_attach_type_optional &&
-> > +         !kernel_supports(prog->obj, FEAT_EXP_ATTACH_TYPE))
-> > +             attr->expected_attach_type = 0;
-> > +
-> > +     if (prog->sec_def->is_sleepable)
-> > +             attr->prog_flags |= BPF_F_SLEEPABLE;
-> > +
-> > +     if ((prog->type == BPF_PROG_TYPE_TRACING ||
-> > +          prog->type == BPF_PROG_TYPE_LSM ||
-> > +          prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
-> > +             int btf_obj_fd = 0, btf_type_id = 0, err;
-> > +
-> > +             err = libbpf_find_attach_btf_id(prog, &btf_obj_fd, &btf_type_id);
-> > +             if (err)
-> > +                     return err;
-> > +
-> > +             /* cache resolved BTF FD and BTF type ID in the prog */
-> > +             prog->attach_btf_obj_fd = btf_obj_fd;
-> > +             prog->attach_btf_id = btf_type_id;
-> > +
-> > +             /* but by now libbpf common logic is not utilizing
-> > +              * prog->atach_btf_obj_fd/prog->attach_btf_id anymore because
-> > +              * this callback is called after attrs were populated by
-> > +              * libbpf, so this callback has to update attr explicitly here
-> > +              */
-> > +             attr->attach_btf_obj_fd = btf_obj_fd;
-> > +             attr->attach_btf_id = btf_type_id;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> We talked on VC about some general approach questions I had here, will
-> summarize. Discussion touched on changes in patches 5 and 6 as well. I thought
-> the pulling of these chunks into libbpf_preload_prog made sense, but wondered
-> whether some of this prog-type specific functionality would also be useful to
-> "average" custom sec_def writer even if it's not considered 'standard libbpf
-> handling', e.g. custom sec_def writer whose SEC produces a PROG_TYPE_TRACING
-> is likely to want the find_attach_btf_id niceness as well. So perhaps something
-> like the ability to chain the callbacks so that sec_def writer can use libbpf's
-> would be useful.
->
-> Your response was that you explicitly wanted to avoid doing this because this
-> would result in libbpf's callbacks becoming part of the API and stability
-> requirements following from that. Furthermore, you don't anticipate libbpf's
-> preload callback becoming very complicated and expect that the average
-> custom sec_def writer will be familiar enough with libbpf to be able to pull
-> out whatever they need.
->
-> Response made sense to me, LGTM
->
-> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+> > It is useful to have a default implementation in the kernel
+> > for some useful maps like this one that works for most
+> > common cases and the bpf user can just use it as get-and-go
+> > like all other common bpf maps do.
+> 
+> I disagree with the premise that Bloom filter is a common and
+> generally useful data structure, tbh. It has its nice niche
+> applications, but its semantics isn't applicable generally, which is
+> why I hesitate to claim that this should live in kernel.
+I don't agree the application is nice niche.  I have encountered this
+many times when bumping into networking usecase discussion and not
+necessary limited to security usage also.  Yes, it is not a link-list
+like data structure but its usage is very common.
