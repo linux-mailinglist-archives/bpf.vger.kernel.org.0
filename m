@@ -2,129 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB4841439C
-	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 10:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6654143F3
+	for <lists+bpf@lfdr.de>; Wed, 22 Sep 2021 10:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhIVIWd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 04:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234004AbhIVIW2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:22:28 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDF0C06175F
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 01:20:58 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id n71so2406326iod.0
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 01:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vKG1/AaxqP8LgmIVBGev2T1cmDt5QBf1NjWmmXtVF6A=;
-        b=VT8a+fZ8vP6BxFU02v4n1naeqrZ3wy9/Y4z4kiAqSZRXrxlgS8vVz3AYNgRFDTsEh2
-         4vltZJDWDw/u1xgUlwTrczbuDMWAjnTqn/jpDPKleeLRcZTY1DTMw+BJAsy4jRNvy94Y
-         hraIrilPvR1oD43s/zHgHnP3ABhf6I9mBmgBI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vKG1/AaxqP8LgmIVBGev2T1cmDt5QBf1NjWmmXtVF6A=;
-        b=4kGqPVsi8c5Up6IE/i1L3CKbNEnsyoL31TC1jvJ7rVQv/BLpFQP0jShIxlxg+EY/Gr
-         UOxqFRLiSEN7XBagR9rBuaZQZGN/UNpKTYU7nFKO9hBsDhRRVz8EWl+lNIGN2yoBzL2O
-         oZ7dyIhUzKwxf6jxJEfumYslK++DWY45LtYiCsPoC11eKhnMxS/aWFYj3JjKOQ70ZJ8F
-         ekevOPsdVikJ31oMeLbosVeRnODcW2sBL9wbld4jdxtAHXEPY4iC/5Iyvz5X0zADvGZf
-         tZpi3qeBUkTGEoG6i9v8G/crsv0QlYePnFCgwzeCalJe9NJrmwumY+rhpDeVqSaNzqyE
-         lVrg==
-X-Gm-Message-State: AOAM532QYCu3fwpQJQ43uv0hZfPWxUYMVZOa/FgXFqgYG1HiI8pp0BNQ
-        fk+ZaL3TG9edQukZ/J85yRNj2rzlRyoGJhv4jD8yjQ==
-X-Google-Smtp-Source: ABdhPJyqZmJLf9Nt3jE558nZ3tIQgo+mCbaDKVO3M5NtcC7pW9QslZVwXDhqVh/5Rr5SbbgiwcwEVSqJOx74gyhlozk=
-X-Received: by 2002:a6b:f908:: with SMTP id j8mr3522864iog.22.1632298857908;
- Wed, 22 Sep 2021 01:20:57 -0700 (PDT)
+        id S233956AbhIVIpP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 04:45:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233349AbhIVIpP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:45:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BCE46128E;
+        Wed, 22 Sep 2021 08:43:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632300225;
+        bh=wIX4Nyvh3NhY3C+0A3fE0uyB9IBDeFSOm7OFmITz9tI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CM4M2XN10RksxBCCApODxtQ2IPRq2c/vxmCmZV3YOE/940DtSnIcLvyKBKPrf6h5S
+         WMGmmNVyRc3N743l6mHHMjdXZ1q5CFPbtTdR8a6nilWKjCj8QELFY3fFO8E7VDd/A4
+         hmThC2566Pbe7I0An0kwPdtYEjjw1ehdvW0+WyWY=
+Date:   Wed, 22 Sep 2021 10:43:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] get_abi.pl: Check for missing symbols at the ABI
+ specs
+Message-ID: <YUrsvgf3JXUPQ2Vo@kroah.com>
+References: <cover.1631957565.git.mchehab+huawei@kernel.org>
+ <YUoN2m/OYHVLPrSl@kroah.com>
+ <20210921201633.5e6128a0@coco.lan>
+ <YUrCjhEYGXWU6M13@kroah.com>
+ <YUrLqdCQyGaCc1XJ@kroah.com>
+ <20210922093609.34d7bbca@coco.lan>
+ <YUrlFjotiFTYKXOV@kroah.com>
 MIME-Version: 1.0
-References: <CACAyw9_TjUMu1s46X3jE3ubcszAW3yoj39ADADOFseL0x96MeQ@mail.gmail.com>
- <CAADnVQKxmNDET97wfi-k7L_ot9WXDX7CnqPNe=wK=rXpQJDcyg@mail.gmail.com>
- <CACAyw9_1s2ZCBWTHvT-rGufW+-m3F722GvhHb_rSR3mEr2gfGA@mail.gmail.com>
- <CABEBQi=WfdJ-h+5+fgFXOptDWSk2Oe_V85gR90G2V+PQh9ME0A@mail.gmail.com> <CAADnVQKX+ngPV=ZD9+Mm-odr=g-Neqm21TtxZ_rHpt+ybs-8RQ@mail.gmail.com>
-In-Reply-To: <CAADnVQKX+ngPV=ZD9+Mm-odr=g-Neqm21TtxZ_rHpt+ybs-8RQ@mail.gmail.com>
-From:   Frank Hofmann <fhofmann@cloudflare.com>
-Date:   Wed, 22 Sep 2021 09:20:47 +0100
-Message-ID: <CABEBQi=aZNfOdPH1999sfpD_dvSiOnhnudH3d=XEuQ=0q_bBCA@mail.gmail.com>
-Subject: Re: bpf_jit_limit close shave
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUrlFjotiFTYKXOV@kroah.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 8:59 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Sep 21, 2021 at 12:11 PM Frank Hofmann <fhofmann@cloudflare.com> wrote:
-> >
-> > Wouldn't that (updating the variable only for unpriv use) also make the leak impossible to notice that we ran into ?
->
-> impossible?
-> That jit limit is not there on older kernels and doesn't apply to root.
-> How would you notice such a kernel bug in such conditions?
+On Wed, Sep 22, 2021 at 10:11:02AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 22, 2021 at 09:36:09AM +0200, Mauro Carvalho Chehab wrote:
+> > It sounds it took quite a while handling iommu cap, which sounds weird, as
+> > it should be looking just 3 What expressions:
+> > 
+> > 	[07:43:06] What: /sys/class/iommu/.*/amd\-iommu/cap
+> > 	[07:43:06] What: /sys/class/iommu/.*/intel\-iommu/cap
+> > 	[07:43:06] What: /sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap
+> > 
+> > Maybe there was a memory starvation while running the script, causing
+> > swaps. Still, it is weird that it would happen there, as the hashes
+> > and arrays used at the script are all allocated before it starts the
+> > search logic. Here, the allocation part takes ~2 seconds.
+> 
+> No memory starvation here, this thing is a beast:
+> 	$ free -h
+> 	               total        used        free      shared  buff/cache   available
+> 	Mem:           251Gi        36Gi        13Gi       402Mi       202Gi       212Gi
+> 	Swap:          4.0Gi       182Mi       3.8Gi
+> 
+> 	$ nproc
+> 	64
+> 
+> 
+> > At least on my Dell Precision 5820 (12 cpu threads), the amount of memory it
+> > uses is not huge:
+> > 
+> >     $ /usr/bin/time -v ./scripts/get_abi.pl undefined >/dev/null
+> > 	Command being timed: "./scripts/get_abi.pl undefined"
+> > 	User time (seconds): 12.68
+> > 	System time (seconds): 1.29
+> > 	Percent of CPU this job got: 99%
+> > 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:13.98
+> > 	Average shared text size (kbytes): 0
+> > 	Average unshared data size (kbytes): 0
+> > 	Average stack size (kbytes): 0
+> > 	Average total size (kbytes): 0
+> > 	Maximum resident set size (kbytes): 212608
+> > 	Average resident set size (kbytes): 0
+> > 	Major (requiring I/O) page faults: 0
+> > 	Minor (reclaiming a frame) page faults: 52003
+> > 	Voluntary context switches: 1
+> > 	Involuntary context switches: 56
+> > 	Swaps: 0
+> > 	File system inputs: 0
+> > 	File system outputs: 0
+> > 	Socket messages sent: 0
+> > 	Socket messages received: 0
+> > 	Signals delivered: 0
+> > 	Page size (bytes): 4096
+> > 	Exit status: 0
+> > 
+> > Unfortunately, I don't have any amd-based machine here, but I'll
+> > try to run it later on a big arm server and see how it behaves.
+> 
+> I'll run that and get back to you in 30 minutes :)
 
-I'm talking about bpf_jit_current - it's an "overall gauge" for
-allocation, priv and unpriv. I understood Lorenz' note as "change it
-so it only tracks unpriv BPF mem usage - since we'll never act on
-privileged usage anyway"
+$ /usr/bin/time -v ./scripts/get_abi.pl undefined > /dev/null
+	Command being timed: "./scripts/get_abi.pl undefined"
+	User time (seconds): 1756.94
+	System time (seconds): 0.76
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 29:18.94
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 228116
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 55862
+	Voluntary context switches: 1
+	Involuntary context switches: 17205
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
 
-FrankH.
-
->
-> > (we have something near to a simple reproducer for https://www.spinics.net/lists/kernel/msg4029472.html ... need to extract the relevant parts of an app of ours, will update separately when there)
-> >
-> > FrankH.
-> >
-> > On Tue, Sep 21, 2021 at 4:52 PM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >>
-> >> On Tue, 21 Sept 2021 at 15:34, Alexei Starovoitov
-> >> <alexei.starovoitov@gmail.com> wrote:
-> >> >
-> >> > On Tue, Sep 21, 2021 at 4:50 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >> > >
-> >> > > Does it make sense to include !capable(CAP_BPF) in the check?
-> >> >
-> >> > Good point. Makes sense to add CAP_BPF there.
-> >> > Taking down critical networking infrastructure because of this limit
-> >> > that supposed to apply to unpriv users only is scary indeed.
-> >>
-> >> Ok, I'll send a patch. Can I add a Fixes: 2c78ee898d8f ("bpf:
-> >> Implement CAP_BPF")?
-> >>
-> >> Another thought: move the check for bpf_capable before the
-> >> atomic_long_add_return? This means we only track JIT allocations from
-> >> unprivileged users. As it stands a privileged user can easily "lock
-> >> out" unprivileged users, which on our set up is a real concern. We
-> >> have several socket filters / SO_REUSEPORT programs which are
-> >> critical, and also use lots of XDP from privileged processes as you
-> >> know.
-> >>
-> >> >
-> >> > > This limit reminds me a bit of the memlock issue, where a global limit
-> >> > > causes coupling between independent systems / processes. Can we remove
-> >> > > the limit in favour of something more fine grained?
-> >> >
-> >> > Right. Unfortunately memcg doesn't distinguish kernel module
-> >> > memory vs any other memory. All types of memory are memory.
-> >> > Regardless of whether its type is per-cpu, bpf map memory, bpf jit memory, etc.
-> >> > That's the main reason for the independent knob for JITed memory.
-> >> > Since it's a bit special. It's a crude knob. Certainly not perfect.
-> >>
-> >> I'm missing context, how is JIT memory different from these other kinds of code?
-> >>
-> >> Lorenz
-> >>
-> >> --
-> >> Lorenz Bauer  |  Systems Engineer
-> >> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-> >>
-> >> www.cloudflare.com
