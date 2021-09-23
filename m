@@ -2,109 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4879E415AB6
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 11:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C0A415C02
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 12:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240130AbhIWJS2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 05:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        id S240410AbhIWKfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 06:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240127AbhIWJS2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:18:28 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A3DC061756
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 02:16:56 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id t10so24050948lfd.8
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 02:16:56 -0700 (PDT)
+        with ESMTP id S240387AbhIWKfQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Sep 2021 06:35:16 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D035DC061574
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 03:33:44 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id e15so24655363lfr.10
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 03:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N3z3fvFblHbwGyNeEifaiutquQQndab42p3+bEZbPaY=;
-        b=ehYZ35FbL06/k33gaQlumer+Y2K7w4b/gsgRH+nLaLoAJ+RfIvIxoeqGixJ5ddCyJV
-         EFArqVGJrVUMgBDanVzNwroPXrRRqJ8z50QkBda1aV4lsV2q71o3Go11h8qznW7MgGmW
-         JTyx2v03oqMz/jpxDvVZunxlkTv8TBwgFM/v8=
+         :cc:content-transfer-encoding;
+        bh=5ot6PH+gktYEISzCciV76Q6e/fmUSTf+WP29K4ilp2Q=;
+        b=SUPsR6hhiJ072d+8E6Yzl6i5Ym+/AhcFu5yoBoSFix8pOFBlaOBKX1XqI445qNWH6F
+         53hR4k3ABfxwfTYeK7LNwPz+XruldNXOWy4U64WSQroTx/hvqIQm66EQXtaKqm54dYHy
+         JvPqW9/pCy3Z63YzhUCG0ClWaKTYsigfAESzo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N3z3fvFblHbwGyNeEifaiutquQQndab42p3+bEZbPaY=;
-        b=UL7/EToVNBQIJMXYB46+rpVteTnaEUZUTwNbX/JJxVEwKXEZnrtO83pHkYfc28BbxS
-         ZYg1dpk2s3bsw5hHH4VMRX+CsyGw0GESKiTPxt6dbKbS8Sgq+FRo/ZU4Gl4fQLJ40oJB
-         asqCeb/AcQ+O8qqExlTEY7fHq8Pct3yXTxYBjghuuZ+JgEHcbtW62j9B+XpwvUiVFuWY
-         VTnfDkHbGKYDQas/Cr/vBsBRZ4qJe+X5sr+XG1lN8X7SaSOagIVzEppPKhy2787VjMk3
-         pMr2ZT4uv2M6e5UQ9h369TDQzKOY4oXNISgM13B0bSMYvAEbPzIjxYq+xv7stgH7L98B
-         xYLA==
-X-Gm-Message-State: AOAM531uNqBEGKPZTcEpb7GeYJlp0CVf+kkl3i7FhbYby2s/8f0q08ld
-        /TOFkfed7YmqO9+5nVR4vFFi1qWfFLYeEAL8fqLqEA==
-X-Google-Smtp-Source: ABdhPJzqPeVApolQp+pqhbBjiqtmMN89VCPBxfINWN/SFzs8PHHKJz9EX1giY+md8Rj7nAR5+bkAHWWROOurBDH6bI0=
-X-Received: by 2002:a2e:7c0b:: with SMTP id x11mr3973430ljc.298.1632388614819;
- Thu, 23 Sep 2021 02:16:54 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5ot6PH+gktYEISzCciV76Q6e/fmUSTf+WP29K4ilp2Q=;
+        b=F1PhI95tOMBvxMP9gfx53uKUyn6nU3UM9Gq1wtV+uXTTN2bbWOSCN7JSC1S8+SjJo3
+         mWjTYKEZ9CWKY0+WN7/OnEhU/Run2gkP62zdx+6qccxZ1x1bDZ7afQRlQ9/nKEShgu9P
+         fY66pTmGZ7cdMz8fgmEnh2xjnpQOB2floXvBmKW54/gsV5yAkfLpEsJHrIAFkxVCH1e5
+         tmD7G+jdAb8wLkKxvzF1t7a8QJd75cJk15uZm/PnowikX9cbMaWYaUD16LcrJ7Cynj69
+         1dIlE1Nt0QpUNl3tVbSgBU8UfKpEMg+0daXLYiHolxYm6TH3iY4qNtMRVaNcnz1YKVh2
+         C+tQ==
+X-Gm-Message-State: AOAM530Ljhd8nd50YDhkD8pQvBB3Q5gcLWaUqgAz8jNmKhvG4TgzMNcA
+        hy4BI8XaOIFpN8Rrw2lE7tqkli0HLAdkXswdTwTmCg==
+X-Google-Smtp-Source: ABdhPJxnppm8F+8QGu58fQbjkPrXIDtcj5GlfwdtYGyad57i8DELRCX5sYZnmg/WU/Okl1vISllFrZU+uo7ZkluteN8=
+X-Received: by 2002:a2e:85cb:: with SMTP id h11mr4528997ljj.111.1632393223115;
+ Thu, 23 Sep 2021 03:33:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACAyw9_TjUMu1s46X3jE3ubcszAW3yoj39ADADOFseL0x96MeQ@mail.gmail.com>
- <CAADnVQKxmNDET97wfi-k7L_ot9WXDX7CnqPNe=wK=rXpQJDcyg@mail.gmail.com>
- <CACAyw9_1s2ZCBWTHvT-rGufW+-m3F722GvhHb_rSR3mEr2gfGA@mail.gmail.com>
- <CABEBQi=WfdJ-h+5+fgFXOptDWSk2Oe_V85gR90G2V+PQh9ME0A@mail.gmail.com>
- <CAADnVQKX+ngPV=ZD9+Mm-odr=g-Neqm21TtxZ_rHpt+ybs-8RQ@mail.gmail.com>
- <CABEBQi=aZNfOdPH1999sfpD_dvSiOnhnudH3d=XEuQ=0q_bBCA@mail.gmail.com>
- <CACAyw99oxFvPFCvN5HovoOnJxdKzqbRvfSMCm0Ds-jh3A4XT5Q@mail.gmail.com> <97d6e8ab-7a02-f317-81ed-6f45d26ad3c6@iogearbox.net>
-In-Reply-To: <97d6e8ab-7a02-f317-81ed-6f45d26ad3c6@iogearbox.net>
+References: <87o88l3oc4.fsf@toke.dk>
+In-Reply-To: <87o88l3oc4.fsf@toke.dk>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 23 Sep 2021 10:16:43 +0100
-Message-ID: <CACAyw9-Ha9RQC_VijJAE02mCX3E09vmDji__Ts8YrsSH4cGiyg@mail.gmail.com>
-Subject: Re: bpf_jit_limit close shave
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Frank Hofmann <fhofmann@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
+Date:   Thu, 23 Sep 2021 11:33:31 +0100
+Message-ID: <CACAyw99+KvsJGeqNE09VWHrZk9wKbQTg3h1h2LRmJADD5En2nQ@mail.gmail.com>
+Subject: Re: Redux: Backwards compatibility for XDP multi-buff
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Lorenzo Bianconi <lbianconi@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 22 Sept 2021 at 22:51, Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Tue, 21 Sept 2021 at 17:06, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> On 9/22/21 1:07 PM, Lorenz Bauer wrote:
-> > On Wed, 22 Sept 2021 at 09:20, Frank Hofmann <fhofmann@cloudflare.com> wrote:
-> >>
-> >>> That jit limit is not there on older kernels and doesn't apply to root.
-> >>> How would you notice such a kernel bug in such conditions?
-> >>
-> >> I'm talking about bpf_jit_current - it's an "overall gauge" for
-> >> allocation, priv and unpriv. I understood Lorenz' note as "change it
-> >> so it only tracks unpriv BPF mem usage - since we'll never act on
-> >> privileged usage anyway"
-> >
-> > Yes, that was my suggestion indeed. What Frank is saying: it looks
-> > like our leak of JIT memory is due to a privileged process. By
-> > exempting privileged processes it would be even harder to notice /
-> > debug. That's true, and brings me back to my question: what is
-> > different about JIT memory that we can't do a better limit?
+> Hi Lorenz (Cc. the other people who participated in today's discussion)
 >
-> The knob with the limit was basically added back then as a band-aid to avoid
-> unprivileged BPF JIT (cBPF or eBPF) eating up all the module memory to the
-> point where we cannot even load kernel modules anymore. Given that memory
-> resource is global, we added the bpf_jit_limit / bpf_jit_current acounting
-> as a fix/heuristic via ede95a63b5e8 ("bpf: add bpf_jit_limit knob to restrict
-> unpriv allocations"). If we wouldn't account for root, how would such detection
-> proposal work otherwise to block unprivileged? I don't think it's feasible to
-> only account the latter given privileged progs might have occupied most of the
-> budget already.
+> Following our discussion at the LPC session today, I dug up my previous
+> summary of the issue and some possible solutions[0]. Seems no on
+> actually replied last time, which is why we went with the "do nothing"
+> approach, I suppose. I'm including the full text of the original email
+> below; please take a look, and let's see if we can converge on a
+> consensus here.
 
-Thanks, that was the part I was missing. JITed BPF programs are
-treated like modules (why?). There is a limited space reserved for
-kernel modules.
+Hi Toke,
 
-How does the knob solve the "can't load a new module" problem if our
-suggestion / preference is to steer people towards CAP_BPF anyways
-(since unpriv BPF is trouble)? Over time all BPF will be privileged
-and we're in the same mess again?
+Thanks for looping me in again. A bit of context what XDP at
+Cloudflare looks like:
+
+* We have a chain of XDP programs attached to a real network device.
+This implements DDoS protection and L4 load balancing. This is
+maintained by the team I am on.
+* We have hundreds of network namespaces with veth that have XDP
+attached to them. Traffic is routed from the root namespace into
+these. This is maintained by the Magic Transit team, see this talk
+from last year's LPC [1]
+I'll try to summarise what I've picked up from the thread and add my
+own 2c. Options being considered:
+
+1. Make sure mb-aware and mb-unaware programs don't mix.
+
+This could either be in the form of a sysctl or a dynamic property
+similar to a refcount. We'd need to discern mb-aware from mb-unaware
+somehow, most easily via a new program type. This means recompiling
+existing programs (but then we expect that to be necessary anyways).
+We'd also have to be able to indicate "mb-awareness" for freplace
+programs.
+
+The implementation complexity seems OK, but operator UX is not good:
+it's not possible to slowly migrate a system to mb-awareness, it has
+to happen in one fell swoop. This would be really problematic for us,
+since we already have multiple teams writing and deploying XDP
+independently of each other. This number is only going to grow. It
+seems there will also be trickiness around redirecting into different
+devices? Not something we do today, but it's kind of an obvious
+optimization to start redirecting into network namespaces from XDP
+instead of relying on routing.
+
+2. Add a compatibility shim for mb-unaware programs receiving an mb frame.
+
+We'd still need a way to indicate "MB-OK", but it could be a piece of
+metadata on a bpf_prog. Whatever code dispatches to an XDP program
+would have to include a prologue that linearises the xdp_buff if
+necessary which implies allocating memory. I don't know how hard it is
+to implement this. There is also the question of freplace: do we
+extend linearising to them, or do they have to support MB?
+
+You raised an interesting point: couldn't we hit programs that can't
+handle data_end - data being above a certain length? I think we (=3D
+Cloudflare) actually have one of those, since we in some cases need to
+traverse the entire buffer to calculate a checksum (we encapsulate
+UDPv4 in IPv6, don't ask). Turns out it's actually really hard to
+calculate the checksum on a variable length packet in BPF so we've had
+to introduce limits. However, this case isn't too important: we made
+this choice consciously, knowing that MTU changes would break it.
+
+Other than that I like this option a lot: mb-aware and mb-unaware
+programs can co-exist, at the cost of performance. This allows
+gradually migrating to our stack so that it can handle jumbo frames.
+
+3. Make non-linearity invisible to the BPF program
+
+Something I've wished for often is that I didn't have to deal with
+nonlinearity at all, based on my experience with cls_redirect [2].
+It's really hard to write a BPF program that handles non-linear skb,
+especially when you have to call adjust_head, etc. which invalidates
+packet buffers. This is probably impossible, but maybe someone has a
+crazy idea? :)
 
 Lorenz
 
--- 
+1: https://youtu.be/UkvxPyIJAko?t=3D10057
+2: https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/b=
+pf/progs/test_cls_redirect.c
+
+--=20
 Lorenz Bauer  |  Systems Engineer
 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
