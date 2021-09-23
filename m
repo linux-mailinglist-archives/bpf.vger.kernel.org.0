@@ -2,147 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C0A415C02
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 12:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F51C415C1C
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 12:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240410AbhIWKfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 06:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240387AbhIWKfQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:35:16 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D035DC061574
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 03:33:44 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id e15so24655363lfr.10
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 03:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5ot6PH+gktYEISzCciV76Q6e/fmUSTf+WP29K4ilp2Q=;
-        b=SUPsR6hhiJ072d+8E6Yzl6i5Ym+/AhcFu5yoBoSFix8pOFBlaOBKX1XqI445qNWH6F
-         53hR4k3ABfxwfTYeK7LNwPz+XruldNXOWy4U64WSQroTx/hvqIQm66EQXtaKqm54dYHy
-         JvPqW9/pCy3Z63YzhUCG0ClWaKTYsigfAESzo=
+        id S231392AbhIWKm6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 06:42:58 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:45885 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240314AbhIWKm6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Sep 2021 06:42:58 -0400
+Received: by mail-wr1-f52.google.com with SMTP id d21so15720513wra.12
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 03:41:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5ot6PH+gktYEISzCciV76Q6e/fmUSTf+WP29K4ilp2Q=;
-        b=F1PhI95tOMBvxMP9gfx53uKUyn6nU3UM9Gq1wtV+uXTTN2bbWOSCN7JSC1S8+SjJo3
-         mWjTYKEZ9CWKY0+WN7/OnEhU/Run2gkP62zdx+6qccxZ1x1bDZ7afQRlQ9/nKEShgu9P
-         fY66pTmGZ7cdMz8fgmEnh2xjnpQOB2floXvBmKW54/gsV5yAkfLpEsJHrIAFkxVCH1e5
-         tmD7G+jdAb8wLkKxvzF1t7a8QJd75cJk15uZm/PnowikX9cbMaWYaUD16LcrJ7Cynj69
-         1dIlE1Nt0QpUNl3tVbSgBU8UfKpEMg+0daXLYiHolxYm6TH3iY4qNtMRVaNcnz1YKVh2
-         C+tQ==
-X-Gm-Message-State: AOAM530Ljhd8nd50YDhkD8pQvBB3Q5gcLWaUqgAz8jNmKhvG4TgzMNcA
-        hy4BI8XaOIFpN8Rrw2lE7tqkli0HLAdkXswdTwTmCg==
-X-Google-Smtp-Source: ABdhPJxnppm8F+8QGu58fQbjkPrXIDtcj5GlfwdtYGyad57i8DELRCX5sYZnmg/WU/Okl1vISllFrZU+uo7ZkluteN8=
-X-Received: by 2002:a2e:85cb:: with SMTP id h11mr4528997ljj.111.1632393223115;
- Thu, 23 Sep 2021 03:33:43 -0700 (PDT)
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version;
+        bh=sQG19A41x7JPrHAz0h7xfaVhm2EGEKQxcIpIk6kWTdI=;
+        b=3wVr/bY3EAwZXhq8qdmm+CKecDwzojP6GgpX39hn8FqLBnsHIY9nqq+nmP4zUzSFYD
+         61m0u2+fGmO6jM6/Vx4ubtW75nblNDtarzXQ3g6Q3t61fDF5OTAkv12s8D1jrY3FcBWm
+         BhR0+i7u6/LHGjfaRo8fKne71v6mmV5iZDT2VsinzkTf+/TyGCuAs25/3eOnOab4uhNf
+         OB6bguc2bELbTahKzuXRkS4QbTEv6knCZO8HxHnofIM1a53R/SrmQY5xuEF2aicx6+vG
+         irfqGD3XsVJnYyayVHKfY20s/lbowzU4zVCPM1b3gGkitqUJkiF68R+LlzvmWs6zEbeT
+         /KwA==
+X-Gm-Message-State: AOAM532QSJ3baJD2v+yrr8/Pd8nhPbHPw0R3dC0vd4rU560uyyLhAnpC
+        TEnE3Kx9Ry69j7rDaz3G+FC65rm1x5I=
+X-Google-Smtp-Source: ABdhPJyfUOWQ6zQ3phVJ1CxmGojbjoskphLMVj/UEU9aI5OquL/AFS2MlhoDvphERL3l8xuv8ytCww==
+X-Received: by 2002:a7b:cc96:: with SMTP id p22mr15247597wma.67.1632393685906;
+        Thu, 23 Sep 2021 03:41:25 -0700 (PDT)
+Received: from localhost ([2a01:4b00:f41a:3600:df86:cebc:8870:2184])
+        by smtp.gmail.com with ESMTPSA id y8sm4869374wrh.44.2021.09.23.03.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 03:41:24 -0700 (PDT)
+Message-ID: <49c54bf3f4a95562592575062058f069654fd253.camel@debian.org>
+Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
+ BSD-2-Clause
+From:   Luca Boccassi <bluca@debian.org>
+To:     bpf@vger.kernel.org
+Cc:     bjorn@kernel.org, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, daniel@zonque.org, joe@ovn.org, jbacik@fb.com
+Date:   Thu, 23 Sep 2021 11:41:20 +0100
+In-Reply-To: <20210923000540.47344-1-luca.boccassi@gmail.com>
+References: <20210923000540.47344-1-luca.boccassi@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-EwuGTsVw/o5OifbOfDbW"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-References: <87o88l3oc4.fsf@toke.dk>
-In-Reply-To: <87o88l3oc4.fsf@toke.dk>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 23 Sep 2021 11:33:31 +0100
-Message-ID: <CACAyw99+KvsJGeqNE09VWHrZk9wKbQTg3h1h2LRmJADD5En2nQ@mail.gmail.com>
-Subject: Re: Redux: Backwards compatibility for XDP multi-buff
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Lorenzo Bianconi <lbianconi@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 17:06, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> Hi Lorenz (Cc. the other people who participated in today's discussion)
->
-> Following our discussion at the LPC session today, I dug up my previous
-> summary of the issue and some possible solutions[0]. Seems no on
-> actually replied last time, which is why we went with the "do nothing"
-> approach, I suppose. I'm including the full text of the original email
-> below; please take a look, and let's see if we can converge on a
-> consensus here.
 
-Hi Toke,
+--=-EwuGTsVw/o5OifbOfDbW
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for looping me in again. A bit of context what XDP at
-Cloudflare looks like:
+On Thu, 2021-09-23 at 01:05 +0100, luca.boccassi@gmail.com wrote:
+> From: Luca Boccassi <bluca@debian.org>
+>=20
+> libbpf and bpftool have been dual-licensed to facilitate inclusion in
+> software that is not compatible with GPL2-only (ie: Apache2), but the
+> samples are still GPL2-only.
+>=20
+> Given these files are samples, they get naturally copied around. For
+> example
+> it is the case for samples/bpf/bpf_insn.h which was copied into the
+> systemd
+> tree:
+> https://github.com/systemd/systemd/blob/main/src/shared/linux/bpf_insn.h
+>=20
+> Dual-license this header as GPL-2.0-only OR BSD-2-Clause to follow
+> the same licensing used by libbpf and bpftool:
+>=20
+> 1bc38b8ff6cc ("libbpf: relicense libbpf as LGPL-2.1 OR BSD-2-Clause")
+> 907b22365115 ("tools: bpftool: dual license all files")
+>=20
+> Signed-off-by: Luca Boccassi <bluca@debian.org>
+> ---
+> Most of systemd is (L)GPL2-or-later, which means there is no
+> perceived
+> incompatibility with Apache2 softwares and can thus be linked with
+> OpenSSL 3.0. But given this GPL2-only header is included this is
+> currently
+> not possible.
+> Dual-licensing this header solves this problem for us as we are
+> scoping
+> moving to OpenSSL 3.0, see:
+>=20
+> https://lists.freedesktop.org/archives/systemd-devel/2021-September/04688=
+2.html
+>=20
+> The authors of this file according to git log are:
+>=20
+> Alexei Starovoitov <ast@kernel.org>
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> Brendan Jackman <jackmanb@google.com>
+> Chenbo Feng <fengc@google.com>
+> Daniel Borkmann <daniel@iogearbox.net>
+> Daniel Mack <daniel@zonque.org>
+> Jakub Kicinski <jakub.kicinski@netronome.com>
+> Jiong Wang <jiong.wang@netronome.com>
+> Joe Stringer <joe@ovn.org>
+> Josef Bacik <jbacik@fb.com>
+>=20
+> (excludes a commit adding the SPDX header)
+>=20
+> All authors and maintainers are CC'ed. An Acked-by from everyone in
+> the
+> above list of authors will be necessary.
+>=20
+> One could probably argue for relicensing all the samples/bpf/ files
+> given both
+> libbpf and bpftool are, however the authors list would be much larger
+> and thus
+> it would be much more difficult, so I'd really appreciate if this
+> header could
+> be handled first by itself, as it solves a real license
+> incompatibility issue
+> we are currently facing.
+>=20
+> =C2=A0samples/bpf/bpf_insn.h | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+> index aee04534483a..29c3bb6ad1cd 100644
+> --- a/samples/bpf/bpf_insn.h
+> +++ b/samples/bpf/bpf_insn.h
+> @@ -1,4 +1,4 @@
+> -/* SPDX-License-Identifier: GPL-2.0 */
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> =C2=A0/* eBPF instruction mini library */
+> =C2=A0#ifndef __BPF_INSN_H
+> =C2=A0#define __BPF_INSN_H
 
-* We have a chain of XDP programs attached to a real network device.
-This implements DDoS protection and L4 load balancing. This is
-maintained by the team I am on.
-* We have hundreds of network namespaces with veth that have XDP
-attached to them. Traffic is routed from the root namespace into
-these. This is maintained by the Magic Transit team, see this talk
-from last year's LPC [1]
-I'll try to summarise what I've picked up from the thread and add my
-own 2c. Options being considered:
+Got "address not found" for the following:
 
-1. Make sure mb-aware and mb-unaware programs don't mix.
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+Jakub Kicinski <jakub.kicinski@netronome.com>
+Jiong Wang <jiong.wang@netronome.com>
 
-This could either be in the form of a sysctl or a dynamic property
-similar to a refcount. We'd need to discern mb-aware from mb-unaware
-somehow, most easily via a new program type. This means recompiling
-existing programs (but then we expect that to be necessary anyways).
-We'd also have to be able to indicate "mb-awareness" for freplace
-programs.
+Trying again with different aliases from more recent commits for Bj=C3=B6rn
+and Jakub.
 
-The implementation complexity seems OK, but operator UX is not good:
-it's not possible to slowly migrate a system to mb-awareness, it has
-to happen in one fell swoop. This would be really problematic for us,
-since we already have multiple teams writing and deploying XDP
-independently of each other. This number is only going to grow. It
-seems there will also be trickiness around redirecting into different
-devices? Not something we do today, but it's kind of an obvious
-optimization to start redirecting into network namespaces from XDP
-instead of relying on routing.
-
-2. Add a compatibility shim for mb-unaware programs receiving an mb frame.
-
-We'd still need a way to indicate "MB-OK", but it could be a piece of
-metadata on a bpf_prog. Whatever code dispatches to an XDP program
-would have to include a prologue that linearises the xdp_buff if
-necessary which implies allocating memory. I don't know how hard it is
-to implement this. There is also the question of freplace: do we
-extend linearising to them, or do they have to support MB?
-
-You raised an interesting point: couldn't we hit programs that can't
-handle data_end - data being above a certain length? I think we (=3D
-Cloudflare) actually have one of those, since we in some cases need to
-traverse the entire buffer to calculate a checksum (we encapsulate
-UDPv4 in IPv6, don't ask). Turns out it's actually really hard to
-calculate the checksum on a variable length packet in BPF so we've had
-to introduce limits. However, this case isn't too important: we made
-this choice consciously, knowing that MTU changes would break it.
-
-Other than that I like this option a lot: mb-aware and mb-unaware
-programs can co-exist, at the cost of performance. This allows
-gradually migrating to our stack so that it can handle jumbo frames.
-
-3. Make non-linearity invisible to the BPF program
-
-Something I've wished for often is that I didn't have to deal with
-nonlinearity at all, based on my experience with cls_redirect [2].
-It's really hard to write a BPF program that handles non-linear skb,
-especially when you have to call adjust_head, etc. which invalidates
-packet buffers. This is probably impossible, but maybe someone has a
-crazy idea? :)
-
-Lorenz
-
-1: https://youtu.be/UkvxPyIJAko?t=3D10057
-2: https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/b=
-pf/progs/test_cls_redirect.c
+I cannot find other commits from Jiong with a different email address -
+Jakub, do you happen to know how we can reach Jiong? Perhaps it's not
+necessary as it's Netronome that owns the copyright and thus your ack
+would cover both contributions?
 
 --=20
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+Kind regards,
+Luca Boccassi
 
-www.cloudflare.com
+--=-EwuGTsVw/o5OifbOfDbW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEE6g0RLAGYhL9yp9G8SylmgFB4UWIFAmFMWdAACgkQSylmgFB4
+UWJIowf/UeT9FLzxv/8lj89Y7cuyKZyYM9OAQ4MYjYwCg0heVAXhOoIziBU2xlic
+gIoGquC3Ouq/TjD+elcGuZ45JUjSWjc1Rmt/xyUbYLZvRxBPzo0JksEck9BIZuQ7
+kmfFh/9xHjaS99WqoYc0QjJYjaqNDzq8Kn7+ekXA/bDjSJA6bsRcBcTNBdVdOGV1
+sRNqWZz6kS5ZiTMamkoL4eo5jQix4dqYEd1HzKWRdMYHHjLcrY2UNq79WIRv+YN1
+i1L8Tvq3mySKdbwaVhT2ZXAZ0Q4zhGjp6VGODiIbdbQJsV97+D0g6WzFi06KIwzc
+T74Rkss0x4wc/nRw5ctSzhkp/fjNiQ==
+=8faf
+-----END PGP SIGNATURE-----
+
+--=-EwuGTsVw/o5OifbOfDbW--
