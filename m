@@ -2,97 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D6F415E8E
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 14:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3C6415F10
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 14:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241039AbhIWMmU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 08:42:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240903AbhIWMmM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:42:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE87560FE6;
-        Thu, 23 Sep 2021 12:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632400840;
-        bh=UU4sXB4zbLyM1GRMWu1SbL6BcY8Hn0STOC/cYICSUQs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ia8xUFwaws5ryhGcS+p8LWn+9qWUsQ3FdLW7+OdGJQ8OCpMzqM6cbPJh+xwS7WypX
-         HYbyLN1A/EnbAA/g+kNM8mO4rK0snLCiMid2MHUnWpA44+m9D7/y2xqVRXB5EMP8mo
-         65hg9IZr3+cmJfxFGGGykw/tJfnx5/rdxZEY9FxYLpyOO40lTonI77rLgxmwJzSBsV
-         Vil8Yw8Zk22ncmBl9NKXGo3ybxIoXFmqWTEr6Gx1UF+bgeTNeoQtw7NdkiBhL5piuW
-         EjwF8EmJWtCFk8B/Q5EOtrBRPbyuo1BMvKP3EObmUB/9Eg6e1409gFMSUXpOkFiWCt
-         GYaGr4W0JZgdg==
-Date:   Thu, 23 Sep 2021 21:40:37 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@redhat.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Sven Schnelle <svens@linux.ibm.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] Series short description
-Message-Id: <20210923214037.a65135f20c68b5fed5d6ac00@kernel.org>
-In-Reply-To: <163240073510.33849.16299450051908678322.stgit@devnote2>
-References: <163240073510.33849.16299450051908678322.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S241095AbhIWNBH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 09:01:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33841 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235776AbhIWNBH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Sep 2021 09:01:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632401975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nj7KuKQYyiNPqoiOH3lAtPIlrtQ842d5NqTukqLDM40=;
+        b=Bk4VZD4+vc3Hp30vETuBMAZnB//deYCsla0LergCFSwq9sSw6JHCWJHnMIscS3nVrHBJE1
+        I+mZNahh8okGYebavwVvsOP2Q3r08pi0orYWZZNu5HgFl55Ys57lN201elyS2AfZmtW8JH
+        42DTQHBQGyWsRKpyVMiV0eFrzOSLVlQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-lQIxAZ26Pg-Abbh23omNYA-1; Thu, 23 Sep 2021 08:59:34 -0400
+X-MC-Unique: lQIxAZ26Pg-Abbh23omNYA-1
+Received: by mail-ed1-f71.google.com with SMTP id r23-20020a50d697000000b003d824845066so6713437edi.8
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 05:59:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=nj7KuKQYyiNPqoiOH3lAtPIlrtQ842d5NqTukqLDM40=;
+        b=E6qRUye6EmFFPRkWXGmJ3COubMU5Zctf2J8zvX86NP7ABGFIlU9ZM3wNxElbQYawlz
+         F8czaaRYNuToHJCg/FLuA9CRf80PZgSxQiw4INZgbe5tTxK0iGGeV2pF09WYSNfin+HQ
+         MF1GFla2Cso6GFcsOUhfDqXm2pqAFDWKj0hZu9exn5Im2QrwfwWTddqW65HYmirZl9L2
+         /DmlQCiTcelhcHAUdquTNAwehVX5dx9c0CcuQmrl/OZlcyxbN1+u+qeGD6Y+OvWL4ut1
+         0xWZH4mUPrn/+O52ct3ipGRn6UNgoBlzzL8PzHcKc1hCunn8enDVqz8UXBDbxprDcWvC
+         +3tg==
+X-Gm-Message-State: AOAM530MB7Zigf08t4KU1sP8qG55xiyrz/1xOMwUT4udENdOdj4U7/6P
+        ZIOKSxcIvxw+GAowI6UdyD+qrnF6DT6JV7H2ItRrURnaNzinms/jNSjRyO+gAW7qgq5MmkSVM65
+        QY3X8As3RY9Dg
+X-Received: by 2002:a17:906:1299:: with SMTP id k25mr4919129ejb.139.1632401972032;
+        Thu, 23 Sep 2021 05:59:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSEtfMW1r8x50L+dOj8aW76eBRZceTqQrafMa7fbJkbDfsPJfnlypgYDX7Y7inLV8GPuGt/A==
+X-Received: by 2002:a17:906:1299:: with SMTP id k25mr4919025ejb.139.1632401970857;
+        Thu, 23 Sep 2021 05:59:30 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id u4sm2949465ejc.19.2021.09.23.05.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 05:59:30 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 28E06180274; Thu, 23 Sep 2021 14:59:29 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Lorenzo Bianconi <lbianconi@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: Redux: Backwards compatibility for XDP multi-buff
+In-Reply-To: <CACAyw99+KvsJGeqNE09VWHrZk9wKbQTg3h1h2LRmJADD5En2nQ@mail.gmail.com>
+References: <87o88l3oc4.fsf@toke.dk>
+ <CACAyw99+KvsJGeqNE09VWHrZk9wKbQTg3h1h2LRmJADD5En2nQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 23 Sep 2021 14:59:29 +0200
+Message-ID: <87tuibzbv2.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Oops, ignore this. I forgot to update subjects.
+Lorenz Bauer <lmb@cloudflare.com> writes:
 
-On Thu, 23 Sep 2021 21:38:55 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> On Tue, 21 Sept 2021 at 17:06, Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Hi Lorenz (Cc. the other people who participated in today's discussion)
+>>
+>> Following our discussion at the LPC session today, I dug up my previous
+>> summary of the issue and some possible solutions[0]. Seems no on
+>> actually replied last time, which is why we went with the "do nothing"
+>> approach, I suppose. I'm including the full text of the original email
+>> below; please take a look, and let's see if we can converge on a
+>> consensus here.
+>
+> Hi Toke,
+>
+> Thanks for looping me in again. A bit of context what XDP at
+> Cloudflare looks like:
+>
+> * We have a chain of XDP programs attached to a real network device.
+> This implements DDoS protection and L4 load balancing. This is
+> maintained by the team I am on.
+> * We have hundreds of network namespaces with veth that have XDP
+> attached to them. Traffic is routed from the root namespace into
+> these. This is maintained by the Magic Transit team, see this talk
+> from last year's LPC [1]
+> I'll try to summarise what I've picked up from the thread and add my
+> own 2c. Options being considered:
+>
+> 1. Make sure mb-aware and mb-unaware programs don't mix.
 
-> Hi Steve,
-> 
-> Here I share my testing patch of the BTF for kprobe events.
-> Currently this only allow user to specify '$$args' for
-> tracing all arguments of the function. This is only
-> avaialbe if
-> - the probe point is on the function entry
-> - the kernel is compiled with BTF (CONFIG_DEBUG_INFO_BTF)
-> - the kernel is enables BPF (CONFIG_BPF_SYSCALL)
-> 
-> And Special thanks to Sven! Most of BTF handling part of
-> this patch comes from his patch [1]
-> 
-> [1] https://stackframe.org/0001-ftrace-arg-hack.patch
-> 
-> What I thought while coding this were;
-> - kernel/bpf/btf.c can be moved under lib/ so that
->   the other subsystems can reuse it, independent
->   from BPF. (Also, this should depends on CONFIG_DEBUG_INFO_BTF)
-> - some more utility functions can be exposed.
->   e.g. I copied btf_type_int() from btf.c
-> - If there are more comments for the BTF APIs, it will
->   be more useful...
-> - Overall, the BTF is easy to understand for who
->   already understand DWARF. Great work!
-> - I think I need 'ptr' and 'bool' types for fetcharg types.
-> 
-> Anyway, this is just for testing. I have to add some
-> more cleanup, features and documentations, etc.
-> 
-> Thank you,
-> 
-> ---
-> 
-> Masami Hiramatsu (1):
->       tracing/kprobe: Support $$args for function entry
-> 
-> 
->  kernel/trace/trace_kprobe.c |   60 ++++++++++++++++++++++++-
->  kernel/trace/trace_probe.c  |  105 +++++++++++++++++++++++++++++++++++++++++++
->  kernel/trace/trace_probe.h  |    5 ++
->  3 files changed, 168 insertions(+), 2 deletions(-)
-> 
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+I think I would rather state this as "make sure mb-unaware programs
+never encounter an mb frame". The programs can mix just fine in a
+single-buffer world since mb-aware programs are backwards compatible.
+All the multibuf helpers will also do the right thing even if there's
+only a single buffer in a given packet.
 
+> This could either be in the form of a sysctl or a dynamic property
+> similar to a refcount. We'd need to discern mb-aware from mb-unaware
+> somehow, most easily via a new program type. This means recompiling
+> existing programs (but then we expect that to be necessary anyways).
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Small nit here: while in most cases this property will  probably be set
+by recompilation, the loader can override it as well. So if you have a
+non-mb-aware program that you know won't break in an mb-setting (because
+it doesn't care about packet length, etc), your loader could just mark
+it as 'mb-aware'.
+
+Command-line loaders like xdp-loader and 'ip' would probably need a
+manual override switch to do this for the case where you have an old XDP
+program that you still want to run even though you've enabled MB mode.
+
+> We'd also have to be able to indicate "mb-awareness" for freplace
+> programs.
+>
+> The implementation complexity seems OK, but operator UX is not good:
+> it's not possible to slowly migrate a system to mb-awareness, it has
+> to happen in one fell swoop.
+
+I don't think it has to be quite that bleak :)
+
+Specifically, there is no reason to block mb-aware programs from loading
+even when the multi-buffer mode is disabled. So a migration plan would
+look something like:
+
+1. Start out with the mb-sysctl toggled off. This will make the system
+   behave like it does today, i.e., XDP programs won't load on
+   interfaces with large MTUs.
+
+2. Start porting all your XDP programs to make them mb-aware, and switch
+   their program type as you do. In many cases this is just a matter of
+   checking that the programs don't care about packet length. While this
+   is ongoing you will have a mix of mb-aware and non-mb-aware programs
+   running, but there will be no actual mb frames.
+
+3. Once all your programs have been ported and marked as such, flip the
+   sysctl. This will make the system start refusing to load any XDP
+   programs that are not mb-aware.
+
+4. Actually raise the MTU of your interfaces :)
+
+> 2. Add a compatibility shim for mb-unaware programs receiving an mb frame.
+>
+> We'd still need a way to indicate "MB-OK", but it could be a piece of
+> metadata on a bpf_prog. Whatever code dispatches to an XDP program
+> would have to include a prologue that linearises the xdp_buff if
+> necessary which implies allocating memory. I don't know how hard it is
+> to implement this.
+
+I think it would be somewhat non-trivial, and more importantly would
+absolutely slaughter performance. And if you're using XDP, presumably
+you care about that, so I'm not sure we're doing anyone any favours by
+implementing such a compatibility layer?
+
+> There is also the question of freplace: do we extend linearising to
+> them, or do they have to support MB?
+
+Well, today freplace programs just inherit the type of whatever they are
+attaching to, so we'd have to go out of our way to block this. I think
+logically it would be up to whatever loader is attaching freplace
+programs, because that's the one that knows the semantics. E.g.,
+something like libxdp that uses freplace to chain load programs would
+have to make sure that the dispatcher program is only marked as mb-aware
+if *all* the constituent programs are.
+
+> You raised an interesting point: couldn't we hit programs that can't
+> handle data_end - data being above a certain length? I think we (=3D
+> Cloudflare) actually have one of those, since we in some cases need to
+> traverse the entire buffer to calculate a checksum (we encapsulate
+> UDPv4 in IPv6, don't ask). Turns out it's actually really hard to
+> calculate the checksum on a variable length packet in BPF so we've had
+> to introduce limits. However, this case isn't too important: we made
+> this choice consciously, knowing that MTU changes would break it.
+
+Yeah, for this I think you're on your own ;)
+
+> Other than that I like this option a lot: mb-aware and mb-unaware
+> programs can co-exist, at the cost of performance. This allows
+> gradually migrating to our stack so that it can handle jumbo frames.
+
+See above re: coexisting.
+
+> 3. Make non-linearity invisible to the BPF program
+>
+> Something I've wished for often is that I didn't have to deal with
+> nonlinearity at all, based on my experience with cls_redirect [2].
+> It's really hard to write a BPF program that handles non-linear skb,
+> especially when you have to call adjust_head, etc. which invalidates
+> packet buffers. This is probably impossible, but maybe someone has a
+> crazy idea? :)
+
+With the other helpers that we started discussing, I don't think you
+have to? I.e., with an xdp_load_bytes() or an xdp_data_pointer()-type
+helper that works across fragment boundaries I think you'd be fine, no?
+
+-Toke
+
