@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6936415E86
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 14:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAC4415E8F
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 14:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhIWMmL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 08:42:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51364 "EHLO mail.kernel.org"
+        id S241079AbhIWMm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 08:42:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241096AbhIWMk3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:40:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2FF360EC0;
-        Thu, 23 Sep 2021 12:38:56 +0000 (UTC)
+        id S241131AbhIWMlS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Sep 2021 08:41:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B210A6054F;
+        Thu, 23 Sep 2021 12:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632400737;
+        s=k20201202; t=1632400786;
         bh=2SYyzBmvsUeVPR77N8xF8Vz3mjTv8podVq1Rkxg0Z1E=;
         h=From:To:Cc:Subject:Date:From;
-        b=pGXRp97wZZ+3jKSo/MGSZPFd1T1D3WdpH0OsC3+JvvLH9YFeiWctkgqzRqlQeaPcE
-         ChsuLVvYcClFqQwu/8WJ0df6bcaTSptZJO8AVw+3hKpOFrbwI86QDPLmSBP/sZle6W
-         WKGRa95AxYI71XBYf5MEXQQuRiMnmEa5NiPFglsuwSMHxLFLYtPxUCf8neFL0GMzkt
-         BcpxHQaLb9yKErNYONWFyyfbtVlpd2HdQV/sSxHAgAeIwTcvHCWunUtNvpg2+rEXIM
-         kxazlxbJFj9TPARNAu+EtsHGld5hBgTCYtEbSsbvrXEA/MCraNAy265SjIjzyaWtbe
-         vcaXloOJmNdSw==
+        b=ddS/Ox6t4WIsuiIGwCpGj0imN1LtfsRc7Ob9zAupglhkHU6aMRw1I7yU46mO+9uld
+         rPojVznlo6jOa12weQLKZe7ZFMaQlhG7PAXOZH6zc1iykHUd9wOCoXgDImmGh4SWqs
+         JGonSyFHuUvOPYrS6LA3aOnLhAhfRI+tBXBKnAkrKVuLjoytuER23CG4vL7j/3rAN8
+         Vvxzs6qnUtFd2oLtBb81CW4OuB4hNJk4kb7NVmLJDydyqu5BT5Un23FMENAHg3cJ03
+         l2d9jKF3JSGz9YXKue2GlQpTqY4ekfSTb8gGqI38UwSa+x/fz0RBdF5Kg4iOzwqP2W
+         +hFSMB4tZnOdw==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>,
@@ -30,9 +30,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Sven Schnelle <svens@linux.ibm.com>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] Series short description
-Date:   Thu, 23 Sep 2021 21:38:55 +0900
-Message-Id: <163240073510.33849.16299450051908678322.stgit@devnote2>
+Subject: [RFC PATCH] tracing: BTF testing for kprobe-events
+Date:   Thu, 23 Sep 2021 21:39:43 +0900
+Message-Id: <163240078318.34105.12819521680435948398.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 User-Agent: StGit/0.19
 MIME-Version: 1.0
