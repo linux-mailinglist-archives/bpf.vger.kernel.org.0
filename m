@@ -2,183 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D454F416595
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 21:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BB44165A1
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 21:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242805AbhIWTCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 15:02:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43589 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232331AbhIWTCD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Sep 2021 15:02:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632423631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4N1OpVszDzQL5pSRj0mhEDEcwQtQTGko1jICaLW5DhE=;
-        b=NZMrDGT5vSW7H7u6Up8ZNztGesyMhBvbHfC2fn4GO/RQa5ACHNCsKOzD+VuiMVU1Bg9ISl
-        qY9D3L/vHYVhLy9BgmKPjW/xz8gwEfBDjrRkk7OJKiRjlJ/9fI+2bCS6EO9TRtV3HFgxPp
-        kD7uaRp3BN7sDfIP4EoNHFnez3A3ykk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-ZDbkUh19M5K4t6dtZ3uAhQ-1; Thu, 23 Sep 2021 15:00:28 -0400
-X-MC-Unique: ZDbkUh19M5K4t6dtZ3uAhQ-1
-Received: by mail-ed1-f70.google.com with SMTP id z6-20020a50cd06000000b003d2c2e38f1fso7689696edi.1
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 12:00:28 -0700 (PDT)
+        id S242812AbhIWTJ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 15:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242834AbhIWTJ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Sep 2021 15:09:26 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471CFC061760
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 12:07:54 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id x7so12187521edd.6
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 12:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wPA6Pkqk/8ab9RW5HZw193jEL/3tz5PDXJBPjTVJtdU=;
+        b=t1rPCUcoa8HEEbAcar5GeFzOJfqI7UfROKcFgIGMv00KZqB4bGNj1yz/Io6IQtZ9+Z
+         NusuDSgjdkYMBVPbv2Vf3ap3Dbmry0u8fptJLN2cjl3LD0YJiwSIuBvYwnbH0rpaioQF
+         s88qN4rAhn2A6bjocX70mp+3vXylM59wSuZYYWLOfUKeLAaAxF3Zwk8fzDO06/nV0A9+
+         HsVgP4O9uIzFx80rDBeCkIGHcNp1EPBKoNORwSEOCOnT2lOJA5lLnJNU7gfbyJ+41Gti
+         zD8XRqIUaiJOWJBUAoo8PMoRjsXYVqkGOPgNVTuehmVHE3E5VSK+CrreHU4ugQScViDj
+         7cjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=4N1OpVszDzQL5pSRj0mhEDEcwQtQTGko1jICaLW5DhE=;
-        b=GeWhU6Hh7kv003yiU73jQwv/24cxHtTFQNbRHK07nDFRiWv6YpHTqDcFU37yRoEaMI
-         pgqpEaAQjWAh+Zw8PTqierx0njhA/3xi1rfnomGNwCNzKkLgUfBt0bCQNdz3wUFIvdt9
-         MCwjAOksoStJ/fxPGNugFdwMb80GHkZETc/o6NAwIjKl4T8PB+2wZ2r0ARdinS+H8TpO
-         /VJq96Et0gF90igHI+ObwNEnQF6gLs6jU+dRPfmtNaO+qz90uSPq8uMDzf8R41wiuiFy
-         qJYnSEFwDzWD+nAJ6LLJQAmOf0R7iSC7l4ES+k63YSVyG+mmkxgxYruIPb7WTkbJkFeC
-         6+TQ==
-X-Gm-Message-State: AOAM533CA6MqSQ6nm33h3244lbVzPzETNukf2naPYVGtsB/uO4PbKU/I
-        p5b4YUk4p6b5yzFrwSMrRE0IJWuMC+yJ6tDaDtqXtj4lsZMWb4YbZ7JFMhIhNXcvq5PDlko8X1X
-        9GXUYxWzmOgkR
-X-Received: by 2002:a17:907:7703:: with SMTP id kw3mr6813707ejc.34.1632423624778;
-        Thu, 23 Sep 2021 12:00:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJze7OvSGXBiNuBxyXXx8R9XStQQwqgi2185GS2FMCL6hPut1aH6DX2utyCbVjBk5sVfGD7w6g==
-X-Received: by 2002:a17:907:7703:: with SMTP id kw3mr6813549ejc.34.1632423622891;
-        Thu, 23 Sep 2021 12:00:22 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id q12sm3533422ejs.58.2021.09.23.12.00.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 12:00:22 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 89BA1180274; Thu, 23 Sep 2021 21:00:20 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Zvi Effron <zeffron@riotgames.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Lorenzo Bianconi <lbianconi@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: Redux: Backwards compatibility for XDP multi-buff
-In-Reply-To: <CAC1LvL11QfiuLq3YGLsJn2meLuo5jXivFf2v-y10-ax7p7sjXQ@mail.gmail.com>
-References: <87o88l3oc4.fsf@toke.dk>
- <20210921155443.507a8479@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87k0j81iq5.fsf@toke.dk>
- <CAC1LvL11QfiuLq3YGLsJn2meLuo5jXivFf2v-y10-ax7p7sjXQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 23 Sep 2021 21:00:20 +0200
-Message-ID: <878rznyv5n.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wPA6Pkqk/8ab9RW5HZw193jEL/3tz5PDXJBPjTVJtdU=;
+        b=IGxa4W40o+SVdz431xAabRH4FP6wyA+BpDMy8owsjKj0Skk1U1XO1Y8K0FUgFzOzOs
+         NSpVhoYIoqINOUqBNt0VDXKX1tA9B9MCiHHohlYANjAkw7wE9RSNXlRJA3Xb2vrSwvWU
+         6wd1X0+mCJSBLyh4GljIR0NObUL/0g+SwDEBDBC8AXOlZB1DMCYMAXJSFYXmSufX7xcK
+         c+D+jwtaw9XY4nsYI5zei/IER49RVBHyE5kb8HBe4zGoq2a164dGSX+TFo1Br5WFvNmi
+         NEnsTGDKNNvtE0lSWIdUscAn7aFp+reabE+9C7NlHItbcXAHxVJQ6IjCSylh6Jrz1LSF
+         522g==
+X-Gm-Message-State: AOAM530uoyqjXGz2ZtRbu1Ot26xMDtXsA4dll9P5NtWzwBrRptHgsiQv
+        +E17d3Uxjj933YHvdxUuXJXT8u8r3w58XCKWbne5
+X-Google-Smtp-Source: ABdhPJyHqn4EAltoJO7dd9O2Dz9oZ7VSNs98CCkrk2Tu48ZH4l2ycuGj+3CiT1FgWeVjeG1GWQpOD1Ti5aR3sTkLnrk=
+X-Received: by 2002:a50:cf48:: with SMTP id d8mr377146edk.293.1632424072663;
+ Thu, 23 Sep 2021 12:07:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210913140229.24797-1-omosnace@redhat.com> <CAHC9VhRw-S+zZUFz5QFFLMBATjo+YbPAiR21jX6p7cT0T+MVLA@mail.gmail.com>
+ <CAHC9VhQyejnmLn0NHQiWzikHs8ZdzAUdZ2WqNxgGM6xhJ4mvMQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhQyejnmLn0NHQiWzikHs8ZdzAUdZ2WqNxgGM6xhJ4mvMQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 23 Sep 2021 15:07:41 -0400
+Message-ID: <CAHC9VhSzh90kFR8wzkmwR-YZNtHGAvYyATc2R1UDaBzZ944OFg@mail.gmail.com>
+Subject: Re: [PATCH v4] lockdown,selinux: fix wrong subject in some SELinux
+ lockdown checks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, linux-acpi@vger.kernel.org,
+        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zvi Effron <zeffron@riotgames.com> writes:
-
-> On Wed, Sep 22, 2021 at 1:03 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Jakub Kicinski <kuba@kernel.org> writes:
->>
->> > On Tue, 21 Sep 2021 18:06:35 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wr=
-ote:
->> >> 1. Do nothing. This would make it up to users / sysadmins to avoid
->> >> anything breaking by manually making sure to not enable multi-buffer
->> >> support while loading any XDP programs that will malfunction if
->> >> presented with an mb frame. This will probably break in interesting
->> >> ways, but it's nice and simple from an implementation PoV. With this
->> >> we don't need the declaration discussed above either.
->> >>
->> >> 2. Add a check at runtime and drop the frames if they are mb-enabled =
-and
->> >> the program doesn't understand it. This is relatively simple to
->> >> implement, but it also makes for difficult-to-understand issues (why
->> >> are my packets suddenly being dropped?), and it will incur runtime
->> >> overhead.
->> >>
->> >> 3. Reject loading of programs that are not MB-aware when running in an
->> >> MB-enabled mode. This would make things break in more obvious ways,
->> >> and still allow a userspace loader to declare a program "MB-aware" to
->> >> force it to run if necessary. The problem then becomes at what level
->> >> to block this?
->> >>
->> >> Doing this at the driver level is not enough: while a particular
->> >> driver knows if it's running in multi-buff mode, we can't know for
->> >> sure if a particular XDP program is multi-buff aware at attach time:
->> >> it could be tail-calling other programs, or redirecting packets to
->> >> another interface where it will be processed by a non-MB aware
->> >> program.
->> >>
->> >> So another option is to make it a global toggle: e.g., create a new
->> >> sysctl to enable multi-buffer. If this is set, reject loading any XDP
->> >> program that doesn't support multi-buffer mode, and if it's unset,
->> >> disable multi-buffer mode in all drivers. This will make it explicit
->> >> when the multi-buffer mode is used, and prevent any accidental subtle
->> >> malfunction of existing XDP programs. The drawback is that it's a
->> >> mode switch, so more configuration complexity.
->> >
->> > 4. Add new program type, XDP_MB. Do not allow mixing of XDP vs XDP_MB
->> > thru tail calls.
->> >
->> > IMHO that's very simple and covers majority of use cases.
->>
->> Using the program type (or maybe the expected_attach_type) was how I was
->> imagining we'd encode the "I am MB aware" flag, yes. I hadn't actually
->> considered that this could be used to also restrict tail call/freplace
->> attachment, but that's a good point. So this leaves just the redirect
->> issue, then, see my other reply.
->>
+On Wed, Sep 15, 2021 at 10:59 PM Paul Moore <paul@paul-moore.com> wrote:
 >
-> I really like this apporoach as well, but before we commit to it, how lik=
-ely
-> are we to encounter this type of situation (where we need to indicate whe=
-ther
-> an XDP program supports a new capability) again in the future. And if we =
-do,
-> are we willing to require that all programs supporting that new feature a=
-re
-> also mb-aware? Essentially, the suboptimal case I'm envisioning is needin=
-g to
-> have XDP_MB, XD_MB_NEW_THING, XDP_NEW_THING, and XDP all as program types=
-. That
-> leads to exponential explosion in program types.
+> On Mon, Sep 13, 2021 at 5:05 PM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 10:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > >
+> > > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> > > lockdown") added an implementation of the locked_down LSM hook to
+> > > SELinux, with the aim to restrict which domains are allowed to perform
+> > > operations that would breach lockdown.
+> > >
+> > > However, in several places the security_locked_down() hook is called in
+> > > situations where the current task isn't doing any action that would
+> > > directly breach lockdown, leading to SELinux checks that are basically
+> > > bogus.
+> > >
+> > > To fix this, add an explicit struct cred pointer argument to
+> > > security_lockdown() and define NULL as a special value to pass instead
+> > > of current_cred() in such situations. LSMs that take the subject
+> > > credentials into account can then fall back to some default or ignore
+> > > such calls altogether. In the SELinux lockdown hook implementation, use
+> > > SECINITSID_KERNEL in case the cred argument is NULL.
+> > >
+> > > Most of the callers are updated to pass current_cred() as the cred
+> > > pointer, thus maintaining the same behavior. The following callers are
+> > > modified to pass NULL as the cred pointer instead:
+> > > 1. arch/powerpc/xmon/xmon.c
+> > >      Seems to be some interactive debugging facility. It appears that
+> > >      the lockdown hook is called from interrupt context here, so it
+> > >      should be more appropriate to request a global lockdown decision.
+> > > 2. fs/tracefs/inode.c:tracefs_create_file()
+> > >      Here the call is used to prevent creating new tracefs entries when
+> > >      the kernel is locked down. Assumes that locking down is one-way -
+> > >      i.e. if the hook returns non-zero once, it will never return zero
+> > >      again, thus no point in creating these files. Also, the hook is
+> > >      often called by a module's init function when it is loaded by
+> > >      userspace, where it doesn't make much sense to do a check against
+> > >      the current task's creds, since the task itself doesn't actually
+> > >      use the tracing functionality (i.e. doesn't breach lockdown), just
+> > >      indirectly makes some new tracepoints available to whoever is
+> > >      authorized to use them.
+> > > 3. net/xfrm/xfrm_user.c:copy_to_user_*()
+> > >      Here a cryptographic secret is redacted based on the value returned
+> > >      from the hook. There are two possible actions that may lead here:
+> > >      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
+> > >         task context is relevant, since the dumped data is sent back to
+> > >         the current task.
+> > >      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
+> > >         dumped SA is broadcasted to tasks subscribed to XFRM events -
+> > >         here the current task context is not relevant as it doesn't
+> > >         represent the tasks that could potentially see the secret.
+> > >      It doesn't seem worth it to try to keep using the current task's
+> > >      context in the a) case, since the eventual data leak can be
+> > >      circumvented anyway via b), plus there is no way for the task to
+> > >      indicate that it doesn't care about the actual key value, so the
+> > >      check could generate a lot of "false alert" denials with SELinux.
+> > >      Thus, let's pass NULL instead of current_cred() here faute de
+> > >      mieux.
+> > >
+> > > Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
+> > > Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+> > > Acked-by: Dan Williams <dan.j.williams@intel.com>         [cxl]
+> > > Acked-by: Steffen Klassert <steffen.klassert@secunet.com> [xfrm]
+> > > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> > > ---
+> > >
+> > > v4:
+> > > - rebase on top of TODO
+> > > - fix rebase conflicts:
+> > >   * drivers/cxl/pci.c
+> > >     - trivial: the lockdown reason was corrected in mainline
+> > >   * kernel/bpf/helpers.c, kernel/trace/bpf_trace.c
+> > >     - trivial: LOCKDOWN_BPF_READ was renamed to LOCKDOWN_BPF_READ_KERNEL
+> > >       in mainline
+> > >   * kernel/power/hibernate.c
+> > >     - trivial: !secretmem_active() was added to the condition in
+> > >       hibernation_available()
+> > > - cover new security_locked_down() call in kernel/bpf/helpers.c
+> > >   (LOCKDOWN_BPF_WRITE_USER in BPF_FUNC_probe_write_user case)
+> > >
+> > > v3: https://lore.kernel.org/lkml/20210616085118.1141101-1-omosnace@redhat.com/
+> > > - add the cred argument to security_locked_down() and adapt all callers
+> > > - keep using current_cred() in BPF, as the hook calls have been shifted
+> > >   to program load time (commit ff40e51043af ("bpf, lockdown, audit: Fix
+> > >   buggy SELinux lockdown permission checks"))
+> > > - in SELinux, don't ignore hook calls where cred == NULL, but use
+> > >   SECINITSID_KERNEL as the subject instead
+> > > - update explanations in the commit message
+> > >
+> > > v2: https://lore.kernel.org/lkml/20210517092006.803332-1-omosnace@redhat.com/
+> > > - change to a single hook based on suggestions by Casey Schaufler
+> > >
+> > > v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
+> >
+> > The changes between v3 and v4 all seem sane to me, but I'm going to
+> > let this sit for a few days in hopes that we can collect a few more
+> > Reviewed-bys and ACKs.  If I don't see any objections I'll merge it
+> > mid-week(ish) into selinux/stable-5.15 and plan on sending it to Linus
+> > after it goes through a build/test cycle.
+>
+> Time's up, I just merged this into selinux/stable-5.15 and I'll send
+> this to Linus once it passes testing.
 
-Hmm, that's a good point. Maybe it would be better to communicate it via
-a flag; we do have a prog_flags attribute on BPF_PROG_LOAD we could use.
+... and it's back out of selinux/stable-5.15 in spectacular fashion.
+I'll be following up with another SELinux patch today or tomorrow.
 
-> Also, every time we add a program type to encode a feature (instead of a =
-truly
-> new type), we're essentially forcing a recompilation (and redeployment) o=
-f all
-> existing programs that take advantage of the libbpf section name program
-> typing. (I'm sure there are tools that can rename a section in an ELF file
-> without recompilation, but recompilation seems the simplest way to correc=
-t the
-> ELF files for most people.)
-
-Isn't this true regardless of how we encode it? I mean when we add a new
-feature that needs an explicit support declaration, programs need to
-declare that they support it somehow. No matter how it's actually
-encoded, this will either entail recompiling the program, or having the
-loader override the value at load-time.
-
-For instance, say we do use a flag instead of a new prog type, how would
-a BPF program set that flag? Defining a new section type in libbpf would
-be an obvious answer (i.e., SEC("xdp") sets prog_type=3Dxdp, and
-SEC("xdp_mb") sets prog_type=3Dxdp, flags=3DXDP_MB).
-
-> If we think this is a one-off, it's probably fine, but if we think
-> it'll happen again, is it worth it to find a solution that will work
-> for future cases now, instead of having XDP, XDP_MB, and then having
-> to find a solution for future cases?
-
-Well, really the right solution is a general "XDP feature flags"
-capability. There was some work done on this, but unfortunately it
-stalled out. Not sure it's feasible to resurrect that as a prerequisite
-for landing xdp_mb, though, so I guess we'll need a one-off thing here :/
-
--Toke
-
+-- 
+paul moore
+www.paul-moore.com
