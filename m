@@ -2,221 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A4C4160CE
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 16:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED13416382
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 18:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241709AbhIWOMU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 10:12:20 -0400
-Received: from mail-dm6nam08on2130.outbound.protection.outlook.com ([40.107.102.130]:21918
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241712AbhIWOMQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:12:16 -0400
+        id S229851AbhIWQpf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 12:45:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15456 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229720AbhIWQpf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Sep 2021 12:45:35 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18NEgKug029482;
+        Thu, 23 Sep 2021 09:43:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=IYjNjC1+3Oynpx51AXdliASTM8sqJIT5ZJNybepzbNQ=;
+ b=fRQPehCVXuxmEW/5vGqY6cmQVRUWHF0d5bh8DsWU+0syucpZ3IvAMLaCwR94FsCKPIQJ
+ wpxlxczYEGU3JJE4D5CsfG6eILF3LEUvb+r5t2r8kW/28tHvKb8Be5Qm8rmyHiJQh+L/
+ b32/QuLGxVX5AxuPpylkRHSsjzKC/ZCvyCY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b8ujy8xex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 Sep 2021 09:43:50 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 23 Sep 2021 09:43:49 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UK2y+iiXOIHkkwcoblrDSmollylqjARtxtLwuA7roJbYaSBFNpLLAJJVw9s3lrin+aFfcNOKGnkjF/lXzRv9nRZNqMYQYVGEZTqAnvREx6SWKYpzcFwYbsdj0tMkkEO2WUT1/nTxLt02lpvCqAfF4q88i+xDHOyAix/arl12Sgp9EZQKiiTel/bOEn8p6QwUm3sZHKur3oGs6KSGf4FMFO9NewDMEDmv7++LauHXUIqZFJvTZgd6697ZWB+7vuHYBYSy41QbX7CEev5GHNQMt5N+IkH5L57w4OogDwMVRhCSp6VAJ/7IhqytQgmXD6imy0AS/kWmCfFRJzZgeitHbg==
+ b=b6fj9CcH9YEtmvb1gW34UHXfmvU5SnMJyFKEjEx3YiOZjPArDuMiTzFY7dgKubjvVNcmzNyMFYLC29sfj0aegZPjvIJPXXgL19ojh3MZT9HfUCeNDDoA7NjjV5Fk03Mmt0DbjM3r/jI/D48OLOBWnoVIiIwP/6I8anfy0QjgAZt7mMcCwyFgHHp2uKz4bdKcoRR3LDmrvXSLfiwNm2cuYMqVlopaoF+Y4ouNz8AtaPRA0gshVcTI/UXXg+7BafS3p850pD7dJjjZVKklXMdaLm1fB1/Uws9VMaTEX1p9GCmve6ysyH3VcmRbcxRGcoUnghYSyBjpJfhZl4AJUmnhZw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=C4mzMmIDbzHwcojrMXDx1yhPBVAP2XEw/bgv1MR/SKY=;
- b=NQjgGaotZcfQPKaMB2m+snN7jrx9SlKbG9yPGPiI/klsOvLbjecweu8YoDlbofsUp6nkS3G6UYVZgFkd+5KAnGPsGx4ieQIMWpUsKMbJ9BAfYrv5cnub3Er5nT4U7RqSpaWMTjFtmFZaZdj6Bl6Lv4ld8iW32Plh7hiseSZMJ7upXNELueeJk1O7VdkuALvyzkVFTKR9L+Vd6v+l/Ah+VTahxwwpDkHdHeYUhYX4aii4dlMi+68wAzU/DIl23gOqSs8Sdk/EtQvYzd176M/H8989IgLsCqMrNdsQA6POtlc0u1eIaLxY4JJYlQhb4bLFQvpCRQ19EXqbYlH0Gy0D6g==
+ bh=IYjNjC1+3Oynpx51AXdliASTM8sqJIT5ZJNybepzbNQ=;
+ b=l8e10Ev95NAa0dSUTarrsMidKE+SOvwm8phzgCvmRz+vVKnCuPfJ165EpxefDi77FUKBlcZT1dOZmwpgz/ba9xQrxVON5ObQ8hpTCT4R6uUm0tBlJX8MHMrWUmeH8lmJO0kyXHewVaapKh5tCAIfejjDrB64XGQTME1pomKY3Nkwi0vEw05QFgJ2U+2m7i7FVogxrNTqE/8xh/45PaCqnOVTg+FF6Ae4sIhjClyigmevD2/rk70PGbhkYyP3ncDsYF4/dZu6YTjXcJsj2xDaov5qR4rF4fapn6yY+HR//jhqG0a6TqkJ7hnn4ojzy16Efi/mNmSsT08T9DaNKPl7Kw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C4mzMmIDbzHwcojrMXDx1yhPBVAP2XEw/bgv1MR/SKY=;
- b=tVTA+2s+ArR1jjEaXExNhNyhD2BssJ19lHCLr41iRZJtMmvfzZjR4xfHJXLWDvEYlQiRpaZFEyMBbBIRi3zKwd3leCkOcbFSSl5D8wsDaz9ibq8d8MC4J/v4Wdp/ocUWnh+kKvEIEGakAELGHHieYFh77nHbAsyfzpuJHjrGH/o=
-Authentication-Results: isovalent.com; dkim=none (message not signed)
- header.d=none;isovalent.com; dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by PH0PR13MB5050.namprd13.prod.outlook.com (2603:10b6:510:a0::21) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
+ by DM5PR1501MB2005.namprd15.prod.outlook.com (2603:10b6:4:a5::29) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.6; Thu, 23 Sep
- 2021 14:10:42 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::e1d9:64d0:cb4f:3e90]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::e1d9:64d0:cb4f:3e90%9]) with mapi id 15.20.4544.013; Thu, 23 Sep 2021
- 14:10:41 +0000
-Date:   Thu, 23 Sep 2021 16:10:34 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Luca Boccassi <bluca@debian.org>, bpf@vger.kernel.org,
-        bjorn@kernel.org, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, daniel@zonque.org, joe@ovn.org, jbacik@fb.com
-Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
- BSD-2-Clause
-Message-ID: <20210923141034.GA12692@corigine.com>
-References: <20210923000540.47344-1-luca.boccassi@gmail.com>
- <49c54bf3f4a95562592575062058f069654fd253.camel@debian.org>
- <a92cd043-30e8-c26d-ffe9-3521322ce71b@isovalent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a92cd043-30e8-c26d-ffe9-3521322ce71b@isovalent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-ClientProxiedBy: AM8P191CA0013.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21a::18) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
-MIME-Version: 1.0
-Received: from corigine.com (2001:982:756:703:d63d:7eff:fe99:ac9d) by AM8P191CA0013.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:21a::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Thu, 23 Sep 2021 14:10:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.17; Thu, 23 Sep
+ 2021 16:43:49 +0000
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6]) by DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6%9]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
+ 16:43:48 +0000
+Message-ID: <0ce9822b-0e49-284e-e999-9b473ebc86b9@fb.com>
+Date:   Thu, 23 Sep 2021 12:43:47 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.1
+Subject: Re: [PATCH v3 bpf-next 8/9] libbpf: add opt-in strict BPF program
+ section name handling logic
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>
+References: <20210922234113.1965663-1-andrii@kernel.org>
+ <20210922234113.1965663-9-andrii@kernel.org>
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+In-Reply-To: <20210922234113.1965663-9-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-ClientProxiedBy: BL0PR0102CA0028.prod.exchangelabs.com
+ (2603:10b6:207:18::41) To DM6PR15MB4039.namprd15.prod.outlook.com
+ (2603:10b6:5:2b2::20)
+Received: from [172.16.2.93] (67.250.161.190) by BL0PR0102CA0028.prod.exchangelabs.com (2603:10b6:207:18::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 16:43:48 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3c97acc-3a42-4058-faa7-08d97e9bed47
-X-MS-TrafficTypeDiagnostic: PH0PR13MB5050:
-X-Microsoft-Antispam-PRVS: <PH0PR13MB505065F12F405AD27473599BE8A39@PH0PR13MB5050.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: 58499dca-a319-4cb1-a8a3-08d97eb15117
+X-MS-TrafficTypeDiagnostic: DM5PR1501MB2005:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1501MB2005523444AE87B0CA55CB8AA0A39@DM5PR1501MB2005.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fzHQdFoP+cRJK78SRemhbLoKdXAdXertrTf/E6xDuBZsLiRlcMPOJpd5an4IEjVA/kJ0vop2oqUjhYQg1FOGqtpmEX7h+X3V1LXtf6OTwdLQ5Snr+wp6CEbDp5yYleE7bvQBhWFpZICjCge1n8z3hJvHhxUZc3VwbQdnooqSbJ+ZJ8lbZ7juOp3brKuuAlyo3TZy2K9WQ+4yXCui2C78HAbz6tW+UYjR75VSlq5mrMbeSN3WI40OQgA/qrKys8Yq4lSl7b/kO5uPpK+yTFscLjMWSoIOXnbtuzPVPHF7BgnWq77V1d5UGrr/GuYfMG6MFRszx7xuH0veb9/rrIZU/vQF8058SPT+uYRFw+hsnyH1138qB2thTbi0bjz1aRvnNPfJqrkFzguaideOg1i445B3pRw2I5X5+Xa8leRrQjkWm7XtVsczcnsmjOyww8HvzIKcDDt1ytmV0Xm0Jth9yXYiT8UZxTqKA/6hgLt8emS/aEGNnEeOeTjulPYsaZh1bx2ch53+LrQWDW3EiBZ0Een7T7kifeFMm5Cel4u9yycTjnuHRk9tqPzoTeVDdtntVHgk8BqOIqz0AdOXZ0LYHIyOZ9y96kb3F6n6F/WcmwsOnAbo4zp9sOb9keXYRwltDAYJe4LhjsXzLo71a0crn4DFFuYbkL/8ufO9yIl2GzgQc74tAG5JcD7GdW3Pg39GHAYKF7mbHIbUuYipN/n/mebrSGtiI+JbWYsOjQkCDKM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(136003)(39840400004)(366004)(83380400001)(66574015)(86362001)(7416002)(186003)(66556008)(66946007)(8936002)(7696005)(1076003)(8676002)(66476007)(966005)(33656002)(4326008)(5660300002)(52116002)(38100700002)(316002)(6666004)(508600001)(2906002)(36756003)(44832011)(6916009)(8886007)(55016002)(2616005);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: AoZjRjWJqkWQh+KQVEUbYMBoVlg3Fe+nbgzf6HHru6n1JctAllMvnwMfjhu6SB1pJy9H2+tvptB530FchI2ugDRxb5r9PeDgVxzx+W1yXQp1kpSt48Uke3HKZ5y+J+mufqTCSAQPiviyj5BrdkNzTsAbH7XsVVad1HW1KLo/SWqcmmeBtQ08x5C/N1Ifwyrd3nrC6yZdnCktyuZfjtyTqYe7RXplw7cbL+x4/0don13i2+QA3JG9ycs6UWxOrFWZkNLPBpZiFvba9bt/UEm7WVpNfukc+Xbtr+lf6hq5rDPFS7v07RZxaFTcW1Qan1YqgdAJpltKbdn41yHZEa+9CcvM7JEZnspPc34AOU6qibmbMDT/30scIYTVsReEvyoUY5DLEr8on0/g7NizwDX784EdDM15rzQVB68nsriD/hQEHsPc/aEum3BC5xEoyfxwEHOYsqYzLNH/n2Lx3mc0nC5SkUHhdS7xq1+nrOh+nQmMFvu+DT9JfgYEQbtneEI+NizRCL9axfqKL139yFHZhYmefvNGEe6aqWMjl8R6k7PcdbdosoNz+1SapppPIdUBtvIt04opBAwUEfE7Z0XAVymKpm5uwKt1uWVimJeeNM51Q7X83KC++V3qdPVrPGKpFsZCUeNdsh/78e0qRAI90cj2MI5diR2198yhn/nTL+7B3/7gxwd70iDGAIh7ediXqBEb9m0Yk+cudJ3u7Q6zdOpCsCCQ9ok8r5gCJhHr8tuSOMneEERoKgWaY0m8X+pOShv1VTyJgAsBZCP5q5f6QCM8SuHP9v56XNCwyZdUvfufFT5epdTy6ACo153+fj2KOWdyor7R9VteH4vgB7AUiw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(186003)(66476007)(8676002)(86362001)(8936002)(4326008)(26005)(508600001)(31696002)(66556008)(36756003)(38100700002)(2906002)(956004)(316002)(5660300002)(966005)(16576012)(66946007)(53546011)(2616005)(83380400001)(6486002)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?em43anpyZEVwTElpNTZkV0FMcmFGTUs1NWRwYk5TejJhK0pzd2lWRThGQU5T?=
- =?utf-8?B?M0VsUE9YQU1IR3h5MHJZaFhzUHlQZ090bWZwZ3VkQ3pHT2kwSUtaRUhYSk9o?=
- =?utf-8?B?TFJqekMrbFR1TXUrWmo4cUMyclZWakV6eEtHMGdtTTI2ZlRpOHpaSDdjYXQ0?=
- =?utf-8?B?cWtiZlNLeitYSWhKT1UvYkJFMW1PWkJQNk5XendUUW9hMmViNXpCSjlMOEZ6?=
- =?utf-8?B?RmpoQmEwM0cxam1objcybk1VRVNkQ2VDalhGa2ROSks0ZEV1ZVF2UzdIdGZM?=
- =?utf-8?B?bW1tV29jY0NMTFJYY1VrSWlKOHQ4RGpHeHYzaUpBVjREdVJOVGhOZWNNbm9l?=
- =?utf-8?B?TG5xNUFYVUtxS2pLTExRbEorK3hScUhGbEhIUTBPV1ZvTHBhc2luSFI1RndR?=
- =?utf-8?B?MHFQT0pPNGNJeGVqSDZ3R2oySm55Um1XeW9HS2x1am4zQnpTaFJmOFpsVUl2?=
- =?utf-8?B?RHZOR0ZRcVdBLzM4NGJMUUlWNEFFbXA2RkZ4Y2VyQmVXT1dGOUpkU1d2TFEy?=
- =?utf-8?B?UWdOVE1vclZhdlNSWTlENjZ0WjJDSHZ6VDh3cnNDaFlXTjRZbHJFOVVYdzV3?=
- =?utf-8?B?MXJVS0tRZmcrUVZIOGpBQk9tckdXSGo4K1hSbkNadUFvNGVFLzBJS1pFcDBN?=
- =?utf-8?B?VTdiNVFnNlJLekhtQ2RNQ2RKdUxLd2hRQVFCdk83ZHR2UktTS0NhK3czajNy?=
- =?utf-8?B?RW9QV2Uvdml2SXduV29FRVh1akNuRHhpbjFOUjNYNWk3Nk9sTGZFZk1Bb3dl?=
- =?utf-8?B?UkdzWS8vYWJRT09ReXpmVlk5aE9FRHZmT3ZjUG9oTVI5K2NKUytlc2FaU0dO?=
- =?utf-8?B?QWV1azJ5TFBYTHNSU0lYVFV1VnVQWElzUjlYRHpETXp4N2k1U3JZeXQrWkZu?=
- =?utf-8?B?Mzd5MlhwTk5VVVlicWhSdTZuK1Rha0IrQkQrSW8vUmh3UjZqVHBEN1F2QWR0?=
- =?utf-8?B?ay8yV0hHVytmR0ZpbHBnbVRxOU1NZ1ZNK3dRYmMwcXVnZTJ6MG10NXErTVlC?=
- =?utf-8?B?KzRvTjI0Q0p4YythM2QwTU0xMVFHdUp4RGhaTDVoYjBRQVhtSTBNNHVmaXpr?=
- =?utf-8?B?MTdQT05pdEZIclVSZENEUUdWTlZFSkZwelkvZ3ZTWnBUbEhLK3k4V24va0p2?=
- =?utf-8?B?UHNJc3N5QWRqcnlhd0Z3a004bXdxWm1BMjVJRlFkeGRxNnJaTlNDc0p3L3hU?=
- =?utf-8?B?LzRTSXZDeE9zczY3ZHBrY1V5R0tBcnpvNEZwTUJoV1BpVGdVbXhQeGZjR20v?=
- =?utf-8?B?RUxWRkJOWFFUWVlrNURQTSt5dmQ3bEx4NHRIQ1h2Z0hLa3NZV1ZWVDFMS1hT?=
- =?utf-8?B?MGh4QVVTZGtUYUlzanZCY3BRZFd1eTBVTlRnQzNwTXNsMEsya05GSCs5S1hR?=
- =?utf-8?B?RWhTUzJmMFM0dFlrWjB5MFhGTitjWFdEMU1CM3NKWjFkM2xUV3lBS3JzS0Rs?=
- =?utf-8?B?Z0g2WW5GSUtOYnYzdlpjaW0vaGRuUkk2dDQrZWV5M3FtMWxlK0UzWGc2cnk2?=
- =?utf-8?B?bFJBZW4rNEhZeDJqbjViZE1WdjdDWjJjeE9pNXRuTCs0cXN3eVZLeGRKM0FQ?=
- =?utf-8?B?ZTdIMmRaaHIrUG12bXZhdTh1ZWxJZHBKQ1d5amQrVUlNdklOU1NTN25mWDBq?=
- =?utf-8?B?YURBWFRrMGxCLytpOHJlTGRkUEUwRnh3aFlFK1krdCtDczY0dzVQcjNpZzVD?=
- =?utf-8?B?YXhwRzJKZkpvWjgrNldWS2xJOWJleFFXQVR0MXQvdThMUlZ0SjE5U0tsSlpz?=
- =?utf-8?B?dGp3d3MvTGNlTGpIbS8wMW9OOW9iOTNZam1JT1NJeWxiL3JmVGVLWXFSTXBC?=
- =?utf-8?B?V2lSYUNlTG15cjdNVXJ1L1JFYmVkVUZoVVJNMzUwRlk4YjMyTzU1TXl2aHI2?=
- =?utf-8?Q?OZ7YWjsvKmYi4?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3c97acc-3a42-4058-faa7-08d97e9bed47
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWEwUHBuSDhhNDlzZ2szc1RpV0piY0l4MTFrWEszeEdOV1lWdTJYUVFrNTBk?=
+ =?utf-8?B?K096anpxSWJ2Wkh1b1ZpVHkySkpJOWhtRURwbjBDSFp3MkVneTNwRjgzVjF4?=
+ =?utf-8?B?M3Y5b1NDcDdmUit1c2NNSWZpa1E1ZGhOck9NTzIxVmF4QlIweXRpRGh6d2pC?=
+ =?utf-8?B?QkhmeU5xRW5FZFlOb052QVBKRW1QbFJ2VHhndE9DWGpxM1pjYmdKcUY2bFFr?=
+ =?utf-8?B?QUp4alpFTnRmWVRFbHNhOUI3b2VQbmpaemxjUU9WdHl6WG90bHppdUhSLzI1?=
+ =?utf-8?B?bmErdU9pTlVFa3pTdUZuaTdlVzVmWGsyYVFLcm83L2J3RHBPbVlvSVJIU3pr?=
+ =?utf-8?B?VW94Q2hjb2dzaWswcHREb1pTVlVDN3Zad3puSDZWKzhjYmtxWXo3WGZzK1Bm?=
+ =?utf-8?B?WU9lWC85MVN6b2VmaytlK2JqLzNRbXlWckdqSnpBQXFwdUpDbGtLbVZrQTZ1?=
+ =?utf-8?B?SExTd01qL0d5MWV4NW5oOEM2R0lBUmZ1NEdjSktmZWhIcm9scUlQQ3RJblpT?=
+ =?utf-8?B?Q0lPYVk2Q3BrU0sycS9odHdiVEt2SVlpaEp2SXkyNW1GRERRL3NrbkhlU1ZY?=
+ =?utf-8?B?MFJxaHR4MjZvNmNXOE9KNGY2bDJzKy9PWSs5eUJ1K1ZUSE5ua0dwb1BDYzVN?=
+ =?utf-8?B?ZW1kcjNrWm1uNEIyWndhRElYTjR6bExzYkZMOGxZT281NWdaQTRNL3NtRjNh?=
+ =?utf-8?B?UjNYSlJYd0FUT3o4OXFSSnB3NUV3b2MyMEpEcUNCSjFlSmY2SFBoS1kxTklr?=
+ =?utf-8?B?aWpla0NuZVBjYnlyVEVkWFhSbENyKyt3L2pqSUhUOVpsVWtwMTFYN0RhUk9R?=
+ =?utf-8?B?NStCQ2hXTEhuWWhJN2E5SlNmdERGVC9TK0R5K2JNMnJ4b3hNeDFZTWpsRDVN?=
+ =?utf-8?B?NGNWT2xsRHR0Szltd2pqMFk0MVE4VjdWQmxEOVI0R0NXQThsc0FTbTRLTnpS?=
+ =?utf-8?B?b0N6bjM5cSt4Vy94M3N6U1c2RGZtYm96WUpiMWh6NDVzeXVDckM0eHpaOXBu?=
+ =?utf-8?B?b3E1ancvZDh0QTdRVjdqaHJJK3VDMlFlclk3NzlVZDdaOCtHYWJyQ2lFanZD?=
+ =?utf-8?B?a3dpS3ZLcktFbk42U0R2VmVZU3pveWZYOW15Uk40UlhtVEJFOTFKbDlPcytp?=
+ =?utf-8?B?QytGZ3drWlEweWRiallDRjNsMEN4UThaZzMzczNMdWV2MWFmSko2K1VKMGM4?=
+ =?utf-8?B?VHcwV0FxaGtjdXczSW13bFpyR3hTSmNVWW52Z05XcUNWRXNoOElZeUpMTmdR?=
+ =?utf-8?B?THNGWHNybWZDbW9zMEkzWmVka2lRRTBxbmlKdGtUei9scHo5V0xWTGkvYklt?=
+ =?utf-8?B?SHJpQ2cwY3k3UkdvQ3hpUW9DQVZ2bitkWGQvZ2dENzNKbkNTMFJWUUFKd05t?=
+ =?utf-8?B?QVF3SFpVNjhnYnVCUktJcG9FdHdIaFVNMjYvWDNGTDNwZDNBU0ZneVlFQThB?=
+ =?utf-8?B?ZDlWL0I4Q0gvUXFDZktiOWY4VEZ2R0tldGFHaXJQcTQxZVJ0aWU5S2E1WFFG?=
+ =?utf-8?B?YkZIME0yazNSZEV4eGI2MVpMT3pnWFZLcGtFR0hUYTZBSW42NkNmUUNMM3lR?=
+ =?utf-8?B?ZSsxaWNqa2liRkcrTm9yUDAxVjhpWnVmVCtaSmdBVFV1SXROL3BmZTN2U3B3?=
+ =?utf-8?B?bDdqb3VyeGFBNk1zbk42K3BJMENYOCtUNEZHZEhqSHJyOCs1WFhRYzlzNFhs?=
+ =?utf-8?B?MHVlQmlPKzV5QWpZRzJ0bGxwUXBHb2JKdTZPWEZ1Nzk4bnZ2OXhKTGEvTDRp?=
+ =?utf-8?Q?EspBcVr1MuxXtPE3Hxnq2RQ+in3ZCEdGJzAHMI3?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58499dca-a319-4cb1-a8a3-08d97eb15117
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 14:10:41.8023
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 16:43:48.7488
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DJneLA5+AOZrASJzWCm+9T8L6gx5rgNd5/BVS3nVKf4oF27hMHwq6odfRkfDqkWbvzCCql3+wCm3wE/yt77NAomH90d8zSz6MZU+bkihkMA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB5050
+X-MS-Exchange-CrossTenant-UserPrincipalName: em6HsjG9wIeVkVGjA3QEN1fac+wp6KWLdKpptKbLcDYyfaUq7xDBwXc6PYPkyPKB3/+VRXWDJ8RMTF7ae1JgaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1501MB2005
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: JfzQm634skxpB_SKS14rvqdPr0jHF8zu
+X-Proofpoint-GUID: JfzQm634skxpB_SKS14rvqdPr0jHF8zu
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-23_05,2021-09-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1015 spamscore=0
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109230103
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 02:42:39PM +0100, Quentin Monnet wrote:
-> 2021-09-23 11:41 UTC+0100 ~ Luca Boccassi <bluca@debian.org>
-> > On Thu, 2021-09-23 at 01:05 +0100, luca.boccassi@gmail.com wrote:
-> >> From: Luca Boccassi <bluca@debian.org>
-> >>
-> >> libbpf and bpftool have been dual-licensed to facilitate inclusion in
-> >> software that is not compatible with GPL2-only (ie: Apache2), but the
-> >> samples are still GPL2-only.
-> >>
-> >> Given these files are samples, they get naturally copied around. For
-> >> example
-> >> it is the case for samples/bpf/bpf_insn.h which was copied into the
-> >> systemd
-> >> tree:
-> >> https://github.com/systemd/systemd/blob/main/src/shared/linux/bpf_insn.h
-> >>
-> >> Dual-license this header as GPL-2.0-only OR BSD-2-Clause to follow
-> >> the same licensing used by libbpf and bpftool:
-> >>
-> >> 1bc38b8ff6cc ("libbpf: relicense libbpf as LGPL-2.1 OR BSD-2-Clause")
-> >> 907b22365115 ("tools: bpftool: dual license all files")
-> >>
-> >> Signed-off-by: Luca Boccassi <bluca@debian.org>
-> >> ---
-> >> Most of systemd is (L)GPL2-or-later, which means there is no
-> >> perceived
-> >> incompatibility with Apache2 softwares and can thus be linked with
-> >> OpenSSL 3.0. But given this GPL2-only header is included this is
-> >> currently
-> >> not possible.
-> >> Dual-licensing this header solves this problem for us as we are
-> >> scoping
-> >> moving to OpenSSL 3.0, see:
-> >>
-> >> https://lists.freedesktop.org/archives/systemd-devel/2021-September/046882.html
-> >>
-> >> The authors of this file according to git log are:
-> >>
-> >> Alexei Starovoitov <ast@kernel.org>
-> >> Björn Töpel <bjorn.topel@intel.com>
-> >> Brendan Jackman <jackmanb@google.com>
-> >> Chenbo Feng <fengc@google.com>
-> >> Daniel Borkmann <daniel@iogearbox.net>
-> >> Daniel Mack <daniel@zonque.org>
-> >> Jakub Kicinski <jakub.kicinski@netronome.com>
-> >> Jiong Wang <jiong.wang@netronome.com>
-> >> Joe Stringer <joe@ovn.org>
-> >> Josef Bacik <jbacik@fb.com>
-> >>
-> >> (excludes a commit adding the SPDX header)
-> >>
-> >> All authors and maintainers are CC'ed. An Acked-by from everyone in
-> >> the
-> >> above list of authors will be necessary.
-> >>
-> >> One could probably argue for relicensing all the samples/bpf/ files
-> >> given both
-> >> libbpf and bpftool are, however the authors list would be much larger
-> >> and thus
-> >> it would be much more difficult, so I'd really appreciate if this
-> >> header could
-> >> be handled first by itself, as it solves a real license
-> >> incompatibility issue
-> >> we are currently facing.
-> >>
-> >>  samples/bpf/bpf_insn.h | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
-> >> index aee04534483a..29c3bb6ad1cd 100644
-> >> --- a/samples/bpf/bpf_insn.h
-> >> +++ b/samples/bpf/bpf_insn.h
-> >> @@ -1,4 +1,4 @@
-> >> -/* SPDX-License-Identifier: GPL-2.0 */
-> >> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> >>  /* eBPF instruction mini library */
-> >>  #ifndef __BPF_INSN_H
-> >>  #define __BPF_INSN_H
-> > 
-> > Got "address not found" for the following:
-> > 
-> > Björn Töpel <bjorn.topel@intel.com>
-> > Jakub Kicinski <jakub.kicinski@netronome.com>
-> > Jiong Wang <jiong.wang@netronome.com>
-> > 
-> > Trying again with different aliases from more recent commits for Björn
-> > and Jakub.
-> > 
-> > I cannot find other commits from Jiong with a different email address -
-> > Jakub, do you happen to know how we can reach Jiong? Perhaps it's not
-> > necessary as it's Netronome that owns the copyright and thus your ack
-> > would cover both contributions?
-> > 
+On 9/22/21 7:41 PM, Andrii Nakryiko wrote:   
+> Implement strict ELF section name handling for BPF programs. It utilizes
+> `libbpf_set_strict_mode()` framework and adds new flag: LIBBPF_STRICT_SEC_NAME.
 > 
-> Hi Luca, I believe Simon can handle this for Netronome, I'm adding him
-> in copy.
+> If this flag is set, libbpf will enforce exact section name matching for
+> a lot of program types that previously allowed just partial prefix
+> match. E.g., if previously SEC("xdp_whatever_i_want") was allowed, now
+> in strict mode only SEC("xdp") will be accepted, which makes SEC("")
+> definitions cleaner and more structured. SEC() now won't be used as yet
+> another way to uniquely encode BPF program identifier (for that
+> C function name is better and is guaranteed to be unique within
+> bpf_object). Now SEC() is strictly BPF program type and, depending on
+> program type, extra load/attach parameter specification.
+> 
+> Libbpf completely supports multiple BPF programs in the same ELF
+> section, so multiple BPF programs of the same type/specification easily
+> co-exist together within the same bpf_object scope.
+> 
+> Additionally, a new (for now internal) convention is introduced: section
+> name that can be a stand-alone exact BPF program type specificator, but
+> also could have extra parameters after '/' delimiter. An example of such
+> section is "struct_ops", which can be specified by itself, but also
+> allows to specify the intended operation to be attached to, e.g.,
+> "struct_ops/dctcp_init". Note, that "struct_ops_some_op" is not allowed.
+> Such section definition is specified as "struct_ops+".
+> 
+> This change is part of libbpf 1.0 effort ([0], [1]).
+> 
+>   [0] Closes: https://github.com/libbpf/libbpf/issues/271
+>   [1] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#stricter-and-more-uniform-bpf-program-section-name-sec-handling
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-Yes, in the recent past we have handled a similar request like this:
-
-Acked-by: Simon Horman <simon.horman@corigine.com>
+Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
 
