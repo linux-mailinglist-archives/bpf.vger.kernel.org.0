@@ -2,186 +2,246 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BB44165A1
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 21:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061CB416612
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 21:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242812AbhIWTJ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 15:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242834AbhIWTJ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:09:26 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471CFC061760
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 12:07:54 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id x7so12187521edd.6
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 12:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wPA6Pkqk/8ab9RW5HZw193jEL/3tz5PDXJBPjTVJtdU=;
-        b=t1rPCUcoa8HEEbAcar5GeFzOJfqI7UfROKcFgIGMv00KZqB4bGNj1yz/Io6IQtZ9+Z
-         NusuDSgjdkYMBVPbv2Vf3ap3Dbmry0u8fptJLN2cjl3LD0YJiwSIuBvYwnbH0rpaioQF
-         s88qN4rAhn2A6bjocX70mp+3vXylM59wSuZYYWLOfUKeLAaAxF3Zwk8fzDO06/nV0A9+
-         HsVgP4O9uIzFx80rDBeCkIGHcNp1EPBKoNORwSEOCOnT2lOJA5lLnJNU7gfbyJ+41Gti
-         zD8XRqIUaiJOWJBUAoo8PMoRjsXYVqkGOPgNVTuehmVHE3E5VSK+CrreHU4ugQScViDj
-         7cjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wPA6Pkqk/8ab9RW5HZw193jEL/3tz5PDXJBPjTVJtdU=;
-        b=IGxa4W40o+SVdz431xAabRH4FP6wyA+BpDMy8owsjKj0Skk1U1XO1Y8K0FUgFzOzOs
-         NSpVhoYIoqINOUqBNt0VDXKX1tA9B9MCiHHohlYANjAkw7wE9RSNXlRJA3Xb2vrSwvWU
-         6wd1X0+mCJSBLyh4GljIR0NObUL/0g+SwDEBDBC8AXOlZB1DMCYMAXJSFYXmSufX7xcK
-         c+D+jwtaw9XY4nsYI5zei/IER49RVBHyE5kb8HBe4zGoq2a164dGSX+TFo1Br5WFvNmi
-         NEnsTGDKNNvtE0lSWIdUscAn7aFp+reabE+9C7NlHItbcXAHxVJQ6IjCSylh6Jrz1LSF
-         522g==
-X-Gm-Message-State: AOAM530uoyqjXGz2ZtRbu1Ot26xMDtXsA4dll9P5NtWzwBrRptHgsiQv
-        +E17d3Uxjj933YHvdxUuXJXT8u8r3w58XCKWbne5
-X-Google-Smtp-Source: ABdhPJyHqn4EAltoJO7dd9O2Dz9oZ7VSNs98CCkrk2Tu48ZH4l2ycuGj+3CiT1FgWeVjeG1GWQpOD1Ti5aR3sTkLnrk=
-X-Received: by 2002:a50:cf48:: with SMTP id d8mr377146edk.293.1632424072663;
- Thu, 23 Sep 2021 12:07:52 -0700 (PDT)
+        id S242889AbhIWToN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 15:44:13 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14222 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S242796AbhIWToM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Sep 2021 15:44:12 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18NIt9Z2015841;
+        Thu, 23 Sep 2021 12:42:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=KEqNYUJsKCNkjLutPgzZrDY+TKz4OqNrhAShF1nsBCc=;
+ b=TP+2OJUOIUtLApyWjYtqsgGvN4qIPOLtqZZ5EdW9T3QtZFbCzF/AtZ0t9Co+y02JLKuZ
+ o722i8XNwZLHov4DGj6fHY7E34vDN3DmWuX3VwpW+fUu4ZCcE63BDKPGaP9jDslsqfZl
+ 9+h6kSyy7fbw7XyZJHZlysUr7Mh1aiPgHfo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3b8j6x5s50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 Sep 2021 12:42:40 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 23 Sep 2021 12:42:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mRNkOm6AeQZhmv3gyar/gBDns5w/3yOOtrduzEgASIUVkLy4jPHn06XK8/dyvYr7KxwioSkx7wGm2oi+rbDFsciJBsNl6ov+R9YHeM5Qv7H/Nv5NveV+e0WOb4T/EGawGwqFoGH5ZDzq7zSfWHwN6kR+5LOjh/QvSmA0j7BYHZs9SeJ4xP2f/LqhxLH+ShcvNklLzhEMajcHD/VgAHHVqFoFyF3aqoH4ccWxy75o0F2E+yYmvkISQ+IAemEN+FhcdOGs4OHezcLJWSnIdlRuH7AIxc+nv1BYvJxncFYV1Vtd8IBYlRmbWo3EEKgP9ekBVbmQHrrxptpzt7u4MWjzfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=KEqNYUJsKCNkjLutPgzZrDY+TKz4OqNrhAShF1nsBCc=;
+ b=ZtUmZNox3RsbdyF7lUGCZ490v/KAomM+vZ/LViOjjxT/k4UKHOWLxte85PfuYND4ulZOvLbvhGHllbyPLQnM1b56LTl7AlvbIJWlJAUYDu4XlbrfxZ1pd4F6IPPi9cgw/fAkqbkqhLiWBVtJF4fDszu0o8HdQHXHn8M+EcH8YHp597B2dApVcRtbJOKRBcEV7eN2qludQy1y4xV3pphpHr+rHJfkUABEptMPo7QBgzSM4Yd2gTdD5Jx2s/0S08VJ7itCAVBGyBa/fyTW43kh5SH/YAn+F7uUOF0JCYCJSqSJ02HYJotCdbt1BD4A7LL+KHCGpLCh7RDr0S3V8Jve9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SN6PR1501MB2109.namprd15.prod.outlook.com (2603:10b6:805:3::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
+ 2021 19:42:36 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160%8]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
+ 19:42:36 +0000
+Date:   Thu, 23 Sep 2021 12:42:33 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
+Message-ID: <20210923194233.og5pamu6g7xfnsmp@kafai-mbp>
+References: <20210921210225.4095056-1-joannekoong@fb.com>
+ <20210921210225.4095056-2-joannekoong@fb.com>
+ <CAEf4BzZfeGGv+gBbfBJq5W8eQESgdqeNaByk-agOgMaB8BjQhA@mail.gmail.com>
+ <517a137d-66aa-8aa8-a064-fad8ae0c7fa8@fb.com>
+ <20210922193827.ypqlt3ube4cbbp5a@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYi3VXdMctKVFsDqG+_nDTSGooJ2sSkF1FuKkqDKqc82g@mail.gmail.com>
+ <20210922220844.ihzoapwytaz2o7nn@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzaQ42NTx9tcP43N-+SkXbFin9U+jSVy6HAmO8e+Cci5Dw@mail.gmail.com>
+ <20210923012849.qfgammwxxcd47fgn@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYstaeBBOPsA+stMOmZ+oBh384E2sY7P8GOtsZFfN=g0w@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYstaeBBOPsA+stMOmZ+oBh384E2sY7P8GOtsZFfN=g0w@mail.gmail.com>
+X-ClientProxiedBy: MW4PR04CA0336.namprd04.prod.outlook.com
+ (2603:10b6:303:8a::11) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
+Received: from kafai-mbp (2620:10d:c090:400::5:f3c9) by MW4PR04CA0336.namprd04.prod.outlook.com (2603:10b6:303:8a::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 19:42:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56161ebe-a94e-4335-3416-08d97eca4b7f
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2109:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB2109B79E7DF68D27D1F80153D5A39@SN6PR1501MB2109.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: isWSL+AdrI4PY3AHPZAZPGQWsPlUNCcSOQoxECwIRJdfxFtUCc1CYCOonTMVvHpgnCrdh4XmNZ3HY4YxXd9Iif1qPNAl1j0Zeyesz74lWU2mCONJg/om5fZlxUfskO5xJ6Mfus0mudZONCVdVPVsOOgG7NrRfIivKuvFuSG/x7FovSMBK9Vk0BJyJ5ai3dY1vi7jcgFeRgAD6N5v0gt4D2bs5dgAJsjEWgcN62JfDuhYLG4ow9jiyWWWl22is93EUWvbdNgnMy+uY1kt8WbECzszowCZyTTO+xcrVxT1DYtZjrsltX1mHIhBPJfSCmdxCp5FPWmb2sOYpr7ywbADzKCuu+mjN0NPTJfRtyLUHVC2j6Zj/DCrlpcw7a6pe3i2cJT74hAL6fHPozuv5QmR/FNTQPTxtqGA40RCgoB7ht0K3MuZrQKuJgV19WnCGvRoTMkTeqSc/1tF+0EO8R1FjJNheQ96/n5Fl+pgV40q6HNuakb/RW732CC0y4wag2xtbAwBtDnGTx17SHATEtndZlpLqSnyOJdD4nMK8j/2eXXaJ0mFo6LntHz5EK0ctIk7mi6YBwcrxC7k/iYKObvu+2fTcoy0LXze5Y2vb/oJ/gPkjkyJujejdUFsubbwUb1LqSsKbA9DlIZ4/y/O/lwc/dsq6XOE4GNEKd1osFaQctbDma7SseKhZKAhwj0ajBmI3hvYWtbrT2GY/SVI1TE/++SwrTcG7hKUOBRHFycExKs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6496006)(83380400001)(508600001)(6916009)(55016002)(966005)(6666004)(9686003)(38100700002)(33716001)(86362001)(8936002)(1076003)(54906003)(66556008)(316002)(66946007)(66476007)(5660300002)(4326008)(8676002)(52116002)(186003)(53546011)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7vocYR1SxrDvdopRfltDnlCV8FNGcOIJ/GR+DQsYX/JnUxQmQS8ZCObj3A9Z?=
+ =?us-ascii?Q?du+kfHOWwmzcBZEdiMkMkTRlxsfDLhbrqDVjxWehOZnSefaHBjxkok2Zdo0k?=
+ =?us-ascii?Q?AfVpbhBv7Ws+a6gBsLBXU5RzZDqPeAr1oMIWGZ7e6Kqn68aDC7kBys6v0wBe?=
+ =?us-ascii?Q?rjWMPaSGIRNCdCLp3AtVftEv73J18EEk8Q9utqM3/qAiLY7mBCqRM6fau3xX?=
+ =?us-ascii?Q?vgPx/kQMPeRnla33xnd0BVnE4rGF6xtfXi0+v9l1GlSFxAEbM9LAqGv72RyK?=
+ =?us-ascii?Q?Oi/G1uFSWhF6GT82b4/XC2CchSX8tgOFT6tKnQpycgaFjv7IA48CPScNQDZd?=
+ =?us-ascii?Q?a4Jb/D7dHAd6M/WYhTSaXCBYjh6jiRWF6HSvs1Xzk2MnEBvIQPIzNOfDM+bY?=
+ =?us-ascii?Q?RDC604/YE15kemj8u/s8NJzYUu+btQ09BEEpVSvNbqdHhbtjn/dGucRLqRuA?=
+ =?us-ascii?Q?E448hZ/EIDinB1PfW9Cq6WcHPn9+InS5sm0vcTyAnR/8i4RM427tHvMcDtQY?=
+ =?us-ascii?Q?yhueCxZY64FITDrdW4AVkWE0ZVqPv/RJia6OtZQY1EhvF9zXSxHLymibBQ6f?=
+ =?us-ascii?Q?wxYQ/nqs1Pr4RdpaIjdKFwI/qPOaWzDgAY8ZWq3ilZ63DL2RPcKlHjQWWDvU?=
+ =?us-ascii?Q?2w8bZBcsPfkR2fJeHyjwykdTRPCQkUlIS4tU9txIIUSD0VE8cC+WA1zc+UAN?=
+ =?us-ascii?Q?NB2IE77P+JrMu+G3HSZzkVAo0f8Z6fWsusLnULLMeYwKsmbOE2aC8BDkBRc/?=
+ =?us-ascii?Q?IZapEp8/UZdcUjupusMIrh0tWftpeazCnuNKxG2PbYagINrJcZolfP3qBXKJ?=
+ =?us-ascii?Q?csT2oUMFZ/vZoJKKJ8b1yy+1z72C93WTS4hhvBtJR1XdySHvkTiFJwqfRFVA?=
+ =?us-ascii?Q?BhGSKBEgAuLRM+BvPBP+LMPeHCJbYeXFio6H/r0/4KI9tKQ3wQTI+m+u/LeI?=
+ =?us-ascii?Q?ZA8BN2inpFQ/stFzDvqdkcuvK2fjufHGavH6gqBWPlCf9U9BJmxZ1K5icrcH?=
+ =?us-ascii?Q?qMH26Pr3YQ+BehpPnwvwnIU4jXWq4cek8063FyDww7HhegjPE4ZBVkn4Gdqn?=
+ =?us-ascii?Q?Z+4/ZewQhYCkUOHyw+PxbxrwIUbJjWuxVpizCD8Jb5iQl/P/qKtpQCURxnQn?=
+ =?us-ascii?Q?LSktsY/bXdktWSGfA8FNwcN9d2EW4EXrjvm/4z+IVuMzNR0SKWxNyUgHU4h/?=
+ =?us-ascii?Q?y6QoIISmIDBUmgdSHMGYxGtE/oJ6fD8LW/koSbgyHUmVztTNZf1W6YnCRN4w?=
+ =?us-ascii?Q?nZqLcchLW/XvqDissH78S/7SW05nJbUFqdBmZoJpmzceKbyz04mJYUBXNiO8?=
+ =?us-ascii?Q?5bhxmlG4Q3fWvDO3szqOUcBGTetwxrrhBK6W28x9MHI72A=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56161ebe-a94e-4335-3416-08d97eca4b7f
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 19:42:36.6569
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: U2KCgciM7e6k7LxQCKgnhIX4HRDPzvMCI+9XB2k1Kv9seTxKixX82dHOFGshQYUx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2109
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: b_epTS5KgfzAP0cVpeI4xEkA54s1BofB
+X-Proofpoint-ORIG-GUID: b_epTS5KgfzAP0cVpeI4xEkA54s1BofB
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210913140229.24797-1-omosnace@redhat.com> <CAHC9VhRw-S+zZUFz5QFFLMBATjo+YbPAiR21jX6p7cT0T+MVLA@mail.gmail.com>
- <CAHC9VhQyejnmLn0NHQiWzikHs8ZdzAUdZ2WqNxgGM6xhJ4mvMQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhQyejnmLn0NHQiWzikHs8ZdzAUdZ2WqNxgGM6xhJ4mvMQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 23 Sep 2021 15:07:41 -0400
-Message-ID: <CAHC9VhSzh90kFR8wzkmwR-YZNtHGAvYyATc2R1UDaBzZ944OFg@mail.gmail.com>
-Subject: Re: [PATCH v4] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-23_06,2021-09-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ mlxscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ suspectscore=0 impostorscore=0 clxscore=1015 spamscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109230115
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:59 PM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Mon, Sep 13, 2021 at 5:05 PM Paul Moore <paul@paul-moore.com> wrote:
+On Thu, Sep 23, 2021 at 11:42:55AM -0700, Andrii Nakryiko wrote:
+> On Wed, Sep 22, 2021 at 6:28 PM Martin KaFai Lau <kafai@fb.com> wrote:
 > >
-> > On Mon, Sep 13, 2021 at 10:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > On Wed, Sep 22, 2021 at 04:07:52PM -0700, Andrii Nakryiko wrote:
+> > > > > Please see my RFC ([0]). I don't think there is much to coordinate. It
+> > > > > could be purely BPF-side code, or BPF + user-space initialization
+> > > > > code, depending on the need. It's a simple and beautiful algorithm,
+> > > > > which BPF is powerful enough to implement customly and easily.
+> > > > >
+> > > > >   [0] https://lore.kernel.org/bpf/20210922203224.912809-1-andrii@kernel.org/T/#t
+> > > > In practice, the bloom filter will be populated only once by the userspace.
+> > > >
+> > > > The future update will be done by map-in-map to replace the whole bloom filter.
+> > > > May be with more max_entries with more nr_hashes.  May be fewer
+> > > > max_entries with fewer nr_hashes.
+> > > >
+> > > > Currently, the continuous running bpf prog using this bloom filter does
+> > > > not need to worry about any change in the newer bloom filter
+> > > > configure/setup.
+> > > >
+> > > > I wonder how that may look like in the custom bpf bloom filter in the
+> > > > bench prog for the map-in-map usage.
 > > >
-> > > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> > > lockdown") added an implementation of the locked_down LSM hook to
-> > > SELinux, with the aim to restrict which domains are allowed to perform
-> > > operations that would breach lockdown.
-> > >
-> > > However, in several places the security_locked_down() hook is called in
-> > > situations where the current task isn't doing any action that would
-> > > directly breach lockdown, leading to SELinux checks that are basically
-> > > bogus.
-> > >
-> > > To fix this, add an explicit struct cred pointer argument to
-> > > security_lockdown() and define NULL as a special value to pass instead
-> > > of current_cred() in such situations. LSMs that take the subject
-> > > credentials into account can then fall back to some default or ignore
-> > > such calls altogether. In the SELinux lockdown hook implementation, use
-> > > SECINITSID_KERNEL in case the cred argument is NULL.
-> > >
-> > > Most of the callers are updated to pass current_cred() as the cred
-> > > pointer, thus maintaining the same behavior. The following callers are
-> > > modified to pass NULL as the cred pointer instead:
-> > > 1. arch/powerpc/xmon/xmon.c
-> > >      Seems to be some interactive debugging facility. It appears that
-> > >      the lockdown hook is called from interrupt context here, so it
-> > >      should be more appropriate to request a global lockdown decision.
-> > > 2. fs/tracefs/inode.c:tracefs_create_file()
-> > >      Here the call is used to prevent creating new tracefs entries when
-> > >      the kernel is locked down. Assumes that locking down is one-way -
-> > >      i.e. if the hook returns non-zero once, it will never return zero
-> > >      again, thus no point in creating these files. Also, the hook is
-> > >      often called by a module's init function when it is loaded by
-> > >      userspace, where it doesn't make much sense to do a check against
-> > >      the current task's creds, since the task itself doesn't actually
-> > >      use the tracing functionality (i.e. doesn't breach lockdown), just
-> > >      indirectly makes some new tracepoints available to whoever is
-> > >      authorized to use them.
-> > > 3. net/xfrm/xfrm_user.c:copy_to_user_*()
-> > >      Here a cryptographic secret is redacted based on the value returned
-> > >      from the hook. There are two possible actions that may lead here:
-> > >      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
-> > >         task context is relevant, since the dumped data is sent back to
-> > >         the current task.
-> > >      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
-> > >         dumped SA is broadcasted to tasks subscribed to XFRM events -
-> > >         here the current task context is not relevant as it doesn't
-> > >         represent the tasks that could potentially see the secret.
-> > >      It doesn't seem worth it to try to keep using the current task's
-> > >      context in the a) case, since the eventual data leak can be
-> > >      circumvented anyway via b), plus there is no way for the task to
-> > >      indicate that it doesn't care about the actual key value, so the
-> > >      check could generate a lot of "false alert" denials with SELinux.
-> > >      Thus, let's pass NULL instead of current_cred() here faute de
-> > >      mieux.
-> > >
-> > > Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
-> > > Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
-> > > Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> > > Acked-by: Dan Williams <dan.j.williams@intel.com>         [cxl]
-> > > Acked-by: Steffen Klassert <steffen.klassert@secunet.com> [xfrm]
-> > > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> > > ---
-> > >
-> > > v4:
-> > > - rebase on top of TODO
-> > > - fix rebase conflicts:
-> > >   * drivers/cxl/pci.c
-> > >     - trivial: the lockdown reason was corrected in mainline
-> > >   * kernel/bpf/helpers.c, kernel/trace/bpf_trace.c
-> > >     - trivial: LOCKDOWN_BPF_READ was renamed to LOCKDOWN_BPF_READ_KERNEL
-> > >       in mainline
-> > >   * kernel/power/hibernate.c
-> > >     - trivial: !secretmem_active() was added to the condition in
-> > >       hibernation_available()
-> > > - cover new security_locked_down() call in kernel/bpf/helpers.c
-> > >   (LOCKDOWN_BPF_WRITE_USER in BPF_FUNC_probe_write_user case)
-> > >
-> > > v3: https://lore.kernel.org/lkml/20210616085118.1141101-1-omosnace@redhat.com/
-> > > - add the cred argument to security_locked_down() and adapt all callers
-> > > - keep using current_cred() in BPF, as the hook calls have been shifted
-> > >   to program load time (commit ff40e51043af ("bpf, lockdown, audit: Fix
-> > >   buggy SELinux lockdown permission checks"))
-> > > - in SELinux, don't ignore hook calls where cred == NULL, but use
-> > >   SECINITSID_KERNEL as the subject instead
-> > > - update explanations in the commit message
-> > >
-> > > v2: https://lore.kernel.org/lkml/20210517092006.803332-1-omosnace@redhat.com/
-> > > - change to a single hook based on suggestions by Casey Schaufler
-> > >
-> > > v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
+> > > You'd have to use BPF_MAP_TYPE_ARRAY for the map-in-map use case.
+> > Right, another map is needed.  When the user space generates
+> > a new bloom filter as inner map, it is likely that it has different
+> > number of entries, so the map size is different.
 > >
-> > The changes between v3 and v4 all seem sane to me, but I'm going to
-> > let this sit for a few days in hopes that we can collect a few more
-> > Reviewed-bys and ACKs.  If I don't see any objections I'll merge it
-> > mid-week(ish) into selinux/stable-5.15 and plan on sending it to Linus
-> > after it goes through a build/test cycle.
->
-> Time's up, I just merged this into selinux/stable-5.15 and I'll send
-> this to Linus once it passes testing.
+> > The old and new inner array map need to at least have the same value_size,
+> > so an one element array with different value_size will not work.
+> >
+> > The inner array map with BPF_F_INNER_MAP can have different max_entries
+> > but then there is no inline code lookup generation.  It may not be too
+> > bad to call it multiple times to lookup a value considering the
+> > array_map_lookup_elem will still be directly called without retpoline.
+> 
+> All true, of course, due to generic BPF limitations. In practice, I'd
+> decide what's the maximum size of the bloom filter I'd need and use
+> that as an inner map definition. If I understand correctly, there is
+> going to be only one "active" Bloom filter map and it's generally not
+> that big (few megabytes covers tons of "max_entries"), so I'd just
+> work with maximum expected size.
+A constant size defeats the configurability/flexibility mem usage
+argument for the custom bpf map.
 
-... and it's back out of selinux/stable-5.15 in spectacular fashion.
-I'll be following up with another SELinux patch today or tomorrow.
+> 
+> If I absolutely needed variable-sized filters, I'd consider doing a
+> multi-element array as you suggested, but I'd expect lower
+> performance, as you mentioned.
+yep.  I also expect it will be worse and it reduces the benefit of
+using bloom filter.
 
--- 
-paul moore
-www.paul-moore.com
+> > The next part is how to learn those "const volatile __u32 bloom_*;"
+> > values of the new inner map.  I think the max_entires can be obtained
+> > by map_ptr->max_entries.   Other vars (e.g. hash_cnt and seed) can
+> > be used as non-const global, allow the update, and a brief moment of
+> > inconsistence may be fine.
+> 
+> For single-element array with fixed value_size I'd put those in first 8 bytes:
+> 
+> struct my_bloom {
+>     __u32 msk;
+>     __u32 seed;
+>     __u64 data[];
+> }
+> 
+> For multi-element BPF_MAP_TYPE_ARRAY I'd put a mask and seed into elem[0].
+Yes, it is the thing that came to my mind also but I was very hesitant even
+to mention this one extra thing to remind the user that he/she needs to do
+to avoid potential false negative during the map switching and the user
+expects it will not happen for bloom filter once the map is fully
+populated.
+
+> I'd expect that hash_cnt would be just hard-coded, because as I
+> mentioned before, it determines the probability of false positive,
+> which is what end-users probably care about the most and set upfront,
+> at least they should be coming at this from the perspective "1% of
+> false positives is acceptable" rather than "hmm... 3 hash functions is
+> probably acceptable", no? But if not, first two elements would be
+> taken.
+I am not sure a constant hashes/false-positive-rate is always the use
+case also. but yes, another element in the arraymap will be needed.
+
+> > It all sounds doable but all these small need-to-pay-attention
+> > things add up.
+> 
+> Of course, there is always a tension between "make it simple and
+> provide a dedicated BPF helper/BPF map" and "let users implement it on
+> their own". I'm saying I'm not convinced that it has to be the former
+> in this case. Bloom filter is just a glorified bit set, once you have
+> a hashing helper. I don't think we've added BPF_MAP_TYPE_BITSET yet,
+> though it probably would be pretty useful in some cases, just like the
+> Bloom filter. Similarly, we don't have BPF_MAP_TYPE_HASHSET in
+> addition to BPF_MAP_TYPE_HASHMAP. I've seen many cases where HASHMAP
+> is used as HASHSET, yet we didn't have a dedicated map for that
+> either. I'm just curious where we draw the line between what should be
+> added to the kernel for BPF, if there are reasonable ways to avoid
+> that.
+I think it is pretty clear on the ups and downs on both arguments
+in terms of performance and configurability and map-in-map.
+
+How to move it forward from here?  Is it a must to keep the
+bloomfilter-like map in pure bpf only and we should stop
+the current work?
+
+or it is useful to have the kernel bloom filter that provides
+a get-and-go usage and a consistent experience for user in
+map-in-map which is the primary use case here.  I don't think
+this is necessarily blocking the custom bpf map effort also.
