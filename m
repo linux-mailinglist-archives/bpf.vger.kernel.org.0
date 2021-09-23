@@ -2,137 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5ED1416573
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 20:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D454F416595
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 21:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242727AbhIWSxy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 14:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242811AbhIWSxx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:53:53 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB82C061574
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 11:52:21 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id s16so365001ybe.0
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 11:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dcLg/eRWX82LWhZq5NSmPRnQe61HEehwk4b62T7t8fw=;
-        b=TC7MM0Z+y88WzcNI65okpSvVRmdvrF85YS/xrZulvDf+ptUfH+aV7MSTTBMhY1m6ab
-         JsQ1m5RtrNMh8Xe75Cb4N/EXkulfpPv1ugksK3RAaVexiCwpXOO0DiasmIC/2YokYrVA
-         7R/m+D922uS3USpWUy+xpMTFgGwJddSvn3WQ3osi4yeZUsJ6fm7TzU0bUKuh0hzc+Uv+
-         hNKv+BBKVklxreB+andRTynkT+1jm9tQI1Uytli2tOoE+HXVGuDvrXxtX7ydNSI6SpOc
-         YkKBT5HeuGbl0gD469/eI2v/zRrWO149QLOkbPXT1IInbb409htxIPRrADwDYHdmAW5+
-         fW8A==
+        id S242805AbhIWTCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 15:02:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43589 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232331AbhIWTCD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Sep 2021 15:02:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632423631;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4N1OpVszDzQL5pSRj0mhEDEcwQtQTGko1jICaLW5DhE=;
+        b=NZMrDGT5vSW7H7u6Up8ZNztGesyMhBvbHfC2fn4GO/RQa5ACHNCsKOzD+VuiMVU1Bg9ISl
+        qY9D3L/vHYVhLy9BgmKPjW/xz8gwEfBDjrRkk7OJKiRjlJ/9fI+2bCS6EO9TRtV3HFgxPp
+        kD7uaRp3BN7sDfIP4EoNHFnez3A3ykk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-ZDbkUh19M5K4t6dtZ3uAhQ-1; Thu, 23 Sep 2021 15:00:28 -0400
+X-MC-Unique: ZDbkUh19M5K4t6dtZ3uAhQ-1
+Received: by mail-ed1-f70.google.com with SMTP id z6-20020a50cd06000000b003d2c2e38f1fso7689696edi.1
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 12:00:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dcLg/eRWX82LWhZq5NSmPRnQe61HEehwk4b62T7t8fw=;
-        b=sCTNOJfm0Ti2fqy4JuULxd1bdLRDzgwNjaak3maQxLbwiA/mkBxpSL4570tXo8kHDq
-         NPwQaXwbeIln8v4SFtFspE65YmC1HGYzPlEYkPLIGDrs8zGK3nUa77496K8eDXaFvmnB
-         235jNDfCpmDqoQtakkrT1mU5m4cyQi1uF4v9DQSpRzOd1B8uDyUrr2ipNSHWCyLgNeXP
-         igp9Xw8DUd9CCgTZPQI1lCHqaRmODkII760iu8rsUPIEAsG1apxTSQPhmSJW7jpZCQLc
-         DBfnfoIC7iqRmZZuEXjm5D8FL/JFghuAUz3GFF7mw/FQbxd1XQPk8J17SABvzCYRQw32
-         d5rg==
-X-Gm-Message-State: AOAM532uJ+jIu2qJEAZI6JfELJuCP3rYEI0Esgq+M5mLFUl8YFyBQhF2
-        R0HFvqg50Pf1hXOoaObBQ6hkh3jAgo1MoRh2DDY=
-X-Google-Smtp-Source: ABdhPJz9kYbvnABew0+/uPvbmFYUYefmx/cDHGVv/7Dz50MIO6GlDmpkaFzysCpyROtsOEx6iSF26r2JaTXJRLLAXPo=
-X-Received: by 2002:a25:83c6:: with SMTP id v6mr7775105ybm.2.1632423137297;
- Thu, 23 Sep 2021 11:52:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210917215721.43491-1-alexei.starovoitov@gmail.com> <CACAyw98puHhO7f=OmEACNaje0DvVdpS7FosLY9aM8z46hy=7ww@mail.gmail.com>
-In-Reply-To: <CACAyw98puHhO7f=OmEACNaje0DvVdpS7FosLY9aM8z46hy=7ww@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 23 Sep 2021 11:52:06 -0700
-Message-ID: <CAEf4Bzbi_zZZndM93pWXn=Yu=bXQi6TWP8=pherCCtP5ZseqMA@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 00/10] bpf: CO-RE support in the kernel.
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=4N1OpVszDzQL5pSRj0mhEDEcwQtQTGko1jICaLW5DhE=;
+        b=GeWhU6Hh7kv003yiU73jQwv/24cxHtTFQNbRHK07nDFRiWv6YpHTqDcFU37yRoEaMI
+         pgqpEaAQjWAh+Zw8PTqierx0njhA/3xi1rfnomGNwCNzKkLgUfBt0bCQNdz3wUFIvdt9
+         MCwjAOksoStJ/fxPGNugFdwMb80GHkZETc/o6NAwIjKl4T8PB+2wZ2r0ARdinS+H8TpO
+         /VJq96Et0gF90igHI+ObwNEnQF6gLs6jU+dRPfmtNaO+qz90uSPq8uMDzf8R41wiuiFy
+         qJYnSEFwDzWD+nAJ6LLJQAmOf0R7iSC7l4ES+k63YSVyG+mmkxgxYruIPb7WTkbJkFeC
+         6+TQ==
+X-Gm-Message-State: AOAM533CA6MqSQ6nm33h3244lbVzPzETNukf2naPYVGtsB/uO4PbKU/I
+        p5b4YUk4p6b5yzFrwSMrRE0IJWuMC+yJ6tDaDtqXtj4lsZMWb4YbZ7JFMhIhNXcvq5PDlko8X1X
+        9GXUYxWzmOgkR
+X-Received: by 2002:a17:907:7703:: with SMTP id kw3mr6813707ejc.34.1632423624778;
+        Thu, 23 Sep 2021 12:00:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJze7OvSGXBiNuBxyXXx8R9XStQQwqgi2185GS2FMCL6hPut1aH6DX2utyCbVjBk5sVfGD7w6g==
+X-Received: by 2002:a17:907:7703:: with SMTP id kw3mr6813549ejc.34.1632423622891;
+        Thu, 23 Sep 2021 12:00:22 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id q12sm3533422ejs.58.2021.09.23.12.00.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 12:00:22 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 89BA1180274; Thu, 23 Sep 2021 21:00:20 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Zvi Effron <zeffron@riotgames.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Lorenzo Bianconi <lbianconi@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        mcroce@microsoft.com, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>
+Subject: Re: Redux: Backwards compatibility for XDP multi-buff
+In-Reply-To: <CAC1LvL11QfiuLq3YGLsJn2meLuo5jXivFf2v-y10-ax7p7sjXQ@mail.gmail.com>
+References: <87o88l3oc4.fsf@toke.dk>
+ <20210921155443.507a8479@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87k0j81iq5.fsf@toke.dk>
+ <CAC1LvL11QfiuLq3YGLsJn2meLuo5jXivFf2v-y10-ax7p7sjXQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 23 Sep 2021 21:00:20 +0200
+Message-ID: <878rznyv5n.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 4:34 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> On Fri, 17 Sept 2021 at 22:57, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Hi All,
-> >
-> > This is very early RFC that introduces CO-RE support in the kernel.
-> > There are several reasons to add such support:
-> > 1. It's a step toward signed BPF programs.
-> > 2. It allows golang like languages that struggle to adopt libbpf
-> >    to take advantage of CO-RE powers.
-> > 3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
-> >    by the verifier purely based on +10 offset. If R1 points to a union
-> >    the verifier picks one of the fields at this offset.
-> >    With CO-RE the kernel can disambiguate the field access.
-> >
-> > This set wires all relevant pieces and passes two selftests with CO-RE
-> > in the kernel.
-> >
-> > The main goal of RFC is to get feedback on patch 3.
-> > It's passing CO-RE relocation into the kernel via bpf_core_apply_relo()
-> > helper that is called by the loader program.
-> > It works, but there is no clean way to add error reporting here.
-> > So I'm thinking that the better approach would be to pass an array
-> > of 'struct bpf_core_relo_desc' into PROG_LOAD command similar to
-> > how func_info and line_info are passed.
-> > Such approach would allow for the use case 3 above (which
-> > current approach in patch 3 doesn't support).
->
-> +1 to having good error reporting, it's hard to debug CO-RE failures
-> as they are. PROG_LOAD seems nice, provided that relocation happens
-> before verification.
->
-> Some questions:
-> * How can this handle kernels that don't have built-in BTF? Not a
-> problem for myself, but some people have to deal with BTF-less distro
-> kernels by using pahole to generate external BTF from debug symbols.
-> Can we accommodate that?
-> * Does in-kernel CO-RE need to account for packed structs w/ bitfields
-> in them? If relocation happens after verification this could be a
-> problem: [1].
+Zvi Effron <zeffron@riotgames.com> writes:
 
-The way that CO-RE relocs for bitfields are implemented with libbpf is
-through the use of 5 different relocation kinds. See
-BPF_CORE_READ_BITFIELD() macro in bpf_core_read.h.
-
-> * Tangent: libbpf CO-RE has this res->validate flag, which turns off
-> some checks for bitfields. I've never fully understood why that is,
-> maybe Andrii can explain it?
-
-Because there is no single canonical set of those 5 relocated values
-(that I mentioned above) that the compiler has to general. There are
-many ways to extract a bitfield and compiler can use different ones
-due to optimization and code generation choices. So in general it's
-ambiguous and impossible to validate that we agree with the compiler.
-Generally we won't agree, but will still do correct bitfield
-relocation. Again, I'll refer you to BPF_CORE_READ_BITFIELD() macro
-for details.
-
-
+> On Wed, Sep 22, 2021 at 1:03 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Jakub Kicinski <kuba@kernel.org> writes:
+>>
+>> > On Tue, 21 Sep 2021 18:06:35 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wr=
+ote:
+>> >> 1. Do nothing. This would make it up to users / sysadmins to avoid
+>> >> anything breaking by manually making sure to not enable multi-buffer
+>> >> support while loading any XDP programs that will malfunction if
+>> >> presented with an mb frame. This will probably break in interesting
+>> >> ways, but it's nice and simple from an implementation PoV. With this
+>> >> we don't need the declaration discussed above either.
+>> >>
+>> >> 2. Add a check at runtime and drop the frames if they are mb-enabled =
+and
+>> >> the program doesn't understand it. This is relatively simple to
+>> >> implement, but it also makes for difficult-to-understand issues (why
+>> >> are my packets suddenly being dropped?), and it will incur runtime
+>> >> overhead.
+>> >>
+>> >> 3. Reject loading of programs that are not MB-aware when running in an
+>> >> MB-enabled mode. This would make things break in more obvious ways,
+>> >> and still allow a userspace loader to declare a program "MB-aware" to
+>> >> force it to run if necessary. The problem then becomes at what level
+>> >> to block this?
+>> >>
+>> >> Doing this at the driver level is not enough: while a particular
+>> >> driver knows if it's running in multi-buff mode, we can't know for
+>> >> sure if a particular XDP program is multi-buff aware at attach time:
+>> >> it could be tail-calling other programs, or redirecting packets to
+>> >> another interface where it will be processed by a non-MB aware
+>> >> program.
+>> >>
+>> >> So another option is to make it a global toggle: e.g., create a new
+>> >> sysctl to enable multi-buffer. If this is set, reject loading any XDP
+>> >> program that doesn't support multi-buffer mode, and if it's unset,
+>> >> disable multi-buffer mode in all drivers. This will make it explicit
+>> >> when the multi-buffer mode is used, and prevent any accidental subtle
+>> >> malfunction of existing XDP programs. The drawback is that it's a
+>> >> mode switch, so more configuration complexity.
+>> >
+>> > 4. Add new program type, XDP_MB. Do not allow mixing of XDP vs XDP_MB
+>> > thru tail calls.
+>> >
+>> > IMHO that's very simple and covers majority of use cases.
+>>
+>> Using the program type (or maybe the expected_attach_type) was how I was
+>> imagining we'd encode the "I am MB aware" flag, yes. I hadn't actually
+>> considered that this could be used to also restrict tail call/freplace
+>> attachment, but that's a good point. So this leaves just the redirect
+>> issue, then, see my other reply.
+>>
 >
-> Lorenz
->
-> 1: https://lore.kernel.org/bpf/CACAyw9_R4_ib0KvcuQC4nSOy5+Hn8-Xq-G8geDdLsNztX=0Fsw@mail.gmail.com/
->
-> --
-> Lorenz Bauer  |  Systems Engineer
-> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
->
-> www.cloudflare.com
+> I really like this apporoach as well, but before we commit to it, how lik=
+ely
+> are we to encounter this type of situation (where we need to indicate whe=
+ther
+> an XDP program supports a new capability) again in the future. And if we =
+do,
+> are we willing to require that all programs supporting that new feature a=
+re
+> also mb-aware? Essentially, the suboptimal case I'm envisioning is needin=
+g to
+> have XDP_MB, XD_MB_NEW_THING, XDP_NEW_THING, and XDP all as program types=
+. That
+> leads to exponential explosion in program types.
+
+Hmm, that's a good point. Maybe it would be better to communicate it via
+a flag; we do have a prog_flags attribute on BPF_PROG_LOAD we could use.
+
+> Also, every time we add a program type to encode a feature (instead of a =
+truly
+> new type), we're essentially forcing a recompilation (and redeployment) o=
+f all
+> existing programs that take advantage of the libbpf section name program
+> typing. (I'm sure there are tools that can rename a section in an ELF file
+> without recompilation, but recompilation seems the simplest way to correc=
+t the
+> ELF files for most people.)
+
+Isn't this true regardless of how we encode it? I mean when we add a new
+feature that needs an explicit support declaration, programs need to
+declare that they support it somehow. No matter how it's actually
+encoded, this will either entail recompiling the program, or having the
+loader override the value at load-time.
+
+For instance, say we do use a flag instead of a new prog type, how would
+a BPF program set that flag? Defining a new section type in libbpf would
+be an obvious answer (i.e., SEC("xdp") sets prog_type=3Dxdp, and
+SEC("xdp_mb") sets prog_type=3Dxdp, flags=3DXDP_MB).
+
+> If we think this is a one-off, it's probably fine, but if we think
+> it'll happen again, is it worth it to find a solution that will work
+> for future cases now, instead of having XDP, XDP_MB, and then having
+> to find a solution for future cases?
+
+Well, really the right solution is a general "XDP feature flags"
+capability. There was some work done on this, but unfortunately it
+stalled out. Not sure it's feasible to resurrect that as a prerequisite
+for landing xdp_mb, though, so I guess we'll need a one-off thing here :/
+
+-Toke
+
