@@ -2,101 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25896415661
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 05:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5C5415A2A
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 10:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239341AbhIWDlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 23:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239331AbhIWDke (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:40:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6EB96113E;
-        Thu, 23 Sep 2021 03:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632368344;
-        bh=e0KvK0LHn2MpqDG7+v7pq8V26y/44bSO2X5nywi2CUM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UQNGEp5z17AN88cM+fZeaOOUenBw8akhf4nEG6qgatkAmRpNyzAP1FaIBPA7XUfRl
-         deisbUiLQp9SA7hYFqcwFboG+eRJ2UyegaKrY9uWYc8kB4EyesmYTQoxj6ktCAso2A
-         kyLvGYEzUuM7st9MhKHZE6VdJvedO1A2I37PSlMLboyRTPcYYvKZ0u4u9HaWXz+AKk
-         aiv36cT1KW6mMuSyaf0NsOKJzbPItL57dVN5/TyfVFrhjJzrghI851QD/akc3Lv/Yf
-         37oa37inhgu7FHM88u7H89+RXEe+vPnnbMwJPfMsNbfKkAlqInuv243Po8kNix0fQ6
-         RTxfLB8+R0K4Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bixuan Cui <cuibixuan@huawei.com>,
-        syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/19] bpf: Add oversize check before call kvcalloc()
-Date:   Wed, 22 Sep 2021 23:38:40 -0400
-Message-Id: <20210923033853.1421193-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210923033853.1421193-1-sashal@kernel.org>
-References: <20210923033853.1421193-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S239977AbhIWImZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 04:42:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20310 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239825AbhIWImU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Sep 2021 04:42:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632386449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=9dF2fUEZWycIGwZ53hEpFFIfueXLgIP+J7ThTRLO4uA=;
+        b=X3dGoJWXT8vpC+dJH7rvd+P6axvKWZqLM8ypkC8h85FVbo0kTN6qUP8P/hwRaYzGAe3Xvl
+        nPyzJ+uE4osvhn7zKuvqoJCHJVVrf+xCcQiq6TaA/FHtkk1la/IZK+enpZ46QdmhpN2hdw
+        7MehlI0BUtGZR+ZOdxWDCs2pF0wQIlc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-NDmQ4V0aOGuX1Ft4LpDTpA-1; Thu, 23 Sep 2021 04:40:47 -0400
+X-MC-Unique: NDmQ4V0aOGuX1Ft4LpDTpA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A53ECC622;
+        Thu, 23 Sep 2021 08:40:46 +0000 (UTC)
+Received: from griffin.upir.cz (unknown [10.40.194.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94FD860BF4;
+        Thu, 23 Sep 2021 08:40:44 +0000 (UTC)
+From:   Jiri Benc <jbenc@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter Oskolkov <posk@google.com>, netdev@vger.kernel.org
+Subject: [PATCH bpf] selftests: bpf: test_lwt_ip_encap: really disable rp_filter
+Date:   Thu, 23 Sep 2021 10:40:22 +0200
+Message-Id: <b1cdd9d469f09ea6e01e9c89a6071c79b7380f89.1632386362.git.jbenc@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@huawei.com>
+It's not enough to set net.ipv4.conf.all.rp_filter=0, that does not override
+a greater rp_filter value on the individual interfaces. We also need to set
+net.ipv4.conf.default.rp_filter=0 before creating the interfaces. That way,
+they'll also get their own rp_filter value of zero.
 
-[ Upstream commit 0e6491b559704da720f6da09dd0a52c4df44c514 ]
-
-Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
-oversize check. When the allocation is larger than what kmalloc() supports,
-the following warning triggered:
-
-WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
-Modules linked in:
-CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
-Call Trace:
- kvmalloc include/linux/mm.h:806 [inline]
- kvmalloc_array include/linux/mm.h:824 [inline]
- kvcalloc include/linux/mm.h:829 [inline]
- check_btf_line kernel/bpf/verifier.c:9925 [inline]
- check_btf_info kernel/bpf/verifier.c:10049 [inline]
- bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
- bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
- __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
- __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
- __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210911005557.45518-1-cuibixuan@huawei.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0fde56e4385b0 ("selftests: bpf: add test_lwt_ip_encap selftest")
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
 ---
- kernel/bpf/verifier.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/bpf/test_lwt_ip_encap.sh | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 60383b28549b..9c5fa5c52903 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -6839,6 +6839,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
- 	nr_linfo = attr->line_info_cnt;
- 	if (!nr_linfo)
- 		return 0;
-+	if (nr_linfo > INT_MAX / sizeof(struct bpf_line_info))
-+		return -EINVAL;
+diff --git a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
+index 59ea56945e6c..b497bb85b667 100755
+--- a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
++++ b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
+@@ -112,6 +112,14 @@ setup()
+ 	ip netns add "${NS2}"
+ 	ip netns add "${NS3}"
  
- 	rec_size = attr->line_info_rec_size;
- 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
++	# rp_filter gets confused by what these tests are doing, so disable it
++	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
++	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
++	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
++	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.default.rp_filter=0
++	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.default.rp_filter=0
++	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.default.rp_filter=0
++
+ 	ip link add veth1 type veth peer name veth2
+ 	ip link add veth3 type veth peer name veth4
+ 	ip link add veth5 type veth peer name veth6
+@@ -236,11 +244,6 @@ setup()
+ 	ip -netns ${NS1} -6 route add ${IPv6_GRE}/128 dev veth5 via ${IPv6_6} ${VRF}
+ 	ip -netns ${NS2} -6 route add ${IPv6_GRE}/128 dev veth7 via ${IPv6_8} ${VRF}
+ 
+-	# rp_filter gets confused by what these tests are doing, so disable it
+-	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
+-	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
+-	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
+-
+ 	TMPFILE=$(mktemp /tmp/test_lwt_ip_encap.XXXXXX)
+ 
+ 	sleep 1  # reduce flakiness
 -- 
-2.30.2
+2.18.1
 
