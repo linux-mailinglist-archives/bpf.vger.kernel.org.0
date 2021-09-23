@@ -2,211 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA09415FD5
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 15:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E2F416031
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 15:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241425AbhIWNby (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 09:31:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241224AbhIWNbq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:31:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD3CF6126A;
-        Thu, 23 Sep 2021 13:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632403814;
-        bh=GfTG4NevTekER0PTzKJU9hfUyfF7/nFfc5ACOcb887E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nrXBUe+SWZjuRn7FRHxODDjRJk/ysp0Qyr5Xy0+vqdIKxhJ41YDvCx3Q5VYEnaM9F
-         BMbSB+WYbWAnvb4uqzUuuyjOhSpULMoFsEgIyZs6fHCuPQ4ZresRU8iB+s3kSyHdLV
-         01hdVRY/jSRcuI12GgE56qnfQFxOJzl0IaFHjNsK7xJJL8iSgjqxBrlA3HMokzaXlw
-         d5yfHpxY7bluKJ4zQy2vKCB9GXYXGbqSjHKlWlE7NJjlM3vBCswpVGVVQWouE9sAxs
-         GLs/S4wAhvb/PcI/xZlsAodgDarLGMHuWXQTIbAH1A0tXFAkPz/1FQnLN2v2x1CQZg
-         PqhMhP9ODSkNQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mTOnk-000nds-OW; Thu, 23 Sep 2021 15:30:12 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 02/13] scripts: get_abi.pl: Check for missing symbols at the ABI specs
-Date:   Thu, 23 Sep 2021 15:30:00 +0200
-Message-Id: <8612c609e77b1b057172ab13685bdfd3ce37995f.1632402570.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632402570.git.mchehab+huawei@kernel.org>
-References: <cover.1632402570.git.mchehab+huawei@kernel.org>
+        id S232633AbhIWNoO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 09:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232316AbhIWNoO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:44:14 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6550AC061574
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 06:42:42 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id w29so17287759wra.8
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 06:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RYNU9hWi3zDMwZGHajuFnmBsx+BT2s/R3kN3qcekSpA=;
+        b=UvtJxvV5hUMJRwPqDAcC7asMCdGlYDjHe4gCJY0Z3LK5J67C12IfTfkr7BaPo5VYlt
+         c50BzhVnF3CSoRoMUHBFpZZIyZJX/FT/lhAiA+8nB8WYn8e0x8iSMmfovaimqaBiE8P6
+         6C0IwjkwUf4NlAXVCswWCOfIoaiGGmx5Af5mimp9acYrTrHgAftd4oxr07F4btbnkhkA
+         tvdYpcFI2h0X3alEQSK7Z9/2NpdJNqgRuHI0mm9Zz4CM9Dv/LkDfyxDvVN956xt/8sDP
+         8YQitNlA/SXwh8ywkwZb1XLYvdqYe+PMMr+f2djXCpH0SjnFfVJ+Yy+vr/lVdHTxWzZb
+         hPdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RYNU9hWi3zDMwZGHajuFnmBsx+BT2s/R3kN3qcekSpA=;
+        b=G2NeMV5UCvqvO6WS9yZKw5CAwWlKTZlFAGAduVlA/vQ1C68lgMI0Bdm2EpUa9qcAin
+         A1wUKSh/FnuVWVLWd0lqqcL1ywEFEy/hYL1m4yPaAv+4jgbwHPfX9jztr9FKqMB4CFiI
+         k5L/U3C7cNV0LOJ0+HdoPhM7LIcWc93Bt9qUvyA2dLTzXIplUC/mowQ20Atk8azZNyEX
+         Zgb8zHXfG9spl3g8OdFmCOLkZVaJJ/EG9pT0q9UtsRbKL3QklLqHIwK2xIlJbfeKt6wZ
+         fujlcJdpZuj9USrsD9oSKT0euPQPPFJHDVVghDDhL0TWaYPWZxxWIFyQjMPy3g/2elsg
+         YAsg==
+X-Gm-Message-State: AOAM5337RnOZxbTHwngr50WOsq+m03Ca8bzCJMlashtGM0hizWpw+qBk
+        4mbFuHkW5xumiF6nB9cJgtI+Og==
+X-Google-Smtp-Source: ABdhPJxIpMbs/49TwiYHjTwj+XToLoUASC+r9v8xnfofNIGOL695gP75+fbxyV97J0Kj+zK+9wfkMQ==
+X-Received: by 2002:a1c:3584:: with SMTP id c126mr4731435wma.0.1632404560919;
+        Thu, 23 Sep 2021 06:42:40 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.69.207])
+        by smtp.gmail.com with ESMTPSA id i1sm5576809wrb.93.2021.09.23.06.42.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 06:42:40 -0700 (PDT)
+Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
+ BSD-2-Clause
+To:     Luca Boccassi <bluca@debian.org>, bpf@vger.kernel.org
+Cc:     bjorn@kernel.org, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, daniel@zonque.org, joe@ovn.org, jbacik@fb.com,
+        Simon Horman <simon.horman@corigine.com>
+References: <20210923000540.47344-1-luca.boccassi@gmail.com>
+ <49c54bf3f4a95562592575062058f069654fd253.camel@debian.org>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <a92cd043-30e8-c26d-ffe9-3521322ce71b@isovalent.com>
+Date:   Thu, 23 Sep 2021 14:42:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <49c54bf3f4a95562592575062058f069654fd253.camel@debian.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Check for the symbols that exists under /sys but aren't
-defined at Documentation/ABI.
+2021-09-23 11:41 UTC+0100 ~ Luca Boccassi <bluca@debian.org>
+> On Thu, 2021-09-23 at 01:05 +0100, luca.boccassi@gmail.com wrote:
+>> From: Luca Boccassi <bluca@debian.org>
+>>
+>> libbpf and bpftool have been dual-licensed to facilitate inclusion in
+>> software that is not compatible with GPL2-only (ie: Apache2), but the
+>> samples are still GPL2-only.
+>>
+>> Given these files are samples, they get naturally copied around. For
+>> example
+>> it is the case for samples/bpf/bpf_insn.h which was copied into the
+>> systemd
+>> tree:
+>> https://github.com/systemd/systemd/blob/main/src/shared/linux/bpf_insn.h
+>>
+>> Dual-license this header as GPL-2.0-only OR BSD-2-Clause to follow
+>> the same licensing used by libbpf and bpftool:
+>>
+>> 1bc38b8ff6cc ("libbpf: relicense libbpf as LGPL-2.1 OR BSD-2-Clause")
+>> 907b22365115 ("tools: bpftool: dual license all files")
+>>
+>> Signed-off-by: Luca Boccassi <bluca@debian.org>
+>> ---
+>> Most of systemd is (L)GPL2-or-later, which means there is no
+>> perceived
+>> incompatibility with Apache2 softwares and can thus be linked with
+>> OpenSSL 3.0. But given this GPL2-only header is included this is
+>> currently
+>> not possible.
+>> Dual-licensing this header solves this problem for us as we are
+>> scoping
+>> moving to OpenSSL 3.0, see:
+>>
+>> https://lists.freedesktop.org/archives/systemd-devel/2021-September/046882.html
+>>
+>> The authors of this file according to git log are:
+>>
+>> Alexei Starovoitov <ast@kernel.org>
+>> Björn Töpel <bjorn.topel@intel.com>
+>> Brendan Jackman <jackmanb@google.com>
+>> Chenbo Feng <fengc@google.com>
+>> Daniel Borkmann <daniel@iogearbox.net>
+>> Daniel Mack <daniel@zonque.org>
+>> Jakub Kicinski <jakub.kicinski@netronome.com>
+>> Jiong Wang <jiong.wang@netronome.com>
+>> Joe Stringer <joe@ovn.org>
+>> Josef Bacik <jbacik@fb.com>
+>>
+>> (excludes a commit adding the SPDX header)
+>>
+>> All authors and maintainers are CC'ed. An Acked-by from everyone in
+>> the
+>> above list of authors will be necessary.
+>>
+>> One could probably argue for relicensing all the samples/bpf/ files
+>> given both
+>> libbpf and bpftool are, however the authors list would be much larger
+>> and thus
+>> it would be much more difficult, so I'd really appreciate if this
+>> header could
+>> be handled first by itself, as it solves a real license
+>> incompatibility issue
+>> we are currently facing.
+>>
+>>  samples/bpf/bpf_insn.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+>> index aee04534483a..29c3bb6ad1cd 100644
+>> --- a/samples/bpf/bpf_insn.h
+>> +++ b/samples/bpf/bpf_insn.h
+>> @@ -1,4 +1,4 @@
+>> -/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+>>  /* eBPF instruction mini library */
+>>  #ifndef __BPF_INSN_H
+>>  #define __BPF_INSN_H
+> 
+> Got "address not found" for the following:
+> 
+> Björn Töpel <bjorn.topel@intel.com>
+> Jakub Kicinski <jakub.kicinski@netronome.com>
+> Jiong Wang <jiong.wang@netronome.com>
+> 
+> Trying again with different aliases from more recent commits for Björn
+> and Jakub.
+> 
+> I cannot find other commits from Jiong with a different email address -
+> Jakub, do you happen to know how we can reach Jiong? Perhaps it's not
+> necessary as it's Netronome that owns the copyright and thus your ack
+> would cover both contributions?
+> 
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/get_abi.pl | 90 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 88 insertions(+), 2 deletions(-)
+Hi Luca, I believe Simon can handle this for Netronome, I'm adding him
+in copy.
 
-diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index 48077feea89c..e714bf75f5c2 100755
---- a/scripts/get_abi.pl
-+++ b/scripts/get_abi.pl
-@@ -13,7 +13,9 @@ my $help = 0;
- my $man = 0;
- my $debug = 0;
- my $enable_lineno = 0;
-+my $show_warnings = 1;
- my $prefix="Documentation/ABI";
-+my $sysfs_prefix="/sys";
- 
- #
- # If true, assumes that the description is formatted with ReST
-@@ -36,7 +38,7 @@ pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
- 
- my ($cmd, $arg) = @ARGV;
- 
--pod2usage(2) if ($cmd ne "search" && $cmd ne "rest" && $cmd ne "validate");
-+pod2usage(2) if ($cmd ne "search" && $cmd ne "rest" && $cmd ne "validate" && $cmd ne "undefined");
- pod2usage(2) if ($cmd eq "search" && !$arg);
- 
- require Data::Dumper if ($debug);
-@@ -50,6 +52,8 @@ my %symbols;
- sub parse_error($$$$) {
- 	my ($file, $ln, $msg, $data) = @_;
- 
-+	return if (!$show_warnings);
-+
- 	$data =~ s/\s+$/\n/;
- 
- 	print STDERR "Warning: file $file#$ln:\n\t$msg";
-@@ -522,11 +526,88 @@ sub search_symbols {
- 	}
- }
- 
-+# Exclude /sys/kernel/debug and /sys/kernel/tracing from the search path
-+sub skip_debugfs {
-+	if (($File::Find::dir =~ m,^/sys/kernel,)) {
-+		return grep {!/(debug|tracing)/ } @_;
-+	}
-+
-+	if (($File::Find::dir =~ m,^/sys/fs,)) {
-+		return grep {!/(pstore|bpf|fuse)/ } @_;
-+	}
-+
-+	return @_
-+}
-+
-+my %leaf;
-+
-+my $escape_symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x29\x2b-\x2d\x3a-\x40\x7b-\xff]) }x;
-+sub parse_existing_sysfs {
-+	my $file = $File::Find::name;
-+
-+	my $mode = (stat($file))[2];
-+	return if ($mode & S_IFDIR);
-+
-+	my $leave = $file;
-+	$leave =~ s,.*/,,;
-+
-+	if (defined($leaf{$leave})) {
-+		# FIXME: need to check if the path makes sense
-+		my $what = $leaf{$leave};
-+
-+		$what =~ s/,/ /g;
-+
-+		$what =~ s/\<[^\>]+\>/.*/g;
-+		$what =~ s/\{[^\}]+\}/.*/g;
-+		$what =~ s/\[[^\]]+\]/.*/g;
-+		$what =~ s,/\.\.\./,/.*/,g;
-+		$what =~ s,/\*/,/.*/,g;
-+
-+		$what =~ s/\s+/ /g;
-+
-+		# Escape all other symbols
-+		$what =~ s/$escape_symbols/\\$1/g;
-+
-+		foreach my $i (split / /,$what) {
-+			if ($file =~ m#^$i$#) {
-+#				print "$file: $i: OK!\n";
-+				return;
-+			}
-+		}
-+
-+		print "$file: $leave is defined at $what\n";
-+
-+		return;
-+	}
-+
-+	print "$file not found.\n";
-+}
-+
-+sub undefined_symbols {
-+	foreach my $w (sort keys %data) {
-+		foreach my $what (split /\xac /,$w) {
-+			my $leave = $what;
-+			$leave =~ s,.*/,,;
-+
-+			if (defined($leaf{$leave})) {
-+				$leaf{$leave} .= " " . $what;
-+			} else {
-+				$leaf{$leave} = $what;
-+			}
-+		}
-+	}
-+
-+	find({wanted =>\&parse_existing_sysfs, preprocess =>\&skip_debugfs, no_chdir => 1}, $sysfs_prefix);
-+}
-+
- # Ensure that the prefix will always end with a slash
- # While this is not needed for find, it makes the patch nicer
- # with --enable-lineno
- $prefix =~ s,/?$,/,;
- 
-+if ($cmd eq "undefined" || $cmd eq "search") {
-+	$show_warnings = 0;
-+}
- #
- # Parses all ABI files located at $prefix dir
- #
-@@ -537,7 +618,9 @@ print STDERR Data::Dumper->Dump([\%data], [qw(*data)]) if ($debug);
- #
- # Handles the command
- #
--if ($cmd eq "search") {
-+if ($cmd eq "undefined") {
-+	undefined_symbols;
-+} elsif ($cmd eq "search") {
- 	search_symbols;
- } else {
- 	if ($cmd eq "rest") {
-@@ -576,6 +659,9 @@ B<rest>                  - output the ABI in ReST markup language
- 
- B<validate>              - validate the ABI contents
- 
-+B<undefined>             - existing symbols at the system that aren't
-+                           defined at Documentation/ABI
-+
- =back
- 
- =head1 OPTIONS
--- 
-2.31.1
-
+Quentin
