@@ -2,67 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B879541558B
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 04:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25896415661
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 05:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238932AbhIWCvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 22:51:15 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35344 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238859AbhIWCvP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:51:15 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1095)
-        id A96792089EE2; Wed, 22 Sep 2021 19:49:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A96792089EE2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1632365384;
-        bh=xLdsl8kzcMimc82CMKplU0g9FfAdCqs4Pu32SbQeCEE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VmLDghvMOMaar/xy4oNVDrTSqTn1kSdaJeEQDQMbBKJhEFZ1tzX+9xBHQgvWlUGKK
-         hDwQ4dXCehdZLDGP/friH+rvyOL5zDC9sN8jx0PksOkKAqI+jzpPU/6De7y1lQasc8
-         b79lFP9YxU7dC2G6i0ZViHG7tx36/Jrf3uCM6+k8=
-Date:   Wed, 22 Sep 2021 19:49:44 -0700
-From:   Muhammad Falak Wani <mwani@linux.microsoft.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>,
+        id S239341AbhIWDlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 23:41:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239331AbhIWDke (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Sep 2021 23:40:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6EB96113E;
+        Thu, 23 Sep 2021 03:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632368344;
+        bh=e0KvK0LHn2MpqDG7+v7pq8V26y/44bSO2X5nywi2CUM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UQNGEp5z17AN88cM+fZeaOOUenBw8akhf4nEG6qgatkAmRpNyzAP1FaIBPA7XUfRl
+         deisbUiLQp9SA7hYFqcwFboG+eRJ2UyegaKrY9uWYc8kB4EyesmYTQoxj6ktCAso2A
+         kyLvGYEzUuM7st9MhKHZE6VdJvedO1A2I37PSlMLboyRTPcYYvKZ0u4u9HaWXz+AKk
+         aiv36cT1KW6mMuSyaf0NsOKJzbPItL57dVN5/TyfVFrhjJzrghI851QD/akc3Lv/Yf
+         37oa37inhgu7FHM88u7H89+RXEe+vPnnbMwJPfMsNbfKkAlqInuv243Po8kNix0fQ6
+         RTxfLB8+R0K4Q==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Bixuan Cui <cuibixuan@huawei.com>,
+        syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Use sysconf to simplify
- libbpf_num_possible_cpus
-Message-ID: <20210923024944.GA446@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20210922070748.21614-1-falakreyaz@gmail.com>
- <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
- <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 06/19] bpf: Add oversize check before call kvcalloc()
+Date:   Wed, 22 Sep 2021 23:38:40 -0400
+Message-Id: <20210923033853.1421193-6-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210923033853.1421193-1-sashal@kernel.org>
+References: <20210923033853.1421193-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > This approach is unfortunately broken, see also commit e00c7b216f34 ("bpf: fix
-> > multiple issues in selftest suite and samples") for more details:
-> 
-> Oh, that predates me. Thanks, Daniel!
-Thank you Daniel for the context. 
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-> 
-> Sorry, Muhammad, seems like current implementation is there for a
-> reason and will have to stay. Thanks a lot for working on this,
-> though. Hopefully you can help with other issues, though.
-> 
-No worries at all, it was a good experience for me & I will
-try to help here and there for sure.
+[ Upstream commit 0e6491b559704da720f6da09dd0a52c4df44c514 ]
 
-Thank you again!
+Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
+oversize check. When the allocation is larger than what kmalloc() supports,
+the following warning triggered:
 
--mfrw
+WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
+Modules linked in:
+CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
+Call Trace:
+ kvmalloc include/linux/mm.h:806 [inline]
+ kvmalloc_array include/linux/mm.h:824 [inline]
+ kvcalloc include/linux/mm.h:829 [inline]
+ check_btf_line kernel/bpf/verifier.c:9925 [inline]
+ check_btf_info kernel/bpf/verifier.c:10049 [inline]
+ bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
+ bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
+ __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210911005557.45518-1-cuibixuan@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 60383b28549b..9c5fa5c52903 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6839,6 +6839,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
+ 	nr_linfo = attr->line_info_cnt;
+ 	if (!nr_linfo)
+ 		return 0;
++	if (nr_linfo > INT_MAX / sizeof(struct bpf_line_info))
++		return -EINVAL;
+ 
+ 	rec_size = attr->line_info_rec_size;
+ 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
+-- 
+2.30.2
+
