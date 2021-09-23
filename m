@@ -2,122 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8382A416478
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 19:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D0E416553
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 20:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242543AbhIWRdG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 13:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
+        id S242778AbhIWSoj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 14:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242402AbhIWRdG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:33:06 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7837EC061574;
-        Thu, 23 Sep 2021 10:31:34 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id i8so2626533uae.7;
-        Thu, 23 Sep 2021 10:31:34 -0700 (PDT)
+        with ESMTP id S242708AbhIWSoj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Sep 2021 14:44:39 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32881C061574
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 11:43:07 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id s16so311295ybe.0
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 11:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+eLkYhNtPz468JECzicPH+55KzTJypaKR1YIxXBGKFA=;
-        b=dQZlVD8zeXrYwt3wy2PGOmtTCuGtQ2/Jgt3RefZ5d0GisMFUk4AgD5Z3HLJfw3vSVx
-         PaAWtDj9X68m9rDET0mUN9ga/1CQiB3uYOpYeAXdZBLYSukNgiEZeqgVcKx1C8UgvlwJ
-         5UPq5n2BKkqHaeL7eOsRI3opCiSAisnFEdY7S/OBx2nnSRuy4dszdTLdnwoTABR8FC2b
-         m875rdvSO7Qn4QzNzkKnDd38bZqpD0K0bcHtgpofgcGgUVgwSoUamTjy/8sFfaq/DU1f
-         x6bODSEZ+4GDo6PKd8b1S6hiaLxXMEdCeyxVAVYOf7Hsk3LaOmwaH4jZ0v6qip+jKNcR
-         2Zkg==
+        bh=mLVB4AglitkNdTvXxlPc4PVf5UljXwmlSEsEX1A02J4=;
+        b=KI7Iyurra2hmTFjVIkCJSfQC8V7nEA3nzudvx0ITzQ5vHKUp6HYBS/klPhB6hnKo3g
+         jOqndLOy0sPdkngwHcmRG9VJIzIXlhYMkxskbLHRfHqU6OfszjLpD7bPiRcBNSamV8jX
+         sWYCP7Vv5LmDZ8Z2SmEWjxG11LhPv9ZBl5RD+27WCj8ln4De+p576z7Z0NXbnrX4FZMo
+         Sw+uAKh6lFR8Zb9jMK9zMMgutY+Pdt42QqtesLzghrhkAlMvKlp8JOjVvz9aKfAiNqgC
+         BbPDCFixbsRtokSZBZL3mIoA2LlBrDaXGYp+ggrElLkWf+bUVlzGrGHSzDzD+vDpswvd
+         DgCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+eLkYhNtPz468JECzicPH+55KzTJypaKR1YIxXBGKFA=;
-        b=f0axcE2B8+EqSjVcHcPEbnpJ25NiRwsvQagHjEThuAF9W0wrtBvktqE1hLsv1WTc8U
-         GtypeY+FGYMYkg0XJA2cvGUjuwVDwl0+o/qgOCbt4B5f6Z7gjxaGbBMTdxvbYNdFNuHn
-         rBjETyPTlHy83S0lqacPwpZlpSdM4dyXjLsxypl67gZymz0UgIc5MVEGIAcKDTG0kP0j
-         bvaRRjIZ7/y2CC9MO/7F4kuSjaHjGitzSHVJvnaFz4wAfuk9MZnRF9PuER2m7J+pe37l
-         DVBtpEI4zTjNjp6I7Sl4v9Nzvl/B2owGA0WaDSXpeb1wGFPFdAeyGyPGxmYoaWDdwpgL
-         bwIA==
-X-Gm-Message-State: AOAM533XBRMkqR7X+sBLrD29uKtscW51eisFpv9WmNPngGS2zgzGchBT
-        QaHqeT7sbv2iyasI0U6vUPU5Ez3Kxh9g3hM6um7kZ649RDg=
-X-Google-Smtp-Source: ABdhPJydA+GP2gNnH2uFrnugHWkTR16KM7HKYgoKjZJUTpYhVa7u6TQrT6QRCt9S/Dqf/81OUokJ548XvLm90xwwUxc=
-X-Received: by 2002:ab0:284d:: with SMTP id c13mr5469553uaq.26.1632418293386;
- Thu, 23 Sep 2021 10:31:33 -0700 (PDT)
+        bh=mLVB4AglitkNdTvXxlPc4PVf5UljXwmlSEsEX1A02J4=;
+        b=38SU4nTwbJobnV49kktqOybVeilokiANYNaDLicEUnX40qQHmAVj1TLS6tiPitlnZn
+         EPqf7cBRBDxQS1Ilv0aBeoyDiYNPbkRwmhFWxOBrwy6gYBozu7gwtczgTFgIvzdwmiaP
+         HAcU/Xp7+BfdjrX78lwbkvu0ArpKvKfj0rqMosavHKsetEms/ItOZwTQJcoNKME8ziOi
+         qJfA9NFz5cyvIzGFaQw7jkhAjJSCxksKWiABKq5/gWamXaf2Zr5f5pZxplncjcj8Mg3a
+         XNtDEuJDE5Kv9E2/p+sL23sjnkCWSLXBAe06KX2Hdi7BsFLqrC+Nsz9538+eyrrpLl6b
+         VUwA==
+X-Gm-Message-State: AOAM531hn1gFGWv45BcmxBdAP/q2NhzCdm/oDpFeHo/BlJ1KRcXUEqyT
+        10PbUMLalFlfPtRUkPTnG3VR5eX0/9THjvv8DYw0Me1K
+X-Google-Smtp-Source: ABdhPJyJB0Rzv2QPyqZUyUkmr5ADNvipzVbZQcy/+gL2UEMqbxDE0IN+0j+9KHLk0ktIwTOm9llwoLEmLqXbYUHyC1Y=
+X-Received: by 2002:a05:6902:724:: with SMTP id l4mr7319294ybt.433.1632422586295;
+ Thu, 23 Sep 2021 11:43:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923161034.18975-1-roysjosh@gmail.com>
-In-Reply-To: <20210923161034.18975-1-roysjosh@gmail.com>
-From:   Joshua Roys <roysjosh@gmail.com>
-Date:   Thu, 23 Sep 2021 13:31:22 -0400
-Message-ID: <CANoNxL_E_+MLu=Re-71J4FfFUcpA0met0AMnjtK2+jw6hGKCJw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: mlx4: Add support for XDP_REDIRECT
-To:     netdev@vger.kernel.org
-Cc:     ast@kernel.org, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, daniel@iogearbox.net, kuba@kernel.org,
-        bpf@vger.kernel.org, tariqt@nvidia.com, linux-rdma@vger.kernel.org,
-        Joshua Roys <roysjosh@gmail.com>
+References: <20210921210225.4095056-1-joannekoong@fb.com> <20210921210225.4095056-2-joannekoong@fb.com>
+ <CAEf4BzZfeGGv+gBbfBJq5W8eQESgdqeNaByk-agOgMaB8BjQhA@mail.gmail.com>
+ <517a137d-66aa-8aa8-a064-fad8ae0c7fa8@fb.com> <20210922193827.ypqlt3ube4cbbp5a@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYi3VXdMctKVFsDqG+_nDTSGooJ2sSkF1FuKkqDKqc82g@mail.gmail.com>
+ <20210922220844.ihzoapwytaz2o7nn@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzaQ42NTx9tcP43N-+SkXbFin9U+jSVy6HAmO8e+Cci5Dw@mail.gmail.com> <20210923012849.qfgammwxxcd47fgn@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210923012849.qfgammwxxcd47fgn@kafai-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 23 Sep 2021 11:42:55 -0700
+Message-ID: <CAEf4BzYstaeBBOPsA+stMOmZ+oBh384E2sY7P8GOtsZFfN=g0w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding requested maintainers to CC.
+On Wed, Sep 22, 2021 at 6:28 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Wed, Sep 22, 2021 at 04:07:52PM -0700, Andrii Nakryiko wrote:
+> > > > Please see my RFC ([0]). I don't think there is much to coordinate. It
+> > > > could be purely BPF-side code, or BPF + user-space initialization
+> > > > code, depending on the need. It's a simple and beautiful algorithm,
+> > > > which BPF is powerful enough to implement customly and easily.
+> > > >
+> > > >   [0] https://lore.kernel.org/bpf/20210922203224.912809-1-andrii@kernel.org/T/#t
+> > > In practice, the bloom filter will be populated only once by the userspace.
+> > >
+> > > The future update will be done by map-in-map to replace the whole bloom filter.
+> > > May be with more max_entries with more nr_hashes.  May be fewer
+> > > max_entries with fewer nr_hashes.
+> > >
+> > > Currently, the continuous running bpf prog using this bloom filter does
+> > > not need to worry about any change in the newer bloom filter
+> > > configure/setup.
+> > >
+> > > I wonder how that may look like in the custom bpf bloom filter in the
+> > > bench prog for the map-in-map usage.
+> >
+> > You'd have to use BPF_MAP_TYPE_ARRAY for the map-in-map use case.
+> Right, another map is needed.  When the user space generates
+> a new bloom filter as inner map, it is likely that it has different
+> number of entries, so the map size is different.
+>
+> The old and new inner array map need to at least have the same value_size,
+> so an one element array with different value_size will not work.
+>
+> The inner array map with BPF_F_INNER_MAP can have different max_entries
+> but then there is no inline code lookup generation.  It may not be too
+> bad to call it multiple times to lookup a value considering the
+> array_map_lookup_elem will still be directly called without retpoline.
 
-On Thu, Sep 23, 2021 at 12:11 PM Joshua Roys <roysjosh@gmail.com> wrote:
+All true, of course, due to generic BPF limitations. In practice, I'd
+decide what's the maximum size of the bloom filter I'd need and use
+that as an inner map definition. If I understand correctly, there is
+going to be only one "active" Bloom filter map and it's generally not
+that big (few megabytes covers tons of "max_entries"), so I'd just
+work with maximum expected size.
+
+If I absolutely needed variable-sized filters, I'd consider doing a
+multi-element array as you suggested, but I'd expect lower
+performance, as you mentioned.
+
+> The next part is how to learn those "const volatile __u32 bloom_*;"
+> values of the new inner map.  I think the max_entires can be obtained
+> by map_ptr->max_entries.   Other vars (e.g. hash_cnt and seed) can
+> be used as non-const global, allow the update, and a brief moment of
+> inconsistence may be fine.
+
+For single-element array with fixed value_size I'd put those in first 8 bytes:
+
+struct my_bloom {
+    __u32 msk;
+    __u32 seed;
+    __u64 data[];
+}
+
+For multi-element BPF_MAP_TYPE_ARRAY I'd put a mask and seed into elem[0].
+
+I'd expect that hash_cnt would be just hard-coded, because as I
+mentioned before, it determines the probability of false positive,
+which is what end-users probably care about the most and set upfront,
+at least they should be coming at this from the perspective "1% of
+false positives is acceptable" rather than "hmm... 3 hash functions is
+probably acceptable", no? But if not, first two elements would be
+taken.
+
 >
-> Signed-off-by: Joshua Roys <roysjosh@gmail.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> This is a pattern-match commit, based off of the mlx4 XDP_TX and other
-> drivers' XDP_REDIRECT enablement patches. The goal was to get AF_XDP
-> working in VPP and this was successful. Tested with a CX3.
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> index 7f6d3b82c29b..557d7daac2d3 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> @@ -669,6 +669,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
->         struct bpf_prog *xdp_prog;
->         int cq_ring = cq->ring;
->         bool doorbell_pending;
-> +       bool xdp_redir_flush;
->         struct mlx4_cqe *cqe;
->         struct xdp_buff xdp;
->         int polled = 0;
-> @@ -682,6 +683,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
->         xdp_prog = rcu_dereference_bh(ring->xdp_prog);
->         xdp_init_buff(&xdp, priv->frag_info[0].frag_stride, &ring->xdp_rxq);
->         doorbell_pending = false;
-> +       xdp_redir_flush = false;
->
->         /* We assume a 1:1 mapping between CQEs and Rx descriptors, so Rx
->          * descriptor offset can be deduced from the CQE index instead of
-> @@ -790,6 +792,14 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
->                         switch (act) {
->                         case XDP_PASS:
->                                 break;
-> +                       case XDP_REDIRECT:
-> +                               if (xdp_do_redirect(dev, &xdp, xdp_prog) >= 0) {
-> +                                       xdp_redir_flush = true;
-> +                                       frags[0].page = NULL;
-> +                                       goto next;
-> +                               }
-> +                               trace_xdp_exception(dev, xdp_prog, act);
-> +                               goto xdp_drop_no_cnt;
->                         case XDP_TX:
->                                 if (likely(!mlx4_en_xmit_frame(ring, frags, priv,
->                                                         length, cq_ring,
-> @@ -897,6 +907,9 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
->                         break;
->         }
->
-> +       if (xdp_redir_flush)
-> +               xdp_do_flush();
-> +
->         if (likely(polled)) {
->                 if (doorbell_pending) {
->                         priv->tx_cq[TX_XDP][cq_ring]->xdp_busy = true;
-> --
-> 2.31.1
->
+> It all sounds doable but all these small need-to-pay-attention
+> things add up.
+
+Of course, there is always a tension between "make it simple and
+provide a dedicated BPF helper/BPF map" and "let users implement it on
+their own". I'm saying I'm not convinced that it has to be the former
+in this case. Bloom filter is just a glorified bit set, once you have
+a hashing helper. I don't think we've added BPF_MAP_TYPE_BITSET yet,
+though it probably would be pretty useful in some cases, just like the
+Bloom filter. Similarly, we don't have BPF_MAP_TYPE_HASHSET in
+addition to BPF_MAP_TYPE_HASHMAP. I've seen many cases where HASHMAP
+is used as HASHSET, yet we didn't have a dedicated map for that
+either. I'm just curious where we draw the line between what should be
+added to the kernel for BPF, if there are reasonable ways to avoid
+that.
