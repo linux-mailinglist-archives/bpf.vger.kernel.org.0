@@ -2,260 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894CC41540B
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 01:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C93415465
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 02:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238477AbhIVXnL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 22 Sep 2021 19:43:11 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40322 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238504AbhIVXnK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Sep 2021 19:43:10 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18MKlbND016229
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 16:41:40 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b86h0uhwf-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 16:41:40 -0700
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 22 Sep 2021 16:41:37 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 27DFF4B32F55; Wed, 22 Sep 2021 16:41:34 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v3 bpf-next 9/9] selftests/bpf: switch sk_lookup selftests to strict SEC("sk_lookup") use
-Date:   Wed, 22 Sep 2021 16:41:13 -0700
-Message-ID: <20210922234113.1965663-10-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210922234113.1965663-1-andrii@kernel.org>
-References: <20210922234113.1965663-1-andrii@kernel.org>
+        id S230414AbhIWAIW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 20:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232944AbhIWAIW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Sep 2021 20:08:22 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC56C061574
+        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 17:06:51 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id t8so12053366wri.1
+        for <bpf@vger.kernel.org>; Wed, 22 Sep 2021 17:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P5ReMAbSeLYa7VjkmMVv35Cu6XMupo74SUOiXj8wpHI=;
+        b=fA/LTyMJELdJNAVUFV2Pc86sOW0Ukt8shb2tTYtcP1XSgepneTsuRWf4o5oalEuiTK
+         a/IQfmbzqAJD3UvupbiNOCAMzdPz5rz8ePmkE5JacjkdxN2tHMFkSs2QgQlAtG0fBYy1
+         LGYb0BmKXiX8o1J3aD3ak6NuI3RGNYS0gZhK4U7FqLlwWjZBhYBIUG0kXm7X3NWa0bmP
+         9KuMY4YOMFT79ByzQBUiRuwwoO1CPdsCx3lsthvRJw38cFaS9jKlMVur+NGm5bjo+kZE
+         U6lhKPG7xtrN6lxrh9ABkM6s6UnyjiLeZRYmt8Ervs/miPcvnZcLVvj50b/j+JNmMGqM
+         PzWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P5ReMAbSeLYa7VjkmMVv35Cu6XMupo74SUOiXj8wpHI=;
+        b=uYhNICUx3QD2I+4iLrks11W8hIwfME6Ues/SYDOYs/GYUhd9LQ4AaUR0dTWm+oI8AP
+         3zU4SwfBdPVO2ickjnOsqMjyQPPxPICBHxiPZxUzxYbec3sQDYISMVadgsCdB4tNL12d
+         Szg5ZRxSS3IOWknk/1QovrzucfadDTjFPdbxKB1f94h9gOpIhpf7edKLwXs0pv4Cyfj7
+         nCRaewcSSLWaU0bl8G1ULI7SqdbCZvScaNQCIUQhbiJGZTgm8vywWeQT0fkNlRtWOM/7
+         W7ftJtNtDbXkXttfZyZ9Q7oNNw9tFhZhI8on1CDlM0WkmxZMPCx1UdcLG7SxXnTyhur/
+         /aZA==
+X-Gm-Message-State: AOAM530HUcGrkSBXmy0OaA+kJHGYoXrEQt/8sdMt+JdeMG//LaDU2wtA
+        aWFrLVBVS09JDUxUl6SlsJO8jcp2EM4=
+X-Google-Smtp-Source: ABdhPJyn4cynvVOMvzIlJU48NP3jR+tsrRgaT2YbN3pXICnS38JxV/FqcR1YLQVpuyEMK9lV8aXH8g==
+X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr1547631wmk.51.1632355609690;
+        Wed, 22 Sep 2021 17:06:49 -0700 (PDT)
+Received: from localhost ([2a01:4b00:f41a:3600:df86:cebc:8870:2184])
+        by smtp.gmail.com with ESMTPSA id i9sm7754076wmi.44.2021.09.22.17.06.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 17:06:49 -0700 (PDT)
+From:   luca.boccassi@gmail.com
+To:     bpf@vger.kernel.org
+Cc:     bjorn.topel@intel.com, jackmanb@google.com,
+        jiong.wang@netronome.com, jakub.kicinski@netronome.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, daniel@zonque.org,
+        fengc@google.com, joe@ovn.org, jbacik@fb.com,
+        Luca Boccassi <bluca@debian.org>
+Subject: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR BSD-2-Clause
+Date:   Thu, 23 Sep 2021 01:05:40 +0100
+Message-Id: <20210923000540.47344-1-luca.boccassi@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: yWAlfudncRAR_km50NKT0vpMcUBDWCMj
-X-Proofpoint-ORIG-GUID: yWAlfudncRAR_km50NKT0vpMcUBDWCMj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-22_09,2021-09-22_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 bulkscore=0 impostorscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109200000 definitions=main-2109220150
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Update "sk_lookup/" definition to be a stand-alone type specifier,
-with backwards-compatible prefix match logic in non-libbpf-1.0 mode.
+From: Luca Boccassi <bluca@debian.org>
 
-Currently in selftests all the "sk_lookup/<whatever>" uses just use
-<whatever> for duplicated unique name encoding, which is redundant as
-BPF program's name (C function name) uniquely and descriptively
-identifies the intended use for such BPF programs.
+libbpf and bpftool have been dual-licensed to facilitate inclusion in
+software that is not compatible with GPL2-only (ie: Apache2), but the
+samples are still GPL2-only.
 
-With libbpf's SEC_DEF("sk_lookup") definition updated, switch existing
-sk_lookup programs to use "unqualified" SEC("sk_lookup") section names,
-with no random text after it.
+Given these files are samples, they get naturally copied around. For example
+it is the case for samples/bpf/bpf_insn.h which was copied into the systemd
+tree: https://github.com/systemd/systemd/blob/main/src/shared/linux/bpf_insn.h
 
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Dual-license this header as GPL-2.0-only OR BSD-2-Clause to follow
+the same licensing used by libbpf and bpftool:
+
+1bc38b8ff6cc ("libbpf: relicense libbpf as LGPL-2.1 OR BSD-2-Clause")
+907b22365115 ("tools: bpftool: dual license all files")
+
+Signed-off-by: Luca Boccassi <bluca@debian.org>
 ---
- tools/lib/bpf/libbpf.c                        |  2 +-
- .../selftests/bpf/progs/test_sk_lookup.c      | 38 +++++++++----------
- 2 files changed, 20 insertions(+), 20 deletions(-)
+Most of systemd is (L)GPL2-or-later, which means there is no perceived
+incompatibility with Apache2 softwares and can thus be linked with
+OpenSSL 3.0. But given this GPL2-only header is included this is currently
+not possible.
+Dual-licensing this header solves this problem for us as we are scoping
+moving to OpenSSL 3.0, see:
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a2b3856ad23f..09f4df242a17 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8053,7 +8053,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("cgroup/getsockopt",	CGROUP_SOCKOPT, BPF_CGROUP_GETSOCKOPT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- 	SEC_DEF("cgroup/setsockopt",	CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- 	SEC_DEF("struct_ops+",		STRUCT_OPS, 0, SEC_NONE),
--	SEC_DEF("sk_lookup/",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE),
-+	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- };
- 
- #define MAX_TYPE_NAME_SIZE 32
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-index 6c4d32c56765..48534d810391 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-@@ -72,13 +72,13 @@ static const __u16 DST_PORT = 7007; /* Host byte order */
- static const __u32 DST_IP4 = IP4(127, 0, 0, 1);
- static const __u32 DST_IP6[] = IP6(0xfd000000, 0x0, 0x0, 0x00000001);
- 
--SEC("sk_lookup/lookup_pass")
-+SEC("sk_lookup")
- int lookup_pass(struct bpf_sk_lookup *ctx)
- {
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/lookup_drop")
-+SEC("sk_lookup")
- int lookup_drop(struct bpf_sk_lookup *ctx)
- {
- 	return SK_DROP;
-@@ -97,7 +97,7 @@ int reuseport_drop(struct sk_reuseport_md *ctx)
- }
- 
- /* Redirect packets destined for port DST_PORT to socket at redir_map[0]. */
--SEC("sk_lookup/redir_port")
-+SEC("sk_lookup")
- int redir_port(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -116,7 +116,7 @@ int redir_port(struct bpf_sk_lookup *ctx)
- }
- 
- /* Redirect packets destined for DST_IP4 address to socket at redir_map[0]. */
--SEC("sk_lookup/redir_ip4")
-+SEC("sk_lookup")
- int redir_ip4(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -139,7 +139,7 @@ int redir_ip4(struct bpf_sk_lookup *ctx)
- }
- 
- /* Redirect packets destined for DST_IP6 address to socket at redir_map[0]. */
--SEC("sk_lookup/redir_ip6")
-+SEC("sk_lookup")
- int redir_ip6(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -164,7 +164,7 @@ int redir_ip6(struct bpf_sk_lookup *ctx)
- 	return err ? SK_DROP : SK_PASS;
- }
- 
--SEC("sk_lookup/select_sock_a")
-+SEC("sk_lookup")
- int select_sock_a(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -179,7 +179,7 @@ int select_sock_a(struct bpf_sk_lookup *ctx)
- 	return err ? SK_DROP : SK_PASS;
- }
- 
--SEC("sk_lookup/select_sock_a_no_reuseport")
-+SEC("sk_lookup")
- int select_sock_a_no_reuseport(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -205,7 +205,7 @@ int select_sock_b(struct sk_reuseport_md *ctx)
- }
- 
- /* Check that bpf_sk_assign() returns -EEXIST if socket already selected. */
--SEC("sk_lookup/sk_assign_eexist")
-+SEC("sk_lookup")
- int sk_assign_eexist(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -238,7 +238,7 @@ int sk_assign_eexist(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that bpf_sk_assign(BPF_SK_LOOKUP_F_REPLACE) can override selection. */
--SEC("sk_lookup/sk_assign_replace_flag")
-+SEC("sk_lookup")
- int sk_assign_replace_flag(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -270,7 +270,7 @@ int sk_assign_replace_flag(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that bpf_sk_assign(sk=NULL) is accepted. */
--SEC("sk_lookup/sk_assign_null")
-+SEC("sk_lookup")
- int sk_assign_null(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk = NULL;
-@@ -313,7 +313,7 @@ int sk_assign_null(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that selected sk is accessible through context. */
--SEC("sk_lookup/access_ctx_sk")
-+SEC("sk_lookup")
- int access_ctx_sk(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk1 = NULL, *sk2 = NULL;
-@@ -379,7 +379,7 @@ int access_ctx_sk(struct bpf_sk_lookup *ctx)
-  * are not covered because they give bogus results, that is the
-  * verifier ignores the offset.
-  */
--SEC("sk_lookup/ctx_narrow_access")
-+SEC("sk_lookup")
- int ctx_narrow_access(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -553,7 +553,7 @@ int ctx_narrow_access(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that sk_assign rejects SERVER_A socket with -ESOCKNOSUPPORT */
--SEC("sk_lookup/sk_assign_esocknosupport")
-+SEC("sk_lookup")
- int sk_assign_esocknosupport(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -578,28 +578,28 @@ int sk_assign_esocknosupport(struct bpf_sk_lookup *ctx)
- 	return ret;
- }
- 
--SEC("sk_lookup/multi_prog_pass1")
-+SEC("sk_lookup")
- int multi_prog_pass1(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG1, &PROG_DONE, BPF_ANY);
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_pass2")
-+SEC("sk_lookup")
- int multi_prog_pass2(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG2, &PROG_DONE, BPF_ANY);
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_drop1")
-+SEC("sk_lookup")
- int multi_prog_drop1(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG1, &PROG_DONE, BPF_ANY);
- 	return SK_DROP;
- }
- 
--SEC("sk_lookup/multi_prog_drop2")
-+SEC("sk_lookup")
- int multi_prog_drop2(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG2, &PROG_DONE, BPF_ANY);
-@@ -623,7 +623,7 @@ static __always_inline int select_server_a(struct bpf_sk_lookup *ctx)
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_redir1")
-+SEC("sk_lookup")
- int multi_prog_redir1(struct bpf_sk_lookup *ctx)
- {
- 	int ret;
-@@ -633,7 +633,7 @@ int multi_prog_redir1(struct bpf_sk_lookup *ctx)
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_redir2")
-+SEC("sk_lookup")
- int multi_prog_redir2(struct bpf_sk_lookup *ctx)
- {
- 	int ret;
+https://lists.freedesktop.org/archives/systemd-devel/2021-September/046882.html
+
+The authors of this file according to git log are:
+
+Alexei Starovoitov <ast@kernel.org>
+Björn Töpel <bjorn.topel@intel.com>
+Brendan Jackman <jackmanb@google.com>
+Chenbo Feng <fengc@google.com>
+Daniel Borkmann <daniel@iogearbox.net>
+Daniel Mack <daniel@zonque.org>
+Jakub Kicinski <jakub.kicinski@netronome.com>
+Jiong Wang <jiong.wang@netronome.com>
+Joe Stringer <joe@ovn.org>
+Josef Bacik <jbacik@fb.com>
+
+(excludes a commit adding the SPDX header)
+
+All authors and maintainers are CC'ed. An Acked-by from everyone in the
+above list of authors will be necessary.
+
+One could probably argue for relicensing all the samples/bpf/ files given both
+libbpf and bpftool are, however the authors list would be much larger and thus
+it would be much more difficult, so I'd really appreciate if this header could
+be handled first by itself, as it solves a real license incompatibility issue
+we are currently facing.
+
+ samples/bpf/bpf_insn.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+index aee04534483a..29c3bb6ad1cd 100644
+--- a/samples/bpf/bpf_insn.h
++++ b/samples/bpf/bpf_insn.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+ /* eBPF instruction mini library */
+ #ifndef __BPF_INSN_H
+ #define __BPF_INSN_H
 -- 
-2.30.2
+2.33.0
 
