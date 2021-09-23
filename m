@@ -2,71 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749B041555C
-	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 04:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B879541558B
+	for <lists+bpf@lfdr.de>; Thu, 23 Sep 2021 04:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238840AbhIWCHL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Sep 2021 22:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238832AbhIWCHL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:07:11 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2297C061574;
-        Wed, 22 Sep 2021 19:05:40 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id l6so2991932plh.9;
-        Wed, 22 Sep 2021 19:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=25/K6IHNQ8vrEpZbcXpenMo4mHxaIzsW78v7ge5900c=;
-        b=jgDixe+kcBVyKy7DS2mKqHTFvi/g1nc/mLfI4NTBv2BC8MLCvkvJoZNUA4e0sXQJGk
-         AR1ShcuCtByCj5fFP6VJq4x+hkD2uJXrPuo8lpP2hrmHF/ps6q1WBS+Q18Ye3s2JlgRV
-         Z1eC6RGAmGwE31ySjnyunJDfkxsWCOk7jiGZMZizAoYbVo6zd8MalmDnISp2uovAgjaR
-         W9jVqMvh9EsskYU8wvdf8Hawi0gm8xD5ddZj4E5F/My5ULlzwh7N6l18u6D14u9k7/2g
-         6IV1jyFLs1IcjeISh0fn15yptZ9PT+UeHNe9vkmEI1brGkEZ0FrO43w0Hw0y9I+ncOGn
-         cJXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=25/K6IHNQ8vrEpZbcXpenMo4mHxaIzsW78v7ge5900c=;
-        b=bHgCLUQcDVLyeDLyQk3FcKN0/VBkzbMMf9QzUftHfldfoz0d80GN1Es07jHgHIO/jv
-         Mckyo19LzetREyqWJyfICM+qEKcKNsshmeC1nHdfAhJmOpKzQWqo1yS9Q2hwHSqOJUlN
-         gaF4zcuyani7CcYMNTWXl/VScKnRjTyDcKLcU55GqYm8qYsskMnsKYDCnR+y4Wcsg7Uj
-         BZYL6lmiMZ4rOlqdWKEQ/VvN+0k3fAAfDKVWjN85rTIwOLxtE2NU9A7shaXYVV0lBXdd
-         xTd98ksW+LTQCiVifu9oqU8Q7ImqX7DUbkzqV4vyCU/hUWHwYlNX7eA2RxU8JGw6wWYW
-         ea+A==
-X-Gm-Message-State: AOAM531dP3MHYLgU+6OfuQ+1Vk9D/DG/WqTFgWUC21tp8YsWeIL1nLXz
-        A5yZD8aEa1FtiRQjRSKUvG69e6IJfNjELzkWIjc=
-X-Google-Smtp-Source: ABdhPJz3NyXZ+EqTkv7EFpVKBAbBCzdfqLkdj+r7WYpPCswBaaNPzLsZYgqyfSpcwmLNNjEnSIPzQg367M95tSAYAks=
-X-Received: by 2002:a17:90a:1944:: with SMTP id 4mr2459193pjh.62.1632362740215;
- Wed, 22 Sep 2021 19:05:40 -0700 (PDT)
+        id S238932AbhIWCvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Sep 2021 22:51:15 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35344 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238859AbhIWCvP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Sep 2021 22:51:15 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1095)
+        id A96792089EE2; Wed, 22 Sep 2021 19:49:44 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A96792089EE2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1632365384;
+        bh=xLdsl8kzcMimc82CMKplU0g9FfAdCqs4Pu32SbQeCEE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VmLDghvMOMaar/xy4oNVDrTSqTn1kSdaJeEQDQMbBKJhEFZ1tzX+9xBHQgvWlUGKK
+         hDwQ4dXCehdZLDGP/friH+rvyOL5zDC9sN8jx0PksOkKAqI+jzpPU/6De7y1lQasc8
+         b79lFP9YxU7dC2G6i0ZViHG7tx36/Jrf3uCM6+k8=
+Date:   Wed, 22 Sep 2021 19:49:44 -0700
+From:   Muhammad Falak Wani <mwani@linux.microsoft.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Muhammad Falak R Wani <falakreyaz@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next] libbpf: Use sysconf to simplify
+ libbpf_num_possible_cpus
+Message-ID: <20210923024944.GA446@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20210922070748.21614-1-falakreyaz@gmail.com>
+ <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
+ <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210913231108.19762-1-xiyou.wangcong@gmail.com>
- <CAADnVQJFbCmzoFM8GGHyLWULSmX75=67Tu0EnTOOoVfH4gE+HA@mail.gmail.com>
- <CAM_iQpX2prCpPDmO1U0A_wyJi_LS4wmd9MQiFKiqQT8NfGNNnw@mail.gmail.com>
- <CAADnVQJJHLuaymMEdDowharvyJr+6ta2Tg9XAR3aM+4=ysu+bg@mail.gmail.com>
- <CAM_iQpUCtXRWhMqSaoymZ6OqOywb-k4R1_mLYsLCTm7ABJ5k_A@mail.gmail.com> <CAADnVQJcUspoBzk9Tt3Rx_OH7-MB+m1xw+vq2k2SozYZMmpurg@mail.gmail.com>
-In-Reply-To: <CAADnVQJcUspoBzk9Tt3Rx_OH7-MB+m1xw+vq2k2SozYZMmpurg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Sep 2021 19:05:29 -0700
-Message-ID: <CAADnVQJSjbQC1wWAf_Js9h47iMge7O3L8zmYh7Mu8j4psMBf7g@mail.gmail.com>
-Subject: Re: [RFC Patch net-next v2] net_sched: introduce eBPF based Qdisc
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 6:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> At the same time Toke mentioned that he has a prototype of suck skb map.
+> > This approach is unfortunately broken, see also commit e00c7b216f34 ("bpf: fix
+> > multiple issues in selftest suite and samples") for more details:
+> 
+> Oh, that predates me. Thanks, Daniel!
+Thank you Daniel for the context. 
 
-This is such an embarrassing typo :) Sorry Toke. s/suck/such/ in above.
+> 
+> Sorry, Muhammad, seems like current implementation is there for a
+> reason and will have to stay. Thanks a lot for working on this,
+> though. Hopefully you can help with other issues, though.
+> 
+No worries at all, it was a good experience for me & I will
+try to help here and there for sure.
+
+Thank you again!
+
+-mfrw
