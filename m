@@ -2,85 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED44417E15
-	for <lists+bpf@lfdr.de>; Sat, 25 Sep 2021 01:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC738417E54
+	for <lists+bpf@lfdr.de>; Sat, 25 Sep 2021 01:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhIXXOt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Sep 2021 19:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
+        id S235727AbhIXXgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Sep 2021 19:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245569AbhIXXOt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Sep 2021 19:14:49 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE933C061571
-        for <bpf@vger.kernel.org>; Fri, 24 Sep 2021 16:13:15 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k17so10173953pff.8
-        for <bpf@vger.kernel.org>; Fri, 24 Sep 2021 16:13:15 -0700 (PDT)
+        with ESMTP id S231531AbhIXXgx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Sep 2021 19:36:53 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A4DC061571
+        for <bpf@vger.kernel.org>; Fri, 24 Sep 2021 16:35:19 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id y13so9184479ybi.6
+        for <bpf@vger.kernel.org>; Fri, 24 Sep 2021 16:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x0w08LHEdal3YJBxFIDxEaV3SmaBuxp6w/CY8MHo7DA=;
-        b=PONCy9KdB96rrDNCreGByZPpD9khEP3qDHpZt5vESK5sQ1aKDNnMOb8gvoHP2Pqhmo
-         wZKccMEd/jIskCMT45NzYebiX54ZEdqnmrLB+XXrzyf6HZthAFvZt1NGS4z1HokxN7rV
-         NZkUs0wREf54PbwpZBG1yc9LDCdA4NvACKb7sFQBtNL5Q/+RheFeKI6XiuGfKlnuWHkp
-         1sCdytYs/CaGJ+1k6XDRhpV0vch7HUVNcEOesDPny/lOp6yTlQ51IcOwJNx706zvGRH2
-         Bmh89FXswt41UXmGbDiGTHr4+k0Z9Ruq6ndYYawt2mskblVXH5bnWUYjxjIjWxzxpsNe
-         Trww==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SBNnDpeQOknM35zpCXqawbCKbr+DS8/yw8RZ4PSHVBA=;
+        b=csqdR5Un9KiIhOCTMau1wGTFbLx0/885ciwfAdIndQ1tPfTLMtkffM2o80CVGQCNgw
+         4p2Yu8hmap6iT8wNAqMqU3QUVSWeVSUZbt/CfhmJW8lxUr29FcjOZg0tIxOzHKB4dnoH
+         mh+69oZz5/qOKlQRXyO47erJe67VdX3M4iDZ2RI9Ols3C2ezB22gbJFdsRrVQNTCS3GV
+         bFNKqUTQk7e3bMiqeXhlBk8C1bUKWU3/eQHZn8mQJawWyX7/bope8BIl34XioBvGH3ak
+         1HFvGu1+dgbuOM2kDgro2JfgwgzDoWQ/9jkXvYV3MADQxiTdlrl14lIaOsjKeLtFfHS+
+         jVXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x0w08LHEdal3YJBxFIDxEaV3SmaBuxp6w/CY8MHo7DA=;
-        b=CAzH1ta40zExXc36N1txoBoCCCNFy9xA9JFVPiVZXrjlxQ8Tp3+QgOF7qZzANvhXIN
-         wz3C3r0vCnXVYRNwbOjZ0tOEm+t0W/Kehm+LP5dpJ/Wk5M4f4UO0EtvOLmQn42sHrCTu
-         VvFu8WANT2dUqZ5zxDfF5RbUFaYAWR78mdZV8M8e3f/4pacv/LnZzG6VEytnek8CmLV8
-         08/beGUEDjo9OffbhswlpK6+IdJhOBAbNhkZ0fhFnx3/0Xy56D6+8pv8zyqLLTM8HljB
-         F0I1jAtdqhc7XKY6S7HkbE/8x0sEJkTKOFBPwih2l9mrPmmJMYXHAjd2a8MMDRoO1h9F
-         I6pw==
-X-Gm-Message-State: AOAM530nRBAClMgakjzjKUw1VOuNECDUIGE6xmCotvybafquxqaAVXPC
-        xNkgjTis7Em0wx/063N+0/0=
-X-Google-Smtp-Source: ABdhPJyUiQPT5k28XJ5x6II6xPWdwhcfqX+Ok5vReRyCQY9gHeSQ7h7k3zqPBiOhhS/CHBBor2TeHw==
-X-Received: by 2002:a05:6a00:234f:b0:3eb:3ffd:6da2 with SMTP id j15-20020a056a00234f00b003eb3ffd6da2mr11908970pfj.15.1632525195298;
-        Fri, 24 Sep 2021 16:13:15 -0700 (PDT)
-Received: from ast-mbp.lan ([2620:10d:c090:400::5:da78])
-        by smtp.gmail.com with ESMTPSA id a4sm9345376pjd.48.2021.09.24.16.13.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 16:13:15 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 16:13:13 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        mcroce@microsoft.com, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH RFC bpf-next 00/10] bpf: CO-RE support in the kernel.
-Message-ID: <20210924231313.jbg4cs3wk63ii54a@ast-mbp.lan>
-References: <20210917215721.43491-1-alexei.starovoitov@gmail.com>
- <CACAyw98puHhO7f=OmEACNaje0DvVdpS7FosLY9aM8z46hy=7ww@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SBNnDpeQOknM35zpCXqawbCKbr+DS8/yw8RZ4PSHVBA=;
+        b=2Zgdit4MZ9Ec8a398xkwtIeCo5GqOq0T3imzC+WivNYdApX0ifmAHg4gOAUR7hVsxu
+         /wjNhzG2OR8pb2zOX+ivkx5UT7OVCdz54jcu+dBilO3SGA1sMmdxwFyk6S9PmZdVvSFs
+         3Jx2MdKLFmTC09fISCmis7GCrgqlFCjRH0GsP4OdXXzybTP/bcmW5qI89r0aEJEPfsZx
+         OHxlV41kPjnTpDpOh2DXDmkThHk/UDYjdvi/DUsD0F+dAI8qXBhIPPrUeOybNzOWjGF3
+         o1NC9z0jWqW/32JryahFof1HTZ9S2A4h3Z2EUIQ9S+wVtyKrXJ1sq0EGzKNGa0A/YJ+d
+         WRmg==
+X-Gm-Message-State: AOAM533ngh9yQBYyLg4qyWi2XtmajQOdkXZ3NCDou/G4zYtoFtX/T+13
+        Cz27dzHG8K8db6Tps/ernVsSO23JvMmOKztctQ0=
+X-Google-Smtp-Source: ABdhPJz0lzoO4vLTqo3x0Ot3+EtQwnZx1FrFWIC7Xbi9UDHJ0G3D7qHg9N8xFn/gR3tiTRmHNebmtKrVQubJRolxQMg=
+X-Received: by 2002:a25:83c6:: with SMTP id v6mr16087925ybm.2.1632526519150;
+ Fri, 24 Sep 2021 16:35:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACAyw98puHhO7f=OmEACNaje0DvVdpS7FosLY9aM8z46hy=7ww@mail.gmail.com>
+References: <20210924025856.2192476-1-yhs@fb.com> <alpine.LRH.2.23.451.2109241911100.21067@localhost>
+In-Reply-To: <alpine.LRH.2.23.451.2109241911100.21067@localhost>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 24 Sep 2021 16:35:08 -0700
+Message-ID: <CAEf4BzZtcWginbqcaSG9ywm6y_juHowbQf2auNn5YLc9zpGfWw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix btf_dump __int128 test
+ failure with clang build kernel
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:33:58PM +0100, Lorenz Bauer wrote:
-> 
-> Some questions:
-> * How can this handle kernels that don't have built-in BTF? Not a
-> problem for myself, but some people have to deal with BTF-less distro
-> kernels by using pahole to generate external BTF from debug symbols.
-> Can we accommodate that?
+On Fri, Sep 24, 2021 at 11:13 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> On Fri, 24 Sep 2021, Yonghong Song wrote:
+>
+> > With clang build kernel (adding LLVM=1 to kernel and selftests/bpf build
+> > command line), I hit the following test failure:
+> >
+> >   $ ./test_progs -t btf_dump
+> >   ...
+> >   btf_dump_data:PASS:ensure expected/actual match 0 nsec
+> >   btf_dump_data:FAIL:find type id unexpected find type id: actual -2 < expected 0
+> >   btf_dump_data:FAIL:find type id unexpected find type id: actual -2 < expected 0
+> >   test_btf_dump_int_data:FAIL:dump __int128 unexpected error: -2 (errno 2)
+> >   #15/9 btf_dump/btf_dump: int_data:FAIL
+> >
+> > Further analysis showed gcc build kernel has type "__int128" in dwarf/BTF
+> > and it doesn't exist in clang build kernel. Code searching for kernel code
+> > found the following:
+> >   arch/s390/include/asm/types.h:  unsigned __int128 pair;
+> >   crypto/ecc.c:   unsigned __int128 m = (unsigned __int128)left * right;
+> >   include/linux/math64.h: return (u64)(((unsigned __int128)a * mul) >> shift);
+> >   include/linux/math64.h: return (u64)(((unsigned __int128)a * mul) >> shift);
+> >   lib/ubsan.h:typedef __int128 s_max;
+> >   lib/ubsan.h:typedef unsigned __int128 u_max;
+> >
+> > In my case, CONFIG_UBSAN is not enabled. Even if we only have "unsigned __int128"
+> > in the code, somehow gcc still put "__int128" in dwarf while clang didn't.
+> > Hence current test works fine for gcc but not for clang.
+> >
+> > Enabling CONFIG_UBSAN is an option to provide __int128 type into dwarf
+> > reliably for both gcc and clang, but not everybody enables CONFIG_UBSAN
+> > in their kernel build. So the best choice is to use "unsigned __int128" type
+> > which is available in both clang and gcc build kernels. But clang and gcc
+> > dwarf encoded names for "unsigned __int128" are different:
+> >
+> >   [$ ~] cat t.c
+> >   unsigned __int128 a;
+> >   [$ ~] gcc -g -c t.c && llvm-dwarfdump t.o | grep __int128
+> >                   DW_AT_type      (0x00000031 "__int128 unsigned")
+> >                   DW_AT_name      ("__int128 unsigned")
+> >   [$ ~] clang -g -c t.c && llvm-dwarfdump t.o | grep __int128
+> >                   DW_AT_type      (0x00000033 "unsigned __int128")
+> >                   DW_AT_name      ("unsigned __int128")
+> >
+> > The test change in this patch tries to test type name before
+> > doing actual test.
+> >
+>
+> Thanks for finding and fixing this!
+>
+> > Signed-off-by: Yonghong Song <yhs@fb.com>
+>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+>
 
-I think so, but it probably should be done as a generic feature:
-"populate kernel BTF".
-When kernel wasn't compiled with BTF there could be a way to
-populate it with such. Just like we do sys_bpf(BTF_LOAD)
-for program's BTF we can allow populating vmlinux BTF this way.
-Unlike builtin BTF it wouldn't be trusted for certain verifier assumptions,
-but better than nothing and more convenient than specifying BTF file
-on a side for every bpf prog load with traditional libbpf style.
+Applied to bpf-next, thanks.
+
+> > ---
+> >  .../selftests/bpf/prog_tests/btf_dump.c       | 27 ++++++++++++++-----
+> >  1 file changed, 21 insertions(+), 6 deletions(-)
+> >
+
+[...]
