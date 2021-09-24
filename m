@@ -2,233 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07D0417AB3
-	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 20:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2A7417AF5
+	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 20:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347965AbhIXSOm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Sep 2021 14:14:42 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:36340 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344906AbhIXSOm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Sep 2021 14:14:42 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18OHAIud021586;
-        Fri, 24 Sep 2021 18:12:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : content-type :
- mime-version; s=corp-2021-07-09;
- bh=6N2bspk0netSEsGh0rHn4nr+61UfgV5niE3eUCgAA1Y=;
- b=VD6Woxz4m/xGOlw7ApCWPRchm9Tyk2JtCsaq5+YQOAtp7H/NO0W11RTWi1+zUYMWiQOV
- SD3QqTTKxekwF0dU3Dv6jy+M4WBjj5QCemsEzz05QZVDgMRup1OH+Kg7ulHbjh0ZY264
- t1+BHRtYGH0/9ci4MlP2PVjapfKizeq5bobfozhY8osv2Hb66YsMDBc1k7KzmEdVAnj0
- tIWo4cZBxDJ1152WPvW5hJfET9dbFpS4GqLi3TUBFEHQWQELdnS2YwZXjasFVZXwz45p
- 8eD3OASRf98H0ilhidaY6xWf+axgqjGfc0KHV2G/At0wFpaD36BFoEDS86ewlIqlPWmS ig== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b93etw5bq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Sep 2021 18:12:53 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18OHniku045732;
-        Fri, 24 Sep 2021 18:12:52 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
-        by userp3030.oracle.com with ESMTP id 3b93g3knk6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Sep 2021 18:12:52 +0000
+        id S1345178AbhIXS03 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Sep 2021 14:26:29 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31964 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346421AbhIXS02 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 Sep 2021 14:26:28 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18OGaKOo006601;
+        Fri, 24 Sep 2021 11:24:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=lESdepIYWNVmTSTKQpGSWo+2rc6gnyA1m0F5B4ovcfw=;
+ b=S4Q27KYgcfBcvxeCJckItVrUBc7McYmV4AnP7Ix0OS0KQEGIA67TXMiBi24hnDXApr0D
+ b75YMavPpmfZs4CUX5MNK9EuwHpNLY4cUKr7fdboLHMAMmJ4JmubAqnZxPd7n9NefJCf
+ 8jZetx44CAWb/kcFHNwGChR2mgQB8XLiUaE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b93f9nw44-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 24 Sep 2021 11:24:41 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Fri, 24 Sep 2021 11:24:40 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dvN+i6//kKE/JVi2lXrEd1phlBMMy21LCIqBCaje9fC7uwxXDj/+BTi5PlXaiXpv3luzVKHCb6zXzjB/CLGPg0S9qndjaXuM7Nq1xBuc3htLsSospaKCt+WL2J5xgHxA3a3pVbZ57hOs3fTdCH6QZ/8C5RnncnwrCKND3pFSwkbveZtfE2iV+3GXJR+TSoM/V5/QemHt1/63PgKvBdd5MwGuy3Hag5fcJOjEBGkcmyxV11yGSWNZp7DeayNRh8PQdbTYbjoKmRD9o9eTEctlf8Wt8LeO9VHe+IY8sHscaKHozgkuKAUh+izrCbHOm0JXvHRzy/hXJPKdus3M9XxZFA==
+ b=BVyuVaZLHkFQ9K/cM/BnnmBqns8Y2z/DBecFnVmaaZTOhmKU1vObtmxzlIqt2MdPp92qOHsgtjQ4KB6Vle9zr1iSlxbFZ5O34asbLNtGDgtV8C1DVDshs2DAMtEgOQtF1+d59XAYjmFkvYt5PwVuEZPgwqiC8X7GsKSxRz+Y9e5fmM8Db97vAEiu8ErHWYSMsx5XtWOhw3RwzCmNnsTARdnhEmYZY8N+xx5JGMzbFsIbd73XZTecOutqkjeK6rXerTOTzR1pQJyB20sqf+0S0LE6ngLGg9uL5Cb1k9RJW0WRb4ycMRiH8LNhgV4vVMGpxgT3xLZnzs1DpkhV45joSA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=6N2bspk0netSEsGh0rHn4nr+61UfgV5niE3eUCgAA1Y=;
- b=T53ll3OoTHp3Z5NOI5wzDAIHZ1u7jQXT47Wh+tpjjVUCgF98lEi20hvs0Em7Q0c+CLknD7hl3eRGabVIdexhfV0QOvnbVzXMDtAJcFiqiO9s7M3CA15BH/gpd4MI7Z9ho8itcR6g/EiZgu1uN5PDqa2G5iJEGldJ1pBfF+dG8bQ9lT/PLKxs8ijJt7ifltS8VyJQ3RYWIHHdyDjPDCymmaMHtWTh/tD7pzs0bFqP0r7EaEVTtkrKQF0MlTXUbmbSW+7zcdL+z+HCvFuDMK6wy5LV+OSqimQQd7EkC967jxHKdT6WsiW1y+eXlpHSFLOw0i7CeVQ6wEbUwLPWjLat2Q==
+ bh=lESdepIYWNVmTSTKQpGSWo+2rc6gnyA1m0F5B4ovcfw=;
+ b=EEvQF9UaBywfNeoJA4Um73CwN//AtiEKVADmbYW+gHnfrLu+fYkDjUaUWOP+7Izj7D37nywYinVXNWLUShxb7v9nDp7O1PbWK7/FZiTEsMqeLPG89j0SSEJfXLFKNjrnPS7/ftH3qzw1zYzenWu2uS/BaKD0SuYQjSrOmmajpsHcZthYxGu+6QTND6jhU+u+WQIDiqu+IKzbMKPkFOPvnj/hjih05x8l5udmxAYaK949gjCM6TatKOgeLRVMRg3XeZWi4FWQmQL+PxQG88TBSbnMA+JhG0upNt0bgaPm4O04dV6OJnwJijsZrAwB86KB7BYsK6qA4optogkTbSa3JQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6N2bspk0netSEsGh0rHn4nr+61UfgV5niE3eUCgAA1Y=;
- b=JDlKQQIaS1Rwu2p2mNbutpktWwdufs/U7r1VPqGEPkQRPYRD1lLaeSoReCLANSRAGdzL/VGKg/q1VKD5WKsV+2ff+b9m8SLdDEAv+lVAzvRBEKTufOeyxb8GnFUSTqvqG98d+TpUmnNBi/yzsEZ9cdPgxQQwOfxw/nbRIW2sz10=
-Authentication-Results: fb.com; dkim=none (message not signed)
- header.d=none;fb.com; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by MN2PR10MB3741.namprd10.prod.outlook.com (2603:10b6:208:117::30) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
+ by DM6PR15MB3196.namprd15.prod.outlook.com (2603:10b6:5:172::33) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Fri, 24 Sep
- 2021 18:12:50 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::9dc9:24ec:f707:cb53]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::9dc9:24ec:f707:cb53%7]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
- 18:12:50 +0000
-Date:   Fri, 24 Sep 2021 19:12:39 +0100 (IST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Yonghong Song <yhs@fb.com>
-cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix btf_dump __int128 test
- failure with clang build kernel
-In-Reply-To: <20210924025856.2192476-1-yhs@fb.com>
-Message-ID: <alpine.LRH.2.23.451.2109241911100.21067@localhost>
-References: <20210924025856.2192476-1-yhs@fb.com>
-Content-Type: text/plain; charset=US-ASCII
-X-ClientProxiedBy: AM8P189CA0017.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:20b:218::22) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 24 Sep
+ 2021 18:24:39 +0000
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6]) by DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6%9]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
+ 18:24:39 +0000
+Message-ID: <761a02db-ff47-fc2f-b557-eff2b02ec941@fb.com>
+Date:   Fri, 24 Sep 2021 14:24:37 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.1
+Subject: Re: [RFC PATCH bpf-next 0/2] bpf: keep track of prog verification
+ stats
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
+References: <20210920151112.3770991-1-davemarchevsky@fb.com>
+ <20210923205105.zufadghli5772uma@ast-mbp>
+ <35e837fb-ac22-3ea1-4624-2a890f6d0db0@fb.com>
+ <CAEf4Bzb+r5Fpu1YzGX01YY6BQb1xnZiMRW3hUF+uft4BsJCPoA@mail.gmail.com>
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+In-Reply-To: <CAEf4Bzb+r5Fpu1YzGX01YY6BQb1xnZiMRW3hUF+uft4BsJCPoA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL0PR02CA0128.namprd02.prod.outlook.com
+ (2603:10b6:208:35::33) To DM6PR15MB4039.namprd15.prod.outlook.com
+ (2603:10b6:5:2b2::20)
 MIME-Version: 1.0
-Received: from localhost.localdomain (2a02:6900:8208:1848::16ae) by AM8P189CA0017.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:218::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 18:12:49 +0000
+Received: from [IPV6:2620:10d:c0a8:11c9::100f] (2620:10d:c091:480::1:a2d0) by BL0PR02CA0128.namprd02.prod.outlook.com (2603:10b6:208:35::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Fri, 24 Sep 2021 18:24:38 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 551cbeeb-656a-400c-7bf9-08d97f86eb95
-X-MS-TrafficTypeDiagnostic: MN2PR10MB3741:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB374197B362FAF45F47313D5AEFA49@MN2PR10MB3741.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Office365-Filtering-Correlation-Id: 26f36ba6-9f85-4052-4703-08d97f889201
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3196:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB3196BD3BB01AEA6F21887387A0A49@DM6PR15MB3196.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e/HTAFThbQJdrI+MBAsphQuEI2jbZVbVaofu43SflaKAqlLacqswn5Va9VhHi5MnoJbw7fksVN9IK8JA5bvXqY5Ne0ogUyp4UV4+WGtIg8WRhq6KIooZI8HYr04Fap5BnmoGfU0gOjCrtyweuOBTXDO9U78AwmoN1jLQ2bqQvFzNooNjqrLxvlIaPfVridw7o6tOhpCQUoAHmm7Co2EVHrhAyj3W35sRR+SZj5Fqc2cfov/p4k7u6ycSAlrRCcDTDPgZI/iJs0Hd4TR7BosFU5MDuXZFNJgVvt9t0qXDbZzymC20ozVMVvh/WXVQVlO3/Xq+Saby7InmUgQpo6dpUsO3Y/Aq1xBqaiJhOz5ZxuX5CNuafn26uZQnSIDoJYiHeyJrkKlMBre9yVSGPFoLyOp2BOi5nbsQi3ZJq2I/j50o9co0ju+H0DWSufmYSPhEIzLJpDKsbZr6yiGUnUJSfYzIN36fDfL+KsM9ColP10KZ9HGCvPZBk11u1AhSwLkmmNP7DIJqrVT55DXSScQgPVWA7TlfwBSYLMbnmm+C6pmsEhV/T6meCa7KdZudD3kX0/SFyAI84bFEJtPwJMcVJ1RiUt2ebr8dTewjzZHpfEzYVnyB2iSZA8hpwSrvWQPMTfXJLiBPSDuYSfRm/MKrYw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6666004)(6512007)(9686003)(6486002)(8936002)(6506007)(5660300002)(316002)(4326008)(33716001)(6916009)(44832011)(86362001)(2906002)(54906003)(38100700002)(186003)(52116002)(8676002)(83380400001)(66556008)(66476007)(9576002)(508600001)(66946007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: dZNBLjDBiYODBnwYgqOMxpgAswqSyGkymyPuKOd+hqJn0TFJUufFm4s2x+MZphH+xlBkZJbBGIi8472Sz57O1yqixIOoIo0CLVl2mqEwjIGBWMIUNG0qNDGIK6zVUkG0yHH1ZNstWA1Osy10ovocdX7MGf+5H7jTQcfaYYvQlpJtdDu2Rq43+y0YLfBz4IhA0ptj10bTrOriEANDdOKRSVD6ks+aYvXjZa9qw8qVNAlfGEXVsedoCd4kwH6aPeUjllpDjf51huj2cI+v41lW19Xrm9LupeI7wbVE65NS41Te8MqODpAkz1wjDELkI6s1Uwij65lqSNSlQBn1Ub8O3Fc42LdPNtrFHw73RdhZ+ColGFX6wFEIGzuhQvo90QefgmPlNs7T7R7Br/Qx0QxeOL6zg0qNdE41xcO9rPQm0e1I2537eBqSdNxme4WUOp14CJtBITstgjKbJt3916FnKyJDdQYBKLjEgesO0UbMsctvT5YB4lf7jX/N/WDsODAEFhBXoVu29T/DSFCL9+LAlz+MTg7PeLgCfTh48+PfIqnF6+uaYfQ19NuJ0Gc6yzDEmZU5yJPS7qzAhmXsMWs0Xa1KK7yEpSJe5+cd9BJC9ysGQnoZk8yFI7bS3TF/IM8NZEFy4vNqMay5/YV/IlCHxrjpWYjTiB13HU9TzdoeeDHtQoHhWVPrRsDqREhX8j8FkjRdDeHj1BxFSF109+7d6l0Kd+fXw9vSleZSiX1oQJ0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(31696002)(36756003)(5660300002)(8936002)(2616005)(38100700002)(186003)(8676002)(6916009)(508600001)(53546011)(86362001)(66476007)(6486002)(2906002)(15650500001)(66556008)(54906003)(316002)(83380400001)(4326008)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QTPltKLzW/r8cANxauEm12nh0hlpodCgZlutHc4ieEcOM0POMGlFFX+upqA1?=
- =?us-ascii?Q?bKicCzh5v6KMhGKB3W5kY8Ze2cuqFh5F/+DgkeKP+DhoYeMvw3OBSxh8W4PL?=
- =?us-ascii?Q?fklkkaNrYp9FFGY5JAnEdfhMg0oMR/rWB0pW3ErTSKSg4Ut2MyBHsNngJ3O5?=
- =?us-ascii?Q?Ou59dg/SnzNEjZeT0aZkxeftVDd1UI5Z6rCos7EkrkowcIIWwr/HUNc4rwEW?=
- =?us-ascii?Q?Tsz5+nv6bG3q4Mj1x9UI2nOZqlLhMiXP11cjN0cZPuIRA1oYd4rRtxjXz0Ik?=
- =?us-ascii?Q?7L7riE8dDUg6lXSeu0YsZc6MmnBvyC/hTqlzwKkArszC69N3OWoiv+ygx2eu?=
- =?us-ascii?Q?3InA/oNidM3hcQ1tsZ02WV+heY+cWxFwLyshHwMj27XmE0gBqbFFhh5cwaTO?=
- =?us-ascii?Q?nOH/+UGCH2rEtDQKRjW2uqOzKB7UHoH2RS1tzb62e5z0BnRhUHSykuiZdoY7?=
- =?us-ascii?Q?aQQ4fFSt9K9xMKXaZsQ+JmvNQ/k2d0PcQ8XLpN1BQh6QuQzz0X530FEkIjCz?=
- =?us-ascii?Q?IHvMPvGHrggJoruaQ1oDHazTfhJj0CCzTNLorCDrTbuFuXdlZdKIXS75NaUp?=
- =?us-ascii?Q?Kg+FBSRSUfF99t9v0fVHL1yJkiE2TZtLHDMeMYYbdfxyS6WLR4BxBTcYuabQ?=
- =?us-ascii?Q?taE1hGSI6rR+PwqPNQRpbJ+uCd1JbaI40wAuActbjcc3PmqI8VNgqRXRLJCM?=
- =?us-ascii?Q?BUS0tHYf7pPgNZ/hLORtM7hnzLwnK3M+c30BAiJ0hxltSOCFqWSnIJuTxPGW?=
- =?us-ascii?Q?yYcha92+0sC1nFNACgRKWhQIMzVjJKO2OS+UYz8mbl4sJ94Quq8AZFofc9Ky?=
- =?us-ascii?Q?gtnRQFD9MyCftbcp+3rKBHtlmUeGy8Q27eoholhcXWre2+R5YV5ZEXwvQ8vL?=
- =?us-ascii?Q?pv+tzMyfRzlXswNscg/WtRdHWdUVg9wFEwecse+9cdtbXDWAaziixNgex3m4?=
- =?us-ascii?Q?qdK7aUJQnJoIS6LgGMtvsA+VidjFMF+If3ZHaSUZsSzPEYQoFq/NNuF+1dSk?=
- =?us-ascii?Q?AFggJBQHFybeGpunKWHKmvE6qCSXwb2yGP2WxY+1uaMMz9GtC3b9iyUEqy1Q?=
- =?us-ascii?Q?ctW2qLmGx3gLqPFEMhrNMAxU/VlbA2Ql+VW5gzoB7/Touj0t3tahbfihYdwz?=
- =?us-ascii?Q?ruD7t20UFHU9yO9s0X80tqw0bEGI/qVlanaugJvsw5fbK2jg+2Pe3ghlow4H?=
- =?us-ascii?Q?Xt6FcatTU6HMcp9ktyimHW+DIEkoKmZKwbielhtExVvmxXUy6LxSg9rCD7XG?=
- =?us-ascii?Q?W3gDuHbTcC8FhJ7ED8L1xuGlQgdelNgHIohRNjOgM5ePC0pRAMLtzCDGTjcn?=
- =?us-ascii?Q?feQENexsHDGoFh5dwe9k/ZBhIzf/1tMVeFUQ0o5qTNU6b0SKqhXybCZM8+gO?=
- =?us-ascii?Q?4vIZFyQ=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 551cbeeb-656a-400c-7bf9-08d97f86eb95
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OEVEaHpEeEdSZWlmdWFLUWhXT3E3djR0aUZ5QjJXYVlLQkdYelJoa2RIS3VK?=
+ =?utf-8?B?NXVLdFpJa0F2dXJvY0ErY2cwb3JUckw1SDJBMzlpUlhIVUdIdllJU0IzVEt0?=
+ =?utf-8?B?bTg5UUtpZ3MxeFBhcHZTYTJrd2s2Um54WmczeHlnVXUwTkpMWTMzWnZITS91?=
+ =?utf-8?B?NG9OSlpjU1RtaHNPMzkvRytPT1FUSjlDNXdBUE1DOThKNDZVb2U0YzAzcmdk?=
+ =?utf-8?B?UkNoVllqWWVCdUVLdzQySVdOWVdPbWFlY0cySm5rcjhMM2JqK0ZpS0p5bWhZ?=
+ =?utf-8?B?MVhrRDhFMEdNRG5OdEZxajJIQ05PZHFZYTNWVWFzRU1JVURmaUJqdC9uNTha?=
+ =?utf-8?B?LzFoNC95SS9zK2p6aUlpUUVGSnFLUGd6YTcwM1NPNWpHanhjNlhDQit4ZDFz?=
+ =?utf-8?B?UkJSS3pvZTFObHdaRk43S2VCNFZVK1MrNENnT2ErZGs5UElaQ2hWVGFGN1dV?=
+ =?utf-8?B?MW5kNXhmbG5iZmxGaWdYWUxwT1RZR1BkMmpEbldLUzhJVm1VL1NJUUE3NG82?=
+ =?utf-8?B?K29PeWJLMVN0blFKUVpuaEl1WW15QzZ2ZnBUckVoODA1OE1CNGhJbm5sb3JO?=
+ =?utf-8?B?VHNKL2Jrc0xodFc2aW1TQ1lJUUFzU2M0bWJNSUNveGNCK1FxZUx4QjFKbm1z?=
+ =?utf-8?B?ZEVYamw4M0lBWXFxd1F4YmVRUThqRzBqNXk5TExlNVdDYm5YVExZQWRqZXdY?=
+ =?utf-8?B?OGxWRWk2eVJlVFI5ck9NSkpyK3FsVnl6Y0EyQy9FaTk2N0ZNR2xkSmk0RUE3?=
+ =?utf-8?B?dTBmbUZYb0QybXJhV1Q5Sk12K2pMY3lNVlJtaG5qTzhkVWhvTkNtYVM3N1po?=
+ =?utf-8?B?cUlTZjZXYnAwQkV3NDhmbHo3ajY2T29QTmJCNTVubHJ4OWhsUHFVc0cvSzBU?=
+ =?utf-8?B?NnNINVRmemZHc0d0NEt5azdkSmxkYkpHK0NHY1pSakNOMm0zd3cwQzViUGRJ?=
+ =?utf-8?B?ejcyWEtXWlgwY3o0d09mOXVna3JlNWh4cXVQMXVMTy9LeHdZdkJHSGlDMW1K?=
+ =?utf-8?B?d0dNajFyUjU1ZXBPalZOdmk1ZmNSY1hBd0R1ekdzTDdvb29xQ2IzeXljbGNB?=
+ =?utf-8?B?dWJZTysxYjhGNFdvaXUrM1ppbm8vdnBZRHdqWHRwNUptMENiVUJLT0xyaVhO?=
+ =?utf-8?B?djhlS1pyeXlBOGpWd2xVYjYwS1lkQjloaVJ4RFpKODI2ZGh6R2RjTjVIZnRm?=
+ =?utf-8?B?MGFzVHFVN2d2MERWdm9tZm1sRnRxaStHN25SSldxQ1JnRUZkQ1Y3YnZocVdL?=
+ =?utf-8?B?VTlBQ0svdmR1Y3NCM3BYOWh0Z0N1WW9MUEMxa0xIOHVwemxyS0g1NEhBbnZx?=
+ =?utf-8?B?ejZNTDZWT3VxeGdTZkphWGRGWEhCNEsrUllSeXhSdGtqSnBpTWhObDVrMHVU?=
+ =?utf-8?B?bUc3ODBPM1hYQkF5dTRMRVdxTHJYVTB2QnllNXBZcWhieWtnTlUrTytaOUc2?=
+ =?utf-8?B?a1FOYUtBazIvMTdFWjNFNk54N1J6cXFjaXFQL0Y3aTNRV0ErTVNOQ1c2dk9M?=
+ =?utf-8?B?YnFSZHhMWXpIQkE0U3pxNnVKdDN3YnA3Rmpka0xPZCt3ei9rK1kxbEl1ekpt?=
+ =?utf-8?B?UFNoUWNHS1RWS0h2VzhPdnRtOVlTOUJTbnMwcVkvYXNkdHVwaGtOcUZ1VGps?=
+ =?utf-8?B?T3I4SWIyWVZXUkRVaCtDU0Z1aWNFT1dUb253U2w2RjdtSGcyYWhrTFZzSWF1?=
+ =?utf-8?B?UzNYWVVDa25BNSs1MXBrWGNvS1hNU041MVJwTjlxWVlqTHdnM0ZVUmVQbEZp?=
+ =?utf-8?B?N05BQSsyN3pQK1M4ck9BUHpqTm9MU2pJTzUvUlloR3k5a1NHUlhEK25kWDlE?=
+ =?utf-8?B?WGVTOGp3dHE3YVlGNVEyQT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26f36ba6-9f85-4052-4703-08d97f889201
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 18:12:50.5747
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 18:24:39.3036
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pPBes7LvZWhQ/pRcHqJfBs79qbZjT5M9EF2bVZqGU+U0ah128kFX1f7pcWPetL0TW9MCIxQYp0nWtqjvelA2FA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3741
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10117 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109240113
-X-Proofpoint-ORIG-GUID: 3KNvxpIjPfTudaJM60Mn0IYmq1CrD26P
-X-Proofpoint-GUID: 3KNvxpIjPfTudaJM60Mn0IYmq1CrD26P
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6fVzl8bUL2i1R+06n8PddIGEo0jLUGOiH4fa8puAls9NuaUA+QWfaZh2QMyasguU+EbSkyZvQmQ9f0yCp9/UMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3196
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: UtnS_GNKn8lJRo7-j0R_RkAWaoMMvA9o
+X-Proofpoint-ORIG-GUID: UtnS_GNKn8lJRo7-j0R_RkAWaoMMvA9o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-24_05,2021-09-24_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ clxscore=1015 lowpriorityscore=0 malwarescore=0 impostorscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109240114
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 24 Sep 2021, Yonghong Song wrote:
+On 9/23/21 10:02 PM, Andrii Nakryiko wrote:   
+> On Thu, Sep 23, 2021 at 6:27 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+>>
+>> On 9/23/21 4:51 PM, Alexei Starovoitov wrote:
+>>> On Mon, Sep 20, 2021 at 08:11:10AM -0700, Dave Marchevsky wrote:
+>>>> The verifier currently logs some useful statistics in
+>>>> print_verification_stats. Although the text log is an effective feedback
+>>>> tool for an engineer iterating on a single application, it would also be
+>>>> useful to enable tracking these stats in a more structured form for
+>>>> fleetwide or historical analysis, which this patchset attempts to do.
+>>>>
+>>>> A concrete motivating usecase which came up in recent weeks:
+>>>>
+>>>> A team owns a complex BPF program, with various folks extending its
+>>>> functionality over the years. An engineer tries to make a relatively
+>>>> simple addition but encounters "BPF program is too large. Processed
+>>>> 1000001 insn".
+>>>>
+>>>> Their changes bumped the processed insns from 700k to over the limit and
+>>>> there's no obvious way to simplify. They must now consider a large
+>>>> refactor in order to incorporate the new feature. What if there was some
+>>>> previous change which bumped processed insns from 200k->700k which
+>>>> _could_ be modified to stress verifier less? Tracking historical
+>>>> verifier stats for each version of the program over the years would
+>>>> reduce manual work necessary to find such a change.
+>>>>
+>>>>
+>>>> Although parsing the text log could work for this scenario, a solution
+>>>> that's resilient to log format and other verifier changes would be
+>>>> preferable.
+>>>>
+>>>> This patchset adds a bpf_prog_verif_stats struct - containing the same
+>>>> data logged by print_verification_stats - which can be retrieved as part
+>>>> of bpf_prog_info. Looking for general feedback on approach and a few
+>>>> specific areas before fleshing it out further:
+>>>>
+>>>> * None of my usecases require storing verif_stats for the lifetime of a
+>>>>   loaded prog, but adding to bpf_prog_aux felt more correct than trying
+>>>>   to pass verif_stats back as part of BPF_PROG_LOAD
+>>>> * The verif_stats are probably not generally useful enough to warrant
+>>>>   inclusion in fdinfo, but hoping to get confirmation before removing
+>>>>   that change in patch 1
+>>>> * processed_insn, verification_time, and total_states are immediately
+>>>>   useful for me, rest were added for parity with
+>>>>      print_verification_stats. Can remove.
+>>>> * Perhaps a version field would be useful in verif_stats in case future
+>>>>   verifier changes make some current stats meaningless
+>>>> * Note: stack_depth stat was intentionally skipped to keep patch 1
+>>>>   simple. Will add if approach looks good.
+>>>
+>>> Sorry for the delay. LPC consumes a lot of mental energy :)
+>>>
+>>> I see the value of exposing some of the verification stats as prog_info.
+>>> Let's look at the list:
+>>> struct bpf_prog_verif_stats {
+>>>        __u64 verification_time;
+>>>        __u32 insn_processed;
+>>>        __u32 max_states_per_insn;
+>>>        __u32 total_states;
+>>>        __u32 peak_states;
+>>>        __u32 longest_mark_read_walk;
+>>> };
+>>> verification_time is non deterministic. It varies with frequency
+>>> and run-to-run. I don't see how alerting tools can use it.
+>>
+>> Makes sense to me, will get rid of it.
+>>
+>>> insn_processed is indeed the main verification metric.
+>>> By now it's well known and understood.
+>>>
+>>> max_states_per_insn, total_states, etc were the metrics I've studied
+>>> carefully with pruning, back tracking and pretty much every significant
+>>> change I did or reiviewed in the verifier. They're useful to humans
+>>> and developers, but I don't see how alerting tools will use them.
+>>>
+>>> So it feels to me that insn_processed alone will be enough to address the
+>>> monitoring goal.
+>>
+>> For the concrete usecase in my original message insn_processed would be
+>> enough. For the others - I thought there might be value in gathering
+>> those "fleetwide" to inform verifier development, e.g.:
+>>
+>> "Hmm, this team's libbpf program has been regressing total_states over
+>> past few {kernel, llvm} rollouts, but they haven't been modifying it.
+>> Let's try to get a minimal repro, send to bpf@vger, and contribute to
+>> selftests if it is indeed hitting a weird verifier edge case"
+>>
+>> So for those I'm not expecting them to be useful to alert on or be a
+>> number that the average BPF program writer needs to care about.
+>>
+>> Of course this is hypothetical as I haven't tried to gather such data
+>> and look for interesting patterns. But these metrics being useful to
+>> you when looking at significant verifier changes is a good sign.
+> 
+> One reason to not add all those fields is to not end up with
+> meaningless stats (in the future) in UAPI. One way to work around that
+> is to make it "unstable" by providing it through raw_tracepoint as
+> internal kernel struct.
+> 
+> Basically, the proposal would be: add new tracepoint for when BPF
+> program is verified, either successfully or not. As one of the
+> parameters provide stats struct which is internal to BPF verifier and
+> is not exposed through UAPI.
+> 
+> Such tracepoint actually would be useful more generally as well, e.g.,
+> to monitor which programs are verified in the fleet, what's the rate
+> of success/failure (to detect verifier regression), what are the stats
+> (verification time actually would be good to have there, again for
+> stats and detecting regression), etc, etc.
+> 
+> WDYT?
+> 
 
-> With clang build kernel (adding LLVM=1 to kernel and selftests/bpf build
-> command line), I hit the following test failure:
-> 
->   $ ./test_progs -t btf_dump
->   ...
->   btf_dump_data:PASS:ensure expected/actual match 0 nsec
->   btf_dump_data:FAIL:find type id unexpected find type id: actual -2 < expected 0
->   btf_dump_data:FAIL:find type id unexpected find type id: actual -2 < expected 0
->   test_btf_dump_int_data:FAIL:dump __int128 unexpected error: -2 (errno 2)
->   #15/9 btf_dump/btf_dump: int_data:FAIL
-> 
-> Further analysis showed gcc build kernel has type "__int128" in dwarf/BTF
-> and it doesn't exist in clang build kernel. Code searching for kernel code
-> found the following:
->   arch/s390/include/asm/types.h:  unsigned __int128 pair;
->   crypto/ecc.c:   unsigned __int128 m = (unsigned __int128)left * right;
->   include/linux/math64.h: return (u64)(((unsigned __int128)a * mul) >> shift);
->   include/linux/math64.h: return (u64)(((unsigned __int128)a * mul) >> shift);
->   lib/ubsan.h:typedef __int128 s_max;
->   lib/ubsan.h:typedef unsigned __int128 u_max;
-> 
-> In my case, CONFIG_UBSAN is not enabled. Even if we only have "unsigned __int128"
-> in the code, somehow gcc still put "__int128" in dwarf while clang didn't.
-> Hence current test works fine for gcc but not for clang.
-> 
-> Enabling CONFIG_UBSAN is an option to provide __int128 type into dwarf
-> reliably for both gcc and clang, but not everybody enables CONFIG_UBSAN
-> in their kernel build. So the best choice is to use "unsigned __int128" type
-> which is available in both clang and gcc build kernels. But clang and gcc
-> dwarf encoded names for "unsigned __int128" are different:
-> 
->   [$ ~] cat t.c
->   unsigned __int128 a;
->   [$ ~] gcc -g -c t.c && llvm-dwarfdump t.o | grep __int128
->                   DW_AT_type      (0x00000031 "__int128 unsigned")
->                   DW_AT_name      ("__int128 unsigned")
->   [$ ~] clang -g -c t.c && llvm-dwarfdump t.o | grep __int128
->                   DW_AT_type      (0x00000033 "unsigned __int128")
->                   DW_AT_name      ("unsigned __int128")
-> 
-> The test change in this patch tries to test type name before
-> doing actual test.
->
+Seems reasonable to me - and attaching a BPF program to the tracepoint to
+grab data is delightfully meta :)
 
-Thanks for finding and fixing this!
- 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+I'll do a pass on alternate implementation with _just_ tracepoint, no 
+prog_info or fdinfo, can add minimal or full stats to those later if
+necessary.
 
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+>>
+>>> It can be exposed to fd_info and printed by bpftool.
+>>> If/when it changes with some future verifier algorithm we should be able
+>>> to approximate it.
+>>>
+>>
 
-> ---
->  .../selftests/bpf/prog_tests/btf_dump.c       | 27 ++++++++++++++-----
->  1 file changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> index 52ccf0cf35e1..87f9df653e4e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> @@ -358,12 +358,27 @@ static void test_btf_dump_int_data(struct btf *btf, struct btf_dump *d,
->  	TEST_BTF_DUMP_DATA_OVER(btf, d, NULL, str, int, sizeof(int)-1, "", 1);
->  
->  #ifdef __SIZEOF_INT128__
-> -	TEST_BTF_DUMP_DATA(btf, d, NULL, str, __int128, BTF_F_COMPACT,
-> -			   "(__int128)0xffffffffffffffff",
-> -			   0xffffffffffffffff);
-> -	ASSERT_OK(btf_dump_data(btf, d, "__int128", NULL, 0, &i, 16, str,
-> -				"(__int128)0xfffffffffffffffffffffffffffffffe"),
-> -		  "dump __int128");
-> +	/* gcc encode unsigned __int128 type with name "__int128 unsigned" in dwarf,
-> +	 * and clang encode it with name "unsigned __int128" in dwarf.
-> +	 * Do an availability test for either variant before doing actual test.
-> +	 */
-> +	if (btf__find_by_name(btf, "unsigned __int128") > 0) {
-> +		TEST_BTF_DUMP_DATA(btf, d, NULL, str, unsigned __int128, BTF_F_COMPACT,
-> +				   "(unsigned __int128)0xffffffffffffffff",
-> +				   0xffffffffffffffff);
-> +		ASSERT_OK(btf_dump_data(btf, d, "unsigned __int128", NULL, 0, &i, 16, str,
-> +					"(unsigned __int128)0xfffffffffffffffffffffffffffffffe"),
-> +			  "dump unsigned __int128");
-> +	} else if (btf__find_by_name(btf, "__int128 unsigned") > 0) {
-> +		TEST_BTF_DUMP_DATA(btf, d, NULL, str, __int128 unsigned, BTF_F_COMPACT,
-> +				   "(__int128 unsigned)0xffffffffffffffff",
-> +				   0xffffffffffffffff);
-> +		ASSERT_OK(btf_dump_data(btf, d, "__int128 unsigned", NULL, 0, &i, 16, str,
-> +					"(__int128 unsigned)0xfffffffffffffffffffffffffffffffe"),
-> +			  "dump unsigned __int128");
-> +	} else {
-> +		ASSERT_TRUE(false, "unsigned_int128_not_found");
-> +	}
->  #endif
->  }
->  
-> -- 
-> 2.30.2
-> 
-> 
