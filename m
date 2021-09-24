@@ -2,114 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AA4416A0E
-	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 04:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81384416A46
+	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 04:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243919AbhIXCjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 22:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbhIXCjB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:39:01 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6305C061574
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 19:37:28 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g184so8456236pgc.6
-        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 19:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=asaqErtRaKKMr0BDq2a1lqQmX1vTntoiAJe7GmeyNlk=;
-        b=e9YWeKmaTDIxwCRdRXNpwm7ybl89DkTJbszxxGxhyR0xIF78WUmtwV6WlyaXMB8Dsc
-         MQorqIE3ypuxLniubbHBAVN+JYIHdZQJjeaeMDTIEe3fvIfVjMIJWFBkYQfELxdcRrVy
-         rqftJfPlG87/gr2sHk+rHV8Ywb8GgtgwxQZQEW1uYPZ/SlvE1gmTSI2Fp//NA365JwjE
-         nc+pPK2mQUGLdTvFzpI73y/L8yET1DqNoRVuHGCbzIFMUiZ0QVUAEemN7PkSPASOrw5I
-         nsCW5XuDRqC/ti4eweRxBLahuhdvsGoboVv0gp6Z68x5/pw6KBtR5zg+/F4lgLN28eN9
-         MqsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=asaqErtRaKKMr0BDq2a1lqQmX1vTntoiAJe7GmeyNlk=;
-        b=kdDtwZa+QDkjIXlMGZSQ+jnngqfXax0ObDvLdzXVEeqtT+XXIuciXN0XIWkU1yQTmF
-         TiAZyQIF3YiG6v2IIArwdoEqd3FAJ2E9xeNGo7B3w5cHW2E5yx776KFR9d47+ItpvJX2
-         uK2ypfwxn6JYsUn13F67YU9JvfDFEHCPs2DK30Jeq8MrS8SNj5GMQ6Q1j45LgJt7oiy5
-         0JYegyC+7PvBsP+9DM63t8N6SI42zDQ10ZflSRtSbJXKK59GDdQYufFUN+SSL/iD6P+Y
-         gFvmXqgRvk5exU7/C9f7eLHg4h57UC7uDFMl8dq1iiVUKAOWGrsb1B7OFDC3UjvfSXyM
-         LqUA==
-X-Gm-Message-State: AOAM530GV2mleAl7gZ2IgmlyQpu63kgl6JhVJwrNxwmeXbiS0YejxJyL
-        88zgJIGYjgIvRCSzCSdT3PXA/PQm1ixqXQ==
-X-Google-Smtp-Source: ABdhPJwpRptR6Nu9X9VA1UyFcufCMrfwtwibZyYxC0/uaubor8bxWpHW9KVksK/24IiQVto801N8KA==
-X-Received: by 2002:a63:de46:: with SMTP id y6mr1765494pgi.364.1632451047917;
-        Thu, 23 Sep 2021 19:37:27 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
-        by smtp.gmail.com with ESMTPSA id z24sm7859111pgu.54.2021.09.23.19.37.27
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 19:37:27 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Subject: [PATCH bpf] libbpf: Fix segfault in static linker for objects without BTF
-Date:   Fri, 24 Sep 2021 08:07:25 +0530
-Message-Id: <20210924023725.70228-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        id S234930AbhIXDAh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 23:00:37 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28390 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230123AbhIXDAg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Sep 2021 23:00:36 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18NNe2v3027464
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 19:59:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=Jf8HUtAaPN0Vj8gjqMPx5UMvBuoAblzRm7i0B2hPAik=;
+ b=BMkWV2T17rbLpLxRYiu8YSZipJWd1dcC7Zy+E/LPq6gZW9gxDjDo5NGxyhO/SeHTIXpW
+ J0BZ1RFUY6gWm7TmnEQKvtAxTGj8fG43aaTSERXATLm8BuDw4qGi88R+3fg4E86qbzFQ
+ 9wN9Q3X+v41ah5qK85Ok0LAW2JNACUuBOPw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 3b93em0u4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 19:59:03 -0700
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 23 Sep 2021 19:59:03 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 4CDE4394E1D; Thu, 23 Sep 2021 19:58:56 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix btf_dump __int128 test failure with clang build kernel
+Date:   Thu, 23 Sep 2021 19:58:56 -0700
+Message-ID: <20210924025856.2192476-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: D8z1ZTTgyteHhpNYNoB30KFb0ZViq3bu
+X-Proofpoint-ORIG-GUID: D8z1ZTTgyteHhpNYNoB30KFb0ZViq3bu
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-23_07,2021-09-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 impostorscore=0 mlxlogscore=953 spamscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109240014
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a BPF object is compiled without BTF info (without -g),
-trying to link such objects using bpftool causes a SIGSEGV due to
-btf__get_nr_types accessing obj->btf which is NULL. Fix this by
-checking for the NULL pointer, and return error.
+With clang build kernel (adding LLVM=3D1 to kernel and selftests/bpf build
+command line), I hit the following test failure:
 
-Reproducer:
-$ cat a.bpf.c
-extern int foo(void);
-int bar(void) { return foo(); }
-$ cat b.bpf.c
-int foo(void) { return 0; }
-$ clang -O2 -target bpf -c a.bpf.c
-$ clang -O2 -target bpf -c b.bpf.c
-$ bpftool gen obj out a.bpf.o b.bpf.o
-Segmentation fault (core dumped)
+  $ ./test_progs -t btf_dump
+  ...
+  btf_dump_data:PASS:ensure expected/actual match 0 nsec
+  btf_dump_data:FAIL:find type id unexpected find type id: actual -2 < expe=
+cted 0
+  btf_dump_data:FAIL:find type id unexpected find type id: actual -2 < expe=
+cted 0
+  test_btf_dump_int_data:FAIL:dump __int128 unexpected error: -2 (errno 2)
+  #15/9 btf_dump/btf_dump: int_data:FAIL
 
-After fix:
-$ bpftool gen obj out a.bpf.o b.bpf.o
-libbpf: failed to find BTF info for object 'a.bpf.o'
-Error: failed to link 'a.bpf.o': Unknown error -22 (-22)
+Further analysis showed gcc build kernel has type "__int128" in dwarf/BTF
+and it doesn't exist in clang build kernel. Code searching for kernel code
+found the following:
+  arch/s390/include/asm/types.h:  unsigned __int128 pair;
+  crypto/ecc.c:   unsigned __int128 m =3D (unsigned __int128)left * right;
+  include/linux/math64.h: return (u64)(((unsigned __int128)a * mul) >> shif=
+t);
+  include/linux/math64.h: return (u64)(((unsigned __int128)a * mul) >> shif=
+t);
+  lib/ubsan.h:typedef __int128 s_max;
+  lib/ubsan.h:typedef unsigned __int128 u_max;
 
-Fixes: a46349227cd8 (libbpf: Add linker extern resolution support for functions and global variables)
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+In my case, CONFIG_UBSAN is not enabled. Even if we only have "unsigned __i=
+nt128"
+in the code, somehow gcc still put "__int128" in dwarf while clang didn't.
+Hence current test works fine for gcc but not for clang.
+
+Enabling CONFIG_UBSAN is an option to provide __int128 type into dwarf
+reliably for both gcc and clang, but not everybody enables CONFIG_UBSAN
+in their kernel build. So the best choice is to use "unsigned __int128" type
+which is available in both clang and gcc build kernels. But clang and gcc
+dwarf encoded names for "unsigned __int128" are different:
+
+  [$ ~] cat t.c
+  unsigned __int128 a;
+  [$ ~] gcc -g -c t.c && llvm-dwarfdump t.o | grep __int128
+                  DW_AT_type      (0x00000031 "__int128 unsigned")
+                  DW_AT_name      ("__int128 unsigned")
+  [$ ~] clang -g -c t.c && llvm-dwarfdump t.o | grep __int128
+                  DW_AT_type      (0x00000033 "unsigned __int128")
+                  DW_AT_name      ("unsigned __int128")
+
+The test change in this patch tries to test type name before
+doing actual test.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/lib/bpf/linker.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/btf_dump.c       | 27 ++++++++++++++-----
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 10911a8cad0f..2df880cefdae 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -1649,11 +1649,17 @@ static bool btf_is_non_static(const struct btf_type *t)
- static int find_glob_sym_btf(struct src_obj *obj, Elf64_Sym *sym, const char *sym_name,
- 			     int *out_btf_sec_id, int *out_btf_id)
- {
--	int i, j, n = btf__get_nr_types(obj->btf), m, btf_id = 0;
-+	int i, j, n, m, btf_id = 0;
- 	const struct btf_type *t;
- 	const struct btf_var_secinfo *vi;
- 	const char *name;
-
-+	if (!obj->btf) {
-+		pr_warn("failed to find BTF info for object '%s'\n", obj->filename);
-+		return -EINVAL;
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/test=
+ing/selftests/bpf/prog_tests/btf_dump.c
+index 52ccf0cf35e1..87f9df653e4e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+@@ -358,12 +358,27 @@ static void test_btf_dump_int_data(struct btf *btf, s=
+truct btf_dump *d,
+ 	TEST_BTF_DUMP_DATA_OVER(btf, d, NULL, str, int, sizeof(int)-1, "", 1);
+=20
+ #ifdef __SIZEOF_INT128__
+-	TEST_BTF_DUMP_DATA(btf, d, NULL, str, __int128, BTF_F_COMPACT,
+-			   "(__int128)0xffffffffffffffff",
+-			   0xffffffffffffffff);
+-	ASSERT_OK(btf_dump_data(btf, d, "__int128", NULL, 0, &i, 16, str,
+-				"(__int128)0xfffffffffffffffffffffffffffffffe"),
+-		  "dump __int128");
++	/* gcc encode unsigned __int128 type with name "__int128 unsigned" in dwa=
+rf,
++	 * and clang encode it with name "unsigned __int128" in dwarf.
++	 * Do an availability test for either variant before doing actual test.
++	 */
++	if (btf__find_by_name(btf, "unsigned __int128") > 0) {
++		TEST_BTF_DUMP_DATA(btf, d, NULL, str, unsigned __int128, BTF_F_COMPACT,
++				   "(unsigned __int128)0xffffffffffffffff",
++				   0xffffffffffffffff);
++		ASSERT_OK(btf_dump_data(btf, d, "unsigned __int128", NULL, 0, &i, 16, st=
+r,
++					"(unsigned __int128)0xfffffffffffffffffffffffffffffffe"),
++			  "dump unsigned __int128");
++	} else if (btf__find_by_name(btf, "__int128 unsigned") > 0) {
++		TEST_BTF_DUMP_DATA(btf, d, NULL, str, __int128 unsigned, BTF_F_COMPACT,
++				   "(__int128 unsigned)0xffffffffffffffff",
++				   0xffffffffffffffff);
++		ASSERT_OK(btf_dump_data(btf, d, "__int128 unsigned", NULL, 0, &i, 16, st=
+r,
++					"(__int128 unsigned)0xfffffffffffffffffffffffffffffffe"),
++			  "dump unsigned __int128");
++	} else {
++		ASSERT_TRUE(false, "unsigned_int128_not_found");
 +	}
-+
-+	n = btf__get_nr_types(obj->btf);
- 	for (i = 1; i <= n; i++) {
- 		t = btf__type_by_id(obj->btf, i);
-
---
-2.33.0
+ #endif
+ }
+=20
+--=20
+2.30.2
 
