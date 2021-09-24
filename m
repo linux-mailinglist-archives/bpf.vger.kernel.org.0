@@ -2,180 +2,302 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E314169C6
-	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 04:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A054169FB
+	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 04:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243792AbhIXCEe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Sep 2021 22:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S243812AbhIXCZI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Sep 2021 22:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243853AbhIXCEd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:04:33 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC9BC061574;
-        Thu, 23 Sep 2021 19:03:01 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id f133so2457516yba.11;
-        Thu, 23 Sep 2021 19:03:01 -0700 (PDT)
+        with ESMTP id S232911AbhIXCZI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Sep 2021 22:25:08 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E2AC061574
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 19:23:35 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id z5so2526396ybj.2
+        for <bpf@vger.kernel.org>; Thu, 23 Sep 2021 19:23:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0wsZ86eDvq8rFmKfUftx4luAbwr+ZRtVm+Rx+YkpDik=;
-        b=ILfxGwVSmwzvNn+m6MCcdOhWfndmx2yG/ncNzHivTj6FQnNOf2u82alVQScQarghfT
-         ocpUpX4nkYkJUbTEYCoxE0hpXuC0d8nc1Kh+UvlONBIMdpwDt2NuPMXDy+Z7SfCxH1FI
-         w38SgUdsDYGv0ga/TVl6JrW89uZyyl0oJ36HzdxVndJEEdD8ZsmdrXVZ0/3318JwcRQ6
-         FrBOCsHIZHCzTZuDnjkoLpP6lPiimuUbNTX5OwbS7PgdTsVANkftp5m1/I6aP5/sbpXv
-         liomsi2g0BMqFfl85278dY/AAu+S/3ucrPgMX9smzTuIEdojrXI4WT/n2rtWivRThw7e
-         7Icg==
+        bh=9rHuxa/LB6xmq0CDQxqCz/OTr7mYnTBucgzfZnO/O+I=;
+        b=IIJooInHzKP/pDfBT4xUyEQt/BRctm8lW/xQueMmwC3PQaKQCRyRCqR9lMnZS8y5Qx
+         94whgaFxQwD+CkhQZy1PluUp9imX3fYNAh2o3zHFhqmmqeFfqPHSFDi/KHcSss7ZzH7O
+         SuwF24uAa/jhJWVwCr5lc6uPqv760S6+rgOTpbMgXgXkphqm6kSbmWRL7Whr27VFNrdA
+         SB9jz+Wxb31Z5xovFd/pH6DU+PDELiApSBZnCuoqLg7AzrlaiD+4Ibn3j7o4gEjVBUfK
+         1B3zHqXpGzDhE0rddHVh9jqnXqvcqKEwmxbGhQTyUQ6hV0S9rbckcK1cUl2Z0zBamev8
+         YT3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0wsZ86eDvq8rFmKfUftx4luAbwr+ZRtVm+Rx+YkpDik=;
-        b=mXMr5KXit5U777Wu+F9IDwlOrBvyP/0zGt4rgRUYBrRmwB2U3XgTKZ3KvfV+w7g5aT
-         GFuSVZWni6k9YUUHPIKZIyZYLj1AqQ4RaS4300gfhYgIWTr0LVvt0lozbYl5oBg0m1Vv
-         eYqvVsY1wFUBQ32dx0nL1nUDKJZwDo/YgHxDt1VtZcvQVwI8xFrvpz9/VgRAwf3q9FMz
-         x/feHPbF5BuF8jD7mrIN6K46GZGY8++SKY0Y6KGEe6cGEfQhZUCwMjj5KPVViahnWB0N
-         g08gE/Fvhfut4wOKBfO2h5LNYTQ+SwmpzuB9Du5abmNie9s65X+CGkz1tv4W4l/y4kFy
-         3meQ==
-X-Gm-Message-State: AOAM5317Xo+KmQCGcK8+VpkXgLihZ/P15/I4IzI9NmyOyFHQW4hhHdb4
-        Mdm9UawqaVAqV+uy40ZkrqALEM5vOf1TPs5yBIo=
-X-Google-Smtp-Source: ABdhPJwgf4bPVvwDo7YWfjkAmOWikv0CNiP00v/Ii6qpI2sJfFTUX7Gm7bQsINT2ksCcfQATPEY4ssUydQyzu/TkKpI=
-X-Received: by 2002:a25:47c4:: with SMTP id u187mr10023389yba.225.1632448980821;
- Thu, 23 Sep 2021 19:03:00 -0700 (PDT)
+        bh=9rHuxa/LB6xmq0CDQxqCz/OTr7mYnTBucgzfZnO/O+I=;
+        b=ej0FG8II1pnJfD8ZErOfr1t+skZBbnZo+ncHd6mQNZdKq1RXIbNKLpORUNpuH75Pzv
+         Lz8cbKQ2vtsqW8jkgTWi/kVpck20Mvd0UEFELc8bnq7224d09LHwrvx/JvWBnIdiRGIT
+         0ZdCTGZOIAhICNuQcFDveJ0yfnZShW3VuJydThHadHpoJQ+83DUxJFkbH0Xf0obxNQ6F
+         4h4hMXUOmzgE2OoFcc3jvxJr6z1XWAi/jbfIVo6cjle6/o1z0vR24j0F9qaHxbh3lpnE
+         Jns4RlciztFADKG0xreCZpe7D406xb+vQEkmIi/Wfdj050WY38z+hz7J+g7mrbRRRlA7
+         uFJQ==
+X-Gm-Message-State: AOAM531Dfp2iQ9N9NSSZZXl1YOOI+ayPscq8iTYK0TEGtO2dz5TPStdF
+        5MonLNmyHXBqv4pOky+uZpC434YSKiy/+Z+oKDk=
+X-Google-Smtp-Source: ABdhPJxTVT0X6QuwYCJOePFkXtQWfKuB7j1CsNhJjbW5wlnf2y1h+YEl9FRVmRhy3ix2N93Rckf8f7fhISUKtVlimLs=
+X-Received: by 2002:a25:1bc5:: with SMTP id b188mr9705862ybb.267.1632450214100;
+ Thu, 23 Sep 2021 19:23:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920151112.3770991-1-davemarchevsky@fb.com>
- <20210923205105.zufadghli5772uma@ast-mbp> <35e837fb-ac22-3ea1-4624-2a890f6d0db0@fb.com>
-In-Reply-To: <35e837fb-ac22-3ea1-4624-2a890f6d0db0@fb.com>
+References: <20210921210225.4095056-2-joannekoong@fb.com> <CAEf4BzZfeGGv+gBbfBJq5W8eQESgdqeNaByk-agOgMaB8BjQhA@mail.gmail.com>
+ <517a137d-66aa-8aa8-a064-fad8ae0c7fa8@fb.com> <20210922193827.ypqlt3ube4cbbp5a@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYi3VXdMctKVFsDqG+_nDTSGooJ2sSkF1FuKkqDKqc82g@mail.gmail.com>
+ <20210922220844.ihzoapwytaz2o7nn@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzaQ42NTx9tcP43N-+SkXbFin9U+jSVy6HAmO8e+Cci5Dw@mail.gmail.com>
+ <20210923012849.qfgammwxxcd47fgn@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYstaeBBOPsA+stMOmZ+oBh384E2sY7P8GOtsZFfN=g0w@mail.gmail.com>
+ <20210923194233.og5pamu6g7xfnsmp@kafai-mbp> <20210923203046.a3fsogdl37mw56kp@ast-mbp>
+ <CAEf4BzZJLFxD=v-NvX+MUjrtJHnO9H1C66ymgWFO-ZM39UBonA@mail.gmail.com> <7957a053-8b98-1e09-26c8-882df6920e6e@fb.com>
+In-Reply-To: <7957a053-8b98-1e09-26c8-882df6920e6e@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 23 Sep 2021 19:02:49 -0700
-Message-ID: <CAEf4Bzb+r5Fpu1YzGX01YY6BQb1xnZiMRW3hUF+uft4BsJCPoA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/2] bpf: keep track of prog verification stats
-To:     Dave Marchevsky <davemarchevsky@fb.com>
+Date:   Thu, 23 Sep 2021 19:23:23 -0700
+Message-ID: <CAEf4BzYx22q5HFEqQ6q5Y0LcambUBDb+-YggbwiLDU86QBYvWA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
+To:     Joanne Koong <joannekoong@fb.com>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 6:27 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Thu, Sep 23, 2021 at 3:28 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> On 9/23/21 4:51 PM, Alexei Starovoitov wrote:
-> > On Mon, Sep 20, 2021 at 08:11:10AM -0700, Dave Marchevsky wrote:
-> >> The verifier currently logs some useful statistics in
-> >> print_verification_stats. Although the text log is an effective feedback
-> >> tool for an engineer iterating on a single application, it would also be
-> >> useful to enable tracking these stats in a more structured form for
-> >> fleetwide or historical analysis, which this patchset attempts to do.
-> >>
-> >> A concrete motivating usecase which came up in recent weeks:
-> >>
-> >> A team owns a complex BPF program, with various folks extending its
-> >> functionality over the years. An engineer tries to make a relatively
-> >> simple addition but encounters "BPF program is too large. Processed
-> >> 1000001 insn".
-> >>
-> >> Their changes bumped the processed insns from 700k to over the limit and
-> >> there's no obvious way to simplify. They must now consider a large
-> >> refactor in order to incorporate the new feature. What if there was some
-> >> previous change which bumped processed insns from 200k->700k which
-> >> _could_ be modified to stress verifier less? Tracking historical
-> >> verifier stats for each version of the program over the years would
-> >> reduce manual work necessary to find such a change.
-> >>
-> >>
-> >> Although parsing the text log could work for this scenario, a solution
-> >> that's resilient to log format and other verifier changes would be
-> >> preferable.
-> >>
-> >> This patchset adds a bpf_prog_verif_stats struct - containing the same
-> >> data logged by print_verification_stats - which can be retrieved as part
-> >> of bpf_prog_info. Looking for general feedback on approach and a few
-> >> specific areas before fleshing it out further:
-> >>
-> >> * None of my usecases require storing verif_stats for the lifetime of a
-> >>   loaded prog, but adding to bpf_prog_aux felt more correct than trying
-> >>   to pass verif_stats back as part of BPF_PROG_LOAD
-> >> * The verif_stats are probably not generally useful enough to warrant
-> >>   inclusion in fdinfo, but hoping to get confirmation before removing
-> >>   that change in patch 1
-> >> * processed_insn, verification_time, and total_states are immediately
-> >>   useful for me, rest were added for parity with
-> >>      print_verification_stats. Can remove.
-> >> * Perhaps a version field would be useful in verif_stats in case future
-> >>   verifier changes make some current stats meaningless
-> >> * Note: stack_depth stat was intentionally skipped to keep patch 1
-> >>   simple. Will add if approach looks good.
+>
+> On 9/23/21 2:12 PM, Andrii Nakryiko wrote:
+> > On Thu, Sep 23, 2021 at 1:30 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >> On Thu, Sep 23, 2021 at 12:42:33PM -0700, Martin KaFai Lau wrote:
+> >>> How to move it forward from here?  Is it a must to keep the
+> >>> bloomfilter-like map in pure bpf only and we should stop
+> >>> the current work?
+> >>>
+> >>> or it is useful to have the kernel bloom filter that provides
+> >>> a get-and-go usage and a consistent experience for user in
+> >>> map-in-map which is the primary use case here.  I don't think
+> >>> this is necessarily blocking the custom bpf map effort also.
+> >> I think map based and helper based bloom filter implementations
+> >> are far from equivalent. There are pros and cons to both.
+> >> For example the helper style doesn't have a good way
+> >> of query/populate from the user space. If it's a single element
+> > I thought about the use from user-space. I'd consider two ways of
+> > doing that. One more complicated but with better performance, another
+> > simpler but less performant (but in this case less performant is
+> > equivalent to in-kernel implementation performance, or still better):
 > >
-> > Sorry for the delay. LPC consumes a lot of mental energy :)
+> > 1. Have identical hash function implementation in user-space. In this
+> > case Jenkins hash. Then memory-map contents and use exactly the same
+> > bloom filter code to set the bits (as I said, once you have hash, it's
+> > just a glorified bitset). This has the downside that if there is even
+> > a single bit difference between hash produced by kernel and
+> > user-space, you are screwed. But can't beat the performance because no
+> > syscall overhead.
 > >
-> > I see the value of exposing some of the verification stats as prog_info.
-> > Let's look at the list:
-> > struct bpf_prog_verif_stats {
-> >        __u64 verification_time;
-> >        __u32 insn_processed;
-> >        __u32 max_states_per_insn;
-> >        __u32 total_states;
-> >        __u32 peak_states;
-> >        __u32 longest_mark_read_walk;
-> > };
-> > verification_time is non deterministic. It varies with frequency
-> > and run-to-run. I don't see how alerting tools can use it.
->
-> Makes sense to me, will get rid of it.
->
-> > insn_processed is indeed the main verification metric.
-> > By now it's well known and understood.
+> > 2. Use BPF_PROG_RUN command to execute custom program that would set
+> > one or multiple provided values in the hashset. Just like we argued
+> > for BPF timers, BPF program can be a custom "API" that would avoid
+> > having separate user-space logic. Pass one or many values through a
+> > global variable/array, BPF_PROG_RUN program that would iterate values,
+> > calculate hashes, set bits. It actually should be faster than doing
+> > BPF_MAP_UPDATE_ELEM syscall for each value. Next proposal will be to
+> > add batched update support, of course, so I won't claim victory for
+> > the performance argument here. :)
 > >
-> > max_states_per_insn, total_states, etc were the metrics I've studied
-> > carefully with pruning, back tracking and pretty much every significant
-> > change I did or reiviewed in the verifier. They're useful to humans
-> > and developers, but I don't see how alerting tools will use them.
+> > But yes, it needs a bit more (but simple) code, than if the kernel
+> > just provided a Bloom filter map out of the box.
 > >
-> > So it feels to me that insn_processed alone will be enough to address the
-> > monitoring goal.
->
-> For the concrete usecase in my original message insn_processed would be
-> enough. For the others - I thought there might be value in gathering
-> those "fleetwide" to inform verifier development, e.g.:
->
-> "Hmm, this team's libbpf program has been regressing total_states over
-> past few {kernel, llvm} rollouts, but they haven't been modifying it.
-> Let's try to get a minimal repro, send to bpf@vger, and contribute to
-> selftests if it is indeed hitting a weird verifier edge case"
->
-> So for those I'm not expecting them to be useful to alert on or be a
-> number that the average BPF program writer needs to care about.
->
-> Of course this is hypothetical as I haven't tried to gather such data
-> and look for interesting patterns. But these metrics being useful to
-> you when looking at significant verifier changes is a good sign.
+> >> array the user space would be forced to allocate huge buffers
+> >> just to read/write single huge value_size.
+> >> With multi element array it's sort-of easier.
+> >> mmap-ing the array could help too,
+> >> but in either case the user space would need to copy-paste jhash,
+> >> which is GPL, and that might be more than just inconvenience.
+> >  From include/linux/jhash.h: "You can use this free for any purpose.
+> > It's in the public domain".
+> >
+> >> We can try siphash in the bpf helper and give it a flag to choose
+> > I did bpf_jhash_mem() just to demonstrate the approach quickly. I
+> > think in practice I'd go for a more generic implementation where one
+> > of the parameters is enum that specifies which supported hash
+> > algorithm is used. It's easier to extend that:
+> >
+> > u64 bpf_hash_mem(const void *data, u32 sz, u32 seed, enum bpf_hash_algo algo);
+> >
+> > enum bpf_hash_algo {
+> >     XOR = 0,
+> >     JENKINS = 1,
+> >     MURMUR3 = 2,
+> >     ...
+> > }
+> >
+> > Note the XOR case. If we specify it as "xor u64 values, where the last
+> > <8 bytes are zero extended", it will come useful below for your
+> > proposal.
+> >
+> >
+> >> between hash implementations. That helps, but doesn't completely
+> >> makes them equivalent.
+> > I don't claim that implementing and using a custom Bloom filter will
+> > be easier to use in all situations. I think the best we can strive for
+> > is making it not much harder, and I think in this case it is. Of
+> > course we can come up with a bunch of situations where doing it with
+> > pure BPF isn't possible to do equivalently (like map-in-map with
+> > dynamically sized bit size, well, sorry, BPF verifier can't validate
+> > stuff like that). Dedicated BPF map or helper (as a general case, not
+> > just this one) will pretty much always going to be easier to use just
+> > because it's a dedicated and tailored API.
+> >
+> To me, it seems like we get the best of both worlds by using both of these
+> two ideas for the bloom filter. For developers who would like
+> to use a general bloom filter without having to do any extra
+> implementation work
+> or having to understand how bloom filters are implemented, they could use
+> the custom bloom filter map with minimal effort. For developers who
+> would like to customize their bloom filter to something more specific or
+> fine-tuned, they could use craft their own bloom filter in an ebpf program.
+> To me, these two directions don't seem mutually exclusive.
 
-One reason to not add all those fields is to not end up with
-meaningless stats (in the future) in UAPI. One way to work around that
-is to make it "unstable" by providing it through raw_tracepoint as
-internal kernel struct.
-
-Basically, the proposal would be: add new tracepoint for when BPF
-program is verified, either successfully or not. As one of the
-parameters provide stats struct which is internal to BPF verifier and
-is not exposed through UAPI.
-
-Such tracepoint actually would be useful more generally as well, e.g.,
-to monitor which programs are verified in the fleet, what's the rate
-of success/failure (to detect verifier regression), what are the stats
-(verification time actually would be good to have there, again for
-stats and detecting regression), etc, etc.
-
-WDYT?
+They are not mutually exclusive, of course, but adding stuff to the
+kernel has its maintenance costs.
 
 >
-> > It can be exposed to fd_info and printed by bpftool.
-> > If/when it changes with some future verifier algorithm we should be able
-> > to approximate it.
-> >
+> >> As far as map based bloom filter I think it can combine bitset
+> >> and bloomfilter features into one. delete_elem from user space
+> >> can be mapped into pop() to clear bits.
+> >> Some special value of nr_hashes could mean that no hashing
+> >> is applied and 4 or 8 byte key gets modulo of max_entries
+> >> and treated as a bit index. Both bpf prog and user space will
+> >> have uniform access into such bitset. With nr_hashes >= 1
+> >> it will become a bloom filter.
+> >> In that sense may be max_entries should be specified in bits
+> >> and the map is called bitset. With nr_hashes >= 1 the kernel
+> >> would accept key_size > 8 and convert it to bloom filter
+> >> peek/pop/push. In other words
+> >> nr_hash == 0 bit_idx == key for set/read/clear
+> >> nr_hashes >= 1 bit_idx[1..N] = hash(key, N) for set/read/clear.
+> >> If we could teach the verifier to inline the bit lookup
+> >> we potentially can get rid of bloomfilter loop inside the peek().
+> >> Then the map would be true bitset without bloomfilter quirks.
+> >> Even in such case it's not equivalent to bpf_hash(mem_ptr, size, flags) helper.
+> >> Thoughts?
+> This is an interesting suggestion; to me, it seems like the APIs and
+> code would be
+> more straightforward if the bitset and the bloom filter were separate maps.
+> With having max_entries be specified in bits, I think this also relies
+> on the
+> user to make an educated call on the optimal number of bits to use for
+> their bloom
+> filter, instead of passing in the number of entries they expect to have
+> and having the
+> bit size automatically calculated according to a mathematically
+> optimized equation.
+> I am open to this idea though.
+
+We can provide a macro that will calculate mathematically optimized
+value based on desired number of unique entries and hash functions.
+E.g.:
+
+#define BPF_BLOOM_FILTER_BYTE_SZ(nr_uniq_entries, nr_hash_funcs)
+(nr_uniq_entires * nr_hash_funcs / 5 * 7 / 8)
+
+Kernel code can round up to closest power-of-two internally to make
+this simpler. So if users don't care or don't know, they'll use
+BPF_BPLOOM_FILTER_BYTE_SZ() macro, but if they know better, they'll
+just specify desired amount of bytes.
+
 >
+> > Sounds a bit complicated from end-user's perspective, tbh, but bitset
+> > map (with generalization for bloom filter) sounds a bit more widely
+> > useful. See above for the bpf_hash_algo proposal. If we allow to
+> > specify nr_hashes and hash algorithm, then with XOR as defined above
+> > and nr_hash = 1, you'll get just bitset behavior with not extra
+> > restrictions on key size: you could have 1, 2, 4, 8 and more bytes
+> > (where with more bytes it's some suboptimal bloom filter with one hash
+> > function, not sure why you'd do that).
+> >
+> > The biggest quirk is defining that XOR hashes in chunks of 8 bytes
+> > (with zero-extending anything that is not a multiple of 8 bytes
+> > length). We can do special "only 1, 2, 4, and 8 bytes are supported",
+> > of course, but it will be special-cased internally. Not sure which one
+> > is cleaner.
+> >
+> > While writing this, another thought was to have a "NOOP" (or
+> > "IDENTITY") hash, where we say that we treat bytes as one huge number.
+> > Obviously then we truncate to the actual bitmap size, which just
+> > basically means "use up to lower 8 bytes as a number". But it sucks
+> > for big-endian, because to make it sane we'd need to take last "up to
+> > 8 bytes", which obviously sounds convoluted. So I don't know, just a
+> > thought.
+> >
+> > If we do the map, though, regardless if it's bitset or bloom
+> > specifically. Maybe we should consider modeling as actual
+> > bpf_map_lookup_elem(), where the key is a pointer to whatever we are
+> > hashing and looking up? It makes much more sense, that's how people
+> > model sets based on maps: key is the element you are looking up, value
+> > is either true/false or meaningless (at least for me it felt much more
+> > natural that you are looking up by key, not by value). In this case,
+> > what if on successful lookup we return a pointer to some fixed
+> > u8/u32/u64 location in the kernel, some dedicated static variable
+> > shared between all maps. So NULL means "element is not in a set",
+> > non-NULL means it is in the set.
+> I think this would then also require that the bpf_map_update_elem() API from
+> the userspace side would have to pass in a valid memory address for the
+> "value".
+> I understand what you're saying though about it feeling more natural
+> that the "key" is the element here; I agree but there doesn't seem to be
+> a clean way
+> of doing this - I think maybe one viable approach would be allowing
+> map_update_elem
+> to pass in a NULL value in the kernel if the map is a non-associative
+> map, and refactoring the
+> push_elem/peek_elem API so that the element can represent either the key
+> or the value.
+
+Yeah, we can allow value to be NULL (and key non-NULL). But why
+push/peek if we are talking about using standard
+lookup_elem/update_elem (and maybe even delete_elem which will reset
+bits to 0)?
+
+> >   Ideally we'd prevent such element to
+> > be written to, but it might be too hard to do that as just one
+> > exception here, don't know.
+
+BTW, that nr_hash_funcs field in UAPI and in libbpf was still
+bothering me. I'd feel better if we generalize this to future map
+needs and make it generic. How about adding "u32 map_extra;" field to
+UAPI (as a new field, so it's available for all maps, including
+map-in-maps). The meaning of that field would be per-map-type extra
+flags/values/etc. In this case we can define that map_extra for
+BLOOM_FILTER it would encode number of hash functions. If we ok adding
+hash function enum that I proposed for bpf_hash_mem() helper, we can
+also include that into map_extra. We can reserve lower N bits for
+number of hash functions and then next few bits would be reserved for
+hash algo enum.
+
+So then you'd define map (in libbpf syntax) pretty naturally as:
+
+struct {
+    __uint(type, BPF_MAP_TYPE_BLOOM_FILTER); /* or BITSET, don't know
+which way this is going */
+    ....
+    __uint(map_extra, BPF_HASH_SHA256 | 3); /* 3 x SHA256 hash functions */
+} my_bloom_filter SEC(".maps");
+
+BPF_HASH_SHA256 would be defined as something like 0x{1,2,4,etc}0,
+leaving lower 4 bits for nr_hash_funcs.
+
+And then I'd have no problem supporting map_extra field for any map
+definition, with bpf_map__map_extra() and bpf_map__set_map_extra()
+getter/setter.
+
+map_flags is different in that it's partially shared by all map types
+(e.g., BPF_F_RDONLY_PROG, BPF_F_INNER_MAP, BPF_F_NUMA_NODE can be
+specified for lots of different types).
+
+Naming is obviously up for discussion.
