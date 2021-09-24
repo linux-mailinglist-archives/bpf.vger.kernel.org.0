@@ -2,91 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061BC417918
-	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 18:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735C24179D3
+	for <lists+bpf@lfdr.de>; Fri, 24 Sep 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343489AbhIXQuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Sep 2021 12:50:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27752 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238886AbhIXQuu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Sep 2021 12:50:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632502156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=+WjYnmvErdRs8r/Qp3drDnA8o8zNqDOAQo1ud4aKaOs=;
-        b=QDetx+DFbCGOKx1MsBUM57TKlbJ67PfvnAeYLQlN9TaaKTRkj/3aO2lGet4vfJEbs0T6xr
-        2SI1SiHd8K1XqlEdQzSOhoLIHWmmjpABQtdRf2C0hJIW1Szft+ZROSmiIdpuf2/L75bE2U
-        X/h+juB7IZp+dxtbEaMs+Mo+wXdH30M=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-QzKL8d8EPA2m6gOkpbzwng-1; Fri, 24 Sep 2021 12:49:15 -0400
-X-MC-Unique: QzKL8d8EPA2m6gOkpbzwng-1
-Received: by mail-ed1-f70.google.com with SMTP id c36-20020a509fa7000000b003da5a9e5d68so129417edf.15
-        for <bpf@vger.kernel.org>; Fri, 24 Sep 2021 09:49:15 -0700 (PDT)
+        id S1344149AbhIXRXM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Sep 2021 13:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348057AbhIXRWx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Sep 2021 13:22:53 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B000C061762
+        for <bpf@vger.kernel.org>; Fri, 24 Sep 2021 10:21:19 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id k26so4866442pfi.5
+        for <bpf@vger.kernel.org>; Fri, 24 Sep 2021 10:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HhqNBNgyc2rC1gOQsFw4IssIDlcZ8jU897SqBigUPJE=;
+        b=jE3K/N1rfcUrHwpRX/aBhCQ3HU7Gn4cVncrbOB7HsoXnYKagsPSuzLssqdIEKNRkID
+         FoCql4G5utEKXNrqzTkPReMGeGuL3PFFP731dV0svygnaUy3oVeJxe/EHUZ8fiCtBUbk
+         ZOj9k2yeBAq1nzLgwnVhCU09C1TKonl/NQ016SylUTiVSeHp096uihJRTs7p5Oukjj8L
+         90sjqZmpt0Buf2teBt3Xzh3uDQgqbQLY01iPGsLP9m3WZQgdWw9FFqRI4mZWU2EeuM1a
+         HgThrZ6/sa6BwMG2lsugjDEgWBtNpt8ejKZRDTHvx4XPiMebNojFcVYA7nUPGNqBCEyi
+         RVww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=+WjYnmvErdRs8r/Qp3drDnA8o8zNqDOAQo1ud4aKaOs=;
-        b=4pQ/eSqblhQtDKsyBqQ5zZgxVnYVS8bXsS5+gAWKudBNKEkTIg1z2XCWW2nLlhrO1b
-         7ziTOz6tqAi/T4lfd1knvFibmmMzom5z6FoVPqfMUAKUGxUt7My1/C7RTpH+EYSIAWWj
-         xHKFhfee/8W3JD/sFpWzggn00QJOPUN533oycgkeeasguxj4NF8rmOh//bDyOjyu0JWQ
-         JT8tjrHOood/A4ar6eIvq+jwQkgQCYdxZ3pA/uULIf5FBRVrVBnQyszOuCxs8a004Hkv
-         kbNgQQE6tGcfELJZXsjqD475AJMJgNv1s2Vp9dIP5ZUCZF5so8Tvv+SD90RLxBpYa53B
-         PRAQ==
-X-Gm-Message-State: AOAM532mHJZI563N7oz/VSQm9UfXgqL/yignz83jEy/W6CybZRwcFeQp
-        SF7NUYcIiFuENlpPYXkh6ZWgxVDSH2XLnf4A/UlF0pdDCStmOPuQopnUWP4cNCsgrBXD9k+D4bY
-        AJdRp0hee97aZ
-X-Received: by 2002:a50:9d0f:: with SMTP id v15mr5964748ede.275.1632502153088;
-        Fri, 24 Sep 2021 09:49:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcUfQMgJK2R9W7sQULwBbJON70ZkqGl1b8xTp2fAFdUxz4y3HbS3TAXJVp/3xIb8nJ+GT9yQ==
-X-Received: by 2002:a50:9d0f:: with SMTP id v15mr5964624ede.275.1632502151929;
-        Fri, 24 Sep 2021 09:49:11 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id f21sm5196614ejc.18.2021.09.24.09.49.11
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=HhqNBNgyc2rC1gOQsFw4IssIDlcZ8jU897SqBigUPJE=;
+        b=D3YR7dLld8kauq6xb6Bv8tbomT4/iTfIztJYKbt+Jj5jijAzv89VKZcD6Pr0STjUEg
+         F0MRUEkBqRj96I1d9Nlcx2nURieoOBEaxKksvASNdvIsyEdnuNZMDHCVkgvDOauAcVkU
+         KhfIbsKE5VwsDfuHCxfxGhlzv+B/enZoVcw6EoEcOhM5RJig3+RFJsc3+ZGjPaOF1JYD
+         3EoCzuE7544/WpN8u/dXk65RPlf6zzN/qaqYUzYufh2CjbuHYx7Kevg451hxaZfk9OKq
+         RSdeHCqc4sp7n13zmrbdUQMYQgcljWCfJkEVfml3LI2kQqGmmVAoFfd1HNatZFV10q+X
+         LDmA==
+X-Gm-Message-State: AOAM532U9bdw2VN0OfAvrkJRG10vdpD373FrQkNzNWgyVUIj3HPkoXlI
+        ii375AaoN3XC2eS6A2bvRWY=
+X-Google-Smtp-Source: ABdhPJz+5b9pIL49ScHEJjdD7Hy9H/8QCSNAOqsxpzSqWMc80Kl6t81qpxdjvUIdSV5f4OgZabkPng==
+X-Received: by 2002:a62:60c2:0:b0:446:b494:39cc with SMTP id u185-20020a6260c2000000b00446b49439ccmr10715488pfb.22.1632504078806;
+        Fri, 24 Sep 2021 10:21:18 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id g22sm9402672pfb.191.2021.09.24.10.21.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 09:49:11 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C93DD18034A; Fri, 24 Sep 2021 18:49:10 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Jiri Benc <jbenc@redhat.com>
-Subject: Reason for libbpf rejecting SECTION symbols in 'maps' section
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 24 Sep 2021 18:49:10 +0200
-Message-ID: <87wnn5yl4p.fsf@toke.dk>
+        Fri, 24 Sep 2021 10:21:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 24 Sep 2021 07:21:16 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     alexei.starovoitov@gmail.com, andrii@kernel.org,
+        bpf@vger.kernel.org,
+        syzbot+df709157a4ecaf192b03@syzkaller.appspotmail.com,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH bpf 1/2] bpf, cgroup: Assign cgroup in cgroup_sk_alloc
+ when called from interrupt
+Message-ID: <YU4JDMTCRJU38e4+@slm.duckdns.org>
+References: <fe51fd2101fe9df82750d0beb2772ef77ba06bcf.1632427246.git.daniel@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe51fd2101fe9df82750d0beb2772ef77ba06bcf.1632427246.git.daniel@iogearbox.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii
+On Thu, Sep 23, 2021 at 10:09:23PM +0200, Daniel Borkmann wrote:
+> If cgroup_sk_alloc() is called from interrupt context, then just assign the
+> root cgroup to skcd->cgroup. Prior to commit 8520e224f547 ("bpf, cgroups:
+> Fix cgroup v2 fallback on v1/v2 mixed mode") we would just return, and later
+> on in sock_cgroup_ptr(), we were NULL-testing the cgroup in fast-path. Rather
+> than re-adding the NULL-test to the fast-path we can just assign it once from
+> cgroup_sk_alloc() given v1/v2 handling has been simplified.
 
-We ran into an issue with binutils[0] mangling BPF object files, which
-makes libbpf sad. Specifically, binutils will create SECTION symbols for
-every section in .symtab, which trips this check in
-bpf_object__init_user_maps():
+I think you should explain why this is safe - ie. when do we hit the
+condition and leak the socket to the root cgroup and why is that okay?
 
-if (GELF_ST_TYPE(sym.st_info) == STT_SECTION
-    || GELF_ST_BIND(sym.st_info) == STB_LOCAL) {
-	pr_warn("map '%s' (legacy): static maps are not supported\n", map_name);
-	return -ENOTSUP;
-}
+Thanks.
 
-Given the error message I can understand why it's checking for
-STB_LOCAL, but why is the check for STT_SECTION there? And is there any
-reason why libbpf couldn't just skip the SECTION symbols instead of
-bugging out?
-
-Hope you can help shed some light on the history here.
-
--Toke
-
-
-[0] This happens because rpmbuild has a script that automatically that
-runs 'strip' on every object file in an rpm; and so when we package up
-the kernel selftests, we end up with mangled object files. Newer
-versions of binutils don't do this, but the one on RHEL does.
-
+-- 
+tejun
