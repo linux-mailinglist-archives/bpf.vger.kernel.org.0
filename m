@@ -2,119 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64EE417FD6
-	for <lists+bpf@lfdr.de>; Sat, 25 Sep 2021 07:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A43A4180C5
+	for <lists+bpf@lfdr.de>; Sat, 25 Sep 2021 11:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345016AbhIYFdO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Sep 2021 01:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbhIYFdO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Sep 2021 01:33:14 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B848C061571;
-        Fri, 24 Sep 2021 22:31:40 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id m26so10728171pff.3;
-        Fri, 24 Sep 2021 22:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zr13fx33D6cGBCWCx+EfPVnEBz7yzV66x12ZC0rnuPo=;
-        b=oco4OO7JDCAMQy8O/ExD798iffrBCo84es7gNI5WdqOZQgvzkRhfEeMzc9qT3efptZ
-         WlIBOva7zgUZt34B4JI8w6n3RKCGykEHZw/mpTfOiEbHTyVYVtUt0JX5zwg+Loc5H9Fe
-         Remg9qvqQ81kuQWx/xB7qej2R7RV7PMzxYieUpz9+P0Rp/VAZf1XB7ipvob5Cm+KByMY
-         XttpWIceYsWGFiS6lX1qB5MouWRUz878Fu+PyMqVvufML8f5LO1GMIZRZeH/MM2Bf1LJ
-         O0kS7yrEVvopyNzELO+lPmWFYi503iBGqoltRwjqVHan7d7zjnWD6OxqxtFQTSwA0J+Z
-         tEFQ==
+        id S237010AbhIYJVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Sep 2021 05:21:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49108 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234271AbhIYJVO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 25 Sep 2021 05:21:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632561579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z80AgXcXHIwRTFTMl3bI9yZVEqbIK0iNPvS8Ba7Fx9I=;
+        b=SGbZOLEgprw2N2NI0mJItejAsCcKW3r6COfpU3fwOhBNaaqFmbd3/v7Oizq1VE9zYqkwvH
+        sNLZvXT58ctCjdb/wO39wQ+kDgI6J3bU04MdpaVVarpleczRH4v5/3CDp9bV8v3DhVhi4m
+        bZ/TCx7CXCgqWYoICoDrKZ2nmeLNdUM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-mL0cH0BfNgyTt8UqXbofsQ-1; Sat, 25 Sep 2021 05:19:37 -0400
+X-MC-Unique: mL0cH0BfNgyTt8UqXbofsQ-1
+Received: by mail-ed1-f69.google.com with SMTP id ec14-20020a0564020d4e00b003cf5630c190so12990797edb.3
+        for <bpf@vger.kernel.org>; Sat, 25 Sep 2021 02:19:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zr13fx33D6cGBCWCx+EfPVnEBz7yzV66x12ZC0rnuPo=;
-        b=tp9iyR/afaTYxmjGSptYzc4122p62iICOK+mOnts+3ulAgq01Fcff2Rs2gkhMQGErq
-         78TmuJw715vTgB3srfAFj00OpzTzr54Wt5lLFqlr+oz2f99hPgDEx54uMt6Ka2RkHQWe
-         nvtjsYldm6rihS0cORUUx3TQY2WEE2s89l7Iw7mu7cy/wBuixTUtfmBnzfwvCXZH7Y0d
-         wQ2SDxWkrFh6ty98tMzc5ORN7ycvplQDqkWYGz9hDdetLbEJHbpWxE+heWOSbFGpDN49
-         TwpbpREBh5OPX5W1pLNapPkHxStdlcA4KsZSZ0t1m1ClcAeIEx2WbL7zw2lBWdCbToph
-         cBng==
-X-Gm-Message-State: AOAM532dmcYJIYVb+qx/wwGFenNLYmYw3hkysXdwyOt+4V05f/k3pZY0
-        Tdj/tLuhbWB7QN4i6/ukuQw=
-X-Google-Smtp-Source: ABdhPJxQECHfMr7dYmbxc6CrMVXdPR3ODuHy1sHJU9WOWD3xIhZY2fSCyw+zq5IGeQXq4z3BPq9lUA==
-X-Received: by 2002:a63:9a19:: with SMTP id o25mr6978416pge.90.1632547899681;
-        Fri, 24 Sep 2021 22:31:39 -0700 (PDT)
-Received: from ty-ThinkPad-X280.sugnm1.kt.home.ne.jp (61-24-168-251.rev.home.ne.jp. [61.24.168.251])
-        by smtp.gmail.com with ESMTPSA id o9sm11841829pfh.217.2021.09.24.22.31.35
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Z80AgXcXHIwRTFTMl3bI9yZVEqbIK0iNPvS8Ba7Fx9I=;
+        b=AEKBLEhqfD6QKPcYNL83V1cRuOu14OjPu/gE/ZgsZAthDamT6zFes2bRLcTte6BqO3
+         BUqOAX5zhgN3eNgiLjIlyh2et4q0ds6YYVZNSFCX4ha+SPn6NVuHvbaBGD1HRwX+7XfM
+         8eYNteI+EgxFJyMpRXR3gB5xDoCRfJm/C3HoyZhmgSz18yyG7gO8AROHZ26xTV2klZwU
+         a9ZJFKLhzuFS3SXVO+QJrTGYQeskZBDC9KU4KGu+tokfgffjz/JSuHChLVgWnGb0Xm9U
+         icOgxH4xRD41aHAn7N9RwRJt9Xf3LajwsdnciV38MvcblvfE9RJ98ilFBrPuwYqqwOhv
+         Ww1Q==
+X-Gm-Message-State: AOAM5330lNegZxf+m6X68eyPtgVuRLu6eyrr3kzHvIFHU5ZJSgkIdteV
+        zXvFW7QRjnWvoFmnuNcC0CrWT0k2RPn9NjyHR/GKUNjamZWt6pnflbgCTRCe52SbrsEMkhc06MP
+        0ntr6rHkTfAb4
+X-Received: by 2002:a17:906:fc7:: with SMTP id c7mr16490277ejk.333.1632561576455;
+        Sat, 25 Sep 2021 02:19:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw8RrBb8e4sXT01SLGFFVtC68/eBZ2VekMRq6OF1/pCy0XTOKs48XdJ8UXa+PjEEu1+aP5TBA==
+X-Received: by 2002:a17:906:fc7:: with SMTP id c7mr16490257ejk.333.1632561576152;
+        Sat, 25 Sep 2021 02:19:36 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id lv10sm6110839ejb.66.2021.09.25.02.19.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 22:31:39 -0700 (PDT)
-From:   Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     th.yasumatsu@gmail.com, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: Fix integer overflow in prealloc_elems_and_freelist()
-Date:   Sat, 25 Sep 2021 14:31:06 +0900
-Message-Id: <20210925053106.1031798-1-th.yasumatsu@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 25 Sep 2021 02:19:35 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 927D218034A; Sat, 25 Sep 2021 11:19:34 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>
+Subject: Re: Reason for libbpf rejecting SECTION symbols in 'maps' section
+In-Reply-To: <CAEf4BzZ5HXrhhpbZ573Hh2yjwxFf3Gu-WekafYZqCBhVgQ=zRg@mail.gmail.com>
+References: <87wnn5yl4p.fsf@toke.dk>
+ <CAEf4BzZ5HXrhhpbZ573Hh2yjwxFf3Gu-WekafYZqCBhVgQ=zRg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 25 Sep 2021 11:19:34 +0200
+Message-ID: <871r5dko61.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In prealloc_elems_and_freelist(), the multiplication to calculate the
-size passed to bpf_map_area_alloc() could lead to an integer overflow.
-As a result, out-of-bounds write could occur in pcpu_freelist_populate()
-as reported by KASAN:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-[...]
-[   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
-[   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
-[   16.970038]
-[   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
-[   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[   16.972026] Call Trace:
-[   16.972306]  dump_stack_lvl+0x34/0x44
-[   16.972687]  print_address_description.constprop.0+0x21/0x140
-[   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.974257]  kasan_report.cold+0x7f/0x11b
-[   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.975190]  pcpu_freelist_populate+0xd9/0x100
-[   16.975669]  stack_map_alloc+0x209/0x2a0
-[   16.976106]  __sys_bpf+0xd83/0x2ce0
-[...]
+> On Fri, Sep 24, 2021 at 9:49 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Hi Andrii
+>>
+>> We ran into an issue with binutils[0] mangling BPF object files, which
+>> makes libbpf sad. Specifically, binutils will create SECTION symbols for
+>> every section in .symtab, which trips this check in
+>> bpf_object__init_user_maps():
+>>
+>> if (GELF_ST_TYPE(sym.st_info) =3D=3D STT_SECTION
+>>     || GELF_ST_BIND(sym.st_info) =3D=3D STB_LOCAL) {
+>>         pr_warn("map '%s' (legacy): static maps are not supported\n", ma=
+p_name);
+>>         return -ENOTSUP;
+>> }
+>>
+>> Given the error message I can understand why it's checking for
+>> STB_LOCAL, but why is the check for STT_SECTION there? And is there any
+>> reason why libbpf couldn't just skip the SECTION symbols instead of
+>> bugging out?
+>
+> Static functions are often referenced through STT_SECTION symbol +
+> some offset. I don't remember by now if I encountered cases where
+> static variables can be referenced through section symbol + offset, I
+> suspect I did, which is why I added this check.
+>
+> But thinking about this now, we should just ignore the STT_SECTION
+> symbol. If Clang really referenced map through STT_SECTION symbol,
+> we'll later won't find a corresponding bpf_map instance for a
+> corresponding relocation.
+>
+> So I think it's fine to drop the STT_SECTION.
 
-The possibility of this overflow was originally discussed in [0], but
-was overlooked.
+Great, thanks! I'll send a patch :)
 
-Fix the integer overflow by casting one operand to u64.
-
-[0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
-
-Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
-Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
----
- kernel/bpf/stackmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 09a3fd97d329..8941dc83a769 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -66,7 +66,7 @@ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
- 	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
- 	int err;
- 
--	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
-+	smap->elems = bpf_map_area_alloc((u64)elem_size * smap->map.max_entries,
- 					 smap->map.numa_node);
- 	if (!smap->elems)
- 		return -ENOMEM;
--- 
-2.25.1
+-Toke
 
