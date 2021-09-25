@@ -2,130 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24703417E9F
-	for <lists+bpf@lfdr.de>; Sat, 25 Sep 2021 02:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64EE417FD6
+	for <lists+bpf@lfdr.de>; Sat, 25 Sep 2021 07:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhIYAce (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Sep 2021 20:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
+        id S1345016AbhIYFdO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Sep 2021 01:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233267AbhIYAcc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Sep 2021 20:32:32 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2F2C061571;
-        Fri, 24 Sep 2021 17:30:58 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id r4so9395441ybp.4;
-        Fri, 24 Sep 2021 17:30:58 -0700 (PDT)
+        with ESMTP id S230453AbhIYFdO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Sep 2021 01:33:14 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B848C061571;
+        Fri, 24 Sep 2021 22:31:40 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id m26so10728171pff.3;
+        Fri, 24 Sep 2021 22:31:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XTIT3DcDFj/D+7v/Md+zN3ePNaIce3cNTgFNX/N3AOU=;
-        b=iyay8woXD748wpwbDvwdFJ2t8R87psS04WMV6wZ2iB8x+q8XMTYLvVs+z+hEj9TwEt
-         WElZaXOh6CU67l86H4nlww/hvcBDmX6i+Q+l1fQiRzkMMCj3EshvwAIItsQz/GshXQgM
-         pkA7Hu0+6p9KC5KVYi1OSQogdER5Wvrr38tirC8BsH8JlaIzhpGi8qj+P0Yv9F0NgYzZ
-         wYlHlwV8Fp9Bkf2q479gMWSwx4nREiq/jEguV9Z/xMS7EqndSwngPCtcFdXyHf3+R1xF
-         CEXtR0JPeEMDZ9IrA37C6xt/EaQKs3RI6QBiAMRAQB2ZXodisaMB1IzW+uRpV2AN29gB
-         DduQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zr13fx33D6cGBCWCx+EfPVnEBz7yzV66x12ZC0rnuPo=;
+        b=oco4OO7JDCAMQy8O/ExD798iffrBCo84es7gNI5WdqOZQgvzkRhfEeMzc9qT3efptZ
+         WlIBOva7zgUZt34B4JI8w6n3RKCGykEHZw/mpTfOiEbHTyVYVtUt0JX5zwg+Loc5H9Fe
+         Remg9qvqQ81kuQWx/xB7qej2R7RV7PMzxYieUpz9+P0Rp/VAZf1XB7ipvob5Cm+KByMY
+         XttpWIceYsWGFiS6lX1qB5MouWRUz878Fu+PyMqVvufML8f5LO1GMIZRZeH/MM2Bf1LJ
+         O0kS7yrEVvopyNzELO+lPmWFYi503iBGqoltRwjqVHan7d7zjnWD6OxqxtFQTSwA0J+Z
+         tEFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XTIT3DcDFj/D+7v/Md+zN3ePNaIce3cNTgFNX/N3AOU=;
-        b=bNAFtU8nDqycZE4+yN2Jn1KM2ZwoFV8zUA8HvwLLn5mC68DiYXPZNQgAPO2pdHAi1Z
-         N+EEYgN+O7BfyqDmkaqfkdnnu128kbZ6rpVaWz7Lp/K5FtZGlhAhK3NqLVV6Hdj5Mypk
-         UUaYLjIzcP7P5HxgPfnV0oxOuUAkSMOQfOBqIQq1Y262Qb35yAiiqJhBPTEH0VhrB2cE
-         l/Sv2x+HWsVQEH4VZ6zxpLq/AjYVWfWhPrUEScv7JKkgLR9xynxsXE/gZjXjNbx70YpM
-         oDqNamke+aigEvKa7Y8FKxrUukM+r+7OaHN6pVKDsHB8hfnEGBroZgXmxjPQSs2hS7i+
-         aS/A==
-X-Gm-Message-State: AOAM533lBsHNdfxCNp90vAOkMaZnGxx88cOUb5oCC9ArcWwDi76Mc44k
-        sIhfxP56hToGvNvZAK/kGS6N+1HJw52T48zDFoA=
-X-Google-Smtp-Source: ABdhPJxCrm3O6ya6Ol31/WqjQ1liykKg7+y+pcBuiAClWEcmzn7Wr3Eb07VWF1u1qzAk2ZGrco96A8PSq5TwFuJdbWU=
-X-Received: by 2002:a05:6902:724:: with SMTP id l4mr15247970ybt.433.1632529857216;
- Fri, 24 Sep 2021 17:30:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920141526.3940002-1-memxor@gmail.com> <20210920141526.3940002-7-memxor@gmail.com>
- <CAEf4BzaZOv5c=-hs4UX3UcqP-fFkv8ABx5FAWXRMCDE8-vZ9Lg@mail.gmail.com> <20210924235417.eqhzbrajwkenk6rd@apollo.localdomain>
-In-Reply-To: <20210924235417.eqhzbrajwkenk6rd@apollo.localdomain>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 24 Sep 2021 17:30:46 -0700
-Message-ID: <CAEf4BzYXNnCJJ3_xQRxZHnYemTXCw7--BRE+Y5HSVfE5OOJeyw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 06/11] libbpf: Support kernel module function calls
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zr13fx33D6cGBCWCx+EfPVnEBz7yzV66x12ZC0rnuPo=;
+        b=tp9iyR/afaTYxmjGSptYzc4122p62iICOK+mOnts+3ulAgq01Fcff2Rs2gkhMQGErq
+         78TmuJw715vTgB3srfAFj00OpzTzr54Wt5lLFqlr+oz2f99hPgDEx54uMt6Ka2RkHQWe
+         nvtjsYldm6rihS0cORUUx3TQY2WEE2s89l7Iw7mu7cy/wBuixTUtfmBnzfwvCXZH7Y0d
+         wQ2SDxWkrFh6ty98tMzc5ORN7ycvplQDqkWYGz9hDdetLbEJHbpWxE+heWOSbFGpDN49
+         TwpbpREBh5OPX5W1pLNapPkHxStdlcA4KsZSZ0t1m1ClcAeIEx2WbL7zw2lBWdCbToph
+         cBng==
+X-Gm-Message-State: AOAM532dmcYJIYVb+qx/wwGFenNLYmYw3hkysXdwyOt+4V05f/k3pZY0
+        Tdj/tLuhbWB7QN4i6/ukuQw=
+X-Google-Smtp-Source: ABdhPJxQECHfMr7dYmbxc6CrMVXdPR3ODuHy1sHJU9WOWD3xIhZY2fSCyw+zq5IGeQXq4z3BPq9lUA==
+X-Received: by 2002:a63:9a19:: with SMTP id o25mr6978416pge.90.1632547899681;
+        Fri, 24 Sep 2021 22:31:39 -0700 (PDT)
+Received: from ty-ThinkPad-X280.sugnm1.kt.home.ne.jp (61-24-168-251.rev.home.ne.jp. [61.24.168.251])
+        by smtp.gmail.com with ESMTPSA id o9sm11841829pfh.217.2021.09.24.22.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 22:31:39 -0700 (PDT)
+From:   Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     th.yasumatsu@gmail.com, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: Fix integer overflow in prealloc_elems_and_freelist()
+Date:   Sat, 25 Sep 2021 14:31:06 +0900
+Message-Id: <20210925053106.1031798-1-th.yasumatsu@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 4:54 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Wed, Sep 22, 2021 at 04:11:13AM IST, Andrii Nakryiko wrote:
-> > On Mon, Sep 20, 2021 at 7:15 AM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > > [...]
-> > > +                       return -E2BIG;
-> > > +               }
-> > > +               ext->ksym.offset = index;
-> >
-> > > +       } else {
-> > > +               ext->ksym.offset = 0;
-> > >         }
-> >
-> > I think it will be cleaner if you move the entire offset determination
-> > logic after all the other checks are performed and ext is mostly
-> > populated. That will also make the logic shorter and simpler because
-> > if ayou find kern_btf_fd match, you can exit early (or probably rather
->
-> Ack to everything else (including the other mail), but...
->
-> > goto to report the match and exit). Otherwise
-> >
->
-> This sentence got eaten up.
+In prealloc_elems_and_freelist(), the multiplication to calculate the
+size passed to bpf_map_area_alloc() could lead to an integer overflow.
+As a result, out-of-bounds write could occur in pcpu_freelist_populate()
+as reported by KASAN:
 
-No idea what I was going to say here, sorry... Sometimes Gmail UI
-glitches with undo/redo, maybe that's what happened here. Doesn't
-matter, ignore the "Otherwise" part.
+[...]
+[   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
+[   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
+[   16.970038]
+[   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
+[   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+[   16.972026] Call Trace:
+[   16.972306]  dump_stack_lvl+0x34/0x44
+[   16.972687]  print_address_description.constprop.0+0x21/0x140
+[   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
+[   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
+[   16.974257]  kasan_report.cold+0x7f/0x11b
+[   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
+[   16.975190]  pcpu_freelist_populate+0xd9/0x100
+[   16.975669]  stack_map_alloc+0x209/0x2a0
+[   16.976106]  __sys_bpf+0xd83/0x2ce0
+[...]
 
->
-> > >
-> > >         kern_func = btf__type_by_id(kern_btf, kfunc_id);
-> >
-> > this is actually extremely wasteful for module BTFs. Let's add
-> > internal (at least for now) helper that will search only for "own" BTF
-> > types in the BTF, skipping types in base BTF. Something like
-> > btf_type_by_id_own()?
-> >
->
-> Just to make sure I am not misunderstanding: I don't see where this is wasteful.
-> btf_type_by_id seems to not be searching anything, but just returns pointer in
-> base BTF if kfunc_id < btf->start_id, otherwise in module BTF.
->
+The possibility of this overflow was originally discussed in [0], but
+was overlooked.
 
-Hm, sorry... Right sentiment and thought, but wrong piece of code to
-quote it on.
+Fix the integer overflow by casting one operand to u64.
 
-I had in mind the btf__find_by_name_kind() use in find_ksym_btf_id().
-Once we start going over each module, we shouldn't be re-checking
-vmlinux BTF when doing btf__find_by_name_kind. It should only check
-the types that each module BTF adds on top of vmlinux BTF. That's what
-would be good to optimize, especially as more complicated BPF programs
-will start using more ksym vars and funcs.
+[0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
 
+Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
+Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+---
+ kernel/bpf/stackmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> What am I missing? I guess the 'kern_btf' name was the source of confusion? If
-> so, I'll rename it.
->
-> Thanks.
->
-> --
-> Kartikeya
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 09a3fd97d329..8941dc83a769 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -66,7 +66,7 @@ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+ 	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
+ 	int err;
+ 
+-	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
++	smap->elems = bpf_map_area_alloc((u64)elem_size * smap->map.max_entries,
+ 					 smap->map.numa_node);
+ 	if (!smap->elems)
+ 		return -ENOMEM;
+-- 
+2.25.1
+
