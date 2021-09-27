@@ -2,120 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8F4419528
-	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 15:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D38419552
+	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 15:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhI0NgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Sep 2021 09:36:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47212 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234500AbhI0NgY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:36:24 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mUqmH-0004tz-Hv; Mon, 27 Sep 2021 15:34:41 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mUqmH-0001qc-9p; Mon, 27 Sep 2021 15:34:41 +0200
-Subject: Re: [PATCH bpf-next 4/4] bpf: export bpf_jit_current
-To:     Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210924095542.33697-1-lmb@cloudflare.com>
- <20210924095542.33697-5-lmb@cloudflare.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a076398b-f1da-c939-3c71-ac157ad96939@iogearbox.net>
-Date:   Mon, 27 Sep 2021 15:34:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S234560AbhI0NsK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Sep 2021 09:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234365AbhI0NsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:48:09 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49125C061575
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 06:46:32 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 75so1474512pga.3
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 06:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=CAg97vcMx+GjmZPMk3e2OXfCovKEIWyEqjdBD5L79aY=;
+        b=iYSGVWyv92Veyt1ahvS3WYCsSBT0w0flXiOOr0cuVskPHixUdwZNZskFwKAHz59wQT
+         4hg9h/yc2M3X78V8EvxntEDlWs8NjCpA07v9ZypETdQOOAsQw48nCBunAppj4rA0aMAU
+         B/rKGK/9i8qLvkPdD7WJM0MLfAsi/msyH07nTN/dwCEXIE3c4EZxzxrc78bjGMTLlXaa
+         4wW65bCnLFEqMH/atfD4I3+Alq9/8RSaThr5f8qh7E52iA9077gFn325N1rIF5asAgpR
+         ZJhU42GKVg1IuSXt0bJ6JALKWspCvlmaULzxZWaRyN7P5lyz1Wx1r2MzHcs68cpLKFcO
+         QiyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=CAg97vcMx+GjmZPMk3e2OXfCovKEIWyEqjdBD5L79aY=;
+        b=IxysZvI1+7hhVbRHhlNm3QbCjbKj/l36Yef0IQtUbCAo1pN5AWQV3j7pL+7IgzZyK9
+         BokvXxOVP96K9/fFikszmpNZU38nYSuifhCnwcybXQtjGAi5gFGjsyRn+/hJTWSkBPbN
+         VddUhjqo3cQZu6d1JnhezQVbS4+zfog8YirjC9OklOEFrJqnWn7xPbhm7gB3P6XKd519
+         XVncmssn36zoNP30/HUhQgIWgfjxGWLtyYXK8EDcAOR8Q5/hpdsJ2emKcGmGKXwCH52N
+         yEmdrOIe12CXqcUd3AoLhz371t5+KMSGanTZjZ17vx0ewslYTAjkCRFVY4tSeAvgFWMF
+         qfWg==
+X-Gm-Message-State: AOAM532oX0tc32emizGZWS3KC9zAS7oRpT4TldzagHB63f/nWvcs9VlX
+        X6HPL7FL7LVJZ3k98HBHXO2tdnMa+Zg=
+X-Google-Smtp-Source: ABdhPJwZSnokvG7AwCVP6m9hS6XOhmwaOawFuZIoay/58RWoAE+UMBN7hVJwqNLVlDXBwgQsKXG5pQ==
+X-Received: by 2002:a63:ed4a:: with SMTP id m10mr16938177pgk.448.1632750391675;
+        Mon, 27 Sep 2021 06:46:31 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
+        by smtp.gmail.com with ESMTPSA id 23sm18879033pgk.89.2021.09.27.06.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 06:46:31 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 19:16:29 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] samples: bpf: avoid name collision with kernel
+ enum values
+Message-ID: <20210927134629.4cnzf25dfbprxwbc@apollo.localdomain>
+References: <20210926125605.1101605-1-memxor@gmail.com>
+ <87sfxqjit1.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210924095542.33697-5-lmb@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26305/Mon Sep 27 11:04:42 2021)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87sfxqjit1.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/24/21 11:55 AM, Lorenz Bauer wrote:
-> Expose bpf_jit_current as a read only value via sysctl.
-> 
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> ---
->   include/linux/filter.h     | 1 +
->   kernel/bpf/core.c          | 3 +--
->   net/core/sysctl_net_core.c | 7 +++++++
->   3 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index ef03ff34234d..b2143ad5ce00 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -1052,6 +1052,7 @@ extern int bpf_jit_harden;
->   extern int bpf_jit_kallsyms;
->   extern long bpf_jit_limit;
->   extern long bpf_jit_limit_max;
-> +extern atomic_long_t bpf_jit_current;
->   
->   typedef void (*bpf_jit_fill_hole_t)(void *area, unsigned int size);
->   
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index e844a2a4c99a..93f95e9ee8be 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -525,6 +525,7 @@ int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
->   int bpf_jit_harden   __read_mostly;
->   long bpf_jit_limit   __read_mostly;
->   long bpf_jit_limit_max __read_mostly;
-> +atomic_long_t bpf_jit_current __read_mostly;
->   
->   static void
->   bpf_prog_ksym_set_addr(struct bpf_prog *prog)
-> @@ -800,8 +801,6 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
->   	return slot;
->   }
->   
-> -static atomic_long_t bpf_jit_current;
-> -
->   /* Can be overridden by an arch's JIT compiler if it has a custom,
->    * dedicated BPF backend memory area, or if neither of the two
->    * below apply.
-> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> index 5f88526ad61c..674aac163b84 100644
-> --- a/net/core/sysctl_net_core.c
-> +++ b/net/core/sysctl_net_core.c
-> @@ -421,6 +421,13 @@ static struct ctl_table net_core_table[] = {
->   		.extra1		= &long_one,
->   		.extra2		= &bpf_jit_limit_max,
->   	},
-> +	{
-> +		.procname	= "bpf_jit_current",
-> +		.data		= &bpf_jit_current,
-> +		.maxlen		= sizeof(long),
-> +		.mode		= 0400,
-> +		.proc_handler	= proc_dolongvec_minmax_bpf_restricted,
+On Mon, Sep 27, 2021 at 06:07:30PM IST, Toke Høiland-Jørgensen wrote:
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+>
+> > In xdp_redirect_map_multi.bpf.c, on newer kernels samples compilation
+> > fails when vmlinux.h is generated from a kernel supporting broadcast for
+> > devmap. Hence, avoid naming collisions to prevent build failure.
+>
+> Hmm, shouldn't the sample just be getting the value from the kernel in
+> the first place instead of re-defining it?
+>
 
-Overall series looks good to me. The only nit I would have is that the above could (in theory)
-be subject to atomic_long_t vs long type confusion. I would rather prefer to have a small handler
-which properly reads out the atomic_long_t and then passes it onwards as a temporary/plain long
-to user space.
+True, but in general my assumption was that it could be built with a older
+kernel's vmlinux.h, but be ran on a newer one. If that's not strictly needed, I
+can just drop it.
 
-Thanks,
-Daniel
+This can also be the case if you haven't built the kernel in the tree (just did
+a make headers_install), it then falls back to generating the vmlinux.h from the
+running kernel.
 
-> +	},
->   #endif
->   	{
->   		.procname	= "netdev_tstamp_prequeue",
-> 
+> -Toke
+>
 
+--
+Kartikeya
