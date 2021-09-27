@@ -2,122 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF3D41947F
-	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 14:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE87E4194F0
+	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 15:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234376AbhI0Mpk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Sep 2021 08:45:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24724 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234331AbhI0Mpj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 27 Sep 2021 08:45:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632746641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xCEkzTLMibk3xPIz3Pcj0fZ0+zGBST1JsRpoKv0nibs=;
-        b=UzeozqdNPIzm1kXFMngeJJEs7nM3tWwdy0xnE9AmmSjmhk7DBxo5T3wj9FQuorKL0YtKK7
-        wz+4wJPn7hymkffoj3+Qo8ik7klRgLMzu1HyI5uTM5lzp0bjKox9c4dWE7JlFLcpWoUoRR
-        cF+/gaPJ/MNXMuwhpVq/OwMK+W6yki4=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-ev1H1H8vP66OwPSxYa6UXA-1; Mon, 27 Sep 2021 08:44:00 -0400
-X-MC-Unique: ev1H1H8vP66OwPSxYa6UXA-1
-Received: by mail-lf1-f70.google.com with SMTP id r193-20020a19c1ca000000b003fc8f43caa6so15720692lff.17
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 05:44:00 -0700 (PDT)
+        id S234518AbhI0NTw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Sep 2021 09:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234421AbhI0NTw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:19:52 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195B3C061575
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 06:18:14 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u8so76518047lff.9
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 06:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=UAOvT72nEzyjB3EaBfIB4vBLAlWNhJb9FUU2K5PC8fM=;
+        b=TuhNHJ1tp2ds5QlXseRrEkZ5WdtFVIbrJ5vY/5opu0PFmbeTB/hKQ02B72klLrFjsX
+         qpgHFbLDLkCWWic7TwoheWwaDg1S4YPfIdD0mEaXRWFxvyippYAzFo5gM+7RFRbLjlIC
+         ke2ohFxBkM0rgIuyIiAZSp28diM6aA0Sap19zbLDHQvjBSvlbvURG+9trE+3vFXU/GQe
+         NpH55dYlY9YOxpUoXh7WPQV3nYZJ2JHO6R6fIHA7mI7JUCIxWs+vITf3B0KImL1UcPrY
+         woDK080pICEsrDTu24KGFr6mFvc/tTCNCyC3uPX2KOfY1pDJLt++yJ0feJk87REj06qG
+         WwbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xCEkzTLMibk3xPIz3Pcj0fZ0+zGBST1JsRpoKv0nibs=;
-        b=ijjbbW+W0NIcHMVU5mDi6BJYRBdiqpRnGKs7j4Bghzbjc9a3g/JX3iD/71w/Ttxh/5
-         CE87/3yLVLymFHIbiZPNbU08NSYNrA/VqxWPco8ckYrUTab42HmOrUoGnPC1vUcgyzbM
-         /hM0bcTXqO8ebi7xgNlQBY7yxaHl26riZxpngEsworjQgIxMjV28AVDWkcSiQ8663dcM
-         AK6hFhRHSUJ2KVmhWMBEr+PHrB6Vt8OTMU6VVpjBPLIdxmJD7i1GO6/edjYCMsz31NWY
-         NenKY9HRoEIIrct0ANMGCVhSlqtpdvhcYalPTl7iP+FB+EDtYXCWV/kb6UFhAbQfwIzd
-         nAoQ==
-X-Gm-Message-State: AOAM530E1BPfMksEfFIWMX4L7kWk9nJa/lWSPeKsS8sdrsE0skznCYrU
-        j/G/9Yj2FwRFhNN5/XZpbq7ODrGqv4dGq4LKiLx4wGmE5xXF3FR4swe3mpDxweC1bQPrC1fxj9E
-        qfjLuMx+sgqN/2jXG5+j4tGhsvrcGEMwMUVKDOfZ1xGvAv8A4c1BmHJHtFNHIFFQ=
-X-Received: by 2002:a05:651c:150b:: with SMTP id e11mr29426739ljf.289.1632746638559;
-        Mon, 27 Sep 2021 05:43:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvC/qpgu6RCW8/2TmGNJ1qj7w8OhMytXfe7vwWXFkcdU80AADG+PBuDJ1VeSLz4SjDTKMyAQ==
-X-Received: by 2002:a05:651c:150b:: with SMTP id e11mr29426708ljf.289.1632746638285;
-        Mon, 27 Sep 2021 05:43:58 -0700 (PDT)
-Received: from [192.168.42.238] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
-        by smtp.gmail.com with ESMTPSA id j1sm1592734lfr.248.2021.09.27.05.43.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 05:43:57 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Zvi Effron <zeffron@riotgames.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Lorenzo Bianconi <lbianconi@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: Redux: Backwards compatibility for XDP multi-buff
-To:     Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-References: <87o88l3oc4.fsf@toke.dk>
- <CAC1LvL1xgFMjjE+3wHH79_9rumwjNqDAS2Yg2NpSvmewHsYScA@mail.gmail.com>
- <87ilyt3i0y.fsf@toke.dk>
- <CAADnVQKi_u6yZnsxEagNTv-XWXtLPpXwURJH0FnGFRgt6weiww@mail.gmail.com>
- <87czp13718.fsf@toke.dk>
- <20210921155118.439c0aa9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87mto41isy.fsf@toke.dk>
- <20210923064634.636ef48a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Message-ID: <7e47e065-f9b2-4b98-923d-94f5a9484a83@redhat.com>
-Date:   Mon, 27 Sep 2021 14:43:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=UAOvT72nEzyjB3EaBfIB4vBLAlWNhJb9FUU2K5PC8fM=;
+        b=0OwT39+meFb+hKHGRXP6rKFLf4KptoZZVGQe2i4PCWsY4TbzNLhyUwBT/SegRygttP
+         H83EGk5UpTv9wEy8hX9K5mt7xbyXuvkSOWm41ZmLRZEH31HfELagJpkOxFNvp5id1EnA
+         icgxy5r7AErwn8YFF8XMvKB8UbgXRbUTcus1/gCoQL+ivt1KByMeORWBsFUMNnLFYMab
+         X30LHdBpNr7FUdbH2iBQRWotuifmn+2pA9stt8FJXzVd6/sZEZi70RwRjZH5SMhH0tG7
+         icyvtTw9gzRkv2lHXd3bofIsO0D/UF/61MzAXzbfrbvR4scO+QqylFEJ5k7x50PHVx+X
+         w7MQ==
+X-Gm-Message-State: AOAM531kj2kfpBm3vtL51x5ZGUeDCz8zrL6m41lIV9fkFMZKMxfn379/
+        WpJLrJ5dLF4XV/acEJNav7RCTTBalfP4CAK9Hf8=
+X-Google-Smtp-Source: ABdhPJz6C4nM6H7j6BY7MagZHZTjjk2sskmeDb8SIAWlQJuTNdMMv7fSmlzJggwJxYVNHDyOnsESMeVpW0hfO6oRnDE=
+X-Received: by 2002:a2e:1510:: with SMTP id s16mr28063534ljd.119.1632748691870;
+ Mon, 27 Sep 2021 06:18:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210923064634.636ef48a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: jennybezoss14@gmail.com
+Sender: mrsjaneolando2@gmail.com
+Received: by 2002:a9a:e02:0:b0:146:fdae:3dfe with HTTP; Mon, 27 Sep 2021
+ 06:18:11 -0700 (PDT)
+From:   Mrs Jenny Bezos <jennybezos1@gmail.com>
+Date:   Mon, 27 Sep 2021 13:18:11 +0000
+X-Google-Sender-Auth: z2GvLVK1BErhcueaU4zl3pAp2Uo
+Message-ID: <CALv6sK-FAZo9P+nUB0=dEqCS128W9JviaEqEj7cp2gb=F5Sj2Q@mail.gmail.com>
+Subject: Dearest Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+-- 
+Dearest Friend,
 
-On 23/09/2021 15.46, Jakub Kicinski wrote:
-> Let me make a general statement that we can't build large systems
-> without division of responsibilities. Device specific logic has to
-> be left to the driver. It's up to veth to apply its extra rules.
-> 
-> As Zvi said, tho, this can be left for later. IMHO initial patches can
-> drop all mb frames on redirect in the core, so we can make progress.
+I am Mrs. Jenny Bezos from America  USA, I decided to donate what I
+have to you  for investment towards the good work of charity
+organizations, and also  to help the motherless and the less
+privileged ones and to carry out charitable works in your Country and
+around the World on my Behalf.
 
-I agree that for *initial* patchset for REDIRECT (func calling 
-ndo_xdp_xmit) it can drop MB frames on redirect in the core, when the 
-drivers ndo_xdp_xmit doesn't support this.
-BUT only so we can make progress.
+I am diagnosing of throat Cancer, hospitalize for good 2 years and
+some months now and quite obvious that I have few days to live, and I
+am a Widow no child; I decided to will/donate the sum of $7.8 million
+to you for the good work of God, and also to help the motherless and
+less privilege and also forth assistance of the widows. At the moment
+I cannot take any telephone calls right now due to the fact that my
+relatives (who have squandered the funds for this purpose before) are
+around me and my health also. I have adjusted my will and my Bank  is
+aware.
 
-As soon as possible (preferably in same kernel release) a follow-up 
-patchset should make a serious attempt at updating all drivers 
-ndo_xdp_xmit to support multi-buffer (MB).
+ I have willed those properties to you by quoting my Personal File
+Routing and Account Information. And I have also notified the bank
+that I am willing to give that property to you for good, effective and
+prudent work. It is right to say that I have been directed to do this
+by God. I will be going in for a surgery soon and I want to make sure
+that I make this donation before undergoing this surgery.  I will need
+your support to make this dream come through, could you let me know
+your interest to enable me to give you further information. And I
+hereby advise you to contact me by this email address.
 
-As MB use the same/compatible layout as skb_shared_info, it should be a 
-fairly small effort to update drivers, for *transmitting* multi-buff. As 
-drivers already support this for normal SKBs.
-
-It will be a larger effort to support XDP multi-buff on RX, as often the 
-RX-loop need to be adjusted/reordered to "delay" calling XDP-prog until 
-all fragments have been "collected".  And MTU check adjusted.
-
-This imply that the driver net_device xdp_features need two feature bits 
-for this MB feature.
-IMHO it makes sense to detangle RX and TX, as IMHO we should allow MB 
-frames to be TX redirect out a driver that have an old non-MB aware 
-XDP-prog loaded.
-
---Jesper
-
+Thanks
+Mrs. Jenny Bezos.
