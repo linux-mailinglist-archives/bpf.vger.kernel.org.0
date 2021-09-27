@@ -2,217 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534FB419E3B
-	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 20:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AAC419F28
+	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 21:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236208AbhI0S2n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Sep 2021 14:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        id S236395AbhI0Taw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Sep 2021 15:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236091AbhI0S2m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:28:42 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E790C06176C
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 11:27:04 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id k23-20020a17090a591700b001976d2db364so736716pji.2
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 11:27:04 -0700 (PDT)
+        with ESMTP id S236534AbhI0Tav (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Sep 2021 15:30:51 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A255DC061575;
+        Mon, 27 Sep 2021 12:29:13 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id s18so11880442ybc.0;
+        Mon, 27 Sep 2021 12:29:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=43dYGFExJoNuUmNt38Q8tohqKTb1ufKF7gir+xFriEA=;
-        b=OTAJiCmBuuuFhoToQMBxE4KKkWNnqjyY0T5C3ko8WigldOACXGOmEVIThFL4CLWHfO
-         0boiIvm+MRHkRP41MYoLnff6X/iHRMjtpJjnNiOV5LMSlmS2bgfQf1LYCsoBbDk6Vro4
-         YGrdlHlgW3FYYUDbRLxmgCOQqLpvBX8z7RJbg=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4msJ1HHIBlUcoGgpNIkATRMbk+sBV85v1+nbCjy8JvU=;
+        b=Pdouc4j1vhNSSTfsaB1K7eTGbCtK4b3bn3/3rX3l6QkxKcEhcvW2lAWJ7fJlVc4dqT
+         7aMd/RHNlusCgCvr9ld9pIkjm0nNH+0DtTKoqq53aWet0mP/fx1TWmVjiuqXC2ISubpF
+         Z1NZRFhMsdRwS4yRR0/7sUqSZkiyV230WKB5BPmqsh/Vn1Q+bgCmGRKn6dj47xrUMK17
+         WGXVK5ozVgSZ/FKnGcWjgHawG/TbgD0BBAQVvoxg+yC9B6Lf0TEZFkFIUaf25to3eyOv
+         1+VIhKEGGMB+mVgoW8qcCjhIQ9zCkZnLYyugAG9M+dCvjRxs8MaCbdMTqUstNjijBBOi
+         OeRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=43dYGFExJoNuUmNt38Q8tohqKTb1ufKF7gir+xFriEA=;
-        b=ZWX69UeGd1gZybFfksVVNlHU+r+Kpr7DcSeh7dHu7fJDqpm6hLcIPrS9gDKoxbXhsf
-         xEZpcMA+6lTJsQO2+fUizmXUEANQoMMGnOPW4ipzauCvJ3+oOlAR/sSM95Mbgt7V4kIQ
-         +2BCJKmehh7xx16JA6SCpU88TlPbaLin+fTzQuo+WZ7uJ+W85Kkh+Qybx+28THcUhAUm
-         CSJjYymZ/q/g7QtnDcP3KNMDANVxgUtXTYeL9IlKWmbM0Zo71RvyX9+2R6U4U7dFGkEa
-         SIREvly+r7Dlog+TTXOz0LclqF1bQ1rRNC4J4HyDXsyu76BNElpyfvmXAF6LaLbHORqm
-         xp5A==
-X-Gm-Message-State: AOAM533fFALVmj9CU8q/hB6SKeh/mbntTAuoPKjbMSpOiPLeYTPEkV+X
-        bw2NnxgGhQc9KDjoxXlm/QNlkg==
-X-Google-Smtp-Source: ABdhPJxn5n/7A6OeXcZ2gt0ceLGh0mQJYaK+ALnORV1nQHPSTfrg5bFiJNgYv9qmlI2GDrQ5D/juVA==
-X-Received: by 2002:a17:90a:8596:: with SMTP id m22mr569840pjn.218.1632767223760;
-        Mon, 27 Sep 2021 11:27:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h21sm17302774pfc.118.2021.09.27.11.27.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 11:27:02 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH 2/2] bpf: Replace callers of BPF_CAST_CALL with proper function typedef
-Date:   Mon, 27 Sep 2021 11:27:00 -0700
-Message-Id: <20210927182700.2980499-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210927182700.2980499-1-keescook@chromium.org>
-References: <20210927182700.2980499-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4msJ1HHIBlUcoGgpNIkATRMbk+sBV85v1+nbCjy8JvU=;
+        b=TV0odwaG0L2alEBZVY+727XPfwaR6mttJhBbissehsGyLSvQyqNMsLZneBRwMH7MZI
+         PjjhetBvrtHvDbQlf7H7ZyHmtt+XymFBCz1YLoqMx1mYDxB8LN4AW3jLyttm8idmmViD
+         VGbixsGM04SR024HfEVFiefeOU/+lgJdARTs4bUKR5pvFhgR0O6kmDIMAfUAR9jUhJIm
+         4++28N2TkPvVWx7wOPcAUfD4gisHTseWpaOPVRQ1d+ThFKzIoKd06fpr2fgLZd6FmIVW
+         y9Un9If0wmM3rF7tjgZX//1VU9b7+vGHr7gmArB8RZwxT0XSS2XdMv+LO0+XKSHTL6dS
+         q2fg==
+X-Gm-Message-State: AOAM532u3GGH3UKsWfpgKiku6HiOPIuM1olkb62eliYcvN9ssHdt6fNo
+        8JSDpP+BduokBDixPJH8knKyBAbG66I4fCpECpk=
+X-Google-Smtp-Source: ABdhPJw7rtRFOV+Xuo5K1eRtWrK5rQe4usXVzfoVH4rh9L+xclm/WeUI6FX3ZVHSUs5MUpXrkRSVPBJXj5D9zrTrjNE=
+X-Received: by 2002:a25:bb0b:: with SMTP id z11mr2101099ybg.108.1632770952882;
+ Mon, 27 Sep 2021 12:29:12 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5714; h=from:subject; bh=9JNJGH2jsdZr2e7yM2qvfQSMdoLIKPava0PYTFnVOoE=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhUgzzQWvlA6xROER3rNkckjnSKXUmUWAhnSt0wEvb X2wRni2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYVIM8wAKCRCJcvTf3G3AJl+zD/ 4kSHS8ROEmGLh19XUw5x0ZU+DiRLH2SQ1oI6znQZbgydbJmDS81IMLn+XMiTZevkXONslNzNQKTH1c kc3SDmSLlCifVvC0QCFUi6hajHSbBdLJHYTFTrqCAesvGCtZOne84ZyN5VGs0A0nNrodSE3okF+YDV rN5lLXMpOXS5Wnn+xs1RjKavvL9g1WkOlDAMe0P7IoPumksdGo/xHx17i7qpiqGx8uF5CbhHhyZkyn 6ri6k3O2cOOwGiZKP3nu/BFMBu8648kDEnA8aVTx/cGWLGyVg5wnVFxdEXtXpB5Y9+LlwOkVEvPlAh OufsAAX36wtfReKPXEDrO8eLq/513snXaFKkvKK7AuzDqmGefSlj4I+WDofkWJzHvr3yzS0bKoAoMW bMVA7nsYELnyydbt7/UZFwdb+ZIvqgK200kmEkNkOJjAy6mAb5IED7982+JUMxiNIZd/vHZNtIiB98 urArKjnn5jRgxZMyJw/g7zk6nbLJt9i0Nd2zXn53sWNM0CiVewTUkEFnSHlrOIEPJXeEUOTBYuezaB cwEdmdM8XpOacyGM52zWM87QBpxT5/2nbFiuQJhnpIx4DkEpld9a1Pg8ElZyv+lVE5G1SU2SaaMFrc 3DN/n+3XaZDNpjq3aM9MCTbmZY6KvpV2m6gAf3HtFeQscEWax6MhgkyQpasg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20210924220507.24543-1-xiyou.wangcong@gmail.com>
+ <20210924220507.24543-3-xiyou.wangcong@gmail.com> <6152085486e84_397f208e8@john-XPS-13-9370.notmuch>
+In-Reply-To: <6152085486e84_397f208e8@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 27 Sep 2021 12:29:01 -0700
+Message-ID: <CAM_iQpXtSYUKy3JRtFG3uuL9jwBiQzjoZt2ab-VOvEaygZh-VA@mail.gmail.com>
+Subject: Re: [Patch bpf 2/3] net: poll psock queues too for sockmap sockets
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Yucong Sun <sunyucong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In order to keep ahead of cases in the kernel where Control Flow
-Integrity (CFI) may trip over function call casts, enabling
--Wcast-function-type is helpful. To that end, BPF_CAST_CALL causes
-various warnings and is one of the last places in the kernel
-triggering this warning.
+On Mon, Sep 27, 2021 at 11:07 AM John Fastabend
+<john.fastabend@gmail.com> wrote:
+>
+> Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > Yucong noticed we can't poll() sockets in sockmap even
+> > when they are the destination sockets of redirections.
+> > This is because we never poll any psock queues in ->poll().
+> > We can not overwrite ->poll() as it is in struct proto_ops,
+> > not in struct proto.
+> >
+> > So introduce sk_msg_poll() to poll psock ingress_msg queue
+> > and let sockets which support sockmap invoke it directly.
+> >
+> > Reported-by: Yucong Sun <sunyucong@gmail.com>
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+> >  include/linux/skmsg.h |  6 ++++++
+> >  net/core/skmsg.c      | 15 +++++++++++++++
+> >  net/ipv4/tcp.c        |  2 ++
+> >  net/ipv4/udp.c        |  2 ++
+> >  net/unix/af_unix.c    |  5 +++++
+> >  5 files changed, 30 insertions(+)
+> >
+>
+> [...]
+>                                                   struct sk_buff *skb)
+> >  {
+> > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> > index e8b48df73c85..2eb1a87ba056 100644
+> > --- a/net/ipv4/tcp.c
+> > +++ b/net/ipv4/tcp.c
+> > @@ -280,6 +280,7 @@
+> >  #include <linux/uaccess.h>
+> >  #include <asm/ioctls.h>
+> >  #include <net/busy_poll.h>
+> > +#include <linux/skmsg.h>
+> >
+> >  /* Track pending CMSGs. */
+> >  enum {
+> > @@ -563,6 +564,7 @@ __poll_t tcp_poll(struct file *file, struct socket *sock, poll_table *wait)
+> >
+> >               if (tcp_stream_is_readable(sk, target))
+> >                       mask |= EPOLLIN | EPOLLRDNORM;
+> > +             mask |= sk_msg_poll(sk);
+> >
+> >               if (!(sk->sk_shutdown & SEND_SHUTDOWN)) {
+> >                       if (__sk_stream_is_writeable(sk, 1)) {
+>
+>
+> For TCP we implement the stream_memory_read() hook which we implement in
+> tcp_bpf.c with tcp_bpf_stream_read. This just checks psock->ingress_msg
+> list which should cover any redirect from skmsg into the ingress side
+> of another socket.
+>
+> And the tcp_poll logic is using tcp_stream_is_readable() which is
+> checking for sk->sk_prot->stream_memory_read() and then calling it.
 
-For actual function calls, replace BPF_CAST_CALL() with a typedef, which
-captures the same details about the given function pointers.
+Ah, I missed it. It is better to have such a hook in struct proto,
+since we just can overwrite it with bpf hooks. Let me rename it
+for non-TCP and implement it for UDP and AF_UNIX too.
 
-This change results in no object code difference.
+>
+> The straight receive path, e.g. not redirected from a sender should
+> be covered by the normal tcp_epollin_ready() checks because this
+> would be after TCP does the normal updates to rcv_nxt, copied_seq,
+> etc.
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://github.com/KSPP/linux/issues/20
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- include/linux/bpf.h    | 4 +++-
- include/linux/filter.h | 5 -----
- kernel/bpf/arraymap.c  | 7 +++----
- kernel/bpf/hashtab.c   | 7 +++----
- kernel/bpf/helpers.c   | 5 ++---
- 5 files changed, 11 insertions(+), 17 deletions(-)
+Yes.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f4c16f19f83e..ff633f08cb51 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -48,6 +48,7 @@ extern struct idr btf_idr;
- extern spinlock_t btf_idr_lock;
- extern struct kobject *btf_kobj;
- 
-+typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
- typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
- 					struct bpf_iter_aux_info *aux);
- typedef void (*bpf_iter_fini_seq_priv_t)(void *private_data);
-@@ -142,7 +143,8 @@ struct bpf_map_ops {
- 	int (*map_set_for_each_callback_args)(struct bpf_verifier_env *env,
- 					      struct bpf_func_state *caller,
- 					      struct bpf_func_state *callee);
--	int (*map_for_each_callback)(struct bpf_map *map, void *callback_fn,
-+	int (*map_for_each_callback)(struct bpf_map *map,
-+				     bpf_callback_t callback_fn,
- 				     void *callback_ctx, u64 flags);
- 
- 	/* BTF name and id of struct allocated by map_alloc */
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 6c247663d4ce..47f80adbe744 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -360,11 +360,6 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
- 		.off   = 0,					\
- 		.imm   = TGT })
- 
--/* Function call */
--
--#define BPF_CAST_CALL(x)					\
--		((u64 (*)(u64, u64, u64, u64, u64))(x))
--
- /* Convert function address to BPF immediate */
- 
- #define BPF_CALL_IMM(x)	((void *)(x) - (void *)__bpf_call_base)
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index cebd4fb06d19..5e1ccfae916b 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -645,7 +645,7 @@ static const struct bpf_iter_seq_info iter_seq_info = {
- 	.seq_priv_size		= sizeof(struct bpf_iter_seq_array_map_info),
- };
- 
--static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
-+static int bpf_for_each_array_elem(struct bpf_map *map, bpf_callback_t callback_fn,
- 				   void *callback_ctx, u64 flags)
- {
- 	u32 i, key, num_elems = 0;
-@@ -668,9 +668,8 @@ static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
- 			val = array->value + array->elem_size * i;
- 		num_elems++;
- 		key = i;
--		ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
--					(u64)(long)&key, (u64)(long)val,
--					(u64)(long)callback_ctx, 0);
-+		ret = callback_fn((u64)(long)map, (u64)(long)&key,
-+				  (u64)(long)val, (u64)(long)callback_ctx, 0);
- 		/* return value: 0 - continue, 1 - stop and return */
- 		if (ret)
- 			break;
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 3d8f9d6997d5..d29af9988f37 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -2049,7 +2049,7 @@ static const struct bpf_iter_seq_info iter_seq_info = {
- 	.seq_priv_size		= sizeof(struct bpf_iter_seq_hash_map_info),
- };
- 
--static int bpf_for_each_hash_elem(struct bpf_map *map, void *callback_fn,
-+static int bpf_for_each_hash_elem(struct bpf_map *map, bpf_callback_t callback_fn,
- 				  void *callback_ctx, u64 flags)
- {
- 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-@@ -2089,9 +2089,8 @@ static int bpf_for_each_hash_elem(struct bpf_map *map, void *callback_fn,
- 				val = elem->key + roundup_key_size;
- 			}
- 			num_elems++;
--			ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
--					(u64)(long)key, (u64)(long)val,
--					(u64)(long)callback_ctx, 0);
-+			ret = callback_fn((u64)(long)map, (u64)(long)key,
-+					  (u64)(long)val, (u64)(long)callback_ctx, 0);
- 			/* return value: 0 - continue, 1 - stop and return */
- 			if (ret) {
- 				rcu_read_unlock();
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 9aabf84afd4b..25d7e02ba449 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1058,7 +1058,7 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
- 	struct bpf_hrtimer *t = container_of(hrtimer, struct bpf_hrtimer, timer);
- 	struct bpf_map *map = t->map;
- 	void *value = t->value;
--	void *callback_fn;
-+	bpf_callback_t callback_fn;
- 	void *key;
- 	u32 idx;
- 
-@@ -1083,8 +1083,7 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
- 		key = value - round_up(map->key_size, 8);
- 	}
- 
--	BPF_CAST_CALL(callback_fn)((u64)(long)map, (u64)(long)key,
--				   (u64)(long)value, 0, 0);
-+	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
- 	/* The verifier checked that return value is zero. */
- 
- 	this_cpu_write(hrtimer_running, NULL);
--- 
-2.30.2
+>
+> So above is not in the TCP case by my reading. Did I miss a
+> case? We also have done tests with Envoy which I thought were polling
+> so I'll check on that as well.
 
+Right, all of these selftests in patch 3/3 are non-TCP.
+
+Thanks.
