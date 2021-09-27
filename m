@@ -2,90 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE87E4194F0
-	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 15:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8F4419528
+	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 15:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbhI0NTw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Sep 2021 09:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234421AbhI0NTw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:19:52 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195B3C061575
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 06:18:14 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id u8so76518047lff.9
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 06:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=UAOvT72nEzyjB3EaBfIB4vBLAlWNhJb9FUU2K5PC8fM=;
-        b=TuhNHJ1tp2ds5QlXseRrEkZ5WdtFVIbrJ5vY/5opu0PFmbeTB/hKQ02B72klLrFjsX
-         qpgHFbLDLkCWWic7TwoheWwaDg1S4YPfIdD0mEaXRWFxvyippYAzFo5gM+7RFRbLjlIC
-         ke2ohFxBkM0rgIuyIiAZSp28diM6aA0Sap19zbLDHQvjBSvlbvURG+9trE+3vFXU/GQe
-         NpH55dYlY9YOxpUoXh7WPQV3nYZJ2JHO6R6fIHA7mI7JUCIxWs+vITf3B0KImL1UcPrY
-         woDK080pICEsrDTu24KGFr6mFvc/tTCNCyC3uPX2KOfY1pDJLt++yJ0feJk87REj06qG
-         WwbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=UAOvT72nEzyjB3EaBfIB4vBLAlWNhJb9FUU2K5PC8fM=;
-        b=0OwT39+meFb+hKHGRXP6rKFLf4KptoZZVGQe2i4PCWsY4TbzNLhyUwBT/SegRygttP
-         H83EGk5UpTv9wEy8hX9K5mt7xbyXuvkSOWm41ZmLRZEH31HfELagJpkOxFNvp5id1EnA
-         icgxy5r7AErwn8YFF8XMvKB8UbgXRbUTcus1/gCoQL+ivt1KByMeORWBsFUMNnLFYMab
-         X30LHdBpNr7FUdbH2iBQRWotuifmn+2pA9stt8FJXzVd6/sZEZi70RwRjZH5SMhH0tG7
-         icyvtTw9gzRkv2lHXd3bofIsO0D/UF/61MzAXzbfrbvR4scO+QqylFEJ5k7x50PHVx+X
-         w7MQ==
-X-Gm-Message-State: AOAM531kj2kfpBm3vtL51x5ZGUeDCz8zrL6m41lIV9fkFMZKMxfn379/
-        WpJLrJ5dLF4XV/acEJNav7RCTTBalfP4CAK9Hf8=
-X-Google-Smtp-Source: ABdhPJz6C4nM6H7j6BY7MagZHZTjjk2sskmeDb8SIAWlQJuTNdMMv7fSmlzJggwJxYVNHDyOnsESMeVpW0hfO6oRnDE=
-X-Received: by 2002:a2e:1510:: with SMTP id s16mr28063534ljd.119.1632748691870;
- Mon, 27 Sep 2021 06:18:11 -0700 (PDT)
+        id S234103AbhI0NgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Sep 2021 09:36:24 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47212 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234500AbhI0NgY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:36:24 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mUqmH-0004tz-Hv; Mon, 27 Sep 2021 15:34:41 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mUqmH-0001qc-9p; Mon, 27 Sep 2021 15:34:41 +0200
+Subject: Re: [PATCH bpf-next 4/4] bpf: export bpf_jit_current
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210924095542.33697-1-lmb@cloudflare.com>
+ <20210924095542.33697-5-lmb@cloudflare.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a076398b-f1da-c939-3c71-ac157ad96939@iogearbox.net>
+Date:   Mon, 27 Sep 2021 15:34:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Reply-To: jennybezoss14@gmail.com
-Sender: mrsjaneolando2@gmail.com
-Received: by 2002:a9a:e02:0:b0:146:fdae:3dfe with HTTP; Mon, 27 Sep 2021
- 06:18:11 -0700 (PDT)
-From:   Mrs Jenny Bezos <jennybezos1@gmail.com>
-Date:   Mon, 27 Sep 2021 13:18:11 +0000
-X-Google-Sender-Auth: z2GvLVK1BErhcueaU4zl3pAp2Uo
-Message-ID: <CALv6sK-FAZo9P+nUB0=dEqCS128W9JviaEqEj7cp2gb=F5Sj2Q@mail.gmail.com>
-Subject: Dearest Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210924095542.33697-5-lmb@cloudflare.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26305/Mon Sep 27 11:04:42 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Dearest Friend,
+On 9/24/21 11:55 AM, Lorenz Bauer wrote:
+> Expose bpf_jit_current as a read only value via sysctl.
+> 
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>   include/linux/filter.h     | 1 +
+>   kernel/bpf/core.c          | 3 +--
+>   net/core/sysctl_net_core.c | 7 +++++++
+>   3 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index ef03ff34234d..b2143ad5ce00 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -1052,6 +1052,7 @@ extern int bpf_jit_harden;
+>   extern int bpf_jit_kallsyms;
+>   extern long bpf_jit_limit;
+>   extern long bpf_jit_limit_max;
+> +extern atomic_long_t bpf_jit_current;
+>   
+>   typedef void (*bpf_jit_fill_hole_t)(void *area, unsigned int size);
+>   
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index e844a2a4c99a..93f95e9ee8be 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -525,6 +525,7 @@ int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
+>   int bpf_jit_harden   __read_mostly;
+>   long bpf_jit_limit   __read_mostly;
+>   long bpf_jit_limit_max __read_mostly;
+> +atomic_long_t bpf_jit_current __read_mostly;
+>   
+>   static void
+>   bpf_prog_ksym_set_addr(struct bpf_prog *prog)
+> @@ -800,8 +801,6 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+>   	return slot;
+>   }
+>   
+> -static atomic_long_t bpf_jit_current;
+> -
+>   /* Can be overridden by an arch's JIT compiler if it has a custom,
+>    * dedicated BPF backend memory area, or if neither of the two
+>    * below apply.
+> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+> index 5f88526ad61c..674aac163b84 100644
+> --- a/net/core/sysctl_net_core.c
+> +++ b/net/core/sysctl_net_core.c
+> @@ -421,6 +421,13 @@ static struct ctl_table net_core_table[] = {
+>   		.extra1		= &long_one,
+>   		.extra2		= &bpf_jit_limit_max,
+>   	},
+> +	{
+> +		.procname	= "bpf_jit_current",
+> +		.data		= &bpf_jit_current,
+> +		.maxlen		= sizeof(long),
+> +		.mode		= 0400,
+> +		.proc_handler	= proc_dolongvec_minmax_bpf_restricted,
 
-I am Mrs. Jenny Bezos from America  USA, I decided to donate what I
-have to you  for investment towards the good work of charity
-organizations, and also  to help the motherless and the less
-privileged ones and to carry out charitable works in your Country and
-around the World on my Behalf.
+Overall series looks good to me. The only nit I would have is that the above could (in theory)
+be subject to atomic_long_t vs long type confusion. I would rather prefer to have a small handler
+which properly reads out the atomic_long_t and then passes it onwards as a temporary/plain long
+to user space.
 
-I am diagnosing of throat Cancer, hospitalize for good 2 years and
-some months now and quite obvious that I have few days to live, and I
-am a Widow no child; I decided to will/donate the sum of $7.8 million
-to you for the good work of God, and also to help the motherless and
-less privilege and also forth assistance of the widows. At the moment
-I cannot take any telephone calls right now due to the fact that my
-relatives (who have squandered the funds for this purpose before) are
-around me and my health also. I have adjusted my will and my Bank  is
-aware.
+Thanks,
+Daniel
 
- I have willed those properties to you by quoting my Personal File
-Routing and Account Information. And I have also notified the bank
-that I am willing to give that property to you for good, effective and
-prudent work. It is right to say that I have been directed to do this
-by God. I will be going in for a surgery soon and I want to make sure
-that I make this donation before undergoing this surgery.  I will need
-your support to make this dream come through, could you let me know
-your interest to enable me to give you further information. And I
-hereby advise you to contact me by this email address.
+> +	},
+>   #endif
+>   	{
+>   		.procname	= "netdev_tstamp_prequeue",
+> 
 
-Thanks
-Mrs. Jenny Bezos.
