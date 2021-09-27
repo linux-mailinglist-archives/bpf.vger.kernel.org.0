@@ -2,107 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4DA41986A
-	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 18:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4EF419870
+	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 18:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbhI0QDP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Sep 2021 12:03:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27897 "EHLO
+        id S235353AbhI0QDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Sep 2021 12:03:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34729 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235345AbhI0QDN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 27 Sep 2021 12:03:13 -0400
+        by vger.kernel.org with ESMTP id S235322AbhI0QDw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 27 Sep 2021 12:03:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632758494;
+        s=mimecast20190719; t=1632758534;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zExPlJIZ2FYbGOJNvq3oGtYGHJadUybqtiVq6T7E0P8=;
-        b=MbbocOQGtt9PgERDRGFNVyz/IxnwldaCCk6tRdr9AX+3+Lvr5ov4cCnysH8wAiVQMmSawt
-        WbJV6R/TMkn+9ctIpvQUvpyxxM2XnjBuKPbxNMb5vOxdNZuC0coHye/Kz/whTfTRpKwm7z
-        SNiD7OcvO/CmXI1PVa5LkHVSKUlBbSw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-bwiIMnN2MGalFVKP5C2Znw-1; Mon, 27 Sep 2021 12:01:33 -0400
-X-MC-Unique: bwiIMnN2MGalFVKP5C2Znw-1
-Received: by mail-ed1-f71.google.com with SMTP id h15-20020aa7de0f000000b003d02f9592d6so18254871edv.17
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 09:01:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=zExPlJIZ2FYbGOJNvq3oGtYGHJadUybqtiVq6T7E0P8=;
-        b=TaFT/KUeRt4ByFT/JKGLZymQtPj7IA5kjyFHh4d/SOF3/IHeS0CJE34bzQV7KybBvb
-         0R4egOPKAZ9tQKCOuNwvJfdHAml3ie777f94qN0jb5oXq/+CQPWqSO/mvMALNSqc1b6Q
-         Y1vU7HdymTlZvMx3ul2av4XYhbgS3tD4qwGtxRhpe4RuMbrW+TVWKS4aT2wLb9sYZsWi
-         UjdUI4QOWktfErd2lm9BePLvbld4rG4mIkAH5a21X5FEmFTMSI7ONsPptS2bV4ncxfRD
-         jZuXYt1G4STpsoOcyDHcSWA2mxe12LY9CjXPqj5xWuZUqxqQAiScsNwb/BzXQdJW0KiU
-         nngw==
-X-Gm-Message-State: AOAM5314pQri5Fl79Cxsm2mfZDcyrqljE/Ui7NaSDtR/va5UVlIOwjqY
-        S3d5DtYvTFznqiNHWv9fj2ff8YDjSvwVI8qcMw2CtQ5D234FcC6rFFHPBsRUTxStPbm9OmDYSWH
-        kLtno9oj1PhFU
-X-Received: by 2002:a17:906:c1c9:: with SMTP id bw9mr881564ejb.3.1632758491002;
-        Mon, 27 Sep 2021 09:01:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjdne5kVFhj0nIsgvqXim6GEbYAXqHlg9Gknp5laAa4W3YM7h/IP0AhDMa56VtHm3rhsOpxg==
-X-Received: by 2002:a17:906:c1c9:: with SMTP id bw9mr881450ejb.3.1632758489978;
-        Mon, 27 Sep 2021 09:01:29 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id w11sm11133076edl.12.2021.09.27.09.01.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 09:01:29 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7CF8618034A; Mon, 27 Sep 2021 18:01:27 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] samples: bpf: avoid name collision with kernel
- enum values
-In-Reply-To: <20210927134629.4cnzf25dfbprxwbc@apollo.localdomain>
-References: <20210926125605.1101605-1-memxor@gmail.com>
- <87sfxqjit1.fsf@toke.dk>
- <20210927134629.4cnzf25dfbprxwbc@apollo.localdomain>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 27 Sep 2021 18:01:27 +0200
-Message-ID: <87mtnyj9d4.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+         to:to:cc:cc; bh=jUaJ1IKQE0YFnAuJ4WfmBeV1UYM0Oan+ct0lDVq9/lw=;
+        b=RHr4EyYp5e4fM7HIyUMPce7KObcxawZQCEMltBFRGekGlnBjQsLGiGq4z/cWzfljrY96Op
+        6GMqiKogburKlsJ+ErlW4M+CpnJCM7gKO7x0Lp5gD60T7MiTcIWF1gjZJyIHC5pqJVJoAt
+        3Ifj+SmN6Az5wKp2u1XRADs5CZufaMM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-GKKlnJi1PHiE2vB-9pKQXw-1; Mon, 27 Sep 2021 12:02:10 -0400
+X-MC-Unique: GKKlnJi1PHiE2vB-9pKQXw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9194050753;
+        Mon, 27 Sep 2021 16:02:09 +0000 (UTC)
+Received: from griffin.upir.cz (unknown [10.40.193.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1106E1A26A;
+        Mon, 27 Sep 2021 16:02:07 +0000 (UTC)
+From:   Jiri Benc <jbenc@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org
+Subject: [PATCH bpf] selftests: bpf: fix makefile dependencies on libbpf
+Date:   Mon, 27 Sep 2021 18:01:36 +0200
+Message-Id: <ee84ab66436fba05a197f952af23c98d90eb6243.1632758415.git.jbenc@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+When building bpf selftest with make -j, I'm randomly getting build failures
+such as this one:
 
-> On Mon, Sep 27, 2021 at 06:07:30PM IST, Toke H=C3=B8iland-J=C3=B8rgensen =
-wrote:
->> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
->>
->> > In xdp_redirect_map_multi.bpf.c, on newer kernels samples compilation
->> > fails when vmlinux.h is generated from a kernel supporting broadcast f=
-or
->> > devmap. Hence, avoid naming collisions to prevent build failure.
->>
->> Hmm, shouldn't the sample just be getting the value from the kernel in
->> the first place instead of re-defining it?
->>
->
-> True, but in general my assumption was that it could be built with a older
-> kernel's vmlinux.h, but be ran on a newer one. If that's not strictly nee=
-ded, I
-> can just drop it.
+> In file included from progs/bpf_flow.c:19:
+> [...]/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:11:10: fatal error: 'bpf_helper_defs.h' file not found
+> #include "bpf_helper_defs.h"
+>          ^~~~~~~~~~~~~~~~~~~
 
-But the code is still making assumptions about the contents of
-vmlinux.h, isn't it? Like the size (and existence) of struct
-bpf_devmap_val.
+The file that fails the build varies between runs but it's always in the
+progs/ subdir.
 
-> This can also be the case if you haven't built the kernel in the tree
-> (just did a make headers_install), it then falls back to generating
-> the vmlinux.h from the running kernel.
+The reason is a missing make dependency on libbpf for the .o files in
+progs/. There was a dependency before commit 3ac2e20fba07e but that commit
+removed it to prevent unneeded rebuilds. However, that only works if libbpf
+has been built already; the 'wildcard' prerequisite does not trigger when
+there's no bpf_helper_defs.h generated yet.
 
-This seems a bit brittle. Given that the samples are distributed with
-the kernel sources, I would expect them to always correspond to the
-kernel version in the source tree they're in and not randomly break if
-the running kernel is different...
+Keep the libbpf as an order-only prerequisite to satisfy both goals. It is
+always built before the progs/ objects but it does not trigger unnecessary
+rebuilds by itself.
 
--Toke
+Fixes: 3ac2e20fba07e ("selftests/bpf: BPF object files should depend only on libbpf headers")
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
+---
+ tools/testing/selftests/bpf/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 866531c08e4f..e7c42695dbbf 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -375,7 +375,8 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
+ 		     $(TRUNNER_BPF_PROGS_DIR)/%.c			\
+ 		     $(TRUNNER_BPF_PROGS_DIR)/*.h			\
+ 		     $$(INCLUDE_DIR)/vmlinux.h				\
+-		     $(wildcard $(BPFDIR)/bpf_*.h) | $(TRUNNER_OUTPUT)
++		     $(wildcard $(BPFDIR)/bpf_*.h) | $(TRUNNER_OUTPUT)	\
++		     $$(BPFOBJ)
+ 	$$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,			\
+ 					  $(TRUNNER_BPF_CFLAGS))
+ 
+-- 
+2.18.1
 
