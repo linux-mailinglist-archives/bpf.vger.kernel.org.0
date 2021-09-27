@@ -2,177 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D834419A40
-	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 19:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9952C419B37
+	for <lists+bpf@lfdr.de>; Mon, 27 Sep 2021 19:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbhI0RHx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Sep 2021 13:07:53 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1202 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235870AbhI0RHB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 27 Sep 2021 13:07:01 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18REfGjh014710
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 10:05:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=JcS2FBvBEsjaB+NsqvmAA0dOLzzQXKPFt9XxAl66HBQ=;
- b=hq8yV5qt5s296Pw079YuiIYAOHrYXvWNFvjagYUTIBx7s/vpCubdPbRuG4rajwHglSan
- yhdMzl7/XWD+ksTXUhripHggi6ik4cNlhnZ7DPAUyDpcM0BqNgwbme6rwzvozFxEx+DQ
- R1NPmLYAcW8m3xZoYB8RkFR5ZBSMjPlTyXI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 3bbfdf99nu-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 10:05:22 -0700
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 27 Sep 2021 10:05:21 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id B93D95BC9F9; Mon, 27 Sep 2021 10:05:19 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix probe_user test failure with clang build kernel
-Date:   Mon, 27 Sep 2021 10:05:19 -0700
-Message-ID: <20210927170519.806505-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S236219AbhI0RQY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Sep 2021 13:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236480AbhI0ROw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:14:52 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D20C051741
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 10:06:03 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id s20so23695141ioa.4
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 10:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9Q9onsPk/TXaOCMEv4AT2657vSl1grxBTxAt6ZfawYo=;
+        b=TmTxwovudp5NuP4w1Yeav+5kzXC8glrF0pAih0hr9exRJq9p+mHHhKDJElNbNQb1Ij
+         h+r066Z2Av7U6b40IEiWrx12F7aN4+Z5f8L9+T7LzV4stdIMkoGD8e3ug2D5RsKORi/i
+         nhLKqjHNYmRrcQr30jTbOCBw6CP6HDWTkcMekBeDmzIpiBtjcvgqj2vbN99Tk5LReCQh
+         bF1qrR6bCgYDfsgmNDbd5XtDvWz9+ca1ZnElRUxlI0oIHsmrzcVzC4L5Bk45+AtRdHnI
+         cR+KTBa0Bi66JFv2Gv1nZWs5hxg0qBljSSrlt3NaBdHQffIeQ0Bq1bT+emufpjF4Oeab
+         5gsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9Q9onsPk/TXaOCMEv4AT2657vSl1grxBTxAt6ZfawYo=;
+        b=Sbwo544A2yWwTEs/Yy7YoPedrjfSzLfo4pRttza44EySE/VwNLJCKdgEV7sQlhAN7Z
+         LjfwawZW31RF5L42hLSfqReoHVrvnezaWDqquhQ9ocoAyQOEfpbUOBjx/Uhl8B2uXBCP
+         Ug06atvRcD5a1Oz0QtfxqZ6dFhGVCyKSvCEmilYZuIDcft+zuOsOnKlsTH4Q7GsbjMK4
+         0cW6xdE8kSpiAYroZRUAUFfK3XpXQ9cS9RUrGaovna4GJrvRjk5YZQTRLj0s9IdjK1KJ
+         tcLVyVKSbuBTFCqu/XkJ/NL48IqokYXZE92P2x9j3xa/cr9T4RVMBeFQITj9vQ6X68Ve
+         KudQ==
+X-Gm-Message-State: AOAM530SsVb6XnCWO7YtJ77ffnDckyMHgdf+1R4UNqCeysfSdMM3ZXdP
+        o5G2+0Iwxcm9188cCc6CdRm2r6vx8u9veRjfLbfphg==
+X-Google-Smtp-Source: ABdhPJzkXYuDVcmVIoUNLd6urdFTTEYgOR6P/eci74DDABaFSKWw4J2VkcNJElNnd4nCoY4BMaiZPqBe1B+b6Az61+0=
+X-Received: by 2002:a02:1049:: with SMTP id 70mr827455jay.123.1632762362607;
+ Mon, 27 Sep 2021 10:06:02 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210922222935.495290-1-irogers@google.com> <e126f901-f3ce-1325-b3c1-9d325bbc8249@iogearbox.net>
+ <014c2f18-cede-ccc6-6d45-ca09093a6c76@iogearbox.net>
+In-Reply-To: <014c2f18-cede-ccc6-6d45-ca09093a6c76@iogearbox.net>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 27 Sep 2021 10:05:48 -0700
+Message-ID: <CAP-5=fWr9EunVXMoYu08AwVpK_Gq2qWixof_Gw5CWJGCeWeD6A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] tools/include: Update if_link.h and netlink.h
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Mark Starovoytov <mstarovoitov@marvell.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Vlad Buslov <vladbu@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Alexandre Cassen <acassen@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: ZU439hhbnsdpPSblaqnXGsyo_Qxwk7dI
-X-Proofpoint-GUID: ZU439hhbnsdpPSblaqnXGsyo_Qxwk7dI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-27_07,2021-09-24_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- spamscore=0 impostorscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0
- mlxscore=0 clxscore=1015 mlxlogscore=787 suspectscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109270116
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-clang build kernel failed the selftest probe_user.
-  $ ./test_progs -t probe_user
-  $ ...
-  $ test_probe_user:PASS:get_kprobe_res 0 nsec
-  $ test_probe_user:FAIL:check_kprobe_res wrong kprobe res from probe rea=
-d: 0.0.0.0:0
-  $ #94 probe_user:FAIL
+On Mon, Sep 27, 2021 at 10:03 AM Daniel Borkmann <daniel@iogearbox.net> wro=
+te:
+>
+> On 9/27/21 7:02 PM, Daniel Borkmann wrote:
+> > On 9/23/21 12:29 AM, Ian Rogers wrote:
+> >> Sync the uAPI headers so that userspace and the kernel match. These
+> >> changes make the tools version match the updates to the files in the
+> >> kernel directory that were updated by commits:
+> >>
+> >> if_link.h:
+> >> 8f4c0e01789c hsr: enhance netlink socket interface to support PRP
+> >> 427f0c8c194b macvlan: Add nodst option to macvlan type source
+> >> 583be982d934 mctp: Add device handling and netlink interface
+> >> c7fa1d9b1fb1 net: bridge: mcast: dump ipv4 querier state
+> >> 2dba407f994e net: bridge: multicast: make tracked EHT hosts limit conf=
+igurable
+> >> b6e5d27e32ef net: ethernet: rmnet: Add support for MAPv5 egress packet=
+s
+> >> 14452ca3b5ce net: qualcomm: rmnet: Export mux_id and flags to netlink
+> >> 78a3ea555713 net: remove comments on struct rtnl_link_stats
+> >> 0db0c34cfbc9 net: tighten the definition of interface statistics
+> >> 571912c69f0e net: UDP tunnel encapsulation module for tunnelling diffe=
+rent protocols like MPLS, IP, NSH etc.
+> >> 00e77ed8e64d rtnetlink: add IFLA_PARENT_[DEV|DEV_BUS]_NAME
+> >> 829eb208e80d rtnetlink: add support for protodown reason
+> >>
+> >> netlink.h:
+> >> d07dcf9aadd6 netlink: add infrastructure to expose policies to userspa=
+ce
+> >> 44f3625bc616 netlink: export policy in extended ACK
+> >> d409989b59ad netlink: simplify NLMSG_DATA with NLMSG_HDRLEN
+> >> a85cbe6159ff uapi: move constants from <linux/kernel.h> to <linux/cons=
+t.h>
+> >>
+> >> v2. Is a rebase and sync to the latest versions. A list of changes
+> >>      computed via diff and blame was added to the commit message as su=
+ggested
+> >>      in:
+> >> https://lore.kernel.org/lkml/20201015223119.1712121-1-irogers@google.c=
+om/
+> >>
+> >> Signed-off-by: Ian Rogers <irogers@google.com>
+> >
+> > With both patches applied to bpf-next, this would break our CI:
+> >
+> > [...]
+> >    CC       bench.o
+> >    CC       bench_count.o
+> >    CC       bench_rename.o
+> >    CC       bench_trigger.o
+> >    CC       bench_ringbufs.o
+> >    BINARY   bench
+> >    BINARY   xdpxceiver
+> > xdpxceiver.c: In function =E2=80=98testapp_invalid_desc=E2=80=99:
+> > xdpxceiver.c:1223:41: warning: implicit declaration of function =E2=80=
+=98ARRAY_SIZE=E2=80=99 [-Wimplicit-function-declaration]
+> >   1223 |  pkt_stream_generate_custom(test, pkts, ARRAY_SIZE(pkts));
+> >        |                                         ^~~~~~~~~~
+> > /usr/bin/ld: /tmp/ccoQONpi.o: in function `testapp_invalid_desc':
+> > /root/daniel/bpf/tools/testing/selftests/bpf/xdpxceiver.c:1223: undefin=
+ed reference to `ARRAY_SIZE'
+> > collect2: error: ld returned 1 exit status
+> > make: *** [Makefile:166: /root/daniel/bpf/tools/testing/selftests/bpf/x=
+dpxceiver] Error 1
+> >
+> > Please take a look and submit v3 of the series with the build issue fix=
+ed.
+>
+> See also: https://github.com/kernel-patches/bpf/pull/1822/checks?check_ru=
+n_id=3D3714445336
 
-The test attached to kernel function __sys_connect(). In net/socket.c, we=
- have
-  int __sys_connect(int fd, struct sockaddr __user *uservaddr, int addrle=
-n)
-  {
-        ......
-  }
-  ...
-  SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
-                  int, addrlen)
-  {
-        return __sys_connect(fd, uservaddr, addrlen);
-  }
 
-The gcc compiler (8.5.0) does not inline __sys_connect() in syscall entry
-function. But latest clang trunk did the inlining. So the bpf program
-is not triggered.
+Thanks, this looks like an "include what you use" problem in
+xdpxceiver.c and so I'll need to add a patch to fix that ahead of
+these patches.
 
-To make the test more reliable, let us kprobe the syscall entry function
-instead. But x86_64, arm64 and s390 has syscall wrapper and they have
-to be handled specially. I also changed the test to use vmlinux.h and COR=
-E
-to accommodate relocatable pt_regs structure, similar to
-samples/bpf/test_probe_write_user_kern.c.
+Ian
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/probe_user.c     |  4 +--
- .../selftests/bpf/progs/test_probe_user.c     | 30 +++++++++++++++----
- 2 files changed, 26 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/probe_user.c b/tools/=
-testing/selftests/bpf/prog_tests/probe_user.c
-index 95bd12097358..52fe157e2a90 100644
---- a/tools/testing/selftests/bpf/prog_tests/probe_user.c
-+++ b/tools/testing/selftests/bpf/prog_tests/probe_user.c
-@@ -3,7 +3,7 @@
-=20
- void test_probe_user(void)
- {
--	const char *prog_name =3D "kprobe/__sys_connect";
-+	const char *prog_name =3D "handle_sys_connect";
- 	const char *obj_file =3D "./test_probe_user.o";
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts, );
- 	int err, results_map_fd, sock_fd, duration =3D 0;
-@@ -18,7 +18,7 @@ void test_probe_user(void)
- 	if (!ASSERT_OK_PTR(obj, "obj_open_file"))
- 		return;
-=20
--	kprobe_prog =3D bpf_object__find_program_by_title(obj, prog_name);
-+	kprobe_prog =3D bpf_object__find_program_by_name(obj, prog_name);
- 	if (CHECK(!kprobe_prog, "find_probe",
- 		  "prog '%s' not found\n", prog_name))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/progs/test_probe_user.c b/tools/=
-testing/selftests/bpf/progs/test_probe_user.c
-index 89b3532ccc75..9b3ddbf6289d 100644
---- a/tools/testing/selftests/bpf/progs/test_probe_user.c
-+++ b/tools/testing/selftests/bpf/progs/test_probe_user.c
-@@ -1,21 +1,39 @@
- // SPDX-License-Identifier: GPL-2.0
-=20
--#include <linux/ptrace.h>
--#include <linux/bpf.h>
--
--#include <netinet/in.h>
-+#include "vmlinux.h"
-=20
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
- #include <bpf/bpf_tracing.h>
-=20
-+#if defined(__TARGET_ARCH_x86)
-+volatile const int syscall_wrapper =3D 1;
-+#define SYS_PREFIX "__x64_"
-+#elif defined(__TARGET_ARCH_s390)
-+volatile const int syscall_wrapper =3D 1;
-+#define SYS_PREFIX "__s390x_"
-+#elif defined(__TARGET_ARCH_arm64)
-+volatile const int syscall_wrapper =3D 1;
-+#define SYS_PREFIX "__arm64_"
-+#else
-+volatile const int syscall_wrapper =3D 0;
-+#endif
-+
- static struct sockaddr_in old;
-=20
--SEC("kprobe/__sys_connect")
-+SEC("kprobe/" SYS_PREFIX "sys_connect")
- int BPF_KPROBE(handle_sys_connect)
- {
--	void *ptr =3D (void *)PT_REGS_PARM2(ctx);
-+	void *ptr;
- 	struct sockaddr_in new;
-=20
-+	if (syscall_wrapper =3D=3D 0) {
-+		ptr =3D (void *)PT_REGS_PARM2_CORE(ctx);
-+	} else {
-+		struct pt_regs *real_regs =3D (struct pt_regs *)PT_REGS_PARM1_CORE(ctx=
-);
-+		ptr =3D (void *)PT_REGS_PARM2_CORE(real_regs);
-+	}
-+
- 	bpf_probe_read_user(&old, sizeof(old), ptr);
- 	__builtin_memset(&new, 0xab, sizeof(new));
- 	bpf_probe_write_user(ptr, &new, sizeof(new));
---=20
-2.30.2
-
+> Thanks,
+> Daniel
