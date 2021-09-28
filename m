@@ -2,85 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4841E41B5B6
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 20:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E193B41B629
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 20:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239306AbhI1SNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 14:13:19 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46234 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242108AbhI1SNS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Sep 2021 14:13:18 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SBK17N026572
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 11:11:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=4qr4MU6aogZhDAGO6WItYzhZ+eg37fJQuNhUq4Xv0hU=;
- b=OjtOzSIuRBYdbXsgjsy6qlFhAJnnE0b0sMg3zKNlgm2MBqnGzFvejmWiPCrJPDhIrByZ
- UhAETLilgMTA5VO2wBN9dYhWCcYWE3r0AF5uFIrTyYotXA3ofKbJPBXYHOauxv2upOU2
- IZ22FOkjoa73AS3P2vQvWBgIDuY4us8UFpA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bc22wu7t0-12
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 11:11:38 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 28 Sep 2021 11:11:37 -0700
-Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id F33BA461F1EF; Tue, 28 Sep 2021 11:11:30 -0700 (PDT)
-From:   Yucong Sun <fallentree@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <andrii@kernel.org>, <sunyucong@gmail.com>,
-        Yucong Sun <fallentree@fb.com>
-Subject: [PATCH bpf] tools/bpftool: Avoid using "?:" in generated code
-Date:   Tue, 28 Sep 2021 11:11:27 -0700
-Message-ID: <20210928181127.1392891-1-fallentree@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S242117AbhI1S1c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 14:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241724AbhI1S1b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 14:27:31 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB3EC06161C
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 11:25:51 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id m70so33767069ybm.5
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 11:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Je9t8ZzjyraEl9KD5dyMzHYrfFskRd8I/xvHN5vfHOM=;
+        b=I8dKFALSowIqwr9yc3elaFZDCdK9ktnHOCRbXxiS+7KJP/+xbk2oBzxuvLQkR1dpaW
+         iOUtgUDtPWL/euDWTkMinxb5uUs53d1qsW5GbYgR1er/ww68BwlqyliskQnrO6Wzs+tO
+         SlTWbZCHeltLRZLrc5iDPv6F5n7n8sYooq/u9na0g1pa66t1QCSm7NiIHgJJN2v1IKZk
+         BiGNq1AF00MOHXrIRQ+KPAWlPIJqrPOfLc3vzLDD6Ie6uStOdJPqUFJjmMWQsmkQb1LP
+         rYmjBzxIyAhEF2+R3Lv0Zpg79Ds2fkrw/4xZ0kvdrSax878yKB+N88+4ks/jexFnaloa
+         FoOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Je9t8ZzjyraEl9KD5dyMzHYrfFskRd8I/xvHN5vfHOM=;
+        b=BmcZt9LymOpXbL4bVaF1DlQTQVq2jRaZhis9IhlMSjJC9Vu3iwNEv6xeN8RJq0auW/
+         +LoGS0U2nPTQ8UojI45pIITrSeFEMdO8F2ktyB+12SW9eG97l8GRHs2lcABYs6R7Cdfx
+         r3rmGNGScRczLT8HUU9eVPGwhxGrGPDOsFFIJWOOa4GYrGiy0ZLl7pE/siVXaNqpZ2O9
+         AIHLCZGVgJAoYnudocQuEc0JyDErWukLwOUtEatBLxp+GuoEozb41hDsHs8NaqBAP1kV
+         6lQgmAAl4+xO0Xup7JhlRXymAW9sLrl6mjnmKrWBp8Gyb1RC61VH9+st5nX8lrYpQPC6
+         VNbQ==
+X-Gm-Message-State: AOAM5321BhMRj+K1C3Qx7YGK+nI3A1PTIDG/jwHaXqBbreKUjdqTcCoV
+        AXhJZ5Up5oH/rVtzKEvDZzeM0FVjXZZ09uAv9MxJ+IL0
+X-Google-Smtp-Source: ABdhPJzaQS9+PfWXM2XB1hx3sTX0YIpLswZt0PJ5vf7F1MnMYLa5SGtGkeArXcA+h41+sw4gh7PzkEENuGo3YAXZqmo=
+X-Received: by 2002:a05:6902:724:: with SMTP id l4mr8167204ybt.433.1632853550965;
+ Tue, 28 Sep 2021 11:25:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: 6dBPs5DotYsK9Amr88xLJ5ujycwSJRQ8
-X-Proofpoint-ORIG-GUID: 6dBPs5DotYsK9Amr88xLJ5ujycwSJRQ8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 bulkscore=0
- mlxscore=0 suspectscore=0 mlxlogscore=439 impostorscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2109280108
-X-FB-Internal: deliver
+References: <20210928181127.1392891-1-fallentree@fb.com>
+In-Reply-To: <20210928181127.1392891-1-fallentree@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Sep 2021 11:25:39 -0700
+Message-ID: <CAEf4BzZq5bqSYvxsW4ot7pN8kyrGNG6RHSOSzyYr6-qFUuh38Q@mail.gmail.com>
+Subject: Re: [PATCH bpf] tools/bpftool: Avoid using "?:" in generated code
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Yucong Sun <sunyucong@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"?:" is a GNU C extension, some environment has warning flags for its
-use, or even prohibit it directly.  This patch avoid triggering these
-problems by simply expand it to its full form, no functionality change.
+On Tue, Sep 28, 2021 at 11:11 AM Yucong Sun <fallentree@fb.com> wrote:
+>
+> "?:" is a GNU C extension, some environment has warning flags for its
+> use, or even prohibit it directly.  This patch avoid triggering these
+> problems by simply expand it to its full form, no functionality change.
+>
+> Signed-off-by: Yucong Sun <fallentree@fb.com>
+> ---
 
-Signed-off-by: Yucong Sun <fallentree@fb.com>
----
- tools/bpf/bpftool/gen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Given there is no bug in the first place, it's not a fix, and thus
+should target bpf-next tree.
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index d40d92bbf0e4..85071b6fa4ad 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -803,7 +803,7 @@ static int do_skeleton(int argc, char **argv)
- 			}						    \n\
- 									    \n\
- 			err =3D %1$s__create_skeleton(obj);		    \n\
--			err =3D err ?: bpf_object__open_skeleton(obj->skeleton, opts);\n\
-+			err =3D err ? err : bpf_object__open_skeleton(obj->skeleton, opts);\n=
-\
- 			if (err)					    \n\
- 				goto err_out;				    \n\
- 									    \n\
---=20
-2.30.2
+>  tools/bpf/bpftool/gen.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index d40d92bbf0e4..85071b6fa4ad 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -803,7 +803,7 @@ static int do_skeleton(int argc, char **argv)
+>                         }                                                   \n\
+>                                                                             \n\
+>                         err = %1$s__create_skeleton(obj);                   \n\
+> -                       err = err ?: bpf_object__open_skeleton(obj->skeleton, opts);\n\
+> +                       err = err ? err : bpf_object__open_skeleton(obj->skeleton, opts);\n\
 
+err+err+err in one row looks quite bad. If we can't use ?: for
+shortness, maybe let's just do
+
+if (!err)
+    err = <some operation>
+
+It's more verbose than the original version, but it's more obvious and
+sort of canonical C?
+
+>                         if (err)                                            \n\
+>                                 goto err_out;                               \n\
+>                                                                             \n\
+> --
+> 2.30.2
+>
