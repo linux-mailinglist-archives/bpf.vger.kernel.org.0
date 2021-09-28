@@ -2,260 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BA241B49A
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 18:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4363E41B3B3
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 18:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241934AbhI1Q64 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 28 Sep 2021 12:58:56 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:19062 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241933AbhI1Q64 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Sep 2021 12:58:56 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SA4AED024155
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:57:16 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bbq81x7jn-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:57:16 -0700
-Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 28 Sep 2021 09:56:37 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id EAE4650FA7D6; Tue, 28 Sep 2021 09:20:58 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v4 bpf-next 10/10] selftests/bpf: switch sk_lookup selftests to strict SEC("sk_lookup") use
-Date:   Tue, 28 Sep 2021 09:19:46 -0700
-Message-ID: <20210928161946.2512801-11-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210928161946.2512801-1-andrii@kernel.org>
-References: <20210928161946.2512801-1-andrii@kernel.org>
+        id S241806AbhI1QXJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 12:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241805AbhI1QXH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:23:07 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0203CC06161C
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:21:28 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id k17so19354250pff.8
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JPGPL/d6LUmATl9eLMSpqEC+PnksaRuKQCpPDhqY2nQ=;
+        b=hQve0bpQtCnJt7gVeWDQ59DD2orR+e/LuDtdJl9cBe71Tt01O3VgEPci5wEocbkkrE
+         0hiN3CcPKb2Q9mLTs7bw3rip1rHF4EJHxrTCgwB7zJHE5ohoMVRVdkGgrSeEhbOQXheP
+         raf3EHKieATbA4KkKUaBj5DJY7shPjeX1Uhc8myF4z2xSJYS01oZMyAlGVQ/MbLcYs0j
+         ZvO76nJBXWUEQrQt9mx+J8kMcPwyLWoAPl0zDqHGZWT87I5RuV3Vw+3ogj6irtX/R+6Y
+         VWDy4vGy+3tA+J2hN7Tg57uLqVEgT2Faqi0vQLOp3/7jNdjmWXkqQCe1+VOf0E6QB3gP
+         kWKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JPGPL/d6LUmATl9eLMSpqEC+PnksaRuKQCpPDhqY2nQ=;
+        b=ZW4JFdNgYwQVSujIT5cP0MXgSLp3pycmBVNS7eeoIiP8Ik8BcagI3x6kWeq4VjU4eU
+         E0B0V/+5jhzoJGvo4Rlgylhr6ffL9DcGPYIg4MNruMMgPdCWSHm5wbvpOW9s9xKOwd8E
+         A01X9OLeuFWeFwYKcPlXucVPYhCGzUBJPLsn4h8NnxlmQ5VIvlFGkmUdliBO3aB4nFVl
+         m4mMQC2QKwzSCOGAEkjm1i3SSIYAWp5PW4Mm/PQHocqhidpWcZqpLOrG2thR3bXpkC4r
+         4G1L0UxWQtZ8W9jqWKoVr2i8n6w1RiOIL8cN/Y/lWdtGp9z5y3GaXg85LZXQKuFPSsFj
+         inoA==
+X-Gm-Message-State: AOAM5307cf3XpDZnpeZt5cEGvC9VitGeK8loVnhcrrT3vT/3WsdyBtBC
+        FYlkiDWY7XUkWKpSFWzplg8=
+X-Google-Smtp-Source: ABdhPJzuBpyIdC//XQo6xIgFP7dWQd6Zc6fGjcAge5JY3pRr3yb2M4ydHwQ0wwma3tbal+Gu9itXqQ==
+X-Received: by 2002:aa7:991b:0:b0:447:bf92:b94d with SMTP id z27-20020aa7991b000000b00447bf92b94dmr6420123pff.76.1632846087429;
+        Tue, 28 Sep 2021 09:21:27 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::6:e195])
+        by smtp.gmail.com with ESMTPSA id o15sm22115002pfg.14.2021.09.28.09.21.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 09:21:27 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 09:21:25 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannekoong@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
+Message-ID: <20210928162125.qsidw3zkzsfy4ms2@ast-mbp.dhcp.thefacebook.com>
+References: <20210923203046.a3fsogdl37mw56kp@ast-mbp>
+ <CAEf4BzZJLFxD=v-NvX+MUjrtJHnO9H1C66ymgWFO-ZM39UBonA@mail.gmail.com>
+ <7957a053-8b98-1e09-26c8-882df6920e6e@fb.com>
+ <CAEf4BzYx22q5HFEqQ6q5Y0LcambUBDb+-YggbwiLDU86QBYvWA@mail.gmail.com>
+ <118c7f22-f710-581f-b87e-ee07aced429a@fb.com>
+ <CAEf4BzZ1BXyTWmLpfqoGOms02_bwQDgBgEd9LkUM_+uDZJo1Og@mail.gmail.com>
+ <20210927164110.gg33uypguty45huk@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4Bzb7bASQ3jXJ3JiKBinnb4ct9Y5pAhn-eVsdCY7rRus8Fg@mail.gmail.com>
+ <20210927235144.7xp3ngebl67egc6a@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzY=yrSZFJ_dgeS5MSn+pTR+Y9d4am2v+Uby-TBGn4i+Cg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: YgQN1B_LcM1KXCoVpaSLAcT13El4R3Pi
-X-Proofpoint-GUID: YgQN1B_LcM1KXCoVpaSLAcT13El4R3Pi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- clxscore=1034 mlxscore=0 suspectscore=0 impostorscore=0 adultscore=0
- malwarescore=0 mlxlogscore=999 spamscore=0 priorityscore=1501 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280099
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY=yrSZFJ_dgeS5MSn+pTR+Y9d4am2v+Uby-TBGn4i+Cg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Update "sk_lookup/" definition to be a stand-alone type specifier,
-with backwards-compatible prefix match logic in non-libbpf-1.0 mode.
+On Mon, Sep 27, 2021 at 05:36:00PM -0700, Andrii Nakryiko wrote:
+> On Mon, Sep 27, 2021 at 4:51 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Sep 27, 2021 at 02:14:09PM -0700, Andrii Nakryiko wrote:
+> > > On Mon, Sep 27, 2021 at 9:41 AM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, Sep 24, 2021 at 04:12:11PM -0700, Andrii Nakryiko wrote:
+> > > > >
+> > > > > That's not what I proposed. So let's say somewhere in the kernel we
+> > > > > have this variable:
+> > > > >
+> > > > > static int bpf_bloom_exists = 1;
+> > > > >
+> > > > > Now, for bpf_map_lookup_elem() helper we pass data as key pointer. If
+> > > > > all its hashed bits are set in Bloom filter (it "exists"), we return
+> > > > > &bpf_bloom_exists. So it's not a NULL pointer.
+> > > >
+> > > > imo that's too much of a hack.
+> > >
+> > > too bad, because this feels pretty natural in BPF code:
+> > >
+> > > int my_key = 1234;
+> > >
+> > > if (bpf_map_lookup_elem(&my_bloom_filter, &my_key)) {
+> > >     /* handle "maybe exists" */
+> > > } else {
+> > >     /* handle "definitely doesn't exist" */
+> > > }
+> >
+> > I don't think it fits bitset map.
+> > In the bitset the value is zero or one. It always exist.
+> > If bloomfilter is not a special map and instead implemented on top of
+> > generic bitset with a plain loop in a bpf program then
+> > push -> bit_set
+> > pop -> bit_clear
+> > peek -> bit_test
+> > would be a better fit for bitset map.
+> >
+> > bpf_map_pop_elem() and peek_elem() don't have 'flags' argument.
+> > In most cases that would be a blocker,
+> > but in this case we can add:
+> > .arg3_type      = ARG_ANYTHING
+> > and ignore it in case of stack/queue.
+> > While bitset could use the flags as an additional seed into the hash.
+> > So to do a bloomfilter the bpf prog would do:
+> > for (i = 0; i < 5; i++)
+> >    if (bpf_map_peek_elem(map, &value, conver_i_to_seed(i)))
+> 
+> I think I'm getting lost in the whole unified bitset + bloom filter
+> design, tbh. In this case, why would you pass the seed to peek()? And
+> what is value here? Is that the value (N bytes) or the bit index (4
+> bytes?)? 
 
-Currently in selftests all the "sk_lookup/<whatever>" uses just use
-<whatever> for duplicated unique name encoding, which is redundant as
-BPF program's name (C function name) uniquely and descriptively
-identifies the intended use for such BPF programs.
+The full N byte value, of course.
+The pure index has the same downsides as hashing helper:
+- hard to make kernel and user space produce the same hash in all cases
+- inability to dynamically change max_entries in a clean way
 
-With libbpf's SEC_DEF("sk_lookup") definition updated, switch existing
-sk_lookup programs to use "unqualified" SEC("sk_lookup") section names,
-with no random text after it.
+> I assumed that once we have a hashing helper and a bitset
+> map, you'd use that and seed to calculate bit index. But now I'm
+> confused about what this peek operation is doing. I'm sorry if I'm
+> just slow.
+> 
+> Overall, I think I agree with Joanne that a separate dedicated Bloom
+> filter map will have simpler and better usability. This bitset + bloom
+> filter generalization seems to just create unnecessary confusion. I
+> don't feel the need for bitset map even more than I didn't feel the
+> need for Bloom filter, given it's even simpler data structure and is
+> totally implementable on either global var array or
+> BPF_MAP_TYPE_ARRAY, if map-in-map and dynamic sizing in mandatory.
 
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c                        |  2 +-
- .../selftests/bpf/progs/test_sk_lookup.c      | 38 +++++++++----------
- 2 files changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 3e1f6211b9b9..1c859b32968d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8055,7 +8055,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("cgroup/getsockopt",	CGROUP_SOCKOPT, BPF_CGROUP_GETSOCKOPT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- 	SEC_DEF("cgroup/setsockopt",	CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- 	SEC_DEF("struct_ops+",		STRUCT_OPS, 0, SEC_NONE),
--	SEC_DEF("sk_lookup/",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE),
-+	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- };
- 
- #define MAX_TYPE_NAME_SIZE 32
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-index 6c4d32c56765..48534d810391 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-@@ -72,13 +72,13 @@ static const __u16 DST_PORT = 7007; /* Host byte order */
- static const __u32 DST_IP4 = IP4(127, 0, 0, 1);
- static const __u32 DST_IP6[] = IP6(0xfd000000, 0x0, 0x0, 0x00000001);
- 
--SEC("sk_lookup/lookup_pass")
-+SEC("sk_lookup")
- int lookup_pass(struct bpf_sk_lookup *ctx)
- {
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/lookup_drop")
-+SEC("sk_lookup")
- int lookup_drop(struct bpf_sk_lookup *ctx)
- {
- 	return SK_DROP;
-@@ -97,7 +97,7 @@ int reuseport_drop(struct sk_reuseport_md *ctx)
- }
- 
- /* Redirect packets destined for port DST_PORT to socket at redir_map[0]. */
--SEC("sk_lookup/redir_port")
-+SEC("sk_lookup")
- int redir_port(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -116,7 +116,7 @@ int redir_port(struct bpf_sk_lookup *ctx)
- }
- 
- /* Redirect packets destined for DST_IP4 address to socket at redir_map[0]. */
--SEC("sk_lookup/redir_ip4")
-+SEC("sk_lookup")
- int redir_ip4(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -139,7 +139,7 @@ int redir_ip4(struct bpf_sk_lookup *ctx)
- }
- 
- /* Redirect packets destined for DST_IP6 address to socket at redir_map[0]. */
--SEC("sk_lookup/redir_ip6")
-+SEC("sk_lookup")
- int redir_ip6(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -164,7 +164,7 @@ int redir_ip6(struct bpf_sk_lookup *ctx)
- 	return err ? SK_DROP : SK_PASS;
- }
- 
--SEC("sk_lookup/select_sock_a")
-+SEC("sk_lookup")
- int select_sock_a(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -179,7 +179,7 @@ int select_sock_a(struct bpf_sk_lookup *ctx)
- 	return err ? SK_DROP : SK_PASS;
- }
- 
--SEC("sk_lookup/select_sock_a_no_reuseport")
-+SEC("sk_lookup")
- int select_sock_a_no_reuseport(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -205,7 +205,7 @@ int select_sock_b(struct sk_reuseport_md *ctx)
- }
- 
- /* Check that bpf_sk_assign() returns -EEXIST if socket already selected. */
--SEC("sk_lookup/sk_assign_eexist")
-+SEC("sk_lookup")
- int sk_assign_eexist(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -238,7 +238,7 @@ int sk_assign_eexist(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that bpf_sk_assign(BPF_SK_LOOKUP_F_REPLACE) can override selection. */
--SEC("sk_lookup/sk_assign_replace_flag")
-+SEC("sk_lookup")
- int sk_assign_replace_flag(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -270,7 +270,7 @@ int sk_assign_replace_flag(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that bpf_sk_assign(sk=NULL) is accepted. */
--SEC("sk_lookup/sk_assign_null")
-+SEC("sk_lookup")
- int sk_assign_null(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk = NULL;
-@@ -313,7 +313,7 @@ int sk_assign_null(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that selected sk is accessible through context. */
--SEC("sk_lookup/access_ctx_sk")
-+SEC("sk_lookup")
- int access_ctx_sk(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk1 = NULL, *sk2 = NULL;
-@@ -379,7 +379,7 @@ int access_ctx_sk(struct bpf_sk_lookup *ctx)
-  * are not covered because they give bogus results, that is the
-  * verifier ignores the offset.
-  */
--SEC("sk_lookup/ctx_narrow_access")
-+SEC("sk_lookup")
- int ctx_narrow_access(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -553,7 +553,7 @@ int ctx_narrow_access(struct bpf_sk_lookup *ctx)
- }
- 
- /* Check that sk_assign rejects SERVER_A socket with -ESOCKNOSUPPORT */
--SEC("sk_lookup/sk_assign_esocknosupport")
-+SEC("sk_lookup")
- int sk_assign_esocknosupport(struct bpf_sk_lookup *ctx)
- {
- 	struct bpf_sock *sk;
-@@ -578,28 +578,28 @@ int sk_assign_esocknosupport(struct bpf_sk_lookup *ctx)
- 	return ret;
- }
- 
--SEC("sk_lookup/multi_prog_pass1")
-+SEC("sk_lookup")
- int multi_prog_pass1(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG1, &PROG_DONE, BPF_ANY);
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_pass2")
-+SEC("sk_lookup")
- int multi_prog_pass2(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG2, &PROG_DONE, BPF_ANY);
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_drop1")
-+SEC("sk_lookup")
- int multi_prog_drop1(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG1, &PROG_DONE, BPF_ANY);
- 	return SK_DROP;
- }
- 
--SEC("sk_lookup/multi_prog_drop2")
-+SEC("sk_lookup")
- int multi_prog_drop2(struct bpf_sk_lookup *ctx)
- {
- 	bpf_map_update_elem(&run_map, &KEY_PROG2, &PROG_DONE, BPF_ANY);
-@@ -623,7 +623,7 @@ static __always_inline int select_server_a(struct bpf_sk_lookup *ctx)
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_redir1")
-+SEC("sk_lookup")
- int multi_prog_redir1(struct bpf_sk_lookup *ctx)
- {
- 	int ret;
-@@ -633,7 +633,7 @@ int multi_prog_redir1(struct bpf_sk_lookup *ctx)
- 	return SK_PASS;
- }
- 
--SEC("sk_lookup/multi_prog_redir2")
-+SEC("sk_lookup")
- int multi_prog_redir2(struct bpf_sk_lookup *ctx)
- {
- 	int ret;
--- 
-2.30.2
-
+Not really. For two reasons:
+- inner array with N 8-byte elements is a slow workaround.
+map_lookup is not inlined for inner arrays because max_entries will
+be different.
+- doing the same hash in user space and the kernel is hard.
+For example, iproute2 is using socket(AF_ALG) to compute the same hash
+(program tag) as the kernel.
+Copy-paste of kernel jhash.h is not possible due to GPL,
+but, as you pointed out, it's public domain, so user space would
+need to search a public domain, reimplement jhash and then
+make sure that it produces the same hash as the kernel.
+All these trade offs point out the need for dedicated map type
+(either generalized bitset or true bloomfilter) that does the hashing
+and can change its size.
