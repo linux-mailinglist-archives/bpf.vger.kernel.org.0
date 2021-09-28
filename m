@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13FA41B494
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 18:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7862A41B49B
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 18:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241924AbhI1Q6V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 28 Sep 2021 12:58:21 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11002 "EHLO
+        id S241874AbhI1Q7M convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 28 Sep 2021 12:59:12 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49546 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241939AbhI1Q6R (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Sep 2021 12:58:17 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SFYIY2009517
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:56:37 -0700
+        by vger.kernel.org with ESMTP id S240975AbhI1Q7M (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Sep 2021 12:59:12 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SBJhuo026365
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:57:32 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bc5t58pch-3
+        by mx0a-00082601.pphosted.com with ESMTP id 3bc22wtkee-12
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:56:37 -0700
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 09:57:32 -0700
 Received: from intmgw002.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
  mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 28 Sep 2021 09:56:36 -0700
+ 15.1.2308.14; Tue, 28 Sep 2021 09:56:37 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 3304F50F9D04; Tue, 28 Sep 2021 09:20:46 -0700 (PDT)
+        id 34EE550F9D5F; Tue, 28 Sep 2021 09:20:48 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v4 bpf-next 04/10] selftests/bpf: normalize all the rest SEC() uses
-Date:   Tue, 28 Sep 2021 09:19:40 -0700
-Message-ID: <20210928161946.2512801-5-andrii@kernel.org>
+Subject: [PATCH v4 bpf-next 05/10] libbpf: refactor internal sec_def handling to enable pluggability
+Date:   Tue, 28 Sep 2021 09:19:41 -0700
+Message-ID: <20210928161946.2512801-6-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210928161946.2512801-1-andrii@kernel.org>
 References: <20210928161946.2512801-1-andrii@kernel.org>
@@ -39,360 +39,346 @@ Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: 3IgNF0lD5oObHUbJbkiO_q8Y8A0c-t9a
-X-Proofpoint-ORIG-GUID: 3IgNF0lD5oObHUbJbkiO_q8Y8A0c-t9a
+X-Proofpoint-GUID: emR7ghalkNJeWh6_fdFXDA5vDR6_MNpd
+X-Proofpoint-ORIG-GUID: emR7ghalkNJeWh6_fdFXDA5vDR6_MNpd
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
- suspectscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1015 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280099
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 bulkscore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2109280099
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Normalize all the other non-conforming SEC() usages across all
-selftests. This is in preparation for libbpf to start to enforce
-stricter SEC() rules in libbpf 1.0 mode.
+Refactor internals of libbpf to allow adding custom SEC() handling logic
+easily from outside of libbpf. To that effect, each SEC()-handling
+registration sets mandatory program type/expected attach type for
+a given prefix and can provide three callbacks called at different
+points of BPF program lifetime:
+
+  - init callback for right after bpf_program is initialized and
+  prog_type/expected_attach_type is set. This happens during
+  bpf_object__open() step, close to the very end of constructing
+  bpf_object, so all the libbpf APIs for querying and updating
+  bpf_program properties should be available;
+
+  - pre-load callback is called right before BPF_PROG_LOAD command is
+  called in the kernel. This callbacks has ability to set both
+  bpf_program properties, as well as program load attributes, overriding
+  and augmenting the standard libbpf handling of them;
+
+  - optional auto-attach callback, which makes a given SEC() handler
+  support auto-attachment of a BPF program through bpf_program__attach()
+  API and/or BPF skeletons <skel>__attach() method.
+
+Each callbacks gets a `long cookie` parameter passed in, which is
+specified during SEC() handling. This can be used by callbacks to lookup
+whatever additional information is necessary.
+
+This is not yet completely ready to be exposed to the outside world,
+mainly due to non-public nature of struct bpf_prog_load_params. Instead
+of making it part of public API, we'll wait until the planned low-level
+libbpf API improvements for BPF_PROG_LOAD and other typical bpf()
+syscall APIs, at which point we'll have a public, probably OPTS-based,
+way to fully specify BPF program load parameters, which will be used as
+an interface for custom pre-load callbacks.
+
+But this change itself is already a good first step to unify the BPF
+program hanling logic even within the libbpf itself. As one example, all
+the extra per-program type handling (sleepable bit, attach_btf_id
+resolution, unsetting optional expected attach type) is now more obvious
+and is gathered in one place.
 
 Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/prog_tests/flow_dissector.c |  4 +--
- .../selftests/bpf/prog_tests/sockopt_multi.c  | 30 +++++++++----------
- tools/testing/selftests/bpf/progs/bpf_flow.c  |  3 +-
- .../bpf/progs/cg_storage_multi_isolated.c     |  4 +--
- .../bpf/progs/cg_storage_multi_shared.c       |  4 +--
- .../selftests/bpf/progs/sockopt_multi.c       |  5 ++--
- .../selftests/bpf/progs/test_cgroup_link.c    |  4 +--
- .../bpf/progs/test_misc_tcp_hdr_options.c     |  2 +-
- .../selftests/bpf/progs/test_sk_lookup.c      |  6 ++--
- .../selftests/bpf/progs/test_sockmap_listen.c |  2 +-
- .../progs/test_sockmap_skb_verdict_attach.c   |  2 +-
- .../bpf/progs/test_tcp_hdr_options.c          |  2 +-
- 12 files changed, 33 insertions(+), 35 deletions(-)
+ tools/lib/bpf/libbpf.c | 129 +++++++++++++++++++++++++++--------------
+ 1 file changed, 87 insertions(+), 42 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index 225714f71ac6..ac54e3f91d42 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -458,9 +458,9 @@ static int init_prog_array(struct bpf_object *obj, struct bpf_map *prog_array)
- 		return -1;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 0bcd0a4c867a..d4d56536dc4b 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -220,7 +220,9 @@ struct reloc_desc {
  
- 	for (i = 0; i < bpf_map__def(prog_array)->max_entries; i++) {
--		snprintf(prog_name, sizeof(prog_name), "flow_dissector/%i", i);
-+		snprintf(prog_name, sizeof(prog_name), "flow_dissector_%d", i);
+ struct bpf_sec_def;
  
--		prog = bpf_object__find_program_by_title(obj, prog_name);
-+		prog = bpf_object__find_program_by_name(obj, prog_name);
- 		if (!prog)
- 			return -1;
+-typedef struct bpf_link *(*attach_fn_t)(const struct bpf_program *prog);
++typedef int (*init_fn_t)(struct bpf_program *prog, long cookie);
++typedef int (*preload_fn_t)(struct bpf_program *prog, struct bpf_prog_load_params *attr, long cookie);
++typedef struct bpf_link *(*attach_fn_t)(const struct bpf_program *prog, long cookie);
  
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-index 51fac975b316..bc34f7773444 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-@@ -2,7 +2,7 @@
- #include <test_progs.h>
- #include "cgroup_helpers.h"
+ struct bpf_sec_def {
+ 	const char *sec;
+@@ -231,7 +233,11 @@ struct bpf_sec_def {
+ 	bool is_attachable;
+ 	bool is_attach_btf;
+ 	bool is_sleepable;
++
++	init_fn_t init_fn;
++	preload_fn_t preload_fn;
+ 	attach_fn_t attach_fn;
++	long cookie;
+ };
  
--static int prog_attach(struct bpf_object *obj, int cgroup_fd, const char *title)
-+static int prog_attach(struct bpf_object *obj, int cgroup_fd, const char *title, const char *name)
- {
- 	enum bpf_attach_type attach_type;
- 	enum bpf_prog_type prog_type;
-@@ -15,23 +15,23 @@ static int prog_attach(struct bpf_object *obj, int cgroup_fd, const char *title)
- 		return -1;
- 	}
- 
--	prog = bpf_object__find_program_by_title(obj, title);
-+	prog = bpf_object__find_program_by_name(obj, name);
- 	if (!prog) {
--		log_err("Failed to find %s BPF program", title);
-+		log_err("Failed to find %s BPF program", name);
- 		return -1;
- 	}
- 
- 	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd,
- 			      attach_type, BPF_F_ALLOW_MULTI);
- 	if (err) {
--		log_err("Failed to attach %s BPF program", title);
-+		log_err("Failed to attach %s BPF program", name);
- 		return -1;
- 	}
- 
+ /*
+@@ -6095,6 +6101,44 @@ static int bpf_object__sanitize_prog(struct bpf_object *obj, struct bpf_program
  	return 0;
  }
  
--static int prog_detach(struct bpf_object *obj, int cgroup_fd, const char *title)
-+static int prog_detach(struct bpf_object *obj, int cgroup_fd, const char *title, const char *name)
++static int libbpf_find_attach_btf_id(struct bpf_program *prog, int *btf_obj_fd, int *btf_type_id);
++
++/* this is called as prog->sec_def->preload_fn for libbpf-supported sec_defs */
++static int libbpf_preload_prog(struct bpf_program *prog,
++			       struct bpf_prog_load_params *attr, long cookie)
++{
++	/* old kernels might not support specifying expected_attach_type */
++	if (prog->sec_def->is_exp_attach_type_optional &&
++	    !kernel_supports(prog->obj, FEAT_EXP_ATTACH_TYPE))
++		attr->expected_attach_type = 0;
++
++	if (prog->sec_def->is_sleepable)
++		attr->prog_flags |= BPF_F_SLEEPABLE;
++
++	if ((prog->type == BPF_PROG_TYPE_TRACING ||
++	     prog->type == BPF_PROG_TYPE_LSM ||
++	     prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
++		int btf_obj_fd = 0, btf_type_id = 0, err;
++
++		err = libbpf_find_attach_btf_id(prog, &btf_obj_fd, &btf_type_id);
++		if (err)
++			return err;
++
++		/* cache resolved BTF FD and BTF type ID in the prog */
++		prog->attach_btf_obj_fd = btf_obj_fd;
++		prog->attach_btf_id = btf_type_id;
++
++		/* but by now libbpf common logic is not utilizing
++		 * prog->atach_btf_obj_fd/prog->attach_btf_id anymore because
++		 * this callback is called after attrs were populated by
++		 * libbpf, so this callback has to update attr explicitly here
++		 */
++		attr->attach_btf_obj_fd = btf_obj_fd;
++		attr->attach_btf_id = btf_type_id;
++	}
++	return 0;
++}
++
+ static int
+ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ 	     char *license, __u32 kern_version, int *pfd)
+@@ -6103,7 +6147,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ 	char *cp, errmsg[STRERR_BUFSIZE];
+ 	size_t log_buf_size = 0;
+ 	char *log_buf = NULL;
+-	int btf_fd, ret;
++	int btf_fd, ret, err;
+ 
+ 	if (prog->type == BPF_PROG_TYPE_UNSPEC) {
+ 		/*
+@@ -6119,22 +6163,15 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ 		return -EINVAL;
+ 
+ 	load_attr.prog_type = prog->type;
+-	/* old kernels might not support specifying expected_attach_type */
+-	if (!kernel_supports(prog->obj, FEAT_EXP_ATTACH_TYPE) && prog->sec_def &&
+-	    prog->sec_def->is_exp_attach_type_optional)
+-		load_attr.expected_attach_type = 0;
+-	else
+-		load_attr.expected_attach_type = prog->expected_attach_type;
++	load_attr.expected_attach_type = prog->expected_attach_type;
+ 	if (kernel_supports(prog->obj, FEAT_PROG_NAME))
+ 		load_attr.name = prog->name;
+ 	load_attr.insns = insns;
+ 	load_attr.insn_cnt = insns_cnt;
+ 	load_attr.license = license;
+ 	load_attr.attach_btf_id = prog->attach_btf_id;
+-	if (prog->attach_prog_fd)
+-		load_attr.attach_prog_fd = prog->attach_prog_fd;
+-	else
+-		load_attr.attach_btf_obj_fd = prog->attach_btf_obj_fd;
++	load_attr.attach_prog_fd = prog->attach_prog_fd;
++	load_attr.attach_btf_obj_fd = prog->attach_btf_obj_fd;
+ 	load_attr.attach_btf_id = prog->attach_btf_id;
+ 	load_attr.kern_version = kern_version;
+ 	load_attr.prog_ifindex = prog->prog_ifindex;
+@@ -6153,6 +6190,16 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ 	load_attr.log_level = prog->log_level;
+ 	load_attr.prog_flags = prog->prog_flags;
+ 
++	/* adjust load_attr if sec_def provides custom preload callback */
++	if (prog->sec_def && prog->sec_def->preload_fn) {
++		err = prog->sec_def->preload_fn(prog, &load_attr, prog->sec_def->cookie);
++		if (err < 0) {
++			pr_warn("prog '%s': failed to prepare load attributes: %d\n",
++				prog->name, err);
++			return err;
++		}
++	}
++
+ 	if (prog->obj->gen_loader) {
+ 		bpf_gen__prog_load(prog->obj->gen_loader, &load_attr,
+ 				   prog - prog->obj->programs);
+@@ -6268,8 +6315,6 @@ static int bpf_program__record_externs(struct bpf_program *prog)
+ 	return 0;
+ }
+ 
+-static int libbpf_find_attach_btf_id(struct bpf_program *prog, int *btf_obj_fd, int *btf_type_id);
+-
+ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
  {
- 	enum bpf_attach_type attach_type;
- 	enum bpf_prog_type prog_type;
-@@ -42,7 +42,7 @@ static int prog_detach(struct bpf_object *obj, int cgroup_fd, const char *title)
- 	if (err)
- 		return -1;
- 
--	prog = bpf_object__find_program_by_title(obj, title);
-+	prog = bpf_object__find_program_by_name(obj, name);
- 	if (!prog)
- 		return -1;
- 
-@@ -89,7 +89,7 @@ static int run_getsockopt_test(struct bpf_object *obj, int cg_parent,
- 	 * - child:  0x80 -> 0x90
- 	 */
- 
--	err = prog_attach(obj, cg_child, "cgroup/getsockopt/child");
-+	err = prog_attach(obj, cg_child, "cgroup/getsockopt", "_getsockopt_child");
- 	if (err)
- 		goto detach;
- 
-@@ -113,7 +113,7 @@ static int run_getsockopt_test(struct bpf_object *obj, int cg_parent,
- 	 * - parent: 0x90 -> 0xA0
- 	 */
- 
--	err = prog_attach(obj, cg_parent, "cgroup/getsockopt/parent");
-+	err = prog_attach(obj, cg_parent, "cgroup/getsockopt", "_getsockopt_parent");
- 	if (err)
- 		goto detach;
- 
-@@ -157,7 +157,7 @@ static int run_getsockopt_test(struct bpf_object *obj, int cg_parent,
- 	 * - parent: unexpected 0x40, EPERM
- 	 */
- 
--	err = prog_detach(obj, cg_child, "cgroup/getsockopt/child");
-+	err = prog_detach(obj, cg_child, "cgroup/getsockopt", "_getsockopt_child");
- 	if (err) {
- 		log_err("Failed to detach child program");
- 		goto detach;
-@@ -198,8 +198,8 @@ static int run_getsockopt_test(struct bpf_object *obj, int cg_parent,
+ 	int err = 0, fd, i;
+@@ -6279,19 +6324,6 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+ 		return libbpf_err(-EINVAL);
  	}
  
- detach:
--	prog_detach(obj, cg_child, "cgroup/getsockopt/child");
--	prog_detach(obj, cg_parent, "cgroup/getsockopt/parent");
-+	prog_detach(obj, cg_child, "cgroup/getsockopt", "_getsockopt_child");
-+	prog_detach(obj, cg_parent, "cgroup/getsockopt", "_getsockopt_parent");
+-	if ((prog->type == BPF_PROG_TYPE_TRACING ||
+-	     prog->type == BPF_PROG_TYPE_LSM ||
+-	     prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+-		int btf_obj_fd = 0, btf_type_id = 0;
+-
+-		err = libbpf_find_attach_btf_id(prog, &btf_obj_fd, &btf_type_id);
+-		if (err)
+-			return libbpf_err(err);
+-
+-		prog->attach_btf_obj_fd = btf_obj_fd;
+-		prog->attach_btf_id = btf_type_id;
+-	}
+-
+ 	if (prog->instances.nr < 0 || !prog->instances.fds) {
+ 		if (prog->preprocessor) {
+ 			pr_warn("Internal error: can't load program '%s'\n",
+@@ -6401,6 +6433,7 @@ static const struct bpf_sec_def *find_sec_def(const char *sec_name);
+ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object_open_opts *opts)
+ {
+ 	struct bpf_program *prog;
++	int err;
  
- 	return err;
- }
-@@ -236,7 +236,7 @@ static int run_setsockopt_test(struct bpf_object *obj, int cg_parent,
+ 	bpf_object__for_each_program(prog, obj) {
+ 		prog->sec_def = find_sec_def(prog->sec_name);
+@@ -6411,8 +6444,6 @@ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object
+ 			continue;
+ 		}
  
- 	/* Attach child program and make sure it adds 0x10. */
+-		if (prog->sec_def->is_sleepable)
+-			prog->prog_flags |= BPF_F_SLEEPABLE;
+ 		bpf_program__set_type(prog, prog->sec_def->prog_type);
+ 		bpf_program__set_expected_attach_type(prog, prog->sec_def->expected_attach_type);
  
--	err = prog_attach(obj, cg_child, "cgroup/setsockopt");
-+	err = prog_attach(obj, cg_child, "cgroup/setsockopt", "_setsockopt");
- 	if (err)
- 		goto detach;
- 
-@@ -263,7 +263,7 @@ static int run_setsockopt_test(struct bpf_object *obj, int cg_parent,
- 
- 	/* Attach parent program and make sure it adds another 0x10. */
- 
--	err = prog_attach(obj, cg_parent, "cgroup/setsockopt");
-+	err = prog_attach(obj, cg_parent, "cgroup/setsockopt", "_setsockopt");
- 	if (err)
- 		goto detach;
- 
-@@ -289,8 +289,8 @@ static int run_setsockopt_test(struct bpf_object *obj, int cg_parent,
+@@ -6422,6 +6453,18 @@ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object
+ 		    prog->sec_def->prog_type == BPF_PROG_TYPE_EXT)
+ 			prog->attach_prog_fd = OPTS_GET(opts, attach_prog_fd, 0);
+ #pragma GCC diagnostic pop
++
++		/* sec_def can have custom callback which should be called
++		 * after bpf_program is initialized to adjust its properties
++		 */
++		if (prog->sec_def->init_fn) {
++			err = prog->sec_def->init_fn(prog, prog->sec_def->cookie);
++			if (err < 0) {
++				pr_warn("prog '%s': failed to initialize: %d\n",
++					prog->name, err);
++				return err;
++			}
++		}
  	}
  
- detach:
--	prog_detach(obj, cg_child, "cgroup/setsockopt");
--	prog_detach(obj, cg_parent, "cgroup/setsockopt");
-+	prog_detach(obj, cg_child, "cgroup/setsockopt", "_setsockopt");
-+	prog_detach(obj, cg_parent, "cgroup/setsockopt", "_setsockopt");
+ 	return 0;
+@@ -7919,6 +7962,7 @@ void bpf_program__set_expected_attach_type(struct bpf_program *prog,
+ 		.is_exp_attach_type_optional = eatype_optional,		    \
+ 		.is_attachable = attachable,				    \
+ 		.is_attach_btf = attach_btf,				    \
++		.preload_fn = libbpf_preload_prog,			    \
+ 	}
  
- 	return err;
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
-index 95a5a0778ed7..f266c757b3df 100644
---- a/tools/testing/selftests/bpf/progs/bpf_flow.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
-@@ -19,9 +19,8 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
--int _version SEC("version") = 1;
- #define PROG(F) PROG_(F, _##F)
--#define PROG_(NUM, NAME) SEC("flow_dissector/"#NUM) int bpf_func##NAME
-+#define PROG_(NUM, NAME) SEC("flow_dissector") int flow_dissector_##NUM
- 
- /* These are the identifiers of the BPF programs that will be used in tail
-  * calls. Name is limited to 16 characters, with the terminating character and
-diff --git a/tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c b/tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c
-index a25373002055..3f81ff92184c 100644
---- a/tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c
-+++ b/tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c
-@@ -20,7 +20,7 @@ struct {
- 
- __u32 invocations = 0;
- 
--SEC("cgroup_skb/egress/1")
-+SEC("cgroup_skb/egress")
- int egress1(struct __sk_buff *skb)
- {
- 	struct cgroup_value *ptr_cg_storage =
-@@ -32,7 +32,7 @@ int egress1(struct __sk_buff *skb)
- 	return 1;
+ /* Programs that can NOT be attached. */
+@@ -7945,15 +7989,16 @@ void bpf_program__set_expected_attach_type(struct bpf_program *prog,
+ 	.sec = sec_pfx,							    \
+ 	.len = sizeof(sec_pfx) - 1,					    \
+ 	.prog_type = BPF_PROG_TYPE_##ptype,				    \
++	.preload_fn = libbpf_preload_prog,				    \
+ 	__VA_ARGS__							    \
  }
  
--SEC("cgroup_skb/egress/2")
-+SEC("cgroup_skb/egress")
- int egress2(struct __sk_buff *skb)
- {
- 	struct cgroup_value *ptr_cg_storage =
-diff --git a/tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c b/tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c
-index a149f33bc533..d662db27fe4a 100644
---- a/tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c
-+++ b/tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c
-@@ -20,7 +20,7 @@ struct {
+-static struct bpf_link *attach_kprobe(const struct bpf_program *prog);
+-static struct bpf_link *attach_tp(const struct bpf_program *prog);
+-static struct bpf_link *attach_raw_tp(const struct bpf_program *prog);
+-static struct bpf_link *attach_trace(const struct bpf_program *prog);
+-static struct bpf_link *attach_lsm(const struct bpf_program *prog);
+-static struct bpf_link *attach_iter(const struct bpf_program *prog);
++static struct bpf_link *attach_kprobe(const struct bpf_program *prog, long cookie);
++static struct bpf_link *attach_tp(const struct bpf_program *prog, long cookie);
++static struct bpf_link *attach_raw_tp(const struct bpf_program *prog, long cookie);
++static struct bpf_link *attach_trace(const struct bpf_program *prog, long cookie);
++static struct bpf_link *attach_lsm(const struct bpf_program *prog, long cookie);
++static struct bpf_link *attach_iter(const struct bpf_program *prog, long cookie);
  
- __u32 invocations = 0;
- 
--SEC("cgroup_skb/egress/1")
-+SEC("cgroup_skb/egress")
- int egress1(struct __sk_buff *skb)
- {
- 	struct cgroup_value *ptr_cg_storage =
-@@ -32,7 +32,7 @@ int egress1(struct __sk_buff *skb)
- 	return 1;
+ static const struct bpf_sec_def section_defs[] = {
+ 	BPF_PROG_SEC("socket",			BPF_PROG_TYPE_SOCKET_FILTER),
+@@ -9425,7 +9470,7 @@ struct bpf_link *bpf_program__attach_kprobe(const struct bpf_program *prog,
+ 	return bpf_program__attach_kprobe_opts(prog, func_name, &opts);
  }
  
--SEC("cgroup_skb/egress/2")
-+SEC("cgroup_skb/egress")
- int egress2(struct __sk_buff *skb)
+-static struct bpf_link *attach_kprobe(const struct bpf_program *prog)
++static struct bpf_link *attach_kprobe(const struct bpf_program *prog, long cookie)
  {
- 	struct cgroup_value *ptr_cg_storage =
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_multi.c b/tools/testing/selftests/bpf/progs/sockopt_multi.c
-index 9d8c212dde9f..177a59069dae 100644
---- a/tools/testing/selftests/bpf/progs/sockopt_multi.c
-+++ b/tools/testing/selftests/bpf/progs/sockopt_multi.c
-@@ -4,9 +4,8 @@
- #include <bpf/bpf_helpers.h>
- 
- char _license[] SEC("license") = "GPL";
--__u32 _version SEC("version") = 1;
- 
--SEC("cgroup/getsockopt/child")
-+SEC("cgroup/getsockopt")
- int _getsockopt_child(struct bpf_sockopt *ctx)
- {
- 	__u8 *optval_end = ctx->optval_end;
-@@ -29,7 +28,7 @@ int _getsockopt_child(struct bpf_sockopt *ctx)
- 	return 1;
+ 	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
+ 	unsigned long offset = 0;
+@@ -9708,7 +9753,7 @@ struct bpf_link *bpf_program__attach_tracepoint(const struct bpf_program *prog,
+ 	return bpf_program__attach_tracepoint_opts(prog, tp_category, tp_name, NULL);
  }
  
--SEC("cgroup/getsockopt/parent")
-+SEC("cgroup/getsockopt")
- int _getsockopt_parent(struct bpf_sockopt *ctx)
+-static struct bpf_link *attach_tp(const struct bpf_program *prog)
++static struct bpf_link *attach_tp(const struct bpf_program *prog, long cookie)
  {
- 	__u8 *optval_end = ctx->optval_end;
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup_link.c b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-index 77e47b9e4446..4faba88e45a5 100644
---- a/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-@@ -6,14 +6,14 @@
- int calls = 0;
- int alt_calls = 0;
- 
--SEC("cgroup_skb/egress1")
-+SEC("cgroup_skb/egress")
- int egress(struct __sk_buff *skb)
- {
- 	__sync_fetch_and_add(&calls, 1);
- 	return 1;
+ 	char *sec_name, *tp_cat, *tp_name;
+ 	struct bpf_link *link;
+@@ -9762,7 +9807,7 @@ struct bpf_link *bpf_program__attach_raw_tracepoint(const struct bpf_program *pr
+ 	return link;
  }
  
--SEC("cgroup_skb/egress2")
-+SEC("cgroup_skb/egress")
- int egress_alt(struct __sk_buff *skb)
+-static struct bpf_link *attach_raw_tp(const struct bpf_program *prog)
++static struct bpf_link *attach_raw_tp(const struct bpf_program *prog, long cookie)
  {
- 	__sync_fetch_and_add(&alt_calls, 1);
-diff --git a/tools/testing/selftests/bpf/progs/test_misc_tcp_hdr_options.c b/tools/testing/selftests/bpf/progs/test_misc_tcp_hdr_options.c
-index 6077a025092c..2c121c5d66a7 100644
---- a/tools/testing/selftests/bpf/progs/test_misc_tcp_hdr_options.c
-+++ b/tools/testing/selftests/bpf/progs/test_misc_tcp_hdr_options.c
-@@ -293,7 +293,7 @@ static int handle_passive_estab(struct bpf_sock_ops *skops)
- 	return check_active_hdr_in(skops);
+ 	const char *tp_name = prog->sec_name + prog->sec_def->len;
+ 
+@@ -9809,12 +9854,12 @@ struct bpf_link *bpf_program__attach_lsm(const struct bpf_program *prog)
+ 	return bpf_program__attach_btf_id(prog);
  }
  
--SEC("sockops/misc_estab")
-+SEC("sockops")
- int misc_estab(struct bpf_sock_ops *skops)
+-static struct bpf_link *attach_trace(const struct bpf_program *prog)
++static struct bpf_link *attach_trace(const struct bpf_program *prog, long cookie)
  {
- 	int true_val = 1;
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-index ac6f7f205e25..6c4d32c56765 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-@@ -84,13 +84,13 @@ int lookup_drop(struct bpf_sk_lookup *ctx)
- 	return SK_DROP;
+ 	return bpf_program__attach_trace(prog);
  }
  
--SEC("sk_reuseport/reuse_pass")
-+SEC("sk_reuseport")
- int reuseport_pass(struct sk_reuseport_md *ctx)
+-static struct bpf_link *attach_lsm(const struct bpf_program *prog)
++static struct bpf_link *attach_lsm(const struct bpf_program *prog, long cookie)
  {
- 	return SK_PASS;
+ 	return bpf_program__attach_lsm(prog);
+ }
+@@ -9945,7 +9990,7 @@ bpf_program__attach_iter(const struct bpf_program *prog,
+ 	return link;
  }
  
--SEC("sk_reuseport/reuse_drop")
-+SEC("sk_reuseport")
- int reuseport_drop(struct sk_reuseport_md *ctx)
+-static struct bpf_link *attach_iter(const struct bpf_program *prog)
++static struct bpf_link *attach_iter(const struct bpf_program *prog, long cookie)
  {
- 	return SK_DROP;
-@@ -194,7 +194,7 @@ int select_sock_a_no_reuseport(struct bpf_sk_lookup *ctx)
- 	return err ? SK_DROP : SK_PASS;
+ 	return bpf_program__attach_iter(prog, NULL);
+ }
+@@ -9955,7 +10000,7 @@ struct bpf_link *bpf_program__attach(const struct bpf_program *prog)
+ 	if (!prog->sec_def || !prog->sec_def->attach_fn)
+ 		return libbpf_err_ptr(-ESRCH);
+ 
+-	return prog->sec_def->attach_fn(prog);
++	return prog->sec_def->attach_fn(prog, prog->sec_def->cookie);
  }
  
--SEC("sk_reuseport/select_sock_b")
-+SEC("sk_reuseport")
- int select_sock_b(struct sk_reuseport_md *ctx)
- {
- 	__u32 key = KEY_SERVER_B;
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-index a1cc58b10c7c..00f1456aaeda 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-@@ -56,7 +56,7 @@ int prog_stream_verdict(struct __sk_buff *skb)
- 	return verdict;
- }
- 
--SEC("sk_skb/skb_verdict")
-+SEC("sk_skb")
- int prog_skb_verdict(struct __sk_buff *skb)
- {
- 	unsigned int *count;
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c b/tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c
-index 2d31f66e4f23..3c69aa971738 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c
-@@ -9,7 +9,7 @@ struct {
- 	__type(value, __u64);
- } sock_map SEC(".maps");
- 
--SEC("sk_skb/skb_verdict")
-+SEC("sk_skb")
- int prog_skb_verdict(struct __sk_buff *skb)
- {
- 	return SK_DROP;
-diff --git a/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c b/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
-index 678bd0fad29e..5f4e87ee949a 100644
---- a/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
-@@ -594,7 +594,7 @@ static int handle_parse_hdr(struct bpf_sock_ops *skops)
- 	return CG_OK;
- }
- 
--SEC("sockops/estab")
-+SEC("sockops")
- int estab(struct bpf_sock_ops *skops)
- {
- 	int true_val = 1;
+ static int bpf_link__detach_struct_ops(struct bpf_link *link)
 -- 
 2.30.2
 
