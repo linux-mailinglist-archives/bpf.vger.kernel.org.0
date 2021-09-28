@@ -2,150 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFE441A73E
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 07:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF83241A74A
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 07:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbhI1Frv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 01:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
+        id S236534AbhI1FyH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 01:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhI1Fru (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:47:50 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E981C061575
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 22:46:12 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id g14so18004474pfm.1
-        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 22:46:12 -0700 (PDT)
+        with ESMTP id S234207AbhI1FyF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 01:54:05 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0CCC061575;
+        Mon, 27 Sep 2021 22:52:26 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id m132so9200947ybf.8;
+        Mon, 27 Sep 2021 22:52:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6RIB34ck9x4xhZjBRT9gV4MhWdDLY2gLPXg+YsEUDEg=;
-        b=o77R8TmR6nAGr3vvelMAWtSLVvjJl4C3nLtoHdPIIURlxMa+pa7xH6m5fEHF9pBgty
-         XQH1Yic2DQqlqEpf2bchP3NHH5cg5OccGWx5P1n4Dt/SZKnDjKMMO0zg6RcF5+z1eEPp
-         u5QGp+gV7oKDCiRbDqnyffWs5TE5QDoRtlkb7Wq9+SokS23V63m6oeUal44tkH3Xkddh
-         Br/5t3QiJif+J93SYb8Il1RKLdtYrDiHBQxSM2Ai9pMLE/ReqXSRxFHISlhW8LRCFH0z
-         W32deIulMmiAREjN3dnlJMXA0fwqwDOjvmXgWHG0jf+g0hcPa+1RcLvaEheK6a5wOdhw
-         mPKA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e6RSWnN6k15haSaDV0km0zLY/zU+uT+FyT3eyQ+b4io=;
+        b=G44Q7JX6YuthrhC0K0mE/YTtXYTVmb2FA1ig1zH/MFG6LKYrsfBNvgGqs/kS8lxUt1
+         RSJxL0E6KdksGvLZ64Ita57Q/iLYqlUAybcXihGsMii2oZsr5YyS2jvnvDnE8tAa14v/
+         pTM8nODn9GjskSmsTdvN5onNlNdIFBBT51YKdkQhZFToTA8SwGwC/2PfxR+aJ+5b57HQ
+         SQngWtwW2+Kf26+JACZ2PKKWO5Qxe+W9XdqEfI2dQdU0xH0awkU6jpYrrOJgImpyVxdZ
+         lrEYG/chJ80n67VbTC7eWZDf3dEql/xvxyOd0DpTjcm0aljTSMdKexu5C80KyGbcyAB4
+         VY0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6RIB34ck9x4xhZjBRT9gV4MhWdDLY2gLPXg+YsEUDEg=;
-        b=JoOdPPQ0to+DCMLJ9cJrtvFA986DrZ0iW44tbuta5SSwL2bEJQK31geCK9uSqgYWVH
-         JQyiebr7R6jVfW6ko/qWElyl1Lj350uLjW/0M44abfG55e2hPHgmQ/g3RgPkVZ0I75Jr
-         TmR5uriiRu7jRxgqOE5bD5b8XiDRKYmU16IWk7oVyQU1GlEing3LX2jxUOGWbUf+pmeT
-         /f1FdTASu37XWPmUcCzFNSKXYEhu3Ps8xD8T/KeXCbZQeGuPB8G5GV3xVGmIUPuaxlZt
-         646TIHYI1AmCOb48LQ86MtqNHPC62yItlAhizv8QVqvjIKtxQJsYaqQwWWpaWynSvRZo
-         oBHg==
-X-Gm-Message-State: AOAM5332+KAAJb1H456aU40zd7CnKT7QpMi+qVGaAG+Jyk+lJuhvdEX7
-        zqH7kJlFJrZcxfTivhHZ+vglG9TOpqE=
-X-Google-Smtp-Source: ABdhPJxH1bQpdhUpSgcbvuRjooSXZPcWVrbkUNdA43xlvNWgcTd4XJdU+9CfJscTZy0q8rFuie6y8g==
-X-Received: by 2002:a63:7d0f:: with SMTP id y15mr3010715pgc.446.1632807971396;
-        Mon, 27 Sep 2021 22:46:11 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
-        by smtp.gmail.com with ESMTPSA id e1sm21791900pgi.43.2021.09.27.22.46.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 22:46:11 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf v2] samples: bpf: Fix vmlinux.h generation for XDP samples
-Date:   Tue, 28 Sep 2021 11:16:08 +0530
-Message-Id: <20210928054608.1799021-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e6RSWnN6k15haSaDV0km0zLY/zU+uT+FyT3eyQ+b4io=;
+        b=r4CoVb4deAb5qLq+duaqVNf/Dkec7/EvdrFGDARUXi9Q4i1Sw2pK6PN/F8rf6RjSJF
+         chF7ojmDea0juQfMto209SLz+yKC29ZRnbvn5KABur3sLdGvLohMu1g+fr9XjenIbBu3
+         rzVY0ecGyOrBc4PahwllG95YU+gnP0apB/fZoEzWb0N6Y0Ex7nkW1RnJ8CuU4O9VxfCn
+         DYv+j4DVriPv0BwWcs4H7eNkOFz9nqzUDQc1lC8mGWoKN7iWhYLR30ipvmrhbXdBe1bu
+         eLoGcwMni57C3qfWjVpCS/7nWVPngZ/j8FL8wM/wCgzx2js55ksjWO6Zf7jG5M2GZges
+         YvhQ==
+X-Gm-Message-State: AOAM531bOjn248iOTkvh3Zs1fTgeyhxu36K+BmOdnUIJ5gPELpht6fo8
+        hc/xdE+WaER4MYRPX1MrVQ0t6NNHSL29H0nY+lg=
+X-Google-Smtp-Source: ABdhPJydKeMVM2mv8SaG1jgR/LtJ0SI70OGzxsTvbSnxqgeZKbAEO6xhWDHjRB5gax9+HSazl27WVAlkKUZWk0f1HoE=
+X-Received: by 2002:a25:af4a:: with SMTP id c10mr4634454ybj.482.1632808345815;
+ Mon, 27 Sep 2021 22:52:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210922093259.164013-1-liujian56@huawei.com>
+In-Reply-To: <20210922093259.164013-1-liujian56@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 27 Sep 2021 22:52:14 -0700
+Message-ID: <CAM_iQpVDiA8-GHXYrNs8A4gBaDioWMPeQR=2u4OKn2ZCyzu8Lg@mail.gmail.com>
+Subject: Re: [PATCH v3] skmsg: lose offset info in sk_psock_skb_ingress
+To:     Liu Jian <liujian56@huawei.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Generate vmlinux.h only from the in-tree vmlinux, and remove enum
-declarations that would cause a build failure in case of version
-mismatches.
+On Wed, Sep 22, 2021 at 2:32 AM Liu Jian <liujian56@huawei.com> wrote:
+>  static void sk_psock_skb_state(struct sk_psock *psock,
+> @@ -604,6 +608,9 @@ static void sk_psock_backlog(struct work_struct *work)
+>  {
+>         struct sk_psock *psock = container_of(work, struct sk_psock, work);
+>         struct sk_psock_work_state *state = &psock->work_state;
+> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+> +       struct strp_msg *stm = NULL;
+> +#endif
+>         struct sk_buff *skb = NULL;
+>         bool ingress;
+>         u32 len, off;
+> @@ -624,6 +631,13 @@ static void sk_psock_backlog(struct work_struct *work)
+>         while ((skb = skb_dequeue(&psock->ingress_skb))) {
+>                 len = skb->len;
+>                 off = 0;
+> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+> +               if (skb_bpf_strparser(skb)) {
 
-There are now two options when building the samples:
-1. Compile the kernel to use in-tree vmlinux for vmlinux.h
-2. Override VMLINUX_BTF for samples using something like this:
-   make VMLINUX_BTF=/sys/kernel/btf/vmlinux -C samples/bpf
+If CONFIG_BPF_STREAM_PARSER is disabled, this
+should always return false, hence you don't need this #ifdef.
+Or alternatively, you can at least define for nop for
+skb_bpf_strparser() if !CONFIG_BPF_STREAM_PARSER.
+And you can move the above "stm" down here too.
 
-This change was tested with relative builds, e.g. cases like:
- * make O=build -C samples/bpf
- * make KBUILD_OUTPUT=build -C samples/bpf
- * make -C samples/bpf
- * cd samples/bpf && make
+(Ditto for the other place below.)
 
-When a suitable VMLINUX_BTF is not found, the following message is
-printed:
-/home/kkd/src/linux/samples/bpf/Makefile:333: *** Cannot find a vmlinux
-for VMLINUX_BTF at any of "  ./vmlinux", build the kernel or set
-VMLINUX_BTF variable.  Stop.
-
-Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-Fixes: 384b6b3bbf0d (samples: bpf: Add vmlinux.h generation support)
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
-v1->v2
-Use abspath for VMLINUX_BTF_PATHS items (Andrii)
----
- samples/bpf/Makefile                     | 17 ++++++++---------
- samples/bpf/xdp_redirect_map_multi.bpf.c |  5 -----
- 2 files changed, 8 insertions(+), 14 deletions(-)
-
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 4dc20be5fb96..5fd48a8d4f10 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -322,17 +322,11 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
-
- -include $(BPF_SAMPLES_PATH)/Makefile.target
-
--VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
--		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
--		     ../../../../vmlinux				\
--		     /sys/kernel/btf/vmlinux				\
--		     /boot/vmlinux-$(shell uname -r)
-+VMLINUX_BTF_PATHS ?= $(abspath $(if $(O),$(O)/vmlinux))				\
-+		     $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux))	\
-+		     $(abspath ./vmlinux)
- VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
-
--ifeq ($(VMLINUX_BTF),)
--$(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
--endif
--
- $(obj)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
- ifeq ($(VMLINUX_H),)
- 	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
-@@ -340,6 +334,11 @@ else
- 	$(Q)cp "$(VMLINUX_H)" $@
- endif
-
-+ifeq ($(VMLINUX_BTF),)
-+	$(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)",\
-+		build the kernel or set VMLINUX_BTF variable)
-+endif
-+
- clean-files += vmlinux.h
-
- # Get Clang's default includes on this system, as opposed to those seen by
-diff --git a/samples/bpf/xdp_redirect_map_multi.bpf.c b/samples/bpf/xdp_redirect_map_multi.bpf.c
-index 8f59d430cb64..bb0a5a3bfcf0 100644
---- a/samples/bpf/xdp_redirect_map_multi.bpf.c
-+++ b/samples/bpf/xdp_redirect_map_multi.bpf.c
-@@ -5,11 +5,6 @@
- #include "xdp_sample.bpf.h"
- #include "xdp_sample_shared.h"
-
--enum {
--	BPF_F_BROADCAST		= (1ULL << 3),
--	BPF_F_EXCLUDE_INGRESS	= (1ULL << 4),
--};
--
- struct {
- 	__uint(type, BPF_MAP_TYPE_DEVMAP_HASH);
- 	__uint(key_size, sizeof(int));
---
-2.33.0
-
+Thanks.
