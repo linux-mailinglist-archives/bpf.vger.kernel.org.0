@@ -2,87 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6050F41B675
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 20:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF66841B6F3
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 21:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhI1SoU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 14:44:20 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12032 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230109AbhI1SoT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Sep 2021 14:44:19 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18SINPlh009423
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 11:42:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=2u4sqjlqbUhJLhW8TshINN2xCe0nl6v1kE1HB51EZGM=;
- b=HOXlOtCoBN5NgJMKdbStUCH1iS+Ja/o4s6BEyyQq00K/zU+O/lTQm1SleBXuwQzqscmc
- J44JHx7BXiBD0bpqlb34Zy6+whjqZwUhTfs2+/NsZwvs76SpzFHAmYnkOzh6oi1w6D6t
- TlM8h7rUkjKDv479iA5gLQ2yvKBT1XOr2Bo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3bby1j4hya-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 11:42:39 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 28 Sep 2021 11:42:38 -0700
-Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id 1BA3E4623C99; Tue, 28 Sep 2021 11:42:26 -0700 (PDT)
-From:   Yucong Sun <fallentree@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <andrii@kernel.org>, <sunyucong@gmail.com>,
-        Yucong Sun <fallentree@fb.com>
-Subject: [PATCH bpf-next] tools/bpftool: Avoid using "?:" in generated code
-Date:   Tue, 28 Sep 2021 11:42:21 -0700
-Message-ID: <20210928184221.1545079-1-fallentree@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S242248AbhI1TLl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 28 Sep 2021 15:11:41 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:38719 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242218AbhI1TLk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:11:40 -0400
+Received: (Authenticated sender: joe@ovn.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id A956F1BF20D
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 19:09:58 +0000 (UTC)
+Received: by mail-lf1-f41.google.com with SMTP id y26so299939lfa.11
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 12:09:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531Q9MypKkc8vJiJqqLxLc1LidayEGCFZ9aOxpWlFGd/L6SVxoJT
+        BpaXOdp7FJTNE0LYxzdOPiBgD1xmtuVPLZmCPhs=
+X-Google-Smtp-Source: ABdhPJwx3mp5/FR7gYQXtyI4+wHZf7F3n9Kb6J+UZH60HlXUU1n1oKmM9W8/fTIOfXny1Nylpo33uG9XbIQer/jp3pg=
+X-Received: by 2002:ac2:4a71:: with SMTP id q17mr6849657lfp.410.1632856197836;
+ Tue, 28 Sep 2021 12:09:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: tKQhmt0ewlnI_or1IgQrrgato7JFjiJv
-X-Proofpoint-ORIG-GUID: tKQhmt0ewlnI_or1IgQrrgato7JFjiJv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- bulkscore=0 clxscore=1015 adultscore=0 malwarescore=0 spamscore=0
- mlxlogscore=397 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280109
-X-FB-Internal: deliver
+References: <20210923000540.47344-1-luca.boccassi@gmail.com> <CA+i-1C3sjrwtskbSZzera7ANL8dTiVWMBwLRhe=+1Ft6NgfL=A@mail.gmail.com>
+In-Reply-To: <CA+i-1C3sjrwtskbSZzera7ANL8dTiVWMBwLRhe=+1Ft6NgfL=A@mail.gmail.com>
+From:   Joe Stringer <joe@ovn.org>
+Date:   Tue, 28 Sep 2021 12:09:46 -0700
+X-Gmail-Original-Message-ID: <CAPWQB7HBBrP5eQhXnhw5VRMPBRHqXNSi_zmiaE12s==Z1av9HA@mail.gmail.com>
+Message-ID: <CAPWQB7HBBrP5eQhXnhw5VRMPBRHqXNSi_zmiaE12s==Z1av9HA@mail.gmail.com>
+Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR BSD-2-Clause
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     luca.boccassi@gmail.com, bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Jiong Wang <jiong.wang@netronome.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, daniel@zonque.org,
+        fengc@google.com, jbacik@fb.com, Luca Boccassi <bluca@debian.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"?:" is a GNU C extension, some environment has warning flags for its
-use, or even prohibit it directly.  This patch avoid triggering these
-problems by simply expand it to its full form, no functionality change.
+On Thu, 23 Sept 2021 at 02:42, Brendan Jackman <jackmanb@google.com> wrote:
+>
+>
+>
+> On Thu, 23 Sept 2021 at 02:06, <luca.boccassi@gmail.com> wrote:
+>>
+>> From: Luca Boccassi <bluca@debian.org>
+>>
+>> libbpf and bpftool have been dual-licensed to facilitate inclusion in
+>> software that is not compatible with GPL2-only (ie: Apache2), but the
+>> samples are still GPL2-only.
+>>
+>> Given these files are samples, they get naturally copied around. For example
+>> it is the case for samples/bpf/bpf_insn.h which was copied into the systemd
+>> tree: https://github.com/systemd/systemd/blob/main/src/shared/linux/bpf_insn.h
+>>
+>> Dual-license this header as GPL-2.0-only OR BSD-2-Clause to follow
+>> the same licensing used by libbpf and bpftool:
+>>
+>> 1bc38b8ff6cc ("libbpf: relicense libbpf as LGPL-2.1 OR BSD-2-Clause")
+>> 907b22365115 ("tools: bpftool: dual license all files")
+>>
+>> Signed-off-by: Luca Boccassi <bluca@debian.org>
+>> ---
+>> Most of systemd is (L)GPL2-or-later, which means there is no perceived
+>> incompatibility with Apache2 softwares and can thus be linked with
+>> OpenSSL 3.0. But given this GPL2-only header is included this is currently
+>> not possible.
+>> Dual-licensing this header solves this problem for us as we are scoping
+>> moving to OpenSSL 3.0, see:
+>>
+>> https://lists.freedesktop.org/archives/systemd-devel/2021-September/046882.html
+>>
+>> The authors of this file according to git log are:
+>>
+>> Alexei Starovoitov <ast@kernel.org>
+>> Björn Töpel <bjorn.topel@intel.com>
+>> Brendan Jackman <jackmanb@google.com>
+>
+>
+> Acked-by:  Brendan Jackman <jackmanb@google.com>
+>
+>> Chenbo Feng <fengc@google.com>
+>> Daniel Borkmann <daniel@iogearbox.net>
+>> Daniel Mack <daniel@zonque.org>
+>> Jakub Kicinski <jakub.kicinski@netronome.com>
+>> Jiong Wang <jiong.wang@netronome.com>
+>> Joe Stringer <joe@ovn.org>
+>> Josef Bacik <jbacik@fb.com>
+>>
+>> (excludes a commit adding the SPDX header)
+>>
+>> All authors and maintainers are CC'ed. An Acked-by from everyone in the
+>> above list of authors will be necessary.
+>>
+>> One could probably argue for relicensing all the samples/bpf/ files given both
+>> libbpf and bpftool are, however the authors list would be much larger and thus
+>> it would be much more difficult, so I'd really appreciate if this header could
+>> be handled first by itself, as it solves a real license incompatibility issue
+>> we are currently facing.
+>>
+>>  samples/bpf/bpf_insn.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+>> index aee04534483a..29c3bb6ad1cd 100644
+>> --- a/samples/bpf/bpf_insn.h
+>> +++ b/samples/bpf/bpf_insn.h
+>> @@ -1,4 +1,4 @@
+>> -/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+>>  /* eBPF instruction mini library */
+>>  #ifndef __BPF_INSN_H
+>>  #define __BPF_INSN_H
+>> --
+>> 2.33.0
+>>
 
-Signed-off-by: Yucong Sun <fallentree@fb.com>
----
- tools/bpf/bpftool/gen.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index e3ec47a6a612..cc835859465b 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -803,7 +803,10 @@ static int do_skeleton(int argc, char **argv)
- 			}						    \n\
- 									    \n\
- 			err =3D %1$s__create_skeleton(obj);		    \n\
--			err =3D err ?: bpf_object__open_skeleton(obj->skeleton, opts);\n\
-+			if (err)					    \n\
-+				goto err_out;				    \n\
-+									    \n\
-+			err =3D bpf_object__open_skeleton(obj->skeleton, opts);\n\
- 			if (err)					    \n\
- 				goto err_out;				    \n\
- 									    \n\
---=20
-2.30.2
-
+Acked-by: Joe Stringer <joe@ovn.org>
