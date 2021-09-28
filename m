@@ -2,102 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2764541A708
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 07:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B540041A720
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 07:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhI1F0Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 01:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S234786AbhI1F3w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 01:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbhI1F0X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:26:23 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB50C061575;
-        Mon, 27 Sep 2021 22:24:44 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id u32so8439050ybd.9;
-        Mon, 27 Sep 2021 22:24:44 -0700 (PDT)
+        with ESMTP id S234213AbhI1F3v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 01:29:51 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C11C061575
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 22:28:12 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id v10so29155719ybq.7
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 22:28:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v3NEK8pPEgXFEQ4ELQDWncywX9Rjl1R3L1/HQjl3gew=;
-        b=m6752IA5QJA6vatmMChf/VuIfoiGB64b3cz0wfsXyLH8lnN8H/49bCjXaAu4AJGmco
-         Em+mx5Cn9bKiC7Sd8o/53y09xrbvo5SkXWik6DxdBY5MiKpC9PHy4nFRJAySuAeyxmH9
-         LSb8aR6mPZbSgGKcu4E+1cHDY3JWJ5nyI92I8SbZIR40QmRji/a3/iJyglIryLPhY/z1
-         YRg/7JN2A/nV8/fwZif7CkTBiWfwbD5HF3PpI/QSOXGyUi7noJMq421wYuBdXrbtWXtj
-         X2oTE0eEgDe3NT4WMdnjcuzy4WaIuY93wqN/QgwiK2snjGctAZ/XyPQyGIXq8SxIQsB5
-         EG0g==
+         :cc:content-transfer-encoding;
+        bh=1be5GuyeQcY7Mkmy2Kjcem9/Kg64N37FjNduHkmYhrE=;
+        b=GwydxRagiJtanSkDgyZjPwjp22rdyUyQ9wSHcVwlEaVyHZucMFkheaT8/dZ83rtpVg
+         pngdhnCyLawbDs7TfiQvEHGl1b2eAVsX+26rQARqAL6GI5OtQfOKax9/yznZOdlo8d3z
+         0LXsWlp9+4jCRvv4KOLVJw1Pf3dRvW18rFAW22UX0j7672ZMWPvylsRQVqLxDrx0U/Vv
+         CZIqg0fHd2dcuw1B4u41wpeLsNUYh86IAdRNBYsQYuljc4LHCszKhs/YtXHFpssF3w1Z
+         UVDeqQc1awc5E6dY6h2lIrv8qHrnLXMWA12nZB12twMGRc1lQ0aPa3nQobIVyP1hjDva
+         KHzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v3NEK8pPEgXFEQ4ELQDWncywX9Rjl1R3L1/HQjl3gew=;
-        b=5vseAXFLpiClturVYH5ofNl7BOdflugj77hPHQ1CmM7GKzAmayU07AiMAPGZUJMT2j
-         Y7nbCZsrZp2YIAL0mZnS/xmNA7RQaHQoADpK+LQ0io2ohb0yX4j5+/q68kErXujCM4bO
-         UrHQ7BSb67vrzuETaPv4UzHYr9tIxvJ052epZPkzxxqL6t0m90kj3U/U3tG9O8v9aM7+
-         j2/cO3T2xziRX5zBCFN8i5ZHQNe0NJNEkae9AKNj8vJ2HnQn0U/3Mr/qJiDmiUHV5YM0
-         jl66e4QGMKVHWGngCtWLeAcynE514wb2ceyiF87sKVjtShZUgLSRKnw4yC8lCjmjN7mn
-         SAXQ==
-X-Gm-Message-State: AOAM531PWqsClRlBXs9hyzzeSe40rjQeleN26xn8V9M8oxPPdoHVAedj
-        5L/PO22EnsV0hkwkM/QifX7UrVhcHDQD6zxwWhI=
-X-Google-Smtp-Source: ABdhPJwAFGx76qmz0A/PqtRX5vtKX0x9+TFOdc1krGsTa3S/Foz/uJUyYGX5DlAO5Yg4MqrMiMMMBZfXe1I9HzvRKpI=
-X-Received: by 2002:a25:1dc4:: with SMTP id d187mr2647041ybd.455.1632806683740;
- Mon, 27 Sep 2021 22:24:43 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1be5GuyeQcY7Mkmy2Kjcem9/Kg64N37FjNduHkmYhrE=;
+        b=kYSK/yiTR/oZMx6cuOgXB27npY4iN/f6OmYdvmvdL67Pe0sE9v/fgPUre9d4vzKFmB
+         HFt1SpZ1VfIhpWFHm8SGrxOexAcbNS/anPsJOiKMmpac6U1rc2N/CFLNDVX8Fvt9tA0X
+         hwCkhclBtmwvj9FWVy15fgRj+PAEKEJTYolzbZo4C6msQXCHhE+4LJ1mxOJ+QmFfzRWd
+         +9rKfY2yJ5poVvD37BaZ70vVKPqwDOL+JYSIpy6BsPLiXcyxdM0PJf3nE/K56izPEYbi
+         fUDc1Skp95rP27gocjTyv82Q4+PSgo+7uK83BjUeYvSkPy2xet24LKaiU0BCa+QiPpIL
+         E08g==
+X-Gm-Message-State: AOAM530rGlfK6mLIgsderNvX+rkRpo+hTL+M8iNVNV2VGIflVh5a/Abs
+        nN7+x5abKzycqdN7yG8KBND0fCHwFGxessnte8w=
+X-Google-Smtp-Source: ABdhPJyqJAmQ3VJ5SPnT7AQwfAx+vlG70Kb63vr4khY5Fa83634HNHo2sx2wO68CgOG7sE3MufKquia+k6zP+jpTrWo=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr4292014ybj.504.1632806892222;
+ Mon, 27 Sep 2021 22:28:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927182700.2980499-1-keescook@chromium.org>
-In-Reply-To: <20210927182700.2980499-1-keescook@chromium.org>
+References: <20210928041329.1735524-1-memxor@gmail.com> <CAEf4BzaCyCZoUGjY8_-+WUV6DMxHvcJLGLb+gYxZrA5YDwbU=w@mail.gmail.com>
+ <20210928045131.psoz6gjb3q3suxc6@apollo.localdomain>
+In-Reply-To: <20210928045131.psoz6gjb3q3suxc6@apollo.localdomain>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 27 Sep 2021 22:24:32 -0700
-Message-ID: <CAEf4Bzb46=-J5Fxc3mMZ8JQPtK1uoE0q6+g6WPz53Cvx=CBEhw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] bpf: Build with -Wcast-function-type
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
+Date:   Mon, 27 Sep 2021 22:28:01 -0700
+Message-ID: <CAEf4BzYOedEAXN0vCj0+seThLwkwv=e83KWDKkym7B9cE36yAQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] samples: bpf: Fix vmlinux.h generation for XDP samples
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 11:27 AM Kees Cook <keescook@chromium.org> wrote:
+On Mon, Sep 27, 2021 at 9:51 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> Hi,
+> On Tue, Sep 28, 2021 at 10:06:09AM IST, Andrii Nakryiko wrote:
+> > On Mon, Sep 27, 2021 at 9:16 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > Generate vmlinux.h only from the in-tree vmlinux, and remove enum
+> > > declarations that would cause a build failure in case of version
+> > > mismatches.
+> > >
+> > > There are now two options when building the samples:
+> > > 1. Compile the kernel to use in-tree vmlinux for vmlinux.h
+> > > 2. Override VMLINUX_BTF for samples using something like this:
+> > >    make VMLINUX_BTF=3D/sys/kernel/btf/vmlinux -C samples/bpf
+> > >
+> > > This change was tested with relative builds, e.g. cases like:
+> > >  * make O=3Dbuild -C samples/bpf
+> > >  * make KBUILD_OUTPUT=3Dbuild -C samples/bpf
+> > >  * make -C samples/bpf
+> > >  * cd samples/bpf && make
+> > >
+> > > When a suitable VMLINUX_BTF is not found, the following message is
+> > > printed:
+> > > /home/kkd/src/linux/samples/bpf/Makefile:333: *** Cannot find a vmlin=
+ux
+> > > for VMLINUX_BTF at any of "  ./vmlinux", build the kernel or set
+> > > VMLINUX_BTF variable.  Stop.
+> > >
+> > > Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> > > Fixes: 384b6b3bbf0d (samples: bpf: Add vmlinux.h generation support)
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  samples/bpf/Makefile                     | 13 ++++++-------
+> > >  samples/bpf/xdp_redirect_map_multi.bpf.c |  5 -----
+> > >  2 files changed, 6 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > > index 4dc20be5fb96..a05130e91403 100644
+> > > --- a/samples/bpf/Makefile
+> > > +++ b/samples/bpf/Makefile
+> > > @@ -324,15 +324,9 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_k=
+ern.h
+> > >
+> > >  VMLINUX_BTF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                      =
+     \
+> > >                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux) =
+   \
+> > > -                    ../../../../vmlinux                             =
+   \
+> > > -                    /sys/kernel/btf/vmlinux                         =
+   \
+> > > -                    /boot/vmlinux-$(shell uname -r)
+> > > +                    ./vmlinux
+> >
+> > isn't this relative to samples/bpf subdirectory, so shouldn't it be
+> > ../../vmlinux?
+> >
 >
-> In order to keep ahead of cases in the kernel where Control Flow Integrity
-> (CFI) may trip over function call casts, enabling -Wcast-function-type
-> is helpful. To that end, replace BPF_CAST_CALL() as it triggers warnings
-> with this option and is now one of the last places in the kernel in need
-> of fixing.
+> I was confused about this too; but it executes this when you call make:
 >
-> Thanks,
+> # Trick to allow make to be run from this directory
+> all:
+>         $(MAKE) -C ../../ M=3D$(CURDIR) BPF_SAMPLES_PATH=3D$(CURDIR)
 >
-> -Kees
->
-> Kees Cook (2):
->   bpf: Replace "want address" users of BPF_CAST_CALL with BPF_CALL_IMM
->   bpf: Replace callers of BPF_CAST_CALL with proper function typedef
->
+> so it fails if the path isn't relative to kernel source root.
 
-Both patches look good to me. For the series:
+Hm... what if we do $(abspath ./vmlinux) here (and probably same for
+$(O) and $(KBUILD_OUTPUT) just in case those are relative as well,
+would that do the right thing here? The way it is right now it's
+extremely confusing (and obviously ../../../../vmlinux never worked
+and we never knew that).
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  include/linux/bpf.h    |  4 +++-
->  include/linux/filter.h |  7 +++----
->  kernel/bpf/arraymap.c  |  7 +++----
->  kernel/bpf/hashtab.c   | 13 ++++++-------
->  kernel/bpf/helpers.c   |  5 ++---
->  kernel/bpf/verifier.c  | 26 +++++++++-----------------
->  6 files changed, 26 insertions(+), 36 deletions(-)
+>
+> > >  VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATH=
+S))))
+> > >
+> > > -ifeq ($(VMLINUX_BTF),)
+> > > -$(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_B=
+TF_PATHS)")
+> > > -endif
+> > > -
+> >
+> > [...]
 >
 > --
-> 2.30.2
->
+> Kartikeya
