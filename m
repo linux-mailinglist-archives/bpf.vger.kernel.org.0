@@ -2,109 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706BB41B8C2
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 22:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FFE41B913
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 23:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242768AbhI1U5s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 16:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
+        id S242830AbhI1VOO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 17:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242764AbhI1U5r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:57:47 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDD4C06161C
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 13:56:07 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 17so379214pgp.4
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 13:56:07 -0700 (PDT)
+        with ESMTP id S241482AbhI1VON (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 17:14:13 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1979CC06161C;
+        Tue, 28 Sep 2021 14:12:34 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id e7so426879pgk.2;
+        Tue, 28 Sep 2021 14:12:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C7YNq2K97Nd1xWfmsNA+rmOvJob0o9TebyYRAsD8+4s=;
-        b=X7YHqC3Tv4CDiG8i2KH9ODy1YCnAEfFd2hJ16W7XHmdi755k/m1Yo4yK/DKBXrD/1B
-         yVzeDjZg/TNaWrweLW/KYrlM5FvXqm+iuXyfGTNXOM02VlXrTX8zEdan6qBA0Bg5d3//
-         Y3TarE+kT0TH2GXxCGt0OrVe+Ezwc3p3ZHAF8sqS43kL60ol4JArK5QjMTXH6yJ3+A2P
-         7HEx3137auJN/FtAw1e5/ExPMIFDTt3M3l/eCLUpuJwlQkif7l7H2cn8Q0qgMu81FlQU
-         lXvcTBU03dol92myHWGHHkiEwlanmhewsVZVNv4s+owBfxTEFnTz880LgtHVm4QI0xI7
-         trfA==
+         :cc:content-transfer-encoding;
+        bh=pHYj7HRtahjbKwEBtzCUYVObQgp1AeKgLSsYRQ8rMi0=;
+        b=K1C9LSpM1QNOMC/qREq9uYcoo3rfN5zeS32XGKdG2eM6GETIOOXbwy6YuJ/EifFg5s
+         xqbTJZdvVMFhJB3YTMX9ce2Kb2z/eplfEeN4wM69qcuCm9V/wYAcce4+dV2WETYDR+6L
+         zbIRBxBDodqw9VWY5wG+0QQt6OMP72V5uWVA65TA4KVcvPw6mvmrbg9RRHcYYudGMVn+
+         iRX2XxbH2Xv+pGqiIQ2BK8QGQIzMklN32ochpjgsLdkqm+O/0occ/B7toJs8LhJRUonj
+         uLRi9owSupAJ80JA4QL050ihR5FJj3nAB99gSTjhpqrovMniq/dN+E83fgdG4xk3mJWX
+         Bc3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C7YNq2K97Nd1xWfmsNA+rmOvJob0o9TebyYRAsD8+4s=;
-        b=XUyuay1n5DmCtX13CEmjUSmoIop7P5AFNXytvjoCEWTjF3EHCKKxNoA5G80BU+N2h0
-         hwFmPD7nS5X+o/dutsGOXLHWWBLmi0DE/zhab1zDFyRJCsSj0EQ8OuStU/09hM+pvY3e
-         JqYrENzSwdq211h2oCmxu5+bMWjogrG6bNYKKgwxQqXbBYUcdoEBKPAkmbabFowO2WEq
-         0w/591T/Fqme9YKNXpwv/ByPvKdP2tko1Q4XiGENdV33NMX0b/rbVeGmgAukLNcf3bLi
-         Yx/8ZZFfMPnJ7ycqBCEHwTQ/avt5r5NGmtrdH7qwRPWBljN5taRsVFXOZ8Mk4CSD7/MI
-         wEjg==
-X-Gm-Message-State: AOAM533WUUe5MJLkmKdUjg91YzbAZQ4LK4cbBii3xXZc/wjLAkQf3HJt
-        qkm6+OdQekmTuKYe9x8JEAlon3SA8ya4ssGN83gR2WyI
-X-Google-Smtp-Source: ABdhPJz8qr0RkA+kxsTbH8rWzPOg1jaqZyCEhLJAWa9ZEnsr8u2WjTTxG4N9gJ5zbOLpoXH2XsV24P+Cvw3j4FjNpSA=
-X-Received: by 2002:a62:2707:0:b0:44b:4870:770b with SMTP id
- n7-20020a622707000000b0044b4870770bmr7621473pfn.59.1632862566979; Tue, 28 Sep
- 2021 13:56:06 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pHYj7HRtahjbKwEBtzCUYVObQgp1AeKgLSsYRQ8rMi0=;
+        b=sM9295G+DMoSkTnGlzarym5okKi67ObaajKxLreJ/UvV6oDJlMv6VRihOfJpXyv/Df
+         X7Bs0EToaXRho9dO9Ywx94jcx+DNUuWYKbNKsqnsmQAQgL6FPqFlr0KmIp7UFy1WXO/h
+         u10Q3KDg3lZrh8UWTTb7xU9zNgshGplWAoAYry1lmsg4RdcZxpbf0rL4Qcib6o+79i7D
+         EqNKNsq8wDK2eEnd4gj4jfiqB4UwIRFcfbs6+BAUX9bcVCAbFUlk0Np9jDq+VSuK6CQu
+         x2cP+4utmnFNlQaR0PJsw6RZjbgj6Mp8HlAqOytKNTbJjL5l8uFAllYEjesmb2Iybfc6
+         imDg==
+X-Gm-Message-State: AOAM532b669xFAO08Z4jTNYhjyPVtjsr7qns30wfVCnD5Oo36fCEs1HA
+        s2BRGfxXbXbejOOv3mDCmaoQG6hzJnDf7SRW/p4=
+X-Google-Smtp-Source: ABdhPJylbWKY9yS+Xe+vI41SkojRTv66HK3od19kYKSV+bsAsKa/+ykIfQi5Z4oTK3GcuAuKUgP4tiSPKM0wyD0neik=
+X-Received: by 2002:aa7:83c4:0:b0:44b:bc59:1a46 with SMTP id
+ j4-20020aa783c4000000b0044bbc591a46mr2555856pfn.77.1632863552393; Tue, 28 Sep
+ 2021 14:12:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928161946.2512801-1-andrii@kernel.org>
-In-Reply-To: <20210928161946.2512801-1-andrii@kernel.org>
+References: <20210927182700.2980499-1-keescook@chromium.org> <CAEf4Bzb46=-J5Fxc3mMZ8JQPtK1uoE0q6+g6WPz53Cvx=CBEhw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb46=-J5Fxc3mMZ8JQPtK1uoE0q6+g6WPz53Cvx=CBEhw@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 28 Sep 2021 13:55:55 -0700
-Message-ID: <CAADnVQLyJ1VSXCLspsjFX46v190skVPzEpF1yMKdW7CDMPMwhw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/10] libbpf: stricter BPF program section
- name handling
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 28 Sep 2021 14:12:21 -0700
+Message-ID: <CAADnVQJmXEpzA6Phgmf8AW6ZvKjbn1XQeZZQdNt_rrQ6NxGD3A@mail.gmail.com>
+Subject: Re: [PATCH 0/2] bpf: Build with -Wcast-function-type
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 9:57 AM Andrii Nakryiko <andrii@kernel.org> wrote:
+On Mon, Sep 27, 2021 at 10:24 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Implement opt-in stricter BPF program section name (SEC()) handling logic. For
-> a lot of supported ELF section names, enforce exact section name match with no
-> arbitrary characters added at the end. See patch #9 for more details.
+> On Mon, Sep 27, 2021 at 11:27 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > In order to keep ahead of cases in the kernel where Control Flow Integr=
+ity
+> > (CFI) may trip over function call casts, enabling -Wcast-function-type
+> > is helpful. To that end, replace BPF_CAST_CALL() as it triggers warning=
+s
+> > with this option and is now one of the last places in the kernel in nee=
+d
+> > of fixing.
+> >
+> > Thanks,
+> >
+> > -Kees
+> >
+> > Kees Cook (2):
+> >   bpf: Replace "want address" users of BPF_CAST_CALL with BPF_CALL_IMM
+> >   bpf: Replace callers of BPF_CAST_CALL with proper function typedef
+> >
 >
-> To allow this, patches #2 through #4 clean up and preventively fix selftests,
-> normalizing existing SEC() usage across multiple selftests. While at it, those
-> patches also reduce the amount of remaining bpf_object__find_program_by_title()
-> uses, which should be completely removed soon, given it's an API with
-> ambiguous semantics and will be deprecated and eventually removed in libbpf 1.0.
+> Both patches look good to me. For the series:
 >
-> Patch #1 also introduces SEC("tc") as an alias for SEC("classifier"). "tc" is
-> a better and less misleading name, so patch #3 replaces all classifier* uses
-> with nice and short SEC("tc").
->
-> Last patch is also fixing "sk_lookup/" definition to not require and not allow
-> extra "/blah" parts after it, which serve no meaning.
->
-> All the other patches are gradual internal libbpf changes to:
->   - allow this optional strict logic for ELF section name handling;
->   - allow new use case (for now for "struct_ops", but that could be extended
->     to, say, freplace definitions), in which it can be used stand-alone to
->     specify just type (SEC("struct_ops")), or also accept extra parameters
->     which can be utilized by libbpf to either get more data or double-check
->     valid use (e.g., SEC("struct_ops/dctcp_init") to specify desired
->     struct_ops operation that is supposed to be implemented);
->   - get libbpf's internal logic ready to allow other libraries and
->     applications to specify their custom handlers for ELF section name for BPF
->     programs. All the pieces are in place, the only thing preventing making
->     this as public libbpf API is reliance on internal type for specifying BPF
->     program load attributes. The work is planned to revamp related low-level
->     libbpf APIs, at which point it will be possible to just re-use such new
->     types for coordination between libbpf and custom handlers.
->
-> These changes are a part of libbpf 1.0 effort ([0]). They are also intended to
-> be applied on top of the previous preparatory series [1], so currently CI will
-> be failing to apply them to bpf-next until that patch set is landed. Once it
-> is landed, kernel-patches daemon will automatically retest this patch set.
->
->   [0] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#stricter-and-more-uniform-bpf-program-section-name-sec-handling
->   [1] https://patchwork.kernel.org/project/netdevbpf/list/?series=547675&state=*
->
-> v3->v4:
->   - replace SEC("classifier*") with SEC("tc") (Daniel);
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Applied. Thanks
+It needs a rebase to bpf-next:
+In file included from ../lib/test_bpf.c:12:
+../lib/test_bpf.c: In function =E2=80=98prepare_tail_call_tests=E2=80=99:
+../lib/test_bpf.c:12442:27: error: implicit declaration of function
+=E2=80=98BPF_CAST_CALL=E2=80=99; did you mean =E2=80=98BPF_EMIT_CALL=E2=80=
+=99?
+[-Werror=3Dimplicit-function-declaration]
+     *insn =3D BPF_EMIT_CALL(BPF_CAST_CALL(addr));
+
+Please mark the patches as [PATCH bpf-next v2] to help CI pick the right tr=
+ee.
