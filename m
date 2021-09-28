@@ -2,98 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF83241A74A
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 07:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F37841A9F3
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 09:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236534AbhI1FyH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 01:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhI1FyF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:54:05 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0CCC061575;
-        Mon, 27 Sep 2021 22:52:26 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id m132so9200947ybf.8;
-        Mon, 27 Sep 2021 22:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e6RSWnN6k15haSaDV0km0zLY/zU+uT+FyT3eyQ+b4io=;
-        b=G44Q7JX6YuthrhC0K0mE/YTtXYTVmb2FA1ig1zH/MFG6LKYrsfBNvgGqs/kS8lxUt1
-         RSJxL0E6KdksGvLZ64Ita57Q/iLYqlUAybcXihGsMii2oZsr5YyS2jvnvDnE8tAa14v/
-         pTM8nODn9GjskSmsTdvN5onNlNdIFBBT51YKdkQhZFToTA8SwGwC/2PfxR+aJ+5b57HQ
-         SQngWtwW2+Kf26+JACZ2PKKWO5Qxe+W9XdqEfI2dQdU0xH0awkU6jpYrrOJgImpyVxdZ
-         lrEYG/chJ80n67VbTC7eWZDf3dEql/xvxyOd0DpTjcm0aljTSMdKexu5C80KyGbcyAB4
-         VY0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e6RSWnN6k15haSaDV0km0zLY/zU+uT+FyT3eyQ+b4io=;
-        b=r4CoVb4deAb5qLq+duaqVNf/Dkec7/EvdrFGDARUXi9Q4i1Sw2pK6PN/F8rf6RjSJF
-         chF7ojmDea0juQfMto209SLz+yKC29ZRnbvn5KABur3sLdGvLohMu1g+fr9XjenIbBu3
-         rzVY0ecGyOrBc4PahwllG95YU+gnP0apB/fZoEzWb0N6Y0Ex7nkW1RnJ8CuU4O9VxfCn
-         DYv+j4DVriPv0BwWcs4H7eNkOFz9nqzUDQc1lC8mGWoKN7iWhYLR30ipvmrhbXdBe1bu
-         eLoGcwMni57C3qfWjVpCS/7nWVPngZ/j8FL8wM/wCgzx2js55ksjWO6Zf7jG5M2GZges
-         YvhQ==
-X-Gm-Message-State: AOAM531bOjn248iOTkvh3Zs1fTgeyhxu36K+BmOdnUIJ5gPELpht6fo8
-        hc/xdE+WaER4MYRPX1MrVQ0t6NNHSL29H0nY+lg=
-X-Google-Smtp-Source: ABdhPJydKeMVM2mv8SaG1jgR/LtJ0SI70OGzxsTvbSnxqgeZKbAEO6xhWDHjRB5gax9+HSazl27WVAlkKUZWk0f1HoE=
-X-Received: by 2002:a25:af4a:: with SMTP id c10mr4634454ybj.482.1632808345815;
- Mon, 27 Sep 2021 22:52:25 -0700 (PDT)
+        id S239327AbhI1Hlt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 03:41:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239351AbhI1Hlq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 03:41:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8EB2B611CB;
+        Tue, 28 Sep 2021 07:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632814807;
+        bh=5OQwXTM7rc+J4UhQfbazAG7F2Y1e67gBcHwMh9fJkKQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pmw2wFjvstVKaVK6E6N3JkrSkEUpSnKWK7SIPYBgl6V+9+yC5BdgVD4TdVg3wtA8+
+         0TCBC9JJaFrO2xKklaBeqFO6Jsw/RJvK37m99Vdp6G/FA3Gwm0K2AR5sX9JpWOle9S
+         Gs7kg5zUEDpBpT7NumQWx49DxqSKPj4S7UranOF4EsCzRbMLIpBPSoZOv4fhVwiFDG
+         XyruHbuVQkgfDksENUAGxtIhS0XU68KHIhlzUvUVt8FQ/HBFvCRTAEmiwsaJUCYj+6
+         zRnHinUtJm9xzIuOYh0fLzE7q2kp9rP4W69/YdHnM5nczpJvqG2dw2F+y0FuKjGtQ2
+         eu6ajoZZb+mQA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7FDA060A69;
+        Tue, 28 Sep 2021 07:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210922093259.164013-1-liujian56@huawei.com>
-In-Reply-To: <20210922093259.164013-1-liujian56@huawei.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 27 Sep 2021 22:52:14 -0700
-Message-ID: <CAM_iQpVDiA8-GHXYrNs8A4gBaDioWMPeQR=2u4OKn2ZCyzu8Lg@mail.gmail.com>
-Subject: Re: [PATCH v3] skmsg: lose offset info in sk_psock_skb_ingress
-To:     Liu Jian <liujian56@huawei.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] selftests: bpf: test_lwt_ip_encap: really disable
+ rp_filter
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163281480751.25377.929896779107240942.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Sep 2021 07:40:07 +0000
+References: <b1cdd9d469f09ea6e01e9c89a6071c79b7380f89.1632386362.git.jbenc@redhat.com>
+In-Reply-To: <b1cdd9d469f09ea6e01e9c89a6071c79b7380f89.1632386362.git.jbenc@redhat.com>
+To:     Jiri Benc <jbenc@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, posk@google.com, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 2:32 AM Liu Jian <liujian56@huawei.com> wrote:
->  static void sk_psock_skb_state(struct sk_psock *psock,
-> @@ -604,6 +608,9 @@ static void sk_psock_backlog(struct work_struct *work)
->  {
->         struct sk_psock *psock = container_of(work, struct sk_psock, work);
->         struct sk_psock_work_state *state = &psock->work_state;
-> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-> +       struct strp_msg *stm = NULL;
-> +#endif
->         struct sk_buff *skb = NULL;
->         bool ingress;
->         u32 len, off;
-> @@ -624,6 +631,13 @@ static void sk_psock_backlog(struct work_struct *work)
->         while ((skb = skb_dequeue(&psock->ingress_skb))) {
->                 len = skb->len;
->                 off = 0;
-> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-> +               if (skb_bpf_strparser(skb)) {
+Hello:
 
-If CONFIG_BPF_STREAM_PARSER is disabled, this
-should always return false, hence you don't need this #ifdef.
-Or alternatively, you can at least define for nop for
-skb_bpf_strparser() if !CONFIG_BPF_STREAM_PARSER.
-And you can move the above "stm" down here too.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-(Ditto for the other place below.)
+On Thu, 23 Sep 2021 10:40:22 +0200 you wrote:
+> It's not enough to set net.ipv4.conf.all.rp_filter=0, that does not override
+> a greater rp_filter value on the individual interfaces. We also need to set
+> net.ipv4.conf.default.rp_filter=0 before creating the interfaces. That way,
+> they'll also get their own rp_filter value of zero.
+> 
+> Fixes: 0fde56e4385b0 ("selftests: bpf: add test_lwt_ip_encap selftest")
+> Signed-off-by: Jiri Benc <jbenc@redhat.com>
+> 
+> [...]
 
-Thanks.
+Here is the summary with links:
+  - [bpf] selftests: bpf: test_lwt_ip_encap: really disable rp_filter
+    https://git.kernel.org/bpf/bpf/c/79e2c3066675
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
