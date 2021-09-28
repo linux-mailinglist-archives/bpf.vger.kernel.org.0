@@ -2,242 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3D241A429
-	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 02:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA14741A440
+	for <lists+bpf@lfdr.de>; Tue, 28 Sep 2021 02:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238347AbhI1AYN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Sep 2021 20:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
+        id S238277AbhI1Ahv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Sep 2021 20:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238338AbhI1AYM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Sep 2021 20:24:12 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E70C061575;
-        Mon, 27 Sep 2021 17:22:33 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id a14so12356867qvb.6;
-        Mon, 27 Sep 2021 17:22:33 -0700 (PDT)
+        with ESMTP id S238236AbhI1Ahv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Sep 2021 20:37:51 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBE8C061575
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 17:36:12 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id m132so7945966ybf.8
+        for <bpf@vger.kernel.org>; Mon, 27 Sep 2021 17:36:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ysNfuXl1HWktNtOSEF03F01sMlIv53eUMXjaR2LS9EI=;
-        b=mfbvn6Qxb6H5yu9MBKFaH1blJHXyyl+qYEPAg/celuM9VfEGhGJ4m/qvS3DwYDqMQL
-         ejS+hVvVEgRFEPlpGr+Q/YTCHgXNfBv++uKaoa0RiyKK/Rzdt5s5kCBgQeAktpeAIO27
-         eWu7kd5fUCRkz4SAzZGR8N/d/gIO+d88L+T/Mhz2iIkopQeSXeHuv+f8v28XrFzBnW2X
-         s2NS4W6D71O+GE90VXGwmsQJKyqk2BKohRXPjnOmqRMsyY0Pv2FPMDJI8QvN/gq38EVj
-         ljn19XZCG794sldFHmsi9hTH8r1hyMm9ylbB3OwRaRhR/6VSGxhMBNqdXc+S+o6r3UKe
-         JxtA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dw10IWq1uMSILzLDi3+eQCW0s3zmx+S4kDdngtWi4n4=;
+        b=ePPye/zPYB5JpHvDDejo6LgVo5qA0Nfmhi1XHo/kWJMZl1LUgpqGIQT694unpq4y2V
+         nGUowtSsyNwhwxSFccj4zJLURB3nHXSr8KJscHKcLBdmxhJFEsDe7DyVx67BwMxUkrWK
+         cD7t8Ul9ONFuBofY1mYsvFQZC8yghsSueEhdeD7kUZuhkwI4NOInabQb2j44SzdR8oFz
+         kN9jYDBWCYlikwF3dcH+1G0tVmBsOf+zDApag2VJ1KxCMIduxIE2cYih7TKDMY1vfazR
+         Rht1fXQpxO/MLbRCvJoypAWuqNuctzZgc8dRYsZ8SOHqkxJJTlGgEwR05wC5VM7hukJe
+         7/Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ysNfuXl1HWktNtOSEF03F01sMlIv53eUMXjaR2LS9EI=;
-        b=tFNlhNbK2X8H5hSmwGdt/O138rDhw1Am+IlDmCh2ccRW6+pU3Lzr9L1cagkOEZFNe+
-         BiBmdez8jJM7buujx5rJTBpru2F2wgGh47bf9XGCAZxs2wKTyQeb+KzKPzLYxWfO3fcR
-         gOdezfEcFwJlIbNk8SLd6ps4YK76nSjjT3up7qhqDt8qfngPHEFiWaxPwpAhSTN3B6Dg
-         hP9r7A/ajLLdbwmhYlcdkZNPKEwa3nObGtGdr8hr71yz0n1LDbIRAnlPYXFW2VzgIzF/
-         P0An4cw2IdyjHrHIPgBL/HWrM9fZ3wo0EI3pIS6UYMQAk4g9VNSF7oz2IRmQgqtZ+OxC
-         fLfw==
-X-Gm-Message-State: AOAM5305rLFZhaKmwuKPm/18Snx2fyQ6JtRIrjeCc6u0keJBNHTNLiQW
-        cRNAdseEqewDG2/EyAJCVpaYdbpqQtk=
-X-Google-Smtp-Source: ABdhPJym2LnHEd0GiuOeqwhiDRZsx3z9TI7/b3Dza6Owd2Zidjuvp+sEWx+V9mNAlY7NSLLxpA+Iaw==
-X-Received: by 2002:a0c:914f:: with SMTP id q73mr2935533qvq.39.1632788552978;
-        Mon, 27 Sep 2021 17:22:32 -0700 (PDT)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:1ce2:35c5:917e:20d7])
-        by smtp.gmail.com with ESMTPSA id 31sm5672308qtb.85.2021.09.27.17.22.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 17:22:32 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Yucong Sun <sunyucong@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Cong Wang <cong.wang@bytedance.com>
-Subject: [Patch bpf v2 4/4] selftests/bpf: use recv_timeout() instead of retries
-Date:   Mon, 27 Sep 2021 17:22:12 -0700
-Message-Id: <20210928002212.14498-5-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210928002212.14498-1-xiyou.wangcong@gmail.com>
-References: <20210928002212.14498-1-xiyou.wangcong@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dw10IWq1uMSILzLDi3+eQCW0s3zmx+S4kDdngtWi4n4=;
+        b=tlxCrWvs4lZKV1aX2ALAs9sEhpeSR9i/PGKZLf4+zUbDMn/TFBJKntrYa+T8bXqNTA
+         W7/JGdbKdA0T9beK7TClXS/c6t4W2JjrhAYVmclTtItrO6eIpwMZXKew4/nJAVDV+1h+
+         EOYCXGpXa4WqUqLYpEuhIl3U7TXFP1OCU5X2mPsVlGOqPGZ1VlZcVsGFD3wcokiVNuwI
+         TxrIc2VQODLcG2867Z4iaHpRgH04Eh+qyZefCwKP/AYEJFZbbYMgPAxKSvjG1/NbTho9
+         8QIkMozdBCydENmRWIC4eskq05IYNQaxPJ+r7foOiwgbAvLYL8xSNpVEHyGM3WIPvWto
+         zoZQ==
+X-Gm-Message-State: AOAM533JRcTuKEBN5Fft5dq0fhhpwfvO3i2bfj83iYYEO5h/O0hxoDqN
+        CV9x0HTR8WvNTh3Uw/FyQwHis4zDF6go4UouniqaW1Kjk0E=
+X-Google-Smtp-Source: ABdhPJw0slvSPMV8Np96irYyT7pNTXMmuEc+T5BucfJrOxnnNYsdr96aTowBXLm1W2zvXv1FehMuoMKyWLlQ2OOrlVs=
+X-Received: by 2002:a25:7c42:: with SMTP id x63mr3566816ybc.225.1632789371705;
+ Mon, 27 Sep 2021 17:36:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAEf4BzYstaeBBOPsA+stMOmZ+oBh384E2sY7P8GOtsZFfN=g0w@mail.gmail.com>
+ <20210923194233.og5pamu6g7xfnsmp@kafai-mbp> <20210923203046.a3fsogdl37mw56kp@ast-mbp>
+ <CAEf4BzZJLFxD=v-NvX+MUjrtJHnO9H1C66ymgWFO-ZM39UBonA@mail.gmail.com>
+ <7957a053-8b98-1e09-26c8-882df6920e6e@fb.com> <CAEf4BzYx22q5HFEqQ6q5Y0LcambUBDb+-YggbwiLDU86QBYvWA@mail.gmail.com>
+ <118c7f22-f710-581f-b87e-ee07aced429a@fb.com> <CAEf4BzZ1BXyTWmLpfqoGOms02_bwQDgBgEd9LkUM_+uDZJo1Og@mail.gmail.com>
+ <20210927164110.gg33uypguty45huk@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4Bzb7bASQ3jXJ3JiKBinnb4ct9Y5pAhn-eVsdCY7rRus8Fg@mail.gmail.com> <20210927235144.7xp3ngebl67egc6a@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210927235144.7xp3ngebl67egc6a@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Sep 2021 17:36:00 -0700
+Message-ID: <CAEf4BzY=yrSZFJ_dgeS5MSn+pTR+Y9d4am2v+Uby-TBGn4i+Cg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Joanne Koong <joannekoong@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yucong Sun <sunyucong@gmail.com>
+On Mon, Sep 27, 2021 at 4:51 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Sep 27, 2021 at 02:14:09PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Sep 27, 2021 at 9:41 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Sep 24, 2021 at 04:12:11PM -0700, Andrii Nakryiko wrote:
+> > > >
+> > > > That's not what I proposed. So let's say somewhere in the kernel we
+> > > > have this variable:
+> > > >
+> > > > static int bpf_bloom_exists = 1;
+> > > >
+> > > > Now, for bpf_map_lookup_elem() helper we pass data as key pointer. If
+> > > > all its hashed bits are set in Bloom filter (it "exists"), we return
+> > > > &bpf_bloom_exists. So it's not a NULL pointer.
+> > >
+> > > imo that's too much of a hack.
+> >
+> > too bad, because this feels pretty natural in BPF code:
+> >
+> > int my_key = 1234;
+> >
+> > if (bpf_map_lookup_elem(&my_bloom_filter, &my_key)) {
+> >     /* handle "maybe exists" */
+> > } else {
+> >     /* handle "definitely doesn't exist" */
+> > }
+>
+> I don't think it fits bitset map.
+> In the bitset the value is zero or one. It always exist.
+> If bloomfilter is not a special map and instead implemented on top of
+> generic bitset with a plain loop in a bpf program then
+> push -> bit_set
+> pop -> bit_clear
+> peek -> bit_test
+> would be a better fit for bitset map.
+>
+> bpf_map_pop_elem() and peek_elem() don't have 'flags' argument.
+> In most cases that would be a blocker,
+> but in this case we can add:
+> .arg3_type      = ARG_ANYTHING
+> and ignore it in case of stack/queue.
+> While bitset could use the flags as an additional seed into the hash.
+> So to do a bloomfilter the bpf prog would do:
+> for (i = 0; i < 5; i++)
+>    if (bpf_map_peek_elem(map, &value, conver_i_to_seed(i)))
 
-We use non-blocking sockets in those tests, retrying for
-EAGAIN is ugly because there is no upper bound for the packet
-arrival time, at least in theory. After we fix poll() on
-sockmap sockets, now we can switch to select()+recv().
+I think I'm getting lost in the whole unified bitset + bloom filter
+design, tbh. In this case, why would you pass the seed to peek()? And
+what is value here? Is that the value (N bytes) or the bit index (4
+bytes?)? I assumed that once we have a hashing helper and a bitset
+map, you'd use that and seed to calculate bit index. But now I'm
+confused about what this peek operation is doing. I'm sorry if I'm
+just slow.
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Yucong Sun <sunyucong@gmail.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c | 75 +++++--------------
- 1 file changed, 20 insertions(+), 55 deletions(-)
+Overall, I think I agree with Joanne that a separate dedicated Bloom
+filter map will have simpler and better usability. This bitset + bloom
+filter generalization seems to just create unnecessary confusion. I
+don't feel the need for bitset map even more than I didn't feel the
+need for Bloom filter, given it's even simpler data structure and is
+totally implementable on either global var array or
+BPF_MAP_TYPE_ARRAY, if map-in-map and dynamic sizing in mandatory.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 5c5979046523..d88bb65b74cc 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -949,7 +949,6 @@ static void redir_to_connected(int family, int sotype, int sock_mapfd,
- 	int err, n;
- 	u32 key;
- 	char b;
--	int retries = 100;
- 
- 	zero_verdict_count(verd_mapfd);
- 
-@@ -1002,17 +1001,11 @@ static void redir_to_connected(int family, int sotype, int sock_mapfd,
- 		goto close_peer1;
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
--again:
--	n = read(c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close_peer1:
- 	xclose(p1);
-@@ -1571,7 +1564,6 @@ static void unix_redir_to_connected(int sotype, int sock_mapfd,
- 	const char *log_prefix = redir_mode_str(mode);
- 	int c0, c1, p0, p1;
- 	unsigned int pass;
--	int retries = 100;
- 	int err, n;
- 	int sfd[2];
- 	u32 key;
-@@ -1606,17 +1598,11 @@ static void unix_redir_to_connected(int sotype, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close:
- 	xclose(c1);
-@@ -1748,7 +1734,6 @@ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
- 	const char *log_prefix = redir_mode_str(mode);
- 	int c0, c1, p0, p1;
- 	unsigned int pass;
--	int retries = 100;
- 	int err, n;
- 	u32 key;
- 	char b;
-@@ -1781,17 +1766,11 @@ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close_cli1:
- 	xclose(c1);
-@@ -1841,7 +1820,6 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	const char *log_prefix = redir_mode_str(mode);
- 	int c0, c1, p0, p1;
- 	unsigned int pass;
--	int retries = 100;
- 	int err, n;
- 	int sfd[2];
- 	u32 key;
-@@ -1876,17 +1854,11 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close_cli1:
- 	xclose(c1);
-@@ -1932,7 +1904,6 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 	int sfd[2];
- 	u32 key;
- 	char b;
--	int retries = 100;
- 
- 	zero_verdict_count(verd_mapfd);
- 
-@@ -1963,17 +1934,11 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close:
- 	xclose(c1);
--- 
-2.30.2
+But given we are converging on having a new map, maybe let's do just a
+Bloom filter map with the tweaks we discussed in this thread for
+map_extra and max_entries?
 
+>
+> Probably would still be an improvement to add:
+> static inline long bpf_bit_test(void *map, void *value, long flags)
+> {
+>     return bpf_map_peek_elem(map, value, flags);
+> }
+> to some header file.
+>
+> Or maybe bloomfilter and the loop can be a flavor of bitset map and
+> done inside the helper to spare bpf programmers doing the manual loops.
+> Or such loop could be another static inline function in a header file?
