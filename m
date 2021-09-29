@@ -2,164 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F0041CA34
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 18:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D725841CA4B
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 18:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345476AbhI2QhT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 12:37:19 -0400
-Received: from mga12.intel.com ([192.55.52.136]:38167 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344682AbhI2QhT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:37:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="204471995"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="204471995"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 09:35:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="538914208"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Sep 2021 09:35:37 -0700
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 29 Sep 2021 09:35:37 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 29 Sep 2021 09:35:37 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Wed, 29 Sep 2021 09:35:36 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Wed, 29 Sep 2021 09:35:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GG2oK6iZyudRnonKb4hJdYKN8kv3qVQKVAOEkTFLPsx6EUdyo48z9tDdINsMgCwQ5Ixnf472NM7KKU5r4fGoSsHOK+wKvIahZGYdXSMcK16eK0Pw5f4HBiHt4/fe7HWTY6FypN2fgLokTGVu2YqEmrDJ1JQURaZ5G8RlPfFizM+C6wW1wscxneurrPjjjKqjZfe5sD47n8tz8pzj51bWEbqwyanH+ZfYY2aCSs6D09o4gCPq20+hWICWCl8kog+XCm19wsxOZMTKJDOGM2nls7grdXmKRg1gALMQrdJTOkZD/8qsApAtQzNh++NKdy2GS2Cp9slyI2vhk64m74QNBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=XsY5pHvtmQwXp6ce0V/VEpwAluy49WcsMikITLz9Ots=;
- b=P25ETFa1QiMorV5XTmc50QZcP0Tpbb6JAAowopjvl5hUXEuVbPsAFo0mtxM8kMzbIXpWLf6RY9UMoHvPana/2hxaYwlGNn19R9jRYK+m2KdKqqgFLcDw4KkLlM6kVCIEC9em6Bp6cCxmbu856SyBaFMLmV1Fp8r55xGjmMWgPhuah0jtLq2dg8hwuTxVbNx9LzSrHtnMqkZ1b2O0Qc3lXBwe+8XI+xce6h7dpYCcgmplwjrHSJzBcYqdP4vVqRADOI84qYYErRQ5OJr6qPay4cjBT0nFFLiWZdAPQW7krKvhg3ObL2LEw5o3F7R1BkfaIi+c+PQ3FsB7et2iI19vaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XsY5pHvtmQwXp6ce0V/VEpwAluy49WcsMikITLz9Ots=;
- b=QveQKSKhRWQ7FVWkZLdMzva9CBuaROdb01fn1fT+uLkA6j0NpF+KrbiZi/cbKajbI3M9zz9qd2sj4YCMC8Is1TUtHYJaxYaOUv/fkJwXi6SvcjpMMDB3YEHI/enL+U7G6UGcsCe8ynHvCX0i0zIjC4gO2LeOLIg4xlecZu3EadE=
-Received: from SJ0PR11MB4814.namprd11.prod.outlook.com (2603:10b6:a03:2d8::23)
- by SJ0PR11MB4928.namprd11.prod.outlook.com (2603:10b6:a03:2d2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Wed, 29 Sep
- 2021 16:35:35 +0000
-Received: from SJ0PR11MB4814.namprd11.prod.outlook.com
- ([fe80::9d2b:4020:9210:a7d]) by SJ0PR11MB4814.namprd11.prod.outlook.com
- ([fe80::9d2b:4020:9210:a7d%7]) with mapi id 15.20.4544.022; Wed, 29 Sep 2021
- 16:35:35 +0000
-From:   "Liang, Kan" <kan.liang@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
-CC:     Like Xu <like.xu.linux@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "like.xu@linux.intel.com" <like.xu@linux.intel.com>,
-        Andi Kleen <andi@firstfloor.org>
-Subject: RE: bpf_get_branch_snapshot on qemu-kvm
-Thread-Topic: bpf_get_branch_snapshot on qemu-kvm
-Thread-Index: AQHXtUsCll+d9db2OEyfPrzZnzZB7Ku7M+DQ
-Date:   Wed, 29 Sep 2021 16:35:35 +0000
-Message-ID: <SJ0PR11MB4814BBE6651FB9F8F05868FBE8A99@SJ0PR11MB4814.namprd11.prod.outlook.com>
-References: <0E5E6FCA-23ED-4CAA-ADEA-967430C62F6F@fb.com>
- <YVQXT5piFYa/SEY/@hirez.programming.kicks-ass.net>
- <d75f6a9a-dbb3-c725-c001-ec9bdd55173f@gmail.com>
- <YVRbX6vBgz+wYzZK@hirez.programming.kicks-ass.net>
- <C6DF009D-161A-4B17-88AE-3982DD6F22A2@fb.com>
- <YVSNV/1tFRGWIa6c@hirez.programming.kicks-ass.net>
-In-Reply-To: <YVSNV/1tFRGWIa6c@hirez.programming.kicks-ass.net>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dcf0fec3-64a3-491f-2230-08d9836729eb
-x-ms-traffictypediagnostic: SJ0PR11MB4928:
-x-microsoft-antispam-prvs: <SJ0PR11MB4928BC324655A0A64BEA81AAE8A99@SJ0PR11MB4928.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nOpMnIApeVboB9lKOBVyFOutbLgKwPRyig6pmhxdN3kATVUS4iaueJGIbTS3KLfzzl9ViSO8bEpxqoxjThxvZACj7YSdPDqWb3Nz5Lzj6yf11KwlxmoGJwZNvEqVTayshiIuP3ctP2sNykGjuS/y1p6RF7VFiq2dpCbIdX8PFZn9s3U6JH94rC/oMJ27ohbMmxf6h7iN3/7prthiIrT2YmC2nn0IaAXURJUkr3FOYyH6TQXZ3Ckd1qNx9A5OU/SHT+LA0YSDWUyqsNp4KAL0iH6aH1+Rl4MCZAF7vi6JWvuSXnG6tK8XQMF9MbzobREL/LDQICmQ0DYkP+ydqsTjCxK3uP3UhNqffEnihQZ3dxvVCqE7ICfplmPulMVtKsNd495zImOUzh+Jv8wK6MbrBjSyeDmaR2+2c6Vfkiq4OFfycFFXa/hImL1iZ/Z2sU3m2NbwcwVeHj7WUxy1b+qNmpsJtstwmuJvYivx26lmZ4XJ6jNA0OS4DgO6q1h0gu+ENX44KFUugJFR732z7wo1dRsrJ+diR+q2Ljvh8y/yXNh9Kb1FqU2iHziV4woDiITKJe2ANBKkQPvNk+9F4DAmS3hDblA4tQyNoWujFc0vPmshSs5cHcCP5F/hLjeiazEIdfm+XPBTyTRcZTS62ADTHBV2YB2n/yl7Z81Vnp4aMyT9vnYgBtkMFGWRrJ3ncwSJD1/wET2ca61J7EUd063ugQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB4814.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(5660300002)(54906003)(110136005)(8676002)(38070700005)(122000001)(316002)(83380400001)(4326008)(9686003)(8936002)(66446008)(64756008)(2906002)(76116006)(71200400001)(6506007)(55016002)(508600001)(26005)(7696005)(86362001)(52536014)(186003)(66946007)(66476007)(33656002)(66556008)(4744005)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4nobGvB+YVp2fTWj6+aW3HDwaa6MVRRg5POetsm5ERCWck10JGSK92mhkT77?=
- =?us-ascii?Q?NUZlzOQUo69JstgSlZIwpQQKPXDT896TWrASXHAGUfd4AEzQMg8ltaz844h2?=
- =?us-ascii?Q?Upmq/Opm5RPuwNW74BdDf/SIkV5CQgRcsUzyVmjh6V2FmzOB/0GdxmZ2DX4y?=
- =?us-ascii?Q?TQlx2AkHZZ1T5wZY8ziQc/v4SW2OJNbD2pRPRKcuOlc/xwjzY2xLeCX0Xogm?=
- =?us-ascii?Q?hgNunv4N/xJ8sl3zZPsX4lPUiRNvymbLmVNChOf8b0vAmA14DNzgfwbOJCM9?=
- =?us-ascii?Q?k//mIs/3vMuUgTVrZ8iQqFhgF07BPaZNM8oEgYH58f5ESQN8GKfINdPt8hEW?=
- =?us-ascii?Q?Ox7cJdrMI2cBB0MEdb0/zZDB09tIxjgUdN5/hIIRZA2Oith7xEvbnTqpAWBq?=
- =?us-ascii?Q?OluPHIoR3pbqmhij5mS8i/strxMEBBCk8qpjRPavae0XpSRQEi2xAjn1Twyh?=
- =?us-ascii?Q?B05SK5V1GKZDDypZOEFMQbFcmD6TS1F47mTSd1B3yMz0QKbebf4mRcv83GE2?=
- =?us-ascii?Q?DiOVe9lR7qTLDBx6siQWnlZdJbYHllrXjV8X+KSrGq/Gd0rxekL7+0vDtIQ9?=
- =?us-ascii?Q?am1GY7SNUu7j5IxS8HjuQ62AnIkCQGMjWVNrKP94CZjWLfFewehehk21r7Ii?=
- =?us-ascii?Q?ylDmZ5lAVeiU+k9NM3mRCJdCNU0o9DIFrS1gLUrEgvm7yrQroPDynGynGllh?=
- =?us-ascii?Q?+60cz0/E2eFWq3n3wuDtQkeS0JndmAnGn+iqUPmgwmF6o4wASl5EenMyPs+1?=
- =?us-ascii?Q?LjL1bRinAI6tkU6M5EH5dezkaVyKtzaRDD3SU42KaHVSMKK9T2UTN6PuYWeJ?=
- =?us-ascii?Q?+JiIuOQh1q63DJxmzWujSswG8Z/I+Rb0JANg3ZTuqnAsUM9sHA67ZB8KZ25J?=
- =?us-ascii?Q?OTRc2MuiaDcVK9cWQn7Lh/PeL2Is/XlhVUu8GKoPPrzYpaomFGDBbujBuyrP?=
- =?us-ascii?Q?bP/EEIuUhvP/P/IVQ+IMPc67HRijI1wBW59VmHSayX33r+MSjWDjqiJraZdE?=
- =?us-ascii?Q?L0L6ul7me8xU7oeLWzOBbCP4sBbhvTTQJpXg1x3VHLdBrjlN981SWlt3dlP1?=
- =?us-ascii?Q?Ib3Er5NONs3wgSIZTT5krGz3iUGg7P3BXGTQTD7kNTx0xP6sxyWLFceIt7P7?=
- =?us-ascii?Q?FPzY4xrv4c+W4+pofhc4JxONkYJRLwppFt1/PGN7n5jMt6JeCZmQzg1tSLgL?=
- =?us-ascii?Q?gbMAmmpMFSl81ufUCF8PeYwfTJBPGBZj3yc4uayyEaT4tSt5mgJuj+plLAjI?=
- =?us-ascii?Q?wIiU8vKpCZhBo9+xyCyNag0yXCJKPz5f7tO2qUGz9KSVDkF0Wtl08SN3VXPW?=
- =?us-ascii?Q?/gaNdARyh3nTpyoO8vr+kcd4?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1345726AbhI2Qjb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 12:39:31 -0400
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:40803 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344376AbhI2Qja (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:39:30 -0400
+Received: by mail-wm1-f49.google.com with SMTP id t16-20020a1c7710000000b003049690d882so5801777wmi.5
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 09:37:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version;
+        bh=7HWmNBFGfNvX7JA+ozWxmZr5Am5AfSoNXdLNCuKVPRU=;
+        b=FRMZkLJ9/r8bt+1tF2Xd4xZhnsmxbqiBiXpf5ZR4JtOxcrGMjmG8tdelScKcucC45K
+         q/nYzI5qQLKjUMvh7/IvEkSBycfsk4Qeevc1MA5DvHF98TMzmzDUZs7Pkl+YRJdU3bVx
+         WMf3UrWGW9QDWr8Ja25prmCAa/brZvweOYnRG1NgHXYrWbYjCr2zVbbuAfuUkE6JodQ4
+         TyT8gqZKExkY5k/z98RSovkrKO1x2WVQmrR/XGGsTr/i6p41+Ueq4oOW40ohUxP9Twoc
+         AvXjG1kFNk/G+Uc7qhoRLde2TUN6s+7CPv9GamnxCpjXfvxuEKnbQvf5Q8hDCCWwZjjd
+         qexA==
+X-Gm-Message-State: AOAM531INrgC01cnaEk3NajjheDWoFckNypQ0jC2bL8yPGyyaLzEwK6H
+        +1ID80vMlCZFkjh9j9BY6q61fXXp9eg=
+X-Google-Smtp-Source: ABdhPJxgIVBy7gRkyzCfLB6Jgo45dRMI5PAjEvUVD0jue25FMyfu4TNRD9PqSYzSvZTW921+MxZ51Q==
+X-Received: by 2002:a05:600c:198e:: with SMTP id t14mr992145wmq.124.1632933468522;
+        Wed, 29 Sep 2021 09:37:48 -0700 (PDT)
+Received: from localhost ([2a01:4b00:f41a:3600:360b:9754:2e3a:c344])
+        by smtp.gmail.com with ESMTPSA id i1sm362945wrb.93.2021.09.29.09.37.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 09:37:48 -0700 (PDT)
+Message-ID: <c3ac53d54a500e67e17272393e58e1c3c361bceb.camel@debian.org>
+Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
+ BSD-2-Clause
+From:   Luca Boccassi <bluca@debian.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 29 Sep 2021 17:37:46 +0100
+In-Reply-To: <a60b2164-2a4a-ac8b-c8a4-6e16497d620c@iogearbox.net>
+References: <20210923000540.47344-1-luca.boccassi@gmail.com>
+         <97ba65d49171c1a4eee34722d79b60e5732ce441.camel@debian.org>
+         <a60b2164-2a4a-ac8b-c8a4-6e16497d620c@iogearbox.net>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-SxW+loIF4OJlz2/nPESV"
+User-Agent: Evolution 3.38.3-1+plugin 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB4814.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcf0fec3-64a3-491f-2230-08d9836729eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 16:35:35.6945
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hl268Grd2irNFa/Uu5A3yN1hh1Fcw81HQhU2jTvnmLYFW3BlDA3R11MVoUT7iXbjwoktpj4ZeMfSaCy+NMGhqA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4928
-X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > > - get confirmation that clearing GLOBAL_CTRL is suffient to supress
-> > >   PEBS, in which case we can simply remove the PEBS_ENABLE clear.
-> >
-> > How should we confirm this? Can we run some tests for this? Or do we
-> > need hardware experts' input for this?
+
+--=-SxW+loIF4OJlz2/nPESV
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2021-09-29 at 18:10 +0200, Daniel Borkmann wrote:
+> On 9/29/21 6:06 PM, Luca Boccassi wrote:
+> [...]
+> > So as far as I understand, only your two acks are missing and then it's
+> > job done and we can go home!
 >=20
-> I'll put it on the list to ask the hardware people when I talk to them ne=
-xt. But
-> maybe Kan or Andi know without asking.
+> Already applied including both our ACKs.
+>=20
+> Thanks!
+> Daniel
 
-If the GLOBAL_CTRL is explicitly disabled, the counters do not count anymor=
-e.
-It doesn't matter if PEBS is enabled or not.=20
+Fantastic, thank you so much!
 
-See 6c1c07b33eb0 ("perf/x86/intel: Avoid unnecessary PEBS_ENABLE MSR
-access in PMI "). We optimized the PMU handler base on it.
+--=20
+Kind regards,
+Luca Boccassi
 
-Thanks,
-Kan
+--=-SxW+loIF4OJlz2/nPESV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmFUlloACgkQKGv37813
+JB7HnRAAzOw6razcywPEndhEZs4buwxdCTh8SGX5lJJ2bU+/3WgeUQwKFb+7mDCT
+RJCD2M6iP3rfsgGlLMGnl2byselaYifgvnTsnwahc6pkD5r0SsI0An5l6aD7RVic
+yC4x8f6imz6Se+MRdXmZSa4vNhewcuFrk/7MdRXaXPnqaqsnzPfV8gG4ew8idy0X
+c75ckCPnGqFphXaefgDV4Ok4yy17T0MOD8Fi7qBkebpLrlkXEB6iO/McN5ReQt4c
+WSbZY6VX5wKht7lcWvTL2hze+1TPI5O+jKVCZXfRQw++22CVWSaWexud1zkkv9xt
+qhGWjLh5htovYyTF0BNxFSh2GPBKrAML7+cu0W+RZ8b8NPdrR9qDOiXzoWBtgtJS
+bC2ErXXbcZQzh9/6uI6uPAeGD6zy3LvBc9+oGFUIAYBmemf34wR+AhnnC27W8+77
+b/WfPcyeL8/bSH8SYPuttOPeJE5bkMLekxEffGiRQ23IQLmyHwE4po5RkEiReC9J
+DQTm+1DxSIGW9maTF8vx+JytWBQ6Lao/V6TeWL2Zd9ob2LyDav5Po1n5Sbt235MP
+XOMt9XSA5q96Vo2czhHsXz4bJYhUE9UilkILcpEhI/KQwTJstRCR4YywXtHhH1lI
+vpB0xT8hxzhAs5aQBO/WydEXLQtLm1E/VRE3WqNxANo/g9Lg1RQ=
+=1iP0
+-----END PGP SIGNATURE-----
+
+--=-SxW+loIF4OJlz2/nPESV--
