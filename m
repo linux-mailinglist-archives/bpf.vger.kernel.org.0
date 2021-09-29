@@ -2,116 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7FC41C457
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 14:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1942A41C4AB
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 14:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244252AbhI2MMJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 08:12:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56135 "EHLO
+        id S1343791AbhI2M1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 08:27:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31512 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343604AbhI2MMI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Sep 2021 08:12:08 -0400
+        by vger.kernel.org with ESMTP id S1343718AbhI2M05 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Sep 2021 08:26:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632917427;
+        s=mimecast20190719; t=1632918316;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JGJx9+GEcsh8Sa0EqH93j5CL1Tgfyu1Cp7NkHrUPcaA=;
-        b=Bxk4sY6Io5YfN+AsxO2gHgFooh5kTYdAHWHnm7n6dx9pFdxcCiJwhxn+BzljWDm5mvsXer
-        oNUKoK8MLATbtEXKLiTjYaeqezPul+TckVItGJgW+n416N7TGqU7Y2o9qn6a+T4yqb6TdV
-        olK0A7ABn1vHAo5Z76+gb0+Usr0XsKU=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-pKTIGS11MkuvI0Vf_4ozFA-1; Wed, 29 Sep 2021 08:10:26 -0400
-X-MC-Unique: pKTIGS11MkuvI0Vf_4ozFA-1
-Received: by mail-ed1-f69.google.com with SMTP id w8-20020a50f108000000b003da70d30658so2190468edl.6
-        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 05:10:26 -0700 (PDT)
+        bh=uI/0WlYY8vMsj143/o4E79xg22XyarAwimk7GbeUUQs=;
+        b=dQSIl8XcXs+SAW90Ikfndd/YYh/G1n+ZESdyNsQvDMZMpSve9e3lCNMugoYfLeMjz2PG+O
+        M81lyttaoV42ypmvRmo9NPrkIOGOE7DHVF4eU5v46WGEcURXnxfEGIit9blel3rTqmnGL9
+        fszP/FF8vng7J+kJ0M3t06EX+9KIzfE=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-IScz73ojP-OpOeNHO-dYoA-1; Wed, 29 Sep 2021 08:25:13 -0400
+X-MC-Unique: IScz73ojP-OpOeNHO-dYoA-1
+Received: by mail-ed1-f72.google.com with SMTP id o23-20020a509b17000000b003da756cac0eso2161563edi.22
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 05:25:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=JGJx9+GEcsh8Sa0EqH93j5CL1Tgfyu1Cp7NkHrUPcaA=;
-        b=0noY7WdKZaMoL1kuzAs0l2APvNZrOzCL1djNwdLKxEWC+Hqe6tMAcuUratmbsobwPb
-         1apLXpmjKN4bAv1vsALTJBNJwa7V40eYG5QBiUpNtasotrfocg3NYdk5DR2lXVTJulgw
-         s1tNl5GmW1pHdwlltEVCX+tXK+UoGtgApqu8Uk+gSwLiJ5yUrDl/2deOrBLuAZVS4uqf
-         Dw2EW0RfcJvG3NH0NFm+GHNr2TCY66TV8q+IKYT9UTeCy73aHTH7+rx0I5k2y1empXu9
-         PCKw6eJndEBaLiGhwpoO5t7Qzkhm/dnCSuyfDNSsO4HIzrM/w5zjekw724M9hKMJIbwz
-         PRcw==
-X-Gm-Message-State: AOAM530qhfoxvWtzOwu9IzHjCXmeb7CFu4ZKO4naDdZXLphr76mr/NL+
-        arddq60OP2ckrXfIpDHShI0vLDhSTuC6aXnKTXTKJmz2eNhEQvZ7K+LUey/LVATAzq/eDAUcZ2I
-        /NvCyWT3azhSZ
-X-Received: by 2002:a17:907:2cf6:: with SMTP id hz22mr5322757ejc.134.1632917424099;
-        Wed, 29 Sep 2021 05:10:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPpDqTSeWGsUWByRJQs1K9NQSC40m5aQgUPc34G0IljFHUpy9DJBBHPPjCVfl2Bz6Lzwxc9g==
-X-Received: by 2002:a17:907:2cf6:: with SMTP id hz22mr5322550ejc.134.1632917421987;
-        Wed, 29 Sep 2021 05:10:21 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id o3sm1305946eji.108.2021.09.29.05.10.20
+         :message-id:mime-version:content-transfer-encoding;
+        bh=uI/0WlYY8vMsj143/o4E79xg22XyarAwimk7GbeUUQs=;
+        b=biI+wC4sbWs+X3sLtoOzHwxuk04feeQeiNEcZdOKMpgmI85DXUC5bBopZLcwF3eKiu
+         uyqmKqiPEBHRIebUoIAZLSYGYtrBaxPMzounDZAti5tgqPfYzPF7OSXNjDPKWxhjtF0v
+         2JJj1cxSptMaA49rEl/Z5+KlVed7KjC6LbPChbcFMp9rTimuHdCgi5NR8B3hVewdLADu
+         v/q7APPlaaT8S7lyMJi2Nwy/1fZriMsqDyD1paU3ZLVkJtakRg6T/PqvT+yyRkZyXGu5
+         HmKlPtTg1j5ZdoAKMwqckyTyEDoX2fiNJf/uDv3scLdrdVlMouwRC+wfvRZZlETP6qdN
+         P5yQ==
+X-Gm-Message-State: AOAM533dnDujhPpnB05PGH6b9nGJl5uk0HFjqKG9BcfhIDn/OE9shtbN
+        4L45DCoou098faGiJwxmkJkoDY+DBpb0eNA2835P0fezdWk0M3BzUA7zUolGn/eYUoTY3+u+anp
+        2JBCwEQABy+OF
+X-Received: by 2002:a17:906:c20d:: with SMTP id d13mr13420145ejz.259.1632918311737;
+        Wed, 29 Sep 2021 05:25:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw80ZOlpqn0F1UPIS55c47A5S38y4EDnGJD4pmAocG3NhaGW50rfnySxLwboHMIZfAY/U/YTQ==
+X-Received: by 2002:a17:906:c20d:: with SMTP id d13mr13420095ejz.259.1632918311455;
+        Wed, 29 Sep 2021 05:25:11 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id k17sm1334589ejk.68.2021.09.29.05.25.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 05:10:21 -0700 (PDT)
+        Wed, 29 Sep 2021 05:25:10 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7E9B218034F; Wed, 29 Sep 2021 14:10:20 +0200 (CEST)
+        id 450B718034F; Wed, 29 Sep 2021 14:25:09 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
         Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        John Fastabend <john.fastabend@gmail.com>,
         David Ahern <dsahern@kernel.org>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Eelco Chaudron <echaudro@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Alexander Duyck <alexander.duyck@gmail.com>,
         Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
         "Karlsson, Magnus" <magnus.karlsson@intel.com>,
         tirthendu.sarkar@intel.com
 Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer
  support
-In-Reply-To: <CACAyw9-8t8RpJgJUTd7u6bOLnJ1xQsgK7z37QrL9T1FUaJ7WNQ@mail.gmail.com>
+In-Reply-To: <CACAyw98tVmuRbMr5RpPY_0GmU_bQAH+d9=UoEx3u5g+nGSwfYQ@mail.gmail.com>
 References: <cover.1631289870.git.lorenzo@kernel.org>
  <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CACAyw9-8t8RpJgJUTd7u6bOLnJ1xQsgK7z37QrL9T1FUaJ7WNQ@mail.gmail.com>
+ <YUSrWiWh57Ys7UdB@lore-desk>
+ <20210917113310.4be9b586@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQL15NAqbswXedF0r2om8SOiMQE80OSjbyCA56s-B4y8zA@mail.gmail.com>
+ <20210917120053.1ec617c2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQKbrkOxfNoixUx-RLJEWULJLyhqjZ=M_X2cFG_APwNyCg@mail.gmail.com>
+ <614511bc3408b_8d5120862@john-XPS-13-9370.notmuch>
+ <8735q25ccg.fsf@toke.dk>
+ <20210920110216.4c54c9a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87lf3r3qrn.fsf@toke.dk>
+ <20210920142542.7b451b78@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87ilyu50kl.fsf@toke.dk>
+ <CACAyw98tVmuRbMr5RpPY_0GmU_bQAH+d9=UoEx3u5g+nGSwfYQ@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 29 Sep 2021 14:10:20 +0200
-Message-ID: <87v92jinv7.fsf@toke.dk>
+Date:   Wed, 29 Sep 2021 14:25:09 +0200
+Message-ID: <87sfxnin6i.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Lorenz Bauer <lmb@cloudflare.com> writes:
 
-> On Thu, 16 Sept 2021 at 18:47, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Mon, 20 Sept 2021 at 23:46, Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>> > The draft API was:
+>> >
+>> > void *xdp_mb_pointer_flush(struct xdp_buff *xdp_md, u32 flags,
+>> >                            u32 offset, u32 len, void *stack_buf)
+>> >
+>> > Which does not take the ptr returned by header_pointer(), but that's
+>> > easy to add (well, easy other than the fact it'd be the 6th arg).
 >>
->> Won't applications end up building something like skb_header_pointer()
->> based on bpf_xdp_adjust_data(), anyway? In which case why don't we
->> provide them what they need?
->>
->> say:
->>
->> void *xdp_mb_pointer(struct xdp_buff *xdp_md, u32 flags,
->>                      u32 offset, u32 len, void *stack_buf)
->>
->> flags and offset can be squashed into one u64 as needed. Helper returns
->> pointer to packet data, either real one or stack_buf. Verifier has to
->> be taught that the return value is NULL or a pointer which is safe with
->> offsets up to @len.
->>
->> If the reason for access is write we'd also need:
->>
->> void *xdp_mb_pointer_flush(struct xdp_buff *xdp_md, u32 flags,
->>                            u32 offset, u32 len, void *stack_buf)
+>> I guess we could play some trickery with stuffing offset/len/flags into
+>> one or two u64s to save an argument or two?
 >
-> Yes! This would be so much better than bpf_skb_load/store_bytes(),
-> especially if we can use it for both XDP and skb contexts as stated
-> elsewhere in this thread.
+> Adding another pointer arg seems really hard to explain as an API.
+> What happens if I pass the "wrong" ptr? What happens if I pass NULL?
+>
+> How about this: instead of taking stack_ptr, take the return value
+> from header_pointer as an argument.
 
-Alright. Let's see if we can go this route, then :)
+Hmm, that's a good point; I do think that passing the return value from
+header pointer is more natural as well (you're flushing pointer you just
+wrote to, after all).
+
+> Then use the already existing (right ;P) inlining to do the following:
+>
+>    if (md->ptr + args->off !=3D ret_ptr)
+>      __pointer_flush(...)
+
+The inlining is orthogonal, though, right? The helper can do this check
+whether or not it's a proper CALL or not (although obviously for
+performance reasons we do want it to inline, at least eventually). In
+particular, I believe we can make progress on this patch series without
+working out the inlining :)
+
+> This means that __pointer_flush has to deal with aliased memory
+> though, so it would always have to memmove. Probably OK for the "slow"
+> path?
+
+Erm, not sure what you mean here? Yeah, flushing is going to take longer
+if you ended up using the stack pointer instead of writing directly to
+the packet. That's kinda intrinsic? Or am I misunderstanding you?
 
 -Toke
 
