@@ -2,93 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B26441C9AA
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 18:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B336141C9A9
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 18:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345536AbhI2QIs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1345121AbhI2QIs (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 29 Sep 2021 12:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346365AbhI2QI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:33725 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346360AbhI2QI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 29 Sep 2021 12:08:29 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C345AC06176D;
-        Wed, 29 Sep 2021 08:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=66kcDX4j9SWeNVqC2qsyhHxLYpPMWSV88hcaCjXWkO0=; b=WIqdC8eCERWRWrKKbrN36grsgm
-        QLRTNAK03cxDdJQMKf3dnIo3j5MUjjvstJ42yTghzBEWoWc59AYfvWnCeNpMay/rvSiFviinH55UN
-        D0WPDDLLevQsWEe8F5Ggaq3gAyUFf8sUPMRQHByblE0pd9dpL2owgs+2RlbnRbVtkjeCi/BQVNSbS
-        ZIXZmVnLkol2Bu/XO1pJx/X+YxjUSeRxDw+Hu7zIloTFEn8xlxYH4m7hOHHmsbYFzKZoAWI/CGUj2
-        R4h++Iehj+Jm8XsCaC4DcHePTjylepdWeGJUx8k0Vculx06lwd7DqcxiZnyaTl9v15HxKPaou7tMD
-        3rvimdJA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVbzN-006jtL-0f; Wed, 29 Sep 2021 15:59:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1C0A8300056;
-        Wed, 29 Sep 2021 17:59:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0322A2C78F4FA; Wed, 29 Sep 2021 17:59:19 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 17:59:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Like Xu <like.xu.linux@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "like.xu@linux.intel.com" <like.xu@linux.intel.com>,
-        "Liang, Kan" <kan.liang@intel.com>,
-        Andi Kleen <andi@firstfloor.org>
-Subject: Re: bpf_get_branch_snapshot on qemu-kvm
-Message-ID: <YVSNV/1tFRGWIa6c@hirez.programming.kicks-ass.net>
-References: <0E5E6FCA-23ED-4CAA-ADEA-967430C62F6F@fb.com>
- <YVQXT5piFYa/SEY/@hirez.programming.kicks-ass.net>
- <d75f6a9a-dbb3-c725-c001-ec9bdd55173f@gmail.com>
- <YVRbX6vBgz+wYzZK@hirez.programming.kicks-ass.net>
- <C6DF009D-161A-4B17-88AE-3982DD6F22A2@fb.com>
+Received: by mail-wr1-f44.google.com with SMTP id t18so5260640wrb.0
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 09:06:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version;
+        bh=rgvI6kpnbp+4kyrVbxzC4brS5TMJKQkBVDyPJnhH13c=;
+        b=wcDzYe0wilZ4YvVd4espUE85fdzV8IlIzMEPficG+iMPLjY1nv3nMO22cqi7odYi6Z
+         CLOZdSuwuQtvn/R2b/JnGagaZL9+zxHMPhHNMharHbpbbvbn7b7ed5LLfYabEXRk8Qkg
+         +OkP/QNvERJs+wBZmtWbz4sHAemK6hsf6LOh1yapoPw0dVMkmYpQjATCsIjMbEm/Pekv
+         VKIXtmJSflkZXI7oHNq+mn2SCrivaPdgP930Oh1Lhb5LNn59TH/26OCJVeSvPf295Cbr
+         6bcBt29C1GDUk1g8iZtTstBurS3Qgl4mFbH4YNVtqfS2cFyC8pPbVvZTDe1+pBmOOHmx
+         X6LA==
+X-Gm-Message-State: AOAM533c1s5Olfcq5QX+SVRTnZ+FwZvHD98aGYkWB11wr7vFUydK/HgO
+        /aPE7ro1Wl8Uw3eUdi1Dv/pHfAxzHOU=
+X-Google-Smtp-Source: ABdhPJyw2ErlVILZLkKkqAoK5NSlKxXyZUMPV2zzNBBItDND5h4H4TF2rKAnaPpglttrpiQ+T2C8LA==
+X-Received: by 2002:a05:6000:1192:: with SMTP id g18mr771787wrx.63.1632931607550;
+        Wed, 29 Sep 2021 09:06:47 -0700 (PDT)
+Received: from localhost ([2a01:4b00:f41a:3600:360b:9754:2e3a:c344])
+        by smtp.gmail.com with ESMTPSA id o17sm308250wrj.96.2021.09.29.09.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 09:06:46 -0700 (PDT)
+Message-ID: <97ba65d49171c1a4eee34722d79b60e5732ce441.camel@debian.org>
+Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
+ BSD-2-Clause
+From:   Luca Boccassi <bluca@debian.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 29 Sep 2021 17:06:45 +0100
+In-Reply-To: <20210923000540.47344-1-luca.boccassi@gmail.com>
+References: <20210923000540.47344-1-luca.boccassi@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-5eDcg0qgApBN2L6k4jLU"
+User-Agent: Evolution 3.38.3-1+plugin 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C6DF009D-161A-4B17-88AE-3982DD6F22A2@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:42:27PM +0000, Song Liu wrote:
-> Hi Peter, 
-> 
-> > On Sep 29, 2021, at 5:26 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > On Wed, Sep 29, 2021 at 08:05:24PM +0800, Like Xu wrote:
-> >> On 29/9/2021 3:35 pm, Peter Zijlstra wrote:
-> > 
-> >>>> [  139.494159] unchecked MSR access error: WRMSR to 0x3f1 (tried to write 0x0000000000000000) at rIP: 0xffffffff81011a8b (intel_pmu_snapshot_branch_stack+0x3b/0xd0)
-> >> 
-> >> Uh, it uses a PEBS counter to sample or count, which is not yet upstream but
-> >> should be soon.
-> > 
-> > Ooh that's PEBS_ENABLE
-> > 
-> >> Song, can you try to fix bpf_get_branch_snapshot on a normal PMC counter,
-> >> or where is the src for bpf_get_branch_snapshot? I am more than happy to help.
-> > 
-> > Nah, all that code wants to do is disable PEBS... and virt being virt,
-> > it's all sorts of weird with f/m/s :/
-> > 
-> > I so hate all that. So there's two solutions:
-> > 
-> > - get confirmation that clearing GLOBAL_CTRL is suffient to supress
-> >   PEBS, in which case we can simply remove the PEBS_ENABLE clear.
-> 
-> How should we confirm this? Can we run some tests for this? Or do we
-> need hardware experts' input for this?
 
-I'll put it on the list to ask the hardware people when I talk to them
-next. But maybe Kan or Andi know without asking.
+--=-5eDcg0qgApBN2L6k4jLU
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2021-09-23 at 01:05 +0100, luca.boccassi@gmail.com wrote:
+> From: Luca Boccassi <bluca@debian.org>
+>=20
+> libbpf and bpftool have been dual-licensed to facilitate inclusion in
+> software that is not compatible with GPL2-only (ie: Apache2), but the
+> samples are still GPL2-only.
+>=20
+> Given these files are samples, they get naturally copied around. For exam=
+ple
+> it is the case for samples/bpf/bpf_insn.h which was copied into the syste=
+md
+> tree: https://github.com/systemd/systemd/blob/main/src/shared/linux/bpf_i=
+nsn.h
+>=20
+> Dual-license this header as GPL-2.0-only OR BSD-2-Clause to follow
+> the same licensing used by libbpf and bpftool:
+>=20
+> 1bc38b8ff6cc ("libbpf: relicense libbpf as LGPL-2.1 OR BSD-2-Clause")
+> 907b22365115 ("tools: bpftool: dual license all files")
+>=20
+> Signed-off-by: Luca Boccassi <bluca@debian.org>
+> ---
+> Most of systemd is (L)GPL2-or-later, which means there is no perceived
+> incompatibility with Apache2 softwares and can thus be linked with
+> OpenSSL 3.0. But given this GPL2-only header is included this is currentl=
+y
+> not possible.
+> Dual-licensing this header solves this problem for us as we are scoping
+> moving to OpenSSL 3.0, see:
+>=20
+> https://lists.freedesktop.org/archives/systemd-devel/2021-September/04688=
+2.html
+>=20
+> The authors of this file according to git log are:
+>=20
+> Alexei Starovoitov <ast@kernel.org>
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> Brendan Jackman <jackmanb@google.com>
+> Chenbo Feng <fengc@google.com>
+> Daniel Borkmann <daniel@iogearbox.net>
+> Daniel Mack <daniel@zonque.org>
+> Jakub Kicinski <jakub.kicinski@netronome.com>
+> Jiong Wang <jiong.wang@netronome.com>
+> Joe Stringer <joe@ovn.org>
+> Josef Bacik <jbacik@fb.com>
+>=20
+> (excludes a commit adding the SPDX header)
+>=20
+> All authors and maintainers are CC'ed. An Acked-by from everyone in the
+> above list of authors will be necessary.
+>=20
+> One could probably argue for relicensing all the samples/bpf/ files given=
+ both
+> libbpf and bpftool are, however the authors list would be much larger and=
+ thus
+> it would be much more difficult, so I'd really appreciate if this header =
+could
+> be handled first by itself, as it solves a real license incompatibility i=
+ssue
+> we are currently facing.
+>=20
+> =C2=A0samples/bpf/bpf_insn.h | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+> index aee04534483a..29c3bb6ad1cd 100644
+> --- a/samples/bpf/bpf_insn.h
+> +++ b/samples/bpf/bpf_insn.h
+> @@ -1,4 +1,4 @@
+> -/* SPDX-License-Identifier: GPL-2.0 */
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> =C2=A0/* eBPF instruction mini library */
+> =C2=A0#ifndef __BPF_INSN_H
+> =C2=A0#define __BPF_INSN_H
+
+Hello Alexei and Daniel,
+
+We got the following acks so far:
+
+Acked-by: Brendan Jackman <jackmanb@google.com>
+Acked-by: Chenbo Feng <fengc@google.com>
+Acked-by: Joe Stringer <joe@ovn.org>
+Acked-by: Simon Horman <simon.horman@corigine.com>
+Acked-by: Daniel Mack <daniel@zonque.org>
+Acked-by: Josef Bacik <josef@toxicpanda.com>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+
+Magnus covers Intel's portion, and Simon covers Netronome's portion.
+
+So as far as I understand, only your two acks are missing and then it's
+job done and we can go home!
+
+--=20
+Kind regards,
+Luca Boccassi
+
+--=-5eDcg0qgApBN2L6k4jLU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmFUjxUACgkQKGv37813
+JB4M9A//VqzDkGMdWW0M8NHrtE+FEDeAM1a/kFEeOumksc7NV7hV1/SUqUCh1yCH
+EbrtRwQXcNwtFWFZqO/1GhEQsL3aGpeLlOUt961UM+X7zgQtP9gLQH0A+757b/rL
+xKbv2QG2sb8aLq7tY/Vn8EHNVAN2rakPoXsDPW0oJnxAASlvol6W3OkHShPcYVOq
+vk5wCjXWLKRv7+SRyf0qCcCoHK1sc1vOBGqY/Ev7++X7t5s9GapDWMiQMwKt+HEx
+95QnfCt/llIg9kEfNGTOuhl2b5APWmrnn8joo9eLriCtNrExp8YxwPOFTvHNHphz
+mkpyf8cy+YURL99ScUeuX3Qr7pIhxS+PomJ7YQjD9LPckONWhUztvUouG3WtxBWB
+UlwPOKTH/96hH6/O23S4qXTfN84aPZaMLEQj6hAL/jbpBDy9AIKnOM9gDy6fuURT
+WtbnyVH8flv2ga2WaN2TWNQeKSg93i+/VZPBYeWOs8fUTFJqmOylSUDyIVcUFxIn
+JHcNFtKbV2B6lZQ+KksFn//P9ESKwwPreyiWBMknSuuXrBPNM5D9D2O4xLVrlSg3
+u67R6SyMMGo6U97WVoHP0xV90VMH6AZG2o3BUeN5gSpft/4mv+MYokCTYLaxFo1b
+i3BuOqfQ2okCTkeyWLWH8/jXb8Sm5cxOMlHHDEEth6Pi+BGeSyM=
+=vR6D
+-----END PGP SIGNATURE-----
+
+--=-5eDcg0qgApBN2L6k4jLU--
