@@ -2,124 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C7F41C370
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 13:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F6F41C393
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 13:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244336AbhI2L3B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 07:29:01 -0400
-Received: from mail-wm1-f41.google.com ([209.85.128.41]:34379 "EHLO
-        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhI2L3B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:29:01 -0400
-Received: by mail-wm1-f41.google.com with SMTP id r11-20020a1c440b000000b0030cf0f01fbaso3610279wma.1
-        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 04:27:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=8MXT4khhcGqSMpn2WZtc1mqCkTlBv8y0jVw1bIIckQc=;
-        b=2OexHh+Pzq1lY8Vg5GW8uEq9r4QrC2cAWqe00+goHCfiGkUOR73X9SKNRhQKS5X5VW
-         xYTbNK0YNepVIsKiEQt5DFBeEUBM6VXQ+OxAvY/ZctSC3qZLMamL6SJUYNuvBRc5tMi8
-         T/c9C/PhMrLgDSHO/GnWtrB0kb4GWnLQO18csv8P5FJlJxjAv87y+WTB1kOVQ3d6Q6jb
-         4mpY1Ak6Um3Zf7bDhgsAnvYImFPH5dLARmxzh1F+WK6oAKhUa8gVRUie+8VQ7A2xO10J
-         r16hcRoaMRmPCfQO8Ya54/8eBOIiz1uTEm2wiWZrL1k/fmEgmgQCDjlnX15gUglSk7GS
-         2nqQ==
-X-Gm-Message-State: AOAM531uBrTmVchkydhk5zXIMh1wFjWPiG4xioXllHzkYGLtPWxwoqaY
-        RK0mipCroexzDD0srfwbkQPh/W+k8bE=
-X-Google-Smtp-Source: ABdhPJwsG6KLCkYk+CZbSKgRGqUdSL8vwQSrBa5nOUj3dlS7DefbdrCiRNIWnbcQC9CTQyOmEOdHRQ==
-X-Received: by 2002:a1c:3b87:: with SMTP id i129mr9720097wma.115.1632914839390;
-        Wed, 29 Sep 2021 04:27:19 -0700 (PDT)
-Received: from localhost ([137.220.125.106])
-        by smtp.gmail.com with ESMTPSA id d7sm1984320wrh.13.2021.09.29.04.27.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 04:27:18 -0700 (PDT)
-Message-ID: <41c5f064898c6427b589ea86f6b538266b2ce8c6.camel@debian.org>
-Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
- BSD-2-Clause
-From:   Luca Boccassi <bluca@debian.org>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        "Mcnamara, John" <john.mcnamara@intel.com>
-Date:   Wed, 29 Sep 2021 12:27:17 +0100
-In-Reply-To: <CAJ8uoz3ammMczNQqFk0SDmTnFThV8U6Fy9YEB+wLkv4fZ5qxZA@mail.gmail.com>
-References: <20210923000540.47344-1-luca.boccassi@gmail.com>
-         <1aa77fde2f7f4637d9eae7807c5c55063d6a4066.camel@debian.org>
-         <CAJ+HfNjsJZx62ZnA9Gi-rCuL=yBVLKZke7J+ruQFHAAKarpk=g@mail.gmail.com>
-         <ed448659f66f2142151b34e6af9c98b46abdaaf0.camel@debian.org>
-         <CAJ8uoz3ammMczNQqFk0SDmTnFThV8U6Fy9YEB+wLkv4fZ5qxZA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-eO4ZpWy6jrYYElgYicWZ"
-User-Agent: Evolution 3.38.3-1+plugin 
+        id S229915AbhI2Lom (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 07:44:42 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38215 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhI2Lom (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 07:44:42 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HKDyW5N65z9sYm;
+        Wed, 29 Sep 2021 13:42:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6eT6i8EZsuyZ; Wed, 29 Sep 2021 13:42:59 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HKDyW46Zzz9sYh;
+        Wed, 29 Sep 2021 13:42:59 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 71C8F8B770;
+        Wed, 29 Sep 2021 13:42:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id X3ysY2qXm5OT; Wed, 29 Sep 2021 13:42:59 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 40B8C8B763;
+        Wed, 29 Sep 2021 13:42:59 +0200 (CEST)
+Subject: Re: [PATCH v4 3/8] bpf powerpc: refactor JIT compiler code
+To:     Hari Bathini <hbathini@linux.ibm.com>, naveen.n.rao@linux.ibm.com,
+        mpe@ellerman.id.au, ast@kernel.org, daniel@iogearbox.net
+Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210929111855.50254-1-hbathini@linux.ibm.com>
+ <20210929111855.50254-4-hbathini@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <0a0e6639-748c-5660-25af-98d82fd78c23@csgroup.eu>
+Date:   Wed, 29 Sep 2021 13:42:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210929111855.50254-4-hbathini@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---=-eO4ZpWy6jrYYElgYicWZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2021-09-29 at 13:26 +0200, Magnus Karlsson wrote:
-> On Wed, Sep 29, 2021 at 1:20 PM Luca Boccassi <bluca@debian.org> wrote:
-> >=20
-> > On Wed, 2021-09-29 at 13:01 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
-> > > On Tue, 28 Sept 2021 at 17:44, Luca Boccassi <bluca@debian.org> wrote=
-:
-> > > >=20
-> > >=20
-> > > [...]
-> > >=20
-> > > >=20
-> > > > Gentle ping. Bj=C3=B6rn and Joe, would be great to hear from you on=
- the
-> > > > above. TIA!
-> > > >=20
-> > >=20
-> > > Luca, apologies for the slow response. I'm no longer at Intel, and I'=
-m
-> > > not sure if an Intel-person needs to do anything? Magnus, do you know=
-?
-> > >=20
-> > > FWIW:
-> > > Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-> >=20
-> > No worries! Unless you had an arrangement in place that made you the
-> > copyright owner of that contribution (eg: it was done in spare time,
-> > etc), then yes we'd need an ack to the relicense from an intel.com
-> > email address to be above board.
->=20
-> Will this do?
->=20
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Le 29/09/2021 à 13:18, Hari Bathini a écrit :
+> Refactor powerpc LDX JITing code to simplify adding BPF_PROBE_MEM
+> support.
+> 
+> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
 
-Good enough for me, thank you!
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
---=20
-Kind regards,
-Luca Boccassi
-
---=-eO4ZpWy6jrYYElgYicWZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmFUTZUACgkQKGv37813
-JB6c3BAAsBfRxcT2XpTnvZUFxtjKNbIeGUIKb48O/rk2CwCOlRF6qnOwptpHlAdE
-fLiWdf2VUAbF/hznz7UIgWvIgplVCDW0fSDCF5q2et42yPB3Ywumsv3KoqdQifuK
-NWHM15NHE5myjd9qTzHWOycZYt+rNvZ9V9xxrLtpKJcHewFNun1hY4V2BPTSKg57
-Wtqdl7AwtIt0bf5E0e75vU4WUr1FzEwzd+mghdqRKD+YFq1VGvjrDzwFuGDxbo2l
-YpzPfwbgZCFNLHjSRViWfSK2SiiopL+aKce3YJpRSSkESXs7JjvA0DuiVDHF4nVa
-OESIRTIMFuISe3lL0oJ4QBkaUZ8Aqm0TUXuQreScjzCvdleysL2kMq4fn40f6H6K
-ERFZK/hAgwHAxxdZ8ZIxBgcCfjJ00ZkY0i2eseXge4i/QA7EyIbyeqKfbT9zMqfk
-niDBEaeIcqTZKg0Za9nLBa3PMEC2CM9YpAtoj565hJ1gI51DABYqs2KlvTxsGxyC
-p7qW//ImOg4/WfOYkBfe2RwwPJ5LYoWTq30xIJF9x7fKshOzc7ijaFchDIGWwDW/
-UgY5JIrL/0y+SP6E5DuYPjtr07ax+vpSh135I2Lvsr366OUuTHXsl0p8PJ69ziWL
-jxZK649uSz7tgVZXCeE/J5mZ0TQJZQjWHLFbykOyDANLeEqk92Y=
-=cAQY
------END PGP SIGNATURE-----
-
---=-eO4ZpWy6jrYYElgYicWZ--
+> ---
+> 
+> Changes in v4:
+> * Dropped the default case in the switch statement for bpf size.
+> * Dropped explicit fallthrough statement for empty switch cases.
+> 
+> 
+>   arch/powerpc/net/bpf_jit_comp32.c | 33 ++++++++++++++++++-------------
+>   arch/powerpc/net/bpf_jit_comp64.c | 31 +++++++++++++++++------------
+>   2 files changed, 37 insertions(+), 27 deletions(-)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+> index b60b59426a24..65a4d1ed97bf 100644
+> --- a/arch/powerpc/net/bpf_jit_comp32.c
+> +++ b/arch/powerpc/net/bpf_jit_comp32.c
+> @@ -282,6 +282,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		u32 src_reg = bpf_to_ppc(ctx, insn[i].src_reg);
+>   		u32 src_reg_h = src_reg - 1;
+>   		u32 tmp_reg = bpf_to_ppc(ctx, TMP_REG);
+> +		u32 size = BPF_SIZE(code);
+>   		s16 off = insn[i].off;
+>   		s32 imm = insn[i].imm;
+>   		bool func_addr_fixed;
+> @@ -810,23 +811,27 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		 * BPF_LDX
+>   		 */
+>   		case BPF_LDX | BPF_MEM | BPF_B: /* dst = *(u8 *)(ul) (src + off) */
+> -			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
+> -			if (!fp->aux->verifier_zext)
+> -				EMIT(PPC_RAW_LI(dst_reg_h, 0));
+> -			break;
+>   		case BPF_LDX | BPF_MEM | BPF_H: /* dst = *(u16 *)(ul) (src + off) */
+> -			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+> -			if (!fp->aux->verifier_zext)
+> -				EMIT(PPC_RAW_LI(dst_reg_h, 0));
+> -			break;
+>   		case BPF_LDX | BPF_MEM | BPF_W: /* dst = *(u32 *)(ul) (src + off) */
+> -			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+> -			if (!fp->aux->verifier_zext)
+> -				EMIT(PPC_RAW_LI(dst_reg_h, 0));
+> -			break;
+>   		case BPF_LDX | BPF_MEM | BPF_DW: /* dst = *(u64 *)(ul) (src + off) */
+> -			EMIT(PPC_RAW_LWZ(dst_reg_h, src_reg, off));
+> -			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off + 4));
+> +			switch (size) {
+> +			case BPF_B:
+> +				EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
+> +				break;
+> +			case BPF_H:
+> +				EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+> +				break;
+> +			case BPF_W:
+> +				EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+> +				break;
+> +			case BPF_DW:
+> +				EMIT(PPC_RAW_LWZ(dst_reg_h, src_reg, off));
+> +				EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off + 4));
+> +				break;
+> +			}
+> +
+> +			if (size != BPF_DW && !fp->aux->verifier_zext)
+> +				EMIT(PPC_RAW_LI(dst_reg_h, 0));
+>   			break;
+>   
+>   		/*
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 2a87da50d9a4..49e6e0b6e4d2 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -285,6 +285,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		u32 code = insn[i].code;
+>   		u32 dst_reg = b2p[insn[i].dst_reg];
+>   		u32 src_reg = b2p[insn[i].src_reg];
+> +		u32 size = BPF_SIZE(code);
+>   		s16 off = insn[i].off;
+>   		s32 imm = insn[i].imm;
+>   		bool func_addr_fixed;
+> @@ -716,25 +717,29 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		 */
+>   		/* dst = *(u8 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_B:
+> -			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
+> -			if (insn_is_zext(&insn[i + 1]))
+> -				addrs[++i] = ctx->idx * 4;
+> -			break;
+>   		/* dst = *(u16 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_H:
+> -			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+> -			if (insn_is_zext(&insn[i + 1]))
+> -				addrs[++i] = ctx->idx * 4;
+> -			break;
+>   		/* dst = *(u32 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_W:
+> -			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+> -			if (insn_is_zext(&insn[i + 1]))
+> -				addrs[++i] = ctx->idx * 4;
+> -			break;
+>   		/* dst = *(u64 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_DW:
+> -			PPC_BPF_LL(dst_reg, src_reg, off);
+> +			switch (size) {
+> +			case BPF_B:
+> +				EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
+> +				break;
+> +			case BPF_H:
+> +				EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+> +				break;
+> +			case BPF_W:
+> +				EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+> +				break;
+> +			case BPF_DW:
+> +				PPC_BPF_LL(dst_reg, src_reg, off);
+> +				break;
+> +			}
+> +
+> +			if (size != BPF_DW && insn_is_zext(&insn[i + 1]))
+> +				addrs[++i] = ctx->idx * 4;
+>   			break;
+>   
+>   		/*
+> 
