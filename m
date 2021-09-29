@@ -2,193 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C09A41CD21
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 22:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6B941CD37
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 22:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344400AbhI2UGu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 16:06:50 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21770 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343734AbhI2UGt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Sep 2021 16:06:49 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18THeZ1w024139;
-        Wed, 29 Sep 2021 13:05:08 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=LzdZYpjIJmIzwTRsqVfi0x7NICvR7ImaS9pD8QkWRao=;
- b=TDh9bga64fBR8BquYHrxrvGSo/foMCYlUvu0VTwVVGkromTpGxf5J523yKybwGBpfY1U
- cT+5KD+xy9Nxw8GN+rMpsgqGu+1+CzveA2nqiE+nr98GKGKTJYaGksMw/HM38SCd49fX
- Oxp7kBPNSF2p3lHkUQxB0yIgjsVJfwOtChg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bcvrh93ut-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 29 Sep 2021 13:05:08 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 29 Sep 2021 13:05:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gg0GbWyzxfT0mEuscZawADnSu4ipSRy11rIHJljL4hK4007Q/xU2yR4lj/VoW+nf2EWx6OxpPk131wVYBkwPoLadFokY1tnt+Oy4l1AhFQ5xCMD5sXe5TVB7clHm59zQuVEfZeA7fI04bcUeZfrYcjj9Scw6dr/6ZIDjfqDkvnqD9Tzow4VGX8D7urjojUs9DY+rr740VcHD8I5A2jmv/2DCIKUNhjW99xdH0o3MfHwwP4lHHP5fDecUBkOpwgqt4vZCJDEv4dIacIKylMJDuELk4zfqhf9211ZbTcn/h/PYpygzZkCQ8g2gX6iywWXRkcMqGGvqICEmm4zTxuSlsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=LzdZYpjIJmIzwTRsqVfi0x7NICvR7ImaS9pD8QkWRao=;
- b=BkyGXurWZ6uu+QpQjYzxxoOKlfNT1IR4viYOsLUH3V66GlX29kfFxSVTed2cy+ufFqhVAroAMxamwVcqKcmPh7SSGPHGLliGdmDB0Pd7UpKwbvnUcdj+q4YZEUS1IHD4ezdXpg2St0H2XsvQL2ELPkIj5TJqY6+OKxQjXzwwKkDkXkkU6bRQNHIzSn5DosW1guEEoYFn0W87XQcgEm1sOzpY89UvjB9/kV9UUX7SZ41+sj00VrNrxhG2nzIPXMON+476AjsHGgDg/bne/C12/OWZ7gi2Wll8CttaKXZgX8k+rouerFCRPy6h3JzUumlJeimVOLrkfqRhHT0zXeSRLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5094.namprd15.prod.outlook.com (2603:10b6:806:1dd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
- 2021 20:05:05 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
- 20:05:05 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     "Liang, Kan" <kan.liang@intel.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Like Xu <like.xu.linux@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "like.xu@linux.intel.com" <like.xu@linux.intel.com>,
-        "Andi Kleen" <andi@firstfloor.org>
-Subject: Re: bpf_get_branch_snapshot on qemu-kvm
-Thread-Topic: bpf_get_branch_snapshot on qemu-kvm
-Thread-Index: AQHXtMWNyKWclBi4s0iJww6HNTXDJ6u6n6yAgABLWQCAAAXKgIAAJheAgAAVeoCAAAoigIAAOogA
-Date:   Wed, 29 Sep 2021 20:05:05 +0000
-Message-ID: <0676194C-3ADF-4FF9-8655-2B15D54E72BE@fb.com>
-References: <0E5E6FCA-23ED-4CAA-ADEA-967430C62F6F@fb.com>
- <YVQXT5piFYa/SEY/@hirez.programming.kicks-ass.net>
- <d75f6a9a-dbb3-c725-c001-ec9bdd55173f@gmail.com>
- <YVRbX6vBgz+wYzZK@hirez.programming.kicks-ass.net>
- <C6DF009D-161A-4B17-88AE-3982DD6F22A2@fb.com>
- <YVSNV/1tFRGWIa6c@hirez.programming.kicks-ass.net>
- <SJ0PR11MB4814BBE6651FB9F8F05868FBE8A99@SJ0PR11MB4814.namprd11.prod.outlook.com>
-In-Reply-To: <SJ0PR11MB4814BBE6651FB9F8F05868FBE8A99@SJ0PR11MB4814.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 483be325-a705-484b-dde6-08d983846de0
-x-ms-traffictypediagnostic: SA1PR15MB5094:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA1PR15MB50945CF31894F9D4BD59CC20B3A99@SA1PR15MB5094.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZNTZ97zZS4Gfd564oHU0jYot9Te9Cj3NahydkVvCIQtHDqsa2icPRO4fXoA4C+ONr5PyX1Ia9JsM6ZBHx3oKUH2wiGs92mkWPcnOoiV7721zgvsPIokG1XYiShSpkyBNxjqG0lCjhedW+2zFnQ4CFsjAx5jhGNA4pMwBC9eDsek/SttmuiUrB7TT+pDV0cMSBeakNCDxnchvSzHdyw6eun1YWYiVBgi7O2TBY8cekF9lsWwkexKukU5EMASWGZZ6bGbZTmvSlCz6JEdYqu5kZFln42GKGqmcQ9MRJ5des07ML5XPNEzjg4FD+UPYyN0XPSi0oRIscNiVdzOUXYIs1mAcLsHvF3wBW8QkvWEQ4NrODCPwOIb5gq3oSWgHweZweBHAq64qsYPI2ncWqvIpTxtj+hA/PsmKusYij7Sr7vcuPAo1ZMNfMSXn3sFEk6Esy3EehJDjJFR9E3uFn6vO7duAJd6EaHYajBtDGJ9F2fE7cQewXVBfUdYHbbgioNLpaByPzrC4fb6uRkHspwNbe8Y93V/Da/bwbZf11k4efrGTHl0ctJTGrN3RWAqABH252OuMqa4MXn5xefpOAMSvTROqmfXKb1VtdQLYWeoQk5S8Bv7ImdpyZjxGoTX8jf8hgRoBCWTsEVKdPJJReiCritHSuDdDzYRUdOz12gr346zh6KSwU6UAE6Zg9EzJhAw3nXjGr4YotqE+pGS9GLjtklY256poVjjRVCrh0PuexDU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(76116006)(54906003)(4326008)(6512007)(38070700005)(122000001)(6486002)(38100700002)(8936002)(66446008)(66946007)(64756008)(2906002)(66556008)(66476007)(91956017)(5660300002)(53546011)(8676002)(6506007)(71200400001)(316002)(6916009)(86362001)(2616005)(83380400001)(33656002)(186003)(508600001)(36756003)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Mfg/yTDsw5ohyq81W4yzhSI9fi/ub2neu5BWxXLpfhm5ZG/tLbEjU/vG01ed?=
- =?us-ascii?Q?F/EiEJpvoMBJMDJqtKmsoY9/6Yga2kOIQ1VE+LK6IfxF4TVocAV4VmPoFQxS?=
- =?us-ascii?Q?Qgm+n6HxhiO4FZ6k9LmizGDTpGyQJYvJpDJVsqQrDtk76TvS7xulPrxeK2+C?=
- =?us-ascii?Q?fpegVodmrmrJ9N1F/eGE3bWWs6b5TD1iSAczlovP0PYaQaAIs0MwR0XpDoPB?=
- =?us-ascii?Q?eixnM66Y1CoYiJTl8bougzKe1XigDDZnnE2oJVylZmVLv3PG5Nmd9MxhUKcE?=
- =?us-ascii?Q?BYVTjjSRv/GOHNOkPitv7Fu5i4a3VW7H7hkM98AUvxyru1khZ+QzjKOFJuiv?=
- =?us-ascii?Q?WY/zE+KQJ1zJjYobcb9ZdF2gMcZrwrOZxSU6Bsgytde6BuStdVARWmQZpY7e?=
- =?us-ascii?Q?E1i0E7fRGhTXYerbBY6qnVaYlLAwszmWLz2Rva9sGLx2DptuRa254fce3cBe?=
- =?us-ascii?Q?bDWrkRSKa4MNMgPv2hIM+uEw44eJvtj+oKcfQ1UVvDtwPHkeyHhbDoJKZKPh?=
- =?us-ascii?Q?vfVeYNVF0prd134JmngYFxhoARngTNqYnFCd3YQ2f0Xy2Zecpjs8F4f8Ir93?=
- =?us-ascii?Q?p64SgDSzXG3uSESCDE5UZ8fmi3/iV9ViuDrKmLYC2PWYV/XZsUxWBbva/gVp?=
- =?us-ascii?Q?BExC7Y20TvSJt+WAQKNJiXcMIijhr6t3AGLmURuiZ9Uf+5jK3DOM1oVu/E8t?=
- =?us-ascii?Q?1thqND6702FQ5VNnbt5u8DK1PD7q/jnVZerR2Tw8w8cMcJOCjRX38m63KJ1r?=
- =?us-ascii?Q?9YI5KCuRaIBjZehjDHhm/1KMxf/iKD9oLfuIVGLpkTxHgRtHltTJYZtWyspb?=
- =?us-ascii?Q?dWtpIlmYGgqOxwAqrNsCO0v+uXYVLr5j/vNFYm9PULvTGiT0dTaE7RL04C8R?=
- =?us-ascii?Q?GxtZfwBvEJvFm4xkQ8BXrZFz+ca4eiBF0zrdGqiLY4RqjLg/90cD/wSatiYp?=
- =?us-ascii?Q?Gw1Gx+2sPGG49ReQqw3zhdzNI4DOFtwXDhDy6WEMnZgBXrrqrVRpEA7ycTUn?=
- =?us-ascii?Q?7a8yOqnm/czJVTSzftFGJKE3sd+zikxsFy0D2cLb0RpgaSfTyveE8S9j5Z9U?=
- =?us-ascii?Q?7hTOn/VRzTW4Z30h+UvRw3fFbdqb71sE7DvsTFd5dtFG2c4TWlg25yCVYePp?=
- =?us-ascii?Q?MAgpJmFY7978C9DlpScqJ9ndRgmuvVFxlFnJoKv+dRTQLigDGLykdbzmKffr?=
- =?us-ascii?Q?1PVV57BHkitzOAiT80RLpL3NJCP9gMDoPss55h4MD3ldEcAHsxV/9drBOdOr?=
- =?us-ascii?Q?HamJy7yH1woUdgwsZQwcCaSGuY+Eg6OcZ1aOICc5Ri6BaLemCsvkdBfVkrbL?=
- =?us-ascii?Q?S7Fz6sO1agekJ0hiHdKI7bYteIKDVhimxM0EWiklatPdrfxKGTPzkZo3E80b?=
- =?us-ascii?Q?SxHD6Ic=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EA91E404CD882E438045581BB0131642@namprd15.prod.outlook.com>
+        id S1346241AbhI2UND (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 16:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345863AbhI2UND (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 16:13:03 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436B9C06161C
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 13:11:21 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id x27so15756161lfu.5
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 13:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=rqnSG7v+IJdX0mhLBUQ0FklBOa0HgkbZHBEW5Ms8rEY=;
+        b=OOLuTGeKleRI5YYFO0je8UQUAQJDmUky/Dbu94taljq2IGZIrQbW2/9O+EaVaFN0Kn
+         s7ByCumRbVzrVxZiaZHqsvlkcmmcDbHAj+rN49Yy1tRzIhLIqySW5B7vXb/8W7UN7FZv
+         cPaD+GLOMu71InG1Z2QlfMHiiJNjoxw2xLYwmq2lwQszMs331yfu8xhK9HOX58ptX+KD
+         tHs5MiZr1OJt5jYbFhstuffeF89rWeC39x3epgIoduBGdsjuXWG6eYe5FTH7JRNYI6ql
+         5qcqBJTLLJEjM6bKr81nLk9CXSbfmv+nyPLfXE/sTJ9TJMtfTdcHbGBD/9nnurMqMH6A
+         1gfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=rqnSG7v+IJdX0mhLBUQ0FklBOa0HgkbZHBEW5Ms8rEY=;
+        b=pgetUZB43IMajNI2KO2vGVsd+d9mXWvuAOzDmFZX+0fdsaQgRu+SUiwmPJF6F35VnI
+         afdM4blaUPLTdBRD2MgY9i2n7yiL9pGbePET/7yKaVOquaiDBG+eyMB8f2JlYqTHYjom
+         VSV/srZ8O3azceR59djYCsSm3qJo21MaAGo3P38J2gXM/75+40khq6obEiNqhu2CjcSB
+         xY6YP6YHw/sbmFKIMAOg9CDoEnhxS1jwFw/k3j7seMNyi/+fAd8j6Max+bwvwymY53dG
+         4lTxvwKvBYDyRc4loaVeF46kl+VUcWTq0iqfA+W0k3QUvAjUD5+Ql5prWmPpo1xZOFyN
+         Ue2g==
+X-Gm-Message-State: AOAM530JurCzVF8zL/4hPqaOyIPqQMcv9B4nCDFL7JCeYfto0hCGJ1OI
+        X+w9eWb7oG5aeVBRD6ik8yvlGtvkpnMC/0kJjg+KGkcmhl4=
+X-Google-Smtp-Source: ABdhPJx+d95k08OyZy2qm5y3TBjJku4lMsI1F051ghSVrZHTDPkzlRpaLbunmOUoM9xSZodBj357MeRKe0Dnvx9XHjk=
+X-Received: by 2002:ac2:508b:: with SMTP id f11mr1612649lfm.239.1632946279066;
+ Wed, 29 Sep 2021 13:11:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 483be325-a705-484b-dde6-08d983846de0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 20:05:05.0846
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d3q4lqmEduAsTUl0oCXG2ICD0bMXUywW0rNXv10V7Zrb7qAzIfqyXSjxlbL/rkLE9tuOG4g1u/snpHTBaV2auw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5094
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 0-mVKuSQOE3p3lO2mAvzarOGPu5qMiG6
-X-Proofpoint-ORIG-GUID: 0-mVKuSQOE3p3lO2mAvzarOGPu5qMiG6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-29_08,2021-09-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- bulkscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- mlxlogscore=982 phishscore=0 lowpriorityscore=0 impostorscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109290117
-X-FB-Internal: deliver
+References: <CAJygYd1z-WCMYta2DCRJkqEi=DxNpVdKSBpTiUgYH5n3H4wmzg@mail.gmail.com>
+In-Reply-To: <CAJygYd1z-WCMYta2DCRJkqEi=DxNpVdKSBpTiUgYH5n3H4wmzg@mail.gmail.com>
+From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
+Date:   Wed, 29 Sep 2021 13:10:52 -0700
+Message-ID: <CAJygYd21wgH0FMV4SfhjXXLc3B-g4DYg9OdGSA3EWBiawuP9xA@mail.gmail.com>
+Subject: Re: kernel panic while running bpf selftests
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kan,
+My observation is that this could be triggered by running
+stacktrace_build_id_nmi together with other tests, that suggests some
+bpf/skb code is not handling NMI correctly.
 
-> On Sep 29, 2021, at 9:35 AM, Liang, Kan <kan.liang@intel.com> wrote:
-> 
->>>> - get confirmation that clearing GLOBAL_CTRL is suffient to supress
->>>>  PEBS, in which case we can simply remove the PEBS_ENABLE clear.
->>> 
->>> How should we confirm this? Can we run some tests for this? Or do we
->>> need hardware experts' input for this?
->> 
->> I'll put it on the list to ask the hardware people when I talk to them next. But
->> maybe Kan or Andi know without asking.
-> 
-> If the GLOBAL_CTRL is explicitly disabled, the counters do not count anymore.
-> It doesn't matter if PEBS is enabled or not. 
-> 
-> See 6c1c07b33eb0 ("perf/x86/intel: Avoid unnecessary PEBS_ENABLE MSR
-> access in PMI "). We optimized the PMU handler base on it.
-
-Thanks for these information!
-
-IIUC, all we need is the following on top of bpf-next/master:
-
-diff --git i/arch/x86/events/intel/core.c w/arch/x86/events/intel/core.c
-index 1248fc1937f82..d0d357e7d6f21 100644
---- i/arch/x86/events/intel/core.c
-+++ w/arch/x86/events/intel/core.c
-@@ -2209,7 +2209,6 @@ intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int
-        /* must not have branches... */
-        local_irq_save(flags);
-        __intel_pmu_disable_all(false); /* we don't care about BTS */
--       __intel_pmu_pebs_disable_all();
-        __intel_pmu_lbr_disable();
-        /*            ... until here */
-        return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
-@@ -2223,7 +2222,6 @@ intel_pmu_snapshot_arch_branch_stack(struct perf_branch_entry *entries, unsigned
-        /* must not have branches... */
-        local_irq_save(flags);
-        __intel_pmu_disable_all(false); /* we don't care about BTS */
--       __intel_pmu_pebs_disable_all();
-        __intel_pmu_arch_lbr_disable();
-        /*            ... until here */
-        return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
-
-
-In the test, this does eliminate the warning. 
-
-Thanks,
-Song
+On Wed, Sep 29, 2021 at 12:23 PM sunyucong@gmail.com
+<sunyucong@gmail.com> wrote:
+>
+> Hi, this has come up a few times while running selftests and seems
+> real enough to warrant investigation.
+>
+> Thanks!
+>
+> [    3.680829] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [    3.681300] CPU: 2 PID: 189 Comm: test_progs Tainted: G           O
+>      5.15.0-rc1-00386-g92da3969a45c-dirty #17
+> [    3.682213] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> [    3.683005] RIP: 0010:bpf_prog_a554d890de36669a_trace_kfree_skb+0xa4/0x9c4
+> [    3.683610] Code: f6 75 04 31 f6 eb 04 49 8b 76 08 48 89 75 d0 48
+> 85 ff 75 05 45 31 ed eb 07 44 8b af d0 00 00 00 44 89 6d f0 48 85 c9
+> 75 04 31 <ff> eb 05 48 0f b6 79 08 89 7d e8 40 88 7d f8 48 85 c9 75 04
+> 31 ff
+> [    3.685251] RSP: 0018:ffffc9000015cca0 EFLAGS: 00010206
+> [    3.685714] RAX: 0000000000000133 RBX: ffff888100970600 RCX: ffff888081af4310
+> [    3.686328] RDX: ffffffff81183d10 RSI: 0000000000000000 RDI: 0101000180000300
+> [    3.686971] RBP: ffff888100970600 R08: 0000000000000050 R09: 2914518100000000
+> [    3.687588] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888108668d00
+> [    3.688217] R13: 0000000000000000 R14: 0000000000000000 R15: ffff88810634002c
+> [    3.688836] FS:  00007f7f204c1740(0000) GS:ffff88813ba80000(0000)
+> knlGS:0000000000000000
+> [    3.689552] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    3.690057] CR2: 00007f7f204bfef8 CR3: 0000000103bd0001 CR4: 0000000000370ee0
+> [    3.690663] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [    3.691243] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [    3.691783] Call Trace:
+> [    3.691982]  <IRQ>
+> [    3.692143]  ? bpf_trace_run2+0x75/0x150
+> [    3.692450]  ? udp_read_sock+0x41/0xb0
+> [    3.692744]  ? kfree_skb+0x7e/0x120
+> [    3.693029]  ? udp_read_sock+0x41/0xb0
+> [    3.693333]  ? sk_psock_verdict_data_ready+0x4c/0x60
+> [    3.693754]  ? __udp_enqueue_schedule_skb+0x161/0x260
+> [    3.694191]  ? udp_queue_rcv_one_skb+0x330/0x590
+> [    3.694593]  ? udp_unicast_rcv_skb.isra.0+0x6b/0x80
+> [    3.695017]  ? ip_protocol_deliver_rcu+0x2a/0x290
+> [    3.695416]  ? ip_local_deliver_finish+0x83/0x120
+> [    3.695797]  ? ip_local_deliver+0x5e/0x200
+> [    3.696153]  ? ip_rcv+0x44/0x1e0
+> [    3.696436]  ? lock_acquire+0xc6/0x2c0
+> [    3.696767]  ? __netif_receive_skb_one_core+0x45/0x50
+> [    3.697207]  ? process_backlog+0xcc/0x220
+> [    3.697562]  ? __napi_poll+0x26/0x1d0
+> [    3.697883]  ? net_rx_action+0xdd/0x200
+> [    3.698223]  ? __do_softirq+0xd9/0x488
+> [    3.698545]  ? ip_finish_output2+0x236/0x960
+> [    3.698913]  ? do_softirq+0xa2/0xd0
+> [    3.699225]  </IRQ>
+> [    3.699414]  ? __local_bh_enable_ip+0xc4/0xe0
+> [    3.699782]  ? ip_finish_output2+0x25a/0x960
+> [    3.700152]  ? ip_output+0x6f/0x230
+> [    3.700460]  ? ip_output+0x6f/0x230
+> [    3.700760]  ? __ip_finish_output+0x450/0x450
+> [    3.701142]  ? ip_send_skb+0x15/0x40
+> [    3.701460]  ? udp_send_skb.isra.0+0x156/0x390
+> [    3.701840]  ? udp_sendmsg+0xa2c/0xd30
+> [    3.702173]  ? ip_reply_glue_bits+0x40/0x40
+> [    3.702526]  ? __lock_acquire+0x378/0x2730
+> [    3.702876]  ? lock_is_held_type+0xd5/0x130
+> [    3.703250]  ? sock_sendmsg+0x33/0x40
+> [    3.703570]  ? sock_sendmsg+0x33/0x40
+> [    3.703888]  ? sock_write_iter+0x95/0xf0
+> [    3.704239]  ? new_sync_write+0x172/0x180
+> [    3.704589]  ? vfs_write+0x25e/0x3d0
+> [    3.704902]  ? ksys_write+0x93/0xd0
+> [    3.705212]  ? do_syscall_64+0x35/0x80
+> [    3.705534]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [    3.705989] Modules linked in: bpf_testmod(O)
+> [    3.706368] ---[ end trace 8c7957c205f7cff3 ]---
+> [    3.706753] RIP: 0010:bpf_prog_a554d890de36669a_trace_kfree_skb+0xa4/0x9c4
+> [    3.707328] Code: f6 75 04 31 f6 eb 04 49 8b 76 08 48 89 75 d0 48
+> 85 ff 75 05 45 31 ed eb 07 44 8b af d0 00 00 00 44 89 6d f0 48 85 c9
+> 75 04 31 <ff> eb 05 48 0f b6 79 08 89 7d e8 40 88 7d f8 48 85 c9 75 04
+> 31 ff
+> [    3.708914] RSP: 0018:ffffc9000015cca0 EFLAGS: 00010206
+> [    3.709374] RAX: 0000000000000133 RBX: ffff888100970600 RCX: ffff888081af4310
+> [    3.710005] RDX: ffffffff81183d10 RSI: 0000000000000000 RDI: 0101000180000300
+> [    3.710603] RBP: ffff888100970600 R08: 0000000000000050 R09: 2914518100000000
+> [    3.711205] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888108668d00
+> [    3.711807] R13: 0000000000000000 R14: 0000000000000000 R15: ffff88810634002c
+> [    3.712420] FS:  00007f7f204c1740(0000) GS:ffff88813ba80000(0000)
+> knlGS:0000000000000000
+> [    3.713121] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    3.713614] CR2: 00007f7f204bfef8 CR3: 0000000103bd0001 CR4: 0000000000370ee0
+> [    3.714224] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [    3.714825] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [    3.715444] Kernel panic - not syncing: Fatal exception in interrupt
+> [    3.716269] Kernel Offset: disabled
+> [    3.716582] ---[ end Kernel panic - not syncing: Fatal exception in
+> interrupt ]---
