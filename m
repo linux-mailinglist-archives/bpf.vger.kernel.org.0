@@ -2,101 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A2D41BF07
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 08:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934D641BF17
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 08:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244213AbhI2GQO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 02:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S244320AbhI2GZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 02:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243585AbhI2GQM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:16:12 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771C9C06161C;
-        Tue, 28 Sep 2021 23:14:31 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id o19so930786wms.1;
-        Tue, 28 Sep 2021 23:14:31 -0700 (PDT)
+        with ESMTP id S244226AbhI2GZj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 02:25:39 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1585C061746
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 23:23:58 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id b82so3026119ybg.1
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 23:23:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XjH00ULnPvaaEhtogRY+O9xuuituLohfTkt4dqW/uYQ=;
-        b=XDxLNC+/BkMU+ukXAxTVk/47iebnulw5jsQWZpmYspvXM3I4rGVEijaZH9wB5yOiwM
-         fmrl0R4DW+WxfpVAxASbyB+N6xH0d5bUBepGI8bHqC33ANTcYYH3hifRPzj0kUsVzUHp
-         k3usFHh7crvjmsEAq3fyh6B395su83YP/TXyu3/1Jj6FrC7lKH1l92DVNDMAJuXfAn2q
-         2xOqDQRWpWkKeMPuZUwyq0vKekzVi4M1ktzm7fQkDhbYvL8t3Wfv9fCj2DIQz48DApqT
-         qCY6j3pPS7fOkxsuBx2JzNON80Rnkq7qp//gQGs7WWwuK/zY17DkhqqC14FOL2/YeOBi
-         uALg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=99Z30LtJUkiTe6vhO1kd8LoPj65Ld4vLFvR/mlhgocU=;
+        b=BwZCyQauknXbNlQ7Fcu2NexrrKt6rpP2s5z3Ixk4ryX6xWzIirWB9d3zmf31awldjq
+         AjbDL9nDJ4JaW1HHT0Nu/PP1oIUqc4q/LwT+x69SNHLzHscOvo/7+Z7NEvt6KLE3tDrG
+         CqTewETQStmuSb0RjeDE6mnwsyU/NxPzhs2NULDRJoeEs45X6P7qx4iepN3DZ26pazHV
+         b4jUGjYg8z8ms1PDeFw3zYOTpE9SSIW+FGNqr9fXk+ZUUAkb7XeQpG3+tnNVhL/YLY3o
+         LHJO8V1xbzP3J9NRl3/MP+R7hPQ5Dmme4WqQv/RJ7AQgaEmdDQb/gOxMFwbm+Xw2uyd1
+         NMDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XjH00ULnPvaaEhtogRY+O9xuuituLohfTkt4dqW/uYQ=;
-        b=U7/LKmklD66HDBVNWQfH+90be/B0roUP4+9l9Tq3YWAix884SyQPDuKyBjx5e7LLkv
-         Y1I4NMybt64tjmRukfVhGNxIpp9dolx0XUwtMPKKCUMcqlQMLGy2dATEFVwi2hMQ9+jA
-         eSdWgSHNX/Xj9Uka44SyPWD6pIPNTMRghewwWGUZyc/a+h+zRpaPzqbWyrcP9b8T8Xh3
-         2c/H7GY2zvorNtQHJD9CVgsG9KoTER9ovFhGC7e/BviDAQX8Jtr+k3teo4iVACKY1JZB
-         Tv0mFAf7g67upI6j3KjTUXUU6Nr/V5j9CSfEHphr9AP7pKsf+4CYqO8MjqksOqzwUCyU
-         3mVQ==
-X-Gm-Message-State: AOAM532Lvsh6BeVKAtyzaPZjUESCiC8euz43Q64kJNnSOWKGd/XbU0s2
-        Rnm3iSEUmvzcH8XUAsmZDD8=
-X-Google-Smtp-Source: ABdhPJxnj8DbJJubIprhjnvlUiut42WY88ZFI92TSPMHEutDxnp6Jp1/4yUJ7mAe4UU4QzadPdoYhQ==
-X-Received: by 2002:a1c:a757:: with SMTP id q84mr8550930wme.26.1632896070019;
-        Tue, 28 Sep 2021 23:14:30 -0700 (PDT)
-Received: from localhost.localdomain (213-66-48-107-no285.tbcn.telia.com. [213.66.48.107])
-        by smtp.gmail.com with ESMTPSA id c15sm908017wrs.19.2021.09.28.23.14.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Sep 2021 23:14:29 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        nathan@kernel.org
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH bpf-next] xsk: fix clang build error in __xp_alloc
-Date:   Wed, 29 Sep 2021 08:14:03 +0200
-Message-Id: <20210929061403.8587-1-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=99Z30LtJUkiTe6vhO1kd8LoPj65Ld4vLFvR/mlhgocU=;
+        b=2dFsaZ3VT/b9aLIhOO3IlJPVvqBDf5EinpGgn2euhQyzpT3GVTa7tuF0KNDHLYsZzT
+         uLFtJCfTLSL3bVZMfI7SKJwpHCi71xrghVnkU+IcdIhxOssq2JL9KsblA0+OJjZwROSC
+         MOyUgb66NuQQpkrMENG4dgdXq6CKnwG1mxdj+t7dRKhlaRmJUHRByWXu/EBnOy4uYHm/
+         /7BwC6MMcsGsZI4DzQSDwUj6BdMvxdHrvEXPEC2yxgzc8r/YYX12DNBRFBINqh4JTAEk
+         gwcdbhFhQeQt6SvzDyuSfjmcWsD7Wbj7FjbwZdwdeGdB8b0OC3H9OoVw6VrkbnvMlddQ
+         61gA==
+X-Gm-Message-State: AOAM532g7oMhWus7OWI/uACKWu8UtpsiIoeU/skF2+DeYxdJOP5lkb4/
+        pRARvW9JX5LMRinMDrUWY6kIgh/HoAu331vbjPQ=
+X-Google-Smtp-Source: ABdhPJweh1rv5MlbR3U7wJEtjONBLitga7L2uCBzYp+3dygprb+hUSrrzpwLJpcEVTjXngn1OEj9RR9nGVvRnsDcFI4=
+X-Received: by 2002:a25:7c42:: with SMTP id x63mr12508219ybc.225.1632896638063;
+ Tue, 28 Sep 2021 23:23:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210929033000.3711921-1-yhs@fb.com>
+In-Reply-To: <20210929033000.3711921-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Sep 2021 23:23:47 -0700
+Message-ID: <CAEf4Bzb9pCbwC0jncHM0F3py0xkmNc_XjOpUDH1Gm4=SQZ-4gA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix probe_user test failure
+ with clang build kernel
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Tue, Sep 28, 2021 at 8:30 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> clang build kernel failed the selftest probe_user.
+>   $ ./test_progs -t probe_user
+>   $ ...
+>   $ test_probe_user:PASS:get_kprobe_res 0 nsec
+>   $ test_probe_user:FAIL:check_kprobe_res wrong kprobe res from probe read: 0.0.0.0:0
+>   $ #94 probe_user:FAIL
+>
+> The test attached to kernel function __sys_connect(). In net/socket.c, we have
+>   int __sys_connect(int fd, struct sockaddr __user *uservaddr, int addrlen)
+>   {
+>         ......
+>   }
+>   ...
+>   SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
+>                   int, addrlen)
+>   {
+>         return __sys_connect(fd, uservaddr, addrlen);
+>   }
+>
+> The gcc compiler (8.5.0) does not inline __sys_connect() in syscall entry
+> function. But latest clang trunk did the inlining. So the bpf program
+> is not triggered.
+>
+> To make the test more reliable, let us kprobe the syscall entry function
+> instead. Note that x86_64, arm64 and s390 have syscall wrappers and they have
+> to be handled specially.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-Fix a build error with clang in __xp_alloc().
+Applied to bpf-next, thanks.
 
-net/xdp/xsk_buff_pool.c:465:15: error: variable 'xskb' is uninitialized
-when used here [-Werror,-Wuninitialized]
-                        xp_release(xskb);
-                                   ^~~~
+>  .../selftests/bpf/prog_tests/probe_user.c     |  4 +--
+>  .../selftests/bpf/progs/test_probe_user.c     | 28 +++++++++++++++++--
+>  2 files changed, 28 insertions(+), 4 deletions(-)
+>
 
-This is correctly detected by clang, but not gcc. In fact, the
-xp_release() statement should not be there at all in the refactored
-code, so just remove it.
-
-Fixes: 94033cd8e73b ("xsk: Optimize for aligned case")
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk_buff_pool.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 96b14e51ba7e..90c4e1e819d3 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -462,7 +462,6 @@ static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
- 	for (;;) {
- 		if (!xskq_cons_peek_addr_unchecked(pool->fq, &addr)) {
- 			pool->fq->queue_empty_descs++;
--			xp_release(xskb);
- 			return NULL;
- 		}
- 
-
-base-commit: 72e1781a5de9e3ee804e24f7ce9a7dd85596fc51
--- 
-2.29.0
-
+[...]
