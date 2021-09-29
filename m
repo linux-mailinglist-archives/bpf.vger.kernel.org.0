@@ -2,88 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEC941CDEA
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 23:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B606A41CE4D
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 23:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346880AbhI2VSz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 17:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbhI2VSy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:18:54 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD9DC06161C;
-        Wed, 29 Sep 2021 14:17:13 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id g2so3060201pfc.6;
-        Wed, 29 Sep 2021 14:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ULTC7uFCOb8co9nVQnkd69sN3DLPbqoM7kYoB4W6cDo=;
-        b=lm3kthFnazHXttVvxmdnJ2lpddbf2XDDyEtVHiu5kq5+E/TNrxO3zShoJxK27vGl5M
-         hLkZkRTMLcuesvn+vFn4Ge75LG4H7FLCIN7FbUOH8nZU+A/OTkRnJ0PI+ci6nlJLkbFe
-         1bBqwdJex2HHw3sywCY1BZuTJT+y6lXovyxKl9FywmFBwmQ25E/FgXRnZfHhc+Rw6yu4
-         xNJTkuF81lzc2+IdHEn+mmmAstIfe4vSEgy1YJcV8EakedVVyWgvQJVx2YThuDmFwz65
-         FPShZHE0KdPj/BpB4vvhSqMznDCAy+TqnEGtK3aS7y7GiqH875fT8GQhmGE0mo0/7flf
-         n5vg==
+        id S1346386AbhI2Vka (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 17:40:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49333 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344269AbhI2Vka (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Sep 2021 17:40:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632951528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GFQyIQau4ZqHlHKeJVLj2V2Zq1y0ubXLhD9d0aYg5f8=;
+        b=S1ab0KS7MPHHvr6vRUBPhLuHSXEuAeRgtcVFudvKLOabH33uvBTacJ4gxfruz2R60GHWuP
+        CMDYnoPuK/v4brwpRvh6i8Gb7HZRCKZSwvhc9WBgkH1knNg9BNKDtzgUk1RyFrZeT+TJbA
+        QI963Vx8r4zW5Swy1RxTh7AWRQMKPBM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-5xeOjuT5PyacUDY5D6ilZQ-1; Wed, 29 Sep 2021 17:38:46 -0400
+X-MC-Unique: 5xeOjuT5PyacUDY5D6ilZQ-1
+Received: by mail-ed1-f69.google.com with SMTP id h6-20020a50c386000000b003da01adc065so3928591edf.7
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 14:38:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ULTC7uFCOb8co9nVQnkd69sN3DLPbqoM7kYoB4W6cDo=;
-        b=5jcfcSHpZQOdq2P4mWrs8SMfyix7IoLQ662uO2X50BkEZdUTShsH88iY9m4WrUJevP
-         Vox0JQib3+djz/eHlEVjA5AcZFB014Uah/2loZ2/EVSU7SlwLET/fgt4IOcEDHFdJ9b5
-         KHpgCBaKXMu2n3+dVii22er6snvrtipgo/tUbbYvnyz+Gh5aoYW9pJ4fYgQaRD8mwVXQ
-         mmgov9wBKoazoBfGy7hJsIukVYsLnuMi7Pyypuq69LEOM3Iwezqi2x65AzXb7/jGLMf5
-         4U/K0gB63/rO3MJ/NRJZ3zSIUt1UBCidbXxWIR7caf2E4P989IP937VPEsp6pAzyyEBn
-         I09Q==
-X-Gm-Message-State: AOAM533BG0fEkXm232iGFxeySgyZwgHaqoDLuO8TWlXki6TQ1oIo/zCs
-        JSnHJvl3Px5I6Y76twmO6v/fY+zOTsxsJKg1Jxc=
-X-Google-Smtp-Source: ABdhPJxK7Y+GYLhrsVzMbbLmfBk8/ATnKnMWoKns7LcaEVHzKqcybRRET83y8SkXgeSPrXDx6tUoyQPsY5quo84VXc4=
-X-Received: by 2002:a63:374c:: with SMTP id g12mr1778357pgn.35.1632950232758;
- Wed, 29 Sep 2021 14:17:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928093100.27124-1-lmb@cloudflare.com>
-In-Reply-To: <20210928093100.27124-1-lmb@cloudflare.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 29 Sep 2021 14:17:01 -0700
-Message-ID: <CAADnVQ+UJ5bhRNdnHM62_XFzMp3q1-Njh80ZNvs=4=PH1jAmpw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: do not invoke the XDP dispatcher for
- PROG_RUN with single repeat
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GFQyIQau4ZqHlHKeJVLj2V2Zq1y0ubXLhD9d0aYg5f8=;
+        b=XTG0Ysk7QeR4f4xAzpPZTCPd99mvysGmzbJPTOBGHS2crL2CCLEfaJ6BjmHI6Ip7Ny
+         HHQ+CI5TQyCbeS17UnRK8lk5s+BS9fEHc6TWCjttlQLEGS9IAGovown8k0bavRfgcuiP
+         I0Em8ynYUHlu4p+w1b1kKmmP143gWIv9jVm7PgNs5O3rGvttPbo6v2fPhBxMdnu1oaiL
+         kfAFwaTKsP1QEm6EY7W/JKcle+FgeS6Oac/+94QZDNyaO2nML6H1wQBalw6l9Z+R9Xjm
+         d4Wq3nL1rY376rMtq6Jr+Tj3WfQzbnjdehdBc4PVDYw1p51areJueI0/hK42N0uUV1/L
+         RQ6Q==
+X-Gm-Message-State: AOAM532pud5iyWIotTtyh6nY0yRXNbegrUum6SFexies3MLyKvlCv/ah
+        xMj8wgSaTYADEmVWRQA/ZBZt+WFVPlksdKNjmVKidXHr+OmBnkxI55WYnxhbZe93iMzowm+wbG1
+        HUPaToBWvkYe4
+X-Received: by 2002:a17:906:2691:: with SMTP id t17mr2413696ejc.522.1632951525335;
+        Wed, 29 Sep 2021 14:38:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxV3yi4hVwTbLwu8bjXisu/brfph67g1je/j5/L1usCpUjEy7tIHvP+x7DmAP5NMrVlfOaL7g==
+X-Received: by 2002:a17:906:2691:: with SMTP id t17mr2413668ejc.522.1632951525023;
+        Wed, 29 Sep 2021 14:38:45 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id qw28sm570391ejb.56.2021.09.29.14.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 14:38:44 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B6EC718034F; Wed, 29 Sep 2021 23:38:43 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Benc <jbenc@redhat.com>, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: properly ignore STT_SECTION symbols in legacy map definitions
+Date:   Wed, 29 Sep 2021 23:38:37 +0200
+Message-Id: <20210929213837.832449-1-toke@redhat.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 2:31 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> We have a unit test that invokes an XDP program with 1m different
-> inputs, aka 1m BPF_PROG_RUN syscalls. We run this test concurrently
-> with slight variations in how we generated the input.
->
-> Since commit f23c4b3924d2 ("bpf: Start using the BPF dispatcher in BPF_TEST_RUN")
-> the unit test has slowed down significantly. Digging deeper reveals that
-> the concurrent tests are serialised in the kernel on the XDP dispatcher.
-> This is a global resource that is protected by a mutex, on which we contend.
->
-> Fix this by not calling into the XDP dispatcher if we only want to perform
-> a single run of the BPF program.
->
-> See: https://lore.kernel.org/bpf/CACAyw9_y4QumOW35qpgTbLsJ532uGq-kVW-VESJzGyiZkypnvw@mail.gmail.com/
->
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+The previous patch to ignore STT_SECTION symbols only added the ignore
+condition in one of them. This fails if there's more than one map
+definition in the 'maps' section, because the subsequent modulus check will
+fail, resulting in error messages like:
 
-Applied. Thanks
+libbpf: elf: unable to determine legacy map definition size in ./xdpdump_xdp.o
+
+Fix this by also ignoring STT_SECTION in the first loop.
+
+Fixes: c3e8c44a9063 ("libbpf: Ignore STT_SECTION symbols in 'maps' section")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+Terribly sorry for not catching this in the previous patch. I was testing with an
+object file with only one map definition, which worked fine :(
+
+ tools/lib/bpf/libbpf.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 453148fe8b4b..c20b2167e354 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1845,6 +1845,8 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
+ 			continue;
+ 		if (sym.st_shndx != obj->efile.maps_shndx)
+ 			continue;
++		if (GELF_ST_TYPE(sym.st_info) == STT_SECTION)
++			continue;
+ 		nr_maps++;
+ 	}
+ 	/* Assume equally sized map definitions */
+-- 
+2.33.0
+
