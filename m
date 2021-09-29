@@ -2,98 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC13A41BC97
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 04:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9F941BCA5
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 04:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243692AbhI2CJx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 22:09:53 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:23184 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242761AbhI2CJw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Sep 2021 22:09:52 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HK09m2r80z1DHQb;
-        Wed, 29 Sep 2021 10:06:52 +0800 (CST)
-Received: from dggema721-chm.china.huawei.com (10.3.20.85) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 10:08:10 +0800
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggema721-chm.china.huawei.com (10.3.20.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 29 Sep 2021 10:08:10 +0800
-Received: from dggema772-chm.china.huawei.com ([10.9.128.138]) by
- dggema772-chm.china.huawei.com ([10.9.128.138]) with mapi id 15.01.2308.008;
- Wed, 29 Sep 2021 10:08:10 +0800
-From:   "liujian (CE)" <liujian56@huawei.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: RE: [PATCH v3] skmsg: lose offset info in sk_psock_skb_ingress
-Thread-Topic: [PATCH v3] skmsg: lose offset info in sk_psock_skb_ingress
-Thread-Index: AQHXr5TEvqMbfOjFUkOFMdZlBki+lKu4dLMAgAHZdMA=
-Date:   Wed, 29 Sep 2021 02:08:10 +0000
-Message-ID: <329a2008cf5f47629451ad0699ef3305@huawei.com>
-References: <20210922093259.164013-1-liujian56@huawei.com>
- <CAM_iQpVDiA8-GHXYrNs8A4gBaDioWMPeQR=2u4OKn2ZCyzu8Lg@mail.gmail.com>
-In-Reply-To: <CAM_iQpVDiA8-GHXYrNs8A4gBaDioWMPeQR=2u4OKn2ZCyzu8Lg@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.93]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S243048AbhI2CWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 22:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243226AbhI2CWV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 22:22:21 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04288C06161C;
+        Tue, 28 Sep 2021 19:20:41 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so1014960ota.6;
+        Tue, 28 Sep 2021 19:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/m3v6wHyU+gceCsGIGZQW1YYbgSsrVq1u5VD7Wq+RWY=;
+        b=bf8iVuGnsm91udbcvDyigQaau+zWTHvOV48qzQjwWUM9o7fSzCvX/zvHLCyAEseY+a
+         fTo7Snk0oXSgXYkOvn/xksR8uIdJESgFU+iy3yqSTlbk8CG1y5VyKDlFAoLPvYsYfNRx
+         HBtxV9mM7E4Q0CqmQhsRt6HtcvCMzeqs/vPeRjfc+NTxdK2+JnogFu7+MGSwRHkIHwEK
+         cM1saWqdOp3EPEUFneggP3sjPPVpLf0iKO37khA7a972EQk42XdmGcaIcHWeuTv4ddhn
+         PEhxz0YukqRjtmO/WBHw318COSpoViXwe2dXJ7YFQwWAjp8+yluQ6jj/ZME8KtARTlB1
+         sf7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/m3v6wHyU+gceCsGIGZQW1YYbgSsrVq1u5VD7Wq+RWY=;
+        b=ayz/Kxd194tSujNSziTmFfD3TE7nT2tx1ilGIMpKMfBQoDuL6c4sJ3B+e8jHihEHts
+         eYyT0qR7yJSqu2pHPTiKbgTySA09coccowu2x2kdpYwVKewikzg/Df+DY+Q0wC9qZPNX
+         pHNSnPTKBSJ+4Lgp4nDAIe5zU+zcYHmdxUSH+ZBGLauFjzUSrkiW/zN1/EpOig1Ac2/L
+         vM7qODWJxSl+ly0G3MxxWWefBf88LW8KTInBzvtKGvq1o4jRdKT2/uREpNZKH0LcEnOQ
+         6tNUfoc7X6U9fnDLxWMrJBXibqYVX8WcrKDZB9HSZk8zXGXW6C94Zq4ZqJ3KA5zoAq3B
+         Na2Q==
+X-Gm-Message-State: AOAM532EoQ2X622BZ/duH8QD2ZnJKCkDWxW/egxIU+7KOfDbkc30XVhT
+        aUHGCmcJ4PG21in/CzIk55pbkaZEyv/4AkjRUMs=
+X-Google-Smtp-Source: ABdhPJx1IMWZ/bsJWfzsNpMgmYvbhuD0LF11DiYOzktOGL+jMle4FLXwNSC2UIWIEYvahPBvQbTjH58u6SxFFZyowMk=
+X-Received: by 2002:a9d:6143:: with SMTP id c3mr8009609otk.124.1632882040342;
+ Tue, 28 Sep 2021 19:20:40 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210901101206.50274-1-kerneljasonxing@gmail.com>
+ <CAL+tcoCOnCpxLXLyAxb+BgumQBpo2PPqSQXY=Xvs-8R48Om=cw@mail.gmail.com> <a1ea0abaadc59bdbc6504a64bae594b059c26cdf.camel@intel.com>
+In-Reply-To: <a1ea0abaadc59bdbc6504a64bae594b059c26cdf.camel@intel.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Wed, 29 Sep 2021 10:20:02 +0800
+Message-ID: <CAL+tcoALdQQPy+9G_azrGqSugGcNjFfYqmf72aNRPahgggeeVA@mail.gmail.com>
+Subject: Re: [PATCH v7] ixgbe: let the xdpdrv work with more than 64 cpus
+To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "kafai@fb.com" <kafai@fb.com>, "hawk@kernel.org" <hawk@kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>, lkp <lkp@intel.com>,
+        "xingwanli@kuaishou.com" <xingwanli@kuaishou.com>,
+        "lishujin@kuaishou.com" <lishujin@kuaishou.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ29uZyBXYW5nIFttYWls
-dG86eGl5b3Uud2FuZ2NvbmdAZ21haWwuY29tXQ0KPiBTZW50OiBUdWVzZGF5LCBTZXB0ZW1iZXIg
-MjgsIDIwMjEgMTo1MiBQTQ0KPiBUbzogbGl1amlhbiAoQ0UpIDxsaXVqaWFuNTZAaHVhd2VpLmNv
-bT4NCj4gQ2M6IEpvaG4gRmFzdGFiZW5kIDxqb2huLmZhc3RhYmVuZEBnbWFpbC5jb20+OyBEYW5p
-ZWwgQm9ya21hbm4NCj4gPGRhbmllbEBpb2dlYXJib3gubmV0PjsgSmFrdWIgU2l0bmlja2kgPGph
-a3ViQGNsb3VkZmxhcmUuY29tPjsgTG9yZW56DQo+IEJhdWVyIDxsbWJAY2xvdWRmbGFyZS5jb20+
-OyBEYXZpZCBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBKYWt1Yg0KPiBLaWNpbnNraSA8
-a3ViYUBrZXJuZWwub3JnPjsgQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz47IEFu
-ZHJpaQ0KPiBOYWtyeWlrbyA8YW5kcmlpQGtlcm5lbC5vcmc+OyBNYXJ0aW4gS2FGYWkgTGF1IDxr
-YWZhaUBmYi5jb20+OyBTb25nIExpdQ0KPiA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPjsgWW9uZ2hv
-bmcgU29uZyA8eWhzQGZiLmNvbT47IEtQIFNpbmdoDQo+IDxrcHNpbmdoQGtlcm5lbC5vcmc+OyBM
-aW51eCBLZXJuZWwgTmV0d29yayBEZXZlbG9wZXJzDQo+IDxuZXRkZXZAdmdlci5rZXJuZWwub3Jn
-PjsgYnBmIDxicGZAdmdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYzXSBz
-a21zZzogbG9zZSBvZmZzZXQgaW5mbyBpbiBza19wc29ja19za2JfaW5ncmVzcw0KPiANCj4gT24g
-V2VkLCBTZXAgMjIsIDIwMjEgYXQgMjozMiBBTSBMaXUgSmlhbiA8bGl1amlhbjU2QGh1YXdlaS5j
-b20+IHdyb3RlOg0KPiA+ICBzdGF0aWMgdm9pZCBza19wc29ja19za2Jfc3RhdGUoc3RydWN0IHNr
-X3Bzb2NrICpwc29jaywgQEAgLTYwNCw2DQo+ID4gKzYwOCw5IEBAIHN0YXRpYyB2b2lkIHNrX3Bz
-b2NrX2JhY2tsb2coc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKSAgew0KPiA+ICAgICAgICAgc3Ry
-dWN0IHNrX3Bzb2NrICpwc29jayA9IGNvbnRhaW5lcl9vZih3b3JrLCBzdHJ1Y3Qgc2tfcHNvY2ss
-IHdvcmspOw0KPiA+ICAgICAgICAgc3RydWN0IHNrX3Bzb2NrX3dvcmtfc3RhdGUgKnN0YXRlID0g
-JnBzb2NrLT53b3JrX3N0YXRlOw0KPiA+ICsjaWYgSVNfRU5BQkxFRChDT05GSUdfQlBGX1NUUkVB
-TV9QQVJTRVIpDQo+ID4gKyAgICAgICBzdHJ1Y3Qgc3RycF9tc2cgKnN0bSA9IE5VTEw7DQo+ID4g
-KyNlbmRpZg0KPiA+ICAgICAgICAgc3RydWN0IHNrX2J1ZmYgKnNrYiA9IE5VTEw7DQo+ID4gICAg
-ICAgICBib29sIGluZ3Jlc3M7DQo+ID4gICAgICAgICB1MzIgbGVuLCBvZmY7DQo+ID4gQEAgLTYy
-NCw2ICs2MzEsMTMgQEAgc3RhdGljIHZvaWQgc2tfcHNvY2tfYmFja2xvZyhzdHJ1Y3Qgd29ya19z
-dHJ1Y3QNCj4gKndvcmspDQo+ID4gICAgICAgICB3aGlsZSAoKHNrYiA9IHNrYl9kZXF1ZXVlKCZw
-c29jay0+aW5ncmVzc19za2IpKSkgew0KPiA+ICAgICAgICAgICAgICAgICBsZW4gPSBza2ItPmxl
-bjsNCj4gPiAgICAgICAgICAgICAgICAgb2ZmID0gMDsNCj4gPiArI2lmIElTX0VOQUJMRUQoQ09O
-RklHX0JQRl9TVFJFQU1fUEFSU0VSKQ0KPiA+ICsgICAgICAgICAgICAgICBpZiAoc2tiX2JwZl9z
-dHJwYXJzZXIoc2tiKSkgew0KPiANCj4gSWYgQ09ORklHX0JQRl9TVFJFQU1fUEFSU0VSIGlzIGRp
-c2FibGVkLCB0aGlzIHNob3VsZCBhbHdheXMgcmV0dXJuIGZhbHNlLA0KPiBoZW5jZSB5b3UgZG9u
-J3QgbmVlZCB0aGlzICNpZmRlZi4NCj4gT3IgYWx0ZXJuYXRpdmVseSwgeW91IGNhbiBhdCBsZWFz
-dCBkZWZpbmUgZm9yIG5vcCBmb3INCj4gc2tiX2JwZl9zdHJwYXJzZXIoKSBpZiAhQ09ORklHX0JQ
-Rl9TVFJFQU1fUEFSU0VSLg0KPiBBbmQgeW91IGNhbiBtb3ZlIHRoZSBhYm92ZSAic3RtIiBkb3du
-IGhlcmUgdG9vLg0KPiANClY0IGhhcyBiZWVuIHNlbnQsIHRoYW5rIHlvdX4NCg0KPiAoRGl0dG8g
-Zm9yIHRoZSBvdGhlciBwbGFjZSBiZWxvdy4pDQo+IA0KPiBUaGFua3MuDQo=
+On Wed, Sep 29, 2021 at 6:17 AM Nguyen, Anthony L
+<anthony.l.nguyen@intel.com> wrote:
+>
+> On Thu, 2021-09-16 at 14:41 +0800, Jason Xing wrote:
+> > Hello guys,
+> >
+> > any suggestions or comments on this v7 patch?
+> >
+> > Thanks,
+> > Jason
+> >
+> > On Wed, Sep 1, 2021 at 6:12 PM <kerneljasonxing@gmail.com> wrote:
+> > > From: Jason Xing <xingwanli@kuaishou.com>
+> > >
+> > > Originally, ixgbe driver doesn't allow the mounting of xdpdrv if
+> > > the
+> > > server is equipped with more than 64 cpus online. So it turns out
+> > > that
+> > > the loading of xdpdrv causes the "NOMEM" failure.
+> > >
+> > > Actually, we can adjust the algorithm and then make it work through
+> > > mapping the current cpu to some xdp ring with the protect of
+> > > @tx_lock.
+> > >
+> > > Here're some numbers before/after applying this patch with xdp-
+> > > example
+> > > loaded on the eth0X:
+> > >
+> > > As client (tx path):
+> > >                      Before    After
+> > > TCP_STREAM send-64   734.14    714.20
+> > > TCP_STREAM send-128  1401.91   1395.05
+> > > TCP_STREAM send-512  5311.67   5292.84
+> > > TCP_STREAM send-1k   9277.40   9356.22 (not stable)
+> > > TCP_RR     send-1    22559.75  21844.22
+> > > TCP_RR     send-128  23169.54  22725.13
+> > > TCP_RR     send-512  21670.91  21412.56
+> > >
+> > > As server (rx path):
+> > >                      Before    After
+> > > TCP_STREAM send-64   1416.49   1383.12
+> > > TCP_STREAM send-128  3141.49   3055.50
+> > > TCP_STREAM send-512  9488.73   9487.44
+> > > TCP_STREAM send-1k   9491.17   9356.22 (not stable)
+> > > TCP_RR     send-1    23617.74  23601.60
+> > > ...
+> > >
+> > > Notice: the TCP_RR mode is unstable as the official document
+> > > explaines.
+> > >
+> > > I tested many times with different parameters combined through
+> > > netperf.
+> > > Though the result is not that accurate, I cannot see much influence
+> > > on
+> > > this patch. The static key is places on the hot path, but it
+> > > actually
+> > > shouldn't cause a huge regression theoretically.
+> > >
+> > > Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+>
+> Hi Jason,
+>
+> The patch doesn't have an explicit target of net or net-next. I assume
+> since you put a Fixes tag you're wanting it to go through net, however,
+> this seems more like an improvement that should go through net-next.
+
+Yes, it is like an improvement. At first I wanted to label it as net,
+but it isn't a fix as you said. So I agree with you and please help me
+send it to net-next.
+
+thanks,
+Jason
+
+> Please let me know if you disagree, otherwise I will send to net-next.
+>
+> Thanks,
+> Tony
+>
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> > > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> > > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> >
