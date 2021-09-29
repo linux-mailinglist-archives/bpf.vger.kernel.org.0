@@ -2,150 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10C841BBA0
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 02:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B74641BBA5
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 02:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhI2ALx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Sep 2021 20:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        id S230451AbhI2AQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Sep 2021 20:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhI2ALw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Sep 2021 20:11:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2C7C06161C;
-        Tue, 28 Sep 2021 17:10:12 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id n23so431590pfv.4;
-        Tue, 28 Sep 2021 17:10:12 -0700 (PDT)
+        with ESMTP id S230410AbhI2AQr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Sep 2021 20:16:47 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2D1C06161C
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 17:15:07 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id w19so1482607ybs.3
+        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 17:15:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f8dYfh9sGypf5J5IWzBcG6k4k6CHlFYv07CjFTv0HWw=;
-        b=TxLXhf9+hu1D/roEJDz0ipqX+btSUps32isUUxmXQKih+kusqxCtQTailyKocEzRI0
-         DLVGNjFw3SFH7b1zhd9O+f0pjzoU/Pcrv6u7RvPSeU/amt3CvizMUuzXsq7d8bxJwqxm
-         5lVEe0piAjsXzOtsIVKQ3rBHtnRmes5KuryLNbZrce8DIoTfabPH3DnPuTxAalqLniFO
-         4rhbKJ5aIfK5/6tL0Spg9sGW3BdmO6yN7T7WtRYgfrVG81YN9dOpQtJBaS3GIdcPhT3a
-         1yGCP2Hof9rDxZeFxdhjoLDcgSp9tZ6J3WIX0/kjvtcWZKTnN1QE5373qt8dxFD2C7Nt
-         Liww==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TmQksg1+2ZQLj9JsoFVpCSXsa+kHVALTXamAtoM49rk=;
+        b=NqpuY+SzH25Rd8wpQi+6232WWpAhuZmAgmbiDyVeuYDM6A6LwOrRo/31UYMeT1EEoo
+         m9fwfRTmqwLNfK2zUrG39BI9WQe3KzuwXnAQL1E3FQBOdyX3XKlOVkraWifZClw1WYGK
+         pLJMxpP7OLe8gnDwG9cCND+WgglW6x3ryqrqfZN+1rPy3oUNhLJZxezR4/7Vblmwo3ke
+         3jhOsOzdb09nshCRfUHeE70kOEghvhPL2LCCzefeAMSPQEyICZ2EwKweMZxPBFQg4sQ2
+         x/Rh4FueZ7l3PbYqawD5X9MPf9yIGDe/62j359Nqbzq+OZP9fxVRwuszWchZaIiNXdcp
+         0arw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f8dYfh9sGypf5J5IWzBcG6k4k6CHlFYv07CjFTv0HWw=;
-        b=FVgO7MWccJZ0+ZS7suNzXNoUFypF8csnKMj0pqJ7ybGAFK3eAHwTZZQXuzCM7rpFJs
-         4FL/xbBWY7Xn2rYXoDZ5WYXyHyj/A2FWSkV0niMZLKtuKh2bhH1WfGYNPCe1Gin8TVnP
-         Qf437iKxvx96TFCp2fx3jjqqK2/cbHz6Wvg1DY+2623CoqXd7uyZS70tY9gq02bBefWw
-         Oj/9MBiC7bMLKJEQ/BBWxNjCSA5M+pjV4ZuLvRlV5r+ZP0JJ8UbKFu+52OzGxTECG7g3
-         eDQR7q6WmXc+OkUlZh5V6Zk6B6NhUuh40g1LpMxvQtQSdmxhBiwRW5ZC/Gw0I3CrswvZ
-         1HCA==
-X-Gm-Message-State: AOAM530thVuhQyMjeTgbW/PD/IXEaW6C/30W+XLWHCTMeApbUid9ycsz
-        RBxZayxkr28yHYoIKXAQ3As=
-X-Google-Smtp-Source: ABdhPJxxuUTMeq4gtDDyLtSVcUzQIMCN15fvpecBF7/u750vwoO27U/HSPpxFpB8vqier9e/t12yjg==
-X-Received: by 2002:a62:f241:0:b0:44b:3078:d7f5 with SMTP id y1-20020a62f241000000b0044b3078d7f5mr8321980pfl.58.1632874212216;
-        Tue, 28 Sep 2021 17:10:12 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
-        by smtp.gmail.com with ESMTPSA id p189sm233846pfp.167.2021.09.28.17.10.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 17:10:11 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 05:40:09 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 09/12] libbpf: Update gen_loader to emit
- BTF_KIND_FUNC relocations
-Message-ID: <20210929001009.uslizph7vq7qh47e@apollo.localdomain>
-References: <20210927145941.1383001-1-memxor@gmail.com>
- <20210927145941.1383001-10-memxor@gmail.com>
- <20210929000100.5ysbbe7jb3abgrdl@ast-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TmQksg1+2ZQLj9JsoFVpCSXsa+kHVALTXamAtoM49rk=;
+        b=lFLLb+ag9JaWgUcuUnZUH1IxDpAzhutz5E+JRhzcavAy3+IWNxX9WkI4zPeQ/RteFx
+         lvL3Hs4N9bdsB0ioWDioHco4DLhGOXzphqjyI17YdkC1jAeWqXcQe5oXUWlpOVP9JqFn
+         h5AzgXUPUcSZlFkTEVPem+Wthx7eq1tlGJx25D7P1YTvgQ9IXxsVS2hvorHXQ1iVDfG2
+         FnsfbvbalgkKKD2MjpucGoIQS62j8dotVRHpd0jb2KvNZq0ufSQvQHfe1MXK8ABGyI08
+         rrr7QBRTLURWunb4C7BVbaXpsPWZezAN8QF8bpwYpj/nlRpDgjR23bUyVBIRnYC9djHQ
+         XEmA==
+X-Gm-Message-State: AOAM5315b8AbskhC8rp3vNsj7Mmod1eFyBYeYfMJt/p8PGn+CtLPzLE7
+        y1wkjP7pXA6JLWpyjMMRb3S3uHsFGnplkVySkGReS595
+X-Google-Smtp-Source: ABdhPJzb1NcumecuUWfmSkrPmdaQC5i86NbnFVJH7Sh8rmF4t+BY6vHyyn0SIkiP/mtCCUXUBWYQTNTzpu7o+71CNfU=
+X-Received: by 2002:a25:1dc4:: with SMTP id d187mr8159389ybd.455.1632874506605;
+ Tue, 28 Sep 2021 17:15:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929000100.5ysbbe7jb3abgrdl@ast-mbp.dhcp.thefacebook.com>
+References: <20210923203046.a3fsogdl37mw56kp@ast-mbp> <CAEf4BzZJLFxD=v-NvX+MUjrtJHnO9H1C66ymgWFO-ZM39UBonA@mail.gmail.com>
+ <7957a053-8b98-1e09-26c8-882df6920e6e@fb.com> <CAEf4BzYx22q5HFEqQ6q5Y0LcambUBDb+-YggbwiLDU86QBYvWA@mail.gmail.com>
+ <118c7f22-f710-581f-b87e-ee07aced429a@fb.com> <CAEf4BzZ1BXyTWmLpfqoGOms02_bwQDgBgEd9LkUM_+uDZJo1Og@mail.gmail.com>
+ <20210927164110.gg33uypguty45huk@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4Bzb7bASQ3jXJ3JiKBinnb4ct9Y5pAhn-eVsdCY7rRus8Fg@mail.gmail.com>
+ <20210927235144.7xp3ngebl67egc6a@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzY=yrSZFJ_dgeS5MSn+pTR+Y9d4am2v+Uby-TBGn4i+Cg@mail.gmail.com> <20210928162125.qsidw3zkzsfy4ms2@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210928162125.qsidw3zkzsfy4ms2@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Sep 2021 17:14:55 -0700
+Message-ID: <CAEf4BzbH8v2m4tJEz2hFU+PGxMxP6QrFXcRmD3ESiQi_jqBbtw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Add bloom filter map implementation
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Joanne Koong <joannekoong@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 05:31:00AM IST, Alexei Starovoitov wrote:
-> On Mon, Sep 27, 2021 at 08:29:38PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > +static void emit_relo_kfunc_btf(struct bpf_gen *gen, struct ksym_relo_desc *relo, int insn)
-> > +{
-> > +	struct kfunc_desc *kdesc;
-> > +	int btf_fd_idx;
-> > +
-> > +	kdesc = get_kfunc_desc(gen, relo->name);
-> > +	if (!kdesc)
-> > +		return;
-> > +
-> > +	btf_fd_idx = kdesc->ref > 1 ? kdesc->off : add_kfunc_btf_fd(gen);
-> > +	if (btf_fd_idx > INT16_MAX) {
-> > +		pr_warn("BTF fd off %d for kfunc %s exceeds INT16_MAX, cannot process relocation\n",
-> > +			btf_fd_idx, relo->name);
-> > +		gen->error = -E2BIG;
-> > +		return;
-> > +	}
-> > +	/* load slot pointer */
-> > +	emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_8, BPF_PSEUDO_MAP_IDX_VALUE,
-> > +					 0, 0, 0, blob_fd_array_off(gen, btf_fd_idx)));
-> > +	/* Try to map one insn->off to one insn->imm */
-> > +	if (kdesc->ref > 1) {
-> > +		emit(gen, BPF_MOV64_REG(BPF_REG_9, BPF_REG_7));
-> > +		goto skip_btf_fd;
-> > +	} else {
-> > +		/* cannot use index == 0 */
-> > +		if (!btf_fd_idx) {
-> > +			btf_fd_idx = add_kfunc_btf_fd(gen);
-> > +			/* shift to next slot */
-> > +			emit(gen, BPF_ALU64_IMM(BPF_ADD, BPF_REG_8, sizeof(int)));
-> > +		}
-> > +		kdesc->off = btf_fd_idx;
-> > +	}
-> > +
-> > +	/* set a default value */
-> > +	emit(gen, BPF_ST_MEM(BPF_W, BPF_REG_8, 0, 0));
-> > +	emit(gen, BPF_MOV64_REG(BPF_REG_9, BPF_REG_7));
-> > +	/* store BTF fd if ret < 0 */
-> > +	emit(gen, BPF_JMP_IMM(BPF_JSLT, BPF_REG_7, 0, 3));
-> > +	emit(gen, BPF_ALU64_IMM(BPF_RSH, BPF_REG_7, 32));
-> > +	/* store BTF fd in slot */
-> > +	emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_8, BPF_REG_7, 0));
-> > +	emit(gen, BPF_MOV64_REG(BPF_REG_7, BPF_REG_9));
-> > +skip_btf_fd:
-> > +	/* remember BTF fd to skip insn->off store for vmlinux case */
-> > +	emit(gen, BPF_ALU64_IMM(BPF_RSH, BPF_REG_9, 32));
-> > +	/* set a default value */
-> > +	emit(gen, BPF_ST_MEM(BPF_H, BPF_REG_0, offsetof(struct bpf_insn, off), 0));
-> > +	/* skip insn->off store if ret < 0 */
-> > +	emit(gen, BPF_JMP_IMM(BPF_JSLT, BPF_REG_7, 0, 2));
-> > +	/* skip if vmlinux BTF */
-> > +	emit(gen, BPF_JMP_IMM(BPF_JEQ, BPF_REG_9, 0, 1));
-> > +	/* store index into insn[insn_idx].off */
-> > +	emit(gen, BPF_ST_MEM(BPF_H, BPF_REG_0, offsetof(struct bpf_insn, off), btf_fd_idx));
-> > +	/* close fd that we skipped storing in fd_array */
-> > +	if (kdesc->ref > 1) {
-> > +		emit(gen, BPF_MOV64_REG(BPF_REG_1, BPF_REG_9));
-> > +		__emit_sys_close(gen);
-> > +	}
+On Tue, Sep 28, 2021 at 9:21 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> kdesc->ref optimization is neat, but I wonder why it's done half way.
-> The generated code still calls bpf_btf_find_by_name_kind() and the kernel
-> allocates the new FD. Then the loader prog simply ignores that FD and closes it.
-> May be don't call the helper at all and just copy imm+off pair from
-> already populated insn?
+> On Mon, Sep 27, 2021 at 05:36:00PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Sep 27, 2021 at 4:51 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Sep 27, 2021 at 02:14:09PM -0700, Andrii Nakryiko wrote:
+> > > > On Mon, Sep 27, 2021 at 9:41 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Sep 24, 2021 at 04:12:11PM -0700, Andrii Nakryiko wrote:
+> > > > > >
+> > > > > > That's not what I proposed. So let's say somewhere in the kernel we
+> > > > > > have this variable:
+> > > > > >
+> > > > > > static int bpf_bloom_exists = 1;
+> > > > > >
+> > > > > > Now, for bpf_map_lookup_elem() helper we pass data as key pointer. If
+> > > > > > all its hashed bits are set in Bloom filter (it "exists"), we return
+> > > > > > &bpf_bloom_exists. So it's not a NULL pointer.
+> > > > >
+> > > > > imo that's too much of a hack.
+> > > >
+> > > > too bad, because this feels pretty natural in BPF code:
+> > > >
+> > > > int my_key = 1234;
+> > > >
+> > > > if (bpf_map_lookup_elem(&my_bloom_filter, &my_key)) {
+> > > >     /* handle "maybe exists" */
+> > > > } else {
+> > > >     /* handle "definitely doesn't exist" */
+> > > > }
+> > >
+> > > I don't think it fits bitset map.
+> > > In the bitset the value is zero or one. It always exist.
+> > > If bloomfilter is not a special map and instead implemented on top of
+> > > generic bitset with a plain loop in a bpf program then
+> > > push -> bit_set
+> > > pop -> bit_clear
+> > > peek -> bit_test
+> > > would be a better fit for bitset map.
+> > >
+> > > bpf_map_pop_elem() and peek_elem() don't have 'flags' argument.
+> > > In most cases that would be a blocker,
+> > > but in this case we can add:
+> > > .arg3_type      = ARG_ANYTHING
+> > > and ignore it in case of stack/queue.
+> > > While bitset could use the flags as an additional seed into the hash.
+> > > So to do a bloomfilter the bpf prog would do:
+> > > for (i = 0; i < 5; i++)
+> > >    if (bpf_map_peek_elem(map, &value, conver_i_to_seed(i)))
+> >
+> > I think I'm getting lost in the whole unified bitset + bloom filter
+> > design, tbh. In this case, why would you pass the seed to peek()? And
+> > what is value here? Is that the value (N bytes) or the bit index (4
+> > bytes?)?
+>
+> The full N byte value, of course.
+> The pure index has the same downsides as hashing helper:
+> - hard to make kernel and user space produce the same hash in all cases
+> - inability to dynamically change max_entries in a clean way
 
-Good idea, I'll fix this in v6.
+Here's the confusing part. If the map is performing hashing, then why
+would we do explicit 5 iteration instead of the map (bloom filter)
+just doing it internally in one go (faster and simpler). But if it is
+a bitset (and so we have to do 5 iterations to implement Bloom filter
+logic), then it is quite unconventional for the bitset data structure
+to perform the hashing of a value. The only upside of this hybrid
+one-bit-at-a-time-but-with-hashing-included approach would be more
+freedom in choosing the hashing seed for each individual bit. But that
+hasn't come up as a limitation in the discussion at all, which made me
+wonder what we are optimizing here for.
 
-> I was thinking to do this optimization for emit_relo() for other cases,
-> but didn't have time to do it.
-> Since the code is doing this optimization I think it's worth doing it cleanly.
-> Or just don't do it at all.
-> It's great that there is a test for it in the patch 12 :)
+>
+> > I assumed that once we have a hashing helper and a bitset
+> > map, you'd use that and seed to calculate bit index. But now I'm
+> > confused about what this peek operation is doing. I'm sorry if I'm
+> > just slow.
+> >
+> > Overall, I think I agree with Joanne that a separate dedicated Bloom
+> > filter map will have simpler and better usability. This bitset + bloom
+> > filter generalization seems to just create unnecessary confusion. I
+> > don't feel the need for bitset map even more than I didn't feel the
+> > need for Bloom filter, given it's even simpler data structure and is
+> > totally implementable on either global var array or
+> > BPF_MAP_TYPE_ARRAY, if map-in-map and dynamic sizing in mandatory.
+>
+> Not really. For two reasons:
+> - inner array with N 8-byte elements is a slow workaround.
+> map_lookup is not inlined for inner arrays because max_entries will
+> be different.
 
---
-Kartikeya
+If we are talking about bit set data structure (not Bloom filter),
+then elementary operation is setting/resetting *one bit*. For that,
+looking up an 8-byte element and setting a bit in it is just as
+efficient as having a dedicated bpf_map_push_elem(). Keep in mind, I'm
+talking about pure bitset logic here. Once you add N hashes (and thus
+we start talking about Bloom filter, not a bit set), then you get N
+helper calls vs just 1 for bloom filter logic.
+
+So for Bloom filter you get performance advantage from a dedicated map
+(due to having just 1 helper call to do N hashing operations). For
+pure bitset, there seems to be little benefit at all because it is
+basically ARRAY. For pure bitset of a fixed size, doing it on a global
+var array is faster (no helper overhead). For map-in-map case with
+known or unknown size, ARRAY is equivalent to BITSET map (one helper
+call + setting 1 bit through returned pointer).
+
+But the nr_hashes == 0 special casing for pure bitset works fine as well.
+
+> - doing the same hash in user space and the kernel is hard.
+> For example, iproute2 is using socket(AF_ALG) to compute the same hash
+> (program tag) as the kernel.
+> Copy-paste of kernel jhash.h is not possible due to GPL,
+
+I haven't found SPDX header or any mention of GPL in
+include/linux/jhash.h, so I assumed someone can just copy paste the
+code (given the references to public domain). Seems like that's not
+the case? Just curious about implications, license-wise, if there is
+no SPDX? Is it still considered GPL?
+
+> but, as you pointed out, it's public domain, so user space would
+> need to search a public domain, reimplement jhash and then
+> make sure that it produces the same hash as the kernel.
+> All these trade offs point out the need for dedicated map type
+> (either generalized bitset or true bloomfilter) that does the hashing
+> and can change its size.
+
+Sure, we've converged on that already. I was confused by the above
+example of an explicit loop + bpf_map_peek_elem with hashing.
