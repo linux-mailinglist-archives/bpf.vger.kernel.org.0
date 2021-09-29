@@ -2,83 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDF141C4B1
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 14:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FCE41C4CB
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 14:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343752AbhI2M14 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 08:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
+        id S1343810AbhI2MeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 08:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343781AbhI2M14 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:27:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F1BC06161C;
-        Wed, 29 Sep 2021 05:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m5vnssJ0KM4mYSxWrXAMLthsIFQPm+npF62UAIPEcZg=; b=lysO5z74LimjxnvyIggoa9hipd
-        l9Lrz8HGEvl2IDkZAe2FVoPruAjic8KvuFMGVxqZiyIeMLnC+aXwXZkl64P2NKQhZNXU6ZDupIE+N
-        21OOMMsA5WXaZTKa5C4G/YYJM3DxdhkjgQQrnbgP2FJDVEq8gJO+G3/RFdhI7kV3i8Fy5U0xFXbxd
-        E++BdKfEm9H8ypQs04I0vNVo73ibEt0gpFuYh260CeWPhB7kMFAr8gPmAy20EOQHaW2xpww0J64BF
-        IegFyI8xDQNfmcwRN0uCKQxhJhlmOGPaf2NkWK5ORaKwUn40haLirQfIyg8rjtNY7eTTcUP7KDTEL
-        E+Saw3NA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVYf2-006hv8-6W; Wed, 29 Sep 2021 12:26:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C11F30026F;
-        Wed, 29 Sep 2021 14:26:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4472120177EAF; Wed, 29 Sep 2021 14:26:07 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 14:26:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, like.xu@linux.intel.com
-Subject: Re: bpf_get_branch_snapshot on qemu-kvm
-Message-ID: <YVRbX6vBgz+wYzZK@hirez.programming.kicks-ass.net>
-References: <0E5E6FCA-23ED-4CAA-ADEA-967430C62F6F@fb.com>
- <YVQXT5piFYa/SEY/@hirez.programming.kicks-ass.net>
- <d75f6a9a-dbb3-c725-c001-ec9bdd55173f@gmail.com>
+        with ESMTP id S1343788AbhI2MeJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:34:09 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20992C061755
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 05:32:28 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id m3so10079377lfu.2
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 05:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ndDKb4ocgk1iK0hmC5H/ny854jlbnAfasAKNdkETtL4=;
+        b=KfftChFrLOLM8wlW4kmiNVvAoNKl9qqCwKqwfT+RP5bRXl5T4baBvHKk9efzO7vYVk
+         +E8KRD40L/mPbLJpZdb71SUDKqd41phKxet34zq+q7xjoIONjnad5clcGUD/cPR9rwdr
+         jiEaiQAvaZJzPyNvLU7aTFix7ixi4oJk3eJTQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ndDKb4ocgk1iK0hmC5H/ny854jlbnAfasAKNdkETtL4=;
+        b=3UPHghKIpkN1La7X346jHkAHcreXhA2zHxm/SKC1lXcj0OlwHujGhZBIXXP1fKS3lc
+         Yn52kaUgT16IR7jLaQQtW5cudv2Vnb8wOu1FfOEA7WBIBPynP5ZCOZMsG4sMwsKatYe4
+         xJqJHo4In4KyWgvu9B5ZfxFWIEGHrI4CQJD+XQ4geLMHfIj3DBSuD40wJ8KP/7WDTQpY
+         yO2ZyKtnUWrLzN5qGgtW2N/IfaiHR2V1UihSc9muzQNc5LldJX1AEmZ/0evrD3V6Vhnu
+         WPvZWpj1aCKpnTf4WmT5dtqCKLe0/5O/Gtrr+gqagTGOZDCABTJtpUOPzXDZiHZE7fwA
+         oKbQ==
+X-Gm-Message-State: AOAM5308WabDRY8LcuR4G5OuO7KfavcU3yDrePkTToyrPClsJkEjLDbu
+        zWPBOfqd7SCdhvhPiJOXmN1KSMLWtmAeBHwzNMtWOA==
+X-Google-Smtp-Source: ABdhPJyhIkFlhqEH6hUVdyzJzolTdBw/zS6TUI63McPfkMK8YRiz5FojUSAdpY25pMgcHh3nmcANAnV7mQAcpjsbBjk=
+X-Received: by 2002:ac2:4c45:: with SMTP id o5mr11382759lfk.620.1632918746426;
+ Wed, 29 Sep 2021 05:32:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d75f6a9a-dbb3-c725-c001-ec9bdd55173f@gmail.com>
+References: <cover.1631289870.git.lorenzo@kernel.org> <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YUSrWiWh57Ys7UdB@lore-desk> <20210917113310.4be9b586@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQL15NAqbswXedF0r2om8SOiMQE80OSjbyCA56s-B4y8zA@mail.gmail.com>
+ <20210917120053.1ec617c2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQKbrkOxfNoixUx-RLJEWULJLyhqjZ=M_X2cFG_APwNyCg@mail.gmail.com>
+ <614511bc3408b_8d5120862@john-XPS-13-9370.notmuch> <8735q25ccg.fsf@toke.dk>
+ <20210920110216.4c54c9a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87lf3r3qrn.fsf@toke.dk> <20210920142542.7b451b78@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87ilyu50kl.fsf@toke.dk> <CACAyw98tVmuRbMr5RpPY_0GmU_bQAH+d9=UoEx3u5g+nGSwfYQ@mail.gmail.com>
+ <87sfxnin6i.fsf@toke.dk>
+In-Reply-To: <87sfxnin6i.fsf@toke.dk>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 29 Sep 2021 13:32:15 +0100
+Message-ID: <CACAyw9-Ni4UaZuUOJHpO2xm2y6Dwtcn98gWsYW1ShmQg-W8TxQ@mail.gmail.com>
+Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer support
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 08:05:24PM +0800, Like Xu wrote:
-> On 29/9/2021 3:35 pm, Peter Zijlstra wrote:
+On Wed, 29 Sept 2021 at 13:25, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
+>
+> > Then use the already existing (right ;P) inlining to do the following:
+> >
+> >    if (md->ptr + args->off !=3D ret_ptr)
+> >      __pointer_flush(...)
+>
+> The inlining is orthogonal, though, right? The helper can do this check
+> whether or not it's a proper CALL or not (although obviously for
+> performance reasons we do want it to inline, at least eventually). In
+> particular, I believe we can make progress on this patch series without
+> working out the inlining :)
 
-> > > [  139.494159] unchecked MSR access error: WRMSR to 0x3f1 (tried to write 0x0000000000000000) at rIP: 0xffffffff81011a8b (intel_pmu_snapshot_branch_stack+0x3b/0xd0)
-> 
-> Uh, it uses a PEBS counter to sample or count, which is not yet upstream but
-> should be soon.
+Yes, I was just worried that your answer would be "it's too expensive" ;)
 
-Ooh that's PEBS_ENABLE
+> > This means that __pointer_flush has to deal with aliased memory
+> > though, so it would always have to memmove. Probably OK for the "slow"
+> > path?
+>
+> Erm, not sure what you mean here? Yeah, flushing is going to take longer
+> if you ended up using the stack pointer instead of writing directly to
+> the packet. That's kinda intrinsic? Or am I misunderstanding you?
 
-> Song, can you try to fix bpf_get_branch_snapshot on a normal PMC counter,
-> or where is the src for bpf_get_branch_snapshot? I am more than happy to help.
+I think I misunderstood your comment about memcpy to mean "want to
+avoid aliased memory for perf reasons". Never mind!
 
-Nah, all that code wants to do is disable PEBS... and virt being virt,
-it's all sorts of weird with f/m/s :/
+--=20
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-I so hate all that. So there's two solutions:
-
- - get confirmation that clearing GLOBAL_CTRL is suffient to supress
-   PEBS, in which case we can simply remove the PEBS_ENABLE clear.
-
-or
-
- - create another 2 intel_pmu_snapshot_{,arch_}branch_stack() copies
-   that omit the PEBS thing.
-
+www.cloudflare.com
