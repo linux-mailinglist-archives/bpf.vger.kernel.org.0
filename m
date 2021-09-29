@@ -2,116 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFF141BEDE
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 07:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A2D41BF07
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 08:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244265AbhI2Fyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 01:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
+        id S244213AbhI2GQO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 02:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243585AbhI2Fyu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 01:54:50 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3358C06161C;
-        Tue, 28 Sep 2021 22:53:09 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 66so1168112pgc.9;
-        Tue, 28 Sep 2021 22:53:09 -0700 (PDT)
+        with ESMTP id S243585AbhI2GQM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 02:16:12 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771C9C06161C;
+        Tue, 28 Sep 2021 23:14:31 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id o19so930786wms.1;
+        Tue, 28 Sep 2021 23:14:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PfjTnWUcOgiAtumoZpdwinOUPN5UVGsh3TYhswHTtSk=;
-        b=pmuJwLZ5P54YR/f4I0ji7GnrYm1qiziZCmr6mmNLx7e339XVS0VXMcx9W2IEOVVY/J
-         XODE1jmE8D1nRwyfOX4jxAPX77b0ps8NDDh0s5tHrgk9rKVbjirgVDeXbrgW0Xogq9Fb
-         RRyH770GNwnEOfTSpSuJ0ziGyFJJ/jqn9pCy0HD15fMh8jiikvraH6R4QEb2jxnqzOQL
-         YGUWJGkXqU+W+r2jMQxdx9+CCvKhsqrqBjHWN4rPqeL9bZUi5xl6Z/F6c0pjOJ+1KJ2K
-         HIfdSTXeC8TkPbF/AcJtYmClEVhzMILFnLnshMSUFOdVkQ6vlfsEP3Reu/TXXoer1S94
-         7MTA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XjH00ULnPvaaEhtogRY+O9xuuituLohfTkt4dqW/uYQ=;
+        b=XDxLNC+/BkMU+ukXAxTVk/47iebnulw5jsQWZpmYspvXM3I4rGVEijaZH9wB5yOiwM
+         fmrl0R4DW+WxfpVAxASbyB+N6xH0d5bUBepGI8bHqC33ANTcYYH3hifRPzj0kUsVzUHp
+         k3usFHh7crvjmsEAq3fyh6B395su83YP/TXyu3/1Jj6FrC7lKH1l92DVNDMAJuXfAn2q
+         2xOqDQRWpWkKeMPuZUwyq0vKekzVi4M1ktzm7fQkDhbYvL8t3Wfv9fCj2DIQz48DApqT
+         qCY6j3pPS7fOkxsuBx2JzNON80Rnkq7qp//gQGs7WWwuK/zY17DkhqqC14FOL2/YeOBi
+         uALg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PfjTnWUcOgiAtumoZpdwinOUPN5UVGsh3TYhswHTtSk=;
-        b=LPTQD4CZrNdbMCkx0QaI+KaRn594PttWwPg3mUVVkDUgtBoLsLGqweFx+K1cBloSFX
-         D5PoaWAUenmVU5DCGt5Xz19HM1ByC7djQw0uhh4VeM/EINE+xsEpR1TRscHdVnZAd8FW
-         HN7KHVo0v/qNHWpX2gaeF1WRH98TNs1y8e06Y5Cq/dOP4VtjlfuNMFgfjk4TtYQzIV5d
-         hzbuVgGPNQNv18WQxoApJpaedFmUGaRnAuo+QJ2rm/bUmgzxDtuTmN6tFnhJW2CcdCWY
-         ST5jj061OCf3KNzjx7jXUxgDXRdY0UOHcbABHjFwFHnrLK7tBCcSKGSnTjA89QcS6oqU
-         KV9w==
-X-Gm-Message-State: AOAM531ZpMXLnL7lNgOWglCMv8yKZ/7dI5sHO3F/YqSJR4J6b1LxlIzR
-        v5wkFF44dvfsW7E93nvlbd15OoFm4nHH17I31jY=
-X-Google-Smtp-Source: ABdhPJw4pXVJN+Q3pNwE5TpcNyPHfgM9xrYH3AKu4MATrkHTwJD1dhSjIR2chL9FVutQXzR67KpZUaBzoGojLO/Z7q0=
-X-Received: by 2002:a05:6a00:708:b0:43b:80ba:99c8 with SMTP id
- 8-20020a056a00070800b0043b80ba99c8mr9284101pfl.51.1632894789089; Tue, 28 Sep
- 2021 22:53:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210922075613.12186-1-magnus.karlsson@gmail.com>
- <20210922075613.12186-7-magnus.karlsson@gmail.com> <YVOiCYXTL63R4Mu9@archlinux-ax161>
-In-Reply-To: <YVOiCYXTL63R4Mu9@archlinux-ax161>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XjH00ULnPvaaEhtogRY+O9xuuituLohfTkt4dqW/uYQ=;
+        b=U7/LKmklD66HDBVNWQfH+90be/B0roUP4+9l9Tq3YWAix884SyQPDuKyBjx5e7LLkv
+         Y1I4NMybt64tjmRukfVhGNxIpp9dolx0XUwtMPKKCUMcqlQMLGy2dATEFVwi2hMQ9+jA
+         eSdWgSHNX/Xj9Uka44SyPWD6pIPNTMRghewwWGUZyc/a+h+zRpaPzqbWyrcP9b8T8Xh3
+         2c/H7GY2zvorNtQHJD9CVgsG9KoTER9ovFhGC7e/BviDAQX8Jtr+k3teo4iVACKY1JZB
+         Tv0mFAf7g67upI6j3KjTUXUU6Nr/V5j9CSfEHphr9AP7pKsf+4CYqO8MjqksOqzwUCyU
+         3mVQ==
+X-Gm-Message-State: AOAM532Lvsh6BeVKAtyzaPZjUESCiC8euz43Q64kJNnSOWKGd/XbU0s2
+        Rnm3iSEUmvzcH8XUAsmZDD8=
+X-Google-Smtp-Source: ABdhPJxnj8DbJJubIprhjnvlUiut42WY88ZFI92TSPMHEutDxnp6Jp1/4yUJ7mAe4UU4QzadPdoYhQ==
+X-Received: by 2002:a1c:a757:: with SMTP id q84mr8550930wme.26.1632896070019;
+        Tue, 28 Sep 2021 23:14:30 -0700 (PDT)
+Received: from localhost.localdomain (213-66-48-107-no285.tbcn.telia.com. [213.66.48.107])
+        by smtp.gmail.com with ESMTPSA id c15sm908017wrs.19.2021.09.28.23.14.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Sep 2021 23:14:29 -0700 (PDT)
 From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 29 Sep 2021 07:52:58 +0200
-Message-ID: <CAJ8uoz0RioOT=-bvfcmGKTKvHnEfYg9v0o1cGLQdY7FX628o_Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 06/13] xsk: optimize for aligned case
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Ciara Loftus <ciara.loftus@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        nathan@kernel.org
+Cc:     bpf@vger.kernel.org
+Subject: [PATCH bpf-next] xsk: fix clang build error in __xp_alloc
+Date:   Wed, 29 Sep 2021 08:14:03 +0200
+Message-Id: <20210929061403.8587-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 1:15 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Wed, Sep 22, 2021 at 09:56:06AM +0200, Magnus Karlsson wrote:
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Optimize for the aligned case by precomputing the parameter values of
-> > the xdp_buff_xsk and xdp_buff structures in the heads array. We can do
-> > this as the heads array size is equal to the number of chunks in the
-> > umem for the aligned case. Then every entry in this array will reflect
-> > a certain chunk/frame and can therefore be prepopulated with the
-> > correct values and we can drop the use of the free_heads stack. Note
-> > that it is not possible to allocate more buffers than what has been
-> > allocated in the aligned case since each chunk can only contain a
-> > single buffer.
-> >
-> > We can unfortunately not do this in the unaligned case as one chunk
-> > might contain multiple buffers. In this case, we keep the old scheme
-> > of populating a heads entry every time it is used and using
-> > the free_heads stack.
-> >
-> > Also move xp_release() and xp_get_handle() to xsk_buff_pool.h. They
-> > were for some reason in xsk.c even though they are buffer pool
-> > operations.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
->
-> My apologies if this has already been reported (I have not seen a report
-> on netdev nor a report from Intel around it) but this patch as
-> commit 94033cd8e73b ("xsk: Optimize for aligned case") in -next causes
-> the following build failure with clang + x86_64 allmodconfig:
->
-> net/xdp/xsk_buff_pool.c:465:15: error: variable 'xskb' is uninitialized when used here [-Werror,-Wuninitialized]
->                         xp_release(xskb);
->                                    ^~~~
-> net/xdp/xsk_buff_pool.c:455:27: note: initialize the variable 'xskb' to silence this warning
->         struct xdp_buff_xsk *xskb;
->                                  ^
->                                   = NULL
-> 1 error generated.
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Thanks for reporting this Nathan. Will fix right away.
+Fix a build error with clang in __xp_alloc().
 
-/Magnus
+net/xdp/xsk_buff_pool.c:465:15: error: variable 'xskb' is uninitialized
+when used here [-Werror,-Wuninitialized]
+                        xp_release(xskb);
+                                   ^~~~
 
-> Cheers,
-> Nathan
+This is correctly detected by clang, but not gcc. In fact, the
+xp_release() statement should not be there at all in the refactored
+code, so just remove it.
+
+Fixes: 94033cd8e73b ("xsk: Optimize for aligned case")
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ net/xdp/xsk_buff_pool.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index 96b14e51ba7e..90c4e1e819d3 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -462,7 +462,6 @@ static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
+ 	for (;;) {
+ 		if (!xskq_cons_peek_addr_unchecked(pool->fq, &addr)) {
+ 			pool->fq->queue_empty_descs++;
+-			xp_release(xskb);
+ 			return NULL;
+ 		}
+ 
+
+base-commit: 72e1781a5de9e3ee804e24f7ce9a7dd85596fc51
+-- 
+2.29.0
+
