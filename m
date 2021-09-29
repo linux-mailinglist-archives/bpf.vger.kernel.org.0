@@ -2,217 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1946841CB61
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 19:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67A441CBEE
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 20:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345582AbhI2R63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 13:58:29 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:64698 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245152AbhI2R62 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Sep 2021 13:58:28 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18THeTF6024051;
-        Wed, 29 Sep 2021 10:56:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=9FdTLOwU1Oz5jYEG2qDmpNkB64HPm+O39f6lvffLXFI=;
- b=XtsYr4FK9XLMi0o2yua5oZutfzN7SFFDiDGzZXGBrEP3COtU6sFgfSVivuON48frEG4t
- tbx5a5rKGyt/riG/4Y246E8SnSHKY6VVF0U1soW5m1rJZJshVB3m9ykqFL55YAe8Nmzr
- GMRUmALkdu9zB00os0PQGfcD5Ywg6/66p0o= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bcvrh83te-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 29 Sep 2021 10:56:26 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 29 Sep 2021 10:56:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eNomr+FNMB5kRytc31Da6ztk27Y/ZZJ6BamoNhD3+D+jCnlRDbkAZmnejZ0DRvd8ECQ+vi2OaWirGOg93bUQeZCatOQTRUsrHS+4ZLFxgo50x37Sjyp3yZzKidj+F9nue3upz/gEH7hpyIq3Tyqv9itDwGid6E7vB7NeItHnnuEe6Eq4oQ/Q/1jTikaaSP+NeqVQMCWYx0j7BgMQGtuyrN7HHDE3OitPr8dsIkZdXmqCD/cv9T60U9YtT/PVVR9mnn2ZWdRb4ALLuqjAsz5sFZYc7fjdXVe+9RMLOIMWk5mzvW5Z6c1ywimlfSbr6kF33lxFpo6cYCrZQftX+CjSYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=9FdTLOwU1Oz5jYEG2qDmpNkB64HPm+O39f6lvffLXFI=;
- b=Ye45BE0lzgVsQ1ddm/eeX5UsrZl4Y/XTVkaNi/CBk2CrRdrev0AFyXm5pFYJ0kDx7I3BWZ174Bxx1Mxh7PyuwTDHo0el5hjCf2/ULUTxyRUc7x1k1dXK3fzptVL8+PeGaw7KsfJnf0yHbGcs0vqiRyAu0J244jCa35OhrOCu7qBxdr8hBHp+DacnWDt0vKeQC0rLcW3tNYbo0LLxo3pq9hW5HdlTNFG1wTMISjzYpXB4IFM93Ul9wSjG/7SGHY5UtxhhnRroxm9BUoSJ5O96WIHfER0wRR05S/JDpvYU8DSP+IZ+lItdKEaXbBJ6zHVoqrP1WVTO7Ur5VCaqErDn5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SA0PR15MB3901.namprd15.prod.outlook.com (2603:10b6:806:8f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
- 2021 17:56:24 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160%6]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
- 17:56:24 +0000
-Date:   Wed, 29 Sep 2021 10:56:20 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Hou Tao <houtao1@huawei.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 2/5] bpf: factor out a helper to prepare
- trampoline for struct_ops prog
-Message-ID: <20210929175620.yi4jfpllhugys6eo@kafai-mbp.dhcp.thefacebook.com>
-References: <20210928025228.88673-1-houtao1@huawei.com>
- <20210928025228.88673-3-houtao1@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210928025228.88673-3-houtao1@huawei.com>
-X-ClientProxiedBy: SJ0PR03CA0210.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::35) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        id S1346177AbhI2SgS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 14:36:18 -0400
+Received: from mga07.intel.com ([134.134.136.100]:42561 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345800AbhI2SgR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 14:36:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="288670170"
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="gz'50?scan'50,208,50";a="288670170"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 11:34:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="gz'50?scan'50,208,50";a="708471230"
+Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Sep 2021 11:34:31 -0700
+Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mVePW-00036Z-Jt; Wed, 29 Sep 2021 18:34:30 +0000
+Date:   Thu, 30 Sep 2021 02:33:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        maciej.fijalkowski@intel.com, sridhar.samudrala@intel.com,
+        jesse.brandeburg@intel.com, qi.z.zhang@intel.com
+Subject: Re: [PATCH bpf-next v3 06/10] xsk: propagate napi_id to XDP socket
+ Rx path
+Message-ID: <202109300212.l6Ky1gNu-lkp@intel.com>
+References: <20201119083024.119566-7-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:d4e0) by SJ0PR03CA0210.namprd03.prod.outlook.com (2603:10b6:a03:2ef::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Wed, 29 Sep 2021 17:56:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8bd87695-b79e-4d60-a329-08d9837273bb
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3901:
-X-Microsoft-Antispam-PRVS: <SA0PR15MB39013E2B2FB4116C0FBACD24D5A99@SA0PR15MB3901.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:580;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H0nDjqEADQy0O1sQaTbbyRfgtxKaLn7zjRKO7xQXxsvOyhiEPaSnC6AsZ7tDiAfAmW+JAyfLbR1j81fpHbKZ0q6oQxBK1/vCEbhom5iykVKXPyHq7m4NseHBbP1V+HgAYzKvnVm5bLCeA0STvxb/Mm4nvv1BjrF6KJctONKh5bxiO9AbTanU7huezeWYLSE7uZc1K8scZOQyJS6IQxwGZ6Z2xjPpgQjP79yoGBAfDZGf0Pe62GHhc8EbVwkDzfK2NeC+j1BO0ri67rM59xOFtoFTik4b5eA5tweGzmE6lKQqCTLkVBom7417QaLkwdHl7JFb29SYuB+35HUPlo2C8CO6VQS6XM8vI1Jt5BjZiuHyWLTvy3YrhwvTySRonFH1jLNNH/+8eVc7M9zZwYOt42Y1Dp+9nUVXDvHFy/eQfuXLCaoiO0VBzra2s8VeD1AyRaS8BNHoxCBiSPqUOq0vQ3mb4IH1Df0Kyldru1jGT+SSxjWkoPjlWYacC5OYxRa9feiDO8XRWDfVteWjqkyZfHqzqlcnqSLElMXqZxL7PPLFFkSNrHZi8K/ZRR1hMWzf5e4s1liEerb+yMOHTlLgD9Bza+IHFDgv/MK2ZAZ7MQouYvMMgluHb/UBS6gfw2V47GUnT/zn+FZ8LMfowp9kLQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(86362001)(508600001)(1076003)(316002)(9686003)(52116002)(66556008)(66476007)(7696005)(186003)(5660300002)(8676002)(54906003)(2906002)(38100700002)(8936002)(6916009)(55016002)(6506007)(4326008)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ki3XS5TVkpTP0W1gBYnOgqiJm0uXirKjF/7x5PileM4UOoFzi8+6AZVEHIeY?=
- =?us-ascii?Q?+Bv0v+q5HMl8pYD0Mqf8PDzK86U7ecyL6DuDXCdP7bsETpHoVqTit4WtqOwa?=
- =?us-ascii?Q?T2Ef4loA6Lb5m0UkHRXsBAu4bhovhQCiqHpSyvvldS+KYFv00bJjXtF8Nmwr?=
- =?us-ascii?Q?yCA/zTQIwbRT2iUjIdRXsMuoIdfaVvp87a6qMABodkuIVkMl5mkzoJcB+DGI?=
- =?us-ascii?Q?9+WLJvfbQKuOfKUAvs6ZuscCvXP03o9qbDywy971YXUpSJy75POwabJq1DAu?=
- =?us-ascii?Q?B/7v/gXsdNfWfhiH2xi1sYlYqBlxoWQaGA9znQEUHWRU/v9GyN761y9aB1v3?=
- =?us-ascii?Q?WPMBWkXqDmwyNLfgPMf9hs4wfm6jq/aXEzPDZL+KfdO9vzUkR5sYTG1ZdMIQ?=
- =?us-ascii?Q?Xs9G/UPW6xhHcMDl25cVNGdQr4PlupG0OaNcgnDZU/4Nz9LORlm3nYp4urgM?=
- =?us-ascii?Q?vKMP0e1jsh4md4aTOINcLZVnwS4h3BkRZperpeZVIcIh2bVoFHvOi7FKx7aZ?=
- =?us-ascii?Q?V1uWiPVPP5wtEIrPi6aWY2wEJdQoZgMEhnbMu7D5m8WCD1NCRhZyTxxgjD7K?=
- =?us-ascii?Q?ziKY0TYSqK/r80P6kKkALQ5FXSka//o0DupikHWNMY+e6P66kgEfjLN+whNO?=
- =?us-ascii?Q?BaMu2QePVDMf7ZoCWXqYqFbtCQq5pllWp0ydmVK/xsWUjX9ZPP3bwkuhHAHe?=
- =?us-ascii?Q?cSocfKJog08sfh3Z10l8Md0qZ/1+A4ObUPbIoYffF1yG5Im/ZKAh9ns4OepK?=
- =?us-ascii?Q?OIuJfdOwUVv3Dntko9quhUdHBbzu2DddFzbJK8srD3J28niDsI0SLtDM7fvC?=
- =?us-ascii?Q?qX6mB3YhYKdfk+z/o5XDi2de9J5rdZMJYuXP726keXVL/s+LtaPaoJkMYo/z?=
- =?us-ascii?Q?g0NMECrNdBEXQmy6KCn11tmzY6ZaNJCwuHftuYgLV8QEefwuVtbfjUatG+Lz?=
- =?us-ascii?Q?vZtmj4lk22B9T9qvUaxv461Nsl2W0s+f2rSvequlfEWYGrnnvVmIms+dG3Wt?=
- =?us-ascii?Q?PMMq14hwddcdN8ufMqxUa4NsL/skf1z2Bs11IBsxvm3viq7sF4C5Se7GHd9v?=
- =?us-ascii?Q?9vB/N0S6A6s3om4Jl/WsGA2scTPbcKaRj22i+MfsBfUt2iPaz7DKrnvbln5Q?=
- =?us-ascii?Q?kBX3gZIqkuCHTmlh6z3pfMC+V2mvrsOhYBWnxaINh77VwaEhh2E/x3FCoGiZ?=
- =?us-ascii?Q?KvW3JDk0cEYF7HCjVj5M0QoaQd5mDN7hHrXiVPrXdUGq8aOOpHBj988r1I+c?=
- =?us-ascii?Q?b67bjUn5EWsMGJDITq5fvwV6FBYj7Yh0oRStLz5TIQXZ1JxGvXrvXB6J0oHD?=
- =?us-ascii?Q?b/uUyCMZg6DI3ciYp5365hCGfpbdwzWB4tp2HSUT+Tpf8Q=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bd87695-b79e-4d60-a329-08d9837273bb
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 17:56:24.2426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y/meUo3eKENU6RGbAYgVlPopb25yQ1iQqV3scRm4Wn1HZ58Y00ifVspF31GfVUEb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3901
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: W-eZ8d4Ruqo8IO3l2ET9-pFXz215VHej
-X-Proofpoint-ORIG-GUID: W-eZ8d4Ruqo8IO3l2ET9-pFXz215VHej
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-29_07,2021-09-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- bulkscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- mlxlogscore=707 phishscore=0 lowpriorityscore=0 impostorscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109290103
-X-FB-Internal: deliver
+Content-Type: multipart/mixed; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201119083024.119566-7-bjorn.topel@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 10:52:25AM +0800, Hou Tao wrote:
-> Factor out a helper bpf_prepare_st_ops_prog() to prepare trampoline
-> for BPF_PROG_TYPE_STRUCT_OPS prog. It will be used by .test_run
-> callback in following patch.
-Thanks for the patches.
 
-This preparation change should be the first patch instead.
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 155dfcfb8923..002bbb2c8bc7 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2224,4 +2224,9 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
->  			u32 **bin_buf, u32 num_args);
->  void bpf_bprintf_cleanup(void);
->  
-> +int bpf_prepare_st_ops_prog(struct bpf_tramp_progs *tprogs,
-> +			    struct bpf_prog *prog,
-> +			    const struct btf_func_model *model,
-> +			    void *image, void *image_end);
-Move it under where other bpf_struct_ops_.*() resides in bpf.h.
+Hi "Björn,
 
-> +
->  #endif /* _LINUX_BPF_H */
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 9abcc33f02cf..ec3c25174923 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -312,6 +312,20 @@ static int check_zero_holes(const struct btf_type *t, void *data)
->  	return 0;
->  }
->  
-> +int bpf_prepare_st_ops_prog(struct bpf_tramp_progs *tprogs,
-> +			    struct bpf_prog *prog,
-> +			    const struct btf_func_model *model,
-> +			    void *image, void *image_end)
-The existing struct_ops functions in the kernel now have naming like
-bpf_struct_ops_.*().  How about renaming it to
-bpf_struct_ops_prepare_trampoline()?
+I love your patch! Yet something to improve:
 
-> +{
-> +	u32 flags;
-> +
-> +	tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
-> +	tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
-> +	flags = model->ret_size > 0 ? BPF_TRAMP_F_RET_FENTRY_RET : 0;
-> +	return arch_prepare_bpf_trampoline(NULL, image, image_end,
-> +					   model, flags, tprogs, NULL);
-> +}
-> +
->  static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->  					  void *value, u64 flags)
->  {
-> @@ -368,7 +382,6 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->  		const struct btf_type *mtype, *ptype;
->  		struct bpf_prog *prog;
->  		u32 moff;
-> -		u32 flags;
->  
->  		moff = btf_member_bit_offset(t, member) / 8;
->  		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
-> @@ -430,14 +443,9 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->  			goto reset_unlock;
->  		}
->  
-> -		tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
-> -		tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
-> -		flags = st_ops->func_models[i].ret_size > 0 ?
-> -			BPF_TRAMP_F_RET_FENTRY_RET : 0;
-This change can't apply to bpf-next now because
-commit 356ed64991c6 ("bpf: Handle return value of BPF_PROG_TYPE_STRUCT_OPS prog")
-is not pulled into bpf-next yet.  Please mention the dependency
-in the cover letter if it is still the case in v2.
+[auto build test ERROR on 4e99d115d865d45e17e83478d757b58d8fa66d3c]
 
-> -		err = arch_prepare_bpf_trampoline(NULL, image,
-> -						  st_map->image + PAGE_SIZE,
-> -						  &st_ops->func_models[i],
-> -						  flags, tprogs, NULL);
-> +		err = bpf_prepare_st_ops_prog(tprogs, prog,
-> +					      &st_ops->func_models[i],
-> +					      image, st_map->image + PAGE_SIZE);
->  		if (err < 0)
->  			goto reset_unlock;
->  
-> -- 
-> 2.29.2
-> 
+url:    https://github.com/0day-ci/linux/commits/Bj-rn-T-pel/Introduce-preferred-busy-polling/20210929-234934
+base:   4e99d115d865d45e17e83478d757b58d8fa66d3c
+config: um-kunit_defconfig (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/0day-ci/linux/commit/f481c00164924dd5d782a92cc67897cc7f804502
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Bj-rn-T-pel/Introduce-preferred-busy-polling/20210929-234934
+        git checkout f481c00164924dd5d782a92cc67897cc7f804502
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        make W=1 O=build_dir ARCH=um SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   cc1: warning: arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+   In file included from fs/select.c:32:
+   include/net/busy_poll.h: In function 'sk_mark_napi_id_once':
+>> include/net/busy_poll.h:150:36: error: 'const struct sk_buff' has no member named 'napi_id'
+     150 |  __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
+         |                                    ^~
+
+
+vim +150 include/net/busy_poll.h
+
+   145	
+   146	/* variant used for unconnected sockets */
+   147	static inline void sk_mark_napi_id_once(struct sock *sk,
+   148						const struct sk_buff *skb)
+   149	{
+ > 150		__sk_mark_napi_id_once_xdp(sk, skb->napi_id);
+   151	}
+   152	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--Kj7319i9nmIyA2yE
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+HXT8LwqSwgAERwAA
+
+--Kj7319i9nmIyA2yE--
