@@ -2,77 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06FE41CDA7
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 22:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEC941CDEA
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 23:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346776AbhI2U7l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 16:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S1346880AbhI2VSz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 17:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346814AbhI2U7k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:59:40 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61725C061766;
-        Wed, 29 Sep 2021 13:57:59 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so3018617pjb.1;
-        Wed, 29 Sep 2021 13:57:59 -0700 (PDT)
+        with ESMTP id S232258AbhI2VSy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 17:18:54 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD9DC06161C;
+        Wed, 29 Sep 2021 14:17:13 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id g2so3060201pfc.6;
+        Wed, 29 Sep 2021 14:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uuv012X9QP66aLKBFKUSvigF4hVX/EMIbUUZ6Wm9ThE=;
-        b=QhNPLtw65YMvy2mrqajEF01CyVKSll0La0y0yQDDDnqHwhsNfGYUcA+x8oX2vXPnSZ
-         SY29t4c++w1HNYTq64PGotoK79TRWmOPbLYFZoLFV9oYvrcTKN7z5qLHre8pdCQ2oVJy
-         2wPk1nEICjPCALUfbC5MxtHD8E8cwTX0PYdub41h7Rxo/81ZmcrSHeNjN3S4ile4VgBg
-         bl1bIH0QqH/cAfXvBXP+iH3hJ+cP+Qf/uk6f0dlRU1V/GqawZtRm7lSoOcUX3aAspHyY
-         pVNojYrpwOsomWgltXLtf461gby8iRgIV4KTk5ALcALNDCssT8bHgYHTWv1ow4qRjM8O
-         AwDQ==
+        bh=ULTC7uFCOb8co9nVQnkd69sN3DLPbqoM7kYoB4W6cDo=;
+        b=lm3kthFnazHXttVvxmdnJ2lpddbf2XDDyEtVHiu5kq5+E/TNrxO3zShoJxK27vGl5M
+         hLkZkRTMLcuesvn+vFn4Ge75LG4H7FLCIN7FbUOH8nZU+A/OTkRnJ0PI+ci6nlJLkbFe
+         1bBqwdJex2HHw3sywCY1BZuTJT+y6lXovyxKl9FywmFBwmQ25E/FgXRnZfHhc+Rw6yu4
+         xNJTkuF81lzc2+IdHEn+mmmAstIfe4vSEgy1YJcV8EakedVVyWgvQJVx2YThuDmFwz65
+         FPShZHE0KdPj/BpB4vvhSqMznDCAy+TqnEGtK3aS7y7GiqH875fT8GQhmGE0mo0/7flf
+         n5vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uuv012X9QP66aLKBFKUSvigF4hVX/EMIbUUZ6Wm9ThE=;
-        b=2i5zciVKQma1bdIppVhq4YTs1UrYz7VS7xKO+A/hcF1HPyHIqEZp6EDgiEzMSoV925
-         Cf/ETbL/wzI5IQY4XBBtRHNX/YQGbtPk+4aznIv7HC6Jp4fSkkCYjYmh9hb/eQNWEtJM
-         LPjyG8vvfpTCHQD10N+xhi1GpnErK6PpSQi+b8NuM4fMP3Kuq0Z73hDnFOtOHL7C8wE9
-         kkwVSO9Jxv661jT8E9XuqPhDRB3MVuOyRUTJW47MljB7G/xisBQi3WAra/Bd8HRi4mmC
-         ohxdphTHc0tV37948LUCuIkMihHbJE5WzvxZ2MBildccnsvCcmsCWFFWhmtycUfjtted
-         Rmog==
-X-Gm-Message-State: AOAM53357lTPd+nAiiJD8RW6OM8v700IQ7qH0CilpZ+7KVdi4XN3ajAU
-        VjlS41iK4kSfJOKHXBRv4Aze5xzJlP77KUPt2YE=
-X-Google-Smtp-Source: ABdhPJwocTgkBLViVZ3xqdqJqUZ6zVVqC7p+KlmZhWBO8LNx0BvRCzILFlTvm/1lknrQsvtn88oysXbNGZMLfFbNfo8=
-X-Received: by 2002:a17:902:bb95:b0:13e:6924:30e5 with SMTP id
- m21-20020a170902bb9500b0013e692430e5mr555019pls.20.1632949078934; Wed, 29 Sep
- 2021 13:57:58 -0700 (PDT)
+        bh=ULTC7uFCOb8co9nVQnkd69sN3DLPbqoM7kYoB4W6cDo=;
+        b=5jcfcSHpZQOdq2P4mWrs8SMfyix7IoLQ662uO2X50BkEZdUTShsH88iY9m4WrUJevP
+         Vox0JQib3+djz/eHlEVjA5AcZFB014Uah/2loZ2/EVSU7SlwLET/fgt4IOcEDHFdJ9b5
+         KHpgCBaKXMu2n3+dVii22er6snvrtipgo/tUbbYvnyz+Gh5aoYW9pJ4fYgQaRD8mwVXQ
+         mmgov9wBKoazoBfGy7hJsIukVYsLnuMi7Pyypuq69LEOM3Iwezqi2x65AzXb7/jGLMf5
+         4U/K0gB63/rO3MJ/NRJZ3zSIUt1UBCidbXxWIR7caf2E4P989IP937VPEsp6pAzyyEBn
+         I09Q==
+X-Gm-Message-State: AOAM533BG0fEkXm232iGFxeySgyZwgHaqoDLuO8TWlXki6TQ1oIo/zCs
+        JSnHJvl3Px5I6Y76twmO6v/fY+zOTsxsJKg1Jxc=
+X-Google-Smtp-Source: ABdhPJxK7Y+GYLhrsVzMbbLmfBk8/ATnKnMWoKns7LcaEVHzKqcybRRET83y8SkXgeSPrXDx6tUoyQPsY5quo84VXc4=
+X-Received: by 2002:a63:374c:: with SMTP id g12mr1778357pgn.35.1632950232758;
+ Wed, 29 Sep 2021 14:17:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210913231108.19762-1-xiyou.wangcong@gmail.com>
- <CAADnVQJFbCmzoFM8GGHyLWULSmX75=67Tu0EnTOOoVfH4gE+HA@mail.gmail.com>
- <CAM_iQpX2prCpPDmO1U0A_wyJi_LS4wmd9MQiFKiqQT8NfGNNnw@mail.gmail.com>
- <CAADnVQJJHLuaymMEdDowharvyJr+6ta2Tg9XAR3aM+4=ysu+bg@mail.gmail.com>
- <CAM_iQpUCtXRWhMqSaoymZ6OqOywb-k4R1_mLYsLCTm7ABJ5k_A@mail.gmail.com>
- <CAADnVQJcUspoBzk9Tt3Rx_OH7-MB+m1xw+vq2k2SozYZMmpurg@mail.gmail.com> <CAM_iQpVaVvaEn2ORfyZQ-FN56pCdE4YPa0r2E+VgyZzvEP31cQ@mail.gmail.com>
-In-Reply-To: <CAM_iQpVaVvaEn2ORfyZQ-FN56pCdE4YPa0r2E+VgyZzvEP31cQ@mail.gmail.com>
+References: <20210928093100.27124-1-lmb@cloudflare.com>
+In-Reply-To: <20210928093100.27124-1-lmb@cloudflare.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 29 Sep 2021 13:57:48 -0700
-Message-ID: <CAADnVQJX8OpXhQ66jVSN1ws8tav5R8yCERr6eaS9POA+QhRx-A@mail.gmail.com>
-Subject: Re: [RFC Patch net-next v2] net_sched: introduce eBPF based Qdisc
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>
+Date:   Wed, 29 Sep 2021 14:17:01 -0700
+Message-ID: <CAADnVQ+UJ5bhRNdnHM62_XFzMp3q1-Njh80ZNvs=4=PH1jAmpw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: do not invoke the XDP dispatcher for
+ PROG_RUN with single repeat
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 10:40 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > That's why approaching the goal with more generic ambitions was requested.
+On Tue, Sep 28, 2021 at 2:31 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
-> This goal has nothing to do with my goal, I am pretty sure we have
-> a lot of queues in networking, here I am only interested in Qdisc for
-> sure. If you need queues in any other place, it is your job, not mine.
+> We have a unit test that invokes an XDP program with 1m different
+> inputs, aka 1m BPF_PROG_RUN syscalls. We run this test concurrently
+> with slight variations in how we generated the input.
+>
+> Since commit f23c4b3924d2 ("bpf: Start using the BPF dispatcher in BPF_TEST_RUN")
+> the unit test has slowed down significantly. Digging deeper reveals that
+> the concurrent tests are serialised in the kernel on the XDP dispatcher.
+> This is a global resource that is protected by a mutex, on which we contend.
+>
+> Fix this by not calling into the XDP dispatcher if we only want to perform
+> a single run of the BPF program.
+>
+> See: https://lore.kernel.org/bpf/CACAyw9_y4QumOW35qpgTbLsJ532uGq-kVW-VESJzGyiZkypnvw@mail.gmail.com/
+>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 
-Now it's yours.
-Applying queuing discipline to non-skb context may be not your target
-but it's a reasonable and practical request to have.
+Applied. Thanks
