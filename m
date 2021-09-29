@@ -2,102 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934D641BF17
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 08:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A659641BFFE
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 09:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244320AbhI2GZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 02:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S243249AbhI2Hhb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 03:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244226AbhI2GZj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:25:39 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1585C061746
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 23:23:58 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id b82so3026119ybg.1
-        for <bpf@vger.kernel.org>; Tue, 28 Sep 2021 23:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=99Z30LtJUkiTe6vhO1kd8LoPj65Ld4vLFvR/mlhgocU=;
-        b=BwZCyQauknXbNlQ7Fcu2NexrrKt6rpP2s5z3Ixk4ryX6xWzIirWB9d3zmf31awldjq
-         AjbDL9nDJ4JaW1HHT0Nu/PP1oIUqc4q/LwT+x69SNHLzHscOvo/7+Z7NEvt6KLE3tDrG
-         CqTewETQStmuSb0RjeDE6mnwsyU/NxPzhs2NULDRJoeEs45X6P7qx4iepN3DZ26pazHV
-         b4jUGjYg8z8ms1PDeFw3zYOTpE9SSIW+FGNqr9fXk+ZUUAkb7XeQpG3+tnNVhL/YLY3o
-         LHJO8V1xbzP3J9NRl3/MP+R7hPQ5Dmme4WqQv/RJ7AQgaEmdDQb/gOxMFwbm+Xw2uyd1
-         NMDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=99Z30LtJUkiTe6vhO1kd8LoPj65Ld4vLFvR/mlhgocU=;
-        b=2dFsaZ3VT/b9aLIhOO3IlJPVvqBDf5EinpGgn2euhQyzpT3GVTa7tuF0KNDHLYsZzT
-         uLFtJCfTLSL3bVZMfI7SKJwpHCi71xrghVnkU+IcdIhxOssq2JL9KsblA0+OJjZwROSC
-         MOyUgb66NuQQpkrMENG4dgdXq6CKnwG1mxdj+t7dRKhlaRmJUHRByWXu/EBnOy4uYHm/
-         /7BwC6MMcsGsZI4DzQSDwUj6BdMvxdHrvEXPEC2yxgzc8r/YYX12DNBRFBINqh4JTAEk
-         gwcdbhFhQeQt6SvzDyuSfjmcWsD7Wbj7FjbwZdwdeGdB8b0OC3H9OoVw6VrkbnvMlddQ
-         61gA==
-X-Gm-Message-State: AOAM532g7oMhWus7OWI/uACKWu8UtpsiIoeU/skF2+DeYxdJOP5lkb4/
-        pRARvW9JX5LMRinMDrUWY6kIgh/HoAu331vbjPQ=
-X-Google-Smtp-Source: ABdhPJweh1rv5MlbR3U7wJEtjONBLitga7L2uCBzYp+3dygprb+hUSrrzpwLJpcEVTjXngn1OEj9RR9nGVvRnsDcFI4=
-X-Received: by 2002:a25:7c42:: with SMTP id x63mr12508219ybc.225.1632896638063;
- Tue, 28 Sep 2021 23:23:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929033000.3711921-1-yhs@fb.com>
-In-Reply-To: <20210929033000.3711921-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Sep 2021 23:23:47 -0700
-Message-ID: <CAEf4Bzb9pCbwC0jncHM0F3py0xkmNc_XjOpUDH1Gm4=SQZ-4gA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix probe_user test failure
- with clang build kernel
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S243109AbhI2Hhb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 03:37:31 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8235FC06161C;
+        Wed, 29 Sep 2021 00:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TzOk+Wz70ArZzrcR1eNSERfP7JI3vRiE+D6/GGEzaQ8=; b=UtYO6JmsxqallW5QbSQE/Ib/gZ
+        5Ig8J0n7C1sGHBx+M8crNtQ6bzRP6Y7rgj1vIiqDD8CUh5oKNuJevGD5I16c5UKu5iGy/o2UonHED
+        jNOLHAjhpfsEpL3idm4D8VoUzb3xpJda986YarPiDTaAuUh/bck1yLeH13BWU9VMoasPbyS5RXb//
+        ry5bKTHxYz2mc3NKOh4gKWIlik9GLQTa+wFyZHuiWkJlO0eVLvDI8kBaRuckJg5QK8iaf6A52IC0R
+        o74Z4LjTWGzl09Fld6TtCnUk6X31CBK8bMUnJs43lIQFvIqvKaVczvrjnZRe6G0+eXtkU9w/ka0Nx
+        h/Wjs6TA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVU80-006fMA-P5; Wed, 29 Sep 2021 07:35:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2BED30029A;
+        Wed, 29 Sep 2021 09:35:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D9D002BBF8379; Wed, 29 Sep 2021 09:35:43 +0200 (CEST)
+Date:   Wed, 29 Sep 2021 09:35:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>, like.xu@linux.intel.com
+Subject: Re: bpf_get_branch_snapshot on qemu-kvm
+Message-ID: <YVQXT5piFYa/SEY/@hirez.programming.kicks-ass.net>
+References: <0E5E6FCA-23ED-4CAA-ADEA-967430C62F6F@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0E5E6FCA-23ED-4CAA-ADEA-967430C62F6F@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 8:30 PM Yonghong Song <yhs@fb.com> wrote:
->
-> clang build kernel failed the selftest probe_user.
->   $ ./test_progs -t probe_user
->   $ ...
->   $ test_probe_user:PASS:get_kprobe_res 0 nsec
->   $ test_probe_user:FAIL:check_kprobe_res wrong kprobe res from probe read: 0.0.0.0:0
->   $ #94 probe_user:FAIL
->
-> The test attached to kernel function __sys_connect(). In net/socket.c, we have
->   int __sys_connect(int fd, struct sockaddr __user *uservaddr, int addrlen)
->   {
->         ......
->   }
->   ...
->   SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
->                   int, addrlen)
->   {
->         return __sys_connect(fd, uservaddr, addrlen);
->   }
->
-> The gcc compiler (8.5.0) does not inline __sys_connect() in syscall entry
-> function. But latest clang trunk did the inlining. So the bpf program
-> is not triggered.
->
-> To make the test more reliable, let us kprobe the syscall entry function
-> instead. Note that x86_64, arm64 and s390 have syscall wrappers and they have
-> to be handled specially.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+On Wed, Sep 29, 2021 at 12:04:21AM +0000, Song Liu wrote:
+> Hi Peter, 
+> 
+> We have see the warning below while testing the new bpf_get_branch_snapshot 
+> helper, on a QEMU vm (/usr/bin/qemu-system-x86_64 -enable-kvm -cpu host ...). 
+> This issue doesn't happen on bare metal systems (no QEMU). 
+> 
+> We didn't cover this case, as LBR didn't really work in QEMU. But it seems to
+> work after I upgrade the host kernel to 5.12. 
+> 
+> At the moment, we don't have much idea on how to debug and fix the issue. Could 
+> you please share your thoughts on this? 
 
-Applied to bpf-next, thanks.
+Well, that's virt, afaik stuff not working is like a feature there or
+something, who knows. I've Cc'ed Like Xu who might have clue since he
+did the patches.
 
->  .../selftests/bpf/prog_tests/probe_user.c     |  4 +--
->  .../selftests/bpf/progs/test_probe_user.c     | 28 +++++++++++++++++--
->  2 files changed, 28 insertions(+), 4 deletions(-)
->
+Virt just ain't worth the pain if you ask me.
 
-[...]
+> 
+> Thanks in advance!
+> 
+> Song
+> 
+> 
+> 
+> 
+> ============================== 8< ============================
+> 
+> [  139.494159] unchecked MSR access error: WRMSR to 0x3f1 (tried to write 0x0000000000000000) at rIP: 0xffffffff81011a8b (intel_pmu_snapshot_branch_stack+0x3b/0xd0)
+> [  139.495587] Call Trace:
+> [  139.495845]  bpf_get_branch_snapshot+0x17/0x40
+> [  139.496285]  bpf_prog_35810402cd1d294c_test1+0x33/0xe6c
+> [  139.496791]  bpf_trampoline_10737534536_0+0x4c/0x1000
+> [  139.497274]  bpf_testmod_loop_test+0x5/0x20 [bpf_testmod]
+> [  139.497799]  bpf_testmod_test_read+0x71/0x1f0 [bpf_testmod]
+> [  139.498332]  ? bpf_testmod_loop_test+0x20/0x20 [bpf_testmod]
+> [  139.498878]  ? sysfs_kf_bin_read+0xbe/0x110
+> [  139.499284]  ? bpf_testmod_loop_test+0x20/0x20 [bpf_testmod]
+> [  139.499829]  kernfs_fop_read_iter+0x1ac/0x2c0
+> [  139.500245]  ? kernfs_create_link+0x110/0x110
+> [  139.500667]  new_sync_read+0x24b/0x360
+> [  139.501037]  ? __x64_sys_llseek+0x1e0/0x1e0
+> [  139.501444]  ? rcu_read_lock_held_common+0x1a/0x50
+> [  139.501942]  ? rcu_read_lock_held_common+0x1a/0x50
+> [  139.502404]  ? rcu_read_lock_sched_held+0x5f/0xd0
+> [  139.502865]  ? rcu_read_lock_bh_held+0xb0/0xb0
+> [  139.503294]  ? security_file_permission+0xe7/0x2c0
+> [  139.503758]  vfs_read+0x1a4/0x2a0
+> [  139.504091]  ksys_read+0xc0/0x160
+> [  139.504413]  ? vfs_write+0x510/0x510
+> [  139.504756]  ? ktime_get_coarse_real_ts64+0xe4/0xf0
+> [  139.505234]  do_syscall_64+0x3a/0x80
+> [  139.505581]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  139.506066] RIP: 0033:0x7fb8a05728b2
+> [  139.506413] Code: 97 20 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b6 0f 1f 80 00 00 00 00 f3 0f 1e fa 8b 05 96 db 20 00 85 c0 75 12 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 41 54 49 89 d4 55 48 89
+> [  139.508164] RSP: 002b:00007ffe66315a28 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [  139.508870] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb8a05728b2
+> [  139.509545] RDX: 0000000000000064 RSI: 0000000000000000 RDI: 0000000000000010
+> [  139.510225] RBP: 00007ffe66315a60 R08: 0000000000000000 R09: 00007ffe66315907
+> [  139.510897] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000040c8b0
+> [  139.511570] R13: 00007ffe66315cc0 R14: 0000000000000000 R15: 0000000000000000 
