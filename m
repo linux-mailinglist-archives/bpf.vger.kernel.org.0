@@ -2,80 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C723941C31F
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 13:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9B141C326
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 13:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243658AbhI2LC5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 07:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245626AbhI2LCz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:02:55 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCF4C061762
-        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 04:01:14 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id t18so3619609wrb.0
-        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 04:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6Z6L+j4zKC5mwS2K6Vzz9EZbJHlOytxXoT9Hbkkw8oQ=;
-        b=EZpKgdzBFIcGT3DnbiBYSbHQHO4PMtixDuggsUkTyxE/zUBk2STDNvWY9uvUUmZh5T
-         3EN9ewItLMay+WD4/Q0+xebLviBs5/X6tTGNPYJB4kFfHSagvMyNvXQkwi+xX0IwIE4J
-         zV1Fz7Cx04hDy+kyvl6clHt7Q+NAxS6DXamXuKPePpcaaXWlN5O99uWKvFnmCkx7mJaE
-         yfITxRegg+hh0X/abwrsQC/bkOCgCIG950CsZdbOrfHdgmEJ+9+YCAlQxw04UE1weIJk
-         E1ZQ5LhyvwUTBGItRP+xQF1GYMvKPBY9nctS8Cvn/0+sdKk8zDBE84Fu8mhrfCiyIXtY
-         4Etw==
+        id S245640AbhI2LH3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 07:07:29 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:43773 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245638AbhI2LH2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 07:07:28 -0400
+Received: by mail-wr1-f43.google.com with SMTP id x20so3524129wrg.10
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 04:05:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6Z6L+j4zKC5mwS2K6Vzz9EZbJHlOytxXoT9Hbkkw8oQ=;
-        b=r9LJK86I/HzCjyOML+Wmv4RrPBq4pnvdcgf4SWgNxKcckJJ67qgJsDz1q+u/wyDjzL
-         IKucCHA6jcX+4KSn37Z7g2bdiDJEjQCkKagBMWfHy7oYTXhnayRF4+xxMw8mYmQ4Jlja
-         05cA/vaAJH/5A76bBaj0GaHzBlZn3dhYzhrwaBBzoEWi6wnvtodWEuwq5F/+Vi8d3MSY
-         n31Hy5hAAbCwVVNgO4nXxIRN2O7o0JOjjrP/VcQnrvJl2kD7c0Vq+jqwR1koKqWtK3Yc
-         V4Jhaujr17nUZCSrwxScJujSfKVCVYfzZJ1ueisj7VbtVsboddOkFdZSOZskGrNX2qjm
-         2SZw==
-X-Gm-Message-State: AOAM533h/YwNaBhhHveOIgIRqhDFEE9AiMbg5ec+TSYPmhSuW4WSOLKG
-        2KePy0951jJP5B3NEHUeiQ4hG2mKWMH0xoemDaE=
-X-Google-Smtp-Source: ABdhPJyVDM0QsNz06BTICVam9tSg0mpnrlYX1XgnGvRAh4h26OfMLHYX+HLe0WgPjBcIR6/oo9j7LoNPe9iEU8GktG8=
-X-Received: by 2002:a5d:4d91:: with SMTP id b17mr5884428wru.321.1632913272644;
- Wed, 29 Sep 2021 04:01:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923000540.47344-1-luca.boccassi@gmail.com> <1aa77fde2f7f4637d9eae7807c5c55063d6a4066.camel@debian.org>
-In-Reply-To: <1aa77fde2f7f4637d9eae7807c5c55063d6a4066.camel@debian.org>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 29 Sep 2021 13:01:00 +0200
-Message-ID: <CAJ+HfNjsJZx62ZnA9Gi-rCuL=yBVLKZke7J+ruQFHAAKarpk=g@mail.gmail.com>
-Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR BSD-2-Clause
-To:     Luca Boccassi <bluca@debian.org>,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version;
+        bh=u/GRJSRDNaRjaqe7aITj2N6LmSMTr6ZHtHD11ND2M0M=;
+        b=HBwUkTn9c4x6yfEzxJQCwlah1iy/E3ZohU1lnm9Sbk+ZXKqzOgvDIsrAJq5FGyxJby
+         g3892WVMu/BxiU+4gVFYgSOcQqmUGAiCjJ/HdPrHJD+TGjC9sZ3mQnzf0aHT2Bu1EzzZ
+         s/XFufBle+4EDv3o3a1rgl+9SVbWtjqwg4m6PvHRIT8Pcn3IS3Qbep9ye1RVSGJ5VXJl
+         fO/Bo1gtUWdMIidKdC4r4xGqsWu/mSshF0SP/8ApojkZsuNDKMujPxylgO1Z0F6Ub+wI
+         5FE1jmB9mq4vhptVDl79VU80P5998enb0eTdh/9SUzAitJw6SISHRiIqxED4MxnZsw6g
+         pjDQ==
+X-Gm-Message-State: AOAM533Vd0Mrc1Pdzr/f6z/2FiLpppE4KTfBcySiJlpr7cVCL9QcG2GD
+        fAMCYCV5fpa9ujpNK4KnaPw=
+X-Google-Smtp-Source: ABdhPJw5xDZjQSxWyEMreel/9vUHX0mXjw68/OIm42Qa0YYWwROwJX7UlkwbrTwP/aEeJazaSsRoWg==
+X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr5823149wrx.161.1632913546936;
+        Wed, 29 Sep 2021 04:05:46 -0700 (PDT)
+Received: from localhost ([137.220.125.106])
+        by smtp.gmail.com with ESMTPSA id h18sm1890485wrs.75.2021.09.29.04.05.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 04:05:46 -0700 (PDT)
+Message-ID: <ed448659f66f2142151b34e6af9c98b46abdaaf0.camel@debian.org>
+Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
+ BSD-2-Clause
+From:   Luca Boccassi <bluca@debian.org>
+To:     =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
         "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Cc:     bpf <bpf@vger.kernel.org>, joe@ovn.org,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     bpf <bpf@vger.kernel.org>,
+        "Mcnamara, John" <john.mcnamara@intel.com>
+Date:   Wed, 29 Sep 2021 12:05:44 +0100
+In-Reply-To: <CAJ+HfNjsJZx62ZnA9Gi-rCuL=yBVLKZke7J+ruQFHAAKarpk=g@mail.gmail.com>
+References: <20210923000540.47344-1-luca.boccassi@gmail.com>
+         <1aa77fde2f7f4637d9eae7807c5c55063d6a4066.camel@debian.org>
+         <CAJ+HfNjsJZx62ZnA9Gi-rCuL=yBVLKZke7J+ruQFHAAKarpk=g@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-FF3UljuYtNQTG73l1hL2"
+User-Agent: Evolution 3.38.3-1+plugin 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 28 Sept 2021 at 17:44, Luca Boccassi <bluca@debian.org> wrote:
->
 
-[...]
+--=-FF3UljuYtNQTG73l1hL2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->
-> Gentle ping. Bj=C3=B6rn and Joe, would be great to hear from you on the
-> above. TIA!
->
+On Wed, 2021-09-29 at 13:01 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
+> On Tue, 28 Sept 2021 at 17:44, Luca Boccassi <bluca@debian.org> wrote:
+> >=20
+>=20
+> [...]
+>=20
+> >=20
+> > Gentle ping. Bj=C3=B6rn and Joe, would be great to hear from you on the
+> > above. TIA!
+> >=20
+>=20
+> Luca, apologies for the slow response. I'm no longer at Intel, and I'm
+> not sure if an Intel-person needs to do anything? Magnus, do you know?
+>=20
+> FWIW:
+> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
-Luca, apologies for the slow response. I'm no longer at Intel, and I'm
-not sure if an Intel-person needs to do anything? Magnus, do you know?
+No worries! Unless you had an arrangement in place that made you the
+copyright owner of that contribution (eg: it was done in spare time,
+etc), then yes we'd need an ack to the relicense from an intel.com
+email address to be above board.
 
-FWIW:
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+John, is this something you could help with, using your manager hat?
+Full context:
 
-> --
-> Kind regards,
-> Luca Boccassi
+https://lore.kernel.org/bpf/20210923000540.47344-1-luca.boccassi@gmail.com/=
+T/#u
+
+--=20
+Kind regards,
+Luca Boccassi
+
+--=-FF3UljuYtNQTG73l1hL2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmFUSIgACgkQKGv37813
+JB6kAQ/9EqGjFwh9MdqbN+CNZdmXPQa0zIjX4mTHpWPZZPCJsDQQ0rKBgI/JOufc
+ujBjXk486ul1eaZgjTQl7uV4bNyJ9FEpVyvHJ4LtjjXD3Xpxu0NYkZDOTFNS7Oty
+qT5OXQ+bAJnOM6UyVFX4fZ9flGsiC7UpFm3HRLdMUHW0ZlOfeiTVxEwQn7L+Us35
+X/vz6XzgJOkB5aEd51G3vGkl99c7g/pOdsemx7KtwUfYASfVOWv+6UFmaQFX6b+k
+2kwl08G7fBbCXqOIk7WDs/yVbf26jqWNPb26XXEAnI2jqUmSxgd3/YbnaAJZdjDK
+HPEgDhah9Le8UhCDOm56n+qEC4Io6AnkwXXOFrkv0GbmKXYI+J3YLB/lBP6PZRrC
+rE9Y9QJKbo53SysTM3x7rwSxUmOmSXElDDsfkIRCwlKDt2dIh0wRqoBXUsCihXT2
+xnK6drRoGBPsU4L7/4qeU1OqO6EOOuVGwBiOLWzcQBZTh+htk2RZqzHKwOhP7a8+
+2HwR3dlkk9bXYbgZljFGNa0Kn7J4zfI+0ztQdV8ipLls5uxS3SuxoUrDXSVSXTRw
+/c+iKtG9Hc0EvSps2LYSU4pzSmfKbVpCJ+wswu0nPMNVZONx/cPweAZW7GF/Xu7I
+y2V487yDDJJwDRw/VspbsE+773YTNWBZW1iRRegvWIUcaCjupVk=
+=SOh0
+-----END PGP SIGNATURE-----
+
+--=-FF3UljuYtNQTG73l1hL2--
