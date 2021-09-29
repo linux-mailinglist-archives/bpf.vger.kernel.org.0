@@ -2,114 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9B141C326
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 13:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399CA41C348
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 13:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245640AbhI2LH3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 07:07:29 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:43773 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245638AbhI2LH2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:07:28 -0400
-Received: by mail-wr1-f43.google.com with SMTP id x20so3524129wrg.10
-        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 04:05:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=u/GRJSRDNaRjaqe7aITj2N6LmSMTr6ZHtHD11ND2M0M=;
-        b=HBwUkTn9c4x6yfEzxJQCwlah1iy/E3ZohU1lnm9Sbk+ZXKqzOgvDIsrAJq5FGyxJby
-         g3892WVMu/BxiU+4gVFYgSOcQqmUGAiCjJ/HdPrHJD+TGjC9sZ3mQnzf0aHT2Bu1EzzZ
-         s/XFufBle+4EDv3o3a1rgl+9SVbWtjqwg4m6PvHRIT8Pcn3IS3Qbep9ye1RVSGJ5VXJl
-         fO/Bo1gtUWdMIidKdC4r4xGqsWu/mSshF0SP/8ApojkZsuNDKMujPxylgO1Z0F6Ub+wI
-         5FE1jmB9mq4vhptVDl79VU80P5998enb0eTdh/9SUzAitJw6SISHRiIqxED4MxnZsw6g
-         pjDQ==
-X-Gm-Message-State: AOAM533Vd0Mrc1Pdzr/f6z/2FiLpppE4KTfBcySiJlpr7cVCL9QcG2GD
-        fAMCYCV5fpa9ujpNK4KnaPw=
-X-Google-Smtp-Source: ABdhPJw5xDZjQSxWyEMreel/9vUHX0mXjw68/OIm42Qa0YYWwROwJX7UlkwbrTwP/aEeJazaSsRoWg==
-X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr5823149wrx.161.1632913546936;
-        Wed, 29 Sep 2021 04:05:46 -0700 (PDT)
-Received: from localhost ([137.220.125.106])
-        by smtp.gmail.com with ESMTPSA id h18sm1890485wrs.75.2021.09.29.04.05.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 04:05:46 -0700 (PDT)
-Message-ID: <ed448659f66f2142151b34e6af9c98b46abdaaf0.camel@debian.org>
-Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
- BSD-2-Clause
-From:   Luca Boccassi <bluca@debian.org>
-To:     =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        "Mcnamara, John" <john.mcnamara@intel.com>
-Date:   Wed, 29 Sep 2021 12:05:44 +0100
-In-Reply-To: <CAJ+HfNjsJZx62ZnA9Gi-rCuL=yBVLKZke7J+ruQFHAAKarpk=g@mail.gmail.com>
-References: <20210923000540.47344-1-luca.boccassi@gmail.com>
-         <1aa77fde2f7f4637d9eae7807c5c55063d6a4066.camel@debian.org>
-         <CAJ+HfNjsJZx62ZnA9Gi-rCuL=yBVLKZke7J+ruQFHAAKarpk=g@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-FF3UljuYtNQTG73l1hL2"
-User-Agent: Evolution 3.38.3-1+plugin 
+        id S245589AbhI2LV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 07:21:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44020 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231859AbhI2LV3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Sep 2021 07:21:29 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TA4qrk030673;
+        Wed, 29 Sep 2021 07:19:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=ZWpHIqp5l0j8Ky+IoPtjh0WeLQd6iPeLN2HuHiozjH4=;
+ b=CgB3sn9JzEY2JvS/zrOLmsxoqm82jhxlcsljeA4eR9j5qZquWn/G+uMwD07QOhGSwGFj
+ LwNrPRZ0jX11b5GP9tFwXJb7AHkVt6S+3Gure8E/x0wrlMJmn7ZEMVuPa1BkC8Yc3k1V
+ zoQDa4Fayw14nG2j6WOqCoUA2STkHFYlk8aZzaFs/hCoOmPb3SthuJK99u0W75O18A3Y
+ QTAGW8MRPHbzUXXszKVlRerI4iEzJ0X1Sxhx2kHdS8XEqyVPuH07DM+8XQEinFs9uZqi
+ VW16ot1iDvkrSDHqYVf/9N/uJTT55kGCCd6gGWLPDHmrtPYrQHwhsL0yHJbgpnBN7vry BQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bcp2w1ejc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 07:19:11 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18TB6O6G009171;
+        Wed, 29 Sep 2021 07:19:11 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bcp2w1ej1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 07:19:11 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18TBC0rm024826;
+        Wed, 29 Sep 2021 11:19:09 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3b9uda55kh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 11:19:09 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18TBJ5NH37421448
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Sep 2021 11:19:05 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C80442072;
+        Wed, 29 Sep 2021 11:19:05 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8552B42070;
+        Wed, 29 Sep 2021 11:19:00 +0000 (GMT)
+Received: from hbathini-workstation.ibm.com.com (unknown [9.43.83.199])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Sep 2021 11:19:00 +0000 (GMT)
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     naveen.n.rao@linux.ibm.com, christophe.leroy@csgroup.eu,
+        mpe@ellerman.id.au, ast@kernel.org, daniel@iogearbox.net
+Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Hari Bathini <hbathini@linux.ibm.com>
+Subject: [PATCH v4 0/8] bpf powerpc: Add BPF_PROBE_MEM support in powerpc JIT compiler
+Date:   Wed, 29 Sep 2021 16:48:47 +0530
+Message-Id: <20210929111855.50254-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3mklSmZIKOAObbZQf-F4yNRi-6FsQX9j
+X-Proofpoint-ORIG-GUID: 1qANcUD5KHoFXfvMlJ2b909Vrl8cbcyV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-29_04,2021-09-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 adultscore=0 suspectscore=0 clxscore=1015
+ spamscore=0 lowpriorityscore=0 mlxlogscore=867 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109290068
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Patch #1 & #2 are simple cleanup patches. Patch #3 refactors JIT
+compiler code with the aim to simplify adding BPF_PROBE_MEM support.
+Patch #4 introduces PPC_RAW_BRANCH() macro instead of open coding
+branch instruction. Patch #5 & #7 add BPF_PROBE_MEM support for PPC64
+& PPC32 JIT compilers respectively. Patch #6 & #8 handle bad userspace
+pointers for PPC64 & PPC32 cases respectively.
 
---=-FF3UljuYtNQTG73l1hL2
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Changes in v4:
+* Addressed all the review comments from Christophe.
 
-On Wed, 2021-09-29 at 13:01 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
-> On Tue, 28 Sept 2021 at 17:44, Luca Boccassi <bluca@debian.org> wrote:
-> >=20
->=20
-> [...]
->=20
-> >=20
-> > Gentle ping. Bj=C3=B6rn and Joe, would be great to hear from you on the
-> > above. TIA!
-> >=20
->=20
-> Luca, apologies for the slow response. I'm no longer at Intel, and I'm
-> not sure if an Intel-person needs to do anything? Magnus, do you know?
->=20
-> FWIW:
-> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
-No worries! Unless you had an arrangement in place that made you the
-copyright owner of that contribution (eg: it was done in spare time,
-etc), then yes we'd need an ack to the relicense from an intel.com
-email address to be above board.
+Hari Bathini (4):
+  bpf powerpc: refactor JIT compiler code
+  powerpc/ppc-opcode: introduce PPC_RAW_BRANCH() macro
+  bpf ppc32: Add BPF_PROBE_MEM support for JIT
+  bpf ppc32: Access only if addr is kernel address
 
-John, is this something you could help with, using your manager hat?
-Full context:
+Ravi Bangoria (4):
+  bpf powerpc: Remove unused SEEN_STACK
+  bpf powerpc: Remove extra_pass from bpf_jit_build_body()
+  bpf ppc64: Add BPF_PROBE_MEM support for JIT
+  bpf ppc64: Access only if addr is kernel address
 
-https://lore.kernel.org/bpf/20210923000540.47344-1-luca.boccassi@gmail.com/=
-T/#u
+ arch/powerpc/include/asm/ppc-opcode.h |   2 +
+ arch/powerpc/net/bpf_jit.h            |  19 +++--
+ arch/powerpc/net/bpf_jit_comp.c       |  72 ++++++++++++++++--
+ arch/powerpc/net/bpf_jit_comp32.c     | 101 ++++++++++++++++++++++----
+ arch/powerpc/net/bpf_jit_comp64.c     |  72 ++++++++++++++----
+ 5 files changed, 224 insertions(+), 42 deletions(-)
 
---=20
-Kind regards,
-Luca Boccassi
+-- 
+2.31.1
 
---=-FF3UljuYtNQTG73l1hL2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCSqx93EIPGOymuRKGv37813JB4FAmFUSIgACgkQKGv37813
-JB6kAQ/9EqGjFwh9MdqbN+CNZdmXPQa0zIjX4mTHpWPZZPCJsDQQ0rKBgI/JOufc
-ujBjXk486ul1eaZgjTQl7uV4bNyJ9FEpVyvHJ4LtjjXD3Xpxu0NYkZDOTFNS7Oty
-qT5OXQ+bAJnOM6UyVFX4fZ9flGsiC7UpFm3HRLdMUHW0ZlOfeiTVxEwQn7L+Us35
-X/vz6XzgJOkB5aEd51G3vGkl99c7g/pOdsemx7KtwUfYASfVOWv+6UFmaQFX6b+k
-2kwl08G7fBbCXqOIk7WDs/yVbf26jqWNPb26XXEAnI2jqUmSxgd3/YbnaAJZdjDK
-HPEgDhah9Le8UhCDOm56n+qEC4Io6AnkwXXOFrkv0GbmKXYI+J3YLB/lBP6PZRrC
-rE9Y9QJKbo53SysTM3x7rwSxUmOmSXElDDsfkIRCwlKDt2dIh0wRqoBXUsCihXT2
-xnK6drRoGBPsU4L7/4qeU1OqO6EOOuVGwBiOLWzcQBZTh+htk2RZqzHKwOhP7a8+
-2HwR3dlkk9bXYbgZljFGNa0Kn7J4zfI+0ztQdV8ipLls5uxS3SuxoUrDXSVSXTRw
-/c+iKtG9Hc0EvSps2LYSU4pzSmfKbVpCJ+wswu0nPMNVZONx/cPweAZW7GF/Xu7I
-y2V487yDDJJwDRw/VspbsE+773YTNWBZW1iRRegvWIUcaCjupVk=
-=SOh0
------END PGP SIGNATURE-----
-
---=-FF3UljuYtNQTG73l1hL2--
