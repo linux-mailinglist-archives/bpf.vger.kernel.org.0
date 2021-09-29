@@ -2,75 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE79341C9D1
-	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 18:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EFB41C9D8
+	for <lists+bpf@lfdr.de>; Wed, 29 Sep 2021 18:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344482AbhI2QME (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 12:12:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345737AbhI2QLr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:11:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A5B5A615A7;
-        Wed, 29 Sep 2021 16:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632931806;
-        bh=/ptdvfEiN8K3rp/cuu9j/cz3lCVfvtVQ13O8tt5Kohc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DVwdpKSQmgCE9PmJd2EGp7jiRN5AyWR/pMXSIWM4WnethFLX/KOLXKmi1LWV9kOyA
-         J10wrTrJHCVVv9qnWRh7CVfK9P9AoEB0OcnHLpmXpZAqmvDFBrYgiaqwZwcDLJdSoM
-         Y7f2Tep6a4rS53GEdIs+PnXifYRH0mKG2CY7BLObyUl+mAwI204SkFwM+OZpKaZh0p
-         D4qWuApQ2m6F33dYnvuPiWQypE3I+deWRn2F15rk0poTUzGJo8esA+FTkqO75aCQNt
-         U68Zy0Kq6b8pEoz2EZLPyITJR25Vbjs7qgJE6rqhaOr8D2b2hx+QLFYvE9oANoHYF3
-         IRtYTnhzJop+g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9AAD3609D6;
-        Wed, 29 Sep 2021 16:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1344259AbhI2QMn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 12:12:43 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47140 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345691AbhI2QMk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:12:40 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mVcAc-000EoN-70; Wed, 29 Sep 2021 18:10:58 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mVcAc-0000Xv-1p; Wed, 29 Sep 2021 18:10:58 +0200
 Subject: Re: [PATCH] samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR
  BSD-2-Clause
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163293180662.13147.6555296992871982703.git-patchwork-notify@kernel.org>
-Date:   Wed, 29 Sep 2021 16:10:06 +0000
+To:     Luca Boccassi <bluca@debian.org>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>
 References: <20210923000540.47344-1-luca.boccassi@gmail.com>
-In-Reply-To: <20210923000540.47344-1-luca.boccassi@gmail.com>
-To:     Luca Boccassi <luca.boccassi@gmail.com>
-Cc:     bpf@vger.kernel.org, bjorn.topel@intel.com, jackmanb@google.com,
-        jiong.wang@netronome.com, jakub.kicinski@netronome.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, daniel@zonque.org,
-        fengc@google.com, joe@ovn.org, jbacik@fb.com, bluca@debian.org
+ <97ba65d49171c1a4eee34722d79b60e5732ce441.camel@debian.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a60b2164-2a4a-ac8b-c8a4-6e16497d620c@iogearbox.net>
+Date:   Wed, 29 Sep 2021 18:10:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <97ba65d49171c1a4eee34722d79b60e5732ce441.camel@debian.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26307/Wed Sep 29 11:09:54 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On 9/29/21 6:06 PM, Luca Boccassi wrote:
+[...]
+> So as far as I understand, only your two acks are missing and then it's
+> job done and we can go home!
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+Already applied including both our ACKs.
 
-On Thu, 23 Sep 2021 01:05:40 +0100 you wrote:
-> From: Luca Boccassi <bluca@debian.org>
-> 
-> libbpf and bpftool have been dual-licensed to facilitate inclusion in
-> software that is not compatible with GPL2-only (ie: Apache2), but the
-> samples are still GPL2-only.
-> 
-> Given these files are samples, they get naturally copied around. For example
-> it is the case for samples/bpf/bpf_insn.h which was copied into the systemd
-> tree: https://github.com/systemd/systemd/blob/main/src/shared/linux/bpf_insn.h
-> 
-> [...]
-
-Here is the summary with links:
-  - samples/bpf: relicense bpf_insn.h as GPL-2.0-only OR BSD-2-Clause
-    https://git.kernel.org/bpf/bpf/c/d75fe9cb1dd0
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks!
+Daniel
