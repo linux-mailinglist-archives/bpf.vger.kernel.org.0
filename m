@@ -2,102 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E301C41D323
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 08:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F1341D359
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 08:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348255AbhI3GSU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 02:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
+        id S1348320AbhI3Gbe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 02:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348254AbhI3GST (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:18:19 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8704BC06161C
-        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 23:16:37 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e7so5192625pgk.2
-        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 23:16:37 -0700 (PDT)
+        with ESMTP id S1348305AbhI3Gbd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:31:33 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7958EC06161C;
+        Wed, 29 Sep 2021 23:29:51 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y8so4057417pfa.7;
+        Wed, 29 Sep 2021 23:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Pb2OlO3FWknzLv3NgAHRQB3w1rBIwUIdDtYVy8/uF8g=;
-        b=jeKOknwf5pYwqmgYuM7Q9ZgP8N1//E1CutSqisSu+14FE6kQHHdED/wFY/0WEp5/tl
-         NR0Rc5wkiugmwbyGOPY0rfsfOq4MhhbgGqBNMsNKWp9B4BaqlfCXu90cJbZZUW/O6YSA
-         kdXlr0avqxCFtPK5m7DOptw9kG5g0Spu0z3N/ulh+Ypw5SMo3jh4GRtY6AhPJRfRTyKy
-         mdPfZ0A3VF+dSWKUPFfTYzTP91ABcc6mIfVE2buH8DK8fqVidugm7F/+lLz7vMdc09Gi
-         4oeAEaWcdilHSBrbMqcF/wRK3qcHPuLYSmhqufc9vEfZNz/GXC6O4HDU/oAkJyrjVT7p
-         FjLQ==
+        bh=SuR2esL/DVyACI8gILFVJl3aPnvnv8X4/G5cIGEopdM=;
+        b=mst7batWlDyi2OYipnKAmvwF8Hm/1qA3bjoVhrJjyD02S7JJVLrECXH2U6WpUQZd9y
+         kE9Tkt5n2JJUCwAqDnmDjzYYPx0QL085dBms9mUhhNkoi+4f7u0kAb5nR55q0dinqPZl
+         azuah1XYFYEwUHgvhV1efT27Sr8rUOJnbj2xNEfGdCWo2YJfDxTaY2NaQ7BdTyLkS6KP
+         Y/oSydWNXbXnV14C+vBBZkqAt44QDCpOe2QlAF/UcuphOsR7BlLEInTzswWicnTqcSCp
+         ZM+2KmcAqr6lBWdZJWibts1vcJDzLtI5gjOsviIqGJLQCk43ecN+yHMJPyi5VM22lVgu
+         gXBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Pb2OlO3FWknzLv3NgAHRQB3w1rBIwUIdDtYVy8/uF8g=;
-        b=OplyYxFOcJez3bJGJmHXFF383QQn7fA6ynJVB0c3bE5Mtfdk7XatVk8yNVdxIMYmoC
-         pL7AtUFco6mJfCxxBIiylN47HSXo8/FDPPv79QqFCGUwIL+9UWicWUHnSnS3BBLuyudx
-         YtbmGIDfzJfZkY4jaccYQ4LvdVa7Zdvo1xCFFobrZCst5kvzql97RsLdwssP9ajJsg85
-         Pm2bmlj0Af9NXoU2kFD4meHhRPdWz4FYBNqUcuW1t4maizTTgDbYS68FonL2BLGUh2KB
-         pWZdx78hUxebyV8qVoUpAepOAXGDuZHf1cPlA4rCj03Pq9SVHm5MaaUxpNKpTYXCzW89
-         mlpg==
-X-Gm-Message-State: AOAM530V0i8OAbdaiixbqNVdx3eYYvDJ6AIzevlpEnA+iiZdTXBfx8ZV
-        DQ6n+FotAWWzbjEhT16PdY6XbHjIk+M=
-X-Google-Smtp-Source: ABdhPJwdjUeBK0kfa38CYBqkgVrDB/t2XDsPYLdVtVdvOIXHSTLL/bbd4QkFiiCd3AQYOYkT+/Ocqg==
-X-Received: by 2002:a63:d351:: with SMTP id u17mr3457618pgi.174.1632982596808;
-        Wed, 29 Sep 2021 23:16:36 -0700 (PDT)
+        bh=SuR2esL/DVyACI8gILFVJl3aPnvnv8X4/G5cIGEopdM=;
+        b=zzX3qES8r1b2QvdzIoo5rdo4USq2089IaVTYBuX8L2wP91D+AHg38n2Bxb8poKwaON
+         99KMrt/FIQ1DwmyKqKE8Jku0xobdubeDEysIcbar+THXIKfCD1nQaUjcVCzFew4zdOQm
+         brxqxKg2/rka/9cbV9lBfn4mxzKpynCNKPhXN8EfUQ1S4JEV7l9oO7vQBVLZiiQq3d3H
+         NscMA/IS03m5nxeRULhPGDxt3q8ujfS+Y8EjnIbdk1DT0uNlhWNb3HKlZyGF0PD5IchY
+         Gr1NjivUYRO05K/QO1TOTPxLJltFqAySfj88aOGVp249q2ZjHkOPQfX1RSW2kTVzcnVy
+         9nwg==
+X-Gm-Message-State: AOAM531xqFkEm0sEFw3afTH6KS0ejqTmFXbTqtf7qpa2sOXcJ89loqSo
+        BhfBwGXyyzxXEGhofztSv3p96B4NKuU=
+X-Google-Smtp-Source: ABdhPJyqiFLWm9NNbifVIuQgxFHDit8zqPF8/C6/mm2dvbbP5tP7/tY3t66mISemOZ8ffyLmY9eB+Q==
+X-Received: by 2002:a62:7806:0:b0:440:448c:f662 with SMTP id t6-20020a627806000000b00440448cf662mr3865860pfc.57.1632983390630;
+        Wed, 29 Sep 2021 23:29:50 -0700 (PDT)
 Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
-        by smtp.gmail.com with ESMTPSA id 23sm1777141pfw.97.2021.09.29.23.16.36
-        for <bpf@vger.kernel.org>
+        by smtp.gmail.com with ESMTPSA id v7sm1457000pjk.37.2021.09.29.23.29.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 23:16:36 -0700 (PDT)
+        Wed, 29 Sep 2021 23:29:50 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Subject: [PATCH bpf] libbpf: Fix segfault in light skeleton for objects without BTF
-Date:   Thu, 30 Sep 2021 11:46:34 +0530
-Message-Id: <20210930061634.1840768-1-memxor@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf-next v6 0/9] Support kernel module function calls from eBPF
+Date:   Thu, 30 Sep 2021 11:59:39 +0530
+Message-Id: <20210930062948.1843919-1-memxor@gmail.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6438; h=from:subject; bh=5iV6LkgSd6UasFJhR4DyEVHb3Vub5hWO2Li2jwGi2Bg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhVVlBhnb2dzwCe0usJJPF0UK6SgnOngVjzuCOYlPI 1rUrJHmJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYVVZQQAKCRBM4MiGSL8Ryr2ND/ wIZBiu49PRApe1ydYz0SC4ojmlYjaI0UjZPPOXNmafqUaSSbmXeszGWNoWMX9JqnJej35Pr6QgSkd4 FbQO3w3dceQD+0ClK9PbA26IX7QASP315DpOoDaoWVADky5KDkpnnR8Zf4eLGnIGeG0h5sLBt0npRN QrfXEbOL/he47Ptd0yx3xhOD2vBhrwjVccMpW6dMDpqMCXOeGPDbYTrNZtO0enkDBSzQu9htvfVGIZ 1YNEIH6iDvWn/Nfx79cIl6NaEhJSK3Z5aHhNiFgZlVdvqLefK0OPIfo6XzLd1zcaluZEW+1MDXG3zY 81l/evapVx3nYjxR5tJu6En00erRFaL/kKMUYGtI2UihDB5/8Gf4V8+BD82cGtlLmbnQXmYdywjjvh aNNwgeoz2UabzfgN92sw2f3PztL76AhS9scbhRs5RtJ0r8O9Kog+rgQrPyyBzYRuFU0QLyLsmq6VTG RoBaT6CkyWu36ESLyQpIZ3ZihBnS/y7WJLlieNoaPGT5iEupp2x7dXuncMbOAQFtBoWQUvyHnO9suv xyIwvzWoNbd7lD1Jt2xapJtwMZT8mjUrFpv/lFHgnJfVvOQ/Bh/jqsuUKPWiQGrtQMPkVwfL2KU0L/ L5UFR9ERS9GSkOnrwMOxJ9GNtgxFcjSWgmh9jsUdcQfOm5kr8w8WOkOdMsWg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When fed an empty BPF object, bpftool gen skeleton -L crashes at
-btf__set_fd since it assumes presence of obj->btf, however for the
-sequence below clang adds no .BTF section (hence no BTF).
+This set enables kernel module function calls, and also modifies verifier logic
+to permit invalid kernel function calls as long as they are pruned as part of
+dead code elimination. This is done to provide better runtime portability for
+BPF objects, which can conditionally disable parts of code that are pruned later
+by the verifier (e.g. const volatile vars, kconfig options). libbpf
+modifications are made along with kernel changes to support module function
+calls.
 
-Reproducer:
-$ touch a.bpf.c
-$ clang -O2 -g -target bpf -c a.bpf.c
-$ bpftool gen skeleton -L a.bpf.o
-/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-/* THIS FILE IS AUTOGENERATED! */
+It also converts TCP congestion control objects to use the module kfunc support
+instead of relying on IS_BUILTIN ifdef.
 
-struct a_bpf {
-	struct bpf_loader_ctx ctx;
-Segmentation fault (core dumped)
+Changelog:
+----------
+v5 -> v6
+v5: https://lore.kernel.org/bpf/20210927145941.1383001-1-memxor@gmail.com
 
-The same occurs for files compiled without BTF info, i.e. without
-clang's -g flag.
+ * Rework gen_loader relocation emits
+   * Only emit bpf_btf_find_by_name_kind call when required (Alexei)
+   * Refactor code to emit ksym var and func relo into separate helpers, this
+     will be easier to add future weak/typeless ksym support to (for my followup)
+   * Count references for both ksym var and funcs, and avoid calling helpers
+     unless required for both of them. This also means we share fds between
+     ksym vars for the module BTFs. Also be careful with this when closing
+     BTF fd so that we only close one instance of the fd for each ksym
 
-Fixes: 67234743736a (libbpf: Generate loader program out of BPF ELF file.)
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/lib/bpf/libbpf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v4 -> v5
+v4: https://lore.kernel.org/bpf/20210920141526.3940002-1-memxor@gmail.com
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 0f85d441fca3..b6b130171b86 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7031,7 +7031,8 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+ * Address comments from Alexei
+   * Use reserved fd_array area in loader map instead of creating a new map
+   * Drop selftest testing the 256 kfunc limit, however selftest testing reuse
+     of BTF fd for same kfunc in gen_loader and libbpf is kept
+ * Address comments from Andrii
+   * Make --no-fail the default for resolve_btfids, i.e. only fail if we find
+     BTF section and cannot process it
+   * Use obj->btf_modules array to store index in the fd_array, so that we don't
+     have to do any searching to reuse the index, instead only set it the first
+     time a module BTF's fd is used
+   * Make find_ksym_btf_id to return struct module_btf * in last parameter
+   * Improve logging when index becomes bigger than INT16_MAX
+   * Add btf__find_by_name_kind_own internal helper to only start searching for
+     kfunc ID in module BTF, since find_ksym_btf_id already checks vmlinux BTF
+     before iterating over module BTFs.
+   * Fix various other nits
+ * Fixes for failing selftests on BPF CI
+ * Rearrange/cleanup selftests
+   * Avoid testing kfunc limit (Alexei)
+   * Do test gen_loader and libbpf BTF fd index dedup with 256 calls
+   * Move invalid kfunc failure test to verifier selftest
+   * Minimize duplication
+ * Use consistent bpf_<type>_check_kfunc_call naming for module kfunc callback
+ * Since we try to add fd using add_data while we can, cherry pick Alexei's
+   patch from CO-RE RFC series to align gen_loader data.
 
- 	if (obj->gen_loader) {
- 		/* reset FDs */
--		btf__set_fd(obj->btf, -1);
-+		if (obj->btf)
-+			btf__set_fd(obj->btf, -1);
- 		for (i = 0; i < obj->nr_maps; i++)
- 			obj->maps[i].fd = -1;
- 		if (!err)
---
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20210915050943.679062-1-memxor@gmail.com
+
+ * Address comments from Alexei
+   * Drop MAX_BPF_STACK change, instead move map_fd and BTF fd to BPF array map
+     and pass fd_array using BPF_PSEUDO_MAP_IDX_VALUE
+ * Address comments from Andrii
+   * Fix selftest to store to variable for observing function call instead of
+     printk and polluting CI logs
+ * Drop use of raw_tp for testing, instead reuse classifier based prog_test_run
+ * Drop index + 1 based insn->off convention for kfunc module calls
+ * Expand selftests to cover more corner cases
+ * Misc cleanups
+
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20210914123750.460750-1-memxor@gmail.com
+
+ * Fix issues pointed out by Kernel Test Robot
+ * Fix find_kfunc_desc to also take offset into consideration when comparing
+
+RFC v1 -> v2
+v1: https://lore.kernel.org/bpf/20210830173424.1385796-1-memxor@gmail.com
+
+ * Address comments from Alexei
+   * Reuse fd_array instead of introducing kfunc_btf_fds array
+   * Take btf and module reference as needed, instead of preloading
+   * Add BTF_KIND_FUNC relocation support to gen_loader infrastructure
+ * Address comments from Andrii
+   * Drop hashmap in libbpf for finding index of existing BTF in fd_array
+   * Preserve invalid kfunc calls only when the symbol is weak
+ * Adjust verifier selftests
+
+Kumar Kartikeya Dwivedi (9):
+  bpf: Introduce BPF support for kernel module function calls
+  bpf: Be conservative while processing invalid kfunc calls
+  bpf: btf: Introduce helpers for dynamic BTF set registration
+  tools: Allow specifying base BTF file in resolve_btfids
+  bpf: Enable TCP congestion control kfunc from modules
+  libbpf: Support kernel module function calls
+  libbpf: Resolve invalid weak kfunc calls with imm = 0, off = 0
+  libbpf: Update gen_loader to emit BTF_KIND_FUNC relocations
+  bpf: selftests: Add selftests for module kfunc support
+
+ include/linux/bpf.h                           |   8 +-
+ include/linux/bpf_verifier.h                  |   2 +
+ include/linux/bpfptr.h                        |   1 +
+ include/linux/btf.h                           |  37 ++
+ kernel/bpf/btf.c                              |  56 +++
+ kernel/bpf/core.c                             |   4 +
+ kernel/bpf/verifier.c                         | 220 ++++++++++--
+ net/bpf/test_run.c                            |   7 +-
+ net/ipv4/bpf_tcp_ca.c                         |  36 +-
+ net/ipv4/tcp_bbr.c                            |  28 +-
+ net/ipv4/tcp_cubic.c                          |  26 +-
+ net/ipv4/tcp_dctcp.c                          |  26 +-
+ scripts/Makefile.modfinal                     |   1 +
+ tools/bpf/resolve_btfids/main.c               |  28 +-
+ tools/lib/bpf/bpf.c                           |   1 +
+ tools/lib/bpf/bpf_gen_internal.h              |  16 +-
+ tools/lib/bpf/btf.c                           |  19 +-
+ tools/lib/bpf/gen_loader.c                    | 323 +++++++++++++++---
+ tools/lib/bpf/libbpf.c                        | 110 +++---
+ tools/lib/bpf/libbpf_internal.h               |   3 +
+ tools/testing/selftests/bpf/Makefile          |  10 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  23 +-
+ .../selftests/bpf/prog_tests/ksyms_module.c   |  29 +-
+ .../bpf/prog_tests/ksyms_module_libbpf.c      |  28 ++
+ .../selftests/bpf/progs/test_ksyms_module.c   |  46 ++-
+ tools/testing/selftests/bpf/verifier/calls.c  |  23 ++
+ 26 files changed, 912 insertions(+), 199 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_module_libbpf.c
+
+-- 
 2.33.0
 
