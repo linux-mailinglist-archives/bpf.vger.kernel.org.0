@@ -2,84 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1156B41E2E7
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 22:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1AD41E347
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 23:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhI3U7p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 16:59:45 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57628 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhI3U7p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 16:59:45 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mW37V-000DIq-1m; Thu, 30 Sep 2021 22:57:33 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mW37U-000FDj-Lu; Thu, 30 Sep 2021 22:57:32 +0200
-Subject: Re: [PATCH v4 0/8] bpf powerpc: Add BPF_PROBE_MEM support in powerpc
- JIT compiler
-To:     Hari Bathini <hbathini@linux.ibm.com>, naveen.n.rao@linux.ibm.com,
-        christophe.leroy@csgroup.eu, mpe@ellerman.id.au, ast@kernel.org
-Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210929111855.50254-1-hbathini@linux.ibm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <88b59272-e3f7-30ba-dda0-c4a6b42c0029@iogearbox.net>
-Date:   Thu, 30 Sep 2021 22:57:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1349688AbhI3VYF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 17:24:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349722AbhI3VX4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 17:23:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30C2B61A60;
+        Thu, 30 Sep 2021 21:22:13 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 17:22:06 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-ID: <20210930172206.1a34279b@oasis.local.home>
+In-Reply-To: <874ka17t8s.ffs@tglx>
+References: <163163030719.489837.2236069935502195491.stgit@devnote2>
+        <20210929112408.35b0ffe06b372533455d890d@kernel.org>
+        <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
+        <874ka17t8s.ffs@tglx>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210929111855.50254-1-hbathini@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26308/Thu Sep 30 11:04:45 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/29/21 1:18 PM, Hari Bathini wrote:
-> Patch #1 & #2 are simple cleanup patches. Patch #3 refactors JIT
-> compiler code with the aim to simplify adding BPF_PROBE_MEM support.
-> Patch #4 introduces PPC_RAW_BRANCH() macro instead of open coding
-> branch instruction. Patch #5 & #7 add BPF_PROBE_MEM support for PPC64
-> & PPC32 JIT compilers respectively. Patch #6 & #8 handle bad userspace
-> pointers for PPC64 & PPC32 cases respectively.
+On Thu, 30 Sep 2021 21:34:11 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Michael, are you planning to pick up the series or shall we route via bpf-next?
+> Masami, feel free to merge them over your tree. If not, let me know and
+> I'll pick them up tomorrow morning.
 
-Thanks,
-Daniel
+Masami usually goes through my tree. Want me to take it or do you want
+to?
 
-> Changes in v4:
-> * Addressed all the review comments from Christophe.
-> 
-> 
-> Hari Bathini (4):
->    bpf powerpc: refactor JIT compiler code
->    powerpc/ppc-opcode: introduce PPC_RAW_BRANCH() macro
->    bpf ppc32: Add BPF_PROBE_MEM support for JIT
->    bpf ppc32: Access only if addr is kernel address
-> 
-> Ravi Bangoria (4):
->    bpf powerpc: Remove unused SEEN_STACK
->    bpf powerpc: Remove extra_pass from bpf_jit_build_body()
->    bpf ppc64: Add BPF_PROBE_MEM support for JIT
->    bpf ppc64: Access only if addr is kernel address
-> 
->   arch/powerpc/include/asm/ppc-opcode.h |   2 +
->   arch/powerpc/net/bpf_jit.h            |  19 +++--
->   arch/powerpc/net/bpf_jit_comp.c       |  72 ++++++++++++++++--
->   arch/powerpc/net/bpf_jit_comp32.c     | 101 ++++++++++++++++++++++----
->   arch/powerpc/net/bpf_jit_comp64.c     |  72 ++++++++++++++----
->   5 files changed, 224 insertions(+), 42 deletions(-)
-> 
-
+-- Steve
