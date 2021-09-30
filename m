@@ -2,125 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE53B41DB97
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 15:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1640241DC71
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 16:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351562AbhI3N6H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 09:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351466AbhI3N6G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:58:06 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A7FC06176A;
-        Thu, 30 Sep 2021 06:56:24 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so6808069pjv.5;
-        Thu, 30 Sep 2021 06:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0U6U7F9Zgp+wZ7g2AX2OTa14R90ArQj48ZC1W7zXZlw=;
-        b=Y6XfwN9KGIUmH1IGD2oahVk1xOjjgETnUNOvyifVabnEtpdyR71NEpRBCR9jyGmQG3
-         mh7gBJuATdk3i0by/QVSedl2HZsodvQ86oAf/rk3deUdmp40G9H85rCblb1fxRGEjUgv
-         lT0P1mMOsrBGavph0m/RnyyeB390ti2b52aPjH23Mq+ZlAm+O60XOi+RX0hUkcauoxw0
-         gljA0TbtUtDL5BFJ90b3j+hZxdgzdQlRmyKx2r+mQClScvgmfbSYQm0R8sl/TuLRY7Xw
-         cK89u0vobiWSJkmxxjNNi83vO3+NAprMggHRuruLbeRt9goUadGTMIsGSm8MQiT4obf6
-         N7rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0U6U7F9Zgp+wZ7g2AX2OTa14R90ArQj48ZC1W7zXZlw=;
-        b=nqSQDMDtT0ohngk9hchE0SDdMSE2MzeOlEJmddECyc+Sn/aK0SSnsYotUbQ24d/trM
-         8qwdYii4nsOiLZjiWCOqRoJlC18+ngYNheUJ1qmv04tDBv3ltezsv787YS5ZxjFUNKiU
-         k/jr03Uw8jxrp86U75Unjs3PCHYT+bNHIHUzh92M9EGL83fOYBhK71H2mLbwW8MGlxf9
-         urSfNUEo50ryw4lq1JCnfVzmbD61GQ0gyaSZEq+rpejZcb1xehOvzRymblLLwluzgT+M
-         ZWLFv9wF37UjhpO6bsiOe9NLRZhClXxB6m87W2iNfvZEZ7Xm+ig1bF8JcjvlMFwf2Q2D
-         D9AA==
-X-Gm-Message-State: AOAM532AtuuYxIqHEVQ2qAASMA2aOhInJ+XGbwCrqQdy8/CXv/WgnqGY
-        H4c1enU8/ht9pTFK1udkM30=
-X-Google-Smtp-Source: ABdhPJxskhGCZQq6q0V8aUn0+OErUrNfGLFiwoWtcY4D6y230MVpZB9Z/qHBqnagkgIND/vvOTqKtA==
-X-Received: by 2002:a17:902:e78f:b0:13d:f99f:34bb with SMTP id cp15-20020a170902e78f00b0013df99f34bbmr4393360plb.48.1633010183787;
-        Thu, 30 Sep 2021 06:56:23 -0700 (PDT)
-Received: from localhost.localdomain ([240b:11:82a2:3000:1c6:8111:fb18:a91e])
-        by smtp.gmail.com with ESMTPSA id b129sm3188209pfg.157.2021.09.30.06.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 06:56:23 -0700 (PDT)
-From:   Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     th.yasumatsu@gmail.com, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] bpf: Fix integer overflow in prealloc_elems_and_freelist()
-Date:   Thu, 30 Sep 2021 22:55:45 +0900
-Message-Id: <20210930135545.173698-1-th.yasumatsu@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1350777AbhI3Okm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 10:40:42 -0400
+Received: from m1514.mail.126.com ([220.181.15.14]:18568 "EHLO
+        m1514.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349727AbhI3Okm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:40:42 -0400
+X-Greylist: delayed 1820 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Sep 2021 10:40:40 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=NG7/U
+        AGLuSe/tXOsjmZbo9Y4ZM6Q1xhVVV+cAOM5S24=; b=C1vRtMBxFxl3XJU818qUm
+        W1ummkGbk8Kd9fn8SrV5/6sp5Vofccrsklt2UTwDARqLPNrx2JIBqjojE8whCu6t
+        BMVug2uFUUgdARfwJ552DAReQFrsNn3wPv+E9cAIS1PMwnwEvir9UQWadMrgZBhV
+        NG68SsMMq46RFAIacDI6TY=
+Received: from kernelpatch$126.com ( [113.200.148.30] ) by
+ ajax-webmail-wmsvr14 (Coremail) ; Thu, 30 Sep 2021 22:07:56 +0800 (CST)
+X-Originating-IP: [113.200.148.30]
+Date:   Thu, 30 Sep 2021 22:07:56 +0800 (CST)
+From:   "Tiezhu Yang" <kernelpatch@126.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        johan.almbladh@anyfinetworks.com, lixuefeng@loongson.cn,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] test_bpf: add module parameter test_type
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 126com
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <2af1fd4d.566a.17c3708821e.Coremail.kernelpatch@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: DsqowABX_ui9xFVh7Y6LAQ--.55499W
+X-CM-SenderInfo: xnhu0vxosd3ubk6rjloofrz/1tbi6B0e9VpEFIIdpAAAsv
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In prealloc_elems_and_freelist(), the multiplication to calculate the
-size passed to bpf_map_area_alloc() could lead to an integer overflow.
-As a result, out-of-bounds write could occur in pcpu_freelist_populate()
-as reported by KASAN:
-
-[...]
-[   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
-[   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
-[   16.970038]
-[   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
-[   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[   16.972026] Call Trace:
-[   16.972306]  dump_stack_lvl+0x34/0x44
-[   16.972687]  print_address_description.constprop.0+0x21/0x140
-[   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.974257]  kasan_report.cold+0x7f/0x11b
-[   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.975190]  pcpu_freelist_populate+0xd9/0x100
-[   16.975669]  stack_map_alloc+0x209/0x2a0
-[   16.976106]  __sys_bpf+0xd83/0x2ce0
-[...]
-
-The possibility of this overflow was originally discussed in [0], but
-was overlooked.
-
-Fix the integer overflow by changing elem_size to u64 from u32.
-
-[0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
-
-Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
-Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
----
-- v2:
-  Fix the overflow by changing elem_size to u64,
-  instead of fixing it by casting one operand of the multiplication
-  which is passed to bpf_map_area_alloc().
-
- kernel/bpf/stackmap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 09a3fd97d329..6e75bbee39f0 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -63,7 +63,8 @@ static inline int stack_map_data_size(struct bpf_map *map)
- 
- static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
- {
--	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
-+	u64 elem_size = sizeof(struct stack_map_bucket) +
-+			(u64)smap->map.value_size;
- 	int err;
- 
- 	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
--- 
-2.25.1
-
+RnJvbTogVGllemh1IFlhbmcgPHlhbmd0aWV6aHVAbG9vbmdzb24uY24+CgpBZnRlciBjb21taXQg
+OTI5OGU2M2VhZmVhICgiYnBmL3Rlc3RzOiBBZGQgZXhoYXVzdGl2ZSB0ZXN0cyBvZiBBTFUKb3Bl
+cmFuZCBtYWduaXR1ZGVzIiksIHdoZW4gbW9kcHJvYmUgdGVzdF9icGYua28gd2l0aCBqaXQgb24g
+bWlwczY0LAp0aGVyZSBleGlzdHMgc2VnbWVudCBmYXVsdCBkdWUgdG8gdGhlIGZvbGxvd2luZyBy
+ZWFzb246Cgp0ZXN0X2JwZjogIzYxNiBBTFU2NF9NT1ZfWDogYWxsIHJlZ2lzdGVyIHZhbHVlIG1h
+Z25pdHVkZXMgaml0ZWQ6MQpCcmVhayBpbnN0cnVjdGlvbiBpbiBrZXJuZWwgY29kZVsjMV0KCkl0
+IHNlZW1zIHRoYXQgdGhlIHJlbGF0ZWQgaml0IGltcGxlbWVudGF0aW9ucyBvZiBzb21lIHRlc3Qg
+Y2FzZXMKaW4gdGVzdF9icGYoKSBoYXZlIHByb2JsZW1zLiBBdCB0aGlzIG1vbWVudCwgSSBkbyBu
+b3QgY2FyZSBhYm91dAp0aGUgc2VnbWVudCBmYXVsdCB3aGlsZSBJIGp1c3Qgd2FudCB0byB2ZXJp
+ZnkgdGhlIHRlc3QgY2FzZXMgb2YKdGFpbCBjYWxscy4KCkJhc2VkIG9uIHRoZSBhYm92ZSBiYWNr
+Z3JvdW5kIGFuZCBtb3RpdmF0aW9uLCBhZGQgdGhlIGZvbGxvd2luZwptb2R1bGUgcGFyYW1ldGVy
+IHRlc3RfdHlwZSB0byB0aGUgdGVzdF9icGYua286CnRlc3RfdHlwZT08c3RyaW5nPjogb25seSB0
+aGUgc3BlY2lmaWVkIHR5cGUgd2lsbCBiZSBydW4sIHRoZSBzdHJpbmcKY2FuIGJlICJ0ZXN0X2Jw
+ZiIsICJ0ZXN0X3RhaWxfY2FsbHMiIG9yICJ0ZXN0X3NrYl9zZWdtZW50Ii4KClRoaXMgaXMgdXNl
+ZnVsIHRvIG9ubHkgdGVzdCB0aGUgY29ycmVzcG9uZGluZyB0ZXN0IHR5cGUgd2hlbiBzcGVjaWZ5
+CnRoZSB2YWxpZCB0ZXN0X3R5cGUgc3RyaW5nLgoKQW55IGludmFsaWQgdGVzdCB0eXBlIHdpbGwg
+cmVzdWx0IGluIC1FSU5WQUwgYmVpbmcgcmV0dXJuZWQgYW5kIG5vCnRlc3RzIGJlaW5nIHJ1bi4g
+SWYgdGhlIHRlc3RfdHlwZSBpcyBub3Qgc3BlY2lmaWVkIG9yIHNwZWNpZmllZCBhcwplbXB0eSBz
+dHJpbmcsIGl0IGRvZXMgbm90IGNoYW5nZSB0aGUgY3VycmVudCBsb2dpYywgYWxsIG9mIHRoZSB0
+ZXN0CmNhc2VzIHdpbGwgYmUgcnVuLgoKU2lnbmVkLW9mZi1ieTogVGllemh1IFlhbmcgPHlhbmd0
+aWV6aHVAbG9vbmdzb24uY24+Ci0tLQoKdjI6CiAgLS0gRml4IHR5cG8gaW4gdGhlIGNvbW1pdCBt
+ZXNzYWdlCiAgLS0gVXNlIG15IHByaXZhdGUgZW1haWwgdG8gc2VuZAoKIGxpYi90ZXN0X2JwZi5j
+IHwgNDggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMzMgaW5zZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvbGliL3Rlc3RfYnBmLmMgYi9saWIvdGVzdF9icGYuYwppbmRleCAyMWVhMWFiLi45NDI4
+ZmVjIDEwMDY0NAotLS0gYS9saWIvdGVzdF9icGYuYworKysgYi9saWIvdGVzdF9icGYuYwpAQCAt
+MTE4NjYsNiArMTE4NjYsOSBAQCBtb2R1bGVfcGFyYW0odGVzdF9pZCwgaW50LCAwKTsKIHN0YXRp
+YyBpbnQgdGVzdF9yYW5nZVsyXSA9IHsgMCwgQVJSQVlfU0laRSh0ZXN0cykgLSAxIH07CiBtb2R1
+bGVfcGFyYW1fYXJyYXkodGVzdF9yYW5nZSwgaW50LCBOVUxMLCAwKTsKIAorc3RhdGljIGNoYXIg
+dGVzdF90eXBlWzMyXTsKK21vZHVsZV9wYXJhbV9zdHJpbmcodGVzdF90eXBlLCB0ZXN0X3R5cGUs
+IHNpemVvZih0ZXN0X3R5cGUpLCAwKTsKKwogc3RhdGljIF9faW5pdCBpbnQgZmluZF90ZXN0X2lu
+ZGV4KGNvbnN0IGNoYXIgKnRlc3RfbmFtZSkKIHsKIAlpbnQgaTsKQEAgLTEyNTE4LDI0ICsxMjUy
+MSwzOSBAQCBzdGF0aWMgaW50IF9faW5pdCB0ZXN0X2JwZl9pbml0KHZvaWQpCiAJc3RydWN0IGJw
+Zl9hcnJheSAqcHJvZ3MgPSBOVUxMOwogCWludCByZXQ7CiAKLQlyZXQgPSBwcmVwYXJlX2JwZl90
+ZXN0cygpOwotCWlmIChyZXQgPCAwKQotCQlyZXR1cm4gcmV0OworCWlmIChzdHJsZW4odGVzdF90
+eXBlKSAmJgorCSAgICBzdHJjbXAodGVzdF90eXBlLCAidGVzdF9icGYiKSAmJgorCSAgICBzdHJj
+bXAodGVzdF90eXBlLCAidGVzdF90YWlsX2NhbGxzIikgJiYKKwkgICAgc3RyY21wKHRlc3RfdHlw
+ZSwgInRlc3Rfc2tiX3NlZ21lbnQiKSkgeworCQlwcl9lcnIoInRlc3RfYnBmOiBpbnZhbGlkIHRl
+c3RfdHlwZSAnJXMnIHNwZWNpZmllZC5cbiIsIHRlc3RfdHlwZSk7CisJCXJldHVybiAtRUlOVkFM
+OworCX0KKworCWlmICghc3RybGVuKHRlc3RfdHlwZSkgfHwgIXN0cmNtcCh0ZXN0X3R5cGUsICJ0
+ZXN0X2JwZiIpKSB7CisJCXJldCA9IHByZXBhcmVfYnBmX3Rlc3RzKCk7CisJCWlmIChyZXQgPCAw
+KQorCQkJcmV0dXJuIHJldDsKKworCQlyZXQgPSB0ZXN0X2JwZigpOworCQlkZXN0cm95X2JwZl90
+ZXN0cygpOworCQlpZiAocmV0KQorCQkJcmV0dXJuIHJldDsKKwl9CiAKLQlyZXQgPSB0ZXN0X2Jw
+ZigpOwotCWRlc3Ryb3lfYnBmX3Rlc3RzKCk7Ci0JaWYgKHJldCkKLQkJcmV0dXJuIHJldDsKKwlp
+ZiAoIXN0cmxlbih0ZXN0X3R5cGUpIHx8ICFzdHJjbXAodGVzdF90eXBlLCAidGVzdF90YWlsX2Nh
+bGxzIikpIHsKKwkJcmV0ID0gcHJlcGFyZV90YWlsX2NhbGxfdGVzdHMoJnByb2dzKTsKKwkJaWYg
+KHJldCkKKwkJCXJldHVybiByZXQ7CisJCXJldCA9IHRlc3RfdGFpbF9jYWxscyhwcm9ncyk7CisJ
+CWRlc3Ryb3lfdGFpbF9jYWxsX3Rlc3RzKHByb2dzKTsKKwkJaWYgKHJldCkKKwkJCXJldHVybiBy
+ZXQ7CisJfQogCi0JcmV0ID0gcHJlcGFyZV90YWlsX2NhbGxfdGVzdHMoJnByb2dzKTsKLQlpZiAo
+cmV0KQotCQlyZXR1cm4gcmV0OwotCXJldCA9IHRlc3RfdGFpbF9jYWxscyhwcm9ncyk7Ci0JZGVz
+dHJveV90YWlsX2NhbGxfdGVzdHMocHJvZ3MpOwotCWlmIChyZXQpCi0JCXJldHVybiByZXQ7CisJ
+aWYgKCFzdHJsZW4odGVzdF90eXBlKSB8fCAhc3RyY21wKHRlc3RfdHlwZSwgInRlc3Rfc2tiX3Nl
+Z21lbnQiKSkKKwkJcmV0dXJuIHRlc3Rfc2tiX3NlZ21lbnQoKTsKIAotCXJldHVybiB0ZXN0X3Nr
+Yl9zZWdtZW50KCk7CisJcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyB2b2lkIF9fZXhpdCB0ZXN0X2Jw
+Zl9leGl0KHZvaWQpCi0tIAoyLjEuMA==
