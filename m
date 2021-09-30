@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CC241D157
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 04:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3456741D16C
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 04:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347561AbhI3CTp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 22:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
+        id S1347694AbhI3Ccb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 22:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347487AbhI3CTp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 22:19:45 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33967C06161C;
-        Wed, 29 Sep 2021 19:18:03 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 11so2689403qvd.11;
-        Wed, 29 Sep 2021 19:18:03 -0700 (PDT)
+        with ESMTP id S1347684AbhI3Ccb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 22:32:31 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C731C06161C;
+        Wed, 29 Sep 2021 19:30:49 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id x12so4381699qkf.9;
+        Wed, 29 Sep 2021 19:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y5Gh4oaaULAjy9Ls1siiMfAAe1fncZYaFKEdzt9GEmE=;
-        b=A2zaW/6XKD8jFlpoJcgz6e5C+hSh4dXRFewPR0XnnVO5OfIimpY2Q8XWCnZMDjjlDE
-         xQvPAEXkV4OmagA1uO0Tv4IYctEGOm/7furs0B13Ov2uHaW6w/wkqFTTzmoWDgpILvVc
-         /3rDYYhIeYKFP5/nCBpk8HD8QEIQAZ7fyFsI2m2GSIwVzfURJLbfFjiUdCEv6MfO3M8/
-         HOPEDw7Rn7JE7B0ffPUtHJWgmTrKN1e4g1ERyzsCkOHYqqSSw/+3coVwDQE/VLN7QgQE
-         28X580sYvFTBhNVAnEHR/5ZcIjBsCDONbiTeQRWW7zJZd/qHYIVt1XBTaUtUg7atz2Cp
-         fcow==
+        bh=d32Irn0I0vfy9RRpsQZ6TQmGfn1LPn0tGmjj6mPM1Ik=;
+        b=NCBGPZM0UsCoshXT9n6E1l8c11X09OlxzHQipXaGXJNY3NsUtQfM8OLU7BNs+jF4Ns
+         EgDOWP8T/BKFlaBPFINGRnIJvmxbo6XK9qBKecVqQdev84BtFkXeSypWKGpsaHHSlvj7
+         OEUSsllR4ZPQavUnddMnMl3E+sa0P0QPAjyjX+nbQwns6rk3z8Tc8+CS8uG7D8giFqjs
+         Qi14NX5EODlrYKM4oGOxc96SY5G6hX5wN+6ThCMw1WPiAz9Csp5Ur8rblh6Hx6mQsJZI
+         zq3afU6dOQH67z0kGqRffP5BXeqYuAxaa5XFMKK9PGw033CyRVZJ0BNCQ9uj67U/w/bv
+         5rvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y5Gh4oaaULAjy9Ls1siiMfAAe1fncZYaFKEdzt9GEmE=;
-        b=RNTVCAUx5CE9Jmm5pCbMWMYt9psGwE9lQifxsshzXV5jh3M+xQHdpuid4MZxcSIQvJ
-         PPmC7ps2eeGDYA+QlnqtYiiv80pXjXSGkRMx+Q2ZVyh2pNc/ddURm+m1IZ7POzRfzzcV
-         kIMmOqPVUJidK7+1fs38cKEkbOyF+RS3Edal8Z0L86IGZqzhld6je2Vg7Dr6xGDuvPCZ
-         XLLqrevikCA7bzPFolCgv2HM2reX7HjR3sgxOzMb3L7onWvQ6n13dKtrVV9WLi/+83Nu
-         SqzydUK41m+biwevUbXq26hb6rEFgOADt9RkHjHSeF7YHAgY3KGcQep+rwvfx07p1Eym
-         qs6Q==
-X-Gm-Message-State: AOAM5305zz8xuC5nIbvT2dkyzU1ZkeiWnpeU5J0c++h0s57aSaAONE1H
-        soh9REnSFs6PIqL6lcIu8bWNIXyq1Yn9QA==
-X-Google-Smtp-Source: ABdhPJz6J7AB2xrlC67LATZk82dpvwfF0XHheMdJ3s3aXb4TY/7OvZt/4Kr+6pudlkrt7EqXiopRng==
-X-Received: by 2002:a0c:b45a:: with SMTP id e26mr1634507qvf.59.1632968282132;
-        Wed, 29 Sep 2021 19:18:02 -0700 (PDT)
+        bh=d32Irn0I0vfy9RRpsQZ6TQmGfn1LPn0tGmjj6mPM1Ik=;
+        b=pdTs5s49NNkT/XOzB8YDhOemyLtkT/IcvXuJM8PS+6aEzsQFH/FfxY3u4SP6Gwlmq3
+         EMs1pVc44XfaD/WiZMx78N7GZJyNxEIxqUHkKyMnefE/WRsi2LdyhQ32M3dnI0wmu1ca
+         pJ1tyJkOGH+qO2c/UO6/0lWl0/it5/F+LAUuPreaJnkRLJlANJQCbsdHihzVVc1kIa3+
+         2Kuac/nmxzUHwf36lHy9ulyIAWHWy8GPYoYluzMGL04hK0MokUlKzrRtuC0J8Mp8JPSH
+         PP4zFBAMEcb51C/dT7ZXKM/jJjv+sdBBYAQAkaS8D7RvnkU9bY6o1sZi+M1Sfkbuupz+
+         S0/Q==
+X-Gm-Message-State: AOAM533RjLqQxjECnAINyZaZdxICmuLNEXb8Mj2GfVARJGEi7jGd4ZeH
+        xx7zccxwLop+7x9zqbc2b0Eymi7X7IZ9SA==
+X-Google-Smtp-Source: ABdhPJylEUrtpzW1+3d+wXWhexL7zqfY9zB67xVZwNyixkOaQBlfH0+w8PXkfI9mQ1J7bVCtlHXYpw==
+X-Received: by 2002:ae9:dc84:: with SMTP id q126mr2948738qkf.128.1632969048386;
+        Wed, 29 Sep 2021 19:30:48 -0700 (PDT)
 Received: from vpp.lan (h132.37.184.173.dynamic.ip.windstream.net. [173.184.37.132])
-        by smtp.gmail.com with ESMTPSA id j15sm977551qth.3.2021.09.29.19.18.01
+        by smtp.gmail.com with ESMTPSA id j184sm897177qkd.74.2021.09.29.19.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 19:18:01 -0700 (PDT)
+        Wed, 29 Sep 2021 19:30:48 -0700 (PDT)
 From:   Joshua Roys <roysjosh@gmail.com>
 To:     netdev@vger.kernel.org
 Cc:     Joshua Roys <roysjosh@gmail.com>, ast@kernel.org,
         davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
         daniel@iogearbox.net, kuba@kernel.org, bpf@vger.kernel.org,
         tariqt@nvidia.com, linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v2] net/mlx4_en: Add XDP_REDIRECT statistics
-Date:   Wed, 29 Sep 2021 22:17:18 -0400
-Message-Id: <20210930021718.245395-1-roysjosh@gmail.com>
+Subject: [PATCH net-next v3] net/mlx4_en: Add XDP_REDIRECT statistics
+Date:   Wed, 29 Sep 2021 22:30:23 -0400
+Message-Id: <20210930023023.245528-1-roysjosh@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210928132602.1488-1-roysjosh@gmail.com>
 References: <20210928132602.1488-1-roysjosh@gmail.com>
@@ -76,6 +76,8 @@ Signed-off-by: Joshua Roys <roysjosh@gmail.com>
  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    | 2 ++
  drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h | 4 +++-
  5 files changed, 20 insertions(+), 2 deletions(-)
+
+Sorry, this version fixes the full/fail typo.
 
 diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
 index ef518b1040f7..66c8ae29bc7a 100644
@@ -119,7 +121,7 @@ index 0158b88bea5b..f25794a92241 100644
  	priv->port_stats.rx_alloc_pages = 0;
  	priv->xdp_stats.rx_xdp_drop    = 0;
 +	priv->xdp_stats.rx_xdp_redirect = 0;
-+	priv->xdp_stats.rx_xdp_redirect_full = 0;
++	priv->xdp_stats.rx_xdp_redirect_fail = 0;
  	priv->xdp_stats.rx_xdp_tx      = 0;
  	priv->xdp_stats.rx_xdp_tx_full = 0;
  	for (i = 0; i < priv->rx_ring_num; i++) {
