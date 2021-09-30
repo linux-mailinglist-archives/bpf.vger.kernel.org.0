@@ -2,132 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC85A41D22B
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 06:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFE941D301
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 08:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbhI3EUd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 00:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        id S1348184AbhI3GGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 02:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhI3EUd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 00:20:33 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F00C06161C;
-        Wed, 29 Sep 2021 21:18:51 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id r4so10237169ybp.4;
-        Wed, 29 Sep 2021 21:18:51 -0700 (PDT)
+        with ESMTP id S1348054AbhI3GGA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:06:00 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D01C06161C;
+        Wed, 29 Sep 2021 23:04:18 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id k24so5138585pgh.8;
+        Wed, 29 Sep 2021 23:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=BM3+YuEPCCFf8tnVNn41FpirshNfW0x9wEl2P7HQvXo=;
-        b=BYDEpv9+qB5pI+2ZbITPdpCaidM0xuiXrlS/vk8ZE+e9VsLS6ubwW0ac2bu48KuvP0
-         cUKCPv5ncs5Iw/f9M4IRMQPuQRMkX0+elSxZMPWM15rwRBwn9V8zjuIzI8YWuaD0PKBM
-         dWTjGkLLds3Vh+xf5N/mxUctiZxAxEqBCuqriiWdmF4yU1/kvTR3y0LWBEAk65ZSAWIO
-         Hs9quGpVfZ3YOhy+9fnOse40ScFdFRmMMBaiQwkISuxjvNhSWSLD/Z6/0kZwoJ/Wa6G6
-         SVvRodICbq8NWb4/SRBs3wUhAv7JG5A7Z4yFq/7sRY90QdkRC+bTtqQz5qv0yR6m1HBM
-         oZeg==
+        bh=ic73pPeEyXcWnfRNixNiAUb29ZgXxYyvahioOuxFWMQ=;
+        b=UH4L74CsfTSDU+nsBbx3i9EFZWG02fMmeA/BPJd7dr2HX9lEwjfvJevEqmvWvgWj6V
+         gb4rs/6lo8QgvWoj1dhS9Ld0Uq0dE9qu8ldTA0XVhXBGozixmgeb5NZPJcsvFMp0zNii
+         WO4KXO/MjLqxIIldYWs/PJRdgRoUAfaWqgpZTsfMn84SjglpMyvpWAnk1Td1fQKAK0+9
+         27gNZADJ+mrqBcbd3tccpNOba5ZqEKasvgfwsRSrE8vJc7CZc/2Au8Qu4Hxg2f40VugP
+         KNZipR/5akpoiHneZuFywg9hAcn2vAvHtJuUkXcdKffs/m/4tnyr6+XvR5kWuSm9Pa1m
+         CFQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BM3+YuEPCCFf8tnVNn41FpirshNfW0x9wEl2P7HQvXo=;
-        b=W0CFOCgNUixKgVNahH8WNGD5jPip6y+TOAc7XMf2koSPt2QvHSlKC7hT4vxWWfr5tk
-         mZgwKvGweS4b1BS/Ht/DRyo5GlJEUaU5Q9eW3dnTh7dQL3cpDfTkhZ38leVGh289xEH7
-         TKVPk/524mtTC0ZtihSTUS1NpgVXMeHNbo5NjZHODeccwEAZrtnJnDC+EEBP/6PtCYP/
-         Ij+rrg48OtiD/e+qg99/bLAQPsfnVgdWFtvH12sxeTDQJBg6yBruEpVuphW1278bAC6m
-         vqCinpfLr6pdxJ2qObQa/iNdoqVAWqmqDOiBnP9U3he5vHR1MRr+9Mh+2TrXdqNLzeJz
-         JxyQ==
-X-Gm-Message-State: AOAM530eU6cP+ECCpiQorqmvKB0kM3E10EDjvZlD8kRNediN36CudTQH
-        tp47B64OoYu+BhSGVY/Q1qcVGvgefutfPYu4Yis=
-X-Google-Smtp-Source: ABdhPJxG9/V7h+JBx/vEOn0pfzD+Ov8bHsUw3MTd1M/mwB81H3w/MY0nqdiSQwYQshUykI5r2CPfec288HVjabf6hHM=
-X-Received: by 2002:a25:5402:: with SMTP id i2mr4240704ybb.312.1632975530282;
- Wed, 29 Sep 2021 21:18:50 -0700 (PDT)
+        bh=ic73pPeEyXcWnfRNixNiAUb29ZgXxYyvahioOuxFWMQ=;
+        b=Wz/ziz5YbN+NoXixS+lLz+Vm5AKM+zRwDvGiZUyI8ws0XQ7VEwtuQVy9OtQxmQuM+M
+         eKqesTIO/tEpJiqmbINifY2linbO7DIONTqHRAGitSoGlDXJ0r7HPveWaXcJnQYo+KHn
+         k6adlTKdCt/B0HHzWzenSnnRNldGJ1by0GI+bkqPI4dKrj3jOBwjQzHh9iW2wgKMJ9r+
+         LcJ2ZyW/EAyFLmfVW7NpDnkq0pmSoDSmVyTnR5lPfdDWXuj7shoy0SXdFpnZcyYB1DKD
+         5Ol3va+psLj0eJ9OPuSdRgE57UyQuQIDBOjVg7y03mn1simNBOy7hENiP4sEV15cdFut
+         pjmw==
+X-Gm-Message-State: AOAM531BvGLr+VIm6srQQVVsGq7l9G1kVOnF0E9d83t+hHDrxBXGamr1
+        X8oZoaZJVV8Ugvki3JVOCgoEap8e/zMcHYR2s3Lx5WmijbhCerHZ9A4=
+X-Google-Smtp-Source: ABdhPJzvRzZMn0eToIIC99jY+ZPM2aC9u3K8zx/Fgpudo4oJtqcXON8SmKM+a7V89pXDjarOblKcBDvNDd4KdbqHx7o=
+X-Received: by 2002:a05:6a00:708:b0:43b:80ba:99c8 with SMTP id
+ 8-20020a056a00070800b0043b80ba99c8mr2483411pfl.51.1632981857497; Wed, 29 Sep
+ 2021 23:04:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929111855.50254-1-hbathini@linux.ibm.com>
- <20210929111855.50254-6-hbathini@linux.ibm.com> <9628c18d-001e-9777-e800-486a83844ac1@csgroup.eu>
-In-Reply-To: <9628c18d-001e-9777-e800-486a83844ac1@csgroup.eu>
-From:   Jordan Niethe <jniethe5@gmail.com>
-Date:   Thu, 30 Sep 2021 14:18:38 +1000
-Message-ID: <CACzsE9oNCaXoizCt-KzKS48A1L7v4_em-nLVfVLeeuWky1mrTA@mail.gmail.com>
-Subject: Re: [PATCH v4 5/8] bpf ppc64: Add BPF_PROBE_MEM support for JIT
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Hari Bathini <hbathini@linux.ibm.com>, naveen.n.rao@linux.ibm.com,
-        Michael Ellerman <mpe@ellerman.id.au>, ast@kernel.org,
-        daniel@iogearbox.net, Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        songliubraving@fb.com, netdev@vger.kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
-        Paul Mackerras <paulus@samba.org>, yhs@fb.com,
-        bpf@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        kafai@fb.com
+References: <20201119083024.119566-7-bjorn.topel@gmail.com> <202109300212.l6Ky1gNu-lkp@intel.com>
+In-Reply-To: <202109300212.l6Ky1gNu-lkp@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 30 Sep 2021 08:04:06 +0200
+Message-ID: <CAJ8uoz3g6wzkTYRb4qq4aj+KDVGUfyZ6O6NkMK_t-EBp07igOg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 06/10] xsk: propagate napi_id to XDP socket Rx path
+To:     kernel test robot <lkp@intel.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kbuild-all@lists.01.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Zhang, Qi Z" <qi.z.zhang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 9:50 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Wed, Sep 29, 2021 at 8:37 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi "Bj=C3=B6rn,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on 4e99d115d865d45e17e83478d757b58d8fa66d3c]
+>
+> url:    https://github.com/0day-ci/linux/commits/Bj-rn-T-pel/Introduce-pr=
+eferred-busy-polling/20210929-234934
+> base:   4e99d115d865d45e17e83478d757b58d8fa66d3c
+> config: um-kunit_defconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=3D1 build):
+>         # https://github.com/0day-ci/linux/commit/f481c00164924dd5d782a92=
+cc67897cc7f804502
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Bj-rn-T-pel/Introduce-preferred-=
+busy-polling/20210929-234934
+>         git checkout f481c00164924dd5d782a92cc67897cc7f804502
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         make W=3D1 O=3Dbuild_dir ARCH=3Dum SHELL=3D/bin/bash
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    cc1: warning: arch/um/include/uapi: No such file or directory [-Wmissi=
+ng-include-dirs]
+>    In file included from fs/select.c:32:
+>    include/net/busy_poll.h: In function 'sk_mark_napi_id_once':
+> >> include/net/busy_poll.h:150:36: error: 'const struct sk_buff' has no m=
+ember named 'napi_id'
+>      150 |  __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
+>          |                                    ^~
 >
 >
+> vim +150 include/net/busy_poll.h
 >
-> Le 29/09/2021 =C3=A0 13:18, Hari Bathini a =C3=A9crit :
-> > From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-> >
-> > BPF load instruction with BPF_PROBE_MEM mode can cause a fault
-> > inside kernel. Append exception table for such instructions
-> > within BPF program.
-> >
-> > Unlike other archs which uses extable 'fixup' field to pass dest_reg
-> > and nip, BPF exception table on PowerPC follows the generic PowerPC
->
->
-> For my curiosity, can you explain why we don't want and can't do the
-> same on powerpc as on other archs ?
+>    145
+>    146  /* variant used for unconnected sockets */
+>    147  static inline void sk_mark_napi_id_once(struct sock *sk,
+>    148                                          const struct sk_buff *skb=
+)
+>    149  {
+>  > 150          __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
+>    151  }
+>    152
 
-The main thing is on x86, the extable has another field , handler:
-struct exception_table_entry { int insn, fixup, handler; };
-handler can be used to perform other things before continuing on to fixup.
-So for bpf the handler is used to clear the dest register (which is
-encoded in the low byte of fixup).
-More detail in 3dec541b2e63 ("bpf: Add support for BTF pointers to x86 JIT"=
-).
+It seems that the robot tested an old commit and that this was already
+fixed by Daniel 10 months ago. Slow mail delivery, a robot glitch, or
+am I missing something?
 
-arm64 is an example of an arch that doesn't have a handler field in the ext=
-able.
-They did something along the lines of this rather than adding a
-handler field to the extable.
-See 800834285361 ("bpf, arm64: Add BPF exception tables")
+commit ba0581749fec389e55c9d761f2716f8fcbefced5
+Author: Daniel Borkmann <daniel@iogearbox.net>
+Date:   Tue Dec 1 15:22:59 2020 +0100
 
->
->
-> > exception table design, where it populates both fixup and extable
-> > sections within BPF program. fixup section contains two instructions,
-> > first instruction clears dest_reg and 2nd jumps to next instruction
-> > in the BPF code. extable 'insn' field contains relative offset of
-> > the instruction and 'fixup' field contains relative offset of the
-> > fixup entry. Example layout of BPF program with extable present:
-> >
-> >               +------------------+
-> >               |                  |
-> >               |                  |
-> >     0x4020 -->| ld   r27,4(r3)   |
-> >               |                  |
-> >               |                  |
-> >     0x40ac -->| lwz  r3,0(r4)    |
-> >               |                  |
-> >               |                  |
-> >               |------------------|
-> >     0x4280 -->| li  r27,0        |  \ fixup entry
-> >               | b   0x4024       |  /
-> >     0x4288 -->| li  r3,0         |
-> >               | b   0x40b0       |
-> >               |------------------|
-> >     0x4290 -->| insn=3D0xfffffd90  |  \ extable entry
-> >               | fixup=3D0xffffffec |  /
-> >     0x4298 -->| insn=3D0xfffffe14  |
-> >               | fixup=3D0xffffffec |
-> >               +------------------+
-> >
-> >     (Addresses shown here are chosen random, not real)
-> >
+    net, xdp, xsk: fix __sk_mark_napi_id_once napi_id error
+
+    Stephen reported the following build error for !CONFIG_NET_RX_BUSY_POLL
+    built kernels:
+
+      In file included from fs/select.c:32:
+      include/net/busy_poll.h: In function 'sk_mark_napi_id_once':
+      include/net/busy_poll.h:150:36: error: 'const struct sk_buff'
+has no member named 'napi_id'
+        150 |  __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
+            |                                    ^~
+
+    Fix it by wrapping a CONFIG_NET_RX_BUSY_POLL around the helpers.
+
+    Fixes: b02e5a0ebb17 ("xsk: Propagate napi_id to XDP socket Rx path")
+    Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+    Cc: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+    Link: https://lore.kernel.org/linux-next/20201201190746.7d3357fb@canb.a=
+uug.org.au
+
+
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
