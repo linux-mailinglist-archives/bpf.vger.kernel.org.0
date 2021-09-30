@@ -2,101 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1640241DC71
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 16:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC9F41DDE7
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 17:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350777AbhI3Okm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 10:40:42 -0400
-Received: from m1514.mail.126.com ([220.181.15.14]:18568 "EHLO
-        m1514.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349727AbhI3Okm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:40:42 -0400
-X-Greylist: delayed 1820 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Sep 2021 10:40:40 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=NG7/U
-        AGLuSe/tXOsjmZbo9Y4ZM6Q1xhVVV+cAOM5S24=; b=C1vRtMBxFxl3XJU818qUm
-        W1ummkGbk8Kd9fn8SrV5/6sp5Vofccrsklt2UTwDARqLPNrx2JIBqjojE8whCu6t
-        BMVug2uFUUgdARfwJ552DAReQFrsNn3wPv+E9cAIS1PMwnwEvir9UQWadMrgZBhV
-        NG68SsMMq46RFAIacDI6TY=
-Received: from kernelpatch$126.com ( [113.200.148.30] ) by
- ajax-webmail-wmsvr14 (Coremail) ; Thu, 30 Sep 2021 22:07:56 +0800 (CST)
-X-Originating-IP: [113.200.148.30]
-Date:   Thu, 30 Sep 2021 22:07:56 +0800 (CST)
-From:   "Tiezhu Yang" <kernelpatch@126.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        johan.almbladh@anyfinetworks.com, lixuefeng@loongson.cn,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] test_bpf: add module parameter test_type
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        id S1345184AbhI3Prz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 11:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345765AbhI3Prz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:47:55 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E940C06176D
+        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 08:46:12 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id e16so6109438qts.4
+        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 08:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8d6xo5L9QevHc/0Sduv9NQkae1fLgboqRLN/cOlHL94=;
+        b=iR/rfVgiWHq5rw4NLK5OT9v5lYhcLGBGwNqvqBTHa8uM0K3LSI6Qds40sZdhqy343D
+         nKF1AalapkTkhy/ypRBVypdug7o8/xaqtmHaWv9UPFEGjb1UhHpm/4rTjAiBbtASwfKx
+         3JH/kVbQPqPEjk5/0bNv7k1/Y2BIonRHJ0vWOSQM3zvPY70Uxrv2rSgTrqGgUv6GDu7E
+         chrKKhinXiSRYk/xsds2GtV3wz6HxpGI4jq2FDoKpBIlG6t+6bi34LoQK0m5uh10NjJQ
+         5mDPrpUbvxQNLMegc4nJJFYKUu1kf5g3ZYgnxHtFO6ahoMuizo6fqj2+osS40oUSZmZK
+         mhMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8d6xo5L9QevHc/0Sduv9NQkae1fLgboqRLN/cOlHL94=;
+        b=kvlPbA+0d2Ves1dLXFUGQriDXfHxgNlssyf8OQPmCm2BmZGamQbwWI1wcbM7mSA04A
+         rCYtktX+0QVj9AzavTa+zrlwuabRT/323Q9K73EEcQSKK+0MzCAassEOZxI3Bln2eBoT
+         bp5hSp+h18ZF7jhJFJQSZUwleV8vISSwsF3GZZj+G2aPYHvUsq3vxkMQbYD0hQVfDhY2
+         zxiXj0IzKkmdJ+YuXk+E3fw0i4Z5SwBdCglop/3Lf7J39MJKMnNBmRCjrfqQkf6chLUU
+         XV6NjRJKZvMho9xdPLM7qDBztm0iC5JFibGfyK4yspw70LC/En2PerR2vm6yKPFrNao1
+         398w==
+X-Gm-Message-State: AOAM533GCIrxCtxoVQcnuCrr9HBaC/ugV5HzDFY7nXA3BRNf5b++bfE/
+        XLOkQHoOnI/zTtodkeMxeNLPKmxY4DtkFE/uG1J9uA==
+X-Google-Smtp-Source: ABdhPJwZ3uxL8AigS1SCTssbBbBxtSyTYvRLlSFXF7X1iRF0BIcI7ZsH6TQi0ZjmX4wm1iehH5EIvAVb3aaD1X5z2aM=
+X-Received: by 2002:ac8:5ed1:: with SMTP id s17mr7389237qtx.196.1633016771378;
+ Thu, 30 Sep 2021 08:46:11 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <2af1fd4d.566a.17c3708821e.Coremail.kernelpatch@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: DsqowABX_ui9xFVh7Y6LAQ--.55499W
-X-CM-SenderInfo: xnhu0vxosd3ubk6rjloofrz/1tbi6B0e9VpEFIIdpAAAsv
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+References: <20210930071143.63410-1-wangkefeng.wang@huawei.com> <20210930071143.63410-8-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210930071143.63410-8-wangkefeng.wang@huawei.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 30 Sep 2021 17:45:35 +0200
+Message-ID: <CAG_fn=XD+nVgVRgj7KFsPWSuia+gZzpA3KAdqucjKodOvxSF6w@mail.gmail.com>
+Subject: Re: [PATCH v4 07/11] mm: kasan: Use is_kernel() helper
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, bpf@vger.kernel.org,
+        linux-alpha@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogVGllemh1IFlhbmcgPHlhbmd0aWV6aHVAbG9vbmdzb24uY24+CgpBZnRlciBjb21taXQg
-OTI5OGU2M2VhZmVhICgiYnBmL3Rlc3RzOiBBZGQgZXhoYXVzdGl2ZSB0ZXN0cyBvZiBBTFUKb3Bl
-cmFuZCBtYWduaXR1ZGVzIiksIHdoZW4gbW9kcHJvYmUgdGVzdF9icGYua28gd2l0aCBqaXQgb24g
-bWlwczY0LAp0aGVyZSBleGlzdHMgc2VnbWVudCBmYXVsdCBkdWUgdG8gdGhlIGZvbGxvd2luZyBy
-ZWFzb246Cgp0ZXN0X2JwZjogIzYxNiBBTFU2NF9NT1ZfWDogYWxsIHJlZ2lzdGVyIHZhbHVlIG1h
-Z25pdHVkZXMgaml0ZWQ6MQpCcmVhayBpbnN0cnVjdGlvbiBpbiBrZXJuZWwgY29kZVsjMV0KCkl0
-IHNlZW1zIHRoYXQgdGhlIHJlbGF0ZWQgaml0IGltcGxlbWVudGF0aW9ucyBvZiBzb21lIHRlc3Qg
-Y2FzZXMKaW4gdGVzdF9icGYoKSBoYXZlIHByb2JsZW1zLiBBdCB0aGlzIG1vbWVudCwgSSBkbyBu
-b3QgY2FyZSBhYm91dAp0aGUgc2VnbWVudCBmYXVsdCB3aGlsZSBJIGp1c3Qgd2FudCB0byB2ZXJp
-ZnkgdGhlIHRlc3QgY2FzZXMgb2YKdGFpbCBjYWxscy4KCkJhc2VkIG9uIHRoZSBhYm92ZSBiYWNr
-Z3JvdW5kIGFuZCBtb3RpdmF0aW9uLCBhZGQgdGhlIGZvbGxvd2luZwptb2R1bGUgcGFyYW1ldGVy
-IHRlc3RfdHlwZSB0byB0aGUgdGVzdF9icGYua286CnRlc3RfdHlwZT08c3RyaW5nPjogb25seSB0
-aGUgc3BlY2lmaWVkIHR5cGUgd2lsbCBiZSBydW4sIHRoZSBzdHJpbmcKY2FuIGJlICJ0ZXN0X2Jw
-ZiIsICJ0ZXN0X3RhaWxfY2FsbHMiIG9yICJ0ZXN0X3NrYl9zZWdtZW50Ii4KClRoaXMgaXMgdXNl
-ZnVsIHRvIG9ubHkgdGVzdCB0aGUgY29ycmVzcG9uZGluZyB0ZXN0IHR5cGUgd2hlbiBzcGVjaWZ5
-CnRoZSB2YWxpZCB0ZXN0X3R5cGUgc3RyaW5nLgoKQW55IGludmFsaWQgdGVzdCB0eXBlIHdpbGwg
-cmVzdWx0IGluIC1FSU5WQUwgYmVpbmcgcmV0dXJuZWQgYW5kIG5vCnRlc3RzIGJlaW5nIHJ1bi4g
-SWYgdGhlIHRlc3RfdHlwZSBpcyBub3Qgc3BlY2lmaWVkIG9yIHNwZWNpZmllZCBhcwplbXB0eSBz
-dHJpbmcsIGl0IGRvZXMgbm90IGNoYW5nZSB0aGUgY3VycmVudCBsb2dpYywgYWxsIG9mIHRoZSB0
-ZXN0CmNhc2VzIHdpbGwgYmUgcnVuLgoKU2lnbmVkLW9mZi1ieTogVGllemh1IFlhbmcgPHlhbmd0
-aWV6aHVAbG9vbmdzb24uY24+Ci0tLQoKdjI6CiAgLS0gRml4IHR5cG8gaW4gdGhlIGNvbW1pdCBt
-ZXNzYWdlCiAgLS0gVXNlIG15IHByaXZhdGUgZW1haWwgdG8gc2VuZAoKIGxpYi90ZXN0X2JwZi5j
-IHwgNDggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tCiAx
-IGZpbGUgY2hhbmdlZCwgMzMgaW5zZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvbGliL3Rlc3RfYnBmLmMgYi9saWIvdGVzdF9icGYuYwppbmRleCAyMWVhMWFiLi45NDI4
-ZmVjIDEwMDY0NAotLS0gYS9saWIvdGVzdF9icGYuYworKysgYi9saWIvdGVzdF9icGYuYwpAQCAt
-MTE4NjYsNiArMTE4NjYsOSBAQCBtb2R1bGVfcGFyYW0odGVzdF9pZCwgaW50LCAwKTsKIHN0YXRp
-YyBpbnQgdGVzdF9yYW5nZVsyXSA9IHsgMCwgQVJSQVlfU0laRSh0ZXN0cykgLSAxIH07CiBtb2R1
-bGVfcGFyYW1fYXJyYXkodGVzdF9yYW5nZSwgaW50LCBOVUxMLCAwKTsKIAorc3RhdGljIGNoYXIg
-dGVzdF90eXBlWzMyXTsKK21vZHVsZV9wYXJhbV9zdHJpbmcodGVzdF90eXBlLCB0ZXN0X3R5cGUs
-IHNpemVvZih0ZXN0X3R5cGUpLCAwKTsKKwogc3RhdGljIF9faW5pdCBpbnQgZmluZF90ZXN0X2lu
-ZGV4KGNvbnN0IGNoYXIgKnRlc3RfbmFtZSkKIHsKIAlpbnQgaTsKQEAgLTEyNTE4LDI0ICsxMjUy
-MSwzOSBAQCBzdGF0aWMgaW50IF9faW5pdCB0ZXN0X2JwZl9pbml0KHZvaWQpCiAJc3RydWN0IGJw
-Zl9hcnJheSAqcHJvZ3MgPSBOVUxMOwogCWludCByZXQ7CiAKLQlyZXQgPSBwcmVwYXJlX2JwZl90
-ZXN0cygpOwotCWlmIChyZXQgPCAwKQotCQlyZXR1cm4gcmV0OworCWlmIChzdHJsZW4odGVzdF90
-eXBlKSAmJgorCSAgICBzdHJjbXAodGVzdF90eXBlLCAidGVzdF9icGYiKSAmJgorCSAgICBzdHJj
-bXAodGVzdF90eXBlLCAidGVzdF90YWlsX2NhbGxzIikgJiYKKwkgICAgc3RyY21wKHRlc3RfdHlw
-ZSwgInRlc3Rfc2tiX3NlZ21lbnQiKSkgeworCQlwcl9lcnIoInRlc3RfYnBmOiBpbnZhbGlkIHRl
-c3RfdHlwZSAnJXMnIHNwZWNpZmllZC5cbiIsIHRlc3RfdHlwZSk7CisJCXJldHVybiAtRUlOVkFM
-OworCX0KKworCWlmICghc3RybGVuKHRlc3RfdHlwZSkgfHwgIXN0cmNtcCh0ZXN0X3R5cGUsICJ0
-ZXN0X2JwZiIpKSB7CisJCXJldCA9IHByZXBhcmVfYnBmX3Rlc3RzKCk7CisJCWlmIChyZXQgPCAw
-KQorCQkJcmV0dXJuIHJldDsKKworCQlyZXQgPSB0ZXN0X2JwZigpOworCQlkZXN0cm95X2JwZl90
-ZXN0cygpOworCQlpZiAocmV0KQorCQkJcmV0dXJuIHJldDsKKwl9CiAKLQlyZXQgPSB0ZXN0X2Jw
-ZigpOwotCWRlc3Ryb3lfYnBmX3Rlc3RzKCk7Ci0JaWYgKHJldCkKLQkJcmV0dXJuIHJldDsKKwlp
-ZiAoIXN0cmxlbih0ZXN0X3R5cGUpIHx8ICFzdHJjbXAodGVzdF90eXBlLCAidGVzdF90YWlsX2Nh
-bGxzIikpIHsKKwkJcmV0ID0gcHJlcGFyZV90YWlsX2NhbGxfdGVzdHMoJnByb2dzKTsKKwkJaWYg
-KHJldCkKKwkJCXJldHVybiByZXQ7CisJCXJldCA9IHRlc3RfdGFpbF9jYWxscyhwcm9ncyk7CisJ
-CWRlc3Ryb3lfdGFpbF9jYWxsX3Rlc3RzKHByb2dzKTsKKwkJaWYgKHJldCkKKwkJCXJldHVybiBy
-ZXQ7CisJfQogCi0JcmV0ID0gcHJlcGFyZV90YWlsX2NhbGxfdGVzdHMoJnByb2dzKTsKLQlpZiAo
-cmV0KQotCQlyZXR1cm4gcmV0OwotCXJldCA9IHRlc3RfdGFpbF9jYWxscyhwcm9ncyk7Ci0JZGVz
-dHJveV90YWlsX2NhbGxfdGVzdHMocHJvZ3MpOwotCWlmIChyZXQpCi0JCXJldHVybiByZXQ7CisJ
-aWYgKCFzdHJsZW4odGVzdF90eXBlKSB8fCAhc3RyY21wKHRlc3RfdHlwZSwgInRlc3Rfc2tiX3Nl
-Z21lbnQiKSkKKwkJcmV0dXJuIHRlc3Rfc2tiX3NlZ21lbnQoKTsKIAotCXJldHVybiB0ZXN0X3Nr
-Yl9zZWdtZW50KCk7CisJcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyB2b2lkIF9fZXhpdCB0ZXN0X2Jw
-Zl9leGl0KHZvaWQpCi0tIAoyLjEuMA==
+On Thu, Sep 30, 2021 at 9:09 AM Kefeng Wang <wangkefeng.wang@huawei.com> wr=
+ote:
+>
+> Directly use is_kernel() helper in kernel_or_module_addr().
+>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+
+> ---
+>  mm/kasan/report.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 3239fd8f8747..1c955e1c98d5 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -226,7 +226,7 @@ static void describe_object(struct kmem_cache *cache,=
+ void *object,
+>
+>  static inline bool kernel_or_module_addr(const void *addr)
+>  {
+> -       if (addr >=3D (void *)_stext && addr < (void *)_end)
+> +       if (is_kernel((unsigned long)addr))
+>                 return true;
+>         if (is_module_address((unsigned long)addr))
+>                 return true;
+> --
+> 2.26.2
+>
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
