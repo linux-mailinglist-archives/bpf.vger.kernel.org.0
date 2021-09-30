@@ -2,48 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDCF41DA3B
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 14:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B5C41DAE0
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 15:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351084AbhI3Mvv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 08:51:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49966 "EHLO mail.kernel.org"
+        id S1350982AbhI3NVx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 09:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351070AbhI3Mvu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:51:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 30DEB619A6;
-        Thu, 30 Sep 2021 12:50:08 +0000 (UTC)
+        id S1350956AbhI3NVw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:21:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2C6C7619F6;
+        Thu, 30 Sep 2021 13:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633006208;
-        bh=Tbjk5nVoB1lzJ2wEqqEEaeh8Bq2eZMQG7O0N1l/HnP0=;
+        s=k20201202; t=1633008010;
+        bh=ZBKP/cy224szzWaC2iWu9Hs89GPkUCQFwthYB12WVI0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gTrl/qa9CCYMPh+eE0XzZokdX3eonwH3ZrMIAyp2ne26IXy3M0B+FqclGs4C9xKJ5
-         1yL0RvpY4K0I1JY+F+H//OarNIbfDshKAVMXFvKJ0W/WvfhKzRKkuhjHYlsvJLO/cQ
-         BuM1pxZQGJIme4OzJ0fDE7Gl+1Jec9gK8bBrb+crAPZCcfotGdAfiKyLaJQkjDHN/a
-         MWEspqLCbxACLDjzUoCL0FErsHQUgELod77dtxFfwTpIY50NaGN5JaOZ9tdZVY+RQN
-         STH9AA3Xqo6GgP4xMgFQWTpeWc8l9QodfC1qT6g3aNJFIXfttEBZ57jEJUc0LXc1xJ
-         zGkgLm5ijAk8Q==
+        b=HjMAgs5lK1P1XcuYt7XJxh6Z327fc2aQfp4D+oVcK7SM4cv/kADf6pb8qt2bqmsXx
+         0zdJNFdGPzUiVD2sVhb9drkCd+TKHfi1RpvQDD9sxJe3ATUKvCnucGzVuJAngn9U7m
+         t/oR6e/CA5dZTPgwhnMYrGDs1sE4Vwo8gxeZNx0Rh1LAmwXxVtpUt1Z25T4BduAPtJ
+         /Bgq+VRLAth1LyuaPR4zWxdbWCTnnknFw0tpvTWsnwNMtOksbdEvB30uhGw5sHTCHD
+         CcNoLajoEey2aWyz7f0Sjtnz600O1lGdmnG4DZaf4/EzcozdTfbnpSx4VefLMmbDet
+         X5DYdyUH3SbMQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 242D560AA5;
-        Thu, 30 Sep 2021 12:50:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 252F160A9F;
+        Thu, 30 Sep 2021 13:20:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/1] ixgbe: let the xdpdrv work with more than 64
- cpus
+Subject: Re: [PATCH net-next v3] net/mlx4_en: Add XDP_REDIRECT statistics
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163300620814.1111.13000461689330514849.git-patchwork-notify@kernel.org>
-Date:   Thu, 30 Sep 2021 12:50:08 +0000
-References: <20210929175605.3963510-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20210929175605.3963510-1-anthony.l.nguyen@intel.com>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, xingwanli@kuaishou.com,
-        netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kpsingh@kernel.org, kafai@fb.com, yhs@fb.com, songliubraving@fb.co,
-        bpf@vger.kernel.org, lishujin@kuaishou.com,
-        sandeep.penigalapati@intel.com
+Message-Id: <163300801014.14372.3999896240140577523.git-patchwork-notify@kernel.org>
+Date:   Thu, 30 Sep 2021 13:20:10 +0000
+References: <20210930023023.245528-1-roysjosh@gmail.com>
+In-Reply-To: <20210930023023.245528-1-roysjosh@gmail.com>
+To:     Joshua Roys <roysjosh@gmail.com>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, daniel@iogearbox.net,
+        kuba@kernel.org, bpf@vger.kernel.org, tariqt@nvidia.com,
+        linux-rdma@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,21 +48,24 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 29 Sep 2021 10:56:05 -0700 you wrote:
-> From: Jason Xing <xingwanli@kuaishou.com>
+On Wed, 29 Sep 2021 22:30:23 -0400 you wrote:
+> Add counters for XDP REDIRECT success and failure. This brings the
+> redirect path in line with metrics gathered via the other XDP paths.
 > 
-> Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-> server is equipped with more than 64 cpus online. So it turns out that
-> the loading of xdpdrv causes the "NOMEM" failure.
-> 
-> Actually, we can adjust the algorithm and then make it work through
-> mapping the current cpu to some xdp ring with the protect of @tx_lock.
+> Signed-off-by: Joshua Roys <roysjosh@gmail.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 8 ++++++++
+>  drivers/net/ethernet/mellanox/mlx4/en_port.c    | 4 ++++
+>  drivers/net/ethernet/mellanox/mlx4/en_rx.c      | 4 +++-
+>  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    | 2 ++
+>  drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h | 4 +++-
+>  5 files changed, 20 insertions(+), 2 deletions(-)
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/1] ixgbe: let the xdpdrv work with more than 64 cpus
-    https://git.kernel.org/netdev/net-next/c/4fe815850bdc
+  - [net-next,v3] net/mlx4_en: Add XDP_REDIRECT statistics
+    https://git.kernel.org/netdev/net-next/c/dee3b2d0fa4b
 
 You are awesome, thank you!
 --
