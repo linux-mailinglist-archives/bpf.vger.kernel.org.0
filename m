@@ -2,147 +2,374 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B9E41D781
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 12:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C1341D865
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 13:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349887AbhI3KTX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 06:19:23 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:24206 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349867AbhI3KTS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:19:18 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HKq0T2YPVz8tWh;
-        Thu, 30 Sep 2021 18:16:41 +0800 (CST)
+        id S1350357AbhI3LHa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 07:07:30 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:24165 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350347AbhI3LH0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 07:07:26 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HKr3V1MHwz1DHDv;
+        Thu, 30 Sep 2021 19:04:22 +0800 (CST)
 Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 18:17:34 +0800
+ 15.1.2308.8; Thu, 30 Sep 2021 19:05:42 +0800
 Received: from [10.174.176.117] (10.174.176.117) by
  dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 18:17:34 +0800
-Subject: Re: [PATCH bpf-next 2/5] bpf: factor out a helper to prepare
- trampoline for struct_ops prog
+ 15.1.2308.8; Thu, 30 Sep 2021 19:05:42 +0800
+Subject: Re: [PATCH bpf-next 3/5] bpf: do .test_run in dummy BPF STRUCT_OPS
 To:     Martin KaFai Lau <kafai@fb.com>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
         <bpf@vger.kernel.org>
 References: <20210928025228.88673-1-houtao1@huawei.com>
- <20210928025228.88673-3-houtao1@huawei.com>
- <20210929175620.yi4jfpllhugys6eo@kafai-mbp.dhcp.thefacebook.com>
+ <20210928025228.88673-4-houtao1@huawei.com>
+ <20210929185541.cb5z2xnngqljkscu@kafai-mbp.dhcp.thefacebook.com>
 From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <74247c43-39df-6872-4de6-8f4136ac37cd@huawei.com>
-Date:   Thu, 30 Sep 2021 18:17:33 +0800
+Message-ID: <89ce4b1c-6ea6-80b9-ec2f-5a6d49dd591b@huawei.com>
+Date:   Thu, 30 Sep 2021 19:05:41 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210929175620.yi4jfpllhugys6eo@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210929185541.cb5z2xnngqljkscu@kafai-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi
+Hi,
 
-On 9/30/2021 1:56 AM, Martin KaFai Lau wrote:
-> On Tue, Sep 28, 2021 at 10:52:25AM +0800, Hou Tao wrote:
->> Factor out a helper bpf_prepare_st_ops_prog() to prepare trampoline
->> for BPF_PROG_TYPE_STRUCT_OPS prog. It will be used by .test_run
->> callback in following patch.
-> Thanks for the patches.
-Thanks for you review.
+On 9/30/2021 2:55 AM, Martin KaFai Lau wrote:
+> On Tue, Sep 28, 2021 at 10:52:26AM +0800, Hou Tao wrote:
+>> Now only program for bpf_dummy_ops::init() is supported. The following
+>> two cases are exercised in bpf_dummy_st_ops_test_run():
+>>
+>> (1) test and check the value returned from state arg in init(state)
+>> The content of state is copied from data_in before calling init() and
+>> copied back to data_out after calling, so test program could use
+>> data_in to pass the input state and use data_out to get the
+>> output state.
+>>
+>> (2) test and check the return value of init(NULL)
+>> data_in_size is set as 0, so the state will be NULL and there will be
+>> no copy-in & copy-out.
+> Patch 1 and patch 3 in this set should be combined.
+Will do. The purpose of splitting into two patches is that if only the return
+value test is needed, patch 3 can be dropped. But now we will add more
+tests, so i think combine two patches into one is OK.
 >
-> This preparation change should be the first patch instead.
-Will do.
+>>  include/linux/bpf_dummy_ops.h  |  13 ++-
+>>  net/bpf/bpf_dummy_struct_ops.c | 176 +++++++++++++++++++++++++++++++++
+>>  2 files changed, 188 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/bpf_dummy_ops.h b/include/linux/bpf_dummy_ops.h
+>> index a594ae830eba..5049484e6693 100644
+>> --- a/include/linux/bpf_dummy_ops.h
+>> +++ b/include/linux/bpf_dummy_ops.h
+> The changes here seem not worth a new header file.
+> Let see if they can be simplified and move the only needed things to bpf.h.
 >
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 155dfcfb8923..002bbb2c8bc7 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -2224,4 +2224,9 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
->>  			u32 **bin_buf, u32 num_args);
->>  void bpf_bprintf_cleanup(void);
+>> @@ -5,10 +5,21 @@
+>>  #ifndef _BPF_DUMMY_OPS_H
+>>  #define _BPF_DUMMY_OPS_H
 >>  
->> +int bpf_prepare_st_ops_prog(struct bpf_tramp_progs *tprogs,
->> +			    struct bpf_prog *prog,
->> +			    const struct btf_func_model *model,
->> +			    void *image, void *image_end);
-> Move it under where other bpf_struct_ops_.*() resides in bpf.h.
+>> -typedef int (*bpf_dummy_ops_init_t)(void);
+>> +#include <linux/bpf.h>
+>> +#include <linux/filter.h>
+>> +
+>> +struct bpf_dummy_ops_state {
+>> +	int val;
+>> +};
+> This struct can be moved to net/bpf/bpf_dummy_struct_ops.c.
 >
 >> +
->>  #endif /* _LINUX_BPF_H */
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index 9abcc33f02cf..ec3c25174923 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -312,6 +312,20 @@ static int check_zero_holes(const struct btf_type *t, void *data)
+>> +typedef int (*bpf_dummy_ops_init_t)(struct bpf_dummy_ops_state *cb);
+> If I read it correctly, the typedef is only useful in casting later.
+> It would need another typedef in the future if new test function is added.
+> Lets try to remove it (more on this later).
+>
+>>  
+>>  struct bpf_dummy_ops {
+>>  	bpf_dummy_ops_init_t init;
+> "init" is a little confusing since it is not doing initialization.
+> It is for testing purpose.  How about renaming it to test1, test2, test3...:
+>
+> 	int (*test1)(struct bpf_dummy_ops_state *cb);
+>
+> Also, it should at least add another function to test more
+> arguments which is another limitation of testing with
+> tcp_congestion_ops.
+>
+>>  };
+> The whole struct bpf_dummy_ops can be moved to include/linux/bpf.h also
+> next to where other bpf_struct_ops_*() functions are residing.
+Will do. Thanks for your suggestions.
+>
+>>  
+>> +extern int bpf_dummy_st_ops_test_run(struct bpf_prog *prog,
+>> +				     const union bpf_attr *kattr,
+>> +				     union bpf_attr __user *uattr);
+> Same here.  It can be moved to include/linux/bpf.h and remove the
+> "extern" also.
+>
+>> +
+>>  #endif
+>> diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
+>> index 1249e4bb4ccb..da77736cd093 100644
+>> --- a/net/bpf/bpf_dummy_struct_ops.c
+>> +++ b/net/bpf/bpf_dummy_struct_ops.c
+>> @@ -10,12 +10,188 @@
+>>  
+>>  extern struct bpf_struct_ops bpf_bpf_dummy_ops;
+>>  
+>> +static const struct btf_type *dummy_ops_state;
+>> +
+>> +static struct bpf_dummy_ops_state *
+>> +init_dummy_ops_state(const union bpf_attr *kattr)
+>> +{
+>> +	__u32 size_in;
+>> +	struct bpf_dummy_ops_state *state;
+>> +	void __user *data_in;
+>> +
+>> +	size_in = kattr->test.data_size_in;
+> These are the args for the test functions?  Using ctx_in/ctx_size_in
+> and ctx_out/ctx_size_out instead should be more consistent
+> with other bpf_prog_test_run* in test_run.c.
+Yes, there are args. I had think about using ctx_in/ctx_out, but I didn't
+because I thought the program which using ctx_in/ctx_out only has
+one argument (namely bpf_context *), but the bpf_dummy_ops::init
+may have multiple arguments. Anyway I will check it again and use
+ctx_in/ctx_out if possible.
+
+>
+>> +	if (!size_in)
+>> +		return NULL;
+>> +
+>> +	if (size_in != sizeof(*state))
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	state = kzalloc(sizeof(*state), GFP_KERNEL);
+>> +	if (!state)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>> +	data_in = u64_to_user_ptr(kattr->test.data_in);
+>> +	if (copy_from_user(state, data_in, size_in)) {
+>> +		kfree(state);
+>> +		return ERR_PTR(-EFAULT);
+>> +	}
+>> +
+>> +	return state;
+>> +}
+>> +
+>> +static int copy_dummy_ops_state(struct bpf_dummy_ops_state *state,
+>> +				const union bpf_attr *kattr,
+>> +				union bpf_attr __user *uattr)
+>> +{
+>> +	int err = 0;
+>> +	void __user *data_out;
+>> +
+>> +	if (!state)
+>> +		return 0;
+>> +
+>> +	data_out = u64_to_user_ptr(kattr->test.data_out);
+>> +	if (copy_to_user(data_out, state, sizeof(*state))) {
+>> +		err = -EFAULT;
+>> +		goto out;
+> Directly return err;
+Will do
+>
+>> +	}
+>> +	if (put_user(sizeof(*state), &uattr->test.data_size_out)) {
+>> +		err = -EFAULT;
+>> +		goto out;
+> Same here.
+>
+>> +	}
+>> +out:
+>> +	return err;
+>> +}
+>> +
+>> +static inline void exit_dummy_ops_state(struct bpf_dummy_ops_state *state)
+> static is good enough.  no need to inline.  Allow the compiler to decide.
+>
+>> +{
+>> +	kfree(state);
+> Probably just remove this helper function and directly call kfree instead.
+>
+> Could you help to check if bpf_ctx_init and bpf_ctx_finish can be directly
+> reused instead?  I haven't looked at them closely to compare yet.
+Will do.
+>
+>> +}
+>> +
+>> +int bpf_dummy_st_ops_test_run(struct bpf_prog *prog,
+>> +			      const union bpf_attr *kattr,
+>> +			      union bpf_attr __user *uattr)
+>> +{
+>> +	const struct bpf_struct_ops *st_ops = &bpf_bpf_dummy_ops;
+>> +	struct bpf_dummy_ops_state *state = NULL;
+>> +	struct bpf_tramp_progs *tprogs = NULL;
+>> +	void *image = NULL;
+>> +	int err;
+>> +	int prog_ret;
+>> +
+>> +	/* Now only support to call init(...) */
+>> +	if (prog->expected_attach_type != 0) {
+>> +		err = -EOPNOTSUPP;
+>> +		goto out;
+>> +	}
+>> +
+>> +	/* state will be NULL when data_size_in == 0 */
+>> +	state = init_dummy_ops_state(kattr);
+>> +	if (IS_ERR(state)) {
+>> +		err = PTR_ERR(state);
+>> +		state = NULL;
+>> +		goto out;
+>> +	}
+>> +
+>> +	tprogs = kcalloc(BPF_TRAMP_MAX, sizeof(*tprogs), GFP_KERNEL);
+>> +	if (!tprogs) {
+>> +		err = -ENOMEM;
+>> +		goto out;
+>> +	}
+>> +
+>> +	image = bpf_jit_alloc_exec(PAGE_SIZE);
+>> +	if (!image) {
+>> +		err = -ENOMEM;
+>> +		goto out;
+>> +	}
+>> +	set_vm_flush_reset_perms(image);
+>> +
+>> +	err = bpf_prepare_st_ops_prog(tprogs, prog, &st_ops->func_models[0],
+>> +				      image, image + PAGE_SIZE);
+>> +	if (err < 0)
+>> +		goto out;
+>> +
+>> +	set_memory_ro((long)image, 1);
+>> +	set_memory_x((long)image, 1);
+>> +	prog_ret = ((bpf_dummy_ops_init_t)image)(state);
+> I would do something like this to avoid creating the
+> bpf_dummy_ops_init_t typedef.
+>
+> 	struct bpf_dummy_ops ops;
+>
+> 	ops.init = (void *)image;
+> 	prog_ret = ops.init(state);
+Good idea. Will do that.
+>
+>> +
+>> +	err = copy_dummy_ops_state(state, kattr, uattr);
+>> +	if (err)
+>> +		goto out;
+>> +	if (put_user(prog_ret, &uattr->test.retval))
+>> +		err = -EFAULT;
+>> +out:
+>> +	exit_dummy_ops_state(state);
+>> +	bpf_jit_free_exec(image);
+>> +	kfree(tprogs);
+>> +	return err;
+>> +}
+>> +
+>>  static int bpf_dummy_init(struct btf *btf)
+>>  {
+>> +	s32 type_id;
+>> +
+>> +	type_id = btf_find_by_name_kind(btf, "bpf_dummy_ops_state",
+>> +					BTF_KIND_STRUCT);
+>> +	if (type_id < 0)
+>> +		return -EINVAL;
+>> +
+>> +	dummy_ops_state = btf_type_by_id(btf, type_id);
+>> +
 >>  	return 0;
 >>  }
 >>  
->> +int bpf_prepare_st_ops_prog(struct bpf_tramp_progs *tprogs,
->> +			    struct bpf_prog *prog,
->> +			    const struct btf_func_model *model,
->> +			    void *image, void *image_end)
-> The existing struct_ops functions in the kernel now have naming like
-> bpf_struct_ops_.*().  How about renaming it to
-> bpf_struct_ops_prepare_trampoline()?
-bpf_struct_ops_prepare_trampoline() may be a little long, and it will make
-the indentations of its parameters look ugly, so how about
-bpf_struct_ops_prep_prog() ?
->
+>> +static bool bpf_dummy_ops_is_valid_access(int off, int size,
+>> +					  enum bpf_access_type type,
+>> +					  const struct bpf_prog *prog,
+>> +					  struct bpf_insn_access_aux *info)
 >> +{
->> +	u32 flags;
+>> +	/* init(state) only has one argument */
+>> +	if (off || type != BPF_READ)
+>> +		return false;
 >> +
->> +	tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
->> +	tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
->> +	flags = model->ret_size > 0 ? BPF_TRAMP_F_RET_FENTRY_RET : 0;
->> +	return arch_prepare_bpf_trampoline(NULL, image, image_end,
->> +					   model, flags, tprogs, NULL);
+>> +	return btf_ctx_access(off, size, type, prog, info);
 >> +}
 >> +
->>  static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>  					  void *value, u64 flags)
->>  {
->> @@ -368,7 +382,6 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>  		const struct btf_type *mtype, *ptype;
->>  		struct bpf_prog *prog;
->>  		u32 moff;
->> -		u32 flags;
->>  
->>  		moff = btf_member_bit_offset(t, member) / 8;
->>  		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
->> @@ -430,14 +443,9 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>  			goto reset_unlock;
->>  		}
->>  
->> -		tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
->> -		tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
->> -		flags = st_ops->func_models[i].ret_size > 0 ?
->> -			BPF_TRAMP_F_RET_FENTRY_RET : 0;
-> This change can't apply to bpf-next now because
-> commit 356ed64991c6 ("bpf: Handle return value of BPF_PROG_TYPE_STRUCT_OPS prog")
-> is not pulled into bpf-next yet.  Please mention the dependency
-> in the cover letter if it is still the case in v2.
-Thanks for the reminder. Will do.
+>> +static int bpf_dummy_ops_btf_struct_access(struct bpf_verifier_log *log,
+>> +					   const struct btf *btf,
+>> +					   const struct btf_type *t, int off,
+>> +					   int size, enum bpf_access_type atype,
+>> +					   u32 *next_btf_id)
+>> +{
+>> +	size_t end;
+>> +
+>> +	if (atype == BPF_READ)
+>> +		return btf_struct_access(log, btf, t, off, size, atype,
+>> +					 next_btf_id);
+>> +
+>> +	if (t != dummy_ops_state) {
+>> +		bpf_log(log, "only read is supported\n");
+>> +		return -EACCES;
+>> +	}
+> The idea is to only allow writing to dummy_ops_state?
 >
->> -		err = arch_prepare_bpf_trampoline(NULL, image,
->> -						  st_map->image + PAGE_SIZE,
->> -						  &st_ops->func_models[i],
->> -						  flags, tprogs, NULL);
->> +		err = bpf_prepare_st_ops_prog(tprogs, prog,
->> +					      &st_ops->func_models[i],
->> +					      image, st_map->image + PAGE_SIZE);
->>  		if (err < 0)
->>  			goto reset_unlock;
+> How about something like this (uncompiled code):
+>
+> 	int ret;
+>
+> 	if (atype != BPF_READ && t != dummy_ops_state)
+> 		return -EACCES;
+>
+> 	ret = btf_struct_access(log, btf, t, off, size, atype,
+> 				next_btf_id);
+> 	if (ret < 0)
+> 		return ret;
+>
+> 	return atype == BPF_READ ? ret : NOT_INIT;
+>
+> Then the following switch and offset logic can go away.
+Good idea. Will do that in v2.
+>
+>> +
+>> +	switch (off) {
+>> +	case offsetof(struct bpf_dummy_ops_state, val):
+>> +		end = offsetofend(struct bpf_dummy_ops_state, val);
+>> +		break;
+>> +	default:
+>> +		bpf_log(log, "no write support to bpf_dummy_ops_state at off %d\n",
+>> +			off);
+>> +		return -EACCES;
+>> +	}
+>> +
+>> +	if (off + size > end) {
+>> +		bpf_log(log,
+>> +			"write access at off %d with size %d beyond the member of bpf_dummy_ops_state ended at %zu\n",
+>> +			off, size, end);
+>> +		return -EACCES;
+>> +	}
+>> +
+>> +	return NOT_INIT;
+>> +}
+>> +
+>>  static const struct bpf_verifier_ops bpf_dummy_verifier_ops = {
+>> +	.is_valid_access = bpf_dummy_ops_is_valid_access,
+>> +	.btf_struct_access = bpf_dummy_ops_btf_struct_access,
+>>  };
 >>  
+>>  static int bpf_dummy_init_member(const struct btf_type *t,
 >> -- 
 >> 2.29.2
 >>
