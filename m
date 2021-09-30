@@ -2,69 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E798741E360
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 23:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F43E41E367
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 23:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhI3Vbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 17:31:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43874 "EHLO mail.kernel.org"
+        id S1345286AbhI3VgU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 17:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229682AbhI3Vbu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:31:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6CB8C61A54;
-        Thu, 30 Sep 2021 21:30:07 +0000 (UTC)
+        id S1344849AbhI3VgU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 17:36:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E3A4061A51;
+        Thu, 30 Sep 2021 21:34:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633037407;
-        bh=gQ3faKtuCFRgD3As8auc+6rTn9Oy2O8L9iXuAocWKns=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CUJ0Qj7mzf7h8lBzXAtJ/DwLO/zw4doX3vjNl1U/OlrGx9GHcpLJQ79gK2QF3Wv5H
-         jY3O9hpq51UKBMrEkG+y00YpQcHeSleQ84Dl04/5yhB7JZbksjlrxEECja4gYzcPz6
-         asWy0nPDQz7bAqYGT+aBpQrbFTMDAoR/KRnmxoHgN3x3/B6CQsUMavBgS8Qijg9bXa
-         vaK8YGRU7VCL8NVkMdBLiMpWQ0vxiqgI94CfBYLpS8rKasyVKpaelXhzEexusoYko+
-         09fAllZ13nnq17yGuV7knCqeaIeayUA2BPovfCGTNWroXJqAPuZDwNUaGNj6rAkrmF
-         +po2EmEGtHtmg==
+        s=k20201202; t=1633037676;
+        bh=Dtfzg1e6cZ1ruBJZwMDGkMTpSG3SbmghqYzbRSZO9QI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=L+/6nf5f33kt02rOW/W7uf+B/CxR7bXl0evT+TM411wnm6YAAK0Xvk5NdpnVuknh3
+         6lr3NK0R2LaOQsOsaDyBPi7lPccHMcJh7LtOWSp0/HVHfbHo1IHcRPZ4tHVj9Qbx2D
+         efyUjNqn9nsd0FpM8qiizTwxYLsrbS9k38CngSfh2e9ymYxaluiSLaDIWcGOpaqa4i
+         WRvs7f6xjzHwUtkKigoNTNAfqMLWBzv1lEnhvEVt5one3kbfjP0t2WcWh51Lkei7xC
+         zsmMYrzekAQjaQKOg8UDEqcMbjrSnabg900Hhn23CrPQvwaRoVpDXh0DCbK0w+2Q1y
+         ZhpHNYEj3p3+g==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 62A2C60C16;
-        Thu, 30 Sep 2021 21:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] Trivial: docs: correct some English grammar and
- spelling
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163303740739.3160.9646843238209736664.git-patchwork-notify@kernel.org>
-Date:   Thu, 30 Sep 2021 21:30:07 +0000
-References: <YVVaWmKqA8l9Tm4J@kev-VirtualBox>
-In-Reply-To: <YVVaWmKqA8l9Tm4J@kev-VirtualBox>
-To:     Kev Jackson <foamdino@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        gregkh@linuxfoundation.org, bpf@vger.kernel.org
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DC82260A88;
+        Thu, 30 Sep 2021 21:34:36 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.15-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210930163002.4159171-1-kuba@kernel.org>
+References: <20210930163002.4159171-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210930163002.4159171-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.15-rc4
+X-PR-Tracked-Commit-Id: 35306eb23814444bd4021f8a1c3047d3cb0c8b2b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4de593fb965fc2bd11a0b767e0c65ff43540a6e4
+Message-Id: <163303767689.5240.9437874320149352433.pr-tracker-bot@kernel.org>
+Date:   Thu, 30 Sep 2021 21:34:36 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        johannes@sipsolutions.net, pablo@netfilter.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+The pull request you sent on Thu, 30 Sep 2021 09:30:02 -0700:
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.15-rc4
 
-On Thu, 30 Sep 2021 07:34:02 +0100 you wrote:
-> Header DOC on include/net/xdp.h contained a few English
->  grammer and spelling errors.
-> 
-> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Kev Jackson <foamdino@gmail.com>
-> ---
->  include/net/xdp.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4de593fb965fc2bd11a0b767e0c65ff43540a6e4
 
-Here is the summary with links:
-  - [bpf-next] Trivial: docs: correct some English grammar and spelling
-    https://git.kernel.org/bpf/bpf-next/c/6bbc7103738f
+Thank you!
 
-You are awesome, thank you!
---
+-- 
 Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+https://korg.docs.kernel.org/prtracker.html
