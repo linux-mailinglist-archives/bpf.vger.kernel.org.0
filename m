@@ -2,137 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD87041D974
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 14:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A38041D989
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 14:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348399AbhI3MQI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 08:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        id S1350772AbhI3MTC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 08:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348201AbhI3MQI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:16:08 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094BAC06176A;
-        Thu, 30 Sep 2021 05:14:26 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id r1so12607426ybo.10;
-        Thu, 30 Sep 2021 05:14:26 -0700 (PDT)
+        with ESMTP id S1350755AbhI3MTB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 08:19:01 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E194C06176C
+        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 05:17:18 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id v127so4473584wme.5
+        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 05:17:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1ly6d2NRz/CO4e+/occWByJ+1ybkH2AhzgC827GNKok=;
-        b=D3yALrGFWCHoJefkI8XjZMKrwZ18ui6XDMw4t95SVu6n4b+QlQDXUbKuYqj+3ZUR77
-         4OraB2xwKiXlxZZNnGmNOHTq5acSirqEeu5hMoj3h8R24v2FpumBTvNIfEGIUIDjTWke
-         dkjas9WJSrST1VbmPCOntur+clVa23wWWI2RAVuGhzrik9BskkbnlF3cScob9/OZa++q
-         zXE7q1BSlOymhD3sKQLngpY0g741BFHsJFuU/FMsebpo+A1PiQtm3o24bcLml9xVln5K
-         mrZ0oBecfxxCxRSmjBC9vfAJ90S8NFMZroKhANmw42yTzYnnMAF+9h8wraYhzlLDGKFA
-         usSQ==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=FDCTavcZNTCR6IHT5nWxxzLFQomp0qMTNq4JyzyeK94=;
+        b=7yEP0WyroleXj4pTqfXhw86YYpQF2i1z0EomN+pGqMUjn4IQcK3qO3N0eeldn0EVW9
+         P6qfXNwvQz7rRgMshgXACc5ju/EIULMzzprty0wNoGL1Fi9GZihh4kcQcRcYiQfyQCIF
+         g6+OP7niX2CIOUVSZmlT/6+5MRPRLknicuXqxmrSVkS94o0a6hzZkiLWCTyPMp2gjVVH
+         4K3kfm2pIKTETJeRMoPM74JGeUsgBqGmO2u2dJXnSORbKm3far+ApFXfwxOLIJ5tMYAN
+         7WjetPlngIAdX0zWf9pKSlIKVbDfUulTnxI5Ey/seZ1lnPiAe2C9AwHL/2pjyeplRRkQ
+         6VLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1ly6d2NRz/CO4e+/occWByJ+1ybkH2AhzgC827GNKok=;
-        b=6pQCy3Mz9Ed8lQbEZNRY59215zyoScAKpxk9w8IJMOBESr0+Yd9RF/WUL1zHUZKCXj
-         pxOpEuAKHVpgKU01ihekITnqDM9MHtfws9wy3tHeRP2XaHlNPPhns9h8RfxY4M4FYwYT
-         iLFQ660BxVWNWq5zsA2sU+qoPE+U0PhEExLEt8Vn+6OzyhHWBaR9etB1hPZDtq+VGuBt
-         QVzWgJXjonnhOJgJspECOmhc92aN9vNxHcFBidgPKSmiIXEI7uGEzEWHTNjgvJuOcCww
-         ibvGBJbnlmR8AdfMhgU9rtemxQ6+uuZxUpTEVg9kOzEDkDiEfyG0jZQsR7iEOzpcsPS5
-         fJCQ==
-X-Gm-Message-State: AOAM530A6wYG0clXk9FoWtIDr7zgtbxN+GCbZk+C8fQREasNAO2Yl8Os
-        22ejaHgj0QmgWuUhvRF0+qKZ9qHP1V6Tw0CLJ8o=
-X-Google-Smtp-Source: ABdhPJx8FtzrbD51HUmiENPFGgET25pOeR5F1yAAzL7J7koVSiUqSLdK0Jmqh5ZoQDDR0cyJLgayWISpxy8Dt9tMI4E=
-X-Received: by 2002:a25:515:: with SMTP id 21mr6157057ybf.279.1633004065280;
- Thu, 30 Sep 2021 05:14:25 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=FDCTavcZNTCR6IHT5nWxxzLFQomp0qMTNq4JyzyeK94=;
+        b=W/qK/MpBSL+azr0mgduKvEYY8wWoFqkr+bsmHYIFIH8FQuTEOP5RNCZl6pgCZ0Dz/E
+         3Etlid2/8KBcXB4SKpZ7LTNOESC6IJpclvEE8N3jIWLz6WhAj9GbEnyi+L35RZ48lnjF
+         nzfI0sCXIhinvIYgy/6UqjNHObW/z2gaZR4eOX/H9Ecnpk5tdSERH55Kjq6Rz9xqa24n
+         WcjsOl20m8a59ekMfr5AUMQfAnZ/tjZQ3qlxZTo1JehovoPUCRrUm4P+lR/VgoK5w4SU
+         mI6VG8K5czdNNqb2tiL7BpzzfAmAO6O8QvLvntt74ipx+aW04ZSvYzT3e4bXoFFMKXLM
+         evgQ==
+X-Gm-Message-State: AOAM533WsPw4P6+ZqIIurFoYQYM7l7oNdi1P8/p1mcPioYNa1KWWyiyJ
+        tdoH9U89USvmiVhqIlhv7i5gVA==
+X-Google-Smtp-Source: ABdhPJyeQ5fdTRDeFrxGsq6dxtbfma6pFwoP4EBpPORVupU+1MzUN52F9vyl+owfIkg2a0B317OZ3A==
+X-Received: by 2002:a05:600c:4f16:: with SMTP id l22mr15253270wmq.123.1633004237199;
+        Thu, 30 Sep 2021 05:17:17 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.91.95])
+        by smtp.gmail.com with ESMTPSA id 8sm2811796wmo.47.2021.09.30.05.17.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 05:17:16 -0700 (PDT)
+Message-ID: <354d2a7b-3dfc-f1b2-e695-1b77d013c621@isovalent.com>
+Date:   Thu, 30 Sep 2021 13:17:15 +0100
 MIME-Version: 1.0
-References: <20210925053106.1031798-1-th.yasumatsu@gmail.com> <9be5acb8-5eaa-6101-1be8-a74d7df7e20e@iogearbox.net>
-In-Reply-To: <9be5acb8-5eaa-6101-1be8-a74d7df7e20e@iogearbox.net>
-From:   Tatushiko Yasumatsu <th.yasumatsu@gmail.com>
-Date:   Thu, 30 Sep 2021 21:14:14 +0900
-Message-ID: <CA+_JbcvO-1NZ1aumJoVfJyRgnGv49U1pMqMvQS7h3j1FUfMO1g@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix integer overflow in prealloc_elems_and_freelist()
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tatushiko Yasumatsu <th.yasumatsu@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH bpf-next 6/9] bpf: iterators: install libbpf headers when
+ building
+Content-Language: en-US
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20210930113306.14950-1-quentin@isovalent.com>
+ <20210930113306.14950-7-quentin@isovalent.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20210930113306.14950-7-quentin@isovalent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:29:43PM +0200, Daniel Borkmann wrote:
-> On 9/25/21 7:31 AM, Tatsuhiko Yasumatsu wrote:
-> > In prealloc_elems_and_freelist(), the multiplication to calculate the
-> > size passed to bpf_map_area_alloc() could lead to an integer overflow.
-> > As a result, out-of-bounds write could occur in pcpu_freelist_populate()
-> > as reported by KASAN:
-> >
-> > [...]
-> > [   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
-> > [   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
-> > [   16.970038]
-> > [   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
-> > [   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> > [   16.972026] Call Trace:
-> > [   16.972306]  dump_stack_lvl+0x34/0x44
-> > [   16.972687]  print_address_description.constprop.0+0x21/0x140
-> > [   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
-> > [   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
-> > [   16.974257]  kasan_report.cold+0x7f/0x11b
-> > [   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
-> > [   16.975190]  pcpu_freelist_populate+0xd9/0x100
-> > [   16.975669]  stack_map_alloc+0x209/0x2a0
-> > [   16.976106]  __sys_bpf+0xd83/0x2ce0
-> > [...]
-> >
-> > The possibility of this overflow was originally discussed in [0], but
-> > was overlooked.
-> >
-> > Fix the integer overflow by casting one operand to u64.
-> >
-> > [0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
-> >
-> > Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
-> > Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-> > ---
-> >   kernel/bpf/stackmap.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> > index 09a3fd97d329..8941dc83a769 100644
-> > --- a/kernel/bpf/stackmap.c
-> > +++ b/kernel/bpf/stackmap.c
-> > @@ -66,7 +66,7 @@ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
-> >     u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
->
-> Thanks a lot for the fix, Tatsuhiko! Could we just change the above elem_size to u64 instead?
+2021-09-30 12:33 UTC+0100 ~ Quentin Monnet <quentin@isovalent.com>
+> API headers from libbpf should not be accessed directly from the
+> library's source directory. Instead, they should be exported with "make
+> install_headers". Let's make sure that bpf/preload/iterators/Makefile
+> installs the headers properly when building.
 
-Thank you for your review, Daniel!
-Yes, I think it's possible to just change elem_size to u64.
+CI complains when trying to build
+kernel/bpf/preload/iterators/iterators.o. I'll look more into this.
 
-We just have to be careful to cast one operand (smap->map.value_size)
-to u64, so that the integer overflow won't happen in 32-bit
-architectures.
-This is necessary because in 32-bit architectures, the result of
-sizeof() is a 32-bit integer.
-
-I will update the patch.
-
->
-> >     int err;
-> > -   smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
-> > +   smap->elems = bpf_map_area_alloc((u64)elem_size * smap->map.max_entries,
-> >                                      smap->map.numa_node);
-> >     if (!smap->elems)
-> >             return -ENOMEM;
-> >
->
-> Best,
-> Daniel
-
-Best regards,
-Tatsuhiko Yasumatsu
+Quentin
