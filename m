@@ -2,88 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C1D41E248
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 21:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1156B41E2E7
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 22:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhI3Tf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 15:35:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52178 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhI3Tf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:35:56 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633030452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ZfbBNzbHkVIuhKwqguJTGfq6DIYa0jFVn7ger7Nk3o=;
-        b=UgvdBcoZxu6zM9MhSomMAxnWcA6voy0PN6zz1Y2Yp9NQK6kYzrOOxWXgTbiKBj3Mzy8moS
-        PnmZEFKkdU6vHtrQRhUxCsjLrphUcV95EZgl5cGLxpJiEBVeQ5Y5vEUUsSi+sKGGVPruIU
-        v1Xc/+xthGkZyFvXUCgxWpMlDbpFCSPOBA06W7QpSF5HpSnsXxf/LV8sbY6Ft0A5RNk5vu
-        jfUrpNrADXubRjx3TxHsIuENg4etf/a1MdYjbTPMJPO92HbcP04+kn9h4GsEI3/0aP6zq5
-        zkykvqzhLiujFutRqDsIr1xjR91n9tyEJFFcjfLKd1xYXEU4FggPLemZleg8QA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633030452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ZfbBNzbHkVIuhKwqguJTGfq6DIYa0jFVn7ger7Nk3o=;
-        b=v/q2/MEs8/p0mkkofLr+c2XttjUlmVrbxnbSWYCNNciv+d5QhXJgbKJuunhKUv/gAx+xSG
-        OOTN/I8QxoOYjMCw==
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
- on x86
-In-Reply-To: <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
-References: <163163030719.489837.2236069935502195491.stgit@devnote2>
- <20210929112408.35b0ffe06b372533455d890d@kernel.org>
- <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
-Date:   Thu, 30 Sep 2021 21:34:11 +0200
-Message-ID: <874ka17t8s.ffs@tglx>
+        id S229960AbhI3U7p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 16:59:45 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57628 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229957AbhI3U7p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 16:59:45 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mW37V-000DIq-1m; Thu, 30 Sep 2021 22:57:33 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mW37U-000FDj-Lu; Thu, 30 Sep 2021 22:57:32 +0200
+Subject: Re: [PATCH v4 0/8] bpf powerpc: Add BPF_PROBE_MEM support in powerpc
+ JIT compiler
+To:     Hari Bathini <hbathini@linux.ibm.com>, naveen.n.rao@linux.ibm.com,
+        christophe.leroy@csgroup.eu, mpe@ellerman.id.au, ast@kernel.org
+Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210929111855.50254-1-hbathini@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <88b59272-e3f7-30ba-dda0-c4a6b42c0029@iogearbox.net>
+Date:   Thu, 30 Sep 2021 22:57:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210929111855.50254-1-hbathini@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26308/Thu Sep 30 11:04:45 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 30 2021 at 11:17, Alexei Starovoitov wrote:
+On 9/29/21 1:18 PM, Hari Bathini wrote:
+> Patch #1 & #2 are simple cleanup patches. Patch #3 refactors JIT
+> compiler code with the aim to simplify adding BPF_PROBE_MEM support.
+> Patch #4 introduces PPC_RAW_BRANCH() macro instead of open coding
+> branch instruction. Patch #5 & #7 add BPF_PROBE_MEM support for PPC64
+> & PPC32 JIT compilers respectively. Patch #6 & #8 handle bad userspace
+> pointers for PPC64 & PPC32 cases respectively.
 
-> On Tue, Sep 28, 2021 at 7:24 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->>
->> Hi Ingo,
->>
->> Can you merge this series to -tip tree since if I understand correctly,
->> all kprobes patches still should be merged via -tip tree.
->> If you don't think so anymore, I would like to handle the kprobe related
->> patches on my tree. Since many kprobes fixes/cleanups have not been
->> merged these months, it seems unhealthy now.
->>
->> Thank you,
->
-> Linus,
->
-> please suggest how to move these patches forward.
-> We've been waiting for this fix for months now.
-
-Sorry, I've not paying attention to those as they are usually handled by
-Ingo who seems to be lost in space.
-
-Masami, feel free to merge them over your tree. If not, let me know and
-I'll pick them up tomorrow morning.
+Michael, are you planning to pick up the series or shall we route via bpf-next?
 
 Thanks,
+Daniel
 
-        tglx
+> Changes in v4:
+> * Addressed all the review comments from Christophe.
+> 
+> 
+> Hari Bathini (4):
+>    bpf powerpc: refactor JIT compiler code
+>    powerpc/ppc-opcode: introduce PPC_RAW_BRANCH() macro
+>    bpf ppc32: Add BPF_PROBE_MEM support for JIT
+>    bpf ppc32: Access only if addr is kernel address
+> 
+> Ravi Bangoria (4):
+>    bpf powerpc: Remove unused SEEN_STACK
+>    bpf powerpc: Remove extra_pass from bpf_jit_build_body()
+>    bpf ppc64: Add BPF_PROBE_MEM support for JIT
+>    bpf ppc64: Access only if addr is kernel address
+> 
+>   arch/powerpc/include/asm/ppc-opcode.h |   2 +
+>   arch/powerpc/net/bpf_jit.h            |  19 +++--
+>   arch/powerpc/net/bpf_jit_comp.c       |  72 ++++++++++++++++--
+>   arch/powerpc/net/bpf_jit_comp32.c     | 101 ++++++++++++++++++++++----
+>   arch/powerpc/net/bpf_jit_comp64.c     |  72 ++++++++++++++----
+>   5 files changed, 224 insertions(+), 42 deletions(-)
+> 
+
