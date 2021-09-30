@@ -2,155 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFE941D301
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 08:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E301C41D323
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 08:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348184AbhI3GGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 02:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
+        id S1348255AbhI3GSU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 02:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348054AbhI3GGA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:06:00 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D01C06161C;
-        Wed, 29 Sep 2021 23:04:18 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id k24so5138585pgh.8;
-        Wed, 29 Sep 2021 23:04:18 -0700 (PDT)
+        with ESMTP id S1348254AbhI3GST (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:18:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8704BC06161C
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 23:16:37 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e7so5192625pgk.2
+        for <bpf@vger.kernel.org>; Wed, 29 Sep 2021 23:16:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ic73pPeEyXcWnfRNixNiAUb29ZgXxYyvahioOuxFWMQ=;
-        b=UH4L74CsfTSDU+nsBbx3i9EFZWG02fMmeA/BPJd7dr2HX9lEwjfvJevEqmvWvgWj6V
-         gb4rs/6lo8QgvWoj1dhS9Ld0Uq0dE9qu8ldTA0XVhXBGozixmgeb5NZPJcsvFMp0zNii
-         WO4KXO/MjLqxIIldYWs/PJRdgRoUAfaWqgpZTsfMn84SjglpMyvpWAnk1Td1fQKAK0+9
-         27gNZADJ+mrqBcbd3tccpNOba5ZqEKasvgfwsRSrE8vJc7CZc/2Au8Qu4Hxg2f40VugP
-         KNZipR/5akpoiHneZuFywg9hAcn2vAvHtJuUkXcdKffs/m/4tnyr6+XvR5kWuSm9Pa1m
-         CFQg==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pb2OlO3FWknzLv3NgAHRQB3w1rBIwUIdDtYVy8/uF8g=;
+        b=jeKOknwf5pYwqmgYuM7Q9ZgP8N1//E1CutSqisSu+14FE6kQHHdED/wFY/0WEp5/tl
+         NR0Rc5wkiugmwbyGOPY0rfsfOq4MhhbgGqBNMsNKWp9B4BaqlfCXu90cJbZZUW/O6YSA
+         kdXlr0avqxCFtPK5m7DOptw9kG5g0Spu0z3N/ulh+Ypw5SMo3jh4GRtY6AhPJRfRTyKy
+         mdPfZ0A3VF+dSWKUPFfTYzTP91ABcc6mIfVE2buH8DK8fqVidugm7F/+lLz7vMdc09Gi
+         4oeAEaWcdilHSBrbMqcF/wRK3qcHPuLYSmhqufc9vEfZNz/GXC6O4HDU/oAkJyrjVT7p
+         FjLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ic73pPeEyXcWnfRNixNiAUb29ZgXxYyvahioOuxFWMQ=;
-        b=Wz/ziz5YbN+NoXixS+lLz+Vm5AKM+zRwDvGiZUyI8ws0XQ7VEwtuQVy9OtQxmQuM+M
-         eKqesTIO/tEpJiqmbINifY2linbO7DIONTqHRAGitSoGlDXJ0r7HPveWaXcJnQYo+KHn
-         k6adlTKdCt/B0HHzWzenSnnRNldGJ1by0GI+bkqPI4dKrj3jOBwjQzHh9iW2wgKMJ9r+
-         LcJ2ZyW/EAyFLmfVW7NpDnkq0pmSoDSmVyTnR5lPfdDWXuj7shoy0SXdFpnZcyYB1DKD
-         5Ol3va+psLj0eJ9OPuSdRgE57UyQuQIDBOjVg7y03mn1simNBOy7hENiP4sEV15cdFut
-         pjmw==
-X-Gm-Message-State: AOAM531BvGLr+VIm6srQQVVsGq7l9G1kVOnF0E9d83t+hHDrxBXGamr1
-        X8oZoaZJVV8Ugvki3JVOCgoEap8e/zMcHYR2s3Lx5WmijbhCerHZ9A4=
-X-Google-Smtp-Source: ABdhPJzvRzZMn0eToIIC99jY+ZPM2aC9u3K8zx/Fgpudo4oJtqcXON8SmKM+a7V89pXDjarOblKcBDvNDd4KdbqHx7o=
-X-Received: by 2002:a05:6a00:708:b0:43b:80ba:99c8 with SMTP id
- 8-20020a056a00070800b0043b80ba99c8mr2483411pfl.51.1632981857497; Wed, 29 Sep
- 2021 23:04:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pb2OlO3FWknzLv3NgAHRQB3w1rBIwUIdDtYVy8/uF8g=;
+        b=OplyYxFOcJez3bJGJmHXFF383QQn7fA6ynJVB0c3bE5Mtfdk7XatVk8yNVdxIMYmoC
+         pL7AtUFco6mJfCxxBIiylN47HSXo8/FDPPv79QqFCGUwIL+9UWicWUHnSnS3BBLuyudx
+         YtbmGIDfzJfZkY4jaccYQ4LvdVa7Zdvo1xCFFobrZCst5kvzql97RsLdwssP9ajJsg85
+         Pm2bmlj0Af9NXoU2kFD4meHhRPdWz4FYBNqUcuW1t4maizTTgDbYS68FonL2BLGUh2KB
+         pWZdx78hUxebyV8qVoUpAepOAXGDuZHf1cPlA4rCj03Pq9SVHm5MaaUxpNKpTYXCzW89
+         mlpg==
+X-Gm-Message-State: AOAM530V0i8OAbdaiixbqNVdx3eYYvDJ6AIzevlpEnA+iiZdTXBfx8ZV
+        DQ6n+FotAWWzbjEhT16PdY6XbHjIk+M=
+X-Google-Smtp-Source: ABdhPJwdjUeBK0kfa38CYBqkgVrDB/t2XDsPYLdVtVdvOIXHSTLL/bbd4QkFiiCd3AQYOYkT+/Ocqg==
+X-Received: by 2002:a63:d351:: with SMTP id u17mr3457618pgi.174.1632982596808;
+        Wed, 29 Sep 2021 23:16:36 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
+        by smtp.gmail.com with ESMTPSA id 23sm1777141pfw.97.2021.09.29.23.16.36
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 23:16:36 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Subject: [PATCH bpf] libbpf: Fix segfault in light skeleton for objects without BTF
+Date:   Thu, 30 Sep 2021 11:46:34 +0530
+Message-Id: <20210930061634.1840768-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20201119083024.119566-7-bjorn.topel@gmail.com> <202109300212.l6Ky1gNu-lkp@intel.com>
-In-Reply-To: <202109300212.l6Ky1gNu-lkp@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Thu, 30 Sep 2021 08:04:06 +0200
-Message-ID: <CAJ8uoz3g6wzkTYRb4qq4aj+KDVGUfyZ6O6NkMK_t-EBp07igOg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 06/10] xsk: propagate napi_id to XDP socket Rx path
-To:     kernel test robot <lkp@intel.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kbuild-all@lists.01.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Zhang, Qi Z" <qi.z.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 8:37 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi "Bj=C3=B6rn,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on 4e99d115d865d45e17e83478d757b58d8fa66d3c]
->
-> url:    https://github.com/0day-ci/linux/commits/Bj-rn-T-pel/Introduce-pr=
-eferred-busy-polling/20210929-234934
-> base:   4e99d115d865d45e17e83478d757b58d8fa66d3c
-> config: um-kunit_defconfig (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=3D1 build):
->         # https://github.com/0day-ci/linux/commit/f481c00164924dd5d782a92=
-cc67897cc7f804502
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Bj-rn-T-pel/Introduce-preferred-=
-busy-polling/20210929-234934
->         git checkout f481c00164924dd5d782a92cc67897cc7f804502
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         make W=3D1 O=3Dbuild_dir ARCH=3Dum SHELL=3D/bin/bash
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    cc1: warning: arch/um/include/uapi: No such file or directory [-Wmissi=
-ng-include-dirs]
->    In file included from fs/select.c:32:
->    include/net/busy_poll.h: In function 'sk_mark_napi_id_once':
-> >> include/net/busy_poll.h:150:36: error: 'const struct sk_buff' has no m=
-ember named 'napi_id'
->      150 |  __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
->          |                                    ^~
->
->
-> vim +150 include/net/busy_poll.h
->
->    145
->    146  /* variant used for unconnected sockets */
->    147  static inline void sk_mark_napi_id_once(struct sock *sk,
->    148                                          const struct sk_buff *skb=
-)
->    149  {
->  > 150          __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
->    151  }
->    152
+When fed an empty BPF object, bpftool gen skeleton -L crashes at
+btf__set_fd since it assumes presence of obj->btf, however for the
+sequence below clang adds no .BTF section (hence no BTF).
 
-It seems that the robot tested an old commit and that this was already
-fixed by Daniel 10 months ago. Slow mail delivery, a robot glitch, or
-am I missing something?
+Reproducer:
+$ touch a.bpf.c
+$ clang -O2 -g -target bpf -c a.bpf.c
+$ bpftool gen skeleton -L a.bpf.o
+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+/* THIS FILE IS AUTOGENERATED! */
 
-commit ba0581749fec389e55c9d761f2716f8fcbefced5
-Author: Daniel Borkmann <daniel@iogearbox.net>
-Date:   Tue Dec 1 15:22:59 2020 +0100
+struct a_bpf {
+	struct bpf_loader_ctx ctx;
+Segmentation fault (core dumped)
 
-    net, xdp, xsk: fix __sk_mark_napi_id_once napi_id error
+The same occurs for files compiled without BTF info, i.e. without
+clang's -g flag.
 
-    Stephen reported the following build error for !CONFIG_NET_RX_BUSY_POLL
-    built kernels:
+Fixes: 67234743736a (libbpf: Generate loader program out of BPF ELF file.)
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-      In file included from fs/select.c:32:
-      include/net/busy_poll.h: In function 'sk_mark_napi_id_once':
-      include/net/busy_poll.h:150:36: error: 'const struct sk_buff'
-has no member named 'napi_id'
-        150 |  __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
-            |                                    ^~
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 0f85d441fca3..b6b130171b86 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -7031,7 +7031,8 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
 
-    Fix it by wrapping a CONFIG_NET_RX_BUSY_POLL around the helpers.
+ 	if (obj->gen_loader) {
+ 		/* reset FDs */
+-		btf__set_fd(obj->btf, -1);
++		if (obj->btf)
++			btf__set_fd(obj->btf, -1);
+ 		for (i = 0; i < obj->nr_maps; i++)
+ 			obj->maps[i].fd = -1;
+ 		if (!err)
+--
+2.33.0
 
-    Fixes: b02e5a0ebb17 ("xsk: Propagate napi_id to XDP socket Rx path")
-    Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-    Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-    Cc: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-    Link: https://lore.kernel.org/linux-next/20201201190746.7d3357fb@canb.a=
-uug.org.au
-
-
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
