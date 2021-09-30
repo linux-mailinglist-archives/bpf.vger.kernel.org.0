@@ -2,121 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC9F41DDE7
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 17:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C7A41DE45
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 17:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345184AbhI3Prz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Sep 2021 11:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
+        id S1347203AbhI3QAd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Sep 2021 12:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345765AbhI3Prz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:47:55 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E940C06176D
-        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 08:46:12 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id e16so6109438qts.4
-        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 08:46:12 -0700 (PDT)
+        with ESMTP id S1346800AbhI3QAc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:00:32 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4FBC06176C
+        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 08:58:50 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pg10so4079846pjb.5
+        for <bpf@vger.kernel.org>; Thu, 30 Sep 2021 08:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8d6xo5L9QevHc/0Sduv9NQkae1fLgboqRLN/cOlHL94=;
-        b=iR/rfVgiWHq5rw4NLK5OT9v5lYhcLGBGwNqvqBTHa8uM0K3LSI6Qds40sZdhqy343D
-         nKF1AalapkTkhy/ypRBVypdug7o8/xaqtmHaWv9UPFEGjb1UhHpm/4rTjAiBbtASwfKx
-         3JH/kVbQPqPEjk5/0bNv7k1/Y2BIonRHJ0vWOSQM3zvPY70Uxrv2rSgTrqGgUv6GDu7E
-         chrKKhinXiSRYk/xsds2GtV3wz6HxpGI4jq2FDoKpBIlG6t+6bi34LoQK0m5uh10NjJQ
-         5mDPrpUbvxQNLMegc4nJJFYKUu1kf5g3ZYgnxHtFO6ahoMuizo6fqj2+osS40oUSZmZK
-         mhMw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BpjdFjiEOov06Jl3ss/zgsxWZ7ryhVFykt+PMtW+OHE=;
+        b=au03x01DqfMZqC8PW8EVxagGMZTuBEEbC5FVPp/syRMeWP9FrKr2zxu1ZWgKd1/F9w
+         p2Ga0jQocglBmX60aicl869c875UYa/gEwoabw4k2UFH/8TV7yZJAjhnJ3ePpSERynkO
+         JgFEIWzgHe/JiS4EN7V9hxh+266odQXGfMWNUuw4JSjsyE824IWdtV4n9AFT+5veGSjD
+         AqNQAEZIPisDWvd89NyBhRmYO25ZBjtnYOjV8g8P0FEzMsYeRzHtlmGZcF8gzOW0JAxq
+         8QjmYiXmQ0SSx/qkkUEK7ebVpCPKirdFxLiFD3/l4PEzE5aXb40wkk3JwI6Corjk9TZk
+         PlBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8d6xo5L9QevHc/0Sduv9NQkae1fLgboqRLN/cOlHL94=;
-        b=kvlPbA+0d2Ves1dLXFUGQriDXfHxgNlssyf8OQPmCm2BmZGamQbwWI1wcbM7mSA04A
-         rCYtktX+0QVj9AzavTa+zrlwuabRT/323Q9K73EEcQSKK+0MzCAassEOZxI3Bln2eBoT
-         bp5hSp+h18ZF7jhJFJQSZUwleV8vISSwsF3GZZj+G2aPYHvUsq3vxkMQbYD0hQVfDhY2
-         zxiXj0IzKkmdJ+YuXk+E3fw0i4Z5SwBdCglop/3Lf7J39MJKMnNBmRCjrfqQkf6chLUU
-         XV6NjRJKZvMho9xdPLM7qDBztm0iC5JFibGfyK4yspw70LC/En2PerR2vm6yKPFrNao1
-         398w==
-X-Gm-Message-State: AOAM533GCIrxCtxoVQcnuCrr9HBaC/ugV5HzDFY7nXA3BRNf5b++bfE/
-        XLOkQHoOnI/zTtodkeMxeNLPKmxY4DtkFE/uG1J9uA==
-X-Google-Smtp-Source: ABdhPJwZ3uxL8AigS1SCTssbBbBxtSyTYvRLlSFXF7X1iRF0BIcI7ZsH6TQi0ZjmX4wm1iehH5EIvAVb3aaD1X5z2aM=
-X-Received: by 2002:ac8:5ed1:: with SMTP id s17mr7389237qtx.196.1633016771378;
- Thu, 30 Sep 2021 08:46:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BpjdFjiEOov06Jl3ss/zgsxWZ7ryhVFykt+PMtW+OHE=;
+        b=hPoF+w0q/MViIzT32yVs4/EBo+v+2PER2WGTt1brMMZlvfLvzvmMn9zD/LvOhOh6dI
+         jBmmZCwBo4jwisiaTT9Tj6Pe3YLbItou3/Wy+ZPD6myX6dxKnm58OvUc1EzwTBknADg4
+         IEhGpVrcRBRcLd9w37gqsZiHcYsuV/obPj+/qLGRDE1ESCEnCdm4ZAK2ec5PFGJlTpgJ
+         oR10lMMmq+sbULoUANLW/PO/Xj72eE5vjzjPBpwDuNw0+L+1HJY/ib1NLdGiDStprk/8
+         qL9SX4CXm3HnZDc10FherwVAAZjzdHQEDnwND6lxlDUNozKBef9EAFb6fQW5qSPVJSZl
+         UeZA==
+X-Gm-Message-State: AOAM530JmZNWJkqufuWo0NZsy4nZf4jQHhVevhPQRo3an97kaK6ul7q+
+        cFTwZksZZpO0R41cFBzDbahIlUn0SL8=
+X-Google-Smtp-Source: ABdhPJw5Eg3p4sqPbocWFa2IbFMxHJNdfAq0IHlbbCsoLWESOwL2pfRdwRnRGa+dXlXrziMK7g1Vfw==
+X-Received: by 2002:a17:90a:f98f:: with SMTP id cq15mr13923340pjb.74.1633017529490;
+        Thu, 30 Sep 2021 08:58:49 -0700 (PDT)
+Received: from [0.0.0.0] ([150.109.126.7])
+        by smtp.gmail.com with ESMTPSA id z33sm3486226pga.20.2021.09.30.08.58.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 08:58:49 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Support uniform BTF-defined
+ key/value specification across all BPF maps
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>
+References: <20210905100914.33007-1-hengqi.chen@gmail.com>
+ <CAEf4BzYfOGi9YLTWWprDtRCHWNpx00kJWHWQ7WbczUaUZi8HRA@mail.gmail.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Message-ID: <8a738f87-d0ed-6edc-6fc7-ba61ca0616bf@gmail.com>
+Date:   Thu, 30 Sep 2021 23:58:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210930071143.63410-1-wangkefeng.wang@huawei.com> <20210930071143.63410-8-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210930071143.63410-8-wangkefeng.wang@huawei.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 30 Sep 2021 17:45:35 +0200
-Message-ID: <CAG_fn=XD+nVgVRgj7KFsPWSuia+gZzpA3KAdqucjKodOvxSF6w@mail.gmail.com>
-Subject: Re: [PATCH v4 07/11] mm: kasan: Use is_kernel() helper
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, bpf@vger.kernel.org,
-        linux-alpha@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzYfOGi9YLTWWprDtRCHWNpx00kJWHWQ7WbczUaUZi8HRA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:09 AM Kefeng Wang <wangkefeng.wang@huawei.com> wr=
-ote:
->
-> Directly use is_kernel() helper in kernel_or_module_addr().
->
-> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-
-> ---
->  mm/kasan/report.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 3239fd8f8747..1c955e1c98d5 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -226,7 +226,7 @@ static void describe_object(struct kmem_cache *cache,=
- void *object,
->
->  static inline bool kernel_or_module_addr(const void *addr)
->  {
-> -       if (addr >=3D (void *)_stext && addr < (void *)_end)
-> +       if (is_kernel((unsigned long)addr))
->                 return true;
->         if (is_module_address((unsigned long)addr))
->                 return true;
-> --
-> 2.26.2
->
 
 
---=20
-Alexander Potapenko
-Software Engineer
+On 9/9/21 12:26 PM, Andrii Nakryiko wrote:
+> On Sun, Sep 5, 2021 at 3:09 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>>
+>> A bunch of BPF maps do not support specifying types for key and value.
+> 
+> s/types/BTF types/, it's a bit confusing otherwise
+> 
+>> This is non-uniform and inconvenient[0]. Currently, libbpf uses a retry
+>> logic which removes BTF type IDs when BPF map creation failed. Instead
+>> of retrying, this commit recognizes those specialized map and removes
+> 
+> s/map/maps/
+> 
+>> BTF type IDs when creating BPF map.
+>>
+>>   [0] Closes: https://github.com/libbpf/libbpf/issues/355
+>>
+>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>> ---
+> 
+> For patch sets consisting of two or more patches, we ask for a cover
+> letter, so for the next revision please provide a cover letter with an
+> overall description of what the series is about.
+> 
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+Hello, Andrii
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+
+
+Sorry for the long delay. Will send a v2 for review.
+
+>>  tools/lib/bpf/libbpf.c | 35 ++++++++++++++++++++---------------
+>>  1 file changed, 20 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 88d8825fc6f6..7068c4d07337 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -4613,6 +4613,26 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>>                         create_attr.inner_map_fd = map->inner_map_fd;
+>>         }
+>>
+>> +       if (def->type == BPF_MAP_TYPE_PERF_EVENT_ARRAY ||
+>> +           def->type == BPF_MAP_TYPE_STACK_TRACE ||
+>> +           def->type == BPF_MAP_TYPE_CGROUP_ARRAY ||
+>> +           def->type == BPF_MAP_TYPE_ARRAY_OF_MAPS ||
+>> +           def->type == BPF_MAP_TYPE_HASH_OF_MAPS ||
+>> +           def->type == BPF_MAP_TYPE_DEVMAP ||
+>> +           def->type == BPF_MAP_TYPE_SOCKMAP ||
+>> +           def->type == BPF_MAP_TYPE_CPUMAP ||
+>> +           def->type == BPF_MAP_TYPE_XSKMAP ||
+>> +           def->type == BPF_MAP_TYPE_SOCKHASH ||
+>> +           def->type == BPF_MAP_TYPE_QUEUE ||
+>> +           def->type == BPF_MAP_TYPE_STACK ||
+>> +           def->type == BPF_MAP_TYPE_DEVMAP_HASH) {
+>> +               create_attr.btf_fd = 0;
+>> +               create_attr.btf_key_type_id = 0;
+>> +               create_attr.btf_value_type_id = 0;
+>> +               map->btf_key_type_id = 0;
+>> +               map->btf_value_type_id = 0;
+>> +       }
+> 
+> Let's do this as a more succinct switch statement. Consider also
+> slightly rearranging entries to keep "related" map types together:
+>   - SOCKMAP + SOCKHASH
+>   - DEVMAP + DEVMAP_HASH + CPUMAP + XSKMAP
+> 
+> Thanks!
+>> 
+>> +
+>>         if (obj->gen_loader) {
+>>                 bpf_gen__map_create(obj->gen_loader, &create_attr, is_inner ? -1 : map - obj->maps);
+>>                 /* Pretend to have valid FD to pass various fd >= 0 checks.
+>> @@ -4622,21 +4642,6 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>>         } else {
+>>                 map->fd = bpf_create_map_xattr(&create_attr);
+>>         }
+>> -       if (map->fd < 0 && (create_attr.btf_key_type_id ||
+>> -                           create_attr.btf_value_type_id)) {
+>> -               char *cp, errmsg[STRERR_BUFSIZE];
+>> -
+>> -               err = -errno;
+>> -               cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+>> -               pr_warn("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
+>> -                       map->name, cp, err);
+>> -               create_attr.btf_fd = 0;
+>> -               create_attr.btf_key_type_id = 0;
+>> -               create_attr.btf_value_type_id = 0;
+>> -               map->btf_key_type_id = 0;
+>> -               map->btf_value_type_id = 0;
+>> -               map->fd = bpf_create_map_xattr(&create_attr);
+>> -       }
+>>
+> 
+> Please don't remove this fallback logic. There are multiple situations
+> where libbpf might need to retry map creation without BTF.
+> 
+>>         err = map->fd < 0 ? -errno : 0;
+>>
+>> --
+>> 2.25.1
+>>
