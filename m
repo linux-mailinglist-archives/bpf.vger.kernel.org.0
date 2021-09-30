@@ -2,204 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3F741D0E5
-	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 03:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CC241D157
+	for <lists+bpf@lfdr.de>; Thu, 30 Sep 2021 04:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244341AbhI3BLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Sep 2021 21:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
+        id S1347561AbhI3CTp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Sep 2021 22:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233113AbhI3BLR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Sep 2021 21:11:17 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC8EC06161C;
-        Wed, 29 Sep 2021 18:09:35 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id z5so9518443ybj.2;
-        Wed, 29 Sep 2021 18:09:35 -0700 (PDT)
+        with ESMTP id S1347487AbhI3CTp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Sep 2021 22:19:45 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33967C06161C;
+        Wed, 29 Sep 2021 19:18:03 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 11so2689403qvd.11;
+        Wed, 29 Sep 2021 19:18:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rgiH3IvJ0OAlzs0PgaVGNLl0L1GHKN5qFR99u9Ydudw=;
-        b=bs/Qb5uB4Mqyl5axF8F6TDCBLMnyTolsL+pvK1pljdfm48KUf5TV6tmqacSd5kORc6
-         73eYJ7damYlJ6XCjOYgIW0dF24keAiVGTBkaeW4zBRmM2vxxltLoJYWbH2gV8Skld8FR
-         O65Th1OxH5iU1smRv7IgOmjgm87SnOOoip2KtT8LCYZJNpRjzcX59dGT8wv1mx1Nfgwl
-         3aKWQeBHGVXM5GokfAG1LD4RUPEg2IDXW8Qy9CCdF6u/7+8M1C/6ReCmP89NeG1oq+Os
-         lu5suyiRA8nnAP4+4cHMwefDjJ1sp7FnJgT0Vk7FiL4sCYeYpWwPbpvJ7Jeoi4cZUGt8
-         1wzQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=y5Gh4oaaULAjy9Ls1siiMfAAe1fncZYaFKEdzt9GEmE=;
+        b=A2zaW/6XKD8jFlpoJcgz6e5C+hSh4dXRFewPR0XnnVO5OfIimpY2Q8XWCnZMDjjlDE
+         xQvPAEXkV4OmagA1uO0Tv4IYctEGOm/7furs0B13Ov2uHaW6w/wkqFTTzmoWDgpILvVc
+         /3rDYYhIeYKFP5/nCBpk8HD8QEIQAZ7fyFsI2m2GSIwVzfURJLbfFjiUdCEv6MfO3M8/
+         HOPEDw7Rn7JE7B0ffPUtHJWgmTrKN1e4g1ERyzsCkOHYqqSSw/+3coVwDQE/VLN7QgQE
+         28X580sYvFTBhNVAnEHR/5ZcIjBsCDONbiTeQRWW7zJZd/qHYIVt1XBTaUtUg7atz2Cp
+         fcow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rgiH3IvJ0OAlzs0PgaVGNLl0L1GHKN5qFR99u9Ydudw=;
-        b=ZDC/NjMCaVbJPr/r3jjJJ6PxKyyHLOfu7UnkW1Bo1Mpo71kbjjDJogZ0Zb+VMmu8Mr
-         nBFLg6vmoNBobduwO5kLHGo6b2MvuHHYKRjMpkJDITbGlGY/vu6WvXT4dm7g6DN++r5y
-         BAH1bU7GYr7/3VLj7jfhRv3y9wY/mI4if5JyvGeih725B6Ru4+CU7/5A/gPtqNXczDld
-         fJUpbOuyQwlgEhLKgoFUGq2Rlso+cPNb8CXZu/fl47p5jPyM/jDNxbBUJZav4EnAs+S7
-         ZYGGhYh2DZ46Hb6o2s7df24qeq8BM2TEgp3pVjI5tJvd9OdhsMo/7IkYg7Chv8CRq8uy
-         wvuA==
-X-Gm-Message-State: AOAM532UxJX1h6YRXn1sqwapX1vUc7xrvPBP9KyXuu5gr3/PdeqL/nyH
-        B1adSHQkmE21k0apLEoHrGTpBD21ytjs69SXT0IolXy0Zw==
-X-Google-Smtp-Source: ABdhPJw8uATfqAs57aGBG1bzmfaJR9fhg2uvx7XqJbJm3uD8vqs/AVfeqLIcwONnmiPuEO8i0C5xy+zTkejoC4tH8C0=
-X-Received: by 2002:a5b:88a:: with SMTP id e10mr3512204ybq.467.1632964174622;
- Wed, 29 Sep 2021 18:09:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=y5Gh4oaaULAjy9Ls1siiMfAAe1fncZYaFKEdzt9GEmE=;
+        b=RNTVCAUx5CE9Jmm5pCbMWMYt9psGwE9lQifxsshzXV5jh3M+xQHdpuid4MZxcSIQvJ
+         PPmC7ps2eeGDYA+QlnqtYiiv80pXjXSGkRMx+Q2ZVyh2pNc/ddURm+m1IZ7POzRfzzcV
+         kIMmOqPVUJidK7+1fs38cKEkbOyF+RS3Edal8Z0L86IGZqzhld6je2Vg7Dr6xGDuvPCZ
+         XLLqrevikCA7bzPFolCgv2HM2reX7HjR3sgxOzMb3L7onWvQ6n13dKtrVV9WLi/+83Nu
+         SqzydUK41m+biwevUbXq26hb6rEFgOADt9RkHjHSeF7YHAgY3KGcQep+rwvfx07p1Eym
+         qs6Q==
+X-Gm-Message-State: AOAM5305zz8xuC5nIbvT2dkyzU1ZkeiWnpeU5J0c++h0s57aSaAONE1H
+        soh9REnSFs6PIqL6lcIu8bWNIXyq1Yn9QA==
+X-Google-Smtp-Source: ABdhPJz6J7AB2xrlC67LATZk82dpvwfF0XHheMdJ3s3aXb4TY/7OvZt/4Kr+6pudlkrt7EqXiopRng==
+X-Received: by 2002:a0c:b45a:: with SMTP id e26mr1634507qvf.59.1632968282132;
+        Wed, 29 Sep 2021 19:18:02 -0700 (PDT)
+Received: from vpp.lan (h132.37.184.173.dynamic.ip.windstream.net. [173.184.37.132])
+        by smtp.gmail.com with ESMTPSA id j15sm977551qth.3.2021.09.29.19.18.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 19:18:01 -0700 (PDT)
+From:   Joshua Roys <roysjosh@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Joshua Roys <roysjosh@gmail.com>, ast@kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        daniel@iogearbox.net, kuba@kernel.org, bpf@vger.kernel.org,
+        tariqt@nvidia.com, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2] net/mlx4_en: Add XDP_REDIRECT statistics
+Date:   Wed, 29 Sep 2021 22:17:18 -0400
+Message-Id: <20210930021718.245395-1-roysjosh@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210928132602.1488-1-roysjosh@gmail.com>
+References: <20210928132602.1488-1-roysjosh@gmail.com>
 MIME-Version: 1.0
-References: <20210929235910.1765396-1-jevburton.kernel@gmail.com>
- <20210929235910.1765396-5-jevburton.kernel@gmail.com> <1c148ba0-0b74-2d48-c94b-3e7ea42e8238@gmail.com>
-In-Reply-To: <1c148ba0-0b74-2d48-c94b-3e7ea42e8238@gmail.com>
-From:   Joe Burton <jevburton.kernel@gmail.com>
-Date:   Wed, 29 Sep 2021 18:09:23 -0700
-Message-ID: <CAN22Dihw1r9WP5JcecyE-3Y==ghVJT5ivRFGTR2bsboxLD2JEw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 04/13] bpf: Define a few bpf_link_ops for BPF_TRACE_MAP
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Joe Burton <jevburton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Good catch, applied both changes. The expectation is to remove only
-one
- program. Theoretically an app could link the same program to the same
-map
-twice, twice, in which case close()ing one link should not detach both
-programs.
+Add counters for XDP REDIRECT success and failure. This brings the
+redirect path in line with metrics gathered via the other XDP paths.
 
-I opted to also apply the _safe() suffix mostly as a matter of convention.
+Signed-off-by: Joshua Roys <roysjosh@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 8 ++++++++
+ drivers/net/ethernet/mellanox/mlx4/en_port.c    | 4 ++++
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c      | 4 +++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    | 2 ++
+ drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h | 4 +++-
+ 5 files changed, 20 insertions(+), 2 deletions(-)
 
--       struct bpf_map_trace_prog *cur_prog;
-+       struct bpf_map_trace_prog *cur_prog, *tmp;
-        struct bpf_map_trace_progs *progs;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+index ef518b1040f7..66c8ae29bc7a 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -197,6 +197,8 @@ static const char main_strings[][ETH_GSTRING_LEN] = {
+ 
+ 	/* xdp statistics */
+ 	"rx_xdp_drop",
++	"rx_xdp_redirect",
++	"rx_xdp_redirect_fail",
+ 	"rx_xdp_tx",
+ 	"rx_xdp_tx_full",
+ 
+@@ -428,6 +430,8 @@ static void mlx4_en_get_ethtool_stats(struct net_device *dev,
+ 		data[index++] = priv->rx_ring[i]->bytes;
+ 		data[index++] = priv->rx_ring[i]->dropped;
+ 		data[index++] = priv->rx_ring[i]->xdp_drop;
++		data[index++] = priv->rx_ring[i]->xdp_redirect;
++		data[index++] = priv->rx_ring[i]->xdp_redirect_fail;
+ 		data[index++] = priv->rx_ring[i]->xdp_tx;
+ 		data[index++] = priv->rx_ring[i]->xdp_tx_full;
+ 	}
+@@ -519,6 +523,10 @@ static void mlx4_en_get_strings(struct net_device *dev,
+ 				"rx%d_dropped", i);
+ 			sprintf(data + (index++) * ETH_GSTRING_LEN,
+ 				"rx%d_xdp_drop", i);
++			sprintf(data + (index++) * ETH_GSTRING_LEN,
++				"rx%d_xdp_redirect", i);
++			sprintf(data + (index++) * ETH_GSTRING_LEN,
++				"rx%d_xdp_redirect_fail", i);
+ 			sprintf(data + (index++) * ETH_GSTRING_LEN,
+ 				"rx%d_xdp_tx", i);
+ 			sprintf(data + (index++) * ETH_GSTRING_LEN,
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_port.c b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+index 0158b88bea5b..f25794a92241 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+@@ -244,6 +244,8 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
+ 	priv->port_stats.rx_chksum_complete = 0;
+ 	priv->port_stats.rx_alloc_pages = 0;
+ 	priv->xdp_stats.rx_xdp_drop    = 0;
++	priv->xdp_stats.rx_xdp_redirect = 0;
++	priv->xdp_stats.rx_xdp_redirect_full = 0;
+ 	priv->xdp_stats.rx_xdp_tx      = 0;
+ 	priv->xdp_stats.rx_xdp_tx_full = 0;
+ 	for (i = 0; i < priv->rx_ring_num; i++) {
+@@ -255,6 +257,8 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
+ 		priv->port_stats.rx_chksum_complete += READ_ONCE(ring->csum_complete);
+ 		priv->port_stats.rx_alloc_pages += READ_ONCE(ring->rx_alloc_pages);
+ 		priv->xdp_stats.rx_xdp_drop	+= READ_ONCE(ring->xdp_drop);
++		priv->xdp_stats.rx_xdp_redirect += READ_ONCE(ring->xdp_redirect);
++		priv->xdp_stats.rx_xdp_redirect_fail += READ_ONCE(ring->xdp_redirect_fail);
+ 		priv->xdp_stats.rx_xdp_tx	+= READ_ONCE(ring->xdp_tx);
+ 		priv->xdp_stats.rx_xdp_tx_full	+= READ_ONCE(ring->xdp_tx_full);
+ 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 557d7daac2d3..650e6a1844ae 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -793,11 +793,13 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+ 			case XDP_PASS:
+ 				break;
+ 			case XDP_REDIRECT:
+-				if (xdp_do_redirect(dev, &xdp, xdp_prog) >= 0) {
++				if (likely(!xdp_do_redirect(dev, &xdp, xdp_prog))) {
++					ring->xdp_redirect++;
+ 					xdp_redir_flush = true;
+ 					frags[0].page = NULL;
+ 					goto next;
+ 				}
++				ring->xdp_redirect_fail++;
+ 				trace_xdp_exception(dev, xdp_prog, act);
+ 				goto xdp_drop_no_cnt;
+ 			case XDP_TX:
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+index f3d1a20201ef..f6c90e97b4cd 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -340,6 +340,8 @@ struct mlx4_en_rx_ring {
+ 	unsigned long csum_complete;
+ 	unsigned long rx_alloc_pages;
+ 	unsigned long xdp_drop;
++	unsigned long xdp_redirect;
++	unsigned long xdp_redirect_fail;
+ 	unsigned long xdp_tx;
+ 	unsigned long xdp_tx_full;
+ 	unsigned long dropped;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+index 7b51ae8cf759..e9cd4bb6f83d 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+@@ -42,9 +42,11 @@ struct mlx4_en_port_stats {
+ 
+ struct mlx4_en_xdp_stats {
+ 	unsigned long rx_xdp_drop;
++	unsigned long rx_xdp_redirect;
++	unsigned long rx_xdp_redirect_fail;
+ 	unsigned long rx_xdp_tx;
+ 	unsigned long rx_xdp_tx_full;
+-#define NUM_XDP_STATS		3
++#define NUM_XDP_STATS		5
+ };
+ 
+ struct mlx4_en_phy_stats {
+-- 
+2.31.1
 
-        progs = map_trace_link->map->trace_progs;
-        mutex_lock(&progs->mutex);
--       list_for_each_entry(cur_prog, &progs->progs[trace_type].list, list) {
-+       list_for_each_entry_safe(cur_prog, tmp, &progs->progs[trace_type].list,
-+                                list) {
-                if (cur_prog->prog == link->prog) {
-                        progs->length[trace_type] -= 1;
-                        list_del_rcu(&cur_prog->list);
-                        kfree_rcu(cur_prog, rcu);
-+                       break;
-                }
-        }
-
-
-On Wed, Sep 29, 2021 at 5:26 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->
->
->
-> On 9/29/21 4:59 PM, Joe Burton wrote:
-> > From: Joe Burton <jevburton@google.com>
-> >
-> > Define release, dealloc, and update_prog for the new tracing programs.
-> > Updates are protected by a single global mutex.
-> >
-> > Signed-off-by: Joe Burton <jevburton@google.com>
-> > ---
-> >  kernel/bpf/map_trace.c | 71 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 71 insertions(+)
-> >
-> > diff --git a/kernel/bpf/map_trace.c b/kernel/bpf/map_trace.c
-> > index 7776b8ccfe88..35906d59ba3c 100644
-> > --- a/kernel/bpf/map_trace.c
-> > +++ b/kernel/bpf/map_trace.c
-> > @@ -14,6 +14,14 @@ struct bpf_map_trace_target_info {
-> >  static struct list_head targets = LIST_HEAD_INIT(targets);
-> >  static DEFINE_MUTEX(targets_mutex);
-> >
-> > +struct bpf_map_trace_link {
-> > +     struct bpf_link link;
-> > +     struct bpf_map *map;
-> > +     struct bpf_map_trace_target_info *tinfo;
-> > +};
-> > +
-> > +static DEFINE_MUTEX(link_mutex);
-> > +
-> >  int bpf_map_trace_reg_target(const struct bpf_map_trace_reg *reg_info)
-> >  {
-> >       struct bpf_map_trace_target_info *tinfo;
-> > @@ -77,3 +85,66 @@ int bpf_map_initialize_trace_progs(struct bpf_map *map)
-> >       return 0;
-> >  }
-> >
-> > +static void bpf_map_trace_link_release(struct bpf_link *link)
-> > +{
-> > +     struct bpf_map_trace_link *map_trace_link =
-> > +                     container_of(link, struct bpf_map_trace_link, link);
-> > +     enum bpf_map_trace_type trace_type =
-> > +                     map_trace_link->tinfo->reg_info->trace_type;
-> > +     struct bpf_map_trace_prog *cur_prog;
-> > +     struct bpf_map_trace_progs *progs;
-> > +
-> > +     progs = map_trace_link->map->trace_progs;
-> > +     mutex_lock(&progs->mutex);
-> > +     list_for_each_entry(cur_prog, &progs->progs[trace_type].list, list) {
->
-> You might consider using list_for_each_entry_safe(), or ...
->
-> > +             if (cur_prog->prog == link->prog) {
-> > +                     progs->length[trace_type] -= 1;
-> > +                     list_del_rcu(&cur_prog->list);
-> > +                     kfree_rcu(cur_prog, rcu);
->
-> or add a break; if you do not expect to find multiple entries.
->
-> > +             }
-> > +     }
-> > +     mutex_unlock(&progs->mutex);
-> > +     bpf_map_put_with_uref(map_trace_link->map);
-> > +}
-> > +
-> > +static void bpf_map_trace_link_dealloc(struct bpf_link *link)
-> > +{
-> > +     struct bpf_map_trace_link *map_trace_link =
-> > +                     container_of(link, struct bpf_map_trace_link, link);
-> > +
-> > +     kfree(map_trace_link);
-> > +}
-> > +
-> > +static int bpf_map_trace_link_replace(struct bpf_link *link,
-> > +                                   struct bpf_prog *new_prog,
-> > +                                   struct bpf_prog *old_prog)
-> > +{
-> > +     int ret = 0;
-> > +
-> > +     mutex_lock(&link_mutex);
-> > +     if (old_prog && link->prog != old_prog) {
-> > +             ret = -EPERM;
-> > +             goto out_unlock;
-> > +     }
-> > +
-> > +     if (link->prog->type != new_prog->type ||
-> > +         link->prog->expected_attach_type != new_prog->expected_attach_type ||
-> > +         link->prog->aux->attach_btf_id != new_prog->aux->attach_btf_id) {
-> > +             ret = -EINVAL;
-> > +             goto out_unlock;
-> > +     }
-> > +
-> > +     old_prog = xchg(&link->prog, new_prog);
-> > +     bpf_prog_put(old_prog);
-> > +
-> > +out_unlock:
-> > +     mutex_unlock(&link_mutex);
-> > +     return ret;
-> > +}
-> > +
-> > +static const struct bpf_link_ops bpf_map_trace_link_ops = {
-> > +     .release = bpf_map_trace_link_release,
-> > +     .dealloc = bpf_map_trace_link_dealloc,
-> > +     .update_prog = bpf_map_trace_link_replace,
-> > +};
-> > +
-> >
