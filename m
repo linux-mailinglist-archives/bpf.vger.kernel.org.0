@@ -2,148 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0417041EE2D
-	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 15:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2BD41EED1
+	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 15:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354490AbhJANG5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 09:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
+        id S1354153AbhJANpB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 09:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354134AbhJANGv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:06:51 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54529C06178C
-        for <bpf@vger.kernel.org>; Fri,  1 Oct 2021 06:04:13 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id bd28so34456017edb.9
-        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 06:04:13 -0700 (PDT)
+        with ESMTP id S1354146AbhJANpA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:45:00 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A153C06177C
+        for <bpf@vger.kernel.org>; Fri,  1 Oct 2021 06:43:16 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id l13so8949753qtv.3
+        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 06:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5zYB8mqtE+ygJzihZK4VFYuXUtlev0s60JUhGV9c/Wg=;
-        b=erH8r8HMaLwfNhcglVlsRt48YRykCk/HyR8bgmz5zhINC7Cvrz9kUo71KZD7CQZm8p
-         CKDqPvJBgoMLOtLsCL3p75pUS5T63GkvrOD+jKAISfhpWZ3GFPFPAdjaIr/NEQ+bfy92
-         JKoBBFVy7sDRsfneNH9k1udTEV0Jae2hKmUMm8D1p0toxKLLtyuYv1OkqzU2zWZcpMcv
-         7GKC9yKN95uUeroae2ZRgu7Yk8pg6FxtfEmSPCF4Ibc4CREwEV+y62FlBhbAPt+y1CKv
-         jW4eyRq0GF7wAF3ANTlo28+I7o1Za/IlJT9YvW5ZR36QZBSSgUUPBBCRu2PjMIFG0duz
-         tgog==
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cf4KervmgbYPewbFXW0H0LrSdYd5Nbh/NaFrqSsod4Y=;
+        b=3Hqx4iJoDMd/CbstYyPKbtUv5iaeGCpZ57vqdgLGDE88xLSq+bB1vN3HhmM3qunXk2
+         RGfhlmLBWn9fHHH3XFZjMn1aCK4rlwgZzbT0oLEZ48DD4uiiiNaAoxzc84NCFIg5t4Mh
+         tbmqATbs2+LHirwbBoQk6zzDCohSeWTej6haXlZe9q/fOv6doKfcW25U1pnsmaNdpKsp
+         meHp6BVNTZCxqy8lH6QDsNpHBzvvs+3SsopkLPfDPQLxrQRKVxggWWpI+sHeUc8tb+Yz
+         DiFA0U9dq8Nrlj8I83sGM7JxArPjsmkS9TCL4RLHoCcu0Ub2L8ZnR5grPW+2Q2KmCiQ/
+         5xCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5zYB8mqtE+ygJzihZK4VFYuXUtlev0s60JUhGV9c/Wg=;
-        b=VLxyRNBl1CmEOOYps4CL/RUKeLGzoNbKRvLeaOTbvIeqeKIYEm+Neqr9QT/aBNpu1L
-         5+anIjwAzpWYmsGqiuDe6lmlsuX3CoSYY5MaY8y7zDf2kXk53yMaX2edkcmC6ipIRcTv
-         xQF08DBy8AM+ti1CJekrlZB8ypXtLDKf40ZHraXNDa9QrHeKhww9o02sO21JZjxm3gEf
-         jCfuGBWHDeJsIAtnoqgStCU4A0ACiS8NM0xvjLvNb1tQ0r1RLg+RF6oVuK7ZIi4kZ8D/
-         WwLy0LUpG8v68V1R2y+448sIipYAUrcNbSEZB5zJF4/yrlspX3AGuOZymCx8K7zDemCM
-         BHTg==
-X-Gm-Message-State: AOAM532x4yDkDO1EpHysKcUtis9jfkQab58TegN78S4jjC3cHtXs8Zlx
-        cjcSXOwMr8RY6Xbmo/AUZreIXQ==
-X-Google-Smtp-Source: ABdhPJzurTk3eXztmQhe69eT45MuApqyv5juzkQJqOdeF+jvXaaptb5Cp5FYqlWek6bVH/OhOxobTg==
-X-Received: by 2002:a17:906:36d6:: with SMTP id b22mr5978897ejc.387.1633093451801;
-        Fri, 01 Oct 2021 06:04:11 -0700 (PDT)
-Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id p22sm2920279ejl.90.2021.10.01.06.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 06:04:11 -0700 (PDT)
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, iii@linux.ibm.com,
-        paul@cilium.io, yangtiezhu@loongson.cn, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf-next 10/10] bpf/tests: Add test of LDX_MEM with operand aliasing
-Date:   Fri,  1 Oct 2021 15:03:48 +0200
-Message-Id: <20211001130348.3670534-11-johan.almbladh@anyfinetworks.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001130348.3670534-1-johan.almbladh@anyfinetworks.com>
-References: <20211001130348.3670534-1-johan.almbladh@anyfinetworks.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cf4KervmgbYPewbFXW0H0LrSdYd5Nbh/NaFrqSsod4Y=;
+        b=tFZ29bTM/0us98H2/dcLwxpPv9z7dKRK0QOWCGIQbFXVQHhoOF8pbWXY3f8feinsoq
+         3mOyhh2+b3w+P62+Zmz70xnIKFj8O9KM/nlKrA2EAearSbP5FjCjkGfDEC/PpxPMPpYA
+         vJwe764i25+7AHGr6VKujX+f4X/tDz+iH4zQGv2Mk2lq8LQdfCiAVJ1vTnNNANXgRppq
+         PuSykT3E68XMWOIbgPwbvJbTpE8guB+YOjzTUB2v4a4OmgWR9v3cbyM35tvfi0NcJ6ha
+         ljeMwdoNpi2oDNOZdMqVBiWriVfsJfwpbdILN1TbJC1y5Rf6F9A5+hhJrBE4crY3OZh3
+         lhEQ==
+X-Gm-Message-State: AOAM533zWhDfQ8rhMiWZy3UGsuAH8VFT5A/AucM3Iri8Mh3KORQF7VEs
+        fs5o6UNuzHh23X50GYWy4BecCwHy85KCJQ==
+X-Google-Smtp-Source: ABdhPJxtCkBgpFlKSAej/LLmct64vIxRBmKGIpMEhIWICJ6X3uIis+5Y29rgb65pLMVd0YPuDNViIA==
+X-Received: by 2002:a05:622a:181:: with SMTP id s1mr13423984qtw.47.1633095795595;
+        Fri, 01 Oct 2021 06:43:15 -0700 (PDT)
+Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-33-142-112-185-132.dsl.bell.ca. [142.112.185.132])
+        by smtp.googlemail.com with ESMTPSA id y22sm3453660qkp.9.2021.10.01.06.43.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 06:43:14 -0700 (PDT)
+Subject: Re: [RFC Patch net-next v2] net_sched: introduce eBPF based Qdisc
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Jiri Pirko <jiri@resnulli.us>
+References: <20210913231108.19762-1-xiyou.wangcong@gmail.com>
+ <CAADnVQJFbCmzoFM8GGHyLWULSmX75=67Tu0EnTOOoVfH4gE+HA@mail.gmail.com>
+ <CAM_iQpX2prCpPDmO1U0A_wyJi_LS4wmd9MQiFKiqQT8NfGNNnw@mail.gmail.com>
+ <CAADnVQJJHLuaymMEdDowharvyJr+6ta2Tg9XAR3aM+4=ysu+bg@mail.gmail.com>
+ <CAM_iQpUCtXRWhMqSaoymZ6OqOywb-k4R1_mLYsLCTm7ABJ5k_A@mail.gmail.com>
+ <CAADnVQJcUspoBzk9Tt3Rx_OH7-MB+m1xw+vq2k2SozYZMmpurg@mail.gmail.com>
+ <CAM_iQpVaVvaEn2ORfyZQ-FN56pCdE4YPa0r2E+VgyZzvEP31cQ@mail.gmail.com>
+ <CAADnVQJX8OpXhQ66jVSN1ws8tav5R8yCERr6eaS9POA+QhRx-A@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <6d648f13-756f-0e3e-b617-5f9244d733b7@mojatatu.com>
+Date:   Fri, 1 Oct 2021 09:43:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJX8OpXhQ66jVSN1ws8tav5R8yCERr6eaS9POA+QhRx-A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a set of tests of BPF_LDX_MEM where both operand registers
-are the same register. Mainly testing 32-bit JITs that may load a 64-bit
-value in two 32-bit loads, and must not overwrite the address register.
+On 2021-09-29 4:57 p.m., Alexei Starovoitov wrote:
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
----
- lib/test_bpf.c | 58 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+> Applying queuing discipline to non-skb context may be not your target
+> but it's a reasonable and practical request to have.
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index dfcbdff714b6..b9fc330fc83b 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -11133,6 +11133,64 @@ static struct bpf_test tests[] = {
- 		{},
- 		{ { 0, 2 } },
- 	},
-+	/* BPF_LDX_MEM with operand aliasing */
-+	{
-+		"LDX_MEM_B: operand register aliasing",
-+		.u.insns_int = {
-+			BPF_ST_MEM(BPF_B, R10, -8, 123),
-+			BPF_MOV64_REG(R0, R10),
-+			BPF_LDX_MEM(BPF_B, R0, R0, -8),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 123 } },
-+		.stack_depth = 8,
-+	},
-+	{
-+		"LDX_MEM_H: operand register aliasing",
-+		.u.insns_int = {
-+			BPF_ST_MEM(BPF_H, R10, -8, 12345),
-+			BPF_MOV64_REG(R0, R10),
-+			BPF_LDX_MEM(BPF_H, R0, R0, -8),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 12345 } },
-+		.stack_depth = 8,
-+	},
-+	{
-+		"LDX_MEM_W: operand register aliasing",
-+		.u.insns_int = {
-+			BPF_ST_MEM(BPF_W, R10, -8, 123456789),
-+			BPF_MOV64_REG(R0, R10),
-+			BPF_LDX_MEM(BPF_W, R0, R0, -8),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 123456789 } },
-+		.stack_depth = 8,
-+	},
-+	{
-+		"LDX_MEM_DW: operand register aliasing",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R1, 0x123456789abcdefULL),
-+			BPF_STX_MEM(BPF_DW, R10, R1, -8),
-+			BPF_MOV64_REG(R0, R10),
-+			BPF_LDX_MEM(BPF_DW, R0, R0, -8),
-+			BPF_ALU64_REG(BPF_SUB, R0, R1),
-+			BPF_MOV64_REG(R1, R0),
-+			BPF_ALU64_IMM(BPF_RSH, R1, 32),
-+			BPF_ALU64_REG(BPF_OR, R0, R1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0 } },
-+		.stack_depth = 8,
-+	},
- 	/*
- 	 * Register (non-)clobbering tests for the case where a JIT implements
- 	 * complex ALU or ATOMIC operations via function calls. If so, the
--- 
-2.30.2
 
+While i agree that it is useful to deal with queues and scheduling
+for other buffer contexts, it certainly not the same infrastructure
+wise to deal with sending a context to user space vs dealing with
+the qdisc environment. There are a lot of corner cases of dealing with
+the mix of hard and softirqs, non-work conserving modes, multiflow
+funneling and locking etc that have been refined over the years that
+are incorporated into the tc + netdev infra.
+The approach that Cong took of just reusing that infra will take
+advantage of those learnings. The only thing that is variable between
+the different qdiscs is the enqueue/dequeue algos (which is where
+Cong is sticking the ebpf hooks). To me that looks like a very
+good starting point as i dont believe you can come up with one size
+fits all without excessive over-engineering (which seems to defeat
+the purpose of ebpf).
+
+cheers,
+jamal
