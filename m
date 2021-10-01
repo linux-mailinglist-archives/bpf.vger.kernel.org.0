@@ -2,299 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E02F41F72A
-	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 23:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F02441F731
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 00:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355737AbhJAV63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 17:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhJAV63 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 17:58:29 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE2FC061775;
-        Fri,  1 Oct 2021 14:56:44 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id q189so5364875ybq.1;
-        Fri, 01 Oct 2021 14:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I3z6l9WwUm29vkId3Y300lHRHn0pAw4iKACOhq4iICo=;
-        b=blepvXvNhCqW0Edy++jfZQugcfPD6wkrXQh7sPL1mHHoE6kjUEL1W+wYGx6zoBXikr
-         w6WUd/gpBw6f/lrdPhMEHILl1qgB24v8aiiT/aGvMVixbfTWBhRhuLNdL+Sx3WGON3oh
-         cC+bNKat1j3GAsThvmUXpTz9uSJLHhBMkv5kAxK3uUiWhSicNd1e3wywlE0soe+6O1td
-         G/Trx5tL3szVXXNCXW9bLDmqlp40jnr8Q+SrC3hq/PqIWMP1poeL2E2gVFf37jCnN+5W
-         DWqM/8o3UGW4uvG1i4ZRnvSjZ5OOBCTpikv4EK1yyaCT33+SsKYcAFyQcHxuxicbgxF6
-         r5Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I3z6l9WwUm29vkId3Y300lHRHn0pAw4iKACOhq4iICo=;
-        b=npDTtLZb86ZYpgCV0gjYxLy1PvABclCmqKyQi6Z+/oNWuqbYjunfWfiDDIG/mXbUzJ
-         +GMuhYkyRvg9JRf1e7k90sicSLBr5dNRM3r+Y5WotJ9FxnFkzEIZA1viLluEO68caXz9
-         t0O6ci2PPxXotHL//SbXDc8tsaWtRU7LDPsYAI9jq6Ll1upOja6RZr1Z4c9sz2iEXWuz
-         2kjbfY3HqJ5olbfyQtzS5b9QPczh+fubT/sgABcoSS8uNZyuEUbaSC9G5IOubmmkk3jp
-         ffATnvpmJqRWxqW/KkaU0d8Kk+Auki4nAyd2QKVz3GnkGvNABOoHFeRDuLJs0c6TBaK1
-         Aqhw==
-X-Gm-Message-State: AOAM53128B9nvv25QEtzq/93XxgLko0lUYBSETg5302a+BW0luZgKdYT
-        EoZ9asN9bGdW29Lpju54576cO8s8kRVj5ATsLCY=
-X-Google-Smtp-Source: ABdhPJy2xM7JAZ9RVfUh/Q9DNcApFALkwihwNQ7dCcXGro5TirINwDv95vK/yMylhJi+utZ5/QT5LsyFflI9PnVIcEk=
-X-Received: by 2002:a25:7c42:: with SMTP id x63mr229323ybc.225.1633125403758;
- Fri, 01 Oct 2021 14:56:43 -0700 (PDT)
+        id S240238AbhJAWDG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 18:03:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239895AbhJAWDF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:03:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B508A61AAD
+        for <bpf@vger.kernel.org>; Fri,  1 Oct 2021 22:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633125680;
+        bh=ct1RiOV8SWaRMqtQR6mhN6Gfe8wqvu8A1heHzzQy0aA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dh0IirtB/+Wi6dD9XGhx3U0CM4Oqjbg1yjyxzVfH79jTBKvh67zSVLLW+yb9xlWaA
+         iY9tLaBjzHZpfIB2GpqbpkcDS6T6/Y1xevE5IQ7KIXD+9a5qEVTbYTO3I+JxnV+Ob5
+         xW6XDm16GdohmiopCX3PbYc0x0JbgwHsEU6UJzMfY41rIUSf27SU4j1TgGqBX82ESK
+         nTDiyhLCNh6Mz7oEVi8fip84lbAtjeJuznUzQ2R7+RtNTPgCdHSrxKteZawZWRhDex
+         uTrmXo9xrBRHHEkgqRAnZDr8JWekmqKCIMR1JQcHiFqIHVFWU0dBhk9Glevfeh1ipo
+         YRyFb5YhvWgKg==
+Received: by mail-lf1-f53.google.com with SMTP id i25so43844251lfg.6
+        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 15:01:20 -0700 (PDT)
+X-Gm-Message-State: AOAM5320tJiAar+b1cee9z2EJjLwDKMKD6UYeHJtwHkaG7yWHY51k+s8
+        72FAIpBTVfuZR14JvqchVmLlaqALZNAZhOgKSxs=
+X-Google-Smtp-Source: ABdhPJy5gI/gJV0ZaWKuso9c92vVQLkAnF7492oeobgBYUYyFao+kcaa4K1NVJr55w5x99OKO58aQHYNS5/rz3MJwAw=
+X-Received: by 2002:a05:6512:3048:: with SMTP id b8mr410642lfb.650.1633125679001;
+ Fri, 01 Oct 2021 15:01:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930062948.1843919-1-memxor@gmail.com> <20210930062948.1843919-7-memxor@gmail.com>
-In-Reply-To: <20210930062948.1843919-7-memxor@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 1 Oct 2021 14:56:32 -0700
-Message-ID: <CAEf4BzZ166cVzb45avJobKqAh4udS9T5+q6qC=+0+KVerSc7rg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 6/9] libbpf: Support kernel module function calls
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <cover.1633104510.git.naveen.n.rao@linux.vnet.ibm.com> <1912a409447071f46ac6cc957ce8edea0e5232b7.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
+In-Reply-To: <1912a409447071f46ac6cc957ce8edea0e5232b7.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 1 Oct 2021 15:01:07 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5NraEPybLVcKWzHva4ksTa05msv-2PBdFXPt_J+=xTyw@mail.gmail.com>
+Message-ID: <CAPhsuW5NraEPybLVcKWzHva4ksTa05msv-2PBdFXPt_J+=xTyw@mail.gmail.com>
+Subject: Re: [PATCH 6/9] powerpc/bpf: Fix BPF_SUB when imm == 0x80000000
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        bpf <bpf@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:30 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Fri, Oct 1, 2021 at 2:17 PM Naveen N. Rao
+<naveen.n.rao@linux.vnet.ibm.com> wrote:
 >
-> This patch adds libbpf support for kernel module function call support.
-> The fd_array parameter is used during BPF program load is used to pass
+> We aren't handling subtraction involving an immediate value of
+> 0x80000000 properly. Fix the same.
+>
+> Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-typo: duplicated "is used"
+Acked-by: Song Liu <songliubraving@fb.com>
 
-> module BTFs referenced by the program. insn->off is set to index into
-> this array, but starts from 1, because insn->off as 0 is reserved for
-> btf_vmlinux.
->
-> We try to use existing insn->off for a module, since the kernel limits
-> the maximum distinct module BTFs for kfuncs to 256, and also because
-> index must never exceed the maximum allowed value that can fit in
-> insn->off (INT16_MAX). In the future, if kernel interprets signed offset
-> as unsigned for kfunc calls, this limit can be increased to UINT16_MAX.
->
-> Also introduce a btf__find_by_name_kind_own helper to start searching
-> from module BTF's start id when we know that the BTF ID is not present
-> in vmlinux BTF (in find_ksym_btf_id).
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  tools/lib/bpf/bpf.c             |  1 +
->  tools/lib/bpf/btf.c             | 19 ++++++--
->  tools/lib/bpf/libbpf.c          | 80 +++++++++++++++++++++++----------
->  tools/lib/bpf/libbpf_internal.h |  3 ++
->  4 files changed, 76 insertions(+), 27 deletions(-)
+>  arch/powerpc/net/bpf_jit_comp64.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 >
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 2401fad090c5..7d1741ceaa32 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -264,6 +264,7 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
->         attr.line_info_rec_size = load_attr->line_info_rec_size;
->         attr.line_info_cnt = load_attr->line_info_cnt;
->         attr.line_info = ptr_to_u64(load_attr->line_info);
-> +       attr.fd_array = ptr_to_u64(load_attr->fd_array);
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index ffb7a2877a8469..4641a50e82d50d 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -333,15 +333,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>                 case BPF_ALU | BPF_SUB | BPF_K: /* (u32) dst -= (u32) imm */
+>                 case BPF_ALU64 | BPF_ADD | BPF_K: /* dst += imm */
+>                 case BPF_ALU64 | BPF_SUB | BPF_K: /* dst -= imm */
+> -                       if (BPF_OP(code) == BPF_SUB)
+> -                               imm = -imm;
+> -                       if (imm) {
+> -                               if (imm >= -32768 && imm < 32768)
+> -                                       EMIT(PPC_RAW_ADDI(dst_reg, dst_reg, IMM_L(imm)));
+> -                               else {
+> -                                       PPC_LI32(b2p[TMP_REG_1], imm);
+> +                       if (imm > -32768 && imm < 32768) {
+> +                               EMIT(PPC_RAW_ADDI(dst_reg, dst_reg,
+> +                                       BPF_OP(code) == BPF_SUB ? IMM_L(-imm) : IMM_L(imm)));
+> +                       } else {
+> +                               PPC_LI32(b2p[TMP_REG_1], imm);
+> +                               if (BPF_OP(code) == BPF_SUB)
+> +                                       EMIT(PPC_RAW_SUB(dst_reg, dst_reg, b2p[TMP_REG_1]));
+> +                               else
+>                                         EMIT(PPC_RAW_ADD(dst_reg, dst_reg, b2p[TMP_REG_1]));
+> -                               }
+>                         }
+>                         goto bpf_alu32_trunc;
+>                 case BPF_ALU | BPF_MUL | BPF_X: /* (u32) dst *= (u32) src */
+> --
+> 2.33.0
 >
->         if (load_attr->name)
->                 memcpy(attr.prog_name, load_attr->name,
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 6ad63e4d418a..f1d872b3fbf4 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -695,15 +695,16 @@ __s32 btf__find_by_name(const struct btf *btf, const char *type_name)
->         return libbpf_err(-ENOENT);
->  }
->
-> -__s32 btf__find_by_name_kind(const struct btf *btf, const char *type_name,
-> -                            __u32 kind)
-> +static __s32 __btf__find_by_name_kind(const struct btf *btf,
-> +                                     const char *type_name, __u32 kind,
-> +                                     bool own)
-
-I generally try to avoid double underscore functions and in this case
-given this is an internal helper, then calling it just
-"btf_find_by_name_kind" would be perfectly fine. Also, instead of
-passing a pretty obscure true/false "own" flag, let's pass "int
-start_id", which makes it a bit more obvious and potentially usable
-for some other cases where we won't to start from some type ID X which
-is not necessarily is a boundary. I'd also put that start_id argument
-right next to btf arg, so that we have "btf, start_id specifies source
-of types" and "type_name and kind specifies the match condition". See
-example below.
-
->  {
->         __u32 i, nr_types = btf__get_nr_types(btf);
->
->         if (kind == BTF_KIND_UNKN || !strcmp(type_name, "void"))
->                 return 0;
->
-> -       for (i = 1; i <= nr_types; i++) {
-> +       for (i = own ? btf->start_id : 1; i <= nr_types; i++) {
->                 const struct btf_type *t = btf__type_by_id(btf, i);
->                 const char *name;
->
-> @@ -717,6 +718,18 @@ __s32 btf__find_by_name_kind(const struct btf *btf, const char *type_name,
->         return libbpf_err(-ENOENT);
->  }
->
-> +__s32 btf__find_by_name_kind_own(const struct btf *btf, const char *type_name,
-> +                                __u32 kind)
-> +{
-> +       return __btf__find_by_name_kind(btf, type_name, kind, true);
-
-so here you'll have a pretty clean (IMO)
-
-return btf_find_by_name_kind(btf, btf->start_id, type_name, kind);
-
-> +}
-> +
-> +__s32 btf__find_by_name_kind(const struct btf *btf, const char *type_name,
-> +                            __u32 kind)
-> +{
-> +       return __btf__find_by_name_kind(btf, type_name, kind, false);
-
-and here:
-
-return btf_find_by_name_kind(btf, 1, type_name, kind);
-
-> +}
-> +
->  static bool btf_is_modifiable(const struct btf *btf)
->  {
->         return (void *)btf->hdr != btf->raw_data;
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 7544d7d09160..8943a56f4fcb 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -443,6 +443,11 @@ struct extern_desc {
->
->                         /* local btf_id of the ksym extern's type. */
->                         __u32 type_id;
-> +                       /* offset to be patched in for insn->off, this is 0 for
-> +                        * vmlinux BTF, and BTF fd index in obj->fd_array for
-> +                        * module BTF
-> +                        */
-> +                       __s16 offset;
-
-s/offset/btf_fd_idx/, give it a semantical name, it's use as insn->off
-is just a particular detail
-
->                 } ksym;
->         };
->  };
-> @@ -454,6 +459,7 @@ struct module_btf {
->         char *name;
->         __u32 id;
->         int fd;
-> +       int fd_array_idx;
->  };
->
->  struct bpf_object {
-> @@ -539,6 +545,10 @@ struct bpf_object {
->         void *priv;
->         bpf_object_clear_priv_t clear_priv;
->
-> +       int *fd_array;
-> +       size_t fd_array_cap;
-> +       size_t fd_array_cnt;
-> +
->         char path[];
->  };
->  #define obj_elf_valid(o)       ((o)->efile.elf)
-> @@ -1168,6 +1178,9 @@ static struct bpf_object *bpf_object__new(const char *path,
->         obj->kern_version = get_kernel_version();
->         obj->loaded = false;
->
-> +       /* We cannot use index 0 for module BTF fds */
-> +       obj->fd_array_cnt = 1;
-> +
-
-This is a lie and we'll probably pay for this at some point. I'd
-rather special handle 0 later when you allocate new memory and fd idx
-(see below). Let's keep it initialized to proper 0 at the beginning,
-so that it matches the NULL pointer properly.
-
->         INIT_LIST_HEAD(&obj->list);
->         list_add(&obj->list, &bpf_objects_list);
->         return obj;
-> @@ -5383,6 +5396,7 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
->                         ext = &obj->externs[relo->sym_off];
->                         insn[0].src_reg = BPF_PSEUDO_KFUNC_CALL;
->                         insn[0].imm = ext->ksym.kernel_btf_id;
-> +                       insn[0].off = ext->ksym.offset;
->                         break;
->                 case RELO_SUBPROG_ADDR:
->                         if (insn[0].src_reg != BPF_PSEUDO_FUNC) {
-
-[...]
-
-> -       if (kern_btf != obj->btf_vmlinux) {
-> -               pr_warn("extern (func ksym) '%s': function in kernel module is not supported\n",
-> -                       ext->name);
-> -               return -ENOTSUP;
-> -       }
-> -
-> -       kern_func = btf__type_by_id(kern_btf, kfunc_id);
-> +       kern_func = btf__type_by_id(btf, kfunc_id);
->         kfunc_proto_id = kern_func->type;
->
->         ret = bpf_core_types_are_compat(obj->btf, local_func_proto_id,
-> -                                       kern_btf, kfunc_proto_id);
-
-kern_btf was used to distinguish it from obj->btf properly and point
-out that it's kernel BTF. kernel doesn't mean only vmlinux, it fits
-both vmlinux and module, so can you please keep the kern_btf name?
-
-> +                                       btf, kfunc_proto_id);
->         if (ret <= 0) {
->                 pr_warn("extern (func ksym) '%s': func_proto [%d] incompatible with kernel [%d]\n",
->                         ext->name, local_func_proto_id, kfunc_proto_id);
->                 return -EINVAL;
->         }
->
-> +       /* set index for module BTF fd in fd_array, if unset */
-> +       if (mod_btf && !mod_btf->fd_array_idx) {
-> +               /* insn->off is s16 */
-> +               if (obj->fd_array_cnt == INT16_MAX) {
-> +                       pr_warn("extern (func ksym) '%s': module BTF fd index %d too big to fit in bpf_insn offset\n",
-> +                               ext->name, mod_btf->fd_array_idx);
-> +                       return -E2BIG;
-> +               }
-> +
-
-here I'd do
-
-new_fd_idx = obj->fd_array_cnt ? obj->fd_array_cnt : 1;
-
-> +               ret = libbpf_ensure_mem((void **)&obj->fd_array, &obj->fd_array_cap, sizeof(int),
-> +                                       obj->fd_array_cnt + 1);
-
-and here just new_fd_idx + 1, you get the idea. Special casing is
-still in one place above, everything else is based on a calculated
-index.
-
-> +               if (ret)
-> +                       return ret;
-> +               mod_btf->fd_array_idx = obj->fd_array_cnt;
-> +               /* we assume module BTF FD is always >0 */
-> +               obj->fd_array[obj->fd_array_cnt++] = mod_btf->fd;
-> +       }
-> +
->         ext->is_set = true;
-> -       ext->ksym.kernel_btf_obj_fd = kern_btf_fd;
->         ext->ksym.kernel_btf_id = kfunc_id;
-> +       ext->ksym.offset = mod_btf ? mod_btf->fd_array_idx : 0;
->         pr_debug("extern (func ksym) '%s': resolved to kernel [%d]\n",
->                  ext->name, kfunc_id);
->
-
-[...]
