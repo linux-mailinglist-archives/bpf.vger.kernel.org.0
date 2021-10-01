@@ -2,120 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1260441EC67
-	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 13:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9899D41ECE3
+	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 14:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354102AbhJALk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 07:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354096AbhJALk7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:40:59 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369D5C061775
-        for <bpf@vger.kernel.org>; Fri,  1 Oct 2021 04:39:15 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i19so34313982lfu.0
-        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 04:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=m59dC1qaqiskFZd4oF1a4Uvk+5tonYdUX8wjItM6/Bg=;
-        b=M0hZPoInbZ3QNGEBzkcw1plHdgxl2CPFyv9GbXpOCjQ/fiTm7C90NnX1sSY0RAeSga
-         MB2f852WBArmZr7bfBNusxzDdPCRl8fOtdyLRlIEGwpgHOcrkDSRsqtwyO/xC13l1xM5
-         JAdpgxSCjbHV+5EQcYc9ZjvY9GAI0JGMXAzLb/UmitCwY3tk1O9fBeoZoD5MVCoucdhI
-         xg1TJ/poGwI0iovS9t+XCrcDVhYko/u0gM0V8YTeGQzrEFgnIvebWag1CTydexdFTgFM
-         iMVoywMkuv9IRbm7Dpby7lI411FM/tCVblzIUBm5VUmC4JOHqPdOqsX0IfgnT06wu29q
-         NRaA==
+        id S1354267AbhJAMHL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 08:07:11 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44948 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354259AbhJAMHK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:07:10 -0400
+Received: by mail-il1-f197.google.com with SMTP id i11-20020a92540b000000b0025456903645so7228944ilb.11
+        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 05:05:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=m59dC1qaqiskFZd4oF1a4Uvk+5tonYdUX8wjItM6/Bg=;
-        b=k6oK/EwNcxYIdACcC3GWt3g4JSYwEj3mfmewcNQexvQsrO4jTUovkzGX8Z6W5fj7Ia
-         cU8JikzXFur7rrLCI4KhZfK/yN+y2O5SBoA60a3+rfLUxpIKKbej/e7vCX5kJQBpG482
-         sI8DM0/juCpfZDwXUhmF9rIP1WWr5Inuk0rzwc2jObj+mIkuHRBi3xe/ES1I7xGavBBn
-         QXUu4g0wVsW20sY8mMEZk4msWCW4Mu8RAWKsdnD0ze6324WafM1DWw/heo6NnryI1cxo
-         dclG04A5qNxw4E5sIl6HQTtfyrVkappsm1Ar/i2A+ac6LJGiLyMF3G7HvstyeGowpe6m
-         8CIw==
-X-Gm-Message-State: AOAM531HW8ZR0pF2z1h9v/zsGDPfZ6uWQnyXKWrdcPukPIb80aKfH2dZ
-        ZlaPaL81w7dBaoWPECBtWINCL3HufRj2bpZjpRnBUBMn/T5HEA==
-X-Google-Smtp-Source: ABdhPJzjYWSB1P3DIqM4JoyDpw4ulxMjIdW12fabN39pTSfQyZ5bdW2SoQJuG4HQq20PCh1VH9f0U8o3WhPqgf/FJeI=
-X-Received: by 2002:ac2:4f01:: with SMTP id k1mr5020483lfr.266.1633088353468;
- Fri, 01 Oct 2021 04:39:13 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6XR7AcFwJGCAhR4U8M+rl8QBYvsM2ERoXA6/OjrO3zU=;
+        b=C5ShD28CjqMZnqOb/DWVRQrFsXOMCypVXPrGosuG1gsoUbGNXWWIvhcXCXuHamayiC
+         mi+BGQLm8YiZeAGaILLCRD+LxA5zpxvRdxU9evyhIN9v8mMjahup56o96ZLxfHtSgxwl
+         GfdXoZe8F7mPStr/ekPJSrXTr+cFVH7IKyu6aIaXrW8QAFrfKpSzoaHYxMzGAbKP3j9H
+         jWbbPOQ47nWN/FNs/9TVpuK8ImbkTVaKkzGwxd0UQsts5PSWe22BZb6HIDrpueAzMzBZ
+         aSZNZ1ZuAUbui7uBMR/s88I2osG5v2r7JeNOEK6CdVLLiAUGw89nE16tJlNkW6ty73BG
+         ppIQ==
+X-Gm-Message-State: AOAM533AOgrwZrkaDhw1IezLJJsb18sNfNIMovMSlo8OHarqx1+1l/Su
+        OckLk/gmI9d3OsD66Psf/NnpVoooEvsU7shTqz/GU5LxJneq
+X-Google-Smtp-Source: ABdhPJwZrhf9uro0TwU2UOZIoHBcW5RwGMHaI/lnR0Z6n+s/V1okJosAbQA4JH0TJt6dPG7/SbUbRK7nnzUVOKsuaZLFQp/Q5dMY
 MIME-Version: 1.0
-Sender: ericmarco715@gmail.com
-Received: by 2002:a05:651c:2046:0:0:0:0 with HTTP; Fri, 1 Oct 2021 04:39:11
- -0700 (PDT)
-From:   Manuella warlord ibrahim <manuellawarlordibrahim@gmail.com>
-Date:   Fri, 1 Oct 2021 04:39:11 -0700
-X-Google-Sender-Auth: LKW60txVro-nt0_yeZKzf1PN0nA
-Message-ID: <CAJEgEjAy0XiPuL+EicHQKPGXZ-b8KFuundZjzciCKWiiTLCTGg@mail.gmail.com>
-Subject: Ich werde warten, um von Ihnen zu lesen !!!
-To:     undisclosed-recipients:;
+X-Received: by 2002:a5d:9f44:: with SMTP id u4mr3449828iot.155.1633089926290;
+ Fri, 01 Oct 2021 05:05:26 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 05:05:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f1645705cd496085@google.com>
+Subject: [syzbot] general protection fault in perf_tp_event (3)
+From:   syzbot <syzbot+f27ed6d2b22fe3b92377@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
+        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Liebste,
+Hello,
 
-Ich wei=C3=9F, dass diese Mail f=C3=BCr Sie eine =C3=9Cberraschung sein wir=
-d, da wir
-uns nicht kannten oder uns begegnet sind, bevor Sie bedenken, dass ich
-Ihren E-Mail-Kontakt =C3=BCber das Internet auf der Suche nach einer
-vertrauensw=C3=BCrdigen Person gefunden habe, die mir helfen kann.
+syzbot found the following issue on:
 
-Ich bin Miss Manuella Warlord Ibrahim Coulibaly, 24 Jahre alt,
-weiblich, aus der Republik Elfenbeink=C3=BCste, Westafrika, bin die Tochter
-des verstorbenen Chief Sgt. Warlord Ibrahim Coulibaly (alias General
-IB). Mein verstorbener Vater war ein bekannter Milizenf=C3=BChrer der
-Elfenbeink=C3=BCste. Er starb am Donnerstag, 28. April 2011, nach einem
-Kampf mit den Republikanischen Streitkr=C3=A4ften der Elfenbeink=C3=BCste
-(FRCI). Ich bin gezwungen, Sie wegen der Misshandlungen, die ich von
-meiner Stiefmutter erhalte, zu kontaktieren.
+HEAD commit:    a3debf177f21 libbpf: Fix segfault in static linker for obj..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=122fa35f300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
+dashboard link: https://syzkaller.appspot.com/bug?extid=f27ed6d2b22fe3b92377
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Sie hatte vor, mir seit dem unerwarteten Tod meines geliebten Vaters
-alle Schatzkammern und Besitzt=C3=BCmer meines verstorbenen Vaters
-wegzunehmen. Inzwischen wollte ich nach Europa reisen, aber sie
-versteckte meinen internationalen Pass und andere wertvolle Dokumente.
-Zum Gl=C3=BCck fand sie nicht heraus, wo ich die Akte meines Vaters
-aufbewahrte, die wichtige Dokumente enthielt. Jetzt bleibe ich derzeit
-in der Mission in Ghana.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Ich suche eine langfristige Beziehung und Investitionshilfe. Mein
-Vater in gesegnetem Andenken hat die Summe von 27,5 Millionen
-US-Dollar bei einer Bank in Accra Ghana mit meinem Namen als n=C3=A4chster
-Angeh=C3=B6riger hinterlegt. Ich hatte die Bank kontaktiert, um die Kaution
-zu verrechnen, aber der Filialleiter sagte mir, dass ich als
-Fl=C3=BCchtling nach dem lokalen Recht nicht berechtigt sei, die Operation
-durchzuf=C3=BChren. Er riet mir jedoch, einen Treuh=C3=A4nder zu stellen, d=
-er an
-meiner Stelle steht. Ich wollte meine Stiefmutter =C3=BCber diese Kaution
-informieren, bef=C3=BCrchte aber, dass sie mir nach Freigabe des Geldes
-nichts mehr anbieten wird.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f27ed6d2b22fe3b92377@syzkaller.appspotmail.com
 
-Daher beschlie=C3=9Fe ich, Ihre Hilfe bei der =C3=9Cberweisung des Geldes a=
-uf
-Ihr Bankkonto zu suchen, w=C3=A4hrend ich in Ihr Land umziehe und mich bei
-Ihnen niederlasse. Da Sie Ihr Interesse bekundet haben, mir zu helfen,
-werde ich Ihnen die Kontonummer und den Kontakt der Bank geben, bei
-der mein verstorbener geliebter Vater das Geld mit meinem Namen als
-n=C3=A4chster Angeh=C3=B6riger hinterlegt hat. Es ist meine Absicht, Sie mi=
-t 40%
-des Gesamtgeldes f=C3=BCr Ihre Unterst=C3=BCtzung zu entsch=C3=A4digen, und=
- der Rest
-soll meine Investition in ein profitables Unternehmen sein, das Sie
-mir empfehlen werden, da Sie keine Ahnung von Auslandsinvestitionen
-haben. Alle Mitteilungen sollten aus vertraulichen Gr=C3=BCnden =C3=BCber d=
-iese
-E-Mail-Adresse erfolgen (manuellawarlordibrahimw@gmail.com).
+general protection fault, probably for non-canonical address 0xfe001bea7e002090: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0xf000ff53f0010480-0xf000ff53f0010487]
+CPU: 0 PID: 29889 Comm: syz-executor.4 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:perf_tp_filter_match kernel/events/core.c:9622 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9639 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9627 [inline]
+RIP: 0010:perf_tp_event+0x2af/0xb70 kernel/events/core.c:9682
+Code: 3c 20 00 0f 85 d7 07 00 00 4c 8b bb e8 02 00 00 4d 85 ff 4c 0f 44 fb e8 df 37 e1 ff 49 8d bf 30 05 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 22 00 0f 85 a1 07 00 00 4d 8b 87 30 05 00 00 4d 85 c0 0f
+RSP: 0018:ffffc90002137540 EFLAGS: 00010806
+RAX: 0000000000000a8c RBX: ffff887fffffffa0 RCX: ffffc90012317000
+RDX: 1e001fea7e002090 RSI: ffffffff8194d811 RDI: f000ff53f0010483
+RBP: ffffc900021377b0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8194d7ac R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff8880b9c2c800 R14: 0000000000000001 R15: f000ff53f000ff53
+FS:  00007fb42500a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb424fe9718 CR3: 0000000021c6d000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ perf_trace_run_bpf_submit+0x11c/0x210 kernel/events/core.c:9657
+ perf_trace_lock+0x2ef/0x4d0 include/trace/events/lock.h:39
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x4a8/0x720 kernel/locking/lockdep.c:5636
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:158 [inline]
+ _raw_spin_unlock_irqrestore+0x16/0x70 kernel/locking/spinlock.c:194
+ spin_unlock_irqrestore include/linux/spinlock.h:418 [inline]
+ pcpu_alloc+0x848/0x1350 mm/percpu.c:1851
+ bpf_prog_alloc+0x4b/0x1a0 kernel/bpf/core.c:125
+ bpf_prog_load+0x651/0x21f0 kernel/bpf/syscall.c:2248
+ __sys_bpf+0x67e/0x5df0 kernel/bpf/syscall.c:4587
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fb427a93709
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb42500a188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fb427b97f60 RCX: 00007fb427a93709
+RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
+RBP: 00007fb427aedcb4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffe8ec545f R14: 00007fb42500a300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 01ae9f661067bd97 ]---
+RIP: 0010:perf_tp_filter_match kernel/events/core.c:9622 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9639 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9627 [inline]
+RIP: 0010:perf_tp_event+0x2af/0xb70 kernel/events/core.c:9682
+Code: 3c 20 00 0f 85 d7 07 00 00 4c 8b bb e8 02 00 00 4d 85 ff 4c 0f 44 fb e8 df 37 e1 ff 49 8d bf 30 05 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 22 00 0f 85 a1 07 00 00 4d 8b 87 30 05 00 00 4d 85 c0 0f
+RSP: 0018:ffffc90002137540 EFLAGS: 00010806
+RAX: 0000000000000a8c RBX: ffff887fffffffa0 RCX: ffffc90012317000
+RDX: 1e001fea7e002090 RSI: ffffffff8194d811 RDI: f000ff53f0010483
+RBP: ffffc900021377b0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8194d7ac R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff8880b9c2c800 R14: 0000000000000001 R15: f000ff53f000ff53
+FS:  00007fb42500a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb424fe9718 CR3: 0000000021c6d000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	20 00                	and    %al,(%rax)
+   2:	0f 85 d7 07 00 00    	jne    0x7df
+   8:	4c 8b bb e8 02 00 00 	mov    0x2e8(%rbx),%r15
+   f:	4d 85 ff             	test   %r15,%r15
+  12:	4c 0f 44 fb          	cmove  %rbx,%r15
+  16:	e8 df 37 e1 ff       	callq  0xffe137fa
+  1b:	49 8d bf 30 05 00 00 	lea    0x530(%r15),%rdi
+  22:	48 89 fa             	mov    %rdi,%rdx
+  25:	48 c1 ea 03          	shr    $0x3,%rdx
+* 29:	42 80 3c 22 00       	cmpb   $0x0,(%rdx,%r12,1) <-- trapping instruction
+  2e:	0f 85 a1 07 00 00    	jne    0x7d5
+  34:	4d 8b 87 30 05 00 00 	mov    0x530(%r15),%r8
+  3b:	4d 85 c0             	test   %r8,%r8
+  3e:	0f                   	.byte 0xf
 
-Vielen Dank in Erwartung Ihrer schnellen Antwort. Ich werde Ihnen
-Details in meiner n=C3=A4chsten Mail geben, nachdem ich Ihre Annahme-Mail
-erhalten habe, um mir zu helfen.
 
-Dein
-Miss manuella Warlord Ibrahim Coulibaly
-(manuellawarlordibrahimw@gmail.com)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
