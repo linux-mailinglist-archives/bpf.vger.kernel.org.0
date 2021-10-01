@@ -2,42 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C8741F7BF
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 00:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BEB41F7CA
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 00:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356017AbhJAWty (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 18:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34578 "EHLO mail.kernel.org"
+        id S1356046AbhJAW4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 18:56:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356037AbhJAWtx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:49:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EAF761AEF;
-        Fri,  1 Oct 2021 22:48:08 +0000 (UTC)
+        id S1356044AbhJAW4C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:56:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B21361AAB;
+        Fri,  1 Oct 2021 22:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633128488;
-        bh=mBaX3QTNk2scTBHegmVBefwtlIjH/j0Hhlrs71kf7dY=;
+        s=k20201202; t=1633128857;
+        bh=zPKOut12759YrChMuTsMoqBL59Wp8+ZSlMnE3nY7Hxw=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ds4inlZhKpYgcXA4xCT+Xp7pKMFM8OMXzdt2ZJNMz4OFpFOBz2rrSAf/KZ6jDujPM
-         4nbubkJfxuCHT/1fOCaEGerzu7PokoMnc20FxT5yByTcijbfcdwDZlaHWoDt0JNngr
-         glniZBrErN8pQoM/b0gydlIA4LBEJoSs2/YaTCXe+S1YuZUoaoFc+ND7ZOoVf6YuYJ
-         ttR65qB6XJXraHf5kzvacS4UMahJmSOxTBKWwhBq0n4677eTl+vsnBpPDYIsajq8UY
-         5XcC8KXTD/KzimCv840+IO3kqqvy+e8nGNG4w6g+MDJHDw25gE73Ijj3eujtiWbjau
-         qNkSwp+iMREFw==
-Received: by mail-lf1-f49.google.com with SMTP id u18so44474127lfd.12;
-        Fri, 01 Oct 2021 15:48:08 -0700 (PDT)
-X-Gm-Message-State: AOAM530KXhE1FX4T+OKYBJPB5EM94oWkS2NkBqQcvvGkB3orJiUMS1MY
-        5XbazL9Y5lBGCnf0d9+M+IxGwvsS9gvSsG4P/w4=
-X-Google-Smtp-Source: ABdhPJxI0JJOMcsNFwNexF/7q2fdRkuG2eu2Rmm33RtoqbciQCV+vQR/0FY+xKZ99ewyq6UhHeJaCRawW9YTKDVpuWk=
-X-Received: by 2002:ac2:5582:: with SMTP id v2mr606121lfg.143.1633128486649;
- Fri, 01 Oct 2021 15:48:06 -0700 (PDT)
+        b=VT3UcaoD0bONpz3zAVK8zSuDtpknlVnI5yYKDwVx7/cUcUSzyhmKj2vYqWciZMzfF
+         Vep+sTEsGejsrNs2ZL3oGrV+6vHVJ7vgZhDFV6Et67KY5vbJkWFlic813njFqu7hlK
+         DC4tRYUxMrV8C7BxpMQsp4HhQ/uCpxrxplrDKR0STPuV+kshBTx/WrdojZiOqh8olI
+         /1IsagfWsqLniUT+OSyQGMqImpo4CSfkHpZgo23E+/tY3XShDEx4yjCnhN6TWDxa34
+         jjjBv/LFKnByWUVbHDPzqLufvx9fkk7f6vQdThgHVpOb2TzHwDwKOEDIba2zWXcKrB
+         cXU4LNAxCIuPQ==
+Received: by mail-lf1-f49.google.com with SMTP id m3so43776621lfu.2;
+        Fri, 01 Oct 2021 15:54:17 -0700 (PDT)
+X-Gm-Message-State: AOAM533auYCfv6NE/GJC5fZN4gPrTMMUYXX1hhiyRUBMKsti1LQloYNY
+        jnK2D5l229Z67wu3+wxc/u/H1WfGzenYK7SMxro=
+X-Google-Smtp-Source: ABdhPJz4ppbI+kmM0q97fUCL90jYIsKhzNAxoWSGqixPtk52OrSSKcXX3dWQlNFUNfbwvN9eO9jExFI/tYp4ZVaUgqs=
+X-Received: by 2002:ac2:5182:: with SMTP id u2mr615797lfi.676.1633128855585;
+ Fri, 01 Oct 2021 15:54:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001215858.1132715-1-joannekoong@fb.com> <20211001215858.1132715-2-joannekoong@fb.com>
-In-Reply-To: <20211001215858.1132715-2-joannekoong@fb.com>
+References: <20211001215858.1132715-1-joannekoong@fb.com> <20211001215858.1132715-3-joannekoong@fb.com>
+In-Reply-To: <20211001215858.1132715-3-joannekoong@fb.com>
 From:   Song Liu <song@kernel.org>
-Date:   Fri, 1 Oct 2021 15:47:55 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4KVXE0UYVee2F7OR_A6C8pNOvPbXM1wDPFNwiUDeOMGg@mail.gmail.com>
-Message-ID: <CAPhsuW4KVXE0UYVee2F7OR_A6C8pNOvPbXM1wDPFNwiUDeOMGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/3] bpf/xdp: Add bpf_load_hdr_opt support for xdp
+Date:   Fri, 1 Oct 2021 15:54:04 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5fUA84rZgVMuFgsqDDDtJkMgH3E49RShnfa3-rVKTvaA@mail.gmail.com>
+Message-ID: <CAPhsuW5fUA84rZgVMuFgsqDDDtJkMgH3E49RShnfa3-rVKTvaA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/3] bpf/selftests: Rename test_tcp_hdr_options
+ to test_sockops_tcp_hdr_options
 To:     Joanne Koong <joannekoong@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Networking <netdev@vger.kernel.org>,
@@ -47,57 +48,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 3:04 PM Joanne Koong <joannekoong@fb.com> wrote:
+On Fri, Oct 1, 2021 at 3:03 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> This patch enables XDP programs to use the bpf_load_hdr_opt helper
-> function to load header options.
+> Currently, tcp_hdr_options is only supported for sockops type programs.
+> This patchset adds xdp tcp_hdr_options support. To more easily
+> differentiate between these two tests, this patch does the following
+> renames (with  no functional changes):
 >
-> The upper 16 bits of "flags" is used to denote the offset to the tcp
-> header. No other flags are, at this time, used by XDP programs.
-> In the future, more flags can be included to support other types of
-> header options.
+> test_tcp_hdr_options -> test_sockops_tcp_hdr_options
+> test_misc_tcp_hdr_options -> test_sockops_misc_tcp_hdr_options
 >
-> Much of the logic for loading header options can be shared between
-> sockops and xdp programs. In net/core/filter.c, this common shared
-> logic is refactored into a separate function both sockops and xdp
-> use.
+> The next patch will add xdp_test_tcp_hdr_options.
 >
 > Signed-off-by: Joanne Koong <joannekoong@fb.com>
 
-Looks good over all.
-
 Acked-by: Song Liu <songliubraving@fb.com>
 
-Just a nitpick below.
-
 > ---
->  include/uapi/linux/bpf.h       | 26 ++++++----
->  net/core/filter.c              | 88 ++++++++++++++++++++++++++--------
->  tools/include/uapi/linux/bpf.h | 26 ++++++----
->  3 files changed, 103 insertions(+), 37 deletions(-)
+>  ...hdr_options.c => sockops_tcp_hdr_options.c} | 18 +++++++++---------
+>  ...s.c => test_sockops_misc_tcp_hdr_options.c} |  0
+>  ...ptions.c => test_sockops_tcp_hdr_options.c} |  0
+>  3 files changed, 9 insertions(+), 9 deletions(-)
+>  rename tools/testing/selftests/bpf/prog_tests/{tcp_hdr_options.c => sockops_tcp_hdr_options.c} (96%)
+>  rename tools/testing/selftests/bpf/progs/{test_misc_tcp_hdr_options.c => test_sockops_misc_tcp_hdr_options.c} (100%)
+>  rename tools/testing/selftests/bpf/progs/{test_tcp_hdr_options.c => test_sockops_tcp_hdr_options.c} (100%)
 >
-
-[...]
-
-> +
-> +BPF_CALL_4(bpf_xdp_load_hdr_opt, struct xdp_buff *, xdp,
-> +          void *, search_res, u32, len, u64, flags)
-> +{
-> +       const void *op, *opend;
-> +       struct tcphdr *th;
-> +
-> +       /* The upper 16 bits of flags contain the offset to the tcp header.
-> +        * No other bits should be set.
-> +        */
-> +       if (flags & 0xffffffffffff)
-
-Maybe use (1ULL << BPF_LOAD_HDR_OPT_TCP_OFFSET_SHIFT) - 1
-
-> +               return -EINVAL;
-> +
-> +       th = xdp->data + (flags >> BPF_LOAD_HDR_OPT_TCP_OFFSET_SHIFT);
-> +       op = (void *)th + sizeof(struct tcphdr);
-> +       if (unlikely(op > xdp->data_end))
-> +               return -EINVAL;
-
-[...]
+> diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_hdr_options.c b/tools/testing/selftests/bpf/prog_tests/sockops_tcp_hdr_options.c
+> similarity index 96%
+> rename from tools/testing/selftests/bpf/prog_tests/tcp_hdr_options.c
+> rename to tools/testing/selftests/bpf/prog_tests/sockops_tcp_hdr_options.c
+> index 1fa772079967..f8fb12f4c1ed 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/tcp_hdr_options.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockops_tcp_hdr_options.c
+> @@ -12,8 +12,8 @@
+>  #include "cgroup_helpers.h"
+>  #include "network_helpers.h"
+>  #include "test_tcp_hdr_options.h"
+> -#include "test_tcp_hdr_options.skel.h"
+> -#include "test_misc_tcp_hdr_options.skel.h"
+> +#include "test_sockops_tcp_hdr_options.skel.h"
+> +#include "test_sockops_misc_tcp_hdr_options.skel.h"
+>
+>  #define LO_ADDR6 "::1"
+>  #define CG_NAME "/tcpbpf-hdr-opt-test"
+> @@ -25,8 +25,8 @@ static struct bpf_test_option exp_active_fin_in;
+>  static struct hdr_stg exp_passive_hdr_stg;
+>  static struct hdr_stg exp_active_hdr_stg = { .active = true, };
+>
+> -static struct test_misc_tcp_hdr_options *misc_skel;
+> -static struct test_tcp_hdr_options *skel;
+> +static struct test_sockops_misc_tcp_hdr_options *misc_skel;
+> +static struct test_sockops_tcp_hdr_options *skel;
+>  static int lport_linum_map_fd;
+>  static int hdr_stg_map_fd;
+>  static __u32 duration;
+> @@ -570,15 +570,15 @@ static struct test tests[] = {
+>         DEF_TEST(misc),
+>  };
+>
+> -void test_tcp_hdr_options(void)
+> +void test_sockops_tcp_hdr_options(void)
+>  {
+>         int i;
+>
+> -       skel = test_tcp_hdr_options__open_and_load();
+> +       skel = test_sockops_tcp_hdr_options__open_and_load();
+>         if (CHECK(!skel, "open and load skel", "failed"))
+>                 return;
+>
+> -       misc_skel = test_misc_tcp_hdr_options__open_and_load();
+> +       misc_skel = test_sockops_misc_tcp_hdr_options__open_and_load();
+>         if (CHECK(!misc_skel, "open and load misc test skel", "failed"))
+>                 goto skel_destroy;
+>
+> @@ -600,6 +600,6 @@ void test_tcp_hdr_options(void)
+>
+>         close(cg_fd);
+>  skel_destroy:
+> -       test_misc_tcp_hdr_options__destroy(misc_skel);
+> -       test_tcp_hdr_options__destroy(skel);
+> +       test_sockops_misc_tcp_hdr_options__destroy(misc_skel);
+> +       test_sockops_tcp_hdr_options__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_misc_tcp_hdr_options.c b/tools/testing/selftests/bpf/progs/test_sockops_misc_tcp_hdr_options.c
+> similarity index 100%
+> rename from tools/testing/selftests/bpf/progs/test_misc_tcp_hdr_options.c
+> rename to tools/testing/selftests/bpf/progs/test_sockops_misc_tcp_hdr_options.c
+> diff --git a/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c b/tools/testing/selftests/bpf/progs/test_sockops_tcp_hdr_options.c
+> similarity index 100%
+> rename from tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
+> rename to tools/testing/selftests/bpf/progs/test_sockops_tcp_hdr_options.c
+> --
+> 2.30.2
+>
