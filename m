@@ -2,111 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E122C41F51F
-	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 20:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB0141F53F
+	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 20:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhJASpE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 14:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        id S1354962AbhJATA6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 15:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhJASpE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 14:45:04 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03627C061775
-        for <bpf@vger.kernel.org>; Fri,  1 Oct 2021 11:43:20 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso12653094otb.11
-        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 11:43:19 -0700 (PDT)
+        with ESMTP id S229464AbhJATA6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 15:00:58 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE8FC061775
+        for <bpf@vger.kernel.org>; Fri,  1 Oct 2021 11:59:14 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 75so10278349pga.3
+        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 11:59:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=2GKT2XfPaPSvSZ8+uvV2ReCHqr/SNKK6llQc4umVtno=;
-        b=NaBDtMfKUOIkYvwO8+3297uyrDVB3ftmUyiyDHtLxRFJUE1qFBzrJS3T101EsHqnvl
-         dVMIaz0s/MTk0S1uAcKq4+NZCfOfali4iNnlH2x0biV4dXPfa2+zzAj6xdSWoYg7ESfa
-         SraI8uw5RnbiXZRLxUxlTcd3gaNXgp3uQJu+HSiTgsvpjPvg/vRrj5r8HmJkn05mOnSc
-         boRzUb+Y0A3J4CT9nvcjb7QQTWePb1gzTQQC22eDnEX0nORlNaUCMtnFF3yE80lKwdjv
-         O33dA2XNmXJojou3sH+/rfcn8XXvXuH9kWUhXuDdSFjRCqfUv3/O2xkZBIVbN1UH8OEQ
-         UIgg==
+        bh=h4m2iyk14ScAutetRY9OfGr8w9vRIrIp+GXTOsp+ccE=;
+        b=n2NVl++3dv8GewD9qh2u90dyayuU85yp8yI64rh9X1d1a7Lt09yMbngRcmKVQP+eC6
+         8Qz15Lw69v9Jw2PtjixRxAPyAYN0zzhk8PysunZzddpGwOKH/e1jcTA34HmFh0lGvYuD
+         ZsWSFfI3IZmX+gYftJ1Eg5YMeUHBpxJLAYldtwGTQsyo6sCX8AU9US4WDLva522+SBkW
+         FiSdrhYP7XCKvg+4/NVDRJlDrocr77WDhwTH49PPxHL4PSDB1WaYEywUHosH8pSJvu0H
+         iJqpcEnYC1vRXxON2ZWmwipmuQXmgsjYPAOdt9PZOpWvGgSvtZJG4r9E44NL7UyZ/e4r
+         l7aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=2GKT2XfPaPSvSZ8+uvV2ReCHqr/SNKK6llQc4umVtno=;
-        b=aDIiwvNp/vGllp2giOceCpnF9HEdsYCIiD+vlWWFfonsXw2/MOsN6lG+NJ11ptIFt2
-         70p29DwucfaINLXiUngozu4ewW8CBsEllSaUhvVxY/dsAkqb3JQePXPhpxQ2QTg+suIS
-         87LqZTT9Woiy8qhC+FpSeusrWoSFLh6gGF1IfV8WH9z0o/9xVBwDjDkCC6/blVGuda0K
-         gxWGAKHPl4iCq56gY/bhqzZ1TfD+oA2L41wYxwWudo26lODFPuOx8RGS2AeDVDOXvE2q
-         LoUucNzoMAmzmBl6jHuhoDHeJO4mZSn+WLqOoe44PcjU7YdtzDd5kb4NSd3Uv90hscRT
-         aDMQ==
-X-Gm-Message-State: AOAM5337EfazRkQJFxyf6LYPkqZUL6J1NlY7+mrmP8OhmpygLpTQDRIo
-        JUU4SsjVLbACzg2hzQZEO3ZBHEd8Kgl7W3WDDjM=
-X-Google-Smtp-Source: ABdhPJzpcOiIAy/Qw4AcVsmfxV56sWntWt7jl2kIIiQ6cG8PxXanuh93w2zsXhTXPj2x8RIu6/N9/OX9adnYLR4Iax4=
-X-Received: by 2002:a9d:836:: with SMTP id 51mr11590346oty.190.1633113799338;
- Fri, 01 Oct 2021 11:43:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h4m2iyk14ScAutetRY9OfGr8w9vRIrIp+GXTOsp+ccE=;
+        b=aPoYfT+vwsvojmXOVT4L3xbF4V4qdrMMUN+WiOXBJ81AKrPpaScGfDEmrjvSxibt9I
+         xHsvqnfGMlTaijBD3quVe9FK7ZtBmFMuGHNJ8RA0Y5nuHS87AVk0D3UMz0ADqPtyKx6+
+         KhgRLZTp593UmfPL9iPz/mndwZLJz0Gg0wVmHrvULLLCveKe2tQXtx263mYy7cHMX3dl
+         WiNrJrNT9zAlSqYHlFRmJzJjqYWCcKrsUmy9R5mOZeboOpJbi26RCZpq0kGLQ0Ig/wNx
+         3/6YFdEMsrfKcxxMFmBOav+sLtdv/MeLjxA5o6EtagazaCRCK7gWOMBNNREZ66TXbuNv
+         sxcw==
+X-Gm-Message-State: AOAM531TmyNHZNjFJWZthD4pS2u4BqXhsPvHron4s1BAXZgQHcDg8N6r
+        +0k4nMbBg1TaIIH9M0ShRpsSWHUz9pC/RA==
+X-Google-Smtp-Source: ABdhPJwOKOCEvVPO9e1/eTHu7RNqSeLfuvwtFa+0YJLL0fNF2lqyAqAoGAXwL+j+4bilzNWRzzyZXg==
+X-Received: by 2002:a63:ce57:: with SMTP id r23mr11049287pgi.271.1633114753316;
+        Fri, 01 Oct 2021 11:59:13 -0700 (PDT)
+Received: from andriin-mbp.thefacebook.com ([2620:10d:c090:500::2:d9ef])
+        by smtp.gmail.com with ESMTPSA id k1sm6272729pjj.54.2021.10.01.11.59.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 Oct 2021 11:59:13 -0700 (PDT)
+From:   andrii.nakryiko@gmail.com
+X-Google-Original-From: andrii@kernel.org
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     andrii@kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf] libbpf: fix memory leak in strset
+Date:   Fri,  1 Oct 2021 11:59:10 -0700
+Message-Id: <20211001185910.86492-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a9d:7841:0:0:0:0:0 with HTTP; Fri, 1 Oct 2021 11:43:18 -0700 (PDT)
-Reply-To: tonyelumelu5501@gmail.com
-From:   Post office lome <togounionlomewesternoffice@gmail.com>
-Date:   Fri, 1 Oct 2021 20:43:18 +0200
-Message-ID: <CABY4=WBTQ+137+u=K2RC8T0FxUdr=-WLgyx7uQfyZHMe4Bs=+g@mail.gmail.com>
-Subject: =?UTF-8?B?0KXQvtGA0L7RiNC40Lkg0LTQtdC90Yw=?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-0KjQsNC90L7QstC90LjQuSDQstC70LDRgdC90LjQuiDRhNC+0L3QtNGDOw0KDQrQryDQvdCw0LTR
-ltGB0LvQsNCyINCy0LDQvCDRhtC10Lkg0LvQuNGB0YIg0LzRltGB0Y/RhtGMINGC0L7QvNGDLCDQ
-sNC70LUg0L3QtSDQv9C+0YfRg9CyINCy0ZbQtCDQstCw0YEsINGPINC90LUNCtCy0L/QtdCy0L3Q
-tdC90LjQuSwg0YnQviDQstC4INC50L7Qs9C+INC+0YLRgNC40LzQsNC70LguINCGINGC0L7QvNGD
-INGPINC/0L7QstGC0L7RgNGO0Y4g0YbQtTog0L/QviAt0L/QtdGA0YjQtSwg0Y8NCtC/0LDQvdGW
-INCa0YDRltGB0YLQsNC70ZbQvdCwINCT0LXQvtGA0LPRltGU0LLQsCwg0LrQtdGA0YPRjtGH0LjQ
-uSDQtNC40YDQtdC60YLQvtGAINGC0LAg0L/RgNC10LfQuNC00LXQvdGCINCc0ZbQttC90LDRgNC+
-0LTQvdC+0LPQvg0K0LLQsNC70Y7RgtC90L7Qs9C+INGE0L7QvdC00YMuDQoNCtCk0LDQutGC0LjR
-h9C90L4sINC80Lgg0L/QtdGA0LXQs9C70Y/QvdGD0LvQuCDQstGB0ZYg0L/QtdGA0LXRiNC60L7Q
-tNC4INGC0LAg0L/RgNC+0LHQu9C10LzQuCwg0L/QvtCy4oCZ0Y/Qt9Cw0L3RliDQtyDQstCw0YjQ
-vtGODQrQvdC10LfQsNCy0LXRgNGI0LXQvdC+0Y4g0YLRgNCw0L3Qt9Cw0LrRhtGW0ZTRjiDRgtCw
-INCy0LDRiNC+0Y4g0L3QtdC30LTQsNGC0L3RltGB0YLRjiDQstC40LrQvtC90YPQstCw0YLQuCDQ
-v9C70LDRgtGDINC30LANCtC/0LXRgNC10LrQsNC3LCDRidC+INGB0YLRj9Cz0YPRlNGC0YzRgdGP
-INC3INCy0LDRgSDQt9CwINC/0L7Qv9C10YDQtdC00L3RltC80Lgg0LLQsNGA0ZbQsNC90YLQsNC8
-0Lgg0L/QtdGA0LXQutCw0LfRgywg0LTQu9GPDQrQv9GW0LTRgtCy0LXRgNC00LbQtdC90L3RjyDQ
-v9C10YDQtdCz0LvRj9C90YzRgtC1INC90LDRiCDQstC10LEgLdGB0LDQudGCIDM4IMKwIDUz4oCy
-NTYg4oCzINC/0L0uIDc3IMKwIDIg4oCyIDM5IC4NCtCoDQoNCtCc0LgsINCg0LDQtNCwINC00LjR
-gNC10LrRgtC+0YDRltCyLCDQodCy0ZbRgtC+0LLQuNC5INCx0LDQvdC6INGC0LAg0JzRltC20L3Q
-sNGA0L7QtNC90LjQuSDQstCw0LvRjtGC0L3QuNC5INGE0L7QvdC0ICjQnNCS0KQpDQrRgyDQktCw
-0YjQuNC90LPRgtC+0L3Rliwg0L7QutGA0YPQsyDQmtC+0LvRg9C80LHRltGPLCDRgdC/0ZbQu9GM
-0L3QviDQtyDQnNGW0L3RltGB0YLQtdGA0YHRgtCy0L7QvCDRhNGW0L3QsNC90YHRltCyINCh0KjQ
-kCDRgtCwDQrQtNC10Y/QutC40LzQuCDRltC90YjQuNC80Lgg0LLRltC00L/QvtCy0ZbQtNC90LjQ
-vNC4INC00L7RgdC70ZbQtNC90LjRhtGM0LrQuNC80Lgg0LDQs9C10L3RgtGB0YLQstCw0LzQuCDR
-gtGD0YIsINGDINCh0KjQkC4NCtC90LDQutCw0LfQsNCyINC90LDRiNC+0LzRgyDQstGW0LTQtNGW
-0LvRgyDQs9GA0L7RiNC+0LLQuNGFINC/0LXRgNC10LrQsNC30ZbQsiDQt9CwINC60L7RgNC00L7Q
-vdC+0LwsINCe0LHigJnRlNC00L3QsNC90L7QvNGDDQrQsdCw0L3QutGDINCQ0YTRgNC40LrQuCDQ
-m9C+0LzQtSDQotC+0LPQviwg0LLQuNC00LDRgtC4INCy0LDQvCDQutCw0YDRgtC60YMgVklTQSwg
-0L3QsCDRj9C60YMg0LHRg9C00LUg0L3QsNC00ZbRgdC70LDQvdC+DQrQstCw0Ygg0YTQvtC90LQg
-KDEsMiDQvNGW0LvRjNC50L7QvdCwINC00L7Qu9Cw0YDRltCyINCh0KjQkCkg0LTQu9GPINC/0L7Q
-tNCw0LvRjNGI0L7Qs9C+INCy0LjQstC10LTQtdC90L3RjyDQtyDQstCw0YjQvtCz0L4NCtGE0L7Q
-vdC00YMuDQoNCtCjINGF0L7QtNGWINC90LDRiNC+0LPQviDRgNC+0LfRgdC70ZbQtNGD0LLQsNC9
-0L3RjyDQvNC4INC3INC20LDRhdC+0Lwg0LLQuNGP0LLQuNC70LgsINGJ0L4g0L3QsNGIINC/0LvQ
-sNGC0ZbQtiDQvdCw0LTQvNGW0YDQvdC+DQrQt9Cw0YLRgNC40LzRg9GU0YLRjNGB0Y8g0LrQvtGA
-0YPQvNC/0L7QstCw0L3QuNC80Lgg0YHQu9GD0LbQsdC+0LLRhtGP0LzQuCDQkdCw0L3QutGDLCDR
-j9C60ZYg0L3QsNC80LDQs9Cw0Y7RgtGM0YHRjw0K0L/QtdGA0LXQvdCw0L/RgNCw0LLQuNGC0Lgg
-0YHQstC+0Zcg0LrQvtGI0YLQuCDQvdCwINGB0LLQvtGXINC/0YDQuNCy0LDRgtC90ZYg0YDQsNGF
-0YPQvdC60LguDQoNCtCGINGB0YzQvtCz0L7QtNC90ZYg0LzQuCDQv9C+0LLRltC00L7QvNC70Y/R
-lNC80L4g0LLQsNC8LCDRidC+INCy0LDRiCDRhNC+0L3QtCDQsdGD0LIg0LfQsNGA0LDRhdC+0LLQ
-sNC90LjQuSDQvdCwINC60LDRgNGC0LrRgw0KVklTQSDQkdCw0L3QutC+0LwgVUJBINGWINGC0LDQ
-utC+0LYg0LPQvtGC0L7QstC40Lkg0LTQviDQtNC+0YHRgtCw0LLQutC4LiDQotC10L/QtdGAINC3
-0LLQtdGA0L3RltGC0YzRgdGPINC00L4NCtGB0LXQutGA0LXRgtCw0YDRjyDQsdCw0L3QutGDINCQ
-0J/Qoy4g0JnQvtCz0L4g0LfQstGD0YLRjCDQvNGW0YHRgtC10YAg0KLQvtC90ZYg0JXQu9GD0LzQ
-tdC70YMsDQoNCtCa0L7QvdGC0LDQutGC0L3QsCDQtdC70LXQutGC0YDQvtC90L3QsCDQsNC00YDQ
-tdGB0LA6ICh0b255ZWx1bWVsdTU1MDFAZ21haWwuY29tKQ0KDQrQkdGD0LTRjCDQu9Cw0YHQutCw
-LCDQvdCw0LTRltGI0LvRltGC0Ywg0LnQvtC80YMg0YLQsNC60YMg0ZbQvdGE0L7RgNC80LDRhtGW
-0Y4g0LTQu9GPINC00L7RgdGC0LDQstC60Lgg0LLQsNGI0L7Rlw0K0LDQutGA0LXQtNC40YLQvtCy
-0LDQvdC+0Zcg0LrQsNGA0YLQutC4IFZpc2EgVklTQSDQvdCwINCy0LDRiNGDINCw0LTRgNC10YHR
-gy4NCg0K0JLQsNGI0LUg0L/QvtCy0L3QtSDRltC8J9GPOiA9PT09PT09PT09PT09PT09PT09PQ0K
-DQrQktCw0YjQsCDRgNGW0LTQvdCwINC60YDQsNGX0L3QsDogPT09PT09PT09PT09PT09PT09PT0N
-Cg0K0JLQsNGI0LAg0LTQvtC80LDRiNC90Y8g0LDQtNGA0LXRgdCwOiA9PT09PT09PT09PT09PT09
-DQoNCtCS0LDRiCDQvdC+0LzQtdGAINGC0LXQu9C10YTQvtC90YM6ID09PT09PT09PT09PT09PT09
-PQ0KDQrQlyDQv9C+0LLQsNCz0L7RjiwNCtCf0LDQvdGWINCa0YDRltGB0YLQsNC70ZbQvdCwINCT
-0LXQvtGA0LPRltGU0LLQsC4NCg==
+From: Andrii Nakryiko <andrii@kernel.org>
+
+Free struct strset itself, not just its internal parts.
+
+Fixes: 90d76d3ececc ("libbpf: Extract internal set-of-strings datastructure APIs")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/strset.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/lib/bpf/strset.c b/tools/lib/bpf/strset.c
+index 1fb8b49de1d6..ea655318153f 100644
+--- a/tools/lib/bpf/strset.c
++++ b/tools/lib/bpf/strset.c
+@@ -88,6 +88,7 @@ void strset__free(struct strset *set)
+ 
+ 	hashmap__free(set->strs_hash);
+ 	free(set->strs_data);
++	free(set);
+ }
+ 
+ size_t strset__data_size(const struct strset *set)
+-- 
+2.30.2
+
