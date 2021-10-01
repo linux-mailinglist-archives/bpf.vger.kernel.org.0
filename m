@@ -2,90 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE88541F6B1
-	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 23:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8826841F6B7
+	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 23:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhJAVNH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 17:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhJAVNH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 17:13:07 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F6CC061775;
-        Fri,  1 Oct 2021 14:11:22 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id w10so708658ybt.4;
-        Fri, 01 Oct 2021 14:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p3yfhqZ/Mjyf8OC/wI8DwsxQR5u/fHsK+l/xaemDGgI=;
-        b=VsP5KSRLrlYgAzBYu4kiABKXeL2WL16uLDrOUSKRWSsdnYGLbcri3n2QuEPN1edYkN
-         PHrAmumjbDzGhvhx2D91/2BWiEQRMFtx5R8oNGrAoATcC0JXUt4mlRtw4GpC4o9UfuLS
-         qJq4gmzyAjMHcfFv6TWshPyY9VXD5KkqsHm0UsRXUx/bmlSGwWpwRBRHlv3zhOqaGBQl
-         CnaIxO88Vxqpse6E05KLcxZCi8NCEIRMcoQ7LogHbBUao1E2qfaDWhOEQsubeVvocayA
-         5O7KVezk7oJQj3mNflZKBOlKP/YU4DoE645yk+OO+L8OeXmOz1OEoH4lEXZ4OiVeC/gR
-         Zj+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p3yfhqZ/Mjyf8OC/wI8DwsxQR5u/fHsK+l/xaemDGgI=;
-        b=X3TPW3sJZNbGOX2wrHCllUi9M3ZMpLknhBH2Kf2/7LKnveQIynizPr+cOGu9n258Wl
-         0hCLz22BiznTuuqu2o8cVkL+8alA5hIMRZVSe/uzQupqdyFf54W9A961+DHbS2Bhu1G8
-         v48CwMLH4qatsM1PlQoT5xZ17Wvj29MeJ4Nm/TY4xDj1IwHRaqg9Ta3ZeaAWg0q2j/oI
-         seOYl7ZFgIbXarFyA7XLWnSv70vdYb7hRzIYpyiL2sZQLKcGJFim+0iZdxxVkatefeBJ
-         OLTWUSKIWJdkUPX5QMUXx3D3am5fk87S8tskXYK49/56OshtqCYx326SUziRrgkbuRjY
-         Wqdg==
-X-Gm-Message-State: AOAM5337XWTASceq0NfxsbFlWHBAf9MpDqjfF9TowLgBC+5T/tc8I8YO
-        LbuuQVgTUE0U/SWfg1tFGL7RBJLQ1hYvyH9GWoA=
-X-Google-Smtp-Source: ABdhPJzH4NUCEqCDhQVR77hGxErEWNi4knNmsFNyEKxKA+P/MTEivb8e0A0BfMEGbm+cnH3Hi1QJsiY0S85eJjr0NwE=
-X-Received: by 2002:a25:7c42:: with SMTP id x63mr20911ybc.225.1633122681997;
- Fri, 01 Oct 2021 14:11:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210930062948.1843919-1-memxor@gmail.com> <20210930062948.1843919-5-memxor@gmail.com>
-In-Reply-To: <20210930062948.1843919-5-memxor@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 1 Oct 2021 14:11:11 -0700
-Message-ID: <CAEf4BzbQ9FrUA1+5-dhg8Qd--XZYiSYXjMVEZAVh6Smj05vX6A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 4/9] tools: Allow specifying base BTF file in resolve_btfids
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S230107AbhJAVRc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 17:17:32 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37526 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229568AbhJAVRc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 Oct 2021 17:17:32 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 191KmA0A012105;
+        Fri, 1 Oct 2021 17:15:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Wm9ssMUwToeW98lV81N19hbAcMm50cGOgb7TpVNaSXA=;
+ b=E6c0XIftIdOK3eJVmcnV9eccWJHFi//dI61QFGnMYh49wUgSubKb5vgHhbHvLrvkAAFk
+ XaaTzNKQmD/BaXH5Z7txgU0+l5yrozkDXvuoQzvakBfFWC0Gng4IPyUM+25PT/e71eFS
+ k3SHgq8um7NzzlySf4ahPZOewTW3Em7zmK/NV5XAovzzxIsGvqugiobCwlL2diqW09Yx
+ dZF9qKQSGMEPVNIIbfb0ruOXEQz+b0KbXvM2Ry2bjRougkS8h7WVaEz2lszMj9gyZtJg
+ S02FOu56mXSobDNX3ABKVbdzo36JzXBsCSP+oT6wdrjPq3lDx1izO+MdksGV9QXQvbGb 9g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3be9p6rf81-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Oct 2021 17:15:23 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 191LFNFo036553;
+        Fri, 1 Oct 2021 17:15:23 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3be9p6rf7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Oct 2021 17:15:23 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 191L6lAD007329;
+        Fri, 1 Oct 2021 21:15:20 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3b9udb1yww-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Oct 2021 21:15:20 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 191LFHni66322722
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 1 Oct 2021 21:15:17 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 438A04C064;
+        Fri,  1 Oct 2021 21:15:17 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 684A84C04E;
+        Fri,  1 Oct 2021 21:15:14 +0000 (GMT)
+Received: from naverao1-tp.ibm.com (unknown [9.43.54.98])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  1 Oct 2021 21:15:14 +0000 (GMT)
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Cc:     <bpf@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
+Subject: [PATCH 0/9] powerpc/bpf: Various fixes
+Date:   Sat,  2 Oct 2021 02:44:46 +0530
+Message-Id: <cover.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kY4RZhFgsl2koOI7OV93qZMRgIgnKIVF
+X-Proofpoint-ORIG-GUID: zKicyWQ1bmtPiUR2wbjNaz8uA4tBUxrx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-01_05,2021-10-01_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 clxscore=1011 spamscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=655 bulkscore=0 phishscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110010147
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:30 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> This commits allows specifying the base BTF for resolving btf id
-> lists/sets during link time in the resolve_btfids tool. The base BTF is
-> set to NULL if no path is passed. This allows resolving BTF ids for
-> module kernel objects.
->
-> Also, drop the --no-fail option, as it is only used in case .BTF_ids
-> section is not present, instead make no-fail the default mode. The long
-> option name is same as that of pahole.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+Various fixes to the eBPF JIT for powerpc, thanks to some new tests 
+added by Johan. This series fixes all failures in test_bpf on powerpc64.  
+There are still some failures on powerpc32 to be looked into.
 
-LGTM.
+- Naveen
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  tools/bpf/resolve_btfids/main.c      | 28 +++++++++++++++++++---------
->  tools/testing/selftests/bpf/Makefile |  2 +-
->  2 files changed, 20 insertions(+), 10 deletions(-)
->
+Naveen N. Rao (8):
+  powerpc/lib: Add helper to check if offset is within conditional
+    branch range
+  powerpc/bpf: Validate branch ranges
+  powerpc/bpf: Handle large branch ranges with BPF_EXIT
+  powerpc/bpf: Fix BPF_MOD when imm == 1
+  powerpc/bpf: Fix BPF_SUB when imm == 0x80000000
+  powerpc/bpf: Limit 'ldbrx' to processors compliant with ISA v2.06
+  powerpc/security: Add a helper to query stf_barrier type
+  powerpc/bpf: Emit stf barrier instruction sequences for BPF_NOSPEC
 
-[...]
+Ravi Bangoria (1):
+  powerpc/bpf: Remove unused SEEN_STACK
+
+ arch/powerpc/include/asm/code-patching.h     |   1 +
+ arch/powerpc/include/asm/ppc-opcode.h        |   1 +
+ arch/powerpc/include/asm/security_features.h |   5 +
+ arch/powerpc/kernel/security.c               |   5 +
+ arch/powerpc/lib/code-patching.c             |   7 +-
+ arch/powerpc/net/bpf_jit.h                   |  39 ++++---
+ arch/powerpc/net/bpf_jit64.h                 |   8 +-
+ arch/powerpc/net/bpf_jit_comp.c              |  28 ++++-
+ arch/powerpc/net/bpf_jit_comp32.c            |  10 +-
+ arch/powerpc/net/bpf_jit_comp64.c            | 113 ++++++++++++++-----
+ 10 files changed, 167 insertions(+), 50 deletions(-)
+
+
+base-commit: 044c2d99d9f43c6d6fde8bed00672517dd9a5a57
+-- 
+2.33.0
+
