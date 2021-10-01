@@ -2,125 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8604241F7E1
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 00:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A6041F7F8
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 01:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhJAW6V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 18:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356171AbhJAW5h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:57:37 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1775C061775;
-        Fri,  1 Oct 2021 15:55:52 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id v10so23632796ybq.7;
-        Fri, 01 Oct 2021 15:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BbdfudAXrW8/mnrrb7EAmGS3rUW5NiGxX746IanDHeE=;
-        b=gzf4VmGukAxfE7acbAVoCuS0I1htg0zZHxY6lEgWN/FYd7RR88uL8DvG/3cZmmiifU
-         7oB+JpGyRFIgGm2Ac9gwsOKVYo8QtXB8IZYlA/QLgbZqOy8ikizsFqaJlztS+u4QHg0w
-         Oi1Bz/y9twttBr+72uFDrg0Qze7yFpvBme1eVPj9P21FS8dQLiynrgbTMqVsNJxisYdz
-         RNQtNW1o2ht3agTJ+21ORj4+RV0R7QQ55ksQGjqzDF4OTa76IYrbacWRGFWbpJQsPm2Q
-         0hAKdCndWXacbWU2S4x58k0CaWIkK9+xuGQK37r9e8GTN+htGPwGd4IgoiAGkGY/slAk
-         m8dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BbdfudAXrW8/mnrrb7EAmGS3rUW5NiGxX746IanDHeE=;
-        b=ljEat5Zm3+HUjiTOBsHAh4+Tm/NIzRojCN92Jj+X0DhipF6MaCN6H1+RtpyRvUz1cs
-         ZlzsaIIzg1KWUyNZKsTwbY3w8oPTtnmBDmdS1ojdiXDYyuRs4mIUrlQRYOt07iQddZb3
-         6RQNGwf1RXMreqmHCrAxD18mLZzkiyvX4uBdDNSspt/FHseGfjO4AVEOrZ5FCfqLjJ02
-         r5Ye4B8jH3EbuqAvPa65UXCrxz9i5ElmIVYIU7891DjuHVBA4yXpRsHpzFSGNkxCuydW
-         tBhSn76otQZVPl5LI5JTivAJgJ2h1EbP1k2mLcaMowWjI8H2KNQ8q4yNaYsfMY3RCtXA
-         mREA==
-X-Gm-Message-State: AOAM531YaURZDEW9lvj4D3jBVSRl/V/lfO/UM6O66H90QxIR5utXu5sS
-        zGDMpjRQM3Yu1/tV2yuhG6215HeVBzOAJSw/5Tg=
-X-Google-Smtp-Source: ABdhPJxqaMCbudAmQr0mxFv/MOTSblrUKEPDDP5egxpcRGns/hNd7co555uuzVSTyIASZbHE+7Q8KjWLwoDnXh04Rxs=
-X-Received: by 2002:a25:e7d7:: with SMTP id e206mr464966ybh.267.1633128951924;
- Fri, 01 Oct 2021 15:55:51 -0700 (PDT)
+        id S231195AbhJAXDY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 19:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230509AbhJAXDW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 19:03:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38F0961353;
+        Fri,  1 Oct 2021 23:01:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633129294;
+        bh=QRsAAsTiVZvjBkzeMGn2n8QolTEbMYKcDHNz8v2WHG0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=efdWktmoxTwaf4hdPljpu15M0O7Ts3Rcagkq6izxCCNUaREmP2c2EKmiB0SD1VBd8
+         wIQyjk7bnUMIQkXHR5e3waFFhkwQgCp1WLlJQ4G+DbHpPbFZIGSxcyvPBGH1t/8ELM
+         Jx3mfi9SVA0XgQw4U8OeykG/kaun0CRFF5wWETV6Ej3yzgtSYoeqFY8SsjW74DyZw0
+         YGt+hngC74arHQ4bT9FM5l2aQ9ELiH0wxmMBOmKqU2d73hL3Mj1qtYWl5QGSVhNg2F
+         ODyJXbrVOl49k39Imw1ucrfcKdLwBxJZjWd/VBwY8oDKsuCpsUgpDXaBMCwtAPNwfV
+         ph81Iq+S5hWsw==
+Date:   Fri, 1 Oct 2021 16:01:33 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf/xdp: Add bpf_load_hdr_opt support
+ for xdp
+Message-ID: <20211001160133.50c5d143@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAPhsuW4KVXE0UYVee2F7OR_A6C8pNOvPbXM1wDPFNwiUDeOMGg@mail.gmail.com>
+References: <20211001215858.1132715-1-joannekoong@fb.com>
+        <20211001215858.1132715-2-joannekoong@fb.com>
+        <CAPhsuW4KVXE0UYVee2F7OR_A6C8pNOvPbXM1wDPFNwiUDeOMGg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211001110856.14730-1-quentin@isovalent.com> <20211001110856.14730-3-quentin@isovalent.com>
-In-Reply-To: <20211001110856.14730-3-quentin@isovalent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 1 Oct 2021 15:55:41 -0700
-Message-ID: <CAEf4BzaEN91ju5E6YUdpT07noMafMfge+8Owvq8UPvBBQxJxJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/9] tools: bpftool: install libbpf headers
- instead of including the dir
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 4:09 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> Bpftool relies on libbpf, therefore it relies on a number of headers
-> from the library and must be linked against the library. The Makefile
-> for bpftool exposes these objects by adding tools/lib as an include
-> directory ("-I$(srctree)/tools/lib"). This is a working solution, but
-> this is not the cleanest one. The risk is to involuntarily include
-> objects that are not intended to be exposed by the libbpf.
->
-> The headers needed to compile bpftool should in fact be "installed" from
-> libbpf, with its "install_headers" Makefile target. In addition, there
-> is one header which is internal to the library and not supposed to be
-> used by external applications, but that bpftool uses anyway.
->
-> Adjust the Makefile in order to install the header files properly before
-> compiling bpftool. Also copy the additional internal header file
-> (nlattr.h), but call it out explicitly. Build (and install headers) in a
-> subdirectory under bpftool/ instead of tools/lib/bpf/. When descending
-> from a parent Makefile, this is configurable by setting the OUTPUT,
-> LIBBPF_OUTPUT and LIBBPF_DESTDIR variables.
->
-> Also adjust the Makefile for BPF selftests, so as to reuse the (host)
-> libbpf compiled earlier and to avoid compiling a separate version of the
-> library just for bpftool.
->
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->  tools/bpf/bpftool/Makefile           | 27 ++++++++++++++++-----------
->  tools/testing/selftests/bpf/Makefile |  2 ++
->  2 files changed, 18 insertions(+), 11 deletions(-)
->
+On Fri, 1 Oct 2021 15:47:55 -0700 Song Liu wrote:
+> > +       if (flags & 0xffffffffffff)  
+> 
+> Maybe use (1ULL << BPF_LOAD_HDR_OPT_TCP_OFFSET_SHIFT) - 1
 
-Looks good, but with Makefile no one can ever be sure :) Let's see how
-this works in practice...
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 1fcf5b01a193..78e42963535a 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -17,16 +17,16 @@ endif
->  BPF_DIR = $(srctree)/tools/lib/bpf/
-
-[...]
-
-> +# We need to copy nlattr.h which is not otherwise exported by libbpf, but still
-> +# required by bpftool.
->  $(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
-> -       $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) $(LIBBPF_OUTPUT)libbpf.a
-> +       $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
-> +               DESTDIR=$(LIBBPF_DESTDIR) prefix= \
-> +               $(LIBBPF_OUTPUT)libbpf.a install_headers
-
-s/$(LIBBPF_OUTPUT)libbpf.a/$(LIBBPF)/ ?
-
-> +       $(call QUIET_INSTALL, bpf/nlattr.h)
-> +       $(Q)install -m 644 -t $(LIBBPF_INCLUDE)/bpf/ $(BPF_DIR)nlattr.h
->
->  $(LIBBPF_BOOTSTRAP): FORCE | $(LIBBPF_BOOTSTRAP_OUTPUT)
->         $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
-
-[...]
+Or GENMASK_ULL(47, 0) ?
