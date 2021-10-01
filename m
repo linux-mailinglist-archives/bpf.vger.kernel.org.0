@@ -2,242 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F80741F818
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 01:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4125E41F821
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 01:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhJAXP2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 19:15:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhJAXP2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 19:15:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A19161A3A;
-        Fri,  1 Oct 2021 23:13:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633130023;
-        bh=us9r4OlZBEJcDwfaANwYYNPzbpNqIU8fPZetJ2SbwPo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kYctJxWrK1yIZOy8v6fWE/apKZ8jDAO+5g7ImYppbJCBLWHP+XZN1A9rrqqCKfZzA
-         9+B79Uedm9cs02IgF8l7bNCPRuYstGMJ0zcVPj3NLIPTgX0zSOeAZa7Ir2z/UFJjvU
-         zu3kmaqc7KdpwX7dtGp2PRS8sBIxtkVaRFll8czX+PFZjOgBjzHJMfHbjvj9C48ciG
-         ah9r/XaYpLtZJa2bHPCngo3Cdt29WlcAtcfSJL+zlvTDG80Es3unONMe96H5+pd6vx
-         DrI9BWg23wulYdATaN31YfEYHcxMKZRrDRJQ9CDD7nni4AtZP6tg1KLfIvzgWIaHQY
-         7bYxzZ9XkeGHQ==
-Received: by mail-lf1-f50.google.com with SMTP id m3so43906718lfu.2;
-        Fri, 01 Oct 2021 16:13:43 -0700 (PDT)
-X-Gm-Message-State: AOAM533wAWf1UMLQceQxRx4XvyrsFbCn/xyTt3KzwPMnAFIoG6bfBsV9
-        Bl3kYWZVkJcKSSP7xmYT4yFdXaB40dYSkv7r/fI=
-X-Google-Smtp-Source: ABdhPJxrvh8lT1hZBYaSDwk3Fs4OiYqTlXecGnWlRBnC/M+EKv+4c5a44c+eHQwZPwjbcdwAIpv7UbYQt08wnZSjLv4=
-X-Received: by 2002:ac2:5617:: with SMTP id v23mr768187lfd.114.1633130021799;
- Fri, 01 Oct 2021 16:13:41 -0700 (PDT)
+        id S230525AbhJAXWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 19:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230009AbhJAXV5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 19:21:57 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0937FC061775;
+        Fri,  1 Oct 2021 16:20:12 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id v10so23716850ybq.7;
+        Fri, 01 Oct 2021 16:20:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=21B7ZF7qpu6s4mwzmkosaovgiviZqx2bRUpMpqZFuq4=;
+        b=YoJ8fn/n28so/17EjZ3yf+s9xDryqo1+Dbi6RvQVfzwkujIrn/XCzygUed3G64P5gs
+         RHfqzOXivcpzFjSJVX3qz8t0o8djumY6en+6UNrI9xR3lGpczIYxXI6xMnDMZ7pGvftB
+         dKX9R46C9FD+O+ZsOvZT0RGrHDfuPmB5y+JyL+xcsfsT2eOdBWZ/IYCxbPVSxXzosNrI
+         wwdQ0sDrcSJn1BqlbjT/m5pgMekeeXJV8qpesVcdrrcKIa9EPTKC9eIDH989/HQFpful
+         xNxC7w/hWHOZ4baDnmdvKYfwQgpCHR3IUOB6ZtLfdQGrBc+VO3NTHbMIIveRPITjNnUE
+         IIng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=21B7ZF7qpu6s4mwzmkosaovgiviZqx2bRUpMpqZFuq4=;
+        b=oIgb6oCDUU1Qs+TY/zFLUTzdK95sSKIjwRoJJ/n1X5E5UiTkL/+Wvg+35KryYML/gP
+         WGzbMfmjnMFusDFWMZYkCDQbXRbeGEf0DEh5OgwQChURF1R4TZp03whM4BHs8hfXbP7N
+         VE4Q7Y4OKUebVL7dZoX6hxBX+xcDU3/smDPa/4q9KfkehSd80yXT1bb1Awh5933ckS2x
+         SVXUNTffs1N5jBjzf7Ps79Lec4yckF1igxOoCLBBUk2f63HJP7orlww3vkN6po9H9Bse
+         6hxVK4LmZ9rjp3/LS5kPDW70g8oCc8HT8WALKKw0ZPxU97hJeiZWOZV4mXYjHcTKorgt
+         tTXw==
+X-Gm-Message-State: AOAM531jEbwIvihVe4wBLxD6VW+h2IScXlr3fakX10SrX+zdkfku46/C
+        Sv6ZVE6f20sgAnlTDwMdxadsQHg002Nwfb5lclclkcs5Vys=
+X-Google-Smtp-Source: ABdhPJyyxNU/JwELVygU17555+MEl6/6dvm9OBIvG9f5T+8Uqzv/SIa0pP7xEBr/vDXZxKEY4UCVM9Y6kpW/3bgy4I0=
+X-Received: by 2002:a25:7c42:: with SMTP id x63mr597380ybc.225.1633130411141;
+ Fri, 01 Oct 2021 16:20:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001215858.1132715-1-joannekoong@fb.com> <20211001215858.1132715-4-joannekoong@fb.com>
-In-Reply-To: <20211001215858.1132715-4-joannekoong@fb.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 1 Oct 2021 16:13:30 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6CU+1qbt+dvT2m_Ys+3517e0DQ1wWCcJfgAWf6oRzGxA@mail.gmail.com>
-Message-ID: <CAPhsuW6CU+1qbt+dvT2m_Ys+3517e0DQ1wWCcJfgAWf6oRzGxA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/3] bpf/selftests: Add xdp
- bpf_load_tcp_hdr_options tests
-To:     Joanne Koong <joannekoong@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
+References: <20211001110856.14730-1-quentin@isovalent.com> <20211001110856.14730-7-quentin@isovalent.com>
+In-Reply-To: <20211001110856.14730-7-quentin@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 1 Oct 2021 16:19:59 -0700
+Message-ID: <CAEf4BzYm_QTq+u5tUp71+wY+JAaiUApv35tSqFUEyc81yOeUzw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 6/9] bpf: iterators: install libbpf headers
+ when building
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 3:04 PM Joanne Koong <joannekoong@fb.com> wrote:
+On Fri, Oct 1, 2021 at 4:09 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> This patch adds tests for bpf_load_tcp_hdr_options used by xdp
-> programs.
+> API headers from libbpf should not be accessed directly from the
+> library's source directory. Instead, they should be exported with "make
+> install_headers". Let's make sure that bpf/preload/iterators/Makefile
+> installs the headers properly when building.
 >
-> test_xdp_tcp_hdr_options.c:
-> - Tests ipv4 and ipv6 packets with TCPOPT_EXP and non-TCPOPT_EXP
-> tcp options set. Verify that options can be parsed and loaded
-> successfully.
-> - Tests error paths: TCPOPT_EXP with invalid magic, option with
-> invalid kind_len, non-existent option, invalid flags, option size
-> smaller than kind_len, invalid packet
->
-> Signed-off-by: Joanne Koong <joannekoong@fb.com>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 > ---
->  .../bpf/prog_tests/xdp_tcp_hdr_options.c      | 158 ++++++++++++++
->  .../bpf/progs/test_xdp_tcp_hdr_options.c      | 198 ++++++++++++++++++
->  2 files changed, 356 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_tcp_hdr_options.c
+>  kernel/bpf/preload/iterators/Makefile | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c b/tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c
-> new file mode 100644
-> index 000000000000..bd77593fb2dd
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c
-> @@ -0,0 +1,158 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Facebook */
-> +
-> +#include "test_progs.h"
-> +#include "network_helpers.h"
-> +#include "test_tcp_hdr_options.h"
-> +#include "test_xdp_tcp_hdr_options.skel.h"
-> +
-> +struct xdp_exprm_opt {
-> +       __u8 kind;
-> +       __u8 len;
-> +       __u16 magic;
-> +       struct bpf_test_option data;
-> +} __packed;
-> +
-> +struct xdp_regular_opt {
-> +       __u8 kind;
-> +       __u8 len;
-> +       struct bpf_test_option data;
-> +} __packed;
-> +
-> +struct xdp_test_opt {
-> +       struct xdp_exprm_opt exprm_opt;
-> +       struct xdp_regular_opt regular_opt;
-> +} __packed;
-> +
-> +struct xdp_ipv4_packet {
-> +       struct ipv4_packet pkt_v4;
-> +       struct xdp_test_opt test_opt;
-> +} __packed;
-> +
-> +struct xdp_ipv6_packet {
-> +       struct ipv6_packet pkt_v6;
-> +       struct xdp_test_opt test_opt;
-> +} __packed;
-> +
-> +static __u8 opt_flags = OPTION_MAX_DELACK_MS | OPTION_RAND;
-> +static __u8 exprm_max_delack_ms = 12;
-> +static __u8 regular_max_delack_ms = 21;
-> +static __u8 exprm_rand = 0xfa;
-> +static __u8 regular_rand = 0xce;
-> +
-> +static void init_test_opt(struct xdp_test_opt *test_opt,
-> +                         struct test_xdp_tcp_hdr_options *skel)
-> +{
-> +       test_opt->exprm_opt.kind = TCPOPT_EXP;
-> +       /* +1 for kind, +1 for kind-len, +2 for magic, +1 for flags, +1 for
-> +        * OPTION_MAX_DELACK_MAX, +1 FOR OPTION_RAND
-> +        */
-> +       test_opt->exprm_opt.len = 3 + TCP_BPF_EXPOPT_BASE_LEN;
-> +       test_opt->exprm_opt.magic = __bpf_htons(skel->rodata->test_magic);
-> +       test_opt->exprm_opt.data.flags = opt_flags;
-> +       test_opt->exprm_opt.data.max_delack_ms = exprm_max_delack_ms;
-> +       test_opt->exprm_opt.data.rand = exprm_rand;
-> +
-> +       test_opt->regular_opt.kind = skel->rodata->test_kind;
-> +       /* +1 for kind, +1 for kind-len, +1 for flags, +1 FOR
-> +        * OPTION_MAX_DELACK_MS, +1 FOR OPTION_RAND
-> +        */
-> +       test_opt->regular_opt.len = 5;
-> +       test_opt->regular_opt.data.flags = opt_flags;
-> +       test_opt->regular_opt.data.max_delack_ms = regular_max_delack_ms;
-> +       test_opt->regular_opt.data.rand = regular_rand;
-> +}
-> +
-> +static void check_opt_out(struct test_xdp_tcp_hdr_options *skel)
-> +{
-> +       struct bpf_test_option *opt_out;
-> +       __u32 duration = 0;
-> +
-> +       opt_out = &skel->bss->exprm_opt_out;
-> +       CHECK(opt_out->flags != opt_flags, "exprm flags",
-> +             "flags = 0x%x", opt_out->flags);
-> +       CHECK(opt_out->max_delack_ms != exprm_max_delack_ms, "exprm max_delack_ms",
-> +             "max_delack_ms = 0x%x", opt_out->max_delack_ms);
-> +       CHECK(opt_out->rand != exprm_rand, "exprm rand",
-> +             "rand = 0x%x", opt_out->rand);
-> +
-> +       opt_out = &skel->bss->regular_opt_out;
-> +       CHECK(opt_out->flags != opt_flags, "regular flags",
-> +             "flags = 0x%x", opt_out->flags);
-> +       CHECK(opt_out->max_delack_ms != regular_max_delack_ms, "regular max_delack_ms",
-> +             "max_delack_ms = 0x%x", opt_out->max_delack_ms);
-> +       CHECK(opt_out->rand != regular_rand, "regular rand",
-> +             "rand = 0x%x", opt_out->rand);
-> +}
-> +
-> +void test_xdp_tcp_hdr_options(void)
-> +{
-> +       int err, prog_fd, prog_err_path_fd, prog_invalid_pkt_fd;
-> +       struct xdp_ipv6_packet ipv6_pkt, invalid_pkt;
-> +       struct test_xdp_tcp_hdr_options *skel;
-> +       struct xdp_ipv4_packet ipv4_pkt;
-> +       struct xdp_test_opt test_opt;
-> +       __u32 duration, retval, size;
-> +       char buf[128];
-> +
-> +       /* Load XDP program to introspect */
-> +       skel = test_xdp_tcp_hdr_options__open_and_load();
-> +       if (CHECK(!skel, "skel open and load",
-> +                 "%s skeleton failed\n", __func__))
-> +               return;
-> +
-> +       prog_fd = bpf_program__fd(skel->progs._xdp_load_hdr_opt);
-> +
-> +       init_test_opt(&test_opt, skel);
-> +
-> +       /* Init the packets */
-> +       ipv4_pkt.pkt_v4 = pkt_v4;
-> +       ipv4_pkt.pkt_v4.tcp.doff += 3;
-> +       ipv4_pkt.test_opt = test_opt;
-> +
-> +       ipv6_pkt.pkt_v6 = pkt_v6;
-> +       ipv6_pkt.pkt_v6.tcp.doff += 3;
-> +       ipv6_pkt.test_opt = test_opt;
-> +
-> +       invalid_pkt.pkt_v6 = pkt_v6;
-> +       /* Set to an offset that will exceed the xdp data_end */
-> +       invalid_pkt.pkt_v6.tcp.doff += 4;
-> +       invalid_pkt.test_opt = test_opt;
-> +
-> +       /* Test on ipv4 packet */
-> +       err = bpf_prog_test_run(prog_fd, 1, &ipv4_pkt, sizeof(ipv4_pkt),
-> +                               buf, &size, &retval, &duration);
-> +       CHECK(err || retval != XDP_PASS,
-> +             "xdp_tcp_hdr_options ipv4", "err val %d, retval %d\n",
-> +             skel->bss->err_val, retval);
+> diff --git a/kernel/bpf/preload/iterators/Makefile b/kernel/bpf/preload/iterators/Makefile
+> index 28fa8c1440f4..cf549dab3e20 100644
+> --- a/kernel/bpf/preload/iterators/Makefile
+> +++ b/kernel/bpf/preload/iterators/Makefile
+> @@ -6,9 +6,11 @@ LLVM_STRIP ?= llvm-strip
+>  DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
+>  BPFTOOL ?= $(DEFAULT_BPFTOOL)
+>  LIBBPF_SRC := $(abspath ../../../../tools/lib/bpf)
+> -BPFOBJ := $(OUTPUT)/libbpf.a
+> -BPF_INCLUDE := $(OUTPUT)
+> -INCLUDES := -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../../../tools/lib)        \
+> +LIBBPF_OUTPUT := $(abspath $(OUTPUT))/libbpf
+> +LIBBPF_DESTDIR := $(LIBBPF_OUTPUT)
+> +LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)/include
+> +BPFOBJ := $(LIBBPF_OUTPUT)/libbpf.a
+> +INCLUDES := -I$(OUTPUT) -I$(LIBBPF_INCLUDE)                                   \
+>         -I$(abspath ../../../../tools/include/uapi)
+>  CFLAGS := -g -Wall
+>
+> @@ -44,13 +46,15 @@ $(OUTPUT)/iterators.bpf.o: iterators.bpf.c $(BPFOBJ) | $(OUTPUT)
+>                  -c $(filter %.c,$^) -o $@ &&                                 \
+>         $(LLVM_STRIP) -g $@
+>
+> -$(OUTPUT):
+> +$(OUTPUT) $(LIBBPF_OUTPUT) $(LIBBPF_INCLUDE):
+>         $(call msg,MKDIR,$@)
+> -       $(Q)mkdir -p $(OUTPUT)
+> +       $(Q)mkdir -p $@
+>
+> -$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)
+> +$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile)            \
+> +          | $(LIBBPF_OUTPUT) $(LIBBPF_INCLUDE)
 
-Shall we skip the following checks if the test_run fails?
+Would it make sense for libbpf's Makefile to create include and output
+directories on its own? We wouldn't need to have these order-only
+dependencies everywhere, right?
 
-> +       check_opt_out(skel);
-> +
-> +       /* Test on ipv6 packet */
-> +       err = bpf_prog_test_run(prog_fd, 1, &ipv6_pkt, sizeof(ipv6_pkt),
-> +                               buf, &size, &retval, &duration);
-> +       CHECK(err || retval != XDP_PASS,
-> +             "xdp_tcp_hdr_options ipv6", "err val %d, retval %d\n",
-> +             skel->bss->err_val, retval);
-> +       check_opt_out(skel);
-> +
-> +       /* Test error paths */
-> +       prog_err_path_fd =
-> +               bpf_program__fd(skel->progs._xdp_load_hdr_opt_err_paths);
-> +       err = bpf_prog_test_run(prog_err_path_fd, 1, &ipv6_pkt, sizeof(ipv6_pkt),
-> +                               buf, &size, &retval, &duration);
-> +       CHECK(err || retval != XDP_PASS,
-> +             "xdp_tcp_hdr_options err_path", "err val %d, retval %d\n",
-> +             skel->bss->err_val, retval);
-
-Ditto.
-
-> +
-> +       /* Test invalid packet */
-> +       prog_invalid_pkt_fd =
-> +               bpf_program__fd(skel->progs._xdp_load_hdr_opt_invalid_pkt);
-> +       err = bpf_prog_test_run(prog_invalid_pkt_fd, 1, &invalid_pkt,
-> +                               sizeof(invalid_pkt), buf, &size, &retval,
-> +                               &duration);
-> +       CHECK(err || retval != XDP_PASS,
-> +             "xdp_tcp_hdr_options invalid_pkt", "err val %d, retval %d\n",
-> +             skel->bss->err_val, retval);
-> +
-> +       test_xdp_tcp_hdr_options__destroy(skel);
-> +}
-
-[...]
+>         $(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)                         \
+> -                   OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
+> +                   OUTPUT=$(abspath $(dir $@))/ prefix=                       \
+> +                   DESTDIR=$(LIBBPF_DESTDIR) $(abspath $@) install_headers
+>
+>  $(DEFAULT_BPFTOOL):
+>         $(Q)$(MAKE) $(submake_extras) -C ../../../../tools/bpf/bpftool                        \
+> --
+> 2.30.2
+>
