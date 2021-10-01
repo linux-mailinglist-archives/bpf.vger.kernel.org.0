@@ -2,147 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF7041E951
-	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 11:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E1F41EB63
+	for <lists+bpf@lfdr.de>; Fri,  1 Oct 2021 13:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352574AbhJAJFq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 05:05:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhJAJFp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:05:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ADE061A51;
-        Fri,  1 Oct 2021 09:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633079041;
-        bh=iwd69jO+HUZ5Wr9iGcz1eQEUZyYDvXgW0N/7XTUzUms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=owffkWakkynFhh0RZ7OilXtduRA5POi9p25zNXAgUcF6GyG+F2s970xLfmME8gkf4
-         XSvX2yUzl3meXbMj6SdsglCB/Z8rZVkShLzFNnC5Cgb0j1ZgoWuDHBtDqOXXU5WBtY
-         bHn0f4oFJp9oVbupt+BuW4n4fMQoEv5ZkT7AmdcW8+IngA7Q1PNOgi9yBA6rl6LtHB
-         /KMcluDYSfunFmWzBq7s/98kXBUUPOKxIGOIoaAXuX9ERmRlA0R7MXUztCkKbPrAex
-         9O5y1UJ+MJNZ/mJ4Os0DeHpSbo4Vu/dF7yTh3qZH9l3XVJQyfIogd0IsPCm4DXr6Pa
-         iTkO8zbm3Jz6w==
-Date:   Fri, 1 Oct 2021 11:03:58 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        tirthendu.sarkar@intel.com
-Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <YVbO/kit/mjWTrv6@lore-desk>
-References: <cover.1631289870.git.lorenzo@kernel.org>
- <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CACAyw9-8t8RpJgJUTd7u6bOLnJ1xQsgK7z37QrL9T1FUaJ7WNQ@mail.gmail.com>
- <87v92jinv7.fsf@toke.dk>
- <CACAyw99S9v658UyiKz3ad4kja7rDNfYv+9VOXZHCUOtam_C8Wg@mail.gmail.com>
- <CAADnVQ+XXGUxzqMdbPMYf+t_ViDkqvGDdogrmv-wH-dckzujLw@mail.gmail.com>
- <20210929122229.1d0c4960@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87mtnvi0bc.fsf@toke.dk>
+        id S1353725AbhJALIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 07:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353721AbhJALIb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:08:31 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBBCC06177B
+        for <bpf@vger.kernel.org>; Fri,  1 Oct 2021 04:06:46 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id r11-20020a1c440b000000b0030cf0f01fbaso3375167wma.1
+        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 04:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=Ic8xXiFIaM5JGwOBFHZCQicrwrYtjcMu6SEU2TZ/HzU=;
+        b=xveUO6JABTX6wVw2mDKiysxksM8SH6FnuIPhIoGVMSaHIn6H0VD9NKBKFi+sOge3lN
+         J+k3GBgST1yZyd2ZsjRmG1Yzo17/kj6ISXX1WoMhqpVXcYkxo/6T6CM9JhcHjyd7qUOl
+         MhO4lqeNb3C+6WtpbOwfhT3UqYukYb+VXdrlPmchA8pr/eWa9DuPP7LCFTLiGlwEklXp
+         Gt2p+vk42HNGfSSqk4R8/gxL+fCDqE+gCjRiGvfndDdOjf/G7UfRziAm3yyPlGkV/g0A
+         N3c6l5+FfalAY3woJmPZj3CcHbUhz+WUevTW3lKIw+2uJOa2jBJxID/XRTyEzJdwRSY1
+         7oBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=Ic8xXiFIaM5JGwOBFHZCQicrwrYtjcMu6SEU2TZ/HzU=;
+        b=QjHtnAxmM7omnqkyoqVhVjeJbK49JOS1tC7XAgQ9YOhWUjcyytJgzGgye/bx3Wd8DG
+         gRQSOqXxH3uoE2rcCGzCmT33KtAl7TpuzNvkt8HJMM+zWYOV7Ftda4Ky3000zAnElPpQ
+         +WKYOXcBn5yQQoLuWdFea0m6V/ySuJ5F6bFSLWsBYTilT4QBSifrooEQUpVO/cwUY9DO
+         osMHl4RxlDRTOurTWBsWUr1MigcpO8R4Gt0+RjR/4s+NpgHRKrev+zZ54d2e6m7Y1knU
+         m1oJd41eRkyzSaRzPk84SXWWDvZJAYRNtYIBiOlvjm/5rrLfrKBWHlxeH/OvwmTxQ0fW
+         jlXw==
+X-Gm-Message-State: AOAM530LJqWRAigAgfhUCKUlgYfIAX8+J7JIYByBt0nsmZwIAzeg8LGy
+        54xrKERO+UyRn8ZB1Z6hKEHckA==
+X-Google-Smtp-Source: ABdhPJxbDoDy2kazexW//RNpVrkMlwjdEz2/ZLPKYlKUl3giJE+FrAoXmwQECe+3ot8yERe4gzizgA==
+X-Received: by 2002:a1c:7d44:: with SMTP id y65mr3728469wmc.181.1633086405139;
+        Fri, 01 Oct 2021 04:06:45 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.91.69])
+        by smtp.gmail.com with ESMTPSA id f15sm5221859wrd.44.2021.10.01.04.06.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 04:06:44 -0700 (PDT)
+Message-ID: <37d25d01-c6ad-4ff9-46e2-236c60369171@isovalent.com>
+Date:   Fri, 1 Oct 2021 12:06:43 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="88BAqEkjHIrKkCZm"
-Content-Disposition: inline
-In-Reply-To: <87mtnvi0bc.fsf@toke.dk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH bpf-next 6/9] bpf: iterators: install libbpf headers when
+ building
+Content-Language: en-US
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20210930113306.14950-1-quentin@isovalent.com>
+ <20210930113306.14950-7-quentin@isovalent.com>
+ <354d2a7b-3dfc-f1b2-e695-1b77d013c621@isovalent.com>
+In-Reply-To: <354d2a7b-3dfc-f1b2-e695-1b77d013c621@isovalent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+2021-09-30 13:17 UTC+0100 ~ Quentin Monnet <quentin@isovalent.com>
+> 2021-09-30 12:33 UTC+0100 ~ Quentin Monnet <quentin@isovalent.com>
+>> API headers from libbpf should not be accessed directly from the
+>> library's source directory. Instead, they should be exported with "make
+>> install_headers". Let's make sure that bpf/preload/iterators/Makefile
+>> installs the headers properly when building.
+> 
+> CI complains when trying to build
+> kernel/bpf/preload/iterators/iterators.o. I'll look more into this.
 
---88BAqEkjHIrKkCZm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+My error was in fact on the previous patch for kernel/preload/Makefile,
+where iterators.o is handled. The resulting Makefile in my v1 contained:
 
-> Jakub Kicinski <kuba@kernel.org> writes:
->=20
-> > On Wed, 29 Sep 2021 11:54:46 -0700 Alexei Starovoitov wrote:
-> >> I'm missing something. Why do we need a separate flush() helper?
-> >> Can't we do:
-> >> char buf[64], *p;
-> >> p =3D xdp_mb_pointer(ctx, flags, off, len, buf);
-> >> read/write p[]
-> >> if (p =3D=3D buf)
-> >>     xdp_store_bytes(ctx, off, buf, len, flags);
-> >
-> > Sure we can. That's what I meant by "leave the checking to the program".
-> > It's bike shedding at this point.
->=20
-> Yeah, let's discuss the details once we have a patch :)
->=20
-> -Toke
->=20
+	bpf_preload_umd-objs := iterators/iterators.o
+	bpf_preload_umd-userldlibs := $(LIBBPF_A) -lelf -lz
 
-Hi,
+	$(obj)/bpf_preload_umd: $(LIBBPF_A)
 
-I implemented the xdp_mb_pointer/xdp_mb_pointer_flush logic here (according=
- to
-current discussion):
-https://github.com/LorenzoBianconi/bpf-next/commit/a5c61c0fa6cb05bab8caebd9=
-6aca5fbbd9510867
+This declares a dependency on $(LIBBPF_A) for building the final
+bpf_preload_umd target, when iterators/iterators.o is linked against the
+libraries. It does not declare the dependency for iterators/iterators.o
+itself. So when we attempt to build the object file, libbpf has not been
+compiled yet (not an issue per se), and the API headers from libbpf have
+not been installed and made available to iterators.o, causing the build
+to fail.
 
-For the moment I have only defined two utility routines and I have not expo=
-rted
-them in ebpf helpers since I need to check what are missing bits in the ver=
-ifier
-code (but afaik this would be orthogonal with respect to the "helper code"):
-- bpf_xdp_pointer --> xdp_mb_pointer
-- bpf_xdp_copy_buf --> xdp_mb_pointer_flush
+Before this patch, there was no issue because the headers would be
+included directly from tools/lib/bpf, so they would always be present.
+I'll fix this by adding the relevant dependency, and send a v2.
 
-In order to test them I have defined two new ebpf helpers (they use
-bpf_xdp_pointer/bpf_xdp_copy_buf internally):
-- bpf_xdp_load_bytes
-- bpf_xdp_store_bytes
+As a side note, I couldn't reproduce the issue locally or in the VM for
+the selftests, I'm not sure why. I struggled to get helpful logs from
+the kernel CI (kernel build in non-verbose mode), so I ended up copying
+the CI infra (running on kernel-patches/bpf on GitHub) to my own GitHub
+repository to add debug info and do other runs without re-posting every
+time to the mailing list. In case anyone else is interested, I figured I
+might share the steps:
 
-In order to test bpf_xdp_load_bytes/bpf_xdp_store_bytes +
-bpf_xdp_pointer/bpf_xdp_copy_buf I added some selftests here:
-https://github.com/LorenzoBianconi/bpf-next/commit/5661a491a890c00db744f288=
-4b7ee3a6d0319384
+- Clone the linux repo on GitHub, push the bpf-next branch
+- Copy all files and directories from the kernel-patches/vmtest GitHub
+repo (including the .github directory) to the root of my linux repo, on
+my development branch.
+- Update the checks on "kernel-patches/bpf" repository name in
+.github/workflows/test.yaml, to avoid pulling new Linux sources and
+overwriting the files on my branch.
+- (Add as much build debug info as necessary.)
+- Push the branch to GitHub and open a PR against my own bpf-next
+branch. This should trigger the Action.
 
-Can you please check if the code above is aligned to current requirements o=
-r if
-it is missing something?
-If this code it is fine, I guess we have two option here:
-- integrate the commits above in xdp multi-buff series (posting v15) and wo=
-rk on
-  the verfier code in parallel (if xdp_mb_pointer helper is not required fr=
-om day0)
-- integrate verfier changes in xdp multi-buff series, drop bpf_xdp_load_byt=
-es
-  helper (probably we will still need bpf_xdp_store_bytes) and introduce
-  bpf_xdp_pointer as new ebpf helper.
+Or was there a simpler way to test my set on the CI, that I ignore?
 
-I am fine both ways. If we decide for the second option I would need some
-guidance on verifier changes since I am not so familiar with that code.
-
-Regards,
-Lorenzo
-
---88BAqEkjHIrKkCZm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYVbO/gAKCRA6cBh0uS2t
-rJ8JAP9D2kamqTzQ+NFNbMWI7liuogHec6NtoHZLAXQFh7SyugEAogNjLCtZ4jbP
-fYNYLuqqmWHBppry7h3u8tRUhjT9mwU=
-=FrL+
------END PGP SIGNATURE-----
-
---88BAqEkjHIrKkCZm--
+Quentin
