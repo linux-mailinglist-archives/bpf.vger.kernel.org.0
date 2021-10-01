@@ -2,460 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E9C41F73C
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 00:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76D241F751
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 00:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355844AbhJAWFU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 18:05:20 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40156 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1355857AbhJAWFR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 1 Oct 2021 18:05:17 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 191LsfGI002518
-        for <bpf@vger.kernel.org>; Fri, 1 Oct 2021 15:03:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=8ilL2Sp1Sy3MgZLUpbHqtSDa+22yjEC+ytfeIw7aaLo=;
- b=K+DY/W71xqmR2irzZnpmVbJLKYt3ATb/FsPrggXVnxR/Fnm+86tUDXlcNaqnxzl1ZcR5
- qYARBUyXlvwa6eiOm3DpXmV0NyuRFPZVTxOd0ByH4QAXXUFVVQWYV0UPxlsVYYi+FQvp
- yMZjYTMdZJW/1E9QC21thYIe+LOqQjcAEEI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3be8e70y4v-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 15:03:32 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 1 Oct 2021 15:03:29 -0700
-Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id 11BC5312DE5E; Fri,  1 Oct 2021 15:03:25 -0700 (PDT)
-From:   Joanne Koong <joannekoong@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <kafai@fb.com>, <netdev@vger.kernel.org>, <Kernel-team@fb.com>,
-        Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH bpf-next v1 3/3] bpf/selftests: Add xdp bpf_load_tcp_hdr_options tests
-Date:   Fri, 1 Oct 2021 14:58:58 -0700
-Message-ID: <20211001215858.1132715-4-joannekoong@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001215858.1132715-1-joannekoong@fb.com>
-References: <20211001215858.1132715-1-joannekoong@fb.com>
+        id S230220AbhJAWPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 18:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229727AbhJAWPB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:15:01 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10365C061775;
+        Fri,  1 Oct 2021 15:13:17 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id d131so6239019ybd.5;
+        Fri, 01 Oct 2021 15:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a92huAptXPQweEzjtK16RveRcK0JZxmlbQ8ugilsEtk=;
+        b=IOQRcu0rbN9H/Ani3wm82Ujnjmv3g/zSSFb7qEsWHR1c8EMSdglKUtNR2WPx8SmXhf
+         RaDrGz2MDxCDp3nXDsYW9alvhkK1xBdRh8wqkq7nxiNcDirTqjaEB021PK2ogNVdOFbg
+         se0MBbuWmTtjec2qJl+9F0DvSNJQyzCI1vjtIa2PitIGCECtbAQQveYGNQb7dShgT9N3
+         /b030AIGrKMaJVeUQcI7i4vC/m1OitFki/1+CbeHTOSNj7tTn6V9nVMuOP0FyRQygj8+
+         WXVkgLB06i1/Oxt9yYB6HdnnJtdDZ4IdRi2T1VBQ3NPj6aw9OQVbsHFHarDP5/hGTXYF
+         iCfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a92huAptXPQweEzjtK16RveRcK0JZxmlbQ8ugilsEtk=;
+        b=NZsmccdHYPfSLsUFWG1ZQdOdZJidhr32ecdbHbAscfWtbv+eqywQRON3pTi1LvgXGl
+         Cfr4l4WlHkVLbynH+Otq2Y204I9fEZ2HA79GSUjt5PyxDW4Byj/8O2pFomwFwE58NWo1
+         5ufFty3h22Y2psI4+YSg/n21q/iL6AMen61FqytuPGYk388uY3VRz19WiOhYHOOcFg52
+         BHu4zxfukPnVOYeic95ySb16ynK8IZ4eJS/cxMGzNyfEdHQEADm04n15ZKr/V+FBekh3
+         ijPjTWj5bjyVmgupKN+3dVCw/Jg9krPBMjd+JYwqZyccMzEyQvfnN+FeUhBGimV3OyOT
+         oTpA==
+X-Gm-Message-State: AOAM530ScW38Nw92IohzLWSsCsSZRkBHaqHQgSsi+QzlSEZGZl6SjNAB
+        z2scaVsU4RUB4i36vuuwcysfHL+wjQY8KgY4wCI=
+X-Google-Smtp-Source: ABdhPJx3P6kxgCYThY4dUqvvJNmGGj9ACz8Xm/t3mE6wtZIfu9I/qyFnJXsn+kdzJZhsAjLgmxEltQQFLd5U4zNt3tM=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr259566ybj.433.1633126396215;
+ Fri, 01 Oct 2021 15:13:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: 1VRnnXE6N3i7Aylk4bgUJD0ftmkyPdDT
-X-Proofpoint-ORIG-GUID: 1VRnnXE6N3i7Aylk4bgUJD0ftmkyPdDT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-01_05,2021-10-01_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- suspectscore=0 mlxscore=0 impostorscore=0 malwarescore=0 bulkscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110010154
-X-FB-Internal: deliver
+References: <20210930062948.1843919-1-memxor@gmail.com> <20210930062948.1843919-10-memxor@gmail.com>
+In-Reply-To: <20210930062948.1843919-10-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 1 Oct 2021 15:13:05 -0700
+Message-ID: <CAEf4BzYXFU+o-AKj_JP3_2VzAYHRtkyzO5Wu0BD7W=n9UHxe6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 9/9] bpf: selftests: Add selftests for module
+ kfunc support
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds tests for bpf_load_tcp_hdr_options used by xdp
-programs.
+On Wed, Sep 29, 2021 at 11:30 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> This adds selftests that tests the success and failure path for modules
+> kfuncs (in presence of invalid kfunc calls) for both libbpf and
+> gen_loader. It also adds a prog_test kfunc_btf_id_list so that we can
+> add module BTF ID set from bpf_testmod.
+>
+> This also introduces  a couple of test cases to verifier selftests for
+> validating whether we get an error or not depending on if invalid kfunc
+> call remains after elimination of unreachable instructions.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/btf.h                           |  2 +
+>  kernel/bpf/btf.c                              |  2 +
+>  net/bpf/test_run.c                            |  5 +-
+>  tools/testing/selftests/bpf/Makefile          |  8 ++--
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 23 +++++++++-
+>  .../selftests/bpf/prog_tests/ksyms_module.c   | 29 ++++++------
+>  .../bpf/prog_tests/ksyms_module_libbpf.c      | 28 +++++++++++
+>  .../selftests/bpf/progs/test_ksyms_module.c   | 46 ++++++++++++++-----
+>  tools/testing/selftests/bpf/verifier/calls.c  | 23 ++++++++++
+>  9 files changed, 135 insertions(+), 31 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_module_libbpf.c
+>
 
-test_xdp_tcp_hdr_options.c:
-- Tests ipv4 and ipv6 packets with TCPOPT_EXP and non-TCPOPT_EXP
-tcp options set. Verify that options can be parsed and loaded
-successfully.
-- Tests error paths: TCPOPT_EXP with invalid magic, option with
-invalid kind_len, non-existent option, invalid flags, option size
-smaller than kind_len, invalid packet
+[...]
 
-Signed-off-by: Joanne Koong <joannekoong@fb.com>
----
- .../bpf/prog_tests/xdp_tcp_hdr_options.c      | 158 ++++++++++++++
- .../bpf/progs/test_xdp_tcp_hdr_options.c      | 198 ++++++++++++++++++
- 2 files changed, 356 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_op=
-tions.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_tcp_hdr_op=
-tions.c
+> @@ -243,7 +244,9 @@ BTF_SET_END(test_sk_kfunc_ids)
+>
+>  bool bpf_prog_test_check_kfunc_call(u32 kfunc_id, struct module *owner)
+>  {
+> -       return btf_id_set_contains(&test_sk_kfunc_ids, kfunc_id);
+> +       if (btf_id_set_contains(&test_sk_kfunc_ids, kfunc_id))
+> +               return true;
+> +       return __bpf_prog_test_check_kfunc_call(kfunc_id, owner);
+>  }
+>
+>  static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index e1ce73be7a5b..df461699932d 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -174,6 +174,7 @@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_tes
+>         $(Q)$(RM) bpf_testmod/bpf_testmod.ko # force re-compilation
+>         $(Q)$(MAKE) $(submake_extras) -C bpf_testmod
+>         $(Q)cp bpf_testmod/bpf_testmod.ko $@
+> +       $(Q)$(RESOLVE_BTFIDS) -b $(VMLINUX_BTF) bpf_testmod.ko
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c=
- b/tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c
-new file mode 100644
-index 000000000000..bd77593fb2dd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "test_progs.h"
-+#include "network_helpers.h"
-+#include "test_tcp_hdr_options.h"
-+#include "test_xdp_tcp_hdr_options.skel.h"
-+
-+struct xdp_exprm_opt {
-+	__u8 kind;
-+	__u8 len;
-+	__u16 magic;
-+	struct bpf_test_option data;
-+} __packed;
-+
-+struct xdp_regular_opt {
-+	__u8 kind;
-+	__u8 len;
-+	struct bpf_test_option data;
-+} __packed;
-+
-+struct xdp_test_opt {
-+	struct xdp_exprm_opt exprm_opt;
-+	struct xdp_regular_opt regular_opt;
-+} __packed;
-+
-+struct xdp_ipv4_packet {
-+	struct ipv4_packet pkt_v4;
-+	struct xdp_test_opt test_opt;
-+} __packed;
-+
-+struct xdp_ipv6_packet {
-+	struct ipv6_packet pkt_v6;
-+	struct xdp_test_opt test_opt;
-+} __packed;
-+
-+static __u8 opt_flags =3D OPTION_MAX_DELACK_MS | OPTION_RAND;
-+static __u8 exprm_max_delack_ms =3D 12;
-+static __u8 regular_max_delack_ms =3D 21;
-+static __u8 exprm_rand =3D 0xfa;
-+static __u8 regular_rand =3D 0xce;
-+
-+static void init_test_opt(struct xdp_test_opt *test_opt,
-+			  struct test_xdp_tcp_hdr_options *skel)
-+{
-+	test_opt->exprm_opt.kind =3D TCPOPT_EXP;
-+	/* +1 for kind, +1 for kind-len, +2 for magic, +1 for flags, +1 for
-+	 * OPTION_MAX_DELACK_MAX, +1 FOR OPTION_RAND
-+	 */
-+	test_opt->exprm_opt.len =3D 3 + TCP_BPF_EXPOPT_BASE_LEN;
-+	test_opt->exprm_opt.magic =3D __bpf_htons(skel->rodata->test_magic);
-+	test_opt->exprm_opt.data.flags =3D opt_flags;
-+	test_opt->exprm_opt.data.max_delack_ms =3D exprm_max_delack_ms;
-+	test_opt->exprm_opt.data.rand =3D exprm_rand;
-+
-+	test_opt->regular_opt.kind =3D skel->rodata->test_kind;
-+	/* +1 for kind, +1 for kind-len, +1 for flags, +1 FOR
-+	 * OPTION_MAX_DELACK_MS, +1 FOR OPTION_RAND
-+	 */
-+	test_opt->regular_opt.len =3D 5;
-+	test_opt->regular_opt.data.flags =3D opt_flags;
-+	test_opt->regular_opt.data.max_delack_ms =3D regular_max_delack_ms;
-+	test_opt->regular_opt.data.rand =3D regular_rand;
-+}
-+
-+static void check_opt_out(struct test_xdp_tcp_hdr_options *skel)
-+{
-+	struct bpf_test_option *opt_out;
-+	__u32 duration =3D 0;
-+
-+	opt_out =3D &skel->bss->exprm_opt_out;
-+	CHECK(opt_out->flags !=3D opt_flags, "exprm flags",
-+	      "flags =3D 0x%x", opt_out->flags);
-+	CHECK(opt_out->max_delack_ms !=3D exprm_max_delack_ms, "exprm max_delac=
-k_ms",
-+	      "max_delack_ms =3D 0x%x", opt_out->max_delack_ms);
-+	CHECK(opt_out->rand !=3D exprm_rand, "exprm rand",
-+	      "rand =3D 0x%x", opt_out->rand);
-+
-+	opt_out =3D &skel->bss->regular_opt_out;
-+	CHECK(opt_out->flags !=3D opt_flags, "regular flags",
-+	      "flags =3D 0x%x", opt_out->flags);
-+	CHECK(opt_out->max_delack_ms !=3D regular_max_delack_ms, "regular max_d=
-elack_ms",
-+	      "max_delack_ms =3D 0x%x", opt_out->max_delack_ms);
-+	CHECK(opt_out->rand !=3D regular_rand, "regular rand",
-+	      "rand =3D 0x%x", opt_out->rand);
-+}
-+
-+void test_xdp_tcp_hdr_options(void)
-+{
-+	int err, prog_fd, prog_err_path_fd, prog_invalid_pkt_fd;
-+	struct xdp_ipv6_packet ipv6_pkt, invalid_pkt;
-+	struct test_xdp_tcp_hdr_options *skel;
-+	struct xdp_ipv4_packet ipv4_pkt;
-+	struct xdp_test_opt test_opt;
-+	__u32 duration, retval, size;
-+	char buf[128];
-+
-+	/* Load XDP program to introspect */
-+	skel =3D test_xdp_tcp_hdr_options__open_and_load();
-+	if (CHECK(!skel, "skel open and load",
-+		  "%s skeleton failed\n", __func__))
-+		return;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs._xdp_load_hdr_opt);
-+
-+	init_test_opt(&test_opt, skel);
-+
-+	/* Init the packets */
-+	ipv4_pkt.pkt_v4 =3D pkt_v4;
-+	ipv4_pkt.pkt_v4.tcp.doff +=3D 3;
-+	ipv4_pkt.test_opt =3D test_opt;
-+
-+	ipv6_pkt.pkt_v6 =3D pkt_v6;
-+	ipv6_pkt.pkt_v6.tcp.doff +=3D 3;
-+	ipv6_pkt.test_opt =3D test_opt;
-+
-+	invalid_pkt.pkt_v6 =3D pkt_v6;
-+	/* Set to an offset that will exceed the xdp data_end */
-+	invalid_pkt.pkt_v6.tcp.doff +=3D 4;
-+	invalid_pkt.test_opt =3D test_opt;
-+
-+	/* Test on ipv4 packet */
-+	err =3D bpf_prog_test_run(prog_fd, 1, &ipv4_pkt, sizeof(ipv4_pkt),
-+				buf, &size, &retval, &duration);
-+	CHECK(err || retval !=3D XDP_PASS,
-+	      "xdp_tcp_hdr_options ipv4", "err val %d, retval %d\n",
-+	      skel->bss->err_val, retval);
-+	check_opt_out(skel);
-+
-+	/* Test on ipv6 packet */
-+	err =3D bpf_prog_test_run(prog_fd, 1, &ipv6_pkt, sizeof(ipv6_pkt),
-+				buf, &size, &retval, &duration);
-+	CHECK(err || retval !=3D XDP_PASS,
-+	      "xdp_tcp_hdr_options ipv6", "err val %d, retval %d\n",
-+	      skel->bss->err_val, retval);
-+	check_opt_out(skel);
-+
-+	/* Test error paths */
-+	prog_err_path_fd =3D
-+		bpf_program__fd(skel->progs._xdp_load_hdr_opt_err_paths);
-+	err =3D bpf_prog_test_run(prog_err_path_fd, 1, &ipv6_pkt, sizeof(ipv6_p=
-kt),
-+				buf, &size, &retval, &duration);
-+	CHECK(err || retval !=3D XDP_PASS,
-+	      "xdp_tcp_hdr_options err_path", "err val %d, retval %d\n",
-+	      skel->bss->err_val, retval);
-+
-+	/* Test invalid packet */
-+	prog_invalid_pkt_fd =3D
-+		bpf_program__fd(skel->progs._xdp_load_hdr_opt_invalid_pkt);
-+	err =3D bpf_prog_test_run(prog_invalid_pkt_fd, 1, &invalid_pkt,
-+				sizeof(invalid_pkt), buf, &size, &retval,
-+				&duration);
-+	CHECK(err || retval !=3D XDP_PASS,
-+	      "xdp_tcp_hdr_options invalid_pkt", "err val %d, retval %d\n",
-+	      skel->bss->err_val, retval);
-+
-+	test_xdp_tcp_hdr_options__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_tcp_hdr_options.c=
- b/tools/testing/selftests/bpf/progs/test_xdp_tcp_hdr_options.c
-new file mode 100644
-index 000000000000..3fe6e1ebd78a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_tcp_hdr_options.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <errno.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#define BPF_PROG_TEST_TCP_HDR_OPTIONS
-+#include "test_tcp_hdr_options.h"
-+
-+struct bpf_test_option regular_opt_out;
-+struct bpf_test_option exprm_opt_out;
-+
-+const __u16 test_magic =3D 0xeB9F;
-+const __u8 test_kind =3D 0xB9;
-+
-+int err_val =3D 0;
-+
-+static void copy_opt_to_out(struct bpf_test_option *test_option, __u8 *d=
-ata)
-+{
-+	test_option->flags =3D data[0];
-+	test_option->max_delack_ms =3D data[1];
-+	test_option->rand =3D data[2];
-+}
-+
-+static int parse_xdp(struct xdp_md *xdp, __u64 *out_flags)
-+{
-+	void *data_end =3D (void *)(long)xdp->data_end;
-+	__u64 tcphdr_offset =3D 0, nh_off;
-+	void *data =3D (void *)(long)xdp->data;
-+	struct ethhdr *eth =3D data;
-+	int ret;
-+
-+	nh_off =3D sizeof(*eth);
-+	if (data + nh_off > data_end) {
-+		err_val =3D 1;
-+		return XDP_DROP;
-+	}
-+
-+	/* Calculate the offset to the tcp hdr */
-+	if (eth->h_proto =3D=3D __bpf_constant_htons(ETH_P_IPV6)) {
-+		tcphdr_offset =3D sizeof(struct ethhdr) +
-+			sizeof(struct ipv6hdr);
-+	} else if (eth->h_proto =3D=3D bpf_htons(ETH_P_IP)) {
-+		tcphdr_offset =3D sizeof(struct ethhdr) +
-+			sizeof(struct iphdr);
-+	} else {
-+		err_val =3D 2;
-+		return XDP_DROP;
-+	}
-+
-+	*out_flags =3D tcphdr_offset << BPF_LOAD_HDR_OPT_TCP_OFFSET_SHIFT;
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp")
-+int _xdp_load_hdr_opt(struct xdp_md *xdp)
-+{
-+	struct tcp_exprm_opt exprm_opt =3D { 0 };
-+	struct tcp_opt regular_opt =3D { 0 };
-+	__u64 flags =3D 0;
-+	int ret;
-+
-+	ret =3D parse_xdp(xdp, &flags);
-+	if (ret !=3D XDP_PASS)
-+		return ret;
-+
-+	/* Test TCPOPT_EXP */
-+	exprm_opt.kind =3D TCPOPT_EXP;
-+	exprm_opt.len =3D 4;
-+	exprm_opt.magic =3D __bpf_htons(test_magic);
-+	ret =3D bpf_load_hdr_opt(xdp, &exprm_opt,
-+			       sizeof(exprm_opt), flags);
-+	if (ret < 0) {
-+		err_val =3D 3;
-+		return XDP_DROP;
-+	}
-+
-+	copy_opt_to_out(&exprm_opt_out, exprm_opt.data);
-+
-+	/* Test non-TCP_OPT_EXP */
-+	regular_opt.kind =3D test_kind;
-+	ret =3D bpf_load_hdr_opt(xdp, &regular_opt,
-+			       sizeof(regular_opt), flags);
-+	if (ret < 0) {
-+		err_val =3D 4;
-+		return XDP_DROP;
-+	}
-+
-+	copy_opt_to_out(&regular_opt_out, regular_opt.data);
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp")
-+int _xdp_load_hdr_opt_err_paths(struct xdp_md *xdp)
-+{
-+	struct tcp_exprm_opt exprm_opt =3D { 0 };
-+	struct tcp_opt regular_opt =3D { 0 };
-+	__u64 flags =3D 0;
-+	int ret;
-+
-+	ret =3D parse_xdp(xdp, &flags);
-+	if (ret !=3D XDP_PASS)
-+		return ret;
-+
-+	/* Test TCPOPT_EXP with invalid magic */
-+	exprm_opt.kind =3D TCPOPT_EXP;
-+	exprm_opt.len =3D 4;
-+	exprm_opt.magic =3D __bpf_htons(test_magic + 1);
-+	ret =3D bpf_load_hdr_opt(xdp, &exprm_opt,
-+			       sizeof(exprm_opt), flags);
-+	if (ret !=3D -ENOMSG) {
-+		err_val =3D 3;
-+		return XDP_DROP;
-+	}
-+
-+	/* Test TCPOPT_EXP with 0 magic */
-+	exprm_opt.magic =3D 0;
-+	ret =3D bpf_load_hdr_opt(xdp, &exprm_opt,
-+			       sizeof(exprm_opt), flags);
-+	if (ret !=3D -ENOMSG) {
-+		err_val =3D 4;
-+		return XDP_DROP;
-+	}
-+
-+	exprm_opt.magic =3D __bpf_htons(test_magic);
-+
-+	/* Test TCPOPT_EXP with invalid kind length */
-+	exprm_opt.len =3D 5;
-+	ret =3D bpf_load_hdr_opt(xdp, &exprm_opt,
-+			       sizeof(exprm_opt), flags);
-+	if (ret !=3D -EINVAL) {
-+		err_val =3D 5;
-+		return XDP_DROP;
-+	}
-+
-+	/* Test that non-existent option is not found */
-+	regular_opt.kind =3D test_kind + 1;
-+	ret =3D bpf_load_hdr_opt(xdp, &regular_opt,
-+			       sizeof(regular_opt), flags);
-+	if (ret !=3D -ENOMSG) {
-+		err_val =3D 6;
-+		return XDP_DROP;
-+	}
-+
-+	/* Test invalid flags */
-+	regular_opt.kind =3D test_kind;
-+	ret =3D bpf_load_hdr_opt(xdp, &regular_opt, sizeof(regular_opt),
-+			       flags | BPF_LOAD_HDR_OPT_TCP_SYN);
-+	if (ret !=3D -EINVAL) {
-+		err_val =3D 7;
-+		return XDP_DROP;
-+	}
-+
-+	/* Test non-TCP_OPT_EXP with option size smaller than kind len */
-+	ret =3D bpf_load_hdr_opt(xdp, &regular_opt,
-+			       sizeof(regular_opt) - 2, flags);
-+	if (ret !=3D -ENOSPC) {
-+		err_val =3D 8;
-+		return XDP_DROP;
-+	}
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp")
-+int _xdp_load_hdr_opt_invalid_pkt(struct xdp_md *xdp)
-+{
-+	struct tcp_exprm_opt exprm_opt =3D { 0 };
-+	__u64 flags =3D 0;
-+	int ret;
-+
-+	ret =3D parse_xdp(xdp, &flags);
-+	if (ret !=3D XDP_PASS)
-+		return ret;
-+
-+	exprm_opt.kind =3D TCPOPT_EXP;
-+	exprm_opt.len =3D 4;
-+	exprm_opt.magic =3D __bpf_htons(test_magic);
-+	ret =3D bpf_load_hdr_opt(xdp, &exprm_opt,
-+			       sizeof(exprm_opt), flags);
-+	if (ret !=3D -EINVAL) {
-+		err_val =3D 3;
-+		return XDP_DROP;
-+	}
-+
-+	return XDP_PASS;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.30.2
+This should be done by kernel Makefiles, which are used to build
+bpf_testmod.ko. If this is not happening, something is wrong and let's
+try to figure out what.
 
+>
+>  $(OUTPUT)/test_stub.o: test_stub.c $(BPFOBJ)
+>         $(call msg,CC,,$@)
+> @@ -315,8 +316,9 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
+>                 linked_vars.skel.h linked_maps.skel.h
+>
+>  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
+> -       test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
+> -       trace_vprintk.c
+> +       test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c
+> +# Generate both light skeleton and libbpf skeleton for these
+> +LSKELS_EXTRA := test_ksyms_module.c
+>  SKEL_BLACKLIST += $$(LSKELS)
+>
+
+[...]
+
+> +#define X_0(x)
+> +#define X_1(x) x X_0(x)
+> +#define X_2(x) x X_1(x)
+> +#define X_3(x) x X_2(x)
+> +#define X_4(x) x X_3(x)
+> +#define X_5(x) x X_4(x)
+> +#define X_6(x) x X_5(x)
+> +#define X_7(x) x X_6(x)
+> +#define X_8(x) x X_7(x)
+> +#define X_9(x) x X_8(x)
+> +#define X_10(x) x X_9(x)
+> +#define REPEAT_256(Y) X_2(X_10(X_10(Y))) X_5(X_10(Y)) X_6(Y)
+
+this is impressive, I can even sort of read it :)
+
+> +
+>  extern const int bpf_testmod_ksym_percpu __ksym;
+> +extern void bpf_testmod_test_mod_kfunc(int i) __ksym;
+> +extern void bpf_testmod_invalid_mod_kfunc(void) __ksym __weak;
+>
+> -int out_mod_ksym_global = 0;
+> -bool triggered = false;
+> +int out_bpf_testmod_ksym = 0;
+> +const volatile int x = 0;
+>
+> -SEC("raw_tp/sys_enter")
+> -int handler(const void *ctx)
+> +SEC("tc")
+
+Did you switch to tc because kfuncs are not allowed from raw_tp
+programs? Or is there some other reason?
+
+> +int load(struct __sk_buff *skb)
+>  {
+> -       int *val;
+> -       __u32 cpu;
+> -
+> -       val = (int *)bpf_this_cpu_ptr(&bpf_testmod_ksym_percpu);
+> -       out_mod_ksym_global = *val;
+> -       triggered = true;
+> +       /* This will be kept by clang, but removed by verifier. Since it is
+> +        * marked as __weak, libbpf and gen_loader don't error out if BTF ID
+> +        * is not found for it, instead imm and off is set to 0 for it.
+> +        */
+> +       if (x)
+> +               bpf_testmod_invalid_mod_kfunc();
+> +       bpf_testmod_test_mod_kfunc(42);
+> +       out_bpf_testmod_ksym = *(int *)bpf_this_cpu_ptr(&bpf_testmod_ksym_percpu);
+> +       return 0;
+> +}
+>
+
+[...]
