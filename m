@@ -2,138 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539BB41F94C
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 04:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8110C41F98A
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 05:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbhJBCJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 22:09:34 -0400
-Received: from mga17.intel.com ([192.55.52.151]:56313 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232278AbhJBCJe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 22:09:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="205789257"
-X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="205789257"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 19:07:49 -0700
-X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="619627588"
-Received: from rli9-mobl1.ccr.corp.intel.com ([10.249.172.70])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 19:07:42 -0700
-Date:   Sat, 2 Oct 2021 10:07:37 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kbuild-all@lists.01.org,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Zhang, Qi Z" <qi.z.zhang@intel.com>
-Subject: Re: [kbuild-all] Re: [PATCH bpf-next v3 06/10] xsk: propagate
- napi_id to XDP socket Rx path
-Message-ID: <20211002020737.GE26462@rli9-MOBL1.ccr.corp.intel.com>
-References: <20201119083024.119566-7-bjorn.topel@gmail.com>
- <202109300212.l6Ky1gNu-lkp@intel.com>
- <CAJ8uoz3g6wzkTYRb4qq4aj+KDVGUfyZ6O6NkMK_t-EBp07igOg@mail.gmail.com>
+        id S229819AbhJBD60 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 23:58:26 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51176 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229752AbhJBD6Z (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 Oct 2021 23:58:25 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1922Ijsh016511
+        for <bpf@vger.kernel.org>; Fri, 1 Oct 2021 20:56:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=v4VlbJUlOtbCkm/Jjjr7WSmc2faB4aS3L6pS5XuqXGo=;
+ b=E5qeshQ6AJDVkkjlZs2T32f5DOBTWsyZRHqHIAM5iplrejq3vE/Kp1cwLzC3wwAFuXDu
+ 33+RVUGQa9BqcjqUqkUm1A6w8kDPPe+QM4maLXtRNK4rBEcgxFPN/+DsaED1fj27N5V2
+ U0FKQrQomdVxNLonI+aQkhvfN1P0epIirxg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bee5xgcmc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 01 Oct 2021 20:56:40 -0700
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Fri, 1 Oct 2021 20:56:39 -0700
+Received: by devbig577.ftw3.facebook.com (Postfix, from userid 187975)
+        id E49A9935C0F6; Fri,  1 Oct 2021 20:56:28 -0700 (PDT)
+From:   Jie Meng <jmeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     Jie Meng <jmeng@fb.com>
+Subject: [PATCH v2 bpf-next] bpf,x64: Save bytes for DIV by reducing reg copies
+Date:   Fri, 1 Oct 2021 20:56:26 -0700
+Message-ID: <20211002035626.2041910-1-jmeng@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ8uoz3g6wzkTYRb4qq4aj+KDVGUfyZ6O6NkMK_t-EBp07igOg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: BOel-7MGuZ0T7r8p3kWx6CPvy4PEJr21
+X-Proofpoint-ORIG-GUID: BOel-7MGuZ0T7r8p3kWx6CPvy4PEJr21
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-02_01,2021-10-01_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ mlxlogscore=775 adultscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110020025
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 08:04:06AM +0200, Magnus Karlsson wrote:
-> On Wed, Sep 29, 2021 at 8:37 PM kernel test robot <lkp@intel.com> wrote:
-> >
-> > Hi "Björn,
-> >
-> > I love your patch! Yet something to improve:
-> >
-> > [auto build test ERROR on 4e99d115d865d45e17e83478d757b58d8fa66d3c]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/Bj-rn-T-pel/Introduce-preferred-busy-polling/20210929-234934
-> > base:   4e99d115d865d45e17e83478d757b58d8fa66d3c
-> > config: um-kunit_defconfig (attached as .config)
-> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         # https://github.com/0day-ci/linux/commit/f481c00164924dd5d782a92cc67897cc7f804502
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Bj-rn-T-pel/Introduce-preferred-busy-polling/20210929-234934
-> >         git checkout f481c00164924dd5d782a92cc67897cc7f804502
-> >         # save the attached .config to linux build tree
-> >         mkdir build_dir
-> >         make W=1 O=build_dir ARCH=um SHELL=/bin/bash
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    cc1: warning: arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
-> >    In file included from fs/select.c:32:
-> >    include/net/busy_poll.h: In function 'sk_mark_napi_id_once':
-> > >> include/net/busy_poll.h:150:36: error: 'const struct sk_buff' has no member named 'napi_id'
-> >      150 |  __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
-> >          |                                    ^~
-> >
-> >
-> > vim +150 include/net/busy_poll.h
-> >
-> >    145
-> >    146  /* variant used for unconnected sockets */
-> >    147  static inline void sk_mark_napi_id_once(struct sock *sk,
-> >    148                                          const struct sk_buff *skb)
-> >    149  {
-> >  > 150          __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
-> >    151  }
-> >    152
-> 
-> It seems that the robot tested an old commit and that this was already
-> fixed by Daniel 10 months ago. Slow mail delivery, a robot glitch, or
-> am I missing something?
-sorry for the noise, we got storage crash and it seems to have old data
-back in test queue after recovery. We will do cleanup to avoid this kind
-of old commit being tested.
+Instead of unconditionally performing push/pop on rax/rdx in case of
+division/modulo, we can save a few bytes in case of dest register
+being either BPF r0 (rax) or r3 (rdx) since the result is written in
+there anyway.
 
-> 
-> commit ba0581749fec389e55c9d761f2716f8fcbefced5
-> Author: Daniel Borkmann <daniel@iogearbox.net>
-> Date:   Tue Dec 1 15:22:59 2020 +0100
-> 
->     net, xdp, xsk: fix __sk_mark_napi_id_once napi_id error
-> 
->     Stephen reported the following build error for !CONFIG_NET_RX_BUSY_POLL
->     built kernels:
-> 
->       In file included from fs/select.c:32:
->       include/net/busy_poll.h: In function 'sk_mark_napi_id_once':
->       include/net/busy_poll.h:150:36: error: 'const struct sk_buff'
-> has no member named 'napi_id'
->         150 |  __sk_mark_napi_id_once_xdp(sk, skb->napi_id);
->             |                                    ^~
-> 
->     Fix it by wrapping a CONFIG_NET_RX_BUSY_POLL around the helpers.
-> 
->     Fixes: b02e5a0ebb17 ("xsk: Propagate napi_id to XDP socket Rx path")
->     Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
->     Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
->     Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->     Cc: Björn Töpel <bjorn.topel@intel.com>
->     Link: https://lore.kernel.org/linux-next/20201201190746.7d3357fb@canb.auug.org.au
-> 
-> 
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+Also, we do not need to copy src to r11 unless src is either rax, rdx
+or an immediate.
+
+For example, before the patch:
+  22:   push   %rax
+  23:   push   %rdx
+  24:   mov    %rsi,%r11
+  27:   xor    %edx,%edx
+  29:   div    %r11
+  2c:   mov    %rax,%r11
+  2f:   pop    %rdx
+  30:   pop    %rax
+  31:   mov    %r11,%rax
+  34:   leaveq
+  35:   retq
+
+After:
+  22:   push   %rdx
+  23:   xor    %edx,%edx
+  25:   div    %rsi
+  28:   pop    %rdx
+  29:   leaveq
+  2a:   retq
+
+Signed-off-by: Jie Meng <jmeng@fb.com>
+---
+ arch/x86/net/bpf_jit_comp.c                | 71 +++++++++++++---------
+ tools/testing/selftests/bpf/verifier/jit.c | 47 ++++++++++++++
+ 2 files changed, 89 insertions(+), 29 deletions(-)
+
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 20d2d6a1f9de..346b4131d496 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1028,19 +1028,30 @@ static int do_jit(struct bpf_prog *bpf_prog, int =
+*addrs, u8 *image,
+ 		case BPF_ALU64 | BPF_MOD | BPF_X:
+ 		case BPF_ALU64 | BPF_DIV | BPF_X:
+ 		case BPF_ALU64 | BPF_MOD | BPF_K:
+-		case BPF_ALU64 | BPF_DIV | BPF_K:
+-			EMIT1(0x50); /* push rax */
+-			EMIT1(0x52); /* push rdx */
+-
+-			if (BPF_SRC(insn->code) =3D=3D BPF_X)
+-				/* mov r11, src_reg */
+-				EMIT_mov(AUX_REG, src_reg);
+-			else
++		case BPF_ALU64 | BPF_DIV | BPF_K: {
++			bool is64 =3D BPF_CLASS(insn->code) =3D=3D BPF_ALU64;
++
++			if (dst_reg !=3D BPF_REG_0)
++				EMIT1(0x50); /* push rax */
++			if (dst_reg !=3D BPF_REG_3)
++				EMIT1(0x52); /* push rdx */
++
++			if (BPF_SRC(insn->code) =3D=3D BPF_X) {
++				if (src_reg =3D=3D BPF_REG_0 ||
++				    src_reg =3D=3D BPF_REG_3) {
++					/* mov r11, src_reg */
++					EMIT_mov(AUX_REG, src_reg);
++					src_reg =3D AUX_REG;
++				}
++			} else {
+ 				/* mov r11, imm32 */
+ 				EMIT3_off32(0x49, 0xC7, 0xC3, imm32);
++				src_reg =3D AUX_REG;
++			}
+=20
+-			/* mov rax, dst_reg */
+-			EMIT_mov(BPF_REG_0, dst_reg);
++			if (dst_reg !=3D BPF_REG_0)
++				/* mov rax, dst_reg */
++				emit_mov_reg(&prog, is64, BPF_REG_0, dst_reg);
+=20
+ 			/*
+ 			 * xor edx, edx
+@@ -1048,26 +1059,28 @@ static int do_jit(struct bpf_prog *bpf_prog, int =
+*addrs, u8 *image,
+ 			 */
+ 			EMIT2(0x31, 0xd2);
+=20
+-			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
+-				/* div r11 */
+-				EMIT3(0x49, 0xF7, 0xF3);
+-			else
+-				/* div r11d */
+-				EMIT3(0x41, 0xF7, 0xF3);
+-
+-			if (BPF_OP(insn->code) =3D=3D BPF_MOD)
+-				/* mov r11, rdx */
+-				EMIT3(0x49, 0x89, 0xD3);
+-			else
+-				/* mov r11, rax */
+-				EMIT3(0x49, 0x89, 0xC3);
+-
+-			EMIT1(0x5A); /* pop rdx */
+-			EMIT1(0x58); /* pop rax */
+-
+-			/* mov dst_reg, r11 */
+-			EMIT_mov(dst_reg, AUX_REG);
++			if (is64)
++				EMIT1(add_1mod(0x48, src_reg));
++			else if (is_ereg(src_reg))
++				EMIT1(add_1mod(0x40, src_reg));
++			/* div src_reg */
++			EMIT2(0xF7, add_1reg(0xF0, src_reg));
++
++			if (BPF_OP(insn->code) =3D=3D BPF_MOD &&
++			    dst_reg !=3D BPF_REG_3)
++				/* mov dst_reg, rdx */
++				emit_mov_reg(&prog, is64, dst_reg, BPF_REG_3);
++			else if (BPF_OP(insn->code) =3D=3D BPF_DIV &&
++				 dst_reg !=3D BPF_REG_0)
++				/* mov dst_reg, rax */
++				emit_mov_reg(&prog, is64, dst_reg, BPF_REG_0);
++
++			if (dst_reg !=3D BPF_REG_3)
++				EMIT1(0x5A); /* pop rdx */
++			if (dst_reg !=3D BPF_REG_0)
++				EMIT1(0x58); /* pop rax */
+ 			break;
++		}
+=20
+ 		case BPF_ALU | BPF_MUL | BPF_K:
+ 		case BPF_ALU64 | BPF_MUL | BPF_K:
+diff --git a/tools/testing/selftests/bpf/verifier/jit.c b/tools/testing/s=
+elftests/bpf/verifier/jit.c
+index eedcb752bf70..79021c30e51e 100644
+--- a/tools/testing/selftests/bpf/verifier/jit.c
++++ b/tools/testing/selftests/bpf/verifier/jit.c
+@@ -102,6 +102,53 @@
+ 	.result =3D ACCEPT,
+ 	.retval =3D 2,
+ },
++{
++	"jit: various div tests",
++	.insns =3D {
++	BPF_LD_IMM64(BPF_REG_2, 0xefeffeULL),
++	BPF_LD_IMM64(BPF_REG_0, 0xeeff0d413122ULL),
++	BPF_LD_IMM64(BPF_REG_1, 0xfefeeeULL),
++	BPF_ALU64_REG(BPF_DIV, BPF_REG_0, BPF_REG_1),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_3, 0xeeff0d413122ULL),
++	BPF_ALU64_IMM(BPF_DIV, BPF_REG_3, 0xfefeeeULL),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_2, 0xaa93ULL),
++	BPF_ALU64_IMM(BPF_MOD, BPF_REG_1, 0xbeefULL),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_1, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_1, 0xfefeeeULL),
++	BPF_LD_IMM64(BPF_REG_3, 0xbeefULL),
++	BPF_ALU64_REG(BPF_MOD, BPF_REG_1, BPF_REG_3),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_1, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_2, 0x5ee1dULL),
++	BPF_LD_IMM64(BPF_REG_1, 0xfefeeeULL),
++	BPF_LD_IMM64(BPF_REG_3, 0x2bULL),
++	BPF_ALU32_REG(BPF_DIV, BPF_REG_1, BPF_REG_3),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_1, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_ALU32_REG(BPF_DIV, BPF_REG_1, BPF_REG_1),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_ALU64_REG(BPF_MOD, BPF_REG_2, BPF_REG_2),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_2, 0, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_MOV64_IMM(BPF_REG_0, 2),
++	BPF_EXIT_INSN(),
++	},
++	.result =3D ACCEPT,
++	.retval =3D 2,
++},
+ {
+ 	"jit: jsgt, jslt",
+ 	.insns =3D {
+--=20
+2.30.2
+
