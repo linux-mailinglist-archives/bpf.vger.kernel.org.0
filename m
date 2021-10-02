@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A5C41FE0C
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 22:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990B841FE11
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 22:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbhJBUch (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Oct 2021 16:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        id S233981AbhJBUmL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Oct 2021 16:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233967AbhJBUcg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 2 Oct 2021 16:32:36 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC7FC0613EC
-        for <bpf@vger.kernel.org>; Sat,  2 Oct 2021 13:30:50 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id y141so15242959vsy.5
-        for <bpf@vger.kernel.org>; Sat, 02 Oct 2021 13:30:50 -0700 (PDT)
+        with ESMTP id S229503AbhJBUmL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Oct 2021 16:42:11 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D93C061714
+        for <bpf@vger.kernel.org>; Sat,  2 Oct 2021 13:40:25 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id s137so5941059vke.11
+        for <bpf@vger.kernel.org>; Sat, 02 Oct 2021 13:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=R6q93+UAArKwuO+eqr6jdH/wpvGlluXnePii2ySrFFg=;
-        b=a0bLgPcXFMoQrofCdVVhdbLV9nxsolZYem1+Xq7GKC0Jd8jg8vEwrM44eZDxualQdM
-         S0PykCEc7iFsrCeNxe5tF9p8wWmO6C87OqMNx4gQ4W1z5poBotITricDIszIGWD4lyqO
-         F9H+y/29BLlvVROlnC4yzf6pU/Hjo7rh6K2OpL8R9D77CVkBrnLgyFogMYVlTUlf2ljL
-         jRaOO5KKMCv8hdHfhk1c1lg/VRdF6XqAxdraqGt1x7RA8lNMfTxEK/aCbgt8Gq0EzgLR
-         bTG3meHGED4lyMm/yk8iBLuZk88Vce5ffJpCVWY9mkCLdUu/+TAD94H5N0y32hBaH+hW
-         fKAA==
+        bh=LNIVK0kO4OyLgbBlEEKag1wUjDkN0DCQynWh6c8ag18=;
+        b=A1H3NecD+cHXG6G5gXmA+fxHVmmvx5TKaiI04gPvAbZvfC7HyeSnYzl6xADuqhHIeC
+         XAuZKbBYqFMpbukQMPtggToY+uLmrPujXELFglVjFNuJLUzH3Gn/WZMAY2cF/epQWsYt
+         m5k3nVCb5f04t8HtUyUBo7zPw4MpIgJ7pWgkAsoFTJ0VvjEgIpKLdNi5Wneouf3YHEBe
+         QhPOIx7AJaJtWbrTCeCqhPOVY5XXF3bgBDYeRqvNBjAvN7RJqhrUOSOGG2ifE2zrd2gl
+         zev+LDAYc+oO45zrcrsX7RfQI0nd4I9tlsbn5fEflJSF1tFZMZoUjkhz30tLud6azDg7
+         GeFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=R6q93+UAArKwuO+eqr6jdH/wpvGlluXnePii2ySrFFg=;
-        b=5p7NbnBJokcXRGymtruf9XQKC9p3MADSKmDIfLWgSILpaluIc7RjhFGqpkDP+mWAw+
-         n5emPw4z4vgnAjBdBDjjsMDyUYCNxTViJ4WHqfHYIK+G0beyxv0fxdaO3SOHByswWJIl
-         sLzRfiqHObPvUXFJHVyH5xeDvnLB0w/8s0rqvE4ro9mejGesH8RyfpiUt/FBPHx034j9
-         MHMuo09S2aIW4rx+F+zmF9lXZzfBoDdxsumjwU10lyWTBwVbSpsg6pzDu/Fxn7oqwMuY
-         B11PY0KM0ahvlDP2k6Xn+TeZU+fqyXFUdxuMhl7r4p5J1ndMCRvGFun9HG8/ctU+OVOJ
-         Dxnw==
-X-Gm-Message-State: AOAM531X8/qYKsvKHwiNZFBIHGcX6NzBsfFRxPgTgYenyZcStonihdSb
-        AFLMLyc2nEZ5TunSq5Q1hLvXvcf4t7EJCThpWXfpEA==
-X-Google-Smtp-Source: ABdhPJwqPHlcaksiGhKAcCAuWy+rJPOgtZGIjmNlrYWtLA8M/9O6RmcmNSVawWnhFdQ+Se4ZA+MssZjnZ9DUYT8S9/Y=
-X-Received: by 2002:a67:d08f:: with SMTP id s15mr9258822vsi.54.1633206649819;
- Sat, 02 Oct 2021 13:30:49 -0700 (PDT)
+        bh=LNIVK0kO4OyLgbBlEEKag1wUjDkN0DCQynWh6c8ag18=;
+        b=HKHsx3AIBvLLr5EmQN5s4yA9VUaycb7CS7ZRyYOnyx9zJ6VN3yg051ape8LwbYzGUN
+         vzfi3TPyBzetrNauHXRP5k2o/eSQscCJmUEkD0qL13p+IeElZuKxdxj25rZ1Au7ZsCTi
+         PmE1kRge1AASDkyqdueojWwlXmMDWcAV/qjNg/AeIQPcAckMqqb6kwHgqgPtfLHNTQVp
+         O0crNFdhnwS6ooIUV+HrUoit1rwiawDvIQj3OvJv44XsdI1ozYICytaJbXfs4dqRcou4
+         oGSz+T/8i1Z7RCXBhcHfAbeOzMfDHzDD0oIjQZfDnIp+bA7MUMehv8GUpgY2j9PiT7Mx
+         o3fA==
+X-Gm-Message-State: AOAM530hV4eghsKQM1oY6bpSzSYEt63R5WgzRomB48wStfKFI+gkypuS
+        gTv9bEB6yX4uOwucGvihu9jZy/+w8ABeCOU9OgyBWIHjfR2OaQqb
+X-Google-Smtp-Source: ABdhPJzsEm7guaAFJZfKI6JguP01/GHgS5JO3A/evzbqNymBFJ96bMKuppzMcQHHKqZkFoGUH6x93zvuV+dE2/9RkDk=
+X-Received: by 2002:a1f:cdc7:: with SMTP id d190mr5318066vkg.1.1633207224300;
+ Sat, 02 Oct 2021 13:40:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001110856.14730-1-quentin@isovalent.com> <20211001110856.14730-8-quentin@isovalent.com>
- <CAEf4BzaOXUgiDwsTFhWKwKm=05qTjQCyXRB6a=n_kdCgSdAZ6A@mail.gmail.com>
-In-Reply-To: <CAEf4BzaOXUgiDwsTFhWKwKm=05qTjQCyXRB6a=n_kdCgSdAZ6A@mail.gmail.com>
+References: <20211001110856.14730-1-quentin@isovalent.com> <CAEf4Bza+C5cNJbvw_n_pR_mVL0rPH2VkZd-AJMx78Fp_m+CpRQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bza+C5cNJbvw_n_pR_mVL0rPH2VkZd-AJMx78Fp_m+CpRQ@mail.gmail.com>
 From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Sat, 2 Oct 2021 21:30:38 +0100
-Message-ID: <CACdoK4JHs+BRv_0WYqa+RO_XXsSg4J-xCpEErLD7XLhhMwVq5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 7/9] samples/bpf: install libbpf headers when building
+Date:   Sat, 2 Oct 2021 21:40:13 +0100
+Message-ID: <CACdoK4LU-uigbtQw63Yacd_AOzv+_fWuhL-ur20GyqFbE4doqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/9] install libbpf headers when using the library
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,40 +60,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2 Oct 2021 at 00:22, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Sat, 2 Oct 2021 at 00:05, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
 > On Fri, Oct 1, 2021 at 4:09 AM Quentin Monnet <quentin@isovalent.com> wrote:
 > >
-> > API headers from libbpf should not be accessed directly from the source
-> > directory. Instead, they should be exported with "make install_headers".
-> > Make sure that samples/bpf/Makefile installs the headers properly when
-> > building.
+> > Libbpf is used at several locations in the repository. Most of the time,
+> > the tools relying on it build the library in its own directory, and include
+> > the headers from there. This works, but this is not the cleanest approach.
+> > It generates objects outside of the directory of the tool which is being
+> > built, and it also increases the risk that developers include a header file
+> > internal to libbpf, which is not supposed to be exposed to user
+> > applications.
 > >
-> > The object compiled from and exported by libbpf are now placed into a
-> > subdirectory of sample/bpf/ instead of remaining in tools/lib/bpf/. We
-> > attempt to remove this directory on "make clean". However, the "clean"
-> > target re-enters the samples/bpf/ directory from the root of the
-> > repository ("$(MAKE) -C ../../ M=$(CURDIR) clean"), in such a way that
-> > $(srctree) and $(src) are not defined, making it impossible to use
-> > $(LIBBPF_OUTPUT) and $(LIBBPF_DESTDIR) in the recipe. So we only attempt
-> > to clean $(CURDIR)/libbpf, which is the default value.
+> > This set adjusts all involved Makefiles to make sure that libbpf is built
+> > locally (with respect to the tool's directory or provided build directory),
+> > and by ensuring that "make install_headers" is run from libbpf's Makefile
+> > to export user headers properly.
 > >
-> > We also change the output directory for bpftool, to place the generated
-> > objects under samples/bpf/bpftool/ instead of building in bpftool's
-> > directory directly. Doing so, we make sure bpftool reuses the libbpf
-> > library previously compiled and installed.
-
-> > @@ -268,16 +272,28 @@ all:
-> >  clean:
-> >         $(MAKE) -C ../../ M=$(CURDIR) clean
-> >         @find $(CURDIR) -type f -name '*~' -delete
-> > +       @/bin/rm -rf $(CURDIR)/libbpf $(CURDIR)/bpftool
+> > This comes at a cost: given that the libbpf was so far mostly compiled in
+> > its own directory by the different components using it, compiling it once
+> > would be enough for all those components. With the new approach, each
+> > component compiles its own version. To mitigate this cost, efforts were
+> > made to reuse the compiled library when possible:
+> >
+> > - Make the bpftool version in samples/bpf reuse the library previously
+> >   compiled for the selftests.
+> > - Make the bpftool version in BPF selftests reuse the library previously
+> >   compiled for the selftests.
+> > - Similarly, make resolve_btfids in BPF selftests reuse the same compiled
+> >   library.
+> > - Similarly, make runqslower in BPF selftests reuse the same compiled
+> >   library; and make it rely on the bpftool version also compiled from the
+> >   selftests (instead of compiling its own version).
+> > - runqslower, when compiled independently, needs its own version of
+> >   bpftool: make them share the same compiled libbpf.
+> >
+> > As a result:
+> >
+> > - Compiling the samples/bpf should compile libbpf just once.
+> > - Compiling the BPF selftests should compile libbpf just once.
+> > - Compiling the kernel (with BTF support) should now lead to compiling
+> >   libbpf twice: one for resolve_btfids, one for kernel/bpf/preload.
+> > - Compiling runqslower individually should compile libbpf just once. Same
+> >   thing for bpftool, resolve_btfids, and kernel/bpf/preload/iterators.
 >
-> should this be $(RM) -rf ? I've seen other makefiles don't hardcode
-> /bin/rm. And also below we are passing RM='rm -rf', not /bin/rm.
-> Inconsistent :)
+> The whole sharing of libbpf build artifacts is great, I just want to
+> point out that it's also dangerous if those multiple Makefiles aren't
+> ordered properly. E.g., if you build runqslower and the rest of
+> selftests in parallel without making sure that libbpf already
+> completed its build, you might end up building libbpf in parallel in
+> two independent make instances and subsequently corrupting generated
+> object files. I haven't looked through all the changes (and I'll
+> confess that it's super hard to reason about dependencies and ordering
+> in Makefile) and I'll keep this in mind, but wanted to bring this up.
 
-Inconsistent?! But I took it just a few lines above, from
-BTF_LLVM_PROBE! :) But I also prefer "$(RM) -r" (the -f is included in
-"$(RM)"), so sure, I'll address.
+I'm not sure how Makefile handles this exactly, I don't know if it can
+possibly build the two in parallel or if it's smart enough to realise
+that the libbpf.a is the same object in both cases and should be built
+only once. Same as you, I didn't hit any issue of this kind when
+testing the patches.
+
+> I suspect you already thought about that, but would be worth to call
+> out this explicitly.
+
+Ok, how would you like me to mention it? Comments in the Makefiles for
+runqslower, the samples, and the selftests?
+
+I'll post a new version addressing this, your other comments, and an
+issue I found for the samples/bpf/ while doing more tests.
+
+Thanks for the review and testing!
 Quentin
