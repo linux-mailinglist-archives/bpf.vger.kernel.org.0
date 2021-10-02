@@ -2,101 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6773A41FAB2
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 11:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD1741FB8E
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 14:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbhJBJpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Oct 2021 05:45:51 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:17949 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbhJBJpv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 2 Oct 2021 05:45:51 -0400
+        id S233001AbhJBMHk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Oct 2021 08:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233019AbhJBMHk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Oct 2021 08:07:40 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F246C0613EF
+        for <bpf@vger.kernel.org>; Sat,  2 Oct 2021 05:05:54 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id k13so13320741ilo.7
+        for <bpf@vger.kernel.org>; Sat, 02 Oct 2021 05:05:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1633167846; x=1664703846;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Y68N53y8IC+/QcDQNl6rEfrdpjYU+xi2+w3DT+gV8+E=;
-  b=YQiYTDYfjA+kRw97GI2SaLf7hswFhHJsnqrwyvtZznuhTulOxJfu2l7B
-   WEn75iy3kPhBTrFkyX5K1k9s+oVTd9G22wV6Zr7VAt/pyHuuadwMl+ILB
-   t33BqEDSgVqcfkBob64d2M3dWikAKYqbIuevBrXC/8snnOudqMRs5J4nP
-   M=;
-X-IronPort-AV: E=Sophos;i="5.85,341,1624320000"; 
-   d="scan'208";a="146335299"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-7d0c7241.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 02 Oct 2021 09:44:04 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2c-7d0c7241.us-west-2.amazon.com (Postfix) with ESMTPS id E32F541F29;
-        Sat,  2 Oct 2021 09:44:02 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 2 Oct 2021 09:44:02 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.43.160.146) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 2 Oct 2021 09:43:56 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kuba@kernel.org>
-CC:     <Rao.Shoaib@oracle.com>, <andrii@kernel.org>, <ast@kernel.org>,
-        <cong.wang@bytedance.com>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>,
-        <jbi.octave@gmail.com>, <jiang.wang@bytedance.com>,
-        <john.fastabend@gmail.com>, <kafai@fb.com>, <kpsingh@kernel.org>,
-        <kuniyu@amazon.co.jp>, <songliubraving@fb.com>,
-        <viro@zeniv.linux.org.uk>, <yhs@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH] af_unix: add missing annotation at bpf_iter_unix_seq_stop()
-Date:   Sat, 2 Oct 2021 18:43:17 +0900
-Message-ID: <20211002094317.8623-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001180439.55bdc79f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20211001180439.55bdc79f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
+        b=mT5J/tgsvdHKNzbixMF0b8bXsjz3ofG89XtBIEYmm31DKAJqTVQnTbIBfX8t5JlCAm
+         Opjgf9WSclRRmZYAkjQxD/epAd7Be57Lkd99MvP59l8GGX8KlyEhPtYedt0NvXplBgjX
+         pECf49P18/Mbmf2mju+ev/IXAfzf+OcnFAI/6DhrXKGlFJfTFDtBD9i87Iy0J15pnXOZ
+         wHRscuxmZb9WncCxGJWn5OmzniZ/0JhwvdctqOeXs5rUDL4iSc0GnXXiVo4MDWIsdUoF
+         mNikICZvRlqzk8OVrQqc8igQ84mfgLfFjLJ6CSExD9iGVksBBxAaSPWqjMuOrlpsdQPB
+         rsUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
+        b=XqMQbxNmNv7UujF1psdHJIKasUphsgCy+IPDNxnnXIdmwRToWygJuVaD7sQTOX6c/9
+         2A0Hce7YBiY101uYU16SSyVu0elytNTJ9MSplusYHl1HkO2NV72OBeXUDefn7R0PbAfh
+         eWyDgYjlwPuvEPOM3YNqVjWo+f3xFwySW09dTiLQ8uKd6vikU/4L1AX4QBIi8PSkirQ1
+         eHVfl6LE+vzFIWMb+mWGeVIPEACv6VrjHd9aS3C9w7AklxUVBg/G/gUBKu/VV1XIQIbx
+         00P1c1qX7ds8IzvLuTuYA8ybQaddl8Dg1TxWv0kyE80+uISpJye5U8fp6PJp7fisNGcV
+         ARZw==
+X-Gm-Message-State: AOAM531P3ipc57Ax+e7p+eB2ZpXwzqAw9KV1kEq97X9CM3WHHGnDoBe2
+        fuhAyM3KsTV1VgDqQFTOGtYq8/bdVVCVx6PtDOg=
+X-Google-Smtp-Source: ABdhPJx2Z/TM2nA5wUcQB6WcULjoMe7ab+gT2T6RTYBvc0J8X+RyTYtawkdaKMq1gSZualViA+kQI7VQTvC2tm5O+Dk=
+X-Received: by 2002:a92:ca06:: with SMTP id j6mr2338241ils.42.1633176354004;
+ Sat, 02 Oct 2021 05:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.146]
-X-ClientProxiedBy: EX13D31UWA004.ant.amazon.com (10.43.160.217) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Received: by 2002:a4f:f90d:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 05:05:53 -0700 (PDT)
+Reply-To: unitednnation0@gmail.com
+From:   "U.n" <wadebaye33@gmail.com>
+Date:   Sat, 2 Oct 2021 00:05:53 -1200
+Message-ID: <CACE0T5U12wTpag8TzpKG7SQXE2-Lmps=PgU=pU_4uJkcXNmpjg@mail.gmail.com>
+Subject: Attention
+To:     unitednnation0@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Date:   Fri, 1 Oct 2021 18:04:39 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-> On Sat,  2 Oct 2021 00:49:37 +0100 Jules Irenge wrote:
-> > Sparse reports a warning at bpf_iter_unix_seq_stop()
-> > The root cause is a missing annotation at bpf_iter_unix_seq_stop()
-> > 
-> > Add the missing __releases(unix_table_lock) annotation
-> > 
-> > Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-
-Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-
-I completely missed that...
-Thanks!
+--=20
 
 
-> > ---
-> >  net/unix/af_unix.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> > index efac5989edb5..9838d4d855e0 100644
-> > --- a/net/unix/af_unix.c
-> > +++ b/net/unix/af_unix.c
-> > @@ -3291,6 +3291,7 @@ static int bpf_iter_unix_seq_show(struct seq_file *seq, void *v)
-> >  }
-> >  
-> >  static void bpf_iter_unix_seq_stop(struct seq_file *seq, void *v)
-> > +	__releases(unix_table_lock)
-> >  {
-> >  	struct bpf_iter_meta meta;
-> >  	struct bpf_prog *prog;
-> 
-> You need to CC bpf@vger... and netdev@vger...
-> 
-> You can drop the CC for linux-kernel@, approximately nobody reads that.
+Attention Sir/Madam
+This is the United Nation (UN). We the United Nations (UN) Globally
+has approved (US$2.500,000)( two Million Five hundred thousand
+dollars) compensation as part of our responsibilities for humanitarian
+Aid for fighting against CoronaVirus and you are among the lucky ones.
 
-Added bpf and netdev, and dropped linux-kernel.
 
-Thank you.
+This compensation is for the most affected countries, communities and
+families across the global. Your funds were deposited with Bank in USA
+to transfer your funds to you via Internet Banking. You have to send
+your full details as state below:with this email Address
+  ( unitednnation0@gmail.com )
+Your full names:
+Address:
+Telephone:
+Occupation:
+
+
+
+Yours Sincerely
+Mr. Ant=C3=B3nio Guterres
+United Nations (UN).
