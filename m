@@ -2,129 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB9B41F849
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 01:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDE241F86C
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 02:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhJAXmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 19:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S232192AbhJBACg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 20:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhJAXmf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 19:42:35 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209A9C061775;
-        Fri,  1 Oct 2021 16:40:51 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id s4so7393196ybs.8;
-        Fri, 01 Oct 2021 16:40:51 -0700 (PDT)
+        with ESMTP id S232167AbhJBACf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Oct 2021 20:02:35 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF59DC061775;
+        Fri,  1 Oct 2021 17:00:50 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id z5so23910873ybj.2;
+        Fri, 01 Oct 2021 17:00:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=O1D8oZVXToA4pvTbmtzcpTG4TdrFZTbxyfGVdrjw1NU=;
-        b=XbW9uSztHiQUZlFNG10H++5sMOElFvBpHj7ChPBOCf+ZOT9CCIn+ZgwzePuCd+et+q
-         MG8AVqCbkVK4fjW+CPBMlfuAUAWbKp+f5OmETssk6G2Tf9VZ1oQMfqwCh9iuiErx2oHm
-         NernIqFSDVgpJlw1BYQZ0K+DVX2BP1aNNiZHVzB0C/Wa73XxzP1AE2nHwl0TizUcDqjK
-         fJlQ4bBCzRyFdstVOtF367Xsi0VoposIifzRFKLIDptn5/gHWytuk2ULA3Imt2Z1Asd+
-         5IWUjv1N6Hyk8BgczoG/lUmRbaqylrQTS70lWAuwQgbgjpUpL15BeArFbN5lfgAHRw/u
-         Targ==
+        bh=IrFD9m/yZudFqfkKn6shlO1MnuJ+CaJRGM3yhqCgxn4=;
+        b=o/RbuAWuljay28z7qVHyrZIpl7LhJ75d7GSdFp0r72MR3ZfwNuhjT9smXHTV+Qwf0l
+         mICzFNKKpsVOj3HJQOd2ovjstWKM96zfA/LbM6xxhQlXafOQ9ZvyaoMY8CFCUp+WqFcB
+         xprIkR8ikWKrS5vrSmxsdWwM+exiRrEIirzE1ENB4n8j92FgpX50OJB1BAObKB4d1kiH
+         c5jG511krtE3CWDqDWw+q3ZWHMrraGODHDmO7vqeprkPCmAVq6uawpF5eiXiNH983r7y
+         0bcLN0aziCztdKS3RH3tzAyN2m/5S0JG6g20of4PTEhn61r8nliR8U+6OW850RYkJNwv
+         yjFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O1D8oZVXToA4pvTbmtzcpTG4TdrFZTbxyfGVdrjw1NU=;
-        b=EKclcFJV6+kTgplWJIBMXQsuDw3Sv3UEteCChwCw0eWswCxl86RIeOoDJzMU+tePJg
-         6LQNqTwhe/71FW9cFp4vRFq8XrsppOYcTt8mEocOY+uLcW67AfcnkPE0U0IEpcN4Y5Uo
-         Hq59WvKcq0VmpCWy981r6FHrXvxdTTfjBJNXwK1NaQrw0zRM1LibUEZanX9+rGoqQW7A
-         bsfR8TQEtFAPxEdBAqAiSIyGzB6c2IeHJbJTVkxqgHMzhQPXboj93xhdQ4FZayHL8Xr6
-         vKD1C/No0b5fOKwbJdb5cithfM5jBYFrwRgifHhM+uXmX5Pe0LNqR5Q3jT80DpLEDWap
-         lKiw==
-X-Gm-Message-State: AOAM53353YIItTLpmZpZowFyu8VtDq4gg/eVe3m3dPdN80vrn4OkUbM6
-        kxiLQVQB47z/pBKiZO7PqphbPaV5kCoc0KSswxU=
-X-Google-Smtp-Source: ABdhPJzhyy/8maGjG3cBwiJhYueopV9Mytg/faKKrQpaPt3z/oeoK/2u0e30WMaVn15mDHYUnnHLH89U8Kj1NhyzUL4=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr692987ybj.504.1633131650405;
- Fri, 01 Oct 2021 16:40:50 -0700 (PDT)
+        bh=IrFD9m/yZudFqfkKn6shlO1MnuJ+CaJRGM3yhqCgxn4=;
+        b=Qt9cqKmnDtgXZKFqrn8g89kTQpLB4raveebGB6IAV+92Tg5GjLavLNgkDpgQCvsgFN
+         6aEDsZVZo7IqSb76v+vRYspTwDdmHo3vI5yVHNJq8HpkAs8pOwh2h79Z1tSQAE3pgi0G
+         AmVN00bqVd60LtIYTRCVQduDCXol/3YJFnLsaNllMJXJHs0QhLHRl2u5k8IK5Ass0NIQ
+         LR0G68SIofFXtCmSbBXXyC2f/39EDV2EOPclBTkKKcP0rngJdDqHIWSpDUtBAeuhHd4y
+         zf+5mPad65h1xfaZxh8lIpKEFB0SDm7RdxNzDiuaSPOUFKAM/mPRxIArQt4uFU3ywKZ8
+         x45A==
+X-Gm-Message-State: AOAM5332HxULAzvcI4aZIfJKn/8D6Hee60TSkdI+tURW1C8gs0kg11Ty
+        j2AkZxaF2wermyj14m/nlliiAqiunDmV0cdocNE=
+X-Google-Smtp-Source: ABdhPJxe1TM5L4BtTMNaBlwl2UlPzbM1Ec3gJ02NKzc1YIbpkt/8omcMcrxH1lIlHKaPYbVrGQUL8CbM3E1BOoxCpAM=
+X-Received: by 2002:a25:bb0b:: with SMTP id z11mr786543ybg.108.1633132849900;
+ Fri, 01 Oct 2021 17:00:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001215858.1132715-1-joannekoong@fb.com> <20211001215858.1132715-4-joannekoong@fb.com>
-In-Reply-To: <20211001215858.1132715-4-joannekoong@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 1 Oct 2021 16:40:39 -0700
-Message-ID: <CAEf4BzYdx9heDyPcXqVR4yhgoWj+Qg-v62UgLFY6WVd0qChH=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/3] bpf/selftests: Add xdp
- bpf_load_tcp_hdr_options tests
-To:     Joanne Koong <joannekoong@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
+References: <20210928002212.14498-1-xiyou.wangcong@gmail.com>
+ <20210928002212.14498-4-xiyou.wangcong@gmail.com> <61562fa0b3f74_6c4e4208c1@john-XPS-13-9370.notmuch>
+In-Reply-To: <61562fa0b3f74_6c4e4208c1@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Fri, 1 Oct 2021 17:00:39 -0700
+Message-ID: <CAM_iQpUj7h0L7xE=CY0zHTJ=VzJ-Cmy6foJQvvpTv1aixLwY6Q@mail.gmail.com>
+Subject: Re: [Patch bpf v2 3/4] net: implement ->sock_is_readable for UDP and AF_UNIX
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Yucong Sun <sunyucong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 3:04 PM Joanne Koong <joannekoong@fb.com> wrote:
+On Thu, Sep 30, 2021 at 2:44 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> > +bool sk_msg_is_readable(struct sock *sk)
+> > +{
+> > +     struct sk_psock *psock;
+> > +     bool empty = true;
+> > +
+> > +     psock = sk_psock_get_checked(sk);
 >
-> This patch adds tests for bpf_load_tcp_hdr_options used by xdp
-> programs.
->
-> test_xdp_tcp_hdr_options.c:
-> - Tests ipv4 and ipv6 packets with TCPOPT_EXP and non-TCPOPT_EXP
-> tcp options set. Verify that options can be parsed and loaded
-> successfully.
-> - Tests error paths: TCPOPT_EXP with invalid magic, option with
-> invalid kind_len, non-existent option, invalid flags, option size
-> smaller than kind_len, invalid packet
->
-> Signed-off-by: Joanne Koong <joannekoong@fb.com>
-> ---
->  .../bpf/prog_tests/xdp_tcp_hdr_options.c      | 158 ++++++++++++++
->  .../bpf/progs/test_xdp_tcp_hdr_options.c      | 198 ++++++++++++++++++
->  2 files changed, 356 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_options.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_tcp_hdr_options.c
->
+> We shouldn't need the checked version here right? We only get here because
+> we hooked the sk with the callbacks from *_bpf_rebuild_rpotos. Then we
+> can just use sk_psock() and save a few extra insns/branch.
 
-[...]
+Good catch! Indeed only sockmap overwrites that hook.
 
-> +static void check_opt_out(struct test_xdp_tcp_hdr_options *skel)
-> +{
-> +       struct bpf_test_option *opt_out;
-> +       __u32 duration = 0;
-> +
-> +       opt_out = &skel->bss->exprm_opt_out;
-> +       CHECK(opt_out->flags != opt_flags, "exprm flags",
-> +             "flags = 0x%x", opt_out->flags);
-> +       CHECK(opt_out->max_delack_ms != exprm_max_delack_ms, "exprm max_delack_ms",
-> +             "max_delack_ms = 0x%x", opt_out->max_delack_ms);
-> +       CHECK(opt_out->rand != exprm_rand, "exprm rand",
-> +             "rand = 0x%x", opt_out->rand);
-> +
-> +       opt_out = &skel->bss->regular_opt_out;
-> +       CHECK(opt_out->flags != opt_flags, "regular flags",
-> +             "flags = 0x%x", opt_out->flags);
-> +       CHECK(opt_out->max_delack_ms != regular_max_delack_ms, "regular max_delack_ms",
-> +             "max_delack_ms = 0x%x", opt_out->max_delack_ms);
-> +       CHECK(opt_out->rand != regular_rand, "regular rand",
-> +             "rand = 0x%x", opt_out->rand);
+I will send V3 shortly after all tests are done.
 
-Please use ASSERT_xxx() macros for new tests. CHECK()s are confusing
-and actually require more typing and work to output actual arguments
-that failed. In this case, you'd just write
-
-ASSERT_EQ(opt_out->rand, regular_rand, "regular_rand");
-
-And if they are not equal, ASSERT_EQ() will print actual values of
-both opt_out->rand and regular_rand.
-
-> +}
-> +
-> +void test_xdp_tcp_hdr_options(void)
-> +{
-> +       int err, prog_fd, prog_err_path_fd, prog_invalid_pkt_fd;
-> +       struct xdp_ipv6_packet ipv6_pkt, invalid_pkt;
-> +       struct test_xdp_tcp_hdr_options *skel;
-> +       struct xdp_ipv4_packet ipv4_pkt;
-> +       struct xdp_test_opt test_opt;
-> +       __u32 duration, retval, size;
-> +       char buf[128];
-> +
-
-[...]
+Thanks
