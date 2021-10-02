@@ -2,122 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ECC41FCFE
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 18:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0898841FD08
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 18:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhJBQMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Oct 2021 12:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S233572AbhJBQTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Oct 2021 12:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbhJBQME (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 2 Oct 2021 12:12:04 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76EBC0613EC
-        for <bpf@vger.kernel.org>; Sat,  2 Oct 2021 09:10:18 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k26so10727166pfi.5
-        for <bpf@vger.kernel.org>; Sat, 02 Oct 2021 09:10:18 -0700 (PDT)
+        with ESMTP id S233451AbhJBQTl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Oct 2021 12:19:41 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD447C0613EC
+        for <bpf@vger.kernel.org>; Sat,  2 Oct 2021 09:17:55 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id y1so8282454plk.10
+        for <bpf@vger.kernel.org>; Sat, 02 Oct 2021 09:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GfXUjBs6aCjimx/l4QpxsuOL85bwwzW+aqwhKG0YeD0=;
-        b=KfJnPkqBcvNYNnGKBWIy2MNK43oU3bvrd9pjbBPtP4gO+QJoqiWufqvinAtkwuUbWk
-         Jj05+CnJuMT2Z1jRVIjU48kgyI5bEOHTq+UY1nwcuLT3O7VurXl0JacWL0rN5De8LnMM
-         C5a2ahLXVyscqufTDXygqKMak0jHZ9LH6O1QL9KcW+EtZ0rIUErV8sbY6XLnpTs/YI9o
-         vn1StNpAxW5qS6r6nBMq2cn8xkJsM6+EML838Ya1q2T8F3pqHmE6LfbTdSAsiAlsb/Gj
-         Osr59Z//0BBPOD10ZlNXUiGltEqFemwaXiuJGb36BQj1XlwuSaLRgx+U/a0tkBe2PZ7Q
-         uEuQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PY49L+fnBcdgAUsmL5kRKvClDHovJYhLW6ssxoeKSlg=;
+        b=Hs+o9s8RFZ4qMk7E3YpRPP3Vmhj/aajRQRm4K5pYJ1vGTVjc8CRWe9XS8zuEPfMP7K
+         B0rP6qOYvAQ6w/KaXyAfKohJNdympwGwVtEyXtDi5uMobG8MBNtGlx12pJSKb6yioLvk
+         bZYmTghYUBlhotDTWP8lXJ2VpmZSGBdQoAIsLj2CxkcZjUZCcHz4bKRI1ACIvnkwSskO
+         qzabdHoFH8RnelrdltQl4bgg1lYOHycfrim0Dl30S3pyABpL3ziH0anQjUGJG+xhW2zi
+         GGV7G9qcpNcjGeruQzRA117plU5UmOCY9d9Ns3MPJQXP3AHbI0j7JwP1zFqzmFpMoNFT
+         afYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=GfXUjBs6aCjimx/l4QpxsuOL85bwwzW+aqwhKG0YeD0=;
-        b=mjDqbE4Ca+RUKvChTKQSC+WG2ONQn+kDYK5SO3MOz85UnyLOwKtfsLb1VMxpMdY+5+
-         DKDg8rebAdFC2ZY6YZ9k0lGajbkHiNV/s18XX6kGYldvS+aTqSSHri/YRwqxkT7orAxC
-         qp0aGAEr8Q7puonqSTcbN3gSD1h8laUZg7G2EYs7oPjhk1iIhkTq42dyrN2F+y5JkvqQ
-         IzFPugh90KBc7a2FUlZsXvqPKh790QtWG/ZDbjzvFpGtfMA4ijEoWbuWJMH8Yq57Kbxv
-         tXYsd4ao5K0yRNM+HcTrBTd02Km+VNzqZNGGY7IWmhL55fDPuw+6Ta4VhnEe3rG1e28o
-         RTpA==
-X-Gm-Message-State: AOAM5311j129fDDi4mJ5A5hQGK7BUOFZLZRrKQWlSUuD8gWnG33H5p4P
-        zL8XGBV3oiiml+8rXwr2dUrCE6nrm+ECcQ==
-X-Google-Smtp-Source: ABdhPJxFu6r761vHdN/gmqDucLryw63EWtzFHvA+KiDz1ecZxh09LQKZUIM5dAv/FE2kvP531hKgkw==
-X-Received: by 2002:a62:160e:0:b0:445:1642:5069 with SMTP id 14-20020a62160e000000b0044516425069mr17153245pfw.66.1633191018075;
-        Sat, 02 Oct 2021 09:10:18 -0700 (PDT)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id v12sm9235720pgt.94.2021.10.02.09.10.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 09:10:17 -0700 (PDT)
+        bh=PY49L+fnBcdgAUsmL5kRKvClDHovJYhLW6ssxoeKSlg=;
+        b=WinPmojRdnctjk/bIhwrtxHBIvC0qy3iSF9WCSQxNo+i/Ff3iLd0NqUhXfbi3RLHZj
+         lkQ5Wt+pKNjwdZARYtkyUYEEpF02+qRxEMMNt3nSY2pm9muQs5NwYokItfPuHDTfG4vZ
+         A9bxMGs9Hk5hnCKOk3vKM4DU1Tv8Dj6YJHtH9GyTV/DdR6rdL2HSL5/XSyOMQ3zyGvsG
+         PZOmO0guOhRJHFDGk45ShkohI3RUS13MHl/zWrWsf64aFk/KwlIUyODRVir6928F+YVU
+         a5o78tB5bg/nHgAEGoWxPbfH6CZhLGD+3d07TXeu0p9GJe3VE24IZge4vuvrX6lkj+5c
+         CXjQ==
+X-Gm-Message-State: AOAM530hXIMFpKmEqCRyjMSPmneL1scceyLPhsNRPwbdJk7qh392nhxj
+        S/DI6EIFgUWiMNRpDH0Q7JE=
+X-Google-Smtp-Source: ABdhPJxT856W0Ac+csYwTX5hLS+xL283BHjW0IXFI3dwELopRWCmMqybTE7ODyTLE/yumnflDnlVYQ==
+X-Received: by 2002:a17:902:a385:b0:13e:99e9:17f3 with SMTP id x5-20020a170902a38500b0013e99e917f3mr3870742pla.65.1633191475063;
+        Sat, 02 Oct 2021 09:17:55 -0700 (PDT)
+Received: from [0.0.0.0] ([150.109.126.7])
+        by smtp.gmail.com with ESMTPSA id s7sm5199751pgc.60.2021.10.02.09.17.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 09:17:54 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Test BPF map creation using
+ BTF-defined key/value
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>
+References: <20210905100914.33007-1-hengqi.chen@gmail.com>
+ <20210905100914.33007-2-hengqi.chen@gmail.com>
+ <CAEf4BzZnKxVRtkaGUbzCmi0SDsR4_KM=uqdgP+Q6seAygkst7g@mail.gmail.com>
+ <52bd9e85-4b5f-d260-8ef0-b5685654ae62@gmail.com>
+ <CAEf4Bzbni1-M=9S=R_xygOYKOFwuOJjcNtJVqQVdTOLjR6512Q@mail.gmail.com>
 From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next v2] libbpf: Deprecate bpf_object__unload() API since v0.7
-Date:   Sun,  3 Oct 2021 00:10:00 +0800
-Message-Id: <20211002161000.3854559-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Message-ID: <6fdca592-693a-f1d5-e2c9-395cfbdb4e6d@gmail.com>
+Date:   Sun, 3 Oct 2021 00:17:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzbni1-M=9S=R_xygOYKOFwuOJjcNtJVqQVdTOLjR6512Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF objects are not re-loadable after unload. User are expected to use
-bpf_object__close() to unload and free up resources in one operation.
-No need to expose bpf_object__unload() as a public API, deprecate it.[0]
-Add bpf_object_unload() as an alias to bpf_object__unload() and replace
-all bpf_object__unload() to avoid compilation errors.
 
-  [0] Closes: https://github.com/libbpf/libbpf/issues/290
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/lib/bpf/libbpf.c | 7 +++++--
- tools/lib/bpf/libbpf.h | 1 +
- 2 files changed, 6 insertions(+), 2 deletions(-)
+On 10/1/21 2:39 AM, Andrii Nakryiko wrote:
+> On Thu, Sep 30, 2021 at 9:05 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>>
+>>
+>>
+>> On 9/9/21 12:29 PM, Andrii Nakryiko wrote:
+>>> On Sun, Sep 5, 2021 at 3:09 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>>>>
+>>>> Test BPF map creation using BTF-defined key/value. The test defines
+>>>> some specialized maps by specifying BTF types for key/value and
+>>>> checks those maps are correctly initialized and loaded.
+>>>>
+>>>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>>>> ---
+>>>>  .../selftests/bpf/prog_tests/map_create.c     |  87 ++++++++++++++
+>>>>  .../selftests/bpf/progs/test_map_create.c     | 110 ++++++++++++++++++
+>>>>  2 files changed, 197 insertions(+)
+>>>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/map_create.c
+>>>>  create mode 100644 tools/testing/selftests/bpf/progs/test_map_create.c
+>>>>
+>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/map_create.c b/tools/testing/selftests/bpf/prog_tests/map_create.c
+>>>> new file mode 100644
+>>>> index 000000000000..6ca32d0dffd2
+>>>> --- /dev/null
+>>>> +++ b/tools/testing/selftests/bpf/prog_tests/map_create.c
+>>>> @@ -0,0 +1,87 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +/* Copyright (c) 2021 Hengqi Chen */
+>>>> +
+>>>> +#include <test_progs.h>
+>>>> +#include "test_map_create.skel.h"
+>>>> +
+>>>> +void test_map_create(void)
+>>>> +{
+>>>> +       struct test_map_create *skel;
+>>>> +       int err, fd;
+>>>> +
+>>>> +       skel = test_map_create__open();
+>>>> +       if (!ASSERT_OK_PTR(skel, "test_map_create__open failed"))
+>>>> +               return;
+>>>> +
+>>>> +       err = test_map_create__load(skel);
+>>>
+>>> If load() succeeds, all the maps will definitely be created, so all
+>>> the below tests are meaningless.
+>>>
+>>> I think it's better to just change all the existing map definitions
+>>> used throughout selftests to use key/value types, instead of
+>>> key_size/value_size. That will automatically test this feature without
+>>> adding an extra test. Unfortunately to really test that the logic is
+>>> working, we'd need to check that libbpf doesn't emit the warning about
+>>> retrying map creation w/o BTF, but I think one-time manual check
+>>> (please use ./test_progs -v to see libbpf warnings during tests)
+>>> should be sufficient for this.
+>>>
+>>
+>> Hello, Andrii
+>>
+>> I updated these existing tests as you suggested,
+>> but I was unable to run the whole bpf selftests locally.
+>>
+>> Running ./test_progs -v made my system hang up,
+>> didn't find the root cause yet.
+> 
+> This is strange. Do you know at which test this happens? Do you get
+> kernel warning/oops when this happens in dmesg?
+> 
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e23f1b6b9402..7de3dcbd61f2 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -6679,6 +6679,9 @@ int bpf_object__unload(struct bpf_object *obj)
- 	return 0;
- }
+No, when this situation occurred, I just restarted my laptop.
+Will look into this later.
 
-+__attribute__((alias("bpf_object__unload")))
-+static int bpf_object_unload(struct bpf_object *obj);
-+
- static int bpf_object__sanitize_maps(struct bpf_object *obj)
- {
- 	struct bpf_map *m;
-@@ -7055,7 +7058,7 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
- 		if (obj->maps[i].pinned && !obj->maps[i].reused)
- 			bpf_map__unpin(&obj->maps[i], NULL);
+> But overall, the development and testing workflow for people working
+> on bpf/bpf-next involves building latest kernel and running selftests
+> inside the QEMU VM for testing. We also have vmtest.sh script in
+> selftests/bpf that automates a lot of building steps. It will build
+> kernel, test_progs and other selftest binaries, and will spin up QEMU
+> VM with the same image that our BPF CIs are using. You just need to
+> have very recent/latest Clang available and similarly pahole (from
+> dwarves package) should be up to date and available through $PATH.
+> After that, running ./vmtest.sh will just run all ./test_progs
+> automatically.
+> 
 
--	bpf_object__unload(obj);
-+	bpf_object_unload(obj);
- 	pr_warn("failed to load object '%s'\n", obj->path);
- 	return libbpf_err(err);
- }
-@@ -7664,7 +7667,7 @@ void bpf_object__close(struct bpf_object *obj)
+This workflow info is quite useful for me. Thanks.
 
- 	bpf_gen__free(obj->gen_loader);
- 	bpf_object__elf_finish(obj);
--	bpf_object__unload(obj);
-+	bpf_object_unload(obj);
- 	btf__free(obj->btf);
- 	btf_ext__free(obj->btf_ext);
-
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index e35490c54eb3..ada0388ca1f2 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -150,6 +150,7 @@ struct bpf_object_load_attr {
- /* Load/unload object into/from kernel */
- LIBBPF_API int bpf_object__load(struct bpf_object *obj);
- LIBBPF_API int bpf_object__load_xattr(struct bpf_object_load_attr *attr);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "bpf_object__unload() is deprecated, use bpf_object__close() instead")
- LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
-
- LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
---
-2.25.1
+> Either way, our CI will also run your changes through the tests
+> (except there are some intermittent issues right now, so we'll have to
+> wait a bit for that to kick in). You can monitor [0], or the link will
+> actually appear on each of your patches (e.g., [1]) in "Checks"
+> section, once everything is up and running properly.
+> 
+>   [0] https://github.com/kernel-patches/bpf/pulls
+>   [1] https://patchwork.kernel.org/project/netdevbpf/patch/20210930161456.3444544-2-hengqi.chen@gmail.com/
+> 
+>>
+>> Instead I just run the modified test with the following commands:
+>>
+>> sudo ./test_progs -v --name=kfree_skb,perf_event_stackmap,btf_map_in_map,pe_preserve_elems,stacktrace_map,stacktrace_build_id,xdp_bpf2bpf,select_reuseport,tcpbpf_user
+>>
+>>>> +       if (!ASSERT_OK(err, "test_map_create__load failed"))
+>>>> +               goto cleanup;
+>>>> +
+>>>> +       fd = bpf_map__fd(skel->maps.map1);
+>>>> +       if (!ASSERT_GT(fd, 0, "bpf_map__fd failed"))
+>>>> +               goto cleanup;
+>>>> +       close(fd);
+>>>> +
+>>>> +       fd = bpf_map__fd(skel->maps.map2);
+>>>> +       if (!ASSERT_GT(fd, 0, "bpf_map__fd failed"))
+>>>> +               goto cleanup;
+>>>> +       close(fd);
+>>>
+>>> [...]
+>>>
