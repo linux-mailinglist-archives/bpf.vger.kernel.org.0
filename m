@@ -2,373 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C58B41F87F
-	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 02:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8808A41F881
+	for <lists+bpf@lfdr.de>; Sat,  2 Oct 2021 02:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhJBAPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Oct 2021 20:15:19 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57094 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232238AbhJBAPT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:15:19 -0400
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mWSed-000Dxf-Qn; Sat, 02 Oct 2021 02:13:27 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2021-10-02
-Date:   Sat,  2 Oct 2021 02:13:27 +0200
-Message-Id: <20211002001327.15169-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S232238AbhJBAPd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Oct 2021 20:15:33 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12764 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232132AbhJBAPc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 Oct 2021 20:15:32 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 191NBRHY009586;
+        Fri, 1 Oct 2021 17:13:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=LYX5EnH5ILDHSNg4vtv3idyAomSsgFK4oqiXMPN1PSY=;
+ b=C+5ox0ORb87aRh214bf7XJDvA1NrJgGmkf/9eF+Gy58acnnH6dzJpr7+lmDgA0J+ijAA
+ 4z86xJww29DzgqoEIYpQ233Qjlr37VHODPSfXrSXGbx1KWvGZFtDkqTzhlxvdsGaDN33
+ dW/jluhYbvHvb94nggYBkvvZCX7WhnbTHRk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bebsj893q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 01 Oct 2021 17:13:35 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Fri, 1 Oct 2021 17:13:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kk1uEQ7qC6Rd34tOZK6vWZ87dyZyEvkI+FZzY454K9t8Q8fls6vNFU9Ih3ejSW6ukEMvnYMFxI/F4W6tZPBBTrfS9RZiOAPxroF7EvYRaqu9nGmneR6W3XYY2xC60IPh/jkqt62d5ThwowWwkEBmLs/hmcGt5kvUH8sv7Dif1ZLwn/mwakRIs8nPv/b+b9eqS/G3V2VAL7irn/VOGQRsfI3uWxqEAkIo1H7yeucJKlKmSmxg+aS3rz/6tLFkR/LOAK/Ti/5LIy6kzRNLB3nZ/JxS9JwNO+olSzGmySe3y7PLoHHP69rR/AiaCT01sWdzVaRDNzWFO8GtIb3CyCfBAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LYX5EnH5ILDHSNg4vtv3idyAomSsgFK4oqiXMPN1PSY=;
+ b=SojYGSayPGvwYmCGIKb6nVXoGt8tLSfFl5ZbUiKZApzmDmFk0LjMZ0cNMPtpAbS0oxMMjI+bPOZB4A5wCmGwqQd+YOutoxhiQ3kzm3oJVoL2Wp/OjbGxOcNbQDqunOq33LuHftOF6iS4pJlOX9pkQYbNC33QZ6mmXvFzNyRTSGiQ9Dqt3Ka8zW7In+plsWn9yFRaJrX4SNML5ze3oPR/yEoSlxVLGiFndQA1yjHUKd9bjM49gxUQ3jkjm2ppWrrq6v2Y7HDq6updc94hzUIOmck5RuNL7aSpFeXKk9FQAxIHmy6oJN4nmk/DNHHs5jYMtnZxdY5daoti0Iqn5cbBAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY3PR15MB4929.namprd15.prod.outlook.com (2603:10b6:a03:3c4::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Sat, 2 Oct
+ 2021 00:13:33 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94%5]) with mapi id 15.20.4566.019; Sat, 2 Oct 2021
+ 00:13:33 +0000
+Date:   Fri, 1 Oct 2021 17:13:31 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Barry Song <21cnbao@gmail.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rfc 4/6] sched: cfs: add bpf hooks to control wakeup and
+ tick preemption
+Message-ID: <YVekKx9lP0qlOaPt@carbon.dhcp.thefacebook.com>
+References: <20210915213550.3696532-1-guro@fb.com>
+ <20210916162451.709260-1-guro@fb.com>
+ <20210916162451.709260-5-guro@fb.com>
+ <CAGsJ_4xr0Xg3B1seT5_kcb26ZQgWaakR8QGOB-N62wehfXkt_Q@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4xr0Xg3B1seT5_kcb26ZQgWaakR8QGOB-N62wehfXkt_Q@mail.gmail.com>
+X-ClientProxiedBy: SJ0PR03CA0242.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::7) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:2431) by SJ0PR03CA0242.namprd03.prod.outlook.com (2603:10b6:a03:3a0::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend Transport; Sat, 2 Oct 2021 00:13:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e9698741-4c82-44f6-966f-08d9853978a2
+X-MS-TrafficTypeDiagnostic: BY3PR15MB4929:
+X-Microsoft-Antispam-PRVS: <BY3PR15MB4929CB971CD333CE81606E4BBEAC9@BY3PR15MB4929.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dwv4p5wmIF0GaqzyVgIuvJpSA6nywtGxea9NaOKphAFD09clpB03jQfhPAI/lUP9hggzLAePdH48RTvXhqG3VYDpzOFJGt/TIzwv8U5lFIZdUt6nUeu/0pfHU3S0rLwLSP6yFJc9gDSNgO0sHPJLMZg1AMXnwLeoWPaX/fh/++kdOtVNv6x+LQXCV+Ba0yrtXE4SSDzqJ0UiXb8T9v9XPk0sXTjvWbz/58YedakK4lD5EK9rUVTgEHYqxEiMMDDSa4XNGbIS4DrNkEpXlEXVQVJrUZWh46wNszofxrU3VPV86py6uVeR1HWOJmF+wNhHFJEvjXzVAZtfKs/ca8RQyWo9RvzkVwwpwO7iXit54VsHWIAqqgqEdj99OH373ovlqNxfjvlNpsmQS5ePU6C4VpSZnrdnUNnTaeJXwyvdHNMhAh/Ub5mn+dbgPjTPgWO2h0zzB6FGgvTl25eDdfrXDent6M7BqIya1CYOgSr3S8uSz16D2SdJZOm5sWp88iusMvtgJ84vFKPAYJzZMJ6YpTW+giwdMaZ5XkOE7o1DglzWQBMzbi1z/7JqVbEAZt31RcMKsDtQqhVP4atS0N4biaJycwtpVZe4l6FAwJ6fh1tdLKaKaz7JtfV4dlahE5A5pJlzE7oFbgnNU20flBXJ1ipkEY5yLMODPOkd+8U2G02cQtXx82pD2JpCgEoRYazyVckFbdOqMRCjZqUUCcaTjXD35RLdAYOpDCvYAjAh43sFY7xQUwP6zionKJPnAbxOxed1RKZsUS0FcO0wEz2YkQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52116002)(6506007)(2906002)(66476007)(5660300002)(66556008)(66946007)(86362001)(55016002)(966005)(53546011)(7696005)(186003)(8936002)(8676002)(9686003)(6916009)(54906003)(508600001)(4326008)(316002)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sYENaa5xKWcmkMaUcYqLSHx4IJkBaTQwwuSpYE8QqgTPr0Edzd0IGRFSv6xf?=
+ =?us-ascii?Q?TLv0HWH/x5Dw931QFvG8dZJDZVC5llcSFXcuY21RH6vm2BuGiMr+13wTwjQU?=
+ =?us-ascii?Q?eZDELzKFbCKVM1GwimM4f4td8dF1B3bHUv7PSzOlwXiQnJpAAWhgOq4uME87?=
+ =?us-ascii?Q?H9fftbo0GAz7Znf+B123o55d+yJ8opMMEjFpzbgDwMogdbZlsxBr8/hEiHTU?=
+ =?us-ascii?Q?YGD27Cpl5IduEMFF68rxAkwUUik/dO8TIZLLDI/2ZsbE+IQnVkMx/nb1BmXf?=
+ =?us-ascii?Q?HggAORuAiRqHlHU6VXvkuMxJkH98Dv/W7mLwRDKMFJugphcLDvYrpjcI+z0J?=
+ =?us-ascii?Q?knADQqS4CWwXh5HC8SLiwXMDnXgsR74lGkj1QnlXDeBkN+WZnswmad4/s0jg?=
+ =?us-ascii?Q?B5er9JnphXnD7Vyxe8A8IUgbmckLHUNNgFZ5GspKJ/GzWcnxjQhEalnf+g/4?=
+ =?us-ascii?Q?9jlgoWtqz12uCJPajMXSqaD5hb1IXvBgyXPer5bVemrsO/PpljVnRXReSENF?=
+ =?us-ascii?Q?L7j5yxK82MD7bBvj/IKAdZGZaOrHcFlzB0n8b6af3HHhNx47rNuybtHsIQYd?=
+ =?us-ascii?Q?7NSvbjjgAnxtKsoYZq6j9dPxxpvd/UVz2Atw6suEy5gn+coOO4AZ0BdHiONO?=
+ =?us-ascii?Q?oQgjdiGKvuYfoK+P05XkKZUT5O8dtD67NXu1nq+4ctP8OH/t6gEkmxxknKlJ?=
+ =?us-ascii?Q?6i/ABhmpBfkQEjmk8WFabkdqWIuYzO2O3wt6X9CqvLLtdTewFpRwm1ucjhYk?=
+ =?us-ascii?Q?YhHn/Ud5lZqreCs9FyEJLi8m+1TzwYyzsnYrgzxHb3dKUVSWa+RZbBqC9NBQ?=
+ =?us-ascii?Q?MpRYWhMwvKbFw2r+ViJdBsKR5h3ZUtKaj6bM4Fhtdw07U7Prd4JxaciZggE1?=
+ =?us-ascii?Q?7GyrVZQRMGtTeI1U0naN1SsSl+vA80S7noAHqbcNeZzIZKLxkhpKINs3U2ko?=
+ =?us-ascii?Q?bN9FwcDfy1Jw6EtHb6bvtsSTLPXJdGsd7dtd5otMkxf5MX1rQoP9PbwPiFbe?=
+ =?us-ascii?Q?Rrnd0XM3JqXaAj31qrsvRBGFd4IXU0W0tjteWiVcMML0tFM//xc8S4Q/5sTP?=
+ =?us-ascii?Q?8SVCTyC47BXDnzr6qeJpslKQWzeL2453lCqEzvJNVINSjlm5Qrox7d7YmVkT?=
+ =?us-ascii?Q?UxvMwmgxUocS48aVoeLA6djrvHu4B6FldktlwAiwjCzX+CWjJJNlNbQVAyM3?=
+ =?us-ascii?Q?+qZBsjiPLOtwpShawzrl0GMtw+5oDMLNL+rWIrnMd3UjbwrbULNW5rloGM6h?=
+ =?us-ascii?Q?de8y9q2kJqGu0USs8kM3+mVWovbyVdTopv7iJvpkoKhSRweaAE8HAgI20zOM?=
+ =?us-ascii?Q?P8tetgazlbLGEOzYWEb1k7ujye12naGkspgx721bEMPBWenj2NlN4IV2DMbI?=
+ =?us-ascii?Q?Oic+frU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9698741-4c82-44f6-966f-08d9853978a2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2021 00:13:33.4426
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AnCecQqzZPnMpdkgJDW1pyq7qT3HsJQIZrhLEE+C1B2+qVV1R5ylVIR7PiOlIYZc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4929
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: u3dwvnc0sOMWe_cRwxv7Rjnqv8dJdX0c
+X-Proofpoint-GUID: u3dwvnc0sOMWe_cRwxv7Rjnqv8dJdX0c
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26309/Fri Oct  1 11:03:53 2021)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-01_05,2021-10-01_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ clxscore=1011 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 mlxscore=0 priorityscore=1501 spamscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110010168
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On Fri, Oct 01, 2021 at 04:35:58PM +1300, Barry Song wrote:
+> On Fri, Sep 17, 2021 at 4:36 AM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > This patch adds 3 hooks to control wakeup and tick preemption:
+> >   cfs_check_preempt_tick
+> >   cfs_check_preempt_wakeup
+> >   cfs_wakeup_preempt_entity
+> >
+> > The first one allows to force or suppress a preemption from a tick
+> > context. An obvious usage example is to minimize the number of
+> > non-voluntary context switches and decrease an associated latency
+> > penalty by (conditionally) providing tasks or task groups an extended
+> > execution slice. It can be used instead of tweaking
+> > sysctl_sched_min_granularity.
+> >
+> > The second one is called from the wakeup preemption code and allows
+> > to redefine whether a newly woken task should preempt the execution
+> > of the current task. This is useful to minimize a number of
+> > preemptions of latency sensitive tasks. To some extent it's a more
+> > flexible analog of a sysctl_sched_wakeup_granularity.
+> 
+> This reminds me of Mel's recent work which might be relevant:
+> sched/fair: Scale wakeup granularity relative to nr_running
+> https://lore.kernel.org/lkml/20210920142614.4891-3-mgorman@techsingularity.net/
 
-The following pull-request contains BPF updates for your *net-next* tree.
+Oh, this is interesting, thank you for the link! This is a perfect example
+of a case when bpf can be useful if the change will be considered to be too
+special to be accepted in the mainline code.
 
-We've added 85 non-merge commits during the last 15 day(s) which contain
-a total of 132 files changed, 13779 insertions(+), 6724 deletions(-).
+> 
+> >
+> > The third one is similar, but it tweaks the wakeup_preempt_entity()
+> > function, which is called not only from a wakeup context, but also
+> > from pick_next_task(), which allows to influence the decision on which
+> > task will be running next.
+> >
+> > It's a place for a discussion whether we need both these hooks or only
+> > one of them: the second is more powerful, but depends more on the
+> > current implementation. In any case, bpf hooks are not an ABI, so it's
+> > not a deal breaker.
+> 
+> I am also curious if similar hook can benefit
+> newidle_balance/sched_migration_cost
+> tuning things in this thread:
+> https://lore.kernel.org/lkml/ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com/
+> 
+> It seems those static values are not universal. different topology might need
+> different settings.  but dynamically tuning them in the kernel seems to be
+> extremely difficult.
 
-The main changes are:
+Absolutely! I'm already playing with newidle_balance (no specific results yet).
+And sched_migration_cost is likely a good target too!
 
-1) Massive update on test_bpf.ko coverage for JITs as preparatory work for
-   an upcoming MIPS eBPF JIT, from Johan Almbladh.
-
-2) Add a batched interface for RX buffer allocation in AF_XDP buffer pool,
-   with driver support for i40e and ice from Magnus Karlsson.
-
-3) Add legacy uprobe support to libbpf to complement recently merged legacy
-   kprobe support, from Andrii Nakryiko.
-
-4) Add bpf_trace_vprintk() as variadic printk helper, from Dave Marchevsky.
-
-5) Support saving the register state in verifier when spilling <8byte bounded
-   scalar to the stack, from Martin Lau.
-
-6) Add libbpf opt-in for stricter BPF program section name handling as part
-   of libbpf 1.0 effort, from Andrii Nakryiko.
-
-7) Add a document to help clarifying BPF licensing, from Alexei Starovoitov.
-
-8) Fix skel_internal.h to propagate errno if the loader indicates an internal
-   error, from Kumar Kartikeya Dwivedi.
-
-9) Fix build warnings with -Wcast-function-type so that the option can later
-   be enabled by default for the kernel, from Kees Cook.
-
-10) Fix libbpf to ignore STT_SECTION symbols in legacy map definitions as it
-    otherwise errors out when encountering them, from Toke Høiland-Jørgensen.
-
-11) Teach libbpf to recognize specialized maps (such as for perf RB) and
-    internally remove BTF type IDs when creating them, from Hengqi Chen.
-
-12) Various fixes and improvements to BPF selftests.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alan Maguire, Andrii Nakryiko, Daniel Borkmann, Dave Marchevsky, Dave 
-Thaler, Gustavo A. R. Silva, Jesper Dangaard Brouer, Joe Stringer, KP 
-Singh, Lorenz Bauer, Maciej Fijalkowski, Nathan Chancellor, Paul 
-Chaignon, Simon Horman, Song Liu, Stephen Hemminger, Tiezhu Yang, Toke 
-Høiland-Jørgensen
-
-----------------------------------------------------------------
-
-The following changes since commit af54faab84f754ebd42ecdda871f8d71940ae40b:
-
-  Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next (2021-09-17 12:40:21 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to d636c8da2d60cc4841ebd7b6e6a02db5c33e11e4:
-
-  Merge branch 'libbpf: Support uniform BTF-defined key/value specification across all BPF maps' (2021-10-01 15:31:51 -0700)
-
-----------------------------------------------------------------
-Alexei Starovoitov (7):
-      Merge branch 'bpf: implement variadic printk helper'
-      Merge branch 'libbpf: add legacy uprobe support'
-      bpf: Document BPF licensing.
-      Merge branch 'bpf: Support <8-byte scalar spill and refill'
-      Merge branch 'libbpf: stricter BPF program section name handling'
-      Merge branch 'bpf: Build with -Wcast-function-type'
-      libbpf: Make gen_loader data aligned.
-
-Andrii Nakryiko (15):
-      libbpf: Fix memory leak in legacy kprobe attach logic
-      selftests/bpf: Adopt attach_probe selftest to work on old kernels
-      libbpf: Refactor and simplify legacy kprobe code
-      libbpf: Add legacy uprobe attaching support
-      libbpf: Add "tc" SEC_DEF which is a better name for "classifier"
-      selftests/bpf: Normalize XDP section names in selftests
-      selftests/bpf: Switch SEC("classifier*") usage to a strict SEC("tc")
-      selftests/bpf: Normalize all the rest SEC() uses
-      libbpf: Refactor internal sec_def handling to enable pluggability
-      libbpf: Reduce reliance of attach_fns on sec_def internals
-      libbpf: Refactor ELF section handler definitions
-      libbpf: Complete SEC() table unification for BPF_APROG_SEC/BPF_EAPROG_SEC
-      libbpf: Add opt-in strict BPF program section name handling logic
-      selftests/bpf: Switch sk_lookup selftests to strict SEC("sk_lookup") use
-      Merge branch 'libbpf: Support uniform BTF-defined key/value specification across all BPF maps'
-
-Daniel Borkmann (1):
-      Merge branch 'bpf-xsk-rx-batch'
-
-Dave Marchevsky (9):
-      bpf: Merge printk and seq_printf VARARG max macros
-      selftests/bpf: Stop using bpf_program__load
-      bpf: Add bpf_trace_vprintk helper
-      libbpf: Modify bpf_printk to choose helper based on arg count
-      libbpf: Use static const fmt string in __bpf_printk
-      bpftool: Only probe trace_vprintk feature in 'full' mode
-      selftests/bpf: Migrate prog_tests/trace_printk CHECKs to ASSERTs
-      selftests/bpf: Add trace_vprintk test prog
-      bpf: Clarify data_len param in bpf_snprintf and bpf_seq_printf comments
-
-Gokul Sivakumar (2):
-      samples: bpf: Convert route table network order fields into readable format
-      samples: bpf: Convert ARP table network order fields into readable format
-
-Grant Seltzer (1):
-      libbpf: Add doc comments in libbpf.h
-
-Hengqi Chen (2):
-      libbpf: Support uniform BTF-defined key/value specification across all BPF maps
-      selftests/bpf: Use BTF-defined key/value for map definitions
-
-Jiri Benc (1):
-      seltests: bpf: test_tunnel: Use ip neigh
-
-Johan Almbladh (24):
-      bpf/tests: Allow different number of runs per test case
-      bpf/tests: Reduce memory footprint of test suite
-      bpf/tests: Add exhaustive tests of ALU shift values
-      bpf/tests: Add exhaustive tests of ALU operand magnitudes
-      bpf/tests: Add exhaustive tests of JMP operand magnitudes
-      bpf/tests: Add staggered JMP and JMP32 tests
-      bpf/tests: Add exhaustive test of LD_IMM64 immediate magnitudes
-      bpf/tests: Add test case flag for verifier zero-extension
-      bpf/tests: Add JMP tests with small offsets
-      bpf/tests: Add JMP tests with degenerate conditional
-      bpf/tests: Expand branch conversion JIT test
-      bpf/tests: Add more BPF_END byte order conversion tests
-      bpf/tests: Fix error in tail call limit tests
-      bpf/tests: Add tail call limit test with external function call
-      bpf/tests: Add tests of BPF_LDX and BPF_STX with small sizes
-      bpf/tests: Add zero-extension checks in BPF_ATOMIC tests
-      bpf/tests: Add exhaustive tests of BPF_ATOMIC magnitudes
-      bpf/tests: Add tests to check source register zero-extension
-      bpf/tests: Add more tests for ALU and ATOMIC register clobbering
-      bpf/tests: Minor restructuring of ALU tests
-      bpf/tests: Add exhaustive tests of ALU register combinations
-      bpf/tests: Add exhaustive tests of BPF_ATOMIC register combinations
-      bpf/tests: Add test of ALU shifts with operand register aliasing
-      bpf/tests: Add test of LDX_MEM with operand aliasing
-
-Kees Cook (2):
-      bpf: Replace "want address" users of BPF_CAST_CALL with BPF_CALL_IMM
-      bpf: Replace callers of BPF_CAST_CALL with proper function typedef
-
-Kev Jackson (1):
-      bpf, xdp, docs: Correct some English grammar and spelling
-
-Kumar Kartikeya Dwivedi (2):
-      bpf: selftests: Fix fd cleanup in get_branch_snapshot
-      libbpf: Fix skel_internal.h to set errno on loader retval < 0
-
-Lorenz Bauer (1):
-      bpf: Do not invoke the XDP dispatcher for PROG_RUN with single repeat
-
-Magnus Karlsson (14):
-      xsk: Get rid of unused entry in struct xdp_buff_xsk
-      xsk: Batched buffer allocation for the pool
-      ice: Use xdp_buf instead of rx_buf for xsk zero-copy
-      ice: Use the xsk batched rx allocation interface
-      i40e: Use the xsk batched rx allocation interface
-      xsk: Optimize for aligned case
-      selftests: xsk: Fix missing initialization
-      selftests: xsk: Put the same buffer only once in the fill ring
-      selftests: xsk: Fix socket creation retry
-      selftests: xsk: Introduce pacing of traffic
-      selftests: xsk: Add single packet test
-      selftests: xsk: Change interleaving of packets in unaligned mode
-      selftests: xsk: Add frame_headroom test
-      xsk: Fix clang build error in __xp_alloc
-
-Martin KaFai Lau (4):
-      bpf: Check the other end of slot_type for STACK_SPILL
-      bpf: Support <8-byte scalar spill and refill
-      bpf: selftest: A bpf prog that has a 32bit scalar spill
-      bpf: selftest: Add verifier tests for <8-byte scalar spill and refill
-
-Po-Hsu Lin (1):
-      selftests/bpf: Use kselftest skip code for skipped tests
-
-Toke Høiland-Jørgensen (2):
-      libbpf: Ignore STT_SECTION symbols in 'maps' section
-      libbpf: Properly ignore STT_SECTION symbols in legacy map definitions
-
-Yonghong Song (2):
-      selftests/bpf: Fix btf_dump __int128 test failure with clang build kernel
-      selftests/bpf: Fix probe_user test failure with clang build kernel
-
-Yucong Sun (1):
-      bpftool: Avoid using "?: " in generated code
-
- Documentation/bpf/bpf_licensing.rst                |    92 +
- Documentation/bpf/index.rst                        |     9 +
- drivers/net/ethernet/intel/i40e/i40e_xsk.c         |    52 +-
- drivers/net/ethernet/intel/ice/ice_txrx.h          |    16 +-
- drivers/net/ethernet/intel/ice/ice_xsk.c           |    92 +-
- include/linux/bpf.h                                |     7 +-
- include/linux/filter.h                             |     7 +-
- include/net/xdp.h                                  |     8 +-
- include/net/xdp_sock_drv.h                         |    22 +
- include/net/xsk_buff_pool.h                        |    48 +-
- include/uapi/linux/bpf.h                           |    16 +-
- kernel/bpf/arraymap.c                              |     7 +-
- kernel/bpf/core.c                                  |     5 +
- kernel/bpf/hashtab.c                               |    13 +-
- kernel/bpf/helpers.c                               |    11 +-
- kernel/bpf/verifier.c                              |   123 +-
- kernel/trace/bpf_trace.c                           |    54 +-
- lib/test_bpf.c                                     | 17181 ++++++++++++-------
- net/bpf/test_run.c                                 |     6 +-
- net/xdp/xsk.c                                      |    15 -
- net/xdp/xsk_buff_pool.c                            |   132 +-
- net/xdp/xsk_queue.h                                |    12 +-
- samples/bpf/xdp_router_ipv4_user.c                 |    39 +-
- tools/bpf/bpftool/feature.c                        |     1 +
- tools/bpf/bpftool/gen.c                            |     5 +-
- tools/include/uapi/linux/bpf.h                     |    16 +-
- tools/lib/bpf/bpf_helpers.h                        |    51 +-
- tools/lib/bpf/gen_loader.c                         |     7 +-
- tools/lib/bpf/libbpf.c                             |   846 +-
- tools/lib/bpf/libbpf.h                             |    67 +-
- tools/lib/bpf/libbpf_internal.h                    |     7 +
- tools/lib/bpf/libbpf_legacy.h                      |     9 +
- tools/lib/bpf/skel_internal.h                      |     6 +-
- tools/testing/selftests/bpf/Makefile               |     3 +-
- tools/testing/selftests/bpf/README.rst             |    13 +
- .../selftests/bpf/prog_tests/attach_probe.c        |    24 +-
- tools/testing/selftests/bpf/prog_tests/btf_dump.c  |    27 +-
- .../selftests/bpf/prog_tests/flow_dissector.c      |     4 +-
- .../selftests/bpf/prog_tests/get_branch_snapshot.c |     5 +-
- .../testing/selftests/bpf/prog_tests/probe_user.c  |     4 +-
- .../selftests/bpf/prog_tests/reference_tracking.c  |    52 +-
- tools/testing/selftests/bpf/prog_tests/sk_assign.c |     2 +-
- .../selftests/bpf/prog_tests/sockopt_multi.c       |    30 +-
- tools/testing/selftests/bpf/prog_tests/tailcalls.c |    58 +-
- .../selftests/bpf/prog_tests/trace_printk.c        |    24 +-
- .../selftests/bpf/prog_tests/trace_vprintk.c       |    68 +
- tools/testing/selftests/bpf/prog_tests/xdpwall.c   |    15 +
- tools/testing/selftests/bpf/progs/bpf_flow.c       |     3 +-
- .../bpf/progs/cg_storage_multi_isolated.c          |     4 +-
- .../selftests/bpf/progs/cg_storage_multi_shared.c  |     4 +-
- .../selftests/bpf/progs/for_each_array_map_elem.c  |     2 +-
- .../selftests/bpf/progs/for_each_hash_map_elem.c   |     2 +-
- tools/testing/selftests/bpf/progs/kfree_skb.c      |     4 +-
- .../testing/selftests/bpf/progs/kfunc_call_test.c  |     4 +-
- .../selftests/bpf/progs/kfunc_call_test_subprog.c  |     2 +-
- .../selftests/bpf/progs/perf_event_stackmap.c      |     4 +-
- tools/testing/selftests/bpf/progs/skb_pkt_end.c    |     2 +-
- .../selftests/bpf/progs/sockmap_verdict_prog.c     |    12 +-
- tools/testing/selftests/bpf/progs/sockopt_multi.c  |     5 +-
- tools/testing/selftests/bpf/progs/tailcall1.c      |     7 +-
- tools/testing/selftests/bpf/progs/tailcall2.c      |    23 +-
- tools/testing/selftests/bpf/progs/tailcall3.c      |     7 +-
- tools/testing/selftests/bpf/progs/tailcall4.c      |     7 +-
- tools/testing/selftests/bpf/progs/tailcall5.c      |     7 +-
- tools/testing/selftests/bpf/progs/tailcall6.c      |     6 +-
- .../selftests/bpf/progs/tailcall_bpf2bpf1.c        |     7 +-
- .../selftests/bpf/progs/tailcall_bpf2bpf2.c        |     7 +-
- .../selftests/bpf/progs/tailcall_bpf2bpf3.c        |    11 +-
- .../selftests/bpf/progs/tailcall_bpf2bpf4.c        |    15 +-
- .../selftests/bpf/progs/test_btf_map_in_map.c      |    14 +-
- .../selftests/bpf/progs/test_btf_skc_cls_ingress.c |     2 +-
- .../testing/selftests/bpf/progs/test_cgroup_link.c |     4 +-
- tools/testing/selftests/bpf/progs/test_check_mtu.c |    12 +-
- .../selftests/bpf/progs/test_cls_redirect.c        |     2 +-
- .../testing/selftests/bpf/progs/test_global_data.c |     2 +-
- .../selftests/bpf/progs/test_global_func1.c        |     2 +-
- .../selftests/bpf/progs/test_global_func3.c        |     2 +-
- .../selftests/bpf/progs/test_global_func5.c        |     2 +-
- .../selftests/bpf/progs/test_global_func6.c        |     2 +-
- .../selftests/bpf/progs/test_global_func7.c        |     2 +-
- .../testing/selftests/bpf/progs/test_map_in_map.c  |    12 +-
- .../selftests/bpf/progs/test_map_in_map_invalid.c  |     2 +-
- .../bpf/progs/test_misc_tcp_hdr_options.c          |     2 +-
- .../selftests/bpf/progs/test_pe_preserve_elems.c   |     8 +-
- .../testing/selftests/bpf/progs/test_perf_buffer.c |     4 +-
- .../testing/selftests/bpf/progs/test_pkt_access.c  |     2 +-
- .../selftests/bpf/progs/test_pkt_md_access.c       |     4 +-
- .../testing/selftests/bpf/progs/test_probe_user.c  |    28 +-
- .../bpf/progs/test_select_reuseport_kern.c         |     4 +-
- tools/testing/selftests/bpf/progs/test_sk_assign.c |     3 +-
- tools/testing/selftests/bpf/progs/test_sk_lookup.c |    44 +-
- .../selftests/bpf/progs/test_sk_lookup_kern.c      |    37 +-
- .../testing/selftests/bpf/progs/test_skb_helpers.c |     2 +-
- .../selftests/bpf/progs/test_sockmap_listen.c      |     2 +-
- .../bpf/progs/test_sockmap_skb_verdict_attach.c    |     2 +-
- .../selftests/bpf/progs/test_sockmap_update.c      |     2 +-
- .../selftests/bpf/progs/test_stacktrace_build_id.c |     4 +-
- .../selftests/bpf/progs/test_stacktrace_map.c      |     4 +-
- tools/testing/selftests/bpf/progs/test_tc_bpf.c    |     2 +-
- tools/testing/selftests/bpf/progs/test_tc_neigh.c  |     6 +-
- .../selftests/bpf/progs/test_tc_neigh_fib.c        |     6 +-
- tools/testing/selftests/bpf/progs/test_tc_peer.c   |    10 +-
- .../bpf/progs/test_tcp_check_syncookie_kern.c      |     4 +-
- .../selftests/bpf/progs/test_tcp_hdr_options.c     |     2 +-
- .../selftests/bpf/progs/test_tcpnotify_kern.c      |     4 +-
- tools/testing/selftests/bpf/progs/test_xdp.c       |     2 +-
- .../bpf/progs/test_xdp_adjust_tail_grow.c          |     2 +-
- .../bpf/progs/test_xdp_adjust_tail_shrink.c        |     4 +-
- .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |     4 +-
- .../selftests/bpf/progs/test_xdp_devmap_helpers.c  |     2 +-
- tools/testing/selftests/bpf/progs/test_xdp_link.c  |     2 +-
- tools/testing/selftests/bpf/progs/test_xdp_loop.c  |     2 +-
- .../selftests/bpf/progs/test_xdp_noinline.c        |     4 +-
- .../bpf/progs/test_xdp_with_cpumap_helpers.c       |     4 +-
- .../bpf/progs/test_xdp_with_devmap_helpers.c       |     4 +-
- tools/testing/selftests/bpf/progs/trace_vprintk.c  |    33 +
- tools/testing/selftests/bpf/progs/xdp_dummy.c      |     2 +-
- .../selftests/bpf/progs/xdp_redirect_multi_kern.c  |     4 +-
- tools/testing/selftests/bpf/progs/xdping_kern.c    |     4 +-
- tools/testing/selftests/bpf/progs/xdpwall.c        |   365 +
- tools/testing/selftests/bpf/test_bpftool.py        |    22 +-
- .../selftests/bpf/test_tcp_check_syncookie.sh      |     4 +-
- tools/testing/selftests/bpf/test_tunnel.sh         |     5 +-
- tools/testing/selftests/bpf/test_xdp_meta.sh       |     5 +-
- tools/testing/selftests/bpf/test_xdp_redirect.sh   |     4 +-
- .../selftests/bpf/test_xdp_redirect_multi.sh       |     2 +-
- tools/testing/selftests/bpf/test_xdp_veth.sh       |     4 +-
- tools/testing/selftests/bpf/test_xdp_vlan.sh       |     7 +-
- tools/testing/selftests/bpf/verifier/spill_fill.c  |   161 +
- tools/testing/selftests/bpf/xdping.c               |     5 +-
- tools/testing/selftests/bpf/xdpxceiver.c           |   133 +-
- tools/testing/selftests/bpf/xdpxceiver.h           |    11 +-
- 132 files changed, 13779 insertions(+), 6724 deletions(-)
- create mode 100644 Documentation/bpf/bpf_licensing.rst
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdpwall.c
- create mode 100644 tools/testing/selftests/bpf/progs/trace_vprintk.c
- create mode 100644 tools/testing/selftests/bpf/progs/xdpwall.c
+Thanks!
