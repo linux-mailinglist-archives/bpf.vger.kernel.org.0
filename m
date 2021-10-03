@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC794203A7
-	for <lists+bpf@lfdr.de>; Sun,  3 Oct 2021 21:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EB64203A9
+	for <lists+bpf@lfdr.de>; Sun,  3 Oct 2021 21:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhJCTYY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Oct 2021 15:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S231684AbhJCTY1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Oct 2021 15:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231641AbhJCTYV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231597AbhJCTYV (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sun, 3 Oct 2021 15:24:21 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD06BC061798
-        for <bpf@vger.kernel.org>; Sun,  3 Oct 2021 12:22:28 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so17206505wmq.1
-        for <bpf@vger.kernel.org>; Sun, 03 Oct 2021 12:22:28 -0700 (PDT)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D86C0617A3
+        for <bpf@vger.kernel.org>; Sun,  3 Oct 2021 12:22:29 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id o20so8360323wro.3
+        for <bpf@vger.kernel.org>; Sun, 03 Oct 2021 12:22:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6qPlM6MAUchBkbCWCD/H91DQxecPf+FzubhRu6ucuSs=;
-        b=JzLgue6VTP/8H6wnhXA7pOgI6vuWWCcHDEe2O2SAqEHI67lRMcZvxR6eCVzkUghmsD
-         ZEbp0J97ousKvr3bdTc/f1kAjwQKmPJj1kwCrd6yrOANRhEAxh9wZXH7PwXaPrQ/jmlk
-         jMMC5Ls3ejUqG6EyO+KkPtRigtuzqr06NvXN2uMxY7lF9EpPtDwvwjUIprbaJxENOs3B
-         TGY6YhqjgjYS709dr2kntVswYdFKzsQS+3V08trhh13RRx90Ag3hl7icV9NRiJ8hqjIG
-         HMhQmvBbW0BVCzIIRYGMePVBfSdrfCmOTpiNKWo1toxVlQ+ZxNRzCIfBkJ/YHWDHKCqk
-         uQiA==
+        bh=BDlgUQirZcOt1FAHvZmZNmvLlnlW8XrgUiUQXaZEUJM=;
+        b=HPYUUXZZm3+OB8e2U+Z2KPrnDJKdj/A0fXhGS8POpGD8+7WDr8LtyrMuS6RzCHevkI
+         ri92xvsl6tiEmbhQN0dgEuY16lMcI0WarLqxg2ox8SMyDGshIB7rg3+7Bf1puF5/zh6z
+         Cf1oRmb5h9qVTm7BD02J1y2coIogbvhbj/5l7kO2JDeiZLh6VKq6Et6j0lHeqIWiNTOU
+         p7rUmuY1APtvgYLRKM8V0lY99uog9E416RMaOyPRWVEMRGCMBsr//S9k4mk35PKXvGuh
+         lqE9Td9LNZ6CHnl9y73BnJjG/PogKL6qc1xcOcIqdbFsFl+KWzoe1NDoY+gfYj0peFt5
+         /Smg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6qPlM6MAUchBkbCWCD/H91DQxecPf+FzubhRu6ucuSs=;
-        b=JuJkmWwBuly5GIPnK7nRDABvjGahyRX88g8aXJ637vgGUo2hG8vEkJmXZ4kHvFMrS9
-         CafQ3YFnpjhWmIUw7CT3OsNv9NYW1NorhTbvcIPJ0wd9AMGPIpn7PPaIFUhreNL6gA8P
-         /AYzZQskk/CmgZDb8AUlfQKj89OFGW2xaIrEVXPpI0yALyTXNznOgNb4/vKAn7LZeoWV
-         nB1g0WTtNRW5nIMjTKtR0yAOU2avo/R8FQu7ytvqUIG9WqzH5BO6EWzYiBQWaQRDwwKz
-         ELah/Lb4FBY/1xgcX0W7qxZ249yImD4ydR1yak3CJz/RHEZeH7nrZcvGiFz+TUtBK/xM
-         EEdg==
-X-Gm-Message-State: AOAM533yPpn58Snx/G1IHGWvv3JCajz+rL+hXrSkjMroby/FnnyxB8fv
-        0dF/Dap4WYEFt14WfdzkGnfR2w==
-X-Google-Smtp-Source: ABdhPJx+xW/iFnEmz526jnqKOBhDKHPGkVElpt95MJBSlFuMp1iCwteFzsttq9RK88kCs20SsSj+lQ==
-X-Received: by 2002:a1c:7706:: with SMTP id t6mr3472713wmi.134.1633288947389;
-        Sun, 03 Oct 2021 12:22:27 -0700 (PDT)
+        bh=BDlgUQirZcOt1FAHvZmZNmvLlnlW8XrgUiUQXaZEUJM=;
+        b=aTlDAZoUNBZLvNnT31k24jOIPqa8KTwhE2qrLGxBDkbDNaAmUdTJ8WdDmiYdqkas+O
+         qvkUWE5/WeUkX+dehCiZIA8O4HSESBp+bnL9JUDiISlRB2w9hp8LoDHm6HtSuH5yj4G6
+         DIDeq2warMKW3T8WSqqe5/1F0LjLs32UliZ5J3lIkaefhuZ5SiHkaezz6EYP1ekSnWUt
+         eRNeD3j4iaKt4EY8VYWbu/D2OSCrq+TfovfZASQq5f2MGaWWRCHwvuOkRhahtqC2G8gz
+         zhOCkDoazbRGIVixZwiEHsKginNC/g2inmQpCV4Jj4ROTA5wkRq0u1/VWqh93weR3U+Y
+         RjtA==
+X-Gm-Message-State: AOAM530R4l/q+Cf8WNJ+bmJOjLS4g0TV8prE4+E7gsVhboV/p0FmcNWp
+        2U7EtKWadYHI0W7QfH9QGpNi7A==
+X-Google-Smtp-Source: ABdhPJzb/u4TIo3KgzbBwfzILlctGJx1H2U1FHbUrzIhlv1OBw3jUKwvwzKt2EAwW6e0QOEXLjZfAg==
+X-Received: by 2002:a5d:4911:: with SMTP id x17mr6955157wrq.173.1633288948218;
+        Sun, 03 Oct 2021 12:22:28 -0700 (PDT)
 Received: from localhost.localdomain ([149.86.88.77])
-        by smtp.gmail.com with ESMTPSA id d3sm14124642wrb.36.2021.10.03.12.22.26
+        by smtp.gmail.com with ESMTPSA id d3sm14124642wrb.36.2021.10.03.12.22.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 03 Oct 2021 12:22:27 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
@@ -53,9 +53,9 @@ To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v3 09/10] selftests/bpf: better clean up for runqslower in test_bpftool_build.sh
-Date:   Sun,  3 Oct 2021 20:22:07 +0100
-Message-Id: <20211003192208.6297-10-quentin@isovalent.com>
+Subject: [PATCH bpf-next v3 10/10] tools: bpftool: add install-bin target to install binary only
+Date:   Sun,  3 Oct 2021 20:22:08 +0100
+Message-Id: <20211003192208.6297-11-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211003192208.6297-1-quentin@isovalent.com>
 References: <20211003192208.6297-1-quentin@isovalent.com>
@@ -65,59 +65,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The script test_bpftool_build.sh attempts to build bpftool in the
-various supported ways, to make sure nothing breaks.
+With "make install", bpftool installs its binary and its bash completion
+file. Usually, this is what we want. But a few components in the kernel
+repository (namely, BPF iterators and selftests) also install bpftool
+locally before using it. In such a case, bash completion is not
+necessary and is just a useless build artifact.
 
-One of those ways is to run "make tools/bpf" from the root of the kernel
-repository. This command builds bpftool, along with the other tools
-under tools/bpf, and runqslower in particular. After running the
-command and upon a successful bpftool build, the script attempts to
-cleanup the generated objects. However, after building with this target
-and in the case of runqslower, the files are not cleaned up as expected.
-
-This is because the "tools/bpf" target sets $(OUTPUT) to
-.../tools/bpf/runqslower/ when building the tool, causing the object
-files to be placed directly under the runqslower directory. But when
-running "cd tools/bpf; make clean", the value for $(OUTPUT) is set to
-".output" (relative to the runqslower directory) by runqslower's
-Makefile, and this is where the Makefile looks for files to clean up.
-
-We cannot easily fix in the root Makefile (where "tools/bpf" is defined)
-or in tools/scripts/Makefile.include (setting $(OUTPUT)), where changing
-the way the output variables are passed would likely have consequences
-elsewhere. We could change runqslower's Makefile to build in the
-repository instead of in a dedicated ".output/", but doing so just to
-accommodate a test script doesn't sound great. Instead, let's just make
-sure that we clean up runqslower properly by adding the correct command
-to the script.
-
-This will attempt to clean runqslower twice: the first try with command
-"cd tools/bpf; make clean" will search for tools/bpf/runqslower/.output
-and fail to clean it (but will still clean the other tools, in
-particular bpftool), the second one (added in this commit) sets the
-$(OUTPUT) variable like for building with the "tool/bpf" target and
-should succeed.
+Let's add an "install-bin" target to bpftool, to offer a way to install
+the binary only.
 
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- tools/testing/selftests/bpf/test_bpftool_build.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/bpf/preload/iterators/Makefile | 2 +-
+ tools/bpf/bpftool/Makefile            | 6 ++++--
+ tools/testing/selftests/bpf/Makefile  | 2 +-
+ 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
-index b03a87571592..1453a53ed547 100755
---- a/tools/testing/selftests/bpf/test_bpftool_build.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
-@@ -90,6 +90,10 @@ echo -e "... through kbuild\n"
+diff --git a/kernel/bpf/preload/iterators/Makefile b/kernel/bpf/preload/iterators/Makefile
+index ec39ccc71b8e..616a7ec0232c 100644
+--- a/kernel/bpf/preload/iterators/Makefile
++++ b/kernel/bpf/preload/iterators/Makefile
+@@ -67,4 +67,4 @@ $(DEFAULT_BPFTOOL): $(BPFOBJ) | $(BPFTOOL_OUTPUT)
+ 		    OUTPUT=$(BPFTOOL_OUTPUT)/				       \
+ 		    LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/			       \
+ 		    LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/			       \
+-		    prefix= DESTDIR=$(abs_out)/ install
++		    prefix= DESTDIR=$(abs_out)/ install-bin
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index ef5219e0e233..eaa38d27194d 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -221,10 +221,12 @@ clean: $(LIBBPF)-clean $(LIBBPF_BOOTSTRAP)-clean feature-detect-clean
+ 	$(Q)$(RM) -- $(OUTPUT)FEATURE-DUMP.bpftool
+ 	$(Q)$(RM) -r -- $(OUTPUT)feature/
  
- if [ -f ".config" ] ; then
- 	make_and_clean tools/bpf
-+	## "make tools/bpf" sets $(OUTPUT) to ...tools/bpf/runqslower for
-+	## runqslower, but the default (used for the "clean" target) is .output.
-+	## Let's make sure we clean runqslower's directory properly.
-+	make -C tools/bpf/runqslower OUTPUT=${KDIR_ROOT_DIR}/tools/bpf/runqslower/ clean
+-install: $(OUTPUT)bpftool
++install-bin: $(OUTPUT)bpftool
+ 	$(call QUIET_INSTALL, bpftool)
+ 	$(Q)$(INSTALL) -m 0755 -d $(DESTDIR)$(prefix)/sbin
+ 	$(Q)$(INSTALL) $(OUTPUT)bpftool $(DESTDIR)$(prefix)/sbin/bpftool
++
++install: install-bin
+ 	$(Q)$(INSTALL) -m 0755 -d $(DESTDIR)$(bash_compdir)
+ 	$(Q)$(INSTALL) -m 0644 bash-completion/bpftool $(DESTDIR)$(bash_compdir)
  
- 	## $OUTPUT is overwritten in kbuild Makefile, and thus cannot be passed
- 	## down from toplevel Makefile to bpftool's Makefile.
+@@ -251,6 +253,6 @@ zdep:
+ 	@if [ "$(feature-zlib)" != "1" ]; then echo "No zlib found"; exit 1 ; fi
+ 
+ .SECONDARY:
+-.PHONY: all FORCE clean install uninstall zdep
++.PHONY: all FORCE clean install-bin install uninstall zdep
+ .PHONY: doc doc-clean doc-install doc-uninstall
+ .DEFAULT_GOAL := all
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index ffe48b40d8fa..f1cb55c0c37e 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -216,7 +216,7 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
+ 		    OUTPUT=$(HOST_BUILD_DIR)/bpftool/			       \
+ 		    LIBBPF_OUTPUT=$(HOST_BUILD_DIR)/libbpf/		       \
+ 		    LIBBPF_DESTDIR=$(HOST_SCRATCH_DIR)/			       \
+-		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install
++		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install-bin
+ 
+ all: docs
+ 
 -- 
 2.30.2
 
