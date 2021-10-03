@@ -2,101 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED80420315
-	for <lists+bpf@lfdr.de>; Sun,  3 Oct 2021 19:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07D9420395
+	for <lists+bpf@lfdr.de>; Sun,  3 Oct 2021 21:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhJCRVL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Oct 2021 13:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        id S231464AbhJCTWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Oct 2021 15:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhJCRVL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Oct 2021 13:21:11 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AECC0613EC;
-        Sun,  3 Oct 2021 10:19:23 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id p80so17603158iod.10;
-        Sun, 03 Oct 2021 10:19:23 -0700 (PDT)
+        with ESMTP id S231420AbhJCTWg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Oct 2021 15:22:36 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD062C0613EC
+        for <bpf@vger.kernel.org>; Sun,  3 Oct 2021 12:20:47 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id u18so26361519wrg.5
+        for <bpf@vger.kernel.org>; Sun, 03 Oct 2021 12:20:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LtNAm7zzl2qrgZZh/QTIxNxuRAfc7I+2wFFQB9vnTF0=;
-        b=HPajL2gRll5UGOWQudiLfEhv04bZJLEY04ZU7ZSRAIC019LPw99IB3jcVbN4EN+uaa
-         xyKMFFwUWxMYSoP4ZBJywqtND/RYthdauADK8DHtR06cFEMk7vPzapNi8yp+/BQqu9DS
-         XOr3DnKVtkoe0wPl/79bKfHiDibk91+zdv0sLCel9UFYLCb9bmD47OsCKSwE0mGDtw8/
-         6gdgpENhRKndxirmzsgGPXX1upChcdibaOTNC3bq+DmwPpNVd9cFYYXmPAmiOvESIXbo
-         CSbSXebOc4mMaPqb0Px805lEkzhdOgcnojNc1+KreKV66iyssiTwe6WqQz88OHS1mJw/
-         GXiw==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=l8KalBRoprd2/whbgXpOCEgrvg7EJ+HvtGGElZ3g6D8=;
+        b=mRPKPjrhQhvRtxSSp3rysn9li3GQ0xI8MuedB9Ar59NthQQSKr+zNa7fAUGqnl5wrv
+         E+q5sGzNhBhezCRC/FbGW8qQo1g1GjzIIchesTVeg/kbmZYv3A3mz5bqqJ8ut1PEDLA4
+         y/Fs5ZfMgLrqe86YfVmz7zp1/QLZOAvepK/PMUQbnphVx3RIqvnCHMdv0tBsyQ7EHhRe
+         zVxInQCZDseEtDVQEadRs783T/2X14izQt/x4dGlXihLJS4dGHetu+XdRwCgVdOp+yyk
+         3NMqX05L3ZiyKenvOrGlIyNFXExffUnK3tPulZ0wbDZG4I61O1wXDT4EK094TiZYI6Ce
+         NMWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LtNAm7zzl2qrgZZh/QTIxNxuRAfc7I+2wFFQB9vnTF0=;
-        b=OlJvNQS4Y84OZTjs29lxUhu7NVJXGBUBlDEKWR77L5beT9+YJbW6ZE6vsZhKSORaNu
-         Zjk7+snQ7f8+yIOuq594x7JkqAbRLCLUvMSZoxYfjtT6Fy3mM7PRGEZXBLn9E31o5Ii4
-         pZJU3bUZ1KkQ1xCg9PnW0Yz0Mt8k9mPFRKQlMGiZw9Z8KxNum2RFQAJzx8kvd6+MITby
-         +LUKlCmGPfmvWe6fp6px09cLOLoT9HjL8jLm6H/nYmOROprlbIWMhuskijP2ZHQTpipr
-         8uIRvN1pmjqdFjwYVwVnFYR4R36YDceS+dptD32PcjJnyG1dhEK5kvB4nNLLvqOvUSni
-         IGrA==
-X-Gm-Message-State: AOAM530kCN3EUHHI7U5xQ2AzGAH6ur52saDb7ZLGzN6gc14eVZaeiig/
-        E97KBM4k6Ot70DKFQGYBmN4GxfWf4Cov0KNNNBM=
-X-Google-Smtp-Source: ABdhPJzE8E4NG+zryoNkkGJT+VnCZOOENDmogYIeJjU1ZUgffAvfm3SvEG54YtnyET4C9tYQXAL12Yepc0ZqQhXt644=
-X-Received: by 2002:a05:6602:214f:: with SMTP id y15mr6480548ioy.127.1633281563293;
- Sun, 03 Oct 2021 10:19:23 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=l8KalBRoprd2/whbgXpOCEgrvg7EJ+HvtGGElZ3g6D8=;
+        b=iVWD+yXhHuCL2D8HPPy9pUkR+zcl/tUEchTisrvnQJZ5gr3+fouwks2QXQ4VVIMhNu
+         kkx4UyiYwtWxUqBUZsRXCgMirJTN4oMwBWPCFZx9j/vJc+nglsaEYTI3lSMSpRrZ2sHq
+         VczgcX3TQIsnc8FDqTUpKthZL3VNb53Abw3cT88MzKA9SBPCXqSSpaxyxcdTkFunLibC
+         0f1jasYqSvFT6pYMpBAI0G1JjDAjIKtguongpACKbzYIgYYdI6+6YdZAnoQI+ZF08+/S
+         6c+Hz5xg6kL5TZLXdtn0IH2XIQ+wXXD6i8nmbczkdg62jNvu7GwCyy6VvPClYn2rQ6ju
+         eGVw==
+X-Gm-Message-State: AOAM532RgfXRmaqr3cLGgv6P/aaExVOnTG3iPzrJhPdvnNWjEiY46UI0
+        o32Fw95/hRkPp+HGg9waTSH3aw==
+X-Google-Smtp-Source: ABdhPJytdYBtP58n1cMZAlf4PVaZc1+caK/+MHANAKaMmk0SPthS/5Aq3zrFfczqAfKbsz3WqJps3A==
+X-Received: by 2002:adf:de02:: with SMTP id b2mr10290219wrm.42.1633288846284;
+        Sun, 03 Oct 2021 12:20:46 -0700 (PDT)
+Received: from [192.168.1.11] ([149.86.88.77])
+        by smtp.gmail.com with ESMTPSA id m4sm13679120wrx.81.2021.10.03.12.20.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Oct 2021 12:20:45 -0700 (PDT)
+Message-ID: <9e1461e2-7062-df4f-a6e7-bf64988aa52d@isovalent.com>
+Date:   Sun, 3 Oct 2021 20:20:45 +0100
 MIME-Version: 1.0
-References: <20210930071143.63410-1-wangkefeng.wang@huawei.com> <20210930071143.63410-8-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210930071143.63410-8-wangkefeng.wang@huawei.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sun, 3 Oct 2021 19:19:12 +0200
-Message-ID: <CA+fCnZd6=sXgb-782KkijqJ7zgBj38oXLeLbi4HoUhm3MY4J8g@mail.gmail.com>
-Subject: Re: [PATCH v4 07/11] mm: kasan: Use is_kernel() helper
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        bpf <bpf@vger.kernel.org>, linux-alpha@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH bpf-next v2 0/9] install libbpf headers when using the
+ library
+Content-Language: en-US
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20211001110856.14730-1-quentin@isovalent.com>
+ <CAEf4Bza+C5cNJbvw_n_pR_mVL0rPH2VkZd-AJMx78Fp_m+CpRQ@mail.gmail.com>
+ <CACdoK4LU-uigbtQw63Yacd_AOzv+_fWuhL-ur20GyqFbE4doqw@mail.gmail.com>
+In-Reply-To: <CACdoK4LU-uigbtQw63Yacd_AOzv+_fWuhL-ur20GyqFbE4doqw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:09 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
-> Directly use is_kernel() helper in kernel_or_module_addr().
->
-> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  mm/kasan/report.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 3239fd8f8747..1c955e1c98d5 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -226,7 +226,7 @@ static void describe_object(struct kmem_cache *cache, void *object,
->
->  static inline bool kernel_or_module_addr(const void *addr)
->  {
-> -       if (addr >= (void *)_stext && addr < (void *)_end)
-> +       if (is_kernel((unsigned long)addr))
->                 return true;
->         if (is_module_address((unsigned long)addr))
->                 return true;
-> --
-> 2.26.2
->
+2021-10-02 21:40 UTC+0100 ~ Quentin Monnet <quentin@isovalent.com>
+> On Sat, 2 Oct 2021 at 00:05, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Fri, Oct 1, 2021 at 4:09 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>>
+>>> Libbpf is used at several locations in the repository. Most of the time,
+>>> the tools relying on it build the library in its own directory, and include
+>>> the headers from there. This works, but this is not the cleanest approach.
+>>> It generates objects outside of the directory of the tool which is being
+>>> built, and it also increases the risk that developers include a header file
+>>> internal to libbpf, which is not supposed to be exposed to user
+>>> applications.
+>>>
+>>> This set adjusts all involved Makefiles to make sure that libbpf is built
+>>> locally (with respect to the tool's directory or provided build directory),
+>>> and by ensuring that "make install_headers" is run from libbpf's Makefile
+>>> to export user headers properly.
+>>>
+>>> This comes at a cost: given that the libbpf was so far mostly compiled in
+>>> its own directory by the different components using it, compiling it once
+>>> would be enough for all those components. With the new approach, each
+>>> component compiles its own version. To mitigate this cost, efforts were
+>>> made to reuse the compiled library when possible:
+>>>
+>>> - Make the bpftool version in samples/bpf reuse the library previously
+>>>   compiled for the selftests.
+>>> - Make the bpftool version in BPF selftests reuse the library previously
+>>>   compiled for the selftests.
+>>> - Similarly, make resolve_btfids in BPF selftests reuse the same compiled
+>>>   library.
+>>> - Similarly, make runqslower in BPF selftests reuse the same compiled
+>>>   library; and make it rely on the bpftool version also compiled from the
+>>>   selftests (instead of compiling its own version).
+>>> - runqslower, when compiled independently, needs its own version of
+>>>   bpftool: make them share the same compiled libbpf.
+>>>
+>>> As a result:
+>>>
+>>> - Compiling the samples/bpf should compile libbpf just once.
+>>> - Compiling the BPF selftests should compile libbpf just once.
+>>> - Compiling the kernel (with BTF support) should now lead to compiling
+>>>   libbpf twice: one for resolve_btfids, one for kernel/bpf/preload.
+>>> - Compiling runqslower individually should compile libbpf just once. Same
+>>>   thing for bpftool, resolve_btfids, and kernel/bpf/preload/iterators.
+>>
+>> The whole sharing of libbpf build artifacts is great, I just want to
+>> point out that it's also dangerous if those multiple Makefiles aren't
+>> ordered properly. E.g., if you build runqslower and the rest of
+>> selftests in parallel without making sure that libbpf already
+>> completed its build, you might end up building libbpf in parallel in
+>> two independent make instances and subsequently corrupting generated
+>> object files. I haven't looked through all the changes (and I'll
+>> confess that it's super hard to reason about dependencies and ordering
+>> in Makefile) and I'll keep this in mind, but wanted to bring this up.
+> 
+> I'm not sure how Makefile handles this exactly, I don't know if it can
+> possibly build the two in parallel or if it's smart enough to realise
+> that the libbpf.a is the same object in both cases and should be built
+> only once. Same as you, I didn't hit any issue of this kind when
+> testing the patches.
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Testing further with make, I don't think it's smart enough to avoid
+building the object twice in the same directory. This probably didn't
+show in practice because the parallel build tends to build the different
+object files in parallel rather than libbpf and bpftool in parallel. But
+to remain on the safe side, I'll just add a dependency on libbpf for
+bpftool/runqslower etc. to make sure they are not all built together
+(most locations had the dependency already). v3 is coming.
+
+Quentin
+
