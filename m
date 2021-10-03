@@ -2,273 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F134208B7
-	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 11:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73163420936
+	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 12:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhJDJvJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Oct 2021 05:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40654 "EHLO
+        id S229505AbhJDKRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Oct 2021 06:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232571AbhJDJvG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:51:06 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFCAC061745;
-        Mon,  4 Oct 2021 02:49:18 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id v11so3394372pgb.8;
-        Mon, 04 Oct 2021 02:49:18 -0700 (PDT)
+        with ESMTP id S229478AbhJDKRv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Oct 2021 06:17:51 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F11FC061745
+        for <bpf@vger.kernel.org>; Mon,  4 Oct 2021 03:16:02 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id j27so13056795wms.0
+        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 03:16:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wx9DpnbwUMGeAU5OeC2TqZu1kEa5DvJJ9RhH8/A2uyw=;
-        b=UB0pgeNHKkMY9dxXLO+xiIKupBAnbzdzDiwQ8z8zSiACfq+r2f5crtyFJUwGyyGnvP
-         nUd+7z0jOiHEYGGZXjMR/mIhE8xnqcsiGhDL85fKuc9Fyv9PNdtysBghDv3ZnNl2F1HJ
-         NX7XcUPmhTsSBFNJU4LyJBTS+UKSGG+oCbVngCne3C2d+5hjbjEnqj7PZfLII2oiTVLL
-         276W/8fFZk7EcJhKgQ7lLPy+Mdicp59qylhQD8UJAUdt8Y1YezvJQDYuinbgZKqpE02m
-         aFrM//9XxFmL631LIcrGNyYudb0N7+2sEV6Mey6c/PL7lCQAuYbqqTvtrD4pEFK1AaDq
-         Lt2w==
+        h=message-id:sender:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=wlLcvdzFoeyeX6JTHYlU53G5ryTrrQ22juicajJlTfk=;
+        b=RBsctk4w1xO6Z2ryQAxJ79l7zKoMaDEOJxcBFFRYe2iPdB+7eQYWzxPjIfidWFBcUc
+         HD/vJBf3JNy9kfArysqlO1GQCgU3jLpUKXtxOcLAd391IxFyIHfTfHy6hUXMDi4/w8T/
+         TSqDx/+yn/5goNHz3xr5vvzN+fVCID4nID94oX84G54dSP+5xfI1OCcWaFjvfd4I3OEJ
+         akTEcxhKG5ytxflIrehAmgS1A6DyCWqwuLt6daNtHJEEK4+qDawdpMwgKpIjJEl+K07e
+         xKS/DafaVuULEu7vk0jHWRxClKftDfbUWUK4NUOzRn62AD1i/hMrzPQdZpjQLAQ6NV+Q
+         zTbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wx9DpnbwUMGeAU5OeC2TqZu1kEa5DvJJ9RhH8/A2uyw=;
-        b=ALN0FaSvvpOrWwqOcSFqmj9vefhefXmRzL8WrKLkkMaYa3l1UOoTbLwfP8YWUGOLxf
-         BGskpy8V6TyN/a1Dhboxzhuy4xIp1klogMUUZT22GdprE6nQ5sBHNz8IWH2r5VESjzIA
-         Nk/ldNAlp1VAdSSRgeiBTI7uKZb7Wy62cg91osITnBxiaOZqzPERcVqawitvzdq2te1f
-         zjiDNqzBuzOS99LVbCXTCFA5u/QeFPPySxp0/zzwwdJabq+od9VvhlSCx+04JvCgUAl8
-         jFJ8aA9m93uKExMTT4LeFeHGHcvewpRJegRgna5DUs8UnsF1+3E8FuELIAf62LpSEow1
-         m1ZQ==
-X-Gm-Message-State: AOAM530pysv6N9nRTDwLd7Qmfde23sSYJzanSSG4YQpfhG1rtyOTFgB+
-        QMfqB17iM4PZQAbB0/WHvls=
-X-Google-Smtp-Source: ABdhPJwYqTQKMjENNXutliFslHqtbdsPnN5mWxVo1wWrd2U2wZzI7DWdLqFvbyvYeYxHFlunvf+Tqg==
-X-Received: by 2002:a62:5304:0:b0:44c:719c:a2c with SMTP id h4-20020a625304000000b0044c719c0a2cmr363051pfb.13.1633340957972;
-        Mon, 04 Oct 2021 02:49:17 -0700 (PDT)
-Received: from localhost ([27.102.113.79])
-        by smtp.gmail.com with ESMTPSA id k14sm12908985pji.45.2021.10.04.02.49.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 02:49:17 -0700 (PDT)
-From:   Hou Tao <hotforest@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Ingo Molnar <mingo@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, houtao1@huawei.com
-Subject: [PATCH bpf-next v5 3/3] bpf/selftests: add test for writable bare tracepoint
-Date:   Mon,  4 Oct 2021 17:48:57 +0800
-Message-Id: <20211004094857.30868-4-hotforest@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211004094857.30868-1-hotforest@gmail.com>
-References: <20211004094857.30868-1-hotforest@gmail.com>
+        h=x-gm-message-state:message-id:sender:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=wlLcvdzFoeyeX6JTHYlU53G5ryTrrQ22juicajJlTfk=;
+        b=nG+QwExjVeYkuZOQDP6YektIAzCGlztBUGU2qvtZlogLihbDp4l9XJaXkPcSII1EbM
+         8iX5TZ+D35j48wvPhHK8F1rXyiv7e8+u/HZUoWxbuLtYQEik8iAmqJGG+8QNDTLiD8lV
+         /99Pc41IzT3sZS7BJCJCwvNFLQ4yEH0Bn4Ndvxa6ogXIOOSyyru9aX2BpZRjBi4XIAyQ
+         SCYDwDTIBo6TohETUB7eb04YCP+Xd4IPcLWyiU3IEj6utmM8x6QZ/Oaea2tj0EzfWn/j
+         88gUk7r/zaTA7VwOgK4fHEUnbWW27ztC+RreUeVD9uLahjLIPUOAMBpMkgXWmGwFpCvj
+         4tdA==
+X-Gm-Message-State: AOAM532RWDvgEVKoWAWhpmZ8f5pO5+TfxxlUZwZHEy0VwzghYRdQqVrx
+        awI6m3/3VXarCPW+kl+Zaw4=
+X-Google-Smtp-Source: ABdhPJxyX8ypzK6Bjr0d0pbbLFM+mqZhalPOiyxImZxspR7wti/MhiL46z0OeuT3Wlh9GwzD90y/hg==
+X-Received: by 2002:a05:600c:3784:: with SMTP id o4mr18071304wmr.180.1633342561175;
+        Mon, 04 Oct 2021 03:16:01 -0700 (PDT)
+Received: from [192.168.43.138] ([105.112.156.79])
+        by smtp.gmail.com with ESMTPSA id h3sm7015520wro.42.2021.10.04.03.15.53
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 04 Oct 2021 03:15:58 -0700 (PDT)
+Message-ID: <615ad45e.1c69fb81.e825b.d954@mx.google.com>
+Sender: "Gen.Bella Lagan" <mrssabahibrahim11@gmail.com>
+From:   Mrs Sabah Ibrahim <absa50602@gmail.com>
+X-Google-Original-From: "Mrs Sabah Ibrahim" <sa2020bah1@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Dear Beloved,
+To:     Recipients <sa2020bah1@gmail.com>
+Date:   Sun, 03 Oct 2021 10:15:50 -0700
+Reply-To: mrssabah51b@gmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+Dear Beloved,
 
-Add a writable bare tracepoint in bpf_testmod module, and
-trigger its calling when reading /sys/kernel/bpf_testmod
-with a specific buffer length. The reading will return
-the value in writable context if the early return flag
-is enabled in writable context.
+How are you doing, hope all is well? Please I am verifying if your
+email is still working, I have sent you several messages, but could
+not get any reply from you, would you get back to me? I have an
+important message for you.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/bpf_testmod/bpf_testmod-events.h      | 15 ++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 10 ++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 +++
- .../selftests/bpf/prog_tests/module_attach.c  | 35 +++++++++++++++++++
- .../selftests/bpf/progs/test_module_attach.c  | 14 ++++++++
- tools/testing/selftests/bpf/test_progs.c      |  4 +--
- tools/testing/selftests/bpf/test_progs.h      |  2 ++
- 7 files changed, 83 insertions(+), 2 deletions(-)
+Please write me through my private email for more clarification:
+mrs2018sabahibrahim@gmail.com
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-index 89c6d58e5dd6..11ee801e75e7 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-@@ -34,6 +34,21 @@ DECLARE_TRACE(bpf_testmod_test_write_bare,
- 	TP_ARGS(task, ctx)
- );
- 
-+#undef BPF_TESTMOD_DECLARE_TRACE
-+#ifdef DECLARE_TRACE_WRITABLE
-+#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
-+	DECLARE_TRACE_WRITABLE(call, PARAMS(proto), PARAMS(args), size)
-+#else
-+#define BPF_TESTMOD_DECLARE_TRACE(call, proto, args, size) \
-+	DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
-+#endif
-+
-+BPF_TESTMOD_DECLARE_TRACE(bpf_testmod_test_writable_bare,
-+	TP_PROTO(struct bpf_testmod_test_writable_ctx *ctx),
-+	TP_ARGS(ctx),
-+	sizeof(struct bpf_testmod_test_writable_ctx)
-+);
-+
- #endif /* _BPF_TESTMOD_EVENTS_H */
- 
- #undef TRACE_INCLUDE_PATH
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 50fc5561110a..1cc1d315ccf5 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -42,6 +42,16 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 	if (bpf_testmod_loop_test(101) > 100)
- 		trace_bpf_testmod_test_read(current, &ctx);
- 
-+	/* Magic number to enable writable tp */
-+	if (len == 64) {
-+		struct bpf_testmod_test_writable_ctx writable = {
-+			.val = 1024,
-+		};
-+		trace_bpf_testmod_test_writable_bare(&writable);
-+		if (writable.early_ret)
-+			return snprintf(buf, len, "%d\n", writable.val);
-+	}
-+
- 	return -EIO; /* always fail */
- }
- EXPORT_SYMBOL(bpf_testmod_test_read);
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index b3892dc40111..0d71e2607832 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -17,4 +17,9 @@ struct bpf_testmod_test_write_ctx {
- 	size_t len;
- };
- 
-+struct bpf_testmod_test_writable_ctx {
-+	bool early_ret;
-+	int val;
-+};
-+
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-index 1797a6e4d6d8..6d0e50dcf47c 100644
---- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-@@ -2,10 +2,36 @@
- /* Copyright (c) 2020 Facebook */
- 
- #include <test_progs.h>
-+#include <stdbool.h>
- #include "test_module_attach.skel.h"
- 
- static int duration;
- 
-+static int trigger_module_test_writable(int *val)
-+{
-+	int fd, err;
-+	char buf[65];
-+	ssize_t rd;
-+
-+	fd = open(BPF_TESTMOD_TEST_FILE, O_RDONLY);
-+	err = -errno;
-+	if (!ASSERT_GE(fd, 0, "testmode_file_open"))
-+		return err;
-+
-+	rd = read(fd, buf, sizeof(buf) - 1);
-+	err = -errno;
-+	if (!ASSERT_GT(rd, 0, "testmod_file_rd_val")) {
-+		close(fd);
-+		return err;
-+	}
-+
-+	buf[rd] = '\0';
-+	*val = strtol(buf, NULL, 0);
-+	close(fd);
-+
-+	return 0;
-+}
-+
- static int delete_module(const char *name, int flags)
- {
- 	return syscall(__NR_delete_module, name, flags);
-@@ -19,6 +45,7 @@ void test_module_attach(void)
- 	struct test_module_attach__bss *bss;
- 	struct bpf_link *link;
- 	int err;
-+	int writable_val = 0;
- 
- 	skel = test_module_attach__open();
- 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-@@ -51,6 +78,14 @@ void test_module_attach(void)
- 	ASSERT_EQ(bss->fexit_ret, -EIO, "fexit_tet");
- 	ASSERT_EQ(bss->fmod_ret_read_sz, READ_SZ, "fmod_ret");
- 
-+	bss->raw_tp_writable_bare_early_ret = true;
-+	bss->raw_tp_writable_bare_out_val = 0xf1f2f3f4;
-+	ASSERT_OK(trigger_module_test_writable(&writable_val),
-+		  "trigger_writable");
-+	ASSERT_EQ(bss->raw_tp_writable_bare_in_val, 1024, "writable_test_in");
-+	ASSERT_EQ(bss->raw_tp_writable_bare_out_val, writable_val,
-+		  "writable_test_out");
-+
- 	test_module_attach__detach(skel);
- 
- 	/* attach fentry/fexit and make sure it get's module reference */
-diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
-index bd37ceec5587..b36857093f71 100644
---- a/tools/testing/selftests/bpf/progs/test_module_attach.c
-+++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
-@@ -27,6 +27,20 @@ int BPF_PROG(handle_raw_tp_bare,
- 	return 0;
- }
- 
-+int raw_tp_writable_bare_in_val = 0;
-+int raw_tp_writable_bare_early_ret = 0;
-+int raw_tp_writable_bare_out_val = 0;
-+
-+SEC("raw_tp.w/bpf_testmod_test_writable_bare")
-+int BPF_PROG(handle_raw_tp_writable_bare,
-+	     struct bpf_testmod_test_writable_ctx *writable)
-+{
-+	raw_tp_writable_bare_in_val = writable->val;
-+	writable->early_ret = raw_tp_writable_bare_early_ret;
-+	writable->val = raw_tp_writable_bare_out_val;
-+	return 0;
-+}
-+
- __u32 tp_btf_read_sz = 0;
- 
- SEC("tp_btf/bpf_testmod_test_read")
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 2ed01f615d20..007b4ff85fea 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -747,7 +747,7 @@ int trigger_module_test_read(int read_sz)
- {
- 	int fd, err;
- 
--	fd = open("/sys/kernel/bpf_testmod", O_RDONLY);
-+	fd = open(BPF_TESTMOD_TEST_FILE, O_RDONLY);
- 	err = -errno;
- 	if (!ASSERT_GE(fd, 0, "testmod_file_open"))
- 		return err;
-@@ -769,7 +769,7 @@ int trigger_module_test_write(int write_sz)
- 	memset(buf, 'a', write_sz);
- 	buf[write_sz-1] = '\0';
- 
--	fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
-+	fd = open(BPF_TESTMOD_TEST_FILE, O_WRONLY);
- 	err = -errno;
- 	if (!ASSERT_GE(fd, 0, "testmod_file_open")) {
- 		free(buf);
-diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index 94bef0aa74cf..9b8a1810b700 100644
---- a/tools/testing/selftests/bpf/test_progs.h
-+++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -301,3 +301,5 @@ int trigger_module_test_write(int write_sz);
- #else
- #define SYS_NANOSLEEP_KPROBE_NAME "sys_nanosleep"
- #endif
-+
-+#define BPF_TESTMOD_TEST_FILE "/sys/kernel/bpf_testmod"
--- 
-2.20.1
-
+Warm Regards,
+Sabah.
