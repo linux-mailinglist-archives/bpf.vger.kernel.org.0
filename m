@@ -2,114 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCE142170B
-	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 21:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A269642170F
+	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 21:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238225AbhJDTND (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Oct 2021 15:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
+        id S234678AbhJDTQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Oct 2021 15:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237807AbhJDTM6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:12:58 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDECC061749;
-        Mon,  4 Oct 2021 12:11:09 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id a7so10838097yba.6;
-        Mon, 04 Oct 2021 12:11:09 -0700 (PDT)
+        with ESMTP id S232043AbhJDTQW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Oct 2021 15:16:22 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D91CC061749
+        for <bpf@vger.kernel.org>; Mon,  4 Oct 2021 12:14:33 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id x8so588801plv.8
+        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 12:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ldJNHVIkPgoS+Nd9Y4xZ86PC0X15+PtogxTJuikgUZk=;
-        b=Hv+zOBC5fJRWejR1NgU7v/waUv4qc/v1pTR+qsuxhhjl6iUmPVK4PXlgFeJXwtYeL2
-         /p3lxmLSzRiEaWcS4SiGhg0V55UCwSo4tvkJ/G4LC3WW434JRrR6VOihV17sfo5AHxp2
-         yIzJ0mCvt7ZDKMuwLkAi/J/MNzgmkl3IL0tEu7sz2oB6ub+Juh6DYZ8POl6badWnd++K
-         roNvuvDc/s+tKm//zJ+m08Bhxm8zLrRySzNHd7Gh+yAuA2bYaceqtloTlSw8XHeFoC5y
-         pk2q/BZNBp7tyAgVyBkFhDwz/PDjlEawE57mTrAsMDBRKu3tagd/GURaaroLtSbpoyUt
-         wwhg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=IZk9KcURE39bItBr2JToxRyweMkJ3IjYCdF9eyKRjvk=;
+        b=EEQ2L2aiO+nrZEAym3NhF53k7qNxmtpkp7nOwL+6KGkTEV5J4XK2IF8vJ9FOq7OCnu
+         gF8SDf5+yPIvLU9ZsRJGw5G/oD0fj5zSJe3J/ea5JN5q8DHgwrDAQQVWt6S9tQUbxD+g
+         BYtEP6BWb617WJIiIZWcycPZ8ZLLQmlV1Unms=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ldJNHVIkPgoS+Nd9Y4xZ86PC0X15+PtogxTJuikgUZk=;
-        b=l64kuQTqTEDDRzZ5vG0UwHQkX/8CgncYrWZJZPliZV3wG5Ygy5XKih0n4+MgZttY80
-         9tEU0BLit/HNEjl1kR2JeQ7UTdekn/u/YiJSxM6TN5MN4ZdStdv9ULB4eRW3c5GZKKVz
-         VGnLjasHMprCFTouxOQoPu4B3FbxFqiS1wJx5L9W3DiIGyMGLNl01p/pe8BQHlo5MxkF
-         ukUZBCdU/GYhNoXLgK86rpJxd6nQ0JKhaWEglBS5FwGcK3nqdjJBorzHrjv3JWE8tzVE
-         kV/Vyxobgc5njWeoIdXEP/XH1kfKYKl326mmSt+YAc3HdHp5r0LGV3AOYbtvBtB/ZG/c
-         8TjQ==
-X-Gm-Message-State: AOAM533NBS3eSk8zax1ioaRPf4bqWCm2LIOtKPN6ehrkiVzctAs03bHD
-        Eow5gHTAZkFuaCCBXBffPlW5dnm1cxoDZQ4wzsfFCQN04/g=
-X-Google-Smtp-Source: ABdhPJxmqvnM0v7c3IE7E/yZ64Z+oT4GlkT2KB4NRI6bvhHg7EOS9zYvnhQIBbnEOpbTKitNCErCHJZx4rVDos2lZdY=
-X-Received: by 2002:a25:1884:: with SMTP id 126mr17102603yby.114.1633374668735;
- Mon, 04 Oct 2021 12:11:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IZk9KcURE39bItBr2JToxRyweMkJ3IjYCdF9eyKRjvk=;
+        b=0KqIsEo+TStvDEZGZxzlmdrtv22nUHX3rsGKz0zcFAGQ4jrDnDM3oXd5on1RCgayjL
+         p67j1MMeE3T/DGnhFjc34H7fVIOZZ7HbgzHbpgKbbaZ3BAy0kpyCXJeD7Vs7EDfg/y6/
+         SAda8t2e16Uu73Rk1G6nYDX6SXFsBCorBeK+U0UivXRzYoly5silIn4cVTo3DAMYF3a9
+         Ky+TNI2+VVE5uV1XKTl+RgFP8IG0mk3pYPfwBToeN9V2djyBN/rvw7VEk6wz/Q1byZoa
+         1VTI8KwEdd67gYgmc7ZFiQk6dJsLwPxS9fm3ymB2bBJ9u1hPou0ek0ES9j2x9468EaaU
+         FXyQ==
+X-Gm-Message-State: AOAM533sZ6yvfzKWH6gmHYbPfo2/qA+C7DGFY4+GZDWQ5D9ryMDYb3tj
+        gVOLJpzhhgRGtP/i40X/jT3Rzg==
+X-Google-Smtp-Source: ABdhPJww4GWrgQH04OALPBHlAyJO0Fe92Q5UeML6U9bLBjb1q3ZSyi2fj5J+OXoZ9XJxAqnGWVtyXQ==
+X-Received: by 2002:a17:902:d887:b0:13e:e77:7a21 with SMTP id b7-20020a170902d88700b0013e0e777a21mr1268205plz.66.1633374872817;
+        Mon, 04 Oct 2021 12:14:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w8sm9962911pfd.4.2021.10.04.12.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 12:14:32 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 12:14:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 1/1] x86: change default to
+ spec_store_bypass_disable=prctl spectre_v2_user=prctl
+Message-ID: <202110041214.564BF23@keescook>
+References: <202109111411.C3D58A18EC@keescook>
+ <AAA2EF2C-293D-4D5B-BFA6-FF655105CD84@redhat.com>
+ <20211004175431.5myyh2wqnxbwqnwh@treble>
 MIME-Version: 1.0
-References: <20211001110856.14730-1-quentin@isovalent.com> <20211001110856.14730-7-quentin@isovalent.com>
- <CAEf4BzYm_QTq+u5tUp71+wY+JAaiUApv35tSqFUEyc81yOeUzw@mail.gmail.com>
- <CACdoK4LL91u-JK1fZ3XvkrTXsKBVsN-y1Js4QSPkWyS51KPB8Q@mail.gmail.com> <CACdoK4K4-x4+ZWXyB697Kn8RK5AyoCST+V7Lhtk_Kaqm5uQ6wg@mail.gmail.com>
-In-Reply-To: <CACdoK4K4-x4+ZWXyB697Kn8RK5AyoCST+V7Lhtk_Kaqm5uQ6wg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 4 Oct 2021 12:10:57 -0700
-Message-ID: <CAEf4Bzb=jP3kU6O6QhZR6pcYn-7bkP8fr5ZDirWzf46WKEWA8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 6/9] bpf: iterators: install libbpf headers
- when building
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211004175431.5myyh2wqnxbwqnwh@treble>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 3:12 PM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> On Sat, 2 Oct 2021 at 21:27, Quentin Monnet <quentin@isovalent.com> wrote:
-> >
-> > On Sat, 2 Oct 2021 at 00:20, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Fri, Oct 1, 2021 at 4:09 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> > > >
-> > > > API headers from libbpf should not be accessed directly from the
-> > > > library's source directory. Instead, they should be exported with "make
-> > > > install_headers". Let's make sure that bpf/preload/iterators/Makefile
-> > > > installs the headers properly when building.
-> >
-> > > >
-> > > > -$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)
-> > > > +$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile)            \
-> > > > +          | $(LIBBPF_OUTPUT) $(LIBBPF_INCLUDE)
-> > >
-> > > Would it make sense for libbpf's Makefile to create include and output
-> > > directories on its own? We wouldn't need to have these order-only
-> > > dependencies everywhere, right?
-> >
-> > Good point, I'll have a look at it.
-> > Quentin
->
-> So libbpf already creates the include (and parent $(DESTDIR))
-> directory, so I can get rid of the related dependencies. But I don't
-> see an easy solution for the output directory for the object files.
-> The issue is that libbpf's Makefile includes
-> tools/scripts/Makefile.include, which checks $(OUTPUT) and errors out
+On Mon, Oct 04, 2021 at 10:54:31AM -0700, Josh Poimboeuf wrote:
+> On Sat, Sep 11, 2021 at 07:01:40PM -0700, Josh Poimboeuf wrote:
+> > 
+> > 
+> > > On Sep 11, 2021, at 2:13 PM, Kees Cook <keescook@chromium.org> wrote:
+> > > 
+> > > ﻿On Wed, Nov 04, 2020 at 06:50:54PM -0500, Andrea Arcangeli wrote:
+> > >> Switch the kernel default of SSBD and STIBP to the ones with
+> > >> CONFIG_SECCOMP=n (i.e. spec_store_bypass_disable=prctl
+> > >> spectre_v2_user=prctl) even if CONFIG_SECCOMP=y.
+> > > 
+> > > Hello x86 maintainers!
+> > > 
+> > > I'd really like to get this landed, so I'll take this via the
+> > > seccomp-tree unless someone else speaks up. This keeps falling off
+> > > the edge of my TODO list. :)
+> > 
+> > Thanks!  You can add my
+> > 
+> > Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> 
+> Hi Kees,
+> 
+> Ping - I don't see this patch in linux-next.  Are you planning on grabbing this
+> for the next merge window?
 
-Did you check what benefits the use of tools/scripts/Makefile.include
-brings? Last time I had to deal with some non-trivial Makefile
-problem, this extra dance with tools/scripts/Makefile.include and some
-related complexities didn't seem very justified. So unless there are
-some very big benefits to having tool's Makefile.include included, I'd
-rather simplify libbpf's in-kernel Makefile and make it more
-straightforward. We have a completely independent separate Makefile
-for libbpf in Github, and I think it's more straightforward. Doesn't
-have to be done in this change, of course, but I was curious to hear
-your thoughts given you seem to have spent tons of time on this
-already.
+Thanks for the reminder! I've pushed this to the seccomp next tree.
 
-> if the directory does not exist. This prevents us from creating the
-> directory as part of the regular targets. We could create it
-> unconditionally before running any target, but it's ugly; and I don't
-> see any simple workaround.
->
-> So I'll remove the deps on $(LIBBPF_INCLUDE) and keep the ones on
-> $(LIBBPF_OUTPUT).
+-- 
+Kees Cook
