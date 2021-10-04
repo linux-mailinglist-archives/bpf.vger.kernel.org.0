@@ -2,127 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EE6421982
-	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 23:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF04421AA0
+	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 01:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhJDV6w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Oct 2021 17:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
+        id S234430AbhJDX1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Oct 2021 19:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234220AbhJDV6w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:58:52 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977E5C061745
-        for <bpf@vger.kernel.org>; Mon,  4 Oct 2021 14:57:02 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id q81so1229031qke.5
-        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 14:57:02 -0700 (PDT)
+        with ESMTP id S233839AbhJDX1q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Oct 2021 19:27:46 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E154C06174E
+        for <bpf@vger.kernel.org>; Mon,  4 Oct 2021 16:25:56 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id s11so18041916pgr.11
+        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 16:25:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7Gzxz/yo5VCSNnHXrX+uh0b7z9266ZHugq7OPcVBQxQ=;
-        b=PJ/U/VO64fFwD0R/fVswzWt6EhFfNXIf+SkJQttJ8O4X+c/Vg05NEuR1cxwctsKO5G
-         /WtgeYJaw4KRkYRBQr4ote471nFrR+NuiNEYgd6d1li4ZJs3qadq8S6rVf0n1JaFbtFs
-         l++NdEy0sJRd0g0DeZb7ylE6YwyaZaWCPoBFNutIyUYcPHMUe8mez9XO8NaIjezndWkC
-         UBnZfZmXCt2iXiCwbG/k9rGsbHWIFG48i/GcKi9qougC8AxnQMaf7/hN6zic/brLhCHZ
-         xMdnRez4J1AtYn9lwc8FXaok1QkdNxjZAZhtS/j0TGNwUnksli3YUmWpC4Vc9pOmY3W0
-         +jyg==
+        bh=LVhO5Cff8ywinpP+5fBDLr67Q38pdXZFNpJlJzlXkJE=;
+        b=GXTR3mgVoyk+LINwkQwxywsnzIcITh6CzQUvyA1sOKgsBLTkEOFhViJacv9lFs+uMD
+         h+ZwlEZLKD7yS4/UfvZfC1VmewlF55C63tHv9ayQXwJO8EInNqUGkRHf93sqUG3FROdS
+         LwTDkbOI71SA48KkDKTZrW27UzM/WjyMzPca2SwbB6ZjIukUxccHLdpKP4JyN7q9Ltme
+         T5ZI5V+FgP4xKO0h7UgfBE4O5LJ7+oB/I7e10Enp87pG1IWrQvYc0+7HVn/cbutq+BNm
+         u6XDKyaInGD5M6+xg1pBHjF/GzB46rnEGQ0QCtS01R3yIVR3OPLMASsSyvKfsKsSJ33p
+         ewKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7Gzxz/yo5VCSNnHXrX+uh0b7z9266ZHugq7OPcVBQxQ=;
-        b=vRLzfoixcr3ADKj5Tmt6ee7cA5EptIvvO8EwSg3HhIMkUOzvGNW+aIKbLQgkzFLuBo
-         nxrv6QF4EghYVCk0D3bKauYQlBKHVw2BkWp5YvDQWk7LhKhhfp8BiHQrNdCPw8fJu7uo
-         SBXpxqSFBWDe1xEeZD58rXW64V7LvFcFB6m1uAknQbFX2/ap43Wp95QrY8DoEJr7641H
-         1uaTSB2lAcAsAp8vYG8VItl78tvzDKPWri+S9nGtP4anQ6tDWZOaKXN2zDFuhaJWRK1x
-         kyGDvRB/iUfci987xf5GX6YpbYjJ61sONxambPMg0EiSqeEfat1lqAYMHLv5dpEmHNDL
-         IWng==
-X-Gm-Message-State: AOAM5330n1whpz9AuA1zQuALuMcVQkcPTCdoT2H0JjhPlvjlyGhwV6+R
-        w4DpHtjkrUn6b/eUAS7LXgU=
-X-Google-Smtp-Source: ABdhPJx9DqpOE3V/W5PZ8NdB2Em5kjzVv0BezEli7Y+C5p3mo+VkSSnPZ8oMhKip1Qhm/vRMKhnpjg==
-X-Received: by 2002:a37:9a89:: with SMTP id c131mr12864447qke.191.1633384621747;
-        Mon, 04 Oct 2021 14:57:01 -0700 (PDT)
-Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
-        by smtp.gmail.com with ESMTPSA id y6sm8217273qkj.26.2021.10.04.14.57.01
+        bh=LVhO5Cff8ywinpP+5fBDLr67Q38pdXZFNpJlJzlXkJE=;
+        b=1RTPG5wnTz5ef+ZLO3z4LRoNoTUgXNIVlH1wqSmJWRwP+vA7JZpFFGyY3Z7glRZ3QT
+         8vzz9xSHDPfJ5FujWkiP1FhTru2hF/9RaxKjUaqkq9SxD8vhClmh8pm+afLtc2tradyY
+         KvkNfcjNmkLAaQhaRpsFTEyqsRO1ZCidXwqYr3v+1+8wRc79ZY8ocn48KdR7eeKtY5/+
+         +nKgqf31Yc9ncaKVBOQz5SsoFPt7BFJY/AhVM2hKn32oNg6bMhz+QdLTJpFU/s4Jtl+y
+         YKeHeqGhm1A0BbRn+JgDgBzFFw68b52vQLHnFRjiUe5Yy88JkQ+xtndbjSpZ9+Disg4/
+         izqw==
+X-Gm-Message-State: AOAM531NIxtBZn7EaIrj6ziyFOThsh0mW2poTfx2rsn7zYOr5f8mjS7O
+        FDiNuHxx56VUb2zFc7nTQb1YB/7e72N2oQ==
+X-Google-Smtp-Source: ABdhPJwJGPAc7usCDf8FZyr5sAz4GPe1/1fOJFubRDrEMSwdtmFeNvwS0U2MWm33Tus//mbeEHs+PA==
+X-Received: by 2002:aa7:88d6:0:b0:44c:5c0b:c8a8 with SMTP id k22-20020aa788d6000000b0044c5c0bc8a8mr8955357pff.76.1633389955702;
+        Mon, 04 Oct 2021 16:25:55 -0700 (PDT)
+Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id s68sm14096927pfb.192.2021.10.04.16.25.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 14:57:01 -0700 (PDT)
-From:   grantseltzer <grantseltzer@gmail.com>
-To:     andrii@kernel.org
-Cc:     bpf@vger.kernel.org, grantseltzer@gmail.com
-Subject: [PATCH bpf-next] libbpf: Add API documentation convention guidelines
-Date:   Mon,  4 Oct 2021 17:56:44 -0400
-Message-Id: <20211004215644.497327-1-grantseltzer@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 04 Oct 2021 16:25:55 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     bpf@vger.kernel.org
+Cc:     cong.wang@bytedance.com, Casey Schaufler <casey@schaufler-ca.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Dumazet <edumazet@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Rao Shoaib <Rao.Shoaib@oracle.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Jakub Sitnicki <jakub@cloudflare.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf v1] unix: fix an issue in unix_shutdown causing the other end read/write failures
+Date:   Mon,  4 Oct 2021 23:25:28 +0000
+Message-Id: <20211004232530.2377085-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Grant Seltzer <grantseltzer@gmail.com>
+Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
+sets unix domain socket peer state to TCP_CLOSE
+in unix_shutdown. This could happen when the local end is shutdown
+but the other end is not. Then the other end will get read or write
+failures which is not expected.
 
-This adds a section to the documentation for libbpf
-naming convention which describes how to document
-API features in libbpf, specifically the format of
-which API doc comments need to conform to.
+Fix the issue by setting the local state to shutdown.
 
-Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+Fixes: 94531cfcbe79 (af_unix: Add unix_stream_proto for sockmap)
+Suggested-by: Cong Wang <cong.wang@bytedance.com>
+Reported-by: Casey Schaufler <casey@schaufler-ca.com>
+Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
 ---
- .../bpf/libbpf/libbpf_naming_convention.rst   | 40 +++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ net/unix/af_unix.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-index 9c68d5014ff1..5f42f172987a 100644
---- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-+++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-@@ -150,6 +150,46 @@ mirror of the mainline's version of libbpf for a stand-alone build.
- However, all changes to libbpf's code base must be upstreamed through
- the mainline kernel tree.
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index efac5989edb5..0878ab86597b 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2882,6 +2882,9 @@ static int unix_shutdown(struct socket *sock, int mode)
  
-+
-+API documentation convention
-+============================
-+
-+The libbpf API is documented via comments above definitions in
-+header files. These comments can be rendered by doxygen and sphinx
-+for well organized html output. This section describes the
-+convention in which these comments should be formated.
-+
-+Here is an example from btf.h:
-+
-+.. code-block:: c
-+
-+        /**
-+        * @brief **btf__new()** creates a new instance of a BTF object from the raw
-+        * bytes of an ELF's BTF section
-+        * @param data raw bytes
-+        * @param size number of bytes passed in `data`
-+        * @return new BTF object instance which has to be eventually freed with
-+        * **btf__free()**
-+        *
-+        * On error, error-code-encoded-as-pointer is returned, not a NULL. To extract
-+        * error code from such a pointer `libbpf_get_error()` should be used. If
-+        * `libbpf_set_strict_mode(LIBBPF_STRICT_CLEAN_PTRS)` is enabled, NULL is
-+        * returned on error instead. In both cases thread-local `errno` variable is
-+        * always set to error code as well.
-+        */
-+
-+The comment must start with a block comment of the form '/**'.
-+
-+The documentation always starts with a @brief directive. This line is a short
-+description about this API. It starts with the name of the API, denoted in bold
-+like so: **api_name**. Please include an open and close parenthesis if this is a
-+function. Follow with the short description of the API. A longer form description
-+can be added below the last directive, at the bottom of the comment.
-+
-+Parameters are denoted with the @param directive, there should be one for each
-+parameter. If this is a function with a non-void return, use the @return directive
-+to document it.
-+
- License
- -------------------
- 
+ 	unix_state_lock(sk);
+ 	sk->sk_shutdown |= mode;
++	if ((sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET) &&
++	    mode == SHUTDOWN_MASK)
++		sk->sk_state = TCP_CLOSE;
+ 	other = unix_peer(sk);
+ 	if (other)
+ 		sock_hold(other);
+@@ -2904,12 +2907,10 @@ static int unix_shutdown(struct socket *sock, int mode)
+ 		other->sk_shutdown |= peer_mode;
+ 		unix_state_unlock(other);
+ 		other->sk_state_change(other);
+-		if (peer_mode == SHUTDOWN_MASK) {
++		if (peer_mode == SHUTDOWN_MASK)
+ 			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_HUP);
+-			other->sk_state = TCP_CLOSE;
+-		} else if (peer_mode & RCV_SHUTDOWN) {
++		else if (peer_mode & RCV_SHUTDOWN)
+ 			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_IN);
+-		}
+ 	}
+ 	if (other)
+ 		sock_put(other);
 -- 
-2.31.1
+2.20.1
 
