@@ -2,72 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443C6420586
-	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 07:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE814206FE
+	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 10:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbhJDFLI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Oct 2021 01:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbhJDFLI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Oct 2021 01:11:08 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348BEC0613EC
-        for <bpf@vger.kernel.org>; Sun,  3 Oct 2021 22:09:20 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id m5so720572pfk.7
-        for <bpf@vger.kernel.org>; Sun, 03 Oct 2021 22:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=qD46H1136lrZ7bP1cPYFINoEmtmKzL0UpxY92n6epPI=;
-        b=C1mMxIOyKWhFF16Y8cVrKUXOsqsS4ao9Dukznw1mCPZwXg3xekXWpYWytWa0SGQsXm
-         yb7ALUXoX4J/Mh9s22wIUaZDa5z62gCVLTO4OjCzJsyq+hYJS7tfEQZqwo2eVb6UxDXP
-         iHOd8itB8HK8NP0ur4ZKcyIv0mVHhGte0sSCQ4jpGX6/NpA6nxkw4YkkedkMlBfNoA9L
-         gyLQF7ED5FzrvVkwwEv50xH5GdtgSqQAW4ja6Q4NqH2u2fXph54ls9SpMaHc3jQGlJiw
-         7heD8ySILbhRkcy17IZX6ZMBx5gN+tFGuuCZtQ5EbuH4G5U3o0dkYtIbwj3QocOJAJ57
-         DaqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=qD46H1136lrZ7bP1cPYFINoEmtmKzL0UpxY92n6epPI=;
-        b=R56Vg8pfKpgljWmUJfH6YInDMDn41nMgMqy1ei3qwdAIlbsDDmB734p9eYm/fent6J
-         ksFyhUAM2Pv3y1cQpteEM6dbB9ADi8bNUUd007JaAceDEqRp5aBs76FJZVilbaUu/Dub
-         5Okiv9/IxG8+MCxGK+15IuGTs5ojGrI0dCF+FLYqgVfdHmwezEx6BmpZ6IVKxwgXho5J
-         TtjhsykfxjwtYMHdGN7Oy9s0lf3GFhNP78UX7k+EIwVqzShsdEt/150smTnAUnJCD61D
-         3H+Fp24BA4kFpNdLfkSdYBvJxD+CdLM+bY6GTdh1OlnbceuOiuY5imbf6yn4G1ditmNS
-         GyJg==
-X-Gm-Message-State: AOAM531nnco464OWopUmHfcbwadPzHxtKVK92EP43L5i7Hqfq97D3yFw
-        YspdCJJRW/e1h+RtK4sOPZibEn9LOcalfbpWxoE=
-X-Google-Smtp-Source: ABdhPJzjCrAdXhDRtQafTVT7oMmllIluBNx0hS7/DuP/QCPtaI762xVMD0vou7Rpo70GhMMfLyJxp63BDFdIctcC4sk=
-X-Received: by 2002:aa7:8298:0:b029:338:340:a085 with SMTP id
- s24-20020aa782980000b02903380340a085mr23183742pfm.46.1633323761340; Sun, 03
- Oct 2021 22:02:41 -0700 (PDT)
+        id S230448AbhJDIIE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Oct 2021 04:08:04 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39104 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230408AbhJDIIB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:08:01 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mXIz0-000CRs-N6; Mon, 04 Oct 2021 10:05:58 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mXIz0-000BaL-Cv; Mon, 04 Oct 2021 10:05:58 +0200
+Subject: Re: [PATCH v4 0/8] bpf powerpc: Add BPF_PROBE_MEM support in powerpc
+ JIT compiler
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        naveen.n.rao@linux.ibm.com, christophe.leroy@csgroup.eu,
+        ast@kernel.org
+Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210929111855.50254-1-hbathini@linux.ibm.com>
+ <88b59272-e3f7-30ba-dda0-c4a6b42c0029@iogearbox.net>
+ <87o885raev.fsf@mpe.ellerman.id.au>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <768469ec-a596-9e0c-541c-aca5693d69e7@iogearbox.net>
+Date:   Mon, 4 Oct 2021 10:05:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:9e87:0:0:0:0 with HTTP; Sun, 3 Oct 2021 22:02:40
- -0700 (PDT)
-Reply-To: angelarichardson2020@yahoo.com
-From:   H M TREASURY U K <angelarichardson065@gmail.com>
-Date:   Sun, 3 Oct 2021 22:02:40 -0700
-Message-ID: <CAC==F7J_ck4HFi3E6P1+z2K0qf7Hzn=xyGZoYvQCR6FFt1tMEg@mail.gmail.com>
-Subject: Third and final notice
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87o885raev.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26311/Sun Oct  3 11:08:49 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Hello
-My name is Angela Richardson. I am the director of information of Her
-Majesty Custom and Revenue, London United Kingdom. Our duty is to look
-into transactions and records of banks, securities companies and
-financial houses within Europe based on the directive of former
-British Prime Minister and United Nations Secretary.View the website
-for more information:http://news.bbc.co.uk/1/hi/business/5171222.stm
-AS A MATTER OF URGENCY, get back to me with your full names and
-telephone number through my direct email
-angelarichardson2020@yahoo.com
+On 10/4/21 12:49 AM, Michael Ellerman wrote:
+> Daniel Borkmann <daniel@iogearbox.net> writes:
+>> On 9/29/21 1:18 PM, Hari Bathini wrote:
+>>> Patch #1 & #2 are simple cleanup patches. Patch #3 refactors JIT
+>>> compiler code with the aim to simplify adding BPF_PROBE_MEM support.
+>>> Patch #4 introduces PPC_RAW_BRANCH() macro instead of open coding
+>>> branch instruction. Patch #5 & #7 add BPF_PROBE_MEM support for PPC64
+>>> & PPC32 JIT compilers respectively. Patch #6 & #8 handle bad userspace
+>>> pointers for PPC64 & PPC32 cases respectively.
+>>
+>> Michael, are you planning to pick up the series or shall we route via bpf-next?
+> 
+> Yeah I'll plan to take it, unless you think there is a strong reason it
+> needs to go via the bpf tree (doesn't look like it from the diffstat).
 
-Respectfully,
-Angela Richardson
+Sounds good to me, in that case, please also route the recent JIT fixes from
+Naveen through your tree.
+
+Thanks,
+Daniel
