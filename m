@@ -2,115 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D21842194C
-	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 23:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EE6421982
+	for <lists+bpf@lfdr.de>; Mon,  4 Oct 2021 23:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhJDVcD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Oct 2021 17:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S233326AbhJDV6w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Oct 2021 17:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhJDVcC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:32:02 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F210C061745
-        for <bpf@vger.kernel.org>; Mon,  4 Oct 2021 14:30:13 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id y141so5674629vsy.5
-        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 14:30:13 -0700 (PDT)
+        with ESMTP id S234220AbhJDV6w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Oct 2021 17:58:52 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977E5C061745
+        for <bpf@vger.kernel.org>; Mon,  4 Oct 2021 14:57:02 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id q81so1229031qke.5
+        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 14:57:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NgQR2dfyLeA9sPp6DpyEFSlglVVbtqhbisC5/s7oPPc=;
-        b=5/Dh3fXXlJTU03MaHYQIdS9MZV0i2c71iqqtgSoQqFVC4OorNLINN69XCVFWzZ7ldB
-         aXw9MVjDYbRu761FvScwJSO8xQYophmhAu0II2Zhx6vs8tKoIAxDwl7Ivtpl3tkASOPh
-         j+viOp6JIP7VjZs/DXmky03gg5yAfMgr/qK/CQ3rhWWWnYlmah7mh71LJsP5lyai1cUy
-         NHN9hV/O6kqtC3zV/F9K78hiuIudXLDROj9iUPXppjY7jfSML2tkWLQ1zr/B1SCFwXJh
-         MsIrJGz9Zrvxdof9ksaHS3vf3ye+PAAD1hzbJ+GHgYldBwUyKGgCWxO9ZBfhETouaHRw
-         nhfg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Gzxz/yo5VCSNnHXrX+uh0b7z9266ZHugq7OPcVBQxQ=;
+        b=PJ/U/VO64fFwD0R/fVswzWt6EhFfNXIf+SkJQttJ8O4X+c/Vg05NEuR1cxwctsKO5G
+         /WtgeYJaw4KRkYRBQr4ote471nFrR+NuiNEYgd6d1li4ZJs3qadq8S6rVf0n1JaFbtFs
+         l++NdEy0sJRd0g0DeZb7ylE6YwyaZaWCPoBFNutIyUYcPHMUe8mez9XO8NaIjezndWkC
+         UBnZfZmXCt2iXiCwbG/k9rGsbHWIFG48i/GcKi9qougC8AxnQMaf7/hN6zic/brLhCHZ
+         xMdnRez4J1AtYn9lwc8FXaok1QkdNxjZAZhtS/j0TGNwUnksli3YUmWpC4Vc9pOmY3W0
+         +jyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NgQR2dfyLeA9sPp6DpyEFSlglVVbtqhbisC5/s7oPPc=;
-        b=gFxLCSDRS+K5aTGdIx/K3dX8Rqj2k/7yz0BXfw4Cz/iKlV1XtF8BJBWlBVaheeGJGH
-         hGZqmiIgvC5C8x7AIdz0WiVA9ghGg8YcVBfYkrVCiD9ykQRxUhDIux1vEA7HX6jnQSws
-         rvs66lA8UfxyY7JVid1yjEPt4y/gBhxfwkWzTIJAsJe/3CTFa/hMFVQKAfoCT71+TRpx
-         XkQbQSL/qyuQjt7XnjVP+639Le35T1haPx1zToAFAlN/4N10zXrLkXWp0dHbx3Y24Qc0
-         oYoq5ldpLbjWlUCjvl7QLdOFKWeqxnR7s7Kt4wHvUq+wwqClA4rcNvSK/pOtOROXCzMp
-         rLkA==
-X-Gm-Message-State: AOAM5322r64x9gFvm4lBIGd5Jp3aeucFclUDGcIimyWW7nRmgKwncKff
-        ZtLHxJVEU9xmKL+ugq579K8TO6RMwyuH8lixavZtMw==
-X-Google-Smtp-Source: ABdhPJz6YW1TiLRAHp8byoOqZTMDdGJHLbulNLKUgO0eSJbtkoYqZzYxhnOd+oULpIbx05nWrvcOapviqEPkkUYVcDo=
-X-Received: by 2002:a05:6102:192:: with SMTP id r18mr15926964vsq.0.1633383012420;
- Mon, 04 Oct 2021 14:30:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Gzxz/yo5VCSNnHXrX+uh0b7z9266ZHugq7OPcVBQxQ=;
+        b=vRLzfoixcr3ADKj5Tmt6ee7cA5EptIvvO8EwSg3HhIMkUOzvGNW+aIKbLQgkzFLuBo
+         nxrv6QF4EghYVCk0D3bKauYQlBKHVw2BkWp5YvDQWk7LhKhhfp8BiHQrNdCPw8fJu7uo
+         SBXpxqSFBWDe1xEeZD58rXW64V7LvFcFB6m1uAknQbFX2/ap43Wp95QrY8DoEJr7641H
+         1uaTSB2lAcAsAp8vYG8VItl78tvzDKPWri+S9nGtP4anQ6tDWZOaKXN2zDFuhaJWRK1x
+         kyGDvRB/iUfci987xf5GX6YpbYjJ61sONxambPMg0EiSqeEfat1lqAYMHLv5dpEmHNDL
+         IWng==
+X-Gm-Message-State: AOAM5330n1whpz9AuA1zQuALuMcVQkcPTCdoT2H0JjhPlvjlyGhwV6+R
+        w4DpHtjkrUn6b/eUAS7LXgU=
+X-Google-Smtp-Source: ABdhPJx9DqpOE3V/W5PZ8NdB2Em5kjzVv0BezEli7Y+C5p3mo+VkSSnPZ8oMhKip1Qhm/vRMKhnpjg==
+X-Received: by 2002:a37:9a89:: with SMTP id c131mr12864447qke.191.1633384621747;
+        Mon, 04 Oct 2021 14:57:01 -0700 (PDT)
+Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
+        by smtp.gmail.com with ESMTPSA id y6sm8217273qkj.26.2021.10.04.14.57.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 14:57:01 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     andrii@kernel.org
+Cc:     bpf@vger.kernel.org, grantseltzer@gmail.com
+Subject: [PATCH bpf-next] libbpf: Add API documentation convention guidelines
+Date:   Mon,  4 Oct 2021 17:56:44 -0400
+Message-Id: <20211004215644.497327-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211001110856.14730-1-quentin@isovalent.com> <20211001110856.14730-7-quentin@isovalent.com>
- <CAEf4BzYm_QTq+u5tUp71+wY+JAaiUApv35tSqFUEyc81yOeUzw@mail.gmail.com>
- <CACdoK4LL91u-JK1fZ3XvkrTXsKBVsN-y1Js4QSPkWyS51KPB8Q@mail.gmail.com>
- <CACdoK4K4-x4+ZWXyB697Kn8RK5AyoCST+V7Lhtk_Kaqm5uQ6wg@mail.gmail.com> <CAEf4Bzb=jP3kU6O6QhZR6pcYn-7bkP8fr5ZDirWzf46WKEWA8Q@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb=jP3kU6O6QhZR6pcYn-7bkP8fr5ZDirWzf46WKEWA8Q@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Mon, 4 Oct 2021 22:30:00 +0100
-Message-ID: <CACdoK4JpgKyeFAwwY=8V-WQO405-xkW+yS2qnfVv2tgoF-F3JA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 6/9] bpf: iterators: install libbpf headers
- when building
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 4 Oct 2021 at 20:11, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Oct 2, 2021 at 3:12 PM Quentin Monnet <quentin@isovalent.com> wrote:
-> >
-> > On Sat, 2 Oct 2021 at 21:27, Quentin Monnet <quentin@isovalent.com> wrote:
-> > >
-> > > On Sat, 2 Oct 2021 at 00:20, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Fri, Oct 1, 2021 at 4:09 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> > > > >
-> > > > > API headers from libbpf should not be accessed directly from the
-> > > > > library's source directory. Instead, they should be exported with "make
-> > > > > install_headers". Let's make sure that bpf/preload/iterators/Makefile
-> > > > > installs the headers properly when building.
-> > >
-> > > > >
-> > > > > -$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)
-> > > > > +$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile)            \
-> > > > > +          | $(LIBBPF_OUTPUT) $(LIBBPF_INCLUDE)
-> > > >
-> > > > Would it make sense for libbpf's Makefile to create include and output
-> > > > directories on its own? We wouldn't need to have these order-only
-> > > > dependencies everywhere, right?
-> > >
-> > > Good point, I'll have a look at it.
-> > > Quentin
-> >
-> > So libbpf already creates the include (and parent $(DESTDIR))
-> > directory, so I can get rid of the related dependencies. But I don't
-> > see an easy solution for the output directory for the object files.
-> > The issue is that libbpf's Makefile includes
-> > tools/scripts/Makefile.include, which checks $(OUTPUT) and errors out
->
-> Did you check what benefits the use of tools/scripts/Makefile.include
-> brings? Last time I had to deal with some non-trivial Makefile
-> problem, this extra dance with tools/scripts/Makefile.include and some
-> related complexities didn't seem very justified. So unless there are
-> some very big benefits to having tool's Makefile.include included, I'd
-> rather simplify libbpf's in-kernel Makefile and make it more
-> straightforward. We have a completely independent separate Makefile
-> for libbpf in Github, and I think it's more straightforward. Doesn't
-> have to be done in this change, of course, but I was curious to hear
-> your thoughts given you seem to have spent tons of time on this
-> already.
+From: Grant Seltzer <grantseltzer@gmail.com>
 
-No, I haven't checked in details so far. I remember that several
-elements defined in the Makefile.include are used in libbpf's
-Makefile, and I stopped at that, because I thought that a refactoring
-of the latter would be beyond the current set. But yes, I can have a
-look at it and see if it's worth changing in a follow-up.
+This adds a section to the documentation for libbpf
+naming convention which describes how to document
+API features in libbpf, specifically the format of
+which API doc comments need to conform to.
+
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+---
+ .../bpf/libbpf/libbpf_naming_convention.rst   | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+index 9c68d5014ff1..5f42f172987a 100644
+--- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
++++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+@@ -150,6 +150,46 @@ mirror of the mainline's version of libbpf for a stand-alone build.
+ However, all changes to libbpf's code base must be upstreamed through
+ the mainline kernel tree.
+ 
++
++API documentation convention
++============================
++
++The libbpf API is documented via comments above definitions in
++header files. These comments can be rendered by doxygen and sphinx
++for well organized html output. This section describes the
++convention in which these comments should be formated.
++
++Here is an example from btf.h:
++
++.. code-block:: c
++
++        /**
++        * @brief **btf__new()** creates a new instance of a BTF object from the raw
++        * bytes of an ELF's BTF section
++        * @param data raw bytes
++        * @param size number of bytes passed in `data`
++        * @return new BTF object instance which has to be eventually freed with
++        * **btf__free()**
++        *
++        * On error, error-code-encoded-as-pointer is returned, not a NULL. To extract
++        * error code from such a pointer `libbpf_get_error()` should be used. If
++        * `libbpf_set_strict_mode(LIBBPF_STRICT_CLEAN_PTRS)` is enabled, NULL is
++        * returned on error instead. In both cases thread-local `errno` variable is
++        * always set to error code as well.
++        */
++
++The comment must start with a block comment of the form '/**'.
++
++The documentation always starts with a @brief directive. This line is a short
++description about this API. It starts with the name of the API, denoted in bold
++like so: **api_name**. Please include an open and close parenthesis if this is a
++function. Follow with the short description of the API. A longer form description
++can be added below the last directive, at the bottom of the comment.
++
++Parameters are denoted with the @param directive, there should be one for each
++parameter. If this is a function with a non-void return, use the @return directive
++to document it.
++
+ License
+ -------------------
+ 
+-- 
+2.31.1
+
