@@ -2,140 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA106422E86
-	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 18:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523A2422F6A
+	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 19:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236723AbhJEQ4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 12:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236701AbhJEQ4W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:56:22 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AC4C061765
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 09:54:31 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id p11so1311043edy.10
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 09:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sSpYqWckQN5De4SWAzfiTyGMwb6xlhm08Y9d5cl4EUw=;
-        b=MOvmVT7UML8WRbH713BepTaRHyQHiaXPJIM3OD89/a22DC2OqqC5Rl9gWPfdK9DfU6
-         Vi4lBbgW6SbZxrNeC8isx4sE/XovAI1hhqLFXDeeBhagEcCe+JhQYnZ0FaAfubDJq9KG
-         5i7J20pdHFepGnCrmIaj1xgKKserwW8DC7yJCjTW4/3HzOgHXblfpdftJ5B4Um9Oo/dS
-         /tXg7ycG/U+mTzDFvreNXbG86nY65V077DwmNP2fer8gItwRTbOzXFv8fktUFlKZvb7s
-         oKgZ5RM44lWGeaW7GE9soqGpjF/vIejEf/Znjcxk6sV8Bq/ONwJTV0gna0ChXejUik78
-         TW3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sSpYqWckQN5De4SWAzfiTyGMwb6xlhm08Y9d5cl4EUw=;
-        b=58ffA3JT3ccgN6yWDTyhWDoHHqbQ2rIMmzOB3ciKHzj5lUlwZ9rPQp1VRjLTHE3s6o
-         sqcOu5r7LY9CITJvAP+Vg+WMaFwr6lIHLxQdbGdZAV8WoAtFXEkRYPzXPYeLD9Tp3XbJ
-         wHnTA1PgKwCq620PMFyjofQwpTRKiMZbqaIzRcCwhSeLSiY58s8swrIk7wloVTa0pIVK
-         BCr/C8+iHhn8IDhfEAfLqkb0NNajzVg1PtzaUAeDK9qfxdLEkNlmtdsBxonD2genA3nO
-         aieeZviBiu90O4CN/1DOJe2P1T9f4PprdOFVlKU23+yyGeQqB6Nnm31OPlDRMoINbQq4
-         z2Zg==
-X-Gm-Message-State: AOAM531x2tjfAPQ293endtQOmDsJOkpFDkBU/4bHnCCCMcIqWa6iHg0L
-        52Bn4TZPpWVi8rQmQQqXJWi06w==
-X-Google-Smtp-Source: ABdhPJymACqQ2ebs/0N/U/cqsCfD/8+UQOpr/BvPCRCJvuTrrAHCHhtX9K1IgbT8JjgEO5UGvXYcMQ==
-X-Received: by 2002:a17:906:180a:: with SMTP id v10mr26094184eje.112.1633452869832;
-        Tue, 05 Oct 2021 09:54:29 -0700 (PDT)
-Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id x16sm3447818ejj.8.2021.10.05.09.54.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 09:54:29 -0700 (PDT)
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        paulburton@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        tsbogend@alpha.franken.de, chenhuacai@kernel.org,
-        jiaxun.yang@flygoat.com, yangtiezhu@loongson.cn,
-        tony.ambardar@gmail.com, bpf@vger.kernel.org,
-        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH 6/7] mips: bpf: Enable eBPF JITs
-Date:   Tue,  5 Oct 2021 18:54:07 +0200
-Message-Id: <20211005165408.2305108-7-johan.almbladh@anyfinetworks.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
-References: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
+        id S229626AbhJERyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 13:54:14 -0400
+Received: from esa.hc5583-2.iphmx.com ([216.71.137.146]:34610 "EHLO
+        esa2.hc5583-2.iphmx.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229523AbhJERyN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Oct 2021 13:54:13 -0400
+X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Oct 2021 13:54:13 EDT
+X-IronPort-RemoteIP: 160.153.247.227
+X-IronPort-MID: 9158
+X-IronPort-Reputation: None
+X-IronPort-Listener: OutgoingMail
+X-IronPort-SenderGroup: None
+X-IronPort-MailFlowPolicy: $ACCEPTED
+IronPort-Data: A9a23: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
+ +s9qxrq/qesabe4VoMDQASo+oZ1XDXcWDDB4Q==
+IronPort-HdrOrdr: A9a23:GhKBJqOD/kIfbcBcTtSjsMiBIKoaSvp037BN7SFMoH1uHPBw+P
+ rDoB1273XJYVUqN03I8OroUJVoJ0m2yXcf2+Qs1M2ZLWrbUROTXeNfBNfZsljd8lbFltJg6Q
+ ==
+X-IronPort-AV: E=Sophos;i="5.85,349,1624338000"; 
+   d="scan'208";a="9158"
+X-MGA-submission: =?us-ascii?q?MDFOwCk9QuFpiGan6YFSB9KfeHLjNt8FlzyIoY?=
+ =?us-ascii?q?pYNBCzAH0KTWahvYQ+isJloPmY4k6+bmSNulEdGZSzR5xPkbjYDnVpub?=
+ =?us-ascii?q?Wc1ES32b26axbBFoWTAIsImzmRix0X0i7fH+oXRwJnm6z5Dq/PrpimTj?=
+ =?us-ascii?q?aq?=
+Message-Id: <3d5ec4$8u6@ob1.hc5583-2.iphmx.com>
+Received: from ip-160-153-247-227.ip.secureserver.net (HELO User) ([160.153.247.227])
+  by ob1.hc5583-2.iphmx.com with SMTP; 05 Oct 2021 12:45:07 -0500
+Reply-To: <rev_peter200421@yahoo.co.jp>
+From:   "Admin" <infor@trendgraphix.com>
+Subject: RE = Congratulations_ _
+Date:   Tue, 5 Oct 2021 19:45:17 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch enables the new eBPF JITs for 32-bit and 64-bit MIPS. It also
-disables the old cBPF JIT to so cBPF programs are converted to use the
-new JIT.
+WhatsApp Admin
 
-Workarounds for R4000 CPU errata are not implemented by the JIT, so the
-JIT is disabled if any of those workarounds are configured.
+Congratulations
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
----
- MAINTAINERS            | 1 +
- arch/mips/Kconfig      | 6 ++++--
- arch/mips/net/Makefile | 5 +++--
- 3 files changed, 8 insertions(+), 4 deletions(-)
+Your email has won $1 million United States Dollar ($1,000,000) in the 2021 WhatsApp lottery and you are expected to claim it as quickly as possible or your lottery will be transferred to the second runner up.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 76e0fdcdd877..407cd4235995 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3422,6 +3422,7 @@ S:	Supported
- F:	arch/arm64/net/
- 
- BPF JIT for MIPS (32-BIT AND 64-BIT)
-+M:	Johan Almbladh <johan.almbladh@anyfinetworks.com>
- M:	Paul Burton <paulburton@kernel.org>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 771ca53af06d..38468f47aa5e 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -57,7 +57,6 @@ config MIPS
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if CPU_SUPPORTS_HUGEPAGES
- 	select HAVE_ASM_MODVERSIONS
--	select HAVE_CBPF_JIT if !64BIT && !CPU_MICROMIPS
- 	select HAVE_CONTEXT_TRACKING
- 	select HAVE_TIF_NOHZ
- 	select HAVE_C_RECORDMCOUNT
-@@ -65,7 +64,10 @@ config MIPS
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
--	select HAVE_EBPF_JIT if 64BIT && !CPU_MICROMIPS && TARGET_ISA_REV >= 2
-+	select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
-+				!CPU_DADDI_WORKAROUNDS && \
-+				!CPU_R4000_WORKAROUNDS && \
-+				!CPU_R4400_WORKAROUNDS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FAST_GUP
- 	select HAVE_FTRACE_MCOUNT_RECORD
-diff --git a/arch/mips/net/Makefile b/arch/mips/net/Makefile
-index e057ee4ba75e..602bf242b13f 100644
---- a/arch/mips/net/Makefile
-+++ b/arch/mips/net/Makefile
-@@ -2,9 +2,10 @@
- # MIPS networking code
- 
- obj-$(CONFIG_MIPS_CBPF_JIT) += bpf_jit.o bpf_jit_asm.o
-+obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp.o
- 
- ifeq ($(CONFIG_32BIT),y)
--        obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp.o bpf_jit_comp32.o
-+        obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp32.o
- else
--        obj-$(CONFIG_MIPS_EBPF_JIT) += ebpf_jit.o
-+        obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp64.o
- endif
--- 
-2.30.2
+Its a way to appreciate your commitment to WhatsApp and the impression you have given other people about WhatsApp.
 
+For Security reasons your winning number is (WHTZPPX9) please keep this information very confidential to avoid being hunted by hoodlum when you finally claim your winning.
+
+Your Name
+Your Address
+Age
+Your country
+Your winning number
+Your Telephone numbers
+
+Yours Sincerely,
+WhatsApp Admin
