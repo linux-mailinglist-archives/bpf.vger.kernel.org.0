@@ -2,149 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B8D421DD4
-	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 07:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D418421E18
+	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 07:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhJEFPA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 01:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhJEFO7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:14:59 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B96C061745;
-        Mon,  4 Oct 2021 22:13:09 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id v19so13183742pjh.2;
-        Mon, 04 Oct 2021 22:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U5yN7pAzjpU0stxPyweIcQkHnN3qFNaQQ8UMF8LaTQw=;
-        b=NnHQS67YIGqPf1JEQpORUXpH9bpni8ZjjpSeOIo5cQAs6UNYU6FAIgk84SmshCbh46
-         HpFnZX/J1uZtG8ruiE/iqZeUxnuJyzSJ/XqR6JNeKp+v9hQZY2S2mEE7VNUziqY7BNLS
-         Lvn0gaZsntrTumxAxtMtW+lPvx0sOkk+Lpul806gLoAd+/kJJl50VPekyS6tAZLP+zzv
-         NB+7dYnas+b0Bm1RBFc1yaRwylNTH9L5tX3qnNw3W/Kr+duxvmftlYpe+EPrjMpWeWvg
-         XMHKULN84RWdl8ucU1pqhpoCOZJ0tYDXYLHDq2GSfpYfwmsR7C83uUm1cllAwBkeq96K
-         RnxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U5yN7pAzjpU0stxPyweIcQkHnN3qFNaQQ8UMF8LaTQw=;
-        b=eSJVXVrz7FC8SPYchrktwKw0podk8pUnOJUw9BJ+eC+ym0CLh9fGSjai0QYo4c9RhL
-         JRwKhCEkiJ/qhNDYtw0ZNVZ79ajQdZrxq1E0U7rpbYyMUGd/VEjB27LGMq7ZnAqKsLc2
-         +jFL7IiCv24dckjRR4CfXG6ZQi0tt0CnVtkdUAjKn5NxaJNTxwGQsugV63eI641i0Hgs
-         asKMguwsQC1wC3PQQ8BIP66yG4RYD15zLSN+7SM59H/J8BeiERWr5JVbb/HzQz5TL9ks
-         m7YylGybCAgrMtq/XBzGeROaLPmeO+OX/i5X/JZdmtmQYHwfHchF/E6Pf10W8ktFokTb
-         gyIg==
-X-Gm-Message-State: AOAM533ttq65PiN799DZL6qwF0KypC02F3zAKMde9h8vK/3kbCZ2JOAs
-        a5CbPIn5l9bPky8dyQPzjgERc9l/Eho=
-X-Google-Smtp-Source: ABdhPJyNdts7bI/1dIDJ0zeQHksIpWkBRRATXOG4hk1DYCgz3yTuGiDt91qfJ48mZlXsxbZt3BxbXw==
-X-Received: by 2002:a17:90a:4e:: with SMTP id 14mr1402358pjb.180.1633410789022;
-        Mon, 04 Oct 2021 22:13:09 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:413d])
-        by smtp.gmail.com with ESMTPSA id o1sm282164pjs.52.2021.10.04.22.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 22:13:08 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 22:13:06 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Joe Burton <jevburton.kernel@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S232383AbhJEFnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 01:43:06 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:37827 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231913AbhJEFm4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Oct 2021 01:42:56 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HNmf626VTz9sVN;
+        Tue,  5 Oct 2021 07:41:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id d37MVdPNSDZD; Tue,  5 Oct 2021 07:41:02 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HNmf60tT5z9sV4;
+        Tue,  5 Oct 2021 07:41:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 027308B770;
+        Tue,  5 Oct 2021 07:41:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id VDza1x_r6ywe; Tue,  5 Oct 2021 07:41:01 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.122])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3AEE08B765;
+        Tue,  5 Oct 2021 07:41:01 +0200 (CEST)
+Subject: Re: [PATCH 6/9] powerpc/bpf: Fix BPF_SUB when imm == 0x80000000
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Joe Burton <jevburton@google.com>
-Subject: Re: [RFC PATCH v2 00/13] Introduce BPF map tracing capability
-Message-ID: <20211005051306.4zbdqo3rnecj3hyv@ast-mbp>
-References: <20210929235910.1765396-1-jevburton.kernel@gmail.com>
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
+ <1912a409447071f46ac6cc957ce8edea0e5232b7.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
+ <43626c62-9a3a-bbba-8cbc-11efb0468b4b@csgroup.eu>
+ <1633371242.5ghdfjua6t.naveen@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <3965e96b-431f-ef00-d902-122163f6e9e0@csgroup.eu>
+Date:   Tue, 5 Oct 2021 07:40:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929235910.1765396-1-jevburton.kernel@gmail.com>
+In-Reply-To: <1633371242.5ghdfjua6t.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:58:57PM +0000, Joe Burton wrote:
-> From: Joe Burton <jevburton@google.com>
+
+
+Le 04/10/2021 à 20:18, Naveen N. Rao a écrit :
+> Christophe Leroy wrote:
+>>
+>>
+>> Le 01/10/2021 à 23:14, Naveen N. Rao a écrit :
+>>> We aren't handling subtraction involving an immediate value of
+>>> 0x80000000 properly. Fix the same.
+>>>
+>>> Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for 
+>>> extended BPF")
+>>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>> ---
+>>>   arch/powerpc/net/bpf_jit_comp64.c | 16 ++++++++--------
+>>>   1 file changed, 8 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/net/bpf_jit_comp64.c 
+>>> b/arch/powerpc/net/bpf_jit_comp64.c
+>>> index ffb7a2877a8469..4641a50e82d50d 100644
+>>> --- a/arch/powerpc/net/bpf_jit_comp64.c
+>>> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+>>> @@ -333,15 +333,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 
+>>> *image, struct codegen_context *
+>>>           case BPF_ALU | BPF_SUB | BPF_K: /* (u32) dst -= (u32) imm */
+>>>           case BPF_ALU64 | BPF_ADD | BPF_K: /* dst += imm */
+>>>           case BPF_ALU64 | BPF_SUB | BPF_K: /* dst -= imm */
+>>> -            if (BPF_OP(code) == BPF_SUB)
+>>> -                imm = -imm;
+>>> -            if (imm) {
+>>> -                if (imm >= -32768 && imm < 32768)
+>>> -                    EMIT(PPC_RAW_ADDI(dst_reg, dst_reg, IMM_L(imm)));
+>>> -                else {
+>>> -                    PPC_LI32(b2p[TMP_REG_1], imm);
+>>> +            if (imm > -32768 && imm < 32768) {
+>>> +                EMIT(PPC_RAW_ADDI(dst_reg, dst_reg,
+>>> +                    BPF_OP(code) == BPF_SUB ? IMM_L(-imm) : 
+>>> IMM_L(imm)));
+>>> +            } else {
+>>> +                PPC_LI32(b2p[TMP_REG_1], imm);
+>>> +                if (BPF_OP(code) == BPF_SUB)
+>>> +                    EMIT(PPC_RAW_SUB(dst_reg, dst_reg, 
+>>> b2p[TMP_REG_1]));
+>>> +                else
+>>>                       EMIT(PPC_RAW_ADD(dst_reg, dst_reg, 
+>>> b2p[TMP_REG_1]));
+>>> -                }
+>>>               }
+>>>               goto bpf_alu32_trunc;
+>>
+>> There is now so few code common to both BPF_ADD and BPF_SUB that you 
+>> should make them different cases.
+>>
+>> While at it, why not also use ADDIS if imm is 32 bits ? That would be 
+>> an ADDIS/ADDI instead of LIS/ORI/ADD
 > 
-> This patch introduces 'map tracing': the capability to execute a
-> tracing program after updating a map.
+> Sure. I wanted to limit the change for this fix. We can do a separate 
+> patch to optimize code generation for BPF_ADD.
 > 
-> Map tracing enables upgrades of stateful programs with fewer race
-> conditions than otherwise possible. We use a tracing program to
-> imbue a map with copy-on-write semantics, then use an iterator to
-> perform a bulk copy of data in the map. After bulk copying concludes,
-> updates to that map automatically propagate via the tracing
-> program, avoiding a class of race conditions. This use case is
-> demonstrated in the new 'real_world_example' selftest.
-> 
-> Extend BPF_PROG_TYPE_TRACING with a new attach type, BPF_TRACE_MAP,
-> and allow linking these programs to arbitrary maps.
-> 
-> Extend the verifier to invoke helper calls directly after
-> bpf_map_update_elem() and bpf_map_delete_elem(). The helpers have the
-> exact same signature as the functions they trace, and simply pass those
-> arguments to the list of tracing programs attached to the map.
 
-It's a neat idea to user verifier powers for this job,
-but I wonder why simple tracepoint in map ops was not used instead?
-With BTF the bpf progs see the actual types of raw tracepoints.
-If tracepoint has map, key, value pointers the prog will be able
-to access them in read-only mode.
-Such map pointer will be PTR_TO_BTF_ID, so the prog won't be able
-to recursively do lookup/update on this map pointer,
-but that's what you need anyway, right?
-If not we can extend this part of the tracepoint/verifier.
+Sure, this second part was just a thought, I agree it should be another 
+patch.
 
-Instead of tracepoint it could have been an empty noinline function
-and fentry/fexit would see all arguments as well.
+My main comment here is to split stuff and make it a different case, I 
+don't think it increases the change much, and IMO it is easier to read:
 
-> One open question is how to handle pointer-based map updates. For
-> example:
->   int *x = bpf_map_lookup_elem(...);
->   if (...) *x++;
->   if (...) *x--;
-> We can't just call a helper function right after the
-> bpf_map_lookup_elem(), since the updates occur later on. We also can't
-> determine where the last modification to the pointer occurs, due to
-> branch instructions. I would therefore consider a pattern where we
-> 'flush' pointers at the end of a BPF program:
->   int *x = bpf_map_lookup_elem(...);
->   ...
->   /* Execute tracing programs for this cell in this map. */
->   bpf_map_trace_pointer_update(x);
->   return 0;
-> We can't necessarily do this in the verifier, since 'x' may no
-> longer be in a register or on the stack. Thus we might introduce a
-> helper to save pointers that should be flushed, then flush all
-> registered pointers at every exit point:
->   int *x = bpf_map_lookup_elem(...);
->   /*
->    * Saves 'x' somewhere in kernel memory. Does nothing if no
->    * corresponding tracing progs are attached to the map.
->    */
->   bpf_map_trace_register_pointer(x);
->   ...
->   /* flush all registered pointers */
->   bpf_map_trace_pointer_update();
->   return 0;
-> This should be easy to implement in the verifier.
-
-I don't think the "solution" for lookup operation is worth pursuing.
-The bpf prog that needs this map tracing is completely in your control.
-So just don't do writes after lookup.
-
-> In addition, we use the verifier to instrument certain map update
-> calls. This requires saving arguments onto the stack, which means that
-> a program using MAX_BPF_STACK bytes of stack could exceed the limit.
-> I don't know whether this actually causes any problems.
-
-Extra 8*4 bytes of stack is not a deal breaker.
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c 
+b/arch/powerpc/net/bpf_jit_comp64.c
+index ffb7a2877a84..39226d88c558 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -330,11 +330,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 
+*image, struct codegen_context *
+  			EMIT(PPC_RAW_SUB(dst_reg, dst_reg, src_reg));
+  			goto bpf_alu32_trunc;
+  		case BPF_ALU | BPF_ADD | BPF_K: /* (u32) dst += (u32) imm */
+-		case BPF_ALU | BPF_SUB | BPF_K: /* (u32) dst -= (u32) imm */
+  		case BPF_ALU64 | BPF_ADD | BPF_K: /* dst += imm */
+-		case BPF_ALU64 | BPF_SUB | BPF_K: /* dst -= imm */
+-			if (BPF_OP(code) == BPF_SUB)
+-				imm = -imm;
+  			if (imm) {
+  				if (imm >= -32768 && imm < 32768)
+  					EMIT(PPC_RAW_ADDI(dst_reg, dst_reg, IMM_L(imm)));
+@@ -344,6 +340,17 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 
+*image, struct codegen_context *
+  				}
+  			}
+  			goto bpf_alu32_trunc;
++		case BPF_ALU | BPF_SUB | BPF_K: /* (u32) dst -= (u32) imm */
++		case BPF_ALU64 | BPF_SUB | BPF_K: /* dst -= imm */
++			if (imm) {
++				if (-imm >= -32768 && -imm < 32768) {
++					EMIT(PPC_RAW_ADDI(dst_reg, dst_reg, IMM_L(-imm)));
++				} else {
++					PPC_LI32(b2p[TMP_REG_1], imm);
++					EMIT(PPC_RAW_SUB(dst_reg, dst_reg, b2p[TMP_REG_1]));
++				}
++			}
++			goto bpf_alu32_trunc;
+  		case BPF_ALU | BPF_MUL | BPF_X: /* (u32) dst *= (u32) src */
+  		case BPF_ALU64 | BPF_MUL | BPF_X: /* dst *= src */
+  			if (BPF_CLASS(code) == BPF_ALU)
