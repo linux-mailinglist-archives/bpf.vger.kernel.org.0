@@ -2,139 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D0E42313D
-	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 22:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067774231A0
+	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 22:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbhJEUF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 16:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbhJEUF1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:05:27 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B475DC061749
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 13:03:35 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id 188so599540vsv.0
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 13:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UUkXRCv5i94LaT1bKu68VJnO8Ng6U39KvQpxaI5oMis=;
-        b=VnBAcWCOEFshe2ikd3LGdzGwkowOOOx0e+HQ8J6uZaTfWsDIEdro0peWHE0Mt68rRp
-         0wl8GYPnPoO9luisuZdXR1csL6ydx/WYsxMaLTkqiedTfTu3x+97p7KpTnr/mBBd/k/x
-         GRy7PmkhnuAGPAG6BnwEUN2ytss3y+xVH4DffHiYq90fc+vavfK4LV6QL8TQsT80wLJn
-         hHvPO2B3tyn1Xvvmp0oGNaTMVWP72xo3w/6bJBLk5InSnjJ5kQbq3q2KGkl56DXuhkmA
-         0/bybzIOsZ54xdHy8/wSCUAIgQ0mZu5O4iUD7ffJIFX5ETS33kZPEeBYT4eajbfRo4im
-         UbQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UUkXRCv5i94LaT1bKu68VJnO8Ng6U39KvQpxaI5oMis=;
-        b=smfdrsgTxrVDo/mvQpwSzubB0v7OlP9XgKOXKOtnNLunPBr+xiEDi+QY79+LABRhwW
-         WwrDGeRJH6N119/CjYAAgvZe11NcTyMi+Y65xUHeE8W6A8I8dinA/q+2bgmXEHeGKgLF
-         mn/RY+mFxHevEkMTptKht40+mXSyGTmBYx/g3noCIchbyk7bkjTNWbZ5FjnAYROP1ZhH
-         oKHLCjxQgyg0UlEEfF3+g4/ynW7CrakiIbI1a/N/ds/B2CpsNnQarHZIli+LWWZsXXkf
-         WYqSrxAG0JwNQ7x8GIY6xJxhfQwfqZnipYfKvy1apnBxfz5eQymchZNAEHPvoXbenEJX
-         ThwQ==
-X-Gm-Message-State: AOAM531/4/5eQ5zEKgc2JENIYrRUtSbyEkxKjjIqiAS3qgRniu9cz+HV
-        DwUQFE1XfbJHuoMTR0zlNOmz9fNNhr6DgoyduOF66w==
-X-Google-Smtp-Source: ABdhPJxlirsRB/ttYrKnjt0r3awHnCZi40aESR/AROiJYpZ3iDs8iGF5jLAaoOAUVK7YouqYF0TlJYvj/JQn8+lUuDM=
-X-Received: by 2002:a67:d08f:: with SMTP id s15mr21422546vsi.54.1633464214840;
- Tue, 05 Oct 2021 13:03:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211001110856.14730-1-quentin@isovalent.com> <20211001110856.14730-7-quentin@isovalent.com>
- <CAEf4BzYm_QTq+u5tUp71+wY+JAaiUApv35tSqFUEyc81yOeUzw@mail.gmail.com>
- <CACdoK4LL91u-JK1fZ3XvkrTXsKBVsN-y1Js4QSPkWyS51KPB8Q@mail.gmail.com>
- <CACdoK4K4-x4+ZWXyB697Kn8RK5AyoCST+V7Lhtk_Kaqm5uQ6wg@mail.gmail.com>
- <CAEf4Bzb=jP3kU6O6QhZR6pcYn-7bkP8fr5ZDirWzf46WKEWA8Q@mail.gmail.com> <CACdoK4JpgKyeFAwwY=8V-WQO405-xkW+yS2qnfVv2tgoF-F3JA@mail.gmail.com>
-In-Reply-To: <CACdoK4JpgKyeFAwwY=8V-WQO405-xkW+yS2qnfVv2tgoF-F3JA@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Tue, 5 Oct 2021 21:03:23 +0100
-Message-ID: <CACdoK4KC2Y69Sj2KmEFHtZctWeZfvUnckRY4Q1hpomHHr0CfDA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 6/9] bpf: iterators: install libbpf headers
- when building
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S230057AbhJEUYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 16:24:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24932 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230033AbhJEUYY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 Oct 2021 16:24:24 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195K5vfd007002;
+        Tue, 5 Oct 2021 16:22:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=kYvgRD44K/u6uVDaUItEcnZxx00SRWWc3R0pcMCVCIU=;
+ b=VZpLDOGeXDM4K028WS38AESHwtiXkbZdTnIyr+4H0iAqPH3sleUeZLnyuwmU9NCotova
+ 57WthHpHGJNtH/lWenkKTEv2g7B5upkEpXhRWidU+11vwFjFEYiCwdA+JgtIEgKyXaDi
+ Sto2NGSp8jPW7LMKWYyx+XQ3k2E8t2pFoBXX9rTfuZpNJ3Rg0KPdYjeuHBG/cUIObtgF
+ vWhlaqeWXyoRbI3JuUXzoPmXuKEQevW6mwBYY3GZyu6TeYGBmVUfT4YApbzhq15NBLVy
+ oj7QbgANA/qFSYfim9KN//r7WJU9YF8p+vlDZ4+3ROUjFRF0/nSwc21bZDFDLPnkr1a6 /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgs36y1mv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 16:22:10 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 195JxuqZ011456;
+        Tue, 5 Oct 2021 16:22:09 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgs36y1mb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 16:22:09 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195KImqu012495;
+        Tue, 5 Oct 2021 20:22:07 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3bef29ksh7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 20:22:06 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195KM4gV46072088
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Oct 2021 20:22:04 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F73CA4065;
+        Tue,  5 Oct 2021 20:22:04 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D831AA4062;
+        Tue,  5 Oct 2021 20:22:03 +0000 (GMT)
+Received: from localhost (unknown [9.43.5.112])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Oct 2021 20:22:03 +0000 (GMT)
+Date:   Wed, 06 Oct 2021 01:52:02 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH 3/9] powerpc/bpf: Remove unused SEEN_STACK
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
+        <92fcd53a43dede52fbba52dc50c76042a6ce284c.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
+        <bdadfd21-7e39-5984-43b9-818f1660ccaf@csgroup.eu>
+        <1633369544.ekqufta9bg.naveen@linux.ibm.com>
+        <a9904ed3-c9fc-d86f-a720-de0a7e7a8938@csgroup.eu>
+In-Reply-To: <a9904ed3-c9fc-d86f-a720-de0a7e7a8938@csgroup.eu>
+MIME-Version: 1.0
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1633465104.63u4we4w28.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: BCZQQdM5PTLlgls5OsQd7iGMS89Viy96
+X-Proofpoint-ORIG-GUID: _LmBPzT-wyPEOCQ15WVdij5gbPNcDVld
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-05_04,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110050117
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 4 Oct 2021 at 22:30, Quentin Monnet <quentin@isovalent.com> wrote:
->
-> On Mon, 4 Oct 2021 at 20:11, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Sat, Oct 2, 2021 at 3:12 PM Quentin Monnet <quentin@isovalent.com> wrote:
-> > >
-> > > On Sat, 2 Oct 2021 at 21:27, Quentin Monnet <quentin@isovalent.com> wrote:
-> > > >
-> > > > On Sat, 2 Oct 2021 at 00:20, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Oct 1, 2021 at 4:09 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> > > > > >
-> > > > > > API headers from libbpf should not be accessed directly from the
-> > > > > > library's source directory. Instead, they should be exported with "make
-> > > > > > install_headers". Let's make sure that bpf/preload/iterators/Makefile
-> > > > > > installs the headers properly when building.
-> > > >
-> > > > > >
-> > > > > > -$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)
-> > > > > > +$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile)            \
-> > > > > > +          | $(LIBBPF_OUTPUT) $(LIBBPF_INCLUDE)
-> > > > >
-> > > > > Would it make sense for libbpf's Makefile to create include and output
-> > > > > directories on its own? We wouldn't need to have these order-only
-> > > > > dependencies everywhere, right?
-> > > >
-> > > > Good point, I'll have a look at it.
-> > > > Quentin
-> > >
-> > > So libbpf already creates the include (and parent $(DESTDIR))
-> > > directory, so I can get rid of the related dependencies. But I don't
-> > > see an easy solution for the output directory for the object files.
-> > > The issue is that libbpf's Makefile includes
-> > > tools/scripts/Makefile.include, which checks $(OUTPUT) and errors out
-> >
-> > Did you check what benefits the use of tools/scripts/Makefile.include
-> > brings? Last time I had to deal with some non-trivial Makefile
-> > problem, this extra dance with tools/scripts/Makefile.include and some
-> > related complexities didn't seem very justified. So unless there are
-> > some very big benefits to having tool's Makefile.include included, I'd
-> > rather simplify libbpf's in-kernel Makefile and make it more
-> > straightforward. We have a completely independent separate Makefile
-> > for libbpf in Github, and I think it's more straightforward. Doesn't
-> > have to be done in this change, of course, but I was curious to hear
-> > your thoughts given you seem to have spent tons of time on this
-> > already.
->
-> No, I haven't checked in details so far. I remember that several
-> elements defined in the Makefile.include are used in libbpf's
-> Makefile, and I stopped at that, because I thought that a refactoring
-> of the latter would be beyond the current set. But yes, I can have a
-> look at it and see if it's worth changing in a follow-up.
+Christophe Leroy wrote:
+>=20
+>=20
+> Le 04/10/2021 =C3=A0 20:11, Naveen N. Rao a =C3=A9crit=C2=A0:
+>> Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 01/10/2021 =C3=A0 23:14, Naveen N. Rao a =C3=A9crit=C2=A0:
+>>>> From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>>>
+>>>> SEEN_STACK is unused on PowerPC. Remove it. Also, have
+>>>> SEEN_TAILCALL use 0x40000000.
+>>>
+>>> Why change SEEN_TAILCALL ? Would it be a problem to leave it as is ?
+>>>
+>>>>
+>>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>>> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>=20
+>> I prefer the bit usage to be contiguous. Changing SEEN_TAILCALL isn't a=20
+>> problem either.
+>>=20
+>=20
+> Well you are adding SEEN_BIG_PROG in following patch so it would still=20
+> be contiguous at the end.
+>=20
+> I don't really mind but I thought it would be less churn to just leave=20
+> SEEN_TAILCALL as is and re-use 0x40000000 for SEEN_BIG_PROG.
 
-Looking more at tools/scripts/Makefile.include: It's 160-line long and
-does not include any other Makefile, so there's nothing in it that we
-couldn't re-implement in libbpf's Makefile if necessary. This being
-said, it has a number of items that, I think, are good to keep there
-and share with the other tools. For example:
+Ah ok. This patch was from a different series and it made more sense to=20
+change the bit number there. I have reused the patch here as-is since=20
+the change is fairly trivial.
 
-- The $(EXTRA_WARNINGS) definitions
-- QUIET_GEN, QUIET_LINK, QUIET_CLEAN, which are not mandatory to have
-but integrate nicely with the way other tools (or kernel components)
-are built
-- Some overwrites for the toolchain, if $(LLVM) or $(CROSS_COMPILE) are set
 
-Thinking more about this, if we want to create the $(OUTPUT) directory
-in libbpf itself, we could maybe just enclose the check on its
-pre-existence in tools/scripts/Makefile.include with a dedicated
-variable ("ifneq ($(_skip_output_check),) ...") and set the latter in
-Makefile.include. This way we wouldn't have to change the current
-Makefile infra too much, and can keep the include.
+- Naveen
 
-Quentin
