@@ -2,89 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2376C421E6A
-	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 07:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADEE421F09
+	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 08:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhJEFwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 01:52:11 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:52949 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231142AbhJEFwL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:52:11 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HNmrr00g5z9sVN;
-        Tue,  5 Oct 2021 07:50:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id MkznaSMcms_y; Tue,  5 Oct 2021 07:50:19 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HNmrq66T1z9sV4;
-        Tue,  5 Oct 2021 07:50:19 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B505F8B770;
-        Tue,  5 Oct 2021 07:50:19 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id XM5qyo8sPpt2; Tue,  5 Oct 2021 07:50:19 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.122])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0D3268B765;
-        Tue,  5 Oct 2021 07:50:18 +0200 (CEST)
-Subject: Re: [PATCH 3/9] powerpc/bpf: Remove unused SEEN_STACK
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
- <92fcd53a43dede52fbba52dc50c76042a6ce284c.1633104510.git.naveen.n.rao@linux.vnet.ibm.com>
- <bdadfd21-7e39-5984-43b9-818f1660ccaf@csgroup.eu>
- <1633369544.ekqufta9bg.naveen@linux.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <a9904ed3-c9fc-d86f-a720-de0a7e7a8938@csgroup.eu>
-Date:   Tue, 5 Oct 2021 07:50:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232569AbhJEGtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 02:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhJEGtB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:49:01 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE25C061745
+        for <bpf@vger.kernel.org>; Mon,  4 Oct 2021 23:47:11 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id cs11-20020a17090af50b00b0019fe3df3dddso1382686pjb.0
+        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 23:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LReiECkU7NMOxG1fc31dEyINrPWgXAoIJLb6r1Endw0=;
+        b=i6bdWrp8m1pc/CFiLNUgYNhcyY6DFCy0QZy5la+hxSU1wFoNVKtfuS7r27yR0YDncG
+         oY6vISDB1HotQYm+NwcZjmklUWAdDG5B3J804H7pGJ9sjou2m8PWlYBtaHmkwkxdxRtV
+         /WUSuxFj6L1d5q9+PmtZ0aV8cFtSFqtt9SBvvPNsnz7kTm9rpX1zJLKsXsH0PjNIiwiJ
+         bYJJqHyDe2dfCnsU9JmX08CnP1kiqI8jreuiKNtpx6qTdCVg8rDv+2uyPZn3ZnBRjBnU
+         CIURidEpvwlqo9nwtZDJQ9ln5Z8aI6Y7KCGP1zBd4FoL61f6VNuISXjIfqx7jnHu0Hjc
+         vvoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LReiECkU7NMOxG1fc31dEyINrPWgXAoIJLb6r1Endw0=;
+        b=fal3FScVe/8WdO5QIBcncJDYZP3Fx+JNFiIx8iXwrmRsvwkTfWZa72j7PdOvOSEj6T
+         z0WMNoRz2Weno0wR3vP/Jqp/YMRrF15b2HMLvqTk7Lz4o0Vr+DU/yoljbIapp9M7pk4d
+         dInwl5U1t93LGHEK52p9nVNJINa2COeavrwwxTyJEYyhwjUwdocHgWzIK1O7mt8DkyR4
+         gqNsjSvMOgB+QxPufTKHSDpGrMssxQkyLzK3VbN2nBz4j5rhz2rtZqivS3lrZwwB025+
+         PulxmB9i51yJEqUvZllME3ZFTvKeUzv23k7PbIgQV1WedFJ+Jwr25kTAIn5MgA4PFtVO
+         F5dA==
+X-Gm-Message-State: AOAM532phpsZT+O1Pp6jL6/03JFikLn+d9pqtbufaJlhrR651FgKshHS
+        0vxFbvOswU6ow8050ZFbUepkzK0pzcvJNA==
+X-Google-Smtp-Source: ABdhPJzUBoevV5pQ3OvAWtFHLZQAQUchkV8X3/s6fzF5qbGfX3aFNmgDci3Taae6zWPIzaoinxca7w==
+X-Received: by 2002:a17:90b:180f:: with SMTP id lw15mr1858356pjb.210.1633416430537;
+        Mon, 04 Oct 2021 23:47:10 -0700 (PDT)
+Received: from andriin-mbp.thefacebook.com ([2620:10d:c090:400::5:381e])
+        by smtp.gmail.com with ESMTPSA id g9sm7185187pfv.80.2021.10.04.23.47.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 04 Oct 2021 23:47:10 -0700 (PDT)
+From:   andrii.nakryiko@gmail.com
+X-Google-Original-From: andrii@kernel.org
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     andrii@kernel.org, kernel-team@fb.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [PATCH bpf-next 0/3] libbpf: add bulk BTF type copying API
+Date:   Mon,  4 Oct 2021 23:47:00 -0700
+Message-Id: <20211005064703.60785-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <1633369544.ekqufta9bg.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Andrii Nakryiko <andrii@kernel.org>
 
+Add bulk BTF type data copying API, btf__add_btf(), to libbpf. This API is
+useful for tools that are manipulating BPF, such as pahole. They abstract away
+the details of implementing a pretty mundane, but important to get right,
+details of handling all possible BTF kinds, as well as, importantly, adjusting
+BTF type IDs and copying/deduplicating strings and string offsets, referenced
+from copied BTF types.
 
-Le 04/10/2021 à 20:11, Naveen N. Rao a écrit :
-> Christophe Leroy wrote:
->>
->>
->> Le 01/10/2021 à 23:14, Naveen N. Rao a écrit :
->>> From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
->>>
->>> SEEN_STACK is unused on PowerPC. Remove it. Also, have
->>> SEEN_TAILCALL use 0x40000000.
->>
->> Why change SEEN_TAILCALL ? Would it be a problem to leave it as is ?
->>
->>>
->>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
->>> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
-> I prefer the bit usage to be contiguous. Changing SEEN_TAILCALL isn't a 
-> problem either.
-> 
+Also, being a batch API, it's possible to improve the efficiency by
+preallocating necessary memory more efficiently.
 
-Well you are adding SEEN_BIG_PROG in following patch so it would still 
-be contiguous at the end.
+This API is going to be used by pahole to implement efficient parallelized BTF
+encoding.
 
-I don't really mind but I thought it would be less churn to just leave 
-SEEN_TAILCALL as is and re-use 0x40000000 for SEEN_BIG_PROG.
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
 
-Anyway
+Andrii Nakryiko (3):
+  libbpf: add API that copies all BTF types from one BTF object to
+    another
+  selftests/bpf: refactor btf_write selftest to reuse BTF generation
+    logic
+  selftests/bpf: test new btf__add_btf() API
 
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+ tools/lib/bpf/btf.c                           | 114 +++++++++++++-
+ tools/lib/bpf/btf.h                           |  22 +++
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/btf_write.c      | 141 +++++++++++++++++-
+ 4 files changed, 270 insertions(+), 8 deletions(-)
+
+-- 
+2.30.2
+
