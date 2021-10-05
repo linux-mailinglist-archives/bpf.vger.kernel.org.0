@@ -2,117 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B3F421B5C
-	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 03:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778F1421B6B
+	for <lists+bpf@lfdr.de>; Tue,  5 Oct 2021 03:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhJEBCQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Oct 2021 21:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50672 "EHLO mail.kernel.org"
+        id S229606AbhJEBIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Oct 2021 21:08:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhJEBCP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Oct 2021 21:02:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C856613AC
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 01:00:26 +0000 (UTC)
+        id S229564AbhJEBIb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Oct 2021 21:08:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC1A610A8
+        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 01:06:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633395626;
-        bh=rp21O60UYE997DVUvkT3TldnnC2zBF9x5e4nRap9kuo=;
+        s=k20201202; t=1633396001;
+        bh=SktD94DznT691r6dkDbAq1H4r/wS7lEyCYfXE1BWHmY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UvVtaulvj7/joaFDeTBAV+PylmhLtNcSFVr2F0oDzzJLB/mEEOXLFNVcHQ6wXqwcU
-         NrUmhJZ/KevNQ06tTQT2ciWJYbKFeyhlVipUcHJnnYxC7C4MRQYiVzTa8ntB5SvRqi
-         80Evxq50Yb8xzl8/8qO9b5BlqVjKJaNO/Gsytsw/IQ0sxLoc62azmk09Q78nodEPij
-         R8D4mUDf7yHfxl52CJOXCwGhR71gtEPVqJVBNz9xbV0N2THu8h5TLUT/vL7zJxWbwO
-         JZhSx5FkT4TTNn3+vc0hI4BTuynmxT8ouDEHmU30MCLcZLK45H3QPQXlVsQmo5k2ln
-         D56Ai/Pg+AJog==
-Received: by mail-lf1-f47.google.com with SMTP id y26so79461630lfa.11
-        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 18:00:25 -0700 (PDT)
-X-Gm-Message-State: AOAM5333/67GXo1qQUoTk7gvgWeGHxysVcHxk0ALrS+zqu4ZQCz5G07i
-        qkX5IUDjePXTAybJbz5WfZ+m23njuHpdx/noVJU=
-X-Google-Smtp-Source: ABdhPJzFm9XjQY7rnKIWvoNVrFBw7LpmDeB9S+qsyHNja9cyAztBfVqcrX9ZWWIWTSZJJ10JYBl5bi2ORGVAHxqza6U=
-X-Received: by 2002:a05:6512:1052:: with SMTP id c18mr315176lfb.223.1633395624373;
- Mon, 04 Oct 2021 18:00:24 -0700 (PDT)
+        b=ItWCes++B6JktuNMagD8wsRZ4n/cn7h6Z0YXZQoZcq10UYnDihT4MqI+k1pBlxeiI
+         UwlFfWxr0GOIVimvw8aFZUKnfNkEvz0bgEe9wzkyzluuU5/XbQNFk9VmUsRDkCERvj
+         lIFYKc49Dk5f0W7C2Q+aGT+nx0zMB3LuoItANURm+pF8iOtrl5K2hZfna3I4O+v7WN
+         8/uCbCHM+1ceZpcvl822ymFcV2Kq5KQtTzvU26Ihdb2FU8dQdD4UXHpB3jtPZgjQNI
+         qEd50dmAdGwof7hvHftjgixpNaXGmq4KReYfc3QHgL/eKjI+VvTAh4exnNrbPB7uWO
+         QFN6f/8POP5iA==
+Received: by mail-lf1-f52.google.com with SMTP id n8so23338786lfk.6
+        for <bpf@vger.kernel.org>; Mon, 04 Oct 2021 18:06:41 -0700 (PDT)
+X-Gm-Message-State: AOAM530foTsS7iaIKalBXBaP22Mnc+Q+ivsHqnlvgj8Ko3rhJ6wVkNYB
+        EFrE32R8a7j3R9GotI/uvz7x9SyEkJ9xBj2j3Qw=
+X-Google-Smtp-Source: ABdhPJy7kEz5HWopb7uFxz7uF7fvwaAY/67zbc7L/RiHmJ6Ka15hhxCwp5q5oI24SCQbrhEPVKnCbPr0O1pdiVmCswg=
+X-Received: by 2002:a2e:9ad7:: with SMTP id p23mr19210158ljj.527.1633396000214;
+ Mon, 04 Oct 2021 18:06:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211004215644.497327-1-grantseltzer@gmail.com>
-In-Reply-To: <20211004215644.497327-1-grantseltzer@gmail.com>
+References: <20211002161000.3854559-1-hengqi.chen@gmail.com>
+In-Reply-To: <20211002161000.3854559-1-hengqi.chen@gmail.com>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 4 Oct 2021 18:00:13 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6MZ8-iHd95OLjV-xZCiq8m=satUjqHOhcoh1PENcL5=g@mail.gmail.com>
-Message-ID: <CAPhsuW6MZ8-iHd95OLjV-xZCiq8m=satUjqHOhcoh1PENcL5=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add API documentation convention guidelines
-To:     grantseltzer <grantseltzer@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Mon, 4 Oct 2021 18:06:29 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7GxToBCDVzD+H-83NAJw-a-EraNVD=+xcFfGqKduejUw@mail.gmail.com>
+Message-ID: <CAPhsuW7GxToBCDVzD+H-83NAJw-a-EraNVD=+xcFfGqKduejUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: Deprecate bpf_object__unload() API
+ since v0.7
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 4:51 PM grantseltzer <grantseltzer@gmail.com> wrote:
+On Sat, Oct 2, 2021 at 9:31 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
-> From: Grant Seltzer <grantseltzer@gmail.com>
+> BPF objects are not re-loadable after unload. User are expected to use
+> bpf_object__close() to unload and free up resources in one operation.
+> No need to expose bpf_object__unload() as a public API, deprecate it.[0]
+> Add bpf_object_unload() as an alias to bpf_object__unload() and replace
+> all bpf_object__unload() to avoid compilation errors.
 >
-> This adds a section to the documentation for libbpf
-> naming convention which describes how to document
-> API features in libbpf, specifically the format of
-> which API doc comments need to conform to.
+>   [0] Closes: https://github.com/libbpf/libbpf/issues/290
 >
-> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 
 Acked-by: Song Liu <songliubraving@fb.com>
-
-> ---
->  .../bpf/libbpf/libbpf_naming_convention.rst   | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->
-> diff --git a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-> index 9c68d5014ff1..5f42f172987a 100644
-> --- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-> +++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-> @@ -150,6 +150,46 @@ mirror of the mainline's version of libbpf for a stand-alone build.
->  However, all changes to libbpf's code base must be upstreamed through
->  the mainline kernel tree.
->
-> +
-> +API documentation convention
-> +============================
-> +
-> +The libbpf API is documented via comments above definitions in
-> +header files. These comments can be rendered by doxygen and sphinx
-> +for well organized html output. This section describes the
-> +convention in which these comments should be formated.
-> +
-> +Here is an example from btf.h:
-> +
-> +.. code-block:: c
-> +
-> +        /**
-> +        * @brief **btf__new()** creates a new instance of a BTF object from the raw
-> +        * bytes of an ELF's BTF section
-> +        * @param data raw bytes
-> +        * @param size number of bytes passed in `data`
-> +        * @return new BTF object instance which has to be eventually freed with
-> +        * **btf__free()**
-> +        *
-> +        * On error, error-code-encoded-as-pointer is returned, not a NULL. To extract
-> +        * error code from such a pointer `libbpf_get_error()` should be used. If
-> +        * `libbpf_set_strict_mode(LIBBPF_STRICT_CLEAN_PTRS)` is enabled, NULL is
-> +        * returned on error instead. In both cases thread-local `errno` variable is
-> +        * always set to error code as well.
-> +        */
-> +
-> +The comment must start with a block comment of the form '/**'.
-> +
-> +The documentation always starts with a @brief directive. This line is a short
-> +description about this API. It starts with the name of the API, denoted in bold
-> +like so: **api_name**. Please include an open and close parenthesis if this is a
-> +function. Follow with the short description of the API. A longer form description
-> +can be added below the last directive, at the bottom of the comment.
-> +
-> +Parameters are denoted with the @param directive, there should be one for each
-> +parameter. If this is a function with a non-void return, use the @return directive
-> +to document it.
-> +
->  License
->  -------------------
->
-> --
-> 2.31.1
->
