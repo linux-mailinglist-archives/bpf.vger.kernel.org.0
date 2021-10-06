@@ -2,86 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5001F423FDA
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 16:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171AC424084
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 16:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238637AbhJFOMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 10:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231600AbhJFOMA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C444B6105A;
-        Wed,  6 Oct 2021 14:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633529407;
-        bh=Uc8Q20VnwsduTfwKM/OouKblxdsH43dSctysbxxvHgQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=deRmKfHTsAW50a/XcgivbYDC3eKZK2zTBYTBWI7vj6bYQ1l5r+1D0WQZk9I2ZmzIu
-         68kAL0+DGSy8PNa7q7lwxw++YWLayz7Osqu7LBeNxH83M9R4XOzB1H8gBS207Ek3Lj
-         ANYqC1hRbF2UutzL/G5tyinv2FPEYfHfc7qBDzgbJKFRWdnmAyCk1KL+I+j4Yb6ArL
-         M5skWTtmEjhRGm5il2NzIt62eO//Tay42z+Jsw0cO/BOCgxLpRf7ciFzPaF7kOhq8W
-         HBu2G1ErXbbGxoC9a2juSuMFj66ff9N4aM8RcLNHwzjJlawOk4ARKfuDsK5shA3/7D
-         yLOf5yxiSOJww==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B24C760971;
-        Wed,  6 Oct 2021 14:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S238226AbhJFOzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 10:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238205AbhJFOzf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:55:35 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537BCC061746;
+        Wed,  6 Oct 2021 07:53:43 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so4628803pjb.5;
+        Wed, 06 Oct 2021 07:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jnJZeKgIptkk68YEHX3pQNflodspjjs/YieRerqVbnQ=;
+        b=aL9VjuuHUNJaVNC9iLXknQyxlHAnJhm6LkmZGE53ljjZtVAwn701nzSehD0v8pOoIt
+         PGZCAYHyVNfZuASyoe4sMKGG/Ct2bHF8/JZNlY8JQ3MUlks1IoI+qYTHdCQxoCTvG1Gw
+         Gq8Cj2M94sejSt5WBLWmcd/vvqBfVz+mO+E+8jC9FYear58pQteEMvij+ePaC8V4Lvir
+         dvNhG7JBEaRpkXuX89mfYoTheyFIthHisilLtV4FhVo7UpPCdrTdCWOlvNAKTBVNLRwc
+         C7S0mIV68B9Tr91cXi1ih8UVPi3G7Ay38ZLNN28Ff2pMFReN0vWEC3kjHKqph6qh6UHe
+         bUWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jnJZeKgIptkk68YEHX3pQNflodspjjs/YieRerqVbnQ=;
+        b=GghviJOYTa90skkdH2zXjkZCks1b4h4DifPzexe3d+XYKhjuM3GNdftzLW1lIAJKBj
+         xe8oYUWTNz27QPVbUqcApoKaWVoJZsTCxbLB9k4zM0yZ92o5VBzd9rbTx3D0eVqMLIPb
+         C9D0mheGjdb5jKd0Wfd0l/RdKJEafz6ZtS210walcaU02ZVHG5XrhoQoTkvqFQ6HWW0a
+         x6PdvwpPbSMzDbO42YWhIpoaJn6FxOnbk1BZbhS6kUqTn23PaIk1WnFNA5jyxXV0nEoW
+         B2lMYBzpO8zIFuO7qbp9fWH3oC9pRHDvKN8m4oErq4e5J3HswxotCKto+I9c3XZRiNF8
+         k3IQ==
+X-Gm-Message-State: AOAM5307ho2iGEfRPhziJ1SU0iFuXUkhOKEhevuoRSbREnBCuwCUnSLw
+        q+x+ELBN0q/wC6h3w5hOk6U/J1xBgTUURt8n+Bw=
+X-Google-Smtp-Source: ABdhPJxnTjLckeUKrsJhPYBYaJTQA9JXAISCBEgPn3wXtpXroaz713aA3dWQUCSHhMP5Cj7Vh0p+5wBLXy/+cF09BCg=
+X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr11424328pjj.122.1633532022824;
+ Wed, 06 Oct 2021 07:53:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/7] A new eBPF JIT implementation for MIPS
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163352940772.9599.5939069697064558862.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Oct 2021 14:10:07 +0000
-References: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
-In-Reply-To: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
-To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        paulburton@kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        tsbogend@alpha.franken.de, chenhuacai@kernel.org,
-        jiaxun.yang@flygoat.com, yangtiezhu@loongson.cn,
-        tony.ambardar@gmail.com, bpf@vger.kernel.org,
-        linux-mips@vger.kernel.org, netdev@vger.kernel.org
+References: <YV1hRboJopUBLm3H@krava> <YV1h+cBxmYi2hrTM@krava>
+In-Reply-To: <YV1h+cBxmYi2hrTM@krava>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 6 Oct 2021 07:53:31 -0700
+Message-ID: <CAADnVQLeHHBsG3751Ld3--w6KEM1a+8V4KY8MReexWo+bLgdmg@mail.gmail.com>
+Subject: Re: [RFC] store function address in BTF
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Oct 6, 2021 at 1:44 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Oct 06, 2021 at 10:41:41AM +0200, Jiri Olsa wrote:
+> > hi,
+> > I'm hitting performance issue and soft lock ups with the new version
+> > of the patchset and the reason seems to be kallsyms lookup that we
+> > need to do for each btf id we want to attach
+>
+> ugh, I meant to sent this as reply to the patchset mentioned above,
+> nevermind, here's the patchset:
+>   https://lore.kernel.org/bpf/20210605111034.1810858-1-jolsa@kernel.org/
+>
+> jirka
+>
+> >
+> > I tried to change kallsyms_lookup_name linear search into rbtree search,
+> > but it has its own pitfalls like duplicate function names and it still
+> > seems not to be fast enough when you want to attach like 30k functions
+> >
+> > so I wonder we could 'fix this' by storing function address in BTF,
+> > which would cut kallsyms lookup completely, because it'd be done in
+> > compile time
+> >
+> > my first thought was to add extra BTF section for that, after discussion
+> > with Arnaldo perhaps we could be able to store extra 8 bytes after
+> > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
+> > indicate that? or new BTF_KIND_FUNC2 type?
+> >
+> > thoughts?
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Tue,  5 Oct 2021 18:54:01 +0200 you wrote:
-> This is an implementation of an eBPF JIT for MIPS I-V and MIPS32/64 r1-r6.
-> The new JIT is written from scratch, but uses the same overall structure
-> as other eBPF JITs.
-> 
-> Before, the MIPS JIT situation looked like this.
-> 
->   - 32-bit: MIPS32, cBPF-only, tests fail
->   - 64-bit: MIPS64r2-r6, eBPF, tests fail, incomplete eBPF ISA support
-> 
-> [...]
-
-Here is the summary with links:
-  - [1/7] MIPS: uasm: Enable muhu opcode for MIPS R6
-    https://git.kernel.org/bpf/bpf-next/c/52738ad51026
-  - [2/7] mips: uasm: Add workaround for Loongson-2F nop CPU errata
-    https://git.kernel.org/bpf/bpf-next/c/be0f00d5a246
-  - [3/7] mips: bpf: Add eBPF JIT for 32-bit MIPS
-    https://git.kernel.org/bpf/bpf-next/c/88dfe3f95766
-  - [4/7] mips: bpf: Add new eBPF JIT for 64-bit MIPS
-    https://git.kernel.org/bpf/bpf-next/c/42fb8eacf86e
-  - [5/7] mips: bpf: Add JIT workarounds for CPU errata
-    https://git.kernel.org/bpf/bpf-next/c/a1db4f358142
-  - [6/7] mips: bpf: Enable eBPF JITs
-    https://git.kernel.org/bpf/bpf-next/c/6675d4a60007
-  - [7/7] mips: bpf: Remove old BPF JIT implementations
-    https://git.kernel.org/bpf/bpf-next/c/06b339fe5450
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+That would be on top of your next patch set?
+Please post it first.
