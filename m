@@ -2,42 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F3A423F8A
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 15:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5001F423FDA
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 16:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhJFNmB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 09:42:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52102 "EHLO mail.kernel.org"
+        id S238637AbhJFOMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 10:12:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhJFNmA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:42:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3D852610E5;
-        Wed,  6 Oct 2021 13:40:08 +0000 (UTC)
+        id S231600AbhJFOMA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C444B6105A;
+        Wed,  6 Oct 2021 14:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633527608;
-        bh=v2+xepJRs/ccwYYIMgmtUAI9KudhKbMORK4zIsnhIzg=;
+        s=k20201202; t=1633529407;
+        bh=Uc8Q20VnwsduTfwKM/OouKblxdsH43dSctysbxxvHgQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JL/MxMdm/TodAvNHdwKvE+/0vfNWexwpxLpz8KMn2kU+dRCTZCr4s4kat0xj1JbjC
-         ugmdUtCpO7AY0eV5IKcSLrvQBmzbrcpSMcTIAWPRdg3Ho+d7RcLtB8jlyELwky3CC0
-         mV8HEnL/FlIKgLCp5vhtLfL054sW2nr+uceULjIOn3/BvYnrOzEV+D4O2osJqXRZ27
-         JewLhTJaSYlMozir9Yd9A+Ica8sEMCCvLGx7RQalSTpzmpj6po5kM28oGkxEwUwPVZ
-         JrnIiU2giyIgeWU+nPCjMhslLX0quL+Q//SZNkmUNXn0Q2RVUW6+utW7BohA5RvXcG
-         sayZ3UNMYjxXQ==
+        b=deRmKfHTsAW50a/XcgivbYDC3eKZK2zTBYTBWI7vj6bYQ1l5r+1D0WQZk9I2ZmzIu
+         68kAL0+DGSy8PNa7q7lwxw++YWLayz7Osqu7LBeNxH83M9R4XOzB1H8gBS207Ek3Lj
+         ANYqC1hRbF2UutzL/G5tyinv2FPEYfHfc7qBDzgbJKFRWdnmAyCk1KL+I+j4Yb6ArL
+         M5skWTtmEjhRGm5il2NzIt62eO//Tay42z+Jsw0cO/BOCgxLpRf7ciFzPaF7kOhq8W
+         HBu2G1ErXbbGxoC9a2juSuMFj66ff9N4aM8RcLNHwzjJlawOk4ARKfuDsK5shA3/7D
+         yLOf5yxiSOJww==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3158D6094F;
-        Wed,  6 Oct 2021 13:40:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B24C760971;
+        Wed,  6 Oct 2021 14:10:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/3] libbpf: add bulk BTF type copying API
+Subject: Re: [PATCH 0/7] A new eBPF JIT implementation for MIPS
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163352760819.24726.8658555431382002389.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Oct 2021 13:40:08 +0000
-References: <20211006051107.17921-1-andrii@kernel.org>
-In-Reply-To: <20211006051107.17921-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, acme@kernel.org
+Message-Id: <163352940772.9599.5939069697064558862.git-patchwork-notify@kernel.org>
+Date:   Wed, 06 Oct 2021 14:10:07 +0000
+References: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
+In-Reply-To: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
+To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        paulburton@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        tsbogend@alpha.franken.de, chenhuacai@kernel.org,
+        jiaxun.yang@flygoat.com, yangtiezhu@loongson.cn,
+        tony.ambardar@gmail.com, bpf@vger.kernel.org,
+        linux-mips@vger.kernel.org, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -46,25 +51,33 @@ Hello:
 
 This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Tue,  5 Oct 2021 22:11:04 -0700 you wrote:
-> From: Andrii Nakryiko <andrii@kernel.org>
+On Tue,  5 Oct 2021 18:54:01 +0200 you wrote:
+> This is an implementation of an eBPF JIT for MIPS I-V and MIPS32/64 r1-r6.
+> The new JIT is written from scratch, but uses the same overall structure
+> as other eBPF JITs.
 > 
-> Add bulk BTF type data copying API, btf__add_btf(), to libbpf. This API is
-> useful for tools that are manipulating BPF, such as pahole. They abstract away
-> the details of implementing a pretty mundane, but important to get right,
-> details of handling all possible BTF kinds, as well as, importantly, adjusting
-> BTF type IDs and copying/deduplicating strings and string offsets, referenced
-> from copied BTF types.
+> Before, the MIPS JIT situation looked like this.
+> 
+>   - 32-bit: MIPS32, cBPF-only, tests fail
+>   - 64-bit: MIPS64r2-r6, eBPF, tests fail, incomplete eBPF ISA support
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf-next,1/3] libbpf: add API that copies all BTF types from one BTF object to another
-    https://git.kernel.org/bpf/bpf-next/c/7ca611215983
-  - [v2,bpf-next,2/3] selftests/bpf: refactor btf_write selftest to reuse BTF generation logic
-    https://git.kernel.org/bpf/bpf-next/c/c65eb8082d4c
-  - [v2,bpf-next,3/3] selftests/bpf: test new btf__add_btf() API
-    https://git.kernel.org/bpf/bpf-next/c/9d0578722391
+  - [1/7] MIPS: uasm: Enable muhu opcode for MIPS R6
+    https://git.kernel.org/bpf/bpf-next/c/52738ad51026
+  - [2/7] mips: uasm: Add workaround for Loongson-2F nop CPU errata
+    https://git.kernel.org/bpf/bpf-next/c/be0f00d5a246
+  - [3/7] mips: bpf: Add eBPF JIT for 32-bit MIPS
+    https://git.kernel.org/bpf/bpf-next/c/88dfe3f95766
+  - [4/7] mips: bpf: Add new eBPF JIT for 64-bit MIPS
+    https://git.kernel.org/bpf/bpf-next/c/42fb8eacf86e
+  - [5/7] mips: bpf: Add JIT workarounds for CPU errata
+    https://git.kernel.org/bpf/bpf-next/c/a1db4f358142
+  - [6/7] mips: bpf: Enable eBPF JITs
+    https://git.kernel.org/bpf/bpf-next/c/6675d4a60007
+  - [7/7] mips: bpf: Remove old BPF JIT implementations
+    https://git.kernel.org/bpf/bpf-next/c/06b339fe5450
 
 You are awesome, thank you!
 --
