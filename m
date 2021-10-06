@@ -2,100 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171AC424084
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 16:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8F9424140
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 17:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238226AbhJFOzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 10:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
+        id S238124AbhJFP0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 11:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238205AbhJFOzf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:55:35 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537BCC061746;
-        Wed,  6 Oct 2021 07:53:43 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so4628803pjb.5;
-        Wed, 06 Oct 2021 07:53:43 -0700 (PDT)
+        with ESMTP id S231671AbhJFP0p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:26:45 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A2AC061746;
+        Wed,  6 Oct 2021 08:24:53 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id b78so3269646iof.2;
+        Wed, 06 Oct 2021 08:24:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jnJZeKgIptkk68YEHX3pQNflodspjjs/YieRerqVbnQ=;
-        b=aL9VjuuHUNJaVNC9iLXknQyxlHAnJhm6LkmZGE53ljjZtVAwn701nzSehD0v8pOoIt
-         PGZCAYHyVNfZuASyoe4sMKGG/Ct2bHF8/JZNlY8JQ3MUlks1IoI+qYTHdCQxoCTvG1Gw
-         Gq8Cj2M94sejSt5WBLWmcd/vvqBfVz+mO+E+8jC9FYear58pQteEMvij+ePaC8V4Lvir
-         dvNhG7JBEaRpkXuX89mfYoTheyFIthHisilLtV4FhVo7UpPCdrTdCWOlvNAKTBVNLRwc
-         C7S0mIV68B9Tr91cXi1ih8UVPi3G7Ay38ZLNN28Ff2pMFReN0vWEC3kjHKqph6qh6UHe
-         bUWg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=MPoP4imfnKaab1dhzJozVR5xGC+0Ss3b1IJx3fLusAs=;
+        b=WL5xJW7f5vdS7w8Q7EMxl9LXY7NsNog9MvfhMXSUzrv0p3cY7FTb8I8cMV5P+WPjcA
+         UgLvqSq11vyWuCQGcTWGjVfwkSuoxMzWaeC1q9LLqcd+7yIzEOmDz6/JoAKffkvRW/4B
+         ZCuPqxEXE6yokrCGuGz8kiiWqZkb3qg6I0Ce0nzXzOlq3f0Qwto1P4/UQS9fAgmHUynd
+         9ar4BJZCcllaXlbDhjGPawW20XmNDnzINop753LXeP5IZ29Q4ighHJ3QvygTP1GiQ4I3
+         1uWQog6c83YPg6smSoodP/MR7SbjEEaeKLbIBKljhTooeVglO2nJNQqYavwJP7riwXTF
+         bO/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jnJZeKgIptkk68YEHX3pQNflodspjjs/YieRerqVbnQ=;
-        b=GghviJOYTa90skkdH2zXjkZCks1b4h4DifPzexe3d+XYKhjuM3GNdftzLW1lIAJKBj
-         xe8oYUWTNz27QPVbUqcApoKaWVoJZsTCxbLB9k4zM0yZ92o5VBzd9rbTx3D0eVqMLIPb
-         C9D0mheGjdb5jKd0Wfd0l/RdKJEafz6ZtS210walcaU02ZVHG5XrhoQoTkvqFQ6HWW0a
-         x6PdvwpPbSMzDbO42YWhIpoaJn6FxOnbk1BZbhS6kUqTn23PaIk1WnFNA5jyxXV0nEoW
-         B2lMYBzpO8zIFuO7qbp9fWH3oC9pRHDvKN8m4oErq4e5J3HswxotCKto+I9c3XZRiNF8
-         k3IQ==
-X-Gm-Message-State: AOAM5307ho2iGEfRPhziJ1SU0iFuXUkhOKEhevuoRSbREnBCuwCUnSLw
-        q+x+ELBN0q/wC6h3w5hOk6U/J1xBgTUURt8n+Bw=
-X-Google-Smtp-Source: ABdhPJxnTjLckeUKrsJhPYBYaJTQA9JXAISCBEgPn3wXtpXroaz713aA3dWQUCSHhMP5Cj7Vh0p+5wBLXy/+cF09BCg=
-X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr11424328pjj.122.1633532022824;
- Wed, 06 Oct 2021 07:53:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <YV1hRboJopUBLm3H@krava> <YV1h+cBxmYi2hrTM@krava>
-In-Reply-To: <YV1h+cBxmYi2hrTM@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 6 Oct 2021 07:53:31 -0700
-Message-ID: <CAADnVQLeHHBsG3751Ld3--w6KEM1a+8V4KY8MReexWo+bLgdmg@mail.gmail.com>
-Subject: Re: [RFC] store function address in BTF
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=MPoP4imfnKaab1dhzJozVR5xGC+0Ss3b1IJx3fLusAs=;
+        b=opV9aQwMdKWC6X15Q2ouqKs7QldCByu4U/Yn5lVy+TgWAnw0XNrFgT1HVTTCa6br9Q
+         x5SaOmlOsLA7tZqcQqa7i+qVWoS/qY+DlwY1GTYHfRuDaRmceyeTz0tE4H78T0OfgQ5a
+         Qe4phJ2BYYWd/ez9bNjeIXpBtJPnpudREvllDNyq51FF2BJNfMVTeO+VCUAYLB/Bq31g
+         4JrYzq4b5nhn5Z3/wG0phRxHOk4NVpMAEwNCFtcObb4KTq2X3CCPpljbIgXiGpGAXnKF
+         HrUuujpjtDctkiwJdCOudrInvf4Id8nIlCrP7ITzXSEUePO4XBhoJ/foSudzPMalclg+
+         9pPQ==
+X-Gm-Message-State: AOAM531mQ9uaSjsf4qqBQglZVKnlR4tco4y4qqYhxSXgufkKxJGGJjLE
+        U3l/SdLScXw65ayp7Byo0tc=
+X-Google-Smtp-Source: ABdhPJy3r8bv8G3OLVWBkc1Vn45RGq43UkL5TZe/G1SZcNyKGebiDDZN3WLNOkZrgox+DmNbPKyyeA==
+X-Received: by 2002:a05:6638:3052:: with SMTP id u18mr7683141jak.148.1633533892709;
+        Wed, 06 Oct 2021 08:24:52 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id x18sm10303342ile.18.2021.10.06.08.24.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 08:24:52 -0700 (PDT)
+Date:   Wed, 06 Oct 2021 08:24:43 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>
+Message-ID: <615dbfbbdd602_1309c208cf@john-XPS-13-9370.notmuch>
+In-Reply-To: <20211002003706.11237-1-xiyou.wangcong@gmail.com>
+References: <20211002003706.11237-1-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf v3 0/4] sock_map: fix ->poll() and update selftests
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:44 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Oct 06, 2021 at 10:41:41AM +0200, Jiri Olsa wrote:
-> > hi,
-> > I'm hitting performance issue and soft lock ups with the new version
-> > of the patchset and the reason seems to be kallsyms lookup that we
-> > need to do for each btf id we want to attach
->
-> ugh, I meant to sent this as reply to the patchset mentioned above,
-> nevermind, here's the patchset:
->   https://lore.kernel.org/bpf/20210605111034.1810858-1-jolsa@kernel.org/
->
-> jirka
->
-> >
-> > I tried to change kallsyms_lookup_name linear search into rbtree search,
-> > but it has its own pitfalls like duplicate function names and it still
-> > seems not to be fast enough when you want to attach like 30k functions
-> >
-> > so I wonder we could 'fix this' by storing function address in BTF,
-> > which would cut kallsyms lookup completely, because it'd be done in
-> > compile time
-> >
-> > my first thought was to add extra BTF section for that, after discussion
-> > with Arnaldo perhaps we could be able to store extra 8 bytes after
-> > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
-> > indicate that? or new BTF_KIND_FUNC2 type?
-> >
-> > thoughts?
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> This patchset fixes ->poll() for sockets in sockmap and updates
+> selftests accordingly with select(). Please check each patch
+> for more details.
+> 
+> Fixes: c50524ec4e3a ("Merge branch 'sockmap: add sockmap support for unix datagram socket'")
+> Fixes: 89d69c5d0fbc ("Merge branch 'sockmap: introduce BPF_SK_SKB_VERDICT and support UDP'")
 
-That would be on top of your next patch set?
-Please post it first.
+Looks good thanks.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
