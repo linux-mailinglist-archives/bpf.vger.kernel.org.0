@@ -2,94 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D8342361D
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 04:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC010423641
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 05:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhJFC6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 22:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
+        id S230317AbhJFDOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 23:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhJFC6E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:58:04 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E720FC061749
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 19:56:12 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id s75so1154663pgs.5
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 19:56:12 -0700 (PDT)
+        with ESMTP id S230306AbhJFDOg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Oct 2021 23:14:36 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EE8C061749
+        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 20:12:45 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id s64so2057569yba.11
+        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 20:12:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vn9UM+/dkZKadYcqMwIDdS5DaVvIvKYy80rqUeg/Gfg=;
-        b=qrpHp0GeS4GZshPr/AcQP//XjTMeyV96E5pEHdyh99Zu7kF3s5r9Xi3QPbtPyN24iN
-         BeWpQj055c94x9lRuUYlQaBnQpgvO0NlhHHGka90XnIe5jG27IcxhEkeeQd9wpt5cw8J
-         4RlyslSbIceBMHctXrFSXy8gtOSkBEC8aXeQHBod9o2sUmrN14hTe4PWqdaGuO3i7kCW
-         Y8QAKk74IYBYCJxwxvnbbNzuSYOyJcHFfrinq1aImjHJlkldvjQUMdfB08liZ8109JEV
-         OKNsoxJVajOnK4JqDPFTDXEjE5HG8wq0Cj/r4QgYD6Z+pGgwxiU/ketlVSMz7p+hLPPl
-         r8Yg==
+        bh=by4xYXNAIgaST2Q7gm/Xu2Q2SK3ReXglUDYxxJnrer4=;
+        b=cGHdOOtXRdwLnvcggdW/ttJ+Rd9eHpcbxpVKUgDdpPEZZ95u1P+IShQYH7M9Dj9hyu
+         0/IMa38d6tnDsBYFdGdE2xnFYYX7KaJ3QKmwzN9fwWkPPGn/Wbf8IUw0e3ICFNqH6B2+
+         QMqRV4Jt3VWvU10Pxj0LAa/9OSJM45AYVGk3onK8UXb9TK+L11+8nVW+YKS7sHU+uaO1
+         V1HUPxxjq2BXa9ettM3YPK6hNQEESbEi4070mKuyxh+IWqjSbLu5YYZQ1QoHcrWTBmas
+         2ocEyqg5HTEKGnLNtHp69UDQuclm9VN6ODz9J/04adEYTpO23dqb6du+yD6K72YI/f98
+         WmCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vn9UM+/dkZKadYcqMwIDdS5DaVvIvKYy80rqUeg/Gfg=;
-        b=2Wb1FevVSSta08faN3ZNNkQA/weM6XuAQAN629nfcFoJSecR97Y+0tWQ0JI8K+T8L4
-         uX3WTcdW+b/KzY0Mr9je/1sVH/CHjygRYuDclDl9zTa+DcaXk7fbpBzRteu77ooinfix
-         YjCOsfVFnVKTKMSSAU/WkK9ZIKXQfsCY4QPw/RXKBM8LaPzbV/ujlbNfZluFCqHZ24Pb
-         R9WB0nwG/uZqkgCQtRxfKx7IsR+sGZuZNWglUTmG1XYettQsStPQjxjxcZYXKo43TOLp
-         RkfKRhDBRd/3o4EUH8AGrIxbKy/GOxq5Ac0V+JkNV8grQ60V5CBjLY7kOBnawwtfDl5k
-         dH/Q==
-X-Gm-Message-State: AOAM533nDeZ+J2l4sQ3I+FhkcKJIiaClBeHbPHVKLlDFfyUxdhl5l6sV
-        huQFakR6LoeJI8pm0vgI92Zm13u95Q+UBxoLPF0=
-X-Google-Smtp-Source: ABdhPJzMHfD9RjhnIDtbshxeRSfa/W8Q0SF0fsKTibzWVPK+QAaGKGrovihux7TRIM3Huf3w7DECYPnP8GM5fvJXVSE=
-X-Received: by 2002:a65:4008:: with SMTP id f8mr18092492pgp.310.1633488972336;
- Tue, 05 Oct 2021 19:56:12 -0700 (PDT)
+        bh=by4xYXNAIgaST2Q7gm/Xu2Q2SK3ReXglUDYxxJnrer4=;
+        b=32lbFQ0HCDqFxwApRwGQaXVxJ2TxNWndbAa10+dLuw/oRPHOwSqr07PaCy4L3Bnr8l
+         1a+ShoOTvCem2sUavHnwh0rFFK6YN8QNSvlCUOkZYyyAbqTq4J6bKPXdJNQRftfPOELu
+         J+UEHYmGEcVe0zVeF7LUeBjF2JeO71lwYsvNM1Uu1JwefEAq3m7l/gSkryZzRG0QelZq
+         fcUIwZqDLGVX8ruW9CvSfFAhYgrfcbBgaw/pA9Pmud/Q8O9WqTx+WoOUd1oRCGDLMcrJ
+         m+M2Lm00zBsoa4a7Me3V5Ne5GH/W6x51EkrVlqCW2szp5kLqm3RZ6g4uKg7LtYalC/Ym
+         QFgw==
+X-Gm-Message-State: AOAM532xIYAT+PFhPsGhgrftU8Sh2B2oUFLBca5t5YEnV8hKDm2xq3kq
+        LxP9h1R4Rc4E/Xu0XRQlz8eN/SNWVtJVbvjYBmM=
+X-Google-Smtp-Source: ABdhPJzNwaTRbIkWjMNNWVRuZjNuGIlstmDltkXWNlxBaPsvFHiEmmn3z1Ea0zAlSgRuyyTC5p8Ub/knuQGGVmDjzjs=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr25445222ybf.455.1633489964285;
+ Tue, 05 Oct 2021 20:12:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211002035626.2041910-1-jmeng@fb.com>
-In-Reply-To: <20211002035626.2041910-1-jmeng@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 Oct 2021 19:56:01 -0700
-Message-ID: <CAADnVQJb6wjXXBV0ZeQGXY3wFFU9eXDj5zBZrGymXrk8OTO+qw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf,x64: Save bytes for DIV by reducing reg copies
-To:     Jie Meng <jmeng@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+References: <20211005064703.60785-1-andrii@kernel.org> <20211005064703.60785-4-andrii@kernel.org>
+ <12FA0143-6E11-46D1-ACF3-8206D4925E3E@fb.com>
+In-Reply-To: <12FA0143-6E11-46D1-ACF3-8206D4925E3E@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Oct 2021 20:12:33 -0700
+Message-ID: <CAEf4Bzb3FW84GfrkVYj0ssto4ZuN4PgNHJBr6M4c9QBnWDVijA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: test new btf__add_btf() API
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 8:56 PM Jie Meng <jmeng@fb.com> wrote:
+On Tue, Oct 5, 2021 at 3:05 PM Song Liu <songliubraving@fb.com> wrote:
 >
-> Instead of unconditionally performing push/pop on rax/rdx in case of
-> division/modulo, we can save a few bytes in case of dest register
-> being either BPF r0 (rax) or r3 (rdx) since the result is written in
-> there anyway.
 >
-> Also, we do not need to copy src to r11 unless src is either rax, rdx
-> or an immediate.
 >
-> For example, before the patch:
->   22:   push   %rax
->   23:   push   %rdx
->   24:   mov    %rsi,%r11
->   27:   xor    %edx,%edx
->   29:   div    %r11
->   2c:   mov    %rax,%r11
->   2f:   pop    %rdx
->   30:   pop    %rax
->   31:   mov    %r11,%rax
->   34:   leaveq
->   35:   retq
+> > On Oct 4, 2021, at 11:47 PM, andrii.nakryiko@gmail.com wrote:
+> >
+> > From: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > Add a test that validates that btf__add_btf() API is correctly copying
+> > all the types from the source BTF into destination BTF object and
+> > adjusts type IDs and string offsets properly.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> > .../selftests/bpf/prog_tests/btf_write.c      | 86 +++++++++++++++++++
+> > 1 file changed, 86 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_write.c b/tools/testing/selftests/bpf/prog_tests/btf_write.c
+> > index aa4505618252..75fd280f75b2 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/btf_write.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_write.c
+> > @@ -342,8 +342,94 @@ static void test_btf_add()
+> >       btf__free(btf);
+> > }
+> >
+> > +static void test_btf_add_btf()
+> > +{
+> > +     struct btf *btf1 = NULL, *btf2 = NULL;
+> > +     int id;
+> > +
+> > +     btf1 = btf__new_empty();
+> > +     if (!ASSERT_OK_PTR(btf1, "btf1"))
+> > +             return;
+> > +
+> > +     btf2 = btf__new_empty();
+> > +     if (!ASSERT_OK_PTR(btf2, "btf2"))
+> > +             return;
+> We need goto cleanup here, no?
 >
-> After:
->   22:   push   %rdx
->   23:   xor    %edx,%edx
->   25:   div    %rsi
->   28:   pop    %rdx
->   29:   leaveq
->   2a:   retq
->
-> Signed-off-by: Jie Meng <jmeng@fb.com>
 
-Applied. Thanks
+yep, my bad, will fix
+
+> Thanks,
+> Song
