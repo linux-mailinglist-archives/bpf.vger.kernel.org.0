@@ -2,191 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA534242E2
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 18:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26E24242E8
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 18:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239335AbhJFQlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 12:41:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:49574 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231779AbhJFQlp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:41:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A4646D;
-        Wed,  6 Oct 2021 09:39:52 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.197.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83C5A3F70D;
-        Wed,  6 Oct 2021 09:39:51 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 17:39:49 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rfc 0/6] Scheduler BPF
-Message-ID: <20211006163949.zwze5du6szdabxos@e107158-lin.cambridge.arm.com>
-References: <20210915213550.3696532-1-guro@fb.com>
- <20210916162451.709260-1-guro@fb.com>
+        id S231779AbhJFQnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 12:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhJFQnj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:43:39 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8BAC061746;
+        Wed,  6 Oct 2021 09:41:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so2780264pjb.4;
+        Wed, 06 Oct 2021 09:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=th6CTyWl3y9lBfjOIdAhLyrGx2yHPT3/CDRsEtTPQ38=;
+        b=V/JOhJ9blBKDkmspPYzUlGgInTcRDR0SDjMvQJcgVkbbkox6Hsx8EItASuat72pKXg
+         Sv3Jr31VwEI7LqJpTJK7B02dREXrXn4czSDrJtUQlhW0T1QzGbfTUhKIrEhPm5s7MAzv
+         Qahs8VMKhUBubNZzC9i5yrQuhQbo3h3Ethkt6aFhw0/xR7sSuR4LCe0zCjzQRD4X8kNn
+         64ZbGv4MC6FalD4p1P44100k8OTAP6D22ZWOYdM62PdokhlNfyvdTLEKAACMTaq/ihda
+         27PFKprrGWsu+nhx+BCmrW3fKBk9Bunuc3XpDR12KMm40+E6JibeX70oV9xDgaFjvrqd
+         AvnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=th6CTyWl3y9lBfjOIdAhLyrGx2yHPT3/CDRsEtTPQ38=;
+        b=hbB6HA0khPscwpTp6w5Yq7TqQS3PnKQF4kHV5Db9gZ0zbxz+bInrMrkzCnsXnqdQ/R
+         AT+RU1IKeApJti5rrumRojFhPiUWt3ZV6OBCj0VpcPjIJyNcnI/BHcJ1Gz9mTuZ1KBwC
+         y3ijTihNs0RnbIAMn+JlGW64D4V7BGFnaHPMYShQo37xr1W+FIlLBXpXWtObLEBHgmLc
+         ZYQ1ydTxAohsXMkZGmjuEcx/kEt6kolcw7HjpaGjInBLVzwckFgLOGDtsXxsnL48fdtt
+         RjLsLJjjfR4L1G4DBGj44CCdDApiHau3I173tIDB0qPF53GtMha3Dqz9LzVFXkDqgP9n
+         7DCQ==
+X-Gm-Message-State: AOAM530/3dRGJiFbIg8WAkn7t/8+kH/Mk4OJtVrnoIKG2xJBdrGR0dDc
+        nzD67ovv7RzdvK6AR7E1u4k=
+X-Google-Smtp-Source: ABdhPJxef4DTTLu0SDASUyOcvYvD39a450fIjjWMkxSRLPL1984t3SfSBkZ/VBsl+QqGWj2o7pIYuA==
+X-Received: by 2002:a17:90b:4f4b:: with SMTP id pj11mr6466894pjb.4.1633538506543;
+        Wed, 06 Oct 2021 09:41:46 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::2:547])
+        by smtp.gmail.com with ESMTPSA id k3sm20753012pfi.6.2021.10.06.09.41.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 09:41:46 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 09:41:43 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Joe Burton <jevburton@google.com>
+Cc:     Joe Burton <jevburton.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH v2 00/13] Introduce BPF map tracing capability
+Message-ID: <20211006164143.fuvbzxjca7cxe5ur@ast-mbp.dhcp.thefacebook.com>
+References: <20210929235910.1765396-1-jevburton.kernel@gmail.com>
+ <20211005051306.4zbdqo3rnecj3hyv@ast-mbp>
+ <CAL0ypaB3=cPnCGdwfEHhSLf8zh_mMJ=mL5T_3EfTsPFbNuLSAA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210916162451.709260-1-guro@fb.com>
+In-Reply-To: <CAL0ypaB3=cPnCGdwfEHhSLf8zh_mMJ=mL5T_3EfTsPFbNuLSAA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Roman
-
-On 09/16/21 09:24, Roman Gushchin wrote:
-> There is a long history of distro people, system administrators, and
-> application owners tuning the CFS settings in /proc/sys, which are now
-> in debugfs. Looking at what these settings actually did, it ended up
-> boiling down to changing the likelihood of task preemption, or
-> disabling it by setting the wakeup_granularity_ns to more than half of
-> the latency_ns. The other settings didn't really do much for
-> performance.
+On Tue, Oct 05, 2021 at 02:47:34PM -0700, Joe Burton wrote:
+> > It's a neat idea to user verifier powers for this job,
+> > but I wonder why simple tracepoint in map ops was not used instead?
 > 
-> In other words, some our workloads benefit by having long running tasks
-> preempted by tasks handling short running requests, and some workloads
-> that run only short term requests which benefit from never being preempted.
+> My concern with tracepoints is that they execute for all map updates,
+> not for a particular map. Ideally performing an upgrade of program X
+> should not affect the performance characteristics of program Y.
 
-We had discussion about introducing latency-nice hint; but that discussion
-didn't end up producing any new API. Your use case seem similar to Android's;
-we want some tasks to run ASAP. There's an out of tree patch that puts these
-tasks on an idle CPU (keep in mind energy aware scheduling in the context here)
-which seem okay for its purpose. Having a more generic solution in mainline
-would be nice.
+Right, but single 'if (map == map_ptr_being_traced)'
+won't really affect update() speed of maps.
+For hash maps the update/delete are heavy operations with a bunch of
+checks and spinlocks.
+Just to make sure we're on the same patch I'm proposing something like
+the patch below...
 
-https://lwn.net/Articles/820659/
+> If n programs are opted into this model, then upgrading any of them
+> affects the performance characteristics of every other. There's also
+> the (very remote) possibility of multiple simultaneous upgrades tracing
+> map updates at the same time, causing a greater performance hit.
 
+Also consider that the verifier fixup of update/delete in the code
+is permanent whereas attaching fentry or fmod_ret to a nop function is temporary.
+Once tracing of the map is no longer necessary that fentry program
+will be detached and overhead will go back to zero.
+Which is not the case for 'fixup' approach.
+
+With fmod_ret the tracing program might be the enforcing program.
+It could be used to disallow certain map access in a generic way.
+
+> > I don't think the "solution" for lookup operation is worth pursuing.
+> > The bpf prog that needs this map tracing is completely in your control.
+> > So just don't do writes after lookup.
 > 
-> This leads to a few observations and ideas:
-> - Different workloads want different policies. Being able to configure
->   the policy per workload could be useful.
-> - A workload that benefits from not being preempted itself could still
->   benefit from preempting (low priority) background system tasks.
-
-You can put these tasks as SCHED_IDLE. There's a potential danger of starving
-these tasks; but assuming they're background and there's idle time in the
-system that should be fine.
-
-https://lwn.net/Articles/805317/
-
-That of course assuming you can classify these background tasks..
-
-If you can do the classification, you can also use cpu.shares to reduce how
-much cpu time they get. Or CFS bandwidth controller
-
-https://lwn.net/Articles/844976/
-
-I like Androd's model of classifying tasks. I think we need this classification
-done by other non-android systems too.
-
-> - It would be useful to quickly (and safely) experiment with different
->   policies in production, without having to shut down applications or reboot
->   systems, to determine what the policies for different workloads should be.
-
-Userspace should have the knobs that allows them to tune that without reboot.
-If you're doing kernel development; then it's part of the job spec I'd say :-)
-
-I think one can still go with the workflow you suggest for development without
-the hooks. You'd need to un-inline the function you're interested in; then you
-can use kprobes to hook into it and force an early return. That should produce
-the same effect, no?
-
-> - Only a few workloads are large and sensitive enough to merit their own
->   policy tweaks. CFS by itself should be good enough for everything else,
->   and we probably do not want policy tweaks to be a replacement for anything
->   CFS does.
+> I eventually want to support apps that use local storage. Those APIs
+> generally only allow updates via a pointer. E.g. bpf_sk_storage_get()
+> only allows updates via the returned pointer and via
+> bpf_sk_storage_delete().
 > 
-> This leads to BPF hooks, which have been successfully used in various
-> kernel subsystems to provide a way for external code to (safely)
-> change a few kernel decisions. BPF tooling makes this pretty easy to do,
-> and the people deploying BPF scripts are already quite used to updating them
-> for new kernel versions.
+> Since I eventually have to solve this problem to handle local storage,
+> then it seems worth solving it for normal maps as well. They seem
+> like isomorphic problems.
 
-I am (very) wary of these hooks. Scheduler (in mobile at least) is an area that
-gets heavily modified by vendors and OEMs. We try very hard to understand the
-problems they face and get the right set of solutions in mainline. Which would
-ultimately help towards the goal of having a single Generic kernel Image [1]
-that gives you what you'd expect out of the platform without any need for
-additional cherries on top.
+Especially for local storage... doing tracing from bpf program itself
+seems to make the most sense.
 
-So my worry is that this will open the gate for these hooks to get more than
-just micro-optimization done in a platform specific way. And that it will
-discourage having the right discussion to fix real problems in the scheduler
-because the easy path is to do whatever you want in userspace. I am not sure we
-can control how these hooks are used.
+From c7b6ec4488ee50ebbca61c22c6837fd6fe7007bf Mon Sep 17 00:00:00 2001
+From: Alexei Starovoitov <ast@kernel.org>
+Date: Wed, 6 Oct 2021 09:30:21 -0700
+Subject: [PATCH] bpf: trace array map update
 
-The question is: why can't we fix any issues in the scheduler/make it better
-and must have these hooks instead?
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ kernel/bpf/arraymap.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-[1] https://arstechnica.com/gadgets/2021/09/android-to-take-an-upstream-first-development-model-for-the-linux-kernel/
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 5e1ccfae916b..89f853b1a217 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -293,6 +293,13 @@ static void check_and_free_timer_in_array(struct bpf_array *arr, void *val)
+ 		bpf_timer_cancel_and_free(val + arr->map.timer_off);
+ }
+ 
++noinline int bpf_array_map_trace_update(struct bpf_map *map, void *key,
++					void *value, u64 map_flags)
++{
++	return 0;
++}
++ALLOW_ERROR_INJECTION(bpf_array_map_trace_update, ERRNO);
++
+ /* Called from syscall or from eBPF program */
+ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 				 u64 map_flags)
+@@ -300,6 +307,7 @@ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+ 	u32 index = *(u32 *)key;
+ 	char *val;
++	int err;
+ 
+ 	if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST))
+ 		/* unknown flags */
+@@ -317,6 +325,9 @@ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 		     !map_value_has_spin_lock(map)))
+ 		return -EINVAL;
+ 
++	if (unlikely(err = bpf_array_map_trace_update(map, key, value, map_flags)))
++		return err;
++
+ 	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
+ 		memcpy(this_cpu_ptr(array->pptrs[index & array->index_mask]),
+ 		       value, map->value_size);
+-- 
+2.30.2
 
-Thanks
-
---
-Qais Yousef
-
-> 
-> This patchset aims to start a discussion about potential applications of BPF
-> to the scheduler. It also aims to land some very basic BPF infrastructure
-> necessary to add new BPF hooks to the scheduler, a minimal set of useful
-> helpers, corresponding libbpf changes, etc.
-> 
-> Our very first experiments with using BPF in CFS look very promising. We're
-> at a very early stage, however already have seen a nice latency and ~1% RPS
-> wins for our (Facebook's) main web workload.
-> 
-> As I know, Google is working on a more radical approach [2]: they aim to move
-> the scheduling code into userspace. It seems that their core motivation is
-> somewhat similar: to make the scheduler changes easier to develop, validate
-> and deploy. Even though their approach is different, they also use BPF for
-> speeding up some hot paths. I think the suggested infrastructure can serve
-> their purpose too.
-> 
-> An example of an userspace part, which loads some simple hooks is available
-> here [3]. It's very simple, provided only to simplify playing with the provided
-> kernel patches.
-> 
-> 
-> [1] c722f35b513f ("sched/fair: Bring back select_idle_smt(), but differently")
-> [2] Google's ghOSt: https://linuxplumbersconf.org/event/11/contributions/954/
-> [3] https://github.com/rgushchin/atc
-> 
-> 
-> Roman Gushchin (6):
->   bpf: sched: basic infrastructure for scheduler bpf
->   bpf: sched: add convenient helpers to identify sched entities
->   bpf: sched: introduce bpf_sched_enable()
->   sched: cfs: add bpf hooks to control wakeup and tick preemption
->   libbpf: add support for scheduler bpf programs
->   bpftool: recognize scheduler programs
-> 
->  include/linux/bpf_sched.h       |  53 ++++++++++++
->  include/linux/bpf_types.h       |   3 +
->  include/linux/sched_hook_defs.h |   4 +
->  include/uapi/linux/bpf.h        |  25 ++++++
->  kernel/bpf/btf.c                |   1 +
->  kernel/bpf/syscall.c            |  21 ++++-
->  kernel/bpf/trampoline.c         |   1 +
->  kernel/bpf/verifier.c           |   9 ++-
->  kernel/sched/Makefile           |   1 +
->  kernel/sched/bpf_sched.c        | 138 ++++++++++++++++++++++++++++++++
->  kernel/sched/fair.c             |  27 +++++++
->  scripts/bpf_doc.py              |   2 +
->  tools/bpf/bpftool/common.c      |   1 +
->  tools/bpf/bpftool/prog.c        |   1 +
->  tools/include/uapi/linux/bpf.h  |  25 ++++++
->  tools/lib/bpf/libbpf.c          |  27 ++++++-
->  tools/lib/bpf/libbpf.h          |   4 +
->  tools/lib/bpf/libbpf.map        |   3 +
->  18 files changed, 341 insertions(+), 5 deletions(-)
->  create mode 100644 include/linux/bpf_sched.h
->  create mode 100644 include/linux/sched_hook_defs.h
->  create mode 100644 kernel/sched/bpf_sched.c
-> 
-> -- 
-> 2.31.1
-> 
