@@ -2,221 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48562424757
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 21:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4EF4247AE
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 22:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239766AbhJFTnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 15:43:47 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3226 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239658AbhJFTnk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 15:43:40 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196JVGrs031470
-        for <bpf@vger.kernel.org>; Wed, 6 Oct 2021 12:41:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=kgxqvcV15zocba8bbgkK7zlAYT5SNN/7XAfHPyNrhzA=;
- b=egNDmmBaChFvLJvLqqFiPMp+hAikjYOxsm7T2yl0CvRzbMrHlkmjhXc5Ok3S3xVYQrVQ
- dsqztTG3ExblmmSJp2BUegm06VT+JWXstuQMCsJ23Fy4GRUx/eWn8NWXinQwZFOBGmMS
- DG7bLDUXEy3Ee3mqVLmjPiR/IpJD63sxjJw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bhetf9wgh-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 12:41:47 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 6 Oct 2021 12:41:45 -0700
-Received: by devbig577.ftw3.facebook.com (Postfix, from userid 187975)
-        id 7944297DF19D; Wed,  6 Oct 2021 12:41:41 -0700 (PDT)
-From:   Jie Meng <jmeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     Jie Meng <jmeng@fb.com>
-Subject: [PATCH bpf-next] bpf,x64: Factor out emission of REX byte in more cases
-Date:   Wed, 6 Oct 2021 12:41:35 -0700
-Message-ID: <20211006194135.608932-1-jmeng@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S239190AbhJFUI3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 16:08:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31451 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229922AbhJFUI3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 16:08:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633550796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H2ttL2wsHNTzIDiRf0sFY/aSVawhGAljPZTNvBv2akE=;
+        b=Pvm0EcOdlqQzvlCWh68S2hY0rWpNZ5wDFGygo9wo31eb7zmJ0u8sbAfF9T221Ku08MyVsK
+        So4sfn6vIEHaPGlfoGQyX1ZKUHkmiCtG7Qg6G3dPYO5rvwuHm3Qv+EaomhSaa4enR6vTMA
+        +wJRKAwcNHk11LUuXA+FBt0+PN+VgKQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-EBw6ZYFDOeeipZNYPyM8Mw-1; Wed, 06 Oct 2021 16:06:35 -0400
+X-MC-Unique: EBw6ZYFDOeeipZNYPyM8Mw-1
+Received: by mail-wr1-f70.google.com with SMTP id a10-20020a5d508a000000b00160723ce588so2905133wrt.23
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 13:06:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H2ttL2wsHNTzIDiRf0sFY/aSVawhGAljPZTNvBv2akE=;
+        b=eYIpmt7tehz41h3t2PvdKy6GtGd9fqKxSkxpgL0SQHiLyImZ1sG0kAenPtFlY0FcpT
+         fqGRYx0ozxVWkjg3N4hPkfySNkCot2TE1EpG6G3pgtKDiCuEdffgcgjrrSs8dmHwDrlv
+         AFiVyPLHxmUtgGk+jUQPKI5xpyN9x/hqF5wFQgCBPT4opRpYuEPgAZeqoMs4/wcZQQtY
+         RQJ4xNXHardF0JBWcTDklF4X8cbvUhzruiaeUFgW21sCJPrIbF5LojN4lRl0Lqui0xtc
+         3J5DUfNg5oPvWw1f/EolwckX35PRd8BGSwIhz/OO09xpeFUjyy0rX+ze3l4vpA5HYPkP
+         NiPw==
+X-Gm-Message-State: AOAM5326C+I+CbLcV7ubTDOmf5DW1mPWOWeu9In9POoAySc4TOu0EqGG
+        qK6gPO/s7SIJ9ugMgS4hEMdZIKz4/kGVxtAf6Ke11f2nPVWoUWkQf8CogQ0MixCFd4ofOP0zCqY
+        wha6s+lrsbxtL
+X-Received: by 2002:adf:aa88:: with SMTP id h8mr169101wrc.112.1633550793889;
+        Wed, 06 Oct 2021 13:06:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaBzAX1XEF3eNoh5fxPitke7eOI5RekMSabjqvBN0KP/uEOkdKstjWIlWa60PpD7G9dqx+rA==
+X-Received: by 2002:adf:aa88:: with SMTP id h8mr169070wrc.112.1633550793655;
+        Wed, 06 Oct 2021 13:06:33 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id o8sm6848515wme.38.2021.10.06.13.06.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 13:06:33 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 22:06:31 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [RFC] store function address in BTF
+Message-ID: <YV4Bx7705mgWzhTd@krava>
+References: <YV1hRboJopUBLm3H@krava>
+ <CAEf4BzZPH6WQTYaUTpWBw1gW=cNUtPYPnN8OySgXtbQLzZLhEQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: jG8mkWr6TYlhler9xLRoswCKzqZKpnNP
-X-Proofpoint-ORIG-GUID: jG8mkWr6TYlhler9xLRoswCKzqZKpnNP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-06_04,2021-10-06_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 priorityscore=1501 adultscore=0 spamscore=0
- mlxlogscore=937 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110060122
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZPH6WQTYaUTpWBw1gW=cNUtPYPnN8OySgXtbQLzZLhEQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce a single reg version of maybe_emit_mod() and factor out
-common code in more cases.
+On Wed, Oct 06, 2021 at 09:17:39AM -0700, Andrii Nakryiko wrote:
+> On Wed, Oct 6, 2021 at 1:42 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > hi,
+> > I'm hitting performance issue and soft lock ups with the new version
+> > of the patchset and the reason seems to be kallsyms lookup that we
+> > need to do for each btf id we want to attach
+> >
+> > I tried to change kallsyms_lookup_name linear search into rbtree search,
+> > but it has its own pitfalls like duplicate function names and it still
+> > seems not to be fast enough when you want to attach like 30k functions
+> 
+> How not fast enough is it exactly? How long does it take?
 
-Signed-off-by: Jie Meng <jmeng@fb.com>
----
- arch/x86/net/bpf_jit_comp.c | 67 +++++++++++++++++--------------------
- 1 file changed, 31 insertions(+), 36 deletions(-)
+30k functions takes 75 seconds for me, it's loop calling bpf_check_attach_target
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 5a0edea3cc2e..e474718d152b 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -721,6 +721,20 @@ static void maybe_emit_mod(u8 **pprog, u32 dst_reg, =
-u32 src_reg, bool is64)
- 	*pprog =3D prog;
- }
-=20
-+/*
-+ * Similar version of maybe_emit_mod() for a single register
-+ */
-+static void maybe_emit_1mod(u8 **pprog, u32 reg, bool is64)
-+{
-+	u8 *prog =3D *pprog;
-+
-+	if (is64)
-+		EMIT1(add_1mod(0x48, reg));
-+	else if (is_ereg(reg))
-+		EMIT1(add_1mod(0x40, reg));
-+	*pprog =3D prog;
-+}
-+
- /* LDX: dst_reg =3D *(u8*)(src_reg + off) */
- static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int=
- off)
- {
-@@ -951,10 +965,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *ad=
-drs, u8 *image,
- 			/* neg dst */
- 		case BPF_ALU | BPF_NEG:
- 		case BPF_ALU64 | BPF_NEG:
--			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
--				EMIT1(add_1mod(0x48, dst_reg));
--			else if (is_ereg(dst_reg))
--				EMIT1(add_1mod(0x40, dst_reg));
-+			maybe_emit_1mod(&prog, dst_reg,
-+					BPF_CLASS(insn->code) =3D=3D BPF_ALU64);
- 			EMIT2(0xF7, add_1reg(0xD8, dst_reg));
- 			break;
-=20
-@@ -968,10 +980,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *ad=
-drs, u8 *image,
- 		case BPF_ALU64 | BPF_AND | BPF_K:
- 		case BPF_ALU64 | BPF_OR | BPF_K:
- 		case BPF_ALU64 | BPF_XOR | BPF_K:
--			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
--				EMIT1(add_1mod(0x48, dst_reg));
--			else if (is_ereg(dst_reg))
--				EMIT1(add_1mod(0x40, dst_reg));
-+			maybe_emit_1mod(&prog, dst_reg,
-+					BPF_CLASS(insn->code) =3D=3D BPF_ALU64);
-=20
- 			/*
- 			 * b3 holds 'normal' opcode, b2 short form only valid
-@@ -1059,11 +1069,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
-addrs, u8 *image,
- 			 */
- 			EMIT2(0x31, 0xd2);
-=20
--			if (is64)
--				EMIT1(add_1mod(0x48, src_reg));
--			else if (is_ereg(src_reg))
--				EMIT1(add_1mod(0x40, src_reg));
- 			/* div src_reg */
-+			maybe_emit_1mod(&prog, src_reg, is64);
- 			EMIT2(0xF7, add_1reg(0xF0, src_reg));
-=20
- 			if (BPF_OP(insn->code) =3D=3D BPF_MOD &&
-@@ -1084,10 +1091,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
-addrs, u8 *image,
-=20
- 		case BPF_ALU | BPF_MUL | BPF_K:
- 		case BPF_ALU64 | BPF_MUL | BPF_K:
--			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
--				EMIT1(add_2mod(0x48, dst_reg, dst_reg));
--			else if (is_ereg(dst_reg))
--				EMIT1(add_2mod(0x40, dst_reg, dst_reg));
-+			maybe_emit_mod(&prog, dst_reg, dst_reg,
-+				       BPF_CLASS(insn->code) =3D=3D BPF_ALU64);
-=20
- 			if (is_imm8(imm32))
- 				/* imul dst_reg, dst_reg, imm8 */
-@@ -1102,10 +1107,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
-addrs, u8 *image,
-=20
- 		case BPF_ALU | BPF_MUL | BPF_X:
- 		case BPF_ALU64 | BPF_MUL | BPF_X:
--			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
--				EMIT1(add_2mod(0x48, src_reg, dst_reg));
--			else if (is_ereg(dst_reg) || is_ereg(src_reg))
--				EMIT1(add_2mod(0x40, src_reg, dst_reg));
-+			maybe_emit_mod(&prog, src_reg, dst_reg,
-+				       BPF_CLASS(insn->code) =3D=3D BPF_ALU64);
-=20
- 			/* imul dst_reg, src_reg */
- 			EMIT3(0x0F, 0xAF, add_2reg(0xC0, src_reg, dst_reg));
-@@ -1118,10 +1121,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
-addrs, u8 *image,
- 		case BPF_ALU64 | BPF_LSH | BPF_K:
- 		case BPF_ALU64 | BPF_RSH | BPF_K:
- 		case BPF_ALU64 | BPF_ARSH | BPF_K:
--			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
--				EMIT1(add_1mod(0x48, dst_reg));
--			else if (is_ereg(dst_reg))
--				EMIT1(add_1mod(0x40, dst_reg));
-+			maybe_emit_1mod(&prog, dst_reg,
-+					BPF_CLASS(insn->code) =3D=3D BPF_ALU64);
-=20
- 			b3 =3D simple_alu_opcodes[BPF_OP(insn->code)];
- 			if (imm32 =3D=3D 1)
-@@ -1152,10 +1153,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
-addrs, u8 *image,
- 			}
-=20
- 			/* shl %rax, %cl | shr %rax, %cl | sar %rax, %cl */
--			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
--				EMIT1(add_1mod(0x48, dst_reg));
--			else if (is_ereg(dst_reg))
--				EMIT1(add_1mod(0x40, dst_reg));
-+			maybe_emit_1mod(&prog, dst_reg,
-+					BPF_CLASS(insn->code) =3D=3D BPF_ALU64);
-=20
- 			b3 =3D simple_alu_opcodes[BPF_OP(insn->code)];
- 			EMIT2(0xD3, add_1reg(b3, dst_reg));
-@@ -1465,10 +1464,8 @@ st:			if (is_imm8(insn->off))
- 		case BPF_JMP | BPF_JSET | BPF_K:
- 		case BPF_JMP32 | BPF_JSET | BPF_K:
- 			/* test dst_reg, imm32 */
--			if (BPF_CLASS(insn->code) =3D=3D BPF_JMP)
--				EMIT1(add_1mod(0x48, dst_reg));
--			else if (is_ereg(dst_reg))
--				EMIT1(add_1mod(0x40, dst_reg));
-+			maybe_emit_1mod(&prog, dst_reg,
-+					BPF_CLASS(insn->code) =3D=3D BPF_JMP);
- 			EMIT2_off32(0xF7, add_1reg(0xC0, dst_reg), imm32);
- 			goto emit_cond_jmp;
-=20
-@@ -1501,10 +1498,8 @@ st:			if (is_imm8(insn->off))
- 			}
-=20
- 			/* cmp dst_reg, imm8/32 */
--			if (BPF_CLASS(insn->code) =3D=3D BPF_JMP)
--				EMIT1(add_1mod(0x48, dst_reg));
--			else if (is_ereg(dst_reg))
--				EMIT1(add_1mod(0x40, dst_reg));
-+			maybe_emit_1mod(&prog, dst_reg,
-+					BPF_CLASS(insn->code) =3D=3D BPF_JMP);
-=20
- 			if (is_imm8(imm32))
- 				EMIT3(0x83, add_1reg(0xF8, dst_reg), imm32);
---=20
-2.30.2
+getting soft lock up messages:
+
+krava33 login: [  168.896671] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [bpftrace:1087]
+
+
+> 
+> >
+> > so I wonder we could 'fix this' by storing function address in BTF,
+> > which would cut kallsyms lookup completely, because it'd be done in
+> > compile time
+> >
+> > my first thought was to add extra BTF section for that, after discussion
+> > with Arnaldo perhaps we could be able to store extra 8 bytes after
+> > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
+> > indicate that? or new BTF_KIND_FUNC2 type?
+> >
+> > thoughts?
+> 
+> I'm strongly against this, because (besides the BTF bloat reason) we
+> need similar mass attachment functionality for kprobe/kretprobe and
+> that one won't be relying on BTF FUNCs, so I think it's better to
+> stick to the same mechanism for figuring out the address of the
+> function.
+
+ok
+
+> 
+> If RB tree is not feasible, we can do a linear search over unsorted
+> kallsyms and do binary search over sorted function names (derived from
+> BTF IDs). That would be O(Nlog(M)), where N is number of ksyms, M is
+> number of BTF IDs/functions-to-be-attached-to. If we did have an RB
+> tree for kallsyms (is it hard to support duplicates? why?) it could be
+> even faster O(Mlog(N)).
+
+I had issues with generic kallsyms rbtree in the post some time ago,
+I'll revisit it to check on details.. but having the tree with just
+btf id functions might clear that.. I'll check
+
+thanks,
+jirka
+
+> 
+> 
+> >
+> > thanks,
+> > jirka
+> >
+> 
 
