@@ -2,178 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8B642376D
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 07:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E0442377A
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 07:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhJFFNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 01:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S229579AbhJFF0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 01:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhJFFNR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:13:17 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A210AC061749
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 22:11:25 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id s75so1407007pgs.5
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 22:11:25 -0700 (PDT)
+        with ESMTP id S232716AbhJFF0t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:26:49 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66631C06174E;
+        Tue,  5 Oct 2021 22:24:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id j15so928069plh.7;
+        Tue, 05 Oct 2021 22:24:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DqRd81efSFuFIw/cDLr3lKmlzmNiIVk6lw3SPXlaJTE=;
-        b=ERZFChVZww8jUabUzUxTiQylMitX/kqXk6HaJA0bXX0ZovA2ZkIdLLcNBel0HQEdYj
-         2n7nEylpFo4ImswkSKdX5cDIwAEuSfKHobR53lN0+kPBxqlP0T+lKjCUvMwdifusNFzh
-         EQU85fTWOkoIwoY7ZIKkTA0Sg8wYklwfMQdSRcAojtVJqHBhBV1LqCVknYj50IGk64g5
-         IXr5Ms4MKiPJIjHk/YaElynkuLRbG8+hGqZ5h412xOmCUYovfEdhQUZ+TB0rE4TXXsYf
-         CbDe+eaOC6Ccha7YwPTF4/zYYuienVj/Fg8aDILHaZ8tdKhw2RE1NTPQZPDRtc1g+bAV
-         lLNg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kE8tUjRehAH/LvwAEmkueguVaxADrwLNnCg94hHiJMg=;
+        b=V1812K/3SleAXnVptIpdu6iNE2S6cJg9vJZASBZT36es7F2PaoMbv60MuwrXyhZZzB
+         aaE9ftlDTX9t1l1gva+i2xnENkTr43/vocAnDsTUWOYAEZNPh6wkKPIiRc5vLG6G/a7H
+         RvyPplZHvwUK1VN9mNXAyps56r+yhVInCUkgJ9soVH6tP/hqWU4IVi0uNVnYvZ2FE9bh
+         iTzCxIz7kZmuKyEQ+wdrqTzdqWo5ATg44M7L2DMClKsCWq0/P+UOxo63L2sMpvwljvPX
+         wT4q2tS+jF0tzrN0T6qEs6tokIomxLk+P6MepXEEHVM6swWKDWsVkaKELXEgLjT82EnU
+         ZT3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DqRd81efSFuFIw/cDLr3lKmlzmNiIVk6lw3SPXlaJTE=;
-        b=uWfQMivNzgw0qb9zhR6mx7H6yq60TlwutqFNt/HWsTLutR8Cq4cCFHcAshk1tn+wuM
-         hqXduHuzNIt1ZhddWCccw/jujUtjwqIopR59X/KG+MvX0rGicrQAsmve/qwCEGW1HRbt
-         8224zMcXfr+Uw4eC7FfmB67B5r8EVp1Fw2lIUmRGot8YzCICbOmR3GOfxMSp+f4t3lEV
-         a0FPtEOgqfKU9Cc8c/77Lfw/SDWVt5pPyWa7WdFzhk0qNHyOR1V6UfzgfWzmc9piAWyk
-         JeQfvFkV69CoCsH73wgjTp7RizGOXYo+vgup8qU3plRTFklgKyp1O9cgB8mmNBRQ/wI8
-         K2FQ==
-X-Gm-Message-State: AOAM532KdwPok5RedOI2PgRBxFmlWmAfyQlTb82nzOI3c3niXWFZEGfv
-        FExgskqZ9ln6F556Ysplv1D7Wm4zLx/MhA==
-X-Google-Smtp-Source: ABdhPJyf0sezkcZZQT9NHjMr4dAlO6Ku2OahWrJ0+QQB3PNAUplUYGXPlqgxO9q+i+D3Ud7O36BzLg==
-X-Received: by 2002:a63:4e45:: with SMTP id o5mr19337611pgl.191.1633497085027;
-        Tue, 05 Oct 2021 22:11:25 -0700 (PDT)
-Received: from andriin-mbp.thefacebook.com ([2620:10d:c090:400::5:b85c])
-        by smtp.gmail.com with ESMTPSA id t4sm13397361pfj.13.2021.10.05.22.11.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Oct 2021 22:11:24 -0700 (PDT)
-From:   andrii.nakryiko@gmail.com
-X-Google-Original-From: andrii@kernel.org
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     andrii@kernel.org, kernel-team@fb.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: test new btf__add_btf() API
-Date:   Tue,  5 Oct 2021 22:11:07 -0700
-Message-Id: <20211006051107.17921-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006051107.17921-1-andrii@kernel.org>
-References: <20211006051107.17921-1-andrii@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kE8tUjRehAH/LvwAEmkueguVaxADrwLNnCg94hHiJMg=;
+        b=JnZChr99ppLZfE4gKjpKq8Niv1MkGBSbkqQ2eapU9AytP4+V18l1VPGtsy/SRa/KfY
+         pFdmJqn4lgrx65pNMiHQcy3j8ozs3vewpFhNlLYkJbjO8p8qAgPgytDWAE/bCVD5bTUg
+         XsB0Z4bPac0sV6+8K7KgGuJn0JEMOKBywf7RQeIQ4AdVDGmcVcEqzz/0pwqLwa5Sbw3b
+         snYYrz9MVOzIgS+vbQk5dEhgDrAYIq9c+/bMU/pDlypvOnwOCLJMjvZLPGly6nz8NHdB
+         hrKkJ8VW0LChlz60bAB+W5JFgrmk4iwakJi3kzCiL7l37FreW2ER7YqtC5yBbxhxGEbp
+         1BKQ==
+X-Gm-Message-State: AOAM530NeAuFn5XV8GWKlA9/yc8PzsF+PMcK9H+AtJDL+lnWjp8ozDYU
+        /BmvorOPhT1UJTvNopkyxDqPYaP24wE=
+X-Google-Smtp-Source: ABdhPJzou3CopLA7zz227KVxoXXKW6zbghyZEb5kwkFo8zyDyPIeOJyZtnyPh0gUr0g5IJZ+VUXMAA==
+X-Received: by 2002:a17:902:9a04:b0:13a:1b2d:8a5c with SMTP id v4-20020a1709029a0400b0013a1b2d8a5cmr9009835plp.47.1633497897737;
+        Tue, 05 Oct 2021 22:24:57 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
+        by smtp.gmail.com with ESMTPSA id o1sm3495760pjs.52.2021.10.05.22.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 22:24:57 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 10:54:55 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v1 3/6] libbpf: Ensure that module BTF fd is
+ never 0
+Message-ID: <20211006052455.st3f7m3q5fb27bs7@apollo.localdomain>
+References: <20211006002853.308945-1-memxor@gmail.com>
+ <20211006002853.308945-4-memxor@gmail.com>
+ <CAEf4BzZCK5L-yZHL=yhGir71t=kkhAn5yN07Vxs2+VizvwF3QQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZCK5L-yZHL=yhGir71t=kkhAn5yN07Vxs2+VizvwF3QQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+On Wed, Oct 06, 2021 at 10:11:29AM IST, Andrii Nakryiko wrote:
+> On Tue, Oct 5, 2021 at 5:29 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > Since the code assumes in various places that BTF fd for modules is
+> > never 0, if we end up getting fd as 0, obtain a new fd > 0. Even though
+> > fd 0 being free for allocation is usually an application error, it is
+> > still possible that we end up getting fd 0 if the application explicitly
+> > closes its stdin. Deal with this by getting a new fd using dup and
+> > closing fd 0.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index d286dec73b5f..3e5e460fe63e 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4975,6 +4975,20 @@ static int load_module_btfs(struct bpf_object *obj)
+> >                         pr_warn("failed to get BTF object #%d FD: %d\n", id, err);
+> >                         return err;
+> >                 }
+> > +               /* Make sure module BTF fd is never 0, as kernel depends on it
+> > +                * being > 0 to distinguish between vmlinux and module BTFs,
+> > +                * e.g. for BPF_PSEUDO_BTF_ID ld_imm64 insns (ksyms).
+> > +                */
+> > +               if (!fd) {
+> > +                       fd = dup(0);
+>
+> This is not the only place where we make assumptions that fd > 0 but
+> technically can get fd == 0. Instead of doing such a check in every
+> such place, would it be possible to open (cheaply) some FD (/dev/null
+> or whatever, don't know what's the best file to open), if we detect
+> that FD == 0 is not allocated? Can we detect that fd 0 is not
+> allocated?
+>
 
-Add a test that validates that btf__add_btf() API is correctly copying
-all the types from the source BTF into destination BTF object and
-adjusts type IDs and string offsets properly.
+We can, e.g. using access("/proc/self/fd/0", F_OK), but I think just calling
+open unconditonally and doing if (ret > 0) close(ret) is better. Also, do I
+leave it lingering, or should I close(0) if we created it on destroy?
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/btf_write.c      | 86 +++++++++++++++++++
- 1 file changed, 86 insertions(+)
+> Doing something like that in bpf_object__open() or bpf_object__load()
+> would make everything much simpler and we'll have a guarantee that fd
+> == 0 is not going to be allocated (unless someone accidentally or not
+> accidentally does close(0), but that's entirely different story).
+>
+> > +                       if (fd < 0) {
+> > +                               err = -errno;
+> > +                               pr_warn("failed to dup BTF object #%d FD 0 to FD > 0: %d\n", id, err);
+> > +                               close(0);
+> > +                               return err;
+> > +                       }
+> > +                       close(0);
+> > +               }
+> >
+> >                 len = sizeof(info);
+> >                 memset(&info, 0, sizeof(info));
+> > --
+> > 2.33.0
+> >
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_write.c b/tools/testing/selftests/bpf/prog_tests/btf_write.c
-index aa4505618252..886e0fc1efb1 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_write.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_write.c
-@@ -342,8 +342,94 @@ static void test_btf_add()
- 	btf__free(btf);
- }
- 
-+static void test_btf_add_btf()
-+{
-+	struct btf *btf1 = NULL, *btf2 = NULL;
-+	int id;
-+
-+	btf1 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf1, "btf1"))
-+		return;
-+
-+	btf2 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf2, "btf2"))
-+		goto cleanup;
-+
-+	gen_btf(btf1);
-+	gen_btf(btf2);
-+
-+	id = btf__add_btf(btf1, btf2);
-+	if (!ASSERT_EQ(id, 20, "id"))
-+		goto cleanup;
-+
-+	VALIDATE_RAW_BTF(
-+		btf1,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1",
-+		"[3] CONST '(anon)' type_id=5",
-+		"[4] VOLATILE '(anon)' type_id=3",
-+		"[5] RESTRICT '(anon)' type_id=4",
-+		"[6] ARRAY '(anon)' type_id=2 index_type_id=1 nr_elems=10",
-+		"[7] STRUCT 's1' size=8 vlen=2\n"
-+		"\t'f1' type_id=1 bits_offset=0\n"
-+		"\t'f2' type_id=1 bits_offset=32 bitfield_size=16",
-+		"[8] UNION 'u1' size=8 vlen=1\n"
-+		"\t'f1' type_id=1 bits_offset=0 bitfield_size=16",
-+		"[9] ENUM 'e1' size=4 vlen=2\n"
-+		"\t'v1' val=1\n"
-+		"\t'v2' val=2",
-+		"[10] FWD 'struct_fwd' fwd_kind=struct",
-+		"[11] FWD 'union_fwd' fwd_kind=union",
-+		"[12] ENUM 'enum_fwd' size=4 vlen=0",
-+		"[13] TYPEDEF 'typedef1' type_id=1",
-+		"[14] FUNC 'func1' type_id=15 linkage=global",
-+		"[15] FUNC_PROTO '(anon)' ret_type_id=1 vlen=2\n"
-+		"\t'p1' type_id=1\n"
-+		"\t'p2' type_id=2",
-+		"[16] VAR 'var1' type_id=1, linkage=global-alloc",
-+		"[17] DATASEC 'datasec1' size=12 vlen=1\n"
-+		"\ttype_id=1 offset=4 size=8",
-+		"[18] TAG 'tag1' type_id=16 component_idx=-1",
-+		"[19] TAG 'tag2' type_id=14 component_idx=1",
-+
-+		/* types appended from the second BTF */
-+		"[20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[21] PTR '(anon)' type_id=20",
-+		"[22] CONST '(anon)' type_id=24",
-+		"[23] VOLATILE '(anon)' type_id=22",
-+		"[24] RESTRICT '(anon)' type_id=23",
-+		"[25] ARRAY '(anon)' type_id=21 index_type_id=20 nr_elems=10",
-+		"[26] STRUCT 's1' size=8 vlen=2\n"
-+		"\t'f1' type_id=20 bits_offset=0\n"
-+		"\t'f2' type_id=20 bits_offset=32 bitfield_size=16",
-+		"[27] UNION 'u1' size=8 vlen=1\n"
-+		"\t'f1' type_id=20 bits_offset=0 bitfield_size=16",
-+		"[28] ENUM 'e1' size=4 vlen=2\n"
-+		"\t'v1' val=1\n"
-+		"\t'v2' val=2",
-+		"[29] FWD 'struct_fwd' fwd_kind=struct",
-+		"[30] FWD 'union_fwd' fwd_kind=union",
-+		"[31] ENUM 'enum_fwd' size=4 vlen=0",
-+		"[32] TYPEDEF 'typedef1' type_id=20",
-+		"[33] FUNC 'func1' type_id=34 linkage=global",
-+		"[34] FUNC_PROTO '(anon)' ret_type_id=20 vlen=2\n"
-+		"\t'p1' type_id=20\n"
-+		"\t'p2' type_id=21",
-+		"[35] VAR 'var1' type_id=20, linkage=global-alloc",
-+		"[36] DATASEC 'datasec1' size=12 vlen=1\n"
-+		"\ttype_id=20 offset=4 size=8",
-+		"[37] TAG 'tag1' type_id=35 component_idx=-1",
-+		"[38] TAG 'tag2' type_id=33 component_idx=1");
-+
-+cleanup:
-+	btf__free(btf1);
-+	btf__free(btf2);
-+}
-+
- void test_btf_write()
- {
- 	if (test__start_subtest("btf_add"))
- 		test_btf_add();
-+	if (test__start_subtest("btf_add_btf"))
-+		test_btf_add_btf();
- }
--- 
-2.30.2
-
+--
+Kartikeya
