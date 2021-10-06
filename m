@@ -2,165 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA7A4248D2
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 23:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CC14248FF
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 23:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239683AbhJFVYd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 17:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
+        id S239695AbhJFVha (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 17:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239680AbhJFVYd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:24:33 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AC3C061746;
-        Wed,  6 Oct 2021 14:22:40 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id s64so8506896yba.11;
-        Wed, 06 Oct 2021 14:22:40 -0700 (PDT)
+        with ESMTP id S232152AbhJFVh3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:37:29 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF303C061746;
+        Wed,  6 Oct 2021 14:35:36 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id d131so8660768ybd.5;
+        Wed, 06 Oct 2021 14:35:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ERup2P4X4JlFTklCDnCypaXBLC87khSfCsez0CZaAIY=;
-        b=Wu3VJVh54ROFXtTvqiHW8xjaaxfNIA4uCAZaBbIdcIRnlV2Kj75IHFb7//m/PF+ejV
-         3iJf+Dg/0UMnqxLRIt9e50PcFbNov62lynM7HP52/0f3JUZgcVOwhu4sq5RkfjVfJsga
-         ur63zrMa46Sa4Q5xl45/6K3ugebCQFwGGwhrYjtVo4tDg8WyAja6KL95tfVEgt/73d9k
-         dkAu3dSifrt3co4i5rnujJ1ypDDwltkEpyf5JZsAMl7dxI2wk3WNn3OpDQntOCd7Nn92
-         Mqm0lIv1IvP8Wy8w9iORjOEhpcz4eYGW/0lZKce+Iwvo5eOp0Qz0tgScYzP2TmfJW1Al
-         HBVA==
+        bh=rR2cRFE2Mq+8LHjKOluZMaFdRd1OI9HbsQgSz23jqJw=;
+        b=QYQXZjI35chblDogkAkqOqEUMKYFDf2tdJ8OpvIJ9Ezh5CYt63EiIduNWyiX2+6kTP
+         UnEp4tBy3dswll/9zPmZwXzYI+DjCNhloSQcWgGEKpA8WR+DuRb3bYKe+w866eFNLqPV
+         baagOvp75rElKjZcXXmVxaTu1WbUqTo9/2eLRzxmiJHaCLGlsMBmLYYr0qFDpG4YYiiL
+         DyBEtea4eqL8hQMAQJyPIBI5dryKGNcMX0HmIHs0SW8oCwXap/ivS1TxuYP3HHVnr/H3
+         1R+B2Oc5L011sVOY9HYj1mt+a+cNqCVEMwSpLSL+KXWXSkTJgoD0liMuSFqkwSbduRKc
+         XkaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ERup2P4X4JlFTklCDnCypaXBLC87khSfCsez0CZaAIY=;
-        b=FCNuAvNgc/NwhjiTzxg0o3WGucWM0ceoOVhNqiOyLbKQAsUyTZ4oV0gc6W3Be0T8B9
-         L1RldBq+zDQhnoUvBMbBBxyIT1Hkk3hoqK/2wtePOGwjjTNA4moVT+iSbBrGuXgJwH3X
-         4P6qtX3lhKvAvw0mP06Sq8FQTuDBakKKXrZaVd3gOPsbUc453A7mChs31OfddbMSOfqL
-         ZygTejvUu9LR3O0n6img6U5XUV6Bw8OLk61Z1T2XKNLOA519OcLn6GlaJbsgKoDca2/L
-         380mSt0YwlzWh126JuA2+wpruxsOCXqT0xArQmOSZhub/J02/vrOtc5HHGqnmR74loM3
-         n8LQ==
-X-Gm-Message-State: AOAM530TxjiwH7I9zinnRTDAtx5J5EA/O5qFIP7K5FecH/BcxQfUOuOj
-        d7mNfxIXpalNLCeDnBLogQ3ro1a9bD0pFclZaes=
-X-Google-Smtp-Source: ABdhPJxFzFfaWEnyMyQJph4fhg+XpN3eSQvP3xPWJFC+4HZ3wVwNbTJ2EZeknjsx5pCpOrz19JOrR34BMwg8wJBbn94=
-X-Received: by 2002:a25:afcf:: with SMTP id d15mr448250ybj.433.1633555359987;
- Wed, 06 Oct 2021 14:22:39 -0700 (PDT)
+        bh=rR2cRFE2Mq+8LHjKOluZMaFdRd1OI9HbsQgSz23jqJw=;
+        b=n2CqMBTrsbpHL1CKiqtghDq6XuY2m4VWGqkyC8mVCyVKPkRHnF4lZpg4KGxDGeu4/N
+         XSgpfRRgjMcIyR7XeJAeSU//OBnm/9u5YXo9PIeZW0U61knvbkswpHhhea3uJGbqp/+Z
+         LUfyztUjeUSTqJuXIJR6n3M4Hpxj7S/7Hd5A4EvKvuT2BtNkFXQhFe1fzijuvEqqk9IE
+         C7vvYVmtIEFHM1tWjS5StMuQMSz1BFimS51RtMKqGU8dN7EIuy2NgMKVec5qMkK+bP8v
+         er7crZxkkMEp/NMgDmumh63Qf4s/KM/l13r06Px/nA49DojGUaMp/lA/EOoE7CGJAvH6
+         5B1Q==
+X-Gm-Message-State: AOAM532BlvT2LhDMgbXBbbCJRj+rFCiP29p3Q1FRRcSpjtl2DFi3sFb0
+        MPRauxdWEHFjI98QovlirSbY3gVl7U1uT+fQT0k=
+X-Google-Smtp-Source: ABdhPJyy+Lu8paWW/omzRGWP62b0C2F37+ml/Dm6OW49kUUOIwknD36Qf04NJwbUjP0KjusWZPjEWA0fY0n+NZeOP3w=
+X-Received: by 2002:a25:5606:: with SMTP id k6mr571631ybb.51.1633556136110;
+ Wed, 06 Oct 2021 14:35:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <YV1hRboJopUBLm3H@krava> <CAEf4BzZPH6WQTYaUTpWBw1gW=cNUtPYPnN8OySgXtbQLzZLhEQ@mail.gmail.com>
- <YV4Bx7705mgWzhTd@krava>
-In-Reply-To: <YV4Bx7705mgWzhTd@krava>
+References: <20211006203135.2566248-1-songliubraving@fb.com>
+In-Reply-To: <20211006203135.2566248-1-songliubraving@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Oct 2021 14:22:28 -0700
-Message-ID: <CAEf4BzbirA4F_kW-sVrS_YmfUxhAjYVDwO1BvtzTYyngqHLkiw@mail.gmail.com>
-Subject: Re: [RFC] store function address in BTF
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 6 Oct 2021 14:35:25 -0700
+Message-ID: <CAEf4BzYs=dumqCAYp-kGFwVnQdt5eT6Yq17XQ83i9vHxE0Rmwg@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: skip get_branch_snapshot in vm
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:06 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Oct 6, 2021 at 1:31 PM Song Liu <songliubraving@fb.com> wrote:
 >
-> On Wed, Oct 06, 2021 at 09:17:39AM -0700, Andrii Nakryiko wrote:
-> > On Wed, Oct 6, 2021 at 1:42 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > hi,
-> > > I'm hitting performance issue and soft lock ups with the new version
-> > > of the patchset and the reason seems to be kallsyms lookup that we
-> > > need to do for each btf id we want to attach
-> > >
-> > > I tried to change kallsyms_lookup_name linear search into rbtree search,
-> > > but it has its own pitfalls like duplicate function names and it still
-> > > seems not to be fast enough when you want to attach like 30k functions
-> >
-> > How not fast enough is it exactly? How long does it take?
+> VMs running on latest kernel support LBR. However, bpf_get_branch_snapshot
+> couldn't stop the LBR before too many entries are flushed. Skip the test
+> for VMs before we find a proper fix for VMs.
 >
-> 30k functions takes 75 seconds for me, it's loop calling bpf_check_attach_target
+> Read the "flags" line from /proc/cpuinfo, if it contains "hypervisor",
+> skip test get_branch_snapshot.
 >
-> getting soft lock up messages:
->
-> krava33 login: [  168.896671] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [bpftrace:1087]
->
+> Fixes: 025bd7c753aa (selftests/bpf: Add test for bpf_get_branch_snapshot)
 
-That's without RB tree right? I was curious about the case of you
-converting kallsyms to RB tree and it still being slow. Can't imagine
-30k queries against RB tree with ~160k kallsyms taking 75 seconds.
+missing quotes?
 
-But as I said, why not map BTF IDs into function names, sort function
-names, and then pass over kallsyms once, doing binary search into a
-sorted array of requested function names and then recording addr for
-each. Then check that you found addresses for all functions (it also
-leaves a question of what to do when we have multiple matching
-functions, but it's a problem with any approach). If everything checks
-out, you have a nice btf id -> func name -> func addr mapping. It's
-O(N log(M)), which sounds like it shouldn't be slow. Definitely not
-multiple seconds slow.
-
-
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  .../bpf/prog_tests/get_branch_snapshot.c      | 32 +++++++++++++++++++
+>  1 file changed, 32 insertions(+)
 >
-> >
-> > >
-> > > so I wonder we could 'fix this' by storing function address in BTF,
-> > > which would cut kallsyms lookup completely, because it'd be done in
-> > > compile time
-> > >
-> > > my first thought was to add extra BTF section for that, after discussion
-> > > with Arnaldo perhaps we could be able to store extra 8 bytes after
-> > > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
-> > > indicate that? or new BTF_KIND_FUNC2 type?
-> > >
-> > > thoughts?
-> >
-> > I'm strongly against this, because (besides the BTF bloat reason) we
-> > need similar mass attachment functionality for kprobe/kretprobe and
-> > that one won't be relying on BTF FUNCs, so I think it's better to
-> > stick to the same mechanism for figuring out the address of the
-> > function.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+> index 67e86f8d86775..bf9d47a859449 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+> @@ -6,6 +6,30 @@
+>  static int *pfd_array;
+>  static int cpu_cnt;
 >
-> ok
->
-> >
-> > If RB tree is not feasible, we can do a linear search over unsorted
-> > kallsyms and do binary search over sorted function names (derived from
-> > BTF IDs). That would be O(Nlog(M)), where N is number of ksyms, M is
-> > number of BTF IDs/functions-to-be-attached-to. If we did have an RB
-> > tree for kallsyms (is it hard to support duplicates? why?) it could be
-> > even faster O(Mlog(N)).
->
-> I had issues with generic kallsyms rbtree in the post some time ago,
-> I'll revisit it to check on details.. but having the tree with just
-> btf id functions might clear that.. I'll check
+> +static bool is_hypervisor(void)
+> +{
+> +       char *line = NULL;
+> +       bool ret = false;
+> +       size_t len;
+> +       FILE *fp;
+> +
+> +       fp = fopen("/proc/cpuinfo", "r");
+> +       if (!fp)
+> +               return false;
+> +
+> +       while (getline(&line, &len, fp) != -1) {
+> +               if (strstr(line, "flags") == line) {
 
-That's not what I'm proposing. See above. Please let me know if
-something is not clear before going all in for RB tree implementation
-:)
+strncmp() would be more explicit. That's what you are trying to do
+(prefix match), right?
 
-
-But while we are on topic, do you think (with ftrace changes you are
-doing) it would be hard to support multi-attach for
-kprobes/kretprobes? We now have bpf_link interface for attaching
-kprobes, so API can be pretty aligned with fentry/fexit, except
-instead of btf IDs we'd need to pass array of pointers of C strings, I
-suppose.
-
+> +                       if (strstr(line, "hypervisor") != NULL)
+> +                               ret = true;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       free(line);
+> +       fclose(fp);
+> +       return ret;
+> +}
+> +
+>  static int create_perf_events(void)
+>  {
+>         struct perf_event_attr attr = {0};
+> @@ -54,6 +78,14 @@ void test_get_branch_snapshot(void)
+>         struct get_branch_snapshot *skel = NULL;
+>         int err;
 >
-> thanks,
-> jirka
->
-> >
-> >
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> >
+> +       if (is_hypervisor()) {
+> +               /* As of today, LBR in hypervisor cannot be stopped before
+> +                * too many entries are flushed. Skip the test for now in
+> +                * hypervisor until we optimize the LBR in hypervisor.
+> +                */
+> +               test__skip();
+> +               return;
+> +       }
+>         if (create_perf_events()) {
+>                 test__skip();  /* system doesn't support LBR */
+>                 goto cleanup;
+> --
+> 2.30.2
 >
