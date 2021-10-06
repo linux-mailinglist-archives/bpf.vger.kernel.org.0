@@ -2,115 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E164247B7
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 22:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1C24247F3
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 22:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239454AbhJFUJH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 16:09:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44248 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239279AbhJFUJG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 16:09:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633550833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wHzIelJadnRS/j3Vm7h6CrTo9MDSeVUCHjzInhdbR2g=;
-        b=e8R1KOvIqrbCXbueaIHoZg/MqG4ZSvmE5hTLQDS5yOCILtrbkxmkAVAFH/B/nrtUiIv82I
-        c10+1u3yghIivNB7SqMdwBls9SUbj2zy84ANcZsA7WK1UFoulN30CojKhp8l1QhtZXvCTc
-        dtvvOmpU8f4IViEgGmtcMQwe3kVL2D0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-ojwUXu2fOLutld0sHmalVg-1; Wed, 06 Oct 2021 16:07:10 -0400
-X-MC-Unique: ojwUXu2fOLutld0sHmalVg-1
-Received: by mail-wr1-f70.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso2893328wrb.20
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 13:07:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wHzIelJadnRS/j3Vm7h6CrTo9MDSeVUCHjzInhdbR2g=;
-        b=dUpUc+36udk6EA15ydG1G+RscSimN4x7DsLkPJrpyyqVu212j0s8gFGyFfPaG8/h0j
-         SflYeSlHsU64ito4oCs1KPwE94+bdSfDoYZn5HCzS+eu2tmXdUOYN+DqJ1DdQEPdKIJI
-         u9OoaFBgC5LHdbzvJvbnyvG58jETRfTh3qIg6UoQFw8f6ImVHXkiaEmv+DDeYGrMfeUs
-         /RtAgd2bMs2nGAfeEjuzuHWaLVZxJt18a++MvRAYJuriUR4HdlLpRQw8eWGRGCz8P2FP
-         8aRN13z25kjhkjiBWw6dYnHnFAvkYvaLvEcYJ9veLGlk4L+d/LSJI/PmUbETdw1cQpvQ
-         vuWg==
-X-Gm-Message-State: AOAM533FcOwS2zPQJDlVC5SDKhXf8D6tIP+A9/IO+rLXaynA1OgdKkfi
-        gzKw14/QB6Q7D/S1wUUUKeV7//t21n9OLC+nVfd16fPfrp6s7zPvhVDWmWuzLPLSgyK2BqyOLs5
-        uAkt7uYx3WXdF
-X-Received: by 2002:adf:9791:: with SMTP id s17mr173947wrb.122.1633550829184;
-        Wed, 06 Oct 2021 13:07:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzo2gS7y2xl/y0Q9acKCMNNR3wL2fxqFLbprZzYf1iP9T6dmu/b4rBaNjc7gJGDdzRbsvEgHQ==
-X-Received: by 2002:adf:9791:: with SMTP id s17mr173917wrb.122.1633550829029;
-        Wed, 06 Oct 2021 13:07:09 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id l21sm7271308wmg.18.2021.10.06.13.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 13:07:08 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 22:07:06 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [RFC] store function address in BTF
-Message-ID: <YV4B6nUbtCVLHbZW@krava>
-References: <YV1hRboJopUBLm3H@krava>
- <YV1h+cBxmYi2hrTM@krava>
- <CAADnVQLeHHBsG3751Ld3--w6KEM1a+8V4KY8MReexWo+bLgdmg@mail.gmail.com>
+        id S230138AbhJFUdf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 16:33:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60972 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229677AbhJFUde (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 16:33:34 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196JvYtG024535
+        for <bpf@vger.kernel.org>; Wed, 6 Oct 2021 13:31:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=SsmvSVCwRksvvYFYj73aSiCt87OGqFl2ccOdDkYGmKI=;
+ b=Hc+MgMimlcfQCNwPSpLgywBtaoVXzzTV9Bbf6S+d12GGvIxvFGAyXY7O9AUl4AsxH5+m
+ qnkM7HPqiYVzsqJz7WJ4ydwoADYNxAbt1C1yo4IDvQtk0YykBwEokC0HusE6/52sqAtD
+ lzGW/C+jAf+8oGFAUKvNtDIxKXcF/8gfvkY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bhfhj9vf7-15
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 13:31:41 -0700
+Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 6 Oct 2021 13:31:39 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 9940A15D85AFD; Wed,  6 Oct 2021 13:31:37 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH] selftests/bpf: skip get_branch_snapshot in vm
+Date:   Wed, 6 Oct 2021 13:31:35 -0700
+Message-ID: <20211006203135.2566248-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLeHHBsG3751Ld3--w6KEM1a+8V4KY8MReexWo+bLgdmg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: nu9p-rteNLSKsIwUh_AVw2tuVGA6YxnQ
+X-Proofpoint-GUID: nu9p-rteNLSKsIwUh_AVw2tuVGA6YxnQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-06_04,2021-10-06_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ phishscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=944 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110060126
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 07:53:31AM -0700, Alexei Starovoitov wrote:
-> On Wed, Oct 6, 2021 at 1:44 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Oct 06, 2021 at 10:41:41AM +0200, Jiri Olsa wrote:
-> > > hi,
-> > > I'm hitting performance issue and soft lock ups with the new version
-> > > of the patchset and the reason seems to be kallsyms lookup that we
-> > > need to do for each btf id we want to attach
-> >
-> > ugh, I meant to sent this as reply to the patchset mentioned above,
-> > nevermind, here's the patchset:
-> >   https://lore.kernel.org/bpf/20210605111034.1810858-1-jolsa@kernel.org/
-> >
-> > jirka
-> >
-> > >
-> > > I tried to change kallsyms_lookup_name linear search into rbtree search,
-> > > but it has its own pitfalls like duplicate function names and it still
-> > > seems not to be fast enough when you want to attach like 30k functions
-> > >
-> > > so I wonder we could 'fix this' by storing function address in BTF,
-> > > which would cut kallsyms lookup completely, because it'd be done in
-> > > compile time
-> > >
-> > > my first thought was to add extra BTF section for that, after discussion
-> > > with Arnaldo perhaps we could be able to store extra 8 bytes after
-> > > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
-> > > indicate that? or new BTF_KIND_FUNC2 type?
-> > >
-> > > thoughts?
-> 
-> That would be on top of your next patch set?
-> Please post it first.
+VMs running on latest kernel support LBR. However, bpf_get_branch_snapsho=
+t
+couldn't stop the LBR before too many entries are flushed. Skip the test
+for VMs before we find a proper fix for VMs.
 
-ok, will do
+Read the "flags" line from /proc/cpuinfo, if it contains "hypervisor",
+skip test get_branch_snapshot.
 
-jirka
+Fixes: 025bd7c753aa (selftests/bpf: Add test for bpf_get_branch_snapshot)
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ .../bpf/prog_tests/get_branch_snapshot.c      | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c=
+ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+index 67e86f8d86775..bf9d47a859449 100644
+--- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
++++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+@@ -6,6 +6,30 @@
+ static int *pfd_array;
+ static int cpu_cnt;
+=20
++static bool is_hypervisor(void)
++{
++	char *line =3D NULL;
++	bool ret =3D false;
++	size_t len;
++	FILE *fp;
++
++	fp =3D fopen("/proc/cpuinfo", "r");
++	if (!fp)
++		return false;
++
++	while (getline(&line, &len, fp) !=3D -1) {
++		if (strstr(line, "flags") =3D=3D line) {
++			if (strstr(line, "hypervisor") !=3D NULL)
++				ret =3D true;
++			break;
++		}
++	}
++
++	free(line);
++	fclose(fp);
++	return ret;
++}
++
+ static int create_perf_events(void)
+ {
+ 	struct perf_event_attr attr =3D {0};
+@@ -54,6 +78,14 @@ void test_get_branch_snapshot(void)
+ 	struct get_branch_snapshot *skel =3D NULL;
+ 	int err;
+=20
++	if (is_hypervisor()) {
++		/* As of today, LBR in hypervisor cannot be stopped before
++		 * too many entries are flushed. Skip the test for now in
++		 * hypervisor until we optimize the LBR in hypervisor.
++		 */
++		test__skip();
++		return;
++	}
+ 	if (create_perf_events()) {
+ 		test__skip();  /* system doesn't support LBR */
+ 		goto cleanup;
+--=20
+2.30.2
 
