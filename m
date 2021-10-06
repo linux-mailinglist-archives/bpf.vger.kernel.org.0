@@ -2,95 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A3E4234DE
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 02:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2A44234E0
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 02:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236909AbhJFATh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 20:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbhJFATh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:19:37 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AD1C061749;
-        Tue,  5 Oct 2021 17:17:46 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id oa6-20020a17090b1bc600b0019ffc4b9c51so3174856pjb.2;
-        Tue, 05 Oct 2021 17:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dd25iWbMIpu6ehv9NxwDDQMShXAH+pXVH28BvCxz830=;
-        b=iJ94omesvlI98Cx+V9cLIYaTPryOoi007XzCfjFa5qKXd2ewcQEi6FTEYjxviUeyaW
-         djr1jV827peMhn1caA7HfnUnFvfdLz5ag5biEiEc098sEVSfmUEubMw0VWGxe7muAlhg
-         qIuiO1FKgBzWEjyHH3QN9DwVynm5+SFSSB1z8NR6SpGJo6I7eL+lIXvBJkTnjPudKbQz
-         eFXOciDdEzJ2wHQC/+VudyI+h0pze8wY7p4ru8J6O5fkq+ti5URtU1/KdIw4pzBw75XW
-         H94efJzVQcFyc2wYCdDXxVSPa3rlZ/cb0HhsdF6j+kYNjHzjf+cmqo2bJle2pISBjf0c
-         rccA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dd25iWbMIpu6ehv9NxwDDQMShXAH+pXVH28BvCxz830=;
-        b=xyhFWuWRRNRNxTCD6NmIw6HPF0BZ5SGESMVhmIo+AmefAOyJZDSMR5z6J7a8TIZYKj
-         JL5Mr3EiYCKhK0n7arUFYqFR25sQ2uXGQX3tvs3IKJl+JUi4ZoUUzDKpel0b/9Ea4Yo2
-         6efSCk2em2Cv+NPcBrNOQLESyZAyyT87I3AVifamoXin8lOoN56dcBt+U1mmKMbZMnYd
-         JbtbK1Bw9nlIPvf/hZ/DeJw2HUTZXudxP36lbKkwU4kYdYQTxAXAQ1NwDapYthJbKYue
-         RInNb12PP+VW7p/CeYQ28ibza0QbOZW0OQabSZ3vThFKrmHKGOHSqMtSc5slLu3spP4o
-         +EsA==
-X-Gm-Message-State: AOAM532uQKNna1JvzA9cBH/T4Pn0mhMFsARQdKnQ+ZcsHrPOYw8RTp/l
-        533XvKVjb0M+gKfbQonvRc9v2pqwe4QRQpfI0C8=
-X-Google-Smtp-Source: ABdhPJyNPqE9x4WGWcGy4JdVi8xrMD7qtrBsZkb8MYIVzrVqsaxBFjnCGuemSltpGIbijAN+9w4ZKThBkvt2WbwLi54=
-X-Received: by 2002:a17:902:b7c9:b0:13e:e094:e24c with SMTP id
- v9-20020a170902b7c900b0013ee094e24cmr6839741plz.3.1633479465540; Tue, 05 Oct
- 2021 17:17:45 -0700 (PDT)
+        id S231855AbhJFAVC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 20:21:02 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56064 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231373AbhJFAVB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 Oct 2021 20:21:01 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195NiTgL017737
+        for <bpf@vger.kernel.org>; Tue, 5 Oct 2021 17:19:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=etO/nGEOJdFSkhfp0hWTtZUpdNmpmAReaEXhw7i6DnY=;
+ b=REBcDMYnxoSQUirJUfHEV4XlK/npLNSNGwsl5cR/zgg+wr3zJ9wcR2HhXCYzXTGRF/5U
+ IDm4w1IZBjzIQnsankcHVX7qmWo7YALLCjW4bKnN/hrON7YF+hi6ZlTRFer436Y8FuxK
+ YW//a9Gl7BwvSR+DrEqbCSfgseFDReB67u4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bh0n0g6gc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 17:19:10 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 5 Oct 2021 17:19:09 -0700
+Received: by devbig139.ftw2.facebook.com (Postfix, from userid 572249)
+        id 306C13C11683; Tue,  5 Oct 2021 17:19:00 -0700 (PDT)
+From:   Andrey Ignatov <rdna@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] bpf: avoid retpoline for bpf_for_each_map_elem
+Date:   Tue, 5 Oct 2021 17:18:38 -0700
+Message-ID: <20211006001838.75607-1-rdna@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211002011757.311265-1-memxor@gmail.com>
-In-Reply-To: <20211002011757.311265-1-memxor@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 Oct 2021 17:17:34 -0700
-Message-ID: <CAADnVQKDPG+U-NwoAeNSU5Ef9ZYhhGcgL4wBkFoP-E9h8-XZhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 0/9] Support kernel module function calls from eBPF
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: XKS8tvDaugdJMwYxXo-0EK8NFOPaGCU8
+X-Proofpoint-ORIG-GUID: XKS8tvDaugdJMwYxXo-0EK8NFOPaGCU8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-05_06,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ suspectscore=0 mlxlogscore=290 spamscore=0 phishscore=0 impostorscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110060000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 6:18 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->
-> This set enables kernel module function calls, and also modifies verifier logic
-> to permit invalid kernel function calls as long as they are pruned as part of
-> dead code elimination. This is done to provide better runtime portability for
-> BPF objects, which can conditionally disable parts of code that are pruned later
-> by the verifier (e.g. const volatile vars, kconfig options). libbpf
-> modifications are made along with kernel changes to support module function
-> calls.
->
-> It also converts TCP congestion control objects to use the module kfunc support
-> instead of relying on IS_BUILTIN ifdef.
->
-> Changelog:
-> ----------
-> v6 -> v7
-> v6: https://lore.kernel.org/bpf/20210930062948.1843919-1-memxor@gmail.com
->
->  * Let __bpf_check_kfunc_call take kfunc_btf_id_list instead of generating
->    callbacks (Andrii)
->  * Rename it to bpf_check_mod_kfunc_call to reflect usage
->  * Remove OOM checks (Alexei)
->  * Remove resolve_btfids invocation for bpf_testmod (Andrii)
->  * Move fd_array_cnt initialization near fd_array alloc (Andrii)
->  * Rename helper to btf_find_by_name_kind and pass start_id (Andrii)
->  * memset when data is NULL in add_data (Alexei)
->  * Fix other nits
+Similarly to 09772d92cd5a ("bpf: avoid retpoline for
+lookup/update/delete calls on maps") and 84430d4232c3 ("bpf, verifier:
+avoid retpoline for map push/pop/peek operation") avoid indirect call
+while calling bpf_for_each_map_elem.
 
-Looking good now. Applied. Thanks
+Before (a program fragment):
+
+  ; if (rules_map) {
+   142: (15) if r4 =3D=3D 0x0 goto pc+8
+   143: (bf) r3 =3D r10
+  ; bpf_for_each_map_elem(rules_map, process_each_rule, &ctx, 0);
+   144: (07) r3 +=3D -24
+   145: (bf) r1 =3D r4
+   146: (18) r2 =3D subprog[+5]
+   148: (b7) r4 =3D 0
+   149: (85) call bpf_for_each_map_elem#143680  <-- indirect call via
+                                                    helper
+
+After (same program fragment):
+
+   ; if (rules_map) {
+    142: (15) if r4 =3D=3D 0x0 goto pc+8
+    143: (bf) r3 =3D r10
+   ; bpf_for_each_map_elem(rules_map, process_each_rule, &ctx, 0);
+    144: (07) r3 +=3D -24
+    145: (bf) r1 =3D r4
+    146: (18) r2 =3D subprog[+5]
+    148: (b7) r4 =3D 0
+    149: (85) call bpf_for_each_array_elem#170336  <-- direct call
+
+On a benchmark that calls bpf_for_each_map_elem() once and does many
+other things (mostly checking fields in skb) with CONFIG_RETPOLINE=3Dy it
+makes program faster.
+
+Before:
+
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+  Benchmark.cpp                                              time/iter it=
+ers/s
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+  IngressMatchByRemoteEndpoint                                80.78ns 12.=
+38M
+  IngressMatchByRemoteIP                                      80.66ns 12.=
+40M
+  IngressMatchByRemotePort                                    80.87ns 12.=
+37M
+
+After:
+
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+  Benchmark.cpp                                              time/iter it=
+ers/s
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+  IngressMatchByRemoteEndpoint                                73.49ns 13.=
+61M
+  IngressMatchByRemoteIP                                      71.48ns 13.=
+99M
+  IngressMatchByRemotePort                                    70.39ns 14.=
+21M
+
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+---
+ kernel/bpf/verifier.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1433752db740..68948f1ed443 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12946,7 +12946,8 @@ static int do_misc_fixups(struct bpf_verifier_env=
+ *env)
+ 		     insn->imm =3D=3D BPF_FUNC_map_push_elem   ||
+ 		     insn->imm =3D=3D BPF_FUNC_map_pop_elem    ||
+ 		     insn->imm =3D=3D BPF_FUNC_map_peek_elem   ||
+-		     insn->imm =3D=3D BPF_FUNC_redirect_map)) {
++		     insn->imm =3D=3D BPF_FUNC_redirect_map    ||
++		     insn->imm =3D=3D BPF_FUNC_for_each_map_elem)) {
+ 			aux =3D &env->insn_aux_data[i + delta];
+ 			if (bpf_map_ptr_poisoned(aux))
+ 				goto patch_call_imm;
+@@ -12990,6 +12991,11 @@ static int do_misc_fixups(struct bpf_verifier_en=
+v *env)
+ 				     (int (*)(struct bpf_map *map, void *value))NULL));
+ 			BUILD_BUG_ON(!__same_type(ops->map_redirect,
+ 				     (int (*)(struct bpf_map *map, u32 ifindex, u64 flags))NULL));
++			BUILD_BUG_ON(!__same_type(ops->map_for_each_callback,
++				     (int (*)(struct bpf_map *map,
++					      bpf_callback_t callback_fn,
++					      void *callback_ctx,
++					      u64 flags))NULL));
+=20
+ patch_map_ops_generic:
+ 			switch (insn->imm) {
+@@ -13014,6 +13020,9 @@ static int do_misc_fixups(struct bpf_verifier_env=
+ *env)
+ 			case BPF_FUNC_redirect_map:
+ 				insn->imm =3D BPF_CALL_IMM(ops->map_redirect);
+ 				continue;
++			case BPF_FUNC_for_each_map_elem:
++				insn->imm =3D BPF_CALL_IMM(ops->map_for_each_callback);
++				continue;
+ 			}
+=20
+ 			goto patch_call_imm;
+--=20
+2.30.2
+
