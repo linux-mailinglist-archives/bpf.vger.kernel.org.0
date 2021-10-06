@@ -2,60 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6EF42376C
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 07:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8B642376D
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 07:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhJFFNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 01:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
+        id S231985AbhJFFNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 01:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhJFFNN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:13:13 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DC6C061749
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 22:11:21 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id r2so1383207pgl.10
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 22:11:21 -0700 (PDT)
+        with ESMTP id S230080AbhJFFNR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:13:17 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A210AC061749
+        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 22:11:25 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s75so1407007pgs.5
+        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 22:11:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zC7G2rZNPZFCtNAj8bw9gQL2MPj0wsjaRrx2PwatbnY=;
-        b=RAc5xdoZRQffcUDRWgyqvEQwTV/3B8RMrkktFOme5RkVAo7Xwtn7jp+k1PSFIqnw+t
-         Sm7yXfF0LVsizPpUTsrLtrwntPYFgP31OaPc/Z8wEy1BBUxUPDzjr0svjlign++vQlMp
-         UlmUvMXFGPAXAj4CEN7HECALNqy+1do3fcCp+Lhe0kT96wjpQLXLIZkfVyOZkXLpS1Td
-         sDus3AJvLcGnyoFNt2DfPtTujZx6SHcvxO2EkBazp5Qw6yxqw+vRfZ3d5MpXKH+WHhaN
-         +p3xgkx8Fr6CA5EdOUkWp+dJ/ttllYEwCjnk4hm9eGmSjQqsVIbnE7kATvABFz4UPkNF
-         e9Rw==
+        bh=DqRd81efSFuFIw/cDLr3lKmlzmNiIVk6lw3SPXlaJTE=;
+        b=ERZFChVZww8jUabUzUxTiQylMitX/kqXk6HaJA0bXX0ZovA2ZkIdLLcNBel0HQEdYj
+         2n7nEylpFo4ImswkSKdX5cDIwAEuSfKHobR53lN0+kPBxqlP0T+lKjCUvMwdifusNFzh
+         EQU85fTWOkoIwoY7ZIKkTA0Sg8wYklwfMQdSRcAojtVJqHBhBV1LqCVknYj50IGk64g5
+         IXr5Ms4MKiPJIjHk/YaElynkuLRbG8+hGqZ5h412xOmCUYovfEdhQUZ+TB0rE4TXXsYf
+         CbDe+eaOC6Ccha7YwPTF4/zYYuienVj/Fg8aDILHaZ8tdKhw2RE1NTPQZPDRtc1g+bAV
+         lLNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zC7G2rZNPZFCtNAj8bw9gQL2MPj0wsjaRrx2PwatbnY=;
-        b=zGWPzjvtFCp1bLyeuMnMOpqkp7s+PAkxbZXDfmksucf5WV2MvmvfbVXnSP/Lvlkovg
-         3vPFTipH/BsgWkh0+OVeTSWpCL1L5SVq790FvPUj/i0Ncuuxh0w7E+p9IgrzwrGw8qkM
-         k6eYRkxH8BcHB+j1xIriQGdVy3NhiAGdWP4G2RNpKzG/a9GSqjuRpLe4hvCcHeufU7ZE
-         sfB5pb6Wn1XjBKpx7GFxEvF68w20GdHDUMTGyNElm2r1yylA4258xgojui/Cf7Inwu1p
-         bZPEKIWDGCRZfv8miFR1zf2SKJMzI0LcUQ3JW676Zv+5u7mhwWFvbR9QoeKjSvr5sS9d
-         iNgQ==
-X-Gm-Message-State: AOAM532M5isyQYNavAOleG3r6t0sbasYvAUntQ2+aA/w4yi8u4m/3Ey8
-        +qc204x49ReOvMzav8Km8wsn2/CxcWx4YA==
-X-Google-Smtp-Source: ABdhPJzKKosZrgEU+NREMHC5TxI7aYOWoFqrq3QCRoLdPPSrAaQGlKO58DVuofUYDDXLAg+vBchZ8g==
-X-Received: by 2002:a05:6a00:b8f:b0:44c:6220:3396 with SMTP id g15-20020a056a000b8f00b0044c62203396mr14339746pfj.58.1633497081190;
-        Tue, 05 Oct 2021 22:11:21 -0700 (PDT)
+        bh=DqRd81efSFuFIw/cDLr3lKmlzmNiIVk6lw3SPXlaJTE=;
+        b=uWfQMivNzgw0qb9zhR6mx7H6yq60TlwutqFNt/HWsTLutR8Cq4cCFHcAshk1tn+wuM
+         hqXduHuzNIt1ZhddWCccw/jujUtjwqIopR59X/KG+MvX0rGicrQAsmve/qwCEGW1HRbt
+         8224zMcXfr+Uw4eC7FfmB67B5r8EVp1Fw2lIUmRGot8YzCICbOmR3GOfxMSp+f4t3lEV
+         a0FPtEOgqfKU9Cc8c/77Lfw/SDWVt5pPyWa7WdFzhk0qNHyOR1V6UfzgfWzmc9piAWyk
+         JeQfvFkV69CoCsH73wgjTp7RizGOXYo+vgup8qU3plRTFklgKyp1O9cgB8mmNBRQ/wI8
+         K2FQ==
+X-Gm-Message-State: AOAM532KdwPok5RedOI2PgRBxFmlWmAfyQlTb82nzOI3c3niXWFZEGfv
+        FExgskqZ9ln6F556Ysplv1D7Wm4zLx/MhA==
+X-Google-Smtp-Source: ABdhPJyf0sezkcZZQT9NHjMr4dAlO6Ku2OahWrJ0+QQB3PNAUplUYGXPlqgxO9q+i+D3Ud7O36BzLg==
+X-Received: by 2002:a63:4e45:: with SMTP id o5mr19337611pgl.191.1633497085027;
+        Tue, 05 Oct 2021 22:11:25 -0700 (PDT)
 Received: from andriin-mbp.thefacebook.com ([2620:10d:c090:400::5:b85c])
-        by smtp.gmail.com with ESMTPSA id s25sm19396609pfm.138.2021.10.05.22.11.20
+        by smtp.gmail.com with ESMTPSA id t4sm13397361pfj.13.2021.10.05.22.11.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Oct 2021 22:11:20 -0700 (PDT)
+        Tue, 05 Oct 2021 22:11:24 -0700 (PDT)
 From:   andrii.nakryiko@gmail.com
 X-Google-Original-From: andrii@kernel.org
 To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
 Cc:     andrii@kernel.org, kernel-team@fb.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2 bpf-next 2/3] selftests/bpf: refactor btf_write selftest to reuse BTF generation logic
-Date:   Tue,  5 Oct 2021 22:11:06 -0700
-Message-Id: <20211006051107.17921-3-andrii@kernel.org>
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: test new btf__add_btf() API
+Date:   Tue,  5 Oct 2021 22:11:07 -0700
+Message-Id: <20211006051107.17921-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211006051107.17921-1-andrii@kernel.org>
 References: <20211006051107.17921-1-andrii@kernel.org>
@@ -67,61 +66,45 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Andrii Nakryiko <andrii@kernel.org>
 
-Next patch will need to reuse BTF generation logic, which tests every
-supported BTF kind, for testing btf__add_btf() APIs. So restructure
-existing selftests and make it as a single subtest that uses bulk
-VALIDATE_RAW_BTF() macro for raw BTF dump checking.
+Add a test that validates that btf__add_btf() API is correctly copying
+all the types from the source BTF into destination BTF object and
+adjusts type IDs and string offsets properly.
 
-Acked-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/prog_tests/btf_write.c      | 55 +++++++++++++++++--
- 1 file changed, 49 insertions(+), 6 deletions(-)
+ .../selftests/bpf/prog_tests/btf_write.c      | 86 +++++++++++++++++++
+ 1 file changed, 86 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/btf_write.c b/tools/testing/selftests/bpf/prog_tests/btf_write.c
-index 76548eecce2c..aa4505618252 100644
+index aa4505618252..886e0fc1efb1 100644
 --- a/tools/testing/selftests/bpf/prog_tests/btf_write.c
 +++ b/tools/testing/selftests/bpf/prog_tests/btf_write.c
-@@ -4,19 +4,15 @@
- #include <bpf/btf.h>
- #include "btf_helpers.h"
+@@ -342,8 +342,94 @@ static void test_btf_add()
+ 	btf__free(btf);
+ }
  
--void test_btf_write() {
-+static void gen_btf(struct btf *btf)
++static void test_btf_add_btf()
 +{
- 	const struct btf_var_secinfo *vi;
- 	const struct btf_type *t;
- 	const struct btf_member *m;
- 	const struct btf_enum *v;
- 	const struct btf_param *p;
--	struct btf *btf;
- 	int id, err, str_off;
- 
--	btf = btf__new_empty();
--	if (!ASSERT_OK_PTR(btf, "new_empty"))
--		return;
--
- 	str_off = btf__find_str(btf, "int");
- 	ASSERT_EQ(str_off, -ENOENT, "int_str_missing_off");
- 
-@@ -301,6 +297,53 @@ void test_btf_write() {
- 	ASSERT_EQ(btf_tag(t)->component_idx, 1, "tag_component_idx");
- 	ASSERT_STREQ(btf_type_raw_dump(btf, 19),
- 		     "[19] TAG 'tag2' type_id=14 component_idx=1", "raw_dump");
-+}
++	struct btf *btf1 = NULL, *btf2 = NULL;
++	int id;
 +
-+static void test_btf_add()
-+{
-+	struct btf *btf;
-+
-+	btf = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf, "new_empty"))
++	btf1 = btf__new_empty();
++	if (!ASSERT_OK_PTR(btf1, "btf1"))
 +		return;
 +
-+	gen_btf(btf);
++	btf2 = btf__new_empty();
++	if (!ASSERT_OK_PTR(btf2, "btf2"))
++		goto cleanup;
++
++	gen_btf(btf1);
++	gen_btf(btf2);
++
++	id = btf__add_btf(btf1, btf2);
++	if (!ASSERT_EQ(id, 20, "id"))
++		goto cleanup;
 +
 +	VALIDATE_RAW_BTF(
-+		btf,
++		btf1,
 +		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
 +		"[2] PTR '(anon)' type_id=1",
 +		"[3] CONST '(anon)' type_id=5",
@@ -148,16 +131,49 @@ index 76548eecce2c..aa4505618252 100644
 +		"[17] DATASEC 'datasec1' size=12 vlen=1\n"
 +		"\ttype_id=1 offset=4 size=8",
 +		"[18] TAG 'tag1' type_id=16 component_idx=-1",
-+		"[19] TAG 'tag2' type_id=14 component_idx=1");
- 
- 	btf__free(btf);
- }
++		"[19] TAG 'tag2' type_id=14 component_idx=1",
 +
-+void test_btf_write()
-+{
-+	if (test__start_subtest("btf_add"))
-+		test_btf_add();
++		/* types appended from the second BTF */
++		"[20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
++		"[21] PTR '(anon)' type_id=20",
++		"[22] CONST '(anon)' type_id=24",
++		"[23] VOLATILE '(anon)' type_id=22",
++		"[24] RESTRICT '(anon)' type_id=23",
++		"[25] ARRAY '(anon)' type_id=21 index_type_id=20 nr_elems=10",
++		"[26] STRUCT 's1' size=8 vlen=2\n"
++		"\t'f1' type_id=20 bits_offset=0\n"
++		"\t'f2' type_id=20 bits_offset=32 bitfield_size=16",
++		"[27] UNION 'u1' size=8 vlen=1\n"
++		"\t'f1' type_id=20 bits_offset=0 bitfield_size=16",
++		"[28] ENUM 'e1' size=4 vlen=2\n"
++		"\t'v1' val=1\n"
++		"\t'v2' val=2",
++		"[29] FWD 'struct_fwd' fwd_kind=struct",
++		"[30] FWD 'union_fwd' fwd_kind=union",
++		"[31] ENUM 'enum_fwd' size=4 vlen=0",
++		"[32] TYPEDEF 'typedef1' type_id=20",
++		"[33] FUNC 'func1' type_id=34 linkage=global",
++		"[34] FUNC_PROTO '(anon)' ret_type_id=20 vlen=2\n"
++		"\t'p1' type_id=20\n"
++		"\t'p2' type_id=21",
++		"[35] VAR 'var1' type_id=20, linkage=global-alloc",
++		"[36] DATASEC 'datasec1' size=12 vlen=1\n"
++		"\ttype_id=20 offset=4 size=8",
++		"[37] TAG 'tag1' type_id=35 component_idx=-1",
++		"[38] TAG 'tag2' type_id=33 component_idx=1");
++
++cleanup:
++	btf__free(btf1);
++	btf__free(btf2);
 +}
++
+ void test_btf_write()
+ {
+ 	if (test__start_subtest("btf_add"))
+ 		test_btf_add();
++	if (test__start_subtest("btf_add_btf"))
++		test_btf_add_btf();
+ }
 -- 
 2.30.2
 
