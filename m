@@ -2,208 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9ACF4249ED
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 00:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9F9424A5B
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 01:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239610AbhJFWk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 18:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239779AbhJFWkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:40:23 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2002DC06136E;
-        Wed,  6 Oct 2021 15:37:28 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id g6so8972491ybb.3;
-        Wed, 06 Oct 2021 15:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=El8xgii0miK9wdp95H0ci9RxSrj37YXXjsNsZAOWyDQ=;
-        b=EiaD2aKNLD/AzSjRN7rXNOwuaqNZA0+/zKRnrw0T45I5GyOCRqy7VGsDTznYkowG5k
-         PFQm0JY3ZTfXqXONoSvnR6DslULir0Sym3RqRST4B9pS+wCvTn1aRypI8WbbbMLp2ubL
-         B/q5EZrusRZO/uJb/FO5eNSHW+I6b0iWVODY2TacV11XlAsUtMOqrmAZQT1ZI8w0BIuK
-         ZRtAB6xfA6vjkN+9/qskjJDby49F+51pwmYcDM03v/T1k0gTAQ/UTni/2qljP/MUDY7u
-         9bYXAj4cKvZKHHVjfqWBcA3kVsLFtiupnnwnEd2kwnZFRkbqMXdgGoZeZ6GOaapDUjFN
-         Tmig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=El8xgii0miK9wdp95H0ci9RxSrj37YXXjsNsZAOWyDQ=;
-        b=oPh87Lz7o+doKlrUUHdh0Cjg+KV4mMGy4sGrWgQMewlfQehamygvJYi/0+WBC94rmQ
-         3kMWxHPFV++Voeuy+lOhKyV1JT4TYlbhYAnVF/spROikLjJQjlRVa7TZR2h3zlUJ7p6t
-         jaPnfuuIZRYmFap3LToYVmgQ/fcsCZm0wW5cYMYkaMKKcA5paevizHibN1wrb1jr003+
-         mhbBrcxTKgeyWOWo2rXtqdgezH8mTbZD+CjfN4gjfEZiRQbcEF1TyY0xgw2OPCSfjOKI
-         9Ax9YiW4SXqHWyfAIymxF/RxCMD8uQ6OcYAaZ1XLiGSztRyaFxY85U6+Sv2tz84pAo0D
-         oDiA==
-X-Gm-Message-State: AOAM531zCZ1kCpRUNeYoy4TtoqvTDTeEs1TVoEbFA7SZ/MMp5mi8bbpO
-        AZkV6IN/vkS9AX97AQ84HBNxp+Qi2hMtO59GVFk=
-X-Google-Smtp-Source: ABdhPJzKMZAt5W3/de7ps/eTKOWcjTBt+gnEkuVijzmw7ZaUJe2oy5ajUPhK9lVevo9Gopcz5O4GR5Zw+6cK1A+dW88=
-X-Received: by 2002:a25:5606:: with SMTP id k6mr862386ybb.51.1633559847302;
- Wed, 06 Oct 2021 15:37:27 -0700 (PDT)
+        id S239827AbhJFXJa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 19:09:30 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7918 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239819AbhJFXJa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 19:09:30 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 196M41er029025
+        for <bpf@vger.kernel.org>; Wed, 6 Oct 2021 16:07:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Sq++9epHfNki2YlM/FDYGutKsr7B4g/e0cHdfCt/TRM=;
+ b=proidZYKXE4u2metGqh/1em/Hi3Zh6PcyeK+YMt8uwdV+YZUB/Gf4Uo/ABt1iZcDp4K7
+ 9RYosoz+UpillJQja+YTPmaCzLwpzn3iPhZDlySTmEZhpsH5sqFHMw4e6UF1O6iIgsOn
+ ktwk24Z5ffBVr10P3lWV0lzxvm8MmEs1BY0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 3bhfn52qq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 16:07:36 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 6 Oct 2021 16:07:36 -0700
+Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
+        id 6426B3457DAD; Wed,  6 Oct 2021 16:07:28 -0700 (PDT)
+From:   Joanne Koong <joannekoong@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <kafai@fb.com>, <netdev@vger.kernel.org>, <Kernel-team@fb.com>,
+        Joanne Koong <joannekoong@fb.com>
+Subject: [PATCH bpf-next v2 0/3] Add XDP support for bpf_load_hdr_opt
+Date:   Wed, 6 Oct 2021 16:05:40 -0700
+Message-ID: <20211006230543.3928580-1-joannekoong@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <YV1hRboJopUBLm3H@krava> <CAEf4BzZPH6WQTYaUTpWBw1gW=cNUtPYPnN8OySgXtbQLzZLhEQ@mail.gmail.com>
- <YV4Bx7705mgWzhTd@krava> <CAEf4BzbirA4F_kW-sVrS_YmfUxhAjYVDwO1BvtzTYyngqHLkiw@mail.gmail.com>
- <YV4dmkXO6nkB2DeV@krava>
-In-Reply-To: <YV4dmkXO6nkB2DeV@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Oct 2021 15:37:16 -0700
-Message-ID: <CAEf4BzYBS8+9XADjJdvKB=_6tf8_t19UVGfm2Lk1+Nb6qWk5cw@mail.gmail.com>
-Subject: Re: [RFC] store function address in BTF
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: ZwpQY22gqR9YxXDswQZGdj8q4mAC-qmB
+X-Proofpoint-ORIG-GUID: ZwpQY22gqR9YxXDswQZGdj8q4mAC-qmB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-06_04,2021-10-06_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=1 lowpriorityscore=0
+ spamscore=1 phishscore=0 adultscore=0 mlxscore=1 suspectscore=0
+ bulkscore=0 clxscore=1015 mlxlogscore=227 priorityscore=1501
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110060142
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 3:05 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Oct 06, 2021 at 02:22:28PM -0700, Andrii Nakryiko wrote:
-> > On Wed, Oct 6, 2021 at 1:06 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Wed, Oct 06, 2021 at 09:17:39AM -0700, Andrii Nakryiko wrote:
-> > > > On Wed, Oct 6, 2021 at 1:42 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > >
-> > > > > hi,
-> > > > > I'm hitting performance issue and soft lock ups with the new version
-> > > > > of the patchset and the reason seems to be kallsyms lookup that we
-> > > > > need to do for each btf id we want to attach
-> > > > >
-> > > > > I tried to change kallsyms_lookup_name linear search into rbtree search,
-> > > > > but it has its own pitfalls like duplicate function names and it still
-> > > > > seems not to be fast enough when you want to attach like 30k functions
-> > > >
-> > > > How not fast enough is it exactly? How long does it take?
-> > >
-> > > 30k functions takes 75 seconds for me, it's loop calling bpf_check_attach_target
-> > >
-> > > getting soft lock up messages:
-> > >
-> > > krava33 login: [  168.896671] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [bpftrace:1087]
-> > >
-> >
-> > That's without RB tree right? I was curious about the case of you
-> > converting kallsyms to RB tree and it still being slow. Can't imagine
-> > 30k queries against RB tree with ~160k kallsyms taking 75 seconds.
->
-> yep, that's the standard kallsyms lookup api
->
-> I need to make some adjustment for rbtree kalsyms code, I think I found
-> a bug in there, so the numbers are probably better as you suggest
+Currently, bpf_sockops programs have been using bpf_load_hdr_opt() to
+parse the tcp header option. It will be useful to allow other bpf prog
+types to have a similar way of handling tcp hdr options.
 
-ok, cool, let's see what are the new numbers then
+This series adds XDP support for bpf_load_hdr_opt(). At a high level,
+these patches are:
 
->
-> >
-> > But as I said, why not map BTF IDs into function names, sort function
-> > names, and then pass over kallsyms once, doing binary search into a
-> > sorted array of requested function names and then recording addr for
-> > each. Then check that you found addresses for all functions (it also
-> > leaves a question of what to do when we have multiple matching
-> > functions, but it's a problem with any approach). If everything checks
-> > out, you have a nice btf id -> func name -> func addr mapping. It's
-> > O(N log(M)), which sounds like it shouldn't be slow. Definitely not
-> > multiple seconds slow.
->
-> ok, now that's clear to me, thanks for these details
+1/3 patch - Add functionality for xdp bpf_load_hdr_opt in net/core.
 
-great
+2/3 patch - Rename existing test_tcp_hdr_options to test_sockops_tcp_hdr_=
+options.
 
->
-> >
-> >
-> > >
-> > > >
-> > > > >
-> > > > > so I wonder we could 'fix this' by storing function address in BTF,
-> > > > > which would cut kallsyms lookup completely, because it'd be done in
-> > > > > compile time
-> > > > >
-> > > > > my first thought was to add extra BTF section for that, after discussion
-> > > > > with Arnaldo perhaps we could be able to store extra 8 bytes after
-> > > > > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
-> > > > > indicate that? or new BTF_KIND_FUNC2 type?
-> > > > >
-> > > > > thoughts?
-> > > >
-> > > > I'm strongly against this, because (besides the BTF bloat reason) we
-> > > > need similar mass attachment functionality for kprobe/kretprobe and
-> > > > that one won't be relying on BTF FUNCs, so I think it's better to
-> > > > stick to the same mechanism for figuring out the address of the
-> > > > function.
-> > >
-> > > ok
-> > >
-> > > >
-> > > > If RB tree is not feasible, we can do a linear search over unsorted
-> > > > kallsyms and do binary search over sorted function names (derived from
-> > > > BTF IDs). That would be O(Nlog(M)), where N is number of ksyms, M is
-> > > > number of BTF IDs/functions-to-be-attached-to. If we did have an RB
-> > > > tree for kallsyms (is it hard to support duplicates? why?) it could be
-> > > > even faster O(Mlog(N)).
-> > >
-> > > I had issues with generic kallsyms rbtree in the post some time ago,
-> > > I'll revisit it to check on details.. but having the tree with just
-> > > btf id functions might clear that.. I'll check
-> >
-> > That's not what I'm proposing. See above. Please let me know if
-> > something is not clear before going all in for RB tree implementation
-> > :)
-> >
-> >
-> > But while we are on topic, do you think (with ftrace changes you are
-> > doing) it would be hard to support multi-attach for
-> > kprobes/kretprobes? We now have bpf_link interface for attaching
-> > kprobes, so API can be pretty aligned with fentry/fexit, except
-> > instead of btf IDs we'd need to pass array of pointers of C strings, I
-> > suppose.
->
-> hum, I think kprobe/kretprobe is made of perf event (kprobe/kretprobe
-> pmus), then you pass event fd and program fd to bpf link syscall,
-> and it attaches bpf program to that perf event
->
-> so perhaps the user interface would be array of perf events fds and prog fd
->
-> also I think you can have just one probe for function, so we will not need
-> to share kprobes for multiple users like we need for trampolines, so the
-> attach logic will be simple
+3/3 patch - Add tests for xdp bpf_load_hdr_opt (test_xdp_tcp_hdr_options)=
+.
 
-creating thousands of perf_event FDs seems expensive (and you'll be
-running into the limit of open files pretty soon in a lot of systems).
-So I think for multi-attach we'll have to have a separate way where
-you'd specify kernel function name (and maybe also offset). I'm just
-saying that having BPF_LINK_CREATE command, it's easier (probably) to
-extend this for kprobe multi-attach, than trying to retrofit this into
-perf_event_open.
+v1 -> v2:
+* 1/3 - Change "(flags & 0xffffffffffff)" to
+(flags & ((1ULL << BPF_LOAD_HDR_OPT_TCP_OFFSET_SHIFT) - 1))
+* 3/3 - Skip check_opt_out on failures
+* 3/3 - Change CHECKs to ASSERTs
 
->
-> jirka
->
-> >
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > > >
-> > > >
-> > > > >
-> > > > > thanks,
-> > > > > jirka
-> > > > >
-> > > >
-> > >
-> >
->
+Joanne Koong (3):
+  bpf/xdp: Add bpf_load_hdr_opt support for xdp
+  bpf/selftests: Rename test_tcp_hdr_options to
+    test_sockops_tcp_hdr_options
+  bpf/selftests: Add xdp bpf_load_tcp_hdr_options tests
+
+ include/uapi/linux/bpf.h                      |  26 ++-
+ net/core/filter.c                             |  88 ++++++--
+ tools/include/uapi/linux/bpf.h                |  26 ++-
+ ...dr_options.c =3D> sockops_tcp_hdr_options.c} |  18 +-
+ .../bpf/prog_tests/xdp_tcp_hdr_options.c      | 144 +++++++++++++
+ ....c =3D> test_sockops_misc_tcp_hdr_options.c} |   0
+ ...tions.c =3D> test_sockops_tcp_hdr_options.c} |   0
+ .../bpf/progs/test_xdp_tcp_hdr_options.c      | 198 ++++++++++++++++++
+ 8 files changed, 454 insertions(+), 46 deletions(-)
+ rename tools/testing/selftests/bpf/prog_tests/{tcp_hdr_options.c =3D> so=
+ckops_tcp_hdr_options.c} (96%)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_tcp_hdr_op=
+tions.c
+ rename tools/testing/selftests/bpf/progs/{test_misc_tcp_hdr_options.c =3D=
+> test_sockops_misc_tcp_hdr_options.c} (100%)
+ rename tools/testing/selftests/bpf/progs/{test_tcp_hdr_options.c =3D> te=
+st_sockops_tcp_hdr_options.c} (100%)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_tcp_hdr_op=
+tions.c
+
+--=20
+2.30.2
+
