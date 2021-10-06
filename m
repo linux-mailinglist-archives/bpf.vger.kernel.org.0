@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332B042376B
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 07:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6EF42376C
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 07:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhJFFNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 01:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
+        id S231576AbhJFFNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 01:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhJFFNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:13:09 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DDCC061749
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 22:11:17 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id h1so1302187pfv.12
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 22:11:17 -0700 (PDT)
+        with ESMTP id S229579AbhJFFNN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:13:13 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DC6C061749
+        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 22:11:21 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id r2so1383207pgl.10
+        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 22:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sHwPwHpKx20bSn061Pvs+eWhJjg079AYJMiYhBX4/kM=;
-        b=DETZZUmez27hXFsEwHKl8JqiaLhij1TU0BpylbBk+TL2zTasJE2j7GSrDKSmZ0bvOj
-         xBdaj7k2ka9NPw9fLV1gRPwrXiixu73Yd9qJ8wv7CMCJhpBoYqJe8Va9isQSOLkj24lE
-         clyIO3nXiIwKI5DDviovfBmoFXsRvpnZ+RzofLDm+73TfnNW9qMDnj3Vr+kR4+QnjTOS
-         EHXIJ3GkA6I8RYZZ4FkJENKcFldS4y5bTnB74FiUYIJQ904d3CaEhG95iNGIBHh2kSg4
-         kf6czI1PpGXW6dd7x/CyrB2EaBmWF55MHIcYGfVtUOcLNE+zVKFZCOLc5inVkGT+7o8L
-         uKVQ==
+        bh=zC7G2rZNPZFCtNAj8bw9gQL2MPj0wsjaRrx2PwatbnY=;
+        b=RAc5xdoZRQffcUDRWgyqvEQwTV/3B8RMrkktFOme5RkVAo7Xwtn7jp+k1PSFIqnw+t
+         Sm7yXfF0LVsizPpUTsrLtrwntPYFgP31OaPc/Z8wEy1BBUxUPDzjr0svjlign++vQlMp
+         UlmUvMXFGPAXAj4CEN7HECALNqy+1do3fcCp+Lhe0kT96wjpQLXLIZkfVyOZkXLpS1Td
+         sDus3AJvLcGnyoFNt2DfPtTujZx6SHcvxO2EkBazp5Qw6yxqw+vRfZ3d5MpXKH+WHhaN
+         +p3xgkx8Fr6CA5EdOUkWp+dJ/ttllYEwCjnk4hm9eGmSjQqsVIbnE7kATvABFz4UPkNF
+         e9Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sHwPwHpKx20bSn061Pvs+eWhJjg079AYJMiYhBX4/kM=;
-        b=RGO4/7DGsu3PDiqrc3+V8bKCu0PHwYZ89LWcS+aM2/qd2ZphzCQSM5LEkBwCxi/3gT
-         3wCaNFHLLOZvpWr+tywX3fUk3nBCy/w+GCewJntZ4birNsaINTFR8Asey/gGcbpWWEHz
-         Q1MElpm3fz3oStg5VRV7Yo2UOwwuo+YQuj0nQqdGLa1tT/Vwg7br5smtIVeG34RU99Fz
-         dNIXvl9pKRC7DtA99CsnNsfCB16rjQZwwzUzaimz7VSno8k+UAshoKmcM/nWX+T1ZCpA
-         baUh7Kv0TQz+14xKKJTkWKENBi2GRSeo82IPk37AuixUcrNxzsPrhckzCtTgbsNKdzTx
-         1a4A==
-X-Gm-Message-State: AOAM533yoaBguNDQ1WLBnpXYvW4JZKtXgysnKdZKJalT15vnU2T84GZX
-        nrBg0se5emDWHbfsbs70Qq3JNfLVESrZJA==
-X-Google-Smtp-Source: ABdhPJyEYiqY1bzMMqKHVb5uVXqTih70sbFQ7d/yfvByAarOSzwnfswGXFGObLS7pRwHt1jDaLmsdg==
-X-Received: by 2002:aa7:870b:0:b0:44b:bcef:32b4 with SMTP id b11-20020aa7870b000000b0044bbcef32b4mr35144075pfo.41.1633497077115;
-        Tue, 05 Oct 2021 22:11:17 -0700 (PDT)
+        bh=zC7G2rZNPZFCtNAj8bw9gQL2MPj0wsjaRrx2PwatbnY=;
+        b=zGWPzjvtFCp1bLyeuMnMOpqkp7s+PAkxbZXDfmksucf5WV2MvmvfbVXnSP/Lvlkovg
+         3vPFTipH/BsgWkh0+OVeTSWpCL1L5SVq790FvPUj/i0Ncuuxh0w7E+p9IgrzwrGw8qkM
+         k6eYRkxH8BcHB+j1xIriQGdVy3NhiAGdWP4G2RNpKzG/a9GSqjuRpLe4hvCcHeufU7ZE
+         sfB5pb6Wn1XjBKpx7GFxEvF68w20GdHDUMTGyNElm2r1yylA4258xgojui/Cf7Inwu1p
+         bZPEKIWDGCRZfv8miFR1zf2SKJMzI0LcUQ3JW676Zv+5u7mhwWFvbR9QoeKjSvr5sS9d
+         iNgQ==
+X-Gm-Message-State: AOAM532M5isyQYNavAOleG3r6t0sbasYvAUntQ2+aA/w4yi8u4m/3Ey8
+        +qc204x49ReOvMzav8Km8wsn2/CxcWx4YA==
+X-Google-Smtp-Source: ABdhPJzKKosZrgEU+NREMHC5TxI7aYOWoFqrq3QCRoLdPPSrAaQGlKO58DVuofUYDDXLAg+vBchZ8g==
+X-Received: by 2002:a05:6a00:b8f:b0:44c:6220:3396 with SMTP id g15-20020a056a000b8f00b0044c62203396mr14339746pfj.58.1633497081190;
+        Tue, 05 Oct 2021 22:11:21 -0700 (PDT)
 Received: from andriin-mbp.thefacebook.com ([2620:10d:c090:400::5:b85c])
-        by smtp.gmail.com with ESMTPSA id y22sm3858090pjj.33.2021.10.05.22.11.15
+        by smtp.gmail.com with ESMTPSA id s25sm19396609pfm.138.2021.10.05.22.11.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Oct 2021 22:11:16 -0700 (PDT)
+        Tue, 05 Oct 2021 22:11:20 -0700 (PDT)
 From:   andrii.nakryiko@gmail.com
 X-Google-Original-From: andrii@kernel.org
 To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
 Cc:     andrii@kernel.org, kernel-team@fb.com,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2 bpf-next 1/3] libbpf: add API that copies all BTF types from one BTF object to another
-Date:   Tue,  5 Oct 2021 22:11:05 -0700
-Message-Id: <20211006051107.17921-2-andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 2/3] selftests/bpf: refactor btf_write selftest to reuse BTF generation logic
+Date:   Tue,  5 Oct 2021 22:11:06 -0700
+Message-Id: <20211006051107.17921-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211006051107.17921-1-andrii@kernel.org>
 References: <20211006051107.17921-1-andrii@kernel.org>
@@ -67,208 +67,97 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Andrii Nakryiko <andrii@kernel.org>
 
-Add a bulk copying api, btf__add_btf(), that speeds up and simplifies
-appending entire contents of one BTF object to another one, taking care
-of copying BTF type data, adjusting resulting BTF type IDs according to
-their new locations in the destination BTF object, as well as copying
-and deduplicating all the referenced strings and updating all the string
-offsets in new BTF types as appropriate.
+Next patch will need to reuse BTF generation logic, which tests every
+supported BTF kind, for testing btf__add_btf() APIs. So restructure
+existing selftests and make it as a single subtest that uses bulk
+VALIDATE_RAW_BTF() macro for raw BTF dump checking.
 
-This API is intended to be used from tools that are generating and
-otherwise manipulating BTFs generically, such as pahole. In pahole's
-case, this API is useful for speeding up parallelized BTF encoding, as
-it allows pahole to offload all the intricacies of BTF type copying to
-libbpf and handle the parallelization aspects of the process.
-
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
 Acked-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/btf.c      | 114 ++++++++++++++++++++++++++++++++++++++-
- tools/lib/bpf/btf.h      |  22 ++++++++
- tools/lib/bpf/libbpf.map |   1 +
- 3 files changed, 135 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/btf_write.c      | 55 +++++++++++++++++--
+ 1 file changed, 49 insertions(+), 6 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 7774f99afa6e..60fbd1c6d466 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -189,12 +189,17 @@ int libbpf_ensure_mem(void **data, size_t *cap_cnt, size_t elem_sz, size_t need_
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_write.c b/tools/testing/selftests/bpf/prog_tests/btf_write.c
+index 76548eecce2c..aa4505618252 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_write.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_write.c
+@@ -4,19 +4,15 @@
+ #include <bpf/btf.h>
+ #include "btf_helpers.h"
+ 
+-void test_btf_write() {
++static void gen_btf(struct btf *btf)
++{
+ 	const struct btf_var_secinfo *vi;
+ 	const struct btf_type *t;
+ 	const struct btf_member *m;
+ 	const struct btf_enum *v;
+ 	const struct btf_param *p;
+-	struct btf *btf;
+ 	int id, err, str_off;
+ 
+-	btf = btf__new_empty();
+-	if (!ASSERT_OK_PTR(btf, "new_empty"))
+-		return;
+-
+ 	str_off = btf__find_str(btf, "int");
+ 	ASSERT_EQ(str_off, -ENOENT, "int_str_missing_off");
+ 
+@@ -301,6 +297,53 @@ void test_btf_write() {
+ 	ASSERT_EQ(btf_tag(t)->component_idx, 1, "tag_component_idx");
+ 	ASSERT_STREQ(btf_type_raw_dump(btf, 19),
+ 		     "[19] TAG 'tag2' type_id=14 component_idx=1", "raw_dump");
++}
++
++static void test_btf_add()
++{
++	struct btf *btf;
++
++	btf = btf__new_empty();
++	if (!ASSERT_OK_PTR(btf, "new_empty"))
++		return;
++
++	gen_btf(btf);
++
++	VALIDATE_RAW_BTF(
++		btf,
++		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
++		"[2] PTR '(anon)' type_id=1",
++		"[3] CONST '(anon)' type_id=5",
++		"[4] VOLATILE '(anon)' type_id=3",
++		"[5] RESTRICT '(anon)' type_id=4",
++		"[6] ARRAY '(anon)' type_id=2 index_type_id=1 nr_elems=10",
++		"[7] STRUCT 's1' size=8 vlen=2\n"
++		"\t'f1' type_id=1 bits_offset=0\n"
++		"\t'f2' type_id=1 bits_offset=32 bitfield_size=16",
++		"[8] UNION 'u1' size=8 vlen=1\n"
++		"\t'f1' type_id=1 bits_offset=0 bitfield_size=16",
++		"[9] ENUM 'e1' size=4 vlen=2\n"
++		"\t'v1' val=1\n"
++		"\t'v2' val=2",
++		"[10] FWD 'struct_fwd' fwd_kind=struct",
++		"[11] FWD 'union_fwd' fwd_kind=union",
++		"[12] ENUM 'enum_fwd' size=4 vlen=0",
++		"[13] TYPEDEF 'typedef1' type_id=1",
++		"[14] FUNC 'func1' type_id=15 linkage=global",
++		"[15] FUNC_PROTO '(anon)' ret_type_id=1 vlen=2\n"
++		"\t'p1' type_id=1\n"
++		"\t'p2' type_id=2",
++		"[16] VAR 'var1' type_id=1, linkage=global-alloc",
++		"[17] DATASEC 'datasec1' size=12 vlen=1\n"
++		"\ttype_id=1 offset=4 size=8",
++		"[18] TAG 'tag1' type_id=16 component_idx=-1",
++		"[19] TAG 'tag2' type_id=14 component_idx=1");
+ 
+ 	btf__free(btf);
  }
- 
-+static void *btf_add_type_offs_mem(struct btf *btf, size_t add_cnt)
++
++void test_btf_write()
 +{
-+	return libbpf_add_mem((void **)&btf->type_offs, &btf->type_offs_cap, sizeof(__u32),
-+			      btf->nr_types, BTF_MAX_NR_TYPES, add_cnt);
++	if (test__start_subtest("btf_add"))
++		test_btf_add();
 +}
-+
- static int btf_add_type_idx_entry(struct btf *btf, __u32 type_off)
- {
- 	__u32 *p;
- 
--	p = libbpf_add_mem((void **)&btf->type_offs, &btf->type_offs_cap, sizeof(__u32),
--			   btf->nr_types, BTF_MAX_NR_TYPES, 1);
-+	p = btf_add_type_offs_mem(btf, 1);
- 	if (!p)
- 		return -ENOMEM;
- 
-@@ -1703,6 +1708,111 @@ int btf__add_type(struct btf *btf, const struct btf *src_btf, const struct btf_t
- 	return btf_commit_type(btf, sz);
- }
- 
-+static int btf_rewrite_type_ids(__u32 *type_id, void *ctx)
-+{
-+	struct btf *btf = ctx;
-+
-+	if (!*type_id) /* nothing to do for VOID references */
-+		return 0;
-+
-+	/* we haven't updated btf's type count yet, so
-+	 * btf->start_id + btf->nr_types - 1 is the type ID offset we should
-+	 * add to all newly added BTF types
-+	 */
-+	*type_id += btf->start_id + btf->nr_types - 1;
-+	return 0;
-+}
-+
-+int btf__add_btf(struct btf *btf, const struct btf *src_btf)
-+{
-+	struct btf_pipe p = { .src = src_btf, .dst = btf };
-+	int data_sz, sz, cnt, i, err, old_strs_len;
-+	__u32 *off;
-+	void *t;
-+
-+	/* appending split BTF isn't supported yet */
-+	if (src_btf->base_btf)
-+		return libbpf_err(-ENOTSUP);
-+
-+	/* deconstruct BTF, if necessary, and invalidate raw_data */
-+	if (btf_ensure_modifiable(btf))
-+		return libbpf_err(-ENOMEM);
-+
-+	/* remember original strings section size if we have to roll back
-+	 * partial strings section changes
-+	 */
-+	old_strs_len = btf->hdr->str_len;
-+
-+	data_sz = src_btf->hdr->type_len;
-+	cnt = btf__get_nr_types(src_btf);
-+
-+	/* pre-allocate enough memory for new types */
-+	t = btf_add_type_mem(btf, data_sz);
-+	if (!t)
-+		return libbpf_err(-ENOMEM);
-+
-+	/* pre-allocate enough memory for type offset index for new types */
-+	off = btf_add_type_offs_mem(btf, cnt);
-+	if (!off)
-+		return libbpf_err(-ENOMEM);
-+
-+	/* bulk copy types data for all types from src_btf */
-+	memcpy(t, src_btf->types_data, data_sz);
-+
-+	for (i = 0; i < cnt; i++) {
-+		sz = btf_type_size(t);
-+		if (sz < 0) {
-+			/* unlikely, has to be corrupted src_btf */
-+			err = sz;
-+			goto err_out;
-+		}
-+
-+		/* fill out type ID to type offset mapping for lookups by type ID */
-+		*off = t - btf->types_data;
-+
-+		/* add, dedup, and remap strings referenced by this BTF type */
-+		err = btf_type_visit_str_offs(t, btf_rewrite_str, &p);
-+		if (err)
-+			goto err_out;
-+
-+		/* remap all type IDs referenced from this BTF type */
-+		err = btf_type_visit_type_ids(t, btf_rewrite_type_ids, btf);
-+		if (err)
-+			goto err_out;
-+
-+		/* go to next type data and type offset index entry */
-+		t += sz;
-+		off++;
-+	}
-+
-+	/* Up until now any of the copied type data was effectively invisible,
-+	 * so if we exited early before this point due to error, BTF would be
-+	 * effectively unmodified. There would be extra internal memory
-+	 * pre-allocated, but it would not be available for querying.  But now
-+	 * that we've copied and rewritten all the data successfully, we can
-+	 * update type count and various internal offsets and sizes to
-+	 * "commit" the changes and made them visible to the outside world.
-+	 */
-+	btf->hdr->type_len += data_sz;
-+	btf->hdr->str_off += data_sz;
-+	btf->nr_types += cnt;
-+
-+	/* return type ID of the first added BTF type */
-+	return btf->start_id + btf->nr_types - cnt;
-+err_out:
-+	/* zero out preallocated memory as if it was just allocated with
-+	 * libbpf_add_mem()
-+	 */
-+	memset(btf->types_data + btf->hdr->type_len, 0, data_sz);
-+	memset(btf->strs_data + old_strs_len, 0, btf->hdr->str_len - old_strs_len);
-+
-+	/* and now restore original strings section size; types data size
-+	 * wasn't modified, so doesn't need restoring, see big comment above */
-+	btf->hdr->str_len = old_strs_len;
-+
-+	return libbpf_err(err);
-+}
-+
- /*
-  * Append new BTF_KIND_INT type with:
-  *   - *name* - non-empty, non-NULL type name;
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 2cfe31327920..864eb51753a1 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -173,6 +173,28 @@ LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
- LIBBPF_API int btf__add_str(struct btf *btf, const char *s);
- LIBBPF_API int btf__add_type(struct btf *btf, const struct btf *src_btf,
- 			     const struct btf_type *src_type);
-+/**
-+ * @brief **btf__add_btf()** appends all the BTF types from *src_btf* into *btf*
-+ * @param btf BTF object which all the BTF types and strings are added to
-+ * @param src_btf BTF object which all BTF types and referenced strings are copied from
-+ * @return BTF type ID of the first appended BTF type, or negative error code
-+ *
-+ * **btf__add_btf()** can be used to simply and efficiently append the entire
-+ * contents of one BTF object to another one. All the BTF type data is copied
-+ * over, all referenced type IDs are adjusted by adding a necessary ID offset.
-+ * Only strings referenced from BTF types are copied over and deduplicated, so
-+ * if there were some unused strings in *src_btf*, those won't be copied over,
-+ * which is consistent with the general string deduplication semantics of BTF
-+ * writing APIs.
-+ *
-+ * If any error is encountered during this process, the contents of *btf* is
-+ * left intact, which means that **btf__add_btf()** follows the transactional
-+ * semantics and the operation as a whole is all-or-nothing.
-+ *
-+ * *src_btf* has to be non-split BTF, as of now copying types from split BTF
-+ * is not supported and will result in -ENOTSUP error code returned.
-+ */
-+LIBBPF_API int btf__add_btf(struct btf *btf, const struct btf *src_btf);
- 
- LIBBPF_API int btf__add_int(struct btf *btf, const char *name, size_t byte_sz, int encoding);
- LIBBPF_API int btf__add_float(struct btf *btf, const char *name, size_t byte_sz);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 9e649cf9e771..f6b0db1e8c8b 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -389,5 +389,6 @@ LIBBPF_0.5.0 {
- 
- LIBBPF_0.6.0 {
- 	global:
-+		btf__add_btf;
- 		btf__add_tag;
- } LIBBPF_0.5.0;
 -- 
 2.30.2
 
