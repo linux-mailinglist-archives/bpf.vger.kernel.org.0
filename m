@@ -2,141 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2D04242EC
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 18:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68624243E5
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 19:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbhJFQpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 12:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbhJFQpG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:45:06 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FA3C061746;
-        Wed,  6 Oct 2021 09:43:13 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id z5so6886476ybj.2;
-        Wed, 06 Oct 2021 09:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H2Nxy5WQkjsv0PqqH9xg8BGM+6zsa6wq4n2ifRHLn5c=;
-        b=RqaaDyTlCh+L73wdsWILeXqCPgbU9joOe2hkw6gTjcmkShQsxGPdXtqJrx6GuUBYUB
-         wsivUOUY9XDQK0nfUujZ59SQsV4PC8WY2129SOAYU+EgtwUCRFkPkuSarf+wwU3ecIzv
-         nK/St6xsYiJHyhybUENW6A6aYvypk7WuNfFQYzz/iGn7LwiDqtGz1NKN4RK2dPNyxmgf
-         jOqXHFMqosF4U0fPPLQHkfkTLotg9NZfTRUbBB2I48B5gLSP8DPNs5ZpCrgRyCwJdEy4
-         EdmOziwmB6q023sFPe4Ukeap+JEtRJasf45BkxWLz/OTfL2ySpCNLxh2Bmt/a8EZU6mI
-         Euqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H2Nxy5WQkjsv0PqqH9xg8BGM+6zsa6wq4n2ifRHLn5c=;
-        b=jJag+/Z3WURC4fiwHjSiDnrjPCv5I2TIHo8LaaBLGSWUNBjsFuUZ55TzdUniLzGWVF
-         fCro7AWJz6pB8Z/ut8aBj0a6QP1DRIjmYvxsPhAbtdmJGJUSyCEeUuF+SfSQ6lJEVAhc
-         I/1UX1PniPsoSYRAKwNy8Lgl+5PANcHXl0z8JHkaDt7G/J9xwGDgIsj9ZB9On2AHmggm
-         nzpqkT+X+iis/TvKEFrt27tRvlriOIaKnYxObLhsKkHnJ5kNAAIzaD4zHcFU3qdQnMNb
-         nMJXN+VS7ibT6l7kCk90nKg9WXX9lc8QZfOCxjQ5opMPg2Ce7cAsCKgSAO//FLntnS3k
-         LuVA==
-X-Gm-Message-State: AOAM532mF06/qgwyEUiAf58k4Q4tOR7RQQkQdY+o8juOdgzXhYj07E98
-        wibpY4WL7azeGXn+My7qoSxQYy4DXrrWqFKbNn38Mmyz02M=
-X-Google-Smtp-Source: ABdhPJzl4SjSCR2BX6hSFEmdhv6SfU76BzgdqDTTN/UXJMl6DCh+mu/S1KveJv6qphJjgA9G+oybQ/h5LkBX/1HzG5w=
-X-Received: by 2002:a25:1884:: with SMTP id 126mr30028311yby.114.1633538592883;
- Wed, 06 Oct 2021 09:43:12 -0700 (PDT)
+        id S238379AbhJFRWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 13:22:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232019AbhJFRV7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 13:21:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5D29561183;
+        Wed,  6 Oct 2021 17:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633540807;
+        bh=wgzVh1dTaYY1xdhB/o44yFpV9k5392mOVEWBIBUvrNU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=adO2O2nn2h133QxgiIuA4UMn4y3qCvZjnAcZn32d2uzUQGLSusaXZM4ly3NFBpeCT
+         0Q9/qFp+O9lVStN+p1Nwc6/fzQbR8ERh0deP1cO83xmzJfrLBvqFzNmOC3iVLoiJF/
+         rVvXd8lOb6CEQEwGzWmb8sbXyzhoMBQPVq/tcnlFWGk38IoJN2gXUGNcKnszciJa+Z
+         EqmP0cZSqx1RcxkIq26JQKv7Pwtahjsn/+2Na9d1qRJYr3h6jLrVUwWNLmhpqjcU++
+         AFW92eqPYKFVI7v3kDp3TAuISnHUiAq2+vbAE2hHibrbc0fvmiMRx703zMCtkg3CF4
+         UHaG9TlCoJrEg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4B5BD609F4;
+        Wed,  6 Oct 2021 17:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211006002853.308945-1-memxor@gmail.com> <20211006002853.308945-4-memxor@gmail.com>
- <CAEf4BzZCK5L-yZHL=yhGir71t=kkhAn5yN07Vxs2+VizvwF3QQ@mail.gmail.com> <20211006052455.st3f7m3q5fb27bs7@apollo.localdomain>
-In-Reply-To: <20211006052455.st3f7m3q5fb27bs7@apollo.localdomain>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Oct 2021 09:43:01 -0700
-Message-ID: <CAEf4Bzai=3GK5L-tkZRTT_h8SYPFjike-LTS8GXK17Z1YFAQtw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/6] libbpf: Ensure that module BTF fd is
- never 0
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftest/bpf: Switch recursion test to use
+ htab_map_delete_elem
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163354080730.29602.11506067200815201165.git-patchwork-notify@kernel.org>
+Date:   Wed, 06 Oct 2021 17:20:07 +0000
+References: <YVnfFTL/3T6jOwHI@krava>
+In-Reply-To: <YVnfFTL/3T6jOwHI@krava>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 10:24 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Wed, Oct 06, 2021 at 10:11:29AM IST, Andrii Nakryiko wrote:
-> > On Tue, Oct 5, 2021 at 5:29 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > >
-> > > Since the code assumes in various places that BTF fd for modules is
-> > > never 0, if we end up getting fd as 0, obtain a new fd > 0. Even though
-> > > fd 0 being free for allocation is usually an application error, it is
-> > > still possible that we end up getting fd 0 if the application explicitly
-> > > closes its stdin. Deal with this by getting a new fd using dup and
-> > > closing fd 0.
-> > >
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index d286dec73b5f..3e5e460fe63e 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -4975,6 +4975,20 @@ static int load_module_btfs(struct bpf_object *obj)
-> > >                         pr_warn("failed to get BTF object #%d FD: %d\n", id, err);
-> > >                         return err;
-> > >                 }
-> > > +               /* Make sure module BTF fd is never 0, as kernel depends on it
-> > > +                * being > 0 to distinguish between vmlinux and module BTFs,
-> > > +                * e.g. for BPF_PSEUDO_BTF_ID ld_imm64 insns (ksyms).
-> > > +                */
-> > > +               if (!fd) {
-> > > +                       fd = dup(0);
-> >
-> > This is not the only place where we make assumptions that fd > 0 but
-> > technically can get fd == 0. Instead of doing such a check in every
-> > such place, would it be possible to open (cheaply) some FD (/dev/null
-> > or whatever, don't know what's the best file to open), if we detect
-> > that FD == 0 is not allocated? Can we detect that fd 0 is not
-> > allocated?
-> >
->
-> We can, e.g. using access("/proc/self/fd/0", F_OK), but I think just calling
-> open unconditonally and doing if (ret > 0) close(ret) is better. Also, do I
+Hello:
 
-yeah, I like this idea, let's go with it
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-> leave it lingering, or should I close(0) if we created it on destroy?
+On Sun, 3 Oct 2021 18:49:25 +0200 you wrote:
+> Currently the recursion test is hooking __htab_map_lookup_elem
+> function, which is invoked both from bpf_prog and bpf syscall.
+> 
+> But in our kernel build, the __htab_map_lookup_elem gets inlined
+> within the htab_map_lookup_elem, so it's not trigered and the
+> test fails.
+> 
+> [...]
 
-I don't mind leaving it open indefinitely, but can you please check
-that it doesn't trigger LeakSanitizer errors?
+Here is the summary with links:
+  - [bpf-next] selftest/bpf: Switch recursion test to use htab_map_delete_elem
+    https://git.kernel.org/bpf/bpf-next/c/fba27f590fd3
 
->
-> > Doing something like that in bpf_object__open() or bpf_object__load()
-> > would make everything much simpler and we'll have a guarantee that fd
-> > == 0 is not going to be allocated (unless someone accidentally or not
-> > accidentally does close(0), but that's entirely different story).
-> >
-> > > +                       if (fd < 0) {
-> > > +                               err = -errno;
-> > > +                               pr_warn("failed to dup BTF object #%d FD 0 to FD > 0: %d\n", id, err);
-> > > +                               close(0);
-> > > +                               return err;
-> > > +                       }
-> > > +                       close(0);
-> > > +               }
-> > >
-> > >                 len = sizeof(info);
-> > >                 memset(&info, 0, sizeof(info));
-> > > --
-> > > 2.33.0
-> > >
->
-> --
-> Kartikeya
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
