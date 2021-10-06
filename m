@@ -2,155 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4D0423853
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 08:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABEC4239E1
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 10:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236777AbhJFGv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 02:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhJFGv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:51:27 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D54C061749
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 23:49:34 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id m3so6159743lfu.2
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 23:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=bJ6SvdyRwRKdysAyT2fbVJrSRKhX7W6R6xrV3Dn2W+o=;
-        b=BIj6vJm28lgQPSrEcBmpFho5A3x/q3WoxefUEizG72sj8cvXP/1dHjVqD4KA65sDsG
-         b21wrycFFBeCEqyN+HSbiFNBatA2mn6WuuhnIiqlv4ltkyg3/tT4plpyFUtfC00MTwG9
-         G+qbeOBjhXmMLlUi5DJyybhXx2WAwMxoTDpr0=
+        id S237674AbhJFInj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 04:43:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43609 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231415AbhJFInj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 04:43:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633509707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=kCM5Cd96ErOWY02ACkCheEUVdabLFYsQ9bA/skAUy2g=;
+        b=ctwG8OJAc1AiXva9wVGorpei0pTVlrhej09jNMb06vreb4DrmQajlizmjpAdyZ8FJHskaM
+        c2bD2yeGFU9sLFvC6te0YPMJJrZ611ZSKD2Hk1dNPqSE5t8eEmiko0kOUIrusRtxgffCCZ
+        0g/7GU2DitmMVyypKx1NdnqMwl9b8DE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-fNctDKR-MYqwnUwSek94YQ-1; Wed, 06 Oct 2021 04:41:46 -0400
+X-MC-Unique: fNctDKR-MYqwnUwSek94YQ-1
+Received: by mail-wr1-f69.google.com with SMTP id s18-20020adfbc12000000b00160b2d4d5ebso1427057wrg.7
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 01:41:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=bJ6SvdyRwRKdysAyT2fbVJrSRKhX7W6R6xrV3Dn2W+o=;
-        b=eTviPG7a4+o48+qTHi9KE+N56Zzp6XBenhp9r3OAm8xsRfmBEhGAlKt5eBtpC7Rob9
-         TNb8QZaVLXsHXCYnhIAQrsOuo5c85KUFy2Tx2q1xpcYkEzOde2B8aeNutbZrAVM9HZIA
-         xgaq22haB7d6BjSIankXvaD8c1NaL/DFEkLdUKQUCVD/ZLuqyD3D+iLw7mtC8SdxdJcv
-         Z1MKJn2jIVEFtMD/IuzevBLk9AI/HS20Zv1ZvnRKMTyYvM7sDi6XgCusEdwLl1Hy4cDB
-         Deno0ZSSslYYsW2drCZn63nXbqPsBEA8Qgtuvw8FwePpaKnIc7Wh6vx0g4aB5MfgvNJU
-         k2kA==
-X-Gm-Message-State: AOAM530utZPiY/mGm85/SVNQlsn9Q257t8EskFbXrcgoOr1qukz0Cif5
-        z+mWSEg7ec3bGdO6aekslwsY7g==
-X-Google-Smtp-Source: ABdhPJymPB1JcFfM++3OidjIDJx0Co/Ywo/VQNYopO3fCtoVEBt8CoPmkozXr0xvSScc15JHge4/+g==
-X-Received: by 2002:a05:6512:158a:: with SMTP id bp10mr7908302lfb.122.1633502973225;
-        Tue, 05 Oct 2021 23:49:33 -0700 (PDT)
-Received: from cloudflare.com ([2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
-        by smtp.gmail.com with ESMTPSA id j15sm2177637lfp.181.2021.10.05.23.49.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=kCM5Cd96ErOWY02ACkCheEUVdabLFYsQ9bA/skAUy2g=;
+        b=7AtpMF0SRuzvJzUsoxC+OPPQ23pbz8tq3sTRSdPYqCzM5PgbWuFoqVETtUDA/NiB41
+         tmW7FW5yzF3Uaqy6e06H4tYOJUp2DjSGfjPbfJ4hjjwCgN1s3sPLzzsxUly1xFZfEATq
+         PP3CqQeBbH+/Et5wDm/jZGw6rnbguyNV4MB5Bh96zv5ovuLFJl4PDUmAYD/fnP7Zi7JU
+         ACDRNxP0wD+7fpNXQ6X5fS41QxtHEU3PEkrcQLqDg8djcUZtXiVfF/ZlzW9Z9W54ou/i
+         YdJAgd0gyWSQCZng5ff/pyeQOTG+/MaO43+qefPoMVFa1GH/yIUA5s3ZHeW/4SZVM8d8
+         BAIQ==
+X-Gm-Message-State: AOAM531V2eVpDhiwC4WPeCQMV4sAsp3WmSC1nB1pGtXgvdVzCjPsKEHA
+        sfOfbWJL64jjA2szLGUbBEJ+iFd2XXTwR+/JZsNoDHr/OPBLmCAp7eLFkyiddI9Rp25nDi+ORQF
+        mfu/JJ5YT1Rc9
+X-Received: by 2002:a5d:6c67:: with SMTP id r7mr26820115wrz.29.1633509704955;
+        Wed, 06 Oct 2021 01:41:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJazLLM1necO1ye/IiTmHNlGHLpHbFM5oSXAMFwHCqJbSbwa09gbfnF4TukdWCIjeWX0UvvQ==
+X-Received: by 2002:a5d:6c67:: with SMTP id r7mr26820099wrz.29.1633509704757;
+        Wed, 06 Oct 2021 01:41:44 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id d3sm23167544wrb.36.2021.10.06.01.41.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 23:49:32 -0700 (PDT)
-References: <20211006002853.308945-1-memxor@gmail.com>
- <20211006002853.308945-6-memxor@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Wed, 06 Oct 2021 01:41:43 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 10:41:41 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 5/6] bpf: selftests: Fix fd cleanup in
- sk_lookup test
-In-reply-to: <20211006002853.308945-6-memxor@gmail.com>
-Date:   Wed, 06 Oct 2021 08:49:32 +0200
-Message-ID: <87zgrmfy0z.fsf@cloudflare.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [RFC] store function address in BTF
+Message-ID: <YV1hRboJopUBLm3H@krava>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 02:28 AM CEST, Kumar Kartikeya Dwivedi wrote:
-> Similar to the fix in commit:
-> e31eec77e4ab (bpf: selftests: Fix fd cleanup in get_branch_snapshot)
->
-> We use memset to set fds to -1 without breaking on future changes to
-> the array size (when MAX_SERVER constant is bumped).
->
-> The particular close(0) occurs on non-reuseport tests, so it can be seen
-> with -n 115/{2,3} but not 115/4. This can cause problems with future
-> tests if they depend on BTF fd never being acquired as fd 0, breaking
-> internal libbpf assumptions.
->
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Fixes: 0ab5539f8584 (selftests/bpf: Tests for BPF_SK_LOOKUP attach point)
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/sk_lookup.c      | 20 +++++++++++++------
->  1 file changed, 14 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> index aee41547e7f4..572220065bdf 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> @@ -598,11 +598,14 @@ static void query_lookup_prog(struct test_sk_lookup *skel)
->
->  static void run_lookup_prog(const struct test *t)
->  {
-> -	int server_fds[MAX_SERVERS] = { -1 };
->  	int client_fd, reuse_conn_fd = -1;
->  	struct bpf_link *lookup_link;
-> +	int server_fds[MAX_SERVERS];
->  	int i, err;
->
-> +	/* set all fds to -1 */
-> +	memset(server_fds, 0xFF, sizeof(server_fds));
-> +
->  	lookup_link = attach_lookup_prog(t->lookup_prog);
->  	if (!lookup_link)
->  		return;
-> @@ -663,8 +666,9 @@ static void run_lookup_prog(const struct test *t)
->  	if (reuse_conn_fd != -1)
->  		close(reuse_conn_fd);
->  	for (i = 0; i < ARRAY_SIZE(server_fds); i++) {
-> -		if (server_fds[i] != -1)
-> -			close(server_fds[i]);
-> +		if (server_fds[i] == -1)
-> +			break;
-> +		close(server_fds[i]);
->  	}
->  	bpf_link__destroy(lookup_link);
->  }
-> @@ -1053,11 +1057,14 @@ static void run_sk_assign(struct test_sk_lookup *skel,
->  			  struct bpf_program *lookup_prog,
->  			  const char *remote_ip, const char *local_ip)
->  {
-> -	int server_fds[MAX_SERVERS] = { -1 };
-> +	int server_fds[MAX_SERVERS];
->  	struct bpf_sk_lookup ctx;
->  	__u64 server_cookie;
->  	int i, err;
->
-> +	/* set all fds to -1 */
-> +	memset(server_fds, 0xFF, sizeof(server_fds));
-> +
->  	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
->  		.ctx_in = &ctx,
->  		.ctx_size_in = sizeof(ctx),
-> @@ -1097,8 +1104,9 @@ static void run_sk_assign(struct test_sk_lookup *skel,
->
->  close_servers:
->  	for (i = 0; i < ARRAY_SIZE(server_fds); i++) {
-> -		if (server_fds[i] != -1)
-> -			close(server_fds[i]);
-> +		if (server_fds[i] == -1)
-> +			break;
-> +		close(server_fds[i]);
->  	}
->  }
+hi,
+I'm hitting performance issue and soft lock ups with the new version
+of the patchset and the reason seems to be kallsyms lookup that we
+need to do for each btf id we want to attach
 
-My mistake. Thanks for the fix.
+I tried to change kallsyms_lookup_name linear search into rbtree search,
+but it has its own pitfalls like duplicate function names and it still
+seems not to be fast enough when you want to attach like 30k functions
 
-Alternatively we can use an extended designated initializer:
+so I wonder we could 'fix this' by storing function address in BTF,
+which would cut kallsyms lookup completely, because it'd be done in
+compile time
 
-int server_fds[] = { [0 ... MAX_SERVERS] = -1 };
+my first thought was to add extra BTF section for that, after discussion
+with Arnaldo perhaps we could be able to store extra 8 bytes after
+BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
+indicate that? or new BTF_KIND_FUNC2 type?
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+thoughts?
+
+thanks,
+jirka
+
