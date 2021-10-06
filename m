@@ -2,268 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30B942490B
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 23:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F83424976
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 00:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhJFVjP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 17:39:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhJFVjP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C608C611CA;
-        Wed,  6 Oct 2021 21:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633556242;
-        bh=Mw6pv/2+UxrGm6Egc4Gd8klF/8uB+fC7Wjrkv2xcS1w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N5kzp5Z9bTL1AZXYtN2mAysE1C9AR2ExMtcsrG9xTpeSp7ks7RXadwIpaMraSdFvb
-         rZJxW23XruHDWEXNqbSCH1gaQMqfwJFyyYnH5TcjjHrSkOxnLCN35D7CEPpH/Ayo9r
-         bysu+5jYtsKOi6tPcJpc0Mws7ZQZgxG87oEJgM8NdImN6NpZ1PdarL6JbTMj49z9i8
-         /f0ebrk8oDuu7Qa0nLuU1M6DYPH6HaLIXFVNV6Ylpihvs4OQbAYZE76JNzb1khqn94
-         CTq5Fx2pibA9vC1tZmmVtRzMeqAsuLz4uf+uS1fF23TR5jPcnwncFFfahvOhHkaXtj
-         VFl41raCym8Hg==
-Received: by mail-lf1-f41.google.com with SMTP id z11so7950881lfj.4;
-        Wed, 06 Oct 2021 14:37:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530wrCnjd4M0US6aa16BQ0yenMyLC0ECISHZueHfvVLbyD4u+IG8
-        2rY18xmJLLsz0jlywXXF6V18RjNp13G32TPWXuk=
-X-Google-Smtp-Source: ABdhPJyGiuMaxaKd7J8Prm1EUoTmURTujn7vt8UJKHh+KknAmW1XybfHmW96VkH44JC3pKQXz89TQqdFRwh9KqHhs7E=
-X-Received: by 2002:a2e:5442:: with SMTP id y2mr460905ljd.436.1633556240988;
- Wed, 06 Oct 2021 14:37:20 -0700 (PDT)
+        id S239752AbhJFWHM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 18:07:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58229 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230285AbhJFWHM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 18:07:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633557919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WIclh3AdLfVYAiQkIwrJSiR618YUkbU+lYFgoUPsNwE=;
+        b=DGGm5ynFE5V7eFaxuE/pFDB0Wi5nDuD1uILyZDlRi6KzEeZ92lFDG4EmKJmZcq50HvoJ5j
+        2MRJlksYC6P9+ZIyW7qYLB3aoOm2zTMyIe4H8c+pr2Ucp1ejoWhli8F7vG1gb1V/ZQGLdr
+        fB73ePek99v2olj49TsMfr0Qt5nf+5U=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-603-6I5pqS0FMdqlcbi20i-q6A-1; Wed, 06 Oct 2021 18:05:17 -0400
+X-MC-Unique: 6I5pqS0FMdqlcbi20i-q6A-1
+Received: by mail-wr1-f70.google.com with SMTP id k16-20020a5d6290000000b00160753b430fso3109781wru.11
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 15:05:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WIclh3AdLfVYAiQkIwrJSiR618YUkbU+lYFgoUPsNwE=;
+        b=F64oRoAEs9mFdmWE0Gq3v4Qs7FVNDuaX5DPpUjN4Px4aNIi+01hSMN0aAATCRTSReN
+         xHtBvTzBiBD7Unr02OEkrUAEeQ6y+2mccoDNmQGi8ePRhJxDeXWXoYFOLzfMPKXT1u8c
+         MtV7Bl3mw+vfKfVQnZjfac1QcnwMoiDYzel/wm5oGMixuYoYS4wBaPgTmy1uBKz7Frge
+         Z3DwaSzNlcKfZoqD+l/TjIpOmbiN/pKV5+Gli7GOv3+9f7n5E2tGL/a+y07aODBa5DVG
+         KV/8t9P0zVLuKKfXEgMsxREY+tWj281U7614vejmodKeVr4eHw1VDieEo61piW5JtUFc
+         ZFYg==
+X-Gm-Message-State: AOAM5321dbN7nDqH8Jya9nYvSkKorhH9J5wFtXK20w25G7BYXIh4pZBR
+        5qoykzTBrIwXDX4BTrQzzP/6cWYyEjkbroxhRlG7GXLBScPS0aAvy3LtWxvHLa9/3e4k2Zyx2Kp
+        kK4NM+A+i+jdj
+X-Received: by 2002:adf:b7c1:: with SMTP id t1mr688005wre.387.1633557916632;
+        Wed, 06 Oct 2021 15:05:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRTA68peCg8NEEERGtCSLZCyWO84r+k/Kvv8uWPQpdDnts+ZtGWzwc43c2i45LBMnvVeWplA==
+X-Received: by 2002:adf:b7c1:: with SMTP id t1mr687965wre.387.1633557916339;
+        Wed, 06 Oct 2021 15:05:16 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id i6sm12105401wrv.61.2021.10.06.15.05.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 15:05:16 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 00:05:14 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [RFC] store function address in BTF
+Message-ID: <YV4dmkXO6nkB2DeV@krava>
+References: <YV1hRboJopUBLm3H@krava>
+ <CAEf4BzZPH6WQTYaUTpWBw1gW=cNUtPYPnN8OySgXtbQLzZLhEQ@mail.gmail.com>
+ <YV4Bx7705mgWzhTd@krava>
+ <CAEf4BzbirA4F_kW-sVrS_YmfUxhAjYVDwO1BvtzTYyngqHLkiw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211006175106.GA295227@fuller.cnet>
-In-Reply-To: <20211006175106.GA295227@fuller.cnet>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 6 Oct 2021 14:37:09 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
-Message-ID: <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: introduce helper bpf_raw_read_cpu_clock
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbirA4F_kW-sVrS_YmfUxhAjYVDwO1BvtzTYyngqHLkiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 10:52 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
->
->
->
-> Add bpf_raw_read_cpu_clock helper, to read architecture specific
-> CPU clock. In x86's case, this is the TSC.
->
-> This is necessary to synchronize bpf traces from host and guest bpf-programs
-> (after subtracting guest tsc-offset from guest timestamps).
+On Wed, Oct 06, 2021 at 02:22:28PM -0700, Andrii Nakryiko wrote:
+> On Wed, Oct 6, 2021 at 1:06 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Wed, Oct 06, 2021 at 09:17:39AM -0700, Andrii Nakryiko wrote:
+> > > On Wed, Oct 6, 2021 at 1:42 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > hi,
+> > > > I'm hitting performance issue and soft lock ups with the new version
+> > > > of the patchset and the reason seems to be kallsyms lookup that we
+> > > > need to do for each btf id we want to attach
+> > > >
+> > > > I tried to change kallsyms_lookup_name linear search into rbtree search,
+> > > > but it has its own pitfalls like duplicate function names and it still
+> > > > seems not to be fast enough when you want to attach like 30k functions
+> > >
+> > > How not fast enough is it exactly? How long does it take?
+> >
+> > 30k functions takes 75 seconds for me, it's loop calling bpf_check_attach_target
+> >
+> > getting soft lock up messages:
+> >
+> > krava33 login: [  168.896671] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [bpftrace:1087]
+> >
+> 
+> That's without RB tree right? I was curious about the case of you
+> converting kallsyms to RB tree and it still being slow. Can't imagine
+> 30k queries against RB tree with ~160k kallsyms taking 75 seconds.
 
-Trying to understand the use case. So in a host-guest scenario,
-bpf_ktime_get_ns()
-will return different values in host and guest, but rdtsc() will give
-the same value.
-Is this correct?
+yep, that's the standard kallsyms lookup api
 
->
-> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index ab83c22d274e..832bb1f65f28 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -95,6 +95,7 @@ config X86
->         select ARCH_HAS_UBSAN_SANITIZE_ALL
->         select ARCH_HAS_DEBUG_WX
->         select ARCH_HAS_ZONE_DMA_SET if EXPERT
-> +       select ARCH_HAS_BPF_RAW_CPU_CLOCK
->         select ARCH_HAVE_NMI_SAFE_CMPXCHG
->         select ARCH_MIGHT_HAVE_ACPI_PDC         if ACPI
->         select ARCH_MIGHT_HAVE_PC_PARPORT
-> diff --git a/arch/x86/include/asm/bpf_raw_cpu_clock.h b/arch/x86/include/asm/bpf_raw_cpu_clock.h
-> new file mode 100644
-> index 000000000000..6951c399819e
-> --- /dev/null
-> +++ b/arch/x86/include/asm/bpf_raw_cpu_clock.h
-> @@ -0,0 +1,10 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_BPF_RAW_CPU_CLOCK_H_
-> +#define _ASM_X86_BPF_RAW_CPU_CLOCK_H_
-> +
-> +static inline unsigned long long read_raw_cpu_clock(void)
-> +{
-> +       return rdtsc_ordered();
-> +}
-> +
-> +#endif /* _ASM_X86_BPF_RAW_CPU_CLOCK_H_ */
-> diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
-> index 3eff08d7b8e5..844a44ff508d 100644
-> --- a/drivers/media/rc/bpf-lirc.c
-> +++ b/drivers/media/rc/bpf-lirc.c
-> @@ -105,6 +105,8 @@ lirc_mode2_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_ktime_get_ns_proto;
->         case BPF_FUNC_ktime_get_boot_ns:
->                 return &bpf_ktime_get_boot_ns_proto;
-> +       case BPF_FUNC_read_raw_cpu_clock:
-> +               return &bpf_read_raw_cpu_clock_proto;
->         case BPF_FUNC_tail_call:
->                 return &bpf_tail_call_proto;
->         case BPF_FUNC_get_prandom_u32:
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index d604c8251d88..b6cb426085fb 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2058,6 +2058,7 @@ extern const struct bpf_func_proto bpf_get_numa_node_id_proto;
->  extern const struct bpf_func_proto bpf_tail_call_proto;
->  extern const struct bpf_func_proto bpf_ktime_get_ns_proto;
->  extern const struct bpf_func_proto bpf_ktime_get_boot_ns_proto;
-> +extern const struct bpf_func_proto bpf_read_raw_cpu_clock_proto;
->  extern const struct bpf_func_proto bpf_get_current_pid_tgid_proto;
->  extern const struct bpf_func_proto bpf_get_current_uid_gid_proto;
->  extern const struct bpf_func_proto bpf_get_current_comm_proto;
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 6fc59d61937a..52191791b089 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -4037,6 +4037,13 @@ union bpf_attr {
->   *     Return
->   *             Current *ktime*.
->   *
-> + * u64 bpf_read_raw_cpu_clock(void)
-> + *     Description
-> + *             Return the architecture specific CPU clock value.
-> + *             For x86, this is the TSC clock.
-> + *     Return
-> + *             *CPU clock value*
-> + *
->   * long bpf_seq_printf(struct seq_file *m, const char *fmt, u32 fmt_size, const void *data, u32 data_len)
->   *     Description
->   *             **bpf_seq_printf**\ () uses seq_file **seq_printf**\ () to print
-> @@ -5089,6 +5096,7 @@ union bpf_attr {
->         FN(task_pt_regs),               \
->         FN(get_branch_snapshot),        \
->         FN(trace_vprintk),              \
-> +       FN(read_raw_cpu_clock),         \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> index a82d6de86522..5815db157220 100644
-> --- a/kernel/bpf/Kconfig
-> +++ b/kernel/bpf/Kconfig
-> @@ -21,6 +21,10 @@ config HAVE_EBPF_JIT
->  config ARCH_WANT_DEFAULT_BPF_JIT
->         bool
->
-> +# Used by archs to tell they support reading raw CPU clock
-> +config ARCH_HAS_BPF_RAW_CPU_CLOCK
-> +       bool
-> +
->  menu "BPF subsystem"
->
->  config BPF_SYSCALL
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index b6c72af64d5d..8e2359dfd582 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2345,6 +2345,8 @@ const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
->  const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
->  const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
->  const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto __weak;
-> +const struct bpf_func_proto bpf_read_raw_cpu_clock_proto __weak;
-> +
->
->  const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
->  const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 1ffd469c217f..90b9e5efaf65 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -18,6 +18,10 @@
->
->  #include "../../lib/kstrtox.h"
->
-> +#ifdef CONFIG_ARCH_HAS_BPF_RAW_CPU_CLOCK
-> +#include <asm/bpf_raw_cpu_clock.h>
-> +#endif
-> +
->  /* If kernel subsystem is allowing eBPF programs to call this function,
->   * inside its own verifier_ops->get_func_proto() callback it should return
->   * bpf_map_lookup_elem_proto, so that verifier can properly check the arguments
-> @@ -168,6 +172,21 @@ const struct bpf_func_proto bpf_ktime_get_boot_ns_proto = {
->         .ret_type       = RET_INTEGER,
->  };
->
-> +BPF_CALL_0(bpf_read_raw_cpu_clock)
-> +{
-> +#ifdef CONFIG_ARCH_HAS_BPF_RAW_CPU_CLOCK
-> +       return read_raw_cpu_clock();
-> +#else
-> +       return sched_clock();
-> +#endif
-> +}
-> +
-> +const struct bpf_func_proto bpf_read_raw_cpu_clock_proto = {
-> +       .func           = bpf_read_raw_cpu_clock,
-> +       .gpl_only       = false,
-> +       .ret_type       = RET_INTEGER,
-> +};
-> +
->  BPF_CALL_0(bpf_ktime_get_coarse_ns)
->  {
->         return ktime_get_coarse_ns();
-> @@ -1366,6 +1385,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
->                 return &bpf_ktime_get_boot_ns_proto;
->         case BPF_FUNC_ktime_get_coarse_ns:
->                 return &bpf_ktime_get_coarse_ns_proto;
-> +       case BPF_FUNC_read_raw_cpu_clock:
-> +               return &bpf_read_raw_cpu_clock_proto;
->         case BPF_FUNC_ringbuf_output:
->                 return &bpf_ringbuf_output_proto;
->         case BPF_FUNC_ringbuf_reserve:
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 6b3153841a33..047ca7c1d57a 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1113,6 +1113,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_ktime_get_boot_ns_proto;
->         case BPF_FUNC_ktime_get_coarse_ns:
->                 return &bpf_ktime_get_coarse_ns_proto;
-> +       case BPF_FUNC_read_raw_cpu_clock:
-> +               return &bpf_read_raw_cpu_clock_proto;
+I need to make some adjustment for rbtree kalsyms code, I think I found
+a bug in there, so the numbers are probably better as you suggest
 
-With the change in bpf_base_func_proto, this part is not needed.
+> 
+> But as I said, why not map BTF IDs into function names, sort function
+> names, and then pass over kallsyms once, doing binary search into a
+> sorted array of requested function names and then recording addr for
+> each. Then check that you found addresses for all functions (it also
+> leaves a question of what to do when we have multiple matching
+> functions, but it's a problem with any approach). If everything checks
+> out, you have a nice btf id -> func name -> func addr mapping. It's
+> O(N log(M)), which sounds like it shouldn't be slow. Definitely not
+> multiple seconds slow.
 
->         case BPF_FUNC_tail_call:
->                 return &bpf_tail_call_proto;
->         case BPF_FUNC_get_current_pid_tgid:
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 6fc59d61937a..52191791b089 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -4037,6 +4037,13 @@ union bpf_attr {
->   *     Return
->   *             Current *ktime*.
->   *
-> + * u64 bpf_read_raw_cpu_clock(void)
-> + *     Description
-> + *             Return the architecture specific CPU clock value.
-> + *             For x86, this is the TSC clock.
-> + *     Return
-> + *             *CPU clock value*
-> + *
->   * long bpf_seq_printf(struct seq_file *m, const char *fmt, u32 fmt_size, const void *data, u32 data_len)
->   *     Description
->   *             **bpf_seq_printf**\ () uses seq_file **seq_printf**\ () to print
-> @@ -5089,6 +5096,7 @@ union bpf_attr {
->         FN(task_pt_regs),               \
->         FN(get_branch_snapshot),        \
->         FN(trace_vprintk),              \
-> +       FN(read_raw_cpu_clock),         \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->
+ok, now that's clear to me, thanks for these details
+
+> 
+> 
+> >
+> > >
+> > > >
+> > > > so I wonder we could 'fix this' by storing function address in BTF,
+> > > > which would cut kallsyms lookup completely, because it'd be done in
+> > > > compile time
+> > > >
+> > > > my first thought was to add extra BTF section for that, after discussion
+> > > > with Arnaldo perhaps we could be able to store extra 8 bytes after
+> > > > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
+> > > > indicate that? or new BTF_KIND_FUNC2 type?
+> > > >
+> > > > thoughts?
+> > >
+> > > I'm strongly against this, because (besides the BTF bloat reason) we
+> > > need similar mass attachment functionality for kprobe/kretprobe and
+> > > that one won't be relying on BTF FUNCs, so I think it's better to
+> > > stick to the same mechanism for figuring out the address of the
+> > > function.
+> >
+> > ok
+> >
+> > >
+> > > If RB tree is not feasible, we can do a linear search over unsorted
+> > > kallsyms and do binary search over sorted function names (derived from
+> > > BTF IDs). That would be O(Nlog(M)), where N is number of ksyms, M is
+> > > number of BTF IDs/functions-to-be-attached-to. If we did have an RB
+> > > tree for kallsyms (is it hard to support duplicates? why?) it could be
+> > > even faster O(Mlog(N)).
+> >
+> > I had issues with generic kallsyms rbtree in the post some time ago,
+> > I'll revisit it to check on details.. but having the tree with just
+> > btf id functions might clear that.. I'll check
+> 
+> That's not what I'm proposing. See above. Please let me know if
+> something is not clear before going all in for RB tree implementation
+> :)
+> 
+> 
+> But while we are on topic, do you think (with ftrace changes you are
+> doing) it would be hard to support multi-attach for
+> kprobes/kretprobes? We now have bpf_link interface for attaching
+> kprobes, so API can be pretty aligned with fentry/fexit, except
+> instead of btf IDs we'd need to pass array of pointers of C strings, I
+> suppose.
+
+hum, I think kprobe/kretprobe is made of perf event (kprobe/kretprobe
+pmus), then you pass event fd and program fd to bpf link syscall,
+and it attaches bpf program to that perf event
+
+so perhaps the user interface would be array of perf events fds and prog fd
+
+also I think you can have just one probe for function, so we will not need
+to share kprobes for multiple users like we need for trampolines, so the
+attach logic will be simple
+
+jirka
+
+> 
+> >
+> > thanks,
+> > jirka
+> >
+> > >
+> > >
+> > > >
+> > > > thanks,
+> > > > jirka
+> > > >
+> > >
+> >
+> 
+
