@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1FF424989
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 00:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946F742498D
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 00:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhJFWXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 18:23:24 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37920 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230236AbhJFWXY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 18:23:24 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 196M3cmV027614
-        for <bpf@vger.kernel.org>; Wed, 6 Oct 2021 15:21:31 -0700
+        id S239454AbhJFWXa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 18:23:30 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62484 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239547AbhJFWX3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 18:23:29 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196Ksxit023994
+        for <bpf@vger.kernel.org>; Wed, 6 Oct 2021 15:21:37 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=tpvrmC9X0utdZCbHTTYba8Xu1YZ66mzNHmJWWZpyfak=;
- b=JfjWvooHVbDpRSdoUt/BkSPg9vrNm+eVs37HDo/nNY1F2R+vDltcxgLQN+Q0zTIkwN5D
- DYhQvD0OrjWq+ZRhU+ZRm4E7sB0U2Bevxq6T/hR0QKd1AOsSHD14o9r98cLfo2EPO97v
- 3ylaWU8FaJuZqtck8Cxyad4SFwbPLMHf0bw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 3bhfn52fa3-1
+ bh=anDzD/iblmNmbfeM1SYA2DgeBKoMdZK8weQQt8f3O8U=;
+ b=W8CAFySa9HLL96FR+u77D+2bn3YnJVu4FEW+PaKN/Qt27MXyHtuH2+TDFWMzz4RDxZ5v
+ qgykhKn7bLnSs7zqByOP/DlGXsk+iUj5jDJw/8o94U9Fulh6hQz3+/18U4SzRoza9RKa
+ mpHU6r0uIw3PqSyGPJjgUfb7IRB9GmIlFHI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bhk8eghgv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 15:21:31 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 15:21:36 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 6 Oct 2021 15:21:30 -0700
+ 15.1.2308.14; Wed, 6 Oct 2021 15:21:35 -0700
 Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id B3230345188F; Wed,  6 Oct 2021 15:21:29 -0700 (PDT)
+        id BD5143451891; Wed,  6 Oct 2021 15:21:29 -0700 (PDT)
 From:   Joanne Koong <joannekoong@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH bpf-next v4 2/5] libbpf: Add "map_extra" as a per-map-type extra flag
-Date:   Wed, 6 Oct 2021 15:21:00 -0700
-Message-ID: <20211006222103.3631981-3-joannekoong@fb.com>
+Subject: [PATCH bpf-next v4 3/5] selftests/bpf: Add bitset map test cases
+Date:   Wed, 6 Oct 2021 15:21:01 -0700
+Message-ID: <20211006222103.3631981-4-joannekoong@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211006222103.3631981-1-joannekoong@fb.com>
 References: <20211006222103.3631981-1-joannekoong@fb.com>
@@ -45,251 +45,451 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: zbXo7tx_ot9QlfdsnPnFXsQjI2lOHLC_
-X-Proofpoint-ORIG-GUID: zbXo7tx_ot9QlfdsnPnFXsQjI2lOHLC_
+X-Proofpoint-GUID: xS6XNt1b610lGTu-8sllD1OaiHyts9zZ
+X-Proofpoint-ORIG-GUID: xS6XNt1b610lGTu-8sllD1OaiHyts9zZ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-10-06_04,2021-10-06_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- spamscore=0 phishscore=0 adultscore=0 mlxscore=0 suspectscore=0
- bulkscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501
- malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110060139
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110060139
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds the libbpf infrastructure for supporting a
-per-map-type "map_extra" field, whose definition will be
-idiosyncratic depending on map type.
-
-For example, for the bitset map, the lower 4 bits of map_extra
-is used to denote the number of hash functions.
+This patch adds test cases for bpf bitset maps. They include tests
+checking against invalid operations by userspace, tests for using the
+bitset  map as an inner map, a bpf program that queries the bitset
+map for values added by userspace, and well as tests for the bloom
+filter capabilities of the bitset map.
 
 Signed-off-by: Joanne Koong <joannekoong@fb.com>
 ---
- include/uapi/linux/bpf.h        |  1 +
- tools/include/uapi/linux/bpf.h  |  1 +
- tools/lib/bpf/bpf.c             |  1 +
- tools/lib/bpf/bpf.h             |  1 +
- tools/lib/bpf/bpf_helpers.h     |  1 +
- tools/lib/bpf/libbpf.c          | 25 ++++++++++++++++++++++++-
- tools/lib/bpf/libbpf.h          |  4 ++++
- tools/lib/bpf/libbpf.map        |  2 ++
- tools/lib/bpf/libbpf_internal.h |  4 +++-
- 9 files changed, 38 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/bitset_map.c     | 279 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/bitset_map.c  | 115 ++++++++
+ 2 files changed, 394 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bitset_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bitset_map.c
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b40fa1a72a75..a6f225e9c95a 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5639,6 +5639,7 @@ struct bpf_map_info {
- 	__u32 btf_id;
- 	__u32 btf_key_type_id;
- 	__u32 btf_value_type_id;
-+	__u32 map_extra;
- } __attribute__((aligned(8)));
-=20
- struct bpf_btf_info {
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-index b40fa1a72a75..a6f225e9c95a 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5639,6 +5639,7 @@ struct bpf_map_info {
- 	__u32 btf_id;
- 	__u32 btf_key_type_id;
- 	__u32 btf_value_type_id;
-+	__u32 map_extra;
- } __attribute__((aligned(8)));
-=20
- struct bpf_btf_info {
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 7d1741ceaa32..41e3e85e7789 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -97,6 +97,7 @@ int bpf_create_map_xattr(const struct bpf_create_map_at=
-tr *create_attr)
- 	attr.btf_key_type_id =3D create_attr->btf_key_type_id;
- 	attr.btf_value_type_id =3D create_attr->btf_value_type_id;
- 	attr.map_ifindex =3D create_attr->map_ifindex;
-+	attr.map_extra =3D create_attr->map_extra;
- 	if (attr.map_type =3D=3D BPF_MAP_TYPE_STRUCT_OPS)
- 		attr.btf_vmlinux_value_type_id =3D
- 			create_attr->btf_vmlinux_value_type_id;
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 6fffb3cdf39b..c4049f2d63cc 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -50,6 +50,7 @@ struct bpf_create_map_attr {
- 		__u32 inner_map_fd;
- 		__u32 btf_vmlinux_value_type_id;
- 	};
-+	__u32 map_extra;
- };
-=20
- LIBBPF_API int
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 963b1060d944..bce5a0090f3f 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -133,6 +133,7 @@ struct bpf_map_def {
- 	unsigned int value_size;
- 	unsigned int max_entries;
- 	unsigned int map_flags;
-+	unsigned int map_extra;
- };
-=20
- enum libbpf_pin_type {
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ed313fd491bd..12a9ecd45a78 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2274,6 +2274,10 @@ int parse_btf_map_def(const char *map_name, struct=
- btf *btf,
- 			}
- 			map_def->pinning =3D val;
- 			map_def->parts |=3D MAP_DEF_PINNING;
-+		} else if (strcmp(name, "map_extra") =3D=3D 0) {
-+			if (!get_map_field_int(map_name, btf, m, &map_def->map_extra))
-+				return -EINVAL;
-+			map_def->parts |=3D MAP_DEF_MAP_EXTRA;
- 		} else {
- 			if (strict) {
- 				pr_warn("map '%s': unknown field '%s'.\n", map_name, name);
-@@ -2298,6 +2302,7 @@ static void fill_map_from_def(struct bpf_map *map, =
-const struct btf_map_def *def
- 	map->def.value_size =3D def->value_size;
- 	map->def.max_entries =3D def->max_entries;
- 	map->def.map_flags =3D def->map_flags;
-+	map->def.map_extra =3D def->map_extra;
-=20
- 	map->numa_node =3D def->numa_node;
- 	map->btf_key_type_id =3D def->key_type_id;
-@@ -2322,6 +2327,8 @@ static void fill_map_from_def(struct bpf_map *map, =
-const struct btf_map_def *def
- 		pr_debug("map '%s': found max_entries =3D %u.\n", map->name, def->max_=
-entries);
- 	if (def->parts & MAP_DEF_MAP_FLAGS)
- 		pr_debug("map '%s': found map_flags =3D %u.\n", map->name, def->map_fl=
-ags);
-+	if (def->parts & MAP_DEF_MAP_EXTRA)
-+		pr_debug("map '%s': found map_extra =3D %u.\n", map->name, def->map_ex=
-tra);
- 	if (def->parts & MAP_DEF_PINNING)
- 		pr_debug("map '%s': found pinning =3D %u.\n", map->name, def->pinning)=
-;
- 	if (def->parts & MAP_DEF_NUMA_NODE)
-@@ -4017,6 +4024,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
- 	map->def.value_size =3D info.value_size;
- 	map->def.max_entries =3D info.max_entries;
- 	map->def.map_flags =3D info.map_flags;
-+	map->def.map_extra =3D info.map_extra;
- 	map->btf_key_type_id =3D info.btf_key_type_id;
- 	map->btf_value_type_id =3D info.btf_value_type_id;
- 	map->reused =3D true;
-@@ -4534,7 +4542,8 @@ static bool map_is_reuse_compat(const struct bpf_ma=
-p *map, int map_fd)
- 		map_info.key_size =3D=3D map->def.key_size &&
- 		map_info.value_size =3D=3D map->def.value_size &&
- 		map_info.max_entries =3D=3D map->def.max_entries &&
--		map_info.map_flags =3D=3D map->def.map_flags);
-+		map_info.map_flags =3D=3D map->def.map_flags &&
-+		map_info.map_extra =3D=3D map->def.map_extra);
- }
-=20
- static int
-@@ -4631,6 +4640,7 @@ static int bpf_object__create_map(struct bpf_object=
- *obj, struct bpf_map *map, b
- 	create_attr.key_size =3D def->key_size;
- 	create_attr.value_size =3D def->value_size;
- 	create_attr.numa_node =3D map->numa_node;
-+	create_attr.map_extra =3D def->map_extra;
-=20
- 	if (def->type =3D=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY && !def->max_entries=
-) {
- 		int nr_cpus;
-@@ -8637,6 +8647,19 @@ int bpf_map__set_map_flags(struct bpf_map *map, __=
-u32 flags)
- 	return 0;
- }
-=20
-+__u32 bpf_map__map_extra(const struct bpf_map *map)
+diff --git a/tools/testing/selftests/bpf/prog_tests/bitset_map.c b/tools/=
+testing/selftests/bpf/prog_tests/bitset_map.c
+new file mode 100644
+index 000000000000..8929cc598b9d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/bitset_map.c
+@@ -0,0 +1,279 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++
++#include <sys/syscall.h>
++#include <test_progs.h>
++#include "bitset_map.skel.h"
++
++static void test_bitset_map_fail(bool bloom_filter)
 +{
-+	return map->def.map_extra;
++	struct bpf_create_map_attr xattr =3D {
++		.name =3D "bitset_map",
++		.map_type =3D BPF_MAP_TYPE_BITSET,
++		.max_entries =3D 100,
++		.value_size =3D bloom_filter ? 11 : sizeof(__u32),
++		.map_extra =3D bloom_filter ? 5 : 0,
++	};
++	__u32 value;
++	int fd, err;
++
++	/* Invalid key size */
++	xattr.key_size =3D 4;
++	fd =3D bpf_create_map_xattr(&xattr);
++	if (!ASSERT_LT(fd, 0, "bpf_create_map bitset invalid key size"))
++		close(fd);
++	xattr.key_size =3D 0;
++
++	/* Invalid value size */
++	xattr.value_size =3D 0;
++	fd =3D bpf_create_map_xattr(&xattr);
++	if (!ASSERT_LT(fd, 0, "bpf_create_map bitset invalid value size 0"))
++		close(fd);
++	if (!bloom_filter) {
++		/* For bitset maps that are not bloom filters, the value size must
++		 * be a __u32.
++		 */
++		xattr.value_size =3D sizeof(__u64);
++		fd =3D bpf_create_map_xattr(&xattr);
++		if (!ASSERT_LT(fd, 0, "bpf_create_map bitset invalid value size u64"))
++			close(fd);
++	}
++	xattr.value_size =3D bloom_filter ? 11 : sizeof(__u32);
++
++	/* Invalid max entries size */
++	xattr.max_entries =3D 0;
++	fd =3D bpf_create_map_xattr(&xattr);
++	if (!ASSERT_LT(fd, 0, "bpf_create_map bitset invalid max entries size")=
+)
++		close(fd);
++	xattr.max_entries =3D 100;
++
++	/* bitset maps do not support BPF_F_NO_PREALLOC */
++	xattr.map_flags =3D BPF_F_NO_PREALLOC;
++	fd =3D bpf_create_map_xattr(&xattr);
++	if (!ASSERT_LT(fd, 0, "bpf_create_map bitset invalid flags"))
++		close(fd);
++	xattr.map_flags =3D 0;
++
++	fd =3D bpf_create_map_xattr(&xattr);
++	if (!ASSERT_GE(fd, 0, "bpf_create_map bitset"))
++		return;
++
++	/* Test invalid flags */
++	err =3D bpf_map_update_elem(fd, NULL, &value, -1);
++	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bitset invalid flags");
++
++	err =3D bpf_map_update_elem(fd, NULL, &value, BPF_EXIST);
++	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bitset invalid flags");
++
++	err =3D bpf_map_update_elem(fd, NULL, &value, BPF_F_LOCK);
++	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bitset invalid flags");
++
++	err =3D bpf_map_update_elem(fd, NULL, &value, BPF_NOEXIST);
++	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bitset invalid flags");
++
++	err =3D bpf_map_update_elem(fd, NULL, &value, 10000);
++	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bitset invalid flags");
++
++	if (bloom_filter) {
++		err =3D bpf_map_update_elem(fd, NULL, &value, 0);
++		ASSERT_OK(err, "bpf_map_update_elem bitset invalid flags");
++
++		/* Clearing a bit is not allowed */
++		err =3D bpf_map_lookup_and_delete_elem(fd, NULL, &value);
++		ASSERT_EQ(err, -EOPNOTSUPP, "bpf_map_lookup_and_delete invalid");
++	} else {
++		/* Try clearing a bit that wasn't set */
++		err =3D bpf_map_lookup_and_delete_elem(fd, NULL, &value);
++		ASSERT_EQ(err, -EINVAL, "bpf_map_lookup_and_delete invalid bit");
++
++		/* Try setting a bit that is outside the bitset range */
++		value =3D xattr.max_entries;
++		err =3D bpf_map_update_elem(fd, NULL, &value, 0);
++		ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bitset out of range");
++	}
++
++	/* bpf_map_delete is not supported. Only use bpf_map_lookup_and_delete =
+*/
++	err =3D bpf_map_delete_elem(fd, &value);
++	ASSERT_EQ(err, -EINVAL, "bpf_map_delete_elem");
++
++	close(fd);
 +}
 +
-+int bpf_map__set_map_extra(struct bpf_map *map, __u32 map_extra)
++static void test_bitset_map_clear(void)
 +{
-+	if (map->fd >=3D 0)
-+		return libbpf_err(-EBUSY);
-+	map->def.map_extra =3D map_extra;
++	int fd, err;
++	__u32 val;
++
++	fd =3D bpf_create_map(BPF_MAP_TYPE_BITSET, 0, sizeof(__u32), 10, 0);
++	if (!ASSERT_GE(fd, 0, "bpf_create_map"))
++		return;
++
++	val =3D 3;
++	err =3D bpf_map_update_elem(fd, NULL, &val, 0);
++	if (!ASSERT_OK(err, "Set bit in bitmap"))
++		goto done;
++
++	err =3D bpf_map_lookup_elem(fd, NULL, &val);
++	if (!ASSERT_OK(err, "Check bit in bitmap"))
++		goto done;
++
++	err =3D bpf_map_lookup_and_delete_elem(fd, NULL, &val);
++	if (!ASSERT_OK(err, "Clear bit in bitmap"))
++		goto done;
++
++	err =3D bpf_map_lookup_elem(fd, NULL, &val);
++	if (!ASSERT_EQ(err, -ENOENT, "Check cleared bit in bitmap"))
++		goto done;
++
++done:
++	close(fd);
++}
++
++static void bitset_map(struct bitset_map *skel, struct bpf_program *prog=
+)
++{
++	struct bpf_link *link;
++
++	link =3D bpf_program__attach(prog);
++	if (!ASSERT_OK_PTR(link, "link"))
++		return;
++
++	syscall(SYS_getpgid);
++
++	ASSERT_EQ(skel->bss->error, 0, "error");
++
++	bpf_link__destroy(link);
++}
++
++static void bitset_inner_map(struct bitset_map *skel, const __u32 *rand_=
+vals,
++			     __u32 nr_rand_vals)
++{
++	int outer_map_fd, inner_map_fd, err, i, key =3D 0;
++	struct bpf_create_map_attr xattr =3D {
++		.name =3D "bitset_inner_map",
++		.map_type =3D BPF_MAP_TYPE_BITSET,
++		.value_size =3D sizeof(__u32),
++		.max_entries =3D 1 << 16,
++	};
++	struct bpf_link *link;
++
++	/* Create a bitset map that will be used as the inner map */
++	inner_map_fd =3D bpf_create_map_xattr(&xattr);
++	if (!ASSERT_GE(inner_map_fd, 0, "bpf_create_map bitset map as inner map=
+"))
++		return;
++
++	for (i =3D 0; i < nr_rand_vals; i++) {
++		err =3D bpf_map_update_elem(inner_map_fd, NULL, rand_vals + i, BPF_ANY=
+);
++		if (!ASSERT_OK(err, "Add random value to inner_map_fd"))
++			goto done;
++	}
++
++	/* Add the bitset map to the outer map */
++	outer_map_fd =3D bpf_map__fd(skel->maps.outer_map);
++	err =3D bpf_map_update_elem(outer_map_fd, &key, &inner_map_fd, BPF_ANY)=
+;
++	if (!ASSERT_OK(err, "Add bitset map to outer map"))
++		goto done;
++
++	/* Attach the bitset_inner_map prog */
++	link =3D bpf_program__attach(skel->progs.prog_bitset_inner_map);
++	if (!ASSERT_OK_PTR(link, "link"))
++		goto delete_inner_map;
++
++	syscall(SYS_getpgid);
++
++	ASSERT_EQ(skel->bss->error, 0, "error");
++
++	bpf_link__destroy(link);
++
++delete_inner_map:
++	/* Ensure the inner bitset map can be deleted */
++	err =3D bpf_map_delete_elem(outer_map_fd, &key);
++	ASSERT_OK(err, "Delete inner bitset map");
++
++done:
++	close(inner_map_fd);
++}
++
++static int setup_bitset_progs(struct bitset_map **out_skel, __u32 **out_=
+rand_vals,
++			      __u32 *out_nr_rand_vals)
++{
++	int random_data_fd, bitset_fd, bloom_filter_fd;
++	struct bitset_map *skel;
++	__u32 *rand_vals =3D NULL;
++	__u32 map_size;
++	__u32 val;
++	int err, i;
++
++	/* Set up a bitset map skeleton */
++	skel =3D bitset_map__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bitset_map__open_and_load"))
++		return -EINVAL;
++
++	/* Set up rand_vals */
++	map_size =3D bpf_map__max_entries(skel->maps.map_random_data);
++	rand_vals =3D malloc(sizeof(*rand_vals) * map_size);
++	if (!rand_vals) {
++		err =3D -ENOMEM;
++		goto error;
++	}
++
++	/* Generate random values and populate both skeletons */
++	random_data_fd =3D bpf_map__fd(skel->maps.map_random_data);
++	bitset_fd =3D bpf_map__fd(skel->maps.map_bitset);
++	bloom_filter_fd =3D bpf_map__fd(skel->maps.map_bloom_filter);
++	for (i =3D 0; i < map_size; i++) {
++		val =3D rand();
++
++		err =3D bpf_map_update_elem(random_data_fd, &i, &val, BPF_ANY);
++		if (!ASSERT_OK(err, "Add random value to map_random_data"))
++			goto error;
++
++		err =3D bpf_map_update_elem(bloom_filter_fd, NULL, &val, BPF_ANY);
++		if (!ASSERT_OK(err, "Add random value to map_bloom_filter"))
++			goto error;
++
++		/* Take the lower 16 bits */
++		val &=3D 0xFFFF;
++
++		rand_vals[i] =3D val;
++
++		err =3D bpf_map_update_elem(bitset_fd, NULL, &val, BPF_ANY);
++		if (!ASSERT_OK(err, "Add random value to map_bitset"))
++			goto error;
++	}
++
++	*out_skel =3D skel;
++	*out_rand_vals =3D rand_vals;
++	*out_nr_rand_vals =3D map_size;
++
++	return 0;
++
++error:
++	bitset_map__destroy(skel);
++	if (rand_vals)
++		free(rand_vals);
++	return err;
++}
++
++void test_bitset_map(void)
++{
++	__u32 *rand_vals, nr_rand_vals;
++	struct bitset_map *skel;
++	int err;
++
++	test_bitset_map_fail(false);
++	test_bitset_map_fail(true);
++
++	test_bitset_map_clear();
++
++	err =3D setup_bitset_progs(&skel, &rand_vals, &nr_rand_vals);
++	if (err)
++		return;
++
++	bitset_inner_map(skel, rand_vals, nr_rand_vals);
++	free(rand_vals);
++
++	bitset_map(skel, skel->progs.prog_bitset);
++	bitset_map(skel, skel->progs.prog_bloom_filter);
++
++	bitset_map__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/bitset_map.c b/tools/testi=
+ng/selftests/bpf/progs/bitset_map.c
+new file mode 100644
+index 000000000000..c284ade37db1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bitset_map.c
+@@ -0,0 +1,115 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++struct bpf_map;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1000);
++	__type(key, __u32);
++	__type(value, __u32);
++} map_random_data SEC(".maps");
++
++struct map_bitset_type {
++	__uint(type, BPF_MAP_TYPE_BITSET);
++	__uint(value_size, sizeof(__u32));
++	__uint(max_entries, 1 << 16);
++} map_bitset SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_BITSET);
++	__uint(value_size, sizeof(__u32));
++	__uint(max_entries, 10000);
++	__uint(map_extra, 5);
++} map_bloom_filter SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
++	__uint(max_entries, 1);
++	__uint(key_size, sizeof(int));
++	__uint(value_size, sizeof(int));
++	__array(values, struct map_bitset_type);
++} outer_map SEC(".maps");
++
++struct callback_ctx {
++	struct bpf_map *map;
++};
++
++int error =3D 0;
++
++static __u64
++check_bit(struct bpf_map *map, __u32 *key, __u32 *val,
++	  struct callback_ctx *data)
++{
++	__u32 index =3D *val & 0xFFFF;
++	int err;
++
++	err =3D bpf_map_peek_elem(data->map, &index);
++	if (err) {
++		error |=3D 1;
++		return 1; /* stop the iteration */
++	}
++
 +	return 0;
 +}
 +
- __u32 bpf_map__numa_node(const struct bpf_map *map)
- {
- 	return map->numa_node;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 89ca9c83ed4e..55e8dfe6f3e1 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -486,6 +486,7 @@ struct bpf_map_def {
- 	unsigned int value_size;
- 	unsigned int max_entries;
- 	unsigned int map_flags;
-+	unsigned int map_extra;
- };
-=20
- /**
-@@ -562,6 +563,9 @@ LIBBPF_API __u32 bpf_map__btf_value_type_id(const str=
-uct bpf_map *map);
- /* get/set map if_index */
- LIBBPF_API __u32 bpf_map__ifindex(const struct bpf_map *map);
- LIBBPF_API int bpf_map__set_ifindex(struct bpf_map *map, __u32 ifindex);
-+/* get/set map map_extra flags */
-+LIBBPF_API __u32 bpf_map__map_extra(const struct bpf_map *map);
-+LIBBPF_API int bpf_map__set_map_extra(struct bpf_map *map, __u32 map_ext=
-ra);
-=20
- typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
- LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index f270d25e4af3..308378b3f20b 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -395,4 +395,6 @@ LIBBPF_0.6.0 {
- 		bpf_object__prev_program;
- 		btf__add_btf;
- 		btf__add_tag;
-+		bpf_map__map_extra;
-+		bpf_map__set_map_extra;
- } LIBBPF_0.5.0;
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
-nal.h
-index f7fd3944d46d..188db854d9c2 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -193,8 +193,9 @@ enum map_def_parts {
- 	MAP_DEF_NUMA_NODE	=3D 0x080,
- 	MAP_DEF_PINNING		=3D 0x100,
- 	MAP_DEF_INNER_MAP	=3D 0x200,
-+	MAP_DEF_MAP_EXTRA	=3D 0x400,
-=20
--	MAP_DEF_ALL		=3D 0x3ff, /* combination of all above */
-+	MAP_DEF_ALL		=3D 0x7ff, /* combination of all above */
- };
-=20
- struct btf_map_def {
-@@ -208,6 +209,7 @@ struct btf_map_def {
- 	__u32 map_flags;
- 	__u32 numa_node;
- 	__u32 pinning;
-+	__u32 map_extra;
- };
-=20
- int parse_btf_map_def(const char *map_name, struct btf *btf,
++SEC("fentry/__x64_sys_getpgid")
++int prog_bitset(void *ctx)
++{
++	struct callback_ctx data;
++
++	data.map =3D (struct bpf_map *)&map_bitset;
++	bpf_for_each_map_elem(&map_random_data, check_bit, &data, 0);
++
++	return 0;
++}
++
++SEC("fentry/__x64_sys_getpgid")
++int prog_bitset_inner_map(void *ctx)
++{
++	struct bpf_map *inner_map;
++	struct callback_ctx data;
++	int key =3D 0;
++
++	inner_map =3D bpf_map_lookup_elem(&outer_map, &key);
++	if (!inner_map) {
++		error |=3D 2;
++		return 0;
++	}
++
++	data.map =3D inner_map;
++	bpf_for_each_map_elem(&map_random_data, check_bit, &data, 0);
++
++	return 0;
++}
++
++static __u64
++check_elem(struct bpf_map *map, __u32 *key, __u32 *val,
++	   struct callback_ctx *data)
++{
++	int err;
++
++	err =3D bpf_map_peek_elem(data->map, val);
++	if (err) {
++		error |=3D 3;
++		return 1; /* stop the iteration */
++	}
++
++	return 0;
++}
++
++SEC("fentry/__x64_sys_getpgid")
++int prog_bloom_filter(void *ctx)
++{
++	struct callback_ctx data;
++
++	data.map =3D (struct bpf_map *)&map_bloom_filter;
++	bpf_for_each_map_elem(&map_random_data, check_elem, &data, 0);
++
++	return 0;
++}
 --=20
 2.30.2
 
