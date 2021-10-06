@@ -2,42 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7F5424AB3
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 01:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D44424AB8
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 01:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239779AbhJFXwq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 19:52:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39186 "EHLO mail.kernel.org"
+        id S231960AbhJFXy7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 19:54:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230513AbhJFXwp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 19:52:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27E7D61152;
-        Wed,  6 Oct 2021 23:50:53 +0000 (UTC)
+        id S230513AbhJFXy6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 19:54:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A239260F5A;
+        Wed,  6 Oct 2021 23:53:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633564253;
-        bh=K+W20q2FWy3PZV6etyIJ9ZB03lez/QC8rG/hOh87ntY=;
+        s=k20201202; t=1633564385;
+        bh=FmnTfErOQoC2jzCTOxRXZYunXlyp3Js7AWi3J8NWV8Q=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p97l+sNqjJeT6XPBJpY+jKfLBeaIRLFzihFD0DFjJcY40iQvZRn/ZoJdSv0TJXJHP
-         4sagqmKBR90doik3UBQ1dpK24DEMojbFi5I4GMoj8tldSFIGV8enQQF7Ak9GDBAPxr
-         cwn/ynCei6R1kQKAseuXbZYD5eBayFj+wTqqRxjigzNmAYtVtGj0k4i9r5bXEe39tp
-         Ygcw1qwXsWHkNq2o1YB6yD0QmJLUlL8DUhApIoL1QIjhMUzXZVQGGH79Zu6ccS2SpH
-         AFVulwvC3c84qfF6E12RSUdbSCwsuICjAW8vFhvXt8lmk/iOMsgpoYfyW/aIBJoxbq
-         4uJySw1yGBCSg==
-Received: by mail-lf1-f44.google.com with SMTP id m3so17334879lfu.2;
-        Wed, 06 Oct 2021 16:50:53 -0700 (PDT)
-X-Gm-Message-State: AOAM5301hlVmQ6gLyES0MjqccyhxpwmXWeH586vSmEKt0tNJux15mYTC
-        PI/oi+50aL/XfgaM1NI0D3jPO3yBbZNVDSQ1oVA=
-X-Google-Smtp-Source: ABdhPJz1SUv65lRuJngQ1VpLq4ZNUfR+fNBQ/yD3MHn5+hTeVSDxdMD5UI+Ns4kYqJpYRuhwKHoIrGgxOtXSrrduluk=
-X-Received: by 2002:a05:6512:3d93:: with SMTP id k19mr1033715lfv.114.1633564251532;
- Wed, 06 Oct 2021 16:50:51 -0700 (PDT)
+        b=iyF9zOQEuqxADuxJ3mB58tDAk5ZlTSGO6K/dPWA6Bv1eP/1h+OrMfnSM6N5JS6YfG
+         Z6oCMndGHPPfxcTOEv1CMqHgpnCWhpzfG1+wYBcb50W8plIQZbvPAR9mKjli7CKY2Y
+         +XxR/bMhhu0PLUP6g2HRx686R6pOaMUGiVR4pKQ+sdItWkXqxpd97Pzv5fL8cIWoFG
+         L5tDAaHAERA35Yq7NF6OrHuSu9rtFN9/NHAvByHb0rupLcPPcIPnRZ6sp2HIQAR/B3
+         7Xl/qxX5+23kD88Ukkue/2LYZIfRQg9jSVzap6IDf9rfdNYa2SHoEUBgaqsGGJjtPj
+         /y4TMmGjbRgEA==
+Received: by mail-lf1-f52.google.com with SMTP id x27so17196245lfu.5;
+        Wed, 06 Oct 2021 16:53:05 -0700 (PDT)
+X-Gm-Message-State: AOAM532gPIrZsCPW335aYpUswqGHtpFc7fC42MbK1qiVmytcSh++rSSw
+        XJPdtNVBMC9EUcsLDYM0Tl/AGid2bukATWiwvc4=
+X-Google-Smtp-Source: ABdhPJz6zk+uh1wpYY5SSzcex9Lr+N7cSJDVBtO7ZmfhW7T+kyLLcMFWM4y+3hr9/MVXl0OZRoaeR4lTcOz5mQhPQIk=
+X-Received: by 2002:ac2:5582:: with SMTP id v2mr982504lfg.143.1633564384017;
+ Wed, 06 Oct 2021 16:53:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006230543.3928580-1-joannekoong@fb.com> <20211006230543.3928580-2-joannekoong@fb.com>
-In-Reply-To: <20211006230543.3928580-2-joannekoong@fb.com>
+References: <20211006230543.3928580-1-joannekoong@fb.com> <20211006230543.3928580-4-joannekoong@fb.com>
+In-Reply-To: <20211006230543.3928580-4-joannekoong@fb.com>
 From:   Song Liu <song@kernel.org>
-Date:   Wed, 6 Oct 2021 16:50:40 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6Uxu=BaZzwd9oiuC1dea00ePkdFbHCCnPf51tNjby0iw@mail.gmail.com>
-Message-ID: <CAPhsuW6Uxu=BaZzwd9oiuC1dea00ePkdFbHCCnPf51tNjby0iw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf/xdp: Add bpf_load_hdr_opt support for xdp
+Date:   Wed, 6 Oct 2021 16:52:52 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5neNhDFXaUJOaS=Ju4o_gEyXNLyTc6_av802bc2JRGSQ@mail.gmail.com>
+Message-ID: <CAPhsuW5neNhDFXaUJOaS=Ju4o_gEyXNLyTc6_av802bc2JRGSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpf/selftests: Add xdp
+ bpf_load_tcp_hdr_options tests
 To:     Joanne Koong <joannekoong@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Networking <netdev@vger.kernel.org>,
@@ -49,18 +50,16 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Oct 6, 2021 at 4:09 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> This patch enables XDP programs to use the bpf_load_hdr_opt helper
-> function to load header options.
+> This patch adds tests for bpf_load_tcp_hdr_options used by xdp
+> programs.
 >
-> The upper 16 bits of "flags" is used to denote the offset to the tcp
-> header. No other flags are, at this time, used by XDP programs.
-> In the future, more flags can be included to support other types of
-> header options.
->
-> Much of the logic for loading header options can be shared between
-> sockops and xdp programs. In net/core/filter.c, this common shared
-> logic is refactored into a separate function both sockops and xdp
-> use.
+> test_xdp_tcp_hdr_options.c:
+> - Tests ipv4 and ipv6 packets with TCPOPT_EXP and non-TCPOPT_EXP
+> tcp options set. Verify that options can be parsed and loaded
+> successfully.
+> - Tests error paths: TCPOPT_EXP with invalid magic, option with
+> invalid kind_len, non-existent option, invalid flags, option size
+> smaller than kind_len, invalid packet
 >
 > Signed-off-by: Joanne Koong <joannekoong@fb.com>
 
