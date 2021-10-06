@@ -2,78 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9268F4235D2
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 04:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D8342361D
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 04:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237168AbhJFCaM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 22:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
+        id S231867AbhJFC6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 22:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhJFCaM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:30:12 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A74C061749
-        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 19:28:21 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so1185419pjb.0
-        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 19:28:21 -0700 (PDT)
+        with ESMTP id S230306AbhJFC6E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Oct 2021 22:58:04 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E720FC061749
+        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 19:56:12 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id s75so1154663pgs.5
+        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 19:56:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XyplLc5CMj8W2rzH3RrNXTbzIemIRz7JbH8pHpdtc6c=;
-        b=AU7JI7C/Wr3K6pKrL2BJSjwamssFxEUy2d5486zKjBuTBtSwW8hUpAdAlXLzxpQsDj
-         wdHU5LDaBXiNpRMD17+c9Me+ttUi8grDiEBPmfSoVareRapPAQHB7BFRGMbPAIHSg17X
-         7eHaRcDJ7rwa39Hkc1nLqko1Q4rYxZFIHHnbBucLeA6kq/Ae5UefdNSqCFprJGjtH9KX
-         plupG/wA6EiJZmByPVga1C9F3iqtW9++FvXcaQy8MmGeNgy9kBhQSRT+/jE5kQezfDzG
-         D3ReE+wUkeyjCv97sJkU3rvo1lASIN6LQ6xLoblwCTGs6ldo7z9x9Eb+gyTN9KnSiM7r
-         BL1Q==
+        bh=vn9UM+/dkZKadYcqMwIDdS5DaVvIvKYy80rqUeg/Gfg=;
+        b=qrpHp0GeS4GZshPr/AcQP//XjTMeyV96E5pEHdyh99Zu7kF3s5r9Xi3QPbtPyN24iN
+         BeWpQj055c94x9lRuUYlQaBnQpgvO0NlhHHGka90XnIe5jG27IcxhEkeeQd9wpt5cw8J
+         4RlyslSbIceBMHctXrFSXy8gtOSkBEC8aXeQHBod9o2sUmrN14hTe4PWqdaGuO3i7kCW
+         Y8QAKk74IYBYCJxwxvnbbNzuSYOyJcHFfrinq1aImjHJlkldvjQUMdfB08liZ8109JEV
+         OKNsoxJVajOnK4JqDPFTDXEjE5HG8wq0Cj/r4QgYD6Z+pGgwxiU/ketlVSMz7p+hLPPl
+         r8Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XyplLc5CMj8W2rzH3RrNXTbzIemIRz7JbH8pHpdtc6c=;
-        b=g4IExFNVSms6JA+aTyBuLyfW/humL5xYclJWrPU3BfS5gxt72E1/Gwo+DA/VMkTPjB
-         3jVRmvGcZAGSPqp06AbP3MRsjvGoH+XISjlfgagtZlZcrYMeWPdTlW4+rRIVKzC6l5GB
-         hWoHIld4zZ1f6250nRX9saPAnccMSHDW7nO8qTr9D9Np0wX1EaAlEriG+ZTCK3YdsD60
-         TuUJNmKrxuyeHrrKVURr3NWjAxiIJJTWJmmLns6evwoWsBr5q7S83DGevFmUT2RMhMgH
-         2OmdiFZ7y3wiohgPG27FiR4S3wYdobXyruaL3QOHVdKgdUGVjJTH0ooOCwyGTAJYDOYE
-         AHhA==
-X-Gm-Message-State: AOAM531RFDFcUxJ0hag9xrhhrwrum3Cm9Xa7zUtcLSfbk0Xm3yZotaTh
-        kzo0b8Fp9+Bksu2PbMieR1YptWQFz4YmChCLRD/mUTDs
-X-Google-Smtp-Source: ABdhPJwGo9VWfpjOQc4uvTsWGj0BkH98w4KghIPf7T6eZLR2f/Xf0Enka+MWkWfAfn91Qk/Lsctw9jS9xZU65MPubaQ=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr8540898pll.22.1633487300542; Tue, 05 Oct
- 2021 19:28:20 -0700 (PDT)
+        bh=vn9UM+/dkZKadYcqMwIDdS5DaVvIvKYy80rqUeg/Gfg=;
+        b=2Wb1FevVSSta08faN3ZNNkQA/weM6XuAQAN629nfcFoJSecR97Y+0tWQ0JI8K+T8L4
+         uX3WTcdW+b/KzY0Mr9je/1sVH/CHjygRYuDclDl9zTa+DcaXk7fbpBzRteu77ooinfix
+         YjCOsfVFnVKTKMSSAU/WkK9ZIKXQfsCY4QPw/RXKBM8LaPzbV/ujlbNfZluFCqHZ24Pb
+         R9WB0nwG/uZqkgCQtRxfKx7IsR+sGZuZNWglUTmG1XYettQsStPQjxjxcZYXKo43TOLp
+         RkfKRhDBRd/3o4EUH8AGrIxbKy/GOxq5Ac0V+JkNV8grQ60V5CBjLY7kOBnawwtfDl5k
+         dH/Q==
+X-Gm-Message-State: AOAM533nDeZ+J2l4sQ3I+FhkcKJIiaClBeHbPHVKLlDFfyUxdhl5l6sV
+        huQFakR6LoeJI8pm0vgI92Zm13u95Q+UBxoLPF0=
+X-Google-Smtp-Source: ABdhPJzMHfD9RjhnIDtbshxeRSfa/W8Q0SF0fsKTibzWVPK+QAaGKGrovihux7TRIM3Huf3w7DECYPnP8GM5fvJXVSE=
+X-Received: by 2002:a65:4008:: with SMTP id f8mr18092492pgp.310.1633488972336;
+ Tue, 05 Oct 2021 19:56:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006001838.75607-1-rdna@fb.com>
-In-Reply-To: <20211006001838.75607-1-rdna@fb.com>
+References: <20211002035626.2041910-1-jmeng@fb.com>
+In-Reply-To: <20211002035626.2041910-1-jmeng@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 Oct 2021 19:28:09 -0700
-Message-ID: <CAADnVQ+oP-6aUze0h2CQOmnprcZxxmuQkbSf=JaNq5xMZribKw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: avoid retpoline for bpf_for_each_map_elem
-To:     Andrey Ignatov <rdna@fb.com>
+Date:   Tue, 5 Oct 2021 19:56:01 -0700
+Message-ID: <CAADnVQJb6wjXXBV0ZeQGXY3wFFU9eXDj5zBZrGymXrk8OTO+qw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf,x64: Save bytes for DIV by reducing reg copies
+To:     Jie Meng <jmeng@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 5:19 PM Andrey Ignatov <rdna@fb.com> wrote:
+On Fri, Oct 1, 2021 at 8:56 PM Jie Meng <jmeng@fb.com> wrote:
 >
-> Before:
+> Instead of unconditionally performing push/pop on rax/rdx in case of
+> division/modulo, we can save a few bytes in case of dest register
+> being either BPF r0 (rax) or r3 (rdx) since the result is written in
+> there anyway.
 >
->   IngressMatchByRemoteEndpoint                                80.78ns 12.38M
->   IngressMatchByRemoteIP                                      80.66ns 12.40M
->   IngressMatchByRemotePort                                    80.87ns 12.37M
+> Also, we do not need to copy src to r11 unless src is either rax, rdx
+> or an immediate.
+>
+> For example, before the patch:
+>   22:   push   %rax
+>   23:   push   %rdx
+>   24:   mov    %rsi,%r11
+>   27:   xor    %edx,%edx
+>   29:   div    %r11
+>   2c:   mov    %rax,%r11
+>   2f:   pop    %rdx
+>   30:   pop    %rax
+>   31:   mov    %r11,%rax
+>   34:   leaveq
+>   35:   retq
 >
 > After:
+>   22:   push   %rdx
+>   23:   xor    %edx,%edx
+>   25:   div    %rsi
+>   28:   pop    %rdx
+>   29:   leaveq
+>   2a:   retq
 >
->   IngressMatchByRemoteEndpoint                                73.49ns 13.61M
->   IngressMatchByRemoteIP                                      71.48ns 13.99M
->   IngressMatchByRemotePort                                    70.39ns 14.21M
+> Signed-off-by: Jie Meng <jmeng@fb.com>
 
-Nice gains :)
-Applied.
+Applied. Thanks
