@@ -2,103 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F27C4234F9
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 02:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9268F4235D2
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 04:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237101AbhJFAbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Oct 2021 20:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        id S237168AbhJFCaM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Oct 2021 22:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237086AbhJFAbF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:31:05 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91D2C061749;
-        Tue,  5 Oct 2021 17:29:14 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id h1so859033pfv.12;
-        Tue, 05 Oct 2021 17:29:14 -0700 (PDT)
+        with ESMTP id S230301AbhJFCaM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Oct 2021 22:30:12 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A74C061749
+        for <bpf@vger.kernel.org>; Tue,  5 Oct 2021 19:28:21 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so1185419pjb.0
+        for <bpf@vger.kernel.org>; Tue, 05 Oct 2021 19:28:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mO8eLvTvx7uyO48zoyP55mESCJ3tJ4Kie0/HPIIxwyg=;
-        b=iGnWmTa44eJeXi9HPgNbokxxNV9dFqcdJ+HZ0wDpABr7YcoQYsGMaeK6NHHTFQbKXO
-         LJseX/qX/t+q9nOkDM3raKstiSbBXhBIE1GKmHS8Q+DbByxuyNkPvDZDZ+xVn89E3Kii
-         nvlYE2VSQZj7lQWdxMp9lU01wgn0mV1RZBF8NBFrJayvtjloWBX7BWyRtIm0sSMdVNCg
-         Z43LcGHuInFo0j30FCmgkVJGf8ftxcuGI/rAYI2vEc1ZM4DxVfOndQ+FKA95LuPZS8hl
-         oADO01uBPny3GXriDfcjpUOTTk+1wWh3Tlc3YkPpX/ZXGg+VgD3pxGfGUzw1VaCuDxF/
-         o3AQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XyplLc5CMj8W2rzH3RrNXTbzIemIRz7JbH8pHpdtc6c=;
+        b=AU7JI7C/Wr3K6pKrL2BJSjwamssFxEUy2d5486zKjBuTBtSwW8hUpAdAlXLzxpQsDj
+         wdHU5LDaBXiNpRMD17+c9Me+ttUi8grDiEBPmfSoVareRapPAQHB7BFRGMbPAIHSg17X
+         7eHaRcDJ7rwa39Hkc1nLqko1Q4rYxZFIHHnbBucLeA6kq/Ae5UefdNSqCFprJGjtH9KX
+         plupG/wA6EiJZmByPVga1C9F3iqtW9++FvXcaQy8MmGeNgy9kBhQSRT+/jE5kQezfDzG
+         D3ReE+wUkeyjCv97sJkU3rvo1lASIN6LQ6xLoblwCTGs6ldo7z9x9Eb+gyTN9KnSiM7r
+         BL1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mO8eLvTvx7uyO48zoyP55mESCJ3tJ4Kie0/HPIIxwyg=;
-        b=QCxQZc24m/CkB5mdfcl/lWntjhGS5+PIT5EvR9c+usNs9icylE7nUXa6wKDdOL9+WH
-         gNCd0xNKVHAZVC/EvjAnjKMCOXASK7aFsSeX1cuV+n2H3SZHUrOE/2I02Q0tpKMbXyBh
-         KHTWV5p44Lc3bm8rIeD6hKJDKMFCRSPYb3ENIXZrtaCAH2xI24Voct7CkvSWAXHDE5cl
-         /3YzaYIi1I41fyJi4tSw7TrBD7I6qhtAcLcmCPRRKDr8cLA1IcqhqkBrKjbLcOmd7FKC
-         5JvNCA/fCccwDaGAutups44qsQBDDrwDw6VDEdpR1/YkXQ/N+MBaTe6RvqHy8PmNpw38
-         e5bQ==
-X-Gm-Message-State: AOAM533Suw/zxI6DyDHzJymp9sdeNpqyddY0NlDzHVSItOES4ZPEnBe+
-        +txL7p5G0T0y6vfPXy4BmBldZgfL738=
-X-Google-Smtp-Source: ABdhPJzjj1yOe+0NeHxesrweh0xp2G9MEAvOosO9U4jsdedoNFeGmDqFT2E9OHkTP8DF1csPrmmQtQ==
-X-Received: by 2002:a65:6648:: with SMTP id z8mr18400234pgv.418.1633480154120;
-        Tue, 05 Oct 2021 17:29:14 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
-        by smtp.gmail.com with ESMTPSA id j6sm18142623pgq.0.2021.10.05.17.29.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 17:29:13 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XyplLc5CMj8W2rzH3RrNXTbzIemIRz7JbH8pHpdtc6c=;
+        b=g4IExFNVSms6JA+aTyBuLyfW/humL5xYclJWrPU3BfS5gxt72E1/Gwo+DA/VMkTPjB
+         3jVRmvGcZAGSPqp06AbP3MRsjvGoH+XISjlfgagtZlZcrYMeWPdTlW4+rRIVKzC6l5GB
+         hWoHIld4zZ1f6250nRX9saPAnccMSHDW7nO8qTr9D9Np0wX1EaAlEriG+ZTCK3YdsD60
+         TuUJNmKrxuyeHrrKVURr3NWjAxiIJJTWJmmLns6evwoWsBr5q7S83DGevFmUT2RMhMgH
+         2OmdiFZ7y3wiohgPG27FiR4S3wYdobXyruaL3QOHVdKgdUGVjJTH0ooOCwyGTAJYDOYE
+         AHhA==
+X-Gm-Message-State: AOAM531RFDFcUxJ0hag9xrhhrwrum3Cm9Xa7zUtcLSfbk0Xm3yZotaTh
+        kzo0b8Fp9+Bksu2PbMieR1YptWQFz4YmChCLRD/mUTDs
+X-Google-Smtp-Source: ABdhPJwGo9VWfpjOQc4uvTsWGj0BkH98w4KghIPf7T6eZLR2f/Xf0Enka+MWkWfAfn91Qk/Lsctw9jS9xZU65MPubaQ=
+X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
+ c6-20020a170902724600b00138a6ed66ccmr8540898pll.22.1633487300542; Tue, 05 Oct
+ 2021 19:28:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211006001838.75607-1-rdna@fb.com>
+In-Reply-To: <20211006001838.75607-1-rdna@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 5 Oct 2021 19:28:09 -0700
+Message-ID: <CAADnVQ+oP-6aUze0h2CQOmnprcZxxmuQkbSf=JaNq5xMZribKw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: avoid retpoline for bpf_for_each_map_elem
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next v1 6/6] bpf: selftests: Fix memory leak in test_ima
-Date:   Wed,  6 Oct 2021 05:58:53 +0530
-Message-Id: <20211006002853.308945-7-memxor@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006002853.308945-1-memxor@gmail.com>
-References: <20211006002853.308945-1-memxor@gmail.com>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1115; h=from:subject; bh=4bfzhM+sYcTW2y2zdsHJx5N2vzbm4oaFQaoGmKSXTic=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhXOxQgI5e86LHo+jVOJkUuF0P4byE+Xxfe3jR9uE9 WjZQteGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYVzsUAAKCRBM4MiGSL8RynvrEA C0Powb1Gh+WDgwv+3rhP5DMBEFGdnK06lC6288bG4XXpDc95ESMY9HptZU36gkLigpKvnv6phTYgg3 0alu9cfQv2iS0b+3lqMGaQ6WxLvtn52BM0DXy4oMFnfOlToOdc0I54RVFl7hcOd1FsDbzSYBmFvoLr KBBO5dAqjevxlWAx/Xq1saaFCrpf0f34LXWeXvVK+Gmuo4+OYfN34ei1lBQ2i1sHxpxprlH88QzCGS ZMEUQNxBPDScvVKPv44IyGYEAtca9SvauMD2gdByGkFvDQ2//F43aV9gU7OOz19vQE8YOBV57sxb1W DTUFx5gefvGcxjO63V/y9UsKnduRrNbvMUIqGPaPEUxvoCIt75seB8KmQ4crFI2XNlhGMRX1/1NMOp 7OwLMc8z1CxgPuGpeHVNa9ftbaB6tmeNFPB3xVlXcfYEzpunY7K/MfW3zRSKQphsrUY/eoy5Kv+gKj AmxVhF/kgdyWQ1t0S6B21dVQ2iVMMgVqt2Fo3uHcVt2WREIiO0rrd4xfxQPapEXgoQ7aQs4X0ENdaD 4/2sqChoj3lCpkhckk9S9wjokyRgCu6zah3ZzfgSbK0xLwC6/kxLM5lVVDX90cQo1Vl7RZl1IrcWPe ilrZ3OVA9FfIxoGP4e1HU47CQcomDhW38rQ+GKkewmn9eEiBDQ2dNX5MBfrg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The allocated ring buffer is never freed, do so in the cleanup path.
+On Tue, Oct 5, 2021 at 5:19 PM Andrey Ignatov <rdna@fb.com> wrote:
+>
+> Before:
+>
+>   IngressMatchByRemoteEndpoint                                80.78ns 12.38M
+>   IngressMatchByRemoteIP                                      80.66ns 12.40M
+>   IngressMatchByRemotePort                                    80.87ns 12.37M
+>
+> After:
+>
+>   IngressMatchByRemoteEndpoint                                73.49ns 13.61M
+>   IngressMatchByRemoteIP                                      71.48ns 13.99M
+>   IngressMatchByRemotePort                                    70.39ns 14.21M
 
-Fixes: f446b570ac7e (bpf/selftests: Update the IMA test to use BPF ring buffer)
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/test_ima.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-index 0252f61d611a..97d8a6f84f4a 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-@@ -43,7 +43,7 @@ static int process_sample(void *ctx, void *data, size_t len)
- void test_test_ima(void)
- {
- 	char measured_dir_template[] = "/tmp/ima_measuredXXXXXX";
--	struct ring_buffer *ringbuf;
-+	struct ring_buffer *ringbuf = NULL;
- 	const char *measured_dir;
- 	char cmd[256];
- 
-@@ -85,5 +85,6 @@ void test_test_ima(void)
- 	err = system(cmd);
- 	CHECK(err, "failed to run command", "%s, errno = %d\n", cmd, errno);
- close_prog:
-+	ring_buffer__free(ringbuf);
- 	ima__destroy(skel);
- }
--- 
-2.33.0
-
+Nice gains :)
+Applied.
