@@ -2,105 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C144D4239E7
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 10:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196F0423A97
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 11:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237802AbhJFIqh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 04:46:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51355 "EHLO
+        id S231240AbhJFJee (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 05:34:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31351 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237543AbhJFIqh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 04:46:37 -0400
+        by vger.kernel.org with ESMTP id S230131AbhJFJed (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Oct 2021 05:34:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633509885;
+        s=mimecast20190719; t=1633512761;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+4rqTW7YP6/QaK2Hf98BXadt2YjhRXa1+qjKywUhD0U=;
-        b=T6YJXfjjmD1wsaWpqTG9wdvvlXmy3QBLX7E9dbAM30vZ8PQgtQs4Rpi5dt22KXSEp1Jvcp
-        NJqEmH+TTIzCUuthUZRE3d9F7RfnTHIOxPUNCn6snZnBT9I2py+vYfggSp4wDMc+VNDJdX
-        jgu59h1bnzOpe1+3icRNAXrEHLS9nf0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-ASr050-hOjaGTGrpR6i_Yg-1; Wed, 06 Oct 2021 04:44:44 -0400
-X-MC-Unique: ASr050-hOjaGTGrpR6i_Yg-1
-Received: by mail-wr1-f71.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso1410489wrb.20
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 01:44:44 -0700 (PDT)
+        bh=ECWtJ9QunQv65wT2NBwXFG9aqNsz/pIxF2+1QOW9wjA=;
+        b=HOPrOjWNiORAaw7it+Wxd7E9ajA/ZXn1L3TwPzQVbVrxDyG4aGr/kpHLJptHEG+SumyotK
+        pCknEZ2s6HYO0RE+HU/i7tezTzwxouFpTtBa1WrqoULz0F4/E7IsazehbnQm4yT9ZgQKHi
+        qlEahhd8rMbE52Ta9R61oolxJc2l4dQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528--nkZn9o3PpiA_sMvTXsseg-1; Wed, 06 Oct 2021 05:32:40 -0400
+X-MC-Unique: -nkZn9o3PpiA_sMvTXsseg-1
+Received: by mail-ed1-f70.google.com with SMTP id x5-20020a50f185000000b003db0f796903so2040022edl.18
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 02:32:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+4rqTW7YP6/QaK2Hf98BXadt2YjhRXa1+qjKywUhD0U=;
-        b=ivF5VS/sFQffrnaYt7DJ9SkPLwh+sfqERXZP0iQq1g/yed1MLYBefvMp4GF2JeJz/z
-         ztsBIz7FxBeBbEZL9TWGZ/excrfOfYfzuoPVPfcJDFinuIOEiNd9Xi0tWHNdnX6s2iYr
-         WCuP0j2MBzgbnf+63aqu3Kmrpn4ey40gh7xTVe8GBThYb6Lm+5Ulepcf+uyZOAh0VkOX
-         Jpwp8+vomR7gVOLGK7ww9REOg6vKt6fkos33bPte5CJi32ubFMBOm4a86tswgm3/QLi8
-         +zGcmqMlJHUb/X8MN+40vWlqFx0hcnyaz02sf09/76yirV65ScSeL7+TZGeGwEHPkQ4x
-         QXrw==
-X-Gm-Message-State: AOAM530qTPJt6lUmUiXaCz9dGt6kRd7DZ4VRm6MlTF0sK5zlv54NG6d+
-        5RRyaBXZDtjlN5z91MVbbUNM0jzyARVwv9FkMRKwOVAuKV4LGvk00BOCo9zLdjIlB1ST3GoRuvo
-        hSXKbCGrfxlkw
-X-Received: by 2002:a05:600c:288:: with SMTP id 8mr8424643wmk.172.1633509883275;
-        Wed, 06 Oct 2021 01:44:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZmt9DX7F4J4aQvQj2seP99mui2ad6YqkzOYLVsgFR4zZLLA04fNa4RrGxwqEugusmP+vctg==
-X-Received: by 2002:a05:600c:288:: with SMTP id 8mr8424624wmk.172.1633509883016;
-        Wed, 06 Oct 2021 01:44:43 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id y8sm16313529wrr.21.2021.10.06.01.44.42
+        bh=ECWtJ9QunQv65wT2NBwXFG9aqNsz/pIxF2+1QOW9wjA=;
+        b=JmIJ/iWgMrThB033Fh/p10efmboakKcb9x8QBYeaSSHB/NmcH6t8UpMPRlsqdJOlOK
+         TtLOqgTlArG1WbKzDlzKTo2ALyQVKCkCgBlUxnjCEGVVQYE22BqkZyzhdTIZhbsYm5G3
+         I52euzczDJVG8kl7ccaTl0Osn2TvTAb+6XP/ZOVXUu3bcct3g77bJxR9NHRcwWH3CW0M
+         btCWKeGjNfl8EHcfluQCPfB6SBpEb1BAgkihwxlUBmnMclRF7LBLkqDmG/K9WPex4HcM
+         eUPISZ1LDQrn+81IRYIJ0ewMEviZYpg/ulb1fhIwFTbOdGnL9RknEVXQXoXO2oBY3MFQ
+         lbDg==
+X-Gm-Message-State: AOAM531sL2UmL9kyDu7DUoumfKdTo9G81FKojFYiXxdSSKqkGNOwuWha
+        qqx0pyuCnmTzeWWVozbXUk2tASyz02FFd7pvv8DaPXwEwzmVVlN4bsgZhGlPevfKpZyKScwmn8r
+        Im+j4paxRnOuw
+X-Received: by 2002:a05:6402:2345:: with SMTP id r5mr23107526eda.202.1633512759420;
+        Wed, 06 Oct 2021 02:32:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwb2h3XjvEjOiYMPuThj33eVzgF4sHQOJ008r2ma1zLc9i0RRK6Xywd9T4NbpEbKL9DwY6ZNg==
+X-Received: by 2002:a05:6402:2345:: with SMTP id r5mr23107502eda.202.1633512759227;
+        Wed, 06 Oct 2021 02:32:39 -0700 (PDT)
+Received: from localhost (net-130-25-199-50.cust.vodafonedsl.it. [130.25.199.50])
+        by smtp.gmail.com with ESMTPSA id rv25sm5944673ejb.21.2021.10.06.02.32.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 01:44:42 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 10:44:41 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Wed, 06 Oct 2021 02:32:38 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 11:32:36 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [RFC] store function address in BTF
-Message-ID: <YV1h+cBxmYi2hrTM@krava>
-References: <YV1hRboJopUBLm3H@krava>
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v14 bpf-next 00/18] mvneta: introduce XDP multi-buffer
+ support
+Message-ID: <YV1tNFy971iqq0Ay@lore-desk>
+References: <cover.1631289870.git.lorenzo@kernel.org>
+ <20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CACAyw9-8t8RpJgJUTd7u6bOLnJ1xQsgK7z37QrL9T1FUaJ7WNQ@mail.gmail.com>
+ <87v92jinv7.fsf@toke.dk>
+ <CACAyw99S9v658UyiKz3ad4kja7rDNfYv+9VOXZHCUOtam_C8Wg@mail.gmail.com>
+ <CAADnVQ+XXGUxzqMdbPMYf+t_ViDkqvGDdogrmv-wH-dckzujLw@mail.gmail.com>
+ <20210929122229.1d0c4960@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87mtnvi0bc.fsf@toke.dk>
+ <YVbO/kit/mjWTrv6@lore-desk>
+ <20211001113528.79f35460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dJuMWhS9OkhSNQ/M"
 Content-Disposition: inline
-In-Reply-To: <YV1hRboJopUBLm3H@krava>
+In-Reply-To: <20211001113528.79f35460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 10:41:41AM +0200, Jiri Olsa wrote:
-> hi,
-> I'm hitting performance issue and soft lock ups with the new version
-> of the patchset and the reason seems to be kallsyms lookup that we
-> need to do for each btf id we want to attach
 
-ugh, I meant to sent this as reply to the patchset mentioned above,
-nevermind, here's the patchset:
-  https://lore.kernel.org/bpf/20210605111034.1810858-1-jolsa@kernel.org/
+--dJuMWhS9OkhSNQ/M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-jirka
+> On Fri, 1 Oct 2021 11:03:58 +0200 Lorenzo Bianconi wrote:
+> > Can you please check if the code above is aligned to current requiremen=
+ts or if
+> > it is missing something?
+> > If this code it is fine, I guess we have two option here:
+> > - integrate the commits above in xdp multi-buff series (posting v15) an=
+d work on
+> >   the verfier code in parallel (if xdp_mb_pointer helper is not require=
+d from day0)
+> > - integrate verfier changes in xdp multi-buff series, drop bpf_xdp_load=
+_bytes
+> >   helper (probably we will still need bpf_xdp_store_bytes) and introduce
+> >   bpf_xdp_pointer as new ebpf helper.
+>=20
+> It wasn't clear to me that we wanted bpf_xdp_load_bytes() to exist.
+> But FWIW no preference here.
+>=20
 
-> 
-> I tried to change kallsyms_lookup_name linear search into rbtree search,
-> but it has its own pitfalls like duplicate function names and it still
-> seems not to be fast enough when you want to attach like 30k functions
-> 
-> so I wonder we could 'fix this' by storing function address in BTF,
-> which would cut kallsyms lookup completely, because it'd be done in
-> compile time
-> 
-> my first thought was to add extra BTF section for that, after discussion
-> with Arnaldo perhaps we could be able to store extra 8 bytes after
-> BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
-> indicate that? or new BTF_KIND_FUNC2 type?
-> 
-> thoughts?
-> 
-> thanks,
-> jirka
+ack, same here. Any other opinion about it?
+
+Regards,
+Lorenzo
+
+--dJuMWhS9OkhSNQ/M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYV1tNAAKCRA6cBh0uS2t
+rG9nAQDzRFQNbjpBmGFTPDTbGEDK2wN/GbIWFg9xqUtOkdPHJgD/clbax0bO8iir
+IHebO6l7i4OZq1Wi3wYrxjIRmdc4pgw=
+=i6/e
+-----END PGP SIGNATURE-----
+
+--dJuMWhS9OkhSNQ/M--
 
