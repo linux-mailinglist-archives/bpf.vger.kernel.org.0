@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAE442421C
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 18:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB9142421D
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 18:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhJFQEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 12:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
+        id S232165AbhJFQEz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 12:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhJFQEy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:04:54 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E56C061746
-        for <bpf@vger.kernel.org>; Wed,  6 Oct 2021 09:03:01 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id y1so1929534plk.10
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 09:03:01 -0700 (PDT)
+        with ESMTP id S230021AbhJFQEz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:04:55 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12287C061746
+        for <bpf@vger.kernel.org>; Wed,  6 Oct 2021 09:03:03 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m21so2839226pgu.13
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 09:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=P04QJ/4Y946HO6LTkPlGTPEfscMIc2EXyiWAONPvzpo=;
-        b=ESP7gPDaoBIaUDS6EInNcY0cPoPb3dD5k0rkI11rjbqwlfAfzXAVfF8l+2fO4zk0yD
-         1i7EIfwozYAJhe1AC981jOrAC8au1oLkm/7IPqPzIC0oQ/Q/arTEAtn/2AkH6HQhRJLY
-         6u6lGWSde3iJB8+Hlspzf9xPu+Z/nMtPE5sJYMeCeBsSOPXmx94KtL4IYC4iRBsaxGnF
-         zEM4Bj76bYbEGyn+0/XSQMCDWBpSd2g/V/tTwtOX3e++1OaWXJY1VYbElX1QU65EHtSH
-         68UX5vDwm7MDnuv7+Z0rwy1jKMHOiW64VmzS+5SmENpdCDyn+BCY2ItEjTgMTfEO5dg4
-         V8WQ==
+        bh=uXH1xXwANkEkMk5xSeRQcDW2a2cM2/Gh6zLAoIsLD9U=;
+        b=BJqs5wldx3tul/E5oCCclzRw6Mw0p74UnU1ehA+cRK6IZ7998IDtD512N2ESzauEK4
+         EzzhD8GgNSgpOjx/qi+K+t9v0BbV+NVapc+UzALJKwopr4wUoYRhEYP4b44CRhZBMxd8
+         KhyNjY5aOVmsxuKfjXDWeeXIjmDvTuDAugXs91hS2lrmlUDypwC7/e6dNgzwLkp7lmiI
+         /fnq8HYrtAQadxY9Q1sRDY/B71TjQntxdQlmw3sETTNMES31YOtjb2xafSFVahiRl1u/
+         aMXq91MkZl3sDWz/vhdtr0cI6w2lDZOc/pcPnBcpbwTokyqJWRzJUyhyQAPJqQ0tcwnf
+         nMgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P04QJ/4Y946HO6LTkPlGTPEfscMIc2EXyiWAONPvzpo=;
-        b=0Rp+0nTx1Kl7Az9hnxqbFqvmNf+OMkxyFbrYX7TFyFkscJAjC7n/c8q1Kq6j1n5Zb/
-         YUKFI/d8RKJNJe40vUitbajgpQ//x3mQaq9YvQLxbXbtB3kACOgARZqp1zNGX8zmgLQm
-         SX2HwGODqKrAN9fU/+oj0B93ShQvwTj3kNxR7y9xJ8d7ftox8FCtSRRZawL0Kqg1OQ+4
-         JFW1cD+nJ59k1cwPMPAzBsjYjKHlnVmEt93TvabbTmQ+3ueHUdkqWpQ+DKSIrKys933s
-         ZRTENSG9Mly778GnRVDZ1wyLFtZM2Zyuitr3MQg71SHan08ZMmVegU3yBUTwoe/kAZ/8
-         h8rA==
-X-Gm-Message-State: AOAM532kV4y5V8iI7K2VkTXAg0T/Sx39eGpGf/nXJDYhzr7DFmLcLh2D
-        1F+UlOBuu9Tz2Uo6+GQCHG2xXWfJgaE=
-X-Google-Smtp-Source: ABdhPJxxFB4ysEW29pPcO5bp2WCEzUeSKXdjgcqkvA/dKY+/hq0Dka6ykLdB5lH9bvyX+VpwCqvqpA==
-X-Received: by 2002:a17:90a:5895:: with SMTP id j21mr11679165pji.99.1633536181151;
-        Wed, 06 Oct 2021 09:03:01 -0700 (PDT)
+        bh=uXH1xXwANkEkMk5xSeRQcDW2a2cM2/Gh6zLAoIsLD9U=;
+        b=XYziUbt4tWVeef+Kgws4v35poQSbt41wAzok/X+L50+2W8bEyT6kW37+4EbQ7T+yAy
+         WHov8CZvNnIwPmNJKk96lWIxWq/vNJXRArRah/Zme9ftU7T+mHZs8yaBVKkSB52lWgCQ
+         vWeYHcK8LfxaV95Z5VpSnopX4BOGGB3JS+u8mt+0EAcg7L3VCF1/EAsduJwWWwhyLyK2
+         GKxXprutiOq81kb01ozcWLRA/Ndaz/Rg+CSBCh3pNv3IrTEUrYxrnTs7bLr8Yxfnfbcy
+         IOicb25CFditN+8Q5bjKoim8og/D9v97WooSph0eGtGxkw2T4n5AlWB/GO/3mNT5ef4A
+         pRbg==
+X-Gm-Message-State: AOAM530StuDYbnFu/KQ1lyNBMCPJX/Av6rr8WglocR0V280t6U2OiFcn
+        Ex/S4Wr1tCECos/6ycZytj0nH6FGk2Y=
+X-Google-Smtp-Source: ABdhPJy8b/0ZbmEMJkl97JI3FWf7uFRNXhkHRcoT+Cn/10fMlDUOuWfUlPsw05FXWv17xuBp6wXlNA==
+X-Received: by 2002:a62:3893:0:b0:44b:9369:5de5 with SMTP id f141-20020a623893000000b0044b93695de5mr36647346pfa.40.1633536182212;
+        Wed, 06 Oct 2021 09:03:02 -0700 (PDT)
 Received: from localhost.localdomain ([98.47.144.235])
-        by smtp.gmail.com with ESMTPSA id x19sm20906098pfn.105.2021.10.06.09.03.00
+        by smtp.gmail.com with ESMTPSA id x19sm20906098pfn.105.2021.10.06.09.03.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 09:03:00 -0700 (PDT)
+        Wed, 06 Oct 2021 09:03:01 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Stanislav Fomichev <sdf@google.com>,
         YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to get/set exported errno value
-Date:   Wed,  6 Oct 2021 09:02:41 -0700
-Message-Id: <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
+Subject: [PATCH bpf-next 3/3] selftests/bpf: Test bpf_export_errno behavior with cgroup/sockopt
+Date:   Wed,  6 Oct 2021 09:02:42 -0700
+Message-Id: <ee26bf5f68535bdb902b711a36f6334fad36d58d.1633535940.git.zhuyifei@google.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1633535940.git.zhuyifei@google.com>
 References: <cover.1633535940.git.zhuyifei@google.com>
@@ -67,242 +67,611 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <zhuyifei@google.com>
 
-When passed in a positive errno, it sets the errno and returns 0.
-When passed in 0, it gets the previously set errno. When passed in
-an out of bound number, it returns -EINVAL. This is unambiguous:
-negative return values are error in invoking the helper itself,
-and positive return values are errnos being exported. Errnos once
-set cannot be unset, but can be overridden.
-
-The errno value is stored inside bpf_cg_run_ctx for ease of access
-different prog types with different context structs layouts. The
-helper implementation can simply perform a container_of from
-current->bpf_ctx to retrieve bpf_cg_run_ctx.
-
-For backward compatibility, if a program rejects without calling
-the helper, and the errno has not been set by any prior progs, the
-BPF_PROG_RUN_ARRAY_CG family macros automatically set the errno to
-EPERM. If a prog sets an errno but returns 1 (allow), the outcome
-is considered implementation-defined. This patch treat it the same
-way as if 0 (reject) is returned.
-
-For BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY, the prior behavior is
-that, if the return value is NET_XMIT_DROP, the packet is silently
-dropped. We preserve this behavior for backward compatibility
-reasons, so even if an errno is set, the errno does not return to
-caller.
-
-For getsockopt hooks, they are different in that bpf progs runs
-after kernel processes the getsockopt syscall instead of before.
-There is also a retval in its context struct in which bpf progs
-can unset the retval, and can force an -EPERM by returning 0.
-We preseve the same semantics. Even though there is retval,
-that value can only be unset, while progs can set (and not unset)
-additional errno by using the helper, and that will override
-whatever is in retval.
+The tests checks how different ways of interacting with the helper
+(getting errno, setting EUNATCH, EISCONN, and legacy reject
+returning 0 without setting errno), produce different results in
+both the setsockopt syscall and the errno value returned by the
+helper. A few more tests verify the interaction between the
+exported errno and the retval in getsockopt context.
 
 Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 Reviewed-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/bpf.h            | 23 +++++++++++------------
- include/uapi/linux/bpf.h       | 14 ++++++++++++++
- kernel/bpf/cgroup.c            | 24 ++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
- 4 files changed, 63 insertions(+), 12 deletions(-)
+ .../bpf/prog_tests/cgroup_export_errno.c      | 472 ++++++++++++++++++
+ .../progs/cgroup_export_errno_getsockopt.c    |  45 ++
+ .../progs/cgroup_export_errno_setsockopt.c    |  52 ++
+ 3 files changed, 569 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_export_errno.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_export_errno_getsockopt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_export_errno_setsockopt.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 938885562d68..5e3f3d2f5871 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1155,6 +1155,7 @@ struct bpf_run_ctx {};
- struct bpf_cg_run_ctx {
- 	struct bpf_run_ctx run_ctx;
- 	const struct bpf_prog_array_item *prog_item;
-+	int errno_val;
- };
- 
- struct bpf_trace_run_ctx {
-@@ -1196,8 +1197,7 @@ BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
- 	const struct bpf_prog *prog;
- 	const struct bpf_prog_array *array;
- 	struct bpf_run_ctx *old_run_ctx;
--	struct bpf_cg_run_ctx run_ctx;
--	int ret = 0;
-+	struct bpf_cg_run_ctx run_ctx = {};
- 	u32 func_ret;
- 
- 	migrate_disable();
-@@ -1208,15 +1208,15 @@ BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
- 	while ((prog = READ_ONCE(item->prog))) {
- 		run_ctx.prog_item = item;
- 		func_ret = run_prog(prog, ctx);
--		if (!(func_ret & 1))
--			ret = -EPERM;
-+		if (!(func_ret & 1) && !run_ctx.errno_val)
-+			run_ctx.errno_val = EPERM;
- 		*(ret_flags) |= (func_ret >> 1);
- 		item++;
- 	}
- 	bpf_reset_run_ctx(old_run_ctx);
- 	rcu_read_unlock();
- 	migrate_enable();
--	return ret;
-+	return -run_ctx.errno_val;
- }
- 
- static __always_inline int
-@@ -1227,8 +1227,7 @@ BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
- 	const struct bpf_prog *prog;
- 	const struct bpf_prog_array *array;
- 	struct bpf_run_ctx *old_run_ctx;
--	struct bpf_cg_run_ctx run_ctx;
--	int ret = 0;
-+	struct bpf_cg_run_ctx run_ctx = {};
- 
- 	migrate_disable();
- 	rcu_read_lock();
-@@ -1237,14 +1236,14 @@ BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	while ((prog = READ_ONCE(item->prog))) {
- 		run_ctx.prog_item = item;
--		if (!run_prog(prog, ctx))
--			ret = -EPERM;
-+		if (!run_prog(prog, ctx) && !run_ctx.errno_val)
-+			run_ctx.errno_val = EPERM;
- 		item++;
- 	}
- 	bpf_reset_run_ctx(old_run_ctx);
- 	rcu_read_unlock();
- 	migrate_enable();
--	return ret;
-+	return -run_ctx.errno_val;
- }
- 
- static __always_inline u32
-@@ -1297,7 +1296,7 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
-  *   0: NET_XMIT_SUCCESS  skb should be transmitted
-  *   1: NET_XMIT_DROP     skb should be dropped and cn
-  *   2: NET_XMIT_CN       skb should be transmitted and cn
-- *   3: -EPERM            skb should be dropped
-+ *   3: -errno            skb should be dropped
-  */
- #define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)		\
- 	({						\
-@@ -1309,7 +1308,7 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
- 		if (!_ret)				\
- 			_ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);	\
- 		else					\
--			_ret = (_cn ? NET_XMIT_DROP : -EPERM);		\
-+			_ret = (_cn ? NET_XMIT_DROP : _ret);		\
- 		_ret;					\
- 	})
- 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 6fc59d61937a..d8126f8c0541 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4909,6 +4909,19 @@ union bpf_attr {
-  *	Return
-  *		The number of bytes written to the buffer, or a negative error
-  *		in case of failure.
-+ *
-+ * int bpf_export_errno(int errno_val)
-+ *	Description
-+ *		If *errno_val* is positive, set the syscall's return error code;
-+ *		if *errno_val* is zero, retrieve the previously set code.
-+ *
-+ *		This helper is currently supported by cgroup programs only.
-+ *	Return
-+ *		Zero if set is successful, or the previously set error code on
-+ *		retrieval. Previously set code may be zero if it was never set.
-+ *		On error, a negative value.
-+ *
-+ *		**-EINVAL** if *errno_val* not between zero and MAX_ERRNO inclusive.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5089,6 +5102,7 @@ union bpf_attr {
- 	FN(task_pt_regs),		\
- 	FN(get_branch_snapshot),	\
- 	FN(trace_vprintk),		\
-+	FN(export_errno),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 5efe2588575e..5b5051eb43e6 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1169,6 +1169,28 @@ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
- 	return ret;
- }
- 
-+BPF_CALL_1(bpf_export_errno, int, errno_val)
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_export_errno.c b/tools/testing/selftests/bpf/prog_tests/cgroup_export_errno.c
+new file mode 100644
+index 000000000000..c472267f8427
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_export_errno.c
+@@ -0,0 +1,472 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++/*
++ * Copyright 2021 Google LLC.
++ */
++
++#include <test_progs.h>
++#include <cgroup_helpers.h>
++#include <network_helpers.h>
++
++#include "cgroup_export_errno_setsockopt.skel.h"
++#include "cgroup_export_errno_getsockopt.skel.h"
++
++#define SOL_CUSTOM	0xdeadbeef
++
++static int zero;
++
++static void test_setsockopt_set(int cgroup_fd, int sock_fd)
 +{
-+	struct bpf_cg_run_ctx *ctx =
-+		container_of(current->bpf_ctx, struct bpf_cg_run_ctx, run_ctx);
++	struct cgroup_export_errno_setsockopt *obj;
++	struct bpf_link *link_set_eunatch = NULL;
 +
-+	if (errno_val < 0 || errno_val > MAX_ERRNO)
-+		return -EINVAL;
++	obj = cgroup_export_errno_setsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
 +
-+	if (!errno_val)
-+		return ctx->errno_val;
++	/* Attach setsockopt that sets EUNATCH, assert that
++	 * we actually get that error when we run setsockopt()
++	 */
++	link_set_eunatch = bpf_program__attach_cgroup(obj->progs.set_eunatch,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eunatch, "cg-attach-set_eunatch"))
++		goto close_bpf_object;
 +
-+	ctx->errno_val = errno_val;
++	if (!ASSERT_ERR(setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR,
++				   &zero, sizeof(int)), "setsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EUNATCH, "setsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 1, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_set_eunatch);
++
++	cgroup_export_errno_setsockopt__destroy(obj);
++}
++
++static void test_setsockopt_set_and_get(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_setsockopt *obj;
++	struct bpf_link *link_set_eunatch = NULL, *link_get_errno = NULL;
++
++	obj = cgroup_export_errno_setsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach setsockopt that sets EUNATCH, and one that gets the
++	 * previously set errno. Assert that we get the same errno back.
++	 */
++	link_set_eunatch = bpf_program__attach_cgroup(obj->progs.set_eunatch,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eunatch, "cg-attach-set_eunatch"))
++		goto close_bpf_object;
++	link_get_errno = bpf_program__attach_cgroup(obj->progs.get_errno,
++						    cgroup_fd);
++	if (!ASSERT_OK_PTR(link_get_errno, "cg-attach-get_errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR,
++				   &zero, sizeof(int)), "setsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EUNATCH, "setsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 2, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->errno_value, EUNATCH, "errno_value"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_set_eunatch);
++	bpf_link__destroy(link_get_errno);
++
++	cgroup_export_errno_setsockopt__destroy(obj);
++}
++
++static void test_setsockopt_default_zero(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_setsockopt *obj;
++	struct bpf_link *link_get_errno = NULL;
++
++	obj = cgroup_export_errno_setsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach setsockopt that gets the previously set errno.
++	 * Assert that, without anything setting one, we get 0.
++	 */
++	link_get_errno = bpf_program__attach_cgroup(obj->progs.get_errno,
++						    cgroup_fd);
++	if (!ASSERT_OK_PTR(link_get_errno, "cg-attach-get_errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_OK(setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR,
++				  &zero, sizeof(int)), "setsockopt"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 1, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->errno_value, 0, "errno_value"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_get_errno);
++
++	cgroup_export_errno_setsockopt__destroy(obj);
++}
++
++static void test_setsockopt_default_zero_and_set(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_setsockopt *obj;
++	struct bpf_link *link_get_errno = NULL, *link_set_eunatch = NULL;
++
++	obj = cgroup_export_errno_setsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach setsockopt that gets the previously set errno, and then
++	 * one that sets the errno to EUNATCH. Assert that the get does not
++	 * see EUNATCH set later, and does not prevent EUNATCH from being set.
++	 */
++	link_get_errno = bpf_program__attach_cgroup(obj->progs.get_errno,
++						    cgroup_fd);
++	if (!ASSERT_OK_PTR(link_get_errno, "cg-attach-get_errno"))
++		goto close_bpf_object;
++	link_set_eunatch = bpf_program__attach_cgroup(obj->progs.set_eunatch,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eunatch, "cg-attach-set_eunatch"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR,
++				   &zero, sizeof(int)), "setsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EUNATCH, "setsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 2, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->errno_value, 0, "errno_value"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_get_errno);
++	bpf_link__destroy(link_set_eunatch);
++
++	cgroup_export_errno_setsockopt__destroy(obj);
++}
++
++static void test_setsockopt_override(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_setsockopt *obj;
++	struct bpf_link *link_set_eunatch = NULL, *link_set_eisconn = NULL;
++	struct bpf_link *link_get_errno = NULL;
++
++	obj = cgroup_export_errno_setsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach setsockopt that sets EUNATCH, then one that sets EISCONN,
++	 * and then one that gets the exported errno. Assert both the syscall
++	 * and the helper sees the last set errno.
++	 */
++	link_set_eunatch = bpf_program__attach_cgroup(obj->progs.set_eunatch,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eunatch, "cg-attach-set_eunatch"))
++		goto close_bpf_object;
++	link_set_eisconn = bpf_program__attach_cgroup(obj->progs.set_eisconn,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eisconn, "cg-attach-set_eisconn"))
++		goto close_bpf_object;
++	link_get_errno = bpf_program__attach_cgroup(obj->progs.get_errno,
++						    cgroup_fd);
++	if (!ASSERT_OK_PTR(link_get_errno, "cg-attach-get_errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR,
++				   &zero, sizeof(int)), "setsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EISCONN, "setsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 3, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->errno_value, EISCONN, "errno_value"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_set_eunatch);
++	bpf_link__destroy(link_set_eisconn);
++	bpf_link__destroy(link_get_errno);
++
++	cgroup_export_errno_setsockopt__destroy(obj);
++}
++
++static void test_setsockopt_legacy_eperm(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_setsockopt *obj;
++	struct bpf_link *link_legacy_eperm = NULL, *link_get_errno = NULL;
++
++	obj = cgroup_export_errno_setsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach setsockopt that return a reject without setting errno
++	 * (legacy reject), and one that gets the errno. Assert that for
++	 * backward compatibility the syscall result in EPERM, and this
++	 * is also visible to the helper.
++	 */
++	link_legacy_eperm = bpf_program__attach_cgroup(obj->progs.legacy_eperm,
++						       cgroup_fd);
++	if (!ASSERT_OK_PTR(link_legacy_eperm, "cg-attach-legacy_eperm"))
++		goto close_bpf_object;
++	link_get_errno = bpf_program__attach_cgroup(obj->progs.get_errno,
++						    cgroup_fd);
++	if (!ASSERT_OK_PTR(link_get_errno, "cg-attach-get_errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR,
++				   &zero, sizeof(int)), "setsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EPERM, "setsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 2, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->errno_value, EPERM, "errno_value"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_legacy_eperm);
++	bpf_link__destroy(link_get_errno);
++
++	cgroup_export_errno_setsockopt__destroy(obj);
++}
++
++static void test_setsockopt_legacy_no_override(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_setsockopt *obj;
++	struct bpf_link *link_set_eunatch = NULL, *link_legacy_eperm = NULL;
++	struct bpf_link *link_get_errno = NULL;
++
++	obj = cgroup_export_errno_setsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach setsockopt that sets EUNATCH, then one that return a reject
++	 * without setting errno, and then one that gets the exported errno.
++	 * Assert both the syscall and the helper's errno are unaffected by
++	 * the second prog (i.e. legacy rejects does not override the errno
++	 * to EPERM).
++	 */
++	link_set_eunatch = bpf_program__attach_cgroup(obj->progs.set_eunatch,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eunatch, "cg-attach-set_eunatch"))
++		goto close_bpf_object;
++	link_legacy_eperm = bpf_program__attach_cgroup(obj->progs.legacy_eperm,
++						       cgroup_fd);
++	if (!ASSERT_OK_PTR(link_legacy_eperm, "cg-attach-legacy_eperm"))
++		goto close_bpf_object;
++	link_get_errno = bpf_program__attach_cgroup(obj->progs.get_errno,
++						    cgroup_fd);
++	if (!ASSERT_OK_PTR(link_get_errno, "cg-attach-get_errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR,
++				   &zero, sizeof(int)), "setsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EUNATCH, "setsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 3, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->errno_value, EUNATCH, "errno_value"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_set_eunatch);
++	bpf_link__destroy(link_legacy_eperm);
++	bpf_link__destroy(link_get_errno);
++
++	cgroup_export_errno_setsockopt__destroy(obj);
++}
++
++static void test_getsockopt_get(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_getsockopt *obj;
++	struct bpf_link *link_get_errno = NULL;
++	int buf;
++	socklen_t optlen = sizeof(buf);
++
++	obj = cgroup_export_errno_getsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach getsockopt that gets previously set errno. Assert that the
++	 * error from kernel is in retval_value and not errno_value.
++	 */
++	link_get_errno = bpf_program__attach_cgroup(obj->progs.get_errno,
++						    cgroup_fd);
++	if (!ASSERT_OK_PTR(link_get_errno, "cg-attach-get_errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(getsockopt(sock_fd, SOL_CUSTOM, 0,
++				   &buf, &optlen), "getsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EOPNOTSUPP, "getsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 1, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->errno_value, 0, "errno_value"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(obj->bss->retval_value, -EOPNOTSUPP, "errno_value"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_get_errno);
++
++	cgroup_export_errno_getsockopt__destroy(obj);
++}
++
++static void test_getsockopt_override(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_getsockopt *obj;
++	struct bpf_link *link_set_eisconn = NULL;
++	int buf;
++	socklen_t optlen = sizeof(buf);
++
++	obj = cgroup_export_errno_getsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach getsockopt that sets errno to EISCONN. Assert that this
++	 * overrides the value from kernel.
++	 */
++	link_set_eisconn = bpf_program__attach_cgroup(obj->progs.set_eisconn,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eisconn, "cg-attach-set_eisconn"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(getsockopt(sock_fd, SOL_CUSTOM, 0,
++				   &buf, &optlen), "getsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EISCONN, "getsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 1, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_set_eisconn);
++
++	cgroup_export_errno_getsockopt__destroy(obj);
++}
++
++static void test_getsockopt_retval_no_clear_errno(int cgroup_fd, int sock_fd)
++{
++	struct cgroup_export_errno_getsockopt *obj;
++	struct bpf_link *link_set_eisconn = NULL, *link_clear_retval = NULL;
++	int buf;
++	socklen_t optlen = sizeof(buf);
++
++	obj = cgroup_export_errno_getsockopt__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "skel-load"))
++		return;
++
++	/* Attach getsockopt that sets errno to EISCONN, and one that clears
++	 * retval. Assert that the clearing retval does not clear EISCONN.
++	 */
++	link_set_eisconn = bpf_program__attach_cgroup(obj->progs.set_eisconn,
++						      cgroup_fd);
++	if (!ASSERT_OK_PTR(link_set_eisconn, "cg-attach-set_eisconn"))
++		goto close_bpf_object;
++	link_clear_retval = bpf_program__attach_cgroup(obj->progs.clear_retval,
++						       cgroup_fd);
++	if (!ASSERT_OK_PTR(link_clear_retval, "cg-attach-clear_retval"))
++		goto close_bpf_object;
++
++	if (!ASSERT_ERR(getsockopt(sock_fd, SOL_CUSTOM, 0,
++				   &buf, &optlen), "getsockopt"))
++		goto close_bpf_object;
++	if (!ASSERT_EQ(errno, EISCONN, "getsockopt-errno"))
++		goto close_bpf_object;
++
++	if (!ASSERT_EQ(obj->bss->invocations, 2, "invocations"))
++		goto close_bpf_object;
++	if (!ASSERT_FALSE(obj->bss->assertion_error, "assertion_error"))
++		goto close_bpf_object;
++
++close_bpf_object:
++	bpf_link__destroy(link_set_eisconn);
++	bpf_link__destroy(link_clear_retval);
++
++	cgroup_export_errno_getsockopt__destroy(obj);
++}
++
++void test_cgroup_export_errno(void)
++{
++	int cgroup_fd = -1;
++	int sock_fd = -1;
++
++	cgroup_fd = test__join_cgroup("/cgroup_export_errno");
++	if (!ASSERT_GE(cgroup_fd, 0, "cg-create"))
++		goto close_fd;
++
++	sock_fd = start_server(AF_INET, SOCK_DGRAM, NULL, 0, 0);
++	if (!ASSERT_GE(sock_fd, 0, "start-server"))
++		goto close_fd;
++
++	if (test__start_subtest("setsockopt-set"))
++		test_setsockopt_set(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("setsockopt-set_and_get"))
++		test_setsockopt_set_and_get(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("setsockopt-default_zero"))
++		test_setsockopt_default_zero(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("setsockopt-default_zero_and_set"))
++		test_setsockopt_default_zero_and_set(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("setsockopt-override"))
++		test_setsockopt_override(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("setsockopt-legacy_eperm"))
++		test_setsockopt_legacy_eperm(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("setsockopt-legacy_no_override"))
++		test_setsockopt_legacy_no_override(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("getsockopt-get"))
++		test_getsockopt_get(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("getsockopt-override"))
++		test_getsockopt_override(cgroup_fd, sock_fd);
++
++	if (test__start_subtest("getsockopt-retval_no_clear_errno"))
++		test_getsockopt_retval_no_clear_errno(cgroup_fd, sock_fd);
++
++close_fd:
++	close(cgroup_fd);
++}
+diff --git a/tools/testing/selftests/bpf/progs/cgroup_export_errno_getsockopt.c b/tools/testing/selftests/bpf/progs/cgroup_export_errno_getsockopt.c
+new file mode 100644
+index 000000000000..2429e66b325a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/cgroup_export_errno_getsockopt.c
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++/*
++ * Copyright 2021 Google LLC.
++ */
++
++#include <errno.h>
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++__u32 invocations = 0;
++__u32 assertion_error = 0;
++__u32 errno_value = 0;
++__u32 retval_value = 0;
++
++SEC("cgroup/getsockopt")
++int get_errno(struct bpf_sockopt *ctx)
++{
++	errno_value = bpf_export_errno(0);
++	retval_value = ctx->retval;
++	__sync_fetch_and_add(&invocations, 1);
++
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int set_eisconn(struct bpf_sockopt *ctx)
++{
++	__sync_fetch_and_add(&invocations, 1);
++
++	if (bpf_export_errno(EISCONN))
++		assertion_error = 1;
++
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int clear_retval(struct bpf_sockopt *ctx)
++{
++	__sync_fetch_and_add(&invocations, 1);
++
++	ctx->retval = 0;
++
++	return 1;
++}
+diff --git a/tools/testing/selftests/bpf/progs/cgroup_export_errno_setsockopt.c b/tools/testing/selftests/bpf/progs/cgroup_export_errno_setsockopt.c
+new file mode 100644
+index 000000000000..f8585e100863
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/cgroup_export_errno_setsockopt.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++/*
++ * Copyright 2021 Google LLC.
++ */
++
++#include <errno.h>
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++__u32 invocations = 0;
++__u32 assertion_error = 0;
++__u32 errno_value = 0;
++
++SEC("cgroup/setsockopt")
++int get_errno(struct bpf_sockopt *ctx)
++{
++	errno_value = bpf_export_errno(0);
++	__sync_fetch_and_add(&invocations, 1);
++
++	return 1;
++}
++
++SEC("cgroup/setsockopt")
++int set_eunatch(struct bpf_sockopt *ctx)
++{
++	__sync_fetch_and_add(&invocations, 1);
++
++	if (bpf_export_errno(EUNATCH))
++		assertion_error = 1;
++
 +	return 0;
 +}
 +
-+static const struct bpf_func_proto bpf_export_errno_proto = {
-+	.func		= bpf_export_errno,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_ANYTHING,
-+};
++SEC("cgroup/setsockopt")
++int set_eisconn(struct bpf_sockopt *ctx)
++{
++	__sync_fetch_and_add(&invocations, 1);
 +
- static const struct bpf_func_proto *
- cgroup_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-@@ -1181,6 +1203,8 @@ cgroup_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_current_cgroup_id_proto;
- 	case BPF_FUNC_perf_event_output:
- 		return &bpf_event_output_data_proto;
-+	case BPF_FUNC_export_errno:
-+		return &bpf_export_errno_proto;
- 	default:
- 		return bpf_base_func_proto(func_id);
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 6fc59d61937a..d8126f8c0541 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4909,6 +4909,19 @@ union bpf_attr {
-  *	Return
-  *		The number of bytes written to the buffer, or a negative error
-  *		in case of failure.
-+ *
-+ * int bpf_export_errno(int errno_val)
-+ *	Description
-+ *		If *errno_val* is positive, set the syscall's return error code;
-+ *		if *errno_val* is zero, retrieve the previously set code.
-+ *
-+ *		This helper is currently supported by cgroup programs only.
-+ *	Return
-+ *		Zero if set is successful, or the previously set error code on
-+ *		retrieval. Previously set code may be zero if it was never set.
-+ *		On error, a negative value.
-+ *
-+ *		**-EINVAL** if *errno_val* not between zero and MAX_ERRNO inclusive.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5089,6 +5102,7 @@ union bpf_attr {
- 	FN(task_pt_regs),		\
- 	FN(get_branch_snapshot),	\
- 	FN(trace_vprintk),		\
-+	FN(export_errno),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
++	if (bpf_export_errno(EISCONN))
++		assertion_error = 1;
++
++	return 0;
++}
++
++SEC("cgroup/setsockopt")
++int legacy_eperm(struct bpf_sockopt *ctx)
++{
++	__sync_fetch_and_add(&invocations, 1);
++
++	return 0;
++}
 -- 
 2.33.0
 
