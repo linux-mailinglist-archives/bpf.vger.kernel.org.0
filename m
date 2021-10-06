@@ -2,206 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED094424872
-	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 23:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3695F4248D1
+	for <lists+bpf@lfdr.de>; Wed,  6 Oct 2021 23:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239454AbhJFVIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 17:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233346AbhJFVIA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:08:00 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4811C061753
-        for <bpf@vger.kernel.org>; Wed,  6 Oct 2021 14:06:07 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id m21so3562333pgu.13
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 14:06:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xde1f9Ug4W6itlYBIif71OcerLPrmVBObFV6OCnWGV0=;
-        b=lzMVvF/USSjhAelz4pHRhhpVq/+AnS26bdnydIeAUp4XVNdBgC3T9nLYFAN18bayhh
-         imCzQqvkfWmaK14Eo0CDAm2bCAwMRZwo4APgdlfy7JekABvCw6jHTSoIn26Ov50OP7Vb
-         IpQX8JAzuhJZ9j1tSdcUJwiF0wso++SGj12dSUtL4Xez1K4UQ6TmmqDwIE0mv6KirPgj
-         HvnvcoylWdse4xlzjTN58eyj796KmAFk9JGU6rUNB4ELC5uCGMJm/pLvU4cerdT5+TZg
-         rbeCvmNHiPPijHDLXJvwhKnoMhI1swdFCOY51R2diW9JenEgW5E1Imm7F9BQRrDkY9XG
-         MEkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xde1f9Ug4W6itlYBIif71OcerLPrmVBObFV6OCnWGV0=;
-        b=HoV/LcFww6NGaRmd+jQJKIPEPYVESy5gbpyPtAW4YZRhFuOmzLNFesUsj93XzsCTO/
-         Jd4mJI1+d9E77EMGecWp1RBHgHte3w/XYzlMvBKbGA9ZRwSaHPXG3umHoUdHcRH5W3Dp
-         NAFO2WQFPHPz8sWG0esIaxS+qYPM07fVtQ1jKKniDPBGSgQdAtYWx+7iHpzEMQlel0hU
-         5LJWH9gWM/car6Bx9xAnfzGA1Lh7GKmK2fLRUaFP3LtjcbcNVnv9QmsSDggsPuWLwkkS
-         s8mXZbHWc3Pmm/DUD5674NHgHb/BKXsWUiY3tAJMy5zWg+zyO/gO1/jl8GxV1EU3hJme
-         ylWA==
-X-Gm-Message-State: AOAM5338RSsagGKd5xtcYdGQIy7RwmMsGlAqRGD6h88t7w8QxINwyQWD
-        dnzlTBgHa9DU6aDNFMDlSPGOkhycWDW7AMKC6Fi/rQ==
-X-Google-Smtp-Source: ABdhPJzvkAD6c3687rWNG8U0byqJ5Gng0298AP+cCzREGzz9Wyerh6AUECVkqWnLlCtjOwQtD/y/bBH9Rxi+sjZCg/Q=
-X-Received: by 2002:a63:f94d:: with SMTP id q13mr237767pgk.230.1633554366732;
- Wed, 06 Oct 2021 14:06:06 -0700 (PDT)
+        id S232152AbhJFVY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 17:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239680AbhJFVYZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:24:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1DA1610EA
+        for <bpf@vger.kernel.org>; Wed,  6 Oct 2021 21:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633555352;
+        bh=HXPGA87ikNQuRSY9vVvChxjosVmuW30IuNRAuuHOyaA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lCR5VpIv5PQjJc7ca8Ju6GToIN5lNM6z4O/D5UwHGe2GwFSeunGrlZ4CZeahDs/Jk
+         1RvpNMEUMp+Wklsn7HLCfwUQAFSJRhH8otYcPlqPr35ukGNUm7oigTda7RALo2xByb
+         Sdy7ltl8kyU+fs7a8Zub8tjAei5T9TQQZT6d7SaDsMtEVT8dkIogZv4cFKUWK9WY2V
+         3dAcqNWa8YE5XbTp3uTxCfAJN01ZciyP6nBrn9SjYCqvVH9pyzYytn240ht1GYcRQV
+         AUuOq7AQ4wUDDzuqTASAW7kVa2Iy1Qkb1YX16eT1VwTBYKeRe9n1ih25Sx9NOmHJjn
+         lYjbHzICVFHEQ==
+Received: by mail-lf1-f43.google.com with SMTP id b20so16248294lfv.3
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 14:22:32 -0700 (PDT)
+X-Gm-Message-State: AOAM533RJuCj1rWusKpG4oMi65b3VdL9apo6W9m0A6cOdZvSij0XcBKX
+        /8QhB2MefmCg2D846B19aq1ChK8WbXJTL3RutOM=
+X-Google-Smtp-Source: ABdhPJwq5JkqrrByy9lEygZXdXhK5m+vEhDpkW2B8rl/eW9d9nC6pJ/lob3WOlDVMxE66cQCFFblS3kU2/7+vr2LWZw=
+X-Received: by 2002:ac2:41d4:: with SMTP id d20mr372465lfi.598.1633555350949;
+ Wed, 06 Oct 2021 14:22:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929235910.1765396-1-jevburton.kernel@gmail.com>
- <20211005051306.4zbdqo3rnecj3hyv@ast-mbp> <CAL0ypaB3=cPnCGdwfEHhSLf8zh_mMJ=mL5T_3EfTsPFbNuLSAA@mail.gmail.com>
- <20211006164143.fuvbzxjca7cxe5ur@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20211006164143.fuvbzxjca7cxe5ur@ast-mbp.dhcp.thefacebook.com>
-From:   Joe Burton <jevburton@google.com>
-Date:   Wed, 6 Oct 2021 14:05:55 -0700
-Message-ID: <CAL0ypaCwmGkQ0VK3nvfimHsO+OhBZb8cew-5c1gjZoZVZb1bBg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/13] Introduce BPF map tracing capability
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Joe Burton <jevburton.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20211006194135.608932-1-jmeng@fb.com>
+In-Reply-To: <20211006194135.608932-1-jmeng@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 6 Oct 2021 14:22:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6UZgqao6UbYsZz-bzBd8ZrV5Kbaya2iD4Rxko+LMo4bQ@mail.gmail.com>
+Message-ID: <CAPhsuW6UZgqao6UbYsZz-bzBd8ZrV5Kbaya2iD4Rxko+LMo4bQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf,x64: Factor out emission of REX byte in more cases
+To:     Jie Meng <jmeng@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Just to make sure we're on the same patch I'm proposing something like
-> the patch below...
-
-The proposed patch seems reasonable overall:
-+ eliminates a lot of boilerplate
-+ enables map update filtering
-+ minimal perf cost when not tracing maps
-+ avoids adding complexity to verifier
-- requires touching every map type's implementation
-- tracing one map implies tracing all maps
-
-I can rev this RFC with hooks inside the common map types' update() and
-delete() methods.
-
-> Especially for local storage... doing tracing from bpf program itself
-> seems to make the most sense.
-
-I'm a little unclear on how this should work. There's no off-the-shelf
-solution that can do this for us, right?
-
-In particular I think we're looking for an interface like this:
-
-        /* This is a BPF program */
-        int my_prog(struct bpf_sock *sk) {
-                struct MyValue *v = bpf_sk_storage_get(&my_map, sk, ...);
-                ...
-                bpf_sk_storage_trace(&my_map, sk, v);
-                return 0;
-        }
-
-I.e. we need some way of triggering a tracing hook from a BPF program.
-For non-local storage maps we can achieve this with a
-bpf_map_update_elem(). For local storage I suspect we need something
-new.
-
-Assuming there's no off-the-shelf hook that I'm missing, we can do some
-brainstorming internally and come back with a proposal or two.
-
-On Wed, Oct 6, 2021 at 9:41 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Oct 6, 2021 at 12:43 PM Jie Meng <jmeng@fb.com> wrote:
 >
-> On Tue, Oct 05, 2021 at 02:47:34PM -0700, Joe Burton wrote:
-> > > It's a neat idea to user verifier powers for this job,
-> > > but I wonder why simple tracepoint in map ops was not used instead?
-> >
-> > My concern with tracepoints is that they execute for all map updates,
-> > not for a particular map. Ideally performing an upgrade of program X
-> > should not affect the performance characteristics of program Y.
+> Introduce a single reg version of maybe_emit_mod() and factor out
+> common code in more cases.
 >
-> Right, but single 'if (map == map_ptr_being_traced)'
-> won't really affect update() speed of maps.
-> For hash maps the update/delete are heavy operations with a bunch of
-> checks and spinlocks.
-> Just to make sure we're on the same patch I'm proposing something like
-> the patch below...
->
-> > If n programs are opted into this model, then upgrading any of them
-> > affects the performance characteristics of every other. There's also
-> > the (very remote) possibility of multiple simultaneous upgrades tracing
-> > map updates at the same time, causing a greater performance hit.
->
-> Also consider that the verifier fixup of update/delete in the code
-> is permanent whereas attaching fentry or fmod_ret to a nop function is temporary.
-> Once tracing of the map is no longer necessary that fentry program
-> will be detached and overhead will go back to zero.
-> Which is not the case for 'fixup' approach.
->
-> With fmod_ret the tracing program might be the enforcing program.
-> It could be used to disallow certain map access in a generic way.
->
-> > > I don't think the "solution" for lookup operation is worth pursuing.
-> > > The bpf prog that needs this map tracing is completely in your control.
-> > > So just don't do writes after lookup.
-> >
-> > I eventually want to support apps that use local storage. Those APIs
-> > generally only allow updates via a pointer. E.g. bpf_sk_storage_get()
-> > only allows updates via the returned pointer and via
-> > bpf_sk_storage_delete().
-> >
-> > Since I eventually have to solve this problem to handle local storage,
-> > then it seems worth solving it for normal maps as well. They seem
-> > like isomorphic problems.
->
-> Especially for local storage... doing tracing from bpf program itself
-> seems to make the most sense.
->
-> From c7b6ec4488ee50ebbca61c22c6837fd6fe7007bf Mon Sep 17 00:00:00 2001
-> From: Alexei Starovoitov <ast@kernel.org>
-> Date: Wed, 6 Oct 2021 09:30:21 -0700
-> Subject: [PATCH] bpf: trace array map update
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Jie Meng <jmeng@fb.com>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
 > ---
->  kernel/bpf/arraymap.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  arch/x86/net/bpf_jit_comp.c | 67 +++++++++++++++++--------------------
+>  1 file changed, 31 insertions(+), 36 deletions(-)
 >
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 5e1ccfae916b..89f853b1a217 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -293,6 +293,13 @@ static void check_and_free_timer_in_array(struct bpf_array *arr, void *val)
->                 bpf_timer_cancel_and_free(val + arr->map.timer_off);
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 5a0edea3cc2e..e474718d152b 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -721,6 +721,20 @@ static void maybe_emit_mod(u8 **pprog, u32 dst_reg, u32 src_reg, bool is64)
+>         *pprog = prog;
 >  }
 >
-> +noinline int bpf_array_map_trace_update(struct bpf_map *map, void *key,
-> +                                       void *value, u64 map_flags)
+> +/*
+> + * Similar version of maybe_emit_mod() for a single register
+> + */
+> +static void maybe_emit_1mod(u8 **pprog, u32 reg, bool is64)
 > +{
-> +       return 0;
+> +       u8 *prog = *pprog;
+> +
+> +       if (is64)
+> +               EMIT1(add_1mod(0x48, reg));
+> +       else if (is_ereg(reg))
+> +               EMIT1(add_1mod(0x40, reg));
+> +       *pprog = prog;
 > +}
-> +ALLOW_ERROR_INJECTION(bpf_array_map_trace_update, ERRNO);
 > +
->  /* Called from syscall or from eBPF program */
->  static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
->                                  u64 map_flags)
-> @@ -300,6 +307,7 @@ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
->         struct bpf_array *array = container_of(map, struct bpf_array, map);
->         u32 index = *(u32 *)key;
->         char *val;
-> +       int err;
+>  /* LDX: dst_reg = *(u8*)(src_reg + off) */
+>  static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+>  {
+> @@ -951,10 +965,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>                         /* neg dst */
+>                 case BPF_ALU | BPF_NEG:
+>                 case BPF_ALU64 | BPF_NEG:
+> -                       if (BPF_CLASS(insn->code) == BPF_ALU64)
+> -                               EMIT1(add_1mod(0x48, dst_reg));
+> -                       else if (is_ereg(dst_reg))
+> -                               EMIT1(add_1mod(0x40, dst_reg));
+> +                       maybe_emit_1mod(&prog, dst_reg,
+> +                                       BPF_CLASS(insn->code) == BPF_ALU64);
+>                         EMIT2(0xF7, add_1reg(0xD8, dst_reg));
+>                         break;
 >
->         if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST))
->                 /* unknown flags */
-> @@ -317,6 +325,9 @@ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
->                      !map_value_has_spin_lock(map)))
->                 return -EINVAL;
+> @@ -968,10 +980,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>                 case BPF_ALU64 | BPF_AND | BPF_K:
+>                 case BPF_ALU64 | BPF_OR | BPF_K:
+>                 case BPF_ALU64 | BPF_XOR | BPF_K:
+> -                       if (BPF_CLASS(insn->code) == BPF_ALU64)
+> -                               EMIT1(add_1mod(0x48, dst_reg));
+> -                       else if (is_ereg(dst_reg))
+> -                               EMIT1(add_1mod(0x40, dst_reg));
+> +                       maybe_emit_1mod(&prog, dst_reg,
+> +                                       BPF_CLASS(insn->code) == BPF_ALU64);
 >
-> +       if (unlikely(err = bpf_array_map_trace_update(map, key, value, map_flags)))
-> +               return err;
-> +
->         if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
->                 memcpy(this_cpu_ptr(array->pptrs[index & array->index_mask]),
->                        value, map->value_size);
+>                         /*
+>                          * b3 holds 'normal' opcode, b2 short form only valid
+> @@ -1059,11 +1069,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>                          */
+>                         EMIT2(0x31, 0xd2);
+>
+> -                       if (is64)
+> -                               EMIT1(add_1mod(0x48, src_reg));
+> -                       else if (is_ereg(src_reg))
+> -                               EMIT1(add_1mod(0x40, src_reg));
+>                         /* div src_reg */
+> +                       maybe_emit_1mod(&prog, src_reg, is64);
+>                         EMIT2(0xF7, add_1reg(0xF0, src_reg));
+>
+>                         if (BPF_OP(insn->code) == BPF_MOD &&
+> @@ -1084,10 +1091,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>
+>                 case BPF_ALU | BPF_MUL | BPF_K:
+>                 case BPF_ALU64 | BPF_MUL | BPF_K:
+> -                       if (BPF_CLASS(insn->code) == BPF_ALU64)
+> -                               EMIT1(add_2mod(0x48, dst_reg, dst_reg));
+> -                       else if (is_ereg(dst_reg))
+> -                               EMIT1(add_2mod(0x40, dst_reg, dst_reg));
+> +                       maybe_emit_mod(&prog, dst_reg, dst_reg,
+> +                                      BPF_CLASS(insn->code) == BPF_ALU64);
+>
+>                         if (is_imm8(imm32))
+>                                 /* imul dst_reg, dst_reg, imm8 */
+> @@ -1102,10 +1107,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>
+>                 case BPF_ALU | BPF_MUL | BPF_X:
+>                 case BPF_ALU64 | BPF_MUL | BPF_X:
+> -                       if (BPF_CLASS(insn->code) == BPF_ALU64)
+> -                               EMIT1(add_2mod(0x48, src_reg, dst_reg));
+> -                       else if (is_ereg(dst_reg) || is_ereg(src_reg))
+> -                               EMIT1(add_2mod(0x40, src_reg, dst_reg));
+> +                       maybe_emit_mod(&prog, src_reg, dst_reg,
+> +                                      BPF_CLASS(insn->code) == BPF_ALU64);
+>
+>                         /* imul dst_reg, src_reg */
+>                         EMIT3(0x0F, 0xAF, add_2reg(0xC0, src_reg, dst_reg));
+> @@ -1118,10 +1121,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>                 case BPF_ALU64 | BPF_LSH | BPF_K:
+>                 case BPF_ALU64 | BPF_RSH | BPF_K:
+>                 case BPF_ALU64 | BPF_ARSH | BPF_K:
+> -                       if (BPF_CLASS(insn->code) == BPF_ALU64)
+> -                               EMIT1(add_1mod(0x48, dst_reg));
+> -                       else if (is_ereg(dst_reg))
+> -                               EMIT1(add_1mod(0x40, dst_reg));
+> +                       maybe_emit_1mod(&prog, dst_reg,
+> +                                       BPF_CLASS(insn->code) == BPF_ALU64);
+>
+>                         b3 = simple_alu_opcodes[BPF_OP(insn->code)];
+>                         if (imm32 == 1)
+> @@ -1152,10 +1153,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>                         }
+>
+>                         /* shl %rax, %cl | shr %rax, %cl | sar %rax, %cl */
+> -                       if (BPF_CLASS(insn->code) == BPF_ALU64)
+> -                               EMIT1(add_1mod(0x48, dst_reg));
+> -                       else if (is_ereg(dst_reg))
+> -                               EMIT1(add_1mod(0x40, dst_reg));
+> +                       maybe_emit_1mod(&prog, dst_reg,
+> +                                       BPF_CLASS(insn->code) == BPF_ALU64);
+>
+>                         b3 = simple_alu_opcodes[BPF_OP(insn->code)];
+>                         EMIT2(0xD3, add_1reg(b3, dst_reg));
+> @@ -1465,10 +1464,8 @@ st:                      if (is_imm8(insn->off))
+>                 case BPF_JMP | BPF_JSET | BPF_K:
+>                 case BPF_JMP32 | BPF_JSET | BPF_K:
+>                         /* test dst_reg, imm32 */
+> -                       if (BPF_CLASS(insn->code) == BPF_JMP)
+> -                               EMIT1(add_1mod(0x48, dst_reg));
+> -                       else if (is_ereg(dst_reg))
+> -                               EMIT1(add_1mod(0x40, dst_reg));
+> +                       maybe_emit_1mod(&prog, dst_reg,
+> +                                       BPF_CLASS(insn->code) == BPF_JMP);
+>                         EMIT2_off32(0xF7, add_1reg(0xC0, dst_reg), imm32);
+>                         goto emit_cond_jmp;
+>
+> @@ -1501,10 +1498,8 @@ st:                      if (is_imm8(insn->off))
+>                         }
+>
+>                         /* cmp dst_reg, imm8/32 */
+> -                       if (BPF_CLASS(insn->code) == BPF_JMP)
+> -                               EMIT1(add_1mod(0x48, dst_reg));
+> -                       else if (is_ereg(dst_reg))
+> -                               EMIT1(add_1mod(0x40, dst_reg));
+> +                       maybe_emit_1mod(&prog, dst_reg,
+> +                                       BPF_CLASS(insn->code) == BPF_JMP);
+>
+>                         if (is_imm8(imm32))
+>                                 EMIT3(0x83, add_1reg(0xF8, dst_reg), imm32);
 > --
 > 2.30.2
 >
