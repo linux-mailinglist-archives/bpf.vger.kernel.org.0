@@ -2,173 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3D442551C
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 16:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309C5425538
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 16:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241969AbhJGOQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Oct 2021 10:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241679AbhJGOQG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:16:06 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74867C061570
-        for <bpf@vger.kernel.org>; Thu,  7 Oct 2021 07:14:12 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso6533165pjb.4
-        for <bpf@vger.kernel.org>; Thu, 07 Oct 2021 07:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZWb2fYim43OGSg+xARj8L/LhBJo5rAUAhxuWF5T+im4=;
-        b=MgSXzIOurIieQL6ahs4dDQza5zNQN4wSEOQQ3r263ocILyjoGdVcPS3qAvFHIn5Vx6
-         Nw+yYjBio4uBGZWpkZil7EVdEyWrntgcT25sKta0J20jTGcgP8xaYFBrRvg9UMTwUSyB
-         gm7QuPJIsmTaPtPBT1noUSqtpUg0OPiHNCZoH1SK7I6S0B7kallwpAMmWcG72sAddEIy
-         dsy9mPVjc+1Ur5giyCOOr7sk3Kchk3cy6yexm+WSxTY/6sH9xun0b6zysKWyQithJlal
-         Wik1Ukv8CoBoaLSK5BDMzcmlHvJ5gijfbQr5OARO2kWKFinHXQRBfuUHjAXVowCXsgiB
-         9LBA==
+        id S241961AbhJGOWP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Oct 2021 10:22:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39128 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233362AbhJGOWO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 Oct 2021 10:22:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633616420;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kFQkbTWYNvDnkeWkafCQ3cJn0Bfvc5WJyurv+wNRTSs=;
+        b=H5P5iN2HBDWyZlviHji3OUoB8lhmpMrXOSs+8lzlDw3yaDA72Q/THIUVaZt94/0ZOeu62+
+        EEoakmOR1GhTwm4nWOCotOjym61g709NMypF4TQ4/T4c5E78+FHi3XxGwU0JTLAbtQU7yp
+        pexGj+vz/ZlsYTkO9m0gT0LZvYQ1yus=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-MVTxTL5NN3GIsGylxJLWNQ-1; Thu, 07 Oct 2021 10:20:19 -0400
+X-MC-Unique: MVTxTL5NN3GIsGylxJLWNQ-1
+Received: by mail-ed1-f69.google.com with SMTP id 1-20020a508741000000b003da559ba1eeso6044297edv.13
+        for <bpf@vger.kernel.org>; Thu, 07 Oct 2021 07:20:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZWb2fYim43OGSg+xARj8L/LhBJo5rAUAhxuWF5T+im4=;
-        b=zKyWRawSfKHXnFFFAz/AfkF0gP+8BqkgHvAKnVGNlWdO6fKAS9f0FMrQSS5aofKiDg
-         qTAsYHGx2D1XZFpawWeWc63Q0hDWvWdlLvkd+eUkzx8QsdtT7OrnwjX43dCQHN3tZEc6
-         +ZW7TcznFhlB8Y+/r9BxLz2btc/u5+BXIHuXtW+YHkB6sTBb4kMX/DQ4O56RBY4PF+t/
-         3ZcisZUmtlTeCUfCU5nQj3UmdDeEykb+ezjtdaREGYndA7u4TheYYc0NLbhYzxan+7oV
-         pGpf20YXE3vf/TYdnaV+p5cIhvNLd8xnLRdeS/SkDKUMk8zd0HANjeGjRP5wVjd0gVvH
-         xPOg==
-X-Gm-Message-State: AOAM530jqmte42BSFufyGIJr+dsLGIAEFcYdOMFa4MFf+LhsB7xLg43v
-        58Vkm+pdGBbXHQGZNPKSgxMTUmvbIic56Q==
-X-Google-Smtp-Source: ABdhPJwG59YfU07WIFgANBWGPX5UKgPXVMkS1Fszf/5EncCMDI8HRwnTYZl/iBs8kKNSY4rEX+swRw==
-X-Received: by 2002:a17:90a:718b:: with SMTP id i11mr2108632pjk.22.1633616051857;
-        Thu, 07 Oct 2021 07:14:11 -0700 (PDT)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id rm6sm3102699pjb.18.2021.10.07.07.14.10
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=kFQkbTWYNvDnkeWkafCQ3cJn0Bfvc5WJyurv+wNRTSs=;
+        b=vBjNUNCRUbg+Eu+Jg7GaJvItYOz5trLuLIEP+KKG/XaSkA6cpP/aF7jvGb0BBzDN1e
+         zjpO8I1GMqKIyv50xcyxo17i+Ookp9yA5NPPKQmnc4BcXuFiP0iYEx/g9DTWufefNimX
+         hDNuG1szcc33x1mK+olVYzokIUEdR6JbVC/ja+NPH//fnW8av9Bx8l9gVo8QI9ZKS/3V
+         BYOCUr9icvsEer2fb2v2WNVMYQsqdNckfHd+A3jGa8Sv7QH2wfUNuYED1dVL2uJB0LiA
+         yWfrmpIvh1E7EBRK4ufZzyOvT7aOAD9P8ydQRukrLu2zYrLQTQ++LcBZPErcl4gVEbm7
+         u5Aw==
+X-Gm-Message-State: AOAM530Cc3KEoBIED/ZKmG0k29lXDtH/UlJ0U07PGhQA7XMrCKbPoR55
+        wU1qwou+u0ZCIQjJwaIxNf49DWOUzxQG1xYwOovhXo4BmyX43iN2CLwMUUP4c5EsRWvxPhS30cP
+        EpGlB4Yf2quh7
+X-Received: by 2002:a05:6402:26d1:: with SMTP id x17mr4997123edd.367.1633616415899;
+        Thu, 07 Oct 2021 07:20:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyyrbWcZ4p/hcttCQfXIaLRNBAxBoDkRStFeoZZcVLL5yhFYEvtBmDzMSNy+R/ihzl5dd7qtQ==
+X-Received: by 2002:a05:6402:26d1:: with SMTP id x17mr4996886edd.367.1633616413830;
+        Thu, 07 Oct 2021 07:20:13 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id g26sm1213597edu.9.2021.10.07.07.20.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 07:14:11 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kafai@fb.com,
-        songliubraving@fb.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 2/2 v2] selftests/bpf: Test bpf_skc_to_unix_sock() helper
-Date:   Thu,  7 Oct 2021 22:13:31 +0800
-Message-Id: <20211007141331.723149-3-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211007141331.723149-1-hengqi.chen@gmail.com>
-References: <20211007141331.723149-1-hengqi.chen@gmail.com>
+        Thu, 07 Oct 2021 07:20:13 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B5F31180151; Thu,  7 Oct 2021 16:20:12 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Joanne Koong <joannekoong@fb.com>, bpf@vger.kernel.org
+Cc:     Kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v4 1/5] bpf: Add bitset map with bloom filter
+ capabilities
+In-Reply-To: <20211006222103.3631981-2-joannekoong@fb.com>
+References: <20211006222103.3631981-1-joannekoong@fb.com>
+ <20211006222103.3631981-2-joannekoong@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 07 Oct 2021 16:20:12 +0200
+Message-ID: <87k0ioncgz.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a new test which triggers unix_listen kernel function
-to test bpf_skc_to_unix_sock helper.
+Joanne Koong <joannekoong@fb.com> writes:
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- .../bpf/prog_tests/skc_to_unix_sock.c         | 54 +++++++++++++++++++
- .../bpf/progs/test_skc_to_unix_sock.c         | 29 ++++++++++
- 2 files changed, 83 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c
+> This patch adds the kernel-side changes for the implementation of
+> a bitset map with bloom filter capabilities.
+>
+> The bitset map does not have keys, only values since it is a
+> non-associative data type. When the bitset map is created, it must
+> be created with a key_size of 0, and the max_entries value should be the
+> desired size of the bitset, in number of bits.
+>
+> The bitset map supports peek (determining whether a bit is set in the
+> map), push (setting a bit in the map), and pop (clearing a bit in the
+> map) operations. These operations are exposed to userspace applications
+> through the already existing syscalls in the following way:
+>
+> BPF_MAP_UPDATE_ELEM -> bpf_map_push_elem
+> BPF_MAP_LOOKUP_ELEM -> bpf_map_peek_elem
+> BPF_MAP_LOOKUP_AND_DELETE_ELEM -> bpf_map_pop_elem
+>
+> For updates, the user will pass in a NULL key and the index of the
+> bit to set in the bitmap as the value. For lookups, the user will pass
+> in the index of the bit to check as the value. If the bit is set, 0
+> will be returned, else -ENOENT. For clearing the bit, the user will pass
+> in the index of the bit to clear as the value.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c b/tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c
-new file mode 100644
-index 000000000000..971ef5b948bd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c
-@@ -0,0 +1,54 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2021 Hengqi Chen */
-+
-+#include <test_progs.h>
-+#include <sys/un.h>
-+#include "test_skc_to_unix_sock.skel.h"
-+
-+static const char *sock_path = "/tmp/test.sock";
-+
-+void test_skc_to_unix_sock(void)
-+{
-+	struct test_skc_to_unix_sock *skel;
-+	struct sockaddr_un sockaddr;
-+	int err, len, sockfd = 0;
-+
-+	skel = test_skc_to_unix_sock__open();
-+	if (!ASSERT_OK_PTR(skel, "could not open BPF object"))
-+		return;
-+
-+	skel->rodata->my_pid = getpid();
-+
-+	err = test_skc_to_unix_sock__load(skel);
-+	if (!ASSERT_OK(err, "could not load BPF object"))
-+		goto cleanup;
-+
-+	err = test_skc_to_unix_sock__attach(skel);
-+	if (!ASSERT_OK(err, "could not attach BPF object"))
-+		goto cleanup;
-+
-+	// trigger unix_listen
-+	sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
-+	if (!ASSERT_GT(sockfd, 0, "socket failed"))
-+		goto cleanup;
-+
-+	sockaddr.sun_family = AF_UNIX;
-+	strcpy(sockaddr.sun_path, sock_path);
-+	len = sizeof(sockaddr);
-+	unlink(sock_path);
-+
-+	err = bind(sockfd, (struct sockaddr *)&sockaddr, len);
-+	if (!ASSERT_OK(err, "bind failed"))
-+		goto cleanup;
-+
-+	err = listen(sockfd, 1);
-+	if (!ASSERT_OK(err, "listen failed"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(strcmp(skel->bss->path, sock_path), 0, "bpf_skc_to_unix_sock failed");
-+
-+cleanup:
-+	if (sockfd)
-+		close(sockfd);
-+	test_skc_to_unix_sock__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c b/tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c
-new file mode 100644
-index 000000000000..098c49c2edce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c
-@@ -0,0 +1,29 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2021 Hengqi Chen */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+const volatile pid_t my_pid = 0;
-+char path[256] = {};
-+
-+SEC("fentry/unix_listen")
-+int BPF_PROG(unix_listen, struct socket *sock, int backlog)
-+{
-+	pid_t pid = bpf_get_current_pid_tgid() >> 32;
-+	struct unix_sock *unix_sk;
-+
-+	if (pid != my_pid)
-+		return 0;
-+
-+	unix_sk = (struct unix_sock *)bpf_skc_to_unix_sock(sock->sk);
-+	if (!unix_sk)
-+		return 0;
-+
-+	bpf_core_read_str(path, sizeof(path), &unix_sk->addr->name->sun_path);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
---
-2.25.1
+This is interesting, and I can see other uses of such a data structure.
+However, a couple of questions (talking mostly about the 'raw' bitmap
+without the bloom filter enabled):
+
+- How are you envisioning synchronisation to work? The code is using the
+  atomic set_bit() operation, but there's no test_and_{set,clear}_bit().
+  Any thoughts on how users would do this?
+
+- It would be useful to expose the "find first set (ffs)" operation of
+  the bitmap as well. This can be added later, but thinking about the
+  API from the start would be good to avoid having to add a whole
+  separate helper for this. My immediate thought is to reserve peek(-1)
+  for this use - WDYT?
+
+- Any thoughts on inlining the lookups? This should at least be feasible
+  for the non-bloom-filter type, but I'm not quite sure if the use of
+  map_extra allows the verifier to distinguish between the map types
+  (I'm a little fuzzy on how the inlining actually works)? And can
+  peek()/push()/pop() be inlined at all?
+
+-Toke
+
