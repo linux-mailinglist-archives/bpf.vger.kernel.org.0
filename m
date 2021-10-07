@@ -2,206 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24558424D75
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 08:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4ED6424DFA
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 09:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240208AbhJGG5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Oct 2021 02:57:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35134 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232682AbhJGG5N (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 Oct 2021 02:57:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633589719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ohI65JdSUSq/+FkxLvHiDlNvOVQLBfq7YkB63w+27PY=;
-        b=S2UdPEanNx2jA2haH5fL3bZefcqakmKXT9dl8P1Y0fChzbjZYFNCxJMt0ZQ/FNKORoROAi
-        CqF7lyFSaZ9BFdx84pLQr224J+BkJVN1q9HVxwypM/R9Ly/xU8/jwurIXxAfUTz4jetg9j
-        kdaRf5a2z1M6PBtJ8RDiSaf53QY+rxU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-83-C_unOUWGOpyYJS49YtPf4A-1; Thu, 07 Oct 2021 02:55:18 -0400
-X-MC-Unique: C_unOUWGOpyYJS49YtPf4A-1
-Received: by mail-wr1-f69.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so3884089wrg.17
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 23:55:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ohI65JdSUSq/+FkxLvHiDlNvOVQLBfq7YkB63w+27PY=;
-        b=If8erbR8JRArd1ZkAxTAsQv9tnC5GU/hmzJP2CfNH6sJobvfG/+zKEwdz0lJe/9+3e
-         3kKk1FUumrPRRTGE6wnhLyJ57Z96au94eoK8sat7HvXZjDnnEStdcQm/glZ2v1HjDcbc
-         dvfvmAuuLhlhEWhozoILOl6TfGrrxAzwXopmWxfNsGPLG8IhLPQBR6yAx8N7zvsnzrlN
-         d45AgMSI1IFmWyHwCmJE+Gsd7OD84bLn8bCHseQJeNrKGgoJZFl7zASlO8v9KCy695si
-         8DkF5vqowAGjx5jjoz7jOzKZz7KW+iTjqX+6F+HhpO4tYW0ARaeSqGF/0gJPGxdV2Ner
-         jrkQ==
-X-Gm-Message-State: AOAM531Ds+mOHzEdn4cd8nWlb0uZPAxgBDSS78y5DFj06T4qXu0U3eEj
-        /Nl5Yd2/IUudoZNgELaucMoH++F6aXyk4ABDoFRFaRziYRrLQ7epCGEp9CeRAzAfh6Wnshi8U2a
-        Xnvl86rPwXWgt
-X-Received: by 2002:adf:bc42:: with SMTP id a2mr3233663wrh.4.1633589717326;
-        Wed, 06 Oct 2021 23:55:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5a6w4xr73nat5ZurZs/SiSonJ8Oe7P3NpMb3m2k5K8Pdj8CPKOWZcTp+n/GAecCz+b7YeJg==
-X-Received: by 2002:adf:bc42:: with SMTP id a2mr3233642wrh.4.1633589717134;
-        Wed, 06 Oct 2021 23:55:17 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id b190sm1353711wmd.25.2021.10.06.23.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 23:55:16 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 08:55:14 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [RFC] store function address in BTF
-Message-ID: <YV6Z0jcB8jdsG4Ly@krava>
-References: <YV1hRboJopUBLm3H@krava>
- <CAEf4BzZPH6WQTYaUTpWBw1gW=cNUtPYPnN8OySgXtbQLzZLhEQ@mail.gmail.com>
- <YV4Bx7705mgWzhTd@krava>
- <CAEf4BzbirA4F_kW-sVrS_YmfUxhAjYVDwO1BvtzTYyngqHLkiw@mail.gmail.com>
- <YV4dmkXO6nkB2DeV@krava>
- <CAEf4BzYBS8+9XADjJdvKB=_6tf8_t19UVGfm2Lk1+Nb6qWk5cw@mail.gmail.com>
+        id S232530AbhJGHVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Oct 2021 03:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232512AbhJGHVA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Oct 2021 03:21:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA3C061746;
+        Thu,  7 Oct 2021 00:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2JHJIpAWgccBA6pQAUlpOyYTSFGIlpbAsVVUO6XyK3w=; b=METMHJ4Uwgejg7yLQ0FdhlSqDc
+        4RiF0XPAjwCu6Xr0VclcBmAeaY6XVFwAdTvn7RPokVchywNUZolBdvwzV1/nc6oYuiriVu/Ka2DeA
+        KiWilHlTFcsK0KkivmGPGjKA1jD86Rz9LRzmphAr37VejYH87iZ+wPXnfzzRnm8yx+1b4kntO+nHM
+        ld9gORc2HXAcPf9VdhhPNxHyDhY97n8btaLu7A1zqJjyVRb2vygP3c1O5ddEb9aa39iWt5HxDH6eg
+        Lsa+U5UAvf30UkdOy2pYK7O8AmzwvHs+xWvuIPgCDCpTGluf/tRlT4nO38ZGmhb3SdWvq2BsA47q8
+        ERRrMV3Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mYNg9-008Qna-2g; Thu, 07 Oct 2021 07:18:57 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9FFC698623A; Thu,  7 Oct 2021 09:18:56 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 09:18:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Xu <peterx@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: introduce helper bpf_raw_read_cpu_clock
+Message-ID: <20211007071856.GM174703@worktop.programming.kicks-ass.net>
+References: <20211006175106.GA295227@fuller.cnet>
+ <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYBS8+9XADjJdvKB=_6tf8_t19UVGfm2Lk1+Nb6qWk5cw@mail.gmail.com>
+In-Reply-To: <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 03:37:16PM -0700, Andrii Nakryiko wrote:
-> On Wed, Oct 6, 2021 at 3:05 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Oct 06, 2021 at 02:37:09PM -0700, Song Liu wrote:
+> On Wed, Oct 6, 2021 at 10:52 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
 > >
-> > On Wed, Oct 06, 2021 at 02:22:28PM -0700, Andrii Nakryiko wrote:
-> > > On Wed, Oct 6, 2021 at 1:06 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Wed, Oct 06, 2021 at 09:17:39AM -0700, Andrii Nakryiko wrote:
-> > > > > On Wed, Oct 6, 2021 at 1:42 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > > >
-> > > > > > hi,
-> > > > > > I'm hitting performance issue and soft lock ups with the new version
-> > > > > > of the patchset and the reason seems to be kallsyms lookup that we
-> > > > > > need to do for each btf id we want to attach
-> > > > > >
-> > > > > > I tried to change kallsyms_lookup_name linear search into rbtree search,
-> > > > > > but it has its own pitfalls like duplicate function names and it still
-> > > > > > seems not to be fast enough when you want to attach like 30k functions
-> > > > >
-> > > > > How not fast enough is it exactly? How long does it take?
-> > > >
-> > > > 30k functions takes 75 seconds for me, it's loop calling bpf_check_attach_target
-> > > >
-> > > > getting soft lock up messages:
-> > > >
-> > > > krava33 login: [  168.896671] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [bpftrace:1087]
-> > > >
-> > >
-> > > That's without RB tree right? I was curious about the case of you
-> > > converting kallsyms to RB tree and it still being slow. Can't imagine
-> > > 30k queries against RB tree with ~160k kallsyms taking 75 seconds.
 > >
-> > yep, that's the standard kallsyms lookup api
 > >
-> > I need to make some adjustment for rbtree kalsyms code, I think I found
-> > a bug in there, so the numbers are probably better as you suggest
+> > Add bpf_raw_read_cpu_clock helper, to read architecture specific
+> > CPU clock. In x86's case, this is the TSC.
+> >
+> > This is necessary to synchronize bpf traces from host and guest bpf-programs
+> > (after subtracting guest tsc-offset from guest timestamps).
 > 
-> ok, cool, let's see what are the new numbers then
-> 
-> >
-> > >
-> > > But as I said, why not map BTF IDs into function names, sort function
-> > > names, and then pass over kallsyms once, doing binary search into a
-> > > sorted array of requested function names and then recording addr for
-> > > each. Then check that you found addresses for all functions (it also
-> > > leaves a question of what to do when we have multiple matching
-> > > functions, but it's a problem with any approach). If everything checks
-> > > out, you have a nice btf id -> func name -> func addr mapping. It's
-> > > O(N log(M)), which sounds like it shouldn't be slow. Definitely not
-> > > multiple seconds slow.
-> >
-> > ok, now that's clear to me, thanks for these details
-> 
-> great
-> 
-> >
-> > >
-> > >
-> > > >
-> > > > >
-> > > > > >
-> > > > > > so I wonder we could 'fix this' by storing function address in BTF,
-> > > > > > which would cut kallsyms lookup completely, because it'd be done in
-> > > > > > compile time
-> > > > > >
-> > > > > > my first thought was to add extra BTF section for that, after discussion
-> > > > > > with Arnaldo perhaps we could be able to store extra 8 bytes after
-> > > > > > BTF_KIND_FUNC record, using one of the 'unused' bits in btf_type to
-> > > > > > indicate that? or new BTF_KIND_FUNC2 type?
-> > > > > >
-> > > > > > thoughts?
-> > > > >
-> > > > > I'm strongly against this, because (besides the BTF bloat reason) we
-> > > > > need similar mass attachment functionality for kprobe/kretprobe and
-> > > > > that one won't be relying on BTF FUNCs, so I think it's better to
-> > > > > stick to the same mechanism for figuring out the address of the
-> > > > > function.
-> > > >
-> > > > ok
-> > > >
-> > > > >
-> > > > > If RB tree is not feasible, we can do a linear search over unsorted
-> > > > > kallsyms and do binary search over sorted function names (derived from
-> > > > > BTF IDs). That would be O(Nlog(M)), where N is number of ksyms, M is
-> > > > > number of BTF IDs/functions-to-be-attached-to. If we did have an RB
-> > > > > tree for kallsyms (is it hard to support duplicates? why?) it could be
-> > > > > even faster O(Mlog(N)).
-> > > >
-> > > > I had issues with generic kallsyms rbtree in the post some time ago,
-> > > > I'll revisit it to check on details.. but having the tree with just
-> > > > btf id functions might clear that.. I'll check
-> > >
-> > > That's not what I'm proposing. See above. Please let me know if
-> > > something is not clear before going all in for RB tree implementation
-> > > :)
-> > >
-> > >
-> > > But while we are on topic, do you think (with ftrace changes you are
-> > > doing) it would be hard to support multi-attach for
-> > > kprobes/kretprobes? We now have bpf_link interface for attaching
-> > > kprobes, so API can be pretty aligned with fentry/fexit, except
-> > > instead of btf IDs we'd need to pass array of pointers of C strings, I
-> > > suppose.
-> >
-> > hum, I think kprobe/kretprobe is made of perf event (kprobe/kretprobe
-> > pmus), then you pass event fd and program fd to bpf link syscall,
-> > and it attaches bpf program to that perf event
-> >
-> > so perhaps the user interface would be array of perf events fds and prog fd
-> >
-> > also I think you can have just one probe for function, so we will not need
-> > to share kprobes for multiple users like we need for trampolines, so the
-> > attach logic will be simple
-> 
-> creating thousands of perf_event FDs seems expensive (and you'll be
-> running into the limit of open files pretty soon in a lot of systems).
-> So I think for multi-attach we'll have to have a separate way where
-> you'd specify kernel function name (and maybe also offset). I'm just
-> saying that having BPF_LINK_CREATE command, it's easier (probably) to
-> extend this for kprobe multi-attach, than trying to retrofit this into
-> perf_event_open.
+> Trying to understand the use case. So in a host-guest scenario,
+> bpf_ktime_get_ns()
+> will return different values in host and guest, but rdtsc() will give
+> the same value.
+> Is this correct?
 
-ah true.. I wonder we could bypass perf by using directly kernel
-kprobe interface
+No, it will not. Also, please explain if any of this stands a chance of
+working for anything other than x86. Or even on x86 in the face of
+guest migration.
 
-jirka
+Also, please explain, again, what's wrong with dumping snapshots of
+CLOCK_MONOTONIC{,_RAW} from host and guest and correlating time that
+way?
 
+And also explain why BPF needs to do this differently than all the other
+tracers.
