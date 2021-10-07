@@ -2,102 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E394256C5
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 17:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F9C42570B
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 17:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240581AbhJGPmF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Oct 2021 11:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+        id S241756AbhJGPwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Oct 2021 11:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234337AbhJGPmE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:42:04 -0400
+        with ESMTP id S241698AbhJGPwH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:52:07 -0400
 Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F1EC061570;
-        Thu,  7 Oct 2021 08:40:10 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id i11so5823198ila.12;
-        Thu, 07 Oct 2021 08:40:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F308FC061746
+        for <bpf@vger.kernel.org>; Thu,  7 Oct 2021 08:50:13 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id y17so6862448ilb.9
+        for <bpf@vger.kernel.org>; Thu, 07 Oct 2021 08:50:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7jRrqeIN2Ff7fhNeRl05LpK9LcpWLgKaWr6uuwqcXss=;
-        b=fSM6z68idkwQOzyYwSOc2QFqnsNNFr9HkHzjw3yuwj0J7UUwvGMwTk+N/1z6GE0Y7X
-         q+/60JLPu28hZVnTReYYr5PL1+mv8ubaBURWau9zpWjIpOpqh1hULgdj/5I/XH/x0WNa
-         CVGbJIKcz/YUrMMNkvRWMV7r9Ijiky6Xlp/I0NmgO0S6FjjL0w8If5dptZL3yLp5EKqj
-         S3DLwNhokX4iaYtyn76b2R+bJLiy+W0m+Eyu89xezQ5Opwzi4r9jIb6f5FPKD9VANgCp
-         tzXMjMpjkstTFLZ8nnsxYgdxfwLfMPLvyqr+0tKt0GP011JILUtbRl+IY/qB22+FYMeu
-         xPig==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RITICfm+7VYo1WW7xYDzpKcdCcOOA5uOvj4tCcim4Ak=;
+        b=gu0pT/qYUzONLbPr9vB0YiA85WJDIddbdUyoOKSuRDutS0uHTMYLpCREwZafMUO9f9
+         8X8mCDi3RtPheYuF4ZTB6EwolpOJIjc2Q9RpHmmEne0NfwgROQJ+OMwov65V58ueho0s
+         dG9i9lT4RlEMsUOIPdU4sWpI8T7uGRsM6FwOrBGfjEgDRIKgmypZFAXhbiLk+Hg09Iw5
+         wtBCwlEcqoPWGmWhcNiU4U4bvGXvTLY0g75h7jmYDy/TBosr3Rf4feYiNY+K74gVv+Lk
+         fjC60wmJ+/Xthm2ykWguRXKkjW9XJ3KzMO+eHvxdVRCqY203XVUnLenyG6F1P24sYFxG
+         oTMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7jRrqeIN2Ff7fhNeRl05LpK9LcpWLgKaWr6uuwqcXss=;
-        b=fLrPQ/n5czNAnHO7WVdpZHCZorknIdBwfBVzmxYdmfHXnq29KybEO5N4gXkGs346K/
-         hSaTXQAjvhObPgs1IVWU7SqmW6uUv1m3kf9KLPv2IgXbupJTjToICFWZQwjogK0KYJwO
-         KvukB+DyTZ18E/9qlHWl0o8d1oLfuGZOsAQPjHKqa7pRh9nr9W/vMNIidfXGU0L4NKHX
-         stRumyDbrMuMqoQF346tnFqrgvzy0VMBACDjPM+FSaj81o+yU7N50wECW+6MhL9Q5jdx
-         roqbzeSgWMWDzKtzTYdY7BxDYTcqXSiagFm43hAoS0PYcBo5PtnyQSr92i06PeYYRaoM
-         CRLw==
-X-Gm-Message-State: AOAM533NMZEHIY9D4sa4FgNvLm7v+OVNvuqkYwlDqkJHZx1xLdT0DiYn
-        +Iv2+0CoY7gztoqO1iQa/p3gaHuHIm0zfX7Z5y8=
-X-Google-Smtp-Source: ABdhPJzmCAOtDz+UuxP6PWhiyG+6fzRKXux3+EgPurp4BoC5M9RS/AFDw5yQUapIS1E3o7122IF4UpnHfA3HbFH+hww=
-X-Received: by 2002:a05:6e02:b2a:: with SMTP id e10mr3838016ilu.151.1633621207286;
- Thu, 07 Oct 2021 08:40:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
- <20210713084541.7958-3-andriy.shevchenko@linux.intel.com> <YO1s+rHEqC9RjMva@kroah.com>
- <YO12ARa3i1TprGnJ@smile.fi.intel.com> <YO13lSUdPfNGOnC3@kroah.com>
- <CANiq72=vs8-88h3Z+BON=qA4CZQ1pS1nggnCFHDEHYyG+Y+3JQ@mail.gmail.com> <YV67+vrn3MxpXABy@smile.fi.intel.com>
-In-Reply-To: <YV67+vrn3MxpXABy@smile.fi.intel.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 7 Oct 2021 17:39:56 +0200
-Message-ID: <CANiq72nKya4OW0Eof=7PP-U78uo+j8DL0UUDNsW3ww_5PPJVtA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
- typeof_memeber() macros
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RITICfm+7VYo1WW7xYDzpKcdCcOOA5uOvj4tCcim4Ak=;
+        b=q10n21vtnmkLk4bU5wX4fY+VX4wp79lvfjCWTZWeu/0i464AXkjKcQW5H1mghY8smL
+         T50xGi1i7BxsCWDrWBzE6aTsHIOFIE8HYgqSI/6stovujxX2MfNBNAcze4HP83HKuRhG
+         d8O9eJO0ff1Of7fk720dn+LPMFCTaJCH7huW8XsvJUOa7olp9ij6ZTpJE3z3xT70xFQ2
+         eeguVpgmcjodUqlg59Y2R1hEUbLmUT6aBVaUasWiTrCfOcFjeHWokCECk9rjMTLNZE4j
+         SwqF/2Rnw7N79wKwQ9MQYiiemg9rNmJFmuyYYsjunPvUSTRb92CwJdlxOtScuiMGfNiG
+         Eeyw==
+X-Gm-Message-State: AOAM532lS2vlWtMrZEcphbJ+Dpt4zYhdY6kI8++BVllHBywdKmbSZuoe
+        ohLXOrc+gkANSUQDqK1WRQk6RQU+bedytFHBX58=
+X-Google-Smtp-Source: ABdhPJwb4fVsbpDwt+DFKerTQztEhR1azA6TWSbTZNML7iUF1Mv+Ztq3oyfJY/ksEuSSgTHhA/3SKQ==
+X-Received: by 2002:a05:6e02:1909:: with SMTP id w9mr4101515ilu.34.1633621813203;
+        Thu, 07 Oct 2021 08:50:13 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id r19sm13699259iot.0.2021.10.07.08.50.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 08:50:12 -0700 (PDT)
+Subject: Re: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>,
+        Howard McLauchlan <hmclauchlan@fb.com>
+Cc:     bpf@vger.kernel.org
+References: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
+ <2dfc6273-6cdd-f4f5-bed9-400873ac9152@suse.cz>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <082f30c7-9a7c-b2de-6d30-99fa38150d48@kernel.dk>
+Date:   Thu, 7 Oct 2021 09:50:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <2dfc6273-6cdd-f4f5-bed9-400873ac9152@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 11:21 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> It does almost 2% (steady) speedup. I will send a v2 with methodology
-> and numbers of testing.
+On 10/7/21 9:32 AM, Vlastimil Babka wrote:
+> On 10/5/21 17:31, Jens Axboe wrote:
+>> Allocations can be a very hot path, and this out-of-line function
+>> call is noticeable.
+>>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> 
+> It used to be inline b4 (hi, Konstantin!) and then was converted to be like
+> this intentionally :/
+> 
+> See 4f6923fbb352 ("mm: make should_failslab always available for fault
+> injection")
+> 
+> And now also kernel/bpf/verifier.c contains:
+> BTF_ID(func, should_failslab)
+> 
+> I think either your or Andrew's version will break this BTF_ID thing, at the
+> very least.
+> 
+> But I do strongly agree that putting unconditionally a non-inline call into
+> slab allocator fastpath sucks. Can we make it so that bpf can only do these
+> overrides when CONFIG_FAILSLAB is enabled?
+> I don't know, perhaps putting this BTF_ID() in #ifdef as well, or providing
+> a dummy that is always available (so that nothing breaks), but doesn't
+> actually affect slab_pre_alloc_hook() unless CONFIG_FAILSLAB has been enabled?
 
-Thanks for taking the time to get the numbers!
+That seems to be the right approach, limiting it on it actually being enabled
+and a function call.
 
-Cheers,
-Miguel
+-- 
+Jens Axboe
+
