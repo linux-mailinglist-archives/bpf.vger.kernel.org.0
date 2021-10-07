@@ -2,156 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D3B425DC7
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 22:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3242425E35
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 22:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhJGUsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Oct 2021 16:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        id S231940AbhJGUzb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Oct 2021 16:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232458AbhJGUsG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Oct 2021 16:48:06 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BA7C061570;
-        Thu,  7 Oct 2021 13:46:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so6118705pjb.5;
-        Thu, 07 Oct 2021 13:46:12 -0700 (PDT)
+        with ESMTP id S232573AbhJGUzb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Oct 2021 16:55:31 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9A9C061570;
+        Thu,  7 Oct 2021 13:53:37 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id z5so16356495ybj.2;
+        Thu, 07 Oct 2021 13:53:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n778GDxPUk5bM/6oUWYf94rGxS7Ym+wi8wyNVSUVHJY=;
-        b=lf7NCZlMcXElgNAC66pZrN0XcQRt25y96kBcovC843viIgi1uE0pje7PtVyQPY0NqB
-         qkvbwFwWFvppdKTfbVxiMUpPZAGbsyLd1tdlAohH5YdwJoLw65SEXKFmzMukywSMSrAj
-         6F9tbwacQ7pAAmtkghVCpMWDMXevVnPpwFLp2Pm+8pu33TwU1C5eEshwzETOX4t9ooIm
-         GuMz4GTqlUCtLo1ArIjI2ztuDW9u5ZLWF2R3HeFVSx87cehkcyAtdBAjz4VIRB/58l4Y
-         T2CxWpYAxVJnRSRpyofXjA74izX49gjzCMIwk+6sPOE81Rpep/UcuRP23ujdyhXlJX5u
-         m0zQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pyQNWwdkJWAkLBnPQDQe8VN/G7b/r2IR8mf10D5CLlw=;
+        b=gl0StOvQsQ3O1nPZovu0/Uun5e4fxMajXQIi6Jx1/qnDGMRgd5xMvxkJkF1o+BS4R+
+         8CDp/99piYQV1ZmnBy8YJGwH+l1L48CqZ+z9kga0xQfHIDJ0D9SCECBfOJDIFg3UnuwI
+         S3cLZSKHpNs8pZm2uI/jtOGuUKX5PzeM/emORkmDQjSvj1cMqWdu++HP3ob7xOJwy46E
+         oHqUVyBw+oFtLuC/KCXzbkIRaW9zcP/NjW9wl0Y9ucpi65GQd3xk0Lz1FC/OPinnTz1A
+         RfJmXVy4/Q3li/AhkIbn+kIqDpDPf1KEgjMqxOcZ6pdJ2nfhjK9YW5UyaW7ks4Z7ohJB
+         lqMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n778GDxPUk5bM/6oUWYf94rGxS7Ym+wi8wyNVSUVHJY=;
-        b=bcatoaun4nKhQtV+CwOM8hemhXrECl1UPXC9VthnOHoPU6RwgcUTsXBXmPznIhpcqJ
-         sNx95oN+MXAkHP7uPIvISy2CcCC3zwvJJ9EGVmdBDae14BWcmEPlBDLAf8df2IPbjVIa
-         V2B9QTkxVo7bmgC0TodBs/A7LTFGw+ndHhVOOMXSSOCBkYsyYJpKbJI5Eby6JWUcZIc8
-         1onyzEHWBiqhFBqbjvtODEkFrJ6Dcn6YWr6y4fyKYalDsbqxXevU/7wchqlxqlS/NsUI
-         tZm1mb2/yrJnjfAFiV0g8km7IQ9kgB70yHslOZtTq2dVz/RhX0wm3LW7XoSO1Uoi+giL
-         3lyQ==
-X-Gm-Message-State: AOAM530EK9/YEbEjWRXLfuVTO7LlgBkgxyo5w8kdH0Y4n1lBMHmuOMEd
-        nFSNUH/TDgxGmjG11e8jO08=
-X-Google-Smtp-Source: ABdhPJyWu61PR6GwdZ3nM0x+fSD3FB9bBBhz6apFdeOAQCR7M7gZwqJxWzY/FI8oCZTPI+lMjmY7mw==
-X-Received: by 2002:a17:90a:9b84:: with SMTP id g4mr5459162pjp.123.1633639572322;
-        Thu, 07 Oct 2021 13:46:12 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
-        by smtp.gmail.com with ESMTPSA id 8sm280984pfi.194.2021.10.07.13.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 13:46:12 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 02:16:09 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v1 4/6] bpf: selftests: Move test_ksyms_weak
- test to lskel, add libbpf test
-Message-ID: <20211007204609.ygrqpx4rahfzqzly@apollo.localdomain>
-References: <20211006002853.308945-1-memxor@gmail.com>
- <20211006002853.308945-5-memxor@gmail.com>
- <CAPhsuW7y3ycWkXLwSmJ5TKbo7Syd65aLRABtWbZcohET0RF6rA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pyQNWwdkJWAkLBnPQDQe8VN/G7b/r2IR8mf10D5CLlw=;
+        b=SlW1LWwypQEykgajfnj/r+3/mk2wIV+YZmdOGH8SDpTF6G+1zWmRysIesjerpVZDs4
+         o7f7cahNIJcoNxEzBkqnrJt/Ewd3IdQHOUJOR2kQOgY/jPj0OvoEzwgxfigPcTjZPb07
+         WYZJ/UHiQakmg+1sjN6ieg2Wt06DWvqTCN3HohAbDkuksZDRpRWSc2B5ZW93pu0YUq0B
+         BHQJtsGE882efxveOsnQT+DMhDTvYDJDIItA9Ca4tSpjxuUAcojZsjXwJsD4QHEBYIDl
+         x6Lrfybz7Sjo7+UzIlJmCPglW9pdUyMMxzluDvGZD7FDdNI2stQn5qdBt5iYVDo1oSb3
+         8c7w==
+X-Gm-Message-State: AOAM532NSZbZysdlsgmM6hQEUt/1fPu6e49e+sSGwhY/2Zid4s6Qujab
+        +iqvNwOGRRztC3cDixhgzq2QR/y8uRmv2MDXjjl0zxgd
+X-Google-Smtp-Source: ABdhPJw0wUV8PYiDNZhfGIw/WkBRT7ozC+3Sy3N62q4x50v4dDMEjp7LCygJQALD3/3k1USlyuAw4snpc8dk0he80JI=
+X-Received: by 2002:a25:bb0b:: with SMTP id z11mr7223193ybg.108.1633640016419;
+ Thu, 07 Oct 2021 13:53:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW7y3ycWkXLwSmJ5TKbo7Syd65aLRABtWbZcohET0RF6rA@mail.gmail.com>
+References: <20211002003706.11237-1-xiyou.wangcong@gmail.com>
+ <20211002003706.11237-4-xiyou.wangcong@gmail.com> <582ff8e9-c7b7-88c1-6cf0-e143da92836f@iogearbox.net>
+In-Reply-To: <582ff8e9-c7b7-88c1-6cf0-e143da92836f@iogearbox.net>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 7 Oct 2021 13:53:25 -0700
+Message-ID: <CAM_iQpXy5HOHOU=T_FVVydBniL=tOW9sYTAMsc_nRWcZsqo8Yg@mail.gmail.com>
+Subject: Re: [Patch bpf v3 3/4] net: implement ->sock_is_readable() for UDP
+ and AF_UNIX
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Yucong Sun <sunyucong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 02:03:49AM IST, Song Liu wrote:
-> On Tue, Oct 5, 2021 at 5:29 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >
-> > Also, avoid using CO-RE features, as lskel doesn't support CO-RE, yet.
-> > Create a file for testing libbpf skeleton as well, so that both
-> > gen_loader and libbpf get tested.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> [...]
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_weak_libbpf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_weak_libbpf.c
-> > new file mode 100644
-> > index 000000000000..b75725e28647
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/ksyms_weak_libbpf.c
-> > @@ -0,0 +1,31 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <test_progs.h>
-> > +#include "test_ksyms_weak.skel.h"
-> > +
-> > +void test_ksyms_weak_libbpf(void)
+On Thu, Oct 7, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> This is (almost?) the same as test_weak_syms(), right? Why do we need both?
+> On 10/2/21 2:37 AM, Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > Yucong noticed we can't poll() sockets in sockmap even
+> > when they are the destination sockets of redirections.
+> > This is because we never poll any psock queues in ->poll(),
+> > except for TCP. With ->sock_is_readable() now we can
+> > overwrite >sock_is_readable(), invoke and implement it for
+> > both UDP and AF_UNIX sockets.
+> >
+> > Reported-by: Yucong Sun <sunyucong@gmail.com>
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+> >   net/ipv4/udp.c      | 2 ++
+> >   net/ipv4/udp_bpf.c  | 1 +
+> >   net/unix/af_unix.c  | 4 ++++
+> >   net/unix/unix_bpf.c | 2 ++
+> >   4 files changed, 9 insertions(+)
+> >
+> > diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> > index 2a7825a5b842..4a7e15a43a68 100644
+> > --- a/net/ipv4/udp.c
+> > +++ b/net/ipv4/udp.c
+> > @@ -2866,6 +2866,8 @@ __poll_t udp_poll(struct file *file, struct socket *sock, poll_table *wait)
+> >           !(sk->sk_shutdown & RCV_SHUTDOWN) && first_packet_length(sk) == -1)
+> >               mask &= ~(EPOLLIN | EPOLLRDNORM);
+> >
+> > +     if (sk_is_readable(sk))
+> > +             mask |= EPOLLIN | EPOLLRDNORM;
 >
+> udp_poll() has this extra logic around first_packet_length() which drops all bad csum'ed
+> skbs. How does this stand in relation to sk_msg_is_readable()? Is this a concern as well
+> there? Maybe makes sense to elaborate a bit more in the commit message for context / future
+> reference.
 
-One includes lskel.h (light skeleton), the other includes skel.h (libbpf
-skeleton). Trying to include both in the same file, it ends up redefining the
-same struct. I am not sure whether adding a prefix/suffix to light skeleton
-struct names is possible now, maybe through another option to bpftool in
-addition to name?
+We don't validate UDP checksums on sockmap RX path, so
+it is okay to leave it as it is, but it is worth a comment like
+you suggest. I will add a comment in this code.
 
-> > +{
-> > +       struct test_ksyms_weak *skel;
-> > +       struct test_ksyms_weak__data *data;
-> > +       int err;
-> > +
-> > +       skel = test_ksyms_weak__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "test_ksyms_weak__open_and_load"))
-> > +               return;
->
-> [...]
->
-> > diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_weak.c b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
-> > index 5f8379aadb29..521e7b99db08 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
-> > @@ -21,7 +21,6 @@ __u64 out__non_existent_typed = -1;
-> >  extern const struct rq runqueues __ksym __weak; /* typed */
-> >  extern const void bpf_prog_active __ksym __weak; /* typeless */
-> >
-> > -
-> >  /* non-existent weak symbols. */
-> >
-> >  /* typeless symbols, default to zero. */
-> > @@ -38,7 +37,7 @@ int pass_handler(const void *ctx)
-> >         /* tests existing symbols. */
-> >         rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, 0);
-> >         if (rq)
-> > -               out__existing_typed = rq->cpu;
-> > +               out__existing_typed = 0;
->
-> Why do we need this change?
->
+If we really need to validate the checksum, it should be addressed
+in a separate patch(set), not in this one.
 
-Since they share the same BPF object for generating skeleton, it needs to remove
-dependency on CO-RE which gen_loader does not support.
-
-If it is kept, we get this:
-...
-libbpf: // TODO core_relo: prog 0 insn[5] rq kind 0
-libbpf: prog 'pass_handler': relo #0: failed to relocate: -95
-libbpf: failed to perform CO-RE relocations: -95
-libbpf: failed to load object 'test_ksyms_weak'
-...
-> >         out__existing_typeless = (__u64)&bpf_prog_active;
-> >
-> >         /* tests non-existent symbols. */
-> > --
-> > 2.33.0
-> >
-
---
-Kartikeya
+Thanks.
