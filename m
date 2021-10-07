@@ -2,135 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E14F424B2B
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 02:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8621D424B2D
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 02:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhJGAhe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Oct 2021 20:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57498 "EHLO mail.kernel.org"
+        id S231358AbhJGAib (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Oct 2021 20:38:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231358AbhJGAhe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:37:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF77611C1;
-        Thu,  7 Oct 2021 00:35:41 +0000 (UTC)
+        id S231183AbhJGAia (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Oct 2021 20:38:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C0CA611CA
+        for <bpf@vger.kernel.org>; Thu,  7 Oct 2021 00:36:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633566941;
-        bh=6cKDMnHiLO4iAlDzkZZoktd8oMzqhPhdRTw0v6NjFwc=;
+        s=k20201202; t=1633566998;
+        bh=VQE1V/DJAPN0nmYGDrGNxnV0VaTLTfTuGLEeWJ/zPJQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KKx4mtqRMht++/IQtu8ao9cXBSAQsqu8vvlKZ1vY1zcaHgyF2N5aVNyVRd/ltjVra
-         YV5UFkWXiQkU8RtY5Noou/3HcvSWeVRiwplD800t9ogN/XEVKM28TUFMoqrF8cc5n1
-         Sh5dJc6cWwVO18ibz0/3aFBfvWrDFY+EU+/UbQ7iFDZWlzIYm3wTkC0xxUQooChvWl
-         U389g6/M562d7HMS1yMHVFusANpcnkBce3HfruJgKB58TauZO0I3SaNDDafpDMNssj
-         jYeUATwrppyDYjaimA9jTLBDh3i3ct2L4BCCCZ3cGQ4WrSascjXURl1xjY3R3F1HEa
-         ankbDnw4c/xtQ==
-Received: by mail-lf1-f45.google.com with SMTP id t9so17193476lfd.1;
-        Wed, 06 Oct 2021 17:35:41 -0700 (PDT)
-X-Gm-Message-State: AOAM530oZRcM04en6pE187gWxjCdcwQtUpj0+KZUywkrH4LBLSIWSgQ0
-        AzbSJ6VY9ssx+5ry5AbT1MHRU0iUmPu3TgSLu7U=
-X-Google-Smtp-Source: ABdhPJyPrVWI8onknipduPSCYODCboyal+0pNNcwYCHvxW5jsRNF2NwqzUNJrUnR36BtpmmQgQTBBFE6rdqHI6TLb+8=
-X-Received: by 2002:a05:6512:3046:: with SMTP id b6mr1154520lfb.650.1633566939334;
- Wed, 06 Oct 2021 17:35:39 -0700 (PDT)
+        b=OE2eryM1pddgomffw3D52jaJGYaaVZwsSL555dy9cH2/t19w/hnsjEz6FHufJBpX/
+         WihLkj/L/11yUYWnXgBd8LsaK2TjylboO1vFBimfgNqaq0aNZcpmD3Cyi9mtOjxElG
+         zNJmFFlwl5pKPvGwWh/HqmntC/+L65v/Lkl4jZQKdo1qEplA2NycDbhtF1AmnsdWx8
+         tRlazLU7t/ahGfzdUaHH+VleAjUIXNqg1+yl8XUXDqJAZ7dSKdrzqqDxd6pnUsNp6D
+         ej2cllYTSDSdBN3X53llCIFm5S9K17cRPUbeiXfNbCHVccIVQWBs+yQOyswpWn91fC
+         gYXODLrHHKr1A==
+Received: by mail-lf1-f51.google.com with SMTP id j5so17470052lfg.8
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 17:36:37 -0700 (PDT)
+X-Gm-Message-State: AOAM531Gu/uCqDPdF8E8BXECb2QgZEglIG6kF/G3d0I+NeZ5mMkV+ppt
+        gVHPuWLCh5XIClauK8S5p4S9Sta0jrPyticUePw=
+X-Google-Smtp-Source: ABdhPJwXM+QyL7EoF8ft3RNzQIiiHoU4rCTqyRv1e6isIaKUc0ElLWWeHwSfdD7bHIZHdjlnyo7kbbFi5bs5wxIlUZY=
+X-Received: by 2002:a2e:6e0b:: with SMTP id j11mr1192766ljc.527.1633566996385;
+ Wed, 06 Oct 2021 17:36:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006203135.2566248-1-songliubraving@fb.com> <CAEf4BzYs=dumqCAYp-kGFwVnQdt5eT6Yq17XQ83i9vHxE0Rmwg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYs=dumqCAYp-kGFwVnQdt5eT6Yq17XQ83i9vHxE0Rmwg@mail.gmail.com>
+References: <cover.1633535940.git.zhuyifei@google.com> <f90f33fb1eacfaf69874e3c769f0cd81ada61e8a.1633535940.git.zhuyifei@google.com>
+In-Reply-To: <f90f33fb1eacfaf69874e3c769f0cd81ada61e8a.1633535940.git.zhuyifei@google.com>
 From:   Song Liu <song@kernel.org>
-Date:   Wed, 6 Oct 2021 17:35:28 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7HPTn_3=TXcAfBHY9c-GZkcAd=zFZb5M13oTZJkEwAPw@mail.gmail.com>
-Message-ID: <CAPhsuW7HPTn_3=TXcAfBHY9c-GZkcAd=zFZb5M13oTZJkEwAPw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: skip get_branch_snapshot in vm
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 6 Oct 2021 17:36:25 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7K_qa2KNBbz-eA6P7kQfCS=jwQUEOSiHMifmMyfR03KQ@mail.gmail.com>
+Message-ID: <CAPhsuW7K_qa2KNBbz-eA6P7kQfCS=jwQUEOSiHMifmMyfR03KQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Make BPF_PROG_RUN_ARRAY return -errno
+ instead of allow boolean
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Stanislav Fomichev <sdf@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 2:36 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Oct 6, 2021 at 9:04 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
 >
-> On Wed, Oct 6, 2021 at 1:31 PM Song Liu <songliubraving@fb.com> wrote:
-> >
-> > VMs running on latest kernel support LBR. However, bpf_get_branch_snapshot
-> > couldn't stop the LBR before too many entries are flushed. Skip the test
-> > for VMs before we find a proper fix for VMs.
-> >
-> > Read the "flags" line from /proc/cpuinfo, if it contains "hypervisor",
-> > skip test get_branch_snapshot.
-> >
-> > Fixes: 025bd7c753aa (selftests/bpf: Add test for bpf_get_branch_snapshot)
+> From: YiFei Zhu <zhuyifei@google.com>
 >
-> missing quotes?
+> Right now BPF_PROG_RUN_ARRAY and related macros return 1 or 0
+> for whether the prog array allows or rejects whatever is being
+> hooked. The caller of these macros then return -EPERM or continue
+> processing based on thw macro's return value. Unforunately this is
+> inflexible, since -EPERM is the only errno that can be returned.
+>
+> This patch should be a no-op; it prepares for the next patch. The
+> returning of the -EPERM is moved to inside the macros, so the outer
+> functions are directly returning what the macros returned if they
+> are non-zero.
+>
+> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> Reviewed-by: Stanislav Fomichev <sdf@google.com>
 
-Aha, I copied this line from e31eec77e4ab90dcec7d2da93415f839098dc287. Will fix.
-
->
-> > Signed-off-by: Song Liu <songliubraving@fb.com>
-> > ---
-> >  .../bpf/prog_tests/get_branch_snapshot.c      | 32 +++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-> > index 67e86f8d86775..bf9d47a859449 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-> > @@ -6,6 +6,30 @@
-> >  static int *pfd_array;
-> >  static int cpu_cnt;
-> >
-> > +static bool is_hypervisor(void)
-> > +{
-> > +       char *line = NULL;
-> > +       bool ret = false;
-> > +       size_t len;
-> > +       FILE *fp;
-> > +
-> > +       fp = fopen("/proc/cpuinfo", "r");
-> > +       if (!fp)
-> > +               return false;
-> > +
-> > +       while (getline(&line, &len, fp) != -1) {
-> > +               if (strstr(line, "flags") == line) {
->
-> strncmp() would be more explicit. That's what you are trying to do
-> (prefix match), right?
-
-right... let me fix it in v2.
-
->
-> > +                       if (strstr(line, "hypervisor") != NULL)
-> > +                               ret = true;
-> > +                       break;
-> > +               }
-> > +       }
-> > +
-> > +       free(line);
-> > +       fclose(fp);
-> > +       return ret;
-> > +}
-> > +
-> >  static int create_perf_events(void)
-> >  {
-> >         struct perf_event_attr attr = {0};
-> > @@ -54,6 +78,14 @@ void test_get_branch_snapshot(void)
-> >         struct get_branch_snapshot *skel = NULL;
-> >         int err;
-> >
-> > +       if (is_hypervisor()) {
-> > +               /* As of today, LBR in hypervisor cannot be stopped before
-> > +                * too many entries are flushed. Skip the test for now in
-> > +                * hypervisor until we optimize the LBR in hypervisor.
-> > +                */
-> > +               test__skip();
-> > +               return;
-> > +       }
-> >         if (create_perf_events()) {
-> >                 test__skip();  /* system doesn't support LBR */
-> >                 goto cleanup;
-> > --
-> > 2.30.2
-> >
+Acked-by: Song Liu <songliubraving@fb.com>
