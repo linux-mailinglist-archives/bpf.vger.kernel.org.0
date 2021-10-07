@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65733425C78
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 21:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6306425C7A
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 21:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241308AbhJGTqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S241403AbhJGTqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 7 Oct 2021 15:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236109AbhJGTqo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Oct 2021 15:46:44 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAE5C061762
-        for <bpf@vger.kernel.org>; Thu,  7 Oct 2021 12:44:50 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id m22so22565454wrb.0
-        for <bpf@vger.kernel.org>; Thu, 07 Oct 2021 12:44:50 -0700 (PDT)
+        with ESMTP id S241012AbhJGTqp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Oct 2021 15:46:45 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CC1C061570
+        for <bpf@vger.kernel.org>; Thu,  7 Oct 2021 12:44:51 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r7so22412801wrc.10
+        for <bpf@vger.kernel.org>; Thu, 07 Oct 2021 12:44:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uh3z/u1dbz/GK73aZBtMswoc9OmOJld1oGoJJOO6d/0=;
-        b=rckX9v+V+NzjXUjxz91cL6vYqQjdFJcQxstm/NRl6qMPvkptekgJ9fvFm+OBPwxJ4D
-         wDqFYGV1M84T1EGzSowoA59oBEkft/1jztYSQ9QAcxg5fa9Mi+AQ+jy3QZ2Ihb+KQmvn
-         5bNmJNs8yPipvajNLAOH3sR8icLJw71XAcEelKINMNPQy2N+peUvbx0RFvkgzlRcqZtw
-         1glPfVFqgrRqk6D22fn7jlFpOHLmcYRnSq7mymZ0SN81Zz8plz2NzVZGyshZOXFinhBb
-         dzPoKhcz+qF/GUte5Jz8UkmZ/U4TGkAhpPY3MfVpvoil2tFbDh+JAp+QN4jbVg2BxY5F
-         5WzQ==
+        bh=2Ze5fDtcRvx+SdsXWnHucRcHaXs5CZugQdR4lFHb2n4=;
+        b=CUDW2q1UqHE+tRZl1IbYwtkk3Ba4tMLrZmZ4II8hK5bYSua51x5zxFdh/2BzLTRX2+
+         z7Xd+hChi3Wvi534VwdaAi+7cKlxZj9CxQ8YRoEyftQiG44j4trU4SuvC4qZJudCv8RG
+         nNFX3acUZQrZGCykOFm7xeaf7Kn+4zVjMdQoqpU25Rti6ICe2CCJ7Ku7Sm6kMGWNpWW9
+         WTuGHTq1VtR5KnHxNKJVMPxqJVc6vzch3z/vgkoWa+LabWsGEF5IZti8N/WLuHSlyVeU
+         G5YKdvQpa3DWwhjlPekwTY/QBbOfVMibBVghjiOfLx4ScH33+ZsA8OvfJB0Fj9mXSyrW
+         YMRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uh3z/u1dbz/GK73aZBtMswoc9OmOJld1oGoJJOO6d/0=;
-        b=VDXfe4sTcLIN3nKx9ZxjYvXbT2tB35ZL8VZjFpcQs61D41bHF4cJpC4n5FB5ForIuD
-         nDETYqcNkg2BJs0kpHeFDI2CIed6a4Cy21cQ8+d+/d3CWhFu1VPnmNRUIz3fO/WV8X5y
-         Gz1fieisGh8ZjUY9FP/MRK6CsKhZXLi4Vrsi73n8P2v6sW0AbtbkqA6gMbgPtap6zHdo
-         vJgOiVzCKPpPsGD3JSANSXiBrnwqZxsi/aIfDs9jZKUa+wU/j19pII3M4agMOUHUhi6l
-         UzKxeiiH2wGIqF4mNxMmHcJs5z0mzbdClW3YSw31cZxSPaMY9YrEkIanuLvLBDreU0WO
-         JchQ==
-X-Gm-Message-State: AOAM531hMEYPab/VtL2FXMB4HvFN1/HTP68QktL5vdFyBElMh3kVORqV
-        lKJmnSVuv/N3OhDKnxsYkzzGqw==
-X-Google-Smtp-Source: ABdhPJzYjiO+9DNONXygkL/gbErrRfGYY0TFqZQ2otxg++asQfopRQ7rV/ecjm0zLJeySVizwrWa4w==
-X-Received: by 2002:a7b:c04e:: with SMTP id u14mr18416402wmc.195.1633635888860;
-        Thu, 07 Oct 2021 12:44:48 -0700 (PDT)
+        bh=2Ze5fDtcRvx+SdsXWnHucRcHaXs5CZugQdR4lFHb2n4=;
+        b=iP8MCy+eEdVaK5bB4QOFAsezeazHOrIp3b2HRxhmjmrFffjHo57ib+uuVTQEvdpdaG
+         mGDK3rtKvfB7xF400pF+wAPplSJH6Gej0S+tndmD0MkiG6D/rD9k06UbU+YbrDL9mNh5
+         feLwrP8dEt2w51fK5FpBZ9XQIOnKVT7DZ5A2MbkDbr1FY/pYsRui0+a1L8UODQrZN86d
+         pvE1tOcp+NriUh17YMHEuZocUPySYxTXg4E5LThnRwVG1Ve/PTZApGzEMuYHgcRsbmMJ
+         L4RJzwUYTzWjC4OwY9MalKZ5gsWZuC1SAzEQFWb0eYfiyoDoy6l4U3VXQ2nQj3t8mRgO
+         XLBQ==
+X-Gm-Message-State: AOAM532g4KYVE691MbG3AxgoasCMBShJ/TVJeuesMGzvYeTW0SfMZgog
+        5WO+QTpLbyA/BHE90wATxtghGw==
+X-Google-Smtp-Source: ABdhPJzC5BKeslX14o7s9SJhBjLl0HQFkCTtoB7J2mPpG5ICK8FmWNZqN6AVchQon9ltqBAv+4Kx1g==
+X-Received: by 2002:a7b:cf07:: with SMTP id l7mr4781196wmg.10.1633635889770;
+        Thu, 07 Oct 2021 12:44:49 -0700 (PDT)
 Received: from localhost.localdomain ([149.86.87.165])
         by smtp.gmail.com with ESMTPSA id u2sm259747wrr.35.2021.10.07.12.44.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 12:44:48 -0700 (PDT)
+        Thu, 07 Oct 2021 12:44:49 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v4 03/12] bpftool: install libbpf headers instead of including the dir
-Date:   Thu,  7 Oct 2021 20:44:29 +0100
-Message-Id: <20211007194438.34443-4-quentin@isovalent.com>
+Subject: [PATCH bpf-next v4 04/12] tools/resolve_btfids: install libbpf headers when building
+Date:   Thu,  7 Oct 2021 20:44:30 +0100
+Message-Id: <20211007194438.34443-5-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211007194438.34443-1-quentin@isovalent.com>
 References: <20211007194438.34443-1-quentin@isovalent.com>
@@ -65,130 +65,137 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bpftool relies on libbpf, therefore it relies on a number of headers
-from the library and must be linked against the library. The Makefile
-for bpftool exposes these objects by adding tools/lib as an include
-directory ("-I$(srctree)/tools/lib"). This is a working solution, but
-this is not the cleanest one. The risk is to involuntarily include
-objects that are not intended to be exposed by the libbpf.
+API headers from libbpf should not be accessed directly from the
+library's source directory. Instead, they should be exported with "make
+install_headers". Let's make sure that resolve_btfids installs the
+headers properly when building.
 
-The headers needed to compile bpftool should in fact be "installed" from
-libbpf, with its "install_headers" Makefile target. In addition, there
-is one header which is internal to the library and not supposed to be
-used by external applications, but that bpftool uses anyway.
+When descending from a parent Makefile, the specific output directories
+for building the library and exporting the headers are configurable with
+LIBBPF_OUT and LIBBPF_DESTDIR, respectively. This is in addition to
+OUTPUT, on top of which those variables are constructed by default.
 
-Adjust the Makefile in order to install the header files properly before
-compiling bpftool. Also copy the additional internal header file
-(nlattr.h), but call it out explicitly. Build (and install headers) in a
-subdirectory under bpftool/ instead of tools/lib/bpf/. When descending
-from a parent Makefile, this is configurable by setting the OUTPUT,
-LIBBPF_OUTPUT and LIBBPF_DESTDIR variables.
-
-Also adjust the Makefile for BPF selftests, so as to reuse the (host)
-libbpf compiled earlier and to avoid compiling a separate version of the
-library just for bpftool.
+Also adjust the Makefile for the BPF selftests in order to point to the
+(target) libbpf shared with other tools, instead of building a version
+specific to resolve_btfids. Remove libbpf's order-only dependencies on
+the include directories (they are created by libbpf and don't need to
+exist beforehand).
 
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/bpf/bpftool/Makefile           | 33 ++++++++++++++++++----------
- tools/testing/selftests/bpf/Makefile |  2 ++
- 2 files changed, 23 insertions(+), 12 deletions(-)
+ tools/bpf/resolve_btfids/Makefile    | 17 ++++++++++++-----
+ tools/bpf/resolve_btfids/main.c      |  4 ++--
+ tools/testing/selftests/bpf/Makefile |  7 +++++--
+ 3 files changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 1fcf5b01a193..ba02d71c39ef 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -17,19 +17,23 @@ endif
- BPF_DIR = $(srctree)/tools/lib/bpf/
+diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+index 08b75e314ae7..4eb74c7e65c4 100644
+--- a/tools/bpf/resolve_btfids/Makefile
++++ b/tools/bpf/resolve_btfids/Makefile
+@@ -29,25 +29,31 @@ BPFOBJ     := $(OUTPUT)/libbpf/libbpf.a
+ LIBBPF_OUT := $(abspath $(dir $(BPFOBJ)))/
+ SUBCMDOBJ  := $(OUTPUT)/libsubcmd/libsubcmd.a
  
- ifneq ($(OUTPUT),)
--  LIBBPF_OUTPUT = $(OUTPUT)/libbpf/
--  LIBBPF_PATH = $(LIBBPF_OUTPUT)
--  BOOTSTRAP_OUTPUT = $(OUTPUT)/bootstrap/
-+  _OUTPUT := $(OUTPUT)
- else
--  LIBBPF_OUTPUT =
--  LIBBPF_PATH = $(BPF_DIR)
--  BOOTSTRAP_OUTPUT = $(CURDIR)/bootstrap/
-+  _OUTPUT := $(CURDIR)
- endif
-+BOOTSTRAP_OUTPUT := $(_OUTPUT)/bootstrap/
-+LIBBPF_OUTPUT := $(_OUTPUT)/libbpf/
-+LIBBPF_DESTDIR := $(LIBBPF_OUTPUT)
-+LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)/include
- 
--LIBBPF = $(LIBBPF_PATH)libbpf.a
-+LIBBPF = $(LIBBPF_OUTPUT)libbpf.a
- LIBBPF_BOOTSTRAP_OUTPUT = $(BOOTSTRAP_OUTPUT)libbpf/
- LIBBPF_BOOTSTRAP = $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
- 
-+# We need to copy nlattr.h which is not otherwise exported by libbpf, but still
-+# required by bpftool.
-+LIBBPF_INTERNAL_HDRS := nlattr.h
++LIBBPF_DESTDIR := $(LIBBPF_OUT)
++LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)include
 +
- ifeq ($(BPFTOOL_VERSION),)
- BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
- endif
-@@ -38,7 +42,13 @@ $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT):
- 	$(QUIET_MKDIR)mkdir -p $@
+ BINARY     := $(OUTPUT)/resolve_btfids
+ BINARY_IN  := $(BINARY)-in.o
  
- $(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
--	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) $(LIBBPF_OUTPUT)libbpf.a
-+	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
-+		DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
-+
-+$(LIBBPF_INCLUDE)/bpf/$(LIBBPF_INTERNAL_HDRS): \
-+		$(addprefix $(BPF_DIR),$(LIBBPF_INTERNAL_HDRS)) $(LIBBPF)
-+	$(call QUIET_INSTALL, bpf/$(notdir $@))
-+	$(Q)install -m 644 -t $(LIBBPF_INCLUDE)/bpf/ $(BPF_DIR)$(notdir $@)
+ all: $(BINARY)
  
- $(LIBBPF_BOOTSTRAP): FORCE | $(LIBBPF_BOOTSTRAP_OUTPUT)
- 	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
-@@ -60,10 +70,10 @@ CFLAGS += -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
- CFLAGS += $(filter-out -Wswitch-enum -Wnested-externs,$(EXTRA_WARNINGS))
- CFLAGS += -DPACKAGE='"bpftool"' -D__EXPORTED_HEADERS__ \
- 	-I$(if $(OUTPUT),$(OUTPUT),.) \
-+	-I$(LIBBPF_INCLUDE) \
- 	-I$(srctree)/kernel/bpf/ \
- 	-I$(srctree)/tools/include \
- 	-I$(srctree)/tools/include/uapi \
--	-I$(srctree)/tools/lib \
- 	-I$(srctree)/tools/perf
- CFLAGS += -DBPFTOOL_VERSION='"$(BPFTOOL_VERSION)"'
- ifneq ($(EXTRA_CFLAGS),)
-@@ -140,7 +150,7 @@ BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o g
- $(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
+-$(OUTPUT) $(OUTPUT)/libbpf $(OUTPUT)/libsubcmd:
++$(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
+ 	$(call msg,MKDIR,,$@)
+ 	$(Q)mkdir -p $(@)
  
- OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
--$(OBJS): $(LIBBPF)
-+$(OBJS): $(LIBBPF) $(LIBBPF_INCLUDE)/bpf/$(LIBBPF_INTERNAL_HDRS)
+ $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
+ 	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
  
- VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
- 		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
-@@ -167,8 +177,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF)
- 	$(QUIET_CLANG)$(CLANG) \
- 		-I$(if $(OUTPUT),$(OUTPUT),.) \
- 		-I$(srctree)/tools/include/uapi/ \
--		-I$(LIBBPF_PATH) \
--		-I$(srctree)/tools/lib \
-+		-I$(LIBBPF_INCLUDE) \
- 		-g -O2 -Wall -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
+-$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)/libbpf
+-	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)  OUTPUT=$(LIBBPF_OUT) $(abspath $@)
++$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile)	       \
++	   | $(LIBBPF_OUT)
++	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
++		    DESTDIR=$(LIBBPF_DESTDIR) prefix=			       \
++		    $(abspath $@) install_headers
  
- $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
+ CFLAGS := -g \
+           -I$(srctree)/tools/include \
+           -I$(srctree)/tools/include/uapi \
+-          -I$(LIBBPF_SRC) \
++          -I$(LIBBPF_INCLUDE) \
+           -I$(SUBCMD_SRC)
+ 
+ LIBS = -lelf -lz
+@@ -65,7 +71,8 @@ $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
+ clean_objects := $(wildcard $(OUTPUT)/*.o                \
+                             $(OUTPUT)/.*.o.cmd           \
+                             $(OUTPUT)/.*.o.d             \
+-                            $(OUTPUT)/libbpf             \
++                            $(LIBBPF_OUT)                \
++                            $(LIBBPF_DESTDIR)            \
+                             $(OUTPUT)/libsubcmd          \
+                             $(OUTPUT)/resolve_btfids)
+ 
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index c6c3e613858a..716e6ad1864b 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -60,8 +60,8 @@
+ #include <linux/rbtree.h>
+ #include <linux/zalloc.h>
+ #include <linux/err.h>
+-#include <btf.h>
+-#include <libbpf.h>
++#include <bpf/btf.h>
++#include <bpf/libbpf.h>
+ #include <parse-options.h>
+ 
+ #define BTF_IDS_SECTION	".BTF_ids"
 diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index c5c9a9f50d8d..849a4637f59d 100644
+index 849a4637f59d..090f424ac5e1 100644
 --- a/tools/testing/selftests/bpf/Makefile
 +++ b/tools/testing/selftests/bpf/Makefile
-@@ -209,6 +209,8 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
- 		    CC=$(HOSTCC) LD=$(HOSTLD)				       \
- 		    EXTRA_CFLAGS='-g -O0'				       \
- 		    OUTPUT=$(HOST_BUILD_DIR)/bpftool/			       \
-+		    LIBBPF_OUTPUT=$(HOST_BUILD_DIR)/libbpf/		       \
-+		    LIBBPF_DESTDIR=$(HOST_SCRATCH_DIR)/			       \
- 		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install
+@@ -122,9 +122,11 @@ BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
+ ifneq ($(CROSS_COMPILE),)
+ HOST_BUILD_DIR		:= $(BUILD_DIR)/host
+ HOST_SCRATCH_DIR	:= $(OUTPUT)/host-tools
++HOST_INCLUDE_DIR	:= $(HOST_SCRATCH_DIR)/include
+ else
+ HOST_BUILD_DIR		:= $(BUILD_DIR)
+ HOST_SCRATCH_DIR	:= $(SCRATCH_DIR)
++HOST_INCLUDE_DIR	:= $(INCLUDE_DIR)
+ endif
+ HOST_BPFOBJ := $(HOST_BUILD_DIR)/libbpf/libbpf.a
+ RESOLVE_BTFIDS := $(HOST_BUILD_DIR)/resolve_btfids/resolve_btfids
+@@ -227,7 +229,7 @@ docs-clean:
  
- all: docs
+ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
+ 	   ../../../include/uapi/linux/bpf.h                                   \
+-	   | $(INCLUDE_DIR) $(BUILD_DIR)/libbpf
++	   | $(BUILD_DIR)/libbpf
+ 	$(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/ \
+ 		    EXTRA_CFLAGS='-g -O0'				       \
+ 		    DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
+@@ -235,7 +237,7 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)		       \
+ ifneq ($(BPFOBJ),$(HOST_BPFOBJ))
+ $(HOST_BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)                \
+ 	   ../../../include/uapi/linux/bpf.h                                   \
+-	   | $(INCLUDE_DIR) $(HOST_BUILD_DIR)/libbpf
++	   | $(HOST_BUILD_DIR)/libbpf
+ 	$(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                             \
+ 		    EXTRA_CFLAGS='-g -O0'				       \
+ 		    OUTPUT=$(HOST_BUILD_DIR)/libbpf/ CC=$(HOSTCC) LD=$(HOSTLD) \
+@@ -260,6 +262,7 @@ $(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/resolve_btfids	\
+ 		       $(TOOLSDIR)/lib/str_error_r.c
+ 	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/resolve_btfids	\
+ 		CC=$(HOSTCC) LD=$(HOSTLD) AR=$(HOSTAR) \
++		LIBBPF_INCLUDE=$(HOST_INCLUDE_DIR) \
+ 		OUTPUT=$(HOST_BUILD_DIR)/resolve_btfids/ BPFOBJ=$(HOST_BPFOBJ)
+ 
+ # Get Clang's default includes on this system, as opposed to those seen by
 -- 
 2.30.2
 
