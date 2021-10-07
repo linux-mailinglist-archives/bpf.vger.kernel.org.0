@@ -2,134 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60958424CA7
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 07:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24507424CF6
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 07:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhJGFEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Oct 2021 01:04:38 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45750 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229497AbhJGFEi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 Oct 2021 01:04:38 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1974QWCn019523
-        for <bpf@vger.kernel.org>; Wed, 6 Oct 2021 22:02:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=7hdLXDicxvEonqM+TahiXJu4T51iJEkOb954yCnSW5k=;
- b=lu24iiC8wbZt9nfOIVXkKDkLptVCdwloMWLu6o5SptyAieecAvzPSLWL7cMg/FNrb5cJ
- QcshAJnXxIzunzQ1nF3Osng/5lVrNBAMloKgY7w5tSUMXao4JyVVKh66NItVOkmkFVJM
- PhsFsjcUCDMBuUup1p1xMOK+kC5bpeYOpH8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bhsv685up-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 22:02:45 -0700
-Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 6 Oct 2021 22:02:44 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 8622515E2E2F3; Wed,  6 Oct 2021 22:02:40 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v2] selftests/bpf: skip the second half of get_branch_snapshot in vm
-Date:   Wed, 6 Oct 2021 22:02:31 -0700
-Message-ID: <20211007050231.728496-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S231485AbhJGGBJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Oct 2021 02:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240206AbhJGGBH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Oct 2021 02:01:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59CF361248
+        for <bpf@vger.kernel.org>; Thu,  7 Oct 2021 05:59:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633586354;
+        bh=FsAjCNJQSMrqczS+hb6ReAb/lLJbQEpMBKERvMDSb5g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ix3IReO3HkTa3E/nGwpsK44ivG1X8V7c6t9G0zp8V6DxuM5WkMqEmaGKnv7CenwtW
+         TZX1s+QImR2qMeBLyIpjR3bSeTp5EMiYai4BopGwQG5CCEG5HrMRoBDYbviiU4vdvX
+         zwyhtZ3EdOWINtmV5gYjCSN6idQY8/VzjsCzpJ++GJOPMtnqaYcdljgQoSENlqjq4w
+         Zcn5L6oUc1HW9uLCaK997X8r1/r4vB/RSbN1ev2fHNOjc0w3OyIM4vtRw3JaxcIxzw
+         F1rXAsFPeFfST5lck3Qv8VjnlTBLWumeTmk3c5yVHv5qYRae3CkNxpRUQ734SL1/sS
+         lEN0ZHewdNVuQ==
+Received: by mail-lf1-f49.google.com with SMTP id u18so19800204lfd.12
+        for <bpf@vger.kernel.org>; Wed, 06 Oct 2021 22:59:14 -0700 (PDT)
+X-Gm-Message-State: AOAM531zWoYLUtbka1dAbH6xxNkJkwM/mCsP97YiMpxdk7JltVcfehLy
+        Y3v3+aIGPFJkLHs4C+rK9Wx0FSAW/lc9j9ss7ng=
+X-Google-Smtp-Source: ABdhPJwDeNxoBnWz9yDiwlOj9Y05rj4qC9mqa0FE58pVN/ew+CM+HvO/qmUKtVADHU7rHtIWyL3zFD+976DUF72ThyA=
+X-Received: by 2002:ac2:5582:: with SMTP id v2mr2421381lfg.143.1633586352708;
+ Wed, 06 Oct 2021 22:59:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: m_hJFJbMbKrLvvx9kqUDpi3ALv-wB3T0
-X-Proofpoint-ORIG-GUID: m_hJFJbMbKrLvvx9kqUDpi3ALv-wB3T0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-06_04,2021-10-06_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- mlxlogscore=933 suspectscore=0 impostorscore=0 lowpriorityscore=0
- spamscore=0 clxscore=1015 phishscore=0 mlxscore=0 adultscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110070032
-X-FB-Internal: deliver
+References: <cover.1633535940.git.zhuyifei@google.com> <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
+ <CAPhsuW4UaidSZXj4-L9t4Ez9TjzoXR6yQvwn_7LC87hYmJbtFw@mail.gmail.com>
+In-Reply-To: <CAPhsuW4UaidSZXj4-L9t4Ez9TjzoXR6yQvwn_7LC87hYmJbtFw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 6 Oct 2021 22:59:01 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5aAq9wA+PsunL0hGKiZc_BTLWjOPpOjYUyADc0+BZCAg@mail.gmail.com>
+Message-ID: <CAPhsuW5aAq9wA+PsunL0hGKiZc_BTLWjOPpOjYUyADc0+BZCAg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to
+ get/set exported errno value
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-VMs running on latest kernel support LBR. However, bpf_get_branch_snapsho=
-t
-couldn't stop the LBR before too many entries are flushed. Skip the
-hit/waste test for VMs before we find a proper fix for LBR in VM.
+On Wed, Oct 6, 2021 at 5:41 PM Song Liu <song@kernel.org> wrote:
+>
+> On Wed, Oct 6, 2021 at 9:04 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> >
+> > From: YiFei Zhu <zhuyifei@google.com>
+> >
+> > When passed in a positive errno, it sets the errno and returns 0.
+> > When passed in 0, it gets the previously set errno. When passed in
+> > an out of bound number, it returns -EINVAL. This is unambiguous:
+> > negative return values are error in invoking the helper itself,
+> > and positive return values are errnos being exported. Errnos once
+> > set cannot be unset, but can be overridden.
+> >
+> > The errno value is stored inside bpf_cg_run_ctx for ease of access
+> > different prog types with different context structs layouts. The
+> > helper implementation can simply perform a container_of from
+> > current->bpf_ctx to retrieve bpf_cg_run_ctx.
+> >
+> > For backward compatibility, if a program rejects without calling
+> > the helper, and the errno has not been set by any prior progs, the
+> > BPF_PROG_RUN_ARRAY_CG family macros automatically set the errno to
+> > EPERM. If a prog sets an errno but returns 1 (allow), the outcome
+> > is considered implementation-defined. This patch treat it the same
+> > way as if 0 (reject) is returned.
+> >
+> > For BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY, the prior behavior is
+> > that, if the return value is NET_XMIT_DROP, the packet is silently
+> > dropped. We preserve this behavior for backward compatibility
+> > reasons, so even if an errno is set, the errno does not return to
+> > caller.
+> >
+> > For getsockopt hooks, they are different in that bpf progs runs
+> > after kernel processes the getsockopt syscall instead of before.
+> > There is also a retval in its context struct in which bpf progs
+> > can unset the retval, and can force an -EPERM by returning 0.
+> > We preseve the same semantics. Even though there is retval,
+> > that value can only be unset, while progs can set (and not unset)
+> > additional errno by using the helper, and that will override
+> > whatever is in retval.
+> >
+> > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> > Reviewed-by: Stanislav Fomichev <sdf@google.com>
+>
+> This is pretty complicated, but the logic looks all correct. Thus,
+>
+> Acked-by: Song Liu <songliubraving@fb.com>
+>
+> One question, if the program want to retrieve existing errno_val, and
+> set a different one, it needs to call the helper twice, right? I guess it
+> is possible to do that in one call with a "swap" logic. Would this work?
 
-Fixes: 025bd7c753aa ("selftests/bpf: Add test for bpf_get_branch_snapshot=
-")
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Actually, how about we split this into two helpers:bpf_set_errno() and
+bpf_get_errno(). This should avoid some confusion in long term.
 
----
-Changes v1 =3D> v2:
-1. Move the is_hypervisor() check to later in the test, so that we still
-   Run the first half of the test in vm
-2. Use strncmp instead of strstr. (Andrii)
-3. Fix the Fixes tag. (Andrii)
----
- .../bpf/prog_tests/get_branch_snapshot.c      | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c=
- b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-index 67e86f8d86775..e4f92feb7b32c 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-@@ -6,6 +6,30 @@
- static int *pfd_array;
- static int cpu_cnt;
-=20
-+static bool is_hypervisor(void)
-+{
-+	char *line =3D NULL;
-+	bool ret =3D false;
-+	size_t len;
-+	FILE *fp;
-+
-+	fp =3D fopen("/proc/cpuinfo", "r");
-+	if (!fp)
-+		return false;
-+
-+	while (getline(&line, &len, fp) !=3D -1) {
-+		if (!strncmp(line, "flags", 5)) {
-+			if (strstr(line, "hypervisor") !=3D NULL)
-+				ret =3D true;
-+			break;
-+		}
-+	}
-+
-+	free(line);
-+	fclose(fp);
-+	return ret;
-+}
-+
- static int create_perf_events(void)
- {
- 	struct perf_event_attr attr =3D {0};
-@@ -83,6 +107,16 @@ void test_get_branch_snapshot(void)
- 		goto cleanup;
- 	}
-=20
-+	if (is_hypervisor()) {
-+		/* As of today, LBR in hypervisor cannot be stopped before
-+		 * too many entries are flushed. Skip the hit/waste test
-+		 * for now in hypervisor until we optimize the LBR in
-+		 * hypervisor.
-+		 */
-+		test__skip();
-+		goto cleanup;
-+	}
-+
- 	ASSERT_GT(skel->bss->test1_hits, 6, "find_looptest_in_lbr");
-=20
- 	/* Given we stop LBR in software, we will waste a few entries.
---=20
-2.30.2
-
+Thanks,
+Song
