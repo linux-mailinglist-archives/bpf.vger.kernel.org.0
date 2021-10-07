@@ -2,79 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4ED6424DFA
-	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 09:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C178424E1C
+	for <lists+bpf@lfdr.de>; Thu,  7 Oct 2021 09:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbhJGHVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Oct 2021 03:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232512AbhJGHVA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Oct 2021 03:21:00 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA3C061746;
-        Thu,  7 Oct 2021 00:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2JHJIpAWgccBA6pQAUlpOyYTSFGIlpbAsVVUO6XyK3w=; b=METMHJ4Uwgejg7yLQ0FdhlSqDc
-        4RiF0XPAjwCu6Xr0VclcBmAeaY6XVFwAdTvn7RPokVchywNUZolBdvwzV1/nc6oYuiriVu/Ka2DeA
-        KiWilHlTFcsK0KkivmGPGjKA1jD86Rz9LRzmphAr37VejYH87iZ+wPXnfzzRnm8yx+1b4kntO+nHM
-        ld9gORc2HXAcPf9VdhhPNxHyDhY97n8btaLu7A1zqJjyVRb2vygP3c1O5ddEb9aa39iWt5HxDH6eg
-        Lsa+U5UAvf30UkdOy2pYK7O8AmzwvHs+xWvuIPgCDCpTGluf/tRlT4nO38ZGmhb3SdWvq2BsA47q8
-        ERRrMV3Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYNg9-008Qna-2g; Thu, 07 Oct 2021 07:18:57 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9FFC698623A; Thu,  7 Oct 2021 09:18:56 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 09:18:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Marcelo Tosatti <mtosatti@redhat.com>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Xu <peterx@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: introduce helper bpf_raw_read_cpu_clock
-Message-ID: <20211007071856.GM174703@worktop.programming.kicks-ass.net>
-References: <20211006175106.GA295227@fuller.cnet>
- <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
+        id S232542AbhJGHdx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Oct 2021 03:33:53 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:55269 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232512AbhJGHdx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Oct 2021 03:33:53 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 1977VT5r023273
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Oct 2021 09:31:29 +0200
+Received: from [167.87.4.198] ([167.87.4.198])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1977VR5D005691;
+        Thu, 7 Oct 2021 09:31:27 +0200
+Subject: Re: [PATCH v4 2/6] arm64: dts: ti:
+ am654-base-board/am65-iot2050-common: Disable mcan nodes
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20211006055344.22662-1-a-govindraju@ti.com>
+ <20211006055344.22662-3-a-govindraju@ti.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <c9907374-623b-e3eb-1be1-3c09a9f93674@siemens.com>
+Date:   Thu, 7 Oct 2021 09:31:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
+In-Reply-To: <20211006055344.22662-3-a-govindraju@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 02:37:09PM -0700, Song Liu wrote:
-> On Wed, Oct 6, 2021 at 10:52 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
-> >
-> >
-> >
-> > Add bpf_raw_read_cpu_clock helper, to read architecture specific
-> > CPU clock. In x86's case, this is the TSC.
-> >
-> > This is necessary to synchronize bpf traces from host and guest bpf-programs
-> > (after subtracting guest tsc-offset from guest timestamps).
+On 06.10.21 07:53, Aswath Govindraju wrote:
+> AM654 base board and iot platforms do not have mcan instances pinned out.
+> Therefore, disable all the mcan instances.
 > 
-> Trying to understand the use case. So in a host-guest scenario,
-> bpf_ktime_get_ns()
-> will return different values in host and guest, but rdtsc() will give
-> the same value.
-> Is this correct?
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 8 ++++++++
+>  arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 8 ++++++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> index 65da226847f4..1e0112b90d9f 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> @@ -646,6 +646,14 @@
+>  	reset-gpios = <&wkup_gpio0 27 GPIO_ACTIVE_HIGH>;
+>  };
+>  
+> +&m_can0 {
+> +	status = "disabled";
+> +};
+> +
+> +&m_can1 {
+> +	status = "disabled";
+> +};
+> +
+>  &pcie1_ep {
+>  	status = "disabled";
+>  };
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> index cfbcebfa37c1..9043f91c9bec 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> @@ -416,6 +416,14 @@
+>  	status = "disabled";
+>  };
+>  
+> +&m_can0 {
+> +	status = "disabled";
+> +};
+> +
+> +&m_can1 {
+> +	status = "disabled";
+> +};
+> +
+>  &mailbox0_cluster0 {
+>  	interrupts = <436>;
+>  
+> 
 
-No, it will not. Also, please explain if any of this stands a chance of
-working for anything other than x86. Or even on x86 in the face of
-guest migration.
+For the IOT2050 part:
 
-Also, please explain, again, what's wrong with dumping snapshots of
-CLOCK_MONOTONIC{,_RAW} from host and guest and correlating time that
-way?
+Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
 
-And also explain why BPF needs to do this differently than all the other
-tracers.
+Jan
+
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
