@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885964273E3
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 00:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F0C4273ED
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 00:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbhJHWtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 18:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
+        id S243552AbhJHWvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 18:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhJHWtH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:49:07 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ADBC061570
-        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 15:47:11 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id m3so45217397lfu.2
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 15:47:11 -0700 (PDT)
+        with ESMTP id S243505AbhJHWvt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 18:51:49 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4646BC061570
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 15:49:53 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so44896821lfa.9
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 15:49:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LuumanNWkBsxYAZDXpTvk0KGVijWoy4AeMPN/jz1pKA=;
-        b=YpU3x7yEF84UKP8PKcWa9HPYNF9ZkDnnG4XZ/ohbt9KeY4IeVl+HM4xKvBTUw7fj5j
-         vFXMmriMmK62mtQNhxi5qFSSm5aMNYEltuslNMRTHXFXhURA7XMyIRRfLRqLnLV1L+nC
-         K+iLtyDueTH40eELwm/cYVR3Dveh4lN6bG/+Qi9WLT/pTDvRfXSJMyvLE1SBUVMJvcsa
-         5RYytyrkUOOEswBhbPbgxGW05CLJj7gCsAK4TH5hzw9FMhJ2hIDkAvCzEasZl/0O12m8
-         eirm7BaWlclYgu38rnVJxHXM3LCwPvBN9Dkb34M+e6jWEqkb4wYwPT0qAYXg0WA8vUow
-         9oig==
+        bh=8B3ExhlOdE3o7BSPjfW4DgXiAX0XrGly7PtruTHBPPY=;
+        b=S1gfnuc5cWG8rDcjL+gfUJe+43tQYbHjQLxnTI/TcviO8fu5FUs1nNFbowUuZjAOx7
+         FpucZxP05yfieS4tdZXf36EAEKhiuNOuA59Do0wOix763nIA+Ykxx9p/rH0xVx1ieW6c
+         vo9MPHHT5AVviTjVDwRkg06f1VKCeuBaFNc6URt/EBG2hhO3fn/jBEpZPjlrAwjj+Efs
+         ISNpTuqEnurWpYxVgWRvKZqaZg31xG8MqnIxlnQqSR+nPYFZA5qYlsF/Ak91VyBG6lGE
+         U/7oAqVKAxFnLm3up+F7W714Ngjkmtjbz8wt7054J+3nhRLe7PpPMevRwytP2VA05msx
+         h+NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LuumanNWkBsxYAZDXpTvk0KGVijWoy4AeMPN/jz1pKA=;
-        b=uid40yX4wuRJuCbZe46vPGhA5EVNflD7SGPO0QsiqRp8Z43/+was6rDBysXWHfK/kV
-         PPniedVpAlcXhmmJcz1rXel/eFw+oI1v1vzOXqKn3/LlWuwY/oBoyeviefwGgS8yfjCP
-         dWzQLvQ8JVkouXnAzqMZr4etJDhec4e9J9UWSmk07VHw+gt0En9munjNg25d+unRWNRw
-         7r0MoJ2jDyRYHJ2eAH6Bm709XviEXZh4V1sJkv+EkFe0QPjuuCpx2Jg0KtHKpiTmkYXh
-         6hJe4GpwXha0RkPjS7KbBO/JEPZ9Sgo9jnkwfYEI/F3xbiQvQVsgf8C8mMbWClfIV+Sq
-         OFWw==
-X-Gm-Message-State: AOAM531IkP4WilsSIzcYiZ7sADQxQupacmydb+Y9r2d3DRbEJRPoO3g4
-        bwCVSG+70rFYQpITGj2x1W0veRzuVVbR07I4U2g=
-X-Google-Smtp-Source: ABdhPJyNnvdmCh29UYdr8uw9NoGAz2oNLJTb8ka9OuO0MM6GRsyPVjwqDfu52C1PxIgla+5b3dENBcPcVfY6ONEbnUY=
-X-Received: by 2002:ac2:508b:: with SMTP id f11mr13290192lfm.239.1633733229806;
- Fri, 08 Oct 2021 15:47:09 -0700 (PDT)
+        bh=8B3ExhlOdE3o7BSPjfW4DgXiAX0XrGly7PtruTHBPPY=;
+        b=JEEIrTVmERkf8BghgGK8OQiJgy9KKUxJya0dLd2MGYfCBS9nFavM8lT8ighE491n6W
+         zuW0pvUfzQKWZYAhCl4X8ULJaom4+d/KmmzHa8bx4EwNeu+0BW5DasXTdR6qaBHHEoke
+         foHbndlo0SYzciGR6o7OkBRLZBnWcn4y5kNZ6WwZo0wnX7ahaL+5cn/uv6QwL5MvWC7N
+         2uoBSczDzE9ND0GGyCQV35J58c1r3voUnopsiJl1q/DEqDflYFrTzKv+M4qMamoKsmpf
+         DuSw8O8YNnse7R/YF4qoNwtAIfPawuX5rkjD9of0s9XGAb8u92USfujC1GmaIuJXXEMH
+         KI9A==
+X-Gm-Message-State: AOAM533OhIslJSXYlhA727q7xBcaiRf4H3wtb8qKCeTrAhF7b7rFwdku
+        8XJ98A6uq6QAUZVzrOZvy0Xsr7moxGy8cauN3W0=
+X-Google-Smtp-Source: ABdhPJwojGuP8p5obQukcGc7TLZJVvOdFeWdRQO9rEoosLXW3ODdmliwytvhvMAZEjNV4kQvGDCNJUTmGzdBqamKDWE=
+X-Received: by 2002:a2e:2205:: with SMTP id i5mr6472342lji.242.1633733391414;
+ Fri, 08 Oct 2021 15:49:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-10-fallentree@fb.com>
- <CAEf4BzYO+XD9Aa0o1BWfk8q4vE3Aon12bRWJjvz6RtWrT0o=WA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYO+XD9Aa0o1BWfk8q4vE3Aon12bRWJjvz6RtWrT0o=WA@mail.gmail.com>
+References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-6-fallentree@fb.com>
+ <CAEf4BzaWi5FQsES5C72T6FgPbEdxqAfQGTArovY_d2KS_w6-=Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzaWi5FQsES5C72T6FgPbEdxqAfQGTArovY_d2KS_w6-=Q@mail.gmail.com>
 From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Fri, 8 Oct 2021 15:46:43 -0700
-Message-ID: <CAJygYd39oi4UB=orVSBb_V5c6nBw6TMymq=JsbhHMsfoDOAyEQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 09/14] selftests/bpf: Make uprobe tests use
- different attach functions.
+Date:   Fri, 8 Oct 2021 15:49:25 -0700
+Message-ID: <CAJygYd2hwcKKZsfXa3eM_jT9WmcpUnmNzmkH1eMBU0MZwg=9NA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 05/14] selftests/bpf: adding
+ read_perf_max_sample_freq() helper
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yucong Sun <fallentree@fb.com>, Song Liu <songliubraving@fb.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Cc:     Yucong Sun <fallentree@fb.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -67,150 +67,85 @@ On Fri, Oct 8, 2021 at 3:27 PM Andrii Nakryiko
 > >
 > > From: Yucong Sun <sunyucong@gmail.com>
 > >
-> > Using same address on different processes of the same binary often fail
-> > with EINVAL, this patch make these tests use distinct methods, so they
-> > can run in parallel.
+> > This patch moved a helper function to test_progs and make all tests
+> > setting sampling frequency use it to read current perf_max_sample_freq,
+> > this will avoid triggering EINVAL error.
 > >
 > > Signed-off-by: Yucong Sun <sunyucong@gmail.com>
 > > ---
-> >  tools/testing/selftests/bpf/prog_tests/attach_probe.c | 8 ++++++--
-> >  tools/testing/selftests/bpf/prog_tests/bpf_cookie.c   | 8 ++++++--
-> >  tools/testing/selftests/bpf/prog_tests/task_pt_regs.c | 8 ++++++--
-> >  3 files changed, 18 insertions(+), 6 deletions(-)
+> >  .../selftests/bpf/prog_tests/bpf_cookie.c     |  2 +-
+> >  .../selftests/bpf/prog_tests/perf_branches.c  |  4 ++--
+> >  .../selftests/bpf/prog_tests/perf_link.c      |  2 +-
+> >  .../bpf/prog_tests/stacktrace_build_id_nmi.c  | 19 ++-----------------
+> >  tools/testing/selftests/bpf/test_progs.c      | 15 +++++++++++++++
+> >  tools/testing/selftests/bpf/test_progs.h      |  1 +
+> >  6 files changed, 22 insertions(+), 21 deletions(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > index 6c511dcd1465..eff36ba9c148 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > @@ -5,6 +5,10 @@
-> >  /* this is how USDT semaphore is actually defined, except volatile modifier */
-> >  volatile unsigned short uprobe_ref_ctr __attribute__((unused)) __attribute((section(".probes")));
-> >
-> > +static int method() {
 >
-> wrong style: { should be on separate line
->
-> > +       return get_base_addr();
->
-> there is nothing special about get_base_addr(), except that it's a
-> global function in a different file and won't be inlined, while this
-> method() approach has no such guarantee
->
-> I've dropped this patch for now.
->
-> But I'm surprised that attaching to the same uprobe few times doesn't
-> work. Song, is there anything in kernel that could cause this?
+> We have trace_helper.c, seems like it would be better to have it
+> there? I haven't applied this patch yet.
 
-
-libbpf: uprobe perf_event_open() failed: Invalid argument
-libbpf: prog 'handle_uprobe': failed to create uprobe
-'/proc/self/exe:0x144d59' perf event: Invalid argument
-uprobe_subtest:FAIL:link1 unexpected error: -22
-
-The problem only happens when several different processes of the same
-binary are trying to attach uprobe on the same function. I am guessing
-it is due to address space randomization ?
-
-I traced through the code and the EINVAL is returned right after this warning
-
-[    1.375901] ref_ctr_offset mismatch. inode: 0x55a0 offset: 0x144d59
-ref_ctr_offset(old): 0x554a00 ref_ctr_offset(new): 0x0
-
-
-This could be easily be reproduced by    ./test_progs -t
-attach_probe,bpf_cookie,test_pt_regs -j
+I did look at that file, but the content was not really related, so
+didn't go with it, of course we can :-D
 
 >
+> [...]
 >
-> > +}
-> > +
-> >  void test_attach_probe(void)
-> >  {
-> >         DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
-> > @@ -33,7 +37,7 @@ void test_attach_probe(void)
-> >         if (CHECK(base_addr < 0, "get_base_addr",
-> >                   "failed to find base addr: %zd", base_addr))
-> >                 return;
-> > -       uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
-> > +       uprobe_offset = get_uprobe_offset(&method, base_addr);
-> >
-> >         ref_ctr_offset = get_rel_offset((uintptr_t)&uprobe_ref_ctr);
-> >         if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
-> > @@ -98,7 +102,7 @@ void test_attach_probe(void)
+> > @@ -48,6 +31,8 @@ void test_stacktrace_build_id_nmi(void)
+> >         if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
 > >                 goto cleanup;
 > >
-> >         /* trigger & validate uprobe & uretprobe */
-> > -       get_base_addr();
-> > +       method();
-> >
-> >         if (CHECK(skel->bss->uprobe_res != 3, "check_uprobe_res",
-> >                   "wrong uprobe res: %d\n", skel->bss->uprobe_res))
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> > index 19c9f7b53cfa..5ebd8ba988e2 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> > @@ -8,6 +8,10 @@
-> >  #include <test_progs.h>
-> >  #include "test_bpf_cookie.skel.h"
-> >
-> > +static int method() {
-> > +       return get_base_addr();
-> > +}
+> > +       attr.sample_freq = read_perf_max_sample_freq();
 > > +
-> >  static void kprobe_subtest(struct test_bpf_cookie *skel)
-> >  {
-> >         DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
-> > @@ -66,7 +70,7 @@ static void uprobe_subtest(struct test_bpf_cookie *skel)
-> >         ssize_t base_addr;
+> >         pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
+> >                          0 /* cpu 0 */, -1 /* group id */,
+> >                          0 /* flags */);
+> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> > index 2ac922f8aa2c..66825313414b 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.c
+> > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > @@ -1500,3 +1500,18 @@ int main(int argc, char **argv)
 > >
-> >         base_addr = get_base_addr();
-> > -       uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
-> > +       uprobe_offset = get_uprobe_offset(&method, base_addr);
-> >
-> >         /* attach two uprobes */
-> >         opts.bpf_cookie = 0x100;
-> > @@ -99,7 +103,7 @@ static void uprobe_subtest(struct test_bpf_cookie *skel)
-> >                 goto cleanup;
-> >
-> >         /* trigger uprobe && uretprobe */
-> > -       get_base_addr();
-> > +       method();
-> >
-> >         ASSERT_EQ(skel->bss->uprobe_res, 0x100 | 0x200, "uprobe_res");
-> >         ASSERT_EQ(skel->bss->uretprobe_res, 0x1000 | 0x2000, "uretprobe_res");
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> > index 37c20b5ffa70..4d2f1435be90 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> > @@ -3,6 +3,10 @@
-> >  #include <test_progs.h>
-> >  #include "test_task_pt_regs.skel.h"
-> >
-> > +static int method() {
-> > +       return get_base_addr();
-> > +}
+> >         return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
+> >  }
 > > +
-> >  void test_task_pt_regs(void)
-> >  {
-> >         struct test_task_pt_regs *skel;
-> > @@ -14,7 +18,7 @@ void test_task_pt_regs(void)
-> >         base_addr = get_base_addr();
-> >         if (!ASSERT_GT(base_addr, 0, "get_base_addr"))
-> >                 return;
-> > -       uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
-> > +       uprobe_offset = get_uprobe_offset(&method, base_addr);
+> > +__u64 read_perf_max_sample_freq(void)
+> > +{
+> > +       __u64 sample_freq = 1000; /* fallback to 1000 on error */
+>
+> previous default was 5000, message below still claims 5000, what's the
+> The reason for changing it?
+
+This is from my observation that on my machine it frequently dip down
+to 3000,  the test doesn't really rely on 5000 either, they were fine
+with 1000 even.
+
+>
+>
+>
+> > +       FILE *f;
+> > +       __u32 duration = 0;
+> > +
+> > +       f = fopen("/proc/sys/kernel/perf_event_max_sample_rate", "r");
+> > +       if (f == NULL)
+> > +               return sample_freq;
+> > +       CHECK(fscanf(f, "%llu", &sample_freq) != 1, "Get max sample rate",
+> > +             "return default value: 5000,err %d\n", -errno);
+> > +       fclose(f);
+> > +       return sample_freq;
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> > index b239dc9fcef0..d5ca0d36cc96 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.h
+> > +++ b/tools/testing/selftests/bpf/test_progs.h
+> > @@ -327,6 +327,7 @@ int extract_build_id(char *build_id, size_t size);
+> >  int kern_sync_rcu(void);
+> >  int trigger_module_test_read(int read_sz);
+> >  int trigger_module_test_write(int write_sz);
+> > +__u64 read_perf_max_sample_freq(void);
 > >
-> >         skel = test_task_pt_regs__open_and_load();
-> >         if (!ASSERT_OK_PTR(skel, "skel_open"))
-> > @@ -32,7 +36,7 @@ void test_task_pt_regs(void)
-> >         skel->links.handle_uprobe = uprobe_link;
-> >
-> >         /* trigger & validate uprobe */
-> > -       get_base_addr();
-> > +       method();
-> >
-> >         if (!ASSERT_EQ(skel->bss->uprobe_res, 1, "check_uprobe_res"))
-> >                 goto cleanup;
+> >  #ifdef __x86_64__
+> >  #define SYS_NANOSLEEP_KPROBE_NAME "__x64_sys_nanosleep"
 > > --
 > > 2.30.2
 > >
