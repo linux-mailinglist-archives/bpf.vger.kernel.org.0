@@ -2,158 +2,465 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E744426670
-	for <lists+bpf@lfdr.de>; Fri,  8 Oct 2021 11:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECECB426A8E
+	for <lists+bpf@lfdr.de>; Fri,  8 Oct 2021 14:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237631AbhJHJQg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 05:16:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27675 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236616AbhJHJQX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 Oct 2021 05:16:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633684467;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aMLlR2SzoNjOmv5PwyT5gjKRoe76WYTK4npUjuAglpY=;
-        b=DruIj8GO1QHQgEY4+gJywUw62sMNEM051XZ/KNcus5kVv9qdvYJ8WTdLAwaj6OuTS/NdBP
-        uvkxhFKSp3fSOF4QpSFzgP4LQ+BusZq+m4HxvQhd3zcMjFxEwREOZhbbwuQcf7KD4uN2x0
-        vSpnbuihWGPZQ91QetQEkLE66nEieqw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-6cpmE5i3Mharmdxqw0aehg-1; Fri, 08 Oct 2021 05:14:26 -0400
-X-MC-Unique: 6cpmE5i3Mharmdxqw0aehg-1
-Received: by mail-wr1-f72.google.com with SMTP id r16-20020adfb1d0000000b00160bf8972ceso6790612wra.13
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 02:14:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aMLlR2SzoNjOmv5PwyT5gjKRoe76WYTK4npUjuAglpY=;
-        b=PAkg5rRtCWXbEKnE2h9+wICwYSN8mfkW2EBXTXRzrUHJh09GTxUvwjcpDMhpX0YuJn
-         dE3QpQaeapMEubOG7NHhTh77LInKLnYpEM1QRdTvzRAyp1ixSHa/KJiOwooZ0Bq26OXs
-         BZIetG0Nz/xGureDzERQhdO7y0yv3n4kHljeA5z+wXAe5sIt1Y1WP4fMvIUY31jGlCdY
-         KTZdAuZaKSaERd7+Hcmn1xGhMJZkAMoXw+bUwnKp0VqjLx5NuiDAYKNQkFxHd/267qFA
-         5WIL3/MEDPVbbYsuhGU/4eJ4PI3vLY1eUOsx5IJsU3MjrWPK4Eb2+cfPVS3/S+CO5zJY
-         hkrA==
-X-Gm-Message-State: AOAM532uagMAbEVSzSh53SK18ZgyOAh3ElqmJs7862rkZ/TsRyt5ULTK
-        N76Z3WyG8Bo8Sc23/DEE2I47D0/+pqgJC2GBVPSZRymcHeJ4fffSQ761di6QzBNLgfDc8RX421R
-        L95/VG4aU3eAT
-X-Received: by 2002:a1c:f705:: with SMTP id v5mr2170519wmh.18.1633684465596;
-        Fri, 08 Oct 2021 02:14:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz6GIVVwRsyGduGMdmAo2Z9uL4etWtj7XIEnA3tDdBWwJS4LKVXzwWWpvrqQgMbPnFVV8FHtA==
-X-Received: by 2002:a1c:f705:: with SMTP id v5mr2170500wmh.18.1633684465393;
-        Fri, 08 Oct 2021 02:14:25 -0700 (PDT)
-Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id z8sm608721wrq.16.2021.10.08.02.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 02:14:25 -0700 (PDT)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S240615AbhJHMUG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 08:20:06 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:38242 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240457AbhJHMUF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:20:05 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxJOb6NmBhR5MWAA--.43565S2;
+        Fri, 08 Oct 2021 20:18:03 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 8/8] ftrace/samples: Add multi direct interface test module
-Date:   Fri,  8 Oct 2021 11:13:36 +0200
-Message-Id: <20211008091336.33616-9-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211008091336.33616-1-jolsa@kernel.org>
-References: <20211008091336.33616-1-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf-next v3] test_bpf: Add module parameter test_suite
+Date:   Fri,  8 Oct 2021 20:18:02 +0800
+Message-Id: <1633695482-10528-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9CxJOb6NmBhR5MWAA--.43565S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Cr47Cw4xZr4kJr4xKr1ftFb_yoWkAr1kpr
+        W7Krn0yF18XF97XF18XF17Aa4rtF4vy3yrtrWfJryqyrs5CryUtF48K34Iqrn3Jr40vw15
+        Z3WIvF45G3W7AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xr1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU6wZcUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding simple module that uses multi direct interface:
+After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
+operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
+there exists segment fault due to the following reason:
 
-  register_ftrace_direct_multi
-  unregister_ftrace_direct_multi
+ALU64_MOV_X: all register value magnitudes jited:1
+Break instruction in kernel code[#1]
 
-The init function registers trampoline for 2 functions,
-and exit function unregisters them.
+It seems that the related jit implementations of some test cases
+in test_bpf() have problems. At this moment, I do not care about
+the segment fault while I just want to verify the test cases of
+tail calls.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Based on the above background and motivation, add the following
+module parameter test_suite to the test_bpf.ko:
+test_suite=<string>: only the specified type will be run, the string
+can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+
+If test_suite is not specified, but test_id, test_name or test_range
+is specified, set 'test_bpf' as the default test suite.
+
+This is useful to only test the corresponding test suite when specify
+the valid test_suite string.
+
+Any invalid test suite will result in -EINVAL being returned and no
+tests being run. If the test_suite is not specified or specified as
+empty string, it does not change the current logic, all of the test
+cases will be run.
+
+Here are some test results:
+ # dmesg -c
+ # modprobe test_bpf
+ # dmesg
+ # dmesg | grep Summary
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf
+ # dmesg | tail -1
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls
+ # dmesg
+ test_bpf: #0 Tail call leaf jited:0 21 PASS
+ [...]
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment
+ # dmesg
+ test_bpf: #0 gso_with_rx_frags PASS
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_id=1
+ # dmesg
+ test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
+ test_bpf: #1 TXA jited:0 54 51 50 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf test_name=TXA
+ # dmesg
+ test_bpf: #1 TXA jited:0 54 50 51 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
+ # dmesg
+ test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment test_id=1
+ # dmesg
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
+
+By the way, the above segment fault has been fixed in the latest bpf-next
+tree.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- samples/ftrace/Makefile              |  1 +
- samples/ftrace/ftrace-direct-multi.c | 52 ++++++++++++++++++++++++++++
- 2 files changed, 53 insertions(+)
- create mode 100644 samples/ftrace/ftrace-direct-multi.c
 
-diff --git a/samples/ftrace/Makefile b/samples/ftrace/Makefile
-index 4ce896e10b2e..ab1d1c05c288 100644
---- a/samples/ftrace/Makefile
-+++ b/samples/ftrace/Makefile
-@@ -3,6 +3,7 @@
- obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct.o
- obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-too.o
- obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-modify.o
-+obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-multi.o
+v3:
+  -- Use test_suite instead of test_type as module parameter
+  -- Make test_id, test_name and test_range selection applied to each test suite
+
+v2:
+  -- Fix typo in the commit message
+  -- Use my private email to send
+
+ lib/test_bpf.c | 263 ++++++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 187 insertions(+), 76 deletions(-)
+
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index e5b10fd..dfa9db8 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
+ static int test_id = -1;
+ module_param(test_id, int, 0);
  
- CFLAGS_sample-trace-array.o := -I$(src)
- obj-$(CONFIG_SAMPLE_TRACE_ARRAY) += sample-trace-array.o
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-new file mode 100644
-index 000000000000..2a5b1fb7ac14
---- /dev/null
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/module.h>
+-static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
++static int test_range[2] = { -1, -1 };
+ module_param_array(test_range, int, NULL, 0);
+ 
+-static __init int find_test_index(const char *test_name)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+-		if (!strcmp(tests[i].descr, test_name))
+-			return i;
+-	}
+-	return -1;
+-}
+-
+-static __init int prepare_bpf_tests(void)
+-{
+-	if (test_id >= 0) {
+-		/*
+-		 * if a test_id was specified, use test_range to
+-		 * cover only that test.
+-		 */
+-		if (test_id >= ARRAY_SIZE(tests)) {
+-			pr_err("test_bpf: invalid test_id specified.\n");
+-			return -EINVAL;
+-		}
+-
+-		test_range[0] = test_id;
+-		test_range[1] = test_id;
+-	} else if (*test_name) {
+-		/*
+-		 * if a test_name was specified, find it and setup
+-		 * test_range to cover only that test.
+-		 */
+-		int idx = find_test_index(test_name);
+-
+-		if (idx < 0) {
+-			pr_err("test_bpf: no test named '%s' found.\n",
+-			       test_name);
+-			return -EINVAL;
+-		}
+-		test_range[0] = idx;
+-		test_range[1] = idx;
+-	} else {
+-		/*
+-		 * check that the supplied test_range is valid.
+-		 */
+-		if (test_range[0] >= ARRAY_SIZE(tests) ||
+-		    test_range[1] >= ARRAY_SIZE(tests) ||
+-		    test_range[0] < 0 || test_range[1] < 0) {
+-			pr_err("test_bpf: test_range is out of bound.\n");
+-			return -EINVAL;
+-		}
+-
+-		if (test_range[1] < test_range[0]) {
+-			pr_err("test_bpf: test_range is ending before it starts.\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-static __init void destroy_bpf_tests(void)
+-{
+-}
+-
+ static bool exclude_test(int test_id)
+ {
+ 	return test_id < test_range[0] || test_id > test_range[1];
+@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
+ 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+ 		const struct skb_segment_test *test = &skb_segment_tests[i];
+ 
++		cond_resched();
++		if (exclude_test(i))
++			continue;
 +
-+#include <linux/mm.h> /* for handle_mm_fault() */
-+#include <linux/ftrace.h>
-+#include <linux/sched/stat.h>
+ 		pr_info("#%d %s ", i, test->descr);
+ 
+ 		if (test_skb_segment_single(test)) {
+@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 		int ret;
+ 
+ 		cond_resched();
++		if (exclude_test(i))
++			continue;
+ 
+ 		pr_info("#%d %s ", i, test->descr);
+ 		if (!fp) {
+@@ -14966,29 +14909,197 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 	return err_cnt ? -EINVAL : 0;
+ }
+ 
++static char test_suite[32];
++module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
 +
-+void my_direct_func(unsigned long ip)
++static __init int find_test_index(const char *test_name)
 +{
-+	trace_printk("ip %lx\n", ip);
++	int i;
++
++	if (!strcmp(test_suite, "test_bpf")) {
++		for (i = 0; i < ARRAY_SIZE(tests); i++) {
++			if (!strcmp(tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_tail_calls")) {
++		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
++			if (!strcmp(tail_call_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_skb_segment")) {
++		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
++			if (!strcmp(skb_segment_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	return -1;
 +}
 +
-+extern void my_tramp(void *);
-+
-+asm (
-+"	.pushsection    .text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	pushq %rbp\n"
-+"	movq %rsp, %rbp\n"
-+"	pushq %rdi\n"
-+"	movq 8(%rbp), %rdi\n"
-+"	call my_direct_func\n"
-+"	popq %rdi\n"
-+"	leave\n"
-+"	ret\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+static struct ftrace_ops direct;
-+
-+static int __init ftrace_direct_multi_init(void)
++static __init int prepare_bpf_tests(void)
 +{
-+	ftrace_set_filter_ip(&direct, (unsigned long) wake_up_process, 0, 0);
-+	ftrace_set_filter_ip(&direct, (unsigned long) schedule, 0, 0);
++	if (test_id >= 0) {
++		/*
++		 * if a test_id was specified, use test_range to
++		 * cover only that test.
++		 */
++		if (!strcmp(test_suite, "test_bpf") &&
++		     test_id >= ARRAY_SIZE(tests)) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++				test_suite);
++			return -EINVAL;
++		}
 +
-+	return register_ftrace_direct_multi(&direct, (unsigned long) my_tramp);
++		if (!strcmp(test_suite, "test_tail_calls") &&
++		    test_id >= ARRAY_SIZE(tail_call_tests)) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++				test_suite);
++			return -EINVAL;
++		}
++
++		if (!strcmp(test_suite, "test_skb_segment") &&
++		    test_id >= ARRAY_SIZE(skb_segment_tests)) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++				test_suite);
++			return -EINVAL;
++		}
++
++		test_range[0] = test_id;
++		test_range[1] = test_id;
++	} else if (*test_name) {
++		/*
++		 * if a test_name was specified, find it and setup
++		 * test_range to cover only that test.
++		 */
++		int idx = find_test_index(test_name);
++
++		if (idx < 0) {
++			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
++			       test_name, test_suite);
++			return -EINVAL;
++		}
++		test_range[0] = idx;
++		test_range[1] = idx;
++	} else {
++		/*
++		 * check that the supplied test_range is valid.
++		 */
++		if (!strcmp(test_suite, "test_bpf")) {
++			if (test_range[0] >= ARRAY_SIZE(tests) ||
++			    test_range[1] >= ARRAY_SIZE(tests) ||
++			    test_range[0] < 0 || test_range[1] < 0) {
++				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++					test_suite);
++				return -EINVAL;
++			}
++		}
++
++		if (!strcmp(test_suite, "test_tail_calls")) {
++			if (test_range[0] >= ARRAY_SIZE(tail_call_tests) ||
++			    test_range[1] >= ARRAY_SIZE(tail_call_tests) ||
++			    test_range[0] < 0 || test_range[1] < 0) {
++				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++					test_suite);
++				return -EINVAL;
++			}
++		}
++
++		if (!strcmp(test_suite, "test_skb_segment")) {
++			if (test_range[0] >= ARRAY_SIZE(skb_segment_tests) ||
++			    test_range[1] >= ARRAY_SIZE(skb_segment_tests) ||
++			    test_range[0] < 0 || test_range[1] < 0) {
++				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++					test_suite);
++				return -EINVAL;
++			}
++		}
++
++		if (test_range[1] < test_range[0]) {
++			pr_err("test_bpf: test_range is ending before it starts.\n");
++			return -EINVAL;
++		}
++	}
++
++	return 0;
 +}
 +
-+static void __exit ftrace_direct_multi_exit(void)
++static __init void destroy_bpf_tests(void)
 +{
-+	unregister_ftrace_direct_multi(&direct, (unsigned long) my_tramp);
 +}
 +
-+module_init(ftrace_direct_multi_init);
-+module_exit(ftrace_direct_multi_exit);
+ static int __init test_bpf_init(void)
+ {
+ 	struct bpf_array *progs = NULL;
+ 	int ret;
+ 
++	if (strlen(test_suite) &&
++	    strcmp(test_suite, "test_bpf") &&
++	    strcmp(test_suite, "test_tail_calls") &&
++	    strcmp(test_suite, "test_skb_segment")) {
++		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
++		return -EINVAL;
++	}
 +
-+MODULE_AUTHOR("Jiri Olsa");
-+MODULE_DESCRIPTION("Example use case of using register_ftrace_direct_multi()");
-+MODULE_LICENSE("GPL");
++	/*
++	 * if test_suite is not specified, but test_id, test_name or test_range
++	 * is specified, set 'test_bpf' as the default test suite.
++	 */
++	if (!strlen(test_suite) &&
++	    (test_id != -1 || strlen(test_name) ||
++	    (test_range[0] != -1 || test_range[1] != -1))) {
++		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
++		strcpy(test_suite, "test_bpf");
++	}
++
++
++	/* if test_range is not specified, set the limit of test_range */
++	if (test_range[0] == -1 && test_range[1] == -1) {
++		/* if test_suite is not specified, set the possible max upper limit */
++		if (!strlen(test_suite)) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(tests) - 1;
++		/* otherwise, set the limit of each test_suite */
++		} else if (!strcmp(test_suite, "test_bpf")) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(tests) - 1;
++		} else if (!strcmp(test_suite, "test_tail_calls")) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(tail_call_tests) - 1;
++		} else if (!strcmp(test_suite, "test_skb_segment")) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(skb_segment_tests) - 1;
++		}
++	}
++
+ 	ret = prepare_bpf_tests();
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = test_bpf();
+-	destroy_bpf_tests();
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
++		ret = test_bpf();
++		destroy_bpf_tests();
++		if (ret)
++			return ret;
++	}
+ 
+-	ret = prepare_tail_call_tests(&progs);
+-	if (ret)
+-		return ret;
+-	ret = test_tail_calls(progs);
+-	destroy_tail_call_tests(progs);
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
++		ret = prepare_tail_call_tests(&progs);
++		if (ret)
++			return ret;
++		ret = test_tail_calls(progs);
++		destroy_tail_call_tests(progs);
++		if (ret)
++			return ret;
++	}
+ 
+-	return test_skb_segment();
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
++		return test_skb_segment();
++
++	return 0;
+ }
+ 
+ static void __exit test_bpf_exit(void)
 -- 
-2.31.1
+2.1.0
 
