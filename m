@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28317427403
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 01:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21235427404
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 01:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243736AbhJHXIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 19:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S243723AbhJHXKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 19:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243723AbhJHXIk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:08:40 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8266CC061570
-        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 16:06:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id u18so44910502lfd.12
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 16:06:44 -0700 (PDT)
+        with ESMTP id S243722AbhJHXKS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 19:10:18 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF37C061570
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 16:08:22 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x27so45299351lfu.5
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 16:08:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yQWbHRdz3Sjt/zFl73o7TuB1A5v/gzG9BJ0cBDyFw3g=;
-        b=J+QZYqLChvvVRdWpdIdsAQmOA8SwXDNGVzAxgFprZ5zMiYaDXuEGJeIi5rxrRQrDWb
-         yIFwaln+uj8UQwY4EaFSTxcatvUQ4TRAAX2C2as0gjYUk38hzvpT1oE1x+D8yeFXxwKd
-         XfMEVab2aGr0iTAtGxCmZwsNtoyq0ZtUcTGGKbUpWM2oFJaiJv0PWDw6Uru1j1s3n1JK
-         89/+GUya717f4y00yJiyTpj7EGbFePP5HzC2i86orJTr+502ZHn2uGVI5RNPWeLShJbu
-         EM0a/chShDZus/cWSUhakKqznYRnh7hKX9nmo1X2kjD4PvZ/SK/2Lb16fAqoGPBnLBD6
-         2uTQ==
+        bh=vTBnlkAjt9bNIWz9nYIojTfMAG4P/ep2ibFYiwSAstY=;
+        b=AtcbCT6mmsxeRuTYCgcJsWVRj8ZqjwuU8yaUhxI1vKH4mz+c9+mSxzNIDOwE9kDmEw
+         LBGJsCmFbQGkt1mRD0giUx+5o4x216fLQQRkkCTr9qg1CA6tnYNoOsY50vRix2x//pOr
+         fYFslNLJX8KZSedGWvVPlQGB4w8c3qDdlruYOmAiLbu2HSunqaqalpsa8dZuQBgkxR9z
+         N015qDdnMFEIDhkAs642g2VFnaXCigT94tcspUIKmx8D8tU/zID26e3IChgD9TOylZ4x
+         lNTzRCxavael46Y/wxjG1+xUw8zWhLA5ISb2k3zpq776My6rTQ6109VZJ5VN0lMgoVHy
+         vumw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yQWbHRdz3Sjt/zFl73o7TuB1A5v/gzG9BJ0cBDyFw3g=;
-        b=tuC1+3/sbsLvfXVGI2RDZiZirW9rChLb872AwynIRtBxFm4ljzWUrfeqOlykGeVErq
-         oNz711XSPLOaOP2USxr8H5X3tDMaiA5341yLAIAdWHdVVIo+0pPmtTquTtq5dGmVYtUk
-         tDA0LwjP2R82WNXLuny46+uFQKNsJkqYYnx/RtaEnoGVgzqUll7/F873aECKblhVEktS
-         F6Eynq3wP0rCTCJGg7iqowEa9A4OME7tZuIswkk0sBDvdVxUiFV9kodlh8h5yhY1vPhb
-         akptpi8T0ldVuZ5BitsrwOKMi01EX8lXAf5oO67g1LIO5ZgYQlM+6UrXQl1iwMglb87x
-         2tIA==
-X-Gm-Message-State: AOAM53119/20lpr+pKv37tf7n1TFkAx/3qk32vMlDZbP3rjXUO/JfqTE
-        4MyYaE6BjY1sfNfQrL3jw5g4stQa7Umbt7ioRbE=
-X-Google-Smtp-Source: ABdhPJyX7qmTmRZOm/8tzIXoy+62SHpMqDVhuJC6ki+dsvFGSaetmdaTBFBMJeBuZkotw6rL8TOPBxaint67Y6NOD1Q=
-X-Received: by 2002:a05:6512:12d3:: with SMTP id p19mr13538686lfg.280.1633734402661;
- Fri, 08 Oct 2021 16:06:42 -0700 (PDT)
+        bh=vTBnlkAjt9bNIWz9nYIojTfMAG4P/ep2ibFYiwSAstY=;
+        b=ZF6egd1C59W5EtWbDYLj6hrgrFBYCetsEdG3ZWyWmcxSK5J7QuGgVwQgbGxl5CfgBx
+         3Qp5KbPF9INMM++auhNCBrpTie57OF58sGrBzU19gbyY79ZOk+xkzQ/9Y3IUvM2ruVVH
+         sBDcx4yLHSzX0Kigj5LHTYpfENS/9eR3YGV6qiwSKK2apIgQMcQFqG9YKS53U+TGwH+L
+         MIX0VU6Hmbfj1yzVWsqKxlTREhyOUBDhfmkWpVScr5vMsES7T+ZTQRNI0PxhfTE1aQD5
+         THJ8rZC2PyV7SvPOq/vtfLnBZQGWl502O26uhxg+JcItiA1I7szhpnciiEXCYMyxHXag
+         W+9g==
+X-Gm-Message-State: AOAM531/cjSxg1D5kHjYPQg4qtnYwW/f2pfswtzhXC/5g9imeRemm43f
+        F7jkCEtijdVqmf+PiTuoxtPDXFrHW16wohvsdXg=
+X-Google-Smtp-Source: ABdhPJwW/NBRhus12rcj3qLCitol0HJKI1CH36zkSbI09cMuPj1XFdF6HCDXIvco9k8KC0YulD2CBdgiF4ijsritsl4=
+X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr12993391lfd.487.1633734500895;
+ Fri, 08 Oct 2021 16:08:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-3-fallentree@fb.com>
- <CAEf4BzaOomCKAxLSShy1cF0xp4Xs22jKkyjdCNVJLrFwMwcNRw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaOomCKAxLSShy1cF0xp4Xs22jKkyjdCNVJLrFwMwcNRw@mail.gmail.com>
+References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-9-fallentree@fb.com>
+ <CAEf4BzaptXUD=fXZfLK6krKGa__oBogcXaHZkrrOk8b0st8O9g@mail.gmail.com>
+In-Reply-To: <CAEf4BzaptXUD=fXZfLK6krKGa__oBogcXaHZkrrOk8b0st8O9g@mail.gmail.com>
 From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Fri, 8 Oct 2021 16:06:15 -0700
-Message-ID: <CAJygYd34kafprTobpd7gT9shdpPZF=aAcYF-YY0Vs+8Hh16bAg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 02/14] selftests/bpf: Allow some tests to be
- executed in sequence
+Date:   Fri, 8 Oct 2021 16:07:54 -0700
+Message-ID: <CAJygYd1QbcZN4ok2UdeUtmj7jN6EejpLCxa2sBHvv_3ZbGhmLA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 08/14] selftests/bpf: adding a namespace reset
+ for tc_redirect
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Yucong Sun <fallentree@fb.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>
@@ -60,97 +60,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 3:26 PM Andrii Nakryiko
+On Fri, Oct 8, 2021 at 3:27 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
 > On Wed, Oct 6, 2021 at 11:56 AM Yucong Sun <fallentree@fb.com> wrote:
 > >
 > > From: Yucong Sun <sunyucong@gmail.com>
 > >
-> > This patch allows tests to define serial_test_name() instead of
-> > test_name(), and this will make test_progs execute those in sequence
-> > after all other tests finished executing concurrently.
+> > This patch delete ns_src/ns_dst/ns_redir namespaces before recreating
+> > them, making the test more robust.
 > >
 > > Signed-off-by: Yucong Sun <sunyucong@gmail.com>
 > > ---
-> >  tools/testing/selftests/bpf/test_progs.c | 60 +++++++++++++++++++++---
-> >  1 file changed, 54 insertions(+), 6 deletions(-)
+> >  .../testing/selftests/bpf/prog_tests/tc_redirect.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
 > >
->
-> [...]
->
-> > @@ -1129,6 +1136,40 @@ static int server_main(void)
-> >         free(env.worker_current_test);
-> >         free(data);
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+> > index e87bc4466d9a..25744136e131 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+> > @@ -176,6 +176,18 @@ static int netns_setup_namespaces(const char *verb)
+> >         return 0;
+> >  }
 > >
-> > +       /* run serial tests */
-> > +       save_netns();
+> > +static void netns_setup_namespaces_nofail(const char *verb)
+> > +{
+> > +       const char * const *ns = namespaces;
+> > +       char cmd[128];
 > > +
-> > +       for (int i = 0; i < prog_test_cnt; i++) {
-> > +               struct prog_test_def *test = &prog_test_defs[i];
-> > +               struct test_result *result = &test_results[i];
-> > +
-> > +               if (!test->should_run || !test->run_serial_test)
-> > +                       continue;
-> > +
-> > +               stdio_hijack();
-> > +
-> > +               run_one_test(i);
-> > +
-> > +               stdio_restore();
-> > +               if (env.log_buf) {
-> > +                       result->log_cnt = env.log_cnt;
-> > +                       result->log_buf = strdup(env.log_buf);
-> > +
-> > +                       free(env.log_buf);
-> > +                       env.log_buf = NULL;
-> > +                       env.log_cnt = 0;
-> > +               }
-> > +               restore_netns();
-> > +
-> > +               fprintf(stdout, "#%d %s:%s\n",
-> > +                       test->test_num, test->test_name,
-> > +                       test->error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
-> > +
-> > +               result->error_cnt = test->error_cnt;
-> > +               result->skip_cnt = test->skip_cnt;
-> > +               result->sub_succ_cnt = test->sub_succ_cnt;
+> > +       while (*ns) {
+> > +               snprintf(cmd, sizeof(cmd), "ip netns %s %s", verb, *ns);
+> > +               system(cmd);
+>
+> is this what's causing
+>
+> Cannot remove namespace file "/var/run/netns/ns_src": No such file or directory
+> Cannot remove namespace file "/var/run/netns/ns_fwd": No such file or directory
+> Cannot remove namespace file "/var/run/netns/ns_dst": No such file or directory
+>
+> ?
+>
+> I haven't applied it yet, let's see if there is a way to avoid
+> unnecessary "warnings".
+
+we could just change this line
+
++               snprintf(cmd, sizeof(cmd), "ip netns %s %s > /dev/null
+2>&1", verb, *ns);
+
+to get rid of the warning
+
+>
+>
+>
+> > +               ns++;
 > > +       }
+> > +}
 > > +
->
-> Did you try to just reuse sequential running loop logic in main() for
-> this? I'd like to avoid the third test running loop copy, if possible.
-> What were the problems of reusing the sequential logic from main(),
-> they do the same work, no?
-
-Well, yes and no
-
-The loop itself is small/simple enough, I'm not sure there is a value
-to extract them to a common function with multiple arguments.
-I think the main issue that needs to be refactored is that log
-printing still works differently in serial mode or parallel mode,  it
-works now, but I would like to get rid of the old dump_test_log()
-function.
-
->
->
-> >         /* generate summary */
-> >         fflush(stderr);
-> >         fflush(stdout);
-> > @@ -1326,6 +1367,13 @@ int main(int argc, char **argv)
-> >                         test->should_run = true;
-> >                 else
-> >                         test->should_run = false;
-> > +
-> > +               if ((test->run_test == NULL && test->run_serial_test == NULL) ||
-> > +                   (test->run_test != NULL && test->run_serial_test != NULL)) {
-> > +                       fprintf(stderr, "Test %d:%s must have either test_%s() or serial_test_%sl() defined.\n",
-> > +                               test->test_num, test->test_name, test->test_name, test->test_name);
-> > +                       exit(EXIT_ERR_SETUP_INFRA);
-> > +               }
-> >         }
+> >  struct netns_setup_result {
+> >         int ifindex_veth_src_fwd;
+> >         int ifindex_veth_dst_fwd;
+> > @@ -762,6 +774,8 @@ static void test_tc_redirect_peer_l3(struct netns_setup_result *setup_result)
 > >
-> >         /* ignore workers if we are just listing */
+> >  static void *test_tc_redirect_run_tests(void *arg)
+> >  {
+> > +       netns_setup_namespaces_nofail("delete");
+> > +
+> >         RUN_TEST(tc_redirect_peer);
+> >         RUN_TEST(tc_redirect_peer_l3);
+> >         RUN_TEST(tc_redirect_neigh);
 > > --
 > > 2.30.2
 > >
