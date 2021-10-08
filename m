@@ -2,171 +2,302 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66221427409
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 01:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2224B427415
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 01:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243719AbhJHXN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 19:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        id S243735AbhJHXVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 19:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhJHXN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:13:57 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E97FC061570
-        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 16:12:01 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id u32so24264043ybd.9
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 16:12:01 -0700 (PDT)
+        with ESMTP id S231946AbhJHXVT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 19:21:19 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EC4C061570
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 16:19:23 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id d131so24378813ybd.5
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 16:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iI7BP73Z2bkWhuODKZBQsKMreIFQbsAb8sf0l4EyPgM=;
-        b=U77kXFwXGDuPu7aleFSFlMphNOPphPYRUYAuYCj27ajEcN3GTzhC+NfqNjwDyo0Tkh
-         PlXpYn5EGDxBEa+cC5TCgr8X6xMT3LLZDMzbvNzNul8oO4Q2dQ6O8FFast7W/M/9LiXh
-         H75EGm9dpCvTmpCubTKxRthpEFrpeB9fK63mbMa3uCWk4rKq9oZKEzVkBpVtxpNP8F+m
-         fbs5+EQrNgdznV0V8Atgk98I0XAx//4oC81MnkBZLHCqoz5dVToQM5xHdxCgz+j0sinc
-         EeWaOawn3bNAtt7T7hTfgllthqLoY0nZOO9cmamWdTAABZA3RI+A1Q0Lec+OobHWGDCo
-         fEVw==
+         :cc;
+        bh=73SKcuQzr8pTfVf9WHqaK+Wh9mQlpRztoBiVm+vfieI=;
+        b=CxkncUY6RgU9sJuseeJffIghZ78AWZEDIm4PrdEwBd7dMiXiVPOAVQCH7/KzDonsQY
+         W7yZ3veitGeFpAZkF+RFDLh+7nNMU0DON3gmfnqUDyCrPWl/THpoVAXf5iX0wFD8v1PI
+         LQEnbQEnQML+xlUBqH5VOiMZceyR/Hmcu2oV+6/144pkA36Kyb9/0a1oCMf42blsFzNS
+         mbPXPpkdmeFrQmBzEE5hHvBmOiM15U4HXzV+bfNhS47xtODXACfCIFAndn1kyW7EPrRj
+         0uWRbJcqzdVkD4Kd8NRwREocezsUKaTt3vf6HRFoRS2zhERBoPYIpsTxBtgUgqThAGHP
+         5Gqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iI7BP73Z2bkWhuODKZBQsKMreIFQbsAb8sf0l4EyPgM=;
-        b=K8aXB/Mh5LSFQ8vlIQQhKp2tWQ43pjaj8YFvoguV89NYOFuTWngICvx2T8s7OBTL0S
-         oq0KTs5vAP4+TRmQ1K4dgxMhgIeIMW/lERc1r7buyu+lixI9GKtCX7cemsRWQRvdNl0s
-         cyAKhsX3ljSUy0MRjljM3/o72rOJew443muCTLOTgjPbsceSkrvO6Radv/Qn0MQNdF/h
-         AUEFn8Jvkv52iQgYYwsT2rUBYeLVY6Wp55/aiWusWUqdWm4iEREHWjw8xbVydmm7oOOj
-         aOcE8ceEfq9RTuLHfBdV9I27YzCiHtWCaO16ejci/uFS5huv3uruoY8v+yIW5A68mNDl
-         nfOQ==
-X-Gm-Message-State: AOAM531XUx4K40/aCslrMErsJjrTrdNa4lL5/C1BNGf7MQak3eVMH7rL
-        JXlKXhBccRTxVtIXs1rNTYnY57MkaNhgcoZcBS4=
-X-Google-Smtp-Source: ABdhPJwTgGNyfXp+AKDp+l62YIoopw89I5nQ+70pO+9Iy4wAasfG7bJklFaJ6YeCrtU9QZpcfdgYIT7ZbN8nwabJc0Q=
-X-Received: by 2002:a25:e7d7:: with SMTP id e206mr6417380ybh.267.1633734720569;
- Fri, 08 Oct 2021 16:12:00 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=73SKcuQzr8pTfVf9WHqaK+Wh9mQlpRztoBiVm+vfieI=;
+        b=N67E90poExOhwRY7ZWcsFX/5OXpztBobNgDuQrI10wggGLsrIPcpVBXUMy7jA3Fzge
+         l8Hljk5rkmGSC9FtvMcxPEgacUyvj82sQCyqIvEQjETQkiT1Mr9kjjo1HyA/dHU/w9wF
+         ZWCuvZOJoanXCt6g+N3o/rjaYlDiDawU5pVT1X/0tTq8POaAEExxcIGU34ml4WwP5hbv
+         GTe87HOTDH9wpREwlDhfjYqRya9Gimk8ZdmzLF3SKVXWQ7LtNiONF0IxW5LmOpaqK/jf
+         PDcoCOIdUZSAOxGjZA+u8DJQRowOToMCmxPCVFbZmAzUNpiQ6B1XbTbtFVv9jy1UsxN+
+         Wx+Q==
+X-Gm-Message-State: AOAM532IIewVDcXEtn0fcSXw8UFK/b61QHxVP1RxP2FFquAYLNYyh+08
+        RhGAYH9LNwhyt0rqhg+TmPjkktaHmvxvrhn4wLQMnh9iCvE=
+X-Google-Smtp-Source: ABdhPJx48Of5Ht7FgJG4AX0LS3xSer5HXkGDtHrdC8Np0KiZxnxhYFgx4rEWJ3MIokVQlQgRCw6zK8rgV/dFGqGonnI=
+X-Received: by 2002:a25:24c1:: with SMTP id k184mr6821328ybk.2.1633735162193;
+ Fri, 08 Oct 2021 16:19:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006222103.3631981-1-joannekoong@fb.com> <20211006222103.3631981-2-joannekoong@fb.com>
- <87k0ioncgz.fsf@toke.dk> <4536decc-5366-dc07-4923-32f2db948d85@fb.com> <87o87zji2a.fsf@toke.dk>
-In-Reply-To: <87o87zji2a.fsf@toke.dk>
+References: <20211006222103.3631981-1-joannekoong@fb.com> <20211006222103.3631981-3-joannekoong@fb.com>
+In-Reply-To: <20211006222103.3631981-3-joannekoong@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Oct 2021 16:11:49 -0700
-Message-ID: <CAEf4BzbqQRzTgPmK3EM0wWw5XrgnenqhhBJdudFjwxLrfPJF8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/5] bpf: Add bitset map with bloom filter capabilities
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
+Date:   Fri, 8 Oct 2021 16:19:11 -0700
+Message-ID: <CAEf4BzarQqJc38ZQGTtSgfbkVtWPoRgj4xLqkkc7nEGw8RvkRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/5] libbpf: Add "map_extra" as a per-map-type
+ extra flag
+To:     Joanne Koong <joannekoong@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 2:58 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Wed, Oct 6, 2021 at 3:27 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> Joanne Koong <joannekoong@fb.com> writes:
+> This patch adds the libbpf infrastructure for supporting a
+> per-map-type "map_extra" field, whose definition will be
+> idiosyncratic depending on map type.
 >
-> > On 10/7/21 7:20 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >
-> >> Joanne Koong <joannekoong@fb.com> writes:
-> >>
-> >>> This patch adds the kernel-side changes for the implementation of
-> >>> a bitset map with bloom filter capabilities.
-> >>>
-> >>> The bitset map does not have keys, only values since it is a
-> >>> non-associative data type. When the bitset map is created, it must
-> >>> be created with a key_size of 0, and the max_entries value should be =
-the
-> >>> desired size of the bitset, in number of bits.
-> >>>
-> >>> The bitset map supports peek (determining whether a bit is set in the
-> >>> map), push (setting a bit in the map), and pop (clearing a bit in the
-> >>> map) operations. These operations are exposed to userspace applicatio=
-ns
-> >>> through the already existing syscalls in the following way:
-> >>>
-> >>> BPF_MAP_UPDATE_ELEM -> bpf_map_push_elem
-> >>> BPF_MAP_LOOKUP_ELEM -> bpf_map_peek_elem
-> >>> BPF_MAP_LOOKUP_AND_DELETE_ELEM -> bpf_map_pop_elem
-> >>>
-> >>> For updates, the user will pass in a NULL key and the index of the
-> >>> bit to set in the bitmap as the value. For lookups, the user will pas=
-s
-> >>> in the index of the bit to check as the value. If the bit is set, 0
-> >>> will be returned, else -ENOENT. For clearing the bit, the user will p=
-ass
-> >>> in the index of the bit to clear as the value.
-> >> This is interesting, and I can see other uses of such a data structure=
-.
-> >> However, a couple of questions (talking mostly about the 'raw' bitmap
-> >> without the bloom filter enabled):
-> >>
-> >> - How are you envisioning synchronisation to work? The code is using t=
-he
-> >>    atomic set_bit() operation, but there's no test_and_{set,clear}_bit=
-().
-> >>    Any thoughts on how users would do this?
-> > I was thinking for users who are doing concurrent lookups + updates,
-> > they are responsible for synchronizing the operations through mutexes.
-> > Do you think this makes sense / is reasonable?
+> For example, for the bitset map, the lower 4 bits of map_extra
+> is used to denote the number of hash functions.
 >
-> Right, that is an option, of course, but it's a bit heavyweight. Atomic
-> bitops are a nice light-weight synchronisation primitive.
+> Signed-off-by: Joanne Koong <joannekoong@fb.com>
+> ---
+>  include/uapi/linux/bpf.h        |  1 +
+>  tools/include/uapi/linux/bpf.h  |  1 +
+>  tools/lib/bpf/bpf.c             |  1 +
+>  tools/lib/bpf/bpf.h             |  1 +
+>  tools/lib/bpf/bpf_helpers.h     |  1 +
+>  tools/lib/bpf/libbpf.c          | 25 ++++++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.h          |  4 ++++
+>  tools/lib/bpf/libbpf.map        |  2 ++
+>  tools/lib/bpf/libbpf_internal.h |  4 +++-
+>  9 files changed, 38 insertions(+), 2 deletions(-)
 >
-> Hmm, looking at your code again, you're already using
-> test_and_clear_bit() in pop_elem(). So why not just mirror that to
-> test_and_set_bit() in push_elem(), and change the returns to EEXIST and
-> ENOENT if trying to set or clear a bit that is already set or cleared
-> (respectively)?
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index b40fa1a72a75..a6f225e9c95a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5639,6 +5639,7 @@ struct bpf_map_info {
+>         __u32 btf_id;
+>         __u32 btf_key_type_id;
+>         __u32 btf_value_type_id;
+> +       __u32 map_extra;
+>  } __attribute__((aligned(8)));
 >
-> >> - It would be useful to expose the "find first set (ffs)" operation of
-> >>    the bitmap as well. This can be added later, but thinking about the
-> >>    API from the start would be good to avoid having to add a whole
-> >>    separate helper for this. My immediate thought is to reserve peek(-=
-1)
-> >>    for this use - WDYT?
-> > I think using peek(-1) for "find first set" sounds like a great idea!
+>  struct bpf_btf_info {
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index b40fa1a72a75..a6f225e9c95a 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -5639,6 +5639,7 @@ struct bpf_map_info {
+>         __u32 btf_id;
+>         __u32 btf_key_type_id;
+>         __u32 btf_value_type_id;
+> +       __u32 map_extra;
+>  } __attribute__((aligned(8)));
 >
-> Awesome!
+>  struct bpf_btf_info {
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 7d1741ceaa32..41e3e85e7789 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -97,6 +97,7 @@ int bpf_create_map_xattr(const struct bpf_create_map_attr *create_attr)
+>         attr.btf_key_type_id = create_attr->btf_key_type_id;
+>         attr.btf_value_type_id = create_attr->btf_value_type_id;
+>         attr.map_ifindex = create_attr->map_ifindex;
+> +       attr.map_extra = create_attr->map_extra;
+>         if (attr.map_type == BPF_MAP_TYPE_STRUCT_OPS)
+>                 attr.btf_vmlinux_value_type_id =
+>                         create_attr->btf_vmlinux_value_type_id;
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index 6fffb3cdf39b..c4049f2d63cc 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -50,6 +50,7 @@ struct bpf_create_map_attr {
+>                 __u32 inner_map_fd;
+>                 __u32 btf_vmlinux_value_type_id;
+>         };
+> +       __u32 map_extra;
 
-What's the intended use case for such an operation? But also searching
-just a first set bit is non completely generic, I'd imagine that in
-practice (at least judging from bit operations done on u64s I've seen
-in the wild) you'd most likely need "first set bit after bit N", so
-peek(-N)?..
+this struct is frozen, we can't change it. It's fine to not allow
+passing map_extra in libbpf APIs. We have libbpf 1.0 task to revamp
+low-level APIs like map creation in a way that will allow good
+extensibility. You don't have to worry about that in this patch set.
 
-I think it's an overkill to provide something like this, but even if
-we do, wouldn't BPF_MAP_GET_NEXT_KEY (except we now say it's a
-"value", not a "key", but that's nitpicking) be a sort of natural
-extension to provide this? Though it might be only available to
-user-space right? Oh, and it won't work in Bloom filter "mode", right?
+>  };
+>
+>  LIBBPF_API int
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 963b1060d944..bce5a0090f3f 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -133,6 +133,7 @@ struct bpf_map_def {
+>         unsigned int value_size;
+>         unsigned int max_entries;
+>         unsigned int map_flags;
+> +       unsigned int map_extra;
+>  };
+
+This one is also frozen, please don't change it.
 
 >
-> >> - Any thoughts on inlining the lookups? This should at least be feasib=
-le
-> >>    for the non-bloom-filter type, but I'm not quite sure if the use of
-> >>    map_extra allows the verifier to distinguish between the map types
-> >>    (I'm a little fuzzy on how the inlining actually works)? And can
-> >>    peek()/push()/pop() be inlined at all?
-> >
-> > I am not too familiar with how bpf instructions and inlining works, but
-> > from a first glance, this looks doable for both the non-bloom filter
-> > and bloom filter cases. From my cursory understanding of how it works,
-> > it seems like we could have something like "bitset_map_gen_lookup" wher=
-e
-> > we parse the bpf_map->map_extra to see if the bloom filter is enabled;
-> > if it is, we could call the hash function directly to compute which bit
-> > to look up,
-> > and then use the same insn logic for looking up the bit in both cases
-> > (the bitmap w/ and w/out the bloom filter).
-> >
-> > I don't think there is support yet in the verifier for inlining
-> > peek()/push()/pop(), but it seems like this should be doable as well.
-> >
-> > I think these changes would maybe warrant a separate patchset
-> > on top of this one. What are your thoughts?
+>  enum libbpf_pin_type {
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index ed313fd491bd..12a9ecd45a78 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -2274,6 +2274,10 @@ int parse_btf_map_def(const char *map_name, struct btf *btf,
+>                         }
+>                         map_def->pinning = val;
+>                         map_def->parts |= MAP_DEF_PINNING;
+> +               } else if (strcmp(name, "map_extra") == 0) {
+> +                       if (!get_map_field_int(map_name, btf, m, &map_def->map_extra))
+> +                               return -EINVAL;
+> +                       map_def->parts |= MAP_DEF_MAP_EXTRA;
+>                 } else {
+>                         if (strict) {
+>                                 pr_warn("map '%s': unknown field '%s'.\n", map_name, name);
+> @@ -2298,6 +2302,7 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
+>         map->def.value_size = def->value_size;
+>         map->def.max_entries = def->max_entries;
+>         map->def.map_flags = def->map_flags;
+> +       map->def.map_extra = def->map_extra;
 >
-> Ah yes, I think you're right, this should be possible to add later. I'm
-> fine with deferring that to a separate series, then :)
+>         map->numa_node = def->numa_node;
+>         map->btf_key_type_id = def->key_type_id;
+> @@ -2322,6 +2327,8 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
+>                 pr_debug("map '%s': found max_entries = %u.\n", map->name, def->max_entries);
+>         if (def->parts & MAP_DEF_MAP_FLAGS)
+>                 pr_debug("map '%s': found map_flags = %u.\n", map->name, def->map_flags);
+> +       if (def->parts & MAP_DEF_MAP_EXTRA)
+> +               pr_debug("map '%s': found map_extra = %u.\n", map->name, def->map_extra);
+
+reading this now, I think map_flags should be emitted as %x, can you
+please update map_flags format specified and use %x for map_extra as
+well?
+
+>         if (def->parts & MAP_DEF_PINNING)
+>                 pr_debug("map '%s': found pinning = %u.\n", map->name, def->pinning);
+>         if (def->parts & MAP_DEF_NUMA_NODE)
+> @@ -4017,6 +4024,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+>         map->def.value_size = info.value_size;
+>         map->def.max_entries = info.max_entries;
+>         map->def.map_flags = info.map_flags;
+> +       map->def.map_extra = info.map_extra;
+>         map->btf_key_type_id = info.btf_key_type_id;
+>         map->btf_value_type_id = info.btf_value_type_id;
+>         map->reused = true;
+> @@ -4534,7 +4542,8 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
+>                 map_info.key_size == map->def.key_size &&
+>                 map_info.value_size == map->def.value_size &&
+>                 map_info.max_entries == map->def.max_entries &&
+> -               map_info.map_flags == map->def.map_flags);
+> +               map_info.map_flags == map->def.map_flags &&
+> +               map_info.map_extra == map->def.map_extra);
+>  }
 >
-> -Toke
+>  static int
+> @@ -4631,6 +4640,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>         create_attr.key_size = def->key_size;
+>         create_attr.value_size = def->value_size;
+>         create_attr.numa_node = map->numa_node;
+> +       create_attr.map_extra = def->map_extra;
+>
+>         if (def->type == BPF_MAP_TYPE_PERF_EVENT_ARRAY && !def->max_entries) {
+>                 int nr_cpus;
+> @@ -8637,6 +8647,19 @@ int bpf_map__set_map_flags(struct bpf_map *map, __u32 flags)
+>         return 0;
+>  }
+>
+> +__u32 bpf_map__map_extra(const struct bpf_map *map)
+> +{
+> +       return map->def.map_extra;
+> +}
+> +
+> +int bpf_map__set_map_extra(struct bpf_map *map, __u32 map_extra)
+> +{
+> +       if (map->fd >= 0)
+> +               return libbpf_err(-EBUSY);
+> +       map->def.map_extra = map_extra;
+> +       return 0;
+> +}
+> +
+>  __u32 bpf_map__numa_node(const struct bpf_map *map)
+>  {
+>         return map->numa_node;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 89ca9c83ed4e..55e8dfe6f3e1 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -486,6 +486,7 @@ struct bpf_map_def {
+>         unsigned int value_size;
+>         unsigned int max_entries;
+>         unsigned int map_flags;
+> +       unsigned int map_extra;
+>  };
+
+this struct is also frozen, please keep it as is
+
+>
+>  /**
+> @@ -562,6 +563,9 @@ LIBBPF_API __u32 bpf_map__btf_value_type_id(const struct bpf_map *map);
+>  /* get/set map if_index */
+>  LIBBPF_API __u32 bpf_map__ifindex(const struct bpf_map *map);
+>  LIBBPF_API int bpf_map__set_ifindex(struct bpf_map *map, __u32 ifindex);
+> +/* get/set map map_extra flags */
+> +LIBBPF_API __u32 bpf_map__map_extra(const struct bpf_map *map);
+> +LIBBPF_API int bpf_map__set_map_extra(struct bpf_map *map, __u32 map_extra);
+>
+>  typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
+>  LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index f270d25e4af3..308378b3f20b 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -395,4 +395,6 @@ LIBBPF_0.6.0 {
+>                 bpf_object__prev_program;
+>                 btf__add_btf;
+>                 btf__add_tag;
+> +               bpf_map__map_extra;
+> +               bpf_map__set_map_extra;
+
+this list is alphabetically sorted, please keep it so
+
+>  } LIBBPF_0.5.0;
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index f7fd3944d46d..188db854d9c2 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -193,8 +193,9 @@ enum map_def_parts {
+>         MAP_DEF_NUMA_NODE       = 0x080,
+>         MAP_DEF_PINNING         = 0x100,
+>         MAP_DEF_INNER_MAP       = 0x200,
+> +       MAP_DEF_MAP_EXTRA       = 0x400,
+>
+> -       MAP_DEF_ALL             = 0x3ff, /* combination of all above */
+> +       MAP_DEF_ALL             = 0x7ff, /* combination of all above */
+>  };
+>
+>  struct btf_map_def {
+> @@ -208,6 +209,7 @@ struct btf_map_def {
+>         __u32 map_flags;
+>         __u32 numa_node;
+>         __u32 pinning;
+> +       __u32 map_extra;
+>  };
+
+this is currently the only (because internal) struct that can get
+map_extra added :)
+
+>
+>  int parse_btf_map_def(const char *map_name, struct btf *btf,
+> --
+> 2.30.2
 >
