@@ -2,242 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BFA427258
-	for <lists+bpf@lfdr.de>; Fri,  8 Oct 2021 22:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B68842726B
+	for <lists+bpf@lfdr.de>; Fri,  8 Oct 2021 22:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242892AbhJHUfV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 16:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        id S242444AbhJHUly (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 16:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242856AbhJHUfT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:35:19 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C712C061570;
-        Fri,  8 Oct 2021 13:33:24 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id o13so7167372qvm.4;
-        Fri, 08 Oct 2021 13:33:24 -0700 (PDT)
+        with ESMTP id S231579AbhJHUly (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 16:41:54 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A27C061570
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 13:39:58 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id h2so23568310ybi.13
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 13:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ysNfuXl1HWktNtOSEF03F01sMlIv53eUMXjaR2LS9EI=;
-        b=AJnVX/Dn9IYIB0wCnMlDtfrso2E5XPJNmW/3HDfnruiUzKZ3lQsgeS4qq5vvKCll21
-         3mqRcHREFFSLKhkkACmHGpaeodhLM7IPC+2I25nejcokZepJhggL0vhv452fJy1I81k4
-         Uekb3Cwm8sYPVNZGq+O2Dn2xhBTLfhU/kOly9gTJWqwE7NexHIoggFT0tAC3g0/GVeeg
-         hdHX18vJi0mwmWgmGZ385LvTaE8Vlli/atk+7wDtMZVvg5SviydqcLbW6AzGbL4RBCVQ
-         6o4uqlI+5Nznx69t57Zt2Xw7i47hqC6vHsmBQGxHIN9H6ojQKeUpSs+W6gyQTtwg38AQ
-         4SbQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j0lWyVjqIUHirVBXI53Fa4kyQOf5tRF59QkI/dVrgDc=;
+        b=DRLZSAfaGEiqceFDmFAW508M4aJXVgvn79xplWdGpjUj490FySe3QaDUPa2XALKScx
+         7BYW0sp2o8wM16752IMe4eTfHOW4aD86W9nN6/8GOFNi7YwV4u1YZGUp8Mt47MZK7A+M
+         HDZHLpFaKAlU7qleCesT8jMTzTLczWet4WDSZBwgqZsFGay49AxcT4pc06EqOMl66fAV
+         qya0i+R//bGMlvifHEW5sZ8BCCTBel7otx1L3ffsfOOzSgI8C0ISDfHeDDrhsaMRTEaE
+         Bo8QmNotrBBdqUU7D3kAgKazEu0RU3Tcip+G0BEktc6vsDmrDwroD0jmbwtI6ZJ4XjhP
+         5r3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ysNfuXl1HWktNtOSEF03F01sMlIv53eUMXjaR2LS9EI=;
-        b=5cEiGbH5/3dTFwMD2K0xCa2rtGaUBgN8M4CVMhgylif/lL4cJFkCvgwsed9VCH4tFa
-         6ozHwIN2BgDMDb8H7SBI+NP2rjna1nc8Gfeb/ZS3Q93dVpgnxRzqDGZrtJ0WWWnTGmCO
-         9qoZMtJ9LnS6gp1la/MUQiCxFdeO3iFMDHHwiIoMdEMXLiV0P25K1u5XVWXPk78xt9c3
-         uzySH0llSJ6PGXC7PkKMJMlYmo36ixUvlTPQPTmSaE/bWu1CUEDnk2k07wiiwxBU1to5
-         49HgFWlijIO6MX2GNPfsFo19ZmeWq1MKfImEFv+0CibkqqEg1Q/7+tWEt6DPqer/RQ6Q
-         2wzw==
-X-Gm-Message-State: AOAM532XYVpzwv4MrdFIBmnyD1hV0u+MXxAWCt5DtmlRBNzbMH2FQt5Q
-        qnXSn5x61ZpyAlAHaMXCSS0469ANYfI=
-X-Google-Smtp-Source: ABdhPJz2dHX7v8GUadyuk/rjP/VqwBho7FYSAVVJVSCv+dWjZN/nXz3zAWDI2i/KGWkWIY+QoieI4A==
-X-Received: by 2002:a05:6214:a4d:: with SMTP id ee13mr12078196qvb.6.1633725202220;
-        Fri, 08 Oct 2021 13:33:22 -0700 (PDT)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:795f:367d:1f1e:4801])
-        by smtp.gmail.com with ESMTPSA id c8sm381945qtb.9.2021.10.08.13.33.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 13:33:21 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Yucong Sun <sunyucong@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Cong Wang <cong.wang@bytedance.com>
-Subject: [Patch bpf v4 4/4] selftests/bpf: use recv_timeout() instead of retries
-Date:   Fri,  8 Oct 2021 13:33:06 -0700
-Message-Id: <20211008203306.37525-5-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211008203306.37525-1-xiyou.wangcong@gmail.com>
-References: <20211008203306.37525-1-xiyou.wangcong@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j0lWyVjqIUHirVBXI53Fa4kyQOf5tRF59QkI/dVrgDc=;
+        b=6I7H6yK6CinLpklpOXEZRJS4QCFlI2h51wxM7N9ZYAFpMAdN1K952+N2d6Yk8hFVIF
+         1xxsTQkwbfocuwcCG9/fWpgXwYsh2fo3c2QPN5kbl+RuifTHutZpM+l3d1R4h0TUPtzW
+         R8yuAdlL1oAm4vIBFQvnWti/xdUfO7251eOcjEMQFT2X2lbR77vK3WMZ8QSb1mEQPOuT
+         IDxXzGuHBmSfqJ0GOM8joyDpXljgwRzplGPpR7WLmsrarfAhwoeyeHClyYXMpold7V7x
+         ikAnfkz+a9tgmkYNgoMXgvDO+KQiuJlPGdJkHvvspeRnfwfXQvgOfBZqnqkSqGWQij4V
+         QhSQ==
+X-Gm-Message-State: AOAM5329WObQCj+pALDrGwqd3yKFCzSUyCWbC0Nx6BGdbjouCyqcQKWO
+        oQ00itOqAKbkwdg2aq3FMdMfXeSAkO77h+LN3Y8=
+X-Google-Smtp-Source: ABdhPJxWnoGbTbb2XZkhkkA1q8bof9YDJn1foMOrSrAhKY7xboFuhV8Qctav3HH/yKOGZqpARh1z5yYSmyfHQvFh++c=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr5875042ybf.455.1633725597666;
+ Fri, 08 Oct 2021 13:39:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211008170751.690570-1-memxor@gmail.com>
+In-Reply-To: <20211008170751.690570-1-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 8 Oct 2021 13:39:46 -0700
+Message-ID: <CAEf4BzYpp+VqqL4n1N7-Uw8sySVgvaCagEcVicgumtpK-y68aw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Silence Coverity warning for find_kfunc_desc_btf
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yucong Sun <sunyucong@gmail.com>
+On Fri, Oct 8, 2021 at 10:07 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> The helper function returns a pointer that in the failure case encodes
+> an error in the struct btf pointer. The current code lead to Coverity
+> warning about the use of the invalid pointer:
+>
+>  *** CID 1507963:  Memory - illegal accesses  (USE_AFTER_FREE)
+>  /kernel/bpf/verifier.c: 1788 in find_kfunc_desc_btf()
+>  1782                          return ERR_PTR(-EINVAL);
+>  1783                  }
+>  1784
+>  1785                  kfunc_btf = __find_kfunc_desc_btf(env, offset, btf_modp);
+>  1786                  if (IS_ERR_OR_NULL(kfunc_btf)) {
+>  1787                          verbose(env, "cannot find module BTF for func_id %u\n", func_id);
+>  >>>      CID 1507963:  Memory - illegal accesses  (USE_AFTER_FREE)
+>  >>>      Using freed pointer "kfunc_btf".
+>  1788                          return kfunc_btf ?: ERR_PTR(-ENOENT);
+>  1789                  }
+>  1790                  return kfunc_btf;
+>  1791          }
+>  1792          return btf_vmlinux ?: ERR_PTR(-ENOENT);
+>  1793     }
+>
+> Daniel suggested the use of ERR_CAST so that the intended use is clear
+> to Coverity, but on closer look it seems that we never return NULL from
+> the helper, hence it can just be switched to checking for IS_ERR and
+> returning the pointer, similar to the cases elsewhere in the kernel.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 20900a1bac12..2551b6be8d42 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1783,10 +1783,8 @@ static struct btf *find_kfunc_desc_btf(struct bpf_verifier_env *env,
+>                 }
+>
+>                 kfunc_btf = __find_kfunc_desc_btf(env, offset, btf_modp);
 
-We use non-blocking sockets in those tests, retrying for
-EAGAIN is ugly because there is no upper bound for the packet
-arrival time, at least in theory. After we fix poll() on
-sockmap sockets, now we can switch to select()+recv().
+Seems like __find_kfunc_desc_btf() already logs most of possible
+reasons for the failure, with possibly btf_get_by_fd failure being the
+biggest user-visible omission. If you complete __find_kfunc_desc_btf
+logging and just pass through its result here without extra check,
+wouldn't it work?
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Yucong Sun <sunyucong@gmail.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c | 75 +++++--------------
- 1 file changed, 20 insertions(+), 55 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 5c5979046523..d88bb65b74cc 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -949,7 +949,6 @@ static void redir_to_connected(int family, int sotype, int sock_mapfd,
- 	int err, n;
- 	u32 key;
- 	char b;
--	int retries = 100;
- 
- 	zero_verdict_count(verd_mapfd);
- 
-@@ -1002,17 +1001,11 @@ static void redir_to_connected(int family, int sotype, int sock_mapfd,
- 		goto close_peer1;
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
--again:
--	n = read(c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close_peer1:
- 	xclose(p1);
-@@ -1571,7 +1564,6 @@ static void unix_redir_to_connected(int sotype, int sock_mapfd,
- 	const char *log_prefix = redir_mode_str(mode);
- 	int c0, c1, p0, p1;
- 	unsigned int pass;
--	int retries = 100;
- 	int err, n;
- 	int sfd[2];
- 	u32 key;
-@@ -1606,17 +1598,11 @@ static void unix_redir_to_connected(int sotype, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close:
- 	xclose(c1);
-@@ -1748,7 +1734,6 @@ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
- 	const char *log_prefix = redir_mode_str(mode);
- 	int c0, c1, p0, p1;
- 	unsigned int pass;
--	int retries = 100;
- 	int err, n;
- 	u32 key;
- 	char b;
-@@ -1781,17 +1766,11 @@ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close_cli1:
- 	xclose(c1);
-@@ -1841,7 +1820,6 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	const char *log_prefix = redir_mode_str(mode);
- 	int c0, c1, p0, p1;
- 	unsigned int pass;
--	int retries = 100;
- 	int err, n;
- 	int sfd[2];
- 	u32 key;
-@@ -1876,17 +1854,11 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close_cli1:
- 	xclose(c1);
-@@ -1932,7 +1904,6 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 	int sfd[2];
- 	u32 key;
- 	char b;
--	int retries = 100;
- 
- 	zero_verdict_count(verd_mapfd);
- 
-@@ -1963,17 +1934,11 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
--again:
--	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0) {
--		if (errno == EAGAIN && retries--) {
--			usleep(1000);
--			goto again;
--		}
--		FAIL_ERRNO("%s: read", log_prefix);
--	}
-+	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: recv_timeout", log_prefix);
- 	if (n == 0)
--		FAIL("%s: incomplete read", log_prefix);
-+		FAIL("%s: incomplete recv", log_prefix);
- 
- close:
- 	xclose(c1);
--- 
-2.30.2
-
+> -               if (IS_ERR_OR_NULL(kfunc_btf)) {
+> +               if (IS_ERR(kfunc_btf))
+>                         verbose(env, "cannot find module BTF for func_id %u\n", func_id);
+> -                       return kfunc_btf ?: ERR_PTR(-ENOENT);
+> -               }
+>                 return kfunc_btf;
+>         }
+>         return btf_vmlinux ?: ERR_PTR(-ENOENT);
+> --
+> 2.33.0
+>
