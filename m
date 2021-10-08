@@ -2,106 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B956D4272BC
-	for <lists+bpf@lfdr.de>; Fri,  8 Oct 2021 23:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEA042732A
+	for <lists+bpf@lfdr.de>; Fri,  8 Oct 2021 23:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhJHVCl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 17:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhJHVCk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 17:02:40 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90B5C061570
-        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 14:00:44 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id k3so7195922qve.10
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 14:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cIjHTOCEgqb8wSqWrjSt0lOQ0vIhUJOZcqMxdo7PNeo=;
-        b=sHG/H/1rI8AkfJvdDTxynqx8jmqvorhf7RQhk4QYb2nt+l8qGwt5XDxnGkmxWlVIF6
-         S4FunvMkHhF1FXhJ2xtBXta2/KLeq3UKZBrKdLFAWqZAGnJXKVQjBJmYA4dslcVLRZeq
-         9GvMF4u7Pglccfb1EhH49UqLr2DBopCy2g9PSOHNwfP0lMrr3VdbKHEGHXOrxA8ycuH2
-         TGbDftckP3A4cmcqdlkHBY6LT9DVCpTz1fJdBFMimz+NeB/HrZJ2p/h2psNacLNmRWKW
-         d7lcw0yKjOe8cF4BfR15iTQCGQv0+HnqGjldtIEW36LXxwwZeJig6jlU2wRSOiroVEiO
-         a6DA==
+        id S230384AbhJHVqV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 17:46:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36250 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243348AbhJHVqV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 Oct 2021 17:46:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633729465;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PfWt5U8+v0qPRonUQSA8hBy5taga+Zye67hLn9kVB7U=;
+        b=EnHWRgkGWuuhUnLH5MXa8OUk9XsefrjshgLW4vdJXTwE8z6/sZVHoN/X0KNqT3ysE2sb8t
+        0FXF+5UzVHQa5xw/IpN5mpISN1A3F4xzTFGFZgBoK89PDtJimWO7F2YdNY+ywKKlN7rcV9
+        O0/JgYprbmMOEQBhf6lTOSlwjs3cksI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-gw1dvHopN4yWRyy36ZGPFw-1; Fri, 08 Oct 2021 17:44:24 -0400
+X-MC-Unique: gw1dvHopN4yWRyy36ZGPFw-1
+Received: by mail-ed1-f70.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso10395654edj.20
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 14:44:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cIjHTOCEgqb8wSqWrjSt0lOQ0vIhUJOZcqMxdo7PNeo=;
-        b=hoiCE/cHsPg8ijpILnliGlBGamC3S5t9sFp5SQpR2Gw7kRycK2ecPBfiMxS8YpU0Gf
-         rFwTrIgSmiAadvW3Pv/9aRnnQQAVR0F/tkhU3EI7lO/wmAADjgxHYO9nWfJAORHf6idz
-         2WsAs9pLhZeF7siyKskTDqdgb4I1karcqAlTC63PQK9678wL7UKJokWdoAT7qmR2IUsi
-         DrKlEJ21g5aadnAFOm+hP5yFr82zoz228MNDcxKU/oj7I+6MSn++xCN+eRNxVUZi8OtY
-         NsmxXUTTTeyRaJ/jMC69epdxAOtxGosGgY2UH/znqw3L5D5/xm/QhwpyF+uwnkVM+68V
-         TjCw==
-X-Gm-Message-State: AOAM531D9wN7ts6QPpmS58e1NPJAAZ9dTQMT8vo2q/boCI99nOzrwfLZ
-        GiMnLJub3NpRxQagDqnj8Jmkst6STX2PJbDAlITf6w==
-X-Google-Smtp-Source: ABdhPJyGrTfF6KD8u7VaX/yV35gAgmnI3kzyxPy+l4ugCdvILiI6/PaSNC+DrA2sMfIMPBAI4oN4ck75JaQno1acOsw=
-X-Received: by 2002:a05:6214:1c8d:: with SMTP id ib13mr12056486qvb.10.1633726843970;
- Fri, 08 Oct 2021 14:00:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=PfWt5U8+v0qPRonUQSA8hBy5taga+Zye67hLn9kVB7U=;
+        b=32A8fy7feagoEmqt2Gu8fJ4Y6trpJZSiw4nIz1P3gaM220JgWhPBNnQrZtfinM3rFR
+         pyAeGu+c/zUis9CeSoF0s66RB7vjtUTt61dgptp5cO3kp0ZSP4gl2wGFzD0Uw+b2yEXO
+         s37anChrrMC3q56f16dMOtLid+PR1K7FU2aZZMm+6q+dck1fIFcu4103QBIWaAb3QFVl
+         DoK9Bs7O7Zmv0ZDeCJeGItSUo7vk7DyOzq7h1/5/032JVuuhCPHRoNiFoi0Ye4yNg4Fl
+         /d5uI//7nZEk1xwcIYMdLIgKZOOoL+H0ymK8cSDDf1vWFhTHiPIgcs8f8xfJNKF2Xcal
+         Cxaw==
+X-Gm-Message-State: AOAM5328q1TtRnG3NpbrkDQIqenp9QhRKob3suboqMV0OaXTrp7XvFWP
+        klIPRyWviNZllrYuQTBQEGyksOmrtGc8r8Dog+ZMFmR7G7N6Fs1O5dTFbhBLYiKaHcGmQemqZe2
+        JR+XthXGNHg1+
+X-Received: by 2002:a17:906:25d4:: with SMTP id n20mr7311428ejb.399.1633729462768;
+        Fri, 08 Oct 2021 14:44:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSEFQpABO86GRoaZa8uGGfPEeuUwvqObArwYXaKmYumykq4xiIIJv8zuQtdzb0swUjM5ptIw==
+X-Received: by 2002:a17:906:25d4:: with SMTP id n20mr7311395ejb.399.1633729462424;
+        Fri, 08 Oct 2021 14:44:22 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id n6sm226154eds.10.2021.10.08.14.44.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 14:44:21 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 2DDEB180151; Fri,  8 Oct 2021 23:44:21 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH bpf-next 09/10] libbpf: simplify look up by name of
+ internal maps
+In-Reply-To: <CAEf4Bzb+z365WCbfPYw5xqhTAqoaAo6y+-Lt-iXGAGeeaLHMOw@mail.gmail.com>
+References: <20211008000309.43274-1-andrii@kernel.org>
+ <20211008000309.43274-10-andrii@kernel.org> <87pmsfl8z0.fsf@toke.dk>
+ <CAEf4Bzb+z365WCbfPYw5xqhTAqoaAo6y+-Lt-iXGAGeeaLHMOw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 08 Oct 2021 23:44:21 +0200
+Message-ID: <87r1cvjioa.fsf@toke.dk>
 MIME-Version: 1.0
-References: <cover.1633535940.git.zhuyifei@google.com> <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
- <CAPhsuW4UaidSZXj4-L9t4Ez9TjzoXR6yQvwn_7LC87hYmJbtFw@mail.gmail.com>
- <CAPhsuW5aAq9wA+PsunL0hGKiZc_BTLWjOPpOjYUyADc0+BZCAg@mail.gmail.com>
- <YV8OBHd4/gdZ6tu3@google.com> <CAA-VZPkSGJC0akTFrfUduAn0zd0sjq8+bMHkyOsuiH5zXo5TeA@mail.gmail.com>
- <CAPhsuW6AfFd7-xa1TVXJJfg02wqQ5QHHv2xttND+NnW93wkh-w@mail.gmail.com> <CAA-VZP=nSZmMjw8Fjk+ucz2X1hALhSKU3rdzSYN8KwEMegd0PA@mail.gmail.com>
-In-Reply-To: <CAA-VZP=nSZmMjw8Fjk+ucz2X1hALhSKU3rdzSYN8KwEMegd0PA@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 8 Oct 2021 14:00:33 -0700
-Message-ID: <CAKH8qBtiB+VCySL59340u6DLH4f0KhH=4bKYxJ4-bVMhdajOCg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to
- get/set exported errno value
-To:     YiFei Zhu <zhuyifei@google.com>
-Cc:     Song Liu <song@kernel.org>, YiFei Zhu <zhuyifei1999@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 1:49 PM YiFei Zhu <zhuyifei@google.com> wrote:
->
-> On Thu, Oct 7, 2021 at 9:34 AM Song Liu <song@kernel.org> wrote:
-> >
-> > On Thu, Oct 7, 2021 at 9:23 AM YiFei Zhu <zhuyifei@google.com> wrote:
-> > >
-> > > Yeah it felt like we only needed one helper for the parameters and
-> > > return values to be unambiguous. But if two better avoid confusion for
-> > > users, we can do that.
-> > >
-> > > YiFei Zhu
-> > >
-> > [...]
-> > > > > >
-> > > > > > One question, if the program want to retrieve existing errno_val, and
-> > > > > > set a different one, it needs to call the helper twice, right? I guess
-> > > > > it
-> > > > > > is possible to do that in one call with a "swap" logic. Would this work?
-> > > >
-> > > > > Actually, how about we split this into two helpers:bpf_set_errno() and
-> > > > > bpf_get_errno(). This should avoid some confusion in long term.
-> > > >
-> > > > We've agreed on the single helper during bpf office hours (about 2 weeks
-> > > > ago), but we can do two, I don't think it matters that much.
-> >
-> > I see. If we agreed on this syntax, I won't object.
-> >
-> > Thanks,
-> > Song
->
-> Shall I do the swap then? I don't think it has been discussed, and I
-> don't see any downsides from doing so, but I don't really see a
-> scenario in which someone would want to get and set at the same time
-> either.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-What kind of swap do you have in mind? IMO it's such a corner case
-operation that doing 2 calls is fine. I'm assuming the majority of
-use-cases are: (1) export a custom errno regardless of was was
-previously done in the chain (2) see if there was already an errno set
-in the chain and bail out early. I don't see any real need for some
-efficient swapping and rewriting, but I might be missing something..
+> On Fri, Oct 8, 2021 at 10:31 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> andrii.nakryiko@gmail.com writes:
+>>
+>> > From: Andrii Nakryiko <andrii@kernel.org>
+>> >
+>> > Map name that's assigned to internal maps (.rodata, .data, .bss, etc)
+>> > consist of a small prefix of bpf_object's name and ELF section name as
+>> > a suffix. This makes it hard for users to "guess" the name to use for
+>> > looking up by name with bpf_object__find_map_by_name() API.
+>> >
+>> > One proposal was to drop object name prefix from the map name and just
+>> > use ".rodata", ".data", etc, names. One downside called out was that
+>> > when multiple BPF applications are active on the host, it will be hard
+>> > to distinguish between multiple instances of .rodata and know which BPF
+>> > object (app) they belong to. Having few first characters, while quite
+>> > limiting, still can give a bit of a clue, in general.
+>> >
+>> > Another downside of such approach is that it is not backwards compatib=
+le
+>> > and, among direct use of bpf_object__find_map_by_name() API, will break
+>> > any BPF skeleton generated using bpftool that was compiled with older
+>> > libbpf version.
+>> >
+>> > Instead of causing all this pain, libbpf will still generate map name
+>> > using a combination of object name and ELF section name, but it will
+>> > allow looking such maps up by their natural names, which correspond to
+>> > their respective ELF section names. This means non-truncated ELF secti=
+on
+>> > names longer than 15 characters are going to be expected and supported.
+>> >
+>> > With such set up, we get the best of both worlds: leave small bits of
+>> > a clue about BPF application that instantiated such maps, as well as
+>> > making it easy for user apps to lookup such maps at runtime. In this
+>> > sense it closes corresponding libbpf 1.0 issue ([0]).
+>>
+>> I like this approach. Only possible problem I can see is that it might
+>> be confusing that a map can be looked up with one name, but that it
+>> disappears once it's loaded into the kernel (and the BPF object is
+>> closed).
+>>
+>> Hmm, couldn't we just extend the kernel to accept longer names? Kinda
+>> like with the netdev name aliases: support a secondary label that can be
+>> longer, and have bpftool display both?
+>
+> Yes, this discrepancy can be confusing. I'd like all those internal
+> maps to be named after their corresponding ELF sections, tbh. We have
+> a mechanism now to make this transition (libbpf_set_strict_mode()),
+> but people have complained before that just seeing ".data" won't give
+> them enough information.
+
+Yeah, I do also sympathise with that complaint :)
+
+> But if we are going to extend the kernel with longer map names, then
+> I'd rather stick to clean ".data.custom" naming from the very
+> beginning, and then switch all existing .data/.rodata/.bss/.kconfig
+> map naming to the same convention as well (guarded by opt-in flag in
+> libbpf_set_strict_mode() until libbpf 1.0). In the kernel, though,
+> instead of having two names (i.e., one is alias), I'd just allow to
+> provide one long name and then all existing UAPIs that have char[16]
+> everywhere would just be a potentially truncated prefix of such a
+> longer name. All the tooling can be updated to use long name when
+> available, of course. WDYT?
+
+Hmm, so introduce a new 'map_name_long' field, and on query the kernel
+will fill in the old map_name with a truncated version, and put the full
+name in the new field? Yeah, I guess that would work too!
+
+-Toke
+
