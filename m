@@ -2,156 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4BC42734C
-	for <lists+bpf@lfdr.de>; Fri,  8 Oct 2021 23:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA832427363
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 00:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243348AbhJHV7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 17:59:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231774AbhJHV7j (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 Oct 2021 17:59:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633730263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/XFrEJWkLw6B8GWd/xHTnVVUxTDqyhf4ypIs7xI2N/4=;
-        b=ZIfTn5CHebdvWFwzeMf5jKt8mHJoDnjKjpylimEAc1Nemw5tZJuoAOLEZuanjk4C7OgPs9
-        +XDsMmvrMSevLUvQftLqlcOBcQovTgoeZ/I9zXdFvyL6gZodTI7EylKapHiOUS7Lvex8XY
-        jvXNtTxidTVLIN61uWB2/1YTIGjvczs=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-QkuC_CKMMmiJL-xU-wEEHg-1; Fri, 08 Oct 2021 17:57:36 -0400
-X-MC-Unique: QkuC_CKMMmiJL-xU-wEEHg-1
-Received: by mail-ed1-f70.google.com with SMTP id c8-20020a50d648000000b003daa53c7518so10429764edj.21
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 14:57:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=/XFrEJWkLw6B8GWd/xHTnVVUxTDqyhf4ypIs7xI2N/4=;
-        b=qQOwwsvOKzDVWuZ/iwGRY9UpimLMi1Dcw0SQnjqoJBA6JAt1FAhItyZcXu5u5GD3Nz
-         zcRP55j9mK6+OdStZJtknVo9Ml8a5F9A0S7mTrurXKtz4D8LMgRebs9rfCEsdf1YrLVg
-         eDOVRJKFEcZRFietf6li/DMpHj1FFF7QbTK55bcYj3vy8jesezU6uYuV3kq+ui2yDVCM
-         ZxFidDvc1UO/plM74yypwYAxPofY7KoG/UzoD+ZyOP2q7v67C2iCgkrqu/sNKCpMUYf7
-         hptLAV7NyoaHsq0Ce+RlYUMi7fQucK8yb4sacwR9UUeOoE4T//Hqi8kS46ANkl/WuoAR
-         T6dw==
-X-Gm-Message-State: AOAM533/MThDd+ugt6qN37Lix/Xk+LRon4Rg+yBAJE+H64K4YnX0pLtZ
-        P74auTr1f464TBQz7iW5seMBJmBJGRsLC+dAdTWGDA8kyp26VhrKmm17f74F8RwbEDlkMvQfRf1
-        wjxFa2RUY25iH
-X-Received: by 2002:a05:6402:2554:: with SMTP id l20mr9203776edb.186.1633730254923;
-        Fri, 08 Oct 2021 14:57:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzcVwHZrgpWHbDjXRUc9VDg2bGYlwzkaMUZJXOeuwMKjQTrhBhYHjTjsJrPZEKHVeOdmKkGkQ==
-X-Received: by 2002:a05:6402:2554:: with SMTP id l20mr9203743edb.186.1633730254642;
-        Fri, 08 Oct 2021 14:57:34 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id f1sm237205edz.47.2021.10.08.14.57.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 14:57:33 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5E3C4180151; Fri,  8 Oct 2021 23:57:33 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Joanne Koong <joannekoong@fb.com>, bpf@vger.kernel.org
-Cc:     Kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v4 1/5] bpf: Add bitset map with bloom filter
- capabilities
-In-Reply-To: <4536decc-5366-dc07-4923-32f2db948d85@fb.com>
-References: <20211006222103.3631981-1-joannekoong@fb.com>
- <20211006222103.3631981-2-joannekoong@fb.com> <87k0ioncgz.fsf@toke.dk>
- <4536decc-5366-dc07-4923-32f2db948d85@fb.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 08 Oct 2021 23:57:33 +0200
-Message-ID: <87o87zji2a.fsf@toke.dk>
+        id S231774AbhJHWHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 18:07:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243549AbhJHWHU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 18:07:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4716460F11
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 22:05:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633730724;
+        bh=SPdproSvRCmKuty2nPGNuU/rR6ESnf0YCR1g9D5qETQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TURPWDKhbfy+A3YSQ4ro9nF1+s8IYV0panMGbjzze31S+H3Tay6/9UHYv4sPR/ck+
+         IXLubbErRfVStXZgTglwssxdobX+lsoBj7QdX1cQIdtxxY9u5hCakiiPvpEUqm7DUZ
+         wko5ka5ZvDbutYZKyXpl8vgYnpFHxJQdNlhkLVb9d82JX600/DdJmBDhGZporKuoCA
+         ZFJFmCVyfBUYcXn/gSfGO86CyUU+VVLO3swm6HuDjjKe/AWA30048zuncJC1YFwm7V
+         la4ebnVyduNXg7V6AhIK3LjGkcHl63KdM9pk/oITpJclQ+50xdiDsola1f7nkoZNay
+         c23fT3DxXrwPg==
+Received: by mail-lf1-f41.google.com with SMTP id y15so44649338lfk.7
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 15:05:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530fGCXS9r0BY/forW5oNFWgYeuszpmeVaK9lVTd0i6eYpjI5sCk
+        +9xPwLG4PXEGsAnAvx3q+f5tAVkLwpr+SfpDyEg=
+X-Google-Smtp-Source: ABdhPJx+aqo5NXdSSVkzGbHKekyhgw7i2wcVycMnaa0RRhHxqMoa6zmPbf6p377rHOswR5Sbe2mN50DA/qS2X1lO/FU=
+X-Received: by 2002:a05:6512:39c4:: with SMTP id k4mr12511911lfu.14.1633730722319;
+ Fri, 08 Oct 2021 15:05:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211008000309.43274-1-andrii@kernel.org> <20211008000309.43274-8-andrii@kernel.org>
+In-Reply-To: <20211008000309.43274-8-andrii@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 8 Oct 2021 15:05:11 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7tUL3sdh7n3+hYedE2hDtgb9iOKKAxOye+RVm1OSz7LA@mail.gmail.com>
+Message-ID: <CAPhsuW7tUL3sdh7n3+hYedE2hDtgb9iOKKAxOye+RVm1OSz7LA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 07/10] libbpf: support multiple .rodata.* and
+ .data.* BPF maps
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Joanne Koong <joannekoong@fb.com> writes:
-
-> On 10/7/21 7:20 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+On Thu, Oct 7, 2021 at 5:05 PM <andrii.nakryiko@gmail.com> wrote:
 >
->> Joanne Koong <joannekoong@fb.com> writes:
->>
->>> This patch adds the kernel-side changes for the implementation of
->>> a bitset map with bloom filter capabilities.
->>>
->>> The bitset map does not have keys, only values since it is a
->>> non-associative data type. When the bitset map is created, it must
->>> be created with a key_size of 0, and the max_entries value should be the
->>> desired size of the bitset, in number of bits.
->>>
->>> The bitset map supports peek (determining whether a bit is set in the
->>> map), push (setting a bit in the map), and pop (clearing a bit in the
->>> map) operations. These operations are exposed to userspace applications
->>> through the already existing syscalls in the following way:
->>>
->>> BPF_MAP_UPDATE_ELEM -> bpf_map_push_elem
->>> BPF_MAP_LOOKUP_ELEM -> bpf_map_peek_elem
->>> BPF_MAP_LOOKUP_AND_DELETE_ELEM -> bpf_map_pop_elem
->>>
->>> For updates, the user will pass in a NULL key and the index of the
->>> bit to set in the bitmap as the value. For lookups, the user will pass
->>> in the index of the bit to check as the value. If the bit is set, 0
->>> will be returned, else -ENOENT. For clearing the bit, the user will pass
->>> in the index of the bit to clear as the value.
->> This is interesting, and I can see other uses of such a data structure.
->> However, a couple of questions (talking mostly about the 'raw' bitmap
->> without the bloom filter enabled):
->>
->> - How are you envisioning synchronisation to work? The code is using the
->>    atomic set_bit() operation, but there's no test_and_{set,clear}_bit().
->>    Any thoughts on how users would do this?
-> I was thinking for users who are doing concurrent lookups + updates,
-> they are responsible for synchronizing the operations through mutexes.
-> Do you think this makes sense / is reasonable?
-
-Right, that is an option, of course, but it's a bit heavyweight. Atomic
-bitops are a nice light-weight synchronisation primitive.
-
-Hmm, looking at your code again, you're already using
-test_and_clear_bit() in pop_elem(). So why not just mirror that to
-test_and_set_bit() in push_elem(), and change the returns to EEXIST and
-ENOENT if trying to set or clear a bit that is already set or cleared
-(respectively)?
-
->> - It would be useful to expose the "find first set (ffs)" operation of
->>    the bitmap as well. This can be added later, but thinking about the
->>    API from the start would be good to avoid having to add a whole
->>    separate helper for this. My immediate thought is to reserve peek(-1)
->>    for this use - WDYT?
-> I think using peek(-1) for "find first set" sounds like a great idea!
-
-Awesome!
-
->> - Any thoughts on inlining the lookups? This should at least be feasible
->>    for the non-bloom-filter type, but I'm not quite sure if the use of
->>    map_extra allows the verifier to distinguish between the map types
->>    (I'm a little fuzzy on how the inlining actually works)? And can
->>    peek()/push()/pop() be inlined at all?
+> From: Andrii Nakryiko <andrii@kernel.org>
 >
-> I am not too familiar with how bpf instructions and inlining works, but
-> from a first glance, this looks doable for both the non-bloom filter
-> and bloom filter cases. From my cursory understanding of how it works,
-> it seems like we could have something like "bitset_map_gen_lookup" where
-> we parse the bpf_map->map_extra to see if the bloom filter is enabled;
-> if it is, we could call the hash function directly to compute which bit=20
-> to look up,
-> and then use the same insn logic for looking up the bit in both cases
-> (the bitmap w/ and w/out the bloom filter).
+> Add support for having multiple .rodata and .data data sections ([0]).
+> .rodata/.data are supported like the usual, but now also
+> .rodata.<whatever> and .data.<whatever> are also supported. Each such
+> section will get its own backing BPF_MAP_TYPE_ARRAY, just like
+> .rodata and .data.
 >
-> I don't think there is support yet in the verifier for inlining
-> peek()/push()/pop(), but it seems like this should be doable as well.
+> Multiple .bss maps are not supported, as the whole '.bss' name is
+> confusing and might be deprecated soon, as well as user would need to
+> specify custom ELF section with SEC() attribute anyway, so might as well
+> stick to just .data.* and .rodata.* convention.
 >
-> I think these changes would maybe warrant a separate patchset
-> on top of this one. What are your thoughts?
+> User-visible map name for such new maps is going to be just their ELF
+> section names. When creating the map in the kernel, libbpf will still
+> try to prepend portion of object name. This feature is up for debate and
+> I'm open to dropping that for new maps entirely.
+>
+>   [0] https://github.com/libbpf/libbpf/issues/274
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Ah yes, I think you're right, this should be possible to add later. I'm
-fine with deferring that to a separate series, then :)
-
--Toke
-
+Acked-by: Song Liu <songliubraving@fb.com>
