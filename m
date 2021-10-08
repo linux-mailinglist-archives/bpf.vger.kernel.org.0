@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC814273F5
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 00:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708E34273F9
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 00:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243716AbhJHW5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 18:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
+        id S231905AbhJHXAI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 19:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhJHW5b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:57:31 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650C6C061570
-        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 15:55:35 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id j5so45106088lfg.8
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 15:55:35 -0700 (PDT)
+        with ESMTP id S231876AbhJHXAH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 19:00:07 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC0DC061570
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 15:58:11 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id r19so42963930lfe.10
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 15:58:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5gy2YYuuDxyxSD4ACl/9xwpW7I8BqkQz386riRFoXoA=;
-        b=Grat8kOh94wrHYWtqQ+yY3xCRV/XtN2VmCcix+9TGkUf2v7xpYhGiVFTvwhQmH0ojM
-         CxZySxuHWn+u1gCi7Ih8iBj1q5LLhq/ZVRdspWCPmlEzpLDB3cIPrOoK75q4K2RE3Dyc
-         59AMi+XLcScZTe2uuEdaWSIFQkzK7zpEGgZzkIby8Jjj1brDVuc+Uce2srXc8Jlh2gAD
-         Akxe3vu6E3SyIU5NOBymCfPv5fMNcBjEY9fADCGGU7hzkr5NbpWreE2mPgHulPcn6ZBv
-         VI6v9bUqbQgxOyqDN3TNLRXH3NYKScI53qUyTu1nYuYm6XbAr4iJhGNCIFvSA2WsjiOc
-         iMfg==
+        bh=NYdeFgx2KCqevXUmSXyIAHihOFhidgp91Fj31Z0MMmk=;
+        b=L59Z4OWTGnyHTS8Io3x4Bkca4NeZo9XiwNq6c74G8B2a6doIO7gdbePeuW6mH+6yRP
+         IJJd3Yq0WndoYJ8qyPCAzEThjzC9NIDjUiOdhzU8GlV7P0AoGJwdZax6dwUK5vn9D7Fc
+         3HgJB5aGgN3BmaJbBxHlHtwDJg/8Nx1xok4Mnz2Avg0YM/DE5oxvnPV6KsBT/2fVNZ76
+         gpU5TO2sB//1io0nDdbmDy9cOtVyCu9qY5885CPrQfjejKRfdPat6E747ReNJMdQaNUH
+         F/o41CiiJ3rq7m118YDNhPnwwXGMxwN28dfBNYG912pmp1OZcr2iRPRqdK3dZeHw6WnY
+         m7QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5gy2YYuuDxyxSD4ACl/9xwpW7I8BqkQz386riRFoXoA=;
-        b=Z4Q1BLgEjtFWeAgOrKkQJF5+Y/brkCHmfzKFzgwWb8tW+nXtZRfK8Ieyq3I76q8av/
-         T0aA1Kide3kKJNFlzNpPljEL07NzkQXpwzUA9Mi5t/QykyF74px9k6DgPwLRNGhdWzbd
-         zX81V1dc15HuPIT4jkYtS4QgNr9IMlsowspZOujUk90RjQ03WjWmZ62SKPKXJNDkG1Cf
-         2t9b1fdz4P8BRuJVljDFMM3yVrBe3Z8j36+m4XC0Fy30FfUMcva3qNSALnS2nWljZ6bh
-         YAqgK74E0uOmGR2cop4Wr68HgTeRPFc9QMSua7ei2jAaK2sRvxNyCkR85UU+2FLZppyE
-         hdsw==
-X-Gm-Message-State: AOAM530Oz8R2GVhXUL/lJwMXyGhj24vRdzZ1u+ZpAOmzgj/T7jok6Zuq
-        LciWmVt+thB8DE3A8hzyKu8YDJ86DaRDDcb8ouk=
-X-Google-Smtp-Source: ABdhPJzGJqbqfsUFG1vZwbBTnr1vNEBMdEAUCs5qj9sM0aNBaQVFQujolYQYnLtTvcV1Ye4JQ3lWZXOq9kktumJ7ohs=
-X-Received: by 2002:a2e:9f10:: with SMTP id u16mr6175673ljk.143.1633733733565;
- Fri, 08 Oct 2021 15:55:33 -0700 (PDT)
+        bh=NYdeFgx2KCqevXUmSXyIAHihOFhidgp91Fj31Z0MMmk=;
+        b=33n3lLABmgmuPjRrwbHoeIdGs/w0442QRg57aEuRrF6hElMC65mXZpLhKjAYyPk/uW
+         bRDKLBQpBETkgId7awcq0Ht62AgQYYHAHI7FXPau6RbpbS20DAOHmPiZ7s5O2istyTpV
+         0Dg/yPDt1WKwU46ihGPdBeyAlxo/CtYtbIDeOLnhPcKK4apRSGE9XcJxORbhaKvC26Ku
+         vyzqyRkXCJnwaCPcVYjy9zF14Fn4iEm/zmKvGME3NTMPufUwwdot0Dsl9C6bhkmVVQUo
+         u5QLRc6Cic03DEZHR5bemOGkPHuSHjDd/bUe6mOLJk8J8GrEu3YgT47GFOZNlXNNav3s
+         xNdw==
+X-Gm-Message-State: AOAM532IL5LN3RjPwsqrsxEyBALrhc2Yhtsj+gxV5cOeRSkHNZtuZtcD
+        1c+b3xp3b/2IrnWFQ0/A5JZumvsxGEsAGnnG3L9nt6Bc
+X-Google-Smtp-Source: ABdhPJziaLhmvQCeCljAemh2YHGyvZmLiVijeQa1hQfqX7pfh1OxagLh9Is7Xg9EA8FaaULevKAko44iPS05Ptfh910=
+X-Received: by 2002:a2e:2205:: with SMTP id i5mr6507468lji.242.1633733889415;
+ Fri, 08 Oct 2021 15:58:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-15-fallentree@fb.com>
- <CAEf4BzYfmMOpfZ2ti-e9z-1_oB4_E0R064_RD8a_QDt2=JLsnQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYfmMOpfZ2ti-e9z-1_oB4_E0R064_RD8a_QDt2=JLsnQ@mail.gmail.com>
+References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-14-fallentree@fb.com>
+ <CAEf4BzZ4vUndS=sLN6qVo4P3MXW+QE2R2Xm-BPYsXWsaFNft6w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ4vUndS=sLN6qVo4P3MXW+QE2R2Xm-BPYsXWsaFNft6w@mail.gmail.com>
 From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Fri, 8 Oct 2021 15:55:07 -0700
-Message-ID: <CAJygYd09TT9N5PYMv48bJp7wgVCqj4o5vMjMMk6m1z7+A=fpHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 14/14] selfetest/bpf: make some tests serial
+Date:   Fri, 8 Oct 2021 15:57:43 -0700
+Message-ID: <CAJygYd0XquMNOF7i-3fKXui_jo=4+V6j0Bcx3DGmaUKRcUNOdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 13/14] selftests/bpf: increase loop count for perf_branches
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Yucong Sun <fallentree@fb.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>
@@ -66,81 +66,56 @@ On Fri, Oct 8, 2021 at 3:27 PM Andrii Nakryiko
 > >
 > > From: Yucong Sun <sunyucong@gmail.com>
 > >
-> > Change tests that often fails in parallel execution mode to serial.
+> > This make this test more likely to succeed.
 > >
 > > Signed-off-by: Yucong Sun <sunyucong@gmail.com>
 > > ---
 >
-> I hope we'll be able to parallelise these tests over time. See some
-> notes on cover letter for how to target this effort better. But here's
-> another thought I had while thinking about this.
->
-> Some tests are inherently testing unshareable resources, e.g., like
-> XDP tests. So we might never be able to completely parallelize all the
-> tests. But it probably will be too restrictive to just bunde all of
-> them into the one "serial" group of tests. It's a good starting point,
-> but I think we'll have to have something like "serialization" group,
-> where we'll be able to mark a bunch of tests like
-> "serial_xdp_<testname>" and each test with "serial_xdp_" prefix will
-> run sequentially relative to each other, but they might run completely
-> parallel to, say, "serial_perf_" tests. WDYT?
+> 100 million iterations seems a bit excessive. Why one million loops
+> doesn't cause a single perf event? Can we make it more robust in some
+> other way that is not as slow? I've dropped it for now while we
+> discuss.
 
-I think someone was talking about being able to attach multiple XDP
-programs in the future?
+I don't know, without this patch the test constantly fails for me
+regardless of serial or parallel mode.
+I think it could be something related to compiler optimizations or hardware?
 
-another approach I want to suggest is for each test to test for
-EBUSY/EEXIST error code on attach and simply sleep/retry,  Then in the
-future when it doesn't return this error there is nothing to change on
-test side.
 >
 >
-> >  tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c   | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c            | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c      | 2 +-
-> >  .../selftests/bpf/prog_tests/cgroup_attach_autodetach.c        | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c   | 2 +-
-> >  .../testing/selftests/bpf/prog_tests/cgroup_attach_override.c  | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/cgroup_link.c           | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/check_mtu.c             | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c         | 3 ++-
-> >  .../selftests/bpf/prog_tests/flow_dissector_load_bytes.c       | 2 +-
-> >  .../testing/selftests/bpf/prog_tests/flow_dissector_reattach.c | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c   | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/kfree_skb.c             | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c     | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/modify_return.c         | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c   | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/perf_buffer.c           | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/perf_link.c             | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/probe_user.c            | 3 ++-
-> >  .../selftests/bpf/prog_tests/raw_tp_writable_test_run.c        | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/select_reuseport.c      | 2 +-
-> >  .../selftests/bpf/prog_tests/send_signal_sched_switch.c        | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/sk_storage_tracing.c    | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/snprintf_btf.c          | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/sock_fields.c           | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/sockmap_listen.c        | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/timer.c                 | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/timer_mim.c             | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/tp_attach_query.c       | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/trace_printk.c          | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/trace_vprintk.c         | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/trampoline_count.c      | 3 ++-
-> >  tools/testing/selftests/bpf/prog_tests/xdp_attach.c            | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/xdp_bonding.c           | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c     | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c     | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/xdp_info.c              | 2 +-
-> >  tools/testing/selftests/bpf/prog_tests/xdp_link.c              | 2 +-
-> >  38 files changed, 48 insertions(+), 38 deletions(-)
+> >  tools/testing/selftests/bpf/prog_tests/perf_branches.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
-> > index 85babb0487b3..b52ff8ce34db 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
-> > @@ -179,7 +179,7 @@ static void do_bpf_iter_setsockopt(struct bpf_iter_setsockopt *iter_skel,
-> >         free_fds(est_fds, nr_est);
-> >  }
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+> > index 6b2e3dced619..d7e88b2c5f36 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+> > @@ -16,7 +16,7 @@ static void check_good_sample(struct test_perf_branches *skel)
+> >         int duration = 0;
 > >
->
-> [...]
+> >         if (CHECK(!skel->bss->valid, "output not valid",
+> > -                "no valid sample from prog"))
+> > +                "no valid sample from prog\n"))
+> >                 return;
+> >
+> >         /*
+> > @@ -46,7 +46,7 @@ static void check_bad_sample(struct test_perf_branches *skel)
+> >         int duration = 0;
+> >
+> >         if (CHECK(!skel->bss->valid, "output not valid",
+> > -                "no valid sample from prog"))
+> > +                "no valid sample from prog\n"))
+> >                 return;
+> >
+> >         CHECK((required_size != -EINVAL && required_size != -ENOENT),
+> > @@ -84,7 +84,7 @@ static void test_perf_branches_common(int perf_fd,
+> >         if (CHECK(err, "set_affinity", "cpu #0, err %d\n", err))
+> >                 goto out_destroy;
+> >         /* spin the loop for a while (random high number) */
+> > -       for (i = 0; i < 1000000; ++i)
+> > +       for (i = 0; i < 100000000; ++i)
+> >                 ++j;
+> >
+> >         test_perf_branches__detach(skel);
+> > --
+> > 2.30.2
+> >
