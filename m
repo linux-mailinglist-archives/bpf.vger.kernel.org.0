@@ -2,90 +2,278 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1108F4279F8
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 14:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46C3427A35
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 14:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhJIMJK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Oct 2021 08:09:10 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28907 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbhJIMJJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Oct 2021 08:09:09 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HRNwk2PDJzbn2P;
-        Sat,  9 Oct 2021 20:02:46 +0800 (CST)
-Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 20:07:11 +0800
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 20:07:10 +0800
-Subject: Re: [PATCH bpf-next v5 0/3] add support for writable bare tracepoint
-To:     Steven Rostedt <rostedt@goodmis.org>, Hou Tao <hotforest@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Ingo Molnar <mingo@redhat.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-References: <20211004094857.30868-1-hotforest@gmail.com>
- <20211004104629.668cadeb@gandalf.local.home>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <0147c4ea-773a-5fe9-dea5-edd16ad1db12@huawei.com>
-Date:   Sat, 9 Oct 2021 20:07:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S244772AbhJIMmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Oct 2021 08:42:22 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:37856 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232978AbhJIMmV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Oct 2021 08:42:21 -0400
+Received: by mail-io1-f69.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso9757374iov.4
+        for <bpf@vger.kernel.org>; Sat, 09 Oct 2021 05:40:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zAUZJ2KhYa0Ny02TkMjgog303WTChLS1Apr/NeAOdno=;
+        b=ht+6UzwPGq9IzQY/g7WlfdZqQH2u4Bfe4GIBmEw5GXNwz/FkzWCJKtV6lrg0x61bTZ
+         KcS+vCGXMPaaP0ywfYR6rZRHKN1IUINTUzVCQJjlM4v8mxqRjfFav1/sXT/Iu5DAuUGk
+         vHhr1uhk1NXsRASsD7ZNGy2fmTUp+etR3T/KAOSF8r1gK4oAMz2M5zzX+25NfqnIe8ry
+         ScJTJHFVvUVUWaNCJxYiuqeB2eEA4ZkMvxISzrGHVKqgucIfm1Rvdh81kDDRqeS4s0sS
+         j2vw+iqJrl+8bN2N9mbFD9lbD10A8Dmch+0qeR4t4CFzOXa2KOZg2QLOwls4M7zsfMy4
+         x2nA==
+X-Gm-Message-State: AOAM5319zFJig1+IV7KXyB4iwCMdE1vVFHty7JIg8TlezasPUCBdUuqb
+        DPCRj79doRqKVCmDkQbtAbDsdnxbws65KiX7zK7stQxtCtjQ
+X-Google-Smtp-Source: ABdhPJwJrlYEaPSUdWkBRiB+WSdb8SCEc96klWv/N8o7DamTITM1bVu1febppTYS1eDiklQ3Fxmg1aFnGEVvss7F0V5hMRQYDSdU
 MIME-Version: 1.0
-In-Reply-To: <20211004104629.668cadeb@gandalf.local.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6e02:1a85:: with SMTP id k5mr12217030ilv.39.1633783224813;
+ Sat, 09 Oct 2021 05:40:24 -0700 (PDT)
+Date:   Sat, 09 Oct 2021 05:40:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c1524005cdeacc5f@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in veth_xdp_rcv
+From:   syzbot <syzbot+67f89551088ea1a6850e@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Steven,
+Hello,
 
-On 10/4/2021 10:46 PM, Steven Rostedt wrote:
-> On Mon,  4 Oct 2021 17:48:54 +0800
-> Hou Tao <hotforest@gmail.com> wrote:
->
->> The main idea comes from patchset "writable contexts for bpf raw
->> tracepoints" [1], but it only supports normal tracepoint with
->> associated trace event under tracefs. Now we have one use case
->> in which we add bare tracepoint in VFS layer, and update
->> file::f_mode for specific files. The reason using bare tracepoint
->> is that it doesn't form a ABI and we can change it freely. So
->> add support for it in BPF.
-> Are the VFS maintainers against adding a trace event with just a pointer as
-> an interface?
-Not tried yet, but considering that VFS maintainer refused to have tracepoint in
-VFS layer, I'm not sure it is worth trying.
->
-> That is, it only gives you a pointer to what is passed in, but does not
-> give you anything else to form any API against it.
-> This way, not only does BPF have access to this information, so do the
-> other tracers, through the new eprobe interface:
-Or in a opposite way can eprobe add support for bare tracepoint ?
->
->   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/Documentation/trace?id=7491e2c442781a1860181adb5ab472a52075f393
->
-> (I just realized we are missing updates to the Documentation directory).
->
-> event probes allows one to attach to an existing trace event, and then
-> create a new trace event that can read through pointers. It uses the same
-> interface that kprobes has.
->
-> Just adding trace events to VFS that only have pointers would allow all of
-> BPF, perf and ftrace access as eprobes could then get the data you are
-> looking for.
->
-> -- Steve
-> .
+syzbot found the following issue on:
 
+HEAD commit:    af4bb50d4647 bpf, tests: Add more LD_IMM64 tests
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=129a1214b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9290a409049988d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=67f89551088ea1a6850e
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+67f89551088ea1a6850e@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in __ptr_ring_peek include/linux/ptr_ring.h:172 [inline]
+BUG: KASAN: use-after-free in __ptr_ring_consume include/linux/ptr_ring.h:299 [inline]
+BUG: KASAN: use-after-free in veth_xdp_rcv+0x70b/0x810 drivers/net/veth.c:856
+Read of size 8 at addr ffff88804c47a1d8 by task ksoftirqd/0/13
+
+CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.15.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+ __ptr_ring_peek include/linux/ptr_ring.h:172 [inline]
+ __ptr_ring_consume include/linux/ptr_ring.h:299 [inline]
+ veth_xdp_rcv+0x70b/0x810 drivers/net/veth.c:856
+ veth_poll+0x134/0x850 drivers/net/veth.c:913
+ __napi_poll+0xaf/0x440 net/core/dev.c:6993
+ napi_poll net/core/dev.c:7060 [inline]
+ net_rx_action+0x801/0xb40 net/core/dev.c:7147
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ run_ksoftirqd kernel/softirq.c:920 [inline]
+ run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
+ smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Allocated by task 23048:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
+ kmalloc_node include/linux/slab.h:614 [inline]
+ kvmalloc_node+0x61/0x120 mm/util.c:587
+ kvmalloc include/linux/mm.h:805 [inline]
+ kvmalloc_array include/linux/mm.h:823 [inline]
+ __ptr_ring_init_queue_alloc include/linux/ptr_ring.h:471 [inline]
+ ptr_ring_init include/linux/ptr_ring.h:489 [inline]
+ __veth_napi_enable_range+0xa2/0x780 drivers/net/veth.c:941
+ __veth_napi_enable drivers/net/veth.c:964 [inline]
+ veth_enable_xdp+0x30f/0x620 drivers/net/veth.c:1068
+ veth_xdp_set drivers/net/veth.c:1483 [inline]
+ veth_xdp+0x4d4/0x780 drivers/net/veth.c:1523
+ dev_xdp_install+0xd5/0x270 net/core/dev.c:9365
+ dev_xdp_attach+0x83d/0x1010 net/core/dev.c:9513
+ dev_xdp_attach_link net/core/dev.c:9532 [inline]
+ bpf_xdp_link_attach+0x262/0x410 net/core/dev.c:9695
+ link_create kernel/bpf/syscall.c:4258 [inline]
+ __sys_bpf+0x549c/0x5df0 kernel/bpf/syscall.c:4657
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 23044:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1700 [inline]
+ slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
+ slab_free mm/slub.c:3483 [inline]
+ kfree+0xe4/0x530 mm/slub.c:4543
+ kvfree+0x42/0x50 mm/util.c:620
+ ptr_ring_cleanup include/linux/ptr_ring.h:671 [inline]
+ veth_napi_del_range+0x3aa/0x560 drivers/net/veth.c:985
+ veth_napi_del drivers/net/veth.c:991 [inline]
+ veth_disable_xdp+0x2b3/0x430 drivers/net/veth.c:1101
+ veth_xdp_set drivers/net/veth.c:1499 [inline]
+ veth_xdp+0x698/0x780 drivers/net/veth.c:1523
+ dev_xdp_install+0x1ed/0x270 net/core/dev.c:9365
+ dev_xdp_detach_link net/core/dev.c:9549 [inline]
+ bpf_xdp_link_release+0x242/0x4e0 net/core/dev.c:9564
+ bpf_link_free+0xe6/0x1b0 kernel/bpf/syscall.c:2419
+ bpf_link_put+0x161/0x1b0 kernel/bpf/syscall.c:2445
+ bpf_link_release+0x33/0x40 kernel/bpf/syscall.c:2453
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:2987 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3067
+ netlink_release+0xdd4/0x1dd0 net/netlink/af_netlink.c:812
+ __sock_release+0xcd/0x280 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:2987 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3067
+ netlink_release+0xdd4/0x1dd0 net/netlink/af_netlink.c:812
+ __sock_release+0xcd/0x280 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88804c47a000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 472 bytes inside of
+ 2048-byte region [ffff88804c47a000, ffff88804c47a800)
+The buggy address belongs to the page:
+page:ffffea0001311e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4c478
+head:ffffea0001311e00 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010c42000
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 19628, ts 447286861857, free_ts 447089779835
+ prep_new_page mm/page_alloc.c:2424 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4153
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5375
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2197
+ alloc_slab_page mm/slub.c:1763 [inline]
+ allocate_slab mm/slub.c:1900 [inline]
+ new_slab+0x319/0x490 mm/slub.c:1963
+ ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
+ slab_alloc_node mm/slub.c:3172 [inline]
+ __kmalloc_node_track_caller+0x2d2/0x340 mm/slub.c:4936
+ kmalloc_reserve net/core/skbuff.c:352 [inline]
+ __alloc_skb+0xda/0x360 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1116 [inline]
+ nlmsg_new include/net/netlink.h:953 [inline]
+ rtmsg_ifinfo_build_skb+0x72/0x1a0 net/core/rtnetlink.c:3809
+ unregister_netdevice_many+0x9e4/0x1790 net/core/dev.c:11054
+ unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:10984
+ unregister_netdevice include/linux/netdevice.h:2988 [inline]
+ __tun_detach+0x10ad/0x13d0 drivers/net/tun.c:670
+ tun_detach drivers/net/tun.c:687 [inline]
+ tun_chr_close+0xc4/0x180 drivers/net/tun.c:3397
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1338 [inline]
+ free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1389
+ free_unref_page_prepare mm/page_alloc.c:3315 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3394
+ __unfreeze_partials+0x340/0x360 mm/slub.c:2495
+ qlink_free mm/kasan/quarantine.c:146 [inline]
+ qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
+ __kasan_slab_alloc+0x95/0xb0 mm/kasan/common.c:444
+ kasan_slab_alloc include/linux/kasan.h:254 [inline]
+ slab_post_alloc_hook mm/slab.h:519 [inline]
+ slab_alloc_node mm/slub.c:3206 [inline]
+ slab_alloc mm/slub.c:3214 [inline]
+ kmem_cache_alloc+0x209/0x390 mm/slub.c:3219
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags+0x9a/0xe0 include/linux/audit.h:319
+ user_path_at_empty+0x2b/0x60 fs/namei.c:2800
+ user_path_at include/linux/namei.h:57 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:221
+ vfs_fstatat fs/stat.c:243 [inline]
+ vfs_lstat include/linux/fs.h:3356 [inline]
+ __do_sys_newlstat+0x91/0x110 fs/stat.c:398
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Memory state around the buggy address:
+ ffff88804c47a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804c47a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88804c47a180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                    ^
+ ffff88804c47a200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804c47a280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
