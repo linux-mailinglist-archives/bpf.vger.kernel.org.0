@@ -2,177 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57B4427A76
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 15:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA161427B0E
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 17:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbhJINMn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Oct 2021 09:12:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:54616 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233022AbhJINMm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 9 Oct 2021 09:12:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633785045;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cjzc4c+tx8ygVFq8OjdVylaeamvE4hyTP0I/P6aSTbc=;
-        b=NqzytyPs2URAh20SBO8Qd5kHyYz1HGtiZtGUeSl4Ro5YTr/eH51j+rVwC8HxC1AJ1Iua73
-        +JVVBzsRAIWOehGdk/PVBdrED7exItu5lZtT7EldeA+mhF0tgiP/CGp1xfcq/qpGflZdhr
-        G7Z7HAKebyOtZJmYILqA6y7DJB00Sd4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-HL4nNz71OluP_UoTSsMHLg-1; Sat, 09 Oct 2021 09:10:43 -0400
-X-MC-Unique: HL4nNz71OluP_UoTSsMHLg-1
-Received: by mail-ed1-f72.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso11658420edn.4
-        for <bpf@vger.kernel.org>; Sat, 09 Oct 2021 06:10:43 -0700 (PDT)
+        id S233657AbhJIPCu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Oct 2021 11:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233599AbhJIPCu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Oct 2021 11:02:50 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F747C061570
+        for <bpf@vger.kernel.org>; Sat,  9 Oct 2021 08:00:53 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id q19so10207441pfl.4
+        for <bpf@vger.kernel.org>; Sat, 09 Oct 2021 08:00:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tBp+HApqYOGPfGxzUPMdlf4FHEHb2QIShMhxU9sy+ws=;
+        b=HP2fEFnOYHtITzNboSJs7uzzyT53Ocr3ez1HlSEp70WWsfaYold9nxoy/JiZScIUut
+         6omC2uc5T53jt4j3cLK1n3KccZsryTPwpkz6EuFgrOp4QekDGj9O5VsYNLgzITKKvGZ6
+         n3s+IYFk3ZEC7ZxxaI/tgPsq8x1mj4fVGWwqQomhuyNCeeTXAYBXFlltZG+TsQHQkaUU
+         OUCqZLpPh33764FKWGYIRH0swVUfNM1kC4dXv2udIwdOd9KgbE2lWbHA6zSYqZhEQZLk
+         5yYxze81grc/+Ec4/PXObc6umZvkPGP9QEYprGuhIIMdodCYUqawKqbqV4UlkL0IP5mc
+         0muQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Cjzc4c+tx8ygVFq8OjdVylaeamvE4hyTP0I/P6aSTbc=;
-        b=cmIAXKTYYDflB5thQIwITbsSfcEB9EoTq0OUXPHPqu5vps7lHoK9VG6HKcoGoslHV/
-         dMO2250J4/m1+XS+2j5+Bfl0WS9e0iV9rCShJwx8ojeeaWsLYcLAkUfSv89OR6WgpqfR
-         LmYTwQxYsJh/XSNsCsKUYl7HlGICYB9jyPwag2OAX2qT7xhcx/Vs/I0KdlbBGUnaTIgP
-         W0hTfcvxJfSYGy1X6wjjSndRcfgaOaBpPMms7v7Ngvwj/+Iy6yXoUW0UcT/bbbp4Bx5c
-         7RiRCdaCAv2X8gtCnVX3a8RbGP7O2LSVTuuTPZjIyIO/SEP/vs3w3/KkHu/cpvPqbeP7
-         s+LA==
-X-Gm-Message-State: AOAM531YHq7ijGTmjmu7lH9BwRTGZ6AVVkeDQynEXuzcjZgmyujFU2GE
-        IJlbzh9dfPP3kOeANbNZwzyd+oyjb9dUP5CCfdoWt/gZkpKR67lmaRjUJQMpVU/XpUfPXVHcpj4
-        N/odli05NoPEB
-X-Received: by 2002:a17:906:ce2c:: with SMTP id sd12mr11661825ejb.488.1633785042606;
-        Sat, 09 Oct 2021 06:10:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwfU9h0CHE0932QAnLTRuxJ+QET81S/ow2Jqienkp+99PlA01EyeMGvOF/hNnfYQpWEQxFt5g==
-X-Received: by 2002:a17:906:ce2c:: with SMTP id sd12mr11661788ejb.488.1633785042235;
-        Sat, 09 Oct 2021 06:10:42 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id s26sm1186318edt.78.2021.10.09.06.10.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tBp+HApqYOGPfGxzUPMdlf4FHEHb2QIShMhxU9sy+ws=;
+        b=v5kR0DMFJ8Eo40SlXv2FOMToMAkcZBS03tJuwcYMhvD8Q5p1QLuox4MF69ExpuP6Cr
+         vjweBpgI/ULIa9kTtrn5Be2ISce7gEfqTiBmaMuTGJCtvjO7BAWXpP2BCTKywnfplkeX
+         cIfKG7HFtzBRTKMn8QA1otGqIbUPZClbggqOOottYNZdsbI3ciSEA8Xq8CwwnCaobExv
+         +KVj4+4JZ9v/B2cWpjRJ+AawwYS/kEweZ306oZSLnQGeRLjLmIy5T2Zg1FNpsDbzGEB6
+         biPclSwDVZCqG7nqWwRQeV8xS2TPJGF+u+GotVTo0irCe03Pv9G7gTfjB+GdcCbwtkFp
+         D5Qg==
+X-Gm-Message-State: AOAM530URUUaM0IAgo2Lxrk4i9ZVUfMAo3plB5BsdO6TT8Pm+trO41Ci
+        uzt67UF45at6JJ8c3xG8+OO45xliyIb3zbgm
+X-Google-Smtp-Source: ABdhPJx+rxcHaimRTXAktmorIjvZdYVgfUElAutKZiWtjK0zmIZjvJ7/Dd1Li5J+zG6cOUQ7kbW5WQ==
+X-Received: by 2002:aa7:9e49:0:b0:44b:2a06:715e with SMTP id z9-20020aa79e49000000b0044b2a06715emr16197754pfq.78.1633791652329;
+        Sat, 09 Oct 2021 08:00:52 -0700 (PDT)
+Received: from VM-32-4-ubuntu.. ([43.132.164.184])
+        by smtp.gmail.com with ESMTPSA id w8sm2659331pfd.4.2021.10.09.08.00.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 06:10:41 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CAA12180151; Sat,  9 Oct 2021 15:10:40 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v4 1/5] bpf: Add bitset map with bloom filter
- capabilities
-In-Reply-To: <CAEf4BzbqQRzTgPmK3EM0wWw5XrgnenqhhBJdudFjwxLrfPJF8g@mail.gmail.com>
-References: <20211006222103.3631981-1-joannekoong@fb.com>
- <20211006222103.3631981-2-joannekoong@fb.com> <87k0ioncgz.fsf@toke.dk>
- <4536decc-5366-dc07-4923-32f2db948d85@fb.com> <87o87zji2a.fsf@toke.dk>
- <CAEf4BzbqQRzTgPmK3EM0wWw5XrgnenqhhBJdudFjwxLrfPJF8g@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 09 Oct 2021 15:10:40 +0200
-Message-ID: <87czoejqcv.fsf@toke.dk>
+        Sat, 09 Oct 2021 08:00:52 -0700 (PDT)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kafai@fb.com,
+        songliubraving@fb.com, hengqi.chen@gmail.com
+Subject: [PATCH bpf-next 0/2] libbpf: Add btf__type_cnt() and btf__raw_data() APIs
+Date:   Sat,  9 Oct 2021 23:00:27 +0800
+Message-Id: <20211009150029.1746383-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Add btf__type_cnt() and btf__raw_data() APIs and deprecate
+btf__get_nr_type() and btf__get_raw_data() since the old APIs
+don't follow libbpf naming convention. Also update tools
+to use these new APIs. This is part of effort towards libbpf v1.0
 
-> On Fri, Oct 8, 2021 at 2:58 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Joanne Koong <joannekoong@fb.com> writes:
->>
->> > On 10/7/21 7:20 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >
->> >> Joanne Koong <joannekoong@fb.com> writes:
->> >>
->> >>> This patch adds the kernel-side changes for the implementation of
->> >>> a bitset map with bloom filter capabilities.
->> >>>
->> >>> The bitset map does not have keys, only values since it is a
->> >>> non-associative data type. When the bitset map is created, it must
->> >>> be created with a key_size of 0, and the max_entries value should be=
- the
->> >>> desired size of the bitset, in number of bits.
->> >>>
->> >>> The bitset map supports peek (determining whether a bit is set in the
->> >>> map), push (setting a bit in the map), and pop (clearing a bit in the
->> >>> map) operations. These operations are exposed to userspace applicati=
-ons
->> >>> through the already existing syscalls in the following way:
->> >>>
->> >>> BPF_MAP_UPDATE_ELEM -> bpf_map_push_elem
->> >>> BPF_MAP_LOOKUP_ELEM -> bpf_map_peek_elem
->> >>> BPF_MAP_LOOKUP_AND_DELETE_ELEM -> bpf_map_pop_elem
->> >>>
->> >>> For updates, the user will pass in a NULL key and the index of the
->> >>> bit to set in the bitmap as the value. For lookups, the user will pa=
-ss
->> >>> in the index of the bit to check as the value. If the bit is set, 0
->> >>> will be returned, else -ENOENT. For clearing the bit, the user will =
-pass
->> >>> in the index of the bit to clear as the value.
->> >> This is interesting, and I can see other uses of such a data structur=
-e.
->> >> However, a couple of questions (talking mostly about the 'raw' bitmap
->> >> without the bloom filter enabled):
->> >>
->> >> - How are you envisioning synchronisation to work? The code is using =
-the
->> >>    atomic set_bit() operation, but there's no test_and_{set,clear}_bi=
-t().
->> >>    Any thoughts on how users would do this?
->> > I was thinking for users who are doing concurrent lookups + updates,
->> > they are responsible for synchronizing the operations through mutexes.
->> > Do you think this makes sense / is reasonable?
->>
->> Right, that is an option, of course, but it's a bit heavyweight. Atomic
->> bitops are a nice light-weight synchronisation primitive.
->>
->> Hmm, looking at your code again, you're already using
->> test_and_clear_bit() in pop_elem(). So why not just mirror that to
->> test_and_set_bit() in push_elem(), and change the returns to EEXIST and
->> ENOENT if trying to set or clear a bit that is already set or cleared
->> (respectively)?
->>
->> >> - It would be useful to expose the "find first set (ffs)" operation of
->> >>    the bitmap as well. This can be added later, but thinking about the
->> >>    API from the start would be good to avoid having to add a whole
->> >>    separate helper for this. My immediate thought is to reserve peek(=
--1)
->> >>    for this use - WDYT?
->> > I think using peek(-1) for "find first set" sounds like a great idea!
->>
->> Awesome!
->
-> What's the intended use case for such an operation?
+Hengqi Chen (2):
+  libbpf: Add btf__type_cnt() and btf__raw_data() APIs
+  tools: Switch to new btf__type_cnt/btf__raw_data APIs
 
-The 'find first set' operation is a single instruction on common
-architectures, so it's an efficient way of finding the first non-empty
-bucket if you index them in a bitmap; sch_qfq uses this, for instance.
+ tools/bpf/bpftool/btf.c                       | 12 +++----
+ tools/bpf/bpftool/gen.c                       |  4 +--
+ tools/bpf/resolve_btfids/main.c               |  4 +--
+ tools/lib/bpf/btf.c                           | 36 +++++++++++--------
+ tools/lib/bpf/btf.h                           |  4 +++
+ tools/lib/bpf/btf_dump.c                      |  8 ++---
+ tools/lib/bpf/libbpf.c                        | 32 ++++++++---------
+ tools/lib/bpf/libbpf.map                      |  2 ++
+ tools/lib/bpf/linker.c                        | 28 +++++++--------
+ tools/perf/util/bpf-event.c                   |  2 +-
+ tools/testing/selftests/bpf/btf_helpers.c     |  4 +--
+ tools/testing/selftests/bpf/prog_tests/btf.c  | 10 +++---
+ .../selftests/bpf/prog_tests/btf_dump.c       |  8 ++---
+ .../selftests/bpf/prog_tests/btf_endian.c     | 12 +++----
+ .../selftests/bpf/prog_tests/btf_split.c      |  2 +-
+ .../selftests/bpf/prog_tests/core_autosize.c  |  2 +-
+ .../selftests/bpf/prog_tests/core_reloc.c     |  2 +-
+ .../selftests/bpf/prog_tests/resolve_btfids.c |  4 +--
+ 18 files changed, 95 insertions(+), 81 deletions(-)
 
-> But also searching just a first set bit is non completely generic, I'd
-> imagine that in practice (at least judging from bit operations done on
-> u64s I've seen in the wild) you'd most likely need "first set bit
-> after bit N", so peek(-N)?..
-
-You're right as far as generality goes, but for my use case "after bit
-N" is not so important (you enqueue into different buckets and always
-need to find the lowest one. But there could be other use cases for
-"find first set after N", of course. If using -N the parameter would
-have to change to explicitly signed, of course, but that's fine by me :)
-
-> I think it's an overkill to provide something like this, but even if
-> we do, wouldn't BPF_MAP_GET_NEXT_KEY (except we now say it's a
-> "value", not a "key", but that's nitpicking) be a sort of natural
-> extension to provide this? Though it might be only available to
-> user-space right?
-
-Yeah, thought about get_next_key() but as you say that doesn't work from
-BPF. It would make sense to *also* expose this to userspace through
-get_next_key(), though.
-
-> Oh, and it won't work in Bloom filter "mode", right?
-
-I expect not? But we could just return -EINVAL in that case?
-
--Toke
+-- 
+2.30.2
 
