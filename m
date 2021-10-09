@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2286342759B
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 04:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42394276B3
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 04:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhJICOT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 22:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
+        id S232321AbhJIClt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 22:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232233AbhJICOS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 22:14:18 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5369CC061570
-        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 19:12:21 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id w10so24899369ybt.4
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 19:12:21 -0700 (PDT)
+        with ESMTP id S232289AbhJIClt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 22:41:49 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24078C061570
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 19:39:53 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id a7so24997128yba.6
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 19:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=e6gHcuZ4VdaKufqrV4hL91j7/LXUMrDZymKvIUQK/38=;
-        b=kB6lMJhSgmO1OGQHSGsC2nS3qJOjehi/YqG4eGfRz6hHUwaNEGkP3J/Awcss+vFA8q
-         BHBeJfbsrBf7rJYvl0O34sIObAdZ5Vfc8aOEeSB0oNMYZV/X9R+oflpVsSFu+VaosWnx
-         ymoNdaLvpGDQrcq2dl+R38dV4pZI7lo5lrR7cDcDomfEU7D1O3D3d0hllROcHBFiNz5J
-         d8AZBH5D8i1THyW981h8y13AkHZysizgHQUypSR93NR9kbVfADqfy6x7DXDh9ZvWrRYW
-         f+ySTvFn5YPLhgSnxTXiCxFFukADWlMGNKRx/rJ1v8YQU8A9aHdVgyol4nhb3aZRFMus
-         fCdw==
+        bh=nUkZuK1BMfQuUaypVZX2vqM9+rDyJiUOGv2Kp6ZiWic=;
+        b=axczh4K2wNP/ujc4mYZVf4YeJ75wbkavq5dObKhGOiGyIkhwuevchVBWnyoconG5wb
+         Z8ykIK5UF8RFCesPibL0lDkvdvBZtYMp28qohCfWpn+6epX66YQX/+nD7TA0Fv4ekIFq
+         NZVWZ5IPa4UNsL1T9zowhXn1AUXdJSgLxtiJ3rtql0iJGRnEdce47S6AskOYbbvp1uXV
+         0clbRlCkT03dj/i4DEutQkgRm7d+lmWHNZ+mt5uhCuKUnkBS+/4XUbGnefnApSW/Gzqw
+         sP9qhAmcdVDKluwCsusNqO00Tegu/2J4gK9B5X7eXyb+MSrymPBvKriX81MFNl1yDzQL
+         tvEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=e6gHcuZ4VdaKufqrV4hL91j7/LXUMrDZymKvIUQK/38=;
-        b=UiUNb/1BysRNso565K7ULmL0gO6bqc0CcIWjj2z9cL7GQet4r+wprSDYEyTDU6+GeN
-         b0nji2ckKn+61UMcgeBV9jQj6x/BoJXJ9sKBPgDfuaq6mHZddL43zAo3ZY6AzQPXAo/Q
-         HRZLW1p3/fN8xXJ/Vdc0/89j5nwsk2svwEdnPmCCbKkQ759UtNEgucQ0+FihxVHxYVa/
-         y54aSyzyw3FXY9U6pBw+i1Xv0xbfURf0sflgHilINlwGaUNGmNeeTdpPwTlLlwdSz6cX
-         sf2sERqRB4asSdLXD3DyDXVL/das/ycrO457DdETcKyMYDHaAYp4V6O71YVspCV13b8W
-         dkmg==
-X-Gm-Message-State: AOAM531IL0PxRgTb79oUMWcQjWdQ7BuMdg5/ODMBL8pEJ8tWL4UdT6Rp
-        oMCx2YMUMVn00Og41q5ELAtwM156YD9LpNG2Rq5YFlz98I4=
-X-Google-Smtp-Source: ABdhPJwXHGXHaKo4VrGVjY707R+h6IAXDl/M9oHWWE7RV1Z6sBkTcYGYmVNlwQEKpeqJNUJL3BHlF61njQHXS+O79oY=
-X-Received: by 2002:a25:5606:: with SMTP id k6mr7197256ybb.51.1633745540404;
- Fri, 08 Oct 2021 19:12:20 -0700 (PDT)
+        bh=nUkZuK1BMfQuUaypVZX2vqM9+rDyJiUOGv2Kp6ZiWic=;
+        b=LGfWWddJrdFcnUmU9gNnHDN5/xtpez/Lg2v3y6VI+xfIIR9A/0XYo71/blYchZ27kU
+         0+r5CS/BcTmjnD/IyJeErJm54gUlIE5pTmx2zj6fxc3IDFDL1jKsvFVT2d1T60wy53op
+         GbICWSKe5zmskkq0jTbpNK06ikTA73uMVXcj6bbyETg/3WmKZ7CN5nmi6Qr4eqhdtKEO
+         3zLRA5eRI0fytBE5b/0OwDrSIlp9kkfm6GfN6vn725zMuNuiVmFbSPtFVOt8lfeCgluf
+         FfE5vfOJYxdTnrMWlar74M2tM5R1pZoF0mFZHOu4F7g6qgg9Hr6H7LDLahZn43cSfwHu
+         LyPw==
+X-Gm-Message-State: AOAM533KflapB1iLBbqbn9tx3rUH7HedcNRHcemYKvasV+iT/dJS8Z38
+        AwNeH4HD8hd5I+3Dqa99eOuEqzdBo7MGq2Pe0Ws=
+X-Google-Smtp-Source: ABdhPJxhEE7FdoU1nBKd7F/ooWpML1h3s+qLdyWXRo6vRKq52Rf1oGaih8s09rOS9iI0foW5h33ohSUWCqmOiYX7KGc=
+X-Received: by 2002:a25:24c1:: with SMTP id k184mr7540681ybk.2.1633747192189;
+ Fri, 08 Oct 2021 19:39:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006222103.3631981-1-joannekoong@fb.com> <20211006222103.3631981-3-joannekoong@fb.com>
-In-Reply-To: <20211006222103.3631981-3-joannekoong@fb.com>
+References: <20211006222103.3631981-1-joannekoong@fb.com> <20211006222103.3631981-5-joannekoong@fb.com>
+In-Reply-To: <20211006222103.3631981-5-joannekoong@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Oct 2021 19:12:07 -0700
-Message-ID: <CAEf4BzY01h7=TG665i=r32th7VxX181Dakhe=QvxLZBUNzeiZA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/5] libbpf: Add "map_extra" as a per-map-type
- extra flag
+Date:   Fri, 8 Oct 2021 19:39:39 -0700
+Message-ID: <CAEf4BzYZLABqsGH-Qy7-3M_VVuy-t+5FS589+Syftw4zNXdmEA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/5] bpf/benchs: Add benchmark tests for bloom
+ filter throughput + false positive
 To:     Joanne Koong <joannekoong@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -60,228 +60,362 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Oct 6, 2021 at 3:27 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> This patch adds the libbpf infrastructure for supporting a
-> per-map-type "map_extra" field, whose definition will be
-> idiosyncratic depending on map type.
+> This patch adds benchmark tests for the throughput (for lookups + updates)
+> and the false positive rate of bloom filter lookups, as well as some
+> minor refactoring of the bash script for running the benchmarks.
 >
-> For example, for the bitset map, the lower 4 bits of map_extra
-> is used to denote the number of hash functions.
+> These benchmarks show that as the number of hash functions increases,
+> the throughput and the false positive rate of the bloom filter decreases.
+> From the benchmark data, the approximate average false-positive rates for
+> 8-byte values are roughly as follows:
+>
+> 1 hash function = ~30%
+> 2 hash functions = ~15%
+> 3 hash functions = ~5%
+> 4 hash functions = ~2.5%
+> 5 hash functions = ~1%
+> 6 hash functions = ~0.5%
+> 7 hash functions  = ~0.35%
+> 8 hash functions = ~0.15%
+> 9 hash functions = ~0.1%
+> 10 hash functions = ~0%
 >
 > Signed-off-by: Joanne Koong <joannekoong@fb.com>
 > ---
->  include/uapi/linux/bpf.h        |  1 +
->  tools/include/uapi/linux/bpf.h  |  1 +
->  tools/lib/bpf/bpf.c             |  1 +
->  tools/lib/bpf/bpf.h             |  1 +
->  tools/lib/bpf/bpf_helpers.h     |  1 +
->  tools/lib/bpf/libbpf.c          | 25 ++++++++++++++++++++++++-
->  tools/lib/bpf/libbpf.h          |  4 ++++
->  tools/lib/bpf/libbpf.map        |  2 ++
->  tools/lib/bpf/libbpf_internal.h |  4 +++-
->  9 files changed, 38 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/bpf/Makefile          |   6 +-
+>  tools/testing/selftests/bpf/bench.c           |  37 ++
+>  tools/testing/selftests/bpf/bench.h           |   3 +
+>  .../bpf/benchs/bench_bloom_filter_map.c       | 411 ++++++++++++++++++
+>  .../bpf/benchs/run_bench_bloom_filter_map.sh  |  28 ++
+>  .../bpf/benchs/run_bench_ringbufs.sh          |  30 +-
+>  .../selftests/bpf/benchs/run_common.sh        |  48 ++
+>  tools/testing/selftests/bpf/bpf_util.h        |  11 +
+>  .../selftests/bpf/progs/bloom_filter_bench.c  | 146 +++++++
+>  9 files changed, 690 insertions(+), 30 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+>  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
+>  create mode 100644 tools/testing/selftests/bpf/benchs/run_common.sh
+>  create mode 100644 tools/testing/selftests/bpf/progs/bloom_filter_bench.c
 >
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index b40fa1a72a75..a6f225e9c95a 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5639,6 +5639,7 @@ struct bpf_map_info {
->         __u32 btf_id;
->         __u32 btf_key_type_id;
->         __u32 btf_value_type_id;
-> +       __u32 map_extra;
->  } __attribute__((aligned(8)));
->
->  struct bpf_btf_info {
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index b40fa1a72a75..a6f225e9c95a 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -5639,6 +5639,7 @@ struct bpf_map_info {
->         __u32 btf_id;
->         __u32 btf_key_type_id;
->         __u32 btf_value_type_id;
-> +       __u32 map_extra;
->  } __attribute__((aligned(8)));
->
->  struct bpf_btf_info {
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 7d1741ceaa32..41e3e85e7789 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -97,6 +97,7 @@ int bpf_create_map_xattr(const struct bpf_create_map_attr *create_attr)
->         attr.btf_key_type_id = create_attr->btf_key_type_id;
->         attr.btf_value_type_id = create_attr->btf_value_type_id;
->         attr.map_ifindex = create_attr->map_ifindex;
-> +       attr.map_extra = create_attr->map_extra;
->         if (attr.map_type == BPF_MAP_TYPE_STRUCT_OPS)
->                 attr.btf_vmlinux_value_type_id =
->                         create_attr->btf_vmlinux_value_type_id;
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 6fffb3cdf39b..c4049f2d63cc 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -50,6 +50,7 @@ struct bpf_create_map_attr {
->                 __u32 inner_map_fd;
->                 __u32 btf_vmlinux_value_type_id;
->         };
-> +       __u32 map_extra;
 
-btw, I think it might be better to use __u64 for map_extra in kernel
-UAPI for extensibility (e.g., some maps might specify that this is a
-pointer to some extra data structure, just like we do for some types
-of bpf_iter program types to specify extra parameters). In libbpf you
-can't express entire 64  bits with __uint() macro, but eventually that
-limitation might be raised separately.
+[...]
 
->  };
->
->  LIBBPF_API int
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index 963b1060d944..bce5a0090f3f 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -133,6 +133,7 @@ struct bpf_map_def {
->         unsigned int value_size;
->         unsigned int max_entries;
->         unsigned int map_flags;
-> +       unsigned int map_extra;
->  };
->
->  enum libbpf_pin_type {
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index ed313fd491bd..12a9ecd45a78 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -2274,6 +2274,10 @@ int parse_btf_map_def(const char *map_name, struct btf *btf,
->                         }
->                         map_def->pinning = val;
->                         map_def->parts |= MAP_DEF_PINNING;
-> +               } else if (strcmp(name, "map_extra") == 0) {
-> +                       if (!get_map_field_int(map_name, btf, m, &map_def->map_extra))
-> +                               return -EINVAL;
-> +                       map_def->parts |= MAP_DEF_MAP_EXTRA;
->                 } else {
->                         if (strict) {
->                                 pr_warn("map '%s': unknown field '%s'.\n", map_name, name);
-> @@ -2298,6 +2302,7 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
->         map->def.value_size = def->value_size;
->         map->def.max_entries = def->max_entries;
->         map->def.map_flags = def->map_flags;
-> +       map->def.map_extra = def->map_extra;
->
->         map->numa_node = def->numa_node;
->         map->btf_key_type_id = def->key_type_id;
-> @@ -2322,6 +2327,8 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
->                 pr_debug("map '%s': found max_entries = %u.\n", map->name, def->max_entries);
->         if (def->parts & MAP_DEF_MAP_FLAGS)
->                 pr_debug("map '%s': found map_flags = %u.\n", map->name, def->map_flags);
-> +       if (def->parts & MAP_DEF_MAP_EXTRA)
-> +               pr_debug("map '%s': found map_extra = %u.\n", map->name, def->map_extra);
->         if (def->parts & MAP_DEF_PINNING)
->                 pr_debug("map '%s': found pinning = %u.\n", map->name, def->pinning);
->         if (def->parts & MAP_DEF_NUMA_NODE)
-> @@ -4017,6 +4024,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
->         map->def.value_size = info.value_size;
->         map->def.max_entries = info.max_entries;
->         map->def.map_flags = info.map_flags;
-> +       map->def.map_extra = info.map_extra;
->         map->btf_key_type_id = info.btf_key_type_id;
->         map->btf_value_type_id = info.btf_value_type_id;
->         map->reused = true;
-> @@ -4534,7 +4542,8 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
->                 map_info.key_size == map->def.key_size &&
->                 map_info.value_size == map->def.value_size &&
->                 map_info.max_entries == map->def.max_entries &&
-> -               map_info.map_flags == map->def.map_flags);
-> +               map_info.map_flags == map->def.map_flags &&
-> +               map_info.map_extra == map->def.map_extra);
->  }
->
->  static int
-> @@ -4631,6 +4640,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->         create_attr.key_size = def->key_size;
->         create_attr.value_size = def->value_size;
->         create_attr.numa_node = map->numa_node;
-> +       create_attr.map_extra = def->map_extra;
->
->         if (def->type == BPF_MAP_TYPE_PERF_EVENT_ARRAY && !def->max_entries) {
->                 int nr_cpus;
-> @@ -8637,6 +8647,19 @@ int bpf_map__set_map_flags(struct bpf_map *map, __u32 flags)
->         return 0;
->  }
->
-> +__u32 bpf_map__map_extra(const struct bpf_map *map)
+> +static struct ctx {
+> +       struct bloom_filter_bench *skel;
+> +
+> +       int bloom_filter_fd;
+> +       int hashmap_fd;
+> +       int array_map_fd;
+> +
+> +       pthread_mutex_t map_done_mtx;
+> +       pthread_cond_t map_done;
+> +       bool map_prepare_err;
+> +
+> +       __u32 next_map_idx;
+> +
+
+nit: unnecessary empty line
+
+> +} ctx = {
+> +       .map_done_mtx = PTHREAD_MUTEX_INITIALIZER,
+> +       .map_done = PTHREAD_COND_INITIALIZER,
+> +};
+> +
+
+[...]
+
+> +
+> +static void populate_maps(void)
 > +{
-> +       return map->def.map_extra;
+> +       unsigned int nr_cpus = bpf_num_possible_cpus();
+> +       pthread_t map_thread;
+> +       int i, err;
+> +
+> +       ctx.bloom_filter_fd = bpf_map__fd(ctx.skel->maps.bloom_filter_map);
+> +       ctx.hashmap_fd = bpf_map__fd(ctx.skel->maps.hashmap);
+> +       ctx.array_map_fd = bpf_map__fd(ctx.skel->maps.array_map);
+> +
+> +       for (i = 0; i < nr_cpus; i++) {
+> +               err = pthread_create(&map_thread, NULL, map_prepare_thread,
+> +                                    NULL);
+> +               if (err) {
+> +                       fprintf(stderr, "failed to create pthread: %d\n", -errno);
+> +                       exit(1);
+> +               }
+> +       }
+> +
+> +       pthread_mutex_lock(&ctx.map_done_mtx);
+> +       pthread_cond_wait(&ctx.map_done, &ctx.map_done_mtx);
+
+This is a fragile way to use cond_wait. If prepare finishes faster
+than you get to this cond_wait, you'll be stuck forevere. Also
+cond_var can spuriously wake up, if I remember correctly. So the
+pattern is usually to do
+checking of some condition in a loop  (inside the locked region) and
+if the condition doesn't hold, cond_wait on it (I renamed ctx.map_done
+into ctx.map_done_cv):
+
+pthread_mutex_lock(&ctx.map_done_mtx);
+while (!ctx.map_done /* this is bool now */)
+    pthread_cond_wait(&ctx.map_done_cv, &ctx.map_done_mtx);
+pthread_mutex_unlock(&ctx.map_done_mtx);
+
+
+> +       pthread_mutex_unlock(&ctx.map_done_mtx);
+> +
+> +       if (ctx.map_prepare_err)
+> +               exit(1);
 > +}
 > +
-> +int bpf_map__set_map_extra(struct bpf_map *map, __u32 map_extra)
+> +static struct bloom_filter_bench *setup_skeleton(bool hashmap_use_bloom_filter)
 > +{
-> +       if (map->fd >= 0)
-> +               return libbpf_err(-EBUSY);
-> +       map->def.map_extra = map_extra;
+> +       struct bloom_filter_bench *skel;
+> +       int err;
+> +
+> +       setup_libbpf();
+> +
+> +       skel = bloom_filter_bench__open();
+> +       if (!skel) {
+> +               fprintf(stderr, "failed to open skeleton\n");
+> +               exit(1);
+> +       }
+> +
+> +       skel->rodata->hashmap_use_bloom_filter = hashmap_use_bloom_filter;
+> +
+> +       /* Resize number of entries */
+> +       err = bpf_map__resize(skel->maps.hashmap, args.nr_entries);
+> +       if (err) {
+
+These errors can't happen unless args.nr_entries is zero, so I'd just
+drop them. But please use bpf_map__set_max_entries() instead,
+bpf_map__resize() is going to be deprecated.
+
+> +               fprintf(stderr, "failed to resize hashmap\n");
+> +               exit(1);
+> +       }
+> +
+> +       err = bpf_map__resize(skel->maps.array_map, args.nr_entries);
+> +       if (err) {
+> +               fprintf(stderr, "failed to resize array map\n");
+> +               exit(1);
+> +       }
+> +
+> +       err = bpf_map__resize(skel->maps.bloom_filter_map,
+> +                             BPF_BLOOM_FILTER_BITSET_SZ(args.nr_entries,
+> +                                                        args.nr_hash_funcs));
+> +       if (err) {
+> +               fprintf(stderr, "failed to resize bloom filter\n");
+> +               exit(1);
+> +       }
+> +
+> +       /* Set value size */
+> +       err = bpf_map__set_value_size(skel->maps.array_map, args.value_size);
+> +       if (err) {
+
+same here, error can only happen if the map is already created in the
+kernel, so be pragmatic and skip that (especially in benchmarks)
+
+> +               fprintf(stderr, "failed to set array map value size\n");
+> +               exit(1);
+> +       }
+> +
+> +       err = bpf_map__set_value_size(skel->maps.bloom_filter_map, args.value_size);
+> +       if (err) {
+> +               fprintf(stderr, "failed to set bloom filter map value size\n");
+> +               exit(1);
+> +       }
+> +
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
+> index a3352a64c067..a260a963efda 100644
+> --- a/tools/testing/selftests/bpf/bpf_util.h
+> +++ b/tools/testing/selftests/bpf/bpf_util.h
+> @@ -40,4 +40,15 @@ static inline unsigned int bpf_num_possible_cpus(void)
+>         (offsetof(TYPE, MEMBER) + sizeof_field(TYPE, MEMBER))
+>  #endif
+>
+> +/* Helper macro for computing the optimal number of bits for a
+> + * bloom filter map.
+> + *
+> + * Mathematically, the optimal bitset size that minimizes the
+> + * false positive probability is n * k / ln(2) where n is the expected
+> + * number of unique entries in the bloom filter and k is the number of
+> + * hash functions. We use 7 / 5 to approximate 1 / ln(2).
+> + */
+> +#define BPF_BLOOM_FILTER_BITSET_SZ(nr_uniq_entries, nr_hash_funcs) \
+> +       ((nr_uniq_entries) * (nr_hash_funcs) / 5 * 7)
+
+hm.. I thought you were going to add into include/linux/uapi/bpf.h,
+why did you change your mind?
+
+> +
+>  #endif /* __BPF_UTIL__ */
+> diff --git a/tools/testing/selftests/bpf/progs/bloom_filter_bench.c b/tools/testing/selftests/bpf/progs/bloom_filter_bench.c
+> new file mode 100644
+> index 000000000000..a44a47ddc4d7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bloom_filter_bench.c
+> @@ -0,0 +1,146 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include <errno.h>
+> +#include <linux/bpf.h>
+> +#include <stdbool.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct bpf_map;
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(key_size, sizeof(__u32));
+> +       /* max entries and value_size will be set programmatically.
+> +        * They are configurable from the userspace bench program.
+> +        */
+> +} array_map SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_BITSET);
+> +       /* max entries,  value_size, and # of hash functions will be set
+> +        * programmatically. They are configurable from the userspace
+> +        * bench program.
+> +        */
+> +} bloom_filter_map SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_HASH);
+> +       /* max entries, key_size, and value_size, will be set
+> +        * programmatically. They are configurable from the userspace
+> +        * bench program.
+> +        */
+> +} hashmap SEC(".maps");
+> +
+> +struct callback_ctx {
+> +       struct bpf_map *map;
+> +       bool update;
+> +};
+> +
+> +/* Tracks the number of hits, drops, and false hits */
+> +struct {
+> +       __u32 stats[3];
+> +} __attribute__((__aligned__(256))) percpu_stats[256];
+> +
+> +__u8 value_sz_nr_u32s;
+> +
+> +const __u32 hit_key  = 0;
+> +const __u32 drop_key  = 1;
+> +const __u32 false_hit_key = 2;
+> +
+> +const volatile bool hashmap_use_bloom_filter = true;
+> +
+> +int error = 0;
+> +
+> +static __always_inline void log_result(__u32 key)
+> +{
+> +       __u32 cpu = bpf_get_smp_processor_id();
+> +
+> +       percpu_stats[cpu & 255].stats[key]++;
+> +}
+> +
+> +static __u64
+> +bloom_filter_callback(struct bpf_map *map, __u32 *key, void *val,
+> +                     struct callback_ctx *data)
+> +{
+> +       int err;
+> +
+> +       if (data->update)
+> +               err = bpf_map_push_elem(data->map, val, 0);
+> +       else
+> +               err = bpf_map_peek_elem(data->map, val);
+> +
+> +       if (err) {
+> +               error |= 1;
+> +               return 1; /* stop the iteration */
+> +       }
+> +
+> +       log_result(hit_key);
+> +
 > +       return 0;
 > +}
 > +
->  __u32 bpf_map__numa_node(const struct bpf_map *map)
->  {
->         return map->numa_node;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 89ca9c83ed4e..55e8dfe6f3e1 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -486,6 +486,7 @@ struct bpf_map_def {
->         unsigned int value_size;
->         unsigned int max_entries;
->         unsigned int map_flags;
-> +       unsigned int map_extra;
->  };
->
->  /**
-> @@ -562,6 +563,9 @@ LIBBPF_API __u32 bpf_map__btf_value_type_id(const struct bpf_map *map);
->  /* get/set map if_index */
->  LIBBPF_API __u32 bpf_map__ifindex(const struct bpf_map *map);
->  LIBBPF_API int bpf_map__set_ifindex(struct bpf_map *map, __u32 ifindex);
-> +/* get/set map map_extra flags */
-> +LIBBPF_API __u32 bpf_map__map_extra(const struct bpf_map *map);
-> +LIBBPF_API int bpf_map__set_map_extra(struct bpf_map *map, __u32 map_extra);
->
->  typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
->  LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index f270d25e4af3..308378b3f20b 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -395,4 +395,6 @@ LIBBPF_0.6.0 {
->                 bpf_object__prev_program;
->                 btf__add_btf;
->                 btf__add_tag;
-> +               bpf_map__map_extra;
-> +               bpf_map__set_map_extra;
->  } LIBBPF_0.5.0;
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index f7fd3944d46d..188db854d9c2 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -193,8 +193,9 @@ enum map_def_parts {
->         MAP_DEF_NUMA_NODE       = 0x080,
->         MAP_DEF_PINNING         = 0x100,
->         MAP_DEF_INNER_MAP       = 0x200,
-> +       MAP_DEF_MAP_EXTRA       = 0x400,
->
-> -       MAP_DEF_ALL             = 0x3ff, /* combination of all above */
-> +       MAP_DEF_ALL             = 0x7ff, /* combination of all above */
->  };
->
->  struct btf_map_def {
-> @@ -208,6 +209,7 @@ struct btf_map_def {
->         __u32 map_flags;
->         __u32 numa_node;
->         __u32 pinning;
-> +       __u32 map_extra;
->  };
->
->  int parse_btf_map_def(const char *map_name, struct btf *btf,
+> +SEC("fentry/__x64_sys_getpgid")
+> +int prog_bloom_filter_lookup(void *ctx)
+> +{
+> +       struct callback_ctx data;
+> +
+> +       data.map = (struct bpf_map *)&bloom_filter_map;
+> +       data.update = false;
+> +
+> +       bpf_for_each_map_elem(&array_map, bloom_filter_callback, &data, 0);
+> +
+> +       return 0;
+> +}
+> +
+> +SEC("fentry/__x64_sys_getpgid")
+> +int prog_bloom_filter_update(void *ctx)
+> +{
+> +       struct callback_ctx data;
+> +
+> +       data.map = (struct bpf_map *)&bloom_filter_map;
+> +       data.update = true;
+> +
+> +       bpf_for_each_map_elem(&array_map, bloom_filter_callback, &data, 0);
+> +
+> +       return 0;
+> +}
+> +
+> +SEC("fentry/__x64_sys_getpgid")
+> +int prog_bloom_filter_hashmap_lookup(void *ctx)
+> +{
+> +       __u64 *result;
+> +       int i, j, err;
+> +
+> +       __u32 val[64] = {0};
+> +
+> +       for (i = 0; i < 1024; i++) {
+> +               for (j = 0; j < value_sz_nr_u32s && j < 64; j++)
+> +                       val[j] = bpf_get_prandom_u32();
+> +
+> +               if (hashmap_use_bloom_filter) {
+
+this is purely subjective, so take it for what it is worth. Using full
+"bloom_filter" everywhere is a bit mouthful and causes unnecessarily
+long identifiers. I think "bloom" itself is very recognizable and
+doesn't detract from readability (I'd claim it actually improves it).
+When using a bench tool manually, having to type "bloom-filter-update"
+if the equivalent "bloom-update" is just as good, would get old pretty
+fast for me.
+
+Similarly program names above, why "prog_" prefix? What does it
+contribute except causes longer identifiers in skeleton?
+
+> +                       err = bpf_map_peek_elem(&bloom_filter_map, val);
+> +                       if (err) {
+> +                               if (err != -ENOENT) {
+> +                                       error |= 3;
+> +                                       return 0;
+> +                               }
+> +                               log_result(hit_key);
+> +                               continue;
+> +                       }
+> +               }
+> +
+> +               result = bpf_map_lookup_elem(&hashmap, val);
+> +               if (result) {
+> +                       log_result(hit_key);
+> +               } else {
+> +                       if (hashmap_use_bloom_filter)
+> +                               log_result(false_hit_key);
+> +                       log_result(drop_key);
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
 > --
 > 2.30.2
 >
