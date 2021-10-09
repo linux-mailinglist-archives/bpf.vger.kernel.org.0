@@ -2,65 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71FA4276D9
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 05:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279674276DC
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 05:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244192AbhJIDPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Oct 2021 23:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52008 "EHLO
+        id S232344AbhJIDQ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Oct 2021 23:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhJIDPQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Oct 2021 23:15:16 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC55FC061570
-        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 20:13:19 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id a7so25102317yba.6
-        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 20:13:19 -0700 (PDT)
+        with ESMTP id S232338AbhJIDQ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Oct 2021 23:16:57 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F24C061570
+        for <bpf@vger.kernel.org>; Fri,  8 Oct 2021 20:15:01 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id z5so25128597ybj.2
+        for <bpf@vger.kernel.org>; Fri, 08 Oct 2021 20:15:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ttJxCFg6wk8EiELDlbBImbRqqTfObeD0o7LlOWtvcMY=;
-        b=UtysZodSK1EDYOeiOLHCh1JchDDeeAiYwBX30/Q1iOSyUakXnjeXKb4QqLr4YWs2Ry
-         9j0aSDI0jaYpgqa9e9Bnter4C/KFmLjYbn4jzuiu1IdU1KjrG1cKO+I43XMtNNkHtoph
-         /k8KVeSRyCCIbbNMmeima2wOENSnGkPSe/IP59OiMcCGFPJBfpR4xDWobhS4T0/wrgDa
-         X+L9UpeHwMRMFtW9ew1sfuXADgqcDW24CkDJOmTSI102FTIzh5Ze49YammNVHaYq9D+w
-         tbGxDS3Uz5m9DKfzziRl+0+0F0TZj6DyPxdZwiQtd3sG2aXn2uPquWtaYhT/6+uZNOKw
-         FBSA==
+        bh=geVXmNhoJ/bnRrBpJOj9sFJnu7l2mcrFALBF9VtPjo4=;
+        b=qtLz1Os4dzsSFNYcwuFvzQmJH5pCORAdf43nnUjMq6rIy3VhETNyVnwXUCD8xkXGo4
+         MSypHXkY969wu8OFGyFB6u6VtW8HNLUrzYGqYVO+heG6KOwtFYUM2+2zKTQ3ewms5jcm
+         DvE2lGG2xQHiYnv2gSaJizZ4E+9Z3h6toqNH+2GxyuHPoYMjb86Kn/TmiAmWZnINYdxA
+         u2WXGHXMoriHjCTZk8mB+T733Clqpx6SHPJl8XrL0WH/tWTt0UgIbP+BYDF3gyBKu3f1
+         wqezzFBQs8iyhkBchylLvTJ7PUNpoWehGvD5r9ylHSFdD1rEuA+AfTzQ59l9P8gHo9Dv
+         zJhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ttJxCFg6wk8EiELDlbBImbRqqTfObeD0o7LlOWtvcMY=;
-        b=bRJPgOybbwU0gDzQ1PuTxG8xgvfwdOHQZGhND8tJ3EC1pOACim+wvoYJOspD2x3wbN
-         vOROtG3wEfX3yWJTWdE6BcFl3oz+mepGYqS/aKDrWXNa/l/LW81vnh7ID62pXzn9l33p
-         J1wqo8l1bbwPvtp1j4wNf/LYrYdyVuTVeOL/DkpM+P93ARMs+969GNSm3UaufHFxC9J9
-         OM2ct5WQzdTYicmllmBMQlxjv6w002NMouZT25vyViBwKc+hsVGpsqZ/OGKvPC0G+sti
-         DUclVOQmMLJG1dS9rI1DF+2AQAObS3KptrPju821TE/f8I/v+xEo0Am59CXCWG3gei28
-         g0LQ==
-X-Gm-Message-State: AOAM53081OypiIdZBr0oV4dwLe8Wid1A5CQXsHeHatu0cNU+RPPfR+1S
-        FEmSVdb7sbO4RTUPPUkSLzkQyJxRNG2Sf8SoUg44z8t3NkE=
-X-Google-Smtp-Source: ABdhPJzYcZSdYqsghbvq1deSUd52HB0ZVQDrY/5nKEXI7QYcIOKk+5FvLFTtzI+s8x6g0RMyQQNghFPsUzvaULB+K9A=
-X-Received: by 2002:a25:afcf:: with SMTP id d15mr6647397ybj.433.1633749199140;
- Fri, 08 Oct 2021 20:13:19 -0700 (PDT)
+        bh=geVXmNhoJ/bnRrBpJOj9sFJnu7l2mcrFALBF9VtPjo4=;
+        b=nKk/kvsgbjWQYe2CEhLpJyA//OEn8Ev0AH105M8Z/mIQ3oOK3dbZUe+Lry7FbrQ11G
+         cykwUOq+w/Iqhs0BoiIKDo3gQ4zVatsG6wcJJ9jln/APhmkZebq0xZ5TvwpBGL3qBhfQ
+         boO48NeXco4ucfLHVdF5RJlpnZqVRSHYHb8NEsXLRAVPMsmr2c9jvt4VLefgb3ie2fS2
+         i7UWYJBq37elNgTzQ8V984L7IPOgIHGM+may2p5zgHG1KGsc0JfU5bdAEqOtI1pKzEqW
+         9UwyFes49nbLux/yEsXbJCn0J+YiC72kdKE8gaTA9/WJlBHQCTxLuXThBmLzXr4gZG1D
+         0mdA==
+X-Gm-Message-State: AOAM530UbnikY784Hwef84pCcbGPspn/bYZEtzlub/rkzOpkldCfSP56
+        BxpJpJrm9dYHHHjF/qlE2SFPXDD//X3sl2UBLjHYnMWhmmM=
+X-Google-Smtp-Source: ABdhPJzG2pIFw7w8Y+gReXUE51OmTqNH1wZ5klu1NCuyoBSs6rqHPFTf4CY3Oy818UDeRfjh5NaBoWAddbz1hGE+nLs=
+X-Received: by 2002:a25:5606:: with SMTP id k6mr7404913ybb.51.1633749300628;
+ Fri, 08 Oct 2021 20:15:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-10-fallentree@fb.com>
- <CAEf4BzYO+XD9Aa0o1BWfk8q4vE3Aon12bRWJjvz6RtWrT0o=WA@mail.gmail.com> <CAJygYd39oi4UB=orVSBb_V5c6nBw6TMymq=JsbhHMsfoDOAyEQ@mail.gmail.com>
-In-Reply-To: <CAJygYd39oi4UB=orVSBb_V5c6nBw6TMymq=JsbhHMsfoDOAyEQ@mail.gmail.com>
+References: <20211006185619.364369-1-fallentree@fb.com> <20211006185619.364369-15-fallentree@fb.com>
+ <CAEf4BzYfmMOpfZ2ti-e9z-1_oB4_E0R064_RD8a_QDt2=JLsnQ@mail.gmail.com> <CAJygYd09TT9N5PYMv48bJp7wgVCqj4o5vMjMMk6m1z7+A=fpHg@mail.gmail.com>
+In-Reply-To: <CAJygYd09TT9N5PYMv48bJp7wgVCqj4o5vMjMMk6m1z7+A=fpHg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Oct 2021 20:13:06 -0700
-Message-ID: <CAEf4BzYeSkj4NQyHooKWt4DJNEyh_KfPGpDYhww7zhBRTdkskA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 09/14] selftests/bpf: Make uprobe tests use
- different attach functions.
+Date:   Fri, 8 Oct 2021 20:14:47 -0700
+Message-ID: <CAEf4BzZxTf6WcJ4Q_0DNAHLFTYbs+LGF+et6etDMChaD+pzfHA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 14/14] selfetest/bpf: make some tests serial
 To:     "sunyucong@gmail.com" <sunyucong@gmail.com>
-Cc:     Yucong Sun <fallentree@fb.com>, Song Liu <songliubraving@fb.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Cc:     Yucong Sun <fallentree@fb.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 3:47 PM sunyucong@gmail.com <sunyucong@gmail.com> wrote:
+On Fri, Oct 8, 2021 at 3:55 PM sunyucong@gmail.com <sunyucong@gmail.com> wrote:
 >
 > On Fri, Oct 8, 2021 at 3:27 PM Andrii Nakryiko
 > <andrii.nakryiko@gmail.com> wrote:
@@ -69,72 +68,89 @@ On Fri, Oct 8, 2021 at 3:47 PM sunyucong@gmail.com <sunyucong@gmail.com> wrote:
 > > >
 > > > From: Yucong Sun <sunyucong@gmail.com>
 > > >
-> > > Using same address on different processes of the same binary often fail
-> > > with EINVAL, this patch make these tests use distinct methods, so they
-> > > can run in parallel.
+> > > Change tests that often fails in parallel execution mode to serial.
 > > >
 > > > Signed-off-by: Yucong Sun <sunyucong@gmail.com>
 > > > ---
-> > >  tools/testing/selftests/bpf/prog_tests/attach_probe.c | 8 ++++++--
-> > >  tools/testing/selftests/bpf/prog_tests/bpf_cookie.c   | 8 ++++++--
-> > >  tools/testing/selftests/bpf/prog_tests/task_pt_regs.c | 8 ++++++--
-> > >  3 files changed, 18 insertions(+), 6 deletions(-)
+> >
+> > I hope we'll be able to parallelise these tests over time. See some
+> > notes on cover letter for how to target this effort better. But here's
+> > another thought I had while thinking about this.
+> >
+> > Some tests are inherently testing unshareable resources, e.g., like
+> > XDP tests. So we might never be able to completely parallelize all the
+> > tests. But it probably will be too restrictive to just bunde all of
+> > them into the one "serial" group of tests. It's a good starting point,
+> > but I think we'll have to have something like "serialization" group,
+> > where we'll be able to mark a bunch of tests like
+> > "serial_xdp_<testname>" and each test with "serial_xdp_" prefix will
+> > run sequentially relative to each other, but they might run completely
+> > parallel to, say, "serial_perf_" tests. WDYT?
+>
+> I think someone was talking about being able to attach multiple XDP
+> programs in the future?
+>
+
+that's all built on top of single XDP attach point using a bunch of
+conventions, so that's not a solution here
+
+> another approach I want to suggest is for each test to test for
+> EBUSY/EEXIST error code on attach and simply sleep/retry,  Then in the
+> future when it doesn't return this error there is nothing to change on
+> test side.
+
+This won't work reliably, sometimes test just makes some system-wide
+assumptions or modifications, it's not always resulting in EBUSY
+
+> >
+> >
+> > >  tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c   | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c            | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c      | 2 +-
+> > >  .../selftests/bpf/prog_tests/cgroup_attach_autodetach.c        | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c   | 2 +-
+> > >  .../testing/selftests/bpf/prog_tests/cgroup_attach_override.c  | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/cgroup_link.c           | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/check_mtu.c             | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c         | 3 ++-
+> > >  .../selftests/bpf/prog_tests/flow_dissector_load_bytes.c       | 2 +-
+> > >  .../testing/selftests/bpf/prog_tests/flow_dissector_reattach.c | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c   | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/kfree_skb.c             | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c     | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/modify_return.c         | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c   | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/perf_buffer.c           | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/perf_link.c             | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/probe_user.c            | 3 ++-
+> > >  .../selftests/bpf/prog_tests/raw_tp_writable_test_run.c        | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/select_reuseport.c      | 2 +-
+> > >  .../selftests/bpf/prog_tests/send_signal_sched_switch.c        | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/sk_storage_tracing.c    | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/snprintf_btf.c          | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/sock_fields.c           | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/sockmap_listen.c        | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/timer.c                 | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/timer_mim.c             | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/tp_attach_query.c       | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/trace_printk.c          | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/trace_vprintk.c         | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/trampoline_count.c      | 3 ++-
+> > >  tools/testing/selftests/bpf/prog_tests/xdp_attach.c            | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/xdp_bonding.c           | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c     | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c     | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/xdp_info.c              | 2 +-
+> > >  tools/testing/selftests/bpf/prog_tests/xdp_link.c              | 2 +-
+> > >  38 files changed, 48 insertions(+), 38 deletions(-)
 > > >
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > > index 6c511dcd1465..eff36ba9c148 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > > @@ -5,6 +5,10 @@
-> > >  /* this is how USDT semaphore is actually defined, except volatile modifier */
-> > >  volatile unsigned short uprobe_ref_ctr __attribute__((unused)) __attribute((section(".probes")));
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
+> > > index 85babb0487b3..b52ff8ce34db 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
+> > > @@ -179,7 +179,7 @@ static void do_bpf_iter_setsockopt(struct bpf_iter_setsockopt *iter_skel,
+> > >         free_fds(est_fds, nr_est);
+> > >  }
 > > >
-> > > +static int method() {
 > >
-> > wrong style: { should be on separate line
-> >
-> > > +       return get_base_addr();
-> >
-> > there is nothing special about get_base_addr(), except that it's a
-> > global function in a different file and won't be inlined, while this
-> > method() approach has no such guarantee
-> >
-> > I've dropped this patch for now.
-> >
-> > But I'm surprised that attaching to the same uprobe few times doesn't
-> > work. Song, is there anything in kernel that could cause this?
->
->
-> libbpf: uprobe perf_event_open() failed: Invalid argument
-> libbpf: prog 'handle_uprobe': failed to create uprobe
-> '/proc/self/exe:0x144d59' perf event: Invalid argument
-> uprobe_subtest:FAIL:link1 unexpected error: -22
->
-> The problem only happens when several different processes of the same
-> binary are trying to attach uprobe on the same function. I am guessing
-> it is due to address space randomization ?
-
-nope, we don't use address space randomization, it's the
-ref_ctr_offset (normally used for USDT semaphore)
-
->
-> I traced through the code and the EINVAL is returned right after this warning
->
-> [    1.375901] ref_ctr_offset mismatch. inode: 0x55a0 offset: 0x144d59
-> ref_ctr_offset(old): 0x554a00 ref_ctr_offset(new): 0x0
-
-ah, ref_ctr_offset is probably enforced by the kernel to be the same
-across all uprobes. attach_probe is the only one that's testing
-ref_ctr_offset, so it should be enough to modify only that one, just
-make sure you are using a non-inlined function for this.
-
->
->
-> This could be easily be reproduced by    ./test_progs -t
-> attach_probe,bpf_cookie,test_pt_regs -j
->
-> >
-> >
-> > > +}
-> > > +
-
-[...]
+> > [...]
