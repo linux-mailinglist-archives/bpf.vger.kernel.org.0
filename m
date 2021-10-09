@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8101427B0F
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 17:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09912427B10
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 17:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhJIPDE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Oct 2021 11:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
+        id S234115AbhJIPDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Oct 2021 11:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233599AbhJIPDE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Oct 2021 11:03:04 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C003FC061570
-        for <bpf@vger.kernel.org>; Sat,  9 Oct 2021 08:01:07 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id kk10so9789187pjb.1
-        for <bpf@vger.kernel.org>; Sat, 09 Oct 2021 08:01:07 -0700 (PDT)
+        with ESMTP id S233599AbhJIPDM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Oct 2021 11:03:12 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FC3C061570
+        for <bpf@vger.kernel.org>; Sat,  9 Oct 2021 08:01:15 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso7526802pjb.1
+        for <bpf@vger.kernel.org>; Sat, 09 Oct 2021 08:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9oJW7122f4me76xl44a/OhxacHDQkKSoRCdXKn+Iqn8=;
-        b=Cz8YPq4iuwe5tdYsY8nDtYm41q4a4hEdEtC3gZFPb1ln/sjdyKZu2OvR/p/NfdY5nB
-         g+SxEQbuCLXWnQIh6VFBAYu5YsxeC/7KIGc8YCKTWPSwLhySa84zK94fZQFlnXT/wKgc
-         lM0weIuteXby69s1nlVERFAwGtJ+lipT4OLu89Otrk5HPLFzmWMaJ2R92vfoDoiEV4ph
-         xO/cm9Jm91PGMpKhqdmFIqBG+XKcoaAMJbaRKIGmdjgY943qy2kGGODMdlKsO9LfAACy
-         5iEwGZUHV9Ww5d62QHyNsjnY/CKcSIdHVZiTzLw5ewCGWmMydZUBaLfJKsuD6TsfV2nx
-         //dA==
+        bh=Or0xZPlURR0feHzdj4zYXkvkmkyi4TG44LhFEBcH8c8=;
+        b=nK3FHtBRL5UxorefGDfb6v/1ifVPjIa+oLbBGSFyv7+SnS7P8TN0DN8c/JtC23xA31
+         H+SFYb09W7MU4JgBxRRrWk9RDZC/wwusSuplZgshF8PCmekniSGta7XfdOh/elA6XeUl
+         NA2ZTVv/4E3PRuLI4c5ynLVp1cccJ9x1SWZslgeO36ijGl5pnE6yE20OzMXKlPofTIJE
+         bf+JEUHRl2JyQ6eQX2KEsDBoAOFCw+m6+N/lN8wvWVWrU60BGiVf9gkZnVMJQnusQ6Py
+         mO4lqRZt4QzZQkrsnsvPcwhIIZ0na+PtHMYKZ2VEKoX9KsIXZjoQVuTGfRpNR9kK4iNF
+         yg/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9oJW7122f4me76xl44a/OhxacHDQkKSoRCdXKn+Iqn8=;
-        b=CdYhFkLk3G6t5NvK95LNlCNVJbQOPZGjBCTU8x0Y59OwzXkvsF6JqLsHhlc9vC6ljj
-         koUoWn7H5DdhRxWYNsBkhcc7F/TyrkADhwn2u6wtK6e2i6nXMEVmzwHJH4bwr5wYs2RN
-         KbXYoWUpVWRaCFjE/w4sWDo+6yyIOnHSpNoZ37StFg9mhLyirwL3zkho2a1NmCv2ukhj
-         8Nz7RmGlDvhXZX3/af/alKoLa4zjAXk5k1RiAzaDsClzNCoY10cvy3fQG0czbSCU57+g
-         csJctRv7iapGB0pTpOyr4vZtpqri/7qK/UU+3yEWXMlRoGCeUbLWGCntG7ma02rIxCwO
-         eryw==
-X-Gm-Message-State: AOAM5320LzOWrKH5Fpey8FYwDZ7blWH3jw8X/pPDGLcr8VoCsg9PFUl8
-        21AS/cEoiI+tXO1PNjTrEYkW/aoWsHRRW0iB
-X-Google-Smtp-Source: ABdhPJxYX8hmaxqntvTshK5l8hGJQhqH1mRUxCydnw5feL0BvzINCk8CVl962FjzcbriF/sUamMr0g==
-X-Received: by 2002:a17:902:a385:b0:13e:99e9:17f3 with SMTP id x5-20020a170902a38500b0013e99e917f3mr14953028pla.65.1633791666893;
-        Sat, 09 Oct 2021 08:01:06 -0700 (PDT)
+        bh=Or0xZPlURR0feHzdj4zYXkvkmkyi4TG44LhFEBcH8c8=;
+        b=t6Ta+ItWpHfx4OLIa3Xmr5Uk6FBp7c9UOVauhAdi29+AhFjJCEeZgg5YlnU/8bo2ID
+         C5slWbwsEbpX8uKtmpmDUhDmndpLurohofE192zhIy4oiRbgMiB6Xa+dhhSfj7kNl+H1
+         aAxXXZ3W4MABhT010XO/Q+rZrH6oGGBBKm0zTC9AHzPTJ6s6iHYpP4uqDZZkR9UV8rRn
+         0mn8lgmpw9ZfcRveb4maic4wZi6mZ63WtElrq6gJCQHMvh2ipn/CfuBR78zYY5vR8t18
+         +InjpomjuZU8l+sYNhe0SedFCGZgmcAkx9NwOlJUZ8DmPRwRsd6vzj8BTpsb25jchFwg
+         aQ9Q==
+X-Gm-Message-State: AOAM532cU1PQ6qLAm7joo9S82MhT/ANzS3QQezFC20LMuQelPZhun39Z
+        EHNQ60f1w4fWzBw8hn0JdndUiRy73R9W4plL
+X-Google-Smtp-Source: ABdhPJzoBg4Nl21jsyILvGC0l8Rna1FAaKIYNx9r+D2icMh4A5LAg5T2CvvmIFPqV4+f3ZSXt1gdOA==
+X-Received: by 2002:a17:90a:ec17:: with SMTP id l23mr6917783pjy.184.1633791674773;
+        Sat, 09 Oct 2021 08:01:14 -0700 (PDT)
 Received: from VM-32-4-ubuntu.. ([43.132.164.184])
-        by smtp.gmail.com with ESMTPSA id w8sm2659331pfd.4.2021.10.09.08.01.05
+        by smtp.gmail.com with ESMTPSA id w8sm2659331pfd.4.2021.10.09.08.01.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 08:01:06 -0700 (PDT)
+        Sat, 09 Oct 2021 08:01:14 -0700 (PDT)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kafai@fb.com,
         songliubraving@fb.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 1/2] libbpf: Add btf__type_cnt() and btf__raw_data() APIs
-Date:   Sat,  9 Oct 2021 23:00:28 +0800
-Message-Id: <20211009150029.1746383-2-hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next 2/2] tools: Switch to new btf__type_cnt/btf__raw_data APIs
+Date:   Sat,  9 Oct 2021 23:00:29 +0800
+Message-Id: <20211009150029.1746383-3-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211009150029.1746383-1-hengqi.chen@gmail.com>
 References: <20211009150029.1746383-1-hengqi.chen@gmail.com>
@@ -64,434 +64,327 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add btf__type_cnt() and btf__raw_data() APIs and deprecate
-btf__get_nr_type() and btf__get_raw_data() since the old APIs
-don't follow the libbpf naming convention for getters which
-omit 'get' in the name.[0] btf__raw_data() is just an alias to
-the existing btf__get_raw_data(). btf__type_cnt() now returns
-the number of all types of the BTF object including 'void'.
-
-  [0] Closes: https://github.com/libbpf/libbpf/issues/279
+Replace the calls to btf__get_nr_types/btf__get_raw_data in tools
+with new APIs btf__type_cnt/btf__raw_data. The old APIs will be
+deprecated in recent release of libbpf.
 
 Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- tools/lib/bpf/btf.c      | 36 ++++++++++++++++++++++--------------
- tools/lib/bpf/btf.h      |  4 ++++
- tools/lib/bpf/btf_dump.c |  8 ++++----
- tools/lib/bpf/libbpf.c   | 32 ++++++++++++++++----------------
- tools/lib/bpf/libbpf.map |  2 ++
- tools/lib/bpf/linker.c   | 28 ++++++++++++++--------------
- 6 files changed, 62 insertions(+), 48 deletions(-)
+ tools/bpf/bpftool/btf.c                              | 12 ++++++------
+ tools/bpf/bpftool/gen.c                              |  4 ++--
+ tools/bpf/resolve_btfids/main.c                      |  4 ++--
+ tools/perf/util/bpf-event.c                          |  2 +-
+ tools/testing/selftests/bpf/btf_helpers.c            |  4 ++--
+ tools/testing/selftests/bpf/prog_tests/btf.c         | 10 +++++-----
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c    |  8 ++++----
+ tools/testing/selftests/bpf/prog_tests/btf_endian.c  | 12 ++++++------
+ tools/testing/selftests/bpf/prog_tests/btf_split.c   |  2 +-
+ .../testing/selftests/bpf/prog_tests/core_autosize.c |  2 +-
+ tools/testing/selftests/bpf/prog_tests/core_reloc.c  |  2 +-
+ .../selftests/bpf/prog_tests/resolve_btfids.c        |  4 ++--
+ 12 files changed, 33 insertions(+), 33 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 60fbd1c6d466..c9dc723b6075 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -57,7 +57,7 @@ struct btf {
- 	 * representation is broken up into three independently allocated
- 	 * memory regions to be able to modify them independently.
- 	 * raw_data is nulled out at that point, but can be later allocated
--	 * and cached again if user calls btf__get_raw_data(), at which point
-+	 * and cached again if user calls btf__raw_data(), at which point
- 	 * raw_data will contain a contiguous copy of header, types, and
- 	 * strings:
- 	 *
-@@ -435,6 +435,11 @@ __u32 btf__get_nr_types(const struct btf *btf)
- 	return btf->start_id + btf->nr_types - 1;
- }
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 49743ad96851..e5d22bef6d58 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -329,7 +329,7 @@ static int dump_btf_type(const struct btf *btf, __u32 id,
+ 				printf("\n\ttype_id=%u offset=%u size=%u",
+ 				       v->type, v->offset, v->size);
  
-+__u32 btf__type_cnt(const struct btf *btf)
-+{
-+	return btf->start_id + btf->nr_types;
-+}
-+
- const struct btf *btf__base_btf(const struct btf *btf)
+-				if (v->type <= btf__get_nr_types(btf)) {
++				if (v->type < btf__type_cnt(btf)) {
+ 					vt = btf__type_by_id(btf, v->type);
+ 					printf(" (%s '%s')",
+ 					       btf_kind_str[btf_kind_safe(btf_kind(vt))],
+@@ -390,14 +390,14 @@ static int dump_btf_raw(const struct btf *btf,
+ 		}
+ 	} else {
+ 		const struct btf *base;
+-		int cnt = btf__get_nr_types(btf);
++		int cnt = btf__type_cnt(btf);
+ 		int start_id = 1;
+ 
+ 		base = btf__base_btf(btf);
+ 		if (base)
+-			start_id = btf__get_nr_types(base) + 1;
++			start_id = btf__type_cnt(base);
+ 
+-		for (i = start_id; i <= cnt; i++) {
++		for (i = start_id; i < cnt; i++) {
+ 			t = btf__type_by_id(btf, i);
+ 			dump_btf_type(btf, i, t);
+ 		}
+@@ -440,9 +440,9 @@ static int dump_btf_c(const struct btf *btf,
+ 				goto done;
+ 		}
+ 	} else {
+-		int cnt = btf__get_nr_types(btf);
++		int cnt = btf__type_cnt(btf);
+ 
+-		for (i = 1; i <= cnt; i++) {
++		for (i = 1; i < cnt; i++) {
+ 			err = btf_dump__dump_type(d, i);
+ 			if (err)
+ 				goto done;
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index b2ffc18eafc1..0f83088be3e4 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -192,7 +192,7 @@ static int codegen_datasec_def(struct bpf_object *obj,
+ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
  {
- 	return btf->base_btf;
-@@ -466,8 +471,8 @@ static int determine_ptr_size(const struct btf *btf)
- 	if (btf->base_btf && btf->base_btf->ptr_sz > 0)
- 		return btf->base_btf->ptr_sz;
+ 	struct btf *btf = bpf_object__btf(obj);
+-	int n = btf__get_nr_types(btf);
++	int n = btf__type_cnt(btf);
+ 	struct btf_dump *d;
+ 	int i, err = 0;
  
--	n = btf__get_nr_types(btf);
+@@ -200,7 +200,7 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
+ 	if (IS_ERR(d))
+ 		return PTR_ERR(d);
+ 
 -	for (i = 1; i <= n; i++) {
-+	n = btf__type_cnt(btf);
 +	for (i = 1; i < n; i++) {
- 		t = btf__type_by_id(btf, i);
- 		if (!btf_is_int(t))
- 			continue;
-@@ -684,12 +689,12 @@ int btf__resolve_type(const struct btf *btf, __u32 type_id)
- 
- __s32 btf__find_by_name(const struct btf *btf, const char *type_name)
- {
--	__u32 i, nr_types = btf__get_nr_types(btf);
-+	__u32 i, nr_types = btf__type_cnt(btf);
- 
- 	if (!strcmp(type_name, "void"))
- 		return 0;
- 
--	for (i = 1; i <= nr_types; i++) {
-+	for (i = 1; i < nr_types; i++) {
  		const struct btf_type *t = btf__type_by_id(btf, i);
- 		const char *name = btf__name_by_offset(btf, t->name_off);
  
-@@ -703,12 +708,12 @@ __s32 btf__find_by_name(const struct btf *btf, const char *type_name)
- static __s32 btf_find_by_name_kind(const struct btf *btf, int start_id,
- 				   const char *type_name, __u32 kind)
- {
--	__u32 i, nr_types = btf__get_nr_types(btf);
-+	__u32 i, nr_types = btf__type_cnt(btf);
- 
- 	if (kind == BTF_KIND_UNKN || !strcmp(type_name, "void"))
- 		return 0;
- 
--	for (i = start_id; i <= nr_types; i++) {
-+	for (i = start_id; i < nr_types; i++) {
- 		const struct btf_type *t = btf__type_by_id(btf, i);
- 		const char *name;
- 
-@@ -781,7 +786,7 @@ static struct btf *btf_new_empty(struct btf *base_btf)
- 
- 	if (base_btf) {
- 		btf->base_btf = base_btf;
--		btf->start_id = btf__get_nr_types(base_btf) + 1;
-+		btf->start_id = btf__type_cnt(base_btf);
- 		btf->start_str_off = base_btf->hdr->str_len;
- 	}
- 
-@@ -831,7 +836,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
- 
- 	if (base_btf) {
- 		btf->base_btf = base_btf;
--		btf->start_id = btf__get_nr_types(base_btf) + 1;
-+		btf->start_id = btf__type_cnt(base_btf);
- 		btf->start_str_off = base_btf->hdr->str_len;
- 	}
- 
-@@ -1317,7 +1322,7 @@ static void *btf_get_raw_data(const struct btf *btf, __u32 *size, bool swap_endi
- 	return NULL;
- }
- 
--const void *btf__get_raw_data(const struct btf *btf_ro, __u32 *size)
-+const void *btf__raw_data(const struct btf *btf_ro, __u32 *size)
- {
- 	struct btf *btf = (struct btf *)btf_ro;
- 	__u32 data_sz;
-@@ -1325,7 +1330,7 @@ const void *btf__get_raw_data(const struct btf *btf_ro, __u32 *size)
- 
- 	data = btf_get_raw_data(btf, &data_sz, btf->swapped_endian);
- 	if (!data)
--		return errno = -ENOMEM, NULL;
-+		return errno = ENOMEM, NULL;
- 
- 	btf->raw_size = data_sz;
- 	if (btf->swapped_endian)
-@@ -1336,6 +1341,9 @@ const void *btf__get_raw_data(const struct btf *btf_ro, __u32 *size)
- 	return data;
- }
- 
-+__attribute__((alias("btf__raw_data")))
-+const void *btf__get_raw_data(const struct btf *btf, __u32 *size);
-+
- const char *btf__str_by_offset(const struct btf *btf, __u32 offset)
- {
- 	if (offset < btf->start_str_off)
-@@ -1744,7 +1752,7 @@ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
- 	old_strs_len = btf->hdr->str_len;
- 
- 	data_sz = src_btf->hdr->type_len;
--	cnt = btf__get_nr_types(src_btf);
-+	cnt = btf__type_cnt(src_btf) - 1;
- 
- 	/* pre-allocate enough memory for new types */
- 	t = btf_add_type_mem(btf, data_sz);
-@@ -2061,7 +2069,7 @@ int btf__add_union(struct btf *btf, const char *name, __u32 byte_sz)
- 
- static struct btf_type *btf_last_type(struct btf *btf)
- {
--	return btf_type_by_id(btf, btf__get_nr_types(btf));
-+	return btf_type_by_id(btf, btf__type_cnt(btf) - 1);
- }
- 
- /*
-@@ -3265,7 +3273,7 @@ static struct btf_dedup *btf_dedup_new(struct btf *btf, struct btf_ext *btf_ext,
- 		goto done;
- 	}
- 
--	type_cnt = btf__get_nr_types(btf) + 1;
-+	type_cnt = btf__type_cnt(btf);
- 	d->map = malloc(sizeof(__u32) * type_cnt);
- 	if (!d->map) {
- 		err = -ENOMEM;
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 864eb51753a1..49397a22d72b 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -131,7 +131,9 @@ LIBBPF_API __s32 btf__find_by_name(const struct btf *btf,
- 				   const char *type_name);
- LIBBPF_API __s32 btf__find_by_name_kind(const struct btf *btf,
- 					const char *type_name, __u32 kind);
-+LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__type_cnt() instead")
- LIBBPF_API __u32 btf__get_nr_types(const struct btf *btf);
-+LIBBPF_API __u32 btf__type_cnt(const struct btf *btf);
- LIBBPF_API const struct btf *btf__base_btf(const struct btf *btf);
- LIBBPF_API const struct btf_type *btf__type_by_id(const struct btf *btf,
- 						  __u32 id);
-@@ -144,7 +146,9 @@ LIBBPF_API int btf__resolve_type(const struct btf *btf, __u32 type_id);
- LIBBPF_API int btf__align_of(const struct btf *btf, __u32 id);
- LIBBPF_API int btf__fd(const struct btf *btf);
- LIBBPF_API void btf__set_fd(struct btf *btf, int fd);
-+LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__raw_data() instead")
- LIBBPF_API const void *btf__get_raw_data(const struct btf *btf, __u32 *size);
-+LIBBPF_API const void *btf__raw_data(const struct btf *btf, __u32 *size);
- LIBBPF_API const char *btf__name_by_offset(const struct btf *btf, __u32 offset);
- LIBBPF_API const char *btf__str_by_offset(const struct btf *btf, __u32 offset);
- LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index ad6df97295ae..e7ad6c00a901 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -188,7 +188,7 @@ struct btf_dump *btf_dump__new(const struct btf *btf,
- 
- static int btf_dump_resize(struct btf_dump *d)
- {
--	int err, last_id = btf__get_nr_types(d->btf);
-+	int err, last_id = btf__type_cnt(d->btf) - 1;
- 
- 	if (last_id <= d->last_id)
- 		return 0;
-@@ -262,7 +262,7 @@ int btf_dump__dump_type(struct btf_dump *d, __u32 id)
- {
- 	int err, i;
- 
--	if (id > btf__get_nr_types(d->btf))
-+	if (id >= btf__type_cnt(d->btf))
- 		return libbpf_err(-EINVAL);
- 
- 	err = btf_dump_resize(d);
-@@ -294,11 +294,11 @@ int btf_dump__dump_type(struct btf_dump *d, __u32 id)
-  */
- static int btf_dump_mark_referenced(struct btf_dump *d)
- {
--	int i, j, n = btf__get_nr_types(d->btf);
-+	int i, j, n = btf__type_cnt(d->btf);
- 	const struct btf_type *t;
- 	__u16 vlen;
- 
--	for (i = d->last_id + 1; i <= n; i++) {
-+	for (i = d->last_id + 1; i < n; i++) {
- 		t = btf__type_by_id(d->btf, i);
- 		vlen = btf_vlen(t);
- 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ae0889bebe32..c2fe484f9792 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2458,8 +2458,8 @@ static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
- 		return -EINVAL;
- 	}
- 
--	nr_types = btf__get_nr_types(obj->btf);
--	for (i = 1; i <= nr_types; i++) {
-+	nr_types = btf__type_cnt(obj->btf);
-+	for (i = 1; i < nr_types; i++) {
- 		t = btf__type_by_id(obj->btf, i);
  		if (!btf_is_datasec(t))
- 			continue;
-@@ -2539,7 +2539,7 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
- 	struct btf_type *t;
- 	int i, j, vlen;
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 716e6ad1864b..a59cb0ee609c 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -502,12 +502,12 @@ static int symbols_resolve(struct object *obj)
+ 	}
+ 
+ 	err = -1;
+-	nr_types = btf__get_nr_types(btf);
++	nr_types = btf__type_cnt(btf);
+ 
+ 	/*
+ 	 * Iterate all the BTF types and search for collected symbol IDs.
+ 	 */
+-	for (type_id = 1; type_id <= nr_types; type_id++) {
++	for (type_id = 1; type_id < nr_types; type_id++) {
+ 		const struct btf_type *type;
+ 		struct rb_root *root;
+ 		struct btf_id *id;
+diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+index 1a7112a87736..388847bab6d9 100644
+--- a/tools/perf/util/bpf-event.c
++++ b/tools/perf/util/bpf-event.c
+@@ -110,7 +110,7 @@ static int perf_env__fetch_btf(struct perf_env *env,
+ 	u32 data_size;
+ 	const void *data;
+ 
+-	data = btf__get_raw_data(btf, &data_size);
++	data = btf__raw_data(btf, &data_size);
+ 
+ 	node = malloc(data_size + sizeof(struct btf_node));
+ 	if (!node)
+diff --git a/tools/testing/selftests/bpf/btf_helpers.c b/tools/testing/selftests/bpf/btf_helpers.c
+index ce103fb0ad1b..7f1e3d9bdd76 100644
+--- a/tools/testing/selftests/bpf/btf_helpers.c
++++ b/tools/testing/selftests/bpf/btf_helpers.c
+@@ -215,7 +215,7 @@ int btf_validate_raw(struct btf *btf, int nr_types, const char *exp_types[])
+ 	int i;
+ 	bool ok = true;
+ 
+-	ASSERT_EQ(btf__get_nr_types(btf), nr_types, "btf_nr_types");
++	ASSERT_EQ(btf__type_cnt(btf) - 1, nr_types, "btf_nr_types");
+ 
+ 	for (i = 1; i <= nr_types; i++) {
+ 		if (!ASSERT_STREQ(btf_type_raw_dump(btf, i), exp_types[i - 1], "raw_dump"))
+@@ -254,7 +254,7 @@ const char *btf_type_c_dump(const struct btf *btf)
+ 		return NULL;
+ 	}
  
 -	for (i = 1; i <= btf__get_nr_types(btf); i++) {
 +	for (i = 1; i < btf__type_cnt(btf); i++) {
- 		t = (struct btf_type *)btf__type_by_id(btf, i);
+ 		err = btf_dump__dump_type(d, i);
+ 		if (err) {
+ 			fprintf(stderr, "Failed to dump type [%d]: %d\n", i, err);
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+index acd33d0cd5d9..7edf1452a510 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -7274,8 +7274,8 @@ static void do_test_dedup(unsigned int test_num)
+ 		goto done;
+ 	}
  
- 		if ((!has_datasec && btf_is_var(t)) || (!has_tag && btf_is_tag(t))) {
-@@ -2767,8 +2767,8 @@ static int bpf_object__sanitize_and_load_btf(struct bpf_object *obj)
- 		if (!prog->mark_btf_static || !prog_is_subprog(obj, prog))
- 			continue;
+-	test_btf_data = btf__get_raw_data(test_btf, &test_btf_size);
+-	expect_btf_data = btf__get_raw_data(expect_btf, &expect_btf_size);
++	test_btf_data = btf__raw_data(test_btf, &test_btf_size);
++	expect_btf_data = btf__raw_data(expect_btf, &expect_btf_size);
+ 	if (CHECK(test_btf_size != expect_btf_size,
+ 		  "test_btf_size:%u != expect_btf_size:%u",
+ 		  test_btf_size, expect_btf_size)) {
+@@ -7329,8 +7329,8 @@ static void do_test_dedup(unsigned int test_num)
+ 		expect_str_cur += expect_len + 1;
+ 	}
  
--		n = btf__get_nr_types(obj->btf);
--		for (j = 1; j <= n; j++) {
-+		n = btf__type_cnt(obj->btf);
-+		for (j = 1; j < n; j++) {
- 			t = btf_type_by_id(obj->btf, j);
- 			if (!btf_is_func(t) || btf_func_linkage(t) != BTF_FUNC_GLOBAL)
- 				continue;
-@@ -2788,7 +2788,7 @@ static int bpf_object__sanitize_and_load_btf(struct bpf_object *obj)
- 		__u32 sz;
+-	test_nr_types = btf__get_nr_types(test_btf);
+-	expect_nr_types = btf__get_nr_types(expect_btf);
++	test_nr_types = btf__type_cnt(test_btf);
++	expect_nr_types = btf__type_cnt(expect_btf);
+ 	if (CHECK(test_nr_types != expect_nr_types,
+ 		  "test_nr_types:%u != expect_nr_types:%u",
+ 		  test_nr_types, expect_nr_types)) {
+@@ -7338,7 +7338,7 @@ static void do_test_dedup(unsigned int test_num)
+ 		goto done;
+ 	}
  
- 		/* clone BTF to sanitize a copy and leave the original intact */
--		raw_data = btf__get_raw_data(obj->btf, &sz);
-+		raw_data = btf__raw_data(obj->btf, &sz);
- 		kern_btf = btf__new(raw_data, sz);
- 		err = libbpf_get_error(kern_btf);
- 		if (err)
-@@ -2801,7 +2801,7 @@ static int bpf_object__sanitize_and_load_btf(struct bpf_object *obj)
+-	for (i = 1; i <= test_nr_types; i++) {
++	for (i = 1; i < test_nr_types; i++) {
+ 		const struct btf_type *test_type, *expect_type;
+ 		int test_size, expect_size;
  
- 	if (obj->gen_loader) {
- 		__u32 raw_size = 0;
--		const void *raw_data = btf__get_raw_data(kern_btf, &raw_size);
-+		const void *raw_data = btf__raw_data(kern_btf, &raw_size);
- 
- 		if (!raw_data)
- 			return -ENOMEM;
-@@ -3181,8 +3181,8 @@ static int find_extern_btf_id(const struct btf *btf, const char *ext_name)
- 	if (!btf)
- 		return -ESRCH;
- 
--	n = btf__get_nr_types(btf);
--	for (i = 1; i <= n; i++) {
-+	n = btf__type_cnt(btf);
-+	for (i = 1; i < n; i++) {
- 		t = btf__type_by_id(btf, i);
- 
- 		if (!btf_is_var(t) && !btf_is_func(t))
-@@ -3213,8 +3213,8 @@ static int find_extern_sec_btf_id(struct btf *btf, int ext_btf_id) {
- 	if (!btf)
- 		return -ESRCH;
- 
--	n = btf__get_nr_types(btf);
--	for (i = 1; i <= n; i++) {
-+	n = btf__type_cnt(btf);
-+	for (i = 1; i < n; i++) {
- 		t = btf__type_by_id(btf, i);
- 
- 		if (!btf_is_datasec(t))
-@@ -3298,8 +3298,8 @@ static int find_int_btf_id(const struct btf *btf)
- 	const struct btf_type *t;
- 	int i, n;
- 
--	n = btf__get_nr_types(btf);
--	for (i = 1; i <= n; i++) {
-+	n = btf__type_cnt(btf);
-+	for (i = 1; i < n; i++) {
- 		t = btf__type_by_id(btf, i);
- 
- 		if (btf_is_int(t) && btf_int_bits(t) == 32)
-@@ -4897,8 +4897,8 @@ static int bpf_core_add_cands(struct bpf_core_cand *local_cand,
- 	size_t targ_essent_len;
- 	int n, i;
- 
--	n = btf__get_nr_types(targ_btf);
--	for (i = targ_start_id; i <= n; i++) {
-+	n = btf__type_cnt(targ_btf);
-+	for (i = targ_start_id; i < n; i++) {
- 		t = btf__type_by_id(targ_btf, i);
- 		if (btf_kind(t) != btf_kind(local_cand->t))
- 			continue;
-@@ -5073,7 +5073,7 @@ bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 l
- 		err = bpf_core_add_cands(&local_cand, local_essent_len,
- 					 obj->btf_modules[i].btf,
- 					 obj->btf_modules[i].name,
--					 btf__get_nr_types(obj->btf_vmlinux) + 1,
-+					 btf__type_cnt(obj->btf_vmlinux),
- 					 cands);
- 		if (err)
- 			goto err_out;
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index f270d25e4af3..5f3cdb992d72 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -395,4 +395,6 @@ LIBBPF_0.6.0 {
- 		bpf_object__prev_program;
- 		btf__add_btf;
- 		btf__add_tag;
-+		btf__raw_data;
-+		btf__type_cnt;
- } LIBBPF_0.5.0;
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 2df880cefdae..2c602c817d3b 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -921,7 +921,7 @@ static int check_btf_type_id(__u32 *type_id, void *ctx)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+index 87f9df653e4e..08bcf693fef3 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+@@ -27,7 +27,7 @@ static struct btf_dump_test_case {
+ static int btf_dump_all_types(const struct btf *btf,
+ 			      const struct btf_dump_opts *opts)
  {
- 	struct btf *btf = ctx;
+-	size_t type_cnt = btf__get_nr_types(btf);
++	size_t type_cnt = btf__type_cnt(btf);
+ 	struct btf_dump *d;
+ 	int err = 0, id;
  
--	if (*type_id > btf__get_nr_types(btf))
-+	if (*type_id >= btf__type_cnt(btf))
- 		return -EINVAL;
+@@ -36,7 +36,7 @@ static int btf_dump_all_types(const struct btf *btf,
+ 	if (err)
+ 		return err;
  
- 	return 0;
-@@ -948,8 +948,8 @@ static int linker_sanity_check_btf(struct src_obj *obj)
- 	if (!obj->btf)
- 		return 0;
+-	for (id = 1; id <= type_cnt; id++) {
++	for (id = 1; id < type_cnt; id++) {
+ 		err = btf_dump__dump_type(d, id);
+ 		if (err)
+ 			goto done;
+@@ -171,7 +171,7 @@ void test_btf_dump_incremental(void)
+ 	err = btf__add_field(btf, "x", 2, 0, 0);
+ 	ASSERT_OK(err, "field_ok");
  
--	n = btf__get_nr_types(obj->btf);
--	for (i = 1; i <= n; i++) {
-+	n = btf__type_cnt(obj->btf);
-+	for (i = 1; i < n; i++) {
- 		t = btf_type_by_id(obj->btf, i);
- 
- 		err = err ?: btf_type_visit_type_ids(t, check_btf_type_id, obj->btf);
-@@ -1659,8 +1659,8 @@ static int find_glob_sym_btf(struct src_obj *obj, Elf64_Sym *sym, const char *sy
- 		return -EINVAL;
+-	for (i = 1; i <= btf__get_nr_types(btf); i++) {
++	for (i = 1; i < btf__type_cnt(btf); i++) {
+ 		err = btf_dump__dump_type(d, i);
+ 		ASSERT_OK(err, "dump_type_ok");
  	}
+@@ -210,7 +210,7 @@ void test_btf_dump_incremental(void)
+ 	err = btf__add_field(btf, "s", 3, 32, 0);
+ 	ASSERT_OK(err, "field_ok");
  
--	n = btf__get_nr_types(obj->btf);
--	for (i = 1; i <= n; i++) {
-+	n = btf__type_cnt(obj->btf);
-+	for (i = 1; i < n; i++) {
- 		t = btf__type_by_id(obj->btf, i);
- 
- 		/* some global and extern FUNCs and VARs might not be associated with any
-@@ -2131,8 +2131,8 @@ static int linker_fixup_btf(struct src_obj *obj)
- 	if (!obj->btf)
- 		return 0;
- 
--	n = btf__get_nr_types(obj->btf);
--	for (i = 1; i <= n; i++) {
-+	n = btf__type_cnt(obj->btf);
-+	for (i = 1; i < n; i++) {
- 		struct btf_var_secinfo *vi;
- 		struct btf_type *t;
- 
-@@ -2235,14 +2235,14 @@ static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj)
- 	if (!obj->btf)
- 		return 0;
- 
--	start_id = btf__get_nr_types(linker->btf) + 1;
--	n = btf__get_nr_types(obj->btf);
-+	start_id = btf__type_cnt(linker->btf);
-+	n = btf__type_cnt(obj->btf);
- 
- 	obj->btf_type_map = calloc(n + 1, sizeof(int));
- 	if (!obj->btf_type_map)
- 		return -ENOMEM;
- 
--	for (i = 1; i <= n; i++) {
-+	for (i = 1; i < n; i++) {
- 		struct glob_sym *glob_sym = NULL;
- 
- 		t = btf__type_by_id(obj->btf, i);
-@@ -2297,8 +2297,8 @@ static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj)
+-	for (i = 1; i <= btf__get_nr_types(btf); i++) {
++	for (i = 1; i < btf__type_cnt(btf); i++) {
+ 		err = btf_dump__dump_type(d, i);
+ 		ASSERT_OK(err, "dump_type_ok");
  	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_endian.c b/tools/testing/selftests/bpf/prog_tests/btf_endian.c
+index 8ab5d3e358dd..2653cc482df4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_endian.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_endian.c
+@@ -32,7 +32,7 @@ void test_btf_endian() {
+ 	ASSERT_EQ(btf__endianness(btf), swap_endian, "endian");
  
- 	/* remap all the types except DATASECs */
--	n = btf__get_nr_types(linker->btf);
--	for (i = start_id; i <= n; i++) {
-+	n = btf__type_cnt(linker->btf);
-+	for (i = start_id; i < n; i++) {
- 		struct btf_type *dst_t = btf_type_by_id(linker->btf, i);
+ 	/* Get raw BTF data in non-native endianness... */
+-	raw_data = btf__get_raw_data(btf, &raw_sz);
++	raw_data = btf__raw_data(btf, &raw_sz);
+ 	if (!ASSERT_OK_PTR(raw_data, "raw_data_inverted"))
+ 		goto err_out;
  
- 		if (btf_type_visit_type_ids(dst_t, remap_type_id, obj->btf_type_map))
-@@ -2657,7 +2657,7 @@ static int finalize_btf(struct bpf_linker *linker)
- 	__u32 raw_sz;
+@@ -42,9 +42,9 @@ void test_btf_endian() {
+ 		goto err_out;
  
- 	/* bail out if no BTF data was produced */
--	if (btf__get_nr_types(linker->btf) == 0)
-+	if (btf__type_cnt(linker->btf) == 1)
- 		return 0;
+ 	ASSERT_EQ(btf__endianness(swap_btf), swap_endian, "endian");
+-	ASSERT_EQ(btf__get_nr_types(swap_btf), btf__get_nr_types(btf), "nr_types");
++	ASSERT_EQ(btf__type_cnt(swap_btf), btf__type_cnt(btf), "nr_types");
  
- 	for (i = 1; i < linker->sec_cnt; i++) {
-@@ -2694,7 +2694,7 @@ static int finalize_btf(struct bpf_linker *linker)
+-	swap_raw_data = btf__get_raw_data(swap_btf, &swap_raw_sz);
++	swap_raw_data = btf__raw_data(swap_btf, &swap_raw_sz);
+ 	if (!ASSERT_OK_PTR(swap_raw_data, "swap_raw_data"))
+ 		goto err_out;
+ 
+@@ -58,7 +58,7 @@ void test_btf_endian() {
+ 
+ 	/* swap it back to native endianness */
+ 	btf__set_endianness(swap_btf, endian);
+-	swap_raw_data = btf__get_raw_data(swap_btf, &swap_raw_sz);
++	swap_raw_data = btf__raw_data(swap_btf, &swap_raw_sz);
+ 	if (!ASSERT_OK_PTR(swap_raw_data, "swap_raw_data"))
+ 		goto err_out;
+ 
+@@ -75,7 +75,7 @@ void test_btf_endian() {
+ 	swap_btf = NULL;
+ 
+ 	btf__set_endianness(btf, swap_endian);
+-	raw_data = btf__get_raw_data(btf, &raw_sz);
++	raw_data = btf__raw_data(btf, &raw_sz);
+ 	if (!ASSERT_OK_PTR(raw_data, "raw_data_inverted"))
+ 		goto err_out;
+ 
+@@ -85,7 +85,7 @@ void test_btf_endian() {
+ 		goto err_out;
+ 
+ 	ASSERT_EQ(btf__endianness(swap_btf), swap_endian, "endian");
+-	ASSERT_EQ(btf__get_nr_types(swap_btf), btf__get_nr_types(btf), "nr_types");
++	ASSERT_EQ(btf__type_cnt(swap_btf), btf__type_cnt(btf), "nr_types");
+ 
+ 	/* the type should appear as if it was stored in native endianness */
+ 	t = btf__type_by_id(swap_btf, var_id);
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_split.c b/tools/testing/selftests/bpf/prog_tests/btf_split.c
+index ca7c2a91610a..b1ffe61f2aa9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_split.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_split.c
+@@ -72,7 +72,7 @@ void test_btf_split() {
+ 	d = btf_dump__new(btf2, NULL, &opts, btf_dump_printf);
+ 	if (!ASSERT_OK_PTR(d, "btf_dump__new"))
+ 		goto cleanup;
+-	for (i = 1; i <= btf__get_nr_types(btf2); i++) {
++	for (i = 1; i < btf__type_cnt(btf2); i++) {
+ 		err = btf_dump__dump_type(d, i);
+ 		ASSERT_OK(err, "dump_type_ok");
  	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_autosize.c b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
+index 3d4b2a358d47..2b63b90eee4a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_autosize.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
+@@ -112,7 +112,7 @@ void test_core_autosize(void)
+ 	if (!ASSERT_OK_PTR(f, "btf_fdopen"))
+ 		goto cleanup;
  
- 	/* Emit .BTF section */
--	raw_data = btf__get_raw_data(linker->btf, &raw_sz);
-+	raw_data = btf__raw_data(linker->btf, &raw_sz);
- 	if (!raw_data)
- 		return -ENOMEM;
+-	raw_data = btf__get_raw_data(btf, &raw_sz);
++	raw_data = btf__raw_data(btf, &raw_sz);
+ 	if (!ASSERT_OK_PTR(raw_data, "raw_data"))
+ 		goto cleanup;
+ 	written = fwrite(raw_data, 1, raw_sz, f);
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index 763302e63a29..9256c39042a5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -381,7 +381,7 @@ static int setup_type_id_case_local(struct core_reloc_test_case *test)
+ 	exp->local_anon_void_ptr = -1;
+ 	exp->local_anon_arr = -1;
  
+-	for (i = 1; i <= btf__get_nr_types(local_btf); i++)
++	for (i = 1; i < btf__type_cnt(local_btf); i++)
+ 	{
+ 		t = btf__type_by_id(local_btf, i);
+ 		/* we are interested only in anonymous types */
+diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+index f62361306f6d..badda6309fd9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
++++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+@@ -106,9 +106,9 @@ static int resolve_symbols(void)
+ 		  "Failed to load BTF from btf_data.o\n"))
+ 		return -1;
+ 
+-	nr = btf__get_nr_types(btf);
++	nr = btf__type_cnt(btf);
+ 
+-	for (type_id = 1; type_id <= nr; type_id++) {
++	for (type_id = 1; type_id < nr; type_id++) {
+ 		if (__resolve_symbol(btf, type_id))
+ 			break;
+ 	}
 -- 
 2.30.2
 
