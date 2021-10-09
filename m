@@ -2,89 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD38427945
-	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 12:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1108F4279F8
+	for <lists+bpf@lfdr.de>; Sat,  9 Oct 2021 14:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244625AbhJILAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Oct 2021 07:00:09 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36348 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231718AbhJILAI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:00:08 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv2q0dWFhcgkXAA--.21276S4;
-        Sat, 09 Oct 2021 18:58:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S232846AbhJIMJK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Oct 2021 08:09:10 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28907 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232889AbhJIMJJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Oct 2021 08:09:09 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HRNwk2PDJzbn2P;
+        Sat,  9 Oct 2021 20:02:46 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 20:07:11 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 20:07:10 +0800
+Subject: Re: [PATCH bpf-next v5 0/3] add support for writable bare tracepoint
+To:     Steven Rostedt <rostedt@goodmis.org>, Hou Tao <hotforest@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Paul Burton <paulburton@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next 2/2] bpf, mips: Modify check condition about tail call count
-Date:   Sat,  9 Oct 2021 18:57:56 +0800
-Message-Id: <1633777076-17256-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxv2q0dWFhcgkXAA--.21276S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7XrW5CFWkCF4fZF4UGF1ftFb_yoW8JrWfpa
-        45G3ZrKr1qg34UXF4rAFW8Xr1IgFs8XF47CF92kayxA3Z0v3ZIqF15K345GF90vrW8tayf
-        XryUKrs8ua93A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
-        xKxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
-        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
-        v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
-        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
-        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
-        yTuYvjfUwjjgUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Ingo Molnar <mingo@redhat.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <20211004094857.30868-1-hotforest@gmail.com>
+ <20211004104629.668cadeb@gandalf.local.home>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <0147c4ea-773a-5fe9-dea5-edd16ad1db12@huawei.com>
+Date:   Sat, 9 Oct 2021 20:07:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20211004104629.668cadeb@gandalf.local.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In emit_tail_call() of bpf_jit_comp32.c, "blez t2" (t2 <= 0) is not
-consistent with the comment "t2 < 0", modify the check condition to
-keep consistency.
+Hi Steven,
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/net/bpf_jit_comp32.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
-index 9d7041a..b887c01 100644
---- a/arch/mips/net/bpf_jit_comp32.c
-+++ b/arch/mips/net/bpf_jit_comp32.c
-@@ -1312,12 +1312,12 @@ static int emit_tail_call(struct jit_context *ctx)
- 	emit(ctx, sltu, t1, ind, t1);            /* t1 = ind < t1            */
- 	emit(ctx, beqz, t1, get_offset(ctx, 1)); /* PC += off(1) if t1 == 0  */
- 						 /* (next insn delay slot)   */
--	/* if (TCC-- <= 0) goto out */
-+	/* if (--TCC < 0) goto out */
- 	emit(ctx, lw, t2, ctx->stack_size, MIPS_R_SP);  /* t2 = *(SP + size) */
- 	emit_load_delay(ctx);                     /* Load delay slot         */
--	emit(ctx, blez, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
- 	emit(ctx, addiu, t2, t2, -1);             /* t2-- (delay slot)       */
- 	emit(ctx, sw, t2, ctx->stack_size, MIPS_R_SP);  /* *(SP + size) = t2 */
-+	emit(ctx, bltz, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
- 
- 	/* prog = ary->ptrs[ind] */
- 	off = offsetof(struct bpf_array, ptrs);
--- 
-2.1.0
+On 10/4/2021 10:46 PM, Steven Rostedt wrote:
+> On Mon,  4 Oct 2021 17:48:54 +0800
+> Hou Tao <hotforest@gmail.com> wrote:
+>
+>> The main idea comes from patchset "writable contexts for bpf raw
+>> tracepoints" [1], but it only supports normal tracepoint with
+>> associated trace event under tracefs. Now we have one use case
+>> in which we add bare tracepoint in VFS layer, and update
+>> file::f_mode for specific files. The reason using bare tracepoint
+>> is that it doesn't form a ABI and we can change it freely. So
+>> add support for it in BPF.
+> Are the VFS maintainers against adding a trace event with just a pointer as
+> an interface?
+Not tried yet, but considering that VFS maintainer refused to have tracepoint in
+VFS layer, I'm not sure it is worth trying.
+>
+> That is, it only gives you a pointer to what is passed in, but does not
+> give you anything else to form any API against it.
+> This way, not only does BPF have access to this information, so do the
+> other tracers, through the new eprobe interface:
+Or in a opposite way can eprobe add support for bare tracepoint ?
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/Documentation/trace?id=7491e2c442781a1860181adb5ab472a52075f393
+>
+> (I just realized we are missing updates to the Documentation directory).
+>
+> event probes allows one to attach to an existing trace event, and then
+> create a new trace event that can read through pointers. It uses the same
+> interface that kprobes has.
+>
+> Just adding trace events to VFS that only have pointers would allow all of
+> BPF, perf and ftrace access as eprobes could then get the data you are
+> looking for.
+>
+> -- Steve
+> .
 
