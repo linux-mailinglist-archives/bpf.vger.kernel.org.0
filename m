@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E97427E28
-	for <lists+bpf@lfdr.de>; Sun, 10 Oct 2021 02:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E06427E2B
+	for <lists+bpf@lfdr.de>; Sun, 10 Oct 2021 02:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhJJA0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Oct 2021 20:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        id S230172AbhJJA1a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Oct 2021 20:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhJJA0D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Oct 2021 20:26:03 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6567C061570
-        for <bpf@vger.kernel.org>; Sat,  9 Oct 2021 17:24:05 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id e3so8764672wrc.11
-        for <bpf@vger.kernel.org>; Sat, 09 Oct 2021 17:24:05 -0700 (PDT)
+        with ESMTP id S230093AbhJJA13 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Oct 2021 20:27:29 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16254C061762
+        for <bpf@vger.kernel.org>; Sat,  9 Oct 2021 17:25:32 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id r7so42282431wrc.10
+        for <bpf@vger.kernel.org>; Sat, 09 Oct 2021 17:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xKKhkzmy8qWVk+hYtwkZjhg13q8YviMKxNPEZCBOe3Q=;
-        b=jH0EG4Wwjm1aMn4E3US93D39cr7AxH0VxhHuEktEIl83jDorRdcN5ZrLqc/k5mtfhM
-         uSa/fzEVD5pLFvDwAVlsH0nVayVuLoEiVtDXCu10uiyWIbzabGNiPsnrIBUYSsg8PjLr
-         J9hAXLKAwVVx3Oi2KV114UE7w0l9rfpdT70s0/rbMv/PrLzngp/27ziPZ1/rMbJo+NHZ
-         kbzbMzP9UbJ6famutm0uUIAyPN/5D6OBgLAF448s14RiiesQdp/DdicdGPOCVpcPkCPS
-         vh9qTu1+ipYrRxXjj5vSq8LRYDq6L9oQozZWpwWfDWwaa4+SuchgzoUCNiu4+9Wv6GTw
-         ikjg==
+        bh=gaEBWnN7KGr2n63duW+rw+8/bgZ3SGchgUY0qU4URic=;
+        b=7gbjH53shg/8N6ikpTkld4Z6I9g75HQ9RdvzsbwX8487yFnFosHpEe9O8ta8ROwcpp
+         8XPSypp2C6CDZ1QcqbP+4dQK/EitHU+6T0NDZdUtsfmLFKrtcFnVujq0VXk2MUPQMSL0
+         w1Nr6sPK6daA1Lg/2PZzVAIPD1e4p/Rv4THjGzBcen/wl3GsdF0G8FI1Fg5m1norHYWA
+         AXc7Y8eb3C2qLiX9rIKgAJwUJ9n+LE5TjMSduFhYGHs/qOmxkIwADTUojfgkxRsauqap
+         uKGZNbhzmqkeePhaoStnczNIaeRgQAVp3JFAK7VVmDBceTseUCOyDFzqCKFd5EnjbkGP
+         cWQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xKKhkzmy8qWVk+hYtwkZjhg13q8YviMKxNPEZCBOe3Q=;
-        b=JvLT47Cifn0GMPmJhTWy2oY9gIPICMve9TMw5AnFBqLFybaocI+4Ucd2vGTggnpACu
-         4TFv/OFg4lxEtGRmr5v+qx2FMEthwiW7OiGvsAPyOUWWiUwmDkrp9OqN4BmEq2eOl6bq
-         qwcxMxBo1A+37QQLW/usPHJpqD/HivTbb2ZLQWWF6ERSNC68D/kBnpI8erGvifu7WgdQ
-         TEQstCMUfti2GVuw4HUSmLM1ViBgDTU27m0phzc/XKM+90t64qVrlZSaI0kmlNvZFhQO
-         YNLBn/T8iFSbhOK5auMglF/hfNN71bzggBMSCfTGTYH4c3UBWJ+flzMRIoCby1RHmHB2
-         wVWw==
-X-Gm-Message-State: AOAM532sQqCnD3P5N6EoceO8DTDiuP4B5Gm3er8hvLTOXYhmca9v+F3B
-        Dc48ra2OCQTNFSGmFKw0YmJVZw==
-X-Google-Smtp-Source: ABdhPJzdeglm410nthhxUVb2TWDuYMZtf3LlI5jNxFoQcyJUqycYpbelX9i5e1YAQzGloWnhsjVr9Q==
-X-Received: by 2002:a05:600c:1987:: with SMTP id t7mr2502968wmq.102.1633825444333;
-        Sat, 09 Oct 2021 17:24:04 -0700 (PDT)
+        bh=gaEBWnN7KGr2n63duW+rw+8/bgZ3SGchgUY0qU4URic=;
+        b=BDvm40sYgG7yiMnuwAkXgCwuFJR/M69/L2IeA3Rty+DU75Vq5BIxvy+QeIF/NKygtG
+         Knxe3smdH19P3roPfumtQhG6Vo1vJz9xCoJD3Iu1NuiaHjAxR4gW9qxUkXgdaYC5oirP
+         au4AmHdiPr2ioLjS38tD6IClm0Ut+U5Lw+pdpsfInkDQnLWQFIiF9FJ7uKHtslFgK3BR
+         A9gxLuhNYQt5bEg1FSZGYpLS33UrrKI5Hw6xOWzRLMewRwrqsIdM3OItcPzWCMScRdEZ
+         zcm3FOjtFvPfhtEMVIZfaKW6g62YyP/o610YRmYzJDt4+DCpJtFg6cjXbzp8ZC+2zd9y
+         1JBA==
+X-Gm-Message-State: AOAM533ommV2ec3PO3ht4KphEnRE1YPDkukqKYdqdTpVVopvMrNRsvgP
+        VyyXU/i2R1zna7d65xwLS7PpeBEhHq+OM21J
+X-Google-Smtp-Source: ABdhPJx1+aBr+jCl6Rcyb63yaa7VV8hB0xUoDN1Elve6/WpNSXGszjkQQWYIyEjgcoe4mXGZuOtjKQ==
+X-Received: by 2002:a05:600c:1c93:: with SMTP id k19mr12397456wms.80.1633825530715;
+        Sat, 09 Oct 2021 17:25:30 -0700 (PDT)
 Received: from localhost.localdomain ([149.86.86.59])
-        by smtp.gmail.com with ESMTPSA id c132sm16479487wma.22.2021.10.09.17.24.02
+        by smtp.gmail.com with ESMTPSA id q12sm6633707wmj.6.2021.10.09.17.25.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 17:24:03 -0700 (PDT)
+        Sat, 09 Oct 2021 17:25:30 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next] bpf/preload: Clean up .gitignore and "clean-files" target
-Date:   Sun, 10 Oct 2021 01:24:00 +0100
-Message-Id: <20211010002400.9339-1-quentin@isovalent.com>
+Subject: [PATCH bpf-next] libbpf: Remove Makefile warnings on out-of-sync netlink.h/if_link.h
+Date:   Sun, 10 Oct 2021 01:25:28 +0100
+Message-Id: <20211010002528.9772-1-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,60 +63,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-kernel/bpf/preload/Makefile was recently updated to have it install
-libbpf's headers locally instead of pulling them from tools/lib/bpf. But
-two items still need to be addressed.
+Although relying on some definitions from the netlink.h and if_link.h
+headers copied into tools/include/uapi/linux/, libbpf does not need
+those headers to stay entirely up-to-date with their original versions,
+and the warnings emitted by the Makefile when it detects a difference
+are usually just noise. Let's remove those warnings.
 
-First, the local .gitignore file was not adjusted to ignore the files
-generated in the new kernel/bpf/preload/libbpf output directory.
-
-Second, the "clean-files" target is now incorrect. The old artefacts
-names were not removed from the target, while the new ones were added
-incorrectly. This is because "clean-files" expects names relative to
-$(obj), but we passed the absolute path instead. This results in the
-output and header-destination directories for libbpf (and their
-contents) not being removed from kernel/bpf/preload on "make clean" from
-the root of the repository.
-
-This commit fixes both issues. Note that $(userprogs) needs not be added
-to "clean-files", because the cleaning infrastructure already accounts
-for it.
-
-Cleaning the files properly also prevents make from printing the
-following message, for builds coming after a "make clean":
-"make[4]: Nothing to be done for 'install_headers'."
-
-Fixes: bf60791741d4 ("bpf: preload: Install libbpf headers when building")
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- kernel/bpf/preload/.gitignore | 4 +---
- kernel/bpf/preload/Makefile   | 3 +--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ tools/lib/bpf/Makefile | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/kernel/bpf/preload/.gitignore b/kernel/bpf/preload/.gitignore
-index 856a4c5ad0dd..9452322902a5 100644
---- a/kernel/bpf/preload/.gitignore
-+++ b/kernel/bpf/preload/.gitignore
-@@ -1,4 +1,2 @@
--/FEATURE-DUMP.libbpf
--/bpf_helper_defs.h
--/feature
-+/libbpf
- /bpf_preload_umd
-diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-index 469d35e890eb..d8379af88161 100644
---- a/kernel/bpf/preload/Makefile
-+++ b/kernel/bpf/preload/Makefile
-@@ -27,8 +27,7 @@ userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
- 
- userprogs := bpf_preload_umd
- 
--clean-files := $(userprogs) bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
--clean-files += $(LIBBPF_OUT) $(LIBBPF_DESTDIR)
-+clean-files := $(subst $(abspath $(obj))/,,$(LIBBPF_OUT) $(LIBBPF_DESTDIR))
- 
- $(obj)/iterators/iterators.o: | libbpf_hdrs
- 
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 9c6804ca5b45..b393b5e82380 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -146,12 +146,6 @@ $(BPF_IN_SHARED): force $(BPF_GENERATED)
+ 	@(test -f ../../include/uapi/linux/bpf_common.h -a -f ../../../include/uapi/linux/bpf_common.h && ( \
+ 	(diff -B ../../include/uapi/linux/bpf_common.h ../../../include/uapi/linux/bpf_common.h >/dev/null) || \
+ 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf_common.h' differs from latest version at 'include/uapi/linux/bpf_common.h'" >&2 )) || true
+-	@(test -f ../../include/uapi/linux/netlink.h -a -f ../../../include/uapi/linux/netlink.h && ( \
+-	(diff -B ../../include/uapi/linux/netlink.h ../../../include/uapi/linux/netlink.h >/dev/null) || \
+-	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h' differs from latest version at 'include/uapi/linux/netlink.h'" >&2 )) || true
+-	@(test -f ../../include/uapi/linux/if_link.h -a -f ../../../include/uapi/linux/if_link.h && ( \
+-	(diff -B ../../include/uapi/linux/if_link.h ../../../include/uapi/linux/if_link.h >/dev/null) || \
+-	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h' differs from latest version at 'include/uapi/linux/if_link.h'" >&2 )) || true
+ 	@(test -f ../../include/uapi/linux/if_xdp.h -a -f ../../../include/uapi/linux/if_xdp.h && ( \
+ 	(diff -B ../../include/uapi/linux/if_xdp.h ../../../include/uapi/linux/if_xdp.h >/dev/null) || \
+ 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
 -- 
 2.30.2
 
