@@ -2,151 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89102428701
-	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 08:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AE2428868
+	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 10:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbhJKGsg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Oct 2021 02:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50110 "EHLO
+        id S234864AbhJKIPl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Oct 2021 04:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbhJKGsg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:48:36 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8C7C061570;
-        Sun, 10 Oct 2021 23:46:36 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id s64so36559615yba.11;
-        Sun, 10 Oct 2021 23:46:36 -0700 (PDT)
+        with ESMTP id S234835AbhJKIPk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:15:40 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26887C06161C
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 01:13:41 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id h2so36910580ybi.13
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 01:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=u2RXKo8mX6oo10DEsmNP5BEDBLL8MQItPDHRAJ9bFrc=;
-        b=LUSbRSKpYRawF8I5pFm0PgvSWuxTjogU7W+TdUjJ+hYKbWT9/VH8c+w0+ix4w0IPwd
-         IKFnCi8lyzBNgW09ksw+fWqIiMID0eru9kMEGx24yKggMJZ3utvotb54jULx6k9r5dz/
-         xP1mztWtMAmdpwmiRbdOnB/2hAi7NzV4MZn92Iv9q/8xaTNeZGpPNzYYaiCFd/FjJZik
-         7NAVuotnPFCTpyLt0b1nb1vFLV2+AK69CyNVOIesB4J4qdmVNHoUPW7iXESPX3acm3bS
-         OvHuEx6K19iMge4zwtBLVSQy6UBfxI4e1UkW5j+4sdDJbe+xXz+vFoG86g28jBYrGVhF
-         +vuA==
+        bh=+qyxK1U8f1ah2GI5g+Zi1pa0XG3ooDuESdmY2ovm1hQ=;
+        b=LeZMMuQTTS4a9QrG5eyK07bSPAnLGjiZAuVeRywBHEJ6qRUsCA+/ftYiw7BxRz5c++
+         BLbEnrF45g7baksChI5w0yxDsuFTQgz51ic3U5cLUdeOUplxO/NsS18l+RY/cOwl6H1Y
+         SSRKi7eF6VElw/K2Ryxhr3EPSkbLBJ6ubxJVnaFu38PR+T3LqcOHS/C4LoeROx5gUq0k
+         rAr2jAo5dPU61AS310N/PzPB4TDYKzou0TMSSCRP6h71yGVG1CRkxf/xjoVlJnAXJUy1
+         0UuLCODcJUURnKn67SioUJ0ZKdMlVWTFOd6LjdG/RR/dzR5K0xCBrLICNJkCTXNW2OFp
+         a0YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=u2RXKo8mX6oo10DEsmNP5BEDBLL8MQItPDHRAJ9bFrc=;
-        b=2NKk5mmnfCvOUdtREidhNCcvh9XdvrzS5SmtrwtDCy8QGXXaG1iul74plYYJTyUarw
-         2DQbOcosuV5CjKHb56lFoPtYDSjgJwLil2OKgxpl3bhwzVdpC0U+98JykdxdHQ5cFLK4
-         HRpIw7DXBSMnKOvuHbnVqgpyapNT30KOFVEeyj/VIw7A7TZaHpFu5FpEnf6TZWY8N50o
-         obAWycXSbjW6K1/E4mwOZwO4jnIlkP1rR+VqFDWqS46Xld2eIIUcHgU6ZbXuafMWdhhN
-         vJ5xT/K8n2vBy87KKCtbfWScEW7wx45DfGkr0LiHsbdRPL9/w6iNkNOVUj6rTGjbU6xj
-         ujlA==
-X-Gm-Message-State: AOAM532S3TyEkxb3JK4BQ8In6C9T+praqe9K7dhoYL9sLs+Q1kEdtcJ1
-        RyVztAIQgafqnYsEfJhEPwFygAwq9peyiNhcnN8=
-X-Google-Smtp-Source: ABdhPJzs7YJ3fxKdUlO2Jl3N9PPvceWpglLFUCZe5Fzgrs8SVMJ8MUNhQFLoAG0QZx/zRDBjekRcO/cIccyhaNcGQbs=
-X-Received: by 2002:a25:e7d7:: with SMTP id e206mr18920168ybh.267.1633934795901;
- Sun, 10 Oct 2021 23:46:35 -0700 (PDT)
+        bh=+qyxK1U8f1ah2GI5g+Zi1pa0XG3ooDuESdmY2ovm1hQ=;
+        b=oUt0fv+AoIulUM1nKHAdc3EXVG7NmJLteC25rWibNpDAGrmHpr4ABZJapcMrGkJ/sO
+         me+UhTfvmZGtkPU8V8UBmJ87Euo709/GCc10uooArpE2KUdn4mEVgi8Kb7tDrH9rvWa0
+         c2q/c6esv7NyFqYNf1jEG4k4vScc2cLMzXATMG9PENeTO6eb+oToq6qb3i2yhIE4k6VF
+         yYX58ErYF0UpLAN7Di7XDGzGSI7bpaoGJEyHO+cwK9oT2yhOs31TM+LDgTgjbIXgrpX9
+         +coksY71S9ZiDDcoHOzd70+EpTc4WJRAuF8PngvveTmE5OWCzSdyGe3AycRmgYT1tq65
+         Bf0w==
+X-Gm-Message-State: AOAM532bz8B1V2SyDdkW94nSmkeQ/8RJ2WC6AD+03Y48xjbVfNWcceDe
+        TeRRxqBTGUqcQ4DTCiVD0CeBZspmrC1sKUN6E/D6Iw==
+X-Google-Smtp-Source: ABdhPJwCpzwyVDj1dBNwAjSmOdYHJGSSO2KQXsFpD/ovyZP9KQV+VD6gzjKtOzl08H77aoIGI2G1nWJ0mMJiMzNvpV0=
+X-Received: by 2002:a05:6902:120e:: with SMTP id s14mr22180060ybu.161.1633940020434;
+ Mon, 11 Oct 2021 01:13:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211007194438.34443-1-quentin@isovalent.com> <CAEf4BzZd0FA6yX4WzK6GZFW2VbBgEJ=oJ=f4GzkapCkbAGUNrA@mail.gmail.com>
- <CACdoK4KaaV_OZJdUz30VyQYyJNeseV=7LX+akeeXpFhQe6Zh6w@mail.gmail.com>
-In-Reply-To: <CACdoK4KaaV_OZJdUz30VyQYyJNeseV=7LX+akeeXpFhQe6Zh6w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Oct 2021 08:46:24 +0200
-Message-ID: <CAEf4Bzaq1CdyhCJFDBF6+6u59h+=zD7on5h_dEiOCLNwDwBK5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 00/12] install libbpf headers when using the library
-To:     Quentin Monnet <quentin@isovalent.com>
+References: <1633915150-13220-1-git-send-email-yangtiezhu@loongson.cn> <1633915150-13220-3-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1633915150-13220-3-git-send-email-yangtiezhu@loongson.cn>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Mon, 11 Oct 2021 10:13:29 +0200
+Message-ID: <CAM1=_QT+VNhTqH+urp155Hwkoax8O7Pqdv-fwGbFZkG8U2cnaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, mips: Fix comment on tail call count limiting
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 11:03 PM Quentin Monnet <quentin@isovalent.com> wrote:
+On Mon, Oct 11, 2021 at 3:19 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> On Fri, 8 Oct 2021 at 20:13, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> In emit_tail_call() of bpf_jit_comp32.c, "blez t2" (t2 <= 0) is
+> not consistent with the comment "t2 < 0", update the comment to
+> keep consistency.
 >
-> > Tons of ungrateful work, thank you! Applied to bpf-next.
-> >
-> > I did a few clean ups (from my POV), see comments on relevant patches.
->
-> Thanks for that. I don't mind the clean ups. There are several of them
-> I considered before sending but wasn't sure about, so it's a good
-> thing that you did it :).
->
-> > Also in a bunch of Makefiles I've moved `| $(LIBBPF_OUTPUT)` to the
-> > same line if the line wasn't overly long. 80 characters is not a law,
-> > and I preferred single-line Makefile target definitions, if possible.
->
-> No particular preference on my side, so OK.
->
-> >
-> > There is one problem in bpftool's Makefile, but it works with a
-> > limited case of single file today. Please follow up with a proper fix.
->
-> Right, good catch. I'm sending the fix.
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-thanks
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
+> ---
+>  arch/mips/net/bpf_jit_comp32.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> >
-> > Btw, running make in bpftool's directory, I'm getting:
-> >
-> > make[1]: Entering directory '/data/users/andriin/linux/tools/lib/bpf'
-> > make[1]: Entering directory '/data/users/andriin/linux/tools/lib/bpf'
-> > make[1]: Nothing to be done for 'install_headers'.
-> > make[1]: Leaving directory '/data/users/andriin/linux/tools/lib/bpf'
-> > make[1]: Leaving directory '/data/users/andriin/linux/tools/lib/bpf'
-> >
-> > Not sure how useful those are, might be better to disable that.
+> diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
+> index 9d7041a..bd996ed 100644
+> --- a/arch/mips/net/bpf_jit_comp32.c
+> +++ b/arch/mips/net/bpf_jit_comp32.c
+> @@ -1315,7 +1315,7 @@ static int emit_tail_call(struct jit_context *ctx)
+>         /* if (TCC-- <= 0) goto out */
+>         emit(ctx, lw, t2, ctx->stack_size, MIPS_R_SP);  /* t2 = *(SP + size) */
+>         emit_load_delay(ctx);                     /* Load delay slot         */
+> -       emit(ctx, blez, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
+> +       emit(ctx, blez, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 <= 0 */
+>         emit(ctx, addiu, t2, t2, -1);             /* t2-- (delay slot)       */
+>         emit(ctx, sw, t2, ctx->stack_size, MIPS_R_SP);  /* *(SP + size) = t2 */
 >
-> I had a look for bpftool, this is because we always descend into
-> libbpf's directory (FORCE target). Removing this FORCE target as I did
-> in samples/bpf/ avoids the descent and clears the output. I'll send a
-> patch.
-
-There is a way to prevent make from logging these enter/leave
-messages, which will solve a similar problem discussed below.
-
+> --
+> 2.1.0
 >
-> >
-> > When running libbpf's make, we constantly getting this annoying warning:
-> >
-> > Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h'
-> > differs from latest version at 'include/uapi/linux/netlink.h'
-> > Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h'
-> > differs from latest version at 'include/uapi/linux/if_link.h'
-> >
-> > If you will get a chance, maybe you can get rid of that as well? I
-> > don't think we need to stay up to date with netlink.h and if_link.h,
-> > so this seems like just a noise.
->
-> I can look into that. Are you sure you want the warnings removed? Or
-> would it be cleaner to simply update the headers?
-
-Yeah, let's remove checks for those headers. We don't need to keep
-them up to date, if there will be new features we need to use from
-libbpf, we can update, if it's not already up-to-date.
-
->
-> >
-> > There was also
-> >
-> > make[4]: Nothing to be done for 'install_headers'.
-> >
-> > when building the kernel. It probably is coming from either
-> > bpf_preload or iterators, but maybe also resolve_btfids, I didn't try
-> > to narrow this down. Also seems like a noise, tbh. There are similar
-> > useless notifications when building selftests/bpf. If it doesn't take
-> > too much time to clean all that up, I'd greatly appreciate that!
->
-> I haven't looked into it yet, but I can do as a follow-up. I'll post
-> the patches for bpftool first because I prefer to submit the fix for
-> bpftool's Makefile as soon as possible, and will look at this next.
-
-sure. See also above about just silencing these somewhat useless
-messages (it's some make variable or something like that, don't
-remember)
-
->
-> Thanks,
-> Quentin
