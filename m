@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6192142851E
-	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 04:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9C142851F
+	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 04:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbhJKC3L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Oct 2021 22:29:11 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14126 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232748AbhJKC3K (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 10 Oct 2021 22:29:10 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19A8BRi9007517
+        id S233076AbhJKC3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Oct 2021 22:29:12 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64458 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233260AbhJKC3L (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 10 Oct 2021 22:29:11 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19AHiEd8030669
         for <bpf@vger.kernel.org>; Sun, 10 Oct 2021 19:27:11 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=lEl/20GrZJKT1d1pLBfakr6HhwqA03hfOCoIwqa1Rvw=;
- b=SgXyRqFvzCbk0CddBg/jFVova/znng4cbHjfmnfAV/VgWLQ+gfFBlQNO8L/VuNlm/Fc7
- Bf82sMnmp1REnC6ByQD+9y53SvcnW1EojVH2YFhpobY+q+5A5lbrWmbLc+/vLaSkTT2J
- 5K5FjMzd1W+fN/Jfkk0aJ23uNgpKhrVcyVU= 
+ bh=01Rwxop+a/aJEQ2TlKKFBSILNTjbLdr1mFudG1t9UzE=;
+ b=Os+d/G5eLK6HV2fopNFdHJf+qsh25OWg54Ah3abHHww/UCnvZmg0qCX2XktTBTMeRsz/
+ Fk8k4+UuCUK1/cg/+iKsS366ve6cPU1Olt7NC1K5HPAino7PBLtLGPcYHnToJNrYHA/9
+ jPi585HGVvf7uPM/vZ0pUCPM/2ybXfknQJc= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 3bkv9sv2ax-3
+        by mx0a-00082601.pphosted.com with ESMTP id 3bm4u71swt-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Sun, 10 Oct 2021 19:27:11 -0700
 Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.14; Sun, 10 Oct 2021 19:27:09 -0700
 Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
-        id 2925E7D98F59; Sun, 10 Oct 2021 19:27:08 -0700 (PDT)
+        id 398147D98F80; Sun, 10 Oct 2021 19:27:09 -0700 (PDT)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
 CC:     Song Liu <songliubraving@fb.com>,
@@ -41,9 +41,9 @@ CC:     Song Liu <songliubraving@fb.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 2/4] bpftool: use bpf_obj_get_info_by_fd directly
-Date:   Sun, 10 Oct 2021 19:27:02 -0700
-Message-ID: <20211011022704.2143205-3-davemarchevsky@fb.com>
+Subject: [PATCH bpf-next 3/4] perf: pull in bpf_program__get_prog_info_linear
+Date:   Sun, 10 Oct 2021 19:27:03 -0700
+Message-ID: <20211011022704.2143205-4-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211011022704.2143205-1-davemarchevsky@fb.com>
 References: <20211011022704.2143205-1-davemarchevsky@fb.com>
@@ -52,15 +52,15 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: Cr9NXEDH3Hn8DligccsDOCYludcGIyiN
-X-Proofpoint-ORIG-GUID: Cr9NXEDH3Hn8DligccsDOCYludcGIyiN
+X-Proofpoint-ORIG-GUID: hQNu9624vMz_9Py0tNoHxiiip8DsR1Kw
+X-Proofpoint-GUID: hQNu9624vMz_9Py0tNoHxiiip8DsR1Kw
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-10-10_07,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 spamscore=0 adultscore=0 bulkscore=0
- mlxlogscore=727 phishscore=0 priorityscore=1501 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ spamscore=0 adultscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
+ clxscore=1015 phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2109230001 definitions=main-2110110012
 X-FB-Internal: deliver
 Precedence: bulk
@@ -68,345 +68,680 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 To prepare for impending deprecation of libbpf's
-bpf_program__get_prog_info_linear, migrate uses of this function to use
-bpf_obj_get_info_by_fd.
+bpf_program__get_prog_info_linear, pull in the function and associated
+helpers into the perf codebase and migrate existing uses to the perf
+copy.
 
-Since the profile_target_name and dump_prog_id_as_func_ptr helpers were
-only looking at the first func_info, avoid grabbing the rest to save a
-malloc. For do_dump, add a more full-featured helper, but avoid
-free/realloc of buffer when possible for multi-prog dumps.
+Since libbpf's deprecated definitions will still be visible to perf, it
+is necessary to rename perf's definitions.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- tools/bpf/bpftool/btf_dumper.c |  40 +++++----
- tools/bpf/bpftool/prog.c       | 153 +++++++++++++++++++++++++--------
- 2 files changed, 143 insertions(+), 50 deletions(-)
+ .../Documentation/perf.data-file-format.txt   |   2 +-
+ tools/perf/util/Build                         |   1 +
+ tools/perf/util/annotate.c                    |   3 +-
+ tools/perf/util/bpf-event.c                   |  41 ++-
+ tools/perf/util/bpf-event.h                   |   2 +-
+ tools/perf/util/bpf-utils.c                   | 261 ++++++++++++++++++
+ tools/perf/util/bpf-utils.h                   |  76 +++++
+ tools/perf/util/bpf_counter.c                 |   6 +-
+ tools/perf/util/dso.c                         |   1 +
+ tools/perf/util/env.c                         |   1 +
+ tools/perf/util/header.c                      |  13 +-
+ 11 files changed, 374 insertions(+), 33 deletions(-)
+ create mode 100644 tools/perf/util/bpf-utils.c
+ create mode 100644 tools/perf/util/bpf-utils.h
 
-diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumpe=
-r.c
-index 9c25286a5c73..0f85704628bf 100644
---- a/tools/bpf/bpftool/btf_dumper.c
-+++ b/tools/bpf/bpftool/btf_dumper.c
-@@ -32,14 +32,16 @@ static int dump_prog_id_as_func_ptr(const struct btf_=
-dumper *d,
- 				    const struct btf_type *func_proto,
- 				    __u32 prog_id)
+diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/p=
+erf/Documentation/perf.data-file-format.txt
+index e6ff8c898ada..f56d0e0fbff6 100644
+--- a/tools/perf/Documentation/perf.data-file-format.txt
++++ b/tools/perf/Documentation/perf.data-file-format.txt
+@@ -346,7 +346,7 @@ to special needs.
+=20
+         HEADER_BPF_PROG_INFO =3D 25,
+=20
+-struct bpf_prog_info_linear, which contains detailed information about
++struct perf_bpil, which contains detailed information about
+ a BPF program, including type, id, tag, jited/xlated instructions, etc.
+=20
+         HEADER_BPF_BTF =3D 26,
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index f2914d5bed6e..ee42da1d3639 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -201,6 +201,7 @@ endif
+ perf-y +=3D perf-hooks.o
+=20
+ perf-$(CONFIG_LIBBPF) +=3D bpf-event.o
++perf-$(CONFIG_LIBBPF) +=3D bpf-utils.o
+=20
+ perf-$(CONFIG_CXX) +=3D c++/
+=20
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 0bae061b2d6d..f0e5a236b7e3 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -28,6 +28,7 @@
+ #include "evsel.h"
+ #include "evlist.h"
+ #include "bpf-event.h"
++#include "bpf-utils.h"
+ #include "block-range.h"
+ #include "string2.h"
+ #include "util/event.h"
+@@ -1700,12 +1701,12 @@ static int symbol__disassemble_bpf(struct symbol =
+*sym,
  {
--	struct bpf_prog_info_linear *prog_info =3D NULL;
- 	const struct btf_type *func_type;
-+	int prog_fd =3D -1, func_sig_len;
-+	struct bpf_prog_info info =3D {};
-+	__u32 info_len =3D sizeof(info);
- 	const char *prog_name =3D NULL;
--	struct bpf_func_info *finfo;
- 	struct btf *prog_btf =3D NULL;
--	struct bpf_prog_info *info;
--	int prog_fd, func_sig_len;
-+	struct bpf_func_info finfo;
-+	__u32 finfo_rec_size;
- 	char prog_str[1024];
-+	int err;
-=20
- 	/* Get the ptr's func_proto */
- 	func_sig_len =3D btf_dump_func(d->btf, prog_str, func_proto, NULL, 0,
-@@ -55,22 +57,27 @@ static int dump_prog_id_as_func_ptr(const struct btf_=
-dumper *d,
- 	if (prog_fd =3D=3D -1)
- 		goto print;
-=20
--	prog_info =3D bpf_program__get_prog_info_linear(prog_fd,
--						1UL << BPF_PROG_INFO_FUNC_INFO);
--	close(prog_fd);
--	if (IS_ERR(prog_info)) {
--		prog_info =3D NULL;
-+	err =3D bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
-+	if (err)
- 		goto print;
--	}
--	info =3D &prog_info->info;
-=20
--	if (!info->btf_id || !info->nr_func_info)
-+	if (!info.btf_id || !info.nr_func_info)
-+		goto print;
-+
-+	finfo_rec_size =3D info.func_info_rec_size;
-+	memset(&info, 0, sizeof(info));
-+	info.nr_func_info =3D 1;
-+	info.func_info_rec_size =3D finfo_rec_size;
-+	info.func_info =3D ptr_to_u64(&finfo);
-+
-+	err =3D bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
-+	if (err)
- 		goto print;
--	prog_btf =3D btf__load_from_kernel_by_id(info->btf_id);
-+
-+	prog_btf =3D btf__load_from_kernel_by_id(info.btf_id);
- 	if (libbpf_get_error(prog_btf))
- 		goto print;
--	finfo =3D u64_to_ptr(info->func_info);
--	func_type =3D btf__type_by_id(prog_btf, finfo->type_id);
-+	func_type =3D btf__type_by_id(prog_btf, finfo.type_id);
- 	if (!func_type || !btf_is_func(func_type))
- 		goto print;
-=20
-@@ -92,7 +99,8 @@ static int dump_prog_id_as_func_ptr(const struct btf_du=
-mper *d,
- 	prog_str[sizeof(prog_str) - 1] =3D '\0';
- 	jsonw_string(d->jw, prog_str);
- 	btf__free(prog_btf);
--	free(prog_info);
-+	if (prog_fd !=3D -1)
-+		close(prog_fd);
- 	return 0;
+ 	struct annotation *notes =3D symbol__annotation(sym);
+ 	struct annotation_options *opts =3D args->options;
+-	struct bpf_prog_info_linear *info_linear;
+ 	struct bpf_prog_linfo *prog_linfo =3D NULL;
+ 	struct bpf_prog_info_node *info_node;
+ 	int len =3D sym->end - sym->start;
+ 	disassembler_ftype disassemble;
+ 	struct map *map =3D args->ms.map;
++	struct perf_bpil *info_linear;
+ 	struct disassemble_info info;
+ 	struct dso *dso =3D map->dso;
+ 	int pc =3D 0, count, sub_id;
+diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+index 1a7112a87736..bac6dcf1fe81 100644
+--- a/tools/perf/util/bpf-event.c
++++ b/tools/perf/util/bpf-event.c
+@@ -10,6 +10,7 @@
+ #include <internal/lib.h>
+ #include <symbol/kallsyms.h>
+ #include "bpf-event.h"
++#include "bpf-utils.h"
+ #include "debug.h"
+ #include "dso.h"
+ #include "symbol.h"
+@@ -32,8 +33,6 @@ struct btf * __weak btf__load_from_kernel_by_id(__u32 i=
+d)
+        return err ? ERR_PTR(err) : btf;
  }
 =20
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index a24ea7e26aa4..a7507cc165eb 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -98,6 +98,72 @@ static enum bpf_attach_type parse_attach_type(const ch=
-ar *str)
- 	return __MAX_BPF_ATTACH_TYPE;
- }
-=20
-+#define holder_prep_needed_rec_sz(nr, rec_size)\
-+({						\
-+	holder.nr =3D info->nr;			\
-+	needed +=3D holder.nr * rec_size;		\
-+})
-+
-+#define holder_prep_needed(nr, rec_size)	\
-+({						\
-+	holder.nr =3D info->nr;			\
-+	holder.rec_size =3D info->rec_size;	\
-+	needed +=3D holder.nr * holder.rec_size;	\
-+})
-+
-+#define holder_set_ptr(field, nr, rec_size)	\
-+({					\
-+	holder.field =3D ptr_to_u64(ptr);	\
-+	ptr +=3D nr * rec_size;		\
-+})
-+
-+static int prep_prog_info(struct bpf_prog_info *const info, enum dump_mo=
-de mode,
-+			  void *info_data, size_t *const info_data_sz)
-+{
-+	struct bpf_prog_info holder =3D {};
-+	size_t needed =3D 0;
-+	void *ptr;
-+
-+	if (mode =3D=3D DUMP_JITED)
-+		holder_prep_needed_rec_sz(jited_prog_len, 1);
-+	else
-+		holder_prep_needed_rec_sz(xlated_prog_len, 1);
-+
-+	holder_prep_needed_rec_sz(nr_jited_ksyms, sizeof(__u64));
-+	holder_prep_needed_rec_sz(nr_jited_func_lens, sizeof(__u32));
-+	holder_prep_needed(nr_func_info, func_info_rec_size);
-+	holder_prep_needed(nr_line_info, line_info_rec_size);
-+	holder_prep_needed(nr_jited_line_info, jited_line_info_rec_size);
-+
-+	if (needed > *info_data_sz) {
-+		info_data =3D realloc(info_data, needed);
-+		if (!info_data)
-+			return -1;
-+		*info_data_sz =3D needed;
-+	}
-+
-+	ptr =3D info_data;
-+
-+	if (mode =3D=3D DUMP_JITED)
-+		holder_set_ptr(jited_prog_insns, holder.jited_prog_len, 1);
-+	else
-+		holder_set_ptr(xlated_prog_insns, holder.xlated_prog_len, 1);
-+
-+	holder_set_ptr(jited_ksyms, holder.nr_jited_ksyms, sizeof(__u64));
-+	holder_set_ptr(jited_func_lens, holder.nr_jited_func_lens, sizeof(__u32=
-));
-+	holder_set_ptr(func_info, holder.nr_func_info, holder.func_info_rec_siz=
-e);
-+	holder_set_ptr(line_info, holder.nr_line_info, holder.line_info_rec_siz=
-e);
-+	holder_set_ptr(jited_line_info, holder.nr_jited_line_info,
-+		       holder.jited_line_info_rec_size);
-+
-+	*info =3D holder;
-+	return 0;
-+}
-+
-+#undef holder_prep_needed
-+#undef holder_prep_needed_rec_sz
-+#undef holder_set_ptr
-+
- static void print_boot_time(__u64 nsecs, char *buf, unsigned int size)
+-#define ptr_to_u64(ptr)    ((__u64)(unsigned long)(ptr))
+-
+ static int snprintf_hex(char *buf, size_t size, unsigned char *data, siz=
+e_t len)
  {
- 	struct timespec real_time_ts, boot_time_ts;
-@@ -791,16 +857,18 @@ prog_dump(struct bpf_prog_info *info, enum dump_mod=
-e mode,
-=20
- static int do_dump(int argc, char **argv)
+ 	int ret =3D 0;
+@@ -48,9 +47,9 @@ static int machine__process_bpf_event_load(struct machi=
+ne *machine,
+ 					   union perf_event *event,
+ 					   struct perf_sample *sample __maybe_unused)
  {
 -	struct bpf_prog_info_linear *info_linear;
-+	struct bpf_prog_info info =3D {};
-+	__u32 info_len =3D sizeof(info);
-+	size_t info_data_sz =3D 0;
-+	void *info_data =3D NULL;
- 	char *filepath =3D NULL;
- 	bool opcodes =3D false;
- 	bool visual =3D false;
- 	enum dump_mode mode;
- 	bool linum =3D false;
--	int *fds =3D NULL;
- 	int nb_fds, i =3D 0;
-+	int *fds =3D NULL;
- 	int err =3D -1;
--	__u64 arrays;
+ 	struct bpf_prog_info_node *info_node;
+ 	struct perf_env *env =3D machine->env;
++	struct perf_bpil *info_linear;
+ 	int id =3D event->bpf.id;
+ 	unsigned int i;
 =20
- 	if (is_prefix(*argv, "jited")) {
- 		if (disasm_init())
-@@ -860,43 +928,42 @@ static int do_dump(int argc, char **argv)
- 		goto exit_close;
- 	}
+@@ -175,9 +174,9 @@ static int perf_event__synthesize_one_bpf_prog(struct=
+ perf_session *session,
+ {
+ 	struct perf_record_ksymbol *ksymbol_event =3D &event->ksymbol;
+ 	struct perf_record_bpf_event *bpf_event =3D &event->bpf;
+-	struct bpf_prog_info_linear *info_linear;
+ 	struct perf_tool *tool =3D session->tool;
+ 	struct bpf_prog_info_node *info_node;
++	struct perf_bpil *info_linear;
+ 	struct bpf_prog_info *info;
+ 	struct btf *btf =3D NULL;
+ 	struct perf_env *env;
+@@ -191,15 +190,15 @@ static int perf_event__synthesize_one_bpf_prog(stru=
+ct perf_session *session,
+ 	 */
+ 	env =3D session->data ? &session->header.env : &perf_env;
 =20
--	if (mode =3D=3D DUMP_JITED)
--		arrays =3D 1UL << BPF_PROG_INFO_JITED_INSNS;
--	else
--		arrays =3D 1UL << BPF_PROG_INFO_XLATED_INSNS;
--
--	arrays |=3D 1UL << BPF_PROG_INFO_JITED_KSYMS;
+-	arrays =3D 1UL << BPF_PROG_INFO_JITED_KSYMS;
 -	arrays |=3D 1UL << BPF_PROG_INFO_JITED_FUNC_LENS;
 -	arrays |=3D 1UL << BPF_PROG_INFO_FUNC_INFO;
+-	arrays |=3D 1UL << BPF_PROG_INFO_PROG_TAGS;
+-	arrays |=3D 1UL << BPF_PROG_INFO_JITED_INSNS;
 -	arrays |=3D 1UL << BPF_PROG_INFO_LINE_INFO;
 -	arrays |=3D 1UL << BPF_PROG_INFO_JITED_LINE_INFO;
--
- 	if (json_output && nb_fds > 1)
- 		jsonw_start_array(json_wtr);	/* root array */
- 	for (i =3D 0; i < nb_fds; i++) {
--		info_linear =3D bpf_program__get_prog_info_linear(fds[i], arrays);
--		if (IS_ERR_OR_NULL(info_linear)) {
-+		err =3D bpf_obj_get_info_by_fd(fds[i], &info, &info_len);
-+		if (err) {
-+			p_err("can't get prog info: %s", strerror(errno));
-+			break;
-+		}
-+
-+		err =3D prep_prog_info(&info, mode, info_data, &info_data_sz);
-+		if (err) {
-+			p_err("can't grow prog info_data");
-+			break;
-+		}
-+
-+		err =3D bpf_obj_get_info_by_fd(fds[i], &info, &info_len);
-+		if (err) {
- 			p_err("can't get prog info: %s", strerror(errno));
- 			break;
- 		}
++	arrays =3D 1UL << PERF_BPIL_JITED_KSYMS;
++	arrays |=3D 1UL << PERF_BPIL_JITED_FUNC_LENS;
++	arrays |=3D 1UL << PERF_BPIL_FUNC_INFO;
++	arrays |=3D 1UL << PERF_BPIL_PROG_TAGS;
++	arrays |=3D 1UL << PERF_BPIL_JITED_INSNS;
++	arrays |=3D 1UL << PERF_BPIL_LINE_INFO;
++	arrays |=3D 1UL << PERF_BPIL_JITED_LINE_INFO;
 =20
- 		if (json_output && nb_fds > 1) {
- 			jsonw_start_object(json_wtr);	/* prog object */
--			print_prog_header_json(&info_linear->info);
-+			print_prog_header_json(&info);
- 			jsonw_name(json_wtr, "insns");
- 		} else if (nb_fds > 1) {
--			print_prog_header_plain(&info_linear->info);
-+			print_prog_header_plain(&info);
- 		}
+-	info_linear =3D bpf_program__get_prog_info_linear(fd, arrays);
++	info_linear =3D get_bpf_prog_info_linear(fd, arrays);
+ 	if (IS_ERR_OR_NULL(info_linear)) {
+ 		info_linear =3D NULL;
+ 		pr_debug("%s: failed to get BPF program info. aborting\n", __func__);
+@@ -452,8 +451,8 @@ int perf_event__synthesize_bpf_events(struct perf_ses=
+sion *session,
 =20
--		err =3D prog_dump(&info_linear->info, mode, filepath, opcodes,
--				visual, linum);
-+		err =3D prog_dump(&info, mode, filepath, opcodes, visual, linum);
-=20
- 		if (json_output && nb_fds > 1)
- 			jsonw_end_object(json_wtr);	/* prog object */
- 		else if (i !=3D nb_fds - 1 && nb_fds > 1)
- 			printf("\n");
-=20
--		free(info_linear);
- 		if (err)
- 			break;
- 		close(fds[i]);
-@@ -908,6 +975,7 @@ static int do_dump(int argc, char **argv)
- 	for (; i < nb_fds; i++)
- 		close(fds[i]);
- exit_free:
-+	free(info_data);
- 	free(fds);
- 	return err;
- }
-@@ -2004,41 +2072,58 @@ static void profile_print_readings(void)
-=20
- static char *profile_target_name(int tgt_fd)
+ static void perf_env__add_bpf_info(struct perf_env *env, u32 id)
  {
 -	struct bpf_prog_info_linear *info_linear;
--	struct bpf_func_info *func_info;
-+	struct bpf_func_info func_info;
+ 	struct bpf_prog_info_node *info_node;
++	struct perf_bpil *info_linear;
+ 	struct btf *btf =3D NULL;
+ 	u64 arrays;
+ 	u32 btf_id;
+@@ -463,15 +462,15 @@ static void perf_env__add_bpf_info(struct perf_env =
+*env, u32 id)
+ 	if (fd < 0)
+ 		return;
+=20
+-	arrays =3D 1UL << BPF_PROG_INFO_JITED_KSYMS;
+-	arrays |=3D 1UL << BPF_PROG_INFO_JITED_FUNC_LENS;
+-	arrays |=3D 1UL << BPF_PROG_INFO_FUNC_INFO;
+-	arrays |=3D 1UL << BPF_PROG_INFO_PROG_TAGS;
+-	arrays |=3D 1UL << BPF_PROG_INFO_JITED_INSNS;
+-	arrays |=3D 1UL << BPF_PROG_INFO_LINE_INFO;
+-	arrays |=3D 1UL << BPF_PROG_INFO_JITED_LINE_INFO;
++	arrays =3D 1UL << PERF_BPIL_JITED_KSYMS;
++	arrays |=3D 1UL << PERF_BPIL_JITED_FUNC_LENS;
++	arrays |=3D 1UL << PERF_BPIL_FUNC_INFO;
++	arrays |=3D 1UL << PERF_BPIL_PROG_TAGS;
++	arrays |=3D 1UL << PERF_BPIL_JITED_INSNS;
++	arrays |=3D 1UL << PERF_BPIL_LINE_INFO;
++	arrays |=3D 1UL << PERF_BPIL_JITED_LINE_INFO;
+=20
+-	info_linear =3D bpf_program__get_prog_info_linear(fd, arrays);
++	info_linear =3D get_bpf_prog_info_linear(fd, arrays);
+ 	if (IS_ERR_OR_NULL(info_linear)) {
+ 		pr_debug("%s: failed to get BPF program info. aborting\n", __func__);
+ 		goto out;
+diff --git a/tools/perf/util/bpf-event.h b/tools/perf/util/bpf-event.h
+index 68f315c3df5b..144a8a24cc69 100644
+--- a/tools/perf/util/bpf-event.h
++++ b/tools/perf/util/bpf-event.h
+@@ -19,7 +19,7 @@ struct evlist;
+ struct target;
+=20
+ struct bpf_prog_info_node {
+-	struct bpf_prog_info_linear	*info_linear;
++	struct perf_bpil		*info_linear;
+ 	struct rb_node			rb_node;
+ };
+=20
+diff --git a/tools/perf/util/bpf-utils.c b/tools/perf/util/bpf-utils.c
+new file mode 100644
+index 000000000000..e271e05e51bc
+--- /dev/null
++++ b/tools/perf/util/bpf-utils.c
+@@ -0,0 +1,261 @@
++// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
++
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
++
++#include <errno.h>
++#include <stdlib.h>
++#include <linux/err.h>
++#include <linux/kernel.h>
++#include <bpf/bpf.h>
++#include "bpf-utils.h"
++#include "debug.h"
++
++struct bpil_array_desc {
++	int	array_offset;	/* e.g. offset of jited_prog_insns */
++	int	count_offset;	/* e.g. offset of jited_prog_len */
++	int	size_offset;	/* > 0: offset of rec size,
++				 * < 0: fix size of -size_offset
++				 */
++};
++
++static struct bpil_array_desc bpil_array_desc[] =3D {
++	[PERF_BPIL_JITED_INSNS] =3D {
++		offsetof(struct bpf_prog_info, jited_prog_insns),
++		offsetof(struct bpf_prog_info, jited_prog_len),
++		-1,
++	},
++	[PERF_BPIL_XLATED_INSNS] =3D {
++		offsetof(struct bpf_prog_info, xlated_prog_insns),
++		offsetof(struct bpf_prog_info, xlated_prog_len),
++		-1,
++	},
++	[PERF_BPIL_MAP_IDS] =3D {
++		offsetof(struct bpf_prog_info, map_ids),
++		offsetof(struct bpf_prog_info, nr_map_ids),
++		-(int)sizeof(__u32),
++	},
++	[PERF_BPIL_JITED_KSYMS] =3D {
++		offsetof(struct bpf_prog_info, jited_ksyms),
++		offsetof(struct bpf_prog_info, nr_jited_ksyms),
++		-(int)sizeof(__u64),
++	},
++	[PERF_BPIL_JITED_FUNC_LENS] =3D {
++		offsetof(struct bpf_prog_info, jited_func_lens),
++		offsetof(struct bpf_prog_info, nr_jited_func_lens),
++		-(int)sizeof(__u32),
++	},
++	[PERF_BPIL_FUNC_INFO] =3D {
++		offsetof(struct bpf_prog_info, func_info),
++		offsetof(struct bpf_prog_info, nr_func_info),
++		offsetof(struct bpf_prog_info, func_info_rec_size),
++	},
++	[PERF_BPIL_LINE_INFO] =3D {
++		offsetof(struct bpf_prog_info, line_info),
++		offsetof(struct bpf_prog_info, nr_line_info),
++		offsetof(struct bpf_prog_info, line_info_rec_size),
++	},
++	[PERF_BPIL_JITED_LINE_INFO] =3D {
++		offsetof(struct bpf_prog_info, jited_line_info),
++		offsetof(struct bpf_prog_info, nr_jited_line_info),
++		offsetof(struct bpf_prog_info, jited_line_info_rec_size),
++	},
++	[PERF_BPIL_PROG_TAGS] =3D {
++		offsetof(struct bpf_prog_info, prog_tags),
++		offsetof(struct bpf_prog_info, nr_prog_tags),
++		-(int)sizeof(__u8) * BPF_TAG_SIZE,
++	},
++
++};
++
++static __u32 bpf_prog_info_read_offset_u32(struct bpf_prog_info *info,
++					   int offset)
++{
++	__u32 *array =3D (__u32 *)info;
++
++	if (offset >=3D 0)
++		return array[offset / sizeof(__u32)];
++	return -(int)offset;
++}
++
++static __u64 bpf_prog_info_read_offset_u64(struct bpf_prog_info *info,
++					   int offset)
++{
++	__u64 *array =3D (__u64 *)info;
++
++	if (offset >=3D 0)
++		return array[offset / sizeof(__u64)];
++	return -(int)offset;
++}
++
++static void bpf_prog_info_set_offset_u32(struct bpf_prog_info *info, int=
+ offset,
++					 __u32 val)
++{
++	__u32 *array =3D (__u32 *)info;
++
++	if (offset >=3D 0)
++		array[offset / sizeof(__u32)] =3D val;
++}
++
++static void bpf_prog_info_set_offset_u64(struct bpf_prog_info *info, int=
+ offset,
++					 __u64 val)
++{
++	__u64 *array =3D (__u64 *)info;
++
++	if (offset >=3D 0)
++		array[offset / sizeof(__u64)] =3D val;
++}
++
++struct perf_bpil *
++get_bpf_prog_info_linear(int fd, __u64 arrays)
++{
 +	struct bpf_prog_info info =3D {};
++	struct perf_bpil *info_linear;
 +	__u32 info_len =3D sizeof(info);
++	__u32 data_len =3D 0;
++	int i, err;
++	void *ptr;
++
++	if (arrays >> PERF_BPIL_LAST_ARRAY)
++		return ERR_PTR(-EINVAL);
++
++	/* step 1: get array dimensions */
++	err =3D bpf_obj_get_info_by_fd(fd, &info, &info_len);
++	if (err) {
++		pr_debug("can't get prog info: %s", strerror(errno));
++		return ERR_PTR(-EFAULT);
++	}
++
++	/* step 2: calculate total size of all arrays */
++	for (i =3D PERF_BPIL_FIRST_ARRAY; i < PERF_BPIL_LAST_ARRAY; ++i) {
++		bool include_array =3D (arrays & (1UL << i)) > 0;
++		struct bpil_array_desc *desc;
++		__u32 count, size;
++
++		desc =3D bpil_array_desc + i;
++
++		/* kernel is too old to support this field */
++		if (info_len < desc->array_offset + sizeof(__u32) ||
++		    info_len < desc->count_offset + sizeof(__u32) ||
++		    (desc->size_offset > 0 && info_len < (__u32)desc->size_offset))
++			include_array =3D false;
++
++		if (!include_array) {
++			arrays &=3D ~(1UL << i);	/* clear the bit */
++			continue;
++		}
++
++		count =3D bpf_prog_info_read_offset_u32(&info, desc->count_offset);
++		size  =3D bpf_prog_info_read_offset_u32(&info, desc->size_offset);
++
++		data_len +=3D count * size;
++	}
++
++	/* step 3: allocate continuous memory */
++	data_len =3D roundup(data_len, sizeof(__u64));
++	info_linear =3D malloc(sizeof(struct perf_bpil) + data_len);
++	if (!info_linear)
++		return ERR_PTR(-ENOMEM);
++
++	/* step 4: fill data to info_linear->info */
++	info_linear->arrays =3D arrays;
++	memset(&info_linear->info, 0, sizeof(info));
++	ptr =3D info_linear->data;
++
++	for (i =3D PERF_BPIL_FIRST_ARRAY; i < PERF_BPIL_LAST_ARRAY; ++i) {
++		struct bpil_array_desc *desc;
++		__u32 count, size;
++
++		if ((arrays & (1UL << i)) =3D=3D 0)
++			continue;
++
++		desc  =3D bpil_array_desc + i;
++		count =3D bpf_prog_info_read_offset_u32(&info, desc->count_offset);
++		size  =3D bpf_prog_info_read_offset_u32(&info, desc->size_offset);
++		bpf_prog_info_set_offset_u32(&info_linear->info,
++					     desc->count_offset, count);
++		bpf_prog_info_set_offset_u32(&info_linear->info,
++					     desc->size_offset, size);
++		bpf_prog_info_set_offset_u64(&info_linear->info,
++					     desc->array_offset,
++					     ptr_to_u64(ptr));
++		ptr +=3D count * size;
++	}
++
++	/* step 5: call syscall again to get required arrays */
++	err =3D bpf_obj_get_info_by_fd(fd, &info_linear->info, &info_len);
++	if (err) {
++		pr_debug("can't get prog info: %s", strerror(errno));
++		free(info_linear);
++		return ERR_PTR(-EFAULT);
++	}
++
++	/* step 6: verify the data */
++	for (i =3D PERF_BPIL_FIRST_ARRAY; i < PERF_BPIL_LAST_ARRAY; ++i) {
++		struct bpil_array_desc *desc;
++		__u32 v1, v2;
++
++		if ((arrays & (1UL << i)) =3D=3D 0)
++			continue;
++
++		desc =3D bpil_array_desc + i;
++		v1 =3D bpf_prog_info_read_offset_u32(&info, desc->count_offset);
++		v2 =3D bpf_prog_info_read_offset_u32(&info_linear->info,
++						   desc->count_offset);
++		if (v1 !=3D v2)
++			pr_warning("%s: mismatch in element count\n", __func__);
++
++		v1 =3D bpf_prog_info_read_offset_u32(&info, desc->size_offset);
++		v2 =3D bpf_prog_info_read_offset_u32(&info_linear->info,
++						   desc->size_offset);
++		if (v1 !=3D v2)
++			pr_warning("%s: mismatch in rec size\n", __func__);
++	}
++
++	/* step 7: update info_len and data_len */
++	info_linear->info_len =3D sizeof(struct bpf_prog_info);
++	info_linear->data_len =3D data_len;
++
++	return info_linear;
++}
++
++void bpil_addr_to_offs(struct perf_bpil *info_linear)
++{
++	int i;
++
++	for (i =3D PERF_BPIL_FIRST_ARRAY; i < PERF_BPIL_LAST_ARRAY; ++i) {
++		struct bpil_array_desc *desc;
++		__u64 addr, offs;
++
++		if ((info_linear->arrays & (1UL << i)) =3D=3D 0)
++			continue;
++
++		desc =3D bpil_array_desc + i;
++		addr =3D bpf_prog_info_read_offset_u64(&info_linear->info,
++						     desc->array_offset);
++		offs =3D addr - ptr_to_u64(info_linear->data);
++		bpf_prog_info_set_offset_u64(&info_linear->info,
++					     desc->array_offset, offs);
++	}
++}
++
++void bpil_offs_to_addr(struct perf_bpil *info_linear)
++{
++	int i;
++
++	for (i =3D PERF_BPIL_FIRST_ARRAY; i < PERF_BPIL_LAST_ARRAY; ++i) {
++		struct bpil_array_desc *desc;
++		__u64 addr, offs;
++
++		if ((info_linear->arrays & (1UL << i)) =3D=3D 0)
++			continue;
++
++		desc =3D bpil_array_desc + i;
++		offs =3D bpf_prog_info_read_offset_u64(&info_linear->info,
++						     desc->array_offset);
++		addr =3D offs + ptr_to_u64(info_linear->data);
++		bpf_prog_info_set_offset_u64(&info_linear->info,
++					     desc->array_offset, addr);
++	}
++}
+diff --git a/tools/perf/util/bpf-utils.h b/tools/perf/util/bpf-utils.h
+new file mode 100644
+index 000000000000..86a5055cdfad
+--- /dev/null
++++ b/tools/perf/util/bpf-utils.h
+@@ -0,0 +1,76 @@
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
++
++#ifndef __PERF_BPF_UTILS_H
++#define __PERF_BPF_UTILS_H
++
++#define ptr_to_u64(ptr)    ((__u64)(unsigned long)(ptr))
++
++#ifdef HAVE_LIBBPF_SUPPORT
++
++#include <bpf/libbpf.h>
++
++/*
++ * Get bpf_prog_info in continuous memory
++ *
++ * struct bpf_prog_info has multiple arrays. The user has option to choo=
+se
++ * arrays to fetch from kernel. The following APIs provide an uniform wa=
+y to
++ * fetch these data. All arrays in bpf_prog_info are stored in a single
++ * continuous memory region. This makes it easy to store the info in a
++ * file.
++ *
++ * Before writing perf_bpil to files, it is necessary to
++ * translate pointers in bpf_prog_info to offsets. Helper functions
++ * bpil_addr_to_offs() and bpil_offs_to_addr()
++ * are introduced to switch between pointers and offsets.
++ *
++ * Examples:
++ *   # To fetch map_ids and prog_tags:
++ *   __u64 arrays =3D (1UL << PERF_BPIL_MAP_IDS) |
++ *           (1UL << PERF_BPIL_PROG_TAGS);
++ *   struct perf_bpil *info_linear =3D
++ *           get_bpf_prog_info_linear(fd, arrays);
++ *
++ *   # To save data in file
++ *   bpil_addr_to_offs(info_linear);
++ *   write(f, info_linear, sizeof(*info_linear) + info_linear->data_len)=
+;
++ *
++ *   # To read data from file
++ *   read(f, info_linear, <proper_size>);
++ *   bpil_offs_to_addr(info_linear);
++ */
++enum perf_bpil_array_types {
++	PERF_BPIL_FIRST_ARRAY =3D 0,
++	PERF_BPIL_JITED_INSNS =3D 0,
++	PERF_BPIL_XLATED_INSNS,
++	PERF_BPIL_MAP_IDS,
++	PERF_BPIL_JITED_KSYMS,
++	PERF_BPIL_JITED_FUNC_LENS,
++	PERF_BPIL_FUNC_INFO,
++	PERF_BPIL_LINE_INFO,
++	PERF_BPIL_JITED_LINE_INFO,
++	PERF_BPIL_PROG_TAGS,
++	PERF_BPIL_LAST_ARRAY,
++};
++
++struct perf_bpil {
++	/* size of struct bpf_prog_info, when the tool is compiled */
++	__u32			info_len;
++	/* total bytes allocated for data, round up to 8 bytes */
++	__u32			data_len;
++	/* which arrays are included in data */
++	__u64			arrays;
++	struct bpf_prog_info	info;
++	__u8			data[];
++};
++
++struct perf_bpil *
++get_bpf_prog_info_linear(int fd, __u64 arrays);
++
++void
++bpil_addr_to_offs(struct perf_bpil *info_linear);
++
++void
++bpil_offs_to_addr(struct perf_bpil *info_linear);
++
++#endif /* HAVE_LIBBPF_SUPPORT */
++#endif /* __PERF_BPF_UTILS_H */
+diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.=
+c
+index ba0f20853651..2b04df8c5f87 100644
+--- a/tools/perf/util/bpf_counter.c
++++ b/tools/perf/util/bpf_counter.c
+@@ -13,6 +13,7 @@
+ #include <perf/bpf_perf.h>
+=20
+ #include "bpf_counter.h"
++#include "bpf-utils.h"
+ #include "counts.h"
+ #include "debug.h"
+ #include "evsel.h"
+@@ -61,14 +62,13 @@ static int bpf_program_profiler__destroy(struct evsel=
+ *evsel)
+=20
+ static char *bpf_target_prog_name(int tgt_fd)
+ {
+-	struct bpf_prog_info_linear *info_linear;
+ 	struct bpf_func_info *func_info;
++	struct perf_bpil *info_linear;
  	const struct btf_type *t;
-+	__u32 func_info_rec_size;
  	struct btf *btf =3D NULL;
  	char *name =3D NULL;
-+	int err;
 =20
 -	info_linear =3D bpf_program__get_prog_info_linear(
 -		tgt_fd, 1UL << BPF_PROG_INFO_FUNC_INFO);
--	if (IS_ERR_OR_NULL(info_linear)) {
--		p_err("failed to get info_linear for prog FD %d", tgt_fd);
--		return NULL;
-+	err =3D bpf_obj_get_info_by_fd(tgt_fd, &info, &info_len);
-+	if (err) {
-+		p_err("failed to bpf_obj_get_info_by_fd for prog FD %d", tgt_fd);
-+		goto out;
- 	}
++	info_linear =3D get_bpf_prog_info_linear(tgt_fd, 1UL << PERF_BPIL_FUNC_=
+INFO);
+ 	if (IS_ERR_OR_NULL(info_linear)) {
+ 		pr_debug("failed to get info_linear for prog FD %d\n", tgt_fd);
+ 		return NULL;
+diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
+index 9ed9a5676d35..9cc8a1772b4b 100644
+--- a/tools/perf/util/dso.c
++++ b/tools/perf/util/dso.c
+@@ -14,6 +14,7 @@
+ #ifdef HAVE_LIBBPF_SUPPORT
+ #include <bpf/libbpf.h>
+ #include "bpf-event.h"
++#include "bpf-utils.h"
+ #endif
+ #include "compress.h"
+ #include "env.h"
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index cf773f0dec38..17f1dd0680b4 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -16,6 +16,7 @@ struct perf_env perf_env;
 =20
--	if (info_linear->info.btf_id =3D=3D 0) {
-+	if (info.btf_id =3D=3D 0) {
- 		p_err("prog FD %d doesn't have valid btf", tgt_fd);
- 		goto out;
- 	}
+ #ifdef HAVE_LIBBPF_SUPPORT
+ #include "bpf-event.h"
++#include "bpf-utils.h"
+ #include <bpf/libbpf.h>
 =20
--	btf =3D btf__load_from_kernel_by_id(info_linear->info.btf_id);
-+	func_info_rec_size =3D info.func_info_rec_size;
-+	if (info.nr_func_info =3D=3D 0) {
-+		p_err("bpf_obj_get_info_by_fd for prog FD %d found 0 func_info", tgt_f=
-d);
-+		goto out;
-+	}
-+
-+	memset(&info, 0, sizeof(info));
-+	info.nr_func_info =3D 1;
-+	info.func_info_rec_size =3D func_info_rec_size;
-+	info.func_info =3D ptr_to_u64(&func_info);
-+
-+	err =3D bpf_obj_get_info_by_fd(tgt_fd, &info, &info_len);
-+	if (err) {
-+		p_err("failed to get func_info for prog FD %d", tgt_fd);
-+		goto out;
-+	}
-+
-+	btf =3D btf__load_from_kernel_by_id(info.btf_id);
- 	if (libbpf_get_error(btf)) {
- 		p_err("failed to load btf for prog FD %d", tgt_fd);
- 		goto out;
- 	}
+ void perf_env__insert_bpf_prog_info(struct perf_env *env,
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index 1c7414f66655..56511db8fa03 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -48,6 +48,7 @@
+ #include "util/util.h" // perf_exe()
+ #include "cputopo.h"
+ #include "bpf-event.h"
++#include "bpf-utils.h"
+ #include "clockid.h"
+ #include "pmu-hybrid.h"
 =20
--	func_info =3D u64_to_ptr(info_linear->info.func_info);
--	t =3D btf__type_by_id(btf, func_info[0].type_id);
-+	t =3D btf__type_by_id(btf, func_info.type_id);
- 	if (!t) {
- 		p_err("btf %d doesn't have type %d",
--		      info_linear->info.btf_id, func_info[0].type_id);
-+		      info.btf_id, func_info.type_id);
- 		goto out;
- 	}
- 	name =3D strdup(btf__name_by_offset(btf, t->name_off));
- out:
- 	btf__free(btf);
--	free(info_linear);
- 	return name;
- }
+@@ -1006,17 +1007,17 @@ static int write_bpf_prog_info(struct feat_fd *ff=
+,
 =20
+ 		node =3D rb_entry(next, struct bpf_prog_info_node, rb_node);
+ 		next =3D rb_next(&node->rb_node);
+-		len =3D sizeof(struct bpf_prog_info_linear) +
++		len =3D sizeof(struct perf_bpil) +
+ 			node->info_linear->data_len;
+=20
+ 		/* before writing to file, translate address to offset */
+-		bpf_program__bpil_addr_to_offs(node->info_linear);
++		bpil_addr_to_offs(node->info_linear);
+ 		ret =3D do_write(ff, node->info_linear, len);
+ 		/*
+ 		 * translate back to address even when do_write() fails,
+ 		 * so that this function never changes the data.
+ 		 */
+-		bpf_program__bpil_offs_to_addr(node->info_linear);
++		bpil_offs_to_addr(node->info_linear);
+ 		if (ret < 0)
+ 			goto out;
+ 	}
+@@ -3018,9 +3019,9 @@ static int process_dir_format(struct feat_fd *ff,
+ #ifdef HAVE_LIBBPF_SUPPORT
+ static int process_bpf_prog_info(struct feat_fd *ff, void *data __maybe_=
+unused)
+ {
+-	struct bpf_prog_info_linear *info_linear;
+ 	struct bpf_prog_info_node *info_node;
+ 	struct perf_env *env =3D &ff->ph->env;
++	struct perf_bpil *info_linear;
+ 	u32 count, i;
+ 	int err =3D -1;
+=20
+@@ -3049,7 +3050,7 @@ static int process_bpf_prog_info(struct feat_fd *ff=
+, void *data __maybe_unused)
+ 			goto out;
+ 		}
+=20
+-		info_linear =3D malloc(sizeof(struct bpf_prog_info_linear) +
++		info_linear =3D malloc(sizeof(struct perf_bpil) +
+ 				     data_len);
+ 		if (!info_linear)
+ 			goto out;
+@@ -3071,7 +3072,7 @@ static int process_bpf_prog_info(struct feat_fd *ff=
+, void *data __maybe_unused)
+ 			goto out;
+=20
+ 		/* after reading from file, translate offset to address */
+-		bpf_program__bpil_offs_to_addr(info_linear);
++		bpil_offs_to_addr(info_linear);
+ 		info_node->info_linear =3D info_linear;
+ 		perf_env__insert_bpf_prog_info(env, info_node);
+ 	}
 --=20
 2.30.2
 
