@@ -2,197 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286774293EB
-	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 17:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF656429462
+	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 18:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236652AbhJKP6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Oct 2021 11:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S231467AbhJKQVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Oct 2021 12:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239201AbhJKP6p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:58:45 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110FCC06161C
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 08:56:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id i21-20020a253b15000000b005b9c0fbba45so23834744yba.20
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 08:56:45 -0700 (PDT)
+        with ESMTP id S231431AbhJKQVh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Oct 2021 12:21:37 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB149C061570
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 09:19:36 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id u18so58114600wrg.5
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 09:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=1fprwygtfcbW4YsIOZabVxvRcnD8jzC8e3Grk+JtWJM=;
-        b=acHksIX1r/8ym8r3mcUiAHJiG/aB1WLWYBa1rzH8qotA6iltqOeIW352rDjzhVcPeu
-         sK72tkrbKEOLuc08Gm3GrlCIujGN6EiKEaCiKTjDtPFu7IEfm1Bwo1QFH8jCfi2Q0GbS
-         Ehpal5CP3TBxS+fpO8MoH2BFGQnWz+vd84a+nOFiQC2YWlX8MZnu4WDU9EZq2r3DJHqe
-         98ccUIZGYmHjOevvyZtXiUOmTSRjxgqDnn7du3Z6w9Z+rIB5y/F2M1i5LzU9FfZokS//
-         wbsyzP/60eE0SlgFda0PowblhM+xHRN2yj6JgSOMNSrHEMICqGvnfSRqFhPg86gJtJ0f
-         ceEQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=n/kS3cJk0pcVJA+tncADE8W6k42vqiHaBpBk3cGY/Rs=;
+        b=SS5ivHzRfbVvkxZEYcAU0GoNHk2zlAMrPxi8UMiT1YcSVufmAy51NKDT8egPooBjO0
+         BlIXezKioAYZZiI+Le9GdenrhQFKuRAPfXRp1coxee32X30a5xGC+R2OPKzCSj7Acq75
+         3JM8Wj58dcdvd1qBNsg/3Jvun93KvqjPRv4xUYYbcrr1fnKcRIBqKk3Tt3TPAEgXDBEx
+         OJVA+6eXG41hBzHoKSSvXG+FUgabZy44S1fvFrZTLyAvmU3STplo9ndkJk+lyotWuPRo
+         z9uj/OvigdYcYYCKwJ2h2/O+2CklhZd5h31OlIunOIItysx6DlRBIJbylYQA0T1n57V+
+         IOBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=1fprwygtfcbW4YsIOZabVxvRcnD8jzC8e3Grk+JtWJM=;
-        b=Dvu7hWa/DfMQGjE8qBXiLPeRUGdb3uNFOe1NA/kOATyEI02FNmg9RG701GC7UCHLFl
-         jmLNBUEeuRkqlIfsSMC684UZiA2R7dE57bK86qwocK4w2VM+QL+tUCwiKAu26gRsxm9a
-         9K8athquIDaIgUf5TEbW/HjIhBWP7cQbMisbi2aQ7Wc1PU/AVOlfz7tj0P81OoR0KObI
-         Xm8dMVwkSWJI6vHqnExYaUT1HSYShM11sJkDhelSX995QY+5mgTh+BLLVWC10FjoLT1+
-         PeUNWSsEsdey1so+ih1fQtu4nE4KQrwevvtGGHlVQZlW3oHlvm0WyTMGP+IRPHmTfh8S
-         f/wA==
-X-Gm-Message-State: AOAM533Y4hBaBsxirfUl/+eLvmC7pvl3OiB4JaYxG1fc1R3PBn5s0yhV
-        aUbFahUKsJTGEP81xdqusZrfMbs=
-X-Google-Smtp-Source: ABdhPJx5e1GqC9IWMQH/lXACJKPoqNtS1nirnDoyePiBKancAXAZmoNUWaSCHdAvS4LU+Jrlo65xKkI=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:8bf5:656e:8f83:7b2d])
- (user=sdf job=sendgmr) by 2002:a25:90b:: with SMTP id 11mr21962569ybj.192.1633967804302;
- Mon, 11 Oct 2021 08:56:44 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 08:56:36 -0700
-In-Reply-To: <20211011155636.2666408-1-sdf@google.com>
-Message-Id: <20211011155636.2666408-3-sdf@google.com>
-Mime-Version: 1.0
-References: <20211011155636.2666408-1-sdf@google.com>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH bpf-next 3/3] selftests/bpf: fix flow dissector tests
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=n/kS3cJk0pcVJA+tncADE8W6k42vqiHaBpBk3cGY/Rs=;
+        b=2BhPmejFtK7o0OKEUYn8U4hX8cOto6FVNnxgA9WY0A84Uzc3vy8NB7o4WnJe0r1xea
+         wuKI/5sws1AIBLsZoiqd1uJ6ICm8lQNcECOyaZC76kT8fkQEqqgUJRyFg6hnKC2dCZ9o
+         sA/mQOQKD4aoTknAmMeess0qNbFmhkwM1zIi4CdqotljabOgBXR2RznVPydHwqen3gMI
+         3n2IKYHr/ClMngkXHksst6xGHPyiQMtsSgOKUErnBeIsZY1X8nEtmczYykeOdcenA/m3
+         j4Bzzcb1Fk75FoaRg02K3VFQjZXci2mnk4v0r0CSnCQgCVyil4cP8V8+g/PQUVrFDDwv
+         Bpmw==
+X-Gm-Message-State: AOAM533N8rz9LaTlxxSN25xJLBM2+Vlx2PR4Phl2HYKevhJzSyPk3JZx
+        fezHCXjd9pjY4GxmdUWwBtjA+pSukMeyA388hjCdgCA53V8=
+X-Google-Smtp-Source: ABdhPJwgvNPFnkI4pR/au7DzWRoSEE3pP7E392zC/GLu3J4ScCNdQxzuHO0u2Dhap2EqAmbUBHxn1tv7YguMM90BhDA=
+X-Received: by 2002:adf:9787:: with SMTP id s7mr25094223wrb.191.1633969174915;
+ Mon, 11 Oct 2021 09:19:34 -0700 (PDT)
+MIME-Version: 1.0
+From:   Sanjit Bhat <sanjit.bhat@gmail.com>
+Date:   Mon, 11 Oct 2021 11:19:23 -0500
+Message-ID: <CAF7Jse9d9s0gFAi_bF3=ShE3FZw6k4X_nvDyGJkLRG7cDPDKCQ@mail.gmail.com>
+Subject: [bpf-next] bpf, verifier: Automated formal verification tool for
+ finding bugs in eBPF verifier range analysis routines
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, hovav@cs.utexas.edu
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-- update custom loader to search by name, not section name
-- update bpftool commands to use proper pin path
+I=E2=80=99m Sanjit Bhat, a researcher at UT Austin. My advisor, Hovav Shach=
+am,
+and I have been working on a tool to enable developers to
+automatically check the eBPF verifier=E2=80=99s range analysis routines for
+bugs, to generate sample bad inputs if bugs exist, and to formally
+prove that there are no range analysis bugs. We=E2=80=99re reaching out to =
+get
+your feedback on whether there would be interest in using our tool.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/flow_dissector_load.c        | 18 +++++++++++-------
- .../selftests/bpf/flow_dissector_load.h        | 10 ++--------
- .../selftests/bpf/test_flow_dissector.sh       | 10 +++++-----
- 3 files changed, 18 insertions(+), 20 deletions(-)
+Some more details about what the tool does:
 
-diff --git a/tools/testing/selftests/bpf/flow_dissector_load.c b/tools/testing/selftests/bpf/flow_dissector_load.c
-index 3fd83b9dc1bf..87fd1aa323a9 100644
---- a/tools/testing/selftests/bpf/flow_dissector_load.c
-+++ b/tools/testing/selftests/bpf/flow_dissector_load.c
-@@ -17,7 +17,7 @@
- const char *cfg_pin_path = "/sys/fs/bpf/flow_dissector";
- const char *cfg_map_name = "jmp_table";
- bool cfg_attach = true;
--char *cfg_section_name;
-+char *cfg_prog_name;
- char *cfg_path_name;
- 
- static void load_and_attach_program(void)
-@@ -25,7 +25,11 @@ static void load_and_attach_program(void)
- 	int prog_fd, ret;
- 	struct bpf_object *obj;
- 
--	ret = bpf_flow_load(&obj, cfg_path_name, cfg_section_name,
-+	ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-+	if (ret)
-+		error(1, 0, "failed to enable libbpf strict mode: %d", ret);
-+
-+	ret = bpf_flow_load(&obj, cfg_path_name, cfg_prog_name,
- 			    cfg_map_name, NULL, &prog_fd, NULL);
- 	if (ret)
- 		error(1, 0, "bpf_flow_load %s", cfg_path_name);
-@@ -75,15 +79,15 @@ static void parse_opts(int argc, char **argv)
- 			break;
- 		case 'p':
- 			if (cfg_path_name)
--				error(1, 0, "only one prog name can be given");
-+				error(1, 0, "only one path can be given");
- 
- 			cfg_path_name = optarg;
- 			break;
- 		case 's':
--			if (cfg_section_name)
--				error(1, 0, "only one section can be given");
-+			if (cfg_prog_name)
-+				error(1, 0, "only one prog can be given");
- 
--			cfg_section_name = optarg;
-+			cfg_prog_name = optarg;
- 			break;
- 		}
- 	}
-@@ -94,7 +98,7 @@ static void parse_opts(int argc, char **argv)
- 	if (cfg_attach && !cfg_path_name)
- 		error(1, 0, "must provide a path to the BPF program");
- 
--	if (cfg_attach && !cfg_section_name)
-+	if (cfg_attach && !cfg_prog_name)
- 		error(1, 0, "must provide a section name");
- }
- 
-diff --git a/tools/testing/selftests/bpf/flow_dissector_load.h b/tools/testing/selftests/bpf/flow_dissector_load.h
-index 7290401ec172..9d0acc2fc6cc 100644
---- a/tools/testing/selftests/bpf/flow_dissector_load.h
-+++ b/tools/testing/selftests/bpf/flow_dissector_load.h
-@@ -7,7 +7,7 @@
- 
- static inline int bpf_flow_load(struct bpf_object **obj,
- 				const char *path,
--				const char *section_name,
-+				const char *prog_name,
- 				const char *map_name,
- 				const char *keys_map_name,
- 				int *prog_fd,
-@@ -23,13 +23,7 @@ static inline int bpf_flow_load(struct bpf_object **obj,
- 	if (ret)
- 		return ret;
- 
--	main_prog = NULL;
--	bpf_object__for_each_program(prog, *obj) {
--		if (strcmp(section_name, bpf_program__section_name(prog)) == 0) {
--			main_prog = prog;
--			break;
--		}
--	}
-+	main_prog = bpf_object__find_program_by_name(*obj, prog_name);
- 	if (!main_prog)
- 		return -1;
- 
-diff --git a/tools/testing/selftests/bpf/test_flow_dissector.sh b/tools/testing/selftests/bpf/test_flow_dissector.sh
-index 174b72a64a4c..dbd91221727d 100755
---- a/tools/testing/selftests/bpf/test_flow_dissector.sh
-+++ b/tools/testing/selftests/bpf/test_flow_dissector.sh
-@@ -26,22 +26,22 @@ if [[ -z $(ip netns identify $$) ]]; then
- 			type flow_dissector
- 
- 		if ! unshare --net $bpftool prog attach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Unexpected unsuccessful attach in namespace" >&2
- 			err=1
- 		fi
- 
--		$bpftool prog attach pinned /sys/fs/bpf/flow/flow_dissector \
-+		$bpftool prog attach pinned /sys/fs/bpf/flow/_dissect \
- 			flow_dissector
- 
- 		if unshare --net $bpftool prog attach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Unexpected successful attach in namespace" >&2
- 			err=1
- 		fi
- 
- 		if ! $bpftool prog detach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Failed to detach flow dissector" >&2
- 			err=1
- 		fi
-@@ -95,7 +95,7 @@ else
- fi
- 
- # Attach BPF program
--./flow_dissector_load -p bpf_flow.o -s flow_dissector
-+./flow_dissector_load -p bpf_flow.o -s _dissect
- 
- # Setup
- tc qdisc add dev lo ingress
--- 
-2.33.0.882.g93a45727a2-goog
+We verify the range analysis routines in the eBPF verifier. These
+routines predict the output range of ALU operations on scalar
+registers. They include all code touched from the
+`adjust_scalar_min_max_vals` function in `verifier.c`, as well as the
+functions in `tnum.c`. In the past, these routines have led to a few
+CVE=E2=80=99s, e.g., CVE-2020-8835, CVE-2020-27194, and CVE-2021-3490. Our
+tool, written purely in Python, translates the C range analysis code
+to Z3 SMT solver inputs and verifies that the code implements a
+correct range analysis pass for all 32- and 64-bit ALU operations on
+scalar registers. Our tool already produces some interesting results,
+described below, but we=E2=80=99re still actively working on it. We would l=
+ove
+your thoughts on ways we could make it more useful.
 
+Some preliminary results:
+
+We analyzed commit bc895e8b, which made a small change to the
+`signed_sub_overflows` function from 32-bit inputs to 64-bit inputs.
+Our tool found that before the commit, range analysis of 64-bit
+scalar-scalar subtraction was incorrect. The tool generated a BPF
+program that exploits the bug and leaves a register that has a
+concrete value outside the register=E2=80=99s tracked range. After applying
+the patch, the tool determined that 64-bit subtraction was now
+correct. In addition to this bug, we were able to re-find bugs
+exploited in prior zero-days, and we=E2=80=99ve done preliminary analysis o=
+n
+all verifier range analysis ops on a commit from back in May.
+
+Please let us know if this tool sounds interesting! We would be happy
+to explain it in more detail and collaborate on using it to aid eBPF
+verifier development.
