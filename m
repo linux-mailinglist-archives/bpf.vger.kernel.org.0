@@ -2,38 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5960E428FD4
-	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 16:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28FD4291B6
+	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 16:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhJKOBf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Oct 2021 10:01:35 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55424 "EHLO
+        id S242347AbhJKO16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Oct 2021 10:27:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:59030 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237915AbhJKN7d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:59:33 -0400
+        with ESMTP id S240366AbhJKO1p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:27:45 -0400
 Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mZvo4-0008Ae-0Q; Mon, 11 Oct 2021 15:57:32 +0200
+        id 1mZwFL-000CI8-QX; Mon, 11 Oct 2021 16:25:43 +0200
 Received: from [85.1.206.226] (helo=linux.home)
         by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mZvo3-0004U9-RX; Mon, 11 Oct 2021 15:57:31 +0200
-Subject: Re: [PATCH bpf-next 08/10] selftests/bpf: demonstrate use of custom
- .rodata/.data sections
-To:     andrii.nakryiko@gmail.com, bpf@vger.kernel.org, ast@kernel.org
-Cc:     andrii@kernel.org, kernel-team@fb.com
-References: <20211008000309.43274-1-andrii@kernel.org>
- <20211008000309.43274-9-andrii@kernel.org>
+        id 1mZwFL-0004dx-Kg; Mon, 11 Oct 2021 16:25:43 +0200
+Subject: Re: [PATCH bpf-next] bpf: rename BTF_KIND_TAG to BTF_KIND_DECL_TAG
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com
+References: <20211011040608.3031468-1-yhs@fb.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <dfde174b-fff5-118b-b6c8-a2d4047ab2c1@iogearbox.net>
-Date:   Mon, 11 Oct 2021 15:57:31 +0200
+Message-ID: <c91ece3f-ec7e-bd3c-9b3d-19952b2d21e7@iogearbox.net>
+Date:   Mon, 11 Oct 2021 16:25:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20211008000309.43274-9-andrii@kernel.org>
+In-Reply-To: <20211011040608.3031468-1-yhs@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,59 +42,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/8/21 2:03 AM, andrii.nakryiko@gmail.com wrote:
-> From: Andrii Nakryiko <andrii@kernel.org>
+On 10/11/21 6:06 AM, Yonghong Song wrote:
+> Patch set [1] introduced BTF_KIND_TAG to allow tagging
+> declarations for struct/union, struct/union field, var, func
+> and func arguments and these tags will be encoded into
+> dwarf. They are also encoded to btf by llvm for the bpf target.
 > 
-> Enhance existing selftests to demonstrate the use of custom
-> .data/.rodata sections.
+> After BTF_KIND_TAG is introduced, we intended to use it
+> for kernel __user attributes. But kernel __user is actually
+> a type attribute. Upstream and internal discussion showed
+> it is not a good idea to mix declaration attribute and
+> type attribute. So we proposed to introduce btf_type_tag
+> as a type attribute and existing btf_tag renamed to
+> btf_decl_tag ([2]).
 > 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-
-Just a thought, but wouldn't the actual demo / use case be better to show that we can
-now have a __read_mostly attribute which implies SEC(".data.read_mostly") section?
-
-Would be nice to add a ...
-
-   #define __read_mostly    SEC(".data.read_mostly")
-
-... into tools/lib/bpf/bpf_helpers.h along with the series for use out of BPF programs
-as I think this should be a rather common use case. Thoughts?
-
-> ---
->   .../selftests/bpf/prog_tests/skeleton.c       | 25 +++++++++++++++++++
->   .../selftests/bpf/progs/test_skeleton.c       | 10 ++++++++
->   2 files changed, 35 insertions(+)
-[...]
-> diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/testing/selftests/bpf/progs/test_skeleton.c
-> index 441fa1c552c8..47a7e76866c4 100644
-> --- a/tools/testing/selftests/bpf/progs/test_skeleton.c
-> +++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
-> @@ -40,9 +40,16 @@ int kern_ver = 0;
->   
->   struct s out5 = {};
->   
-> +const volatile int in_dynarr_sz SEC(".rodata.dyn");
-> +const volatile int in_dynarr[4] SEC(".rodata.dyn") = { -1, -2, -3, -4 };
-> +
-> +int out_dynarr[4] SEC(".data.dyn") = { 1, 2, 3, 4 };
-> +
->   SEC("raw_tp/sys_enter")
->   int handler(const void *ctx)
->   {
-> +	int i;
-> +
->   	out1 = in1;
->   	out2 = in2;
->   	out3 = in3;
-> @@ -53,6 +60,9 @@ int handler(const void *ctx)
->   	bpf_syscall = CONFIG_BPF_SYSCALL;
->   	kern_ver = LINUX_KERNEL_VERSION;
->   
-> +	for (i = 0; i < in_dynarr_sz; i++)
-> +		out_dynarr[i] = in_dynarr[i];
-> +
->   	return 0;
->   }
->   
+> This patch renamed BTF_KIND_TAG to BTF_KIND_DECL_TAG and some
+> other declarations with *_tag to *_decl_tag to make it clear
+> the tag is for declaration. In the future, BTF_KIND_TYPE_TAG
+> might be introduced per [2].
+> 
+>   [1] https://lore.kernel.org/bpf/20210914223004.244411-1-yhs@fb.com/
+>   [2] https://reviews.llvm.org/D111199
 > 
 
+Just a small nit: no objections to the rename as its only in bpf-next, but
+lets add proper Fixes tags to the three main commits from the series in [1]
+(which adds it to core, libbpf, bpftool). Given these are in bpf-next, the
+commit shas are more useful for searching in the git log compared to links
+to lore in this case. Thanks!
+
+> Signed-off-by: Yonghong Song <yhs@fb.com>
