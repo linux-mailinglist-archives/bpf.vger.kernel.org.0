@@ -2,105 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF04242888F
-	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 10:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750EA428A24
+	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 11:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbhJKIWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Oct 2021 04:22:53 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22014 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234944AbhJKIWv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 Oct 2021 04:22:51 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19AI3aIn009193
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 01:20:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Uez65aulhadKLJpn+NXYsgF0SuMdHpdNtV+Bqq7Fi3E=;
- b=itKuqBv0taOwbGH4zv5bHJr/qaYriXEY/LV6wvRnyhcpfO+iyjkjsE937SLMiIuZPWbx
- lhpz93FSNI5zmj/YNJMDlezG1fi7hjbBU40UkqUeYfJwQxIMw3ZWJ59QEQuwE4vP0BZ5
- Yys8qijXRb8zI4lvHgjDLcWMSJmKbo0QY2g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bm540ubwd-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 01:20:51 -0700
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 11 Oct 2021 01:20:43 -0700
-Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
-        id 2EF737DCA117; Mon, 11 Oct 2021 01:20:35 -0700 (PDT)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
-CC:     Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v2 bpf-next 4/4] libbpf: deprecate bpf_program__get_prog_info_linear
-Date:   Mon, 11 Oct 2021 01:20:31 -0700
-Message-ID: <20211011082031.4148337-5-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211011082031.4148337-1-davemarchevsky@fb.com>
-References: <20211011082031.4148337-1-davemarchevsky@fb.com>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: FLOBmQ0i5tXXCEUyc4UrGGe7VXvLF5uv
-X-Proofpoint-GUID: FLOBmQ0i5tXXCEUyc4UrGGe7VXvLF5uv
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S231370AbhJKJux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Oct 2021 05:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235607AbhJKJuu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:50:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E835F60E8B;
+        Mon, 11 Oct 2021 09:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633945730;
+        bh=PhsR/ZnLmZ4MFPZ1GZtfeun3Q/yhTWkDBOGurKoP+ww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pX4ycGtia4q9UNlhO325KnJ+UKoWtcXgnmYiLgA0K3rPh3r81zvjIFPIuqJoIw9YJ
+         XckQKpgrmhcpnxEI78HqF5EW1x33mvLEFikbJfNVQ2gzu+2EOCYXwSXtUNsWQ+8o1h
+         ML8SP+MFlZK3qaRADCr2rxnIjhOb7+cTuhMbXUwnyaLYjl7uo+9+ditMiWABNIQHaD
+         IbwlCIm9yOXuhI6B/P/nggTerNiUgJaChYQVTZWIObiEtL2VlnhZ96ShNaG1GavcOu
+         4nH+DnwuhSizzW3EK0q6JOuB+os8Vn7QAI+oz50zM+0tK9QbHeliPIpeSb+mrZyuz4
+         HKEw1FY3Vjdtw==
+Date:   Mon, 11 Oct 2021 11:48:44 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        shayagr@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v15 bpf-next 00/18] mvneta: introduce XDP multi-buffer
+ support
+Message-ID: <YWQIfIjqdm1fzZwu@lore-desk>
+References: <cover.1633697183.git.lorenzo@kernel.org>
+ <20211008181435.742e1e44@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87fstajqt8.fsf@toke.dk>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-11_02,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=605
- spamscore=0 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 suspectscore=0 priorityscore=1501
- phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110110048
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4Y8Wu7HEDp7r9l2D"
+Content-Disposition: inline
+In-Reply-To: <87fstajqt8.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As part of the road to libbpf 1.0, and discussed in libbpf issue tracker
-[0], bpf_program__get_prog_info_linear and its associated structs and
-helper functions should be deprecated. The functionality is too specific
-to the needs of 'perf', and there's little/no out-of-tree usage to
-preclude introduction of a more general helper in the future.
 
-[0] Closes: https://github.com/libbpf/libbpf/issues/313
+--4Y8Wu7HEDp7r9l2D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- tools/lib/bpf/libbpf.h | 3 +++
- 1 file changed, 3 insertions(+)
+> Jakub Kicinski <kuba@kernel.org> writes:
+>=20
+> > On Fri,  8 Oct 2021 14:49:38 +0200 Lorenzo Bianconi wrote:
+> >> Changes since v14:
+> >> - intrudce bpf_xdp_pointer utility routine and
+> >>   bpf_xdp_load_bytes/bpf_xdp_store_bytes helpers
+> >> - drop bpf_xdp_adjust_data helper
+> >> - drop xdp_frags_truesize in skb_shared_info
+> >> - explode bpf_xdp_mb_adjust_tail in bpf_xdp_mb_increase_tail and
+> >>   bpf_xdp_mb_shrink_tail
+> >
+> > I thought the conclusion of the discussion regarding backward
+> > compatibility was that we should require different program type
+> > or other explicit opt in. Did I misinterpret?
+>=20
+> No, you're right. I think we settled on using the 'flags' field instead
+> of program type, but either way this should be part of the initial patch
+> set.
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 89ca9c83ed4e..285008b46e1b 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -877,12 +877,15 @@ struct bpf_prog_info_linear {
- 	__u8			data[];
- };
-=20
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use a custom linear prog_info wrapper")
- LIBBPF_API struct bpf_prog_info_linear *
- bpf_program__get_prog_info_linear(int fd, __u64 arrays);
-=20
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use a custom linear prog_info wrapper")
- LIBBPF_API void
- bpf_program__bpil_addr_to_offs(struct bpf_prog_info_linear *info_linear);
-=20
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use a custom linear prog_info wrapper")
- LIBBPF_API void
- bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear);
-=20
---=20
-2.30.2
+ops, right. I will add it in the v16. Sorry for the noise.
 
+Are you fine with bpf_xdp_load_bytes/bpf_xdp_store_bytes proposed solution?
+
+Regards,
+Lorenzo
+
+>=20
+> -Toke
+>=20
+
+--4Y8Wu7HEDp7r9l2D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYWQIfAAKCRA6cBh0uS2t
+rAbpAP41WVwfcNEE2EuwQtfXwL70lV4ElMVyPuBUznC5hhGXhwD+MwYDdxzhmAvc
+a3yzsGKVyXgVFVHXnQTMkQHITkXYNwQ=
+=QoZ0
+-----END PGP SIGNATURE-----
+
+--4Y8Wu7HEDp7r9l2D--
