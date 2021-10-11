@@ -2,87 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8761F428C8A
-	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 14:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A3D428CC2
+	for <lists+bpf@lfdr.de>; Mon, 11 Oct 2021 14:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhJKMGo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Oct 2021 08:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234579AbhJKMGn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:06:43 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9388C061570
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 05:04:43 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id m26so14697818pff.3
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 05:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=EggiArwUHdzlhhZ9X3Lz0fb6bTSzjLRY73Yy7pjfbDw=;
-        b=lTzIqa9vZjsqexN5EkeLPJbOeFUyCBD1a0MHI0O8LY7S6TQyp0UGaTkFhJmTFUANgf
-         Q3TCaUHVFh51pgazW18AtZv7bfKv7vnJYwr1RceAjvgnNZpzf502sqSwKMy6t6LLyPTq
-         L8pM+pGgsLlCGWAcdB42XEhjUhLIY541pmmPr3ku+Z7GOcIjcswjdEqoaZfgQcDtCyd+
-         BB9O2Q7eWu0frUSgGQzxHMhSZkV5JMBza91dw7R14A2NLz9cmIAxtZsZ1W5w2ZSwzxjh
-         TSI4+sgOnIr/X+HKdQyNcj149ZGv3jk1YYDHN9ojNrSTOmTZh91EztlsCg3RPG9WyKCf
-         o4oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=EggiArwUHdzlhhZ9X3Lz0fb6bTSzjLRY73Yy7pjfbDw=;
-        b=ksLfkFV6WrCxRpAOuQWc3EiGt2fJub6MmmgJemdH+oeaRsYtEQyJqvbwU9CrTMvS7w
-         WNm2ADLu2Lf4zUOCYlrU2FaVHpbtiO8vSz2sUxH0uYjgt/JFkvbhTpRx5k51rPsLqKCn
-         ph8/CwtkD2QQiEfVYAz/WkHhr8fzOV/f6bV445O2agB6OoI1fLijIbLq9lHmtMPKVp5t
-         M6zC6Rsy4PA5yYTUTgrAzghnsMs1GZ9TASBXaG7PhmUDmPALqZzxaKfSG9X6q9VF1UYq
-         Sw9+DkI8rVwdY5egdu8+Q3fpSSJEZDI6WFF49bZkTR1qedQ5G5qgiaNdSS21cMdaS3Wz
-         I7+A==
-X-Gm-Message-State: AOAM532QgJqQsSxjRjz/H+OhjWweF+ynww7UvSbZSxST+BK9ukyBV18Y
-        KSX7mUVDTUpA2j1qDgKqhuVusIx9WIrY1D9oriE=
-X-Google-Smtp-Source: ABdhPJw2TXLhJ2x/gzgBmvOyRskNbsh3FfJfcPfebNCn345DoeXnrIHs5vHXCMApgmbzv7NZKILxz2kleCjOY3u0ZMU=
-X-Received: by 2002:a62:6411:0:b0:44c:bf9f:f584 with SMTP id
- y17-20020a626411000000b0044cbf9ff584mr24201553pfb.29.1633953883158; Mon, 11
- Oct 2021 05:04:43 -0700 (PDT)
+        id S234849AbhJKMOs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Oct 2021 08:14:48 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36936 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234843AbhJKMOr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Oct 2021 08:14:47 -0400
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mZuAf-000Edl-JE; Mon, 11 Oct 2021 14:12:45 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     roopa@nvidia.com, dsahern@kernel.org, m@lambda.lt,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH net-next 0/4] Managed Neighbor Entries
+Date:   Mon, 11 Oct 2021 14:12:34 +0200
+Message-Id: <20211011121238.25542-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Sender: mrs.dorisdavid5@gmail.com
-Received: by 2002:a05:6a10:68e:0:0:0:0 with HTTP; Mon, 11 Oct 2021 05:04:42
- -0700 (PDT)
-From:   Anderson Theresa <ndersontheresa.24@gmail.com>
-Date:   Mon, 11 Oct 2021 05:04:42 -0700
-X-Google-Sender-Auth: Ws1Hra-HjQ2yaCfX0dgVs2eex5Y
-Message-ID: <CA+=KUqysLZg0pNJk4LELp8_YDD3fv+yCZFpqD2Xyg7FLyTNHkg@mail.gmail.com>
-Subject: Re: Greetings My Dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26319/Mon Oct 11 10:18:47 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Greetings,
+This series adds a couple of fixes related to NTF_EXT_LEARNED and NTF_USE
+neighbor flags, extends the UAPI with a new NDA_FLAGS_EXT netlink attribute
+in order to be able to add new neighbor flags from user space given all
+current struct ndmsg / ndm_flags bits are used up. Finally, the core of this
+series adds a new NTF_EXT_MANAGED flag to neighbors, which allows user space
+control planes to add 'managed' neighbor entries. Meaning, user space may
+either transition existing entries or can push down new L3 entries without
+lladdr into the kernel where the latter will periodically try to keep such
+NTF_EXT_MANAGED managed entries in reachable state. Main use case for this
+series are XDP / tc BPF load-balancers which make use of the bpf_fib_lookup()
+helper for backends. For more details, please see individual patches. Thanks!
 
-I sent this mail praying it will find you in a good condition, since I
-myself am in a very critical health condition in which I sleep every
-night without knowing if I may be alive to see the next day. I am
-Mrs.Theresa Anderson, a widow suffering from a long time illness. I
-have some funds I inherited from my late husband, the sum of
-($11,000,000.00, Eleven Million Dollars) my Doctor told me recently
-that I have serious sickness which is a cancer problem. What disturbs
-me most is my stroke sickness. Having known my condition, I decided to
-donate this fund to a good person that will utilize it the way I am
-going to instruct herein. I need a very honest God.
+Daniel Borkmann (3):
+  net, neigh: Fix NTF_EXT_LEARNED in combination with NTF_USE
+  net, neigh: Enable state migration between NUD_PERMANENT and NTF_USE
+  net, neigh: Add NTF_MANAGED flag for managed neighbor entries
 
-fearing a person who can claim this money and use it for Charity
-works, for orphanages, widows and also build schools for less
-privileges that will be named after my late husband if possible and to
-promote the word of God and the effort that the house of God is
-maintained. I do not want a situation where this money will be used in
-an ungodly manner. That's why I' making this decision. I'm not afraid
-of death so I know where I'm going. I accept this decision because I
-do not have any child who will inherit this money after I die. Please
-I want your sincere and urgent answer to know if you will be able to
-execute this project, and I will give you more information on how the
-fund will be transferred to your bank account. I am waiting for your
-reply.
+Roopa Prabhu (1):
+  net, neigh: Extend neigh->flags to 32 bit to allow for extensions
 
-May God Bless you,
-Mrs.Theresa Anderson.
+ include/net/neighbour.h        |  34 ++++--
+ include/uapi/linux/neighbour.h |  35 ++++--
+ net/core/neighbour.c           | 196 +++++++++++++++++++++++----------
+ 3 files changed, 187 insertions(+), 78 deletions(-)
+
+-- 
+2.27.0
+
