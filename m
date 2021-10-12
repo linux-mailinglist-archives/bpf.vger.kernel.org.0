@@ -2,106 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E20742A1BD
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 12:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22DA42A2C8
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 13:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhJLKSS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Oct 2021 06:18:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:32968 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232638AbhJLKSS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:18:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 943AF101E;
-        Tue, 12 Oct 2021 03:16:16 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.197.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE12E3F694;
-        Tue, 12 Oct 2021 03:16:15 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 11:16:13 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rfc 0/6] Scheduler BPF
-Message-ID: <20211012101613.bv3szjjl2ak2glqk@e107158-lin.cambridge.arm.com>
-References: <20210915213550.3696532-1-guro@fb.com>
- <20210916162451.709260-1-guro@fb.com>
- <20211006163949.zwze5du6szdabxos@e107158-lin.cambridge.arm.com>
- <YV3v3RkxOB6g/O+8@carbon.lan>
- <20211011163852.s4pq45rs2j3qhdwl@e107158-lin.cambridge.arm.com>
- <YWR9339EvxX6Ld1U@carbon.dhcp.thefacebook.com>
+        id S233818AbhJLLFb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Oct 2021 07:05:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28012 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232810AbhJLLFb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Oct 2021 07:05:31 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C8ZGU7027281;
+        Tue, 12 Oct 2021 07:03:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Xowob3foClNe+UBjgCiRQuCluyPw48N2b8lBCW2lXoY=;
+ b=oQOijNlax7dTYgIrcgvz/8EBsvX6EPig1X3c6jCx+HQuMaXL5Z4bvCvu63K1zwII8crm
+ QN9q52TwVIPhsZRVadph/xt8kSWJ3DnzY/7fFtJU2ezxPGwNTjO7aTAyYluAoVqLQQmH
+ 01DDY3T/fSs/njELBCPuU7nuYTBjxMh8hNcjZPiCnwt0Trf674TvPKt+aoC8M3GXosK3
+ 1hTbyA0vyoWQPaygCyHOm/tP4svJV+BV6jO/O1N/ivXWftuw/2UPHmplMhVCoEE3JupV
+ id6MgnWcOt81cGHBHNI3/590p6SUaEge8/shuGPo9Zfa2/TfFjr32NJwB/k11OkSUzV6 Bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn49ypk1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 07:03:16 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19CAwXS2025329;
+        Tue, 12 Oct 2021 07:03:16 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn49ypjyv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 07:03:16 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19CApNeT021504;
+        Tue, 12 Oct 2021 11:03:13 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3bk2q9nr2q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 11:03:13 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19CAvRfL60293428
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 10:57:27 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 087464C09C;
+        Tue, 12 Oct 2021 11:03:00 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A45304C040;
+        Tue, 12 Oct 2021 11:02:59 +0000 (GMT)
+Received: from sig-9-145-45-184.uk.ibm.com (unknown [9.145.45.184])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Oct 2021 11:02:59 +0000 (GMT)
+Message-ID: <fd749b049550e179d0d0b789d08a102655b1a68e.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Use cpu_number only on
+ arches that have it
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Tue, 12 Oct 2021 13:02:59 +0200
+In-Reply-To: <CAEf4BzY=npfWOSgPPEKZ9g44a5XQ_606agX840dLLCqJiDC++g@mail.gmail.com>
+References: <20211012023218.399568-1-iii@linux.ibm.com>
+         <20211012023218.399568-2-iii@linux.ibm.com>
+         <CAEf4BzY=npfWOSgPPEKZ9g44a5XQ_606agX840dLLCqJiDC++g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YWR9339EvxX6Ld1U@carbon.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: W-CR5ggI-HLtqS1y0zkkFUIODPUDecPn
+X-Proofpoint-GUID: 4qDJvLs4ZiCM7SncxQTJ0-U4isRgf-tH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_02,2021-10-12_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 priorityscore=1501 phishscore=0 spamscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110120065
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/11/21 11:09, Roman Gushchin wrote:
-> > Convenient will be only true assuming you have a full comprehensive list of
-> > hooks to never require adding a new one. As I highlighted above, this
-> > convenience is limited to hooks that you added now.
+On Tue, 2021-10-12 at 05:56 +0200, Andrii Nakryiko wrote:
+> On Tue, Oct 12, 2021 at 4:51 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
 > > 
-> > Do people always want more hooks? Rhetorical question ;-)
-> 
-> Why do you think that the list of the hooks will be so large/dynamic?
-
-It's not a fact. Just my thoughts/guess based on how things usually end up.
-It's very likely this will grow. I could be wrong of course :)
-
-> I'm not saying we can figure it out from a first attempt, but I'm pretty sure
-> that after some initial phase it can be relatively stable, e.g. changing only
-> with some _major_ changes in the scheduler code.
-
-My point was that the speed up in workflow will be limited by the what's
-available. It might be enough for a large use cases as you say, but at some
-point there will be a new bottleneck that you might think worth experimenting
-with and the chances a suitable hook is available are 50:50 in theory. So it's
-not a magical fix where one would *never* have to push a custom kernel on all
-these systems to experiment with some scheduler changes.
-
-> > > > So my worry is that this will open the gate for these hooks to get more than
-> > > > just micro-optimization done in a platform specific way. And that it will
-> > > > discourage having the right discussion to fix real problems in the scheduler
-> > > > because the easy path is to do whatever you want in userspace. I am not sure we
-> > > > can control how these hooks are used.
-> > > 
-> > > I totally understand your worry. I think we need to find a right balance between
-> > > allowing to implement custom policies and keeping the core functionality
-> > > working well enough for everybody without a need to tweak anything.
-> > > 
-> > > It seems like an alternative to this "let's allow cfs customization via bpf"
-> > > approach is to completely move the scheduler code into userspace/bpf, something
-> > > that Google's ghOSt is aiming to do.
+> > cpu_number exists only on Intel and aarch64, so skip the test
+> > involing
+> > it on other arches. An alternative would be to replace it with an
+> > exported non-ifdefed primitive-typed percpu variable from the
+> > common
+> > code, but there appears to be none.
 > > 
-> > Why not ship a custom kernel instead then?
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/btf_dump.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > index 87f9df653e4e..12f457b6786d 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > @@ -778,8 +778,10 @@ static void test_btf_dump_struct_data(struct
+> > btf *btf, struct btf_dump *d,
+> >  static void test_btf_dump_var_data(struct btf *btf, struct
+> > btf_dump *d,
+> >                                    char *str)
+> >  {
+> > +#if defined(__i386__) || defined(__x86_64__) ||
+> > defined(__aarch64__)
+> >         TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_number", int,
+> > BTF_F_COMPACT,
+> >                           "int cpu_number = (int)100", 100);
+> > +#endif
 > 
-> Shipping a custom kernel (actually any kernel) at this scale isn't easy or fast.
-> Just for example, imagine a process of rebooting of a 1000000 machines running
-> 1000's different workloads, each with their own redundancy and capacity requirements.
-> 
-> This what makes an ability to push scheduler changes without a reboot/kernel upgrade
-> so attractive.
-> 
-> Obviously, it's not a case when we talk about a single kernel engineer and their
-> laptop/dev server/vm.
+> We are in the talks about supporting cross-compilation of selftests,
+> and this will be just another breakage that we'll have to undo.
 
-I think you're still referring to ghOSt here. I thought your 2 use cases are
-different as you mentioned they "completely move the scheduler code into
-userspace/bpf"; but it could be just me mis-interpreting what this means. That
-didn't read to me they want to micro-optimize (few) certain decisions in the
-scheduler, rather replace it altogether, hence my question.
+Why would this break? Cross-compilation should define these macros
+based on target, not build system.
 
-Anyway. My 2cents here is that we should be careful not to introduce something
-that encourages out-of-tree workarounds for real scheduler problems nor have it
-done in a way where we lose visibility over how these hooks are used and being
-able to share it with others who could benefit from the same mico-optimization
-too.
+> Can we find some other variable that will be available on all
+> architectures? Maybe "runqueues"?
 
-Thanks!
+Wouldn't runqueues be pointless? We already have cpu_profile_flip. I
+thought the idea here was to have something marked with
+EXPORT_PER_CPU_SYMBOL.
 
---
-Qais Yousef
+> >         TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_profile_flip",
+> > int, BTF_F_COMPACT,
+> >                           "static int cpu_profile_flip = (int)2",
+> > 2);
+> >  }
+> > --
+> > 2.31.1
+
