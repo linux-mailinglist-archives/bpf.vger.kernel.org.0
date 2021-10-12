@@ -2,99 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41E3429C33
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 06:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8053429CEB
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 07:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhJLERa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Oct 2021 00:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+        id S230153AbhJLFIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Oct 2021 01:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhJLER3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Oct 2021 00:17:29 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A948C061570
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 21:15:28 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k23-20020a17090a591700b001976d2db364so1551522pji.2
-        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 21:15:28 -0700 (PDT)
+        with ESMTP id S229593AbhJLFIK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Oct 2021 01:08:10 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98EAC061570;
+        Mon, 11 Oct 2021 22:06:09 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id d125so6365486iof.5;
+        Mon, 11 Oct 2021 22:06:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oblNZxxjz2n3XYhiqm9+qJ7yfSIxEkt4DwvylmYsmaM=;
-        b=olOC0QaKMRgTPr7e7zgKy10Kx3UbL5x5d3SY73iXiqbPKURf0Ao9NTKcM5nt0OlHEO
-         YOlcVo672jdtUf9JHRQHu/x/Ysc5SS50o14fuZXCj+IJMJlaWuR9w5Yc18D5/sITqnp3
-         RdTHh0d4wVMA2WwFegJf8gd/b8SYn9qjZKCrX0UyOQNFynjpCN4n3vABpv0z32Fpzepa
-         63P8uBmgganxa/tRQqrUht0CW9+owuyDDRexeEEeLUNXPbhXl6jpOnfltFGitZJJ18wB
-         DoWCX7IWIL3AoqKMl1WwWeHshqX7Lswbiyb+d7ADTvW3hBs2TdRxCDmF64od5Hfy2mdj
-         /X8A==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=D1EXf0UQ7O0n0PRZAuiXxXUhGb2pOwfptpjgbbeKvkg=;
+        b=hFHrkPDvfYRfIfxI7wHlqF/vsgzMd/MlZ7AqY00g/OyByz5PMFmwhCoopKazgIwJ47
+         /3+2P/ZNfz1fSUjmm8XoilqFJfKqVTnA1frmNzlUkK0+2pwS4DOUPGNGLFgFACZgav5O
+         vGd/rVF/QDMxqxHpI+izQOu+oarMxT6eUzvgJvUDsh+1hY16toXxX7tjedEN6Oz8WDI6
+         ULw2I3kYzvQyMjxrLnqscjrtLkzi+7cU2edBvh0KtH1E3DDhqBL1dCbmWfy431B/uGcd
+         c4O305hIXzi5W/+F9+lqYw5a6ZsFm3IcUmxScMExaTVwasKrp83lfjJVYjWH1MbCZ2TH
+         l9ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oblNZxxjz2n3XYhiqm9+qJ7yfSIxEkt4DwvylmYsmaM=;
-        b=HwyiHuIcens81dLuM1M0euQnLVNYABvkusVLuIBmJhOy5gNHHmVpfqG81rHM6+dcPg
-         +OyrB+pS2OGS08e31idHrLrCxrX3Z/iTU4waHEJvDmAVRPrViJOwLR71R/mauPW2m1wg
-         0X7b3pfQBjQzS5MjNrDMwdmwO02R0xQUEHRqrnvRcCj6XotYFLkEZTmw7Jn9+SBea2Bz
-         lqrIQBcm+EvAuHunpC66gc/h9Sr67V1SIjxXxfb2xuRx+9BKq3oG8IenIKzAC6BahvG3
-         n1vgKUlwHLl8eaNw+8yzPqosA+zuaPGS4wuWETtI3+yh/A/J1AVm7dtv+2R78aAfc1V4
-         AEOQ==
-X-Gm-Message-State: AOAM531XRTMXVjfovFQTZJPZfhS3TzmFbbBBPTlU4E69psrAwYulVKbu
-        TCYzbmHWfAXTaFbFiGx8C2k=
-X-Google-Smtp-Source: ABdhPJxU96xq8TDOn/+3rtKwKeBAxEX87kk9/l+ve+3kiLFFq1QToE4D5CWkHl/xjQwUcEXze8JPvA==
-X-Received: by 2002:a17:90a:db51:: with SMTP id u17mr3387686pjx.171.1634012127693;
-        Mon, 11 Oct 2021 21:15:27 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
-        by smtp.gmail.com with ESMTPSA id i123sm9563535pfg.157.2021.10.11.21.15.26
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=D1EXf0UQ7O0n0PRZAuiXxXUhGb2pOwfptpjgbbeKvkg=;
+        b=hDa96DCFtcQcwYkVFdGjThrUommG+HJPhB757Lo8z5GySFRmBEKB9hDPSmISzeRUaD
+         zM22tiZsUVwBMm7h0bStzXx2WNAaMlnHzc94bFGgPBcFJYulmDP6ZbwUVxQYjlXRBMzj
+         9NTgkyYaAUjAIcgnHCjkq1Xxw+BpH0KO55/3f70sjKg8mjn/JMfewxvyiVLT5j6xinhE
+         rsPyzbEvsn6nMHgYmLuMON2FUpBzHdr3VMcum/QGAOjONv7aN8QR5yf575ieX56YrvP8
+         3VyrCG5IlhTgAbgbp4OGhklaGFxMQtMI8IvKMptpNxn+O38ysVfLnBvN+aZlGY5Ygxbr
+         gsKA==
+X-Gm-Message-State: AOAM530jAfA650d6+ZIk00g14keav8nxPRQqryex5BTQPTA+AHfZsqWP
+        pr+aaKYPlgdG5CGU+/njIbc=
+X-Google-Smtp-Source: ABdhPJyQ8vjy1AnDje/oXz3nQUgQ0ke1qvBtNoBLk05P6Nn/QntD/msKDFInI5nflE4YL7ykI5wZDw==
+X-Received: by 2002:a02:858c:: with SMTP id d12mr9537564jai.110.1634015169106;
+        Mon, 11 Oct 2021 22:06:09 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id t1sm4987301ilf.70.2021.10.11.22.06.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 21:15:27 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 09:45:24 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 00/10] libbpf: support custom .rodata.*/.data.*
- sections
-Message-ID: <20211012041524.udytbr2xs5wid6x2@apollo.localdomain>
-References: <20211008000309.43274-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008000309.43274-1-andrii@kernel.org>
+        Mon, 11 Oct 2021 22:06:08 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 22:06:01 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Message-ID: <616517b9b7336_2215c208b2@john-XPS-13-9370.notmuch>
+In-Reply-To: <20211008204604.38014-1-xiyou.wangcong@gmail.com>
+References: <20211008204604.38014-1-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf] udp: validate checksum in udp_read_sock()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 05:32:59AM IST, andrii.nakryiko@gmail.com wrote:
-> From: Andrii Nakryiko <andrii@kernel.org>
->
-> [...]
-> One interesting possibility that is now open by these changes is that it's
-> possible to do:
->
->     bpf_trace_printk("My fmt %s", sizeof("My fmt %s"), "blah");
->
-> and it will work as expected. I haven't updated libbpf-provided helpers in
-> bpf_helpers.h for snprintf, seq_printf, and printk, because using
-> `static const char ___fmt[] = fmt;` trick is still efficient and doesn't fill
-> out the buffer at runtime (no copying), but it also enforces that format
-> string is compile-time string literal:
->
->     const char *s = NULL;
->
->     bpf_printk("hi"); /* works */
->     bpf_printk(s); /* compilation error */
->
-> By passing fmt directly to bpf_trace_printk() would actually compile
-> bpf_printk(s) above with no warnings and will not work at runtime, which is
-> worse user experience, IMO.
->
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> It turns out the skb's in sock receive queue could have
+> bad checksums, as both ->poll() and ->recvmsg() validate
+> checksums. We have to do the same for ->read_sock() path
+> too before they are redirected in sockmap.
+> 
+> Fixes: d7f571188ecf ("udp: Implement ->read_sock() for sockmap")
+> Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+> Reported-by: John Fastabend <john.fastabend@gmail.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  net/ipv4/udp.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 8536b2a7210b..0ae8ab5e05b4 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -1808,6 +1808,17 @@ int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+>  		skb = skb_recv_udp(sk, 0, 1, &err);
+>  		if (!skb)
+>  			return err;
+> +
+> +		if (udp_lib_checksum_complete(skb)) {
+> +			__UDP_INC_STATS(sock_net(sk), UDP_MIB_CSUMERRORS,
+> +					IS_UDPLITE(sk));
+> +			__UDP_INC_STATS(sock_net(sk), UDP_MIB_INERRORS,
+> +					IS_UDPLITE(sk));
+> +			atomic_inc(&sk->sk_drops);
+> +			kfree_skb(skb);
 
-You could try the following (_Static_assert would probably be preferable, but
-IDK if libbpf can use it).
+We could use sock_drop() here? Otherwise looks good thanks.
 
-#define IS_ARRAY(x) ({ sizeof(int[-__builtin_types_compatible_p(typeof(x), typeof(&*(x)))]); 1; })
+> +			continue;
+> +		}
+> +
+>  		used = recv_actor(desc, skb, 0, skb->len);
+>  		if (used <= 0) {
+>  			if (!copied)
+> -- 
+> 2.30.2
+> 
 
-In action: https://godbolt.org/z/4d4W61YPf
 
---
-Kartikeya
