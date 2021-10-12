@@ -2,144 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22DA42A2C8
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 13:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BFC42A2F7
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 13:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbhJLLFb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Oct 2021 07:05:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28012 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232810AbhJLLFb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Oct 2021 07:05:31 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C8ZGU7027281;
-        Tue, 12 Oct 2021 07:03:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Xowob3foClNe+UBjgCiRQuCluyPw48N2b8lBCW2lXoY=;
- b=oQOijNlax7dTYgIrcgvz/8EBsvX6EPig1X3c6jCx+HQuMaXL5Z4bvCvu63K1zwII8crm
- QN9q52TwVIPhsZRVadph/xt8kSWJ3DnzY/7fFtJU2ezxPGwNTjO7aTAyYluAoVqLQQmH
- 01DDY3T/fSs/njELBCPuU7nuYTBjxMh8hNcjZPiCnwt0Trf674TvPKt+aoC8M3GXosK3
- 1hTbyA0vyoWQPaygCyHOm/tP4svJV+BV6jO/O1N/ivXWftuw/2UPHmplMhVCoEE3JupV
- id6MgnWcOt81cGHBHNI3/590p6SUaEge8/shuGPo9Zfa2/TfFjr32NJwB/k11OkSUzV6 Bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn49ypk1j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 07:03:16 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19CAwXS2025329;
-        Tue, 12 Oct 2021 07:03:16 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn49ypjyv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 07:03:16 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19CApNeT021504;
-        Tue, 12 Oct 2021 11:03:13 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 3bk2q9nr2q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 11:03:13 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19CAvRfL60293428
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 10:57:27 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 087464C09C;
-        Tue, 12 Oct 2021 11:03:00 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A45304C040;
-        Tue, 12 Oct 2021 11:02:59 +0000 (GMT)
-Received: from sig-9-145-45-184.uk.ibm.com (unknown [9.145.45.184])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Oct 2021 11:02:59 +0000 (GMT)
-Message-ID: <fd749b049550e179d0d0b789d08a102655b1a68e.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Use cpu_number only on
- arches that have it
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Tue, 12 Oct 2021 13:02:59 +0200
-In-Reply-To: <CAEf4BzY=npfWOSgPPEKZ9g44a5XQ_606agX840dLLCqJiDC++g@mail.gmail.com>
-References: <20211012023218.399568-1-iii@linux.ibm.com>
-         <20211012023218.399568-2-iii@linux.ibm.com>
-         <CAEf4BzY=npfWOSgPPEKZ9g44a5XQ_606agX840dLLCqJiDC++g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S236124AbhJLLTJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Oct 2021 07:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232665AbhJLLTH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:19:07 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C25C061570;
+        Tue, 12 Oct 2021 04:17:06 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id q5so5538971pgr.7;
+        Tue, 12 Oct 2021 04:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=toin2qRutuPFHVWf+g8domdh9ga8LXuWYrISewj7CEM=;
+        b=j0050LnyUGXdh7+N0cUFjwwpgCK+nBjYRj668ZBSS+1KLxHmQrxXIb/5qyKAQ40ToG
+         Hu6ge+c26Hz1/Ad+kY75fcr5aWzmS9vSo3ThWdyxcFcbnxwV0iERsRQY8AldmR7Qcccx
+         rmsm853DLLhxZSVVlhhXoKr6vmmo/b2wmHB/CIDNgUDNTUmemSdftPF19+xsyBOozOp/
+         Tv6xbI1iCD/ghms30JSUznvToFpursgOUWShVDTetiSik2VP4D6q92T8LY/Lk4wjnXXc
+         tTuFGCSLj685t2IYUBDTRSjecEWPruU+sn0tY0GFK81a27vzgeyVZkI4dJqecG7LwBav
+         7x6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=toin2qRutuPFHVWf+g8domdh9ga8LXuWYrISewj7CEM=;
+        b=iJ4mSOc6UNkKNgSpmg2tknwagkJ/1/QcYZBToPuAQMhvpg3vkI1zCaL6TO6R3i0gcy
+         jBAxs531k/zlB3qmfyn4Ryzjx16wYBIdf+S5746pWT06DcR6k+Q8QdBi4KvLgGC1SlnK
+         GBtEvmvTS802NiS4CuRSQfOcflDqhaAuNnsOeehicAmPHONOaKxPLgTCCRPcBh0RVPzc
+         9/VZ3SI1DWDLfpc1pNa0NZwJ5pKUo+mJj4C8rilILEKzReh/78YoDtpIJ65tuhLnmY1z
+         ZFeK/f3MJslSsnTWeXo2EPKtyNoSGRCz0+L/oidAwUApZJ5faIjNooLXC14Ybqb9JFrF
+         7JnQ==
+X-Gm-Message-State: AOAM530pL0vtLCq508R2Xm1e9KA2xtVZR1rtr+TnvS1v787gVPhCPyFr
+        SzEENsb0ILRXglEooGmH0nc=
+X-Google-Smtp-Source: ABdhPJyzPsKwhgLrlj2Aty7rX51eUmE1cPtuzka/4Nm3SSRKgPQhrzgmjJlZFXmDyyZ93l5PoetOOw==
+X-Received: by 2002:aa7:814f:0:b0:44d:626:8b96 with SMTP id d15-20020aa7814f000000b0044d06268b96mr15953073pfn.65.1634037426042;
+        Tue, 12 Oct 2021 04:17:06 -0700 (PDT)
+Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
+        by smtp.gmail.com with ESMTPSA id 63sm10383409pfv.192.2021.10.12.04.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 04:17:05 -0700 (PDT)
+From:   davidcomponentone@gmail.com
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        David Yang <davidcomponentone@gmail.com>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] Fix application of sizeof to pointer
+Date:   Tue, 12 Oct 2021 19:16:49 +0800
+Message-Id: <20211012111649.983253-1-davidcomponentone@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: W-CR5ggI-HLtqS1y0zkkFUIODPUDecPn
-X-Proofpoint-GUID: 4qDJvLs4ZiCM7SncxQTJ0-U4isRgf-tH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-12_02,2021-10-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999 malwarescore=0
- adultscore=0 priorityscore=1501 phishscore=0 spamscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120065
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2021-10-12 at 05:56 +0200, Andrii Nakryiko wrote:
-> On Tue, Oct 12, 2021 at 4:51 AM Ilya Leoshkevich <iii@linux.ibm.com>
-> wrote:
-> > 
-> > cpu_number exists only on Intel and aarch64, so skip the test
-> > involing
-> > it on other arches. An alternative would be to replace it with an
-> > exported non-ifdefed primitive-typed percpu variable from the
-> > common
-> > code, but there appears to be none.
-> > 
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/btf_dump.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> > b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> > index 87f9df653e4e..12f457b6786d 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> > @@ -778,8 +778,10 @@ static void test_btf_dump_struct_data(struct
-> > btf *btf, struct btf_dump *d,
-> >  static void test_btf_dump_var_data(struct btf *btf, struct
-> > btf_dump *d,
-> >                                    char *str)
-> >  {
-> > +#if defined(__i386__) || defined(__x86_64__) ||
-> > defined(__aarch64__)
-> >         TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_number", int,
-> > BTF_F_COMPACT,
-> >                           "int cpu_number = (int)100", 100);
-> > +#endif
-> 
-> We are in the talks about supporting cross-compilation of selftests,
-> and this will be just another breakage that we'll have to undo.
+From: David Yang <davidcomponentone@gmail.com>
 
-Why would this break? Cross-compilation should define these macros
-based on target, not build system.
+The coccinelle check report:
+"./samples/bpf/xdp_redirect_cpu_user.c:397:32-38:
+ERROR: application of sizeof to pointer"
+Using the "strlen" to fix it.
 
-> Can we find some other variable that will be available on all
-> architectures? Maybe "runqueues"?
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: David Yang <davidcomponentone@gmail.com>
+---
+ samples/bpf/xdp_redirect_cpu_user.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Wouldn't runqueues be pointless? We already have cpu_profile_flip. I
-thought the idea here was to have something marked with
-EXPORT_PER_CPU_SYMBOL.
-
-> >         TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_profile_flip",
-> > int, BTF_F_COMPACT,
-> >                           "static int cpu_profile_flip = (int)2",
-> > 2);
-> >  }
-> > --
-> > 2.31.1
+diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+index 6e25fba64c72..d84e6949007c 100644
+--- a/samples/bpf/xdp_redirect_cpu_user.c
++++ b/samples/bpf/xdp_redirect_cpu_user.c
+@@ -325,7 +325,6 @@ int main(int argc, char **argv)
+ 	int add_cpu = -1;
+ 	int ifindex = -1;
+ 	int *cpu, i, opt;
+-	char *ifname;
+ 	__u32 qsize;
+ 	int n_cpus;
+ 
+@@ -393,9 +392,8 @@ int main(int argc, char **argv)
+ 				fprintf(stderr, "-d/--dev name too long\n");
+ 				goto end_cpu;
+ 			}
+-			ifname = (char *)&ifname_buf;
+-			safe_strncpy(ifname, optarg, sizeof(ifname));
+-			ifindex = if_nametoindex(ifname);
++			safe_strncpy(ifname_buf, optarg, strlen(ifname_buf));
++			ifindex = if_nametoindex(ifname_buf);
+ 			if (!ifindex)
+ 				ifindex = strtoul(optarg, NULL, 0);
+ 			if (!ifindex) {
+-- 
+2.30.2
 
