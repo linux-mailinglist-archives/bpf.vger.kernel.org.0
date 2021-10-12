@@ -2,75 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7439642A129
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 11:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E20742A1BD
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 12:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhJLJfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Oct 2021 05:35:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59536 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235715AbhJLJfA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:35:00 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B14721FF4D;
-        Tue, 12 Oct 2021 09:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634031177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uUH2uniB3EQO3dwCrSFaoRzeR2U8u7SDS04Yd4v70+U=;
-        b=YhyfbjO5nAw5bwwzh728WNI5DvAqHjJZFQzjmHA1K2+FdNCUYVxUjqsq9Ae4F6bDEzoqJQ
-        EEwVGKESG8YU55NGTFA+CFcmsIM5Doln5oqhNIvnNKw5GzbJco1gWy+9X50dKiW+sFqa2K
-        BV+UzYXo89KlPkPy75N9K1j65LCFY+I=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 69D8E132D4;
-        Tue, 12 Oct 2021 09:32:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 84kbGUlWZWHjaAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 12 Oct 2021 09:32:57 +0000
-Date:   Tue, 12 Oct 2021 11:32:55 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Quanyang Wang <quanyang.wang@windriver.com>
-Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-Message-ID: <20211012093255.GA14510@blackbody.suse.cz>
-References: <20211007121603.1484881-1-quanyang.wang@windriver.com>
- <20211011162128.GC61605@blackbody.suse.cz>
- <6d76de0b-9de7-adbe-834b-c49ed991559d@windriver.com>
+        id S235833AbhJLKSS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Oct 2021 06:18:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:32968 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232638AbhJLKSS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:18:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 943AF101E;
+        Tue, 12 Oct 2021 03:16:16 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.197.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE12E3F694;
+        Tue, 12 Oct 2021 03:16:15 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 11:16:13 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rfc 0/6] Scheduler BPF
+Message-ID: <20211012101613.bv3szjjl2ak2glqk@e107158-lin.cambridge.arm.com>
+References: <20210915213550.3696532-1-guro@fb.com>
+ <20210916162451.709260-1-guro@fb.com>
+ <20211006163949.zwze5du6szdabxos@e107158-lin.cambridge.arm.com>
+ <YV3v3RkxOB6g/O+8@carbon.lan>
+ <20211011163852.s4pq45rs2j3qhdwl@e107158-lin.cambridge.arm.com>
+ <YWR9339EvxX6Ld1U@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6d76de0b-9de7-adbe-834b-c49ed991559d@windriver.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YWR9339EvxX6Ld1U@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 02:22:13PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
-> Before this commit, percpu_ref is embedded in cgroup, it can be freed along
-> with cgroup, so there is no memory leak. Since this commit, it causes the
-> memory leak.
-> Should I change it to "Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of
-> cgroup_bpf from cgroup itself")"?
+On 10/11/21 11:09, Roman Gushchin wrote:
+> > Convenient will be only true assuming you have a full comprehensive list of
+> > hooks to never require adding a new one. As I highlighted above, this
+> > convenience is limited to hooks that you added now.
+> > 
+> > Do people always want more hooks? Rhetorical question ;-)
+> 
+> Why do you think that the list of the hooks will be so large/dynamic?
 
-I see. The leak is a product so I'd tag both of them and explain it in
-the commit message.
+It's not a fact. Just my thoughts/guess based on how things usually end up.
+It's very likely this will grow. I could be wrong of course :)
 
-Thank you,
-Michal
+> I'm not saying we can figure it out from a first attempt, but I'm pretty sure
+> that after some initial phase it can be relatively stable, e.g. changing only
+> with some _major_ changes in the scheduler code.
+
+My point was that the speed up in workflow will be limited by the what's
+available. It might be enough for a large use cases as you say, but at some
+point there will be a new bottleneck that you might think worth experimenting
+with and the chances a suitable hook is available are 50:50 in theory. So it's
+not a magical fix where one would *never* have to push a custom kernel on all
+these systems to experiment with some scheduler changes.
+
+> > > > So my worry is that this will open the gate for these hooks to get more than
+> > > > just micro-optimization done in a platform specific way. And that it will
+> > > > discourage having the right discussion to fix real problems in the scheduler
+> > > > because the easy path is to do whatever you want in userspace. I am not sure we
+> > > > can control how these hooks are used.
+> > > 
+> > > I totally understand your worry. I think we need to find a right balance between
+> > > allowing to implement custom policies and keeping the core functionality
+> > > working well enough for everybody without a need to tweak anything.
+> > > 
+> > > It seems like an alternative to this "let's allow cfs customization via bpf"
+> > > approach is to completely move the scheduler code into userspace/bpf, something
+> > > that Google's ghOSt is aiming to do.
+> > 
+> > Why not ship a custom kernel instead then?
+> 
+> Shipping a custom kernel (actually any kernel) at this scale isn't easy or fast.
+> Just for example, imagine a process of rebooting of a 1000000 machines running
+> 1000's different workloads, each with their own redundancy and capacity requirements.
+> 
+> This what makes an ability to push scheduler changes without a reboot/kernel upgrade
+> so attractive.
+> 
+> Obviously, it's not a case when we talk about a single kernel engineer and their
+> laptop/dev server/vm.
+
+I think you're still referring to ghOSt here. I thought your 2 use cases are
+different as you mentioned they "completely move the scheduler code into
+userspace/bpf"; but it could be just me mis-interpreting what this means. That
+didn't read to me they want to micro-optimize (few) certain decisions in the
+scheduler, rather replace it altogether, hence my question.
+
+Anyway. My 2cents here is that we should be careful not to introduce something
+that encourages out-of-tree workarounds for real scheduler problems nor have it
+done in a way where we lose visibility over how these hooks are used and being
+able to share it with others who could benefit from the same mico-optimization
+too.
+
+Thanks!
+
+--
+Qais Yousef
