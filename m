@@ -2,173 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A084429B8F
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 04:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDEA429BD6
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 05:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhJLCiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Oct 2021 22:38:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:25123 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbhJLCiX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:38:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HT09x0t9Qz1DH80;
-        Tue, 12 Oct 2021 10:34:45 +0800 (CST)
-Received: from dggema721-chm.china.huawei.com (10.3.20.85) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 10:36:19 +0800
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggema721-chm.china.huawei.com (10.3.20.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 12 Oct 2021 10:36:19 +0800
-Received: from dggema772-chm.china.huawei.com ([10.9.128.138]) by
- dggema772-chm.china.huawei.com ([10.9.128.138]) with mapi id 15.01.2308.008;
- Tue, 12 Oct 2021 10:36:18 +0800
-From:   "liujian (CE)" <liujian56@huawei.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "jakub@cloudflare.com" <jakub@cloudflare.com>,
-        "lmb@cloudflare.com" <lmb@cloudflare.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>
-Subject: RE: [PATCH v4] skmsg: lose offset info in sk_psock_skb_ingress
-Thread-Topic: [PATCH v4] skmsg: lose offset info in sk_psock_skb_ingress
-Thread-Index: AQHXtNafWXeoX8LX90u02UwkM3/EjKu8qsUAgAWaNgCADHS7AA==
-Date:   Tue, 12 Oct 2021 02:36:18 +0000
-Message-ID: <e60cf9bd85924ead98bb5bfd5b7e4919@huawei.com>
-References: <20210929020642.206454-1-liujian56@huawei.com>
- <61563ebaf2fe0_6c4e420813@john-XPS-13-9370.notmuch> 
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.93]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231951AbhJLDTt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Oct 2021 23:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbhJLDTt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Oct 2021 23:19:49 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487CFC061570
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 20:17:48 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id d131so43542497ybd.5
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 20:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RBk23ij5AVzmMpFqPM3b8WHu01WexSRJcFMEd4U2rcA=;
+        b=FyO4xieYGo2P6VjByrQIIl3J3lSYBmps2udq4thGf84ryCDNPggyvLbi36DmHe0T4a
+         vStysyiQy2qnmPmlrC2htzbjW5a6qc6bB+59TlATHkLWuYHR1Smq8XID+3HF7Zozzizo
+         nKVYr08OlTE5ILE3vqY37tEf/mR3CzC5y35P42FNVlycTaNP01nqk3ZtjI/jBmE1D3em
+         7Za5fNQGV87ZV6RYtExqUC36g4Y6DyROalsrrbYL+t3BD8d1BJ1VBO7vkUfKAmbtaxVK
+         CZbzVYCtiwg21fez2/Urper5LV6kMUb2gktxYasNRT9kJ9j8dh1kOuuxwpdXBNpvp+v8
+         VIUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RBk23ij5AVzmMpFqPM3b8WHu01WexSRJcFMEd4U2rcA=;
+        b=66AyQzLoD4bOmJB6eyTZVW7cj3gcVwfRYMc3UNuzNm5hKm7JboWTjlM0kslmnZO7Nx
+         7+JI9iNkKLGTF7u6IZMdXgnab1icfvF0OkmvCDI4siEQLWUwcX8I7+FoKqg5h8oiRH3u
+         W9LQFFOGeHGSfd8itQjc1upVCUn+7IFc5Fx1D0s4IWh6gtuItm+aFb+/jmmjjDKnlfs6
+         AkwwKuu4AvwYrBYvHu1nGSDX1MayEgC4tfsLQnpGdPVF3gjExbPdvtSnIoQa4u/sMZvr
+         TkJwB9NYtqGF8m/d8vwWJ6JWn1kwjrpfgPx/xhDcvlP2usdJAA4Z47dRWnO1eJyBvzq2
+         6AxA==
+X-Gm-Message-State: AOAM532Aw4E8UIYKjWkoiCQWSW5O5ohr5Ho5LPoAFHk8RCXEUn2biDFr
+        /2r2A++nHEslUll/VPTURqFGLXrTrcWrtGdC6A4=
+X-Google-Smtp-Source: ABdhPJzGa0yJYV9NAJM8Jj3nSkd1Fq0sK5ZJDgTxOPRcJOKkK5riGcKItg8c0/jr8CyVuLlVei1ngQMMThHTLgZzqLs=
+X-Received: by 2002:a25:5606:: with SMTP id k6mr25399666ybb.51.1634008667335;
+ Mon, 11 Oct 2021 20:17:47 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20211006222103.3631981-1-joannekoong@fb.com> <20211006222103.3631981-2-joannekoong@fb.com>
+ <87k0ioncgz.fsf@toke.dk> <4536decc-5366-dc07-4923-32f2db948d85@fb.com>
+ <87o87zji2a.fsf@toke.dk> <CAEf4BzbqQRzTgPmK3EM0wWw5XrgnenqhhBJdudFjwxLrfPJF8g@mail.gmail.com>
+ <87czoejqcv.fsf@toke.dk>
+In-Reply-To: <87czoejqcv.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Oct 2021 05:17:36 +0200
+Message-ID: <CAEf4BzbWVCz6RNKHVgqLYx8UqGUdDqL5EPKyuQ5YTXZMxt2r_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/5] bpf: Add bitset map with bloom filter capabilities
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGl1amlhbiAoQ0UpDQo+
-IFNlbnQ6IE1vbmRheSwgT2N0b2JlciA0LCAyMDIxIDEyOjI4IFBNDQo+IFRvOiAnSm9obiBGYXN0
-YWJlbmQnIDxqb2huLmZhc3RhYmVuZEBnbWFpbC5jb20+OyBkYW5pZWxAaW9nZWFyYm94Lm5ldDsN
-Cj4gamFrdWJAY2xvdWRmbGFyZS5jb207IGxtYkBjbG91ZGZsYXJlLmNvbTsgZGF2ZW1AZGF2ZW1s
-b2Z0Lm5ldDsNCj4ga3ViYUBrZXJuZWwub3JnOyBhc3RAa2VybmVsLm9yZzsgYW5kcmlpQGtlcm5l
-bC5vcmc7IGthZmFpQGZiLmNvbTsNCj4gc29uZ2xpdWJyYXZpbmdAZmIuY29tOyB5aHNAZmIuY29t
-OyBrcHNpbmdoQGtlcm5lbC5vcmc7DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGJwZkB2Z2Vy
-Lmtlcm5lbC5vcmc7IHhpeW91Lndhbmdjb25nQGdtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSRTogW1BB
-VENIIHY0XSBza21zZzogbG9zZSBvZmZzZXQgaW5mbyBpbiBza19wc29ja19za2JfaW5ncmVzcw0K
-PiANCj4gDQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogSm9o
-biBGYXN0YWJlbmQgW21haWx0bzpqb2huLmZhc3RhYmVuZEBnbWFpbC5jb21dDQo+ID4gU2VudDog
-RnJpZGF5LCBPY3RvYmVyIDEsIDIwMjEgNjo0OCBBTQ0KPiA+IFRvOiBsaXVqaWFuIChDRSkgPGxp
-dWppYW41NkBodWF3ZWkuY29tPjsgam9obi5mYXN0YWJlbmRAZ21haWwuY29tOw0KPiA+IGRhbmll
-bEBpb2dlYXJib3gubmV0OyBqYWt1YkBjbG91ZGZsYXJlLmNvbTsgbG1iQGNsb3VkZmxhcmUuY29t
-Ow0KPiA+IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGt1YmFAa2VybmVsLm9yZzsgYXN0QGtlcm5lbC5v
-cmc7DQo+ID4gYW5kcmlpQGtlcm5lbC5vcmc7IGthZmFpQGZiLmNvbTsgc29uZ2xpdWJyYXZpbmdA
-ZmIuY29tOyB5aHNAZmIuY29tOw0KPiA+IGtwc2luZ2hAa2VybmVsLm9yZzsgbmV0ZGV2QHZnZXIu
-a2VybmVsLm9yZzsgYnBmQHZnZXIua2VybmVsLm9yZzsNCj4gPiB4aXlvdS53YW5nY29uZ0BnbWFp
-bC5jb20NCj4gPiBDYzogbGl1amlhbiAoQ0UpIDxsaXVqaWFuNTZAaHVhd2VpLmNvbT4NCj4gPiBT
-dWJqZWN0OiBSRTogW1BBVENIIHY0XSBza21zZzogbG9zZSBvZmZzZXQgaW5mbyBpbg0KPiA+IHNr
-X3Bzb2NrX3NrYl9pbmdyZXNzDQo+ID4NCj4gPiBMaXUgSmlhbiB3cm90ZToNCj4gPiA+IElmIHNv
-Y2ttYXAgZW5hYmxlIHN0cnBhcnNlciwgdGhlcmUgYXJlIGxvc2Ugb2Zmc2V0IGluZm8gaW4NCj4g
-PiA+IHNrX3Bzb2NrX3NrYl9pbmdyZXNzLiBJZiB0aGUgbGVuZ3RoIGRldGVybWluZWQgYnkgcGFy
-c2VfbXNnIGZ1bmN0aW9uDQo+ID4gPiBpcyBub3Qgc2tiLT5sZW4sIHRoZSBza2Igd2lsbCBiZSBj
-b252ZXJ0ZWQgdG8gc2tfbXNnIG11bHRpcGxlIHRpbWVzLA0KPiA+ID4gYW5kIHVzZXJzcGFjZSBh
-cHAgd2lsbCBnZXQgdGhlIGRhdGEgbXVsdGlwbGUgdGltZXMuDQo+ID4gPg0KPiA+ID4gRml4IHRo
-aXMgYnkgZ2V0IHRoZSBvZmZzZXQgYW5kIGxlbmd0aCBmcm9tIHN0cnBfbXNnLg0KPiA+ID4gQW5k
-IGFzIENvbmcgc3VnZ2VzdGlvbiwgYWRkIG9uZSBiaXQgaW4gc2tiLT5fc2tfcmVkaXIgdG8gZGlz
-dGluZ3Vpc2gNCj4gPiA+IGVuYWJsZSBvciBkaXNhYmxlIHN0cnBhcnNlci4NCj4gPiA+DQo+ID4g
-PiBTaWduZWQtb2ZmLWJ5OiBMaXUgSmlhbiA8bGl1amlhbjU2QGh1YXdlaS5jb20+DQo+ID4gPiAt
-LS0NCj4gPg0KPiA+IFRoYW5rcy4gUGxlYXNlIGFkZCBGaXhlcyB0YWdzIHNvIHdlIGNhbiB0cmFj
-ayB0aGVzZSBJJ3ZlIGFkZGVkIGl0IGhlcmUuDQo+ID4NCj4gPiBUaGlzIGhhcyBiZWVuIGJyb2tl
-biBmcm9tIHRoZSBpbml0aWFsIHBhdGNoZXMgYW5kIGFmdGVyIGEgcXVpY2sgZ2xhbmNlDQo+ID4g
-SSBzdXNwZWN0IHRoaXMgd2lsbCBuZWVkIG1hbnVhbCBiYWNrcG9ydHMgaWYgd2UgbmVlZCBpdC4g
-QWxzbyBhbGwgdGhlDQo+ID4gSSB1c2UgYW5kIGFsbCB0aGUgc2VsZnRlc3RzIHNldCBwYXJzZXIg
-dG8gYSBub3AgYnkgcmV0dXJuaW5nIHNrYi0+bGVuLg0KPiA+DQo+ID4gQ2FuIHlvdSBhbHNvIGNy
-ZWF0ZSBhIHRlc3Qgc28gd2UgY2FuIGVuc3VyZSB3ZSBkb24ndCBicmVhayB0aGlzIGFnYWluPw0K
-PiBPa2F5LCBJIHdpbGwgZG8gdGhpcyBhZnRlciB0aGUgaG9saWRheS4NCg0KDQpIaSBKb2huLCAN
-CkkgY2hlY2tlZCBzZWxmdGVzdHMsIHRoZXJlIGFyZSBoYXZlIG9uZSB0ZXN0IGNhc2UgbmFtZWQg
-IiB0ZXN0X3R4bXNnX2luZ3Jlc3NfcGFyc2VyIi4NCkJ1dCB3aXRoIHRoaXMgcGF0Y2ggYW5kIGt0
-bHMsIHRoZSB0ZXN0IGZhaWxlZCwgdGhpcyBiZWNhdXNlIGt0bHMgcGFyc2VyKHRsc19yZWFkX3Np
-emUpIHJldHVybiB2YWx1ZSBpcyAyODUgbm90IDI1Ni4NCnRoZSBjYXNlIGxpa2UgdGhpczogDQp0
-bHNfc2sxIC0tPiByZWRpcl9zayAtLT4gdGxzX3NrMg0KdGxzX3NrMSBzZW50IG91dCA1MTIgYnl0
-ZXMgZGF0YSwgYWZ0ZXIgdGxzIHJlbGF0ZWQgcHJvY2Vzc2luZyByZWRpcl9zayByZWN2ZWQgNTcw
-IGJ0eWVzIGRhdGEsDQphbmQgcmVkaXJlY3QgNTEyIChza2JfdXNlX3BhcnNlcikgYnl0ZXMgZGF0
-YSB0byB0bHNfc2syOyBidXQgdGxzX3NrMiBuZWVkcyAyODUgKiAyIGJ5dGVzIGRhdGEsIHJlY2Vp
-dmUgdGltZW91dCBvY2N1cnJlZC4NCkkgZml4IHRoaXMgYXMgYmVsb3c6DQotLS0gYS90b29scy90
-ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9zb2NrbWFwLmMNCisrKyBiL3Rvb2xzL3Rlc3Rpbmcv
-c2VsZnRlc3RzL2JwZi90ZXN0X3NvY2ttYXAuYw0KQEAgLTE2ODAsNiArMTY4MCw4IEBAIHN0YXRp
-YyB2b2lkIHRlc3RfdHhtc2dfaW5ncmVzc19wYXJzZXIoaW50IGNncnAsIHN0cnVjdCBzb2NrbWFw
-X29wdGlvbnMgKm9wdCkNCiB7DQogICAgICAgIHR4bXNnX3Bhc3MgPSAxOw0KICAgICAgICBza2Jf
-dXNlX3BhcnNlciA9IDUxMjsNCisgICAgICAgaWYgKGt0bHMgPT0gMSkNCisgICAgICAgICAgICAg
-ICBza2JfdXNlX3BhcnNlciA9IDU3MDsNCiAgICAgICAgb3B0LT5pb3ZfbGVuZ3RoID0gMjU2Ow0K
-ICAgICAgICBvcHQtPmlvdl9jb3VudCA9IDE7DQogICAgICAgIG9wdC0+cmF0ZSA9IDI7DQoNCg0K
-QW5kIGkgYWRkIG9uZSBuZXcgdGVzdCBhcyBiZWxvdywgaXMgaXQgb2s/DQoNCi0tLSBhL3Rvb2xz
-L3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi90ZXN0X3NvY2ttYXAuYw0KKysrIGIvdG9vbHMvdGVzdGlu
-Zy9zZWxmdGVzdHMvYnBmL3Rlc3Rfc29ja21hcC5jDQpAQCAtMTM5LDYgKzEzOSw3IEBAIHN0cnVj
-dCBzb2NrbWFwX29wdGlvbnMgew0KICAgICAgICBib29sIHNlbmRwYWdlOw0KICAgICAgICBib29s
-IGRhdGFfdGVzdDsNCiAgICAgICAgYm9vbCBkcm9wX2V4cGVjdGVkOw0KKyAgICAgICBib29sIGNo
-ZWNrX3JlY3ZlZF9sZW47DQogICAgICAgIGludCBpb3ZfY291bnQ7DQogICAgICAgIGludCBpb3Zf
-bGVuZ3RoOw0KICAgICAgICBpbnQgcmF0ZTsNCkBAIC01NTYsOCArNTU3LDEyIEBAIHN0YXRpYyBp
-bnQgbXNnX2xvb3AoaW50IGZkLCBpbnQgaW92X2NvdW50LCBpbnQgaW92X2xlbmd0aCwgaW50IGNu
-dCwNCiAgICAgICAgaW50IGVyciwgaSwgZmxhZ3MgPSBNU0dfTk9TSUdOQUw7DQogICAgICAgIGJv
-b2wgZHJvcCA9IG9wdC0+ZHJvcF9leHBlY3RlZDsNCiAgICAgICAgYm9vbCBkYXRhID0gb3B0LT5k
-YXRhX3Rlc3Q7DQorICAgICAgIGludCBpb3ZfYWxsb2NfbGVuZ3RoID0gaW92X2xlbmd0aDsNCiAN
-Ci0gICAgICAgZXJyID0gbXNnX2FsbG9jX2lvdigmbXNnLCBpb3ZfY291bnQsIGlvdl9sZW5ndGgs
-IGRhdGEsIHR4KTsNCisgICAgICAgaWYgKCF0eCAmJiBvcHQtPmNoZWNrX3JlY3ZlZF9sZW4pDQor
-ICAgICAgICAgICAgICAgaW92X2FsbG9jX2xlbmd0aCAqPSAyOw0KKw0KKyAgICAgICBlcnIgPSBt
-c2dfYWxsb2NfaW92KCZtc2csIGlvdl9jb3VudCwgaW92X2FsbG9jX2xlbmd0aCwgZGF0YSwgdHgp
-Ow0KICAgICAgICBpZiAoZXJyKQ0KICAgICAgICAgICAgICAgIGdvdG8gb3V0X2Vycm5vOw0KICAg
-ICAgICBpZiAocGVla19mbGFnKSB7DQpAQCAtNjY1LDYgKzY3MCwxMyBAQCBzdGF0aWMgaW50IG1z
-Z19sb29wKGludCBmZCwgaW50IGlvdl9jb3VudCwgaW50IGlvdl9sZW5ndGgsIGludCBjbnQsDQog
-DQogICAgICAgICAgICAgICAgICAgICAgICBzLT5ieXRlc19yZWN2ZCArPSByZWN2Ow0KIA0KKyAg
-ICAgICAgICAgICAgICAgICAgICAgaWYgKG9wdC0+Y2hlY2tfcmVjdmVkX2xlbiAmJiBzLT5ieXRl
-c19yZWN2ZCA+IHRvdGFsX2J5dGVzKSB7DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IGVycm5vID0gRU1TR1NJWkU7DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZwcmlu
-dGYoc3RkZXJyLCAicmVjdiBmYWlsZWQoKSwgYnl0ZXNfcmVjdmQ6JXpkLCB0b3RhbF9ieXRlczol
-ZlxuIiwNCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHMt
-PmJ5dGVzX3JlY3ZkLCB0b3RhbF9ieXRlcyk7DQorICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGdvdG8gb3V0X2Vycm5vOw0KKyAgICAgICAgICAgICAgICAgICAgICAgfQ0KKw0KICAgICAg
-ICAgICAgICAgICAgICAgICAgaWYgKGRhdGEpIHsNCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgaW50IGNodW5rX3N6ID0gb3B0LT5zZW5kcGFnZSA/DQogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpb3ZfbGVuZ3RoICogY250IDoNCkBAIC03NDQs
-NyArNzU2LDggQEAgc3RhdGljIGludCBzZW5kbXNnX3Rlc3Qoc3RydWN0IHNvY2ttYXBfb3B0aW9u
-cyAqb3B0KQ0KIA0KICAgICAgICByeHBpZCA9IGZvcmsoKTsNCiAgICAgICAgaWYgKHJ4cGlkID09
-IDApIHsNCi0gICAgICAgICAgICAgICBpb3ZfYnVmIC09ICh0eG1zZ19wb3AgLSB0eG1zZ19zdGFy
-dF9wb3AgKyAxKTsNCisgICAgICAgICAgICAgICBpZiAodHhtc2dfcG9wIHx8IHR4bXNnX3N0YXJ0
-X3BvcCkNCisgICAgICAgICAgICAgICAgICAgICAgIGlvdl9idWYgLT0gKHR4bXNnX3BvcCAtIHR4
-bXNnX3N0YXJ0X3BvcCArIDEpOw0KICAgICAgICAgICAgICAgIGlmIChvcHQtPmRyb3BfZXhwZWN0
-ZWQgfHwgdHhtc2dfa3Rsc19za2JfZHJvcCkNCiAgICAgICAgICAgICAgICAgICAgICAgIF9leGl0
-KDApOw0KIA0KQEAgLTE2ODgsNiArMTcwMSwxOSBAQCBzdGF0aWMgdm9pZCB0ZXN0X3R4bXNnX2lu
-Z3Jlc3NfcGFyc2VyKGludCBjZ3JwLCBzdHJ1Y3Qgc29ja21hcF9vcHRpb25zICpvcHQpDQogICAg
-ICAgIHRlc3RfZXhlYyhjZ3JwLCBvcHQpOw0KIH0NCiANCitzdGF0aWMgdm9pZCB0ZXN0X3R4bXNn
-X2luZ3Jlc3NfcGFyc2VyMihpbnQgY2dycCwgc3RydWN0IHNvY2ttYXBfb3B0aW9ucyAqb3B0KQ0K
-K3sNCisgICAgICAgaWYgKGt0bHMgPT0gMSkNCisgICAgICAgICAgICAgICByZXR1cm47DQorICAg
-ICAgIHNrYl91c2VfcGFyc2VyID0gMTA7DQorICAgICAgIG9wdC0+aW92X2xlbmd0aCA9IDIwOw0K
-KyAgICAgICBvcHQtPmlvdl9jb3VudCA9IDE7DQorICAgICAgIG9wdC0+cmF0ZSA9IDE7DQorICAg
-ICAgIG9wdC0+Y2hlY2tfcmVjdmVkX2xlbiA9IHRydWU7DQorICAgICAgIHRlc3RfZXhlYyhjZ3Jw
-LCBvcHQpOw0KKyAgICAgICBvcHQtPmNoZWNrX3JlY3ZlZF9sZW4gPSBmYWxzZTsNCit9DQorDQog
-Y2hhciAqbWFwX25hbWVzW10gPSB7DQogICAgICAgICJzb2NrX21hcCIsDQogICAgICAgICJzb2Nr
-X21hcF90eG1zZyIsDQpAQCAtMTc4Niw3ICsxODEyLDggQEAgc3RydWN0IF90ZXN0IHRlc3RbXSA9
-IHsNCiAgICAgICAgeyJ0eG1zZyB0ZXN0IHB1bGwtZGF0YSIsIHRlc3RfdHhtc2dfcHVsbH0sDQog
-ICAgICAgIHsidHhtc2cgdGVzdCBwb3AtZGF0YSIsIHRlc3RfdHhtc2dfcG9wfSwNCiAgICAgICAg
-eyJ0eG1zZyB0ZXN0IHB1c2gvcG9wIGRhdGEiLCB0ZXN0X3R4bXNnX3B1c2hfcG9wfSwNCi0gICAg
-ICAgeyJ0eG1zZyB0ZXh0IGluZ3Jlc3MgcGFyc2VyIiwgdGVzdF90eG1zZ19pbmdyZXNzX3BhcnNl
-cn0sDQorICAgICAgIHsidHhtc2cgdGVzdCBpbmdyZXNzIHBhcnNlciIsIHRlc3RfdHhtc2dfaW5n
-cmVzc19wYXJzZXJ9LA0KKyAgICAgICB7InR4bXNnIHRlc3QgaW5ncmVzcyBwYXJzZXIyIiwgdGVz
-dF90eG1zZ19pbmdyZXNzX3BhcnNlcjJ9LA0KIH07DQoNCj4gPg0KPiA+IEZpeGVzOiA2MDQzMjZi
-NDFhNmZiICgiYnBmLCBzb2NrbWFwOiBjb252ZXJ0IHRvIGdlbmVyaWMgc2tfbXNnDQo+ID4gaW50
-ZXJmYWNlIikNCj4gPiBBY2tlZC1ieTogSm9obiBGYXN0YWJlbmQgPGpvaG4uZmFzdGFiZW5kQGdt
-YWlsLmNvbT4NCj4gVGhhbmsgeW91IGZvciByZXZpZXdpbmcgdGhpcyBwYXRjaCBhZ2Fpbi4NCg==
+On Sat, Oct 9, 2021 at 3:10 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Fri, Oct 8, 2021 at 2:58 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+> >>
+> >> Joanne Koong <joannekoong@fb.com> writes:
+> >>
+> >> > On 10/7/21 7:20 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> >
+> >> >> Joanne Koong <joannekoong@fb.com> writes:
+> >> >>
+> >> >>> This patch adds the kernel-side changes for the implementation of
+> >> >>> a bitset map with bloom filter capabilities.
+> >> >>>
+> >> >>> The bitset map does not have keys, only values since it is a
+> >> >>> non-associative data type. When the bitset map is created, it must
+> >> >>> be created with a key_size of 0, and the max_entries value should =
+be the
+> >> >>> desired size of the bitset, in number of bits.
+> >> >>>
+> >> >>> The bitset map supports peek (determining whether a bit is set in =
+the
+> >> >>> map), push (setting a bit in the map), and pop (clearing a bit in =
+the
+> >> >>> map) operations. These operations are exposed to userspace applica=
+tions
+> >> >>> through the already existing syscalls in the following way:
+> >> >>>
+> >> >>> BPF_MAP_UPDATE_ELEM -> bpf_map_push_elem
+> >> >>> BPF_MAP_LOOKUP_ELEM -> bpf_map_peek_elem
+> >> >>> BPF_MAP_LOOKUP_AND_DELETE_ELEM -> bpf_map_pop_elem
+> >> >>>
+> >> >>> For updates, the user will pass in a NULL key and the index of the
+> >> >>> bit to set in the bitmap as the value. For lookups, the user will =
+pass
+> >> >>> in the index of the bit to check as the value. If the bit is set, =
+0
+> >> >>> will be returned, else -ENOENT. For clearing the bit, the user wil=
+l pass
+> >> >>> in the index of the bit to clear as the value.
+> >> >> This is interesting, and I can see other uses of such a data struct=
+ure.
+> >> >> However, a couple of questions (talking mostly about the 'raw' bitm=
+ap
+> >> >> without the bloom filter enabled):
+> >> >>
+> >> >> - How are you envisioning synchronisation to work? The code is usin=
+g the
+> >> >>    atomic set_bit() operation, but there's no test_and_{set,clear}_=
+bit().
+> >> >>    Any thoughts on how users would do this?
+> >> > I was thinking for users who are doing concurrent lookups + updates,
+> >> > they are responsible for synchronizing the operations through mutexe=
+s.
+> >> > Do you think this makes sense / is reasonable?
+> >>
+> >> Right, that is an option, of course, but it's a bit heavyweight. Atomi=
+c
+> >> bitops are a nice light-weight synchronisation primitive.
+> >>
+> >> Hmm, looking at your code again, you're already using
+> >> test_and_clear_bit() in pop_elem(). So why not just mirror that to
+> >> test_and_set_bit() in push_elem(), and change the returns to EEXIST an=
+d
+> >> ENOENT if trying to set or clear a bit that is already set or cleared
+> >> (respectively)?
+> >>
+> >> >> - It would be useful to expose the "find first set (ffs)" operation=
+ of
+> >> >>    the bitmap as well. This can be added later, but thinking about =
+the
+> >> >>    API from the start would be good to avoid having to add a whole
+> >> >>    separate helper for this. My immediate thought is to reserve pee=
+k(-1)
+> >> >>    for this use - WDYT?
+> >> > I think using peek(-1) for "find first set" sounds like a great idea=
+!
+> >>
+> >> Awesome!
+> >
+> > What's the intended use case for such an operation?
+>
+> The 'find first set' operation is a single instruction on common
+> architectures, so it's an efficient way of finding the first non-empty
+> bucket if you index them in a bitmap; sch_qfq uses this, for instance.
+
+There is also extremely useful popcnt() instruction, would be great to
+have that as well. There is also fls() (find largest set bit), it is
+used extensively throughout the kernel. If we'd like to take this ad
+absurdum, there are a lot of useful operations defined in
+include/linux/bitops.h and include/linux/bitmap.h, I'm pretty sure one
+can come up with a use case for every one of those.
+
+The question is whether we should bloat the kernel with such helpers/operat=
+ions?
+
+I still think that we don't need a dedicated BITSET map. I'm not
+talking about Bloom filters here, mind you. With the Bloom filter I
+can't (in principle) beat the performance aspect, so I stopped trying
+to argue against that. But for BITSET map, there is next to zero
+reason (in my view) to have it as a dedicated map vs just implementing
+it as an ARRAY map. Or even, for cases where it's feasible, as a
+global variable array (avoiding BPF helper calls completely). Any
+bitset operation is literally one bpf_map_lookup_elem() helper call
+and one logical and/or/xor operation. And you can choose whether it
+has to be atomic or not. And you don't even have to do power-of-2
+sizing, if you don't want to (but your life will be a bit harder to
+prove stuff to the BPF verifier).
+
+Further, if one implements BITSET as just an ARRAY of u64s (for
+example), you get all the power of bpf_for_each_map_elem() and you can
+implement finding first unset bit, last unset bit, and anything in
+between. All using already existing primitives. Yes, there is a
+callback overhead, but with your custom ARRAY, you can optimize
+further by using something bigger than u64 as a "building block" of
+your ARRAY. E.g., you can have u64[8], and reduce the number of
+necessary callbacks by 8. But we are getting way too far ahead. My
+claim is that ARRAY is better than BITSET map and doesn't lose in
+performance (still one BPF helper call for basic operations).
+
+I'd love to hear specific arguments in favor of dedicated BITSET, though.
+
+>
+> > But also searching just a first set bit is non completely generic, I'd
+> > imagine that in practice (at least judging from bit operations done on
+> > u64s I've seen in the wild) you'd most likely need "first set bit
+> > after bit N", so peek(-N)?..
+>
+> You're right as far as generality goes, but for my use case "after bit
+> N" is not so important (you enqueue into different buckets and always
+> need to find the lowest one. But there could be other use cases for
+> "find first set after N", of course. If using -N the parameter would
+> have to change to explicitly signed, of course, but that's fine by me :)
+>
+> > I think it's an overkill to provide something like this, but even if
+> > we do, wouldn't BPF_MAP_GET_NEXT_KEY (except we now say it's a
+> > "value", not a "key", but that's nitpicking) be a sort of natural
+> > extension to provide this? Though it might be only available to
+> > user-space right?
+>
+> Yeah, thought about get_next_key() but as you say that doesn't work from
+> BPF. It would make sense to *also* expose this to userspace through
+> get_next_key(), though.
+>
+> > Oh, and it won't work in Bloom filter "mode", right?
+>
+> I expect not? But we could just return -EINVAL in that case?
+>
+> -Toke
+>
