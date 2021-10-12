@@ -2,112 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6464642A107
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 11:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7439642A129
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 11:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235306AbhJLJak (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Oct 2021 05:30:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232657AbhJLJak (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:30:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E16360F92;
-        Tue, 12 Oct 2021 09:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634030919;
-        bh=w6tJ0j7GZyF9EA8+IbdyJH2ct/ziottLxIdQqKTGRqU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Af/9zwXNiRPkvFTna55wceL8kexV3DRj4NlW8pN/pyovPyCs5nA2v/56fiiRDIU+c
-         HM3Yu00NmTQF5P/KOHjXwMKD/VP0O/X3b0SCsoNdDpQFnkr/DDBxo1KFcNTaVuCVAK
-         CleWg31dMcxiLmuLVt6pU/08nVbn/1ukk2C4m0v8=
-Date:   Tue, 12 Oct 2021 11:28:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <songliubraving@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        bpf <bpf@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc2 review
-Message-ID: <YWVVRDEDdaIQYKlX@kroah.com>
-References: <20211012064436.577746139@linuxfoundation.org>
- <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
+        id S235746AbhJLJfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Oct 2021 05:35:00 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59536 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235715AbhJLJfA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:35:00 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B14721FF4D;
+        Tue, 12 Oct 2021 09:32:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634031177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uUH2uniB3EQO3dwCrSFaoRzeR2U8u7SDS04Yd4v70+U=;
+        b=YhyfbjO5nAw5bwwzh728WNI5DvAqHjJZFQzjmHA1K2+FdNCUYVxUjqsq9Ae4F6bDEzoqJQ
+        EEwVGKESG8YU55NGTFA+CFcmsIM5Doln5oqhNIvnNKw5GzbJco1gWy+9X50dKiW+sFqa2K
+        BV+UzYXo89KlPkPy75N9K1j65LCFY+I=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 69D8E132D4;
+        Tue, 12 Oct 2021 09:32:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 84kbGUlWZWHjaAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 12 Oct 2021 09:32:57 +0000
+Date:   Tue, 12 Oct 2021 11:32:55 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Quanyang Wang <quanyang.wang@windriver.com>
+Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] cgroup: fix memory leak caused by missing
+ cgroup_bpf_offline
+Message-ID: <20211012093255.GA14510@blackbody.suse.cz>
+References: <20211007121603.1484881-1-quanyang.wang@windriver.com>
+ <20211011162128.GC61605@blackbody.suse.cz>
+ <6d76de0b-9de7-adbe-834b-c49ed991559d@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
+In-Reply-To: <6d76de0b-9de7-adbe-834b-c49ed991559d@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:04:54PM +0530, Naresh Kamboju wrote:
-> On Tue, 12 Oct 2021 at 12:16, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.4.153 release.
-> > There are 52 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Thu, 14 Oct 2021 06:44:25 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> stable rc 5.4.153-rc2 Powerpc build failed.
-> 
-> In file included from arch/powerpc/net/bpf_jit64.h:11,
->                  from arch/powerpc/net/bpf_jit_comp64.c:19:
-> arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
-> arch/powerpc/net/bpf_jit.h:32:9: error: expected expression before 'do'
->    32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
->       |         ^~
-> arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
->    33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
->       |                                 ^~~~~~~~~~~
-> arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
->   415 |                                         EMIT(PPC_LI(dst_reg, 0));
->       |                                         ^~~~
-> arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
->    33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
->       |                                 ^~~~~~~~~~~
-> arch/powerpc/net/bpf_jit.h:41:33: note: in expansion of macro 'EMIT'
->    41 | #define PPC_ADDI(d, a, i)       EMIT(PPC_INST_ADDI |
-> ___PPC_RT(d) |           \
->       |                                 ^~~~
-> arch/powerpc/net/bpf_jit.h:44:33: note: in expansion of macro 'PPC_ADDI'
->    44 | #define PPC_LI(r, i)            PPC_ADDI(r, 0, i)
->       |                                 ^~~~~~~~
-> arch/powerpc/net/bpf_jit_comp64.c:415:46: note: in expansion of macro 'PPC_LI'
->   415 |                                         EMIT(PPC_LI(dst_reg, 0));
->       |                                              ^~~~~~
-> make[3]: *** [scripts/Makefile.build:262:
-> arch/powerpc/net/bpf_jit_comp64.o] Error 1
-> make[3]: Target '__build' not remade because of errors.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On Tue, Oct 12, 2021 at 02:22:13PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
+> Before this commit, percpu_ref is embedded in cgroup, it can be freed along
+> with cgroup, so there is no memory leak. Since this commit, it causes the
+> memory leak.
+> Should I change it to "Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of
+> cgroup_bpf from cgroup itself")"?
 
-Ok, I'm just going to go delete this patch from the queue now...
+I see. The leak is a product so I'd tag both of them and explain it in
+the commit message.
 
-Thanks for the quick report.
-
-greg k-h
+Thank you,
+Michal
