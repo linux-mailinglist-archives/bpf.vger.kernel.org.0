@@ -2,180 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E2A42A6A0
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 16:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8A042A6DF
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 16:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237049AbhJLOBw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Oct 2021 10:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237119AbhJLOBu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:01:50 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0557EC06161C
-        for <bpf@vger.kernel.org>; Tue, 12 Oct 2021 06:59:49 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id t2so67307029wrb.8
-        for <bpf@vger.kernel.org>; Tue, 12 Oct 2021 06:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3TJptnN4GzzzsUZvyAiZp6iIaMylBdItWw9O0Dv3HnA=;
-        b=cEXX6Mwrzs0vcm+TK38bYcoPrMHAs0fVD4jmEKoOLPPaGOcW9Qr6Zup4q7Kga2P0X7
-         QVnbk5vBa9BvvMXBXCaROYb02HihhCiVW9yB4XJ2PH8I0Rn7AwAjlGsKBNnGvS6LxHRH
-         q6D1e7luYHHtp4LCyC5fDwreOAtgoseaEWeec=
+        id S236888AbhJLON4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Oct 2021 10:13:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60720 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236995AbhJLONz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Oct 2021 10:13:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634047913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0iK1/pGNnUtvxIpXr8vij/Yx3QTTCdY0pXxA5X8g5Gc=;
+        b=fVmZoqFQothaIjCXdy9asvNYwevrQxqMb6Kji9q+VCjetCGuIZ+go8Oqml+uIo5NmkUEdH
+        oxtXLmJIcJcvWctdDG5ImRtlITGhV1VeDwF1vMC01KGSnWeiuX63H2D2pVJQRnGRZHyIy9
+        u5zim4xV1k/L7vaZilJPKeLcbxgXwUs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-TrnQOTd-P4SamRqU7dWwPg-1; Tue, 12 Oct 2021 10:11:52 -0400
+X-MC-Unique: TrnQOTd-P4SamRqU7dWwPg-1
+Received: by mail-ed1-f70.google.com with SMTP id l10-20020a056402230a00b003db6977b694so10708295eda.23
+        for <bpf@vger.kernel.org>; Tue, 12 Oct 2021 07:11:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3TJptnN4GzzzsUZvyAiZp6iIaMylBdItWw9O0Dv3HnA=;
-        b=I9ZdU2xv3d/oSJoUaTOdpCErDD//LqwtSaOZawsK/lTEozWX+179TyZrTSgTh7DXhp
-         fVuNX7Vfnb2r31KHPhwZlWCncQOmBslLuUI08f+zzY3jHQaGJJCNOnQMhhZTm2dGb8SK
-         P++rJiClSmIJPC+GzmIITIy+8gQ/8nW2WlelIDKWdh3U0vvcS+8Lt9Zp54YDlo+KQ/Fk
-         3JVepZy0SP9Q+HnnSmRyfTYTLOz2xqn76QLwI2QEd75Eo4jfGljUApMpnqPWhrFPAQV+
-         Oi62AH2zMSEjR+r/R59MpTQ0XfMQ2SAJZ0VUVVTxKb+H8THlH9et9kkSOzK8g9K9/bf4
-         Yj/g==
-X-Gm-Message-State: AOAM531mncQc+dljH8zW+YRGKP56Wpgw8H5Uo3D/xn/MtKMZm4X1HBza
-        aYz4hjeLt2LjOYh32f9eX0isDw==
-X-Google-Smtp-Source: ABdhPJwuWlvoXE01sklUceayFwJNHshBmOnMKqtYiLDNpo/fCBYUw+NZfYsR4cYPv0+2ghqgOm2LLA==
-X-Received: by 2002:adf:e0c1:: with SMTP id m1mr32554707wri.241.1634047187605;
-        Tue, 12 Oct 2021 06:59:47 -0700 (PDT)
-Received: from antares.. (d.5.b.3.f.b.d.4.c.0.9.7.6.8.3.1.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:1386:790c:4dbf:3b5d])
-        by smtp.gmail.com with ESMTPSA id o6sm14875894wri.49.2021.10.12.06.59.46
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=0iK1/pGNnUtvxIpXr8vij/Yx3QTTCdY0pXxA5X8g5Gc=;
+        b=W23bl8oIk7rS3aSZaMDYHEpA9UG/veu/KT8c4iFPJWTO/9/YkYpDcvzfZ59cyWW21t
+         iHGOF6SHDZS/bbslP3JxBRvEDV6ACtYY8PsE75/1thCdcjE6TPV/9QFiziZe6ke8ZG/W
+         UjhSknAsMtkArX+8FeiX9b4Ry2joZC82dcrAUkeBrZ20m9Vk6z6Y1LKqUZwSSm/n8UV0
+         FuR8BQeOHkfrds8+cqm+IxTPOANUkSNdn0jjJrX0Jw+mr0hT+Ax8sP3Bkjd7E8ih6AUq
+         LMDQz817yV0V2v9OveqVG1YY+f904Mh6MvDrJY2q9gou8vrne8YIAVoJPZQ18DyEStoN
+         qYWg==
+X-Gm-Message-State: AOAM531DWVQ/bdUvEzFT9VSDib5lkWKG/d0W6pERWpSeUKB9tCZuUrzX
+        /+6FIOqN/+Q2oXsF7dgHIbIVgjTF8J4FzX0M5d6wPhoEJScNqobBF/u9peljOnqcodc6eEqrI6f
+        izMY3xFBmiqrv
+X-Received: by 2002:a50:cf86:: with SMTP id h6mr184923edk.104.1634047910256;
+        Tue, 12 Oct 2021 07:11:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0Cl6+LJW1EksJuzAgqSLF1FNTHg1p7RnOXfBgT0U4JakKnBEfKK33kzhBFIW3GQufFwaz7w==
+X-Received: by 2002:a50:cf86:: with SMTP id h6mr184844edk.104.1634047909506;
+        Tue, 12 Oct 2021 07:11:49 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id f12sm2470365edx.90.2021.10.12.07.11.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 06:59:47 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     nicolas.dichtel@6wind.com, luke.r.nels@gmail.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH v2 4/4] bpf: export bpf_jit_current
-Date:   Tue, 12 Oct 2021 14:59:35 +0100
-Message-Id: <20211012135935.37054-5-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211012135935.37054-1-lmb@cloudflare.com>
-References: <20211012135935.37054-1-lmb@cloudflare.com>
+        Tue, 12 Oct 2021 07:11:48 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 041FC180151; Tue, 12 Oct 2021 16:11:48 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Joanne Koong <joannekoong@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v2 0/3] Add XDP support for bpf_load_hdr_opt
+In-Reply-To: <20211011184333.sb7zjdsty7gmtlvl@kafai-mbp>
+References: <20211006230543.3928580-1-joannekoong@fb.com>
+ <87h7dsnbh5.fsf@toke.dk> <9f8c195c-9c03-b398-2803-386c7af99748@fb.com>
+ <43bfb0fe-5476-c62c-51f2-a83da9fef659@iogearbox.net>
+ <20211007235203.uksujks57djohg3p@kafai-mbp> <87lf33jh04.fsf@toke.dk>
+ <20211011184333.sb7zjdsty7gmtlvl@kafai-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 12 Oct 2021 16:11:47 +0200
+Message-ID: <87v922gwnw.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Expose bpf_jit_current as a read only value via sysctl.
+Martin KaFai Lau <kafai@fb.com> writes:
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- Documentation/admin-guide/sysctl/net.rst |  6 ++++++
- include/linux/filter.h                   |  1 +
- kernel/bpf/core.c                        |  3 +--
- net/core/sysctl_net_core.c               | 24 ++++++++++++++++++++++++
- 4 files changed, 32 insertions(+), 2 deletions(-)
+> On Sat, Oct 09, 2021 at 12:20:27AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> So if we can't fix the verifier, maybe we could come up with a more
+>> general helper for packet parsing? Something like:
+>>=20
+>> bpf_for_each_pkt_chunk(ctx, offset, callback_fn, callback_arg)
+>> {
+>>   ptr =3D ctx->data + offset;
+>>   while (ptr < ctx->data_end) {
+>>     offset =3D callback_fn(ptr, ctx->data_end, callback_arg);
+>>     if (offset =3D=3D 0)
+>>       return 0;
+>>     ptr +=3D offset;
+>>   }
+>>=20=20=20
+>>   // out of bounds before callback was done
+>>   return -EINVAL;
+>> }
+>>=20=20=20=20
+>> This would work for parsing any kind of packet header or TLV-style data
+>> without having to teach the kernel about each header type. It'll have
+>> quite a bit of overhead if all the callbacks happen via indirect calls,
+>> but maybe the verifier can inline the calls (or at least turn them into
+>> direct CALL instructions)?
+> Direct call different callback_fn?  bpf_for_each_pkt_chunk() is a kernel
+> function.  It would be nice if the verifier could do that.
 
-diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
-index 4150f74c521a..524e7db8d53f 100644
---- a/Documentation/admin-guide/sysctl/net.rst
-+++ b/Documentation/admin-guide/sysctl/net.rst
-@@ -123,6 +123,12 @@ compiler in order to reject unprivileged JIT requests once it has
- been surpassed. bpf_jit_limit contains the value of the global limit
- in bytes.
- 
-+bpf_jit_current
-+---------------
-+
-+The amount of JIT memory currently allocated, in bytes. JITing of
-+unprivileged BPF is rejected if this value is above bpf_jit_limit.
-+
- dev_weight
- ----------
- 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 8231a6a257f6..42c543a21cd8 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1051,6 +1051,7 @@ extern int bpf_jit_harden;
- extern int bpf_jit_kallsyms;
- extern long bpf_jit_limit;
- extern long bpf_jit_limit_max;
-+extern atomic_long_t bpf_jit_current;
- 
- typedef void (*bpf_jit_fill_hole_t)(void *area, unsigned int size);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ab84b3816339..12aedab09222 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -526,6 +526,7 @@ int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
- int bpf_jit_harden   __read_mostly;
- long bpf_jit_limit   __read_mostly;
- long bpf_jit_limit_max __read_mostly;
-+atomic_long_t bpf_jit_current __read_mostly;
- 
- static void
- bpf_prog_ksym_set_addr(struct bpf_prog *prog)
-@@ -801,8 +802,6 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
- 	return slot;
- }
- 
--static atomic_long_t bpf_jit_current;
--
- /* Can be overridden by an arch's JIT compiler if it has a custom,
-  * dedicated BPF backend memory area, or if neither of the two
-  * below apply.
-diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-index 5f88526ad61c..78603f561482 100644
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -15,6 +15,7 @@
- #include <linux/vmalloc.h>
- #include <linux/init.h>
- #include <linux/slab.h>
-+#include <linux/atomic.h>
- 
- #include <net/ip.h>
- #include <net/sock.h>
-@@ -307,6 +308,22 @@ proc_dolongvec_minmax_bpf_restricted(struct ctl_table *table, int write,
- 
- 	return proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
- }
-+
-+static int proc_bpf_jit_current(struct ctl_table *table, int write,
-+				void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	long curr = atomic_long_read(&bpf_jit_current) << PAGE_SHIFT;
-+	struct ctl_table ctl_entry = {
-+		.data		= &curr,
-+		.maxlen		= sizeof(long),
-+	};
-+
-+
-+	if (!capable(CAP_SYS_ADMIN) || write)
-+		return -EPERM;
-+
-+	return proc_doulongvec_minmax(&ctl_entry, write, buffer, lenp, ppos);
-+}
- #endif
- 
- static struct ctl_table net_core_table[] = {
-@@ -421,6 +438,13 @@ static struct ctl_table net_core_table[] = {
- 		.extra1		= &long_one,
- 		.extra2		= &bpf_jit_limit_max,
- 	},
-+	{
-+		.procname	= "bpf_jit_current",
-+		.data		= &bpf_jit_current,
-+		.maxlen		= sizeof(long),
-+		.mode		= 0400,
-+		.proc_handler	= proc_bpf_jit_current,
-+	},
- #endif
- 	{
- 		.procname	= "netdev_tstamp_prequeue",
--- 
-2.30.2
+Ohh, right, think-o on my part. It could be done if the helper was
+inlined in its entirety, though? Not sure if that's feasible?
+
+> This for_each helper had been considered also. Other than the need to
+> callback in a loop, the thought was to extend the existing
+> bpf_load_hdr_opt() because our initial feedback is the same header
+> handling logic cannot be used in xdp which is confusing.
+
+TBH, I had not noticed this helper before. Now that I have, it does
+seems like the kind of thing that belongs as a BPF library function
+rather than a helper in the first place :)
+
+> I don't mind to go with the for_each helper.  However, with another
+> thought, if it needs to call a function in the loop anyway, I think
+> it could also be done in bpf by putting a global function in a loop.
+> Need to try and double check.
+
+Hmm, that would be interesting if possible!
+
+-Toke
 
