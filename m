@@ -2,107 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD1E429C32
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 06:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41E3429C33
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 06:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbhJLENn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Oct 2021 00:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
+        id S231683AbhJLERa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Oct 2021 00:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhJLENn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Oct 2021 00:13:43 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C70AC061570;
-        Mon, 11 Oct 2021 21:11:42 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id i84so43608819ybc.12;
-        Mon, 11 Oct 2021 21:11:42 -0700 (PDT)
+        with ESMTP id S229729AbhJLER3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Oct 2021 00:17:29 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A948C061570
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 21:15:28 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id k23-20020a17090a591700b001976d2db364so1551522pji.2
+        for <bpf@vger.kernel.org>; Mon, 11 Oct 2021 21:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EzttPnvSBj9TWPQB22etUBHe1lHk1VSkKn9Reb38kBY=;
-        b=pblW8aH9whMxuBdAhzUGYKrFUCy7lCdFE27wZxsId/Gq7S6ykgNaOlWhYLcXXJmQt/
-         uSPH8BIR36xDYQbAMGwWLrnKQK5VQrU0yvcqfxJqTwhAvL+5I8Gi+cHD0jTGiw1ziT5g
-         ZYuSv/TtzpsTVyIXf0t8VpdsArtkn5R/72femKMG2imfP+tznYJJviUzeke5XgD2nnzJ
-         gwj1BtO4+Phb1b2hKKCjmV8eqZ7XoGwrATr5ACVq61vIN/w5d2vDAODO6UgFayHrJeZW
-         PqGU5+gGIM+Z5rvws9j2IXTYcXpNpfqFauT7gnyKk7a6kch0qgZFlt9Q82z0Hc90JE9p
-         USKw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oblNZxxjz2n3XYhiqm9+qJ7yfSIxEkt4DwvylmYsmaM=;
+        b=olOC0QaKMRgTPr7e7zgKy10Kx3UbL5x5d3SY73iXiqbPKURf0Ao9NTKcM5nt0OlHEO
+         YOlcVo672jdtUf9JHRQHu/x/Ysc5SS50o14fuZXCj+IJMJlaWuR9w5Yc18D5/sITqnp3
+         RdTHh0d4wVMA2WwFegJf8gd/b8SYn9qjZKCrX0UyOQNFynjpCN4n3vABpv0z32Fpzepa
+         63P8uBmgganxa/tRQqrUht0CW9+owuyDDRexeEEeLUNXPbhXl6jpOnfltFGitZJJ18wB
+         DoWCX7IWIL3AoqKMl1WwWeHshqX7Lswbiyb+d7ADTvW3hBs2TdRxCDmF64od5Hfy2mdj
+         /X8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EzttPnvSBj9TWPQB22etUBHe1lHk1VSkKn9Reb38kBY=;
-        b=D10rqQ8YzfZO0rSrxd53dE8Pny1n/50/f++iFCLGC34F41rYBs0YPgs6PA0fgkH9My
-         QsLC9GzPJEvG3jlyLcrQzTx+e+MMKrL+To4qNCJxRzWqhSVAGETn8iTXp1sn1gSYRlpz
-         M7HyKITVzUoPTPY0klpLrU9/pooyIMInjzjXurE7nf46NuXinRAw78FPKKPfMgGbqsQc
-         TCn+qr1kGjJOj+hcAOXX5wOt1NOtxgx6lcpd89ZY/17D1dPL8Y/34KSd5BYewVPdf2zO
-         17SW/jddZhh0XSH/B8mi0TuOTzNBBj+Y3c+jO6hiuhdceSxC4uiLJQvHli8MUirR1tiq
-         9alA==
-X-Gm-Message-State: AOAM533X7aSzi2bjjSyBVhtvU6aOo+eUqa+jc/4APC/0LXzbTFGNtnDf
-        luQnYclYqK1oqrN69j2D3IVzvnvKGruGVMw8x6E=
-X-Google-Smtp-Source: ABdhPJwgS22Xnjxu0g/1EeTi3csvNvrQvyy0ap3OdxaOWAk110Rbh2ew7LUjWFUudztXD/lyT7aPZmmEA3fjHDvfUVc=
-X-Received: by 2002:a25:e7d7:: with SMTP id e206mr24810219ybh.267.1634011901767;
- Mon, 11 Oct 2021 21:11:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oblNZxxjz2n3XYhiqm9+qJ7yfSIxEkt4DwvylmYsmaM=;
+        b=HwyiHuIcens81dLuM1M0euQnLVNYABvkusVLuIBmJhOy5gNHHmVpfqG81rHM6+dcPg
+         +OyrB+pS2OGS08e31idHrLrCxrX3Z/iTU4waHEJvDmAVRPrViJOwLR71R/mauPW2m1wg
+         0X7b3pfQBjQzS5MjNrDMwdmwO02R0xQUEHRqrnvRcCj6XotYFLkEZTmw7Jn9+SBea2Bz
+         lqrIQBcm+EvAuHunpC66gc/h9Sr67V1SIjxXxfb2xuRx+9BKq3oG8IenIKzAC6BahvG3
+         n1vgKUlwHLl8eaNw+8yzPqosA+zuaPGS4wuWETtI3+yh/A/J1AVm7dtv+2R78aAfc1V4
+         AEOQ==
+X-Gm-Message-State: AOAM531XRTMXVjfovFQTZJPZfhS3TzmFbbBBPTlU4E69psrAwYulVKbu
+        TCYzbmHWfAXTaFbFiGx8C2k=
+X-Google-Smtp-Source: ABdhPJxU96xq8TDOn/+3rtKwKeBAxEX87kk9/l+ve+3kiLFFq1QToE4D5CWkHl/xjQwUcEXze8JPvA==
+X-Received: by 2002:a17:90a:db51:: with SMTP id u17mr3387686pjx.171.1634012127693;
+        Mon, 11 Oct 2021 21:15:27 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
+        by smtp.gmail.com with ESMTPSA id i123sm9563535pfg.157.2021.10.11.21.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 21:15:27 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 09:45:24 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 00/10] libbpf: support custom .rodata.*/.data.*
+ sections
+Message-ID: <20211012041524.udytbr2xs5wid6x2@apollo.localdomain>
+References: <20211008000309.43274-1-andrii@kernel.org>
 MIME-Version: 1.0
-References: <20211011155636.2666408-1-sdf@google.com>
-In-Reply-To: <20211011155636.2666408-1-sdf@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Oct 2021 06:11:30 +0200
-Message-ID: <CAEf4BzZJg6bcFjkvKR627PMDj6EBy7pSMHYq1T9pyfo5CpjFQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: use func name when pinning programs
- with LIBBPF_STRICT_SEC_NAME
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008000309.43274-1-andrii@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 5:56 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Fri, Oct 08, 2021 at 05:32:59AM IST, andrii.nakryiko@gmail.com wrote:
+> From: Andrii Nakryiko <andrii@kernel.org>
 >
-> We can't use section name anymore because it's not unique
-> and pinning objects with multiple programs with the same
-> progtype/secname will fail.
+> [...]
+> One interesting possibility that is now open by these changes is that it's
+> possible to do:
 >
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
+>     bpf_trace_printk("My fmt %s", sizeof("My fmt %s"), "blah");
+>
+> and it will work as expected. I haven't updated libbpf-provided helpers in
+> bpf_helpers.h for snprintf, seq_printf, and printk, because using
+> `static const char ___fmt[] = fmt;` trick is still efficient and doesn't fill
+> out the buffer at runtime (no copying), but it also enforces that format
+> string is compile-time string literal:
+>
+>     const char *s = NULL;
+>
+>     bpf_printk("hi"); /* works */
+>     bpf_printk(s); /* compilation error */
+>
+> By passing fmt directly to bpf_trace_printk() would actually compile
+> bpf_printk(s) above with no warnings and will not work at runtime, which is
+> worse user experience, IMO.
+>
 
-Also, patch sets with more than one related patch should come with the
-cover letter, please send one on the next revision. Thanks!
+You could try the following (_Static_assert would probably be preferable, but
+IDK if libbpf can use it).
 
->  tools/lib/bpf/libbpf.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index ae0889bebe32..0373ca86a54c 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -285,7 +285,8 @@ struct bpf_program {
->         size_t sub_insn_off;
->
->         char *name;
-> -       /* sec_name with / replaced by _; makes recursive pinning
-> +       /* sec_name (or name when using LIBBPF_STRICT_SEC_NAME)
-> +        * with / replaced by _; makes recursive pinning
->          * in bpf_object__pin_programs easier
->          */
->         char *pin_name;
-> @@ -614,7 +615,11 @@ static char *__bpf_program__pin_name(struct bpf_program *prog)
->  {
->         char *name, *p;
->
-> -       name = p = strdup(prog->sec_name);
-> +       if (libbpf_mode & LIBBPF_STRICT_SEC_NAME)
-> +               name = p = strdup(prog->name);
-> +       else
-> +               name = p = strdup(prog->sec_name);
-> +
->         while ((p = strchr(p, '/')))
->                 *p = '_';
->
-> --
-> 2.33.0.882.g93a45727a2-goog
->
+#define IS_ARRAY(x) ({ sizeof(int[-__builtin_types_compatible_p(typeof(x), typeof(&*(x)))]); 1; })
+
+In action: https://godbolt.org/z/4d4W61YPf
+
+--
+Kartikeya
