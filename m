@@ -2,130 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477E9429B86
-	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 04:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF16429B89
+	for <lists+bpf@lfdr.de>; Tue, 12 Oct 2021 04:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhJLCel (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Oct 2021 22:34:41 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47246 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230362AbhJLCek (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 Oct 2021 22:34:40 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C2Bn2F003854;
-        Mon, 11 Oct 2021 22:32:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=nsY0Xq+rxFEiF00RuE84NF6M/ZTAF7lGUFj030HOzXM=;
- b=l/5r2EeW4TsfFDA6RJ8CYFBXI6iD2iA4u8wKaUo6DMysoWnsZGLStroCTQ2yX6I41Ymv
- aVlb+l1wvqPXe5r1f3y8XDr0xKCCAB9NR/J4XP2YS8bXJj7n1RlsWiVFE1cQ/J/CcpXU
- x3GSxdW+VzbaMjpa3Qjx/z30IbAWANQiUQ81R/H+2rZZw5jsswHglIAUiEYCnSgKkysa
- PxgHFx1vDu0b0LhaL6MyHtvYIJyZyDUJXyyDBII2Rqafi5J5XWmJkqoGb6ytacVjR0Ib
- rhccvBxBmxRbJfAlsNKXd8dt/pDxTahJTMA+MqMqSL0JBvsMnuQLWxCcyQdmcz/JlEX2 QA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn1c188ec-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 22:32:27 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C2Uda2011783;
-        Mon, 11 Oct 2021 22:32:27 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn1c188e1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 22:32:27 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C2BPKZ030567;
-        Tue, 12 Oct 2021 02:32:25 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bk2q9ue4t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 02:32:25 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C2WMUu48234920
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 02:32:22 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4193F11C069;
-        Tue, 12 Oct 2021 02:32:22 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DFE9411C050;
-        Tue, 12 Oct 2021 02:32:21 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.45.184])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Oct 2021 02:32:21 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S231517AbhJLCeu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Oct 2021 22:34:50 -0400
+Received: from mail-eopbgr1320099.outbound.protection.outlook.com ([40.107.132.99]:64903
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230362AbhJLCet (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Oct 2021 22:34:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ctZMCBCyfMAouG+fCfRZAR1jKa7L6kDwBQxemIcmY7t6iDPeptRIbfqlFi2685j/ZVH9L6u3kxnGyToBEkePJ4bHr9PXJOvs+S6q9+C+unmAuafNoNmxBwbSIGJbnWwXF0jF9kypTANGFAF1fGn27DKEwVxNQ20fqS9yXWBDfRINWKZhe3RN1Riaw2dRpntzMmtOunwgu+nxbKfSAge2aeecx4GQWc6ma2u2nBjIJDnjUueurV1ewugN41H2sxxWhjNh0TGOkOFzKWQJVm+lMeH8nuiAOq1HTXIcxAJQVVQVaZmMHnejOcrg6f8JVwnO/pjcQ/ouKlngN5ORS+YGnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EvApJGgKqShxGzk4OlDWBSlVv4WPa4knfg9HDu76pNg=;
+ b=bO3IHpDkIizN0jrv+PdTkuvD/9/eA0UoARmofUlKYbwavkxCPAkHI00Ktm2dbTNHabzvs9leNuOuK4fD5bFgCIM7P6KJwk4ZoxY9uzjknoxfnbwZ75KIZOdqh1B+xUOag2S5+TN4BnyRMjDpNiNGDEsMHSXf5qhrv4sWTKzJ8kluFEb038op+qPRb4ESahpRh39sUHkqdm7+dzFx9tMDfIZJur2LZ2un21gYcVRVeO+lCXBMWnh0gk3Hk2QGk1ss+lZ/3besNC6W6xcWxcz7rlroHFLwf4Mbar0RKhmr+pREBuEGJO0YIMYrdtpN+CCsywS912bnnZb3ig9RQoe5JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EvApJGgKqShxGzk4OlDWBSlVv4WPa4knfg9HDu76pNg=;
+ b=eTt2jjXCFSp6aRNeWgIVjC+gfWNDlPOV3XD/Yu4O0t4Q19KSiVeNaqiLkNPEn/kEMMWlpY5YHPmNSPaxc9/DK+XXvweF11ybgDPDapgByfg5ElbyZsXCWpPGoEBzlTY3Uco2GzApbuSanW8spPVL0EpQbdK5DTQ8vfRDrI7eQR0=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR0601MB1838.apcprd06.prod.outlook.com (2603:1096:3:8::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4587.24; Tue, 12 Oct 2021 02:32:42 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
+ 02:32:42 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next 3/3] libbpf: Fix dumping __int128
-Date:   Tue, 12 Oct 2021 04:32:18 +0200
-Message-Id: <20211012023218.399568-4-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211012023218.399568-1-iii@linux.ibm.com>
-References: <20211012023218.399568-1-iii@linux.ibm.com>
-MIME-Version: 1.0
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] [v2] selftests: bpf: Remove duplicated include in cgroup_helpers
+Date:   Tue, 12 Oct 2021 10:32:30 +0800
+Message-Id: <20211012023231.19911-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.30.2
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: gN-ibB6v_x4r22lxkTJBaZ4yTR3vA8pf
-X-Proofpoint-GUID: vY_DfBdUcBFXgdeCaCShrl1K8Vk8g868
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-11_11,2021-10-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- phishscore=0 impostorscore=0 spamscore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120008
+Content-Type: text/plain
+X-ClientProxiedBy: HK2P15301CA0013.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::23) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
+MIME-Version: 1.0
+Received: from NJ-11126903.vivo.xyz (203.90.234.87) by HK2P15301CA0013.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.1 via Frontend Transport; Tue, 12 Oct 2021 02:32:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b4d85a6b-48b0-42a7-d102-08d98d2890e1
+X-MS-TrafficTypeDiagnostic: SG2PR0601MB1838:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR0601MB1838ACEAED42F4ED8D3C2977ABB69@SG2PR0601MB1838.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:110;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EevLQXP0mhXx9jSLmmd0g0KBWpxnAk6v48+zi7dSOjLQ7yJE4+gNY9N/f0hL7wXoHiiTPzJLQPZvghUPTH6zb6tS8daRAMJbPDCFsXqGPPEpMpactKfFL+NBX4BA+Lq3ek26E6qyP2QdGSo5RPAg+v5HoLF1C26ynInXquJmIwYQrX/jtzv+sR+0WhITBhvlDiHI5uzQNNQ21rn+GBYmgGojzsgcW4cu6+3AOpYkJ2CGb1HuPkFstQFz259X6QZojXtOX36OuPe5yEQwAr25MHIcGTQU4uq72hLr1Bl8AyFCcK0hitGFiwF6NDc2qSaXKNW2bvzjxP0m9udUfRf8VfGBLBDak9EFgNHvoOEez6FFssfi1IytTRlYOWsHI3SFy7ngIkCzkLA6iDPsgoU6ZMAD9atRDdEJVRmheQud0Dgs+I6BTC2cpRLO+QxOyAJ7U5nNziYnq5wMwSId2dydY//9+p2ObDsczfx2sx3IfdE7OzrTUKQzXii9P5q/tIFBfsgOP4OFMEBkCGrYoiUp1TSIGg6dp8q4LpYUwGfnY0kFY8/uAxJDJx7Dc0JEC8soyer4BM3CwVqzthNmlrSWesw/I9bfBdJszUg75F19vFzYYbxMDe8cbSBHEI7l+bYIOCR2jvASNjDn3G0Z9DgzwNRR0OBT3/7EdrtGzjEjrE3m+tCHyQAkL8bgeca6Af/1b75VFwBjasxvqgteetiq6u8IAsgLSQtHGbB8Eqm8r9ecbtvzJE1w4HkZyjL0y0ZJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(86362001)(2616005)(508600001)(8676002)(956004)(6666004)(38350700002)(38100700002)(107886003)(83380400001)(1076003)(6512007)(6486002)(4744005)(921005)(5660300002)(7416002)(4326008)(26005)(316002)(110136005)(36756003)(66476007)(6506007)(66556008)(52116002)(2906002)(66946007)(186003)(4730100016);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MBBXFYl9G0FvjnOfCjofYh7HBZWQtCmayc7NhZgwLdqPkNVqXmiVr+3Ex2wV?=
+ =?us-ascii?Q?1tp7AZ8rhkCk4U6ZehHvIRwmkTcrip8OPgl3Z8kavP0oJAJoHviO/mOQ8kJk?=
+ =?us-ascii?Q?JVVOQf4Amb+PWS734ZR8xgQ7BJb+AbX1DbRq32YPNmcI5acPKsFOmyeDkVZi?=
+ =?us-ascii?Q?eHVnTFahFH8aY1lk+8/ueZsqoUIv+02BIaezOSpaleDyJvW8xWUDL2b+dFYA?=
+ =?us-ascii?Q?DcgCH5gf/VMYKgCFsJUCJoHToj250Aj6bRUJV++xKv8pWKdPd6DDrWmbroDy?=
+ =?us-ascii?Q?EEJt9I09f0RYhK7O00qCnSWpZGmhicd6/EWrlgAOuZH64VGaKMuXX2Km2ElJ?=
+ =?us-ascii?Q?8vXc0iCKVORnZufwb3the8F6ON0z1TdXDrmcKPM27bHDiyGZuaiObqhwWhIk?=
+ =?us-ascii?Q?aPj/AT3swwkfSfniOD+CoqaLQV68rwbEUqaVYopXciEpXP4uYxbTqRmgMeik?=
+ =?us-ascii?Q?I95v+FCrYAnczeMxEOmOnhRZepZoJDkCpBkCezcpLLETTU8yN+JT4c46OMfB?=
+ =?us-ascii?Q?8kQk3BZhB6YWNaFHTrctuwBWol3WnMvj3YDSJRom7PtsklpRslO/47ZHS3TJ?=
+ =?us-ascii?Q?JjM/Z7RPVOa1K4Ne/GIjB6rYlr3acGVYj46+RMiVAicMKr04sXZfGgk4Lm0h?=
+ =?us-ascii?Q?gEHgkD83Dx0mBgxNM4W8NylWnQfruX1P4xQrooexnrAaYQ6hmws0RaxfliBP?=
+ =?us-ascii?Q?xiNKogi6J6DHpmufeEt+lSOIjaKoQB2/K42IaRfkSNXs6q5tc7iyNoOJVTHw?=
+ =?us-ascii?Q?puffPzKX2YXCvZSf9XEp9+yxRoyljAMruW+0BHZcb5purLVPjV9Rs5ZhfjoX?=
+ =?us-ascii?Q?jYj0A6q1pZOq3upX6Vfyt37liVgEO4TRfdknFWepvxdPsPl7u3gSiyPgTkgP?=
+ =?us-ascii?Q?rnmxBltAOkQ5MhSYD/8q2CFkTrNKeRGndWlR3Bh4mGhFP4dXOXcFrLMB6KJV?=
+ =?us-ascii?Q?lxcF+SuvqwPL1Wuh19Jqm/pkPYTGWNJZgSWsMl8eJ0lP4xEjYU3y11nXxS3N?=
+ =?us-ascii?Q?JqyHCJjTa+h/i8r4cuoRiqF9fziFLpEXeJ4HicpasH5w/+buV752K5kf6KKf?=
+ =?us-ascii?Q?Cp0OTdG9W8cMZUQknvZhM1JvvzKmZZZmx2Cs20YL9JRcKN1GAsBPYWsqWEsJ?=
+ =?us-ascii?Q?PSUeQX1gM4GigQM+mDeNwLmcD+egQUL5D/VUh3NTVpstGJ1BX3ZbUYGGJS1a?=
+ =?us-ascii?Q?W+9D/2nWMupn0ePOBZfpEx6sNEarXm14TUTwTUvaBcj9lfJd4GUrjfl8YCBf?=
+ =?us-ascii?Q?FkfKkNvG6WgWwHwqaxr23fx8fB9o+XcACwM3nYnkORSN1jpCL20h7S/oQ4aI?=
+ =?us-ascii?Q?TAKijewgM7ZroLEOJC9NP0MQ?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4d85a6b-48b0-42a7-d102-08d98d2890e1
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 02:32:42.1350
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GA4JztlcS92diG0c8MxYE/7m6d/C/K/SNAR+9rBfClUE72p322CKHWPiZNbaJfvRWmCbeQydILT5T/CPFK7xcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR0601MB1838
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On s390 __int128 can be 8-byte aligned, therefore in libbpf will
-occasionally consider variables of this type non-aligned and try to
-dump them as a bitfield, which is supported for at most 64-bit
-integers.
+Fix following checkincludes.pl warning:
+./scripts/checkincludes.pl tools/testing/selftests/bpf/cgroup_helpers.c
+tools/testing/selftests/bpf/cgroup_helpers.c: unistd.h is included more
+than once.
 
-Fix by using the same trick as btf_dump_float_data(): copy non-aligned
-values to the local buffer.
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- tools/lib/bpf/btf_dump.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Changelog:
+v2:
+- Fix the commit description.
+---
+ tools/testing/selftests/bpf/cgroup_helpers.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index ab45771d0cb4..d8264c1762e8 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -1672,9 +1672,10 @@ static int btf_dump_int_data(struct btf_dump *d,
- {
- 	__u8 encoding = btf_int_encoding(t);
- 	bool sign = encoding & BTF_INT_SIGNED;
-+	char buf[16] __aligned(16);
- 	int sz = t->size;
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index 8fcd44841bb2..9d59c3990ca8 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -11,7 +11,6 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <ftw.h>
+-#include <unistd.h>
  
--	if (sz == 0) {
-+	if (sz == 0 || sz > sizeof(buf)) {
- 		pr_warn("unexpected size %d for id [%u]\n", sz, type_id);
- 		return -EINVAL;
- 	}
-@@ -1682,8 +1683,10 @@ static int btf_dump_int_data(struct btf_dump *d,
- 	/* handle packed int data - accesses of integers not aligned on
- 	 * int boundaries can cause problems on some platforms.
- 	 */
--	if (!ptr_is_aligned(data, sz))
--		return btf_dump_bitfield_data(d, t, data, 0, 0);
-+	if (!ptr_is_aligned(data, sz)) {
-+		memcpy(buf, data, sz);
-+		data = buf;
-+	}
+ #include "cgroup_helpers.h"
  
- 	switch (sz) {
- 	case 16: {
 -- 
-2.31.1
+2.30.2
 
