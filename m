@@ -2,114 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4361542BFE1
-	for <lists+bpf@lfdr.de>; Wed, 13 Oct 2021 14:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE6642C002
+	for <lists+bpf@lfdr.de>; Wed, 13 Oct 2021 14:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbhJMM1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Oct 2021 08:27:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55090 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232807AbhJMM1h (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 Oct 2021 08:27:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634127933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8YOBHg2cxN8ogGYoOT/g9xYB/0smdgUNl3MS2jFXUKQ=;
-        b=arcQbXP5MMyFOIeDVtKF8mykTyXOvfwQC81PByttSs+C3gVMWNsjiu15Z3YKWsapa9gmOO
-        xVpY27GydLaIfZfiEZhoay7tl9qPwfR++qEO6glE7hSYRwVP7myFIpMshTJG5zdaER4QB9
-        0xScJS45K3uF81kycEV/HCp8YoPdTkY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-Gr6ZLDG2NnW3W7w5TRDnUw-1; Wed, 13 Oct 2021 08:25:32 -0400
-X-MC-Unique: Gr6ZLDG2NnW3W7w5TRDnUw-1
-Received: by mail-wr1-f69.google.com with SMTP id y12-20020a056000168c00b00160da4de2c7so1849497wrd.5
-        for <bpf@vger.kernel.org>; Wed, 13 Oct 2021 05:25:32 -0700 (PDT)
+        id S233226AbhJMMbs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Oct 2021 08:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233614AbhJMMbX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:31:23 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D745DC061749
+        for <bpf@vger.kernel.org>; Wed, 13 Oct 2021 05:29:19 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id g25so7851336wrb.2
+        for <bpf@vger.kernel.org>; Wed, 13 Oct 2021 05:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jxXON34bwb9U7480ZI8tD9t7EEtIFIeyXWCvuOY9nFo=;
+        b=VC+P5UlQ+oa8RbtjkI6ihbKMfbye3hyLHafy4vC6TZ/b2HfnrH7nV5364N8CnXHH1o
+         GbrzBKBdRPPQwEX23FzhzFYs+Z/tTPuDETyDVqrmCttOwI/ei3kS9hWtQLQwrHOOqLQY
+         7QVhHDvwEkBleqiz2KkdOF//mFKsb9feT36V6YQo1YENKhAt7e+1sGujzR09uh0pts6/
+         IPzecce4A3D3bTmbWBNYJDdOgBeQtnep1bknl+zPOpw3Rro+Gzg7ki4oajHI0OLuU7qP
+         y0yXUzV0jHJTZs31IUWS/8z+loY+KCEqCzPKP5tdrM02RliDA8izTq7dD3tMiygPax1t
+         I5OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8YOBHg2cxN8ogGYoOT/g9xYB/0smdgUNl3MS2jFXUKQ=;
-        b=MUh7fBCvXj5MicRI2TZf6zaodUE3Zvn6oDnXKeotvPpPIa7poMIY2FyjGyLzbMoAVy
-         UDXBTqUqfe0nPhYOjAL1lTXwP2tnuTpkeFE5xG/8ftb1lWiA7o05iM3kXdTyu4RGKmG7
-         LHG/NWUpDqhj49sS39AZ9ziL9fyjdK5OKVSrcqyDPH0upwN5KT1oqhBtbwyg+C5pjaD3
-         cttpz6Bz+3m2XOQAD6D1kGmLgq0snD4JgSnmWpZshBtXQ+NN6on+e4s2WbHhB0UxC5/X
-         GqUQBTipY60FN6J8LPqbe/tRU8o5t+iotcaN47D6ef9OJDEKdQq5aeqDmJc9hNYUgeLL
-         Wuag==
-X-Gm-Message-State: AOAM532Aj/Oj+JULC+2j/MzrzSF2ONB92Q8P2pb/KB3pBAmKtiDzaHAY
-        iUM//WvflYi8BjiqqE7ASZNvIwEfa+gOk5KCU0ljDMYr3fxegMbXvvj0tbz7rxHMmhsdAT9Gbae
-        7oN+WpcwtnbT+
-X-Received: by 2002:a05:600c:b5a:: with SMTP id k26mr12480610wmr.172.1634127931587;
-        Wed, 13 Oct 2021 05:25:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4Fm6ZpRgEuTdDHvgL6ziG2Yey+Xu8fBe+Ruq1ZnFYz4uNmvgF6gyg91uSbPPP/dPPTadUjQ==
-X-Received: by 2002:a05:600c:b5a:: with SMTP id k26mr12480583wmr.172.1634127931404;
-        Wed, 13 Oct 2021 05:25:31 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id m4sm5367957wrz.45.2021.10.13.05.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:25:31 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 14:25:29 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jxXON34bwb9U7480ZI8tD9t7EEtIFIeyXWCvuOY9nFo=;
+        b=T4Se73lO9t4ptNxjXOm90yP9Pd/H+pIEIK9jGW5UPeJ82fN/EseQocZWMzWfveyhJG
+         JbwBOdTQtTMNJxF1zOKLYLd6nQA7xf1ouZs3qTQ0GUn6kyHd/UHoBFsLklb5zSx3QPVz
+         x0FtHTW4DS/XRm81oe5wxcYQgWiPRfHoY+0Gu3kceIK1JAIuRfMGvWKfNwJSYnqHNdof
+         Qoc1kg1VkAzbTmZOcB8ajUWMg/GkFFza8rRqUcAY3PQ/X95fo3fT6vwrsps6Wkj5myMN
+         Qnzax+f8RCd0VT8SGazVl1DhLcotMVkoA6gP8bC/+5y3N7/OcJgDnLmGL8trLtnSoSo0
+         uU/w==
+X-Gm-Message-State: AOAM533Td8F+tOy6bKU9+o3BWHhD6+CnIoGjzeYwna0OSyBfbS5ket10
+        QFL0YCEPUoBiHWoKtiHZxA5pRcQAqHwCqg==
+X-Google-Smtp-Source: ABdhPJzl6+sUsuUybRUSH6RZdbmAHK1EefCNIcA8VP9VCCbH04KII0GFLfkdnJcYa7FxDnWPNabdHg==
+X-Received: by 2002:a7b:cf29:: with SMTP id m9mr12651264wmg.64.1634128158449;
+        Wed, 13 Oct 2021 05:29:18 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:410:bb00:cdb4:f738:2bad:740f? ([2a01:e0a:410:bb00:cdb4:f738:2bad:740f])
+        by smtp.gmail.com with ESMTPSA id v3sm13427135wrg.23.2021.10.13.05.29.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 05:29:18 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH v2 4/4] bpf: export bpf_jit_current
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCHv2 0/8] x86/ftrace: Add direct batch interface
-Message-ID: <YWbQObW70Vuju9hY@krava>
-References: <20211008091336.33616-1-jolsa@kernel.org>
- <YWagbqm4wtYqpBt/@osiris>
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20211012135935.37054-1-lmb@cloudflare.com>
+ <20211012135935.37054-5-lmb@cloudflare.com>
+ <836d9371-7d51-b01f-eefd-cc3bf6f5f68e@6wind.com>
+ <CACAyw99ZfALrTRYKOTifWXCRFS9sUOhONbyEyWjTBdzFE4fpQQ@mail.gmail.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <1792748b-9204-c96e-b9c6-367eb19928cb@6wind.com>
+Date:   Wed, 13 Oct 2021 14:29:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWagbqm4wtYqpBt/@osiris>
+In-Reply-To: <CACAyw99ZfALrTRYKOTifWXCRFS9sUOhONbyEyWjTBdzFE4fpQQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:01:34AM +0200, Heiko Carstens wrote:
-> On Fri, Oct 08, 2021 at 11:13:28AM +0200, Jiri Olsa wrote:
-> > hi,
-> > adding interface to maintain multiple direct functions
-> > within single calls. It's a base for follow up bpf batch
-> > attach functionality.
-> ...
-> > ---
-> > Jiri Olsa (6):
-> >       x86/ftrace: Remove extra orig rax move
-> >       tracing: Add trampoline/graph selftest
-> >       ftrace: Add ftrace_add_rec_direct function
-> >       ftrace: Add multi direct register/unregister interface
-> >       ftrace: Add multi direct modify interface
-> >       ftrace/samples: Add multi direct interface test module
-> > 
-> > Steven Rostedt (VMware) (2):
-> >       x86/ftrace: Remove fault protection code in prepare_ftrace_return
-> >       x86/ftrace: Make function graph use ftrace directly
-> > 
-> >  arch/x86/include/asm/ftrace.h        |   9 +++-
-> >  arch/x86/kernel/ftrace.c             |  71 +++++++++++++++---------------
-> >  arch/x86/kernel/ftrace_64.S          |  30 +------------
-> >  include/linux/ftrace.h               |  26 +++++++++++
-> >  kernel/trace/fgraph.c                |   6 ++-
-> >  kernel/trace/ftrace.c                | 268 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------
-> >  kernel/trace/trace_selftest.c        |  54 ++++++++++++++++++++++-
-> >  samples/ftrace/Makefile              |   1 +
-> >  samples/ftrace/ftrace-direct-multi.c |  52 ++++++++++++++++++++++
-> >  9 files changed, 420 insertions(+), 97 deletions(-)
-> >  create mode 100644 samples/ftrace/ftrace-direct-multi.c
+Le 13/10/2021 à 10:35, Lorenz Bauer a écrit :
+> On Tue, 12 Oct 2021 at 17:29, Nicolas Dichtel <nicolas.dichtel@6wind.com> wrote:
+>>
+>> Le 12/10/2021 à 15:59, Lorenz Bauer a écrit :
+>>> Expose bpf_jit_current as a read only value via sysctl.
+>>>
+>>> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+>>> ---
+>>
+>> [snip]
+>>
+>>> +     {
+>>> +             .procname       = "bpf_jit_current",
+>>> +             .data           = &bpf_jit_current,
+>>> +             .maxlen         = sizeof(long),
+>>> +             .mode           = 0400,
+>> Why not 0444 ?
 > 
-> FWIW, Steven pointed me to this thread since I posted
-> DYNAMIC_FTRACE_WITH_DIRECT_CALL support for s390 here:
-> https://lore.kernel.org/all/20211012133802.2460757-1-hca@linux.ibm.com/
-> 
-> Since Jiri asked for it: please feel free to add
-> Tested-by: Heiko Carstens <hca@linux.ibm.com>
-> to all non-x86 patches.
-> 
+> This mirrors what the other BPF related sysctls do, which only allow
+> access from root with CAP_SYS_ADMIN. I'd prefer 0444 as well, but
+> Daniel explicitly locked down these sysctls in
+> 2e4a30983b0f9b19b59e38bbf7427d7fdd480d98.
+Even after this patch, bpf_jit_enable is 0644.
 
-thanks,
-jirka
+In fact, if you have CAP_BPF or CAP_SYS_ADMIN, this value has no impact for your
+programs. But I you don't have one of these capabilities, it may be rejected,
+but you cannot read these values, which help to understand why.
 
+
+Regards,
+Nicolas
