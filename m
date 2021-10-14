@@ -2,100 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF46942D48C
-	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 10:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3805442D4A0
+	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 10:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhJNIMc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Oct 2021 04:12:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:53372 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhJNIMb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:12:31 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mavoh-000E8D-HS; Thu, 14 Oct 2021 10:10:19 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mavoh-000MV5-9L; Thu, 14 Oct 2021 10:10:19 +0200
-Subject: Re: [PATCH net-next 2/3] net, neigh: Use NLA_POLICY_MASK helper for
- NDA_FLAGS_EXT attribute
-To:     David Ahern <dsahern@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     roopa@nvidia.com, dsahern@kernel.org, m@lambda.lt,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20211013132140.11143-1-daniel@iogearbox.net>
- <20211013132140.11143-3-daniel@iogearbox.net>
- <8be43259-1fc1-2c62-3cd1-100bde6ff702@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <687e2be1-4d16-1f71-bb25-1f27a04d06f0@iogearbox.net>
-Date:   Thu, 14 Oct 2021 10:10:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230081AbhJNIRf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 14 Oct 2021 04:17:35 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35800 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230161AbhJNIRe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Oct 2021 04:17:34 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-25-ZAf48fDhNsWZHQ1kXJysiQ-1; Thu, 14 Oct 2021 09:15:25 +0100
+X-MC-Unique: ZAf48fDhNsWZHQ1kXJysiQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Thu, 14 Oct 2021 09:15:23 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Thu, 14 Oct 2021 09:15:23 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Hari Bathini' <hbathini@linux.ibm.com>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+CC:     "paulus@samba.org" <paulus@samba.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: [RESEND PATCH v4 0/8] bpf powerpc: Add BPF_PROBE_MEM support in
+ powerpc JIT compiler
+Thread-Topic: [RESEND PATCH v4 0/8] bpf powerpc: Add BPF_PROBE_MEM support in
+ powerpc JIT compiler
+Thread-Index: AQHXv2X2sg2Hg8STAUWVvVtx4py8mavSKAQw
+Date:   Thu, 14 Oct 2021 08:15:23 +0000
+Message-ID: <8091e1294ad343a88aa399417ff91aee@AcuMS.aculab.com>
+References: <20211012123056.485795-1-hbathini@linux.ibm.com>
+In-Reply-To: <20211012123056.485795-1-hbathini@linux.ibm.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <8be43259-1fc1-2c62-3cd1-100bde6ff702@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26321/Wed Oct 13 10:21:20 2021)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/14/21 5:13 AM, David Ahern wrote:
-> On 10/13/21 7:21 AM, Daniel Borkmann wrote:
->> Instead of open-coding a check for invalid bits in NTF_EXT_MASK, we can just
->> use the NLA_POLICY_MASK() helper instead, and simplify NDA_FLAGS_EXT sanity
->> check this way.
->>
->> Suggested-by: Jakub Kicinski <kuba@kernel.org>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> ---
->>   net/core/neighbour.c | 6 +-----
->>   1 file changed, 1 insertion(+), 5 deletions(-)
->>
->> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
->> index 4fc601f9cd06..922b9ed0fe76 100644
->> --- a/net/core/neighbour.c
->> +++ b/net/core/neighbour.c
->> @@ -1834,7 +1834,7 @@ const struct nla_policy nda_policy[NDA_MAX+1] = {
->>   	[NDA_MASTER]		= { .type = NLA_U32 },
->>   	[NDA_PROTOCOL]		= { .type = NLA_U8 },
->>   	[NDA_NH_ID]		= { .type = NLA_U32 },
->> -	[NDA_FLAGS_EXT]		= { .type = NLA_U32 },
->> +	[NDA_FLAGS_EXT]		= NLA_POLICY_MASK(NLA_U32, NTF_EXT_MASK),
->>   	[NDA_FDB_EXT_ATTRS]	= { .type = NLA_NESTED },
->>   };
->>   
->> @@ -1936,10 +1936,6 @@ static int neigh_add(struct sk_buff *skb, struct nlmsghdr *nlh,
->>   	if (tb[NDA_FLAGS_EXT]) {
->>   		u32 ext = nla_get_u32(tb[NDA_FLAGS_EXT]);
->>   
->> -		if (ext & ~NTF_EXT_MASK) {
->> -			NL_SET_ERR_MSG(extack, "Invalid extended flags");
->> -			goto out;
->> -		}
->>   		BUILD_BUG_ON(sizeof(neigh->flags) * BITS_PER_BYTE <
->>   			     (sizeof(ndm->ndm_flags) * BITS_PER_BYTE +
->>   			      hweight32(NTF_EXT_MASK)));
->>
+From: Hari Bathini 
+> Sent: 12 October 2021 13:31
 > 
-> I get that NLA_POLICY_MASK wants to standardize the logic, but the
-> generic extack message "reserved bit set" is less useful than the one here.
+> Patch #1 & #2 are simple cleanup patches. Patch #3 refactors JIT
+> compiler code with the aim to simplify adding BPF_PROBE_MEM support.
+> Patch #4 introduces PPC_RAW_BRANCH() macro instead of open coding
+> branch instruction. Patch #5 & #7 add BPF_PROBE_MEM support for PPC64
+> & PPC32 JIT compilers respectively. Patch #6 & #8 handle bad userspace
+> pointers for PPC64 & PPC32 cases respectively.
 
-If the expectation/recommendation is that NLA_POLICY_MASK() should be used, then
-it would probably make sense for NLA_POLICY_MASK() itself to improve. For example,
-NLA_POLICY_MASK() could perhaps take an optional error string which it should
-return via extack rather than the standard "reserved bit set" one or such.. on
-the other hand, I see that NL_SET_ERR_MSG_ATTR() already points out the affected
-attribute via setting extack->bad_attr, so it be sufficient to figure out that it's
-about reserved bits inside NDA_FLAGS_EXT given this is propagated back to user
-space via NLMSGERR_ATTR_OFFS.
+I thought that BPF was only allowed to do fairly restricted
+memory accesses - so WTF does it need a BPF_PROBE_MEM instruction?
 
-Thanks,
-Daniel
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
