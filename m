@@ -2,126 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9827642DB7C
-	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 16:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D214342DBC3
+	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 16:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhJNO2R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Oct 2021 10:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
+        id S230032AbhJNOhB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Oct 2021 10:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhJNO2N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:28:13 -0400
+        with ESMTP id S229994AbhJNOhA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:37:00 -0400
 Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BFFC061760
-        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 07:26:08 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id y3so20200257wrl.1
-        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 07:26:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC55DC061570
+        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 07:34:55 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id r18so20221427wrg.6
+        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 07:34:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lgl8mZ/YrF8TfvvRQz3SdK85Z+G04kK8iCOR7zSeTw4=;
-        b=Lkoux+c6UA1oHasGJ/r8HQtqbC5B9HrSLLHEkQAG3UQGRAXXBugFRBQSfv3RJcZ9rf
-         LEJ6dsMUgbYfWleimFXH3kfT8MDUsXnlZAv5pr8HOBsD/bYgM++k1B4dqqj9G7Q13Dd8
-         BV2f3zEPg0PzEYuK+1yQV0Q0r5oy4LaIQqnnY=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6u++N1GZS21Vq5pEOOIw8ZH2pt4bmbuLIdHwwW27yCY=;
+        b=s5JKieKymeUfajqBsRxGAOmQf6B1+XlttTvHMeNP3lfs1xu3R1pvUnro9uOUPxbhJ8
+         MQhYFa5QiIqOkdfiXzEwBfrooFfA638Ka5QooywckRgixvset6DSjgZF54152/lvqjSm
+         o2zyH07AzOgyCy//a8wD0uWVvPiwY0H7bCqCE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lgl8mZ/YrF8TfvvRQz3SdK85Z+G04kK8iCOR7zSeTw4=;
-        b=WetnC6kV6Lxi0Gxn4iYA3mzu/CQSmkZNpvlQJacYKlxVNAKSsrkgzxDtu+rxPVNhX7
-         BMIscPYy36e9j0NWDDHDwBvPWo4uRacg3J97PS9TDgiUMZ5p7Sieu9b6DlwVXrhJAIJD
-         hEIhdSK1lAHcFI4FDpeFsP9cRp30QFWJNLWADfoIbovmD9tdpGHAHgRe1K5Frxx0MER5
-         yRv6j1hNemwIaEhWm0TTOXqWQphhJhaS62Pj6IqMsFMu7QSZEbl0+4ek1e3ateAEszOZ
-         zAcohsEhI4u7Meygqsx4lR8mp+0s3M2ibztsk7WIhFj2Gb1bgIcx7UeMr9k8ThR2J7f9
-         Eh6g==
-X-Gm-Message-State: AOAM532+k5+Pafj1Uuj9l+S3UNvosy8mc3jckN/uOZ5/L4jDL6d30dA+
-        Ln9uEsauYJzbbpJK/KZeUMrCojW17pj/gVN9
-X-Google-Smtp-Source: ABdhPJzukZ7AV61dROfIxRv1Lfgv+4xIL2tgaMjZiAoRX7cQziN9II70oV45qMpSTCcq+p7wQN86qA==
-X-Received: by 2002:a5d:6d86:: with SMTP id l6mr7055659wrs.96.1634221567412;
-        Thu, 14 Oct 2021 07:26:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6u++N1GZS21Vq5pEOOIw8ZH2pt4bmbuLIdHwwW27yCY=;
+        b=cztxHDWBdgvgLEASdLPBQKN6RFD0TksR7yJx7Wne5R3TsqDI6auT5KfaHprJtl42PA
+         BMYsSevZYks8j7/mx2bqrG66wO6VsyNV7ssBmCdUmhycHt/AkKcUXaAK6C2xKUrzTLOW
+         oijeCxY8rKUB97Pkr9sJ51DWPRBL6KEOPZjENgcuK9+Sqy/1OLiS1wL8PxPLL/6p81Hc
+         KXlYeJs+nKz4BL2lIEjr2mOYWAAdicNmR8UmO9HhHlgsuqUm5K5NWQ/Fh2kI+GHZK4XR
+         OGSGouPJOqw339IZXSJZ2Z0F2liqhExw3HRg+9/sMDHJ3QRs8Ic4pl2Evm4Xi3JAFi8o
+         csqQ==
+X-Gm-Message-State: AOAM5321QUeNZRrEcZsO0TTWoOB77HiKq8VKm3R3wOu73HZ/Ufmc/PMR
+        bxuKiMZusEQIvZpWQmlFHzByJA==
+X-Google-Smtp-Source: ABdhPJyIMCFdyR4NOw1RHZLH4GTd1eQFsOub0w1B+oj8+iSmAWYesz9QadEO9PbXyMaaVd8kvznNRQ==
+X-Received: by 2002:a05:600c:414c:: with SMTP id h12mr6174517wmm.66.1634222094561;
+        Thu, 14 Oct 2021 07:34:54 -0700 (PDT)
 Received: from antares.. (4.4.a.7.5.8.b.d.d.b.6.7.4.d.a.6.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:6ad4:76bd:db85:7a44])
-        by smtp.gmail.com with ESMTPSA id e8sm3731111wrg.48.2021.10.14.07.26.06
+        by smtp.gmail.com with ESMTPSA id k6sm2656439wri.83.2021.10.14.07.34.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 07:26:07 -0700 (PDT)
+        Thu, 14 Oct 2021 07:34:54 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     nicolas.dichtel@6wind.com, luke.r.nels@gmail.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] bpf: prevent increasing bpf_jit_limit above max
-Date:   Thu, 14 Oct 2021 15:25:53 +0100
-Message-Id: <20211014142554.53120-4-lmb@cloudflare.com>
+To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: [RFC 0/9] uapi/bpf.h for robots
+Date:   Thu, 14 Oct 2021 15:34:24 +0100
+Message-Id: <20211014143436.54470-1-lmb@cloudflare.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211014142554.53120-1-lmb@cloudflare.com>
-References: <20211014142554.53120-1-lmb@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Restrict bpf_jit_limit to the maximum supported by the arch's JIT.
+Hi,
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- include/linux/filter.h     | 1 +
- kernel/bpf/core.c          | 4 +++-
- net/core/sysctl_net_core.c | 2 +-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+I recently presented at LPC 2021 [1] on problems I encountered when
+generating bindings from bpf.h. I proposed the following changes:
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 47f80adbe744..8231a6a257f6 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1050,6 +1050,7 @@ extern int bpf_jit_enable;
- extern int bpf_jit_harden;
- extern int bpf_jit_kallsyms;
- extern long bpf_jit_limit;
-+extern long bpf_jit_limit_max;
- 
- typedef void (*bpf_jit_fill_hole_t)(void *area, unsigned int size);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index b6c72af64d5d..ab84b3816339 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -525,6 +525,7 @@ int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
- int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
- int bpf_jit_harden   __read_mostly;
- long bpf_jit_limit   __read_mostly;
-+long bpf_jit_limit_max __read_mostly;
- 
- static void
- bpf_prog_ksym_set_addr(struct bpf_prog *prog)
-@@ -818,7 +819,8 @@ u64 __weak bpf_jit_alloc_exec_limit(void)
- static int __init bpf_jit_charge_init(void)
- {
- 	/* Only used as heuristic here to derive limit. */
--	bpf_jit_limit = min_t(u64, round_up(bpf_jit_alloc_exec_limit() >> 2,
-+	bpf_jit_limit_max = bpf_jit_alloc_exec_limit();
-+	bpf_jit_limit = min_t(u64, round_up(bpf_jit_limit_max >> 2,
- 					    PAGE_SIZE), LONG_MAX);
- 	return 0;
- }
-diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-index c8496c1142c9..5f88526ad61c 100644
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -419,7 +419,7 @@ static struct ctl_table net_core_table[] = {
- 		.mode		= 0600,
- 		.proc_handler	= proc_dolongvec_minmax_bpf_restricted,
- 		.extra1		= &long_one,
--		.extra2		= &long_max,
-+		.extra2		= &bpf_jit_limit_max,
- 	},
- #endif
- 	{
+* Use enums instead of macros
+* Use __bpf_md_ptr throughout
+* Give types / fields in bpf_attr a name
+* Have one bpf_attr field per bpf_cmd
+
+As David Miller pointed out, changing a macro definition to an enum
+is a breaking change if users use the C preprocessor for conditional
+compilation. Andrii has made a similar change in commit 1aae4bdd7879
+("bpf: Switch BPF UAPI #define constants used from BPF program side to enums")
+where he simply converted to enum. I'm doing the same here.
+
+Next is using __bpf_md_ptr, which seems to work quite well. We can even add
+const qualifiers. A minor nit is that we have to give the unnamed field
+generated by __bpf_md_ptr a name, otherwise we can't refer to it on the
+kernel side to get a __user pointer. Is there a better way? If not, is
+there a better naming scheme?
+
+Giving types and fields a name in bpf_attr goes hand in hand with having
+one field per bpf_cmd in bpf_attr. This means that kernel-side code would
+become more verbose:
+
+    int ufd = attr->map_fd;
+
+    vs.
+
+    int ufd = attr->map_create.map_fd;
+
+Not great. The solution I've prototyped is that we convert from bpf_attr
+to e.g. struct bpf_map_create_attr as early as possible. This is made
+easier by a new macro CHECK_ATTR_TAIL which allows us to remove the
+XXX_LAST_FIELD macros. There are a couple places where I cheat and
+cast back to union bpf_attr: in the real series more function signatures
+would need changing, which will cause a ripple effect.
+
+Finally, I convert one function in libbpf to use one of the new types
+to show what the changes look like from the libbpf side. It also ensures that
+all other syscall wrappers continue to compile unchanged.
+
+So, what does everyone think?
+
+1: https://linuxplumbersconf.org/event/11/contributions/937/
+
+Lorenz Bauer (9):
+  bpf: name enums used from userspace
+  bpf: various constants
+  bpf: move up __bpf_md_ptr
+  bpf: name __u64 member of __bpf_md_ptr
+  bpf: introduce CHECK_ATTR_TAIL
+  bpf: struct bpf_map_create_attr
+  bpf: split map modification structs
+  selftests: sync bpf.h
+  libbpf: use new-style syscall args
+
+ include/linux/bpf.h            |   4 +-
+ include/uapi/linux/bpf.h       | 200 ++++++++++++++++++++++-----------
+ kernel/bpf/syscall.c           |  84 ++++++--------
+ tools/include/uapi/linux/bpf.h | 200 ++++++++++++++++++++++-----------
+ tools/lib/bpf/bpf.c            |  13 +--
+ 5 files changed, 309 insertions(+), 192 deletions(-)
+
 -- 
 2.30.2
 
