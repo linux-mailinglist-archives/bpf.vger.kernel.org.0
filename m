@@ -2,97 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9484542DAC9
-	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 15:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670DD42DB07
+	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 16:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhJNNwK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Oct 2021 09:52:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57651 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230177AbhJNNwK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Oct 2021 09:52:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634219404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NU91yXOcSHE5nSjfMfHje2UOd8qpOzLy0LtZp6G93T4=;
-        b=F8Dbu/21BN00ZPh984YQUEr2XsD4uo/QXGsy1JqsNCGlNy/yrpaAkm5471tOr6IPOhF4kH
-        34SJXQUZu6QOGcfMrSHsNFycVlyq0GL73pBcSM/TXikHHJ4+5TosCPzKgzcy5MGUAOjw33
-        9pjhx4WHVvB+LnY7mW6zCPMG6v/S2Vw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-jgtChhiZONyQHarOlyWR6g-1; Thu, 14 Oct 2021 09:50:03 -0400
-X-MC-Unique: jgtChhiZONyQHarOlyWR6g-1
-Received: by mail-wr1-f70.google.com with SMTP id h99-20020adf906c000000b001644add8925so1432634wrh.0
-        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 06:50:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=NU91yXOcSHE5nSjfMfHje2UOd8qpOzLy0LtZp6G93T4=;
-        b=G/sLSlGl/WaYX5PlhDBMhHItR04O0Q04WyBYcMP7I3HLfuHcYKJ8dvCPFCpIuEcrDB
-         gs1aehTJW3L986EF9BKzXaAarnNlz/Ju8m+29zsjjtu5kh27s50s2SLgXtw8gmAgIXGG
-         gU7fCxG/QemExt+Vn69O4WGNnbFgNSEbllPzoqg/K0BgYD7F8Q2or7C9Zwi35uVXt6i0
-         2JPd8WQAezui3qBJKGflmsV6VFuSmgNrfEKCyhrFszwx0zKp961/8mtWxAQaGPopHwyA
-         aI0E5Xxqykj55rT+9wZ2QBj1pFoT5xs7BdQXmgCNlqDO9oU00VeRq839dX5Ueci1F2uT
-         FHbw==
-X-Gm-Message-State: AOAM5320YG7djDOIZ807lUYB14T/hvYEl8oyZ+O3nyxz8PTz6XqPqRM/
-        kajH4bYkCtv1EjKJc7Oj09Wj41QLoPS5zbI/rA3n0TLahwW3jc0lnFZ4cOPXm44stfF1aQzKRxZ
-        rXaHSGS2x/FpK
-X-Received: by 2002:adf:a48c:: with SMTP id g12mr6772211wrb.341.1634219402591;
-        Thu, 14 Oct 2021 06:50:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhasqnkH6VqbFgdvBD0W5Dr+k4Bevu249dEYV/bhzX6RKl2KWbGOdZbqz1wCI3B6WA3SqVvQ==
-X-Received: by 2002:adf:a48c:: with SMTP id g12mr6772182wrb.341.1634219402382;
-        Thu, 14 Oct 2021 06:50:02 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-231-16.dyn.eolo.it. [146.241.231.16])
-        by smtp.gmail.com with ESMTPSA id c15sm2496966wrs.19.2021.10.14.06.50.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 06:50:02 -0700 (PDT)
-Message-ID: <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
-Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Cc:     toke@toke.dk, joamaki@gmail.com
-Date:   Thu, 14 Oct 2021 15:50:00 +0200
-In-Reply-To: <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
-References: <0000000000005639cd05ce3a6d4d@google.com>
-         <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S231388AbhJNOEP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Oct 2021 10:04:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhJNOEO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:04:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFB7060D07;
+        Thu, 14 Oct 2021 14:02:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634220130;
+        bh=TiEabhn5ARhjlEpC9/usidwzgzF5FoyqmA9TadcjUyw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k/CgIJL0rNLhgXb1xRDQw48sdoPHvUJtjKf2NcVp9AiUMPnDSscnRbUAo1NnqP6PF
+         a8GFovmm+HCmd4K+w7mZ0JwpenLrw75Y4EF9MNeSMR7y1ONXn0xvdI17XpjBzkDyzI
+         ORC+3t7QcXeAW4icovTETGsNhoeZsrsKgvusVIHpx29MXHxo3wWLplwclurvk640Em
+         rrIK4ypPhkY2kimZ85hUL4N5GfnelwDzjqNYpQMbuGHhmmPO11rzq2s/CGN9xfoey/
+         0xJRLCHo4Ltlph7jUwjtll44mBVUpsLGsv3uGYXBdHqWIpLft9g/u+TEs98DZts5A5
+         7Kk3fOi0XQVrQ==
+Date:   Thu, 14 Oct 2021 07:02:08 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     David Ahern <dsahern@gmail.com>, davem@davemloft.net,
+        roopa@nvidia.com, dsahern@kernel.org, m@lambda.lt,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 2/3] net, neigh: Use NLA_POLICY_MASK helper for
+ NDA_FLAGS_EXT attribute
+Message-ID: <20211014070208.3cd7e679@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <687e2be1-4d16-1f71-bb25-1f27a04d06f0@iogearbox.net>
+References: <20211013132140.11143-1-daniel@iogearbox.net>
+        <20211013132140.11143-3-daniel@iogearbox.net>
+        <8be43259-1fc1-2c62-3cd1-100bde6ff702@gmail.com>
+        <687e2be1-4d16-1f71-bb25-1f27a04d06f0@iogearbox.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2021-10-13 at 15:35 +0200, Daniel Borkmann wrote:
-> On 10/13/21 1:40 PM, syzbot wrote:
-> > Hello,
+On Thu, 14 Oct 2021 10:10:18 +0200 Daniel Borkmann wrote:
+> On 10/14/21 5:13 AM, David Ahern wrote:
+> > On 10/13/21 7:21 AM, Daniel Borkmann wrote:  
+> >> Instead of open-coding a check for invalid bits in NTF_EXT_MASK, we can just
+> >> use the NLA_POLICY_MASK() helper instead, and simplify NDA_FLAGS_EXT sanity
+> >> check this way.
+> >>
+> >> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> >> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> >> ---
+> >>   net/core/neighbour.c | 6 +-----
+> >>   1 file changed, 1 insertion(+), 5 deletions(-)
+> >>
+> >> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+> >> index 4fc601f9cd06..922b9ed0fe76 100644
+> >> --- a/net/core/neighbour.c
+> >> +++ b/net/core/neighbour.c
+> >> @@ -1834,7 +1834,7 @@ const struct nla_policy nda_policy[NDA_MAX+1] = {
+> >>   	[NDA_MASTER]		= { .type = NLA_U32 },
+> >>   	[NDA_PROTOCOL]		= { .type = NLA_U8 },
+> >>   	[NDA_NH_ID]		= { .type = NLA_U32 },
+> >> -	[NDA_FLAGS_EXT]		= { .type = NLA_U32 },
+> >> +	[NDA_FLAGS_EXT]		= NLA_POLICY_MASK(NLA_U32, NTF_EXT_MASK),
+> >>   	[NDA_FDB_EXT_ATTRS]	= { .type = NLA_NESTED },
+> >>   };
+> >>   
+> >> @@ -1936,10 +1936,6 @@ static int neigh_add(struct sk_buff *skb, struct nlmsghdr *nlh,
+> >>   	if (tb[NDA_FLAGS_EXT]) {
+> >>   		u32 ext = nla_get_u32(tb[NDA_FLAGS_EXT]);
+> >>   
+> >> -		if (ext & ~NTF_EXT_MASK) {
+> >> -			NL_SET_ERR_MSG(extack, "Invalid extended flags");
+> >> -			goto out;
+> >> -		}
+> >>   		BUILD_BUG_ON(sizeof(neigh->flags) * BITS_PER_BYTE <
+> >>   			     (sizeof(ndm->ndm_flags) * BITS_PER_BYTE +
+> >>   			      hweight32(NTF_EXT_MASK)));
+> >>  
 > > 
-> > syzbot found the following issue on:
+> > I get that NLA_POLICY_MASK wants to standardize the logic, but the
+> > generic extack message "reserved bit set" is less useful than the one here.  
 > 
-> [ +Paolo/Toke wrt veth/XDP, +Jussi wrt bond/XDP, please take a look, thanks! ]
+> If the expectation/recommendation is that NLA_POLICY_MASK() should be used, then
+> it would probably make sense for NLA_POLICY_MASK() itself to improve. For example,
+> NLA_POLICY_MASK() could perhaps take an optional error string which it should
+> return via extack rather than the standard "reserved bit set" one or such.. on
+> the other hand, I see that NL_SET_ERR_MSG_ATTR() already points out the affected
+> attribute via setting extack->bad_attr, so it be sufficient to figure out that it's
+> about reserved bits inside NDA_FLAGS_EXT given this is propagated back to user
+> space via NLMSGERR_ATTR_OFFS.
 
-For the records: Toke and me are actively investigating this issue and
-the other recent related one. So far we could not find anything
-relevant. 
+My larger point is that the ability to dump policy and inspect it in
+user space is an important part of the modern netlink paradigm. When
+RTNL is extended appropriately it'll be good if the policies are
+expressed the right way.
 
-The onluy note is that the reproducer is not extremelly reliable - I
-could not reproduce locally, and multiple syzbot runs on the same code
-give different results. Anyhow, so far the issue was only observerable
-on a specific 'next' commit which is currently "not reachable" from any
-branch. I'm wondering if the issue was caused by some incosistent
-status of such tree.
+Fingers-on-the-keyboard-eyes-on-the-screen user friendliness is
+important but IMHO code that can be built on top of these interfaces 
+is more important.
 
-Cheers,
-
-Paolo
-
+I think the patch is good as is.
