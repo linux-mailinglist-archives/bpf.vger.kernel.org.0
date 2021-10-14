@@ -2,222 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857C142DFC4
-	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 18:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C02A42E08E
+	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 19:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhJNQ6F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Oct 2021 12:58:05 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12974 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232428AbhJNQ6F (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Oct 2021 12:58:05 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EGnsS5022266;
-        Thu, 14 Oct 2021 09:56:00 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=l0V3SyDCzslCy/UCO7iVuaVWXRwukXVOnxahbUC5MnA=;
- b=bY49YZyxzW/iilfphNLGj744WNchRmb7yLMel7NarWm6NsKhpWiYg7e5KhiUN0+5/IfE
- ygr9cqd5DLF0pwo4SOmPzNAiyyD94qTNVyAXIwjUxcO09UDisGOS8u3urgR84+h4c+eO
- GDgXQ/IZbJnwud/d8JvCMI5DqNnPl2E1+es= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bprdn01gd-13
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 14 Oct 2021 09:55:59 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 14 Oct 2021 09:55:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UlE/EpP45HwgRLTLiOKzUQ24NLKD2Gh273DrCwIJYckDzfVeeR/XrY6homGu4b01DiI+vFZDV6AD3yQX8KloDdSwfiTYUs61ipGWz8dIFmQJ8rDa5f+YgSS83p/UDmxiKyaP/lYIZiNICfgRPoZ18xii1e3esQR99VZINoQFEwWpeGnyyHR6IfN1gfPSbscy93BYV73n8ZiE4bKrfPiQ0E+e5tB4oQS8U/ePDrBJ/t1qrJbFeaeQvfFFwWN/8tj5ZEVQUKKXliIvbNj53AcQvKEmvU6ilxvVZ8GPPvtei9VPJqWEihtYqhT4W0fNd/mZcDErFuaipxlsmqBRTSoBCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l0V3SyDCzslCy/UCO7iVuaVWXRwukXVOnxahbUC5MnA=;
- b=ZwBuajWOWnp7+QhKcb9kuYvxdnjybdyr09aDxOlKayC+ugqkYA9iIkVhzmzpjEGkR/7rAsS8cJPp3NaquQJZJsWPfmb6T9xOYj8XW7wpSsAytFEFamheLKK+b4vPmXsfOg99Gf+fNAX8M7haTQO8TnShxlxXArBzDsdPbO9LQrNCH1Rqm0mlwNqSGHyIMx0MGYA8IVmqkWIxHDub24acTQFzEpZLUA/1+h72kGsZlpbZYUevJsEf8Xu8WvfdxwQVp49ifpCv6XZgBsFH8fXS+pn2zDD849OaYT2u77vZLpITRx52cbSkeqzLQRR81GDnBfY56b1s52+SgTHJtqhgTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5140.namprd15.prod.outlook.com (2603:10b6:806:234::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Thu, 14 Oct
- 2021 16:55:54 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f%8]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
- 16:55:54 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin Lau" <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S233710AbhJNRzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Oct 2021 13:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231573AbhJNRzu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:55:50 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8F0C061570;
+        Thu, 14 Oct 2021 10:53:45 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y4so4723663plb.0;
+        Thu, 14 Oct 2021 10:53:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=81GpCKLCWpbf3M+gsswoRRIpPZEb5Emb7g2uodb7ed8=;
+        b=OfUY7PmqAYlld2ccD+6ukE6SfLNrKYXMm+lh+EPpTOxW/YckqgWsf5zYoyTVr0MQXK
+         jwm2gfoocbPOceHpvVRvScJVGKT8Q07PY6jugsAVJBKoMR10/9XoPBRAqxuEo8PZmExd
+         5mGZIq7oeX5pp8woSq0lWYPQA/YgrTEzHnanvXgy3sDwJ2VLm9Ew/MPDJVs/K47Frfyp
+         vVU/cQWCukai9NmBDnK6c9x25UiG3t9ohsigTG6bS8bWiZODA9+SnZOE6nL+aUIU4qqz
+         KGPQSW3N6ZNG4k5KGXcVvi3IZ5etnhKyKRnH/W+vjU4wfT/geC9okZHpG9GgUJ6P/MRG
+         PFgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=81GpCKLCWpbf3M+gsswoRRIpPZEb5Emb7g2uodb7ed8=;
+        b=Sq4Fyeiy6ysZgOEPch0UDlSX2NBGnNNsP0bXuiCAhKjswOB24slCFI1nLguJAHaYJY
+         ODPXx6NjQv3eXSUFukCRN9y5goEpTOSDP5y/cIJV4XlLZekc4IGNBYzh/b++4y9Ght3h
+         x9PgXKsDscRV6oDnj816ey/rZL/2kxdlDHAxV85eKMOZ/JeiJ6MxQ/GwxgPs6ss9wabL
+         JAH9VKdWkmI30sFI7uWjsxzixzKP7bprh4tRdTzt/T121y/6jqgy7JXH4Mq/JX/o0/Pv
+         e1anfqQAt8ysTYoT/QKjJdUfiJXL8XgYm6BqtGX8Mm5MLmbv3OvuTUnw3g+32jtFvRdb
+         a+uw==
+X-Gm-Message-State: AOAM532avzYytNs9yN+FfxqWGhqcXYkW+3V+653vd5P9bGhyA4Df21H9
+        bVxluOFnBGUNmxs5ZZGLFso=
+X-Google-Smtp-Source: ABdhPJySKo0gBFXz1j7VN3suxiLf6meGnOc3OFgMdQK8uIIgc5NnV3SVe0qNk5tnUy+wrKjqMWccrg==
+X-Received: by 2002:a17:90b:3ecd:: with SMTP id rm13mr7720613pjb.189.1634234024632;
+        Thu, 14 Oct 2021 10:53:44 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d058:a28d:3909:6ed5:29e7])
+        by smtp.gmail.com with ESMTPSA id i124sm3173472pfc.153.2021.10.14.10.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 10:53:44 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 23:23:41 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 4/8] libbpf: Ensure that BPF syscall fds are
- never 0, 1, or 2
-Thread-Topic: [PATCH bpf-next v2 4/8] libbpf: Ensure that BPF syscall fds are
- never 0, 1, or 2
-Thread-Index: AQHXwAS4LHKn7TU/q0qCfzTTWRTxUqvSuKoA
-Date:   Thu, 14 Oct 2021 16:55:54 +0000
-Message-ID: <01653735-42DA-4047-A956-FC8225D3BD28@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/8] libbpf: Add typeless ksym support to
+ gen_loader
+Message-ID: <20211014175341.eitbn6ujf4zjkrs7@apollo.localdomain>
 References: <20211013073348.1611155-1-memxor@gmail.com>
- <20211013073348.1611155-5-memxor@gmail.com>
-In-Reply-To: <20211013073348.1611155-5-memxor@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e1afb67f-bf19-4e04-46a6-08d98f337c90
-x-ms-traffictypediagnostic: SA1PR15MB5140:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA1PR15MB514054755DC1B6A791446739B3B89@SA1PR15MB5140.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: srzo0IVLvmn5CaFlGpbEKB4Sff/q0LOfFjLU2Dj9LeI9IQo9cGrNPnx9vpfFyOcEr4RJAu9r2l72P1XvW/aE5B32b1BQs4nxJCpaWCTNHyWXbPoB1c7ZH3k01TMW9TMRmJ8veGpPknirvCS5k5DfLVYlC6DTv1dR502zW729KwOO48WiyQ3PdaU4ePf9Hxd5qn1XOdWkizIQ6m9hvYIzE8BimWbTwJVfDgnBicb/r1VPcbqeZb7bnYK0Uvavn57bxhYTJ8T3e6vndhxv4WAwRIFki6MRwFclVsz3wNcMYyWpfeLPeWLhFR0EUQBIO7xOfXNDnsqoqZMGbRKhWdNI1TUYhTkecS6/36/dYKRjengAxbJZwM0UPXETpmfhRJ9fHgsCSDhdP+lhpQtVUapgKKw87WTbOXLIYSRxFIScTN5fu4yS2dW0ZHrlf6NJ/yiWeR8m2Vm8GOhltxH2ky7C+6fNtAjWTjx/fkRIOH2SnaudQGTgCo8skEnDX/Mc57TNALxL3f7CQmaMlSa+yIVlOYNXEFaH0wKtU3nAsmUOIdCC15nqwj6Ki7sMyzRRhsFYvEf8X6jipoNi1gu7j+nudmIEn5v2DCF4ysEjViMS9yB8beX/6NS937RrQG1SIT2XeHW5hI79+HM6BTsCcMbsmN30hTVh547m/P8eY6S73qEnI3YUrRWbl6oLA/o3FfJlOL1N3WM+hf7XRHh9rDbumadyE4xcNDQ6fbqXb14N6o0gC9XqrlC+ioQ/oaE9mqGJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(38100700002)(36756003)(2906002)(6486002)(6506007)(6512007)(71200400001)(186003)(53546011)(38070700005)(508600001)(83380400001)(2616005)(91956017)(66946007)(66446008)(76116006)(66556008)(4326008)(66476007)(64756008)(8676002)(8936002)(54906003)(86362001)(33656002)(5660300002)(6916009)(316002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?6C6mZae4riMsRx0OppMhsLYdIJB1LeMacr4nro1h8Pds/+K9Vi6WPWG5hf?=
- =?iso-8859-1?Q?UF2tvfEkSxrOwDMDp8EPTS1yA9UEyQ0QUtSV+Quo46Y+lZdyMueyO+MeXB?=
- =?iso-8859-1?Q?DWWTD3iqe6DuW9vrUKKLODTFU5FgqKBymd/iY8zzEkTCawI7SBNWcX5H1a?=
- =?iso-8859-1?Q?mKhNwQpZVPNKmuu7qW5JPFR+L4kDWqvNuexNSQm9JuvnQ7FxqveZZ9PZlg?=
- =?iso-8859-1?Q?QQ2rjh4R3UJmG1Z+CkhIz+Z31YwtPzE2AZxlQ5T+oA/Stiuqb/AYOcnEXB?=
- =?iso-8859-1?Q?xensEDETlxYyVfDXEjTA8iJWBZcJp5oieiMwOIgyO26OshQK7sVjC/ll+D?=
- =?iso-8859-1?Q?6yloT0PcyyfzAREfV4iNmecC9KmjqvvXs9SvlzZ9IkwcF4nRoxnpTlmPEO?=
- =?iso-8859-1?Q?XK+EGYW+MSqGo75jUIyhsvg3Jq5Rzu2P45evomag2CaZWaHCKHHuIKnsAN?=
- =?iso-8859-1?Q?LpaPM2pY+lN+NU7TsOG9mFDeUgB+4bdsxmZMICR6Xx1dUTg+uI55HVmyfV?=
- =?iso-8859-1?Q?t1RU+cvPL9hWhwUmq9E9aSrbMs7hX62trhR/vXI3ChjX0NgGuRc98VudiB?=
- =?iso-8859-1?Q?IKehjFzFv2ZGm+TYYnIXTNpc7TmuIe2+3Kxg0sV5sw+DJEwAJzeAj0uZFU?=
- =?iso-8859-1?Q?n/h0ZWykJCAt+Yo4qV1obD98QJWZLcWJOcrfI1/kd7jkBKeKNRsb5hUsUI?=
- =?iso-8859-1?Q?R4HXyFPbnV8MKLH8AHRjWYgPAnJ6/etK0at4AAbIMKwtgvFxAxlF2Y7iH/?=
- =?iso-8859-1?Q?kBleFWpr1nxsNQ/AQ90Cd9MLbKTPiJe/c6wwf5BJMsyVrijfkouEPhH27r?=
- =?iso-8859-1?Q?vnIAMdwGzNxqKsxdF+n9xVh+h1jlncsRrzTWjO/zerMOQ8JNZf25rN0w0/?=
- =?iso-8859-1?Q?xqOkAGMO4zaiYHv1aqU+SL7/qecNqqxrOxtm0MGAUbc4s3r8favCg9080R?=
- =?iso-8859-1?Q?wJFwzC1u6L/GYanCSQFhQW1k57hr9MHn+MSvxmQbMPg9qBYCJbvBY/9JFq?=
- =?iso-8859-1?Q?zw5bjYh/F7k3Cg9gGMc3AYlClGPtflKrRmkmlJrq05TXAWaEQRv+kleuFg?=
- =?iso-8859-1?Q?qw5leiGUyoNVwJpSprZpM192yghDaaLS9VH66TD4XeYAzqkZQLH+ZIdI0Q?=
- =?iso-8859-1?Q?2MLb5DzW1ccILf7ixbPAWqEAXbLfYa/KI4G313t7NdG31b4gddV4nYQtAG?=
- =?iso-8859-1?Q?JEyHatWmOhw/5txqSePJ6ShHyuBA7shp7zIjh1VwjPO6mUpECvs9SjWA6j?=
- =?iso-8859-1?Q?IpakMmx73OmXmXUaeHBLLFi6oOxpjFJJRML/LJD1IZxaZ2ISxHVzlwWzH7?=
- =?iso-8859-1?Q?YQ8WV8716i9oWKf5IjMdWyqny7OR2d+Wr4zLy7YOSOwNnA1xx9gGxFCRbV?=
- =?iso-8859-1?Q?oTQZvlqQ76zy8Q1Oc4qoddjFFlJTdBB5llV/Af1tn58TZf3UYJBXg=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <FABEE445C7956F429A3751167C3F70BF@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ <20211013073348.1611155-3-memxor@gmail.com>
+ <F745CD84-E520-4DCB-B9F1-0C4F0014CBFF@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1afb67f-bf19-4e04-46a6-08d98f337c90
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2021 16:55:54.4469
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5piV2/8KEthR3bzSCZcq3Ss7Pt9nK3ZfK5531kQWEccuwyMpiTD6ckL+pbVbyhcGIbyPAy1YYV1tXYd69unZAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5140
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: lsXuFCkTt9Rzf0FYN8Re5EbvrdYbWA25
-X-Proofpoint-ORIG-GUID: lsXuFCkTt9Rzf0FYN8Re5EbvrdYbWA25
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-14_09,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0 clxscore=1015
- mlxlogscore=927 bulkscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110140096
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F745CD84-E520-4DCB-B9F1-0C4F0014CBFF@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Oct 14, 2021 at 10:09:43PM IST, Song Liu wrote:
+>
+>
+> > On Oct 13, 2021, at 12:33 AM, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > This uses the bpf_kallsyms_lookup_name helper added in previous patches
+> > to relocate typeless ksyms. The return value ENOENT can be ignored, and
+> > the value written to 'res' can be directly stored to the insn, as it is
+> > overwritten to 0 on lookup failure. For repeating symbols, we can simply
+> > copy the previously populated bpf_insn.
+> >
+> > Also, we need to take care to not close fds for typeless ksym_desc, so
+> > reuse the 'off' member's space to add a marker for typeless ksym and use
+> > that to skip them in cleanup_relos.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> [...]
+> > }
+> >
+> > +/* Expects:
+> > + * BPF_REG_8 - pointer to instruction
+> > + */
+> > +static void emit_relo_ksym_typeless(struct bpf_gen *gen,
+> > +				    struct ksym_relo_desc *relo, int insn)
+>
+> This function has quite some duplicated logic as emit_relo_ksym_btf().
+> I guess we can somehow reuse the code here. Say, we pull changes from
+> 3/8 first to handle weak type. Then we extend the function to handle
+> typeless. Would this work?
+>
 
+Ok, will put both into the same function in the next version. Though the part
+between:
 
-> On Oct 13, 2021, at 12:33 AM, Kumar Kartikeya Dwivedi <memxor@gmail.com> =
-wrote:
->=20
-> Add a simple wrapper for passing an fd and getting a new one >=3D 3 if it
-> is one of 0, 1, or 2. There are two primary reasons to make this change:
-> First, libbpf relies on the assumption a certain BPF fd is never 0 (e.g.
-> most recently noticed in [0]). Second, Alexei pointed out in [1] that
-> some environments reset stdin, stdout, and stderr if they notice an
-> invalid fd at these numbers. To protect against both these cases, switch
-> all internal BPF syscall wrappers in libbpf to always return an fd >=3D 3=
-.
-> We only need to modify the syscall wrappers and not other code that
-> assumes a valid fd by doing >=3D 0, to avoid pointless churn, and because
-> it is still a valid assumption. The cost paid is two additional syscalls
-> if fd is in range [0, 2].
+> > +{
+> > +	struct ksym_desc *kdesc;
+> > +
+> > +	kdesc = get_ksym_desc(gen, relo);
+> > +	if (!kdesc)
+> > +		return;
+> > +	/* try to copy from existing ldimm64 insn */
+> > +	if (kdesc->ref > 1) {
+> > +		move_blob2blob(gen, insn + offsetof(struct bpf_insn, imm), 4,
+> > +			       kdesc->insn + offsetof(struct bpf_insn, imm));
+> > +		move_blob2blob(gen, insn + sizeof(struct bpf_insn) + offsetof(struct bpf_insn, imm), 4,
+> > +			       kdesc->insn + sizeof(struct bpf_insn) + offsetof(struct bpf_insn, imm));
 
-Acked-by: Song Liu <songliubraving@fb.com>
+this and ...
 
-With on nitpick below.=20
+> > +		goto log;
+> > +	}
+> > +	/* remember insn offset, so we can copy ksym addr later */
+> > +	kdesc->insn = insn;
+> > +	/* skip typeless ksym_desc in fd closing loop in cleanup_relos */
+> > +	kdesc->typeless = true;
+> > +	emit_bpf_kallsyms_lookup_name(gen, relo);
+> > +	emit(gen, BPF_JMP_IMM(BPF_JEQ, BPF_REG_7, -ENOENT, 1));
+> > +	emit_check_err(gen);
+> > +	/* store lower half of addr into insn[insn_idx].imm */
+> > +	emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_8, BPF_REG_9, offsetof(struct bpf_insn, imm)));
+> > +	/* store upper half of addr into insn[insn_idx + 1].imm */
+> > +	emit(gen, BPF_ALU64_IMM(BPF_RSH, BPF_REG_9, 32));
+> > +	emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_8, BPF_REG_9,
+> > +		      sizeof(struct bpf_insn) + offsetof(struct bpf_insn, imm)));
 
-[...]
+... this won't overlap (so it will have to jump into the else branch to clear_src_reg).
 
-> +static inline int skel_reserve_bad_fds(struct bpf_load_and_run_opts *opt=
-s, int *fds)
-> +{
-> +	int fd, err, i;
-> +
-> +	for (i =3D 0; i < 3; i++) {
-> +		fd =3D open("/dev/null", O_RDONLY | O_CLOEXEC);
-> +		if (fd < 0) {
-> +			opts->errstr =3D "failed to reserve fd 0, 1, and 2";
-> +			err =3D -errno;
-> +			return err;
-> +		}
-> +		if (fd >=3D 3)
-> +			close(fd);
+e.g. it looks something like this:
 
-nit: Maybe likely(fd >=3D 3) and break here?=20
+if (kdesc->ref > 1) {
+	move...
+	if (!relo->is_typeless)
+		...
+		goto clear_src_reg;
+}
+kdesc->insn = insn;
+...
+if (relo->is_typeless) {
+	...
+} else {
+	...
+clear_src_reg:
+	...
+}
 
-> +		else
-> +			fds[i] =3D fd;
-> +	}
-> +	return 0;
-> +}
-> +
-> static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
-> {
-> -	int map_fd =3D -1, prog_fd =3D -1, key =3D 0, err;
-> +	int map_fd =3D -1, prog_fd =3D -1, key =3D 0, err, i;
-> +	int res_fds[3] =3D { -1, -1, -1 };
-> 	union bpf_attr attr;
->=20
-> +	/* ensures that we don't open fd 0, 1, or 2 from here on out */
-> +	err =3D skel_reserve_bad_fds(opts, res_fds);
-> +	if (err < 0) {
-> +		errno =3D -err;
-> +		goto out;
-> +	}
-> +
-> 	map_fd =3D bpf_create_map_name(BPF_MAP_TYPE_ARRAY, "__loader.map", 4,
-> 				     opts->data_sz, 1, 0);
-> 	if (map_fd < 0) {
-> @@ -115,6 +143,10 @@ static inline int bpf_load_and_run(struct bpf_load_a=
-nd_run_opts *opts)
-> 	}
-> 	err =3D 0;
-> out:
-> +	for (i =3D 0; i < 3; i++) {
-> +		if (res_fds[i] >=3D 0)
-> +			close(res_fds[i]);
-> +	}
-> 	if (map_fd >=3D 0)
-> 		close(map_fd);
-> 	if (prog_fd >=3D 0)
-> --=20
-> 2.33.0
->=20
+so it looked better to split into separate functions (maybe we can just move the
+logging part to common helper? the rest is just duplicating the inital get and
+move_blob2blob).
 
+> > +log:
+> > +	if (!gen->log_level)
+> > +		return;
+> > +	emit(gen, BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_8,
+> > +			      offsetof(struct bpf_insn, imm)));
+> > +	emit(gen, BPF_LDX_MEM(BPF_H, BPF_REG_9, BPF_REG_8, sizeof(struct bpf_insn) +
+> > +			      offsetof(struct bpf_insn, imm)));
+> > +	debug_regs(gen, BPF_REG_7, BPF_REG_9, " var t=0 w=%d (%s:count=%d): imm[0]: %%d, imm[1]: %%d",
+> > +		   relo->is_weak, relo->name, kdesc->ref);
+> > +	emit(gen, BPF_LDX_MEM(BPF_B, BPF_REG_9, BPF_REG_8, offsetofend(struct bpf_insn, code)));
+> > +	debug_regs(gen, BPF_REG_9, -1, " var t=0 w=%d (%s:count=%d): insn.reg",
+> > +		   relo->is_weak, relo->name, kdesc->ref);
+> >
+> [...]
+>
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -6355,17 +6355,14 @@ static int bpf_program__record_externs(struct bpf_program *prog)
+> > 		case RELO_EXTERN_VAR:
+> > 			if (ext->type != EXT_KSYM)
+> > 				continue;
+> > -			if (!ext->ksym.type_id) {
+> > -				pr_warn("typeless ksym %s is not supported yet\n",
+> > -					ext->name);
+> > -				return -ENOTSUP;
+> > -			}
+> > -			bpf_gen__record_extern(obj->gen_loader, ext->name, ext->is_weak,
+> > +			bpf_gen__record_extern(obj->gen_loader, ext->name,
+> > +					       ext->is_weak, !ext->ksym.type_id,
+> > 					       BTF_KIND_VAR, relo->insn_idx);
+> > 			break;
+> > 		case RELO_EXTERN_FUNC:
+> > -			bpf_gen__record_extern(obj->gen_loader, ext->name, ext->is_weak,
+> > -					       BTF_KIND_FUNC, relo->insn_idx);
+> > +			bpf_gen__record_extern(obj->gen_loader, ext->name,
+> > +					       ext->is_weak, 0, BTF_KIND_FUNC,
+>
+> nit: Prefer use "false" for bool arguments.
+>
+> > +					       relo->insn_idx);
+> > 			break;
+> > 		default:
+> > 			continue;
+> > --
+> > 2.33.0
+> >
+>
+
+--
+Kartikeya
