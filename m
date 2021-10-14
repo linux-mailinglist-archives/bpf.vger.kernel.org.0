@@ -2,107 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670DD42DB07
-	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 16:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D34C42DB63
+	for <lists+bpf@lfdr.de>; Thu, 14 Oct 2021 16:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhJNOEP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Oct 2021 10:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJNOEO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:04:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFB7060D07;
-        Thu, 14 Oct 2021 14:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634220130;
-        bh=TiEabhn5ARhjlEpC9/usidwzgzF5FoyqmA9TadcjUyw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k/CgIJL0rNLhgXb1xRDQw48sdoPHvUJtjKf2NcVp9AiUMPnDSscnRbUAo1NnqP6PF
-         a8GFovmm+HCmd4K+w7mZ0JwpenLrw75Y4EF9MNeSMR7y1ONXn0xvdI17XpjBzkDyzI
-         ORC+3t7QcXeAW4icovTETGsNhoeZsrsKgvusVIHpx29MXHxo3wWLplwclurvk640Em
-         rrIK4ypPhkY2kimZ85hUL4N5GfnelwDzjqNYpQMbuGHhmmPO11rzq2s/CGN9xfoey/
-         0xJRLCHo4Ltlph7jUwjtll44mBVUpsLGsv3uGYXBdHqWIpLft9g/u+TEs98DZts5A5
-         7Kk3fOi0XQVrQ==
-Date:   Thu, 14 Oct 2021 07:02:08 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     David Ahern <dsahern@gmail.com>, davem@davemloft.net,
-        roopa@nvidia.com, dsahern@kernel.org, m@lambda.lt,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 2/3] net, neigh: Use NLA_POLICY_MASK helper for
- NDA_FLAGS_EXT attribute
-Message-ID: <20211014070208.3cd7e679@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <687e2be1-4d16-1f71-bb25-1f27a04d06f0@iogearbox.net>
-References: <20211013132140.11143-1-daniel@iogearbox.net>
-        <20211013132140.11143-3-daniel@iogearbox.net>
-        <8be43259-1fc1-2c62-3cd1-100bde6ff702@gmail.com>
-        <687e2be1-4d16-1f71-bb25-1f27a04d06f0@iogearbox.net>
+        id S230213AbhJNOYt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Oct 2021 10:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhJNOYs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:24:48 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B141BC061570
+        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 07:22:43 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id n8so27638877lfk.6
+        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 07:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Okqf4cnxYE2FjVdlyGWzuWegB5o4GhJUuUv5TbPoZBA=;
+        b=DGrABGEtP5hjLIs/K1pNqbk2y6fYRbTTyPPSrc7s4OG9i6hCAmcTe5jL1IVGbdybNm
+         n0QifbSEMlrGOg4m4tPIegguFfiIUWJvHDSXCODQQ2YBybjOAwh0WVR136yqcH7zOo2W
+         De5kAU5D+EBLEhVYxyJSKgs4GEFiD3QIS417M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Okqf4cnxYE2FjVdlyGWzuWegB5o4GhJUuUv5TbPoZBA=;
+        b=HgfsPmsvu9UIDfNifJW0Z9RBCP7SG78eXg1Jz4OKVgT9qAupVnvAKng5fu7vltqcxN
+         O9URV664f9Krfbg3WCK3zzA4ckB2CVKBONkrLf7QdZye4bPt6K4qTGBT+25uOjjjUvLW
+         1k7uSA1BTleEyRNEA+sm4+DkOiYDVxcC5eEwJeDGvWzsdc1qSXVumBCeqvFU7s47/DOg
+         NivQupahwSUNhgvetAEBXkivMY4fgyLHq5tREunXe0wLohdtZRu4xpdZNM+y+lkYc/vD
+         tvdPOgXg2pdnc9kDCjkary2NGbg2ipOegQ4wEjM2mdQFCyoehn6qETr5Dp2dAKTsfQSt
+         NsjA==
+X-Gm-Message-State: AOAM530lqSPJMQXchuxSu3w416eEs/eSqNxCvl5HCzIRVvXhNck22IPW
+        1sANxEc5ipUS0NlUjHA+De+VrmEmyrdxyHFJiQGwUQ==
+X-Google-Smtp-Source: ABdhPJwH/KSfANj7WAISJ4X/OGGDRL8CEswJt/vSOXqtZNnUmhmfUOPmS/catGq1ZLRDado7y9BjlPPYtSlde7lnKe4=
+X-Received: by 2002:a05:6512:314b:: with SMTP id s11mr5650906lfi.206.1634221358158;
+ Thu, 14 Oct 2021 07:22:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211012135935.37054-1-lmb@cloudflare.com> <87wnmgg0mf.fsf@cloudflare.com>
+In-Reply-To: <87wnmgg0mf.fsf@cloudflare.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 14 Oct 2021 15:22:26 +0100
+Message-ID: <CACAyw99FGc_z2zXjrjP=0k3jz0vz2u6ddiGVbzD0zuTcTU4rzg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Fix up bpf_jit_limit some more
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-riscv@lists.infradead.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 14 Oct 2021 10:10:18 +0200 Daniel Borkmann wrote:
-> On 10/14/21 5:13 AM, David Ahern wrote:
-> > On 10/13/21 7:21 AM, Daniel Borkmann wrote:  
-> >> Instead of open-coding a check for invalid bits in NTF_EXT_MASK, we can just
-> >> use the NLA_POLICY_MASK() helper instead, and simplify NDA_FLAGS_EXT sanity
-> >> check this way.
-> >>
-> >> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> >> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> >> ---
-> >>   net/core/neighbour.c | 6 +-----
-> >>   1 file changed, 1 insertion(+), 5 deletions(-)
-> >>
-> >> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-> >> index 4fc601f9cd06..922b9ed0fe76 100644
-> >> --- a/net/core/neighbour.c
-> >> +++ b/net/core/neighbour.c
-> >> @@ -1834,7 +1834,7 @@ const struct nla_policy nda_policy[NDA_MAX+1] = {
-> >>   	[NDA_MASTER]		= { .type = NLA_U32 },
-> >>   	[NDA_PROTOCOL]		= { .type = NLA_U8 },
-> >>   	[NDA_NH_ID]		= { .type = NLA_U32 },
-> >> -	[NDA_FLAGS_EXT]		= { .type = NLA_U32 },
-> >> +	[NDA_FLAGS_EXT]		= NLA_POLICY_MASK(NLA_U32, NTF_EXT_MASK),
-> >>   	[NDA_FDB_EXT_ATTRS]	= { .type = NLA_NESTED },
-> >>   };
-> >>   
-> >> @@ -1936,10 +1936,6 @@ static int neigh_add(struct sk_buff *skb, struct nlmsghdr *nlh,
-> >>   	if (tb[NDA_FLAGS_EXT]) {
-> >>   		u32 ext = nla_get_u32(tb[NDA_FLAGS_EXT]);
-> >>   
-> >> -		if (ext & ~NTF_EXT_MASK) {
-> >> -			NL_SET_ERR_MSG(extack, "Invalid extended flags");
-> >> -			goto out;
-> >> -		}
-> >>   		BUILD_BUG_ON(sizeof(neigh->flags) * BITS_PER_BYTE <
-> >>   			     (sizeof(ndm->ndm_flags) * BITS_PER_BYTE +
-> >>   			      hweight32(NTF_EXT_MASK)));
-> >>  
-> > 
-> > I get that NLA_POLICY_MASK wants to standardize the logic, but the
-> > generic extack message "reserved bit set" is less useful than the one here.  
-> 
-> If the expectation/recommendation is that NLA_POLICY_MASK() should be used, then
-> it would probably make sense for NLA_POLICY_MASK() itself to improve. For example,
-> NLA_POLICY_MASK() could perhaps take an optional error string which it should
-> return via extack rather than the standard "reserved bit set" one or such.. on
-> the other hand, I see that NL_SET_ERR_MSG_ATTR() already points out the affected
-> attribute via setting extack->bad_attr, so it be sufficient to figure out that it's
-> about reserved bits inside NDA_FLAGS_EXT given this is propagated back to user
-> space via NLMSGERR_ATTR_OFFS.
+On Wed, 13 Oct 2021 at 20:56, Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 03:59 PM CEST, Lorenz Bauer wrote:
+> > Some more cleanups around bpf_jit_limit to make it readable via sysctl.
+> >
+> > Jakub raised the point that a sysctl toggle is UAPI and therefore
+> > can't be easily changed later on. I tried to find another place to stick
+> > the info, but couldn't find a good one. All the current BPF knobs are in
+> > sysctl.
+> >
+> > There are examples of read only sysctls:
+> > $ sudo find /proc/sys -perm 0444 | wc -l
+> > 90
+> >
+> > There are no examples of sysctls with mode 0400 however:
+> > $ sudo find /proc/sys -perm 0400 | wc -l
+> > 0
+> >
+> > Thoughts?
+>
+> I threw this idea out there during LPC already, that it would be cool to
+> use BPF iterators for that. Pinned/preloaded iterators were made for
+> dumping kernel data on demand after all.
+>
+> What is missing is a BPF iterator type that would run the program just
+> once (there is just one thing to print), and a BPF helper to lookup
+> symbol's address.
+>
+> I thought this would require a bit of work, but actually getting a PoC
+> (see below) to work was rather pleasntly straightforward.
+>
+> Perhaps a bit of a hack but I'd consider it as an alternative.
 
-My larger point is that the ability to dump policy and inspect it in
-user space is an important part of the modern netlink paradigm. When
-RTNL is extended appropriately it'll be good if the policies are
-expressed the right way.
+I spoke to Jakub, I won't have time to work on this myself. So I'll
+drop this patch from the series and send a v3 with just the fixes to
+bpf_jit_limit.
 
-Fingers-on-the-keyboard-eyes-on-the-screen user friendliness is
-important but IMHO code that can be built on top of these interfaces 
-is more important.
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-I think the patch is good as is.
+www.cloudflare.com
