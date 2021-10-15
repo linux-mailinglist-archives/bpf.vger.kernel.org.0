@@ -2,127 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF1842EACA
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 09:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7D142ED10
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 11:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhJOIAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 04:00:41 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:25137 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhJOIAl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:00:41 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HVzBD485lz1DHcx;
-        Fri, 15 Oct 2021 15:56:52 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Fri, 15 Oct 2021 15:58:32 +0800
-Received: from huawei.com (10.175.101.6) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Fri, 15
- Oct 2021 15:58:31 +0800
-From:   Liu Jian <liujian56@huawei.com>
-To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
-        <edumazet@google.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <ast@kernel.org>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <liujian56@huawei.com>
-Subject: [PATCH] bpf, sockmap: Do not read sk_receive_queue in tcp_bpf_recvmsg if strparser enabled
-Date:   Fri, 15 Oct 2021 16:01:42 +0800
-Message-ID: <20211015080142.43424-1-liujian56@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S235771AbhJOJGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 05:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234459AbhJOJGe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:06:34 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA088C061570
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so8879647pjc.3
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Va56VXzThcapfyuRQ5Jm4rTPogdKDliZvBqOga5mRCw=;
+        b=hnSlvkSy8cjPjchSs3Hpxei9lPzOzdRKnGEDp0hhdCM+8yKQM4Kt1BRIwSd26KLl2l
+         EFt5IAwN/0QrDf9Ta4giZbi+cJSj/gjcY7WvJljtnfU+YA/iP4/es2U9Po4uq36kYsqt
+         ZJkQW2CtqgeF7zNus5pDXLAia3sR2pzy+X97VVYBrEUz4GSuz34o7soP/h9oeIV5YShH
+         J5rb+9ip9FiehgJgt/fE4mfeSqpbFLNggzPBdWu+jW0bLOZEiexIKguWCTWM3PUQXc3d
+         qBvugIE6AYBQ6nGxzs2FajNbJidlKnQD4W9TkFUG+Ccbcta63FTpS54osYsbSKjCJdnD
+         waxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Va56VXzThcapfyuRQ5Jm4rTPogdKDliZvBqOga5mRCw=;
+        b=n+YXkBxGTVW7xtxpik6kxvhRULVLl/DbDb3paWZVdKHYR8kyVNpaeHcSAtUeJzc4MZ
+         +3mgVBalJ91cBE1jY3OC9ivI8WvUa43otTpMmiHBsSIBXbk1kIuNRLtTQpsJlV000/Na
+         Oa+qi1UNFFSc/oth4qC4ES8wos7dHzf1S8FJJQUgt1UWuTUX7tsqrrtsgJuVJwFSNKco
+         pY6FLKsl5WTleK23XOJIrJl+zbHC9zzL3BaQxR8+b+u1J351nTRtDZJZbn0Vfw2zM2wG
+         DcsyNlTolxw+LY5SO/neGh436IU70iPFeMk+7x86I+Mak+dy3acgMEWcG3JXhXKyPbdt
+         63Og==
+X-Gm-Message-State: AOAM532PBvYjLjiOt//DyBn5nbciGOM1u4J7+c8j9nTT1eBKLFqTnvK0
+        W1iWWo1M3l26QgQnbhM3AiD8Fw==
+X-Google-Smtp-Source: ABdhPJwUUlt2PziUSmkUXhAgxMM7TpA7Blg+ObSbfCjY4jh7FhM1njWaFNuIMt+ySOT3pqCxqR6rXA==
+X-Received: by 2002:a17:903:41c2:b0:13f:f26:d6b9 with SMTP id u2-20020a17090341c200b0013f0f26d6b9mr10019185ple.14.1634288667413;
+        Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.226])
+        by smtp.gmail.com with ESMTPSA id k190sm4366009pfd.211.2021.10.15.02.04.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
+Subject: [PATCH] bpf: use count for prealloc hashtab too
+Date:   Fri, 15 Oct 2021 17:03:53 +0800
+Message-Id: <20211015090353.31248-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If the strparser function of sk is turned on, all received data needs to
-be processed by strparser first.
+We only use count for kmalloc hashtab not for prealloc hashtab, because
+__pcpu_freelist_pop() return NULL when no more elem in pcpu freelist.
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
+But the problem is that __pcpu_freelist_pop() will traverse all CPUs and
+spin_lock for all CPUs to find there is no more elem at last.
+
+We encountered bad case on big system with 96 CPUs that alloc_htab_elem()
+would last for 1ms. This patch use count for prealloc hashtab too,
+avoid traverse and spin_lock for all CPUs in this case.
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- include/linux/skmsg.h | 6 ++++++
- net/core/skmsg.c      | 5 +++++
- net/ipv4/tcp_bpf.c    | 9 ++++++---
- 3 files changed, 17 insertions(+), 3 deletions(-)
+ kernel/bpf/hashtab.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 94e2a1f6e58d..25e92dff04aa 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -390,6 +390,7 @@ void sk_psock_stop(struct sk_psock *psock, bool wait);
- int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock);
- void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock);
- void sk_psock_stop_strp(struct sock *sk, struct sk_psock *psock);
-+bool sk_psock_strparser_started(struct sock *sk);
- #else
- static inline int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 32471ba02708..0c432a23aa00 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -855,12 +855,12 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
+ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
  {
-@@ -403,6 +404,11 @@ static inline void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
- static inline void sk_psock_stop_strp(struct sock *sk, struct sk_psock *psock)
- {
- }
-+
-+static inline bool sk_psock_strparser_started(struct sock *sk)
-+{
-+	return false;
-+}
- #endif
+ 	htab_put_fd_value(htab, l);
++	atomic_dec(&htab->count);
  
- void sk_psock_start_verdict(struct sock *sk, struct sk_psock *psock);
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index e85b7f8491b9..dd64ef854f3e 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -1105,6 +1105,11 @@ void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
- 	sk->sk_write_space = sk_psock_write_space;
- }
- 
-+bool sk_psock_strparser_started(struct sock *sk)
-+{
-+	return sk->sk_data_ready == sk_psock_strp_data_ready;
-+}
-+
- void sk_psock_stop_strp(struct sock *sk, struct sk_psock *psock)
- {
- 	if (!psock->saved_data_ready)
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 9d068153c316..17129b343966 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -198,6 +198,7 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 	if (unlikely(!psock))
- 		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
- 	if (!skb_queue_empty(&sk->sk_receive_queue) &&
-+	    !sk_psock_strparser_started(sk) &&
- 	    sk_psock_queue_empty(psock)) {
- 		sk_psock_put(sk, psock);
- 		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-@@ -214,9 +215,11 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 		if (data) {
- 			if (!sk_psock_queue_empty(psock))
- 				goto msg_bytes_ready;
--			release_sock(sk);
--			sk_psock_put(sk, psock);
--			return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-+			if (!sk_psock_strparser_started(sk)) {
-+				release_sock(sk);
-+				sk_psock_put(sk, psock);
-+				return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-+			}
- 		}
- 		copied = -EAGAIN;
+ 	if (htab_is_prealloc(htab)) {
+ 		check_and_free_timer(htab, l);
+ 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
+ 	} else {
+-		atomic_dec(&htab->count);
+ 		l->htab = htab;
+ 		call_rcu(&l->rcu, htab_elem_free_rcu);
  	}
+@@ -938,6 +938,11 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 		} else {
+ 			struct pcpu_freelist_node *l;
+ 
++			if (atomic_inc_return(&htab->count) > htab->map.max_entries) {
++				l_new = ERR_PTR(-E2BIG);
++				goto dec_count;
++			}
++
+ 			l = __pcpu_freelist_pop(&htab->freelist);
+ 			if (!l)
+ 				return ERR_PTR(-E2BIG);
 -- 
-2.17.1
+2.11.0
 
