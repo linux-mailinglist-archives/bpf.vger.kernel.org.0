@@ -2,316 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3792642F836
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 18:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3314B42FC3B
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 21:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241378AbhJOQd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 12:33:56 -0400
-Received: from mga12.intel.com ([192.55.52.136]:37917 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241380AbhJOQdy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:33:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="208059657"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="208059657"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 09:31:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="528205599"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Oct 2021 09:31:10 -0700
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kpsingh@kernel.org, kafai@fb.com, yhs@fb.com,
-        songliubraving@fb.com, bpf@vger.kernel.org,
-        Gurucharan G <gurucharanx.g@intel.com>
-Subject: [PATCH net-next 9/9] ice: make use of ice_for_each_* macros
-Date:   Fri, 15 Oct 2021 09:29:08 -0700
-Message-Id: <20211015162908.145341-10-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211015162908.145341-1-anthony.l.nguyen@intel.com>
-References: <20211015162908.145341-1-anthony.l.nguyen@intel.com>
+        id S238544AbhJOTh1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 15:37:27 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48786 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235221AbhJOTh1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 Oct 2021 15:37:27 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FJXevL013791;
+        Fri, 15 Oct 2021 12:35:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=BI3oB2L8w4Cux7jwApgq9PcEj8A0EAo00+d+5n421OA=;
+ b=c+psBq0G0xJUCkrC/vc6w1SBPYhyCYqiW8DVQSSF/XyJfRd4u2miH+wsX0P2N21jGtFL
+ 15GPsNwU/fLkutnTVhfNpx8A04f0QuceWyT9E/+ae3OpvJY56jqFLA3PTQ5jratnlaAj
+ DqTQFQ/s/BrK7W1zq7LLFMOzpX+YEgjOEuc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bqf2prdpe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 15 Oct 2021 12:35:17 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Fri, 15 Oct 2021 12:30:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hbALPnfRfhELO0QVYSG0kLo6BXV+NTEkizCKh61R/oPKIIpVFpIHIdwXGv0lOncGZNZKXCIPiCrjocS78thzdHum6PZeUh0tLRp+X9HgI6UXVgQzotJLR9kKNqRizhA0BSjUt1W3MFncIeL15Ffk+z0nO7po7YW4sE3/Q2gDUy657fInyocAJKLJWKtEhPAGtg9jDBXRc7arB7bC0GZD7kmIz4fMpXreKXRS/FQ3zfGdCyBtlRB8/M8rbjy7mKr4Qk0MZw9RsK+NRfN0LAkVYdVg2gE3QUKQ2qoZ5UQZZUEHGP1b9RiJz0j57mtFDtz4V4QGkVDzfwlDA4+u5SSI7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BI3oB2L8w4Cux7jwApgq9PcEj8A0EAo00+d+5n421OA=;
+ b=jGfXnlpXDR0Gn1fO2YdoxuT7rdvoIDq+Ag2v4yOAyvzqo72xXYpUGGblIZ8kCptXtaTda8Ejyts7B+pspmWWMQmmQfSIoRPuuTvINQ19tE24vqVOmBixans7PvocUu8cry9q/tKqkgGCgpl8rfCJepKyPcgCBzPosdvRDQlgXCtwnSgQItzK7MORgr1NnZImQAK0V0lruO7NyUb9/9YgxEJzYjftOjjv0dtdnNnJ41HF952kt7SK3jBfm3j3KiXj0kpjpD0LOwobL7PtsPrihutQ0HTQXMH7/GW7kN2/Qd5QNvcVlT6bU9NZfgY1jqwZyxvhNXbvQZc3o05ji1SWrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SA1PR15MB4822.namprd15.prod.outlook.com (2603:10b6:806:1e1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Fri, 15 Oct
+ 2021 19:30:13 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160%8]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 19:30:13 +0000
+Date:   Fri, 15 Oct 2021 12:30:10 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, <alan.maguire@oracle.com>
+Subject: Re: BUG: Ksnoop tool failed to pass the BPF verifier with recent
+ kernel changes
+Message-ID: <20211015193010.22frp6eat3wz54hq@kafai-mbp.dhcp.thefacebook.com>
+References: <800ce502-8f63-8712-7ed4-d3124a5fd6fb@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <800ce502-8f63-8712-7ed4-d3124a5fd6fb@gmail.com>
+X-ClientProxiedBy: MW4P220CA0027.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:303:115::32) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3f3b) by MW4P220CA0027.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:115::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Fri, 15 Oct 2021 19:30:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b4b63dd2-215a-4f52-460d-08d9901235d0
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4822:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB48220422B3B34B95BE421394D5B99@SA1PR15MB4822.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:288;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EiTdyGR3Wtndt1jBI3E0Oc5HmXpTfiB3SShxlH9Nl5WsQVJ+iq5RcQFcltsx8CJGhxm+kmmGTVZ8q+ES4x9GnfiDjAeswxI6QqaFJylZ5NA7r3MkrFA0lqzH0hu5ArwkCfwD1+VUZ44to8UMeSm4CRZxYmeMF9Oqo6Yz4S5SZu205wAZl6KbcZIjOgIbizIf8XCdJG811PJdd4nwyTXw7L5Ifylu/jSSotCrZ0haZ/XpF7v72DPvqfvbD3vAHb6uevxAmuPHpTJdAZ6xdwcZ3XzP7mGlxBoicR9cJtBwdUT3zoQGGrjDNkq3mScraQZPWUXvYvJmYvHySLNVa5VRYzq6EgSvqrLyNcyrMRcWQ+UKUmGBFvIZ1zZbWYfRy18lkktFukJf9g/xUYAlaR756N4IQI5QdNZ/FH/31pVaOKsMJkD9w98kMFHJUO61ayfyQmEhUiLWJ8snGk94l1ih0FD1L4/8wQsNxaeribFzz2o0nTS8GWw9RaY1ZRy3VrzlOGORlEbTHo3A0HchdiOxpfdI8++zlsUDI1AFzZGwMmH7BFnfAQo82QtR+vHvXDsHEZ/HxeeukTS81evay1+3YyrUyPue5PjuQRtW5VdplKREmGtiQWryIxvV76xa5QQBz7XlmgzQztgAu/+W3YqZGg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(8936002)(38100700002)(6916009)(86362001)(66556008)(8676002)(66476007)(4326008)(6506007)(186003)(52116002)(7696005)(4744005)(9686003)(55016002)(2906002)(316002)(83380400001)(5660300002)(508600001)(1076003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9w9juLOJlAyfYmZ8oRfGxEFONISRUhPZ2LHb/mru4KHyN48dRAGMYNWbKtwR?=
+ =?us-ascii?Q?0u2st5Ln1czGkAa5Bqh9MdLdQQa/fXGzI2bx9Msddtgiz+ncNQ9lLsvwLYXi?=
+ =?us-ascii?Q?nz9/B0sHEQ+Nfj6cXJBOiYXPUYz2KkJLhsO+ffP7vkrVwui52F3PRLBHJBxc?=
+ =?us-ascii?Q?c9ixkwrE+QGQKohQ8DaAk/Z4Okkt/n1lsyl7Ba0S3tU+wN19vJ5GNyXbcWeX?=
+ =?us-ascii?Q?MVXEktb73t3o/Tkdg8+erwqohlgYZVgPHB3NyE7p3lIUW1d0Ec4boOezZ6IL?=
+ =?us-ascii?Q?zg28tRw4ac62ng7Vk5kbZiBtKDeZBbneDVz8i8ST70e5dPlChe0lAuHXNiV7?=
+ =?us-ascii?Q?wgGCtKTtKNXTzsCTIig1sQSV5P9bSm9YFSdvGFzgDrRAJtx/GGsOkW6kIUzR?=
+ =?us-ascii?Q?xDzM103VJiLJezeP8uJUpSvCxmA66n+eJA5tut82kXxUhYdvBrpgBozvaT4i?=
+ =?us-ascii?Q?2T+Ty4BOxRq3ZKpgJHyAhjPx91orO8RTChmGwAOajBTB2mOW2MauRtXDHaQy?=
+ =?us-ascii?Q?GheJoZcg6ygsoWpjpwovdDYhkS5aT0DcYhey6Bs9L5RXvGJbPoicSEX2k7bC?=
+ =?us-ascii?Q?1OYlWM+9A5lGupHwVCQOroO24yYjterg3UvQHbyr+vLbCTQ/KJo/NweV7b1R?=
+ =?us-ascii?Q?dkWWFhnKdlsrwT5CplwcS+DgR69s2KmwnJBd0gIHEBG23U+/NBQPrJau4f0A?=
+ =?us-ascii?Q?RQpudjurACfxwA7O83T3pWRw2CfqDSXF5IPqGW6KiT8GS3YSzS4CMK49KAor?=
+ =?us-ascii?Q?5XoSGclZ6tPjuu6SOpkG6Wa/B/WD4FbT8tWqJ17SfPOydU2SJ8+lxPVLa6t4?=
+ =?us-ascii?Q?Ao6cUErn4AW+KhbzkmD5grPKI0CSvu9TEKsYTSOZhu3h7KuZit23GLOlgSUE?=
+ =?us-ascii?Q?XEuhyeO4OOnMfbWdkiBXSeS8KkAb6t/gfDDvWC2BVpvBj6UxsXZqqpmlw0v8?=
+ =?us-ascii?Q?A3MOprXRd99V83Z6QKLmFicNxsbrl+vdW4HTjSMUGpkO59LUQYz5ZkYpvLT/?=
+ =?us-ascii?Q?r5ml99um9qyQXIoGfPQE0w5e/mlpUi0xbh393CiaVoTF2pSdW5hg1VulMndr?=
+ =?us-ascii?Q?QIG0prKoiEWFkXxanDFK8YFA2mM1wrQwR5ndi8OpjKK4DOXlZFGqcRAGHGUU?=
+ =?us-ascii?Q?xLHLJKQVdMhewMezu79oKJOI1wVaYTJkSpc+3JSwMh+jOmDGElSpavrcCM07?=
+ =?us-ascii?Q?Nwikpv4sZGPUcb3HCqg0PnD27w/ULvro4Faga96So79hIXP44h9jjJyL/0PR?=
+ =?us-ascii?Q?Ja4JAMrqPw7tpyPf5xIb8iqmjOFagBUFpubqEILOxyHAHvq2WNJN7Q7Wk+Yh?=
+ =?us-ascii?Q?Wzd3ycKDWjlGKnWbcxEl+HPqJ+wNAd7TWOiXFEq8z75TQA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4b63dd2-215a-4f52-460d-08d9901235d0
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 19:30:13.7403
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J/G+BlCNGPyoOp9QTJ0JRzaiVNeDkhwvIVG27jnsSyP9gPYK1IKAgFOi37kfudlr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4822
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: ezyNhyM3_vKOhPB475GP8-xS2e3-U7Hk
+X-Proofpoint-GUID: ezyNhyM3_vKOhPB475GP8-xS2e3-U7Hk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-15_06,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 phishscore=0 bulkscore=0 mlxscore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 impostorscore=0 spamscore=0
+ mlxlogscore=960 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110150119
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Thu, Oct 14, 2021 at 12:35:42AM +0800, Hengqi Chen wrote:
+> Hi, BPF community,
+> 
+> 
+> I would like to report a possible bug in bpf-next,
+> hope I don't make any stupid mistake. Here is the details:
+> 
+> I have two VMs:
+> 
+> One has the kernel built against the following commit:
+> 
+> 0693b27644f04852e46f7f034e3143992b658869 (bpf-next)
+> 
+> The ksnoop tool (from BCC repo) works well on this VM.
+> 
+> 
+> Another has the kernel built against the following commit:
+> 
+> 5319255b8df9271474bc9027cabf82253934f28d (bpf-next)
+> 
+> On this VM, the ksnoop tool failed with the following message:
+I see the error in both mentioned bpf-next commits above.
+I use the latest llvm and bcc from github.
 
-Go through the code base and use ice_for_each_* macros.  While at it,
-introduce ice_for_each_xdp_txq() macro that can be used for looping over
-xdp_rings array.
-
-Commit is not introducing any new functionality.
-
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: Gurucharan G <gurucharanx.g@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice.h         |  5 ++++-
- drivers/net/ethernet/intel/ice/ice_arfs.c    |  2 +-
- drivers/net/ethernet/intel/ice/ice_dcb_lib.c |  4 ++--
- drivers/net/ethernet/intel/ice/ice_ethtool.c | 10 ++++-----
- drivers/net/ethernet/intel/ice/ice_lib.c     | 22 ++++++++++----------
- drivers/net/ethernet/intel/ice/ice_main.c    | 14 ++++++-------
- 6 files changed, 30 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index aeac6cd0e74f..80f14886b5b1 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -125,10 +125,13 @@
- #define ice_for_each_vsi(pf, i) \
- 	for ((i) = 0; (i) < (pf)->num_alloc_vsi; (i)++)
- 
--/* Macros for each Tx/Rx ring in a VSI */
-+/* Macros for each Tx/Xdp/Rx ring in a VSI */
- #define ice_for_each_txq(vsi, i) \
- 	for ((i) = 0; (i) < (vsi)->num_txq; (i)++)
- 
-+#define ice_for_each_xdp_txq(vsi, i) \
-+	for ((i) = 0; (i) < (vsi)->num_xdp_txq; (i)++)
-+
- #define ice_for_each_rxq(vsi, i) \
- 	for ((i) = 0; (i) < (vsi)->num_rxq; (i)++)
- 
-diff --git a/drivers/net/ethernet/intel/ice/ice_arfs.c b/drivers/net/ethernet/intel/ice/ice_arfs.c
-index 3071b8e79499..5daade32ea62 100644
---- a/drivers/net/ethernet/intel/ice/ice_arfs.c
-+++ b/drivers/net/ethernet/intel/ice/ice_arfs.c
-@@ -614,7 +614,7 @@ int ice_set_cpu_rx_rmap(struct ice_vsi *vsi)
- 		return -EINVAL;
- 
- 	base_idx = vsi->base_vector;
--	for (i = 0; i < vsi->num_q_vectors; i++)
-+	ice_for_each_q_vector(vsi, i)
- 		if (irq_cpu_rmap_add(netdev->rx_cpu_rmap,
- 				     pf->msix_entries[base_idx + i].vector)) {
- 			ice_free_cpu_rx_rmap(vsi);
-diff --git a/drivers/net/ethernet/intel/ice/ice_dcb_lib.c b/drivers/net/ethernet/intel/ice/ice_dcb_lib.c
-index 4366626e0eb4..4284526e9e24 100644
---- a/drivers/net/ethernet/intel/ice/ice_dcb_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_dcb_lib.c
-@@ -201,11 +201,11 @@ void ice_vsi_cfg_dcb_rings(struct ice_vsi *vsi)
- 
- 	if (!test_bit(ICE_FLAG_DCB_ENA, vsi->back->flags)) {
- 		/* Reset the TC information */
--		for (i = 0; i < vsi->num_txq; i++) {
-+		ice_for_each_txq(vsi, i) {
- 			tx_ring = vsi->tx_rings[i];
- 			tx_ring->dcb_tc = 0;
- 		}
--		for (i = 0; i < vsi->num_rxq; i++) {
-+		ice_for_each_rxq(vsi, i) {
- 			rx_ring = vsi->rx_rings[i];
- 			rx_ring->dcb_tc = 0;
- 		}
-diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-index 19ae045b7242..6e0af72c2020 100644
---- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-@@ -2756,12 +2756,12 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
- 
- 	/* set for the next time the netdev is started */
- 	if (!netif_running(vsi->netdev)) {
--		for (i = 0; i < vsi->alloc_txq; i++)
-+		ice_for_each_alloc_txq(vsi, i)
- 			vsi->tx_rings[i]->count = new_tx_cnt;
--		for (i = 0; i < vsi->alloc_rxq; i++)
-+		ice_for_each_alloc_rxq(vsi, i)
- 			vsi->rx_rings[i]->count = new_rx_cnt;
- 		if (ice_is_xdp_ena_vsi(vsi))
--			for (i = 0; i < vsi->num_xdp_txq; i++)
-+			ice_for_each_xdp_txq(vsi, i)
- 				vsi->xdp_rings[i]->count = new_tx_cnt;
- 		vsi->num_tx_desc = (u16)new_tx_cnt;
- 		vsi->num_rx_desc = (u16)new_rx_cnt;
-@@ -2810,7 +2810,7 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
- 		goto free_tx;
- 	}
- 
--	for (i = 0; i < vsi->num_xdp_txq; i++) {
-+	ice_for_each_xdp_txq(vsi, i) {
- 		/* clone ring and setup updated count */
- 		xdp_rings[i] = *vsi->xdp_rings[i];
- 		xdp_rings[i].count = new_tx_cnt;
-@@ -2904,7 +2904,7 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
- 		}
- 
- 		if (xdp_rings) {
--			for (i = 0; i < vsi->num_xdp_txq; i++) {
-+			ice_for_each_xdp_txq(vsi, i) {
- 				ice_free_tx_ring(vsi->xdp_rings[i]);
- 				*vsi->xdp_rings[i] = xdp_rings[i];
- 			}
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index e4dc4435c8f5..f981e77f72ad 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -46,12 +46,12 @@ static int ice_vsi_ctrl_all_rx_rings(struct ice_vsi *vsi, bool ena)
- 	int ret = 0;
- 	u16 i;
- 
--	for (i = 0; i < vsi->num_rxq; i++)
-+	ice_for_each_rxq(vsi, i)
- 		ice_vsi_ctrl_one_rx_ring(vsi, ena, i, false);
- 
- 	ice_flush(&vsi->back->hw);
- 
--	for (i = 0; i < vsi->num_rxq; i++) {
-+	ice_for_each_rxq(vsi, i) {
- 		ret = ice_vsi_wait_one_rx_ring(vsi, ena, i);
- 		if (ret)
- 			break;
-@@ -639,12 +639,12 @@ static void ice_vsi_put_qs(struct ice_vsi *vsi)
- 
- 	mutex_lock(&pf->avail_q_mutex);
- 
--	for (i = 0; i < vsi->alloc_txq; i++) {
-+	ice_for_each_alloc_txq(vsi, i) {
- 		clear_bit(vsi->txq_map[i], pf->avail_txqs);
- 		vsi->txq_map[i] = ICE_INVAL_Q_INDEX;
- 	}
- 
--	for (i = 0; i < vsi->alloc_rxq; i++) {
-+	ice_for_each_alloc_rxq(vsi, i) {
- 		clear_bit(vsi->rxq_map[i], pf->avail_rxqs);
- 		vsi->rxq_map[i] = ICE_INVAL_Q_INDEX;
- 	}
-@@ -1298,7 +1298,7 @@ static void ice_vsi_clear_rings(struct ice_vsi *vsi)
- 	}
- 
- 	if (vsi->tx_rings) {
--		for (i = 0; i < vsi->alloc_txq; i++) {
-+		ice_for_each_alloc_txq(vsi, i) {
- 			if (vsi->tx_rings[i]) {
- 				kfree_rcu(vsi->tx_rings[i], rcu);
- 				WRITE_ONCE(vsi->tx_rings[i], NULL);
-@@ -1306,7 +1306,7 @@ static void ice_vsi_clear_rings(struct ice_vsi *vsi)
- 		}
- 	}
- 	if (vsi->rx_rings) {
--		for (i = 0; i < vsi->alloc_rxq; i++) {
-+		ice_for_each_alloc_rxq(vsi, i) {
- 			if (vsi->rx_rings[i]) {
- 				kfree_rcu(vsi->rx_rings[i], rcu);
- 				WRITE_ONCE(vsi->rx_rings[i], NULL);
-@@ -1327,7 +1327,7 @@ static int ice_vsi_alloc_rings(struct ice_vsi *vsi)
- 
- 	dev = ice_pf_to_dev(pf);
- 	/* Allocate Tx rings */
--	for (i = 0; i < vsi->alloc_txq; i++) {
-+	ice_for_each_alloc_txq(vsi, i) {
- 		struct ice_tx_ring *ring;
- 
- 		/* allocate with kzalloc(), free with kfree_rcu() */
-@@ -1346,7 +1346,7 @@ static int ice_vsi_alloc_rings(struct ice_vsi *vsi)
- 	}
- 
- 	/* Allocate Rx rings */
--	for (i = 0; i < vsi->alloc_rxq; i++) {
-+	ice_for_each_alloc_rxq(vsi, i) {
- 		struct ice_rx_ring *ring;
- 
- 		/* allocate with kzalloc(), free with kfree_rcu() */
-@@ -1857,7 +1857,7 @@ int ice_vsi_cfg_xdp_txqs(struct ice_vsi *vsi)
- 	if (ret)
- 		return ret;
- 
--	for (i = 0; i < vsi->num_xdp_txq; i++)
-+	ice_for_each_xdp_txq(vsi, i)
- 		vsi->xdp_rings[i]->xsk_pool = ice_tx_xsk_pool(vsi->xdp_rings[i]);
- 
- 	return ret;
-@@ -1955,7 +1955,7 @@ void ice_vsi_cfg_msix(struct ice_vsi *vsi)
- 	u16 txq = 0, rxq = 0;
- 	int i, q;
- 
--	for (i = 0; i < vsi->num_q_vectors; i++) {
-+	ice_for_each_q_vector(vsi, i) {
- 		struct ice_q_vector *q_vector = vsi->q_vectors[i];
- 		u16 reg_idx = q_vector->reg_idx;
- 
-@@ -2649,7 +2649,7 @@ static void ice_vsi_release_msix(struct ice_vsi *vsi)
- 	u32 rxq = 0;
- 	int i, q;
- 
--	for (i = 0; i < vsi->num_q_vectors; i++) {
-+	ice_for_each_q_vector(vsi, i) {
- 		struct ice_q_vector *q_vector = vsi->q_vectors[i];
- 
- 		ice_write_intrl(q_vector, 0);
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index ccd9b9514001..f531691a3e12 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -103,7 +103,7 @@ static void ice_check_for_hang_subtask(struct ice_pf *pf)
- 
- 	hw = &vsi->back->hw;
- 
--	for (i = 0; i < vsi->num_txq; i++) {
-+	ice_for_each_txq(vsi, i) {
- 		struct ice_tx_ring *tx_ring = vsi->tx_rings[i];
- 
- 		if (tx_ring && tx_ring->desc) {
-@@ -2377,7 +2377,7 @@ static int ice_xdp_alloc_setup_rings(struct ice_vsi *vsi)
- 	struct ice_tx_desc *tx_desc;
- 	int i, j;
- 
--	for (i = 0; i < vsi->num_xdp_txq; i++) {
-+	ice_for_each_xdp_txq(vsi, i) {
- 		u16 xdp_q_idx = vsi->alloc_txq + i;
- 		struct ice_tx_ring *xdp_ring;
- 
-@@ -2526,7 +2526,7 @@ int ice_prepare_xdp_rings(struct ice_vsi *vsi, struct bpf_prog *prog)
- 
- 	return 0;
- clear_xdp_rings:
--	for (i = 0; i < vsi->num_xdp_txq; i++)
-+	ice_for_each_xdp_txq(vsi, i)
- 		if (vsi->xdp_rings[i]) {
- 			kfree_rcu(vsi->xdp_rings[i], rcu);
- 			vsi->xdp_rings[i] = NULL;
-@@ -2534,7 +2534,7 @@ int ice_prepare_xdp_rings(struct ice_vsi *vsi, struct bpf_prog *prog)
- 
- err_map_xdp:
- 	mutex_lock(&pf->avail_q_mutex);
--	for (i = 0; i < vsi->num_xdp_txq; i++) {
-+	ice_for_each_xdp_txq(vsi, i) {
- 		clear_bit(vsi->txq_map[i + vsi->alloc_txq], pf->avail_txqs);
- 		vsi->txq_map[i + vsi->alloc_txq] = ICE_INVAL_Q_INDEX;
- 	}
-@@ -2579,13 +2579,13 @@ int ice_destroy_xdp_rings(struct ice_vsi *vsi)
- 
- free_qmap:
- 	mutex_lock(&pf->avail_q_mutex);
--	for (i = 0; i < vsi->num_xdp_txq; i++) {
-+	ice_for_each_xdp_txq(vsi, i) {
- 		clear_bit(vsi->txq_map[i + vsi->alloc_txq], pf->avail_txqs);
- 		vsi->txq_map[i + vsi->alloc_txq] = ICE_INVAL_Q_INDEX;
- 	}
- 	mutex_unlock(&pf->avail_q_mutex);
- 
--	for (i = 0; i < vsi->num_xdp_txq; i++)
-+	ice_for_each_xdp_txq(vsi, i)
- 		if (vsi->xdp_rings[i]) {
- 			if (vsi->xdp_rings[i]->desc)
- 				ice_free_tx_ring(vsi->xdp_rings[i]);
-@@ -7066,7 +7066,7 @@ static void ice_tx_timeout(struct net_device *netdev, unsigned int txqueue)
- 	}
- 
- 	/* now that we have an index, find the tx_ring struct */
--	for (i = 0; i < vsi->num_txq; i++)
-+	ice_for_each_txq(vsi, i)
- 		if (vsi->tx_rings[i] && vsi->tx_rings[i]->desc)
- 			if (txqueue == vsi->tx_rings[i]->q_index) {
- 				tx_ring = vsi->tx_rings[i];
--- 
-2.31.1
-
+Can you confirm which llvm version (or llvm git commit) you are using
+in both the good and the bad case?
