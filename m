@@ -2,84 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481BA42FCA5
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 21:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B38F42FD11
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 22:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242888AbhJOUA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 16:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
+        id S238698AbhJOUlc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 16:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhJOUA7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Oct 2021 16:00:59 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2F7C061570;
-        Fri, 15 Oct 2021 12:58:52 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id k26so9244666pfi.5;
-        Fri, 15 Oct 2021 12:58:52 -0700 (PDT)
+        with ESMTP id S238675AbhJOUlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Oct 2021 16:41:31 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91B9C061570
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 13:39:24 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id bp7so5009607qkb.12
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 13:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EpBL0d+zARonX4e/FdCBynNmNWbTS6+G42KxKb9lhC8=;
-        b=Yp5b2HqyopTLlyq+F0z39XHmlgPs7aOcuIwqOjxxLevJITs+tLjbIvkLdoR7pSyHaS
-         pSdD1norYLU8RnDg/GlUbeKd4+PM91tVieMKfT6nyoN2rEXTmLa/OyYeG328xQENFeNI
-         Qnyk2FQ4eqXLrlqrIAfgB2lloO3L3PmdCmQNnb9Vs22z2LIUP86VwLoNp1jxUOXz2xS+
-         6vmDeS24uPMEpJeL9ksl1aIcjq/N/8J4uz1jsqSqAuDzC/lpVrzmHTC0u2buYpt/PX+t
-         o7mCHE7HTnzHm6r/7gINP18c8JDkmuj9+olsoBuaVVFCbzLCaLjawiuadDvH4K00wBLE
-         zXcQ==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=PblJKZo+k2H8JL30I1NZ2lTZq4dtq1qv335T60XMHjc=;
+        b=YpMrIJyaLE6IO76TXBI44Zen63kJN+hnqeqAW/3j9CGj5yIRAS+BICNTzjtKKzPxsy
+         gRMS+zS5wq2je8OrJqDLz8cun2rAuOAnAZVi3B+IXOQi1K0vYqugdpRiDXbTiEE+aVoY
+         4kyxWWpaeiicwp9fh6Xkijr17A++C2Z7IgFpmDNEzuBtZHHphc+ooTmEDokkOBchi0+O
+         8u5tJHiOP/8YNS9ryMrbCMCv5mZf2Lu3P77br51J7RzRaiQQ5WlI6dvH0LtQ5W0l1uen
+         aiMqujqZjeA+izixoupYpI6JxPbbVy3p8nH8u305OP4HOzmSjQ+ujbZ2g0b++i1AMrOr
+         B8qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EpBL0d+zARonX4e/FdCBynNmNWbTS6+G42KxKb9lhC8=;
-        b=Se6CcjunioSovMYuaF8O+TvnbFQgmod1c+eVvbADbYeXUQ2aDMTN+q6n2oDGM8nNjC
-         85JHT324LGoaHdicMhksq24lFcwO3O4GSRgaNgbnGlC96PqDfRsKOliErfYlHJq/RPJO
-         ePni1XJdOZr7XEmCMJP8hQe9aO4f0lwsqK9WcAm+5WbJo5mFIb2JjVJ8/qpWqwWyE4hY
-         bldYe0B3kEMSIOZpx9TqfBqEzo/Q0XnzZmEwT63gWrPEtpQfZRzzDgmhh89ZhFsDqGqh
-         EikQPm8IO6tMdNZFBmgSZhgIKQVMUizdUQ0oLCKze+Rumbb+Sf/q/eUbkKnVnYamgx2B
-         Xlzw==
-X-Gm-Message-State: AOAM532Tgu8BIYxWh2/zVEZDPGvf8lQTcll32rxC6vzVcbdDfGe1e4mv
-        DQAYcwJNjbZUSNJAyJui7QxIw7md/Rv+NgLWGr8=
-X-Google-Smtp-Source: ABdhPJz9duZk+yy0M1N2CMw5eP43R6dCaVdVYh1L+JZWF0kXl2A3MqE/VITrtXtpUfFOkHWoNF+Z1+Ew1KA3Dp9h51w=
-X-Received: by 2002:a63:4f57:: with SMTP id p23mr10654618pgl.376.1634327932138;
- Fri, 15 Oct 2021 12:58:52 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=PblJKZo+k2H8JL30I1NZ2lTZq4dtq1qv335T60XMHjc=;
+        b=NoOcYOsVHBgGlEz+S+9nc032LPzayPABzdIXg+uz1UUKIfXOifSzvLybzDeRBI3IHf
+         qcfYHGcU+jPFj7rIcrPf6QZeOHpnIkZzeMr2e6NORlGL5IQTCxxipuf0hoazsZ23KAds
+         9aUR8C8Cs8qv2Ehy/CwVLOw2mZ16jo+VhKsqPg8L7KgBps479nLj62e3630vRCK/GrDn
+         nYStp+7GBg/qoLCB1sYzZkYoegvrKb5dFIJ5JuYbEbZvj9OBjikW93FptPLRQXMpiFwl
+         DyDTMG6GY3Ioi4aeOUIOynhN0M6nRx9db71qp271vfMr/HPLFefPbYH1/dPH+XDyxHQp
+         fOSQ==
+X-Gm-Message-State: AOAM530m+wOxIiuxV2wkMOsVksNpB8ftpMURQTlZ1etJJZNyvu4wGtfR
+        GoP6zyMLuM80MaSY1O1iAHfjQt9+qwvnpundMnE=
+X-Google-Smtp-Source: ABdhPJz+mJ6oGxk0ZjlQSyZ524QRi8Dxqk6aljzfXFDwbI/7gXJCLl8NN1E6NLY/Nn+pe+TNtEQTYCfU1i9kDfoo01k=
+X-Received: by 2002:a37:b586:: with SMTP id e128mr11955305qkf.43.1634330363677;
+ Fri, 15 Oct 2021 13:39:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211015090353.31248-1-zhouchengming@bytedance.com>
-In-Reply-To: <20211015090353.31248-1-zhouchengming@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 15 Oct 2021 21:58:40 +0200
-Message-ID: <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: use count for prealloc hashtab too
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Sender: mrsmelaniat@gmail.com
+Received: by 2002:a05:620a:1993:0:0:0:0 with HTTP; Fri, 15 Oct 2021 13:39:23
+ -0700 (PDT)
+From:   Alary Jean Claude <claudealaryjean@gmail.com>
+Date:   Fri, 15 Oct 2021 20:39:23 +0000
+X-Google-Sender-Auth: OrXtjdSIDzXP39xxApfNvO8ttQo
+Message-ID: <CANL8XDtBLPMCF1jon3ONmY3pd1SrJy_qOoPXjtVRPNNvQ8V0cA@mail.gmail.com>
+Subject: Good Day My beloved,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 11:04 AM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> We only use count for kmalloc hashtab not for prealloc hashtab, because
-> __pcpu_freelist_pop() return NULL when no more elem in pcpu freelist.
->
-> But the problem is that __pcpu_freelist_pop() will traverse all CPUs and
-> spin_lock for all CPUs to find there is no more elem at last.
->
-> We encountered bad case on big system with 96 CPUs that alloc_htab_elem()
-> would last for 1ms. This patch use count for prealloc hashtab too,
-> avoid traverse and spin_lock for all CPUs in this case.
->
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Greeting My Dear,
+With due respect to your person and much sincerity of purpose I wish
+to write to you today, seeking for your urgent assistance in this
+humanitarian investment project to be established in your country for
+the mutual benefit of the orphans and the less privileged ones. My
+names are Mrs.Claude Alary Jean, a dying widow hospitalized undergoing
+treatment for brain tumor disease, I hope that you will not expose or
+betray this belief and confidence that I am about to delegate to you
+for the mutual benefit of the orphans and the less privileged ones. My
+late husband made a substantial deposit with the Bank which I have
+Strong-Willed to hand over and entrust the sum of ($
+12,000.000,Dollar) in the account under your guardianship for you to
+invest it into any social charitable project in your country. Based on
+my present health status I am permanently indisposed to handle
+finances or any financial related project.
 
-It's not clear from the commit log what you're solving.
-The atomic inc/dec in critical path of prealloc maps hurts performance.
-That's why it's not used.
+With this intention, I am determined to contact you in order to
+sustain and assist me as my rightful beneficiary and claim the money
+for humanitarian purposes for the mutual benefits of the less
+privileged ones. Because If the fund remains unclaimed with the bank I
+pass away, those gluttonous bank executives will place the fund as an
+unclaimed Fund and share it among themselves for their selfish and
+worthless ventures. In this regard, I will be grateful for your kind
+acceptance to carry out this transaction and fulfill my final wish in
+implementing the charitable project in your country as it requires
+absolute trust and devotion without any failure. Meanwhile It will be
+my pleasure to compensate you as my Investment Manager/Partner with
+40% percent of the total amount as commission/share just for you to
+take this charitable project serious and handle it with sincerity of
+mind, showing honesty and attention in our communication and in every
+aspect of this project, While 60% of the money will be invested into
+the charity project.
+
+Thank you very much for your kind consideration and I will be happy to
+receive your prompt response for further correspondence.
+May the peace of God be with you.
+Yours beloved Sister in Christ Mrs.Claude Alary Jean.
