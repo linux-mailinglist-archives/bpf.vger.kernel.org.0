@@ -2,209 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FCC42F1EC
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 15:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C05E42F20A
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 15:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239367AbhJONMz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 09:12:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239273AbhJONMu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:12:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCEBC611C8;
-        Fri, 15 Oct 2021 13:10:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634303444;
-        bh=v/xKKm7pK45erNzDtEBmB1EkqYKDVshX9hXRWweMUtU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l2A6EVHs3ZYc8gM31JawXS25skMDHKFsyzxT2vHP0QVj/51nKEG4wqQTxRMpYDP8k
-         wJu9Gy8sVs3koTkJcBYeuDreGGTmMgAv5Ez/7sjrEKlsbwllCle1lM337eb2O4gPIx
-         7ChRkLJbCQTwu5IpLs3xLErnPPYAvVr0GWhzyQLovGTMew3SbFtNOu0Xsyj/p0nvhd
-         +W5uM10OdbtO8XJqzqrN3EPMHtkSU9iCTM5iggwvgfT3aDVeioP5qiiy6ae7EVcJOI
-         Vs8snKih9nrBnrXMZT3LzWWytErE4dCRheRcVrKA28DGxbQ07U/r90BbYABohO7TAN
-         RkQTccT6C5N1w==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+        id S239360AbhJONYn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 09:24:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55715 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239351AbhJONYm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 Oct 2021 09:24:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634304155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6i4ZlcpI65G0vVAJgnz1cFjngGSuB+RC98zfnoRpQag=;
+        b=PvaldnlvWDq8CTi3qnZlr8sIyFUgJxR0s1G9zKffRfT0N3LO4kTt2YmrtiQbNlizB7d9fx
+        L0yb1G0FBckH+OFWRsJR2C3zvqAPcBlT8uvviiG/9lE+d7rh81qpOa+66Yyf9P/ix+LmKl
+        y5Urr5GfpNQs3RZgSyiGraPfa0h19Rw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-enE4xlzkOZ2K2SeP-A-i5A-1; Fri, 15 Oct 2021 09:22:34 -0400
+X-MC-Unique: enE4xlzkOZ2K2SeP-A-i5A-1
+Received: by mail-ed1-f69.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso8225977edn.4
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 06:22:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=6i4ZlcpI65G0vVAJgnz1cFjngGSuB+RC98zfnoRpQag=;
+        b=hSh9KJkUBFVx4++oLnzYjEvJza0qup7i/J7Po5/usJ/TP+2ozgy0RBdV21a2KbslRQ
+         27+yX2aNd1MXAdMMy7CjDtq1uJ8rL1ZPKSzjrLZzQYhMEyUhda2yaqx8HsQBV6wRPxN3
+         oD7GTMkxZgHe52u7oix/WNlekITRLyhXmwtVKcrydtJA7MfEfx8+ZVf0g/TlyeKCwdDp
+         l6bmPXV5ciSCt40DZN775qV49RE69nl7biKLCXn2qdTqXkn4N4eeWRw5EhJry5x0xoDH
+         6QMzZAn6gPpJk1VInZyGYU8NgbXB9y32bVWkSjyr2SQCN/TSybQefAO/bKMSJn2jgIS1
+         1PhA==
+X-Gm-Message-State: AOAM532vA2dQgTjr1WlayEk/TZlkLPUo+0YR1Btn2uyoxZF++iZ53f6H
+        ICY9NFFNeZPDQJluflxzbkBJzd6XoHUgI3AIvzmNAE4F/m2dlnybQaiZvwTXFRI+69SD4LT2p4P
+        yFZdKdpJTwFNc
+X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr6440726ejb.356.1634304152649;
+        Fri, 15 Oct 2021 06:22:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwf7iElNP6x1ZTn76DCAvYzuu9ypXwRBvtux0Y3zYiqJL2i3G/wNYIAuJgTIg0LlcEnuT3W1g==
+X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr6440696ejb.356.1634304152394;
+        Fri, 15 Oct 2021 06:22:32 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ck9sm4210345ejb.56.2021.10.15.06.22.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 06:22:31 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5A5E518025F; Fri, 15 Oct 2021 15:22:31 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
 Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
         john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
         echaudro@redhat.com, jasowang@redhat.com,
         alexander.duyck@gmail.com, saeed@kernel.org,
         maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: [PATCH v16 bpf-next 20/20] bpf: introduce bpf_xdp_{load,store}_bytes selftest
-Date:   Fri, 15 Oct 2021 15:08:57 +0200
-Message-Id: <829038ab1f3c84e5f0508675f9dfaf5617984049.1634301224.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634301224.git.lorenzo@kernel.org>
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v16 bpf-next 09/20] bpf: introduce BPF_F_XDP_MB flag in
+ prog_flags loading the ebpf program
+In-Reply-To: <0a48666cfb23d1ceef8d529506e7ad2da90079de.1634301224.git.lorenzo@kernel.org>
 References: <cover.1634301224.git.lorenzo@kernel.org>
+ <0a48666cfb23d1ceef8d529506e7ad2da90079de.1634301224.git.lorenzo@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 15 Oct 2021 15:22:31 +0200
+Message-ID: <87y26uzalk.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce kernel selftest for new bpf_xdp_{load,store}_bytes helpers.
-and bpf_xdp_pointer/bpf_xdp_copy_buf utility routines.
+Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- tools/lib/bpf/libbpf.c                        |  2 +-
- .../bpf/prog_tests/xdp_adjust_frags.c         | 81 +++++++++++++++++++
- .../bpf/progs/test_xdp_update_frags.c         | 42 ++++++++++
- 3 files changed, 124 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
+> Introduce BPF_F_XDP_MB and the related field in bpf_prog_aux in order to
+> notify the driver the loaded program support xdp multi-buffer.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index d5ae2716d08b..dd64721988fd 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8098,8 +8098,8 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
- 	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
- 	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
--	SEC_DEF("xdp",			XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
- 	SEC_DEF("xdp_mb/",		XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX | SEC_XDP_MB),
-+	SEC_DEF("xdp",			XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
- 	SEC_DEF("perf_event",		PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
- 	SEC_DEF("lwt_in",		LWT_IN, 0, SEC_NONE | SEC_SLOPPY_PFX),
- 	SEC_DEF("lwt_out",		LWT_OUT, 0, SEC_NONE | SEC_SLOPPY_PFX),
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-new file mode 100644
-index 000000000000..53febbcb8fd4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+void test_xdp_update_frags(void)
-+{
-+	const char *file = "./test_xdp_update_frags.o";
-+	__u32 duration, retval, size;
-+	struct bpf_object *obj;
-+	int err, prog_fd;
-+	__u32 *offset;
-+	__u8 *buf;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	buf = malloc(128);
-+	if (CHECK(!buf, "malloc()", "error:%s\n", strerror(errno)))
-+		return;
-+
-+	memset(buf, 0, 128);
-+	offset = (__u32 *)buf;
-+	*offset = 16;
-+	buf[*offset] = 0xaa;		/* marker at offset 16 */
-+	buf[*offset + 15] = 0xaa;	/* marker at offset 31 */
-+
-+	err = bpf_prog_test_run(prog_fd, 1, buf, 128,
-+				buf, &size, &retval, &duration);
-+
-+	/* test_xdp_update_frags: buf[16,31]: 0xaa -> 0xbb */
-+	CHECK(err || retval != XDP_PASS || buf[16] != 0xbb || buf[31] != 0xbb,
-+	      "128b", "err %d errno %d retval %d size %d\n",
-+	      err, errno, retval, size);
-+
-+	free(buf);
-+
-+	buf = malloc(9000);
-+	if (CHECK(!buf, "malloc()", "error:%s\n", strerror(errno)))
-+		return;
-+
-+	memset(buf, 0, 9000);
-+	offset = (__u32 *)buf;
-+	*offset = 5000;
-+	buf[*offset] = 0xaa;		/* marker at offset 5000 (frag0) */
-+	buf[*offset + 15] = 0xaa;	/* marker at offset 5015 (frag0) */
-+
-+	err = bpf_prog_test_run(prog_fd, 1, buf, 9000,
-+				buf, &size, &retval, &duration);
-+
-+	/* test_xdp_update_frags: buf[5000,5015]: 0xaa -> 0xbb */
-+	CHECK(err || retval != XDP_PASS ||
-+	      buf[5000] != 0xbb || buf[5015] != 0xbb,
-+	      "9000b", "err %d errno %d retval %d size %d\n",
-+	      err, errno, retval, size);
-+
-+	memset(buf, 0, 9000);
-+	offset = (__u32 *)buf;
-+	*offset = 3510;
-+	buf[*offset] = 0xaa;		/* marker at offset 3510 (head) */
-+	buf[*offset + 15] = 0xaa;	/* marker at offset 3525 (frag0) */
-+
-+	err = bpf_prog_test_run(prog_fd, 1, buf, 9000,
-+				buf, &size, &retval, &duration);
-+
-+	/* test_xdp_update_frags: buf[3510,3525]: 0xaa -> 0xbb */
-+	CHECK(err || retval != XDP_PASS ||
-+	      buf[3510] != 0xbb || buf[3525] != 0xbb,
-+	      "9000b", "err %d errno %d retval %d size %d\n",
-+	      err, errno, retval, size);
-+
-+	free(buf);
-+
-+	bpf_object__close(obj);
-+}
-+
-+void test_xdp_adjust_frags(void)
-+{
-+	if (test__start_subtest("xdp_adjust_frags"))
-+		test_xdp_update_frags();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-new file mode 100644
-index 000000000000..5801f05219db
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int _version SEC("version") = 1;
-+
-+SEC("xdp_mb/xdp_adjust_frags")
-+int _xdp_adjust_frags(struct xdp_md *xdp)
-+{
-+	__u8 *data_end = (void *)(long)xdp->data_end;
-+	__u8 *data = (void *)(long)xdp->data;
-+	__u8 val[16] = {};
-+	__u32 offset;
-+	int err;
-+
-+	if (data + sizeof(__u32) > data_end)
-+		return XDP_DROP;
-+
-+	offset = *(__u32 *)data;
-+	err = bpf_xdp_load_bytes(xdp, offset, val, sizeof(val));
-+	if (err < 0)
-+		return XDP_DROP;
-+
-+	if (val[0] != 0xaa || val[15] != 0xaa) /* marker */
-+		return XDP_DROP;
-+
-+	val[0] = 0xbb; /* update the marker */
-+	val[15] = 0xbb;
-+	err = bpf_xdp_store_bytes(xdp, offset, val, sizeof(val));
-+	if (err < 0)
-+		return XDP_DROP;
-+
-+	return XDP_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.31.1
+We should also add some restrictions in the BPF core. In particular,
+tail call, cpumap and devmap maps should not be able to mix multi-buf
+and non-multibuf programs.
+
+-Toke
 
