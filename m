@@ -2,102 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF0842F7A2
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 18:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BB042F822
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 18:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236754AbhJOQGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 12:06:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29900 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236270AbhJOQGD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 Oct 2021 12:06:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634313836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dsDEKtYCRzpfGHfWuRln3LBcuvT/rlU9WF50B32EWSQ=;
-        b=e4GX/OESvypgTn5BmIps4Jpqwi61GyOGWXCF2XKHVWUYNBrlJCfq9BB19FhtBrfmO8KYOG
-        vahZ/TzuJZmzq22gYnFnbI6WbA0UtsRE23Al4klq/wj1qY288iDFlmNhFNkqR/0cztLGrQ
-        oMkGaEFak7waDqtqxMVQyJ+ViB2EJi0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-1Er5WMLONp2LeFGV7HfcYA-1; Fri, 15 Oct 2021 12:03:53 -0400
-X-MC-Unique: 1Er5WMLONp2LeFGV7HfcYA-1
-Received: by mail-ed1-f69.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso8591507edj.20
-        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 09:03:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=dsDEKtYCRzpfGHfWuRln3LBcuvT/rlU9WF50B32EWSQ=;
-        b=kuiw8TI/qV4Rowal24p/D1Dd9puSVmHXuiY+8fovPdbq8ZXAebgkRO56JK5Kkn9haA
-         EEdKYCPMmcFCOG5ah9nYgiTUU62r4KSQ3ATs05ARu9cPmjm4UJT/gg1kCx5XHziOuUD5
-         GG59ZosVxE5EgsVwgGk/50XA/UOQBiY+AP1YW73iyFgny/cy7FrK0KZazwoaeNodg9Ox
-         NTLeIDFIBNnvtXgTRz9GzI6v1Vgixnsf3Sey31QFAnsXam59ocG2z3OegzWtht7Bf+5s
-         j2pDptHcU7r5Ubqc3LS0tcinhFgVU6CDbUFfwZdGUmUkdHyo0RJQ1R5ibOu0AtAXSE5y
-         /RlA==
-X-Gm-Message-State: AOAM533pG7XMEKTfxtFE8myGKIOWjuQIt9KN0yeJz3+xQteACy2Ey5JY
-        rzsahvDYb0pzrhhNLEheQn2i0H+XQisnW3KK9bE12BoZY+weZzTkRRptHq7ViUy5Vx3HUlN9/Nl
-        zn8bJrCZUhHjl
-X-Received: by 2002:a17:906:a382:: with SMTP id k2mr7572516ejz.454.1634313831268;
-        Fri, 15 Oct 2021 09:03:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVpl3COZZa10m9FGGCOulI/IilZO1BZ1AmzpG9vXvqWXM/Vr6tYrv3GMPd7axLellHTaPsIw==
-X-Received: by 2002:a17:906:a382:: with SMTP id k2mr7572303ejz.454.1634313829001;
-        Fri, 15 Oct 2021 09:03:49 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i21sm4370071eja.50.2021.10.15.09.03.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 09:03:48 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DDB3218025F; Fri, 15 Oct 2021 18:03:47 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
+        id S241334AbhJOQdk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 12:33:40 -0400
+Received: from mga12.intel.com ([192.55.52.136]:37917 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241276AbhJOQdk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:33:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="208059617"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="208059617"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 09:31:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="528205554"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Oct 2021 09:31:03 -0700
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, netdev@vger.kernel.org,
         maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com
-Subject: Re: [PATCH v16 bpf-next 09/20] bpf: introduce BPF_F_XDP_MB flag in
- prog_flags loading the ebpf program
-In-Reply-To: <YWmCLlLelmG2ElyV@lore-desk>
-References: <cover.1634301224.git.lorenzo@kernel.org>
- <0a48666cfb23d1ceef8d529506e7ad2da90079de.1634301224.git.lorenzo@kernel.org>
- <87y26uzalk.fsf@toke.dk> <YWmCLlLelmG2ElyV@lore-desk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 15 Oct 2021 18:03:47 +0200
-Message-ID: <87lf2uz34s.fsf@toke.dk>
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
+        kafai@fb.com, yhs@fb.com, songliubraving@fb.com,
+        bpf@vger.kernel.org
+Subject: [PATCH net-next 0/9][pull request] 100GbE Intel Wired LAN Driver Updates 2021-10-15
+Date:   Fri, 15 Oct 2021 09:28:59 -0700
+Message-Id: <20211015162908.145341-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
+This series contains updates to ice driver only.
 
->> Lorenzo Bianconi <lorenzo@kernel.org> writes:
->> 
->> > Introduce BPF_F_XDP_MB and the related field in bpf_prog_aux in order to
->> > notify the driver the loaded program support xdp multi-buffer.
->> 
->> We should also add some restrictions in the BPF core. In particular,
->> tail call, cpumap and devmap maps should not be able to mix multi-buf
->> and non-multibuf programs.
->
-> ack. How can we detect if a cpumap or a devmap is running in XDP multi-buff
-> mode in order to reject loading the legacy XDP program?
+Maciej makes improvements centered around XDP. Changes include removing
+an unused field from the ring structure, creating separate Tx and Rx
+ring structures, and using ice_for_each macros for iterating rings.
+Some calls and parameters are changed to reduce unneeded overhead for
+further optimization. New fields are added for tracking to aid in
+improving workloads. He also unifies XDP indexing to a single
+methodology and adds a fallback patch when XDP Tx queue per CPU is not
+met.
 
-I was hoping we could copy the same mechanism that tail call maps to
-ensure that callers and callees are the same type. And amend that to
-also consider the xdp_mb flag while we're at it :)
+The following are changes since commit 295711fa8fec42a55623bf6997d05a21d7855132:
+  Merge branch 'dpaa2-irq-coalescing'
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue 100GbE
 
-> Should we just discard the XDP multi-buff in this case?
+Maciej Fijalkowski (9):
+  ice: remove ring_active from ice_ring
+  ice: move ice_container_type onto ice_ring_container
+  ice: split ice_ring onto Tx/Rx separate structs
+  ice: unify xdp_rings accesses
+  ice: do not create xdp_frame on XDP_TX
+  ice: propagate xdp_ring onto rx_ring
+  ice: optimize XDP_TX workloads
+  ice: introduce XDP_TX fallback path
+  ice: make use of ice_for_each_* macros
 
-If I'm right in the above, we won't have to because the verifier can
-ensure that the program types match...
+ drivers/net/ethernet/intel/ice/ice.h          |  41 +++-
+ drivers/net/ethernet/intel/ice/ice_arfs.c     |   2 +-
+ drivers/net/ethernet/intel/ice/ice_base.c     |  59 +++---
+ drivers/net/ethernet/intel/ice/ice_base.h     |   8 +-
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.c  |   9 +-
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.h  |  10 +-
+ drivers/net/ethernet/intel/ice/ice_eswitch.c  |  35 ++--
+ drivers/net/ethernet/intel/ice/ice_eswitch.h  |   4 +-
+ drivers/net/ethernet/intel/ice/ice_ethtool.c  |  95 +++++----
+ drivers/net/ethernet/intel/ice/ice_lib.c      |  92 +++++----
+ drivers/net/ethernet/intel/ice/ice_lib.h      |   6 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     | 145 +++++++++-----
+ drivers/net/ethernet/intel/ice/ice_ptp.c      |   2 +-
+ drivers/net/ethernet/intel/ice/ice_ptp.h      |   4 +-
+ drivers/net/ethernet/intel/ice/ice_trace.h    |  28 +--
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 183 +++++++++++-------
+ drivers/net/ethernet/intel/ice/ice_txrx.h     | 121 ++++++++----
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  98 ++++++++--
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  14 +-
+ .../net/ethernet/intel/ice/ice_virtchnl_pf.c  |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |  70 ++++---
+ drivers/net/ethernet/intel/ice/ice_xsk.h      |  20 +-
+ 22 files changed, 628 insertions(+), 420 deletions(-)
 
--Toke
+-- 
+2.31.1
 
