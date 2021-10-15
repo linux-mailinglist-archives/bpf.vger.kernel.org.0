@@ -2,65 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5640242E4F2
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 01:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8CE42E68C
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 04:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234504AbhJNX7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Oct 2021 19:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234490AbhJNX7K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:59:10 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81715C061570
-        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 16:57:04 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id l6so5237926plh.9
-        for <bpf@vger.kernel.org>; Thu, 14 Oct 2021 16:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=66ra3PGkNiE0awiBDaE59Q2npiisE7ssZ+6K7AE7PZE=;
-        b=nj6SX6L6L+LrchKIZCFcMtfWi/vc1mRG/jLhICUIS8praKgYGMXbLmcRF0qMEPJko6
-         uaMups+35YRmvuL6/mowSt95nxIXi96viVevLAFttms2VukCYude0YxbUW9Pc4ckanbZ
-         Nx8/1RC08nxse1YC8p9Q9Ofi2AnZ1pCaNDq0heHttcSc/bLRD3EnkjhG/Hy1u2lCWyQq
-         LdDsPDYF1Uzr9Q7BfbeLp/JIUw8QVMDNUnSYbXbT6NPpu63HvD3yJoTsCKo2c6lZQ7IE
-         iYXnrbgvWV6SrfGm5Niriy/2084mTY/IDNQ3LjHoStYgSyR3E1Ej5hWUJW2rOm+cS+GP
-         4ovQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=66ra3PGkNiE0awiBDaE59Q2npiisE7ssZ+6K7AE7PZE=;
-        b=2urlU2bieHTFrkFaA8IofZ6jusg4L9kz7Lm5pMBhyX/yDbCbAkq1AD5CQEr7TYb6+C
-         wV1bWpf2KUNXXicqdVXseBPmSfAkG28y4H2y74EzOYDXy8E9KCXz8gf+1SBtdOSh9cLI
-         F0eNY6io+q78C+HbGB9aX8V0oaBfO6GgyhDQkYDZEjq2DogxcQXmyaydVjUMz6zPtPah
-         T+Yx7iQf5Afbmj2YFzwCaPF3MImMTObetkzBpmX+HMlIPy98aK/2/O93WzdO/xspSq+0
-         fiTkL7NcLucTje/U8pgnwRjsm3KUGkDTqdP2E17tbcDh+uobCvpeT5VvhjvoOZjDFHA3
-         pe4Q==
-X-Gm-Message-State: AOAM533VHZZaSGfc2rW7KLrvNp7Q1eVgpmJWlR43sf+nh/6e8tCISCD9
-        QNmZrvtmRPTnwixM/B40hTQIrG+wk2QENUY7a1A=
-X-Google-Smtp-Source: ABdhPJx13LfspvqLNG5UPiZQJeWHkdb4UbOf47K7U6Htw4YSZLRxAoU6ar5vGHiho0NJCGPK/1TqyJc56cwr4wnXTSM=
-X-Received: by 2002:a17:90a:de84:: with SMTP id n4mr5741954pjv.226.1634255823848;
- Thu, 14 Oct 2021 16:57:03 -0700 (PDT)
+        id S235033AbhJOCcO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Oct 2021 22:32:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231331AbhJOCcN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Oct 2021 22:32:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 415B661152;
+        Fri, 15 Oct 2021 02:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634265008;
+        bh=4FVO8qQ+ZnxAWkGbzDOBnUsWqDDsimQpVqlsLcI54BY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=d56C6kMPgQYC8/KB9KGT2Uqz1Ld3HX6+0b05lXhMTAZ80y01Y9yO1Njxpbrzz1PiB
+         e1A/wbjlfTu8RiODUE4qdMBKfl2fIdbAeLvn0pihaIfP5Oluwkmn8qzQR5esFbe2ie
+         Z5cegklmiD98/VRq7H75b9mnVs/uo49PhRNDon4xcZdTUfzIb45pe8Pn2A+yPhLMvf
+         XICXHhpbrchMB8qDh5+dZtsaHViGL+aZSXamA0OvdjYRofVDO7Net409ZrXuKOXk7w
+         RlFdkR4w1kYDr/uX4/tQTsgECX9TCO53VWcSbNh+CGbA1xclIzYItAbne+Qr7c+fke
+         fS1NtbIAB/DfA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 34BF660A44;
+        Fri, 15 Oct 2021 02:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:a17:90a:1a41:0:0:0:0 with HTTP; Thu, 14 Oct 2021 16:57:03
- -0700 (PDT)
-Reply-To: mralisonandrew1954@gmail.com
-From:   "Mr.Alison Andrew" <drsalifmusa800@gmail.com>
-Date:   Thu, 14 Oct 2021 16:57:03 -0700
-Message-ID: <CAOTALFOy0HXAgTrAWGd004b_eksCgPedmN9OciyKUvYR7vyPFQ@mail.gmail.com>
-Subject: VERY URGENT!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/3] Minor managed neighbor follow-ups
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163426500821.31820.3009159456327599460.git-patchwork-notify@kernel.org>
+Date:   Fri, 15 Oct 2021 02:30:08 +0000
+References: <20211013132140.11143-1-daniel@iogearbox.net>
+In-Reply-To: <20211013132140.11143-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
+        dsahern@kernel.org, m@lambda.lt, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Friend,
-My Name is Mr. Alison Andrew; I am a banker by profession. My reason
-for contacting you is to transfer abandoned $15.5 Million United
-States Dollars to your account.
-Further details of the transaction shall be forwarded to you as soon
-as I receive your return mail indicating your interest.
-Thanks and hope to hear from you soon.
-Mr. Alison Andrew
+Hello:
+
+This series was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 13 Oct 2021 15:21:37 +0200 you wrote:
+> Minor follow-up series to address prior feedback from David and Jakub.
+> Patch 1 adds a build time assertion to prevent overflows when shifting
+> in extended flags, patch 2 is a cleanup to use NLA_POLICY_MASK instead
+> of open-coding invalid flags rejection and patch 3 rejects creating new
+> neighbors with NUD_PERMANENT & NTF_MANAGED. For details, see individual
+> patches. Will push out iproute2 series after that. Thanks!
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/3] net, neigh: Add build-time assertion to avoid neigh->flags overflow
+    https://git.kernel.org/netdev/net-next/c/507c2f1d2936
+  - [net-next,2/3] net, neigh: Use NLA_POLICY_MASK helper for NDA_FLAGS_EXT attribute
+    https://git.kernel.org/netdev/net-next/c/c8e80c1169b2
+  - [net-next,3/3] net, neigh: Reject creating NUD_PERMANENT with NTF_MANAGED entries
+    https://git.kernel.org/netdev/net-next/c/30fc7efa38f2
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
