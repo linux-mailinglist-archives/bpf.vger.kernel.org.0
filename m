@@ -2,203 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAF642EF9C
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 13:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A7742F02A
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 14:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhJOL00 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 07:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238483AbhJOL0Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:26:25 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26822C061762
-        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 04:24:19 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id u8-20020a05600c440800b0030d90076dabso1448079wmn.1
-        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 04:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=M2KhKg7mGMM/7Z7JCzghnvL0t/VBs24STBJ7ab9m2xs=;
-        b=LEW7hQIj+g8zU+1jSb8o1CI776sI1BeWIOXbGZZw4qccJdVXXSW0t94y9WWmBac6b2
-         aX0Lvr7DSbMyUYzsR15w9Tb48Yk1Nmfs9+2aqCKKNr+ThpH/KmR/mRKYZD/uVQIn41Hn
-         EnLoRi6U43BLhSQglz+SdeSzJtII2mbQhRlNI=
+        id S238635AbhJOMHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 08:07:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20848 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238617AbhJOMHg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 Oct 2021 08:07:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634299530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JvoH5oMSp2BXCD8LbAzv1uYST/vLBcsCP136QtwFNwM=;
+        b=PanOJQeOja2mHxSxrPSR7QAXUJTV8UgSiLOa83uNxsLMXst84iTk0DT55n+Q3x4q5BjXRA
+        DPlGLGJ9o36E2a3K2l8yECOsQb6hEyZZ1nCLw772g9pp1qKU9pP8DZNzQF8RANd6WGNdm1
+        kATi6OkmWSR5yaSww1Ve2sDLKDQ6HU8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-95-X21YDV-3O6eUBUf4SM3YIg-1; Fri, 15 Oct 2021 08:05:29 -0400
+X-MC-Unique: X21YDV-3O6eUBUf4SM3YIg-1
+Received: by mail-wr1-f71.google.com with SMTP id v15-20020adfa1cf000000b00160940b17a2so5835437wrv.19
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 05:05:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=M2KhKg7mGMM/7Z7JCzghnvL0t/VBs24STBJ7ab9m2xs=;
-        b=61vG3xUdGuwHI5JLKG5V4PD6HVjl1Ye9CWrT8fb1whTz6hPiEpqYjgGQwqzOsb2lpJ
-         tXSMMTFCfVJhsF1JxBaOajBB6uq/hFqkmLFAMQda4c6nLvSp7UTRch+oEs0i0vSKrCk4
-         BK4qAIJ6Z9aUJNnOmzkuL12xjEdJBcgyk27WCjuTWyStZ4RU4fTOsgV9VU5P7sWPFjAD
-         64+TZIC7zzBMZrAPgvyCD1prjt25zyYv5DfOcFE/T6tRG9kB7yy8NvMYKyTFiB6HOocF
-         sRZi4Aa40YZChXkGucc+l78D6odkRlROFBErqE9DoBdmD8e5K4Lo9Kst7tPpwqCZiYn8
-         FWiw==
-X-Gm-Message-State: AOAM530Do4Xn8hpy7NFzlo4BKUTY0kKwgmNJ5sHavDQxK20+oe7cbnlA
-        dHHdyqi+tokUT/nsEKnrgWkSTA==
-X-Google-Smtp-Source: ABdhPJzjAR0Yu0mRoDxHM/EMDN/otw3YAOOKcwLy3ZsB/p88WjadAl1+y3IPoQh7D1+Y+EmuJgU0zA==
-X-Received: by 2002:a7b:c193:: with SMTP id y19mr25939309wmi.125.1634297057696;
-        Fri, 15 Oct 2021 04:24:17 -0700 (PDT)
-Received: from kharboze.dr-pashinator-m-d.gmail.com.beta.tailscale.net ([2a02:390:85ca:6:be5f:f4ff:fe85:e406])
-        by smtp.gmail.com with ESMTPSA id o12sm4631223wrv.78.2021.10.15.04.24.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JvoH5oMSp2BXCD8LbAzv1uYST/vLBcsCP136QtwFNwM=;
+        b=jWR6Vms2mk6xCkfLuT5sRJt5lCMHH0AI/vDXW/Sg32olsUJe0VNp9CS/QffAhWYJtL
+         +T2L3/FF/+IODKBKrxiFsgHhFReSJkBDoed+HJnTn5VThYWzhDC25xmTpZT8phJ3G3wT
+         0FvxjTFaIvorvafpgsxmVIQcwqikqKQVLWTqUCR1rH6Fzr7kTtirK4oeoTE2BHWpvmIa
+         CZcokta7+wxYSJGFBojlMDNbRotsMHwpUhshgik32NDlvkm0Vav0Pg2LvfiCgQ0Z0y7p
+         jb+QsbHcm6aruG+tP3umM9anJ2Tr5cT4qyphbIEvx9PAnuU1SVyBYVNV9iDZE9f7hPeZ
+         5wCQ==
+X-Gm-Message-State: AOAM530heHMzGYwgo5VXhowCPa8FWOeq5YIIYPcoOOJkt2CW6L7MR+pn
+        Sw1fcRHTfda9PsrHymrpdq7ZbdlmXf5JQW1j1oMihPJaaF+nxksexiY4GRAH3tUeutMrqO/9PLn
+        UvnhCyOjNjddR
+X-Received: by 2002:a1c:a558:: with SMTP id o85mr12304154wme.110.1634299527661;
+        Fri, 15 Oct 2021 05:05:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPw+HEJn+F00fk/SX9viUW+5VgyF3kV0jrtkEF8y8/rC2NWO+DXscmzJBN5cRnME77odizdw==
+X-Received: by 2002:a1c:a558:: with SMTP id o85mr12304122wme.110.1634299527418;
+        Fri, 15 Oct 2021 05:05:27 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id r9sm4560020wrn.95.2021.10.15.05.05.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 04:24:17 -0700 (PDT)
-From:   Mark Pashmfouroush <markpash@cloudflare.com>
-To:     markpash@cloudflare.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Fri, 15 Oct 2021 05:05:26 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 14:05:25 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Joe Stringer <joe@cilium.io>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add tests for accessing ifindex in bpf_sk_lookup
-Date:   Fri, 15 Oct 2021 12:23:30 +0100
-Message-Id: <20211015112336.1973229-3-markpash@cloudflare.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211015112336.1973229-1-markpash@cloudflare.com>
-References: <20211015112336.1973229-1-markpash@cloudflare.com>
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
+Message-ID: <YWluhdDMfkNGwlhz@krava>
+References: <20211008091336.33616-1-jolsa@kernel.org>
+ <20211008091336.33616-8-jolsa@kernel.org>
+ <20211014162819.5c85618b@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014162819.5c85618b@gandalf.local.home>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new field was added to the bpf_sk_lookup data that users can access.
-Add tests that validate that the new ifindex field contains the right
-data.
+On Thu, Oct 14, 2021 at 04:28:19PM -0400, Steven Rostedt wrote:
+> On Fri,  8 Oct 2021 11:13:35 +0200
+> Jiri Olsa <jolsa@redhat.com> wrote:
+> 
+> > +	/*
+> > +	 * Shutdown the ops, change 'direct' pointer for each
+> > +	 * ops entry in direct_functions hash and startup the
+> > +	 * ops back again.
+> > +	 *
+> > +	 * Note there is no callback called for @ops object after
+> > +	 * this ftrace_shutdown call until ftrace_startup is called
+> > +	 * later on.
+> > +	 */
+> > +	err = ftrace_shutdown(ops, 0);
+> > +	if (err)
+> > +		goto out_unlock;
+> 
+> I believe I said before that we can do this by adding a stub ops that match
+> all the functions with the direct ops being modified. This will cause the
+> loop function to be called, which will call the direct function helper,
+> which will then call the direct function that is found. That is, there is
+> no "pause" in calling the direct callers. Either the old direct is called,
+> or the new one. When the function returns, all are calling the new one.
+> 
+> That is, instead of:
+> 
+> [ Changing direct call from my_direct_1 to my_direct_2 ]
+> 
+>   <traced_func>:
+>      call my_direct_1
+> 
+>  ||||||||||||||||||||
+>  vvvvvvvvvvvvvvvvvvvv
+> 
+>   <traced_func>:
+>      nop
+> 
+>  ||||||||||||||||||||
+>  vvvvvvvvvvvvvvvvvvvv
+> 
+>   <traced_func>:
+>      call my_direct_2
+> 
+> 
+> We have it do:
+> 
+>   <traced_func>:
+>      call my_direct_1
+> 
+>  ||||||||||||||||||||
+>  vvvvvvvvvvvvvvvvvvvv
+> 
+>   <traced_func>:
+>      call ftrace_caller
+> 
+> 
+>   <ftrace_caller>:
+>     [..]
+>     call ftrace_ops_list_func
+> 
+> 
+> ftrace_ops_list_func()
+> {
+> 	ops->func() -> direct_helper -> set rax to my_direct_1 or my_direct_2
+> }
+> 
+>    call rax (to either my_direct_1 or my_direct_2
 
-Signed-off-by: Mark Pashmfouroush <markpash@cloudflare.com>
+nice! :) I did not see that as a problem and something that can be
+done later, thanks for doing this
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index aee41547e7f4..951e5dcf297e 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -937,6 +937,37 @@ static void test_drop_on_lookup(struct test_sk_lookup *skel)
- 			.connect_to	= { EXT_IP6, EXT_PORT },
- 			.listen_at	= { EXT_IP6, INT_PORT },
- 		},
-+		/* The program will drop on success, meaning that the ifindex
-+		 * was 1.
-+		 */
-+		{
-+			.desc		= "TCP IPv4 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_STREAM,
-+			.connect_to	= { EXT_IP4, EXT_PORT },
-+			.listen_at	= { EXT_IP4, EXT_PORT },
-+		},
-+		{
-+			.desc		= "TCP IPv6 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_STREAM,
-+			.connect_to	= { EXT_IP6, EXT_PORT },
-+			.listen_at	= { EXT_IP6, EXT_PORT },
-+		},
-+		{
-+			.desc		= "UDP IPv4 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_DGRAM,
-+			.connect_to	= { EXT_IP4, EXT_PORT },
-+			.listen_at	= { EXT_IP4, EXT_PORT },
-+		},
-+		{
-+			.desc		= "UDP IPv6 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_DGRAM,
-+			.connect_to	= { EXT_IP6, EXT_PORT },
-+			.listen_at	= { EXT_IP6, EXT_PORT },
-+		},
- 	};
- 	const struct test *t;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-index 19d2465d9442..0f3283bfe3b6 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-@@ -84,6 +84,14 @@ int lookup_drop(struct bpf_sk_lookup *ctx)
- 	return SK_DROP;
- }
- 
-+SEC("sk_lookup")
-+int check_ifindex(struct bpf_sk_lookup *ctx)
-+{
-+	if (ctx->ifindex == 1)
-+		return SK_DROP;
-+	return SK_PASS;
-+}
-+
- SEC("sk_reuseport")
- int reuseport_pass(struct sk_reuseport_md *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-index d78627be060f..0b3088da1e89 100644
---- a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-@@ -229,6 +229,24 @@
- 		BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
- 			    offsetof(struct bpf_sk_lookup, local_port)),
- 
-+		/* 1-byte read from ifindex field */
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 1),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 2),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 3),
-+		/* 2-byte read from ifindex field */
-+		BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+		BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 2),
-+		/* 4-byte read from ifindex field */
-+		BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+
- 		/* 8-byte read from sk field */
- 		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
- 			    offsetof(struct bpf_sk_lookup, sk)),
-@@ -351,6 +369,20 @@
- 	.expected_attach_type = BPF_SK_LOOKUP,
- 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
- },
-+{
-+	"invalid 8-byte read from bpf_sk_lookup ifindex field",
-+	.insns = {
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.errstr = "invalid bpf_context access",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_SK_LOOKUP,
-+	.expected_attach_type = BPF_SK_LOOKUP,
-+	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
-+},
- /* invalid 1,2,4-byte reads from 8-byte fields in bpf_sk_lookup */
- {
- 	"invalid 4-byte read from bpf_sk_lookup sk field",
--- 
-2.31.1
+> 
+>  ||||||||||||||||||||
+>  vvvvvvvvvvvvvvvvvvvv
+> 
+>   <traced_func>:
+>      call my_direct_2
+> 
+> 
+> I did this on top of this patch:
+
+ATM I'm bit stuck on the bpf side of this whole change, I'll test
+it with my other changes when I unstuck myself ;-)
+
+thanks,
+jirka
+
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ftrace.c | 33 ++++++++++++++++++++-------------
+>  1 file changed, 20 insertions(+), 13 deletions(-)
+> 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 30120342176e..7ad1e8ae5855 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -5561,8 +5561,12 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
+>   */
+>  int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+>  {
+> -	struct ftrace_hash *hash = ops->func_hash->filter_hash;
+> +	struct ftrace_hash *hash;
+>  	struct ftrace_func_entry *entry, *iter;
+> +	static struct ftrace_ops tmp_ops = {
+> +		.func		= ftrace_stub,
+> +		.flags		= FTRACE_OPS_FL_STUB,
+> +	};
+>  	int i, size;
+>  	int err;
+>  
+> @@ -5572,21 +5576,22 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+>  		return -EINVAL;
+>  
+>  	mutex_lock(&direct_mutex);
+> -	mutex_lock(&ftrace_lock);
+> +
+> +	/* Enable the tmp_ops to have the same functions as the direct ops */
+> +	ftrace_ops_init(&tmp_ops);
+> +	tmp_ops.func_hash = ops->func_hash;
+> +
+> +	err = register_ftrace_function(&tmp_ops);
+> +	if (err)
+> +		goto out_direct;
+>  
+>  	/*
+> -	 * Shutdown the ops, change 'direct' pointer for each
+> -	 * ops entry in direct_functions hash and startup the
+> -	 * ops back again.
+> -	 *
+> -	 * Note there is no callback called for @ops object after
+> -	 * this ftrace_shutdown call until ftrace_startup is called
+> -	 * later on.
+> +	 * Now the ftrace_ops_list_func() is called to do the direct callers.
+> +	 * We can safely change the direct functions attached to each entry.
+>  	 */
+> -	err = ftrace_shutdown(ops, 0);
+> -	if (err)
+> -		goto out_unlock;
+> +	mutex_lock(&ftrace_lock);
+>  
+> +	hash = ops->func_hash->filter_hash;
+>  	size = 1 << hash->size_bits;
+>  	for (i = 0; i < size; i++) {
+>  		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
+> @@ -5597,10 +5602,12 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+>  		}
+>  	}
+>  
+> -	err = ftrace_startup(ops, 0);
+> +	/* Removing the tmp_ops will add the updated direct callers to the functions */
+> +	unregister_ftrace_function(&tmp_ops);
+>  
+>   out_unlock:
+>  	mutex_unlock(&ftrace_lock);
+> + out_direct:
+>  	mutex_unlock(&direct_mutex);
+>  	return err;
+>  }
+> -- 
+> 2.31.1
+> 
 
