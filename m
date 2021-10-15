@@ -2,233 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A7742F02A
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 14:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DE142F173
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 14:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238635AbhJOMHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 08:07:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20848 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238617AbhJOMHg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 Oct 2021 08:07:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634299530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JvoH5oMSp2BXCD8LbAzv1uYST/vLBcsCP136QtwFNwM=;
-        b=PanOJQeOja2mHxSxrPSR7QAXUJTV8UgSiLOa83uNxsLMXst84iTk0DT55n+Q3x4q5BjXRA
-        DPlGLGJ9o36E2a3K2l8yECOsQb6hEyZZ1nCLw772g9pp1qKU9pP8DZNzQF8RANd6WGNdm1
-        kATi6OkmWSR5yaSww1Ve2sDLKDQ6HU8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-95-X21YDV-3O6eUBUf4SM3YIg-1; Fri, 15 Oct 2021 08:05:29 -0400
-X-MC-Unique: X21YDV-3O6eUBUf4SM3YIg-1
-Received: by mail-wr1-f71.google.com with SMTP id v15-20020adfa1cf000000b00160940b17a2so5835437wrv.19
-        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 05:05:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JvoH5oMSp2BXCD8LbAzv1uYST/vLBcsCP136QtwFNwM=;
-        b=jWR6Vms2mk6xCkfLuT5sRJt5lCMHH0AI/vDXW/Sg32olsUJe0VNp9CS/QffAhWYJtL
-         +T2L3/FF/+IODKBKrxiFsgHhFReSJkBDoed+HJnTn5VThYWzhDC25xmTpZT8phJ3G3wT
-         0FvxjTFaIvorvafpgsxmVIQcwqikqKQVLWTqUCR1rH6Fzr7kTtirK4oeoTE2BHWpvmIa
-         CZcokta7+wxYSJGFBojlMDNbRotsMHwpUhshgik32NDlvkm0Vav0Pg2LvfiCgQ0Z0y7p
-         jb+QsbHcm6aruG+tP3umM9anJ2Tr5cT4qyphbIEvx9PAnuU1SVyBYVNV9iDZE9f7hPeZ
-         5wCQ==
-X-Gm-Message-State: AOAM530heHMzGYwgo5VXhowCPa8FWOeq5YIIYPcoOOJkt2CW6L7MR+pn
-        Sw1fcRHTfda9PsrHymrpdq7ZbdlmXf5JQW1j1oMihPJaaF+nxksexiY4GRAH3tUeutMrqO/9PLn
-        UvnhCyOjNjddR
-X-Received: by 2002:a1c:a558:: with SMTP id o85mr12304154wme.110.1634299527661;
-        Fri, 15 Oct 2021 05:05:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxPw+HEJn+F00fk/SX9viUW+5VgyF3kV0jrtkEF8y8/rC2NWO+DXscmzJBN5cRnME77odizdw==
-X-Received: by 2002:a1c:a558:: with SMTP id o85mr12304122wme.110.1634299527418;
-        Fri, 15 Oct 2021 05:05:27 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id r9sm4560020wrn.95.2021.10.15.05.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 05:05:26 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 14:05:25 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S239031AbhJOMyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 08:54:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239291AbhJOMyH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Oct 2021 08:54:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32C8C60ED4;
+        Fri, 15 Oct 2021 12:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634302321;
+        bh=Xc/QwLh4lpZWDyacqoAIE1hYNsKJzWckAbVJdtS63aQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KyHg0XkWvurtSz3ckZ9DhZGfCVzVop1VLBdWmXF/oRHtR7GlSsERhzJZVN4gmaxk8
+         qSYl1DS0TODbxj5kkMCaMo6+SOCBHLuyteRBqOUfV2WN1DFCknSf1Z3Aquxd2F3iZN
+         c4WVsHtQ8OJzb+TyKLLINabxX3h/fbhQNURFK5PeS88Gn5HakMxnl5BbulWy5sLHW3
+         3Y9NNDnEHwyCo22AFvBzjsZq33omtftHqhQu6cgiY0Zcdf/NVsfuH0xCxs5VMnCZjv
+         eHVceE148PoRSYdMxm869kiErQFQGTlNtDeMXQ4fGWxZepH2Sop5LA+wBM1d2m6fS8
+         Wh23cyXlpbRUA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 74FDB410A1; Fri, 15 Oct 2021 09:51:58 -0300 (-03)
+Date:   Fri, 15 Oct 2021 09:51:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
-Message-ID: <YWluhdDMfkNGwlhz@krava>
-References: <20211008091336.33616-1-jolsa@kernel.org>
- <20211008091336.33616-8-jolsa@kernel.org>
- <20211014162819.5c85618b@gandalf.local.home>
+        Petar Penkov <ppenkov@google.com>
+Subject: Re: [PATCH] btf_encoder: Make BTF_KIND_TAG conditional
+Message-ID: <YWl5bq4m60EGo0JY@kernel.org>
+References: <20211014212049.1010192-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211014162819.5c85618b@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211014212049.1010192-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 04:28:19PM -0400, Steven Rostedt wrote:
-> On Fri,  8 Oct 2021 11:13:35 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > +	/*
-> > +	 * Shutdown the ops, change 'direct' pointer for each
-> > +	 * ops entry in direct_functions hash and startup the
-> > +	 * ops back again.
-> > +	 *
-> > +	 * Note there is no callback called for @ops object after
-> > +	 * this ftrace_shutdown call until ftrace_startup is called
-> > +	 * later on.
-> > +	 */
-> > +	err = ftrace_shutdown(ops, 0);
-> > +	if (err)
-> > +		goto out_unlock;
-> 
-> I believe I said before that we can do this by adding a stub ops that match
-> all the functions with the direct ops being modified. This will cause the
-> loop function to be called, which will call the direct function helper,
-> which will then call the direct function that is found. That is, there is
-> no "pause" in calling the direct callers. Either the old direct is called,
-> or the new one. When the function returns, all are calling the new one.
-> 
-> That is, instead of:
-> 
-> [ Changing direct call from my_direct_1 to my_direct_2 ]
-> 
->   <traced_func>:
->      call my_direct_1
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      nop
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      call my_direct_2
-> 
-> 
-> We have it do:
-> 
->   <traced_func>:
->      call my_direct_1
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      call ftrace_caller
-> 
-> 
->   <ftrace_caller>:
->     [..]
->     call ftrace_ops_list_func
-> 
-> 
-> ftrace_ops_list_func()
-> {
-> 	ops->func() -> direct_helper -> set rax to my_direct_1 or my_direct_2
-> }
-> 
->    call rax (to either my_direct_1 or my_direct_2
+Em Thu, Oct 14, 2021 at 02:20:49PM -0700, Ian Rogers escreveu:
+> BTF_KIND_TAG is present in libbtf 6.0 but not libbtf in 5.15rc4. Make
+> the code requiring it conditionally compiled in.
 
-nice! :) I did not see that as a problem and something that can be
-done later, thanks for doing this
+Thanks, applied.
 
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      call my_direct_2
-> 
-> 
-> I did this on top of this patch:
+I just removed the part updating lib/bpf, as I have updated it recently:
 
-ATM I'm bit stuck on the bpf side of this whole change, I'll test
-it with my other changes when I unstuck myself ;-)
+⬢[acme@toolbox pahole]$ git show cc6c7d473d51832490aa7b743a0ed7f7f9e05592
+commit cc6c7d473d51832490aa7b743a0ed7f7f9e05592
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Thu Oct 14 16:27:07 2021 -0300
 
-thanks,
-jirka
+    Update libbpf to get API to combine BTF
+    
+    I.e. the one in:
+    
+     13ebb60ab66799ab libbpf: Add API that copies all BTF types from one BTF object to another
+    
+    This will be used to paralellize the BTF encoding phase.
+    
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+diff --git a/lib/bpf b/lib/bpf
+index 980777cc16db75d5..92c1e61a605410b1 160000
+--- a/lib/bpf
++++ b/lib/bpf
+@@ -1 +1 @@
+-Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
++Subproject commit 92c1e61a605410b16d6330fdd4a7a4e03add86d4
+⬢[acme@toolbox pahole]$ git log --oneline -3
+cad8b8b840d621cd (HEAD -> master) btf_encoder: Make BTF_KIND_TAG conditional
+a9c99e98815f06bd dwarves: Introduce conf_load->thread_exit() callback
+cc6c7d473d518324 Update libbpf to get API to combine BTF
+⬢[acme@toolbox pahole]$
+
+- Arnaldo
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  kernel/trace/ftrace.c | 33 ++++++++++++++++++++-------------
->  1 file changed, 20 insertions(+), 13 deletions(-)
+>  btf_encoder.c | 7 +++++++
+>  lib/bpf       | 2 +-
+>  2 files changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 30120342176e..7ad1e8ae5855 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5561,8 +5561,12 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
->   */
->  int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index c341f95..400d64b 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -141,7 +141,9 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>  	[BTF_KIND_VAR]          = "VAR",
+>  	[BTF_KIND_DATASEC]      = "DATASEC",
+>  	[BTF_KIND_FLOAT]        = "FLOAT",
+> +#ifdef BTF_KIND_TAG /* BTF_KIND_TAG was added in 6.0 */
+>  	[BTF_KIND_TAG]          = "TAG",
+> +#endif
+>  };
+>  
+>  static const char *btf__printable_name(const struct btf *btf, uint32_t offset)
+> @@ -648,6 +650,7 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
+>  static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *value, uint32_t type,
+>  				    int component_idx)
 >  {
-> -	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-> +	struct ftrace_hash *hash;
->  	struct ftrace_func_entry *entry, *iter;
-> +	static struct ftrace_ops tmp_ops = {
-> +		.func		= ftrace_stub,
-> +		.flags		= FTRACE_OPS_FL_STUB,
-> +	};
->  	int i, size;
->  	int err;
->  
-> @@ -5572,21 +5576,22 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
->  		return -EINVAL;
->  
->  	mutex_lock(&direct_mutex);
-> -	mutex_lock(&ftrace_lock);
-> +
-> +	/* Enable the tmp_ops to have the same functions as the direct ops */
-> +	ftrace_ops_init(&tmp_ops);
-> +	tmp_ops.func_hash = ops->func_hash;
-> +
-> +	err = register_ftrace_function(&tmp_ops);
-> +	if (err)
-> +		goto out_direct;
->  
->  	/*
-> -	 * Shutdown the ops, change 'direct' pointer for each
-> -	 * ops entry in direct_functions hash and startup the
-> -	 * ops back again.
-> -	 *
-> -	 * Note there is no callback called for @ops object after
-> -	 * this ftrace_shutdown call until ftrace_startup is called
-> -	 * later on.
-> +	 * Now the ftrace_ops_list_func() is called to do the direct callers.
-> +	 * We can safely change the direct functions attached to each entry.
->  	 */
-> -	err = ftrace_shutdown(ops, 0);
-> -	if (err)
-> -		goto out_unlock;
-> +	mutex_lock(&ftrace_lock);
->  
-> +	hash = ops->func_hash->filter_hash;
->  	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
-> @@ -5597,10 +5602,12 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
->  		}
+> +#ifdef BTF_KIND_TAG /* Proxy for libbtf 6.0 */
+>  	struct btf *btf = encoder->btf;
+>  	const struct btf_type *t;
+>  	int32_t id;
+> @@ -663,6 +666,10 @@ static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *val
 >  	}
 >  
-> -	err = ftrace_startup(ops, 0);
-> +	/* Removing the tmp_ops will add the updated direct callers to the functions */
-> +	unregister_ftrace_function(&tmp_ops);
->  
->   out_unlock:
->  	mutex_unlock(&ftrace_lock);
-> + out_direct:
->  	mutex_unlock(&direct_mutex);
->  	return err;
+>  	return id;
+> +#else
+> +        fprintf(stderr, "error: unable to encode BTF_KIND_TAG due to old libbtf\n");
+> +        return -ENOTSUP;
+> +#endif
 >  }
+>  
+>  /*
+> diff --git a/lib/bpf b/lib/bpf
+> index 980777c..986962f 160000
+> --- a/lib/bpf
+> +++ b/lib/bpf
+> @@ -1 +1 @@
+> -Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
+> +Subproject commit 986962fade5dfa89c2890f3854eb040d2a64ab38
 > -- 
-> 2.31.1
-> 
-
+> 2.33.0.1079.g6e70778dc9-goog
