@@ -2,59 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C05E42F20A
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 15:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F274442F339
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 15:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239360AbhJONYn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 09:24:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55715 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239351AbhJONYm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 Oct 2021 09:24:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634304155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6i4ZlcpI65G0vVAJgnz1cFjngGSuB+RC98zfnoRpQag=;
-        b=PvaldnlvWDq8CTi3qnZlr8sIyFUgJxR0s1G9zKffRfT0N3LO4kTt2YmrtiQbNlizB7d9fx
-        L0yb1G0FBckH+OFWRsJR2C3zvqAPcBlT8uvviiG/9lE+d7rh81qpOa+66Yyf9P/ix+LmKl
-        y5Urr5GfpNQs3RZgSyiGraPfa0h19Rw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-enE4xlzkOZ2K2SeP-A-i5A-1; Fri, 15 Oct 2021 09:22:34 -0400
-X-MC-Unique: enE4xlzkOZ2K2SeP-A-i5A-1
-Received: by mail-ed1-f69.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso8225977edn.4
-        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 06:22:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=6i4ZlcpI65G0vVAJgnz1cFjngGSuB+RC98zfnoRpQag=;
-        b=hSh9KJkUBFVx4++oLnzYjEvJza0qup7i/J7Po5/usJ/TP+2ozgy0RBdV21a2KbslRQ
-         27+yX2aNd1MXAdMMy7CjDtq1uJ8rL1ZPKSzjrLZzQYhMEyUhda2yaqx8HsQBV6wRPxN3
-         oD7GTMkxZgHe52u7oix/WNlekITRLyhXmwtVKcrydtJA7MfEfx8+ZVf0g/TlyeKCwdDp
-         l6bmPXV5ciSCt40DZN775qV49RE69nl7biKLCXn2qdTqXkn4N4eeWRw5EhJry5x0xoDH
-         6QMzZAn6gPpJk1VInZyGYU8NgbXB9y32bVWkSjyr2SQCN/TSybQefAO/bKMSJn2jgIS1
-         1PhA==
-X-Gm-Message-State: AOAM532vA2dQgTjr1WlayEk/TZlkLPUo+0YR1Btn2uyoxZF++iZ53f6H
-        ICY9NFFNeZPDQJluflxzbkBJzd6XoHUgI3AIvzmNAE4F/m2dlnybQaiZvwTXFRI+69SD4LT2p4P
-        yFZdKdpJTwFNc
-X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr6440726ejb.356.1634304152649;
-        Fri, 15 Oct 2021 06:22:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwf7iElNP6x1ZTn76DCAvYzuu9ypXwRBvtux0Y3zYiqJL2i3G/wNYIAuJgTIg0LlcEnuT3W1g==
-X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr6440696ejb.356.1634304152394;
-        Fri, 15 Oct 2021 06:22:32 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id ck9sm4210345ejb.56.2021.10.15.06.22.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 06:22:31 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5A5E518025F; Fri, 15 Oct 2021 15:22:31 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        id S239654AbhJONca (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 09:32:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239724AbhJONb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Oct 2021 09:31:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF79B61151;
+        Fri, 15 Oct 2021 13:29:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634304562;
+        bh=3rf7kkaFFfGvpxInDkMyDX53tjfu1Wz10azRKgKwfV8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tccNC7YJO/WCwtQEvB9fvP41WoRsiBeBP99qeZLuIIH+cC78EfvzdFAm9aTvCyHzw
+         ywc2haNaKleWiixXbZ3D/QX0PJ1JvJut7NsM5ehYsOTWD+hyaa1aSuQXqh3LYktz9M
+         RJtR+uT7yFjcwM9prbcHcX7KU0dQtVDmjB4p1IatqtJSOmLfgug95D6D8kEI14W/5F
+         nd+MZ3+PS2WwRMg96Y5tvbieTaK2ZxYsoIpUN0anOrSnX+9QcLeT8TwSMdw+/zWYcV
+         4nWFzs8GwyjqLNcQ29MM4bIJCJ6LzW2vuQ2mydi1F4Jzd+vqdd/0tY/XSoKqM/UvPo
+         qcrTxVCk16y7w==
+Date:   Fri, 15 Oct 2021 15:29:18 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
         john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
         echaudro@redhat.com, jasowang@redhat.com,
@@ -63,26 +36,53 @@ Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
         tirthendu.sarkar@intel.com
 Subject: Re: [PATCH v16 bpf-next 09/20] bpf: introduce BPF_F_XDP_MB flag in
  prog_flags loading the ebpf program
-In-Reply-To: <0a48666cfb23d1ceef8d529506e7ad2da90079de.1634301224.git.lorenzo@kernel.org>
+Message-ID: <YWmCLlLelmG2ElyV@lore-desk>
 References: <cover.1634301224.git.lorenzo@kernel.org>
  <0a48666cfb23d1ceef8d529506e7ad2da90079de.1634301224.git.lorenzo@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 15 Oct 2021 15:22:31 +0200
-Message-ID: <87y26uzalk.fsf@toke.dk>
+ <87y26uzalk.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Q9NZZ+2B9Fmrq9wr"
+Content-Disposition: inline
+In-Reply-To: <87y26uzalk.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-> Introduce BPF_F_XDP_MB and the related field in bpf_prog_aux in order to
-> notify the driver the loaded program support xdp multi-buffer.
+--Q9NZZ+2B9Fmrq9wr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We should also add some restrictions in the BPF core. In particular,
-tail call, cpumap and devmap maps should not be able to mix multi-buf
-and non-multibuf programs.
+> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+>=20
+> > Introduce BPF_F_XDP_MB and the related field in bpf_prog_aux in order to
+> > notify the driver the loaded program support xdp multi-buffer.
+>=20
+> We should also add some restrictions in the BPF core. In particular,
+> tail call, cpumap and devmap maps should not be able to mix multi-buf
+> and non-multibuf programs.
 
--Toke
+ack. How can we detect if a cpumap or a devmap is running in XDP multi-buff
+mode in order to reject loading the legacy XDP program?
+Should we just discard the XDP multi-buff in this case?
 
+Lorenzo
+
+>=20
+> -Toke
+>=20
+
+--Q9NZZ+2B9Fmrq9wr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYWmCLgAKCRA6cBh0uS2t
+rL+/AP0QNwItRbRAy/t+VAYxtdtU+e03pOMptI1jdw5WdHi9yAD+M1KtCdfPTVJL
+O0sNoQA5XCfrVd7PTEO3SNnB6fxPkQU=
+=grYt
+-----END PGP SIGNATURE-----
+
+--Q9NZZ+2B9Fmrq9wr--
