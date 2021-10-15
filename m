@@ -2,112 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7D142ED10
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 11:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1FD42EDBE
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 11:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235771AbhJOJGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 05:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        id S237360AbhJOJfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 05:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234459AbhJOJGe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:06:34 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA088C061570
-        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so8879647pjc.3
-        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+        with ESMTP id S236612AbhJOJfb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:35:31 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7926CC061753
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 02:33:24 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id u84-20020a254757000000b005bbc2bc51fcso4041737yba.3
+        for <bpf@vger.kernel.org>; Fri, 15 Oct 2021 02:33:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Va56VXzThcapfyuRQ5Jm4rTPogdKDliZvBqOga5mRCw=;
-        b=hnSlvkSy8cjPjchSs3Hpxei9lPzOzdRKnGEDp0hhdCM+8yKQM4Kt1BRIwSd26KLl2l
-         EFt5IAwN/0QrDf9Ta4giZbi+cJSj/gjcY7WvJljtnfU+YA/iP4/es2U9Po4uq36kYsqt
-         ZJkQW2CtqgeF7zNus5pDXLAia3sR2pzy+X97VVYBrEUz4GSuz34o7soP/h9oeIV5YShH
-         J5rb+9ip9FiehgJgt/fE4mfeSqpbFLNggzPBdWu+jW0bLOZEiexIKguWCTWM3PUQXc3d
-         qBvugIE6AYBQ6nGxzs2FajNbJidlKnQD4W9TkFUG+Ccbcta63FTpS54osYsbSKjCJdnD
-         waxQ==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6myK6WnI6dJ3vgs3FhgJcImZgK4luWhZru749g0AYEM=;
+        b=rGL6DqoXuJLBeaNawkHojQD7EDvEZGyvkXsfO18Q3++92kGCrOllm0bBEpvg4I7nsI
+         YfWbkz8lI7OSGeVEmpvHkw6wIVklrXxOU/4OuAVlmW33XU+M4LgiZ0mm4wYGUuOIH9KH
+         qp0maWA7PJjgTfWstyEo7TUSAVMoJ9b+5NGpQxcYHhm08BTcMvJyb0gTp3FqVAVE/A7j
+         gHIGhu94L5UWaE83SXmtLCjUBVQzKXjgwkRSSrVE+xxXLgt9kIvtGL4HHJUDUGcydMXo
+         ufaHlAtFmsl2tjdoOhNwV/SDkjr/Iw8dRVZZnoN2FYEk2QnYKZp3i27apZ0QncWWTJPo
+         Yp4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Va56VXzThcapfyuRQ5Jm4rTPogdKDliZvBqOga5mRCw=;
-        b=n+YXkBxGTVW7xtxpik6kxvhRULVLl/DbDb3paWZVdKHYR8kyVNpaeHcSAtUeJzc4MZ
-         +3mgVBalJ91cBE1jY3OC9ivI8WvUa43otTpMmiHBsSIBXbk1kIuNRLtTQpsJlV000/Na
-         Oa+qi1UNFFSc/oth4qC4ES8wos7dHzf1S8FJJQUgt1UWuTUX7tsqrrtsgJuVJwFSNKco
-         pY6FLKsl5WTleK23XOJIrJl+zbHC9zzL3BaQxR8+b+u1J351nTRtDZJZbn0Vfw2zM2wG
-         DcsyNlTolxw+LY5SO/neGh436IU70iPFeMk+7x86I+Mak+dy3acgMEWcG3JXhXKyPbdt
-         63Og==
-X-Gm-Message-State: AOAM532PBvYjLjiOt//DyBn5nbciGOM1u4J7+c8j9nTT1eBKLFqTnvK0
-        W1iWWo1M3l26QgQnbhM3AiD8Fw==
-X-Google-Smtp-Source: ABdhPJwUUlt2PziUSmkUXhAgxMM7TpA7Blg+ObSbfCjY4jh7FhM1njWaFNuIMt+ySOT3pqCxqR6rXA==
-X-Received: by 2002:a17:903:41c2:b0:13f:f26:d6b9 with SMTP id u2-20020a17090341c200b0013f0f26d6b9mr10019185ple.14.1634288667413;
-        Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
-Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.226])
-        by smtp.gmail.com with ESMTPSA id k190sm4366009pfd.211.2021.10.15.02.04.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
-Subject: [PATCH] bpf: use count for prealloc hashtab too
-Date:   Fri, 15 Oct 2021 17:03:53 +0800
-Message-Id: <20211015090353.31248-1-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6myK6WnI6dJ3vgs3FhgJcImZgK4luWhZru749g0AYEM=;
+        b=YFa482q/ELRrKNPBGOjr1xAG7c7rSPwWCnYak7D96TfuN+Zz6NvB47WSuk39RiOJ9b
+         IEVG1wazA4SjHrKrIH8L3b/5qWmhf1+2kzl7QyZKu7eVaVk9oojlPYnunUmam5Egmui9
+         9IE+CErX2/uPMpPqeIHIe2SsLPyIXycmEU7gjcb0LQPQfkoRZTfd+VNEIk+HjZ3eVnRL
+         ZN5B0EXzZ7K2hn2NqyZqxrxjEuN51CMYfF11snhf9PuoCVMSzU8qaI6pFK4jCsTTYQbP
+         qDAM7Rwu7Gk+GtElhfcDUNS0u2AZcmpGUcA9P0X5CnAdqlqlrwxywjIsy0vFohJ+pMhQ
+         EAcg==
+X-Gm-Message-State: AOAM531Uu/t4ZZlcnCL7R0/WBLYxY8hA7m5tYUUSlK70wsr9vepayOcf
+        HrYpiX6SK1ReKvMpNvtYlrM3yylv2kOr8SWeA2DpWHAoms5rx5MEChdBOkOo/NDAn0FZ1ECy1AO
+        nY450lrBQT2hVmwNUjbCPvrOxLRaalHvktpRn+AwAhxpFTuifuxSC1VlaFM/173A=
+X-Google-Smtp-Source: ABdhPJw0cWvVwG/eQ+2pTAA9FuOD8iTsTNLXdLHhlfF3wP4k06jKbAivbM/OuxLD1XL/kblT/6f2qQ2WYcnAhQ==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a05:6902:707:: with SMTP id
+ k7mr13103612ybt.545.1634290403688; Fri, 15 Oct 2021 02:33:23 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 09:33:18 +0000
+Message-Id: <20211015093318.1273686-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [[PATCH bpf-next]] selftests/bpf: Some more atomic tests
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We only use count for kmalloc hashtab not for prealloc hashtab, because
-__pcpu_freelist_pop() return NULL when no more elem in pcpu freelist.
+Some new verifier tests that hit some important gaps in the parameter
+space for atomic ops.
 
-But the problem is that __pcpu_freelist_pop() will traverse all CPUs and
-spin_lock for all CPUs to find there is no more elem at last.
+There are already exhaustive tests for the JIT part in
+lib/test_bpf.c, but these exercise the verifier too.
 
-We encountered bad case on big system with 96 CPUs that alloc_htab_elem()
-would last for 1ms. This patch use count for prealloc hashtab too,
-avoid traverse and spin_lock for all CPUs in this case.
-
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- kernel/bpf/hashtab.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../selftests/bpf/verifier/atomic_cmpxchg.c   | 38 +++++++++++++
+ .../selftests/bpf/verifier/atomic_fetch.c     | 57 +++++++++++++++++++
+ .../selftests/bpf/verifier/atomic_invalid.c   | 25 ++++++++
+ 3 files changed, 120 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_invalid.c
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 32471ba02708..0c432a23aa00 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -855,12 +855,12 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
- static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
- {
- 	htab_put_fd_value(htab, l);
-+	atomic_dec(&htab->count);
- 
- 	if (htab_is_prealloc(htab)) {
- 		check_and_free_timer(htab, l);
- 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
- 	} else {
--		atomic_dec(&htab->count);
- 		l->htab = htab;
- 		call_rcu(&l->rcu, htab_elem_free_rcu);
- 	}
-@@ -938,6 +938,11 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 		} else {
- 			struct pcpu_freelist_node *l;
- 
-+			if (atomic_inc_return(&htab->count) > htab->map.max_entries) {
-+				l_new = ERR_PTR(-E2BIG);
-+				goto dec_count;
-+			}
-+
- 			l = __pcpu_freelist_pop(&htab->freelist);
- 			if (!l)
- 				return ERR_PTR(-E2BIG);
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+index 6e52dfc64415..c22dc83a41fd 100644
+--- a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
++++ b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+@@ -119,3 +119,41 @@
+ 	},
+ 	.result = ACCEPT,
+ },
++{
++	"Dest pointer in r0 - fail",
++	.insns = {
++		/* val = 0; */
++		BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++		/* r0 = &val */
++		BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
++		/* r0 = atomic_cmpxchg(&val, r0, 1); */
++		BPF_MOV64_IMM(BPF_REG_1, 1),
++		BPF_ATOMIC_OP(BPF_DW, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
++		/* if (r0 != 0) exit(1); */
++		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
++		BPF_MOV64_IMM(BPF_REG_0, 1),
++		BPF_EXIT_INSN(),
++		/* exit(0); */
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++},
++{
++	"Dest pointer in r0 - succeed",
++	.insns = {
++		/* r0 = &val */
++		BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
++		/* val = r0; */
++		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
++		/* r0 = atomic_cmpxchg(&val, r0, 0); */
++		BPF_MOV64_IMM(BPF_REG_1, 0),
++		BPF_ATOMIC_OP(BPF_DW, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
++		/* r1 = *r0 */
++		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, -8),
++		/* exit(0); */
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++},
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_fetch.c b/tools/testing/selftests/bpf/verifier/atomic_fetch.c
+new file mode 100644
+index 000000000000..3bc9ff7a860b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/atomic_fetch.c
+@@ -0,0 +1,57 @@
++#define __ATOMIC_FETCH_OP_TEST(src_reg, dst_reg, operand1, op, operand2, expect) \
++	{								\
++		"atomic fetch " #op ", src=" #dst_reg " dst=" #dst_reg,	\
++		.insns = {						\
++			/* u64 val = operan1; */			\
++			BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, operand1),	\
++			/* u64 old = atomic_fetch_add(&val, operand2); */ \
++			BPF_MOV64_REG(dst_reg, BPF_REG_10),		\
++			BPF_MOV64_IMM(src_reg, operand2),		\
++			BPF_ATOMIC_OP(BPF_DW, op,			\
++				      dst_reg, src_reg, -8),		\
++			/* if (old != operand1) exit(1); */		\
++			BPF_JMP_IMM(BPF_JEQ, src_reg, operand1, 2),	\
++			BPF_MOV64_IMM(BPF_REG_0, 1),			\
++			BPF_EXIT_INSN(),				\
++			/* if (val != result) exit (2); */		\
++			BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_10, -8),	\
++			BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, expect, 2),	\
++			BPF_MOV64_IMM(BPF_REG_0, 2),			\
++			BPF_EXIT_INSN(),				\
++			/* exit(0); */					\
++			BPF_MOV64_IMM(BPF_REG_0, 0),			\
++			BPF_EXIT_INSN(),				\
++		},							\
++		.result = ACCEPT,					\
++	}
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_XCHG, 0x011, 0x011),
++#undef __ATOMIC_FETCH_OP_TEST
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_invalid.c b/tools/testing/selftests/bpf/verifier/atomic_invalid.c
+new file mode 100644
+index 000000000000..39272720b2f6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/atomic_invalid.c
+@@ -0,0 +1,25 @@
++#define __INVALID_ATOMIC_ACCESS_TEST(op)					\
++	{								\
++		"atomic " #op " access through non-pointer ",			\
++		.insns = {						\
++			BPF_MOV64_IMM(BPF_REG_0, 1),			\
++			BPF_MOV64_IMM(BPF_REG_1, 0),			\
++			BPF_ATOMIC_OP(BPF_DW, op, BPF_REG_1, BPF_REG_0, -8), \
++			BPF_MOV64_IMM(BPF_REG_0, 0),			\
++			BPF_EXIT_INSN(),				\
++		},							\
++		.result = REJECT,					\
++		.errstr = "R1 invalid mem access 'inv'"			\
++	}
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_AND),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_AND | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_OR),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_OR | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_XOR),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_XOR | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_XCHG),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_CMPXCHG),
 -- 
-2.11.0
+2.33.0.1079.g6e70778dc9-goog
 
