@@ -2,30 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFE142F188
-	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 14:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FCB42F18A
+	for <lists+bpf@lfdr.de>; Fri, 15 Oct 2021 14:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhJOMz0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Oct 2021 08:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54580 "EHLO mail.kernel.org"
+        id S235938AbhJOM4f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Oct 2021 08:56:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234376AbhJOMzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:55:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D24860F56;
-        Fri, 15 Oct 2021 12:53:19 +0000 (UTC)
+        id S234376AbhJOM4f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Oct 2021 08:56:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF50260F56;
+        Fri, 15 Oct 2021 12:54:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634302399;
-        bh=I7fuA6e/iDc9aNOqvdYlh5qnta1s26Zw+3KRiQBcCP0=;
+        s=k20201202; t=1634302468;
+        bh=GJYgvDmFMF37lj8djCH6OYdxq1He49jAVjZbUl5kHiQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KNUi1JVaxaWjTYIXeKW/w/UHL2bYnGqaKVGjbD1XitZZktrkA8tmowsq3xpzxgKSW
-         CXRkpvTMHO+7BFFf/mn4XlU9N0xRdpwhjJq849QQ1zhfS7Acs2IQZa25tVxBbHSDb/
-         LHOBbgB/1pA8fLY7xQAZ2KAQHHdqQEPFeq2S2G2erxvL6+9BWZLP9zZGQvBXFEHStb
-         GDnrZiObjDpI8ChBixjwzVZY1A9T64q2PZoYIhcVut5aGfDN5is6ihUnCbB7k/tVEP
-         kq+LSOfZfsA4ALF7gqcFKNQZ9S8ft67X9VICLP0bCi7SChmiUHY2gQ5UuCYnSCg062
-         H8D8B6J8ZgMVA==
+        b=Rx60UodlNITonDTm9CQDT0fQlhTm2HWNIha4CO1a/dacAwFOurifPHxk6RD7xbr85
+         kfVP5bYDu3J3CnEXUSh5vd2/5LZ/8EqHx2ptIGn9dq27sCMkk7TQ77wEJ1Opgnc6K9
+         OipG4IGXiO3X/kadk/mhpqmQI2fPTqDerOaNchwm9caRDGrZtEjummUmLCtSoCX/qe
+         ZWxqoqbnVOJ/r8Pg154J1Rbs8yMOMXS4C5NPMOHrBY8VK+thOcBBJ0UzEVPMxcBhPk
+         CI/xRowYdcVv3HwN4FJCjcDJarpLoCUz7wEQBGVbYsJe6fCLff79ghG6DP63jcWks0
+         TLDd1AOBXoDQA==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EEAE8410A1; Fri, 15 Oct 2021 09:53:15 -0300 (-03)
-Date:   Fri, 15 Oct 2021 09:53:15 -0300
+        id 364A1410A1; Fri, 15 Oct 2021 09:54:26 -0300 (-03)
+Date:   Fri, 15 Oct 2021 09:54:26 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
@@ -35,26 +35,42 @@ Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH dwarves] dwarf_loader: Fix heap overflow when accessing
- variable specification
-Message-ID: <YWl5u2j7kHNLIbPT@kernel.org>
-References: <20211012022521.399302-1-iii@linux.ibm.com>
+Subject: Re: [PATCH dwarves] btf_encoder: Fix handling of percpu symbols on
+ s390
+Message-ID: <YWl6Au74co0UNMq2@kernel.org>
+References: <20211012022637.399365-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211012022521.399302-1-iii@linux.ibm.com>
+In-Reply-To: <20211012022637.399365-1-iii@linux.ibm.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Oct 12, 2021 at 04:25:21AM +0200, Ilya Leoshkevich escreveu:
-> Variables can be allocated with or without specification, however,
-> tag__recode_dwarf_type() always tries accessing it, leading to heap
-> read overflows and subsequent logic bugs.
+Em Tue, Oct 12, 2021 at 04:26:37AM +0200, Ilya Leoshkevich escreveu:
+> pahole does not generate VARs for percpu symbols on s390. A percpu
+> symbol definition on a typical x86_64 kernel looks like this:
 > 
-> Fix by introducing a bit that tracks whether or not specification is
-> present.
+>   [33] .data..percpu     PROGBITS         0000000000000000  01c00000
+>                                           ^^^^^^^^^^^^^^^^ sh_addr
+>   LOAD           0x0000000001c00000 0x0000000000000000 0x000000000286f000
+>                                     ^^^^^^^^^^^^^^^^^^ p_vaddr
+>  13559: 000000000001ba50     4 OBJECT  LOCAL  DEFAULT   33 cpu_profile_flip
+>         ^^^^^^^^^^^^^^^^ st_value
+> 
+> Most importantly, .data..percpu's sh_addr is 0, and this is what pahole
+> is currently assuming. However, on s390 this is different:
+> 
+>    [37] .data..percpu     PROGBITS         00000000019cd000  018ce000
+>                                            ^^^^^^^^^^^^^^^^ sh_addr
+>   LOAD           0x000000000136e000 0x000000000146d000 0x000000000146d000
+>                                     ^^^^^^^^^^^^^^^^^^ p_vaddr
+> 80377: 0000000001ba1440     4 OBJECT  WEAK   DEFAULT   37 cpu_profile_flip
+>        ^^^^^^^^^^^^^^^^ st_value
+> 
+> Fix by restructuring the code to always use section-relative offsets
+> for symbols. Change the comment to focus on this invariant.
 
 Thanks, applied.
 
@@ -63,56 +79,62 @@ Thanks, applied.
  
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  dwarf_loader.c | 15 ++++++++++-----
->  dwarves.h      |  1 +
->  2 files changed, 11 insertions(+), 5 deletions(-)
+>  btf_encoder.c | 21 ++++++++++++++-------
+>  1 file changed, 14 insertions(+), 7 deletions(-)
 > 
-> diff --git a/dwarf_loader.c b/dwarf_loader.c
-> index 48e1bf0..60bdca3 100644
-> --- a/dwarf_loader.c
-> +++ b/dwarf_loader.c
-> @@ -723,6 +723,7 @@ static struct variable *variable__new(Dwarf_Die *die, struct cu *cu, struct conf
->  		var->external = dwarf_hasattr(die, DW_AT_external);
->  		/* non-defining declaration of an object */
->  		var->declaration = dwarf_hasattr(die, DW_AT_declaration);
-> +		var->has_specification = has_specification;
->  		var->scope = VSCOPE_UNKNOWN;
->  		INIT_LIST_HEAD(&var->annots);
->  		var->ip.addr = 0;
-> @@ -2291,12 +2292,16 @@ static int tag__recode_dwarf_type(struct tag *tag, struct cu *cu)
->  		goto find_type;
->  	case DW_TAG_variable: {
->  		struct variable *var = tag__variable(tag);
-> -		dwarf_off_ref specification = dwarf_tag__spec(dtag);
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index c341f95..16e90c3 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -56,7 +56,8 @@ struct btf_encoder {
+>  			  raw_output,
+>  			  verbose,
+>  			  force,
+> -			  gen_floats;
+> +			  gen_floats,
+> +			  is_rel;
+>  	uint32_t	  array_index_id;
+>  	struct {
+>  		struct var_info vars[MAX_PERCPU_VAR_CNT];
+> @@ -1104,6 +1105,13 @@ static int btf_encoder__collect_percpu_var(struct btf_encoder *encoder, GElf_Sym
+>  	if (encoder->verbose)
+>  		printf("Found per-CPU symbol '%s' at address 0x%" PRIx64 "\n", sym_name, addr);
 >  
-> -		if (specification.off) {
-> -			dtype = dwarf_cu__find_tag_by_ref(cu->priv, &specification);
-> -			if (dtype)
-> -				var->spec = tag__variable(dtype->tag);
-> +		if (var->has_specification) {
-> +			dwarf_off_ref specification = dwarf_tag__spec(dtag);
+> +	/* Make sure addr is section-relative. For kernel modules (which are
+> +	 * ET_REL files) this is already the case. For vmlinux (which is an
+> +	 * ET_EXEC file) we need to subtract the section address.
+> +	 */
+> +	if (!encoder->is_rel)
+> +		addr -= encoder->percpu.base_addr;
 > +
-> +			if (specification.off) {
-> +				dtype = dwarf_cu__find_tag_by_ref(cu->priv,
-> +								  &specification);
-> +				if (dtype)
-> +					var->spec = tag__variable(dtype->tag);
-> +			}
->  		}
->  	}
+>  	if (encoder->percpu.var_cnt == MAX_PERCPU_VAR_CNT) {
+>  		fprintf(stderr, "Reached the limit of per-CPU variables: %d\n",
+>  			MAX_PERCPU_VAR_CNT);
+> @@ -1195,12 +1203,9 @@ static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder, struct
+>  		addr = var->ip.addr;
+>  		dwarf_name = variable__name(var);
 >  
-> diff --git a/dwarves.h b/dwarves.h
-> index 30d33fa..20608dd 100644
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -691,6 +691,7 @@ struct variable {
->  	const char	 *name;
->  	uint8_t		 external:1;
->  	uint8_t		 declaration:1;
-> +	uint8_t		 has_specification:1;
->  	enum vscope	 scope;
->  	struct location	 location;
->  	struct hlist_node tool_hnode;
+> -		/* DWARF takes into account .data..percpu section offset
+> -		 * within its segment, which for vmlinux is 0, but for kernel
+> -		 * modules is >0. ELF symbols, on the other hand, don't take
+> -		 * into account these offsets (as they are relative to the
+> -		 * section start), so to match DWARF and ELF symbols we need
+> -		 * to negate the section base address here.
+> +		/* Make sure addr is section-relative. DWARF, unlike ELF,
+> +		 * always contains virtual symbol addresses, so subtract
+> +		 * the section address unconditionally.
+>  		 */
+>  		if (addr < encoder->percpu.base_addr || addr >= encoder->percpu.base_addr + encoder->percpu.sec_sz)
+>  			continue;
+> @@ -1322,6 +1327,8 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
+>  			goto out_delete;
+>  		}
+>  
+> +		encoder->is_rel = ehdr.e_type == ET_REL;
+> +
+>  		switch (ehdr.e_ident[EI_DATA]) {
+>  		case ELFDATA2LSB:
+>  			btf__set_endianness(encoder->btf, BTF_LITTLE_ENDIAN);
 > -- 
 > 2.31.1
 
