@@ -2,93 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DA5430107
-	for <lists+bpf@lfdr.de>; Sat, 16 Oct 2021 10:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE124301B4
+	for <lists+bpf@lfdr.de>; Sat, 16 Oct 2021 11:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239859AbhJPIEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 16 Oct 2021 04:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239884AbhJPICc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 16 Oct 2021 04:02:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2963D61263;
-        Sat, 16 Oct 2021 08:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634371215;
-        bh=n0MpGGnG6YCGyCA0N2+K+25FiZq2dm1Y9Iav0fFoH6Q=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HyZlPRsrlPNVM27vl0fK0gp8MR4CXXVQDUHYBMpDDEU5CzoHUHyQJGPDIPy+8shGr
-         /7inUOSC9UShjohHm/ewRLVH7Y6lMBgSqLa+iAohCckHSxkIkCeX9Jg8lna5+4a4d6
-         jETcgzfXSXo5SoYZgl43PSrsMZDyKBbRBB3Pf+oyAiNGboXVWj1f60e7skFZNcaEQ/
-         Ofc8KHTYOFpzx2Ll0ZQi2IZBauQRE11DM6sFUvN/P8lFxsZtsLiztUmwSriNuIqB8V
-         PUKSAcl+M68WebWz8Rcs0uCM2upPrHWoTS3G7pkZ6SK10BevZEW/FEXoRax++XRlxH
-         S/MsttiCVUsRQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 148A960A90;
-        Sat, 16 Oct 2021 08:00:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S239987AbhJPJ7y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 16 Oct 2021 05:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235573AbhJPJ7x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 16 Oct 2021 05:59:53 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BC5C061570
+        for <bpf@vger.kernel.org>; Sat, 16 Oct 2021 02:57:46 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s136so7688356pgs.4
+        for <bpf@vger.kernel.org>; Sat, 16 Oct 2021 02:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mpOAixr3OFRGdoe91PDD9LeUpr0a8cKcJu5K7EQ3uGQ=;
+        b=JAvSW+z0zH5mW19NfQLdGpTtMx5uvMBh9Ncmv/xzv5oOCvPSej7vQKnZt4lSgtil7R
+         G4wr9u8bZM1XJQLsyrW27XwR1p9sFH6DmnkkMcaqitZ8PaoQI+xJQhTGjjLNfeapOh5J
+         UyE6tYLKKDA5ltSQLzk1S7TjDczRs7/D2RzVDVagMVqoiwBwhDzyd2kOG0BEKYLz56nz
+         hp7OhOEsh5BxnQVic4x+m6neopD8gFddkwR8SUVRXTOvvkf9xocJ98HXuBh28oFxf0Fu
+         ouxlZEsFRdcbd+eHlavLtOpRdOUt0U3NZQewa87YPVE3Sy559rVXpZJc4gaCXwWhzCQJ
+         Z7Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mpOAixr3OFRGdoe91PDD9LeUpr0a8cKcJu5K7EQ3uGQ=;
+        b=TuZCovEu/37ptIMnG7PIGgoKX/QCJZwJkr9zZq8ghFAcqzsRGd0H/r9wnHU4hcFOph
+         DNqsp1b5dj5Uit8iupKpYyh0fQ7itJWl+OtWFvGixMfqL1/Dmsnlo2YdQxMTVrJfLZSe
+         JnvJwb67X8O2kKp9vZ4IhJHbIZvoaqTlJJHus0zFHQYdDeXwHRMiDKQT/5blQQJ27Df4
+         X2p0TWHIj+ookBYSkOivDSJcPFq03kogpXDjneEHAC7AEWlSOQbjOrQTl3HYVi0fzabz
+         NqnnKenSa31su/O1+aK+uNJyfHuWNQBjWVvsLdv3M1EuW2lIitP2fO7FxqieY+THiOeI
+         Qlsw==
+X-Gm-Message-State: AOAM532KIyAgGv8bYifNhF0dQi5bc0hpcam6LoCIpgFwt6CxNARC2bts
+        rGAI1hTMUY6S0LBm1RUhyPs=
+X-Google-Smtp-Source: ABdhPJxZBw7bzWVuP8lbk3O7qtXM6z6NYPYBwR54lBu50c84pcrzNoQJ/f1AOOsy/z/o07afNbNWGQ==
+X-Received: by 2002:a05:6a00:24d6:b0:44c:df15:f52e with SMTP id d22-20020a056a0024d600b0044cdf15f52emr16907872pfv.36.1634378265831;
+        Sat, 16 Oct 2021 02:57:45 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.115])
+        by smtp.gmail.com with ESMTPSA id o72sm7209316pjo.50.2021.10.16.02.57.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 02:57:45 -0700 (PDT)
+Subject: Re: BUG: Ksnoop tool failed to pass the BPF verifier with recent
+ kernel changes
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, alan.maguire@oracle.com,
+        Yonghong Song <yhs@fb.com>
+References: <800ce502-8f63-8712-7ed4-d3124a5fd6fb@gmail.com>
+ <20211015193010.22frp6eat3wz54hq@kafai-mbp.dhcp.thefacebook.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Message-ID: <da0a8a77-eb71-57c3-35b9-f1dcaeaa560d@gmail.com>
+Date:   Sat, 16 Oct 2021 17:57:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/9][pull request] 100GbE Intel Wired LAN Driver
- Updates 2021-10-15
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163437121507.28528.14004144964081319278.git-patchwork-notify@kernel.org>
-Date:   Sat, 16 Oct 2021 08:00:15 +0000
-References: <20211015162908.145341-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20211015162908.145341-1-anthony.l.nguyen@intel.com>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
-        kafai@fb.com, yhs@fb.com, songliubraving@fb.com,
-        bpf@vger.kernel.org
+In-Reply-To: <20211015193010.22frp6eat3wz54hq@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net-next.git (master)
-by Tony Nguyen <anthony.l.nguyen@intel.com>:
 
-On Fri, 15 Oct 2021 09:28:59 -0700 you wrote:
-> This series contains updates to ice driver only.
+On 2021/10/16 3:30 AM, Martin KaFai Lau wrote:
+> On Thu, Oct 14, 2021 at 12:35:42AM +0800, Hengqi Chen wrote:
+>> Hi, BPF community,
+>>
+>>
+>> I would like to report a possible bug in bpf-next,
+>> hope I don't make any stupid mistake. Here is the details:
+>>
+>> I have two VMs:
+>>
+>> One has the kernel built against the following commit:
+>>
+>> 0693b27644f04852e46f7f034e3143992b658869 (bpf-next)
+>>
+>> The ksnoop tool (from BCC repo) works well on this VM.
+>>
+>>
+>> Another has the kernel built against the following commit:
+>>
+>> 5319255b8df9271474bc9027cabf82253934f28d (bpf-next)
+>>
+>> On this VM, the ksnoop tool failed with the following message:
+> I see the error in both mentioned bpf-next commits above.
+> I use the latest llvm and bcc from github.
 > 
-> Maciej makes improvements centered around XDP. Changes include removing
-> an unused field from the ring structure, creating separate Tx and Rx
-> ring structures, and using ice_for_each macros for iterating rings.
-> Some calls and parameters are changed to reduce unneeded overhead for
-> further optimization. New fields are added for tracking to aid in
-> improving workloads. He also unifies XDP indexing to a single
-> methodology and adds a fallback patch when XDP Tx queue per CPU is not
-> met.
+> Can you confirm which llvm version (or llvm git commit) you are using
+> in both the good and the bad case?
 > 
-> [...]
 
-Here is the summary with links:
-  - [net-next,1/9] ice: remove ring_active from ice_ring
-    https://git.kernel.org/netdev/net-next/c/e93d1c37a85b
-  - [net-next,2/9] ice: move ice_container_type onto ice_ring_container
-    https://git.kernel.org/netdev/net-next/c/dc23715cf30a
-  - [net-next,3/9] ice: split ice_ring onto Tx/Rx separate structs
-    https://git.kernel.org/netdev/net-next/c/e72bba21355d
-  - [net-next,4/9] ice: unify xdp_rings accesses
-    https://git.kernel.org/netdev/net-next/c/0bb4f9ecadd4
-  - [net-next,5/9] ice: do not create xdp_frame on XDP_TX
-    https://git.kernel.org/netdev/net-next/c/a55e16fa330a
-  - [net-next,6/9] ice: propagate xdp_ring onto rx_ring
-    https://git.kernel.org/netdev/net-next/c/eb087cd82864
-  - [net-next,7/9] ice: optimize XDP_TX workloads
-    https://git.kernel.org/netdev/net-next/c/9610bd988df9
-  - [net-next,8/9] ice: introduce XDP_TX fallback path
-    https://git.kernel.org/netdev/net-next/c/22bf877e528f
-  - [net-next,9/9] ice: make use of ice_for_each_* macros
-    https://git.kernel.org/netdev/net-next/c/2faf63b650bb
+Indeed, this could be the problem of LLVM, not the kernel.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The following is the version info of my environment:
 
+The good one:
 
+	llvm-config-14 --version
+	14.0.0
+
+	clang -v     
+	Ubuntu clang version 14.0.0-++20210915052613+c78ed20784ee-1~exp1~20210915153417.547
+	Target: x86_64-pc-linux-gnu
+	Thread model: posix
+	InstalledDir: /usr/bin
+	Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/9
+	Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/9
+	Candidate multilib: .;@m64
+	Selected multilib: .;@m64
+
+The bad one:
+
+	llvm-config-14 --version
+	14.0.0
+
+	clang -v         
+	Ubuntu clang version 14.0.0-++20211008104411+f4145c074cb8-1~exp1~20211008085218.709
+	Target: x86_64-pc-linux-gnu
+	Thread model: posix
+	InstalledDir: /usr/bin
+	Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10
+	Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/11
+	Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/9
+	Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/11
+	Candidate multilib: .;@m64
+	Selected multilib: .;@m64
