@@ -2,88 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6BF430276
-	for <lists+bpf@lfdr.de>; Sat, 16 Oct 2021 13:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E869430297
+	for <lists+bpf@lfdr.de>; Sat, 16 Oct 2021 14:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235100AbhJPLmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 16 Oct 2021 07:42:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38376 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232168AbhJPLmI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 16 Oct 2021 07:42:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634384399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tjS9YFlVGwtcWTbzJnOhWSoY+8PFA5sGYT0gTfsGBcw=;
-        b=ZdpTbFNszwAvkmv6ltNfNQwPTWMqkUcWZccM5V0hNdxRg27w9//7ZtlyAjxYoVKbyb+BTw
-        wdkq4b4yxgC4YjSz+CfM5a30kMhDaWWify95INUiVLcCfn66MDKPPB3xzLj7MUWQR8rpnd
-        V3OzoeAXfKGqpYOged4IURGDSL06H1A=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-MOXF02PpMdiV4T7TFVp-bA-1; Sat, 16 Oct 2021 07:39:58 -0400
-X-MC-Unique: MOXF02PpMdiV4T7TFVp-bA-1
-Received: by mail-wm1-f72.google.com with SMTP id o196-20020a1ca5cd000000b0030dc197412aso1608587wme.0
-        for <bpf@vger.kernel.org>; Sat, 16 Oct 2021 04:39:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tjS9YFlVGwtcWTbzJnOhWSoY+8PFA5sGYT0gTfsGBcw=;
-        b=MIPBE0R0HHj+HRPXeX6zhpNUOA1T0h/AVAvbzm6IYyuJbWtjEa7gsZ9z0JszmeMGrv
-         E+G+Q1oSjK92IFf9IuX9gwGntRRACdxLzyOye/drpXQAoytBCB+XYvIN1tbkvcW5KOzl
-         VlXllo05BB5tqVMEalTfnU+h4iRJ7qZDK159xlviy2g2NALND3DhsiFfjdj4UNWo9oC9
-         6bwHnSE4PA778E24cHfM+zmpgGjebkiqAEzKN94YV+5fwKiQo9zUMQLw3K/9NmkFOjxC
-         5uXVkhbYVX7ic6cExSHgSiH+lRCtruEScYEi10u58I9d6qDyenwQuKHR4UuF0B5Engs3
-         m1ew==
-X-Gm-Message-State: AOAM533wJ53U9D6OMerlP4xh+CFPlWrI3LB4vwTadrX7zWMUnveC7sCh
-        vws/979ejuao1Bv5t0URODwWTg4XFn6oBuw9BTBmvGkCzJVa/9PlY/Rd2WgOW1UKSpf2LdP7UVw
-        n/PeBIlMpB3dL
-X-Received: by 2002:a5d:47ac:: with SMTP id 12mr20371852wrb.352.1634384397260;
-        Sat, 16 Oct 2021 04:39:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMbnFqzfoci5oeFVy4BTnkfciAlNCmyxciKO8osAJkH83DA6kseDTUUvad29VpBWcw3rw/Vw==
-X-Received: by 2002:a5d:47ac:: with SMTP id 12mr20371836wrb.352.1634384397087;
-        Sat, 16 Oct 2021 04:39:57 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id d24sm6867737wmb.35.2021.10.16.04.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 04:39:56 -0700 (PDT)
-Date:   Sat, 16 Oct 2021 13:39:55 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
-Message-ID: <YWq6C69rQhUcAGe+@krava>
-References: <20211008091336.33616-1-jolsa@kernel.org>
- <20211008091336.33616-8-jolsa@kernel.org>
- <20211014162819.5c85618b@gandalf.local.home>
- <YWluhdDMfkNGwlhz@krava>
- <20211015100509.78d4fb01@gandalf.local.home>
+        id S235147AbhJPMfR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 16 Oct 2021 08:35:17 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28951 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234762AbhJPMfR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 16 Oct 2021 08:35:17 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HWj9J6HS2zbmrT;
+        Sat, 16 Oct 2021 20:28:36 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 16 Oct 2021 20:33:07 +0800
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 16 Oct
+ 2021 20:33:06 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <houtao1@huawei.com>
+Subject: [PATCH bpf-next v2 0/5] introduce dummy BPF STRUCT_OPS
+Date:   Sat, 16 Oct 2021 20:48:01 +0800
+Message-ID: <20211016124806.1547989-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015100509.78d4fb01@gandalf.local.home>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 10:05:09AM -0400, Steven Rostedt wrote:
-> On Fri, 15 Oct 2021 14:05:25 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > ATM I'm bit stuck on the bpf side of this whole change, I'll test
-> > it with my other changes when I unstuck myself ;-)
-> 
-> If you want, I'll apply this as a separate change on top of your patch set.
-> As I don't see anything wrong with your current code.
-> 
-> And when you are satisfied with this, just give me a "tested-by" and I'll
-> push it too.
+Hi,
 
-sounds great, thanks
-jirka
+Currently the test of BPF STRUCT_OPS depends on the specific bpf
+implementation (e.g, tcp_congestion_ops), but it can not cover all
+basic functionalities (e.g, return value handling), so introduce
+a dummy BPF STRUCT_OPS for test purpose.
+
+Instead of loading a userspace-implemeted bpf_dummy_ops map into
+kernel and calling the specific function by writing to sysfs provided
+by bpf_testmode.ko, only loading bpf_dummy_ops related prog into
+kernel and calling these prog by bpf_prog_test_run(). The latter
+is more flexible and has no dependency on extra kernel module.
+
+Now the return value handling is supported by test_1(...) ops,
+and passing multiple arguments is supported by test_2(...) ops.
+If more is needed, test_x(...) ops can be added afterwards.
+
+Comments are always welcome.
+Regards,
+Hou
+
+Change Log:
+v2:
+ * rebase on bpf-next
+ * add test_2(...) ops to test the passing of multiple arguments
+ * a new patch (patch #2) is added to factor out ctx access helpers
+ * address comments from Martin & Andrii
+
+v1: https://www.spinics.net/lists/bpf/msg46787.html
+
+RFC: https://www.spinics.net/lists/bpf/msg46117.html
+
+Hou Tao (5):
+  bpf: factor out a helper to prepare trampoline for struct_ops prog
+  bpf: factor out helpers to check ctx access for BTF function
+  bpf: add dummy BPF STRUCT_OPS for test purpose
+  bpf: hook .test_run for struct_ops program
+  selftests/bpf: add test cases for struct_ops prog
+
+ include/linux/bpf.h                           |  45 ++++
+ kernel/bpf/bpf_struct_ops.c                   |  46 +++-
+ kernel/bpf/bpf_struct_ops_types.h             |   1 +
+ kernel/trace/bpf_trace.c                      |  16 +-
+ net/bpf/Makefile                              |   3 +
+ net/bpf/bpf_dummy_struct_ops.c                | 206 ++++++++++++++++++
+ net/ipv4/bpf_tcp_ca.c                         |   9 +-
+ .../selftests/bpf/prog_tests/dummy_st_ops.c   | 114 ++++++++++
+ .../selftests/bpf/progs/dummy_st_ops.c        |  50 +++++
+ 9 files changed, 458 insertions(+), 32 deletions(-)
+ create mode 100644 net/bpf/bpf_dummy_struct_ops.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dummy_st_ops.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dummy_st_ops.c
+
+-- 
+2.29.2
 
