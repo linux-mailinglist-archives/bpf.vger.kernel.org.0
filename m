@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D004431F4C
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 16:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4AA431F51
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 16:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbhJROT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 10:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44746 "EHLO
+        id S231874AbhJROTt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 10:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbhJROTX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:19:23 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA25C094268;
-        Mon, 18 Oct 2021 07:05:47 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id i189so16438977ioa.1;
-        Mon, 18 Oct 2021 07:05:47 -0700 (PDT)
+        with ESMTP id S232367AbhJROTr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:19:47 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FFDC0796F6;
+        Mon, 18 Oct 2021 07:09:40 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id k3so15037824ilu.2;
+        Mon, 18 Oct 2021 07:09:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=Zg7ZOhohtZhCCy7y9pyI3V1BTITKPMF9LsGk4rxu3ME=;
-        b=nWNyDok3ZmGoXBOCY7rCOH0ppd4gXK2vUtMNQkkv7frHeMXcrlianwSQCXCO8XHfcz
-         3y8V7pEP1XpLmpJnkagiE5hUH0ZoZ6RxtvaZV6UUNXD9zHSR1ikashslErZRryq+/RoB
-         x51k0yCMuqY5womdTVfwGUtijvkUI3gL4qE5q3LQV5gYGMOrvIuRLGGsyFdPcyx8e2Mt
-         fzCx8+qg0UOaky5bIJACV5hKzdWWrDvFWaDn2p+Nqwz52iLhJwIeu+PuIDQP40iAStDn
-         z2wbm0rzPI2Vny/ISUNKAOKof7A794b8TrwXVkYmrAVR1gI6P4d7CwXIYnuoX3oSIYwo
-         6CKw==
+        bh=IMHKUU/aPTZ1B41jOo+lOELIQKcF+Y1//c1q8Tb8uNY=;
+        b=qx2jRO04XPqGFon6Eo0uUqTrYWFCoxnDl3/AfstUIYnZz43zWdhg1EScAy7+zL+Ix7
+         6VNXSN9ARE1moMS7Ok3sUen/ZbzPb7zlI2x4BH2SzXTIwCJKQmRF20bHOHc7GMLQpN2L
+         FlMjjJ8TkICj+OInDV3Kc/G4T27O67B4BXjvXEj2CBxCnOHZMsOsM12CADWTIkYYtXgD
+         cBUQf241KJmHTMhbfBBdka02SGXKlfG0Ad2sHpwNEpgZnkCc22ZFN6W4yJAgXhwAGnE1
+         tKQzIL3lZWSQ7JzmFvZy4OrJoJpQacmmNm18PoWlDedLBojEFvpE0egp/oFst7gckM3z
+         iR1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=Zg7ZOhohtZhCCy7y9pyI3V1BTITKPMF9LsGk4rxu3ME=;
-        b=5TYZK11lqjkpncD4VBREDErviYpNtz38JHdCGiCDtI9NoV0yq8imNw9M879a8pduXf
-         UJlgPfFBfqcoZgaMZa3XQCSvxHl4K5xAwBtttO0BnkXRnYho3DhN/C1rcRz0OhK6ee67
-         /qfnb4tfxEKoCJb339VZ5+uzS+ORT098jfKBLCNL0jaOggqdlOwYCGbndwmQFFgD0VgY
-         89RBP3k44eq+uIchWjtXmGMChBZfun+Coc3Vbc0+D/PFqz+vLjdd46Lg97/wINGR3gdb
-         XBCKQCa8miMeq/DcoWEQISx+Juri9yHEkOrWb5W9PF6OzblljX2iSa9RS1UO+p+JQyML
-         otvw==
-X-Gm-Message-State: AOAM530HA2W7PdVQsiUrJpCmwSVfJwlt049DctyaIROukmW9Nwxd13ry
-        27gptYGM98o4n8zXCibu9JY=
-X-Google-Smtp-Source: ABdhPJzFz3LOOcUrd20WZd2igSMrraNbJfSZMRIQa54AFozFR435NJccy3bCwPdMG49RTzIOq3jViA==
-X-Received: by 2002:a02:c484:: with SMTP id t4mr18449727jam.37.1634565947280;
-        Mon, 18 Oct 2021 07:05:47 -0700 (PDT)
+        bh=IMHKUU/aPTZ1B41jOo+lOELIQKcF+Y1//c1q8Tb8uNY=;
+        b=5UJIJJDA7NhSYeJSVdj354FGpr9Mf5jfp5b7db5CkcvAUpNFyLqJ+YyDbpGUsVBi5U
+         67phzYYDJWdRrKvw+0yFMFJGINLoT7nxY0PI79TgSzlAYFkaZ43bew4A/HuZ7ij4GqjM
+         WwIzVnT12fI7h5SwSiMn4JlmBoe5k+Q9Z25ctqQqOQ5DgRkzbo2mLrb2zJk7GnOzL77f
+         Z3ej7H+58DItQzpXtna+USLV66p3vM0FnvHxkFQeGpk3PaEeT5eSN0wxy8zKPltW6E/b
+         ikHBDsZK1mK/rpVm7aNCD8QbKsMrQt+YnWwVr+VT1nksajolSdz2Okl7+X9RYvjWF4LQ
+         lGtA==
+X-Gm-Message-State: AOAM532vmgwaif/iQBf8HO/+DuPKN74p5dQ6dDlplY/ccd/dGp+Aw63o
+        QJlqClcSCOhqFoCOlA/hk+Q=
+X-Google-Smtp-Source: ABdhPJxnws0Rniub6BPpOmZqIKbdjjklyZQI7NMNwfzaOBwzjGBkXKWe6/ewxnVgW1EW925Z8ZNfrQ==
+X-Received: by 2002:a92:d0d1:: with SMTP id y17mr13871500ila.40.1634566179610;
+        Mon, 18 Oct 2021 07:09:39 -0700 (PDT)
 Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id g9sm3610257ila.20.2021.10.18.07.05.44
+        by smtp.gmail.com with ESMTPSA id m10sm7228813ila.13.2021.10.18.07.09.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 07:05:46 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 07:05:38 -0700
+        Mon, 18 Oct 2021 07:09:38 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 07:09:31 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -55,10 +55,11 @@ To:     Quentin Monnet <quentin@isovalent.com>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Message-ID: <616d7f32e2125_1eb12088b@john-XPS-13-9370.notmuch>
-In-Reply-To: <20211009210341.6291-1-quentin@isovalent.com>
-References: <20211009210341.6291-1-quentin@isovalent.com>
-Subject: RE: [PATCH bpf-next 0/3] fixes for bpftool's Makefile
+Message-ID: <616d801bb48bc_1eb1208d8@john-XPS-13-9370.notmuch>
+In-Reply-To: <20211010002400.9339-1-quentin@isovalent.com>
+References: <20211010002400.9339-1-quentin@isovalent.com>
+Subject: RE: [PATCH bpf-next] bpf/preload: Clean up .gitignore and
+ "clean-files" target
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -68,28 +69,33 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Quentin Monnet wrote:
-> This set contains one fix for bpftool's Makefile, to make sure that the
-> headers internal to libbpf are installed properly even if we add more
-> headers to the relevant Makefile variable in the future (although we'd like
-> to avoid that if possible).
+> kernel/bpf/preload/Makefile was recently updated to have it install
+> libbpf's headers locally instead of pulling them from tools/lib/bpf. But
+> two items still need to be addressed.
 > 
-> The other patches aim at cleaning up the output from the Makefile, in
-> particular when running the command "make" another time after bpftool is
-> built.
+> First, the local .gitignore file was not adjusted to ignore the files
+> generated in the new kernel/bpf/preload/libbpf output directory.
 > 
-> Quentin Monnet (3):
->   bpftool: fix install for libbpf's internal header(s)
->   bpftool: do not FORCE-build libbpf
->   bpftool: turn check on zlib from a phony target into a conditional
->     error
+> Second, the "clean-files" target is now incorrect. The old artefacts
+> names were not removed from the target, while the new ones were added
+> incorrectly. This is because "clean-files" expects names relative to
+> $(obj), but we passed the absolute path instead. This results in the
+> output and header-destination directories for libbpf (and their
+> contents) not being removed from kernel/bpf/preload on "make clean" from
+> the root of the repository.
 > 
->  tools/bpf/bpftool/Makefile | 29 +++++++++++++++--------------
->  1 file changed, 15 insertions(+), 14 deletions(-)
+> This commit fixes both issues. Note that $(userprogs) needs not be added
+> to "clean-files", because the cleaning infrastructure already accounts
+> for it.
 > 
-> -- 
-> 2.30.2
+> Cleaning the files properly also prevents make from printing the
+> following message, for builds coming after a "make clean":
+> "make[4]: Nothing to be done for 'install_headers'."
 > 
+> Fixes: bf60791741d4 ("bpf: preload: Install libbpf headers when building")
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
 
-I'm not a Makefile expert, but from my side these look good. Thanks.
+[...]
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
