@@ -2,96 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFDA4318CD
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 14:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4CC4319D5
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 14:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhJRMUO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 08:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        id S231699AbhJRMuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 08:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbhJRMUN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:20:13 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCD5C061768
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 05:18:02 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id r184so659357ybc.10
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 05:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YzDyEdfFWyqtSOdiO6QK4xGkQUsG3IOdxwmFPTyDrKM=;
-        b=53oTNf/YP2P2eto+z7EVCOtA+Vn7m80OFkKjWx5Zgo+FwwvaUT7NNxt2WRCDAqROc9
-         NxzIHJBCQe58CjOjP70NdGcypknTCFeBvvk9FIkNDiSETTrLjuh7/Vz2YvMGSfCA/Bzw
-         BvDQHMRNAuabxVKqWaw7O7lNgPzz7K1fb9F3xNQIol2t9FqwZgISe3xzkSOBWC1pNScE
-         wx5llK7F1PD8rS8KxfEo15gq94V5jLjmmcWdzqS82AxNz/2jEE/Onb6WyqsKWp0UkWec
-         2zUi96NaRnasJ7a0d69+ws0fyPiRo1tDTmVi9aGuRtgN+gql7i6ckyWO5hofBF0wqxaY
-         DlHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YzDyEdfFWyqtSOdiO6QK4xGkQUsG3IOdxwmFPTyDrKM=;
-        b=finIaWjPAZ+l4GNLrKaDQq1rdAKoljQa9y5SBLleqTco4GRBAHhh9RVxeS8wlyJTG7
-         kTHsPsdyqr+pOGlj8Dvb5VQkFO5UVc0+pUhdZI/zoLs3n1FglmG06vwYhlBPoYRkO9Ld
-         dUozDxWWcqw7lfSgrI58XpFh15fJk8bvC8+LcEyjn0I15+xDu5SY7qdY+N3fYfVn1HfI
-         ULUa0sO/YlJywsXNn4NCm+BYyv1mDaXqVzZcM5gSPYDhyBhzffH74zAl/2/PAzSmOW4i
-         9AEPDLHvq+mfh7QhMeGg0FZsw+MPAx3L+/haVRrCqXocBkLf4OfuYG8YwoNlc2V9x10g
-         r5ZA==
-X-Gm-Message-State: AOAM531qMTDKg1OolorY1pS5F9iIAc+xxF44GZ/npH3fWW1K2qhgRK9k
-        T0dn9lCsYZbrx93wgze7U+KIlV+PXaPEmO22kYjw1g==
-X-Google-Smtp-Source: ABdhPJwNiC8GfLPXo1yH8xcU+Nzj5ADXuvkFvo4kX/imGw4KxpkBqMOjXvN4jINqJ0fElfNAdMkf8tHdziGpVPkBf08=
-X-Received: by 2002:a25:b904:: with SMTP id x4mr26912175ybj.48.1634559482132;
- Mon, 18 Oct 2021 05:18:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
- <20211005165408.2305108-3-johan.almbladh@anyfinetworks.com> <alpine.DEB.2.21.2110181359111.31442@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2110181359111.31442@angie.orcam.me.uk>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Mon, 18 Oct 2021 14:17:51 +0200
-Message-ID: <CAM1=_QQqTSABUQ1WgmBS2mgRzYKB7UA7CHyDLfwnnFnEDL4QBw@mail.gmail.com>
-Subject: Re: [PATCH 2/7] mips: uasm: Add workaround for Loongson-2F nop CPU errata
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231611AbhJRMuH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:50:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24442C06161C
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 05:47:56 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mcS3I-0003FV-EQ; Mon, 18 Oct 2021 14:47:40 +0200
+Received: from pengutronix.de (2a03-f580-87bc-d400-c2ef-28ab-e0cd-e8fd.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:c2ef:28ab:e0cd:e8fd])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 81EB9696766;
+        Mon, 18 Oct 2021 12:47:37 +0000 (UTC)
+Date:   Mon, 18 Oct 2021 14:47:36 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        chenhuacai@kernel.org, jiaxun.yang@flygoat.com,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
-        bpf <bpf@vger.kernel.org>, linux-mips@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] CAN: Add support for CAN in AM65,J721e and AM64
+Message-ID: <20211018124736.zr2oavfg6h3tnrgp@pengutronix.de>
+References: <20211006055344.22662-1-a-govindraju@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ljji6pbi73l3wne5"
+Content-Disposition: inline
+In-Reply-To: <20211006055344.22662-1-a-govindraju@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-You are right, it should say "at" here instead of "ax". The code uses
-the MIPS "at" register. AX is a BPF register, so this is a typo in my
-commit message.
 
-Thanks,
-Johan
+--ljji6pbi73l3wne5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On 06.10.2021 11:23:37, Aswath Govindraju wrote:
+> The following series of patches add support for CAN in SoC's AM65, J721e
+> and AM64.
+>=20
+> The following series is dependent on,
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210920123344.2320-=
+1-a-govindraju@ti.com/
 
+This patch just hit net/master:
 
+| 99d173fbe894 can: m_can: fix iomap_read_fifo() and iomap_write_fifo()
+| https://git.kernel.org/netdev/net/c/99d173fbe8944861a00ebd1c73817a1260d21=
+e60
 
+and should be part of v5.15.
 
-On Mon, Oct 18, 2021 at 2:00 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
->
-> On Tue, 5 Oct 2021, Johan Almbladh wrote:
->
-> > This patch implements a workaround for the Loongson-2F nop in generated,
-> > code, if the existing option CONFIG_CPU_NOP_WORKAROUND is set. Before,
-> > the binutils option -mfix-loongson2f-nop was enabled, but no workaround
-> > was done when emitting MIPS code. Now, the nop pseudo instruction is
-> > emitted as "or ax,ax,zero" instead of the default "sll zero,zero,0". This
->
->  Confusing typo here, s/ax/at/.
->
->   Maciej
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--ljji6pbi73l3wne5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFtbOYACgkQqclaivrt
+76n5Jwf/R6q+JD0YwphCt5Ds1vOyuiZPyR4D2wrVSFpT/+l6g00FDgeMztPJT6zN
+SYLYIyyceQ3tBP1R+ZBKfM8EdFaA8g6PORPECfUwH12gP6GnvUX+Nsvlgr1XMtOn
+9I6ls+J0cFhFoSQ/HVXoRlLsCTXGEk1QLcPUVE/iazvJx7bOy1jbR+sLwINoMn0L
+Kf+3/Pae+NhOvELK8HjVFIH1LWAEUpu6sTs81ebL8elGHxgbiGBi8vcWPkorkyfD
+DhaLbRCSh1y4uf09YJhU9OzjXIwyVbOJZixDUGgEBDwvjV9BtOyAhsAgQYFZ8IQg
+prXTLN1erGJEdGGjZgq/9DPDviN91g==
+=H9mY
+-----END PGP SIGNATURE-----
+
+--ljji6pbi73l3wne5--
