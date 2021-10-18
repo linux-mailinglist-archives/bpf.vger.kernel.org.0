@@ -2,100 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4AA431F51
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 16:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62D3431FDC
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 16:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhJROTt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 10:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
+        id S231883AbhJROiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 10:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232367AbhJROTr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:19:47 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FFDC0796F6;
-        Mon, 18 Oct 2021 07:09:40 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id k3so15037824ilu.2;
-        Mon, 18 Oct 2021 07:09:40 -0700 (PDT)
+        with ESMTP id S231736AbhJROiB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:38:01 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FCBC06161C
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 07:35:50 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id n65so1840828ybb.7
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 07:35:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=IMHKUU/aPTZ1B41jOo+lOELIQKcF+Y1//c1q8Tb8uNY=;
-        b=qx2jRO04XPqGFon6Eo0uUqTrYWFCoxnDl3/AfstUIYnZz43zWdhg1EScAy7+zL+Ix7
-         6VNXSN9ARE1moMS7Ok3sUen/ZbzPb7zlI2x4BH2SzXTIwCJKQmRF20bHOHc7GMLQpN2L
-         FlMjjJ8TkICj+OInDV3Kc/G4T27O67B4BXjvXEj2CBxCnOHZMsOsM12CADWTIkYYtXgD
-         cBUQf241KJmHTMhbfBBdka02SGXKlfG0Ad2sHpwNEpgZnkCc22ZFN6W4yJAgXhwAGnE1
-         tKQzIL3lZWSQ7JzmFvZy4OrJoJpQacmmNm18PoWlDedLBojEFvpE0egp/oFst7gckM3z
-         iR1A==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=V0cJQz0gH75WFcvZhGBmg8DMiEZkmet/g29v4QseqDOP+B+8f19HTvxLVoOQ5EoHSA
+         YMOaBof0JPnzyb1mnJfXq/vZSEkX3Ejwlp+OV1kmzNCYWXb2z4HX2qUuU7KHn/GM2Al/
+         4RyTuEb50Bi3sGaV83UeO8Ok65R0HcrX/501DkdrRv5+WyqfY+z7SVPFO9FQnDOzdumh
+         EZK/M/W8CsQsauXKCWmdfl+S0O5h2tyshCO0Zgy1A3U0n1IfEsDDPWUy7PPM6Y8QbX1m
+         T83myRoVUtfjdc24QVvL+tEtjGWHHKpod2nonfaScQQExaVVhNsNZryHAuW5F7HaFHkq
+         +GaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=IMHKUU/aPTZ1B41jOo+lOELIQKcF+Y1//c1q8Tb8uNY=;
-        b=5UJIJJDA7NhSYeJSVdj354FGpr9Mf5jfp5b7db5CkcvAUpNFyLqJ+YyDbpGUsVBi5U
-         67phzYYDJWdRrKvw+0yFMFJGINLoT7nxY0PI79TgSzlAYFkaZ43bew4A/HuZ7ij4GqjM
-         WwIzVnT12fI7h5SwSiMn4JlmBoe5k+Q9Z25ctqQqOQ5DgRkzbo2mLrb2zJk7GnOzL77f
-         Z3ej7H+58DItQzpXtna+USLV66p3vM0FnvHxkFQeGpk3PaEeT5eSN0wxy8zKPltW6E/b
-         ikHBDsZK1mK/rpVm7aNCD8QbKsMrQt+YnWwVr+VT1nksajolSdz2Okl7+X9RYvjWF4LQ
-         lGtA==
-X-Gm-Message-State: AOAM532vmgwaif/iQBf8HO/+DuPKN74p5dQ6dDlplY/ccd/dGp+Aw63o
-        QJlqClcSCOhqFoCOlA/hk+Q=
-X-Google-Smtp-Source: ABdhPJxnws0Rniub6BPpOmZqIKbdjjklyZQI7NMNwfzaOBwzjGBkXKWe6/ewxnVgW1EW925Z8ZNfrQ==
-X-Received: by 2002:a92:d0d1:: with SMTP id y17mr13871500ila.40.1634566179610;
-        Mon, 18 Oct 2021 07:09:39 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id m10sm7228813ila.13.2021.10.18.07.09.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 07:09:38 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 07:09:31 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Message-ID: <616d801bb48bc_1eb1208d8@john-XPS-13-9370.notmuch>
-In-Reply-To: <20211010002400.9339-1-quentin@isovalent.com>
-References: <20211010002400.9339-1-quentin@isovalent.com>
-Subject: RE: [PATCH bpf-next] bpf/preload: Clean up .gitignore and
- "clean-files" target
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=DSzWFDZ8c7BmAlyKzxCYCczUQOnIB6kRCdn6NvMNNXc8aj/V6MbmmL37LyffF19SP+
+         9V3OHw3KU5DegCHmq8ITPrWrEsRsjKc/Ipqx4XPZoR20ZdtxXdsiOxvddFHLLMvMzUUa
+         TXFJGddrc5H/iDUL9gGlbdwiO1cS2bZZhBOiXQTO/xb1BPGEi/Ykntsd5vdnoGIrC9Gp
+         G1q+x7BWvVXdIoFIud/ae32+QhwGAHtnxT1MB/8OShyk1tBowG6QqsXx4UHoynmgYLCn
+         KjS3lVwuf30oLaejf4p+Ab4W89xTiJ7C3hRuGR+1N3fbXtyh/s//BU9iROHaEStqqjtu
+         UUow==
+X-Gm-Message-State: AOAM532T+SXv0GqDY1MJ4hhVmM1EU9z8okZsAOJ3qVRrbgXlQkdZpEHX
+        lEr5AT6fvRiTPncmm9u43o8WLJbEcQc++q0hS7w=
+X-Google-Smtp-Source: ABdhPJyVNyMADb9W58xn+OhSOhuYbET7JeN/pu726I02NjG4jV0XDS9zxB0OXUHk3Ffsd95hG8WYZFnpzrDBB0nf+Vg=
+X-Received: by 2002:a25:d084:: with SMTP id h126mr29316967ybg.80.1634567748478;
+ Mon, 18 Oct 2021 07:35:48 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:7110:7184:b0:fa:5f5d:c9d3 with HTTP; Mon, 18 Oct 2021
+ 07:35:48 -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <whitemrshannah@gmail.com>
+Date:   Mon, 18 Oct 2021 07:35:48 -0700
+Message-ID: <CAPOLZiy7Ez6mMj4xpmJBGqDytiVja2VuMj4L3oJoS2Wq8-am-g@mail.gmail.com>
+Subject: Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Quentin Monnet wrote:
-> kernel/bpf/preload/Makefile was recently updated to have it install
-> libbpf's headers locally instead of pulling them from tools/lib/bpf. But
-> two items still need to be addressed.
-> 
-> First, the local .gitignore file was not adjusted to ignore the files
-> generated in the new kernel/bpf/preload/libbpf output directory.
-> 
-> Second, the "clean-files" target is now incorrect. The old artefacts
-> names were not removed from the target, while the new ones were added
-> incorrectly. This is because "clean-files" expects names relative to
-> $(obj), but we passed the absolute path instead. This results in the
-> output and header-destination directories for libbpf (and their
-> contents) not being removed from kernel/bpf/preload on "make clean" from
-> the root of the repository.
-> 
-> This commit fixes both issues. Note that $(userprogs) needs not be added
-> to "clean-files", because the cleaning infrastructure already accounts
-> for it.
-> 
-> Cleaning the files properly also prevents make from printing the
-> following message, for builds coming after a "make clean":
-> "make[4]: Nothing to be done for 'install_headers'."
-> 
-> Fixes: bf60791741d4 ("bpf: preload: Install libbpf headers when building")
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
+Dear Friend,
 
-[...]
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
+
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
+Best Regards
+Mrs Aisha Al-Qaddafi
