@@ -2,203 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14B0430FEF
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 07:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2CB43103F
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 08:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhJRFv7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 01:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
+        id S229847AbhJRGRY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 02:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhJRFv4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 01:51:56 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95238C061765
-        for <bpf@vger.kernel.org>; Sun, 17 Oct 2021 22:49:45 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso13681323pjb.4
-        for <bpf@vger.kernel.org>; Sun, 17 Oct 2021 22:49:45 -0700 (PDT)
+        with ESMTP id S229708AbhJRGRY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 02:17:24 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99075C06161C;
+        Sun, 17 Oct 2021 23:15:13 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id o24so292480wms.0;
+        Sun, 17 Oct 2021 23:15:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=6rwEtZ1Zb/VZuvZ9Ty4TZLVT6960nXlgqfxXCvxX4Tk=;
-        b=Pev3csxQaQTkrwhTCrr7tYQsB65VVPyU53VeCEXBl0QUr/YENzAWjt3xqz4VuY7hwz
-         yLa5TvtM1tLiYClOkPBC3ELc2XGTXt7AflP97/8ttptFUDiI52sM/FF/awdNQA1FA7/F
-         BWqS1WMhK1ew3r5UdO+VsiceVhcuAaYZWOPbBb8cM/1BgU3erpmyw1edocXIYfTOlcwg
-         p0fPPF5+gkrV4KRVAwGk02w0r0/KKrOb8dEfQ6EoibNxohOCH/md9i97Ht7qRvV/r4K2
-         EV0GH/3THuUyCANq56o4frDJ/xNg5NSUUG9sVGG8FVnXlwXJ2onL3bW+csMD6W2OcliN
-         UQDw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WQhK9newMuT4ZcfEVTu2O6OOxhG5FSs8pfq23mZQ9b8=;
+        b=IU6s7L+v4s0/VflIrjGqDc+A21kMuoTSuD8fw/5h+PKaJcHoeA0GIjHE/yccgSfss3
+         j/2wa+P8gnqL6Aa9WPzCcZ4eOB1bvmHD6MW4wiRcR6KGbbafNxloYv76HE6sYsABF6iL
+         3IIW3b1BdgKPatNsN3YHj1WciZ2YTWYCsA+xwiAbrLkwnSEJazWr63w59qkkHBdT6Mc5
+         qtNJ4fl61L6stAnOOVlMFk39rhnU1189y8xIoQnXQBFFHQi6NVelT5k2Hl2CVHC0hvpN
+         QBSKmU3wWRMgBbEl0fEjaIvsd7Ii0nqJtesePyWPqKwIIO96lZoeHF3WRatFjI17NkFs
+         +KDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=6rwEtZ1Zb/VZuvZ9Ty4TZLVT6960nXlgqfxXCvxX4Tk=;
-        b=zyK0yuHtPeMZjAQWR0C4itOmxsTekYAoSQS5/UtH4748+qZeHYYAoazK1wFtXY9SOm
-         gxJ37qc5ILRTo4TrFz7JMcvY6BKlVSUkkAqpthm1fZAFcwCEiYQG4ubD4XO2FG8QXH19
-         7WsrrWBSXkbC7Dek1HW+fqNrgclOmWDL8vAb4QxAKw3QhdxROkVMyYAZrC9JnSOMHBpV
-         rzfisBIueC1lawMTiw/dRvPd0iHPdQWm4MRfMNLSzm/lhCVIghnfFIDT7TmBU4m67sZc
-         bUFYprqxLaXgVLeJn61dZemyBNgNYK4PDboKqxhsW0e5cHFtX0C+mGrz9YHRGKL2hxqJ
-         RViw==
-X-Gm-Message-State: AOAM530fe8VzANADwmYvxTx9S7/uqXcFJgqL+wayvCnPf3HZ3P0Nd96l
-        eRY63Eeyb8fkqs4GQH1Tu45dsZpRaqU=
-X-Google-Smtp-Source: ABdhPJxhYreOWM4oXTRILVvFSjCgPe7TD6r5u4iYr/UTp36Dw6uFV5EzNle1SeXfKd7jOG9AS/zrEA==
-X-Received: by 2002:a17:90b:4a8d:: with SMTP id lp13mr31527573pjb.32.1634536185061;
-        Sun, 17 Oct 2021 22:49:45 -0700 (PDT)
-Received: from [10.254.36.135] ([139.177.225.233])
-        by smtp.gmail.com with ESMTPSA id n202sm11706527pfd.160.2021.10.17.22.49.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 22:49:44 -0700 (PDT)
-Message-ID: <6d7246b6-195e-ee08-06b1-2d1ec722e7b2@bytedance.com>
-Date:   Mon, 18 Oct 2021 13:49:38 +0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WQhK9newMuT4ZcfEVTu2O6OOxhG5FSs8pfq23mZQ9b8=;
+        b=x6tH1ujLeoStJujBi0ConT+O6fthZJZ+LjOmVuY8EZ1tVKpx86goxBu3WmJ4p+9WUY
+         AsVNe27Ug20jLpjm95T4l0Uvs11b4i7CpNs8DDhehgRQXQIQSmJL4uYa+wWWgtmglpAg
+         Z1Z/gvZMaMSIknRqIojWzoA/ZMumi1E5gHSCv0OQFesAniGpHoCiltHN7evLH/4T7Ss1
+         c15z7XghEohC38WN8bc4G8N1QiroroyFzi5t8FPwEk1/3BIfWw9Kf9YV0ZFazvR+fRlJ
+         V0brYzykyHyXFyvn3pg2ypcu7aFBhlr0HbKz90i2YSGhWlfFefwuozhxkuZeiYcJmMEi
+         qYrA==
+X-Gm-Message-State: AOAM533AKRSe6lKvz5WAYF3LKSgYhXzX+BUSq22rWIZueH3tOrL2RMig
+        eaViCvt5Ek1L6ZcESrf6fj+YCdHAttWS539o6Zm4b0C5dfw=
+X-Google-Smtp-Source: ABdhPJzIWJApevckci5qatLKjWalU8JmJdnGMPtIihNA04JRK/++WitE4TYuQZePvX7gfpQTma1rFv+7dMmpPjJx4WI=
+X-Received: by 2002:a1c:750b:: with SMTP id o11mr28786227wmc.5.1634537712218;
+ Sun, 17 Oct 2021 23:15:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [External] Re: [PATCH] bpf: use count for prealloc hashtab too
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20211014142554.53120-1-lmb@cloudflare.com> <20211014142554.53120-2-lmb@cloudflare.com>
+In-Reply-To: <20211014142554.53120-2-lmb@cloudflare.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 18 Oct 2021 08:14:59 +0200
+Message-ID: <CAJ+HfNjwYtg+8ZWBNaL08afQJpOQ6m0tUiTjhTtLBBoLDdxAmg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] bpf: define bpf_jit_alloc_exec_limit for riscv JIT
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     nicolas.dichtel@6wind.com, Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20211015090353.31248-1-zhouchengming@bytedance.com>
- <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, kernel-team@cloudflare.com,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2021/10/16 上午3:58, Alexei Starovoitov 写道:
-> On Fri, Oct 15, 2021 at 11:04 AM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
->>
->> We only use count for kmalloc hashtab not for prealloc hashtab, because
->> __pcpu_freelist_pop() return NULL when no more elem in pcpu freelist.
->>
->> But the problem is that __pcpu_freelist_pop() will traverse all CPUs and
->> spin_lock for all CPUs to find there is no more elem at last.
->>
->> We encountered bad case on big system with 96 CPUs that alloc_htab_elem()
->> would last for 1ms. This patch use count for prealloc hashtab too,
->> avoid traverse and spin_lock for all CPUs in this case.
->>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> It's not clear from the commit log what you're solving.
-> The atomic inc/dec in critical path of prealloc maps hurts performance.
-> That's why it's not used.
-> 
-Thanks for the explanation, what I'm solving is when hash table hasn't free
-elements, we don't need to call __pcpu_freelist_pop() to traverse and
-spin_lock all CPUs. The ftrace output of this bad case is below:
+On Thu, 14 Oct 2021 at 16:26, Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> Expose the maximum amount of useable memory from the riscv JIT.
+>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Acked-by: Luke Nelson <luke.r.nels@gmail.com>
 
- 50)               |  htab_map_update_elem() {
- 50)   0.329 us    |    _raw_spin_lock_irqsave();
- 50)   0.063 us    |    lookup_elem_raw();
- 50)               |    alloc_htab_elem() {
- 50)               |      pcpu_freelist_pop() {
- 50)   0.209 us    |        _raw_spin_lock();
- 50)   0.264 us    |        _raw_spin_lock();
- 50)   0.231 us    |        _raw_spin_lock();
- 50)   0.168 us    |        _raw_spin_lock();
- 50)   0.168 us    |        _raw_spin_lock();
- 50)   0.300 us    |        _raw_spin_lock();
- 50)   0.263 us    |        _raw_spin_lock();
- 50)   0.304 us    |        _raw_spin_lock();
- 50)   0.168 us    |        _raw_spin_lock();
- 50)   0.177 us    |        _raw_spin_lock();
- 50)   0.235 us    |        _raw_spin_lock();
- 50)   0.162 us    |        _raw_spin_lock();
- 50)   0.186 us    |        _raw_spin_lock();
- 50)   0.185 us    |        _raw_spin_lock();
- 50)   0.315 us    |        _raw_spin_lock();
- 50)   0.172 us    |        _raw_spin_lock();
- 50)   0.180 us    |        _raw_spin_lock();
- 50)   0.173 us    |        _raw_spin_lock();
- 50)   0.176 us    |        _raw_spin_lock();
- 50)   0.261 us    |        _raw_spin_lock();
- 50)   0.364 us    |        _raw_spin_lock();
- 50)   0.180 us    |        _raw_spin_lock();
- 50)   0.284 us    |        _raw_spin_lock();
- 50)   0.226 us    |        _raw_spin_lock();
- 50)   0.210 us    |        _raw_spin_lock();
- 50)   0.237 us    |        _raw_spin_lock();
- 50)   0.333 us    |        _raw_spin_lock();
- 50)   0.295 us    |        _raw_spin_lock();
- 50)   0.278 us    |        _raw_spin_lock();
- 50)   0.260 us    |        _raw_spin_lock();
- 50)   0.224 us    |        _raw_spin_lock();
- 50)   0.447 us    |        _raw_spin_lock();
- 50)   0.221 us    |        _raw_spin_lock();
- 50)   0.320 us    |        _raw_spin_lock();
- 50)   0.203 us    |        _raw_spin_lock();
- 50)   0.213 us    |        _raw_spin_lock();
- 50)   0.242 us    |        _raw_spin_lock();
- 50)   0.230 us    |        _raw_spin_lock();
- 50)   0.216 us    |        _raw_spin_lock();
- 50)   0.525 us    |        _raw_spin_lock();
- 50)   0.257 us    |        _raw_spin_lock();
- 50)   0.235 us    |        _raw_spin_lock();
- 50)   0.269 us    |        _raw_spin_lock();
- 50)   0.368 us    |        _raw_spin_lock();
- 50)   0.249 us    |        _raw_spin_lock();
- 50)   0.217 us    |        _raw_spin_lock();
- 50)   0.174 us    |        _raw_spin_lock();
- 50)   0.173 us    |        _raw_spin_lock();
- 50)   0.161 us    |        _raw_spin_lock();
- 50)   0.282 us    |        _raw_spin_lock();
- 50)   0.264 us    |        _raw_spin_lock();
- 50)   0.160 us    |        _raw_spin_lock();
- 50)   0.692 us    |        _raw_spin_lock();
- 50)   0.185 us    |        _raw_spin_lock();
- 50)   0.157 us    |        _raw_spin_lock();
- 50)   0.168 us    |        _raw_spin_lock();
- 50)   0.205 us    |        _raw_spin_lock();
- 50)   0.189 us    |        _raw_spin_lock();
- 50)   0.276 us    |        _raw_spin_lock();
- 50)   0.171 us    |        _raw_spin_lock();
- 50)   0.390 us    |        _raw_spin_lock();
- 50)   0.164 us    |        _raw_spin_lock();
- 50)   0.170 us    |        _raw_spin_lock();
- 50)   0.188 us    |        _raw_spin_lock();
- 50)   0.284 us    |        _raw_spin_lock();
- 50)   0.191 us    |        _raw_spin_lock();
- 50)   0.412 us    |        _raw_spin_lock();
- 50)   0.285 us    |        _raw_spin_lock();
- 50)   0.296 us    |        _raw_spin_lock();
- 50)   0.315 us    |        _raw_spin_lock();
- 50)   0.239 us    |        _raw_spin_lock();
- 50)   0.225 us    |        _raw_spin_lock();
- 50)   0.258 us    |        _raw_spin_lock();
- 50)   0.228 us    |        _raw_spin_lock();
- 50)   0.240 us    |        _raw_spin_lock();
- 50)   0.297 us    |        _raw_spin_lock();
- 50)   0.216 us    |        _raw_spin_lock();
- 50)   0.213 us    |        _raw_spin_lock();
- 50)   0.225 us    |        _raw_spin_lock();
- 50)   0.223 us    |        _raw_spin_lock();
- 50)   0.287 us    |        _raw_spin_lock();
- 50)   0.258 us    |        _raw_spin_lock();
- 50)   0.295 us    |        _raw_spin_lock();
- 50)   0.262 us    |        _raw_spin_lock();
- 50)   0.325 us    |        _raw_spin_lock();
- 50)   0.203 us    |        _raw_spin_lock();
- 50)   0.325 us    |        _raw_spin_lock();
- 50)   0.255 us    |        _raw_spin_lock();
- 50)   0.325 us    |        _raw_spin_lock();
- 50)   0.216 us    |        _raw_spin_lock();
- 50)   0.232 us    |        _raw_spin_lock();
- 50)   0.804 us    |        _raw_spin_lock();
- 50)   0.262 us    |        _raw_spin_lock();
- 50)   0.242 us    |        _raw_spin_lock();
- 50)   0.271 us    |        _raw_spin_lock();
- 50)   0.175 us    |        _raw_spin_lock();
- 50) + 61.026 us   |      }
- 50) + 61.575 us   |    }
- 50)   0.051 us    |    _raw_spin_unlock_irqrestore();
- 50) + 64.863 us   |  }
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+
+> ---
+>  arch/riscv/net/bpf_jit_core.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.=
+c
+> index fed86f42dfbe..0fee2cbaaf53 100644
+> --- a/arch/riscv/net/bpf_jit_core.c
+> +++ b/arch/riscv/net/bpf_jit_core.c
+> @@ -166,6 +166,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog=
+ *prog)
+>         return prog;
+>  }
+>
+> +u64 bpf_jit_alloc_exec_limit(void)
+> +{
+> +       return BPF_JIT_REGION_SIZE;
+> +}
+> +
+>  void *bpf_jit_alloc_exec(unsigned long size)
+>  {
+>         return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START=
+,
+> --
+> 2.30.2
+>
