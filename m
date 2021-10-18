@@ -2,124 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA71431286
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 10:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2A343128A
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 10:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhJRI4z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 04:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55004 "EHLO
+        id S231372AbhJRI6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 04:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbhJRI4z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:56:55 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0417CC06161C
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 01:54:44 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id e19so7641984ljk.12
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 01:54:43 -0700 (PDT)
+        with ESMTP id S231338AbhJRI6P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 04:58:15 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C22C06161C
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 01:56:05 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id kk10so11757137pjb.1
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 01:56:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=fwxHCYtOiMXXRgcphb0lrlnoR0SP6t9eqPMjpVE6f6M=;
-        b=kbashtIZXWPQ8oUjpqFcfdpaGw+Ny4LRvIDt6rFvzvYM1ld2Qo/xgo19D7HFrb+Wp+
-         RX9hZUcldbaXrVDJNYkRXcYKBtpNt5lGFHIfpTMraEfVUTe4uevMbBhe+pYXZL9+1+Dv
-         rj2ZSCAUsyLN0dOkjlH617+RkuJcE7qJNt6tM=
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=U+wvXPwvhucTVlxnfZp7fdTxV1dqI6RrlYLlpej7n+A=;
+        b=MNdN7D3A6IJ9IpEnrZK0wQ5+brpRm9T0KBJNjcU9HcD4RFx1rlQtjBDRO+0VA0uqa2
+         y6c36Ke5B+OaHyVH0gymIikifvVrbl2oJkQkkkXyXUsrcKBNaebBUadVPLVXNw/Y1JOi
+         4IkP56jiDHwMkn3gzmLobAyRxVS18cPcWVN8X70gamUpX9M3qMkP5AHwyutNXPnYfz/i
+         YEaE1srzdpeXm6qciQyraHqD5fUVzvBU4ssLQyOJ+YSGngFNYLEuxnX8G9PDV2CrFEHa
+         Blv1EYWBSbZDnLd0T45uvnjApCiBZYPsKKPEq5sFNTPvn7J37oWxGDoPEgTxZAYGF8l4
+         sVlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=fwxHCYtOiMXXRgcphb0lrlnoR0SP6t9eqPMjpVE6f6M=;
-        b=pKEes7rsdWX1oEiuAbNKDQG46MUCxd0w9g/1tomgArN0QzUf9wILUjj/kKWygjYDbR
-         Krllus9TcUzLzxMO9T+r98KtWyr2s3OLpmfzVQVbPZ5gsXXG/DIBr3GTf2nAfEQJOjgm
-         Wj2yHJ1DpYqBjRCWdgNr6BAIIkWgV4K4NTrl1mG/0el8MRfkDvXsyBu264lSlSEsbr+S
-         1Lld0KcKV4PRqcBN5u0iMwh0P05fMD7M0wZK1nq94PNEzV43OY4zt9Kxo+pXh+q4RT6M
-         Ys9W8kEAWoUILmgtniWf1mKjg9UHfqrTL+Jcy7sVkQAWzx3/zxD5mHhzl3Mx0QpKMVV0
-         RT6w==
-X-Gm-Message-State: AOAM53132quvuS3rVyOOYTXftvaVrbQiZjxAnD0Fz6ZBeQDMrs5RtOCZ
-        CLbQ+/qIPTDnR06SaXQxOHpkTrJqKsxLsA==
-X-Google-Smtp-Source: ABdhPJyfaE9g6S9kKzUHMA+eo2hQUSfisQ6L6AlLLx89D5aS0HTq+eVkAp0RRn1NvBf4rECuxX1IoQ==
-X-Received: by 2002:a2e:8696:: with SMTP id l22mr22840147lji.82.1634547282240;
-        Mon, 18 Oct 2021 01:54:42 -0700 (PDT)
-Received: from cloudflare.com ([2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
-        by smtp.gmail.com with ESMTPSA id t19sm1451928lfl.30.2021.10.18.01.54.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 01:54:41 -0700 (PDT)
-References: <20211015080142.43424-1-liujian56@huawei.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Liu Jian <liujian56@huawei.com>
-Cc:     john.fastabend@gmail.com, daniel@iogearbox.net, lmb@cloudflare.com,
-        edumazet@google.com, davem@davemloft.net, kuba@kernel.org,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] bpf, sockmap: Do not read sk_receive_queue in
- tcp_bpf_recvmsg if strparser enabled
-In-reply-to: <20211015080142.43424-1-liujian56@huawei.com>
-Date:   Mon, 18 Oct 2021 10:54:41 +0200
-Message-ID: <87v91ug1bi.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=U+wvXPwvhucTVlxnfZp7fdTxV1dqI6RrlYLlpej7n+A=;
+        b=nGCxJD4OPT6WO+xzlbVzi89zmcEuIY/9PJMws1yXiTFTj6vQMlKGLsETCg1J4A+V2d
+         +iZy3JFFypo4MDIsdY+o6xXpYPfZLuACjYDs4rIRpIoF405J58veQn/J9asZcqTJpcEO
+         QAFWKFSvBD4d/QjeisD9xJ07WLeNyUsSw0GGmVP+KCuNLLrWejBiiNwiUy/fmt+pN58u
+         887M9nVMnZWS+jFxpnIYuJDNMi0V6INeUmtPQQIz+p48zmCrm+an9u08lTeXWOrbjdGf
+         lCADVhCp0bZ3eRfye0Zr07kLEW2GQyf6ArsHip0StQoOFf6BeM3JFP0H4iLpzR3r/3Gh
+         zPjA==
+X-Gm-Message-State: AOAM5314lhiw4+lvsy/mNvWtlEmtvQRDdl22wMESGS48BJf7NkkkbIaH
+        IkLTLwDt9RjntjXECbAJhHW2NfMYSJvtWKDyq/A=
+X-Google-Smtp-Source: ABdhPJy5ftVhB3OwVsAEkfW2zBOikKz5dUqtHYB9CFBNXF7TdJ2h5I9fw9KuqI30/l3rGsJTUWN/AmHIMciTnLSQs60=
+X-Received: by 2002:a17:902:d4d1:b0:13f:af7:9068 with SMTP id
+ o17-20020a170902d4d100b0013f0af79068mr26001887plg.20.1634547364677; Mon, 18
+ Oct 2021 01:56:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:a05:6a10:178f:0:0:0:0 with HTTP; Mon, 18 Oct 2021 01:56:04
+ -0700 (PDT)
+Reply-To: mauhin11@gmail.com
+From:   Maureen Hinckley <addialexy@gmail.com>
+Date:   Mon, 18 Oct 2021 11:56:04 +0300
+Message-ID: <CAHUzaZ1onNBXAddKYj94cVaP_pisc=xZ8a7woJJr9vnTBGE_aQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 10:01 AM CEST, Liu Jian wrote:
-> If the strparser function of sk is turned on, all received data needs to
-> be processed by strparser first.
->
-> Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> ---
+--=20
+Hello,
 
-[...]
+I am Maureen Hinckley and my foundation is donating ($2.2 Million.
+Dollars) to you. Contact us via my email at (mauhin13@gmail.com) for
+further details.
 
->  net/core/skmsg.c      | 5 +++++
->  net/ipv4/tcp_bpf.c    | 9 ++++++---
->  3 files changed, 17 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 94e2a1f6e58d..25e92dff04aa 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -390,6 +390,7 @@ void sk_psock_stop(struct sk_psock *psock, bool wait);
->  int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock);
->  void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock);
->  void sk_psock_stop_strp(struct sock *sk, struct sk_psock *psock);
-> +bool sk_psock_strparser_started(struct sock *sk);
->  #else
->  static inline int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock)
->  {
-> @@ -403,6 +404,11 @@ static inline void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
->  static inline void sk_psock_stop_strp(struct sock *sk, struct sk_psock *psock)
->  {
->  }
-> +
-> +static inline bool sk_psock_strparser_started(struct sock *sk)
-> +{
-> +	return false;
-> +}
->  #endif
->  
->  void sk_psock_start_verdict(struct sock *sk, struct sk_psock *psock);
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index e85b7f8491b9..dd64ef854f3e 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -1105,6 +1105,11 @@ void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
->  	sk->sk_write_space = sk_psock_write_space;
->  }
->  
-> +bool sk_psock_strparser_started(struct sock *sk)
-> +{
-> +	return sk->sk_data_ready == sk_psock_strp_data_ready;
-
-What if kTLS is configured on the socket? I think this check won't work then.
-
-> +}
-> +
->  void sk_psock_stop_strp(struct sock *sk, struct sk_psock *psock)
->  {
->  	if (!psock->saved_data_ready)
-
-[...]
+Best Regards,
+Mrs. Maureen Hinckley,
+Copyright =C2=A92021 The Maureen Hinckley Foundation All Rights Reserved.
