@@ -2,90 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17314325C7
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 19:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4404327B1
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 21:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhJRSAp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 14:00:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42604 "EHLO mail.kernel.org"
+        id S233049AbhJRTdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 15:33:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229836AbhJRSAo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:00:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7426760F02;
-        Mon, 18 Oct 2021 17:58:32 +0000 (UTC)
+        id S232659AbhJRTd3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:33:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C68BB6128B;
+        Mon, 18 Oct 2021 19:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634579913;
-        bh=ge+eIkzzAkuGhHb3uX/+iTHVZpyor7eLDw73yDW8zVk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J0b+jKDJTxhPz+zxQoRFENjkyEms1lsDQCvHNboAWtZ6smpjRdU/iVYJlJ0NXBdVi
-         TesR83//fy7mZx9OIVtyK5rIvkS0La9w/4rK6iWfVI0zApxa1yL9Kngw5MCe7poFNt
-         cQa5MYhELZI4bXksNPVQe0wZXBRVYQPb8kPQra+POBwVRVPFTGn/71UYLayKsWXdPf
-         1pG0W6vK7MD2YI/Cwn+fyGwzKTfJNgbvlhApP12w0AsD+td4nfFf83Jm6QXq1LB1Za
-         Qq0TueVhWGBEfQAF8CqPGKrKjobdBQ/whNiW/IP7WoHx3t7Yi5nem0+JoGL2gpcBxL
-         LAVnkCCYUkGrg==
-Date:   Mon, 18 Oct 2021 10:58:31 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@toke.dk>
-Cc:     Vlad Buslov <vladbu@nvidia.com>, Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com, joamaki@gmail.com,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>
-Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
-Message-ID: <20211018105831.77cde2ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87lf2qi63r.fsf@toke.dk>
-References: <0000000000005639cd05ce3a6d4d@google.com>
-        <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
-        <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
-        <ygnh5ytubfa4.fsf@nvidia.com>
-        <20211018084201.4c7e5be1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87lf2qi63r.fsf@toke.dk>
+        s=k20201202; t=1634585477;
+        bh=kL+xvgtJucVN4cFRoEIBRAEL92uNVUroLxqy6YYCqFE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Zwf9r/8UZz6gNf2WZx2ZtEDDZxD6hhqa7tf+X5YVgqhSzDKboXg+OEL0sBsjy7HZh
+         YxCy1HQaFDKXUEHEr5JNNIoZOrLjScbSXvdWkjiX7EHZzc2M7Wz741RgL4n6axrXT3
+         RiyxwIETKFqOdBCqcoqHk2tPVYrSCYPZz4BHXL2LMf+Op5stL7WhmJxP0k8sVvkukh
+         zoD6kI6BzDp2XNgim1i3Y5x68gj6KVRMdi6Vt4sceyxqcIZP8xatc8bwHuusX1xLtJ
+         W5pLwJI5C1pQWBb+ymmst3p2WDsEyOMe/llZdbWY9SESUoJCYxIu55D4VPTwUXUMW8
+         xJWZyMn/m8qXA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Simon Horman <simon.horman@corigine.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        oss-drivers@corigine.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] nfp: bpf: Fix bitwise vs. logical OR warning
+Date:   Mon, 18 Oct 2021 12:31:01 -0700
+Message-Id: <20211018193101.2340261-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.1.637.gf443b226ca
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 18 Oct 2021 19:40:40 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Jakub Kicinski <kuba@kernel.org> writes:
->=20
-> > On Mon, 18 Oct 2021 17:04:19 +0300 Vlad Buslov wrote: =20
-> >> We got a use-after-free with very similar trace [0] during nightly
-> >> regression. The issue happens when ip link up/down state is flipped
-> >> several times in loop and doesn't reproduce for me manually. The fact
-> >> that it didn't reproduce for me after running test ten times suggests
-> >> that it is either very hard to reproduce or that it is a result of some
-> >> interaction between several tests in our suite.
-> >>=20
-> >> [0]:
-> >>=20
-> >> [ 3187.779569] mlx5_core 0000:08:00.0 enp8s0f0: Link up
-> >>  [ 3187.890694] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>  [ 3187.892518] BUG: KASAN: use-after-free in __list_add_valid+0xc3/0x=
-f0
-> >>  [ 3187.894132] Read of size 8 at addr ffff8881150b3fb8 by task ip/119=
-618 =20
-> >
-> > Hm, not sure how similar it is. This one looks like channel was freed
-> > without deleting NAPI. Do you have list debug enabled? =20
->=20
-> Well, the other report[0] also kinda looks like the NAPI thread keeps
-> running after it should have been disabled, so maybe they are in fact
-> related?
->=20
-> [0] https://lore.kernel.org/r/000000000000c1524005cdeacc5f@google.com
+A new warning in clang points out two places in this driver where
+boolean expressions are being used with a bitwise OR instead of a
+logical one:
 
-Could be, if napi->state gets corrupted it may lose NAPI_STATE_LISTED.
+drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+        reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                             ||
+drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: note: cast one or both operands to int to silence this warning
+drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+        reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                             ||
+drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: note: cast one or both operands to int to silence this warning
+2 errors generated.
 
-719c57197010 ("net: make napi_disable() symmetric with enable")
-3765996e4f0b ("napi: fix race inside napi_enable")
-is the only thing that comes to mind, but they look fine to me.
+The motivation for the warning is that logical operations short circuit
+while bitwise operations do not. In this case, it does not seem like
+short circuiting is harmful so implement the suggested fix of changing
+to a logical operation to fix the warning.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1479
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/net/ethernet/netronome/nfp/nfp_asm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_asm.c b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
+index 2643ea5948f4..154399c5453f 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_asm.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
+@@ -196,7 +196,7 @@ int swreg_to_unrestricted(swreg dst, swreg lreg, swreg rreg,
+ 	}
+ 
+ 	reg->dst_lmextn = swreg_lmextn(dst);
+-	reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
++	reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
+ 
+ 	return 0;
+ }
+@@ -277,7 +277,7 @@ int swreg_to_restricted(swreg dst, swreg lreg, swreg rreg,
+ 	}
+ 
+ 	reg->dst_lmextn = swreg_lmextn(dst);
+-	reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
++	reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
+ 
+ 	return 0;
+ }
+
+base-commit: 041c61488236a5a84789083e3d9f0a51139b6edf
+-- 
+2.33.1.637.gf443b226ca
 
