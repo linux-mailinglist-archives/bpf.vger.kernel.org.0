@@ -2,148 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0627C4323CD
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 18:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D03432558
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 19:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhJRQ3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 12:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S234181AbhJRRtw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 13:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbhJRQ3J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:29:09 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D058C06161C;
-        Mon, 18 Oct 2021 09:26:58 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id m20so16929335iol.4;
-        Mon, 18 Oct 2021 09:26:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=offus+2ar6u0y56JRk1lmDPVUgFh2hpnxwvio9DDSkg=;
-        b=ZpleY+Mg375E2NzQdCafhH3vCAVhN3audaqcw/mWIMZrNOyQyslIs5KNAkZUmvYG0q
-         SUzzZUruNqQ6ugogCiHB5p3aa9cPV4dAyhOkHR0/YBUSfJsSNRz0rzIXJKPA2YaVkFso
-         GGpcbyR52p+mc7dvzDP5CKb49+inh412KdCoeJeZ/1SMBGlUrhlfDkdcmvjDIVhnBOtO
-         0qmF7/HxrXfufLbm/Wo4Z5dFiZ8umxk1IfOK6yJ+lY5YwEiK5ipw0xGzBSyO0ISAqNIv
-         AdMmc62IHivW7CFdW9fX6bEYDAosYdKqJmpjV3pF+Cgdq3I8Q9tniHQGy9DppebpjhNP
-         johw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=offus+2ar6u0y56JRk1lmDPVUgFh2hpnxwvio9DDSkg=;
-        b=ZQ/QylqyucznaiAtT22JnaH8ZSZN5QNZhWtVBC0it+KcImF3bLyjSduXO967drcn3J
-         I0AgoLXX/jcBXcOtdk2tBKN/LqEspQ6iuxhWtW3Ch7enAeB/fXFraeUtHDko8NZ2jLbY
-         k0omWbm79RcIBcWo2L5iKWDkh9PwudxVNlvAGYR9OWyxL59L6zVmlbNO+GxCySej4AVM
-         tWXR+N30/+dO68TamfnzB7hveqe/IVkTXjdA2hhm87488WJGw8fu0iA0hjm75ObEE194
-         eUgAo6s9ncVgJEmDwA1OpLY1ZU3pannpFcNqHvUNCVgpE+dE8aShqLo7nga0JUi8rzfX
-         GQ5A==
-X-Gm-Message-State: AOAM531xNYpt0epNFSG0nhvZ2Z8yF+P+V7Kwrz9ki5qEWGZ/pr03h4ZQ
-        wYvu+rYrnp0ip6OXx55lXIY=
-X-Google-Smtp-Source: ABdhPJwTaJyTZxdcPRPvuecXIBXcsXXAZiARQZZ0xn4z3qI/THeN4y2v62gMUUsZ8FRrv+wxDxKxrg==
-X-Received: by 2002:a05:6602:2dd2:: with SMTP id l18mr15508118iow.86.1634574417569;
-        Mon, 18 Oct 2021 09:26:57 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id d4sm7492970ilv.3.2021.10.18.09.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:26:57 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 09:26:49 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Qing Wang <wangqing@vivo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S234155AbhJRRtw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 13:49:52 -0400
+X-Greylist: delayed 417 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Oct 2021 10:47:41 PDT
+Received: from mail.toke.dk (mail.toke.dk [IPv6:2a0c:4d80:42:2001::664])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0810EC061745;
+        Mon, 18 Oct 2021 10:47:40 -0700 (PDT)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+        t=1634578840; bh=FVM/cjw4IBkLaXSB40QytfJFa5MUoqqQ7l3nk9AgC3I=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=xKbLdwwt5RszbRAxplVhNJWjebgIvvIsPRXd/VOlCoLkrLCS8bySl4O14YbA73KAN
+         eREHNsU5xctMI5Rl7DP3Hi9/tn0Oz3sqbm/hgMH/0cn6ODeXZTYUTrvr+jVaLqhBeW
+         ydpVLaXuBaweLDwzDRFdJgOfWkYixdE1GEZDvyUDIs6HfGDAMcPtF31K/kBLhcwCx/
+         6l0Ze5QxWKTK5FeU6TrLxrLqXjwslIr7rQvoI/8YnkwsmhB17Ge9GNoWFOMUgw2Xma
+         VWVy+xO3JY+P64uSG+lLM98ZI6aRc5Tm6eM98wxXfNkF9Lt0SCdg2VGJcZOxjTjFVy
+         LIg7R3hwQCn8g==
+To:     Jakub Kicinski <kuba@kernel.org>, Vlad Buslov <vladbu@nvidia.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Message-ID: <616da04982886_1eb12083d@john-XPS-13-9370.notmuch>
-In-Reply-To: <1634556651-38702-1-git-send-email-wangqing@vivo.com>
-References: <1634556651-38702-1-git-send-email-wangqing@vivo.com>
-Subject: RE: [PATCH V2] net: bpf: switch over to memdup_user()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com, joamaki@gmail.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>
+Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
+In-Reply-To: <20211018084201.4c7e5be1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <0000000000005639cd05ce3a6d4d@google.com>
+ <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
+ <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
+ <ygnh5ytubfa4.fsf@nvidia.com>
+ <20211018084201.4c7e5be1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Date:   Mon, 18 Oct 2021 19:40:40 +0200
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87lf2qi63r.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Qing Wang wrote:
-> This patch fixes the following Coccinelle warning:
-> 
-> net/bpf/test_run.c:361:8-15: WARNING opportunity for memdup_user
-> net/bpf/test_run.c:1055:8-15: WARNING opportunity for memdup_user
-> 
-> Use memdup_user rather than duplicating its implementation
-> This is a little bit restricted to reduce false positives
-> 
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
-> ---
->  net/bpf/test_run.c | 21 ++++++---------------
->  1 file changed, 6 insertions(+), 15 deletions(-)
+Jakub Kicinski <kuba@kernel.org> writes:
 
-LGTM, but subject line should be '[PATCH bpf-next v2]' there is no reason
-to push to fixes trees here.
+> On Mon, 18 Oct 2021 17:04:19 +0300 Vlad Buslov wrote:
+>> We got a use-after-free with very similar trace [0] during nightly
+>> regression. The issue happens when ip link up/down state is flipped
+>> several times in loop and doesn't reproduce for me manually. The fact
+>> that it didn't reproduce for me after running test ten times suggests
+>> that it is either very hard to reproduce or that it is a result of some
+>> interaction between several tests in our suite.
+>> 
+>> [0]:
+>> 
+>> [ 3187.779569] mlx5_core 0000:08:00.0 enp8s0f0: Link up
+>>  [ 3187.890694] ==================================================================
+>>  [ 3187.892518] BUG: KASAN: use-after-free in __list_add_valid+0xc3/0xf0
+>>  [ 3187.894132] Read of size 8 at addr ffff8881150b3fb8 by task ip/119618
+>
+> Hm, not sure how similar it is. This one looks like channel was freed
+> without deleting NAPI. Do you have list debug enabled?
 
-Also might be worth noting that the original kzalloc could have just been
-a kalloc because copy_from_user will zero any extra bytes.
+Well, the other report[0] also kinda looks like the NAPI thread keeps
+running after it should have been disabled, so maybe they are in fact
+related?
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+-Toke
 
-> 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 5296087..fbda8f5
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -358,13 +358,9 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
->  		return -EINVAL;
->  
->  	if (ctx_size_in) {
-> -		info.ctx = kzalloc(ctx_size_in, GFP_USER);
-> -		if (!info.ctx)
-> -			return -ENOMEM;
-> -		if (copy_from_user(info.ctx, ctx_in, ctx_size_in)) {
-> -			err = -EFAULT;
-> -			goto out;
-> -		}
-> +		info.ctx = memdup_user(ctx_in, ctx_size_in);
-> +		if (IS_ERR(info.ctx))
-> +			return PTR_ERR(info.ctx);
->  	} else {
->  		info.ctx = NULL;
->  	}
-> @@ -392,7 +388,6 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
->  	    copy_to_user(&uattr->test.retval, &info.retval, sizeof(u32)))
->  		err = -EFAULT;
->  
-> -out:
->  	kfree(info.ctx);
->  	return err;
->  }
-> @@ -1052,13 +1047,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
->  		return -EINVAL;
->  
->  	if (ctx_size_in) {
-> -		ctx = kzalloc(ctx_size_in, GFP_USER);
-> -		if (!ctx)
-> -			return -ENOMEM;
-> -		if (copy_from_user(ctx, ctx_in, ctx_size_in)) {
-> -			err = -EFAULT;
-> -			goto out;
-> -		}
-> +		ctx = memdup_user(ctx_in, ctx_size_in);
-> +		if (IS_ERR(ctx))
-> +			return PTR_ERR(ctx);
->  	}
->  
->  	rcu_read_lock_trace();
-> -- 
-> 2.7.4
-> 
-
-
+[0] https://lore.kernel.org/r/000000000000c1524005cdeacc5f@google.com
