@@ -2,173 +2,497 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB7D431753
-	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 13:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A85431856
+	for <lists+bpf@lfdr.de>; Mon, 18 Oct 2021 14:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhJRLdO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 07:33:14 -0400
-Received: from mail-eopbgr1300127.outbound.protection.outlook.com ([40.107.130.127]:9876
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229491AbhJRLdO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:33:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VUWPYV3BR1m0LHnMPIAlryWU3Ol8ulFCl00P0u3RpbcSyUgVlD0YIsIuKwY/xGVc7oVZlRUpOULc8hyEFquhmQr7Bian7h7BP9s7EsCgbY3guZZsZ9/TE5gV0MPMuKMBMp8ik5fV9dIGNV9gKwahP8csJs4NERaJnxR/MXcl3oBl2/wIeBK2MtWrD89eDVldQIW2t2qXQ5WTgMAUwLO59dkRoz8QaHlI3O9zahV7PcggEQUVLPM6gc8vqa7V/T8piSPf7tqW5UvVXyMkKQddLONNUqmwEqpELY/t4xl8TNT2aP6YR4SAEq2FeuOJKUEu35Vp1JgpTW7SY2BtpGzLYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dlhWNaFd6qORY7uFhL5+jFdI7EssNdoefkfCIBPICc4=;
- b=Mpl6F80ktrP83Ep3W7x9XoHvjqh6aAJ/8ZT7L4Myz8CPTESpCerY5g8Kq0DZlGMQwIlBHJAGU83FAYvGPUHDuzEXrpW8orTZFO5MPBToE8ZOl79sRkF9h9vn3teibv1KOpd0XBXwnsJNJk9QONjT62dX+9XCUn4aSbIfo2Wo3YcubJ87uLktr0Jj+xeBeOIZJvs08T+Fi0XXfZQlvvTmghbtOC96l/w3Wram5y+QAQovsKl1v9CGcBsjhjlmlzN1jCJK1Dyw9aCBEsgNFYEGEHzOsl8+e9E7jKNyzppD7q6ljppGWVR3ri9oV4zjrBfM4MlukhtMy/6thsW5pNN9Lg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dlhWNaFd6qORY7uFhL5+jFdI7EssNdoefkfCIBPICc4=;
- b=pDYYgI0BBdxsN+83yW8GsNbovuyA4oBXXBtLvqoWqkEUw/BQ7wjYXes8AWjclyyVAqdFyBMRWN/mdnpl8LeeGqVRTCa3TVKP5jq8cdhSldXV/xikhhI5EdVYjNx96y5ZNhkE14MXSkYp1NrU6DSeh0XGBnyK9+2M/RR9D1JPkBE=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB2986.apcprd06.prod.outlook.com (2603:1096:100:2e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Mon, 18 Oct
- 2021 11:30:59 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
- 11:30:59 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S231165AbhJRMCd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 08:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhJRMCd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:02:33 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3A4C06161C
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 05:00:22 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id r184so528742ybc.10
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 05:00:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=juraMBvA38BOSqrDHG4pfgD29AL90mbtQe/6m1BfeOU=;
+        b=pNTPFiaFHQMpc+2laDxxKKqScPqQ3gQiGFabal20suvJImCSPjxkwXN88cUvA+9PoZ
+         bJtkFGkFdMBxUiNd5tQcvJLe4j8hV4wpb12FKD2WYqYvssgdXmBMhliVvwUW62cNtqwK
+         kBYJxBzg+ei8GpQNVyuy6VZ/Oz2bL7IrSUISaE4rhpgNe+hFxr33WcNrksHs4GjVdo+x
+         S/vFykY+Bi3zu8wrjkj01+lcmhvcIrgPwSuywd938rVR1M3cnM29CnBGvtL3Kp8TTbDx
+         KEj5feKydD8mWke4IyYZrv6PkVICScOEHXVcjV26wsBnHfNgXETuxJJXgl+ZdAbegp94
+         kmgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=juraMBvA38BOSqrDHG4pfgD29AL90mbtQe/6m1BfeOU=;
+        b=LTVn64/JM+ZTkbtWk1jYfSylKV5G6swIvgAD6u5mWtEMP+EehHHgEUqY6A1TN3UgPo
+         ns1z8BydVUdLO9JmP+0pPOcwyJcw/PSCHR14OVwJoRD6llZZwQfR9I08O4SMcVXou/vb
+         7kiAgcu1Y2lZb3lfhj44rtW8SSf5v5XolYvetnhrAk7z86htgr01OqlZgfC+jismxATJ
+         m3OoMztKW8YXC0Zbjp/QF9DJV8uaphdJBcCVuo2O5qR0FjqF1ccU3SRPB065amH91L8+
+         ytevJo4727WfeKpOrUHtxyGdf4rBd2XFjIgxjejY/TDozblnykgAA8/a6OKlFsMF/vnK
+         HdQg==
+X-Gm-Message-State: AOAM5309D8lk/0aVoOPDvoxtNNgkJOml/dJ0/3Ak4qyMXm3txqrHZCQc
+        4ea8JVYMBGHFPo9nMBH8syeUB5FKheVlSdRBZifZVw==
+X-Google-Smtp-Source: ABdhPJzKUbx+7gIqeTHqFtFJ8oo2KH+IFpj8ViurP6RvUHDhxuMUxzxHnZUsWVNxcmb0z56ydlKJYvus3DRHMfoT62U=
+X-Received: by 2002:a05:6902:120e:: with SMTP id s14mr33838372ybu.161.1634558419979;
+ Mon, 18 Oct 2021 05:00:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <1634178930-4067-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1634178930-4067-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Mon, 18 Oct 2021 14:00:08 +0200
+Message-ID: <CAM1=_QSaRFomxCGUCyXWZp4vxfCagrFTvYOVw_hqofEYz6UDAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5] test_bpf: Add module parameter test_suite
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH V2] net: bpf: switch over to memdup_user()
-Date:   Mon, 18 Oct 2021 04:30:48 -0700
-Message-Id: <1634556651-38702-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR0401CA0011.apcprd04.prod.outlook.com
- (2603:1096:202:2::21) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
-MIME-Version: 1.0
-Received: from ubuntu.localdomain (103.220.76.181) by HK2PR0401CA0011.apcprd04.prod.outlook.com (2603:1096:202:2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.16 via Frontend Transport; Mon, 18 Oct 2021 11:30:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 235f7320-2875-4233-7138-08d9922ac1d8
-X-MS-TrafficTypeDiagnostic: SL2PR06MB2986:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB29861BB79614A6783F2FAA95BDBC9@SL2PR06MB2986.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2umuLxo0HDiI1jP65GVdxLMg6QX4sNBT7I+/87vndh5JJ0xjUa9s1AeGpvRKuN8J69S7A2oykOdP7PCvZTkjoQ3vR3k/Uu1bZNgfuOiF4EDhvmahyL7qexURRtksVBCAZa086Kdo+JQI7TQ+1mmb1oF7lXQBva/4FVzrr3GH9BF7sLTMUFQYdXrLXfYLFcCMXABpn9673juCKIJSUPOoadN5tRHk/QNVVNj1uSttBmx0trppQttZGlhtHIAcw6bywVW1zHwot8EjW0DM1M1Maa3uVPpDLt9ny7g2iV2ve7E8ODJrJbH9teECtOnOfyntkeNSwEUGRHkTiF0MevmLt5Ju1U5b4Px60EuciyMYK9oF+ej/af/+qo5q1/PFcMX2UZZbQoDRoL/8B6C1T79pICCZ7+QKzkNaFb/w/C2rx/t/OzmITzJVwcWEWiBSErIhOfhoewRDd6LzPkzX9at5ahvw35b86lyEe5ZUE3a4/vW9smDA2UUhyIOUouR5Phrv9CLHwLh5nOoOYJf3Fi92gHYBSdwybVPks/p1+9bHzIBw1nF/brNsGhsjN8rG+8WiREaXIPnA7vjkeKdy83cGT0F0KXAYbQ0Jw9xjyMCVP4LG6twL/y+Xcntivs/Ye/aXSmlKCLy51v7SOPYi+dqkRgJ6tEV7neR/wVct7sw/qJLb2SrefAomV2YLyO4GRF/pGe0yCdLA+MjLi+JaVYXR8geXgf4UsE34qbzrgGcglTY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(2616005)(956004)(107886003)(5660300002)(8676002)(8936002)(83380400001)(26005)(7416002)(86362001)(110136005)(66476007)(921005)(36756003)(4326008)(186003)(66556008)(66946007)(6512007)(6486002)(316002)(38350700002)(508600001)(2906002)(6506007)(52116002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Vju7zFr3rcn8+DJvIMk02a2Ruuf91tEZdYqKKUUZ5rB9KBt2PmLdYGGxhXax?=
- =?us-ascii?Q?YNVGb+Fe3fzokn8qTYFygK04Ngfw5MJTPrhUjXw+n+yMVak17GDU5ofvo2a2?=
- =?us-ascii?Q?dS81J+WQ/GhFLXCkpKrGN2h4S/nXR38LjZuXD4BhKalye9NdILc4SyiknBmC?=
- =?us-ascii?Q?gaJYZ/E601JY7R7uZD8+ZJSN8G9HlSWFynJ1GOD8XRfAA6CAisUaQGYTMrAZ?=
- =?us-ascii?Q?B7YpmWOktvdtyATf3z7IC23p0exdcpKftMNYcKpy+3p6d5i5nFPh+17pPfQs?=
- =?us-ascii?Q?VBkbBSVI5lmXzjB1pfdVYbX8BpotccmNTeUwpmprfazPRNpTKIMbg7aERCCJ?=
- =?us-ascii?Q?dzpyRTU8xEf/udMLKdzsVAuQcZAnfyy1t/OB0cJyeR3+YeBIhb7W2XmovC7F?=
- =?us-ascii?Q?YwZ6lsaZEaUHW+7ubgPiaTdyzyveeD+hLv3ZB5oi9clVoAiPB4Df6QY/6s/f?=
- =?us-ascii?Q?PkMqm0Zw8itCeiETOJXh7Z8ZkKrYmOkDVGnQjV94hkf75iVpU/0jX30QgaRx?=
- =?us-ascii?Q?lgLzSha+QAV5rksBkDnWF6RhuTUL1OLIHy3DrEHfNTvOF93dU5EgFNKwjpSU?=
- =?us-ascii?Q?UISWoGbDsFOmuSjVlHZY1iiMMt54u37FTJVdyrGFAJSdjgCvcS6f+KED95xG?=
- =?us-ascii?Q?rgTnK1xCx39Wy7bri27CvglBvnmhK0dK+vg6/J5plVlBCz9q+V05mmO2EmhU?=
- =?us-ascii?Q?ilMKW9Wv8uUjFRRWN0W54ToL3oST431okBan3hoxyaGG2rInZhC6o4s793pl?=
- =?us-ascii?Q?PqhcQsTuJNvfBwsYecD+4ayDW/RDdJ+xQYYCdSInbyhnUUqtty9+id6TRC8X?=
- =?us-ascii?Q?YjvxGJuMlmDgHy2V+ugmXpFV0bGg6z0WFxumP95Wosm9ol/y2jeuieVELBll?=
- =?us-ascii?Q?BqNX9ChkZl4gT7tP56YEJI+WXL4PW8A0GA2IrxpKJj4GNuplhQKNyz0mtNmi?=
- =?us-ascii?Q?bWvD1E3W1Ofud3alC623nPb9ldhEAei3WVvVp0ScYkct5M18e+TKkviCecaj?=
- =?us-ascii?Q?mrq/9WUy26dSrv4XZUPJa6jJK+OUUjeOAFl1IXanpmEyxOO/tN72ZvfUUAIy?=
- =?us-ascii?Q?xF6/X8w+hyWwMuMQwzq0UegmLwEtZRQ5k3mctcMWO1lTxh3jzNEW8kH8QVSp?=
- =?us-ascii?Q?PZxy82adG5gCYkuFgQTjpZjaysOEllAWLL8yylOwywVRsMj8T+euUnqgCZQz?=
- =?us-ascii?Q?Hf//XheXokzXZ7E2tWj3KbIbwVqwOa/sWqhEgIfC4SB34ndzRVJbw8fyLLwQ?=
- =?us-ascii?Q?UG2cOCqKUhh4tvvfxaRaHiY3I14ibF1K7DjFabhhafDLVZZIPgmGiXh+cARq?=
- =?us-ascii?Q?ceUh/cy/sdypr98dCasMZpCt?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 235f7320-2875-4233-7138-08d9922ac1d8
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 11:30:59.0223
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wpBYFFVt3oTpFLx7uwjVKm79WlMQgqU1HOU2qPkNQ20DccgLjwchlFSTAGPwu7Bbgoetz2InuofHRQ3/8hSqWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB2986
+        KP Singh <kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch fixes the following Coccinelle warning:
+On Thu, Oct 14, 2021 at 4:36 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>
+> After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
+> operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
+> there exists segment fault due to the following reason:
+>
+> ALU64_MOV_X: all register value magnitudes jited:1
+> Break instruction in kernel code[#1]
+>
+> It seems that the related jit implementations of some test cases
+> in test_bpf() have problems. At this moment, I do not care about
+> the segment fault while I just want to verify the test cases of
+> tail calls.
+>
+> Based on the above background and motivation, add the following
+> module parameter test_suite to the test_bpf.ko:
+> test_suite=<string>: only the specified test suite will be run, the
+> string can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+>
+> If test_suite is not specified, but test_id, test_name or test_range
+> is specified, set 'test_bpf' as the default test suite.
+>
+> This is useful to only test the corresponding test suite when specify
+> the valid test_suite string.
+>
+> Any invalid test suite will result in -EINVAL being returned and no
+> tests being run. If the test_suite is not specified or specified as
+> empty string, it does not change the current logic, all of the test
+> cases will be run.
+>
+> Here are some test results:
+>  # dmesg -c
+>  # modprobe test_bpf
+>  # dmesg | grep Summary
+>  test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+>  test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+>  test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+>
+>  # rmmod test_bpf
+>  # dmesg -c
+>  # modprobe test_bpf test_suite=test_bpf
+>  # dmesg | tail -1
+>  test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+>
+>  # rmmod test_bpf
+>  # dmesg -c
+>  # modprobe test_bpf test_suite=test_tail_calls
+>  # dmesg
+>  test_bpf: #0 Tail call leaf jited:0 21 PASS
+>  [...]
+>  test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+>  test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+>
+>  # rmmod test_bpf
+>  # dmesg -c
+>  # modprobe test_bpf test_suite=test_skb_segment
+>  # dmesg
+>  test_bpf: #0 gso_with_rx_frags PASS
+>  test_bpf: #1 gso_linear_no_head_frag PASS
+>  test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+>
+>  # rmmod test_bpf
+>  # dmesg -c
+>  # modprobe test_bpf test_id=1
+>  # dmesg
+>  test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
+>  test_bpf: #1 TXA jited:0 54 51 50 PASS
+>  test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+>
+>  # rmmod test_bpf
+>  # dmesg -c
+>  # modprobe test_bpf test_suite=test_bpf test_name=TXA
+>  # dmesg
+>  test_bpf: #1 TXA jited:0 54 50 51 PASS
+>  test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+>
+>  # rmmod test_bpf
+>  # dmesg -c
+>  # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
+>  # dmesg
+>  test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
+>  test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+>  test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
+>
+>  # rmmod test_bpf
+>  # dmesg -c
+>  # modprobe test_bpf test_suite=test_skb_segment test_id=1
+>  # dmesg
+>  test_bpf: #1 gso_linear_no_head_frag PASS
+>  test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
+>
+> By the way, the above segment fault has been fixed in the latest bpf-next
+> tree.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>
+> v5:
+>   -- Remove some duplicated code, suggested by Johan Almbladh,
+>      thank you.
+>   -- Initialize test_range[2] to {0, INT_MAX}.
+>   -- If test_suite is specified, but test_range is not specified,
+>      set the upper limit of each test_suite to overwrite INT_MAX.
+>
+> v4:
+>   -- Fix the following checkpatch issues:
+>      CHECK: Alignment should match open parenthesis
+>      CHECK: Please don't use multiple blank lines
+>
+>      ./scripts/checkpatch.pl --strict *.patch
+>      total: 0 errors, 0 warnings, 0 checks, 299 lines checked
+>
+>      the default max-line-length is 100 in ./scripts/checkpatch.pl,
+>      but it seems that the netdev/checkpatch is 80:
+>      https://patchwork.hopto.org/static/nipa/559961/12545157/checkpatch/stdout
+>
+> v3:
+>   -- Use test_suite instead of test_type as module parameter
+>   -- Make test_id, test_name and test_range selection applied to each test suite
+>
+> v2:
+>   -- Fix typo in the commit message
+>   -- Use my private email to send
+>
+>  lib/test_bpf.c | 245 +++++++++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 169 insertions(+), 76 deletions(-)
+>
+> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> index e5b10fd..64fb358 100644
+> --- a/lib/test_bpf.c
+> +++ b/lib/test_bpf.c
+> @@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
+>  static int test_id = -1;
+>  module_param(test_id, int, 0);
+>
+> -static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
+> +static int test_range[2] = { 0, INT_MAX };
+>  module_param_array(test_range, int, NULL, 0);
+>
+> -static __init int find_test_index(const char *test_name)
+> -{
+> -       int i;
+> -
+> -       for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> -               if (!strcmp(tests[i].descr, test_name))
+> -                       return i;
+> -       }
+> -       return -1;
+> -}
+> -
+> -static __init int prepare_bpf_tests(void)
+> -{
+> -       if (test_id >= 0) {
+> -               /*
+> -                * if a test_id was specified, use test_range to
+> -                * cover only that test.
+> -                */
+> -               if (test_id >= ARRAY_SIZE(tests)) {
+> -                       pr_err("test_bpf: invalid test_id specified.\n");
+> -                       return -EINVAL;
+> -               }
+> -
+> -               test_range[0] = test_id;
+> -               test_range[1] = test_id;
+> -       } else if (*test_name) {
+> -               /*
+> -                * if a test_name was specified, find it and setup
+> -                * test_range to cover only that test.
+> -                */
+> -               int idx = find_test_index(test_name);
+> -
+> -               if (idx < 0) {
+> -                       pr_err("test_bpf: no test named '%s' found.\n",
+> -                              test_name);
+> -                       return -EINVAL;
+> -               }
+> -               test_range[0] = idx;
+> -               test_range[1] = idx;
+> -       } else {
+> -               /*
+> -                * check that the supplied test_range is valid.
+> -                */
+> -               if (test_range[0] >= ARRAY_SIZE(tests) ||
+> -                   test_range[1] >= ARRAY_SIZE(tests) ||
+> -                   test_range[0] < 0 || test_range[1] < 0) {
+> -                       pr_err("test_bpf: test_range is out of bound.\n");
+> -                       return -EINVAL;
+> -               }
+> -
+> -               if (test_range[1] < test_range[0]) {
+> -                       pr_err("test_bpf: test_range is ending before it starts.\n");
+> -                       return -EINVAL;
+> -               }
+> -       }
+> -
+> -       return 0;
+> -}
+> -
+> -static __init void destroy_bpf_tests(void)
+> -{
+> -}
+> -
+>  static bool exclude_test(int test_id)
+>  {
+>         return test_id < test_range[0] || test_id > test_range[1];
+> @@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
+>         for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+>                 const struct skb_segment_test *test = &skb_segment_tests[i];
+>
+> +               cond_resched();
+> +               if (exclude_test(i))
+> +                       continue;
+> +
+>                 pr_info("#%d %s ", i, test->descr);
+>
+>                 if (test_skb_segment_single(test)) {
+> @@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
+>                 int ret;
+>
+>                 cond_resched();
+> +               if (exclude_test(i))
+> +                       continue;
+>
+>                 pr_info("#%d %s ", i, test->descr);
+>                 if (!fp) {
+> @@ -14966,29 +14909,179 @@ static __init int test_tail_calls(struct bpf_array *progs)
+>         return err_cnt ? -EINVAL : 0;
+>  }
+>
+> +static char test_suite[32];
+> +module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
+> +
+> +static __init int find_test_index(const char *test_name)
+> +{
+> +       int i;
+> +
+> +       if (!strcmp(test_suite, "test_bpf")) {
+> +               for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> +                       if (!strcmp(tests[i].descr, test_name))
+> +                               return i;
+> +               }
+> +       }
+> +
+> +       if (!strcmp(test_suite, "test_tail_calls")) {
+> +               for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
+> +                       if (!strcmp(tail_call_tests[i].descr, test_name))
+> +                               return i;
+> +               }
+> +       }
+> +
+> +       if (!strcmp(test_suite, "test_skb_segment")) {
+> +               for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+> +                       if (!strcmp(skb_segment_tests[i].descr, test_name))
+> +                               return i;
+> +               }
+> +       }
+> +
+> +       return -1;
+> +}
+> +
+> +static __init int prepare_bpf_tests(void)
+> +{
+> +       if (test_id >= 0) {
+> +               /*
+> +                * if a test_id was specified, use test_range to
+> +                * cover only that test.
+> +                */
+> +               if (!strcmp(test_suite, "test_bpf") &&
+> +                   test_id >= ARRAY_SIZE(tests)) {
+> +                       pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
+> +                              test_suite);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               if (!strcmp(test_suite, "test_tail_calls") &&
+> +                   test_id >= ARRAY_SIZE(tail_call_tests)) {
+> +                       pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
+> +                              test_suite);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               if (!strcmp(test_suite, "test_skb_segment") &&
+> +                   test_id >= ARRAY_SIZE(skb_segment_tests)) {
+> +                       pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
+> +                              test_suite);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               test_range[0] = test_id;
+> +               test_range[1] = test_id;
+> +       } else if (*test_name) {
+> +               /*
+> +                * if a test_name was specified, find it and setup
+> +                * test_range to cover only that test.
+> +                */
+> +               int idx = find_test_index(test_name);
+> +
+> +               if (idx < 0) {
+> +                       pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
+> +                              test_name, test_suite);
+> +                       return -EINVAL;
+> +               }
+> +               test_range[0] = idx;
+> +               test_range[1] = idx;
+> +       } else {
+> +               int valid_range;
+> +
+> +               if (!strcmp(test_suite, "test_bpf"))
+> +                       valid_range = ARRAY_SIZE(tests);
+> +               else if (!strcmp(test_suite, "test_tail_calls"))
+> +                       valid_range = ARRAY_SIZE(tail_call_tests);
+> +               else if (!strcmp(test_suite, "test_skb_segment"))
+> +                       valid_range = ARRAY_SIZE(skb_segment_tests);
+> +
+> +               /*
+> +                * check that the supplied test_range is valid.
+> +                */
+> +               if (strlen(test_suite)) {
+> +                       if (test_range[0] >= valid_range ||
+> +                           test_range[1] >= valid_range ||
+> +                           test_range[0] < 0 || test_range[1] < 0) {
+> +                               pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
+> +                                      test_suite);
+> +                               return -EINVAL;
+> +                       }
+> +               }
+> +
+> +               if (test_range[1] < test_range[0]) {
+> +                       pr_err("test_bpf: test_range is ending before it starts.\n");
+> +                       return -EINVAL;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
 
-net/bpf/test_run.c:361:8-15: WARNING opportunity for memdup_user
-net/bpf/test_run.c:1055:8-15: WARNING opportunity for memdup_user
+I would like to see a simplified logic here with fewer conditionals.
+The test_range and test_id variables are checked in multiple locations
+with different conditionals. It is difficult to spot logical errors in
+such code, and also easy to break anything if new conditions are
+added.
 
-Use memdup_user rather than duplicating its implementation
-This is a little bit restricted to reduce false positives
+I would compute the valid range once in the beginning of the function.
+Then check each of the id and range input variables to make sure they
+are within this valid range.
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- net/bpf/test_run.c | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 5296087..fbda8f5
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -358,13 +358,9 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
- 		return -EINVAL;
- 
- 	if (ctx_size_in) {
--		info.ctx = kzalloc(ctx_size_in, GFP_USER);
--		if (!info.ctx)
--			return -ENOMEM;
--		if (copy_from_user(info.ctx, ctx_in, ctx_size_in)) {
--			err = -EFAULT;
--			goto out;
--		}
-+		info.ctx = memdup_user(ctx_in, ctx_size_in);
-+		if (IS_ERR(info.ctx))
-+			return PTR_ERR(info.ctx);
- 	} else {
- 		info.ctx = NULL;
- 	}
-@@ -392,7 +388,6 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
- 	    copy_to_user(&uattr->test.retval, &info.retval, sizeof(u32)))
- 		err = -EFAULT;
- 
--out:
- 	kfree(info.ctx);
- 	return err;
- }
-@@ -1052,13 +1047,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 		return -EINVAL;
- 
- 	if (ctx_size_in) {
--		ctx = kzalloc(ctx_size_in, GFP_USER);
--		if (!ctx)
--			return -ENOMEM;
--		if (copy_from_user(ctx, ctx_in, ctx_size_in)) {
--			err = -EFAULT;
--			goto out;
--		}
-+		ctx = memdup_user(ctx_in, ctx_size_in);
-+		if (IS_ERR(ctx))
-+			return PTR_ERR(ctx);
- 	}
- 
- 	rcu_read_lock_trace();
--- 
-2.7.4
-
+> +
+> +static __init void destroy_bpf_tests(void)
+> +{
+> +}
+> +
+>  static int __init test_bpf_init(void)
+>  {
+>         struct bpf_array *progs = NULL;
+>         int ret;
+>
+> +       if (strlen(test_suite) &&
+> +           strcmp(test_suite, "test_bpf") &&
+> +           strcmp(test_suite, "test_tail_calls") &&
+> +           strcmp(test_suite, "test_skb_segment")) {
+> +               pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
+> +               return -EINVAL;
+> +       }
+> +
+> +       /*
+> +        * if test_suite is not specified, but test_id, test_name or test_range
+> +        * is specified, set 'test_bpf' as the default test suite.
+> +        */
+> +       if (!strlen(test_suite) &&
+> +           (test_id != -1 || strlen(test_name) ||
+> +           (test_range[0] != 0 || test_range[1] != INT_MAX))) {
+> +               pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
+> +               strcpy(test_suite, "test_bpf");
+> +       }
+> +
+> +       /*
+> +        * if test_suite is specified, but test_range is not specified,
+> +        * set the upper limit of each test_suite to overwrite INT_MAX.
+> +        */
+> +       if (strlen(test_suite) && test_range[0] == 0 && test_range[1] == INT_MAX) {
+> +               if (!strcmp(test_suite, "test_bpf"))
+> +                       test_range[1] = ARRAY_SIZE(tests) - 1;
+> +               else if (!strcmp(test_suite, "test_tail_calls"))
+> +                       test_range[1] = ARRAY_SIZE(tail_call_tests) - 1;
+> +               else if (!strcmp(test_suite, "test_skb_segment"))
+> +                       test_range[1] = ARRAY_SIZE(skb_segment_tests) - 1;
+> +       }
+> +
+>         ret = prepare_bpf_tests();
+>         if (ret < 0)
+>                 return ret;
+>
+> -       ret = test_bpf();
+> -       destroy_bpf_tests();
+> -       if (ret)
+> -               return ret;
+> +       if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
+> +               ret = test_bpf();
+> +               destroy_bpf_tests();
+> +               if (ret)
+> +                       return ret;
+> +       }
+>
+> -       ret = prepare_tail_call_tests(&progs);
+> -       if (ret)
+> -               return ret;
+> -       ret = test_tail_calls(progs);
+> -       destroy_tail_call_tests(progs);
+> -       if (ret)
+> -               return ret;
+> +       if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
+> +               ret = prepare_tail_call_tests(&progs);
+> +               if (ret)
+> +                       return ret;
+> +               ret = test_tail_calls(progs);
+> +               destroy_tail_call_tests(progs);
+> +               if (ret)
+> +                       return ret;
+> +       }
+>
+> -       return test_skb_segment();
+> +       if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
+> +               return test_skb_segment();
+> +
+> +       return 0;
+>  }
+>
+>  static void __exit test_bpf_exit(void)
+> --
+> 2.1.0
+>
