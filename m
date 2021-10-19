@@ -2,122 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB62643325B
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 11:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF89433340
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 12:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbhJSJiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 05:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        id S230042AbhJSKNx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 06:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235049AbhJSJiC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:38:02 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4BDC061768
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 02:35:49 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id r7so46652042wrc.10
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 02:35:49 -0700 (PDT)
+        with ESMTP id S230007AbhJSKNw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:13:52 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E77C06161C;
+        Tue, 19 Oct 2021 03:11:40 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id v77so4135823oie.1;
+        Tue, 19 Oct 2021 03:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=L2Opnlu/+Ei1mILrJUudB00wyP5HtEuEpZxkiaGcTuk=;
-        b=4Uvv/V9yhjJYTwf+O9NvMcCHZPepWSsWQ2DUG9K7T456ybg9EBcQvphaGM/VctW7mv
-         UXLs7h8Sh9o39g1WSMZgTt5pHkZBakrJZqayHGdmOXsrYJlqf7oDOVBbF/EHTSmlOMyM
-         a6IlSoE+YWI5Uld+lTvGOg/MOcO72KNwvdOOGLxYL53+KWobDyx1phCv8M3Ok53Efots
-         YvjwEjeZ9gSlhjRFgkE+fTmHhQgBNYZ6nIrX6sTpJ0IBFzXwwbDLAglILfPEYJiKXEYu
-         1EBw+rQt9324DpZLRV++n8Erlk1/ztmsoKNHHMZ0PnAoOkLDs5PbL0hHWC1QGe2BYPOH
-         YB1A==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ctl1coiiBgIR1zUuBcj1SRCWr0mc617dDGiuKbUwbY=;
+        b=c873+lYsgqVl0Yfr6t+uWwUHLzQB6VnoRVOeUx2Ee/HORwwyNrC2oqUYkY3POlnmuL
+         n+tc8p2TX0E2tcBh1VU6j4TChwpyIth3Td7GdJVDMXKXjs7FhTqoNNZoZJhlqyZAnalq
+         jWKjAxIlZkC/9kxvhngfvq0iQBttHIriATnyQ1gDhabE2To/TIB09ixSL7Eo/vZ4muUN
+         xGvX8g37HvIrbcSKV3+zLiHg6agms0W+wiyRHvKfNc+toLVklWhtsug4KjJeS3LDGh6f
+         EVtVtXLFJVHgd5lydDxrOqgS673Gqrq9IhiyFLEXkZRM9NVqEh5hBAXb0gpaSJvr8qFK
+         HuQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=L2Opnlu/+Ei1mILrJUudB00wyP5HtEuEpZxkiaGcTuk=;
-        b=WNlzFxTw1m72sIy0/J//HXrYCtRN1HRDvXLrfL1wa6HqsiMPNERN9L49zE+bZjWHQ2
-         ZeeqonCF0tI6opj1OZBGJe/q90xKiSadbTvZysvCuN7lMZfWY++ZomTMWpglrhBfEYyN
-         an3T9nncT1Vat8vre8vKLrZX23BORY5RCNC5THRXDwLkqW7hmnFBF3zk8hP+lYhmxKPh
-         q+UpyP3omR1WMrv9UWU8BBWcVDfDCJaU0gOKWq1PqBTSIoj0Hiw5FWsxD/y2nhw/AYwj
-         ShYPYamYEDX0bENbCkcBvOEVoK2sBIqcXQ4etaum7x3sqPPtgETSbdh6OApecPfQEuDv
-         O4kw==
-X-Gm-Message-State: AOAM531ZOhuIm1MlCeKX0RtT5hDYXpLhkXcIVjJ34OEt057CXCddfQSH
-        InUZal1kf1FL+lAkMaYk4Xoq9Q==
-X-Google-Smtp-Source: ABdhPJx8VfDG1M08CY2EwW4NlYD+30EjdeM5Y4rFFcgsoqwPfH7CxovxzrJhPB1TEyjaKCuj+tU1uA==
-X-Received: by 2002:adf:9b8a:: with SMTP id d10mr40402392wrc.151.1634636148051;
-        Tue, 19 Oct 2021 02:35:48 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.82.20])
-        by smtp.gmail.com with ESMTPSA id p3sm1727165wmp.43.2021.10.19.02.35.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Oct 2021 02:35:47 -0700 (PDT)
-Message-ID: <e11c38fa-22fa-a0ae-4dd1-cac5a208e021@isovalent.com>
-Date:   Tue, 19 Oct 2021 10:35:46 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ctl1coiiBgIR1zUuBcj1SRCWr0mc617dDGiuKbUwbY=;
+        b=oyIeUsh2bXDH7dCdQre0+gwOcWo2rgy+vBlSdIwyo87Fq3DVYPCLy8ntS8yYzxNDM7
+         udOho5YSluKkNsasRj+9fU6fbLn+aMPI9vdgPsti9Byn6mi3UTk6XRKu/IAuqvZ76+QH
+         VDBUxRhEbeE9xYqCb9YnGeL4GZqTndDrDSsk4K912z4EHvhtn62rgTDjaGTaS1c13xDX
+         XFTL3+uqJyvkuaEfBxc47SnIecCaVeciZzZZ/3J3AVr9Wa14sUAOYOzxYtQYIKRn3bjl
+         2iL4XEFDpnTu+MCzEgjmCHzf55LXhVYoFbeSUDQGeGyB4yWcVm69XNmjZXd0473O6AxL
+         K8WA==
+X-Gm-Message-State: AOAM531rXuvDZIswuKQCgjXFbzn7aoFUsZUI/Etb1OKQcfGpo/DBbnPW
+        cALmx9LZdUAXoBOH6ga6UsdMxjiJKxcjRtXWWA==
+X-Google-Smtp-Source: ABdhPJybA/174GdIrs0q4NSa5FqT5pPxCeY63ObMStK/SaVjnPZJBE4By7fv6IinsJ8E9sGDlb0DFnENP/H8rQqhgbY=
+X-Received: by 2002:aca:5cd4:: with SMTP id q203mr3509045oib.179.1634638299649;
+ Tue, 19 Oct 2021 03:11:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 14/23] bpftool: update bpftool-cgroup.rst reference
-Content-Language: en-US
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
- <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <0000000000005639cd05ce3a6d4d@google.com> <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
+ <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
+In-Reply-To: <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
+From:   Jussi Maki <joamaki@gmail.com>
+Date:   Tue, 19 Oct 2021 12:11:28 +0200
+Message-ID: <CAHn8xcnoPvt4KNZ3cD17PD9qbTa=58h38E8O0zePvYiKHFEc+A@mail.gmail.com>
+Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, ast@kernel.org,
+        bpf <bpf@vger.kernel.org>, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        toke@toke.dk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-10-19 09:04 UTC+0100 ~ Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org>
-> The file name: Documentation/bpftool-cgroup.rst
-> should be, instead: tools/bpf/bpftool/Documentation/bpftool-cgroup.rst.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
-> Fixes: 5ccda64d38cc ("bpftool: implement cgroup bpf operations")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
-> 
->  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> index be54b7335a76..617b8084c440 100755
-> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> @@ -392,7 +392,7 @@ class ManCgroupExtractor(ManPageExtractor):
->      """
->      An extractor for bpftool-cgroup.rst.
->      """
-> -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-cgroup.rst')
-> +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-cgroup.rst')
->  
->      def get_attach_types(self):
->          return self.get_rst_list('ATTACH_TYPE')
-> 
+On Thu, Oct 14, 2021 at 3:50 PM Paolo Abeni <pabeni@redhat.com> wrote:
+>
+> On Wed, 2021-10-13 at 15:35 +0200, Daniel Borkmann wrote:
+> > On 10/13/21 1:40 PM, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> >
+> > [ +Paolo/Toke wrt veth/XDP, +Jussi wrt bond/XDP, please take a look, thanks! ]
+>
+> For the records: Toke and me are actively investigating this issue and
+> the other recent related one. So far we could not find anything
+> relevant.
+>
+> The onluy note is that the reproducer is not extremelly reliable - I
+> could not reproduce locally, and multiple syzbot runs on the same code
+> give different results. Anyhow, so far the issue was only observerable
+> on a specific 'next' commit which is currently "not reachable" from any
+> branch. I'm wondering if the issue was caused by some incosistent
+> status of such tree.
+>
 
-No, this change is incorrect. We have discussed it several times before
-[0][1]. Please drop this patch.
+Hey,
 
-Quentin
-
-[0]
-https://lore.kernel.org/bpf/eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com/
-[1]
-https://lore.kernel.org/bpf/CAEf4BzZhr+3JzuPvyTozQSts7QixnyY1N8CD+-ZuteHodCpmRA@mail.gmail.com/
+I took a look at the bond/XDP related bits and couldn't find anything
+obvious there. And for what it's worth, I was running the syzbot repro
+under bpf-next tree (223f903e9c8) in the bpf vmtest.sh environment for
+30 minutes without hitting this. An inconsistent tree might be a
+plausible cause.
