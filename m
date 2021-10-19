@@ -2,77 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26550432B97
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 03:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B956432B9F
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 03:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhJSBtW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 21:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
+        id S229529AbhJSB7y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 21:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhJSBtW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 21:49:22 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5701FC06161C
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 18:47:10 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id f21so12566876plb.3
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 18:47:10 -0700 (PDT)
+        with ESMTP id S229588AbhJSB7y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 21:59:54 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC7EC06161C;
+        Mon, 18 Oct 2021 18:57:42 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so1414415pjb.4;
+        Mon, 18 Oct 2021 18:57:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pvr3FaBzSOwhyafBtpkgZ1TUmdMuGYW8Movpdp0PmZ4=;
-        b=aTN2/4adLIIxK54UTh+kmx02QR6DbwIvmOlGLeJuI9sI+3LDPvTCpOsjC3kdqUglo7
-         MVmN5fM92IqloY2icqFB2zjfVxk4pfsD0gFoBnxWNqVgwwTYKl31PEeQeYsWLGlK4y9m
-         23Zpecxv5WUL0EIhBrq7I+XgDx3Yf7t8CZVVyWpBkSfxnR0ym9PkiDz5K+oLIAkvtUVV
-         PcUcHCE94mGLDF4RyjsYhG/d+rlUr11Rn6zyXrCwc7RoGhDKAu0OAbr1CkJGPPW1e5wp
-         Z5dd+1Nbc7NUeAkmd+p1xj/kPRRpvoCMbwC4Ig50u3j5PI2ix/Xh0Qr8VYc43331cPNN
-         MPYw==
+         :cc:content-transfer-encoding;
+        bh=qUY79MPyKMwGVT6iIJG0K/BwgiUzFm+gKagkPPohO2I=;
+        b=JORsSZEgrR8G1WZivCfAlnol5GV1JeVfl2qbtl+N2GBfrV2qmq9cx4Ucm9Cr4ICODD
+         m2TSG9wCBiYAb1EliNiQqhVdS/oo0xpYZb4uLT2fhWhDXpost+kj3rifEYv6ByZu5p0e
+         9KQNYpgPyC6BMkt9t2etI9gL/EDenRkyssFJXDWth38RcD/+3G5UYtTLVRiqm3dgEGWg
+         tMLOCUWqXJgb35eqz8BawmH+IElzSkyrmR1EcPFYqUk2DRNP9SXhhkpeDCr0TIoM5iXS
+         9x1vs8ZNetPOA93nsY/q23x4QaJfp1iQ7rY/xbAmu3LOnYsp5ibK+ZQRHn2BwVzfCW7r
+         Ebtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pvr3FaBzSOwhyafBtpkgZ1TUmdMuGYW8Movpdp0PmZ4=;
-        b=JyW520pJdH0pxUVfhjeybyG1yYKDykH4iHbqsqWqR+6tf3zvAZg6jA9GvVvbJebaoX
-         R0KPmsFVNk4jE1SVb3sUymO+/vBjjJ8xlIDHAiDi9py862jrZTkSGzUzFy825NGacU4u
-         maGFU5PlVSiWKw74ZHOi41ryR6/K+1ALoJt/AsWtfxZ3GdsJl9cnwW2PkeQem51qfD2U
-         ny4Nv2hQDwwqL6pPCB0Qs8VTbcruf6B2S1InnlF/khWP60zWpBqRotzfKkN4vKLEG+dH
-         m+jdb1gvVcC7rPw3SBK3MYLlk2IjEXvlpjzTQjOvZy7KjUvKlWBkxFtW5DLh2GeSzUGH
-         b0tQ==
-X-Gm-Message-State: AOAM533OHguFTQnRCS5m0kVjrbnqekiNIW6Ig6RIyxdSjFOHvHiA8FL8
-        VZzwIl/Q36cM91+S28O88VJ25j+V0isygIEjduI=
-X-Google-Smtp-Source: ABdhPJxkmFnTsH4eWusZdr+RLEwhG0wACSmr8thB/XB+K2HejI43NAnLA5Cdav4J45cNWIVGYSDp4vNCCUsCuMJ4LN0=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr31594535pll.22.1634608029876; Mon, 18
- Oct 2021 18:47:09 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qUY79MPyKMwGVT6iIJG0K/BwgiUzFm+gKagkPPohO2I=;
+        b=vyORHjmx4FU27BZgr1D84Hej0EBTcHgad+Fdxo7O0bDvya8m3PJ7Bi05nKvyw/hPB6
+         sZBP3vDfF29ruJNg8Qudmi8fsuMNV22H0zeUBGzGJNTRlO1hKfUFoo4Tr0XCZ7aJEn6V
+         kpe39QuxzNijEMJF+UiojlxFO91mlm9dVMsAEjIFCCr6vLNxmRrUuHdErmUDqNvmS4N1
+         DWfj8beAAMajblafT3hSfC49XUb5CrP42DfnJ7ol+tnG+6DJRlAIgVA1xa46N+cp538c
+         Bj9efwkF7fxtcOKyN+9RbA9v9zZOravQ/NDVcR70siZBLi+Q3/oBpbUtyKprJ9V4UYCc
+         4u/g==
+X-Gm-Message-State: AOAM530MIhoMKZBIpP63Qd2L9fHMU/vB3T5xNWQ9DQSx2GS1JL4weS4N
+        myOaX5HEwEeM1WDNsezTLyNKyyLA747M91MASdixuTco
+X-Google-Smtp-Source: ABdhPJyPybmmM9SrYlqMdXm4JeZRP35FsXVmolprketo+C/zDHmctWOYo01jj1/89HRUecM3oWT5PafbaAEzEj5wgu8=
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr2703651pjj.138.1634608661937;
+ Mon, 18 Oct 2021 18:57:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211007141331.723149-1-hengqi.chen@gmail.com> <20211007141331.723149-3-hengqi.chen@gmail.com>
-In-Reply-To: <20211007141331.723149-3-hengqi.chen@gmail.com>
+References: <20211015090353.31248-1-zhouchengming@bytedance.com>
+ <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com> <6d7246b6-195e-ee08-06b1-2d1ec722e7b2@bytedance.com>
+In-Reply-To: <6d7246b6-195e-ee08-06b1-2d1ec722e7b2@bytedance.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 18 Oct 2021 18:46:58 -0700
-Message-ID: <CAADnVQLGfg=iMUi4oQtMzY9Y+j_pZtAAHQ_b8zO6wPaL6C0ooA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2 v2] selftests/bpf: Test bpf_skc_to_unix_sock()
- helper
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 18 Oct 2021 18:57:30 -0700
+Message-ID: <CAADnVQKG5=qVSjZGzHEc0ijwiYABVCU1uc8vOQ-ZLibhpW--Hg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] bpf: use count for prealloc hashtab too
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 7:14 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
-> +
-> +       sockaddr.sun_family = AF_UNIX;
-> +       strcpy(sockaddr.sun_path, sock_path);
+On Sun, Oct 17, 2021 at 10:49 PM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> =E5=9C=A8 2021/10/16 =E4=B8=8A=E5=8D=883:58, Alexei Starovoitov =E5=86=99=
+=E9=81=93:
+> > On Fri, Oct 15, 2021 at 11:04 AM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> >>
+> >> We only use count for kmalloc hashtab not for prealloc hashtab, becaus=
+e
+> >> __pcpu_freelist_pop() return NULL when no more elem in pcpu freelist.
+> >>
+> >> But the problem is that __pcpu_freelist_pop() will traverse all CPUs a=
+nd
+> >> spin_lock for all CPUs to find there is no more elem at last.
+> >>
+> >> We encountered bad case on big system with 96 CPUs that alloc_htab_ele=
+m()
+> >> would last for 1ms. This patch use count for prealloc hashtab too,
+> >> avoid traverse and spin_lock for all CPUs in this case.
+> >>
+> >> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> >
+> > It's not clear from the commit log what you're solving.
+> > The atomic inc/dec in critical path of prealloc maps hurts performance.
+> > That's why it's not used.
+> >
+> Thanks for the explanation, what I'm solving is when hash table hasn't fr=
+ee
+> elements, we don't need to call __pcpu_freelist_pop() to traverse and
+> spin_lock all CPUs. The ftrace output of this bad case is below:
+>
+>  50)               |  htab_map_update_elem() {
+>  50)   0.329 us    |    _raw_spin_lock_irqsave();
+>  50)   0.063 us    |    lookup_elem_raw();
+>  50)               |    alloc_htab_elem() {
+>  50)               |      pcpu_freelist_pop() {
+>  50)   0.209 us    |        _raw_spin_lock();
+>  50)   0.264 us    |        _raw_spin_lock();
 
-please use strncpy.
-
-> +       len = sizeof(sockaddr);
-> +       unlink(sock_path);
-
-please use abstract socket to avoid unlink and potential race.
+This is LRU map. Not hash map.
+It will grab spin_locks of other cpus
+only if all previous cpus don't have free elements.
+Most likely your map is actually full and doesn't have any free elems.
+Since it's an lru it will force free an elem eventually.
