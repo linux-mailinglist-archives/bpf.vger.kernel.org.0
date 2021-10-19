@@ -2,88 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CCE433D10
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 19:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B177A433DC0
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 19:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhJSRMn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 13:12:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36142 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhJSRMm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:12:42 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 65A2E21A76;
-        Tue, 19 Oct 2021 17:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634663428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1eyKSX2/7swyCKXn7z9fVjzybvXll+tbtLpZFqDx1m8=;
-        b=RVz/tL02sPQdjtNeumX2ZM+VtIFyIcTOEASFvv6I0/FVlHvZ4o9I/0RJ7QO2xcZDmai6xU
-        4h/KSMw/yrIULI7jwk8EkRvwcpYQFzka8UE4eirJd7G1eClI5pV5rYNy+uIttiWykEFB+n
-        aMD35+up03LH+YwZPGz6j/iIN4qa1fE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F310A13E8E;
-        Tue, 19 Oct 2021 17:10:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YBKFOQP8bmGfIgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 19 Oct 2021 17:10:27 +0000
-Date:   Tue, 19 Oct 2021 19:10:26 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Quanyang Wang <quanyang.wang@windriver.com>
-Cc:     Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S234687AbhJSRvR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 13:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233613AbhJSRvQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:51:16 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6205C06161C
+        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 10:49:03 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id t127so12019375ybf.13
+        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 10:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u8ar48zhi7i3uzu5kelFHun05utK6xOe59jHMIqjo6Y=;
+        b=ScWlMOzh/TruUWxcrULfTqMgtyf7JsYGZFTmrm3ZVaLVc2U/+dRsR33LlaT327l2MU
+         Xno9X2m8M0LWXbLN4Omkm9Qp1lg5hHrYd7uHxkqhvTu96dEqyUe/xzZ8cmvdyiOAb+Y1
+         cplphz436ZR9vTAwdYfPsQp6dKJ1TzmkP3kBT/8kpZM0KN72qqVxNQnl45p0y5H9Qlro
+         Utvpjf5kCUYA2+2ZEXjFhvYT0+q6dK9ogzkHVtOULrvbZzpnWGPH+N7x3q1xXwRsgzjD
+         CzC8jv3s7DbVrWfdtyMtFZJicNNRs7h3lAEiFD252UadQdQ8tae5Ti7xlfFQgRWbYbsG
+         1Qzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u8ar48zhi7i3uzu5kelFHun05utK6xOe59jHMIqjo6Y=;
+        b=C2WdfNC93IH9DAYEpVXE6JdND688hX0yhbMJGOiSYhoi3MoAXTTXfQ4UBVcCd5/IfP
+         YFawuYt9n9ZTigtjAva7Voni6X/fB+h3kJwzu/So1MEgWdjVe/llO9afy6XDwxRaQOte
+         DG9qjUuL7OIxjV5dcM/5q1tgq69qX07qG8+Vw4eLb60iaX4ym9jDkG1RhDeSCuY4MGkC
+         6W7GWb2l6LCMNjGRTzXPJefLRvoAcczH0Ok1hsTXXwD3vBKYjxSnD8kFgJwI+dtLyhPk
+         G0DYGInT7G5WxKEJcXntvgWYtc1l7iRXpbhpOwEsKBCeX3qc4ptHenCReMjWT6feZBqy
+         DG5g==
+X-Gm-Message-State: AOAM530fz0g/JL168Qv6U+UzIWNXBX2+Aqw2o8SzyLp7OdD/k8hvsK7f
+        +PdlkZLQNH2UgyqrFXpj9j3hjGNw43ASBjJXZWoTMDlQ6hw=
+X-Google-Smtp-Source: ABdhPJwuTXit3KTukFRckyE1I/v+jGrKlNuTQJy3mkcbxpTdi2YI9h+Jj97gLBW9xgLKLy1cle2wc+oSOJgUVextIZg=
+X-Received: by 2002:a25:24c1:: with SMTP id k184mr37178407ybk.2.1634665743061;
+ Tue, 19 Oct 2021 10:49:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211009150029.1746383-1-hengqi.chen@gmail.com> <20211009150029.1746383-2-hengqi.chen@gmail.com>
+In-Reply-To: <20211009150029.1746383-2-hengqi.chen@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 19 Oct 2021 10:48:52 -0700
+Message-ID: <CAEf4BzZyjoaRATpKHuYFFmZ1u5WnEh4nBdOOpSO+OZi7MH=cHg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Add btf__type_cnt() and
+ btf__raw_data() APIs
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-Message-ID: <YW78AohHqgqM9Cuw@blackbook>
-References: <20211018075623.26884-1-quanyang.wang@windriver.com>
- <YW04Gqqm3lDisRTc@T590>
- <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
- <YW1vuXh4C4tX9ZHP@T590>
- <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi.
+On Sat, Oct 9, 2021 at 8:01 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>
+> Add btf__type_cnt() and btf__raw_data() APIs and deprecate
+> btf__get_nr_type() and btf__get_raw_data() since the old APIs
+> don't follow the libbpf naming convention for getters which
+> omit 'get' in the name.[0] btf__raw_data() is just an alias to
 
-On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
-> So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
-> different issues.
+nit: this ".[0]" looks out of place, please use it as a reference in a
+sentence, e.g.,:
 
-AFAIU, both the changes are needed to cause the leak, a single patch
-alone won't cause the issue. Is that correct? (Perhaps not as I realize,
-see below.)
+omit 'get' in the name (see [0]).
 
-But on second thought, the problem is the missing percpu_ref_exit() in
-the (root) cgroup release path and percpu counter would allocate the
-percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
-visible. Is this correct?
+So that it reads naturally and fits the overall commit message.
 
-I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
-percpu_ref in fast path") alone did nothing wrong.
 
-[On a related (but independent) note, there seems to be an optimization
-opportunity in not dealing with cgroup_bpf at all on the non-default
-hierarchies.]
+> the existing btf__get_raw_data(). btf__type_cnt() now returns
+> the number of all types of the BTF object including 'void'.
+>
+>   [0] Closes: https://github.com/libbpf/libbpf/issues/279
+>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  tools/lib/bpf/btf.c      | 36 ++++++++++++++++++++++--------------
+>  tools/lib/bpf/btf.h      |  4 ++++
+>  tools/lib/bpf/btf_dump.c |  8 ++++----
+>  tools/lib/bpf/libbpf.c   | 32 ++++++++++++++++----------------
+>  tools/lib/bpf/libbpf.map |  2 ++
+>  tools/lib/bpf/linker.c   | 28 ++++++++++++++--------------
+>  6 files changed, 62 insertions(+), 48 deletions(-)
+>
 
-Regards,
-Michal
+[...]
+
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index 864eb51753a1..49397a22d72b 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -131,7 +131,9 @@ LIBBPF_API __s32 btf__find_by_name(const struct btf *btf,
+>                                    const char *type_name);
+>  LIBBPF_API __s32 btf__find_by_name_kind(const struct btf *btf,
+>                                         const char *type_name, __u32 kind);
+> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__type_cnt() instead")
+
+it has to be scheduled to 0.7 to have a release with new API
+(btf__type_cnt) before we deprecate btf__get_nr_types(). It's probably
+worth mentioning in the deprecation message that btf__type_cnt()
+return is +1 from btf__get_nr_types(). Maybe something like:
+
+LIBBPF_DEPRECATED_SINCE(0, 7, "use btf__type_cnt() instead; note that
+btf__get_nr_types() == btf__type_cnt() - 1")
+
+>  LIBBPF_API __u32 btf__get_nr_types(const struct btf *btf);
+> +LIBBPF_API __u32 btf__type_cnt(const struct btf *btf);
+>  LIBBPF_API const struct btf *btf__base_btf(const struct btf *btf);
+>  LIBBPF_API const struct btf_type *btf__type_by_id(const struct btf *btf,
+>                                                   __u32 id);
+> @@ -144,7 +146,9 @@ LIBBPF_API int btf__resolve_type(const struct btf *btf, __u32 type_id);
+>  LIBBPF_API int btf__align_of(const struct btf *btf, __u32 id);
+>  LIBBPF_API int btf__fd(const struct btf *btf);
+>  LIBBPF_API void btf__set_fd(struct btf *btf, int fd);
+> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__raw_data() instead")
+
+same, 0.7+
+
+>  LIBBPF_API const void *btf__get_raw_data(const struct btf *btf, __u32 *size);
+> +LIBBPF_API const void *btf__raw_data(const struct btf *btf, __u32 *size);
+>  LIBBPF_API const char *btf__name_by_offset(const struct btf *btf, __u32 offset);
+>  LIBBPF_API const char *btf__str_by_offset(const struct btf *btf, __u32 offset);
+>  LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
+
+[...]
