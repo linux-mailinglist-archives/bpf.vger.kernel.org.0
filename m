@@ -2,202 +2,351 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1870433BC5
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 18:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F17E433CA8
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 18:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbhJSQM7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 12:12:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41714 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229774AbhJSQM6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 19 Oct 2021 12:12:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634659845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XmXGGi2dblSuJkjJokwS1Y/EYujNuYOQOkVrKKsVabA=;
-        b=fR5stcm7bbgLN0j+jQGFw0aRGN7ehAbSOm833uDsxJwuDNaDx7bzq2yHkfzq1V0VcUkENr
-        S4To2OXHkppaGfuE1jO6DFE8/UkniuOqCzR0Qu+tO/1OJptezHNSs0zzMDaspqUlZn8rx6
-        0/Zk5omn+jz+Wlm9ztazNBptMNdPY1s=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-MH3E-CS_MsiHIKKoj0V-Wg-1; Tue, 19 Oct 2021 12:10:43 -0400
-X-MC-Unique: MH3E-CS_MsiHIKKoj0V-Wg-1
-Received: by mail-ed1-f72.google.com with SMTP id a3-20020a50da43000000b003dca31dcfc2so1673791edk.14
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 09:10:43 -0700 (PDT)
+        id S233153AbhJSQsP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 12:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhJSQsP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 12:48:15 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1228EC06161C;
+        Tue, 19 Oct 2021 09:46:02 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id i76so422467pfe.13;
+        Tue, 19 Oct 2021 09:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m6ifRcXTDP6HSBZmS0xYlQ4bXkqgkStw3rde+wfGT3U=;
+        b=YMR2Y6botW84pgiWlV2rOb1lBH+VAk6Qv021wt5VOUKg61nHJKFiGLsIq8B2Hh5BOK
+         +utpqUnsYqfW6zzd6RufJnmu1ckI1QYNNWzaLKcFxq1x2oD1G22QZYPPtFj256grfpad
+         wwZp1+EKf+qJzzNGSwCJvMI2r03UxwTpp2eOA9cz4d9+OdDbGj8K56UEty+WWPQoPbP5
+         /xDeNrLwsoKNmJA/p8C2lqjGmMX7U3yG3M+CIVq3UtgNKbvEaHmt4Cqu4KfiyzhsrwL9
+         emxYj/EvQljFpUD7Yipz92UQpja8PIh2RgAKkRFXtuS+XMs7w0wYAjfgeNSQY/XJ30ir
+         hHjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=XmXGGi2dblSuJkjJokwS1Y/EYujNuYOQOkVrKKsVabA=;
-        b=UAJkOfZccTFt0Fz+ZLlUG5DXllBcie4ENmFUMHNzqK3WPZqSMERvBN0LhgDwwmjnQX
-         ve+dK2VZGpLZr535nnyXyLOyt+n/LtM6rpM2GsG9/JnKSaGhh2/yyftspPecBMQ7Ubka
-         OGnFdBVvcItqMoN+Ut1iVdJUd1JHCfNp1soUIEpwpPXKH0jAG/aHvyZwdBiHdweiP0Md
-         e0PNbk4THcVvz8GOvTnCEYvqr8cB4kMQxAMqySNREbiGYYnf1F3AivLzJzVpGaBNZRli
-         kB88WhpchldxbroznhIhZm+38uhVUdftmtozfp+mk0t+1qAvBDSyxfCu864cNgB4PdLz
-         qZwA==
-X-Gm-Message-State: AOAM530oOBH0qPtSfsAVZZWgnY82rr+LEeQQlTyEa4LTllCZF8jLMBC9
-        3ceLAq6tAFSdSU5yKhJ2CCPU2yDS0artYVoP9BFlpiq2xr7zCdBAK1LzK9CFETiRkYfufGILiV3
-        8Oej1kP3T+/Zz
-X-Received: by 2002:a17:907:7f90:: with SMTP id qk16mr38753318ejc.26.1634659840648;
-        Tue, 19 Oct 2021 09:10:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyj2FeE2PnPSLojUuhOUcg5qb3HCcVNk2diu76Eq9w1NoHUozFEEMk8dIb2oEcZMW0nJR+Tzw==
-X-Received: by 2002:a17:907:7f90:: with SMTP id qk16mr38753138ejc.26.1634659838938;
-        Tue, 19 Oct 2021 09:10:38 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a4sm2541626edk.71.2021.10.19.09.10.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 09:10:38 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DA50B180263; Tue, 19 Oct 2021 18:10:37 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m6ifRcXTDP6HSBZmS0xYlQ4bXkqgkStw3rde+wfGT3U=;
+        b=dWSpfUWYC7+UuR/qLK+9FOIUMPfh84ki2MwC5fJ9BSGEmYZ85ZvX6irnGjMBbHPfDT
+         9IcHYSWwtAJ0qX4xdyuKsscVat1Gz0uhqkV/Hrmkt8SIcMPyUQdARn7VHxkbPBU94W7V
+         TnljTOKzaFqVRUOSReLybVG1YteKFRyrf1GrvfV/EF0Y3vjBZW/nwAtHv/vjcm5TTKFJ
+         rlgkzF9GZ52mZKekx8Gu+5rI2hepYO0H1lmt7EzNQwbSwUknkVOAivfmVrWFRgOmfa4T
+         H6FrFEmoYY8DaTzutLXuVMLN/Y1bMyrWg0pa3xoIAO3u//39teC93y5IaCdCEjGiPm3X
+         CrQg==
+X-Gm-Message-State: AOAM532ylRfLuo+oXLr/cVS8bLWdIZxHoKKlIrIGolhhyCjSNBtnPoj4
+        Mopm0DFgAWwRes/Cc/RvUZs=
+X-Google-Smtp-Source: ABdhPJzFKdfpb7pBgZQZCK3ss28kxJa50w2ejY0CK3HNLNozCUKxTcbdChyP9RU5eL2TlD8n7mo39A==
+X-Received: by 2002:a05:6a00:1a8e:b0:44c:f3cb:2a77 with SMTP id e14-20020a056a001a8e00b0044cf3cb2a77mr918202pfv.53.1634661961528;
+        Tue, 19 Oct 2021 09:46:01 -0700 (PDT)
+Received: from ?IPv6:2620:15c:2c1:200:554e:89d1:9693:8d66? ([2620:15c:2c1:200:554e:89d1:9693:8d66])
+        by smtp.gmail.com with ESMTPSA id fv9sm3346007pjb.26.2021.10.19.09.45.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 09:46:01 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 09/10] bpf: Add a helper to issue timestamp
+ cookies in XDP
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Joanne Koong <joannekoong@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v2 0/3] Add XDP support for bpf_load_hdr_opt
-In-Reply-To: <20211019000058.ghklvg4saybzqk3o@ast-mbp>
-References: <20211006230543.3928580-1-joannekoong@fb.com>
- <87h7dsnbh5.fsf@toke.dk> <9f8c195c-9c03-b398-2803-386c7af99748@fb.com>
- <43bfb0fe-5476-c62c-51f2-a83da9fef659@iogearbox.net>
- <20211007235203.uksujks57djohg3p@kafai-mbp> <87lf33jh04.fsf@toke.dk>
- <20211019000058.ghklvg4saybzqk3o@ast-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 19 Oct 2021 18:10:37 +0200
-Message-ID: <874k9dgflu.fsf@toke.dk>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Joe Stringer <joe@cilium.io>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20211019144655.3483197-1-maximmi@nvidia.com>
+ <20211019144655.3483197-10-maximmi@nvidia.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <834e92a4-8a4d-945f-c894-9730ff7d91dc@gmail.com>
+Date:   Tue, 19 Oct 2021 09:45:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211019144655.3483197-10-maximmi@nvidia.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On Sat, Oct 09, 2021 at 12:20:27AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->>=20
->> So if we can't fix the verifier, maybe we could come up with a more
->> general helper for packet parsing? Something like:
->>=20
->> bpf_for_each_pkt_chunk(ctx, offset, callback_fn, callback_arg)
->> {
->>   ptr =3D ctx->data + offset;
->>   while (ptr < ctx->data_end) {
->>     offset =3D callback_fn(ptr, ctx->data_end, callback_arg);
->>     if (offset =3D=3D 0)
->>       return 0;
->>     ptr +=3D offset;
->>   }
->>=20=20=20
->>   // out of bounds before callback was done
->>   return -EINVAL;
->> }
->
-> We're starting to work on this since it will be useful not only for
-> packet parsing, TLV parsing, but potentially any kind of 'for' loop itera=
-tion.
 
-Awesome! :)
+On 10/19/21 7:46 AM, Maxim Mikityanskiy wrote:
+> The new helper bpf_tcp_raw_gen_tscookie allows an XDP program to
+> generate timestamp cookies (to be used together with SYN cookies) which
+> encode different options set by the client in the SYN packet: SACK
+> support, ECN support, window scale. These options are encoded in lower
+> bits of the timestamp, which will be returned by the client in a
+> subsequent ACK packet. The format is the same used by synproxy.
+> 
+> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  include/net/tcp.h              |  1 +
+>  include/uapi/linux/bpf.h       | 27 +++++++++++++++
+>  net/core/filter.c              | 38 +++++++++++++++++++++
+>  net/ipv4/syncookies.c          | 60 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 27 +++++++++++++++
+>  5 files changed, 153 insertions(+)
+> 
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index 1cc96a225848..651820bef6a2 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -564,6 +564,7 @@ u32 __cookie_v4_init_sequence(const struct iphdr *iph, const struct tcphdr *th,
+>  			      u16 *mssp);
+>  __u32 cookie_v4_init_sequence(const struct sk_buff *skb, __u16 *mss);
+>  u64 cookie_init_timestamp(struct request_sock *req, u64 now);
+> +bool cookie_init_timestamp_raw(struct tcphdr *th, __be32 *tsval, __be32 *tsecr);
+>  bool cookie_timestamp_decode(const struct net *net,
+>  			     struct tcp_options_received *opt);
+>  bool cookie_ecn_ok(const struct tcp_options_received *opt,
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index e32f72077250..791790b41874 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5053,6 +5053,32 @@ union bpf_attr {
+>   *
+>   *		**-EPROTONOSUPPORT** if the IP version is not 4 or 6 (or 6, but
+>   *		CONFIG_IPV6 is disabled).
+> + *
+> + * int bpf_tcp_raw_gen_tscookie(struct tcphdr *th, u32 th_len, __be32 *tsopt, u32 tsopt_len)
+> + *	Description
+> + *		Try to generate a timestamp cookie which encodes some of the
+> + *		flags sent by the client in the SYN packet: SACK support, ECN
+> + *		support, window scale. To be used with SYN cookies.
+> + *
+> + *		*th* points to the start of the TCP header of the client's SYN
+> + *		packet, while *th_len* contains the length of the TCP header (at
+> + *		least **sizeof**\ (**struct tcphdr**)).
+> + *
+> + *		*tsopt* points to the output location where to put the resulting
+> + *		timestamp values: tsval and tsecr, in the format of the TCP
+> + *		timestamp option.
+> + *
+> + *	Return
+> + *		On success, 0.
+> + *
+> + *		On failure, the returned value is one of the following:
+> + *
+> + *		**-EINVAL** if the input arguments are invalid.
+> + *
+> + *		**-ENOENT** if the TCP header doesn't have the timestamp option.
+> + *
+> + *		**-EOPNOTSUPP** if the kernel configuration does not enable SYN
+> + *		cookies (CONFIG_SYN_COOKIES is off).
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5238,6 +5264,7 @@ union bpf_attr {
+>  	FN(ct_release),			\
+>  	FN(tcp_raw_gen_syncookie),	\
+>  	FN(tcp_raw_check_syncookie),	\
+> +	FN(tcp_raw_gen_tscookie),	\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 5f03d4a282a0..73fe20ef7442 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -7403,6 +7403,42 @@ static const struct bpf_func_proto bpf_tcp_raw_check_syncookie_proto = {
+>  	.arg4_type	= ARG_CONST_SIZE,
+>  };
+>  
+> +BPF_CALL_4(bpf_tcp_raw_gen_tscookie, struct tcphdr *, th, u32, th_len,
+> +	   __be32 *, tsopt, u32, tsopt_len)
+> +{
+> +	int err;
+> +
+> +#ifdef CONFIG_SYN_COOKIES
+> +	if (tsopt_len != sizeof(u64)) {
+> +		err = -EINVAL;
+> +		goto err_out;
+> +	}
+> +
+> +	if (!cookie_init_timestamp_raw(th, &tsopt[0], &tsopt[1])) {
+> +		err = -ENOENT;
+> +		goto err_out;
+> +	}
+> +
+> +	return 0;
+> +err_out:
+> +#else
+> +	err = -EOPNOTSUPP;
+> +#endif
+> +	memset(tsopt, 0, tsopt_len);
+> +	return err;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_tcp_raw_gen_tscookie_proto = {
+> +	.func		= bpf_tcp_raw_gen_tscookie,
+> +	.gpl_only	= false,
+> +	.pkt_access	= true,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_MEM,
+> +	.arg2_type	= ARG_CONST_SIZE,
+> +	.arg3_type	= ARG_PTR_TO_UNINIT_MEM,
+> +	.arg4_type	= ARG_CONST_SIZE,
+> +};
+> +
+>  #endif /* CONFIG_INET */
+>  
+>  bool bpf_helper_changes_pkt_data(void *func)
+> @@ -7825,6 +7861,8 @@ xdp_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  		return &bpf_tcp_raw_gen_syncookie_proto;
+>  	case BPF_FUNC_tcp_raw_check_syncookie:
+>  		return &bpf_tcp_raw_check_syncookie_proto;
+> +	case BPF_FUNC_tcp_raw_gen_tscookie:
+> +		return &bpf_tcp_raw_gen_tscookie_proto;
+>  #endif
+>  	default:
+>  		return bpf_sk_base_func_proto(func_id);
+> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+> index 8696dc343ad2..4dd2c7a096eb 100644
+> --- a/net/ipv4/syncookies.c
+> +++ b/net/ipv4/syncookies.c
+> @@ -85,6 +85,66 @@ u64 cookie_init_timestamp(struct request_sock *req, u64 now)
+>  	return (u64)ts * (NSEC_PER_SEC / TCP_TS_HZ);
+>  }
+>  
+> +bool cookie_init_timestamp_raw(struct tcphdr *th, __be32 *tsval, __be32 *tsecr)
+> +{
+> +	int length = (th->doff * 4) - sizeof(*th);
+> +	u8 wscale = TS_OPT_WSCALE_MASK;
+> +	bool option_timestamp = false;
+> +	bool option_sack = false;
+> +	u32 cookie;
+> +	u8 *ptr;
+> +
+> +	ptr = (u8 *)(th + 1);
+> +
+> +	while (length > 0) {
+> +		u8 opcode = *ptr++;
+> +		u8 opsize;
+> +
+> +		if (opcode == TCPOPT_EOL)
+> +			break;
+> +		if (opcode == TCPOPT_NOP) {
+> +			length--;
+> +			continue;
+> +		}
+> +
+> +		if (length < 2)
+> +			break;
+> +		opsize = *ptr++;
+> +		if (opsize < 2)
+> +			break;
+> +		if (opsize > length)
+> +			break;
+> +
+> +		switch (opcode) {
+> +		case TCPOPT_WINDOW:
 
->> This would work for parsing any kind of packet header or TLV-style data
->> without having to teach the kernel about each header type. It'll have
->> quite a bit of overhead if all the callbacks happen via indirect calls,
->> but maybe the verifier can inline the calls (or at least turn them into
->> direct CALL instructions)?
->
-> Right. That's the main downside.
-> If the bpf_for_each*() helper is simple enough the verifier can inline it
-> similar to map_gen_lookup. In such case the indirect call will be a direc=
-t call,
-> so the overhead won't be that bad, but it's still a function call and
-> static function will have full prologue+epilogue.
-> Converting static function into direct jump would be really challenging
-> for the verifier and won't provide much benefit, since r6-r9 save/restore
-> would need to happen anyway even for such 'inlined' static func, since
-> llvm will be freely using r6-r9 for insns inside function body
-> assuming that it's a normal function.
+You must check osize.
 
-I reckon it could be acceptable to have the overhead of a regular
-function call per iteration, but obviously it would be better to avoid
-it.
+> +			wscale = min_t(u8, *ptr, TCP_MAX_WSCALE);
+> +			break;
+> +		case TCPOPT_TIMESTAMP:
 
-> May be there is a way to avoid call overhead with with clang extensions.
-> If we want to do:
-> int mem_eq(char *p1, char *p2, int size)
-> {
->   int i;
->   for (i =3D 0; i < size; i++)
->     if (p1[i] !=3D p2[i])
->       return 0;
->   return 1;
-> }
->
-> With clang extension we might write it as:
-> int bpf_mem_eq(char *p1, char *p2, int size)
-> {
->   int i =3D 0;
->   int iter;
->
->   iter =3D __builtin_for_until(i, size, ({
->       if (p1[i] !=3D p2[i])
->         goto out;
->   }));
->   out:
->   if (iter !=3D size)
->     return 0;
->   return 1;
-> }
->
-> The llvm will generate pseudo insns for this __builtin_for.
-> The verifier will analyze the loop body for the range [0, size)
-> and replace pseudo insns with normal branches after the verification.
+You must check opsize.
 
-That seems like an interesting approach! The __builtin_for thing is a
-little awkward, but not more than turning the loop into a separate
-function + callback.
+> +			option_timestamp = true;
+> +			/* Client's tsval becomes our tsecr. */
+> +			*tsecr = cpu_to_be32(get_unaligned_be32(ptr));
 
-What about backwards compatibility? Would you have to ensure your kernel
-understands the loop instructions before you put them into your code, or
-could libbpf be taught to rewrite them if the kernel doesn't understand
-them (say, to a separate function that is called in a regular bounded
-loop)?
+Please avoid useless ntohl/htonl dance (even if compiler probably optimizes this)
+No need to obfuscate :)
 
-> We might even keep the normal C syntax for loops and use
-> llvm HardwareLoops pass to add pseudo insns.
+			*tsecr = get_unaligned((__be32 *)ptr);
 
-Now *this* would be cool!
-
-> It's more or less the same ideas for loops we discussed before
-> bounded loops were introduced.
-
-Why was it rejected at the time?
-
-> The main problem with bounded loops is that the loop body will
-> typically be verified the number of times equal to the number of iteratio=
-ns.
-> So for any non-trivial loop such iteration count is not much more
-> than 100. The verifier can do scalar evolution analysis, but
-> it's likely won't work for many cases and user experience
-> will suffer. With __builtin_for the scalar evolution is not necessary,
-> since induction variable is one and explicit and its range is explicit to=
-o.
-> That enables single pass over loop body.
-> One might argue that for (i =3D 0; i < 10000; i +=3D 10) loops are
-> necessary too, but instead of complicating the verifier with sparse
-> ranges it's better to put that on users that can do:
->   iter =3D __builtin_for_until(i, 10000 / 10, ({
->       j =3D i * 10;
->       use j;
->   }));
-> Single explicit induction variable makes the verification practical.
-> The loop body won't be as heavily optimized as normal loop,
-> but it's a good thing.
-
-Agreed, limiting things to single-step loops would be acceptable.
-
--Toke
-
+> +			break;
+> +		case TCPOPT_SACK_PERM:
+> +			option_sack = true;
+> +			break;
+> +		}
+> +
+> +		ptr += opsize - 2;
+> +		length -= opsize;
+> +	}
+> +
+> +	if (!option_timestamp)
+> +		return false;
+> +
+> +	cookie = tcp_time_stamp_raw() & ~TSMASK;
+> +	cookie |= wscale & TS_OPT_WSCALE_MASK;
+> +	if (option_sack)
+> +		cookie |= TS_OPT_SACK;
+> +	if (th->ece && th->cwr)
+> +		cookie |= TS_OPT_ECN;
+> +	*tsval = cpu_to_be32(cookie);
+> +	return true;
+> +}
+>  
+>  static __u32 secure_tcp_syn_cookie(__be32 saddr, __be32 daddr, __be16 sport,
+>  				   __be16 dport, __u32 sseq, __u32 data)
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index e32f72077250..791790b41874 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -5053,6 +5053,32 @@ union bpf_attr {
+>   *
+>   *		**-EPROTONOSUPPORT** if the IP version is not 4 or 6 (or 6, but
+>   *		CONFIG_IPV6 is disabled).
+> + *
+> + * int bpf_tcp_raw_gen_tscookie(struct tcphdr *th, u32 th_len, __be32 *tsopt, u32 tsopt_len)
+> + *	Description
+> + *		Try to generate a timestamp cookie which encodes some of the
+> + *		flags sent by the client in the SYN packet: SACK support, ECN
+> + *		support, window scale. To be used with SYN cookies.
+> + *
+> + *		*th* points to the start of the TCP header of the client's SYN
+> + *		packet, while *th_len* contains the length of the TCP header (at
+> + *		least **sizeof**\ (**struct tcphdr**)).
+> + *
+> + *		*tsopt* points to the output location where to put the resulting
+> + *		timestamp values: tsval and tsecr, in the format of the TCP
+> + *		timestamp option.
+> + *
+> + *	Return
+> + *		On success, 0.
+> + *
+> + *		On failure, the returned value is one of the following:
+> + *
+> + *		**-EINVAL** if the input arguments are invalid.
+> + *
+> + *		**-ENOENT** if the TCP header doesn't have the timestamp option.
+> + *
+> + *		**-EOPNOTSUPP** if the kernel configuration does not enable SYN
+> + *		cookies (CONFIG_SYN_COOKIES is off).
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5238,6 +5264,7 @@ union bpf_attr {
+>  	FN(ct_release),			\
+>  	FN(tcp_raw_gen_syncookie),	\
+>  	FN(tcp_raw_check_syncookie),	\
+> +	FN(tcp_raw_gen_tscookie),	\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> 
