@@ -2,164 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B78F4331FF
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 11:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB62643325B
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 11:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234840AbhJSJSr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 05:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
+        id S234561AbhJSJiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 05:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234843AbhJSJSp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Oct 2021 05:18:45 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46C5C06161C
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 02:16:32 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j21so6128490lfe.0
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 02:16:32 -0700 (PDT)
+        with ESMTP id S235049AbhJSJiC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 05:38:02 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4BDC061768
+        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 02:35:49 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id r7so46652042wrc.10
+        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 02:35:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=cxhBllE4qGFDGgzgKWWLi0zeBxQnDNBJTirScQAPH6k=;
-        b=p54i6P06LTDaCPBW4CrsJWb73kTEh+TA89xUqk7Jd2oywEHlGVEYAsjKGLDBC2535y
-         TsQn04umL7+y8g3xhdBTrAMEvv1rIBlUhpt1z2uVwQ+tRkjIIZrbn50cu8ZebudlbsM3
-         GfhCeuIVGsmMF5jdROtkal/4I5S9nnNcdaV9A=
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=L2Opnlu/+Ei1mILrJUudB00wyP5HtEuEpZxkiaGcTuk=;
+        b=4Uvv/V9yhjJYTwf+O9NvMcCHZPepWSsWQ2DUG9K7T456ybg9EBcQvphaGM/VctW7mv
+         UXLs7h8Sh9o39g1WSMZgTt5pHkZBakrJZqayHGdmOXsrYJlqf7oDOVBbF/EHTSmlOMyM
+         a6IlSoE+YWI5Uld+lTvGOg/MOcO72KNwvdOOGLxYL53+KWobDyx1phCv8M3Ok53Efots
+         YvjwEjeZ9gSlhjRFgkE+fTmHhQgBNYZ6nIrX6sTpJ0IBFzXwwbDLAglILfPEYJiKXEYu
+         1EBw+rQt9324DpZLRV++n8Erlk1/ztmsoKNHHMZ0PnAoOkLDs5PbL0hHWC1QGe2BYPOH
+         YB1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=cxhBllE4qGFDGgzgKWWLi0zeBxQnDNBJTirScQAPH6k=;
-        b=IoEhpP9ZnRhVVsD0tPiHSKaohXjOiS+JzS4tBLpubK+8i8FnrXO+/zM+FFUEfPZPAQ
-         wGvMuejpgbHGUWctRPrAMRS8tr2MAdqP35A15Cas0mYjNpjSlUVBsLbdBdMY3gjeoOpt
-         j22uXN70bL99gt97zblQW57GbubFGFy1L0pACl0DwS15RZDiJ5EXALHpW2KZR59atbVc
-         /m5wzQDK6frKfAWJnHrgxFUoxZIKvA7gSXiCY/sH9y/Io2YPM9JShqnGzw2f96uwfXPc
-         EWKZqhzkkflbdWDLIt+VwHX+P62f2COk67JJi5547TN22ek6BPINqBxIW3DpyHTnkhjN
-         ONIQ==
-X-Gm-Message-State: AOAM533+a3ba552t7qgn1ZvHPTLkvBAN+EQJN6VkzrV6BciQOSG2FrKu
-        al7f9OSGXXBDDoF2SIVVy+24bg==
-X-Google-Smtp-Source: ABdhPJxUeKr2wrSWuBx0TSBk2qJrKNOUCrH+GEBa8+DKn9RSfKsGBVi0ZH7xCQzy4XnMSpUOX1+y3g==
-X-Received: by 2002:ac2:52a5:: with SMTP id r5mr5019056lfm.239.1634634991018;
-        Tue, 19 Oct 2021 02:16:31 -0700 (PDT)
-Received: from cloudflare.com (2a01-110f-480d-6f00-ff34-bf12-0ef2-5071.aa.ipv6.supernova.orange.pl. [2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
-        by smtp.gmail.com with ESMTPSA id h19sm1619568lfk.199.2021.10.19.02.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 02:16:30 -0700 (PDT)
-References: <20211011191647.418704-1-john.fastabend@gmail.com>
- <20211011191647.418704-3-john.fastabend@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        joamaki@gmail.com, xiyou.wangcong@gmail.com
-Subject: Re: [PATCH bpf 2/4] bpf, sockmap: Fix race in ingress receive
- verdict with redirect to self
-In-reply-to: <20211011191647.418704-3-john.fastabend@gmail.com>
-Date:   Tue, 19 Oct 2021 11:16:29 +0200
-Message-ID: <87sfwxfk7m.fsf@cloudflare.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=L2Opnlu/+Ei1mILrJUudB00wyP5HtEuEpZxkiaGcTuk=;
+        b=WNlzFxTw1m72sIy0/J//HXrYCtRN1HRDvXLrfL1wa6HqsiMPNERN9L49zE+bZjWHQ2
+         ZeeqonCF0tI6opj1OZBGJe/q90xKiSadbTvZysvCuN7lMZfWY++ZomTMWpglrhBfEYyN
+         an3T9nncT1Vat8vre8vKLrZX23BORY5RCNC5THRXDwLkqW7hmnFBF3zk8hP+lYhmxKPh
+         q+UpyP3omR1WMrv9UWU8BBWcVDfDCJaU0gOKWq1PqBTSIoj0Hiw5FWsxD/y2nhw/AYwj
+         ShYPYamYEDX0bENbCkcBvOEVoK2sBIqcXQ4etaum7x3sqPPtgETSbdh6OApecPfQEuDv
+         O4kw==
+X-Gm-Message-State: AOAM531ZOhuIm1MlCeKX0RtT5hDYXpLhkXcIVjJ34OEt057CXCddfQSH
+        InUZal1kf1FL+lAkMaYk4Xoq9Q==
+X-Google-Smtp-Source: ABdhPJx8VfDG1M08CY2EwW4NlYD+30EjdeM5Y4rFFcgsoqwPfH7CxovxzrJhPB1TEyjaKCuj+tU1uA==
+X-Received: by 2002:adf:9b8a:: with SMTP id d10mr40402392wrc.151.1634636148051;
+        Tue, 19 Oct 2021 02:35:48 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.82.20])
+        by smtp.gmail.com with ESMTPSA id p3sm1727165wmp.43.2021.10.19.02.35.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 02:35:47 -0700 (PDT)
+Message-ID: <e11c38fa-22fa-a0ae-4dd1-cac5a208e021@isovalent.com>
+Date:   Tue, 19 Oct 2021 10:35:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v3 14/23] bpftool: update bpftool-cgroup.rst reference
+Content-Language: en-US
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+ <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On Mon, Oct 11, 2021 at 09:16 PM CEST, John Fastabend wrote:
-> A socket in a sockmap may have different combinations of programs
-> attached depending on configuration. There can be no programs in which
-> case the socket acts as a sink only. There can be a TX program in this
-> case a BPF program is attached to sending side, but no RX program is
-> attached. There can be an RX program only where sends have no BPF
-> program attached, but receives are hooked with BPF. And finally,
-> both TX and RX programs may be attached. Giving us the permutations,
->
->  None, Tx, Rx, and TxRx
->
-> To date most of our use cases have been TX case being used as a fast
-> datapath to directly copy between local application and a userspace
-> proxy. Or Rx cases and TxRX applications that are operating an in
-> kernel based proxy. The traffic in the first case where we hook
-> applications into a userspace application looks like this,
->
->   AppA  redirect   AppB
->    Tx <-----------> Rx
->    |                |
->    +                +
->    TCP <--> lo <--> TCP
->
-> In this case all traffic from AppA (after 3whs) is copied into the
-> AppB ingress queue and no traffic is ever on the TCP recieive_queue.
->
-> In the second case the application never receives, except in some
-> rare error cases, traffic on the actual user space socket. Instead
-> the send happens in the kernel.
->
->            AppProxy       socket pool
->        sk0 ------------->{sk1,sk2, skn}
->         ^                      |
->         |                      |
->         |                      v
->        ingress              lb egress
->        TCP                  TCP
->
-> Here because traffic is never read off the socket with userspace
-> recv() APIs there is only ever one reader on the sk receive_queue.
-> Namely the BPF programs.
->
-> However, we've started to introduce a third configuration where the
-> BPF program on receive should process the data, but then the normal
-> case is to push the data into the receive queue of AppB.
->
->        AppB
->        recv()                (userspace)
->      -----------------------
->        tcp_bpf_recvmsg()     (kernel)
->          |             |
->          |             |
->          |             |
->        ingress_msgQ    |
->          |             |
->        RX_BPF          |
->          |             |
->          v             v
->        sk->receive_queue
->
->
-> This is different from the App{A,B} redirect because traffic is
-> first received on the sk->receive_queue.
->
-> Now for the issue. The tcp_bpf_recvmsg() handler first checks the
-> ingress_msg queue for any data handled by the BPF rx program and
-> returned with PASS code so that it was enqueued on the ingress msg
-> queue. Then if no data exists on that queue it checks the socket
-> receive queue. Unfortunately, this is the same receive_queue the
-> BPF program is reading data off of. So we get a race. Its possible
-> for the recvmsg() hook to pull data off the receive_queue before
-> the BPF hook has a chance to read it. It typically happens when
-> an application is banging on recv() and getting EAGAINs. Until
-> they manage to race with the RX BPF program.
->
-> To fix this we note that before this patch at attach time when
-> the socket is loaded into the map we check if it needs a TX
-> program or just the base set of proto bpf hooks. Then it uses
-> the above general RX hook regardless of if we have a BPF program
-> attached at rx or not. This patch now extends this check to
-> handle all cases enumerated above, TX, RX, TXRX, and none. And
-> to fix above race when an RX program is attached we use a new
-> hook that is nearly identical to the old one except now we
-> do not let the recv() call skip the RX BPF program. Now only
-> the BPF program pulls data from sk->receive_queue and recv()
-> only pulls data from the ingress msgQ post BPF program handling.
->
-> With this resolved our AppB from above has been up and running
-> for many hours without detecting any errors. We do this by
-> correlating counters in RX BPF events and the AppB to ensure
-> data is never skipping the BPF program. Selftests, was not
-> able to detect this because we only run them for a short
-> period of time on well ordered send/recvs so we don't get any
-> of the noise we see in real application environments.
->
-> Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+2021-10-19 09:04 UTC+0100 ~ Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org>
+> The file name: Documentation/bpftool-cgroup.rst
+> should be, instead: tools/bpf/bpftool/Documentation/bpftool-cgroup.rst.
+> 
+> Update its cross-reference accordingly.
+> 
+> Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
+> Fixes: 5ccda64d38cc ("bpftool: implement cgroup bpf operations")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
+> 
+> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
+> 
+>  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> index be54b7335a76..617b8084c440 100755
+> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> @@ -392,7 +392,7 @@ class ManCgroupExtractor(ManPageExtractor):
+>      """
+>      An extractor for bpftool-cgroup.rst.
+>      """
+> -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-cgroup.rst')
+> +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-cgroup.rst')
+>  
+>      def get_attach_types(self):
+>          return self.get_rst_list('ATTACH_TYPE')
+> 
 
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+No, this change is incorrect. We have discussed it several times before
+[0][1]. Please drop this patch.
+
+Quentin
+
+[0]
+https://lore.kernel.org/bpf/eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com/
+[1]
+https://lore.kernel.org/bpf/CAEf4BzZhr+3JzuPvyTozQSts7QixnyY1N8CD+-ZuteHodCpmRA@mail.gmail.com/
