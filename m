@@ -2,115 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544A3433CC4
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 18:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF4C433CDA
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 18:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhJSQzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 12:55:50 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:39509 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhJSQzt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Oct 2021 12:55:49 -0400
-Received: by mail-oi1-f173.google.com with SMTP id s9so3552502oiw.6;
-        Tue, 19 Oct 2021 09:53:36 -0700 (PDT)
+        id S233784AbhJSRAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 13:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhJSRAY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 13:00:24 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFC9C06161C
+        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 09:58:10 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q19so486349pfl.4
+        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 09:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i5Qezf7c3TxeD08+tPhgqNRcXoDOexIcHhzpB9W1YFg=;
+        b=piOkh/XzGfcPSctBg/vDT4mnaCk9Q/AinpSX9vKPaj/olJaMgK1jmzQQXXabxQ1LfV
+         o31bBMVWbv1uLUzF6ayKC+PYXVvzIDeLmu2wcliUN8TvB/grksbGZjpJs5OObbGzzrjY
+         xoHLXYOlk+VTwCTrcZmCWk+cNxDNFO45ipY8NdN9+zSYJvQ6Dwa8ospIx9fAgXFAxkYd
+         H0A1X9bF1P1E0lwtWpdt3y9gzdaw2UijbodeSoAYTOjT9WBkC4GuvFz/iF7t+iUA6w/a
+         9l/b8PuwkrDZno5hKL5JrNxeXzAXodmpWUbMpxzU5GjnJcSqz51SorrRMRuxYkaXI6WZ
+         33LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fnwMHmBtcUTzeN7AT8ukQSoNU1knCjzi3Fwq9Ac0g90=;
-        b=HJdKu9Yc8oALg0EUXoUMBKenRfGSuc1q4BNOBnq1d3QPbXkCq0Q5jlBTo0ea8p8UZl
-         TFoRbrGnbWaGpIrHbQBqSuwUjDBjln3eaN2Tq7E0W56vbVBbTfmfC0AToRtbsfbJrN2f
-         TGQLAwhyx4BbOTgYtABGlXWrUetqHt59xqngUL10JUAD9n2+2D9oWEUJzviJL0Jxj5V5
-         1ehW808u32vCVZl2iVvCq3srHVgLn+AvHiMGVaozwkhe/dawpGSKvp7qDZAT2I5VNhxs
-         BJzngAMZ1t+SxOkjC/HJaDKF7a5CBdMUeB22usBCn/Xn19ZwnQcZOApGMc6tjISI+tdo
-         6Amw==
-X-Gm-Message-State: AOAM531GWuQFQ3L5WRDnGlhygdiI/0FEMysCTKio0KzcAOE7RqhVCKqw
-        nUgroemq5t+BnedFQmoE8w==
-X-Google-Smtp-Source: ABdhPJxG3M4MMDejwrse4k8mTAjT5I/40KR+eLLfq1+ZBF3yaKS308ugfGwsvK1xSATT6JQLbB2GBw==
-X-Received: by 2002:a05:6808:1185:: with SMTP id j5mr5157383oil.16.1634662416108;
-        Tue, 19 Oct 2021 09:53:36 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l26sm3843004oti.45.2021.10.19.09.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 09:53:35 -0700 (PDT)
-Received: (nullmailer pid 427792 invoked by uid 1000);
-        Tue, 19 Oct 2021 16:53:33 -0000
-Date:   Tue, 19 Oct 2021 11:53:33 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Rob Herring <robh+dt@kernel.org>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
-        netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        KP Singh <kpsingh@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Cross <ccross@android.com>, Alex Shi <alexs@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Kees Cook <keescook@chromium.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>, kvm@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        sparmaintainer@unisys.com,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>, devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v3 00/23] Fix some issues at documentation
-Message-ID: <YW74Dez4/3cIbe1Q@robh.at.kernel.org>
-References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i5Qezf7c3TxeD08+tPhgqNRcXoDOexIcHhzpB9W1YFg=;
+        b=efKSh+jCI1jY9rlMytf07bndS+XWnrmZUJe10xfQJzEhA7XZ8Ldkl9+Pi+X3Y6A7Sp
+         lhgACA8lz8DnNbne+ynnFWIswRpN3pZFHSH3y8T2NvAuliC+TKhBkI8g1NWXeu7PlaJR
+         GFXwyj5Jf2CIhs9lJE8/TJIQToJtkyKC7F+yumT686jpb8AqFPcqnhptlF8T5moaN96I
+         d0WPwFyLjAMHra5jcDs9AsMQZPK49ZoE+ggxM2o7/eQ7P0O42VpMNJmTd6i+tgx/tNZM
+         fJo7RFgiz+Hv4OJ2uG0NRZyUx5D83Sqw1rsuU97vG1L5aH5cN//L9f0Bu/GNqAC4PKpR
+         +Seg==
+X-Gm-Message-State: AOAM533fNW3nr5SAqMIH0W6H2r3RxYcBQ7lh0C9deOe2P/2n/HoF1/Q6
+        hjG1H6idfztWru/X8+XTTkjzmKGXNYrfZA==
+X-Google-Smtp-Source: ABdhPJzm6Tls0nIs6YPQnWDzgTY8HbSdjcn5DQMvS51nZzVmeKa52Hj3QjW8AegLeR8XzPIesLkP/w==
+X-Received: by 2002:a63:384f:: with SMTP id h15mr16565121pgn.348.1634662689984;
+        Tue, 19 Oct 2021 09:58:09 -0700 (PDT)
+Received: from andriin-mbp.thefacebook.com ([2620:10d:c090:500::be8c])
+        by smtp.gmail.com with ESMTPSA id v8sm3235964pjd.7.2021.10.19.09.58.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Oct 2021 09:58:09 -0700 (PDT)
+From:   andrii.nakryiko@gmail.com
+X-Google-Original-From: andrii@kernel.org
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     andrii@kernel.org, kernel-team@fb.com,
+        Evgeny Vereshchagin <evvers@ya.ru>
+Subject: [PATCH bpf] libbpf: fix overflow in BTF sanity checks
+Date:   Tue, 19 Oct 2021 09:58:01 -0700
+Message-Id: <20211019165801.88714-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1634630485.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 19 Oct 2021 09:03:59 +0100, Mauro Carvalho Chehab wrote:
-> Hi Jon,
-> 
-> This series is against today's next (next-20211019) and addresses missing
-> links to Documentation/*.
-> 
-> The best would be to have the patches applied directly to the trees that
-> contain the patches that moved/renamed files, and then apply the
-> remaining ones either later during the merge window or just afterwards,
-> whatever works best for you.
-> 
-> Regards,
-> Mauro
-> 
-> Mauro Carvalho Chehab (23):
->   visorbus: fix a copyright symbol that was bad encoded
->   libbpf: update index.rst reference
->   docs: accounting: update delay-accounting.rst reference
->   MAINTAINERS: update arm,vic.yaml reference
->   MAINTAINERS: update aspeed,i2c.yaml reference
->   MAINTAINERS: update faraday,ftrtc010.yaml reference
->   MAINTAINERS: update ti,sci.yaml reference
->   MAINTAINERS: update intel,ixp46x-rng.yaml reference
->   MAINTAINERS: update nxp,imx8-jpeg.yaml reference
->   MAINTAINERS: update gemini.yaml reference
->   MAINTAINERS: update brcm,unimac-mdio.yaml reference
->   MAINTAINERS: update mtd-physmap.yaml reference
+From: Andrii Nakryiko <andrii@kernel.org>
 
-Applied patches 3-12.
+btf_header's str_off+str_len or type_off+type_len can overflow as they
+are u32s. This will lead to bypassing the sanity checks during BTF
+parsing, resulting in crashes afterwards. Fix by using 64-bit signed
+integers for comparison.
 
->   Documentation: update vcpu-requests.rst reference
->   bpftool: update bpftool-cgroup.rst reference
->   docs: translations: zn_CN: irq-affinity.rst: add a missing extension
->   docs: translations: zh_CN: memory-hotplug.rst: fix a typo
->   docs: fs: locks.rst: update comment about mandatory file locking
->   fs: remove a comment pointing to the removed mandatory-locking file
->   Documentation/process: fix a cross reference
->   dt-bindings: mfd: update x-powers,axp152.yaml reference
->   regulator: dt-bindings: update samsung,s2mpa01.yaml reference
->   regulator: dt-bindings: update samsung,s5m8767.yaml reference
->   dt-bindings: reserved-memory: ramoops: update ramoops.yaml references
+Fixes: d8123624506c ("libbpf: Fix BTF data layout checks and allow empty BTF")
+Reported-by: Evgeny Vereshchagin <evvers@ya.ru>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/btf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 1f6dea11f600..7ed117401e52 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -241,12 +241,12 @@ static int btf_parse_hdr(struct btf *btf)
+ 	}
+ 
+ 	meta_left = btf->raw_size - sizeof(*hdr);
+-	if (meta_left < hdr->str_off + hdr->str_len) {
++	if (meta_left < (long long)hdr->str_off + hdr->str_len) {
+ 		pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (hdr->type_off + hdr->type_len > hdr->str_off) {
++	if ((long long)hdr->type_off + hdr->type_len > hdr->str_off) {
+ 		pr_debug("Invalid BTF data sections layout: type data at %u + %u, strings data at %u + %u\n",
+ 			 hdr->type_off, hdr->type_len, hdr->str_off, hdr->str_len);
+ 		return -EINVAL;
+-- 
+2.30.2
+
