@@ -2,127 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE71D432C20
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 05:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB92D432C3E
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 05:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhJSDQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 23:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhJSDQs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:16:48 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9C6C061765
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 20:14:36 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id f5so18038015pgc.12
-        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 20:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=aM3Uu5Y3y5Vgada2bdPWHaQ5RiDRtrSzHIKW6V50leE=;
-        b=eeY8dNlntVANS/YumjJeKJj3EiisMkt7ORQbYNbiJrNn2j5RLJeDnnqNZ2xjLg0/gC
-         WEoMCb10GIAEaLRe295tQhPF7lQdErJd0ZUN1Y87RkNAJr5dxPQiBNvbnl9xqRNa1l/N
-         9uaNftBK6wsiTb8nqVTwsysQRaVJNZWJ9poMTH2jGENqTUzyzNyLzCz4QvZktp4W1pqS
-         0YWYAYRbtuawAGUMBaZMDuP9Ux1hrRO709/zM3eS6TINDoTI2bje3gw87p/0lDtJlL2U
-         TszjhnOucLEe1Ld2ilVcsvghIVrlosxHrPkYyF/2e3c+Rwbb5ZJTvQ58SAt3Sqsn/oH/
-         XAIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=aM3Uu5Y3y5Vgada2bdPWHaQ5RiDRtrSzHIKW6V50leE=;
-        b=HZTkP1U89+QniQlSWbAR3M6Axxn2mKZw6vfskcJ27iz6YsxUFPsEqJcgNu1ixqZpb7
-         QLyTn2UshM1eBRMPGU9QiAhAStRRA3Jg8aZ2ksGTWL+x/8NzT6CxJCMk0U45jJWF00R0
-         bxAReEt7uuhquy/IRWc/sZD9/g1dcy63RAJvL1IVtJgfabskkpcOv0FbzN0P9mqSWhqU
-         dKeIFwz/JyIuVjbmMmTuuN/wwFeZzz3uNOSf7YBmOx0s61002N3z1wMFPguXxmjk9NBf
-         wrWXpACMymnpwC0VftMVl3GgrzIfzk4IfE8wNX2CA/cyQPzqMHkqdwH8IQr19OlPhKH1
-         QRMg==
-X-Gm-Message-State: AOAM532skbJAW/2P4tMawv8ItFFBYCF6x9wTDHYIWR0qUjTCFgAfWq6Q
-        3+IOjw6y3j6BL/rH0HpQ7qpYYQ==
-X-Google-Smtp-Source: ABdhPJwfYtqxpPN0L68LDtEG9zZo+GUWjRoapYQgmNZQnF4PdyJWOOIUoIKa0aug2G03DckNnuqyYA==
-X-Received: by 2002:a05:6a00:198c:b0:44d:ce87:d164 with SMTP id d12-20020a056a00198c00b0044dce87d164mr10603571pfl.64.1634613276110;
-        Mon, 18 Oct 2021 20:14:36 -0700 (PDT)
-Received: from [10.70.253.117] ([139.177.225.234])
-        by smtp.gmail.com with ESMTPSA id gm14sm791619pjb.40.2021.10.18.20.14.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 20:14:35 -0700 (PDT)
-Message-ID: <b8f6c2f6-1b07-9306-46da-5ab170a125f9@bytedance.com>
-Date:   Tue, 19 Oct 2021 11:14:30 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [External] Re: [PATCH] bpf: use count for prealloc hashtab too
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S231226AbhJSD0e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 23:26:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:29907 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhJSD0e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 23:26:34 -0400
+Received: from dggeme764-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HYJrh3X66zbnGN;
+        Tue, 19 Oct 2021 11:19:48 +0800 (CST)
+Received: from huawei.com (10.67.174.119) by dggeme764-chm.china.huawei.com
+ (10.3.19.110) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 19
+ Oct 2021 11:24:20 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <bpf@vger.kernel.org>
+CC:     Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20211015090353.31248-1-zhouchengming@bytedance.com>
- <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com>
- <6d7246b6-195e-ee08-06b1-2d1ec722e7b2@bytedance.com>
- <CAADnVQKG5=qVSjZGzHEc0ijwiYABVCU1uc8vOQ-ZLibhpW--Hg@mail.gmail.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAADnVQKG5=qVSjZGzHEc0ijwiYABVCU1uc8vOQ-ZLibhpW--Hg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Yonghong Song <yhs@fb.com>, Xu Kuohai <xukuohai@huawei.com>
+Subject: [PATCH bpf] bpf: Fix error usage of map_fd and fdget() in generic_map_update_batch()
+Date:   Tue, 19 Oct 2021 03:29:34 +0000
+Message-ID: <20211019032934.1210517-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.119]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme764-chm.china.huawei.com (10.3.19.110)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2021/10/19 上午9:57, Alexei Starovoitov 写道:
-> On Sun, Oct 17, 2021 at 10:49 PM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
->>
->> 在 2021/10/16 上午3:58, Alexei Starovoitov 写道:
->>> On Fri, Oct 15, 2021 at 11:04 AM Chengming Zhou
->>> <zhouchengming@bytedance.com> wrote:
->>>>
->>>> We only use count for kmalloc hashtab not for prealloc hashtab, because
->>>> __pcpu_freelist_pop() return NULL when no more elem in pcpu freelist.
->>>>
->>>> But the problem is that __pcpu_freelist_pop() will traverse all CPUs and
->>>> spin_lock for all CPUs to find there is no more elem at last.
->>>>
->>>> We encountered bad case on big system with 96 CPUs that alloc_htab_elem()
->>>> would last for 1ms. This patch use count for prealloc hashtab too,
->>>> avoid traverse and spin_lock for all CPUs in this case.
->>>>
->>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->>>
->>> It's not clear from the commit log what you're solving.
->>> The atomic inc/dec in critical path of prealloc maps hurts performance.
->>> That's why it's not used.
->>>
->> Thanks for the explanation, what I'm solving is when hash table hasn't free
->> elements, we don't need to call __pcpu_freelist_pop() to traverse and
->> spin_lock all CPUs. The ftrace output of this bad case is below:
->>
->>  50)               |  htab_map_update_elem() {
->>  50)   0.329 us    |    _raw_spin_lock_irqsave();
->>  50)   0.063 us    |    lookup_elem_raw();
->>  50)               |    alloc_htab_elem() {
->>  50)               |      pcpu_freelist_pop() {
->>  50)   0.209 us    |        _raw_spin_lock();
->>  50)   0.264 us    |        _raw_spin_lock();
-> 
-> This is LRU map. Not hash map.
-> It will grab spin_locks of other cpus
-> only if all previous cpus don't have free elements.
-> Most likely your map is actually full and doesn't have any free elems.
-> Since it's an lru it will force free an elem eventually.
-> 
+1. The ufd in generic_map_update_batch() should be read from batch.map_fd;
+2. A call to fdget() should be followed by a symmetric call to fdput().
 
-Maybe I missed something, the map_update_elem function of LRU map is
-htab_lru_map_update_elem() and the htab_map_update_elem() above is the
-map_update_elem function of hash map.
-Because of the implementation of percpu freelist used in hash map, it
-will spin_lock all other CPUs when there is no free elements.
+Fixes: aa2e93b8e58e ("bpf: Add generic support for update and delete batch ops")
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ kernel/bpf/syscall.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Thanks.
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4e50c0bfdb7d..9dab49d3f394 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1337,12 +1337,11 @@ int generic_map_update_batch(struct bpf_map *map,
+ 	void __user *values = u64_to_user_ptr(attr->batch.values);
+ 	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+ 	u32 value_size, cp, max_count;
+-	int ufd = attr->map_fd;
++	int ufd = attr->batch.map_fd;
+ 	void *key, *value;
+ 	struct fd f;
+ 	int err = 0;
+ 
+-	f = fdget(ufd);
+ 	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+ 		return -EINVAL;
+ 
+@@ -1367,6 +1366,7 @@ int generic_map_update_batch(struct bpf_map *map,
+ 		return -ENOMEM;
+ 	}
+ 
++	f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
+ 	for (cp = 0; cp < max_count; cp++) {
+ 		err = -EFAULT;
+ 		if (copy_from_user(key, keys + cp * map->key_size,
+@@ -1386,6 +1386,7 @@ int generic_map_update_batch(struct bpf_map *map,
+ 
+ 	kvfree(value);
+ 	kvfree(key);
++	fdput(f);
+ 	return err;
+ }
+ 
+-- 
+2.27.0
 
