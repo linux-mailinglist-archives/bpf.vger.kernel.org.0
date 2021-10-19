@@ -2,88 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE72F432FEE
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 09:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB38433080
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 10:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhJSHpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 03:45:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55850 "EHLO mail.kernel.org"
+        id S234785AbhJSIGq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 04:06:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234581AbhJSHpO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Oct 2021 03:45:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 385656136F;
-        Tue, 19 Oct 2021 07:43:02 +0000 (UTC)
+        id S234722AbhJSIGl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 04:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E94EB61452;
+        Tue, 19 Oct 2021 08:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634629382;
-        bh=hJoet635Vy1bZq8U3J0xmPvh7E+f4HrdZFse3BcIUaE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZAiYan56EhycFINj4QXIHezUk0hXKMCem+RCbBFZQB0gwQk8FLcLUWWw0CDNtiW1g
-         jqrJVPxyn6aZBikDklBi7T7q6JCJHW41tvbaiJlso8PH3H3xHPbfRegZIYizB4gQgu
-         nvTQd3Yv4P4rNbGMVp/pZZGUdH+eyxQrPDK82cfzfjddpgSTNthoj/MRvS8IRV/dix
-         dHgusBY45kDfnyoIYVOdc9XTDqhrIIy4gCZ54k+73jqNREHjuBVSzEa0XLDFT6RXVB
-         PZoe7Lnw9JHN7HklmO7w/plzsLdxl7Tg3Zz8b6kHYXk4AYR3xhdMaRBFun1ts8G3SE
-         ljzeut4d9MIkg==
+        s=k20201202; t=1634630668;
+        bh=Uvci5l/z6Xl7igGPEJw1tvb5zXG8EEBvSjZvZQvPw7o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rpKkaVAryy3dOHI5Z0AVHWDGL+qYu3wofMEsdn+Pc8CjxVWvhXVazy7gZrKiPAaDD
+         xNVXTC8q0dsZKNR3ih1oPwNBgr4zydsOmvnv3poIDksXNNKT3SfE6lRbc6lup8jshp
+         UFeWO8R7fla6iyuPrQH95m37/OifKGJ7dEFFb9jjachmzIGkjNuxHpa2sx0ZtXdKS1
+         AGVBuul1FLqAXwuvTgrPKfeB7WXkylEdnmiuXkM/w4yevSt2//z+WrduhEbO7W0aHm
+         qsWGPEPZWnGjrqUdazSHMDIBy5fUq5IJo3r1SYMCGrtFiTcQmrOZ5eRKUX3tYFWXRU
+         876wQqSSyZ5qw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mcjlt-001nLk-8V; Tue, 19 Oct 2021 08:42:53 +0100
+        id 1mck6j-001oIo-02; Tue, 19 Oct 2021 09:04:25 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Alex Shi <alexs@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Chen-Yu Tsai <wens@csie.org>, Colin Cross <ccross@android.com>,
+        Jeff Layton <jlayton@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 2/2] scripts: documentation-file-ref-check: fix bpf selftests path
-Date:   Tue, 19 Oct 2021 08:42:51 +0100
-Message-Id: <49b765cbac6ccd22d627573154806ec9389d60f0.1634629094.git.mchehab+huawei@kernel.org>
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, devicetree@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, netdev@vger.kernel.org,
+        sparmaintainer@unisys.com
+Subject: [PATCH v3 00/23] Fix some issues at documentation
+Date:   Tue, 19 Oct 2021 09:03:59 +0100
+Message-Id: <cover.1634630485.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634629094.git.mchehab+huawei@kernel.org>
-References: <cover.1634629094.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tools/testing/selftests/bpf/test_bpftool_synctypes.py use
-relative patches on the top of BPFTOOL_DIR:
+Hi Jon,
 
-	BPFTOOL_DIR = os.path.join(LINUX_ROOT, 'tools/bpf/bpftool')
+This series is against today's next (next-20211019) and addresses missing
+links to Documentation/*.
 
-Change the script to automatically convert:
+The best would be to have the patches applied directly to the trees that
+contain the patches that moved/renamed files, and then apply the
+remaining ones either later during the merge window or just afterwards,
+whatever works best for you.
 
-	testing/selftests/bpf -> bpf/bpftool
+Regards,
+Mauro
 
-In order to properly check the files used by such script.
+Mauro Carvalho Chehab (23):
+  visorbus: fix a copyright symbol that was bad encoded
+  libbpf: update index.rst reference
+  docs: accounting: update delay-accounting.rst reference
+  MAINTAINERS: update arm,vic.yaml reference
+  MAINTAINERS: update aspeed,i2c.yaml reference
+  MAINTAINERS: update faraday,ftrtc010.yaml reference
+  MAINTAINERS: update ti,sci.yaml reference
+  MAINTAINERS: update intel,ixp46x-rng.yaml reference
+  MAINTAINERS: update nxp,imx8-jpeg.yaml reference
+  MAINTAINERS: update gemini.yaml reference
+  MAINTAINERS: update brcm,unimac-mdio.yaml reference
+  MAINTAINERS: update mtd-physmap.yaml reference
+  Documentation: update vcpu-requests.rst reference
+  bpftool: update bpftool-cgroup.rst reference
+  docs: translations: zn_CN: irq-affinity.rst: add a missing extension
+  docs: translations: zh_CN: memory-hotplug.rst: fix a typo
+  docs: fs: locks.rst: update comment about mandatory file locking
+  fs: remove a comment pointing to the removed mandatory-locking file
+  Documentation/process: fix a cross reference
+  dt-bindings: mfd: update x-powers,axp152.yaml reference
+  regulator: dt-bindings: update samsung,s2mpa01.yaml reference
+  regulator: dt-bindings: update samsung,s5m8767.yaml reference
+  dt-bindings: reserved-memory: ramoops: update ramoops.yaml references
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+ Documentation/admin-guide/ramoops.rst         |  2 +-
+ Documentation/admin-guide/sysctl/kernel.rst   |  2 +-
+ Documentation/bpf/index.rst                   |  2 +-
+ .../devicetree/bindings/gpio/gpio-axp209.txt  |  2 +-
+ .../bindings/regulator/samsung,s2mpa01.yaml   |  2 +-
+ .../bindings/regulator/samsung,s5m8767.yaml   |  2 +-
+ Documentation/filesystems/locks.rst           | 17 +++++-----------
+ Documentation/process/submitting-patches.rst  |  4 ++--
+ .../zh_CN/core-api/irq/irq-affinity.rst       |  2 +-
+ .../zh_CN/core-api/memory-hotplug.rst         |  2 +-
+ MAINTAINERS                                   | 20 +++++++++----------
+ arch/riscv/kvm/vcpu.c                         |  2 +-
+ drivers/visorbus/visorbus_main.c              |  2 +-
+ fs/locks.c                                    |  1 -
+ .../selftests/bpf/test_bpftool_synctypes.py   |  2 +-
+ 15 files changed, 28 insertions(+), 36 deletions(-)
 
-To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH 0/2] at: https://lore.kernel.org/all/cover.1634629094.git.mchehab+huawei@kernel.org/
-
- scripts/documentation-file-ref-check | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/documentation-file-ref-check b/scripts/documentation-file-ref-check
-index 6865d8e63d5c..68083f2f1122 100755
---- a/scripts/documentation-file-ref-check
-+++ b/scripts/documentation-file-ref-check
-@@ -147,6 +147,7 @@ while (<IN>) {
- 		if ($f =~ m/tools/) {
- 			my $path = $f;
- 			$path =~ s,(.*)/.*,$1,;
-+			$path =~ s,testing/selftests/bpf,bpf/bpftool,;
- 			next if (grep -e, glob("$path/$ref $path/../$ref $path/$fulref"));
- 		}
- 
 -- 
 2.31.1
+
 
