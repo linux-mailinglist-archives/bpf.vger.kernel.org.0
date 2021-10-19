@@ -2,94 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB94433DCD
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 19:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252AC43416B
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 00:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhJSRxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 13:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        id S229627AbhJSWeD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 18:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhJSRxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Oct 2021 13:53:09 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5EEC06161C
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 10:50:55 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id t127so12031021ybf.13
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 10:50:55 -0700 (PDT)
+        with ESMTP id S229734AbhJSWeD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 18:34:03 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F29C06161C;
+        Tue, 19 Oct 2021 15:31:50 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id t184so1266871pfd.0;
+        Tue, 19 Oct 2021 15:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vlhdPi8AOZZTCp9eCtfFwCOazpvWLYwiFZSK+mM3Q6E=;
-        b=UaRqJCFpuGsrn+RA/tOJaN0sQBOJqBAMOrWvshdaPt7NM7ZIJbIICGd8ImtqolRhim
-         rL8y5/4P4mH05SLUmCUCOBT3fH1+x0weyjNsANJiGpDlhR13H0wurWO+/JaX4HsqzVcx
-         cwC1LSfTfQV7Ymg23S6j+rU1kIu5PzSds8qB06WEaTg9SB96cd0vBbhT86pZWcY0WQhN
-         CULAL6dBU9WTc8VYNx/BuYmjsAjOvR3RYR80ecu3JpnoTRH1H02vUmfveDX0Ce7EdvTF
-         cz4z/kNjB7b1CafQhspm4GzxM/b2k+taM7F8Gwefjd0UZcdCP2Gnh25YHvNIK1dOIakw
-         DEyQ==
+        bh=QQt79f2ztwEytrG3Wcrb+UJxVauF4hf/a/9L7b7paIc=;
+        b=ej0Kea7BiqGuAt4aKtPjKo+cLvhiFuWuFwxu4v6BlAwQe4zOpN4sD71RrNJAd1uYAn
+         UbYC0A7LrpxXLQWgmagvghe5QDBcC423gzvcmIzSGWIWI8Kh9k+0nMgaqQ1uFT3WIY+i
+         y+ec3MLN4Ki3YJZ6DQsPZsfy474aXkQC4iTpSSybg+HjoHzv0bZBWZ4y+QYfNNAScrvw
+         imRoNfL+7RTIaKw638hOOkT+ahnlXSZZIjLOxZf2k7NKBKXJTi0M91eX91UXDXnmFamK
+         JBvcA8+/qKpvUfnxvPWR/PVd9Bnl+K6+14QxPAmZ8ZhdNb6z/K4upmWoGA4dP8dx2PgW
+         S94g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vlhdPi8AOZZTCp9eCtfFwCOazpvWLYwiFZSK+mM3Q6E=;
-        b=mSqE9fhy9dQcSx4GLu6Djbi0h/z1twgYvpD5TK4tSUCwrUtBMNiHthDDBEcJ3p6JQE
-         c48JoZHMxMYtc5l/raXdXQUtnvrA0voRoEXQ1DLyR9OG0YkB5yRz3TcAKmkzFeX7PbrP
-         anWEWGeSp9cUWTgqpykZck1GQpk+yn2i1ETGF4omq2tZkQTSmREDMXQmL82zAaPvwHt5
-         5Oy+qkwhTgb0tmrzsKbKQOpMbRyeZYkFRZ7vMPHF+FCiS/lpPkbx901N7ywW36/dvTfL
-         i84ctzSMoTiEVD9WnHVer/K1Bzn+glppKUN5W6M1XeDsNRkL5LVzB+f9dYO50cX03pIe
-         MFhA==
-X-Gm-Message-State: AOAM533JAu/u5qnXkpoRi4SaffwIQnKfs+Ud1A5Yls6IGwfuPr1kZ3GZ
-        p2QF3DG7SciLFRQNK8HR/m2AfUqS1Ervs89jkOEhLlFavn8=
-X-Google-Smtp-Source: ABdhPJyJJYoZDQL0+QctQJar6fFZ/hJF15d4TjmI8qqzGkOZg++VEGcmYVy4a5KK1RYXIiKqhA5C7391kh5TKppSbYQ=
-X-Received: by 2002:a25:5606:: with SMTP id k6mr38292302ybb.51.1634665855277;
- Tue, 19 Oct 2021 10:50:55 -0700 (PDT)
+        bh=QQt79f2ztwEytrG3Wcrb+UJxVauF4hf/a/9L7b7paIc=;
+        b=VcJ56z+jtnaAXJOjUuJ8LKq2/yo3cIHTXev68Rs+Ta4O7sX32H0QeGFKHTYiWJNWlz
+         WsQZszw0j9IuQV9x9PoqoZ+8cc2B3T4VvD1BgLySfRSCCsYlvNxQiKJsZyrO/Io5hm/l
+         mzbjaQmlsHVD+s/WiG5WWaKbyRpyBdJSxkiL5xap2YGILuxYFsD8K97bks0an9LRPaId
+         fq3VW7nTKSXgrx+rPAifYQVeV8hkXEcCZc3EIyEmjiWLhtbyz11rXFQ3ttBgkSJGZYsM
+         74Tn/T3Uv9T9WeP3Rvv+5GROUQrhJ9YEiK4Bss5JTnk1JEHBYONUxAsJJgOg4BRQAFik
+         yqxw==
+X-Gm-Message-State: AOAM532O7LYSHtbD0xIU0LaeCdNpeI0/sWdcE6KeRiwGDH9YF2npGBRU
+        UIOM7ZFQO0RcwjvdobHoVnf7tul5hYiKZqDiIuM=
+X-Google-Smtp-Source: ABdhPJx1ZTfV1KbHy9KP6Y6JzrwYhVPoMKjxO+PGza3THp14gnPZ50Ulxz3A7SO+g7ja72X+W5MdPQAyTH/vBTMQksE=
+X-Received: by 2002:a63:374c:: with SMTP id g12mr30702710pgn.35.1634682709570;
+ Tue, 19 Oct 2021 15:31:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211009150029.1746383-1-hengqi.chen@gmail.com> <20211009150029.1746383-3-hengqi.chen@gmail.com>
-In-Reply-To: <20211009150029.1746383-3-hengqi.chen@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 19 Oct 2021 10:50:43 -0700
-Message-ID: <CAEf4Bza6iFBn6FJ4ps+ONwDQ-Otqt=QtBm7Tw00qg+zVYM0wdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] tools: Switch to new btf__type_cnt/btf__raw_data
- APIs
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+ <11f3dc3cfc192e2ee271467d7a6c7c1920006766.1634630486.git.mchehab+huawei@kernel.org>
+ <e11c38fa-22fa-a0ae-4dd1-cac5a208e021@isovalent.com>
+In-Reply-To: <e11c38fa-22fa-a0ae-4dd1-cac5a208e021@isovalent.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 19 Oct 2021 15:31:38 -0700
+Message-ID: <CAADnVQ+9+fXGXyEU+fWYGiM7HqzaJwPoSKBuXKd=qz3x25XfSw@mail.gmail.com>
+Subject: Re: [PATCH v3 14/23] bpftool: update bpftool-cgroup.rst reference
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 8:01 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Tue, Oct 19, 2021 at 2:35 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Replace the calls to btf__get_nr_types/btf__get_raw_data in tools
-> with new APIs btf__type_cnt/btf__raw_data. The old APIs will be
-> deprecated in recent release of libbpf.
-
-"in libbpf v0.7+"
-
+> 2021-10-19 09:04 UTC+0100 ~ Mauro Carvalho Chehab
+> <mchehab+huawei@kernel.org>
+> > The file name: Documentation/bpftool-cgroup.rst
+> > should be, instead: tools/bpf/bpftool/Documentation/bpftool-cgroup.rst.
+> >
+> > Update its cross-reference accordingly.
+> >
+> > Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
+> > Fixes: 5ccda64d38cc ("bpftool: implement cgroup bpf operations")
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >
+> > To mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> > See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/
+> >
+> >  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> > index be54b7335a76..617b8084c440 100755
+> > --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> > +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> > @@ -392,7 +392,7 @@ class ManCgroupExtractor(ManPageExtractor):
+> >      """
+> >      An extractor for bpftool-cgroup.rst.
+> >      """
+> > -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-cgroup.rst')
+> > +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-cgroup.rst')
+> >
+> >      def get_attach_types(self):
+> >          return self.get_rst_list('ATTACH_TYPE')
+> >
 >
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  tools/bpf/bpftool/btf.c                              | 12 ++++++------
->  tools/bpf/bpftool/gen.c                              |  4 ++--
->  tools/bpf/resolve_btfids/main.c                      |  4 ++--
->  tools/perf/util/bpf-event.c                          |  2 +-
->  tools/testing/selftests/bpf/btf_helpers.c            |  4 ++--
->  tools/testing/selftests/bpf/prog_tests/btf.c         | 10 +++++-----
->  tools/testing/selftests/bpf/prog_tests/btf_dump.c    |  8 ++++----
->  tools/testing/selftests/bpf/prog_tests/btf_endian.c  | 12 ++++++------
->  tools/testing/selftests/bpf/prog_tests/btf_split.c   |  2 +-
->  .../testing/selftests/bpf/prog_tests/core_autosize.c |  2 +-
->  tools/testing/selftests/bpf/prog_tests/core_reloc.c  |  2 +-
->  .../selftests/bpf/prog_tests/resolve_btfids.c        |  4 ++--
->  12 files changed, 33 insertions(+), 33 deletions(-)
->
+> No, this change is incorrect. We have discussed it several times before
+> [0][1]. Please drop this patch.
 
-Please split each tool into a separate patch, and selftests separate
-from tools as well. Otherwise, great job, thanks!
-
-[...]
++1
