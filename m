@@ -2,133 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FFD432C6A
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 05:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1E7432C7D
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 05:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhJSDsW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 23:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhJSDsV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 23:48:21 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AFC5C06161C;
-        Mon, 18 Oct 2021 20:46:09 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so959699pjc.3;
-        Mon, 18 Oct 2021 20:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BZZTHz9glvu1cCcglzMbueWb2cAg5BGgcHCHhFUYOyo=;
-        b=TYnT0JHLak+IGcZunfBdTnuCxhsG4IO5Tbh/KUz/Psnz1HThhD88kQE12+vOZa+imz
-         kD/cMsM18F6DFAaN9wH6mmBOOgG8/U66kxQgWQphN1BIx5I6ZZ8bFVJYKRpoLj+U5UVS
-         pokXtrPApMxYYppvRzlANb0W0WEsBwt1t9LMKWU6ZqWv+gM9aAgj0MuudOWDSgtQ7qEi
-         mX/K5MzheHeBndh+f5s+unzTp+0xMHLU932x/aV8h/pCBCYvbQdaW4y5N1TKodsGaN3Q
-         bLv6XV5NTrzIas5YWc5nwRNNX1Aq24HU4wDl9NR7TfWVO/UBADX832LXKDklBZg6cPO0
-         eEDw==
+        id S229774AbhJSEBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 00:01:33 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:40871 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhJSEBc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 00:01:32 -0400
+Received: by mail-io1-f71.google.com with SMTP id r12-20020a5d96cc000000b005dc1dcac76eso12343838iol.7
+        for <bpf@vger.kernel.org>; Mon, 18 Oct 2021 20:59:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BZZTHz9glvu1cCcglzMbueWb2cAg5BGgcHCHhFUYOyo=;
-        b=gJFdCen47zvuNRBpGfAv2gmEboQaRzw0CaPrYMksMaXT5us+m7WCSfcjrvTacbI6qR
-         LLbH0byPnqQLlcG+vf68hV1YZ6auj+Quhzcf384cs3AF0eKMh+hP8K4LF5Idt4PGlVBS
-         baAXLyApc3KiOQyUbrB7VdaAS1Iu4nB4aKBrRn5/zjvPVA54+ncYMkdbUFoRETXf7Dxw
-         /UxeIe4mKcFZUONMKoGjZ9gGZDDJVjvf0Ojv5b1ObOpVm10s86yPSCcl8lSCR+z5PEz3
-         CZK9W4huN/JJeLjxPYDLLptKC/Y5/3qIKB10zRCPeTWRXg8nAFZyYh4aalILd/jeNCBj
-         lExw==
-X-Gm-Message-State: AOAM533Wu13TxmPPsUOVovSF0tBfSE4Ly+1HNi7jS9HgftZzZIeiWkd2
-        3l0VxKz1LJUfdWRJ2PdMblhkHAkwWmgJm8QSViE=
-X-Google-Smtp-Source: ABdhPJxUtFFZ/TdUvhg3UFl/iRBV82O13ot3ca0wwDlvmopzKaMuVbedurIxZEDyynaNtS/8vAkxaNqYlz17/ZTpTQE=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr32071190pll.22.1634615168946; Mon, 18
- Oct 2021 20:46:08 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=CXLu3Njd4HQy29X7aYrAHKb4yyo3yeWSYSnh0Cidu00=;
+        b=vCmASp3vsvIUy+6rLmjIQ428kpLosH+z0hzjTgjLXf56bsW1+RlWkHBgwkaq2SqlaP
+         7MZd2M/roxNWKgLPTv85+hywlTyBbJgSicF0gZcsSDiVv/AW3ZMqp+irteH+13qvaaNt
+         dFEaseq1htof1J5cdoogsXqI9PK7Hb9gigziMCNOPNpjS90HG4U0bt8tPB6vauEmQGOE
+         GsbjtRGJkv33IIJDqouOZXTA5RDMOs0YHvww+lg2rMuYcoeIWjnsXKU/+OLG3dZSwXql
+         WliJaaa+6JUKTuMDEpP/pO71nL19TA4P+eobw2nSSrjPYfeWPMSzr8pm4JJIxrxPeV1a
+         sGmg==
+X-Gm-Message-State: AOAM530y70qQZHcghIo2QKkc8buzue1+OfUWxZV14V5mj0BGZ7d/hTMe
+        glGR7VLML9wuR2vHccD5miBmX77x8/DNhBhntxmJ3w4hNgDx
+X-Google-Smtp-Source: ABdhPJwiWLU6Niv1Rp7QH3jVOOdgdv8+XtU9gerOd1MjkaW+zGtzuHdjPoTXI1cVkcaajO9snerMGnco8ogcw1mYQMeNUXxFeI/e
 MIME-Version: 1.0
-References: <20211015090353.31248-1-zhouchengming@bytedance.com>
- <CAADnVQ+A5LdWQTXFugNTceGcz_biV-uEJma4oT5UJKeHQBHQPw@mail.gmail.com>
- <6d7246b6-195e-ee08-06b1-2d1ec722e7b2@bytedance.com> <CAADnVQKG5=qVSjZGzHEc0ijwiYABVCU1uc8vOQ-ZLibhpW--Hg@mail.gmail.com>
- <b8f6c2f6-1b07-9306-46da-5ab170a125f9@bytedance.com>
-In-Reply-To: <b8f6c2f6-1b07-9306-46da-5ab170a125f9@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 18 Oct 2021 20:45:57 -0700
-Message-ID: <CAADnVQJpcFXVE1j5aEdeyCoBZytzytiYP+3AwQxtWmNj6q-kNQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] bpf: use count for prealloc hashtab too
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a92:cdaa:: with SMTP id g10mr16367152ild.1.1634615960333;
+ Mon, 18 Oct 2021 20:59:20 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 20:59:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8f39905ceacaf6b@google.com>
+Subject: [syzbot] INFO: rcu detected stall in prog_array_map_clear_deferred
+From:   syzbot <syzbot+1e372cc42ba6b9d90a6b@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 8:14 PM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> =E5=9C=A8 2021/10/19 =E4=B8=8A=E5=8D=889:57, Alexei Starovoitov =E5=86=99=
-=E9=81=93:
-> > On Sun, Oct 17, 2021 at 10:49 PM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
-> >>
-> >> =E5=9C=A8 2021/10/16 =E4=B8=8A=E5=8D=883:58, Alexei Starovoitov =E5=86=
-=99=E9=81=93:
-> >>> On Fri, Oct 15, 2021 at 11:04 AM Chengming Zhou
-> >>> <zhouchengming@bytedance.com> wrote:
-> >>>>
-> >>>> We only use count for kmalloc hashtab not for prealloc hashtab, beca=
-use
-> >>>> __pcpu_freelist_pop() return NULL when no more elem in pcpu freelist=
-.
-> >>>>
-> >>>> But the problem is that __pcpu_freelist_pop() will traverse all CPUs=
- and
-> >>>> spin_lock for all CPUs to find there is no more elem at last.
-> >>>>
-> >>>> We encountered bad case on big system with 96 CPUs that alloc_htab_e=
-lem()
-> >>>> would last for 1ms. This patch use count for prealloc hashtab too,
-> >>>> avoid traverse and spin_lock for all CPUs in this case.
-> >>>>
-> >>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> >>>
-> >>> It's not clear from the commit log what you're solving.
-> >>> The atomic inc/dec in critical path of prealloc maps hurts performanc=
-e.
-> >>> That's why it's not used.
-> >>>
-> >> Thanks for the explanation, what I'm solving is when hash table hasn't=
- free
-> >> elements, we don't need to call __pcpu_freelist_pop() to traverse and
-> >> spin_lock all CPUs. The ftrace output of this bad case is below:
-> >>
-> >>  50)               |  htab_map_update_elem() {
-> >>  50)   0.329 us    |    _raw_spin_lock_irqsave();
-> >>  50)   0.063 us    |    lookup_elem_raw();
-> >>  50)               |    alloc_htab_elem() {
-> >>  50)               |      pcpu_freelist_pop() {
-> >>  50)   0.209 us    |        _raw_spin_lock();
-> >>  50)   0.264 us    |        _raw_spin_lock();
-> >
-> > This is LRU map. Not hash map.
-> > It will grab spin_locks of other cpus
-> > only if all previous cpus don't have free elements.
-> > Most likely your map is actually full and doesn't have any free elems.
-> > Since it's an lru it will force free an elem eventually.
-> >
->
-> Maybe I missed something, the map_update_elem function of LRU map is
-> htab_lru_map_update_elem() and the htab_map_update_elem() above is the
-> map_update_elem function of hash map.
-> Because of the implementation of percpu freelist used in hash map, it
-> will spin_lock all other CPUs when there is no free elements.
+Hello,
 
-Ahh. Right. Then what's the point of optimizing the error case
-at the expense of the fast path?
+syzbot found the following issue on:
+
+HEAD commit:    7c832d2f9b95 Add linux-next specific files for 20211015
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13d749ccb00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f6ac42766a768877
+dashboard link: https://syzkaller.appspot.com/bug?extid=1e372cc42ba6b9d90a6b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1702b644b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f91334b00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1e372cc42ba6b9d90a6b@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	1-...!: (1 GPs behind) idle=38d/1/0x4000000000000000 softirq=10159/10160 fqs=234 
+	(t=10500 jiffies g=11181 q=11)
+rcu: rcu_preempt kthread starved for 9849 jiffies! g11181 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:29304 pid:   14 ppid:     2 flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4965 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6246
+ schedule+0xd2/0x260 kernel/sched/core.c:6319
+ schedule_timeout+0x14a/0x2a0 kernel/time/timer.c:1881
+ rcu_gp_fqs_loop+0x186/0x810 kernel/rcu/tree.c:1966
+ rcu_gp_kthread+0x1de/0x320 kernel/rcu/tree.c:2139
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+rcu: Stack dump where RCU GP kthread last ran:
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 2713 Comm: kworker/0:3 Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events prog_array_map_clear_deferred
+RIP: 0010:check_preemption_disabled+0x2/0x170 lib/smp_processor_id.c:13
+Code: 1f 44 00 00 e8 6f 16 4e f8 65 48 8b 3c 25 40 70 02 00 e8 41 43 05 f8 eb 99 0f 1f 44 00 00 0f 0b e9 23 ff ff ff cc cc cc 41 56 <41> 55 49 89 f5 41 54 55 48 89 fd 53 0f 1f 44 00 00 65 44 8b 25 cd
+RSP: 0018:ffffc9000b95fa68 EFLAGS: 00000046
+RAX: 0000000000000002 RBX: c8757c4f6cfa24cc RCX: ffffc9000b95fac8
+RDX: 1ffff110046b014b RSI: ffffffff89ac08c0 RDI: ffffffff8a046f60
+RBP: 1ffff9200172bf51 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000002
+R13: 0000000000000003 R14: ffff888023580a60 R15: ffff888023580000
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005555567352c0 CR3: 000000000b88e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lockdep_recursion_finish kernel/locking/lockdep.c:438 [inline]
+ lock_release+0x3bb/0x720 kernel/locking/lockdep.c:5659
+ __mutex_unlock_slowpath+0x99/0x5e0 kernel/locking/mutex.c:892
+ fd_array_map_delete_elem+0x1b0/0x2e0 kernel/bpf/arraymap.c:824
+ bpf_fd_array_map_clear kernel/bpf/arraymap.c:871 [inline]
+ prog_array_map_clear_deferred+0x10b/0x1b0 kernel/bpf/arraymap.c:1050
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+NMI backtrace for cpu 1
+CPU: 1 PID: 23 Comm: kworker/1:1 Not tainted 5.15.0-rc5-next-20211015-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events prog_array_map_clear_deferred
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_dump_cpu_stacks+0x25e/0x3f0 kernel/rcu/tree_stall.h:343
+ print_cpu_stall kernel/rcu/tree_stall.h:604 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:688 [inline]
+ rcu_pending kernel/rcu/tree.c:3889 [inline]
+ rcu_sched_clock_irq.cold+0x9d/0x746 kernel/rcu/tree.c:2608
+ update_process_times+0x16d/0x200 kernel/time/timer.c:1785
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
+ tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1428
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:lock_is_held_type+0xff/0x140 kernel/locking/lockdep.c:5685
+Code: 00 00 b8 ff ff ff ff 65 0f c1 05 0c 1a b5 76 83 f8 01 75 29 9c 58 f6 c4 02 75 3d 48 f7 04 24 00 02 00 00 74 01 fb 48 83 c4 08 <44> 89 e8 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 ed eb b9 0f 0b 48
+RSP: 0018:ffffc90000ddfa30 EFLAGS: 00000296
+RAX: 0000000000000046 RBX: 0000000000000003 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffffff8bb82de0 R08: 0000000000000000 R09: ffffffff8d8fd297
+R10: fffffbfff1b1fa52 R11: 0000000000000000 R12: ffff8880157b0000
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff8880157b0ab8
+ lock_is_held include/linux/lockdep.h:283 [inline]
+ rcu_read_lock_sched_held+0x3a/0x70 kernel/rcu/update.c:125
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x522/0x720 kernel/locking/lockdep.c:5648
+ __mutex_unlock_slowpath+0x99/0x5e0 kernel/locking/mutex.c:892
+ fd_array_map_delete_elem+0x1b0/0x2e0 kernel/bpf/arraymap.c:824
+ bpf_fd_array_map_clear kernel/bpf/arraymap.c:871 [inline]
+ prog_array_map_clear_deferred+0x10b/0x1b0 kernel/bpf/arraymap.c:1050
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	44 00 00             	add    %r8b,(%rax)
+   3:	e8 6f 16 4e f8       	callq  0xf84e1677
+   8:	65 48 8b 3c 25 40 70 	mov    %gs:0x27040,%rdi
+   f:	02 00
+  11:	e8 41 43 05 f8       	callq  0xf8054357
+  16:	eb 99                	jmp    0xffffffb1
+  18:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  1d:	0f 0b                	ud2
+  1f:	e9 23 ff ff ff       	jmpq   0xffffff47
+  24:	cc                   	int3
+  25:	cc                   	int3
+  26:	cc                   	int3
+  27:	41 56                	push   %r14
+* 29:	41 55                	push   %r13 <-- trapping instruction
+  2b:	49 89 f5             	mov    %rsi,%r13
+  2e:	41 54                	push   %r12
+  30:	55                   	push   %rbp
+  31:	48 89 fd             	mov    %rdi,%rbp
+  34:	53                   	push   %rbx
+  35:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  3a:	65                   	gs
+  3b:	44                   	rex.R
+  3c:	8b                   	.byte 0x8b
+  3d:	25                   	.byte 0x25
+  3e:	cd                   	.byte 0xcd
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
