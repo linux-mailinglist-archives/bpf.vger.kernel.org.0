@@ -2,205 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C23433654
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 14:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C148343367B
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 14:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhJSMwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 08:52:35 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:37421 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235707AbhJSMwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Oct 2021 08:52:35 -0400
-Received: by mail-il1-f200.google.com with SMTP id c10-20020a92d3ca000000b002595f56ca9aso10105647ilh.4
-        for <bpf@vger.kernel.org>; Tue, 19 Oct 2021 05:50:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=bFZmoTBRl1R1qYVXczghINGlIPTaUfOP94TF4bR5q2Q=;
-        b=kM8kfrTJrEh/Jqw9r8JUQ2OEZua/gmeoRVGEHDOs4f41rixFvZy4ZgS/xriNct450K
-         YVqrbm+AGXAgfWCneO+UFq4vAx+WjyVPI/Aa40Qd14+cS5R/oeqdxKQbtZA1DczzTvoU
-         THTefu/WWG52p8NhrjE7FMrbi+DmkvaHq+Z0Dcu1ORrzLEza7iBImrLhwt7y6cXuZl41
-         W5l42Fg9Rxqw7TVpe9As7fx1rIH+BxQXjeETDhTDTP5zx5A0MPPjRJJKTIsxWrxH/UEo
-         94E+Ev38HqdAul3ub3esZuGJXwXiFnp8m7mLL0nlvfWcUkwgl/v2LLGmGNmDJzLdQEXg
-         gN8w==
-X-Gm-Message-State: AOAM532jd1ZnUqORp27dulypD4Wz1fT30FYcpbrBHS5Q4SKi7392Xqxw
-        7Lm77Cv24ozMmqdeUp/zdi7CpNYURKvPbz4QNLAXD4znOgXR
-X-Google-Smtp-Source: ABdhPJw+uxCUYWF5tbRGkCVF+1A0ZsW/FYvAv+CVSHoENSvNrVk69XQJ5tVs6n3O0t3lc53aK1UeQyPutzRHhzT/Q+W3o+eEnK97
+        id S231616AbhJSNB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 09:01:28 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:29909 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235763AbhJSNB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:01:27 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HYYbz40RQzbnFn;
+        Tue, 19 Oct 2021 20:54:39 +0800 (CST)
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 20:59:12 +0800
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 20:59:11 +0800
+From:   Di Zhu <zhudi2@huawei.com>
+To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kafai@fb.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhudi2@huawei.com>
+Subject: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
+Date:   Tue, 19 Oct 2021 20:58:56 +0800
+Message-ID: <20211019125856.2566882-1-zhudi2@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3052:: with SMTP id u18mr4114717jak.148.1634647822011;
- Tue, 19 Oct 2021 05:50:22 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 05:50:22 -0700
-In-Reply-To: <0000000000007e727005c284bc8e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3972705ceb41add@google.com>
-Subject: Re: [syzbot] possible deadlock in perf_event_ctx_lock_nested (2)
-From:   syzbot <syzbot+4b71bb3365e7d5228913@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500011.china.huawei.com (7.185.36.84)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Right now there is no way to query whether BPF programs are
+attached to a sockmap or not.
 
-HEAD commit:    60e8840126bd Add linux-next specific files for 20211018
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c92b80b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4bd44cafcda7632e
-dashboard link: https://syzkaller.appspot.com/bug?extid=4b71bb3365e7d5228913
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11eccf58b00000
+we can use the standard interface in libbpf to query, such as:
+bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+the mapFd is the fd of sockmap.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4b71bb3365e7d5228913@syzkaller.appspotmail.com
+Signed-off-by: Di Zhu <zhudi2@huawei.com>
+---
+ include/linux/bpf.h  |  8 +++++
+ kernel/bpf/syscall.c |  4 +++
+ net/core/sock_map.c  | 81 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 93 insertions(+)
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.15.0-rc5-next-20211018-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.1/30066 is trying to acquire lock:
-ffff88807cb88f28 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0xa1/0x170 mm/memory.c:5243
-
-but task is already holding lock:
-ffff8880b9c3fab0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0x23a/0x490 kernel/events/core.c:1357
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&cpuctx_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:599 [inline]
-       __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:732
-       perf_event_init_cpu+0x172/0x3e0 kernel/events/core.c:13325
-       perf_event_init+0x39d/0x408 kernel/events/core.c:13372
-       start_kernel+0x2bb/0x49b init/main.c:1063
-       secondary_startup_64_no_verify+0xb0/0xbb
-
--> #2 (pmus_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:599 [inline]
-       __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:732
-       perf_event_init_cpu+0xc4/0x3e0 kernel/events/core.c:13319
-       cpuhp_invoke_callback+0x3b5/0x9a0 kernel/cpu.c:190
-       cpuhp_invoke_callback_range kernel/cpu.c:665 [inline]
-       cpuhp_up_callbacks kernel/cpu.c:693 [inline]
-       _cpu_up+0x3b0/0x790 kernel/cpu.c:1368
-       cpu_up kernel/cpu.c:1404 [inline]
-       cpu_up+0xfe/0x1a0 kernel/cpu.c:1376
-       bringup_nonboot_cpus+0xfe/0x130 kernel/cpu.c:1470
-       smp_init+0x2e/0x145 kernel/smp.c:1092
-       kernel_init_freeable+0x477/0x73a init/main.c:1618
-       kernel_init+0x1a/0x1d0 init/main.c:1515
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
--> #1 (cpu_hotplug_lock){++++}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       cpus_read_lock+0x3e/0x140 kernel/cpu.c:308
-       wake_up_all_idle_cpus+0x13/0x80 kernel/smp.c:1173
-       cpu_latency_qos_apply kernel/power/qos.c:249 [inline]
-       cpu_latency_qos_remove_request.part.0+0xc4/0x2f0 kernel/power/qos.c:328
-       cpu_latency_qos_remove_request+0x65/0x80 kernel/power/qos.c:330
-       snd_pcm_hw_params+0x1481/0x1990 sound/core/pcm_native.c:784
-       snd_pcm_kernel_ioctl+0x164/0x310 sound/core/pcm_native.c:3355
-       snd_pcm_oss_change_params_locked+0x1936/0x3a60 sound/core/oss/pcm_oss.c:947
-       snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1091 [inline]
-       snd_pcm_oss_mmap+0x442/0x550 sound/core/oss/pcm_oss.c:2910
-       call_mmap include/linux/fs.h:2164 [inline]
-       mmap_region+0xd8c/0x1650 mm/mmap.c:1787
-       do_mmap+0x869/0xfb0 mm/mmap.c:1575
-       vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
-       ksys_mmap_pgoff+0x49f/0x620 mm/mmap.c:1624
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&mm->mmap_lock#2){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3063 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3186 [inline]
-       validate_chain kernel/locking/lockdep.c:3801 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5027
-       lock_acquire kernel/locking/lockdep.c:5637 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
-       __might_fault mm/memory.c:5244 [inline]
-       __might_fault+0x104/0x170 mm/memory.c:5229
-       _copy_to_user+0x27/0x150 lib/usercopy.c:28
-       copy_to_user include/linux/uaccess.h:200 [inline]
-       perf_read_group kernel/events/core.c:5329 [inline]
-       __perf_read kernel/events/core.c:5396 [inline]
-       perf_read+0x736/0x900 kernel/events/core.c:5415
-       do_loop_readv_writev fs/read_write.c:750 [inline]
-       do_loop_readv_writev fs/read_write.c:737 [inline]
-       do_iter_read+0x501/0x760 fs/read_write.c:792
-       vfs_readv+0xe5/0x150 fs/read_write.c:910
-       do_readv+0x139/0x300 fs/read_write.c:947
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
-Chain exists of:
-  &mm->mmap_lock#2 --> pmus_lock --> &cpuctx_mutex
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&cpuctx_mutex);
-                               lock(pmus_lock);
-                               lock(&cpuctx_mutex);
-  lock(&mm->mmap_lock#2);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.1/30066:
- #0: ffff8880b9c3fab0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0x23a/0x490 kernel/events/core.c:1357
-
-stack backtrace:
-CPU: 0 PID: 30066 Comm: syz-executor.1 Not tainted 5.15.0-rc5-next-20211018-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2143
- check_prev_add kernel/locking/lockdep.c:3063 [inline]
- check_prevs_add kernel/locking/lockdep.c:3186 [inline]
- validate_chain kernel/locking/lockdep.c:3801 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5027
- lock_acquire kernel/locking/lockdep.c:5637 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
- __might_fault mm/memory.c:5244 [inline]
- __might_fault+0x104/0x170 mm/memory.c:5229
- _copy_to_user+0x27/0x150 lib/usercopy.c:28
- copy_to_user include/linux/uaccess.h:200 [inline]
- perf_read_group kernel/events/core.c:5329 [inline]
- __perf_read kernel/events/core.c:5396 [inline]
- perf_read+0x736/0x900 kernel/events/core.c:5415
- do_loop_readv_writev fs/read_write.c:750 [inline]
- do_loop_readv_writev fs/read_write.c:737 [inline]
- do_iter_read+0x501/0x760 fs/read_write.c:792
- vfs_readv+0xe5/0x150 fs/read_write.c:910
- do_readv+0x139/0x300 fs/read_write.c:947
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f78228c6a39
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7821ffa188 EFLAGS: 00000246 ORIG_RAX: 0000000000000013
-RAX: ffffffffffffffda RBX: 00007f78229ca0e0 RCX: 00007f78228c6a39
-RDX: 0000000000000001 RSI: 00000000200002c0 RDI: 0000000000000007
-RBP: 00007f7822920c5f R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd71dc7def R14: 00007f7821ffa300 R15: 0000000000022000
- </TASK>
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 1c7fd7c4c6d3..69cf70b077d5 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1959,6 +1959,8 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
+ int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
+ int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
++int sockmap_bpf_prog_query(const union bpf_attr *attr,
++			   union bpf_attr __user *uattr);
+ void sock_map_unhash(struct sock *sk);
+ void sock_map_close(struct sock *sk, long timeout);
+ #else
+@@ -2012,6 +2014,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
+ {
+ 	return -EOPNOTSUPP;
+ }
++
++static inline int sockmap_bpf_prog_query(const union bpf_attr *attr,
++					 union bpf_attr __user *uattr)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_BPF_SYSCALL */
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4e50c0bfdb7d..3049b9506583 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3275,6 +3275,10 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_FLOW_DISSECTOR:
+ 	case BPF_SK_LOOKUP:
+ 		return netns_bpf_prog_query(attr, uattr);
++	case BPF_SK_SKB_STREAM_PARSER:
++	case BPF_SK_SKB_STREAM_VERDICT:
++	case BPF_SK_MSG_VERDICT:
++		return sockmap_bpf_prog_query(attr, uattr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index e252b8ec2b85..32688a1b78c6 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1451,6 +1451,87 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+ 	return 0;
+ }
+ 
++static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog **prog,
++				u32 which)
++{
++	struct sk_psock_progs *progs = sock_map_progs(map);
++
++	if (!progs)
++		return -EOPNOTSUPP;
++
++	switch (which) {
++	case BPF_SK_MSG_VERDICT:
++		*prog = READ_ONCE(progs->msg_parser);
++		break;
++#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
++	case BPF_SK_SKB_STREAM_PARSER:
++		*prog = READ_ONCE(progs->skb_parser);
++		break;
++#endif
++	case BPF_SK_SKB_STREAM_VERDICT:
++		*prog = READ_ONCE(progs->skb_verdict);
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
++int sockmap_bpf_prog_query(const union bpf_attr *attr,
++			   union bpf_attr __user *uattr)
++{
++	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
++	u32 prog_cnt = 0, flags = 0;
++	u32 ufd = attr->target_fd;
++	struct bpf_map *map;
++	struct bpf_prog *prog;
++	struct fd f;
++	int ret;
++
++	if (attr->query.query_flags)
++		return -EINVAL;
++
++	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
++		return -EFAULT;
++
++	f = fdget(ufd);
++	map = __bpf_map_get(f);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	rcu_read_lock();
++
++	ret = sock_map_prog_lookup(map, &prog, attr->query.attach_type);
++	if (ret)
++		goto end;
++
++	prog_cnt = (!prog) ? 0 : 1;
++	if (copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt))) {
++		ret = -EFAULT;
++		goto end;
++	}
++
++	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
++		goto end;
++
++	prog = bpf_prog_inc_not_zero(prog);
++	if (IS_ERR(prog)) {
++		ret = PTR_ERR(prog);
++		goto end;
++	}
++
++	if (copy_to_user(prog_ids, &prog->aux->id, sizeof(u32)))
++		ret = -EFAULT;
++
++	bpf_prog_put(prog);
++
++end:
++	rcu_read_unlock();
++	fdput(f);
++	return ret;
++}
++
+ static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
+ {
+ 	switch (link->map->map_type) {
+-- 
+2.23.0
 
