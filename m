@@ -2,196 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E35432BAF
-	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 04:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDC2432C06
+	for <lists+bpf@lfdr.de>; Tue, 19 Oct 2021 05:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbhJSCM3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Oct 2021 22:12:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhJSCM3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Oct 2021 22:12:29 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDFA961372;
-        Tue, 19 Oct 2021 02:10:16 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 22:10:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
-Message-ID: <20211018221015.3f145843@gandalf.local.home>
-In-Reply-To: <YWq6C69rQhUcAGe+@krava>
-References: <20211008091336.33616-1-jolsa@kernel.org>
-        <20211008091336.33616-8-jolsa@kernel.org>
-        <20211014162819.5c85618b@gandalf.local.home>
-        <YWluhdDMfkNGwlhz@krava>
-        <20211015100509.78d4fb01@gandalf.local.home>
-        <YWq6C69rQhUcAGe+@krava>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231226AbhJSDF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Oct 2021 23:05:59 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13952 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhJSDF6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Oct 2021 23:05:58 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HYJS54t2GzZcPh;
+        Tue, 19 Oct 2021 11:01:57 +0800 (CST)
+Received: from dggema722-chm.china.huawei.com (10.3.20.86) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 11:03:42 +0800
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ dggema722-chm.china.huawei.com (10.3.20.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Tue, 19 Oct 2021 11:03:42 +0800
+Received: from dggema772-chm.china.huawei.com ([10.9.128.138]) by
+ dggema772-chm.china.huawei.com ([10.9.128.138]) with mapi id 15.01.2308.015;
+ Tue, 19 Oct 2021 11:03:42 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "lmb@cloudflare.com" <lmb@cloudflare.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH] bpf, sockmap: Do not read sk_receive_queue in
+ tcp_bpf_recvmsg if strparser enabled
+Thread-Topic: [PATCH] bpf, sockmap: Do not read sk_receive_queue in
+ tcp_bpf_recvmsg if strparser enabled
+Thread-Index: AQHXwZpygzOnNyA0s0aKrXrj6DNL3qvX8kKAgABTfQCAAUoU4A==
+Date:   Tue, 19 Oct 2021 03:03:41 +0000
+Message-ID: <21313b79ef0c4059a0d9cfa3fd8746fd@huawei.com>
+References: <20211015080142.43424-1-liujian56@huawei.com>
+ <87v91ug1bi.fsf@cloudflare.com>
+ <616d7c5aa492a_1eb12084b@john-XPS-13-9370.notmuch>
+In-Reply-To: <616d7c5aa492a_1eb12084b@john-XPS-13-9370.notmuch>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 16 Oct 2021 13:39:55 +0200
-Jiri Olsa <jolsa@redhat.com> wrote:
-
-> On Fri, Oct 15, 2021 at 10:05:09AM -0400, Steven Rostedt wrote:
-> > On Fri, 15 Oct 2021 14:05:25 +0200
-> > Jiri Olsa <jolsa@redhat.com> wrote:
-> >   
-> > > ATM I'm bit stuck on the bpf side of this whole change, I'll test
-> > > it with my other changes when I unstuck myself ;-)  
-> > 
-> > If you want, I'll apply this as a separate change on top of your patch set.
-> > As I don't see anything wrong with your current code.
-> > 
-> > And when you are satisfied with this, just give me a "tested-by" and I'll
-> > push it too.  
-> 
-> sounds great, thanks
-> jirka
-
-Would you want to ack/review this?
-
--- Steve
-
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH] ftrace/direct: Do not disable when switching direct callers
-
-Currently to switch a set of "multi" direct trampolines from one
-trampoline to another, a full shutdown of the current set needs to be
-done, followed by an update to what trampoline the direct callers would
-call, and then re-enabling the callers. This leaves a time when the
-functions will not be calling anything, and events may be missed.
-
-Instead, use a trick to allow all the functions with direct trampolines
-attached will always call either the new or old trampoline while the
-switch is happening. To do this, first attach a "dummy" callback via
-ftrace to all the functions that the current direct trampoline is attached
-to. This will cause the functions to call the "list func" instead of the
-direct trampoline. The list function will call the direct trampoline
-"helper" that will set the function it should call as it returns back to
-the ftrace trampoline.
-
-At this moment, the direct caller descriptor can safely update the direct
-call trampoline. The list function will pick either the new or old
-function (depending on the memory coherency model of the architecture).
-
-Now removing the dummy function from each of the locations of the direct
-trampoline caller, will put back the direct call, but now to the new
-trampoline.
-
-A better visual is:
-
-[ Changing direct call from my_direct_1 to my_direct_2 ]
-
-  <traced_func>:
-     call my_direct_1
-
- ||||||||||||||||||||
- vvvvvvvvvvvvvvvvvvvv
-
-  <traced_func>:
-     call ftrace_caller
-
-  <ftrace_caller>:
-    [..]
-    call ftrace_ops_list_func
-
-	ftrace_ops_list_func()
-	{
-		ops->func() -> direct_helper -> set rax to my_direct_1 or my_direct_2
-	}
-
-   call rax (to either my_direct_1 or my_direct_2
-
- ||||||||||||||||||||
- vvvvvvvvvvvvvvvvvvvv
-
-  <traced_func>:
-     call my_direct_2
-
-Link: https://lore.kernel.org/all/20211014162819.5c85618b@gandalf.local.home/
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ftrace.c | 33 ++++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 30120342176e..7ad1e8ae5855 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5561,8 +5561,12 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
-  */
- int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
- {
--	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-+	struct ftrace_hash *hash;
- 	struct ftrace_func_entry *entry, *iter;
-+	static struct ftrace_ops tmp_ops = {
-+		.func		= ftrace_stub,
-+		.flags		= FTRACE_OPS_FL_STUB,
-+	};
- 	int i, size;
- 	int err;
- 
-@@ -5572,21 +5576,22 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
- 		return -EINVAL;
- 
- 	mutex_lock(&direct_mutex);
--	mutex_lock(&ftrace_lock);
-+
-+	/* Enable the tmp_ops to have the same functions as the direct ops */
-+	ftrace_ops_init(&tmp_ops);
-+	tmp_ops.func_hash = ops->func_hash;
-+
-+	err = register_ftrace_function(&tmp_ops);
-+	if (err)
-+		goto out_direct;
- 
- 	/*
--	 * Shutdown the ops, change 'direct' pointer for each
--	 * ops entry in direct_functions hash and startup the
--	 * ops back again.
--	 *
--	 * Note there is no callback called for @ops object after
--	 * this ftrace_shutdown call until ftrace_startup is called
--	 * later on.
-+	 * Now the ftrace_ops_list_func() is called to do the direct callers.
-+	 * We can safely change the direct functions attached to each entry.
- 	 */
--	err = ftrace_shutdown(ops, 0);
--	if (err)
--		goto out_unlock;
-+	mutex_lock(&ftrace_lock);
- 
-+	hash = ops->func_hash->filter_hash;
- 	size = 1 << hash->size_bits;
- 	for (i = 0; i < size; i++) {
- 		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
-@@ -5597,10 +5602,12 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
- 		}
- 	}
- 
--	err = ftrace_startup(ops, 0);
-+	/* Removing the tmp_ops will add the updated direct callers to the functions */
-+	unregister_ftrace_function(&tmp_ops);
- 
-  out_unlock:
- 	mutex_unlock(&ftrace_lock);
-+ out_direct:
- 	mutex_unlock(&direct_mutex);
- 	return err;
- }
--- 
-2.31.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9obiBGYXN0YWJlbmQg
+W21haWx0bzpqb2huLmZhc3RhYmVuZEBnbWFpbC5jb21dDQo+IFNlbnQ6IE1vbmRheSwgT2N0b2Jl
+ciAxOCwgMjAyMSA5OjU0IFBNDQo+IFRvOiBKYWt1YiBTaXRuaWNraSA8amFrdWJAY2xvdWRmbGFy
+ZS5jb20+OyBsaXVqaWFuIChDRSkNCj4gPGxpdWppYW41NkBodWF3ZWkuY29tPg0KPiBDYzogam9o
+bi5mYXN0YWJlbmRAZ21haWwuY29tOyBkYW5pZWxAaW9nZWFyYm94Lm5ldDsgbG1iQGNsb3VkZmxh
+cmUuY29tOw0KPiBlZHVtYXpldEBnb29nbGUuY29tOyBkYXZlbUBkYXZlbWxvZnQubmV0OyBrdWJh
+QGtlcm5lbC5vcmc7DQo+IHlvc2hmdWppQGxpbnV4LWlwdjYub3JnOyBkc2FoZXJuQGtlcm5lbC5v
+cmc7IGFzdEBrZXJuZWwub3JnOw0KPiBhbmRyaWlAa2VybmVsLm9yZzsga2FmYWlAZmIuY29tOyBz
+b25nbGl1YnJhdmluZ0BmYi5jb207IHloc0BmYi5jb207DQo+IGtwc2luZ2hAa2VybmVsLm9yZzsg
+bmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgYnBmQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBS
+ZTogW1BBVENIXSBicGYsIHNvY2ttYXA6IERvIG5vdCByZWFkIHNrX3JlY2VpdmVfcXVldWUgaW4N
+Cj4gdGNwX2JwZl9yZWN2bXNnIGlmIHN0cnBhcnNlciBlbmFibGVkDQo+IA0KPiBKYWt1YiBTaXRu
+aWNraSB3cm90ZToNCj4gPiBPbiBGcmksIE9jdCAxNSwgMjAyMSBhdCAxMDowMSBBTSBDRVNULCBM
+aXUgSmlhbiB3cm90ZToNCj4gPiA+IElmIHRoZSBzdHJwYXJzZXIgZnVuY3Rpb24gb2Ygc2sgaXMg
+dHVybmVkIG9uLCBhbGwgcmVjZWl2ZWQgZGF0YQ0KPiA+ID4gbmVlZHMgdG8gYmUgcHJvY2Vzc2Vk
+IGJ5IHN0cnBhcnNlciBmaXJzdC4NCj4gPiA+DQo+ID4gPiBGaXhlczogNjA0MzI2YjQxYTZmYiAo
+ImJwZiwgc29ja21hcDogY29udmVydCB0byBnZW5lcmljIHNrX21zZw0KPiA+ID4gaW50ZXJmYWNl
+IikNCj4gPiA+IFNpZ25lZC1vZmYtYnk6IExpdSBKaWFuIDxsaXVqaWFuNTZAaHVhd2VpLmNvbT4N
+Cj4gPiA+IC0tLQ0KPiA+DQo+ID4gWy4uLl0NCj4gPg0KPiA+ID4gIG5ldC9jb3JlL3NrbXNnLmMg
+ICAgICB8IDUgKysrKysNCj4gPiA+ICBuZXQvaXB2NC90Y3BfYnBmLmMgICAgfCA5ICsrKysrKy0t
+LQ0KPiA+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMo
+LSkNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9za21zZy5oIGIvaW5j
+bHVkZS9saW51eC9za21zZy5oIGluZGV4DQo+ID4gPiA5NGUyYTFmNmU1OGQuLjI1ZTkyZGZmMDRh
+YSAxMDA2NDQNCj4gPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvc2ttc2cuaA0KPiA+ID4gKysrIGIv
+aW5jbHVkZS9saW51eC9za21zZy5oDQo+ID4gPiBAQCAtMzkwLDYgKzM5MCw3IEBAIHZvaWQgc2tf
+cHNvY2tfc3RvcChzdHJ1Y3Qgc2tfcHNvY2sgKnBzb2NrLCBib29sDQo+ID4gPiB3YWl0KTsgIGlu
+dCBza19wc29ja19pbml0X3N0cnAoc3RydWN0IHNvY2sgKnNrLCBzdHJ1Y3Qgc2tfcHNvY2sNCj4g
+PiA+ICpwc29jayk7ICB2b2lkIHNrX3Bzb2NrX3N0YXJ0X3N0cnAoc3RydWN0IHNvY2sgKnNrLCBz
+dHJ1Y3Qgc2tfcHNvY2sNCj4gPiA+ICpwc29jayk7ICB2b2lkIHNrX3Bzb2NrX3N0b3Bfc3RycChz
+dHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19wc29jaw0KPiA+ID4gKnBzb2NrKTsNCj4gPiA+ICti
+b29sIHNrX3Bzb2NrX3N0cnBhcnNlcl9zdGFydGVkKHN0cnVjdCBzb2NrICpzayk7DQo+ID4gPiAg
+I2Vsc2UNCj4gPiA+ICBzdGF0aWMgaW5saW5lIGludCBza19wc29ja19pbml0X3N0cnAoc3RydWN0
+IHNvY2sgKnNrLCBzdHJ1Y3QNCj4gPiA+IHNrX3Bzb2NrICpwc29jaykgIHsgQEAgLTQwMyw2ICs0
+MDQsMTEgQEAgc3RhdGljIGlubGluZSB2b2lkDQo+ID4gPiBza19wc29ja19zdGFydF9zdHJwKHN0
+cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX3Bzb2NrICpwc29jaykgIHN0YXRpYw0KPiA+ID4gaW5s
+aW5lIHZvaWQgc2tfcHNvY2tfc3RvcF9zdHJwKHN0cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX3Bz
+b2NrDQo+ID4gPiAqcHNvY2spICB7ICB9DQo+ID4gPiArDQo+ID4gPiArc3RhdGljIGlubGluZSBi
+b29sIHNrX3Bzb2NrX3N0cnBhcnNlcl9zdGFydGVkKHN0cnVjdCBzb2NrICpzaykgew0KPiA+ID4g
+KwlyZXR1cm4gZmFsc2U7DQo+ID4gPiArfQ0KPiA+ID4gICNlbmRpZg0KPiA+ID4NCj4gPiA+ICB2
+b2lkIHNrX3Bzb2NrX3N0YXJ0X3ZlcmRpY3Qoc3RydWN0IHNvY2sgKnNrLCBzdHJ1Y3Qgc2tfcHNv
+Y2sNCj4gPiA+ICpwc29jayk7IGRpZmYgLS1naXQgYS9uZXQvY29yZS9za21zZy5jIGIvbmV0L2Nv
+cmUvc2ttc2cuYyBpbmRleA0KPiA+ID4gZTg1YjdmODQ5MWI5Li5kZDY0ZWY4NTRmM2UgMTAwNjQ0
+DQo+ID4gPiAtLS0gYS9uZXQvY29yZS9za21zZy5jDQo+ID4gPiArKysgYi9uZXQvY29yZS9za21z
+Zy5jDQo+ID4gPiBAQCAtMTEwNSw2ICsxMTA1LDExIEBAIHZvaWQgc2tfcHNvY2tfc3RhcnRfc3Ry
+cChzdHJ1Y3Qgc29jayAqc2ssDQo+IHN0cnVjdCBza19wc29jayAqcHNvY2spDQo+ID4gPiAgCXNr
+LT5za193cml0ZV9zcGFjZSA9IHNrX3Bzb2NrX3dyaXRlX3NwYWNlOyAgfQ0KPiA+ID4NCj4gPiA+
+ICtib29sIHNrX3Bzb2NrX3N0cnBhcnNlcl9zdGFydGVkKHN0cnVjdCBzb2NrICpzaykgew0KPiA+
+ID4gKwlyZXR1cm4gc2stPnNrX2RhdGFfcmVhZHkgPT0gc2tfcHNvY2tfc3RycF9kYXRhX3JlYWR5
+Ow0KPiA+DQo+ID4gV2hhdCBpZiBrVExTIGlzIGNvbmZpZ3VyZWQgb24gdGhlIHNvY2tldD8gSSB0
+aGluayB0aGlzIGNoZWNrIHdvbid0IHdvcmsgdGhlbi4NCj4gDQo+IExpdSwgZGlkIHlvdSBzZWUg
+dGhpcy4gSSB0aGluayBpdHMgYSBiaXQgY2xlYW5lciwgYXZvaWRzIHRoZSBleHRyYSBwYXJzZXIg
+Y2hlY2sgaW4NCj4gaG90cGF0aCwgYW5kIHNob3VsZCBzb2x2ZSB0aGUgaXNzdWU/DQo+IA0KPiBo
+dHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbmV0ZGV2YnBmL3BhdGNoLzIwMjEx
+MDExMTkxNjQ3LjQxOA0KPiA3MDQtMy1qb2huLmZhc3RhYmVuZEBnbWFpbC5jb20vDQo+IA0KPiBJ
+IHRoaW5rIGl0IHNob3VsZCBhbHNvIGFkZHJlc3MgSmFrdWIncyBjb25jZXJuLg0KPiANCkkgYW0g
+c29ycnksIEkgZGlkIG5vdCBzZWUgdGhlIHBhdGNoIGJlZm9yZS4NCkkgdGhpbmsgaXQgY2FuIHNv
+bHZlIG15IGlzc3VlLCBwbGVhc2UgaWdub3JlIG15IHBhdGNoLg0KVGhhbmtzLg0KDQo+IFRoYW5r
+cywNCj4gSm9obg0KPiANCj4gPg0KPiA+ID4gK30NCj4gPiA+ICsNCj4gPiA+ICB2b2lkIHNrX3Bz
+b2NrX3N0b3Bfc3RycChzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBza19wc29jayAqcHNvY2spICB7
+DQo+ID4gPiAgCWlmICghcHNvY2stPnNhdmVkX2RhdGFfcmVhZHkpDQo+ID4NCj4gPiBbLi4uXQ0K
+PiANCg0K
