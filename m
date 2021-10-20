@@ -2,161 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D209F435542
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 23:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B85435572
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 23:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhJTVaE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 17:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S231342AbhJTVpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 17:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhJTVaD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 17:30:03 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F72C06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 14:27:49 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id g6so17787820ybb.3
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 14:27:48 -0700 (PDT)
+        with ESMTP id S230181AbhJTVpa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 17:45:30 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF60DC061749;
+        Wed, 20 Oct 2021 14:43:15 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id v195so14022100ybb.0;
+        Wed, 20 Oct 2021 14:43:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=trJ5qupIUuTA08iG4ykhqnQTpYLgxUEzEcK4z9AeclQ=;
-        b=jlyY2QRXKH6ywnnO9s/7pYCrquvkqv4MC6AqloQY5UU1WsMAhC9g9fFCOvM8yFes91
-         nOWXvPJJ/LPNrtgAk0cXiEOXuM8hRdANWWCxDPjxOq25FV/0I/V55JOohShJDOJqIzpU
-         TgmEtkjVfu2FUXAGx5XihzCOmw2DLCstH+Pdr2TuiQQQt41z3CrGJ+IRS6f/LKFxLdKh
-         YGw/rp6oQbGXHgPup2SzfVeQJ39hti830kg0BqcXi+bh4g3jtFkxwAXo+pPIyWGlIUrb
-         PJVr1d4+XM3tVdoxEOo/N0fhfpWhNypsGVUgD/VSjiY9SaFVvcknw7KLlcsp2YJy+p28
-         5m/w==
+        bh=NLxhOL21uFNIWLDSCmZGrluiBbEIb6Tp/0GJSmli5XU=;
+        b=ADmPeU5eJwvh3K1oDREWtuXS/3cFrcy8kYa02+JLgbEYJ/j3RQvJexBaCipS3gg+vT
+         G/HgJ2eKNg3Rc0qrBmh+Y4uA/2HkLRWw2o7cphSKQdJPEUF6DHnjXfRf0/+73dKHzUvb
+         xuIvVlHrW5iatMgPBgrvC5GzCpIq/EuTfSdojiCCITnTHYfKdsJJPqM0sdNq7ed0fhrx
+         sEBvgt3Ue6QyB/De3XvYMpzp/bc6I6/DATO7yE0R3j5AI3HUTrS0GtySVkbv1SvM7yQ/
+         vNUoKr2jhjSMbbuEIEzCl2SsjXctxG9LlGMfYwmrYwgtHMDBiqg/lGuGqX9LBXDV3vzm
+         EsxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=trJ5qupIUuTA08iG4ykhqnQTpYLgxUEzEcK4z9AeclQ=;
-        b=pqQvo2Q6vuEIZ/QfDc2WHGIcuMwmoacMu/Q9Xbfk+SwSnGIPATuVuDJdOA9mrEA+ab
-         5HKJUXOiT0ccyLELwYVW/Ohg4ELv4gGE267lnwTWiFf/cYy5zGkuJp8RrD9fe+hES6kL
-         JUG3JiKwAwazt7rUt6E3dD19Jvs7ls3fovZmv+p3Tc/nHONke7RSkEL+5kUC5lrIJZt1
-         Uwkto7iTEcpjFG+OnZDkajriJEgy68Gggn9DDRhxh6eSB07ow+wraM+Gng+3q0uroApQ
-         ANEdZKI7gKGOv7yXlozsCa387vZ7i/2t0H3pf6Gcg29ZDSoYFh4TlroPxFS7Zq8hhgG0
-         7tQA==
-X-Gm-Message-State: AOAM531pN1AnIPsszrClb5j8vJcMpDLqxUJl2DxfQn7tIvElTt3oPmMu
-        +60878OM9ak6Yje9EPNrih8isukNHrjOHREfKcw=
-X-Google-Smtp-Source: ABdhPJxyfeDGW2plHn84lIlXkUrxfVuEFg8ss4PlNtf6JH2PtBZwAa7hwaKbGN3vYVL9A9SiMhkMXvdbEB4CllmvKKM=
-X-Received: by 2002:a25:afcf:: with SMTP id d15mr1484197ybj.433.1634765268300;
- Wed, 20 Oct 2021 14:27:48 -0700 (PDT)
+        bh=NLxhOL21uFNIWLDSCmZGrluiBbEIb6Tp/0GJSmli5XU=;
+        b=Ys0xM45Id8O5SFaV01abU5TuNJFVNtrLsjq5HMx7g4J07wXdzPhzxFiNhTnz9LsRM2
+         nxj8rZxlYvO5NqfYbVVf8ucVq2zM+1Ul3nM9NPOwMOt0whinlCB7gsXFrnmaMQ5DGRZL
+         g0D5c1lBYzX6HdtZY4eTQ/oiH1Ex/5qHsHmDc285+kDBoF4WGL+Sr53adQHB3OAyU1h3
+         JujA0UWvAAGUBGuWMHcyDE6GvamiIuXi7PUB4BoCZQrzPQH0S3sBc4O2rqmE0QWGBq+5
+         ab60Sn4OEzB8t7WvVqzpftJI/W2xje0H3jcjSY25IqjJJqFndEelqe3Q5ifDDvtxgwF6
+         XQ8g==
+X-Gm-Message-State: AOAM5310X2q7dJq1zoUgXriQ2qOBWkvUlAQbLemJDui9NG4SZ/yyFIGd
+        ngUG6w2KBzSnIvWfkMTU4ykwJX/4vmFln8aVcAM=
+X-Google-Smtp-Source: ABdhPJxgXZ85DRGdZhjSufD07NvPT0QRrDJgOWXzfWc+WJOLihVGXYqVDwjMjwvZe/EawZCezVXF1roYX527iOGeGAo=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr1712702ybf.455.1634766195138;
+ Wed, 20 Oct 2021 14:43:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211014212049.1010192-1-irogers@google.com> <CAEf4BzYiG36y0XWVfjXti-qb=gOdGkhzB6R5Ny3kvUbTRyeHUA@mail.gmail.com>
- <CAP-5=fXLAp+9tKU1qS1fr+6ZSFiq=soyD+mr_FPPmi40P0imjw@mail.gmail.com>
-In-Reply-To: <CAP-5=fXLAp+9tKU1qS1fr+6ZSFiq=soyD+mr_FPPmi40P0imjw@mail.gmail.com>
+References: <20211020082956.8359-1-lmb@cloudflare.com> <20211020082956.8359-3-lmb@cloudflare.com>
+In-Reply-To: <20211020082956.8359-3-lmb@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Oct 2021 14:27:37 -0700
-Message-ID: <CAEf4BzaZpfnmTZj4k+APhTheODb6_NbNvUdsPYH84ophCaU3cw@mail.gmail.com>
-Subject: Re: [PATCH] btf_encoder: Make BTF_KIND_TAG conditional
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Wed, 20 Oct 2021 14:43:04 -0700
+Message-ID: <CAEf4BzaRUK3we69HpsFsDYirjQV52w_nb6nY6u-WqhhGR8oBHA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests: bpf: test RENAME_EXCHANGE and
+ RENAME_NOREPLACE on bpffs
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Petar Penkov <ppenkov@google.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 2:23 PM Ian Rogers <irogers@google.com> wrote:
+On Wed, Oct 20, 2021 at 1:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
-> On Wed, Oct 20, 2021 at 2:12 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Oct 14, 2021 at 2:20 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > BTF_KIND_TAG is present in libbtf 6.0 but not libbtf in 5.15rc4. Make
-> > > the code requiring it conditionally compiled in.
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  btf_encoder.c | 7 +++++++
-> > >  lib/bpf       | 2 +-
-> > >  2 files changed, 8 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > index c341f95..400d64b 100644
-> > > --- a/btf_encoder.c
-> > > +++ b/btf_encoder.c
-> > > @@ -141,7 +141,9 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
-> > >         [BTF_KIND_VAR]          = "VAR",
-> > >         [BTF_KIND_DATASEC]      = "DATASEC",
-> > >         [BTF_KIND_FLOAT]        = "FLOAT",
-> > > +#ifdef BTF_KIND_TAG /* BTF_KIND_TAG was added in 6.0 */
-> > >         [BTF_KIND_TAG]          = "TAG",
-> > > +#endif
-> > >  };
-> > >
-> > >  static const char *btf__printable_name(const struct btf *btf, uint32_t offset)
-> > > @@ -648,6 +650,7 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
-> > >  static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *value, uint32_t type,
-> > >                                     int component_idx)
-> > >  {
-> > > +#ifdef BTF_KIND_TAG /* Proxy for libbtf 6.0 */
-> >
-> > How will this work when libbpf is loaded dynamically? I believe pahole
-> > has this mode as well.
+> Add tests to exercise the behaviour of RENAME_EXCHANGE and RENAME_NOREPLACE
+> on bpffs. The former checks that after an exchange the inode of two
+> directories has changed. The latter checks that the source still exists
+> after a failed rename.
 >
-> Well it won't have a compilation error because BTF_KIND_TAG isn't
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  .../selftests/bpf/prog_tests/test_bpffs.c     | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> index 172c999e523c..9c28ae9589bf 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright (c) 2020 Facebook */
+>  #define _GNU_SOURCE
+> +#include <stdio.h>
+>  #include <sched.h>
+>  #include <sys/mount.h>
+>  #include <sys/stat.h>
+> @@ -29,6 +30,7 @@ static int read_iter(char *file)
+>
+>  static int fn(void)
+>  {
+> +       struct stat a, b;
+>         int err, duration = 0;
+>
+>         err = unshare(CLONE_NEWNS);
+> @@ -67,6 +69,43 @@ static int fn(void)
+>         err = read_iter(TDIR "/fs2/progs.debug");
+>         if (CHECK(err, "reading " TDIR "/fs2/progs.debug", "failed\n"))
+>                 goto out;
+> +
+> +       err = mkdir(TDIR "/fs1/a", 0777);
+> +       if (CHECK(err, "creating " TDIR "/fs1/a", "failed\n"))
+> +               goto out;
+> +       err = mkdir(TDIR "/fs1/a/1", 0777);
+> +       if (CHECK(err, "creating " TDIR "/fs1/a/1", "failed\n"))
+> +               goto out;
+> +       err = mkdir(TDIR "/fs1/b", 0777);
+> +       if (CHECK(err, "creating " TDIR "/fs1/b", "failed\n"))
+> +               goto out;
+> +
+> +       /* Check that RENAME_EXCHANGE works. */
+> +       err = stat(TDIR "/fs1/a", &a);
+> +       if (CHECK(err, "stat(" TDIR "/fs1/a)", "failed\n"))
+> +               goto out;
+> +       err = renameat2(0, TDIR "/fs1/a", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
+> +       if (CHECK(err, "renameat2(RENAME_EXCHANGE)", "failed\n"))
+> +               goto out;
+> +       err = stat(TDIR "/fs1/b", &b);
+> +       if (CHECK(err, "stat(" TDIR "/fs1/b)", "failed\n"))
+> +               goto out;
+> +       if (CHECK(a.st_ino != b.st_ino, "b should have a's inode", "failed\n"))
+> +               goto out;
+> +       err = access(TDIR "/fs1/b/1", F_OK);
+> +       if (CHECK(err, "access(" TDIR "/fs1/b/1)", "failed\n"))
+> +               goto out;
+> +
+> +       /* Check that RENAME_NOREPLACE works. */
+> +       err = renameat2(0, TDIR "/fs1/b", 0, TDIR "/fs1/a", RENAME_NOREPLACE);
+> +       if (CHECK(!err, "renameat2(RENAME_NOREPLACE)", "succeeded\n")) {
+> +               err = -EINVAL;
+> +               goto out;
+> +       }
+> +       err = access(TDIR "/fs1/b", F_OK);
+> +       if (CHECK(err, "access(" TDIR "/fs1/b)", "failed\n"))
+> +               goto out;
+> +
 
-Great, you traded compile-time error for runtime linking error, I hope
-that trade off makes sense to Arnaldo.
+Please use ASSERT_xxx() for new code.
 
-> undefined :-) Tbh, I'm not sure but it seems that you'd be limited to
-> features in the version of libbpf you compiled against.
-
-I've been consistently advocating for statically linking against
-libbpf exactly to control what APIs and features are supported. But
-people stubbornly want dynamic linking. I hope added complexity and
-feature detection makes sense in practice for pahole.
-
+>  out:
+>         umount(TDIR "/fs1");
+>         umount(TDIR "/fs2");
+> --
+> 2.30.2
 >
-> > Also, note that libbpf now provides LIBBPF_MAJOR_VERSION and
-> > LIBBPF_MINOR_VERSION macros, starting from 0.5, so no need for
-> > guessing the version
->
-> This was moved to a header file in:
-> https://lore.kernel.org/bpf/CAADnVQJ2qd095mvj3z9u9BXQYCe2OTDn4=Gsu9nv1tjFHc2yqQ@mail.gmail.com/T/
->
-> But that header doesn't appear any more:
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/tools/lib/bpf
->
-> Is that a bug?
-
-You should be checking here:
-
-https://github.com/libbpf/libbpf/blob/master/src/libbpf_version.h
-
->
-> Thanks,
-> Ian
->
-> > >         struct btf *btf = encoder->btf;
-> > >         const struct btf_type *t;
-> > >         int32_t id;
-> > > @@ -663,6 +666,10 @@ static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *val
-> > >         }
-> > >
-> > >         return id;
-> > > +#else
-> > > +        fprintf(stderr, "error: unable to encode BTF_KIND_TAG due to old libbtf\n");
-> > > +        return -ENOTSUP;
-> > > +#endif
-> > >  }
-> > >
-> > >  /*
-> > > diff --git a/lib/bpf b/lib/bpf
-> > > index 980777c..986962f 160000
-> > > --- a/lib/bpf
-> > > +++ b/lib/bpf
-> > > @@ -1 +1 @@
-> > > -Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
-> > > +Subproject commit 986962fade5dfa89c2890f3854eb040d2a64ab38
-> > > --
-> > > 2.33.0.1079.g6e70778dc9-goog
-> > >
