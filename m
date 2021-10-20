@@ -2,109 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495CF435291
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 20:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A835F4352B2
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 20:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhJTSYa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 14:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
+        id S230076AbhJTSey (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 14:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhJTSY3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:24:29 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F438C06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 11:22:15 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id b15so3971397qkl.10
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 11:22:15 -0700 (PDT)
+        with ESMTP id S229998AbhJTSey (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:34:54 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B505C06161C
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 11:32:39 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id b9so2263967ybc.5
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 11:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Amx5b9ulkowQsD/+s+Yg7t/EHUFV5O46vZ+modI/J9Q=;
-        b=VokNfouG2ShPNUs4b9HK/dITE9lFDGh7m73vDpIYpw3clsLAOqWGixjkmGkaIFpzTY
-         vzuzkp4ul4JAPYvDt3uphigFOlhBhGcllooR0ysMehsQH8+wF7Du9dRU8+Mdda/ZdItC
-         I6wsK3n4ipvllkhnNU8TjpB+tawmE4yK8/GRx38iKRTW+cNXxxs1bSHO7byuFr0RyUmv
-         1C1qZZPcX9+Rb3cdCe/wb78+/kVTBd+aV1h2ZG3fLxC9O+mswNluoGVC7qmy6mUun0Vc
-         b1SkUrduycB5NVN1ZcWtYAY4atd5NfFdlqrzbAbT8i5VGb0OYGPWMLE09Vqf8AclS9OL
-         rsTQ==
+        bh=0i4y6UyDLDUiSaX1ey5DBe2SVakCZgM42B6OBIqtHH0=;
+        b=ldAht1IA/DnDLII3Vwy1N8/rtivKHBciTZAsRCXmkKIAMkXMFYEbuRUKwcLns1HqL2
+         TThBIanLaD1eaP6UkuKneDhveE0WPGJvUE0OHdx/y9FZBXrw05Mhz/W/3xvlcFDMMKnb
+         T9859mPbzLavGVTJPPy8GTv2/evADfgEH4+f2LnuVvXT6ctf8s1s6n1IoDD5PtQ0KxBU
+         QN+A8O8Znt6/S5PxAcwGAqDnUtKyrvYtb4T/NeCAAQcdr7uORhcnF85JNEbGuV0gIaUV
+         FjHSP1HBKDuENYSmRPD+WTKe7R2LCUTQreZwn4kUspkjcvDjpRsiGqSREtwXpq2poDzF
+         jeiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Amx5b9ulkowQsD/+s+Yg7t/EHUFV5O46vZ+modI/J9Q=;
-        b=wWsZqHRb/EDxmiUAceSVCgPueRD8fMzwbaAE//mfqTtoN8zC/tZDFnQ9qXIV7bQmlx
-         d9c6XXs/Ub+cSK4qRn2C5emBOwPLbPw1v3a5Cb4v2is7vZW2JdpW0kjzaTlciElFNhBY
-         X7Gww2uX1+5HovSIXnSTsYytQnaKsETdT3qC6FxWO7v+THrF1nlM+RtuwjUnZGu0YjWy
-         HFDReHzmnQnEypFwOm77LZB+odAyYpf1l1WyzOzpWId+4kCrz/uMcJ7/PstIDtZyS00T
-         34bbgcdjXfeR9+llddd2EBjBGAwzLome9v3OnK4108YoD2mkwG1P+dwl9HD8nHswwCji
-         r9uQ==
-X-Gm-Message-State: AOAM531GujpKNFoG5uUnIkAGxJL4OBeJtaLb46PAT1MdZ+r4VNhePK2c
-        l3BOLNifzxhpV8bfPUU4hBX2+dukOR3SI8V1B6hjow==
-X-Google-Smtp-Source: ABdhPJzANFvQBoBjcEiZAzOegEyIbaVvY7XBPVzPUNWDzseoLE+HO37abNnIAg8MVcqufnnxmwaEvb+cuwMWsE//904=
-X-Received: by 2002:a37:d53:: with SMTP id 80mr617420qkn.490.1634754134036;
- Wed, 20 Oct 2021 11:22:14 -0700 (PDT)
+        bh=0i4y6UyDLDUiSaX1ey5DBe2SVakCZgM42B6OBIqtHH0=;
+        b=i6zSFQuZnCGSZwfHSm7+appojB/ClDzx1X/M0UNegRXCO8po1oEkVpbmSmaEpAx997
+         fJ2ztjr+33yoTsIFb0a9d87+vSIZz2xSs8nLvOwUabQomaAvumfPGemW4/vg062SKC/c
+         pifOBqLV872XvNHoePdYhgPqdYyGrxVt2UnR4QZhDcv+UmcOuP/BwCaIYv8d0sMq7sne
+         v0QWed0DzCVLNFSg/p3fMx6a0+IMhcx5j6yHIUPtdyEqgxPSqaf3LCh/7wgX0FMpPbZt
+         HXT6ou0tToabTbKVxz+zmM2pLuVz4HBVF1jUTu5j49Mgx0NBAh4kly0Ddk/Mc492XuHl
+         yqEw==
+X-Gm-Message-State: AOAM533nX1sUx8YvnbVL35Npy5QKZhTHqNy8Jej2r6n+HPJ9uAfEmPOu
+        R7M6WlY02h4FOHwGbtDp/QSTSMMzFxh2q1QXOVKLCYXeiMU=
+X-Google-Smtp-Source: ABdhPJy1oYJzM9DUwvKrtAzAFhWNbCbY/SrQEhCEkLjgDOWthKTNrxxr0wyo3UUnWjGvt8vT9sLIlQRhmrx29ekuaWc=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr717816ybf.455.1634754758479;
+ Wed, 20 Oct 2021 11:32:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211012161544.660286-1-sdf@google.com> <CAEf4BzZ0-BeNmd9AuyLF1QZvmH4xNjAXPC2TsUN++D2WkuN5UQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ0-BeNmd9AuyLF1QZvmH4xNjAXPC2TsUN++D2WkuN5UQ@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 20 Oct 2021 11:22:03 -0700
-Message-ID: <CAKH8qBt5dLs8UN4YnRj7mkG2KmqrRKLj5QTGdFZ-OKDkz+vkwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/3] libbpf: use func name when pinning
- programs with LIBBPF_STRICT_SEC_NAME
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20211012023218.399568-1-iii@linux.ibm.com> <20211012023218.399568-2-iii@linux.ibm.com>
+ <CAEf4BzY=npfWOSgPPEKZ9g44a5XQ_606agX840dLLCqJiDC++g@mail.gmail.com> <fd749b049550e179d0d0b789d08a102655b1a68e.camel@linux.ibm.com>
+In-Reply-To: <fd749b049550e179d0d0b789d08a102655b1a68e.camel@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Oct 2021 11:32:27 -0700
+Message-ID: <CAEf4BzZq9kfQ_effdQMcfFJDcui_14QPTs7e_i42txiZMzHvUA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Use cpu_number only on arches
+ that have it
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 11:14 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Oct 12, 2021 at 4:03 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Tue, Oct 12, 2021 at 9:15 AM Stanislav Fomichev <sdf@google.com> wrote:
+> On Tue, 2021-10-12 at 05:56 +0200, Andrii Nakryiko wrote:
+> > On Tue, Oct 12, 2021 at 4:51 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
+> > >
+> > > cpu_number exists only on Intel and aarch64, so skip the test
+> > > involing
+> > > it on other arches. An alternative would be to replace it with an
+> > > exported non-ifdefed primitive-typed percpu variable from the
+> > > common
+> > > code, but there appears to be none.
+> > >
+> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/prog_tests/btf_dump.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > > b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > > index 87f9df653e4e..12f457b6786d 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+> > > @@ -778,8 +778,10 @@ static void test_btf_dump_struct_data(struct
+> > > btf *btf, struct btf_dump *d,
+> > >  static void test_btf_dump_var_data(struct btf *btf, struct
+> > > btf_dump *d,
+> > >                                    char *str)
+> > >  {
+> > > +#if defined(__i386__) || defined(__x86_64__) ||
+> > > defined(__aarch64__)
+> > >         TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_number", int,
+> > > BTF_F_COMPACT,
+> > >                           "int cpu_number = (int)100", 100);
+> > > +#endif
 > >
-> > Commit 15669e1dcd75 ("selftests/bpf: Normalize all the rest SEC() uses")
-> > broke flow dissector tests. With the strict section names, bpftool isn't
-> > able to pin all programs of the objects (all section names are the
-> > same now). To bring it back to life let's do the following:
-> >
-> > - teach libbpf to pin by func name with LIBBPF_STRICT_SEC_NAME
-> > - enable strict mode in bpftool (breaking cli change)
-> > - fix custom flow_dissector loader to use strict mode
-> > - fix flow_dissector tests to use new pin names (func vs sec)
-> >
-> > v2:
-> > - add github issue (Andrii Nakryiko)
-> > - remove sec_name from bpf_program.pin_name comment (Andrii Nakryiko)
-> > - clarify program pinning in LIBBPF_STRICT_SEC_NAME (Andrii Nakryiko)
+> > We are in the talks about supporting cross-compilation of selftests,
+> > and this will be just another breakage that we'll have to undo.
 >
-> I could not find this, can you please point me to where this is
-> clarified/explained in your patches?
+> Why would this break? Cross-compilation should define these macros
+> based on target, not build system.
 
-Sorry, I don't see it either. I remember I've added some comment to
-LIBBPF_STRICT_SEC_NAME in tools/lib/bpf/libbpf_legacy.h but I don't
-see it in the paches / my local tree. Will add back and resend.
+Ok, then it should be good.
 
 >
-> > - add cover letter (Andrii Nakryiko)
-> >
-> > Stanislav Fomichev (3):
-> >   libbpf: use func name when pinning programs with
-> >     LIBBPF_STRICT_SEC_NAME
-> >   bpftool: don't append / to the progtype
-> >   selftests/bpf: fix flow dissector tests
-> >
-> >  tools/bpf/bpftool/main.c                       |  4 ++++
-> >  tools/bpf/bpftool/prog.c                       | 15 +--------------
-> >  tools/lib/bpf/libbpf.c                         | 10 ++++++++--
-> >  .../selftests/bpf/flow_dissector_load.c        | 18 +++++++++++-------
-> >  .../selftests/bpf/flow_dissector_load.h        | 10 ++--------
-> >  .../selftests/bpf/test_flow_dissector.sh       | 10 +++++-----
-> >  6 files changed, 31 insertions(+), 36 deletions(-)
-> >
-> > --
-> > 2.33.0.882.g93a45727a2-goog
-> >
+> > Can we find some other variable that will be available on all
+> > architectures? Maybe "runqueues"?
+>
+> Wouldn't runqueues be pointless? We already have cpu_profile_flip. I
+> thought the idea here was to have something marked with
+> EXPORT_PER_CPU_SYMBOL.
+
+No idea what the idea was, tbh.
+
+>
+> > >         TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_profile_flip",
+> > > int, BTF_F_COMPACT,
+> > >                           "static int cpu_profile_flip = (int)2",
+> > > 2);
+> > >  }
+> > > --
+> > > 2.31.1
+>
