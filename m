@@ -2,175 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D259C4355D7
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 00:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8B74355DF
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 00:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhJTW1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 18:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
+        id S230466AbhJTWc7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 18:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhJTW1q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 18:27:46 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B77AC06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 15:25:31 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id s64so18541259yba.11
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 15:25:31 -0700 (PDT)
+        with ESMTP id S230181AbhJTWc6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 18:32:58 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C483C06161C
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 15:30:44 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id r184so15721757ybc.10
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 15:30:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pTDm9UhgfgKEkLEiIDJgzu+AD3/ZBBqqky/WIB9Zp5A=;
-        b=gW8Ro9O3uZMTFq3mCGzYVqZphbXxaFK2ZBEHXLeeIBLQcrzfDiGNA+EL2safiVh3dP
-         UqdC+Xj+kOEUFJT5//sYc2ggdpXDJ6i8wAAmwZ9IWyMT+4GSzPieGAibYONB6QJNmpFf
-         ETYYIax96x+DP+vJGswpyHwzCVA70zeGh4cdox+xl05Y8u9QYpUGaYQbzIiZUq2pSLOc
-         BcFC2xPA6yGOOSvNTaFRWU1GIprKlWXCeBVQaYK/OGKLqo92PxErR8FjklwCHRHNAMrn
-         8a9RrMzuHt6MyBT6cmD5HviNFS2qIO4BOL7WGbLeBjAHOq22ENpmpfQ+saPSaZCgVIzK
-         Ky6Q==
+         :cc;
+        bh=H5CkYfbj76oIjX6pDhDFIo9doreR2zsLZgB9O2aLih8=;
+        b=FWCqHv7aGwscunXux1mzjk6YkwdSEQpRML1gfFU0f3aCekQ331wnA5/wpWrnE/rOin
+         qVAWLXxTTSTgHVWXb90a3HiTiqEFes9BNyLaTROfpDHUdaxMRILXRT4YbynaUVimNdhD
+         +B3gZKi3etbw0YlLjpAxstAqAJ21Q81q9kPt6LnHq7ENR9R1GbrwAiYqIyZpfpeGLkcl
+         4uTqprb3M5hLIuKVerKPs6XNpalPmiVhEslBF1x3gfRl7tCkXsULdxwFPb8KLLVAjxyG
+         mu7F4eEb8Rb3nie1JKUg/x7cli/TH1FpTLXrbSuKwtRaFsm93L1QzNMEf00yLH9acsGO
+         58Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pTDm9UhgfgKEkLEiIDJgzu+AD3/ZBBqqky/WIB9Zp5A=;
-        b=oALySajlYygjqor5jRfwcby5CWF9wC0s0aiKsXYXHGCt6axeLYv9oBPAXvLgnG/hMt
-         d6xwu/mUhAXZOAmhsIQl0BFV9HjjeRl6eM4BeVfXH2Dg5F/lAI0dqQD9WIShGondfb+x
-         lkvSI6BEqUCRRJjAnvOohuHcewJwr9oUA9mqgGGlxi8YEcPxigPoXEWJTWU5jc8BtGNW
-         +eTOHzC+koPdFHZpw7G7AH58wBSRCi3xdjwOCnCs603kiYXVPpI1WhKo/0KN63nxJ8MD
-         2SJAvzoTgtyuqbyMJH1rL3cJJH1xYl80qZSH+BRB6MKM4LGBluuNaL0djps27r3GZeq5
-         qxPw==
-X-Gm-Message-State: AOAM533SCvLG5DG/mkz1158ss/ZZt1BzoH+bH4XgRqn4rj0gBNjrxDFm
-        yUjJlNpYF1QP1SCeQ7wUn1QLmB0Pq4h1kCsa0lk=
-X-Google-Smtp-Source: ABdhPJwO7wEpCvV3sVZCTwTa0u4j8NX2q48/9UT0wcK5WRlhbe+m2Nyec1yqCVv2li07Ds6ATzzrlAYhHQKsAFMzik8=
-X-Received: by 2002:a25:5606:: with SMTP id k6mr1872117ybb.51.1634768730309;
- Wed, 20 Oct 2021 15:25:30 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=H5CkYfbj76oIjX6pDhDFIo9doreR2zsLZgB9O2aLih8=;
+        b=WZd93eqENZDua4JnxeZeD89LXpb4rTGHmUL1jZFWgjU+jZ+ZU4Uhl+FvZOUZCgf5j+
+         eiPJqN3gWKkHRrh7MzyF6HVsDhMu/vZZptzRMmkFR0iAWQrLq40XGyHierG8c1uS2Ve9
+         e2/TRXTuKGQUgN/wPatlvML+/Vc3BD1jSG5NUzb/VvbMSQO/dT9ZpGhpNga9WViSym/T
+         uPhQbi8rssM9VpZUZeYhpnCYh9IqnDIWGYp1jmBfNqZf0N1qaRi+hybB80ENPSNYsVu4
+         +aNu2/CHVObKviB936sXQu+WzO6WQNZmGIjVa+DGy93xNZmZ1A7tj/SewoD4lfS5uexa
+         04LA==
+X-Gm-Message-State: AOAM531wml2r72meIpnHZD1eEKWNto3nYHGmhQRS6REJPH9479DBw55m
+        OgHBc8pLIm3z1jXjWK6UEJio5o7IOikqEdw0hBt79HFnmAc=
+X-Google-Smtp-Source: ABdhPJytkn2ZHEG3RhWBLf40zCCN6FRpbisBByvccACYfjcE21ZtNOOkZoMAWYNAQqdatsTSGLad/WriJjju2yg7RZI=
+X-Received: by 2002:a25:5606:: with SMTP id k6mr1894225ybb.51.1634769043257;
+ Wed, 20 Oct 2021 15:30:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211008000309.43274-1-andrii@kernel.org> <20211008000309.43274-10-andrii@kernel.org>
- <87pmsfl8z0.fsf@toke.dk> <CAEf4Bzb+z365WCbfPYw5xqhTAqoaAo6y+-Lt-iXGAGeeaLHMOw@mail.gmail.com>
- <87r1cvjioa.fsf@toke.dk> <91b10579-61fc-3bc7-8349-0ff3228905ae@fb.com>
- <CAEf4BzYJj_R1V=OtQUmWGXiUh0Bd=kYXXFHOKwzafF=JRAaBfQ@mail.gmail.com>
- <CAKH8qBtiDLeJmp9GXNTCNBnWbGbu66o+CE7NGyeEKB8o1=9bgA@mail.gmail.com>
- <CAEf4BzYkrabS=7fpn01BesM06P9gNEreQLReQBhbbqhvW6dTzQ@mail.gmail.com>
- <CAKH8qBsazaRM+ACSJc69Tt9RXR95twtG-T+Sn8LmV9sKWkhu1Q@mail.gmail.com>
- <CAEf4BzbhE0JMzap6OJf1vstyFi+qRTn1UjhUz+AoaUJYazA2BA@mail.gmail.com> <87cznze4lx.fsf@toke.dk>
-In-Reply-To: <87cznze4lx.fsf@toke.dk>
+References: <20211014212049.1010192-1-irogers@google.com> <CAEf4BzYiG36y0XWVfjXti-qb=gOdGkhzB6R5Ny3kvUbTRyeHUA@mail.gmail.com>
+ <CAP-5=fXLAp+9tKU1qS1fr+6ZSFiq=soyD+mr_FPPmi40P0imjw@mail.gmail.com>
+ <CAEf4BzaZpfnmTZj4k+APhTheODb6_NbNvUdsPYH84ophCaU3cw@mail.gmail.com> <CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com>
+In-Reply-To: <CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Oct 2021 15:25:19 -0700
-Message-ID: <CAEf4BzbCqAoF_6+S6CirA=gsSX2iFKqrBUeNkuuG_PPr1zPuLA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 09/10] libbpf: simplify look up by name of
- internal maps
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+Date:   Wed, 20 Oct 2021 15:30:32 -0700
+Message-ID: <CAEf4BzaNwEkGJ9OFEPe7nH2G2yP3tzqRjXV8zLHhqk-76xK1QA@mail.gmail.com>
+Subject: Re: [PATCH] btf_encoder: Make BTF_KIND_TAG conditional
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Petar Penkov <ppenkov@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 3:03 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Wed, Oct 20, 2021 at 2:49 PM Ian Rogers <irogers@google.com> wrote:
 >
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Wed, Oct 20, 2021 at 11:09 AM Stanislav Fomichev <sdf@google.com> wr=
-ote:
-> >>
-> >> On Wed, Oct 20, 2021 at 10:59 AM Andrii Nakryiko
-> >> <andrii.nakryiko@gmail.com> wrote:
-> >> >
-> >> > On Tue, Oct 12, 2021 at 8:29 AM Stanislav Fomichev <sdf@google.com> =
-wrote:
-> >> > >
-> >> > > On Mon, Oct 11, 2021 at 8:45 PM Andrii Nakryiko
-> >> > > <andrii.nakryiko@gmail.com> wrote:
-> >> > > >
-> >> > > > On Mon, Oct 11, 2021 at 11:24 PM Alexei Starovoitov <ast@fb.com>=
- wrote:
-> >> > > > >
-> >> > > > > On 10/8/21 2:44 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >> > > > > >
-> >> > > > > > Hmm, so introduce a new 'map_name_long' field, and on query =
-the kernel
-> >> > > > > > will fill in the old map_name with a truncated version, and =
-put the full
-> >> > > > > > name in the new field? Yeah, I guess that would work too!
-> >> > > > >
-> >> > > > > Let's start storing full map names in BTF instead.
-> >> > > > > Like we do already for progs.
-> >> > > > > Some tools already fetch full prog names this way.
-> >> > > >
-> >> > > > We do have those names in BTF. Each map has either corresponding=
- VAR
-> >> > > > or DATASEC. The problem is that we don't know which.
-> >> > > >
-> >> > > > Are you proposing to add some extra "btf_def_type_id" field to s=
-pecify
-> >> > > > BTF type ID of what "defines" the map (VAR or DATASEC)? That wou=
-ld
-> >> > > > work. Would still require UAPI and kernel changes, of course.
-> >> > > >
-> >> > > > The reason Toke and others were asking to preserve that object n=
-ame
-> >> > > > prefix for .rodata/.data maps was different though, and won't be
-> >> > > > addressed by the above. Even if you know the BTF VAR/DATASEC, yo=
-u
-> >> > > > don't know the "object name" associated with the map. And the ke=
-rnel
-> >> > > > doesn't know because it's purely libbpf's abstraction. And somet=
-imes
-> >> > > > that abstraction doesn't make sense (e.g., if we create a map th=
-at's
-> >> > > > pinned and reused from multiple BPF apps/objects).
-> >> > >
-> >> > > [..]
-> >> > >
-> >> > > > We do have BPF metadata that Stanislav added a while ago, so may=
-be we
-> >> > > > should just punt that problem to that? I'd love to have clean
-> >> > > > ".rodata" and ".data" names, of course.
-> >> > >
-> >> > > Are you suggesting we add some option to associate the metadata wi=
-th
-> >> > > the maps (might be an option)? IIRC, the metadata can only be
-> >> > > associated with the progs right now.
-> >> >
-> >> > Well, maps have associated BTF fd, when they are created, no? So you
-> >> > can find all the same metadata for the map, no?
-> >>
-> >> I guess that's true, we can store this metadata in the map itself
-> >> using something like existing bpf_metadata_ prefix.
+> On Wed, Oct 20, 2021 at 2:27 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > We had a discussion during the inaugural BSC meeting about having a
-> > small set of "standardized" metadata strings. "owner" and
-> > "description" (or maybe "app" for "application name") were two that
-> > were clearly useful and generally useful. So if we update bpftool and
-> > other tooling to recognize bpf_metadata_owner and bpf_metadata_app and
-> > print them in some nice and meaningful way in bpftool output (in
-> > addition to general btf_metadata dump), it would be great.
+> > On Wed, Oct 20, 2021 at 2:23 PM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Wed, Oct 20, 2021 at 2:12 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Thu, Oct 14, 2021 at 2:20 PM Ian Rogers <irogers@google.com> wrote:
+> > > > >
+> > > > > BTF_KIND_TAG is present in libbtf 6.0 but not libbtf in 5.15rc4. Make
+> > > > > the code requiring it conditionally compiled in.
+> > > > >
+> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > > ---
+> > > > >  btf_encoder.c | 7 +++++++
+> > > > >  lib/bpf       | 2 +-
+> > > > >  2 files changed, 8 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > > > index c341f95..400d64b 100644
+> > > > > --- a/btf_encoder.c
+> > > > > +++ b/btf_encoder.c
+> > > > > @@ -141,7 +141,9 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+> > > > >         [BTF_KIND_VAR]          = "VAR",
+> > > > >         [BTF_KIND_DATASEC]      = "DATASEC",
+> > > > >         [BTF_KIND_FLOAT]        = "FLOAT",
+> > > > > +#ifdef BTF_KIND_TAG /* BTF_KIND_TAG was added in 6.0 */
+> > > > >         [BTF_KIND_TAG]          = "TAG",
+> > > > > +#endif
+> > > > >  };
+> > > > >
+> > > > >  static const char *btf__printable_name(const struct btf *btf, uint32_t offset)
+> > > > > @@ -648,6 +650,7 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
+> > > > >  static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *value, uint32_t type,
+> > > > >                                     int component_idx)
+> > > > >  {
+> > > > > +#ifdef BTF_KIND_TAG /* Proxy for libbtf 6.0 */
+> > > >
+> > > > How will this work when libbpf is loaded dynamically? I believe pahole
+> > > > has this mode as well.
+> > >
+> > > Well it won't have a compilation error because BTF_KIND_TAG isn't
+> >
+> > Great, you traded compile-time error for runtime linking error, I hope
+> > that trade off makes sense to Arnaldo.
+> >
+> > > undefined :-) Tbh, I'm not sure but it seems that you'd be limited to
+> > > features in the version of libbpf you compiled against.
+> >
+> > I've been consistently advocating for statically linking against
+> > libbpf exactly to control what APIs and features are supported. But
+> > people stubbornly want dynamic linking. I hope added complexity and
+> > feature detection makes sense in practice for pahole.
+> >
+> > >
+> > > > Also, note that libbpf now provides LIBBPF_MAJOR_VERSION and
+> > > > LIBBPF_MINOR_VERSION macros, starting from 0.5, so no need for
+> > > > guessing the version
+> > >
+> > > This was moved to a header file in:
+> > > https://lore.kernel.org/bpf/CAADnVQJ2qd095mvj3z9u9BXQYCe2OTDn4=Gsu9nv1tjFHc2yqQ@mail.gmail.com/T/
+> > >
+> > > But that header doesn't appear any more:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/tools/lib/bpf
+> > >
+> > > Is that a bug?
+> >
+> > You should be checking here:
+> >
+> > https://github.com/libbpf/libbpf/blob/master/src/libbpf_version.h
 >
-> I like the idea of specifying some well-known metadata names, especially
-> if libbpf can auto-populate them if the user doesn't.
->
-> Also, couldn't bpftool just print out all bpf_metadata_* fields? At
-> least in a verbose mode...
+> We don't currently mirror this or bpf-next, but presumably the
 
-Yes, bpftool dumps all bpf_metadata_* fields already. The point of
-converging on few common ones (say, bpf_metadata_owner and
-bpf_metadata_app) would allow all the tools to use consistent subset
-to display meaningful short info about a prog or map. Dumping all
-metadata fields for something like "bpf top" doesn't make sense.
+Sorry, who's "we" and what's the use case we are talking about here?
+pahole itself is using libbpf from Github mirror and that's what all
+distros either are already doing or strongly encouraged to start
+doing.
 
-re: libbpf auto-populating some of them. It can populate "app"
-metadata from bpf_object's name, but we need to think through all the
-logistics carefully (e.g., not setting if user already specified that
-explicitly, etc). There is no way libbpf can know "owner" meta,
-though.
+> released version of libbpf is that in the Linus' tree [1]? There are
+> some things like traceevent that are planned for removal. It seems
+> like a bug that these trees are missing libbpf_version.h.
+
+I misremembered versions, LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION
+are available starting from v0.6 (unreleased yet), not v0.5. It's a
+pretty recent change, so might have not made it to the tip tree. But
+Github repo does have it, it's synced from bpf-next directly.
 
 >
-> -Toke
+> Thanks,
+> Ian
 >
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/bpf
+> > >
+> > > Thanks,
+> > > Ian
+> > >
+> > > > >         struct btf *btf = encoder->btf;
+> > > > >         const struct btf_type *t;
+> > > > >         int32_t id;
+> > > > > @@ -663,6 +666,10 @@ static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *val
+> > > > >         }
+> > > > >
+> > > > >         return id;
+> > > > > +#else
+> > > > > +        fprintf(stderr, "error: unable to encode BTF_KIND_TAG due to old libbtf\n");
+> > > > > +        return -ENOTSUP;
+> > > > > +#endif
+> > > > >  }
+> > > > >
+> > > > >  /*
+> > > > > diff --git a/lib/bpf b/lib/bpf
+> > > > > index 980777c..986962f 160000
+> > > > > --- a/lib/bpf
+> > > > > +++ b/lib/bpf
+> > > > > @@ -1 +1 @@
+> > > > > -Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
+> > > > > +Subproject commit 986962fade5dfa89c2890f3854eb040d2a64ab38
+> > > > > --
+> > > > > 2.33.0.1079.g6e70778dc9-goog
+> > > > >
