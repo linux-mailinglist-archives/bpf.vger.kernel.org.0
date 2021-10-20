@@ -2,103 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486E4434FF3
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 18:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2B9435042
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 18:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhJTQSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 12:18:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24449 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231402AbhJTQSn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 20 Oct 2021 12:18:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634746586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DB6FNE9518vrXKyk9/xmjFbyTClEQdA5fjKA0BXqbOU=;
-        b=fz0/VvXe/nQh5+G66wEJXw7pV1kjs8aZKZaP7Uk1ZxVJoH+6raBBWD0EIZsFuVI6vRfzFN
-        F9dQHgjLob2mF0MJMwFUEW0MICuH17NfwmJWJ1//38UNI/zZsbNpT+J0z3iiKygwGIqQID
-        Ujyx5FutkmiT1HJj/KqsEpGPYZwynxU=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-Mc4PhPhXO9qrUg_CLYZC0w-1; Wed, 20 Oct 2021 12:16:25 -0400
-X-MC-Unique: Mc4PhPhXO9qrUg_CLYZC0w-1
-Received: by mail-ed1-f70.google.com with SMTP id t18-20020a056402021200b003db9e6b0e57so21491569edv.10
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 09:16:25 -0700 (PDT)
+        id S230052AbhJTQhl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 12:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhJTQhk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 12:37:40 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B467C06161C
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 09:35:24 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id g8so13622584ljn.4
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 09:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=OdU+bgXoYXyezlWN+g9oRiIOveUP3dWgtIEKKskFW9w=;
+        b=gZMjIjq5IfqjoBi5EDZ4OY/VQn79ffIBw+Tm+ox85a/WbLxWZnBN9v5VWPRBGTauP3
+         1TshHJuqQPw887XtRPo0Tf0FeDwzHpLU0IkwbYtxgkq17Ve/imnfbBwvqZyq7XYxNzwp
+         Xq/slsBzSS8iBf247yZfrUbCPkL2WJXTspV5Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=DB6FNE9518vrXKyk9/xmjFbyTClEQdA5fjKA0BXqbOU=;
-        b=EOZO/tnguwsL6mz5vFVqyR62c8A/XwN26i+FRCbQlVCkeGYISnTArDFpSH7vcqN+5L
-         OXsqHeSZg2ft0jKQr3wuRPs/aS/Ut3JdYydoqjTaxsxeCEom+R4YlDkzU2QeCpMCWv+c
-         u6Pzrk1lAmzIKw2Xnt0j2JKPczmd0I5qwl0PkDLlN5uZvp1Ex0+Zw3xtJfbmSPfT9xYW
-         DeGOJgojPQ0dlPlyFmevsB3i8YE827BToyWq3gb90QTYd1f48cWM5nrWFxoFUsVx5uai
-         eM0woB0h1zeFdzug/SV1Nxxls5IaDvkFrJe8mknsHjbtkyVPTsb6fscBnvznkfy6Qs/k
-         ug3g==
-X-Gm-Message-State: AOAM533dvKp9sQanD77TxglepKsoK3P6bsRt57/rO7+I2gLYPGxXEr/6
-        W75AvtWXlXAzO4e5QcxlfOUuWHSf0TvWkR+r5dVkAacF1NcdJ2RETdw1ERkgkYJ8zCom/CqCL0j
-        s7dT4++gb6eF/
-X-Received: by 2002:a17:907:7752:: with SMTP id kx18mr347275ejc.276.1634746583010;
-        Wed, 20 Oct 2021 09:16:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxyQmCf6ySfQkkio7kRxi2QylOtvh+NWOtFaKQ59KcVINsv7754SFz8ClvR/dwt/emOrfu5A==
-X-Received: by 2002:a17:907:7752:: with SMTP id kx18mr347035ejc.276.1634746580913;
-        Wed, 20 Oct 2021 09:16:20 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i10sm1474006edl.15.2021.10.20.09.16.20
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=OdU+bgXoYXyezlWN+g9oRiIOveUP3dWgtIEKKskFW9w=;
+        b=wCJgvCVo+go0DckE486IQs46iP1L36e6cCYdGruwQLttZEiuPKWqVMqTm4083+ztPM
+         IMzFjkEXQLTyKhiuzZeB2M0OtLYaKzPgPSWA3q+72mdpCmcz4N3A0HxyWAM1gge9E4Fg
+         IqMBZniATG7jvTw/hyA4wlgTHlC/Weq4uYOIs8ApswszXpCqSlJJomFXkVOuTu77PK3O
+         9YaT6dIy5rWgZB8SIcK/Y9qGRmhEIJrNXbzQ/D6xajFf+eZd2CDLajuIyN7D2QaDrlMJ
+         AK0sQoP8/DgZzIlMam3BmIMGQZIO/nEO42SxGmeM0UIg3Cpmdz19sYUHbZgX7BfYqpxJ
+         q9rg==
+X-Gm-Message-State: AOAM531LCTQGVvxlW8Smlaii04/+TkmvJ9IFQYvOaaiA8jzgI6zV5B08
+        8sGzZwIWtFA41pX47NJp1mvW0g==
+X-Google-Smtp-Source: ABdhPJz7XuuPxCd6LR7eYWc/Eof3rFzqdkinTxHjkDhVNpqiqwZnlAHE86Z+LOUC4vIhJj/NcsJr4g==
+X-Received: by 2002:a05:651c:2107:: with SMTP id a7mr64329ljq.435.1634747722201;
+        Wed, 20 Oct 2021 09:35:22 -0700 (PDT)
+Received: from cloudflare.com (2a01-110f-480d-6f00-ff34-bf12-0ef2-5071.aa.ipv6.supernova.orange.pl. [2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
+        by smtp.gmail.com with ESMTPSA id 4sm228464lfq.5.2021.10.20.09.35.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 09:16:20 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9D47A180262; Wed, 20 Oct 2021 18:16:19 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Joe Stringer <joe@cilium.io>, Tariq Toukan <tariqt@nvidia.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next 09/10] bpf: Add a helper to issue timestamp
- cookies in XDP
-In-Reply-To: <CACAyw9_MT-+n_b1pLYrU+m6OicgRcndEBiOwb5Kc1w0CANd_9A@mail.gmail.com>
-References: <20211019144655.3483197-1-maximmi@nvidia.com>
- <20211019144655.3483197-10-maximmi@nvidia.com>
- <CACAyw9_MT-+n_b1pLYrU+m6OicgRcndEBiOwb5Kc1w0CANd_9A@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 20 Oct 2021 18:16:19 +0200
-Message-ID: <87y26nekoc.fsf@toke.dk>
+        Wed, 20 Oct 2021 09:35:21 -0700 (PDT)
+References: <20211011191647.418704-1-john.fastabend@gmail.com>
+ <20211011191647.418704-2-john.fastabend@gmail.com>
+ <87tuhdfpq4.fsf@cloudflare.com>
+ <616fa9127fa63_340c7208ef@john-XPS-13-9370.notmuch>
+ <87pmrzg28a.fsf@cloudflare.com>
+ <61703b183b7ac_48ee720873@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        joamaki@gmail.com, xiyou.wangcong@gmail.com,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf 1/4] bpf, sockmap: Remove unhash handler for BPF
+ sockmap usage
+In-reply-to: <61703b183b7ac_48ee720873@john-XPS-13-9370.notmuch>
+Date:   Wed, 20 Oct 2021 18:35:21 +0200
+Message-ID: <87o87jfyd2.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenz Bauer <lmb@cloudflare.com> writes:
-
->> +bool cookie_init_timestamp_raw(struct tcphdr *th, __be32 *tsval, __be32 *tsecr)
+On Wed, Oct 20, 2021 at 05:51 PM CEST, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Wed, Oct 20, 2021 at 07:28 AM CEST, John Fastabend wrote:
+>> > Jakub Sitnicki wrote:
+>> >> On Mon, Oct 11, 2021 at 09:16 PM CEST, John Fastabend wrote:
+>> >> > We do not need to handle unhash from BPF side we can simply wait for the
+>> >> > close to happen. The original concern was a socket could transition from
+>> >> > ESTABLISHED state to a new state while the BPF hook was still attached.
+>> >> > But, we convinced ourself this is no longer possible and we also
+>> >> > improved BPF sockmap to handle listen sockets so this is no longer a
+>> >> > problem.
+>> >> >
+>> >> > More importantly though there are cases where unhash is called when data is
+>> >> > in the receive queue. The BPF unhash logic will flush this data which is
+>> >> > wrong. To be correct it should keep the data in the receive queue and allow
+>> >> > a receiving application to continue reading the data. This may happen when
+>> >> > tcp_abort is received for example. Instead of complicating the logic in
+>> >> > unhash simply moving all this to tcp_close hook solves this.
+>> >> >
+>> >> > Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+>> >> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> >> > ---
+>> >>
+>> >> Doesn't this open the possibility of having a TCP_CLOSE socket in
+>> >> sockmap if I disconnect it, that is call connect(AF_UNSPEC), instead of
+>> >> close it?
+>> >
+>> > Correct it means we may have TCP_CLOSE socket in the map. I'm not
+>> > seeing any problem with this though. A send on the socket would
+>> > fail the sk_state checks in the send hooks. (tcp.c:1245). Receiving
+>> > from the TCP stack would fail with normal TCP stack checks.
+>> >
+>> > Maybe we want a check on redirect into ingress if the sock is in
+>> > ESTABLISHED state as well? I might push that in its own patch
+>> > though it seems related, but I think we should have that there
+>> > regardless of this patch.
+>> >
+>> > Did you happen to see any issues on the sock_map side for close case?
+>> > It looks good to me.
+>>
+>> OK, I didn't understand if that was an intended change or not.
+>>
 >
-> I'm probably missing context, Is there something in this function that
-> means you can't implement it in BPF?
+> wrt bpf-next:
+> The problem is this needs to be backported in some way that fixes the
+> case for stable kernels as well. We have applications that are throwing
+> errors when they hit this at the moment.
 
-I was about to reply with some other comments but upon closer inspection
-I ended up at the same conclusion: this helper doesn't seem to be needed
-at all?
+Understood.
 
--Toke
+>> If we're considering allowing TCP sockets in TCP_CLOSE state in sockmap,
+>> a few things come to mind:
+>
+> I think what makes most sense is to do the minimal work to fix the
+> described issue for bpf tree without introducing new issues and
+> then do the consistency/better cases in bpf-next.
+>
+>>
+>> 1) We can't insert TCP_CLOSE sockets today. sock_map_sk_state_allowed()
+>>    won't allow it. However, with this change we will be able to have a
+>>    TCP_CLOSE socket in sockmap by disconnecting it. If so, perhaps
+>>    inserting TCP sockets in TCP_CLOSE state should be allowed for
+>>    consistency.
+>
+> I agree, but would hold off on this for bpf-next. I missed points
+> 2,3 though in this series.
 
+OK, that makes sense.
+
+>>
+>> 2) Checks in bpf_sk_lookup_assign() helper need adjusting. Only TCP
+>>    sockets in TCP_LISTEN state make a valid choice (and UDP sockets in
+>>    TCP_CLOSE state). Today we rely on the fact there that you can't
+>>    insert a TCP_CLOSE socket.
+>
+> This should be minimal change, just change the logic to allow only
+> TCP_LISTEN.
+>
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -10402,7 +10402,7 @@ BPF_CALL_3(bpf_sk_lookup_assign, struct bpf_sk_lookup_kern *, ctx,
+>                 return -EINVAL;
+>         if (unlikely(sk && sk_is_refcounted(sk)))
+>                 return -ESOCKTNOSUPPORT; /* reject non-RCU freed sockets */
+> -       if (unlikely(sk && sk->sk_state == TCP_ESTABLISHED))
+> +       if (unlikely(sk && sk->sk_state != TCP_LISTEN))
+>                 return -ESOCKTNOSUPPORT; /* reject connected sockets */
+>
+>         /* Check if socket is suitable for packet L3/L4 protocol */
+>
+>
+
+Yeah, it shouldn't be hard. But we need to cover UDP as well. Something
+along the lines of:
+
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -10402,8 +10402,10 @@ BPF_CALL_3(bpf_sk_lookup_assign, struct bpf_sk_lookup_kern *, ctx,
+                return -EINVAL;
+        if (unlikely(sk && sk_is_refcounted(sk)))
+                return -ESOCKTNOSUPPORT; /* reject non-RCU freed sockets */
+-       if (unlikely(sk && sk->sk_state == TCP_ESTABLISHED))
+-               return -ESOCKTNOSUPPORT; /* reject connected sockets */
++       if (unlikely(sk && sk_is_tcp(sk) && sk->sk_state != TCP_LISTEN))
++               return -ESOCKTNOSUPPORT; /* reject closed TCP sockets */
++       if (unlikely(sk && sk_is_udp(sk) && sk->sk_state != TCP_CLOSE))
++               return -ESOCKTNOSUPPORT; /* reject connected UDP sockets */
+
+        /* Check if socket is suitable for packet L3/L4 protocol */
+        if (sk && sk->sk_protocol != ctx->protocol)
+
+We aren't testing today that that error case in sk_lookup test suite,
+because it wasn't possible to insert a TCP_CLOSE socket. So once that
+gets in, I can add coverage.
+
+>>
+>> 3) Checks in sk_select_reuseport() helper need adjusting as well. It's a
+>>    similar same case as with bpf_sk_lookup_assign() (with a slight
+>>    difference that reuseport allows dispatching to connected UDP
+>>    sockets).
+>
+> Is it needed here? There is no obvious check now.  Is ESTABLISHED
+> state OK here now?
+
+TCP ESTABLISHED sockets are not okay. They can't join the reuseport
+group and will always hit the !reuse branch.
+
+Re-reading the code, though, I think nothing needs to be done for the
+sk_select_reuseport() helper. TCP sockets will be detached from
+reuseport group on unhash. Hence TCP_CLOSE socket will also hit the
+!reuse branch.
+
+CC'ing Martin just in case he wants to double-check.
+
+>
+>>
+>> 4) Don't know exactly how checks in sockmap redirect helpers would need
+>>    to be tweaked. I recall that it can't be just TCP_ESTABLISHED state
+>>    that's allowed due to a short window of opportunity that opens up
+>>    when we transition from TCP_SYN_SENT to TCP_ESTABLISHED.
+>>    BPF_SOCK_OPS_STATE_CB callback happens just before the state is
+>>    switched to TCP_ESTABLISHED.
+>>
+>>    TCP_CLOSE socket sure doesn't make sense as a redirect target. Would
+>>    be nice to get an error from the redirect helper. If I understand
+>>    correctly, if the TCP stack drops the packet after BPF verdict has
+>>    selected a socket, only the socket owner will know about by reading
+>>    the error queue.
+>>
+>>    OTOH, redirecting to a TCP_CLOSE_WAIT socket doesn't make sense
+>>    either, but we don't seem to filter it out today, so the helper is
+>>    not airtight.
+>
+> Right. At the moment for sending we call do_tcp_sendpages() and this
+> has the normal check ~(TCPF_ESABLISHED | TCPF_CLOSE_WAIT) so we
+> would return an error. The missing case is ingress. We currently
+> let these happen and would need a check there. I was thinking
+> of doing it in a separate patch, but could tack it on to this
+> series for completeness.
+>
+
+Oh, yeah, right. I see now what you mean. No problem on egress.
+
+So it's just an SK_DROP return code from bpf_sk_redirect_map() that
+could be a potential improvement.
+
+Your call if you want to add it this series. Patching it up as a follow
+up works for me as well.
+
+>>
+>> All in all, sounds like an API change when it comes to corner cases, in
+>> addition to being a fix for the receive queue flush issue which you
+>> explained in the patch description. If possible, would push it through
+>> bpf-next.
+>
+> I think if we address 2,3,4 then we can fix the described issue
+> without introducing new cases. And then 1 is great for consistency
+> but can go via bpf-next?
+
+So (3) is out, reuseport+sockmap users should be unaffected by this.
+
+If you could patch (2) that would be great. We rely on this, and I can't
+assume that nobody isn't disconnecting their listener sockets for some
+reason.
+
+(4) and (1) can follow later, if you ask me.
