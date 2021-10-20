@@ -2,69 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8054C4347EE
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 11:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038DA4347F6
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 11:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhJTJbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 05:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        id S230052AbhJTJc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 05:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhJTJbq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 05:31:46 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0DFC061765
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 02:29:32 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id v127so17459132wme.5
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 02:29:32 -0700 (PDT)
+        with ESMTP id S229952AbhJTJc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 05:32:26 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC66C06161C
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 02:30:12 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id g39so13325743wmp.3
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 02:30:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ykgdjxhAzVVgvIOev5ZjMvpn28ZknbgkcJ3ItmcQ13s=;
-        b=ccTcYnaTCZnvx+0dioCUfvzxTuT7PAiYz1X882B4WE2X/v27ojgcjsmDhjXpZBS5ot
-         ufyathg3MHNQJMd1scWM92QWQjBSsw24qE61/z8eHhkI5gLytEtkCppqZzbpLkk2es70
-         b2Mlil+m4TNz0PjqF7Y45I22ctCZtIXP4s98vL9wG6BhxlZE8on365XkR+4gwGWaHmqg
-         MtIqln8OX63Iz5YuWEEdFCD3hFyaXmS63Q6z67NNDsuaLNEzL52XXG+64r1wsZHcFsnJ
-         W49E8mTUAxs9T6AUrbM+YT61ancgPyynFXH/a9BtxYLP07GChUF3W/5N39rzUQO5/w39
-         5OUw==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=18unRjIEgtu53s2AOFSBOaihnZgi6/yiKrjjisGxHnA=;
+        b=UoQeY4iYZjQ1L7P59cZltNOmPD6mVN2WULLC0cZ2ymMnEXtTKVlHaOZlrJGDImu1eA
+         vppuhyaEosK9YouBjU0LEm7XonjhN9Pg7gWsGru5ZOJaOcPvMDIk3WqampBf7VR/KsTj
+         a7SWEHDcFQHeNeRCtsBMO4z5Q04Ts0RdSvTJTin1mTPZ/6Bb9CpEqksf0hp1g4voval6
+         zPGBhyMmlFtZn/CEQBal27vF9OlzYDD1xFnQ70Cc5vUw7ub3lFi3PdHSTAz+UgE7HYbG
+         dlTYES4M2cX5pveONmb8jNFsZpkNAQX5S8kUaWhecZLEXi4DYNmvafw909eXEK1gu25G
+         9/jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ykgdjxhAzVVgvIOev5ZjMvpn28ZknbgkcJ3ItmcQ13s=;
-        b=kI5Go4TSj6w4JdFV4Ai9LH3tPpRckN5O4puut3pEr4Pt99p2Tp4mF00TSAe1UKrqNn
-         Qkmwbqpfbg311HRYg1qN2VLLbBUSC2DlmrMw1JX/YnUS6nRgT0pMo5lUqMHymUBeITJI
-         r50WRuvhnJZ+pN7F+12BQo/JGitb/KWunVy+Qyw7tUSUMHGn/83sMvS+DLiJCtSIBSXw
-         LRLaQkPTDqu/GWegJu6/Hofb81RtQ7e89hNU5pW6Q5+YNLVm1NYz+cJre3TRlJe6Q42f
-         maBPQSbWaIoKHoxhuGWlT9pk28ePNzpjdBfriR8HLzR/Tl6FQ6PWMasujB/C8zPpfhQj
-         YZqQ==
-X-Gm-Message-State: AOAM532Zm6X5ulHmWRGfsg9rtmywfjBBQ5Ot4pYAIqxnuFlQM41WqsVd
-        FOzCL4+0DX8t+SXOKVNt4HF2erXI+ysJxZ41ZsM=
-X-Google-Smtp-Source: ABdhPJz2pIbFJxrBXUS7QiS2zj+nr5m31skAto/hnzsK7k5shLcuv43Y4cMSbYJ+opQk1gzgcYk4mDZINR2JpUxp+Wc=
-X-Received: by 2002:a05:600c:19cd:: with SMTP id u13mr12080602wmq.148.1634722170892;
- Wed, 20 Oct 2021 02:29:30 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=18unRjIEgtu53s2AOFSBOaihnZgi6/yiKrjjisGxHnA=;
+        b=6NUkQK1OHKaL51wWzBTxbRqZXOLmSvEt/+B+SY2b0NZ32nlrnca+qFD1WEkiswDygO
+         viskPU9larhgj7YIxdbd125aAaFMYPfJTKOBdr8PkQN3gLz3YkDvpfwoTa/eNbH5AGXY
+         zFyeWNVXJsAmjWLfJwd8AAtoIgVM7INgCS8K9Pg2YF72nSZbZbMt6RX4Lwl2QAIwbFn4
+         c2tkKlojLCECq0Fu1waHU4aWDJpytU+6Hn0GhzvFdxgzQQp+n04OJhK3lNxc9rg1L8cJ
+         DHXGDLJxEy/4BZ17RpLSUAFlpRfmszEGQjLSDNCPDjzg75+9Z3yMPaNrhJrrHUTNwT3S
+         cu0w==
+X-Gm-Message-State: AOAM531SD5Lx6h0D8XeniMDrSXXKgzPjy/UGzTynZ6AD7qu/HIkgXrTI
+        4RLfQ68q04VOSH7DLZoYH9KSTTQfyTu+6XvG
+X-Google-Smtp-Source: ABdhPJyQRfrhWDEz5irhwOalGLfEAeIJ9712M/2WBMHGpdm+WMijti8hSEWBEy5SK0NwHr/aolvW7w==
+X-Received: by 2002:a05:6000:188d:: with SMTP id a13mr50654955wri.243.1634722210672;
+        Wed, 20 Oct 2021 02:30:10 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.78.224])
+        by smtp.gmail.com with ESMTPSA id j7sm1833615wmq.32.2021.10.20.02.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 02:30:10 -0700 (PDT)
+Message-ID: <73ba260f-c634-0955-2111-6c12c1b8b79f@isovalent.com>
+Date:   Wed, 20 Oct 2021 10:30:09 +0100
 MIME-Version: 1.0
-Received: by 2002:a7b:c14c:0:0:0:0:0 with HTTP; Wed, 20 Oct 2021 02:29:30
- -0700 (PDT)
-Reply-To: mauhin11@gmail.com
-From:   Maureen Hinckley <joycenyamweya5@gmail.com>
-Date:   Wed, 20 Oct 2021 12:29:30 +0300
-Message-ID: <CAOT2_Cw+kuN=Utgs2W3b2sOHpBba3jEzmyVZj0GX3OH9Qa6Cdg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH bpf-next] bpf/preload: Clean up .gitignore and
+ "clean-files" target
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20211010002400.9339-1-quentin@isovalent.com>
+ <CAEf4Bza1K2-ncAqmvri=4apP9Bzv9gX7e8YAu4GWgk_kM48Jgw@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAEf4Bza1K2-ncAqmvri=4apP9Bzv9gX7e8YAu4GWgk_kM48Jgw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-Hello,
+2021-10-19 16:50 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Sat, Oct 9, 2021 at 5:24 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> kernel/bpf/preload/Makefile was recently updated to have it install
+>> libbpf's headers locally instead of pulling them from tools/lib/bpf. But
+>> two items still need to be addressed.
+>>
+>> First, the local .gitignore file was not adjusted to ignore the files
+>> generated in the new kernel/bpf/preload/libbpf output directory.
+>>
+>> Second, the "clean-files" target is now incorrect. The old artefacts
+>> names were not removed from the target, while the new ones were added
+>> incorrectly. This is because "clean-files" expects names relative to
+>> $(obj), but we passed the absolute path instead. This results in the
+>> output and header-destination directories for libbpf (and their
+>> contents) not being removed from kernel/bpf/preload on "make clean" from
+>> the root of the repository.
+>>
+>> This commit fixes both issues. Note that $(userprogs) needs not be added
+>> to "clean-files", because the cleaning infrastructure already accounts
+>> for it.
+>>
+>> Cleaning the files properly also prevents make from printing the
+>> following message, for builds coming after a "make clean":
+>> "make[4]: Nothing to be done for 'install_headers'."
+>>
+>> Fixes: bf60791741d4 ("bpf: preload: Install libbpf headers when building")
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>> ---
+>>  kernel/bpf/preload/.gitignore | 4 +---
+>>  kernel/bpf/preload/Makefile   | 3 +--
+>>  2 files changed, 2 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/bpf/preload/.gitignore b/kernel/bpf/preload/.gitignore
+>> index 856a4c5ad0dd..9452322902a5 100644
+>> --- a/kernel/bpf/preload/.gitignore
+>> +++ b/kernel/bpf/preload/.gitignore
+>> @@ -1,4 +1,2 @@
+>> -/FEATURE-DUMP.libbpf
+>> -/bpf_helper_defs.h
+>> -/feature
+>> +/libbpf
+>>  /bpf_preload_umd
+>> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+>> index 469d35e890eb..d8379af88161 100644
+>> --- a/kernel/bpf/preload/Makefile
+>> +++ b/kernel/bpf/preload/Makefile
+>> @@ -27,8 +27,7 @@ userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
+>>
+>>  userprogs := bpf_preload_umd
+>>
+>> -clean-files := $(userprogs) bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
+>> -clean-files += $(LIBBPF_OUT) $(LIBBPF_DESTDIR)
+>> +clean-files := $(subst $(abspath $(obj))/,,$(LIBBPF_OUT) $(LIBBPF_DESTDIR))
+> 
+> why so complicated? also isn't LIBBPF_OUT and LIBBPF_DESTDIR the same?
 
-I am Maureen Hinckley and my foundation is donating ($2.2 Million.
-Dollars) to you. Contact us via my email at (mauhin11@gmail.com) for
-further details.
+They're the same. My reasoning was that since we had these two variables
+for output directories, it felt logical somehow to add both, in case one
+changes in the future.
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92021 The Maureen Hinckley Foundation All Rights Reserved.
+> Wouldn't just this work and be super clear:
+> 
+> clean-files: libbpf/
+
+It does look simpler. OK I'll change and submit a new version.
+
+Thanks,
+Quentin
