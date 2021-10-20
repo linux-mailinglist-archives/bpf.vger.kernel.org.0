@@ -2,205 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A0A434F5A
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 17:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBB2434F7E
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 17:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhJTPyS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 11:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
+        id S230521AbhJTP7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 11:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTPyS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 11:54:18 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAE0C06161C;
-        Wed, 20 Oct 2021 08:52:03 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id n7so25292141iod.0;
-        Wed, 20 Oct 2021 08:52:03 -0700 (PDT)
+        with ESMTP id S231195AbhJTP7N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:59:13 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA48C061749
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 08:56:58 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id u21so16006831lff.8
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 08:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=QMTCPjO3wwdoiVbxw6GnEB0zqUrLMjDbBj032lhBm04=;
-        b=P852d2IcahcUelfPw1MA+TVEm8UQ/Yzhok4DywJgdWgfA3FQivQnDjSNUkoI5cEnDt
-         bRahYlIfOB3fqKZJaykJl978YVnUMaQQKiJmT1mAZGYYqInC3zLLjh9+uhA24y/vLNuP
-         Xa+Gq1VguatrGt/E/iV01ALnjDSmwIsLOFpL5tSKVtEd4PdxgykHUlu4uXFe17DQUN44
-         pmQPMtNubzAaFrnDsR8UcdNJUnVwv1TBdK025Vc5s07JhQAD5gud5rPLUTGMkjtW9Pzx
-         E9QCth4lW+ZMtkGfEGjGlPmCRIbN3zI7sl5b43ger3A2/X0H2SnoUHQT3hhwSgOB7CMi
-         6OGQ==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TCZ683u99Jm41qEN6eWPpP1n8rGety/eAnHibS9A2GQ=;
+        b=UoEY0usm5DXMVHSQsT6pMf14NgDa018KZ90Gl4MACFJB/bi0CXOzd28A8QyMTsyJjX
+         4IKnOSoPOSq9AM0rv4e32uiLrc+5g9MYyAjPd/vGaE/aaKhX5AhYcUwA5Cp7CiNXnWmd
+         6QtsxrBUM5dSQGECTjQn4oq7b/Y14Mg0dwoqk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=QMTCPjO3wwdoiVbxw6GnEB0zqUrLMjDbBj032lhBm04=;
-        b=aW5u76ipntM83nJ4ZsfLIFg66AX8m1yVaqTQmpNRwWeOzwS5aWFPjXS7Se/SsEZLo+
-         QsjbBZj9jhkMn2YUcrJnJE9m7lObyL0xX52+K+kQ8SMqSfRvFBC/yoraFXJudCePds7U
-         AxbsBX6jF068+mE7cCtXavkwGtY3cgldPqsCgLGb09XvvvA8z6iSWvQ8CsSJF7pgX1Km
-         sX4MULg/TKAoYhDFDvZKTFWTeFllTF5PUZojgxOCyGSPxIUj96XbW1v5DiTvJIdTwwnF
-         lAmN/Th9xnR19zutU3wFzCYt4UQviT+QEimt/IVkeEP8J2D7iSuFODrOWG7O1t6E4Q8G
-         w9AQ==
-X-Gm-Message-State: AOAM531Q7XU+KoTscVGlHqx1hL/25TEN8HMBX7B5BKFwSg5E7HI0qDGf
-        76vBKS7ZghTCV/M9WV5YSTo=
-X-Google-Smtp-Source: ABdhPJzGHDY6JouWgDmcgcUxNr30NEzWDTfdwgfmhH32dWqwiSlEXVN/TdDCsrstKLzLPVTJ65nafA==
-X-Received: by 2002:a02:6064:: with SMTP id d36mr100351jaf.80.1634745122620;
-        Wed, 20 Oct 2021 08:52:02 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id j3sm1291284ilu.15.2021.10.20.08.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 08:52:02 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 08:51:52 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        joamaki@gmail.com, xiyou.wangcong@gmail.com
-Message-ID: <61703b183b7ac_48ee720873@john-XPS-13-9370.notmuch>
-In-Reply-To: <87pmrzg28a.fsf@cloudflare.com>
-References: <20211011191647.418704-1-john.fastabend@gmail.com>
- <20211011191647.418704-2-john.fastabend@gmail.com>
- <87tuhdfpq4.fsf@cloudflare.com>
- <616fa9127fa63_340c7208ef@john-XPS-13-9370.notmuch>
- <87pmrzg28a.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf 1/4] bpf, sockmap: Remove unhash handler for BPF
- sockmap usage
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TCZ683u99Jm41qEN6eWPpP1n8rGety/eAnHibS9A2GQ=;
+        b=BMqWUsK2MyrKisOcVYlWooSOg9e9bKMFW37I7vnCc7f2mph2qmuei+2gRBJzzO4axG
+         +IAwlseTsEYPZdXy0x2svM2XdcWiMqoJnje9sSZszDflhhb9F2K1ZLoFT0RGcZB5daUt
+         E29bXc5G1p8YlBwb6b16tyvvw3lkHu0aGS//t2SdBq3C7yuLs67+HFsn1la3qJYbdWhK
+         cv4+f74xDKRD4gxotgkp+WmYDQVSCHCrMTKN5lVIbWn9FIBMmiSOsCsVwpJT8zrNrSPq
+         k/ffnqzZrUEhV/GxGNG4n5zdwrwkFzw5X+EQZeUNKfVztZQimbLwe2gD/aqu2tQekexr
+         tEuw==
+X-Gm-Message-State: AOAM533DakY0a1i4HalqaLYFqso0mhgiXLoq+yqWxy402rpe120z2+Dl
+        /RVt23EtlcOti59AIFrd0a0KlKXYA6t+XHowgnH4pQ==
+X-Google-Smtp-Source: ABdhPJy3PpTlDciRIIloIP1t/37pw5N/rZE7Pu5xGX4BiYf125qTL3TMpv58efY/EJzh8K1MSn2Wc8aIz4qA4iMEC3I=
+X-Received: by 2002:a05:6512:3bc:: with SMTP id v28mr152447lfp.102.1634745417053;
+ Wed, 20 Oct 2021 08:56:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211019144655.3483197-1-maximmi@nvidia.com> <20211019144655.3483197-10-maximmi@nvidia.com>
+In-Reply-To: <20211019144655.3483197-10-maximmi@nvidia.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 20 Oct 2021 16:56:46 +0100
+Message-ID: <CACAyw9_MT-+n_b1pLYrU+m6OicgRcndEBiOwb5Kc1w0CANd_9A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 09/10] bpf: Add a helper to issue timestamp
+ cookies in XDP
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Joe Stringer <joe@cilium.io>, Tariq Toukan <tariqt@nvidia.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Wed, Oct 20, 2021 at 07:28 AM CEST, John Fastabend wrote:
-> > Jakub Sitnicki wrote:
-> >> On Mon, Oct 11, 2021 at 09:16 PM CEST, John Fastabend wrote:
-> >> > We do not need to handle unhash from BPF side we can simply wait for the
-> >> > close to happen. The original concern was a socket could transition from
-> >> > ESTABLISHED state to a new state while the BPF hook was still attached.
-> >> > But, we convinced ourself this is no longer possible and we also
-> >> > improved BPF sockmap to handle listen sockets so this is no longer a
-> >> > problem.
-> >> >
-> >> > More importantly though there are cases where unhash is called when data is
-> >> > in the receive queue. The BPF unhash logic will flush this data which is
-> >> > wrong. To be correct it should keep the data in the receive queue and allow
-> >> > a receiving application to continue reading the data. This may happen when
-> >> > tcp_abort is received for example. Instead of complicating the logic in
-> >> > unhash simply moving all this to tcp_close hook solves this.
-> >> >
-> >> > Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
-> >> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> >> > ---
-> >>
-> >> Doesn't this open the possibility of having a TCP_CLOSE socket in
-> >> sockmap if I disconnect it, that is call connect(AF_UNSPEC), instead of
-> >> close it?
-> >
-> > Correct it means we may have TCP_CLOSE socket in the map. I'm not
-> > seeing any problem with this though. A send on the socket would
-> > fail the sk_state checks in the send hooks. (tcp.c:1245). Receiving
-> > from the TCP stack would fail with normal TCP stack checks.
-> >
-> > Maybe we want a check on redirect into ingress if the sock is in
-> > ESTABLISHED state as well? I might push that in its own patch
-> > though it seems related, but I think we should have that there
-> > regardless of this patch.
-> >
-> > Did you happen to see any issues on the sock_map side for close case?
-> > It looks good to me.
-> 
-> OK, I didn't understand if that was an intended change or not.
-> 
+On Tue, 19 Oct 2021 at 15:49, Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
+>
+> The new helper bpf_tcp_raw_gen_tscookie allows an XDP program to
+> generate timestamp cookies (to be used together with SYN cookies) which
+> encode different options set by the client in the SYN packet: SACK
+> support, ECN support, window scale. These options are encoded in lower
+> bits of the timestamp, which will be returned by the client in a
+> subsequent ACK packet. The format is the same used by synproxy.
+>
+> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  include/net/tcp.h              |  1 +
+>  include/uapi/linux/bpf.h       | 27 +++++++++++++++
+>  net/core/filter.c              | 38 +++++++++++++++++++++
+>  net/ipv4/syncookies.c          | 60 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 27 +++++++++++++++
+>  5 files changed, 153 insertions(+)
+>
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index 1cc96a225848..651820bef6a2 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -564,6 +564,7 @@ u32 __cookie_v4_init_sequence(const struct iphdr *iph, const struct tcphdr *th,
+>                               u16 *mssp);
+>  __u32 cookie_v4_init_sequence(const struct sk_buff *skb, __u16 *mss);
+>  u64 cookie_init_timestamp(struct request_sock *req, u64 now);
+> +bool cookie_init_timestamp_raw(struct tcphdr *th, __be32 *tsval, __be32 *tsecr);
+>  bool cookie_timestamp_decode(const struct net *net,
+>                              struct tcp_options_received *opt);
+>  bool cookie_ecn_ok(const struct tcp_options_received *opt,
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index e32f72077250..791790b41874 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5053,6 +5053,32 @@ union bpf_attr {
+>   *
+>   *             **-EPROTONOSUPPORT** if the IP version is not 4 or 6 (or 6, but
+>   *             CONFIG_IPV6 is disabled).
+> + *
+> + * int bpf_tcp_raw_gen_tscookie(struct tcphdr *th, u32 th_len, __be32 *tsopt, u32 tsopt_len)
 
-wrt bpf-next:
-The problem is this needs to be backported in some way that fixes the
-case for stable kernels as well. We have applications that are throwing
-errors when they hit this at the moment.
+flags which must be 0?
 
-> If we're considering allowing TCP sockets in TCP_CLOSE state in sockmap,
-> a few things come to mind:
+> + *     Description
+> + *             Try to generate a timestamp cookie which encodes some of the
+> + *             flags sent by the client in the SYN packet: SACK support, ECN
+> + *             support, window scale. To be used with SYN cookies.
+> + *
+> + *             *th* points to the start of the TCP header of the client's SYN
+> + *             packet, while *th_len* contains the length of the TCP header (at
+> + *             least **sizeof**\ (**struct tcphdr**)).
+> + *
+> + *             *tsopt* points to the output location where to put the resulting
+> + *             timestamp values: tsval and tsecr, in the format of the TCP
+> + *             timestamp option.
+> + *
+> + *     Return
+> + *             On success, 0.
+> + *
+> + *             On failure, the returned value is one of the following:
+> + *
+> + *             **-EINVAL** if the input arguments are invalid.
+> + *
+> + *             **-ENOENT** if the TCP header doesn't have the timestamp option.
+> + *
+> + *             **-EOPNOTSUPP** if the kernel configuration does not enable SYN
+> + *             cookies (CONFIG_SYN_COOKIES is off).
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -5238,6 +5264,7 @@ union bpf_attr {
+>         FN(ct_release),                 \
+>         FN(tcp_raw_gen_syncookie),      \
+>         FN(tcp_raw_check_syncookie),    \
+> +       FN(tcp_raw_gen_tscookie),       \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 5f03d4a282a0..73fe20ef7442 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -7403,6 +7403,42 @@ static const struct bpf_func_proto bpf_tcp_raw_check_syncookie_proto = {
+>         .arg4_type      = ARG_CONST_SIZE,
+>  };
+>
+> +BPF_CALL_4(bpf_tcp_raw_gen_tscookie, struct tcphdr *, th, u32, th_len,
+> +          __be32 *, tsopt, u32, tsopt_len)
+> +{
+> +       int err;
 
-I think what makes most sense is to do the minimal work to fix the
-described issue for bpf tree without introducing new issues and
-then do the consistency/better cases in bpf-next.
+Missing check for th_len?
 
-> 
-> 1) We can't insert TCP_CLOSE sockets today. sock_map_sk_state_allowed()
->    won't allow it. However, with this change we will be able to have a
->    TCP_CLOSE socket in sockmap by disconnecting it. If so, perhaps
->    inserting TCP sockets in TCP_CLOSE state should be allowed for
->    consistency.
+> +
+> +#ifdef CONFIG_SYN_COOKIES
+> +       if (tsopt_len != sizeof(u64)) {
 
-I agree, but would hold off on this for bpf-next. I missed points
-2,3 though in this series.
+sizeof(u32) * 2? That u64 isn't really relevant here.
 
-> 
-> 2) Checks in bpf_sk_lookup_assign() helper need adjusting. Only TCP
->    sockets in TCP_LISTEN state make a valid choice (and UDP sockets in
->    TCP_CLOSE state). Today we rely on the fact there that you can't
->    insert a TCP_CLOSE socket.
+> +               err = -EINVAL;
+> +               goto err_out;
+> +       }
+> +
+> +       if (!cookie_init_timestamp_raw(th, &tsopt[0], &tsopt[1])) {
+> +               err = -ENOENT;
+> +               goto err_out;
+> +       }
+> +
+> +       return 0;
+> +err_out:
+> +#else
+> +       err = -EOPNOTSUPP;
+> +#endif
+> +       memset(tsopt, 0, tsopt_len);
+> +       return err;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_tcp_raw_gen_tscookie_proto = {
+> +       .func           = bpf_tcp_raw_gen_tscookie,
+> +       .gpl_only       = false,
+> +       .pkt_access     = true,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_MEM,
+> +       .arg2_type      = ARG_CONST_SIZE,
+> +       .arg3_type      = ARG_PTR_TO_UNINIT_MEM,
+> +       .arg4_type      = ARG_CONST_SIZE,
+> +};
+> +
+>  #endif /* CONFIG_INET */
+>
+>  bool bpf_helper_changes_pkt_data(void *func)
+> @@ -7825,6 +7861,8 @@ xdp_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>                 return &bpf_tcp_raw_gen_syncookie_proto;
+>         case BPF_FUNC_tcp_raw_check_syncookie:
+>                 return &bpf_tcp_raw_check_syncookie_proto;
+> +       case BPF_FUNC_tcp_raw_gen_tscookie:
+> +               return &bpf_tcp_raw_gen_tscookie_proto;
+>  #endif
+>         default:
+>                 return bpf_sk_base_func_proto(func_id);
+> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+> index 8696dc343ad2..4dd2c7a096eb 100644
+> --- a/net/ipv4/syncookies.c
+> +++ b/net/ipv4/syncookies.c
+> @@ -85,6 +85,66 @@ u64 cookie_init_timestamp(struct request_sock *req, u64 now)
+>         return (u64)ts * (NSEC_PER_SEC / TCP_TS_HZ);
+>  }
+>
+> +bool cookie_init_timestamp_raw(struct tcphdr *th, __be32 *tsval, __be32 *tsecr)
 
-This should be minimal change, just change the logic to allow only
-TCP_LISTEN.
+I'm probably missing context, Is there something in this function that
+means you can't implement it in BPF?
 
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -10402,7 +10402,7 @@ BPF_CALL_3(bpf_sk_lookup_assign, struct bpf_sk_lookup_kern *, ctx,
-                return -EINVAL;
-        if (unlikely(sk && sk_is_refcounted(sk)))
-                return -ESOCKTNOSUPPORT; /* reject non-RCU freed sockets */
--       if (unlikely(sk && sk->sk_state == TCP_ESTABLISHED))
-+       if (unlikely(sk && sk->sk_state != TCP_LISTEN))
-                return -ESOCKTNOSUPPORT; /* reject connected sockets */
- 
-        /* Check if socket is suitable for packet L3/L4 protocol */
+Lorenz
 
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-> 
-> 3) Checks in sk_select_reuseport() helper need adjusting as well. It's a
->    similar same case as with bpf_sk_lookup_assign() (with a slight
->    difference that reuseport allows dispatching to connected UDP
->    sockets).
-
-Is it needed here? There is no obvious check now.  Is ESTABLISHED
-state OK here now?
-
-> 
-> 4) Don't know exactly how checks in sockmap redirect helpers would need
->    to be tweaked. I recall that it can't be just TCP_ESTABLISHED state
->    that's allowed due to a short window of opportunity that opens up
->    when we transition from TCP_SYN_SENT to TCP_ESTABLISHED.
->    BPF_SOCK_OPS_STATE_CB callback happens just before the state is
->    switched to TCP_ESTABLISHED.
-> 
->    TCP_CLOSE socket sure doesn't make sense as a redirect target. Would
->    be nice to get an error from the redirect helper. If I understand
->    correctly, if the TCP stack drops the packet after BPF verdict has
->    selected a socket, only the socket owner will know about by reading
->    the error queue.
-> 
->    OTOH, redirecting to a TCP_CLOSE_WAIT socket doesn't make sense
->    either, but we don't seem to filter it out today, so the helper is
->    not airtight.
-
-Right. At the moment for sending we call do_tcp_sendpages() and this
-has the normal check ~(TCPF_ESABLISHED | TCPF_CLOSE_WAIT) so we
-would return an error. The missing case is ingress. We currently
-let these happen and would need a check there. I was thinking
-of doing it in a separate patch, but could tack it on to this
-series for completeness.
-
-> 
-> All in all, sounds like an API change when it comes to corner cases, in
-> addition to being a fix for the receive queue flush issue which you
-> explained in the patch description. If possible, would push it through
-> bpf-next.
-
-I think if we address 2,3,4 then we can fix the described issue
-without introducing new cases. And then 1 is great for consistency
-but can go via bpf-next?
-
-WDYT.
-
-Thanks,
-John
+www.cloudflare.com
