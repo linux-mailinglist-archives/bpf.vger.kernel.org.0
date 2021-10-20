@@ -2,124 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50AA435261
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 20:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460D043526F
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 20:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhJTSLq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 14:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
+        id S230328AbhJTSOr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 14:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhJTSLp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 14:11:45 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066CEC06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 11:09:31 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id g14so2618647qvb.0
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 11:09:30 -0700 (PDT)
+        with ESMTP id S230031AbhJTSOo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 14:14:44 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E988AC06161C;
+        Wed, 20 Oct 2021 11:12:28 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id g6so16635670ybb.3;
+        Wed, 20 Oct 2021 11:12:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qx9MNDLFl2CLYg3YdYhFkrY5J8l1IltFAth2Q7AZH7A=;
-        b=mFKxycmmDrJOttP0QwEhHcqSn0eGRW91n08I1mSpmfxxxC6eQd4cl9nrcWqrEa7XNa
-         EDnqzdru3Vp25feRx4gqjXoXCQWHELVyQujzxGkCVBKVYmlnQEVgALPaJ3p+HWtZfk1c
-         NfxwZvc8KTMxQ4jldQQjQg2MKAyn7t0sIvxwBOXaBJxifLPeHty+IIGFwamMi4GSL9JU
-         DTIoJfkh3yX0EKYU6CR98sody8nvpd/4azuFlPulJ5uyIleKMSFanp7j786AM3JucTYZ
-         sU/WYsu55dTGyq7v1hqLU4DoAzDWQX806Y3dU7MslIlj5cD2YHIW4y248T/Z9rnF3yAM
-         jtZQ==
+         :cc;
+        bh=Qo1qyks3RfjarTon/kWWfHODVZOa8tJzDI6ulDaEkvI=;
+        b=UAR4553aAhNe8U/BXmuaoBJpCZ6X4QDhSaVbE7+K2nHTzxnBneYMJweAyMz7vicP1S
+         rUKFUCT+Fl0LQUz8DqGk3n4uVbHF86KSkUFI/0AuULjb0nZeISQJlZEYPKR4R/9hs0zz
+         t0Y3xn9xhZWo4FsNxZY+zxYt4ZYuptBYb1rGH9WDnRzRCYNL38XIj5Wb+6CpYpZ9Wu76
+         VJUEHDJSL3dO15vKToMzs16SSSbOTpVRMFwXt25RRSQXTPJpg4dlS+Ij9L8q/0KNSxJd
+         TYod3WT2opj7s7oevcL2FS4HT2GHgbddN3w4y8D0RTVrl8uDp7aKFhU70D8vAUoq5qoc
+         8IOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qx9MNDLFl2CLYg3YdYhFkrY5J8l1IltFAth2Q7AZH7A=;
-        b=Dli6U3qihehsEEJNJb3QvhJ+0EG+MMoXNar5hyRSkwFhzwPhr/+GUYkZrLnsZppu2n
-         li6wnMGMDdRtW+tgCweefEEL5QB/8V7ElWYayOtZcqHO/j5X3kFwBtWFLv57IiVNq5cg
-         GqATM/C9f1cGE1fOGZmjwwYuQmaumeyiAIbpg+pGkYiW8BvBVnomjD/VYTdPjfLBSohn
-         keVU2xqZu3O7c/FGZpQtYxRnWKi8jD3XUX/6RXSONoQ0JI9SkLQ6TWCDx3ZMfN1QhhUN
-         x70Yckh7/eSbBIo3kvVv3rE6y3ihd+8gp/4vZR/t+aGEcO6gtxnCQRvzufawg2LmLcj/
-         /36g==
-X-Gm-Message-State: AOAM531BmUc89UdXKFW9DGjh7MLU+3CdzAXQ545gvxf1D5g3mZUBjMDy
-        GBZ3f97PSAgrc7OgEoRy53dPX6nv9oTpfwNAdAHHdQ==
-X-Google-Smtp-Source: ABdhPJyHb4muCdCWxMB5B2qiuk9xz/qb0i8WqXJcxDPB9BzgCBGkpeJXzgTvnNmLuWQi3puN1gN6DWH0F0wwbEHgByI=
-X-Received: by 2002:a05:6214:154d:: with SMTP id t13mr248458qvw.40.1634753370046;
- Wed, 20 Oct 2021 11:09:30 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Qo1qyks3RfjarTon/kWWfHODVZOa8tJzDI6ulDaEkvI=;
+        b=0gMvuK61qlSX8qzf9jDTtmm8YdZ0dmyJy4j53h8AlElsMVP1bMsWOKPM5xFHdqu8ub
+         N4pKiFTNPgoTAP0Nc1nntUurBEe8rA3JLcn70L4jjqKEqBHlVIa+lZ+8AaK0DVena7kp
+         V+iajs0jlGTCybuL++fc+Eyr7Wi+N3XKaiVYMlBfgdQD1TTDP/cVdBjJUQEvn0QlzTM0
+         ZCK8phk+hBWdClC0Eu6FOVexvCedqZv99kaP1i4kZGw7oIbCiCQVqpfnODIVsC/UIWnM
+         Q4YPVHjhz5heRrCekxkWIrfctcCaYr4DW30wdLb5psUqAmscBuPWKGQB47TxnsofPB+V
+         m7oQ==
+X-Gm-Message-State: AOAM53304NrVBMUUocobPoJv+N/7CWBqSCQeQPjyk0fk6NcMBbsgdzNS
+        BH8PrjhsPd7ZCq792xHVvkeKrCA27Le40M0SdjI=
+X-Google-Smtp-Source: ABdhPJyy0dNm7/vRasgSmZTuN3o1fsa57PAR6ldEoPeVbujPT0YYIw90GdX56tprl6iSdfSWP9TTLnNtFM28sKhu07s=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr602658ybf.455.1634753547590;
+ Wed, 20 Oct 2021 11:12:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211008000309.43274-1-andrii@kernel.org> <20211008000309.43274-10-andrii@kernel.org>
- <87pmsfl8z0.fsf@toke.dk> <CAEf4Bzb+z365WCbfPYw5xqhTAqoaAo6y+-Lt-iXGAGeeaLHMOw@mail.gmail.com>
- <87r1cvjioa.fsf@toke.dk> <91b10579-61fc-3bc7-8349-0ff3228905ae@fb.com>
- <CAEf4BzYJj_R1V=OtQUmWGXiUh0Bd=kYXXFHOKwzafF=JRAaBfQ@mail.gmail.com>
- <CAKH8qBtiDLeJmp9GXNTCNBnWbGbu66o+CE7NGyeEKB8o1=9bgA@mail.gmail.com> <CAEf4BzYkrabS=7fpn01BesM06P9gNEreQLReQBhbbqhvW6dTzQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYkrabS=7fpn01BesM06P9gNEreQLReQBhbbqhvW6dTzQ@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 20 Oct 2021 11:09:19 -0700
-Message-ID: <CAKH8qBsazaRM+ACSJc69Tt9RXR95twtG-T+Sn8LmV9sKWkhu1Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 09/10] libbpf: simplify look up by name of
- internal maps
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20211012161544.660286-1-sdf@google.com> <20211012161544.660286-3-sdf@google.com>
+In-Reply-To: <20211012161544.660286-3-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Oct 2021 11:12:16 -0700
+Message-ID: <CAEf4Bza3wYs7sjtp2UNDhT58yH+49C5sQonVssbnDko7kkpMaA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] bpftool: don't append / to the progtype
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 10:59 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Oct 12, 2021 at 9:15 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> On Tue, Oct 12, 2021 at 8:29 AM Stanislav Fomichev <sdf@google.com> wrote=
-:
-> >
-> > On Mon, Oct 11, 2021 at 8:45 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 11, 2021 at 11:24 PM Alexei Starovoitov <ast@fb.com> wrot=
-e:
-> > > >
-> > > > On 10/8/21 2:44 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > > > >
-> > > > > Hmm, so introduce a new 'map_name_long' field, and on query the k=
-ernel
-> > > > > will fill in the old map_name with a truncated version, and put t=
-he full
-> > > > > name in the new field? Yeah, I guess that would work too!
-> > > >
-> > > > Let's start storing full map names in BTF instead.
-> > > > Like we do already for progs.
-> > > > Some tools already fetch full prog names this way.
-> > >
-> > > We do have those names in BTF. Each map has either corresponding VAR
-> > > or DATASEC. The problem is that we don't know which.
-> > >
-> > > Are you proposing to add some extra "btf_def_type_id" field to specif=
-y
-> > > BTF type ID of what "defines" the map (VAR or DATASEC)? That would
-> > > work. Would still require UAPI and kernel changes, of course.
-> > >
-> > > The reason Toke and others were asking to preserve that object name
-> > > prefix for .rodata/.data maps was different though, and won't be
-> > > addressed by the above. Even if you know the BTF VAR/DATASEC, you
-> > > don't know the "object name" associated with the map. And the kernel
-> > > doesn't know because it's purely libbpf's abstraction. And sometimes
-> > > that abstraction doesn't make sense (e.g., if we create a map that's
-> > > pinned and reused from multiple BPF apps/objects).
-> >
-> > [..]
-> >
-> > > We do have BPF metadata that Stanislav added a while ago, so maybe we
-> > > should just punt that problem to that? I'd love to have clean
-> > > ".rodata" and ".data" names, of course.
-> >
-> > Are you suggesting we add some option to associate the metadata with
-> > the maps (might be an option)? IIRC, the metadata can only be
-> > associated with the progs right now.
+> Otherwise, attaching with bpftool doesn't work with strict section names.
 >
-> Well, maps have associated BTF fd, when they are created, no? So you
-> can find all the same metadata for the map, no?
+> Also, switch to libbpf strict mode to use the latest conventions
+> (note, I don't think we have any cli api guarantees?).
+>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  tools/bpf/bpftool/main.c |  4 ++++
+>  tools/bpf/bpftool/prog.c | 15 +--------------
+>  2 files changed, 5 insertions(+), 14 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index 02eaaf065f65..8223bac1e401 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -409,6 +409,10 @@ int main(int argc, char **argv)
+>         block_mount = false;
+>         bin_name = argv[0];
+>
+> +       ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
 
-I guess that's true, we can store this metadata in the map itself
-using something like existing bpf_metadata_ prefix.
+Quentin, any concerns about turning strict mode for bpftool? Either
+way we should audit bpftool code to ensure that at least error
+handling is done properly (see my comments on Dave's patch set about
+== -1 checks).
+
+> +       if (ret)
+> +               p_err("failed to enable libbpf strict mode: %d", ret);
+> +
+>         hash_init(prog_table.table);
+>         hash_init(map_table.table);
+>         hash_init(link_table.table);
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 277d51c4c5d9..17505dc1243e 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1396,8 +1396,6 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>
+>         while (argc) {
+>                 if (is_prefix(*argv, "type")) {
+> -                       char *type;
+> -
+>                         NEXT_ARG();
+>
+>                         if (common_prog_type != BPF_PROG_TYPE_UNSPEC) {
+> @@ -1407,19 +1405,8 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>                         if (!REQ_ARGS(1))
+>                                 goto err_free_reuse_maps;
+>
+> -                       /* Put a '/' at the end of type to appease libbpf */
+> -                       type = malloc(strlen(*argv) + 2);
+> -                       if (!type) {
+> -                               p_err("mem alloc failed");
+> -                               goto err_free_reuse_maps;
+> -                       }
+> -                       *type = 0;
+> -                       strcat(type, *argv);
+> -                       strcat(type, "/");
+> -
+> -                       err = get_prog_type_by_name(type, &common_prog_type,
+> +                       err = get_prog_type_by_name(*argv, &common_prog_type,
+>                                                     &expected_attach_type);
+
+Question not specifically to Stanislav, but anyone who's using bpftool
+to load programs. Do we need to support program type overrides? Libbpf
+has been inferring the program type for a long time now, are there
+realistic use cases where this override logic is necessary? I see
+there is bpf_object__for_each_program() loop down the code, it
+essentially repeats what libbpf is already doing on
+bpf_object__open(), why keep the duplicated logic?
+
+libbpf_prog_type_by_name() is also a bad idea (IMO) and I'd like to
+get rid of that in libbpf 1.0, so if we can stop using that from
+bpftool, it would be great.
+
+Thoughts?
+
+> -                       free(type);
+>                         if (err < 0)
+>                                 goto err_free_reuse_maps;
+>
+> --
+> 2.33.0.882.g93a45727a2-goog
+>
