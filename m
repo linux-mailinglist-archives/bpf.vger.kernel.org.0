@@ -2,92 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B89434376
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 04:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3814343E4
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 05:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhJTCU3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Oct 2021 22:20:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55714 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229635AbhJTCU1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 19 Oct 2021 22:20:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634696293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D74GYl4Q75+oXj/aMCjO7YTPXeKQjd+IcbtXAGLf308=;
-        b=Bs2r5YFJXMOX61pXNAEqEnnG1ilWnSguIV8DwERM8Ui4u6QEm0fbH07Fk03l2H7QT7Nz/L
-        IwS8bh7OOFq4SF9eWN7qw3ae07Y1g4t35BUABs2g3RRgp1YRhz3dGLJCsb2x52krb6UV5l
-        b/s2yWCaciS625SLcSsN74CSkvj0kSg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-8Kxz5JYxMzONNvmCRHlvSQ-1; Tue, 19 Oct 2021 22:18:10 -0400
-X-MC-Unique: 8Kxz5JYxMzONNvmCRHlvSQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F264108088A;
-        Wed, 20 Oct 2021 02:18:07 +0000 (UTC)
-Received: from T590 (ovpn-8-20.pek2.redhat.com [10.72.8.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 22A5D103BAC7;
-        Wed, 20 Oct 2021 02:17:46 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 10:17:41 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Quanyang Wang <quanyang.wang@windriver.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S229715AbhJTDak (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Oct 2021 23:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhJTDak (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Oct 2021 23:30:40 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46168C06161C;
+        Tue, 19 Oct 2021 20:28:26 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id w10so20562081ilc.13;
+        Tue, 19 Oct 2021 20:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=eBIDOwTiVEDpLZJCtDQ9qFP0TuQHVkD3tTneVRsqqv4=;
+        b=Nk3tgkVzH7dUY3M5cYsipgUGd2ehfDSaBrjS+n/n5+uhCIgB1NCkcjvDgkyvLvFBQj
+         vQ8cPHpJiq5C3hkCnBiMRkNtxXoGOMec70OJbGrXETc8KU36ZBwmx4Vy1Ltspeaf6PLi
+         DM9yuKkP4DToS/mihj7RJRCsmG1a0TM/E0UEXs8TyxNpY5fu5gOv79cS4Vh62AFtYhL8
+         4ZdJ/GVl98/aFb8RSAdBmnvYdMStG45+4Ng80KKR1X8MuzR22cnWZcmg38OMp4TvjZzv
+         uzucOhIYyd0FR2Al3ucCpW8PpxG2cZVb39a+XfulYpIqp8ggsDoy0KP2wEoOyK0V+SHP
+         b2zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=eBIDOwTiVEDpLZJCtDQ9qFP0TuQHVkD3tTneVRsqqv4=;
+        b=Gn6s9IDSyZ9jEALv75qttXZOCmoeHYuS+XEYV0NUz65szAYMKzAjCIcl+MmTrXslOK
+         rs1UjM0eIhwU1rfzIijKMnD9H6t3Thw7IiRQPdIAPtC8WQiZmfyxgSIkuO53lwfcgQWo
+         fMc4/R2IHNAhzU9G6HIA/gwk+Zlb6dBDefih2GONIeV6aZxfHr4PaoiWxwQqP7YBjifX
+         SXPWOqbxigaDPt0bwPnuswfiao9JMlYF/oBSTQnthkH571U6FEo3YunU9irC4e7ZhB6l
+         QffgcYTHURiol6EWYulf3XguXlh3yPyY0emAOqr5xAoUCoBQc6Lqat5qd5xmban6YLV7
+         JjPQ==
+X-Gm-Message-State: AOAM533mC+/DinVD4BP2pgsl0ypHGu5HJzeSXguroGrQbyBfvvV5/IPi
+        BwOT+YXqeaAr5uWP3ZcySCdkVSWewS0BEksi
+X-Google-Smtp-Source: ABdhPJwnbPzirbnLmdcyp0XfSK5R5Skc5QcvbUFMKLxJIerSX/IePoumRvxY+Px2YRR/cKNIYx94/A==
+X-Received: by 2002:a05:6e02:19ca:: with SMTP id r10mr15540186ill.148.1634700505518;
+        Tue, 19 Oct 2021 20:28:25 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id x5sm474959ioh.23.2021.10.19.20.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 20:28:24 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 20:28:16 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-Message-ID: <YW98RTBdzqin+9Ko@T590>
-References: <20211018075623.26884-1-quanyang.wang@windriver.com>
- <YW04Gqqm3lDisRTc@T590>
- <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
- <YW1vuXh4C4tX9ZHP@T590>
- <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
- <YW78AohHqgqM9Cuw@blackbook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YW78AohHqgqM9Cuw@blackbook>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Joe Stringer <joe@cilium.io>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Maxim Mikityanskiy <maximmi@nvidia.com>
+Message-ID: <616f8cd0a0c6c_340c7208ae@john-XPS-13-9370.notmuch>
+In-Reply-To: <20211019144655.3483197-5-maximmi@nvidia.com>
+References: <20211019144655.3483197-1-maximmi@nvidia.com>
+ <20211019144655.3483197-5-maximmi@nvidia.com>
+Subject: RE: [PATCH bpf-next 04/10] bpf: Make errors of
+ bpf_tcp_check_syncookie distinguishable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 07:10:26PM +0200, Michal Koutný wrote:
-> Hi.
-> 
-> On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
-> > So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
-> > different issues.
-> 
-> AFAIU, both the changes are needed to cause the leak, a single patch
-> alone won't cause the issue. Is that correct? (Perhaps not as I realize,
-> see below.)
-> 
-> But on second thought, the problem is the missing percpu_ref_exit() in
-> the (root) cgroup release path and percpu counter would allocate the
-> percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
-> visible. Is this correct?
-> 
-> I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
-> percpu_ref in fast path") alone did nothing wrong.
+Maxim Mikityanskiy wrote:
+> bpf_tcp_check_syncookie returns errors when SYN cookie generation is
+> disabled (EINVAL) or when no cookies were recently generated (ENOENT).
+> The same error codes are used for other kinds of errors: invalid
+> parameters (EINVAL), invalid packet (EINVAL, ENOENT), bad cookie
+> (ENOENT). Such an overlap makes it impossible for a BPF program to
+> distinguish different cases that may require different handling.
 
-If only precpu_ref data is leaked, it is fine to add "Fixes: 2b0d3d3e4fcf",
-I thought cgroup_bpf_release() needs to release more for root cgroup, but
-looks not true.
+I'm not sure we can change these errors now. They are embedded in
+the helper API. I think a BPF program could uncover the meaning
+of the error anyways with some error path handling?
 
+Anyways even if we do change these most of us who run programs
+on multiple kernel versions would not be able to rely on them
+being one way or the other easily.
+
+> 
+> For a BPF program that accelerates generating and checking SYN cookies,
+> typical logic looks like this (with current error codes annotated):
+> 
+> 1. Drop invalid packets (EINVAL, ENOENT).
+> 
+> 2. Drop packets with bad cookies (ENOENT).
+> 
+> 3. Pass packets with good cookies (0).
+> 
+> 4. Pass all packets when cookies are not in use (EINVAL, ENOENT).
+> 
+> The last point also matches the behavior of cookie_v4_check and
+> cookie_v6_check that skip all checks if cookie generation is disabled or
+> no cookies were recently generated. Overlapping error codes, however,
+> make it impossible to distinguish case 4 from cases 1 and 2.
+> 
+> The original commit message of commit 399040847084 ("bpf: add helper to
+> check for a valid SYN cookie") mentions another use case, though:
+> traffic classification, where it's important to distinguish new
+> connections from existing ones, and case 4 should be distinguishable
+> from case 3.
+> 
+> To match the requirements of both use cases, this patch reassigns error
+> codes of bpf_tcp_check_syncookie and adds missing documentation:
+> 
+> 1. EINVAL: Invalid packets.
+> 
+> 2. EACCES: Packets with bad cookies.
+> 
+> 3. 0: Packets with good cookies.
+> 
+> 4. ENOENT: Cookies are not in use.
+> 
+> This way all four cases are easily distinguishable.
+> 
+> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+
+At very leasst this would need a fixes tag and should be backported
+as a bug. Then we at least have a chance stable and LTS kernels
+report the same thing.
+
+[...]
+
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+ 
+I'll take a stab at how a program can learn the error cause today.
+
+BPF_CALL_5(bpf_tcp_check_syncookie, struct sock *, sk, void *, iph, u32, iph_len,
+	   struct tcphdr *, th, u32, th_len)
+{
+#ifdef CONFIG_SYN_COOKIES
+	u32 cookie;
+	int ret;
+
+// BPF program should know it pass bad values and can check
+	if (unlikely(!sk || th_len < sizeof(*th)))
+		return -EINVAL;
+
+// sk_protocol and sk_state are exposed in sk and can be read directly 
+	/* sk_listener() allows TCP_NEW_SYN_RECV, which makes no sense here. */
+	if (sk->sk_protocol != IPPROTO_TCP || sk->sk_state != TCP_LISTEN)
+		return -EINVAL;
+
+// This is a user space knob right? I think this is a misconfig user can
+// check before loading a program with check_syncookie?
+	if (!sock_net(sk)->ipv4.sysctl_tcp_syncookies)
+		return -EINVAL;
+
+// We have th pointer can't we just check?
+	if (!th->ack || th->rst || th->syn)
+		return -ENOENT;
+
+	if (tcp_synq_no_recent_overflow(sk))
+		return -ENOENT;
+
+	cookie = ntohl(th->ack_seq) - 1;
+
+	switch (sk->sk_family) {
+	case AF_INET:
+// misconfiguration but can be checked.
+		if (unlikely(iph_len < sizeof(struct iphdr)))
+			return -EINVAL;
+
+		ret = __cookie_v4_check((struct iphdr *)iph, th, cookie);
+		break;
+
+#if IS_BUILTIN(CONFIG_IPV6)
+	case AF_INET6:
+// misconfiguration can check as well
+		if (unlikely(iph_len < sizeof(struct ipv6hdr)))
+			return -EINVAL;
+
+		ret = __cookie_v6_check((struct ipv6hdr *)iph, th, cookie);
+		break;
+#endif /* CONFIG_IPV6 */
+
+	default:
+		return -EPROTONOSUPPORT;
+	}
+
+	if (ret > 0)
+		return 0;
+
+	return -ENOENT;
+#else
+	return -ENOTSUPP;
+#endif
+}
+
+
+So I guess my point is we have all the fields we could write a bit
+of BPF to find the error cause if necessary. Might be better than
+dealing with changing the error code and having to deal with the
+differences in kernels. I do see how it would have been better
+to get errors correct on the first patch though :/
+
+By the way I haven't got to the next set of patches with the
+actual features, but why not push everything above this patch
+as fixes in its own series. Then the fixes can get going why
+we review the feature.
 
 Thanks,
-Ming
-
+John
