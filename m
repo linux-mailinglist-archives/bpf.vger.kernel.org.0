@@ -2,167 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8271C435653
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 01:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84D2435682
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 01:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhJTXQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 19:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        id S230219AbhJTXay (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 19:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhJTXQw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 19:16:52 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816EAC06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 16:14:37 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id t127so21659289ybf.13
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 16:14:37 -0700 (PDT)
+        with ESMTP id S229702AbhJTXay (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 19:30:54 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9F0C06161C
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 16:28:39 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id o134so14114816ybc.2
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 16:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kL5A35aXr98DxVhOnO4biEdFIkfecS8nWq3dsirE6yg=;
-        b=VeZYR7GCNrLEmm2ymw8gwaA0bNI6boOXtaj0Oo+pPF4TGoT/3BSe8hd4g2JNxHgWn6
-         +cXwLj5/uu7baH8i3+yg1zVoEgyR5Kk04krlrX1sK3SIBiAYaBNKmJbfqVYqafAfCoQM
-         VlGkw8//th5UYWkcP5CpC/lPDPH89VlJQEradnHcJ9Pg7d646G4X/YmyDGkj/A7SqrHs
-         sS9gkY3t8M1GKnUOiU6KYDHrCAmLEeQwR5D39p7sV9/zME5a8iwZ96k21uIhefM2T94h
-         q0Ekq0dhzzgnWlidtKvCs+xISx7k2SHD0lAKFLHfl1ATatJvw05N7XG3/cxHaL/asDGs
-         8pSA==
+        bh=f0HV6skCzX8lII2RA+BX+ymlEjU4MNy7wSLJiaOhOHA=;
+        b=A+U+8LHj/AmkM7E32epWUCNS4v8R6KS8NJ/39uZBKHx+eBzqE0JfkZh+fb9EM6S1IU
+         pONz1iGA0UWVOzcqi0pL+zJVLiJrg9JMSwmsY5YARtqunmfjzXh0x2A2w7KV7qy3Oqpd
+         YxpvJwfozh7yG+jsVdEDJCmQOnrdiwnQlRTFoZC276u7Lfc7h0BkmlJurqDYK30L4U24
+         UB/KdHzEXd6yqL7wOk+qVsQmESiwiAH0v9mNZclkkufsEAEuuzFF5bJhhqRGkWhXX/kU
+         mri3Tl6No43ZENy6cZyNCowhx8Kp8bs31vgKeV17YhH/xubk8akYkvpbkwshCKYC8w6P
+         YMaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kL5A35aXr98DxVhOnO4biEdFIkfecS8nWq3dsirE6yg=;
-        b=G/5uEQAPtTLafGxcDjMQo515gPYTQ4MZR5HL6UWFSIcpYB/sUgmqriYYh/dwrLXFZH
-         V3zehLCAkxXaQUEJj7AVFBI589Rx/yiU+467Jqtf1wt5YXzxwPbNMN+Gkoz3/PLeraY9
-         p/q1aiDU7ULKez2VcGvz4cidNurEL7MvZw4oJeVDqhf5vjm2jLHYGm2yRzN32PdeMvH3
-         o2y18wGwaS046aNgbJcbylsi4t8aPkC9q2eUMjmTVGbakBlGB+E1ol4rJrPq9bSaH+j/
-         yfr1b5sVawdopUvRagSfU6HW8dGHpN7GhwW0Mp+RZ6Ja2zKZ09y/zTUnPWU5netcTWrN
-         G82Q==
-X-Gm-Message-State: AOAM531poIcM3h0wJ6r/kVCe0DYVALuPDxQKR7pNpP2vURe06rz6CNM2
-        kLl+0gymRx5356X0XAYXKDBEK4wmZpLOiDM72b2JhC/uTMw=
-X-Google-Smtp-Source: ABdhPJzUZqXSuPic73HMdSC//9D2+Su0ibWbwx/S85tO1XI6enPq+MsIqY9jYFuoLBMKfY1pTzJ6dBvGZSL375blJZ4=
-X-Received: by 2002:a25:e7d7:: with SMTP id e206mr1924284ybh.267.1634771676685;
- Wed, 20 Oct 2021 16:14:36 -0700 (PDT)
+        bh=f0HV6skCzX8lII2RA+BX+ymlEjU4MNy7wSLJiaOhOHA=;
+        b=eyOMnBk3Kq0m58V2GysPRdOmmM7dtagauw3WoJsiQTSw4wlXnKtARwFEdBw+BnkSEG
+         u/YfPenTZeskMnifDq6rY/jPeopc/3Aq/MFHj89UGLj0OFaPnYXP+HTETnqhbRg1bNSh
+         MUG0UnBo0fgqqY0HwPyhIDUCI7acu7vR3U1guWkydOsY6bXHBCUpgGyYHUiP+mCIUMFh
+         Pfw+lHxK5YYersh1Laf5XpDVqTberOizYTnbVmldi6IztxMSUzPkKMOydTES0N67oeh8
+         GyDiv4h57xkpmwZa2RIwAYSGVGQxsEeD34Qu+DaT3BRltmlZ+1mqG99YF3jlgAxAFtUE
+         ACjg==
+X-Gm-Message-State: AOAM531uTXtiok36XQPd2jRF22DmU/+wm/zI++aNhZ+IqWW9m5ajGQV1
+        /G7MXjLIeN4hnIh9l3LnnPIinfwygB7DAmAdLNhGUxBnZWw=
+X-Google-Smtp-Source: ABdhPJzJdJew0iI71g8xC0BmlUH0TRbi4AIYh0iBMlkF+ONbXp1fdbEQw7NPpjGV79QpWuaM18BnLkWEyjF8iC6OBmI=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr2002707ybj.433.1634772518190;
+ Wed, 20 Oct 2021 16:28:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211009150029.1746383-1-hengqi.chen@gmail.com>
- <20211009150029.1746383-2-hengqi.chen@gmail.com> <CAEf4BzZyjoaRATpKHuYFFmZ1u5WnEh4nBdOOpSO+OZi7MH=cHg@mail.gmail.com>
- <fc764766-e4fd-dc0a-c042-5af92373a461@gmail.com>
-In-Reply-To: <fc764766-e4fd-dc0a-c042-5af92373a461@gmail.com>
+References: <cover.1633535940.git.zhuyifei@google.com> <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
+In-Reply-To: <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Oct 2021 16:14:25 -0700
-Message-ID: <CAEf4BzY9q1md3Q6Z6q5EJ=JEp9keq-cOa6S3jOoo8i+WRhJFxw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: Add btf__type_cnt() and
- btf__raw_data() APIs
-To:     Hengqi Chen <hengqi.chen@gmail.com>
+Date:   Wed, 20 Oct 2021 16:28:27 -0700
+Message-ID: <CAEf4Bzbj0Bd5bnUrJMr4ozFFAHVE=NvsO1KR1o9=iqBT85=LUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to
+ get/set exported errno value
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>
+        Stanislav Fomichev <sdf@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 6:51 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Wed, Oct 6, 2021 at 9:04 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
 >
+> From: YiFei Zhu <zhuyifei@google.com>
 >
+> When passed in a positive errno, it sets the errno and returns 0.
+> When passed in 0, it gets the previously set errno. When passed in
+> an out of bound number, it returns -EINVAL. This is unambiguous:
+> negative return values are error in invoking the helper itself,
+> and positive return values are errnos being exported. Errnos once
+> set cannot be unset, but can be overridden.
 >
-> On 2021/10/20 1:48 AM, Andrii Nakryiko wrote:
-> > On Sat, Oct 9, 2021 at 8:01 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
-> >>
-> >> Add btf__type_cnt() and btf__raw_data() APIs and deprecate
-> >> btf__get_nr_type() and btf__get_raw_data() since the old APIs
-> >> don't follow the libbpf naming convention for getters which
-> >> omit 'get' in the name.[0] btf__raw_data() is just an alias to
-> >
-> > nit: this ".[0]" looks out of place, please use it as a reference in a
-> > sentence, e.g.,:
-> >
-> > omit 'get' in the name (see [0]).
-> >
-> > So that it reads naturally and fits the overall commit message.
-> >
-> >
+> The errno value is stored inside bpf_cg_run_ctx for ease of access
+> different prog types with different context structs layouts. The
+> helper implementation can simply perform a container_of from
+> current->bpf_ctx to retrieve bpf_cg_run_ctx.
 >
-> Got it. Will do.
+> For backward compatibility, if a program rejects without calling
+> the helper, and the errno has not been set by any prior progs, the
+> BPF_PROG_RUN_ARRAY_CG family macros automatically set the errno to
+> EPERM. If a prog sets an errno but returns 1 (allow), the outcome
+> is considered implementation-defined. This patch treat it the same
+> way as if 0 (reject) is returned.
 >
-> >> the existing btf__get_raw_data(). btf__type_cnt() now returns
-> >> the number of all types of the BTF object including 'void'.
-> >>
-> >>   [0] Closes: https://github.com/libbpf/libbpf/issues/279
-> >>
-> >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> >> ---
-> >>  tools/lib/bpf/btf.c      | 36 ++++++++++++++++++++++--------------
-> >>  tools/lib/bpf/btf.h      |  4 ++++
-> >>  tools/lib/bpf/btf_dump.c |  8 ++++----
-> >>  tools/lib/bpf/libbpf.c   | 32 ++++++++++++++++----------------
-> >>  tools/lib/bpf/libbpf.map |  2 ++
-> >>  tools/lib/bpf/linker.c   | 28 ++++++++++++++--------------
-> >>  6 files changed, 62 insertions(+), 48 deletions(-)
-> >>
-> >
-> > [...]
-> >
-> >> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> >> index 864eb51753a1..49397a22d72b 100644
-> >> --- a/tools/lib/bpf/btf.h
-> >> +++ b/tools/lib/bpf/btf.h
-> >> @@ -131,7 +131,9 @@ LIBBPF_API __s32 btf__find_by_name(const struct btf *btf,
-> >>                                    const char *type_name);
-> >>  LIBBPF_API __s32 btf__find_by_name_kind(const struct btf *btf,
-> >>                                         const char *type_name, __u32 kind);
-> >> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__type_cnt() instead")
-> >
-> > it has to be scheduled to 0.7 to have a release with new API
-> > (btf__type_cnt) before we deprecate btf__get_nr_types(). It's probably
-> > worth mentioning in the deprecation message that btf__type_cnt()
-> > return is +1 from btf__get_nr_types(). Maybe something like:
-> >
+> For BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY, the prior behavior is
+> that, if the return value is NET_XMIT_DROP, the packet is silently
+> dropped. We preserve this behavior for backward compatibility
+> reasons, so even if an errno is set, the errno does not return to
+> caller.
 >
-> I am a little confused about this scheduling. You mentioned that
-> we can deprecate old API on the development version (0.6). See [0].
+> For getsockopt hooks, they are different in that bpf progs runs
+> after kernel processes the getsockopt syscall instead of before.
+> There is also a retval in its context struct in which bpf progs
+> can unset the retval, and can force an -EPERM by returning 0.
+> We preseve the same semantics. Even though there is retval,
+> that value can only be unset, while progs can set (and not unset)
+> additional errno by using the helper, and that will override
+> whatever is in retval.
+>
+> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/linux/bpf.h            | 23 +++++++++++------------
+>  include/uapi/linux/bpf.h       | 14 ++++++++++++++
+>  kernel/bpf/cgroup.c            | 24 ++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
+>  4 files changed, 63 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 938885562d68..5e3f3d2f5871 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1155,6 +1155,7 @@ struct bpf_run_ctx {};
+>  struct bpf_cg_run_ctx {
+>         struct bpf_run_ctx run_ctx;
+>         const struct bpf_prog_array_item *prog_item;
+> +       int errno_val;
+>  };
+>
+>  struct bpf_trace_run_ctx {
+> @@ -1196,8 +1197,7 @@ BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
+>         const struct bpf_prog *prog;
+>         const struct bpf_prog_array *array;
+>         struct bpf_run_ctx *old_run_ctx;
+> -       struct bpf_cg_run_ctx run_ctx;
+> -       int ret = 0;
+> +       struct bpf_cg_run_ctx run_ctx = {};
 
-If we add some new API and deprecate old API (but recommend to use new
-API instead), we need to make sure that new API is there in at least
-one released libbpf version. Only then we can mark old API as
-deprecated in the next released libbpf version. In this case
-btf__type_cnt() has to go into v0.6 and btf__get_nr_types() can be
-deprecated in v0.7, not in v0.6.
+you are zero-initializing this struct unnecessarily here. It's a
+microoptimization, but it would be a bit cheaper to just
+run_ctx.errno_val = 0; before the loop.
 
-Previous case in [0] was different, there was no new API we had to
-wait for, so we could deprecate the old API immediately.
+>         u32 func_ret;
+>
+>         migrate_disable();
+> @@ -1208,15 +1208,15 @@ BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
+>         while ((prog = READ_ONCE(item->prog))) {
+>                 run_ctx.prog_item = item;
+>                 func_ret = run_prog(prog, ctx);
+> -               if (!(func_ret & 1))
+> -                       ret = -EPERM;
+> +               if (!(func_ret & 1) && !run_ctx.errno_val)
+> +                       run_ctx.errno_val = EPERM;
+>                 *(ret_flags) |= (func_ret >> 1);
+>                 item++;
+>         }
+>         bpf_reset_run_ctx(old_run_ctx);
+>         rcu_read_unlock();
+>         migrate_enable();
+> -       return ret;
+> +       return -run_ctx.errno_val;
+>  }
+>
+>  static __always_inline int
+> @@ -1227,8 +1227,7 @@ BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
+>         const struct bpf_prog *prog;
+>         const struct bpf_prog_array *array;
+>         struct bpf_run_ctx *old_run_ctx;
+> -       struct bpf_cg_run_ctx run_ctx;
+> -       int ret = 0;
+> +       struct bpf_cg_run_ctx run_ctx = {};
+>
+>         migrate_disable();
+>         rcu_read_lock();
+> @@ -1237,14 +1236,14 @@ BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
+>         old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+>         while ((prog = READ_ONCE(item->prog))) {
+>                 run_ctx.prog_item = item;
+> -               if (!run_prog(prog, ctx))
+> -                       ret = -EPERM;
+> +               if (!run_prog(prog, ctx) && !run_ctx.errno_val)
+> +                       run_ctx.errno_val = EPERM;
+>                 item++;
+>         }
+>         bpf_reset_run_ctx(old_run_ctx);
+>         rcu_read_unlock();
+>         migrate_enable();
+> -       return ret;
+> +       return -run_ctx.errno_val;
+>  }
+>
+>  static __always_inline u32
+> @@ -1297,7 +1296,7 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
+>   *   0: NET_XMIT_SUCCESS  skb should be transmitted
+>   *   1: NET_XMIT_DROP     skb should be dropped and cn
+>   *   2: NET_XMIT_CN       skb should be transmitted and cn
+> - *   3: -EPERM            skb should be dropped
+> + *   3: -errno            skb should be dropped
+>   */
+>  #define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)                \
+>         ({                                              \
+> @@ -1309,7 +1308,7 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
+>                 if (!_ret)                              \
+>                         _ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);  \
+>                 else                                    \
+> -                       _ret = (_cn ? NET_XMIT_DROP : -EPERM);          \
+> +                       _ret = (_cn ? NET_XMIT_DROP : _ret);            \
+>                 _ret;                                   \
+>         })
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 6fc59d61937a..d8126f8c0541 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4909,6 +4909,19 @@ union bpf_attr {
+>   *     Return
+>   *             The number of bytes written to the buffer, or a negative error
+>   *             in case of failure.
+> + *
+> + * int bpf_export_errno(int errno_val)
 
->
->
-> > LIBBPF_DEPRECATED_SINCE(0, 7, "use btf__type_cnt() instead; note that
-> > btf__get_nr_types() == btf__type_cnt() - 1")
-> >
->
-> Will take this in v2.
->
-> >>  LIBBPF_API __u32 btf__get_nr_types(const struct btf *btf);
-> >> +LIBBPF_API __u32 btf__type_cnt(const struct btf *btf);
-> >>  LIBBPF_API const struct btf *btf__base_btf(const struct btf *btf);
-> >>  LIBBPF_API const struct btf_type *btf__type_by_id(const struct btf *btf,
-> >>                                                   __u32 id);
-> >> @@ -144,7 +146,9 @@ LIBBPF_API int btf__resolve_type(const struct btf *btf, __u32 type_id);
-> >>  LIBBPF_API int btf__align_of(const struct btf *btf, __u32 id);
-> >>  LIBBPF_API int btf__fd(const struct btf *btf);
-> >>  LIBBPF_API void btf__set_fd(struct btf *btf, int fd);
-> >> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__raw_data() instead")
-> >
-> > same, 0.7+
-> >
-> >>  LIBBPF_API const void *btf__get_raw_data(const struct btf *btf, __u32 *size);
-> >> +LIBBPF_API const void *btf__raw_data(const struct btf *btf, __u32 *size);
-> >>  LIBBPF_API const char *btf__name_by_offset(const struct btf *btf, __u32 offset);
-> >>  LIBBPF_API const char *btf__str_by_offset(const struct btf *btf, __u32 offset);
-> >>  LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
-> >
-> > [...]
-> >
->
->   [0] https://lore.kernel.org/all/CAEf4BzZ_JB1VLAF0=7gu=2M0M735aXava=nPL8m8ewQWdS3m8g@mail.gmail.com/
+it's subjective, but "bpf_export_errno" name is quite confusing. What
+are we "exporting" and where?
+
+I actually like Song's proposal for two helpers,
+bpf_set_err()/bpf_get_err(). It makes the semantics less confusing. I
+honestly don't remember the requirement to have one combined helper
+from the BPF office hour discussion, but if there was a good reason
+for that, please remind us.
+
+> + *     Description
+> + *             If *errno_val* is positive, set the syscall's return error code;
+
+This inversion of error code is also confusing. If we are to return
+-EXXX, bpf_set_err(EXXX) is quite confusing.
+
+> + *             if *errno_val* is zero, retrieve the previously set code.
+
+Also, are there use cases where zero is the valid "error" (or lack of
+it, rather). I.e., wouldn't there be cases where you want to clear a
+previous error? We might have discussed this, sorry if I forgot.
+
+But either way, if bpf_set_err() accepted <= 0 and used that as error
+value as-is (> 0 should be rejected, probably) that would make for
+straightforward logic. Then for getting the current error we can have
+a well-paired bpf_get_err()?
+
+
+BTW, "errno" is very strongly associated with user-space errno, do we
+want to have this naming association (this is the reason I used "err"
+terminology above).
+
+> + *
+> + *             This helper is currently supported by cgroup programs only.
+> + *     Return
+> + *             Zero if set is successful, or the previously set error code on
+> + *             retrieval. Previously set code may be zero if it was never set.
+> + *             On error, a negative value.
+> + *
+> + *             **-EINVAL** if *errno_val* not between zero and MAX_ERRNO inclusive.
+
+[...]
