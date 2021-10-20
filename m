@@ -2,198 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85694435623
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 00:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D0E435633
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 00:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhJTWwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 18:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
+        id S231162AbhJTW5r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 18:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhJTWw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 18:52:28 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2D8C06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 15:50:13 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id k84-20020a628457000000b0044db4128ea4so2601221pfd.20
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 15:50:13 -0700 (PDT)
+        with ESMTP id S230474AbhJTW5r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 18:57:47 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E601C06161C;
+        Wed, 20 Oct 2021 15:55:32 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso10109066ota.9;
+        Wed, 20 Oct 2021 15:55:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=cW6HnFPnxVttXYlllvO2YbONJSMhxty7Sc5+0SAjPIg=;
-        b=jtgkvZuItEYvDKVEAy/vvYC549Z1ccriJUPqqcHb29Pj1nKLN7L3GhYJ7VB/LrbJWD
-         PdWw7lga9wxwhTNbkaxN+9O30u++b3Iu0A+97TjrCkCYZVKaIXzxH05xGw/jRvOA/ZXy
-         J5bdKCrfi52rGvgtvGt7K5K5dm3vBzxyu0yMgyE2Mij48RIgt3ykic6s9DjYUzo+HDm3
-         DoxPstc+A/nL7wt/EAfYqkuSlWV9mZtGyz1im66s86QHHqyomBnDu0b0fQYfKjNaB+PL
-         Gw4MypL7Y/dIRBZhgvGXTZjwHRMUCn+U3/TbIsGk952TwcRJz2HCyObUqxd+MbrKOQz5
-         Lfqw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=cPiacAHVzcrhdUz4ZTtN/fpqDLeX0mVZT75Tk2+KOqw=;
+        b=L8asQJGAEwxHpeR4LQzteEVcYbiffD6v+eiSn0f+mFF+oaQty5UWPv9e0WUaLOznRD
+         g8IUWWgrJy12oMlvets+kJj1BXVInfpNJHOJIXmgQEjDvTRvcMy4XBlUfX/R7FVw6Cl1
+         C4fX7J7mWHMipTS47kt522zjhDC7dlFyMjM0x+tG9UchiImgcvlpcatBAVP8oT5/cK/F
+         O7POA++sR2wSX21NsiDYktuLmgZ82DIVwjaz/TX/BNaHTdjWaA/0Hmgl6s0sb3PIuzvn
+         n8V/UMKXfLB9sC51/L7ZXZ1Y8OJS4mrAEe6ZCt/Au+klp+sc/ArwoLWNnELGvFHS1sKD
+         MDNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=cW6HnFPnxVttXYlllvO2YbONJSMhxty7Sc5+0SAjPIg=;
-        b=E9IY9Obt0P0I4eoZLmBsfPg3+QZl+km+/IvLQRvg3kOwOyWQK+kihtd5HUaE+tA/XO
-         u/lkwWboT8eZDabWTB+wuKBV7Ntr6EF6TKUCEd+WCWM3zePL+Xl/rE+LS+k58Yumm0Ct
-         Z+HF2MGhdUDNvZu+hGG+kix3KPojmNQi5AgUW2+n+MNHM7OtTA3Nprb6taTCyhkHEZeS
-         kLRKr4C7bs/xXw4282/uPAU9PObPSGQ7NmCUca+Oj/FkWAH0t4t99ceXa1D3Dj8r1FKz
-         8MKvomvx6bf4S0mGMKOOvdb/2kwUTfgXIPdi/UEWmm0eKxgtPR5gcVE74s8pF1oXyvR3
-         JcOg==
-X-Gm-Message-State: AOAM530jALnU3wXC5yYb3k1GWoqrdLN0L9W/WuogF6bNthH9iO4xiezm
-        beohxpig/W7XiR9q3HqqLgpEt94=
-X-Google-Smtp-Source: ABdhPJyGJrI+IYbh6uloCgmkr4dCkC6+p5FlygHxsXU+AT33iBaLYb4J8Vu5kLVCmyHXRONJ2uMprno=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:dcf9:6f58:d879:8452])
- (user=sdf job=sendgmr) by 2002:a17:902:7ec2:b0:13d:b563:c39 with SMTP id
- p2-20020a1709027ec200b0013db5630c39mr1856094plb.14.1634770213341; Wed, 20 Oct
- 2021 15:50:13 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 15:50:05 -0700
-In-Reply-To: <20211020225005.2986729-1-sdf@google.com>
-Message-Id: <20211020225005.2986729-4-sdf@google.com>
-Mime-Version: 1.0
-References: <20211020225005.2986729-1-sdf@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: fix flow dissector tests
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=cPiacAHVzcrhdUz4ZTtN/fpqDLeX0mVZT75Tk2+KOqw=;
+        b=kTQKWTXUtWpfg40QxBDSWZm+dQyH76Ux/vaW3TTwUS1mmh2IbxtdLCWygE8VQULvR9
+         TJ03CFI7+b2yK6jZ5Y1nu0eJBj5cQG0STBiBg7j58DQuMmqlzj++naIkYUhFh9G/XKqu
+         9WZmDCUVXEU1nus59qnSfG1nw0KfS6lQsNvCiB/lYqqSZOiCrUNATIq7+2golEWhW3ku
+         MKMm0++fZq5b/lGPdRbbZ8s65vv30OF1NOcNQq4Q8+v9aw74OlvDuNzBXB4I9m0VZ/4n
+         xVXxU64uhI39HOg7rWcag0157sTPdnICFfZScX7mMfCJ7s4I0RIhE/snjEG+dTU8PXoD
+         uMmw==
+X-Gm-Message-State: AOAM532UTsC5VZ188HXBk20HpmhJzgLQz8Jpt2tzURlCOZzCW1tW7XGN
+        uUnggXyWLMO0z+IG9scYocc=
+X-Google-Smtp-Source: ABdhPJy9i16Y51nszpIvaloQtDYHYhAYpRTzu/gSXP6PUAwfskLa0IzCFihTwQ8uQEm0RIIgsuE4Dw==
+X-Received: by 2002:a05:6830:31a8:: with SMTP id q8mr1708511ots.156.1634770531707;
+        Wed, 20 Oct 2021 15:55:31 -0700 (PDT)
+Received: from [172.16.0.2] ([8.48.134.34])
+        by smtp.googlemail.com with ESMTPSA id y4sm707047oix.23.2021.10.20.15.55.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Oct 2021 15:55:31 -0700 (PDT)
+Message-ID: <cc00fa9d-3f18-f850-4cdc-eb81145bdc47@gmail.com>
+Date:   Wed, 20 Oct 2021 16:55:28 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH bpf-next 07/10] bpf: Add helpers to query conntrack info
+Content-Language: en-US
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Florian Westphal <fw@strlen.de>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Joe Stringer <joe@cilium.io>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20211019144655.3483197-1-maximmi@nvidia.com>
+ <20211019144655.3483197-8-maximmi@nvidia.com>
+ <20211020035622.lgrxnrwfeak2e75a@apollo.localdomain>
+ <20211020092844.GI28644@breakpoint.cc> <87h7dcf2n4.fsf@toke.dk>
+ <20211020095815.GJ28644@breakpoint.cc> <875ytrga3p.fsf@toke.dk>
+ <20211020124457.GA7604@breakpoint.cc> <87r1cfe7sx.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <87r1cfe7sx.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-- update custom loader to search by name, not section name
-- update bpftool commands to use proper pin path
+On 10/20/21 2:54 PM, Toke Høiland-Jørgensen wrote:
+>> Sure, but I'm not sure I understand the use case.
+>>
+>> Insertion at XDP layer turns off netfilters NAT capability, so its
+>> incompatible with the classic forwarding path.
+>>
+>> If thats fine, why do you need to insert into the conntrack table to
+>> begin with?  The entire infrastructure its designed for is disabled...
+> One of the major selling points of XDP is that you can reuse the
+> existing kernel infrastructure instead of having to roll your own. So
+> sure, one could implement their own conntrack using BPF maps (as indeed,
+> e.g., Cilium has done), but why do that when you can take advantage of
+> the existing one in the kernel? Same reason we have the bpf_fib_lookup()
+> helper...
+> 
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/flow_dissector_load.c        | 18 +++++++++++-------
- .../selftests/bpf/flow_dissector_load.h        | 10 ++--------
- .../selftests/bpf/test_flow_dissector.sh       | 10 +++++-----
- 3 files changed, 18 insertions(+), 20 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/flow_dissector_load.c b/tools/testing/selftests/bpf/flow_dissector_load.c
-index 3fd83b9dc1bf..87fd1aa323a9 100644
---- a/tools/testing/selftests/bpf/flow_dissector_load.c
-+++ b/tools/testing/selftests/bpf/flow_dissector_load.c
-@@ -17,7 +17,7 @@
- const char *cfg_pin_path = "/sys/fs/bpf/flow_dissector";
- const char *cfg_map_name = "jmp_table";
- bool cfg_attach = true;
--char *cfg_section_name;
-+char *cfg_prog_name;
- char *cfg_path_name;
- 
- static void load_and_attach_program(void)
-@@ -25,7 +25,11 @@ static void load_and_attach_program(void)
- 	int prog_fd, ret;
- 	struct bpf_object *obj;
- 
--	ret = bpf_flow_load(&obj, cfg_path_name, cfg_section_name,
-+	ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-+	if (ret)
-+		error(1, 0, "failed to enable libbpf strict mode: %d", ret);
-+
-+	ret = bpf_flow_load(&obj, cfg_path_name, cfg_prog_name,
- 			    cfg_map_name, NULL, &prog_fd, NULL);
- 	if (ret)
- 		error(1, 0, "bpf_flow_load %s", cfg_path_name);
-@@ -75,15 +79,15 @@ static void parse_opts(int argc, char **argv)
- 			break;
- 		case 'p':
- 			if (cfg_path_name)
--				error(1, 0, "only one prog name can be given");
-+				error(1, 0, "only one path can be given");
- 
- 			cfg_path_name = optarg;
- 			break;
- 		case 's':
--			if (cfg_section_name)
--				error(1, 0, "only one section can be given");
-+			if (cfg_prog_name)
-+				error(1, 0, "only one prog can be given");
- 
--			cfg_section_name = optarg;
-+			cfg_prog_name = optarg;
- 			break;
- 		}
- 	}
-@@ -94,7 +98,7 @@ static void parse_opts(int argc, char **argv)
- 	if (cfg_attach && !cfg_path_name)
- 		error(1, 0, "must provide a path to the BPF program");
- 
--	if (cfg_attach && !cfg_section_name)
-+	if (cfg_attach && !cfg_prog_name)
- 		error(1, 0, "must provide a section name");
- }
- 
-diff --git a/tools/testing/selftests/bpf/flow_dissector_load.h b/tools/testing/selftests/bpf/flow_dissector_load.h
-index 7290401ec172..9d0acc2fc6cc 100644
---- a/tools/testing/selftests/bpf/flow_dissector_load.h
-+++ b/tools/testing/selftests/bpf/flow_dissector_load.h
-@@ -7,7 +7,7 @@
- 
- static inline int bpf_flow_load(struct bpf_object **obj,
- 				const char *path,
--				const char *section_name,
-+				const char *prog_name,
- 				const char *map_name,
- 				const char *keys_map_name,
- 				int *prog_fd,
-@@ -23,13 +23,7 @@ static inline int bpf_flow_load(struct bpf_object **obj,
- 	if (ret)
- 		return ret;
- 
--	main_prog = NULL;
--	bpf_object__for_each_program(prog, *obj) {
--		if (strcmp(section_name, bpf_program__section_name(prog)) == 0) {
--			main_prog = prog;
--			break;
--		}
--	}
-+	main_prog = bpf_object__find_program_by_name(*obj, prog_name);
- 	if (!main_prog)
- 		return -1;
- 
-diff --git a/tools/testing/selftests/bpf/test_flow_dissector.sh b/tools/testing/selftests/bpf/test_flow_dissector.sh
-index 174b72a64a4c..dbd91221727d 100755
---- a/tools/testing/selftests/bpf/test_flow_dissector.sh
-+++ b/tools/testing/selftests/bpf/test_flow_dissector.sh
-@@ -26,22 +26,22 @@ if [[ -z $(ip netns identify $$) ]]; then
- 			type flow_dissector
- 
- 		if ! unshare --net $bpftool prog attach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Unexpected unsuccessful attach in namespace" >&2
- 			err=1
- 		fi
- 
--		$bpftool prog attach pinned /sys/fs/bpf/flow/flow_dissector \
-+		$bpftool prog attach pinned /sys/fs/bpf/flow/_dissect \
- 			flow_dissector
- 
- 		if unshare --net $bpftool prog attach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Unexpected successful attach in namespace" >&2
- 			err=1
- 		fi
- 
- 		if ! $bpftool prog detach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Failed to detach flow dissector" >&2
- 			err=1
- 		fi
-@@ -95,7 +95,7 @@ else
- fi
- 
- # Attach BPF program
--./flow_dissector_load -p bpf_flow.o -s flow_dissector
-+./flow_dissector_load -p bpf_flow.o -s _dissect
- 
- # Setup
- tc qdisc add dev lo ingress
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+Exactly, and a key point is that it allows consistency between XDP fast
+path and full stack slow path. e.g., the BPF program is removed or
+defers a flow to full stack for some reason.
