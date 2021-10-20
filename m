@@ -2,81 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34529435145
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 19:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B541943516B
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 19:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhJTRa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 13:30:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41318 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhJTRa5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:30:57 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3CE511F770;
-        Wed, 20 Oct 2021 17:28:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634750922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6iR1y/JL3F5bSNnhveF9tZ47D84ZakNWdr4w2O9FyR0=;
-        b=puC+JrAjKBLfJWIbDTKsG+jqaPcCcX5u7U5/ZJPdJv9ua4KfXtLpGNpcZ6nDxuFX4QPk29
-        tH5H30S6wh9+68I/f9eYApstnc7SF0fwjjwxQUWfmJo/sr8fbVEoANJKKaYLy1XOrjurZr
-        3bFQZWUJbGW4YVvD6mjDX9KxSO3oXew=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D480113BBD;
-        Wed, 20 Oct 2021 17:28:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yleGMslRcGE4awAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 20 Oct 2021 17:28:41 +0000
-Date:   Wed, 20 Oct 2021 19:28:40 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Quanyang Wang <quanyang.wang@windriver.com>
-Cc:     Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S230372AbhJTRjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 13:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhJTRjB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:39:01 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15391C06161C;
+        Wed, 20 Oct 2021 10:36:47 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id b9so1912644ybc.5;
+        Wed, 20 Oct 2021 10:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TnOn7gWEVYHdcRp4y5YIlp2bdpip9/giinxRFtcv7E8=;
+        b=FqrlMr3zEzSN/Nw/bfV2e4wEqtydzRWtn+s0D6SrnhDkMb8N9TXPWo6PWM9kUv584r
+         KQWDLFvkMSIawnDiKHW3ZTiwu8oWT5URzw7yUuhiZXcclMzDWKmtlCTRfnTlDjy1NJ/U
+         x7PJ4ovsL1mQGJbIvk3QTeds5bFFCsB+SZQxV5EOlx0nnStMIxOjww4JF5M3JgKcb8fX
+         tYh3AucH6DrIaKfN0zHvhVqmCt1XSG83ZeIobOEGhdmglmcf9+tB68nhoOIS8XbNvhGL
+         ZMeIHqwwP8kaOafKHHZ639AE5TN0/Vou5FlcVoIby6Q7PNRb7b7eAx1Yp4jia7Pj7Lm8
+         Kb0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TnOn7gWEVYHdcRp4y5YIlp2bdpip9/giinxRFtcv7E8=;
+        b=ltQ7m6R7U5ORzuCKVO8LtxmWrECHDL6wfcP91fqKiNs2d6qZfBegcyhH6KQjVBDlxT
+         HBt/1/AnEZkRJUTRGi9vj8VIriGRXkfL1IiByRdrA1FVrBfwblgHpUI4zyCnQVGAqC/1
+         Pu3dAoFS4B9jDwKbJwk2Fv8UmNvrRfZRz1NV0ZxZXJE8lcHZu9ekLbdfZt4nb76W7IGU
+         oj0FGe72qg4TxmapCa/IZ3b6JWGe8/oeUaDCEW+btK+Gy+HGiFGaAELHtMrcgbtspnsa
+         75Z5G5MnsqFsr5vPudfK5BuK8t/WyiF/boKOwVuczNMR74OJQliLHuGdkvUrJOKZ/Odc
+         p8EA==
+X-Gm-Message-State: AOAM533U4hkdFsgKNFvrjyakGwyyaRdZiZSH7p3LXzbw6pRH3mkuBrZO
+        gHuILrsgYb6JkUCybVaPN4pgXL2SPefeRniXZo4=
+X-Google-Smtp-Source: ABdhPJxXxMyzxPfAX7WpZ5q97gB6wu/EJh0YhUymgRLhjWQd+9c+tfFWHj1N7zd1lAoOGm9afcTQXtzFS1sWhh/p9xU=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr385695ybf.455.1634751406275;
+ Wed, 20 Oct 2021 10:36:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211011082031.4148337-1-davemarchevsky@fb.com> <20211011082031.4148337-2-davemarchevsky@fb.com>
+In-Reply-To: <20211011082031.4148337-2-davemarchevsky@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Oct 2021 10:36:35 -0700
+Message-ID: <CAEf4BzbRdUn4FG208egs+MuHy37W5=Tp=CHngMLQdNyZooWqiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/4] libbpf: migrate internal use of bpf_program__get_prog_info_linear
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-Message-ID: <YXBRyJMru/RbUQK5@blackbook>
-References: <20211018075623.26884-1-quanyang.wang@windriver.com>
- <YW04Gqqm3lDisRTc@T590>
- <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
- <YW1vuXh4C4tX9ZHP@T590>
- <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
- <YW78AohHqgqM9Cuw@blackbook>
- <YW98RTBdzqin+9Ko@T590>
- <7a21a20d-eb12-e491-4e69-4e043b3b6d8d@windriver.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7a21a20d-eb12-e491-4e69-4e043b3b6d8d@windriver.com>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 01:22:06PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
-> > If only precpu_ref data is leaked, it is fine to add "Fixes: 2b0d3d3e4fcf",
-> > I thought cgroup_bpf_release() needs to release more for root cgroup, but
-> > looks not true.
-> For now, I can only observe that precpu_ref data is leaked when running ltp
-> testsuite.
+On Mon, Oct 11, 2021 at 1:20 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+>
+> In preparation for bpf_program__get_prog_info_linear, move the single
 
-I assume you refer to ref->data. I considered the ref->percpu_count_ptr
-allocated with __alloc_percpu_gfp(). Could it be that kmemleak won't
-detect leaked percpu allocations?
+for bpf_program__get_prog_info_linear *deprecation* ? fixed it up while applying
 
-(The patch you sent resolves this as well, I'm just curious.)
+> use in libbpf to call bpf_obj_get_info_by_fd directly.
+>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
 
-Michal
+I've applied this patch for now, as it is pretty independent (and I've
+already fixed it up already and didn't want to lose that :) I hope you
+don't mind.
+
+>  tools/lib/bpf/libbpf.c | 15 ++++++---------
+>  1 file changed, 6 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index ed313fd491bd..8b86c4831aa8 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8459,26 +8459,24 @@ int libbpf_find_vmlinux_btf_id(const char *name,
+>
+>  static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
+>  {
+> -       struct bpf_prog_info_linear *info_linear;
+> -       struct bpf_prog_info *info;
+> +       struct bpf_prog_info info = {};
+> +       __u32 info_len = sizeof(info);
+>         struct btf *btf;
+>         int err;
+>
+> -       info_linear = bpf_program__get_prog_info_linear(attach_prog_fd, 0);
+> -       err = libbpf_get_error(info_linear);
+> +       err = bpf_obj_get_info_by_fd(attach_prog_fd, &info, &info_len);
+>         if (err) {
+> -               pr_warn("failed get_prog_info_linear for FD %d\n",
+> +               pr_warn("failed bpf_obj_get_info_by_fd for FD %d\n",
+
+I've also added err code into warn message here
+
+>                         attach_prog_fd);
+>                 return err;
+>         }
+>
+>         err = -EINVAL;
+> -       info = &info_linear->info;
+> -       if (!info->btf_id) {
+> +       if (!info.btf_id) {
+>                 pr_warn("The target program doesn't have BTF\n");
+>                 goto out;
+>         }
+> -       btf = btf__load_from_kernel_by_id(info->btf_id);
+> +       btf = btf__load_from_kernel_by_id(info.btf_id);
+>         if (libbpf_get_error(btf)) {
+>                 pr_warn("Failed to get BTF of the program\n");
+
+and here
+
+
+
+
+>                 goto out;
+> @@ -8490,7 +8488,6 @@ static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
+>                 goto out;
+>         }
+>  out:
+> -       free(info_linear);
+>         return err;
+>  }
+>
+> --
+> 2.30.2
+>
