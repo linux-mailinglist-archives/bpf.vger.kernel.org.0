@@ -2,74 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67DD4351F8
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 19:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD92143520E
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 19:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhJTRwW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 13:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhJTRwW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 13:52:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8A4B9611C7;
-        Wed, 20 Oct 2021 17:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634752207;
-        bh=2Dzzo6jTqKBd7t+CAO2c1sp4Zw4SZDoIQxwCiTE9Y5k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=of4UImj3Oz9AZZ66Gm4PEvOxokqNUX1zcK5lEasmoSyg6hpt8CFvogS9YRNh/yCj8
-         KoBus6sIejY7HaJz9ZtL4hPBiO0VJE+sxmgBM4k/KJOMIM2nOLhYrz7m+qINsmjM+8
-         REABHxYt/bWlUJYbIjnmAysilAdfg3+c9Bhm2lQTNa/zlHY6C1O/WyRhxV92sF7KuO
-         goNuvbX+DJHAzQ4XC6JJPemQO+Nqubj9kbyorkQfXuxclKjsyS1X34rCBgdwYICR0e
-         kgQXZ011gj7MDy+7aa0ab7X9THv6yPkEpDY5WwQhEoSSTr4A6hRpelfoVB1A3PZ9Zk
-         EK+MAV6LEAyjQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7DD6B609E7;
-        Wed, 20 Oct 2021 17:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230089AbhJTR5x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 13:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhJTR5x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 13:57:53 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3374C06161C;
+        Wed, 20 Oct 2021 10:55:38 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id l201so3315670ybl.9;
+        Wed, 20 Oct 2021 10:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V8u86eLA4+HU/aIaOe6FGTXKOIQPSQcBtCZ7dRIOqJ4=;
+        b=Ymtz7D3u8DujOdY7kLaXMRY3YJFFp/myUA06VyXitafGFeU23JUimNyGSyV/9APBS7
+         xRiYq2A6L9reVBhlhN8pXW6Y+owBKR8kWfiKYPSyfBceXbalzlyDOvGvLfKEwn/LMVII
+         732R6+YH/jVgOrrAe7lvq+002jUjQxF4WwlJlADtizvgzKh1LpoVtfH74cqlCnrot3O9
+         UrzWMqnhCb4DMZfD/g9mb5l58pL8ET5Zd5HhWo2OFkTSUCG4zxSMivklVRmDllfF3ZDE
+         GSxX7HrpQBCllEJFEE+XAfWF5zPXIZLS/BUknAyw7RpZPbmsQ6W9TVEGWzI+ABtGpev8
+         n8EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V8u86eLA4+HU/aIaOe6FGTXKOIQPSQcBtCZ7dRIOqJ4=;
+        b=JUmMuPVIbuLpAcL/vmuwze8PGrR7XEaeHwX3fogesuwJhq71OscjDyQRONL5XC7aRm
+         l2qnj/AwYWqXz6G4CB9MbRw96oQBi7U3ZU41jPJfgDQHJLvL80yYR9BvDSXkPmchNrxt
+         juL6o52cBzCZ3i9XgKFHyKc4iSob7WfIzSLDo2ewaASStYjUvkTDp6SKUJI8TFsK18fK
+         2/B8wWXk5IUJRNDJ06YFcxwXjT4grnffaZBzlcG5cWtyEV35JDcUpzdGUJAtmP605xGU
+         4G9XYJweMK0pBxFbYv6F1kU7exa1SQkyV1LqKC8Vh/I1lnJJ5WkEUqdnnvkNzDsJYJXd
+         DIBA==
+X-Gm-Message-State: AOAM533n6UEdx2HLbv/eun9NSnExRvwE/chJ1Wx5rmI/UgoCCeQqnoho
+        i+GorUTjr9LViw32NpApl+U5BY3ecuUo48VarSE=
+X-Google-Smtp-Source: ABdhPJwl4dexMHx25AHVV4O1CY1kJDihzhI+4Wa5+WDaHdsrMGIiry4wfSnp7RoCOKPP2A72YHLFvT76XCiA1BBprGU=
+X-Received: by 2002:a05:6902:154d:: with SMTP id r13mr671224ybu.114.1634752538215;
+ Wed, 20 Oct 2021 10:55:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH selftests/bpf] selftests/bpf: remove duplicate include in
- cgroup_helpers.c.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163475220751.2338.1905298841088957803.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Oct 2021 17:50:07 +0000
-References: <20211019014549.970830-1-ran.jianping@zte.com.cn>
-In-Reply-To: <20211019014549.970830-1-ran.jianping@zte.com.cn>
-To:     Ran Jianping <cgel.zte@gmail.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ran.jianping@zte.com.cn, zealci@zte.com.cn
+References: <20211012111649.983253-1-davidcomponentone@gmail.com>
+In-Reply-To: <20211012111649.983253-1-davidcomponentone@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Oct 2021 10:55:27 -0700
+Message-ID: <CAEf4BzYTNZ=TNqMiGNg_Nj03K9fMM_xnoc=yaEYn8zbyE1rVjg@mail.gmail.com>
+Subject: Re: [PATCH] Fix application of sizeof to pointer
+To:     davidcomponentone@gmail.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Zeal Robot <zealci@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Tue, 19 Oct 2021 01:45:49 +0000 you wrote:
-> From: Ran Jianping <ran.jianping@zte.com.cn>
-> 
-> unistd.h included in '/tools/testing/selftests/bpf/cgroup_helpers.c'
->  is duplicated.It is also included on the 14 line.
-> 
+On Tue, Oct 12, 2021 at 4:17 AM <davidcomponentone@gmail.com> wrote:
+>
+> From: David Yang <davidcomponentone@gmail.com>
+>
+> The coccinelle check report:
+> "./samples/bpf/xdp_redirect_cpu_user.c:397:32-38:
+> ERROR: application of sizeof to pointer"
+> Using the "strlen" to fix it.
+>
 > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Ran Jianping <ran.jianping@zte.com.cn>
-> 
-> [...]
+> Signed-off-by: David Yang <davidcomponentone@gmail.com>
+> ---
 
-Here is the summary with links:
-  - [selftests/bpf] selftests/bpf: remove duplicate include in cgroup_helpers.c.
-    https://git.kernel.org/bpf/bpf-next/c/b8f49dce799f
+For future submissions, please use [PATCH bpf-next] subject prefix.
+For changes that are targeted against BPF samples, please use
+samples/bpf: prefix as well. So in this case the patch subject should
+have been something like:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+[PATCH bpf-next] samples/bpf: Fix application of sizeof to pointer
 
+I've fixed it up and applied to bpf-next, thanks.
 
+>  samples/bpf/xdp_redirect_cpu_user.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+> index 6e25fba64c72..d84e6949007c 100644
+> --- a/samples/bpf/xdp_redirect_cpu_user.c
+> +++ b/samples/bpf/xdp_redirect_cpu_user.c
+> @@ -325,7 +325,6 @@ int main(int argc, char **argv)
+>         int add_cpu = -1;
+>         int ifindex = -1;
+>         int *cpu, i, opt;
+> -       char *ifname;
+>         __u32 qsize;
+>         int n_cpus;
+>
+> @@ -393,9 +392,8 @@ int main(int argc, char **argv)
+>                                 fprintf(stderr, "-d/--dev name too long\n");
+>                                 goto end_cpu;
+>                         }
+> -                       ifname = (char *)&ifname_buf;
+> -                       safe_strncpy(ifname, optarg, sizeof(ifname));
+> -                       ifindex = if_nametoindex(ifname);
+> +                       safe_strncpy(ifname_buf, optarg, strlen(ifname_buf));
+> +                       ifindex = if_nametoindex(ifname_buf);
+>                         if (!ifindex)
+>                                 ifindex = strtoul(optarg, NULL, 0);
+>                         if (!ifindex) {
+> --
+> 2.30.2
+>
