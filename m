@@ -2,114 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D0E435633
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 00:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A56435645
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 01:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhJTW5r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 18:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhJTW5r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 18:57:47 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E601C06161C;
-        Wed, 20 Oct 2021 15:55:32 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso10109066ota.9;
-        Wed, 20 Oct 2021 15:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=cPiacAHVzcrhdUz4ZTtN/fpqDLeX0mVZT75Tk2+KOqw=;
-        b=L8asQJGAEwxHpeR4LQzteEVcYbiffD6v+eiSn0f+mFF+oaQty5UWPv9e0WUaLOznRD
-         g8IUWWgrJy12oMlvets+kJj1BXVInfpNJHOJIXmgQEjDvTRvcMy4XBlUfX/R7FVw6Cl1
-         C4fX7J7mWHMipTS47kt522zjhDC7dlFyMjM0x+tG9UchiImgcvlpcatBAVP8oT5/cK/F
-         O7POA++sR2wSX21NsiDYktuLmgZ82DIVwjaz/TX/BNaHTdjWaA/0Hmgl6s0sb3PIuzvn
-         n8V/UMKXfLB9sC51/L7ZXZ1Y8OJS4mrAEe6ZCt/Au+klp+sc/ArwoLWNnELGvFHS1sKD
-         MDNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=cPiacAHVzcrhdUz4ZTtN/fpqDLeX0mVZT75Tk2+KOqw=;
-        b=kTQKWTXUtWpfg40QxBDSWZm+dQyH76Ux/vaW3TTwUS1mmh2IbxtdLCWygE8VQULvR9
-         TJ03CFI7+b2yK6jZ5Y1nu0eJBj5cQG0STBiBg7j58DQuMmqlzj++naIkYUhFh9G/XKqu
-         9WZmDCUVXEU1nus59qnSfG1nw0KfS6lQsNvCiB/lYqqSZOiCrUNATIq7+2golEWhW3ku
-         MKMm0++fZq5b/lGPdRbbZ8s65vv30OF1NOcNQq4Q8+v9aw74OlvDuNzBXB4I9m0VZ/4n
-         xVXxU64uhI39HOg7rWcag0157sTPdnICFfZScX7mMfCJ7s4I0RIhE/snjEG+dTU8PXoD
-         uMmw==
-X-Gm-Message-State: AOAM532UTsC5VZ188HXBk20HpmhJzgLQz8Jpt2tzURlCOZzCW1tW7XGN
-        uUnggXyWLMO0z+IG9scYocc=
-X-Google-Smtp-Source: ABdhPJy9i16Y51nszpIvaloQtDYHYhAYpRTzu/gSXP6PUAwfskLa0IzCFihTwQ8uQEm0RIIgsuE4Dw==
-X-Received: by 2002:a05:6830:31a8:: with SMTP id q8mr1708511ots.156.1634770531707;
-        Wed, 20 Oct 2021 15:55:31 -0700 (PDT)
-Received: from [172.16.0.2] ([8.48.134.34])
-        by smtp.googlemail.com with ESMTPSA id y4sm707047oix.23.2021.10.20.15.55.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 15:55:31 -0700 (PDT)
-Message-ID: <cc00fa9d-3f18-f850-4cdc-eb81145bdc47@gmail.com>
-Date:   Wed, 20 Oct 2021 16:55:28 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH bpf-next 07/10] bpf: Add helpers to query conntrack info
-Content-Language: en-US
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Florian Westphal <fw@strlen.de>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S229842AbhJTXHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 19:07:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31454 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhJTXHs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 20 Oct 2021 19:07:48 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KN0A6Q002386;
+        Wed, 20 Oct 2021 19:05:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=PV7tSLsD192oKmUy2LlW6GzWVYK28/fkfbrYnwplHAQ=;
+ b=p620l59DlHTgTsJLDvkJ0G2FCXNIXz414B0+B9Tp7XS0b4YFCKZmGWi7j4qGEPXTSHKX
+ /hdxHNHiPigMFZFEoiMguCrzS9edcqp3VWdI4/DguZBCiLwBgnX8zYmbwOCDT6fa9k83
+ FN8Pco3XgyCtKw971JwTap5NZPVYTfyahgvQ8iKhaeSTfYcITmQdPaZU5tEUmAM+Axvj
+ zf1B2LS75MuSVEKZYO8EUYRKekH6jlr8Y+xbeqiveXf8K4JCjD3UWHcEE+3qYJbv1Hyv
+ jcQ3vEehuKZCf2fPXZyENSsceCEXy3XY16DA/vckcCUn/ncF1qj97P0J3zgwM4HKwXIe jQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btsnbu33y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 19:05:21 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KLtKTf022634;
+        Wed, 20 Oct 2021 19:05:20 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btsnbu33f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 19:05:20 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KN1xYs020834;
+        Wed, 20 Oct 2021 23:05:18 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bqpca96r6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 23:05:18 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KN5Eh254526222
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 23:05:14 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01EDA42A6E;
+        Wed, 20 Oct 2021 23:02:02 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AEDA142A52;
+        Wed, 20 Oct 2021 23:02:01 +0000 (GMT)
+Received: from sig-9-145-12-156.uk.ibm.com (unknown [9.145.12.156])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Oct 2021 23:02:01 +0000 (GMT)
+Message-ID: <9c925536f10105414327ed70e7e50321061c9204.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v2 4/4] libbpf: Fix ptr_is_aligned() usages
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Joe Stringer <joe@cilium.io>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20211019144655.3483197-1-maximmi@nvidia.com>
- <20211019144655.3483197-8-maximmi@nvidia.com>
- <20211020035622.lgrxnrwfeak2e75a@apollo.localdomain>
- <20211020092844.GI28644@breakpoint.cc> <87h7dcf2n4.fsf@toke.dk>
- <20211020095815.GJ28644@breakpoint.cc> <875ytrga3p.fsf@toke.dk>
- <20211020124457.GA7604@breakpoint.cc> <87r1cfe7sx.fsf@toke.dk>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <87r1cfe7sx.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Thu, 21 Oct 2021 01:02:01 +0200
+In-Reply-To: <CAEf4BzbQcsz8Y1_MVhnyjCaYx-t-MWBD8xykF3x-UHE9a+X8HQ@mail.gmail.com>
+References: <20211013160902.428340-1-iii@linux.ibm.com>
+         <20211013160902.428340-5-iii@linux.ibm.com>
+         <CAEf4BzbQcsz8Y1_MVhnyjCaYx-t-MWBD8xykF3x-UHE9a+X8HQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iD1hNbNd1dbS9UAcFV33xy25ZyUfEViq
+X-Proofpoint-GUID: ZrdM15C144pNSkQH2aMPT8C-qf23xc3L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_06,2021-10-20_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ phishscore=0 impostorscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200131
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/20/21 2:54 PM, Toke Høiland-Jørgensen wrote:
->> Sure, but I'm not sure I understand the use case.
->>
->> Insertion at XDP layer turns off netfilters NAT capability, so its
->> incompatible with the classic forwarding path.
->>
->> If thats fine, why do you need to insert into the conntrack table to
->> begin with?  The entire infrastructure its designed for is disabled...
-> One of the major selling points of XDP is that you can reuse the
-> existing kernel infrastructure instead of having to roll your own. So
-> sure, one could implement their own conntrack using BPF maps (as indeed,
-> e.g., Cilium has done), but why do that when you can take advantage of
-> the existing one in the kernel? Same reason we have the bpf_fib_lookup()
-> helper...
+On Wed, 2021-10-20 at 11:44 -0700, Andrii Nakryiko wrote:
+> On Wed, Oct 13, 2021 at 9:09 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
+> > 
+> > Currently ptr_is_aligned() takes size, and not alignment, as a
+> > parameter, which may be overly pessimistic e.g. for __i128 on s390,
+> > which must be only 8-byte aligned. Fix by using btf__align_of()
+> > where
+> > possible - one notable exception is ptr_sz, for which there is no
+> > corresponding type.
+> > 
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> >  tools/lib/bpf/btf_dump.c | 12 +++++-------
+> >  1 file changed, 5 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> > index 25ce60828e8d..da345520892f 100644
+> > --- a/tools/lib/bpf/btf_dump.c
+> > +++ b/tools/lib/bpf/btf_dump.c
+> > @@ -1657,9 +1657,9 @@ static int
+> > btf_dump_base_type_check_zero(struct btf_dump *d,
+> >         return 0;
+> >  }
+> > 
+> > -static bool ptr_is_aligned(const void *data, int data_sz)
+> > +static bool ptr_is_aligned(const void *data, int alignment)
+> >  {
+> > -       return ((uintptr_t)data) % data_sz == 0;
+> > +       return ((uintptr_t)data) % alignment == 0;
 > 
+> btf__align_of() can return 0 on error and this will be div by 0. I
+> think the better approach would be for ptr_is_aligned to accept
+> struct
+> btf *btf and __u32 type_id, call btf__align_of() based on btf and
+> type
+> id, handle 0 case pessimistically (assume not aligned).
 
-Exactly, and a key point is that it allows consistency between XDP fast
-path and full stack slow path. e.g., the BPF program is removed or
-defers a flow to full stack for some reason.
+I thought about this, but it won't cover the ptr_sz case. Maybe we
+just need two functions - I'll give it a try tomorrow.
+
