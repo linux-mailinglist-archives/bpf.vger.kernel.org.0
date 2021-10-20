@@ -2,113 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A99434CC4
-	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 15:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE1C434EB9
+	for <lists+bpf@lfdr.de>; Wed, 20 Oct 2021 17:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhJTN4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 09:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
+        id S230340AbhJTPOG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 11:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhJTN4u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:56:50 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510F1C06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 06:54:36 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id o133so3029592pfg.7
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 06:54:36 -0700 (PDT)
+        with ESMTP id S230287AbhJTPOG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 11:14:06 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C393CC06161C
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 08:11:51 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id y15so15725412lfk.7
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 08:11:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=611xAqXnimQaZan7BQQ8OSl4RHvr4F7Ld3Lp+NXsW04=;
-        b=peM4hcfxZPVlYoTDOBefxi8UOCGt1QflYvmbinPjlFLVKCteEmtF1NOCF5EDb11kCz
-         exrgNd/atLRaDpmtC+cmBnELdHt69+5wm/g8cBkuTL9vHOEIc3ES7ic1wK1ZvcJ1pAdx
-         6h5AzoS9zRYE7NlROn00/4c8s9SFR19bq0XCev8A86HiYATdTQBKPaq8O/IxZk1W4lWV
-         bS73CHsBp+D2vaUCCcuMRp9J1OZex9XpzxtjE67lE3DDIDYeIjeTmue2rD6yQGuxZ/CT
-         gXgyAUxmhK86o6ZSv3tXGDF7QjHYJUlFFMWa+PBeORqomenL/IOFVlo1YB5hlznwfukv
-         CZ6A==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=ex70dGEef5Ctoy83Pz7cxdcGJqsgvDVsEg6q5HLmBIU=;
+        b=KoyiafT88yljlgxWRFqZxfnBa9+0DHUYmeFo1/MKC6xH40Nt6KSx4hXgNuKQjv0khD
+         2/CHOmwF2Mvb11j2nnW5J/IJtTK0y2xug6Lwj40HoCnqI377P3SwNdzy6nAA66nESumY
+         YheAOcTe8w1sTscqsxCFReMaIP1bmyF3RmH1E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=611xAqXnimQaZan7BQQ8OSl4RHvr4F7Ld3Lp+NXsW04=;
-        b=Z9IcSpnK7hC5alrEnpUbh3XObw2l9Q5DeVmQLnhzBG56elU84BPfe8Pq8aLWAs5ofu
-         ufsBRlqzb5CPUMv5MyV1XML5OKh3lz/CLvgHKQrCOPabMTbsPjF+FwT+l1I1BfwhWG7i
-         XDN6WbgjsBZTcgiArZORfbAu1rua+tHWEM87KjuUpEckDe1pNAalLQ+KUsKNpfS00I9x
-         3Yf0HlzZO5bnRGfMhslA51nbZS0MVsOfiPQlVbBlgBVOdy9Dxg/FckuSHsFvHBcDw+rV
-         5IQ+f9BM07Ik6ajvSv4OZ3WVI0KGsCKpfNJ7yr84ineL5qHYSRb3VZnQMNWnOsiH/Ejn
-         DiUw==
-X-Gm-Message-State: AOAM5321FPorlRaiN8lL6ctXigt4YQA9fJa5etkYwVV2ah2DUlF1T4RL
-        kX35IFFVY3qgDGjIn+XMqdc=
-X-Google-Smtp-Source: ABdhPJwqkKFgDQDtK2ZC1NdSaXU9Tfecx8Lw5Bt6ER+OnrCqzEdeF4uFRSI9RGbH/3wV+a7ETfs21w==
-X-Received: by 2002:a63:7504:: with SMTP id q4mr96397pgc.103.1634738075924;
-        Wed, 20 Oct 2021 06:54:35 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.116])
-        by smtp.gmail.com with ESMTPSA id d2sm3082795pfj.42.2021.10.20.06.54.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 06:54:35 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 2/2] tools: Switch to new
- btf__type_cnt/btf__raw_data APIs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>
-References: <20211009150029.1746383-1-hengqi.chen@gmail.com>
- <20211009150029.1746383-3-hengqi.chen@gmail.com>
- <CAEf4Bza6iFBn6FJ4ps+ONwDQ-Otqt=QtBm7Tw00qg+zVYM0wdQ@mail.gmail.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <66bfc72b-0cac-3c16-7224-49884e83b8be@gmail.com>
-Date:   Wed, 20 Oct 2021 21:54:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=ex70dGEef5Ctoy83Pz7cxdcGJqsgvDVsEg6q5HLmBIU=;
+        b=TTf2yMrWxv32yf79L8nkaZ+Dtumepde4uDRcTJCaWagPcBJAPqa7LU1iWTqZdxp1bj
+         2M0kTuDgKvS/ddn8kKx/eN5dbU3QNxE6tyuHHs+gcNkzfURsykaogzxsC8OyTIkWumF4
+         SuGFZcc5RJwIvGzNboKB56WDgU66ajdmQZREFlKWo6L5kGSzLbhdE/GHAfvE1aaM/TlA
+         XKctIMcLcDhhpPDoZ9WdNEeMwDlFz4a2J70eJ1ud8k4qsn13Wjs/aSOYlFJ5QlX+p9Jv
+         a7sM0+xEazOKziCns0CZzt+bobpDTJdoyGGCVu/J6UrrLuujJeupFzmmfJOggXcLJ00m
+         mifA==
+X-Gm-Message-State: AOAM531wJQ+vVyQ7esxlRSV4uHBAnc25Jv6j5Djc05UEemTskxnT3hdi
+        ITj3bP/Y5+I2E1XKP7df9l5DKKjphtJUFg==
+X-Google-Smtp-Source: ABdhPJzoYlG4xXAoe5ctsVaf9MrA71YBJV7gjVD0ww3RX+RbUjRzGRxNW4F/Va98FlRsizESGYadwA==
+X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr40863lfs.528.1634742710000;
+        Wed, 20 Oct 2021 08:11:50 -0700 (PDT)
+Received: from cloudflare.com (2a01-110f-480d-6f00-ff34-bf12-0ef2-5071.aa.ipv6.supernova.orange.pl. [2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
+        by smtp.gmail.com with ESMTPSA id m27sm212122lfo.48.2021.10.20.08.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 08:11:49 -0700 (PDT)
+References: <20211011191647.418704-1-john.fastabend@gmail.com>
+ <20211011191647.418704-2-john.fastabend@gmail.com>
+ <87tuhdfpq4.fsf@cloudflare.com>
+ <616fa9127fa63_340c7208ef@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        joamaki@gmail.com, xiyou.wangcong@gmail.com
+Subject: Re: [PATCH bpf 1/4] bpf, sockmap: Remove unhash handler for BPF
+ sockmap usage
+In-reply-to: <616fa9127fa63_340c7208ef@john-XPS-13-9370.notmuch>
+Date:   Wed, 20 Oct 2021 17:11:49 +0200
+Message-ID: <87pmrzg28a.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bza6iFBn6FJ4ps+ONwDQ-Otqt=QtBm7Tw00qg+zVYM0wdQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 2021/10/20 1:50 AM, Andrii Nakryiko wrote:
-> On Sat, Oct 9, 2021 at 8:01 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Wed, Oct 20, 2021 at 07:28 AM CEST, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Mon, Oct 11, 2021 at 09:16 PM CEST, John Fastabend wrote:
+>> > We do not need to handle unhash from BPF side we can simply wait for the
+>> > close to happen. The original concern was a socket could transition from
+>> > ESTABLISHED state to a new state while the BPF hook was still attached.
+>> > But, we convinced ourself this is no longer possible and we also
+>> > improved BPF sockmap to handle listen sockets so this is no longer a
+>> > problem.
+>> >
+>> > More importantly though there are cases where unhash is called when data is
+>> > in the receive queue. The BPF unhash logic will flush this data which is
+>> > wrong. To be correct it should keep the data in the receive queue and allow
+>> > a receiving application to continue reading the data. This may happen when
+>> > tcp_abort is received for example. Instead of complicating the logic in
+>> > unhash simply moving all this to tcp_close hook solves this.
+>> >
+>> > Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+>> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> > ---
 >>
->> Replace the calls to btf__get_nr_types/btf__get_raw_data in tools
->> with new APIs btf__type_cnt/btf__raw_data. The old APIs will be
->> deprecated in recent release of libbpf.
-> 
-> "in libbpf v0.7+"
-> 
->>
->> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
->> ---
->>  tools/bpf/bpftool/btf.c                              | 12 ++++++------
->>  tools/bpf/bpftool/gen.c                              |  4 ++--
->>  tools/bpf/resolve_btfids/main.c                      |  4 ++--
->>  tools/perf/util/bpf-event.c                          |  2 +-
->>  tools/testing/selftests/bpf/btf_helpers.c            |  4 ++--
->>  tools/testing/selftests/bpf/prog_tests/btf.c         | 10 +++++-----
->>  tools/testing/selftests/bpf/prog_tests/btf_dump.c    |  8 ++++----
->>  tools/testing/selftests/bpf/prog_tests/btf_endian.c  | 12 ++++++------
->>  tools/testing/selftests/bpf/prog_tests/btf_split.c   |  2 +-
->>  .../testing/selftests/bpf/prog_tests/core_autosize.c |  2 +-
->>  tools/testing/selftests/bpf/prog_tests/core_reloc.c  |  2 +-
->>  .../selftests/bpf/prog_tests/resolve_btfids.c        |  4 ++--
->>  12 files changed, 33 insertions(+), 33 deletions(-)
->>
-> 
-> Please split each tool into a separate patch, and selftests separate
-> from tools as well. Otherwise, great job, thanks!
-> 
+>> Doesn't this open the possibility of having a TCP_CLOSE socket in
+>> sockmap if I disconnect it, that is call connect(AF_UNSPEC), instead of
+>> close it?
+>
+> Correct it means we may have TCP_CLOSE socket in the map. I'm not
+> seeing any problem with this though. A send on the socket would
+> fail the sk_state checks in the send hooks. (tcp.c:1245). Receiving
+> from the TCP stack would fail with normal TCP stack checks.
+>
+> Maybe we want a check on redirect into ingress if the sock is in
+> ESTABLISHED state as well? I might push that in its own patch
+> though it seems related, but I think we should have that there
+> regardless of this patch.
+>
+> Did you happen to see any issues on the sock_map side for close case?
+> It looks good to me.
 
-I was hesitant to separate these changes to individual patches.
-Will do since you ask for it. Thanks.
+OK, I didn't understand if that was an intended change or not.
 
-> [...]
-> 
+If we're considering allowing TCP sockets in TCP_CLOSE state in sockmap,
+a few things come to mind:
+
+1) We can't insert TCP_CLOSE sockets today. sock_map_sk_state_allowed()
+   won't allow it. However, with this change we will be able to have a
+   TCP_CLOSE socket in sockmap by disconnecting it. If so, perhaps
+   inserting TCP sockets in TCP_CLOSE state should be allowed for
+   consistency.
+
+2) Checks in bpf_sk_lookup_assign() helper need adjusting. Only TCP
+   sockets in TCP_LISTEN state make a valid choice (and UDP sockets in
+   TCP_CLOSE state). Today we rely on the fact there that you can't
+   insert a TCP_CLOSE socket.
+
+3) Checks in sk_select_reuseport() helper need adjusting as well. It's a
+   similar same case as with bpf_sk_lookup_assign() (with a slight
+   difference that reuseport allows dispatching to connected UDP
+   sockets).
+
+4) Don't know exactly how checks in sockmap redirect helpers would need
+   to be tweaked. I recall that it can't be just TCP_ESTABLISHED state
+   that's allowed due to a short window of opportunity that opens up
+   when we transition from TCP_SYN_SENT to TCP_ESTABLISHED.
+   BPF_SOCK_OPS_STATE_CB callback happens just before the state is
+   switched to TCP_ESTABLISHED.
+
+   TCP_CLOSE socket sure doesn't make sense as a redirect target. Would
+   be nice to get an error from the redirect helper. If I understand
+   correctly, if the TCP stack drops the packet after BPF verdict has
+   selected a socket, only the socket owner will know about by reading
+   the error queue.
+
+   OTOH, redirecting to a TCP_CLOSE_WAIT socket doesn't make sense
+   either, but we don't seem to filter it out today, so the helper is
+   not airtight.
+
+All in all, sounds like an API change when it comes to corner cases, in
+addition to being a fix for the receive queue flush issue which you
+explained in the patch description. If possible, would push it through
+bpf-next.
