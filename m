@@ -2,124 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8015943580D
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 03:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33342435813
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 03:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhJUBI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 21:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        id S231439AbhJUBOq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 21:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJUBIZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:08:25 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF652C06161C;
-        Wed, 20 Oct 2021 18:06:09 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id gn3so3743531pjb.0;
-        Wed, 20 Oct 2021 18:06:09 -0700 (PDT)
+        with ESMTP id S229702AbhJUBOq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 21:14:46 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BD5C06161C;
+        Wed, 20 Oct 2021 18:12:31 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id o133so4437028pfg.7;
+        Wed, 20 Oct 2021 18:12:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=06BhUAAUORlPk7152bN5SJFZoUaSVjUcf1XHx3yIAJY=;
-        b=lzebUHAxWOMc16YW1CkY8JPZUjMqG80Y5LNRBom+OtgF78yipOyJ8mGFoq2nCFpPEl
-         9/73mcgIDUju95bEvYzF6iQUS380kOGu/iQMmNiBrH1MQaOV92iQAVvw2Vo5Q02NSXKl
-         tkFazyDG5hgAb05OnW5XLD7u7RcgmNYwb+fnLUsj6CU1810JYdxsDt7TTGESXH1u3evB
-         C1DlC+aYuUYU3sHBb67sQ6s2qxKIkayuArjt5P6Sc2WzXch0q87mT2/mkoKCwAotV7Sg
-         ZSxEBlE8yfD/eZ7i31ehthUGqK8UnNV5qB2AyXkpthjHdbnWscMxew3sUYfyW127nmxF
-         oirg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LPzDsdX08NZmDx8Uzcz7akVMOz1kLBz7pqYyuIw+ZW4=;
+        b=RuvKXK5gQBkp+PCNywSjxIbKM3ItZD29IBCojEGxMfH+RWCq+Asjw4L+Dht3I8tJQD
+         4ffSWQu21rkk/ZX1fM70dGBvmT0TtuLwL/+FP7Iu0ddKgxF7KbT+3ZhO3TAYV1iQqHi4
+         +Xmj1+7OViUidvIKQxIB8TCv5Wl9wOo/BAE6wWCZyc6nQvG3Bli7z0ilCBndTG5+z9Tj
+         5XN4mm5WAWyquA3phwZ1Em69xYDRQYzEirqhXJ2ey0ZKXwTvpmM9juDOt9ijSGoCXI++
+         jiToyRxT3tW+FvXo+MLQfQ8GiLGKIPGYZaCZvVWFMw+BKBra2Cc/fB62NUM7UjnKy60M
+         qREA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=06BhUAAUORlPk7152bN5SJFZoUaSVjUcf1XHx3yIAJY=;
-        b=uoRxs3Visv2HD4K4p7FAMrbogooQD+1AV96GCefMtIR6dIHQLJXRpaHuMmpJf5kS1v
-         CzzbihtHoD1QTdf3RordxLpxtKxMK6TLf5qi0+Uthi2x+2lNQE7iM2pV/cayOo/WkqKq
-         o7x/NDhdNydgdBxhcmFLd2I+ThC7KpBeciLGErE3mE9duZffrCIicWsXcJ5DXEFY8ybn
-         fE6NHg/iqCnlFTatRVTaAzEDnOvGcipWONNMdbqqG3qlWTRNveZVn67+m0f9McRnziDr
-         bfHwFV9FIAvOs94RzFW8JAxJCCh1/x05SIYWBJwyXa0EoeZ5aRTqRmzskSkGoJUIVX9V
-         s+rw==
-X-Gm-Message-State: AOAM531IFj8X+oE87QZ6+513SWdp4NWCbTa0QPLUrbgdZl3LZonUbEsG
-        pnUEZQBA4u5wVm8VjhGLbgw=
-X-Google-Smtp-Source: ABdhPJyeI4TGuNQAQQamS/sZe2UiPyX+/0o+x6FjXIrnkqzN2uRSTDVsj+jRJ96na/Jneqx7ohtbDA==
-X-Received: by 2002:a17:90a:c087:: with SMTP id o7mr2889434pjs.30.1634778369306;
-        Wed, 20 Oct 2021 18:06:09 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8c95])
-        by smtp.gmail.com with ESMTPSA id g186sm3858699pfb.53.2021.10.20.18.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 18:06:08 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 18:06:05 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LPzDsdX08NZmDx8Uzcz7akVMOz1kLBz7pqYyuIw+ZW4=;
+        b=UIVg/QRf2alm91+Q1FG65B5ZxhmkmN+kbXvfHbmOOztHfpLLXh/88uyM2P2VjDMHwz
+         Pw2gzdLXNVxa5qK6hBwuBzGDz8UVzPb/BDGg6zaBTJ42o5p0sCUr1EMv7xCOsmk+3HKV
+         JqP7CYg9NQLZQXiEFPBN2c2Ujju7aN6THpFMnL4K2n35QevrG7so8VyVxVJZBOMHg9tS
+         vOiPvxhgVArMGo1EpBAxeWAu2alaF7Xf4drRxTxhQCoQ+h6tVQSlWwWy1VWOuGn00/ui
+         y6dHSQ1V5NwO47d00t8n7gTq+CGwL5CeCWyRht7FU1dhKa+CN6fvfwKMSUpUXhwdf4JH
+         NFNw==
+X-Gm-Message-State: AOAM5334+dY/Gp+71X8u1DGhi8j2kvGcy8c76vqy9GYi0/PE1Gm+i2kL
+        rFsEAdThEUc6gtKaj1wkOmx+qJkcEVsMLCgdmq6gCKfE
+X-Google-Smtp-Source: ABdhPJw3QWWPVYqMXzg8U0HaSTLX5wnUGNnR5b+CuFcas++LD/CZcnho1YhpkuhGKxaFAkLxAcCFpFm9T0Jol+Ebjiw=
+X-Received: by 2002:aa7:9f8f:0:b0:44c:cf63:ec7c with SMTP id
+ z15-20020aa79f8f000000b0044ccf63ec7cmr2146811pfr.77.1634778750690; Wed, 20
+ Oct 2021 18:12:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211015093318.1273686-1-jackmanb@google.com>
+In-Reply-To: <20211015093318.1273686-1-jackmanb@google.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 20 Oct 2021 18:12:19 -0700
+Message-ID: <CAADnVQ+VJbbAvEG8c++2K8WgPWOfnPbdHA414nGnqub+PRrhxw@mail.gmail.com>
+Subject: Re: [[PATCH bpf-next]] selftests/bpf: Some more atomic tests
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Joe Stringer <joe@cilium.io>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next 10/10] bpf: Add sample for raw syncookie helpers
-Message-ID: <20211021010605.osyvspqie63asgn4@ast-mbp.dhcp.thefacebook.com>
-References: <20211019144655.3483197-1-maximmi@nvidia.com>
- <20211019144655.3483197-11-maximmi@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019144655.3483197-11-maximmi@nvidia.com>
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 05:46:55PM +0300, Maxim Mikityanskiy wrote:
-> This commit adds a sample for the new BPF helpers: bpf_ct_lookup_tcp,
-> bpf_tcp_raw_gen_syncookie and bpf_tcp_raw_check_syncookie.
-> 
-> samples/bpf/syncookie_kern.c is a BPF program that generates SYN cookies
-> on allowed TCP ports and sends SYNACKs to clients, accelerating synproxy
-> iptables module.
-> 
-> samples/bpf/syncookie_user.c is a userspace control application that
-> allows to configure the following options in runtime: list of allowed
-> ports, MSS, window scale, TTL.
-> 
-> samples/bpf/syncookie_test.sh is a script that demonstrates the setup of
-> synproxy with XDP acceleration.
-> 
-> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  samples/bpf/.gitignore        |   1 +
->  samples/bpf/Makefile          |   3 +
->  samples/bpf/syncookie_kern.c  | 591 ++++++++++++++++++++++++++++++++++
->  samples/bpf/syncookie_test.sh |  55 ++++
->  samples/bpf/syncookie_user.c  | 388 ++++++++++++++++++++++
->  5 files changed, 1038 insertions(+)
->  create mode 100644 samples/bpf/syncookie_kern.c
->  create mode 100755 samples/bpf/syncookie_test.sh
->  create mode 100644 samples/bpf/syncookie_user.c
+On Fri, Oct 15, 2021 at 2:33 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> Some new verifier tests that hit some important gaps in the parameter
+> space for atomic ops.
+>
+> There are already exhaustive tests for the JIT part in
+> lib/test_bpf.c, but these exercise the verifier too.
+>
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-Tests should be in selftests/bpf.
-Samples are for samples only.
-
-> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-
-Isn't it deprecated?
-LICENSES/deprecated/Linux-OpenIB
-
-> +	// Don't combine additions to avoid 32-bit overflow.
-
-c++ style comment?
-did you run checkpatch?
+Applied and fixed subj.
