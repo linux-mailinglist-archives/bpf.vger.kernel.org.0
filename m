@@ -2,185 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E5543635C
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 15:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E737436378
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 15:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhJUNuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 09:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        id S231431AbhJUNzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 09:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhJUNut (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:50:49 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977D1C0613B9
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 06:48:33 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id f11so669279pfc.12
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 06:48:33 -0700 (PDT)
+        with ESMTP id S231510AbhJUNze (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:55:34 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20174C061348
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 06:53:19 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so591217pjb.5
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 06:53:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vOE4lK296m9L6da4WuOTEcb7qddg9J08gatHpRhQgQE=;
-        b=Ml8DvUq+M/b3Yff49inTaCp4+H3LHbNI/B+n7GnlcCxQ3ZVtqZmmmmATpEr2b5Y4aX
-         05iO+Ka3Yk6foVQAkpgF2v8T0C1W0Sx5giaDJ7yW9hUf74LFhC0IA/EP5PNacAxb0U3B
-         GSbocZ3qPkZtGBzmfElfcXzpX+DmQclnOSD0Dc475gEXYfg2lCb2C2lmiZsbh6tRVYSp
-         6UIHYQjcKS093yeP3zIfSRyQaEurt/3NpaE+ZtdJZhEwxuaQ/SGji8fLtc5g+Qgx9u5g
-         xoYLa4ARQThD4kitmxWFyy9zEVEhd4M4epTwP63BU4xdPXcQG76j2Jkyxb5AV7sGdupm
-         Yp7Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dXfzwl5SrdfYLTNic5B7twESFB4MzvClROMLtrfTNd4=;
+        b=FSmPX3HIz24FtpZbgrQ/h9lAUMOBHZ1Q4d6zI2UpIA2W0lSXFt8l6x6Br1eUTfW34m
+         r6fs7B6j6KMGlc62MTE00rUjXwaHJuVyCX4VWNpFvPrs/h16g3GiJ6a/tI22tufb4UH2
+         rqtgQ3nenkUqBvxRBvkX9R/wKWoa/5OibFo+aX/fPcx/Hq/9Dioy7uxf2owlLUxOC+q6
+         xvJsFEEY1O+UMSFwxGTobCb5WAAePwFU9Bn9Pixhc95wXOd+35Rm39EXC85Di9bhH2Gh
+         oOb7ZRb0Lg/Wf9mYng6wWf9MeoGUzPAMqjivTuBXEV+95Vt3firts5qArI2w1RSlVXif
+         veSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vOE4lK296m9L6da4WuOTEcb7qddg9J08gatHpRhQgQE=;
-        b=IdCWrR+JaH5Zoiu3WjrKRBmHxnOKw8YNFBNfxGKklpyLf4eDVck1cEyrqNFuHNCzJK
-         S/210LJgj3fqVF2tgBL06b7N1squ9NsENp53lurepA8q5P2YckdNoFSn6gnCiMJHlLov
-         /sJccnHhppVtfdEpg4xUBa7lO/LHU/NznrTqtEltTS+V/sb87VW68HwcV4zE2/x1WlYK
-         qRQt1zMWzJMg8CNXEOM9iFJeWSFy01udIUczSROufUyNQj4auigDxCeOiE1BMnEfHEpQ
-         T+9hXPawuTS0iTdewdY++5/r6+lC/LZ4lwVpDFCaBDiduyqHr0ZHsdG4EYOdip86P26J
-         5D6w==
-X-Gm-Message-State: AOAM533/vVJyddmjpuihtm0QTpoXhRMF34dcjG+kXXoBlsDGZ2GHLv30
-        VZr+NlQew9PVtohN2HNn3TUNXr4nsPX5yA==
-X-Google-Smtp-Source: ABdhPJyjDUeQ5a9gOfdDApaCru2BbfpeealCIh05ckC9UOiVVRY21XLPHMmvNfoHybr6GVf7blBFlw==
-X-Received: by 2002:a62:7cd8:0:b0:44d:4574:ea8a with SMTP id x207-20020a627cd8000000b0044d4574ea8amr5726707pfc.80.1634824113012;
-        Thu, 21 Oct 2021 06:48:33 -0700 (PDT)
-Received: from VM-32-4-ubuntu.. ([43.132.164.184])
-        by smtp.gmail.com with ESMTPSA id f21sm6830067pfc.203.2021.10.21.06.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 06:48:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dXfzwl5SrdfYLTNic5B7twESFB4MzvClROMLtrfTNd4=;
+        b=OkRfHJ9bNuOhGTCD4bXfRILWggtm+33FFd326v+IvImS9EEj/Vy3kAnKGb7gnQTMB8
+         FSGNtFEWmmv+flYzYRw9ZGnNIPQGs+28SfoEMpmMdT+9CnlLYZcw4h+fOKNs+JZZxomf
+         FJXX1yXMVtgCAllqseI9Nnt0Y1+K+Kt2+vujWK7vmMx5aVc9hwpL7vRjd+vezS899MC6
+         mYY/qTZQr2tActUOxsNmxWtxWIcAJTZlpWb0h5VBRaAz5FvyrTRvOjgTdXCX2PN3wzaG
+         we1WLjeOQmbEmhKMzS8bGgYKv8qbWv9bF/ugww3MMU++S2Vyt7zYrG8+wEAA2UoupPkd
+         7/pQ==
+X-Gm-Message-State: AOAM532L7HkGgZRt9ZoB0jhmqkKOfoTyaErJ89j49cPR2H5sv08+08/W
+        EoAlqRYvBrq7Br7fW/W33os=
+X-Google-Smtp-Source: ABdhPJy+ADEnPK0qYidEjaTVdnHbkka4EmxBMMGyjA4clivj4rTnQG19TqMz/xDVL+jWDvrKkcDeWw==
+X-Received: by 2002:a17:90a:c70d:: with SMTP id o13mr6846341pjt.143.1634824398616;
+        Thu, 21 Oct 2021 06:53:18 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.114])
+        by smtp.gmail.com with ESMTPSA id p16sm7624150pfh.97.2021.10.21.06.53.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 06:53:18 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Add btf__type_cnt() and
+ btf__raw_data() APIs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>
+References: <20211009150029.1746383-1-hengqi.chen@gmail.com>
+ <20211009150029.1746383-2-hengqi.chen@gmail.com>
+ <CAEf4BzZyjoaRATpKHuYFFmZ1u5WnEh4nBdOOpSO+OZi7MH=cHg@mail.gmail.com>
+ <fc764766-e4fd-dc0a-c042-5af92373a461@gmail.com>
+ <CAEf4BzY9q1md3Q6Z6q5EJ=JEp9keq-cOa6S3jOoo8i+WRhJFxw@mail.gmail.com>
 From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kafai@fb.com,
-        songliubraving@fb.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Test bpf_skc_to_unix_sock() helper
-Date:   Thu, 21 Oct 2021 21:47:52 +0800
-Message-Id: <20211021134752.1223426-3-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211021134752.1223426-1-hengqi.chen@gmail.com>
-References: <20211021134752.1223426-1-hengqi.chen@gmail.com>
+Message-ID: <adfe1bf4-fd2a-784a-ff6a-b91ddc44ca1c@gmail.com>
+Date:   Thu, 21 Oct 2021 21:53:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzY9q1md3Q6Z6q5EJ=JEp9keq-cOa6S3jOoo8i+WRhJFxw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a new test which triggers unix_listen kernel function
-to test bpf_skc_to_unix_sock helper.
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- .../bpf/prog_tests/skc_to_unix_sock.c         | 54 +++++++++++++++++++
- .../bpf/progs/test_skc_to_unix_sock.c         | 40 ++++++++++++++
- 2 files changed, 94 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c b/tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c
-new file mode 100644
-index 000000000000..3eefdfed1db9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/skc_to_unix_sock.c
-@@ -0,0 +1,54 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2021 Hengqi Chen */
-+
-+#include <test_progs.h>
-+#include <sys/un.h>
-+#include "test_skc_to_unix_sock.skel.h"
-+
-+static const char *sock_path = "@skc_to_unix_sock";
-+
-+void test_skc_to_unix_sock(void)
-+{
-+	struct test_skc_to_unix_sock *skel;
-+	struct sockaddr_un sockaddr;
-+	int err, sockfd = 0;
-+
-+	skel = test_skc_to_unix_sock__open();
-+	if (!ASSERT_OK_PTR(skel, "could not open BPF object"))
-+		return;
-+
-+	skel->rodata->my_pid = getpid();
-+
-+	err = test_skc_to_unix_sock__load(skel);
-+	if (!ASSERT_OK(err, "could not load BPF object"))
-+		goto cleanup;
-+
-+	err = test_skc_to_unix_sock__attach(skel);
-+	if (!ASSERT_OK(err, "could not attach BPF object"))
-+		goto cleanup;
-+
-+	/* trigger unix_listen */
-+	sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
-+	if (!ASSERT_GT(sockfd, 0, "socket failed"))
-+		goto cleanup;
-+
-+	memset(&sockaddr, 0, sizeof(sockaddr));
-+	sockaddr.sun_family = AF_UNIX;
-+	strncpy(sockaddr.sun_path, sock_path, strlen(sock_path));
-+	sockaddr.sun_path[0] = '\0';
-+
-+	err = bind(sockfd, (struct sockaddr *)&sockaddr, sizeof(sockaddr));
-+	if (!ASSERT_OK(err, "bind failed"))
-+		goto cleanup;
-+
-+	err = listen(sockfd, 1);
-+	if (!ASSERT_OK(err, "listen failed"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(strcmp(skel->bss->path, sock_path), 0, "bpf_skc_to_unix_sock failed");
-+
-+cleanup:
-+	if (sockfd)
-+		close(sockfd);
-+	test_skc_to_unix_sock__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c b/tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c
-new file mode 100644
-index 000000000000..a408ec95cba4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_skc_to_unix_sock.c
-@@ -0,0 +1,40 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2021 Hengqi Chen */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_tracing_net.h"
-+
-+const volatile pid_t my_pid = 0;
-+char path[256] = {};
-+
-+SEC("fentry/unix_listen")
-+int BPF_PROG(unix_listen, struct socket *sock, int backlog)
-+{
-+	pid_t pid = bpf_get_current_pid_tgid() >> 32;
-+	struct unix_sock *unix_sk;
-+	int i, len;
-+
-+	if (pid != my_pid)
-+		return 0;
-+
-+	unix_sk = (struct unix_sock *)bpf_skc_to_unix_sock(sock->sk);
-+	if (!unix_sk)
-+		return 0;
-+
-+	if (!UNIX_ABSTRACT(unix_sk))
-+		return 0;
-+
-+	len = unix_sk->addr->len - sizeof(short);
-+	path[0] = '@';
-+	for (i = 1; i < len; i++) {
-+		if (i >= sizeof(struct sockaddr_un))
-+			break;
-+
-+		path[i] = unix_sk->addr->name->sun_path[i];
-+	}
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+On 2021/10/21 7:14 AM, Andrii Nakryiko wrote:
+> On Wed, Oct 20, 2021 at 6:51 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>>
+>>
+>>
+>> On 2021/10/20 1:48 AM, Andrii Nakryiko wrote:
+>>> On Sat, Oct 9, 2021 at 8:01 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>>>>
+>>>> Add btf__type_cnt() and btf__raw_data() APIs and deprecate
+>>>> btf__get_nr_type() and btf__get_raw_data() since the old APIs
+>>>> don't follow the libbpf naming convention for getters which
+>>>> omit 'get' in the name.[0] btf__raw_data() is just an alias to
+>>>
+>>> nit: this ".[0]" looks out of place, please use it as a reference in a
+>>> sentence, e.g.,:
+>>>
+>>> omit 'get' in the name (see [0]).
+>>>
+>>> So that it reads naturally and fits the overall commit message.
+>>>
+>>>
+>>
+>> Got it. Will do.
+>>
+>>>> the existing btf__get_raw_data(). btf__type_cnt() now returns
+>>>> the number of all types of the BTF object including 'void'.
+>>>>
+>>>>   [0] Closes: https://github.com/libbpf/libbpf/issues/279
+>>>>
+>>>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>>>> ---
+>>>>  tools/lib/bpf/btf.c      | 36 ++++++++++++++++++++++--------------
+>>>>  tools/lib/bpf/btf.h      |  4 ++++
+>>>>  tools/lib/bpf/btf_dump.c |  8 ++++----
+>>>>  tools/lib/bpf/libbpf.c   | 32 ++++++++++++++++----------------
+>>>>  tools/lib/bpf/libbpf.map |  2 ++
+>>>>  tools/lib/bpf/linker.c   | 28 ++++++++++++++--------------
+>>>>  6 files changed, 62 insertions(+), 48 deletions(-)
+>>>>
+>>>
+>>> [...]
+>>>
+>>>> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+>>>> index 864eb51753a1..49397a22d72b 100644
+>>>> --- a/tools/lib/bpf/btf.h
+>>>> +++ b/tools/lib/bpf/btf.h
+>>>> @@ -131,7 +131,9 @@ LIBBPF_API __s32 btf__find_by_name(const struct btf *btf,
+>>>>                                    const char *type_name);
+>>>>  LIBBPF_API __s32 btf__find_by_name_kind(const struct btf *btf,
+>>>>                                         const char *type_name, __u32 kind);
+>>>> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__type_cnt() instead")
+>>>
+>>> it has to be scheduled to 0.7 to have a release with new API
+>>> (btf__type_cnt) before we deprecate btf__get_nr_types(). It's probably
+>>> worth mentioning in the deprecation message that btf__type_cnt()
+>>> return is +1 from btf__get_nr_types(). Maybe something like:
+>>>
+>>
+>> I am a little confused about this scheduling. You mentioned that
+>> we can deprecate old API on the development version (0.6). See [0].
+> 
+> If we add some new API and deprecate old API (but recommend to use new
+> API instead), we need to make sure that new API is there in at least
+> one released libbpf version. Only then we can mark old API as
+> deprecated in the next released libbpf version. In this case
+> btf__type_cnt() has to go into v0.6 and btf__get_nr_types() can be
+> deprecated in v0.7, not in v0.6.
+> 
+> Previous case in [0] was different, there was no new API we had to
+> wait for, so we could deprecate the old API immediately.
+> 
 
+Thanks. That's clear.
+Will do in next revision.
+
+>>
+>>
+>>> LIBBPF_DEPRECATED_SINCE(0, 7, "use btf__type_cnt() instead; note that
+>>> btf__get_nr_types() == btf__type_cnt() - 1")
+>>>
+>>
+>> Will take this in v2.
+>>
+>>>>  LIBBPF_API __u32 btf__get_nr_types(const struct btf *btf);
+>>>> +LIBBPF_API __u32 btf__type_cnt(const struct btf *btf);
+>>>>  LIBBPF_API const struct btf *btf__base_btf(const struct btf *btf);
+>>>>  LIBBPF_API const struct btf_type *btf__type_by_id(const struct btf *btf,
+>>>>                                                   __u32 id);
+>>>> @@ -144,7 +146,9 @@ LIBBPF_API int btf__resolve_type(const struct btf *btf, __u32 type_id);
+>>>>  LIBBPF_API int btf__align_of(const struct btf *btf, __u32 id);
+>>>>  LIBBPF_API int btf__fd(const struct btf *btf);
+>>>>  LIBBPF_API void btf__set_fd(struct btf *btf, int fd);
+>>>> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__raw_data() instead")
+>>>
+>>> same, 0.7+
+>>>
+>>>>  LIBBPF_API const void *btf__get_raw_data(const struct btf *btf, __u32 *size);
+>>>> +LIBBPF_API const void *btf__raw_data(const struct btf *btf, __u32 *size);
+>>>>  LIBBPF_API const char *btf__name_by_offset(const struct btf *btf, __u32 offset);
+>>>>  LIBBPF_API const char *btf__str_by_offset(const struct btf *btf, __u32 offset);
+>>>>  LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
+>>>
+>>> [...]
+>>>
+>>
+>>   [0] https://lore.kernel.org/all/CAEf4BzZ_JB1VLAF0=7gu=2M0M735aXava=nPL8m8ewQWdS3m8g@mail.gmail.com/
