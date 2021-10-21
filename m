@@ -2,140 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5687435BD1
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 09:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13E5435D47
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 10:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhJUHjJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 03:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S231433AbhJUIth (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 04:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhJUHjI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 03:39:08 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5860BC06161C;
-        Thu, 21 Oct 2021 00:36:53 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1mdScj-0007At-Jb; Thu, 21 Oct 2021 09:36:25 +0200
-Date:   Thu, 21 Oct 2021 09:36:25 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Joe Stringer <joe@cilium.io>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next 07/10] bpf: Add helpers to query conntrack info
-Message-ID: <20211021073625.GE7604@breakpoint.cc>
-References: <20211019144655.3483197-1-maximmi@nvidia.com>
- <20211019144655.3483197-8-maximmi@nvidia.com>
- <20211020035622.lgrxnrwfeak2e75a@apollo.localdomain>
- <20211020092844.GI28644@breakpoint.cc>
- <87h7dcf2n4.fsf@toke.dk>
- <20211020095815.GJ28644@breakpoint.cc>
- <875ytrga3p.fsf@toke.dk>
- <20211020124457.GA7604@breakpoint.cc>
- <87r1cfe7sx.fsf@toke.dk>
+        with ESMTP id S230269AbhJUItd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:49:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B358C06161C;
+        Thu, 21 Oct 2021 01:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/1hQGMgB+pbBjKU+GtBo7/RGdYg+za5wlQN/5rpq/IM=; b=m0CFh2xpa30BQIh8WFy2hP3iRW
+        f+llIEBdmbeYYsigAu0L2a/9h6IR5g/VqHFHJN7hgJHFP6P1bJLBoI/BLroWZ+QuIuLkqqFlUNGh6
+        RZVQZ89p8WOSakL3j6f7RN2fbD16H1aRyft9etjZUIHYgEx79yFg3JHjPii431N4qI27fegI6o9RG
+        xaNKNZr5aQZLWHQFoUZa4w3SSD5O7fEmDo/wxlafEr8mI0/iaNbdcYhMhadFPvHeFX4djrQpMri6V
+        4fhI2YtI0xit+szqZ/kBVCEada8Tq99t/d/1KPmnkD5462NlI8k/fykGUcJCRJdGnrxZp6IYODT4G
+        FQf6BKew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdTj5-00BGZ5-OE; Thu, 21 Oct 2021 08:47:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 41B3F300221;
+        Thu, 21 Oct 2021 10:47:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 18CA52D4101EC; Thu, 21 Oct 2021 10:47:00 +0200 (CEST)
+Date:   Thu, 21 Oct 2021 10:47:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        daniel@iogearbox.net, bpf@vger.kernel.org, andrii@kernel.org
+Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
+Message-ID: <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105843.345016338@infradead.org>
+ <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
+ <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87r1cfe7sx.fsf@toke.dk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> Florian Westphal <fw@strlen.de> writes:
+On Wed, Oct 20, 2021 at 05:05:02PM -0700, Alexei Starovoitov wrote:
+> On Wed, Oct 20, 2021 at 01:09:51PM +0200, Peter Zijlstra wrote:
+
+> > @@ -446,25 +440,8 @@ static void emit_bpf_tail_call_indirect(
+> >  {
+> >  	int tcc_off = -4 - round_up(stack_depth, 8);
+> >  	u8 *prog = *pprog, *start = *pprog;
+> > -	int pop_bytes = 0;
+> > -	int off1 = 42;
+> > -	int off2 = 31;
+> > -	int off3 = 9;
+> > -
+> > -	/* count the additional bytes used for popping callee regs from stack
+> > -	 * that need to be taken into account for each of the offsets that
+> > -	 * are used for bailing out of the tail call
+> > -	 */
+> > -	pop_bytes = get_pop_bytes(callee_regs_used);
+> > -	off1 += pop_bytes;
+> > -	off2 += pop_bytes;
+> > -	off3 += pop_bytes;
+> > -
+> > -	if (stack_depth) {
+> > -		off1 += 7;
+> > -		off2 += 7;
+> > -		off3 += 7;
+> > -	}
+> > +	static int out_label = -1;
 > 
-> > Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> >> > Lookups should be fine.  Insertions are the problem.
-> >> >
-> >> > NAT hooks are expected to execute before the insertion into the
-> >> > conntrack table.
-> >> >
-> >> > If you insert before, NAT hooks won't execute, i.e.
-> >> > rules that use dnat/redirect/masquerade have no effect.
-> >> 
-> >> Well yes, if you insert the wrong state into the conntrack table, you're
-> >> going to get wrong behaviour. That's sorta expected, there are lots of
-> >> things XDP can do to disrupt the packet flow (like just dropping the
-> >> packets :)).
-> >
-> > Sure, but I'm not sure I understand the use case.
-> >
-> > Insertion at XDP layer turns off netfilters NAT capability, so its
-> > incompatible with the classic forwarding path.
-> >
-> > If thats fine, why do you need to insert into the conntrack table to
-> > begin with?  The entire infrastructure its designed for is disabled...
-> 
-> One of the major selling points of XDP is that you can reuse the
-> existing kernel infrastructure instead of having to roll your own. So
-> sure, one could implement their own conntrack using BPF maps (as indeed,
-> e.g., Cilium has done), but why do that when you can take advantage of
-> the existing one in the kernel? Same reason we have the bpf_fib_lookup()
-> helper...
+> Interesting idea!
 
-Insertion to conntrack via ebpf seems to be bad to me precisely because it
-bypasses the existing infra.
+I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
+lot more robust than the 64bit one and I couldn't figure out why the
+difference.
 
-In the bypass scenario you're envisioning, who is responsible for
-fastpath-or-not decision?
+> All insn emits trying to do the right thing from the start.
+> Here the logic assumes that there will be at least two passes over image.
+> I think that is correct, but we never had such assumption.
 
-> > In the HW offload case, conntrack is bypassed completely. There is an
-> > IPS_(HW)_OFFLOAD_BIT that prevents the flow from expiring.
-> 
-> That's comparable in execution semantics (stack is bypassed entirely),
-> but not in control plane semantics (we lookup from XDP instead of
-> pushing flows down to an offload).
+That's not exactly true; I think image is NULL on every first run, so
+all insn that depend on it will be wrong to start with. Equally there's
+a number of insn that seem to depend on addrs[i], that also requires at
+least two passes.
 
-I'm not following.  As soon as you do insertion via XDP existing
-control plane (*tables ruleset, xfrm and so on) becomes irrelevant.
+> A comment is certainly must have.
 
-Say e.g. user has a iptables ruleset that disables conntrack for udp dport
-53 to avoid conntrack overhead for local resolver cache.
+I can certainly add one, although I think we'll disagree on the comment
+style :-)
 
-No longer relevant, ebpf overrides or whatever generates the epbf prog
-needs to emulate existing config.
+> The race is possible too. Not sure whether READ_ONCE/WRITE_ONCE
+> are really warranted though. Might be overkill.
 
-> > I suspect we'd want a way to notify/call an ebpf program instead so we
-> > can avoid the ctnetlink -> userspace -> update dance and do the XDP
-> > 'flow bypass information update' from inside the kernel and ebpf/XDP
-> > reimplementation of the nf flow table (it uses the netfilter ingress
-> > hook on the configured devices; everyhing it does should be doable
-> > from XDP).
-> 
-> But the point is exactly that we don't have to duplicate the state into
-> BPF, we can make XDP look it up directly.
+Is there concurrency on the jit?
 
-Normally for fast bypass I'd expect that the bypass infra would want to
-access all info in one lookup, but conntrack only gives you the NAT
-transformation, so you'll also need a sk lookup and possibly a FIB
-lookup later to get the route.
-Also maybe an xfrm lookup as well if your bypass infra needs to support
-ipsec.
+> Once you have a git branch with all the changes I can give it a go.
 
-So I neither understand the need for conntrack lookup (*for fast bypass use
-case*) nor the need for insert IFF the control plane we have is to be
-respected.
+Ok, I'll go polish this thing and stick it in the tree mentioned in the
+cover letter.
+
+> Also you can rely on our BPF CI.
+> Just cc your patchset to bpf@vger and add [PATCH bpf-next] to a subject.
+> In patchwork there will be "bpf/vmtest-bpf-next" link that
+> builds kernel, selftests and runs everything.
+
+What's a patchwork and where do I find it?
+
+> It's pretty much the same as selftests/bpf/vmtest.sh, but with the latest
+> clang nightly and other deps like pahole.
+
+nice.
