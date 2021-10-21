@@ -2,238 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D292F435875
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 03:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C38A43593A
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 05:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhJUB5j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 21:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
+        id S230453AbhJUDrj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 23:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhJUB5j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:57:39 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BEEC06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 18:55:24 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id t127so22326970ybf.13
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 18:55:24 -0700 (PDT)
+        with ESMTP id S230020AbhJUDri (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 23:47:38 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC58C06161C;
+        Wed, 20 Oct 2021 20:45:23 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id t184so4738930pfd.0;
+        Wed, 20 Oct 2021 20:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Raao5mFGmYqcZ0AlCjy1zm3a4Xcr7+U7s99Zig3pIfM=;
-        b=behglBHr0o36ZOQmNSqGvbgoElHJe7s2bxwYxoSU3hQDZNaSTECBCITfLEhilGKeOk
-         3pr1PVglwcdw1RwbLnKBwhotOoXdfrzLdT2nkaY7BslMS06B1A5lcHvfNscoBrhLfVdS
-         d6CnvCWNYSxTrydqy/ivCw0xf28HEV1Yy9Uzn1KqZkyw6SSRBUOaCrzsPEeUIEIZNJFn
-         s+WASZyEYOipOcpkPru4Bimnlc7PhCnk01X7GBG74R77ZmRlDWV8iRrOC8GlcPvmCSmE
-         DVcqwmZ5dEoHRaGE0cuLuTd9IJQvRkf7wV3245UuyHDR/UR2wsq8xZgIZqKghztskEEq
-         9pNA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5kRttFnqDyMni18OAxsto47TLeLeI3Z8fqyF7mE1Fis=;
+        b=kLRVNCc05x5aMMjJPHURO3uO5yA6yK8P7nuiOxqIMaJpJRtzMsYEDfh/i74qsxVHmC
+         6e7nz8q9C9OEg/sM4FO08Z2HpbQF+t0/jShPa7XyK9r/N+B6bD0M5E+dl+CsRbD31qGW
+         0Qfu5p3JMmqgwcpGpi2SS0/JLUFWvSH1181NwLJdWbdqLGrYQJglCKkDnoRq+yDY30+v
+         9D8I2MPD6nLvvMG16iOczMpbkd0gwWrCtlGvA2tMAZTb29tMlg5xXKNWwD3JF8K6Pk5P
+         Em1thcMLiIQOeyATJgfeJ2M08i9bopTCdv6BV2RPDgXADvotw0tpOWI4gOBK0co3Egph
+         N+bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Raao5mFGmYqcZ0AlCjy1zm3a4Xcr7+U7s99Zig3pIfM=;
-        b=Vu8dqePytInWjT4FxPurTCn78SKzLeI6bwyzt2AgKWF//cjWdE7i7E8/5Nm1ouZBa9
-         Tqsg7OWCE1nr9ULE3GGGJEONlCoTy9PKSDrFpUS97pxVjCufug7IYvhgexdxtg4N0llL
-         uagKSq00Evohafhho7lS0741gRHsF/AG9G0nShDy9pjBZN+gg503CL5zJJ+ItLEF5tBZ
-         p5XA7fBH8bZZnZr+8YT828R69Mlx8WaG2vJYgKzrsP9UsT/DemcKcprBQb6cPaDppdkc
-         y87ygXItGPCjFqVcBmMpHf95EVHiud2h5mlwAcbUlQDB/hxrWToeuCaUR62ZXorRKskx
-         CI7g==
-X-Gm-Message-State: AOAM530VnSqQXI5IyXfq+me98nbTPByRUIpaLNxCyjvNiwGHKC3TOltL
-        b93NmamOx2FY83gfav52kZVMP0iQeiaJuXIwikw=
-X-Google-Smtp-Source: ABdhPJyUkipMsb0BKpnCgcUTTdmmsjLofRGWj73JlugzxHA4NZ/EspOwgLQlVv6GDzrTft81eGUWXnWoxzUjYVtWHKA=
-X-Received: by 2002:a25:24c1:: with SMTP id k184mr3046973ybk.2.1634781323486;
- Wed, 20 Oct 2021 18:55:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5kRttFnqDyMni18OAxsto47TLeLeI3Z8fqyF7mE1Fis=;
+        b=vIjoTpLVY438YCwBXU29+9jxOfjvxB5Tgxk99M7H3YqrPzWfcwJSOtC2n4uxIwpaPd
+         9r3XkeFmn2bVpZCAArl3322riwOJPfyIzbuup01XSquLXmUmz1IajGikvSK30LCwqyHB
+         62qTapjFVMr4WnjqKsD8nrKNmcl3lUsBQqVGrprs/40WqUEOGTBciOT3ziRwqCp7LH1t
+         kddmHPSOXTwWlXp55K8JVpc6Ni9+hKMKAtaodSPdOgYIUEVxvY9WTlTkKRlG+hJ7aVPc
+         WUvE6I7c+ZTMuB+I3vxZIAd1YLSiLPaK2ta5NdwQ17FMWsZK0u98AoyI2/BxL0JzvSIN
+         kyHQ==
+X-Gm-Message-State: AOAM533nK0QcGtp2j/qgm0kU7bDEyhfpyUghHC52FrIlmvG3PQ3o0Sv3
+        ANVkNVifxIx6KGr2hxBZV4A=
+X-Google-Smtp-Source: ABdhPJxDUWZxORefBHkXUWJn7UmjFJRQi36sfn7/BgQlaQ/sisJbzvS6natUXJR1teZtLta231GinQ==
+X-Received: by 2002:aa7:88c2:0:b0:46c:3c50:bcc2 with SMTP id k2-20020aa788c2000000b0046c3c50bcc2mr1239865pff.71.1634787922886;
+        Wed, 20 Oct 2021 20:45:22 -0700 (PDT)
+Received: from localhost.localdomain ([140.82.17.67])
+        by smtp.gmail.com with ESMTPSA id bp19sm3651077pjb.46.2021.10.20.20.45.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 20:45:22 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     keescook@chromium.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, valentin.schneider@arm.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v5 00/15] extend task comm from 16 to 24 for CONFIG_BASE_FULL 
+Date:   Thu, 21 Oct 2021 03:45:07 +0000
+Message-Id: <20211021034516.4400-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20211014212049.1010192-1-irogers@google.com> <CAEf4BzYiG36y0XWVfjXti-qb=gOdGkhzB6R5Ny3kvUbTRyeHUA@mail.gmail.com>
- <CAP-5=fXLAp+9tKU1qS1fr+6ZSFiq=soyD+mr_FPPmi40P0imjw@mail.gmail.com>
- <CAEf4BzaZpfnmTZj4k+APhTheODb6_NbNvUdsPYH84ophCaU3cw@mail.gmail.com>
- <CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com>
- <CAEf4BzaNwEkGJ9OFEPe7nH2G2yP3tzqRjXV8zLHhqk-76xK1QA@mail.gmail.com> <CAP-5=fVCJ+RCj9WBr6BGhweC6_F0tMpdUky=ZS-_FLKmF6+neg@mail.gmail.com>
-In-Reply-To: <CAP-5=fVCJ+RCj9WBr6BGhweC6_F0tMpdUky=ZS-_FLKmF6+neg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Oct 2021 18:55:12 -0700
-Message-ID: <CAEf4BzbuYZ6dayHoRKQ1w3PuNKnG0N=AO=a=NO0vEvKN0WY1tQ@mail.gmail.com>
-Subject: Re: [PATCH] btf_encoder: Make BTF_KIND_TAG conditional
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Petar Penkov <ppenkov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 4:46 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Oct 20, 2021 at 3:30 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 2:49 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Wed, Oct 20, 2021 at 2:27 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Wed, Oct 20, 2021 at 2:23 PM Ian Rogers <irogers@google.com> wrote:
-> > > > >
-> > > > > On Wed, Oct 20, 2021 at 2:12 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Oct 14, 2021 at 2:20 PM Ian Rogers <irogers@google.com> wrote:
-> > > > > > >
-> > > > > > > BTF_KIND_TAG is present in libbtf 6.0 but not libbtf in 5.15rc4. Make
-> > > > > > > the code requiring it conditionally compiled in.
-> > > > > > >
-> > > > > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > > > > ---
-> > > > > > >  btf_encoder.c | 7 +++++++
-> > > > > > >  lib/bpf       | 2 +-
-> > > > > > >  2 files changed, 8 insertions(+), 1 deletion(-)
-> > > > > > >
-> > > > > > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > > > > > index c341f95..400d64b 100644
-> > > > > > > --- a/btf_encoder.c
-> > > > > > > +++ b/btf_encoder.c
-> > > > > > > @@ -141,7 +141,9 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
-> > > > > > >         [BTF_KIND_VAR]          = "VAR",
-> > > > > > >         [BTF_KIND_DATASEC]      = "DATASEC",
-> > > > > > >         [BTF_KIND_FLOAT]        = "FLOAT",
-> > > > > > > +#ifdef BTF_KIND_TAG /* BTF_KIND_TAG was added in 6.0 */
-> > > > > > >         [BTF_KIND_TAG]          = "TAG",
-> > > > > > > +#endif
-> > > > > > >  };
-> > > > > > >
-> > > > > > >  static const char *btf__printable_name(const struct btf *btf, uint32_t offset)
-> > > > > > > @@ -648,6 +650,7 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
-> > > > > > >  static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *value, uint32_t type,
-> > > > > > >                                     int component_idx)
-> > > > > > >  {
-> > > > > > > +#ifdef BTF_KIND_TAG /* Proxy for libbtf 6.0 */
-> > > > > >
-> > > > > > How will this work when libbpf is loaded dynamically? I believe pahole
-> > > > > > has this mode as well.
-> > > > >
-> > > > > Well it won't have a compilation error because BTF_KIND_TAG isn't
-> > > >
-> > > > Great, you traded compile-time error for runtime linking error, I hope
-> > > > that trade off makes sense to Arnaldo.
-> > > >
-> > > > > undefined :-) Tbh, I'm not sure but it seems that you'd be limited to
-> > > > > features in the version of libbpf you compiled against.
-> > > >
-> > > > I've been consistently advocating for statically linking against
-> > > > libbpf exactly to control what APIs and features are supported. But
-> > > > people stubbornly want dynamic linking. I hope added complexity and
-> > > > feature detection makes sense in practice for pahole.
-> > > >
-> > > > >
-> > > > > > Also, note that libbpf now provides LIBBPF_MAJOR_VERSION and
-> > > > > > LIBBPF_MINOR_VERSION macros, starting from 0.5, so no need for
-> > > > > > guessing the version
-> > > > >
-> > > > > This was moved to a header file in:
-> > > > > https://lore.kernel.org/bpf/CAADnVQJ2qd095mvj3z9u9BXQYCe2OTDn4=Gsu9nv1tjFHc2yqQ@mail.gmail.com/T/
-> > > > >
-> > > > > But that header doesn't appear any more:
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/tools/lib/bpf
-> > > > >
-> > > > > Is that a bug?
-> > > >
-> > > > You should be checking here:
-> > > >
-> > > > https://github.com/libbpf/libbpf/blob/master/src/libbpf_version.h
-> > >
-> > > We don't currently mirror this or bpf-next, but presumably the
-> >
-> > Sorry, who's "we" and what's the use case we are talking about here?
-> > pahole itself is using libbpf from Github mirror and that's what all
-> > distros either are already doing or strongly encouraged to start
-> > doing.
->
-> I work for Google. When I spoke with Arnaldo it seemed uncommon that a
-> distro would be tracking bpf-next. There's a policy of a single
-> library version within Google and a different version for pahole has
-> some issues for us.
+This patchset changes files among many subsystems. I don't know which
+tree it should be applied to, so I just base it on Linus's tree.
 
-I'm not following. Distros don't track bpf-next for libbpf. They track
-https://github.com/libbpf/libbpf as an official libbpf repo. Not sure
-what you mean by "different version for pahole"? Use pahole version
-that statically links against its own (submodule) libbpf.
+There're many truncated kthreads in the kernel, which may make trouble
+for the user, for example, the user can't get detailed device
+information from the task comm.
 
->
-> > > released version of libbpf is that in the Linus' tree [1]? There are
-> > > some things like traceevent that are planned for removal. It seems
-> > > like a bug that these trees are missing libbpf_version.h.
-> >
-> > I misremembered versions, LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION
-> > are available starting from v0.6 (unreleased yet), not v0.5. It's a
-> > pretty recent change, so might have not made it to the tip tree. But
-> > Github repo does have it, it's synced from bpf-next directly.
->
-> Ok, do you suggest something like:
->
-> #if defined(LIBBPF_MAJOR_VERSION)
-> #if LIBBPF_MAJOR_VERSION > 5
-> ..
-> #endif
-> #endif
->
-> rather than #ifdef BTF_KIND_TAG ? I couldn't see similar examples to
-> cargo cult from, so there's a likelihood that this could become a
-> pattern others copy.
+This patchset tries to improve this problem fundamentally by extending
+the task comm size from 16 to 24. In order to do that, we have to do
+some cleanups first.
 
-That's more reliable than checking BTF_KIND_TAG for sure. BTF_KIND_TAG
-comes from kernel UAPI headers, it doesn't directly correlate with
-libbpf version, unless you make sure that you only use UAPI headers
-that libbpf uses for its own build.
+1. Make the copy of task comm always safe no matter what the task
+comm size is. For example,
 
-But then, if you use pahole in the mode that dynamically links against
-libbpf, then this whole LIBBPF_MAJOR_VERSION business is bogus,
-because it only checks what version of libbpf pahole was compiled
-against, not which libbpf version will it dynamically link against.
+  Unsafe                 Safe
+  strlcpy                strscpy_pad
+  strncpy                strscpy_pad
+  bpf_probe_read_kernel  bpf_probe_read_kernel_str
+                         bpf_core_read_str
+                         bpf_get_current_comm
+                         perf_event__prepare_comm
+                         prctl(2)
 
+2. Replace the old hard-coded 16 with a new macro TASK_COMM_LEN_16 to
+make it more grepable.
 
-Regardless, it's probably a good idea to add libbpf version APIs that
-could be queried at runtime, e.g., int libbpf_major_version(), int
-libbpf_minor_version(), etc. That would be usable even with shared
-library.
+3. Extend the task comm size to 24 for CONFIG_BASE_FULL case and keep it
+as 16 for CONFIG_BASE_SMALL.
 
->
-> Thanks,
-> Ian
->
-> > >
-> > > Thanks,
-> > > Ian
-> > >
-> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/bpf
-> > > > >
-> > > > > Thanks,
-> > > > > Ian
-> > > > >
-> > > > > > >         struct btf *btf = encoder->btf;
-> > > > > > >         const struct btf_type *t;
-> > > > > > >         int32_t id;
-> > > > > > > @@ -663,6 +666,10 @@ static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *val
-> > > > > > >         }
-> > > > > > >
-> > > > > > >         return id;
-> > > > > > > +#else
-> > > > > > > +        fprintf(stderr, "error: unable to encode BTF_KIND_TAG due to old libbtf\n");
-> > > > > > > +        return -ENOTSUP;
-> > > > > > > +#endif
-> > > > > > >  }
-> > > > > > >
-> > > > > > >  /*
-> > > > > > > diff --git a/lib/bpf b/lib/bpf
-> > > > > > > index 980777c..986962f 160000
-> > > > > > > --- a/lib/bpf
-> > > > > > > +++ b/lib/bpf
-> > > > > > > @@ -1 +1 @@
-> > > > > > > -Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
-> > > > > > > +Subproject commit 986962fade5dfa89c2890f3854eb040d2a64ab38
-> > > > > > > --
-> > > > > > > 2.33.0.1079.g6e70778dc9-goog
-> > > > > > >
+4. Print a warning if the kthread comm is still truncated.
+
+Changes since v4:
+- introduce TASK_COMM_LEN_16 and TASK_COMM_LEN_24 per Steven
+- replace hard-coded 16 with TASK_COMM_LEN_16 per Kees
+- use strscpy_pad() instead of strlcpy()/strncpy() per Kees
+- make perf test adopt to task comm size change per Arnaldo and Mathieu
+- fix warning reported by kernel test robot
+
+Changes since v3:
+- fixes -Wstringop-truncation warning reported by kernel test robot
+
+Changes since v2:
+- avoid change UAPI code per Kees
+- remove the description of out of tree code from commit log per Peter
+
+Changes since v1:
+- extend task comm to 24bytes, per Petr
+- improve the warning per Petr
+- make the checkpatch warning a separate patch
+
+Yafang Shao (15):
+  fs/exec: make __set_task_comm always set a nul ternimated string
+  fs/exec: make __get_task_comm always get a nul terminated string
+  sched.h: introduce TASK_COMM_LEN_16
+  cn_proc: make connector comm always nul ternimated
+  drivers/infiniband: make setup_ctxt always get a nul terminated task
+    comm
+  elfcore: make prpsinfo always get a nul terminated task comm
+  samples/bpf/kern: use TASK_COMM_LEN instead of hard-coded 16
+  samples/bpf/user: use TASK_COMM_LEN_16 instead of hard-coded 16
+  tools/include: introduce TASK_COMM_LEN_16
+  tools/lib/perf: use TASK_COMM_LEN_16 instead of hard-coded 16
+  tools/bpf/bpftool: use TASK_COMM_LEN_16 instead of hard-coded 16
+  tools/perf/test: make perf test adopt to task comm size change
+  tools/testing/selftests/bpf: use TASK_COMM_LEN_16 instead of
+    hard-coded 16
+  sched.h: extend task comm from 16 to 24 for CONFIG_BASE_FULL
+  kernel/kthread: show a warning if kthread's comm is truncated
+
+ drivers/connector/cn_proc.c                   |  5 +++-
+ drivers/infiniband/hw/qib/qib.h               |  4 +--
+ drivers/infiniband/hw/qib/qib_file_ops.c      |  2 +-
+ fs/binfmt_elf.c                               |  2 +-
+ fs/exec.c                                     |  5 ++--
+ include/linux/elfcore-compat.h                |  3 ++-
+ include/linux/elfcore.h                       |  4 +--
+ include/linux/sched.h                         | 11 +++++++-
+ include/uapi/linux/cn_proc.h                  |  7 ++++-
+ kernel/kthread.c                              |  7 ++++-
+ samples/bpf/offwaketime_kern.c                | 10 +++----
+ samples/bpf/offwaketime_user.c                |  6 ++---
+ samples/bpf/test_overhead_kprobe_kern.c       | 11 ++++----
+ samples/bpf/test_overhead_tp_kern.c           |  5 ++--
+ samples/bpf/tracex2_kern.c                    |  3 ++-
+ samples/bpf/tracex2_user.c                    |  7 ++---
+ tools/bpf/bpftool/Makefile                    |  1 +
+ tools/bpf/bpftool/main.h                      |  3 ++-
+ tools/bpf/bpftool/skeleton/pid_iter.bpf.c     |  4 +--
+ tools/bpf/bpftool/skeleton/pid_iter.h         |  4 ++-
+ tools/include/linux/sched/task.h              |  3 +++
+ tools/lib/perf/include/perf/event.h           |  5 ++--
+ tools/perf/tests/evsel-tp-sched.c             | 26 ++++++++++++++-----
+ tools/testing/selftests/bpf/Makefile          |  2 +-
+ .../selftests/bpf/prog_tests/ringbuf.c        |  3 ++-
+ .../selftests/bpf/prog_tests/ringbuf_multi.c  |  3 ++-
+ .../bpf/prog_tests/sk_storage_tracing.c       |  3 ++-
+ .../selftests/bpf/prog_tests/test_overhead.c  |  3 ++-
+ .../bpf/prog_tests/trampoline_count.c         |  3 ++-
+ tools/testing/selftests/bpf/progs/profiler.h  |  7 ++---
+ .../selftests/bpf/progs/profiler.inc.h        |  8 +++---
+ tools/testing/selftests/bpf/progs/pyperf.h    |  4 +--
+ .../testing/selftests/bpf/progs/strobemeta.h  |  6 ++---
+ .../bpf/progs/test_core_reloc_kernel.c        |  3 ++-
+ .../selftests/bpf/progs/test_ringbuf.c        |  3 ++-
+ .../selftests/bpf/progs/test_ringbuf_multi.c  |  3 ++-
+ .../bpf/progs/test_sk_storage_tracing.c       |  5 ++--
+ .../selftests/bpf/progs/test_skb_helpers.c    |  5 ++--
+ .../selftests/bpf/progs/test_stacktrace_map.c |  5 ++--
+ .../selftests/bpf/progs/test_tracepoint.c     |  5 ++--
+ 40 files changed, 135 insertions(+), 74 deletions(-)
+
+-- 
+2.17.1
+
