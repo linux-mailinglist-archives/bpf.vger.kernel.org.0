@@ -2,185 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E737436378
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 15:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2554365B9
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 17:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhJUNzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 09:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        id S231331AbhJUPSV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 11:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbhJUNze (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 09:55:34 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20174C061348
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 06:53:19 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so591217pjb.5
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 06:53:19 -0700 (PDT)
+        with ESMTP id S232244AbhJUPSP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:18:15 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBDAC0613B9
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 08:15:59 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso31573wmd.3
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 08:15:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dXfzwl5SrdfYLTNic5B7twESFB4MzvClROMLtrfTNd4=;
-        b=FSmPX3HIz24FtpZbgrQ/h9lAUMOBHZ1Q4d6zI2UpIA2W0lSXFt8l6x6Br1eUTfW34m
-         r6fs7B6j6KMGlc62MTE00rUjXwaHJuVyCX4VWNpFvPrs/h16g3GiJ6a/tI22tufb4UH2
-         rqtgQ3nenkUqBvxRBvkX9R/wKWoa/5OibFo+aX/fPcx/Hq/9Dioy7uxf2owlLUxOC+q6
-         xvJsFEEY1O+UMSFwxGTobCb5WAAePwFU9Bn9Pixhc95wXOd+35Rm39EXC85Di9bhH2Gh
-         oOb7ZRb0Lg/Wf9mYng6wWf9MeoGUzPAMqjivTuBXEV+95Vt3firts5qArI2w1RSlVXif
-         veSA==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7m1Wk3lLuUTxXPaWg5aaAofsPODvH9dK4PSjVqp0T8Q=;
+        b=v+/RR6sK6h0A3BAfp9+EAsoLcsj9Asy1xOUPdOn2tD4ssHxSDTQFcw94DUXja2iXWm
+         9a/5Fphtf4bp391KQEeUEb58fkiWuCRzdLDUs65vbMxWjMYf6fLw1Fbur3oELmz/HLnC
+         WIOT43tGE+wkSOwnpY3pZKahZEST1kvVp0KUk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dXfzwl5SrdfYLTNic5B7twESFB4MzvClROMLtrfTNd4=;
-        b=OkRfHJ9bNuOhGTCD4bXfRILWggtm+33FFd326v+IvImS9EEj/Vy3kAnKGb7gnQTMB8
-         FSGNtFEWmmv+flYzYRw9ZGnNIPQGs+28SfoEMpmMdT+9CnlLYZcw4h+fOKNs+JZZxomf
-         FJXX1yXMVtgCAllqseI9Nnt0Y1+K+Kt2+vujWK7vmMx5aVc9hwpL7vRjd+vezS899MC6
-         mYY/qTZQr2tActUOxsNmxWtxWIcAJTZlpWb0h5VBRaAz5FvyrTRvOjgTdXCX2PN3wzaG
-         we1WLjeOQmbEmhKMzS8bGgYKv8qbWv9bF/ugww3MMU++S2Vyt7zYrG8+wEAA2UoupPkd
-         7/pQ==
-X-Gm-Message-State: AOAM532L7HkGgZRt9ZoB0jhmqkKOfoTyaErJ89j49cPR2H5sv08+08/W
-        EoAlqRYvBrq7Br7fW/W33os=
-X-Google-Smtp-Source: ABdhPJy+ADEnPK0qYidEjaTVdnHbkka4EmxBMMGyjA4clivj4rTnQG19TqMz/xDVL+jWDvrKkcDeWw==
-X-Received: by 2002:a17:90a:c70d:: with SMTP id o13mr6846341pjt.143.1634824398616;
-        Thu, 21 Oct 2021 06:53:18 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.114])
-        by smtp.gmail.com with ESMTPSA id p16sm7624150pfh.97.2021.10.21.06.53.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 06:53:18 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/2] libbpf: Add btf__type_cnt() and
- btf__raw_data() APIs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        bh=7m1Wk3lLuUTxXPaWg5aaAofsPODvH9dK4PSjVqp0T8Q=;
+        b=vIzr/4LwWPsQIe3A5BUcbdWsG0qpmBRxP9VXpF99L1DwmSzrmOwEB1kminehMPO4fg
+         PD82YQJcrXMsrUTui6NpL3x7NoRf8EMOG+/PQDiBV63PSi9kYAvWaSphk1GwEFjqfGec
+         2UNeovsIa+AyXRZSURE2RFi0322J65GuMfTfCsGNLsmb4FAGhGnP2D23Y9a9lrr4o15v
+         IG30XHAFZjNG4raIxzy2DOY6M1nQILvrsijZAghIjptFvfvehBySGcZDC5fYhLybJGRA
+         nLwAm1pfUFaI1bFNFM2gfSLOHbkHFS+76Bf8wIK95kpd2xCdPitu17kVM+tQN58kWAnA
+         +q+w==
+X-Gm-Message-State: AOAM531xcaYWPq+QNF8TeWTc7HU2GsFg3KfBdwDXzPSpBVy2Cl9C938G
+        XLJunAgblDCOZLGrgz3lYPUe7t2OiHM=
+X-Google-Smtp-Source: ABdhPJwaAPH3llwbjh/cAbi0GYwtUt8sCw5ajvMT3h4TMAOjUB8W2KdxsKrw0C3LseN5K6mD0QvZ5A==
+X-Received: by 2002:a05:600c:414c:: with SMTP id h12mr7365998wmm.66.1634829357512;
+        Thu, 21 Oct 2021 08:15:57 -0700 (PDT)
+Received: from altair.lan (7.2.6.0.8.8.2.4.4.c.c.f.b.1.5.4.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:451b:fcc4:4288:627])
+        by smtp.googlemail.com with ESMTPSA id z1sm5098562wrt.94.2021.10.21.08.15.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 08:15:57 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>
-References: <20211009150029.1746383-1-hengqi.chen@gmail.com>
- <20211009150029.1746383-2-hengqi.chen@gmail.com>
- <CAEf4BzZyjoaRATpKHuYFFmZ1u5WnEh4nBdOOpSO+OZi7MH=cHg@mail.gmail.com>
- <fc764766-e4fd-dc0a-c042-5af92373a461@gmail.com>
- <CAEf4BzY9q1md3Q6Z6q5EJ=JEp9keq-cOa6S3jOoo8i+WRhJFxw@mail.gmail.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <adfe1bf4-fd2a-784a-ff6a-b91ddc44ca1c@gmail.com>
-Date:   Thu, 21 Oct 2021 21:53:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/3] Support RENAME_EXCHANGE on bpffs
+Date:   Thu, 21 Oct 2021 16:15:25 +0100
+Message-Id: <20211021151528.116818-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzY9q1md3Q6Z6q5EJ=JEp9keq-cOa6S3jOoo8i+WRhJFxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add support for renameat2(RENAME_EXCHANGE) on bpffs. This is useful
+for atomic upgrades of our sk_lookup control plane.
 
+* Create a temporary directory on bpffs
+* Migrate maps and pin them into temporary directory
+* Load new sk_lookup BPF, attach it and pin the link into temp dir
+* renameat2(temp dir, state dir, RENAME_EXCHANGE)
+* rmdir temp dir
 
-On 2021/10/21 7:14 AM, Andrii Nakryiko wrote:
-> On Wed, Oct 20, 2021 at 6:51 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->>
->>
->>
->> On 2021/10/20 1:48 AM, Andrii Nakryiko wrote:
->>> On Sat, Oct 9, 2021 at 8:01 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->>>>
->>>> Add btf__type_cnt() and btf__raw_data() APIs and deprecate
->>>> btf__get_nr_type() and btf__get_raw_data() since the old APIs
->>>> don't follow the libbpf naming convention for getters which
->>>> omit 'get' in the name.[0] btf__raw_data() is just an alias to
->>>
->>> nit: this ".[0]" looks out of place, please use it as a reference in a
->>> sentence, e.g.,:
->>>
->>> omit 'get' in the name (see [0]).
->>>
->>> So that it reads naturally and fits the overall commit message.
->>>
->>>
->>
->> Got it. Will do.
->>
->>>> the existing btf__get_raw_data(). btf__type_cnt() now returns
->>>> the number of all types of the BTF object including 'void'.
->>>>
->>>>   [0] Closes: https://github.com/libbpf/libbpf/issues/279
->>>>
->>>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
->>>> ---
->>>>  tools/lib/bpf/btf.c      | 36 ++++++++++++++++++++++--------------
->>>>  tools/lib/bpf/btf.h      |  4 ++++
->>>>  tools/lib/bpf/btf_dump.c |  8 ++++----
->>>>  tools/lib/bpf/libbpf.c   | 32 ++++++++++++++++----------------
->>>>  tools/lib/bpf/libbpf.map |  2 ++
->>>>  tools/lib/bpf/linker.c   | 28 ++++++++++++++--------------
->>>>  6 files changed, 62 insertions(+), 48 deletions(-)
->>>>
->>>
->>> [...]
->>>
->>>> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
->>>> index 864eb51753a1..49397a22d72b 100644
->>>> --- a/tools/lib/bpf/btf.h
->>>> +++ b/tools/lib/bpf/btf.h
->>>> @@ -131,7 +131,9 @@ LIBBPF_API __s32 btf__find_by_name(const struct btf *btf,
->>>>                                    const char *type_name);
->>>>  LIBBPF_API __s32 btf__find_by_name_kind(const struct btf *btf,
->>>>                                         const char *type_name, __u32 kind);
->>>> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__type_cnt() instead")
->>>
->>> it has to be scheduled to 0.7 to have a release with new API
->>> (btf__type_cnt) before we deprecate btf__get_nr_types(). It's probably
->>> worth mentioning in the deprecation message that btf__type_cnt()
->>> return is +1 from btf__get_nr_types(). Maybe something like:
->>>
->>
->> I am a little confused about this scheduling. You mentioned that
->> we can deprecate old API on the development version (0.6). See [0].
-> 
-> If we add some new API and deprecate old API (but recommend to use new
-> API instead), we need to make sure that new API is there in at least
-> one released libbpf version. Only then we can mark old API as
-> deprecated in the next released libbpf version. In this case
-> btf__type_cnt() has to go into v0.6 and btf__get_nr_types() can be
-> deprecated in v0.7, not in v0.6.
-> 
-> Previous case in [0] was different, there was no new API we had to
-> wait for, so we could deprecate the old API immediately.
-> 
+Due to the sk_lookup semantics this means we can never end up in a
+situation where an upgrade breaks the existing control plane.
 
-Thanks. That's clear.
-Will do in next revision.
+v2:
+- Test exchanging a map and a directory (Alexei)
+- Use ASSERT macros (Andrii)
 
->>
->>
->>> LIBBPF_DEPRECATED_SINCE(0, 7, "use btf__type_cnt() instead; note that
->>> btf__get_nr_types() == btf__type_cnt() - 1")
->>>
->>
->> Will take this in v2.
->>
->>>>  LIBBPF_API __u32 btf__get_nr_types(const struct btf *btf);
->>>> +LIBBPF_API __u32 btf__type_cnt(const struct btf *btf);
->>>>  LIBBPF_API const struct btf *btf__base_btf(const struct btf *btf);
->>>>  LIBBPF_API const struct btf_type *btf__type_by_id(const struct btf *btf,
->>>>                                                   __u32 id);
->>>> @@ -144,7 +146,9 @@ LIBBPF_API int btf__resolve_type(const struct btf *btf, __u32 type_id);
->>>>  LIBBPF_API int btf__align_of(const struct btf *btf, __u32 id);
->>>>  LIBBPF_API int btf__fd(const struct btf *btf);
->>>>  LIBBPF_API void btf__set_fd(struct btf *btf, int fd);
->>>> +LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__raw_data() instead")
->>>
->>> same, 0.7+
->>>
->>>>  LIBBPF_API const void *btf__get_raw_data(const struct btf *btf, __u32 *size);
->>>> +LIBBPF_API const void *btf__raw_data(const struct btf *btf, __u32 *size);
->>>>  LIBBPF_API const char *btf__name_by_offset(const struct btf *btf, __u32 offset);
->>>>  LIBBPF_API const char *btf__str_by_offset(const struct btf *btf, __u32 offset);
->>>>  LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
->>>
->>> [...]
->>>
->>
->>   [0] https://lore.kernel.org/all/CAEf4BzZ_JB1VLAF0=7gu=2M0M735aXava=nPL8m8ewQWdS3m8g@mail.gmail.com/
+Lorenz Bauer (3):
+  libfs: support RENAME_EXCHANGE in simple_rename()
+  selftests: bpf: convert test_bpffs to ASSERT macros
+  selftests: bpf: test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
+
+ fs/libfs.c                                    |  6 +-
+ .../selftests/bpf/prog_tests/test_bpffs.c     | 85 ++++++++++++++++---
+ 2 files changed, 79 insertions(+), 12 deletions(-)
+
+-- 
+2.32.0
+
