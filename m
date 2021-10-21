@@ -2,142 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2507436B97
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 21:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A318436B9A
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 21:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhJUT6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 15:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhJUT6M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 15:58:12 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634F2C0613B9
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 12:55:55 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id d198-20020a1c1dcf000000b00322f53b9b89so691850wmd.0
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 12:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=XYIxYzcJhG46dfQP6KRsrSctXdlVV4n7ho/KEOgFs7I=;
-        b=gN3Ji9gdfyc8MKmJWDursDM0jko+iRPAbPEVU0YOhdBuiqhp1qVkbCHGhWnm1QeucD
-         TTY7A2h4n7exEYm1oGgCi06rAeMDDQkD1eRynV8L/BwbsY2tRukQjAHWEyYJkEXf/sXL
-         w+NjVd0eJMbSFxJyoE7akv0fsP+QrLzTjlHJb3dmz71CU4txKx4hUiiTGc3ejlVK5XKT
-         I77jUoNIOipeuioU9D3jAMR43vKG8kaPjOqaXERuathi9zlcoEQMx6uKzrp3WQ76AVD9
-         fC9iebtfoWj1GPM5L03E8HTPM+xlnfJguNRX0bK22OY7qgXC/uI2vAo8vy3QmNZrYdLc
-         3uUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=XYIxYzcJhG46dfQP6KRsrSctXdlVV4n7ho/KEOgFs7I=;
-        b=GsT4GLSdYQcn7wEaMUhDQ4v/nlOHovoC4nkh5kC/Ffh5MxmH2rJcpLIUZz0WchbU3P
-         2+QU/di/lEPPWHWCnj8b3XuKApdZJ8blLwi6TiJOxCruDDjlQ7ri7DpZSinexH/D9eRF
-         ZRACFhqgCvMI1F7yr/3WnlPMtY1gdDrgpU6f1/0mTUZ516gDFx9/x/gTSYavpOcqq/Il
-         XL6WbL0/C8zvDAshOyo9L38qAnm2qRZUZRZdQiKqdlssl057IdSX66us2fzIw3Zb2thP
-         VWPRlunL9TMC04pgfXoGQ7iZSMdncnz3VbQcPzJuodDdYUrEw1TSSkjqJZJFwT3TFA8s
-         dKcw==
-X-Gm-Message-State: AOAM533Fn9+9JqSnde07atSRE/uqVMaOXSKMqLY1+6iCTqAI+coUV+lg
-        r5WhUAoN9j20qVIzNcVrEviNYQ==
-X-Google-Smtp-Source: ABdhPJzm69MdfN1iaNvp5igcEeXW7V22oi0NRoWoiylgbRpLwsv0OjcHLKDgKCG5gio8j/avuV+53w==
-X-Received: by 2002:a05:600c:2212:: with SMTP id z18mr8690844wml.39.1634846153980;
-        Thu, 21 Oct 2021 12:55:53 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.65.74])
-        by smtp.gmail.com with ESMTPSA id p3sm5792839wrs.10.2021.10.21.12.55.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 12:55:53 -0700 (PDT)
-Message-ID: <2f2fd146-222a-ecdb-7fe1-d9f67f5ac1de@isovalent.com>
-Date:   Thu, 21 Oct 2021 20:55:52 +0100
+        id S231728AbhJUT6z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 15:58:55 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1594 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231579AbhJUT6w (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Oct 2021 15:58:52 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LJatZa028608
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 12:56:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=BP6LIiCCv0jfw5OL+AqNBC62jkKGn+r/qcJ9ImnHuZw=;
+ b=gr3p8dLgDlycIf/9dZAyXu2sIg8OmwNXyr+RIQJFX2af/y6J1bQKrdhKQzBOE/IOakxk
+ BmXbks9dGYjvirofHZbeSpXz7/ak+xi8DAqBYoIosWjjAyrWxn0hJDViYnYnRPH459vH
+ ZLZM4o6AhxMU0gvEX4xbK7GaSCZsWyYQaD4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bu90qbmvn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 12:56:35 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 21 Oct 2021 12:56:34 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id ED79815167FF; Thu, 21 Oct 2021 12:56:22 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/5] bpf: add support for BTF_KIND_DECL_TAG typedef
+Date:   Thu, 21 Oct 2021 12:56:22 -0700
+Message-ID: <20211021195622.4018339-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: KyNGo_rVApDtyhJiqjSItnW41gE5Vji-
+X-Proofpoint-ORIG-GUID: KyNGo_rVApDtyhJiqjSItnW41gE5Vji-
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH bpf-next v4 2/3] bpftool: conditionally append / to the
- progtype
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-References: <20211021165618.178352-1-sdf@google.com>
- <20211021165618.178352-3-sdf@google.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20211021165618.178352-3-sdf@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-21_05,2021-10-21_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
+ mlxlogscore=762 impostorscore=0 malwarescore=0 adultscore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110210101
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-10-21 09:56 UTC-0700 ~ Stanislav Fomichev <sdf@google.com>
-> Otherwise, attaching with bpftool doesn't work with strict section names.
-> 
-> Also, switch to libbpf strict mode to use the latest conventions
-> (note, I don't think we have any cli api guarantees?).
-> 
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  tools/bpf/bpftool/main.c | 4 ++++
->  tools/bpf/bpftool/prog.c | 9 +++++++--
->  2 files changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> index 02eaaf065f65..8223bac1e401 100644
-> --- a/tools/bpf/bpftool/main.c
-> +++ b/tools/bpf/bpftool/main.c
-> @@ -409,6 +409,10 @@ int main(int argc, char **argv)
->  	block_mount = false;
->  	bin_name = argv[0];
->  
-> +	ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-> +	if (ret)
-> +		p_err("failed to enable libbpf strict mode: %d", ret);
-> +
->  	hash_init(prog_table.table);
->  	hash_init(map_table.table);
->  	hash_init(link_table.table);
-> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> index 277d51c4c5d9..b04990588ccf 100644
-> --- a/tools/bpf/bpftool/prog.c
-> +++ b/tools/bpf/bpftool/prog.c
-> @@ -1420,8 +1420,13 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
->  			err = get_prog_type_by_name(type, &common_prog_type,
->  						    &expected_attach_type);
->  			free(type);
-> -			if (err < 0)
-> -				goto err_free_reuse_maps;
+Latest upstream llvm-project added support for btf_decl_tag attributes
+for typedef declarations ([1], [2]). Similar to other btf_decl_tag cases,
+func/func_param/global_var/struct/union/field, btf_decl_tag with typedef
+declaration can carry information from kernel source to clang compiler
+and then to dwarf/BTF, for bpf verification or other use cases.
 
-Thanks a lot for the change! Can you please test it for e.g. an XDP
-program? You should see that "bpftool prog load prog.o <path> type xdp"
-prints a debug message from libbpf about the first attempt (above)
-failing, before the second attempt (below) succeeds.
+This patch set added kernel support for BTF_KIND_DECL_TAG to typedef
+declaration (Patch 1). Additional selftests are added to cover
+unit testing, dedup, or bpf program usage of btf_decl_tag with typedef.
+(Patches 2, 3 and 4). The btf documentation is updated to include
+BTF_KIND_DECL_TAG typedef (Patch 5).
 
-We need to get rid of this message. I think it should be easy, because
-we explicitly "ask" for that message in get_prog_type_by_name(), in the
-same file, if it fails to load in the first place.
+  [1] https://reviews.llvm.org/D110127
+  [2] https://reviews.llvm.org/D112259
 
-Could you please update get_prog_type_by_name() to take an additional
-switch as an argument, to tell if the debug-info should be retrieved
-(then first attempt here would skip it, second would keep it)?
-An alternative could be to move all the '/' and retries handling to that
-function, and I think it would end up in bpftool keeping support for the
-legacy object files with the former convention - but that would somewhat
-defeat the objectives of the strict mode, so maybe not the best option.
+Yonghong Song (5):
+  bpf: add BTF_KIND_DECL_TAG typedef support
+  selftests/bpf: add BTF_KIND_DECL_TAG typedef unit tests
+  selftests/bpf: test deduplication for BTF_KIND_DECL_TAG typedef
+  selftests/bpf: add BTF_KIND_DECL_TAG typedef example in tag.c
+  docs/bpf: update documentation for BTF_KIND_DECL_TAG typedef support
 
+ Documentation/bpf/btf.rst                    |  6 +-
+ kernel/bpf/btf.c                             |  4 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c | 83 ++++++++++++++++++--
+ tools/testing/selftests/bpf/progs/tag.c      |  9 ++-
+ 4 files changed, 89 insertions(+), 13 deletions(-)
 
-> +			if (err < 0) {
-
-We could run the second attempt only on libbpf returning -ESRCH, maybe?
-
-> +				err = get_prog_type_by_name(*argv, &common_prog_type,
-> +							    &expected_attach_type);
-> +				if (err < 0)
-> +
-> +					goto err_free_reuse_maps;
-> +			}
->  
->  			NEXT_ARG();
->  		} else if (is_prefix(*argv, "map")) {
-> 
+--=20
+2.30.2
 
