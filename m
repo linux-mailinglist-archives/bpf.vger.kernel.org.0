@@ -2,212 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC35435696
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 01:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6934356A5
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 02:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhJTXs2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 19:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
+        id S231233AbhJUAHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 20:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJTXs2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 19:48:28 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C886C06161C
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 16:46:13 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id l7so10610534iln.8
-        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 16:46:13 -0700 (PDT)
+        with ESMTP id S229702AbhJUAHV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:07:21 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C88C06161C;
+        Wed, 20 Oct 2021 17:05:06 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so3589482pjb.3;
+        Wed, 20 Oct 2021 17:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t+AOlq7tTH4ZJ0ZjRU+29zYs3qA+tbQ0ordbZjqARaI=;
-        b=i9FQ++LIwpS3gW4c46qGPBxXI/lF4j2ud5nSlJ41kz/Me2zcNtHg2OXdrZzNQfIWT+
-         +ijJWOHv/XYpo4E6iDHU+vlVmMZbmuLjXEpkgK4/LM/Vaptw7xPjApIk4l4C+Rj001uV
-         juaeokruqt50Y63PKHVq29cv6HXoGofJiaxlDo2e9QmkyAT4x1CsQ/xIey+STXjH0+cr
-         Cf8e4um+ZcTUEylrBuWLtTHy4YHjYwByWog2VDmSpvTyzuJZcqnt4hlrtvFNyH11veFc
-         XcuFblnQUd/kB6zkg0hMCHUjAkTQNNUraQSp0K7Ecbxcn9RAG6HE7dWg8HRQ4DQQN3bb
-         rZgw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DJt7lhYi4fhHKDW9Hf2SKDLfs1y2zkAh3j1RrAI1z/k=;
+        b=jOGkmaT61ymJEiZJfnoS80k6E14isokbplin6CC1rCz+tYd+r6Nu+/kQS8o/3Btgj2
+         tx8Dk6IfZtqr44B+tI3bJnddF8HzVSrrIGUAnnVLxdeh9piF4vE6tqbMVtMgrtXYGLVN
+         ypPnfx+dMMkumoWAuRjFG0rSy1ftqC66jDMztjiGJH50ldB8XluYnclvHZMxGYAt5zBM
+         1FcdguLDywv+BT7XPLdnwmaNU19yb9+QRYnwH6fMEBCGP/thSeTWs510+G9J2JxvLFCU
+         4GxlNpkgp3Fgm9rbcdSo5Ht6bi7juW1M1sfOnQ14KqV1AOBaKjOohLux82b5iF4ziOtb
+         +eFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t+AOlq7tTH4ZJ0ZjRU+29zYs3qA+tbQ0ordbZjqARaI=;
-        b=iUWZ7E3hSjq9kwdbLYsA+QHxNjyNSZ4t2bqG770WIC0WOCpcT4WTIOJqCaZUea8x8y
-         P1yxEwvOAgoWUE9KBDG8zUYYhBE+TvnBVXXIR9Kr4StzSNGTe3xvzJUqj8Jb56qtou+C
-         L0sAkSGeKMdpfWOSWSkM0wbJ0lXZPUX9OhodcarHitd3It6sgZM9nBypmwXG+7tlxP25
-         f2m3dmUufbqfz+Yr/0Jzig3HNXgBbLe1PMsR7JabsJ/0+JxZPGkFLc/bhbNBpsf2QU5R
-         nvxwNt/TzYCVwHzSbfeCBDM2uQHMgzy4Thlb8xhKlKL3Pp9dnEs8815aWPa5Sxu9OGMy
-         TFOQ==
-X-Gm-Message-State: AOAM530yPoq6FGbGEuwZKboR11ENmnCRaMlBnywuCMpoUKSsKKqOdD1g
-        MxK1Ha+GNBg4WbFT3AxS4wgjRJjhZBMcmViJJNAFug==
-X-Google-Smtp-Source: ABdhPJwF/8IX7puoSnqQyu9ZjTC+ePyi9X3pOYVEbZ0pJFouVrSXrLy85m5jjfoXdJJPWRURN5BQAA2TJZjuy2rb1IM=
-X-Received: by 2002:a05:6e02:1708:: with SMTP id u8mr1342496ill.2.1634773572806;
- Wed, 20 Oct 2021 16:46:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DJt7lhYi4fhHKDW9Hf2SKDLfs1y2zkAh3j1RrAI1z/k=;
+        b=0FdP3rWW0qoeFQq257ZIzsy6XMlcRdBxN8zgWfF57IRWP/FVhuGygX3xeaBQKT+MAs
+         sRGwo47RVuMO3xmeTu5p/wsLiJ+Osh+36xTcLnRRShZIkvpFZjhns7aJ2HGlsaFnWVwL
+         s9H2Zo/jeej2Kij/Ix4NhQuU0h1j8sgNNysZS8LgdR7urCvOllUaBXa+p2SEEV1HPMbW
+         tDmVf/Um6LJ5a632mlO6zFp/4TfZqa2EgfIJjUWSRtpiNIRvF6Ra8IIIKxEL9miOXAou
+         Ua/XOi7y3mqZdYEVlEM05+O8Fuzb23bMR/Ho1zfY7lOssNmrJ3wH/LW6f8qvYsm2vFo2
+         nw0A==
+X-Gm-Message-State: AOAM530/2vFWkIpsO9GFu3te14viRu584tFk6/Fo215KA/KJifTua7TZ
+        RCLSchv+7UK6HD/sResvw8s=
+X-Google-Smtp-Source: ABdhPJxu+xSz00BD5P6rgkAQ/rJIhaGUs5hbEv+rs3HKhjh5+uesFxoFaQ779boP6QQrTdZgcRHb0A==
+X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr2334628pjb.39.1634774705888;
+        Wed, 20 Oct 2021 17:05:05 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8c95])
+        by smtp.gmail.com with ESMTPSA id b10sm3624707pfi.122.2021.10.20.17.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 17:05:05 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 17:05:02 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        daniel@iogearbox.net, bpf@vger.kernel.org, andrii@kernel.org
+Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
+Message-ID: <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105843.345016338@infradead.org>
+ <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20211014212049.1010192-1-irogers@google.com> <CAEf4BzYiG36y0XWVfjXti-qb=gOdGkhzB6R5Ny3kvUbTRyeHUA@mail.gmail.com>
- <CAP-5=fXLAp+9tKU1qS1fr+6ZSFiq=soyD+mr_FPPmi40P0imjw@mail.gmail.com>
- <CAEf4BzaZpfnmTZj4k+APhTheODb6_NbNvUdsPYH84ophCaU3cw@mail.gmail.com>
- <CAP-5=fUc3LtU0WYg-Py9Jf+9picaWHJdSw=sdOMA54uY3p1pdw@mail.gmail.com> <CAEf4BzaNwEkGJ9OFEPe7nH2G2yP3tzqRjXV8zLHhqk-76xK1QA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaNwEkGJ9OFEPe7nH2G2yP3tzqRjXV8zLHhqk-76xK1QA@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 20 Oct 2021 16:46:00 -0700
-Message-ID: <CAP-5=fVCJ+RCj9WBr6BGhweC6_F0tMpdUky=ZS-_FLKmF6+neg@mail.gmail.com>
-Subject: Re: [PATCH] btf_encoder: Make BTF_KIND_TAG conditional
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Petar Penkov <ppenkov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 3:30 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Oct 20, 2021 at 2:49 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Wed, Oct 20, 2021 at 2:27 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Oct 20, 2021 at 2:23 PM Ian Rogers <irogers@google.com> wrote:
-> > > >
-> > > > On Wed, Oct 20, 2021 at 2:12 PM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Oct 14, 2021 at 2:20 PM Ian Rogers <irogers@google.com> wrote:
-> > > > > >
-> > > > > > BTF_KIND_TAG is present in libbtf 6.0 but not libbtf in 5.15rc4. Make
-> > > > > > the code requiring it conditionally compiled in.
-> > > > > >
-> > > > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > > > ---
-> > > > > >  btf_encoder.c | 7 +++++++
-> > > > > >  lib/bpf       | 2 +-
-> > > > > >  2 files changed, 8 insertions(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > > > > index c341f95..400d64b 100644
-> > > > > > --- a/btf_encoder.c
-> > > > > > +++ b/btf_encoder.c
-> > > > > > @@ -141,7 +141,9 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
-> > > > > >         [BTF_KIND_VAR]          = "VAR",
-> > > > > >         [BTF_KIND_DATASEC]      = "DATASEC",
-> > > > > >         [BTF_KIND_FLOAT]        = "FLOAT",
-> > > > > > +#ifdef BTF_KIND_TAG /* BTF_KIND_TAG was added in 6.0 */
-> > > > > >         [BTF_KIND_TAG]          = "TAG",
-> > > > > > +#endif
-> > > > > >  };
-> > > > > >
-> > > > > >  static const char *btf__printable_name(const struct btf *btf, uint32_t offset)
-> > > > > > @@ -648,6 +650,7 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
-> > > > > >  static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *value, uint32_t type,
-> > > > > >                                     int component_idx)
-> > > > > >  {
-> > > > > > +#ifdef BTF_KIND_TAG /* Proxy for libbtf 6.0 */
-> > > > >
-> > > > > How will this work when libbpf is loaded dynamically? I believe pahole
-> > > > > has this mode as well.
-> > > >
-> > > > Well it won't have a compilation error because BTF_KIND_TAG isn't
-> > >
-> > > Great, you traded compile-time error for runtime linking error, I hope
-> > > that trade off makes sense to Arnaldo.
-> > >
-> > > > undefined :-) Tbh, I'm not sure but it seems that you'd be limited to
-> > > > features in the version of libbpf you compiled against.
-> > >
-> > > I've been consistently advocating for statically linking against
-> > > libbpf exactly to control what APIs and features are supported. But
-> > > people stubbornly want dynamic linking. I hope added complexity and
-> > > feature detection makes sense in practice for pahole.
-> > >
-> > > >
-> > > > > Also, note that libbpf now provides LIBBPF_MAJOR_VERSION and
-> > > > > LIBBPF_MINOR_VERSION macros, starting from 0.5, so no need for
-> > > > > guessing the version
-> > > >
-> > > > This was moved to a header file in:
-> > > > https://lore.kernel.org/bpf/CAADnVQJ2qd095mvj3z9u9BXQYCe2OTDn4=Gsu9nv1tjFHc2yqQ@mail.gmail.com/T/
-> > > >
-> > > > But that header doesn't appear any more:
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/tools/lib/bpf
-> > > >
-> > > > Is that a bug?
-> > >
-> > > You should be checking here:
-> > >
-> > > https://github.com/libbpf/libbpf/blob/master/src/libbpf_version.h
-> >
-> > We don't currently mirror this or bpf-next, but presumably the
->
-> Sorry, who's "we" and what's the use case we are talking about here?
-> pahole itself is using libbpf from Github mirror and that's what all
-> distros either are already doing or strongly encouraged to start
-> doing.
+On Wed, Oct 20, 2021 at 01:09:51PM +0200, Peter Zijlstra wrote:
+> > -	RETPOLINE_RCX_BPF_JIT();
+> > +	emit_indirect_jump(&prog, 1 /* rcx */, ip + (prog - start));
+> >  
+> >  	/* out: */
+> >  	*pprog = prog;
+> 
+> Alexei; could the above not be further improved with something like the
+> below?
 
-I work for Google. When I spoke with Arnaldo it seemed uncommon that a
-distro would be tracking bpf-next. There's a policy of a single
-library version within Google and a different version for pahole has
-some issues for us.
+sorry for delay. I was traveling last week
+and Daniel is on PTO this week.
 
-> > released version of libbpf is that in the Linus' tree [1]? There are
-> > some things like traceevent that are planned for removal. It seems
-> > like a bug that these trees are missing libbpf_version.h.
->
-> I misremembered versions, LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION
-> are available starting from v0.6 (unreleased yet), not v0.5. It's a
-> pretty recent change, so might have not made it to the tip tree. But
-> Github repo does have it, it's synced from bpf-next directly.
+> Despite several hours trying and Song helping, I can't seem to run
+> anything bpf, that stuff is cursed. So I've no idea if the below
+> actually works, but it seems reasonable.
 
-Ok, do you suggest something like:
+It's certainly delicate.
 
-#if defined(LIBBPF_MAJOR_VERSION)
-#if LIBBPF_MAJOR_VERSION > 5
-..
-#endif
-#endif
+> @@ -446,25 +440,8 @@ static void emit_bpf_tail_call_indirect(
+>  {
+>  	int tcc_off = -4 - round_up(stack_depth, 8);
+>  	u8 *prog = *pprog, *start = *pprog;
+> -	int pop_bytes = 0;
+> -	int off1 = 42;
+> -	int off2 = 31;
+> -	int off3 = 9;
+> -
+> -	/* count the additional bytes used for popping callee regs from stack
+> -	 * that need to be taken into account for each of the offsets that
+> -	 * are used for bailing out of the tail call
+> -	 */
+> -	pop_bytes = get_pop_bytes(callee_regs_used);
+> -	off1 += pop_bytes;
+> -	off2 += pop_bytes;
+> -	off3 += pop_bytes;
+> -
+> -	if (stack_depth) {
+> -		off1 += 7;
+> -		off2 += 7;
+> -		off3 += 7;
+> -	}
+> +	static int out_label = -1;
 
-rather than #ifdef BTF_KIND_TAG ? I couldn't see similar examples to
-cargo cult from, so there's a likelihood that this could become a
-pattern others copy.
+Interesting idea!
+All insn emits trying to do the right thing from the start.
+Here the logic assumes that there will be at least two passes over image.
+I think that is correct, but we never had such assumption.
+A comment is certainly must have.
+The race is possible too. Not sure whether READ_ONCE/WRITE_ONCE
+are really warranted though. Might be overkill.
 
-Thanks,
-Ian
-
-> >
-> > Thanks,
-> > Ian
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/bpf
-> > > >
-> > > > Thanks,
-> > > > Ian
-> > > >
-> > > > > >         struct btf *btf = encoder->btf;
-> > > > > >         const struct btf_type *t;
-> > > > > >         int32_t id;
-> > > > > > @@ -663,6 +666,10 @@ static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *val
-> > > > > >         }
-> > > > > >
-> > > > > >         return id;
-> > > > > > +#else
-> > > > > > +        fprintf(stderr, "error: unable to encode BTF_KIND_TAG due to old libbtf\n");
-> > > > > > +        return -ENOTSUP;
-> > > > > > +#endif
-> > > > > >  }
-> > > > > >
-> > > > > >  /*
-> > > > > > diff --git a/lib/bpf b/lib/bpf
-> > > > > > index 980777c..986962f 160000
-> > > > > > --- a/lib/bpf
-> > > > > > +++ b/lib/bpf
-> > > > > > @@ -1 +1 @@
-> > > > > > -Subproject commit 980777cc16db75d5628a537c892aefc2640bb242
-> > > > > > +Subproject commit 986962fade5dfa89c2890f3854eb040d2a64ab38
-> > > > > > --
-> > > > > > 2.33.0.1079.g6e70778dc9-goog
-> > > > > >
+Nice that Josh's test_verifier is passing, but it doesn't provide
+a ton of coverage. test_progs has a lot more.
+Once you have a git branch with all the changes I can give it a go.
+Also you can rely on our BPF CI.
+Just cc your patchset to bpf@vger and add [PATCH bpf-next] to a subject.
+In patchwork there will be "bpf/vmtest-bpf-next" link that
+builds kernel, selftests and runs everything.
+It's pretty much the same as selftests/bpf/vmtest.sh, but with the latest
+clang nightly and other deps like pahole.
