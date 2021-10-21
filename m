@@ -2,76 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6802C435822
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 03:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4113C435855
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 03:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhJUBYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 21:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        id S230357AbhJUBmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 21:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJUBYv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:24:51 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90771C06161C;
-        Wed, 20 Oct 2021 18:22:36 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id k26so4457607pfi.5;
-        Wed, 20 Oct 2021 18:22:36 -0700 (PDT)
+        with ESMTP id S229771AbhJUBmD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 21:42:03 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7D8C06161C;
+        Wed, 20 Oct 2021 18:39:48 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id f11so4466798pfc.12;
+        Wed, 20 Oct 2021 18:39:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GRLMpz20W+uWjSSx3JO2MLjsrcVU2TkHeUAxLEmJB58=;
-        b=R3SUN5E4mDf3iv5WJwjMQdSDM5mATS7L6fZHzSHe+IBMasEJ/Skwfld6uw08RE2dcm
-         Wn4Nl6EKnHup9cBEeoC0bugXURgBysYenN2rJIb4i+hN+i2wLLuATTGkWYVTfyO7ldhO
-         RHWs4d+LMbrAwKh2zhrmjsOMmN+i66Y436NntymrMczeRQLQntR4L69eWFXD2vowRncc
-         0WvweQzeqCMOqOY/lhpC0b8Y9Wx3KJMmjexUZJpolM1Cm5pkG0LTzQEKPGYwVxYfSnz2
-         xJibmt2ut51V0ez9w9pfNXrII/JzI8TvL1HDc81hvi6etz7eIv/NsEnVTqXWL986MobG
-         Y32w==
+        bh=6z6pmntkws3JIoVxcs0cRfziVLFxgFIK3h3B/uS8Qww=;
+        b=LBanFLyPzSy4d/c2YdGtHAuRS0rCwCC0fwxWZUD3uY72P4mIC5Q/Qd53om0M/xw+MR
+         mBP84YbFvYoIYs3eOI7/+MG2cDLF20jsTLJ5BUV7niuEhXPbRRAipzBF4ALxSAZvRzsJ
+         XGMyy30/96g5nxGuffdBMQfuhsgHhPI0TkQcp52sEJxHf1YMTRKV3oqKDg9EFXkVB0ar
+         b1ghk7OOxKIU2wSmxBI/uAWkTP8nTCwZYJwaB4hODPYmneeBkGk2VRWf+zL4DGARSqVS
+         ZwbJ9Q31a+pCWwFQ3WOUM9AW/9G/UhNcMtxB1nKHlcg/oU11Au0FY5jzphZAYqldyZaW
+         j+qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GRLMpz20W+uWjSSx3JO2MLjsrcVU2TkHeUAxLEmJB58=;
-        b=be5LHpFcA2muojTWsIQj/85U3RteHOipLgdG4hk9j65y5d3/u3ABd01JXS/DpmMzdc
-         SbD4tJbhXnlOJdD15J/o4u8CcmpK++jQPIT59kI0bZbgvF/zGlbLONfdAZHC63N3ZTKG
-         A2BrcTK+myA8Xt9fquIJjbtltvyEfy8pxf08qu+U3XvsTVhBi5lSG9HrTyiih9u/gI2A
-         oJ5UM2ipKp7QXOVH7z+V4E+vNqj5kMfVICwJGjTkOpCOcBk212BfeaRI8fVy8KgIJqDG
-         2jrr5fr6CZjscRtff8g8uaEkMxEnbJMdpc2ZOTBY4WpFFUmFWMljQQXwciSRd8E5zu2N
-         S/GA==
-X-Gm-Message-State: AOAM531gUoVzYSJ4+4EN4XLZe73NNOPVnOyioVlettGbFSJ+itT6+KNO
-        YpSV0plesqWfjOIRxB0O779CMDdedBdKUS3ebBI=
-X-Google-Smtp-Source: ABdhPJytfbK6iVZ4JeBA2xLyuOJ57QviX7QpjPKNosl6WEl0zzOnxGXZ9AlPU1P8coSQxpPKhaH86KdqqpGYMK1x7Oo=
-X-Received: by 2002:a65:4008:: with SMTP id f8mr2062629pgp.310.1634779356017;
- Wed, 20 Oct 2021 18:22:36 -0700 (PDT)
+        bh=6z6pmntkws3JIoVxcs0cRfziVLFxgFIK3h3B/uS8Qww=;
+        b=rAmHy+UVILfzITv+g8wrnJMGxTaSVkgniAfKfDlKIhr8CnwwBNZy/PwGD2q1PD4imv
+         kckAALe28rz92FzCPvqECIHTC6urOKuN8CeMxfsRvDnrwIPITYuv2i/3zwOJtYOM7hEu
+         mP+xile4Z/fzjYjCcQr/WfVXhjrGWz4/z2V5rexugWFjxaMegTCkkjqWlnKKdt1u65pv
+         kWRKPIMW/e6PqnlQLIHrlKq0h86phByPrruRo5LtMZOvNTHKDpkFDSOdV4R0x5/sVRQa
+         Z5Mr82ZfpPaMQoe80auhesb+YSYq/pT8eEDrJymyflpD4fqeCctSQ/J88tYO402QiUvO
+         LnxA==
+X-Gm-Message-State: AOAM531s60O/cZT9yu4jTZs+jvmWn+m/kKxOGH7mVDcpnGs4aZQ/dr/k
+        ldhwOkIAmHtsPOPFtfJBof1fWJO1h6bgriAie9A=
+X-Google-Smtp-Source: ABdhPJzKd1h2Y5XOg7sXlFNskYrVsISwIn9PO9O2R5DyAwwJEYWLWs7/Xr0+HOjNH9TCHjpzFZfYAiud2L7v5Xx5LhY=
+X-Received: by 2002:a63:4f57:: with SMTP id p23mr2124913pgl.376.1634780388063;
+ Wed, 20 Oct 2021 18:39:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211014142554.53120-1-lmb@cloudflare.com>
-In-Reply-To: <20211014142554.53120-1-lmb@cloudflare.com>
+References: <20211015112336.1973229-1-markpash@cloudflare.com> <20211015112336.1973229-2-markpash@cloudflare.com>
+In-Reply-To: <20211015112336.1973229-2-markpash@cloudflare.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 20 Oct 2021 18:22:24 -0700
-Message-ID: <CAADnVQJRUz81YeBqM-Kk4OM7FXAw07TNA_mOY1ZGAZ5MHpsE2A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Fix up bpf_jit_limit some more
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 20 Oct 2021 18:39:36 -0700
+Message-ID: <CAADnVQ+_MysCNnaPZd550wQaohtWTikmgnsysoZhnNpwPgv23A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add ifindex to bpf_sk_lookup
+To:     Mark Pashmfouroush <markpash@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Joe Stringer <joe@cilium.io>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 7:26 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Fri, Oct 15, 2021 at 4:24 AM Mark Pashmfouroush
+<markpash@cloudflare.com> wrote:
 >
-> Fix some inconsistencies of bpf_jit_limit on non-x86 platforms.
-> I've dropped exposing bpf_jit_current since we couldn't agree on
-> file modes, correct names, etc.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 6fc59d61937a..9bd3e8b8a659 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6262,6 +6262,7 @@ struct bpf_sk_lookup {
+>         __u32 local_ip4;        /* Network byte order */
+>         __u32 local_ip6[4];     /* Network byte order */
+>         __u32 local_port;       /* Host byte order */
+> +       __u32 ifindex;          /* Maps to skb->dev->ifindex */
 
-Applied to bpf tree. Seems more appropriate there.
+Is the comment accurate?
+The bpf_sk_lookup_kern ifindex is populated with inet_iif(skb).
+Which is skb->skb_iif at this point (I think).
+skb->dev->ifindex would typically mean destination or egress ifindex.
+In __sk_buff we have 'ifindex' and 'ingress_ifindex' to differentiate them.
+If it's really dev->ifindex than keeping 'ifindex' name here would be correct,
+but looking at how it's populated in inet/udp_lookup makes me wonder
+whether it should be named 'ingress_ifindex' instead and comment clarified.
+
+If/when you resubmit please trim cc list to a minimum.
