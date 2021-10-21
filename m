@@ -2,89 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0748E4361C5
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 14:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B348436243
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 15:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbhJUMjj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 08:39:39 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25307 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhJUMji (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:39:38 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HZn1n73CVzbglW;
-        Thu, 21 Oct 2021 20:32:45 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 20:37:20 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.98) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 21 Oct 2021 20:37:20 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <nathan@kernel.org>, <ndesaulniers@google.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>,
-        <pulehui@huawei.com>
-Subject: [PATCH bpf-next] samples: bpf: Suppress readelf stderr when probing for BTF support
-Date:   Thu, 21 Oct 2021 20:39:13 +0800
-Message-ID: <20211021123913.48833-1-pulehui@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S231574AbhJUNCJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 09:02:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231731AbhJUNBm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:01:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3650B61260;
+        Thu, 21 Oct 2021 12:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634821166;
+        bh=3BKdRD/8wFaWv8jGzgoDJH1uu5lNDvND1IBbsx3dRcA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FgbIaMGaOxi2cZ1w0PTH5koLwAKST6WAUHaSq9rjTS96x28Op/XN1yWKTA6sYmLHX
+         Ci0mHr/JbR3++YXGTRfTsi/I4fVfrk2DEYKkY2IkyEWiecIB3b5Yn5vTuAv7sFF/7k
+         LJfFs4fKiraplFiZLcXKMpuyStPhJyGVT0aVp4msPBVI7i5DwOrlYMxMvUcaw8q0F+
+         squkDg7QyVfvdPge8z9n4nTViSu60CTmegxTeJtnYpZVnb+qxB2UuwArQkZLZKcQxF
+         H6Gcb60m9tTwWrwY7T7iCsAyzyF6Q/bU9JdDfwmw8/5bychdWNDAyzGnDaP7gVI+2G
+         JfUZgYD7TDJbA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7796D410A1; Thu, 21 Oct 2021 09:59:20 -0300 (-03)
+Date:   Thu, 21 Oct 2021 09:59:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Petar Penkov <ppenkov@google.com>
+Subject: Re: [PATCH] btf_encoder: Make BTF_KIND_TAG conditional
+Message-ID: <YXFkKKcAHqJ1mQCC@kernel.org>
+References: <20211014212049.1010192-1-irogers@google.com>
+ <CAEf4BzYiG36y0XWVfjXti-qb=gOdGkhzB6R5Ny3kvUbTRyeHUA@mail.gmail.com>
+ <CAP-5=fXLAp+9tKU1qS1fr+6ZSFiq=soyD+mr_FPPmi40P0imjw@mail.gmail.com>
+ <CAEf4BzaZpfnmTZj4k+APhTheODb6_NbNvUdsPYH84ophCaU3cw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.98]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaZpfnmTZj4k+APhTheODb6_NbNvUdsPYH84ophCaU3cw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When compiling bpf samples, the following warning appears:
+Em Wed, Oct 20, 2021 at 02:27:37PM -0700, Andrii Nakryiko escreveu:
+> On Wed, Oct 20, 2021 at 2:23 PM Ian Rogers <irogers@google.com> wrote:
+> > On Wed, Oct 20, 2021 at 2:12 PM Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > On Thu, Oct 14, 2021 at 2:20 PM Ian Rogers <irogers@google.com> wrote:
+> > > > @@ -648,6 +650,7 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
+> > > >  static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *value, uint32_t type,
+> > > >                                     int component_idx)
+> > > >  {
+> > > > +#ifdef BTF_KIND_TAG /* Proxy for libbtf 6.0 */
 
-readelf: Error: Missing knowledge of 32-bit reloc types used in DWARF
-sections of machine number 247
-readelf: Warning: unable to apply unsupported reloc type 10 to section
-.debug_info
-readelf: Warning: unable to apply unsupported reloc type 1 to section
-.debug_info
-readelf: Warning: unable to apply unsupported reloc type 10 to section
-.debug_info
+> > > How will this work when libbpf is loaded dynamically? I believe pahole
+> > > has this mode as well.
 
-Same problem was mentioned in commit 2f0921262ba9 ("selftests/bpf:
-suppress readelf stderr when probing for BTF support"), let's use
-readelf that supports btf.
+> > Well it won't have a compilation error because BTF_KIND_TAG isn't
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- samples/bpf/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> Great, you traded compile-time error for runtime linking error, I hope
+> that trade off makes sense to Arnaldo.
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 2366242edb7c..a886dff1ba89 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -229,6 +229,7 @@ CLANG ?= clang
- OPT ?= opt
- LLVM_DIS ?= llvm-dis
- LLVM_OBJCOPY ?= llvm-objcopy
-+LLVM_READELF ?= llvm-readelf
- BTF_PAHOLE ?= pahole
+This situation is tricky to handle, yeah :-\
  
- # Detect that we're cross compiling and use the cross compiler
-@@ -252,7 +253,7 @@ BTF_PAHOLE_PROBE := $(shell $(BTF_PAHOLE) --help 2>&1 | grep BTF)
- BTF_OBJCOPY_PROBE := $(shell $(LLVM_OBJCOPY) --help 2>&1 | grep -i 'usage.*llvm')
- BTF_LLVM_PROBE := $(shell echo "int main() { return 0; }" | \
- 			  $(CLANG) -target bpf -O2 -g -c -x c - -o ./llvm_btf_verify.o; \
--			  readelf -S ./llvm_btf_verify.o | grep BTF; \
-+			  $(LLVM_READELF) -S ./llvm_btf_verify.o | grep BTF; \
- 			  /bin/rm -f ./llvm_btf_verify.o)
+> > undefined :-) Tbh, I'm not sure but it seems that you'd be limited to
+> > features in the version of libbpf you compiled against.
  
- BPF_EXTRA_CFLAGS += -fno-stack-protector
--- 
-2.17.1
+> I've been consistently advocating for statically linking against
+> libbpf exactly to control what APIs and features are supported. But
+> people stubbornly want dynamic linking. I hope added complexity and
+> feature detection makes sense in practice for pahole.
 
+It is a pain, but fedora also have this policy.
+ 
+> > > Also, note that libbpf now provides LIBBPF_MAJOR_VERSION and
+> > > LIBBPF_MINOR_VERSION macros, starting from 0.5, so no need for
+> > > guessing the version
+> >
+> > This was moved to a header file in:
+> > https://lore.kernel.org/bpf/CAADnVQJ2qd095mvj3z9u9BXQYCe2OTDn4=Gsu9nv1tjFHc2yqQ@mail.gmail.com/T/
+> >
+> > But that header doesn't appear any more:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/tools/lib/bpf
+> >
+> > Is that a bug?
+> 
+> You should be checking here:
+> 
+> https://github.com/libbpf/libbpf/blob/master/src/libbpf_version.h
+
+Ian, would be so kind as to follow up on this so that we get this
+situation improved?
+
+- Arnaldo
