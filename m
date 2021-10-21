@@ -2,98 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578EE436E72
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 01:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DA2436E7D
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 01:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhJUXol (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 19:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJUXok (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:44:40 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531A3C061764;
-        Thu, 21 Oct 2021 16:42:24 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so654400pje.0;
-        Thu, 21 Oct 2021 16:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vbHn1t4w6ii4qOpK6OASHe+IZF0/K00mQ93D+vSWtbo=;
-        b=lvGYdZSiEg4NpLU4xu1JfC695jBAeKaDJyQRvBLH7sXDxR1zs75zHAZO3eX6CtqDvi
-         8h0TPWtdf1wXybZ2M/sXA7d3uDPgamYDnTWPItuq+jnlhTzsmG5znGqndIZJfbd7bpPP
-         nDYBZdTtvQCvNB1+785SB9Y9lKDxklk28yPQd7DgLgmpCZLaZBxAM0fs4iRIQ6OFz+/n
-         1l6ppu9LBFTrVr/7/ApXbNRAEQ0/ESRpqEjIsGf1Qypbp4sNWze5gaom9bLMg991xqAQ
-         /wgc57su+aGZS/WT7xD8dpfLj0kaySi/d+1POyxclnbj75SNF/uyiudy1gk5RqMLIIOj
-         M0Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vbHn1t4w6ii4qOpK6OASHe+IZF0/K00mQ93D+vSWtbo=;
-        b=NhnljbeYtwQ5zeKjLGSbfuH+uC4dgz8GmQwUt8pU9rrS/oSmYfXBAGmfEwEUCjuT7m
-         EwLhBELkP/qVxbfQDwDzPE0+uLH+x2e4ct2jg4So4NnwTF4QGO04b9Z2O5VUqIufiP+G
-         ifYf1fqG6PujZSDWKw2zpHyPgyUs1lENsolaZDQrCj0r1bKtuOmLXokJfX8qorJwc+KS
-         S+sDhiWwF3BSBDuU2qhscbpTN7iF0QiuN3RAEXSdVvd9esEeeu5+T/W/MRojHbsfElEu
-         ifV36PCKMRqEZ47GoJb3WgzkRfZB/JRrDUTMbXeLbyjss6qpc9N5a6ZLJlN4xtMUcjYY
-         jvVg==
-X-Gm-Message-State: AOAM53148HGCFgB6YxynYrsRVB+jaNkXvfoZmMfv5CuON9ndMe9pRRrp
-        TTN6rbe0s/4po6E+nVxLNUOlosjDJ9hpE2U2p1E=
-X-Google-Smtp-Source: ABdhPJyN1hj8+a29/Eln8HV/7A9HIu2b2dNAOWP+8PY8PSa0FHgdibcOhjSMsnanb3r1CSC/5MNpSvbXo0JiT8/CLf4=
-X-Received: by 2002:a17:902:ea09:b0:13f:ac2:c5ae with SMTP id
- s9-20020a170902ea0900b0013f0ac2c5aemr8052334plg.3.1634859743484; Thu, 21 Oct
- 2021 16:42:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211020104442.021802560@infradead.org> <20211020105843.345016338@infradead.org>
- <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net> <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net> <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
- <20211021223719.GY174703@worktop.programming.kicks-ass.net>
- <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com> <20211021233852.gbkyl7wpunyyq4y5@treble>
-In-Reply-To: <20211021233852.gbkyl7wpunyyq4y5@treble>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 16:42:12 -0700
-Message-ID: <CAADnVQ+iMysKSKBGzx7Wa+ygpr9nTJbRo4eGYADLFDE4PmtjOQ@mail.gmail.com>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        id S230190AbhJUXta (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 19:49:30 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3764 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229512AbhJUXt3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Oct 2021 19:49:29 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LLvCI3029246;
+        Thu, 21 Oct 2021 19:47:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=7SONM1/3OJW4x6P2w6KM2U/fEnvBHOOPfoMrGRzQkZ0=;
+ b=EdLzuN+1TuYhGysXjYNBh4gY1CxhX3Q8G/Uz4I7fIGBGk8gZjgT5L8NwXuDjTGBqYfi+
+ qhqqi6cbEGVAJ4a/jks8E5WAD0QwhnQy9H4xFa//QCxw7Wo4svWrbkj1CYOo/J6TAk6Y
+ KY1SSnp5C88Pv4h2ZyTC4PdnUOMHiRhx1CUINpgdOQKRFw7lUHdkQLxTZHtMBKs+vPxX
+ 4L1JHJckXHkgu9iPvShBcpu0rigzG5T880Xd+trMPXXOMtBH2RSbvDJDfVB8ieKDBwis
+ 9Ty3ySjoh2PuSGtZ7oVJhW1bv68CD+xDNQbE+Hi9ZBJB0pu1YY+XZboTFiQi/qgtMCqs Bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bua9hau3n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Oct 2021 19:47:00 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19LNjat7007504;
+        Thu, 21 Oct 2021 19:47:00 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bua9hau39-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Oct 2021 19:47:00 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19LNgApv019471;
+        Thu, 21 Oct 2021 23:46:57 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bqpcakjec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 Oct 2021 23:46:57 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19LNks6Y52625868
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 23:46:54 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A7365204F;
+        Thu, 21 Oct 2021 23:46:54 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.12.156])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 14DD55204E;
+        Thu, 21 Oct 2021 23:46:54 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next 0/3] core_reloc fixes for s390
+Date:   Fri, 22 Oct 2021 01:46:50 +0200
+Message-Id: <20211021234653.643302-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: D8yEOBmaanyNP3M_F-vPA4XAu-z7O84v
+X-Proofpoint-ORIG-GUID: a_f4-LDWuGXJ9prS8o6wqpXCYxIphM6V
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-21_07,2021-10-21_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 impostorscore=0 spamscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110210117
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 4:38 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Oct 21, 2021 at 04:24:33PM -0700, Alexei Starovoitov wrote:
-> > On Thu, Oct 21, 2021 at 3:40 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Oct 21, 2021 at 11:03:33AM -0700, Alexei Starovoitov wrote:
-> > >
-> > > > > I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
-> > > > > lot more robust than the 64bit one and I couldn't figure out why the
-> > > > > difference.
-> > > >
-> > > > Interesting. Daniel will recognize that trick then :)
-> > >
-> > > > > Is there concurrency on the jit?
-> > > >
-> > > > The JIT of different progs can happen in parallel.
-> > >
-> > > In that case I don't think the patch is safe. I'll see if I can find a
-> > > variant that doesn't use static storage.
-> >
-> > The variable can only change from one fixed value to another fixed value.
-> > Different threads will compute the same value. So I think it's safe
-> > as-is. READ_ONCE/WRITE_ONCE won't hurt though.
->
-> But the size of the generated code differs based on the
-> emit_bpf_tail_call_indirect() args: 'callee_regs_used' and
-> 'stack_depth'.  So the fixed value can change.
+Hi,
 
-Ahh. Right. It's potentially a different offset for every prog.
-Let's put it into struct jit_context then.
+this series fixes test failures in core_reloc on s390.
+
+Patch 1 fixes a bug in byte order determination.
+Patch 2 fixes an endianness issue in bitfield relocation.
+Patch 3 fixes an endianness issue in test_core_reloc_mods.
+
+Best regards,
+Ilya
+
+Ilya Leoshkevich (3):
+  bpf: Use __BYTE_ORDER__ everywhere
+  libbpf: Fix relocating big-endian bitfields
+  selftests/bpf: Fix test_core_reloc_mods on big-endian machines
+
+ samples/seccomp/bpf-helper.h                       |  8 ++++----
+ tools/lib/bpf/bpf_core_read.h                      |  2 +-
+ tools/lib/bpf/btf.c                                |  4 ++--
+ tools/lib/bpf/btf_dump.c                           |  8 ++++----
+ tools/lib/bpf/libbpf.c                             |  4 ++--
+ tools/lib/bpf/linker.c                             | 12 ++++++------
+ tools/lib/bpf/relo_core.c                          | 13 +++++++++----
+ .../testing/selftests/bpf/prog_tests/btf_endian.c  |  6 +++---
+ .../selftests/bpf/progs/test_core_reloc_mods.c     |  9 +++++++++
+ tools/testing/selftests/bpf/test_sysctl.c          |  4 ++--
+ tools/testing/selftests/bpf/verifier/ctx_skb.c     | 14 +++++++-------
+ tools/testing/selftests/bpf/verifier/lwt.c         |  2 +-
+ .../bpf/verifier/perf_event_sample_period.c        |  6 +++---
+ tools/testing/selftests/seccomp/seccomp_bpf.c      |  6 +++---
+ 14 files changed, 56 insertions(+), 42 deletions(-)
+
+-- 
+2.31.1
+
