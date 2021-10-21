@@ -2,84 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57D44356CD
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 02:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CB34356CF
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 02:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhJUAQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 20:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        id S230103AbhJUARH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Oct 2021 20:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhJUAQT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:16:19 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D017C06161C;
-        Wed, 20 Oct 2021 17:14:04 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso1777579pjm.4;
-        Wed, 20 Oct 2021 17:14:04 -0700 (PDT)
+        with ESMTP id S229702AbhJUARH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:17:07 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14935C06161C
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 17:14:52 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id s64so19018937yba.11
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 17:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=92XZC3M6KtezTSTjAquE9ET2T2cgiRgUK/rsYPAsOKs=;
-        b=giEmQggiVBwWjApyjs+//wLJIthkVcgCZsRMBvwPtNHfk350CYKI+u/gtndsIBKUOo
-         zf6dAL/7Rd8p0uvcVhVgrpoV1H9ip0/DdFX+p/65Wmk2vOQymJ7EHsKWXGw6mtt2k8fw
-         OAbgtLodImVFX9tK3VJymlFHXIsb4HMNO88OBAc+B4MZ1GFF8tJasbIeRvIPG6hXS0lh
-         Yqud8PAfqGfydqvNI/LkDDevUQV9ZqlF8bHmVfXNaGZhjb8ubF651jEjlgSaSK6vAq5B
-         oS33i32yCcm9Rbop4Pwm94WtXQ2BHViCP5iXrIowiJkV/oYg3do+rVcbF5MccDhS8m51
-         w6JQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yTTZ706DRDbQHTtfSaCImH89gPPtcScXW1ihGhIthS8=;
+        b=T/j4jyj6gtpO7fftu2CJDTY0puag/CZSze1iXp8cOK9CSzaWb1VelDhlpg4Fgdhryv
+         pDdm9ZZ4HIxsvhzZNOfu1YMf0uhzok+p+NTk5SUk4wgJtFD3gMTmsdlqiWOISRn4ffEZ
+         6uB7AG7DGFyN0Kv7EyDtxFS76/yYwnx3ohJCpiISzSB00Ra9yIc8bdYkPW1rheMB5L69
+         +z7eBZ5qDRF6NbI900T7dCLsnPEQ2M0F/UHaIO0qqHgJaQ8+5xEdNockixq9uwglWBmS
+         IMGhttZMjNIBUVxExMljnuEqnwIyEnKQZPTPMYCwCGRowkkctGM9xSZU+XwNOJzFJhci
+         Q36Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=92XZC3M6KtezTSTjAquE9ET2T2cgiRgUK/rsYPAsOKs=;
-        b=cPhOzCmr6r9iLlMcvWfLZN09yxI8zKwqjShI4+307kkVU2Ex95PY+fkHi6+9yPxTzp
-         YCi1l4NszENN4gfn/H5TY5/ekhqMb4MUPGeovQTSyjfBHqXa/QHZF07PfNtr3RVsyq+I
-         iFlIoJVkoatrfcNLZ6daJh7jVk7V69jrKtUxvgd1nI7sWLhvvsTJySFzsZj/bOBXQB57
-         OIViJ2YRXI/Mr7Lqk7oinxcg06ExBHLTE6IjgtunVBnDDnrRCJJy7JCks7qU8WqnhtZa
-         xDloIvIEPNeHYbX4CT/WiBLdrMcwqNtgBxNtXOMQhWBxkPw3Emf4OyvUQx5eLsaVGqAW
-         S/Hw==
-X-Gm-Message-State: AOAM531iOPJFOlE5X3yhzj0QTfpZpMJlHNhPb59++axw35W7OdPQ2ODV
-        2yq4LuAsTI9NFSN0IZTj/6ZSOaHHBQs=
-X-Google-Smtp-Source: ABdhPJyS6Hj+9vNcLmCD36MOwKHX6qQ7YVPMrYBm3BkSvjwcENJ37lRCka6U2ihKrTofTHnazLn9Sw==
-X-Received: by 2002:a17:90a:8b89:: with SMTP id z9mr2431176pjn.89.1634775244107;
-        Wed, 20 Oct 2021 17:14:04 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8c95])
-        by smtp.gmail.com with ESMTPSA id e12sm3577119pfl.67.2021.10.20.17.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Oct 2021 17:14:03 -0700 (PDT)
-Date:   Wed, 20 Oct 2021 17:14:01 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yTTZ706DRDbQHTtfSaCImH89gPPtcScXW1ihGhIthS8=;
+        b=xdPzH66JqzhEF+EU6hmofgDhp9k7lWBowLn6HW4k5249X0hUUWlFf1wsPpWJEEwGJB
+         5bbqvbOvd0tH7bZAEgd5SDjWbK4lEcJkiNiMa1ipRSZRtNU0grQqp/oVmTgAj/9pjaiY
+         3SZokkFdbtXBN7vxJVhfJg+iv+bGZ/uUdPHZGl9ntRI3pe8lHncTQpr+pW2ml78hZW+j
+         ygNe9f3JV51RCGeV3Nc1ItoM6selK0Aa6GZ9JUq6Mux/67lXv8+cmABI1GrEotdSmKqO
+         a92qRuCNGogHOepHkDQ2ArTLMnx11Pm68txzmr2iN3JqkLw9dqA69riSShnBGMBpywVW
+         UzRQ==
+X-Gm-Message-State: AOAM531nIEZuHaLdWyLwisk+r0xi486BBSguzlhd4MxYU/BIrkQWaunx
+        N3kLYJvJ/aWck1rQCCJHhzZrD9cV9JFA1RlfF3ajOQVor5Joog==
+X-Google-Smtp-Source: ABdhPJzy5eedjRt1vz+a3s0sw0p8IRUGaAB1AFwAQYFQP6qMZudhfSxODvSs6O2jIr61hujEtQMsvypD7dIytupfzNk=
+X-Received: by 2002:a25:5606:: with SMTP id k6mr2353564ybb.51.1634775291288;
+ Wed, 20 Oct 2021 17:14:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211008000309.43274-1-andrii@kernel.org> <20211012041524.udytbr2xs5wid6x2@apollo.localdomain>
+In-Reply-To: <20211012041524.udytbr2xs5wid6x2@apollo.localdomain>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Oct 2021 17:14:40 -0700
+Message-ID: <CAEf4BzY43kSeayjxu_CsnGsy-hF_yfXac9e+caUiUAeJ8c-6sQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/10] libbpf: support custom .rodata.*/.data.* sections
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/2] Support RENAME_EXCHANGE on bpffs
-Message-ID: <20211021001401.p65y2yx75d42splb@ast-mbp.dhcp.thefacebook.com>
-References: <20211020082956.8359-1-lmb@cloudflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020082956.8359-1-lmb@cloudflare.com>
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 09:29:54AM +0100, Lorenz Bauer wrote:
-> Add support for renameat2(RENAME_EXCHANGE) on bpffs. This is useful
-> for atomic upgrades of our sk_lookup control plane.
-> 
-> * Create a temporary directory on bpffs
-> * Migrate maps and pin them into temporary directory
-> * Load new sk_lookup BPF, attach it and pin the link into temp dir
-> * renameat2(temp dir, state dir, RENAME_EXCHANGE)
-> * rmdir temp dir
-> 
-> Due to the sk_lookup semantics this means we can never end up in a
-> situation where an upgrade breaks the existing control plane.
+On Mon, Oct 11, 2021 at 9:15 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Fri, Oct 08, 2021 at 05:32:59AM IST, andrii.nakryiko@gmail.com wrote:
+> > From: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > [...]
+> > One interesting possibility that is now open by these changes is that it's
+> > possible to do:
+> >
+> >     bpf_trace_printk("My fmt %s", sizeof("My fmt %s"), "blah");
+> >
+> > and it will work as expected. I haven't updated libbpf-provided helpers in
+> > bpf_helpers.h for snprintf, seq_printf, and printk, because using
+> > `static const char ___fmt[] = fmt;` trick is still efficient and doesn't fill
+> > out the buffer at runtime (no copying), but it also enforces that format
+> > string is compile-time string literal:
+> >
+> >     const char *s = NULL;
+> >
+> >     bpf_printk("hi"); /* works */
+> >     bpf_printk(s); /* compilation error */
+> >
+> > By passing fmt directly to bpf_trace_printk() would actually compile
+> > bpf_printk(s) above with no warnings and will not work at runtime, which is
+> > worse user experience, IMO.
+> >
+>
+> You could try the following (_Static_assert would probably be preferable, but
+> IDK if libbpf can use it).
 
-That is a cool idea.
-The selftest doesn't exercise all of this logic.
-It's only testing that RENAME_EXCHANGE works on directories within bpffs.
-Do we need a test for other types of paths?
+Yeah, we definitely can use _Static_assert from BPF side (see
+progs/test_cls_redirect.c in selftests/bpf).
+
+>
+> #define IS_ARRAY(x) ({ sizeof(int[-__builtin_types_compatible_p(typeof(x), typeof(&*(x)))]); 1; })
+>
+
+Thanks! This seems to be working well to detect arrays and string
+literals. I'll keep it in my toolbox :) Ultimately I decided to not
+touch bpf_printk() for now, because of the BPF_NO_GLOBAL_DATA trick.
+If I go with direct "fmt" usage, I'll need to implementations of
+__bpf_printk(), which doesn't seem worth it right now. I might revisit
+it later, though.
+
+> In action: https://godbolt.org/z/4d4W61YPf
+>
+> --
+> Kartikeya
