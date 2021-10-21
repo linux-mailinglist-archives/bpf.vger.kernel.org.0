@@ -2,80 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7126436D76
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 00:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B438D436DAB
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 00:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhJUWbE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 18:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
+        id S231515AbhJUWoq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 18:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhJUWbD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 18:31:03 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AC6C061764
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 15:28:47 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g6so2726648ybb.3
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 15:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M8IC//svY/zZt+CDPSHT9rgntEyJlaw1x6VGCAf1xKk=;
-        b=E+OFCIaIyKzcJLfZHTkDuz5uAzhcPVFFWqTVdbrZYFIUUNbaIIW1YceGrtdX4CEWxx
-         GCmlvbDJnbtpjKfzhA0bokadjaahweiGtcQmMwLZHpECERDBE2Q7RKJzLXzZOSq7+SPe
-         S6IqxbqLUkoS4WPkoi0y6z+z26t5lFPFGVYCDsRlMrqPGLrOjTjwkjeE7eqRb+49JdPv
-         Q2D0A/LbhmBiYS9nsL8gUdXkEOVxIVwOAF3ZLH4+QpnCbAVHv9a2OkDTmiFT+s4RSrbQ
-         OZs3sIQ6IveoJwmeKeRzrSiY+B28YXtNByfF0R0caWdq8iMWXWDIiWCDPgaeQsHKZMQw
-         7/1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M8IC//svY/zZt+CDPSHT9rgntEyJlaw1x6VGCAf1xKk=;
-        b=FduVR9CeWwcD1ZWzZ3EjT9wpOnhtQHimsKKOQ5xN21RRDq7EULnnvzh+h5BeCIriMo
-         nxeg/jBZzo1Ey1GtddgCN5rDV5cbmTrgMdb023OnNVxQpOjHx1n75X7zY4YdnAnhX2ru
-         Z48ZzI8O2t/2HWhb2vcUSIhFOkJtMO7Po6fUzrHKGKX0mcHTIo35cw4WnqI+E24b+V2S
-         iMZ++lyvltLhGoRGEDbxxtnqmXRslnfTKTVDt8MbB7vq294Z4EI9OMHkz1k5ctwsH5Se
-         3/+AjQDF6YYWpQzwMkixiN5UndRVZ0CzJHTmegww82N2ELuAyQykir/KoD+f8UF9l2Qe
-         zYYA==
-X-Gm-Message-State: AOAM533SC0722/gYZvzGC9gSMm7xD3GMLc6AhYyRlFJrR+hurW2PSmug
-        fZdfUTh9UXrGFdYgzUsdC7V1tbtNsBLf22JyUBI=
-X-Google-Smtp-Source: ABdhPJxLw9tkrygHKyPDfwLSTyXACniaPI5XID6FfdULCaTTwE+cqTEqKaU9pC8Xlc6C/TvDDjRQZAwA4Dx4hprdXzY=
-X-Received: by 2002:a25:918e:: with SMTP id w14mr9328184ybl.225.1634855326232;
- Thu, 21 Oct 2021 15:28:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211021054623.3871933-1-andrii@kernel.org> <CAADnVQJY6xQqGhGhA2V2Np43tLsDRS67=WZsM1ZgKj_tA0Y-5A@mail.gmail.com>
-In-Reply-To: <CAADnVQJY6xQqGhGhA2V2Np43tLsDRS67=WZsM1ZgKj_tA0Y-5A@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 21 Oct 2021 15:28:35 -0700
-Message-ID: <CAEf4BzZVAf+eADCCvnf7bQ5H6A-mt0QwthvynFh4DwLvWNKFVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: fix BTF header parsing checks
+        with ESMTP id S229567AbhJUWoq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 18:44:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC944C061764;
+        Thu, 21 Oct 2021 15:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nBPXAxp8jG+dtVLA+/+js/8q7VpKJL9S5SfJVd3OHdA=; b=CLbUATGoOs/6ClJd2fwn+OILI9
+        hjv5AbGJ/3+NU6ugBWQ8/BfSLtEmfrFhID3S2SCRLoJjM13ZoQOgAKQmk0l+DJMDQIzCzCLqCEvME
+        4Z8eDfqnQIpmQxV3OJWDrujyPBgwSp0ZYMmu/LuWWWO3D7NAKw8nGSDO7GqAoJmGgRxgLsuSDdc8g
+        0Se17LIMGs5XlXDI3lbNg81zBlKdeU3dguH1/52py+83elFGH+jZgits82CI4hlS5pgfeRxq4RjdF
+        Gr2cMovnOT2ruZCm3pIekTNHJFiQMRRUYvu2TOoeZ0p9/P6mS+eL+SlDIJoxzZ+8HfS/QLzl5gFRj
+        sWyIQJ3Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdggc-00DYya-FP; Thu, 21 Oct 2021 22:38:00 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7E2F79812EB; Fri, 22 Oct 2021 00:37:19 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 00:37:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Evgeny Vereshchagin <evvers@ya.ru>
-Content-Type: text/plain; charset="UTF-8"
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
+Message-ID: <20211021223719.GY174703@worktop.programming.kicks-ass.net>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105843.345016338@infradead.org>
+ <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
+ <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
+ <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
+ <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 3:16 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Oct 20, 2021 at 10:46 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Original code assumed fixed and correct BTF header length. That's not
-> > always the case, though, so fix this bug with a proper additional check.
-> > And use actual header length instead of sizeof(struct btf_header) in
-> > sanity checks.
-> >
-> > Reported-by: Evgeny Vereshchagin <evvers@ya.ru>
-> > Fixes: a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
->
-> there is no such commit sha.
+On Thu, Oct 21, 2021 at 11:03:33AM -0700, Alexei Starovoitov wrote:
 
-Oops, seems like I lost the first digit, it should be:
+> > I nicked it from emit_bpf_tail_call() in the 32bit jit :-) It seemed a
+> > lot more robust than the 64bit one and I couldn't figure out why the
+> > difference.
+> 
+> Interesting. Daniel will recognize that trick then :)
 
-8a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
+> > Is there concurrency on the jit?
+> 
+> The JIT of different progs can happen in parallel.
+
+In that case I don't think the patch is safe. I'll see if I can find a
+variant that doesn't use static storage.
