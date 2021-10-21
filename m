@@ -2,99 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F680436075
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 13:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD9C43617B
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 14:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhJULoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 07:44:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55825 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230372AbhJULoJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 Oct 2021 07:44:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634816513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=srAxXppIvHz+myMAl+rb3OMXLAjwG2sT2dL0Sifr8SY=;
-        b=Ml8QgT+qYdLA+R3BA2kYMTfFaMksbXnT1bZRAL+QxEgw/H2Ap3yA1pk9qDmv75PI1SjFXW
-        TlMkD+b0I1evLxaxgfL7A7TOLELIZioJ2zfMPtTXuhYDZtsio83rs0DJK+JkDKPzZRCCZ9
-        MSnyDgb2tHmITvcLwyr3jmoArS0Asec=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-CeHn1C9CPTSfY7JNuYP6vg-1; Thu, 21 Oct 2021 07:41:52 -0400
-X-MC-Unique: CeHn1C9CPTSfY7JNuYP6vg-1
-Received: by mail-ed1-f71.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso36212edf.7
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 04:41:52 -0700 (PDT)
+        id S231424AbhJUMW1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 08:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231659AbhJUMW0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:22:26 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71941C061760
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 05:20:10 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id m20so638732iol.4
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 05:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=G2Jq8ABcZaKAiy06d3oRm5z7XXaT0OFvg3EWPt/6AmM=;
+        b=M5Ya1N0dCbQJLcwtpVEPTz6Dw3mxiUGnLonLp8ALVmrUobmbUbdal8KzCPO079nop4
+         p42L4tLfntonejdleCvs97XDS5IVoKgzp10GBTnOE+0hFNiwDJeci1pMOTZCr0HZ4LCs
+         XErQkcbDRY7/gjsFJOu9d9FikMoNmRF0L3XYgqbC2sLzCsGN4H533tIUaUX5bKkz+vMN
+         12ZwbbnL1+OWKirejA6vP0lqZQR3aZnltK88wcgWY1wY8NFWNCTlsFgfREmQgCZJtA0K
+         ewWdMpuMgGD6Y+f7OXOnXib2+gq1S+OBarah4nx/YddL9i5eynDBsggViC04Mi04buQR
+         CJQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=srAxXppIvHz+myMAl+rb3OMXLAjwG2sT2dL0Sifr8SY=;
-        b=o36hmjZmDLfnj+yE49lu/buF8XaBG5CYJ2zKBrjA+2O/gpLf8Fho/XKYPx0sqh+jth
-         zDDuDGdI7/Zl9E6kT06gOJKR01YlrlBsmqiODDOQU1e9K03KbCmgTQ3uTkIslPp+5jAa
-         o7eNIj4726rz2XcoVTwlB40rbtj6x1qUGfCkdyAcrLiRl1dnImTuePiJSbINaw2MkFIM
-         gRoK8bSXeeV354aLNJRyKga0ba5mZKY576gFwitaXm7u10TEUpmD/87MZXUJRJQTpxc7
-         71w7WRDnhxSGyy5s1f7S9ADvB1tGiXOMoQ6K9T0LU7kVe44GpmuWBKtejY9YxP5putiT
-         Hpng==
-X-Gm-Message-State: AOAM530gpC7s0/6E+kBrce4u9b0q+pAteqHK2X90uNRcqZsnE5CFdl+T
-        UgmtT7mXqDqdIjzqNs0OV09bRSFq137PrOIEoPx2hoYz6xR17koEGwxM1tE5IycHjSA/yzPRV2h
-        SUUWEFWIHSPae
-X-Received: by 2002:a05:6402:50d4:: with SMTP id h20mr7009037edb.112.1634816511345;
-        Thu, 21 Oct 2021 04:41:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNkiRG6MQhchj2BPeZhgF7KMFN9UW11wQbBPpenEdGJRKXrqcz/xS8eCT3E+oZ38nmMtm6RQ==
-X-Received: by 2002:a05:6402:50d4:: with SMTP id h20mr7009009edb.112.1634816511158;
-        Thu, 21 Oct 2021 04:41:51 -0700 (PDT)
-Received: from krava.cust.in.nbox.cz ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id u23sm2747922edr.97.2021.10.21.04.41.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 04:41:50 -0700 (PDT)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Use nanosleep tracepoint in perf buffer test
-Date:   Thu, 21 Oct 2021 13:41:32 +0200
-Message-Id: <20211021114132.8196-4-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211021114132.8196-1-jolsa@kernel.org>
-References: <20211021114132.8196-1-jolsa@kernel.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=G2Jq8ABcZaKAiy06d3oRm5z7XXaT0OFvg3EWPt/6AmM=;
+        b=agzvzH3fgnJMDQanvR8r6ggyaDGIudJzvkQ+KwU6kkWlwFxT1h2t3oNQtJCcz1ufD3
+         22WQD8NeZ58SKXH4MEyiMQH+GsB3d3wBjBO6rbpSEpSan6qajMpuhzpVY7wFiED/uj00
+         6JbXmtdKA+bwbW5JFQvB6ulIRVYn9N8ZSifv1rWBrYst6/GlpT9sVb/fzM+0M0RrqWTo
+         O14qP3f0F410NNvk4aKVct8/pFOY+rt1VF7iwYHP2agNC6ReIdqw+KpUh/T0qDm2NbeK
+         m0J49T0SjMXMrBiB/NcgB8cRLk1Kd6q6YD099a27kVwtRHIHmp6m4K1gbadhkZFqqyEA
+         Dc+g==
+X-Gm-Message-State: AOAM5324XKJER7EROFI+pj8aweF8Rf+8h2XKAz/wULsuGaB55De3SSHo
+        zYr2p9oVRtnrSjXJb/+yaLKQtEgZyccrHSgFdak=
+X-Google-Smtp-Source: ABdhPJyg4Uw5gMXeuJaK/fNuVnFoa3QK4wMhuKn5p7setzcVxuuBiAsS3r7VZmGpmNn3nsrj2MAVSnMCKNX9QxUD/fY=
+X-Received: by 2002:a02:9f1a:: with SMTP id z26mr3762598jal.86.1634818809669;
+ Thu, 21 Oct 2021 05:20:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6638:1924:0:0:0:0 with HTTP; Thu, 21 Oct 2021 05:20:09
+ -0700 (PDT)
+Reply-To: ooisangkuang63@gmail.com
+From:   Mr Ooi Sang Kuang <mrsshirleyperezfosgate7@gmail.com>
+Date:   Thu, 21 Oct 2021 05:20:09 -0700
+Message-ID: <CA+ynneBiQsQaBjiG4sPysZHF9edA-QYDpLvkShBxLRGFpeEF6w@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The perf buffer tests triggers trace with nanosleep syscall,
-but monitors all syscalls, which results in lot of data in the
-buffer and makes it harder to debug. Let's lower the trace
-traffic and monitor just nanosleep syscall.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/testing/selftests/bpf/progs/test_perf_buffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_buffer.c b/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-index d37ce29fd393..a08874c5bdf2 100644
---- a/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-+++ b/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-@@ -12,7 +12,7 @@ struct {
- 	__type(value, int);
- } perf_buf_map SEC(".maps");
- 
--SEC("tp/raw_syscalls/sys_enter")
-+SEC("tp/syscalls/sys_enter_nanosleep")
- int handle_sys_enter(void *ctx)
- {
- 	int cpu = bpf_get_smp_processor_id();
 -- 
-2.31.1
+Hello,
 
+I want to discuss an important project issue with you.
+Please, let me know if this email is valid. Reply me at ooisangkuang63@gmail.com
+
+Thank you,
+Mr Ooi Sang Kuang
