@@ -2,106 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4113C435855
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 03:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7847543586F
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 03:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhJUBmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Oct 2021 21:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhJUBmD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:42:03 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7D8C06161C;
-        Wed, 20 Oct 2021 18:39:48 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id f11so4466798pfc.12;
-        Wed, 20 Oct 2021 18:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6z6pmntkws3JIoVxcs0cRfziVLFxgFIK3h3B/uS8Qww=;
-        b=LBanFLyPzSy4d/c2YdGtHAuRS0rCwCC0fwxWZUD3uY72P4mIC5Q/Qd53om0M/xw+MR
-         mBP84YbFvYoIYs3eOI7/+MG2cDLF20jsTLJ5BUV7niuEhXPbRRAipzBF4ALxSAZvRzsJ
-         XGMyy30/96g5nxGuffdBMQfuhsgHhPI0TkQcp52sEJxHf1YMTRKV3oqKDg9EFXkVB0ar
-         b1ghk7OOxKIU2wSmxBI/uAWkTP8nTCwZYJwaB4hODPYmneeBkGk2VRWf+zL4DGARSqVS
-         ZwbJ9Q31a+pCWwFQ3WOUM9AW/9G/UhNcMtxB1nKHlcg/oU11Au0FY5jzphZAYqldyZaW
-         j+qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6z6pmntkws3JIoVxcs0cRfziVLFxgFIK3h3B/uS8Qww=;
-        b=rAmHy+UVILfzITv+g8wrnJMGxTaSVkgniAfKfDlKIhr8CnwwBNZy/PwGD2q1PD4imv
-         kckAALe28rz92FzCPvqECIHTC6urOKuN8CeMxfsRvDnrwIPITYuv2i/3zwOJtYOM7hEu
-         mP+xile4Z/fzjYjCcQr/WfVXhjrGWz4/z2V5rexugWFjxaMegTCkkjqWlnKKdt1u65pv
-         kWRKPIMW/e6PqnlQLIHrlKq0h86phByPrruRo5LtMZOvNTHKDpkFDSOdV4R0x5/sVRQa
-         Z5Mr82ZfpPaMQoe80auhesb+YSYq/pT8eEDrJymyflpD4fqeCctSQ/J88tYO402QiUvO
-         LnxA==
-X-Gm-Message-State: AOAM531s60O/cZT9yu4jTZs+jvmWn+m/kKxOGH7mVDcpnGs4aZQ/dr/k
-        ldhwOkIAmHtsPOPFtfJBof1fWJO1h6bgriAie9A=
-X-Google-Smtp-Source: ABdhPJzKd1h2Y5XOg7sXlFNskYrVsISwIn9PO9O2R5DyAwwJEYWLWs7/Xr0+HOjNH9TCHjpzFZfYAiud2L7v5Xx5LhY=
-X-Received: by 2002:a63:4f57:: with SMTP id p23mr2124913pgl.376.1634780388063;
- Wed, 20 Oct 2021 18:39:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211015112336.1973229-1-markpash@cloudflare.com> <20211015112336.1973229-2-markpash@cloudflare.com>
-In-Reply-To: <20211015112336.1973229-2-markpash@cloudflare.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 20 Oct 2021 18:39:36 -0700
-Message-ID: <CAADnVQ+_MysCNnaPZd550wQaohtWTikmgnsysoZhnNpwPgv23A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add ifindex to bpf_sk_lookup
-To:     Mark Pashmfouroush <markpash@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Joe Stringer <joe@cilium.io>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        id S230286AbhJUBtJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 20 Oct 2021 21:49:09 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8040 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229771AbhJUBtI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 20 Oct 2021 21:49:08 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KN9oPf021450
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 18:46:53 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3btnf0vcmv-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 20 Oct 2021 18:46:53 -0700
+Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 20 Oct 2021 18:46:51 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id DF4D86E3E12C; Wed, 20 Oct 2021 18:44:08 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v2 bpf-next 00/10] libbpf: support custom .rodata.*/.data.* sections
+Date:   Wed, 20 Oct 2021 18:43:54 -0700
+Message-ID: <20211021014404.2635234-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 Content-Type: text/plain; charset="UTF-8"
+X-FB-Internal: Safe
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: NVQ2EfyM3oZAWsqfMOKJ2yk1FACjW1HJ
+X-Proofpoint-GUID: NVQ2EfyM3oZAWsqfMOKJ2yk1FACjW1HJ
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_06,2021-10-20_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
+ clxscore=1034 mlxlogscore=999 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110210008
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 4:24 AM Mark Pashmfouroush
-<markpash@cloudflare.com> wrote:
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 6fc59d61937a..9bd3e8b8a659 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -6262,6 +6262,7 @@ struct bpf_sk_lookup {
->         __u32 local_ip4;        /* Network byte order */
->         __u32 local_ip6[4];     /* Network byte order */
->         __u32 local_port;       /* Host byte order */
-> +       __u32 ifindex;          /* Maps to skb->dev->ifindex */
+This patch set refactors internals of libbpf to enable support for multiple
+custom .rodata.* and .data.* sections. Each such section is backed by its own
+BPF_MAP_TYPE_ARRAY, memory-mappable just like .rodata/.data. This is not
+extended to .bss because .bss is not a great name, it is generated by compiler
+with name that reflects completely irrelevant historical implementation
+details. Given that users have to annotate their variables with
+SEC(".data.my_sec") explicitly, standardizing on .rodata. and .data. prefixes
+makes more sense and keeps things simpler.
 
-Is the comment accurate?
-The bpf_sk_lookup_kern ifindex is populated with inet_iif(skb).
-Which is skb->skb_iif at this point (I think).
-skb->dev->ifindex would typically mean destination or egress ifindex.
-In __sk_buff we have 'ifindex' and 'ingress_ifindex' to differentiate them.
-If it's really dev->ifindex than keeping 'ifindex' name here would be correct,
-but looking at how it's populated in inet/udp_lookup makes me wonder
-whether it should be named 'ingress_ifindex' instead and comment clarified.
+Additionally, this patch set makes it simpler to work with those special
+internal maps by allowing to look them up by their full ELF section name.
 
-If/when you resubmit please trim cc list to a minimum.
+Patch #1 is a preparatory patch that deprecates one libbpf API and moves
+custom logic into libbpf.c, where it's used. This code is later refactored
+with the rest of libbpf.c logic to support multiple data section maps.
+
+See individual patches for all the details.
+
+For new custom "dot maps", their full ELF section names are used as the names
+that are sent into the kernel. Object name isn't prepended like for
+.data/.rodata/.bss. The reason is that with longer custom names, there isn't
+much space left for object name anyways. Also, if BTF is supported,
+btf_value_type_id points to DATASEC BTF type, which contains full original ELF
+name of the section, so tools like bpftool could use that to recover full
+name. This patch set doesn't add this logic yet, this is left for follow up
+patches.
+
+One interesting possibility that is now open by these changes is that it's
+possible to do:
+
+    bpf_trace_printk("My fmt %s", sizeof("My fmt %s"), "blah");
+    
+and it will work as expected. I haven't updated libbpf-provided helpers in
+bpf_helpers.h for snprintf, seq_printf, and printk, because using
+`static const char ___fmt[] = fmt;` trick is still efficient and doesn't fill
+out the buffer at runtime (no copying). But we might consider updating them in
+the future, especially with the array check that Kumar proposed (see [0]).
+
+  [0] https://lore.kernel.org/bpf/20211012041524.udytbr2xs5wid6x2@apollo.localdomain/
+
+v1->v2:
+  - don't prepend object name for new dot maps;
+  - add __read_mostly example in selftests (Daniel).
+
+Andrii Nakryiko (10):
+  libbpf: deprecate btf__finalize_data() and move it into libbpf.c
+  libbpf: extract ELF processing state into separate struct
+  libbpf: use Elf64-specific types explicitly for dealing with ELF
+  libbpf: remove assumptions about uniqueness of .rodata/.data/.bss maps
+  bpftool: support multiple .rodata/.data internal maps in skeleton
+  bpftool: improve skeleton generation for data maps without DATASEC
+    type
+  libbpf: support multiple .rodata.* and .data.* BPF maps
+  selftests/bpf: demonstrate use of custom .rodata/.data sections
+  libbpf: simplify look up by name of internal maps
+  selftests/bpf: switch to ".bss"/".rodata"/".data" lookups for internal
+    maps
+
+ tools/bpf/bpftool/gen.c                       | 158 ++--
+ tools/lib/bpf/btf.c                           |  93 --
+ tools/lib/bpf/btf.h                           |   1 +
+ tools/lib/bpf/libbpf.c                        | 893 +++++++++++-------
+ tools/lib/bpf/libbpf_internal.h               |   8 +-
+ tools/lib/bpf/linker.c                        |   1 -
+ .../selftests/bpf/prog_tests/core_autosize.c  |   2 +-
+ .../selftests/bpf/prog_tests/core_reloc.c     |   2 +-
+ .../selftests/bpf/prog_tests/global_data.c    |  11 +-
+ .../bpf/prog_tests/global_data_init.c         |   2 +-
+ .../selftests/bpf/prog_tests/kfree_skb.c      |   2 +-
+ .../selftests/bpf/prog_tests/rdonly_maps.c    |   2 +-
+ .../selftests/bpf/prog_tests/skeleton.c       |  29 +
+ .../selftests/bpf/progs/test_skeleton.c       |  18 +
+ 14 files changed, 731 insertions(+), 491 deletions(-)
+
+-- 
+2.30.2
+
