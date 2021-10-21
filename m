@@ -2,197 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735FC43687A
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 18:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21A14368BD
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 19:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhJUQ6o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 12:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
+        id S230453AbhJURLU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 13:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbhJUQ6n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:58:43 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC94C061764
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 09:56:27 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id j18-20020a633c12000000b0029956680edaso449671pga.15
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 09:56:27 -0700 (PDT)
+        with ESMTP id S230288AbhJURLT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 13:11:19 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D438FC061764
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 10:09:02 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id r13-20020a17090a1bcd00b001a1b1747cd2so692056pjr.9
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 10:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=cW6HnFPnxVttXYlllvO2YbONJSMhxty7Sc5+0SAjPIg=;
-        b=Z0+dk8eMT5uDn2kV8wHUJMSvSwoJw4Y836IBqX9IGNiBd3FS6yx9BM7ualhv78z7l8
-         dR3NmQ0onsRjVLluuh8uv2sFz+02xp1U9IZ1+yM5mQQWd3BYG62cTeuiWm512eUElrw3
-         3al3CTXfsCxQ7vqoEwBi0aul8poeZoEtP6nMUstpE9ciB/zjhOn59Bp4tOnvcZE444uC
-         0tXE6SrJ54YMB3vAJrJ7FjCuosZZ5dXtq2pI+GPzdFQeQXvfLbn1sNigJ9H4ISzRPVv6
-         Pv+3WTOLxOpfqOMRUXounsuGfOgc601qVVJ8G0CvNp0IksPg3Fux3IzaCmsXFv8xBK9m
-         fM7w==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=8bVJyeQz8xtfM71rV28KhbClKuVdVe3Fd5qAFyoOMtE=;
+        b=LQWLTn2bReceDx4GkOQd4UsuBvNnJZcFIvgo3okOiSxhCaDAz8TOzJN6AWNZcTpxbE
+         DOc5FG2ax1q8JO4z9WtJlV/yTsTxqORhlwS9uYJJcJjPNHE6SFN2jnr+K2NEdaC/U78L
+         JRBO46rIKKi5j0OWNKKA4krTJLn+4Kvs5+97a43rf0Q3tnhQpyUZrpXozufoxVvAmj5t
+         In8ugRJjB+F2jImSKUbZPihVUFjWPF/0mtvy4dJRYFJ9NmegSCrYy1q4Hs/ymZWpXmVJ
+         SE9VgqxPAH5oBbNfuSQUB/Ak6/RbqVZOLSWYuA8Q4FjIu/Ty6grai4Den7y6/M/YHnkq
+         JNdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=cW6HnFPnxVttXYlllvO2YbONJSMhxty7Sc5+0SAjPIg=;
-        b=ahKmxgq34f7t4IqdJeQfud1ORtbfsZF6CbzDHJyNj2na2/D/8ZOYuR2u0fek3sE/s9
-         BwofuJxha1kFaBSot1pIU0B5dDX8Blo9i14OS74YXW6WiENNqYERCKBPMH4FHwZBzuzb
-         fukCTAA6WZllYvyto9V/WTR8NEaFklaJWWPejK3ygkJPbq2GG0rZYDSUywIhgXNF2Yb2
-         rTq3ewZOm9iB34/dKxgIK3LO4iis+UCXlqkwwEhQScIn5oONmK4Lwa9wg97dexwi7ljM
-         dcTBMiPuqMPGgjD0wRIfY5QXd+tm+LcHcG9+tzWF6JKbOts+oFeawHmf2ii6raVZSGZl
-         9KAg==
-X-Gm-Message-State: AOAM532Ccp8IAjOfOgv/bT1TnXYUanGSxB+hwWeCxm/xjznMWgiDi/s+
-        L75vETwjbcTvbhVkwuXwj24/i+0=
-X-Google-Smtp-Source: ABdhPJwmVmikHGElZhNyGggcIrDjodWrREYIcvpC0BgcINgVzffK3enuF4XTZKkLumT5oxDLcez/0oo=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:5d22:afc4:e329:550e])
- (user=sdf job=sendgmr) by 2002:a17:90b:1e0e:: with SMTP id
- pg14mr7748570pjb.15.1634835386894; Thu, 21 Oct 2021 09:56:26 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 09:56:18 -0700
-In-Reply-To: <20211021165618.178352-1-sdf@google.com>
-Message-Id: <20211021165618.178352-4-sdf@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=8bVJyeQz8xtfM71rV28KhbClKuVdVe3Fd5qAFyoOMtE=;
+        b=XjVxzXHzGX7l/9+rVOTnmDM1v8osuwocH/MmulXVpiO2Gs+DsVv8COH+naz4d+XtgE
+         JJkA5rRHjs7j/gHxIoJl+R27MJCJ9qbpPHSlFHMvOaedmxONSF4fE113O1dSKNQNvIWv
+         +ySLPLl3YNGOckYB3+ZvuygI0s8AVTiovi4jgciiJwcDqXasM97Vn3LxGjFX9YBJzP4E
+         yvxBxaq+gT+plOjLHkCT9XE8lBL233lT+icRhFh1Mjgmt/bMtUO8TsFdhtLIEGw4o/6Q
+         mIpqytujTWSQg2TKdzVqNW/e6ue/nNVjar4FNhlwGnwMsk5IrtnCZcYNqtzOsPFUeRYz
+         XOKQ==
+X-Gm-Message-State: AOAM530R//uQqzEXulLnyY82Li0VLojbLLSIQFpmeTsXQXZa4lgrZUMU
+        XURStBgrUhHuFXbRktq2+IaHxOrJ5sMy
+X-Google-Smtp-Source: ABdhPJw4DWa6hpqEjb/R1I2IkusoFxtH2pRYBMHj8/BZAsX61IOx32P+Bc6dkLoFOpQmbHXvumh2vzWAWK7d
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6827:3dc3:9d6c:8c3d])
+ (user=irogers job=sendgmr) by 2002:a17:90b:30d6:: with SMTP id
+ hi22mr8279633pjb.4.1634836142110; Thu, 21 Oct 2021 10:09:02 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 10:08:58 -0700
+Message-Id: <20211021170858.446660-1-irogers@google.com>
 Mime-Version: 1.0
-References: <20211021165618.178352-1-sdf@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH bpf-next v4 3/3] selftests/bpf: fix flow dissector tests
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
+Subject: [PATCH v2] btf_encoder: Make BTF_KIND_TAG conditional
+From:   Ian Rogers <irogers@google.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Petar Penkov <ppenkov@google.com>
+Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-- update custom loader to search by name, not section name
-- update bpftool commands to use proper pin path
+BTF_KIND_TAG is present in libbtf 6.0 but not libbtf in 5.15rc4. Make
+the code requiring it conditionally compiled in.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- .../selftests/bpf/flow_dissector_load.c        | 18 +++++++++++-------
- .../selftests/bpf/flow_dissector_load.h        | 10 ++--------
- .../selftests/bpf/test_flow_dissector.sh       | 10 +++++-----
- 3 files changed, 18 insertions(+), 20 deletions(-)
+ btf_encoder.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/flow_dissector_load.c b/tools/testing/selftests/bpf/flow_dissector_load.c
-index 3fd83b9dc1bf..87fd1aa323a9 100644
---- a/tools/testing/selftests/bpf/flow_dissector_load.c
-+++ b/tools/testing/selftests/bpf/flow_dissector_load.c
-@@ -17,7 +17,7 @@
- const char *cfg_pin_path = "/sys/fs/bpf/flow_dissector";
- const char *cfg_map_name = "jmp_table";
- bool cfg_attach = true;
--char *cfg_section_name;
-+char *cfg_prog_name;
- char *cfg_path_name;
+diff --git a/btf_encoder.c b/btf_encoder.c
+index c341f95..1694679 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -31,6 +31,15 @@
+ #include <errno.h>
+ #include <stdint.h>
  
- static void load_and_attach_program(void)
-@@ -25,7 +25,11 @@ static void load_and_attach_program(void)
- 	int prog_fd, ret;
- 	struct bpf_object *obj;
- 
--	ret = bpf_flow_load(&obj, cfg_path_name, cfg_section_name,
-+	ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-+	if (ret)
-+		error(1, 0, "failed to enable libbpf strict mode: %d", ret);
++#ifndef LIBBPF_MINOR_VERSION
++/*
++ * The libbpf version is not defined in older versions, workaround by assuming
++ * version 0.5.
++ */
++#define LIBBPF_MAJOR_VERSION 0
++#define LIBBPF_MINOR_VERSION 5
++#endif
 +
-+	ret = bpf_flow_load(&obj, cfg_path_name, cfg_prog_name,
- 			    cfg_map_name, NULL, &prog_fd, NULL);
- 	if (ret)
- 		error(1, 0, "bpf_flow_load %s", cfg_path_name);
-@@ -75,15 +79,15 @@ static void parse_opts(int argc, char **argv)
- 			break;
- 		case 'p':
- 			if (cfg_path_name)
--				error(1, 0, "only one prog name can be given");
-+				error(1, 0, "only one path can be given");
+ struct elf_function {
+ 	const char	*name;
+ 	bool		 generated;
+@@ -141,7 +150,9 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+ 	[BTF_KIND_VAR]          = "VAR",
+ 	[BTF_KIND_DATASEC]      = "DATASEC",
+ 	[BTF_KIND_FLOAT]        = "FLOAT",
++#if LIBBPF_MINOR_VERSION > 5
+ 	[BTF_KIND_TAG]          = "TAG",
++#endif
+ };
  
- 			cfg_path_name = optarg;
- 			break;
- 		case 's':
--			if (cfg_section_name)
--				error(1, 0, "only one section can be given");
-+			if (cfg_prog_name)
-+				error(1, 0, "only one prog can be given");
- 
--			cfg_section_name = optarg;
-+			cfg_prog_name = optarg;
- 			break;
- 		}
+ static const char *btf__printable_name(const struct btf *btf, uint32_t offset)
+@@ -648,6 +659,7 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
+ static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *value, uint32_t type,
+ 				    int component_idx)
+ {
++#if LIBBPF_MINOR_VERSION > 5
+ 	struct btf *btf = encoder->btf;
+ 	const struct btf_type *t;
+ 	int32_t id;
+@@ -663,6 +675,10 @@ static int32_t btf_encoder__add_tag(struct btf_encoder *encoder, const char *val
  	}
-@@ -94,7 +98,7 @@ static void parse_opts(int argc, char **argv)
- 	if (cfg_attach && !cfg_path_name)
- 		error(1, 0, "must provide a path to the BPF program");
  
--	if (cfg_attach && !cfg_section_name)
-+	if (cfg_attach && !cfg_prog_name)
- 		error(1, 0, "must provide a section name");
+ 	return id;
++#else
++        fprintf(stderr, "error: unable to encode BTF_KIND_TAG due to old libbtf\n");
++        return -ENOTSUP;
++#endif
  }
  
-diff --git a/tools/testing/selftests/bpf/flow_dissector_load.h b/tools/testing/selftests/bpf/flow_dissector_load.h
-index 7290401ec172..9d0acc2fc6cc 100644
---- a/tools/testing/selftests/bpf/flow_dissector_load.h
-+++ b/tools/testing/selftests/bpf/flow_dissector_load.h
-@@ -7,7 +7,7 @@
- 
- static inline int bpf_flow_load(struct bpf_object **obj,
- 				const char *path,
--				const char *section_name,
-+				const char *prog_name,
- 				const char *map_name,
- 				const char *keys_map_name,
- 				int *prog_fd,
-@@ -23,13 +23,7 @@ static inline int bpf_flow_load(struct bpf_object **obj,
- 	if (ret)
- 		return ret;
- 
--	main_prog = NULL;
--	bpf_object__for_each_program(prog, *obj) {
--		if (strcmp(section_name, bpf_program__section_name(prog)) == 0) {
--			main_prog = prog;
--			break;
--		}
--	}
-+	main_prog = bpf_object__find_program_by_name(*obj, prog_name);
- 	if (!main_prog)
- 		return -1;
- 
-diff --git a/tools/testing/selftests/bpf/test_flow_dissector.sh b/tools/testing/selftests/bpf/test_flow_dissector.sh
-index 174b72a64a4c..dbd91221727d 100755
---- a/tools/testing/selftests/bpf/test_flow_dissector.sh
-+++ b/tools/testing/selftests/bpf/test_flow_dissector.sh
-@@ -26,22 +26,22 @@ if [[ -z $(ip netns identify $$) ]]; then
- 			type flow_dissector
- 
- 		if ! unshare --net $bpftool prog attach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Unexpected unsuccessful attach in namespace" >&2
- 			err=1
- 		fi
- 
--		$bpftool prog attach pinned /sys/fs/bpf/flow/flow_dissector \
-+		$bpftool prog attach pinned /sys/fs/bpf/flow/_dissect \
- 			flow_dissector
- 
- 		if unshare --net $bpftool prog attach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Unexpected successful attach in namespace" >&2
- 			err=1
- 		fi
- 
- 		if ! $bpftool prog detach pinned \
--			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			/sys/fs/bpf/flow/_dissect flow_dissector; then
- 			echo "Failed to detach flow dissector" >&2
- 			err=1
- 		fi
-@@ -95,7 +95,7 @@ else
- fi
- 
- # Attach BPF program
--./flow_dissector_load -p bpf_flow.o -s flow_dissector
-+./flow_dissector_load -p bpf_flow.o -s _dissect
- 
- # Setup
- tc qdisc add dev lo ingress
+ /*
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
