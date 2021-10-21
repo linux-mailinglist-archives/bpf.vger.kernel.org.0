@@ -2,167 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9374365C0
-	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 17:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB74A43671F
+	for <lists+bpf@lfdr.de>; Thu, 21 Oct 2021 17:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhJUPS3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 11:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
+        id S232164AbhJUQCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 12:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhJUPST (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:18:19 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85AAC061220
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 08:16:03 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id b189-20020a1c1bc6000000b0030da052dd4fso18497wmb.3
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 08:16:03 -0700 (PDT)
+        with ESMTP id S231959AbhJUQBn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 12:01:43 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEBCC061224
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 08:59:12 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 204so682117ljf.9
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 08:59:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wPEEI/42En9uKSJ0rR6svxJibQPpLgl3/xd+Q1CAzs4=;
-        b=ArwVTh3EaIjsFaD/Zbzk2v9QkwA3pWqH34r8L0lMMOpk5RFI4xI5zowgC5WNu3NqO5
-         1kyrUBKSFJi7H2zK6/4d5xiODpuHqkWpcmN4WOp0LS6RRGmtvOpZ9JCaxt8m2Cz714ai
-         QDV0et2cSifjt23YweKmZ8SMST9HKxMXkJCDk=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ELW42ptjxbIrNBLbgLdDMft0T9DqGMzj6NFwEw1t3L4=;
+        b=dtzrKX1av1V0q4EvbEsh8Opz9bLfX3tTyclYw+hidYdVUhffpX30Zaz3ZLhwmE/VIb
+         1AZUE8z/QYhIHPO9lFxFHiW9aldTJKh0aN8lFRSnXS22mK+ekWA4LR9lpoYu3Tn+lqjq
+         qIITabu/u/AQN5+rA/Ifglrjas7yyiJS3BG4A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wPEEI/42En9uKSJ0rR6svxJibQPpLgl3/xd+Q1CAzs4=;
-        b=e3F1GrRsD7pnlWSifWLb9AnNnXA1NxMR8shkT7hraBn9p9DxCdoChnVbbBA8mkg3Rp
-         OZWdzOcvhI1hlSVvscJ0i2sDIHzB0eqAuVZ43ibnwF+4p51PunQPI2KCMsvjXpDiiPhD
-         wqIv+uKxFLjGm7J5jpzsA5FeRhJL1OWhqpmUKjCLomW4czlI7THD8JmVTsUBrC4Hb7eI
-         5Eyrn31HdpQCAGvuH19TaEJpSQ/gp4M0NQiM9wgp/U7F9tC2sQicD+EVaXp73iK5CNRO
-         EPP3EQC/pjhWmbv8gFXqXVCnznOsBi8dSm2Vfr5Heqm6wJZ6aNoC9WhkTvNxlmbH1WpX
-         /NRQ==
-X-Gm-Message-State: AOAM532w6r38mBtanQZ2KsbQEewU3jBmcCsuYqLtUR9TpWBvp4GCca06
-        op3W1oaIPBLMKLYukYTJo0mZRA==
-X-Google-Smtp-Source: ABdhPJydPjkzgQW2iWvviw52oqi+ooJKj874Q5kNQJaDXzYi3gfB4tnn05PuwBzIoPhuvzR9ZiHLVQ==
-X-Received: by 2002:a7b:c30c:: with SMTP id k12mr22015678wmj.38.1634829362115;
-        Thu, 21 Oct 2021 08:16:02 -0700 (PDT)
-Received: from altair.lan (7.2.6.0.8.8.2.4.4.c.c.f.b.1.5.4.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:451b:fcc4:4288:627])
-        by smtp.googlemail.com with ESMTPSA id z1sm5098562wrt.94.2021.10.21.08.16.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:16:01 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] selftests: bpf: test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
-Date:   Thu, 21 Oct 2021 16:15:28 +0100
-Message-Id: <20211021151528.116818-4-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211021151528.116818-1-lmb@cloudflare.com>
-References: <20211021151528.116818-1-lmb@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ELW42ptjxbIrNBLbgLdDMft0T9DqGMzj6NFwEw1t3L4=;
+        b=jEB5sSM5S1WLZ0niRaHdnVK7YblDLRgGePoraF+5wzMaZQDsp0LF80WobZLMxLr5Gi
+         hv5+ctdimt1ko+M0tKN50v9P+9FKpr9KKpmO8GZgeX50HMaDl0Jf3OF2LmF0JbBzHUtm
+         koSQDyTHMaoAf/nONrTMnRqE0diGvRWcyRFk94MiFu+RgXHuTDvt64sPksD3dBbkn+HC
+         cMrZeCzINDpm0tehquztVPejpUH7AMDnAV/kUAdvT9zFkIuk2AUdz286C0ORzXRYmnxQ
+         E46z7qrvuiuwx0PsURghOGNUTgf902ZP5Z70MtX2T4uFE7uAeuuyu9rkW/XyyGJ6prqm
+         CsYw==
+X-Gm-Message-State: AOAM533O7gXScIzjHcLvhSaSwEiO1NeqKtTPUgB9uZt/E4VGEoyfya+1
+        Pq6K+D8i3cUbKn0az2BFskgAmkQNb2SGsY2vCCc1wQ==
+X-Google-Smtp-Source: ABdhPJy6ZRs2drY2cdB/ofPUPZQRGklPpKdly5AToaWwxKg97na7t03kFHCUZEvgU2kHhfgJtYCpxfWiEB/zBI/3QFY=
+X-Received: by 2002:a2e:9b09:: with SMTP id u9mr6921399lji.111.1634831951311;
+ Thu, 21 Oct 2021 08:59:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211014143436.54470-1-lmb@cloudflare.com> <20211014143436.54470-10-lmb@cloudflare.com>
+ <20211020171542.7vn3lsrqmq2h7q2v@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211020171542.7vn3lsrqmq2h7q2v@ast-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 21 Oct 2021 16:59:00 +0100
+Message-ID: <CACAyw9_z=dya3S00wEjS_sVtFp5PVOX2OU6eDw0JHTQ91dRRHA@mail.gmail.com>
+Subject: Re: [RFC 7/9] bpf: split get_id and fd_by_id in bpf_attr
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests to exercise the behaviour of RENAME_EXCHANGE and RENAME_NOREPLACE
-on bpffs. The former checks that after an exchange the inode of two
-directories has changed. The latter checks that the source still exists
-after a failed rename.
+On Wed, 20 Oct 2021 at 18:15, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> > +     struct { /* used by BPF_PROG_GET_FD_BY_ID command */
+> > +             __u32 id;
+> > +     } prog_get_fd_by_id;
+> > +
+> > +     struct { /* used by BPF_MAP_GET_FD_BY_ID command */
+> > +             __u32 id;
+> > +             __u32 ingnored;
+> > +             __u32 open_flags;
+> > +     } map_get_fd_by_id;
+> > +
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/test_bpffs.c     | 65 ++++++++++++++++++-
- 1 file changed, 64 insertions(+), 1 deletion(-)
+> > +     struct { /* used by BPF_PROG_GET_NEXT_ID command */
+> > +             __u32 start_id;
+> > +             __u32 next_id;
+> > +     } prog_get_next_id;
+> > +
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-index 533e3f3a459a..d29ebfeef9c5 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
- #define _GNU_SOURCE
-+#include <stdio.h>
- #include <sched.h>
- #include <sys/mount.h>
- #include <sys/stat.h>
-@@ -29,7 +30,8 @@ static int read_iter(char *file)
- 
- static int fn(void)
- {
--	int err;
-+	struct stat a, b, c;
-+	int err, map;
- 
- 	err = unshare(CLONE_NEWNS);
- 	if (!ASSERT_OK(err, "unshare"))
-@@ -67,6 +69,67 @@ static int fn(void)
- 	err = read_iter(TDIR "/fs2/progs.debug");
- 	if (!ASSERT_OK(err, "reading " TDIR "/fs2/progs.debug"))
- 		goto out;
-+
-+	err = mkdir(TDIR "/fs1/a", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/a"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/a/1", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/a/1"))
-+		goto out;
-+	err = mkdir(TDIR "/fs1/b", 0777);
-+	if (!ASSERT_OK(err, "creating " TDIR "/fs1/b"))
-+		goto out;
-+
-+	map = bpf_create_map(BPF_MAP_TYPE_ARRAY, 4, 4, 1, 0);
-+	if (!ASSERT_GT(map, 0, "create_map(ARRAY)"))
-+		goto out;
-+	err = bpf_obj_pin(map, TDIR "/fs1/c");
-+	if (!ASSERT_OK(err, "pin map"))
-+		goto out;
-+	close(map);
-+
-+	/* Check that RENAME_EXCHANGE works for directories. */
-+	err = stat(TDIR "/fs1/a", &a);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/a)"))
-+		goto out;
-+	err = renameat2(0, TDIR "/fs1/a", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
-+	if (!ASSERT_OK(err, "renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE)"))
-+		goto out;
-+	err = stat(TDIR "/fs1/b", &b);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/b)"))
-+		goto out;
-+	if (!ASSERT_EQ(a.st_ino, b.st_ino, "b should have a's inode"))
-+		goto out;
-+	err = access(TDIR "/fs1/b/1", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/b/1)"))
-+		goto out;
-+
-+	/* Check that RENAME_EXCHANGE works for mixed file types. */
-+	err = stat(TDIR "/fs1/c", &c);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/map)"))
-+		goto out;
-+	err = renameat2(0, TDIR "/fs1/c", 0, TDIR "/fs1/b", RENAME_EXCHANGE);
-+	if (!ASSERT_OK(err, "renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE)"))
-+		goto out;
-+	err = stat(TDIR "/fs1/b", &b);
-+	if (!ASSERT_OK(err, "stat(" TDIR "/fs1/b)"))
-+		goto out;
-+	if (!ASSERT_EQ(c.st_ino, b.st_ino, "b should have c's inode"))
-+		goto out;
-+	err = access(TDIR "/fs1/c/1", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/c/1)"))
-+		goto out;
-+
-+	/* Check that RENAME_NOREPLACE works. */
-+	err = renameat2(0, TDIR "/fs1/b", 0, TDIR "/fs1/a", RENAME_NOREPLACE);
-+	if (!ASSERT_ERR(err, "renameat2(RENAME_NOREPLACE)")) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+	err = access(TDIR "/fs1/b", F_OK);
-+	if (!ASSERT_OK(err, "access(" TDIR "/fs1/b)"))
-+		goto out;
-+
- out:
- 	umount(TDIR "/fs1");
- 	umount(TDIR "/fs2");
+> This one looks like churn though.
+
+Yes, but it's still better than what we have now. There are three
+distinct syscall signatures that a user needs to understand, which is
+impossible right now without looking at the source. map_get_fd_by_id
+is arguably dodgy with one field completely ignored. Having one struct
+for each bpf_cmd makes code generation easier as well.
+
+I could reduce this to just the three different variants, it opens us
+up to another map_get_fd_by_id.
+
+Lorenz
 -- 
-2.32.0
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
