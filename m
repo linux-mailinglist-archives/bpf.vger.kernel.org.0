@@ -2,79 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD364437E97
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 21:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C993437E9D
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 21:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbhJVT11 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 22 Oct 2021 15:27:27 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48508 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233564AbhJVT10 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 22 Oct 2021 15:27:26 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MGmvRi031477
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 12:25:08 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3busjqd2pa-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 12:25:07 -0700
-Received: from intmgw001.46.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 22 Oct 2021 12:25:05 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id EDF3A70A3A32; Fri, 22 Oct 2021 12:25:04 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: fix the use of aligned attribute
-Date:   Fri, 22 Oct 2021 12:25:02 -0700
-Message-ID: <20211022192502.2975553-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S233564AbhJVT2f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 15:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234088AbhJVT2e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Oct 2021 15:28:34 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7C6C061764;
+        Fri, 22 Oct 2021 12:26:16 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id o17so9292754ybq.4;
+        Fri, 22 Oct 2021 12:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kjFVYyZDuuF+EL0ZNFMRLD5Ub7SUklZXemiD8dj4nu8=;
+        b=AlcRkbliBroMe95h1np6Dp2heCHNBL2t/AagarT9oD3DpY+rEh8d1eZ02+93CUPZMb
+         XquxYDAAGXV50gkC6kGjy2feM+XrJTFZvt24WYFvHAam6rF5k8HkvsVafUqTz+ub8nOn
+         Y8exOb4i7alO86Y1oHeD1RfP6Zng2NK0/dFByzp8NAU00URyWdAKPQ3uWFa8K+6JgPh6
+         NovkApO1VUz4gpjwMC+4sV9IqSRbZTlVzHRAORqG9MTDZrp3DnY3Ut9pO0xd50zpXzH2
+         I/8KCjNApcNl2Wh2Y56nZeIeP72NLFEf5koueJEMXZdlTopThK3Cls9E2y2ABSZiUNNY
+         0Y4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kjFVYyZDuuF+EL0ZNFMRLD5Ub7SUklZXemiD8dj4nu8=;
+        b=L+oxbo9yGidNedpXBkve1EONLVqXz8z+WfBWnerxnqAqIxMDtam5jNJ6HwDqcx80R4
+         MV+BSCg9HKhIdqXMXs2O8F6D+q/5CNM60Dtm/GCGstVSj2YtJv14WJGMN9ERDVXTbijL
+         hryX/pZtkSvFVct7TTLo86Dkt2qzB+oN6dXx0JvmZ2WQWIX3abUGBa3BSvaXL93GORzY
+         c2RBKAeDjnXzsaZM4chnUKZnE0tN229HlSTDruxZown4gUpE2lHIAPTrmNlNyGETFAJG
+         F6iGYIAuriMkXRPftOriGgSjdRe/M5Q6oRIYN8Dtx9XY77pMMh4ywOboxKeJBy8hdsJk
+         fiEQ==
+X-Gm-Message-State: AOAM530gOQeAq4WZ9GWqdUeKoaD+WRtmluXOju02HKhcSdv7a9WudSHI
+        kESgxKL/NSa0RKPxgC68YS9ZCQAHkkO7ke6KVzc=
+X-Google-Smtp-Source: ABdhPJzRIraq6n30h7CFDfVm0wqO3ZrygEZ0QfNQsiSxmr0WrxCfNMViGYkvbH+tpDkvAzf9cKKPXa1eX0MEPiW3Zl8=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr1818947ybj.504.1634930775935;
+ Fri, 22 Oct 2021 12:26:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: LNcr0OAzeC2NRz7fhyJR2H8ZLQxLzgFm
-X-Proofpoint-GUID: LNcr0OAzeC2NRz7fhyJR2H8ZLQxLzgFm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_05,2021-10-22_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- clxscore=1015 malwarescore=0 bulkscore=0 mlxscore=0 adultscore=0
- phishscore=0 mlxlogscore=660 spamscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110220108
-X-FB-Internal: deliver
+References: <20211011082031.4148337-1-davemarchevsky@fb.com>
+ <20211011082031.4148337-5-davemarchevsky@fb.com> <CAEf4BzbY+OMR_=JJHdzJpiuar_giusd0sb1LKoCQ7BEDYh57NQ@mail.gmail.com>
+ <87o87je7hn.fsf@toke.dk> <d3de589a-21f3-7a0d-59de-126d3c70fba1@fb.com>
+In-Reply-To: <d3de589a-21f3-7a0d-59de-126d3c70fba1@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 22 Oct 2021 12:26:04 -0700
+Message-ID: <CAEf4BzaGH63-kaM40ifCWBLncEn7tfJcKxGdVKOR0_jcdpeX1g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/4] libbpf: deprecate bpf_program__get_prog_info_linear
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Building libbpf sources out of kernel tree (in Github repo) we run into
-compilation error due to unknown __aligned attribute. It must be coming
-from some kernel header, which is not available to Github sources. Use
-explicit __attribute__((aligned(16))) instead.
+On Fri, Oct 22, 2021 at 12:18 PM Dave Marchevsky <davemarchevsky@fb.com> wr=
+ote:
+>
+> On 10/20/21 5:01 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >
+> >> On Mon, Oct 11, 2021 at 1:20 AM Dave Marchevsky <davemarchevsky@fb.com=
+> wrote:
+> >>>
+> >>> As part of the road to libbpf 1.0, and discussed in libbpf issue trac=
+ker
+> >>> [0], bpf_program__get_prog_info_linear and its associated structs and
+> >>> helper functions should be deprecated. The functionality is too speci=
+fic
+> >>> to the needs of 'perf', and there's little/no out-of-tree usage to
+> >>> preclude introduction of a more general helper in the future.
+> >>>
+> >>> [0] Closes: https://github.com/libbpf/libbpf/issues/313
+> >>
+> >> styling nit: don't know if it's described anywhere or not, but when
+> >> people do references like this, they use 2 spaces of indentation. No
+> >> idea how it came to be, but that's what I did for a while and see
+> >> others doing the same.
+> >>
+> >>>
+> >>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> >>> ---
+>
+> [...]
+>
+> >> we can actually deprecate all this starting from v0.6, because perf is
+> >> building libbpf statically, so no worries about releases (also there
+> >> are no replacement APIs we have to wait full release for)
+> >
+> > Just FYI, we're also using this in libxdp, and that does link
+> > dynamically to libbpf. It's not an issue to move away from it[0], but
+> > perf is not the only user :)
+> >
+> > -Toke
+> >
+> > [0] Track that here: https://github.com/xdp-project/xdp-tools/issues/12=
+7
+> >
+>
+> I submitted a PR to migrate the xdp-tools usage as well. Strange that
+> this didn't show up in an "all github" search.
+>
+> Andrii, should the DEPRECATED_SINCE stay at 0.7 in light of this?
 
-Fixes: 961632d54163 ("libbpf: Fix dumping non-aligned __int128")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/btf_dump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index e9e5801ece4c..3c19644b5fad 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -1676,7 +1676,7 @@ static int btf_dump_int_data(struct btf_dump *d,
- {
- 	__u8 encoding = btf_int_encoding(t);
- 	bool sign = encoding & BTF_INT_SIGNED;
--	char buf[16] __aligned(16);
-+	char buf[16] __attribute__((aligned(16)));
- 	int sz = t->size;
- 
- 	if (sz == 0 || sz > sizeof(buf)) {
--- 
-2.30.2
-
+There is no replacement API that we need to wait to go through full
+libbpf release, so no, it can stay as is.
