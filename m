@@ -2,71 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8189D436EE1
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDF5436EF8
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhJVAia (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 20:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        id S232353AbhJVAqH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 20:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJVAia (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:38:30 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AF8C061766;
-        Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id i1so1537449plr.13;
-        Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
+        with ESMTP id S231518AbhJVAqH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 20:46:07 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8249FC061764
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:43:50 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso2337301pjf.3
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:43:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4NyLIt9iLg6rZ1QK5VsbahId9/COsWCMPmtuER6RfUg=;
-        b=bplMtp7hlQ2ltpCHyZDdZlhsDlgsw1Es32HK+cub4W72PQrTpsxbebomL2a0G7o/tU
-         Qhfuwg/SoWG5U1/bi62Z6YHhMkqV8nnrYIYZiYn4R/jFbdxxKpAGiRNHdJJ49ieqoevf
-         XZ7mkuig5cINTG8YkAyzLG3RIygG6V4gikqyUkDwJEM9kIcF9rg0z8Yfk3++atPCE20Y
-         goMdglQAlDaw1IgrKVPJjBLtLsvpOlchs/b1/g1+tztNH0SAesb0W8v8S/JxfTQl9jHB
-         rMvIzW8V4QEj0gEVgAhAYuARQHNGWN9uvoRCF4EhPzuGiosPZ0K8gIDbO6inUiSdvYJU
-         fIfQ==
+        bh=fOr4gx1mLXFhqHDG0rVpWr1TIx97UzCoZrRgZhCE5oI=;
+        b=mzDTDDkogZSWzgWclse7WisdsvoWJzL1mYEQNQUWPAlG8Tjnzj4Dnowtyk9NSY8rGN
+         38plmgBMXHzAiCVKkktt0FRBhDMyzKC7GTdDGRfv6c0PNvCa/hQU4iPwIGz1Flnbh4pO
+         A5q8JH7gj+DznasBtW8PpUP3gRH4D1CffwN1Ijidi32b8clVLBD9Q7FgyHhaH9/uENzf
+         riLcR7CvzcvnP179dP/Gzu5I2PVM+2Vw9xNxLFkuRrTG9c+n1DZmepljbYbogPe4c9A7
+         FvdCAqa7FzHOGq9Xy1FnKtbNEq+7jeo+XftPXNJ3w5Cfe5DPLUPkiUprD5CJ8vIhCk74
+         LfBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4NyLIt9iLg6rZ1QK5VsbahId9/COsWCMPmtuER6RfUg=;
-        b=Marb2D6QCccHUnZtaeGWgFN35rV9ecOaNGCaughtOHxzxv/B9zcIkBudZUkRSScbPH
-         CBx1SGY08jWuLxDwZm5qqo0OS0iG5grdkxy6earyR7b0ktf/4QZre9+seDmh80fo7v8q
-         exrk4PZ6xyKz3cFErWGOLILZAwINRud7hkTQGBJbD9q4pu7KCQfKMogUQRVbVt9stOQH
-         oJBvCsp/wR5hWs678xYuNU+CUxFuD9sHLAGOYuCAdNuqn4mWOSZaRgncSwWlZ+h/DYye
-         9xEz1WVjbdHMM9vxrVeJIFoRU6ldRayatuY1F9MAD+LXtISK8KOw7RrxmHWwVxsD0EjY
-         ipHg==
-X-Gm-Message-State: AOAM530PphpD0sl3j6+or9JJXHpvoiSC2DwPuFBsYi6uuA3QDMWQDbRr
-        +3TiE9WjsnKu6EGXdhh7GP23JVm+L/19geOhwas=
-X-Google-Smtp-Source: ABdhPJzx+ge6JKoDTskH6nB+UW4cv10c4x1D7XvWUxpTXRXFXz1xIiK+P2rRY2QiNoMDW/dHjczEOmKroX9vu7zCYew=
-X-Received: by 2002:a17:90b:4a4d:: with SMTP id lb13mr9954808pjb.122.1634862973288;
- Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
+        bh=fOr4gx1mLXFhqHDG0rVpWr1TIx97UzCoZrRgZhCE5oI=;
+        b=wOjXT4HbHuY4wRTZWO90oImeSVTc1Pu59OFUf5ouZ3Nr2M2sp/TIDg1273SWF+kvha
+         ZZxw6VngO+KMAa1ah0NA1BoXZsIOfnf/szi3TJt6JFghtDK7nMCZlEQcXpGBIVXtJfzd
+         TSEoieQR1ryB0HqJPxjMP1dfrcjTp9BfZ8Loat7WiX4FTuSnHcRqvI60YJfUZ4mid1yH
+         l87PzlKOsbKaRrOnwwzYr+VdapSwHiGmypoSowcCYAuQ5lmA2ENlgx3lGAU6gxgpPWOj
+         x/r4bEcqbPDfusaY1bJDt6hJjV3XsSu5YU4IDbPLY3rosBrCVEWZiVFne+GdTnaALMcY
+         uA7g==
+X-Gm-Message-State: AOAM533mJzBWERW0KwhJmB1W3jf7AI9NfForBnyNtAxIDRw5reyBmZYp
+        +hslFdoxXKP0ugDAXhNjM4NQvDAThG3e4wKgkTgN+lr9mtg=
+X-Google-Smtp-Source: ABdhPJw4CSNJBlXd3RsYe83lPTqDjVhPn/H6P/9Ytlw2Tv9La+3/cfs020EWha0uEEpJeE7jUDCU03EXhSUmLSFKiuA=
+X-Received: by 2002:a17:902:8211:b0:13f:afe5:e4fb with SMTP id
+ x17-20020a170902821100b0013fafe5e4fbmr8418238pln.20.1634863430037; Thu, 21
+ Oct 2021 17:43:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211019125856.2566882-1-zhudi2@huawei.com>
-In-Reply-To: <20211019125856.2566882-1-zhudi2@huawei.com>
+References: <57c1bcd6-f034-f5d1-f282-a6d843a2937f@gmail.com>
+In-Reply-To: <57c1bcd6-f034-f5d1-f282-a6d843a2937f@gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 17:36:02 -0700
-Message-ID: <CAADnVQ+MLy8Ub8FL4ak92Wh+LqUg5npfHc_u3bgDqk-U7LB3Ww@mail.gmail.com>
-Subject: Re: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
-To:     Di Zhu <zhudi2@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 21 Oct 2021 17:43:39 -0700
+Message-ID: <CAADnVQLB6t7FwT7OMid63VJCRTorXGi5PJHve-fxd8Tvo6fM3w@mail.gmail.com>
+Subject: Re: branch prediction issue
+To:     zerons <sironhide0null@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 5:59 AM Di Zhu <zhudi2@huawei.com> wrote:
-> +               break;
-> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-> +       case BPF_SK_SKB_STREAM_PARSER:
-> +               *prog = READ_ONCE(progs->skb_parser);
+On Fri, Oct 8, 2021 at 7:30 AM zerons <sironhide0null@gmail.com> wrote:
+>
+> In check_cond_jmp_op(), the is_branch_taken() is called when
+> 1) SRC op is imm
+> 2) the value of SRC op is known
+>
+> Here comes the question: what if the value of DST op is known.
+>
+> Consider the following instructions:
+>
+> BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_8, 0),
+> BPF_JMP32_IMM(BPF_JGT, BPF_REG_7, 0x7ffffff0, 1),
+> BPF_EXIT_INSN(),
+> BPF_LD_IMM64(BPF_REG_3, 0x7fffffe0),
+> BPF_JMP32_REG(BPF_JGT, BPF_REG_3, BPF_REG_7, 1),
+> BPF_EXIT_INSN(),
+> BPF_EXIT_INSN(), ==> point_a
+...
+> The point_a instructions should be dead code. I wonder if the
+> verifier do this on purpose. Do we need to handle this situation?
 
-skb_parser?
-Please don't submit patches that don't even build.
+The compiler would never generate such code. It would be optimized.
+What's the point of adding complexity to the verifier for an
+artificial use case?
