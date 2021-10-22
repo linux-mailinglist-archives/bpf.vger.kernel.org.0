@@ -2,83 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDF5436EF8
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DFC436EFE
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbhJVAqH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 20:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        id S231667AbhJVAur (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 20:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbhJVAqH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:46:07 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8249FC061764
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:43:50 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso2337301pjf.3
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:43:50 -0700 (PDT)
+        with ESMTP id S229512AbhJVAuq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 20:50:46 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9B4C061764;
+        Thu, 21 Oct 2021 17:48:30 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id x66so2131617pfx.13;
+        Thu, 21 Oct 2021 17:48:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fOr4gx1mLXFhqHDG0rVpWr1TIx97UzCoZrRgZhCE5oI=;
-        b=mzDTDDkogZSWzgWclse7WisdsvoWJzL1mYEQNQUWPAlG8Tjnzj4Dnowtyk9NSY8rGN
-         38plmgBMXHzAiCVKkktt0FRBhDMyzKC7GTdDGRfv6c0PNvCa/hQU4iPwIGz1Flnbh4pO
-         A5q8JH7gj+DznasBtW8PpUP3gRH4D1CffwN1Ijidi32b8clVLBD9Q7FgyHhaH9/uENzf
-         riLcR7CvzcvnP179dP/Gzu5I2PVM+2Vw9xNxLFkuRrTG9c+n1DZmepljbYbogPe4c9A7
-         FvdCAqa7FzHOGq9Xy1FnKtbNEq+7jeo+XftPXNJ3w5Cfe5DPLUPkiUprD5CJ8vIhCk74
-         LfBg==
+         :cc:content-transfer-encoding;
+        bh=tmArOx3eYbE8ZFWrrAoTrYxAAmYaBp16jR3G3fSQSgI=;
+        b=nf3TuOxGm1K7Yh7YGWAyXmEF9/PDd6596H3aUHCtBc7x2Cs3ACk4VvT/8b6jkCVLIk
+         ZjdfGHkyNMKNP7JXp1lDGxOSNe05+TOhezLpsDV9P9AEomYX/mLSRKkGTkPgo6XuHw8y
+         5NOJvqqIQZHteQHv2smMS4aI1KQk1CUXSXl5QW8QASdqmSP1lTVvAVq38ueWd7R3fhH6
+         XbUCO4ALZsTaaDXitC+PSzZOOdYeasWh2gs8g7gxCkitb0LAg4Oj9tDkcSObHIEM3aIl
+         qtubGnjAVZ3hcrnrPibziStV6hlb8EcrBJj5CSnFjLdSV0jGypI3KVJ6K6vd0MxakMzp
+         Wv6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fOr4gx1mLXFhqHDG0rVpWr1TIx97UzCoZrRgZhCE5oI=;
-        b=wOjXT4HbHuY4wRTZWO90oImeSVTc1Pu59OFUf5ouZ3Nr2M2sp/TIDg1273SWF+kvha
-         ZZxw6VngO+KMAa1ah0NA1BoXZsIOfnf/szi3TJt6JFghtDK7nMCZlEQcXpGBIVXtJfzd
-         TSEoieQR1ryB0HqJPxjMP1dfrcjTp9BfZ8Loat7WiX4FTuSnHcRqvI60YJfUZ4mid1yH
-         l87PzlKOsbKaRrOnwwzYr+VdapSwHiGmypoSowcCYAuQ5lmA2ENlgx3lGAU6gxgpPWOj
-         x/r4bEcqbPDfusaY1bJDt6hJjV3XsSu5YU4IDbPLY3rosBrCVEWZiVFne+GdTnaALMcY
-         uA7g==
-X-Gm-Message-State: AOAM533mJzBWERW0KwhJmB1W3jf7AI9NfForBnyNtAxIDRw5reyBmZYp
-        +hslFdoxXKP0ugDAXhNjM4NQvDAThG3e4wKgkTgN+lr9mtg=
-X-Google-Smtp-Source: ABdhPJw4CSNJBlXd3RsYe83lPTqDjVhPn/H6P/9Ytlw2Tv9La+3/cfs020EWha0uEEpJeE7jUDCU03EXhSUmLSFKiuA=
-X-Received: by 2002:a17:902:8211:b0:13f:afe5:e4fb with SMTP id
- x17-20020a170902821100b0013fafe5e4fbmr8418238pln.20.1634863430037; Thu, 21
- Oct 2021 17:43:50 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tmArOx3eYbE8ZFWrrAoTrYxAAmYaBp16jR3G3fSQSgI=;
+        b=8RheaN6KWKZt2MqkoxEuJRCT46n+VvUujiDaP/ktKWNS+xLlbMxDFGVvx4hS1sDZBr
+         QOxig4aMqW0+5t6wsJKkmYxivo3PU7lQw2KtHS5wutCgsitlTKJFk8m5t+X3WLAMC/Zs
+         RB9ObNabqfaGg3YCv0tDFobxtMKih2pJt5uYMy0/Z5P1ADhavk3BNPntddFd0SDvy9E5
+         0pRlnH3wDhC7ABT5vsBG5damb4Af1WfgEhaqJTk9RnZ1emF4i+9Iey59RaJLA/IyyZ1w
+         0wCwpV7gH8S5vMDcXv7n9dRkhRA/4JwK6YHcqWUtugSq5Si6KCk/3XiefMpkjLli8fRb
+         x67w==
+X-Gm-Message-State: AOAM530gC/MCD/aD8rDA6VtF20FeAz6IDqXEHHKNCGcgVu5DK0vL788p
+        6qXsnmb5b2Fa28IJ0emQW6Ma7TH5gQH457TTT4Q=
+X-Google-Smtp-Source: ABdhPJykVtN09BVssZyNEZU0GfBcUWhYDoLm1kfIrtKQ5vVxYX8+WTsZU33vRf2e6iF2uSjXPWl3E+jbElPsyOtuOws=
+X-Received: by 2002:aa7:9f8f:0:b0:44c:cf63:ec7c with SMTP id
+ z15-20020aa79f8f000000b0044ccf63ec7cmr8957531pfr.77.1634863709799; Thu, 21
+ Oct 2021 17:48:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <57c1bcd6-f034-f5d1-f282-a6d843a2937f@gmail.com>
-In-Reply-To: <57c1bcd6-f034-f5d1-f282-a6d843a2937f@gmail.com>
+References: <20211021183951.169905-1-toke@redhat.com>
+In-Reply-To: <20211021183951.169905-1-toke@redhat.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 17:43:39 -0700
-Message-ID: <CAADnVQLB6t7FwT7OMid63VJCRTorXGi5PJHve-fxd8Tvo6fM3w@mail.gmail.com>
-Subject: Re: branch prediction issue
-To:     zerons <sironhide0null@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Thu, 21 Oct 2021 17:48:18 -0700
+Message-ID: <CAADnVQLPBLc0T32nqM7Q_LBEGWiJRp3JvGaY2Lsmf9yqJW+Yfw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix potential race in tail call compatibility check
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 7:30 AM zerons <sironhide0null@gmail.com> wrote:
->
-> In check_cond_jmp_op(), the is_branch_taken() is called when
-> 1) SRC op is imm
-> 2) the value of SRC op is known
->
-> Here comes the question: what if the value of DST op is known.
->
-> Consider the following instructions:
->
-> BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_8, 0),
-> BPF_JMP32_IMM(BPF_JGT, BPF_REG_7, 0x7ffffff0, 1),
-> BPF_EXIT_INSN(),
-> BPF_LD_IMM64(BPF_REG_3, 0x7fffffe0),
-> BPF_JMP32_REG(BPF_JGT, BPF_REG_3, BPF_REG_7, 1),
-> BPF_EXIT_INSN(),
-> BPF_EXIT_INSN(), ==> point_a
-...
-> The point_a instructions should be dead code. I wonder if the
-> verifier do this on purpose. Do we need to handle this situation?
+On Thu, Oct 21, 2021 at 11:40 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+> +       map_type =3D READ_ONCE(array->aux->type);
+> +       if (!map_type) {
+> +               /* There's no owner yet where we could check for compatib=
+ility.
+> +                * Do an atomic swap to prevent racing with another invoc=
+ation
+> +                * of this branch (via simultaneous map_update syscalls).
+>                  */
+> -               array->aux->type  =3D fp->type;
+> -               array->aux->jited =3D fp->jited;
+> +               if (cmpxchg(&array->aux->type, 0, prog_type))
+> +                       return false;
 
-The compiler would never generate such code. It would be optimized.
-What's the point of adding complexity to the verifier for an
-artificial use case?
+Other fields might be used in the compatibility check in the future.
+This hack is too fragile.
+Just use a spin_lock.
