@@ -2,60 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAE64379F8
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 17:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8321437A43
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 17:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhJVPhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Oct 2021 11:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        id S230187AbhJVPtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 11:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbhJVPhG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:37:06 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEFEC061764;
-        Fri, 22 Oct 2021 08:34:48 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id j6so4452995ila.1;
-        Fri, 22 Oct 2021 08:34:48 -0700 (PDT)
+        with ESMTP id S229484AbhJVPtN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Oct 2021 11:49:13 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CDDC061764;
+        Fri, 22 Oct 2021 08:46:56 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id m20so5905455iol.4;
+        Fri, 22 Oct 2021 08:46:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=n5H9Bf9ZcCtG40Soap2ANs+z3ZAK6GVAhwLSpZUSWec=;
-        b=BZDTYMK4Rxq99wt3oQTT9VDAGhX7uLuCcVFpuvTqcHIm54ZyTbTkt98x2ysZJnNCDB
-         vx3fbAlM7fxQ+KW79p7FlW2mkY0KN9WdUckx2+xm4rbrRMWdmDti8gULQgpTP9kH1wv7
-         5Ht1JHuiBWjUcHA1jmlpkeb8kghz5jzPyesJxfDVy7nKcMHamdg5ia46frs7zTY+C8cS
-         2qss4ScebggBeZFbwKPG64LOG2XhgOFfuomRyAZZtiOEkt7Z2PttGd8OCIQOzTOcpp2q
-         eCQneacDrQ6Lb7CfgGxXtIZcDLgGKDw8xK9krX7t4gl1eruVcIyYMAmAvlSgNqpKlySm
-         0cFA==
+        bh=pclmJnOxUzu2p+gBluzlBxhVBxGQaG1PWO0p74EKR7Y=;
+        b=DRA/dpxoC9CZZcIz1kMr73dYiXgS04XzQ0qkdhAKCtQHYJ0QOOknAjlLzdb82em2d7
+         t436PPBt39VheeWFIoy0q7jksy1AL+WFe/CBgVFsYIZxhga7EQNQUxBXiLhM4iJ8OKIG
+         o9i8VjF02UWORMmOGL68UFjzU6cwVBD4EyC1k8yPxKq+MrklaSlIgOvu2C1aZiaaAa/z
+         tK0Dzuoswiwm1gN7RwsIRYVfAel7dO6zpIauZsFpO3agVk2CfbOChEmPNhaEfLn6DbmV
+         hLrtFL7jH/nf8RYUlD/r6ZnLnUIcsrvZ0EQFzRJOynJZSsrcPzgZTM9SkKCnp2EdXzKa
+         gCzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=n5H9Bf9ZcCtG40Soap2ANs+z3ZAK6GVAhwLSpZUSWec=;
-        b=B3zMiAbZMg16y4ptk2wR5wLANi3vim352eblTrfB/VmQwCxX3M33D7tz1n0zelmlwM
-         DKKc6yuFW+AGVSMXOa76WwheymoyFLzEZ69epzDuAQa8Wz6em0KBLxWxWYJKmeJwXFXq
-         C91bIQgpWxPGIB7EfXRl1Res7DfPaSZZ9vlqG+npp3/lvQ1UWUrD8cKkpQIsVvKmgHc5
-         DqvoHKFt5IwlajI7Xw9o6JXfPXZiLpCoa5yUUKQ3r2XPy8NW+2rz2inbA9pZ/oAwuc7B
-         aJH9DBnoEGfZ9yuN87jFLAulq6JDEFh18WUfOUWTd9tqTmDYbDHDUVqQT7ZYdcn6K41F
-         bjdg==
-X-Gm-Message-State: AOAM532hiRjZhAnbpyFTERt3lZ+r0LEkT5P5kl252BGLZ8wNsRn4C999
-        9geUkZk49Xkd2orfcdkD3d8=
-X-Google-Smtp-Source: ABdhPJxYUhGJB+jUFDS/oaJSwUrqOLFdIMm6eNh2dKxmBCkq8HfxtUW1Ye/rjByuUAtzFN8bDwN9Mg==
-X-Received: by 2002:a92:de47:: with SMTP id e7mr468500ilr.282.1634916888379;
-        Fri, 22 Oct 2021 08:34:48 -0700 (PDT)
+        bh=pclmJnOxUzu2p+gBluzlBxhVBxGQaG1PWO0p74EKR7Y=;
+        b=gbwdnIEnMFRkZ0m/Hq5zldc1IHBBppUlkPAgA1mCJt0uda+HxOjcOJ+E2jNYf8IDyt
+         3H48pTz8AHAowjm+7LP8OfpW4oLt7PzNfkxdZhnXsEDbdfCGlga47evswaIJoN9gxjVE
+         njdc4zt9QOCnJsHlgw1UC6uJPRwoYfZn/2CuQJ+jXW1zrOxOLZbO0IOAywGge4WVi2b+
+         9GeIhiZZR/LwRFU9UnSFMrklKng8L+5z1tfMUczNSfx16Cs8cUF/1fNMDxrJ3uDZSIAv
+         up479xci9VEIJ4iXoke9jMn1I4zQrIdCVTx9dtGj/30bKglg27y9dAc/ss8IUjYSXSj0
+         Qd0w==
+X-Gm-Message-State: AOAM5339X7sMS2Z8Ihc3gZ8XPgxIrmuf0OWYt1iBvoqwMM8KEVW3oHgL
+        HFNK1OLyOQqD2VCAaieLMVZn3lMQkSoLS0Vx
+X-Google-Smtp-Source: ABdhPJzDCD7YbM/jLCvnfsDzB0/WsAqQpUUpQh9viwUNEpwSo568Vt0rmhUY0rnuNClo8/KyvLGHxw==
+X-Received: by 2002:a02:c901:: with SMTP id t1mr438586jao.132.1634917615795;
+        Fri, 22 Oct 2021 08:46:55 -0700 (PDT)
 Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id c4sm4392167ioo.48.2021.10.22.08.34.46
+        by smtp.gmail.com with ESMTPSA id w15sm4489324ill.23.2021.10.22.08.46.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 08:34:48 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 08:34:40 -0700
+        Fri, 22 Oct 2021 08:46:55 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 08:46:47 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Message-ID: <6172da1091904_82a7f20833@john-XPS-13-9370.notmuch>
-In-Reply-To: <20211008203306.37525-1-xiyou.wangcong@gmail.com>
-References: <20211008203306.37525-1-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf v4 0/4] sock_map: fix ->poll() and update selftests
+To:     Di Zhu <zhudi2@huawei.com>, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jakub@cloudflare.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhudi2@huawei.com
+Message-ID: <6172dce78e957_82a7f2082@john-XPS-13-9370.notmuch>
+In-Reply-To: <20211022103348.284562-1-zhudi2@huawei.com>
+References: <20211022103348.284562-1-zhudi2@huawei.com>
+Subject: RE: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -64,53 +67,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
+Di Zhu wrote:
+> Right now there is no way to query whether BPF programs are
+> attached to a sockmap or not.
 > 
-> This patchset fixes ->poll() for sockets in sockmap and updates
-> selftests accordingly with select(). Please check each patch
-> for more details.
+> we can use the standard interface in libbpf to query, such as:
+> bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+> the mapFd is the fd of sockmap.
 > 
-> Fixes: c50524ec4e3a ("Merge branch 'sockmap: add sockmap support for unix datagram socket'")
-> Fixes: 89d69c5d0fbc ("Merge branch 'sockmap: introduce BPF_SK_SKB_VERDICT and support UDP'")
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> 
+> Signed-off-by: Di Zhu <zhudi2@huawei.com>
 > ---
-> v4: add a comment in udp_poll()
-> 
-> v3: drop sk_psock_get_checked()
->     reuse tcp_bpf_sock_is_readable()
-> 
-> v2: rename and reuse ->stream_memory_read()
->     fix a compile error in sk_psock_get_checked()
-> 
-> Cong Wang (3):
->   net: rename ->stream_memory_read to ->sock_is_readable
->   skmsg: extract and reuse sk_msg_is_readable()
->   net: implement ->sock_is_readable() for UDP and AF_UNIX
-> 
-> Yucong Sun (1):
->   selftests/bpf: use recv_timeout() instead of retries
-> 
->  include/linux/skmsg.h                         |  1 +
->  include/net/sock.h                            |  8 +-
->  include/net/tls.h                             |  2 +-
->  net/core/skmsg.c                              | 14 ++++
->  net/ipv4/tcp.c                                |  5 +-
->  net/ipv4/tcp_bpf.c                            | 15 +---
->  net/ipv4/udp.c                                |  3 +
->  net/ipv4/udp_bpf.c                            |  1 +
->  net/tls/tls_main.c                            |  4 +-
->  net/tls/tls_sw.c                              |  2 +-
->  net/unix/af_unix.c                            |  4 +
->  net/unix/unix_bpf.c                           |  2 +
->  .../selftests/bpf/prog_tests/sockmap_listen.c | 75 +++++--------------
->  13 files changed, 58 insertions(+), 78 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
 
-For the series. Thanks.
+LGTM, lets add a small test here as well
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+  ./tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+
+Looks like we can just copy the sk_lookup.c test case which does
+the query tests for BPF_SK_LOOKUP.
+
+Also I don't think its required for this series, but a bpftool
+patch to query it would be useful as well if its doesn't just
+work with above.
+
+Thanks!
+John
