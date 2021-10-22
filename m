@@ -2,82 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DFC436EFE
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44C1436F01
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhJVAur (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 20:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJVAuq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:50:46 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9B4C061764;
-        Thu, 21 Oct 2021 17:48:30 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id x66so2131617pfx.13;
-        Thu, 21 Oct 2021 17:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tmArOx3eYbE8ZFWrrAoTrYxAAmYaBp16jR3G3fSQSgI=;
-        b=nf3TuOxGm1K7Yh7YGWAyXmEF9/PDd6596H3aUHCtBc7x2Cs3ACk4VvT/8b6jkCVLIk
-         ZjdfGHkyNMKNP7JXp1lDGxOSNe05+TOhezLpsDV9P9AEomYX/mLSRKkGTkPgo6XuHw8y
-         5NOJvqqIQZHteQHv2smMS4aI1KQk1CUXSXl5QW8QASdqmSP1lTVvAVq38ueWd7R3fhH6
-         XbUCO4ALZsTaaDXitC+PSzZOOdYeasWh2gs8g7gxCkitb0LAg4Oj9tDkcSObHIEM3aIl
-         qtubGnjAVZ3hcrnrPibziStV6hlb8EcrBJj5CSnFjLdSV0jGypI3KVJ6K6vd0MxakMzp
-         Wv6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tmArOx3eYbE8ZFWrrAoTrYxAAmYaBp16jR3G3fSQSgI=;
-        b=8RheaN6KWKZt2MqkoxEuJRCT46n+VvUujiDaP/ktKWNS+xLlbMxDFGVvx4hS1sDZBr
-         QOxig4aMqW0+5t6wsJKkmYxivo3PU7lQw2KtHS5wutCgsitlTKJFk8m5t+X3WLAMC/Zs
-         RB9ObNabqfaGg3YCv0tDFobxtMKih2pJt5uYMy0/Z5P1ADhavk3BNPntddFd0SDvy9E5
-         0pRlnH3wDhC7ABT5vsBG5damb4Af1WfgEhaqJTk9RnZ1emF4i+9Iey59RaJLA/IyyZ1w
-         0wCwpV7gH8S5vMDcXv7n9dRkhRA/4JwK6YHcqWUtugSq5Si6KCk/3XiefMpkjLli8fRb
-         x67w==
-X-Gm-Message-State: AOAM530gC/MCD/aD8rDA6VtF20FeAz6IDqXEHHKNCGcgVu5DK0vL788p
-        6qXsnmb5b2Fa28IJ0emQW6Ma7TH5gQH457TTT4Q=
-X-Google-Smtp-Source: ABdhPJykVtN09BVssZyNEZU0GfBcUWhYDoLm1kfIrtKQ5vVxYX8+WTsZU33vRf2e6iF2uSjXPWl3E+jbElPsyOtuOws=
-X-Received: by 2002:aa7:9f8f:0:b0:44c:cf63:ec7c with SMTP id
- z15-20020aa79f8f000000b0044ccf63ec7cmr8957531pfr.77.1634863709799; Thu, 21
- Oct 2021 17:48:29 -0700 (PDT)
+        id S231567AbhJVAvj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 20:51:39 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40948 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhJVAvj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 20:51:39 -0400
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 61EBF20B6C55
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:49:22 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 61EBF20B6C55
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1634863762;
+        bh=svPWq/6FS+2H+VVf9ukZHq+zjeWYXuTgEf2PYMnibS0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SqQXBAkE1ftJE4qowzeI6WlVcHSpo45gurc0PClpAutivDm9FDRRu0v+w5UB7E2eV
+         A50jF7oNf3uCxP3Qq6Ih7lZwVAF5RfoqJsuWa8CV56ehOqi2Nsu9LjxkEuMdkX9kHI
+         APzsMvX3wXLLdGSXRS+qk6UfUFz2vFYbNVzqYGVs=
+Received: by mail-pj1-f54.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so1811001pjb.5
+        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:49:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530ul5003QnIHjGuzoUOCPzzwITH10DmOn2IxLCZUKxGRvRcseCW
+        TjwOOpNhM/vmYEkHuNn9uKgKwqQvXipZWyR7CRU=
+X-Google-Smtp-Source: ABdhPJxeLRlfqf2KbjxpCQq3t6x4yXlqykZ3mbIStymCuy8hpUc5gJLNWUTx1rOLeJOzFRpH051rq/HaIHN10EXA8ak=
+X-Received: by 2002:a17:90b:1e0e:: with SMTP id pg14mr10342710pjb.15.1634863761867;
+ Thu, 21 Oct 2021 17:49:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021183951.169905-1-toke@redhat.com>
-In-Reply-To: <20211021183951.169905-1-toke@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 17:48:18 -0700
-Message-ID: <CAADnVQLPBLc0T32nqM7Q_LBEGWiJRp3JvGaY2Lsmf9yqJW+Yfw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix potential race in tail call compatibility check
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20210917215721.43491-1-alexei.starovoitov@gmail.com>
+ <20210917215721.43491-2-alexei.starovoitov@gmail.com> <20210928164515.46fad888@linux.microsoft.com>
+ <20210928163730.7v7ovjhk7kxputny@ast-mbp.dhcp.thefacebook.com>
+ <20210928191103.193a9c62@linux.microsoft.com> <CAADnVQ+ajFPKfP+Q5WQFztfZ+05uGgbuQk3H8_9OTny=0vku=g@mail.gmail.com>
+ <CAFnufp3hx0CaF=ukCXY3UJj0omVX+5WWk0=-QuENvTPGye_sKA@mail.gmail.com>
+ <20210929193858.57ba3cd1@linux.microsoft.com> <CAADnVQJjHyB1CwquYx2X2uMGygEpFJhNh75gPcHnYkD2pLmcDA@mail.gmail.com>
+ <CAFnufp07EHqc0wgv0V2H5yMfdw-9diPOX6RS_z+k1iJV+LJ=Kw@mail.gmail.com>
+In-Reply-To: <CAFnufp07EHqc0wgv0V2H5yMfdw-9diPOX6RS_z+k1iJV+LJ=Kw@mail.gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 22 Oct 2021 02:48:45 +0200
+X-Gmail-Original-Message-ID: <CAFnufp15UYRJTW9dEorryZ80NsK_ULK0MXmaP_dg_ys6jC89nw@mail.gmail.com>
+Message-ID: <CAFnufp15UYRJTW9dEorryZ80NsK_ULK0MXmaP_dg_ys6jC89nw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 01/10] bpf: Prepare relo_core.c for kernel duty.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Matteo Croce <mcroce@microsoft.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:40 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
-> +       map_type =3D READ_ONCE(array->aux->type);
-> +       if (!map_type) {
-> +               /* There's no owner yet where we could check for compatib=
-ility.
-> +                * Do an atomic swap to prevent racing with another invoc=
-ation
-> +                * of this branch (via simultaneous map_update syscalls).
->                  */
-> -               array->aux->type  =3D fp->type;
-> -               array->aux->jited =3D fp->jited;
-> +               if (cmpxchg(&array->aux->type, 0, prog_type))
-> +                       return false;
+On Thu, Sep 30, 2021 at 1:49 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> On Thu, Sep 30, 2021 at 1:01 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Sep 29, 2021 at 10:39 AM Matteo Croce
+> > <mcroce@linux.microsoft.com> wrote:
+> > > > >
+> > > > > I'll take a look. Could you provide the full .c file?
+> > > >
+> > > > Sure. I put everything in this repo:
+> > > >
+> > > > https://gist.github.com/teknoraver/2855e0f8770d1363b57d683fa32bccc3
+> >
+> > This gist is not a reproducer. It doesn't have a single CO-RE relo.
+> >
+> > But I've hacked it with dev->ifindex like in your email above
+> > and managed to repro.
+> > My error is different though:
+> > [ 1127.634633] libbpf: prog 'prog_name': relo #0: trying to relocate
+> > unrecognized insn #0, code:0x85, src:0x0, dst:0x0, off:0x0, imm:0x7
+> > [ 1127.636003] libbpf: prog 'prog_name': relo #0: failed to patch insn #0: -22
+> >
+> > But there is a bug. Debugging...
+>
+> Oops, I forget to force push, sorry..
+> I've updated the gist, even if you managed to reproduce a similar error.
+>
+> Regards,
+> --
+> per aspera ad upstream
 
-Other fields might be used in the compatibility check in the future.
-This hack is too fragile.
-Just use a spin_lock.
+Hi Alexei,
+
+Did you find out anything?
+
+I posted an RFC for the eBPF signature which depends on this series.
+
+Regards,
+-- 
+per aspera ad upstream
