@@ -2,74 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FBB436F14
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C221436F56
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 03:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbhJVAxk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 20:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbhJVAxj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:53:39 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9E1C061764
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:51:23 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id w17so1577607plg.9
-        for <bpf@vger.kernel.org>; Thu, 21 Oct 2021 17:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Enb7nyrjVNvXyAgH3Ga/tFNgrt0DMdmL2N5/zDV5Oug=;
-        b=KOUjFIxouNDcu5kw2L22LIR8sTQXpuccFj6/aiPgOwbOulOLTiMFWlrM9Tp4797+PL
-         ml2GRLyQl1wCV0pxDvrHz3OoOFu6b60Y3DYGtmNZnGOEwn3hh27viYA/zMywZvs/jn+j
-         rNdy2oWYBD1+wvI/SvI6aY+AV21x53M8sL6vtWBYTVJvbiVDXJy1NTsqeGyBC2yTKgNI
-         wtqVzYtUwlLEL13uaoLx3zP47p4M1xudEErqKu2yEMe9DG+Bss0pVurXouZmPyE96ylG
-         Yb44lw3nlVrEXNYYjz7sRnOvsgVx/alBjObyOp3FHY8CD4BnhKmMxCNb1xXuVNGuC56C
-         3bMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Enb7nyrjVNvXyAgH3Ga/tFNgrt0DMdmL2N5/zDV5Oug=;
-        b=KZiB33Q5Q30pkbU1WsP7en8BZ0nHCECuUM6KFqMQc6C595TV0oENwVYZU5yo3b+upL
-         Cv1RRpvuhUYjMi77Dq8ekAhyRFJptK3ZF/cwG5IR8fj4nEDVHgdKGX09C2zh4NgyP0uJ
-         wgxaYh1hn5hNnb8AVvUjjd9MbMXHINySPhyWRDAIxaUnygXns0YF/Y7gozneQvf1PluV
-         LUw5oq2BoiTPkXawc+RqWj0aqgibbaXnWdNWbMpsFcfCsQpE7qjtyn2u7ETmevRVp/TW
-         UTw2Fa0UAlUAg6+cmEeI7G6Qh+M9E9ovdO6/YMLVRvbwAhCVrNc4I66odm9wInhgdASH
-         yPyQ==
-X-Gm-Message-State: AOAM530XNwZd1G4eNBG48xsSl7p2KGLjnMbSwtkYovAmAIOGmyiwlQyF
-        ZXaIzM2NqC3bsaWVEIbgzekvUNGnP4uyaR3EmgQ=
-X-Google-Smtp-Source: ABdhPJz47jYQ10RLyCp+oI5N+S/RSKGqh11TOCRT/K7JyoTlb5hYg2aEKXiMi+ZG2jzD7oGa+DgVkzV9Wi6S8DLMMJ8=
-X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr10498233pjj.138.1634863882630;
- Thu, 21 Oct 2021 17:51:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210917215721.43491-1-alexei.starovoitov@gmail.com>
- <20210917215721.43491-2-alexei.starovoitov@gmail.com> <20210928164515.46fad888@linux.microsoft.com>
- <20210928163730.7v7ovjhk7kxputny@ast-mbp.dhcp.thefacebook.com>
- <20210928191103.193a9c62@linux.microsoft.com> <CAADnVQ+ajFPKfP+Q5WQFztfZ+05uGgbuQk3H8_9OTny=0vku=g@mail.gmail.com>
- <CAFnufp3hx0CaF=ukCXY3UJj0omVX+5WWk0=-QuENvTPGye_sKA@mail.gmail.com>
- <20210929193858.57ba3cd1@linux.microsoft.com> <CAADnVQJjHyB1CwquYx2X2uMGygEpFJhNh75gPcHnYkD2pLmcDA@mail.gmail.com>
- <CAFnufp07EHqc0wgv0V2H5yMfdw-9diPOX6RS_z+k1iJV+LJ=Kw@mail.gmail.com> <CAFnufp15UYRJTW9dEorryZ80NsK_ULK0MXmaP_dg_ys6jC89nw@mail.gmail.com>
-In-Reply-To: <CAFnufp15UYRJTW9dEorryZ80NsK_ULK0MXmaP_dg_ys6jC89nw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 17:51:11 -0700
-Message-ID: <CAADnVQ+xVzbz_jhn_k0c+tNU7Py_oJqBJ5Sr+DGq1t-Y1iWxZw@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 01/10] bpf: Prepare relo_core.c for kernel duty.
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        id S230288AbhJVBYJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 21:24:09 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25309 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhJVBYJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 21:24:09 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hb5zw1DBGzbhJv;
+        Fri, 22 Oct 2021 09:17:16 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (7.185.36.155) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 09:21:50 +0800
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ dggpeml500010.china.huawei.com (7.185.36.155) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 09:21:50 +0800
+Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
+ dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.015;
+ Fri, 22 Oct 2021 09:21:50 +0800
+From:   "zhudi (E)" <zhudi2@huawei.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Matteo Croce <mcroce@microsoft.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIGJwZjogc3VwcG9ydCBCUEZfUFJPR19RVUVSWSBm?=
+ =?utf-8?Q?or_progs_attached_to_sockmap?=
+Thread-Topic: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to
+ sockmap
+Thread-Index: AQHXxOkchxQzV9/PNEig//CNsgG3kavdqaYAgACSU+A=
+Date:   Fri, 22 Oct 2021 01:21:50 +0000
+Message-ID: <41d41a6026e243bca11ccfefb50b11c0@huawei.com>
+References: <20211019125856.2566882-1-zhudi2@huawei.com>
+ <CAADnVQ+MLy8Ub8FL4ak92Wh+LqUg5npfHc_u3bgDqk-U7LB3Ww@mail.gmail.com>
+In-Reply-To: <CAADnVQ+MLy8Ub8FL4ak92Wh+LqUg5npfHc_u3bgDqk-U7LB3Ww@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.136.114.155]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 5:49 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> I posted an RFC for the eBPF signature which depends on this series.
-
-you need to wait.
+U29ycnksIGl0J3MgbXkgY2FyZWxlc3NuZXNzLiBJJ2xsIGFkYXB0IGl0IG9uIHRoZSBsYXRlc3Qg
+a2VybmVsLg0KDQpUaGFua3MuDQoNCj4gT24gVHVlLCBPY3QgMTksIDIwMjEgYXQgNTo1OSBBTSBE
+aSBaaHUgPHpodWRpMkBodWF3ZWkuY29tPiB3cm90ZToNCj4gPiArICAgICAgICAgICAgICAgYnJl
+YWs7DQo+ID4gKyNpZiBJU19FTkFCTEVEKENPTkZJR19CUEZfU1RSRUFNX1BBUlNFUikNCj4gPiAr
+ICAgICAgIGNhc2UgQlBGX1NLX1NLQl9TVFJFQU1fUEFSU0VSOg0KPiA+ICsgICAgICAgICAgICAg
+ICAqcHJvZyA9IFJFQURfT05DRShwcm9ncy0+c2tiX3BhcnNlcik7DQo+IA0KPiBza2JfcGFyc2Vy
+Pw0KPiBQbGVhc2UgZG9uJ3Qgc3VibWl0IHBhdGNoZXMgdGhhdCBkb24ndCBldmVuIGJ1aWxkLg0K
