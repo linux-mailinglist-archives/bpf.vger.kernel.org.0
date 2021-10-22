@@ -2,123 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5361E437503
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 11:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528FE437565
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 12:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhJVJuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Oct 2021 05:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbhJVJuG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Oct 2021 05:50:06 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196F7C061764
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 02:47:49 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id z11-20020a1c7e0b000000b0030db7b70b6bso2734022wmc.1
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 02:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XuyoO0KwbnJlAvuwrNyqN2UzjOrfqN6yescFAavqV+0=;
-        b=l9uS1gic+zy8IAayhWSJyK+m593hBUWrhkXaAbTdjCdOzFfqaFnDlCuVL3Oy/dDmGm
-         sPc5lm9q6bbNcR7K95BFCnDLTS3tMlWm9l2aLq2tBE9C8MVpdpjiwE2U5FV20VUfGOtp
-         Rr/Oy2aF71mJ1qVZGaLER3haWX7dEr6lZPRfh/G7EyNQpzSnRt7BBzSmOIRsC9fq4gAv
-         0fqAAKz0AMQ9ORVSpAfSIKqg7cp6Cyla8c5TD2fMqGzOK/0fJw/8g9+uxU9FXQ9mtcLJ
-         7CcU9OQHyNAoI+0xT5xvEBnqxuJDN/SZbcuUCZb65jbAYjDyyaGPHpw9WzdkQyQHamXK
-         +6NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XuyoO0KwbnJlAvuwrNyqN2UzjOrfqN6yescFAavqV+0=;
-        b=DcEAQ5LH7SXbK+CiJYN1DWspmtlYSsKx8DVnibVZTVCXgZjlEUmcjLYtQE1sOCBSKK
-         Zxg8IsWcU4t/Zb86zkPkiXpN9dhfMnF9XNwln5h7GGrFif/9adwcCRl7Y1lTWIl9owuV
-         0kfyLNVWM5kxQOHbFJCFSrj6CnY+E+osiLvgs4LD6yKA3RcjkDRoqpSgTYNF26R5DbX6
-         Pe9iL6P2iPTpzQEcFDXFZ5IAQcLkrzXkC3zuiSnFJoqy29lttnM1NzVqZzZrfcDBYCC+
-         VkwXl4Rm4MA0Bax7AXT9r3fiXGSP41LHQmd8ReXy4Tve7Infh9/m6HkH+IIKcHsx38tj
-         MlIg==
-X-Gm-Message-State: AOAM531wqBmVra5Fncpxymw1o5GGzmiCMBr7g3A4STJHHVj6jkMnRBDu
-        xjR1Njs6LYZ+pb29EsF2Jr+Q4Q==
-X-Google-Smtp-Source: ABdhPJwMtcgjSWPbcQlGaNLO9zs6nwoMjl5M9xyy52UDXBAyjJNLhsHxSyCANAy2N9NYBOZpNBBwoA==
-X-Received: by 2002:a7b:c757:: with SMTP id w23mr12821745wmk.84.1634896067692;
-        Fri, 22 Oct 2021 02:47:47 -0700 (PDT)
-Received: from localhost.localdomain ([149.86.70.166])
-        by smtp.gmail.com with ESMTPSA id g2sm7277368wrq.62.2021.10.22.02.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 02:47:47 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
+        id S232580AbhJVK0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 06:26:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31064 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232483AbhJVK0s (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 22 Oct 2021 06:26:48 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19M9Zvqh004491;
+        Fri, 22 Oct 2021 06:24:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=yVT4dh5crNcz7J5emRyqwKpgXKwzArVjBWkSrO3kxxY=;
+ b=Pjg155T1q5QFwAMarjY7x/IrQd1dPgHREcp7rrDQbpli3XFA+tRpfDnV2VFs+EOBjKQr
+ sffM66pB/7ntzPxRidrEHnNFZ60iEyOC8f7mk6AmnN69htocdv2htTZ8TJT1MSVa6a7v
+ hQaQoRm/S+3r9dZjkB0q7OZkGyVbFs1AfIKastqhmahunjavtpPoDwnzxNZPwdRZO3Jt
+ /SSimnciBemMaVDPGmabSk4ojH5GaEeFkGvRPazTOuYxh4fPqM9bIGHaIEApMYOeUaB9
+ AcUenchMmR8NRipnZ0IWVSJI8hYRDyXTJwjZxZeby7K0K35vRhMedNJiPyFSnmKWyJqA Tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bufj0mq39-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 06:24:17 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19M9wBP6013306;
+        Fri, 22 Oct 2021 06:24:16 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bufj0mq2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 06:24:16 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19MABl9L032400;
+        Fri, 22 Oct 2021 10:24:15 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 3bqpcabu8f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Oct 2021 10:24:15 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19MAOBqO2622010
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Oct 2021 10:24:11 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C0EB5A4054;
+        Fri, 22 Oct 2021 10:24:11 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6EA50A405F;
+        Fri, 22 Oct 2021 10:24:11 +0000 (GMT)
+Received: from sig-9-145-12-156.uk.ibm.com (unknown [9.145.12.156])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 22 Oct 2021 10:24:11 +0000 (GMT)
+Message-ID: <8e1c57c29be8812cbd6407112b00939c7ea780ab.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 2/3] libbpf: Fix relocating big-endian bitfields
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>,
-        YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH bpf-next] bpftool: avoid leaking the JSON writer prepared for program metadata
-Date:   Fri, 22 Oct 2021 10:47:43 +0100
-Message-Id: <20211022094743.11052-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Fri, 22 Oct 2021 12:24:11 +0200
+In-Reply-To: <20211021234653.643302-3-iii@linux.ibm.com>
+References: <20211021234653.643302-1-iii@linux.ibm.com>
+         <20211021234653.643302-3-iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -yAvdDPjH9yL9FxRv0LWBwPfB_80x4Sf
+X-Proofpoint-GUID: BhvdvPjrbdvX81HTMXAHqyE5HfLA7LSt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-22_02,2021-10-21_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 mlxlogscore=999 clxscore=1015 malwarescore=0 phishscore=0
+ spamscore=0 mlxscore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110220056
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bpftool creates a new JSON object for writing program metadata in plain
-text mode, regardless of metadata being present or not. Then this writer
-is freed if any metadata has been found and printed, but it leaks
-otherwise. We cannot destroy the object unconditionally, because the
-destructor prints an undesirable line break. Instead, make sure the
-writer is created only after we have found program metadata to print.
+On Fri, 2021-10-22 at 01:46 +0200, Ilya Leoshkevich wrote:
+> This is the same as commit c9e982b87946 ("libbpf: Fix dumping
+> big-endian bitfields"), but for CO-RE. Make the code structure as
+> similar as possible to that of btf_dump_get_bitfield_value().
+> 
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  tools/lib/bpf/relo_core.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+> index b5b8956a1be8..fd814b985e1e 100644
+> --- a/tools/lib/bpf/relo_core.c
+> +++ b/tools/lib/bpf/relo_core.c
+> @@ -661,13 +661,18 @@ static int bpf_core_calc_field_relo(const char
+> *prog_name,
+>                 if (validate)
+>                         *validate = true; /* signedness is never
+> ambiguous */
+>                 break;
+> -       case BPF_FIELD_LSHIFT_U64:
+> +       case BPF_FIELD_LSHIFT_U64: {
+> +               __u32 bits_offset = bit_off - byte_off * 8;
+> +               __u8 nr_copy_bits;
+> +
+>  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+> -               *val = 64 - (bit_off + bit_sz - byte_off  * 8);
+> +               nr_copy_bits = bit_sz + bits_offset;
+>  #else
+> -               *val = (8 - byte_sz) * 8 + (bit_off - byte_off * 8);
+> +               nr_copy_bits = byte_sz * 8 - bits_offset;
+>  #endif
+> +               *val = 64 - nr_copy_bits;
+>                 break;
+> +       }
+>         case BPF_FIELD_RSHIFT_U64:
+>                 *val = 64 - bit_sz;
+>                 if (validate)
 
-Found with valgrind.
+At a closer look this patch is not necessary: the new and the old
+expressions yield the same result. Please disregard it.
 
-Cc: YiFei Zhu <zhuyifei@google.com>
-Fixes: aff52e685eb3 ("bpftool: Support dumping metadata")
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/prog.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 277d51c4c5d9..f633299b1261 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -307,18 +307,12 @@ static void show_prog_metadata(int fd, __u32 num_maps)
- 		if (printed_header)
- 			jsonw_end_object(json_wtr);
- 	} else {
--		json_writer_t *btf_wtr = jsonw_new(stdout);
-+		json_writer_t *btf_wtr;
- 		struct btf_dumper d = {
- 			.btf = btf,
--			.jw = btf_wtr,
- 			.is_plain_text = true,
- 		};
- 
--		if (!btf_wtr) {
--			p_err("jsonw alloc failed");
--			goto out_free;
--		}
--
- 		for (i = 0; i < vlen; i++, vsi++) {
- 			t_var = btf__type_by_id(btf, vsi->type);
- 			name = btf__name_by_offset(btf, t_var->name_off);
-@@ -328,6 +322,14 @@ static void show_prog_metadata(int fd, __u32 num_maps)
- 
- 			if (!printed_header) {
- 				printf("\tmetadata:");
-+
-+				btf_wtr = jsonw_new(stdout);
-+				if (!btf_wtr) {
-+					p_err("jsonw alloc failed");
-+					goto out_free;
-+				}
-+				d.jw = btf_wtr,
-+
- 				printed_header = true;
- 			}
- 
--- 
-2.30.2
+Best regards,
+Ilya
 
