@@ -2,78 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD37436EDA
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8189D436EE1
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 02:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhJVAgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Oct 2021 20:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S231844AbhJVAia (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Oct 2021 20:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJVAgx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Oct 2021 20:36:53 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E68C061764;
-        Thu, 21 Oct 2021 17:34:37 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id v20so1560122plo.7;
-        Thu, 21 Oct 2021 17:34:37 -0700 (PDT)
+        with ESMTP id S229512AbhJVAia (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Oct 2021 20:38:30 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AF8C061766;
+        Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id i1so1537449plr.13;
+        Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yqPz9UwGOL2oABwNBSlqj+l8EL/eOZPQBNaJklwRa/Y=;
-        b=Zj0bq3XMN9csha0L+Lyafo/XEJ+3FzTLi3q+OsMfh7ovp6D6xpKprFvgJ6AhxAYB6V
-         QzsJkBx1VcJlr0mlDLn1mrxYWJgSktoIDVmH4+6kd9Kz2RmZ4fAWozhOGT0Hvw+Bo7em
-         OVOAJjObWPnhKZ1fDZSpKMKrbqBdBQRN584mwECQSGM/WoYcmCI6L+ESc/Db1HkQE2ct
-         yVFai21IBH7g4MW3eNDC//ZQTCDHAjJEzBR6PQ+MdsxnyIyXJZhj5MmggOKnIQnRSKFD
-         /KQq5KspfnS4XuUZZsCy9cTLp5JhfEfvTjOxtaGHVGXKLVZgeJIBYTnMhM5AoLZawNmP
-         SKrw==
+        bh=4NyLIt9iLg6rZ1QK5VsbahId9/COsWCMPmtuER6RfUg=;
+        b=bplMtp7hlQ2ltpCHyZDdZlhsDlgsw1Es32HK+cub4W72PQrTpsxbebomL2a0G7o/tU
+         Qhfuwg/SoWG5U1/bi62Z6YHhMkqV8nnrYIYZiYn4R/jFbdxxKpAGiRNHdJJ49ieqoevf
+         XZ7mkuig5cINTG8YkAyzLG3RIygG6V4gikqyUkDwJEM9kIcF9rg0z8Yfk3++atPCE20Y
+         goMdglQAlDaw1IgrKVPJjBLtLsvpOlchs/b1/g1+tztNH0SAesb0W8v8S/JxfTQl9jHB
+         rMvIzW8V4QEj0gEVgAhAYuARQHNGWN9uvoRCF4EhPzuGiosPZ0K8gIDbO6inUiSdvYJU
+         fIfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yqPz9UwGOL2oABwNBSlqj+l8EL/eOZPQBNaJklwRa/Y=;
-        b=BnA5Qeq8POWQeqSqLDJP/+4PAKbJvy2k/Ir7INwQ72/Cq4X3Y8IFIqDGsjkNgA391b
-         i/Yv7HbgpDNmIYWcOeNaBIFTnQnmzImLObxc2jxB8br5GbAC7TLl8i/gjV0oucX566VI
-         IxFrjUlfsBn4NVPcCJoa5O3DmbA3cBnPO0mU0tVDvDjV5QmVhGi/7Lwogwd6rNUdPGNF
-         bZvTh5smzlg6wQKsHLOJogVT7eIv67CsB3coDWAQcObdzLmBhrNkBhkrmvQC00RWlGe9
-         jyOx1Ozrm6ncMwVwIaOXjJvz48Xp26K3viCCJLum+IHCwFUMq5C12wiNYXOVng/VNOE+
-         D+sg==
-X-Gm-Message-State: AOAM532FicRn1aB9TKj6XyUm9VJ1UNsvuZI6W4JGl7UShV9ehaSDkM65
-        hB+2E8xeLBjRfoD+t2g57Q4mIlDl7rLALai7pyY=
-X-Google-Smtp-Source: ABdhPJyF09dUixHxh34wDIUzRjS++Vw65D3ix9lvCpIigyHgvAy1i8yfNHIW2r9EiP+fEA0krl9HUx7aOUa8H1lASG0=
-X-Received: by 2002:a17:90b:3148:: with SMTP id ip8mr10296860pjb.62.1634862876489;
- Thu, 21 Oct 2021 17:34:36 -0700 (PDT)
+        bh=4NyLIt9iLg6rZ1QK5VsbahId9/COsWCMPmtuER6RfUg=;
+        b=Marb2D6QCccHUnZtaeGWgFN35rV9ecOaNGCaughtOHxzxv/B9zcIkBudZUkRSScbPH
+         CBx1SGY08jWuLxDwZm5qqo0OS0iG5grdkxy6earyR7b0ktf/4QZre9+seDmh80fo7v8q
+         exrk4PZ6xyKz3cFErWGOLILZAwINRud7hkTQGBJbD9q4pu7KCQfKMogUQRVbVt9stOQH
+         oJBvCsp/wR5hWs678xYuNU+CUxFuD9sHLAGOYuCAdNuqn4mWOSZaRgncSwWlZ+h/DYye
+         9xEz1WVjbdHMM9vxrVeJIFoRU6ldRayatuY1F9MAD+LXtISK8KOw7RrxmHWwVxsD0EjY
+         ipHg==
+X-Gm-Message-State: AOAM530PphpD0sl3j6+or9JJXHpvoiSC2DwPuFBsYi6uuA3QDMWQDbRr
+        +3TiE9WjsnKu6EGXdhh7GP23JVm+L/19geOhwas=
+X-Google-Smtp-Source: ABdhPJzx+ge6JKoDTskH6nB+UW4cv10c4x1D7XvWUxpTXRXFXz1xIiK+P2rRY2QiNoMDW/dHjczEOmKroX9vu7zCYew=
+X-Received: by 2002:a17:90b:4a4d:: with SMTP id lb13mr9954808pjb.122.1634862973288;
+ Thu, 21 Oct 2021 17:36:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021151528.116818-1-lmb@cloudflare.com> <20211021151528.116818-2-lmb@cloudflare.com>
-In-Reply-To: <20211021151528.116818-2-lmb@cloudflare.com>
+References: <20211019125856.2566882-1-zhudi2@huawei.com>
+In-Reply-To: <20211019125856.2566882-1-zhudi2@huawei.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Oct 2021 17:34:25 -0700
-Message-ID: <CAADnVQLuhuAHe1e0gBZQTDynys5pXwWbp0BOZ6o6+J7a8gun9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] libfs: support RENAME_EXCHANGE in simple_rename()
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+Date:   Thu, 21 Oct 2021 17:36:02 -0700
+Message-ID: <CAADnVQ+MLy8Ub8FL4ak92Wh+LqUg5npfHc_u3bgDqk-U7LB3Ww@mail.gmail.com>
+Subject: Re: [PATCH] bpf: support BPF_PROG_QUERY for progs attached to sockmap
+To:     Di Zhu <zhudi2@huawei.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 8:16 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> Allow atomic exchange via RENAME_EXCHANGE when using simple_rename.
-> This affects binderfs, ramfs, hubetlbfs and bpffs. There isn't much
-> to do except update the various *time fields.
->
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+On Tue, Oct 19, 2021 at 5:59 AM Di Zhu <zhudi2@huawei.com> wrote:
+> +               break;
+> +#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+> +       case BPF_SK_SKB_STREAM_PARSER:
+> +               *prog = READ_ONCE(progs->skb_parser);
 
-Al,
-
-could you please Ack this patch so we can route the whole set through
-bpf-next tree?
+skb_parser?
+Please don't submit patches that don't even build.
