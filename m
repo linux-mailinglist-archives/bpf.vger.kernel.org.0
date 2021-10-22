@@ -2,70 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5866438075
-	for <lists+bpf@lfdr.de>; Sat, 23 Oct 2021 01:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762D64380B5
+	for <lists+bpf@lfdr.de>; Sat, 23 Oct 2021 01:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhJVXMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Oct 2021 19:12:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231134AbhJVXMZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:12:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F382560F25;
-        Fri, 22 Oct 2021 23:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634944207;
-        bh=5xYKVWnMh6ZunL8Pv3pRq8PpMAvPwX/8WNtzzuZ2RC4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oySeyaHEI+Hgz/yuKCz8HWHhDt5YUfJWlU/BVoYyg01IquWK9A3g7AAJ3v2G+6T5j
-         m4rqYx9TApqLsMaPBjqlWNBO2PHljtzCNUfOH0qsgg1Ipavzha0CMm4lAOtrwLNe9A
-         vqnSaMwmadK/cZEoptlLovAkhKCI+evX2896xrMskFE3q4DbqJymjLEcBIRSKBcAq7
-         uc0sWSe5CHJgTfKN/nVRksXM+uAFLYdkqym4ZLIJnavw1YzePngRwOZfRkSjUoiBHZ
-         iaQ+yljs4+xyeh6Xix4kiaUkPZSteQK7che9CjHyChRmQdeHBlTWRROsllY6r8+hnL
-         zazOHz4DR4V7Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E62C2609E2;
-        Fri, 22 Oct 2021 23:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232318AbhJVXky (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 19:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhJVXky (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Oct 2021 19:40:54 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9103C061764
+        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 16:38:35 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id v200so10336597ybe.11
+        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 16:38:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=slq52cAdHRoa9atgU3dV2eltaTrBwuhOstDQ5DaWuWo=;
+        b=gad642RYSSTjRhAXTXl0PalNId8GCpgTvv2q3xDQAaGgqHncjNJ08kySLPQ9kSj7zp
+         TJ1Z/4IJdcHShff1PoP33xksfB5pf/hVxcMVEBU07c4sARa0ZvUK1vkRtI6m5KUo+3sG
+         FPyuih0s7mQIXY0MVeoqKkTcLkjC05BahkNyMLwQge7rf5aYhS4Lq3SX0lH+Gb4CWtLz
+         6oEj6zKKBRCosDzUXNkRZYZivEQRqDh5yas4tZYK6nZUk0cj/oGN3Ke5oQyHRHErpNco
+         N5EZDkGcHsLQJRbPPREWE5EtfwQ0fM3fr5lhHW8swO3ASq6QQ2INL0DxhiscdENgcxma
+         9zPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=slq52cAdHRoa9atgU3dV2eltaTrBwuhOstDQ5DaWuWo=;
+        b=dSSCQ/w8wQv/Xr4Ps0siZBXmAz4DLynR4oZIUj47sbmbxdQePmmUo+7+pNu5AveoRN
+         0MfXl06FkJuCS02izWciidZDg5EZTesoONh3yCWBxkAAg1GqNik9YUSFiR+HmhDcUuHW
+         Mgn9C+lD9B17ZB7DcEwEV/3ek0nUVqgWV55ddzaqkTO1iGGlHTr8ekch06jkEChY+bgS
+         lGcfpL4gur8DRSsaeUmlNuhjl9w9dMGzYiGiGFTsw4E2iSr8lZdk97oBkJYRAD5/ZwqW
+         w0pw0yaHwoPVwJBi0ITwHvpaN3Pa84nZBpcshAAIl78gKTNPt26ovDFYiEZYbgFWnZK7
+         /o3g==
+X-Gm-Message-State: AOAM530YV3kbDW1RFrt35XEPP51fgXCIW71e25wmpKIF6zvdrs4EQLo9
+        P5QUqD42i7AlHKkZMWb3cXMszsMMZ7W5ypZ6LNtE1MtsCs0=
+X-Google-Smtp-Source: ABdhPJxTIKu/rWvhMDEKQNDfUVg49oOwE/KbX2ULjUn01bsfyeYiQD9NqDTN88jMePvDhVcQO+XwOXLlfvEEL3I7G00=
+X-Received: by 2002:a25:8749:: with SMTP id e9mr1472909ybn.2.1634945914999;
+ Fri, 22 Oct 2021 16:38:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: fix memory leak in btf__dedup()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163494420693.19598.6158579807891111574.git-patchwork-notify@kernel.org>
-Date:   Fri, 22 Oct 2021 23:10:06 +0000
-References: <20211022202035.48868-1-mauricio@kinvolk.io>
-In-Reply-To: <20211022202035.48868-1-mauricio@kinvolk.io>
-To:     =?utf-8?q?Mauricio_V=C3=A1squez_=3Cmauricio=40kinvolk=2Eio=3E?=@ci.codeaurora.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org
+References: <20211021234653.643302-1-iii@linux.ibm.com>
+In-Reply-To: <20211021234653.643302-1-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 22 Oct 2021 16:38:24 -0700
+Message-ID: <CAEf4BzZBTDpcbEzpm5v7GUE7z_bZ+Azxf-Gt3oqqKGWFRYQP-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] core_reloc fixes for s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Oct 21, 2021 at 4:47 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> Hi,
+>
+> this series fixes test failures in core_reloc on s390.
+>
+> Patch 1 fixes a bug in byte order determination.
+> Patch 2 fixes an endianness issue in bitfield relocation.
+> Patch 3 fixes an endianness issue in test_core_reloc_mods.
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Fri, 22 Oct 2021 15:20:35 -0500 you wrote:
-> Free btf_dedup if btf_ensure_modifiable() returns error.
-> 
-> Fixes: 919d2b1dbb07 ("libbpf: Allow modification of BTF and add btf__add_str API")
-> 
-> Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
-> ---
->  tools/lib/bpf/btf.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-
-Here is the summary with links:
-  - [bpf-next] libbpf: fix memory leak in btf__dedup()
-    https://git.kernel.org/bpf/bpf-next/c/1000298c7683
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This doesn't apply cleanly anymore. Please rebase and re-submit. You
+mentioned that patch #2 is not necessary, so please drop it as well.
+As for the patch #1, can you please split it into libbpf, selftests
+and samples patches? Thanks.
 
 
+> Best regards,
+> Ilya
+>
+> Ilya Leoshkevich (3):
+>   bpf: Use __BYTE_ORDER__ everywhere
+>   libbpf: Fix relocating big-endian bitfields
+>   selftests/bpf: Fix test_core_reloc_mods on big-endian machines
+>
+>  samples/seccomp/bpf-helper.h                       |  8 ++++----
+>  tools/lib/bpf/bpf_core_read.h                      |  2 +-
+>  tools/lib/bpf/btf.c                                |  4 ++--
+>  tools/lib/bpf/btf_dump.c                           |  8 ++++----
+>  tools/lib/bpf/libbpf.c                             |  4 ++--
+>  tools/lib/bpf/linker.c                             | 12 ++++++------
+>  tools/lib/bpf/relo_core.c                          | 13 +++++++++----
+>  .../testing/selftests/bpf/prog_tests/btf_endian.c  |  6 +++---
+>  .../selftests/bpf/progs/test_core_reloc_mods.c     |  9 +++++++++
+>  tools/testing/selftests/bpf/test_sysctl.c          |  4 ++--
+>  tools/testing/selftests/bpf/verifier/ctx_skb.c     | 14 +++++++-------
+>  tools/testing/selftests/bpf/verifier/lwt.c         |  2 +-
+>  .../bpf/verifier/perf_event_sample_period.c        |  6 +++---
+>  tools/testing/selftests/seccomp/seccomp_bpf.c      |  6 +++---
+>  14 files changed, 56 insertions(+), 42 deletions(-)
+>
+> --
+> 2.31.1
+>
