@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D44437BB1
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 19:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6249F437BB3
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 19:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbhJVRTL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Oct 2021 13:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        id S233848AbhJVRTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 13:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233799AbhJVRTK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:19:10 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B61C061766
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 10:16:52 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id u8-20020a05600c440800b0030d90076dabso9253649wmn.1
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 10:16:52 -0700 (PDT)
+        with ESMTP id S233799AbhJVRTL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Oct 2021 13:19:11 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF3DC061764
+        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 10:16:53 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id a16so730664wrh.12
+        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 10:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N1WVOZzTNh/27joMu9FrakmExxycTJXl4iU2zUCXEpI=;
-        b=ewhoK45sF3Zg4VE2snLTFUbIvZlZkFthahDTUev8K4bO4AZRy6glqFt16WQ8H2t6iU
-         toBBnZ4tbUoex985/Weef0BsApHAPV4pFLdVC5bHm5ES1GlsMZ6cSvKXE3en4fx8HsxK
-         M/sfPnWI0jYa2iMVZgXmwyUsi1mgr/+ZxNseOOT5HVD4VdJV1d6bF5Afg+4LPNK722pW
-         AFL5M+ZIlsYS/n0//0ipYHgQy0+ExdVbRLfIfmMePD2jnaAuhSppn1X7mXfcgVFCTxJ/
-         HY8gnE/GxNfKoHv3bfKsu12wAur7Jvh4u+GzW5Y3kfHeCFz0T2bJmysc+GxC5QQSL/sd
-         QTPw==
+        bh=fG1lO4YrDaNaXdkJiQ920tZ/bSWumMS49v8DUjgg1Ac=;
+        b=3I5BNg6Qll8NONBAGtCAa1LttVk4WBpeFxoyXf/r6MK+tG6bvATrnWzfJujcNV/UJ0
+         Q9AeEsUV+ZVersKLtMwCSuOdqKZPoG3MQrtXsV2f1iR/A5+va+jsmBS4Ovp8JiyfP4US
+         D1JyvwOA31vB1dd9EkfmnliJxvHWNUQ0REF9CgK4sUSEornJQ5gHyy3lcOgl3LeMcosz
+         Fd5OBSzFTiE63L5PBGlUUBBEp9qshB1eJhqTxNm/Z21tXChb90wUA4KaxClSkG785THX
+         d/jFG+Lp0zhJxF2IOUHdO5sSdRWznQWKiBeBuGo11lE3kWOIbY/730bgBbsu7n7amIzo
+         0Vmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N1WVOZzTNh/27joMu9FrakmExxycTJXl4iU2zUCXEpI=;
-        b=q823/6pHrOXyI1DFgSEtlN0Ug0+jSwujgBQlckwD7rzeltmP3Ez/B20zL2bhhLDRnf
-         bWT+KjQfS+dhBkGoh0npYIyy1WlwZcbbPyguQZhRQxAwxDwYn6rUd4AcQq3Enhp8m4+k
-         0wGvlbYhy+Ar75nc/21m6ktG6swMjTGjNgwavZfVavmIG7nFzCXc9M9CE5k36PE5aL/e
-         KyrxT6leFiikyVW9H4b68lXEh1HoUDPSPKo58VpQ51+i/9n8f16vj9gZmie5jHxsL7S3
-         peGtSTfzz0e7OX3sKUy2MMQBCuQ6aXlJ7LIBRiiJyBSzdE60lH/u5o5e28mnlw5v7bXZ
-         fGOA==
-X-Gm-Message-State: AOAM5336e2eDWKn3y1RB7m1+CKwGZR6ItFkTSOQ4DbrwCnBdQBvDJVX2
-        DMgJp1JUJUv10KaWYoN/Xk/OtoEUElUpkegm
-X-Google-Smtp-Source: ABdhPJypWgfS1g7dG9bzMdrxLMYOyBPugTPd8XUYkR2tC4IvQEbl5dOo4gJQjOxNVKtEush0lLB/qQ==
-X-Received: by 2002:a1c:ac03:: with SMTP id v3mr1043816wme.127.1634923011497;
-        Fri, 22 Oct 2021 10:16:51 -0700 (PDT)
+        bh=fG1lO4YrDaNaXdkJiQ920tZ/bSWumMS49v8DUjgg1Ac=;
+        b=1H0yR8525/ulo6UkabHzoa3aGR+DkdluYTgkyvNltU8BFIBRsKTv4Wkz7zgK00e1uY
+         zqNpRwvYiMWagAUwxV+8Cb5pji2SOWmIq0EAqCevEcWig07prjeArEOPVUh0GRR+x25D
+         Dj7DWYxPOr7/Y7JSQm2Z6u/i7/lyJsrh5XEOq27zSlTGtpeYWaJm5Grxuroyszlidz8c
+         KfqV10WcJ5ESyyu3OeJgYcZ3tT9s8r9YXjD2JclmuQ2rygubsnaCrjJA6LA6iex0zxqc
+         gXH3AP/gzK/S28/l+NxH65FN5+pPokSLeKF2ihVlzL90QeYigMC67Oq8lRigIgCo8HBG
+         l/Qg==
+X-Gm-Message-State: AOAM531QKWBR0vco8IWszoJVkMsEAuQEOq/bJly3SZL4rpjNafwgX5cO
+        sc9xOBrdLRK5ULQ4UkbgWmz8d4ah3U1kVg==
+X-Google-Smtp-Source: ABdhPJw4SAZojKYvrdq665BkdHUXz++fO03mWlyEClNYlyVEgV/1XG4qL2lRSqq23IgThJP5f//Rmw==
+X-Received: by 2002:a5d:6d8f:: with SMTP id l15mr1427157wrs.350.1634923012420;
+        Fri, 22 Oct 2021 10:16:52 -0700 (PDT)
 Received: from localhost.localdomain ([149.86.74.50])
-        by smtp.gmail.com with ESMTPSA id 6sm4427367wma.48.2021.10.22.10.16.50
+        by smtp.gmail.com with ESMTPSA id 6sm4427367wma.48.2021.10.22.10.16.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 10:16:51 -0700 (PDT)
+        Fri, 22 Oct 2021 10:16:52 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 1/5] bpftool: Remove Makefile dep. on $(LIBBPF) for $(LIBBPF_INTERNAL_HDRS)
-Date:   Fri, 22 Oct 2021 18:16:43 +0100
-Message-Id: <20211022171647.27885-2-quentin@isovalent.com>
+Subject: [PATCH bpf-next 2/5] bpftool: Do not expose and init hash maps for pinned path in main.c
+Date:   Fri, 22 Oct 2021 18:16:44 +0100
+Message-Id: <20211022171647.27885-3-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211022171647.27885-1-quentin@isovalent.com>
 References: <20211022171647.27885-1-quentin@isovalent.com>
@@ -65,39 +65,183 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The dependency is only useful to make sure that the $(LIBBPF_HDRS_DIR)
-directory is created before we try to install locally the required
-libbpf internal header. Let's create this directory properly instead.
+BPF programs, maps, and links, can all be listed with their pinned paths
+by bpftool, when the "-f" option is provided. To do so, bpftool builds
+hash maps containing all pinned paths for each kind of objects.
 
-This is in preparation of making $(LIBBPF_INTERNAL_HDRS) a dependency to
-the bootstrap bpftool version, in which case we want no dependency on
-$(LIBBPF).
+These three hash maps are always initialised in main.c, and exposed
+through main.h. There appear to be no particular reason to do so: we can
+just as well make them static to the files that need them (prog.c,
+map.c, and link.c respectively), and initialise them only when we want
+to show objects and the "-f" switch is provided.
+
+This may prevent unnecessary memory allocations if the implementation of
+the hash maps was to change in the future.
 
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- tools/bpf/bpftool/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/bpf/bpftool/link.c |  9 ++++++++-
+ tools/bpf/bpftool/main.c | 12 ------------
+ tools/bpf/bpftool/main.h |  3 ---
+ tools/bpf/bpftool/map.c  |  9 ++++++++-
+ tools/bpf/bpftool/prog.c |  9 ++++++++-
+ 5 files changed, 24 insertions(+), 18 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 098d762e111a..939b0fca5fb9 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -39,14 +39,14 @@ ifeq ($(BPFTOOL_VERSION),)
- BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
- endif
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 8cc3e36f8cc6..ebf29be747b3 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -20,6 +20,8 @@ static const char * const link_type_name[] = {
+ 	[BPF_LINK_TYPE_NETNS]			= "netns",
+ };
  
--$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT):
-+$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR):
- 	$(QUIET_MKDIR)mkdir -p $@
++static struct pinned_obj_table link_table;
++
+ static int link_parse_fd(int *argc, char ***argv)
+ {
+ 	int fd;
+@@ -302,8 +304,10 @@ static int do_show(int argc, char **argv)
+ 	__u32 id = 0;
+ 	int err, fd;
  
- $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
- 	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
- 		DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
+-	if (show_pinned)
++	if (show_pinned) {
++		hash_init(link_table.table);
+ 		build_pinned_obj_table(&link_table, BPF_OBJ_LINK);
++	}
+ 	build_obj_refs_table(&refs_table, BPF_OBJ_LINK);
  
--$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h $(LIBBPF)
-+$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_DIR)
- 	$(call QUIET_INSTALL, $@)
- 	$(Q)install -m 644 -t $(LIBBPF_HDRS_DIR) $<
+ 	if (argc == 2) {
+@@ -384,6 +388,9 @@ static int do_detach(int argc, char **argv)
+ 	if (json_output)
+ 		jsonw_null(json_wtr);
+ 
++	if (show_pinned)
++		delete_pinned_obj_table(&link_table);
++
+ 	return 0;
+ }
+ 
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 02eaaf065f65..7a33f0e6da28 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -31,9 +31,6 @@ bool verifier_logs;
+ bool relaxed_maps;
+ bool use_loader;
+ struct btf *base_btf;
+-struct pinned_obj_table prog_table;
+-struct pinned_obj_table map_table;
+-struct pinned_obj_table link_table;
+ struct obj_refs_table refs_table;
+ 
+ static void __noreturn clean_and_exit(int i)
+@@ -409,10 +406,6 @@ int main(int argc, char **argv)
+ 	block_mount = false;
+ 	bin_name = argv[0];
+ 
+-	hash_init(prog_table.table);
+-	hash_init(map_table.table);
+-	hash_init(link_table.table);
+-
+ 	opterr = 0;
+ 	while ((opt = getopt_long(argc, argv, "VhpjfLmndB:",
+ 				  options, NULL)) >= 0) {
+@@ -479,11 +472,6 @@ int main(int argc, char **argv)
+ 	if (json_output)
+ 		jsonw_destroy(&json_wtr);
+ 
+-	if (show_pinned) {
+-		delete_pinned_obj_table(&prog_table);
+-		delete_pinned_obj_table(&map_table);
+-		delete_pinned_obj_table(&link_table);
+-	}
+ 	btf__free(base_btf);
+ 
+ 	return ret;
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 90caa42aac4c..baf607cd5924 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -91,9 +91,6 @@ extern bool verifier_logs;
+ extern bool relaxed_maps;
+ extern bool use_loader;
+ extern struct btf *base_btf;
+-extern struct pinned_obj_table prog_table;
+-extern struct pinned_obj_table map_table;
+-extern struct pinned_obj_table link_table;
+ extern struct obj_refs_table refs_table;
+ 
+ void __printf(1, 2) p_err(const char *fmt, ...);
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 407071d54ab1..0085039d9610 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -56,6 +56,8 @@ const char * const map_type_name[] = {
+ 
+ const size_t map_type_name_size = ARRAY_SIZE(map_type_name);
+ 
++static struct pinned_obj_table map_table;
++
+ static bool map_is_per_cpu(__u32 type)
+ {
+ 	return type == BPF_MAP_TYPE_PERCPU_HASH ||
+@@ -694,8 +696,10 @@ static int do_show(int argc, char **argv)
+ 	int err;
+ 	int fd;
+ 
+-	if (show_pinned)
++	if (show_pinned) {
++		hash_init(map_table.table);
+ 		build_pinned_obj_table(&map_table, BPF_OBJ_MAP);
++	}
+ 	build_obj_refs_table(&refs_table, BPF_OBJ_MAP);
+ 
+ 	if (argc == 2)
+@@ -742,6 +746,9 @@ static int do_show(int argc, char **argv)
+ 
+ 	delete_obj_refs_table(&refs_table);
+ 
++	if (show_pinned)
++		delete_pinned_obj_table(&map_table);
++
+ 	return errno == ENOENT ? 0 : -1;
+ }
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 277d51c4c5d9..9a10cfebd252 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -84,6 +84,8 @@ static const char * const attach_type_strings[] = {
+ 	[__MAX_BPF_ATTACH_TYPE] = NULL,
+ };
+ 
++static struct pinned_obj_table prog_table;
++
+ static enum bpf_attach_type parse_attach_type(const char *str)
+ {
+ 	enum bpf_attach_type type;
+@@ -565,8 +567,10 @@ static int do_show(int argc, char **argv)
+ 	int err;
+ 	int fd;
+ 
+-	if (show_pinned)
++	if (show_pinned) {
++		hash_init(prog_table.table);
+ 		build_pinned_obj_table(&prog_table, BPF_OBJ_PROG);
++	}
+ 	build_obj_refs_table(&refs_table, BPF_OBJ_PROG);
+ 
+ 	if (argc == 2)
+@@ -611,6 +615,9 @@ static int do_show(int argc, char **argv)
+ 
+ 	delete_obj_refs_table(&refs_table);
+ 
++	if (show_pinned)
++		delete_pinned_obj_table(&prog_table);
++
+ 	return err;
+ }
  
 -- 
 2.30.2
