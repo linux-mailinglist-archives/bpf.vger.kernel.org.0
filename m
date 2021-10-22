@@ -2,93 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29F2437B6B
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 19:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED14437B70
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 19:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhJVRGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Oct 2021 13:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        id S233690AbhJVRHl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 13:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233862AbhJVRGY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:06:24 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7265C079788
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 10:03:32 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id m22so5159508wrb.0
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 10:03:32 -0700 (PDT)
+        with ESMTP id S233782AbhJVRHh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Oct 2021 13:07:37 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4188C061226;
+        Fri, 22 Oct 2021 10:05:15 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id h196so6297198iof.2;
+        Fri, 22 Oct 2021 10:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=F26I+cBcpyIkdxRfcHLvmvj+TTSmfbBclURHJNpWXCA=;
-        b=CjfO3IqZ+vr48LU5OCo8CpBAk1cHSk845D99sodNe3izqzuhMEAflRlXTeUaK01fVU
-         YFWM5JthW1yC0U+KegC3xfW7qJePfd8cszfaNDzvUJ0mpi0Bmujhy/XHeG1ZbBd13mDT
-         QjvB34evnotgRRKf2+X+x7weZti7HKV0LHPrjzdnS0GmdH+AI31OmK5rAvMB3Yy6sEMq
-         ItV8E5svrEMWyYLbJtyIAnQh68evbLEfpahmPLmCRUWBAcoio7eL4NXE3WLlRmrQuOdd
-         InD33e1jsp6pu0myd4vZ28vtZip9U9XbKBc0du7XJ/IZoRC3+xdAFWMwPvlxG0ZF0G+L
-         7YxQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=aOicbiME2BnKBlw3Dk0BrMP0wVjcmRzulWqjlzLwSCQ=;
+        b=cdW6TAzqKQ5AUhN3093+i/BliSPkrf2o+V+QAW3FBdW47e2E6kop2Ff3OKG8KXHACJ
+         jhNg4twWG9yzzsSDKQE0NMGX7CCqqkkI6KeuZI/xeXHtr17eMdMqiB/2XsjHYwnJTJg4
+         HbkLpX/7S8u5q8BJHWDHk9Zi4C2pYJX376VHh8WWXTfU0jHgBRmg+191MYAUpmdDB1ZG
+         lH+az8h0UAMFK6R+qyL6mY1oI0iayDAcS84CvZmwCrjZ99TZfY86/WyEsRqmZZZB/bCm
+         XjscpIOFmmsKbP2Z6sVcfxsKKxJFRihPXvsrGZkfqpdFliZ1VDYCIP8jRUfOcxwQVSGf
+         7VaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=F26I+cBcpyIkdxRfcHLvmvj+TTSmfbBclURHJNpWXCA=;
-        b=17o5NvnwbngrDmP4I3153i0FSDZvx+bP8u/ULROaUaM1OiAb4oyO/6Gxeponwud043
-         pY0qU6KCj0DM/DIHrgaajcQV/Z5beccX76tmoPbLsedHSuutLUkr1N3p2v1vuCw30nL2
-         pxHYMIpCcQEtJwEoQjWJb7XOrZaf0KxnkZCeIrVgOBBivBO9yN07BUuW1MBh4c4HC48k
-         /Yw/CD/D03yrFGNN4XpV+yIXovBly2kcuRLGEKOIuN9I4QVvawh28Z+HI7p9uoOKUbHG
-         v5LoEmv4FXUtbmrYdU0CcsQHMbMXXehKZberWDSlcT7ru50sdGEJ1Aa2qCY4T303Xpak
-         kROA==
-X-Gm-Message-State: AOAM531vke6BB8A7ZHNO4N89yWtg9BU1EAavJrhQRPDasiEsPVXRNJvA
-        hFYkP7i+Hg1Fwt5TuFykxsd8ORgftxnbfvW5gf0=
-X-Google-Smtp-Source: ABdhPJz05jcyglOwitthrapM5mJ7UlyelhDz+8YO+bJUlx9RrgfN1PxrmrSWha29AAVolwu71jUJt5dO1GuE0hR0ksY=
-X-Received: by 2002:adf:8919:: with SMTP id s25mr1255456wrs.185.1634922210973;
- Fri, 22 Oct 2021 10:03:30 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: martinafrancis01@gmail.com
-Sender: castillomarima356@gmail.com
-Received: by 2002:a5d:4f0e:0:0:0:0:0 with HTTP; Fri, 22 Oct 2021 10:03:30
- -0700 (PDT)
-From:   Martina Francis <martinafrancis655@gmail.com>
-Date:   Fri, 22 Oct 2021 10:03:30 -0700
-X-Google-Sender-Auth: i0mvE1RkDqba8aMq8R1XbIojwAA
-Message-ID: <CAJoaYMaA4nhSkyiK41Lcur_G=jy=T6c5PJ6HUF2JeMG6+0LUgA@mail.gmail.com>
-Subject: =?UTF-8?Q?Dobry_dzie=C5=84_moja_droga?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=aOicbiME2BnKBlw3Dk0BrMP0wVjcmRzulWqjlzLwSCQ=;
+        b=Y0bVIRLbRYNmnSSdRri+Zt3cGWOd0x2MOhvTLoAhoL5/IuUdWLgpaViJ3XyxSSM76x
+         LS0YIiAiI0GwW9Xm+zqaFexpratP0mpO9Y7eg6yh1jUZXc2VRC8kQ8qcKlY5zeqg8O71
+         WJ3pC8Z66Cox/3ouOhmhhWWSDiiQPtwLQ3phtEzD7u+Cyw4IZMay4VIxlfM7c8BkYBTU
+         Lr1C8jOFKIRj4vjwRDiuZha5ba1ea2hbkdWgCBGIWLQwe+6lgqTj6AG+o3e0FT8ox34Y
+         rLyl46x2YyCnMnCz5SGO+ICdzOwtmRjncsfAqnqx7BTidn9I+vf/JC0zxfRu6zFa69Gb
+         OtrA==
+X-Gm-Message-State: AOAM530dKR/3vMmV5Zjgku7IKsusk1NQZ1kBRHdJfeLi4yK2WeD1rkGE
+        VAt/uPKC0ZxB7k3z7srrHiI=
+X-Google-Smtp-Source: ABdhPJxMx2NhdH5diZ2QHqNazQmaVAp2wti9qiQPkutzsRaFumXXUnshVy2VWy8JFKVV8Dm60GM9gw==
+X-Received: by 2002:a02:ce82:: with SMTP id y2mr675819jaq.121.1634922315117;
+        Fri, 22 Oct 2021 10:05:15 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id r9sm4699655ilb.28.2021.10.22.10.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 10:05:14 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 10:05:05 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>
+Message-ID: <6172ef4180b84_840632087a@john-XPS-13-9370.notmuch>
+In-Reply-To: <20211011155636.2666408-2-sdf@google.com>
+References: <20211011155636.2666408-1-sdf@google.com>
+ <20211011155636.2666408-2-sdf@google.com>
+Subject: RE: [PATCH bpf-next 2/3] bpftool: don't append / to the progtype
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-Dobry dzie=C5=84 moja droga
-Jak si=C4=99 masz i twoja rodzina.
-Jestem pani Martina Francis, chora wdowa pisz=C4=85ca ze szpitalnego =C5=82=
-=C3=B3=C5=BCka
-bez dziecka. Kontaktuj=C4=99 si=C4=99 z Pa=C5=84stwem, aby=C5=9Bcie dowiedz=
-ieli si=C4=99 o moim
-pragnieniu przekazania sumy (2 700 000,00 USD MILION=C3=93W USD), kt=C3=B3r=
-=C4=85
-odziedziczy=C5=82am po moim zmar=C5=82ym m=C4=99=C5=BCu na cele charytatywn=
-e, obecnie
-fundusz jest nadal w banku. Niedawno m=C3=B3j lekarz powiedzia=C5=82 mi, =
-=C5=BCe mam
-powa=C5=BCn=C4=85 chorob=C4=99 nowotworow=C4=85 i moje =C5=BCycie nie jest =
-ju=C5=BC gwarantowane,
-dlatego podejmuj=C4=99 t=C4=99 decyzj=C4=99..
+Stanislav Fomichev wrote:
+> Otherwise, attaching with bpftool doesn't work with strict section names.
+> 
+> Also, switch to libbpf strict mode to use the latest conventions
+> (note, I don't think we have any cli api guarantees?).
+> 
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  tools/bpf/bpftool/main.c |  4 ++++
+>  tools/bpf/bpftool/prog.c | 15 +--------------
+>  2 files changed, 5 insertions(+), 14 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index 02eaaf065f65..8223bac1e401 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -409,6 +409,10 @@ int main(int argc, char **argv)
+>  	block_mount = false;
+>  	bin_name = argv[0];
+>  
+> +	ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> +	if (ret)
+> +		p_err("failed to enable libbpf strict mode: %d", ret);
+> +
 
-Chc=C4=99, aby=C5=9Bcie skorzystali z tego funduszu dla ludzi ubogich,
-maltretowanych dzieci, mniej uprzywilejowanych, ko=C5=9Bcio=C5=82=C3=B3w, s=
-ieroci=C5=84c=C3=B3w
-i cierpi=C4=85cych wd=C3=B3w w spo=C5=82ecze=C5=84stwie.
+Would it better to just warn? Seems like this shouldn't be fatal from
+bpftool side?
 
-Prosz=C4=99, wr=C3=B3=C4=87 do mnie natychmiast po przeczytaniu tej wiadomo=
-=C5=9Bci, aby
-uzyska=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3w dotycz=C4=85cych tej age=
-ndy humanitarnej.
+Also this is a potentially breaking change correct? Programs that _did_
+work in the unstrict might suddently fail in the strict mode? If this
+is the case whats the versioning plan? We don't want to leak these
+type of changes across multiple versions, idealy we have a hard
+break and bump the version.
 
-Niech B=C3=B3g ci=C4=99 b=C5=82ogos=C5=82awi, kiedy czekam na twoj=C4=85 od=
-powied=C5=BA.
+I didn't catch a cover letter on the series. A small
+note about versioning and upgrading bpftool would be helpful.
 
-Twoja siostra.
-Pani Martina Francis.
+
+>  	hash_init(prog_table.table);
+>  	hash_init(map_table.table);
+>  	hash_init(link_table.table);
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 277d51c4c5d9..17505dc1243e 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1396,8 +1396,6 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  
+>  	while (argc) {
+>  		if (is_prefix(*argv, "type")) {
+> -			char *type;
+> -
+>  			NEXT_ARG();
+>  
+>  			if (common_prog_type != BPF_PROG_TYPE_UNSPEC) {
+> @@ -1407,19 +1405,8 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  			if (!REQ_ARGS(1))
+>  				goto err_free_reuse_maps;
+>  
+> -			/* Put a '/' at the end of type to appease libbpf */
+> -			type = malloc(strlen(*argv) + 2);
+> -			if (!type) {
+> -				p_err("mem alloc failed");
+> -				goto err_free_reuse_maps;
+> -			}
+> -			*type = 0;
+> -			strcat(type, *argv);
+> -			strcat(type, "/");
+> -
+> -			err = get_prog_type_by_name(type, &common_prog_type,
+> +			err = get_prog_type_by_name(*argv, &common_prog_type,
+>  						    &expected_attach_type);
+> -			free(type);
+>  			if (err < 0)
+>  				goto err_free_reuse_maps;
+
+This wont potentially break existing programs correct? It looks like
+just adding a '/' should be fine.
+
+Thanks,
+John
