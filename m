@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3264377AC
-	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 15:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EAA4377AD
+	for <lists+bpf@lfdr.de>; Fri, 22 Oct 2021 15:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhJVNJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Oct 2021 09:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
+        id S230175AbhJVNJm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 09:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhJVNJZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Oct 2021 09:09:25 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F547C061764
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 06:07:08 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id s1so2628610plg.12
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 06:07:08 -0700 (PDT)
+        with ESMTP id S231917AbhJVNJl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Oct 2021 09:09:41 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2962CC061764
+        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 06:07:22 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id t184so3263433pgd.8
+        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 06:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9JDK/zYHBPlI7UN5orEe5bbjb6f6AAf+xpyZzZCD7Io=;
-        b=LY/bKfHK/8i3Tw4n9u2QopM9G9kCzpXmOndj57iWgpsSAptEGlpDoCV15zfbcKSVzq
-         EiWanrJmI1XdEUj5Yas0fI7BKR6uZrFm1wmQsXFB2TV8eD+3BH2cljq5akb1LhMepO28
-         gTWIwIpgZyD1QzNIqqvjvbMVzgJ/fc1MW0ErtcFoAVdpRI/y6WCDTy9zU8IvhpsGlhu+
-         UKig3tl6nWCN+k2ZoiiKoFdAaLtkhocM4etY4wb5/NoRiusHGJG1nUymWRp4//o9rqUI
-         PUHjbArefgHKapkJtNSwdOLjmAXj0OHB+sqV2vRHR+hU2egx0vC9JmnJNh2juMILDlrk
-         jmsw==
+        bh=Y1DEvjS9aiuILbVD403rQL7cOozCIYtiCbVqNxfmuDw=;
+        b=NmY8pLBcszUAuJdaWVHOpwEVi+SQh09vQ6QE3pXfLNGil+G+3qXx9Nwoj+ZULGy4vL
+         lixgAa39qUtcXx5nhrpWkP/nbkB2esRt+DfISlfjk24guqBoImd9jIdrxKtDOelt62pI
+         dARMsqBOKru9Y72/XLHAjOF8mUznk5gB0A/4qsbou8e/K4aLz1xZPObF744F8ThTtR49
+         bfMvYYE9ZIGkNc+CLNGIqzRKxd8cqCOypFYjrF4hgSvhHqT6YF8AGUO/+lkXsma63xuN
+         cGc8FwSYO6Q8lnwjr8MRnfancFsz9jwNEles3pfKxXrkMLWbV2RKLDTmh0XYtv46ItWs
+         rMXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9JDK/zYHBPlI7UN5orEe5bbjb6f6AAf+xpyZzZCD7Io=;
-        b=3Qgvz6AyRK07+/KqTRvvbvUgZFrjQbiYAk9ge+6JjBPZJOprKmiZ/3NjKpXLigJIjB
-         YOQJguD4J4zEauwC8R1g7ub3e+/5LsmAyUc+s1YKNghmz4LWN/pkOBkYHlU9AWrsfMXk
-         EZZ/VYLRIzwtnu4VUFe7A6gw78vZGHyCgKKkBK7FKXx/AGNTsd9+XK3YOOfDXll8mur+
-         apznJlQFBoxbJJBOCnZQ4m397/iFmSnBaHnH8w/zYicIxteagKqZ4T6cJwHVFBzkmJnP
-         phUwLxTYGstq7Zsw8RxcAlLySk6BAdICH2IM/8xS3rA+63eRfdM4X/d6XJAOCE6GqGrJ
-         PIIg==
-X-Gm-Message-State: AOAM530uHNB2EtRmLiEbb+77kIvXLwF8JZrJgBRivM7p1I5HscrtRXW+
-        5qHnLqX8BBx869vklUAIlAmWyyA3lYj/gg==
-X-Google-Smtp-Source: ABdhPJwoZOMY1f3HYDcJjTyzBxrT0HSVAZgkD/WrAx11dYE9wsg+WzZ2/q7IuC1qbQaPKOQ28uJkQw==
-X-Received: by 2002:a17:90b:4a05:: with SMTP id kk5mr14469842pjb.25.1634908027827;
-        Fri, 22 Oct 2021 06:07:07 -0700 (PDT)
+        bh=Y1DEvjS9aiuILbVD403rQL7cOozCIYtiCbVqNxfmuDw=;
+        b=0+H6sd9nSv0v1jXfy3M9g7SissqcoGMoHKXdRTRJZIyU6GdFxsDtGLwM7Wg2FIlDZj
+         0q553nb6QUJ9CN2Q2odkuY48bubGUKJ/JWdZEQ8oPc75QzO1HkYW72Mvvq6UXsSjHBn0
+         tFypIfT2WE00JRYjn3/9Tf93/JwFcDbN3geP2rFOClkImtZSHK4d/DJOuoV9G/N7+NoK
+         ZyAaMlGVvf2Gvj5h+GftJfXLlQj4X18LGV29WRxEKnnXS/lwa18z618Q+zxqJ6E0A9h3
+         VR/lhy58A/X+Z3hW47/9mbHfRfORwIwCr5sRlfSsnXlXNLwYPqxgqblInxsSKms9AVW1
+         zNxQ==
+X-Gm-Message-State: AOAM531jSAJQ72ta8AjL9cCra/YD+m9L05ns4UI/6KtjrMKZxYCt9CuU
+        KZ0IDCMyjII6Y41u10EzMtWWgVwRqTpQcg==
+X-Google-Smtp-Source: ABdhPJxR3Ql2zBHpvhd7TGSSqhvXUJ1e2SBG6EXNoWiqp7iyYpNQl+is/offbRlWH6xTifB+z5E7RQ==
+X-Received: by 2002:a63:2a10:: with SMTP id q16mr8947185pgq.45.1634908041570;
+        Fri, 22 Oct 2021 06:07:21 -0700 (PDT)
 Received: from VM-32-4-ubuntu.. ([43.132.164.184])
-        by smtp.gmail.com with ESMTPSA id k22sm9632083pfi.149.2021.10.22.06.07.06
+        by smtp.gmail.com with ESMTPSA id k22sm9632083pfi.149.2021.10.22.06.07.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 06:07:07 -0700 (PDT)
+        Fri, 22 Oct 2021 06:07:21 -0700 (PDT)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kafai@fb.com,
         songliubraving@fb.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 2/5 v2] perf bpf: Switch to new btf__raw_data API
-Date:   Fri, 22 Oct 2021 21:06:20 +0800
-Message-Id: <20211022130623.1548429-3-hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next 3/5 v2] tools/resolve_btfids: Switch to new btf__type_cnt API
+Date:   Fri, 22 Oct 2021 21:06:21 +0800
+Message-Id: <20211022130623.1548429-4-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211022130623.1548429-1-hengqi.chen@gmail.com>
 References: <20211022130623.1548429-1-hengqi.chen@gmail.com>
@@ -64,27 +64,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Replace the call to btf__get_raw_data with new API btf__raw_data.
-The old APIs will be deprecated in libbpf v0.7+. No functionality
+Replace the call to btf__get_nr_types with new API btf__type_cnt.
+The old API will be deprecated in libbpf v0.7+. No functionality
 change.
 
 Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- tools/perf/util/bpf-event.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/resolve_btfids/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 1a7112a87736..388847bab6d9 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -110,7 +110,7 @@ static int perf_env__fetch_btf(struct perf_env *env,
- 	u32 data_size;
- 	const void *data;
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 716e6ad1864b..a59cb0ee609c 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -502,12 +502,12 @@ static int symbols_resolve(struct object *obj)
+ 	}
 
--	data = btf__get_raw_data(btf, &data_size);
-+	data = btf__raw_data(btf, &data_size);
+ 	err = -1;
+-	nr_types = btf__get_nr_types(btf);
++	nr_types = btf__type_cnt(btf);
 
- 	node = malloc(data_size + sizeof(struct btf_node));
- 	if (!node)
+ 	/*
+ 	 * Iterate all the BTF types and search for collected symbol IDs.
+ 	 */
+-	for (type_id = 1; type_id <= nr_types; type_id++) {
++	for (type_id = 1; type_id < nr_types; type_id++) {
+ 		const struct btf_type *type;
+ 		struct rb_root *root;
+ 		struct btf_id *id;
 --
 2.30.2
