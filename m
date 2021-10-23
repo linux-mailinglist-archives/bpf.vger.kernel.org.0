@@ -2,95 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0084380DE
-	for <lists+bpf@lfdr.de>; Sat, 23 Oct 2021 02:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB104380E1
+	for <lists+bpf@lfdr.de>; Sat, 23 Oct 2021 02:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhJWAKL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 22 Oct 2021 20:10:11 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40122 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230086AbhJWAKK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 22 Oct 2021 20:10:10 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19MLCZnq020826
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 17:07:52 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bum5j11jp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 22 Oct 2021 17:07:52 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 22 Oct 2021 17:07:51 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 1EA7D70EEC1F; Fri, 22 Oct 2021 17:07:46 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Evgeny Vereshchagin <evvers@ya.ru>
-Subject: [PATCH v2 bpf] libbpf: fix BTF header parsing checks
-Date:   Fri, 22 Oct 2021 17:07:41 -0700
-Message-ID: <20211023000741.611730-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S231293AbhJWAQS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Oct 2021 20:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhJWAQS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Oct 2021 20:16:18 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBDEC061764;
+        Fri, 22 Oct 2021 17:13:59 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id v7so10683845ybq.0;
+        Fri, 22 Oct 2021 17:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RVC/3H4XWoFsWku2XRUprMXaLMrvDr0CYPvZlI8J200=;
+        b=dxawzenDsCVVCg2MGVWBJ2zoY7v9NxiwyudtQDvlB921wnO//5SlDRLeZ7rxORsGTm
+         3edbNkWBPeybLEcRkc0Jrv9VhtWAiwT0w4FuMS/yUddcTsjBaZfzRhCL8+MOSaoFcM9F
+         Y+T0UcQPDweOrDhtVZGkjcDCtxiwoMGiB/pdjQSWAeBJre2vOMqzJ/KJNJlzc178JsX4
+         syTguG3f2XfS4hcbmQcvIqF7pizCGNM8gM3ZI1Z2Q9Zc5ntK0y4Le1eJRx0Mw3g6tWUJ
+         +k3IGVNxo+85yFTm/cbyb+kq+iJnuYX/7nhN/NYDmCwpseOBbiqqRh/CGsBZ+m9Q4rNa
+         udAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RVC/3H4XWoFsWku2XRUprMXaLMrvDr0CYPvZlI8J200=;
+        b=6qnJ2y7PG1pzrw3phpLnoG9PbYBE05Xym3i0bNg1qcdA4LsEvxHEGcHighjZWGLXHc
+         CpemXJ+lm+FHC07VzycUXN+ghXwqvjsvu5UpzKpd3OrnV4nxmX/tE58nOKFCKJYCnCu0
+         N7GKoRCUaZiu97KI1oqYXll9nY9kUDeNDFcF2gV5aQ6Y9BNtHkZi9XCMSqGW3j9cGRyP
+         oavIjgAVWqwaOHqjeMpOo05A/w/aR8tcExV/HZG2pMXMtYtNhO3zQ9nLWN0iRl7rYzy1
+         yI3cZ1svuNQimMTGw4jrTHuQQMyqsgs4KmMSA+2pYlXzh+PZmXLx1aWAox7aXCf9vOG1
+         ySQQ==
+X-Gm-Message-State: AOAM531DVD5EFCFRpsTqHXQ287kWkO2mtBSCGwDeJJ4FCjUesn6WhIWE
+        3PrDWnLIUwegyF5VCagwIJv8XxbOLVReu2jTEWY=
+X-Google-Smtp-Source: ABdhPJzMo/B5icVddrSHgsfKhLLPPiFR7Jy/f4mOZmhdDRjX9eRkUtUs+1z2b1z++PVfJ5PuK5OgEsOr5rtwEryLhM8=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr2875817ybj.433.1634948038982;
+ Fri, 22 Oct 2021 17:13:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: faRqkKDJa8GIOzcrrOvR7sm5pahHeylu
-X-Proofpoint-ORIG-GUID: faRqkKDJa8GIOzcrrOvR7sm5pahHeylu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-22_05,2021-10-22_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- impostorscore=0 spamscore=0 mlxlogscore=771 bulkscore=0 clxscore=1015
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110220137
-X-FB-Internal: deliver
+References: <20211022171647.27885-1-quentin@isovalent.com> <20211022171647.27885-3-quentin@isovalent.com>
+In-Reply-To: <20211022171647.27885-3-quentin@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 22 Oct 2021 17:13:48 -0700
+Message-ID: <CAEf4BzYouGby=iKWb18E7XH9RDg+vNt=8DuUv9AAEKgM74b4sA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpftool: Do not expose and init hash maps
+ for pinned path in main.c
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Original code assumed fixed and correct BTF header length. That's not
-always the case, though, so fix this bug with a proper additional check.
-And use actual header length instead of sizeof(struct btf_header) in
-sanity checks.
+On Fri, Oct 22, 2021 at 10:16 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> BPF programs, maps, and links, can all be listed with their pinned paths
+> by bpftool, when the "-f" option is provided. To do so, bpftool builds
+> hash maps containing all pinned paths for each kind of objects.
+>
+> These three hash maps are always initialised in main.c, and exposed
+> through main.h. There appear to be no particular reason to do so: we can
+> just as well make them static to the files that need them (prog.c,
+> map.c, and link.c respectively), and initialise them only when we want
+> to show objects and the "-f" switch is provided.
+>
+> This may prevent unnecessary memory allocations if the implementation of
+> the hash maps was to change in the future.
+>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/bpf/bpftool/link.c |  9 ++++++++-
+>  tools/bpf/bpftool/main.c | 12 ------------
+>  tools/bpf/bpftool/main.h |  3 ---
+>  tools/bpf/bpftool/map.c  |  9 ++++++++-
+>  tools/bpf/bpftool/prog.c |  9 ++++++++-
+>  5 files changed, 24 insertions(+), 18 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+> index 8cc3e36f8cc6..ebf29be747b3 100644
+> --- a/tools/bpf/bpftool/link.c
+> +++ b/tools/bpf/bpftool/link.c
+> @@ -20,6 +20,8 @@ static const char * const link_type_name[] = {
+>         [BPF_LINK_TYPE_NETNS]                   = "netns",
+>  };
+>
+> +static struct pinned_obj_table link_table;
+> +
+>  static int link_parse_fd(int *argc, char ***argv)
+>  {
+>         int fd;
+> @@ -302,8 +304,10 @@ static int do_show(int argc, char **argv)
+>         __u32 id = 0;
+>         int err, fd;
+>
+> -       if (show_pinned)
+> +       if (show_pinned) {
+> +               hash_init(link_table.table);
+>                 build_pinned_obj_table(&link_table, BPF_OBJ_LINK);
+> +       }
+>         build_obj_refs_table(&refs_table, BPF_OBJ_LINK);
+>
+>         if (argc == 2) {
+> @@ -384,6 +388,9 @@ static int do_detach(int argc, char **argv)
+>         if (json_output)
+>                 jsonw_null(json_wtr);
+>
+> +       if (show_pinned)
+> +               delete_pinned_obj_table(&link_table);
 
-Reported-by: Evgeny Vereshchagin <evvers@ya.ru>
-Fixes: 8a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/btf.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Shouldn't this be in do_show rather than do_detach?
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 1ced31ecaf7f..aab7e4ece0a0 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -231,13 +231,19 @@ static int btf_parse_hdr(struct btf *btf)
- 		}
- 		btf_bswap_hdr(hdr);
- 	} else if (hdr->magic != BTF_MAGIC) {
--		pr_debug("Invalid BTF magic:%x\n", hdr->magic);
-+		pr_debug("Invalid BTF magic: %x\n", hdr->magic);
- 		return -EINVAL;
- 	}
- 
--	meta_left = btf->raw_size - sizeof(*hdr);
-+	if (btf->raw_size < hdr->hdr_len) {
-+		pr_debug("BTF header len %u larger than data size %u\n",
-+			 hdr->hdr_len, btf->raw_size);
-+		return -EINVAL;
-+	}
-+
-+	meta_left = btf->raw_size - hdr->hdr_len;
- 	if (meta_left < (long long)hdr->str_off + hdr->str_len) {
--		pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
-+		pr_debug("Invalid BTF total size: %u\n", btf->raw_size);
- 		return -EINVAL;
- 	}
- 
--- 
-2.30.2
+> +
+>         return 0;
+>  }
+>
 
+[...]
