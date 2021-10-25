@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D4143A492
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 22:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CE043A49C
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 22:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235864AbhJYU1D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 16:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        id S236542AbhJYU2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 16:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235923AbhJYU06 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:26:58 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091A2C069659
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:13:14 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id y10so12918160qkp.9
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:13:13 -0700 (PDT)
+        with ESMTP id S235565AbhJYU1y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 16:27:54 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AD0C04F5A1
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:15:57 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id d205so13046959qke.3
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:15:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+biiFamx6+RAbaSzzgMJ3jI/Ac7Q3sMmnWv/gfxMpNA=;
-        b=lTmMfJG9sYNmRuE/t6qP2sPRvUCqXoIsYTW1tHtnCI+4SRFqnNCAX7k0QgquIOp8Z4
-         ETVj/iBcfNFdieYZC4Is92g3XyiOmYPkHNiGuYy+ACT0KHCln/Ymk7EYKWT4ucyXNzNm
-         FWIOPtq2WVPuoavmXujmM84u0Hpcoz7zffxjlCIGXW4ay6arLKwc9l1ow8t200tYow9D
-         ebrLQvzeaOL2ItO7q3d9T4z/FqeAliTWozAndJCIgHMEgsVyrCA2dPYibKdwGvckBbO5
-         FrI+sHshyLb3xTSTiGE0jsdeX236m4//0Bo0P9SgYDAnfHePYrb1MeSMIMuYLNNyb2wp
-         uOaw==
+        bh=1r20jmrkvSoeU0GArP1aRAz2DxJYwHA9lYmnsg20gPA=;
+        b=lpERwUL8H/Ravsg1Ywx6/mcTP+m6rTEDdaHtH6KvuM9XFTqbdIt0o7SCqNO+PJVudB
+         qkVHxuPeywJ2QXDggb/5aqVZ7CjDGy+9t3E9bNpHGMB3+uQASlfiFikbxBvFL25zzsq1
+         AH2Ardoj5HABHmHvJsSsUaCHIghJGsOTm4/wvjzUwqzrviuPKu6cFnRF52V1QlP7ShJ7
+         aBllq+QPVvlKew8TUn8qXSB5swvQgbTneQvs/gg3ZFaP6RHQ+bSlrffNB2HyUI5G9/Bb
+         y9BWypfas3VPTE6UwQj7mmMaXkktIKq3SpMm+1/1bHgboZ+1ZAgXBMO5c9xKti4N/ISR
+         OihQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+biiFamx6+RAbaSzzgMJ3jI/Ac7Q3sMmnWv/gfxMpNA=;
-        b=rPiXVSKVGmGW7SVzfVHwme76i5Cv2hv04++7z5ydrDWQw9Lw/vTHue7MssBxBnJpQe
-         3bcdTEo+snrcUlWrWrzPf4c9GxAmU9W7uUEPmMOcPaEXwxrLtdeVed2iFYkC8viqBVW4
-         d/7KZ1yelF8Q95IHzdqxf+OiRqr3ZtqILBaUyoH71bdORyPadNwpGp8xsidqpyN5eZUL
-         sgsfCRCBGjZFZi6ZseYPepsbeKquIZR/69DT5wIDE8gcIs3XNyZzN1SM/e+Feaspk069
-         4VcOLN1DY/3w7zkGAexTrOBTj3HIov3HQWCCtp9o5ewArcnrfqRmNFL64f0QgqOkzMJ+
-         Kxhg==
-X-Gm-Message-State: AOAM532uh+OxxhutZIA+W18ADk3YNCQLRQzD+DZr/GuLcZQZ71ShrRmP
-        PE4TazFLYycfvS8/hJiKgz3ISH8wyKLBrLKNdY86vMpFFQc=
-X-Google-Smtp-Source: ABdhPJwy0y46LEySyvT0hbjcxNBfUTuKG6TujwoQnpn2i7CLlufP+d/2A+YwWB1XxIKXO+I/9V1kfQIXtlaqYoIjKuQ=
-X-Received: by 2002:a05:620a:2909:: with SMTP id m9mr7624026qkp.496.1635192793008;
- Mon, 25 Oct 2021 13:13:13 -0700 (PDT)
+        bh=1r20jmrkvSoeU0GArP1aRAz2DxJYwHA9lYmnsg20gPA=;
+        b=vOUizLox/S06HlllHc256zzPcddKRFA982PO2dxkmojxMO4Sn71x6Yn1RSr9IA74hE
+         7TIb4gnqNFCvpzK0D3p0UIenwYw7XndM3A5ut6sLnDwq7ldgKv5OUnxWyBlyT7jfMejx
+         hmnj/ldk7gZr352s6vRGbMlIkLld72ACv+akvFikRUPmX0GUWo7Aols6blgvOf6TiPGq
+         MzZyKJSu4JkJTtc6/Rt1vBKqg0Po8/FvBdQdN+xranFjWyxnewGCI6OW71QquiTH0ONB
+         wBJyLP2FCJMCXOdzqlCbkDJYj7wcmhP+ctELaFtkOz9aNuF5c50Vt3ZwLna/l+QTDEg8
+         8pEw==
+X-Gm-Message-State: AOAM530hCvMd8ZG6Ot5Buwl3NPZovGZqcUKdWRBN26x2lASZt2Z8yOOL
+        Ej0c2Ai5aUKpemSp2AfqpHQLdd/qLQ6Siy1iHwE=
+X-Google-Smtp-Source: ABdhPJxpHmnjZVGUWj/hSO5CHAtEmZs21oHL428zXWYD3Q+LdbS/3gWHP1DK4kNnYZuulYxQYlF0A290Wp+9USr9wIg=
+X-Received: by 2002:a37:65d0:: with SMTP id z199mr15443223qkb.484.1635192956943;
+ Mon, 25 Oct 2021 13:15:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022223228.99920-1-andrii@kernel.org> <20211022223228.99920-3-andrii@kernel.org>
-In-Reply-To: <20211022223228.99920-3-andrii@kernel.org>
+References: <20211022223228.99920-1-andrii@kernel.org>
+In-Reply-To: <20211022223228.99920-1-andrii@kernel.org>
 From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Mon, 25 Oct 2021 13:12:47 -0700
-Message-ID: <CAJygYd1qr5yi0i0wfPuz4yBj61TjcXqBRWKoLUa=XkUp+7g1Vg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: support multiple tests per file
+Date:   Mon, 25 Oct 2021 13:15:30 -0700
+Message-ID: <CAJygYd11fmiNsw2F1HV1NxCkj_ustqWRdxJqRUpKPimAG37+8A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/4] Parallelize verif_scale selftests
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,43 +59,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Thanks, this patch is awesome!
+
+Acked-by: Yucong Sun <sunyucong@gmail.com>
+
+
 On Fri, Oct 22, 2021 at 3:33 PM Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> Revamp how test discovery works for test_progs and allow multiple test
-> entries per file. Any global void function with no arguments and
-> serial_test_ or test_ prefix is considered a test.
+> Reduce amount of waiting time when running test_progs in parallel mode (-j) by
+> splitting bpf_verif_scale selftests into multiple tests. Previously it was
+> structured as a test with multiple subtests, but subtests are not easily
+> parallelizable with test_progs' infra. Also in practice each scale subtest is
+> really an independent test with nothing shared across all substest.
 >
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/testing/selftests/bpf/Makefile | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+> This patch set changes how test_progs test discovery works. Now it is possible
+> to define multiple tests within a single source code file. One of the patches
+> also marks tc_redirect selftests as serial, because it's extremely harmful to
+> the test system when run in parallel mode.
 >
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 498222543c37..ac47cf9760fc 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -421,10 +421,9 @@ ifeq ($($(TRUNNER_TESTS_DIR)-tests-hdr),)
->  $(TRUNNER_TESTS_DIR)-tests-hdr := y
->  $(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/*.c
->         $$(call msg,TEST-HDR,$(TRUNNER_BINARY),$$@)
-> -       $$(shell ( cd $(TRUNNER_TESTS_DIR);                             \
-> -                 echo '/* Generated header, do not edit */';           \
-> -                 ls *.c 2> /dev/null |                                 \
-> -                       sed -e 's@\([^\.]*\)\.c@DEFINE_TEST(\1)@';      \
-> +       $$(shell (echo '/* Generated header, do not edit */';                                   \
-> +                 sed -n -E 's/^void (serial_)?test_([a-zA-Z0-9_]+)\((void)?\).*/DEFINE_TEST(\2)/p'     \
-
-probably not that important :  allow \s* before void and after void.
-Or,  maybe we can just  (?!static)  instead of anchoring to line
-start.
-
-> +                       $(TRUNNER_TESTS_DIR)/*.c | sort ;       \
-
-to be super safe : maybe add a check here to ensure each file contains
-at least one test function.
-
->                  ) > $$@)
->  endif
+> Andrii Nakryiko (4):
+>   selftests/bpf: normalize selftest entry points
+>   selftests/bpf: support multiple tests per file
+>   selftests/bpf: mark tc_redirect selftest as serial
+>   selftests/bpf: split out bpf_verif_scale selftests into multiple tests
+>
+>  tools/testing/selftests/bpf/Makefile          |   7 +-
+>  .../bpf/prog_tests/bpf_verif_scale.c          | 220 ++++++++++++------
+>  .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
+>  .../selftests/bpf/prog_tests/resolve_btfids.c |  10 +-
+>  .../selftests/bpf/prog_tests/signal_pending.c |   2 +-
+>  .../selftests/bpf/prog_tests/snprintf.c       |   4 +-
+>  .../selftests/bpf/prog_tests/tc_redirect.c    |   2 +-
+>  .../bpf/prog_tests/xdp_adjust_tail.c          |   6 +-
+>  .../bpf/prog_tests/xdp_devmap_attach.c        |   4 +-
+>  9 files changed, 169 insertions(+), 88 deletions(-)
 >
 > --
 > 2.30.2
