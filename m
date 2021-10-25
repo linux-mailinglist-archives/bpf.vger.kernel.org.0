@@ -2,94 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB95439215
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 11:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D3E43937B
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 12:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhJYJNn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 05:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232259AbhJYJNm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:13:42 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02790C061745
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 02:11:21 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso8778548pjf.3
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 02:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bcW3pl4R8WFRyrGyotJtCPUK+gsqiQaeO26LUHm4wkQ=;
-        b=Z2EGhTLukm0MioMX2f+Ijs7DkwetSji6d1QSufJjRomXBtokg4NUuZsYAzgKvf2bWj
-         7fS1jSB/HOwFtC2tmGK3rhfc05vzRnoymZ2MgciYqS4cYD2Hzmi1Y7WB41QI/djFFGP4
-         uJryQra/7wv5WNLqxJV7CIgr980/gNZMyyOUdai0Xs7adbCEIfPKKH3lse4pIfpPpGUZ
-         afbD3Ai6KhUNReewINWUYkwhmvwUPKd+dKkrZMXY1NXWoa9/CO0smnal4NlVNymdZtzp
-         Y7OkpK+jaYYptUYQXXFGH8KPEwQMXilFjTgPki3T864mFbQcFcXcbNPAZyFmOkpgEFei
-         1Smg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bcW3pl4R8WFRyrGyotJtCPUK+gsqiQaeO26LUHm4wkQ=;
-        b=NCf4Vzv60V+u90MwETMDzHooKDxUjMvYqVPntcW4pV68sNcyKXZycj21xldI+8/pf4
-         TGwf6d4klXvzviIRg5H1cQKovy3WTc7d6bHe6xIOeoIX25yAxuFz9AT4z3OkWKqN8fhr
-         S6CAs+ETKvFMpwQEkrD4++wgNfSEFRIlagLC72Vnm82JdKqNhkbZYEHy/ZEbga35kkMZ
-         f7zBTW1YZuVyanRRMYOD8Szw4mHKeDbr3I1atnMHQqwg0L3c17GTXEp/dqW+k6r7lzC1
-         HX7JW1UpC28G3QfgPjJPkQXERb1P1LZl6Hn7f1kSujJvmJIBUUZ4KvLC8W979RmAysw1
-         SnfQ==
-X-Gm-Message-State: AOAM5331Y0N4g6e3cLcT6chM18010sa2R7Oe7M0XHt5tV93dX3h5z8+v
-        MCX6jvFm92fW4xs5OBTE+QeS1C63gEAXrwEVmMM=
-X-Google-Smtp-Source: ABdhPJzoz7rgWYD8SSy943SgQqeYqZf2j4IG/+0GcuTkRWAiPZe/99V8GK+S+i+g0Ef203JG8R3zBRXblu58y8hXubU=
-X-Received: by 2002:a17:903:11d0:b0:13f:ecf6:26ce with SMTP id
- q16-20020a17090311d000b0013fecf626cemr15502049plh.2.1635153080448; Mon, 25
- Oct 2021 02:11:20 -0700 (PDT)
+        id S232756AbhJYKTq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 06:19:46 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:26194 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhJYKTp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 06:19:45 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hd9p76bV5z8tvD;
+        Mon, 25 Oct 2021 18:15:59 +0800 (CST)
+Received: from dggema722-chm.china.huawei.com (10.3.20.86) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Mon, 25 Oct 2021 18:17:19 +0800
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ dggema722-chm.china.huawei.com (10.3.20.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 25 Oct 2021 18:17:19 +0800
+Received: from dggema772-chm.china.huawei.com ([10.9.128.138]) by
+ dggema772-chm.china.huawei.com ([10.9.128.138]) with mapi id 15.01.2308.015;
+ Mon, 25 Oct 2021 18:17:18 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "jakub@cloudflare.com" <jakub@cloudflare.com>,
+        "lmb@cloudflare.com" <lmb@cloudflare.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>
+Subject: RE: [PATHC bpf v5 3/3] selftests, bpf: Add one test for sockmap with
+ strparser
+Thread-Topic: [PATHC bpf v5 3/3] selftests, bpf: Add one test for sockmap with
+ strparser
+Thread-Index: AQHXvzXp2/El6N6AFUS/uEEa0ZcKOaveryUAgATgOnA=
+Date:   Mon, 25 Oct 2021 10:17:18 +0000
+Message-ID: <c798b06f10f04a6588924e745ced655b@huawei.com>
+References: <20211012065705.224643-1-liujian56@huawei.com>
+ <20211012065705.224643-3-liujian56@huawei.com>
+ <6172d93e2a470_82a7f2083@john-XPS-13-9370.notmuch>
+In-Reply-To: <6172d93e2a470_82a7f2083@john-XPS-13-9370.notmuch>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CAEf4BzZ5Uajg5548=vpq8O2L5VLrONmr8h2O-6X6H0urMDXEqA@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ5Uajg5548=vpq8O2L5VLrONmr8h2O-6X6H0urMDXEqA@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 25 Oct 2021 11:11:09 +0200
-Message-ID: <CAJ8uoz35Xqx1YCnxB0wCd-58_u9fdzEy5xS45Jcs82gXiAnK1Q@mail.gmail.com>
-Subject: Re: libxsk move from libbpf to libxdp
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 7:49 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> Hey guys,
->
-> It's been a while since we chatted about libxsk move. I believe last
-> time we were already almost ready to recommend libxdp for this, but
-> I'd like to double-check. Can one of you please own [0], validate that
-> whatever APIs are provided by libxdp are equivalent to what libbpf
-> provides, and start marking xdk.h APIs as deprecated? Thanks!
-
-Resending since Gmail had jumped out of plain text mode again.
-
-No problem, I will own this. I will verify the APIs are the same then
-submit a patch marking the ones in libbpf's xsk.h as deprecated.
-
-One question is what to do with the samples and the selftests for xsk.
-They currently rely on libbpf's xsk support. Two options that I see:
-
-1: Require libxdp on the system. Do not try to compile the xsk samples
-and selftests if libxdp is not available so the rest of the bpf
-samples and selftests are not impacted.
-2: Provide a standalone mock-up file of xsk.c and xsk.h that samples
-and selftests could use.
-
-I prefer #1 as it is better for the long-term. #2 means I would have
-to maintain that mock-up file as libxdp features are added. Sounds
-like double the amount of work to me. Thoughts?
-
-/Magnus
-
->   [0] https://github.com/libbpf/libbpf/issues/270
->
-> -- Andrii
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9obiBGYXN0YWJlbmQg
+W21haWx0bzpqb2huLmZhc3RhYmVuZEBnbWFpbC5jb21dDQo+IFNlbnQ6IEZyaWRheSwgT2N0b2Jl
+ciAyMiwgMjAyMSAxMTozMSBQTQ0KPiBUbzogbGl1amlhbiAoQ0UpIDxsaXVqaWFuNTZAaHVhd2Vp
+LmNvbT47IGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbTsNCj4gZGFuaWVsQGlvZ2VhcmJveC5uZXQ7
+IGpha3ViQGNsb3VkZmxhcmUuY29tOyBsbWJAY2xvdWRmbGFyZS5jb207DQo+IGRhdmVtQGRhdmVt
+bG9mdC5uZXQ7IGt1YmFAa2VybmVsLm9yZzsgYXN0QGtlcm5lbC5vcmc7DQo+IGFuZHJpaUBrZXJu
+ZWwub3JnOyBrYWZhaUBmYi5jb207IHNvbmdsaXVicmF2aW5nQGZiLmNvbTsgeWhzQGZiLmNvbTsN
+Cj4ga3BzaW5naEBrZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBicGZAdmdlci5r
+ZXJuZWwub3JnOw0KPiB4aXlvdS53YW5nY29uZ0BnbWFpbC5jb20NCj4gQ2M6IGxpdWppYW4gKENF
+KSA8bGl1amlhbjU2QGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJFOiBbUEFUSEMgYnBmIHY1IDMv
+M10gc2VsZnRlc3RzLCBicGY6IEFkZCBvbmUgdGVzdCBmb3Igc29ja21hcCB3aXRoDQo+IHN0cnBh
+cnNlcg0KPiANCj4gTGl1IEppYW4gd3JvdGU6DQo+ID4gQWRkIHRoZSB0ZXN0IHRvIGNoZWNrIHNv
+Y2ttYXAgd2l0aCBzdHJwYXJzZXIgaXMgd29ya2luZyB3ZWxsLg0KPiA+DQo+ID4gU2lnbmVkLW9m
+Zi1ieTogTGl1IEppYW4gPGxpdWppYW41NkBodWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+ICB0b29s
+cy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9zb2NrbWFwLmMgfCAzMw0KPiA+ICsrKysrKysr
+KysrKysrKysrKysrLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDMwIGluc2VydGlvbnMoKyksIDMg
+ZGVsZXRpb25zKC0pDQo+IA0KPiBIaSBMaXUsDQo+IA0KPiBUaGlzIGlzIGEgZ29vZCB0ZXN0LCBi
+dXQgd2Ugc2hvdWxkIGFsc28gYWRkIG9uZSB3aXRoIGEgcGFyc2VyIHJldHVybmluZyBhIHZhbHVl
+DQo+IHRoYXQgaXMgbm90IHNrYi0+bGVuLiBUaGlzIGRvZXNuJ3QgY292ZXIgdGhlIGNhc2UgZml4
+ZWQgaW4gcGF0Y2ggMS8zIGNvcnJlY3Q/DQo+IEZvciB0aGF0IHdlIHdvdWxkIG5lZWQgdG8gbW9k
+aWZ5IHRoZSBCUEYgcHJvZyBpdHNlbGYgYXMgd2VsbA0KPiBzb2NrbWFwX3BhcnNlX3Byb2cuYy4N
+Cj4gDQpIaSBKb2huLA0KVGhpcyB0ZXN0IHBhdGNoIHVzZSB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0
+cy9icGYvcHJvZ3MvdGVzdF9zb2NrbWFwX2tlcm4uYyBub3Qgc29ja21hcF9wYXJzZV9wcm9nLmMu
+DQoNCklmIHdlIHNldCBza2JfdXNlX3BhcnNlciB0byBub256ZXJvLCB0aGUgYnBmIHBhcnNlciBw
+cm9ncmFtIHdpbGwgcmV0dXJuIHNrYl91c2VfcGFyc2VyIG5vdCBza2ItPmxlbi4NCkluIHRoaXMg
+dGVzdCBjYXNlLCBJIHNldCBza2JfdXNlX3BhcnNlciB0byAxMCwgc2tiLT5sZW4gdG8gMjAgKG9w
+dC0+aW92X2xlbmd0aCkuIA0KVGhpcyBjYW4gdGVzdCAxLzMgcGF0Y2gsIGl0IHdpbGwgY2hlY2sg
+dGhlIHJlY3ZlZCBkYXRhIGxlbiBpcyAxMCBub3QgMjAuDQoNClRoZSBwYXJzZXIgcHJvZyBpbiB0
+b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9zb2NrbWFwX2tlcm4uaA0KU0VD
+KCJza19za2IxIikNCmludCBicGZfcHJvZzEoc3RydWN0IF9fc2tfYnVmZiAqc2tiKQ0Kew0KICAg
+ICAgICBpbnQgKmYsIHR3byA9IDI7DQoNCiAgICAgICAgZiA9IGJwZl9tYXBfbG9va3VwX2VsZW0o
+JnNvY2tfc2tiX29wdHMsICZ0d28pOw0KICAgICAgICBpZiAoZiAmJiAqZikgew0KICAgICAgICAg
+ICAgICAgIHJldHVybiAqZjsNCiAgICAgICAgfQ0KICAgICAgICByZXR1cm4gc2tiLT5sZW47DQp9
+DQo+IEZvciB0aGlzIHBhdGNoIHRob3VnaCwNCj4gDQo+IEFja2VkLWJ5OiBKb2huIEZhc3RhYmVu
+ZCA8am9obi5mYXN0YWJlbmRAZ21haWwuY29tPg0KPiANCj4gVGhlbiBvbmUgbW9yZSBwYXRjaCBp
+cyBhbGwgd2UgbmVlZCBzb21ldGhpbmcgdG8gYnJlYWsgdXAgdGhlIHNrYiBmcm9tIHRoZQ0KPiBw
+YXJzZXIuIFdlIHJlYWxseSBuZWVkIHRoZSB0ZXN0IGJlY2F1c2UgaXRzIG5vdCBzb21ldGhpbmcg
+d2UgY2FuIGVhc2lseSB0ZXN0DQo+IG90aGVyd2lzZSBhbmQgSSBkb24ndCBoYXZlIGFueSB1c2Ug
+Y2FzZXMgdGhhdCBkbyB0aGlzIHNvIHdvdWxkbid0IGNhdGNoIGl0Lg0KPiANCj4gVGhhbmtzIQ0K
+PiBKb2huDQo=
