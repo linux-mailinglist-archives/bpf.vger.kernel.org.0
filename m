@@ -2,376 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D18439133
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 10:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C195343913E
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 10:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhJYIcQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 04:32:16 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25312 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhJYIcP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:32:15 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hd7LJ6R16zbhK0;
-        Mon, 25 Oct 2021 16:25:12 +0800 (CST)
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 16:29:50 +0800
-Received: from localhost.localdomain (10.175.101.6) by
- dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 16:29:49 +0800
-From:   Di Zhu <zhudi2@huawei.com>
-To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <jakub@cloudflare.com>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhudi2@huawei.com>
-Subject: [PATCH v2] bpf: support BPF_PROG_QUERY for progs attached to sockmap
-Date:   Mon, 25 Oct 2021 16:29:25 +0800
-Message-ID: <20211025082925.1459427-1-zhudi2@huawei.com>
+        id S232135AbhJYIgF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 04:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231241AbhJYIgE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 04:36:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0759CC061745;
+        Mon, 25 Oct 2021 01:33:43 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id gn3so7715160pjb.0;
+        Mon, 25 Oct 2021 01:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=baWGvL41dy19+4BZX6uDav+aolsx9Dk7kQUgS64bb1g=;
+        b=as4g3fNzeC53JV1QW9l3PceZ7FSLOqm+yJq6vNLpKffQFUNwOQ+76VDeleJozGL7V5
+         iIlFN02m6BFIhPRcEpe89vDEbCKxXwF0QDCz+IjNrDjf7Ob6aZdvBz2N/w4XeY5Fsyo/
+         HVIzT0+QzJxtY5uoGe4XRnu56S79bMx0ec9tlZ7EBU7jt1MXf7O/Ljv5tf7eAYgyeeFB
+         Hr/mNV8SFuF6TX8jVuKlzv985B1MruvJuXFg/kLvO/xXhxVRdiHnIgIRaToqE9uYh8ku
+         UWborlia3oFOLcABtOiMjP7UPbJZuv5ik1GjBmrgKJxHZHS+xlL7r2v7mKniBRH6ng4V
+         3r4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=baWGvL41dy19+4BZX6uDav+aolsx9Dk7kQUgS64bb1g=;
+        b=JyM9pOinhbe3Dx/ak2td5DFtWBMmhhnCWX+3gWwe88vZlf+4bIh3hADgEoA/GCZU1q
+         mHSPxunAFzfViLb2kIQQqAd45wpV4HEbjyTgfQjd60Dq3N5Ng3YyFp88d1T8jBKZsswf
+         Fc2OMQ0ORHPhU06NcvkXDLmQIvE+uscgbCRDcSrjjMjlZEVoDEGha1dZWlkPzylOnbUO
+         n8eqtJo6++t4iHU2tQoXE9pTuF24enBmSS7f7UMut/Avm8XRxwhUcrv4muLYU7yM2Veu
+         b/KCEc9AL5jqOj9CfvBayuj7ybl4SSM+q8t2mpVW8aXma2Rfd0JvJ/HbuAOFptcfEV9R
+         gqHg==
+X-Gm-Message-State: AOAM5332xMsSp74YeD/m6SwoQJRrtUbmEqQoHWP1R53lphvUqu0x1nly
+        ILfwQ/CJGoUFf9NEkWlfjRM=
+X-Google-Smtp-Source: ABdhPJwKKV3YHe5Kx2TD+5yPgrUQbt8S2s5EfBAbZQQPLcMJjqzjQTN1qjux7zaNTymJGxsM9r7acw==
+X-Received: by 2002:a17:90b:2247:: with SMTP id hk7mr4087767pjb.159.1635150822423;
+        Mon, 25 Oct 2021 01:33:42 -0700 (PDT)
+Received: from localhost.localdomain ([140.82.17.67])
+        by smtp.gmail.com with ESMTPSA id p13sm2495694pfo.102.2021.10.25.01.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 01:33:42 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     akpm@linux-foundation.org, keescook@chromium.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        arnaldo.melo@gmail.com, pmladek@suse.com, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, valentin.schneider@arm.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v6 00/12] extend task comm from 16 to 24
+Date:   Mon, 25 Oct 2021 08:33:03 +0000
+Message-Id: <20211025083315.4752-1-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500011.china.huawei.com (7.185.36.84)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Right now there is no way to query whether BPF programs are
-attached to a sockmap or not.
+There're many truncated kthreads in the kernel, which may make trouble
+for the user, for example, the user can't get detailed device
+information from the task comm.
 
-we can use the standard interface in libbpf to query, such as:
-bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
-the mapFd is the fd of sockmap.
+This patchset tries to improve this problem fundamentally by extending
+the task comm size from 16 to 24. In order to do that, we have to do
+some cleanups first.
 
-Signed-off-by: Di Zhu <zhudi2@huawei.com>
----
-/* v2 */
-- John Fastabend <john.fastabend@gmail.com>
-  - add selftest code
----
- include/linux/bpf.h                           |  9 ++
- kernel/bpf/syscall.c                          |  5 ++
- net/core/sock_map.c                           | 82 ++++++++++++++++--
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 85 +++++++++++++++++++
- .../bpf/progs/test_sockmap_progs_query.c      | 25 ++++++
- 5 files changed, 199 insertions(+), 7 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+1. Make the copy of task comm always safe no matter what the task
+   comm size is. For example,
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index d604c8251d88..db7d0e5115b7 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1961,6 +1961,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
- int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
- int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
-+int sockmap_bpf_prog_query(const union bpf_attr *attr,
-+				 union bpf_attr __user *uattr);
-+
- void sock_map_unhash(struct sock *sk);
- void sock_map_close(struct sock *sk, long timeout);
- #else
-@@ -2014,6 +2017,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
- {
- 	return -EOPNOTSUPP;
- }
-+
-+static inline int sockmap_bpf_prog_query(const union bpf_attr *attr,
-+					       union bpf_attr __user *uattr)
-+{
-+	return -EINVAL;
-+}
- #endif /* CONFIG_BPF_SYSCALL */
- #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e50c0bfdb7d..17faeff8f85f 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3275,6 +3275,11 @@ static int bpf_prog_query(const union bpf_attr *attr,
- 	case BPF_FLOW_DISSECTOR:
- 	case BPF_SK_LOOKUP:
- 		return netns_bpf_prog_query(attr, uattr);
-+	case BPF_SK_SKB_STREAM_PARSER:
-+	case BPF_SK_SKB_STREAM_VERDICT:
-+	case BPF_SK_MSG_VERDICT:
-+	case BPF_SK_SKB_VERDICT:
-+		return sockmap_bpf_prog_query(attr, uattr);
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index e252b8ec2b85..269349bd05a8 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1412,38 +1412,50 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
- 	return NULL;
- }
- 
--static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
--				struct bpf_prog *old, u32 which)
-+static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog **pprog[],
-+				u32 which)
- {
- 	struct sk_psock_progs *progs = sock_map_progs(map);
--	struct bpf_prog **pprog;
- 
- 	if (!progs)
- 		return -EOPNOTSUPP;
- 
- 	switch (which) {
- 	case BPF_SK_MSG_VERDICT:
--		pprog = &progs->msg_parser;
-+		*pprog = &progs->msg_parser;
- 		break;
- #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
- 	case BPF_SK_SKB_STREAM_PARSER:
--		pprog = &progs->stream_parser;
-+		*pprog = &progs->stream_parser;
- 		break;
- #endif
- 	case BPF_SK_SKB_STREAM_VERDICT:
- 		if (progs->skb_verdict)
- 			return -EBUSY;
--		pprog = &progs->stream_verdict;
-+		*pprog = &progs->stream_verdict;
- 		break;
- 	case BPF_SK_SKB_VERDICT:
- 		if (progs->stream_verdict)
- 			return -EBUSY;
--		pprog = &progs->skb_verdict;
-+		*pprog = &progs->skb_verdict;
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
- 	}
- 
-+	return 0;
-+}
-+
-+static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
-+				struct bpf_prog *old, u32 which)
-+{
-+	struct bpf_prog **pprog;
-+	int ret;
-+
-+	ret = sock_map_prog_lookup(map, &pprog, which);
-+	if (ret)
-+		return ret;
-+
- 	if (old)
- 		return psock_replace_prog(pprog, prog, old);
- 
-@@ -1451,6 +1463,62 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
- 	return 0;
- }
- 
-+int sockmap_bpf_prog_query(const union bpf_attr *attr,
-+			   union bpf_attr __user *uattr)
-+{
-+	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
-+	u32 prog_cnt = 0, flags = 0;
-+	u32 ufd = attr->target_fd;
-+	struct bpf_prog **pprog;
-+	struct bpf_prog *prog;
-+	struct bpf_map *map;
-+	struct fd f;
-+	int ret;
-+
-+	if (attr->query.query_flags)
-+		return -EINVAL;
-+
-+	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
-+		return -EFAULT;
-+
-+	f = fdget(ufd);
-+	map = __bpf_map_get(f);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	rcu_read_lock();
-+
-+	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
-+	if (ret)
-+		goto end;
-+
-+	prog = *pprog;
-+	prog_cnt = (!prog) ? 0 : 1;
-+	if (copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt))) {
-+		ret = -EFAULT;
-+		goto end;
-+	}
-+
-+	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
-+		goto end;
-+
-+	prog = bpf_prog_inc_not_zero(prog);
-+	if (IS_ERR(prog)) {
-+		ret = PTR_ERR(prog);
-+		goto end;
-+	}
-+
-+	if (copy_to_user(prog_ids, &prog->aux->id, sizeof(u32)))
-+		ret = -EFAULT;
-+
-+	bpf_prog_put(prog);
-+
-+end:
-+	rcu_read_unlock();
-+	fdput(f);
-+	return ret;
-+}
-+
- static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
- {
- 	switch (link->map->map_type) {
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1352ec104149..23fd89661ef5 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -8,6 +8,7 @@
- #include "test_sockmap_update.skel.h"
- #include "test_sockmap_invalid_update.skel.h"
- #include "test_sockmap_skb_verdict_attach.skel.h"
-+#include "test_sockmap_progs_query.skel.h"
- #include "bpf_iter_sockmap.skel.h"
- 
- #define TCP_REPAIR		19	/* TCP sock is under repair right now */
-@@ -315,6 +316,84 @@ static void test_sockmap_skb_verdict_attach(enum bpf_attach_type first,
- 	test_sockmap_skb_verdict_attach__destroy(skel);
- }
- 
-+static __u32 query_prog_id(int prog)
-+{
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
-+	int err;
-+
-+	err = bpf_obj_get_info_by_fd(prog, &info, &info_len);
-+	if (CHECK_FAIL(err || info_len != sizeof(info))) {
-+		perror("bpf_obj_get_info_by_fd");
-+		return 0;
-+	}
-+
-+	return info.id;
-+}
-+
-+static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
-+{
-+	struct test_sockmap_progs_query *skel;
-+	int err, map, verdict, duration = 0;
-+	__u32 attach_flags = 0;
-+	__u32 prog_ids[3] = {};
-+	__u32 prog_cnt = 3;
-+
-+	skel = test_sockmap_progs_query__open_and_load();
-+	if (CHECK_FAIL(!skel)) {
-+		perror("test_sockmap_progs_query__open_and_load");
-+		return;
-+	}
-+
-+	map = bpf_map__fd(skel->maps.sock_map);
-+
-+	if (attach_type == BPF_SK_MSG_VERDICT)
-+		verdict = bpf_program__fd(skel->progs.prog_skmsg_verdict);
-+	else
-+		verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+
-+	err = bpf_prog_query(map, attach_type, 0 /* query flags */,
-+			     &attach_flags, prog_ids, &prog_cnt);
-+	if (CHECK(err, "bpf_prog_query", "failed\n"))
-+		goto out;
-+
-+	if (CHECK(attach_flags != 0, "bpf_prog_query",
-+		  "wrong attach_flags on query: %u", attach_flags))
-+		goto out;
-+
-+	if (CHECK(prog_cnt != 0, "bpf_prog_query",
-+		  "wrong program count on query: %u", prog_cnt))
-+		goto out;
-+
-+	err = bpf_prog_attach(verdict, map, attach_type, 0);
-+	if (CHECK(err, "bpf_prog_attach", "failed\n"))
-+		goto out;
-+
-+	prog_cnt = 1;
-+	err = bpf_prog_query(map, attach_type, 0 /* query flags */,
-+			     &attach_flags, prog_ids, &prog_cnt);
-+	if (CHECK(err, "bpf_prog_query", "failed\n"))
-+		goto detach;
-+
-+	if (CHECK(attach_flags != 0, "bpf_prog_query",
-+		  "wrong attach_flags on query: %u", attach_flags))
-+		goto detach;
-+
-+	if (CHECK(prog_cnt != 1, "bpf_prog_query",
-+		  "wrong program count on query: %u", prog_cnt))
-+		goto detach;
-+
-+	if (CHECK(prog_ids[0] != query_prog_id(verdict), "bpf_prog_query",
-+		  "wrong prog id on query: %u", prog_ids[0]))
-+		goto detach;
-+
-+detach:
-+	bpf_prog_detach2(verdict, map, attach_type);
-+out:
-+	test_sockmap_progs_query__destroy(skel);
-+
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -341,4 +420,10 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_attach(BPF_SK_SKB_STREAM_VERDICT,
- 						BPF_SK_SKB_VERDICT);
- 	}
-+	if (test__start_subtest("sockmap progs query")) {
-+		test_sockmap_progs_query(BPF_SK_MSG_VERDICT);
-+		test_sockmap_progs_query(BPF_SK_SKB_STREAM_PARSER);
-+		test_sockmap_progs_query(BPF_SK_SKB_STREAM_VERDICT);
-+		test_sockmap_progs_query(BPF_SK_SKB_VERDICT);
-+	}
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
-new file mode 100644
-index 000000000000..ec0da297cf80
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sock_map SEC(".maps");
-+
-+SEC("sk_skb")
-+int prog_skb_verdict(struct __sk_buff *skb)
-+{
-+	return SK_PASS;
-+}
-+
-+SEC("sk_msg")
-+int prog_skmsg_verdict(struct sk_msg_md *msg)
-+{
-+	return SK_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
+      Unsafe                 Safe
+      strlcpy                strscpy_pad
+      strncpy                strscpy_pad
+      bpf_probe_read_kernel  bpf_probe_read_kernel_str
+                             bpf_core_read_str
+                             bpf_get_current_comm
+                             perf_event__prepare_comm
+                             prctl(2)
+
+   After this step, the comm size change won't make any trouble to the 
+   kernel or the in-tree tools for example perf, BPF programs.
+
+2. Cleanup some old hard-coded 16
+   Actually we don't need to convert all of them to TASK_COMM_LEN or
+   TASK_COMM_LEN_16, what we really care about is if the convert can
+   make the code more reasonable or easier to understand. For
+   example, some in-tree tools read the comm from sched:sched_switch
+   tracepoint, as it is derived from the kernel, we'd better make them
+   consistent with the kernel.
+
+3. Extend the task comm size from 16 to 24
+   task_struct is growing rather regularly by 8 bytes. This size change
+   should be acceptable. We used to think about extending the size for
+   CONFIG_BASE_FULL only, but that would be a burden for maintenance 
+   and introduce code complexity.
+
+4. Print a warning if the kthread comm is still truncated.
+
+5. What will happen to the out-of-tree tools after this change?
+   If the tool get task comm through kernel API, for example prctl(2),
+   bpf_get_current_comm() and etc, then it doesn't matter how large the
+   user buffer is, because it will always get a string with a nul
+   terminator. While if it gets the task comm through direct string copy,
+   the user tool must make sure the copied string has a nul terminator
+   itself. As TASK_COMM_LEN is not exposed to userspace, there's no
+   reason that it must require a fixed-size task comm.
+
+Changes since v5:
+- extend the comm size for both CONFIG_BASE_{FULL, SMALL} that could
+  make the code more simple and easier to maintain.
+- avoid changing too much hard-coded 16 in BPF programs per Andrii. 
+
+Changes since v4:
+- introduce TASK_COMM_LEN_16 and TASK_COMM_LEN_24 per Steven
+- replace hard-coded 16 with TASK_COMM_LEN_16 per Kees
+- use strscpy_pad() instead of strlcpy()/strncpy() per Kees
+- make perf test adopt to task comm size change per Arnaldo and Mathieu
+- fix warning reported by kernel test robot
+
+Changes since v3:
+- fixes -Wstringop-truncation warning reported by kernel test robot
+
+Changes since v2:
+- avoid change UAPI code per Kees
+- remove the description of out of tree code from commit log per Peter
+
+Changes since v1:
+- extend task comm to 24bytes, per Petr
+- improve the warning per Petr
+- make the checkpatch warning a separate patch
+
+Yafang Shao (12):
+  fs/exec: make __set_task_comm always set a nul ternimated string
+  fs/exec: make __get_task_comm always get a nul terminated string
+  drivers/connector: make connector comm always nul ternimated
+  drivers/infiniband: make setup_ctxt always get a nul terminated task
+    comm
+  elfcore: make prpsinfo always get a nul terminated task comm
+  samples/bpf/test_overhead_kprobe_kern: make it adopt to task comm size
+    change
+  samples/bpf/offwaketime_kern: make sched_switch tracepoint args adopt
+    to comm size change
+  tools/bpf/bpftool/skeleton: make it adopt to task comm size change
+  tools/perf/test: make perf test adopt to task comm size change
+  tools/testing/selftests/bpf: make it adopt to task comm size change
+  sched.h: extend task comm from 16 to 24
+  kernel/kthread: show a warning if kthread's comm is truncated
+
+ drivers/connector/cn_proc.c                   |  5 +++-
+ drivers/infiniband/hw/qib/qib.h               |  2 +-
+ drivers/infiniband/hw/qib/qib_file_ops.c      |  2 +-
+ fs/binfmt_elf.c                               |  2 +-
+ fs/exec.c                                     |  5 ++--
+ include/linux/elfcore-compat.h                |  3 ++-
+ include/linux/elfcore.h                       |  4 +--
+ include/linux/sched.h                         |  9 +++++--
+ kernel/kthread.c                              |  7 ++++-
+ samples/bpf/offwaketime_kern.c                |  4 +--
+ samples/bpf/test_overhead_kprobe_kern.c       | 11 ++++----
+ samples/bpf/test_overhead_tp_kern.c           |  5 ++--
+ tools/bpf/bpftool/skeleton/pid_iter.bpf.c     |  4 +--
+ tools/include/linux/sched.h                   | 11 ++++++++
+ tools/perf/tests/evsel-tp-sched.c             | 26 ++++++++++++++-----
+ .../selftests/bpf/progs/test_stacktrace_map.c |  6 ++---
+ .../selftests/bpf/progs/test_tracepoint.c     |  6 ++---
+ 17 files changed, 77 insertions(+), 35 deletions(-)
+ create mode 100644 tools/include/linux/sched.h
+
 -- 
-2.27.0
+2.17.1
 
