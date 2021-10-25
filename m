@@ -2,107 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396B9439695
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 14:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382D44396E6
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 15:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbhJYMsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 08:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbhJYMsH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:48:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E320C061745;
-        Mon, 25 Oct 2021 05:45:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RIUrXxUV4UbEv2DGGHaNGcFcvRKSfANE71br1DygmXE=; b=kUsxMs1Z4n8b+0909nSn+49Any
-        grB324UAZJIgSY8CEqFEGD9kDcJlSbAXEHEM5uF1VJfACLytS5tLr0AOW3iRjvNMzkzI4EkzcstfR
-        +nFtDTfAKYaWhoHjLDm7S8ldi+sD8pS6e1DY/rZKvpXjLrZqT0/FNOiZ/vFWTU34FE/LrJ0+1yb/T
-        of/8Eu0kWXkmohp69S/6d4RSNk+03UsI999j/TpKjxfDyZW/5dXeQFnqLpLs+VIg8PPDqNXoCV+aB
-        Cn2AT1e+d447yMvQr2vnM+AET2VoTaVsfd7VVv4506Nki8Y58U29DajzAiA6IcccwvVXKCeEfJRHG
-        Rh9XIiFQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mezJZ-00G7qw-94; Mon, 25 Oct 2021 12:43:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0556A3002AE;
-        Mon, 25 Oct 2021 14:42:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E2B74212E25E6; Mon, 25 Oct 2021 14:42:55 +0200 (CEST)
-Date:   Mon, 25 Oct 2021 14:42:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <YXamT2EIUYW8t74A@hirez.programming.kicks-ass.net>
-References: <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
- <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
- <20211021223719.GY174703@worktop.programming.kicks-ass.net>
- <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com>
- <20211021233852.gbkyl7wpunyyq4y5@treble>
- <CAADnVQ+iMysKSKBGzx7Wa+ygpr9nTJbRo4eGYADLFDE4PmtjOQ@mail.gmail.com>
- <YXKhLzd/DtkjURpc@hirez.programming.kicks-ass.net>
- <CAADnVQKJojWGaTCpUhkmU+vUxXORPacX_ByjyHWY0V03hGH7KA@mail.gmail.com>
- <YXa0uH0fA0P+dM8J@boxer>
+        id S233366AbhJYNCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 09:02:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34725 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233343AbhJYNCW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 09:02:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635166800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=qA0I4/+z2GGotAPzClR23nYM/h7wOlk9GbkFHt3Tads=;
+        b=PUCEdAYq6K2AETkvTPLbqvAuyBxwtvAWqzB4Nz7nRVXrdoqdaYHQ1CfZAI9iSerjLdqJia
+        6GYVkCzynRVhY6E/0ovI3Pl8g1S0Q30htOy9Zc7di27KDEMceigxfb408XCbDLzDwxxDKE
+        bpDTwOJ5R5lZ8MOVhbuxz/xeCVfALjs=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-bb8RSlvaP0-F4uJSzSPjpg-1; Mon, 25 Oct 2021 08:59:58 -0400
+X-MC-Unique: bb8RSlvaP0-F4uJSzSPjpg-1
+Received: by mail-yb1-f199.google.com with SMTP id w199-20020a25c7d0000000b005bea7566924so17330651ybe.20
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 05:59:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=qA0I4/+z2GGotAPzClR23nYM/h7wOlk9GbkFHt3Tads=;
+        b=w7Ne6ww+gkwqNg/m3v8XFzw0daH+L5mXDHi9CZRcySFNlOWzId+7U3gVaPIMgY2XPG
+         HpCkomTT0b5EvxEwzwdkeqULf75JkhAe1TBdd+uX5SwGLzoKabjdOknj+hqz6OtEKpj7
+         qpZMQzydr2b6vHicdm0mOfQRc8i4T0PF/elDn1YsnGz+NTSLfOVMGO8mD37tV+JtUAIP
+         Vipa9TcxoTGhZkRGYsUs6QJNuDPB54noD6Njjc9j5RZsY2uKeMWn3W06DbUdyzsbdTk3
+         c+Wwdng6pCh4W00Tm7Sz476ZfjG1VuNvFS6ka6VuFlg3YZC/qm5rLUwWZg+L/i6aEal/
+         nhOQ==
+X-Gm-Message-State: AOAM533wguUCUkLCXsV1hRHUnijf9qHYexuUcEYHrVP4ESL4KQrfHF0P
+        hovMOpX+85Ma4nHTn0etPl621nYYQALUhQLHzCPB38+C3Q/FKetmh6XrVIC7gxfQ7er/YTK6P1M
+        MwcTGGlScgb2nRKs8BYI0SGcQBR+2
+X-Received: by 2002:a25:b59a:: with SMTP id q26mr1112241ybj.518.1635166797617;
+        Mon, 25 Oct 2021 05:59:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLKGxfRM1ZkAoM4kM3RUu1DN69aIxRcpRPVR3OtR6cZL/MwWEZzIriE0cklyFJc7+ou2V21eEwcYSHzhFXxqw=
+X-Received: by 2002:a25:b59a:: with SMTP id q26mr1112211ybj.518.1635166797318;
+ Mon, 25 Oct 2021 05:59:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXa0uH0fA0P+dM8J@boxer>
+From:   Dave Tucker <datucker@redhat.com>
+Date:   Mon, 25 Oct 2021 13:59:46 +0100
+Message-ID: <CAOJ0YmrUNbw_qMP_FHmoYejS1JRaKCkD69S5xYS9gxsWAPX4rw@mail.gmail.com>
+Subject: eBPF Documentation
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 03:44:24PM +0200, Maciej Fijalkowski wrote:
-> On Fri, Oct 22, 2021 at 08:22:35AM -0700, Alexei Starovoitov wrote:
-> > On Fri, Oct 22, 2021 at 4:33 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Oct 21, 2021 at 04:42:12PM -0700, Alexei Starovoitov wrote:
-> > >
-> > > > Ahh. Right. It's potentially a different offset for every prog.
-> > > > Let's put it into struct jit_context then.
-> > >
-> > > Something like this...
-> > 
-> > Yep. Looks nice and clean to me.
-> > 
-> > > -       poke->tailcall_bypass = image + (addr - poke_off - X86_PATCH_SIZE);
-> > > +       poke->tailcall_bypass = ip + (prog - start);
-> > >         poke->adj_off = X86_TAIL_CALL_OFFSET;
-> > > -       poke->tailcall_target = image + (addr - X86_PATCH_SIZE);
-> > > +       poke->tailcall_target = ip + ctx->tail_call_direct_label - X86_PATCH_SIZE;
-> > 
-> > This part looks correct too, but this is Daniel's magic.
-> > He'll probably take a look next week when he comes back from PTO.
-> > I don't recall which test exercises this tailcall poking logic.
-> > It's only used with dynamic updates to prog_array.
-> > insmod test_bpf.ko and test_verifier won't go down this path.
-> 
-> Please run ./test_progs -t tailcalls from tools/testing/selftests/bpf and
-> make sure that all of the tests are passing in there, especially the
-> tailcall_bpf2bpf* subset.
+Hello eBPF Community!
 
-Yeah, so nothing from that selftests crud wants to work for me; also I
-*really* dislike how vmtest.sh as found there tramples all over my
-source dir without asking.
+I wanted to follow up on an excerpt from the "Happy Birthday BPF" email [1].
 
-Note that even when eventually supplied with O=builddir (confusingly in
-front of it), it doesn't want to work and bails with lots of -ENOSPC
-warnings (I double checked, my disks are nowhere near full). (and this
-is after installing some horrendous python rst crap because clearly
-running a test needs to build documentation :/)
+> Despite books about BPF and pretty complete documentation at
+> https://ebpf.io/what-is-ebpf, developers and users complain that the
+> documentation is spread around.
 
-I've spend hours on that, I'm not sinking more time into it. If you want
-me to run that crap, fix it first.
+As one of those users who has complained, I'd like to explain why and
+propose a solution.Before I do, I'd just like to say thank you to
+everyone who has contributed
+
+Current State
+=============
+
+Firstly, the documentation at ebpf.io does a great job of describing the
+basics, but defers to the eBPF & XDP Reference [2] for more depth.
+
+That guide is a treasure trove of information, but , there are also notable
+omissions:
+
+- A definitive list of program types
+- A definitive list of map types
+- Information about which kernel versions they were introduced in, what
+they are intended for and perhaps even some examples
+- Documentation for bpf-helpers outside of the manpage
+
+This documentation partially exists in bcc [3], but with bcc-style
+syntax examples. Certain program types are a little more complex and
+require documentation of their own (see: man tc-bpf) or [4] for
+BPF_PROG_TYPE_FLOW_DISSECTOR. Other types seem to have no examples or
+documentation available outside the kernel source, for example
+BPF_PROG_TYPE_SK_SKB.
+
+For understanding CO:RE, BTF and program lifecycle I've found the blog
+posts on the Facebook eBPF Microsite [5] invaluable.
+
+If you're working on a loader other than libbpf, you'll be reading man bpf.
+
+If you're working on a compiler or VM, the official documentation for
+the eBPF instruction set is here [6], but it certainly helps to have
+this unofficial guide [7] as a reference (and the aforementioned eBPF
+and XDP reference covers some of this too) as well as this blog post
+[8].
+
+... and then of course are the libbpf/bcc/wrapper docs ...
+
+Desired State
+=============
+
+What I would love to see is the following:
+
+1. ebpf.io is the home to all official documentation
+2. Documentation arranged from bottom of the stack up
+  a. eBPF VM Instruction Set
+  b. ELF File Format, BTF and CO:RE
+  c. eBPF compilers
+  d. eBPF Syscall Interface
+  e. eBPF Program Types, Map Types and Helpers
+3. Docs that then point to the API documentation for libbpf, libxdp,
+bcc, and various other libraries.
+
+I'd be willing to help pull some of this together if there's some
+agreement that this is necessary and the breakdown is correct.
+
+Thanks in advance,
+
+- Dave
+
+[1]: https://lore.kernel.org/bpf/20210926203409.kn3gzz2eaodflels@ast-mbp.dhcp.thefacebook.com/T/#u
+[2]: https://docs.cilium.io/en/stable/bpf/
+[3]: https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md
+[4]: https://www.kernel.org/doc/html/latest/bpf/prog_flow_dissector.html
+[5]: https://facebookmicrosites.github.io/bpf/blog/2018/08/31/object-lifetime.html
+[6]: https://www.kernel.org/doc/Documentation/networking/filter.txt
+[7]: https://github.com/iovisor/bpf-docs/blob/master/eBPF.md
+[8]: https://pchaigno.github.io/bpf/2021/10/20/ebpf-instruction-sets.html
+
