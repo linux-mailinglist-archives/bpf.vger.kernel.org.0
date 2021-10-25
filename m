@@ -2,78 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212F943A6C8
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 00:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B4D43A6CC
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 00:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhJYWqk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 18:46:40 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48192 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbhJYWqk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:46:40 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mf8hR-000FhX-QT; Tue, 26 Oct 2021 00:44:13 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mf8hR-0007ku-KZ; Tue, 26 Oct 2021 00:44:13 +0200
-Subject: Re: [PATCH bpf-next v2 1/5] libbpf: Use __BYTE_ORDER__
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20211025131214.731972-1-iii@linux.ibm.com>
- <20211025131214.731972-2-iii@linux.ibm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <167b9b31-2568-4d7f-9e08-f8fc93ea04b4@iogearbox.net>
-Date:   Tue, 26 Oct 2021 00:44:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S232470AbhJYWsF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 25 Oct 2021 18:48:05 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18742 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234275AbhJYWsF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 18:48:05 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PMiY3Y028960
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 15:45:42 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bx4fm0g6m-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 15:45:42 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Mon, 25 Oct 2021 15:45:41 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 21CC174E663D; Mon, 25 Oct 2021 15:45:33 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/4] libbpf: add bpf_program__insns() accessor
+Date:   Mon, 25 Oct 2021 15:45:27 -0700
+Message-ID: <20211025224531.1088894-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: sibbz1HIHiOoBNhcuzkpo8m2SwtFtNlc
+X-Proofpoint-ORIG-GUID: sibbz1HIHiOoBNhcuzkpo8m2SwtFtNlc
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <20211025131214.731972-2-iii@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26333/Mon Oct 25 10:29:40 2021)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_07,2021-10-25_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ suspectscore=0 mlxlogscore=632 malwarescore=0 mlxscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110250128
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/25/21 3:12 PM, Ilya Leoshkevich wrote:
-> __BYTE_ORDER is supposed to be defined by a libc, and __BYTE_ORDER__ -
-> by a compiler. bpf_core_read.h checks __BYTE_ORDER == __LITTLE_ENDIAN,
-> which is true if neither are defined, leading to incorrect behavior on
-> big-endian hosts if libc headers are not included, which is often the
-> case.
-> 
-> Instead of changing just this particular location, replace all
-> occurrences of __BYTE_ORDER with __BYTE_ORDER__ in libbpf code for
-> consistency.
+Add libbpf APIs to access BPF program instructions. Both before and after
+libbpf processing (before and after bpf_object__load()). This allows to
+inspect what's going on with BPF program assembly instructions as libbpf
+performs its processing magic.
 
-ACK, that is definitely broken as is - we had similar issue back then with the
-bpf_{htons,ntohs}() helpers, details: 78a5a93c1eeb ("bpf, tests: fix endianness
-selection").
+But in more practical terms, this allows to do a no-brainer BPF program
+cloning, which is something you need when working with fentry/fexit BPF
+programs to be able to attach the same BPF program code to multiple kernel
+functions. Currently, kernel needs multiple copies of BPF programs, each
+loaded with its own target BTF ID. retsnoop is one such example that
+previously had to rely on bpf_program__set_prep() API to hijack program
+instructions ([0] for before and after).
 
-The bpf_core_read.h change I would split out as a separate commit along with a
-proper Fixes tag so it could potentially be cherry-picked easier (since the
-remainder in here is a cleanup for consistency and not used out of the BPF prog
-where this issue exists).
+Speaking of bpf_program__set_prep() API and the whole concept of
+multiple-instance BPF programs in libbpf, all that is scheduled for
+deprecation in v0.7. It doesn't work well, it's cumbersome, and it will become
+more broken as libbpf adds more functionality. So deprecate and remove it in
+libbpf 1.0. It doesn't seem to be used by anyone anyways (except for that
+retsnoop hack, which is now much cleaner with new APIs as can be seen in [0]).
 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->   tools/lib/bpf/bpf_core_read.h |  2 +-
->   tools/lib/bpf/btf.c           |  4 ++--
->   tools/lib/bpf/btf_dump.c      |  8 ++++----
->   tools/lib/bpf/libbpf.c        |  4 ++--
->   tools/lib/bpf/linker.c        | 12 ++++++------
->   tools/lib/bpf/relo_core.c     |  2 +-
->   6 files changed, 16 insertions(+), 16 deletions(-)
+  [0] https://github.com/anakryiko/retsnoop/pull/1
 
-Thanks,
-Daniel
+Andrii Nakryiko (4):
+  libbpf: fix off-by-one bug in bpf_core_apply_relo()
+  libbpf: add ability to fetch bpf_program's underlying instructions
+  libbpf: deprecate multi-instance bpf_program APIs
+  libbpf: deprecate ambiguously-named bpf_program__size() API
+
+ tools/lib/bpf/libbpf.c   | 36 ++++++++++++++++++++++-----------
+ tools/lib/bpf/libbpf.h   | 43 +++++++++++++++++++++++++++++++++++++---
+ tools/lib/bpf/libbpf.map |  2 ++
+ 3 files changed, 66 insertions(+), 15 deletions(-)
+
+-- 
+2.30.2
+
