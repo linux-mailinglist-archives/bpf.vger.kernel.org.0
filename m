@@ -2,185 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78BB439735
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 15:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA3E439741
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 15:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbhJYNKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 09:10:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38089 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233468AbhJYNKt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 09:10:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635167307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QxJG4ClCwysLwMBZ0+vM6Qh/czcxiPTdVQDytoS0Hdk=;
-        b=ZgKE3BO6Od8xMu51cMsDHppW2/UFswOuTQlWdmD2GScomqeQxkcTk2QqEWWlavEggN+7G7
-        GE4W6LSWWxnNRt5XWtvk6VXSmaMVaGOP+jz/zh0FK4PjDXGgSSwklLckf4CbLqyOx0mTsh
-        0kShzXAJ5+VHYkOng5s11z+NddmhmPk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-ifp6Ekd6NbaMedPsnsKUpw-1; Mon, 25 Oct 2021 09:08:25 -0400
-X-MC-Unique: ifp6Ekd6NbaMedPsnsKUpw-1
-Received: by mail-ed1-f69.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso181945edb.19
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 06:08:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QxJG4ClCwysLwMBZ0+vM6Qh/czcxiPTdVQDytoS0Hdk=;
-        b=mBp8pCe8VGglJEBvnFZ1mBSUC/siB/PbdK5NkI3iko1Q5nbEVSPxgthPmybSFAdbos
-         /45vZ69GPZMibdfqLXziJlBnUTdVcyBN5zdEjx74Szd7azWCurZMh7CF1kTuLKgDNY5o
-         ktYjLZdEmfomM2rXPtTJN8bCz8B8gY1PLELahfxXfza50ZEXeLG6h7wg0QEeZE6c2p/z
-         S1YctPf0hhIjldWO5lc3E8LfQb6CmrC9Un2wRvGkisg5ikXnqtyPfhi+UAxf/gz9Aljx
-         4a2OeNEk4N3gs/rudmcgFAdKdXjIt/B/pC0gRM/BabIPnSP4aIh5w5VIzaXdAdM5STOc
-         4VFg==
-X-Gm-Message-State: AOAM533WC6dmhdz+MTdtLxKCii4gPrcbT/ciDv+IIA39Yxei6ZkkJMKX
-        fTJFTXx0MCVbChktueOxbjjeq86xZyNY7nB2xkQqqBS+DUZ5PZ1vQFInUIQvNC2kdskC4HDKc1i
-        gPVgIufY3JpMx
-X-Received: by 2002:a05:6402:11d1:: with SMTP id j17mr4812588edw.139.1635167304355;
-        Mon, 25 Oct 2021 06:08:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBdByXnC92Gd5IMtq7QJaG68HvprP7ci0Jxti+XWvUIDZE4vUAsErjPF6qKzXSOq3yrqMSrg==
-X-Received: by 2002:a05:6402:11d1:: with SMTP id j17mr4812542edw.139.1635167303931;
-        Mon, 25 Oct 2021 06:08:23 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id s16sm9443327edd.32.2021.10.25.06.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 06:08:23 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1FFCA180262; Mon, 25 Oct 2021 15:08:21 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        id S233436AbhJYNO7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 09:14:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6330 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233371AbhJYNO6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 09:14:58 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PCM6rg028877;
+        Mon, 25 Oct 2021 13:12:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=G0GWFK8CqDfBJlic01i4S1HzVZ6TV2at09DO1LpCong=;
+ b=MTmQCsUNKC/Ta+dxqKkSE9oYRmKOK82mI9XLmwMr7BitNw+16wk+8sj9OWUTXkcOIvn6
+ rLhGqD5KvqIg3poURN9qPlytmU1zZJHJiIThsmMG+kgsIWdPU+vBv5zo3zSaocEwc2Yh
+ Ny0i9CRAP86jQJVB21zGwvgbtfjBH21PERB3npCaRpm0uTgL4CqV7e/Rckffhe97BfC6
+ aDHqzO19cfBb0IlEEfsiWK71rHEAcFEBFY+tTF/FiG86KaWHs9KtgJ7q4uCw8OL3vj3x
+ ZBAuFvUWps1x5931Av8ZsKsj1Q8+kKSt4CGTbOFRpWAP17IoWLWsm4l9NLctrIbrq3b0 +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bwt0twesd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 13:12:22 +0000
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19PCeaFj010637;
+        Mon, 25 Oct 2021 13:12:22 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bwt0twerq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 13:12:22 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19PD8HXI000379;
+        Mon, 25 Oct 2021 13:12:20 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bva19pxnw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 13:12:20 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19PD6D7g56492426
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Oct 2021 13:06:13 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22490A406B;
+        Mon, 25 Oct 2021 13:12:16 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C28F2A4069;
+        Mon, 25 Oct 2021 13:12:15 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.12.156])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 25 Oct 2021 13:12:15 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: [PATCH bpf v2] bpf: fix potential race in tail call compatibility check
-Date:   Mon, 25 Oct 2021 15:08:09 +0200
-Message-Id: <20211025130809.314707-1-toke@redhat.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next v2 0/5] core_reloc fixes for s390
+Date:   Mon, 25 Oct 2021 15:12:09 +0200
+Message-Id: <20211025131214.731972-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: c3bI0yAhAkdwGh9e4trczTbTFo4QFJ-x
+X-Proofpoint-GUID: Y1FmJQ9k5J0ddBz8m-TwdjKDOLsvond-
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_05,2021-10-25_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ mlxscore=0 bulkscore=0 priorityscore=1501 phishscore=0 adultscore=0
+ mlxlogscore=999 lowpriorityscore=0 clxscore=1015 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110250081
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo noticed that the code testing for program type compatibility of
-tail call maps is potentially racy in that two threads could encounter a
-map with an unset type simultaneously and both return true even though they
-are inserting incompatible programs.
+v1: https://lore.kernel.org/bpf/20211021234653.643302-1-iii@linux.ibm.com/
+v1 -> v2: Drop bpf_core_calc_field_relo() restructuring, split
+          __BYTE_ORDER__ change.
 
-The race window is quite small, but artificially enlarging it by adding a
-usleep_range() inside the check in bpf_prog_array_compatible() makes it
-trivial to trigger from userspace with a program that does, essentially:
+Hi,
 
-        map_fd = bpf_create_map(BPF_MAP_TYPE_PROG_ARRAY, 4, 4, 2, 0);
-        pid = fork();
-        if (pid) {
-                key = 0;
-                value = xdp_fd;
-        } else {
-                key = 1;
-                value = tc_fd;
-        }
-        err = bpf_map_update_elem(map_fd, &key, &value, 0);
+this series fixes test failures in core_reloc on s390.
 
-While the race window is small, it has potentially serious ramifications in
-that triggering it would allow a BPF program to tail call to a program of a
-different type. So let's get rid of it by protecting the update with a
-spinlock. The commit in the Fixes tag is the last commit that touches the
-code in question.
+Patches 1-4 replace __BYTE_ORDER with __BYTE_ORDER__ in order to fix an
+endianness bug and make the code consistent.
+Patch 5 fixes an endianness issue in test_core_reloc_mods.
 
-v2:
-- Use a spinlock instead of an atomic variable and cmpxchg() (Alexei)
+Best regards,
+Ilya
 
-Fixes: 3324b584b6f6 ("ebpf: misc core cleanup")
-Reported-by: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- include/linux/bpf.h   |  1 +
- kernel/bpf/arraymap.c |  1 +
- kernel/bpf/core.c     | 14 ++++++++++----
- kernel/bpf/syscall.c  |  2 ++
- 4 files changed, 14 insertions(+), 4 deletions(-)
+Ilya Leoshkevich (5):
+  libbpf: Use __BYTE_ORDER__
+  selftests/bpf: Use __BYTE_ORDER__
+  samples: seccomp: use __BYTE_ORDER__
+  selftests/seccomp: Use __BYTE_ORDER__
+  selftests/bpf: Fix test_core_reloc_mods on big-endian machines
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 020a7d5bf470..98d906176d89 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -929,6 +929,7 @@ struct bpf_array_aux {
- 	 * stored in the map to make sure that all callers and callees have
- 	 * the same prog type and JITed flag.
- 	 */
-+	spinlock_t type_check_lock;
- 	enum bpf_prog_type type;
- 	bool jited;
- 	/* Programs with direct jumps into programs part of this array. */
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index cebd4fb06d19..da9b1e96cadc 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1072,6 +1072,7 @@ static struct bpf_map *prog_array_map_alloc(union bpf_attr *attr)
- 	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
- 	INIT_LIST_HEAD(&aux->poke_progs);
- 	mutex_init(&aux->poke_mutex);
-+	spin_lock_init(&aux->type_check_lock);
- 
- 	map = array_map_alloc(attr);
- 	if (IS_ERR(map)) {
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index c1e7eb3f1876..9439c839d279 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1823,20 +1823,26 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
- bool bpf_prog_array_compatible(struct bpf_array *array,
- 			       const struct bpf_prog *fp)
- {
-+	bool ret;
-+
- 	if (fp->kprobe_override)
- 		return false;
- 
-+	spin_lock(&array->aux->type_check_lock);
-+
- 	if (!array->aux->type) {
- 		/* There's no owner yet where we could check for
- 		 * compatibility.
- 		 */
- 		array->aux->type  = fp->type;
- 		array->aux->jited = fp->jited;
--		return true;
-+		ret = true;
-+	} else {
-+		ret = array->aux->type  == fp->type &&
-+		      array->aux->jited == fp->jited;
- 	}
--
--	return array->aux->type  == fp->type &&
--	       array->aux->jited == fp->jited;
-+	spin_unlock(&array->aux->type_check_lock);
-+	return ret;
- }
- 
- static int bpf_check_tail_call(const struct bpf_prog *fp)
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e50c0bfdb7d..955011c7df29 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -543,8 +543,10 @@ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
- 
- 	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY) {
- 		array = container_of(map, struct bpf_array, map);
-+		spin_lock(&array->aux->type_check_lock);
- 		type  = array->aux->type;
- 		jited = array->aux->jited;
-+		spin_unlock(&array->aux->type_check_lock);
- 	}
- 
- 	seq_printf(m,
+ samples/seccomp/bpf-helper.h                       |  8 ++++----
+ tools/lib/bpf/bpf_core_read.h                      |  2 +-
+ tools/lib/bpf/btf.c                                |  4 ++--
+ tools/lib/bpf/btf_dump.c                           |  8 ++++----
+ tools/lib/bpf/libbpf.c                             |  4 ++--
+ tools/lib/bpf/linker.c                             | 12 ++++++------
+ tools/lib/bpf/relo_core.c                          |  2 +-
+ .../testing/selftests/bpf/prog_tests/btf_endian.c  |  6 +++---
+ .../selftests/bpf/progs/test_core_reloc_mods.c     |  9 +++++++++
+ tools/testing/selftests/bpf/test_sysctl.c          |  4 ++--
+ tools/testing/selftests/bpf/verifier/ctx_skb.c     | 14 +++++++-------
+ tools/testing/selftests/bpf/verifier/lwt.c         |  2 +-
+ .../bpf/verifier/perf_event_sample_period.c        |  6 +++---
+ tools/testing/selftests/seccomp/seccomp_bpf.c      |  6 +++---
+ 14 files changed, 48 insertions(+), 39 deletions(-)
+
 -- 
-2.33.0
+2.31.1
 
