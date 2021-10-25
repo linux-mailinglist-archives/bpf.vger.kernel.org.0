@@ -2,84 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E648A43A6CD
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 00:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAB643A7EF
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 00:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhJYWsI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 25 Oct 2021 18:48:08 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27254 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234275AbhJYWsG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 18:48:06 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PMiXkc028915
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 15:45:44 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bx4fm0g6v-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 15:45:44 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 25 Oct 2021 15:45:41 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 59F4874E664E; Mon, 25 Oct 2021 15:45:41 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 4/4] libbpf: deprecate ambiguously-named bpf_program__size() API
-Date:   Mon, 25 Oct 2021 15:45:31 -0700
-Message-ID: <20211025224531.1088894-5-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211025224531.1088894-1-andrii@kernel.org>
-References: <20211025224531.1088894-1-andrii@kernel.org>
+        id S234389AbhJYW5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 18:57:11 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49534 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232586AbhJYW5J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 18:57:09 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mf8rY-0000FB-RX; Tue, 26 Oct 2021 00:54:40 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mf8rY-0002oR-Gs; Tue, 26 Oct 2021 00:54:40 +0200
+Subject: Re: [PATCH] powerpc/bpf: fix write protecting JIT code
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, ast@kernel.org,
+        christophe.leroy@csgroup.eu, Hari Bathini <hbathini@linux.ibm.com>,
+        jniethe5@gmail.com, mpe@ellerman.id.au
+Cc:     andrii@kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, paulus@samba.org, songliubraving@fb.com,
+        stable@vger.kernel.org, yhs@fb.com
+References: <20211025055649.114728-1-hbathini@linux.ibm.com>
+ <1635142354.46h6w5c2rx.naveen@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c8d7390b-c07c-75cd-e9e9-4b8f0b786cc6@iogearbox.net>
+Date:   Tue, 26 Oct 2021 00:54:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: AC3fdgfdzLVkZ-i7d5eqinF2fKxr-2XX
-X-Proofpoint-ORIG-GUID: AC3fdgfdzLVkZ-i7d5eqinF2fKxr-2XX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_07,2021-10-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- suspectscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110250128
-X-FB-Internal: deliver
+In-Reply-To: <1635142354.46h6w5c2rx.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26333/Mon Oct 25 10:29:40 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The name of the API doesn't convey clearly that this size is in number
-of bytes (there needed to be a separate comment to make this clear in
-libbpf.h). Further, measuring the size of BPF program in bytes is not
-exactly the best fit, because BPF programs always consist of 8-byte
-instructions. As such, bpf_program__insn_cnt() is a better alternative
-in pretty much any imaginable case.
+On 10/25/21 8:15 AM, Naveen N. Rao wrote:
+> Hari Bathini wrote:
+>> Running program with bpf-to-bpf function calls results in data access
+>> exception (0x300) with the below call trace:
+>>
+>>     [c000000000113f28] bpf_int_jit_compile+0x238/0x750 (unreliable)
+>>     [c00000000037d2f8] bpf_check+0x2008/0x2710
+>>     [c000000000360050] bpf_prog_load+0xb00/0x13a0
+>>     [c000000000361d94] __sys_bpf+0x6f4/0x27c0
+>>     [c000000000363f0c] sys_bpf+0x2c/0x40
+>>     [c000000000032434] system_call_exception+0x164/0x330
+>>     [c00000000000c1e8] system_call_vectored_common+0xe8/0x278
+>>
+>> as bpf_int_jit_compile() tries writing to write protected JIT code
+>> location during the extra pass.
+>>
+>> Fix it by holding off write protection of JIT code until the extra
+>> pass, where branch target addresses fixup happens.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 62e3d4210ac9 ("powerpc/bpf: Write protect JIT code")
+>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+>> ---
+>>  arch/powerpc/net/bpf_jit_comp.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Thanks for the fix!
+> 
+> Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-So schedule bpf_program__size() deprecation starting from v0.7 and it
-will be removed in libbpf 1.0.
+LGTM, I presume this fix will be routed via Michael.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 449eeed80be6..e1900819bfab 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -224,6 +224,7 @@ LIBBPF_API bool bpf_program__autoload(const struct bpf_program *prog);
- LIBBPF_API int bpf_program__set_autoload(struct bpf_program *prog, bool autoload);
- 
- /* returns program size in bytes */
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_program__insn_cnt() instead")
- LIBBPF_API size_t bpf_program__size(const struct bpf_program *prog);
- 
- struct bpf_insn;
--- 
-2.30.2
-
+BPF selftests have plenty of BPF-to-BPF calls in there, too bad this was
+caught so late. :/
