@@ -2,129 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABA543A527
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 22:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D81A43A565
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 23:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234355AbhJYU63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 16:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbhJYU61 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:58:27 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66B5C061745
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:56:03 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 65so10358356ljf.9
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=USyQCAwnVpfrQy5qb2RoSXJSCIXJaXwpovwGbyAm9Vg=;
-        b=MgkVecsSHFR+C5RN2+Lim2/bx63FD7+Iy00D44KSooRHVPj0zvMhEZxWKZsmtQAJXH
-         110k4lSVVKlm6yXmLv1MrJXk9SonF+pLcHl9azcB6NEKOhJD1gxaSephQ8dmSKzUjZTg
-         Umx0llfz/TNkE+o+8i+n2/vf2dYIlEyyYg3gDijtwtrx2RyorMi+m+W1hFp0yD0InyQ8
-         mzrdQvT4AL/efjSb9jMmUm7Y6e7zDWcq0d0Fxp5YquuPT5M9rlAhawU6d2JjbHZkEixK
-         Et4mx0Q0VDhWjMGuWTxKApCsUrqgJJNj8qiVuRoUiZnj2MUf7Cst/yT5bG4w1OkhDTQH
-         W2kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=USyQCAwnVpfrQy5qb2RoSXJSCIXJaXwpovwGbyAm9Vg=;
-        b=Uxcoh5tCWMxqplFgjuWr8U7WQvsKdpd3xYiWqVTosoxjjNQ6Xv55z+jz7D96dky9N8
-         8A1/za7Ev4pgW2V/YuK+RdlOWclipRQshRbHm2V4wNZW+ANeRe6vz9peWUsSvSNvJLQ7
-         hMVpql3SeyriYL8hHmlqczFBHQJt2XwJxB6tabDMM5S7SPIIT9H7QhNlsrnrcQI0ImKi
-         S2axmriNSL3c4N/019vu8ikfAFwLx6dqUmdBtm91B0Ijk3qHnUI1hFTmq/LCHO18aH8f
-         sVaub4Khkvkv2TxBjC6vhwemzNxgmYeeck67YDHttXgn4M9HQbmwPQLmHgnCg+4zTULP
-         IEqQ==
-X-Gm-Message-State: AOAM531gCRLXAsPqvlbf/WMutOmioUIUGEXSKIW59Y4VHjn0f/sCC+8x
-        +6ZlwUwq5n5RDMLtLSK2YuHM38js5R1HNJHhI04=
-X-Google-Smtp-Source: ABdhPJyJ1dsCDtFUfixUJPGy9dXH/Mg5SFP3q3jgnEQliT32VVo10SGuhO/PM1pG2YOhe5DCh+3mUTVN16ndTE6NbdE=
-X-Received: by 2002:a05:651c:2128:: with SMTP id a40mr21412651ljq.148.1635195361897;
- Mon, 25 Oct 2021 13:56:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211022223228.99920-1-andrii@kernel.org> <20211022223228.99920-3-andrii@kernel.org>
- <CAJygYd1qr5yi0i0wfPuz4yBj61TjcXqBRWKoLUa=XkUp+7g1Vg@mail.gmail.com> <CAEf4BzZ3_COLB32D7oktOPKBGzU3LZ7N=Bd-H-Lf0KWb-Qc7NA@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ3_COLB32D7oktOPKBGzU3LZ7N=Bd-H-Lf0KWb-Qc7NA@mail.gmail.com>
-From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Mon, 25 Oct 2021 13:55:35 -0700
-Message-ID: <CAJygYd1ctJpaNmL8eyGs66UpFCrSdRo7SQZbnpUnpMufKfcnug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: support multiple tests per file
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        id S234163AbhJYVHd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 17:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230373AbhJYVHc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:07:32 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C80961073;
+        Mon, 25 Oct 2021 21:05:06 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 17:05:03 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Zhang, Qiang" <qiang.zhang@windriver.com>, robdclark@chromium.org,
+        Christian Brauner <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-perf-users@vger.kernel.org,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v6 00/12] extend task comm from 16 to 24
+Message-ID: <20211025170503.59830a43@gandalf.local.home>
+In-Reply-To: <CAADnVQKm0Ljj-w5PbkAu1ugLFnZRRPt-Vk-J7AhXxDD5xVompA@mail.gmail.com>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+        <CAADnVQKm0Ljj-w5PbkAu1ugLFnZRRPt-Vk-J7AhXxDD5xVompA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 1:39 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Oct 25, 2021 at 1:13 PM sunyucong@gmail.com <sunyucong@gmail.com> wrote:
-> >
-> > On Fri, Oct 22, 2021 at 3:33 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > Revamp how test discovery works for test_progs and allow multiple test
-> > > entries per file. Any global void function with no arguments and
-> > > serial_test_ or test_ prefix is considered a test.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/Makefile | 7 +++----
-> > >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > index 498222543c37..ac47cf9760fc 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -421,10 +421,9 @@ ifeq ($($(TRUNNER_TESTS_DIR)-tests-hdr),)
-> > >  $(TRUNNER_TESTS_DIR)-tests-hdr := y
-> > >  $(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/*.c
-> > >         $$(call msg,TEST-HDR,$(TRUNNER_BINARY),$$@)
-> > > -       $$(shell ( cd $(TRUNNER_TESTS_DIR);                             \
-> > > -                 echo '/* Generated header, do not edit */';           \
-> > > -                 ls *.c 2> /dev/null |                                 \
-> > > -                       sed -e 's@\([^\.]*\)\.c@DEFINE_TEST(\1)@';      \
-> > > +       $$(shell (echo '/* Generated header, do not edit */';                                   \
-> > > +                 sed -n -E 's/^void (serial_)?test_([a-zA-Z0-9_]+)\((void)?\).*/DEFINE_TEST(\2)/p'     \
-> >
-> > probably not that important :  allow \s* before void and after void.
-> > Or,  maybe we can just  (?!static)  instead of anchoring to line
-> > start.
->
-> Selftests source code is pretty strict with formatting, so I don't
-> think we'll deviate from the strict `^void <name>` pattern (and we
-> certainly don't want to deviate). So I didn't want to overcomplicate
-> regexes unnecessarily.
->
-> >
-> > > +                       $(TRUNNER_TESTS_DIR)/*.c | sort ;       \
-> >
-> > to be super safe : maybe add a check here to ensure each file contains
-> > at least one test function.
->
-> It's actually a useful property to have .c files that don't have
-> tests. This can be used for adding various shared helpers. Currently
-> all *_helpers.c are in selftests/bpf/ directory and have to be
-> explicitly wired in Makefile, which is a bit annoying. With this setup
-> we can just put a new .c file in the selftests/bpf/prog_tests/ and it
-> will be automatically compiled and linked.
->
-> It also will significantly hurt readability to add some sort of
-> per-file check in there, do you think it's worth it?
+On Mon, 25 Oct 2021 11:10:09 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-You are right, probably not really worth it. we just have to watch the
-total test numbers, it should always goes up :-D
+> It looks like a churn that doesn't really address the problem.
+> If we were to allow long names then make it into a pointer and use 16 byte
+> as an optimized storage for short names. Any longer name would be a pointer.
+> In other words make it similar to dentry->d_iname.
 
->
-> >
-> > >                  ) > $$@)
-> > >  endif
-> > >
-> > > --
-> > > 2.30.2
-> > >
+That would be quite a bigger undertaking too, as it is assumed throughout
+the kernel that the task->comm is TASK_COMM_LEN and is nul terminated. And
+most locations that save the comm simply use a fixed size string of
+TASK_COMM_LEN. Not saying its not feasible, but it would require a lot more
+analysis of the impact by changing such a fundamental part of task struct
+from a static to something requiring allocation.
+
+Unless you are suggesting that we truncate like normal the 16 byte names
+(to a max of 15 characters), and add a way to hold the entire name for
+those locations that understand it.
+
+-- Steve
+
