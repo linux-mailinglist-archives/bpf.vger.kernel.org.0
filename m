@@ -2,160 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2A3439AFC
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 17:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AAB439B22
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 18:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhJYQBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 12:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbhJYQBe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:01:34 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C9BC061767
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 08:59:11 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id t2so10683534qtn.12
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 08:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZjV3URyePb4s53GQk1M02gG3V/4dpnLt8uVS6yoYgnE=;
-        b=nnpRH9u3J9+2NYYU+U5s0uyFX12y5FxDsv6mqiCZ47soMyWTZD5+rwHXOjUieiuTaA
-         pGQGs6sVDqn5X//TqfHL/cD+1+rF+EplCDmmiURX7RnXNq2ZelsgPU8DfIHE2OKK1pB4
-         jCsqTcqj0bZfhl14PSguoM5dIX1X+5Vb5hlC2qtezjoYiLIc6uu+H4jt143CsTAOvaxz
-         i7x5qJfiddBwkevY0s6dCZ5wJCZPz55V0P0xoB6V9xXLFx9PLohGToNWiCj3GE0xQ9/p
-         YiAZUyAWYHCVMQqn6d50bQku8pkpVBrL12R3z8cNTBKagNyIYESOpEUE5fYp6L5Y73rS
-         q8KA==
+        id S230525AbhJYQFv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 12:05:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24984 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230511AbhJYQFv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 12:05:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635177808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SzZKBwOsVE4UO/yr3UZsr7hPmN/ISAyTPojfUgsRot0=;
+        b=H5mlONSoXvMzmJxk0vM9CpINKW6aL5uePoObGU+TPSdezEItTBfpQZrefLQ9SUQPLlsSOK
+        JHNjq7pigHnvjNYrIQqniC77sM3Zoowdu4oiRf68DHUh3CSY/yJUW4/RyCCKb3VWvjdCwB
+        2J4ezqJW1M0aGAzUKXPpem3l/ETyN6k=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-hv_5IZAEO2yji8VrAmnAXw-1; Mon, 25 Oct 2021 12:03:26 -0400
+X-MC-Unique: hv_5IZAEO2yji8VrAmnAXw-1
+Received: by mail-ed1-f70.google.com with SMTP id m16-20020a056402431000b003dd2005af01so8708677edc.5
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 09:03:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZjV3URyePb4s53GQk1M02gG3V/4dpnLt8uVS6yoYgnE=;
-        b=EkoifzHzi3UYrZYiNqgZFHFV2OAmE5ycb7cr4YnHXz/FUwaXZOYalVPda6C4vo2Amr
-         CodhLigw9xVeUNPUH8cAHVmbLVg5L35u5JH8fHNLpT+Tnjr85sPHNKtQG0UxgjPzDu/t
-         U1SldJHzpIV9yXY+JJWilDpx+UYTsZFP7epGnjxwrCTF8HXxKzMIWtHItFW8xc0W6xr0
-         SrR7mf6tR+pvXA3BnARyiET2S6KDbQl9/BhjdVKnpTafbLFzTcQ0soHBbwU1I++JjyyF
-         RRMxtmr9MLw2aV12BQ3Ob2ZFfhfC/2LJyHlGMl6YCtPoQU9SULrbg+EWWOTQP4qk1t0a
-         OZ9w==
-X-Gm-Message-State: AOAM533SbtmjlwhPQoYqSrU90K7TZuRu7HeK/HDb+5JyNXVQEoken26s
-        q3hTvO2qtvZIxotGVHYRHxsqwoVtwtVlaUZUIlju3jYU7fl15g==
-X-Google-Smtp-Source: ABdhPJxlSjBR5isPLhvz6sSXZyIqbg53tHQ5mPFWC0D/kz3HeGGenZQKpsQy9NwnmXMN5kDzEiFWORB+wBjbYYSSSeg=
-X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr18546411qta.287.1635177550570;
- Mon, 25 Oct 2021 08:59:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=SzZKBwOsVE4UO/yr3UZsr7hPmN/ISAyTPojfUgsRot0=;
+        b=y7Hgg6VJx2wf0euDd7W5hXXnRP+lVZpcCOtEMLtiRObhS7ORlTYhkF5LKCFMC76sN0
+         FtGjONrm8+Rj5Ns7Jlfmq3dz1YMykcfNL6qDDa0dQTNlc0BEWdENCw0IdWJEmOD2BSjO
+         i6GVWYeQyULNdJmda9idwg9g1hBSUfeAfoksELC/dfcTtOkSyGXa5iOwMPZ1LKZgJAjs
+         DLR1h46jiGuIAJko4QPJItU6Z3yrlUa+MfXqaMdA8ZiYx09OyoBIe3tftP+tF0STQVGm
+         9O3iWj5nYzwDTfh3BUl5Ealgdw75XwtHI70l+Fw0pXivHKTWi94nRpkAK3Wb1uUIOdXJ
+         TPCg==
+X-Gm-Message-State: AOAM531fYN4EF8RxbPQsKiwHeJr7aA/oqQj+QQCq5JpN466WawV71mEH
+        ZUbKGJCU1FDGUGw/xi0+KA8ZMHixhUn2nZIz+B+kkVO2NJfi+mlug1vrW/Me4n/di69sTse49l7
+        9qN0epT9tCc2d
+X-Received: by 2002:a17:906:4e57:: with SMTP id g23mr16629607ejw.448.1635177805113;
+        Mon, 25 Oct 2021 09:03:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8cUU70PkM538DkLDFWDPq5g3C/6csXSqxmm69uiH427YqCUzOA1QoZ/RnuSTIYoaw+U+GqA==
+X-Received: by 2002:a17:906:4e57:: with SMTP id g23mr16629569ejw.448.1635177804705;
+        Mon, 25 Oct 2021 09:03:24 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ne2sm2363040ejc.44.2021.10.25.09.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 09:03:24 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 785B2180262; Mon, 25 Oct 2021 18:03:23 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: libxsk move from libbpf to libxdp
+In-Reply-To: <CAJ8uoz35Xqx1YCnxB0wCd-58_u9fdzEy5xS45Jcs82gXiAnK1Q@mail.gmail.com>
+References: <CAEf4BzZ5Uajg5548=vpq8O2L5VLrONmr8h2O-6X6H0urMDXEqA@mail.gmail.com>
+ <CAJ8uoz35Xqx1YCnxB0wCd-58_u9fdzEy5xS45Jcs82gXiAnK1Q@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 25 Oct 2021 18:03:23 +0200
+Message-ID: <87v91lay7o.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20211011155636.2666408-1-sdf@google.com> <20211011155636.2666408-2-sdf@google.com>
- <6172ef4180b84_840632087a@john-XPS-13-9370.notmuch>
-In-Reply-To: <6172ef4180b84_840632087a@john-XPS-13-9370.notmuch>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 25 Oct 2021 08:58:59 -0700
-Message-ID: <CAKH8qBuR4bYn1POgu0TF428vApknvMNPAng5qMuiKXCpcg8CQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpftool: don't append / to the progtype
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:05 AM John Fastabend
-<john.fastabend@gmail.com> wrote:
+Magnus Karlsson <magnus.karlsson@gmail.com> writes:
+
+> On Fri, Oct 22, 2021 at 7:49 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>>
+>> Hey guys,
+>>
+>> It's been a while since we chatted about libxsk move. I believe last
+>> time we were already almost ready to recommend libxdp for this, but
+>> I'd like to double-check. Can one of you please own [0], validate that
+>> whatever APIs are provided by libxdp are equivalent to what libbpf
+>> provides, and start marking xdk.h APIs as deprecated? Thanks!
 >
-> Stanislav Fomichev wrote:
-> > Otherwise, attaching with bpftool doesn't work with strict section names.
-> >
-> > Also, switch to libbpf strict mode to use the latest conventions
-> > (note, I don't think we have any cli api guarantees?).
-> >
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/bpf/bpftool/main.c |  4 ++++
-> >  tools/bpf/bpftool/prog.c | 15 +--------------
-> >  2 files changed, 5 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> > index 02eaaf065f65..8223bac1e401 100644
-> > --- a/tools/bpf/bpftool/main.c
-> > +++ b/tools/bpf/bpftool/main.c
-> > @@ -409,6 +409,10 @@ int main(int argc, char **argv)
-> >       block_mount = false;
-> >       bin_name = argv[0];
-> >
-> > +     ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-> > +     if (ret)
-> > +             p_err("failed to enable libbpf strict mode: %d", ret);
-> > +
+> Resending since Gmail had jumped out of plain text mode again.
 >
-> Would it better to just warn? Seems like this shouldn't be fatal from
-> bpftool side?
+> No problem, I will own this. I will verify the APIs are the same then
+> submit a patch marking the ones in libbpf's xsk.h as deprecated.
 >
-> Also this is a potentially breaking change correct? Programs that _did_
-> work in the unstrict might suddently fail in the strict mode? If this
-> is the case whats the versioning plan? We don't want to leak these
-> type of changes across multiple versions, idealy we have a hard
-> break and bump the version.
+> One question is what to do with the samples and the selftests for xsk.
+> They currently rely on libbpf's xsk support. Two options that I see:
 >
-> I didn't catch a cover letter on the series. A small
-> note about versioning and upgrading bpftool would be helpful.
-
-Yeah, it is a breaking change, every program that has non-strict
-section names will be rejected.
-
-I mentioned that in the bpftool's commit description:
-Also, switch to libbpf strict mode to use the latest conventions
-(note, I don't think we have any cli api guarantees?).
-
-So I'm actually not sure what's the best way to handle this migration
-and whether we really provide any cli guarantees to the users. I was
-always assuming that bpftool is mostly for debugging/introspection,
-but not sure.
-
-As Andrii suggested in another email, I can add a flag to disable this
-strict mode. Any better ideas?
-
-
-
-
-> >       hash_init(prog_table.table);
-> >       hash_init(map_table.table);
-> >       hash_init(link_table.table);
-> > diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> > index 277d51c4c5d9..17505dc1243e 100644
-> > --- a/tools/bpf/bpftool/prog.c
-> > +++ b/tools/bpf/bpftool/prog.c
-> > @@ -1396,8 +1396,6 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >
-> >       while (argc) {
-> >               if (is_prefix(*argv, "type")) {
-> > -                     char *type;
-> > -
-> >                       NEXT_ARG();
-> >
-> >                       if (common_prog_type != BPF_PROG_TYPE_UNSPEC) {
-> > @@ -1407,19 +1405,8 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >                       if (!REQ_ARGS(1))
-> >                               goto err_free_reuse_maps;
-> >
-> > -                     /* Put a '/' at the end of type to appease libbpf */
-> > -                     type = malloc(strlen(*argv) + 2);
-> > -                     if (!type) {
-> > -                             p_err("mem alloc failed");
-> > -                             goto err_free_reuse_maps;
-> > -                     }
-> > -                     *type = 0;
-> > -                     strcat(type, *argv);
-> > -                     strcat(type, "/");
-> > -
-> > -                     err = get_prog_type_by_name(type, &common_prog_type,
-> > +                     err = get_prog_type_by_name(*argv, &common_prog_type,
-> >                                                   &expected_attach_type);
-> > -                     free(type);
-> >                       if (err < 0)
-> >                               goto err_free_reuse_maps;
+> 1: Require libxdp on the system. Do not try to compile the xsk samples
+> and selftests if libxdp is not available so the rest of the bpf
+> samples and selftests are not impacted.
+> 2: Provide a standalone mock-up file of xsk.c and xsk.h that samples
+> and selftests could use.
 >
-> This wont potentially break existing programs correct? It looks like
-> just adding a '/' should be fine.
->
-> Thanks,
-> John
+> I prefer #1 as it is better for the long-term. #2 means I would have
+> to maintain that mock-up file as libxdp features are added. Sounds
+> like double the amount of work to me. Thoughts?
+
+I agree #1 is preferable of those two. Another option is to move the
+samples to the xdp-tools repo instead? Doesn't work for selftests, of
+course; if it's acceptable to conditionally-compile the XSK tests
+depending on system library availability that would be fine by me...
+
+I pinged the Debian maintainer of libbpf to see if I can get him to pick
+up libxdp as well, or sponsor me to maintain it. Should make the
+transition smoother; guess I also need to get hold of the OpenSuse
+people.
+
+-Toke
+
