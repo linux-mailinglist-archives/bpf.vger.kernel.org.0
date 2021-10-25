@@ -2,81 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34594439521
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 13:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6429F439596
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 14:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhJYLrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 07:47:07 -0400
-Received: from mga04.intel.com ([192.55.52.120]:37514 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhJYLrH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 07:47:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="228391476"
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="228391476"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 04:44:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,180,1631602800"; 
-   d="scan'208";a="446195657"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by orsmga006.jf.intel.com with ESMTP; 25 Oct 2021 04:44:42 -0700
-Date:   Mon, 25 Oct 2021 15:44:24 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2 14/14] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-Message-ID: <YXa0uH0fA0P+dM8J@boxer>
-References: <YW/4/7MjUf3hWfjz@hirez.programming.kicks-ass.net>
- <20211021000502.ltn5o6ji6offwzeg@ast-mbp.dhcp.thefacebook.com>
- <YXEpBKxUICIPVj14@hirez.programming.kicks-ass.net>
- <CAADnVQKD6=HwmnTw=Shup7Rav-+OTWJERRYSAn-as6iikqoHEA@mail.gmail.com>
- <20211021223719.GY174703@worktop.programming.kicks-ass.net>
- <CAADnVQ+cJLYL-r6S8TixJxH1JEXXaNojVoewB3aKcsi7Y8XPdQ@mail.gmail.com>
- <20211021233852.gbkyl7wpunyyq4y5@treble>
- <CAADnVQ+iMysKSKBGzx7Wa+ygpr9nTJbRo4eGYADLFDE4PmtjOQ@mail.gmail.com>
- <YXKhLzd/DtkjURpc@hirez.programming.kicks-ass.net>
- <CAADnVQKJojWGaTCpUhkmU+vUxXORPacX_ByjyHWY0V03hGH7KA@mail.gmail.com>
+        id S231245AbhJYMIt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 08:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233009AbhJYMI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 08:08:26 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC69BC061224
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 05:06:00 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id e10so21578838uab.3
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 05:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=CT/q+dlrfk5YNnSJ+9aKffida5ZW42IofveDiasWyRU=;
+        b=G09zgxKFUiFcbfpASdxFrpn++jsiwz3ug4rIbqAMZ/Vb7yPy8YrP9bVuUU2qydyX+w
+         k6HiJLOeKRltUauER05OGoYV2j9bqeIBzX2dUKgKL9GflY21P7wemIFDa4mSeNlCByYl
+         LpbIfNHlZ7jO87L3eqq60SDcNn71KV8mZl3ci7aBKuzgtsFC6nnUVI15vNkD6I8hwcQJ
+         VL5C9Lf1NEtyAjQXHaB508kEmXy4eVc9p/qSfeUYfCX1alOveQxRUshDYpNvSpRQf82s
+         O66RvnRH+6TUt97pGi3OSZeak3udiUZAUV3Z5cMkemDNaSogQ9TXDnYpJ1iCc3gOaiA2
+         oZKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=CT/q+dlrfk5YNnSJ+9aKffida5ZW42IofveDiasWyRU=;
+        b=cup7EEN9zX7cclGwd1nd1Ue71An3TcZsfdlA76Fxi7omEULjCGOz/v1oIY9KqxHUEI
+         hwX7MHcZUOIiy6dsHIZ1Gu8ysNqNEH7cHbReN3DhuCX8/wPlipywYgt+NVuKo+C9iM9N
+         T9ABgHBt3MZeR6c7l5+HnH1IhDLtjrppNYPmDc+mFvr9TWXX2XCZ/9Szb3L3jquuGZwC
+         7e1YtrqvtsQrNeO3m9Ja93aI/ICj+rvm+JS31lkxeJ38rvke8qFJINfvVgRU4IOlKFiK
+         um2lgjwz/rmaZLwkTK7a5l/NfW0ZnNBu78FppNkl+HPfQyiZvFQnYctvlvvArDkuL6zb
+         3xvw==
+X-Gm-Message-State: AOAM533MzKtWxHyFv3BM1WBQoEdma5vF4kV55JuHf9Ubrn5PUZyeU6Jx
+        Z8lXiEdAX24lnwaUXHxVBy37S0FksJjNDGyh/EbnU/y3qA==
+X-Google-Smtp-Source: ABdhPJwTGvxE/uXP1okHUnwSswj2OTyb2yc6pcYzySKyINA5jCK1dN4UF++0j2Vs0c8Yoh0ELPQeZb4Odn+mfKJybT4=
+X-Received: by 2002:ab0:6e89:: with SMTP id b9mr14765567uav.132.1635163559622;
+ Mon, 25 Oct 2021 05:05:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKJojWGaTCpUhkmU+vUxXORPacX_ByjyHWY0V03hGH7KA@mail.gmail.com>
+From:   Tal Lossos <tallossos@gmail.com>
+Date:   Mon, 25 Oct 2021 15:05:48 +0300
+Message-ID: <CAO15rP=JzzanBC7Hj=9pshpMeWGJVpbt0wCiZfP8HwBaEbcFMw@mail.gmail.com>
+Subject: Question regarding "BPF CO-RE reference guide" blog post
+To:     bpf <bpf@vger.kernel.org>
+Cc:     andrii@kernel.org, assaf.shab@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 08:22:35AM -0700, Alexei Starovoitov wrote:
-> On Fri, Oct 22, 2021 at 4:33 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Oct 21, 2021 at 04:42:12PM -0700, Alexei Starovoitov wrote:
-> >
-> > > Ahh. Right. It's potentially a different offset for every prog.
-> > > Let's put it into struct jit_context then.
-> >
-> > Something like this...
-> 
-> Yep. Looks nice and clean to me.
-> 
-> > -       poke->tailcall_bypass = image + (addr - poke_off - X86_PATCH_SIZE);
-> > +       poke->tailcall_bypass = ip + (prog - start);
-> >         poke->adj_off = X86_TAIL_CALL_OFFSET;
-> > -       poke->tailcall_target = image + (addr - X86_PATCH_SIZE);
-> > +       poke->tailcall_target = ip + ctx->tail_call_direct_label - X86_PATCH_SIZE;
-> 
-> This part looks correct too, but this is Daniel's magic.
-> He'll probably take a look next week when he comes back from PTO.
-> I don't recall which test exercises this tailcall poking logic.
-> It's only used with dynamic updates to prog_array.
-> insmod test_bpf.ko and test_verifier won't go down this path.
+Hello!
+After reading Andrii's new blog post regarding BPF CO-RE, which was
+really lovely and well written, I came up with a small question:
+When you gave the example for BPF_CORE_READ, you've accessed the
+executable pointer under linux_binfmt struct.
+Is it a mistake with linux_binprm struct? or maybe I'm missing something.
 
-Please run ./test_progs -t tailcalls from tools/testing/selftests/bpf and
-make sure that all of the tests are passing in there, especially the
-tailcall_bpf2bpf* subset.
+Another thing, maybe you could add a little explanation about how
+libbpf validates the structs offsets with the help of BTF? It's a key
+part of CO-RE so it would be nice to have a little deep-dive in the
+blog post about it :)
 
-Thanks!
+Thanks.
