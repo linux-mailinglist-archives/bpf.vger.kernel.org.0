@@ -2,438 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220AA438DDD
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 05:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67500438F0A
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 07:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhJYDlA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Oct 2021 23:41:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14857 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhJYDlA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Oct 2021 23:41:00 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hd0zX2rg8z90CJ;
-        Mon, 25 Oct 2021 11:38:32 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 11:38:33 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 11:38:32 +0800
-From:   Tong Tiangen <tongtiangen@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Tong Tiangen <tongtiangen@huawei.com>
-Subject: [PATCH bpf-next,v2] riscv, bpf: Add BPF exception tables
-Date:   Mon, 25 Oct 2021 03:53:24 +0000
-Message-ID: <20211025035324.517263-1-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S229712AbhJYGAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 02:00:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6004 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229678AbhJYGAI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 02:00:08 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19P2BWXZ002897;
+        Mon, 25 Oct 2021 01:57:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Yrql1A3zEoiaAiMlCrkjNOeG6UgXSyYESM54IDW+hFk=;
+ b=suEt4ooclPP0tyttxqJDvy7wswcpj/GS1zfRzCU5gpsNhg4vWmSQgmFVskHtXlXoWx9P
+ /5e4KTQW+EVaTpMymRP4WhZUKlqHfhJ15XSgm7mgvGQ1UELQ/NY8taRkRpxiIyDmJ9c8
+ RwmGEbopdQow5dO6ll6hHCnlzbizVvIDpxw3LuSqolqyKoy3Ek2gqfdrKdBEs+MqZiS5
+ xcH+bRUEGIgM1+8gfoL+3Zrwvrf+XHF0SRSDlHcQyV4/qzvFRw07IhdLqPb59iZcOLsg
+ dkY6l5yT4PFG5DZmlQsV1wcjtdeh0E8uqoxFEZqHXyJhZjhB7Xu0bbf6hQq3akMekrl7 Pg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bvy9q1fh2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 01:57:07 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19P4rcuv025532;
+        Mon, 25 Oct 2021 01:57:07 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bvy9q1fgn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 01:57:07 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19P5slqA010679;
+        Mon, 25 Oct 2021 05:57:05 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bva1ahxt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 05:57:05 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19P5v17W53477784
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Oct 2021 05:57:01 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC1D252051;
+        Mon, 25 Oct 2021 05:57:01 +0000 (GMT)
+Received: from hbathini-workstation.ibm.com.com (unknown [9.43.32.58])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A39E25204E;
+        Mon, 25 Oct 2021 05:56:57 +0000 (GMT)
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     naveen.n.rao@linux.ibm.com, jniethe5@gmail.com,
+        christophe.leroy@csgroup.eu, mpe@ellerman.id.au, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     paulus@samba.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Hari Bathini <hbathini@linux.ibm.com>, stable@vger.kernel.org
+Subject: [PATCH] powerpc/bpf: fix write protecting JIT code
+Date:   Mon, 25 Oct 2021 11:26:49 +0530
+Message-Id: <20211025055649.114728-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="y"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HgdCVfj6g5biGbYpPc1Iq424TT_6zGG3
+X-Proofpoint-GUID: w8HwfKcXREudIYwCbb2537m7_fCPXTjl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_01,2021-10-25_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ spamscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1011 suspectscore=0 malwarescore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110250032
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a tracing BPF program attempts to read memory without using the
-bpf_probe_read() helper, the verifier marks the load instruction with
-the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
-this flag it falls back to the interpreter.
+Running program with bpf-to-bpf function calls results in data access
+exception (0x300) with the below call trace:
 
-Add support for BPF_PROBE_MEM, by appending an exception table to the
-BPF program. If the load instruction causes a data abort, the fixup
-infrastructure finds the exception table and fixes up the fault, by
-clearing the destination register and jumping over the faulting
-instruction.
+    [c000000000113f28] bpf_int_jit_compile+0x238/0x750 (unreliable)
+    [c00000000037d2f8] bpf_check+0x2008/0x2710
+    [c000000000360050] bpf_prog_load+0xb00/0x13a0
+    [c000000000361d94] __sys_bpf+0x6f4/0x27c0
+    [c000000000363f0c] sys_bpf+0x2c/0x40
+    [c000000000032434] system_call_exception+0x164/0x330
+    [c00000000000c1e8] system_call_vectored_common+0xe8/0x278
 
-A more generic solution would add a "handler" field to the table entry,
-like on x86 and s390.
+as bpf_int_jit_compile() tries writing to write protected JIT code
+location during the extra pass.
 
-The same issue in ARM64 is fixed in:
-commit 800834285361 ("bpf, arm64: Add BPF exception tables")
+Fix it by holding off write protection of JIT code until the extra
+pass, where branch target addresses fixup happens.
 
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
-Tested-by: Pu Lehui <pulehui@huawei.com>
+Cc: stable@vger.kernel.org
+Fixes: 62e3d4210ac9 ("powerpc/bpf: Write protect JIT code")
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
 ---
-v2:
-Modify according to Björn's comments, mainly removes redundant head files
-extable.h and some code style issues.
+ arch/powerpc/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/riscv/mm/extable.c         |  27 ++++-
- arch/riscv/net/bpf_jit.h        |   1 +
- arch/riscv/net/bpf_jit_comp64.c | 185 +++++++++++++++++++++++++-------
- arch/riscv/net/bpf_jit_core.c   |  18 +++-
- 4 files changed, 185 insertions(+), 46 deletions(-)
-
-diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-index 2fc729422151..442695393131 100644
---- a/arch/riscv/mm/extable.c
-+++ b/arch/riscv/mm/extable.c
-@@ -11,14 +11,31 @@
- #include <linux/module.h>
- #include <linux/uaccess.h>
+diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+index fcbf7a917c56..90ce75f0f1e2 100644
+--- a/arch/powerpc/net/bpf_jit_comp.c
++++ b/arch/powerpc/net/bpf_jit_comp.c
+@@ -241,8 +241,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 	fp->jited_len = alloclen;
  
-+#ifdef CONFIG_BPF_JIT
-+static inline bool in_bpf_jit(struct pt_regs *regs)
-+{
-+	if (!IS_ENABLED(CONFIG_BPF_JIT))
-+		return false;
-+
-+	return regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END;
-+}
-+
-+int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
-+#endif
-+
- int fixup_exception(struct pt_regs *regs)
- {
- 	const struct exception_table_entry *fixup;
- 
- 	fixup = search_exception_tables(regs->epc);
--	if (fixup) {
--		regs->epc = fixup->fixup;
--		return 1;
--	}
--	return 0;
-+	if (!fixup)
-+		return 0;
-+
-+#ifdef CONFIG_BPF_JIT
-+	if (in_bpf_jit(regs))
-+		return rv_bpf_fixup_exception(fixup, regs);
-+#endif
-+
-+	regs->epc = fixup->fixup;
-+	return 1;
- }
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index 75c1e9996867..8f2e5670c1aa 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -71,6 +71,7 @@ struct rv_jit_context {
- 	int ninsns;
- 	int epilogue_offset;
- 	int *offset;		/* BPF to RV */
-+	int nexentrys;
- 	unsigned long flags;
- 	int stack_size;
- };
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 3af4131c22c7..a1b9fe14ead3 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -5,6 +5,7 @@
-  *
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
- #include "bpf_jit.h"
-@@ -27,6 +28,21 @@ static const int regmap[] = {
- 	[BPF_REG_AX] =	RV_REG_T0,
- };
- 
-+static const int pt_regmap[] = {
-+	[RV_REG_A5] = offsetof(struct pt_regs, a5),
-+	[RV_REG_A0] = offsetof(struct pt_regs, a0),
-+	[RV_REG_A1] = offsetof(struct pt_regs, a1),
-+	[RV_REG_A2] = offsetof(struct pt_regs, a2),
-+	[RV_REG_A3] = offsetof(struct pt_regs, a3),
-+	[RV_REG_A4] = offsetof(struct pt_regs, a4),
-+	[RV_REG_S1] = offsetof(struct pt_regs, s1),
-+	[RV_REG_S2] = offsetof(struct pt_regs, s2),
-+	[RV_REG_S3] = offsetof(struct pt_regs, s3),
-+	[RV_REG_S4] = offsetof(struct pt_regs, s4),
-+	[RV_REG_S5] = offsetof(struct pt_regs, s5),
-+	[RV_REG_T0] = offsetof(struct pt_regs, t0),
-+};
-+
- enum {
- 	RV_CTX_F_SEEN_TAIL_CALL =	0,
- 	RV_CTX_F_SEEN_CALL =		RV_REG_RA,
-@@ -440,6 +456,69 @@ static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
- 	return 0;
- }
- 
-+#define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
-+#define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
-+
-+int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
-+				struct pt_regs *regs)
-+{
-+	off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
-+	int regs_offset = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
-+
-+	*(unsigned long *)((unsigned char *)regs + pt_regmap[regs_offset]) = 0;
-+	regs->epc = (unsigned long)&ex->fixup - offset;
-+
-+	return 1;
-+}
-+
-+/* For accesses to BTF pointers, add an entry to the exception table */
-+static int add_exception_handler(const struct bpf_insn *insn,
-+				 struct rv_jit_context *ctx,
-+				 int dst_reg, int insn_len)
-+{
-+	struct exception_table_entry *ex;
-+	unsigned long pc;
-+	off_t offset;
-+
-+	if (!ctx->insns || !ctx->prog->aux->extable || BPF_MODE(insn->code) != BPF_PROBE_MEM)
-+		return 0;
-+
-+	if (WARN_ON_ONCE(ctx->nexentrys >= ctx->prog->aux->num_exentries))
-+		return -EINVAL;
-+
-+	if (WARN_ON_ONCE(insn_len > ctx->ninsns))
-+		return -EINVAL;
-+
-+	if (WARN_ON_ONCE(!rvc_enabled() && insn_len == 1))
-+		return -EINVAL;
-+
-+	ex = &ctx->prog->aux->extable[ctx->nexentrys];
-+	pc = (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
-+
-+	offset = pc - (long)&ex->insn;
-+	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-+		return -ERANGE;
-+	ex->insn = pc;
-+
-+	/*
-+	 * Since the extable follows the program, the fixup offset is always
-+	 * negative and limited to BPF_JIT_REGION_SIZE. Store a positive value
-+	 * to keep things simple, and put the destination register in the upper
-+	 * bits. We don't need to worry about buildtime or runtime sort
-+	 * modifying the upper bits because the table is already sorted, and
-+	 * isn't part of the main exception table.
-+	 */
-+	offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
-+	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
-+		return -ERANGE;
-+
-+	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
-+		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
-+
-+	ctx->nexentrys++;
-+	return 0;
-+}
-+
- int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 		      bool extra_pass)
- {
-@@ -893,52 +972,86 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 
- 	/* LDX: dst = *(size *)(src + off) */
- 	case BPF_LDX | BPF_MEM | BPF_B:
--		if (is_12b_int(off)) {
--			emit(rv_lbu(rd, off, rs), ctx);
-+	case BPF_LDX | BPF_MEM | BPF_H:
-+	case BPF_LDX | BPF_MEM | BPF_W:
-+	case BPF_LDX | BPF_MEM | BPF_DW:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_H:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_W:
-+	case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
-+	{
-+		int insn_len, insns_start;
-+
-+		switch (BPF_SIZE(code)) {
-+		case BPF_B:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit(rv_lbu(rd, off, rs), ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
-+
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
-+			insn_len = ctx->ninsns - insns_start;
-+			if (insn_is_zext(&insn[1]))
-+				return 1;
- 			break;
--		}
-+		case BPF_H:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit(rv_lhu(rd, off, rs), ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
--		if (insn_is_zext(&insn[1]))
--			return 1;
--		break;
--	case BPF_LDX | BPF_MEM | BPF_H:
--		if (is_12b_int(off)) {
--			emit(rv_lhu(rd, off, rs), ctx);
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
-+			insn_len = ctx->ninsns - insns_start;
-+			if (insn_is_zext(&insn[1]))
-+				return 1;
- 			break;
--		}
-+		case BPF_W:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit(rv_lwu(rd, off, rs), ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
--		if (insn_is_zext(&insn[1]))
--			return 1;
--		break;
--	case BPF_LDX | BPF_MEM | BPF_W:
--		if (is_12b_int(off)) {
--			emit(rv_lwu(rd, off, rs), ctx);
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
-+			insn_len = ctx->ninsns - insns_start;
-+			if (insn_is_zext(&insn[1]))
-+				return 1;
- 			break;
--		}
-+		case BPF_DW:
-+			if (is_12b_int(off)) {
-+				insns_start = ctx->ninsns;
-+				emit_ld(rd, off, rs, ctx);
-+				insn_len = ctx->ninsns - insns_start;
-+				break;
-+			}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
--		if (insn_is_zext(&insn[1]))
--			return 1;
--		break;
--	case BPF_LDX | BPF_MEM | BPF_DW:
--		if (is_12b_int(off)) {
--			emit_ld(rd, off, rs, ctx);
-+			emit_imm(RV_REG_T1, off, ctx);
-+			emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
-+			insns_start = ctx->ninsns;
-+			emit_ld(rd, 0, RV_REG_T1, ctx);
-+			insn_len = ctx->ninsns - insns_start;
- 			break;
- 		}
- 
--		emit_imm(RV_REG_T1, off, ctx);
--		emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
--		emit_ld(rd, 0, RV_REG_T1, ctx);
-+		ret = add_exception_handler(insn, ctx, rd, insn_len);
-+		if (ret)
-+			return ret;
- 		break;
--
-+	}
- 	/* speculation barrier */
- 	case BPF_ST | BPF_NOSPEC:
- 		break;
-diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-index fed86f42dfbe..5f2a842ec6f3 100644
---- a/arch/riscv/net/bpf_jit_core.c
-+++ b/arch/riscv/net/bpf_jit_core.c
-@@ -41,12 +41,12 @@ bool bpf_jit_needs_zext(void)
- 
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- {
-+	unsigned int image_size, prog_size, extable_size;
- 	bool tmp_blinded = false, extra_pass = false;
- 	struct bpf_prog *tmp, *orig_prog = prog;
- 	int pass = 0, prev_ninsns = 0, i;
- 	struct rv_jit_data *jit_data;
- 	struct rv_jit_context *ctx;
--	unsigned int image_size = 0;
- 
- 	if (!prog->jit_requested)
- 		return orig_prog;
-@@ -73,7 +73,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 
- 	if (ctx->offset) {
- 		extra_pass = true;
--		image_size = sizeof(*ctx->insns) * ctx->ninsns;
-+		prog_size = sizeof(*ctx->insns) * ctx->ninsns;
- 		goto skip_init_ctx;
- 	}
- 
-@@ -102,8 +102,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		if (ctx->ninsns == prev_ninsns) {
- 			if (jit_data->header)
- 				break;
-+			/* obtain the actual image size */
-+			extable_size = prog->aux->num_exentries *
-+				sizeof(struct exception_table_entry);
-+			prog_size = sizeof(*ctx->insns) * ctx->ninsns;
-+			image_size = prog_size + extable_size;
- 
--			image_size = sizeof(*ctx->insns) * ctx->ninsns;
- 			jit_data->header =
- 				bpf_jit_binary_alloc(image_size,
- 						     &jit_data->image,
-@@ -130,9 +134,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		goto out_offset;
- 	}
- 
-+	if (extable_size)
-+		prog->aux->extable = (void *)ctx->insns + prog_size;
-+
- skip_init_ctx:
- 	pass++;
- 	ctx->ninsns = 0;
-+	ctx->nexentrys = 0;
- 
- 	bpf_jit_build_prologue(ctx);
- 	if (build_body(ctx, extra_pass, NULL)) {
-@@ -143,11 +151,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	bpf_jit_build_epilogue(ctx);
- 
- 	if (bpf_jit_enable > 1)
--		bpf_jit_dump(prog->len, image_size, pass, ctx->insns);
-+		bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
- 
- 	prog->bpf_func = (void *)ctx->insns;
- 	prog->jited = 1;
--	prog->jited_len = image_size;
-+	prog->jited_len = prog_size;
- 
- 	bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
- 
+ 	bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + (bpf_hdr->pages * PAGE_SIZE));
+-	bpf_jit_binary_lock_ro(bpf_hdr);
+ 	if (!fp->is_func || extra_pass) {
++		bpf_jit_binary_lock_ro(bpf_hdr);
+ 		bpf_prog_fill_jited_linfo(fp, addrs);
+ out_addrs:
+ 		kfree(addrs);
 -- 
-2.25.1
+2.31.1
 
