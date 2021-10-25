@@ -2,133 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382D44396E6
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 15:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78BB439735
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 15:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbhJYNCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 09:02:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34725 "EHLO
+        id S233424AbhJYNKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 09:10:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38089 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233343AbhJYNCW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 09:02:22 -0400
+        by vger.kernel.org with ESMTP id S233468AbhJYNKt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 09:10:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635166800;
+        s=mimecast20190719; t=1635167307;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=qA0I4/+z2GGotAPzClR23nYM/h7wOlk9GbkFHt3Tads=;
-        b=PUCEdAYq6K2AETkvTPLbqvAuyBxwtvAWqzB4Nz7nRVXrdoqdaYHQ1CfZAI9iSerjLdqJia
-        6GYVkCzynRVhY6E/0ovI3Pl8g1S0Q30htOy9Zc7di27KDEMceigxfb408XCbDLzDwxxDKE
-        bpDTwOJ5R5lZ8MOVhbuxz/xeCVfALjs=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-bb8RSlvaP0-F4uJSzSPjpg-1; Mon, 25 Oct 2021 08:59:58 -0400
-X-MC-Unique: bb8RSlvaP0-F4uJSzSPjpg-1
-Received: by mail-yb1-f199.google.com with SMTP id w199-20020a25c7d0000000b005bea7566924so17330651ybe.20
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 05:59:58 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QxJG4ClCwysLwMBZ0+vM6Qh/czcxiPTdVQDytoS0Hdk=;
+        b=ZgKE3BO6Od8xMu51cMsDHppW2/UFswOuTQlWdmD2GScomqeQxkcTk2QqEWWlavEggN+7G7
+        GE4W6LSWWxnNRt5XWtvk6VXSmaMVaGOP+jz/zh0FK4PjDXGgSSwklLckf4CbLqyOx0mTsh
+        0kShzXAJ5+VHYkOng5s11z+NddmhmPk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-ifp6Ekd6NbaMedPsnsKUpw-1; Mon, 25 Oct 2021 09:08:25 -0400
+X-MC-Unique: ifp6Ekd6NbaMedPsnsKUpw-1
+Received: by mail-ed1-f69.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso181945edb.19
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 06:08:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=qA0I4/+z2GGotAPzClR23nYM/h7wOlk9GbkFHt3Tads=;
-        b=w7Ne6ww+gkwqNg/m3v8XFzw0daH+L5mXDHi9CZRcySFNlOWzId+7U3gVaPIMgY2XPG
-         HpCkomTT0b5EvxEwzwdkeqULf75JkhAe1TBdd+uX5SwGLzoKabjdOknj+hqz6OtEKpj7
-         qpZMQzydr2b6vHicdm0mOfQRc8i4T0PF/elDn1YsnGz+NTSLfOVMGO8mD37tV+JtUAIP
-         Vipa9TcxoTGhZkRGYsUs6QJNuDPB54noD6Njjc9j5RZsY2uKeMWn3W06DbUdyzsbdTk3
-         c+Wwdng6pCh4W00Tm7Sz476ZfjG1VuNvFS6ka6VuFlg3YZC/qm5rLUwWZg+L/i6aEal/
-         nhOQ==
-X-Gm-Message-State: AOAM533wguUCUkLCXsV1hRHUnijf9qHYexuUcEYHrVP4ESL4KQrfHF0P
-        hovMOpX+85Ma4nHTn0etPl621nYYQALUhQLHzCPB38+C3Q/FKetmh6XrVIC7gxfQ7er/YTK6P1M
-        MwcTGGlScgb2nRKs8BYI0SGcQBR+2
-X-Received: by 2002:a25:b59a:: with SMTP id q26mr1112241ybj.518.1635166797617;
-        Mon, 25 Oct 2021 05:59:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLKGxfRM1ZkAoM4kM3RUu1DN69aIxRcpRPVR3OtR6cZL/MwWEZzIriE0cklyFJc7+ou2V21eEwcYSHzhFXxqw=
-X-Received: by 2002:a25:b59a:: with SMTP id q26mr1112211ybj.518.1635166797318;
- Mon, 25 Oct 2021 05:59:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QxJG4ClCwysLwMBZ0+vM6Qh/czcxiPTdVQDytoS0Hdk=;
+        b=mBp8pCe8VGglJEBvnFZ1mBSUC/siB/PbdK5NkI3iko1Q5nbEVSPxgthPmybSFAdbos
+         /45vZ69GPZMibdfqLXziJlBnUTdVcyBN5zdEjx74Szd7azWCurZMh7CF1kTuLKgDNY5o
+         ktYjLZdEmfomM2rXPtTJN8bCz8B8gY1PLELahfxXfza50ZEXeLG6h7wg0QEeZE6c2p/z
+         S1YctPf0hhIjldWO5lc3E8LfQb6CmrC9Un2wRvGkisg5ikXnqtyPfhi+UAxf/gz9Aljx
+         4a2OeNEk4N3gs/rudmcgFAdKdXjIt/B/pC0gRM/BabIPnSP4aIh5w5VIzaXdAdM5STOc
+         4VFg==
+X-Gm-Message-State: AOAM533WC6dmhdz+MTdtLxKCii4gPrcbT/ciDv+IIA39Yxei6ZkkJMKX
+        fTJFTXx0MCVbChktueOxbjjeq86xZyNY7nB2xkQqqBS+DUZ5PZ1vQFInUIQvNC2kdskC4HDKc1i
+        gPVgIufY3JpMx
+X-Received: by 2002:a05:6402:11d1:: with SMTP id j17mr4812588edw.139.1635167304355;
+        Mon, 25 Oct 2021 06:08:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBdByXnC92Gd5IMtq7QJaG68HvprP7ci0Jxti+XWvUIDZE4vUAsErjPF6qKzXSOq3yrqMSrg==
+X-Received: by 2002:a05:6402:11d1:: with SMTP id j17mr4812542edw.139.1635167303931;
+        Mon, 25 Oct 2021 06:08:23 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id s16sm9443327edd.32.2021.10.25.06.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 06:08:23 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1FFCA180262; Mon, 25 Oct 2021 15:08:21 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: [PATCH bpf v2] bpf: fix potential race in tail call compatibility check
+Date:   Mon, 25 Oct 2021 15:08:09 +0200
+Message-Id: <20211025130809.314707-1-toke@redhat.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-From:   Dave Tucker <datucker@redhat.com>
-Date:   Mon, 25 Oct 2021 13:59:46 +0100
-Message-ID: <CAOJ0YmrUNbw_qMP_FHmoYejS1JRaKCkD69S5xYS9gxsWAPX4rw@mail.gmail.com>
-Subject: eBPF Documentation
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello eBPF Community!
+Lorenzo noticed that the code testing for program type compatibility of
+tail call maps is potentially racy in that two threads could encounter a
+map with an unset type simultaneously and both return true even though they
+are inserting incompatible programs.
 
-I wanted to follow up on an excerpt from the "Happy Birthday BPF" email [1].
+The race window is quite small, but artificially enlarging it by adding a
+usleep_range() inside the check in bpf_prog_array_compatible() makes it
+trivial to trigger from userspace with a program that does, essentially:
 
-> Despite books about BPF and pretty complete documentation at
-> https://ebpf.io/what-is-ebpf, developers and users complain that the
-> documentation is spread around.
+        map_fd = bpf_create_map(BPF_MAP_TYPE_PROG_ARRAY, 4, 4, 2, 0);
+        pid = fork();
+        if (pid) {
+                key = 0;
+                value = xdp_fd;
+        } else {
+                key = 1;
+                value = tc_fd;
+        }
+        err = bpf_map_update_elem(map_fd, &key, &value, 0);
 
-As one of those users who has complained, I'd like to explain why and
-propose a solution.Before I do, I'd just like to say thank you to
-everyone who has contributed
+While the race window is small, it has potentially serious ramifications in
+that triggering it would allow a BPF program to tail call to a program of a
+different type. So let's get rid of it by protecting the update with a
+spinlock. The commit in the Fixes tag is the last commit that touches the
+code in question.
 
-Current State
-=============
+v2:
+- Use a spinlock instead of an atomic variable and cmpxchg() (Alexei)
 
-Firstly, the documentation at ebpf.io does a great job of describing the
-basics, but defers to the eBPF & XDP Reference [2] for more depth.
+Fixes: 3324b584b6f6 ("ebpf: misc core cleanup")
+Reported-by: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ include/linux/bpf.h   |  1 +
+ kernel/bpf/arraymap.c |  1 +
+ kernel/bpf/core.c     | 14 ++++++++++----
+ kernel/bpf/syscall.c  |  2 ++
+ 4 files changed, 14 insertions(+), 4 deletions(-)
 
-That guide is a treasure trove of information, but , there are also notable
-omissions:
-
-- A definitive list of program types
-- A definitive list of map types
-- Information about which kernel versions they were introduced in, what
-they are intended for and perhaps even some examples
-- Documentation for bpf-helpers outside of the manpage
-
-This documentation partially exists in bcc [3], but with bcc-style
-syntax examples. Certain program types are a little more complex and
-require documentation of their own (see: man tc-bpf) or [4] for
-BPF_PROG_TYPE_FLOW_DISSECTOR. Other types seem to have no examples or
-documentation available outside the kernel source, for example
-BPF_PROG_TYPE_SK_SKB.
-
-For understanding CO:RE, BTF and program lifecycle I've found the blog
-posts on the Facebook eBPF Microsite [5] invaluable.
-
-If you're working on a loader other than libbpf, you'll be reading man bpf.
-
-If you're working on a compiler or VM, the official documentation for
-the eBPF instruction set is here [6], but it certainly helps to have
-this unofficial guide [7] as a reference (and the aforementioned eBPF
-and XDP reference covers some of this too) as well as this blog post
-[8].
-
-... and then of course are the libbpf/bcc/wrapper docs ...
-
-Desired State
-=============
-
-What I would love to see is the following:
-
-1. ebpf.io is the home to all official documentation
-2. Documentation arranged from bottom of the stack up
-  a. eBPF VM Instruction Set
-  b. ELF File Format, BTF and CO:RE
-  c. eBPF compilers
-  d. eBPF Syscall Interface
-  e. eBPF Program Types, Map Types and Helpers
-3. Docs that then point to the API documentation for libbpf, libxdp,
-bcc, and various other libraries.
-
-I'd be willing to help pull some of this together if there's some
-agreement that this is necessary and the breakdown is correct.
-
-Thanks in advance,
-
-- Dave
-
-[1]: https://lore.kernel.org/bpf/20210926203409.kn3gzz2eaodflels@ast-mbp.dhcp.thefacebook.com/T/#u
-[2]: https://docs.cilium.io/en/stable/bpf/
-[3]: https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md
-[4]: https://www.kernel.org/doc/html/latest/bpf/prog_flow_dissector.html
-[5]: https://facebookmicrosites.github.io/bpf/blog/2018/08/31/object-lifetime.html
-[6]: https://www.kernel.org/doc/Documentation/networking/filter.txt
-[7]: https://github.com/iovisor/bpf-docs/blob/master/eBPF.md
-[8]: https://pchaigno.github.io/bpf/2021/10/20/ebpf-instruction-sets.html
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 020a7d5bf470..98d906176d89 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -929,6 +929,7 @@ struct bpf_array_aux {
+ 	 * stored in the map to make sure that all callers and callees have
+ 	 * the same prog type and JITed flag.
+ 	 */
++	spinlock_t type_check_lock;
+ 	enum bpf_prog_type type;
+ 	bool jited;
+ 	/* Programs with direct jumps into programs part of this array. */
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index cebd4fb06d19..da9b1e96cadc 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -1072,6 +1072,7 @@ static struct bpf_map *prog_array_map_alloc(union bpf_attr *attr)
+ 	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
+ 	INIT_LIST_HEAD(&aux->poke_progs);
+ 	mutex_init(&aux->poke_mutex);
++	spin_lock_init(&aux->type_check_lock);
+ 
+ 	map = array_map_alloc(attr);
+ 	if (IS_ERR(map)) {
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index c1e7eb3f1876..9439c839d279 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1823,20 +1823,26 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+ bool bpf_prog_array_compatible(struct bpf_array *array,
+ 			       const struct bpf_prog *fp)
+ {
++	bool ret;
++
+ 	if (fp->kprobe_override)
+ 		return false;
+ 
++	spin_lock(&array->aux->type_check_lock);
++
+ 	if (!array->aux->type) {
+ 		/* There's no owner yet where we could check for
+ 		 * compatibility.
+ 		 */
+ 		array->aux->type  = fp->type;
+ 		array->aux->jited = fp->jited;
+-		return true;
++		ret = true;
++	} else {
++		ret = array->aux->type  == fp->type &&
++		      array->aux->jited == fp->jited;
+ 	}
+-
+-	return array->aux->type  == fp->type &&
+-	       array->aux->jited == fp->jited;
++	spin_unlock(&array->aux->type_check_lock);
++	return ret;
+ }
+ 
+ static int bpf_check_tail_call(const struct bpf_prog *fp)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4e50c0bfdb7d..955011c7df29 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -543,8 +543,10 @@ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
+ 
+ 	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY) {
+ 		array = container_of(map, struct bpf_array, map);
++		spin_lock(&array->aux->type_check_lock);
+ 		type  = array->aux->type;
+ 		jited = array->aux->jited;
++		spin_unlock(&array->aux->type_check_lock);
+ 	}
+ 
+ 	seq_printf(m,
+-- 
+2.33.0
 
