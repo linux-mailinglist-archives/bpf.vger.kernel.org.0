@@ -2,165 +2,526 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D84B439E5B
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 20:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9BA439E83
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 20:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhJYSXN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 14:23:13 -0400
-Received: from mail-mw2nam12on2113.outbound.protection.outlook.com ([40.107.244.113]:31841
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232658AbhJYSXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:23:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gW0kDQd9PGi+he3BWFPDakDBlT58iGB1pyn4bbzAqAfjnDAH4MdHNiVXHODVnlhlIIVU0TyG/xvUMAWtmMAHVp+54dxsw/+fsDl8yuSPx4C67CdtHzKS+OXw9cLdk5VWmKPLcoCbhhoz6nhexAdAkQsEJII8Pug7dIROc8m2LwaojrO+PedyY8FGTwdGdYQzdDxmnUZiY/QMpNTs1hD+SYJLPGBVqJgLd+p6KCkZK0gHv3P/xLn0PLLgWKqXYG83WbR3VA+ckgdq2DZihgTX2Wb5bVacU9fKzkSKGt/9c0LB9AvebP0oEC0U3R5qgvPe/ysjMMl4V3oOYNjb/TqzJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fp539HxF44tOmwRBNe6Woyi3i0CQf7P2I4MdOclU4m4=;
- b=YIJY9oWMm2UEHaCEUhnNZNDQ8BYiSVc5Yv1swXDsE/S2sJU6jBb9fIaZepkD7u04+g/13DDZ9lUijvEYiucU677xu16+f6dV0NSgXIbpgbVcSr2L+us1wqZU5Iq+NE3Qvs+On2mCaF3INomXkDtn8iMS7oFYJ0+poheKnxbSg7ZSQAvzWuURoxqMsHEN2J7o/wxJs7SFqKzPWHeX0kB95oSreAmwJvzNoDbkYW6f+5mrc3wFCLxX6IaDjxBTMSgfdPiyrbqatepZFTxfFJmdUB7Tu+X5Y6eiXjK+b4zk8S3z52+PZbiSPeu9fYCE0lanIEarZfBRZW5eFm8ng81o/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fp539HxF44tOmwRBNe6Woyi3i0CQf7P2I4MdOclU4m4=;
- b=WxpXZRqN6iPDGo2eANjak7KV/K6TceZvYDwYAwoBWiGQU8xWwGBqrjsNfso+yrq0sj/gjO6o7gcNcF7mbs9BbSGPq+cFN7EN0rMiEILqQ1DPaYE6jjlVUIRwVIsPA8Q5iV2h1WhgPEEDkFLE2j/JkY4tKB82HmBHM2y5Hm+sQ/228Jbk1LSb8/avjyWHhh0E8JZtFujhDTTiR7uBYW6fUr7F17zIJEbEfaaY3rnS/Xv6lpQtvsQdRYgizcm5pYcbPrKFXbDTthY9SjHe0mQ3XrMTJ/Wv3brBQXQxDsvdq4dmAyx6jvHuDv9INWTt+XePrxqOHJqmLml4IxdqGbOOxA==
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB7476.prod.exchangelabs.com (2603:10b6:510:f3::5) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.18; Mon, 25 Oct 2021 18:20:44 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::88df:62ca:347:917f]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::88df:62ca:347:917f%7]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 18:20:44 +0000
-Message-ID: <e07e29ab-4cae-73b5-0836-c3cf39f3df00@cornelisnetworks.com>
-Date:   Mon, 25 Oct 2021 14:20:36 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v6 04/12] drivers/infiniband: make setup_ctxt always get a
- nul terminated task comm
-Content-Language: en-US
-To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
-        keescook@chromium.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-5-laoar.shao@gmail.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20211025083315.4752-5-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAPR03CA0047.namprd03.prod.outlook.com
- (2603:10b6:208:32d::22) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+        id S232628AbhJYSaJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 14:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhJYSaI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 14:30:08 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878DDC061745;
+        Mon, 25 Oct 2021 11:27:45 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id y78so6286079wmc.0;
+        Mon, 25 Oct 2021 11:27:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OyfSUTjxeHms5poLBJl6tylyEWbiHe67CT09WIuAMsU=;
+        b=DRTJojekLcsN6KFnGL2Muvwux70aPo8ynLFl1g9pAHIDED9bCdqk3Ls2hmflxph9ro
+         Zi63v7mIel1mCnNEzi82f9ld94pEDGGswxRaBqTGE1nv0lijVV90U9j4aits7iCAhdYH
+         spR+nhwMene3t8+389CcOLl45h5g9wVHyYtfnKNcwZYLa6WwpkLd+fu22L3NJJEMu/Y6
+         TNeTKxZlTRp67xlXGzqlyEhVn21cIREnRPX4U6+54R6PZJKXemWqmNBIQe0e4kA5PYf6
+         JY4I5ao3n6Ds6FOBc09ERwXhExoqXAKEDDU/Ns09ReKGl+BgCjF0PND3xHp/2A8BK9Hw
+         fLAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OyfSUTjxeHms5poLBJl6tylyEWbiHe67CT09WIuAMsU=;
+        b=CzEjMmwhgiZgzhWifDOJ6xlTpyMEGwkNRQJravm934wzG2lzJMpvZOIgM98lpADQH5
+         vOgwHjCg9QmLRYxHCSix0YQJJYcv+9EhaOcR2IG6AeBs7eUmbCsvygp+W7QU//jeg677
+         AwukBdVwyYKJz5YVwvD2uXToZ/xEpaZKJixk6hZszp1lSJis7mCbr29pzWTxeSEAFFMX
+         twNh+9NLYMkcJQ3YMAYkfZ/Zawr1rnj04ytcNYwkBTSVDgOaix9VxTMwK4AsUbS8x+hf
+         IWzx8lVyap890gKpVO1C65uvTVuAhhD4EJFkqTyHN7TOPuElRYtZMVCM9Sq/WvsRvbTO
+         TvuA==
+X-Gm-Message-State: AOAM532KtYfniXN5/pCisOuJurxVxBZJdXe+e1cO87ywq/9kGBkpUv/6
+        UUb3u0FDSeEF1GqbbxzSL3MO+7qNRtL2zjDk3DhdsBw1gdE=
+X-Google-Smtp-Source: ABdhPJzwTHv9KLpOQ7QaVP0ILYfQpXNWwQQ2vSvHgF424O3LFhwj3NRPR+DaIjoeCD5AWDXYd9nYdVBMWSjA1J4zZ1I=
+X-Received: by 2002:a1c:740e:: with SMTP id p14mr50233220wmc.109.1635186463919;
+ Mon, 25 Oct 2021 11:27:43 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [192.168.40.173] (24.154.216.5) by BLAPR03CA0047.namprd03.prod.outlook.com (2603:10b6:208:32d::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Mon, 25 Oct 2021 18:20:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4bff85a7-4515-4627-275e-08d997e4286f
-X-MS-TrafficTypeDiagnostic: PH0PR01MB7476:
-X-Microsoft-Antispam-PRVS: <PH0PR01MB7476C29755B177CE515380C5F4839@PH0PR01MB7476.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:741;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cRCb5gVhKCqifggviULiAHoU6jGgXiHcnagOSDdYi4DbpnKhK4c8DCONfDZEStpcPxSjxtAq1YcvLxUGge/1DjT3vBq4tW5wZNBLt4kLI0wNe+NeJ6aEEf+XbuLcZQPo5mXiZAAlkRGGVy+wMF6mEGE9jSgy2ntLQf9Dq+4E7WtS6IYqiINeX4hidQFU84WMBtesRFCH+qWrSn+3QLwUwJ8UCfl4L7wlC+92rcYyOp1QZ2gRsSD2/L+p7SC2Hpst7AgUKcz2ThWFGkjuw+kiRs+TV40EmqqkuYOw65BrNkO/sBQvskshyi+FRudJaRWV7dKSxlmeFzZzns+lcTIQLzdRrZRfBKfGsrgpr8A9FMYLWo/FCdIEmgHkXFJGs7D5ajmVjMDcjSNPfjW7GQddfIWy/8e8LGBjW15oTSBZaZbBZg9U6xLAUPDQkgp0JGgpV16v21TqR/MgduA8HJ0/BfOllldsR2iwGmXTMKZxhAj/b7cxDxMhgSlq+fgWaJyZMtMaElzhOkn3YQYf5IW9irxgpPdUgkBKytva3Sv0dKBVwDvDV+OAQjNuUWM2WQCk9keIL0un06YE+E3eK9kr57y/DBWBlAdQqgMg2oiPmzOik7jEz2skbjtlFLLqLsRjfAFciavBaEFBEgQXtJke3sgyTFGGSet3WaQR0oU2RDvLVQSnnhQEDk6LVy4ZZuLj0nC5fRg1tsIYPzOCUk3I5JddH0BJP9IjPXXFJDrbnk+d7Lm+MUifNQc0y+Idww0e7a9paWye08Ujh7PbD/JwBlMJyEMH6LbngYTvoU+AKCo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39840400004)(396003)(8936002)(508600001)(2906002)(52116002)(7416002)(36756003)(7406005)(6666004)(316002)(4326008)(38350700002)(8676002)(38100700002)(31686004)(921005)(4744005)(16576012)(2616005)(44832011)(5660300002)(956004)(83380400001)(6486002)(66476007)(66556008)(66946007)(186003)(86362001)(26005)(31696002)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2tsT1ppU0ZuZE90RkpYeEd1bE5KN1RwNHpscFhlUElhc3BEVlpLZHNpdkZ1?=
- =?utf-8?B?ZHRxNmVWcTBlUFFhWnppSXRwYmVvTTBQSXMzMzFEUVpKU3dWdmdOMmpieFV6?=
- =?utf-8?B?My9wd0tLQ2I5dXMxRTJ1TmlaVFlNOVBVZnpBUEh3MXY4dkxqempyUUVzU0xH?=
- =?utf-8?B?TS9QdERkaUw1Wnl1OG9iTmxhNW9GZ1h6cUtrN2xaV1o4Ums2NDFwWGRFalNp?=
- =?utf-8?B?R21EQ0xZR0ZxNWs5VnVTZ2dvUE5PV1JnVEhRVnkxYTFGZklmVjdkREhpRUFj?=
- =?utf-8?B?Y25MSzJwUGE0U25jVWV2clNzUzFqWlRPSW4zL2RXa0crUTZpVHZDNWhLaEhi?=
- =?utf-8?B?ZUZVK3FNTDVDZFp2RGZVZE1mblJFLyt4RFJOU0hUaVpDTmxoV1kwdjVpc2VD?=
- =?utf-8?B?dXRGbzJhRDRFeStPNTJ4eGVaRWFqRXA5R29qendIRnpELzIvMFNWZ1hGS2RK?=
- =?utf-8?B?K3pjSGZPdGVZcUhXOFh0Q0ZBcWNsdVBPMWlPWnBvTjY0OHM4RGRGQU9LK3I0?=
- =?utf-8?B?VWV1clRCWXAxTjN4Qk11empVYk5zdHcvZTcwMms5d0ZaMTg3VTlDdVRybXJk?=
- =?utf-8?B?STFFYnJTQThxakVQQ1dNcGFrWHRFUDRuR3ZuTXQxbVVEV3J2a051emZ2QSth?=
- =?utf-8?B?clZYWjFYWk9aRC9ZQWh4Qm81bUhuSDhJanNLV0hrRVdyN0Y2Tkpmb1ZmV0FF?=
- =?utf-8?B?TXJOMCtuKzE3cGQ2VDVFem90dVVUd0FkR09lN1BQaHl3b2tyczArVzNJOVNZ?=
- =?utf-8?B?Vm9kenpHQk9KdjkvNTJ2a0gzL1g1TmJnTS81NWRoeG5CbVdwZHpPQ3N2K05N?=
- =?utf-8?B?UUw4TXM1SjU1KzlOUjBaLzNqZW8xZlVPRnJheHNUaEhBRzRTbVEzUDN2TVJD?=
- =?utf-8?B?NUVvNUpoUmhtVlYyVGExd1pLSFVMaHd5bzNqOFEwOWRQZ3d2cWdjSDh2cURk?=
- =?utf-8?B?Y3V0bzUrKzVDSGVlZHVDL3kzeHBlVDZqa2dvYnAzay9KRHJqaE9uUjZ2N3FK?=
- =?utf-8?B?NnlGQ240ejdYMW9FazZzbkZJRHRXdzA1QWQveEJEWXAwUXpEVVdYdzRYSXNx?=
- =?utf-8?B?eWUvL1FWTHBIWTd0N2dIT05FVGJhb2FOeEgwSDRlYk1VSUZSc2V5WWFCTVpJ?=
- =?utf-8?B?OEo0VlhoTXVRSzdWdUtVZktTWGVldmtGNWJhSWRNeEgrL0RxdWhlUGdqbjZ2?=
- =?utf-8?B?clRnMlhFYStCVnViZU1XL3FJRDdLSzQwcVhoT01FSXZ6b2JIVWttejI3cUxE?=
- =?utf-8?B?NW1ScWhWUDJPQkF0QjVWRUdDd0dTZTRERXZ2SW9wV3Rsak11OVZsVTR1YXg3?=
- =?utf-8?B?aHFQcTBnSWZMWlZkQ2JJUTdZR284MDlUVk1VMG1zZThxQzJqL0c1NXZTOXNH?=
- =?utf-8?B?TDlwbStseG5ERFRFamp1bE5FYWU4a25YOVNleEJyd05Ob1poaU5FdUxaU2Yz?=
- =?utf-8?B?WXoyV3R3OVV5Y0NaNDIyamhzei9TeEZJUWMyRTVmSGFPZ2pKZGpvSVQ0QUFG?=
- =?utf-8?B?WUtBLzA0cHFFUWZ0SDRGQzVEYmRNTkliaFEvVmNSUmJWUHp5cWE0TnVIUnFw?=
- =?utf-8?B?ZVNEcHhaZERzcEhzM2lBQ1M4SUE0dkgvREtLUEJkaHJXVEFnbnUrU09lZ2gz?=
- =?utf-8?B?aGFuVSt0c3pWbHpONXd5bHp1Vkhjdmx0TGt4T1JjdVRjZTVIMFQ0TjR6Q3Y2?=
- =?utf-8?B?VHdIZDJOWjE0NWEwV3oyWVc5b2VuVDd3OFZDRXB0VUp1OEh3OFU3WGZQemRM?=
- =?utf-8?B?ZUtyaDk2YUNDMC83R0hWQkVyY0QvK3dHVEFMVTR3N0poUnlPZzlGVnVuLzNF?=
- =?utf-8?B?SmVxeVd1UGJ1d2tGRDIyeTFXOUd4TlJSQkRXc2dTSnR5ZTlrc0Fkd2VSZFlj?=
- =?utf-8?B?dS9tem9YdWJPY0lMT0g0TkNDTEZ1cHp3SmwwSWwwQ2Z6R3hYQ0dTODBaYlBM?=
- =?utf-8?B?ZCs4QjZFRStLMHVlTW91MFZsSytkcm1yaUVucEFxOTdQa1pMWnpZWjVDV1RJ?=
- =?utf-8?B?bWpiaE5XMWZlelhHeDdIb1k1Znkrd3pZS1NCcnY2UDQ1Ry9rMzZEWGZQeTlW?=
- =?utf-8?B?ZytRNVIra2lZQWExU2QzUm40SXVkZHJrSkYrMUh2MXYxVXBPVFYxb1VpcFF6?=
- =?utf-8?B?TUlsOGNTL3VHMXRPOFE2TTRCVVYvVHZ0REltL2NuQlFUdXFyd2tIR1YrOFov?=
- =?utf-8?B?WmVJZHBDV0ZLT0MwUU5nWkY4VlRVVFVqU09PamoxMk83S25vOTR5aFlERERM?=
- =?utf-8?B?RXM5NVN0czQvenVJL1hEdDNiMml4Y1N0ZmFUNTdTNjRrZm1BRmNubmxwYzFI?=
- =?utf-8?B?ZWNJTWhleDBjYmxLdU02VjVKSWMxWnUxSVkxNEYwZWFTMm4vK0FrQT09?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4bff85a7-4515-4627-275e-08d997e4286f
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 18:20:44.0359
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tUTTpQj2VqJ/riel8HbpjyHdadlzpyWpIpH6diahkVfxLqdSJd51Ux5gWNgfhYNiYFerfkMsVR5SJJxyZ1m94uZPu6KsQoB09RDl2R7+4l8wRrPcRuyL7rDEV1ccTVjm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB7476
+References: <20211025035324.517263-1-tongtiangen@huawei.com>
+In-Reply-To: <20211025035324.517263-1-tongtiangen@huawei.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 25 Oct 2021 20:27:32 +0200
+Message-ID: <CAJ+HfNgSVSs5BxVdDHuGNXnC9dxTuZVtx5RiPX=O8okTJZwsPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next,v2] riscv, bpf: Add BPF exception tables
+To:     Tong Tiangen <tongtiangen@huawei.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 10/25/21 4:33 AM, Yafang Shao wrote:
-> Use strscpy_pad() instead of strlcpy() to make the comm always nul
-> terminated. As the comment above the hard-coded 16, we can replace it
-> with TASK_COMM_LEN, then it will adopt to the comm size change.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
+On Mon, 25 Oct 2021 at 05:38, Tong Tiangen <tongtiangen@huawei.com> wrote:
+>
+> When a tracing BPF program attempts to read memory without using the
+> bpf_probe_read() helper, the verifier marks the load instruction with
+> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
+> this flag it falls back to the interpreter.
+>
+> Add support for BPF_PROBE_MEM, by appending an exception table to the
+> BPF program. If the load instruction causes a data abort, the fixup
+> infrastructure finds the exception table and fixes up the fault, by
+> clearing the destination register and jumping over the faulting
+> instruction.
+>
+> A more generic solution would add a "handler" field to the table entry,
+> like on x86 and s390.
+>
+> The same issue in ARM64 is fixed in:
+> commit 800834285361 ("bpf, arm64: Add BPF exception tables")
+>
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+> Tested-by: Pu Lehui <pulehui@huawei.com>
 > ---
->  drivers/infiniband/hw/qib/qib.h          | 2 +-
->  drivers/infiniband/hw/qib/qib_file_ops.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> v2:
+> Modify according to Bj=C3=B6rn's comments, mainly removes redundant head =
+files
+> extable.h and some code style issues.
+>
 
-This qib patch looks fine.
+Thanks Tong! I haven't got around to take it for a spin yet.
 
-Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+However, some more minor nits, and some other comments.
+
+>  arch/riscv/mm/extable.c         |  27 ++++-
+>  arch/riscv/net/bpf_jit.h        |   1 +
+>  arch/riscv/net/bpf_jit_comp64.c | 185 +++++++++++++++++++++++++-------
+>  arch/riscv/net/bpf_jit_core.c   |  18 +++-
+>  4 files changed, 185 insertions(+), 46 deletions(-)
+>
+> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+> index 2fc729422151..442695393131 100644
+> --- a/arch/riscv/mm/extable.c
+> +++ b/arch/riscv/mm/extable.c
+> @@ -11,14 +11,31 @@
+>  #include <linux/module.h>
+>  #include <linux/uaccess.h>
+>
+> +#ifdef CONFIG_BPF_JIT
+> +static inline bool in_bpf_jit(struct pt_regs *regs)
+> +{
+> +       if (!IS_ENABLED(CONFIG_BPF_JIT))
+> +               return false;
+
+The whole function is gated by the ifdef. No need for this check. Please re=
+move!
+
+> +
+> +       return regs->epc >=3D BPF_JIT_REGION_START && regs->epc < BPF_JIT=
+_REGION_END;
+> +}
+> +
+> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struc=
+t pt_regs *regs);
+> +#endif
+> +
+>  int fixup_exception(struct pt_regs *regs)
+>  {
+>         const struct exception_table_entry *fixup;
+>
+>         fixup =3D search_exception_tables(regs->epc);
+> -       if (fixup) {
+> -               regs->epc =3D fixup->fixup;
+> -               return 1;
+> -       }
+> -       return 0;
+> +       if (!fixup)
+> +               return 0;
+> +
+> +#ifdef CONFIG_BPF_JIT
+> +       if (in_bpf_jit(regs))
+> +               return rv_bpf_fixup_exception(fixup, regs);
+> +#endif
+> +
+> +       regs->epc =3D fixup->fixup;
+> +       return 1;
+>  }
+> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> index 75c1e9996867..8f2e5670c1aa 100644
+> --- a/arch/riscv/net/bpf_jit.h
+> +++ b/arch/riscv/net/bpf_jit.h
+> @@ -71,6 +71,7 @@ struct rv_jit_context {
+>         int ninsns;
+>         int epilogue_offset;
+>         int *offset;            /* BPF to RV */
+> +       int nexentrys;
+
+Nit: Spelling: entries, not entrys.
+
+>         unsigned long flags;
+>         int stack_size;
+>  };
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index 3af4131c22c7..a1b9fe14ead3 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -5,6 +5,7 @@
+>   *
+>   */
+>
+> +#include <linux/bitfield.h>
+>  #include <linux/bpf.h>
+>  #include <linux/filter.h>
+>  #include "bpf_jit.h"
+> @@ -27,6 +28,21 @@ static const int regmap[] =3D {
+>         [BPF_REG_AX] =3D  RV_REG_T0,
+>  };
+>
+> +static const int pt_regmap[] =3D {
+> +       [RV_REG_A5] =3D offsetof(struct pt_regs, a5),
+
+Nit: Please place the A5 *under* A4.
+
+> +       [RV_REG_A0] =3D offsetof(struct pt_regs, a0),
+> +       [RV_REG_A1] =3D offsetof(struct pt_regs, a1),
+> +       [RV_REG_A2] =3D offsetof(struct pt_regs, a2),
+> +       [RV_REG_A3] =3D offsetof(struct pt_regs, a3),
+> +       [RV_REG_A4] =3D offsetof(struct pt_regs, a4),
+> +       [RV_REG_S1] =3D offsetof(struct pt_regs, s1),
+> +       [RV_REG_S2] =3D offsetof(struct pt_regs, s2),
+> +       [RV_REG_S3] =3D offsetof(struct pt_regs, s3),
+> +       [RV_REG_S4] =3D offsetof(struct pt_regs, s4),
+> +       [RV_REG_S5] =3D offsetof(struct pt_regs, s5),
+> +       [RV_REG_T0] =3D offsetof(struct pt_regs, t0),
+> +};
+> +
+>  enum {
+>         RV_CTX_F_SEEN_TAIL_CALL =3D       0,
+>         RV_CTX_F_SEEN_CALL =3D            RV_REG_RA,
+> @@ -440,6 +456,69 @@ static int emit_call(bool fixed, u64 addr, struct rv=
+_jit_context *ctx)
+>         return 0;
+>  }
+>
+> +#define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+> +#define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+> +
+> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+> +                               struct pt_regs *regs)
+> +{
+> +       off_t offset =3D FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
+> +       int regs_offset =3D FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+> +
+> +       *(unsigned long *)((unsigned char *)regs + pt_regmap[regs_offset]=
+) =3D 0;
+
+Nit: Inconsistency. Sometimes you use (void *) cast for byte access,
+sometimes (unsigned char *).  I'd change it to void * here, and keep
+the (void *) below.
+
+> +       regs->epc =3D (unsigned long)&ex->fixup - offset;
+> +
+> +       return 1;
+> +}
+> +
+> +/* For accesses to BTF pointers, add an entry to the exception table */
+> +static int add_exception_handler(const struct bpf_insn *insn,
+> +                                struct rv_jit_context *ctx,
+> +                                int dst_reg, int insn_len)
+> +{
+> +       struct exception_table_entry *ex;
+> +       unsigned long pc;
+> +       off_t offset;
+> +
+> +       if (!ctx->insns || !ctx->prog->aux->extable || BPF_MODE(insn->cod=
+e) !=3D BPF_PROBE_MEM)
+> +               return 0;
+> +
+> +       if (WARN_ON_ONCE(ctx->nexentrys >=3D ctx->prog->aux->num_exentrie=
+s))
+> +               return -EINVAL;
+> +
+> +       if (WARN_ON_ONCE(insn_len > ctx->ninsns))
+> +               return -EINVAL;
+> +
+> +       if (WARN_ON_ONCE(!rvc_enabled() && insn_len =3D=3D 1))
+> +               return -EINVAL;
+> +
+> +       ex =3D &ctx->prog->aux->extable[ctx->nexentrys];
+> +       pc =3D (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
+> +
+> +       offset =3D pc - (long)&ex->insn;
+> +       if (WARN_ON_ONCE(offset >=3D 0 || offset < INT_MIN))
+> +               return -ERANGE;
+> +       ex->insn =3D pc;
+> +
+> +       /*
+> +        * Since the extable follows the program, the fixup offset is alw=
+ays
+> +        * negative and limited to BPF_JIT_REGION_SIZE. Store a positive =
+value
+> +        * to keep things simple, and put the destination register in the=
+ upper
+> +        * bits. We don't need to worry about buildtime or runtime sort
+> +        * modifying the upper bits because the table is already sorted, =
+and
+> +        * isn't part of the main exception table.
+> +        */
+> +       offset =3D (long)&ex->fixup - (pc + insn_len * sizeof(u16));
+> +       if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
+> +               return -ERANGE;
+> +
+> +       ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
+> +               FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+> +
+> +       ctx->nexentrys++;
+> +       return 0;
+> +}
+> +
+>  int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context=
+ *ctx,
+>                       bool extra_pass)
+>  {
+> @@ -893,52 +972,86 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, =
+struct rv_jit_context *ctx,
+>
+>         /* LDX: dst =3D *(size *)(src + off) */
+>         case BPF_LDX | BPF_MEM | BPF_B:
+> -               if (is_12b_int(off)) {
+> -                       emit(rv_lbu(rd, off, rs), ctx);
+> +       case BPF_LDX | BPF_MEM | BPF_H:
+> +       case BPF_LDX | BPF_MEM | BPF_W:
+> +       case BPF_LDX | BPF_MEM | BPF_DW:
+> +       case BPF_LDX | BPF_PROBE_MEM | BPF_B:
+> +       case BPF_LDX | BPF_PROBE_MEM | BPF_H:
+> +       case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+> +       case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
+> +       {
+> +               int insn_len, insns_start;
+> +
+> +               switch (BPF_SIZE(code)) {
+> +               case BPF_B:
+> +                       if (is_12b_int(off)) {
+> +                               insns_start =3D ctx->ninsns;
+> +                               emit(rv_lbu(rd, off, rs), ctx);
+> +                               insn_len =3D ctx->ninsns - insns_start;
+> +                               break;
+> +                       }
+> +
+> +                       emit_imm(RV_REG_T1, off, ctx);
+> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> +                       insns_start =3D ctx->ninsns;
+> +                       emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
+> +                       insn_len =3D ctx->ninsns - insns_start;
+> +                       if (insn_is_zext(&insn[1]))
+> +                               return 1;
+>                         break;
+> -               }
+> +               case BPF_H:
+> +                       if (is_12b_int(off)) {
+> +                               insns_start =3D ctx->ninsns;
+> +                               emit(rv_lhu(rd, off, rs), ctx);
+> +                               insn_len =3D ctx->ninsns - insns_start;
+> +                               break;
+> +                       }
+>
+> -               emit_imm(RV_REG_T1, off, ctx);
+> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> -               emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
+> -               if (insn_is_zext(&insn[1]))
+> -                       return 1;
+> -               break;
+> -       case BPF_LDX | BPF_MEM | BPF_H:
+> -               if (is_12b_int(off)) {
+> -                       emit(rv_lhu(rd, off, rs), ctx);
+> +                       emit_imm(RV_REG_T1, off, ctx);
+> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> +                       insns_start =3D ctx->ninsns;
+> +                       emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
+> +                       insn_len =3D ctx->ninsns - insns_start;
+> +                       if (insn_is_zext(&insn[1]))
+> +                               return 1;
+>                         break;
+> -               }
+> +               case BPF_W:
+> +                       if (is_12b_int(off)) {
+> +                               insns_start =3D ctx->ninsns;
+> +                               emit(rv_lwu(rd, off, rs), ctx);
+> +                               insn_len =3D ctx->ninsns - insns_start;
+> +                               break;
+> +                       }
+>
+> -               emit_imm(RV_REG_T1, off, ctx);
+> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> -               emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
+> -               if (insn_is_zext(&insn[1]))
+> -                       return 1;
+> -               break;
+> -       case BPF_LDX | BPF_MEM | BPF_W:
+> -               if (is_12b_int(off)) {
+> -                       emit(rv_lwu(rd, off, rs), ctx);
+> +                       emit_imm(RV_REG_T1, off, ctx);
+> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> +                       insns_start =3D ctx->ninsns;
+> +                       emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
+> +                       insn_len =3D ctx->ninsns - insns_start;
+> +                       if (insn_is_zext(&insn[1]))
+> +                               return 1;
+>                         break;
+> -               }
+> +               case BPF_DW:
+> +                       if (is_12b_int(off)) {
+> +                               insns_start =3D ctx->ninsns;
+> +                               emit_ld(rd, off, rs, ctx);
+> +                               insn_len =3D ctx->ninsns - insns_start;
+> +                               break;
+> +                       }
+>
+> -               emit_imm(RV_REG_T1, off, ctx);
+> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> -               emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
+> -               if (insn_is_zext(&insn[1]))
+> -                       return 1;
+> -               break;
+> -       case BPF_LDX | BPF_MEM | BPF_DW:
+> -               if (is_12b_int(off)) {
+> -                       emit_ld(rd, off, rs, ctx);
+> +                       emit_imm(RV_REG_T1, off, ctx);
+> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> +                       insns_start =3D ctx->ninsns;
+> +                       emit_ld(rd, 0, RV_REG_T1, ctx);
+> +                       insn_len =3D ctx->ninsns - insns_start;
+>                         break;
+>                 }
+>
+> -               emit_imm(RV_REG_T1, off, ctx);
+> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
+> -               emit_ld(rd, 0, RV_REG_T1, ctx);
+> +               ret =3D add_exception_handler(insn, ctx, rd, insn_len);
+> +               if (ret)
+> +                       return ret;
+>                 break;
+> -
+> +       }
+>         /* speculation barrier */
+>         case BPF_ST | BPF_NOSPEC:
+>                 break;
+> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.=
+c
+> index fed86f42dfbe..5f2a842ec6f3 100644
+> --- a/arch/riscv/net/bpf_jit_core.c
+> +++ b/arch/riscv/net/bpf_jit_core.c
+> @@ -41,12 +41,12 @@ bool bpf_jit_needs_zext(void)
+>
+>  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  {
+> +       unsigned int image_size, prog_size, extable_size;
+>         bool tmp_blinded =3D false, extra_pass =3D false;
+>         struct bpf_prog *tmp, *orig_prog =3D prog;
+>         int pass =3D 0, prev_ninsns =3D 0, i;
+>         struct rv_jit_data *jit_data;
+>         struct rv_jit_context *ctx;
+> -       unsigned int image_size =3D 0;
+
+Hmm, image_size is now the *program size* plus the extable. So,
+prog_size is what image_size was. If my memory is not failing I
+*think* that the image_size has to be initialized to zero , if so this
+new prog_size has to be initialized to zero. I might be wrong. I just
+want to make sure that we're not introducing uninitialized data
+access.
+
+Same question for the extable_size. I see it's being used outside the
+for-loop below.
+
+To me it looks like both prog_size and extable_size needs to be
+initialized to zero.
+
+>
+>         if (!prog->jit_requested)
+>                 return orig_prog;
+> @@ -73,7 +73,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *p=
+rog)
+>
+>         if (ctx->offset) {
+>                 extra_pass =3D true;
+> -               image_size =3D sizeof(*ctx->insns) * ctx->ninsns;
+> +               prog_size =3D sizeof(*ctx->insns) * ctx->ninsns;
+>                 goto skip_init_ctx;
+>         }
+>
+> @@ -102,8 +102,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog=
+ *prog)
+>                 if (ctx->ninsns =3D=3D prev_ninsns) {
+>                         if (jit_data->header)
+>                                 break;
+> +                       /* obtain the actual image size */
+> +                       extable_size =3D prog->aux->num_exentries *
+> +                               sizeof(struct exception_table_entry);
+> +                       prog_size =3D sizeof(*ctx->insns) * ctx->ninsns;
+> +                       image_size =3D prog_size + extable_size;
+
+image_size is only used in the call to bpf_jit_binary_alloc(). I'd
+remove it and only use prog_size + extable_size in the call. Or move
+it into the if-statement.
+
+>
+> -                       image_size =3D sizeof(*ctx->insns) * ctx->ninsns;
+>                         jit_data->header =3D
+>                                 bpf_jit_binary_alloc(image_size,
+>                                                      &jit_data->image,
+> @@ -130,9 +134,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog=
+ *prog)
+>                 goto out_offset;
+>         }
+>
+> +       if (extable_size)
+> +               prog->aux->extable =3D (void *)ctx->insns + prog_size;
+
+(This was the void*-cast I was talking about)
+
+
+> skip_init_ctx:
+>         pass++;
+>         ctx->ninsns =3D 0;
+> +       ctx->nexentrys =3D 0;
+>
+>         bpf_jit_build_prologue(ctx);
+>         if (build_body(ctx, extra_pass, NULL)) {
+> @@ -143,11 +151,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *prog)
+>         bpf_jit_build_epilogue(ctx);
+>
+>         if (bpf_jit_enable > 1)
+> -               bpf_jit_dump(prog->len, image_size, pass, ctx->insns);
+> +               bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
+>
+>         prog->bpf_func =3D (void *)ctx->insns;
+>         prog->jited =3D 1;
+> -       prog->jited_len =3D image_size;
+> +       prog->jited_len =3D prog_size;
+>
+>         bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
+>
+> --
+> 2.25.1
+
+
+
+Again, thank you for hacking on this!
+
+
+Cheers,
+Bj=C3=B6rn
