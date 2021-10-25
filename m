@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CE043A49C
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 22:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5077243A4E0
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 22:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbhJYU2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 16:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        id S232361AbhJYUlu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 16:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235565AbhJYU1y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:27:54 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AD0C04F5A1
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:15:57 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id d205so13046959qke.3
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:15:57 -0700 (PDT)
+        with ESMTP id S230194AbhJYUlt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 16:41:49 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B892DC061348
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:39:26 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id b9so29175482ybc.5
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 13:39:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1r20jmrkvSoeU0GArP1aRAz2DxJYwHA9lYmnsg20gPA=;
-        b=lpERwUL8H/Ravsg1Ywx6/mcTP+m6rTEDdaHtH6KvuM9XFTqbdIt0o7SCqNO+PJVudB
-         qkVHxuPeywJ2QXDggb/5aqVZ7CjDGy+9t3E9bNpHGMB3+uQASlfiFikbxBvFL25zzsq1
-         AH2Ardoj5HABHmHvJsSsUaCHIghJGsOTm4/wvjzUwqzrviuPKu6cFnRF52V1QlP7ShJ7
-         aBllq+QPVvlKew8TUn8qXSB5swvQgbTneQvs/gg3ZFaP6RHQ+bSlrffNB2HyUI5G9/Bb
-         y9BWypfas3VPTE6UwQj7mmMaXkktIKq3SpMm+1/1bHgboZ+1ZAgXBMO5c9xKti4N/ISR
-         OihQ==
+        bh=+x53/PZweOJT2an76Lhzk+na+OzBM4p4LNLJHtZe+Zg=;
+        b=GxytfKCPHOxOBCUSU5Uwwu1kF6y7t73CoNfMxlIIH0eRGLoemjTfANGitGtmg8UgUl
+         JLokvlggXFcymOtnoNye8ilPf/e6M6iy8O5CfuSmQTm0L74qjlctg9BuFf6WA596hKOL
+         1AQTz6YnJBjub0vNKoFSqiuxC0XQTIQBRxTZMHEGRJQ9Wz/1zid8rx68cAwcOF1AOCup
+         xKTx3X5l9qNUHhtAo/RJO6wyXOVuymySzPRNSnhene/IP+hjhSc1Zx+3XHkD1z1Iw6TP
+         ajlofhzRVMC3Y04+Mds110odwUjLelQySw+sEyDScxW9PKRLIb0fwi2QQdd9gleqxmsl
+         Tj4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1r20jmrkvSoeU0GArP1aRAz2DxJYwHA9lYmnsg20gPA=;
-        b=vOUizLox/S06HlllHc256zzPcddKRFA982PO2dxkmojxMO4Sn71x6Yn1RSr9IA74hE
-         7TIb4gnqNFCvpzK0D3p0UIenwYw7XndM3A5ut6sLnDwq7ldgKv5OUnxWyBlyT7jfMejx
-         hmnj/ldk7gZr352s6vRGbMlIkLld72ACv+akvFikRUPmX0GUWo7Aols6blgvOf6TiPGq
-         MzZyKJSu4JkJTtc6/Rt1vBKqg0Po8/FvBdQdN+xranFjWyxnewGCI6OW71QquiTH0ONB
-         wBJyLP2FCJMCXOdzqlCbkDJYj7wcmhP+ctELaFtkOz9aNuF5c50Vt3ZwLna/l+QTDEg8
-         8pEw==
-X-Gm-Message-State: AOAM530hCvMd8ZG6Ot5Buwl3NPZovGZqcUKdWRBN26x2lASZt2Z8yOOL
-        Ej0c2Ai5aUKpemSp2AfqpHQLdd/qLQ6Siy1iHwE=
-X-Google-Smtp-Source: ABdhPJxpHmnjZVGUWj/hSO5CHAtEmZs21oHL428zXWYD3Q+LdbS/3gWHP1DK4kNnYZuulYxQYlF0A290Wp+9USr9wIg=
-X-Received: by 2002:a37:65d0:: with SMTP id z199mr15443223qkb.484.1635192956943;
- Mon, 25 Oct 2021 13:15:56 -0700 (PDT)
+        bh=+x53/PZweOJT2an76Lhzk+na+OzBM4p4LNLJHtZe+Zg=;
+        b=cbkUhz9cQBcq1JAp1iMC8YvycF5tWjLPlhW34wx6CqDYu7gBMFKFS+qljqz55TBlRc
+         KAhbAvABlSCEXWVeAt4ot8E3NEQ/SBeXdn7k/UYdYYvCP0BJnhpGWNyzyhSpM1hCx7SM
+         UPpGKZp6QjHQguwB0pa/iiJTjSPl5GVOulwFo/SqDNj41Q8qDMPOseoVEsouudKBoyhL
+         MvfMeaj1bnY/QrZJdkJrVQUTRP6PPDqLBvbTkze1tl13ORqY/G3Crk7JtzKn/t1HPm4I
+         /2UIyj+nuah59tZFjzSEOfXwH4PRUo+phAZaqEiqn5ajkFMeqkvujNj/+qKhbM9rZdZE
+         0iHw==
+X-Gm-Message-State: AOAM5305aVEjZZ74PkpiWzI7j7RcbzVx9p26Z14rBkuuWuYWlMeJMoV2
+        9rfTQrkLlN0cbnX7PbRKOZyXbJM8et8qoTPTzKE=
+X-Google-Smtp-Source: ABdhPJy7WeHUjJx/Eqoq9NWGx+vyZbh2JRpDogttnyqbqGvqSrzwNGUY+TgcMobLDKjQkEXeOA1h+ojVDtgz/3BRLcw=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr20584509ybj.504.1635194365889;
+ Mon, 25 Oct 2021 13:39:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022223228.99920-1-andrii@kernel.org>
-In-Reply-To: <20211022223228.99920-1-andrii@kernel.org>
-From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Mon, 25 Oct 2021 13:15:30 -0700
-Message-ID: <CAJygYd11fmiNsw2F1HV1NxCkj_ustqWRdxJqRUpKPimAG37+8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] Parallelize verif_scale selftests
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20211022223228.99920-1-andrii@kernel.org> <20211022223228.99920-3-andrii@kernel.org>
+ <CAJygYd1qr5yi0i0wfPuz4yBj61TjcXqBRWKoLUa=XkUp+7g1Vg@mail.gmail.com>
+In-Reply-To: <CAJygYd1qr5yi0i0wfPuz4yBj61TjcXqBRWKoLUa=XkUp+7g1Vg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 25 Oct 2021 13:39:14 -0700
+Message-ID: <CAEf4BzZ3_COLB32D7oktOPKBGzU3LZ7N=Bd-H-Lf0KWb-Qc7NA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: support multiple tests per file
+To:     "sunyucong@gmail.com" <sunyucong@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -59,41 +61,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks, this patch is awesome!
+On Mon, Oct 25, 2021 at 1:13 PM sunyucong@gmail.com <sunyucong@gmail.com> wrote:
+>
+> On Fri, Oct 22, 2021 at 3:33 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> >
+> > Revamp how test discovery works for test_progs and allow multiple test
+> > entries per file. Any global void function with no arguments and
+> > serial_test_ or test_ prefix is considered a test.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/Makefile | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 498222543c37..ac47cf9760fc 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -421,10 +421,9 @@ ifeq ($($(TRUNNER_TESTS_DIR)-tests-hdr),)
+> >  $(TRUNNER_TESTS_DIR)-tests-hdr := y
+> >  $(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/*.c
+> >         $$(call msg,TEST-HDR,$(TRUNNER_BINARY),$$@)
+> > -       $$(shell ( cd $(TRUNNER_TESTS_DIR);                             \
+> > -                 echo '/* Generated header, do not edit */';           \
+> > -                 ls *.c 2> /dev/null |                                 \
+> > -                       sed -e 's@\([^\.]*\)\.c@DEFINE_TEST(\1)@';      \
+> > +       $$(shell (echo '/* Generated header, do not edit */';                                   \
+> > +                 sed -n -E 's/^void (serial_)?test_([a-zA-Z0-9_]+)\((void)?\).*/DEFINE_TEST(\2)/p'     \
+>
+> probably not that important :  allow \s* before void and after void.
+> Or,  maybe we can just  (?!static)  instead of anchoring to line
+> start.
 
-Acked-by: Yucong Sun <sunyucong@gmail.com>
+Selftests source code is pretty strict with formatting, so I don't
+think we'll deviate from the strict `^void <name>` pattern (and we
+certainly don't want to deviate). So I didn't want to overcomplicate
+regexes unnecessarily.
 
+>
+> > +                       $(TRUNNER_TESTS_DIR)/*.c | sort ;       \
+>
+> to be super safe : maybe add a check here to ensure each file contains
+> at least one test function.
 
-On Fri, Oct 22, 2021 at 3:33 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+It's actually a useful property to have .c files that don't have
+tests. This can be used for adding various shared helpers. Currently
+all *_helpers.c are in selftests/bpf/ directory and have to be
+explicitly wired in Makefile, which is a bit annoying. With this setup
+we can just put a new .c file in the selftests/bpf/prog_tests/ and it
+will be automatically compiled and linked.
+
+It also will significantly hurt readability to add some sort of
+per-file check in there, do you think it's worth it?
+
 >
-> Reduce amount of waiting time when running test_progs in parallel mode (-j) by
-> splitting bpf_verif_scale selftests into multiple tests. Previously it was
-> structured as a test with multiple subtests, but subtests are not easily
-> parallelizable with test_progs' infra. Also in practice each scale subtest is
-> really an independent test with nothing shared across all substest.
->
-> This patch set changes how test_progs test discovery works. Now it is possible
-> to define multiple tests within a single source code file. One of the patches
-> also marks tc_redirect selftests as serial, because it's extremely harmful to
-> the test system when run in parallel mode.
->
-> Andrii Nakryiko (4):
->   selftests/bpf: normalize selftest entry points
->   selftests/bpf: support multiple tests per file
->   selftests/bpf: mark tc_redirect selftest as serial
->   selftests/bpf: split out bpf_verif_scale selftests into multiple tests
->
->  tools/testing/selftests/bpf/Makefile          |   7 +-
->  .../bpf/prog_tests/bpf_verif_scale.c          | 220 ++++++++++++------
->  .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
->  .../selftests/bpf/prog_tests/resolve_btfids.c |  10 +-
->  .../selftests/bpf/prog_tests/signal_pending.c |   2 +-
->  .../selftests/bpf/prog_tests/snprintf.c       |   4 +-
->  .../selftests/bpf/prog_tests/tc_redirect.c    |   2 +-
->  .../bpf/prog_tests/xdp_adjust_tail.c          |   6 +-
->  .../bpf/prog_tests/xdp_devmap_attach.c        |   4 +-
->  9 files changed, 169 insertions(+), 88 deletions(-)
->
-> --
-> 2.30.2
->
+> >                  ) > $$@)
+> >  endif
+> >
+> > --
+> > 2.30.2
+> >
