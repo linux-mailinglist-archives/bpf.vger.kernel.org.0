@@ -2,163 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F256D43A5B1
-	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 23:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5A043A5B3
+	for <lists+bpf@lfdr.de>; Mon, 25 Oct 2021 23:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbhJYVUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 17:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235086AbhJYVUp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 17:20:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B50A760FDC;
-        Mon, 25 Oct 2021 21:18:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635196703;
-        bh=ZkMbbqz10cwMBhjk6UVExasGDyFwBzZ4akzqlOcNlIc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aKXZyAv6HmTOuDOVZDCByrQ+0yV1TelQqxAy4qg5HD3DUpMcAjLbpH4yNd/+EfJCM
-         JZ04xgzHgXnMwpy4lnCl0ScwctC2NaUBW+Wvi3TQMSPgNrXDtuaMT0eoG0SmpJBGpf
-         dONc4rmKVDbR7RQ7UDR78P7zPq8+oJfJBErVa5YASJzJOABPuxMG4XsnjIBHQ0CZOM
-         OZpJvGA2fsZH0DrD9Q4D1a2eVS0yuH7X5epZsSWqwu3ZO/O0OiVADEEvtuwGbFpxE0
-         xqHovCAbZpwYW1tpN0+RTxkhg0XbpimKPY3RI2dxStnX7dVPL+0LJXy5+W/mlf6hAD
-         2oyJzLc/3/MJA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
-        dsahern@kernel.org, toke@redhat.com, lorenzo.bianconi@redhat.com
-Subject: [PATCH bpf-next] bpf: introduce bpf_map_get_xdp_prog utility routine
-Date:   Mon, 25 Oct 2021 23:18:02 +0200
-Message-Id: <269c70c6c529a09eb6d6b489eb9bf5e5513c943a.1635196496.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S235130AbhJYVVH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 17:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235086AbhJYVVG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 17:21:06 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD6BC061220
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 14:18:43 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id t7so11940921pgl.9
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 14:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4dFG4rs8hqlCuz/EfoYAZcUALMQAcileOXiGOM+GvSs=;
+        b=h8zXHApiXwW7BGwOlRTSYeAOiIYlU/hMc4TbALJMI/0cihoZAHnZhaMeTUvABTDXH4
+         5kFUw7f88DKj2ScaqsgEkCUCDGOUXuF76JmStbCrZkEf1poAl1epuiBjB6Wqp4mTm9QZ
+         jt5LcTyHO1dqnK/b81084OhydFJoAMS1MxwZA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4dFG4rs8hqlCuz/EfoYAZcUALMQAcileOXiGOM+GvSs=;
+        b=SA1EhYU0ZMrxcZe0IHGOqAvENkGlKo/FbaSYHB1lppoHCuCVvw/GzF9JHmpi0lT4iR
+         +5GM7ddjR9RXfhNhOI1fhmE0rhXbrDgC6lZk9+VY+0dYqOI8NpHtzZI/gf3hIm0aPRQ+
+         fzV68casGpagtUTsikiWjitcVb0euPHsDWfTqc0wILIcj5nqxHy/MLNPuXUUf6Wu8Kbm
+         Gt0xP/Oy0PQ3b0uotnR/9IuLmIdQFBOSTaK2RSp8aqCWQykFfuv4CxXTXJkVa2SN5t/K
+         8bpd31z85DV5oipCLWCVrz4mCdOX/QY6DlTmiQC0EEUKuo0fKHzlPfhgPF8ywYXK70j7
+         aLUg==
+X-Gm-Message-State: AOAM532lxZw7e+zwxDTZ04E1tEp1v4EaqIwKsSKOpbnUS4QbSPTuwG19
+        YPxLu1GAe84ccOYxj7YDFdIu/A==
+X-Google-Smtp-Source: ABdhPJyS0ge/35NJ840NuvZ4u5yKuw5pNRnD/FZjdif7Rr5/oI4rIsLKUc08UKkwGfL8P+QzRMJDvg==
+X-Received: by 2002:a63:e00b:: with SMTP id e11mr15663430pgh.190.1635196723249;
+        Mon, 25 Oct 2021 14:18:43 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d15sm22788279pfu.12.2021.10.25.14.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 14:18:43 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 14:18:42 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
+        valentin.schneider@arm.com, qiang.zhang@windriver.com,
+        robdclark@chromium.org, christian@brauner.io,
+        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH v6 05/12] elfcore: make prpsinfo always get a nul
+ terminated task comm
+Message-ID: <202110251417.4D879366@keescook>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+ <20211025083315.4752-6-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025083315.4752-6-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce bpf_map_get_xdp_prog to load an eBPF program on
-CPUMAP/DEVMAP entries since both of them share the same code.
+On Mon, Oct 25, 2021 at 08:33:08AM +0000, Yafang Shao wrote:
+> kernel test robot reported a -Wstringop-truncation warning after I
+> extend task comm from 16 to 24. Below is the detailed warning:
+> 
+>    fs/binfmt_elf.c: In function 'fill_psinfo.isra':
+> >> fs/binfmt_elf.c:1575:9: warning: 'strncpy' output may be truncated copying 16 bytes from a string of length 23 [-Wstringop-truncation]
+>     1575 |         strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> This patch can fix this warning.
+> 
+> Replacing strncpy() with strscpy_pad() can avoid this warning.
+> 
+> This patch also replace the hard-coded 16 with TASK_COMM_LEN to make it
+> more compatible with task comm size change.
+> 
+> I also verfied if it still work well when I extend the comm size to 24.
+> struct elf_prpsinfo is used to dump the task information in userspace
+> coredump or kernel vmcore. Below is the verfication of vmcore,
+> 
+> crash> ps
+>    PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
+>       0      0   0  ffffffff9d21a940  RU   0.0       0      0  [swapper/0]
+> >     0      0   1  ffffa09e40f85e80  RU   0.0       0      0  [swapper/1]
+> >     0      0   2  ffffa09e40f81f80  RU   0.0       0      0  [swapper/2]
+> >     0      0   3  ffffa09e40f83f00  RU   0.0       0      0  [swapper/3]
+> >     0      0   4  ffffa09e40f80000  RU   0.0       0      0  [swapper/4]
+> >     0      0   5  ffffa09e40f89f80  RU   0.0       0      0  [swapper/5]
+>       0      0   6  ffffa09e40f8bf00  RU   0.0       0      0  [swapper/6]
+> >     0      0   7  ffffa09e40f88000  RU   0.0       0      0  [swapper/7]
+> >     0      0   8  ffffa09e40f8de80  RU   0.0       0      0  [swapper/8]
+> >     0      0   9  ffffa09e40f95e80  RU   0.0       0      0  [swapper/9]
+> >     0      0  10  ffffa09e40f91f80  RU   0.0       0      0  [swapper/10]
+> >     0      0  11  ffffa09e40f93f00  RU   0.0       0      0  [swapper/11]
+> >     0      0  12  ffffa09e40f90000  RU   0.0       0      0  [swapper/12]
+> >     0      0  13  ffffa09e40f9bf00  RU   0.0       0      0  [swapper/13]
+> >     0      0  14  ffffa09e40f98000  RU   0.0       0      0  [swapper/14]
+> >     0      0  15  ffffa09e40f9de80  RU   0.0       0      0  [swapper/15]
+> 
+> It works well as expected.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> ---
+>  fs/binfmt_elf.c                | 2 +-
+>  include/linux/elfcore-compat.h | 3 ++-
+>  include/linux/elfcore.h        | 4 ++--
+>  3 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index a813b70f594e..a4ba79fce2a9 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -1572,7 +1572,7 @@ static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
+>  	SET_UID(psinfo->pr_uid, from_kuid_munged(cred->user_ns, cred->uid));
+>  	SET_GID(psinfo->pr_gid, from_kgid_munged(cred->user_ns, cred->gid));
+>  	rcu_read_unlock();
+> -	strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
+> +	strscpy_pad(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- include/linux/bpf.h |  2 ++
- kernel/bpf/core.c   | 17 +++++++++++++++++
- kernel/bpf/cpumap.c | 12 ++++--------
- kernel/bpf/devmap.c | 16 ++++++----------
- 4 files changed, 29 insertions(+), 18 deletions(-)
+This should use get_task_comm().
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 26bf8c865103..891936b54b55 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1910,6 +1910,8 @@ static inline struct bpf_prog *bpf_prog_get_type(u32 ufd,
- 	return bpf_prog_get_type_dev(ufd, type, false);
- }
- 
-+struct bpf_prog *bpf_map_get_xdp_prog(struct bpf_map *map, int fd,
-+				      enum bpf_attach_type attach_type);
- void __bpf_free_used_maps(struct bpf_prog_aux *aux,
- 			  struct bpf_map **used_maps, u32 len);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index dee91a2eea7b..7e72c21b6589 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2228,6 +2228,23 @@ void __bpf_free_used_maps(struct bpf_prog_aux *aux,
- 	}
- }
- 
-+struct bpf_prog *bpf_map_get_xdp_prog(struct bpf_map *map, int fd,
-+				      enum bpf_attach_type attach_type)
-+{
-+	struct bpf_prog *prog;
-+
-+	prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_XDP);
-+	if (IS_ERR(prog))
-+		return prog;
-+
-+	if (prog->expected_attach_type != attach_type) {
-+		bpf_prog_put(prog);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	return prog;
-+}
-+
- static void bpf_free_used_maps(struct bpf_prog_aux *aux)
- {
- 	__bpf_free_used_maps(aux, aux->used_maps, aux->used_map_cnt);
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 585b2b77ccc4..0b3e561e0c2a 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -397,19 +397,15 @@ static int cpu_map_kthread_run(void *data)
- 	return 0;
- }
- 
--static int __cpu_map_load_bpf_program(struct bpf_cpu_map_entry *rcpu, int fd)
-+static int __cpu_map_load_bpf_program(struct bpf_cpu_map_entry *rcpu,
-+				      struct bpf_map *map, int fd)
- {
- 	struct bpf_prog *prog;
- 
--	prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_XDP);
-+	prog = bpf_map_get_xdp_prog(map, fd, BPF_XDP_CPUMAP);
- 	if (IS_ERR(prog))
- 		return PTR_ERR(prog);
- 
--	if (prog->expected_attach_type != BPF_XDP_CPUMAP) {
--		bpf_prog_put(prog);
--		return -EINVAL;
--	}
--
- 	rcpu->value.bpf_prog.id = prog->aux->id;
- 	rcpu->prog = prog;
- 
-@@ -457,7 +453,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
- 	rcpu->map_id = map->id;
- 	rcpu->value.qsize  = value->qsize;
- 
--	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, fd))
-+	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, map, fd))
- 		goto free_ptr_ring;
- 
- 	/* Setup kthread */
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index f02d04540c0c..59df0745f72d 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -864,12 +864,12 @@ static struct bpf_dtab_netdev *__dev_map_alloc_node(struct net *net,
- 		goto err_out;
- 
- 	if (val->bpf_prog.fd > 0) {
--		prog = bpf_prog_get_type_dev(val->bpf_prog.fd,
--					     BPF_PROG_TYPE_XDP, false);
--		if (IS_ERR(prog))
--			goto err_put_dev;
--		if (prog->expected_attach_type != BPF_XDP_DEVMAP)
--			goto err_put_prog;
-+		prog = bpf_map_get_xdp_prog(&dtab->map, val->bpf_prog.fd,
-+					    BPF_XDP_DEVMAP);
-+		if (IS_ERR(prog)) {
-+			dev_put(dev->dev);
-+			goto err_out;
-+		}
- 	}
- 
- 	dev->idx = idx;
-@@ -884,10 +884,6 @@ static struct bpf_dtab_netdev *__dev_map_alloc_node(struct net *net,
- 	dev->val.ifindex = val->ifindex;
- 
- 	return dev;
--err_put_prog:
--	bpf_prog_put(prog);
--err_put_dev:
--	dev_put(dev->dev);
- err_out:
- 	kfree(dev);
- 	return ERR_PTR(-EINVAL);
+>  
+>  	return 0;
+>  }
+> diff --git a/include/linux/elfcore-compat.h b/include/linux/elfcore-compat.h
+> index e272c3d452ce..afa0eb45196b 100644
+> --- a/include/linux/elfcore-compat.h
+> +++ b/include/linux/elfcore-compat.h
+> @@ -5,6 +5,7 @@
+>  #include <linux/elf.h>
+>  #include <linux/elfcore.h>
+>  #include <linux/compat.h>
+> +#include <linux/sched.h>
+>  
+>  /*
+>   * Make sure these layouts match the linux/elfcore.h native definitions.
+> @@ -43,7 +44,7 @@ struct compat_elf_prpsinfo
+>  	__compat_uid_t			pr_uid;
+>  	__compat_gid_t			pr_gid;
+>  	compat_pid_t			pr_pid, pr_ppid, pr_pgrp, pr_sid;
+> -	char				pr_fname[16];
+> +	char				pr_fname[TASK_COMM_LEN];
+>  	char				pr_psargs[ELF_PRARGSZ];
+>  };
+>  
+> diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
+> index 2aaa15779d50..8d79cd58b09a 100644
+> --- a/include/linux/elfcore.h
+> +++ b/include/linux/elfcore.h
+> @@ -65,8 +65,8 @@ struct elf_prpsinfo
+>  	__kernel_gid_t	pr_gid;
+>  	pid_t	pr_pid, pr_ppid, pr_pgrp, pr_sid;
+>  	/* Lots missing */
+> -	char	pr_fname[16];	/* filename of executable */
+> -	char	pr_psargs[ELF_PRARGSZ];	/* initial part of arg list */
+> +	char	pr_fname[TASK_COMM_LEN];	/* filename of executable */
+> +	char	pr_psargs[ELF_PRARGSZ];		/* initial part of arg list */
+>  };
+>  
+>  static inline void elf_core_copy_regs(elf_gregset_t *elfregs, struct pt_regs *regs)
+> -- 
+> 2.17.1
+> 
+
+These structs are externally parsed -- we can't change the size of
+pr_fname AFAICT.
+
 -- 
-2.31.1
-
+Kees Cook
