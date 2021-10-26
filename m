@@ -2,176 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0527443AB9A
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 07:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0079743AC65
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 08:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234445AbhJZFRR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 01:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S234149AbhJZGtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 02:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbhJZFRR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:17:17 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E169FC061745
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 22:14:53 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id i65so31017872ybb.2
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 22:14:53 -0700 (PDT)
+        with ESMTP id S234146AbhJZGtm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 02:49:42 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6534C061745
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 23:47:18 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so1451527pje.0
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 23:47:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zQJUeT00AuM/8uM0hhmJqdvPo2FG+9CaeodJxLhMSJs=;
-        b=Bp0NPR1X/JMTVEH2X125QU9QrKYDDbF4wNNEppQzmEYtHQZ03vSJhQ/2sP3LbDs0/d
-         sHTFe0gHzl7ISlNx39nxwCwdOr4/SATWxa5slPiZHisX4RZKBhvzWOz4w7dXfY3Rz8St
-         BcflTTgZdPfhYL74jRK0/bFplzcBJ8OaBAMLN7EQ5pNK+k45odTEnZg7XVKLFWIXKIv1
-         LzdMSvd9CjwXBhVmvehLho8jNBG5zjZKOOlKQGHxAyWKMNf329Lc7gJogfjPixjVP6UT
-         Iu3S9H8G/5YGvluzcXrlmrQ9GIhJjtQy3xQ0xdQivNYXpb2HPkz3Ws7GBnuo1WcWAmkf
-         ec/A==
+         :cc:content-transfer-encoding;
+        bh=gnIVLsJyA0yzh89IATRCGC19WIcHSUuElFLSRXaUsWY=;
+        b=JdgmMfaZF6cbfcbI3yPHWo40euLqnXZ9lnu3Xb7vyVcBJZDIjAGsTHE6Mt/BPKvhv8
+         ZzRgQ6CDDpMVYZLNW7hK4cd1w985XlO4EWwV+nnYuuFrGXc2cCX8U2QRHee7mg001aUc
+         bNaoYeACHD7dZjF3lO8/lV+wb40aB8+iaVr/wYTh66q4Hmb5yR8k8hscvgoWaeu6+c/C
+         yJMoSwr8vozv3SuDZjPX1RngRJeTEaC4uzqMJRlgPThoFDn1sjHdydtU1PtAMQ4uplcm
+         f3nOJuU9bKBS60dSXKMeA97D+s7zpxKA37ZXJbjGetR/5185+Hwx9vnI8Zr3RAJOawWe
+         L7ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zQJUeT00AuM/8uM0hhmJqdvPo2FG+9CaeodJxLhMSJs=;
-        b=vCjvts8Bj+8A59dMcBBZ0LkI4G9EykZHaNVkCbDtMRIpcHB6/IMV25zUNtHJLBcWyl
-         OH0lTV21ygXUSOvIJst6vXj3psjescI4Dw9oYBJgwWibmeBg+vwLby8Q9YuNwkdWnV8Q
-         dVNwdtn2qVzwrN56jBGgWaTc8JKCXFLX4EphxX5uMe/nl00kMQeNk6KJKBnoYNdBZ2+P
-         lkoRBiF6j2EzPlbtjtYSA1ekOMzdhAn1r3ubSN47DQrxXIgNEfG/4RKNIObbWKIwEmvk
-         V1dTiSNYoZzFT6fEKz2uw5LAqVwy0XlXaPd7aJgK++hAYUesEoCEt/KmOPtUKGKGdStd
-         bepQ==
-X-Gm-Message-State: AOAM533VN6p22jZ9Z35ysZpllY/2LxDxGU+IsGpsWEVkqJU5aWvWpbd2
-        Hd2Ju9bPrG4ns74VWm2WRUeSvmkzPHSVpq0NAq0=
-X-Google-Smtp-Source: ABdhPJxDTuH2WUd3m1HoqbvRlGuoqz8iu/j3tlskLcECYS6A1l4q/76RVb7ud1zU9Znf6fdx0n0+yfeedWxdj/Tp5y4=
-X-Received: by 2002:a05:6902:701:: with SMTP id k1mr12100007ybt.225.1635225293158;
- Mon, 25 Oct 2021 22:14:53 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gnIVLsJyA0yzh89IATRCGC19WIcHSUuElFLSRXaUsWY=;
+        b=1y1jN8s9hv4kQQzhN0bAH7dlaNTdV7/+TvII/9H+z/fuQYV11+xEe/hku/d1NWU66K
+         VZNvAESqVpJR8AGmWKQxyKkdWau9skmV8LkKc7JTnTvbArpfSwzzZdzrl/nRDA4kTuDk
+         q6RngCiGCCnHAja5M/XxMOuKmQHgaOuSBB/lX8KX/xYawc7CtbVfcGrUcTxmm7G9FRz9
+         USujyG/TIpmquw+ei4Yj4soCJgR44o+d7vM0iHeLqX+GHwVPA9nUKoJfXA7eDhoxK07T
+         qNm6Dem/gOl0WR5BRjhsjf8p3AABuNvAkuGwHLbKiVQgqkQLqDthjulQ1pxGwGsRikJE
+         a+dw==
+X-Gm-Message-State: AOAM532cp1vvPlxAHHrQOr4V2ix7p3Y8+wWgWLaUig7uvRTiypQKYAjf
+        IYQdI2UeWfV4vpW5EgUjbnOffv3/XN0g/8qhcC8=
+X-Google-Smtp-Source: ABdhPJy+nipSjE2qe6nk7ZBwFrYRFBdStjUsecRx5RT5gMM8XWyToJX+mLIvmE4zErcUqIiu3k2qu51gKrg9EvZlb/s=
+X-Received: by 2002:a17:902:c410:b0:13e:cfac:45ad with SMTP id
+ k16-20020a170902c41000b0013ecfac45admr21021072plk.68.1635230838201; Mon, 25
+ Oct 2021 23:47:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025231256.4030142-1-haoluo@google.com> <20211025231256.4030142-3-haoluo@google.com>
- <20211026034854.3ozkpaxaok7hk6kn@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20211026034854.3ozkpaxaok7hk6kn@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 25 Oct 2021 22:14:42 -0700
-Message-ID: <CAEf4BzbvXQ1qpGazNKCBhzUUPmmfe9d9icDtf++weJkJmme0aw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: Introduce ARG_PTR_TO_WRITABLE_MEM
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <CAEf4BzZ5Uajg5548=vpq8O2L5VLrONmr8h2O-6X6H0urMDXEqA@mail.gmail.com>
+ <CAJ8uoz35Xqx1YCnxB0wCd-58_u9fdzEy5xS45Jcs82gXiAnK1Q@mail.gmail.com>
+ <87v91lay7o.fsf@toke.dk> <CAEf4BzZoajVwGywDipuAk7ojY9WjL2rvuk82EtCZKGU-JSZUow@mail.gmail.com>
+In-Reply-To: <CAEf4BzZoajVwGywDipuAk7ojY9WjL2rvuk82EtCZKGU-JSZUow@mail.gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 26 Oct 2021 08:47:07 +0200
+Message-ID: <CAJ8uoz1GP4M71E-PNScndfeTbcCG2OUg+wcoO4ZaJF5UTBiXCQ@mail.gmail.com>
+Subject: Re: libxsk move from libbpf to libxdp
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 8:48 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Oct 26, 2021 at 6:18 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Mon, Oct 25, 2021 at 04:12:55PM -0700, Hao Luo wrote:
-> > Some helper functions may modify its arguments, for example,
-> > bpf_d_path, bpf_get_stack etc. Previously, their argument types
-> > were marked as ARG_PTR_TO_MEM, which is compatible with read-only
-> > mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
-> > to modify a read-only memory by passing it into one of such helper
-> > functions.
+> On Mon, Oct 25, 2021 at 9:03 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
 > >
-> > This patch introduces a new arg type ARG_PTR_TO_WRITABLE_MEM to
-> > annotate the arguments that may be modified by the helpers. For
-> > arguments that are of ARG_PTR_TO_MEM, it's ok to take any mem type,
-> > while for ARG_PTR_TO_WRITABLE_MEM, readonly mem reg types are not
-> > acceptable.
+> > Magnus Karlsson <magnus.karlsson@gmail.com> writes:
 > >
-> > In short, when a helper may modify its input parameter, use
-> > ARG_PTR_TO_WRITABLE_MEM instead of ARG_PTR_TO_MEM.
+> > > On Fri, Oct 22, 2021 at 7:49 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > >>
+> > >> Hey guys,
+> > >>
+> > >> It's been a while since we chatted about libxsk move. I believe last
+> > >> time we were already almost ready to recommend libxdp for this, but
+> > >> I'd like to double-check. Can one of you please own [0], validate th=
+at
+> > >> whatever APIs are provided by libxdp are equivalent to what libbpf
+> > >> provides, and start marking xdk.h APIs as deprecated? Thanks!
+> > >
+> > > Resending since Gmail had jumped out of plain text mode again.
+> > >
+> > > No problem, I will own this. I will verify the APIs are the same then
+> > > submit a patch marking the ones in libbpf's xsk.h as deprecated.
+> > >
+> > > One question is what to do with the samples and the selftests for xsk=
+.
+> > > They currently rely on libbpf's xsk support. Two options that I see:
+> > >
+> > > 1: Require libxdp on the system. Do not try to compile the xsk sample=
+s
+> > > and selftests if libxdp is not available so the rest of the bpf
+> > > samples and selftests are not impacted.
+> > > 2: Provide a standalone mock-up file of xsk.c and xsk.h that samples
+> > > and selftests could use.
+> > >
+> > > I prefer #1 as it is better for the long-term. #2 means I would have
+> > > to maintain that mock-up file as libxdp features are added. Sounds
+> > > like double the amount of work to me. Thoughts?
 > >
-> > So far the difference between ARG_PTR_TO_MEM and ARG_PTR_TO_WRITABLE_MEM
-> > is PTR_TO_RDONLY_BUF and PTR_TO_RDONLY_MEM. PTR_TO_RDONLY_BUF is
-> > only used in bpf_iter prog as the type of key, which hasn't been
-> > used in the affected helper functions. PTR_TO_RDONLY_MEM currently
-> > has no consumers.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >  Changes since v1:
-> >   - new patch, introduced ARG_PTR_TO_WRITABLE_MEM to differentiate
-> >     read-only and read-write mem arg types.
-> >
-> >  include/linux/bpf.h      |  9 +++++++++
-> >  kernel/bpf/cgroup.c      |  2 +-
-> >  kernel/bpf/helpers.c     |  2 +-
-> >  kernel/bpf/verifier.c    | 18 ++++++++++++++++++
-> >  kernel/trace/bpf_trace.c |  6 +++---
-> >  net/core/filter.c        |  6 +++---
-> >  6 files changed, 35 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 7b47e8f344cb..586ce67d63a9 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -341,6 +341,15 @@ enum bpf_arg_type {
-> >       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
-> >       ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
-> >       ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
-> > +     ARG_PTR_TO_WRITABLE_MEM,        /* pointer to valid memory. Compared to
-> > +                                      * ARG_PTR_TO_MEM, this arg_type is not
-> > +                                      * compatible with RDONLY memory. If the
-> > +                                      * argument may be updated by the helper,
-> > +                                      * use this type.
-> > +                                      */
-> > +     ARG_PTR_TO_WRITABLE_MEM_OR_NULL,   /* pointer to memory or null, similar to
-> > +                                         * ARG_PTR_TO_WRITABLE_MEM.
-> > +                                         */
+> > I agree #1 is preferable of those two. Another option is to move the
+> > samples to the xdp-tools repo instead? Doesn't work for selftests, of
+> > course; if it's acceptable to conditionally-compile the XSK tests
+> > depending on system library availability that would be fine by me...
 >
-> Instead of adding new types,
-> can we do something like this instead:
->
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index c8a78e830fca..5dbd2541aa86 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -68,7 +68,8 @@ struct bpf_reg_state {
->                         u32 btf_id;
->                 };
->
-> -               u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-> +               u32 rd_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-> +               u32 wr_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+> Seems like the only thing that uses xsk.h is xdpxceiver.c which is
+> tested through test_xsk.sh. It's not part of test_progs and so isn't
+> run regularly by BPF CI or maintainers. It makes sense to me to move
+> such test closer to the library it's supposed to be testing (i.e.,
+> libxdp)?
 
-This seems more confusing, it's technically possible to express a
-memory pointer from which you can read X bytes, but can write Y bytes.
+xdpxceiver.c tests kernel functionality, not libxdp functionality,
+though it does use libxdp (and libbpf) to make the implementation
+simpler. So it should remain here and use strategy #1. libxdp tests
+are on another level and should definitely go into the libxdp repo.
+The xsk samples in samples/bpf/, we could just stop developing/retire
+(or even remove) in the Linux repo and move them to the xdp-tools
+repo. They just show how to use the xsk.h api:s and it makes more
+sense to have them together with libxdp.
 
-I actually liked the idea that helpers will be explicit about whether
-they can write into a memory or only read from it.
-
-Apart from a few more lines of code, are there any downsides to having
-PTR_TO_MEM vs PTR_TO_RDONLY_MEM?
-
-BTW, this made me think about read-only (from the BPF side) maps.
-Seems like we have some special handling around that right now, but if
-we had PTR_TO_RDONLY_MEM and PTR_TO_MEM, could we have used that as a
-more uniform way to enforce read-only access to memory?
-
->
->                 /* Max size from any of the above. */
->                 struct {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index c6616e325803..ad46169d422b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4374,7 +4374,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
->                         return -EACCES;
->                 }
->                 err = check_mem_region_access(env, regno, off, size,
-> -                                             reg->mem_size, false);
-> +                                             t == BPF_WRITE ? reg->wr_mem_size : reg->rd_mem_size, false);
->                 if (!err && t == BPF_READ && value_regno >= 0)
->                         mark_reg_unknown(env, regs, value_regno);
->         } else if (reg->type == PTR_TO_CTX) {
-> @@ -11511,7 +11511,8 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
->                         goto err_put;
->                 }
->                 aux->btf_var.reg_type = PTR_TO_MEM;
-> -               aux->btf_var.mem_size = tsize;
-> +               aux->btf_var.rd_mem_size = tsize;
-> +               aux->btf_var.wr_mem_size = 0;
->         } else {
->                 aux->btf_var.reg_type = PTR_TO_BTF_ID;
->                 aux->btf_var.btf = btf;
->
+> >
+> > I pinged the Debian maintainer of libbpf to see if I can get him to pic=
+k
+> > up libxdp as well, or sponsor me to maintain it. Should make the
+> > transition smoother; guess I also need to get hold of the OpenSuse
+> > people.
+> >
+> > -Toke
+> >
