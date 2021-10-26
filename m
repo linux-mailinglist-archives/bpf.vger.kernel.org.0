@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDBE43AAF9
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 06:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14EA43AAFD
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 06:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhJZEL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 00:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
+        id S230075AbhJZEOT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 00:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhJZELx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 00:11:53 -0400
+        with ESMTP id S229487AbhJZEOT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 00:14:19 -0400
 Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A63C061745
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 21:09:30 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id v7so31623439ybq.0
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 21:09:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DFBC061745
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 21:11:56 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id i65so30698684ybb.2
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 21:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BUcWKpE55nuBB7nVh+DOAxCTFmU3b88wQBUod25DOfA=;
-        b=bWDxjKIXD4iK0xsIoXmIEJY57dLU3yvj43FeQBIZM0Yj2hgf5U+TRvy4vwfcvgy3WJ
-         qvO/zDfNVd/VkZ57W+9BuDYcLcOcfRgOA/XDF7ayTWtlAe6Bow/gytkz5V7m4Ih7NXgI
-         BypIKdm1Q/oZ82H1GhHrI5m0o+W4XnEvw55+26ElxmFky37tW9PYZYwerWwUSizA649x
-         GobZfZ1Ctvb1hPs807z9mj0G+rlGdL4cZQyKhBoe8YmrN1AWyjRYSb9ZYFI3/K+MVRkW
-         +tYOcATJ0WRg5NQS79qsn9qjaGiWPXyP55TV68WdMxPFpFbUrWxvpBSmYovAygTScLPD
-         2GHQ==
+        bh=XIK9S3lqhapmhIUnkJLY2DJdo1Cj67KelLuQUYOagP0=;
+        b=IdHdYO/upvXMYjtPYjp7rT46b/FqlLtvrSWLgn23WO+WAn+gOj9h2VA909eyL4XxZV
+         7js4VF8d9YVgXWDZ+rbOgOqdauzMarrmMTzFJYx4IUJuz4nOfrI6hl6FuKf6RtFoSFmj
+         F1F4YjOd54gF3s8lCLoKW5hr14fWmL6+P0kD8n5M1JgsUhKS0TEGln+KEwMHmlfN/yqP
+         Yvbn6J05i3NnvypQuX2d8FHBryNKo5MJbdYhPXk4a6J9X9HgrlLFXT9Pb4V49K1mDdJ4
+         yFf1ESAGBYS8PJP1rCykCY3p6yxqsnCm2pFxxzSaelRRkKpXfrRGK6AQrK3QiUXbsikx
+         4mMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BUcWKpE55nuBB7nVh+DOAxCTFmU3b88wQBUod25DOfA=;
-        b=OA1/KaIvGwdxjQOEBMqvFGr6KEwo2VqsIer0yQ14/Mor4tjpXrtppgDb1WhcxOZyJk
-         kTFoNBMLRZNdD8O+897+6gtoZfh5lwFQW/z4+mSXnb8A4xeXrjJD3KtB9XeU+vBz77pn
-         g/3KQfVJwZFGZoP+Z7wBWKs1QF0QqaE/xO9OfFraEkpOntGJdR6gL5hGYh57gLZ6YEXN
-         pIVAgPvkUtp/Kb9Ugy9f/Wo4InbUBAKVdXkCvJ0W+wnppoUt8/K283WsThGY/38IuQh+
-         0mLrAu7/SZI3RuavYB3c1WN6BymZVEl9rkXUSFgxIQiAtpYiFh5KL3trnrTryZPKw/bk
-         kHzw==
-X-Gm-Message-State: AOAM532hJW6GAn05LW+s2MGIxJxXA1Yuz+x0Kmf/Mg+sQ4BRCJXOlViC
-        9rHW46z1dkhAYhcdm8QXy54kY0LHYc0N1NzFJwQ=
-X-Google-Smtp-Source: ABdhPJwkHc4bDajke9NL1N/lE3MAaymhMJHYygc/Dg7O0etnWu5KCJyxltEDZAWdzz1qKr5vEaQpgME226+NLdp/5mA=
-X-Received: by 2002:a25:8749:: with SMTP id e9mr20936248ybn.2.1635221369580;
- Mon, 25 Oct 2021 21:09:29 -0700 (PDT)
+        bh=XIK9S3lqhapmhIUnkJLY2DJdo1Cj67KelLuQUYOagP0=;
+        b=Vpx72j6VMn4YB9iOnMnHa8yStNw6jUFW0mKbnHyS2lny6LkOcykFttbqbTEu5qpb+p
+         oV3qeK44cQ83si6UC5yYSoPRbSI36fVrR6iJUJK2gv8IaVqh5xlXM1fix4wTGxOC0iRs
+         /xACcQL3aYpMEBlx+XQKfMQHFF0OsEyS4seWr1Q9e8oCIpnwRA5DLMu2kuQfmi80UuUT
+         dLxIpp1VIJPn1d7TEqeTG0ItUjRMFseV0bdTABoVHo16EfvSVEBNUbDWrkpmoUbPZuYs
+         7T3EOhr14QGI3Wtz0euxWlBuUeBYOGv3UztN9A4YYvPQsAysL9C0YNgBhcS4Oovo0272
+         fHWQ==
+X-Gm-Message-State: AOAM531AoHcZ/q+327N6tvLo6Mtw9TU4OG2RrYLMuoBL5MMECGRDNxc/
+        xfr9tUSMXBA7aYUWmFGs3up2av1ZzQug4SOpy+jsQ8TTff0=
+X-Google-Smtp-Source: ABdhPJyqx0zl3NGtzPg+k9q/r7V5gWY3cafYzxNDFwbPPR3uyGS9D0yJ9fuqB7Ham2z5GatNA8aAJBVIT8BKlCKN/cs=
+X-Received: by 2002:a05:6902:701:: with SMTP id k1mr11843078ybt.225.1635221515620;
+ Mon, 25 Oct 2021 21:11:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025223345.2136168-1-fallentree@fb.com> <20211025223345.2136168-3-fallentree@fb.com>
-In-Reply-To: <20211025223345.2136168-3-fallentree@fb.com>
+References: <20211025223345.2136168-1-fallentree@fb.com> <20211025223345.2136168-4-fallentree@fb.com>
+In-Reply-To: <20211025223345.2136168-4-fallentree@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 25 Oct 2021 21:09:18 -0700
-Message-ID: <CAEf4BzZFtCreYhRy01g1mXe9iU-LdP4Td45ynXF9ztQrKXBqGQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: print subtest status line
+Date:   Mon, 25 Oct 2021 21:11:44 -0700
+Message-ID: <CAEf4BzZUT+Y5_Aw-y9J1-C_B_vp4Gbza_CnsqRdLDWxuu3FAMA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: fix attach_probe in parallel mode
 To:     Yucong Sun <fallentree@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Yucong Sun <sunyucong@gmail.com>
@@ -62,154 +62,58 @@ On Mon, Oct 25, 2021 at 3:33 PM Yucong Sun <fallentree@fb.com> wrote:
 >
 > From: Yucong Sun <sunyucong@gmail.com>
 >
-> This patch restores behavior that prints one status line for each
-> subtest executed. It works in both serial mode and parallel mode,  and
-> all verbosity settings.
+> This patch makes attach_probe uses its own method as attach point,
+> avoiding conflict with other tests like bpf_cookie.
 >
-> The logic around IO hijacking could use some more simplification in the
-> future.
->
-
-This feels like a big hack, not a proper solution. What if we extend
-MSG_TEST_DONE to signal also sub-test completion (along with subtest
-logs)? Would that work better and result in cleaner logic?
-
 > Signed-off-by: Yucong Sun <sunyucong@gmail.com>
 > ---
->  tools/testing/selftests/bpf/test_progs.c | 56 +++++++++++++++++++-----
->  tools/testing/selftests/bpf/test_progs.h |  4 ++
->  2 files changed, 50 insertions(+), 10 deletions(-)
+>  tools/testing/selftests/bpf/prog_tests/attach_probe.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index 1f4a48566991..ff4598126f9d 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -100,6 +100,18 @@ static bool should_run(struct test_selector *sel, int num, const char *name)
->         return num < sel->num_set_len && sel->num_set[num];
->  }
+> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> index 6c511dcd1465..d0bd51eb23c8 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> @@ -5,6 +5,11 @@
+>  /* this is how USDT semaphore is actually defined, except volatile modifier */
+>  volatile unsigned short uprobe_ref_ctr __attribute__((unused)) __attribute((section(".probes")));
 >
-> +static void dump_subtest_status(bool display) {
+> +/* attach point */
+> +static void method(void) {
 
-please run checkpatch.pl
+{ on separate line
 
-> +       fflush(env.subtest_status_fd);
-> +       if (display) {
-> +               if (env.subtest_status_cnt) {
-> +                       env.subtest_status_buf[env.subtest_status_cnt] = '\0';
-> +                       fputs(env.subtest_status_buf, stdout);
-> +               }
-> +       }
-> +       rewind(env.subtest_status_fd);
-> +       fflush(env.subtest_status_fd);
+
+let's also mark it as noinline just in case
+
+
+> +       return ;
+
+unnecessary return (also extra space before semicolon)
+
 > +}
 > +
->  static void dump_test_log(const struct prog_test_def *test, bool failed)
+>  void test_attach_probe(void)
 >  {
->         if (stdout == env.stdout)
-> @@ -112,12 +124,17 @@ static void dump_test_log(const struct prog_test_def *test, bool failed)
->         fflush(stdout); /* exports env.log_buf & env.log_cnt */
+>         DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
+> @@ -33,7 +38,7 @@ void test_attach_probe(void)
+>         if (CHECK(base_addr < 0, "get_base_addr",
+>                   "failed to find base addr: %zd", base_addr))
+>                 return;
+> -       uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
+> +       uprobe_offset = get_uprobe_offset(&method, base_addr);
 >
->         if (env.verbosity > VERBOSE_NONE || test->force_log || failed) {
-> -               if (env.log_cnt) {
-> -                       env.log_buf[env.log_cnt] = '\0';
-> -                       fprintf(env.stdout, "%s", env.log_buf);
-> -                       if (env.log_buf[env.log_cnt - 1] != '\n')
-> -                               fprintf(env.stdout, "\n");
-> -               }
-> +               dump_subtest_status(false);
-> +       } else {
-> +               rewind(stdout);
-> +               dump_subtest_status(true);
-> +               fflush(stdout);
-> +       }
-> +       if (env.log_cnt) {
-> +               env.log_buf[env.log_cnt] = '\0';
-> +               fprintf(env.stdout, "%s", env.log_buf);
-> +               if (env.log_buf[env.log_cnt - 1] != '\n')
-> +                       fprintf(env.stdout, "\n");
->         }
->  }
+>         ref_ctr_offset = get_rel_offset((uintptr_t)&uprobe_ref_ctr);
+>         if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
+> @@ -98,7 +103,7 @@ void test_attach_probe(void)
+>                 goto cleanup;
 >
-> @@ -183,7 +200,12 @@ void test__end_subtest(void)
+>         /* trigger & validate uprobe & uretprobe */
+> -       get_base_addr();
+> +       method();
 >
->         dump_test_log(test, sub_error_cnt);
->
-> +       // Print two copies here, one as part of full logs, another one will
-> +       // only be used if there is no need to show full logs.
-
-C++ style comments
-
->         fprintf(stdout, "#%d/%d %s/%s:%s\n",
-> +               test->test_num, test->subtest_num, test->test_name, test->subtest_name,
-> +               sub_error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
-> +       fprintf(env.subtest_status_fd, "#%d/%d %s/%s:%s\n",
->                test->test_num, test->subtest_num, test->test_name, test->subtest_name,
->                sub_error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
->
-> @@ -1250,6 +1272,15 @@ static int worker_main(int sock)
->
->                         run_one_test(test_to_run);
->
-> +                       // discard logs if we don't need them
-
-C++ style comment
-
-> +                       if (env.verbosity > VERBOSE_NONE || test->force_log || test->error_cnt) {
-> +                               dump_subtest_status(false);
-> +                       } else {
-> +                               rewind(stdout);
-> +                               dump_subtest_status(true);
-> +                               fflush(stdout);
-> +                       }
-> +
->                         stdio_restore();
->
->                         memset(&msg_done, 0, sizeof(msg_done));
-> @@ -1260,10 +1291,9 @@ static int worker_main(int sock)
->                         msg_done.test_done.sub_succ_cnt = test->sub_succ_cnt;
->                         msg_done.test_done.have_log = false;
->
-> -                       if (env.verbosity > VERBOSE_NONE || test->force_log || test->error_cnt) {
-> -                               if (env.log_cnt)
-> -                                       msg_done.test_done.have_log = true;
-> -                       }
-> +                       if (env.log_cnt)
-> +                               msg_done.test_done.have_log = true;
-> +
->                         if (send_message(sock, &msg_done) < 0) {
->                                 perror("Fail to send message done");
->                                 goto out;
-> @@ -1357,6 +1387,12 @@ int main(int argc, char **argv)
->
->         env.stdout = stdout;
->         env.stderr = stderr;
-> +       env.subtest_status_fd = open_memstream(
-
-extremely misleading name, it's not an FD at all
-
-> +               &env.subtest_status_buf, &env.subtest_status_cnt);
-> +       if (!env.subtest_status_fd) {
-> +               perror("Failed to setup env.subtest_status_fd");
-> +               exit(EXIT_ERR_SETUP_INFRA);
-> +       }
->
->         env.has_testmod = true;
->         if (!env.list_test_names && load_bpf_testmod()) {
-> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-> index 93c1ff705533..a564215a63b1 100644
-> --- a/tools/testing/selftests/bpf/test_progs.h
-> +++ b/tools/testing/selftests/bpf/test_progs.h
-> @@ -89,6 +89,10 @@ struct test_env {
->         pid_t *worker_pids; /* array of worker pids */
->         int *worker_socks; /* array of worker socks */
->         int *worker_current_test; /* array of current running test for each worker */
-> +
-> +       FILE* subtest_status_fd; /* fd for printing status line for subtests */
-> +       char *subtest_status_buf; /* buffer for subtests status */
-> +       size_t subtest_status_cnt;
->  };
->
->  #define MAX_LOG_TRUNK_SIZE 8192
+>         if (CHECK(skel->bss->uprobe_res != 3, "check_uprobe_res",
+>                   "wrong uprobe res: %d\n", skel->bss->uprobe_res))
 > --
 > 2.30.2
 >
