@@ -2,93 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8668943AB6F
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 06:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BDE43AB7A
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 06:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbhJZEtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 00:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
+        id S234727AbhJZE5Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 00:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbhJZEtX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 00:49:23 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F07CC061745;
-        Mon, 25 Oct 2021 21:47:00 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id v7so31811297ybq.0;
-        Mon, 25 Oct 2021 21:47:00 -0700 (PDT)
+        with ESMTP id S231801AbhJZE5X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 00:57:23 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053FBC061745;
+        Mon, 25 Oct 2021 21:54:59 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id d204so16246366ybb.4;
+        Mon, 25 Oct 2021 21:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=snF+FgRXlmPR3jIjKkl30XVFVxT4Om22kZ8kNiegnwE=;
-        b=bTH4TGqO5GorcGcg/EjKv+pqJU53vEC3xUasoHEnFYvNsxcSYYHn8wQ891rxzE9OJs
-         dZu7TY3pVPU9LmLGxQ08CpWYugaXaoy7nKCwfmgAjyP7dATKpp/CBjoPwCu2o4OPl0mo
-         RIX6GFWWqAs4pQ5zCk8u0KG04lK/sJhVAIA6DQc0nyHbI8qqsXqGYsUQLhB7URPS+U5q
-         eh9VttpyGu4Fa2a2f9cuk3jIX6rNqxuFMzEk7Yct2Sg+sqUvw4UC32BqfH0tFKwX9Ove
-         YwYLLScfx4M4487z3QbRUFrL9eZ6P1Xd6BbNuska2N+XVKD1fwpSPOld843vRTXjh/E9
-         CFcA==
+        bh=4Rq+clhxkZCbB9+pnMudoNhmYAfOTd3FsrKbIehYoOg=;
+        b=ENk6ibOPOfUzReh9gUL0YUlzmGErn2xn+r1N9Ons7Qaz7Koo+JEbqbvfVpT8/v6NSV
+         WtfOE33nmy/qY5YUfEfxFNgoe9ukOrox7tQ74EbzUiLjKEt5LSkearLCbz8ekGfJPf2s
+         jSOATRIeifQH9LMYXxpavPqnTq+gSnHGwgQTv5NpgJfwYvZvh7MvorOzdlCmhDK5SnXO
+         pZ7cRIxlR1lONuPmTgzJFnHHUV/rUGPQ7ZGMY/DILgrai69qnseppOqDmpErTuS3wpjh
+         SpwkimWgOSlXJ3v/gocxuJPyQEyjqhzCilX7tESAMVrFwQk9rfgBoR3k0Br7dzmLUsQt
+         hJZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=snF+FgRXlmPR3jIjKkl30XVFVxT4Om22kZ8kNiegnwE=;
-        b=Q2vj54p2Y/Qq0PgpjFBZfgUznfxkPRdaDgpEn5Xck3M/Q2t1qKw3gKnrDk5TMycklE
-         WaN6MOHgx7UoQBE5L50c3t1d4bRnH0y/968A6XLasr/N5q0PA7sEux8xaFMDSl3tAxDp
-         uEBym5k4X4iL7peRyrUOXSC3jIAKMU5kKnVpqkgKdQPX9oRHydBrwnCFSpuVqqTm4bgP
-         UyvDJ4qvGL9Y79vfobVRoCbEWV1mTE8CHPN4Z9u4iLmoRQ842NAa/d0jdYsKfoxTmlX4
-         +jy7FpPsDfW/aAXojUtTAEyDPIPYN8RHS4E3M+0kr2YCXG7mM+RCGHCgzVMy/CwrVKkG
-         7pYg==
-X-Gm-Message-State: AOAM531hdna+ngWH90uPaX54vjKklnaWN67AqxZ2UTntVYQbm45QSXbm
-        QDpQuNR7S/KD7R3hj5i4wOYV05NsxRiU0kRIinw=
-X-Google-Smtp-Source: ABdhPJy7F4dFHuWsjEsI1C3xFE1RJr+4lQSqw2mb1SRXVvvZUt3O3HsWPZ0kwscrS1trOC1Tjy7ssyJMHAAQ0aPdqHk=
-X-Received: by 2002:a25:afcf:: with SMTP id d15mr20890438ybj.433.1635223619696;
- Mon, 25 Oct 2021 21:46:59 -0700 (PDT)
+        bh=4Rq+clhxkZCbB9+pnMudoNhmYAfOTd3FsrKbIehYoOg=;
+        b=0kYPlMCpdp0aF75zOtENpsjdxzUhQLb+fmx1yXimsbHkDfQQBR/pclwlzRAn8NfhUX
+         P/KQzOTURLLmbog3cq/rDQlGy+OXsYM0V45CSruXg4P/Twssz+ca8YtG76MbYCHSBEc6
+         v8p4G4yogzYTqLWNKaMOPxRgJUcg3Ry9hLWUcZevSamtqXdc5axxVI6qAstjDgucAhzy
+         lWkdPIHMaQnx0BLM7fAx6pJ9mv+NQYpZWFMqNwiwgh58mymcUofiGLO0z80wuwSKhOiT
+         Iqglt40e2MBqGSGCqo0ZY9weLZZpByWzWnmWX/YzVkpMDbYAtCCcY/f8hl9mNCytGLJG
+         FimQ==
+X-Gm-Message-State: AOAM5317bC6fMl7WzpD2fOywbMw3OkdO/jF0o1hCvS6HIfw7NpGVKTSn
+        5FIIz/Sk//vaQ9rpkK9Rdi50wdIig4E9KA9b40s=
+X-Google-Smtp-Source: ABdhPJwUZgNjMPaMKUt4rAUwYM0hduyZMGwrLGncIMxw8cafErJPiw75WyXWaDv3NmXa0gI5tbytv5UicsXXBJKSyuI=
+X-Received: by 2002:a25:8749:: with SMTP id e9mr21100920ybn.2.1635224099251;
+ Mon, 25 Oct 2021 21:54:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022234814.318457-1-songliubraving@fb.com>
-In-Reply-To: <20211022234814.318457-1-songliubraving@fb.com>
+References: <20211023120452.212885-1-jolsa@kernel.org>
+In-Reply-To: <20211023120452.212885-1-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 25 Oct 2021 21:46:48 -0700
-Message-ID: <CAEf4BzYdfgZDh4pLkeFr_BbzhOgg26PX1fgUZgi04w-n4p11bw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: guess function end for test_get_branch_snapshot
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 25 Oct 2021 21:54:48 -0700
+Message-ID: <CAEf4BzbaD60KFsUB4VkTAH2v3+GFkRvRbY_O-bNSpNG0=8pJ0Q@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/2] bpf: Fix BTF data for modules
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 4:48 PM Song Liu <songliubraving@fb.com> wrote:
+On Sat, Oct 23, 2021 at 5:05 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> Function in modules could appear in /proc/kallsyms in random order.
+> hi,
+> I'm trying to enable BTF for kernel module in fedora,
+> and I'm getting big increase on modules sizes on s390x arch.
 >
-> ffffffffa02608a0 t bpf_testmod_loop_test
-> ffffffffa02600c0 t __traceiter_bpf_testmod_test_writable_bare
-> ffffffffa0263b60 d __tracepoint_bpf_testmod_test_write_bare
-> ffffffffa02608c0 T bpf_testmod_test_read
-> ffffffffa0260d08 t __SCT__tp_func_bpf_testmod_test_writable_bare
-> ffffffffa0263300 d __SCK__tp_func_bpf_testmod_test_read
-> ffffffffa0260680 T bpf_testmod_test_write
-> ffffffffa0260860 t bpf_testmod_test_mod_kfunc
+> Size of modules in total - kernel dir under /lib/modules/VER/
+> from kernel-core and kernel-module packages:
 >
-> Therefore, we cannot reliably use kallsyms_find_next() to find the end of
-> a function. Replace it with a simple guess (start + 128). This is good
-> enough for this test.
+>                current   new
+>       aarch64      60M   76M
+>       ppc64le      53M   66M
+>       s390x        21M   41M
+>       x86_64       64M   79M
+>
+> The reason for higher increase on s390x was that dedup algorithm
+> did not detect some of the big kernel structs like 'struct module',
+> so they are duplicated in the kernel module BTF data. The s390x
+> has many small modules that increased significantly in size because
+> of that even after compression.
+>
+> First issues was that the '--btf_gen_floats' option is not passed
+> to pahole for kernel module BTF generation.
+>
+> The other problem is more tricky and is the reason why this patchset
+> is RFC ;-)
+>
+> The s390x compiler generates multiple definitions of the same struct
+> and dedup algorithm does not seem to handle this at the moment.
+>
+> I put the debuginfo and btf dump of the s390x pnet.ko module in here:
+>   http://people.redhat.com/~jolsa/kmodbtf/
+>
+> Please let me know if you'd like to see other info/files.
+>
 
-It's so annoying that sizes of all those symbols are known and
-available in ELF, yet kallsyms don't expose them :( I've applied this
-"fix", but it makes me very sad.
+Hard to tell what's going on without vmlinux itself. Can you upload a
+corresponding kernel image with BTF in it?
 
+> I found code in dedup that seems to handle such situation for arrays,
+> and added 'some' fix for structs. With that change I can no longer
+> see vmlinux's structs in kernel module BTF data, but I have no idea
+> if that breaks anything else.
 >
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+> thoughts? thanks,
+> jirka
+>
+>
 > ---
->  .../bpf/prog_tests/get_branch_snapshot.c      |  7 ++--
->  tools/testing/selftests/bpf/trace_helpers.c   | 36 -------------------
->  tools/testing/selftests/bpf/trace_helpers.h   |  5 ---
->  3 files changed, 4 insertions(+), 44 deletions(-)
+> Jiri Olsa (2):
+>       kbuild: Unify options for BTF generation for vmlinux and modules
+>       bpf: Add support to detect and dedup instances of same structs
 >
-
-[...]
+>  Makefile                  |  3 +++
+>  scripts/Makefile.modfinal |  2 +-
+>  scripts/link-vmlinux.sh   | 11 +----------
+>  scripts/pahole-flags.sh   | 20 ++++++++++++++++++++
+>  tools/lib/bpf/btf.c       | 12 ++++++++++--
+>  5 files changed, 35 insertions(+), 13 deletions(-)
+>  create mode 100755 scripts/pahole-flags.sh
+>
