@@ -2,163 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BBD43BC58
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 23:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196EE43BC57
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 23:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239575AbhJZV1C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 17:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239580AbhJZV1B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:27:01 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707DCC061767
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 14:24:37 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id i65so1059545ybb.2
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 14:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6O5vbr72GKDlarVqLODX1PC787jPL/Yv8hW6xR71VDM=;
-        b=bBxwS/tZFnQZgPCvdzEx+88Lk632snOXJM5ZohNsG41vIM7WRzDZBk1Hu1th6DXWSX
-         F2KQofb8QL+TWOwZPTuXm9AIG5HLdI9Y4FsdCnCNpSk2BXbbXc7EcGuJ8p3Q08IIWDLO
-         7CJ47pjaPwTDYc10U7MXbi25dyTe1IepKGsF88wnzSIm42lK9QWQPQ7A/cwwzgaiBaCO
-         USNdKfiBbgCbGVMzORpmI26h/S+9oPeUcycsVRWENJI5b3vzDcXPmxdpU32UclDa5ST9
-         QNQ3tyOBRUxQfhMOKdx4xUzXvGQXRl48UJvMMVje8fm/y6clgfwO57Qwu55nzhBPedRI
-         915g==
+        id S232059AbhJZV0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 17:26:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29169 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239575AbhJZV0s (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Oct 2021 17:26:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635283463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=c0f2U91ZYdHciaCbl1twiqOJ6L+v0KBNSmK6aUUIrtE=;
+        b=XevrFokYlbtEF9Bgtj+Dm5oCV6H//zkc7Btb3yLbxyBvE+t1E080HX92hC+RRRaCHgrJKD
+        P6MdvpGbBKZzBO2nV1Gp3pMCCUXuoz0EEz5bHspkY2d6WlMpGdul86I5jIJpDF5saKNcmz
+        q9w52mLYKUowp1K1fofYfv652+165LQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-t3PZAQ6WPnqyWFZG2fBEkg-1; Tue, 26 Oct 2021 17:24:22 -0400
+X-MC-Unique: t3PZAQ6WPnqyWFZG2fBEkg-1
+Received: by mail-wm1-f69.google.com with SMTP id c1-20020a05600c0ac100b00322fcaa2bc7so263124wmr.4
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 14:24:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6O5vbr72GKDlarVqLODX1PC787jPL/Yv8hW6xR71VDM=;
-        b=hF2exfzk2QtyIciA8mHe5LQxGp8H6xIGVoYteAzU8+1v2yc7iqo0gWK9MTX+vmmPG9
-         8MfTE5vI0zyBxKpkMlMIeCBzHsm2ATOuqdtEqRLgLGJHq+bHfoMKDFGqQmilJMEvPEes
-         Y57zPwS2mlDIFT+HhoVql++gctlvO/FEfzjqbM2dfRGYfxWXOQXaRMyd169+QEqr3CFg
-         ftVxpYalcXRGoxUNQ5YD5xEzhkLUfntBlcfFXEBEUggwahQR3SFvh14PdpEVT6tc5pKU
-         hdWE+g5ujqEZsslE5tnyaP5TVE4Lr80XQ1t/4YhXWKgqONhG3dlnFyEr9Ie4yeJqWeUq
-         A8FQ==
-X-Gm-Message-State: AOAM530v2qTVbdtPa9DnB0OHhQYo54J766E3qL8qdKSjteIFtCWqeZnl
-        AnQxtEScQrIygTU/fOBeuzORXSMeJxjedMhDNlACkKbZtxY=
-X-Google-Smtp-Source: ABdhPJwFdxK4q99Kr33oeW6QFucd/skGlXegm2tjPw1WyWDWw9qOeSfj/mp8qgLHKNBXcdbupgRvz7hdtD3ZhajYPJA=
-X-Received: by 2002:a25:b19b:: with SMTP id h27mr1184606ybj.225.1635283476663;
- Tue, 26 Oct 2021 14:24:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025231256.4030142-1-haoluo@google.com> <20211025231256.4030142-3-haoluo@google.com>
- <20211026034854.3ozkpaxaok7hk6kn@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzbvXQ1qpGazNKCBhzUUPmmfe9d9icDtf++weJkJmme0aw@mail.gmail.com>
- <CAADnVQJQuZ9pP_T_ZDgoeTnqfPcRMcKM_BshBTpmsZiRmzWMgA@mail.gmail.com>
- <CAEf4Bzb2LdZrYVP+h5HxKS+H5tj-s7h_4xir_c3+bihaU5z_yQ@mail.gmail.com> <CAADnVQKo+jrFO4FVm=rm8q--hkHwBe9-iwDrdBzWW_aFxQ5KxA@mail.gmail.com>
-In-Reply-To: <CAADnVQKo+jrFO4FVm=rm8q--hkHwBe9-iwDrdBzWW_aFxQ5KxA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 26 Oct 2021 14:24:18 -0700
-Message-ID: <CAEf4BzYkM043BR9Vabj5khZ7-eBh31PM2FxF1jfpm7n_v_a=iA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: Introduce ARG_PTR_TO_WRITABLE_MEM
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c0f2U91ZYdHciaCbl1twiqOJ6L+v0KBNSmK6aUUIrtE=;
+        b=My5LeQOhtUo8ch2inulQKEvRN78qbJZWFyiYrKjrU3kTzAFGJfjE3wTV9D7HN9Gz4i
+         9La12SH0fvkE1HBUb5HWKNh0yT6hoNLTLm0lROwQUJKZNLrP9F62VB/3fBO7Y/4BOwr0
+         FfLRqbp3aU4ZX7xP2O1iaW+gPp3J2YflFzBVVJWNBXDp1MqolDom28JgH56D5EHMYOlB
+         IU6CyIbyx9ebZMEq0S/O9G5qkCiqPfKlHoQ/Iuf2o8mAjvlT+JPjzIOcCCHSZeGpz6Qa
+         Vrm8HgIBHqTS92Pm0UrjmLa01ol9NRcyUUENZFF9LEaOZ+Gnd08POgs59qK06Wz+zwGN
+         Tt4A==
+X-Gm-Message-State: AOAM5323C55P5zcqUCMCzAO4hIawd1OiUACTySTrp2rG53yJPT+iKKFy
+        7wuNIy+0bMfexnrjk5hamsgXu4KTQbL07CNr+1UpLFzYatqt2nFug12GNYHxh+ou96Y6jHMk7KO
+        GlMykAYWpPpNe
+X-Received: by 2002:a5d:5402:: with SMTP id g2mr31143126wrv.290.1635283461123;
+        Tue, 26 Oct 2021 14:24:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwApQ6dlu1w5joksZslbDv4X+LkjmHfIX/w2wmCQK02a+UzvJ/pIx/wfXYYP4tdhcXj30e93w==
+X-Received: by 2002:a5d:5402:: with SMTP id g2mr31143091wrv.290.1635283460869;
+        Tue, 26 Oct 2021 14:24:20 -0700 (PDT)
+Received: from krava.cust.in.nbox.cz ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id h22sm1828123wmq.42.2021.10.26.14.24.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 14:24:20 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCHv2 bpf-next] kbuild: Unify options for BTF generation for vmlinux and modules
+Date:   Tue, 26 Oct 2021 23:24:19 +0200
+Message-Id: <20211026212419.144077-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 12:23 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Oct 26, 2021 at 11:45 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Oct 26, 2021 at 10:59 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 25, 2021 at 10:14 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > Instead of adding new types,
-> > > > > can we do something like this instead:
-> > > > >
-> > > > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> > > > > index c8a78e830fca..5dbd2541aa86 100644
-> > > > > --- a/include/linux/bpf_verifier.h
-> > > > > +++ b/include/linux/bpf_verifier.h
-> > > > > @@ -68,7 +68,8 @@ struct bpf_reg_state {
-> > > > >                         u32 btf_id;
-> > > > >                 };
-> > > > >
-> > > > > -               u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-> > > > > +               u32 rd_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-> > > > > +               u32 wr_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-> > > >
-> > > > This seems more confusing, it's technically possible to express a
-> > > > memory pointer from which you can read X bytes, but can write Y bytes.
-> > >
-> > > I'm fine it being a new flag instead of wr_mem_size.
-> > >
-> > > > I actually liked the idea that helpers will be explicit about whether
-> > > > they can write into a memory or only read from it.
-> > > >
-> > > > Apart from a few more lines of code, are there any downsides to having
-> > > > PTR_TO_MEM vs PTR_TO_RDONLY_MEM?
-> > >
-> > > because it's a churn and non scalable long term.
-> > > It's not just PTR_TO_RDONLY_MEM.
-> > > It's also ARG_PTR_TO_RDONLY_MEM,
-> > > and RET_PTR_TO_RDONLY_MEM,
-> > > and PTR_TO_RDONLY_MEM_OR_NULL
-> > > and *_OR_BTF_ID,
-> > > and *_OR_BTF_ID_OR_NULL.
-> > > It felt that expressing readonly-ness as a flag in bpf_reg_state
-> > > will make it easier to get right in the code and extend in the future.
-> >
-> > That's true, but while it's easy to add a flag to bpf_reg_state, it's
-> > not easy to do the same for BPF helper input (ARG_PTR_xxx) and output
-> > (RET_PTR_xxx) restrictions. So unless we extend ARG_PTR and RET_PTR
-> > with flags, it seems more consistent to keep the same pure enum
-> > approach for reg_state.
-> >
-> > > May be we will have a kernel vs user flag for PTR_TO_MEM in the future.
-> > > If we use different name to express that we will have:
-> > > PTR_TO_USER_RDONLY_MEM and
-> > > PTR_TO_USER_MEM
-> > > plus all variants of ARG_* and RET_* and *_OR_NULL.
-> > > With a flag approach it will be just another flag in bpf_reg_state.
-> >
-> > All true, but then maybe we should rethink how we do all those enums.
-> > And instead of having all the _OR_NULL variants, it should be
-> > ARG_NULLABLE/REG_NULLABLE/RET_NULLABLE flag that can be or-ed with the
-> > basic set of register/input/output type enums? Same for ARG_RDONLY
-> > flag. Same could technically be done for USER vs KERNEL memory in the
-> > future.
->
-> Exactly. OR_NULL is such a flag and we already struggled to
-> differentiate that flag with truly_not_equal_to_NULL and may_be_NULL.
-> That's why all bpf_skc* helpers have additional run-time !NULL check.
->
-> ARG_NULLABLE/REG_NULLABLE/RET_NULLABLE would make it cleaner.
-> And ARG_RDONLY would fit that model well.
->
-> > It's definitely a bunch of code changes, but if we are worried about
-> > an explosion of enum values, it might be the right move?
-> >
-> > On the other hand, if there are all those different variations and
-> > each is handled slightly differently, we'll have to have different
-> > logic for each of them. And whether it's an enum + flags, or a few
-> > more enumerators, doesn't change anything fundamentally. I feel like
-> > enums make code discovery a bit simpler in practice, but it's
-> > subjective.
->
-> I think it's a bit of a mess already.
-> ARG_PTR_TO_BTF_ID has may_be_NULL flag.
-> Just like ARG_PTR_TO_BTF_ID_SOCK_COMMON.
-> but RET_PTR_TO_BTF_ID doesn't.
-> PTR_TO_BTF_ID doesn't have that may_be_NULL assumption either.
->
-> imo cleaning up OR_NULL will be very nice.
-> RDONLY would be an addition on top.
-> We can probably fold UNINIT as a flag too.
->
-> All that will be a big change, but I think it's worth it.
+Using new PAHOLE_FLAGS variable to pass extra arguments to
+pahole for both vmlinux and modules BTF data generation.
 
-Yep, agree.
+Adding new scripts/pahole-flags.sh script that detect and
+prints pahole options.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+v2 changes:
+  - posting separately from original patchset
+  - added Andrii's ack
+
+ Makefile                  |  3 +++
+ scripts/Makefile.modfinal |  2 +-
+ scripts/link-vmlinux.sh   | 11 +----------
+ scripts/pahole-flags.sh   | 20 ++++++++++++++++++++
+ 4 files changed, 25 insertions(+), 11 deletions(-)
+ create mode 100755 scripts/pahole-flags.sh
+
+diff --git a/Makefile b/Makefile
+index 437ccc66a1c2..ee514b80c62e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -480,6 +480,8 @@ LZ4		= lz4c
+ XZ		= xz
+ ZSTD		= zstd
+ 
++PAHOLE_FLAGS	= $(shell PAHOLE=$(PAHOLE) scripts/pahole-flags.sh)
++
+ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
+ 		  -Wbitwise -Wno-return-void -Wno-unknown-attribute $(CF)
+ NOSTDINC_FLAGS :=
+@@ -534,6 +536,7 @@ export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE
+ export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
+ export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_LDFLAGS_MODULE
+ export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL
++export PAHOLE_FLAGS
+ 
+ # Files to ignore in find ... statements
+ 
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 1fb45b011e4b..7f39599e9fae 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -40,7 +40,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+ quiet_cmd_btf_ko = BTF [M] $@
+       cmd_btf_ko = 							\
+ 	if [ -f vmlinux ]; then						\
+-		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
++		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
+ 		$(RESOLVE_BTFIDS) -b vmlinux $@; 			\
+ 	else								\
+ 		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index d74cee5c4326..3ea7cece7c97 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -205,7 +205,6 @@ vmlinux_link()
+ gen_btf()
+ {
+ 	local pahole_ver
+-	local extra_paholeopt=
+ 
+ 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+ 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+@@ -220,16 +219,8 @@ gen_btf()
+ 
+ 	vmlinux_link ${1}
+ 
+-	if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
+-		# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+-		extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
+-	fi
+-	if [ "${pahole_ver}" -ge "121" ]; then
+-		extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
+-	fi
+-
+ 	info "BTF" ${2}
+-	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${extra_paholeopt} ${1}
++	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+ 
+ 	# Create ${2} which contains just .BTF section but no symbols. Add
+ 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
+diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+new file mode 100755
+index 000000000000..2b99fc77019c
+--- /dev/null
++++ b/scripts/pahole-flags.sh
+@@ -0,0 +1,20 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++extra_paholeopt=
++
++if ! [ -x "$(command -v ${PAHOLE})" ]; then
++	return
++fi
++
++pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
++
++if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
++	# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
++	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
++fi
++if [ "${pahole_ver}" -ge "121" ]; then
++	extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
++fi
++
++echo ${extra_paholeopt}
+-- 
+2.31.1
+
