@@ -2,58 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2D943B59F
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 17:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8ECA43B5E8
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 17:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236814AbhJZPcx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 11:32:53 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:53053 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236779AbhJZPcx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:32:53 -0400
-Received: from [192.168.0.2] (ip5f5aef5c.dynamic.kabel-deutschland.de [95.90.239.92])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        id S235764AbhJZPpS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 11:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235153AbhJZPpR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 11:45:17 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24144C061745;
+        Tue, 26 Oct 2021 08:42:54 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1ACA761E5FE33;
-        Tue, 26 Oct 2021 17:30:27 +0200 (CEST)
-Message-ID: <745fff43-4649-ac63-5c6e-6fb3877953c0@molgen.mpg.de>
-Date:   Tue, 26 Oct 2021 17:30:26 +0200
+        by ms.lwn.net (Postfix) with ESMTPSA id 124E25ED5;
+        Tue, 26 Oct 2021 15:42:53 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 124E25ED5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1635262973; bh=3gc4vV+tU4bNJypurxjSBfHk40yL80BPXB366nAZYxc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=p/RS7LSjDYY8ixyq7Lqx5M1pNLg2lOimIP6f77kiQWRNtZggyxzLlWYtQWxU8XcCi
+         d/mIA7FxyHZ+2xHBot2fiUs85ryBlu5wK2Yb/sLg2Ma7SwrRlC/U+xYbaOXZTejhCm
+         FWKrkoK5eyC+ZRka6XL30ni72U3cmHt9cmMWnPmAa+TcbZVVhRtuMnzgN189jfaRgL
+         xJptnngsPIqNZN692wFpye+bbwgSPvzeDXx5HKqG0JPc+Mx66OwmZXEwnxtbsyqqz/
+         ZfNocUipElHn/OYv5NiRCkBUXy5tbysF25yf4gII+CNg/qcDVl8mYifAuAAyT8SpTc
+         ifPj2Mn0P2mpA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 0/2] Two fixes for documentation-file-ref-check
+In-Reply-To: <cover.1634629094.git.mchehab+huawei@kernel.org>
+References: <cover.1634629094.git.mchehab+huawei@kernel.org>
+Date:   Tue, 26 Oct 2021 09:42:52 -0600
+Message-ID: <875ytjg5c3.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Wrong date/time of messages (was: [Intel-wired-lan] [PATCH intel-next
- 0/2] ice: ethtool -L fixes)
-Content-Language: en-US
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     alexandr.lobakin@intel.com, netdev@vger.kernel.org,
-        marta.a.plantykow@intel.com, kuba@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, magnus.karlsson@intel.com,
-        intel-wired-lan@lists.osuosl.org
-References: <20211026164719.1766911-1-maciej.fijalkowski@intel.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20211026164719.1766911-1-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Intel folks,
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
+> Hi Jon,
+>
+> This small series contain two fixes for  documentation-file-ref-check,
+> in order to remove some (false) positives.
+>
+> The first one makes it to ignore files that start with a dot. It
+> prevents the script to try parsing hidden files. 
+>
+> The second one shuts up (currently) two false-positives for some
+> documents under:
+>
+> 	tools/bpf/bpftool/Documentation/
+>
+> Mauro Carvalho Chehab (2):
+>   scripts: documentation-file-ref-check: ignore hidden files
+>   scripts: documentation-file-ref-check: fix bpf selftests path
+>
+>  scripts/documentation-file-ref-check | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-On 26.10.21 18:47, Maciej Fijalkowski wrote:
+Set applied, thanks.
 
-[…]
-
-Once again messages were sent to the list with a Date from the future. 
-Why can’t Intel employees work on systems with a correct clock?
-
-It’d would be great if somebody from Intel would at least have the 
-courtesy to analyze and fix the root cause.
-
-
-Kind regards,
-
-Paul
+jon
