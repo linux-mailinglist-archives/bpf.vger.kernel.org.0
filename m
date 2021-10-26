@@ -2,140 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DA443B7D3
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 19:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7BA43B81C
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 19:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237673AbhJZRGE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 13:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
+        id S236333AbhJZR1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 13:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237690AbhJZRGD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:06:03 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF0EC061745;
-        Tue, 26 Oct 2021 10:03:39 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id v200so36551488ybe.11;
-        Tue, 26 Oct 2021 10:03:39 -0700 (PDT)
+        with ESMTP id S232231AbhJZR1E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:27:04 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105A6C061745
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 10:24:40 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j9so340135lfu.7
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 10:24:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uDTMGWAumcppRQTTt/9RJBXUz5ZAmLW8AZg8+OT4b4I=;
-        b=dhiikuNcETWSy2ebc54Eaez6dOXRocZuO6D1g7OcrV+AUsGF+k+kF8f98WbiFq9CqS
-         R4DGwK2+eHkJ8H9imzge1L0zlElKG96vEyrSlB9MXBdxdZEV5tMWxy7A5UStGEkuvs5n
-         9TSGwHXG390Y1OULvpyvfDK3XkeAEbgTDUCl2ndI1jH/kOyWSl0c3/e7cvYLZPR5VNpz
-         jHdIjXvmSopIbHxxl4DOr6/Fx1FsIBPU2hqsIQDY8mc73YUrCIpEp4UfvvNL4JuZyxE2
-         lHgnqkYkxj7syhZpfZD96dN0mmP70EgatbWR4uy4NXuJaE5UQXE4RmBvgKrNS4CvfNAm
-         I+8A==
+        bh=vDrpnuZxjObjPC1Zo7alESxZb3WYT4LrDS903Eli4Xo=;
+        b=anRkFpKxDIm3c5Iu/3JjwnUP6SN3SA007ddsUvalOve7JHDHq/vkZnaS7iQ3dSkCbY
+         +CRgC7ujQNeNzpzzQHQOri/KFvwSGSHOwRMwFgLzwWLfX6J7j4eeEDoLWWRV/zCY7YR7
+         UPnwecFsK5mql3pVee0n1mYsP6TTJARJLAkk/DPke6Zko+bAQF0q4uvb5vl1QCONz/nJ
+         yOiMGuLzWRjIlnv4BZ44nyOuu/Egh+mxjLrtYaQTMzQ1wzKTTL95cOstB6Cr07uyktHH
+         44j/Z9q3B+BRYQ/6stb9vBA0yCUGu9SzCTsAiu2adztcgEX48OyWVJg5sykm2anQtKc2
+         tP3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uDTMGWAumcppRQTTt/9RJBXUz5ZAmLW8AZg8+OT4b4I=;
-        b=2udgfUbXUSMbeAArK42bsjnWOPwxs3oDKFP1Es6mjmmzaQTm+Xv0YP6PMVWWGS0doK
-         d5ctkRtsGjh8FVIn29sC7lA14ZNRfAmalRyy8MCchixphAL5QA14b3CdejK95hEOU++p
-         /xuY29y1KHcevKe6vPJW8fxyFLTw6/HYPettpPU68l44P0pZgBa70BUvuMI5+gGlOVgU
-         IzFKdj+54kOJHfdhpdy4YBVhgDmdWnvMop5WE7ovbZ7TK/C9g1YkZF3evr3mDrLMxLBY
-         yrp9sJNXv8HPt030FXa/6pXJX8+WBIKKnKewbT2UDydqXJTh3DwSoxvNKTsr9npD7AK9
-         Lqgg==
-X-Gm-Message-State: AOAM532KOq3EPvJ+B3G2uMyJI1fyv7bnycQGzYlt1HlynHb7QrVCZU40
-        ltKevJ7C0jWoMrso5NcPxT3yEe2Mr6h0X58vLW4=
-X-Google-Smtp-Source: ABdhPJzJzyWKWRmCAVOp/PEJJzUy7vunEPHyyfERgo5ZcjTEYQOEQFbEFK81UgNoLKHM1N2WlQv/6CsX2VzJhvunoCY=
-X-Received: by 2002:a25:143:: with SMTP id 64mr25080123ybb.455.1635267819106;
- Tue, 26 Oct 2021 10:03:39 -0700 (PDT)
+        bh=vDrpnuZxjObjPC1Zo7alESxZb3WYT4LrDS903Eli4Xo=;
+        b=H35Sk3zwgR/HTNhQsybxTWH5vxRSgv4oLMl+RIJeBDdmWSLq87pruVJR6VM//AAJsf
+         N4ilMY7wsxtB478tAmK2wqGnWQgh5Z8aQySYEaa+yzJNiq/2ADQbviL9TT1ZeDRA1khc
+         gXNvCH7sjJ57X1fVwsGwtH40OFx+JqKb1TBWa0IK8C1Sffyj8Rs27EdU7IOf5UbBYoBD
+         fUvIYe71UEMm3EySocsjKlropLfydrsQt4MRLNIACyVFRhvapEIgFm/loZnY7//C7fED
+         x12Av+/YC+w552+HWIO/BJ5FTlbXTMNuQk6YFzS2QTBwz7++t+29r330lL32t46eMpwV
+         ab8g==
+X-Gm-Message-State: AOAM533VrRHbW8XaJpD7hKwuR7FnnUm3iN0gdEWsPRsDWU7WWzMqjeae
+        fIrfBySRcTIf7BcA/w3g3DR7WydnLFCpJ/e1JCgBS0z0
+X-Google-Smtp-Source: ABdhPJxeR1qI0qDF75M2/SutqIS+gOAc6rxeSTpje0bMKxR8nqLudb9d/PVet6WxMSaaBi08NKspP9ylMhAx5dA2jEA=
+X-Received: by 2002:a05:6512:31a:: with SMTP id t26mr17435574lfp.280.1635269077908;
+ Tue, 26 Oct 2021 10:24:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211011155636.2666408-1-sdf@google.com> <20211011155636.2666408-2-sdf@google.com>
- <6172ef4180b84_840632087a@john-XPS-13-9370.notmuch> <CAKH8qBuR4bYn1POgu0TF428vApknvMNPAng5qMuiKXCpcg8CQQ@mail.gmail.com>
- <CAEf4BzaUFAVZz2PHePbF4ypBHusUJEZi5W9HL0gT_fy1T71itg@mail.gmail.com> <CAKH8qBt3_qpCLjviMr86EixBx+pVG5E4+ZZeHZpwO6G6wnrR+g@mail.gmail.com>
-In-Reply-To: <CAKH8qBt3_qpCLjviMr86EixBx+pVG5E4+ZZeHZpwO6G6wnrR+g@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 26 Oct 2021 10:03:27 -0700
-Message-ID: <CAEf4BzZnsiotMAjmeHN6y3sXgvJ_XbQHazMJbXrFuSr3RkVXzQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpftool: don't append / to the progtype
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20211025223345.2136168-1-fallentree@fb.com> <20211025223345.2136168-3-fallentree@fb.com>
+ <CAEf4BzZFtCreYhRy01g1mXe9iU-LdP4Td45ynXF9ztQrKXBqGQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZFtCreYhRy01g1mXe9iU-LdP4Td45ynXF9ztQrKXBqGQ@mail.gmail.com>
+From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
+Date:   Tue, 26 Oct 2021 10:24:11 -0700
+Message-ID: <CAJygYd0pMMuZ2Q5ZJtxK=z8qKHJmRO45io+W7VJ66mGhPY1yRw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: print subtest status line
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yucong Sun <fallentree@fb.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 8:46 AM Stanislav Fomichev <sdf@google.com> wrote:
+On Mon, Oct 25, 2021 at 9:09 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Mon, Oct 25, 2021 at 9:27 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Mon, Oct 25, 2021 at 3:33 PM Yucong Sun <fallentree@fb.com> wrote:
 > >
-> > On Mon, Oct 25, 2021 at 8:59 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > On Fri, Oct 22, 2021 at 10:05 AM John Fastabend
-> > > <john.fastabend@gmail.com> wrote:
-> > > >
-> > > > Stanislav Fomichev wrote:
-> > > > > Otherwise, attaching with bpftool doesn't work with strict section names.
-> > > > >
-> > > > > Also, switch to libbpf strict mode to use the latest conventions
-> > > > > (note, I don't think we have any cli api guarantees?).
-> > > > >
-> > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > > ---
-> > > > >  tools/bpf/bpftool/main.c |  4 ++++
-> > > > >  tools/bpf/bpftool/prog.c | 15 +--------------
-> > > > >  2 files changed, 5 insertions(+), 14 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> > > > > index 02eaaf065f65..8223bac1e401 100644
-> > > > > --- a/tools/bpf/bpftool/main.c
-> > > > > +++ b/tools/bpf/bpftool/main.c
-> > > > > @@ -409,6 +409,10 @@ int main(int argc, char **argv)
-> > > > >       block_mount = false;
-> > > > >       bin_name = argv[0];
-> > > > >
-> > > > > +     ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-> > > > > +     if (ret)
-> > > > > +             p_err("failed to enable libbpf strict mode: %d", ret);
-> > > > > +
-> > > >
-> > > > Would it better to just warn? Seems like this shouldn't be fatal from
-> > > > bpftool side?
-> > > >
-> > > > Also this is a potentially breaking change correct? Programs that _did_
-> > > > work in the unstrict might suddently fail in the strict mode? If this
-> > > > is the case whats the versioning plan? We don't want to leak these
-> > > > type of changes across multiple versions, idealy we have a hard
-> > > > break and bump the version.
-> > > >
-> > > > I didn't catch a cover letter on the series. A small
-> > > > note about versioning and upgrading bpftool would be helpful.
-> > >
-> > > Yeah, it is a breaking change, every program that has non-strict
-> > > section names will be rejected.
-> > >
-> > > I mentioned that in the bpftool's commit description:
-> > > Also, switch to libbpf strict mode to use the latest conventions
-> > > (note, I don't think we have any cli api guarantees?).
-> > >
-> > > So I'm actually not sure what's the best way to handle this migration
-> > > and whether we really provide any cli guarantees to the users. I was
-> > > always assuming that bpftool is mostly for debugging/introspection,
-> > > but not sure.
-> > >
-> > > As Andrii suggested in another email, I can add a flag to disable this
-> > > strict mode. Any better ideas?
+> > From: Yucong Sun <sunyucong@gmail.com>
 > >
-> > Maybe the other way around for the transition period. Add a --strict
-> > flag to turn on libbpf strict mode? This follows libbpf's opt-in
-> > approach to breaking change. We can also emit warnings when people are
-> > trying to pin programs and mention that they should switch to --strict
-> > as in some future version this will be the default. Would that be
-> > better for users?
+> > This patch restores behavior that prints one status line for each
+> > subtest executed. It works in both serial mode and parallel mode,  and
+> > all verbosity settings.
+> >
+> > The logic around IO hijacking could use some more simplification in the
+> > future.
+> >
 >
-> Agreed, that sounds better for backwards compatibility. However, I'm
-> not sure when we set that --strict to 'true' by default. The same
-> moment libbpf loses non-strict behavior?
+> This feels like a big hack, not a proper solution. What if we extend
+> MSG_TEST_DONE to signal also sub-test completion (along with subtest
+> logs)? Would that work better and result in cleaner logic?
 
-Yep, probably it will have to coincide with libbpf 1.0 release. And
-it's not setting it to true, it's more like enforcing it to true (or
-just dropping the --strict flag altogether).
+I think the current solution is actually cleaner.  Yes we could add
+fields in task struct to record each subtest's name and status and
+generate the status line separately, but it will only work in
+situations where all tests pass.
+When there is an error, we do want to mix the status line with the
+actual stdout logs, which we won't be able to do afterwards.
+
+Besides, we will still need to implement separate logic in 3 places
+(serial mode,  parallel mode in worker process, and serial part of
+parallel mode execution). Having two copies of stdout logs is actually
+not that bad.
+
+>
+> > Signed-off-by: Yucong Sun <sunyucong@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/test_progs.c | 56 +++++++++++++++++++-----
+> >  tools/testing/selftests/bpf/test_progs.h |  4 ++
+> >  2 files changed, 50 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> > index 1f4a48566991..ff4598126f9d 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.c
+> > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > @@ -100,6 +100,18 @@ static bool should_run(struct test_selector *sel, int num, const char *name)
+> >         return num < sel->num_set_len && sel->num_set[num];
+> >  }
+> >
+> > +static void dump_subtest_status(bool display) {
+>
+> please run checkpatch.pl
+>
+> > +       fflush(env.subtest_status_fd);
+> > +       if (display) {
+> > +               if (env.subtest_status_cnt) {
+> > +                       env.subtest_status_buf[env.subtest_status_cnt] = '\0';
+> > +                       fputs(env.subtest_status_buf, stdout);
+> > +               }
+> > +       }
+> > +       rewind(env.subtest_status_fd);
+> > +       fflush(env.subtest_status_fd);
+> > +}
+> > +
+> >  static void dump_test_log(const struct prog_test_def *test, bool failed)
+> >  {
+> >         if (stdout == env.stdout)
+> > @@ -112,12 +124,17 @@ static void dump_test_log(const struct prog_test_def *test, bool failed)
+> >         fflush(stdout); /* exports env.log_buf & env.log_cnt */
+> >
+> >         if (env.verbosity > VERBOSE_NONE || test->force_log || failed) {
+> > -               if (env.log_cnt) {
+> > -                       env.log_buf[env.log_cnt] = '\0';
+> > -                       fprintf(env.stdout, "%s", env.log_buf);
+> > -                       if (env.log_buf[env.log_cnt - 1] != '\n')
+> > -                               fprintf(env.stdout, "\n");
+> > -               }
+> > +               dump_subtest_status(false);
+> > +       } else {
+> > +               rewind(stdout);
+> > +               dump_subtest_status(true);
+> > +               fflush(stdout);
+> > +       }
+> > +       if (env.log_cnt) {
+> > +               env.log_buf[env.log_cnt] = '\0';
+> > +               fprintf(env.stdout, "%s", env.log_buf);
+> > +               if (env.log_buf[env.log_cnt - 1] != '\n')
+> > +                       fprintf(env.stdout, "\n");
+> >         }
+> >  }
+> >
+> > @@ -183,7 +200,12 @@ void test__end_subtest(void)
+> >
+> >         dump_test_log(test, sub_error_cnt);
+> >
+> > +       // Print two copies here, one as part of full logs, another one will
+> > +       // only be used if there is no need to show full logs.
+>
+> C++ style comments
+>
+> >         fprintf(stdout, "#%d/%d %s/%s:%s\n",
+> > +               test->test_num, test->subtest_num, test->test_name, test->subtest_name,
+> > +               sub_error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
+> > +       fprintf(env.subtest_status_fd, "#%d/%d %s/%s:%s\n",
+> >                test->test_num, test->subtest_num, test->test_name, test->subtest_name,
+> >                sub_error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
+> >
+> > @@ -1250,6 +1272,15 @@ static int worker_main(int sock)
+> >
+> >                         run_one_test(test_to_run);
+> >
+> > +                       // discard logs if we don't need them
+>
+> C++ style comment
+>
+> > +                       if (env.verbosity > VERBOSE_NONE || test->force_log || test->error_cnt) {
+> > +                               dump_subtest_status(false);
+> > +                       } else {
+> > +                               rewind(stdout);
+> > +                               dump_subtest_status(true);
+> > +                               fflush(stdout);
+> > +                       }
+> > +
+> >                         stdio_restore();
+> >
+> >                         memset(&msg_done, 0, sizeof(msg_done));
+> > @@ -1260,10 +1291,9 @@ static int worker_main(int sock)
+> >                         msg_done.test_done.sub_succ_cnt = test->sub_succ_cnt;
+> >                         msg_done.test_done.have_log = false;
+> >
+> > -                       if (env.verbosity > VERBOSE_NONE || test->force_log || test->error_cnt) {
+> > -                               if (env.log_cnt)
+> > -                                       msg_done.test_done.have_log = true;
+> > -                       }
+> > +                       if (env.log_cnt)
+> > +                               msg_done.test_done.have_log = true;
+> > +
+> >                         if (send_message(sock, &msg_done) < 0) {
+> >                                 perror("Fail to send message done");
+> >                                 goto out;
+> > @@ -1357,6 +1387,12 @@ int main(int argc, char **argv)
+> >
+> >         env.stdout = stdout;
+> >         env.stderr = stderr;
+> > +       env.subtest_status_fd = open_memstream(
+>
+> extremely misleading name, it's not an FD at all
+
+it is indeed a file descriptor, isn't it? What's a better name for it?
+
+>
+> > +               &env.subtest_status_buf, &env.subtest_status_cnt);
+> > +       if (!env.subtest_status_fd) {
+> > +               perror("Failed to setup env.subtest_status_fd");
+> > +               exit(EXIT_ERR_SETUP_INFRA);
+> > +       }
+> >
+> >         env.has_testmod = true;
+> >         if (!env.list_test_names && load_bpf_testmod()) {
+> > diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> > index 93c1ff705533..a564215a63b1 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.h
+> > +++ b/tools/testing/selftests/bpf/test_progs.h
+> > @@ -89,6 +89,10 @@ struct test_env {
+> >         pid_t *worker_pids; /* array of worker pids */
+> >         int *worker_socks; /* array of worker socks */
+> >         int *worker_current_test; /* array of current running test for each worker */
+> > +
+> > +       FILE* subtest_status_fd; /* fd for printing status line for subtests */
+> > +       char *subtest_status_buf; /* buffer for subtests status */
+> > +       size_t subtest_status_cnt;
+> >  };
+> >
+> >  #define MAX_LOG_TRUNK_SIZE 8192
+> > --
+> > 2.30.2
+> >
