@@ -2,112 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9389043B8A8
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 19:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9953E43B8DB
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 19:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237975AbhJZR53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 13:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
+        id S238001AbhJZSCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 14:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhJZR52 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:57:28 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1130C061745;
-        Tue, 26 Oct 2021 10:55:04 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c4so69093plg.13;
-        Tue, 26 Oct 2021 10:55:04 -0700 (PDT)
+        with ESMTP id S236643AbhJZSCV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 14:02:21 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4C8C061767
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 10:59:57 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso111590pjb.1
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 10:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=225l4SA1OGtdUSNrI/zTvcHrB7dEaQw3+UttA1rDb8E=;
-        b=BZFrlCMj/rV6HcmWYv8j/HdU0pdqvvR1cBDAoJhSUU3QKaCbApIPAdOIBovnSdIszu
-         mpLhbZcAy+S+AKwZtafdpdwfyex82nE9S/EL+ALUkZFCE/H6F5dEWzr2xOFiWcB5jETw
-         zJNM0H9wgriHQSZSHhAwY67pYq1dPiNKZfZDsWLpvnmwIMkpq+IgrZn+nMYQ1QfDosJN
-         wnd648K6iDkOfuJNDHALSLeQ2HFmad/7sLL5OPieaCnBLvT2yWh2MZ+/z02lJOJBWYyj
-         Jj8lCcbPczk93iKvd4CfVje1Uw7njLUSFXFrI/IhGgG2fjLsWvW20RpeqFDC8kABnWo8
-         BO8g==
+        bh=5KrqtnWSYzc3yrOGwMhk3/Z+xdhxho6hiCSPbKL+h4w=;
+        b=i3BS2e6hiXM0PjSznjFsOpK2KfX8lRppziLXmuDwb3HVdTLv9koB4n4oG0OFOuID2h
+         psLHRsTQfJPFRWvHle2wWl3PLWzL+3kZWTvBVfqr9goAXGIxU/UcOlVyeaE6TZVPPpmn
+         72myBx4lwwaL+dzyuU1fxd0rtlmMv2FNuY9baVveL8nJZRwHb1T/vpLpoDWA514G4TmV
+         vquzWFeb+B3jYRV5vhDbudWyr3CUYwtBRCS1VTkRJOg9wp6/LDkZULSfLPkExAWwaxE3
+         yavqhRkA0ICJ0XR4c6Ts+z74iyNmRUB9vqFVdT2mBX6s+zC1AH8LyzDNM+PuwzkOceoJ
+         i1Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=225l4SA1OGtdUSNrI/zTvcHrB7dEaQw3+UttA1rDb8E=;
-        b=pWlBohf9hoUYcZ6qg6WaGClgRI9Fr0GqjJVNwHFAHcA2zkAS3R5tUaFf4rdAVhXO0Y
-         PqGvDb65iNrEaKvVY4GaaRdcDjmTmfhgKUQFLimbTt6o06KzGsjLfR/213iM5hR5p4zj
-         9F47jAewwMApXlHH5OPuVlQqT7SIeoHVl6MNr860vIR7uvq7cMweQXK3g066wNr0Zufp
-         9Oilt26XhIvarqENu1p5IuIgFO6r3X9kwXVV/sgg3/efjtfh8Gs0Bfhn2lh0Lh+7XwBU
-         ugwPr2vpBbclsZScbfl+xsh7GeRICrJ2BxUzfkRbbg+0sL9WJsBNWCOYNhMGeevlNP5y
-         2EBw==
-X-Gm-Message-State: AOAM530LjWusczm9uAriRVzZvSRiCd9c/X3RfMtiHTlYbCkqfU/f0Kyg
-        jK0QXM0VtqvzPvB+mNeK9LvjgKcEiDIkGEesnrlE170/z38=
-X-Google-Smtp-Source: ABdhPJxgeIN2LvtNpZZLac6UfKv3uZ72O0a4OseZVAu4guZ5UKoE5Pg9rL/JeVT/0beVAo//wgKjPGPUQIv6I7RQhNU=
-X-Received: by 2002:a17:902:8211:b0:13f:afe5:e4fb with SMTP id
- x17-20020a170902821100b0013fafe5e4fbmr23969092pln.20.1635270904246; Tue, 26
- Oct 2021 10:55:04 -0700 (PDT)
+        bh=5KrqtnWSYzc3yrOGwMhk3/Z+xdhxho6hiCSPbKL+h4w=;
+        b=uRvIsx1xMICyp+z4uoEvWnPMn6+NuDV93Tv8qVAas0tww3EXh887SLAAB1EbM+M4Sh
+         GfZH+T3QVGWqFpdOjm2PeaAXOSJFSrmZiavmmKm94tqrYmrn+oyPEdApKhuPulxkxsFV
+         HTkqXBUB2W70CJfy4HMqz0UvB1NDnubsKIXDE6ok5jN5mmGwyqDPd8eGROtCY0mJbACB
+         FFhKqeZHZ2Z28PpvAA0XyEjrosI47B9WmBZ4WrwApm/qH40VeKaeEziGdWmwWyIYMH1X
+         O4t/X2QnR4Pf1LJX5TpdMELEFJoryyU1p2sUsug5JayecHObd+AoWX7RtF1k/Xqpw1QV
+         5+VA==
+X-Gm-Message-State: AOAM533m/1YA148895y2v491iJrVmpU7G8I+7hJzwe9W4L2gMXdXvAof
+        J8KKyETsv2rT16sjqqpgoSqbcLNZF1Qb4geQnIM=
+X-Google-Smtp-Source: ABdhPJzMGFdV9eqzvMBY7Ij7I+lQjI5pejwljmEHhW1ED4aok24XraujaS/8pSOgMapTKpyZxOFgOAxhfub6+fnRHHo=
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr250936pjj.138.1635271197274;
+ Tue, 26 Oct 2021 10:59:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026143409.42666-1-andrea.righi@canonical.com> <ce41c5da-2952-e800-54be-51cbcc7a0ada@linuxfoundation.org>
-In-Reply-To: <ce41c5da-2952-e800-54be-51cbcc7a0ada@linuxfoundation.org>
+References: <20211025231256.4030142-1-haoluo@google.com> <20211025231256.4030142-3-haoluo@google.com>
+ <20211026034854.3ozkpaxaok7hk6kn@ast-mbp.dhcp.thefacebook.com> <CAEf4BzbvXQ1qpGazNKCBhzUUPmmfe9d9icDtf++weJkJmme0aw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbvXQ1qpGazNKCBhzUUPmmfe9d9icDtf++weJkJmme0aw@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 26 Oct 2021 10:54:53 -0700
-Message-ID: <CAADnVQK_LWcafdVwB+7aFr2Ow3yOd03e8D6-d13JbMB8=a+QQw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: fix fclose/pclose mismatch
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 26 Oct 2021 10:59:46 -0700
+Message-ID: <CAADnVQJQuZ9pP_T_ZDgoeTnqfPcRMcKM_BshBTpmsZiRmzWMgA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] bpf: Introduce ARG_PTR_TO_WRITABLE_MEM
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:47 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+On Mon, Oct 25, 2021 at 10:14 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> >
+> > Instead of adding new types,
+> > can we do something like this instead:
+> >
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > index c8a78e830fca..5dbd2541aa86 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -68,7 +68,8 @@ struct bpf_reg_state {
+> >                         u32 btf_id;
+> >                 };
+> >
+> > -               u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+> > +               u32 rd_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+> > +               u32 wr_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
 >
-> On 10/26/21 8:34 AM, Andrea Righi wrote:
-> > Make sure to use pclose() to properly close the pipe opened by popen().
-> >
-> > Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > ---
-> >   tools/testing/selftests/bpf/test_progs.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> > index cc1cd240445d..e3fea6f281e4 100644
-> > --- a/tools/testing/selftests/bpf/test_progs.c
-> > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > @@ -370,7 +370,7 @@ int extract_build_id(char *build_id, size_t size)
-> >
-> >       if (getline(&line, &len, fp) == -1)
-> >               goto err;
-> > -     fclose(fp);
-> > +     pclose(fp);
-> >
-> >       if (len > size)
-> >               len = size;
-> > @@ -379,7 +379,7 @@ int extract_build_id(char *build_id, size_t size)
-> >       free(line);
-> >       return 0;
-> >   err:
-> > -     fclose(fp);
-> > +     pclose(fp);
-> >       return -1;
-> >   }
-> >
-> >
->
-> Thank you for the patch. The return logic could be simpler
-> doing out handling common for error and success path with
-> just one call to close. Not related to this change though.
->
-> Adding bpf maintainers to the thread
+> This seems more confusing, it's technically possible to express a
+> memory pointer from which you can read X bytes, but can write Y bytes.
 
-Ohh. That's odd.
-I see the patch in:
-https://patchwork.kernel.org/project/netdevbpf/list/?delegate=121173
-but not in my gmail.
-vger is probably slow.
+I'm fine it being a new flag instead of wr_mem_size.
+
+> I actually liked the idea that helpers will be explicit about whether
+> they can write into a memory or only read from it.
+>
+> Apart from a few more lines of code, are there any downsides to having
+> PTR_TO_MEM vs PTR_TO_RDONLY_MEM?
+
+because it's a churn and non scalable long term.
+It's not just PTR_TO_RDONLY_MEM.
+It's also ARG_PTR_TO_RDONLY_MEM,
+and RET_PTR_TO_RDONLY_MEM,
+and PTR_TO_RDONLY_MEM_OR_NULL
+and *_OR_BTF_ID,
+and *_OR_BTF_ID_OR_NULL.
+It felt that expressing readonly-ness as a flag in bpf_reg_state
+will make it easier to get right in the code and extend in the future.
+May be we will have a kernel vs user flag for PTR_TO_MEM in the future.
+If we use different name to express that we will have:
+PTR_TO_USER_RDONLY_MEM and
+PTR_TO_USER_MEM
+plus all variants of ARG_* and RET_* and *_OR_NULL.
+With a flag approach it will be just another flag in bpf_reg_state.
