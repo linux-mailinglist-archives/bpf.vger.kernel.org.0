@@ -2,105 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8497F43B3F9
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 16:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B22D43B441
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 16:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhJZO27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 10:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233064AbhJZO26 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:28:58 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3746EC061745;
-        Tue, 26 Oct 2021 07:26:35 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id r194so392012iod.7;
-        Tue, 26 Oct 2021 07:26:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=L5D0+j7FaSezg76oVeVVLGGUXUUlkCip1HOizeqS3F0=;
-        b=BYEtfYnADJR1nva03YwbtWDmJqc0JekTqrBc/UkvtxMbR20tM3+tjsd40tPOCuQ0FY
-         mu5qiIcDEjGZwnM2+m+zFZ6iW8t2OYkc6xvvzj5BGz5sZoI9XLsvY5vCHrMGEJ8E9Ptw
-         4eplondyATTctuNYB8NWANcRWHH3X5b0+0mRmUoKHrnmmZ7NXZ8hCag8++ViQxdZ1Dyd
-         ebk/vOqZYAmaXGj4DmMmWsHrAN0L7gKeQkAW7PxHQt/fFABfRJrPpCA/HVuMIGNnbHcY
-         XyQ59m0y31feprCF+/0BwMHpZJIrM1/97wECpeLFXWF7ZbVcoAZcjg1QrGnpcEHIwOe6
-         pA6A==
+        id S235635AbhJZOgi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 10:36:38 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38248
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234528AbhJZOgi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Oct 2021 10:36:38 -0400
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 57C8E40277
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 14:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635258853;
+        bh=eDxSkDWuV2Brl7cNvyAavjHeovH27qcvC2ratC3kbv8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=P1L7QojtR3MKwvXvPP2OAz83YqtC3rS09Rs1W3MJjFr7LbxjzGY69bmkcCtmiRrcN
+         XozqnLsoakyM7Qs5B31Uhi+A6iUnJ2DYLV89fPhT39DNiUf6fbfXgpKj8ntVUOfJW6
+         fmJ6zw/gyzpGTAO/FGaHKBxsQKdz7xmb1iM5IhbN+BzryCcHzXnx9ETpS1qmreHC9p
+         8JYyNZHRpCjuI6L6R8dXZkAwYWw78ItzXzYkxemW+jpTkpOxV86t+/dmlArvW/lmzU
+         KK4TkTeGj8mf0VmubSaHt7unxAOOjPAmRp9CPga58+qhb++0Byy62ySYviZ6sfv7Hz
+         Ri9GFDEda8b8A==
+Received: by mail-wm1-f71.google.com with SMTP id z17-20020a7bc7d1000000b0032cafafaf79so1012176wmk.5
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 07:34:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=L5D0+j7FaSezg76oVeVVLGGUXUUlkCip1HOizeqS3F0=;
-        b=CrZUSQ/BCOrtXmcsjYlkZPXzyBDb0rfI4d4dwbNqPQ0q0MUuSGIhQk89r0vFGvDtX0
-         UufyEm1tB5fkJA38wnPqQBQe7r3MPvhsMrvyuJLkC71hrDzccXSpWlOqPTSZKk77Lc7Y
-         JFGxrW0GFJZ3R1K+O8JSNAi3L+uIviszbKapSLLzzFAjggl15zThNonk8NlZ/pJzcYsl
-         sTF7g2UQbBcaEme9uc53T4TDsWk+aq2NJBr/JpFNJ6vXneZ5tWP+KPWjkF8CUgAs2zdr
-         ERHcoE2AGCZ/MoM2SeYNr9WAgie81XKrDPUyVCuAI/fftRky/0nUpWEbe5Uo3+08qGKK
-         BOBw==
-X-Gm-Message-State: AOAM532j3G/26+7aJEf5Bidfz09gNsOyW82pSYIuCEFV80qbLqpW/wNL
-        1YTr8WbwjHd7B5xzpuIp3aM=
-X-Google-Smtp-Source: ABdhPJzxea8hMZMheKY2Qt87166kL9BeX6gTsSp6/EmMzyCyZ2m/IhY3w2E/abL5pJIiDFxFPGzQjQ==
-X-Received: by 2002:a5d:954b:: with SMTP id a11mr5045902ios.99.1635258394676;
-        Tue, 26 Oct 2021 07:26:34 -0700 (PDT)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id m11sm1352031ilh.0.2021.10.26.07.26.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eDxSkDWuV2Brl7cNvyAavjHeovH27qcvC2ratC3kbv8=;
+        b=Rhs2pR1fV20aPwb6KgUiKm8yq9A+tb1rjSK4amTxnATe9ghpmcqz8S93neAJYNWJmL
+         4egWExWA8GP2V1f+Giq8fpj0NjpsRmvxnQ8WAGXYh2b6DW+uxnZ6B46kjT4q/K0Eb71b
+         8yYexF9570c/WwqDtTmddbgEz7dAkLi9Wvh/muasWvHqxQQ1OoYQtInahLlYnNUlnld8
+         cbaosQh95Gk31CfB3QmhMEKfQ3QllvJqpYcu1JVOdvTvWRLtMw/UxtudTlaImQta1TC+
+         PJZXKfL0TUJfluE1QFyIp9YEo80aoOlBVnLel//n310Dtc2HWVqkIWKg8jnmo1pDPLpJ
+         /OOA==
+X-Gm-Message-State: AOAM531B1LsSkLYo6rvynsIIu9FNgrJDFbXn5S7nh67P76NeRFcuGsDN
+        0kwFsKy5yjCEitqxWMoy67r3DZdzqxukuD6rWFLPv4lX/4/PKlUQ01VQKI9DXMPOZgoSNyADX5Q
+        UiInNc6RC5Em6q4y/FfwMT1freZDzbw==
+X-Received: by 2002:a5d:58ec:: with SMTP id f12mr32833782wrd.24.1635258852983;
+        Tue, 26 Oct 2021 07:34:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwEiliuRm8Od3p070aft+0SzvwyEHzdS3NpXZbNSe6M5MRDCzikoxxtwZ2bnpDR86tzT0wrFA==
+X-Received: by 2002:a5d:58ec:: with SMTP id f12mr32833741wrd.24.1635258852720;
+        Tue, 26 Oct 2021 07:34:12 -0700 (PDT)
+Received: from arighi-desktop.homenet.telecomitalia.it ([151.57.120.224])
+        by smtp.gmail.com with ESMTPSA id p1sm800266wmq.23.2021.10.26.07.34.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 07:26:34 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 07:26:24 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Liu Jian <liujian56@huawei.com>, john.fastabend@gmail.com,
-        daniel@iogearbox.net, jakub@cloudflare.com, lmb@cloudflare.com,
-        edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     liujian56@huawei.com
-Message-ID: <61781010b20b3_108a220859@john-XPS-13-9370.notmuch>
-In-Reply-To: <20211012052019.184398-1-liujian56@huawei.com>
-References: <20211012052019.184398-1-liujian56@huawei.com>
-Subject: RE: [PATHC bpf v2] tcp_bpf: Fix one concurrency problem in the
- tcp_bpf_send_verdict function
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Tue, 26 Oct 2021 07:34:12 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/bpf: fix fclose/pclose mismatch
+Date:   Tue, 26 Oct 2021 16:34:09 +0200
+Message-Id: <20211026143409.42666-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Liu Jian wrote:
-> With two Msgs, msgA and msgB and a user doing nonblocking sendmsg calls (or
-> multiple cores) on a single socket 'sk' we could get the following flow.
-> 
->  msgA, sk                               msgB, sk
->  -----------                            ---------------
->  tcp_bpf_sendmsg()
->  lock(sk)
->  psock = sk->psock
->                                         tcp_bpf_sendmsg()
->                                         lock(sk) ... blocking
-> tcp_bpf_send_verdict
-> if (psock->eval == NONE)
->    psock->eval = sk_psock_msg_verdict
->  ..
->  < handle SK_REDIRECT case >
->    release_sock(sk)                     < lock dropped so grab here >
->    ret = tcp_bpf_sendmsg_redir
->                                         psock = sk->psock
->                                         tcp_bpf_send_verdict
->  lock_sock(sk) ... blocking on B
->                                         if (psock->eval == NONE) <- boom.
->                                          psock->eval will have msgA state
-> 
-> The problem here is we dropped the lock on msgA and grabbed it with msgB.
-> Now we have old state in psock and importantly psock->eval has not been
-> cleared. So msgB will run whatever action was done on A and the verdict
-> program may never see it.
-> 
-> Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
+Make sure to use pclose() to properly close the pipe opened by popen().
 
-Yep thanks for digging into this. Nice catch. And commit looks good now.
+Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/bpf/test_progs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index cc1cd240445d..e3fea6f281e4 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -370,7 +370,7 @@ int extract_build_id(char *build_id, size_t size)
+ 
+ 	if (getline(&line, &len, fp) == -1)
+ 		goto err;
+-	fclose(fp);
++	pclose(fp);
+ 
+ 	if (len > size)
+ 		len = size;
+@@ -379,7 +379,7 @@ int extract_build_id(char *build_id, size_t size)
+ 	free(line);
+ 	return 0;
+ err:
+-	fclose(fp);
++	pclose(fp);
+ 	return -1;
+ }
+ 
+-- 
+2.32.0
+
