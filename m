@@ -2,175 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8719843A80D
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 01:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D7B43A917
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 02:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbhJYXTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 19:19:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37412 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230219AbhJYXTO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 19:19:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635203811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QMXbK4ePzk3n+ceTQNajazYCa4xaMoaeqduI1Kwqi4A=;
-        b=DBH+PQziR9aAEFMtedsV7faRW/dbMZSwjSKa4qfLRhCLRpeykOIFAg8O3dIYnCFeGEAn+D
-        C99dNFqqBqcFUcLysEuqK2cir9ApJRSLs3vhi9Og89YrZAXQUhayqqkJQ1NKtNcYJdJR37
-        d/nCrW7L7Chra2VQLGsyW+9CPRHKtkk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-8dV2UBPwO8uW7T3cpJS7Xg-1; Mon, 25 Oct 2021 19:16:50 -0400
-X-MC-Unique: 8dV2UBPwO8uW7T3cpJS7Xg-1
-Received: by mail-ed1-f70.google.com with SMTP id f21-20020a0564021e9500b003dd77985601so1165154edf.9
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 16:16:49 -0700 (PDT)
+        id S234788AbhJZAIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 20:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233720AbhJZAIy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 20:08:54 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEDAC061745
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:06:31 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id o26so11774409uab.5
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8rRDEWTK36PdUw/E/Fa/gp8H9JXxNSQ6vCnNr8V/ZN8=;
+        b=MSL8wU70YzlZasAXsx2sBN6zQRpcCsAJTYPSmojtypFj5qssqHCutv0AjY0VNFIu0f
+         5yrqreA5BaEfs4IKuth7FYJmK7q0JEjfNY0P19RUgrfP1HRROylY/kDUmqU/LqBFpC9i
+         6eLsDwrlehDWyeh49Tfq4u3W960zGAbud8rv5lk4671dwr1eT4o9mRSb7TXcSIy1U3/O
+         WgCOZz58l1XprxgszqzMP4hE2+Y3NjxDo1x4pNCpK4TrE5hX6B2sBmjgTspw+UEw8XRk
+         knHdNNyQG0WoKszeUzKx0W66AQaeC72A9kJhcn6PXvDrttYwJxGGeGP+SCZ26VPufvG2
+         cORQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=QMXbK4ePzk3n+ceTQNajazYCa4xaMoaeqduI1Kwqi4A=;
-        b=k8wzbeQEU1v8kx/gBvBG7+Fs0uBg/dhI7Tk7+uOY2r5yDE8ec5pho/pnHIHoz28enR
-         V20ypQ1BBMQAV+PkO8YvaFI2q5yYcLyC6fWLJwMNGGLLv4W5x+SrPxXTW8Y2lznaYjUM
-         0ULv3CBZBh/JizY7gF6TLPUiCP2Ny2afsza1t/WTu7lzR9rsLLdG1T/4v9pEMOI/4nQK
-         yIgr9non6FFhdt0QZi+tI/gpYBRAqppm2oOr9DweDO4gM4p3fzvLhLPtMPpv4VGvmvxW
-         7ZYAWmTYdB6A0Ljqfy88lf0Tvin8lfp7GqxEGAF5taM1IvQRjOmVf154qEahdkK39X2B
-         /4OA==
-X-Gm-Message-State: AOAM532DFWyEgMiEBtzi2CzneNFjFBBXFGWmc7/NPzcShn+m2F/axTGP
-        m9HRRUKjrih4SZvBsTT6IAl1kN7vQ1Kb/VsBoTeZJYMwoMaJ9a9E/WTPt1N6qSJRZiY5Y+vHo5R
-        1xgp8QGx3SB30
-X-Received: by 2002:a50:cd87:: with SMTP id p7mr30310507edi.205.1635203808117;
-        Mon, 25 Oct 2021 16:16:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrKHHm8lIXLTrCOnw7KkbsrL+gOfuT7m5ziKQ/AyQBnD+BmD2waJkj9SGGtlDGGwMG4Dt7dg==
-X-Received: by 2002:a50:cd87:: with SMTP id p7mr30310428edi.205.1635203807122;
-        Mon, 25 Oct 2021 16:16:47 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id qa16sm2908667ejc.120.2021.10.25.16.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 16:16:46 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 13B08180262; Tue, 26 Oct 2021 01:16:45 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf v2] bpf: fix potential race in tail call
- compatibility check
-In-Reply-To: <c1244c73-bc61-89b8-dca3-f06dca85f64e@iogearbox.net>
-References: <20211025130809.314707-1-toke@redhat.com>
- <YXa/A4eQhlPPsn+n@lore-desk>
- <c1244c73-bc61-89b8-dca3-f06dca85f64e@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 26 Oct 2021 01:16:45 +0200
-Message-ID: <878rygbspu.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8rRDEWTK36PdUw/E/Fa/gp8H9JXxNSQ6vCnNr8V/ZN8=;
+        b=4eQYAIY/cmFK26VZGkQOyAC0kFtFWE5XOlRVngfktsVG14fi8D0PbIe/rtQLfanF9w
+         4784yEgf1WYQUfyxjE9VNkGyoF15LvIE4GvQkLWM6hnIX+z6Txx89L1juGRCJH86SpOs
+         u93/IprXCpXFpMnH8eEgil7sDQwHGNx6LPZxylAIiGCOjYcKJzO8M2i7ySiJRQ9yCpnj
+         lByCB7jwF1YIYSD9Xur+6Zx6SSePqYj0vxjr6pdMwr1kAoaCJBXXlmO7Yc6hs/pJ5wCA
+         PNQaf+nrNuGSTOjSyE/9LstqavONqUMMt5G2muVhvgQYpMGIfaWTg8Tch+uJyKsS8kFv
+         eBSw==
+X-Gm-Message-State: AOAM5319i4SkMFgAw6wFomeAq7kb9j2no8/Nuo5l9i6+5khaqLPY/IOJ
+        di7PC82evSOk3ey5ozXVIJ0HlBtWToy5OMCdzUYk/Q==
+X-Google-Smtp-Source: ABdhPJwgdIDcWEzWNa12DKosaoUXk5daOeJjSZVM8hTXj4Pq/De2WM5BIOlWX4MaKbyU9Ban+e1rRZihMbfkGa8TvXg=
+X-Received: by 2002:a67:ebcf:: with SMTP id y15mr3000441vso.43.1635206790149;
+ Mon, 25 Oct 2021 17:06:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <cover.1633535940.git.zhuyifei@google.com> <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
+ <CAEf4Bzbj0Bd5bnUrJMr4ozFFAHVE=NvsO1KR1o9=iqBT85=LUw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbj0Bd5bnUrJMr4ozFFAHVE=NvsO1KR1o9=iqBT85=LUw@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei@google.com>
+Date:   Mon, 25 Oct 2021 17:06:19 -0700
+Message-ID: <CAA-VZP=Hft3MkKxc+2xxM6Qc1ZO=d+2JshjV5g2TxfymjfW6rw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to
+ get/set exported errno value
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
-
-> On 10/25/21 4:28 PM, Lorenzo Bianconi wrote:
->>> Lorenzo noticed that the code testing for program type compatibility of
->>> tail call maps is potentially racy in that two threads could encounter a
->>> map with an unset type simultaneously and both return true even though =
-they
->>> are inserting incompatible programs.
->>>
->>> The race window is quite small, but artificially enlarging it by adding=
- a
->>> usleep_range() inside the check in bpf_prog_array_compatible() makes it
->>> trivial to trigger from userspace with a program that does, essentially:
->>>
->>>          map_fd =3D bpf_create_map(BPF_MAP_TYPE_PROG_ARRAY, 4, 4, 2, 0);
->>>          pid =3D fork();
->>>          if (pid) {
->>>                  key =3D 0;
->>>                  value =3D xdp_fd;
->>>          } else {
->>>                  key =3D 1;
->>>                  value =3D tc_fd;
->>>          }
->>>          err =3D bpf_map_update_elem(map_fd, &key, &value, 0);
->>>
->>> While the race window is small, it has potentially serious ramification=
-s in
->>> that triggering it would allow a BPF program to tail call to a program =
-of a
->>> different type. So let's get rid of it by protecting the update with a
->>> spinlock. The commit in the Fixes tag is the last commit that touches t=
-he
->>> code in question.
->>>
->>> v2:
->>> - Use a spinlock instead of an atomic variable and cmpxchg() (Alexei)
->>>
->>> Fixes: 3324b584b6f6 ("ebpf: misc core cleanup")
->>> Reported-by: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
->>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>> ---
->>>   include/linux/bpf.h   |  1 +
->>>   kernel/bpf/arraymap.c |  1 +
->>>   kernel/bpf/core.c     | 14 ++++++++++----
->>>   kernel/bpf/syscall.c  |  2 ++
->>>   4 files changed, 14 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>> index 020a7d5bf470..98d906176d89 100644
->>> --- a/include/linux/bpf.h
->>> +++ b/include/linux/bpf.h
->>> @@ -929,6 +929,7 @@ struct bpf_array_aux {
->>>   	 * stored in the map to make sure that all callers and callees have
->>>   	 * the same prog type and JITed flag.
->>>   	 */
->>> +	spinlock_t type_check_lock;
->>=20
->> I was wondering if we can use a mutex instead of a spinlock here since i=
-t is
->> run from a syscall AFAIU. The only downside is mutex_lock is run inside
->> aux->used_maps_mutex critical section. Am I missing something?
+On Wed, Oct 20, 2021 at 4:28 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Hm, potentially it could work, but then it's also 32 vs 4 extra bytes. Th=
-ere's
-> also poke_mutex or freeze_mutex, but feels to hacky to 'generalize for re=
-use',
-> so I think the spinlock in bpf_array_aux is fine.
+> it's subjective, but "bpf_export_errno" name is quite confusing. What
+> are we "exporting" and where?
 >
->>>   	enum bpf_prog_type type;
->>>   	bool jited;
->>>   	/* Programs with direct jumps into programs part of this array. */
->>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
->>> index cebd4fb06d19..da9b1e96cadc 100644
->>> --- a/kernel/bpf/arraymap.c
->>> +++ b/kernel/bpf/arraymap.c
->>> @@ -1072,6 +1072,7 @@ static struct bpf_map *prog_array_map_alloc(union=
- bpf_attr *attr)
->>>   	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
->>>   	INIT_LIST_HEAD(&aux->poke_progs);
->>>   	mutex_init(&aux->poke_mutex);
->>> +	spin_lock_init(&aux->type_check_lock);
+> I actually like Song's proposal for two helpers,
+> bpf_set_err()/bpf_get_err(). It makes the semantics less confusing. I
+> honestly don't remember the requirement to have one combined helper
+> from the BPF office hour discussion, but if there was a good reason
+> for that, please remind us.
 >
-> Just as a tiny nit, I would probably name it slightly different, since ty=
-pe_check_lock
-> mainly refers to the type property but there's also jit vs non-jit and as=
- pointed out
-> there could be other extensions that need checking in future as well. May=
-be 'compat_lock'
-> would be a more generic one or just:
+> > + *     Description
+> > + *             If *errno_val* is positive, set the syscall's return error code;
 >
->          struct {
->                  enum bpf_prog_type type;
->                  bool jited;
->                  spinlock_t lock;
->          } owner;
+> This inversion of error code is also confusing. If we are to return
+> -EXXX, bpf_set_err(EXXX) is quite confusing.
+>
+> > + *             if *errno_val* is zero, retrieve the previously set code.
+>
+> Also, are there use cases where zero is the valid "error" (or lack of
+> it, rather). I.e., wouldn't there be cases where you want to clear a
+> previous error? We might have discussed this, sorry if I forgot.
 
-Uh, I like that! Makes it easier to move as well (which we're doing as
-part of the xdp_mb series). Will send a v3 with this :)
+Hmm, originally I thought it's best to assume the underlying
+assumption is that filters may set policies and it would violate it if
+policies become ignored; however one could argue that debugging would
+be a use case for an error-clearing filter.
 
--Toke
+Let's say we do bpf_set_err()/bpf_get_err(), with the ability to clear
+errors. I'm having trouble thinking of the best way to have it
+interact with the getsockopt "retval" in its context:
+* Let's say the kernel initially sets an error code in the retval. I
+think it would be a surprising behavior if only "retval" but not
+bpf_get_err() shows the error. Therefore we'd need to initialize "err"
+with the "retval" if retval is an error.
+* If we initialize "err" with the "retval", then for a prog to clear
+the error they'd need to clear it twice, once with bpf_set_err(0) with
+and another with ctx->retval = 0. This will immediately break backward
+compatibility. Therefore, we'd need to mirror the setting of
+ctx->retval = 0 to bpf_set_err(0)
+* In that case, what to do if a user uses ctx->retval as a way to pass
+data between filters? I mean, whether ctx->retval is set to 0 or the
+original is only checked after all filters are run. It could be any
+value while the filters are running.
+* A second issue, if we have first a legacy filter that returns 0 to
+set EPERM, and then there's another filter that does a ctx->retval =
+0. The original behavior would be that the syscall fails with EPERM,
+but if we mirror ctx->retval = 0 to bpf_set_err(0), then that EPERM
+would be cleared.
 
+One of the reasons I liked "export" is that it's slightly clearer that
+this value is strictly from the BPF's side and has nothing to do with
+what the kernel sets (as in the getsockopt case). But yeah I agree
+it's not an ideal name.
+
+> But either way, if bpf_set_err() accepted <= 0 and used that as error
+> value as-is (> 0 should be rejected, probably) that would make for
+> straightforward logic. Then for getting the current error we can have
+> a well-paired bpf_get_err()?
+>
+>
+> BTW, "errno" is very strongly associated with user-space errno, do we
+> want to have this naming association (this is the reason I used "err"
+> terminology above).
+
+Ack.
+
+YiFei Zhu
