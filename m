@@ -2,60 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4212343B91E
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 20:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FEA43B939
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 20:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238101AbhJZSOq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 14:14:46 -0400
-Received: from mail-4022.proton.ch ([185.70.40.22]:27622 "EHLO
-        mail-4022.proton.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238100AbhJZSOq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:14:46 -0400
-Date:   Tue, 26 Oct 2021 18:12:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thesw4rm.com;
-        s=protonmail3; t=1635271940;
-        bh=RbpL8lnvbl41tu42hFFJfhxtCMBXNd1CPg5xF/iSysU=;
-        h=Date:To:From:Reply-To:Subject:From;
-        b=cz8UvOW5+Iusth4TDuJpG1r7W6atDF6t1+ljjGq+OhywQHn98caEK7XEh5f9J8xlf
-         ZUfujs44u01f0mULnz3jR1PGGiBIy8E272AKqKGdWhmcDueppbzXKrgOAQriGGwvj/
-         pj1KL6PR/3anHOoO19Uut9Ahnz/rsC+w2E3Pr59O4PNrFHl7rUOg9g/pFJVkLHNxQf
-         KhTCkIY8gzqxiw35ygEEBsfoTT8+6IKdNY/8XdsT9sI7cZKzN+LwQ/WtqiZH3ycyPC
-         c2ra+c/opb2iBeLN2bWQ+CmfN244vcXyM/Dkhe2FV2JWviICD4HQqfWjtC3HYMEA7W
-         h2BESReLfOvoQ==
-To:     bpf@vger.kernel.org
-From:   Yadunandan Pillai <ytpillai@thesw4rm.com>
-Reply-To: Yadunandan Pillai <ytpillai@thesw4rm.com>
-Subject: Missing events when intercepting execve and sched_wakeup_new
-Message-ID: <20211026181209.sumcxr5soyqf4xx2@bigdesk>
+        id S238163AbhJZSQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 14:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238145AbhJZSQ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 14:16:28 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4300FC061226
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 11:14:04 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id y67so415686iof.10
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 11:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a3xvsJM2aKqQJVT0+o82H+Qil172ZuH81nWvhLX7y0s=;
+        b=UctN/2lwOvIBfyJMKAS4onBCQR5BjA7X6vJaxKpzBjkcnZMWIfBQVDK2q8z+T2nriq
+         GgWA88PQzTq8I5cD/S3jpplbcp8CqB6TL4ESDYqaI5eVkuRptzvJh3v5dP8pX1rsl4jR
+         1OVuJYLwcEHdUvrzHLTLBSCIt4MiaoHOk29CGv+m9hKwOU+k41ofIDTwb3ISK8kZ40qs
+         RZuBVDysd89yONV1w7TjjzM3yqAnn421tLxakyICfel5yX+0tPGaxFmdS2fJaEJYa+4K
+         bOl2SaYRs4uuffgAmtGEDjhARO2/qsKwGwYGAin1ACQuQpIi2GFKK6kldOcQF+zF05Ar
+         eN2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a3xvsJM2aKqQJVT0+o82H+Qil172ZuH81nWvhLX7y0s=;
+        b=2aFF9UoRKIfsiEujoWz0W+egp7MaBN1D4AqAxZejIElVAFPN8dV9JC6GINsbV2zpYq
+         bBIVv1CiPU4AYjD2pqKQDwNsn7JHwEFDT29EzKCmH68wxA7FM07RLwbQ2/6RsHixnNgz
+         rdQEIpGdiHJw0idC82KNx47s0j3/iWq1K9zqEABt5/UnJGyuI1yg2wUAOu6s/dsghy6w
+         WL+C3PkQm1iOiXfaFJURsLEvGazVCpfos7UOAmUTuAiv1x/m9K+wuSvX7MDmTpP3FKSr
+         nOCFFqXx1F0HZ8862jHjNEza9/jE/A6hok9iL/oWxEyXnIsC6fodnjO73XxzvYFfyv4j
+         kdXg==
+X-Gm-Message-State: AOAM530TZiJOOw+3jqj1k1DGgwdnPxu9FDqOETesLEBxmyo14em6DYLP
+        MUUupBac7V+9wNHn2TC8Y+SKviJTuJwSEtY1Rf5JFQ==
+X-Google-Smtp-Source: ABdhPJx2JzJVxpEwngeRPGfaDDiyvIbKfPto5JgkcLJx/hfwViN2rscaajTWpzDGu9U8d1hW9Zq7lk6FsHJe8/JcoAQ=
+X-Received: by 2002:a5e:c204:: with SMTP id v4mr16484774iop.183.1635272043400;
+ Tue, 26 Oct 2021 11:14:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20211025231256.4030142-1-haoluo@google.com> <20211025231256.4030142-3-haoluo@google.com>
+ <20211026034854.3ozkpaxaok7hk6kn@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbvXQ1qpGazNKCBhzUUPmmfe9d9icDtf++weJkJmme0aw@mail.gmail.com> <CAADnVQJQuZ9pP_T_ZDgoeTnqfPcRMcKM_BshBTpmsZiRmzWMgA@mail.gmail.com>
+In-Reply-To: <CAADnVQJQuZ9pP_T_ZDgoeTnqfPcRMcKM_BshBTpmsZiRmzWMgA@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 26 Oct 2021 11:13:52 -0700
+Message-ID: <CA+khW7h1p8T5FikBC=xxj3n7yL8+du2=UVXCAx0BC-uFMW2Oog@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] bpf: Introduce ARG_PTR_TO_WRITABLE_MEM
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I am intercepting three tracepoints in an eBPF program:
-sched_wakeup_new, sys_enter_execve, and sys_exit_execve.
-To test it out, I spawned a bash shell and ran something
-like "ps -aux | grep exe".
+On Tue, Oct 26, 2021 at 11:00 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Oct 25, 2021 at 10:14 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > Instead of adding new types,
+> > > can we do something like this instead:
+> > >
+> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > > index c8a78e830fca..5dbd2541aa86 100644
+> > > --- a/include/linux/bpf_verifier.h
+> > > +++ b/include/linux/bpf_verifier.h
+> > > @@ -68,7 +68,8 @@ struct bpf_reg_state {
+> > >                         u32 btf_id;
+> > >                 };
+> > >
+> > > -               u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+> > > +               u32 rd_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+> > > +               u32 wr_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+> >
+> > This seems more confusing, it's technically possible to express a
+> > memory pointer from which you can read X bytes, but can write Y bytes.
+>
+> I'm fine it being a new flag instead of wr_mem_size.
+>
+> > I actually liked the idea that helpers will be explicit about whether
+> > they can write into a memory or only read from it.
+> >
+> > Apart from a few more lines of code, are there any downsides to having
+> > PTR_TO_MEM vs PTR_TO_RDONLY_MEM?
+>
+> because it's a churn and non scalable long term.
+> It's not just PTR_TO_RDONLY_MEM.
+> It's also ARG_PTR_TO_RDONLY_MEM,
+> and RET_PTR_TO_RDONLY_MEM,
+> and PTR_TO_RDONLY_MEM_OR_NULL
+> and *_OR_BTF_ID,
+> and *_OR_BTF_ID_OR_NULL.
+> It felt that expressing readonly-ness as a flag in bpf_reg_state
+> will make it easier to get right in the code and extend in the future.
+> May be we will have a kernel vs user flag for PTR_TO_MEM in the future.
+> If we use different name to express that we will have:
+> PTR_TO_USER_RDONLY_MEM and
+> PTR_TO_USER_MEM
+> plus all variants of ARG_* and RET_* and *_OR_NULL.
+> With a flag approach it will be just another flag in bpf_reg_state.
 
-I think I'm misunderstanding how the two events relate to each other.
-Here's an example result (not actual data).
+Totally agree. Adding a variant incurs exponential cost. Introducing
+another dimension in future may need to go over all the MEM,
+RDONLY_MEM, MEM_OR_NULL, RDONLY_MEM_OR_NULL, multiplied by ARG_*,
+RET_*, etc. It's a pain.
 
-Time    |       PID     |       Event                   |       Name
-1       |       5       |       sched_wakeup_new        |       bash
-1       |       5       |       sched_wakeup_new        |       bash
-4       |       10      |       sys_enter_execve        |       ps
-6       |       12      |       sys_enter_execve        |       grep
-10      |       10      |       sys_exit_execve
-14      |       12      |       sys_exit_execve
-
-My question: why do ps and grep not trigger sched_wakeup_new? When would
-sched_wakeup_new actually be triggered or not triggered? I assumed it
-would trigger an event for each new process that's created.
-
+I have that in mind and start thinking more about how can we do a more
+scalable flag approach.
