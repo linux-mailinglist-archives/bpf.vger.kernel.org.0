@@ -2,88 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C299843B31F
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 15:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD63743B36E
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 15:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235129AbhJZNZb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 09:25:31 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14865 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbhJZNZa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:25:30 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HdsvQ5xF7z90RM;
-        Tue, 26 Oct 2021 21:22:58 +0800 (CST)
-Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 26 Oct 2021 21:23:01 +0800
-Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
- (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 26 Oct
- 2021 21:23:00 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <houtao1@huawei.com>
-Subject: [PATCH bpf-next] bpf: bpf_log() clean-up for kernel log output
-Date:   Tue, 26 Oct 2021 21:38:19 +0800
-Message-ID: <20211026133819.4138245-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S236318AbhJZN64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 09:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236305AbhJZN6z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:58:55 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55263C061767;
+        Tue, 26 Oct 2021 06:56:31 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id 188so20463374iou.12;
+        Tue, 26 Oct 2021 06:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OCNly9Pv6GVtqK5WKlYGGpWZ1IwDTUSNcWIUnGMQ4tQ=;
+        b=i7RAxoJj6vRHJO/QOSjI/2wZP40Tm49lxjwUghVRA9loicQXFZNhM0MArl94d+vLjQ
+         3ONCBgOGm6/Tzkk6/rbzph3fyWGtvF06KCpw5TQuJV+IYTHQLBvZq/yAsOXYH5zO2znh
+         0zjKS2Yzo3vcuKLciR7vPdHTMj2n1hFo604EAkwzdVdDIC4TDCtH88vI9tlkTdFe6ovD
+         fUtyJV7cBcB5modNsKwvWcaeO4hCblmIqUYnQtEfhNC7w/zLGp7dGfWhIz6QBgu1TWLw
+         8Ux1Iqr2m7VjjSxbnvmsTLhMEWmkZE4cIbSrm9U8IZMkRyp3VWpS9uj1z99yX47jDUJn
+         YTpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OCNly9Pv6GVtqK5WKlYGGpWZ1IwDTUSNcWIUnGMQ4tQ=;
+        b=8FWOAAlleloW0xhPMxL+6GS5BexHx48d5GFmrTfGRKL214YQ4qDtQcHro6mpZHRT/f
+         I/SychaEi7/a5YqNF2c3brqa5DsCp5V3ufu6zxcbPsMGFPk6fFukNH0vgLEf5HA+g6zn
+         B3O1AtvPLmVFMzTybzBBt+jFq/2Y/MLH/gkoSFAMJ/uFx8Wbk3Ahy7sI4KwcZP3FP1Rb
+         GNLExtKQUXIGtPUSBxl6oiQttRV1xWqLNnMbDBo60TwO7nRGDPh9/q1WOQ2TTv1f91HY
+         o7eUwun0cj129c0D1qmMKl7J2fBAyxSXjh7yyKxtwCaWwX4TJrg4Ijo1CJXGWe5pcl2L
+         nRyA==
+X-Gm-Message-State: AOAM532aw9v9bPEw3Mmnx6gT5nYW8jfDHqwZk4ykigptZjjYWbeDRJGZ
+        lIMQoS0R4Md0VIfAgzsNjaN8U6nKj1tjHSuPjDg=
+X-Google-Smtp-Source: ABdhPJw6DOg4zAXK3lnhpAIkXs7o2KoNL0GRJkIrWvXjuD/QZ3ItZtbM3RgVBE1XgEfOYoA0wxJIHxgbtWr7mAbD35g=
+X-Received: by 2002:a02:a483:: with SMTP id d3mr6171868jam.23.1635256590773;
+ Tue, 26 Oct 2021 06:56:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-9-laoar.shao@gmail.com>
+ <202110251421.7056ACF84@keescook> <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
+ <20211026091211.569a7ba2@gandalf.local.home>
+In-Reply-To: <20211026091211.569a7ba2@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 26 Oct 2021 21:55:54 +0800
+Message-ID: <CALOAHbBAKqbZEMvk5PVMrqFR_kjbi_kotGTNTGEW+=JWnC+_uA@mail.gmail.com>
+Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
+ task comm size change
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-An extra newline will output for bpf_log() with BPF_LOG_KERNEL level
-as shown below:
+On Tue, Oct 26, 2021 at 9:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 26 Oct 2021 10:18:51 +0800
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > > So, if we're ever going to copying these buffers out of the kernel (I
+> > > don't know what the object lifetime here in bpf is for "e", etc), we
+> > > should be zero-padding (as get_task_comm() does).
+> > >
+> > > Should this, instead, be using a bounce buffer?
+> >
+> > The comment in bpf_probe_read_kernel_str_common() says
+> >
+> >   :      /*
+> >   :       * The strncpy_from_kernel_nofault() call will likely not fill the
+> >   :       * entire buffer, but that's okay in this circumstance as we're probing
+> >   :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
+> >   :       * as well probe the stack. Thus, memory is explicitly cleared
+> >   :       * only in error case, so that improper users ignoring return
+> >   :       * code altogether don't copy garbage; otherwise length of string
+> >   :       * is returned that can be used for bpf_perf_event_output() et al.
+> >   :       */
+> >
+> > It seems that it doesn't matter if the buffer is filled as that is
+> > probing arbitrary memory.
+> >
+> > >
+> > > get_task_comm(comm, task->group_leader);
+> >
+> > This helper can't be used by the BPF programs, as it is not exported to BPF.
+> >
+> > > bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
+>
+> I guess Kees is worried that e.comm will have something exported to user
+> space that it shouldn't. But since e is part of the BPF program, does the
+> BPF JIT take care to make sure everything on its stack is zero'd out, such
+> that a user BPF couldn't just read various items off its stack and by doing
+> so, see kernel memory it shouldn't be seeing?
+>
 
-[   52.095704] BPF:The function test_3 has 12 arguments. Too many.
-[   52.095704]
-[   52.096896] Error in parsing func ptr test_3 in struct bpf_dummy_ops
+Understood.
+It can leak information to the user if the user buffer is large enough.
 
-Now all bpf_log() are ended by newline, so just remove the extra newline.
 
-Also there is no need to calculate the left userspace buffer size
-for kernel log output and to truncate the output by '\0' which
-has already been done by vscnprintf(), so only do these for
-userspace log output.
+> I'm guessing it does, otherwise this would be a bigger issue than this
+> patch series.
+>
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/verifier.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I will think about how to fix it.
+At first glance, it seems we'd better introduce a new BPF helper like
+bpf_probe_read_kernel_str_pad().
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c6616e325803..7d4a313da86e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -299,13 +299,13 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
- 	WARN_ONCE(n >= BPF_VERIFIER_TMP_LOG_SIZE - 1,
- 		  "verifier log line truncated - local buffer too short\n");
- 
--	n = min(log->len_total - log->len_used - 1, n);
--	log->kbuf[n] = '\0';
--
- 	if (log->level == BPF_LOG_KERNEL) {
--		pr_err("BPF:%s\n", log->kbuf);
-+		pr_err("BPF:%s", log->kbuf);
- 		return;
- 	}
-+
-+	n = min(log->len_total - log->len_used - 1, n);
-+	log->kbuf[n] = '\0';
- 	if (!copy_to_user(log->ubuf + log->len_used, log->kbuf, n + 1))
- 		log->len_used += n;
- 	else
 -- 
-2.29.2
-
+Thanks
+Yafang
