@@ -2,140 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E749643BB77
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 22:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C7143BBAE
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 22:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbhJZUVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 16:21:47 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55858 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhJZUVr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:21:47 -0400
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mfSum-0000pV-Sw; Tue, 26 Oct 2021 22:19:20 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-10-26
-Date:   Tue, 26 Oct 2021 22:19:20 +0200
-Message-Id: <20211026201920.11296-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S239221AbhJZUk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 16:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239230AbhJZUkz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 16:40:55 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB042C061570;
+        Tue, 26 Oct 2021 13:38:31 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id y1-20020a17090a134100b001a27a7e9c8dso2918835pjf.3;
+        Tue, 26 Oct 2021 13:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fknUh9gFZDY7Qs8RRkbBMbjy5NGCHFipP/1lmyKoBoA=;
+        b=cCQOBVPFiAYJOP0XntWfTgJ0nzj695/Uuw90z9fJLywUvIAFYdDYd0sidx0zdEyrEB
+         lUrqvA1slYJ8FtWR7R/9MF4Elv/HmEHkRUQWApXmLgrDUCtJIrXu42W9SM/ukIPo5jIi
+         4hcEY1mMG0ewG8aHYNJ+zzaYCVnvn4a3DLC5XYkModhVRPBvVNtyKOlEjFsgl5mMOTbU
+         V1SuiDj3n1kU3WdNjSluD81rPYcotlu+tuf18GMZZVJgYyn5ptRZgjcmEuSRddx+nZ2+
+         fJlwkTwyVTfOw+5sIQ02RgqUMuSBlnMxUCuz1UwGsks1xhwPM+UV0MW1c4FtKV2RQVz0
+         xNMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fknUh9gFZDY7Qs8RRkbBMbjy5NGCHFipP/1lmyKoBoA=;
+        b=sYqt0qP8vhQoiDDcwBm17CxjvgigaqGMGzLDZBh2Q5kpzq2qq+yOaxkjGbtM/J9XDN
+         y3r3jGZoT0cQRO7OH8sPtIMdbv4RD4V22BYO85OaPE5qrmD/fA8HrOjHAVveSMFCKDuP
+         v9fhCQHxb6x+j2OZCUpApRbjqaIMo1rUpntzqcIq6zkbEZjdFFDlv93BGCCNnxxnZCX4
+         x5mwySkBa6514pju9txtDRl5KjJBeDw77YuCY3ju6y0GAzrS7JNleWuohcL2AfqfTwcD
+         gZNDqrPNm94R/SwbZ6uuaAVs1M2wgFhQevhHrtqfliIf0QLYnpf/uExD4U6Sf3TDMPIf
+         0haA==
+X-Gm-Message-State: AOAM533iQsjKtEBXj7YA/RtuO4BYp5XEWxnyTM/7YQWjJmd2ojW//Ckk
+        4PBFs2vPOSoeuB/LISmzoo0=
+X-Google-Smtp-Source: ABdhPJyFuRO1ZcrmP4n1Rhx2IOy7PXoLHK5pShAXIaGKccOPDydAvBWKFpEkW27v47RGBdVy4VYaQQ==
+X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr1108730pjl.19.1635280711463;
+        Tue, 26 Oct 2021 13:38:31 -0700 (PDT)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:207c:7102:7bd7:80eb])
+        by smtp.gmail.com with ESMTPSA id ip8sm1944477pjb.9.2021.10.26.13.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 13:38:30 -0700 (PDT)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: [PATCH bpf 0/2] bpf: use 32bit safe version of u64_stats
+Date:   Tue, 26 Oct 2021 13:38:23 -0700
+Message-Id: <20211026203825.2720459-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26334/Tue Oct 26 10:22:12 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+From: Eric Dumazet <edumazet@google.com>
 
-The following pull-request contains BPF updates for your *net* tree.
+Two patches, fixing bugs added in 5.1 and 5.5
 
-We've added 12 non-merge commits during the last 7 day(s) which contain
-a total of 23 files changed, 118 insertions(+), 98 deletions(-).
+I have a followup patch for bpf-next, replacing the u64 fields
+in struct bpf_prog_stats with u64_stats_t ones to avoid
+possible sampling errors.
 
-The main changes are:
+Eric Dumazet (2):
+  bpf: avoid races in __bpf_prog_run() for 32bit arches
+  bpf: fixes possible race in update_prog_stats() for 32bit arches
 
-1) Fix potential race window in BPF tail call compatibility check, from Toke Høiland-Jørgensen.
+ include/linux/filter.h  | 5 +++--
+ kernel/bpf/trampoline.c | 6 ++++--
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-2) Fix memory leak in cgroup fs due to missing cgroup_bpf_offline(), from Quanyang Wang.
+-- 
+2.33.0.1079.g6e70778dc9-goog
 
-3) Fix file descriptor reference counting in generic_map_update_batch(), from Xu Kuohai.
-
-4) Fix bpf_jit_limit knob to the max supported limit by the arch's JIT, from Lorenz Bauer.
-
-5) Fix BPF sockmap ->poll callbacks for UDP and AF_UNIX sockets, from Cong Wang and Yucong Sun.
-
-6) Fix BPF sockmap concurrency issue in TCP on non-blocking sendmsg calls, from Liu Jian.
-
-7) Fix build failure of INODE_STORAGE and TASK_STORAGE maps on !CONFIG_NET, from Tejun Heo.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Björn Töpel, John Fastabend, kernel test robot, Lorenzo Bianconi, Luke 
-Nelson, Martin KaFai Lau, Roman Gushchin, Yucong Sun
-
-----------------------------------------------------------------
-
-The following changes since commit 4225fea1cb28370086e17e82c0f69bec2779dca0:
-
-  ptp: Fix possible memory leak in ptp_clock_register() (2021-10-20 14:44:33 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 54713c85f536048e685258f880bf298a74c3620d:
-
-  bpf: Fix potential race in tail call compatibility check (2021-10-26 12:37:28 -0700)
-
-----------------------------------------------------------------
-Alexei Starovoitov (2):
-      Merge branch 'Fix up bpf_jit_limit some more'
-      Merge branch 'sock_map: fix ->poll() and update selftests'
-
-Cong Wang (3):
-      net: Rename ->stream_memory_read to ->sock_is_readable
-      skmsg: Extract and reuse sk_msg_is_readable()
-      net: Implement ->sock_is_readable() for UDP and AF_UNIX
-
-Liu Jian (1):
-      tcp_bpf: Fix one concurrency problem in the tcp_bpf_send_verdict function
-
-Lorenz Bauer (3):
-      bpf: Define bpf_jit_alloc_exec_limit for riscv JIT
-      bpf: Define bpf_jit_alloc_exec_limit for arm64 JIT
-      bpf: Prevent increasing bpf_jit_limit above max
-
-Quanyang Wang (1):
-      cgroup: Fix memory leak caused by missing cgroup_bpf_offline
-
-Tejun Heo (1):
-      bpf: Move BPF_MAP_TYPE for INODE_STORAGE and TASK_STORAGE outside of CONFIG_NET
-
-Toke Høiland-Jørgensen (1):
-      bpf: Fix potential race in tail call compatibility check
-
-Xu Kuohai (1):
-      bpf: Fix error usage of map_fd and fdget() in generic_map_update_batch()
-
-Yucong Sun (1):
-      selftests/bpf: Use recv_timeout() instead of retries
-
- arch/arm64/net/bpf_jit_comp.c                      |  5 ++
- arch/riscv/net/bpf_jit_core.c                      |  5 ++
- include/linux/bpf.h                                |  7 +-
- include/linux/bpf_types.h                          |  8 +--
- include/linux/filter.h                             |  1 +
- include/linux/skmsg.h                              |  1 +
- include/net/sock.h                                 |  8 ++-
- include/net/tls.h                                  |  2 +-
- kernel/bpf/arraymap.c                              |  1 +
- kernel/bpf/core.c                                  | 24 ++++---
- kernel/bpf/syscall.c                               | 11 ++--
- kernel/cgroup/cgroup.c                             |  4 +-
- net/core/skmsg.c                                   | 14 ++++
- net/core/sysctl_net_core.c                         |  2 +-
- net/ipv4/tcp.c                                     |  5 +-
- net/ipv4/tcp_bpf.c                                 | 27 ++++----
- net/ipv4/udp.c                                     |  3 +
- net/ipv4/udp_bpf.c                                 |  1 +
- net/tls/tls_main.c                                 |  4 +-
- net/tls/tls_sw.c                                   |  2 +-
- net/unix/af_unix.c                                 |  4 ++
- net/unix/unix_bpf.c                                |  2 +
- .../selftests/bpf/prog_tests/sockmap_listen.c      | 75 ++++++----------------
- 23 files changed, 118 insertions(+), 98 deletions(-)
