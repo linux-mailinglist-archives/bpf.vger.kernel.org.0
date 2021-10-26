@@ -2,88 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CBC43A9C8
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 03:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD2243A9CD
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 03:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhJZBkq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 21:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        id S230268AbhJZBox (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 21:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhJZBkp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:40:45 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A554EC061745
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 18:38:22 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id x66so12656494pfx.13
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 18:38:22 -0700 (PDT)
+        with ESMTP id S230183AbhJZBox (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 21:44:53 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BE6C061745
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 18:42:29 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id w23so11829636lje.7
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 18:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PY5j0rTwm2AD+DFgSjxHgcfYob585Oa3YCa2epDEWcs=;
-        b=qKMJ7ayFQJRgvmEl9yCuJWC9CkT6AHmnVs9XVwEswvHueHK+OYMBqoi2/+pKGjv01s
-         soaJJfrdZNJ51GYjWHAG7Boy06TbDwDad23o5Bie+iTm1//f3s9JdJWtE1WzXJPKEmdo
-         oUMIAkgwxtFoVYQogEtsyrafh0BeY2HkU6WxP8gdYgId6Vz2KkojaNVlBn7iTi6vT0+l
-         wpVR741oFRH7Op54AOG/wszxKtr/NBGmHB+05+MiU+9eD+g61yxSZwPDN6dJoYyB9iGa
-         TCW5NgbC+zteSpDAcgWCvXi+vHazzML53Qika2VJpo3RI4wPcE59Nypk2EBYFHkgohVI
-         IZCg==
+        d=kinvolk.io; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=NND/8wSd4gWI4RJgRatahkBOW7Lrks344Qf525awD84=;
+        b=LM0xo/o70Boqodl+YAdk2Krh5zd96qz1lWuBsb6cVTc54lJvt/wUZjO3HLnrSv3zjg
+         K50QShZLH95xVo/1hYITSCoOsyvLeVi9yWhNjMMrTx60/KN7I7aHDQgXQef5WMbM15K/
+         wUfDi2CsetTmuccLTgBCnLCxK2B4/X3DHk7uI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PY5j0rTwm2AD+DFgSjxHgcfYob585Oa3YCa2epDEWcs=;
-        b=ffO7u4UtleEHVYpBdPpnFvK3r0xqi0KvtINcvEDlGeEsjd93gM8Yvt9UPB5IuzzV7+
-         ctmQP2qoZ828lqQANv2nvnetloHkpxUGkg+kUJSRjPHJwRyMvHKJtb8tgbDlCL1Sc3Au
-         E/6DWd/oa+kB0N5anhkknG19j7wz3BOljTQnCWbnHaPIL9b5AywYis0jujxYX10nrR6L
-         NvAY8LBe7/NbpJdiKiC0CA/Vu5z12eOEqbLRDOjfFODhmy8FTqYZPqJxgvWEn0hnLzQJ
-         NkuArKNTtxW+KjJrZdKs/iqu5Ql/go+a7pVbIEBxAsgK53+TfK5z/WlDE/K7s4oFAlOs
-         6G4A==
-X-Gm-Message-State: AOAM531lrcz21eFn/B4s30VW6risgwmFGFt5rIh6pQlA5HeVULhxUCo7
-        bjwYQqeFsDJs+B1y2aUZSww=
-X-Google-Smtp-Source: ABdhPJweOHwNi9iusbqt1/vXLKhh9ASeOUzYaRpHRq3v7BlzsU3ftEO6a8GlBrMszAsAPT4hI7PiJw==
-X-Received: by 2002:a63:8f4a:: with SMTP id r10mr16634129pgn.337.1635212302107;
-        Mon, 25 Oct 2021 18:38:22 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:8f62])
-        by smtp.gmail.com with ESMTPSA id p9sm19860118pfn.7.2021.10.25.18.38.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 18:38:21 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 18:38:19 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 0/4] libbpf: add bpf_program__insns() accessor
-Message-ID: <20211026013819.v75o22oz2cvsdokw@ast-mbp>
-References: <20211025224531.1088894-1-andrii@kernel.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=NND/8wSd4gWI4RJgRatahkBOW7Lrks344Qf525awD84=;
+        b=pXKtXLO60aaZDUEzqZ+txERKuW2URbjE6bsrCGGRr1rKUGv1BOl80WqRGeumzRXXCn
+         nmXYIYFXrH3o/Qup2KQbTOtZLWfX5zJF4BNbh/H9sLKSYgDRdJ5J0rPQwCerCjVQf5Rz
+         xsSoyZBqV+Gf6zWC7HGNqn+8vZIJFo0OqZ3PRpz/mhyLM3e5tsSIn0qylYURrQy9xP4Y
+         TfWYv22cXOITpfo/b31/T85MBhuiK/9iAtpYrqQNPjmrqwS76UYWmeMy/g0AQgJa3lTS
+         cOOqVwYT5Wavm4dxbIHGNhAg728DFzsdeTSTvmq4FXDgtxRldcAGA+zLIQ+oAIKK676n
+         5htA==
+X-Gm-Message-State: AOAM532PVAXNt7sDfOHpdgIkq96DSMDctaaroNDAz/yrLIBBBb5CfhAp
+        UulQWUEQl60wrXqTDt9tOaqO2S1sGxPZ/kAvCa37Y5qDjPllxQ==
+X-Google-Smtp-Source: ABdhPJzYHx2E1XqirtXUqyk+FKel6Mv9VZXjAjNg1CmlF90Q3FteHScwU07SaodpmZAwUhmOCqrVu0iDOeRffU+4fCc=
+X-Received: by 2002:a05:651c:10b7:: with SMTP id k23mr22865254ljn.310.1635212547876;
+ Mon, 25 Oct 2021 18:42:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025224531.1088894-1-andrii@kernel.org>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Mon, 25 Oct 2021 20:42:17 -0500
+Message-ID: <CAHap4ztxPO485-5u5bkncyf9n-EQBTfF-3tN28jdNa4w1E-vkQ@mail.gmail.com>
+Subject: Question about duplicated types in BTF and btf__dedup()
+To:     bpf@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 03:45:27PM -0700, Andrii Nakryiko wrote:
-> Add libbpf APIs to access BPF program instructions. Both before and after
-> libbpf processing (before and after bpf_object__load()). This allows to
-> inspect what's going on with BPF program assembly instructions as libbpf
-> performs its processing magic.
-> 
-> But in more practical terms, this allows to do a no-brainer BPF program
-> cloning, which is something you need when working with fentry/fexit BPF
-> programs to be able to attach the same BPF program code to multiple kernel
-> functions. Currently, kernel needs multiple copies of BPF programs, each
-> loaded with its own target BTF ID. retsnoop is one such example that
-> previously had to rely on bpf_program__set_prep() API to hijack program
-> instructions ([0] for before and after).
-> 
-> Speaking of bpf_program__set_prep() API and the whole concept of
-> multiple-instance BPF programs in libbpf, all that is scheduled for
-> deprecation in v0.7. It doesn't work well, it's cumbersome, and it will become
-> more broken as libbpf adds more functionality. So deprecate and remove it in
-> libbpf 1.0. It doesn't seem to be used by anyone anyways (except for that
-> retsnoop hack, which is now much cleaner with new APIs as can be seen in [0]).
-> 
->   [0] https://github.com/anakryiko/retsnoop/pull/1
+Hi. I found out that some of the BTF files provided by BTFHub contain
+a lot of duplicated types definitions:
 
-Applied, Thanks
+$ mkdir -p /tmp/foo
+$ cd /tmp/foo/
+$ wget https://github.com/aquasecurity/btfhub/raw/main/ubuntu/20.04/x86_64/5.4.0-88-generic.btf.tar.xz
+$ tar -xf 5.4.0-88-generic.btf.tar.xz
+
+$ bpftool btf dump file 5.4.0-88-generic.btf | grep "STRUCT 'dentry'"
+[954] STRUCT 'dentry' size=192 vlen=16
+[28359] STRUCT 'dentry' size=192 vlen=16
+
+$ bpftool btf dump file 5.4.0-88-generic.btf | grep "STRUCT 'task_struct'"
+[146] STRUCT 'task_struct' size=9216 vlen=213
+[28317] STRUCT 'task_struct' size=9216 vlen=213
+
+$ bpftool btf dump file 5.4.0-88-generic.btf | grep "STRUCT 'file'"
+[640] STRUCT 'file' size=256 vlen=21
+[28416] STRUCT 'file' size=256 vlen=21
+
+I tried to use btf__dedup() but the result is just the same file. Is
+this expected to have duplicated types in the BTF files? Why aren't
+those types getting deduplicated by the algorithm?
+
+btw, I also noted that the /sys/kernel/btf/vmlinux file contains
+duplicated types in some kernels, so I don't think it's an issue
+related to BTFHub.
+
+Thanks
+Mauricio.
