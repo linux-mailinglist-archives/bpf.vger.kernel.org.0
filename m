@@ -2,152 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1803643BC5C
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 23:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A9943BC7A
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 23:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239595AbhJZV3T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 17:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239576AbhJZV3T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:29:19 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3379BC061570
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 14:26:55 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id bl14so505067qkb.4
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 14:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J0x8zvgJhWOxibNxJcbFQB2Ec+ISL26TgiW2P+CR8us=;
-        b=IW9QgU5VOHrzO2VCvzX7Yn/iyfZJIikNHLxO38e/B8K9jZzbJmHpOlUbaQdgm9pyW3
-         WUDItmT0xBRL7EG/Qj08SDBxrf4jS17H16pYgko2F3rKMkfMSoJBz3J/ZVo65/gNlqci
-         hOANVbMmzv8SIUtR76PxLPBl+b6bfhQUvDVkmGdJtLTkb95RhkdBKdpj5t3WTb+a5FAA
-         eUzWIb20DKWNB4X60o3W5Wmdk4HdwjmOr0LJ86bNSI7AMC4IRmB4y62QaEURGmSjdkNJ
-         7lNgI6xmkw1EFDMl4zUkNVbGTGyOVETWEP1cyYzE5jTt3cZXin8HrKWnzNrZY1K5kI/g
-         444Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J0x8zvgJhWOxibNxJcbFQB2Ec+ISL26TgiW2P+CR8us=;
-        b=lbNUeE53QsCgU+xoy/LYx5ABwY7u926V+Uu9lIs53WekEMvlThpvtT6V0oq4w4TlYN
-         6ulyXOCR3Zw0LqvybA9QSriEHtsk54UnLpDwfBweilq7WFYJyB0wCsOS75Rlkfh8LvzN
-         551VEqnf2xkUAXaD2bAaEc4Cs5kwABzHbhChSykxpcAiTqWe7ztHNf752pV5J+o7sffO
-         5HLP7NzKwV28iDTG8+FeUd93JQGOVJsHdtfW4stVqJkN4FZnKl4gHaL9zqKGKgJF0nLX
-         fQR8vtSlQwv4MMw8AtTdsx+2zmLg/cvvq14a1N/PtW01d2AoWUo8Ie8dkGvUOWVib9Xa
-         seIA==
-X-Gm-Message-State: AOAM531bCirgaHrPZq+JxGqqXzSz/NC5i4J6rR+XqGiOaGEbNYw2fuk+
-        scLLed7nrPmwT6SfQWstZawuQIKSmPi4iueyNH6H82oUpYQnvkks
-X-Google-Smtp-Source: ABdhPJySV+oWF8SkfN/NQpPM+bw2at10D7Iyg1O81fEKprlHLacsmfR2BR6ytwKyN1WJjTgwrwGSWz1XmHk+vCBBM50=
-X-Received: by 2002:a05:620a:4088:: with SMTP id f8mr13419506qko.355.1635283614030;
- Tue, 26 Oct 2021 14:26:54 -0700 (PDT)
+        id S239659AbhJZVhu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 17:37:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23728 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239651AbhJZVht (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Oct 2021 17:37:49 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QFWuGh022644;
+        Tue, 26 Oct 2021 14:35:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=2sHGI1DHz3xYH3yaOBUI+Hc+iMShl+gVHmXN6wwT+uA=;
+ b=nR0FuJIzNSnhhCwjEQevjRWT8/Z8gwD8Egp+U6Amt5yi5MTKVHusFPS1YW8l30n7F8Oa
+ MBUpbsCpjqUlKl+ZTOR4sVrUqjXdEEBMUc/6eLxq7J6v1GKM7ansbYlYooaBDgobCgr6
+ fZhnUeNnNh+d1R4OoQ1ZSfsKzUpJRULHjEA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bxkkcb6sh-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 26 Oct 2021 14:35:07 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 26 Oct 2021 14:35:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A23yJ0ZLDSxp0cX7UxysAKLv5DORdsD5hdrb1JrKvQUl84UvwOyUGm1xCrunDx/HmPR5sZxV02zomCUCZfmzMnimSgwiAT86VByDrb2efNd4M4ZXY/nkwQuthyDxqEdlAWC6QKW672RrN00O00R6vUfafWFF9Ki6Ls3U3JrFn89tbdKYYFViKv+oiVmsXuDeg3P1dZE0BH/bLvGFJgk83p0Rc/BlgCrft0mXZDkcUbN/Gv98Uq6Ngf3tbZVawFEBAREGMADTzVfUVmPJ1efSL3dobp4n6Yn9adfJ/w5aKj9+Ge6qZ0DRRJ7djAj6+QsrA4SP72YG4CbHCCcMT6qXJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2sHGI1DHz3xYH3yaOBUI+Hc+iMShl+gVHmXN6wwT+uA=;
+ b=CqbKbXYhjHTplKlduA2hRH/H4pYbWnKI5vVkaBg2yxtkGyFpyXkhRr43Wx5dTYWBrCPCYqPMgxhj7u7wjLIAoEOOTonf58kZ9Ml9YJZH/vQviA6HPYGYSjxuM+m111BDivFLCtGoLK1fhOqDhFcSrB8OF2C4NELEEG7/JZHyxQiNpmacPCr0ldM90H8PB53PrHEkKN7IZVpY/8y5o6cumvsNBZOEblonuTGTJiusZ7lz9e2xTNla3gO5m/IhzaQ6m1SdXRtYBdehKKl5R5U5GthMBzmXtYPRsVjOQMYWVu4QTtwmDChuOBGnlrmIFIVK6kk+vpvRNQ3gZMHTP5u1bQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SN6PR15MB4269.namprd15.prod.outlook.com (2603:10b6:805:eb::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Tue, 26 Oct
+ 2021 21:35:06 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::6c34:bcb:51af:6160%7]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
+ 21:35:05 +0000
+Date:   Tue, 26 Oct 2021 14:35:02 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Hou Tao <houtao1@huawei.com>
+CC:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: bpf_log() clean-up for kernel log output
+Message-ID: <20211026213502.s5arrmvh42tbymvv@kafai-mbp.dhcp.thefacebook.com>
+References: <20211026133819.4138245-1-houtao1@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211026133819.4138245-1-houtao1@huawei.com>
+X-ClientProxiedBy: MWHPR12CA0068.namprd12.prod.outlook.com
+ (2603:10b6:300:103::30) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
 MIME-Version: 1.0
-References: <cover.1633535940.git.zhuyifei@google.com> <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
- <CAEf4Bzbj0Bd5bnUrJMr4ozFFAHVE=NvsO1KR1o9=iqBT85=LUw@mail.gmail.com>
- <CAA-VZP=Hft3MkKxc+2xxM6Qc1ZO=d+2JshjV5g2TxfymjfW6rw@mail.gmail.com>
- <CAKH8qBs2xgqJnECSNpguqkwNMOd4m2gaz1CGueReP32cUdPgGw@mail.gmail.com> <CAA-VZP=rXb_oyoORsK5apL39xpY7XeVAdEQvVFhBqUBQOTxthA@mail.gmail.com>
-In-Reply-To: <CAA-VZP=rXb_oyoORsK5apL39xpY7XeVAdEQvVFhBqUBQOTxthA@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 26 Oct 2021 14:26:42 -0700
-Message-ID: <CAKH8qBunq4LQGGuX9_L_3BMgPNOjqjZJrxK0ih6QnD_UYsAq6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to
- get/set exported errno value
-To:     YiFei Zhu <zhuyifei@google.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:8034) by MWHPR12CA0068.namprd12.prod.outlook.com (2603:10b6:300:103::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Tue, 26 Oct 2021 21:35:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5fb90d69-33ab-4ba2-9740-08d998c879df
+X-MS-TrafficTypeDiagnostic: SN6PR15MB4269:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB4269EAB790B9DF16DC30E4B9D5849@SN6PR15MB4269.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UBKKlrvvDuIJwUhofAY2Iu1/QAxZKoY8OndGm5xuIwvmpUhix4IAqHIHWoL5/gqQW9DfkiGYXc1K3zcb/8oSiqeARqvukRKUaK2pAoRxJYfSvKZIHH4Rqa1ySWTYTRNNb6kcpqtGr7XHHIsXpQ3+UetF7VLfh7dPIRYkAkOCgTAfUuBFCuNMoUvVP2ZwP1mv0bodJp0RfURUjRwuSn5PCzWQOnYKKMbsOKb50GbNpTOzJaR0UWLDAQuyJScgWVKWr8TPPUwnTOdLNVLA4yQKKUyGJ807JYpD1rFZcUdlfmedjqXJCA3PyUCBo8RVcKux93XYmuHHhtTW0V7Fz34ug7ohltQEV7EQdSiZ6NBDaMEFn175G+tLv4M+uD7/uL3AmNolhRjyMTE6Jq76Yn9LJHWjXgGf4qxlNrripPSv2aOKzbmdziXRjVq4PQWU+m336q2IWtOs6KTU773T9hNhReS69LPkTHqBE0L0zdZLt0qX6IHD2vB+Q7Q6vXlD62hpAeHBubnsQ2jHkVrW5atz3Ez3fcrOdQbphLJf+jcOrSZRz2LGONH+pLX9KGPd//BpNZd3ppd6rKwz5mwufZ/EoyPrtb6oInlnBP3RskbqC8TCu4DGg9NFyafE4MrZ7JCaDM7SZacquxAMhQcKpeVklg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(66946007)(66476007)(66556008)(52116002)(6916009)(54906003)(7696005)(316002)(8936002)(186003)(83380400001)(9686003)(38100700002)(1076003)(4326008)(2906002)(86362001)(55016002)(6506007)(508600001)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?61iWNj3WG41Peh8CFJoVmEoy93pbvmhrTiupgvgLoJ0rBU6zi+GOfxK+S+WE?=
+ =?us-ascii?Q?ouaBCIrCAmjpsRIkQd7t9gq2P/BTdfPMmPFLynTt1wdGBkHafgdk79RWMUwM?=
+ =?us-ascii?Q?hD6qT3DS9WEqvrd6CLruUt2HFSnMK+t0AYlg9zeKUe00UxlqmTwqnBahNeHP?=
+ =?us-ascii?Q?6GLWmvKVkWJVolueUpbC1RJOTLiWTqtmd1XjRdjDctJeGCa8rasURnHLk2UN?=
+ =?us-ascii?Q?rq0VEfuPcYx8DWp6mGbUs4EfkEfXKhWe6PbGvU3i6aQSoSgoNPsjJSFx70GD?=
+ =?us-ascii?Q?zkxIzpqqnYUg7hOl//+QWVaEVn/LT/77zOuejYVkAMAfllwsudAe5Q7BcwVZ?=
+ =?us-ascii?Q?RXR81E8eRlwwKfhCwGk8GP32IX54FH7ob/VTs1saeR/0RUR/Vh4qKwQJQD+7?=
+ =?us-ascii?Q?AK0zqNPKBC3Fi0dNBNNreSZ/Do4fdvqhWP9Fw7DnjYiLyvPDjL5eXOt3LsVo?=
+ =?us-ascii?Q?vArUqzfHbMgwKDXLz1Jx640UUKKYA/2P+6r9/BKd2TU3mZCkPBsIQxGnfx9o?=
+ =?us-ascii?Q?urIdk5tZIf58EJWcCOkNTuAsqexzyrMRj/WMEiEPGyG3TZ1EBCKR/g+1PrBD?=
+ =?us-ascii?Q?tjxeYtszxOAVwYT4IpXW6JYOmQ2A8TYwkOA3rQHqCAZBiv50Pacj/n2nt3tC?=
+ =?us-ascii?Q?Cu0ShRxrA6gpbZk/OCz3kub3ZdpEWA92L1pM7d6K87xOc7wb3tJrEDaDjh7K?=
+ =?us-ascii?Q?fxVjUdkMCvxNUUm+mzsgsb+qidJqh+GUwmIkSo2hj35j7v4qzGNYXVal+gZg?=
+ =?us-ascii?Q?qLPg4SaeS27Gj3gyjde/+oUwPmQ/Ktk5SUFioNmokXNDcLD8kbQMDZhSIwxP?=
+ =?us-ascii?Q?bPM4yvZHWgBn/Amz4W0dVATYQC6IsddkO7Q1HJ2iyg6mQHn/8aBU6N8LXsPM?=
+ =?us-ascii?Q?gm9yM+KfgiMfHeDvjFS1KWYnWlSytXoS+kQ8Y9tKfF1DgQITZ+4IdEgjJjqC?=
+ =?us-ascii?Q?X2eHwyNonW6z/YzOGJIUL1drXPhCw5PLFhPN2lyKZMG2MRYboUd+JZ+aHUBI?=
+ =?us-ascii?Q?cis2RAzFXknUQXI8Vf+6yvXYMJGsaDfC27F/sZ65BgPh7D/OvtY3wSL2QWdE?=
+ =?us-ascii?Q?h1FRFbbgYASS2x19yo1z2m3hiUgWBoixges6aQa4fgAySjIyiAXnIWgyCd1U?=
+ =?us-ascii?Q?9bHorMsXXMtkweaSsH6AE+wxOx6V+op8sdBTdJH7NxlZTXwkVkA9l5+cdM4i?=
+ =?us-ascii?Q?M5XK5Oeb4EuU+qHdD8KVVs0J5vWeZ7WOI/FruvJimT8hZdU0MEAUE98eSAdl?=
+ =?us-ascii?Q?JHZadkukBLWuy9soPqlX0jCBRMH44h+CDd2VXd4H9A8mBSl1IFo4zzFrLSV4?=
+ =?us-ascii?Q?VnyO+iY5Xdd79etRxN6qaJYdFpdnroc4w7tElc/McYeQEhAyuBeBeXKy6hAR?=
+ =?us-ascii?Q?/sGN8wR06jii/UQgIG6iwmfnZmLg694oC/acx9X3NUdP7xgFNj/6HPkME0uK?=
+ =?us-ascii?Q?NN7stm5aXHaCHPqYhGbW8pzbw6ezaE0fyJjQ00ZCRST0cIL5crfPfzw06POR?=
+ =?us-ascii?Q?tT5Ff/GQodrOPCB/WubTRkggl2+GekOaKSokE4iXJgZtvky2jNOrrcnMu31o?=
+ =?us-ascii?Q?ZkYLBufYfKGnb29divvbSrPkF0POyRf0vkGBpdJO?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fb90d69-33ab-4ba2-9740-08d998c879df
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2021 21:35:05.6995
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6/IffTDXHaxp0JLvOhWZCtf0CBGn7kjmW9RAT48L+4guk34pVJh7Mnvc4PBCvn4L
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB4269
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: wcveJcgHDRHr7eq3Gz31Q8fo5ccJf7Ss
+X-Proofpoint-GUID: wcveJcgHDRHr7eq3Gz31Q8fo5ccJf7Ss
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-26_06,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 clxscore=1015
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2110260117
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 1:50 PM YiFei Zhu <zhuyifei@google.com> wrote:
->
-> On Tue, Oct 26, 2021 at 8:44 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > On Mon, Oct 25, 2021 at 5:06 PM YiFei Zhu <zhuyifei@google.com> wrote:
-> > >
-> > > On Wed, Oct 20, 2021 at 4:28 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > it's subjective, but "bpf_export_errno" name is quite confusing. What
-> > > > are we "exporting" and where?
-> > > >
-> > > > I actually like Song's proposal for two helpers,
-> > > > bpf_set_err()/bpf_get_err(). It makes the semantics less confusing. I
-> > > > honestly don't remember the requirement to have one combined helper
-> > > > from the BPF office hour discussion, but if there was a good reason
-> > > > for that, please remind us.
-> > > >
-> > > > > + *     Description
-> > > > > + *             If *errno_val* is positive, set the syscall's return error code;
-> > > >
-> > > > This inversion of error code is also confusing. If we are to return
-> > > > -EXXX, bpf_set_err(EXXX) is quite confusing.
-> > > >
-> > > > > + *             if *errno_val* is zero, retrieve the previously set code.
-> > > >
-> > > > Also, are there use cases where zero is the valid "error" (or lack of
-> > > > it, rather). I.e., wouldn't there be cases where you want to clear a
-> > > > previous error? We might have discussed this, sorry if I forgot.
-> > >
-> > > Hmm, originally I thought it's best to assume the underlying
-> > > assumption is that filters may set policies and it would violate it if
-> > > policies become ignored; however one could argue that debugging would
-> > > be a use case for an error-clearing filter.
-> > >
-> > > Let's say we do bpf_set_err()/bpf_get_err(), with the ability to clear
-> > > errors. I'm having trouble thinking of the best way to have it
-> > > interact with the getsockopt "retval" in its context:
-> > > * Let's say the kernel initially sets an error code in the retval. I
-> > > think it would be a surprising behavior if only "retval" but not
-> > > bpf_get_err() shows the error. Therefore we'd need to initialize "err"
-> > > with the "retval" if retval is an error.
-> > > * If we initialize "err" with the "retval", then for a prog to clear
-> > > the error they'd need to clear it twice, once with bpf_set_err(0) with
-> > > and another with ctx->retval = 0. This will immediately break backward
-> > > compatibility. Therefore, we'd need to mirror the setting of
-> > > ctx->retval = 0 to bpf_set_err(0)
-> > > * In that case, what to do if a user uses ctx->retval as a way to pass
-> > > data between filters? I mean, whether ctx->retval is set to 0 or the
-> > > original is only checked after all filters are run. It could be any
-> > > value while the filters are running.
-> > > * A second issue, if we have first a legacy filter that returns 0 to
-> > > set EPERM, and then there's another filter that does a ctx->retval =
-> > > 0. The original behavior would be that the syscall fails with EPERM,
-> > > but if we mirror ctx->retval = 0 to bpf_set_err(0), then that EPERM
-> > > would be cleared.
-> > >
-> > > One of the reasons I liked "export" is that it's slightly clearer that
-> > > this value is strictly from the BPF's side and has nothing to do with
-> > > what the kernel sets (as in the getsockopt case). But yeah I agree
-> > > it's not an ideal name.
-> >
-> > For getsockopt, maybe the best way to go is to point ctx->retval to
-> > run_ctx.errno_val? (i.e., bpf_set_err would be equivalent to doing
-> > ctx->retval = x;). We can leave ctx->retval as a backwards-compatible
-> > legacy way of doing things. For new programs, bpf_set_err would work
-> > universally, regardless of attach type. Any cons here?
->
-> Is it a concern that AFAICT getsockopt retval may be a positive number
-> whereas the err here must be non-negative?
+On Tue, Oct 26, 2021 at 09:38:19PM +0800, Hou Tao wrote:
+> An extra newline will output for bpf_log() with BPF_LOG_KERNEL level
+> as shown below:
+> 
+> [   52.095704] BPF:The function test_3 has 12 arguments. Too many.
+> [   52.095704]
+> [   52.096896] Error in parsing func ptr test_3 in struct bpf_dummy_ops
+> 
+> Now all bpf_log() are ended by newline, so just remove the extra newline.
+bpf_verifier_vlog is also called by btf_verifier_log.
+Not all of them is ended with newline.
 
-getsockopt retval is either -errno or 0. It's not really enforced at
-load/attach time, but there is a runtime check which returns -EFAULT
-if the prog sets it to something else.
+> 
+> Also there is no need to calculate the left userspace buffer size
+> for kernel log output and to truncate the output by '\0' which
+> has already been done by vscnprintf(), so only do these for
+> userspace log output.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  kernel/bpf/verifier.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c6616e325803..7d4a313da86e 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -299,13 +299,13 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
+>  	WARN_ONCE(n >= BPF_VERIFIER_TMP_LOG_SIZE - 1,
+>  		  "verifier log line truncated - local buffer too short\n");
+>  
+> -	n = min(log->len_total - log->len_used - 1, n);
+> -	log->kbuf[n] = '\0';
+> -
+>  	if (log->level == BPF_LOG_KERNEL) {
+> -		pr_err("BPF:%s\n", log->kbuf);
+> +		pr_err("BPF:%s", log->kbuf);
+How about trim the tailing '\n' (if any) from kbuf?
+or just test if kbuf is ended with '\n'?
 
-> Also the fourth point still stands. If any getsockopt returns 0,
-> original behavior is return -EPERM whereas new behavior, clearing
-> retval will clear -EPERM.
-
-True, but do you think these cases exist out there? I guess somebody
-can do it inadvertently, but the example you've mentioned doesn't
-really make sense, right?
-This is why we are adding a way to propagate the status, so the
-programs in the chain can understand whether they should do anything
-at all (previous prog returned EPERM). Returning EPERM from the child
-and then doing ctx->retval=0 in the parent should already not work as
-expected.
+>  		return;
+>  	}
+> +
+> +	n = min(log->len_total - log->len_used - 1, n);
+> +	log->kbuf[n] = '\0';
+>  	if (!copy_to_user(log->ubuf + log->len_used, log->kbuf, n + 1))
+>  		log->len_used += n;
+>  	else
+> -- 
+> 2.29.2
+> 
