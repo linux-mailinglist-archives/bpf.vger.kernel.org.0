@@ -2,132 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D7B43A917
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 02:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DA343A91B
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 02:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234788AbhJZAIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 20:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233720AbhJZAIy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 20:08:54 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEDAC061745
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:06:31 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id o26so11774409uab.5
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8rRDEWTK36PdUw/E/Fa/gp8H9JXxNSQ6vCnNr8V/ZN8=;
-        b=MSL8wU70YzlZasAXsx2sBN6zQRpcCsAJTYPSmojtypFj5qssqHCutv0AjY0VNFIu0f
-         5yrqreA5BaEfs4IKuth7FYJmK7q0JEjfNY0P19RUgrfP1HRROylY/kDUmqU/LqBFpC9i
-         6eLsDwrlehDWyeh49Tfq4u3W960zGAbud8rv5lk4671dwr1eT4o9mRSb7TXcSIy1U3/O
-         WgCOZz58l1XprxgszqzMP4hE2+Y3NjxDo1x4pNCpK4TrE5hX6B2sBmjgTspw+UEw8XRk
-         knHdNNyQG0WoKszeUzKx0W66AQaeC72A9kJhcn6PXvDrttYwJxGGeGP+SCZ26VPufvG2
-         cORQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8rRDEWTK36PdUw/E/Fa/gp8H9JXxNSQ6vCnNr8V/ZN8=;
-        b=4eQYAIY/cmFK26VZGkQOyAC0kFtFWE5XOlRVngfktsVG14fi8D0PbIe/rtQLfanF9w
-         4784yEgf1WYQUfyxjE9VNkGyoF15LvIE4GvQkLWM6hnIX+z6Txx89L1juGRCJH86SpOs
-         u93/IprXCpXFpMnH8eEgil7sDQwHGNx6LPZxylAIiGCOjYcKJzO8M2i7ySiJRQ9yCpnj
-         lByCB7jwF1YIYSD9Xur+6Zx6SSePqYj0vxjr6pdMwr1kAoaCJBXXlmO7Yc6hs/pJ5wCA
-         PNQaf+nrNuGSTOjSyE/9LstqavONqUMMt5G2muVhvgQYpMGIfaWTg8Tch+uJyKsS8kFv
-         eBSw==
-X-Gm-Message-State: AOAM5319i4SkMFgAw6wFomeAq7kb9j2no8/Nuo5l9i6+5khaqLPY/IOJ
-        di7PC82evSOk3ey5ozXVIJ0HlBtWToy5OMCdzUYk/Q==
-X-Google-Smtp-Source: ABdhPJwgdIDcWEzWNa12DKosaoUXk5daOeJjSZVM8hTXj4Pq/De2WM5BIOlWX4MaKbyU9Ban+e1rRZihMbfkGa8TvXg=
-X-Received: by 2002:a67:ebcf:: with SMTP id y15mr3000441vso.43.1635206790149;
- Mon, 25 Oct 2021 17:06:30 -0700 (PDT)
+        id S230343AbhJZAKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 20:10:04 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1770 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235444AbhJZAKD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 20:10:03 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19PMiU7X027675
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:07:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Boibk+L3fz3EqHA4e82wKA53nXYv+eNyHk8OhI+7NIk=;
+ b=UnZ8pOW0r1gWApKHySsZq4zAKX4TG3Y1AYsD3yCpXiuAFz+i2lSxhdiVWFIhKbudPjQq
+ TlAjSRVaA23UY2P5cdkPtveb+3n6Mg/EXkoV9VRWn5oUkmskNQ4kGDWwUZ2YY7BF0HUe
+ YaArbDAEA0FwrvAqWT4W1TFOmrRS2U9s66E= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3bx4fcgxrv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:07:40 -0700
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Mon, 25 Oct 2021 17:07:38 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id A92631ADA6825; Mon, 25 Oct 2021 17:07:36 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: Skip all serial_test_get_branch_snapshot in vm
+Date:   Mon, 25 Oct 2021 17:07:33 -0700
+Message-ID: <20211026000733.477714-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <cover.1633535940.git.zhuyifei@google.com> <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
- <CAEf4Bzbj0Bd5bnUrJMr4ozFFAHVE=NvsO1KR1o9=iqBT85=LUw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbj0Bd5bnUrJMr4ozFFAHVE=NvsO1KR1o9=iqBT85=LUw@mail.gmail.com>
-From:   YiFei Zhu <zhuyifei@google.com>
-Date:   Mon, 25 Oct 2021 17:06:19 -0700
-Message-ID: <CAA-VZP=Hft3MkKxc+2xxM6Qc1ZO=d+2JshjV5g2TxfymjfW6rw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to
- get/set exported errno value
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: fcuK-4uVjUUJpLzh0o6jatvPr4z_O3YQ
+X-Proofpoint-GUID: fcuK-4uVjUUJpLzh0o6jatvPr4z_O3YQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_07,2021-10-25_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 impostorscore=0 spamscore=0 bulkscore=0
+ adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=985 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110250138
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 4:28 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> it's subjective, but "bpf_export_errno" name is quite confusing. What
-> are we "exporting" and where?
->
-> I actually like Song's proposal for two helpers,
-> bpf_set_err()/bpf_get_err(). It makes the semantics less confusing. I
-> honestly don't remember the requirement to have one combined helper
-> from the BPF office hour discussion, but if there was a good reason
-> for that, please remind us.
->
-> > + *     Description
-> > + *             If *errno_val* is positive, set the syscall's return error code;
->
-> This inversion of error code is also confusing. If we are to return
-> -EXXX, bpf_set_err(EXXX) is quite confusing.
->
-> > + *             if *errno_val* is zero, retrieve the previously set code.
->
-> Also, are there use cases where zero is the valid "error" (or lack of
-> it, rather). I.e., wouldn't there be cases where you want to clear a
-> previous error? We might have discussed this, sorry if I forgot.
+Skipping the second half of the test is not enough to silent the warning
+in dmesg. Skip the whole test before we can either properly silent the
+warning in kernel, or fix LBR snapshot for VM.
 
-Hmm, originally I thought it's best to assume the underlying
-assumption is that filters may set policies and it would violate it if
-policies become ignored; however one could argue that debugging would
-be a use case for an error-clearing filter.
+Fixes: 025bd7c753aa ("selftests/bpf: Add test for bpf_get_branch_snapshot=
+")
+Fixes: aa67fdb46436 ("selftests/bpf: Skip the second half of get_branch_s=
+napshot in vm")
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ .../bpf/prog_tests/get_branch_snapshot.c         | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-Let's say we do bpf_set_err()/bpf_get_err(), with the ability to clear
-errors. I'm having trouble thinking of the best way to have it
-interact with the getsockopt "retval" in its context:
-* Let's say the kernel initially sets an error code in the retval. I
-think it would be a surprising behavior if only "retval" but not
-bpf_get_err() shows the error. Therefore we'd need to initialize "err"
-with the "retval" if retval is an error.
-* If we initialize "err" with the "retval", then for a prog to clear
-the error they'd need to clear it twice, once with bpf_set_err(0) with
-and another with ctx->retval = 0. This will immediately break backward
-compatibility. Therefore, we'd need to mirror the setting of
-ctx->retval = 0 to bpf_set_err(0)
-* In that case, what to do if a user uses ctx->retval as a way to pass
-data between filters? I mean, whether ctx->retval is set to 0 or the
-original is only checked after all filters are run. It could be any
-value while the filters are running.
-* A second issue, if we have first a legacy filter that returns 0 to
-set EPERM, and then there's another filter that does a ctx->retval =
-0. The original behavior would be that the syscall fails with EPERM,
-but if we mirror ctx->retval = 0 to bpf_set_err(0), then that EPERM
-would be cleared.
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c=
+ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+index d6d70a359aeb5..81402e4439844 100644
+--- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
++++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+@@ -78,6 +78,12 @@ void serial_test_get_branch_snapshot(void)
+ 	struct get_branch_snapshot *skel =3D NULL;
+ 	int err;
+=20
++	/* Skip the test before we fix LBR snapshot for hypervisor. */
++	if (is_hypervisor()) {
++		test__skip();
++		return;
++	}
++
+ 	if (create_perf_events()) {
+ 		test__skip();  /* system doesn't support LBR */
+ 		goto cleanup;
+@@ -107,16 +113,6 @@ void serial_test_get_branch_snapshot(void)
+ 		goto cleanup;
+ 	}
+=20
+-	if (is_hypervisor()) {
+-		/* As of today, LBR in hypervisor cannot be stopped before
+-		 * too many entries are flushed. Skip the hit/waste test
+-		 * for now in hypervisor until we optimize the LBR in
+-		 * hypervisor.
+-		 */
+-		test__skip();
+-		goto cleanup;
+-	}
+-
+ 	ASSERT_GT(skel->bss->test1_hits, 6, "find_looptest_in_lbr");
+=20
+ 	/* Given we stop LBR in software, we will waste a few entries.
+--=20
+2.30.2
 
-One of the reasons I liked "export" is that it's slightly clearer that
-this value is strictly from the BPF's side and has nothing to do with
-what the kernel sets (as in the getsockopt case). But yeah I agree
-it's not an ideal name.
-
-> But either way, if bpf_set_err() accepted <= 0 and used that as error
-> value as-is (> 0 should be rejected, probably) that would make for
-> straightforward logic. Then for getting the current error we can have
-> a well-paired bpf_get_err()?
->
->
-> BTW, "errno" is very strongly associated with user-space errno, do we
-> want to have this naming association (this is the reason I used "err"
-> terminology above).
-
-Ack.
-
-YiFei Zhu
