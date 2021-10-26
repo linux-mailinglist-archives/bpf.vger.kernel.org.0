@@ -2,199 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF0843BC92
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 23:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2131043BD52
+	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 00:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbhJZVoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 17:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        id S230411AbhJZWjK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 18:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235366AbhJZVoG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:44:06 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8589C061767;
-        Tue, 26 Oct 2021 14:41:41 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 127so747561pfu.1;
-        Tue, 26 Oct 2021 14:41:41 -0700 (PDT)
+        with ESMTP id S240091AbhJZWiJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 18:38:09 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBABC061224;
+        Tue, 26 Oct 2021 15:35:39 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 75so972737pga.3;
+        Tue, 26 Oct 2021 15:35:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uRZB2rF8sHKDVMLWBScuHHaIQnj2j20RrdT9H9xm/3c=;
-        b=noawh3oskqNWSO7UlEcKGWOuv5x7kOu0dOf0KYmpCo4aNAQY9bA8cf3qNeiyEKbd4o
-         9ZUCI9WaNRN4I/5VRD8fEZWbMR5WCLD5zTAWWhBosUV6Ckyo+RpZxRxd5Sv3TjP35j7j
-         j+l+0NHXZcP/3kP7Sv2AA7qO87Cqt/D6QqPg08dz1qgNC1qjHBmBEAK39SxVd8mo4NH2
-         Yv1oBg58DOPObFh7/v7FaxRMnlW+OXllzLZ9WSH4NgUPM3O6SfKNfYIXlAvlXgPdEgar
-         rNsxXXEYzXfOpD4SxY0Do2KfMk7IN/fPbqln8oo2PZef0TasNMpvkEvtNBwScKM/bS+y
-         ltCA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l6j46Ws58hCljuR8NCqQZteT2C36qK9PN69x2iQopUA=;
+        b=ooOVukM+tvv/6Usnc0yRUaKWdgMPRT9NtGkk7dWAcVeuYX99Paoe+Gt/dq6tj6mzyZ
+         WSRkGPlbAP4jVx2zkyViJm9gaQAdn112odFoEqsh9KUEEK5WuS1Z3sYf4FVQNt/vN7B0
+         UR4kWtuje3JRdZqEYSKxeOgwwdss1ML54eY5pTzQfo+jyML5a8/vjE0jZ1NQ/t+yFwu8
+         jjbVlZSOyQnxBKpn3iWax3vqRUxemPFgjqPSOe4buV9m9rwOfsvEaHea2EIO2Lki9DDm
+         OCx7RMs8ME59vVSxYQGkyMkc8na/dm6BhgtK76wBlkz2vFUvUYBHagQv8XMAwZNaMOHa
+         VT9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uRZB2rF8sHKDVMLWBScuHHaIQnj2j20RrdT9H9xm/3c=;
-        b=gTIPq+qiHhGs2AAvEmh6Co244NYuNNtXpl/IbU/dUPdpsDYba2qFJ1iFuOXbcvrNa3
-         5fLntfrp9DBaeCq01N0XGW6VMa4z/QAcP+r89xCW9kC/bSDi6wskrz0QvtpgRCTPhKFd
-         +GcV5qA2msR95YeIcfXeyxsekK+ZbtWncRyVKz9VYHyBGjp/I8qJzWAo8IFnT0Gcmxn2
-         sJV3FLQfE50WRZxzEUecOzBayOGyQkLzVNXGx6XPLxNqNhMR98gxZPzJjBfyrBUVdiJR
-         bEXEU5r5a+6Tai49fCYikkodrCvCo7KwltUOtHqXJYuC3x4UP+JVAWGgHvS4ObnVB5a0
-         NDYw==
-X-Gm-Message-State: AOAM533EoNepCtQKbGeySI//UI0gj4BRqlgcbraPxwYrW/i3DEBX6cZn
-        l6+CC/V24kAVhktKDBkQnX4=
-X-Google-Smtp-Source: ABdhPJw/7VohMZ4MaDTTWlIoH+qGitBHyuWxRhUa7MzK2AlTBXQ0jXGavGJdaqw0nf/lMdM82PZbZg==
-X-Received: by 2002:a05:6a00:1a01:b0:47b:ae61:9bd1 with SMTP id g1-20020a056a001a0100b0047bae619bd1mr28173461pfv.0.1635284500389;
-        Tue, 26 Oct 2021 14:41:40 -0700 (PDT)
-Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:207c:7102:7bd7:80eb])
-        by smtp.gmail.com with ESMTPSA id g22sm6495400pfj.181.2021.10.26.14.41.39
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l6j46Ws58hCljuR8NCqQZteT2C36qK9PN69x2iQopUA=;
+        b=uVKftl+zMzvJWrA9uzPHie+rP02rXigBsKytVU9bcJnmQwEgSzsFay2+smKl23LWxx
+         A9C/UvLzE2C9rNh3/l97Wps5I4GpRYFsoC6QGVsqvxJI/sx3ILrh9bq5LvoJcIZKDxRs
+         l0KnioVu4qAQk4FqFUUnrQjIkss2OBPZtQRxZngi9YoxlTsS1LASWH58321797aPjwfv
+         tP1vlkk43IRpOQ0nKMl7K+znfWtelLi9s1KucpPrg/VwoPuAvz8+gm+aJ81bbWt3Qtxi
+         evUeVfPGZHpCEkNZb9xkB1zJaVDZf75qAeWqSQWx1lO5Ql6Cy6XjlJIAFb859gjyuzup
+         oHqw==
+X-Gm-Message-State: AOAM531AFiYJXxzaFUW3gPfVJa5pOMKNYLi/aWgJi4w42/T9lNcuYCdD
+        YwEzymLKpVAd5sq6pegQl/a6uz6g8A==
+X-Google-Smtp-Source: ABdhPJyTwyYZW37oXHntJ8ujr2kfQrwGwGJSEcryH5FPfTnrKXWFPoeXOSIUH5biu+XjgFVdLCHvWQ==
+X-Received: by 2002:a63:18b:: with SMTP id 133mr20602512pgb.156.1635287738890;
+        Tue, 26 Oct 2021 15:35:38 -0700 (PDT)
+Received: from jevburton2.c.googlers.com.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j6sm19757369pgq.0.2021.10.26.15.35.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:41:40 -0700 (PDT)
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: [PATCH V2 bpf-next 3/3] bpf: use u64_stats_t in struct bpf_prog_stats
-Date:   Tue, 26 Oct 2021 14:41:33 -0700
-Message-Id: <20211026214133.3114279-4-eric.dumazet@gmail.com>
+        Tue, 26 Oct 2021 15:35:38 -0700 (PDT)
+From:   Joe Burton <jevburton.kernel@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joe Burton <jevburton@google.com>
+Subject: [PATCH v2] libbpf: Deprecate bpf_objects_list
+Date:   Tue, 26 Oct 2021 22:35:28 +0000
+Message-Id: <20211026223528.413950-1-jevburton.kernel@gmail.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211026214133.3114279-1-eric.dumazet@gmail.com>
-References: <20211026214133.3114279-1-eric.dumazet@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Joe Burton <jevburton@google.com>
 
-Commit 316580b69d0a ("u64_stats: provide u64_stats_t type")
-fixed possible load/store tearing on 64bit arches.
+Add a flag to `enum libbpf_strict_mode' to disable the global
+`bpf_objects_list', preventing race conditions when concurrent threads
+call bpf_object__open() or bpf_object__close().
 
-For instance the following C code
+bpf_object__next() will return NULL if this option is set.
 
-stats->nsecs += sched_clock() - start;
+Callers may achieve the same workflow by tracking bpf_objects in
+application code.
 
-Could be rightfully implemented like this by a compiler,
-confusing concurrent readers a lot:
+  [0] Closes: https://github.com/libbpf/libbpf/issues/293
 
-stats->nsecs += sched_clock();
-// arbitrary delay
-stats->nsecs -= start;
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Joe Burton <jevburton@google.com>
 ---
- include/linux/filter.h  | 10 +++++-----
- kernel/bpf/syscall.c    | 18 ++++++++++++------
- kernel/bpf/trampoline.c |  6 +++---
- 3 files changed, 20 insertions(+), 14 deletions(-)
+ tools/lib/bpf/libbpf.c        | 8 +++++++-
+ tools/lib/bpf/libbpf.h        | 3 ++-
+ tools/lib/bpf/libbpf_legacy.h | 6 ++++++
+ 3 files changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 2fffe9cc50f946f24f4f78b59902bad91f910e5b..9782e32458522273b314579e62c6215ebb07a617 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -553,9 +553,9 @@ struct bpf_binary_header {
- };
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 2fbed2d4a645..59d39ce9f375 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1148,6 +1148,7 @@ static struct bpf_object *bpf_object__new(const char *path,
+ 					  size_t obj_buf_sz,
+ 					  const char *obj_name)
+ {
++	bool strict = (libbpf_mode & LIBBPF_STRICT_NO_OBJECT_LIST);
+ 	struct bpf_object *obj;
+ 	char *end;
  
- struct bpf_prog_stats {
--	u64 cnt;
--	u64 nsecs;
--	u64 misses;
-+	u64_stats_t cnt;
-+	u64_stats_t nsecs;
-+	u64_stats_t misses;
- 	struct u64_stats_sync syncp;
- } __aligned(2 * sizeof(u64));
+@@ -1188,7 +1189,8 @@ static struct bpf_object *bpf_object__new(const char *path,
+ 	obj->loaded = false;
  
-@@ -617,8 +617,8 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
- 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
- 		stats = this_cpu_ptr(prog->stats);
- 		flags = u64_stats_update_begin_irqsave(&stats->syncp);
--		stats->cnt++;
--		stats->nsecs += sched_clock() - start;
-+		u64_stats_inc(&stats->cnt);
-+		u64_stats_add(&stats->nsecs, sched_clock() - start);
- 		u64_stats_update_end_irqrestore(&stats->syncp, flags);
- 	} else {
- 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e50c0bfdb7d38e1c929a499c0688f59b9caf618..7a147c6eb30b2b771539cce642a359bd4dec66f8 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1804,8 +1804,14 @@ static int bpf_prog_release(struct inode *inode, struct file *filp)
- 	return 0;
+ 	INIT_LIST_HEAD(&obj->list);
+-	list_add(&obj->list, &bpf_objects_list);
++	if (!strict)
++		list_add(&obj->list, &bpf_objects_list);
+ 	return obj;
  }
  
-+struct bpf_prog_kstats {
-+	u64 nsecs;
-+	u64 cnt;
-+	u64 misses;
-+};
+@@ -7935,6 +7937,10 @@ struct bpf_object *
+ bpf_object__next(struct bpf_object *prev)
+ {
+ 	struct bpf_object *next;
++	bool strict = (libbpf_mode & LIBBPF_STRICT_NO_OBJECT_LIST);
 +
- static void bpf_prog_get_stats(const struct bpf_prog *prog,
--			       struct bpf_prog_stats *stats)
-+			       struct bpf_prog_kstats *stats)
- {
- 	u64 nsecs = 0, cnt = 0, misses = 0;
- 	int cpu;
-@@ -1818,9 +1824,9 @@ static void bpf_prog_get_stats(const struct bpf_prog *prog,
- 		st = per_cpu_ptr(prog->stats, cpu);
- 		do {
- 			start = u64_stats_fetch_begin_irq(&st->syncp);
--			tnsecs = st->nsecs;
--			tcnt = st->cnt;
--			tmisses = st->misses;
-+			tnsecs = u64_stats_read(&st->nsecs);
-+			tcnt = u64_stats_read(&st->cnt);
-+			tmisses = u64_stats_read(&st->misses);
- 		} while (u64_stats_fetch_retry_irq(&st->syncp, start));
- 		nsecs += tnsecs;
- 		cnt += tcnt;
-@@ -1836,7 +1842,7 @@ static void bpf_prog_show_fdinfo(struct seq_file *m, struct file *filp)
- {
- 	const struct bpf_prog *prog = filp->private_data;
- 	char prog_tag[sizeof(prog->tag) * 2 + 1] = { };
--	struct bpf_prog_stats stats;
-+	struct bpf_prog_kstats stats;
++	if (strict)
++		return NULL;
  
- 	bpf_prog_get_stats(prog, &stats);
- 	bin2hex(prog_tag, prog->tag, sizeof(prog->tag));
-@@ -3575,7 +3581,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 	struct bpf_prog_info __user *uinfo = u64_to_user_ptr(attr->info.info);
- 	struct bpf_prog_info info;
- 	u32 info_len = attr->info.info_len;
--	struct bpf_prog_stats stats;
-+	struct bpf_prog_kstats stats;
- 	char __user *uinsns;
- 	u32 ulen;
- 	int err;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index e5963de368ed34874414d097bc6614ff7e168dd3..e98de5e73ba59f756480cc5f962849be1859751b 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -545,7 +545,7 @@ static void notrace inc_misses_counter(struct bpf_prog *prog)
+ 	if (!prev)
+ 		next = list_first_entry(&bpf_objects_list,
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index e1900819bfab..defabdbe7760 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -168,7 +168,8 @@ LIBBPF_API struct bpf_program *
+ bpf_object__find_program_by_name(const struct bpf_object *obj,
+ 				 const char *name);
  
- 	stats = this_cpu_ptr(prog->stats);
- 	u64_stats_update_begin(&stats->syncp);
--	stats->misses++;
-+	u64_stats_inc(&stats->misses);
- 	u64_stats_update_end(&stats->syncp);
- }
+-LIBBPF_API struct bpf_object *bpf_object__next(struct bpf_object *prev);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "track bpf_objects in application code instead")
++struct bpf_object *bpf_object__next(struct bpf_object *prev);
+ #define bpf_object__for_each_safe(pos, tmp)			\
+ 	for ((pos) = bpf_object__next(NULL),		\
+ 		(tmp) = bpf_object__next(pos);		\
+diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legacy.h
+index 29ccafab11a8..5ba5c9beccfa 100644
+--- a/tools/lib/bpf/libbpf_legacy.h
++++ b/tools/lib/bpf/libbpf_legacy.h
+@@ -57,6 +57,12 @@ enum libbpf_strict_mode {
+ 	 * function name instead of section name.
+ 	 */
+ 	LIBBPF_STRICT_SEC_NAME = 0x04,
++	/*
++	 * Disable the global 'bpf_objects_list'. Maintaining this list adds
++	 * a race condition to bpf_object__open() and bpf_object__close().
++	 * Clients can maintain it on their own if it is valuable for them.
++	 */
++	LIBBPF_STRICT_NO_OBJECT_LIST = 0x08,
  
-@@ -590,8 +590,8 @@ static void notrace update_prog_stats(struct bpf_prog *prog,
- 
- 		stats = this_cpu_ptr(prog->stats);
- 		flags = u64_stats_update_begin_irqsave(&stats->syncp);
--		stats->cnt++;
--		stats->nsecs += sched_clock() - start;
-+		u64_stats_inc(&stats->cnt);
-+		u64_stats_add(&stats->nsecs, sched_clock() - start);
- 		u64_stats_update_end_irqrestore(&stats->syncp, flags);
- 	}
- }
+ 	__LIBBPF_STRICT_LAST,
+ };
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
