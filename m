@@ -2,163 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6384143AAD8
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 05:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2484A43AAE5
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 06:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbhJZDvV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 23:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52180 "EHLO
+        id S229501AbhJZEEg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 00:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232597AbhJZDvU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Oct 2021 23:51:20 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD410C061745
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 20:48:57 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k2-20020a17090ac50200b001a218b956aaso588328pjt.2
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 20:48:57 -0700 (PDT)
+        with ESMTP id S229487AbhJZEEg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 00:04:36 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E20C061745
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 21:02:13 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id k26so12988856pfi.5
+        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 21:02:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L7yXnguj8TeUILD4Tfggkj7W20tOoJJt8WpfF8TKrj8=;
-        b=RrwVmBO9gvIFaUQI+eAMWvxdN+7RjWLuVg1kn1HqZvpvy4leARRTNZU0WSo5gGD1YY
-         +9iecQuBO309NfUoUYooEN2Mobzdu7oQYIDEvx68YYysmznL3OJAdtXlzN/9mp1aRCJ6
-         Vjijn1O3LzQyp9iyOk/RKP6UuKLOu3keP62taCp8mKXib1WRH9kSMq++kC9jP2G+usIw
-         8LoJogoT6So3H18GoCcvl4oMI2PBahyp8V1UWdR0BqzpMYMypdNBBlF6bPO9drwIWbnZ
-         HYmUCRCtX8kEKGdtmK8iD/inQv0XAOZgQ1OTSav6+q+2c/znvMm4ucrEB1VtdMxk76XB
-         XP+g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XNCY2In2FTRlj7mvXmzs1Tca9yvDLgVV6DHArPqDtGk=;
+        b=KZF/AOzHvvXeYatMsiCRYwiLQNVpaikIZ8wRTi8qweLPCNxD6t2JZhz9uXzUC4WrmZ
+         DBrdUfnqUhlOqst9ZLP6krixBYrKZSYL4OStpUE40WowbSB8xyKBeOCXQguLOSpOlwje
+         tU8KYMc3/KeS9sfkO2ewj61qj1ARfr0krBl4/s8BeyR4QnlMNzpNlncVR9a/BfFmj/Ac
+         ZDVkL9gO+dkfdWXiUC3QIOczrF8H81iVZ3LfLfhTB+0h4GpFAl0d/8OspESvLW9cf+b3
+         N4R4VkvBCRdmoVjNu+IMcrvleWGoNwvxRlIsk6sH8TByHmLSlYSgfksoLHRcSrV3CpWH
+         87FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L7yXnguj8TeUILD4Tfggkj7W20tOoJJt8WpfF8TKrj8=;
-        b=dyd/eQkCYvmiF5SqRDyXb2pA6BwhD7kiVe47NkxKRB1gfjOLPk/5DSJEpDFvmQVT2A
-         I50jnprAe2tcurZgTU/DnxKY3KvjQXCG5DrItrPdg4pCLJmRiCj/oasUxgqsrMv1PjBQ
-         4vYx2JtBVcKnpTR1HPU+06I1DNhGo9lgm/5w7Wvk0AGdvrVE2EWzJLhFuQ93/K09GLXq
-         I8YXD0BpK/apFOimNp7HBAzpLxD7BJgYL7oeTc3UtKaed3Xlnj8XUC62OsHkY6MV7KU3
-         82pCrMra5z4GoLOFv2EiwarfaLsf5qNWcFmgIjrMbVe6hpnmLnIeOxz5tHj1mG2niXUK
-         IPTQ==
-X-Gm-Message-State: AOAM531m5pSiCYv3LqNchJ9hQLIk9RWnov7cudXF4sX2n0TD36AjXms9
-        KEjymMQqhwrqv1Plfgki3vKofkBrV94=
-X-Google-Smtp-Source: ABdhPJyClz7Md5d9A1DfxeknZtoriY1rrqWFg1iQvJNGiYHx68C3pp3bDI/uX1NBf5kOJpxVDhA8jw==
-X-Received: by 2002:a17:90a:a8f:: with SMTP id 15mr25759564pjw.229.1635220137216;
-        Mon, 25 Oct 2021 20:48:57 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8f62])
-        by smtp.gmail.com with ESMTPSA id f15sm22871857pfe.132.2021.10.25.20.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 20:48:56 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 20:48:54 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Hao Luo <haoluo@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: Introduce ARG_PTR_TO_WRITABLE_MEM
-Message-ID: <20211026034854.3ozkpaxaok7hk6kn@ast-mbp.dhcp.thefacebook.com>
-References: <20211025231256.4030142-1-haoluo@google.com>
- <20211025231256.4030142-3-haoluo@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XNCY2In2FTRlj7mvXmzs1Tca9yvDLgVV6DHArPqDtGk=;
+        b=Yc5pEE+YNSuqAWQab/rpCka07YL6MMdrIZ//3nlXNbpK9WL6JhlSna2ZVGYsLIf1bE
+         EscwdMF7O/+kxAu5a/sI0X5MCrYO2av4vbCY2CccGtYl/LJylVImnmds98CHyAahX1IC
+         YQol4iD42DQew/0VsyN0XwwwTe49iizn6YNmK/wUtgvBLEniO/X9k9XtnzMMvgbNk75I
+         9uzISAkr0a1pKSPZSgYj2/AF+P5IiShLu/sM5azGPuKDJsDAmscrK3P3CQsmABo4fytM
+         bToG11hmQyM31iC81nVNGoU4MjYNWvPuanSsQjwS6ewGBLIq/+KE/Fxj7yRfvOF5wOVR
+         v73A==
+X-Gm-Message-State: AOAM533pbJGAIgbEXzh1jd2SptFEdSlGtPR1OsFODKx2TJifp8UF2pJA
+        aJp8XOzp0k+Pjd1O1RPuFplzvf8PfZ/SZU0hDhvJ1BeH
+X-Google-Smtp-Source: ABdhPJyZLFFEXkDS6eSWByTd3EJ2d3LpH3HJU73Fy9w0FM6NuPDoD/zYkikmDtQgrFfXK+ECtgkRj3uO0lIhrY/2HIE=
+X-Received: by 2002:aa7:9727:0:b0:47b:e175:2320 with SMTP id
+ k7-20020aa79727000000b0047be1752320mr16610032pfg.77.1635220932289; Mon, 25
+ Oct 2021 21:02:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025231256.4030142-3-haoluo@google.com>
+References: <CAF7Jse9d9s0gFAi_bF3=ShE3FZw6k4X_nvDyGJkLRG7cDPDKCQ@mail.gmail.com>
+In-Reply-To: <CAF7Jse9d9s0gFAi_bF3=ShE3FZw6k4X_nvDyGJkLRG7cDPDKCQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 25 Oct 2021 21:02:01 -0700
+Message-ID: <CAADnVQJaRgQOA=hghLOwREYc=ebxMBPsRdBRZLNdZ4HV5xu7Zg@mail.gmail.com>
+Subject: Re: [bpf-next] bpf, verifier: Automated formal verification tool for
+ finding bugs in eBPF verifier range analysis routines
+To:     Sanjit Bhat <sanjit.bhat@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, hovav@cs.utexas.edu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 04:12:55PM -0700, Hao Luo wrote:
-> Some helper functions may modify its arguments, for example,
-> bpf_d_path, bpf_get_stack etc. Previously, their argument types
-> were marked as ARG_PTR_TO_MEM, which is compatible with read-only
-> mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
-> to modify a read-only memory by passing it into one of such helper
-> functions.
-> 
-> This patch introduces a new arg type ARG_PTR_TO_WRITABLE_MEM to
-> annotate the arguments that may be modified by the helpers. For
-> arguments that are of ARG_PTR_TO_MEM, it's ok to take any mem type,
-> while for ARG_PTR_TO_WRITABLE_MEM, readonly mem reg types are not
-> acceptable.
-> 
-> In short, when a helper may modify its input parameter, use
-> ARG_PTR_TO_WRITABLE_MEM instead of ARG_PTR_TO_MEM.
-> 
-> So far the difference between ARG_PTR_TO_MEM and ARG_PTR_TO_WRITABLE_MEM
-> is PTR_TO_RDONLY_BUF and PTR_TO_RDONLY_MEM. PTR_TO_RDONLY_BUF is
-> only used in bpf_iter prog as the type of key, which hasn't been
-> used in the affected helper functions. PTR_TO_RDONLY_MEM currently
-> has no consumers.
-> 
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->  Changes since v1:
->   - new patch, introduced ARG_PTR_TO_WRITABLE_MEM to differentiate
->     read-only and read-write mem arg types.
-> 
->  include/linux/bpf.h      |  9 +++++++++
->  kernel/bpf/cgroup.c      |  2 +-
->  kernel/bpf/helpers.c     |  2 +-
->  kernel/bpf/verifier.c    | 18 ++++++++++++++++++
->  kernel/trace/bpf_trace.c |  6 +++---
->  net/core/filter.c        |  6 +++---
->  6 files changed, 35 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 7b47e8f344cb..586ce67d63a9 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -341,6 +341,15 @@ enum bpf_arg_type {
->  	ARG_PTR_TO_STACK_OR_NULL,	/* pointer to stack or NULL */
->  	ARG_PTR_TO_CONST_STR,	/* pointer to a null terminated read-only string */
->  	ARG_PTR_TO_TIMER,	/* pointer to bpf_timer */
-> +	ARG_PTR_TO_WRITABLE_MEM,	/* pointer to valid memory. Compared to
-> +					 * ARG_PTR_TO_MEM, this arg_type is not
-> +					 * compatible with RDONLY memory. If the
-> +					 * argument may be updated by the helper,
-> +					 * use this type.
-> +					 */
-> +	ARG_PTR_TO_WRITABLE_MEM_OR_NULL,   /* pointer to memory or null, similar to
-> +					    * ARG_PTR_TO_WRITABLE_MEM.
-> +					    */
+On Mon, Oct 11, 2021 at 9:19 AM Sanjit Bhat <sanjit.bhat@gmail.com> wrote:
+>
+> I=E2=80=99m Sanjit Bhat, a researcher at UT Austin. My advisor, Hovav Sha=
+cham,
+> and I have been working on a tool to enable developers to
+> automatically check the eBPF verifier=E2=80=99s range analysis routines f=
+or
+> bugs, to generate sample bad inputs if bugs exist, and to formally
+> prove that there are no range analysis bugs. We=E2=80=99re reaching out t=
+o get
+> your feedback on whether there would be interest in using our tool.
+>
+> Some more details about what the tool does:
+>
+> We verify the range analysis routines in the eBPF verifier. These
+> routines predict the output range of ALU operations on scalar
+> registers. They include all code touched from the
+> `adjust_scalar_min_max_vals` function in `verifier.c`, as well as the
+> functions in `tnum.c`. In the past, these routines have led to a few
+> CVE=E2=80=99s, e.g., CVE-2020-8835, CVE-2020-27194, and CVE-2021-3490. Ou=
+r
+> tool, written purely in Python, translates the C range analysis code
+> to Z3 SMT solver inputs and verifies that the code implements a
+> correct range analysis pass for all 32- and 64-bit ALU operations on
+> scalar registers. Our tool already produces some interesting results,
+> described below, but we=E2=80=99re still actively working on it. We would=
+ love
+> your thoughts on ways we could make it more useful.
+>
+> Some preliminary results:
+>
+> We analyzed commit bc895e8b, which made a small change to the
+> `signed_sub_overflows` function from 32-bit inputs to 64-bit inputs.
+> Our tool found that before the commit, range analysis of 64-bit
+> scalar-scalar subtraction was incorrect. The tool generated a BPF
+> program that exploits the bug and leaves a register that has a
+> concrete value outside the register=E2=80=99s tracked range. After applyi=
+ng
+> the patch, the tool determined that 64-bit subtraction was now
+> correct. In addition to this bug, we were able to re-find bugs
+> exploited in prior zero-days, and we=E2=80=99ve done preliminary analysis=
+ on
+> all verifier range analysis ops on a commit from back in May.
+>
+> Please let us know if this tool sounds interesting! We would be happy
+> to explain it in more detail and collaborate on using it to aid eBPF
+> verifier development.
 
-Instead of adding new types,
-can we do something like this instead:
+It certainly sounds interesting! Keep us posted on the progress.
+Do you plan to do forward analysis and find bugs proactively?
+It sounds like the tool can only analyze the past commits?
+Could you contribute the auto-generated progs as selftests?
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index c8a78e830fca..5dbd2541aa86 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -68,7 +68,8 @@ struct bpf_reg_state {
-                        u32 btf_id;
-                };
-
--               u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-+               u32 rd_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-+               u32 wr_mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-
-                /* Max size from any of the above. */
-                struct {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c6616e325803..ad46169d422b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4374,7 +4374,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
-                        return -EACCES;
-                }
-                err = check_mem_region_access(env, regno, off, size,
--                                             reg->mem_size, false);
-+                                             t == BPF_WRITE ? reg->wr_mem_size : reg->rd_mem_size, false);
-                if (!err && t == BPF_READ && value_regno >= 0)
-                        mark_reg_unknown(env, regs, value_regno);
-        } else if (reg->type == PTR_TO_CTX) {
-@@ -11511,7 +11511,8 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
-                        goto err_put;
-                }
-                aux->btf_var.reg_type = PTR_TO_MEM;
--               aux->btf_var.mem_size = tsize;
-+               aux->btf_var.rd_mem_size = tsize;
-+               aux->btf_var.wr_mem_size = 0;
-        } else {
-                aux->btf_var.reg_type = PTR_TO_BTF_ID;
-                aux->btf_var.btf = btf;
-
+Thanks!
