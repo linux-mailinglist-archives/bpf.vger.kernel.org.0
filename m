@@ -2,110 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DA343A91B
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 02:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C518943A92D
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 02:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhJZAKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 20:10:04 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1770 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235444AbhJZAKD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 20:10:03 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19PMiU7X027675
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:07:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=Boibk+L3fz3EqHA4e82wKA53nXYv+eNyHk8OhI+7NIk=;
- b=UnZ8pOW0r1gWApKHySsZq4zAKX4TG3Y1AYsD3yCpXiuAFz+i2lSxhdiVWFIhKbudPjQq
- TlAjSRVaA23UY2P5cdkPtveb+3n6Mg/EXkoV9VRWn5oUkmskNQ4kGDWwUZ2YY7BF0HUe
- YaArbDAEA0FwrvAqWT4W1TFOmrRS2U9s66E= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3bx4fcgxrv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 25 Oct 2021 17:07:40 -0700
-Received: from intmgw001.05.ash7.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 25 Oct 2021 17:07:38 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id A92631ADA6825; Mon, 25 Oct 2021 17:07:36 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: Skip all serial_test_get_branch_snapshot in vm
-Date:   Mon, 25 Oct 2021 17:07:33 -0700
-Message-ID: <20211026000733.477714-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S235065AbhJZAXZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 20:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232743AbhJZAXY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Oct 2021 20:23:24 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D33EC061745;
+        Mon, 25 Oct 2021 17:21:02 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id o12so26294930ybk.1;
+        Mon, 25 Oct 2021 17:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9xAX9J7s8Ak1x97cx5ASfC7vUeon7RIMGp5IVKda4uQ=;
+        b=MFpghTTP7kDYJZyCns0R6MD5/remfDE3UI/a20vAzkeUNqXxL9x7owWELqYj5RqYWb
+         x2b9ph77ecKGpBcUDBV3WPVeyj/DFL1iTTusYtFYboeF24kwL3zLCYJB+Ha7CwZCDpD4
+         BsWDWraN16s9cRtg5zppEmsbZIPouNh58fnRdNcklKXDERXnvle3yqFcpNfBWUfDljCE
+         1zYjPVuKOxXgRNc4xoh0UGCYfG99TrQsnfkLl/qM6hyB5cVEf2Dnx3ZwqD1ouK9WhaFZ
+         MsNBoJZxst6RP4PEEfT6AVhoVI/VXFEBK+JJBu578x75fffKZGZO51a7BcIelmSYmY1E
+         bDpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9xAX9J7s8Ak1x97cx5ASfC7vUeon7RIMGp5IVKda4uQ=;
+        b=R4JlgkJh2SmvVZlFnmCBMHoe0kbn3pATmTa42b6uwuULSOIou0rKLwlJbxdXi5gdOJ
+         X3E1r7IF973eqyKPokT6nV41eNcUglWnXPHb44QySg4gqmaxMi2AHJKGjpFM3iKAggMK
+         CO5u7ZpRlV9PwuOkDbpKJoCT4MpZSmdkAOcDi2fC0bWmdjrmykCvEr7FlU9Hwqr9hEmq
+         6i0PLrWB4nksozmN1qlyEYxstAvqtyRyTyindxj7ZuuovjEru1QgKydWfM9JH0j0jjEJ
+         AlRJzxGpYCUBydgbUyXUK6PPg2M0EKX8qy3gmrUPmzscHM1ncYjFFZYgmQJJfgpMpYAR
+         bGBA==
+X-Gm-Message-State: AOAM533OTFIXf4U5vwwZg79jmOIDEDffDs+Ct4iiyg9PQR4sAoqdlrk2
+        SHgQB9yG/zw+ulujAqI6+uzQyk1wECf6jFtXiXM=
+X-Google-Smtp-Source: ABdhPJyRrYXR7B21pA/VtiD/arEEJsCU9lCMCbjFsJnCv1KeE+TKGHCs8Nrs9JAEpLL2t8QLto5WeyEhVwHz9eU+cBE=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr19830619ybj.433.1635207660956;
+ Mon, 25 Oct 2021 17:21:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: fcuK-4uVjUUJpLzh0o6jatvPr4z_O3YQ
-X-Proofpoint-GUID: fcuK-4uVjUUJpLzh0o6jatvPr4z_O3YQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_07,2021-10-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- priorityscore=1501 suspectscore=0 impostorscore=0 spamscore=0 bulkscore=0
- adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=985 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110250138
-X-FB-Internal: deliver
+References: <20211025230220.3250968-1-yhs@fb.com>
+In-Reply-To: <20211025230220.3250968-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 25 Oct 2021 17:20:49 -0700
+Message-ID: <CAEf4BzZ9povWyXYnx0_ud8chXobB3_wga+cWoi0gX8EoLO=gLA@mail.gmail.com>
+Subject: Re: [PATCH dwarves] btf: rename btf_tag to btf_decl_tag
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Skipping the second half of the test is not enough to silent the warning
-in dmesg. Skip the whole test before we can either properly silent the
-warning in kernel, or fix LBR snapshot for VM.
+On Mon, Oct 25, 2021 at 4:02 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> Kernel commit ([1]) renamed btf_tag to btf_decl_tag
+> for uapi btf.h and libbpf api's. The reason is a new
+> clang attribute, btf_type_tag, is introduced ([2]).
+> Renaming btf_tag to btf_decl_tag makes it easier to
+> distinghish from btf_type_tag.
+>
+> I also pulled in latest libbpf repo since it
+> contains renamed libbpf api function btf__add_decl_tag().
+>
+>   [1] https://lore.kernel.org/bpf/20211012164838.3345699-1-yhs@fb.com/
+>   [2] https://reviews.llvm.org/D111199
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-Fixes: 025bd7c753aa ("selftests/bpf: Add test for bpf_get_branch_snapshot=
-")
-Fixes: aa67fdb46436 ("selftests/bpf: Skip the second half of get_branch_s=
-napshot in vm")
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/prog_tests/get_branch_snapshot.c         | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+LGTM.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c=
- b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-index d6d70a359aeb5..81402e4439844 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-@@ -78,6 +78,12 @@ void serial_test_get_branch_snapshot(void)
- 	struct get_branch_snapshot *skel =3D NULL;
- 	int err;
-=20
-+	/* Skip the test before we fix LBR snapshot for hypervisor. */
-+	if (is_hypervisor()) {
-+		test__skip();
-+		return;
-+	}
-+
- 	if (create_perf_events()) {
- 		test__skip();  /* system doesn't support LBR */
- 		goto cleanup;
-@@ -107,16 +113,6 @@ void serial_test_get_branch_snapshot(void)
- 		goto cleanup;
- 	}
-=20
--	if (is_hypervisor()) {
--		/* As of today, LBR in hypervisor cannot be stopped before
--		 * too many entries are flushed. Skip the hit/waste test
--		 * for now in hypervisor until we optimize the LBR in
--		 * hypervisor.
--		 */
--		test__skip();
--		goto cleanup;
--	}
--
- 	ASSERT_GT(skel->bss->test1_hits, 6, "find_looptest_in_lbr");
-=20
- 	/* Given we stop LBR in software, we will waste a few entries.
---=20
-2.30.2
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+>  btf_encoder.c  | 16 ++++++++--------
+>  dwarf_loader.c |  6 +++---
+>  dwarves.h      |  2 +-
+>  lib/bpf        |  2 +-
+>  pahole.c       | 12 ++++++------
+>  5 files changed, 19 insertions(+), 19 deletions(-)
+>
+
+[...]
