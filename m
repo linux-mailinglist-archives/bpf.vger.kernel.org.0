@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F15A43A991
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 03:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A507943A994
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 03:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236025AbhJZBLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Oct 2021 21:11:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55174 "EHLO
+        id S236015AbhJZBLS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Oct 2021 21:11:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4450 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236030AbhJZBLO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 21:11:14 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PNgTxP021307;
-        Tue, 26 Oct 2021 01:08:39 GMT
+        by vger.kernel.org with ESMTP id S236040AbhJZBLP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Oct 2021 21:11:15 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19PLZbRS001462;
+        Tue, 26 Oct 2021 01:08:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=qN0RPFjSxYKWVDQVjkpEBeuWf34iC9MoU7ZpOfc/6Ko=;
- b=NKS9mxIhle3A2IrbHaELE41DH5ODZWQBl1bWLBRgWt/eB/5IZNJzmcxvXnOYCMNujsHU
- 6BbbbAJid01XrssyJzoo1azM+6HJLP0SUHnv0Mky/EQ04SDkKSuMF/2Vu/QNf96ePHnT
- HAnPBcENhG1DWkrjiNScp3MiVuRT64PtEDf7PQJfdESfyy2DJ0wE8bO+e/OR+rV3Qq16
- 0DYiWUr8r+f+Yiad4PY3D6vZmJcCUxAXKsaIygs4SSG40JLlQWLz1I7U0PbSWrNcVJqN
- YW+cvQiiofbEVDkdecccKTUV9XIkmCKZJiacnYVfmhRu/MHklrYJ1Tv3u5usFoUgdE5Z 2g== 
+ bh=1D0eH0k1kzCRsdmF4oWLKgvrwCrRPwHfE1C8od9oz1M=;
+ b=pWzeuuOBDhPnpVN0uN7xnex1MpC0LTRBOS/6LfdR980X9+pVEYl6AH9XcHmAlOYcJEz/
+ DvXQb0h5qX9W5XL5QxEMp5iR+mDDzPoo7k99b+X3FOm7lzHoQC0BdHV6H8QCQEb7wjWX
+ IyfPz2HNVF6T4bkDsPNyAg/nY0kNb6EMqGHcWrVfA54L7m5/mN3wGgqwptiXWfmR+mSQ
+ gawOoofpmp5w+CpSIFusmEDaoY8vqDJw0NZphR+Qc10+SFJa5oq5sudL3nI4C/yR5vrF
+ E+UN15WQ2Ns4fZXwKnW6HC0NbXxAJpjQBGmiOiLsjOSote5uFdrjNuGJRWjvs1TjICtp 9g== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx5ewtvea-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx4msbvme-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 01:08:40 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19Q0uIlA011234;
+        Tue, 26 Oct 2021 01:08:39 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx4msbvkw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 26 Oct 2021 01:08:39 +0000
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19Q0vkGY000927;
-        Tue, 26 Oct 2021 01:08:39 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx5ewtvdr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 01:08:38 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19Q12LLK009083;
-        Tue, 26 Oct 2021 01:08:37 GMT
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19Q13aSx017407;
+        Tue, 26 Oct 2021 01:08:38 GMT
 Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bx4esrt90-1
+        by ppma04ams.nl.ibm.com with ESMTP id 3bx4edgtbd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 26 Oct 2021 01:08:37 +0000
 Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19Q18Ygv55116260
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19Q18Yne58851616
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 26 Oct 2021 01:08:34 GMT
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBC6C42045;
-        Tue, 26 Oct 2021 01:08:33 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id B417942045;
+        Tue, 26 Oct 2021 01:08:34 +0000 (GMT)
 Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D21742042;
-        Tue, 26 Oct 2021 01:08:33 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 5661342049;
+        Tue, 26 Oct 2021 01:08:34 +0000 (GMT)
 Received: from vm.lan (unknown [9.145.12.156])
         by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Oct 2021 01:08:33 +0000 (GMT)
+        Tue, 26 Oct 2021 01:08:34 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,25 +61,25 @@ To:     Alexei Starovoitov <ast@kernel.org>,
 Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next v3 2/6] libbpf: Use __BYTE_ORDER__
-Date:   Tue, 26 Oct 2021 03:08:27 +0200
-Message-Id: <20211026010831.748682-3-iii@linux.ibm.com>
+Subject: [PATCH bpf-next v3 3/6] selftests/bpf: Use __BYTE_ORDER__
+Date:   Tue, 26 Oct 2021 03:08:28 +0200
+Message-Id: <20211026010831.748682-4-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211026010831.748682-1-iii@linux.ibm.com>
 References: <20211026010831.748682-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: MYKkDA2BAkT-Png9oNKoa-h9UWj4vhnD
-X-Proofpoint-ORIG-GUID: 683PAVmJYdM4kfoxQ8-AWhSpKX3fQ_24
+X-Proofpoint-ORIG-GUID: WRYpjwy4mqaCs-zbTyXT_vWo1AIRs3Iq
+X-Proofpoint-GUID: 6lB68_pEOdgQmxWPDIo_lThB4Q1QZzZE
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-10-25_08,2021-10-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110260001
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 clxscore=1015 priorityscore=1501
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110260004
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -89,126 +89,166 @@ __BYTE_ORDER for consistency.
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- tools/lib/bpf/btf.c       |  4 ++--
- tools/lib/bpf/btf_dump.c  |  8 ++++----
- tools/lib/bpf/libbpf.c    |  4 ++--
- tools/lib/bpf/linker.c    | 12 ++++++------
- tools/lib/bpf/relo_core.c |  2 +-
- 5 files changed, 15 insertions(+), 15 deletions(-)
+ .../testing/selftests/bpf/prog_tests/btf_endian.c  |  6 +++---
+ tools/testing/selftests/bpf/test_sysctl.c          |  4 ++--
+ tools/testing/selftests/bpf/verifier/ctx_skb.c     | 14 +++++++-------
+ tools/testing/selftests/bpf/verifier/lwt.c         |  2 +-
+ .../bpf/verifier/perf_event_sample_period.c        |  6 +++---
+ 5 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index ef924fc2c911..0c628c33e23b 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -538,9 +538,9 @@ int btf__set_pointer_size(struct btf *btf, size_t ptr_sz)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_endian.c b/tools/testing/selftests/bpf/prog_tests/btf_endian.c
+index 2653cc482df4..8afbf3d0b89a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_endian.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_endian.c
+@@ -7,12 +7,12 @@
+ #include <bpf/btf.h>
  
- static bool is_host_big_endian(void)
- {
+ void test_btf_endian() {
 -#if __BYTE_ORDER == __LITTLE_ENDIAN
 +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	return false;
+ 	enum btf_endianness endian = BTF_LITTLE_ENDIAN;
 -#elif __BYTE_ORDER == __BIG_ENDIAN
 +#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 	return true;
+ 	enum btf_endianness endian = BTF_BIG_ENDIAN;
  #else
- # error "Unrecognized __BYTE_ORDER__"
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 8e05ab44c22a..17db62b5002e 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -1576,11 +1576,11 @@ static int btf_dump_get_bitfield_value(struct btf_dump *d,
- 	/* Bitfield value retrieval is done in two steps; first relevant bytes are
- 	 * stored in num, then we left/right shift num to eliminate irrelevant bits.
- 	 */
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	for (i = t->size - 1; i >= 0; i--)
- 		num = num * 256 + bytes[i];
- 	nr_copy_bits = bit_sz + bits_offset;
--#elif __BYTE_ORDER == __BIG_ENDIAN
-+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 	for (i = 0; i < t->size; i++)
- 		num = num * 256 + bytes[i];
- 	nr_copy_bits = t->size * 8 - bits_offset;
-@@ -1700,10 +1700,10 @@ static int btf_dump_int_data(struct btf_dump *d,
- 		/* avoid use of __int128 as some 32-bit platforms do not
- 		 * support it.
- 		 */
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 		lsi = ints[0];
- 		msi = ints[1];
--#elif __BYTE_ORDER == __BIG_ENDIAN
-+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 		lsi = ints[1];
- 		msi = ints[0];
- #else
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 604abe00785f..cd6132c5a416 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1299,10 +1299,10 @@ static int bpf_object__elf_init(struct bpf_object *obj)
- 
- static int bpf_object__check_endianness(struct bpf_object *obj)
- {
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	if (obj->efile.ehdr->e_ident[EI_DATA] == ELFDATA2LSB)
- 		return 0;
--#elif __BYTE_ORDER == __BIG_ENDIAN
-+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 	if (obj->efile.ehdr->e_ident[EI_DATA] == ELFDATA2MSB)
- 		return 0;
- #else
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 7bf658fbda80..ce0800e61dc7 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -323,12 +323,12 @@ static int init_output_elf(struct bpf_linker *linker, const char *file)
- 
- 	linker->elf_hdr->e_machine = EM_BPF;
- 	linker->elf_hdr->e_type = ET_REL;
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	linker->elf_hdr->e_ident[EI_DATA] = ELFDATA2LSB;
--#elif __BYTE_ORDER == __BIG_ENDIAN
-+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 	linker->elf_hdr->e_ident[EI_DATA] = ELFDATA2MSB;
- #else
--#error "Unknown __BYTE_ORDER"
-+#error "Unknown __BYTE_ORDER__"
+-#error "Unrecognized __BYTE_ORDER"
++#error "Unrecognized __BYTE_ORDER__"
  #endif
- 
- 	/* STRTAB */
-@@ -538,12 +538,12 @@ static int linker_load_obj_file(struct bpf_linker *linker, const char *filename,
- 				const struct bpf_linker_file_opts *opts,
- 				struct src_obj *obj)
- {
+ 	enum btf_endianness swap_endian = 1 - endian;
+ 	struct btf *btf = NULL, *swap_btf = NULL;
+diff --git a/tools/testing/selftests/bpf/test_sysctl.c b/tools/testing/selftests/bpf/test_sysctl.c
+index a20a919244c0..a3bb6d399daa 100644
+--- a/tools/testing/selftests/bpf/test_sysctl.c
++++ b/tools/testing/selftests/bpf/test_sysctl.c
+@@ -124,7 +124,7 @@ static struct sysctl_test tests[] = {
+ 		.descr = "ctx:write sysctl:write read ok narrow",
+ 		.insns = {
+ 			/* u64 w = (u16)write & 1; */
 -#if __BYTE_ORDER == __LITTLE_ENDIAN
 +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	const int host_endianness = ELFDATA2LSB;
--#elif __BYTE_ORDER == __BIG_ENDIAN
-+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 	const int host_endianness = ELFDATA2MSB;
+ 			BPF_LDX_MEM(BPF_H, BPF_REG_7, BPF_REG_1,
+ 				    offsetof(struct bpf_sysctl, write)),
  #else
--#error "Unknown __BYTE_ORDER"
-+#error "Unknown __BYTE_ORDER__"
- #endif
- 	int err = 0;
- 	Elf_Scn *scn;
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index 4016ed492d0c..b5b8956a1be8 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -662,7 +662,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
- 			*validate = true; /* signedness is never ambiguous */
- 		break;
- 	case BPF_FIELD_LSHIFT_U64:
+@@ -184,7 +184,7 @@ static struct sysctl_test tests[] = {
+ 		.descr = "ctx:file_pos sysctl:read read ok narrow",
+ 		.insns = {
+ 			/* If (file_pos == X) */
 -#if __BYTE_ORDER == __LITTLE_ENDIAN
 +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 		*val = 64 - (bit_off + bit_sz - byte_off  * 8);
+ 			BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_1,
+ 				    offsetof(struct bpf_sysctl, file_pos)),
  #else
- 		*val = (8 - byte_sz) * 8 + (bit_off - byte_off * 8);
+diff --git a/tools/testing/selftests/bpf/verifier/ctx_skb.c b/tools/testing/selftests/bpf/verifier/ctx_skb.c
+index 9e1a30b94197..83cecfbd6739 100644
+--- a/tools/testing/selftests/bpf/verifier/ctx_skb.c
++++ b/tools/testing/selftests/bpf/verifier/ctx_skb.c
+@@ -502,7 +502,7 @@
+ 	"check skb->hash byte load permitted",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, hash)),
+ #else
+@@ -537,7 +537,7 @@
+ 	"check skb->hash byte load permitted 3",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, hash) + 3),
+ #else
+@@ -646,7 +646,7 @@
+ 	"check skb->hash half load permitted",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, hash)),
+ #else
+@@ -661,7 +661,7 @@
+ 	"check skb->hash half load permitted 2",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, hash) + 2),
+ #else
+@@ -676,7 +676,7 @@
+ 	"check skb->hash half load not permitted, unaligned 1",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, hash) + 1),
+ #else
+@@ -693,7 +693,7 @@
+ 	"check skb->hash half load not permitted, unaligned 3",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, hash) + 3),
+ #else
+@@ -951,7 +951,7 @@
+ 	"check skb->data half load not permitted",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, data)),
+ #else
+diff --git a/tools/testing/selftests/bpf/verifier/lwt.c b/tools/testing/selftests/bpf/verifier/lwt.c
+index 2cab6a3966bb..5c8944d0b091 100644
+--- a/tools/testing/selftests/bpf/verifier/lwt.c
++++ b/tools/testing/selftests/bpf/verifier/lwt.c
+@@ -174,7 +174,7 @@
+ 	"check skb->tc_classid half load not permitted for lwt prog",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct __sk_buff, tc_classid)),
+ #else
+diff --git a/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+index 471c1a5950d8..d8a9b1a1f9a2 100644
+--- a/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
++++ b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+@@ -2,7 +2,7 @@
+ 	"check bpf_perf_event_data->sample_period byte load permitted",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct bpf_perf_event_data, sample_period)),
+ #else
+@@ -18,7 +18,7 @@
+ 	"check bpf_perf_event_data->sample_period half load permitted",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct bpf_perf_event_data, sample_period)),
+ #else
+@@ -34,7 +34,7 @@
+ 	"check bpf_perf_event_data->sample_period word load permitted",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
+ 		    offsetof(struct bpf_perf_event_data, sample_period)),
+ #else
 -- 
 2.31.1
 
