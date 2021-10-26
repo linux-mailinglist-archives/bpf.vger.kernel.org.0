@@ -2,91 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAA943AFC9
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 12:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379E143B023
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 12:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbhJZKP7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 06:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbhJZKPx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:15:53 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1A9C061745
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 03:13:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id w12so5527620edd.11
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 03:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=bpGQNTL6otHRb0hLa6usXEaBRLpkl9zua7K0hI+JF4Q=;
-        b=ZJpI9YykeeFjMVLSSB4IbFj4JzCVtxRDKUcAJmBG924Ec8TpJV6Ww4MGsjs9USd2Fc
-         R7jTp/T4x8CHHu0IhNXHN82Mtcgx4QpyL+keGOQye11KnduQiAHlrQZ/5O2iQ5axwquY
-         5paGXYXBsMmKv0LMaoDN/UXIf8wNNjROneUAvcN6LoTGeb0JmpWryqoKbDSID9VjtJ0M
-         8vqMxWsvj1iqvc/ijMWSSMDtTEUxLj5HWv5g3lir8rEeg7uJ3F602TQF+BEgry4gCAwV
-         W06pKjmLG6EjvmAJVNpBTZkDyxWm0yK13Upr6jOMmn9P3cGD0rb4j0RVycZaemx7NwrE
-         bUhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=bpGQNTL6otHRb0hLa6usXEaBRLpkl9zua7K0hI+JF4Q=;
-        b=A3XO0mBweT386OgGrhtuaxHLAOz+lde/ykB/90MTUztiJPG1EYLs6WqzUG+VprDgk6
-         rNiShdO19jQ6zbtNdMdvJEBHtWN4YWEaxnNJCmtBxJ1CwkkN7ybGHl/ffHb+dsUvoDia
-         FCVPDlw8oJsknk9vI/2g1xmp6ZcqLdtkAk/kyaPxHuSS7oZItIR88EM3jEsPDsdv/o+A
-         uVYSUAk4KBdid+khrSX4j+5kc07iTRRQAUUtDYkG1g2FeAQbGlr/RDqhuwpVNW1gaemn
-         Q3BPZW8Owp3bg4iLTM83uTDm11DqD5IRB2u/7t8Jj0fQZ+G7aBJZfgrHEnubkXeMoYGP
-         ImgA==
-X-Gm-Message-State: AOAM531wOCX+987iElubzMOucwSbZ6tIyBJgmXgZwlPA+c8Bn/iDhnHN
-        ELUVfQnMBqJRzFL9TWNL7KQSKgxrvh3Zu43n5pU=
-X-Google-Smtp-Source: ABdhPJwwM7NP6dAhJkfFjxUTix7/z7YKSAWfVeSQRREDARaA1QMLGMerBjitdxxQdmttOktOKFrEdq/A1GE+QzjFNAI=
-X-Received: by 2002:aa7:c40c:: with SMTP id j12mr927235edq.137.1635243205374;
- Tue, 26 Oct 2021 03:13:25 -0700 (PDT)
+        id S234188AbhJZKio (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 06:38:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47904 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234596AbhJZKiU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:38:20 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CFCFC1FD4C;
+        Tue, 26 Oct 2021 10:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635244551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1eIOwvf/mMVcZwym9Rsv9K70HOPBD5q/9n5lAFwsZyI=;
+        b=INOy8JbcR/E0RvXOtZ9l6kLK4ypy5b76OCI5OckfNKpFgnwhlXjEbmuL3zGAyCw8uxdvjj
+        YSpBGCium6DRcUwhe5EC3/On5TQaGYvsiKMxzDZqBKy4LcBGj5EteMRwpKyc5XDj7AZPwm
+        YDf9opjAXlpbqwZAzKOuC4KIFz3WjkU=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 025E8A3B85;
+        Tue, 26 Oct 2021 10:35:50 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 12:35:47 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Zhang, Qiang" <qiang.zhang@windriver.com>, robdclark@chromium.org,
+        Christian Brauner <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-perf-users@vger.kernel.org,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v6 00/12] extend task comm from 16 to 24
+Message-ID: <YXfaA2uSj9JIfZIl@alley>
+References: <20211025083315.4752-1-laoar.shao@gmail.com>
+ <CAADnVQKm0Ljj-w5PbkAu1ugLFnZRRPt-Vk-J7AhXxDD5xVompA@mail.gmail.com>
+ <20211025170503.59830a43@gandalf.local.home>
 MIME-Version: 1.0
-Sender: rosemarie.carlsen29@gmail.com
-Received: by 2002:a54:3f12:0:0:0:0:0 with HTTP; Tue, 26 Oct 2021 03:13:24
- -0700 (PDT)
-From:   "mrs.sophia.robin" <mrs.sophiar.robin424@gmail.com>
-Date:   Tue, 26 Oct 2021 11:13:24 +0100
-X-Google-Sender-Auth: h0HmKbK7N1t7xKKBumCgt9P7t78
-Message-ID: <CAFYKt_9Vy=2qDV10B=yqb_wr3SywA-mmuwUNRCBi4_HfT1SouQ@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025170503.59830a43@gandalf.local.home>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-am Mrs.Sophia Robin, a citizen of the united state of America, I work
-at HSBC Bank in Milan Italy, as Telex Manager charge of wire transfer
-department, am contacting you personally for investment assistance and
-a long term business relationship in your Country.am contacting you
-for an important and  urgent business transaction, I want the bank to
-transfer the money left by Dr. Cheng Chao, A Chinese  Politician who
-died, March 17th 2020, without any trace of his family members, he
-used our bank to launder money overseas through the help of their
-Political advisers. And most of the funds which they transferred out
-of the shores of China, were gold and oil money that was supposed to
-have been used to develop the continent.
+On Mon 2021-10-25 17:05:03, Steven Rostedt wrote:
+> On Mon, 25 Oct 2021 11:10:09 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> 
+> > It looks like a churn that doesn't really address the problem.
+> > If we were to allow long names then make it into a pointer and use 16 byte
+> > as an optimized storage for short names. Any longer name would be a pointer.
+> > In other words make it similar to dentry->d_iname.
+> 
+> That would be quite a bigger undertaking too, as it is assumed throughout
+> the kernel that the task->comm is TASK_COMM_LEN and is nul terminated. And
+> most locations that save the comm simply use a fixed size string of
+> TASK_COMM_LEN. Not saying its not feasible, but it would require a lot more
+> analysis of the impact by changing such a fundamental part of task struct
+> from a static to something requiring allocation.
 
-Can you invest this money and also help the poor? The amount value at
-$15.5million Dollars  ($US15,500,000), left in his account still
-unclaimed, if you know that you are capable to invest this fund into
-any profitable business in your country kindly send me your details
-information as listed below to enable me draft you an application form
-of claim along with the deposit certificate which you are going to
-fill with your bank account detail necessary and contact the HSBC Bank
-in Italy for immediate transfer of the Amounted sum into your bank
-account direct. Percentage share will be 60,for me/40,for you.
+I fully agree. The evolution of this patchset clearly shows how many
+code paths depend on the existing behavior.
 
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your  Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) Your photo.......................................
 
-Thanks with my best regards.Mrs. Sophia Robin,
-Telex Manager Milan Italy  (H.S.B.C)
+> Unless you are suggesting that we truncate like normal the 16 byte names
+> (to a max of 15 characters), and add a way to hold the entire name for
+> those locations that understand it.
+
+Yup. If the problem is only with kthreads, it might be possible to
+store the pointer into "struct kthread" and update proc_task_name().
+It would generalize the solution already used by workqueues.
+I think that something like this was mentioned in the discussion
+about v1.
+
+Best Regards,
+Petr
