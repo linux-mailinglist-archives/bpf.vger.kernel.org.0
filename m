@@ -2,517 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3F043AD8B
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 09:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA1943ADDF
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 10:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhJZHyU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 03:54:20 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13979 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbhJZHyT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:54:19 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HdkWC2nTyzZcNC;
-        Tue, 26 Oct 2021 15:49:59 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 26 Oct 2021 15:51:53 +0800
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 26 Oct 2021 15:51:52 +0800
-Subject: Re: [PATCH bpf-next,v2] riscv, bpf: Add BPF exception tables
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-References: <20211025035324.517263-1-tongtiangen@huawei.com>
- <CAJ+HfNgSVSs5BxVdDHuGNXnC9dxTuZVtx5RiPX=O8okTJZwsPw@mail.gmail.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-From:   tongtiangen <tongtiangen@huawei.com>
-Message-ID: <4ab2e551-e371-2e94-dce2-432be3c09061@huawei.com>
-Date:   Tue, 26 Oct 2021 15:51:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S233575AbhJZIUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 04:20:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233734AbhJZIUr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Oct 2021 04:20:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635236303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nX6P2vPwnb96lf0y4PA5FIFAX54BW+MBp9F/NDzRo+Q=;
+        b=XUQ2Cn1TBRoRWZBri8PcslOHOfKSLL4fIYo2/3qqI+be/L46Q1P0Cx7QBCR35EN17da6lq
+        UxwG+Avuhq88UM2aEEVfHJvIZB9FZtvSRxtGVvi5Kznp4x3WO5sLRG2Vlvp6hX8jROyna3
+        13DFAR2fT97qWlsxbTmzC/c548uv63c=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-ToAKw-S7Os2VvLYCIDGj5g-1; Tue, 26 Oct 2021 04:18:22 -0400
+X-MC-Unique: ToAKw-S7Os2VvLYCIDGj5g-1
+Received: by mail-ed1-f71.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso2678987edb.19
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 01:18:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nX6P2vPwnb96lf0y4PA5FIFAX54BW+MBp9F/NDzRo+Q=;
+        b=f+umcjfrAyny2hVhYP9PjLmRb2ANV8DIJ/axEiW7gsehmSTvkbnPABkHN2PAS0EtRk
+         B1kWc9YpkQqPgqqHKvxvhFplLeDr8xROzTsEuzx5wzvfkmf5BzGIXoKrTJTr+BjpNwa1
+         oSiOK6IFaLzJxn9fn+/KYl3k2niCX/30FR9pvSy0BtFzcrbUgHwPc1wsLsvXSb5obKtF
+         UBk0F5R8eZGDbE4Qck3d4yCK62ygfiuGSm681q3RjzgMKdYpEcTSGhNCdtqdiNzMpOEh
+         FwsSY72MCY6ToYTC0/wyfRXdfqS4FJG6n3wU0kiZgjcEk7g45zfjRHdlvFrXs+KHLPJ9
+         uiUg==
+X-Gm-Message-State: AOAM532UJ675xuHSUO43DYeMDcJU7aft6o2n7D5hUZLw0G8BPQQdKg9U
+        INbc4GQrwqene//nDD0vqrQPZnWX+H8I7ybTnQNwPl6mFB+zVFQjFH76kStfw5wqgy6ghRlGATT
+        sK2f6ltIpa/Ee
+X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr35356733edw.379.1635236300787;
+        Tue, 26 Oct 2021 01:18:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGIRmVkJxzy0xEsKSVcpzQIfnthJICe2xCttVtJhF+kOEgP+VhujoYdKt/HLRNKev62xrZJQ==
+X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr35356710edw.379.1635236300504;
+        Tue, 26 Oct 2021 01:18:20 -0700 (PDT)
+Received: from localhost (net-130-25-199-50.cust.vodafonedsl.it. [130.25.199.50])
+        by smtp.gmail.com with ESMTPSA id u23sm10309408edr.97.2021.10.26.01.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 01:18:20 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 10:18:18 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf v2] bpf: fix potential race in tail call
+ compatibility check
+Message-ID: <YXe5yg1G635STsHE@lore-desk>
+References: <20211025130809.314707-1-toke@redhat.com>
+ <YXa/A4eQhlPPsn+n@lore-desk>
+ <c1244c73-bc61-89b8-dca3-f06dca85f64e@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNgSVSs5BxVdDHuGNXnC9dxTuZVtx5RiPX=O8okTJZwsPw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Dya8FXOfIi726Ldv"
+Content-Disposition: inline
+In-Reply-To: <c1244c73-bc61-89b8-dca3-f06dca85f64e@iogearbox.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+--Dya8FXOfIi726Ldv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/10/26 2:27, Björn Töpel wrote:
-> On Mon, 25 Oct 2021 at 05:38, Tong Tiangen <tongtiangen@huawei.com> wrote:
->>
->> When a tracing BPF program attempts to read memory without using the
->> bpf_probe_read() helper, the verifier marks the load instruction with
->> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
->> this flag it falls back to the interpreter.
->>
->> Add support for BPF_PROBE_MEM, by appending an exception table to the
->> BPF program. If the load instruction causes a data abort, the fixup
->> infrastructure finds the exception table and fixes up the fault, by
->> clearing the destination register and jumping over the faulting
->> instruction.
->>
->> A more generic solution would add a "handler" field to the table entry,
->> like on x86 and s390.
->>
->> The same issue in ARM64 is fixed in:
->> commit 800834285361 ("bpf, arm64: Add BPF exception tables")
->>
->> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
->> Tested-by: Pu Lehui <pulehui@huawei.com>
->> ---
->> v2:
->> Modify according to Björn's comments, mainly removes redundant head files
->> extable.h and some code style issues.
->>
->
-> Thanks Tong! I haven't got around to take it for a spin yet.
->
-> However, some more minor nits, and some other comments.
+> On 10/25/21 4:28 PM, Lorenzo Bianconi wrote:
+> > > Lorenzo noticed that the code testing for program type compatibility =
+of
+> > > tail call maps is potentially racy in that two threads could encounte=
+r a
+> > > map with an unset type simultaneously and both return true even thoug=
+h they
+> > > are inserting incompatible programs.
+> > >=20
+> > > The race window is quite small, but artificially enlarging it by addi=
+ng a
+> > > usleep_range() inside the check in bpf_prog_array_compatible() makes =
+it
+> > > trivial to trigger from userspace with a program that does, essential=
+ly:
+> > >=20
+> > >          map_fd =3D bpf_create_map(BPF_MAP_TYPE_PROG_ARRAY, 4, 4, 2, =
+0);
+> > >          pid =3D fork();
+> > >          if (pid) {
+> > >                  key =3D 0;
+> > >                  value =3D xdp_fd;
+> > >          } else {
+> > >                  key =3D 1;
+> > >                  value =3D tc_fd;
+> > >          }
+> > >          err =3D bpf_map_update_elem(map_fd, &key, &value, 0);
+> > >=20
+> > > While the race window is small, it has potentially serious ramificati=
+ons in
+> > > that triggering it would allow a BPF program to tail call to a progra=
+m of a
+> > > different type. So let's get rid of it by protecting the update with a
+> > > spinlock. The commit in the Fixes tag is the last commit that touches=
+ the
+> > > code in question.
+> > >=20
+> > > v2:
+> > > - Use a spinlock instead of an atomic variable and cmpxchg() (Alexei)
+> > >=20
+> > > Fixes: 3324b584b6f6 ("ebpf: misc core cleanup")
+> > > Reported-by: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+> > > Signed-off-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
+> > > ---
+> > >   include/linux/bpf.h   |  1 +
+> > >   kernel/bpf/arraymap.c |  1 +
+> > >   kernel/bpf/core.c     | 14 ++++++++++----
+> > >   kernel/bpf/syscall.c  |  2 ++
+> > >   4 files changed, 14 insertions(+), 4 deletions(-)
+> > >=20
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 020a7d5bf470..98d906176d89 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -929,6 +929,7 @@ struct bpf_array_aux {
+> > >   	 * stored in the map to make sure that all callers and callees have
+> > >   	 * the same prog type and JITed flag.
+> > >   	 */
+> > > +	spinlock_t type_check_lock;
+> >=20
+> > I was wondering if we can use a mutex instead of a spinlock here since =
+it is
+> > run from a syscall AFAIU. The only downside is mutex_lock is run inside
+> > aux->used_maps_mutex critical section. Am I missing something?
+>=20
+> Hm, potentially it could work, but then it's also 32 vs 4 extra bytes. Th=
+ere's
+> also poke_mutex or freeze_mutex, but feels to hacky to 'generalize for re=
+use',
+> so I think the spinlock in bpf_array_aux is fine.
 
-Thanks Björn, Your comments are very useful.
+I was wondering if in the future we would need to protect something not sup=
+ported
+by a spinlock but it is probably not the case. I am fine with the spinlock =
+:)
 
->
->>  arch/riscv/mm/extable.c         |  27 ++++-
->>  arch/riscv/net/bpf_jit.h        |   1 +
->>  arch/riscv/net/bpf_jit_comp64.c | 185 +++++++++++++++++++++++++-------
->>  arch/riscv/net/bpf_jit_core.c   |  18 +++-
->>  4 files changed, 185 insertions(+), 46 deletions(-)
->>
->> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
->> index 2fc729422151..442695393131 100644
->> --- a/arch/riscv/mm/extable.c
->> +++ b/arch/riscv/mm/extable.c
->> @@ -11,14 +11,31 @@
->>  #include <linux/module.h>
->>  #include <linux/uaccess.h>
->>
->> +#ifdef CONFIG_BPF_JIT
->> +static inline bool in_bpf_jit(struct pt_regs *regs)
->> +{
->> +       if (!IS_ENABLED(CONFIG_BPF_JIT))
->> +               return false;
->
-> The whole function is gated by the ifdef. No need for this check. Please remove!
+Regards,
+Lorenzo
 
-ok, It should be removed here.
+>=20
+> > >   	enum bpf_prog_type type;
+> > >   	bool jited;
+> > >   	/* Programs with direct jumps into programs part of this array. */
+> > > diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> > > index cebd4fb06d19..da9b1e96cadc 100644
+> > > --- a/kernel/bpf/arraymap.c
+> > > +++ b/kernel/bpf/arraymap.c
+> > > @@ -1072,6 +1072,7 @@ static struct bpf_map *prog_array_map_alloc(uni=
+on bpf_attr *attr)
+> > >   	INIT_WORK(&aux->work, prog_array_map_clear_deferred);
+> > >   	INIT_LIST_HEAD(&aux->poke_progs);
+> > >   	mutex_init(&aux->poke_mutex);
+> > > +	spin_lock_init(&aux->type_check_lock);
+>=20
+> Just as a tiny nit, I would probably name it slightly different, since ty=
+pe_check_lock
+> mainly refers to the type property but there's also jit vs non-jit and as=
+ pointed out
+> there could be other extensions that need checking in future as well. May=
+be 'compat_lock'
+> would be a more generic one or just:
+>=20
+>         struct {
+>                 enum bpf_prog_type type;
+>                 bool jited;
+>                 spinlock_t lock;
+>         } owner;
+>=20
+> > >   	map =3D array_map_alloc(attr);
+> > >   	if (IS_ERR(map)) {
+> > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > > index c1e7eb3f1876..9439c839d279 100644
+> > > --- a/kernel/bpf/core.c
+> > > +++ b/kernel/bpf/core.c
+> > > @@ -1823,20 +1823,26 @@ static unsigned int __bpf_prog_ret0_warn(cons=
+t void *ctx,
+> > >   bool bpf_prog_array_compatible(struct bpf_array *array,
+> > >   			       const struct bpf_prog *fp)
+> > >   {
+> > > +	bool ret;
+> > > +
+> > >   	if (fp->kprobe_override)
+> > >   		return false;
+> > > +	spin_lock(&array->aux->type_check_lock);
+> > > +
+> > >   	if (!array->aux->type) {
+> > >   		/* There's no owner yet where we could check for
+> > >   		 * compatibility.
+> > >   		 */
+> > >   		array->aux->type  =3D fp->type;
+> > >   		array->aux->jited =3D fp->jited;
+> > > -		return true;
+> > > +		ret =3D true;
+> > > +	} else {
+> > > +		ret =3D array->aux->type  =3D=3D fp->type &&
+> > > +		      array->aux->jited =3D=3D fp->jited;
+> > >   	}
+> > > -
+> > > -	return array->aux->type  =3D=3D fp->type &&
+> > > -	       array->aux->jited =3D=3D fp->jited;
+> > > +	spin_unlock(&array->aux->type_check_lock);
+> > > +	return ret;
+> > >   }
+> > >   static int bpf_check_tail_call(const struct bpf_prog *fp)
+> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > > index 4e50c0bfdb7d..955011c7df29 100644
+> > > --- a/kernel/bpf/syscall.c
+> > > +++ b/kernel/bpf/syscall.c
+> > > @@ -543,8 +543,10 @@ static void bpf_map_show_fdinfo(struct seq_file =
+*m, struct file *filp)
+> > >   	if (map->map_type =3D=3D BPF_MAP_TYPE_PROG_ARRAY) {
+> > >   		array =3D container_of(map, struct bpf_array, map);
+> > > +		spin_lock(&array->aux->type_check_lock);
+> > >   		type  =3D array->aux->type;
+> > >   		jited =3D array->aux->jited;
+> > > +		spin_unlock(&array->aux->type_check_lock);
+> > >   	}
+> > >   	seq_printf(m,
+> > > --=20
+> > > 2.33.0
+> > >=20
+>=20
 
->
->> +
->> +       return regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END;
->> +}
->> +
->> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
->> +#endif
->> +
->>  int fixup_exception(struct pt_regs *regs)
->>  {
->>         const struct exception_table_entry *fixup;
->>
->>         fixup = search_exception_tables(regs->epc);
->> -       if (fixup) {
->> -               regs->epc = fixup->fixup;
->> -               return 1;
->> -       }
->> -       return 0;
->> +       if (!fixup)
->> +               return 0;
->> +
->> +#ifdef CONFIG_BPF_JIT
->> +       if (in_bpf_jit(regs))
->> +               return rv_bpf_fixup_exception(fixup, regs);
->> +#endif
->> +
->> +       regs->epc = fixup->fixup;
->> +       return 1;
->>  }
->> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->> index 75c1e9996867..8f2e5670c1aa 100644
->> --- a/arch/riscv/net/bpf_jit.h
->> +++ b/arch/riscv/net/bpf_jit.h
->> @@ -71,6 +71,7 @@ struct rv_jit_context {
->>         int ninsns;
->>         int epilogue_offset;
->>         int *offset;            /* BPF to RV */
->> +       int nexentrys;
->
-> Nit: Spelling: entries, not entrys.
+--Dya8FXOfIi726Ldv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-typo.
+-----BEGIN PGP SIGNATURE-----
 
->
->>         unsigned long flags;
->>         int stack_size;
->>  };
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->> index 3af4131c22c7..a1b9fe14ead3 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -5,6 +5,7 @@
->>   *
->>   */
->>
->> +#include <linux/bitfield.h>
->>  #include <linux/bpf.h>
->>  #include <linux/filter.h>
->>  #include "bpf_jit.h"
->> @@ -27,6 +28,21 @@ static const int regmap[] = {
->>         [BPF_REG_AX] =  RV_REG_T0,
->>  };
->>
->> +static const int pt_regmap[] = {
->> +       [RV_REG_A5] = offsetof(struct pt_regs, a5),
->
-> Nit: Please place the A5 *under* A4.
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYXe5ygAKCRA6cBh0uS2t
+rJxGAP4/Xo5iLd3UqhBPmWl2/MEEBCblfgzISPU3P5dGd9QpXQEAt1zDgk5We2W3
+h/07h5te16s1hfg3MD3rubwBgCEAMwg=
+=Wfkl
+-----END PGP SIGNATURE-----
 
-ok, A5 should be placed under A4.
->
->> +       [RV_REG_A0] = offsetof(struct pt_regs, a0),
->> +       [RV_REG_A1] = offsetof(struct pt_regs, a1),
->> +       [RV_REG_A2] = offsetof(struct pt_regs, a2),
->> +       [RV_REG_A3] = offsetof(struct pt_regs, a3),
->> +       [RV_REG_A4] = offsetof(struct pt_regs, a4),
->> +       [RV_REG_S1] = offsetof(struct pt_regs, s1),
->> +       [RV_REG_S2] = offsetof(struct pt_regs, s2),
->> +       [RV_REG_S3] = offsetof(struct pt_regs, s3),
->> +       [RV_REG_S4] = offsetof(struct pt_regs, s4),
->> +       [RV_REG_S5] = offsetof(struct pt_regs, s5),
->> +       [RV_REG_T0] = offsetof(struct pt_regs, t0),
->> +};
->> +
->>  enum {
->>         RV_CTX_F_SEEN_TAIL_CALL =       0,
->>         RV_CTX_F_SEEN_CALL =            RV_REG_RA,
->> @@ -440,6 +456,69 @@ static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
->>         return 0;
->>  }
->>
->> +#define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
->> +#define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
->> +
->> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
->> +                               struct pt_regs *regs)
->> +{
->> +       off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
->> +       int regs_offset = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
->> +
->> +       *(unsigned long *)((unsigned char *)regs + pt_regmap[regs_offset]) = 0;
->
-> Nit: Inconsistency. Sometimes you use (void *) cast for byte access,
-> sometimes (unsigned char *).  I'd change it to void * here, and keep
-> the (void *) below.
+--Dya8FXOfIi726Ldv--
 
-Ummm, It is common to use void* for transit, such as container_of.
-
->
->> +       regs->epc = (unsigned long)&ex->fixup - offset;
->> +
->> +       return 1;
->> +}
->> +
->> +/* For accesses to BTF pointers, add an entry to the exception table */
->> +static int add_exception_handler(const struct bpf_insn *insn,
->> +                                struct rv_jit_context *ctx,
->> +                                int dst_reg, int insn_len)
->> +{
->> +       struct exception_table_entry *ex;
->> +       unsigned long pc;
->> +       off_t offset;
->> +
->> +       if (!ctx->insns || !ctx->prog->aux->extable || BPF_MODE(insn->code) != BPF_PROBE_MEM)
->> +               return 0;
->> +
->> +       if (WARN_ON_ONCE(ctx->nexentrys >= ctx->prog->aux->num_exentries))
->> +               return -EINVAL;
->> +
->> +       if (WARN_ON_ONCE(insn_len > ctx->ninsns))
->> +               return -EINVAL;
->> +
->> +       if (WARN_ON_ONCE(!rvc_enabled() && insn_len == 1))
->> +               return -EINVAL;
->> +
->> +       ex = &ctx->prog->aux->extable[ctx->nexentrys];
->> +       pc = (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
->> +
->> +       offset = pc - (long)&ex->insn;
->> +       if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
->> +               return -ERANGE;
->> +       ex->insn = pc;
->> +
->> +       /*
->> +        * Since the extable follows the program, the fixup offset is always
->> +        * negative and limited to BPF_JIT_REGION_SIZE. Store a positive value
->> +        * to keep things simple, and put the destination register in the upper
->> +        * bits. We don't need to worry about buildtime or runtime sort
->> +        * modifying the upper bits because the table is already sorted, and
->> +        * isn't part of the main exception table.
->> +        */
->> +       offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
->> +       if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
->> +               return -ERANGE;
->> +
->> +       ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
->> +               FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
->> +
->> +       ctx->nexentrys++;
->> +       return 0;
->> +}
->> +
->>  int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                       bool extra_pass)
->>  {
->> @@ -893,52 +972,86 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>
->>         /* LDX: dst = *(size *)(src + off) */
->>         case BPF_LDX | BPF_MEM | BPF_B:
->> -               if (is_12b_int(off)) {
->> -                       emit(rv_lbu(rd, off, rs), ctx);
->> +       case BPF_LDX | BPF_MEM | BPF_H:
->> +       case BPF_LDX | BPF_MEM | BPF_W:
->> +       case BPF_LDX | BPF_MEM | BPF_DW:
->> +       case BPF_LDX | BPF_PROBE_MEM | BPF_B:
->> +       case BPF_LDX | BPF_PROBE_MEM | BPF_H:
->> +       case BPF_LDX | BPF_PROBE_MEM | BPF_W:
->> +       case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
->> +       {
->> +               int insn_len, insns_start;
->> +
->> +               switch (BPF_SIZE(code)) {
->> +               case BPF_B:
->> +                       if (is_12b_int(off)) {
->> +                               insns_start = ctx->ninsns;
->> +                               emit(rv_lbu(rd, off, rs), ctx);
->> +                               insn_len = ctx->ninsns - insns_start;
->> +                               break;
->> +                       }
->> +
->> +                       emit_imm(RV_REG_T1, off, ctx);
->> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> +                       insns_start = ctx->ninsns;
->> +                       emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
->> +                       insn_len = ctx->ninsns - insns_start;
->> +                       if (insn_is_zext(&insn[1]))
->> +                               return 1;
->>                         break;
->> -               }
->> +               case BPF_H:
->> +                       if (is_12b_int(off)) {
->> +                               insns_start = ctx->ninsns;
->> +                               emit(rv_lhu(rd, off, rs), ctx);
->> +                               insn_len = ctx->ninsns - insns_start;
->> +                               break;
->> +                       }
->>
->> -               emit_imm(RV_REG_T1, off, ctx);
->> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> -               emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
->> -               if (insn_is_zext(&insn[1]))
->> -                       return 1;
->> -               break;
->> -       case BPF_LDX | BPF_MEM | BPF_H:
->> -               if (is_12b_int(off)) {
->> -                       emit(rv_lhu(rd, off, rs), ctx);
->> +                       emit_imm(RV_REG_T1, off, ctx);
->> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> +                       insns_start = ctx->ninsns;
->> +                       emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
->> +                       insn_len = ctx->ninsns - insns_start;
->> +                       if (insn_is_zext(&insn[1]))
->> +                               return 1;
->>                         break;
->> -               }
->> +               case BPF_W:
->> +                       if (is_12b_int(off)) {
->> +                               insns_start = ctx->ninsns;
->> +                               emit(rv_lwu(rd, off, rs), ctx);
->> +                               insn_len = ctx->ninsns - insns_start;
->> +                               break;
->> +                       }
->>
->> -               emit_imm(RV_REG_T1, off, ctx);
->> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> -               emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
->> -               if (insn_is_zext(&insn[1]))
->> -                       return 1;
->> -               break;
->> -       case BPF_LDX | BPF_MEM | BPF_W:
->> -               if (is_12b_int(off)) {
->> -                       emit(rv_lwu(rd, off, rs), ctx);
->> +                       emit_imm(RV_REG_T1, off, ctx);
->> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> +                       insns_start = ctx->ninsns;
->> +                       emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
->> +                       insn_len = ctx->ninsns - insns_start;
->> +                       if (insn_is_zext(&insn[1]))
->> +                               return 1;
->>                         break;
->> -               }
->> +               case BPF_DW:
->> +                       if (is_12b_int(off)) {
->> +                               insns_start = ctx->ninsns;
->> +                               emit_ld(rd, off, rs, ctx);
->> +                               insn_len = ctx->ninsns - insns_start;
->> +                               break;
->> +                       }
->>
->> -               emit_imm(RV_REG_T1, off, ctx);
->> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> -               emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
->> -               if (insn_is_zext(&insn[1]))
->> -                       return 1;
->> -               break;
->> -       case BPF_LDX | BPF_MEM | BPF_DW:
->> -               if (is_12b_int(off)) {
->> -                       emit_ld(rd, off, rs, ctx);
->> +                       emit_imm(RV_REG_T1, off, ctx);
->> +                       emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> +                       insns_start = ctx->ninsns;
->> +                       emit_ld(rd, 0, RV_REG_T1, ctx);
->> +                       insn_len = ctx->ninsns - insns_start;
->>                         break;
->>                 }
->>
->> -               emit_imm(RV_REG_T1, off, ctx);
->> -               emit_add(RV_REG_T1, RV_REG_T1, rs, ctx);
->> -               emit_ld(rd, 0, RV_REG_T1, ctx);
->> +               ret = add_exception_handler(insn, ctx, rd, insn_len);
->> +               if (ret)
->> +                       return ret;
->>                 break;
->> -
->> +       }
->>         /* speculation barrier */
->>         case BPF_ST | BPF_NOSPEC:
->>                 break;
->> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
->> index fed86f42dfbe..5f2a842ec6f3 100644
->> --- a/arch/riscv/net/bpf_jit_core.c
->> +++ b/arch/riscv/net/bpf_jit_core.c
->> @@ -41,12 +41,12 @@ bool bpf_jit_needs_zext(void)
->>
->>  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>  {
->> +       unsigned int image_size, prog_size, extable_size;
->>         bool tmp_blinded = false, extra_pass = false;
->>         struct bpf_prog *tmp, *orig_prog = prog;
->>         int pass = 0, prev_ninsns = 0, i;
->>         struct rv_jit_data *jit_data;
->>         struct rv_jit_context *ctx;
->> -       unsigned int image_size = 0;
->
-> Hmm, image_size is now the *program size* plus the extable. So,
-> prog_size is what image_size was. If my memory is not failing I
-> *think* that the image_size has to be initialized to zero , if so this
-> new prog_size has to be initialized to zero. I might be wrong. I just
-> want to make sure that we're not introducing uninitialized data
-> access.
->
-> Same question for the extable_size. I see it's being used outside the
-> for-loop below.
->
-> To me it looks like both prog_size and extable_size needs to be
-> initialized to zero.
-
-I checked the logic. indeed, prog_size and extable_size needs to be initialized to 0.
->
->>
->>         if (!prog->jit_requested)
->>                 return orig_prog;
->> @@ -73,7 +73,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>
->>         if (ctx->offset) {
->>                 extra_pass = true;
->> -               image_size = sizeof(*ctx->insns) * ctx->ninsns;
->> +               prog_size = sizeof(*ctx->insns) * ctx->ninsns;
->>                 goto skip_init_ctx;
->>         }
->>
->> @@ -102,8 +102,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>                 if (ctx->ninsns == prev_ninsns) {
->>                         if (jit_data->header)
->>                                 break;
->> +                       /* obtain the actual image size */
->> +                       extable_size = prog->aux->num_exentries *
->> +                               sizeof(struct exception_table_entry);
->> +                       prog_size = sizeof(*ctx->insns) * ctx->ninsns;
->> +                       image_size = prog_size + extable_size;
->
-> image_size is only used in the call to bpf_jit_binary_alloc(). I'd
-> remove it and only use prog_size + extable_size in the call. Or move
-> it into the if-statement.
->
-ok, remove image_size to simplified code.
-
->>
->> -                       image_size = sizeof(*ctx->insns) * ctx->ninsns;
->>                         jit_data->header =
->>                                 bpf_jit_binary_alloc(image_size,
->>                                                      &jit_data->image,
->> @@ -130,9 +134,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>                 goto out_offset;
->>         }
->>
->> +       if (extable_size)
->> +               prog->aux->extable = (void *)ctx->insns + prog_size;
->
-> (This was the void*-cast I was talking about)
->
->
->> skip_init_ctx:
->>         pass++;
->>         ctx->ninsns = 0;
->> +       ctx->nexentrys = 0;
->>
->>         bpf_jit_build_prologue(ctx);
->>         if (build_body(ctx, extra_pass, NULL)) {
->> @@ -143,11 +151,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>         bpf_jit_build_epilogue(ctx);
->>
->>         if (bpf_jit_enable > 1)
->> -               bpf_jit_dump(prog->len, image_size, pass, ctx->insns);
->> +               bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
->>
->>         prog->bpf_func = (void *)ctx->insns;
->>         prog->jited = 1;
->> -       prog->jited_len = image_size;
->> +       prog->jited_len = prog_size;
->>
->>         bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
->>
->> --
->> 2.25.1
->
->
->
-> Again, thank you for hacking on this!
-
-thanks.
->
->
-> Cheers,
-> Björn
-> .
->
