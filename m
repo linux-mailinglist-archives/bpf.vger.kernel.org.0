@@ -2,140 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07BB43B5F0
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 17:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515A843B5FE
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 17:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhJZPqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 11:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S234630AbhJZPtH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 11:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231572AbhJZPqi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:46:38 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B7AC061745
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 08:44:14 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id gh1so9821946qvb.8
-        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 08:44:14 -0700 (PDT)
+        with ESMTP id S231536AbhJZPtG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 11:49:06 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8671C061745
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 08:46:42 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id w2so13959612qtn.0
+        for <bpf@vger.kernel.org>; Tue, 26 Oct 2021 08:46:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=h2GzPZNMg/JdzGE2lvPwgBNsfPNDx1sHgiOkukSfcBw=;
-        b=Xb48VzU/Df0wRzLF7U+LlhpCkT6iKyKOLkYTbLC4v+B92fxOxT903uGPYHRUYPzjGY
-         q5Gph6BrDWmGTiUyUrmm1za+9ugJ69NCHNMf/2jRSaevAiIl0k+eOLmGw00/MJGLfHRF
-         jiC/6YImJj58DPLiPk3TGfpdbv1LszfRE3I3RYBpcPZ0YEdr/DQZpLAqsU9jT1YbeGnc
-         biXRwrJcdksp7wouTsjCNN0oyiI0mUvBtIaKS6s6zZ+H+BL+Tw9Xw+E/nw3Wuw/9vzc7
-         5s0dPljugPoRen/8QUpIWcJDzVKhbrMDLhmQYzELODtHJITch4Yu18+1EHPnuA4rTrwN
-         cK8A==
+        bh=R+5HmDDZUtlzRRRsqWwE3SEIGVuAoci/RAiSJi18EH8=;
+        b=GrWjdoYRGT/MzA9Rnjq8J0OtuIUgeRIAz/DiHnjYPnlDwCSZXAqI918B1LOfVx9m73
+         wBLxkT3WgFV0BGZVv5gz7JG4cb08PcXVS5z29tu1F+M1Gaft9xJtxa0HwnoJFXwXMXi8
+         8+NTRBU++S92cGQ1uVQK8Tzwdf2gFsmGnNwlN8ywpYaTpQn20AkcLjn3BwZjec39XHTM
+         SqicXBvRcxrlxJAKpaPuyHfNmp1miJAPfVV6YjmpB02x5rrWYgg7H2fJYJWAB60tyqjE
+         TXHG4V3E3nk2ybvdF9AFuFEQdl+YWmJCOgLy79Q/U1T8B5Ixxahz0+cKOnGAu8G66gju
+         RHsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h2GzPZNMg/JdzGE2lvPwgBNsfPNDx1sHgiOkukSfcBw=;
-        b=avIQ6kiRnFyJtWuDSp7dfocfDKJeBRq1IAck0QXFdFhDrvsSbWRLlsLrbxlBPDE6BF
-         3oA7rnQ2jKCROAurNn00o6jaPvXqhlIujhRnC79e78wad4g7c1H0y4gS6cFuuY01U5q1
-         hBNs7hoefosSN5HL/58w8OU5X1Bmc23RHLuhUWt+7W+lHMRIc01dfacbiqX/s9s3Kw46
-         ApUNYT8P0ZwHP8wXZhMeIHxHlL+oaDMZhsVQ2zcxQ3nMsaGN74QTzFTGdGdcm7717s2Z
-         JteD+nqRP2c3+sWhYOGb8vZMcSBCumIbuYsh8HnMlJFgGS4Q2nQuey9rUqeP2bUBwjyP
-         wHVA==
-X-Gm-Message-State: AOAM532DLRmaqPZz+sIVkvE3TtnTXwaRT+Z3xoWW2XBQcuk2Ixy34kWZ
-        rsdJKSH+mBqlYMihgYqEMBSGEf/fAKcfKmOWlc/g1Q==
-X-Google-Smtp-Source: ABdhPJzpPLV+e2JD6aF1jUw+WolURFaJ4EuY4JVwWoagp8nPb/mLXH3nHp312QHdcf3z9zU6gPCaDOWGaoUav6VvC0k=
-X-Received: by 2002:a05:6214:21e6:: with SMTP id p6mr18193233qvj.10.1635263053706;
- Tue, 26 Oct 2021 08:44:13 -0700 (PDT)
+        bh=R+5HmDDZUtlzRRRsqWwE3SEIGVuAoci/RAiSJi18EH8=;
+        b=PH+dyCbbkSwJXbVpcA/8gj/1TXSe38XZLOlq2ykmMz5LuDcFXj57IsrxB1nHXwsXsg
+         nCaKkTBrLm0vNX/NhtuX588N/0arMdywiPFuxWn6vvP7Pz7UJYDrlqBPoyNyc0HGQcjW
+         4feF2w+jHl3C6YZi2yEjh5na3Y9ELiU8Wt/fMUZDl8r05Xivd+FkVq+Yv2hSy6M7xfNp
+         +xsjkWYiE0KKm6zOVAkUnvzTBcCVoUcdRSlAZDm0g4jyi1aL7GFK7JbP4vIXREapELlk
+         V1ZPdXprA8jve3VFUCa0as+EEIvdAes7UcUS/G1tpHqETHhNy+AJOn20y3Y0ik6b2k4k
+         H18A==
+X-Gm-Message-State: AOAM5302AVKg0Y/jMNdqecg65TOrjt60gUOpvnSuh1meqbLmI0NHvqrs
+        54O4H1RJs9Nl4EqX33KnQHeF7ya3Xpls1b2+KCSkgg+d0bBn2g==
+X-Google-Smtp-Source: ABdhPJx+tOwjlffUewKU7LH+Lg7DoUElb6ZmnMQSHW5X4TwlUCJsauTKH8hgl+YwJkP9eWPnGz943s+1JJ1TtUa+kK4=
+X-Received: by 2002:ac8:4159:: with SMTP id e25mr25664193qtm.69.1635263201845;
+ Tue, 26 Oct 2021 08:46:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1633535940.git.zhuyifei@google.com> <a2e569ee61e677ee474b7538adcebb0e1462df69.1633535940.git.zhuyifei@google.com>
- <CAEf4Bzbj0Bd5bnUrJMr4ozFFAHVE=NvsO1KR1o9=iqBT85=LUw@mail.gmail.com> <CAA-VZP=Hft3MkKxc+2xxM6Qc1ZO=d+2JshjV5g2TxfymjfW6rw@mail.gmail.com>
-In-Reply-To: <CAA-VZP=Hft3MkKxc+2xxM6Qc1ZO=d+2JshjV5g2TxfymjfW6rw@mail.gmail.com>
+References: <20211011155636.2666408-1-sdf@google.com> <20211011155636.2666408-2-sdf@google.com>
+ <6172ef4180b84_840632087a@john-XPS-13-9370.notmuch> <CAKH8qBuR4bYn1POgu0TF428vApknvMNPAng5qMuiKXCpcg8CQQ@mail.gmail.com>
+ <CAEf4BzaUFAVZz2PHePbF4ypBHusUJEZi5W9HL0gT_fy1T71itg@mail.gmail.com>
+In-Reply-To: <CAEf4BzaUFAVZz2PHePbF4ypBHusUJEZi5W9HL0gT_fy1T71itg@mail.gmail.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 26 Oct 2021 08:44:02 -0700
-Message-ID: <CAKH8qBs2xgqJnECSNpguqkwNMOd4m2gaz1CGueReP32cUdPgGw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add cgroup helper bpf_export_errno to
- get/set exported errno value
-To:     YiFei Zhu <zhuyifei@google.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>, bpf <bpf@vger.kernel.org>,
+Date:   Tue, 26 Oct 2021 08:46:30 -0700
+Message-ID: <CAKH8qBt3_qpCLjviMr86EixBx+pVG5E4+ZZeHZpwO6G6wnrR+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpftool: don't append / to the progtype
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 5:06 PM YiFei Zhu <zhuyifei@google.com> wrote:
+On Mon, Oct 25, 2021 at 9:27 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Wed, Oct 20, 2021 at 4:28 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Mon, Oct 25, 2021 at 8:59 AM Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > it's subjective, but "bpf_export_errno" name is quite confusing. What
-> > are we "exporting" and where?
+> > On Fri, Oct 22, 2021 at 10:05 AM John Fastabend
+> > <john.fastabend@gmail.com> wrote:
+> > >
+> > > Stanislav Fomichev wrote:
+> > > > Otherwise, attaching with bpftool doesn't work with strict section names.
+> > > >
+> > > > Also, switch to libbpf strict mode to use the latest conventions
+> > > > (note, I don't think we have any cli api guarantees?).
+> > > >
+> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > ---
+> > > >  tools/bpf/bpftool/main.c |  4 ++++
+> > > >  tools/bpf/bpftool/prog.c | 15 +--------------
+> > > >  2 files changed, 5 insertions(+), 14 deletions(-)
+> > > >
+> > > > diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> > > > index 02eaaf065f65..8223bac1e401 100644
+> > > > --- a/tools/bpf/bpftool/main.c
+> > > > +++ b/tools/bpf/bpftool/main.c
+> > > > @@ -409,6 +409,10 @@ int main(int argc, char **argv)
+> > > >       block_mount = false;
+> > > >       bin_name = argv[0];
+> > > >
+> > > > +     ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> > > > +     if (ret)
+> > > > +             p_err("failed to enable libbpf strict mode: %d", ret);
+> > > > +
+> > >
+> > > Would it better to just warn? Seems like this shouldn't be fatal from
+> > > bpftool side?
+> > >
+> > > Also this is a potentially breaking change correct? Programs that _did_
+> > > work in the unstrict might suddently fail in the strict mode? If this
+> > > is the case whats the versioning plan? We don't want to leak these
+> > > type of changes across multiple versions, idealy we have a hard
+> > > break and bump the version.
+> > >
+> > > I didn't catch a cover letter on the series. A small
+> > > note about versioning and upgrading bpftool would be helpful.
 > >
-> > I actually like Song's proposal for two helpers,
-> > bpf_set_err()/bpf_get_err(). It makes the semantics less confusing. I
-> > honestly don't remember the requirement to have one combined helper
-> > from the BPF office hour discussion, but if there was a good reason
-> > for that, please remind us.
+> > Yeah, it is a breaking change, every program that has non-strict
+> > section names will be rejected.
 > >
-> > > + *     Description
-> > > + *             If *errno_val* is positive, set the syscall's return error code;
+> > I mentioned that in the bpftool's commit description:
+> > Also, switch to libbpf strict mode to use the latest conventions
+> > (note, I don't think we have any cli api guarantees?).
 > >
-> > This inversion of error code is also confusing. If we are to return
-> > -EXXX, bpf_set_err(EXXX) is quite confusing.
+> > So I'm actually not sure what's the best way to handle this migration
+> > and whether we really provide any cli guarantees to the users. I was
+> > always assuming that bpftool is mostly for debugging/introspection,
+> > but not sure.
 > >
-> > > + *             if *errno_val* is zero, retrieve the previously set code.
-> >
-> > Also, are there use cases where zero is the valid "error" (or lack of
-> > it, rather). I.e., wouldn't there be cases where you want to clear a
-> > previous error? We might have discussed this, sorry if I forgot.
+> > As Andrii suggested in another email, I can add a flag to disable this
+> > strict mode. Any better ideas?
 >
-> Hmm, originally I thought it's best to assume the underlying
-> assumption is that filters may set policies and it would violate it if
-> policies become ignored; however one could argue that debugging would
-> be a use case for an error-clearing filter.
->
-> Let's say we do bpf_set_err()/bpf_get_err(), with the ability to clear
-> errors. I'm having trouble thinking of the best way to have it
-> interact with the getsockopt "retval" in its context:
-> * Let's say the kernel initially sets an error code in the retval. I
-> think it would be a surprising behavior if only "retval" but not
-> bpf_get_err() shows the error. Therefore we'd need to initialize "err"
-> with the "retval" if retval is an error.
-> * If we initialize "err" with the "retval", then for a prog to clear
-> the error they'd need to clear it twice, once with bpf_set_err(0) with
-> and another with ctx->retval = 0. This will immediately break backward
-> compatibility. Therefore, we'd need to mirror the setting of
-> ctx->retval = 0 to bpf_set_err(0)
-> * In that case, what to do if a user uses ctx->retval as a way to pass
-> data between filters? I mean, whether ctx->retval is set to 0 or the
-> original is only checked after all filters are run. It could be any
-> value while the filters are running.
-> * A second issue, if we have first a legacy filter that returns 0 to
-> set EPERM, and then there's another filter that does a ctx->retval =
-> 0. The original behavior would be that the syscall fails with EPERM,
-> but if we mirror ctx->retval = 0 to bpf_set_err(0), then that EPERM
-> would be cleared.
->
-> One of the reasons I liked "export" is that it's slightly clearer that
-> this value is strictly from the BPF's side and has nothing to do with
-> what the kernel sets (as in the getsockopt case). But yeah I agree
-> it's not an ideal name.
+> Maybe the other way around for the transition period. Add a --strict
+> flag to turn on libbpf strict mode? This follows libbpf's opt-in
+> approach to breaking change. We can also emit warnings when people are
+> trying to pin programs and mention that they should switch to --strict
+> as in some future version this will be the default. Would that be
+> better for users?
 
-For getsockopt, maybe the best way to go is to point ctx->retval to
-run_ctx.errno_val? (i.e., bpf_set_err would be equivalent to doing
-ctx->retval = x;). We can leave ctx->retval as a backwards-compatible
-legacy way of doing things. For new programs, bpf_set_err would work
-universally, regardless of attach type. Any cons here?
-
-> > But either way, if bpf_set_err() accepted <= 0 and used that as error
-> > value as-is (> 0 should be rejected, probably) that would make for
-> > straightforward logic. Then for getting the current error we can have
-> > a well-paired bpf_get_err()?
-> >
-> >
-> > BTW, "errno" is very strongly associated with user-space errno, do we
-> > want to have this naming association (this is the reason I used "err"
-> > terminology above).
->
-> Ack.
->
-> YiFei Zhu
+Agreed, that sounds better for backwards compatibility. However, I'm
+not sure when we set that --strict to 'true' by default. The same
+moment libbpf loses non-strict behavior?
