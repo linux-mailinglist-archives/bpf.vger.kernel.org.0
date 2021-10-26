@@ -2,146 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B31A43B68F
-	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 18:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DA443B7D3
+	for <lists+bpf@lfdr.de>; Tue, 26 Oct 2021 19:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236081AbhJZQMO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 12:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
+        id S237673AbhJZRGE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 13:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235993AbhJZQMK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:12:10 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64318C061348;
-        Tue, 26 Oct 2021 09:09:46 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id h196so21248199iof.2;
-        Tue, 26 Oct 2021 09:09:46 -0700 (PDT)
+        with ESMTP id S237690AbhJZRGD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:06:03 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF0EC061745;
+        Tue, 26 Oct 2021 10:03:39 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id v200so36551488ybe.11;
+        Tue, 26 Oct 2021 10:03:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rcwUM+yfYkd1fGoVQ1bAhhWXo7KweulJ4cGcrB1ov2k=;
-        b=j3hPdCROifw9JEpIA+McCEuNKWXOqBx6EsNP39GxRzscQeiT6z+/qJVIw6tlre1oR0
-         jenfCTu+YAhGgcdrYGOccXRLRIGsBdFZgMeSMz8sEwVfc1AqepJEJT9HHBm0UDZXs/O5
-         ZfhiMhpKdc3n2JO5H5DAJ5jvPJVnCsROvENQxUjaXPRspotW4g8Va7dYRA/uOYEbytGK
-         mNsdpH8oeQE1R+Od3g3VwR4XfDRvnLt4feNRnzdmfJko++vkI8GN7ieL6NMHCe8bt3AU
-         Raymkh3ad9Q7ejXGgrSb8jF0qWnMZCQd6Pxqv5sjUlcBK8P3RfghnR5eBA1gAeAOkpd9
-         qf8A==
+        bh=uDTMGWAumcppRQTTt/9RJBXUz5ZAmLW8AZg8+OT4b4I=;
+        b=dhiikuNcETWSy2ebc54Eaez6dOXRocZuO6D1g7OcrV+AUsGF+k+kF8f98WbiFq9CqS
+         R4DGwK2+eHkJ8H9imzge1L0zlElKG96vEyrSlB9MXBdxdZEV5tMWxy7A5UStGEkuvs5n
+         9TSGwHXG390Y1OULvpyvfDK3XkeAEbgTDUCl2ndI1jH/kOyWSl0c3/e7cvYLZPR5VNpz
+         jHdIjXvmSopIbHxxl4DOr6/Fx1FsIBPU2hqsIQDY8mc73YUrCIpEp4UfvvNL4JuZyxE2
+         lHgnqkYkxj7syhZpfZD96dN0mmP70EgatbWR4uy4NXuJaE5UQXE4RmBvgKrNS4CvfNAm
+         I+8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rcwUM+yfYkd1fGoVQ1bAhhWXo7KweulJ4cGcrB1ov2k=;
-        b=xuV5OsOsyTNPIm3ICQVCx7KYjjrfJcmsVOZ5OqGfUEMIPI7yxg+K3w7pep8uTaHNDw
-         6rtutCXlpP5DxtvC0EZK/Q2qcNRBi0APSxuwAwoafWorJncMTi4PcN+0k6SxuS9C23ux
-         Q7Qqg5ea8u+OTgmjjzEOXQS4/9/Dagvd9ygpUaNgOJpL5FdRJYBhIaMEg6jWyrKs/0pf
-         cRkTjne4vm0uXrX+VbmgKTRkAu1bdX8QapjaLXA1OqZUsDKvCZNBwNS8kBhFQXxB6cIs
-         qUx7PUiO51IK9B5kqWa5MWgJfscHUbAdIWJ4gEU/BihISNVxQ2I7G4+tFQQzCT48A5MA
-         3T3w==
-X-Gm-Message-State: AOAM530yzEvr7KPQghvuok6UIj4Q6Qox3XBhNrsv5Q1s0ZTjrbxNWeyz
-        tNngYQIHGwiKVY0hTDA1MDwOdPB04r+wVAen4tE=
-X-Google-Smtp-Source: ABdhPJxXrjxmBSp1hood0IVz9PaZRtPxRuaI3ESryi3mTB5SO+Lab1x+ccAB23JEegIpQOzsPDhPHWEbuL2xAQCM5j8=
-X-Received: by 2002:a05:6602:1514:: with SMTP id g20mr16487935iow.9.1635264585800;
- Tue, 26 Oct 2021 09:09:45 -0700 (PDT)
+        bh=uDTMGWAumcppRQTTt/9RJBXUz5ZAmLW8AZg8+OT4b4I=;
+        b=2udgfUbXUSMbeAArK42bsjnWOPwxs3oDKFP1Es6mjmmzaQTm+Xv0YP6PMVWWGS0doK
+         d5ctkRtsGjh8FVIn29sC7lA14ZNRfAmalRyy8MCchixphAL5QA14b3CdejK95hEOU++p
+         /xuY29y1KHcevKe6vPJW8fxyFLTw6/HYPettpPU68l44P0pZgBa70BUvuMI5+gGlOVgU
+         IzFKdj+54kOJHfdhpdy4YBVhgDmdWnvMop5WE7ovbZ7TK/C9g1YkZF3evr3mDrLMxLBY
+         yrp9sJNXv8HPt030FXa/6pXJX8+WBIKKnKewbT2UDydqXJTh3DwSoxvNKTsr9npD7AK9
+         Lqgg==
+X-Gm-Message-State: AOAM532KOq3EPvJ+B3G2uMyJI1fyv7bnycQGzYlt1HlynHb7QrVCZU40
+        ltKevJ7C0jWoMrso5NcPxT3yEe2Mr6h0X58vLW4=
+X-Google-Smtp-Source: ABdhPJzJzyWKWRmCAVOp/PEJJzUy7vunEPHyyfERgo5ZcjTEYQOEQFbEFK81UgNoLKHM1N2WlQv/6CsX2VzJhvunoCY=
+X-Received: by 2002:a25:143:: with SMTP id 64mr25080123ybb.455.1635267819106;
+ Tue, 26 Oct 2021 10:03:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-9-laoar.shao@gmail.com>
- <202110251421.7056ACF84@keescook> <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
- <20211026091211.569a7ba2@gandalf.local.home>
-In-Reply-To: <20211026091211.569a7ba2@gandalf.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 27 Oct 2021 00:09:09 +0800
-Message-ID: <CALOAHbAK6u8qO5EiQ9yPp5a_HwddmDJE-JDUoDBK4QeEiR6ywQ@mail.gmail.com>
-Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
- task comm size change
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+References: <20211011155636.2666408-1-sdf@google.com> <20211011155636.2666408-2-sdf@google.com>
+ <6172ef4180b84_840632087a@john-XPS-13-9370.notmuch> <CAKH8qBuR4bYn1POgu0TF428vApknvMNPAng5qMuiKXCpcg8CQQ@mail.gmail.com>
+ <CAEf4BzaUFAVZz2PHePbF4ypBHusUJEZi5W9HL0gT_fy1T71itg@mail.gmail.com> <CAKH8qBt3_qpCLjviMr86EixBx+pVG5E4+ZZeHZpwO6G6wnrR+g@mail.gmail.com>
+In-Reply-To: <CAKH8qBt3_qpCLjviMr86EixBx+pVG5E4+ZZeHZpwO6G6wnrR+g@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 26 Oct 2021 10:03:27 -0700
+Message-ID: <CAEf4BzZnsiotMAjmeHN6y3sXgvJ_XbQHazMJbXrFuSr3RkVXzQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpftool: don't append / to the progtype
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 9:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Oct 26, 2021 at 8:46 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> On Tue, 26 Oct 2021 10:18:51 +0800
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> > > So, if we're ever going to copying these buffers out of the kernel (I
-> > > don't know what the object lifetime here in bpf is for "e", etc), we
-> > > should be zero-padding (as get_task_comm() does).
+> On Mon, Oct 25, 2021 at 9:27 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Oct 25, 2021 at 8:59 AM Stanislav Fomichev <sdf@google.com> wrote:
 > > >
-> > > Should this, instead, be using a bounce buffer?
-> >
-> > The comment in bpf_probe_read_kernel_str_common() says
-> >
-> >   :      /*
-> >   :       * The strncpy_from_kernel_nofault() call will likely not fill the
-> >   :       * entire buffer, but that's okay in this circumstance as we're probing
-> >   :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
-> >   :       * as well probe the stack. Thus, memory is explicitly cleared
-> >   :       * only in error case, so that improper users ignoring return
-> >   :       * code altogether don't copy garbage; otherwise length of string
-> >   :       * is returned that can be used for bpf_perf_event_output() et al.
-> >   :       */
-> >
-> > It seems that it doesn't matter if the buffer is filled as that is
-> > probing arbitrary memory.
-> >
+> > > On Fri, Oct 22, 2021 at 10:05 AM John Fastabend
+> > > <john.fastabend@gmail.com> wrote:
+> > > >
+> > > > Stanislav Fomichev wrote:
+> > > > > Otherwise, attaching with bpftool doesn't work with strict section names.
+> > > > >
+> > > > > Also, switch to libbpf strict mode to use the latest conventions
+> > > > > (note, I don't think we have any cli api guarantees?).
+> > > > >
+> > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > > ---
+> > > > >  tools/bpf/bpftool/main.c |  4 ++++
+> > > > >  tools/bpf/bpftool/prog.c | 15 +--------------
+> > > > >  2 files changed, 5 insertions(+), 14 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> > > > > index 02eaaf065f65..8223bac1e401 100644
+> > > > > --- a/tools/bpf/bpftool/main.c
+> > > > > +++ b/tools/bpf/bpftool/main.c
+> > > > > @@ -409,6 +409,10 @@ int main(int argc, char **argv)
+> > > > >       block_mount = false;
+> > > > >       bin_name = argv[0];
+> > > > >
+> > > > > +     ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> > > > > +     if (ret)
+> > > > > +             p_err("failed to enable libbpf strict mode: %d", ret);
+> > > > > +
+> > > >
+> > > > Would it better to just warn? Seems like this shouldn't be fatal from
+> > > > bpftool side?
+> > > >
+> > > > Also this is a potentially breaking change correct? Programs that _did_
+> > > > work in the unstrict might suddently fail in the strict mode? If this
+> > > > is the case whats the versioning plan? We don't want to leak these
+> > > > type of changes across multiple versions, idealy we have a hard
+> > > > break and bump the version.
+> > > >
+> > > > I didn't catch a cover letter on the series. A small
+> > > > note about versioning and upgrading bpftool would be helpful.
 > > >
-> > > get_task_comm(comm, task->group_leader);
+> > > Yeah, it is a breaking change, every program that has non-strict
+> > > section names will be rejected.
+> > >
+> > > I mentioned that in the bpftool's commit description:
+> > > Also, switch to libbpf strict mode to use the latest conventions
+> > > (note, I don't think we have any cli api guarantees?).
+> > >
+> > > So I'm actually not sure what's the best way to handle this migration
+> > > and whether we really provide any cli guarantees to the users. I was
+> > > always assuming that bpftool is mostly for debugging/introspection,
+> > > but not sure.
+> > >
+> > > As Andrii suggested in another email, I can add a flag to disable this
+> > > strict mode. Any better ideas?
 > >
-> > This helper can't be used by the BPF programs, as it is not exported to BPF.
-> >
-> > > bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
+> > Maybe the other way around for the transition period. Add a --strict
+> > flag to turn on libbpf strict mode? This follows libbpf's opt-in
+> > approach to breaking change. We can also emit warnings when people are
+> > trying to pin programs and mention that they should switch to --strict
+> > as in some future version this will be the default. Would that be
+> > better for users?
 >
-> I guess Kees is worried that e.comm will have something exported to user
-> space that it shouldn't. But since e is part of the BPF program, does the
-> BPF JIT take care to make sure everything on its stack is zero'd out, such
-> that a user BPF couldn't just read various items off its stack and by doing
-> so, see kernel memory it shouldn't be seeing?
->
-> I'm guessing it does, otherwise this would be a bigger issue than this
-> patch series.
->
+> Agreed, that sounds better for backwards compatibility. However, I'm
+> not sure when we set that --strict to 'true' by default. The same
+> moment libbpf loses non-strict behavior?
 
-You guess is correct per my verification.
-But the BPF JIT doesn't  zero it out, while it really does is adding
-some character like '?' in my verification.
-
-Anyway we don't need to worry that the kernel information may be
-leaked though bpf_probe_read_kernel_str().
-
--- 
-Thanks
-Yafang
+Yep, probably it will have to coincide with libbpf 1.0 release. And
+it's not setting it to true, it's more like enforcing it to true (or
+just dropping the --strict flag altogether).
