@@ -2,162 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D3F43D7A0
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 01:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7289143D7B5
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 01:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbhJ0Xjx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Oct 2021 19:39:53 -0400
-Received: from mga11.intel.com ([192.55.52.93]:17497 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhJ0Xjx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:39:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="227744238"
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
-   d="scan'208";a="227744238"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 16:37:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
-   d="scan'208";a="529804966"
-Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
-  by orsmga001.jf.intel.com with ESMTP; 27 Oct 2021 16:37:26 -0700
-Date:   Wed, 27 Oct 2021 16:39:43 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        antonio.gomez.iglesias@intel.com, tony.luck@intel.com,
-        dave.hansen@linux.intel.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH ebpf] bpf: Disallow unprivileged bpf by default
-Message-ID: <20211027233943.kehyrdbibp2d2u4c@gupta-dev2.localdomain>
-References: <d37b01e70e65dced2659561ed5bc4b2ed1a50711.1635367330.git.pawan.kumar.gupta@linux.intel.com>
- <bd4db8da-0d44-1785-5767-1731bdaebef8@iogearbox.net>
+        id S229486AbhJ0Xrv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Oct 2021 19:47:51 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27080 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229558AbhJ0Xrt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 Oct 2021 19:47:49 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RLfSZV013778
+        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 16:45:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=kbsf91cLw0M748gY3gHgo1AS8dsplRP9LO8rP/z72nk=;
+ b=dJRHRdyb6yLCULXuo01LgGxCmEpCAG2+UZdl3VxyaBTxrpHYTkdrNI3ovsorZjdxKBhJ
+ J+CtEXU1VIhaXZN5pvPxHoRsYWTBmDP+Zt4ch9BiWNxnBKFb4MmiHel0CfymKUnDpV48
+ BmpZroCG6V6RzH2lNoCaJC9Dbd0eeuiShkU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3by64s71t1-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 16:45:23 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 27 Oct 2021 16:45:20 -0700
+Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
+        id 41DA1421C732; Wed, 27 Oct 2021 16:45:18 -0700 (PDT)
+From:   Joanne Koong <joannekoong@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kafai@fb.com>, <Kernel-team@fb.com>,
+        Joanne Koong <joannekoong@fb.com>
+Subject: [PATCH v6 bpf-next 0/5] Implement bloom filter map
+Date:   Wed, 27 Oct 2021 16:44:59 -0700
+Message-ID: <20211027234504.30744-1-joannekoong@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: y3FjHw-M4saKgcMd6uZUjt3aq5YZLDg9
+X-Proofpoint-GUID: y3FjHw-M4saKgcMd6uZUjt3aq5YZLDg9
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <bd4db8da-0d44-1785-5767-1731bdaebef8@iogearbox.net>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_07,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110270130
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 27.10.2021 23:21, Daniel Borkmann wrote:
->Hello Pawan,
->
->On 10/27/21 10:51 PM, Pawan Gupta wrote:
->>Disabling unprivileged BPF by default would help prevent unprivileged
->>users from creating the conditions required for potential speculative
->>execution side-channel attacks on affected hardware as demonstrated by
->>[1][2][3].
->>
->>This will sync mainline with what most distros are currently applying.
->>An admin can enable this at runtime if necessary.
->>
->>Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
->>
->>[1] https://access.redhat.com/security/cve/cve-2019-7308
->>[2] https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-3490
->>[3] https://bugzilla.redhat.com/show_bug.cgi?id=1672355#c5
->
->Some of your above quoted links are just random ?! For example, [2] has really _zero_ to
->do with what you wrote with regards to speculative execution side-channel attacks ...
->
->We recently did a deep dive on our mitigation work we did in BPF here [0]. This also includes
->an appendix with an extract of the main commits related to the different Spectre variants.
->
->I'd suggest to link to that one instead to avoid confusion on what is related and what not.
->
->  [0] https://ebpf.io/summit-2021-slides/eBPF_Summit_2021-Keynote-Daniel_Borkmann-BPF_and_Spectre.pdf
+This patchset adds a new kind of bpf map: the bloom filter map.
+Bloom filters are a space-efficient probabilistic data structure
+used to quickly test whether an element exists in a set.
+For a brief overview about how bloom filters work,
+https://en.wikipedia.org/wiki/Bloom_filter
+may be helpful.
 
-Sure, I will add reference to this presentation.
+One example use-case is an application leveraging a bloom filter
+map to determine whether a computationally expensive hashmap
+lookup can be avoided. If the element was not found in the bloom
+filter map, the hashmap lookup can be skipped.
 
->>---
->>  kernel/bpf/Kconfig | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->>diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
->>index a82d6de86522..73d446294455 100644
->>--- a/kernel/bpf/Kconfig
->>+++ b/kernel/bpf/Kconfig
->>@@ -64,6 +64,7 @@ config BPF_JIT_DEFAULT_ON
->>  config BPF_UNPRIV_DEFAULT_OFF
->>  	bool "Disable unprivileged BPF by default"
->>+	default y
->
->Hm, arm arch has a CPU_SPECTRE Kconfig symbol, see commit c58d237d0852 ("ARM: spectre:
->add Kconfig symbol for CPUs vulnerable to Spectre") that can be selected.
->
->Would be good to generalize it for reuse so archs can select it, and make the above as
->'default y if CPU_SPECTRE'.
+This patchset includes benchmarks for testing the performance of
+the bloom filter for different entry sizes and different number of
+hash functions used, as well as comparisons for hashmap lookups
+with vs. without the bloom filter.
 
-Thanks for your feedback, I will send a v2 soon. I guess below is how
-you want it to be:
+A high level overview of this patchset is as follows:
+1/5 - kernel changes for adding bloom filter map
+2/5 - libbpf changes for adding map_extra flags
+3/5 - tests for the bloom filter map
+4/5 - benchmarks for bloom filter lookup/update throughput and false positi=
+ve
+rate
+5/5 - benchmarks for how hashmap lookups perform with vs. without the bloom
+filter
 
----
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 8df1c7102643..6aa856d51cb7 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1091,6 +1091,9 @@ config ARCH_SUPPORTS_RT
-  config CPU_NO_EFFICIENT_FFS
-  	def_bool n
-  
-+config CPU_SPECTRE
-+	bool
-+
-  config HAVE_ARCH_VMAP_STACK
-  	def_bool n
-  	help
-diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-index 8355c3895894..44551465fd03 100644
---- a/arch/arm/mm/Kconfig
-+++ b/arch/arm/mm/Kconfig
-@@ -828,9 +828,6 @@ config CPU_BPREDICT_DISABLE
-  	help
-  	  Say Y here to disable branch prediction.  If unsure, say N.
-  
--config CPU_SPECTRE
--	bool
--
-  config HARDEN_BRANCH_PREDICTOR
-  	bool "Harden the branch predictor against aliasing attacks" if EXPERT
-  	depends on CPU_SPECTRE
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d9830e7e1060..769739da67c6 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -124,6 +124,7 @@ config X86
-  	select CLKEVT_I8253
-  	select CLOCKSOURCE_VALIDATE_LAST_CYCLE
-  	select CLOCKSOURCE_WATCHDOG
-+	select CPU_SPECTRE
-  	select DCACHE_WORD_ACCESS
-  	select EDAC_ATOMIC_SCRUB
-  	select EDAC_SUPPORT
-diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-index a82d6de86522..510a5a73f9a2 100644
---- a/kernel/bpf/Kconfig
-+++ b/kernel/bpf/Kconfig
-@@ -64,6 +64,7 @@ config BPF_JIT_DEFAULT_ON
-  
-  config BPF_UNPRIV_DEFAULT_OFF
-  	bool "Disable unprivileged BPF by default"
-+	default y if CPU_SPECTRE
-  	depends on BPF_SYSCALL
-  	help
-  	  Disables unprivileged BPF by default by setting the corresponding
-@@ -72,6 +73,10 @@ config BPF_UNPRIV_DEFAULT_OFF
-  	  disable it by setting it to 1 (from which no other transition to
-  	  0 is possible anymore).
-  
-+	  Unprivileged BPF can be used to exploit potential speculative
-+	  execution side-channel vulnerabilities on affected hardware. If you
-+	  are concerned about it, answer Y.
-+
-  source "kernel/bpf/preload/Kconfig"
-  
-  config BPF_LSM
+v5 -> v6:
+* in 1/5: remove "inline" from the hash function, add check in syscall to
+fail out in cases where map_extra is not 0 for non-bloom-filter maps,
+fix alignment matching issues, move "map_extra flags" comments to inside
+the bpf_attr struct, add bpf_map_info map_extra changes here, add map_extra
+assignment in bpf_map_get_info_by_fd, change hash value_size to u32 instead=
+ of
+a u64
+* in 2/5: remove bpf_map_info map_extra changes, remove TODO comment about
+extending BTF arrays to cover u64s, cast to unsigned long long for %llx when
+printing out map_extra flags
+* in 3/5: use __type(value, ...) instead of __uint(value_size, ...) for val=
+ues
+and keys
+* in 4/5: fix wrong bounds for the index when iterating through random valu=
+es,
+update commit message to include update+lookup benchmark results for 8 byte
+and 64-byte value sizes, remove explicit global bool initializaton to false
+for hashmap_use_bloom and count_false_hits variables
+
+v4 -> v5:
+* Change the "bitset map with bloom filter capabilities" to a bloom filter =
+map
+with max_entries signifying the number of unique entries expected in the bl=
+oom
+filter, remove bitset tests
+* Reduce verbiage by changing "bloom_filter" to "bloom", and renaming progs=
+ to
+more concise names.
+* in 2/5: remove "map_extra" from struct definitions that are frozen, creat=
+e a
+"bpf_create_map_params" struct to propagate map_extra to the kernel at map
+creation time, change map_extra to __u64
+* in 4/5: check pthread condition variable in a loop when generating initial
+map data, remove "err" checks where not pragmatic, generate random values
+for the hashmap in the setup() instead of in the bpf program, add check_arg=
+s()
+for checking that there aren't more requested entries than possible unique
+entries for the specified value size
+* in 5/5: Update commit message with updated benchmark data
+
+v3 -> v4:
+* Generalize the bloom filter map to be a bitset map with bloom filter
+capabilities
+* Add map_extra flags; pass in nr_hash_funcs through lower 4 bits of map_ex=
+tra
+for the bitset map
+* Add tests for the bitset map (non-bloom filter) functionality
+* In the benchmarks, stats are computed only as monotonic increases, and pl=
+ace
+stats in a struct instead of as a percpu_array bpf map
+
+v2 -> v3:
+* Add libbpf changes for supporting nr_hash_funcs, instead of passing the
+number of hash functions through map_flags.
+* Separate the hashing logic in kernel/bpf/bloom_filter.c into a helper
+function
+
+v1 -> v2:
+* Remove libbpf changes, and pass the number of hash functions through
+map_flags instead.
+* Default to using 5 hash functions if no number of hash functions
+is specified.
+* Use set_bit instead of spinlocks in the bloom filter bitmap. This
+improved the speed significantly. For example, using 5 hash functions
+with 100k entries, there was roughly a 35% speed increase.
+* Use jhash2 (instead of jhash) for u32-aligned value sizes. This
+increased the speed by roughly 5 to 15%. When using jhash2 on value
+sizes non-u32 aligned (truncating any remainder bits), there was not
+a noticeable difference.
+* Add test for using the bloom filter as an inner map.
+* Reran the benchmarks, updated the commit messages to correspond to
+the new results.
+
+
+Joanne Koong (5):
+  bpf: Add bloom filter map implementation
+  libbpf: Add "map_extra" as a per-map-type extra flag
+  selftests/bpf: Add bloom filter map test cases
+  bpf/benchs: Add benchmark tests for bloom filter throughput + false
+    positive
+  bpf/benchs: Add benchmarks for comparing hashmap lookups w/ vs. w/out
+    bloom filter
+
+ include/linux/bpf.h                           |   1 +
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |   9 +
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bloom_filter.c                     | 195 +++++++
+ kernel/bpf/syscall.c                          |  24 +-
+ kernel/bpf/verifier.c                         |  19 +-
+ tools/include/uapi/linux/bpf.h                |   9 +
+ tools/lib/bpf/bpf.c                           |  27 +-
+ tools/lib/bpf/bpf_gen_internal.h              |   2 +-
+ tools/lib/bpf/gen_loader.c                    |   3 +-
+ tools/lib/bpf/libbpf.c                        |  38 +-
+ tools/lib/bpf/libbpf.h                        |   3 +
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_internal.h               |  25 +-
+ tools/testing/selftests/bpf/Makefile          |   6 +-
+ tools/testing/selftests/bpf/bench.c           |  60 ++-
+ tools/testing/selftests/bpf/bench.h           |   3 +
+ .../bpf/benchs/bench_bloom_filter_map.c       | 477 ++++++++++++++++++
+ .../bpf/benchs/run_bench_bloom_filter_map.sh  |  45 ++
+ .../bpf/benchs/run_bench_ringbufs.sh          |  30 +-
+ .../selftests/bpf/benchs/run_common.sh        |  60 +++
+ .../bpf/prog_tests/bloom_filter_map.c         | 204 ++++++++
+ .../selftests/bpf/progs/bloom_filter_bench.c  | 153 ++++++
+ .../selftests/bpf/progs/bloom_filter_map.c    |  82 +++
+ 25 files changed, 1429 insertions(+), 51 deletions(-)
+ create mode 100644 kernel/bpf/bloom_filter.c
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bloom_filter_m=
+ap.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bloom_filt=
+er_map.sh
+ create mode 100644 tools/testing/selftests/bpf/benchs/run_common.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bloom_filter_map=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bloom_filter_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bloom_filter_map.c
+
+--=20
+2.30.2
+
