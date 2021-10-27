@@ -2,18 +2,18 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D2843D7BE
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 01:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193E743D7B4
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 01:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbhJ0Xum (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Oct 2021 19:50:42 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7128 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229447AbhJ0Xum (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 Oct 2021 19:50:42 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19RLfViJ016261
-        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 16:48:15 -0700
+        id S229558AbhJ0Xrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Oct 2021 19:47:52 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15398 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229565AbhJ0Xrv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 Oct 2021 19:47:51 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RLfhlQ010126
+        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 16:45:25 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
@@ -22,13 +22,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc
  bkO/ZY9kf7iDPSJR8j+XPHDmb/5/kddS4cH0aILKpGbfv6mhBIJl39FENNJY5qvHbtPi
  AuJ+rqyHtT63axJIDtbfpY0jtvafFsfjtZg= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3by64p6v6d-5
+        by mx0a-00082601.pphosted.com with ESMTP id 3bxvv89hty-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 16:48:15 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 16:45:24 -0700
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 27 Oct 2021 16:48:14 -0700
+ 15.1.2308.14; Wed, 27 Oct 2021 16:45:21 -0700
 Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
         id A0A29421C73A; Wed, 27 Oct 2021 16:45:18 -0700 (PDT)
 From:   Joanne Koong <joannekoong@fb.com>
@@ -47,15 +47,15 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: fuoh7kf0I8l1C-B7g8alpq4tIa_Hcv9-
-X-Proofpoint-GUID: fuoh7kf0I8l1C-B7g8alpq4tIa_Hcv9-
+X-Proofpoint-GUID: 18onj8ECu9GYYnA6_cj5vqFmakKDzQO3
+X-Proofpoint-ORIG-GUID: 18onj8ECu9GYYnA6_cj5vqFmakKDzQO3
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-10-27_07,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
+ impostorscore=0 mlxlogscore=999 clxscore=1015 malwarescore=0 adultscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2110270130
 X-FB-Internal: deliver
 Precedence: bulk
