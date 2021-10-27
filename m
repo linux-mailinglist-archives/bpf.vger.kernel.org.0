@@ -2,143 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFBB43C0BA
-	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 05:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E5C43C0C9
+	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 05:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236573AbhJ0DVN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Oct 2021 23:21:13 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1048 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232200AbhJ0DVM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Oct 2021 23:21:12 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19R1APp1003377;
-        Tue, 26 Oct 2021 20:18:47 -0700
+        id S239084AbhJ0Dct (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Oct 2021 23:32:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37706 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237941AbhJ0Dcr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Oct 2021 23:32:47 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QHIdIH007631;
+        Tue, 26 Oct 2021 20:30:21 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=a7XPRpO6nx8/dxwTjvAztwdockiIl9g4polC14bPAHU=;
- b=gCNt3iyW4vVfuKIrqOnpGEyosOj8NDmsQ5uitcctD/Pf7zN0gY3FjHrfVrikbpN+Wmm7
- VcEcHy2vLo3PRFehq48yBxozNbQ4En++w1UBUk1KOIddpnAp4Ah8VViVGSHqTlxXN4Iv
- JJQvrWnLfIwNVt/5EMZhu/iHvt+07KdYBaQ= 
+ bh=xZCRceKzomuMr4p9ib9VKHpf1mcpLbmT50Y8AtjlukI=;
+ b=Xh+QOOFm3z5Yz/+K22aNINZO3fuR+vwYJ7sDZcv32QchFmNqBdzgQ/w/t/ywJfLfHBdb
+ S/PiSDjWclrShZb4cgjncSGGEWpnVtTUy16g8rguZtVc6E2hxmt3vem0aHvGTktsKs3K
+ avC3aSrQ4ar/mgInPrXjVS63MJS9rmO25Jo= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bxvv80hmu-2
+        by mx0a-00082601.pphosted.com with ESMTP id 3bxny4bmaf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Oct 2021 20:18:47 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+        Tue, 26 Oct 2021 20:30:21 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
  o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 26 Oct 2021 20:18:46 -0700
+ 15.1.2308.14; Tue, 26 Oct 2021 20:30:19 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nyF9+VV7ETBOOBimQJ/Lj/19iLcou2M5aqHXgPqDUZfW6NVfPwZa3df9w+W0Lsh2A+KSH2tziF+vgC1/gdLOzsBKimJVVv9xY6gg7d1FemS1QqrIs3oSXn+TLp6L/i6yrZpgWaHi/gaENL/wKLH3Tv7w8nsafqxgAyE3O2ZD+YoteJUaDGUZII0RWhjBoLWc1QZQ0C3Y6mMmpdqAgIjYhD4FqTRqvrdQo3cll5aHO/effzhjLgip596Bs9rQp3PLqCeR/rV58d4ajHBHqMavfsWAglPcMiem5NJa7Rry6vMy7X5y165/EccAXwHHlsnCEDFIOqnySUwnw9w0i9BSUA==
+ b=dX+vnFXCAfQ6HM+dkU8Q5UCQVuWPPyFzk1RZiL8MJ5N+OeqF0BF8Ihgl4+vy9xmXdhSXrpb0IBEPMGf9U+gLgrfQ/lZ+uCmeRnWfZwQCnuw/3p35f+iCHHa64z80rMpyblEUOMZeDVl0/bDON3eBtM4juTd1nhU+l8LpEvVcbhMWkmC03etfS3o+GP1SLlJueHIyx+lR8Z06uE7nrgQmsNZyReeJTJcVCBvbu+llKot4DAuy36Kq+42D/uPLQuClX4u2I6rTiE17q5x3mx7ZYFBH4yojEm4PDqpJhlCl4EXP+JodPcPIXRkrr2RSWoNsfgU18Gt/hJpMTdGUYR2ZYA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a7XPRpO6nx8/dxwTjvAztwdockiIl9g4polC14bPAHU=;
- b=gF8zk0ID/QFzgD/FHTV5h38QxvitwTCAfjzAoZc69USYsA90ak3OXQJcpk4lHryrX2EvFCLWbGAb4ushm+hAM9j9i+6PvD8ep295H58F4WyZpUSMY/kYohB7Ssd3KhTxWKdoTvcNOwccyT2Rtw5VqgHZJvsZgY6Ury76D2UJPAgyB/1OF2b2/H2e6r+iSTYlf8El+MAMUUFPrSF04tvl8cJtvEaqB/D6C54Xvn12ggTgnv8UcelDoQjJHYybCeIvDvCP5soKdfUWSs69wJxGjW8WUZmIzpDdIyfeX/YXaLNkM7+4Rpva7WYwcVfDGAR7A8JXBEjEiU8d9xdmm1fV2w==
+ bh=xZCRceKzomuMr4p9ib9VKHpf1mcpLbmT50Y8AtjlukI=;
+ b=ONgQVmv5Gzcrk7Eh25E3riCIWFsX6XpJfpoJlT264skp5UhyX9rbH+XiQHwH95Gu3Jioqe/G71h1JGXAS1hKZ131ZGAE+WvjE8WDtsiopPhasRlNKIPlbiQdHFgfyPkHLzmdvMmfbDSWLEeyjPH964wuIpGBtHC5eApZb1U5JM5/oKbhqPIT2qlUOFFeANf1I8EYhzJAkrBfrRGv1T0GKRlvH8UYn4ZVD+BPxgckfg3NZ9a6XY73CZH6lrChOWQQcRWUgaS8I4iwYE2nQnFOM+3sgMwQgr7DlqatmMFVK7/CrHkjYSB7MdXKOyTHEDVFIvy6ow24cX4LyU9sMdr/Aw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from MW3PR15MB3980.namprd15.prod.outlook.com (2603:10b6:303:48::23)
- by MW4PR15MB4778.namprd15.prod.outlook.com (2603:10b6:303:10c::11) with
+ by MWHPR15MB1597.namprd15.prod.outlook.com (2603:10b6:300:bd::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Wed, 27 Oct
- 2021 03:18:45 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Wed, 27 Oct
+ 2021 03:30:17 +0000
 Received: from MW3PR15MB3980.namprd15.prod.outlook.com
  ([fe80::517a:2932:62df:1075]) by MW3PR15MB3980.namprd15.prod.outlook.com
  ([fe80::517a:2932:62df:1075%3]) with mapi id 15.20.4628.020; Wed, 27 Oct 2021
- 03:18:45 +0000
-Subject: Re: [PATCH v5 bpf-next 1/5] bpf: Add bloom filter map implementation
+ 03:30:17 +0000
+Subject: Re: [PATCH v5 bpf-next 2/5] libbpf: Add "map_extra" as a per-map-type
+ extra flag
 To:     Joanne Koong <joannekoong@fb.com>, <bpf@vger.kernel.org>
 CC:     <Kernel-team@fb.com>, <andrii@kernel.org>
 References: <20211022220249.2040337-1-joannekoong@fb.com>
- <20211022220249.2040337-2-joannekoong@fb.com>
+ <20211022220249.2040337-3-joannekoong@fb.com>
 From:   Andrii Nakryiko <andriin@fb.com>
-Message-ID: <086460a2-6213-2b1b-9368-166229a91847@fb.com>
-Date:   Tue, 26 Oct 2021 20:18:43 -0700
+Message-ID: <3bc83103-6c5a-6cfb-9ea3-1b98fb50352b@fb.com>
+Date:   Tue, 26 Oct 2021 20:30:14 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <20211022220249.2040337-2-joannekoong@fb.com>
+In-Reply-To: <20211022220249.2040337-3-joannekoong@fb.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-ClientProxiedBy: MW4PR04CA0220.namprd04.prod.outlook.com
- (2603:10b6:303:87::15) To MW3PR15MB3980.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR11CA0011.namprd11.prod.outlook.com
+ (2603:10b6:301:1::21) To MW3PR15MB3980.namprd15.prod.outlook.com
  (2603:10b6:303:48::23)
 MIME-Version: 1.0
-Received: from [IPv6:2620:10d:c085:2103:b2:4e6a:72dd:1ddf] (2620:10d:c090:400::5:8f40) by MW4PR04CA0220.namprd04.prod.outlook.com (2603:10b6:303:87::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Wed, 27 Oct 2021 03:18:45 +0000
+Received: from [IPv6:2620:10d:c085:2103:b2:4e6a:72dd:1ddf] (2620:10d:c090:400::5:8f40) by MWHPR11CA0011.namprd11.prod.outlook.com (2603:10b6:301:1::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13 via Frontend Transport; Wed, 27 Oct 2021 03:30:16 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a11f838a-7201-492c-afa1-08d998f87c45
-X-MS-TrafficTypeDiagnostic: MW4PR15MB4778:
-X-Microsoft-Antispam-PRVS: <MW4PR15MB477871D7E4511FB4B6DF7A90C6859@MW4PR15MB4778.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: f5018ecf-ea53-4bfb-e1ea-08d998fa186f
+X-MS-TrafficTypeDiagnostic: MWHPR15MB1597:
+X-Microsoft-Antispam-PRVS: <MWHPR15MB1597F02549B2927D2A9A631AC6859@MWHPR15MB1597.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:758;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pAMfObnBqaq3w8VYLY20bhhqKKWPD0sWAYjNXp0m59CfjHIzsSCfCCKK7o/dzRKolqxnCdAqAbpCt0EjBaxIv0e3ad8Jt1CpxCVaHqoJQ6O8qgjDujyK3FEwth37yC37BZ0Kg9toLTp8h8ZxpHTujODC5/RADCXuxTW5yWBGinRuRVuEHQv2bybgsoKWH/GfLWzrXlbuGOFC0MLxkscDizGS4ku8rGTMZ8cS1RXlpApBOwsxyzNuVJ6kGyjUK6UKScDWA7lxopJjWi80Fjt+15zd+B6/DChUAkAFrtxwAetHTYFMsRKhk80AO6jJJy/ZYtwhwBoQkR2U09v9uP3aezZoMtX//O9jqfERTwiv4TbiikZg+WGu4xmEpnbfbcJ0V5UAy/oiirnID3EGkSH7f8KZHsd2MsnGG4D060ODdURaxRXmj1UktvfedU0L3u/arqKioO3bSuxes/mKSHa/8hEY1zV5l8QT4JpkTomZh60TXK/pt8CNUV8hsgr89px34uX6xIuyQptz42duzbUwK4XVKK2Fkqc44pFUFFOUR5QrJMmh8+xd6X2D64+5oCPKg7b97fvKeD9VZutVJh6hS9a5JfE/LQEbMqt5N6jzMLwC9fXLVl0FxBzLwuIxGdHMmtHBap99zza/5HNUgZAH+CxEDuvx+cWaYJJ6Jh3dkawXjSgnsIBDTgiaPnn5zdSaP5QxJ3KbVgeHVUMIsSwpBnhRFyaXCTbcG9zz2iqh1msUqp73aI4yG2Mj3tJ1IPMa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3980.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(31686004)(2616005)(4326008)(86362001)(508600001)(316002)(31696002)(38100700002)(5660300002)(53546011)(83380400001)(36756003)(186003)(2906002)(66556008)(8936002)(66476007)(6486002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: u0FJIKr0r0+t12XL3E03L79fzZJIaW1Ed7UaQC1BQ2jAXF4CXNunc+SYP94zDRZ8SvZApwnamd7IxrTtB58jmItW+Ls+HaxT3Pubc6I15jUBsQPzwIUb86QeUWQtAPfszuUYsJOPoONI0qZS1vAO9tVWgy5BOQv0vd7EJ58Re75LLDhEV4pF4MY1ipl8Kp3YAXg8kbSU+RsupcAmovQRKzDiNJRcXpUM2jLGm5dxFnHUrEuAZJbmMpFyTWsFI/jUDL2XfkPUsT1Shw90qXqDueNs99spkULd7mn6VqYSrVRcAePCl758GPjWCxz96RRWPCRz6WefdBnHNzbJXFEen1TIpeoa+5RCX3aXExR7pgQ3fqMZaR9pyS1pNfqtICDtwZsPk4M6nVIbC0lTkRq3E+jDlEnmskhdRe3ocmEHQTIuXmvqe+My8MLw3/sxFY0KrNKAXcyVh15fYQhzofVuTVZweKZ6rnpwSVTCKvre9+daxkuhFDZqviBmIHJXtijzCbjJuDceg2SlfQQR1vA7NZV1LwLHfsBm5Tl9puMjeiIJ62wSOR6qvcIPD+Ca7nhS0ZuX0kj/tWF7bgsKN4/bydrGKwam6FzJrRzuBXKatp8503pAMQYZUluZS6W5XTuk3mBxHLyNksKMENyqiz55wYN2YQlwqJAAkEmrQfiYDNV/tzbkOuUdWCHmzNPMae2343PyBtj+Ua1l2m1E5Y1N5OHVfjdNF0eKP3qevrT7SX6QeyPZZHDrDYEwQs7h7wZc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3980.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(5660300002)(8936002)(316002)(31686004)(86362001)(83380400001)(6486002)(66556008)(8676002)(66946007)(66476007)(36756003)(53546011)(31696002)(4326008)(2616005)(186003)(38100700002)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YWY1UzlPcC9ITk5HUWxJenU1ZXpUUEwvUHR2RG9TUWFhWEovMEdnTmJiTWkz?=
- =?utf-8?B?aUNUWVZVNE5yWDkveUI0UWJiNEE2NitXaEs4QWVvYnFoOVFZbjVpRzhldUZj?=
- =?utf-8?B?dUM2YjBnSmxFRDVoM3pGWjRmNGNBcWM3Rk9yenVKc3RKNnVIVWFsd3VJcU5X?=
- =?utf-8?B?c0gzbXdoc3c1cW9pWnJ6cUkwdk1lNlNTdDFVamZjSTlvTSt6VG1RejFDUDNz?=
- =?utf-8?B?Z2R5QlNpbng5eThuRTZQNUxnWkRYWE5JUnEza3M2Tnk1RlFsTyttdkw2b3o3?=
- =?utf-8?B?T0FTcEJ1NXBGSXFsaWVSQ0RwZStaY3dVdWtjTGllaVhJQSsyd2t0VG5qTDFR?=
- =?utf-8?B?cFhmWHVDUmF5eW9MVXFIQjQ0ZmZobmF4bCtadTNDeGpSeEZKNDhPUFBnbXdt?=
- =?utf-8?B?aHpWcHBXZW1WTndYRVFhU2o0QlpudVhiQWFtbEZrdWlFajYxUWFsckpqZDAx?=
- =?utf-8?B?d3AzVWk5bTRKWTF0ODBYZ1FRT2svbGc0Q0pBVXZKQnZ5SzlMbGJhR0g0M0Ur?=
- =?utf-8?B?T1NtVW9Vc2JrbmtUeldkUkMxTjQ5Y0Z3Z2R5YnVicStuc3NvMGJJUTk2MTN1?=
- =?utf-8?B?VFRVbjJ6RU55dVBFR3RBa0t6dXZTS1dCd0g0NTI3TldhbDZ5OXIxMlY5ZCtP?=
- =?utf-8?B?ZEtyR1prVVdUOE43Vnh6VlZVTkVIcGdEV052Q25heFhCR3RnNmZib09Ta1p5?=
- =?utf-8?B?aGNkZWxyQkw4K0tPUG5NeVZwSzBtUHA5akNxZkVoM1RZcHpUa09FZ3Y1RGxX?=
- =?utf-8?B?dWtUMFJCWDU5bWlRTGhIWmY3OU1zTk5CeWU4WFcrVnc3Um1SRkpVS0FvN25B?=
- =?utf-8?B?dHFiTTZyQ0h0eGtlSUtjYVBkWS9sUnczSld2UnlsVk9mWlR6T3NPOEt4eEZl?=
- =?utf-8?B?UzVacXVHYTl0ZUxlVHYway9EQjFRUGdtaTYzYWVYMlNxN0p4K2JQVHBKQnA2?=
- =?utf-8?B?RUhteFMrRlNXNk9ySXNyV0FOZndNd2ZDRzMrM2hLYTR6MElFSmFRNGltVmVv?=
- =?utf-8?B?cE01aGo0dzJwSndzQVJtbXpDYzZXV25nUWwvNzhqeFVxNUJrL3MvN1pQWW5m?=
- =?utf-8?B?RTlMK295ZnZnSytQc0psckE4OEM5NkxUM1k4L3FNTkUxWllTTDBYQ3F5VENu?=
- =?utf-8?B?dVVhUGk1N01SYTQxaVFaOHRmQjU1WE5MMjBrVm9jRWZuWWdPbHVXTFV1STFQ?=
- =?utf-8?B?Q2FhWHc0SWtOQWtGSE1TbUtOR1pzaWduRU14RzduNUl1YWtkZnI5clhQNEh1?=
- =?utf-8?B?SGFsWVhEZXQxeldSOXRwNmNJZVplazMwdkdMRy93WWVYRjlmcEZ0MzhmQmNp?=
- =?utf-8?B?NmZEdWhmd1RWWWN4VVNuWUwrbXBRM2c3WFFjQW00YjczcTAwZXVER1QwbVRX?=
- =?utf-8?B?UHRYanlNVVVhbEFrQnE0NXVHRG96aDBHM05TVWFWYUxaNlpwWW5MZHB0YzZp?=
- =?utf-8?B?UHdXNHNUWUlUUlFIMkJjOWZwNVBFNEwvTWZrdU93UmlEVVMrVW9EajZhWmVO?=
- =?utf-8?B?S2c5UEpJVktLdEw1NmFaVFlnM1FTd1B0NGRlSE9qanNFU0lyc3lYejFDamlH?=
- =?utf-8?B?VldOckFxWFpTaWwwdDdrZjdDa0ltNFYxTU05L01uM3lyZkhhRE1sMVZFU1pL?=
- =?utf-8?B?SXdjTHJ3Z3hyL3hKa0FGTjhOQTRIK2dtU2hNQVdMcVNzczdhZXFkT2xtaGo3?=
- =?utf-8?B?L2h1NjU3R0Fwckh6TWhselB5bE9kK3pUM1F5TE5Id21ud1p2QS82MHNyTFRn?=
- =?utf-8?B?SExGWXorV0paTjhZRG54eU9Cd2RIMDM2VTd1b2gwUzMrRFZlcTltY2NONURB?=
- =?utf-8?B?enEvY1BRdkhVOEV4VFQvSFlKSFZPWFdmVWl1UUphblRWZDlhY2RqV3ZOSTdG?=
- =?utf-8?B?c01CTTdUejZkRGRiQkUyem91eWR5M2tFTjd3TlhEeG1oYkdUenE0R1dPeDR2?=
- =?utf-8?B?aXQydi9Hbng4bjhneTRMT3djQW9DTWF4cEtVWmFTZGxHcVhYMkZ2WDFnYzJ5?=
- =?utf-8?B?ZEJpYXNTa0pNeWsrNjlKbkQvM284T2dRRUg5UG1PVTU4Si9mQTZDVjJtUDdS?=
- =?utf-8?B?WFpkZ3NSZUErM0NyOUw5RERrQ091dzBTaVYyQWxrYzFZTmVqdVhWeVI5NHVR?=
- =?utf-8?B?d0lqQWpubGZGNGxjei83SHZwcjZGMUxBNDNYbjRpZUZ1SE5wQTRaZ2ZwcmdE?=
- =?utf-8?B?K3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a11f838a-7201-492c-afa1-08d998f87c45
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bWQ0RHpoK0tEd2I5bWVVclByRWJVUjBUVHRaV210Tllja3Z6SlprZGlOMjlx?=
+ =?utf-8?B?VkVvbmE2OEFpUjdXdk5MbXl6UGFvaGd1MnFQRXBWTWNVemlVdzFteHFLeHdt?=
+ =?utf-8?B?UERTYmhPRTMzeWova3R6RWNJVW9HdjN4b3VPQTFaUEEvN0U0Y2N3Z28xRlcv?=
+ =?utf-8?B?eUIwMGpxTjRaUE5KUVNTcExFQThTQ2tPbVIvUGNIK0ZoaFptNVpBdzFtSTlr?=
+ =?utf-8?B?TmkvQUlpUDRWVU5Ea1lDR3pJbmV5a3cwaWZXNERrd2JveFpldjVwNnJ6cnR2?=
+ =?utf-8?B?ZEdZQXkzbnZ2ZGNpQmR2TUd3MnRLdkVHR2hsdm8yQmFhQTg3Q3E2a2dDRVlT?=
+ =?utf-8?B?azQxVW9sR1NGYythM25JNDRidTBxVFdUZ1FnNGRBU0V4bUdYMVZTME5HVFMy?=
+ =?utf-8?B?YWFTeVNYOGxFY3JZSjRuVVZEUUZENDFoYlFQemI3OXB0V1pkT3I1VUIwcit3?=
+ =?utf-8?B?QVZ0ODNIbjBXczV6dU1oelp3eVhRTWd0SENmdEt6Z0FwRUFrK2RyK0pUTnEy?=
+ =?utf-8?B?eHFjRWZMYnBJWTJ1ZklWT0pXaXFXL1l3aGV5THZnTThNUm1MYU5WRVRSY3VT?=
+ =?utf-8?B?S2NMWDZnUVlqdEVtTlAybUhyd0FBbnp6YnBvWlZTejFvbjMyZzdyQXNNVEdr?=
+ =?utf-8?B?bGcvSDI5eDZBRnZnYXpwR1RFaEllSGduV2lMWXpIZ3ZlSFFRZS9ja2prK0JR?=
+ =?utf-8?B?SmFmdXVaRHROVnhvbEFXZC82Y2V2SGM3WlJXWUxvdFB1TEMrMDZNdUJWaGJn?=
+ =?utf-8?B?Mmwrb01Qd0dxQVdxUXpQV1NGNkJHSEk5R1ZCRDF4ay9jNWpWd1ZDRWFXbkdF?=
+ =?utf-8?B?cVc4R2ZFSXZkaXFESy9jeGJqTlhDR2NwV2RSZmlBbS9OQkY4YzlkbGZ0WFRs?=
+ =?utf-8?B?U0ptUEc4SThDdnNTODhSbG5ENU82Zno4cjFFdEdHb3huTTJKRGx4MWtDeGVK?=
+ =?utf-8?B?VUpRMGtsazFjQ2w0MUdid0QvckJLc2dubk9ta0VQM1JHQmg1dGZmamU2SXJE?=
+ =?utf-8?B?cTd1cndJWEdGUHB5c3hQN2VidGEySmc2SlpoT3JOQ0crN3ZlSTdCZTlzbmFj?=
+ =?utf-8?B?QXhvekE5c1NBWng5RDErZ0tmV1JuRS9UZlZkQ0tLYjhGMEZpQjNUYWNXYWFl?=
+ =?utf-8?B?RURWKzZHYWFmSDRjT1hjK296T2lMZlMveXpGeHVYaS96bVVhdnJyNVBNOThu?=
+ =?utf-8?B?a1Rlc0FLUm1IeUd2dDR5SndTdXRiaEdpRDI4THlSdktIbjc3MHNxdGdKa1Y4?=
+ =?utf-8?B?R3g4bHB3dm16Wk9jMm1nUHZIQjFPSU9YTEFDRW1mL0YrSUZtajhVa3prSURz?=
+ =?utf-8?B?WUpJZzRiNU02NEVTMnpYK09SaU1ScHBoZUw3emN1dnZZOTd3MTJ0MTZlVWRO?=
+ =?utf-8?B?VTg1Vnd6RVh5Q1NFb3dTaCtvbGR2UG9uTkNlTjVFNURDc3dQNUVmeWZpZGFn?=
+ =?utf-8?B?cTNNdUdCSWx5RWhJdk53ZUl0QzFHeHZ3TzF5NW54YkM5WGJXV3czcEsrUFVi?=
+ =?utf-8?B?R0diQXFqNXYzMXVYRWkvVmcwZkNiY3pQR1FjcERVcktmbU5JMnRpeENiNlpj?=
+ =?utf-8?B?OVBzWHIwMDhMQTltMmhCcTBBSXBkWXMyZjEwU0dXWCs1bmdCWW5LOGNFZEcv?=
+ =?utf-8?B?NGpVWk9IalU1QTBPL0xqY3p0OFNJako2V3d3cTkxSjNPaWYzRlpkdFhBTFgx?=
+ =?utf-8?B?TUFSSmdHMlZYVWg5azBVcWIrbEIwSTZNSkc2MVhEV1ZoWHNLUS91d3kyTTdD?=
+ =?utf-8?B?VUhDdmVDY2ZzL1BxRGVKSDVLMzl6bFpMMzBUaVU5K2hKeTBSd0M1Q2FxOFpk?=
+ =?utf-8?B?bVhYMzJ4eXFJeGdORkxRQlk3Z1BiSi9KVUtyTGp2SGNlNTRNN3hMVnBETis4?=
+ =?utf-8?B?Rmo1QVFIL2x4WG1VWktZTHlINlNFOW1MbVhzVnBIdHU1YTVDU3Q5VzFqMDcz?=
+ =?utf-8?B?WTBrYWtLbExKWUVBMmZEVUNhVEpBRHQvQlRLMXVmNFFuZ29YZkFuL1NYcDZC?=
+ =?utf-8?B?S2pEK2xYbVpVdDduNXRISGgzT0d3OVQyc3ZQYmNGdkxJUk5aS1crZkdsMXd3?=
+ =?utf-8?B?OGJJTSszanp0QW5lbXdXVVJnb3UzK2d0V3dMcExkMW5UVXd0VDBvRWhCNG80?=
+ =?utf-8?B?YlAxSlZqeUwwTTRsNmJoYm5QNEppWml6RFg0VUJjM204QWdpcTg3WWZLSFgx?=
+ =?utf-8?B?Rmc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5018ecf-ea53-4bfb-e1ea-08d998fa186f
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR15MB3980.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 03:18:45.5691
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 03:30:17.0012
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s41cqe/ndOF0v+DahkbcY/6uEViE0/gEc4Ysb8EclSXy7/Us+JfEHcgqrS/foKzK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4778
+X-MS-Exchange-CrossTenant-UserPrincipalName: /yQdVk3xV7pdzD874XA4VvnAys5ZgDouStWk4DOIELDwNOcfNmFW37w93PnU+aW5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1597
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: JeHT2Hp4w-dDbgzTMatUSpqcROuJU8ix
-X-Proofpoint-ORIG-GUID: JeHT2Hp4w-dDbgzTMatUSpqcROuJU8ix
+X-Proofpoint-ORIG-GUID: f19Izs0oYsEXDhYKJJKeHpmtRzcTpxDy
+X-Proofpoint-GUID: f19Izs0oYsEXDhYKJJKeHpmtRzcTpxDy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_07,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
- impostorscore=0 mlxlogscore=999 clxscore=1011 malwarescore=0 adultscore=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270017
+ definitions=2021-10-27_01,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ suspectscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ adultscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2110270017
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -146,143 +147,135 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 10/22/21 3:02 PM, Joanne Koong wrote:
-> This patch adds the kernel-side changes for the implementation of
-> a bpf bloom filter map.
+> This patch adds the libbpf infrastructure for supporting a
+> per-map-type "map_extra" field, whose definition will be
+> idiosyncratic depending on map type.
 >
-> The bloom filter map supports peek (determining whether an element
-> is present in the map) and push (adding an element to the map)
-> operations.These operations are exposed to userspace applications
-> through the already existing syscalls in the following way:
+> For example, for the bloom filter map, the lower 4 bits of
+> map_extra is used to denote the number of hash functions.
 >
-> BPF_MAP_LOOKUP_ELEM -> peek
-> BPF_MAP_UPDATE_ELEM -> push
->
-> The bloom filter map does not have keys, only values. In light of
-> this, the bloom filter map's API matches that of queue stack maps:
-> user applications use BPF_MAP_LOOKUP_ELEM/BPF_MAP_UPDATE_ELEM
-> which correspond internally to bpf_map_peek_elem/bpf_map_push_elem,
-> and bpf programs must use the bpf_map_peek_elem and bpf_map_push_elem
-> APIs to query or add an element to the bloom filter map. When the
-> bloom filter map is created, it must be created with a key_size of 0.
->
-> For updates, the user will pass in the element to add to the map
-> as the value, with a NULL key. For lookups, the user will pass in the
-> element to query in the map as the value, with a NULL key. In the
-> verifier layer, this requires us to modify the argument type of
-> a bloom filter's BPF_FUNC_map_peek_elem call to ARG_PTR_TO_MAP_VALUE;
-> as well, in the syscall layer, we need to copy over the user value
-> so that in bpf_map_peek_elem, we know which specific value to query.
->
-> A few things to please take note of:
->   * If there are any concurrent lookups + updates, the user is
-> responsible for synchronizing this to ensure no false negative lookups
-> occur.
->   * The number of hashes to use for the bloom filter is configurable from
-> userspace. If no number is specified, the default used will be 5 hash
-> functions. The benchmarks later in this patchset can help compare the
-> performance of using different number of hashes on different entry
-> sizes. In general, using more hashes decreases both the false positive
-> rate and the speed of a lookup.
->   * Deleting an element in the bloom filter map is not supported.
->   * The bloom filter map may be used as an inner map.
->   * The "max_entries" size that is specified at map creation time is used
-> to approximate a reasonable bitmap size for the bloom filter, and is not
-> otherwise strictly enforced. If the user wishes to insert more entries
-> into the bloom filter than "max_entries", they may do so but they should
-> be aware that this may lead to a higher false positive rate.
+> Please note that until libbpf 1.0 is here, the
+> "bpf_create_map_params" struct is used as a temporary
+> means for propagating the map_extra field to the kernel.
 >
 > Signed-off-by: Joanne Koong <joannekoong@fb.com>
 > ---
-
-
-Apart from few minor comments below and the stuff that Martin mentioned, 
-LGTM.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-
->   include/linux/bpf.h            |   2 +
->   include/linux/bpf_types.h      |   1 +
->   include/uapi/linux/bpf.h       |   8 ++
->   kernel/bpf/Makefile            |   2 +-
->   kernel/bpf/bloom_filter.c      | 198 +++++++++++++++++++++++++++++++++
->   kernel/bpf/syscall.c           |  19 +++-
->   kernel/bpf/verifier.c          |  19 +++-
->   tools/include/uapi/linux/bpf.h |   8 ++
->   8 files changed, 250 insertions(+), 7 deletions(-)
->   create mode 100644 kernel/bpf/bloom_filter.c
+>   include/uapi/linux/bpf.h         |  1 +
+>   tools/include/uapi/linux/bpf.h   |  1 +
+>   tools/lib/bpf/bpf.c              | 27 ++++++++++++++++++++-
+>   tools/lib/bpf/bpf_gen_internal.h |  2 +-
+>   tools/lib/bpf/gen_loader.c       |  3 ++-
+>   tools/lib/bpf/libbpf.c           | 41 ++++++++++++++++++++++++++++----
+>   tools/lib/bpf/libbpf.h           |  3 +++
+>   tools/lib/bpf/libbpf.map         |  2 ++
+>   tools/lib/bpf/libbpf_internal.h  | 25 ++++++++++++++++++-
+>   9 files changed, 96 insertions(+), 9 deletions(-)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 31421c74ba08..953d23740ecc 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -193,6 +193,8 @@ struct bpf_map {
->   	struct work_struct work;
->   	struct mutex freeze_mutex;
->   	u64 writecnt; /* writable mmap cnt; protected by freeze_mutex */
-> +
-> +	u64 map_extra; /* any per-map-type extra fields */
-
-
-It's minor, but given this is a read-only value, it makes more sense to 
-put it after map_flags so that it doesn't share a cache line with a 
-refcounting and mutex fields
-
-
->   };
->   
->   static inline bool map_value_has_spin_lock(const struct bpf_map *map)
-> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> index 9c81724e4b98..c4424ac2fa02 100644
-> --- a/include/linux/bpf_types.h
-> +++ b/include/linux/bpf_types.h
-> @@ -125,6 +125,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK, stack_map_ops)
->   BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
->   #endif
->   BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
-> +BPF_MAP_TYPE(BPF_MAP_TYPE_BLOOM_FILTER, bloom_filter_map_ops)
->   
->   BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
->   BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
 > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c10820037883..66827b93f548 100644
+> index 66827b93f548..bb64d407b8bd 100644
 > --- a/include/uapi/linux/bpf.h
 > +++ b/include/uapi/linux/bpf.h
-> @@ -906,6 +906,7 @@ enum bpf_map_type {
->   	BPF_MAP_TYPE_RINGBUF,
->   	BPF_MAP_TYPE_INODE_STORAGE,
->   	BPF_MAP_TYPE_TASK_STORAGE,
-> +	BPF_MAP_TYPE_BLOOM_FILTER,
+> @@ -5646,6 +5646,7 @@ struct bpf_map_info {
+>   	__u32 btf_id;
+>   	__u32 btf_key_type_id;
+>   	__u32 btf_value_type_id;
+> +	__u64 map_extra;
+>   } __attribute__((aligned(8)));
+>   
+>   struct bpf_btf_info {
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 66827b93f548..bb64d407b8bd 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -5646,6 +5646,7 @@ struct bpf_map_info {
+>   	__u32 btf_id;
+>   	__u32 btf_key_type_id;
+>   	__u32 btf_value_type_id;
+> +	__u64 map_extra;
+>   } __attribute__((aligned(8)));
+
+
+this is kernel UAPI changes. They should go into the first patch or 
+separate patch. And you probably need to extend bpf_map_get_info_by_fd() 
+such that it actually populates map_extra field.
+
+
+>   
+>   struct bpf_btf_info {
+
+
+[...]
+
+
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index db6e48014839..751cfb9778dc 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -400,6 +400,7 @@ struct bpf_map {
+>   	char *pin_path;
+>   	bool pinned;
+>   	bool reused;
+> +	__u64 map_extra;
 >   };
 >   
->   /* Note that tracing related programs such as
-> @@ -1252,6 +1253,12 @@ struct bpf_stack_build_id {
->   
->   #define BPF_OBJ_NAME_LEN 16U
->   
-> +/* map_extra flags
-> + *
-> + * BPF_MAP_TYPE_BLOOM_FILTER - the lowest 4 bits indicate the number of hash
-> + * functions (if 0, the bloom filter will default to using 5 hash functions).
-> + */
+>   enum extern_type {
+> @@ -2313,6 +2314,17 @@ int parse_btf_map_def(const char *map_name, struct btf *btf,
+>   			}
+>   			map_def->pinning = val;
+>   			map_def->parts |= MAP_DEF_PINNING;
+> +		} else if (strcmp(name, "map_extra") == 0) {
+> +			/*
+> +			 * TODO: When the BTF array supports __u64s, read into
+> +			 * map_def->map_extra directly.
+> +			 */
+
+
+Please drop the TODO comment. There are no plans to extend BTF arrays to 
+support __u64 sizes.
+
+
+> +			__u32 map_extra;
 > +
-
-
-This comment makes more sense right before map_extra field below. I 
-noticed it only accidentally.
-
-
->   union bpf_attr {
->   	struct { /* anonymous struct used by BPF_MAP_CREATE command */
->   		__u32	map_type;	/* one of enum bpf_map_type */
-> @@ -1274,6 +1281,7 @@ union bpf_attr {
->   						   * struct stored as the
->   						   * map value
->   						   */
-> +		__u64	map_extra;	/* any per-map-type extra fields */
->   	};
+> +			if (!get_map_field_int(map_name, btf, m, &map_extra))
+> +				return -EINVAL;
+> +			map_def->map_extra = map_extra;
+> +			map_def->parts |= MAP_DEF_MAP_EXTRA;
+>   		} else {
+>   			if (strict) {
+>   				pr_warn("map '%s': unknown field '%s'.\n", map_name, name);
+> @@ -2337,6 +2349,7 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
+>   	map->def.value_size = def->value_size;
+>   	map->def.max_entries = def->max_entries;
+>   	map->def.map_flags = def->map_flags;
+> +	map->map_extra = def->map_extra;
 >   
->   	struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+>   	map->numa_node = def->numa_node;
+>   	map->btf_key_type_id = def->key_type_id;
+> @@ -2360,7 +2373,9 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
+>   	if (def->parts & MAP_DEF_MAX_ENTRIES)
+>   		pr_debug("map '%s': found max_entries = %u.\n", map->name, def->max_entries);
+>   	if (def->parts & MAP_DEF_MAP_FLAGS)
+> -		pr_debug("map '%s': found map_flags = %u.\n", map->name, def->map_flags);
+> +		pr_debug("map '%s': found map_flags = 0x%X.\n", map->name, def->map_flags);
+> +	if (def->parts & MAP_DEF_MAP_EXTRA)
+> +		pr_debug("map '%s': found map_extra = 0x%llX.\n", map->name, def->map_extra);
+
+
+%llx will cause compilation warnings on some architectures if used with 
+__u64. Please cast to (long long) to avoid that.
+
+
+>   	if (def->parts & MAP_DEF_PINNING)
+>   		pr_debug("map '%s': found pinning = %u.\n", map->name, def->pinning);
+>   	if (def->parts & MAP_DEF_NUMA_NODE)
+> @@ -4199,6 +4214,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+>   	map->btf_key_type_id = info.btf_key_type_id;
+>   	map->btf_value_type_id = info.btf_value_type_id;
+>   	map->reused = true;
+> +	map->map_extra = info.map_extra;
+>   
+>   	return 0;
+>   
 
 
 [...]
