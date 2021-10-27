@@ -2,131 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6739243CF17
-	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 18:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2938C43CFC5
+	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 19:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243072AbhJ0Q5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Oct 2021 12:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
+        id S238075AbhJ0RfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Oct 2021 13:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233200AbhJ0Q5t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:57:49 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A206C061570;
-        Wed, 27 Oct 2021 09:55:23 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d3so5238947wrh.8;
-        Wed, 27 Oct 2021 09:55:23 -0700 (PDT)
+        with ESMTP id S229612AbhJ0RfZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:35:25 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D34C061570;
+        Wed, 27 Oct 2021 10:32:59 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so2606664pjb.4;
+        Wed, 27 Oct 2021 10:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CWsVp+SrjAMjXLWg5aGWLi275IB1/UGr/3Kbpvbrlz0=;
-        b=U/dhtVVCVlDcYpws+z+H9Kda0couCD6neCQIXUYqlrfO99hMTp9STdc0AieEg3qQT/
-         LEA+vxDrmd6yzu18iRRAB7YQmULVytVd3yh6Xi9gtG1Ybl4G92/I6YlQOxY2glyzB2ez
-         RSpQKKllcdr7iULn1KqydmlmuPpSummlQFliAWT5I/z2CsL6lBTRCzfsah1skJPOy7c9
-         7fl5PnuRz4XGmicNOMSDHCBzne9RpQHzLWK3ekMeRb6Bn9YJ7j+y2J1ySvyKN3NyAZOS
-         WMWEP7YuQVmedJe+ydRZaG8mrxdMVK14JVyiTBZqk+ID/fmMClq1kcVaIJXjqN1JFrno
-         T0vg==
+         :cc;
+        bh=AQBChEkhtFQMuVjrFTDIhbaj31TO4xmGXKwKQGnOWcs=;
+        b=ZDGmGwDo5RnuiecC7SBBClnFGTmBM/X2+jXUwkHeS89LA+if+glDQ1k3g/oQbxMSO+
+         qJvuRchbUG9K37AHQSUmMk64bc/ADd6X37t7h1caaxzpSGEEsz6qFEAwbRZA8Yqvhyym
+         ozqgzOMJ8MOk8q38hLIc2R/pHU6ZZa8c3YlWTRtrMljJcRxeMPRYcurKGIMFStHyVF0X
+         21/kQA69RsVDmUocBED3+c5GxGt7GsqBSElCwG8xZa+K+wX6s+xsAh7CZ1DRfkjNs+Se
+         QTMSS+3BfDQKNTOVxgrvNo6nSQCekKgFxn/+r3kWBXAlHLYDLBW45DkD554Jvwsm+fIF
+         7IjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CWsVp+SrjAMjXLWg5aGWLi275IB1/UGr/3Kbpvbrlz0=;
-        b=GbPyR0kSMEZ1c/nN+UCjDxMAxLptgl9CNM3gygBpeWbz+lMzHrg/lGzgfL14Gwgh+6
-         Zmt8FGNiATvNTreeloBfRad3BdSTlfSJ/t5SoKq6/5k9aMrEfXtmDb1uZSxEdHo+HAZU
-         RqzvM93AWIlEKR2vdiQOF7s52+o21NqJJEiJnW3pp6Y8n+Dkns265w8mDYH2b3KOzL9g
-         lcwISDRXHKta+EATbUaZLGU2sVM8P7wZ52fwmSk6sTL6rg8ppAd6vd7JkuFTb5fCJdC7
-         azVgK5A6DjJXsbx6JyPEYpzuEt08qq80XJVzfMWVRK3U1gvY4WWduSHKCC485SQsTrSF
-         p+oQ==
-X-Gm-Message-State: AOAM530YusuGvNTDbbproLfpA4sgHDaF3ixbyjm0AOXHB+4VGvH3GZPH
-        VExyvOQZpdclxnKysYaeSnLlOs3GsjwqvhnnVOA=
-X-Google-Smtp-Source: ABdhPJyV24jXnFwVti0Sq573uCKjsBbNXwheOJlt548iRfoPnt9g9DgT6esuUDsI3g9IgU9ttKCWsBoZhmwBKODu/0Y=
-X-Received: by 2002:a05:6000:2c6:: with SMTP id o6mr21600827wry.321.1635353722089;
- Wed, 27 Oct 2021 09:55:22 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=AQBChEkhtFQMuVjrFTDIhbaj31TO4xmGXKwKQGnOWcs=;
+        b=zUE8SEyTbzFHofeapKAO4nn5/qIDbUanTZOr+ADcC39MnfTvFx6fz/O+hsWWIK5QyA
+         YLR2g/Sto+wysb5tBR+FgLLCfdLx8tmSkJI+1dEJ+qfaKGv4NejyTseKtbOGL6JhvgDt
+         JYMWo+po3mPDF10ugntsTMzVw586MyZ0CxBHSmUItVuvOXrXgv/O+4nAZI+GAYTNlIyd
+         zTw/rtQcH/XT9gD+a8WpZbaTyWBeIfiVXjG50NNZSMG837kUZlhBzNzRCUTnSoe9Yo+4
+         4wPBc+q8CdkNqTFNm5aZgVzqGKi4s3oWxjLJm8ms/pDqKCoUWRM0Njwe2TxDIsyr1U6S
+         ZKGA==
+X-Gm-Message-State: AOAM5331I0Fv3wOikj15mJ6kcJRx1e8LXT5LSA0BCCnT+vieTHLC3XGs
+        vRIF9HOuB/NCOSHAn21mdLx9INyrDoptP4Lv22o=
+X-Google-Smtp-Source: ABdhPJxJ9RcQO8lR5LgHho8LtnEICkSPFV9VreN0Owub71aRxlP/jMdoV1d9HHQ+U032S5WPmcKI5c5vbHTJIRjb5g4=
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr7349063pjj.138.1635355979040;
+ Wed, 27 Oct 2021 10:32:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211027111822.3801679-1-tongtiangen@huawei.com>
-In-Reply-To: <20211027111822.3801679-1-tongtiangen@huawei.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 27 Oct 2021 18:55:10 +0200
-Message-ID: <CAJ+HfNhC=hfFnjVvCf=bw+n1msRjR3gGUyapAmsRDupZ5CusrQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next,v3] riscv, bpf: Add BPF exception tables
-To:     Tong Tiangen <tongtiangen@huawei.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20211026120132.613201817@infradead.org> <CAADnVQJaiHWWnVcaRN43DcNgqktgKs3i1P3uz4Qm8kN7bvPCCg@mail.gmail.com>
+ <YXhMv6rENfn/zsaj@hirez.programming.kicks-ass.net> <CAADnVQ+w_ww3ZR_bJVEU-PxWusT569y0biLNi=GZJNpKqFzNLA@mail.gmail.com>
+ <20211026210509.GH174703@worktop.programming.kicks-ass.net>
+ <CAADnVQ+NA2J3Lxvb8Y31yaubM6ntx5LtoSEaLziZ1b8qiY4oYQ@mail.gmail.com> <YXkVGSG3BkMUEaKH@hirez.programming.kicks-ass.net>
+In-Reply-To: <YXkVGSG3BkMUEaKH@hirez.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 27 Oct 2021 10:32:47 -0700
+Message-ID: <CAADnVQL0tnF+8Wch1Uq3nH3Bi+Ogo2uK4gqY46o7E4A+Dx+Mhg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
+To:     Peter Zijlstra <peterz@infradead.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Nick Desaulniers <ndesaulniers@google.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 13:03, Tong Tiangen <tongtiangen@huawei.com> wrote:
+On Wed, Oct 27, 2021 at 2:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> When a tracing BPF program attempts to read memory without using the
-> bpf_probe_read() helper, the verifier marks the load instruction with
-> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
-> this flag it falls back to the interpreter.
+> On Tue, Oct 26, 2021 at 02:05:55PM -0700, Alexei Starovoitov wrote:
 >
-> Add support for BPF_PROBE_MEM, by appending an exception table to the
-> BPF program. If the load instruction causes a data abort, the fixup
-> infrastructure finds the exception table and fixes up the fault, by
-> clearing the destination register and jumping over the faulting
-> instruction.
+> > Please post it. CI cannot pull it from the repo.
 >
-> A more generic solution would add a "handler" field to the table entry,
-> like on x86 and s390.
+> Done:
 >
-> The same issue in ARM64 is fixed in:
-> commit 800834285361 ("bpf, arm64: Add BPF exception tables")
->
-> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
-> Tested-by: Pu Lehui <pulehui@huawei.com>
-> ---
-> v3:
-> Modify according to Bj=C3=B6rn's comments, mainly code optimization.
+>   https://lore.kernel.org/bpf/20211027085243.008677168@infradead.org/T/#t
 
-Thank you!
+Perfect. Thanks!
+Looks like vger got into 'delete all users' mode.
+Looks like my and many other emails were automatically unsubscribed
+from many mailing lists.
+bpf@vger, netdev@vger, linux-kernel@vger user count looks very low
+compared to a few weeks ago.
+I doubt all these users decided to unsubscribe themselves.
 
-I ran this patch against the test_bpf.ko, and selftests/bpf -- no
-regressions, and after the patch is applied more tests passes. Yay!
+Anyway looks like BPF CI doesn't see the patchset yet for some reason
+(we're debugging),
+but I've tested your patchset manually the same way CI would do
+and reviewed most of the patches.
+Please add:
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+to bpf patches 16 and 17
+and
+Tested-by: Alexei Starovoitov <ast@kernel.org>
+for the whole set.
 
-On a related note. The RISC-V selftests/bpf is in a pretty lousy
-state. I'll send a cleanup patch for them soonish. E.g.:
-
-* RISC-V is missing in bpf_tracing.h (libbpf)
-* Some programs don't converge in 16 steps, I had to increase it to ~32
-* The selftest/bpf Makefile needed some RV specific changes
-* ...a lot of tests still don't pass, and needs to be looked in to
-
-Feel free to add:
-
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-
-> v2:
-> Modify according to Bj=C3=B6rn's comments, mainly removes redundant head =
-files
-> extable.h and some code style issues.
->
->  arch/riscv/mm/extable.c         |  19 +++-
->  arch/riscv/net/bpf_jit.h        |   1 +
->  arch/riscv/net/bpf_jit_comp64.c | 185 +++++++++++++++++++++++++-------
->  arch/riscv/net/bpf_jit_core.c   |  19 ++--
->  4 files changed, 177 insertions(+), 47 deletions(-)
->
-
-[...]
-
-Bj=C3=B6rn
+Thanks!
