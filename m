@@ -2,90 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F223A43D03D
-	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 20:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BDD43D087
+	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 20:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239704AbhJ0SE1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Oct 2021 14:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
+        id S238593AbhJ0SUX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Oct 2021 14:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238448AbhJ0SE1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:04:27 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E71C061570;
-        Wed, 27 Oct 2021 11:02:01 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 67so8426718yba.6;
-        Wed, 27 Oct 2021 11:02:01 -0700 (PDT)
+        with ESMTP id S231232AbhJ0SUX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:20:23 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7E0C061570;
+        Wed, 27 Oct 2021 11:17:57 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id oa4so2696672pjb.2;
+        Wed, 27 Oct 2021 11:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y4Ep56fOfPjwhoMraFFxW5wtkRrwAnAh+988/M+IXBc=;
-        b=MPxf5hLKbtPKOnPYmQX3pQjMalBbUHIPoY+DVdJukH85kdrla+XRmMDmLvR+Fi6P95
-         IlBIZO0GdSK9BtsTcbfex64fTiEdv4r5uHiYRJBd94iqSuHTBBJviq7Q8ISDbnBPDreI
-         FnIZuHfvZOzFv4n69aT97nZNtMQTqU7IkYzo4p9DP/TGf+VoaAtCgDkNJ1sS9qb3OHg0
-         CAxXmqIzdBtQHah0cpMGJ7MVRdS2msU8ozI3SbontNQgTc4djocIhQhDA46B6ChChAMF
-         Lj5t1xO80nfAfEW8xZTZBkYFXUI9eNmeGMsdJpYslSlrqVSqXDKduJBllxybXxvrlUSB
-         3lfw==
+        bh=k+J8bFq2fo19uN4FjC4jMXaiLDf48GwgQzg1X0SlSu4=;
+        b=BE/HhNsn0w+Ww7jLgz4xRgpW9aInj1fztmrdwk1POIisOyLzN7gya2a50ZELhfZcSk
+         z4pTZhVrbSlF4WlNNR/cPozj3cApO1O14AEm97sxxI2l/vKhzBhHAR160MvoW1DIqlmH
+         w9qD3OV5Ud3m5MEIcU/V4PGTsAYb/bnVhb9vgk3pShXxPMa06OicKhim5MiCFVnBHk1q
+         OgcTd3X0UGaJbmqGwNpbTIEdbG4nfy3yRJekS6E7fPn6yfQOLnFjNIaoNpAlLne1qei9
+         Q2N5lFLiC2eGoKGaJyPjc1zru2vFok5Tqdc4425gMU8sa8YIXeJ5VhNCh7EUokeSqiaV
+         SVow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Y4Ep56fOfPjwhoMraFFxW5wtkRrwAnAh+988/M+IXBc=;
-        b=A+vRdKDk92uBYp2hFTGl37dQF6eWLL6fw4cVA6VR8rHlSPAg+kRPnxB/Ww7s+4isvC
-         YqXNkyeRy8YwoAKTOTy17ZvluXBSTdBOPgyb5JACS91nFSdTRxWzLwaeGOT5vBg+1Gej
-         yt1ycAKcYnVd8mI8BKEZ5x3kSG/kW2m50aetFYSTdE6WstMiXDzSPIZ11nsOjRO5OB34
-         LcIW7xKB0c2d8Y3gkbt6BHH5EyGV4IMYL0wC8Bx3Cw9tDoJstGlfnidAoChZaCbBf2iB
-         b8yiQpU1ffmfl4uCJqATjGd++Td6UiH6YUgcXKHq00e/VOMbUVMOrtykpT36wPfyrIvr
-         oWHQ==
-X-Gm-Message-State: AOAM533a7jSHZyX9hHj1NOxJbm/9tNC+1EhzjF/JCtSlKpoBSMEjwIsl
-        HDzweLppE2y7bmUF6UOyxipUTCaxzKFz33V8fuA=
-X-Google-Smtp-Source: ABdhPJyW+6P7367fMDFPMV3f5MHc+9YUvSUaztDH9a3u/TlmPD4C7QwMCt24dl6V9SU3pNsVL4xkQ9lLMqr23IavPuk=
-X-Received: by 2002:a25:aa0f:: with SMTP id s15mr26612332ybi.51.1635357720816;
- Wed, 27 Oct 2021 11:02:00 -0700 (PDT)
+        bh=k+J8bFq2fo19uN4FjC4jMXaiLDf48GwgQzg1X0SlSu4=;
+        b=hf0MgVBXJoBg2/6tZc3nShJxEx9OVf+cAn89iEsedE15m0Yh7Qzqr0UX+JwKu9PB65
+         xnCPDWyVD95/7RHug76fCN4y1AOSI/zIve0c2nXGuol6JQOKWhDArtm64JlFmjYRuJBH
+         SzXBVMCB+tMb+ohF9bNzdRywlBdKaB10fJE3MPY3rSKZ3iNi/OGAm9qZ8ze86SH0oNuX
+         8KaF+YEti5wsIw9k301qEW8FKY1wTYoXvMARYD99SiqkwICkJSAHUGwhBbxLF298xqDm
+         vP9N29F2v4nl93c+vgIOOuT9A8dDXWPegWnVMBAKwjRhQ6sisRFKZ0ed0Tso0Mc4L58L
+         sJ1Q==
+X-Gm-Message-State: AOAM531G0U3slwahfM7mvZpBdh4xHKEnH6Eus0oIKVSr41W4YWb11rj1
+        Xxze/iKrDoqOupUUuu+laHmIjGJ0K+cMjbAlqZ/mKfi7
+X-Google-Smtp-Source: ABdhPJzT8SjZaK3s0eKyVWEHZqAUQ6D3Brfwkmd97BuTjaciNwnx00I86MQmhA/moaHEjMiIbnJzOthg++Dj0+PQVAo=
+X-Received: by 2002:a17:902:ea09:b0:13f:ac2:c5ae with SMTP id
+ s9-20020a170902ea0900b0013f0ac2c5aemr29659450plg.3.1635358677198; Wed, 27 Oct
+ 2021 11:17:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026223528.413950-1-jevburton.kernel@gmail.com>
-In-Reply-To: <20211026223528.413950-1-jevburton.kernel@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Oct 2021 11:01:49 -0700
-Message-ID: <CAEf4BzYoNBZEqdNWYSTrviOs5_4d08ODxL6XSNNHOmqxDRu8Mw@mail.gmail.com>
-Subject: Re: [PATCH v2] libbpf: Deprecate bpf_objects_list
-To:     Joe Burton <jevburton.kernel@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Joe Burton <jevburton@google.com>
+References: <20211026214133.3114279-1-eric.dumazet@gmail.com>
+In-Reply-To: <20211026214133.3114279-1-eric.dumazet@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 27 Oct 2021 11:17:46 -0700
+Message-ID: <CAADnVQKwkN_+eQN1=jDBu+GzyCsqVXiP_wPx5OMHp-B-qT5JhA@mail.gmail.com>
+Subject: Re: [PATCH V2 bpf-next 0/3] bpf: use 32bit safe version of u64_stats
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 3:35 PM Joe Burton <jevburton.kernel@gmail.com> wrote:
+On Tue, Oct 26, 2021 at 2:41 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
 >
-> From: Joe Burton <jevburton@google.com>
+> From: Eric Dumazet <edumazet@google.com>
 >
-> Add a flag to `enum libbpf_strict_mode' to disable the global
-> `bpf_objects_list', preventing race conditions when concurrent threads
-> call bpf_object__open() or bpf_object__close().
+> Two first patches fix bugs added in 5.1 and 5.5
 >
-> bpf_object__next() will return NULL if this option is set.
->
-> Callers may achieve the same workflow by tracking bpf_objects in
-> application code.
->
->   [0] Closes: https://github.com/libbpf/libbpf/issues/293
->
-> Signed-off-by: Joe Burton <jevburton@google.com>
-> ---
+> Third patch replaces the u64 fields in struct bpf_prog_stats
+> with u64_stats_t ones to avoid possible sampling errors,
+> in case of load/store stearing.
 
-Applied to bpf-next, thanks. Please specify kernel tree next time
-(i.e., [PATCH bpf-next] subject prefix)
-
-
->  tools/lib/bpf/libbpf.c        | 8 +++++++-
->  tools/lib/bpf/libbpf.h        | 3 ++-
->  tools/lib/bpf/libbpf_legacy.h | 6 ++++++
->  3 files changed, 15 insertions(+), 2 deletions(-)
->
-
-[...]
+Applied to bpf-next. Thanks!
