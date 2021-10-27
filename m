@@ -2,115 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D9043D53E
-	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 23:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA85743D62E
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 00:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239050AbhJ0VZu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Oct 2021 17:25:50 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57098 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244524AbhJ0VYe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:24:34 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mfqMv-0001Do-AK; Wed, 27 Oct 2021 23:21:57 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mfqMu-0008yD-V2; Wed, 27 Oct 2021 23:21:56 +0200
-Subject: Re: [PATCH ebpf] bpf: Disallow unprivileged bpf by default
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        antonio.gomez.iglesias@intel.com, tony.luck@intel.com,
-        dave.hansen@linux.intel.com, gregkh@linuxfoundation.org
-References: <d37b01e70e65dced2659561ed5bc4b2ed1a50711.1635367330.git.pawan.kumar.gupta@linux.intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <bd4db8da-0d44-1785-5767-1731bdaebef8@iogearbox.net>
-Date:   Wed, 27 Oct 2021 23:21:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S229900AbhJ0WDW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Oct 2021 18:03:22 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46052 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229893AbhJ0WDV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 Oct 2021 18:03:21 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RLfjri026705
+        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 15:00:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=9Z4DHBUKQ7KDMPBFYeTqQo5w8PrCfjCKAN0i6BSeSvw=;
+ b=jmtWpf4W9JzBbeaBvjFbMGU3TmryxYMnDa5i0owgwFaSWQkK9sB/AJnfywLZUgQvBhKx
+ pXtgBzV4GQG+a2kI1Pn3Aeq5rQIBM/izEga2aHTAQD752AnJoWE3scpihvKsnq2jFLra
+ 4Dwdwm4fdHmKUTI4/tN201fc5RVLMi66/F4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bxy9e8a69-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 15:00:55 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 27 Oct 2021 15:00:52 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 9E0A71B7DA3B8; Wed, 27 Oct 2021 15:00:45 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <kpsingh@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-next 0/2] introduce bpf_find_vma
+Date:   Wed, 27 Oct 2021 15:00:41 -0700
+Message-ID: <20211027220043.1937648-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <d37b01e70e65dced2659561ed5bc4b2ed1a50711.1635367330.git.pawan.kumar.gupta@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26335/Wed Oct 27 10:28:55 2021)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: nGY15lqJnk5H45_U03OzKp-9K0nD-vz_
+X-Proofpoint-GUID: nGY15lqJnk5H45_U03OzKp-9K0nD-vz_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_06,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxscore=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 phishscore=0
+ mlxlogscore=397 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2110270121
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Pawan,
+Add helper bpf_find_vma. This can be used in some profiling use cases. It
+might also be useful for LSM.
 
-On 10/27/21 10:51 PM, Pawan Gupta wrote:
-> Disabling unprivileged BPF by default would help prevent unprivileged
-> users from creating the conditions required for potential speculative
-> execution side-channel attacks on affected hardware as demonstrated by
-> [1][2][3].
-> 
-> This will sync mainline with what most distros are currently applying.
-> An admin can enable this at runtime if necessary.
-> 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> 
-> [1] https://access.redhat.com/security/cve/cve-2019-7308
-> [2] https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-3490
-> [3] https://bugzilla.redhat.com/show_bug.cgi?id=1672355#c5
+Song Liu (2):
+  bpf: introduce helper bpf_find_vma
+  selftests/bpf: add tests for bpf_find_vma
 
-Some of your above quoted links are just random ?! For example, [2] has really _zero_ to
-do with what you wrote with regards to speculative execution side-channel attacks ...
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |  20 ++++
+ kernel/bpf/task_iter.c                        | 102 +++++++++++++++++-
+ kernel/bpf/verifier.c                         |  36 +++++++
+ kernel/trace/bpf_trace.c                      |   2 +
+ tools/include/uapi/linux/bpf.h                |  19 ++++
+ .../selftests/bpf/prog_tests/find_vma.c       |  95 ++++++++++++++++
+ tools/testing/selftests/bpf/progs/find_vma.c  |  70 ++++++++++++
+ 8 files changed, 344 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/find_vma.c
+ create mode 100644 tools/testing/selftests/bpf/progs/find_vma.c
 
-We recently did a deep dive on our mitigation work we did in BPF here [0]. This also includes
-an appendix with an extract of the main commits related to the different Spectre variants.
-
-I'd suggest to link to that one instead to avoid confusion on what is related and what not.
-
-   [0] https://ebpf.io/summit-2021-slides/eBPF_Summit_2021-Keynote-Daniel_Borkmann-BPF_and_Spectre.pdf
-
-> ---
->   kernel/bpf/Kconfig | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> index a82d6de86522..73d446294455 100644
-> --- a/kernel/bpf/Kconfig
-> +++ b/kernel/bpf/Kconfig
-> @@ -64,6 +64,7 @@ config BPF_JIT_DEFAULT_ON
->   
->   config BPF_UNPRIV_DEFAULT_OFF
->   	bool "Disable unprivileged BPF by default"
-> +	default y
-
-Hm, arm arch has a CPU_SPECTRE Kconfig symbol, see commit c58d237d0852 ("ARM: spectre:
-add Kconfig symbol for CPUs vulnerable to Spectre") that can be selected.
-
-Would be good to generalize it for reuse so archs can select it, and make the above as
-'default y if CPU_SPECTRE'.
-
->   	depends on BPF_SYSCALL
->   	help
->   	  Disables unprivileged BPF by default by setting the corresponding
-> @@ -72,6 +73,10 @@ config BPF_UNPRIV_DEFAULT_OFF
->   	  disable it by setting it to 1 (from which no other transition to
->   	  0 is possible anymore).
->   
-> +	  Unprivileged BPF can be used to exploit potential speculative
-> +	  execution side-channel vulnerabilities on affected hardware. If you
-> +	  are concerned about it, answer Y.
-> +
->   source "kernel/bpf/preload/Kconfig"
->   
->   config BPF_LSM
-> 
-
-Thanks,
-Daniel
+--
+2.30.2
