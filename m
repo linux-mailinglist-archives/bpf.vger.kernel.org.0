@@ -2,99 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC22E43C543
-	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 10:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E90A43C583
+	for <lists+bpf@lfdr.de>; Wed, 27 Oct 2021 10:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238766AbhJ0IhJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Oct 2021 04:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
+        id S241018AbhJ0Iwo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Oct 2021 04:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233389AbhJ0IhI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:37:08 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90534C061570
-        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 01:34:43 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id h11so3430936ljk.1
-        for <bpf@vger.kernel.org>; Wed, 27 Oct 2021 01:34:43 -0700 (PDT)
+        with ESMTP id S239598AbhJ0Iwn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Oct 2021 04:52:43 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E5CC061570;
+        Wed, 27 Oct 2021 01:50:19 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id v1-20020a17090a088100b001a21156830bso4552864pjc.1;
+        Wed, 27 Oct 2021 01:50:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KIDFtAiKeA+WxeyP7TSnB2e6k+2/VG+8HR9nAV/81kI=;
-        b=k3lsPonJ3nEEe9s6t52vikl+DKG36TXthaT+bsFpnRoBg0qP3GSE5peymnGk1dpcpf
-         WuUW6UDylysQEEPYcNvkEyHKGiXricPjOaaYonKnpj/0DEws9bWHtJhwO3or0XAIfK0s
-         c3Je9JvEiamrGDrRbPa50yEUUbtepgxBLz6p8=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z5P3/alhJ1He0txyAzdck7/7d56+F/fzpzqghGnxQS8=;
+        b=LrKScxu+Cucp9+VA8Fh1unPAtj/7zshPQgCWMkw5J8oT3efw8cbN3c4ai6VVR2qjpN
+         yi6ZsVIyNWPig9umy3cp+99AlFO8qdLWV76TLgGeIeNWF3/tRQ2zYnfRmC+2+UURRejG
+         SDtEQBMVHahz19Qr9pBqom8ZsBXt6Dl4yvS6cCvTtGQ2EoBnGUXTEiAaCT8pHI5cU2+B
+         o6kaXpWDRsIthluNLtBQKcWa4saLe8syRy3lfJU7+9Z1iWLo6g7lDzDzQPVk85QvNQPr
+         jULjI5hyjQKElSFa10vOV/3lzFpgefXX2q7ZVspwunbi53TxLhvc92tsXfz6DqIQA5yr
+         SFcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KIDFtAiKeA+WxeyP7TSnB2e6k+2/VG+8HR9nAV/81kI=;
-        b=W6HnOJ5iEbeLfzQfOLfTrqWjiry3BP3ijkJT753EMMseOHyaH6ECtr7XuRMOttUnWV
-         FQAkN1QT6X15x534czBnsaBVxwQGPIDnM2gVSQ+N0/Cyw/kc61PdNGdXPnPnnNbWn2hO
-         qfM6XUlvS1SbEhQEir3dwt7Lw41QaIc+JEbB1sIjCRfc7RTvjyqNQGH2H2g1q/hwnFt4
-         uFI1YVWGbWAjnG64cCEihtnVtqfKIaLaGBRFeLE6rXt4W5rh29V+ULm+pz8jMa0D1lbw
-         u15Tr6QE8tIcigRxeUnPVRJbivjYk6Dff1LuIvj5auqibDuywrEGNAK5IXjrYUHFgAw7
-         4J3A==
-X-Gm-Message-State: AOAM530tW1Mwr2RCYzkp9ya4p83jD/cgDBgMz6oq8/Y72fb7pRKF6zSh
-        GhgB280FxPO46/PwCisQe6IhyJs5kTnJuAULhPncYQ==
-X-Google-Smtp-Source: ABdhPJxI9s3Gnb8U1l5ecHTKXwGJNbsw6QtitFikqgde5xFWdwI818s8KeQVN/LZpnNqM2coqoQMKip3NaMpkNWUFr8=
-X-Received: by 2002:a05:651c:2328:: with SMTP id bi40mr31550620ljb.121.1635323681920;
- Wed, 27 Oct 2021 01:34:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z5P3/alhJ1He0txyAzdck7/7d56+F/fzpzqghGnxQS8=;
+        b=vOxH9e/D1VXFd+vhKvGXidFk9KafLdIa3V355hHpkX13EVs1CUXrsrlvuOl9aRyY2f
+         KKQnbq9GT0Kxn0S6v6quoxQG9up0Nk0ISOU+wJMmvlDipylkYgcKCN9XlnECtyKtprKZ
+         9AAFRmo0EWeQRai0stJ7YpG3cob4BzPlt8w1SJf6HE/L6rbjn4FEWc7BfrtthFZ7Trve
+         z4M+eeJquGYGcU1IwoGTa+2KePohi0zjeJuP1lKYwN/hAw51lcsnsdh442B0VahIfWre
+         9b9djxrAdIl+G3A6Ll7j1o4VBn66/CW3NLzDne4HpNzRZi5kTYDfyzeirMEXD3Qyof7p
+         xwQA==
+X-Gm-Message-State: AOAM5326cX91tBDlKOiKtlGYJXO17AuXJkgwKw6J6TZWtriilTQxbwYx
+        wnLBGwaCPIomAcU4tKeNG7o=
+X-Google-Smtp-Source: ABdhPJzHbtpYZoghiArpc3WdPAyZOlRyOKbFVqo3wjB3HDjkVTNYVtaizG1t6Px7p7bQFEJ9zmoT3A==
+X-Received: by 2002:a17:902:a70a:b0:140:44f9:6d75 with SMTP id w10-20020a170902a70a00b0014044f96d75mr19675029plq.58.1635324618570;
+        Wed, 27 Oct 2021 01:50:18 -0700 (PDT)
+Received: from localhost.localdomain ([154.86.159.246])
+        by smtp.gmail.com with ESMTPSA id bg15sm3401055pjb.15.2021.10.27.01.50.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Oct 2021 01:50:18 -0700 (PDT)
+From:   kerneljasonxing@gmail.com
+To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, edumazet@google.com, atenart@kernel.org,
+        alobakin@pm.me, weiwan@google.com, bjorn@kernel.org, arnd@arndb.de,
+        memxor@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
+        Jason Xing <xingwanli@kuaishou.com>
+Subject: [PATCH net] net: gro: flush the real oldest skb
+Date:   Wed, 27 Oct 2021 16:49:44 +0800
+Message-Id: <20211027084944.4508-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-References: <20211019144655.3483197-1-maximmi@nvidia.com> <20211019144655.3483197-10-maximmi@nvidia.com>
- <CACAyw9_MT-+n_b1pLYrU+m6OicgRcndEBiOwb5Kc1w0CANd_9A@mail.gmail.com>
- <87y26nekoc.fsf@toke.dk> <533129a4-7f4e-e7a6-407c-f15b6acbb0e2@nvidia.com>
-In-Reply-To: <533129a4-7f4e-e7a6-407c-f15b6acbb0e2@nvidia.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 27 Oct 2021 09:34:31 +0100
-Message-ID: <CACAyw9-rKNX=EtQ2JtLkLTyDfj2-HBtZfFB05TLgcJSw3ja7AQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 09/10] bpf: Add a helper to issue timestamp
- cookies in XDP
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Joe Stringer <joe@cilium.io>, Tariq Toukan <tariqt@nvidia.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 22 Oct 2021 at 17:56, Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
->
-> tcp_time_stamp_raw() uses ktime_get_ns(), while bpf_ktime_get_ns() uses
-> ktime_get_mono_fast_ns(). Is it fine to use ktime_get_mono_fast_ns()
-> instead of ktime_get_ns()? I'm a bit worried about this note in
-> Documentation/core-api/timekeeping.rst:
->
->  > most drivers should never call them,
->  > since the time is allowed to jump under certain conditions.
+From: Jason Xing <xingwanli@kuaishou.com>
 
-That depends on what happens when the timestamp is "off". Since you're
-sending this value over the network I doubt that the two methods will
-show a difference.
+Prior to this patch, when the count of skbs of one flow is larger than
+MAX_GRO_SKBS, gro_flush_oldest() flushes the tail of the list. However,
+as we can see in the merge part of skb_gro_receive(), the tail of the
+list is the newest, head oldest.
 
-Lorenz
+Here, we need to fetch the real oldest one and then process it to lower
+the latency.
 
+Fix: 07d78363dc ("net: Convert NAPI gro list into a small hash table.")
+Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+---
+ net/core/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 7ee9fec..d52ebdb 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6012,7 +6012,7 @@ static void gro_flush_oldest(struct napi_struct *napi, struct list_head *head)
+ {
+ 	struct sk_buff *oldest;
+ 
+-	oldest = list_last_entry(head, struct sk_buff, list);
++	oldest = list_first_entry(head, struct sk_buff, list);
+ 
+ 	/* We are called with head length >= MAX_GRO_SKBS, so this is
+ 	 * impossible.
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+1.8.3.1
 
-www.cloudflare.com
