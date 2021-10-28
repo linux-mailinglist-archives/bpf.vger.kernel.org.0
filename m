@@ -2,120 +2,450 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E10243D858
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 03:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3399A43D87C
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 03:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhJ1BE1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Oct 2021 21:04:27 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13983 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhJ1BE1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:04:27 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HfnKD3KrdzWtCr;
-        Thu, 28 Oct 2021 09:00:00 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 09:01:57 +0800
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 09:01:55 +0800
-Subject: Re: [PATCH bpf-next,v3] riscv, bpf: Add BPF exception tables
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-References: <20211027111822.3801679-1-tongtiangen@huawei.com>
- <CAJ+HfNhC=hfFnjVvCf=bw+n1msRjR3gGUyapAmsRDupZ5CusrQ@mail.gmail.com>
- <15487721-b3de-73c7-5ef3-614c6da2f8cd@iogearbox.net>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S229635AbhJ1B2H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Oct 2021 21:28:07 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40588 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229505AbhJ1B2H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Oct 2021 21:28:07 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx72kD_Hlh1kohAA--.36465S2;
+        Thu, 28 Oct 2021 09:25:24 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-From:   tongtiangen <tongtiangen@huawei.com>
-Message-ID: <5c38b790-65e9-6ba2-75bd-121d6d51ab34@huawei.com>
-Date:   Thu, 28 Oct 2021 09:01:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
-MIME-Version: 1.0
-In-Reply-To: <15487721-b3de-73c7-5ef3-614c6da2f8cd@iogearbox.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf-next v8] test_bpf: Add module parameter test_suite
+Date:   Thu, 28 Oct 2021 09:25:21 +0800
+Message-Id: <1635384321-28128-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx72kD_Hlh1kohAA--.36465S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Cr4rCr1fGr15Cr17Ar1kZrb_yoWkGry8pF
+        WUXrn0yF18JF97XF4xXF17Aa4FyF40y3y8KrWfJryqyrs5AryUtF48K34Iqrn3Jr40vw15
+        Za10vFs8G3W2yaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
+        628vn2kIc2xKxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
+        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+        C2KfnxnUUI43ZEXa7VUbLiSPUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
+operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
+there exists segment fault due to the following reason:
 
+ALU64_MOV_X: all register value magnitudes jited:1
+Break instruction in kernel code[#1]
 
-On 2021/10/28 7:11, Daniel Borkmann wrote:
-> On 10/27/21 6:55 PM, Björn Töpel wrote:
->> On Wed, 27 Oct 2021 at 13:03, Tong Tiangen <tongtiangen@huawei.com> wrote:
->>>
->>> When a tracing BPF program attempts to read memory without using the
->>> bpf_probe_read() helper, the verifier marks the load instruction with
->>> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
->>> this flag it falls back to the interpreter.
->>>
->>> Add support for BPF_PROBE_MEM, by appending an exception table to the
->>> BPF program. If the load instruction causes a data abort, the fixup
->>> infrastructure finds the exception table and fixes up the fault, by
->>> clearing the destination register and jumping over the faulting
->>> instruction.
->>>
->>> A more generic solution would add a "handler" field to the table entry,
->>> like on x86 and s390.
->>>
->>> The same issue in ARM64 is fixed in:
->>> commit 800834285361 ("bpf, arm64: Add BPF exception tables")
->>>
->>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
->>> Tested-by: Pu Lehui <pulehui@huawei.com>
->>> ---
->>> v3:
->>> Modify according to Björn's comments, mainly code optimization.
->>
->> Thank you!
->>
->> I ran this patch against the test_bpf.ko, and selftests/bpf -- no
->> regressions, and after the patch is applied more tests passes. Yay!
->>
->> On a related note. The RISC-V selftests/bpf is in a pretty lousy
->> state. I'll send a cleanup patch for them soonish. E.g.:
->
-> Thanks for testing!
->
->> * RISC-V is missing in bpf_tracing.h (libbpf)
->> * Some programs don't converge in 16 steps, I had to increase it to ~32
->> * The selftest/bpf Makefile needed some RV specific changes
->> * ...a lot of tests still don't pass, and needs to be looked in to
->
-> Sounds good, please ship them. ;)
->
->> Feel free to add:
->>
->> Acked-by: Björn Töpel <bjorn@kernel.org>
->
-> Applied, thanks! Tong, if you have a chance, please follow up with Mark's
-> suggestion to align the extable infra to arm64/x86.
+It seems that the related jit implementations of some test cases
+in test_bpf() have problems. At this moment, I do not care about
+the segment fault while I just want to verify the test cases of
+tail calls.
 
-Thanks, Mark's suggestion is good. I will improve this part if I have the opportunity.
->
-> Thanks,
-> Daniel
-> .
->
+Based on the above background and motivation, add the following
+module parameter test_suite to the test_bpf.ko:
+test_suite=<string>: only the specified test suite will be run, the
+string can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+
+If test_suite is not specified, but test_id, test_name or test_range
+is specified, set 'test_bpf' as the default test suite.
+
+This is useful to only test the corresponding test suite when specify
+the valid test_suite string.
+
+Any invalid test suite will result in -EINVAL being returned and no
+tests being run. If the test_suite is not specified or specified as
+empty string, it does not change the current logic, all of the test
+cases will be run.
+
+Here are some test results:
+ # dmesg -c
+ # modprobe test_bpf
+ # dmesg | grep Summary
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf
+ # dmesg | tail -1
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls
+ # dmesg
+ test_bpf: #0 Tail call leaf jited:0 21 PASS
+ [...]
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment
+ # dmesg
+ test_bpf: #0 gso_with_rx_frags PASS
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_id=1
+ # dmesg
+ test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
+ test_bpf: #1 TXA jited:0 54 51 50 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf test_name=TXA
+ # dmesg
+ test_bpf: #1 TXA jited:0 54 50 51 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
+ # dmesg
+ test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment test_id=1
+ # dmesg
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
+
+By the way, the above segment fault has been fixed in the latest bpf-next
+tree.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+---
+
+v8:
+  -- Use strscpy(test_suite, "test_bpf", sizeof(test_suite))
+     instead of strcpy, suggested by Johan Almbladh, thank you.
+
+v7:
+  -- Rename prepare_bpf_tests() to prepare_test_range(), remove
+     some unnecessary code, suggested by Johan Almbladh, thank you.
+
+v6:
+  -- Compute the valid range once in the beginning of prepare_bpf_tests(),
+     suggested by Johan Almbladh, thank you.
+
+v5:
+  -- Remove some duplicated code, suggested by Johan Almbladh,
+     thank you.
+  -- Initialize test_range[2] to {0, INT_MAX}.
+  -- If test_suite is specified, but test_range is not specified,
+     set the upper limit of each test_suite to overwrite INT_MAX.
+
+v4:
+  -- Fix the following checkpatch issues:
+     CHECK: Alignment should match open parenthesis
+     CHECK: Please don't use multiple blank lines
+
+     ./scripts/checkpatch.pl --strict *.patch
+     total: 0 errors, 0 warnings, 0 checks, 299 lines checked
+
+     the default max-line-length is 100 in ./scripts/checkpatch.pl,
+     but it seems that the netdev/checkpatch is 80:
+     https://patchwork.hopto.org/static/nipa/559961/12545157/checkpatch/stdout
+
+v3:
+  -- Use test_suite instead of test_type as module parameter
+  -- Make test_id, test_name and test_range selection applied to each test suite
+
+v2:
+  -- Fix typo in the commit message
+  -- Use my private email to send
+
+ lib/test_bpf.c | 212 ++++++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 135 insertions(+), 77 deletions(-)
+
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index e5b10fd..adae395 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
+ static int test_id = -1;
+ module_param(test_id, int, 0);
+ 
+-static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
++static int test_range[2] = { 0, INT_MAX };
+ module_param_array(test_range, int, NULL, 0);
+ 
+-static __init int find_test_index(const char *test_name)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+-		if (!strcmp(tests[i].descr, test_name))
+-			return i;
+-	}
+-	return -1;
+-}
+-
+-static __init int prepare_bpf_tests(void)
+-{
+-	if (test_id >= 0) {
+-		/*
+-		 * if a test_id was specified, use test_range to
+-		 * cover only that test.
+-		 */
+-		if (test_id >= ARRAY_SIZE(tests)) {
+-			pr_err("test_bpf: invalid test_id specified.\n");
+-			return -EINVAL;
+-		}
+-
+-		test_range[0] = test_id;
+-		test_range[1] = test_id;
+-	} else if (*test_name) {
+-		/*
+-		 * if a test_name was specified, find it and setup
+-		 * test_range to cover only that test.
+-		 */
+-		int idx = find_test_index(test_name);
+-
+-		if (idx < 0) {
+-			pr_err("test_bpf: no test named '%s' found.\n",
+-			       test_name);
+-			return -EINVAL;
+-		}
+-		test_range[0] = idx;
+-		test_range[1] = idx;
+-	} else {
+-		/*
+-		 * check that the supplied test_range is valid.
+-		 */
+-		if (test_range[0] >= ARRAY_SIZE(tests) ||
+-		    test_range[1] >= ARRAY_SIZE(tests) ||
+-		    test_range[0] < 0 || test_range[1] < 0) {
+-			pr_err("test_bpf: test_range is out of bound.\n");
+-			return -EINVAL;
+-		}
+-
+-		if (test_range[1] < test_range[0]) {
+-			pr_err("test_bpf: test_range is ending before it starts.\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-static __init void destroy_bpf_tests(void)
+-{
+-}
+-
+ static bool exclude_test(int test_id)
+ {
+ 	return test_id < test_range[0] || test_id > test_range[1];
+@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
+ 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+ 		const struct skb_segment_test *test = &skb_segment_tests[i];
+ 
++		cond_resched();
++		if (exclude_test(i))
++			continue;
++
+ 		pr_info("#%d %s ", i, test->descr);
+ 
+ 		if (test_skb_segment_single(test)) {
+@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 		int ret;
+ 
+ 		cond_resched();
++		if (exclude_test(i))
++			continue;
+ 
+ 		pr_info("#%d %s ", i, test->descr);
+ 		if (!fp) {
+@@ -14966,29 +14909,144 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 	return err_cnt ? -EINVAL : 0;
+ }
+ 
++static char test_suite[32];
++module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
++
++static __init int find_test_index(const char *test_name)
++{
++	int i;
++
++	if (!strcmp(test_suite, "test_bpf")) {
++		for (i = 0; i < ARRAY_SIZE(tests); i++) {
++			if (!strcmp(tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_tail_calls")) {
++		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
++			if (!strcmp(tail_call_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_skb_segment")) {
++		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
++			if (!strcmp(skb_segment_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	return -1;
++}
++
++static __init int prepare_test_range(void)
++{
++	int valid_range;
++
++	if (!strcmp(test_suite, "test_bpf"))
++		valid_range = ARRAY_SIZE(tests);
++	else if (!strcmp(test_suite, "test_tail_calls"))
++		valid_range = ARRAY_SIZE(tail_call_tests);
++	else if (!strcmp(test_suite, "test_skb_segment"))
++		valid_range = ARRAY_SIZE(skb_segment_tests);
++	else
++		return 0;
++
++	if (test_id >= 0) {
++		/*
++		 * if a test_id was specified, use test_range to
++		 * cover only that test.
++		 */
++		if (test_id >= valid_range) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++			       test_suite);
++			return -EINVAL;
++		}
++
++		test_range[0] = test_id;
++		test_range[1] = test_id;
++	} else if (*test_name) {
++		/*
++		 * if a test_name was specified, find it and setup
++		 * test_range to cover only that test.
++		 */
++		int idx = find_test_index(test_name);
++
++		if (idx < 0) {
++			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
++			       test_name, test_suite);
++			return -EINVAL;
++		}
++		test_range[0] = idx;
++		test_range[1] = idx;
++	} else if (test_range[0] != 0 || test_range[1] != INT_MAX) {
++		/*
++		 * check that the supplied test_range is valid.
++		 */
++		if (test_range[0] < 0 || test_range[1] >= valid_range) {
++			pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++			       test_suite);
++			return -EINVAL;
++		}
++
++		if (test_range[1] < test_range[0]) {
++			pr_err("test_bpf: test_range is ending before it starts.\n");
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
+ static int __init test_bpf_init(void)
+ {
+ 	struct bpf_array *progs = NULL;
+ 	int ret;
+ 
+-	ret = prepare_bpf_tests();
++	if (strlen(test_suite) &&
++	    strcmp(test_suite, "test_bpf") &&
++	    strcmp(test_suite, "test_tail_calls") &&
++	    strcmp(test_suite, "test_skb_segment")) {
++		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
++		return -EINVAL;
++	}
++
++	/*
++	 * if test_suite is not specified, but test_id, test_name or test_range
++	 * is specified, set 'test_bpf' as the default test suite.
++	 */
++	if (!strlen(test_suite) &&
++	    (test_id != -1 || strlen(test_name) ||
++	    (test_range[0] != 0 || test_range[1] != INT_MAX))) {
++		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
++		strscpy(test_suite, "test_bpf", sizeof(test_suite));
++	}
++
++	ret = prepare_test_range();
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = test_bpf();
+-	destroy_bpf_tests();
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
++		ret = test_bpf();
++		if (ret)
++			return ret;
++	}
+ 
+-	ret = prepare_tail_call_tests(&progs);
+-	if (ret)
+-		return ret;
+-	ret = test_tail_calls(progs);
+-	destroy_tail_call_tests(progs);
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
++		ret = prepare_tail_call_tests(&progs);
++		if (ret)
++			return ret;
++		ret = test_tail_calls(progs);
++		destroy_tail_call_tests(progs);
++		if (ret)
++			return ret;
++	}
+ 
+-	return test_skb_segment();
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
++		return test_skb_segment();
++
++	return 0;
+ }
+ 
+ static void __exit test_bpf_exit(void)
+-- 
+2.1.0
+
