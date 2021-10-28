@@ -2,109 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F89E43DD0F
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 10:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8806343DD90
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 11:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhJ1IqX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 04:46:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32774 "EHLO
+        id S230016AbhJ1JUK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 05:20:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28440 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229626AbhJ1IqW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 Oct 2021 04:46:22 -0400
+        by vger.kernel.org with ESMTP id S229950AbhJ1JUJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 28 Oct 2021 05:20:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635410635;
+        s=mimecast20190719; t=1635412662;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KccYG4rSdcXMoVRo53pQg4Ozdzh38yw0Q7oh7hWL/OA=;
-        b=W53oVEaDQzM8VF6YoIGich0YcmQU7TxrAmiqolsqmbApNLJD5N0jCCnjEoOjGsd2oNqg2x
-        vIjegVBS5fClyOdzmOHGzoycz8fSkZNNJeLO3f3KXjBC6eJoGv/qXcsDF6b5+9+qTc7Z4K
-        Tn72LK5p6uxxzsfaHbRvF0tZfq88XiU=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-cmIKj2OUM1G4ThS4MXS51g-1; Thu, 28 Oct 2021 04:43:54 -0400
-X-MC-Unique: cmIKj2OUM1G4ThS4MXS51g-1
-Received: by mail-qv1-f70.google.com with SMTP id gs5-20020a056214226500b00382f5609124so4422883qvb.8
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 01:43:54 -0700 (PDT)
+        bh=XYb49CUJnsqbEGH495iJBbfqlJAQ8lsg5dpvdMeVuOo=;
+        b=Yi7sMCEGh3LoE1ffMDBNEO9kOGXrukBRwpOWTddQn1s3J1i5dm0idaVSy9qlkvB16/jk74
+        0BYbRCwxxUun+FRA6W3T7fMBULQ25fco8UgcGK+M59OB1A/4Vo5ts5XAjqAphCZ6yWnEVq
+        5rSBF3Kig6uxTZ+PwDn7ynbEUpZX/7A=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-539-Zg7ElvvMMaOyuWdebzkeMw-1; Thu, 28 Oct 2021 05:17:41 -0400
+X-MC-Unique: Zg7ElvvMMaOyuWdebzkeMw-1
+Received: by mail-ed1-f72.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso4932012edj.20
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 02:17:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KccYG4rSdcXMoVRo53pQg4Ozdzh38yw0Q7oh7hWL/OA=;
-        b=DRfoLjbP0H1kyOm2lWEb2L55kbzaHba/R7lEP2Na7SXbH4WFlzSqEAp3jZ2j4rMCJ8
-         JPP8jlQoe2IvxQeTq9sxOVkyfWsdQLKxmOzcCs8tdRrGpzQBVww3XJu/GEMh9LLo/fPI
-         CUqXeSQKYPAbY4pydClXxEtE1lAK8GfXqqoiFPIhvGpEiMvqRXjjRshk2hyfQEdjs/Yx
-         ZgZFEjBiKel+wPYxTmxeJVyk4OqIr9nZq+L2Ggw+rU3+S1q8QhpbA9eUvxzn1tRfbypQ
-         0OvKUOdw0uroMVX0LtIbUWxaWbmwRgbBDWlExmpdHJo9+3hwM/zUj7gngVy0nF/GDy4h
-         lvGw==
-X-Gm-Message-State: AOAM532jOYxJwgGn+MSv2vJCQDr9rGGAYvMkJCj+x6iJvWr0Aja0TC+q
-        prxL+0NBXXq6TCeMgLbETlo3xmo2qPA9EeLItYKX4Va7u94ty0eH3LLDg8IaDSXKd07OiWp8euZ
-        gSTUd6WGtA/9PfvVJ+md075HUZgX7
-X-Received: by 2002:a05:620a:15f3:: with SMTP id p19mr2422626qkm.337.1635410634133;
-        Thu, 28 Oct 2021 01:43:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzArBk6z7YGdByxd/X+igic/KcScZxC371ErWZ5REyS2JhtSA3Npou6sTwbdZL/ZSDM/1i2lyGhR3evMJPw0lI=
-X-Received: by 2002:a05:620a:15f3:: with SMTP id p19mr2422618qkm.337.1635410633974;
- Thu, 28 Oct 2021 01:43:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=XYb49CUJnsqbEGH495iJBbfqlJAQ8lsg5dpvdMeVuOo=;
+        b=RdcknRuWn+ybjTQloSzHhYaq/vrDO+/IVrH+5nZldMSDAAlwvJ4BNhJo9BvFKUr6JR
+         mo6Gx4llYmGVmBrtTmlkV12koZVyOY7JAjvgDbYNhZy1BXQzmvVRYq6sQMX6fRZ+LUaz
+         mmqTlGjNKotYbtVW2qZ4hsd49Pwx+rgmQs54i4OSDEsPSXxuxLLl4Hf7p3g4NsC827fO
+         YXUi8Scaf2jMYUYbJykbFkrAJrNBZJEvGrRBWxyzOmFJE7pzJactTtG3tYLFEyDfOVL0
+         8yd5wSODk2rtIemMBLZG9aN9NlfH+AndZmHa2cQC5zrq0YyriQ4mZ+9tx3R5hQHAA3EY
+         Egmw==
+X-Gm-Message-State: AOAM5334JXNjRFIb00798UhEjv878b16goWQTRQhO52LSFHbQQXKwx0/
+        79zFYyRZLTQdIOJO/GfvRfUGvjT8FBQ1cFTQE0I+mBhgyMh7JB2HfTqxB6mECxMjAB0UHHyX1LM
+        hYnVk4WQu+Nk1
+X-Received: by 2002:aa7:dbca:: with SMTP id v10mr4514440edt.280.1635412659883;
+        Thu, 28 Oct 2021 02:17:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyyErkSvFKeRyepEgpLv8FRrpQIaiOwQw6qPzorfehEgRmVuwdbrpK46uIWESSl+EZchFOB9Q==
+X-Received: by 2002:aa7:dbca:: with SMTP id v10mr4514396edt.280.1635412659539;
+        Thu, 28 Oct 2021 02:17:39 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id mp5sm1112484ejc.68.2021.10.28.02.17.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 02:17:39 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7B83B180262; Thu, 28 Oct 2021 11:17:38 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>, davem@davemloft.net
+Cc:     kuba@kernel.org, ast@kernel.org, andrii.nakryiko@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: pull-request: bpf 2021-10-26
+In-Reply-To: <07334aca-9b58-fdae-0de9-43d44e087d76@iogearbox.net>
+References: <20211026201920.11296-1-daniel@iogearbox.net>
+ <87bl3a9lc5.fsf@toke.dk>
+ <07334aca-9b58-fdae-0de9-43d44e087d76@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 28 Oct 2021 11:17:38 +0200
+Message-ID: <878ryda4p9.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20211021151528.116818-1-lmb@cloudflare.com> <20211021151528.116818-2-lmb@cloudflare.com>
- <b215bb8c-3ffd-2b43-44a3-5b25243db5be@iogearbox.net>
-In-Reply-To: <b215bb8c-3ffd-2b43-44a3-5b25243db5be@iogearbox.net>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Thu, 28 Oct 2021 10:43:43 +0200
-Message-ID: <CAOssrKciL5EDhrbQe1mkOrtD1gwkrEBRQyQmVhRE8Z-Kjb0WGw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] libfs: support RENAME_EXCHANGE in simple_rename()
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 1:46 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+Daniel Borkmann <daniel@iogearbox.net> writes:
+
+> On 10/28/21 12:03 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>=20
+>>> The following pull-request contains BPF updates for your *net* tree.
+>>>
+>>> We've added 12 non-merge commits during the last 7 day(s) which contain
+>>> a total of 23 files changed, 118 insertions(+), 98 deletions(-).
+>>=20
+>> Hi Daniel
+>>=20
+>> Any chance we could also get bpf merged into bpf-next? We'd like to use
+>> this fix:
+>>=20
+>>> 1) Fix potential race window in BPF tail call compatibility check,
+>>> from Toke H=C3=B8iland-J=C3=B8rgensen.
 >
-> [ Adding Miklos & Greg to Cc for review given e0e0be8a8355 ("libfs: support RENAME_NOREPLACE in
->    simple_rename()"). If you have a chance, would be great if you could take a look, thanks! ]
->
-> On 10/21/21 5:15 PM, Lorenz Bauer wrote:
-> > Allow atomic exchange via RENAME_EXCHANGE when using simple_rename.
-> > This affects binderfs, ramfs, hubetlbfs and bpffs. There isn't much
-> > to do except update the various *time fields.
-> >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > ---
-> >   fs/libfs.c | 6 +++++-
-> >   1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/libfs.c b/fs/libfs.c
-> > index 51b4de3b3447..93c03d593749 100644
-> > --- a/fs/libfs.c
-> > +++ b/fs/libfs.c
-> > @@ -455,9 +455,12 @@ int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
-> >       struct inode *inode = d_inode(old_dentry);
-> >       int they_are_dirs = d_is_dir(old_dentry);
-> >
-> > -     if (flags & ~RENAME_NOREPLACE)
-> > +     if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE))
-> >               return -EINVAL;
-> >
-> > +     if (flags & RENAME_EXCHANGE)
-> > +             goto done;
-> > +
+> Makes sense! I presume final net tree PR before merge win might go out to=
+day
+> or tomorrow (Jakub/David?) and would get fast-fwd'ed into net-next after =
+that
+> as well, which means we get the current batch for bpf-next out by then. By
+> that we'd have mentioned commit in bpf-next after re-sync.
 
-This is not sufficient.   RENAME_EXCHANGE can swap a dir and a
-non-dir, in which case the parent nlink counters need to be fixed up.
+Alright, sounds good - thanks! :)
 
-See shmem_exchange().   My suggestion is to move that function to
-libfs.c:simple_rename_exchange().
-
-Thanks,
-Miklos
+-Toke
 
