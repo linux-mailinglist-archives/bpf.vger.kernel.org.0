@@ -2,135 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EFD43E894
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 20:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D5843E89E
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 20:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhJ1Sr6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 14:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
+        id S230410AbhJ1SuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 14:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhJ1Sr5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:47:57 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7915BC061570;
-        Thu, 28 Oct 2021 11:45:30 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id a129so4592206yba.10;
-        Thu, 28 Oct 2021 11:45:30 -0700 (PDT)
+        with ESMTP id S230496AbhJ1SuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 14:50:17 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2F7C0613B9
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id m26so6848829pff.3
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RWtqEKyHYkFMHQbChIdUju0X/2PuRmrE8NIrll0BanA=;
-        b=TGjNzJkZ8nfkjCGtvWxTxHhGzmR+AUHymi3+BUX0kpjLDEoItcrsyKBvo9ilD7VAHC
-         H3LaLd9hgf/10g9VVOhBjnqjEu10u6t1J9x+UUTKJcUOpCv+rpi+q8hsVTWc7fInWJJH
-         Kiu8RxnhlmYUzz8ESTYT+lmNxuf7IzOQX9T+b+lpXT3AjK6L3RLKiNsNjYBoXTpdeCZ+
-         Ve+IzNMKOGH9TUU4mYD8OcVKLtEa08sWgVXFeAs0XB+eb7cJljg8Hc5uPAllYYHbV0GP
-         OX2V81d/Cgw9j98PH2YUBxeVJoJ9ou8VrN5tskfeEYlXGhAZMRlJKACTCB130+Mo2uU/
-         j2tQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OVU9szkq61aNLb2lvzFxnap0kX1k7Tq4ULR6zE1UQeA=;
+        b=JhzxYSWISXsDoknoTCT5nmTH4RRJulSB1Z9lahh/ZTXx4d4gioMrgqswO8/VYuE+GL
+         uTMcpMs9GnlYYgE8fyW79aM/M3HNcJR6IINXi2Cr2HpJoNnLX2FgIGH8po0lCth0yQ2M
+         DkaEnizVNx0xEvzdLz5QigtPDn2z/jCMKZQZU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RWtqEKyHYkFMHQbChIdUju0X/2PuRmrE8NIrll0BanA=;
-        b=vvIgBBR9KqQR+PS0bOaIpDOfc5WIDtQGc6xKjUEJHo3RBTe1FX2wBg51jFW/I+gRwv
-         Vz5jKtSmfINxXxW8EW7bpcFOdnDXGz9U2WJWZNEbKOqZ35oimaPeUEqItw5dkQscE6ht
-         rAKwY6R86a2IxMrF1AhZ7Va4RbpEH55nJAF3dhrSdwFMXR/DvxxFVQShMjpc73VBQ1vW
-         Wc4AKVAGtJDfjoSlzsDbLSA8g6PpAEMWOC2chlgUdixNbfBqA2zln7bQlpNkAfbAEL0h
-         CX59PsQmMgbtNWNdZDgUU+TEd7ktEJtG5JxyNpQ0TUpXQMZMhu1pE9IsD1419nL9nUnB
-         CVyQ==
-X-Gm-Message-State: AOAM531DvCJ3SnDW2kuw7J3U12xTTthl9Ky5GtsmjDVekUKIS9/bPrbW
-        F558nBfWPHZx8pBNvIy1+i+CpXGOPqLstAMr+Fzg0KXNyxk=
-X-Google-Smtp-Source: ABdhPJwr75zKtVQQd7LZ47LWX9NV+uUMKfiO/u/jSce3KbbUAFljNKNz2/IAc5Oe0ivkBJxUNhvwhbVxlScvYjWK7Fs=
-X-Received: by 2002:a25:b19b:: with SMTP id h27mr6937899ybj.225.1635446729749;
- Thu, 28 Oct 2021 11:45:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211027203727.208847-1-mauricio@kinvolk.io> <20211027203727.208847-3-mauricio@kinvolk.io>
-In-Reply-To: <20211027203727.208847-3-mauricio@kinvolk.io>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Oct 2021 11:45:18 -0700
-Message-ID: <CAEf4BzYUXYFKyWVbNmfz9Bjui4UytfQs1Qmc24U+bYZwQtRbcw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] libbpf: Implement API for generating BTF for
- ebpf objects
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OVU9szkq61aNLb2lvzFxnap0kX1k7Tq4ULR6zE1UQeA=;
+        b=R0J7cIjl3yU1pJuhhVBYgQi4m+l5GS/SEsrQtF6WMn3HdXxDU6vCJ49dGvweR44j/C
+         89pypELjR8IGkcUawg1BI0Y2ffrBJo4JSSFjy0MVQFkCz0GAgmXGgHSBskH73O4gX4yu
+         Y9CAmC5xHbZyQFTMhEF3HYDdsdgBrPZ93r7lFRriEyYp3w+qWQUuRR9LS7e/35en4ADQ
+         xpfPObjV951yFGolDZFJhVG1bKADSEDgNA9e+Mr7yxTNI8ctpK0J0zAJT2NJSoXyYchp
+         aPo6TNn7J814ALLjNHbSSTWa8B2t9GOpBuFvKMe5Jys6njapFCp3YYZIPD3HFtrG6pow
+         Jj1w==
+X-Gm-Message-State: AOAM530CuFFJDntde8iFIKxPjPTNNkPsJxl3W/3PDPd1vfVz9cF4jGYz
+        voSOTbWA2A/j0LsULkG0TXi9qw==
+X-Google-Smtp-Source: ABdhPJzgpftfzQqh6cQkfQwpqB9kCGWUYUkdWrI6OS+lGu7a8shSi/eg1Ixn5ahdw0frC07JSH/3jQ==
+X-Received: by 2002:aa7:8a0e:0:b0:47c:1116:3ce with SMTP id m14-20020aa78a0e000000b0047c111603cemr5964030pfa.76.1635446869394;
+        Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ls6sm144127pjb.53.2021.10.28.11.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 11:47:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Rafael David Tinoco <rafael.tinoco@aquasec.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: selftests: seccomp_bpf failure on 5.15
+Message-ID: <202110281136.5CE65399A7@keescook>
+References: <YXrN+Hnl9pSOsWlA@arighi-desktop>
+ <202110280955.B18CB67@keescook>
+ <878rydm56l.fsf@disp2133>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878rydm56l.fsf@disp2133>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 1:37 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
- wrote:
->
-> This commit implements a new set of "bpf_reloc_info__" functions for
-> generating a BTF file with the types a given set of eBPF objects need
-> for their CO-RE relocations. This code reuses all the existing CO-RE
-> logic (candidate lookup, matching, etc). The workflow is the same as
-> when an eBPF program is being loaded, but instead of patching the eBPF
-> instruction, we save the type involved in the relocation.
->
-> A new struct btf_reloc_info is defined to save the BTF types needed by a
-> set of eBPF objects. It is created with the bpf_reloc_info__new()
-> function and populated with bpf_object__reloc_info_gen() for each eBPF
-> object, finally the BTF file is generated with
-> bpf_reloc_info__get_btf(). Please take at a look at BTFGen[0] to get a
-> complete example of how this API can be used.
->
-> bpf_object__reloc_info_gen() ends up calling btf_reloc_info_gen_field()
-> that uses the access spec to add all the types needed by a given
-> relocation. The root type is added and, if it is a complex type, like a
-> struct or union, the members involved in the relocation are added as
-> well. References are resolved and all referenced types are added. This
-> function can be called multiple times to add the types needed for
-> different objects into the same struct btf_reloc_info, this allows the
-> user to create a BTF file that contains the BTF information for multiple
-> eBPF objects.
->
-> The bpf_reloc_info__get_btf() generates the BTF file from a given struct
-> btf_reloc_info. This function first creates a new BTF object and copies
-> all the types saved in the struct btf_reloc_info there. For structures
-> and unions, only the members involved in a relocation are copied. While
-> adding the types to the new BTF object, a map is filled with the type
-> IDs on the old and new BTF structures.  This map is then used later on
-> to fix all the IDs in the new BTF object.
->
-> Right now only support for field based CO-RE relocations is supported.
->
-> [0]: https://github.com/kinvolk/btfgen
->
-> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> ---
+On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> 
+> > On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
+> >> The following sub-tests are failing in seccomp_bpf selftest:
+> >> 
+> >> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
+> >> ...
+> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
+> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
+> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
+> >> ...
+> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
+> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
+> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
+> >> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
+> >> ...
+> >> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
+> >> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
+> >> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
+> >> 
+> >> I did some bisecting and found that the failures started to happen with:
+> >> 
+> >>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
+> >> 
+> >> Not sure if the test needs to be fixed after this commit, or if the
+> >> commit is actually introducing an issue. I'll investigate more, unless
+> >> someone knows already what's going on.
+> >
+> > Ah thanks for noticing; I will investigate...
+> 
+> 
+> I just did a quick read through of the test and while
+> I don't understand everything having a failure seems
+> very weird.
+> 
+> I don't understand the comment:
+> /* Tracer will redirect getpid to getppid, and we should die. */
+> 
+> As I think what happens is it the bpf programs loads the signal
+> number.  Tests to see if the signal number if GETPPID and allows
+> that system call and causes any other system call to be terminated.
 
-I don't think it's necessary for libbpf to expose all these new APIs.
-The format of CO-RE relocations and .BTF.ext is open and fixed. You
-don't really need to simulate full CO-RE relocation logic to figure
-out which types are necessary. Just go over all .BTF.ext records for
-CO-RE relocations, parse spec (simple format as well) and see which
-fields are accessed. The only extra bit is ignoring ___<suffix>,
-that's it. bpftool (or whatever other tool that's going to be used for
-this) can do that on its own by using existing libbpf APIs to work
-with BTF. Good bit of optimization would be to only emit forward
-declarations for structs that are never used, but are referenced by
-structs that are used.
+The test suite runs a series of seccomp filter vs syscalls under tracing,
+either with ptrace or with seccomp SECCOMP_RET_TRACE, to validate the
+expected behavioral states. It seems that what's happened is that the
+SIGSYS has suddenly become non-killing:
 
-Either way, this is not libbpf's problem to solve. It's a tooling problem.
+#  RUN           TRACE_syscall.ptrace.kill_after ...
+# seccomp_bpf.c:1555:kill_after:Expected WSTOPSIG(status) & 0x80 (0) == 0x80 (128)
+# seccomp_bpf.c:1556:kill_after:WSTOPSIG: 31
+# kill_after: Test exited normally instead of by signal (code: 12)
+#          FAIL  TRACE_syscall.ptrace.kill_after
+
+i.e. the ptracer no longer sees a dead tracee, which would pass through
+here:
+
+                if (WIFSIGNALED(status) || WIFEXITED(status))
+                        /* Child is dead. Time to go. */
+                        return;
+
+So the above saw a SIG_TRAP|SIGSYS rather than a killing SIGSYS. i.e.
+instead of WIFSIGNALED(stauts) being true, it instead catches a
+PTRACE_EVENT_STOP for SIGSYS, which should be impossible (the process
+should be getting killed).
+
+> Which being single threaded would seem to cause the kernel  to execute
+> the changed code.
+> 
+> How there kernel at that point is having the process exit with anything
+> except SIGSYS I am not immediately seeing.
+
+I've run out of time at the moment to debug further, but I've appended
+my changes to the test, and a brute-force change to kernel/seccomp.c to
+restore original behavior (though I haven't tested if coredumping works
+still). I'll return to this in a few hours...
+
+> 
+> The logic is the same as that for SECCOMP_RET_TRAP is there a test for
+> that, that is also failing?
+> 
+> How do you run that test anyway?
+
+cd tools/testing/selftests/seccomp
+make seccomp_bpf
+scp seccomp_bpf target:
+ssh target ./seccomp_bpf
 
 
->  tools/lib/bpf/Makefile    |   2 +-
->  tools/lib/bpf/libbpf.c    |  28 ++-
->  tools/lib/bpf/libbpf.h    |   4 +
->  tools/lib/bpf/libbpf.map  |   5 +
->  tools/lib/bpf/relo_core.c | 514 +++++++++++++++++++++++++++++++++++++-
->  tools/lib/bpf/relo_core.h |  11 +-
->  6 files changed, 554 insertions(+), 10 deletions(-)
->
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 4d8f44a17727..b6c8c8f8bd69 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1269,10 +1269,12 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 			syscall_rollback(current, current_pt_regs());
+ 			/* Trigger a coredump with SIGSYS */
+ 			force_sig_seccomp(this_syscall, data, true);
+-		} else {
+-			do_exit(SIGSYS);
++			do_group_exit(SIGSYS);
+ 		}
+-		return -1; /* skip the syscall go directly to signal handling */
++		if (action == SECCOMP_RET_KILL_THREAD)
++			do_exit(SIGSYS);
++		else
++			do_group_exit(SIGSYS);
+ 	}
+ 
+ 	unreachable();
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 1d64891e6492..8f8c1df885d6 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -1487,7 +1487,7 @@ TEST_F(precedence, log_is_fifth_in_any_order)
+ #define PTRACE_EVENT_SECCOMP 7
+ #endif
+ 
+-#define IS_SECCOMP_EVENT(status) ((status >> 16) == PTRACE_EVENT_SECCOMP)
++#define PTRACE_EVENT_MASK(status) ((status) >> 16)
+ bool tracer_running;
+ void tracer_stop(int sig)
+ {
+@@ -1536,17 +1536,34 @@ void start_tracer(struct __test_metadata *_metadata, int fd, pid_t tracee,
+ 	/* Run until we're shut down. Must assert to stop execution. */
+ 	while (tracer_running) {
+ 		int status;
++		bool run_callback = true;
+ 
+ 		if (wait(&status) != tracee)
+ 			continue;
++
+ 		if (WIFSIGNALED(status) || WIFEXITED(status))
+ 			/* Child is dead. Time to go. */
+ 			return;
+ 
+-		/* Check if this is a seccomp event. */
+-		ASSERT_EQ(!ptrace_syscall, IS_SECCOMP_EVENT(status));
++		/* Check if we got an expected event. */
++		ASSERT_EQ(WIFCONTINUED(status), false);
++		ASSERT_EQ(WIFSTOPPED(status), true);
++		ASSERT_EQ(WSTOPSIG(status) & SIGTRAP, SIGTRAP) {
++			TH_LOG("WSTOPSIG: %d", WSTOPSIG(status));
++		}
++		if (ptrace_syscall) {
++			EXPECT_EQ(WSTOPSIG(status) & 0x80, 0x80) {
++				TH_LOG("WSTOPSIG: %d", WSTOPSIG(status));
++				run_callback = false;
++			};
++		} else {
++			EXPECT_EQ(PTRACE_EVENT_MASK(status), PTRACE_EVENT_SECCOMP) {
++				run_callback = false;
++			};
++		}
+ 
+-		tracer_func(_metadata, tracee, status, args);
++		if (run_callback)
++			tracer_func(_metadata, tracee, status, args);
+ 
+ 		ret = ptrace(ptrace_syscall ? PTRACE_SYSCALL : PTRACE_CONT,
+ 			     tracee, NULL, 0);
 
-[...]
+-- 
+Kees Cook
