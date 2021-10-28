@@ -2,61 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5FE43E74C
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 19:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF5743E753
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 19:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhJ1R16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 13:27:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230451AbhJ1R14 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:27:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0DFD2610FF;
-        Thu, 28 Oct 2021 17:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635441929;
-        bh=g/bzId7RkrOvfk+SrjHBprnep7MTl4j0MevO9JIXV6E=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Hc7NIXIszy888yfFJM7APFGcE1Xgh+FZAX/HR2Lf5t9YpdPgoowpZvBfsp43Rdnxb
-         hD+QNIjgut0w0GHoEwZdb/3JsCb4kFLZzjDPQ6dBOyJ7c3+uj+Hmvolt+tYSldYAa3
-         NVm7ubexdVEfWvZDC3a5l2FrWJVE8Kvf3ptfSMDGi9qI//x1+8AVSTimEjH0k/YPkA
-         eD40vYpaxPe0qaqgbKaQtA9Jnit/5SS0WGhblUxsXCB4Ifj3H2uPAf19sb/NQaBn/t
-         D+X84vOC45j23McV+ETZnUmQDnGVipw4n/ju230ENxgmCrwSMSzDLAtfMYSt9COzUB
-         j7esaCpkvrKpw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0705360972;
-        Thu, 28 Oct 2021 17:25:29 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for 5.15-rc8
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211028162912.1660341-1-kuba@kernel.org>
-References: <20211028162912.1660341-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211028162912.1660341-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.15-rc8
-X-PR-Tracked-Commit-Id: 35392da51b1ab7ba0c63de0a553e2a93c2314266
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 411a44c24a561e449b592ff631b7ae321f1eb559
-Message-Id: <163544192902.14282.15783866044630928474.pr-tracker-bot@kernel.org>
-Date:   Thu, 28 Oct 2021 17:25:29 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, daniel@iogearbox.net, toke@toke.dk,
-        johannes@sipsolutions.net, bpf@vger.kernel.org
+        id S231171AbhJ1R3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 13:29:02 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:37354 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230501AbhJ1R3C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:29:02 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:57008)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mg9Ag-005L5u-IP; Thu, 28 Oct 2021 11:26:34 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:45048 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mg9Af-002PQl-Id; Thu, 28 Oct 2021 11:26:34 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org
+References: <YXrN+Hnl9pSOsWlA@arighi-desktop> <202110280955.B18CB67@keescook>
+Date:   Thu, 28 Oct 2021 12:26:26 -0500
+In-Reply-To: <202110280955.B18CB67@keescook> (Kees Cook's message of "Thu, 28
+        Oct 2021 09:56:12 -0700")
+Message-ID: <878rydm56l.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1mg9Af-002PQl-Id;;;mid=<878rydm56l.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19RQNkvCuNUQim9XPRcghzWw+Dpd4ik0TE=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4997]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 421 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (2.6%), b_tie_ro: 9 (2.2%), parse: 0.84 (0.2%),
+         extract_message_metadata: 12 (2.9%), get_uri_detail_list: 1.82 (0.4%),
+         tests_pri_-1000: 13 (3.1%), tests_pri_-950: 1.21 (0.3%),
+        tests_pri_-900: 1.01 (0.2%), tests_pri_-90: 65 (15.5%), check_bayes:
+        64 (15.2%), b_tokenize: 8 (1.9%), b_tok_get_all: 8 (1.9%),
+        b_comp_prob: 2.4 (0.6%), b_tok_touch_all: 42 (10.0%), b_finish: 0.82
+        (0.2%), tests_pri_0: 297 (70.5%), check_dkim_signature: 0.52 (0.1%),
+        check_dkim_adsp: 2.5 (0.6%), poll_dns_idle: 0.46 (0.1%), tests_pri_10:
+        2.5 (0.6%), tests_pri_500: 14 (3.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: selftests: seccomp_bpf failure on 5.15
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The pull request you sent on Thu, 28 Oct 2021 09:29:12 -0700:
+Kees Cook <keescook@chromium.org> writes:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.15-rc8
+> On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
+>> The following sub-tests are failing in seccomp_bpf selftest:
+>> 
+>> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
+>> ...
+>> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
+>> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
+>> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
+>> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
+>> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
+>> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
+>> ...
+>> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
+>> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
+>> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
+>> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
+>> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
+>> ...
+>> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
+>> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
+>> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
+>> 
+>> I did some bisecting and found that the failures started to happen with:
+>> 
+>>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
+>> 
+>> Not sure if the test needs to be fixed after this commit, or if the
+>> commit is actually introducing an issue. I'll investigate more, unless
+>> someone knows already what's going on.
+>
+> Ah thanks for noticing; I will investigate...
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/411a44c24a561e449b592ff631b7ae321f1eb559
 
-Thank you!
+I just did a quick read through of the test and while
+I don't understand everything having a failure seems
+very weird.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+I don't understand the comment:
+/* Tracer will redirect getpid to getppid, and we should die. */
+
+As I think what happens is it the bpf programs loads the signal
+number.  Tests to see if the signal number if GETPPID and allows
+that system call and causes any other system call to be terminated.
+
+Which being single threaded would seem to cause the kernel  to execute
+the changed code.
+
+How there kernel at that point is having the process exit with anything
+except SIGSYS I am not immediately seeing.
+
+The logic is the same as that for SECCOMP_RET_TRAP is there a test for
+that, that is also failing?
+
+How do you run that test anyway?
+
+Eric
+
