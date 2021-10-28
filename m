@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C41243E148
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 14:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E6343E1E7
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 15:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhJ1MzP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 08:55:15 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:34810 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhJ1MzP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:55:15 -0400
-Received: by mail-lj1-f178.google.com with SMTP id h11so10565855ljk.1;
-        Thu, 28 Oct 2021 05:52:48 -0700 (PDT)
+        id S229641AbhJ1NXN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 09:23:13 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:33746 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhJ1NXN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:23:13 -0400
+Received: by mail-lj1-f181.google.com with SMTP id 17so7520108ljq.0;
+        Thu, 28 Oct 2021 06:20:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xrmACLrClol1Ht1AqRT5BlRPbvf71eFZVnNxO5q/rNI=;
-        b=QWhpwM4mY2+NcYr72FKWuy7tTDke5SRPDtEGsazMiaqEd02RZStgJGcGbR/yjAYS8A
-         HkWDjSCSsc3aXKG3+cx3mSLaR5Rb82BVxm78Jp/GOJgIIntMixZVuLF853S/NeGE5fmw
-         bkLmMyEvvZqxbKcM8z134eE3eJbZt7LRhXbdVz4muWkMKqIced412p1jrvMNm5jASjy0
-         1Vbx2suDf1XPxqHxmTZdwiyG3+VWy0SmB1mRaNBDei34CumVKO0/XgP7fpOrcj1h9d1L
-         VcmSscXBd0is/4I30xNI4jgoiM7436fzjN7sqnfhuaK0IubV1gH2soDUou29vI1yZrcl
-         yiTA==
-X-Gm-Message-State: AOAM5313qAK5PIHUZi1ZIMByTRPtubhvEC1IQavANbUpu6404TfpJsjt
-        VHYlj2w9ldonC3SRwLfXgsOA0YzvBRI=
-X-Google-Smtp-Source: ABdhPJyQuQYnh4pcXTg5UYacz2zwAvAPf7Nnyl+A/VS8XnK9ZOgp2IkFx0P7Wfl5aBeow658nwCU2w==
-X-Received: by 2002:a2e:9d88:: with SMTP id c8mr4662425ljj.276.1635425567390;
-        Thu, 28 Oct 2021 05:52:47 -0700 (PDT)
+        bh=tV3/PwR5VpxbTSpUyiluLuIWKfFd+0GUhLTj4B2BabA=;
+        b=XVno5Xsq181pRPOlL1ZzwLEMPkvEoDkYWngmCxcq2PUf/coFwOE9VIsIUG4siN/Kmt
+         3nS/KPISuDvxABs/+JhLHPaK5VI1x0aP9xK+mVrMOYFPDVAZA82wOeU/LHTSNrO23z2h
+         SOoaCSy+5Wr9mAWSvhN7m7JPeMi57TqiGcEP/6/l+Aa4osyOGwYIl8LcKRpGCOKb41Eb
+         u56IBKd8bTNXF3r12swsOAXkyjEfiH4XgwHO/ofmVWjy0onmZpMMj2ToY3l02Fx311nO
+         RfM2mnLZUHiUoS00G28FXJVU79OdK1V6UA7I+L8tbTbsa8Ttxp4/1zKjg5z4fh9cYHnr
+         DOTQ==
+X-Gm-Message-State: AOAM5313CbIKCcXpQeWPHbYlb6LUmWgg+oNpNkINgk0SiCWw4/xeMd/t
+        Xi9osXw3dlMtHPq4qYFluxVmRqOUGvY=
+X-Google-Smtp-Source: ABdhPJxYlGkAp5YfgykTL+OJPSVAqgl4GZXQLle35EobOrAUTuaWxVUdSIobaRXPItg1SLgSd2jolA==
+X-Received: by 2002:a2e:82d5:: with SMTP id n21mr4673656ljh.6.1635427244950;
+        Thu, 28 Oct 2021 06:20:44 -0700 (PDT)
 Received: from kladdkakan.. ([185.213.154.234])
-        by smtp.gmail.com with ESMTPSA id p10sm282150ljm.53.2021.10.28.05.52.46
+        by smtp.gmail.com with ESMTPSA id o9sm309616lfk.292.2021.10.28.06.20.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 05:52:46 -0700 (PDT)
+        Thu, 28 Oct 2021 06:20:44 -0700 (PDT)
 From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
         linux-riscv@lists.infradead.org
-Subject: [PATCH bpf] riscv, bpf: Fix potential NULL dereference
-Date:   Thu, 28 Oct 2021 14:51:15 +0200
-Message-Id: <20211028125115.514587-1-bjorn@kernel.org>
+Subject: [PATCH bpf-next 0/4] Various RISC-V BPF improvements
+Date:   Thu, 28 Oct 2021 15:20:37 +0200
+Message-Id: <20211028132041.516820-1-bjorn@kernel.org>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,34 +49,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_jit_binary_free() function requires a non-NULL argument. When
-the RISC-V BPF JIT fails to converge in NR_JIT_ITERATIONS steps,
-jit_data->header will be NULL, which triggers a NULL
-dereference. Avoid this by checking the argument, prior calling the
-function.
+Unfortunately selftest/bpf does not build for RV64. This series fixes
+that.
 
-Fixes: ca6cb5447cec ("riscv, bpf: Factor common RISC-V JIT code")
-Signed-off-by: Björn Töpel <bjorn@kernel.org>
----
- arch/riscv/net/bpf_jit_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+* JIT requires more iterations to converge
+* Some Makefile issues
+* bpf_tracing.h was missing RISC-V macros for PT_REGS
 
-diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-index 0fee2cbaaf53..753d85bdfad0 100644
---- a/arch/riscv/net/bpf_jit_core.c
-+++ b/arch/riscv/net/bpf_jit_core.c
-@@ -125,7 +125,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 
- 	if (i == NR_JIT_ITERATIONS) {
- 		pr_err("bpf-jit: image did not converge in <%d passes!\n", i);
--		bpf_jit_binary_free(jit_data->header);
-+		if (jit_data->header)
-+			bpf_jit_binary_free(jit_data->header);
- 		prog = orig_prog;
- 		goto out_offset;
- 	}
+More details are in each commit.
 
-base-commit: 72f898ca0ab85fde6facf78b14d9f67a4a7b32d1
+There are still many failing tests, but this is a start.
+
+
+Cheers,
+Björn
+
+Björn Töpel (4):
+  riscv, bpf: Increase the maximum number of iterations
+  tools build: Add RISC-V to HOSTARCH parsing
+  riscv, libbpf: Add RISC-V (RV64) support to bpf_tracing.h
+  selftests/bpf: Fix broken riscv build
+
+ arch/riscv/net/bpf_jit_core.c        |  2 +-
+ tools/lib/bpf/bpf_tracing.h          | 32 ++++++++++++++++++++++++++++
+ tools/scripts/Makefile.arch          |  3 ++-
+ tools/testing/selftests/bpf/Makefile |  3 ++-
+ 4 files changed, 37 insertions(+), 3 deletions(-)
+
+
+base-commit: b066abba3ef16a4a085d237e95da0de3f0b87713
 -- 
 2.32.0
 
