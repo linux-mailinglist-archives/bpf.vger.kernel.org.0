@@ -2,80 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714FA43E06F
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 14:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C41243E148
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 14:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhJ1MEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 08:04:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48139 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229578AbhJ1MEf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 Oct 2021 08:04:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635422528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OgFJHZa14rAj0gelQuYCdVS3Z6a6zIUIxaF4Uxm+NZ8=;
-        b=QllCddqi2t+hixWzt1oX0nH9Khyw9G92gUVtK5jP01AhIzG8LHIhoZDiW45yvuH6idF9ZH
-        4FqT0GExd6Mx7AyXAU1Eauug8sI85geucBFyxfGOZPqXzub0ND5Hi3rCffEep6VsF37fhU
-        tLYbjFyFmnTNgjMBpCbMLPWbnM1prY4=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-539-_e7jKhZoN8ibheqbkx8D6Q-1; Thu, 28 Oct 2021 08:02:06 -0400
-X-MC-Unique: _e7jKhZoN8ibheqbkx8D6Q-1
-Received: by mail-ed1-f70.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso5344921edb.19
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 05:02:06 -0700 (PDT)
+        id S229868AbhJ1MzP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 08:55:15 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:34810 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhJ1MzP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:55:15 -0400
+Received: by mail-lj1-f178.google.com with SMTP id h11so10565855ljk.1;
+        Thu, 28 Oct 2021 05:52:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
-         :content-language:to:subject:content-transfer-encoding;
-        bh=OgFJHZa14rAj0gelQuYCdVS3Z6a6zIUIxaF4Uxm+NZ8=;
-        b=vRkPvR3kiapSNwtVP1IJLU6UezsqhKBMZ8M38uhRw7/tB1ZGKcCBGq//HsNsKYp5PU
-         d3tYyUXoW6QR22Is6+aGOzFEKzNKRkdsi6YhIllEMhU4gng0AGHvgAVyYLOyD/cwbTDM
-         wU0AdsCiD6NlTl0PVZCgk9iUmdTjK6boXWZ4JLY2Mlab1vM1vZf6GdJwfUWPm2+mcHyw
-         66AVQlT7fE78PfagB6dujXNr/dSeWiGe4HQabZPApLngsSmNY8sKQ5tmecMsPmGGhg4X
-         WivhPHBWu4hLAFn7qPXzajEdnRUA2yoX08GkegO1lG2mfELXnJmRu3qJJ786HgmN7nrw
-         xTfw==
-X-Gm-Message-State: AOAM531mTzTCSf+9kiU/OPbsviJ3h6ILzwM7pxbGio9B+68ZYo+ea3Su
-        9bA1eK/+rR4PRdLtXru7Z8ioRzk2uSg1pxvuYiq/XdnByBbbS6Rbbj0wcysDuT3n7h7muPTRJHP
-        AIbTGo22yAm6Z
-X-Received: by 2002:a05:6402:11d4:: with SMTP id j20mr5565084edw.267.1635422524813;
-        Thu, 28 Oct 2021 05:02:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymg1HCihMeCfA3y3WOtCGDQDsvuoMR6FnvJ1vYrlW/fFFevBSBWb11VTCX76JkmAm5Dad9KA==
-X-Received: by 2002:a05:6402:11d4:: with SMTP id j20mr5565061edw.267.1635422524624;
-        Thu, 28 Oct 2021 05:02:04 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id t22sm1508069edt.40.2021.10.28.05.02.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 05:02:03 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <829e159a-b573-345f-fabe-fe68a756b21b@redhat.com>
-Date:   Thu, 28 Oct 2021 14:02:02 +0200
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xrmACLrClol1Ht1AqRT5BlRPbvf71eFZVnNxO5q/rNI=;
+        b=QWhpwM4mY2+NcYr72FKWuy7tTDke5SRPDtEGsazMiaqEd02RZStgJGcGbR/yjAYS8A
+         HkWDjSCSsc3aXKG3+cx3mSLaR5Rb82BVxm78Jp/GOJgIIntMixZVuLF853S/NeGE5fmw
+         bkLmMyEvvZqxbKcM8z134eE3eJbZt7LRhXbdVz4muWkMKqIced412p1jrvMNm5jASjy0
+         1Vbx2suDf1XPxqHxmTZdwiyG3+VWy0SmB1mRaNBDei34CumVKO0/XgP7fpOrcj1h9d1L
+         VcmSscXBd0is/4I30xNI4jgoiM7436fzjN7sqnfhuaK0IubV1gH2soDUou29vI1yZrcl
+         yiTA==
+X-Gm-Message-State: AOAM5313qAK5PIHUZi1ZIMByTRPtubhvEC1IQavANbUpu6404TfpJsjt
+        VHYlj2w9ldonC3SRwLfXgsOA0YzvBRI=
+X-Google-Smtp-Source: ABdhPJyQuQYnh4pcXTg5UYacz2zwAvAPf7Nnyl+A/VS8XnK9ZOgp2IkFx0P7Wfl5aBeow658nwCU2w==
+X-Received: by 2002:a2e:9d88:: with SMTP id c8mr4662425ljj.276.1635425567390;
+        Thu, 28 Oct 2021 05:52:47 -0700 (PDT)
+Received: from kladdkakan.. ([185.213.154.234])
+        by smtp.gmail.com with ESMTPSA id p10sm282150ljm.53.2021.10.28.05.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 05:52:46 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH bpf] riscv, bpf: Fix potential NULL dereference
+Date:   Thu, 28 Oct 2021 14:51:15 +0200
+Message-Id: <20211028125115.514587-1-bjorn@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Cc:     brouer@redhat.com, bpf <bpf@vger.kernel.org>,
-        Toke Hoiland Jorgensen <toke@redhat.com>
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii@kernel.org>
-Subject: libbpf - why find_program_by_title ?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
+The bpf_jit_binary_free() function requires a non-NULL argument. When
+the RISC-V BPF JIT fails to converge in NR_JIT_ITERATIONS steps,
+jit_data->header will be NULL, which triggers a NULL
+dereference. Avoid this by checking the argument, prior calling the
+function.
 
-The libbpf API bpf_program__title() is getting depricated (which is 
-great BTW). (p.s. Instead use bpf_program__section_name()).
+Fixes: ca6cb5447cec ("riscv, bpf: Factor common RISC-V JIT code")
+Signed-off-by: Björn Töpel <bjorn@kernel.org>
+---
+ arch/riscv/net/bpf_jit_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Why do we still have bpf_object__find_program_by_title() ?
+diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+index 0fee2cbaaf53..753d85bdfad0 100644
+--- a/arch/riscv/net/bpf_jit_core.c
++++ b/arch/riscv/net/bpf_jit_core.c
+@@ -125,7 +125,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 
+ 	if (i == NR_JIT_ITERATIONS) {
+ 		pr_err("bpf-jit: image did not converge in <%d passes!\n", i);
+-		bpf_jit_binary_free(jit_data->header);
++		if (jit_data->header)
++			bpf_jit_binary_free(jit_data->header);
+ 		prog = orig_prog;
+ 		goto out_offset;
+ 	}
 
-Shouldn't we also deprecate that?
-And introduce bpf_object__find_program_by_section_name().
-
---Jesper
+base-commit: 72f898ca0ab85fde6facf78b14d9f67a4a7b32d1
+-- 
+2.32.0
 
