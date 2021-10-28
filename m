@@ -2,81 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A61F43DE11
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 11:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BDC43DE19
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 11:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhJ1JwA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 05:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhJ1Jvq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:51:46 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9363CC061225
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 02:49:18 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id k13so9607200ljj.12
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 02:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fk20SFTna7oenyJFMvCkJ++ZR0TFp2usytKYkzVEf0s=;
-        b=kf7QbjWu1KoXK2GcxquXY75XDFKY96HN8PhY+2IdmX0My5dsmxhOifxj3w+ZaB8bI1
-         mTFK+tYsuwaU9fDQtOw0yMiZeS4i4l45HAoV8jZRaqMfQKixIfM+z9QIDq1gQI2fnCPM
-         cKkuo2/nXat3lC4ncjsZfWKecL2Cq0VFHHxyw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fk20SFTna7oenyJFMvCkJ++ZR0TFp2usytKYkzVEf0s=;
-        b=FALawloYL2p94sAFWwN5T3h4O8zU5+VtyOy897IfwN2QvWjvq6q88+WgMPUWczreq+
-         zKiepMLrqFIqE5D4ENesoZmSe3hMfxOONYjQFrZx8syAG2nzER78Jr1Wf2JnjY7B8hVu
-         bCuT03v/h5g+Y/i0j1lGGztQddJPDIhWA4cE+dMexOQ5t5sUDxA7WL5EiU5OeYOrlKM5
-         rUootYC2Ioh3DF1J2mZXCfBfTur0xQpn0WwgMxyShQ9aj0txNq9cKroojTFJLP2KDhOD
-         AdN46ml+gpphnwMXIhcAXFZoJfoNX9x7PnB+5kqVESvGg7j0AhKGjNLTh6lL/I1Opi7k
-         xVPA==
-X-Gm-Message-State: AOAM532QmL1LFBR2qY0JPwHg5lANP0fD70R2pTh6+g+HMfZsRsh/LRKW
-        ogsyIPtSKFOBp8fVzYJs1LixsSEmeQOOlGviMfPWsQ==
-X-Google-Smtp-Source: ABdhPJy79YQNwa1VedoC9Fu2+mb2Y9ZRSMvFCQS6gRxPDar6Suys0za7kSVoiq/FhiIJ2iaPRaXNwxunO+FZ+29u4rE=
-X-Received: by 2002:a05:651c:2328:: with SMTP id bi40mr3584357ljb.121.1635414556987;
- Thu, 28 Oct 2021 02:49:16 -0700 (PDT)
+        id S230044AbhJ1Jwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 05:52:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229850AbhJ1Jwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 05:52:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 70F8B610E7;
+        Thu, 28 Oct 2021 09:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635414607;
+        bh=Pw7f694QeuTBSzXOZY3z4HjgXzZuelwivi3ONEK7jxs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=L5X/6fqyCXHyuWi6iq8XjGL0UAyVLCq1a3l2Th/tZqq/NQmhKO1odmS/pPQV8FRwl
+         bmRfoEftr0dkayG45C8pLF5U7DqZUAT4RQ1V0mL/pkHG5d1haRCUwj3TBrc63f8WbL
+         QS4bz5VSX/HGRw/BMTUqSpWxA8X0zyk1g1HFs2X9waL784SJ+kWZoBVfLGAY0+iRdn
+         CeisWhcDq8aT7cjC5X2/R/axGei6YTNEv5lfkZ8SMhyf9mvYXlnz3Ax935G4rdH+mD
+         bu214M4K27huGat3K56Yq0bkk1mDqt4z7siy/htDC6qvcCjBvwZNlvxkM2QpDzjkXW
+         gnX4IP/8YAG7A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6345560A17;
+        Thu, 28 Oct 2021 09:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211021151528.116818-1-lmb@cloudflare.com> <20211021151528.116818-2-lmb@cloudflare.com>
- <b215bb8c-3ffd-2b43-44a3-5b25243db5be@iogearbox.net> <CAOssrKciL5EDhrbQe1mkOrtD1gwkrEBRQyQmVhRE8Z-Kjb0WGw@mail.gmail.com>
-In-Reply-To: <CAOssrKciL5EDhrbQe1mkOrtD1gwkrEBRQyQmVhRE8Z-Kjb0WGw@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 28 Oct 2021 10:49:06 +0100
-Message-ID: <CACAyw9_yWL2YdYs2WbZ-Up2MqUKH7s5=g+v230TzYa=A4gx9SA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] libfs: support RENAME_EXCHANGE in simple_rename()
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v8] test_bpf: Add module parameter test_suite
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163541460740.23048.1974505348152957386.git-patchwork-notify@kernel.org>
+Date:   Thu, 28 Oct 2021 09:50:07 +0000
+References: <1635384321-28128-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1635384321-28128-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lixuefeng@loongson.cn,
+        johan.almbladh@anyfinetworks.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 28 Oct 2021 at 09:43, Miklos Szeredi <mszeredi@redhat.com> wrote:
->
-> This is not sufficient.   RENAME_EXCHANGE can swap a dir and a
-> non-dir, in which case the parent nlink counters need to be fixed up.
->
-> See shmem_exchange().   My suggestion is to move that function to
-> libfs.c:simple_rename_exchange().
+Hello:
 
-Thanks for the pointer, I sent a v3.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Lorenz
+On Thu, 28 Oct 2021 09:25:21 +0800 you wrote:
+> After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
+> operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
+> there exists segment fault due to the following reason:
+> 
+> ALU64_MOV_X: all register value magnitudes jited:1
+> Break instruction in kernel code[#1]
+> 
+> [...]
 
+Here is the summary with links:
+  - [bpf-next,v8] test_bpf: Add module parameter test_suite
+    https://git.kernel.org/bpf/bpf-next/c/b066abba3ef1
+
+You are awesome, thank you!
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-www.cloudflare.com
+
