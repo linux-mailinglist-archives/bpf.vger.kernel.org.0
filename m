@@ -2,100 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C33E43E5FC
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 18:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E15743E613
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 18:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhJ1QXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 12:23:42 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60082
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230094AbhJ1QXm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 Oct 2021 12:23:42 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 79E073F166
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 16:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635438074;
-        bh=MFCXhrxMMYgeyWYGBw4pwKsi4LVWUxJzOa6T0MBMtLM=;
-        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type;
-        b=QqIjgHU9gEY/MATVTHlaxL4tCstzpQ4TfFBy+UqFb85noxIVCKbBRj4qNi85de8SE
-         NGHdVJzp2LszoM1r7nnzUE2oVvJyxRG+phky2LL6vfB1frJaWVBVevlJmwijguPy0z
-         b4Vw4ELhSDCAEW688UYlxbKS1ciSnHt62Gt6jFz5qiCf7m6/SmnFrtfiHU2b6VUl+2
-         9xyn6spUb0BiqrEUjvAktAu9W146t/6aj3wu58kGBHPQl84klK8OMOhKMMkDF6zavq
-         l8GvfeKS1+wM5dOKBmQiy6cYa6Ok56oCwox+Ir2V0LAYqVqXhBoBJSfKtKv8I5LGd6
-         0QVL7tsSH5saA==
-Received: by mail-ed1-f69.google.com with SMTP id x13-20020a05640226cd00b003dd4720703bso6132326edd.8
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 09:21:14 -0700 (PDT)
+        id S229723AbhJ1Qaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 12:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhJ1Qaf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 12:30:35 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A24AC061570
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 09:28:08 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id f4so12657002uad.4
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 09:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=GIjjeVFYpCUN5WRxqFha1yv2IU8TpJ/eD9Kb3tl4OyQJR8WBR/R3gwHHovVWiE6hGm
+         OJReuObzJwUWV94z5KrklV923e8EcT07fMjd2zg9Wq7t0rBr+yuxzZZTQnpx5Mkeuhpd
+         xqy54VAyFB4s4oG6dzPYoD7ECnrH8r0G5/YPoisVq/zorD2uSHjkywPhobqYHQdM7pe/
+         tBs1vW5u/x2BEFlz0/S8jWhNgk6X+Mds3mx+vFaaSlUvPB8FZVuL2lHptszKLlWGVRKi
+         d5+wUjqM/ffiQEDjFlM5AuXvsavIMJxRJz3MTWtacoBcxTIV41HbpFOrv5Y5vrIo46iB
+         kMYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=MFCXhrxMMYgeyWYGBw4pwKsi4LVWUxJzOa6T0MBMtLM=;
-        b=OL41V0R8qWei6VCdgemWIKa1iW/iVUUCTUdL79MFFtrITpPIHeylGiqWSHxw18s1s3
-         OwWzKFT3ye5PsdhHqXeGr2gyQ3M9B40Bb2/QVg15KBJvEgTA7fNhBEeSxU0ROKt9eL70
-         zzrwLz6TPgA0Sh+lKZLmfZGXi9VcKnCQOzpKGYQFB/qgtBL6nV6iuNbQK3jSuSNvItSN
-         mCE0d9FMz8hQsDstkXsAY4V10ufXabLfOxQYa3WXj9umB3eGxCQ0JBwGbdOs0sQUMoBg
-         asR3W+bjVm8tz/yIRrWCr29OxkyTUWswvjoauSBZ9D0IJbwMi+lCuBsfNs3qzAaVNxdX
-         WjGw==
-X-Gm-Message-State: AOAM5335ZPjGxgawosfHiaNLhG3MGgW1dRaTo91QywYpAuRp96bdeUf2
-        ywRtSZ3lMvLtgIdWhizLKidA+c9gCLy63KbfzFoX2P3wEdtCJMuBSxhXTA/K9R+3ixachAOlpSz
-        XPSKkCeliH6TSLXy9pLJdhj78QfBsYw==
-X-Received: by 2002:a17:906:5d09:: with SMTP id g9mr6611812ejt.330.1635438074194;
-        Thu, 28 Oct 2021 09:21:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWZXiaNgMwJhzGxH1D6ClXiGSkRe0zvTc1H0wlSMBtt5rCNF3SDuo4BLgw1+bVmz7g2tyP9g==
-X-Received: by 2002:a17:906:5d09:: with SMTP id g9mr6611790ejt.330.1635438073995;
-        Thu, 28 Oct 2021 09:21:13 -0700 (PDT)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id o10sm1982444edj.79.2021.10.28.09.21.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 09:21:13 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 18:21:12 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org
-Subject: selftests: seccomp_bpf failure on 5.15
-Message-ID: <YXrN+Hnl9pSOsWlA@arighi-desktop>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=qBDrWBHg0EaOmssJFeRqODQJTKxtPoGiNekt0PtI/7YMzsL6C2QUsTZ/PQ7byTgEA1
+         fDx0puWNeeh5fCaYM7EKdks2IDtqeppgyawNF4q1Nv+8xSTnv3ctmpP3MPbYw5ug/8n/
+         7NUbA7K262GlUQEuoaBx8imrRZ//5nQuVkszuER5t3D2DQtux7DaQrVQf6jUsNkhkYwT
+         I1jBnUB0howSaYqLa/hz8GcRL1X1H4TGVxSOOEul12iwOgzKkr8HGki3HCq/6pMWWhaW
+         W+7yMtwd/p4mb7Ydt/cA2HYVA8rejD/743834yEiRvKOJf087GJCP9gGs/PtQev/NQYz
+         S3Ew==
+X-Gm-Message-State: AOAM533PwXumxUxi19ec1eZFfY+PhhoDOo8/efZhgIb7oFio6S0df2Tg
+        R9d4oK0Kptg//eM2jRwiZF7y5TDpIM07hA7fP3I=
+X-Google-Smtp-Source: ABdhPJythqQxw5w4heUp7TGgvoFT4lBiRWxForpm7D4BVFOqig/Ofr6lfhf/Nvjaamwud4iMz9wn58I0jABsCpNJvKc=
+X-Received: by 2002:ab0:5928:: with SMTP id n37mr5644691uad.15.1635438486395;
+ Thu, 28 Oct 2021 09:28:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: by 2002:a67:cb08:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 09:28:06
+ -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <faridafarah924@gmail.com>
+Date:   Thu, 28 Oct 2021 09:28:06 -0700
+Message-ID: <CAJAEg+t3Mf9mzvF6BJ1QCJAOL4KLi3kYPQUDNnmizkb4DLoORw@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following sub-tests are failing in seccomp_bpf selftest:
+Dear Friend,
 
-18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
-...
-18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
-18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
-18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
-18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
-18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
-18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
-...
-18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
-18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
-18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
-18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
-18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
-...
-18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
-18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
-18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-I did some bisecting and found that the failures started to happen with:
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
- 307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
 
-Not sure if the test needs to be fixed after this commit, or if the
-commit is actually introducing an issue. I'll investigate more, unless
-someone knows already what's going on.
-
-Thanks,
--Andrea
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
+Best Regards
+Mrs Aisha Al-Qaddafi
