@@ -2,61 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8974C43E7F8
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 20:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3379643E80B
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 20:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhJ1SJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 14:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        id S230467AbhJ1SNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 14:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhJ1SJX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:09:23 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2561AC061570;
-        Thu, 28 Oct 2021 11:06:56 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id d10so6611174ybe.3;
-        Thu, 28 Oct 2021 11:06:56 -0700 (PDT)
+        with ESMTP id S230258AbhJ1SNB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 14:13:01 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A761C061570;
+        Thu, 28 Oct 2021 11:10:34 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id y3so6397973ybf.2;
+        Thu, 28 Oct 2021 11:10:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sh/g4CoEIsz6tuQeflx/5ddmD34YVD3NefLka+HCvu0=;
-        b=qxdVtFesCNdVPtc2zD4xVzpruQihxTdt3WnCno/urs0A0Gsgbs/lPxi9zaur0veIzd
-         5rcLz8Mri5sslPmnu4PmDhGqR59FdzAm3FgsHFRiZ5rSXBHkL++KasziefuEO6Z7zzfn
-         xtPgXdR7MtOPQBxrohLjpYqHIUeEATk1ZPeVHBcaGFbeiRuyGvTncg2sJAU8EDqgx0gc
-         d9OEyGORPBd374+HwaJ/ZjRW1gPjRMU6fKeIzIHm4f+gxGzf7OuJQUBEjDhR/UmLV222
-         Bs2zxNgYr9/8WJHsjKUY6IYovxM2fP6eV/jrxnjoEEzO6n22BzB8glBgRzA1k/6ucs+V
-         MTRA==
+        bh=PibadPtFXRDa44ZUmOQfsMNDa2MEM73QABZ8NV45MJ8=;
+        b=m2ICJo9qn/Rdn8KjUKxWxzAGQjl54SJUcsmKj+h5j1053QPETpn03RaDqzAyLI2V/Q
+         tRt471H+AlSQEOXO8TcszLQcPvxsJk6p6/UbF+vF2oEiJFMUdruLU//D0A8pNrxS/OPI
+         /4xgOf0lGRfBjDz4s3LcvpI8yQbgm3bXzTXvO2tXMqyxaI6rPWjB2OYEDO1GhUjiFYLu
+         YWWCabsBoSs33FdoVYpN6KoHnDtK2wwt3OmFylCr+QOIA9l/bzn3w+XTgWZ0UFJlvvt0
+         FnDxv292gOfblQAPm3SwBCiIBxlrQGyyTn41L93haC02uH9VdG6gMzdsh1zIMe0eqQNG
+         dbnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sh/g4CoEIsz6tuQeflx/5ddmD34YVD3NefLka+HCvu0=;
-        b=QtlsYqUbfbdjw7Di7I6Xaf+smUo8CbNkjWXL0zHteeWwVQyB0TDr9RKfOyDl/tLQo+
-         ZpC19nd/Rdp97SYlr2UdhpRNQhHFUXCgsWmfQca9lNRKacdxSnlvPJts+d90fZZ7W6zG
-         M8yI7v2K3zkjoeK1lKe2rdj95Bthva0vritM0LJgczWcwa940R64s7taVpagdAiZekTu
-         rV2r0NB4zLoAT9Vdnp34jYdy1Ewwxjv6OSjy/+IYNbqw3dRamIrlRdqM9xhtrHcq+2O2
-         LLx5qS+g0WlGqKy7BzCkAByJZBMuty8V+p7Ct7OHdnWHNiP8PXwHWg0Bd58nFiIhueCW
-         VSVg==
-X-Gm-Message-State: AOAM530rD/FfUOlYRJH+f6jtwluAngsJGl8OZJXikWwMplo/P/hcmc7n
-        CRbrNlgn52ep5UHJ22xlyU9hkOv0PG/TzJvesRw=
-X-Google-Smtp-Source: ABdhPJy3+2Ts9odc4moKIH96uR1pn1JDF36gq1nj+iwM3DQWt61PuoISxTNVpzJNUi29yL6jgH7pxky2qn2AptK+nlA=
-X-Received: by 2002:a25:b19b:: with SMTP id h27mr6691539ybj.225.1635444415389;
- Thu, 28 Oct 2021 11:06:55 -0700 (PDT)
+        bh=PibadPtFXRDa44ZUmOQfsMNDa2MEM73QABZ8NV45MJ8=;
+        b=tKpfZwiR5k+4nR9X3NQYrd9roxROm5rMQNI4UvezSmU4Aiv3zQQzd1ilpgY746vAko
+         P91ZKyR6O9RtXR3FCjebmwOkP2LfKI0KyKqXLxWufdOFBJd+JfP8MiZAxWjUQx7+1qDs
+         0Yz6kwoSonrd/NJWEg48HIlBadmKwBtorFTj6jhe2KW33qiHpDP7Fq2YaNhuFgKCZXly
+         7fuKkFtqO39Wx7dMWxmiqpgZegArsDNfXGru1SukCwwwbekI/y4OuojPb2EKCLLHsLHq
+         WqibzbB/g1uTEkoJRgvLHcJuw7agEfFXsHyf1ssFP+FuWKqCYXaEPk3f0dJ6qTKqu6zk
+         QJGw==
+X-Gm-Message-State: AOAM533twUOYRBKejO4KgNWRQPil9OyJuFzWOQCGPJ1QCsujPtgL8Dyo
+        jjs8toEvLvb4b2kejNZ3JkUUaJ+nRF38l4dRU4s=
+X-Google-Smtp-Source: ABdhPJyrTl/NA+L1Emy0kUxtKXajMu0rlKAmOnm3h+cqY7G0a3QMAR9iv3/So9DBaeK3FLnqgRx6rTG2kd79dOJhiAs=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr6805131ybj.504.1635444633394;
+ Thu, 28 Oct 2021 11:10:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211028063501.2239335-1-memxor@gmail.com> <20211028063501.2239335-7-memxor@gmail.com>
-In-Reply-To: <20211028063501.2239335-7-memxor@gmail.com>
+References: <20211028063501.2239335-1-memxor@gmail.com> <20211028063501.2239335-2-memxor@gmail.com>
+In-Reply-To: <20211028063501.2239335-2-memxor@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Oct 2021 11:06:43 -0700
-Message-ID: <CAEf4BzZm_R6JuV3pyN3qMJqPxZDZWJ_5kYTaX4BgbYB7Lk=t6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/8] selftests/bpf: Add weak/typeless ksym
- test for light skeleton
+Date:   Thu, 28 Oct 2021 11:10:22 -0700
+Message-ID: <CAEf4BzZa_vhXB3c8atNcTS6=krQvC25H7K7c3WWZhM=27ro=Wg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/8] bpf: Add bpf_kallsyms_lookup_name helper
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Networking <netdev@vger.kernel.org>
@@ -68,44 +67,52 @@ X-Mailing-List: bpf@vger.kernel.org
 On Wed, Oct 27, 2021 at 11:35 PM Kumar Kartikeya Dwivedi
 <memxor@gmail.com> wrote:
 >
-> Also, avoid using CO-RE features, as lskel doesn't support CO-RE, yet.
-> Include both light and libbpf skeleton in same file to test both of them
-> together.
+> This helper allows us to get the address of a kernel symbol from inside
+> a BPF_PROG_TYPE_SYSCALL prog (used by gen_loader), so that we can
+> relocate typeless ksym vars.
 >
-> In c48e51c8b07a ("bpf: selftests: Add selftests for module kfunc support"),
-> I added support for generating both lskel and libbpf skel for a BPF
-> object, however the name parameter for bpftool caused collisions when
-> included in same file together. This meant that every test needed a
-> separate file for a libbpf/light skeleton separation instead of
-> subtests.
->
-> Change that by appending a "_lskel" suffix to the name for files using
-> light skeleton, and convert all existing users.
->
+> Acked-by: Song Liu <songliubraving@fb.com>
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
-
-I like the simplicity, thanks.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  tools/testing/selftests/bpf/Makefile          |  4 +-
->  .../selftests/bpf/prog_tests/atomics.c        | 34 ++++++++--------
->  .../selftests/bpf/prog_tests/fentry_fexit.c   | 16 ++++----
->  .../selftests/bpf/prog_tests/fentry_test.c    | 14 +++----
->  .../selftests/bpf/prog_tests/fexit_sleep.c    | 12 +++---
->  .../selftests/bpf/prog_tests/fexit_test.c     | 14 +++----
->  .../selftests/bpf/prog_tests/kfunc_call.c     |  6 +--
->  .../selftests/bpf/prog_tests/ksyms_btf.c      | 35 +++++++++++++++-
->  .../selftests/bpf/prog_tests/ksyms_module.c   | 40 +++++++++++++++++--
->  .../bpf/prog_tests/ksyms_module_libbpf.c      | 28 -------------
->  .../selftests/bpf/prog_tests/ringbuf.c        | 12 +++---
->  .../selftests/bpf/prog_tests/trace_printk.c   | 14 +++----
->  .../selftests/bpf/prog_tests/trace_vprintk.c  | 12 +++---
->  .../selftests/bpf/prog_tests/verif_stats.c    |  6 +--
->  .../selftests/bpf/progs/test_ksyms_weak.c     |  2 +-
->  15 files changed, 142 insertions(+), 107 deletions(-)
->  delete mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_module_libbpf.c
+>  include/linux/bpf.h            |  1 +
+>  include/uapi/linux/bpf.h       | 16 ++++++++++++++++
+>  kernel/bpf/syscall.c           | 27 +++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 16 ++++++++++++++++
+>  4 files changed, 60 insertions(+)
 >
+
+[...]
+
+> +BPF_CALL_4(bpf_kallsyms_lookup_name, const char *, name, int, name_sz, int, flags, u64 *, res)
+> +{
+> +       if (flags)
+> +               return -EINVAL;
+> +
+> +       if (name_sz <= 1 || name[name_sz - 1])
+> +               return -EINVAL;
+> +
+> +       if (!bpf_dump_raw_ok(current_cred()))
+> +               return -EPERM;
+> +
+> +       *res = kallsyms_lookup_name(name);
+> +       return *res ? 0 : -ENOENT;
+> +}
+> +
+> +const struct bpf_func_proto bpf_kallsyms_lookup_name_proto = {
+> +       .func           = bpf_kallsyms_lookup_name,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_MEM,
+> +       .arg2_type      = ARG_CONST_SIZE,
+
+can you make it ARG_CONST_SIZE_OR_ZERO? Not because zero makes sense,
+but because it removes the need to prove to the verifier that the size
+(which you can get at runtime) is > 0. Just less unnecessary fussing
+with preventing Clang optimizations.
+
+> +       .arg3_type      = ARG_ANYTHING,
+> +       .arg4_type      = ARG_PTR_TO_LONG,
+> +};
+> +
 
 [...]
