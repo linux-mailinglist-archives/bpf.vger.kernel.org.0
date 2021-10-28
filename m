@@ -2,70 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EAD43E553
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 17:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FBD43E5A0
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 17:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhJ1Pmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 11:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhJ1Pmf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4FA91610C8;
-        Thu, 28 Oct 2021 15:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635435608;
-        bh=RhNp0ZDgNabWMlYljqrqlsicwJVv4uK8mY93cUQZpvY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=K9uEFhNkUPDkUy0Vtx9CpQsvF8Mo4SmjgrJ+ilxr7B1meYGp2JudEZD28juKUxGbX
-         wzTr7jNjaBP7g8KAufQwTOSpIApfngWgnn7yJhwtxBxDqO8jzxHu5Zw6QN3Yod5tHG
-         TYJtOZ632qBJXT2EAhBv2MJtW9DPHKBuHcaOv7KfMsmFEUFS3wyW4+lhDtS3Pk58lz
-         ICqAew/G8KIqRQnYzQ5N8zvkdubmywG8+Rdfj7lUksrfm16qDfbM1roSZ1cnvL/BdS
-         ATlfGyj+3nvOtG0U82woWNCpq5rRaQmZuyORrNsvx7Q0oTM922Dn3jv2jiWis2zmM3
-         YcyaBsxhtUYTQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3C8F1609CC;
-        Thu, 28 Oct 2021 15:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230077AbhJ1QB0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 12:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhJ1QBZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 12:01:25 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2333C061745;
+        Thu, 28 Oct 2021 08:58:58 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id b12so6623712wrh.4;
+        Thu, 28 Oct 2021 08:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IfAjr9+KKKwq3jZHOqs7MUPR8iCNkDuvoFjPyZqntvM=;
+        b=PyfGdX5Xu7vVSY+Hs9BCdjCwI9FiBa1IyJEScsuaJItF9N350/OhCZvPJgDBPbEQwZ
+         ZiKZFknB6xcMCv78U6DdjH13aJ81hsEW+K3KTejH7iyatPL9WxKiXJdI2TKIBsYATgfW
+         vAdkum8G8gQA7Ya1tjmgl5QeQhDymxdZIwQ17UAkuA0vFUkntT7xBe44v5xBoU/VNUjJ
+         wH5JGuD3YmKQHPL2GoBNwIZDTtD7DXSUqZvAgBIy/jRkLIWcqzhnSBvNPz48sT/IN2CJ
+         7aVIvTNc2lnHFU7mj0heub2Lqj9OkEaQC+jHpUPu//rXmdYQVcfh5Z9poCd3AJ7oFIo6
+         FNeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IfAjr9+KKKwq3jZHOqs7MUPR8iCNkDuvoFjPyZqntvM=;
+        b=oufkhUDOF6JlShdVaNK4KPWC1wCm+2sKu/HIABvlZzkTbRNn5/boMvfVkgSFU1vsHn
+         vjQre+L1HZo0fc2xRLRLlGLyrF/FHcmQa5RNF5c2sPvVRC15EG0vLL9CMoUjxQmvqoLl
+         Vxzqw1ywvt57ke45HQ1WLT0RdAWyYe3sKrSj2jCKW49EK9LA9nJuJHMuGKKLU51+dC+2
+         EGkkSt++mCysjsRXmN7yM73fgdJCvaeXbccaqJNFuAxxQmRiFK7bjShiWz+c3u6V1zHG
+         WnmKGmIPUrt9sXBxxoR0Yp0B9XseHWbHhU6aMLimD1gJF70KjDenCPjzjmrhXjiXdox7
+         diUw==
+X-Gm-Message-State: AOAM530WjTNqgDBCggIKfhlNnOWJRX6OuuRb86hT5zxl5TJI5LxNfRE9
+        Vj/V+pO/HlRg88Z/DnDr6QRpCZ61E4oDBc4ipbQ=
+X-Google-Smtp-Source: ABdhPJwF/tzZNVVcXXVBs376LCifqLS0X4Jx4j7NaP5Bpe1G9itZn7ONH0knEsN4be8DkUsJZbmIMYUWJcWhlPkphpo=
+X-Received: by 2002:a5d:59a7:: with SMTP id p7mr6896008wrr.141.1635436737323;
+ Thu, 28 Oct 2021 08:58:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] riscv, bpf: Fix potential NULL dereference
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163543560824.29178.17218180216053026996.git-patchwork-notify@kernel.org>
-Date:   Thu, 28 Oct 2021 15:40:08 +0000
-References: <20211028125115.514587-1-bjorn@kernel.org>
-In-Reply-To: <20211028125115.514587-1-bjorn@kernel.org>
-To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm5Aa2VybmVsLm9yZz4=?=@ci.codeaurora.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <20211028132041.516820-1-bjorn@kernel.org> <20211028132041.516820-5-bjorn@kernel.org>
+In-Reply-To: <20211028132041.516820-5-bjorn@kernel.org>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 28 Oct 2021 17:58:45 +0200
+Message-ID: <CAJ+HfNjfGfO52KQZ23pRJFZL9arSiYQvJcHJS5nwyBDW40inAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Fix broken riscv build
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, 28 Oct 2021 at 15:20, Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> wrot=
+e:
+>
+> This patch is closely related to commit 6016df8fe874 ("selftests/bpf:
+> Fix broken riscv build"). When clang includes the system include
+> directories, but targeting BPF program, __BITS_PER_LONG defaults to
+> 32, unless explicitly set. Workaround this problem, by explicitly
+> setting __BITS_PER_LONG to __riscv_xlen.
+>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index ac47cf9760fc..d739e62d0f90 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -277,7 +277,8 @@ $(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)=
+/resolve_btfids        \
+>  define get_sys_includes
+>  $(shell $(1) -v -E - </dev/null 2>&1 \
+>         | sed -n '/<...> search starts here:/,/End of search list./{ s| \=
+(/.*\)|-idirafter \1|p }') \
+> -$(shell $(1) -dM -E - </dev/null | grep '#define __riscv_xlen ' | sed 's=
+/#define /-D/' | sed 's/ /=3D/')
+> +$(shell $(1) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{printf("=
+-D__riscv_xlen=3D%d -D__BITS_PER_LONG=3D%d", $$3, $$3)}')
+> +
 
-This patch was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+Argh, this messes things up. I'll spin a v2 with the extra NL removed.
 
-On Thu, 28 Oct 2021 14:51:15 +0200 you wrote:
-> The bpf_jit_binary_free() function requires a non-NULL argument. When
-> the RISC-V BPF JIT fails to converge in NR_JIT_ITERATIONS steps,
-> jit_data->header will be NULL, which triggers a NULL
-> dereference. Avoid this by checking the argument, prior calling the
-> function.
-> 
-> Fixes: ca6cb5447cec ("riscv, bpf: Factor common RISC-V JIT code")
-> Signed-off-by: Björn Töpel <bjorn@kernel.org>
-> 
-> [...]
+Bj=C3=B6rn
 
-Here is the summary with links:
-  - [bpf] riscv, bpf: Fix potential NULL dereference
-    https://git.kernel.org/netdev/net/c/27de809a3d83
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>  endef
+>
+>  # Determine target endianness.
+> --
+> 2.32.0
+>
