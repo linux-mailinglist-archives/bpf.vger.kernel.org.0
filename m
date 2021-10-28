@@ -2,97 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D1A43E6AC
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 18:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A3D43E6F5
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 19:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhJ1Q6y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 12:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJ1Q6x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:58:53 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D29C061570
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 09:56:26 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 131so5397143ybc.7
-        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 09:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=csJiIIjiJMNWhFJko0MsNXKFYvRsB3UByW2/bv79s1k=;
-        b=P6wyZUMWj/WN2XBi04Hxd9c08MsF3PXEI+U0QBcxk+QmTVajsg9pFoDcDDn8K2djje
-         e0Ui+gsRk4foDzaMOJOwRP0HIXx15nj42/DQgkN38aleV9iNlwioACLDhWQQ9ABekJPo
-         k9rMJxPhfd0Pvi6ju0P4F+XcoZU2GJ3pJGMrJQlbwIydJmtbFG9+nvgj99eX00ciQG9h
-         7b7j/M9WjnIbxTyj8cy5/cKb3+Ch0TJCOHkSOnwzYMwGHL2qtHs3GetAXHkSg2Kccwkq
-         yAVjgZb2hZq53UZG8eFJXQz0DqvOaZeZEDrvCjfwPRZjye5yYuDFbqx/0ZyKwQTvf8fB
-         Xxew==
+        id S230335AbhJ1RRS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 13:17:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57192 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230174AbhJ1RRR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 28 Oct 2021 13:17:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635441290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CKzHPmwBuuVZ+sZfNezc+/bbA27vHU7b9f4gWlByyIQ=;
+        b=MtAcuau7izUpsB4kwhRLpd2PENgjVAgK+6I687UoLvR/sa75mB7I9TxFYc+l+zzYeCiaCC
+        wGIBdAlW1XThH3k395Fd//jVE4JlFOw+mMdtSKOAA3vmuWiafeJhs8uIQvlMK+m1xNHRhQ
+        dpOYKjSqSAzHGYXVk233RfIaSzgOPjk=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-0nB6AxeTNHudoILeNAYRXA-1; Thu, 28 Oct 2021 13:14:46 -0400
+X-MC-Unique: 0nB6AxeTNHudoILeNAYRXA-1
+Received: by mail-wr1-f70.google.com with SMTP id k8-20020a5d5248000000b001763e7c9ce5so1228056wrc.22
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 10:14:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=csJiIIjiJMNWhFJko0MsNXKFYvRsB3UByW2/bv79s1k=;
-        b=FSjYbVa9xT2HqCVx9ap/kIKjDkGFwOMzkAMb6p0r85VZik0mpneaYsug5ERMnlv7df
-         A53Qhyv3/piyPZSds/bSX5m3996c7WqujrNxSDcVTpf7quAp09sMeISAFTUukfgrvTXW
-         B3yWqpHzoW00qNPd38BYvCHrsptkPnEJfPdgf3L4dDFCA9p8JCyPrsJszWeprMAmkKdP
-         rBEBGyjDBEZ4/H3yec9KruDIT2qZlgcnK5tufZ8Z/27wvtNuPECYp3qW9ha1IM/hrBOV
-         mnJsSEJ8vfBz5XKhow04wa8bNBXHbnyKK29BTQKUxVVyrNgplTwW0VTeWERXhvXl4IC2
-         j0gg==
-X-Gm-Message-State: AOAM533xQpdLpTQRYSQIU/Lf2eR7RojJp8pMAVlh8vrDt50ARJ3hWDTz
-        ebuxS/fu+/JjpU238NjhRBnJaFBaAwucP8ETMYo=
-X-Google-Smtp-Source: ABdhPJw1uJnbBQtwHN5fpoBdT3gH+LP0cBs1QG5aXeuKDcVHUJt+NNbpeTgb7Fmyywv5gj1s8Ol7q2Dt4bbd90/p0Fw=
-X-Received: by 2002:a25:bfc8:: with SMTP id q8mr5846425ybm.455.1635440185435;
- Thu, 28 Oct 2021 09:56:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CKzHPmwBuuVZ+sZfNezc+/bbA27vHU7b9f4gWlByyIQ=;
+        b=An+HrWwJvBVhRdV3M/F0rx1z/irV/5kxy9lStgDKey34Jc89k65VunxLDCp3Nk6PWv
+         vnOjnUmtPc/6bfRiP38NIHo/qaN/etlky2PlkRB0xZC5oi3B4Au6v3MXJkljWy4xMB+b
+         KjcbA+KL0TMGZ1mEBkyRrcSezNEQqAw62jJf39qaFwMfGP6WNLExp1SyU5MkQ3qSaoBf
+         qzhnUKxOW+8ScL7p0y8lNg83HBtgnLRZaupBAvs++qdqGa8vyP1ZOsowkGEts1jSf3j+
+         ZTWhN15ZZ/kkLFpq8VKrGSGtLDu+5PsIOWc34QDJjNDk/2xvbaGSsqqvYN+lrIpx7+gG
+         8yxA==
+X-Gm-Message-State: AOAM530YBno/6h+XC5hoh1cwzP0JunrE8IzDqsUS7nXFYZKsKtmDfN4f
+        5Nc5hRUAekp3hFVPgFnq4L1ePKT+GuvwrRti0FqxCcBiQvgG4z85d0d/n4d7zaMyzK5QUL7rqzf
+        Tj2bosN7SR5A1
+X-Received: by 2002:adf:ed0b:: with SMTP id a11mr7293707wro.272.1635441285337;
+        Thu, 28 Oct 2021 10:14:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw35HfQ+pQU0AFKLh9Ihxe6USnrLC12wWLMPS8do1Rh2m1MMZwSyYrnpEMNB35BsmYAUvAm4g==
+X-Received: by 2002:adf:ed0b:: with SMTP id a11mr7293680wro.272.1635441285173;
+        Thu, 28 Oct 2021 10:14:45 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id q14sm6541592wmq.4.2021.10.28.10.14.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 10:14:44 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 19:14:37 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCHv2 bpf-next] kbuild: Unify options for BTF generation for
+ vmlinux and modules
+Message-ID: <YXrafRBGp9E4+EEm@krava>
+References: <20211026212419.144077-1-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <829e159a-b573-345f-fabe-fe68a756b21b@redhat.com>
-In-Reply-To: <829e159a-b573-345f-fabe-fe68a756b21b@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Oct 2021 09:56:14 -0700
-Message-ID: <CAEf4BzZhkHT7MrwYMt-pU8zS2ME0KaAoGjdPY0ugkh6i8M_dDg@mail.gmail.com>
-Subject: Re: libbpf - why find_program_by_title ?
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>,
-        Toke Hoiland Jorgensen <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026212419.144077-1-jolsa@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 5:02 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
-> Hi Andrii,
->
-> The libbpf API bpf_program__title() is getting depricated (which is
-> great BTW). (p.s. Instead use bpf_program__section_name()).
->
-> Why do we still have bpf_object__find_program_by_title() ?
->
-> Shouldn't we also deprecate that?
+On Tue, Oct 26, 2021 at 11:24:19PM +0200, Jiri Olsa wrote:
+> Using new PAHOLE_FLAGS variable to pass extra arguments to
+> pahole for both vmlinux and modules BTF data generation.
+> 
+> Adding new scripts/pahole-flags.sh script that detect and
+> prints pahole options.
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Yes, we should and we plan, see [0]. The only reason why it's not yet
-marked as deprecated is because there are still a lot of uses of
-find_program_by_title in selftests and we need to clean that up first.
-It would be great to get help with that, of course.
+I'm checking on reported build failures and will send v3
 
+jirka
 
-  [0] https://github.com/libbpf/libbpf/issues/292
+> ---
+> v2 changes:
+>   - posting separately from original patchset
+>   - added Andrii's ack
+> 
+>  Makefile                  |  3 +++
+>  scripts/Makefile.modfinal |  2 +-
+>  scripts/link-vmlinux.sh   | 11 +----------
+>  scripts/pahole-flags.sh   | 20 ++++++++++++++++++++
+>  4 files changed, 25 insertions(+), 11 deletions(-)
+>  create mode 100755 scripts/pahole-flags.sh
+> 
+> diff --git a/Makefile b/Makefile
+> index 437ccc66a1c2..ee514b80c62e 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -480,6 +480,8 @@ LZ4		= lz4c
+>  XZ		= xz
+>  ZSTD		= zstd
+>  
+> +PAHOLE_FLAGS	= $(shell PAHOLE=$(PAHOLE) scripts/pahole-flags.sh)
+> +
+>  CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
+>  		  -Wbitwise -Wno-return-void -Wno-unknown-attribute $(CF)
+>  NOSTDINC_FLAGS :=
+> @@ -534,6 +536,7 @@ export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE
+>  export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
+>  export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_LDFLAGS_MODULE
+>  export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL
+> +export PAHOLE_FLAGS
+>  
+>  # Files to ignore in find ... statements
+>  
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 1fb45b011e4b..7f39599e9fae 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -40,7 +40,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+>  quiet_cmd_btf_ko = BTF [M] $@
+>        cmd_btf_ko = 							\
+>  	if [ -f vmlinux ]; then						\
+> -		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
+> +		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
+>  		$(RESOLVE_BTFIDS) -b vmlinux $@; 			\
+>  	else								\
+>  		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index d74cee5c4326..3ea7cece7c97 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -205,7 +205,6 @@ vmlinux_link()
+>  gen_btf()
+>  {
+>  	local pahole_ver
+> -	local extra_paholeopt=
+>  
+>  	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+>  		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+> @@ -220,16 +219,8 @@ gen_btf()
+>  
+>  	vmlinux_link ${1}
+>  
+> -	if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
+> -		# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+> -		extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
+> -	fi
+> -	if [ "${pahole_ver}" -ge "121" ]; then
+> -		extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
+> -	fi
+> -
+>  	info "BTF" ${2}
+> -	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${extra_paholeopt} ${1}
+> +	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+>  
+>  	# Create ${2} which contains just .BTF section but no symbols. Add
+>  	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
+> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+> new file mode 100755
+> index 000000000000..2b99fc77019c
+> --- /dev/null
+> +++ b/scripts/pahole-flags.sh
+> @@ -0,0 +1,20 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +extra_paholeopt=
+> +
+> +if ! [ -x "$(command -v ${PAHOLE})" ]; then
+> +	return
+> +fi
+> +
+> +pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+> +
+> +if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
+> +	# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+> +	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
+> +fi
+> +if [ "${pahole_ver}" -ge "121" ]; then
+> +	extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
+> +fi
+> +
+> +echo ${extra_paholeopt}
+> -- 
+> 2.31.1
+> 
 
-> And introduce bpf_object__find_program_by_section_name().
-
-I didn't plan to because there is (in general) more than one program
-for the same section name (section names are not unique identifiers
-for a while now), so which program this API would return: first, last,
-random? It's just wrong API with wrong assumptions.
-
-The right way to go about this is to do a loop over all programs with
-bpf_object__for_each_program(prog, obj) and compare
-bpf_program__section_name() explicitly. And then do whatever your
-application needs to do with every instance of the program with
-matching section name.
-
->
-> --Jesper
->
