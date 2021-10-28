@@ -2,114 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD2143E773
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 19:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C4643E789
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 19:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhJ1RqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 13:46:17 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36016 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhJ1RqR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:46:17 -0400
-Received: from zn.tnic (p200300ec2f13a700349123b1f000d126.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:a700:3491:23b1:f000:d126])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 11AA41EC067E;
-        Thu, 28 Oct 2021 19:43:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635443029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=LV/QiZdF7ZKqnJvyt4f9O/KBxui21yF4wr9jzKFDXrY=;
-        b=qIWNzriERo9OwiVILV1unRM52LETMnLqD3z4taQIYbRTcwlLNSDkB47m4F2nal4ODvWhVM
-        w4+M1r126g/lvOGdl3krqz4WodnO5D2W6NkFwVoas+Cn1RunTatMwxHEAvo9Ipf6dTk/9m
-        zn3qhAel7oTvjr4iS1fpAWUK6sTL+04=
-Date:   Thu, 28 Oct 2021 19:43:45 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
-Message-ID: <YXrhUQZ5lA70Fhm0@zn.tnic>
-References: <20211026120132.613201817@infradead.org>
+        id S230509AbhJ1R4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 13:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230361AbhJ1R4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:56:24 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FCBC061570
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 10:53:56 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g10so27808153edj.1
+        for <bpf@vger.kernel.org>; Thu, 28 Oct 2021 10:53:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WZwJd6pQXuj90DgXnmrq+JdASJsQQ5coXQgD2NBlIMM=;
+        b=qnAz/d7q/TDFqW/0iBgAdTdriYZv2eXb3FJ8w68ffn4ileagqBwP6qLze2/cGcU+aZ
+         A7yPMjQrWkYeriKci7bLmWgXbEpToqxjJAnV66a380uBzgVaK6IHN/aLslSdAAZ7v00R
+         rF+Wtr/ivntMOk9An9/sgAu9UBAB30U6iRNOGtlt67Ku7zZRf+vcjW8neTXIlcVKB5xD
+         CtnwmkQyFm4MJv1aFJXXXFsVDfM3JHqQS/AwQhx3ZwBaHvKpm8bN+FtWVcHaAeQLJRRr
+         BN/W9nIM2ZeKbFInJqKsn+G6+eW/FzmIZaSycxYYiLyxkOEUaYQZso9GtPu9YeKCE/bh
+         6JIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WZwJd6pQXuj90DgXnmrq+JdASJsQQ5coXQgD2NBlIMM=;
+        b=l3kg+owlU5aO8LRm92ccQ2aeLh1E+T7dUA/YQEz8+xwesVSqsa+f6OXD+jrxLeG90A
+         rYeHGgKEt2SCcuFrmoRD9q7aKh78EscTu5BI1AJ51SJjxSdazGsDMzvhHplWbw5FWIoO
+         H1pV9mZEFcB7UJ5q5VndYSDPc3Dwr+9GdMexYHI12a20wtp0w494sE+JNPblSe1omuP6
+         f9bBzvG9fslvlZhB9SGo9OMUTr3VtB/qem49G6bbOYTl216TlpczM+OS8hxkpJSXAQ1D
+         OzwSimrraj5qNEJ7D0QKmkeLHEsJamDzEIIfk5rC5dZFl11v2+4MtNZQLbJCQUsVYYRM
+         QTaA==
+X-Gm-Message-State: AOAM53319SUn/fEBk+ZcmwrnB8CemTBvyt96umWZMdvW5GIDiyTWHRS9
+        Zi1rzhVWCYPMzs5RdYZGsn+dnWOuMj2rpVXXBBs=
+X-Google-Smtp-Source: ABdhPJw+SqyuKCmUM9RzUAvokPuk1wxXii+TxpWHncJRQVnE2vWsCdxjTcaSvV33gxNl544mTAEtoxaWcIBkB99hOLo=
+X-Received: by 2002:a50:e08a:: with SMTP id f10mr8098310edl.319.1635443635320;
+ Thu, 28 Oct 2021 10:53:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211026120132.613201817@infradead.org>
+Received: by 2002:a50:6c8b:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 10:53:54
+ -0700 (PDT)
+Reply-To: jennehkandeh@yahoo.com
+From:   Jenneh Kandeh <efffbi12@gmail.com>
+Date:   Thu, 28 Oct 2021 10:53:54 -0700
+Message-ID: <CANLFAeTT6g5B8Z-Su2bK6Lxt5+VJSJhedN-A0d2QNoPGifSAfw@mail.gmail.com>
+Subject: Re: Regarding Of My Late Father's Fund $10,200,000
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 02:01:32PM +0200, Peter Zijlstra wrote:
-> Hi,
-> 
-> These patches rewrite the way retpolines are rewritten. Currently objtool emits
-> alternative entries for most retpoline calls. However trying to extend that led
-> to trouble (ELF files are horrid).
-> 
-> Therefore completely overhaul this and have objtool emit a .retpoline_sites
-> section that lists all compiler generated retpoline thunk calls. Then the
-> kernel can do with them as it pleases.
-> 
-> Notably it will:
-> 
->  - rewrite them to indirect instructions for !RETPOLINE
->  - rewrite them to lfence; indirect; for RETPOLINE_AMD,
->    where size allows (boo clang!)
-> 
-> Specifically, the !RETPOLINE case can now also deal with the clang-special
-> conditional-indirect-tail-call:
-> 
->   Jcc __x86_indirect_thunk_\reg.
-> 
-> Finally, also update the x86 BPF jit to catch up to recent times and do these
-> same things.
-> 
-> All this should help improve performance by removing an indirection.
-> 
-> Patches can (soon) be found here:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git objtool/core
-> 
-> Changes since v2:
-> 
->  - rewrite the __x86_indirect_thunk_array[] stuff again
->  - rewrite the retpoline,amd rewrite logic, it now also supports
->    rewriting the Jcc case, if the original instruction is long enough, but
->    more importantly, it's simpler code.
->  - bpf label simplification patch
->  - random assorted cleanups
->  - actually managed to get bpf selftests working
-> 
-> ---
->  arch/um/kernel/um_arch.c                |   4 +
->  arch/x86/include/asm/GEN-for-each-reg.h |  14 ++-
->  arch/x86/include/asm/alternative.h      |   1 +
->  arch/x86/include/asm/asm-prototypes.h   |  18 ---
->  arch/x86/include/asm/nospec-branch.h    |  72 ++---------
->  arch/x86/kernel/alternative.c           | 189 ++++++++++++++++++++++++++++-
->  arch/x86/kernel/cpu/bugs.c              |   7 --
->  arch/x86/kernel/module.c                |   9 +-
->  arch/x86/kernel/vmlinux.lds.S           |  14 +++
->  arch/x86/lib/retpoline.S                |  56 ++-------
->  arch/x86/net/bpf_jit_comp.c             | 160 +++++++++---------------
->  arch/x86/net/bpf_jit_comp32.c           |  22 +++-
->  tools/objtool/arch/x86/decode.c         | 120 ------------------
->  tools/objtool/check.c                   | 208 ++++++++++++++++++++++----------
->  tools/objtool/elf.c                     |  84 -------------
->  tools/objtool/include/objtool/check.h   |   1 -
->  tools/objtool/include/objtool/elf.h     |   6 +-
->  tools/objtool/special.c                 |   8 --
->  18 files changed, 472 insertions(+), 521 deletions(-)
+dear,
 
-Ok, this all looks real nice, thx!
+I got your contact through the internet due to serious searching for a
+reliable personality.  I am Jenneh Kandeh from FreeTown Capital of
+Sierra Leone. Time of opposed to the government of President Ahmad
+Tejan Kebbah the ex-leader.
 
-Reviewed-by: Borislav Petkov <bp@suse.de> 
+Since 21st November, 2005 But I am current residing in Porto-Novo
+Benin due to war of my country, my mother killed on 04/01/2002 for
+Sierra Leone civilian war my father decided to change another
+residence country with me because I am only child for my family bad
+news that my father passed away on 25/11/2018. During the war, My
+father made a lot of money through the illegal sales of Diamonds. To
+the tune of $10,200,000.
 
--- 
-Regards/Gruss,
-    Boris.
+This money is currently and secretly kept in ECOWAS security company
+here in Benin, but because of the political turmoil which still exists
+here in Africa, I can not invest the money by myself, hence am
+soliciting your help to help me take these funds into your custody and
+also advise me on how to invest it.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+And I want to add here that if agreed 35% of the total worth of the
+fund will be yours minus your total expenses incurred during the
+clearing of the fund in
+Porto Novo Benin that 35% is a $3,570,000 I would like to invest on
+heavy duty agricultural equipment and earth moving machines to enable
+me go into a full scale mechanized farming.
+
+l wait to hear from you
