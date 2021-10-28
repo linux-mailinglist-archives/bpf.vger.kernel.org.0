@@ -2,133 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF5743E753
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 19:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD2143E773
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 19:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhJ1R3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 13:29:02 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:37354 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhJ1R3C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:29:02 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:57008)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mg9Ag-005L5u-IP; Thu, 28 Oct 2021 11:26:34 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:45048 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mg9Af-002PQl-Id; Thu, 28 Oct 2021 11:26:34 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org
-References: <YXrN+Hnl9pSOsWlA@arighi-desktop> <202110280955.B18CB67@keescook>
-Date:   Thu, 28 Oct 2021 12:26:26 -0500
-In-Reply-To: <202110280955.B18CB67@keescook> (Kees Cook's message of "Thu, 28
-        Oct 2021 09:56:12 -0700")
-Message-ID: <878rydm56l.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S230174AbhJ1RqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 13:46:17 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:36016 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229610AbhJ1RqR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:46:17 -0400
+Received: from zn.tnic (p200300ec2f13a700349123b1f000d126.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:a700:3491:23b1:f000:d126])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 11AA41EC067E;
+        Thu, 28 Oct 2021 19:43:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635443029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=LV/QiZdF7ZKqnJvyt4f9O/KBxui21yF4wr9jzKFDXrY=;
+        b=qIWNzriERo9OwiVILV1unRM52LETMnLqD3z4taQIYbRTcwlLNSDkB47m4F2nal4ODvWhVM
+        w4+M1r126g/lvOGdl3krqz4WodnO5D2W6NkFwVoas+Cn1RunTatMwxHEAvo9Ipf6dTk/9m
+        zn3qhAel7oTvjr4iS1fpAWUK6sTL+04=
+Date:   Thu, 28 Oct 2021 19:43:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
+Message-ID: <YXrhUQZ5lA70Fhm0@zn.tnic>
+References: <20211026120132.613201817@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mg9Af-002PQl-Id;;;mid=<878rydm56l.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19RQNkvCuNUQim9XPRcghzWw+Dpd4ik0TE=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4997]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 421 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (2.6%), b_tie_ro: 9 (2.2%), parse: 0.84 (0.2%),
-         extract_message_metadata: 12 (2.9%), get_uri_detail_list: 1.82 (0.4%),
-         tests_pri_-1000: 13 (3.1%), tests_pri_-950: 1.21 (0.3%),
-        tests_pri_-900: 1.01 (0.2%), tests_pri_-90: 65 (15.5%), check_bayes:
-        64 (15.2%), b_tokenize: 8 (1.9%), b_tok_get_all: 8 (1.9%),
-        b_comp_prob: 2.4 (0.6%), b_tok_touch_all: 42 (10.0%), b_finish: 0.82
-        (0.2%), tests_pri_0: 297 (70.5%), check_dkim_signature: 0.52 (0.1%),
-        check_dkim_adsp: 2.5 (0.6%), poll_dns_idle: 0.46 (0.1%), tests_pri_10:
-        2.5 (0.6%), tests_pri_500: 14 (3.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: selftests: seccomp_bpf failure on 5.15
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211026120132.613201817@infradead.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On Tue, Oct 26, 2021 at 02:01:32PM +0200, Peter Zijlstra wrote:
+> Hi,
+> 
+> These patches rewrite the way retpolines are rewritten. Currently objtool emits
+> alternative entries for most retpoline calls. However trying to extend that led
+> to trouble (ELF files are horrid).
+> 
+> Therefore completely overhaul this and have objtool emit a .retpoline_sites
+> section that lists all compiler generated retpoline thunk calls. Then the
+> kernel can do with them as it pleases.
+> 
+> Notably it will:
+> 
+>  - rewrite them to indirect instructions for !RETPOLINE
+>  - rewrite them to lfence; indirect; for RETPOLINE_AMD,
+>    where size allows (boo clang!)
+> 
+> Specifically, the !RETPOLINE case can now also deal with the clang-special
+> conditional-indirect-tail-call:
+> 
+>   Jcc __x86_indirect_thunk_\reg.
+> 
+> Finally, also update the x86 BPF jit to catch up to recent times and do these
+> same things.
+> 
+> All this should help improve performance by removing an indirection.
+> 
+> Patches can (soon) be found here:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git objtool/core
+> 
+> Changes since v2:
+> 
+>  - rewrite the __x86_indirect_thunk_array[] stuff again
+>  - rewrite the retpoline,amd rewrite logic, it now also supports
+>    rewriting the Jcc case, if the original instruction is long enough, but
+>    more importantly, it's simpler code.
+>  - bpf label simplification patch
+>  - random assorted cleanups
+>  - actually managed to get bpf selftests working
+> 
+> ---
+>  arch/um/kernel/um_arch.c                |   4 +
+>  arch/x86/include/asm/GEN-for-each-reg.h |  14 ++-
+>  arch/x86/include/asm/alternative.h      |   1 +
+>  arch/x86/include/asm/asm-prototypes.h   |  18 ---
+>  arch/x86/include/asm/nospec-branch.h    |  72 ++---------
+>  arch/x86/kernel/alternative.c           | 189 ++++++++++++++++++++++++++++-
+>  arch/x86/kernel/cpu/bugs.c              |   7 --
+>  arch/x86/kernel/module.c                |   9 +-
+>  arch/x86/kernel/vmlinux.lds.S           |  14 +++
+>  arch/x86/lib/retpoline.S                |  56 ++-------
+>  arch/x86/net/bpf_jit_comp.c             | 160 +++++++++---------------
+>  arch/x86/net/bpf_jit_comp32.c           |  22 +++-
+>  tools/objtool/arch/x86/decode.c         | 120 ------------------
+>  tools/objtool/check.c                   | 208 ++++++++++++++++++++++----------
+>  tools/objtool/elf.c                     |  84 -------------
+>  tools/objtool/include/objtool/check.h   |   1 -
+>  tools/objtool/include/objtool/elf.h     |   6 +-
+>  tools/objtool/special.c                 |   8 --
+>  18 files changed, 472 insertions(+), 521 deletions(-)
 
-> On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
->> The following sub-tests are failing in seccomp_bpf selftest:
->> 
->> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
->> ...
->> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
->> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
->> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
->> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
->> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
->> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
->> ...
->> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
->> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
->> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
->> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
->> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
->> ...
->> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
->> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
->> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
->> 
->> I did some bisecting and found that the failures started to happen with:
->> 
->>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
->> 
->> Not sure if the test needs to be fixed after this commit, or if the
->> commit is actually introducing an issue. I'll investigate more, unless
->> someone knows already what's going on.
->
-> Ah thanks for noticing; I will investigate...
+Ok, this all looks real nice, thx!
 
+Reviewed-by: Borislav Petkov <bp@suse.de> 
 
-I just did a quick read through of the test and while
-I don't understand everything having a failure seems
-very weird.
+-- 
+Regards/Gruss,
+    Boris.
 
-
-I don't understand the comment:
-/* Tracer will redirect getpid to getppid, and we should die. */
-
-As I think what happens is it the bpf programs loads the signal
-number.  Tests to see if the signal number if GETPPID and allows
-that system call and causes any other system call to be terminated.
-
-Which being single threaded would seem to cause the kernel  to execute
-the changed code.
-
-How there kernel at that point is having the process exit with anything
-except SIGSYS I am not immediately seeing.
-
-The logic is the same as that for SECCOMP_RET_TRAP is there a test for
-that, that is also failing?
-
-How do you run that test anyway?
-
-Eric
-
+https://people.kernel.org/tglx/notes-about-netiquette
