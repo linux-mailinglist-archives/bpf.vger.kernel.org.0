@@ -2,258 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4818043DDB4
-	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 11:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEB243DDBF
+	for <lists+bpf@lfdr.de>; Thu, 28 Oct 2021 11:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhJ1J2b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 05:28:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhJ1J2b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:28:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E48F1610CB;
-        Thu, 28 Oct 2021 09:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635413164;
-        bh=qPMj5+ibTS+mDVdAFv5psLuDLcC2AQaOow2YgmTIKRM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m1fj1TEote5YsyoBOJ+yp+JTs+WCMJTeZ5SNQgyrseZ/uej9Ziss1iZzYTgwNPYT7
-         lkhI8v18TPHBjOiCW/zrKQmQQNod4yacX08IpcbqhwY8gC/C7zJ6gvMph/jAAp0u/M
-         RgZUsrYSYN2GyXZRgG8cmg2MDyHqcyIU2atxMeeHZrDZbgzksdayXp2SWN68aL4WGS
-         +YYN5qIiO0i2Z3OPgauf6IWWUUBT31w3HwIqQ3J0iIgWqTyHuCUImsLNxAOO4clS7F
-         nGP/A1CQMK93A7f4Dc81kGp+2kxaM/Y1ItV5YoWdk/jCJQKyhRK51Bi2XDAz/sH7tV
-         tWHpRJwkODjdA==
-Date:   Thu, 28 Oct 2021 11:26:00 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v16 bpf-next 19/20] net: xdp: introduce bpf_xdp_pointer
- utility routine
-Message-ID: <YXpsqMZ1PYwtO+2W@lore-desk>
-References: <cover.1634301224.git.lorenzo@kernel.org>
- <98e60294b7ba81ca647cffd4d7b87617e9b1e9d9.1634301224.git.lorenzo@kernel.org>
- <3d196d1d-69f3-0ff2-1752-f318defbbf33@iogearbox.net>
+        id S229791AbhJ1JcP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 05:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1JcO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 05:32:14 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDC3C061570;
+        Thu, 28 Oct 2021 02:29:48 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f13a700ce852a94ee005c43.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:a700:ce85:2a94:ee00:5c43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A8ABA1EC0646;
+        Thu, 28 Oct 2021 11:29:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635413386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=5eLak/pJw+sxT0NjHMlx3r7vNd3IpQAg8PUR9uVd+Ec=;
+        b=om1Oxc0wUxEhyIJlskJW4axkjQve9kAHjOK7UEFy1TM8GoZwfDsoaQFNI3pFHHeGCbq28c
+        VeVvtTduby8BjqsgRCsywofZ7STrZNlqFnnGJPSokr0MdqSy9+GrF8e/N5W6Rb6IGmpoj5
+        OocbOzD0CivZKpOfgZVbTSpPFYYcq8w=
+Date:   Thu, 28 Oct 2021 11:29:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 11/16] x86/alternative: Handle Jcc
+ __x86_indirect_thunk_\reg
+Message-ID: <YXpth/x0f5Rj3k+D@zn.tnic>
+References: <20211026120132.613201817@infradead.org>
+ <20211026120310.296470217@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lhclgtT3vdc2tvZp"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3d196d1d-69f3-0ff2-1752-f318defbbf33@iogearbox.net>
+In-Reply-To: <20211026120310.296470217@infradead.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Oct 26, 2021 at 02:01:43PM +0200, Peter Zijlstra wrote:
+> +	op = insn->opcode.bytes[0];
+> +
+> +	/*
+> +	 * Convert:
+> +	 *
+> +	 *   Jcc.d32 __x86_indirect_thunk_\reg
+> +	 *
+> +	 * into:
+> +	 *
+> +	 *   Jncc.d8 1f
+> +	 *   JMP *%\reg
+> +	 *   NOP
+> +	 * 1:
+> +	 */
 
---lhclgtT3vdc2tvZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Let's explain the second part of the test better:
 
-> On 10/15/21 3:08 PM, Lorenzo Bianconi wrote:
-> [...]
-> > +static void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset,
-> > +			     u32 len, void *buf)
-> > +{
-> > +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
-> > +	u32 size =3D xdp->data_end - xdp->data;
-> > +	void *addr =3D xdp->data;
-> > +	u32 frame_sz =3D size;
-> > +	int i;
-> > +
-> > +	if (xdp_buff_is_mb(xdp))
-> > +		frame_sz +=3D sinfo->xdp_frags_size;
-> > +
-> > +	if (offset + len > frame_sz)
-> > +		return ERR_PTR(-EINVAL);
->=20
-> Given offset is ARG_ANYTHING, the above could overflow. In bpf_skb_*_byte=
-s() we
-> guard with offset > 0xffff.
+	/* Jcc opcodes are in the range 0x80-0x8f */
 
-ack, I will fix it in v17
+Yeah, you have that range check below but still.
 
->=20
-> > +	if (offset < size) /* linear area */
-> > +		goto out;
-> > +
-> > +	offset -=3D size;
-> > +	for (i =3D 0; i < sinfo->nr_frags; i++) { /* paged area */
-> > +		u32 frag_size =3D skb_frag_size(&sinfo->frags[i]);
-> > +
-> > +		if  (offset < frag_size) {
-> > +			addr =3D skb_frag_address(&sinfo->frags[i]);
-> > +			size =3D frag_size;
-> > +			break;
-> > +		}
-> > +		offset -=3D frag_size;
-> > +	}
-> > +
-> > +out:
-> > +	if (offset + len < size)
-> > +		return addr + offset; /* fast path - no need to copy */
-> > +
-> > +	if (!buf) /* no copy to the bounce buffer */
-> > +		return NULL;
-> > +
-> > +	/* slow path - we need to copy data into the bounce buffer */
-> > +	bpf_xdp_copy_buf(xdp, offset, len, buf, false);
-> > +	return buf;
-> > +}
-> > +
-> > +BPF_CALL_4(bpf_xdp_load_bytes, struct xdp_buff *, xdp, u32, offset,
-> > +	   void *, buf, u32, len)
-> > +{
-> > +	void *ptr;
-> > +
-> > +	ptr =3D bpf_xdp_pointer(xdp, offset, len, buf);
-> > +	if (ptr =3D=3D ERR_PTR(-EINVAL))
-> > +		return -EINVAL;
->=20
-> nit + same below in *_store_bytes(): IS_ERR(ptr) return PTR_ERR(ptr); ? (=
-Or
-> should we just return -EFAULT to make it analog to bpf_skb_{load,store}_b=
-ytes()?
-> Either is okay, imho.)
+> +	if (op == 0x0f && (insn->opcode.bytes[1] & 0xf0) == 0x80) {
+> +		cc = insn->opcode.bytes[1] & 0xf;
+> +		cc ^= 1; /* invert condition */
+> +
+> +		bytes[i++] = 0x70 + cc; /* Jcc.d8 */
+> +		bytes[i++] = insn->length - 2;
 
-ack, I will fix it in v17
+maybe put at the end here: /* 2 == sizeof(Jcc.d8) */
 
->=20
-> > +	if (ptr !=3D buf)
-> > +		memcpy(buf, ptr, len);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct bpf_func_proto bpf_xdp_load_bytes_proto =3D {
-> > +	.func		=3D bpf_xdp_load_bytes,
-> > +	.gpl_only	=3D false,
-> > +	.ret_type	=3D RET_INTEGER,
-> > +	.arg1_type	=3D ARG_PTR_TO_CTX,
-> > +	.arg2_type	=3D ARG_ANYTHING,
-> > +	.arg3_type	=3D ARG_PTR_TO_MEM,
->=20
-> ARG_PTR_TO_UNINIT_MEM, or do you need the dst buffer to be initialized?
+to have it explicit what that 2 means.
 
-no, I think it is ok, I will fix it in v17.
+But yeah, looks good.
 
->=20
-> > +	.arg4_type	=3D ARG_CONST_SIZE_OR_ZERO,
->=20
-> ARG_CONST_SIZE
+Thx.
 
-ack, I will fix it in v17
+> +
+> +		op = JMP32_INSN_OPCODE;
+> +	}
+> +
+> +	ret = emit_indirect(op, reg, bytes + i);
+> +	if (ret < 0)
+> +		return ret;
+> +	i += ret;
+>  
+>  	for (; i < insn->length;)
+>  		bytes[i++] = BYTES_NOP1;
+> @@ -443,6 +469,10 @@ void __init_or_module noinline apply_ret
+>  		case JMP32_INSN_OPCODE:
+>  			break;
+>  
+> +		case 0x0f: /* escape */
+> +			if (op2 >= 0x80 && op2 <= 0x8f)
+> +				break;
+> +			fallthrough;
+>  		default:
+>  			WARN_ON_ONCE(1);
+>  			continue;
+> 
+> 
 
->=20
-> > +};
-> > +
-> > +BPF_CALL_4(bpf_xdp_store_bytes, struct xdp_buff *, xdp, u32, offset,
-> > +	   void *, buf, u32, len)
-> > +{
-> > +	void *ptr;
-> > +
-> > +	ptr =3D bpf_xdp_pointer(xdp, offset, len, NULL);
-> > +	if (ptr =3D=3D ERR_PTR(-EINVAL))
-> > +		return -EINVAL;
-> > +
-> > +	if (!ptr)
-> > +		bpf_xdp_copy_buf(xdp, offset, len, buf, true);
-> > +	else
-> > +		memcpy(ptr, buf, len);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct bpf_func_proto bpf_xdp_store_bytes_proto =3D {
-> > +	.func		=3D bpf_xdp_store_bytes,
-> > +	.gpl_only	=3D false,
-> > +	.ret_type	=3D RET_INTEGER,
-> > +	.arg1_type	=3D ARG_PTR_TO_CTX,
-> > +	.arg2_type	=3D ARG_ANYTHING,
-> > +	.arg3_type	=3D ARG_PTR_TO_MEM,
-> > +	.arg4_type	=3D ARG_CONST_SIZE_OR_ZERO,
->=20
-> ARG_CONST_SIZE, or do you have a use case for bpf_xdp_store_bytes(..., bu=
-f, 0)?
+-- 
+Regards/Gruss,
+    Boris.
 
-ack, I think we do not need it. I will fix it in v17
-
-Regards,
-Lorenzo
-
->=20
-> > +};
-> > +
-> >   static int bpf_xdp_mb_increase_tail(struct xdp_buff *xdp, int offset)
-> >   {
-> >   	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
-> > @@ -7619,6 +7749,10 @@ xdp_func_proto(enum bpf_func_id func_id, const s=
-truct bpf_prog *prog)
-> >   		return &bpf_xdp_adjust_tail_proto;
-> >   	case BPF_FUNC_xdp_get_buff_len:
-> >   		return &bpf_xdp_get_buff_len_proto;
-> > +	case BPF_FUNC_xdp_load_bytes:
-> > +		return &bpf_xdp_load_bytes_proto;
-> > +	case BPF_FUNC_xdp_store_bytes:
-> > +		return &bpf_xdp_store_bytes_proto;
-> >   	case BPF_FUNC_fib_lookup:
-> >   		return &bpf_xdp_fib_lookup_proto;
-> >   	case BPF_FUNC_check_mtu:
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/=
-bpf.h
-> > index 1cb992ec0cc8..dad1d8c3a4c1 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -4920,6 +4920,22 @@ union bpf_attr {
-> >    *		Get the total size of a given xdp buff (linear and paged area)
-> >    *	Return
-> >    *		The total size of a given xdp buffer.
-> > + *
-> > + * long bpf_xdp_load_bytes(struct xdp_buff *xdp_md, u32 offset, void *=
-buf, u32 len)
-> > + *	Description
-> > + *		This helper is provided as an easy way to load data from a
-> > + *		xdp buffer. It can be used to load *len* bytes from *offset* from
-> > + *		the frame associated to *xdp_md*, into the buffer pointed by
-> > + *		*buf*.
-> > + *	Return
-> > + *		0 on success, or a negative error in case of failure.
-> > + *
-> > + * long bpf_xdp_store_bytes(struct xdp_buff *xdp_md, u32 offset, void =
-*buf, u32 len)
-> > + *	Description
-> > + *		Store *len* bytes from buffer *buf* into the frame
-> > + *		associated to *xdp_md*, at *offset*.
-> > + *	Return
-> > + *		0 on success, or a negative error in case of failure.
-> >    */
-> >   #define __BPF_FUNC_MAPPER(FN)		\
-> >   	FN(unspec),			\
-> > @@ -5101,6 +5117,8 @@ union bpf_attr {
-> >   	FN(get_branch_snapshot),	\
-> >   	FN(trace_vprintk),		\
-> >   	FN(xdp_get_buff_len),		\
-> > +	FN(xdp_load_bytes),		\
-> > +	FN(xdp_store_bytes),		\
-> >   	/* */
-> >   /* integer value in 'imm' field of BPF_CALL instruction selects which=
- helper
-> >=20
->=20
-
---lhclgtT3vdc2tvZp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYXpsqAAKCRA6cBh0uS2t
-rFNxAQCWMR3y/DKVXXA5OQIg7irvdEP9cZvCKYj3TIgfzZOXBgD/b7gp7qX0ytfq
-Yrco9KcQzQdOZwJm+lVZHmZA6j08TAQ=
-=tY3A
------END PGP SIGNATURE-----
-
---lhclgtT3vdc2tvZp--
+https://people.kernel.org/tglx/notes-about-netiquette
