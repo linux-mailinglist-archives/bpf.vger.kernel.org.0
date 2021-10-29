@@ -2,159 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A99343FF77
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 17:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9C543FFD2
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 17:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhJ2PbC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 11:31:02 -0400
-Received: from www62.your-server.de ([213.133.104.62]:56324 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhJ2PbC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Oct 2021 11:31:02 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mgTnm-000DRl-Hy; Fri, 29 Oct 2021 17:28:18 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mgTnm-00091V-8q; Fri, 29 Oct 2021 17:28:18 +0200
-Subject: Re: [PATCH bpf-next v3 1/4] libfs: move shmem_exchange to
- simple_rename_exchange
-To:     Lorenz Bauer <lmb@cloudflare.com>, viro@zeniv.linux.org.uk,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     mszeredi@redhat.com, gregkh@linuxfoundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20211028094724.59043-1-lmb@cloudflare.com>
- <20211028094724.59043-2-lmb@cloudflare.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0c957c87-cfd1-fceb-ce18-54274eee9fc2@iogearbox.net>
-Date:   Fri, 29 Oct 2021 17:28:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S229623AbhJ2Pwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 11:52:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhJ2Pwf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 11:52:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DEA4D61165;
+        Fri, 29 Oct 2021 15:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635522606;
+        bh=C24ZEADQSvzXhTDyTXoMSH01592ojU9/SMUi01rYgTU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BW54T610amKwIMu8MEs6rlNqyln+uFDUyU/sp0dgli6dIWl7RO2gyUXsSvBy8mnq4
+         oRk/Wrrp4Duqk1y5sOd02V1rcNF6pw5HuNGdI/EhZplrbI5hbsXlRdrfET7Dz+jwnW
+         DqZFYBLkE7XKf9PPNwhYr8mbuMvyXEc6BSOJvHoraioibnmNMdXyMX8oiQ5qF/kPYm
+         dDCATtwJh5JszuzA1AM+8Gp8jEt8/BXH3kfbMnvzWTd57hMfPrL3gDdyJzFRG7wPRa
+         JFG77pnxzYxrga6zX7Qg83aHc2qjoIk7EnlgbRatTSViXg5ZORT3CW7nlhoTPO8IYU
+         bkmHNhg69AKjg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D1D8760987;
+        Fri, 29 Oct 2021 15:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211028094724.59043-2-lmb@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26337/Fri Oct 29 10:19:12 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests/bpf: fix fclose/pclose mismatch
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163552260685.20698.10433659303294861994.git-patchwork-notify@kernel.org>
+Date:   Fri, 29 Oct 2021 15:50:06 +0000
+References: <20211026143409.42666-1-andrea.righi@canonical.com>
+In-Reply-To: <20211026143409.42666-1-andrea.righi@canonical.com>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/28/21 11:47 AM, Lorenz Bauer wrote:
-> Move shmem_exchange and make it available to other callers.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Tue, 26 Oct 2021 16:34:09 +0200 you wrote:
+> Make sure to use pclose() to properly close the pipe opened by popen().
 > 
-> Suggested-by: <mszeredi@redhat.com>
-
-nit: Should say proper name, but we can fix it up while applying.
-
-Miklos, does the below look good to you? Would be good to have an ACK from fs
-folks before applying, please take a look if you have a chance. Thanks!
-
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
+> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
 > ---
->   fs/libfs.c         | 24 ++++++++++++++++++++++++
->   include/linux/fs.h |  2 ++
->   mm/shmem.c         | 24 +-----------------------
->   3 files changed, 27 insertions(+), 23 deletions(-)
-> 
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index 51b4de3b3447..1cf144dc9ed2 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -448,6 +448,30 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
->   }
->   EXPORT_SYMBOL(simple_rmdir);
->   
-> +int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
-> +			   struct inode *new_dir, struct dentry *new_dentry)
-> +{
-> +	bool old_is_dir = d_is_dir(old_dentry);
-> +	bool new_is_dir = d_is_dir(new_dentry);
-> +
-> +	if (old_dir != new_dir && old_is_dir != new_is_dir) {
-> +		if (old_is_dir) {
-> +			drop_nlink(old_dir);
-> +			inc_nlink(new_dir);
-> +		} else {
-> +			drop_nlink(new_dir);
-> +			inc_nlink(old_dir);
-> +		}
-> +	}
-> +	old_dir->i_ctime = old_dir->i_mtime =
-> +	new_dir->i_ctime = new_dir->i_mtime =
-> +	d_inode(old_dentry)->i_ctime =
-> +	d_inode(new_dentry)->i_ctime = current_time(old_dir);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(simple_rename_exchange);
-> +
->   int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
->   		  struct dentry *old_dentry, struct inode *new_dir,
->   		  struct dentry *new_dentry, unsigned int flags)
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index e7a633353fd2..333b8af405ce 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3383,6 +3383,8 @@ extern int simple_open(struct inode *inode, struct file *file);
->   extern int simple_link(struct dentry *, struct inode *, struct dentry *);
->   extern int simple_unlink(struct inode *, struct dentry *);
->   extern int simple_rmdir(struct inode *, struct dentry *);
-> +extern int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
-> +				  struct inode *new_dir, struct dentry *new_dentry);
->   extern int simple_rename(struct user_namespace *, struct inode *,
->   			 struct dentry *, struct inode *, struct dentry *,
->   			 unsigned int);
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index b5860f4a2738..a18dde3d3092 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2945,28 +2945,6 @@ static int shmem_rmdir(struct inode *dir, struct dentry *dentry)
->   	return shmem_unlink(dir, dentry);
->   }
->   
-> -static int shmem_exchange(struct inode *old_dir, struct dentry *old_dentry, struct inode *new_dir, struct dentry *new_dentry)
-> -{
-> -	bool old_is_dir = d_is_dir(old_dentry);
-> -	bool new_is_dir = d_is_dir(new_dentry);
-> -
-> -	if (old_dir != new_dir && old_is_dir != new_is_dir) {
-> -		if (old_is_dir) {
-> -			drop_nlink(old_dir);
-> -			inc_nlink(new_dir);
-> -		} else {
-> -			drop_nlink(new_dir);
-> -			inc_nlink(old_dir);
-> -		}
-> -	}
-> -	old_dir->i_ctime = old_dir->i_mtime =
-> -	new_dir->i_ctime = new_dir->i_mtime =
-> -	d_inode(old_dentry)->i_ctime =
-> -	d_inode(new_dentry)->i_ctime = current_time(old_dir);
-> -
-> -	return 0;
-> -}
-> -
->   static int shmem_whiteout(struct user_namespace *mnt_userns,
->   			  struct inode *old_dir, struct dentry *old_dentry)
->   {
-> @@ -3012,7 +2990,7 @@ static int shmem_rename2(struct user_namespace *mnt_userns,
->   		return -EINVAL;
->   
->   	if (flags & RENAME_EXCHANGE)
-> -		return shmem_exchange(old_dir, old_dentry, new_dir, new_dentry);
-> +		return simple_rename_exchange(old_dir, old_dentry, new_dir, new_dentry);
->   
->   	if (!simple_empty(new_dentry))
->   		return -ENOTEMPTY;
-> 
+>  tools/testing/selftests/bpf/test_progs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Here is the summary with links:
+  - selftests/bpf: fix fclose/pclose mismatch
+    https://git.kernel.org/bpf/bpf-next/c/f48ad69097fe
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
