@@ -2,72 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB0643F6CD
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 07:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA2843F72B
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 08:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhJ2FyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 01:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhJ2FyJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Oct 2021 01:54:09 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C61C061570;
-        Thu, 28 Oct 2021 22:51:41 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id h11so15059692ljk.1;
-        Thu, 28 Oct 2021 22:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e47xHDKaM01MvOsHRikgqLLV4TYv+/klsDh8VWoFM+g=;
-        b=eZ/vMdvxivGA1M9WAuL+qG7yqdGdph8O9bObvAiya5EgPwYWVBLTia9QoVJgGBHbFw
-         Ap1EcOZghGGccqYE9macGXaYKvvUCy90IIrEbR0Qct97iLf4CF83QsrpkXNvaZZ+6pql
-         YITom8yhIqsqlelvf4Tg4rApsUlx4fsmrrOD8I+96Wb0H1S4MRmIgXEZReIjGQo7Ux24
-         5FTRezSWtn1buuhxJjhgU/lxBEv5Ox3H9ow/RYvR7uMugqYUKnTudxgpg6drTc7hSeD2
-         3ywxw/pRyBPQFtniclXCJPadKhdwD8SpL/T7YYoEED/BSP9qFPCMXyFN5MZy9/Ewmwvb
-         kAvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e47xHDKaM01MvOsHRikgqLLV4TYv+/klsDh8VWoFM+g=;
-        b=QhkEO2wSDlwX96nA//PVXId9+Q1SHDlcR75C76JIkHCetXV/rsfO+3/CvMWDO34sLE
-         5w+CwPzJZ6YOZo4WZkN2uOYLKOnifja6/UymoFDaLEWfFlMaQQ98QqLhEm6PZrbhkYtd
-         CuXfYpOMHwa152eXawW8gO5b3Vzl95fQWtETGEOTySASXTBnP381tVxZNVidzd+bT78y
-         E+p7CjzeABwOS2lEmZmb/LQ4IFisi2xP8gyWOQRXNIibHbwQtrogyJf2q55JT35JvqPt
-         H9bGZ5BxRi4n/CaUsO9VZfRQV7lgYGjeq6+EbkBXbwNU348fZJvonk/GLcDfE/Ws2u9X
-         +Keg==
-X-Gm-Message-State: AOAM532I/W3kY4eaxK0BOR2d/26p3zHNfZPvRsBda9mtDfNwzqh99kVW
-        3MWiG7JQA8qyFMrr1lyqgWRmLb87j1Hah2CxSG5xYTtdRw==
-X-Google-Smtp-Source: ABdhPJxhebn/iC3Zqkl3b126LLZ2zLZQlPF2ENb8QdQD3y4DDgOFsj9+OxTni2iT0NQ8aza9/a2j6TOCNhKlsMwze/M=
-X-Received: by 2002:a05:651c:160e:: with SMTP id f14mr5332305ljq.379.1635486700157;
- Thu, 28 Oct 2021 22:51:40 -0700 (PDT)
+        id S232017AbhJ2Gbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 02:31:53 -0400
+Received: from sp4.canonet.ne.jp ([210.134.165.91]:34364 "EHLO
+        sp4.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231806AbhJ2Gbx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 02:31:53 -0400
+X-Greylist: delayed 730 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 02:31:52 EDT
+Received: from csp4.canonet.ne.jp (unknown [172.21.160.44])
+        by sp4.canonet.ne.jp (Postfix) with ESMTP id 308D61E10D1;
+        Fri, 29 Oct 2021 15:16:24 +0900 (JST)
+Received: from echeck4.canonet.ne.jp ([172.21.160.34])
+        by csp4 with ESMTP
+        id gLBgmb2avl9aCgLBgmLb05; Fri, 29 Oct 2021 15:16:24 +0900
+X-CNT-CMCheck-Reason: "undefined", "v=2.4 cv=K/mcowaI c=1 sm=1 tr=0
+ ts=617b91b8 cx=g_jp:t_eml p=jS_m2ZRBfqgA:10 p=J6NwUhtvX1eaRd5jVJ0A:9
+ a=lZJ1x3jAK8i3JwxrpB1Yuw==:117 a=bURPceStnloCrvuNYcEqkQ==:17
+ a=PlGk70OYzacA:10 a=Dyoqhi_TatcA:10 a=Cfj4BQAnxiAA:10 a=8gfv0ekSlNoA:10
+ a=x7bEGLp0ZPQA:10 a=pGLkceISAAAA:8 a=Ft8UYL4EG9YA:10 a=BQXGylkD5y8A:10
+ a=J0s5x_g6e59_nfSmIxx9:22"
+X-CNT-CMCheck-Score: 100.00
+Received: from echeck4.canonet.ne.jp (localhost [127.0.0.1])
+        by esets.canonet.ne.jp (Postfix) with ESMTP id C43DC1C021D;
+        Fri, 29 Oct 2021 15:16:23 +0900 (JST)
+X-Virus-Scanner: This message was checked by ESET Mail Security
+        for Linux/BSD. For more information on ESET Mail Security,
+        please, visit our website: http://www.eset.com/.
+Received: from smtp4.canonet.ne.jp (smtp4.canonet.ne.jp [172.21.160.24])
+        by echeck4.canonet.ne.jp (Postfix) with ESMTP id BBAC01C020D;
+        Fri, 29 Oct 2021 15:16:23 +0900 (JST)
+Received: from User (unknown [103.169.70.21])
+        by smtp4.canonet.ne.jp (Postfix) with ESMTPA id 689F215F99C;
+        Fri, 29 Oct 2021 15:15:16 +0900 (JST)
+Reply-To: <t8901658jtg@foxmail.com>
+From:   "Tony" <mail@akiyama-estate.co.jp>
+Subject: Re: THE TRUTH/SECRET ABOUT YOUR FUND
+Date:   Fri, 29 Oct 2021 06:16:26 -0000
 MIME-Version: 1.0
-References: <20211027203727.208847-1-mauricio@kinvolk.io> <CAADnVQK2Bm7dDgGc6uHVosuSzi_LT0afXM6Hf3yLXByfftxV1Q@mail.gmail.com>
- <CAGqxgpuB_L519RK6mGUrt9XTHnYJTrZY9AuQqgQ+p196k+oE1g@mail.gmail.com>
-In-Reply-To: <CAGqxgpuB_L519RK6mGUrt9XTHnYJTrZY9AuQqgQ+p196k+oE1g@mail.gmail.com>
-From:   Rafael David Tinoco <rafaeldtinoco@gmail.com>
-Date:   Fri, 29 Oct 2021 02:51:16 -0300
-Message-ID: <CAGqxgpvC2W24NGTVBoxSgcsifw=_6kbv6wOagHva9LUZyDjOjw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] libbpf: Implement BTF Generator API
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-EsetResult: clean, %VIRUSNAME%
+X-ESET-AS: R=SPAM;S=100;OP=CALC;TIME=1635488183;VERSION=7907;MC=2349868339;TRN=14;CRV=0;IPC=103.169.70.21;SP=4;SIPS=1;PI=5;F=0
+X-I-ESET-AS: RN=584:0,442,624:1;RNP=t8923458jtg@gmail.com,t8901658jtg@foxmail.com
+X-ESET-Antispam: SPAM
+Message-Id: <20211029061623.C43DC1C021D@echeck4.canonet.ne.jp>
+To:     undisclosed-recipients:;
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > Have you considered generating kernel BTF with fields that are accessed
-> > by bpf prog only and replacing all other fields with padding ?
->
-> That is exactly the result of our final BTF file. We only include the
-> fields and types being used by the given eBPF object:
+I am Mr Tony. a computer scientist working with central bank of Lome Togo. I just started work with central bank of Lome Togo. and I came across your file which was marked X and your released disk  painted RED, I took time to study it and found out that you have paid VIRTUALLY all fees and but the fund was not released to you.
 
-A full explanation on this here:
+The most annoying thing is that they won't tell you the truth that  no account will they ever release the fund to you,instead they allow you spend money unnecessarily, I do not intend to work here all the days of my life, I can release this fund to you if you can certify me of my security.I needed to do this because you need to know the statues of your Funds and cause for the delay,Please this is like a Mafia setting in Lome Togo, you may not understand it because you are not a Togolese.
 
-https://github.com/aquasecurity/btfhub/tree/main/tools#how-to-use-libbpf-co-re-relocations-to-build-a-btf-file
+The only thing needed to release this fund is the Anti drug/terrorist clearance certificate which will be tendered to any of your nominated bank and the INTERNAL REVENUE SERVICE(IRS)for clearance of the transferred amount in your account.Once the Anti drug /terrorist clearance certificate is obtained funds will immediately reflect in your bank within 10 Minutes,the certificate is all that is needed to complete this transaction.
+
+Note that the actual funds is valued at $5 MILLION USD and the president made a compensation fund release for all unpaid beneficiary valued at $1 million usd.Listed below are the mafia's and banks behind the non release of your funds that i managed to sneak out for your kind perusal.
+
+1) Prof. Charles soludo
+2) Senator  Mark
+3) Chief Joseph Sanusi
+4) Dr. R. Rasheed
+5) Barrister Awele Ugorji
+6) Mr Roland Ngwa
+7) Barrister Ucheuzo Williams
+8) Mr. Ernest Chukwudi Obi
+9) Dr. Patrick Aziza
+Deputy Governor - Policy / Board Member
+10) Mr. Tunde Lemo
+Deputy Governor - Financial Sector Surveillance / Board Member
+11) Mrs. W. D. A. Mshelia
+Deputy Governor - Corporate Services / Board Members
+12) Mrs. Okonjo Iweala
+13) Mrs. Rita Ekwesili
+14) Barr Jacob Onyema
+15) Dr. Godwin Oboh: Director Union Bank Of Nigeria.
+16) Mr John Collins: Global Diplomat Director.
+17) Foreign fund diplomatic courier
+18) Barr. Becky Owens
+19)Rev. Steven Jones
+20) bank of Africa
+21)Mrs. Debbie Hargrove
+22)Mr. Micheal Wagner
+23)Barr. Isa Farid
+24)Dr. Raymond Faye
+25)Ibraheem Fashola
+26)Dr. Leslie Fawaz
+27)Mercy Fajaroo
+28)Walter K. Falana
+29)Azeez Fatou
+30)Ibrahim Fabumi
+31)Daniel Faras
+32)Micheal Faras
+
+Do get in touch with me immediately with my direct  Email id  t8923458jtg@gmail.com  to conclude this final transaction immediately,and also send to me your convenient tel/fax numbers for easy communications.
+
+Thanks while i look forward to your positive reply.
+
+Regards,
+Mr Tony
