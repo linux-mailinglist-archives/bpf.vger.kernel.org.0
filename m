@@ -2,203 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FE4440597
-	for <lists+bpf@lfdr.de>; Sat, 30 Oct 2021 00:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22625440594
+	for <lists+bpf@lfdr.de>; Sat, 30 Oct 2021 00:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhJ2WwT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 18:52:19 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22972 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231566AbhJ2WwS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 29 Oct 2021 18:52:18 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TMhf7a020520
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 15:49:48 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=KYJbf3GdMMx/HzRefRDY75/KiJi5QhPl/OuuTetH1zw=;
- b=pczlytz4oYpQW10nWRtnJIMURPxYtbLi2gwspuShOnNWKik2BkKMdqzTmqZex4HRAnGY
- Kuye74YaYrApFdFG8QkyPHWQBabc/F25eYYpVc7e2lq4RfdKhiMMt/jEHJ98Y6EMxwK7
- NtGSsqElUomV2FIH3Omz1E1i5eJcbhwR8kA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c09aw0rc8-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 15:49:48 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 29 Oct 2021 15:49:46 -0700
-Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id A575D4373050; Fri, 29 Oct 2021 15:49:36 -0700 (PDT)
-From:   Joanne Koong <joannekoong@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kafai@fb.com>, <Kernel-team@fb.com>, <yhs@fb.com>,
-        Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add bloom map success test for userspace calls
-Date:   Fri, 29 Oct 2021 15:49:09 -0700
-Message-ID: <20211029224909.1721024-4-joannekoong@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211029224909.1721024-1-joannekoong@fb.com>
-References: <20211029224909.1721024-1-joannekoong@fb.com>
+        id S231132AbhJ2WvX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 18:51:23 -0400
+Received: from mga02.intel.com ([134.134.136.20]:5762 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhJ2WvW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 18:51:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10152"; a="217951556"
+X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
+   d="scan'208";a="217951556"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 15:48:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,194,1631602800"; 
+   d="scan'208";a="448274950"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by orsmga006.jf.intel.com with ESMTP; 29 Oct 2021 15:48:50 -0700
+Date:   Fri, 29 Oct 2021 15:51:09 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Wang Kefeng <wangkefeng.wang@huawei.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] arch/Kconfig: Make CONFIG_CPU_SPECTRE available
+ for all architectures
+Message-ID: <20211029225109.d3m2q4kuuzhzs2cv@gupta-dev2.localdomain>
+References: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+ <232b692cd79e4f6e4c3ee7055b5f02792a28d2c4.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+ <20211028134918.GB48435@lakrids.cambridge.arm.com>
+ <20211028193658.7n2oehp6yogyqbwq@gupta-dev2.localdomain>
+ <YXvIIwkfYcXEBf97@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: D1XaNqtsqxs0bVISvzj2qDL_UCtq-J7p
-X-Proofpoint-ORIG-GUID: D1XaNqtsqxs0bVISvzj2qDL_UCtq-J7p
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-29_06,2021-10-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 impostorscore=0 adultscore=0 phishscore=0
- mlxscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
- mlxlogscore=829 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110290127
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YXvIIwkfYcXEBf97@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch has two changes:
-1) Adds a new function "test_success_cases" to test
-successfully creating + adding + looking up a value
-in a bloom filter map from the userspace side.
+On 29.10.2021 11:08, Russell King (Oracle) wrote:
+>On Thu, Oct 28, 2021 at 12:36:58PM -0700, Pawan Gupta wrote:
+>> Isn't ARM already using CPU_SPECTRE for selecting things:
+>>
+>> 	config HARDEN_BRANCH_PREDICTOR
+>> 	     bool "Harden the branch predictor against aliasing attacks" if EXPERT
+>> 	     depends on CPU_SPECTRE
+>>
+>> This was the whole motivation for doing the same for x86.
+>>
+>> Adding a condition for all architectures is also okay, but its going to
+>> a little messier:
+>>
+>> 	 config BPF_UNPRIV_DEFAULT_OFF
+>> 	        default y if X86 || ARM || ...
+>
+>It doesn't have to be (but sadly we end up repeating "DEFAULT"):
+>
+>config BPF_UNPRIV_DEFAULT_OFF_DEFAULT
+>	bool
+>
+>config BPF_UNPRIV_DEFAULT_OFF
+>	bool "Disable unprivileged BPF by default"
+>	default BPF_UNPRIV_DEFAULT_OFF_DEFAULT
+>
+>Then architectures can select BPF_UNPRIV_DEFAULT_OFF_DEFAULT if they
+>wish this to be defaulted to "yes".
 
-2) Use bpf_create_map instead of bpf_create_map_xattr in
-the "test_fail_cases" and test_inner_map to make the
-code look cleaner.
+Looks like we are settling on unconditional 'default y' for now [1].
+I have sent a v3 with 'default y' [2].
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Joanne Koong <joannekoong@fb.com>
----
- .../bpf/prog_tests/bloom_filter_map.c         | 59 +++++++++++--------
- 1 file changed, 33 insertions(+), 26 deletions(-)
+>However, please note that this has limited use given that the
+>BPF_UNPRIV_DEFAULT_OFF option has been around for a while now. Any
+>existing configuration that mentions this symbol will override any
+>default specified in the Kconfig files if the option is user-visible.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c b/=
-tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-index 9aa3fbed918b..be73e3de6668 100644
---- a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-@@ -7,44 +7,31 @@
-=20
- static void test_fail_cases(void)
- {
--	struct bpf_create_map_attr xattr =3D {
--		.name =3D "bloom_filter_map",
--		.map_type =3D BPF_MAP_TYPE_BLOOM_FILTER,
--		.max_entries =3D 100,
--		.value_size =3D 11,
--	};
- 	__u32 value;
- 	int fd, err;
-=20
- 	/* Invalid key size */
--	xattr.key_size =3D 4;
--	fd =3D bpf_create_map_xattr(&xattr);
-+	fd =3D bpf_create_map(BPF_MAP_TYPE_BLOOM_FILTER, 4, sizeof(value), 100,=
- 0);
- 	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid key size"))
- 		close(fd);
--	xattr.key_size =3D 0;
-=20
- 	/* Invalid value size */
--	xattr.value_size =3D 0;
--	fd =3D bpf_create_map_xattr(&xattr);
-+	fd =3D bpf_create_map(BPF_MAP_TYPE_BLOOM_FILTER, 0, 0, 100, 0);
- 	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid value size 0=
-"))
- 		close(fd);
--	xattr.value_size =3D 11;
-=20
- 	/* Invalid max entries size */
--	xattr.max_entries =3D 0;
--	fd =3D bpf_create_map_xattr(&xattr);
-+	fd =3D bpf_create_map(BPF_MAP_TYPE_BLOOM_FILTER, 0, sizeof(value), 0, 0=
-);
- 	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid max entries =
-size"))
- 		close(fd);
--	xattr.max_entries =3D 100;
-=20
- 	/* Bloom filter maps do not support BPF_F_NO_PREALLOC */
--	xattr.map_flags =3D BPF_F_NO_PREALLOC;
--	fd =3D bpf_create_map_xattr(&xattr);
-+	fd =3D bpf_create_map(BPF_MAP_TYPE_BLOOM_FILTER, 0, sizeof(value), 100,
-+			    BPF_F_NO_PREALLOC);
- 	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid flags"))
- 		close(fd);
--	xattr.map_flags =3D 0;
-=20
--	fd =3D bpf_create_map_xattr(&xattr);
-+	fd =3D bpf_create_map(BPF_MAP_TYPE_BLOOM_FILTER, 0, sizeof(value), 100,=
- 0);
- 	if (!ASSERT_GE(fd, 0, "bpf_create_map bloom filter"))
- 		return;
-=20
-@@ -67,6 +54,30 @@ static void test_fail_cases(void)
- 	close(fd);
- }
-=20
-+static void test_success_cases(void)
-+{
-+	char value[11];
-+	int fd, err;
-+
-+	/* Create a map */
-+	fd =3D bpf_create_map(BPF_MAP_TYPE_BLOOM_FILTER, 0, sizeof(value), 100,
-+			    BPF_F_ZERO_SEED | BPF_F_NUMA_NODE);
-+	if (!ASSERT_GE(fd, 0, "bpf_create_map bloom filter success case"))
-+		return;
-+
-+	/* Add a value to the bloom filter */
-+	err =3D bpf_map_update_elem(fd, NULL, &value, 0);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem bloom filter success case"))
-+		goto done;
-+
-+	 /* Lookup a value in the bloom filter */
-+	err =3D bpf_map_lookup_elem(fd, NULL, &value);
-+	ASSERT_OK(err, "bpf_map_update_elem bloom filter success case");
-+
-+done:
-+	close(fd);
-+}
-+
- static void check_bloom(struct bloom_filter_map *skel)
- {
- 	struct bpf_link *link;
-@@ -86,16 +97,11 @@ static void test_inner_map(struct bloom_filter_map *s=
-kel, const __u32 *rand_vals
- 			   __u32 nr_rand_vals)
- {
- 	int outer_map_fd, inner_map_fd, err, i, key =3D 0;
--	struct bpf_create_map_attr xattr =3D {
--		.name =3D "bloom_filter_inner_map",
--		.map_type =3D BPF_MAP_TYPE_BLOOM_FILTER,
--		.value_size =3D sizeof(__u32),
--		.max_entries =3D nr_rand_vals,
--	};
- 	struct bpf_link *link;
-=20
- 	/* Create a bloom filter map that will be used as the inner map */
--	inner_map_fd =3D bpf_create_map_xattr(&xattr);
-+	inner_map_fd =3D bpf_create_map(BPF_MAP_TYPE_BLOOM_FILTER, 0, sizeof(*r=
-and_vals),
-+				      nr_rand_vals, 0);
- 	if (!ASSERT_GE(inner_map_fd, 0, "bpf_create_map bloom filter inner map"=
-))
- 		return;
-=20
-@@ -190,6 +196,7 @@ void test_bloom_filter_map(void)
- 	int err;
-=20
- 	test_fail_cases();
-+	test_success_cases();
-=20
- 	err =3D setup_progs(&skel, &rand_vals, &nr_rand_vals);
- 	if (err)
---=20
-2.30.2
+Yes, existing configurations will have to toggle this manually. However,
+many distros already have BPF_UNPRIV_DEFAULT_OFF=y in their
+configuration.
 
+>So, IMHO, defaults need to be set correctly from the point in time
+>that the option is introduced.
+
+Agree.
+
+[1] https://lore.kernel.org/lkml/6130e55f-4d84-5ada-4e86-5b678e3eaf5e@iogearbox.net/
+[2] https://lore.kernel.org/lkml/0ace9ce3f97656d5f62d11093ad7ee81190c3c25.1635535215.git.pawan.kumar.gupta@linux.intel.com/
