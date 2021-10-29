@@ -2,84 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C79D43F4F6
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 04:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF4343F4FD
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 04:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhJ2CZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Oct 2021 22:25:22 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:36674 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231509AbhJ2CZV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Oct 2021 22:25:21 -0400
-X-Greylist: delayed 970 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Oct 2021 22:25:20 EDT
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowABXGfYSV3thW+2TBQ--.15439S2;
-        Fri, 29 Oct 2021 10:06:10 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     jeyu@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] module: Fix implicit type conversion
-Date:   Fri, 29 Oct 2021 02:06:09 +0000
-Message-Id: <1635473169-1848729-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowABXGfYSV3thW+2TBQ--.15439S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFy5GFW7WrWrCFW3KF1kuFg_yoWDCwc_Jr
-        1DXrWjgryYvwn29a13Jw4rZryxKw1jgFs09a48WFZxJFyrtr13Aw1vqry3Zrn5WrWrCFn7
-        Xas8Jrnxuw1IgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
-        628vn2kIc2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyU
-        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUO_MaUUUUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S231522AbhJ2Cgg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Oct 2021 22:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231348AbhJ2Cgg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Oct 2021 22:36:36 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D07C061570;
+        Thu, 28 Oct 2021 19:34:08 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id oa4so6166986pjb.2;
+        Thu, 28 Oct 2021 19:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5jMJxS4oaEGvvxnO1MoSOjq2SAVMs+890AbhZNzdgBI=;
+        b=Me0YK5oLZ8tw//8pywCn1SG/remtqqCaZsjASmrM5kw8BFbeX4jR5cEVAq/cj8b9SR
+         1Cl/mg7Q8CW7gKboV5DdQ1cteQ+oUjKVqB48Rzo+hIrX0hmlmygvv9U4iDggyaz9mZdK
+         2SWbjzrzhKsPU6N4eATIT4WwAlxBSrTvncqp0td1NXM+Bo4z+zi+vGeF+GfrgS5SKxEB
+         qkd+CThNXRsS0scn+70ygQiBNCBdCgXJohQcWsvltJUnMAtDoWQKCRj/bsOU8M7xHk9H
+         njOvcCIqUGqWJzKRUKa4zhTAw4NRgS05iRfSLvKEHqGJvBx5MxVvAeOUGZcLhFtQsozv
+         hySw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5jMJxS4oaEGvvxnO1MoSOjq2SAVMs+890AbhZNzdgBI=;
+        b=PjgMTbhxAqNugKBKHcfTRR51qygywH1UXb0ckGGnBt4c3af8lRp+C0HK7B70IX0jtn
+         Z0WOyR3KZVylcN5dISCmbdeCgqT/eQs/DI0tRdGH2J8IW0K9f8YjG8/1GBLAS0Yfmg3c
+         UK3d7RWGPs5qAiN5mqo59aiBwj84/HtTJ6QVs1gXNNorXbvqL46S67p9mQzFZcIk+J8w
+         0s1Ly4ReMVCesJpVY9trnGKmgka+reWZjH7/iXkpxnde598bQ1MEOfCM7OOG4Tep4XRy
+         xjjGW8HlUpH5T63Se+wI78YPD630OFxyWSHIBma49ArOIDS8S8oRzcrkeRMQMW6IrzoB
+         uEKA==
+X-Gm-Message-State: AOAM533ISJeuxyRDh+k2ltWbNJQkmDZ3WHwBY22mMpY0oSpqxg4d9ndk
+        GSkKu/u0rNsryGt/KOwHmh895OAuGH6aAUhZtUQ=
+X-Google-Smtp-Source: ABdhPJwTvSdxOGtx5Ox97DWaIBXUKfPC84ULFnZjYCWNgfye5YJX/TKJXKHF+dct34bSmUGlYKgcE5EnKJlawJfBXHQ=
+X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
+ c6-20020a170902724600b00138a6ed66ccmr7613690pll.22.1635474848067; Thu, 28 Oct
+ 2021 19:34:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211027203727.208847-1-mauricio@kinvolk.io>
+In-Reply-To: <20211027203727.208847-1-mauricio@kinvolk.io>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 28 Oct 2021 19:33:56 -0700
+Message-ID: <CAADnVQK2Bm7dDgGc6uHVosuSzi_LT0afXM6Hf3yLXByfftxV1Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] libbpf: Implement BTF Generator API
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The variable 'cpu' is defined as unsigned int.
-However in the for_each_possible_cpu, its values is assigned to -1.
-That doesn't make sense and in the cpumask_next() it is implicitly
-type conversed to int.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to change the definition of 'cpu' from
-unsigned int to int.
+On Wed, Oct 27, 2021 at 1:37 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
+ wrote:
+> There is also a good example[3] on how to use BTFGen and BTFHub together
+> to generate multiple BTF files, to each existing/supported kernel,
+> tailored to one application. For example: a complex bpf object might
+> support nearly 400 kernels by having BTF files summing only 1.5 MB.
 
-Fixes: 10fad5e ("percpu, module: implement and use is_kernel/module_percpu_address()")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- kernel/module.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 927d46c..f10d611 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -632,7 +632,7 @@ static void percpu_modcopy(struct module *mod,
- bool __is_module_percpu_address(unsigned long addr, unsigned long *can_addr)
- {
- 	struct module *mod;
--	unsigned int cpu;
-+	int cpu;
- 
- 	preempt_disable();
- 
--- 
-2.7.4
-
+Could you share more details on what kind of fields and types
+were used to achieve this compression?
+Tracing progs will be peeking into task_struct.
+To describe it in the reduced BTF most of the kernel types would be needed,
+so I'm a bit skeptical on the practicality of the algorithm.
+I think it may work for sk_buff, since it will pull struct sock,
+net_device, rb_tree
+and not a ton more.
+Have you considered generating kernel BTF with fields that are accessed
+by bpf prog only and replacing all other fields with padding ?
+I think the algo would be quite different from the actual CO-RE logic
+you're trying to reuse.
+If CO-RE matching style is necessary and it's the best approach then please
+add new logic to bpftool. I'm not sure such api would be
+useful beyond this particular case to expose as stable libbpf api.
+Also note that relo_core.c soon will be dual compiled for kernel and
+libbpf needs.
