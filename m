@@ -2,221 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1CA43F7F4
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 09:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968F243F954
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 11:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhJ2HsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 03:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S230417AbhJ2JEE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 05:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbhJ2HsF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Oct 2021 03:48:05 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40AEC061570;
-        Fri, 29 Oct 2021 00:45:37 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id n67so11489652iod.9;
-        Fri, 29 Oct 2021 00:45:37 -0700 (PDT)
+        with ESMTP id S229844AbhJ2JEE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:04:04 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B85C061570;
+        Fri, 29 Oct 2021 02:01:35 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id s13so7944903wrb.3;
+        Fri, 29 Oct 2021 02:01:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YvS3OEojn6WlgoM5Pok9+XWG3Yikban/dCaVMqXh6O4=;
-        b=j0ZYEwfg/RFP3vZ0NF45LNbXn0FXnpRrSZKuYBz/v3Ti0BTmeyp9N7VQZHJ0MOpaHc
-         SyOFdeQmIvmzNxRqDvY36MWKL4TN4GyGqlch3Oic3ZzzQtFJzSqAx6Sncn84ySZo0K/U
-         CDVKvtPGDJyopdDodidwBiFnONnN0Y+zPuafOQ6zzwcj0xmqQruYxufDtrGqgVTm197X
-         YD7WbaChlI8ZDicXCuH4XD1MpdTyJ50sTFdy4MOyQqgKK1CXkRLKfxaPvxQqnar8Ew15
-         4rzhCfQnHV9Kq+c95oj4HnQu6n4EutKUy+lqQDB3VSiBsBk12fvwsyMW/u3N12jhBu3l
-         Yg8A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WA/6Xqdu/lY3k5mObuDlvl/BcJnZz1vPm2VJ5v5puSA=;
+        b=EW4Y6dEIpJAICfNYqhmSZWO2ku7ISrDMw5OQnbH1p2e0DVkhoa8NMiT5c+pa347AuH
+         8YmuTxilu4KsmbsadyK9wkPJe0N9LFMD4yN1QPDBifk8cqy1IbFW+4WqInheK3zx09a3
+         b827VXZU8+Ln+R0hEhHnyUGjI/UyJX/RmoGfDieb6n6CQNxDqU3LWhca0cXwDnQiQ28Q
+         Rt7ROwASYn8Y0TggSdE5E9/LPNcKoO0F7uYNnApl863L5y2Un/i/p2hKlQgltbKq+WgP
+         CE++MCuqK1MneqyvexFtVpeOS1PtCl5f6dBSc57kDXQXowIXAkMpc86urL0sUiTiRzcz
+         jkUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YvS3OEojn6WlgoM5Pok9+XWG3Yikban/dCaVMqXh6O4=;
-        b=Dy+L2AIyx8TPFQn9HjDpaganSZ4/9hXjfefaJa5ZQ+Ao0OlHtHnsgU2/ANFCz027DB
-         OzcpXx7w5abhPDzg6FKagaZ0pci1jadnof3uroSqKjOP1qV0ReILwvxbYRmioikToxOR
-         CBwpMeVdB2gIg80oLTSZSHbVGvPX6NH5Ql2YL+sQTzEId9hGtr39ssnZPmNCs8nCQpfl
-         1uNJQ1bRaCyjWOvcE4ovJ5buqaIcRwO2ySeuD6ST7//Wnrw35DabK/wTIfQwCRtRT8Qe
-         run0JpMf41CZOxGtnqbQux9wy8skHBdexwjzlbDkTEJScEvBlt4xjjJ4UCzVax+weyJw
-         jITg==
-X-Gm-Message-State: AOAM530kgGMKBstBxKTuI/V7O59d1ylMJumuc/VM7XjstAdqzehCCevV
-        6DJp11l0OzhHkDqGwo+SFs0Pxb9375Pbo9YkjiI=
-X-Google-Smtp-Source: ABdhPJyETE/qLAF0grfwPy1l00eM4REeeLtmeoBWL6wOt59OXeZvcrCFeFwAw5oh/9q3xbShCHKFcImikiHaH3niayk=
-X-Received: by 2002:a05:6602:27d4:: with SMTP id l20mr6774818ios.94.1635493536891;
- Fri, 29 Oct 2021 00:45:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WA/6Xqdu/lY3k5mObuDlvl/BcJnZz1vPm2VJ5v5puSA=;
+        b=ukm3XuTdF1VkK9Ki1VsMPD3ti1HK8V6ZY47qto8HW4FDTpUIsCVgnY1Ra6cXJx/t/L
+         tsRHkvgJq5+XuWYjggOFha7o3SysjbvYMr3+OoS9puquLWcaEFtaKGemvbIKfynww01x
+         NmfV9tnof+xKn6gPfSyVx26CzbScjA7dJd2eKcdasshOQe/T/IJojeiVDVPG6ePcSTiY
+         D3uxf87FtUkRKfJTgI+joUAmBtaUoyzejcsV2awyu0yu1jS3Snd4uK+0pmblP1HYpMVs
+         3p9uC7+qoJHhavizqJftXDlVVH0ovtwbG63vMMYRWXj+f3VMIUrSxWEKwJhSwZoT6KOG
+         TgjA==
+X-Gm-Message-State: AOAM531E2XK+nz50jus8MsIlrDlbA9tYLV2IeRhx1BoYS1WKe3QK7Xxr
+        JxNDPmQid6EUIfyzgqjkntU=
+X-Google-Smtp-Source: ABdhPJy/6MeXiLkIj5cy3BgJk0e6X7/iQBWkDdIdng9uo6aBa83y/FtaH3Eurdar6nmvch4uhaqPjw==
+X-Received: by 2002:a05:6000:1107:: with SMTP id z7mr12606302wrw.370.1635498094313;
+        Fri, 29 Oct 2021 02:01:34 -0700 (PDT)
+Received: from localhost.localdomain ([188.149.128.194])
+        by smtp.gmail.com with ESMTPSA id p12sm5699421wrr.67.2021.10.29.02.01.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 29 Oct 2021 02:01:33 -0700 (PDT)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, yhs@fb.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
+Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2] libbpf: deprecate AF_XDP support
+Date:   Fri, 29 Oct 2021 11:01:11 +0200
+Message-Id: <20211029090111.4733-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-13-laoar.shao@gmail.com>
- <202110251431.F594652F@keescook> <YXmySeDsxxbA7hcq@alley>
-In-Reply-To: <YXmySeDsxxbA7hcq@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 29 Oct 2021 15:44:47 +0800
-Message-ID: <CALOAHbDQkfdpW4hktPCcstEAYG6ecEan_b095NeanA7sC1K=-w@mail.gmail.com>
-Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's comm
- is truncated
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:10 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Mon 2021-10-25 14:35:42, Kees Cook wrote:
-> > On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
-> > > Show a warning if task comm is truncated. Below is the result
-> > > of my test case:
-> > >
-> > > truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-> > >
-> > > Suggested-by: Petr Mladek <pmladek@suse.com>
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Petr Mladek <pmladek@suse.com>
-> > > ---
-> > >  kernel/kthread.c | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > > index 5b37a8567168..46b924c92078 100644
-> > > --- a/kernel/kthread.c
-> > > +++ b/kernel/kthread.c
-> > > @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> > >     if (!IS_ERR(task)) {
-> > >             static const struct sched_param param = { .sched_priority = 0 };
-> > >             char name[TASK_COMM_LEN];
-> > > +           int len;
-> > >
-> > >             /*
-> > >              * task is already visible to other tasks, so updating
-> > >              * COMM must be protected.
-> > >              */
-> > > -           vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           len = vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           if (len >= TASK_COMM_LEN) {
-> >
-> > And since this failure case is slow-path, we could improve the warning
-> > as other had kind of suggested earlier with something like this instead:
-> >
-> >                       char *full_comm;
-> >
-> >                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
->
-> You need to use va_copy()/va_end() if you want to use the same va_args
-> twice.
->
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Now I understand it.
-So the patch will be:
+Deprecate AF_XDP support in libbpf ([0]). This has been moved to
+libxdp as it is a better fit for that library. The AF_XDP support only
+uses the public libbpf functions and can therefore just use libbpf as
+a library from libxdp. The libxdp APIs are exactly the same so it
+should just be linking with libxdp instead of libbpf for the AF_XDP
+functionality. If not, please submit a bug report. Linking with both
+libraries is supported but make sure you link in the correct order so
+that the new functions in libxdp are used instead of the deprecated
+ones in libbpf.
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 5b37a8567168..c1ff67283725 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -399,12 +399,29 @@ struct task_struct *__kthread_create_on_node(int
-(*threadfn)(void *data),
-        if (!IS_ERR(task)) {
-                static const struct sched_param param = { .sched_priority = 0 };
-                char name[TASK_COMM_LEN];
-+               char *full_comm;
-+               va_list aq;
-+               int len;
+Libxdp can be found at https://github.com/xdp-project/xdp-tools.
 
-                /*
-                 * task is already visible to other tasks, so updating
-                 * COMM must be protected.
-                 */
--               vsnprintf(name, sizeof(name), namefmt, args);
-+               va_copy(aq, args);
-+               len = vsnprintf(name, sizeof(name), namefmt, aq);
-+               va_end(aq);
-+               if (len >= TASK_COMM_LEN) {
-+                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
-+                       if (full_comm) {
-+                               pr_warn("truncated kthread comm '%s'
-to '%s' (pid:%d)\n",
-+                                       full_comm, name, task->pid);
-+                               kfree(full_comm);
-+                       } else {
-+                               pr_warn("truncated kthread comm '%s'
-(pid:%d) by %d characters\n",
-+                                       name, task->pid, len -
-TASK_COMM_LEN + 1);
+[0] https://github.com/libbpf/libbpf/issues/270
+
+v1 -> v2: Corrected spelling error
+
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ tools/lib/bpf/xsk.h | 90 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 52 insertions(+), 38 deletions(-)
+
+diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+index 01c12dca9c10..64e9c57fd792 100644
+--- a/tools/lib/bpf/xsk.h
++++ b/tools/lib/bpf/xsk.h
+@@ -23,6 +23,12 @@
+ extern "C" {
+ #endif
+ 
++/* This whole API has been deprecated and moved to libxdp that can be found at
++ * https://github.com/xdp-project/xdp-tools. The APIs are exactly the same so
++ * it should just be linking with libxdp instead of libbpf for this set of
++ * functionality. If not, please submit a bug report on the aforementioned page.
++ */
 +
-+                       }
-+               }
-                set_task_comm(task, name);
-                /*
-                 * root may have changed our (kthreadd's) priority or CPU mask.
+ /* Load-Acquire Store-Release barriers used by the XDP socket
+  * library. The following macros should *NOT* be considered part of
+  * the xsk.h API, and is subject to change anytime.
+@@ -245,8 +251,10 @@ static inline __u64 xsk_umem__add_offset_to_addr(__u64 addr)
+ 	return xsk_umem__extract_addr(addr) + xsk_umem__extract_offset(addr);
+ }
+ 
+-LIBBPF_API int xsk_umem__fd(const struct xsk_umem *umem);
+-LIBBPF_API int xsk_socket__fd(const struct xsk_socket *xsk);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_umem__fd(const struct xsk_umem *umem);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_socket__fd(const struct xsk_socket *xsk);
+ 
+ #define XSK_RING_CONS__DEFAULT_NUM_DESCS      2048
+ #define XSK_RING_PROD__DEFAULT_NUM_DESCS      2048
+@@ -263,10 +271,10 @@ struct xsk_umem_config {
+ 	__u32 flags;
+ };
+ 
+-LIBBPF_API int xsk_setup_xdp_prog(int ifindex,
+-				  int *xsks_map_fd);
+-LIBBPF_API int xsk_socket__update_xskmap(struct xsk_socket *xsk,
+-					 int xsks_map_fd);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_setup_xdp_prog(int ifindex, int *xsks_map_fd);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_socket__update_xskmap(struct xsk_socket *xsk, int xsks_map_fd);
+ 
+ /* Flags for the libbpf_flags field. */
+ #define XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD (1 << 0)
+@@ -280,40 +288,46 @@ struct xsk_socket_config {
+ };
+ 
+ /* Set config to NULL to get the default configuration. */
+-LIBBPF_API int xsk_umem__create(struct xsk_umem **umem,
+-				void *umem_area, __u64 size,
+-				struct xsk_ring_prod *fill,
+-				struct xsk_ring_cons *comp,
+-				const struct xsk_umem_config *config);
+-LIBBPF_API int xsk_umem__create_v0_0_2(struct xsk_umem **umem,
+-				       void *umem_area, __u64 size,
+-				       struct xsk_ring_prod *fill,
+-				       struct xsk_ring_cons *comp,
+-				       const struct xsk_umem_config *config);
+-LIBBPF_API int xsk_umem__create_v0_0_4(struct xsk_umem **umem,
+-				       void *umem_area, __u64 size,
+-				       struct xsk_ring_prod *fill,
+-				       struct xsk_ring_cons *comp,
+-				       const struct xsk_umem_config *config);
+-LIBBPF_API int xsk_socket__create(struct xsk_socket **xsk,
+-				  const char *ifname, __u32 queue_id,
+-				  struct xsk_umem *umem,
+-				  struct xsk_ring_cons *rx,
+-				  struct xsk_ring_prod *tx,
+-				  const struct xsk_socket_config *config);
+-LIBBPF_API int
+-xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+-			  const char *ifname,
+-			  __u32 queue_id, struct xsk_umem *umem,
+-			  struct xsk_ring_cons *rx,
+-			  struct xsk_ring_prod *tx,
+-			  struct xsk_ring_prod *fill,
+-			  struct xsk_ring_cons *comp,
+-			  const struct xsk_socket_config *config);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_umem__create(struct xsk_umem **umem,
++		     void *umem_area, __u64 size,
++		     struct xsk_ring_prod *fill,
++		     struct xsk_ring_cons *comp,
++		     const struct xsk_umem_config *config);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_umem__create_v0_0_2(struct xsk_umem **umem,
++			    void *umem_area, __u64 size,
++			    struct xsk_ring_prod *fill,
++			    struct xsk_ring_cons *comp,
++			    const struct xsk_umem_config *config);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_umem__create_v0_0_4(struct xsk_umem **umem,
++			    void *umem_area, __u64 size,
++			    struct xsk_ring_prod *fill,
++			    struct xsk_ring_cons *comp,
++			    const struct xsk_umem_config *config);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_socket__create(struct xsk_socket **xsk,
++		       const char *ifname, __u32 queue_id,
++		       struct xsk_umem *umem,
++		       struct xsk_ring_cons *rx,
++		       struct xsk_ring_prod *tx,
++		       const struct xsk_socket_config *config);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
++			      const char *ifname,
++			      __u32 queue_id, struct xsk_umem *umem,
++			      struct xsk_ring_cons *rx,
++			      struct xsk_ring_prod *tx,
++			      struct xsk_ring_prod *fill,
++			      struct xsk_ring_cons *comp,
++			      const struct xsk_socket_config *config);
+ 
+ /* Returns 0 for success and -EBUSY if the umem is still in use. */
+-LIBBPF_API int xsk_umem__delete(struct xsk_umem *umem);
+-LIBBPF_API void xsk_socket__delete(struct xsk_socket *xsk);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++int xsk_umem__delete(struct xsk_umem *umem);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
++void xsk_socket__delete(struct xsk_socket *xsk);
+ 
+ #ifdef __cplusplus
+ } /* extern "C" */
 
-That seems a little overkill to me.
-I prefer to keep the v6 as-is.
-
-> For example, see how kvasprintf() is implemented. It calls
-> vsnprintf() twice and it uses va_copy()/va_end() around the the first call.
->
-> kvasprintf() could also return NULL if there is not enough memory.
->
-> >                       pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
-> >                               full_comm, name);
->
-> BTW: Is this message printed during normal boot? I did not tried the
-> patchset myself.
->
-> We should add this warning only if there is a good solution how to
-> avoid the truncated names. And we should me sure that the most common
-> kthreads/workqueues do not trigger it. It would be ugly to print many
-> warnings during boot if people could not get rid of them easily.
->
-> >                       kfree(full_comm);
-> >               }
-> > >             set_task_comm(task, name);
-> > >             /*
-> > >              * root may have changed our (kthreadd's) priority or CPU mask.
->
-> Best Regards,
-> Petr
-
-
-
+base-commit: b9989b59123b3ced5387a5360c05a7bb2fb92d94
 -- 
-Thanks
-Yafang
+2.29.0
+
