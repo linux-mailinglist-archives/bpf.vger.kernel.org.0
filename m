@@ -2,98 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7177943FAD6
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 12:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2ACD43FB1B
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 12:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhJ2Kiv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 06:38:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231719AbhJ2Kit (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 29 Oct 2021 06:38:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635503780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6zTf+kP+TTNJjwaC8Adr///Yv4cYdq6F0Z4nTu/ogXo=;
-        b=UBT1VhUv2hHzpbzRWrKQjXKpMr5j1Spq7kSBBZ94Il9/TpB6nkAnMM+EeMlj8WwvOYigiY
-        lznhYedekIEgTTQWM8tY0GYH+orxpGo84h69n6zCMyvpEJ5ZYrMhwHHw8SGkxygQeBmkjO
-        L5IGRAFFQTzdUcJY2dYxShktI1BgCmw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-112-Sgvw0Yq5NpCDqWT2W2eZEg-1; Fri, 29 Oct 2021 06:36:18 -0400
-X-MC-Unique: Sgvw0Yq5NpCDqWT2W2eZEg-1
-Received: by mail-ed1-f71.google.com with SMTP id x13-20020a05640226cd00b003dd4720703bso8799334edd.8
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 03:36:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=6zTf+kP+TTNJjwaC8Adr///Yv4cYdq6F0Z4nTu/ogXo=;
-        b=opHgOnDjNx3eln2mHKGNi986HVuk3qTIsH0k4K05SKqFRTi4i5zck53ZX1u++JdetO
-         Sw01zuCoY8ys821YfZqNGOnQyCO9Ff3kWj6rLwl46sshCPQl6CZxiH94F3wxcWrco7ye
-         5Mjyydauhv51qNSQ3GTEMxJxFfg+uy5/JYzuvVMiQovrPylu+DiUQYMCdamuF9ebWaZv
-         FYxxCG54sUmDwDnlN6hmRwM2UIulpY70ysGjrAs5VM8Eol3B+gEERlXnRAUN/H1DIhw+
-         x6X/VIo+7A/gM1ZjXd6HLgSvu8gvmuJUOPhZMXn3sSzGH2xCLca3prt4pacCyeDSsMmm
-         iNVw==
-X-Gm-Message-State: AOAM533piQCnvJGAOS+u94JpAnvJycn9khtNQSDhK3walCYC0CY7sGaf
-        VMajfHlnbBIE0xByU/KdsUANTlJjvCWv0kn6HpakmV/vQ6JQm/w430Lb5nKU8brTgoIVYo/uG+8
-        PaZgKnOCiPKeH
-X-Received: by 2002:a17:907:868c:: with SMTP id qa12mr12174756ejc.346.1635503776888;
-        Fri, 29 Oct 2021 03:36:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0vSAUG187MJcKLC8ZiB6qmj2025d/UW8QZOcijvFGVGylan+cJPkDv+Ymiqz0I7USKh4+xg==
-X-Received: by 2002:a17:907:868c:: with SMTP id qa12mr12174639ejc.346.1635503775911;
-        Fri, 29 Oct 2021 03:36:15 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a9sm3281830edm.31.2021.10.29.03.36.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 03:36:15 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B1970180262; Fri, 29 Oct 2021 12:36:14 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, yhs@fb.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] libbpf: deprecate AF_XDP support
-In-Reply-To: <20211029090111.4733-1-magnus.karlsson@gmail.com>
-References: <20211029090111.4733-1-magnus.karlsson@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 29 Oct 2021 12:36:14 +0200
-Message-ID: <87mtms86e9.fsf@toke.dk>
+        id S231782AbhJ2K6D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 06:58:03 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30879 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231749AbhJ2K6D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 06:58:03 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HgfNW49jBzbmhX;
+        Fri, 29 Oct 2021 18:50:51 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 29 Oct 2021 18:55:32 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 29 Oct 2021 18:55:31 +0800
+Subject: Re: [PATCH bpf-next v4 0/4] introduce dummy BPF STRUCT_OPS
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <20211025064025.2567443-1-houtao1@huawei.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <d89d987d-18e1-cd2a-0f29-efd2ff0449bb@huawei.com>
+Date:   Fri, 29 Oct 2021 18:55:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211025064025.2567443-1-houtao1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Magnus Karlsson <magnus.karlsson@gmail.com> writes:
+Hi Alexei,
 
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
->
-> Deprecate AF_XDP support in libbpf ([0]). This has been moved to
-> libxdp as it is a better fit for that library. The AF_XDP support only
-> uses the public libbpf functions and can therefore just use libbpf as
-> a library from libxdp. The libxdp APIs are exactly the same so it
-> should just be linking with libxdp instead of libbpf for the AF_XDP
-> functionality. If not, please submit a bug report. Linking with both
-> libraries is supported but make sure you link in the correct order so
-> that the new functions in libxdp are used instead of the deprecated
-> ones in libbpf.
->
-> Libxdp can be found at https://github.com/xdp-project/xdp-tools.
->
-> [0] https://github.com/libbpf/libbpf/issues/270
->
-> v1 -> v2: Corrected spelling error
->
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Could you please consider the patch set for 5.16 ? The whole patch set has
+already been Acked by Martin.
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Thanks.
+
+On 10/25/2021 2:40 PM, Hou Tao wrote:
+> Hi,
+>
+> Currently the test of BPF STRUCT_OPS depends on the specific bpf
+> implementation (e.g, tcp_congestion_ops), but it can not cover all
+> basic functionalities (e.g, return value handling), so introduce
+> a dummy BPF STRUCT_OPS for test purpose.
+>
+> Instead of loading a userspace-implemeted bpf_dummy_ops map into
+> kernel and calling the specific function by writing to sysfs provided
+> by bpf_testmode.ko, only loading bpf_dummy_ops related prog into
+> kernel and calling these prog by bpf_prog_test_run(). The latter
+> is more flexible and has no dependency on extra kernel module.
+>
+> Now the return value handling is supported by test_1(...) ops,
+> and passing multiple arguments is supported by test_2(...) ops.
+> If more is needed, test_x(...) ops can be added afterwards.
+>
+> Comments are always welcome.
+> Regards,
+> Hou
+>
+> Change Log:
+> v4:
+>  * add Acked-by tags in patch 1~4
+>  * patch 2: remove unncessary comments and update commit message
+>             accordingly
+>  * patch 4: remove unnecessary nr checking in dummy_ops_init_args()
+>
+> v3: https://www.spinics.net/lists/bpf/msg48303.html
+>  * rebase on bpf-next
+>  * address comments for Martin, mainly include: merge patch 3 &
+>    patch 4 in v2, fix names of btf ctx access check helpers,
+>    handle CONFIG_NET, fix leak in dummy_ops_init_args(), and
+>    simplify bpf_dummy_init()
+>  * patch 4: use a loop to check args in test_dummy_multiple_args()
+>
+> v2: https://www.spinics.net/lists/bpf/msg47948.html
+>  * rebase on bpf-next
+>  * add test_2(...) ops to test the passing of multiple arguments
+>  * a new patch (patch #2) is added to factor out ctx access helpers
+>  * address comments from Martin & Andrii
+>
+> v1: https://www.spinics.net/lists/bpf/msg46787.html
+>
+> RFC: https://www.spinics.net/lists/bpf/msg46117.html
+>
+>
+> Hou Tao (4):
+>   bpf: factor out a helper to prepare trampoline for struct_ops prog
+>   bpf: factor out helpers for ctx access checking
+>   bpf: add dummy BPF STRUCT_OPS for test purpose
+>   selftests/bpf: add test cases for struct_ops prog
+>
+>  include/linux/bpf.h                           |  43 ++++
+>  kernel/bpf/bpf_struct_ops.c                   |  32 ++-
+>  kernel/bpf/bpf_struct_ops_types.h             |   3 +
+>  kernel/trace/bpf_trace.c                      |  16 +-
+>  net/bpf/Makefile                              |   3 +
+>  net/bpf/bpf_dummy_struct_ops.c                | 200 ++++++++++++++++++
+>  net/ipv4/bpf_tcp_ca.c                         |   9 +-
+>  .../selftests/bpf/prog_tests/dummy_st_ops.c   | 115 ++++++++++
+>  .../selftests/bpf/progs/dummy_st_ops.c        |  50 +++++
+>  9 files changed, 439 insertions(+), 32 deletions(-)
+>  create mode 100644 net/bpf/bpf_dummy_struct_ops.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/dummy_st_ops.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/dummy_st_ops.c
+>
 
