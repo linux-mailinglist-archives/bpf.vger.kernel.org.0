@@ -2,92 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ACB43FEBC
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 16:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A811743FED1
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 16:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhJ2O4b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 10:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        id S229727AbhJ2PAe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 11:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhJ2O4a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:56:30 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F03C061570
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:54:02 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id q187so10176111pgq.2
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:54:02 -0700 (PDT)
+        with ESMTP id S229621AbhJ2PAd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 11:00:33 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA50FC061714
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:58:04 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id s24so7046101plp.0
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:58:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=4AuMATFjpbWTZ0I+UQqUufcg225mt5ZMICnMbvDg+1c=;
-        b=UqAJD3EsmUrq0vYya3aSXA9/SSthOtLtjisA6YqGtPD/9zoz1wNJL3p/YoPQWmtcrb
-         E8HuOahKfoSlTYgFdK2AFrHzvnifZq/HyiNrnXAk5IH2IibId00aVlpx1lq6XMvIUjOm
-         oy+l265CPz+yyDh3To+spKQrKdzgHPzcR7FZSkbqjDmwbQflAlm21FDW5CN28xzlLRPS
-         wXPEvF5fl8+BjKQUw78GupShBsOaBB+Ybfju2XPkVE/W+H6uExbSFXVcp0UWYQkCH91r
-         ZdkM0/LOuURF3zAYXIf1pYjc/XGJ6q3a7KF6QMvnE0Sr6zisl3otQ0rHsJv/62lNGqlI
-         zU9w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VEe/u6gPdZlKSr0M6oaNVpmJO6541YBOxFo1iZy9jxY=;
+        b=XgNVKerM9naMpOzlG/yHOv6MbIBkuVbdK2nh8u3B6CTSDzELhiTjOA/oXBPr38rHdb
+         4mKzpTPKz5GByJldq3UbYPi/RKcrp7ssrAvr/1T9GgQ0nRT/INmDXWhMBxNTT8pBD+4I
+         q+FxMmeVtJEHyaB6fFMKC8p/Q2AnAHCTUeqS0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4AuMATFjpbWTZ0I+UQqUufcg225mt5ZMICnMbvDg+1c=;
-        b=jJt2NSqae5mk51ljyVW2aKN9glf8cKOu2YZyTTSb3MqH51She+xH27BLQliEzEnmrO
-         XQzT7pxS2XXodgxCbUvPu4ndCoG8kb4ZcviqXknJfM+JWVV53kq86a/JeD6Tkcgj4aTi
-         2M6LQNJZyZ11uWPKsdgZbWm4T8Yiy1ZlefH+0U7lHWnojRcajJpsrUSFqAOwf4DQVk3Q
-         8RuqPvWETZhEV4utLeeZ9luEg4k23zjSoXeh/n1T8dMMybZfumK5XNmKB3syT2v49ez7
-         +GA18mpat2FU5EveJoX0U4rJwN1x5TgWcWMJf4dYI8mDF1AZDbOMf0A5eii+/b+ODvSM
-         XqGQ==
-X-Gm-Message-State: AOAM531WQjd2l4yzfF6f5AQU5VfHRJJW8f5mn8fsy4a/Z0WjyJ+02837
-        68hnDncm7nQDRWKAyAVZ1y3TCUxi6BzZGg==
-X-Google-Smtp-Source: ABdhPJwwbEf6zpdpALTBZM1s3rXj/nVxxSNUS2i4eTc7FxG3JTde4ZQluzi28M0KtJV6WV/Hh/rvXA==
-X-Received: by 2002:a63:7a53:: with SMTP id j19mr8433987pgn.275.1635519241744;
-        Fri, 29 Oct 2021 07:54:01 -0700 (PDT)
-Received: from [0.0.0.0] ([150.109.126.7])
-        by smtp.gmail.com with ESMTPSA id k8sm7721459pfu.179.2021.10.29.07.54.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Oct 2021 07:54:01 -0700 (PDT)
-Subject: Re: Read large payload from struct mm_struct without ring buffer
-To:     Yadunandan Pillai <ytpillai@thesw4rm.com>, bpf@vger.kernel.org
-References: <20211026180110.nfgozwtq7diptye7@bigdesk>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <f8b84cfa-7571-7594-ef5f-9aa278a9b428@gmail.com>
-Date:   Fri, 29 Oct 2021 22:53:59 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VEe/u6gPdZlKSr0M6oaNVpmJO6541YBOxFo1iZy9jxY=;
+        b=dR2DhtNHlge4ngsCvAyXIsntaUlmEA0wL3TUyRJWeEX/VOJBY1uid/Q+xw92bYzdIt
+         IWuFqpT7zmHovtfczPPatQ+ctqYpkE8HIH6jWh7ggtf+rfUkh2hGFyQ1euun9DnTndLK
+         gVsaCfD/weGv7Et0yD5bp7a0xOwGocVRjUUhnPI8qcgL8fe6md4hZhaGeUgbEhOumOBJ
+         +84ObOdRXDD9E7NFobdeT2GZSLahvRrrMjSPZnJrjcyg28FHWPmco36gre9gy9S0/QgD
+         b1Fjsw/Fa2l6OU+QbJSM+fgIYL6mqeBMgBDE1JuELk5mVnkNpRwY5GrG6UrKA2u3QgQ/
+         NVNA==
+X-Gm-Message-State: AOAM531dGMBVSugn5MmOD6b/Ik6f0R1Sw2yr+D1+kcUmrBBs6EiXw2LW
+        yNtgPsVqnkpNExNjE9Y63FYzJg==
+X-Google-Smtp-Source: ABdhPJzb9u+2dMEcZaSXa+AiqxQ44lfYwbYDuIySZAxxQm6HTY4y7N4CneHSkWx0kEjeTZP1gPgvWA==
+X-Received: by 2002:a17:90a:8592:: with SMTP id m18mr5199470pjn.184.1635519484215;
+        Fri, 29 Oct 2021 07:58:04 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u11sm7009927pfk.151.2021.10.29.07.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Oct 2021 07:58:03 -0700 (PDT)
+Date:   Fri, 29 Oct 2021 07:58:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: selftests: seccomp_bpf failure on 5.15
+Message-ID: <202110290755.451B036CE9@keescook>
+References: <YXrN+Hnl9pSOsWlA@arighi-desktop>
+ <202110280955.B18CB67@keescook>
+ <878rydm56l.fsf@disp2133>
+ <202110281136.5CE65399A7@keescook>
+ <8735okls76.fsf@disp2133>
 MIME-Version: 1.0
-In-Reply-To: <20211026180110.nfgozwtq7diptye7@bigdesk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8735okls76.fsf@disp2133>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 10/27/21 2:01 AM, Yadunandan Pillai wrote:
-> I am intercepting sched_wakeup_new and am able to read command line
-> arguments for an event using active_mm within the current task_struct.
-> However, the maximum size for these arguments is way beyond the stack
-> size of an eBPF program. Is there a way to read such a large payload
-> into userspace?
+On Thu, Oct 28, 2021 at 05:06:53PM -0500, Eric W. Biederman wrote:
+> Kees Cook <keescook@chromium.org> writes:
 > 
-> I'm trying to maintain backwards compatibility so unfortunately ringbuf
-> is not an option for the time being. I've tried reading the payload
-> directly into a hashmap, but unfortunately can't read past 512 bytes
-> (max buffer size). Is there another way to reserve large amounts of
-> memory in a separate location and get a direct reference, so I can read
-> into it with something like bpf_probe_read?
+> > On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
+> >> Kees Cook <keescook@chromium.org> writes:
+> >> 
+> >> > On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
+> >> >> The following sub-tests are failing in seccomp_bpf selftest:
+> >> >> 
+> >> >> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
+> >> >> ...
+> >> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
+> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
+> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
+> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
+> >> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
+> >> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
+> >> >> ...
+> >> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
+> >> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
+> >> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
+> >> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
+> >> >> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
+> >> >> ...
+> >> >> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
+> >> >> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
+> >> >> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
+> >> >> 
+> >> >> I did some bisecting and found that the failures started to happen with:
+> >> >> 
+> >> >>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
+> >> >> 
+> >> >> Not sure if the test needs to be fixed after this commit, or if the
+> >> >> commit is actually introducing an issue. I'll investigate more, unless
+> >> >> someone knows already what's going on.
+> >> >
+> >> > Ah thanks for noticing; I will investigate...
+> >> 
+> >> 
+> >> I just did a quick read through of the test and while
+> >> I don't understand everything having a failure seems
+> >> very weird.
+> >> 
+> >> I don't understand the comment:
+> >> /* Tracer will redirect getpid to getppid, and we should die. */
+> >> 
+> >> As I think what happens is it the bpf programs loads the signal
+> >> number.  Tests to see if the signal number if GETPPID and allows
+> >> that system call and causes any other system call to be terminated.
+> >
+> > The test suite runs a series of seccomp filter vs syscalls under tracing,
+> > either with ptrace or with seccomp SECCOMP_RET_TRACE, to validate the
+> > expected behavioral states. It seems that what's happened is that the
+> > SIGSYS has suddenly become non-killing:
+> >
+> > #  RUN           TRACE_syscall.ptrace.kill_after ...
+> > # seccomp_bpf.c:1555:kill_after:Expected WSTOPSIG(status) & 0x80 (0) == 0x80 (128)
+> > # seccomp_bpf.c:1556:kill_after:WSTOPSIG: 31
+> > # kill_after: Test exited normally instead of by signal (code: 12)
+> > #          FAIL  TRACE_syscall.ptrace.kill_after
+> >
+> > i.e. the ptracer no longer sees a dead tracee, which would pass through
+> > here:
+> >
+> >                 if (WIFSIGNALED(status) || WIFEXITED(status))
+> >                         /* Child is dead. Time to go. */
+> >                         return;
+> >
+> > So the above saw a SIG_TRAP|SIGSYS rather than a killing SIGSYS. i.e.
+> > instead of WIFSIGNALED(stauts) being true, it instead catches a
+> > PTRACE_EVENT_STOP for SIGSYS, which should be impossible (the process
+> > should be getting killed).
 > 
+> Oh.  This is being ptraced as part of the test?
+> 
+> Yes.  The signal started being delivered.  As far as that goes that
+> sounds correct.
+> 
+> Ptrace is allowed to intercept even fatal signals.  Everything except
+> SIGKILL.
+> 
+> Is this a condition we don't want even ptrace to be able to catch?
+> 
+> I think we can arrange it so that even ptrace can't intercept this
+> signal.  I need to sit this problem on the back burner for a few
+> minutes.  It is an angle I had not considered.
+> 
+> Is it a problem that the debugger can see the signal if the process does
+> not?
 
-You can use a per-cpu array as a heap storage for that purpose.
-Please refer to Andrii's blog post ([0]) and a real-world application ([1]).
+Right, I'm trying to understand that too. However, my neighbor just lost
+power. :|
 
-  [0]: https://nakryiko.com/posts/bpf-ringbuf/#bpf-perfbuf-bpf-perf-event-output
-  [1]: https://github.com/iovisor/bcc/blob/master/libbpf-tools/mountsnoop.bpf.c
+What I was in the middle of checking was what ptrace "sees" going
+through a fatal SIGSYS; my initial debugging attempts were weird.
 
-Cheers,
---
-Hengqi
+-Kees
+
+-- 
+Kees Cook
