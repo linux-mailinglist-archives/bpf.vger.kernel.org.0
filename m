@@ -2,97 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D3243FE8B
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 16:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ACB43FEBC
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 16:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhJ2Oia (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 10:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        id S229888AbhJ2O4b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 10:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhJ2Oia (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:38:30 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D172C061570
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:36:01 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id d204so24725728ybb.4
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:36:01 -0700 (PDT)
+        with ESMTP id S229610AbhJ2O4a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:56:30 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F03C061570
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:54:02 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q187so10176111pgq.2
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=PVKkXlv5tz5OjxD8+aBFbgk53jsO2zCBnP/mnCWgRyMvAvJYLH59I/sLMHR9RRQ6jy
-         27EoHkxcjs6ajxjdMcdb582+X6uCiO71pqhAU/llSKFI3P1LS2ONzOvYJHuI80u3V41z
-         cRmocPfx58QhR9/r37ep4+VbXUEeuLciyiZz0p02J0kfLTZfNo0UuyJzbhP/qUUPBaOR
-         +CHK9FbanRt/U1az8bgkhaKbeV4ikLK4Fe3+d1N652Fc8G/fIahFEc9A3r5vAXRJehR9
-         BFAIooOO+OFKJReqofTESXiRyp3i6gMKOIgs/eu/DVpqKfki06MZrfepbhl7gt7ktQ7H
-         QjiA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=4AuMATFjpbWTZ0I+UQqUufcg225mt5ZMICnMbvDg+1c=;
+        b=UqAJD3EsmUrq0vYya3aSXA9/SSthOtLtjisA6YqGtPD/9zoz1wNJL3p/YoPQWmtcrb
+         E8HuOahKfoSlTYgFdK2AFrHzvnifZq/HyiNrnXAk5IH2IibId00aVlpx1lq6XMvIUjOm
+         oy+l265CPz+yyDh3To+spKQrKdzgHPzcR7FZSkbqjDmwbQflAlm21FDW5CN28xzlLRPS
+         wXPEvF5fl8+BjKQUw78GupShBsOaBB+Ybfju2XPkVE/W+H6uExbSFXVcp0UWYQkCH91r
+         ZdkM0/LOuURF3zAYXIf1pYjc/XGJ6q3a7KF6QMvnE0Sr6zisl3otQ0rHsJv/62lNGqlI
+         zU9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=m2ibdDx8ZBGGCqEO7ciimeUpjCgvP93L4eZeEnj4UoCWj32A7zzXoKje17yBteUW+V
-         IvgrkomsLB3RbrDZ0rN8CBfI+15a4Ix14h36upBUyp51cMqI42lUdzC8kLfCe55pv2gR
-         qjn+YnU0SXbBlJCUdAnr3y8ikGpo5fhhzyxd/s3nP7IzutAoDxkvNz5xPKtTyw3+ZOcH
-         t+kFNcFWu26MK4nKyTA4ur3ko5Sp6ZpTtAJ0s6q6D2Ml3c9prmG4pUavavyFhV9Amt4b
-         PwuSPVf0CyCC/JibfpT5wnfZR7CcHmOYbF3/QEM37cbfXAjzUY/8F2wT3mI5IByYGrwH
-         5Nmg==
-X-Gm-Message-State: AOAM533EmCX+2+Mo8kmPH1apK+eQ6mXTUoGHc/uuLZ1VBDF1jM+i6SvQ
-        10zESvonNHjl47pjL2wzh4XV/Ys2KohJZW+EX/8=
-X-Google-Smtp-Source: ABdhPJz/ZbW0HiAiSe+rbGJ1J2r28rVD3dAKDF0hmlgIknwEtQC23rARrJSg9xUJQ84WBUhIpxYS0aQ1Zrxaab2lWOE=
-X-Received: by 2002:a05:6902:1207:: with SMTP id s7mr13623848ybu.211.1635518159827;
- Fri, 29 Oct 2021 07:35:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4AuMATFjpbWTZ0I+UQqUufcg225mt5ZMICnMbvDg+1c=;
+        b=jJt2NSqae5mk51ljyVW2aKN9glf8cKOu2YZyTTSb3MqH51She+xH27BLQliEzEnmrO
+         XQzT7pxS2XXodgxCbUvPu4ndCoG8kb4ZcviqXknJfM+JWVV53kq86a/JeD6Tkcgj4aTi
+         2M6LQNJZyZ11uWPKsdgZbWm4T8Yiy1ZlefH+0U7lHWnojRcajJpsrUSFqAOwf4DQVk3Q
+         8RuqPvWETZhEV4utLeeZ9luEg4k23zjSoXeh/n1T8dMMybZfumK5XNmKB3syT2v49ez7
+         +GA18mpat2FU5EveJoX0U4rJwN1x5TgWcWMJf4dYI8mDF1AZDbOMf0A5eii+/b+ODvSM
+         XqGQ==
+X-Gm-Message-State: AOAM531WQjd2l4yzfF6f5AQU5VfHRJJW8f5mn8fsy4a/Z0WjyJ+02837
+        68hnDncm7nQDRWKAyAVZ1y3TCUxi6BzZGg==
+X-Google-Smtp-Source: ABdhPJwwbEf6zpdpALTBZM1s3rXj/nVxxSNUS2i4eTc7FxG3JTde4ZQluzi28M0KtJV6WV/Hh/rvXA==
+X-Received: by 2002:a63:7a53:: with SMTP id j19mr8433987pgn.275.1635519241744;
+        Fri, 29 Oct 2021 07:54:01 -0700 (PDT)
+Received: from [0.0.0.0] ([150.109.126.7])
+        by smtp.gmail.com with ESMTPSA id k8sm7721459pfu.179.2021.10.29.07.54.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 07:54:01 -0700 (PDT)
+Subject: Re: Read large payload from struct mm_struct without ring buffer
+To:     Yadunandan Pillai <ytpillai@thesw4rm.com>, bpf@vger.kernel.org
+References: <20211026180110.nfgozwtq7diptye7@bigdesk>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Message-ID: <f8b84cfa-7571-7594-ef5f-9aa278a9b428@gmail.com>
+Date:   Fri, 29 Oct 2021 22:53:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a05:7110:700c:b0:fa:6b8d:fe70 with HTTP; Fri, 29 Oct 2021
- 07:35:59 -0700 (PDT)
-Reply-To: uchennailobitenone@gmail.com
-From:   uhenna <tochiuju11@gmail.com>
-Date:   Fri, 29 Oct 2021 07:35:59 -0700
-Message-ID: <CA+6axKvWzmRnHfHRdW8Px6t52MZYYD8XSjiY4Hgj66NL0kcNBw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211026180110.nfgozwtq7diptye7@bigdesk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Attention Please,
 
-I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
-healthy? This is to inform you that i have concluded the transaction
-successfully with the help of a new partner from Venezuela and now the
-fund has been transferred to Venezuela into the bank account of the
-new partner.
 
-Meanwhile, I have decided to compensate you with the sum of
-US$350,000.00 (thiree Hundred and Fifty Thousand United States
-Dollars) due to your past effort, though you disappointed me along the
-line. But nevertheless I am very happy for the successful ending of
-the transaction without any problem and that is the reason why i have
-decided to compensate you with the sum of US$350,000.00 so that you
-will share the joy with me.
+On 10/27/21 2:01 AM, Yadunandan Pillai wrote:
+> I am intercepting sched_wakeup_new and am able to read command line
+> arguments for an event using active_mm within the current task_struct.
+> However, the maximum size for these arguments is way beyond the stack
+> size of an eBPF program. Is there a way to read such a large payload
+> into userspace?
+> 
+> I'm trying to maintain backwards compatibility so unfortunately ringbuf
+> is not an option for the time being. I've tried reading the payload
+> directly into a hashmap, but unfortunately can't read past 512 bytes
+> (max buffer size). Is there another way to reserve large amounts of
+> memory in a separate location and get a direct reference, so I can read
+> into it with something like bpf_probe_read?
+> 
 
-I advise you to contact my secretary for Atm Card of US$350.000.00,
-which I kept for you. Contact him now without any delay.
+You can use a per-cpu array as a heap storage for that purpose.
+Please refer to Andrii's blog post ([0]) and a real-world application ([1]).
 
-Name: solomon brandy
+  [0]: https://nakryiko.com/posts/bpf-ringbuf/#bpf-perfbuf-bpf-perf-event-output
+  [1]: https://github.com/iovisor/bcc/blob/master/libbpf-tools/mountsnoop.bpf.c
 
-Email:solomonbrandyfiveone@gmail.com
-
-Kindly reconfirm to him the following below information:
-
-Your full name_________________________
-Your address__________________________
-Your country___________________________
-Your age______________________________
-Your occupation________________________
-Your cell Phone number______________________
-
-Note that if you did not send him the above information complete, he
-will not release the Atm card to you because he has to be sure that it
-is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
-which I kept for you.
-
-Best regards,
-
-Mr. uchenna ilobi
+Cheers,
+--
+Hengqi
