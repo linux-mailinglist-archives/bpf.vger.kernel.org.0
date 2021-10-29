@@ -2,135 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B64143F657
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 06:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D2143F6BF
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 07:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbhJ2E6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 00:58:48 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46432 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229504AbhJ2E6s (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 29 Oct 2021 00:58:48 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SL9j9h019055;
-        Thu, 28 Oct 2021 21:56:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=7WKv+h1wxSaUCxaA9eJicyygBodXrDjq2KFHw7hlhow=;
- b=rqTsacRihNzQlh4Zq0TU3QvHvAT4AR6nDuTI1tpM599Ns2qvwl/JggJP2IXvTiLBjiKW
- mKUftPvt9gkbrnCF9wjqJWJRKcbJia7RyrQ3aYR6fGI8KcVueB1HGUOHmfQPSbP1cet2
- 3D8+iMYqp+u4TZg0lpWiGJVpKgIb1ZaC/eI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c03hk2aba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 28 Oct 2021 21:56:18 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 28 Oct 2021 21:56:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=igLFiUqtb7DChJB+DzOVLbR3W2Sp7IQ/lJvfTgsr13f6lZSUl6CFRCyuxSyiwjJWc5IeNQMlRukCf3L/awfTYAUM7CrLq/F5FYFGeJrTboYXLPdXZVCdrCRW86X+nD36dn8oaCKPYUfVhBm7QZnaqoQy6tWgdT3OSPRW3so81rDZGuMwz6CBNwPR1hSc+2WIODo2vVDXyKqxN1gT8prjkf9HPdQnq9tonACTR7YrwhBebKoc++CpF4HdG9boT4Ajy+JnzDfc8VX9mjZ5CeGpe1FOMya8AsjSL51GJSMj+RV8csxakLaZfFuRV6Rbz3u/90Z+OQ2hlKluOlz28zx0qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7WKv+h1wxSaUCxaA9eJicyygBodXrDjq2KFHw7hlhow=;
- b=EXS4pKr6GKpBl2VeNKa9qc/QVFgwPxO//TnHJx/MWJodZreAjDqX9QrSdttSUYU8erdxPtvSLcSkMVI3IgwLdNsEIBSN1T2llr8FUB8zOgKOti1lGiOJjmaS1+Kt0anM6imnYcg3jZfN6XY1aghxWhz/3HtjuBGbKrhSfMbBx6XbAuHy+2aYf2FdaWVMedl9PHIAyLUVj4FLwI8a1K6eCMpvXePgVGXOz1r/OlLa1SbW9YHEKEIBxmDNfeY+8lamnXhE/JLHwrxS7OTgHsAiLRW+rj2ZoyVFW8Bf5/fYyj0NrUTsvLRywb4mZiVV0K+XSV29IFTNusfNMINkVpQrPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=fb.com;
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SA1PR15MB4888.namprd15.prod.outlook.com (2603:10b6:806:1d3::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 29 Oct
- 2021 04:56:16 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160%7]) with mapi id 15.20.4628.020; Fri, 29 Oct 2021
- 04:56:16 +0000
-Date:   Thu, 28 Oct 2021 21:56:12 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Andrea Righi <andrea.righi@canonical.com>
-CC:     Shuah Khan <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/bpf: fix fclose/pclose mismatch
-Message-ID: <20211029045612.6cdqkoihrvp7kzhq@kafai-mbp.dhcp.thefacebook.com>
-References: <20211026143409.42666-1-andrea.righi@canonical.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211026143409.42666-1-andrea.righi@canonical.com>
-X-ClientProxiedBy: MW4P221CA0007.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:303:8b::12) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        id S231764AbhJ2Foh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 01:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhJ2Fog (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 01:44:36 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8629FC061570;
+        Thu, 28 Oct 2021 22:42:07 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id n7so14969824ljp.5;
+        Thu, 28 Oct 2021 22:42:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OqIUMNNZdElt4ykeqKzyUq6XbANVm6mrrDpsIt3rxiU=;
+        b=fzJXldPw1O0i9bei67PZJPn3L/SMf8vEe9M34juhGK41c1KZxyBtfkjOnPxo7QS7iQ
+         SLqQF6e+R1SDtMaDzIpm40QIMH9TISqqChYzLmjj/fkSCTeixbx8UKMA2mnJ9ru4mDm+
+         5dxAs8LPaIEiZjyXCW0nIUXSv9EhYbNnKQBYSGOuliOYbTv7aXOTo+RXYnAre1ALUnja
+         pVt5kW1GcMqAvbQMSKpo4m6nz71JcCoo++OA3jo6wnC/us3lW0z0mCqRp9pkAnfPDyMy
+         7PpWb2kwlmTfM/EL6VSQnS1XQId35ohgCe+SvVzezaiBvrphF394n7tWhqbyi6l13kgw
+         6eXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OqIUMNNZdElt4ykeqKzyUq6XbANVm6mrrDpsIt3rxiU=;
+        b=dqAqgi1APJmVY1qJoIEBEAHS1NPv5UNPGN1JF/Z3F2gXTYDBa1/rYprkySp9hE4IEU
+         oC4LkfrJOZi1tE2l7ta++3Ovi/yRciMi6Aw+0YgD6ZR0oIYRfLbO9V/IOIqXWwDiR0Bo
+         BYeLSZ6jkpf4tHF80lovXc4KDIRWRuxFb2+tNSe/fihrhiid+jstzWl5n3lA7ZafsjoK
+         INGU3DaN6FkJdmcriaIt81HBbNkLUlx3iUW+kQt+kO6+dTE5HMXG2AhpPaAs/iKAer4W
+         gcpC0mcSSiORs6OiEJiAWEcu8TtwjVCl6bEsnUfAuU+Djl7gu6q5O0BH94FU7pQ8dCQO
+         R8Qg==
+X-Gm-Message-State: AOAM531QEa4bzUSnrnCyiU4riLAgsuOJW0OreRDTVwnq/SLKOkiaF25D
+        2kdGsLMlixCoqo+DUCq+z1tD1Gxzi4ChlvfKxA==
+X-Google-Smtp-Source: ABdhPJxIiTLKGbkjERdw0T/Hi7HVMyRwEDBtXgq8t31Pbo4YuFvl35uOrKLsKT+RPKFb2OJqncKE/acO8mnLJO34JDs=
+X-Received: by 2002:a2e:9106:: with SMTP id m6mr9191592ljg.24.1635486125724;
+ Thu, 28 Oct 2021 22:42:05 -0700 (PDT)
 MIME-Version: 1.0
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:ae8b) by MW4P221CA0007.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Fri, 29 Oct 2021 04:56:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 186b2f2a-410b-44db-0e80-08d99a987061
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4888:
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4888B6F7995896037E872480D5879@SA1PR15MB4888.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0iBMnK47hym0ourucVcS4qKtGOJ+08ussweWhTL0/Seb2nXeEn8mR77NgpWn517i0qwJIzsYIB6Td4vOmy9dQ4zNfjujIxFwjp4I3//mbMjLrKqTH6+SAUE9LREoCFSdzL7eKPq2O8x+mXj6oR7pX4nRXJIxCoEtl0lUFC6wjG8DivQ+R6R+D6qJbjvccTv5OVtDV4f5XZwvkxDRZji50q/dpLuhaE4adYUkuBrB37IQXjLNkbmf9MJj99o6CxUKpKjvcWm7vZVSeMbKOBIJJU5N48UYHlFr7a35C7vHVxE95nQwtY2EcFPTA/61thVSC3RN6BRLzHkYTSnA1+UnCleYnMZ2h5nZkTZCiHi9VV4stRCTcX8BiZ9EkvHyQUNs+lg+sAYeENMDSTLYbfGSUN7YGtdFj4M51xXkkN5oafcnXfs7zYb/1Km94fXBOgjfdhztj6aocoMYI8wkg6zOXrAbuphOxFRh/iomazg/cYd00Wf0FHIhTdqSIWh51AXKuOSHm6SNKdaAyV95DE1KMDr7twZXcaODJ0QczIeTXjnhDo27oh5Ix+fH9cQHlODHyYbY9YwIwIY9IHbZYRnynEb3JtyCKPdG0qqr7tfykkVa/2D8e1Ah1k02QCEiJ4IoxorairOrsT1q7wlPXk/CvA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(55016002)(66946007)(66556008)(86362001)(8936002)(66476007)(9686003)(186003)(4326008)(316002)(6506007)(2906002)(7696005)(558084003)(6666004)(8676002)(6916009)(508600001)(83380400001)(52116002)(5660300002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?djZbwZQuQRJPbv+Uc2hlrsMwBtjmFi2FMuA0O/iVd7qRNgRfvFcUt73dk87L?=
- =?us-ascii?Q?plqkQj9rV6eiR3rz3RUTcX6llMMIbRHJKLu2E5n0sPpLE5S3YqkZwQdI+S6K?=
- =?us-ascii?Q?w+65XLQOSHSykdAJB2aIlpCRDtz1Vsr/Vp17XFCWvJ5APRm7QvfdDJM6WIMM?=
- =?us-ascii?Q?X7hqnowOsjABTbCfZENMXqTmsUvcg7V4rGABr8svNUfFh+s4SW69D5K5JMj7?=
- =?us-ascii?Q?ulHx1Ki7wGdv5MY0BJH2QhNwHxvjCg9TqtbgTiKKnzFJipzq1GX3XD5udDsf?=
- =?us-ascii?Q?BmyW9sqSm0sy8E9zhbS1HuOyEfyveza4Suxiz2uh1M19b6DmxVZC9pGE4A4w?=
- =?us-ascii?Q?d2b1uMVJ/TBh+GfCdPWmIklq6NSrysnzMpl/RbP80mSKqGAzbH1TXT8U0Zdu?=
- =?us-ascii?Q?2oDIycnsP634YNnrG/FMHJc0A/yx8KuUmTa5NqPAMZem8Nn20klzK9+Mlkva?=
- =?us-ascii?Q?sranaJSDHKotoY24195FGgkO/4TuTLVcNyZPAmJ9q4wumQ5qu4cC5fcKK9+M?=
- =?us-ascii?Q?aps9tUr9DQd+4hn6f2l3QhCtFgCKcVanX8s7ePXwMXbqvOyEQkJQtgIEh4IU?=
- =?us-ascii?Q?momkda9z7rt0SS4T9Y0AU77HmPrDn6cQkOLO1XMABsylMdw6yeptVfE/Y5jh?=
- =?us-ascii?Q?d/pUYs7dffkS0KRxV/Injvr0y8hVAEZn075pliP4v8K/r5rw9fG5/2wiUUGD?=
- =?us-ascii?Q?cC15aFTMdLcqxQJe6GGoF1XH+D0+oiihoTLRLAsqfnrym34iJFAsILuxk38V?=
- =?us-ascii?Q?lU2j+Hp2m3Qfw1ImEPmkkUrqspYhrpes8hYTR1x+Kf/5sFcNPe9zXPec/et2?=
- =?us-ascii?Q?6ZzNlV/+nHrTmHNcb9TJapB8b5wBWAl0FiV3SoO1UQbLgguSWQzJzOYxzwUf?=
- =?us-ascii?Q?MGCJvppigBshLmW6h9t7IRGYForUEo9K91wVZGNJ89d0fA5PdEVLpnkUGhHZ?=
- =?us-ascii?Q?OehjFVswOjs9G7FkNB9zIu8j6s+uZL2NJ75ttqnIek02zw8F4mXXExLhnVHn?=
- =?us-ascii?Q?RSG1zcymw+DpuqgI3YxqteCsbxKW4IFvsIDQVBRChCYkDtaI5aDcuXsFUfOy?=
- =?us-ascii?Q?DMnpsMpITpppepaQrUR66rqz6uRuKKBIDwrtMChL3uELLqXFVPc9FjcSyNK6?=
- =?us-ascii?Q?ffY84hIlsM5TQiKjIcSHpNSKqlEOJZSpTEzXModxIEf0/x9GyrtTLcatmXzW?=
- =?us-ascii?Q?4wedIsM71nd+HElJYZDV7jUPsWQ3mN4Sc1J2FRrMWzlkV5WbZukS1sM4tk7r?=
- =?us-ascii?Q?tiZdV17urxS/30qRHp84wPXRW2+BKK33T/m49veTCQjAr+TvpZpdbO4Zlrf8?=
- =?us-ascii?Q?UiCnHA4vm46obpige6V6L51YonVL+q2uRn3ri/kww8hJP8h3k8FDjhCBaL6e?=
- =?us-ascii?Q?onwlAcxrrQ+3iFIa7uTNHIU8Aqx4N5HIPcuJe0QIU/HUpLjjzx6xUFTnFdQp?=
- =?us-ascii?Q?J/RQKM/0MABFVRKJMu18SFpucEz/n2RsNi6TVqTinDao0ALo6bWO9NYWdhB5?=
- =?us-ascii?Q?LDFIdQidT86hctOinB2TTKu7VW9DbAHSqI4Ji+SHvVsLtgtW/oo66C4wOFVu?=
- =?us-ascii?Q?nbIUSa9LgrU0h+UxGrAC/ns1D7xjx4nnQZZyMDHDu8ceAScORbBrNqcYf5F7?=
- =?us-ascii?Q?/Q=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 186b2f2a-410b-44db-0e80-08d99a987061
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2021 04:56:16.4186
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 75ZAObwFVHCF/GdQjS6qE3GlFGOMh/eLgFGTZ3tPIHxMOMxFb153ngeSUzzY63h9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4888
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: OLtVnq9aycvaaF9Eqt_mb9lPM8mhTwye
-X-Proofpoint-GUID: OLtVnq9aycvaaF9Eqt_mb9lPM8mhTwye
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-29_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- suspectscore=0 phishscore=0 spamscore=0 malwarescore=0 clxscore=1011
- impostorscore=0 mlxlogscore=661 mlxscore=0 lowpriorityscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110290028
-X-FB-Internal: deliver
+References: <20211027203727.208847-1-mauricio@kinvolk.io> <CAADnVQK2Bm7dDgGc6uHVosuSzi_LT0afXM6Hf3yLXByfftxV1Q@mail.gmail.com>
+In-Reply-To: <CAADnVQK2Bm7dDgGc6uHVosuSzi_LT0afXM6Hf3yLXByfftxV1Q@mail.gmail.com>
+From:   Rafael David Tinoco <rafaeldtinoco@gmail.com>
+Date:   Fri, 29 Oct 2021 02:41:42 -0300
+Message-ID: <CAGqxgpuB_L519RK6mGUrt9XTHnYJTrZY9AuQqgQ+p196k+oE1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] libbpf: Implement BTF Generator API
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 04:34:09PM +0200, Andrea Righi wrote:
-> Make sure to use pclose() to properly close the pipe opened by popen().
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+On Thu, Oct 28, 2021 at 11:34 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Oct 27, 2021 at 1:37 PM Mauricio V=C3=A1squez <mauricio@kinvolk.i=
+o> wrote:
+> > There is also a good example[3] on how to use BTFGen and BTFHub togethe=
+r
+> > to generate multiple BTF files, to each existing/supported kernel,
+> > tailored to one application. For example: a complex bpf object might
+> > support nearly 400 kernels by having BTF files summing only 1.5 MB.
+>
+> Could you share more details on what kind of fields and types
+> were used to achieve this compression?
+> Tracing progs will be peeking into task_struct.
+> To describe it in the reduced BTF most of the kernel types would be neede=
+d,
+> so I'm a bit skeptical on the practicality of the algorithm.
+
+https://github.com/aquasecurity/btfhub/tree/main/tools
+
+has a complete README and, at the end, the example used:
+
+https://github.com/aquasecurity/btfhub/tree/main/tools#time-to-test-btfgen-=
+and-btfhub
+
+We tested btfgen with bpfcc tools and tracee:
+
+https://github.com/aquasecurity/tracee/blob/main/tracee-ebpf/tracee/tracee.=
+bpf.c
+
+and the generated BTF files worked. If you run something like:
+
+./btfgen.sh [.../aquasec-tracee/tracee-ebpf/dist/tracee.bpf.core.o]
+
+it will generate the BTFs tailored to a given eBPF object file, 1 smaller B=
+TF
+file per existing full external raw BTF file (1 per kernel version, basical=
+ly).
+
+All the ~500 kernels generated the same amount of BTF files with ~3MB in
+total. We then remove all the BTF files that are equal to their previous
+kernels:
+
+https://github.com/aquasecurity/btfhub/blob/main/tools/btfgen.sh#L113
+
+and we are able to reduce from 3MB to 1.5MB (as similar BTF files are symli=
+nks
+to the previous ones).
+
+> I think it may work for sk_buff, since it will pull struct sock,
+> net_device, rb_tree, and not a ton more.
+> Have you considered generating kernel BTF with fields that are accessed
+> by bpf prog only and replacing all other fields with padding ?
+
+That is exactly the result of our final BTF file. We only include the
+fields and types being used by the given eBPF object:
+
+```
+$ bpftool btf dump file ./generated/5.4.0-87-generic.btf format raw
+[1] PTR '(anon)' type_id=3D99
+[2] TYPEDEF 'u32' type_id=3D35
+[3] TYPEDEF '__be16' type_id=3D22
+[4] PTR '(anon)' type_id=3D52
+[5] TYPEDEF '__u8' type_id=3D83
+[6] PTR '(anon)' type_id=3D29
+[7] STRUCT 'mnt_namespace' size=3D120 vlen=3D1
+    'ns' type_id=3D72 bits_offset=3D64
+[8] TYPEDEF '__kernel_gid32_t' type_id=3D75
+[9] STRUCT 'iovec' size=3D16 vlen=3D2
+    'iov_base' type_id=3D16 bits_offset=3D0
+    'iov_len' type_id=3D85 bits_offset=3D64
+[10] PTR '(anon)' type_id=3D58
+[11] STRUCT '(anon)' size=3D8 vlen=3D2
+    'skc_daddr' type_id=3D81 bits_offset=3D0
+    'skc_rcv_saddr' type_id=3D81 bits_offset=3D32
+[12] TYPEDEF '__u64' type_id=3D89
+...
+[120] STRUCT 'task_struct' size=3D9216 vlen=3D13
+    'thread_info' type_id=3D105 bits_offset=3D0
+    'real_parent' type_id=3D30 bits_offset=3D18048
+    'real_cred' type_id=3D16 bits_offset=3D21248
+    'pid' type_id=3D14 bits_offset=3D17920
+    'mm' type_id=3D110 bits_offset=3D16512
+    'thread_pid' type_id=3D56 bits_offset=3D18752
+    'exit_code' type_id=3D123 bits_offset=3D17152
+    'group_leader' type_id=3D30 bits_offset=3D18432
+    'flags' type_id=3D75 bits_offset=3D288
+    'thread_group' type_id=3D87 bits_offset=3D19328
+    'tgid' type_id=3D14 bits_offset=3D17952
+    'nsproxy' type_id=3D100 bits_offset=3D22080
+    'comm' type_id=3D96 bits_offset=3D21440
+[121] STRUCT 'pid' size=3D96 vlen=3D1
+    'numbers' type_id=3D77 bits_offset=3D640
+[122] STRUCT 'new_utsname' size=3D390 vlen=3D1
+    'nodename' type_id=3D48 bits_offset=3D520
+[123] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+[124] ARRAY '(anon)' type_id=3D35 index_type_id=3D123 nr_elems=3D2
+```
+
+If you do a "format c" to the generated BTF file, then bpftool considers
+everything as padding:
+
+```
+typedef unsigned char __u8;
+
+struct ns_common {
+        long: 64;
+        long: 64;
+        unsigned int inum;
+        int: 32;
+};
+
+struct mnt_namespace {
+        long: 64;
+        struct ns_common ns;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+        long: 64;
+};
+
+typedef unsigned int __kernel_gid32_t;
+```
+
+But libbpf is still able to calculate all field relocations.
+
+> I think the algo would be quite different from the actual CO-RE logic
+> you're trying to reuse.
+> If CO-RE matching style is necessary and it's the best approach then plea=
+se
+> add new logic to bpftool.
+
+Yes, we're heading that direction I suppose :\ ... Accessing .BTF.ext, to g=
+et
+the "bpf_core_relo" information requires libbpf internals to be exposed:
+
+https://github.com/rafaeldtinoco/btfgen/blob/standalone/btfgen2.c#L119
+https://github.com/rafaeldtinoco/btfgen/blob/standalone/include/stolen.h
+
+we would have to check if we can try to export what we need for that (inste=
+ad
+of re-declaring internal headers, which obviously looks bad).
