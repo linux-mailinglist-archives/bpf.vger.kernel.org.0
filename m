@@ -2,139 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0015143FDE7
-	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 16:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D3243FE8B
+	for <lists+bpf@lfdr.de>; Fri, 29 Oct 2021 16:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhJ2OMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 10:12:02 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:26135 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhJ2OLz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:11:55 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Hgkl5003tz1DHg5;
-        Fri, 29 Oct 2021 22:07:12 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Fri, 29 Oct 2021 22:09:11 +0800
-Received: from huawei.com (10.175.101.6) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Fri, 29
- Oct 2021 22:09:10 +0800
-From:   Liu Jian <liujian56@huawei.com>
-To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <xiyou.wangcong@gmail.com>,
-        <alexei.starovoitov@gmail.com>
-CC:     <liujian56@huawei.com>
-Subject: [PATHC bpf v6 3/3] selftests, bpf: Add one test for sockmap with strparser
-Date:   Fri, 29 Oct 2021 22:12:16 +0800
-Message-ID: <20211029141216.211899-3-liujian56@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211029141216.211899-1-liujian56@huawei.com>
-References: <20211029141216.211899-1-liujian56@huawei.com>
+        id S229558AbhJ2Oia (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Oct 2021 10:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhJ2Oia (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Oct 2021 10:38:30 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D172C061570
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:36:01 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id d204so24725728ybb.4
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 07:36:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=PVKkXlv5tz5OjxD8+aBFbgk53jsO2zCBnP/mnCWgRyMvAvJYLH59I/sLMHR9RRQ6jy
+         27EoHkxcjs6ajxjdMcdb582+X6uCiO71pqhAU/llSKFI3P1LS2ONzOvYJHuI80u3V41z
+         cRmocPfx58QhR9/r37ep4+VbXUEeuLciyiZz0p02J0kfLTZfNo0UuyJzbhP/qUUPBaOR
+         +CHK9FbanRt/U1az8bgkhaKbeV4ikLK4Fe3+d1N652Fc8G/fIahFEc9A3r5vAXRJehR9
+         BFAIooOO+OFKJReqofTESXiRyp3i6gMKOIgs/eu/DVpqKfki06MZrfepbhl7gt7ktQ7H
+         QjiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=m2ibdDx8ZBGGCqEO7ciimeUpjCgvP93L4eZeEnj4UoCWj32A7zzXoKje17yBteUW+V
+         IvgrkomsLB3RbrDZ0rN8CBfI+15a4Ix14h36upBUyp51cMqI42lUdzC8kLfCe55pv2gR
+         qjn+YnU0SXbBlJCUdAnr3y8ikGpo5fhhzyxd/s3nP7IzutAoDxkvNz5xPKtTyw3+ZOcH
+         t+kFNcFWu26MK4nKyTA4ur3ko5Sp6ZpTtAJ0s6q6D2Ml3c9prmG4pUavavyFhV9Amt4b
+         PwuSPVf0CyCC/JibfpT5wnfZR7CcHmOYbF3/QEM37cbfXAjzUY/8F2wT3mI5IByYGrwH
+         5Nmg==
+X-Gm-Message-State: AOAM533EmCX+2+Mo8kmPH1apK+eQ6mXTUoGHc/uuLZ1VBDF1jM+i6SvQ
+        10zESvonNHjl47pjL2wzh4XV/Ys2KohJZW+EX/8=
+X-Google-Smtp-Source: ABdhPJz/ZbW0HiAiSe+rbGJ1J2r28rVD3dAKDF0hmlgIknwEtQC23rARrJSg9xUJQ84WBUhIpxYS0aQ1Zrxaab2lWOE=
+X-Received: by 2002:a05:6902:1207:: with SMTP id s7mr13623848ybu.211.1635518159827;
+ Fri, 29 Oct 2021 07:35:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Received: by 2002:a05:7110:700c:b0:fa:6b8d:fe70 with HTTP; Fri, 29 Oct 2021
+ 07:35:59 -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uhenna <tochiuju11@gmail.com>
+Date:   Fri, 29 Oct 2021 07:35:59 -0700
+Message-ID: <CA+6axKvWzmRnHfHRdW8Px6t52MZYYD8XSjiY4Hgj66NL0kcNBw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add the test to check sockmap with strparser is working well.
+Attention Please,
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- tools/testing/selftests/bpf/test_sockmap.c | 33 ++++++++++++++++++++--
- 1 file changed, 30 insertions(+), 3 deletions(-)
+I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
+healthy? This is to inform you that i have concluded the transaction
+successfully with the help of a new partner from Venezuela and now the
+fund has been transferred to Venezuela into the bank account of the
+new partner.
 
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 06924917ad77..1ba7e7346afb 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -139,6 +139,7 @@ struct sockmap_options {
- 	bool sendpage;
- 	bool data_test;
- 	bool drop_expected;
-+	bool check_recved_len;
- 	int iov_count;
- 	int iov_length;
- 	int rate;
-@@ -556,8 +557,12 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 	int err, i, flags = MSG_NOSIGNAL;
- 	bool drop = opt->drop_expected;
- 	bool data = opt->data_test;
-+	int iov_alloc_length = iov_length;
- 
--	err = msg_alloc_iov(&msg, iov_count, iov_length, data, tx);
-+	if (!tx && opt->check_recved_len)
-+		iov_alloc_length *= 2;
-+
-+	err = msg_alloc_iov(&msg, iov_count, iov_alloc_length, data, tx);
- 	if (err)
- 		goto out_errno;
- 	if (peek_flag) {
-@@ -665,6 +670,13 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 
- 			s->bytes_recvd += recv;
- 
-+			if (opt->check_recved_len && s->bytes_recvd > total_bytes) {
-+				errno = EMSGSIZE;
-+				fprintf(stderr, "recv failed(), bytes_recvd:%zd, total_bytes:%f\n",
-+						s->bytes_recvd, total_bytes);
-+				goto out_errno;
-+			}
-+
- 			if (data) {
- 				int chunk_sz = opt->sendpage ?
- 						iov_length * cnt :
-@@ -744,7 +756,8 @@ static int sendmsg_test(struct sockmap_options *opt)
- 
- 	rxpid = fork();
- 	if (rxpid == 0) {
--		iov_buf -= (txmsg_pop - txmsg_start_pop + 1);
-+		if (txmsg_pop || txmsg_start_pop)
-+			iov_buf -= (txmsg_pop - txmsg_start_pop + 1);
- 		if (opt->drop_expected || txmsg_ktls_skb_drop)
- 			_exit(0);
- 
-@@ -1688,6 +1701,19 @@ static void test_txmsg_ingress_parser(int cgrp, struct sockmap_options *opt)
- 	test_exec(cgrp, opt);
- }
- 
-+static void test_txmsg_ingress_parser2(int cgrp, struct sockmap_options *opt)
-+{
-+	if (ktls == 1)
-+		return;
-+	skb_use_parser = 10;
-+	opt->iov_length = 20;
-+	opt->iov_count = 1;
-+	opt->rate = 1;
-+	opt->check_recved_len = true;
-+	test_exec(cgrp, opt);
-+	opt->check_recved_len = false;
-+}
-+
- char *map_names[] = {
- 	"sock_map",
- 	"sock_map_txmsg",
-@@ -1786,7 +1812,8 @@ struct _test test[] = {
- 	{"txmsg test pull-data", test_txmsg_pull},
- 	{"txmsg test pop-data", test_txmsg_pop},
- 	{"txmsg test push/pop data", test_txmsg_push_pop},
--	{"txmsg text ingress parser", test_txmsg_ingress_parser},
-+	{"txmsg test ingress parser", test_txmsg_ingress_parser},
-+	{"txmsg test ingress parser2", test_txmsg_ingress_parser2},
- };
- 
- static int check_whitelist(struct _test *t, struct sockmap_options *opt)
--- 
-2.17.1
+Meanwhile, I have decided to compensate you with the sum of
+US$350,000.00 (thiree Hundred and Fifty Thousand United States
+Dollars) due to your past effort, though you disappointed me along the
+line. But nevertheless I am very happy for the successful ending of
+the transaction without any problem and that is the reason why i have
+decided to compensate you with the sum of US$350,000.00 so that you
+will share the joy with me.
 
+I advise you to contact my secretary for Atm Card of US$350.000.00,
+which I kept for you. Contact him now without any delay.
+
+Name: solomon brandy
+
+Email:solomonbrandyfiveone@gmail.com
+
+Kindly reconfirm to him the following below information:
+
+Your full name_________________________
+Your address__________________________
+Your country___________________________
+Your age______________________________
+Your occupation________________________
+Your cell Phone number______________________
+
+Note that if you did not send him the above information complete, he
+will not release the Atm card to you because he has to be sure that it
+is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
+which I kept for you.
+
+Best regards,
+
+Mr. uchenna ilobi
