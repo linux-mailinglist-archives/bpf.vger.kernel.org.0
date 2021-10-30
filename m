@@ -2,108 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D96B4405C7
-	for <lists+bpf@lfdr.de>; Sat, 30 Oct 2021 01:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80503440786
+	for <lists+bpf@lfdr.de>; Sat, 30 Oct 2021 06:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhJ2Xbg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Oct 2021 19:31:36 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51428 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhJ2Xbf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Oct 2021 19:31:35 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mgbIy-0003Jv-0R; Sat, 30 Oct 2021 01:29:00 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mgbIx-0007ES-Pp; Sat, 30 Oct 2021 01:28:59 +0200
-Subject: Re: [PATCH bpf-next] bpf: Fix propagation of bounds from 64-bit
- min/max into 32-bit and var_off.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20211029163102.80290-1-alexei.starovoitov@gmail.com>
- <2d8df23d-175f-3eb8-3ba4-35659664336c@fb.com>
- <CAADnVQLvwGMsawF9s3wDw9Gh_HJpCTkHTS=0MHLLy+VqapLUWQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4c43dc61-d8b8-b179-280f-84bc291583ca@iogearbox.net>
-Date:   Sat, 30 Oct 2021 01:28:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230002AbhJ3FCY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 30 Oct 2021 01:02:24 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19682 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231286AbhJ3FCX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 30 Oct 2021 01:02:23 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19U3RqPs027686
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 21:59:53 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c0wq90bt9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 21:59:53 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Fri, 29 Oct 2021 21:59:52 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 6B7817830508; Fri, 29 Oct 2021 21:59:43 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next 00/14] libbpf: add unified bpf_prog_load() low-level API
+Date:   Fri, 29 Oct 2021 21:59:27 -0700
+Message-ID: <20211030045941.3514948-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLvwGMsawF9s3wDw9Gh_HJpCTkHTS=0MHLLy+VqapLUWQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26337/Fri Oct 29 10:19:12 2021)
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: HEzjZh2p7MoJwwrmBCFAcA9GUMYpyJWI
+X-Proofpoint-GUID: HEzjZh2p7MoJwwrmBCFAcA9GUMYpyJWI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-30_01,2021-10-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 clxscore=1015 spamscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110300025
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/29/21 9:22 PM, Alexei Starovoitov wrote:
-> On Fri, Oct 29, 2021 at 11:29 AM Yonghong Song <yhs@fb.com> wrote:
->> On 10/29/21 9:31 AM, Alexei Starovoitov wrote:
->>> From: Alexei Starovoitov <ast@kernel.org>
->>>
->>> Before this fix:
->>> 166: (b5) if r2 <= 0x1 goto pc+22
->>> from 166 to 189: R2=invP(id=1,umax_value=1,var_off=(0x0; 0xffffffff))
->>>
->>> After this fix:
->>> 166: (b5) if r2 <= 0x1 goto pc+22
->>> from 166 to 189: R2=invP(id=1,umax_value=1,var_off=(0x0; 0x1))
->>>
->>> While processing BPF_JLE the reg_set_min_max() would set true_reg->umax_value = 1
->>> and call __reg_combine_64_into_32(true_reg).
->>>
->>> Without the fix it would not pass the condition:
->>> if (__reg64_bound_u32(reg->umin_value) && __reg64_bound_u32(reg->umax_value))
->>>
->>> since umin_value == 0 at this point.
->>> Before commit 10bf4e83167c the umin was incorrectly ingored.
->>> The commit 10bf4e83167c fixed the correctness issue, but pessimized
->>> propagation of 64-bit min max into 32-bit min max and corresponding var_off.
->>>
->>> Fixes: 10bf4e83167c ("bpf: Fix propagation of 32 bit unsigned bounds from 64 bit bounds")
->>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->>
->> See an unrelated nits below.
->>
->> Acked-by: Yonghong Song <yhs@fb.com>
->>
->>> ---
->>>    kernel/bpf/verifier.c                               | 2 +-
->>>    tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
->>>    2 files changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 3c8aa7df1773..29671ed49ee8 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -1425,7 +1425,7 @@ static bool __reg64_bound_s32(s64 a)
->>
->> We have
->> static bool __reg64_bound_s32(s64 a)
->> {
->>           return a > S32_MIN && a < S32_MAX;
->> }
->>
->> Should we change to
->>          return a >= S32_MIN && a <= S32_MAX
->> ?
-> 
-> Probably, but I haven't investigated that yet.
+This patch set adds unified OPTS-based low-level bpf_prog_load() API for
+loading BPF programs directly into kernel without utilizing libbpf's
+bpf_object abstractions. This OPTS-based interface allows for future
+extensions without breaking backwards or forward API and ABI compatibility.
+Similar approach will be used for other low-level APIs that require extensive
+sets of parameters, like BPF_MAP_CREATE command.
 
-Fix looks good to me as well, we should make it consistent if so given it's the same
-logic, but some tests for the S32 would be good if we don't have them yet.
+First half of the patch set adds libbpf API, cleans up internal usage of
+to-be-deprecated APIs, etc. Second half cleans up and converts selftests away
+from using deprecated APIs. See individual patches for more details.
 
-Thanks!
-Daniel
+Cc: Hengqi Chen <hengqi.chen@gmail.com>
+
+Andrii Nakryiko (14):
+  bpftool: fix unistd.h include
+  libbpf: add bpf() syscall wrapper into public API
+  libbpf: rename DECLARE_LIBBPF_OPTS into LIBBPF_OPTS
+  libbpf: pass number of prog load attempts explicitly
+  libbpf: unify low-level BPF_PROG_LOAD APIs into bpf_prog_load()
+  libbpf: remove internal use of deprecated bpf_prog_load() variants
+  libbpf: stop using to-be-deprecated APIs
+  bpftool: stop using deprecated bpf_load_program()
+  libbpf: remove deprecation attribute from struct bpf_prog_prep_result
+  selftests/bpf: fix non-strict SEC() program sections
+  selftests/bpf: convert legacy prog load APIs to bpf_prog_load()
+  selftests/bpf: merge test_stub.c into testing_helpers.c
+  selftests/bpf: use explicit bpf_prog_test_load() calls everywhere
+  selftests/bpf: use explicit bpf_test_load_program() helper calls
+
+ tools/bpf/bpftool/cgroup.c                    |   2 +-
+ tools/bpf/bpftool/feature.c                   |   2 +-
+ tools/lib/bpf/bpf.c                           | 242 +++++++++---------
+ tools/lib/bpf/bpf.h                           | 104 +++++++-
+ tools/lib/bpf/bpf_gen_internal.h              |   8 +-
+ tools/lib/bpf/gen_loader.c                    |  30 +--
+ tools/lib/bpf/libbpf.c                        | 177 +++++--------
+ tools/lib/bpf/libbpf.h                        |   6 +-
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_common.h                 |  14 +-
+ tools/lib/bpf/libbpf_internal.h               |  31 ---
+ tools/lib/bpf/libbpf_legacy.h                 |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |  20 +-
+ tools/lib/bpf/xsk.c                           |  34 +--
+ tools/testing/selftests/bpf/Makefile          |  38 +--
+ .../selftests/bpf/flow_dissector_load.h       |   3 +-
+ .../selftests/bpf/get_cgroup_id_user.c        |   5 +-
+ .../testing/selftests/bpf/prog_tests/align.c  |  11 +-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     |   2 +-
+ .../bpf/prog_tests/cgroup_attach_autodetach.c |   2 +-
+ .../bpf/prog_tests/cgroup_attach_multi.c      |   2 +-
+ .../bpf/prog_tests/cgroup_attach_override.c   |   2 +-
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |   8 +-
+ .../selftests/bpf/prog_tests/fexit_stress.c   |  33 +--
+ .../prog_tests/flow_dissector_load_bytes.c    |   2 +-
+ .../bpf/prog_tests/flow_dissector_reattach.c  |   4 +-
+ .../bpf/prog_tests/get_stack_raw_tp.c         |   4 +-
+ .../selftests/bpf/prog_tests/global_data.c    |   2 +-
+ .../bpf/prog_tests/global_func_args.c         |   2 +-
+ .../selftests/bpf/prog_tests/kfree_skb.c      |   2 +-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +-
+ .../bpf/prog_tests/load_bytes_relative.c      |   2 +-
+ .../selftests/bpf/prog_tests/map_lock.c       |   4 +-
+ .../selftests/bpf/prog_tests/pkt_access.c     |   2 +-
+ .../selftests/bpf/prog_tests/pkt_md_access.c  |   2 +-
+ .../bpf/prog_tests/queue_stack_map.c          |   2 +-
+ .../raw_tp_writable_reject_nbd_invalid.c      |  14 +-
+ .../bpf/prog_tests/raw_tp_writable_test_run.c |  29 +--
+ .../selftests/bpf/prog_tests/signal_pending.c |   2 +-
+ .../selftests/bpf/prog_tests/skb_ctx.c        |   2 +-
+ .../selftests/bpf/prog_tests/skb_helpers.c    |   2 +-
+ .../selftests/bpf/prog_tests/sockopt.c        |  19 +-
+ .../selftests/bpf/prog_tests/spinlock.c       |   4 +-
+ .../selftests/bpf/prog_tests/stacktrace_map.c |   2 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c    |   2 +-
+ .../selftests/bpf/prog_tests/tailcalls.c      |  18 +-
+ .../bpf/prog_tests/task_fd_query_rawtp.c      |   2 +-
+ .../bpf/prog_tests/task_fd_query_tp.c         |   4 +-
+ .../selftests/bpf/prog_tests/tcp_estats.c     |   2 +-
+ .../bpf/prog_tests/tp_attach_query.c          |   2 +-
+ tools/testing/selftests/bpf/prog_tests/xdp.c  |   2 +-
+ .../bpf/prog_tests/xdp_adjust_tail.c          |   6 +-
+ .../selftests/bpf/prog_tests/xdp_attach.c     |   6 +-
+ .../selftests/bpf/prog_tests/xdp_info.c       |   2 +-
+ .../selftests/bpf/prog_tests/xdp_perf.c       |   2 +-
+ .../selftests/bpf/progs/fexit_bpf2bpf.c       |   2 +-
+ tools/testing/selftests/bpf/progs/test_l4lb.c |   2 +-
+ .../selftests/bpf/progs/test_l4lb_noinline.c  |   2 +-
+ .../selftests/bpf/progs/test_map_lock.c       |   2 +-
+ .../bpf/progs/test_queue_stack_map.h          |   2 +-
+ .../selftests/bpf/progs/test_skb_ctx.c        |   2 +-
+ .../selftests/bpf/progs/test_spin_lock.c      |   2 +-
+ .../selftests/bpf/progs/test_tcp_estats.c     |   2 +-
+ .../selftests/bpf/test_cgroup_storage.c       |   3 +-
+ tools/testing/selftests/bpf/test_dev_cgroup.c |   3 +-
+ .../selftests/bpf/test_lirc_mode2_user.c      |   6 +-
+ tools/testing/selftests/bpf/test_lru_map.c    |   9 +-
+ tools/testing/selftests/bpf/test_maps.c       |   7 +-
+ tools/testing/selftests/bpf/test_sock.c       |  23 +-
+ tools/testing/selftests/bpf/test_sock_addr.c  |  13 +-
+ tools/testing/selftests/bpf/test_stub.c       |  44 ----
+ tools/testing/selftests/bpf/test_sysctl.c     |  23 +-
+ tools/testing/selftests/bpf/test_tag.c        |   3 +-
+ .../selftests/bpf/test_tcpnotify_user.c       |   3 +-
+ tools/testing/selftests/bpf/test_verifier.c   |  38 +--
+ tools/testing/selftests/bpf/testing_helpers.c |  55 ++++
+ tools/testing/selftests/bpf/testing_helpers.h |   6 +
+ tools/testing/selftests/bpf/xdping.c          |   3 +-
+ 78 files changed, 620 insertions(+), 566 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/test_stub.c
+
+-- 
+2.30.2
+
