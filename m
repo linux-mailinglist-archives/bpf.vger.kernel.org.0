@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF00C440787
-	for <lists+bpf@lfdr.de>; Sat, 30 Oct 2021 06:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E578E440785
+	for <lists+bpf@lfdr.de>; Sat, 30 Oct 2021 06:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhJ3FC0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 30 Oct 2021 01:02:26 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39750 "EHLO
+        id S231364AbhJ3FCX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 30 Oct 2021 01:02:23 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3828 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231409AbhJ3FCY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 30 Oct 2021 01:02:24 -0400
+        by vger.kernel.org with ESMTP id S230002AbhJ3FCX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 30 Oct 2021 01:02:23 -0400
 Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19U3dM86021751
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 21:59:55 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c0mdnmsj6-5
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TMhdvl031403
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 21:59:53 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c0mdnmsj7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 21:59:55 -0700
-Received: from intmgw001.27.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 29 Oct 2021 21:59:53 -0700
+Received: from intmgw002.48.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.14; Fri, 29 Oct 2021 21:59:53 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 898067830519; Fri, 29 Oct 2021 21:59:49 -0700 (PDT)
+        id 97E16783051B; Fri, 29 Oct 2021 21:59:51 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH bpf-next 03/14] libbpf: rename DECLARE_LIBBPF_OPTS into LIBBPF_OPTS
-Date:   Fri, 29 Oct 2021 21:59:30 -0700
-Message-ID: <20211030045941.3514948-4-andrii@kernel.org>
+Subject: [PATCH bpf-next 04/14] libbpf: pass number of prog load attempts explicitly
+Date:   Fri, 29 Oct 2021 21:59:31 -0700
+Message-ID: <20211030045941.3514948-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211030045941.3514948-1-andrii@kernel.org>
 References: <20211030045941.3514948-1-andrii@kernel.org>
@@ -39,13 +39,13 @@ Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: P7W95Rg3pXriqptd8h3T66TrthbUflof
-X-Proofpoint-ORIG-GUID: P7W95Rg3pXriqptd8h3T66TrthbUflof
+X-Proofpoint-GUID: U7e1yhD-EaWtiE1NCnsZFVbqdhhJPyM8
+X-Proofpoint-ORIG-GUID: U7e1yhD-EaWtiE1NCnsZFVbqdhhJPyM8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-10-30_01,2021-10-29_01,2020-04-07_01
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- mlxlogscore=399 lowpriorityscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=910 lowpriorityscore=0 spamscore=0 suspectscore=0
  malwarescore=0 impostorscore=0 priorityscore=1501 phishscore=0
  adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2110300025
@@ -54,62 +54,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It's confusing that libbpf-provided helper macro doesn't start with
-LIBBPF. Also "declare" vs "define" is confusing terminology, I can never
-remember and always have to look up previous examples.
-
-Bypass both issues by renaming DECLARE_LIBBPF_OPTS into a short and
-clean LIBBPF_OPTS. To avoid breaking existing code, provide:
-
-  #define DECLARE_LIBBPF_OPTS LIBBPF_OPTS
-
-in libbpf_legacy.h. We can decide later if we ever want to remove it or
-we'll keep it forever because it doesn't add any maintainability burden.
+Allow to control number of BPF_PROG_LOAD attempts from outside the
+sys_bpf_prog_load() helper.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf.h           | 1 +
- tools/lib/bpf/libbpf_common.h | 2 +-
- tools/lib/bpf/libbpf_legacy.h | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ tools/lib/bpf/bpf.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 6ef9e1e464c0..aac6bb4d8c82 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -33,6 +33,7 @@
- #include <sys/types.h>
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 4b4fd2dae3bf..7bb4ab16d4f6 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -46,14 +46,15 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
+ 	return ensure_good_fd(fd);
+ }
  
- #include "libbpf_common.h"
-+#include "libbpf_legacy.h"
+-static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size)
++#define PROG_LOAD_ATTEMPTS 5
++
++static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
+ {
+-	int retries = 5;
+ 	int fd;
  
- #ifdef __cplusplus
- extern "C" {
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index aaa1efbf6f51..0967112b933a 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -54,7 +54,7 @@
-  * including any extra padding, it with memset() and then assigns initial
-  * values provided by users in struct initializer-syntax as varargs.
-  */
--#define DECLARE_LIBBPF_OPTS(TYPE, NAME, ...)				    \
-+#define LIBBPF_OPTS(TYPE, NAME, ...)					    \
- 	struct TYPE NAME = ({ 						    \
- 		memset(&NAME, 0, sizeof(struct TYPE));			    \
- 		(struct TYPE) {						    \
-diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legacy.h
-index 5ba5c9beccfa..bb03c568af7b 100644
---- a/tools/lib/bpf/libbpf_legacy.h
-+++ b/tools/lib/bpf/libbpf_legacy.h
-@@ -69,6 +69,7 @@ enum libbpf_strict_mode {
+ 	do {
+ 		fd = sys_bpf_fd(BPF_PROG_LOAD, attr, size);
+-	} while (fd < 0 && errno == EAGAIN && retries-- > 0);
++	} while (fd < 0 && errno == EAGAIN && --attempts > 0);
  
- LIBBPF_API int libbpf_set_strict_mode(enum libbpf_strict_mode mode);
+ 	return fd;
+ }
+@@ -276,7 +277,7 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
+ 		memcpy(attr.prog_name, load_attr->name,
+ 		       min(strlen(load_attr->name), (size_t)BPF_OBJ_NAME_LEN - 1));
  
-+#define DECLARE_LIBBPF_OPTS LIBBPF_OPTS
+-	fd = sys_bpf_prog_load(&attr, sizeof(attr));
++	fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+ 	if (fd >= 0)
+ 		return fd;
  
- #ifdef __cplusplus
- } /* extern "C" */
+@@ -317,7 +318,7 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
+ 			break;
+ 		}
+ 
+-		fd = sys_bpf_prog_load(&attr, sizeof(attr));
++		fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+ 		if (fd >= 0)
+ 			goto done;
+ 	}
+@@ -331,7 +332,7 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
+ 	attr.log_level = 1;
+ 	load_attr->log_buf[0] = 0;
+ 
+-	fd = sys_bpf_prog_load(&attr, sizeof(attr));
++	fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+ done:
+ 	/* free() doesn't affect errno, so we don't need to restore it */
+ 	free(finfo);
+@@ -421,7 +422,7 @@ int bpf_verify_program(enum bpf_prog_type type, const struct bpf_insn *insns,
+ 	attr.kern_version = kern_version;
+ 	attr.prog_flags = prog_flags;
+ 
+-	fd = sys_bpf_prog_load(&attr, sizeof(attr));
++	fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+ 	return libbpf_err_errno(fd);
+ }
+ 
 -- 
 2.30.2
 
