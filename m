@@ -2,128 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A95440FD4
-	for <lists+bpf@lfdr.de>; Sun, 31 Oct 2021 18:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FE6441063
+	for <lists+bpf@lfdr.de>; Sun, 31 Oct 2021 20:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhJaRn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Oct 2021 13:43:59 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:36806 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhJaRn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Oct 2021 13:43:57 -0400
-Received: by mail-il1-f199.google.com with SMTP id w10-20020a056e021a6a00b0025be678c27eso7348247ilv.3
-        for <bpf@vger.kernel.org>; Sun, 31 Oct 2021 10:41:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xn2VPDHyczbj/6eKQO8PUyqqrb+LWwudCU/o8kfDPBk=;
-        b=iJmq8JKCqBZxz59WcYR78RxA4nsOPAJYbdt7GLrB0SJmyR9oGfkdOb8LWgDIWIZREH
-         PK7Cdocn1l3NBZ/jVaB0BBKqA8Xa3PMkxtn9WPbSNyh7qb9JqxulsLlhC/Vlh1LvmJ5Z
-         gQLyMb/pwLA+X2KDopu7/dzGoBeiCuZ4eiLdjNEgMM+Q3V8nF+TcHSWZuANK8d+vfMsc
-         lxiOmDdZ5fbISHcBsUYtGffTWj5Unpi4U/5eayBq8WRqUUfMpbSNAH+rOLaMVcEaPD6J
-         M6UlhubyycfnDYBz5DdHs72xHNi7Fx4yxJKmg5hmeBy0TVxmHZR/GRWQakE5Q8VoTUQY
-         ebPg==
-X-Gm-Message-State: AOAM530dTrGZYb3TQXH9rfL1jsKtzZSwXBjbxtTtHm4upmz9xfBnekmS
-        VdvmMRzdBfE5OjHD28Oa/iugRNtJ8uuJlPu/O8aaDDupZLFF
-X-Google-Smtp-Source: ABdhPJxzQ2/toHlxMzf91rZ11FY4t4Ldv56Gktj2rsE+yPXKuvRJLqItCNXBMFIe7y99njaaRL8IkQJ4qY1jSne6PrAIvE367T4s
+        id S230291AbhJaTN3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Oct 2021 15:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhJaTN2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Oct 2021 15:13:28 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87633C061570;
+        Sun, 31 Oct 2021 12:10:56 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1mhGE9-00013B-JV; Sun, 31 Oct 2021 20:10:45 +0100
+Date:   Sun, 31 Oct 2021 20:10:45 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v1 5/6] net: netfilter: Add unstable CT
+ lookup helper for XDP and TC-BPF
+Message-ID: <20211031191045.GA19266@breakpoint.cc>
+References: <20211030144609.263572-1-memxor@gmail.com>
+ <20211030144609.263572-6-memxor@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c74a:: with SMTP id y10mr9962613ilp.122.1635702084959;
- Sun, 31 Oct 2021 10:41:24 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 10:41:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bb843a05cfa99111@google.com>
-Subject: [syzbot] WARNING: ODEBUG bug in __put_task_struct
-From:   syzbot <syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org,
-        asml.silence@gmail.com, ast@kernel.org, axboe@kernel.dk,
-        bpf@vger.kernel.org, christian@brauner.io, daniel@iogearbox.net,
-        david@redhat.com, ebiederm@xmission.com, io-uring@vger.kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        npiggin@gmail.com, peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, xiaoguang.wang@linux.alibaba.com,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211030144609.263572-6-memxor@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> This change adds conntrack lookup helpers using the unstable kfunc call
+> interface for the XDP and TC-BPF hooks.
+> 
+> Also add acquire/release functions (randomly returning NULL), and also
+> exercise the RET_PTR_TO_BTF_ID_OR_NULL path so that BPF program caller
+> has to check for NULL before dereferencing the pointer, for the TC hook.
+> These will be used in selftest.
+> 
+> Export get_net_ns_by_id and btf_type_by_id as nf_conntrack needs to call
+> them.
 
-syzbot found the following issue on:
+It would be good to get a summary on how this is useful.
 
-HEAD commit:    bdcc9f6a5682 Add linux-next specific files for 20211029
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1413226ab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cea91ee10b0cd274
-dashboard link: https://syzkaller.appspot.com/bug?extid=30a60157d4ef222fd5e2
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ba3e2b00000
+I tried to find a use case but I could not.
+Entry will time out soon once packets stop appearing, so it can't be
+used for stack bypass.  Is it for something else?  If so, what?
 
-The issue was bisected to:
+For UDP it will work to let a packet pass through classic forward
+path once in a while, but this will not work for tcp, depending
+on conntrack settings (lose mode, liberal pickup etc. pp).
 
-commit 34ced75ca1f63fac6148497971212583aa0f7a87
-Author: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Date:   Mon Oct 25 05:38:48 2021 +0000
+> +/* Unstable Kernel Helpers for XDP hook */
+> +static struct nf_conn *__bpf_nf_ct_lookup(struct net *net,
+> +					  struct bpf_sock_tuple *bpf_tuple,
+> +					  u32 tuple_len, u8 protonum,
+> +					  u64 netns_id, u64 flags)
+> +{
+> +	struct nf_conntrack_tuple_hash *hash;
+> +	struct nf_conntrack_tuple tuple;
+> +
+> +	if (flags != IP_CT_DIR_ORIGINAL && flags != IP_CT_DIR_REPLY)
+> +		return ERR_PTR(-EINVAL);
 
-    io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request
+The flags argument is not needed.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11d8286ab00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13d8286ab00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d8286ab00000
+> +	tuple.dst.dir = flags;
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com
-Fixes: 34ced75ca1f6 ("io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request")
+.dir can be 0, its not used by nf_conntrack_find_get().
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 1) object type: rcu_head hint: 0x0
-WARNING: CPU: 0 PID: 6915 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Modules linked in:
-CPU: 0 PID: 6915 Comm: kworker/0:1 Not tainted 5.15.0-rc7-next-20211029-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events io_fallback_req_func
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 00 4f bf 89 4c 89 ee 48 c7 c7 00 43 bf 89 e8 88 45 2e 05 <0f> 0b 83 05 05 c1 9f 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc900033a7a98 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff88801a799d40 RSI: ffffffff815f3788 RDI: fffff52000674f45
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815ed55e R11: 0000000000000000 R12: ffffffff896d62a0
-R13: ffffffff89bf4940 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff9fb60898 CR3: 000000000b48e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_check_no_obj_freed lib/debugobjects.c:992 [inline]
- debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1023
- slab_free_hook mm/slub.c:1698 [inline]
- slab_free_freelist_hook+0xeb/0x1c0 mm/slub.c:1749
- slab_free mm/slub.c:3513 [inline]
- kmem_cache_free+0x92/0x5e0 mm/slub.c:3529
- __put_task_struct+0x277/0x400 kernel/fork.c:810
- put_task_struct_many include/linux/sched/task.h:120 [inline]
- io_put_task fs/io_uring.c:1773 [inline]
- __io_free_req+0x2a3/0x3c5 fs/io_uring.c:2037
- io_fallback_req_func+0xf9/0x1ae fs/io_uring.c:1335
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
+> +	hash = nf_conntrack_find_get(net, &nf_ct_zone_dflt, &tuple);
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Ok, so default zone. Depending on meaning of "unstable helper" this
+is ok and can be changed in incompatible way later.
