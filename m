@@ -2,136 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28583440FB4
-	for <lists+bpf@lfdr.de>; Sun, 31 Oct 2021 18:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D24440FCA
+	for <lists+bpf@lfdr.de>; Sun, 31 Oct 2021 18:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhJaRQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Oct 2021 13:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbhJaRQa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Oct 2021 13:16:30 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672B5C061570;
-        Sun, 31 Oct 2021 10:13:58 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id t7so15066028pgl.9;
-        Sun, 31 Oct 2021 10:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8Anqb1HFE6tyy8XhRpxJJ0FE7FabhrGsV+UlluUO+y0=;
-        b=cQlWQy9/eL7uTjJT3hcuoVwneL2/OLI7t4sQ9vCwPWt8/Eq/CqgTWmOvUcfv/1i6fA
-         D5qklqdK0V6W0XLekIzYTWuDvQ7Hw/8KKdG4kA9Ax5TFnKpe7rS+Gk+cZeQWN828Z9V4
-         bkWcqs3DytUGYbfrc7qgSQUbkE6olGmMCA14lA713q7db95x45Q8PlinJYLf/vL/NjhN
-         h4zjUsLaiMmlH+PoJYMQ6l+qDPOW1W4ik8penhmfO2oVkBqkM0AXDYXfhxZgvkqECb3a
-         t6sRPeb/saTlH1p5loDW/O/YkJqeSp1nDtzuxEYniBuW9jBtyEMlatN/iDLCULjeeph4
-         tn8w==
+        id S229732AbhJaRnC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Oct 2021 13:43:02 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:46964
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230184AbhJaRnA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 31 Oct 2021 13:43:00 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D25AA3F1AD
+        for <bpf@vger.kernel.org>; Sun, 31 Oct 2021 17:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635702021;
+        bh=CRAiFS1cKz+cJsqMGNZZJACSB/KL6YFLVva91SNe05Y=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=v4pXO7t4Jmet2uBFpNpcZxF8Kf+vJo+XydC/oW8wz/g90s1k76Aa5VDpV3weKDp+r
+         khcKkMIuvmVuP2TiXipv7qNZRFwEoIC8imIMPAu4RYB8naCfjq/G0odaHxiOb8GeVr
+         18Ufqd4BFVZCYC7wZdD9KLjQ8ZJmz4IXdsx15lU6cbqzxLafFs/L57vM49M/+UNZOW
+         7VLUZKDa9abbNLGftZYPTmTVYaxvGoKpkB8Wh3pZO409ybldyUs7L4SUgtVhO/0/VE
+         QOv4FHfijjdLFbUdGB1b+JZXpuBbnNrjqOlmVbxvG/yjRRDBz4rzXvMXJtFH3sAHCa
+         RyK2Ud+5i2XcQ==
+Received: by mail-ed1-f72.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso13473881edj.20
+        for <bpf@vger.kernel.org>; Sun, 31 Oct 2021 10:40:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8Anqb1HFE6tyy8XhRpxJJ0FE7FabhrGsV+UlluUO+y0=;
-        b=Mcwu56Mi2aZIrBJD9kbrHOpRlfaGQ0fNZHBXvC83zGbQbfkRLkb/+HfyPXBLZO3CM7
-         3DyzYpnaIregTVqI0QHUCTI5LLP5ZOKLKe2Ts96ZTA8gxYSpL7E5D3D27QJR+FpuwGmu
-         daLb4JvUG5FG3mo9uC25we2bFTWc6r26xYe/S0thJpHnCSB7SIjaZ8I7w9fQyToB/BCU
-         poRK+GJ+GwbTJVK2aW97gyKriVfIfAUicpSUok4r+v5gc58E5WdjQWZ8ImsqDn7Pirzh
-         2gNNk8Vgl8epP6xXhib9xgl9o+VjJBw5Ndwa0u8FVu01GgXjlhWLxBkxMfmaNbhpGYHt
-         iFRA==
-X-Gm-Message-State: AOAM532ZwxMqDEAaSPuuJZp0h46lBsiZBbONB4jMhUofB0lwDvyJSE2i
-        k8WlSYoWkIg/x6oXgeAY9Xk=
-X-Google-Smtp-Source: ABdhPJztizmoc9dBdmy5Dlk6fA3ErbCI8c7pIPZ66iucxT22RmnIdMNjaLDf7gnUrX5SSkcQsy7ehQ==
-X-Received: by 2002:a05:6a00:1484:b0:47b:f6a3:868f with SMTP id v4-20020a056a00148400b0047bf6a3868fmr23725203pfu.66.1635700437640;
-        Sun, 31 Oct 2021 10:13:57 -0700 (PDT)
-Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:2233:f5ab:4727:14bc])
-        by smtp.gmail.com with ESMTPSA id t4sm12963574pfj.166.2021.10.31.10.13.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CRAiFS1cKz+cJsqMGNZZJACSB/KL6YFLVva91SNe05Y=;
+        b=US1jdgd6PBFhsNnLtqX3Qf0Bdn7wquhzJHk4NfyWCOVwcjoCTlEFGH9kcFAjQF57EO
+         lZf40+tvfJcE30KOxc6Qh4Xuh/sERwS9HbwLJKXrv88eIpsa89Nn3Q6XCxdQEItMMcn6
+         Sy1HbdaOqaeelURaOfQP5m9RhM2U7eT6C+a3XjSFZHOs1Yty8xV7XIW+lT269X1N9W8J
+         Fz9afQ+iGqlyUabvamhZy4IrsInAdoDPhRdbXPhSwglNU/fhWY2H5Jemdz1Mq9i4hq1F
+         aqnuCrqIGogMCsLIBJ3UaUnPhy4xshFry2LLCk2r7+UeEjht67WapXTRYHyLHdPwRxaU
+         V3UQ==
+X-Gm-Message-State: AOAM533TurRjE2m7ROiYdNbzlS2oQNaoW3xr6lbv9xFIJrRX/h0lZbXV
+        ktKfekfmUWAa8KHB+dBREzDa+Ab2UznIbSGjrI/kBErVulmo8VmPhvPjXl2hAuU2licMKzEqwtd
+        usZ+jALv207ElzDqkRduduRtpjiae4A==
+X-Received: by 2002:a05:6402:3512:: with SMTP id b18mr33560115edd.15.1635702021474;
+        Sun, 31 Oct 2021 10:40:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxtZsccnVYGZSxvzQx65pspDj7+afH+kZC2jBUN05hv/1SGDsw94p/ES6HAcpn2odiZ0W8Tg==
+X-Received: by 2002:a05:6402:3512:: with SMTP id b18mr33560092edd.15.1635702021288;
+        Sun, 31 Oct 2021 10:40:21 -0700 (PDT)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id t25sm1766673edv.31.2021.10.31.10.40.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 10:13:57 -0700 (PDT)
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Joanne Koong <joannekoong@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        syzbot <syzkaller@googlegroups.com>
-Subject: [PATCH bpf-next] bpf: add missing map_delete_elem method to bloom filter map
-Date:   Sun, 31 Oct 2021 10:13:53 -0700
-Message-Id: <20211031171353.4092388-1-eric.dumazet@gmail.com>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+        Sun, 31 Oct 2021 10:40:20 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 18:40:19 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] signal: Add SA_IMMUTABLE to ensure forced siganls do not
+ get changed
+Message-ID: <YX7VA1JZaYkTQeSi@arighi-desktop>
+References: <YXrN+Hnl9pSOsWlA@arighi-desktop>
+ <202110280955.B18CB67@keescook>
+ <878rydm56l.fsf@disp2133>
+ <202110281136.5CE65399A7@keescook>
+ <87k0hvkgvj.fsf_-_@disp2133>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0hvkgvj.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+On Fri, Oct 29, 2021 at 10:09:04AM -0500, Eric W. Biederman wrote:
+> 
+> As Andy pointed out that there are races between
+> force_sig_info_to_task and sigaction[1] when force_sig_info_task.  As
+> Kees discovered[2] ptrace is also able to change these signals.
+> 
+> In the case of seeccomp killing a process with a signal it is a
+> security violation to allow the signal to be caught or manipulated.
+> 
+> Solve this problem by introducing a new flag SA_IMMUTABLE that
+> prevents sigaction and ptrace from modifying these forced signals.
+> This flag is carefully made kernel internal so that no new ABI is
+> introduced.
+> 
+> Longer term I think this can be solved by guaranteeing short circuit
+> delivery of signals in this case.  Unfortunately reliable and
+> guaranteed short circuit delivery of these signals is still a ways off
+> from being implemented, tested, and merged.  So I have implemented a much
+> simpler alternative for now.
+> 
+> [1] https://lkml.kernel.org/r/b5d52d25-7bde-4030-a7b1-7c6f8ab90660@www.fastmail.com
+> [2] https://lkml.kernel.org/r/202110281136.5CE65399A7@keescook
+> Cc: stable@vger.kernel.org
+> Fixes: 307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
 
-Without it, kernel crashes in map_delete_elem(), as reported
-by syzbot.
+FWIW I've tested this patch and I confirm that it fixes the failure that
+I reported with the seccomp_bpf selftest.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-PGD 72c97067 P4D 72c97067 PUD 1e20c067 PMD 0
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 6518 Comm: syz-executor196 Not tainted 5.15.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc90002bafcb8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff92000575f9f RCX: 0000000000000000
-RDX: 1ffffffff1327aba RSI: 0000000000000000 RDI: ffff888025a30c00
-RBP: ffffc90002baff08 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff818525d8 R11: 0000000000000000 R12: ffffffff8993d560
-R13: ffff888025a30c00 R14: ffff888024bc0000 R15: 0000000000000000
-FS:  0000555557491300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000070189000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- map_delete_elem kernel/bpf/syscall.c:1220 [inline]
- __sys_bpf+0x34f1/0x5ee0 kernel/bpf/syscall.c:4606
- __do_sys_bpf kernel/bpf/syscall.c:4719 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4717 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4717
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+Tested-by: Andrea Righi <andrea.righi@canonical.com>
 
-Fixes: 9330986c0300 ("bpf: Add bloom filter map implementation")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Joanne Koong <joannekoong@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Reported-by: syzbot <syzkaller@googlegroups.com>
----
- kernel/bpf/bloom_filter.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks!
+-Andrea
 
-diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
-index 7c50232b7571f3f038dd45b5c0bd7289125e6d43..31a7af15a83d74af1d88d04cc8d71aa7d403b4ef 100644
---- a/kernel/bpf/bloom_filter.c
-+++ b/kernel/bpf/bloom_filter.c
-@@ -77,6 +77,11 @@ static int pop_elem(struct bpf_map *map, void *value)
- 	return -EOPNOTSUPP;
- }
- 
-+static int delete_elem(struct bpf_map *map, void *value)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static struct bpf_map *map_alloc(union bpf_attr *attr)
- {
- 	u32 bitset_bytes, bitset_mask, nr_hash_funcs, nr_bits;
-@@ -189,6 +194,7 @@ const struct bpf_map_ops bloom_filter_map_ops = {
- 	.map_pop_elem = pop_elem,
- 	.map_lookup_elem = lookup_elem,
- 	.map_update_elem = update_elem,
-+	.map_delete_elem = delete_elem,
- 	.map_check_btf = check_btf,
- 	.map_btf_name = "bpf_bloom_filter",
- 	.map_btf_id = &bpf_bloom_btf_id,
--- 
-2.33.1.1089.g2158813163f-goog
-
+> 
+> I have tested this patch and this changed works for me to fix the issue.
+> 
+> I believe this closes all of the races that force_sig_info_to_task
+> has when sigdfl is specified.  So this should be enough for anything
+> that needs a guaranteed that userspace can not race with the kernel
+> is handled.
+> 
+> Can folks look this over and see if I missed something?
+> Thank you,
+> Eric
+> 
+> 
+>  include/linux/signal_types.h           | 3 +++
+>  include/uapi/asm-generic/signal-defs.h | 1 +
+>  kernel/signal.c                        | 8 +++++++-
+>  3 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/signal_types.h b/include/linux/signal_types.h
+> index 34cb28b8f16c..927f7c0e5bff 100644
+> --- a/include/linux/signal_types.h
+> +++ b/include/linux/signal_types.h
+> @@ -70,6 +70,9 @@ struct ksignal {
+>  	int sig;
+>  };
+>  
+> +/* Used to kill the race between sigaction and forced signals */
+> +#define SA_IMMUTABLE		0x008000000
+> +
+>  #ifndef __ARCH_UAPI_SA_FLAGS
+>  #ifdef SA_RESTORER
+>  #define __ARCH_UAPI_SA_FLAGS	SA_RESTORER
+> diff --git a/include/uapi/asm-generic/signal-defs.h b/include/uapi/asm-generic/signal-defs.h
+> index fe929e7b77ca..7572f2f46ee8 100644
+> --- a/include/uapi/asm-generic/signal-defs.h
+> +++ b/include/uapi/asm-generic/signal-defs.h
+> @@ -45,6 +45,7 @@
+>  #define SA_UNSUPPORTED	0x00000400
+>  #define SA_EXPOSE_TAGBITS	0x00000800
+>  /* 0x00010000 used on mips */
+> +/* 0x00800000 used for internal SA_IMMUTABLE */
+>  /* 0x01000000 used on x86 */
+>  /* 0x02000000 used on x86 */
+>  /*
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 6a5e1802b9a2..056a107e3cbc 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1336,6 +1336,7 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
+>  	blocked = sigismember(&t->blocked, sig);
+>  	if (blocked || ignored || sigdfl) {
+>  		action->sa.sa_handler = SIG_DFL;
+> +		action->sa.sa_flags |= SA_IMMUTABLE;
+>  		if (blocked) {
+>  			sigdelset(&t->blocked, sig);
+>  			recalc_sigpending_and_wake(t);
+> @@ -2760,7 +2761,8 @@ bool get_signal(struct ksignal *ksig)
+>  		if (!signr)
+>  			break; /* will return 0 */
+>  
+> -		if (unlikely(current->ptrace) && signr != SIGKILL) {
+> +		if (unlikely(current->ptrace) && (signr != SIGKILL) &&
+> +		    !(sighand->action[signr -1].sa.sa_flags & SA_IMMUTABLE)) {
+>  			signr = ptrace_signal(signr, &ksig->info);
+>  			if (!signr)
+>  				continue;
+> @@ -4110,6 +4112,10 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
+>  	k = &p->sighand->action[sig-1];
+>  
+>  	spin_lock_irq(&p->sighand->siglock);
+> +	if (k->sa.sa_flags & SA_IMMUTABLE) {
+> +		spin_unlock_irq(&p->sighand->siglock);
+> +		return -EINVAL;
+> +	}
+>  	if (oact)
+>  		*oact = *k;
+>  
+> -- 
+> 2.20.1
