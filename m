@@ -2,193 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D24440FCA
-	for <lists+bpf@lfdr.de>; Sun, 31 Oct 2021 18:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A95440FD4
+	for <lists+bpf@lfdr.de>; Sun, 31 Oct 2021 18:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhJaRnC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Oct 2021 13:43:02 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:46964
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230184AbhJaRnA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 31 Oct 2021 13:43:00 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D25AA3F1AD
-        for <bpf@vger.kernel.org>; Sun, 31 Oct 2021 17:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635702021;
-        bh=CRAiFS1cKz+cJsqMGNZZJACSB/KL6YFLVva91SNe05Y=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=v4pXO7t4Jmet2uBFpNpcZxF8Kf+vJo+XydC/oW8wz/g90s1k76Aa5VDpV3weKDp+r
-         khcKkMIuvmVuP2TiXipv7qNZRFwEoIC8imIMPAu4RYB8naCfjq/G0odaHxiOb8GeVr
-         18Ufqd4BFVZCYC7wZdD9KLjQ8ZJmz4IXdsx15lU6cbqzxLafFs/L57vM49M/+UNZOW
-         7VLUZKDa9abbNLGftZYPTmTVYaxvGoKpkB8Wh3pZO409ybldyUs7L4SUgtVhO/0/VE
-         QOv4FHfijjdLFbUdGB1b+JZXpuBbnNrjqOlmVbxvG/yjRRDBz4rzXvMXJtFH3sAHCa
-         RyK2Ud+5i2XcQ==
-Received: by mail-ed1-f72.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso13473881edj.20
-        for <bpf@vger.kernel.org>; Sun, 31 Oct 2021 10:40:21 -0700 (PDT)
+        id S230468AbhJaRn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Oct 2021 13:43:59 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:36806 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230395AbhJaRn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Oct 2021 13:43:57 -0400
+Received: by mail-il1-f199.google.com with SMTP id w10-20020a056e021a6a00b0025be678c27eso7348247ilv.3
+        for <bpf@vger.kernel.org>; Sun, 31 Oct 2021 10:41:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CRAiFS1cKz+cJsqMGNZZJACSB/KL6YFLVva91SNe05Y=;
-        b=US1jdgd6PBFhsNnLtqX3Qf0Bdn7wquhzJHk4NfyWCOVwcjoCTlEFGH9kcFAjQF57EO
-         lZf40+tvfJcE30KOxc6Qh4Xuh/sERwS9HbwLJKXrv88eIpsa89Nn3Q6XCxdQEItMMcn6
-         Sy1HbdaOqaeelURaOfQP5m9RhM2U7eT6C+a3XjSFZHOs1Yty8xV7XIW+lT269X1N9W8J
-         Fz9afQ+iGqlyUabvamhZy4IrsInAdoDPhRdbXPhSwglNU/fhWY2H5Jemdz1Mq9i4hq1F
-         aqnuCrqIGogMCsLIBJ3UaUnPhy4xshFry2LLCk2r7+UeEjht67WapXTRYHyLHdPwRxaU
-         V3UQ==
-X-Gm-Message-State: AOAM533TurRjE2m7ROiYdNbzlS2oQNaoW3xr6lbv9xFIJrRX/h0lZbXV
-        ktKfekfmUWAa8KHB+dBREzDa+Ab2UznIbSGjrI/kBErVulmo8VmPhvPjXl2hAuU2licMKzEqwtd
-        usZ+jALv207ElzDqkRduduRtpjiae4A==
-X-Received: by 2002:a05:6402:3512:: with SMTP id b18mr33560115edd.15.1635702021474;
-        Sun, 31 Oct 2021 10:40:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxtZsccnVYGZSxvzQx65pspDj7+afH+kZC2jBUN05hv/1SGDsw94p/ES6HAcpn2odiZ0W8Tg==
-X-Received: by 2002:a05:6402:3512:: with SMTP id b18mr33560092edd.15.1635702021288;
-        Sun, 31 Oct 2021 10:40:21 -0700 (PDT)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id t25sm1766673edv.31.2021.10.31.10.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 10:40:20 -0700 (PDT)
-Date:   Sun, 31 Oct 2021 18:40:19 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] signal: Add SA_IMMUTABLE to ensure forced siganls do not
- get changed
-Message-ID: <YX7VA1JZaYkTQeSi@arighi-desktop>
-References: <YXrN+Hnl9pSOsWlA@arighi-desktop>
- <202110280955.B18CB67@keescook>
- <878rydm56l.fsf@disp2133>
- <202110281136.5CE65399A7@keescook>
- <87k0hvkgvj.fsf_-_@disp2133>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=xn2VPDHyczbj/6eKQO8PUyqqrb+LWwudCU/o8kfDPBk=;
+        b=iJmq8JKCqBZxz59WcYR78RxA4nsOPAJYbdt7GLrB0SJmyR9oGfkdOb8LWgDIWIZREH
+         PK7Cdocn1l3NBZ/jVaB0BBKqA8Xa3PMkxtn9WPbSNyh7qb9JqxulsLlhC/Vlh1LvmJ5Z
+         gQLyMb/pwLA+X2KDopu7/dzGoBeiCuZ4eiLdjNEgMM+Q3V8nF+TcHSWZuANK8d+vfMsc
+         lxiOmDdZ5fbISHcBsUYtGffTWj5Unpi4U/5eayBq8WRqUUfMpbSNAH+rOLaMVcEaPD6J
+         M6UlhubyycfnDYBz5DdHs72xHNi7Fx4yxJKmg5hmeBy0TVxmHZR/GRWQakE5Q8VoTUQY
+         ebPg==
+X-Gm-Message-State: AOAM530dTrGZYb3TQXH9rfL1jsKtzZSwXBjbxtTtHm4upmz9xfBnekmS
+        VdvmMRzdBfE5OjHD28Oa/iugRNtJ8uuJlPu/O8aaDDupZLFF
+X-Google-Smtp-Source: ABdhPJxzQ2/toHlxMzf91rZ11FY4t4Ldv56Gktj2rsE+yPXKuvRJLqItCNXBMFIe7y99njaaRL8IkQJ4qY1jSne6PrAIvE367T4s
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0hvkgvj.fsf_-_@disp2133>
+X-Received: by 2002:a92:c74a:: with SMTP id y10mr9962613ilp.122.1635702084959;
+ Sun, 31 Oct 2021 10:41:24 -0700 (PDT)
+Date:   Sun, 31 Oct 2021 10:41:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bb843a05cfa99111@google.com>
+Subject: [syzbot] WARNING: ODEBUG bug in __put_task_struct
+From:   syzbot <syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org,
+        asml.silence@gmail.com, ast@kernel.org, axboe@kernel.dk,
+        bpf@vger.kernel.org, christian@brauner.io, daniel@iogearbox.net,
+        david@redhat.com, ebiederm@xmission.com, io-uring@vger.kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        npiggin@gmail.com, peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, xiaoguang.wang@linux.alibaba.com,
+        yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 10:09:04AM -0500, Eric W. Biederman wrote:
-> 
-> As Andy pointed out that there are races between
-> force_sig_info_to_task and sigaction[1] when force_sig_info_task.  As
-> Kees discovered[2] ptrace is also able to change these signals.
-> 
-> In the case of seeccomp killing a process with a signal it is a
-> security violation to allow the signal to be caught or manipulated.
-> 
-> Solve this problem by introducing a new flag SA_IMMUTABLE that
-> prevents sigaction and ptrace from modifying these forced signals.
-> This flag is carefully made kernel internal so that no new ABI is
-> introduced.
-> 
-> Longer term I think this can be solved by guaranteeing short circuit
-> delivery of signals in this case.  Unfortunately reliable and
-> guaranteed short circuit delivery of these signals is still a ways off
-> from being implemented, tested, and merged.  So I have implemented a much
-> simpler alternative for now.
-> 
-> [1] https://lkml.kernel.org/r/b5d52d25-7bde-4030-a7b1-7c6f8ab90660@www.fastmail.com
-> [2] https://lkml.kernel.org/r/202110281136.5CE65399A7@keescook
-> Cc: stable@vger.kernel.org
-> Fixes: 307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
+Hello,
 
-FWIW I've tested this patch and I confirm that it fixes the failure that
-I reported with the seccomp_bpf selftest.
+syzbot found the following issue on:
 
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
+HEAD commit:    bdcc9f6a5682 Add linux-next specific files for 20211029
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1413226ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cea91ee10b0cd274
+dashboard link: https://syzkaller.appspot.com/bug?extid=30a60157d4ef222fd5e2
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ba3e2b00000
 
-Thanks!
--Andrea
+The issue was bisected to:
 
-> 
-> I have tested this patch and this changed works for me to fix the issue.
-> 
-> I believe this closes all of the races that force_sig_info_to_task
-> has when sigdfl is specified.  So this should be enough for anything
-> that needs a guaranteed that userspace can not race with the kernel
-> is handled.
-> 
-> Can folks look this over and see if I missed something?
-> Thank you,
-> Eric
-> 
-> 
->  include/linux/signal_types.h           | 3 +++
->  include/uapi/asm-generic/signal-defs.h | 1 +
->  kernel/signal.c                        | 8 +++++++-
->  3 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/signal_types.h b/include/linux/signal_types.h
-> index 34cb28b8f16c..927f7c0e5bff 100644
-> --- a/include/linux/signal_types.h
-> +++ b/include/linux/signal_types.h
-> @@ -70,6 +70,9 @@ struct ksignal {
->  	int sig;
->  };
->  
-> +/* Used to kill the race between sigaction and forced signals */
-> +#define SA_IMMUTABLE		0x008000000
-> +
->  #ifndef __ARCH_UAPI_SA_FLAGS
->  #ifdef SA_RESTORER
->  #define __ARCH_UAPI_SA_FLAGS	SA_RESTORER
-> diff --git a/include/uapi/asm-generic/signal-defs.h b/include/uapi/asm-generic/signal-defs.h
-> index fe929e7b77ca..7572f2f46ee8 100644
-> --- a/include/uapi/asm-generic/signal-defs.h
-> +++ b/include/uapi/asm-generic/signal-defs.h
-> @@ -45,6 +45,7 @@
->  #define SA_UNSUPPORTED	0x00000400
->  #define SA_EXPOSE_TAGBITS	0x00000800
->  /* 0x00010000 used on mips */
-> +/* 0x00800000 used for internal SA_IMMUTABLE */
->  /* 0x01000000 used on x86 */
->  /* 0x02000000 used on x86 */
->  /*
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index 6a5e1802b9a2..056a107e3cbc 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -1336,6 +1336,7 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
->  	blocked = sigismember(&t->blocked, sig);
->  	if (blocked || ignored || sigdfl) {
->  		action->sa.sa_handler = SIG_DFL;
-> +		action->sa.sa_flags |= SA_IMMUTABLE;
->  		if (blocked) {
->  			sigdelset(&t->blocked, sig);
->  			recalc_sigpending_and_wake(t);
-> @@ -2760,7 +2761,8 @@ bool get_signal(struct ksignal *ksig)
->  		if (!signr)
->  			break; /* will return 0 */
->  
-> -		if (unlikely(current->ptrace) && signr != SIGKILL) {
-> +		if (unlikely(current->ptrace) && (signr != SIGKILL) &&
-> +		    !(sighand->action[signr -1].sa.sa_flags & SA_IMMUTABLE)) {
->  			signr = ptrace_signal(signr, &ksig->info);
->  			if (!signr)
->  				continue;
-> @@ -4110,6 +4112,10 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
->  	k = &p->sighand->action[sig-1];
->  
->  	spin_lock_irq(&p->sighand->siglock);
-> +	if (k->sa.sa_flags & SA_IMMUTABLE) {
-> +		spin_unlock_irq(&p->sighand->siglock);
-> +		return -EINVAL;
-> +	}
->  	if (oact)
->  		*oact = *k;
->  
-> -- 
-> 2.20.1
+commit 34ced75ca1f63fac6148497971212583aa0f7a87
+Author: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Date:   Mon Oct 25 05:38:48 2021 +0000
+
+    io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11d8286ab00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13d8286ab00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d8286ab00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+30a60157d4ef222fd5e2@syzkaller.appspotmail.com
+Fixes: 34ced75ca1f6 ("io_uring: reduce frequent add_wait_queue() overhead for multi-shot poll request")
+
+------------[ cut here ]------------
+ODEBUG: free active (active state 1) object type: rcu_head hint: 0x0
+WARNING: CPU: 0 PID: 6915 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Modules linked in:
+CPU: 0 PID: 6915 Comm: kworker/0:1 Not tainted 5.15.0-rc7-next-20211029-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events io_fallback_req_func
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 00 4f bf 89 4c 89 ee 48 c7 c7 00 43 bf 89 e8 88 45 2e 05 <0f> 0b 83 05 05 c1 9f 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc900033a7a98 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff88801a799d40 RSI: ffffffff815f3788 RDI: fffff52000674f45
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815ed55e R11: 0000000000000000 R12: ffffffff896d62a0
+R13: ffffffff89bf4940 R14: 0000000000000000 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff9fb60898 CR3: 000000000b48e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __debug_check_no_obj_freed lib/debugobjects.c:992 [inline]
+ debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1023
+ slab_free_hook mm/slub.c:1698 [inline]
+ slab_free_freelist_hook+0xeb/0x1c0 mm/slub.c:1749
+ slab_free mm/slub.c:3513 [inline]
+ kmem_cache_free+0x92/0x5e0 mm/slub.c:3529
+ __put_task_struct+0x277/0x400 kernel/fork.c:810
+ put_task_struct_many include/linux/sched/task.h:120 [inline]
+ io_put_task fs/io_uring.c:1773 [inline]
+ __io_free_req+0x2a3/0x3c5 fs/io_uring.c:2037
+ io_fallback_req_func+0xf9/0x1ae fs/io_uring.c:1335
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
