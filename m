@@ -2,150 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED824412A1
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 05:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B26724412B6
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 05:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbhKAEE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 00:04:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21862 "EHLO
+        id S229462AbhKAEQg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 00:16:36 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34052 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229462AbhKAEEZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 1 Nov 2021 00:04:25 -0400
+        by vger.kernel.org with ESMTP id S229457AbhKAEQg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Nov 2021 00:16:36 -0400
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19VLYqB6013185;
-        Sun, 31 Oct 2021 21:01:37 -0700
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19VLYpAb013124;
+        Sun, 31 Oct 2021 21:13:53 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=uuSJsbp4Pg2wvA51PqyAXXcR2zWBs7l3/1v/284lUA8=;
- b=L6mZFwiqV17Qsy0Eu8VFSYNIdoIUuKAUIXvEAneRovsNXKDSaDm0vV8WkuCsHkEWy5VH
- /mIBvxotz9I6ndQNxFR3jAAdkjPGSvwdTEJKo3211Hrxp1SgTTYkpioVw7CbmcNAIOST
- YRPAGUITT5UpHX9ntSKXBPCOKf1Z+6ZtfE4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3c1ns7482u-1
+ bh=8KxcbJlD/nR9R9nL//+LOAhaFdydTM+DoLhsQE08bB4=;
+ b=HMN0FfA1n3V4guLrYDW/Gxi8Gipf66wFtdcP9PeDxMHSUBa6Wco6VcaH0TLzNHrldvCP
+ Xa3Mt6ec6dmYz2+jpjlsBBQq0tD49g8T+AXbkGMZxg9+OQLrTNyZJYXp4F6JBy3AAK5A
+ 8Gq+Ewzo8SudeRPe3tJ8n1z8HMYxlM7jqds= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 3c1ns749e6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 31 Oct 2021 21:01:36 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+        Sun, 31 Oct 2021 21:13:53 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Sun, 31 Oct 2021 21:01:35 -0700
+ 15.1.2308.14; Sun, 31 Oct 2021 21:13:52 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h6tEssdNLryOhY3h0uuOjfpdZlCsS7Xfo6ja7EX6n7JMldoqpQlK17Gsb+Rfpp6zhBAtCJ++Jiz8nmdgCh+HA7UWN1RCnNwrj1zqZwkKCKI9oxrEmCuwmDyqe/saqAGbZplbBK4kZYvL/SPoChBnFXOgHmjbjvdGmwLreNELx3bd4uouUEiiFbBxTN3INqsZyd1pqJcAAXys28nqaqDPftBpn99PYqTBW1NShAqfOsZ932933j5jnyy27TvYj4EIByrdAsKOPgQRe/TloqbsgnrGUd7beWpt1QYlMI5kQIAqkEGQyvZebpLuXLXHtn+K9aXBuQUOg9jSj5+3S7bjrQ==
+ b=HI0yLXxj/6ipJd+xVLh0ZTouI1UdcHQZF5Kz8Bp5BO3RLH6fp6p9Mg3LLw70n2djfFaghsYUBjcnKP/T9BklBpdYHWlNJYxq5pi/bFxVZ/J5vthvsb/Xi7iAXshb+iRsWmGYE0dw1a3zM4AEiNnxBNmQWBm7owQWS/7wMVZd4qEZlskVbA0EsVW6p1rVTM4CpdcV89wHJA+YYIbxiEsTwwbJ+wKM6isBi8jkRHY/WZjtkb8FK0ae2IK3kzx0G1hGce+PvCOcsDLX4ivGysTPrOSpRgn7sFzavn/u+wziD+P2VOsZQQypAMSNzNNT8CdhTdG6muc0wKuqGKmhP35mqg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uuSJsbp4Pg2wvA51PqyAXXcR2zWBs7l3/1v/284lUA8=;
- b=MLlk5Ez0iB8CNITpyEKRw24CY9frbIzptI7RTieinUWc0WHoBhYRSPAVQTHMNkfeGDyMFNdywMsJdnlgYcdw7h9c5lBso7E5dHIQoMK397QqgKoDm3OoF0ar1NPCMlIl4ClUbR7lHGCgvHUsfiyRHFz0miQwl0VRnII123uDIcAC29ZC2Gt4AzDCKjK44CjEX4xGlIQBr1KFeyaEPW7W8WeZi5ZmyUtmsIfQZbDiu9Ls6Dbnncsq02HOr4b5RIaJNTFeQcDMqC6dHI2V1DeFPnvOUPCM7e52yd1l3mvEII7TVPXWwnRofmYZCsqz/5WQ7T/n52XXFNgUQ49ePoVpNg==
+ bh=8KxcbJlD/nR9R9nL//+LOAhaFdydTM+DoLhsQE08bB4=;
+ b=HLsNboU+VJn8R9BDHDzCpdOj9rGrbUKiMN/eJfxBYP5Ll6HuKbogufqfhRqn/UqhZK6ZuDVnDt/u6V00Z7nGbmfxAF06s5OPUH0j5GbdE7yFNihYsQJP1xdVQ7n9wnzPWJ9p0ij2GDXYARUXtDb8SGYIOPbaSsAWazsCTptLFBRkPivd46bPHqPchvkCoJdrwLQ/NJX/lHXmMh1XL71O89+mUtVGgJ2/3mXWiVG948baGg78Objx+itGm4Hy7F8aQjA54oL/yw5tM8/KS0Zfpg3phe8U52SFkNdae+cU/IxE2oPJg8kRo+svGFX8nJZ3qitGFn6MGZC4Z4AtB/4oGw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB4062.namprd15.prod.outlook.com (2603:10b6:806:82::11) with
+ by SN6PR1501MB4095.namprd15.prod.outlook.com (2603:10b6:805:56::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Mon, 1 Nov
- 2021 04:01:34 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17; Mon, 1 Nov
+ 2021 04:13:50 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4649.019; Mon, 1 Nov 2021
- 04:01:33 +0000
-Message-ID: <c735d5a9-cf60-13ba-83eb-86cbcd25685e@fb.com>
-Date:   Sun, 31 Oct 2021 21:01:29 -0700
+ 04:13:50 +0000
+Message-ID: <3d7c321e-6099-a7f4-bffe-06d4bf48536d@fb.com>
+Date:   Sun, 31 Oct 2021 21:13:47 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH bpf-next] bpf: add missing map_delete_elem method to bloom
- filter map
+Subject: Re: [PATCH -next] bpf/benchs: Fix return value check of
+ bpf_program__attach()
 Content-Language: en-US
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>,
-        Joanne Koong <joannekoong@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        syzbot <syzkaller@googlegroups.com>
-References: <20211031171353.4092388-1-eric.dumazet@gmail.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <linux-kselftest@vger.kernel.org>, <shuah@kernel.org>,
+        <ast@kernel.org>
+References: <20211030093051.2609665-1-yangyingliang@huawei.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20211031171353.4092388-1-eric.dumazet@gmail.com>
+In-Reply-To: <20211030093051.2609665-1-yangyingliang@huawei.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-ClientProxiedBy: MWHPR04CA0070.namprd04.prod.outlook.com
- (2603:10b6:300:6c::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0055.namprd04.prod.outlook.com
+ (2603:10b6:303:6a::30) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
-Received: from [IPV6:2620:10d:c085:21c1::17cb] (2620:10d:c090:400::5:ee01) by MWHPR04CA0070.namprd04.prod.outlook.com (2603:10b6:300:6c::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 04:01:32 +0000
+MIME-Version: 1.0
+Received: from [IPV6:2620:10d:c085:21c1::17cb] (2620:10d:c090:400::5:ee01) by MW4PR04CA0055.namprd04.prod.outlook.com (2603:10b6:303:6a::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Mon, 1 Nov 2021 04:13:49 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9c64e609-c770-4e81-1784-08d99cec4b1e
-X-MS-TrafficTypeDiagnostic: SA0PR15MB4062:
-X-Microsoft-Antispam-PRVS: <SA0PR15MB406251C806670D24D2FF8CA3D38A9@SA0PR15MB4062.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 282fee3f-27b4-4227-f24a-08d99cee0223
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB4095:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB409582BE8190421630EFD40AD38A9@SN6PR1501MB4095.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:425;
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Uhx3DiDhpzxL50F9eEfhVLHdsNlYsk5zjNuB5hmp2uA8lJNNXZfuBi6blxqE8ipALtLa6zll1O2fqGHSthjX5w59G+xcEB1F9Z/4zRm3jD0m06NjLKaP73mb4f0JQb5w4O3YxAHgk+ZMBNoImnLwr3Wc4mpxEpyGAX5qqw7tszdSW6ZWTZMNwbRNBa4jaKCU4wEUgo6ja0GAGgQrlg5fB9GtkXjtpZCqYSxDKO1Ys08pTo+JfTladGIC4ytttHiyMb7JxdaCvkIRy4fXHhwB8+siyr6K4bcafQ079xP755gijR6HjVAh/ZUqkONTGAmj9PnsOTeWTSpXjdP4bC4SIvjvsVws/Q/5ueJwi26Pw4Eok3/InEZboKMBg5KiXe1PfxBhsxmrwyFINq6Tjudq1az2Wm1wFRI+Qtzl/zW1fpVmIMF6mVeCT5BtWpULIxcNwBgoy72oBnNcYoh51C0mf98T0Sbuk6xFCfKmMpJTxzYAcOisRVtMp1d7UQWR18z3Tw4mfYhM4C6dQsys6ktXZV0CLlEhAxdtzFrdu8pPNTPRCwcJ4LU08sOGpzo99mB/zI9c9ouMsDtBsZ4YDcvLmzKTDnMNnvaOsfh2WT6UDfQ1p72XCcpJ6++PL+/ji/b7/T62L+B+AzKZeb8fl+60/4YVvLb0FfVJRUGXYSshaI8kd/iSbEOX5YUlaIyGOHhEZDr9kLvVba8c7vRHL07bSHW8ILYus41CX0hs+yes+h0qxtjothlEGmxM0K/SdCbqy+rF3nwtMRkTkV6NRfa/8civJjTykNNH7ZORtdQ0BAb8mWnrh0vB+O+cdXW0i+3f
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(186003)(316002)(31696002)(4326008)(508600001)(110136005)(54906003)(86362001)(2906002)(8936002)(6666004)(38100700002)(83380400001)(66946007)(66556008)(66476007)(2616005)(8676002)(966005)(36756003)(5660300002)(53546011)(52116002)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: BTFw0driQtNC6jhZxVc1Y2QSzEjXY25a1dYXkePr429cVXGxOPqDik6cBguciyeDqz9q8LKue3scbuFAHgKCf1yyS4dsbLS/Xrf+sN3vRHaQikXcNMss3ndjTt7KUvawM+xnqXsW2TnWNBK43Nw+R+TXchUc3MeTS5eunOIc2I8dBcgYkbIWxW8xYzBPMPH/XuC6jr+11yHpq6/OsRYuxj3QVHJdfVP5+Zlz9wpWh12HLN0Q39ChYL0G3jnsrXLz81cX50pd+NsKcWH2mKUN05F+Jwo6IQPBAz8BqdSPi2yXJP0un4RGJLTm2TuoFu4oIpmPXZw5wp8QfxPn6adK8cCZdcaZ0p1HgWozk2eu30ehy1u4SY0bY9zCLGhVLbPykQzBcGInLFbVI2ZynNcU2dtpeFwcM3BMll5y+u3uJSGgrWyd5cOR8/w9rulPGKtFAvSYNMb5pWMYS5laFVF5v0Lo/X+clzEpFvolxblezJKEf7mtkKLzQjajizhH0z4k8DDATp86rGb/XGkQ+8Szfj+oo+0CEWPvN1QnsTh0PcOUkeLWV+Zf/C9L/B9pWCs1kO0wJFyTwr+GXU+Fw7MefkLCBabdnImNv9kc1Gpt4k4B1x1J9E6PMLMLXFkYk5q00oYitQFp2D40ObWhmEfR+B0oJCyefZXjXegVIG9RfkuIaiQoHPExv59wBUHI6lBjCuj1Az4vDdiwOygKXxo/FP2eSj3p5jb4tJ9vsjoZiFb34JkNqXz9ZxkLdKiAY2uLkbeCcOJ3V4jtyHzg5naUyw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(53546011)(2906002)(66946007)(4326008)(186003)(8676002)(83380400001)(316002)(5660300002)(52116002)(66476007)(66556008)(31696002)(86362001)(38100700002)(8936002)(31686004)(36756003)(2616005)(6486002)(101420200003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T05qZlhLT01ueDFFNVMrVUs4YWlzK1c2cGl3bVBDSEVXMXErNUtRcC9OTEI2?=
- =?utf-8?B?YTMxK09QRXBZQ2YzaVBhZTB0eStkVEEzbElvOHczbDEra2s1NXRHSkc5OWJr?=
- =?utf-8?B?aHJvcG0rYnV3MHAwWjN0R0gzS3BtL3dJSjd2V1FEYk9kYWJDV0JFR0VtOFdq?=
- =?utf-8?B?d3kvL0FheEEra05kelFNbmRNYmlMVnV6YVhkWDlTbGhvMzdqZ3RtdFhoamJG?=
- =?utf-8?B?aTg2Q3ZWd1dNZUg4cTd1YTN2TzBFekJlS25ON3JNM2UwZWFjbEV0MWFKTjhD?=
- =?utf-8?B?RnZjN1RIZTJzdG1lVlcvdkJnQ0RLTEZCZ1pYb2hINXZrSXQvN3NHeHgrbWI0?=
- =?utf-8?B?TEdWK1UxZGdVSzhITlA0UVR6ZXgxbDZHVGpuS3hZV1l1M3dJdTNRSjIzMG9F?=
- =?utf-8?B?cWRhZm91NUY3eHFqa0dTMVdiL1ord2FvL3RxZlJXMjVOWUJrTkFOcXNYY2x5?=
- =?utf-8?B?ZWtxdjc1OUtDVUQ5SERLK3pETHRnMElEM2k5N2FvaXlydmJOVCt0T3cwWk9H?=
- =?utf-8?B?NlhjNW03aFpzalViQ2tNQkd2OCtTL3MzeWxYc2tQNERDbFBYZDNWcnU3UzFW?=
- =?utf-8?B?YjltY1YycHVXbzU0OUtlQzZZYVc2RHJEWEQ2VTlpbzRJa0VDd0tBS2ZlVHIx?=
- =?utf-8?B?ZWhad0ErK1J5ZlhpUW1IbStjVlhnblNkT1JISDBwbGUwdksvcHBuRzJvS2JP?=
- =?utf-8?B?bWl4Z3dIUktpangvK3pzc0ltNnlnNGlmYW9iVmRqK0lidzd6Mzg5SUJzZGxS?=
- =?utf-8?B?RnpaOERUa0RMMUhOWWI4VU5HR1pOY0pzbktpMUVzaFhyQW4vSHpIUFVkcWkv?=
- =?utf-8?B?WWErdUtDcldnT2d5RS9PbzRxTlpTWFJsNGgwdW1iZ1RHcGxPaHBwbzQzNlNm?=
- =?utf-8?B?dXpjclgybGd4Z1ZxM3dhZGhkQlVYZmdBSEw3K05HMzJlanRrM2xxd0QvRDBE?=
- =?utf-8?B?L2M2WG13aHZlY0Vxd1pIYzh4NGVBVFFBeDRwRk5MVUgxa2RuK1hJTmNjWXdj?=
- =?utf-8?B?ODczUlJ4VTY4YlllYWZTcSswMnVsRXIyWFFlWkwxYWdUM0ROajl0elNVVkU5?=
- =?utf-8?B?dCtuVTE1Yi9sZy9sMURld0pCbkt5djZjRnFjUXhDOFE3UlhMK0JkS2Q3RU55?=
- =?utf-8?B?aUNJaVBCN3JNM25DUXpCNDFZLy81TXhlUWFsT1FPYk1xR25JUUE4MldsT3p3?=
- =?utf-8?B?Q0lEM1pCdTloRllFUExmTWpDcGZSSzV2enJnbFFhWk9TZ2F3aHpGUjl6Qm90?=
- =?utf-8?B?YXh6NTFIL0Z6OW9XMW05endiTStpZmFybUY3NndIbmFScDMyRDZaamtqQlI2?=
- =?utf-8?B?ZlZQRFJ2UWp3Y2F5bnJ4ZUs3bFY4c0lNdkFGMEFaZHBaL1poZEVaYVJRZytL?=
- =?utf-8?B?ZDY2MkovRmsrZDlKQ1J1UlBRV2M0L2hyUWFxTysrYVlXNkNPSTF0N3VyMldN?=
- =?utf-8?B?cDFWNituS2xuUXduaTFwQXM2MmxXOUtkRTB6T1lZREZNNHZHTlNXcVoyTXc4?=
- =?utf-8?B?NjNjZ0dNTFc4VWxFcVZ4R0VXSDI0US9XQVdnOTU0S2hpczZxTHFVQ200Nmpi?=
- =?utf-8?B?Y0Nvd0NrUjNCcGxPdjNHUVU0L2huRm5WYTJ0ai9YYlFBOWJ6MSt4QmxyTjBs?=
- =?utf-8?B?UldXL2dwWmpMZXRqOTROSTZ1MXlPM1ZobE1kUi9iVzdOT0xIQUdqRktiRk5z?=
- =?utf-8?B?NUtUajV5OVFSblAxZUtudjluTWhWRHByM013VWNkYWlJcnJNeC93VXNwaHFK?=
- =?utf-8?B?WjQ1N1UvbnJDeFU5d1dWcU9ubHJTb2J5TDJ6VU15bFdNaHVUZjFuendyREto?=
- =?utf-8?B?RTM1N291ZGZ4TU14QzlwRkV2M2tydUJJaFh6c1dGaXowOFhhVnFBY0FCRkZj?=
- =?utf-8?B?ZHBzTmE5QTRTV3FDaC80THBibyttQTFIbGZsSGtXWmtqMnJnOE1UcjhVL2w4?=
- =?utf-8?B?bCtOTXp1Y0ZneElkc1NmWEpZSjZUTUt3YmpOMG50dXlkd0FvZTVQMjloNDFM?=
- =?utf-8?B?Z2tFa2dnRVk1bXdLa3BKMi9UR0ExT2ViekFrOTdMaEd6QktHM3hwZWFYM0Rh?=
- =?utf-8?B?VFEveHhPbjBBbzlxL1ZEZEQycFNROVpmOFhGV0JTRFB6RWtiU2pTTEk1ZlNF?=
- =?utf-8?Q?1VwQXvV7HEjS28sXqCl48C5sR?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c64e609-c770-4e81-1784-08d99cec4b1e
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzlWWHJPb3FLeEgwY2xnSU45ZTB0VkNCV3dSOE43WnRoN3dmWmE3QUZFNmxW?=
+ =?utf-8?B?ekZiSjJHV2IrekhCZktKRWxUTWs4SC9nS2FnTUV2MHJrVXc5V04xYXM3TEx6?=
+ =?utf-8?B?Vzd3c3h3Z1czb3dYaFhsMlUxbnFWdlc3TUtxLzdnWTJ0SlNlVFZlQy9SRWpM?=
+ =?utf-8?B?bmEzWVRaemlWZlZrTzZUQ2JHd1MrQnBwV3hTNWttaXc5Z2Q5TytiTzkxb3U2?=
+ =?utf-8?B?YXF4MzJFWlVNVmtCMG5jb3h4TnJ5UXN5M2Q1aGZMZ0J3S2ZGY1BsQVlCNGUy?=
+ =?utf-8?B?bEhvbGtQYW1IWkJtSnV5ODV6VmlzNEl4Y2R2Z280a2dwUk1MYWUxQVpNcE9y?=
+ =?utf-8?B?RUMxMVZISmdTVWFBTWRIWTJma2h1MlhzVmd3YVE1ZWR5REQyTEhEQ3c5NTZY?=
+ =?utf-8?B?Z0NTeURQWDQ2cHh6NGVieDBCeDdzbzEvaEZDcnFITnpGVHBEZWpXM0M0RGJR?=
+ =?utf-8?B?bUozZVBpc0o0WFcyYks5cGRLQlBrc083WWx3VzNiNHJSMlJMZ2xmTzRiU2Z3?=
+ =?utf-8?B?YXBONlJNdTY1OUhpOGJCVm9hbVI4WnZpSmYvOUtDUzIzcnJNRlhJaVB4U1pv?=
+ =?utf-8?B?ZVVOdGNtSU5Lc3hFeW9IU0xxSVpsU2RtbnFnZkVwSEtKdVpzVGxxcUowODR5?=
+ =?utf-8?B?OGpDUjdmSWFuNkhnZkZxV1htNjIrZzdVQ25BZ0E4eEM1d3lPQ3g4WjRxeC9M?=
+ =?utf-8?B?ZVE2c1BGLzdwM0c1L1JHUGxqb3VlRzdhM2QxbFZkcE8xNVVibGFLK29ERExj?=
+ =?utf-8?B?a2cwc2ZIVjVVd05oOTRmQXFDdC9WVnUxVlc3b1lUeG9iNXljMzk2Vk5yRkps?=
+ =?utf-8?B?aUx5MHZQSzVOK2l2US9BKzlTaW9neGRXYXV3Y0lIdVNOcHRSblRraUZiaGVn?=
+ =?utf-8?B?UlVUQ0ZsaWRORUFKK292ckh1VHB1dE5yMXJPSGMydG5WcXp2a1BNOW9MTGlC?=
+ =?utf-8?B?eTF2eVRPdlNnQzNrYnVCaTF3L1l0WWNVU2RCR0VkaWdSU0dYay8rTXZhMndW?=
+ =?utf-8?B?cVRKQlBoTWptRHlsdERxbVE0Vm04T2wxLzVQR3E2UWJaVFp1WnpqYjZXVnRI?=
+ =?utf-8?B?THlJL0xEdkRPM3E5THBHWEtVTUVnOUJJcS9ZWWNGZGk0WElHWlkvdE5IeTA4?=
+ =?utf-8?B?TC9kdkN5QUlDVUFDSGErcVZsNWlhZWFtM2Jnc1I4dlF6QVZLcUc5VUc5UURG?=
+ =?utf-8?B?N3l3U0NxNVNrZlFpRXlXekVxaEgvdGtqeTVqOStCMHRRaVlIZ0FSMGJValE0?=
+ =?utf-8?B?Y1dXaU9ldFFXVnJabzBVK2crWUtSMURUbkR0WlozVmZnSG9PaHA1VzVHK0o5?=
+ =?utf-8?B?eXhLb044eHh3bytOcXVOUDE3a3NkRUJiRFl0V3VSeGNrdmNCdHBqTTM4ZVVt?=
+ =?utf-8?B?M0RKOHplS0FrcXFzOVl2Y2l2RU8xNjBNeHRnWDRWcDBVUEdYZks2bFZHZWw0?=
+ =?utf-8?B?aEd5WStjR0NtMk9uYk9aZFI1M1RxS1NWNkliVGNxSzMyOFRDbTRpYkF4ZGtl?=
+ =?utf-8?B?elhSVm5UZjNpcytzT1RNNGo5d0FDRC8xQXBpTEc3dFQrbGJqY1oxTjNER1dj?=
+ =?utf-8?B?NG5OUGl1SzQyOG1IZkY0MzhJUzMwUmROMHJkZXIwS0FWVWYvWDIyT01PZWJr?=
+ =?utf-8?B?a01RdnZ4S2ZaMFd6YlVtY3NVOHJFaHJ6YTUvOGlydSs5NEhCbWtEOFJHZ0x0?=
+ =?utf-8?B?SkNrVFgrUk1nd0FzdnUyZytyYmtsNlNNSE9FdnNQVHZKVi9ORUo2OHNMVGxC?=
+ =?utf-8?B?dmQ5MEV0d3dIeGpDRUQ3TURhMDl4aUZXZndxTWo0NVk0NjRaV1dYS0NoOWZV?=
+ =?utf-8?B?bWRkOVlZZkljSVM4eld0L0QrTXRmYnhVelY5OHI4ZWJtWGtZaEkxMGVUdnZQ?=
+ =?utf-8?B?R2FWUmpFQndGSmhtOFlwQkNTeVQ2ODF3R0xpMktEeWRpL04vUmVWekx0QWhj?=
+ =?utf-8?B?NWM3eUZnd1pVZkVrWm11eXRaWm8vL0ZDVlY4V3E1SFpvUWxTTzhOUXBTNkVN?=
+ =?utf-8?B?ci9ySEwwdDhuRjlabnlnTVBRY2d1THErTUpHTVlnTTBWNFFraU5tUHNkNmRh?=
+ =?utf-8?B?U1FOajBqTE4vZmNiOFhSanI5NmgxYTFpeVMxSUpGMGsrN3loZDZFR1V0eGxR?=
+ =?utf-8?B?R2hJekcxd20wMnpjTHZBUHNOR003Sm9mZmZvbU1ObUpDaVY0SU9JOW0xSGdC?=
+ =?utf-8?B?MXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 282fee3f-27b4-4227-f24a-08d99cee0223
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 04:01:33.7883
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2021 04:13:50.2804
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /9BiRW6UIdcn1+C69cM7k4pbyKjdjbANvBgVyRJwAb/f/0os6r1nKxMwMKRi/kxa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4062
+X-MS-Exchange-CrossTenant-UserPrincipalName: +hN3zLrC7RO8mYtxIrfYe/he3dwe58TJGZefT5rPuYFQWuQyq+xO/YQ7odMcXx+n
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB4095
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: _ScH26BKESU9EVmFQ08raWMcYNuBOXxL
-X-Proofpoint-GUID: _ScH26BKESU9EVmFQ08raWMcYNuBOXxL
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: -esCVVy0CDM_5bM7QN6OiCNe_rN6d1kE
+X-Proofpoint-GUID: -esCVVy0CDM_5bM7QN6OiCNe_rN6d1kE
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-01_01,2021-10-29_03,2020-04-07_01
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
  suspectscore=0 malwarescore=0 impostorscore=0 spamscore=0 phishscore=0
  mlxscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1011
- mlxlogscore=898 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111010023
+ mlxlogscore=979 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111010024
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -153,82 +148,119 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 10/31/21 10:13 AM, Eric Dumazet wrote:
-> From: Eric Dumazet <edumazet@google.com>
+On 10/30/21 2:30 AM, Yang Yingliang wrote:
+> If bpf_program__attach() fails, it never returns NULL,
+> we should use libbpf_get_error() to check the return value.
 > 
-> Without it, kernel crashes in map_delete_elem(), as reported
-> by syzbot.
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> PGD 72c97067 P4D 72c97067 PUD 1e20c067 PMD 0
-> Oops: 0010 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 6518 Comm: syz-executor196 Not tainted 5.15.0-rc3-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-> RSP: 0018:ffffc90002bafcb8 EFLAGS: 00010246
-> RAX: dffffc0000000000 RBX: 1ffff92000575f9f RCX: 0000000000000000
-> RDX: 1ffffffff1327aba RSI: 0000000000000000 RDI: ffff888025a30c00
-> RBP: ffffc90002baff08 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff818525d8 R11: 0000000000000000 R12: ffffffff8993d560
-> R13: ffff888025a30c00 R14: ffff888024bc0000 R15: 0000000000000000
-> FS:  0000555557491300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 0000000070189000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   map_delete_elem kernel/bpf/syscall.c:1220 [inline]
->   __sys_bpf+0x34f1/0x5ee0 kernel/bpf/syscall.c:4606
->   __do_sys_bpf kernel/bpf/syscall.c:4719 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:4717 [inline]
->   __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4717
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> 
-> Fixes: 9330986c0300 ("bpf: Add bloom filter map implementation")
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Cc: Joanne Koong <joannekoong@fb.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-LGTM with a suggestion below.
+Thanks for the fix. LGTM with a nit below.
 
 Acked-by: Yonghong Song <yhs@fb.com>
 
 > ---
->   kernel/bpf/bloom_filter.c | 6 ++++++
->   1 file changed, 6 insertions(+)
+>   .../bpf/benchs/bench_bloom_filter_map.c       | 20 ++++++++++++++-----
+>   1 file changed, 15 insertions(+), 5 deletions(-)
 > 
-> diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
-> index 7c50232b7571f3f038dd45b5c0bd7289125e6d43..31a7af15a83d74af1d88d04cc8d71aa7d403b4ef 100644
-> --- a/kernel/bpf/bloom_filter.c
-> +++ b/kernel/bpf/bloom_filter.c
-> @@ -77,6 +77,11 @@ static int pop_elem(struct bpf_map *map, void *value)
->   	return -EOPNOTSUPP;
->   }
->   
-> +static int delete_elem(struct bpf_map *map, void *value)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
->   static struct bpf_map *map_alloc(union bpf_attr *attr)
+> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> index 6eeeed2913e6..6879340b20c4 100644
+> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> @@ -296,6 +296,7 @@ static struct bloom_filter_bench *setup_skeleton(void)
+>   static void bloom_lookup_setup(void)
 >   {
->   	u32 bitset_bytes, bitset_mask, nr_hash_funcs, nr_bits;
-> @@ -189,6 +194,7 @@ const struct bpf_map_ops bloom_filter_map_ops = {
->   	.map_pop_elem = pop_elem,
->   	.map_lookup_elem = lookup_elem,
->   	.map_update_elem = update_elem,
-> +	.map_delete_elem = delete_elem,
+>   	struct bpf_link *link;
+> +	int err;
+>   
+>   	ctx.use_array_map = true;
+>   
+> @@ -304,7 +305,8 @@ static void bloom_lookup_setup(void)
+>   	populate_maps();
+>   
+>   	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
+> -	if (!link) {
+> +	err = libbpf_get_error(link);
+> +	if (err) {
 
-There is a pending patch
-https://lore.kernel.org/bpf/20211029224909.1721024-2-joannekoong@fb.com/T/#u
-to rename say lookup_elem to bloom_map_lookup_elem.
-I think we should change
-this delete_elem to bloom_map_delete_elem as well.
+There is no need to define 'int err', you can just do
+	if (libbpf_get_error(link))
 
->   	.map_check_btf = check_btf,
->   	.map_btf_name = "bpf_bloom_filter",
->   	.map_btf_id = &bpf_bloom_btf_id,
+The same for a few 'int err' below.
+
+>   		fprintf(stderr, "failed to attach program!\n");
+>   		exit(1);
+>   	}
+> @@ -313,6 +315,7 @@ static void bloom_lookup_setup(void)
+>   static void bloom_update_setup(void)
+>   {
+>   	struct bpf_link *link;
+> +	int err;
+>   
+>   	ctx.use_array_map = true;
+>   
+> @@ -321,7 +324,8 @@ static void bloom_update_setup(void)
+>   	populate_maps();
+>   
+>   	link = bpf_program__attach(ctx.skel->progs.bloom_update);
+> -	if (!link) {
+> +	err = libbpf_get_error(link);
+> +	if (err) {
+>   		fprintf(stderr, "failed to attach program!\n");
+>   		exit(1);
+>   	}
+> @@ -330,6 +334,7 @@ static void bloom_update_setup(void)
+>   static void false_positive_setup(void)
+>   {
+>   	struct bpf_link *link;
+> +	int err;
+>   
+>   	ctx.use_hashmap = true;
+>   	ctx.hashmap_use_bloom = true;
+> @@ -340,7 +345,8 @@ static void false_positive_setup(void)
+>   	populate_maps();
+>   
+>   	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+> -	if (!link) {
+> +	err = libbpf_get_error(link);
+> +	if (err) {
+>   		fprintf(stderr, "failed to attach program!\n");
+>   		exit(1);
+>   	}
+> @@ -349,6 +355,7 @@ static void false_positive_setup(void)
+>   static void hashmap_with_bloom_setup(void)
+>   {
+>   	struct bpf_link *link;
+> +	int err;
+>   
+>   	ctx.use_hashmap = true;
+>   	ctx.hashmap_use_bloom = true;
+> @@ -358,7 +365,8 @@ static void hashmap_with_bloom_setup(void)
+>   	populate_maps();
+>   
+>   	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+> -	if (!link) {
+> +	err = libbpf_get_error(link);
+> +	if (err) {
+>   		fprintf(stderr, "failed to attach program!\n");
+>   		exit(1);
+>   	}
+> @@ -367,6 +375,7 @@ static void hashmap_with_bloom_setup(void)
+>   static void hashmap_no_bloom_setup(void)
+>   {
+>   	struct bpf_link *link;
+> +	int err;
+>   
+>   	ctx.use_hashmap = true;
+>   
+> @@ -375,7 +384,8 @@ static void hashmap_no_bloom_setup(void)
+>   	populate_maps();
+>   
+>   	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+> -	if (!link) {
+> +	err = libbpf_get_error(link);
+> +	if (err) {
+>   		fprintf(stderr, "failed to attach program!\n");
+>   		exit(1);
+>   	}
 > 
