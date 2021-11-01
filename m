@@ -2,88 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF9B441DFE
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 17:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC95441E14
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 17:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhKAQWm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 12:22:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232683AbhKAQWm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:22:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B0C9661154;
-        Mon,  1 Nov 2021 16:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635783608;
-        bh=WBH5x2sQl+H3hGdk/mI4v0/FbeLdnVzHPnqeavXRrFs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PjF8TodNsj/Xujg0l9Km00KmeSb33FuUJHSRkDBPX0lfsnEqA+0BjROa4646BsHgO
-         YO+pFJ3bqmxDBCKXhsQexUU+DmqU70HnP1lHeozwIDRM+Pjc6oTtBLitxryFZtGbu+
-         yqj7mjNsIzBXyvlHHNqkcS6no3ZSbXKHtZtl4M+UGYKCGdBgg5uLo3bZZxAGg6z9oW
-         WjkoteKsi4XhuYG+dml/b3Hwu0L3sYToEKq8uUUasE/Y5wA2fpY86ctmFXjNT7G11R
-         YQaRvZ7+WkUWm2DNhnsPUlCghyEBusVctinz3tzFIOwo0dQnAZra4SzIdsBLYumqpl
-         PvA9YwYvj8MZg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A462060A90;
-        Mon,  1 Nov 2021 16:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix strobemeta selftest regression
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163578360866.18867.12937578535017333186.git-patchwork-notify@kernel.org>
-Date:   Mon, 01 Nov 2021 16:20:08 +0000
-References: <20211029182907.166910-1-andrii@kernel.org>
-In-Reply-To: <20211029182907.166910-1-andrii@kernel.org>
+        id S232498AbhKAQZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 12:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232174AbhKAQZK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 12:25:10 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A533AC061714
+        for <bpf@vger.kernel.org>; Mon,  1 Nov 2021 09:22:37 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id e65so17618366pgc.5
+        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 09:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0/q8gY92WpHEhEb+p85M8WmEzLmdNCfJ38CSCvKtmBg=;
+        b=NQ8LIalhWAOSrakB2DFRjOxZD+JNuo4at2aAV4g5J2B51qPSoxIWLUFcyhjriswA12
+         1MwlyeX3DOtTi4+YJ8LBtLG9oU1Yy78tw4nZo5EZpvdjptyRSmb45ffh834U40jS3fha
+         t3bKhRRmMRytzZsPz1b562jRpxqcGYzeF/EAXzfN6Q8NljbvDors8erhMr5xqkkoRtDo
+         H+AZb1ge4wyymdEUd9OvJrfBdl/TYyZdITMKRQxoY9/FD/q03K6+KZnDqmbfMh7w1JY2
+         jMgPo+V2IcZuzU8J3m/s2btNI9pzp+7J9gqrats9xxofXagrC043V/+45W2NRVU+XTbf
+         oWDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0/q8gY92WpHEhEb+p85M8WmEzLmdNCfJ38CSCvKtmBg=;
+        b=5vNdI2Vs23C/zXxD9KRS+gqfpjzHLde6A2T3WMSGEnte+jB7Dfrv01BUP5i7WEnwmW
+         4nteRfcD+wbfe9CsC1M9VHvpGPC65u9jIOLms4X7CplCiWrGJhuKgJbkd6LAP56k97tB
+         OYFgehacS9D/8FU9VVwki9A8mpEf1na8VoWeGVqIfcQfn4w4XtGVfrQUMVdzGzdFT/JD
+         9Q5op2mJf9zQBF+j1VdnUqCL0Ri2Y2/Roi0PlUjBOb1SPfozpowXZVjGA6O823wtfEV+
+         YdSHH6jzeaVgFzPNWwD7JBjDQ1ow1vjRNlzReLdwFsgT8DBiDqL0971ZM46sJyO5l3/m
+         0jBg==
+X-Gm-Message-State: AOAM533rltwrhYxhOuqlPXHY9pDv3PMBdt0HgSAU0Sbw3RtBKCPLrQxf
+        6I7Cv44lO0o26bIwFVGt/yI=
+X-Google-Smtp-Source: ABdhPJyqTQ3sFUPT79B9FWwG6dkhS2HkQvmLvcN5yyCQMv6SR0fYyS0kgNFT/2rqkW7ilmq2c3046A==
+X-Received: by 2002:a05:6a00:248e:b0:47c:20c2:f038 with SMTP id c14-20020a056a00248e00b0047c20c2f038mr29989785pfv.13.1635783757175;
+        Mon, 01 Nov 2021 09:22:37 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:880e])
+        by smtp.gmail.com with ESMTPSA id q10sm5362382pfk.218.2021.11.01.09.22.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 09:22:36 -0700 (PDT)
+Date:   Mon, 1 Nov 2021 09:22:34 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
+        kernel-team@fb.com, Hengqi Chen <hengqi.chen@gmail.com>
+Subject: Re: [PATCH bpf-next 02/14] libbpf: add bpf() syscall wrapper into
+ public API
+Message-ID: <20211101162234.fhtnmrdj5gil3qfo@ast-mbp.dhcp.thefacebook.com>
+References: <20211030045941.3514948-1-andrii@kernel.org>
+ <20211030045941.3514948-3-andrii@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211030045941.3514948-3-andrii@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Oct 29, 2021 at 09:59:29PM -0700, Andrii Nakryiko wrote:
+> Move internal sys_bpf() helper into bpf.h and expose as public API.
+> __NR_bpf definition logic is also moved. Renamed sys_bpf() into bpf() to
+> follow libbpf naming conventions. Adapt internal uses accordingly.
+...
+> -static inline int sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
+> -			  unsigned int size)
+> -{
+> -	return syscall(__NR_bpf, cmd, attr, size);
+> -}
+> -
+...
+> +static inline long bpf(enum bpf_cmd cmd, union bpf_attr *attr, unsigned int size)
+> +{
+> +	return syscall(__NR_bpf, cmd, attr, size);
+> +}
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+I think it will conflict with glibc.
+It will also conflict with systemd that uses bpf() from glibc or does:
 
-On Fri, 29 Oct 2021 11:29:07 -0700 you wrote:
-> After most recent nightly Clang update strobemeta selftests started
-> failing with the following error (relevant portion of assembly included):
-> 
->   1624: (85) call bpf_probe_read_user_str#114
->   1625: (bf) r1 = r0
->   1626: (18) r2 = 0xfffffffe
->   1628: (5f) r1 &= r2
->   1629: (55) if r1 != 0x0 goto pc+7
->   1630: (07) r9 += 104
->   1631: (6b) *(u16 *)(r9 +0) = r0
->   1632: (67) r0 <<= 32
->   1633: (77) r0 >>= 32
->   1634: (79) r1 = *(u64 *)(r10 -456)
->   1635: (0f) r1 += r0
->   1636: (7b) *(u64 *)(r10 -456) = r1
->   1637: (79) r1 = *(u64 *)(r10 -368)
->   1638: (c5) if r1 s< 0x1 goto pc+778
->   1639: (bf) r6 = r8
->   1640: (0f) r6 += r7
->   1641: (b4) w1 = 0
->   1642: (6b) *(u16 *)(r6 +108) = r1
->   1643: (79) r3 = *(u64 *)(r10 -352)
->   1644: (79) r9 = *(u64 *)(r10 -456)
->   1645: (bf) r1 = r9
->   1646: (b4) w2 = 1
->   1647: (85) call bpf_probe_read_user_str#114
-> 
-> [...]
+#if !HAVE_BPF
+static inline int missing_bpf(int cmd, union bpf_attr *attr, size_t size) {
+#ifdef __NR_bpf
+        return (int) syscall(__NR_bpf, cmd, attr, size);
+#else
+        errno = ENOSYS;
+        return -1;
+#endif
+}
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix strobemeta selftest regression
-    https://git.kernel.org/bpf/bpf-next/c/0133c20480b1
+#  define bpf missing_bpf
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+why take a risk of renaming?
