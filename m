@@ -2,115 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8AC441B96
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 14:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD27441C1B
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 15:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhKANUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 09:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S232241AbhKAOFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 10:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhKANUT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:20:19 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1347C061714;
-        Mon,  1 Nov 2021 06:17:46 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id g11so4941286pfv.7;
-        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
+        with ESMTP id S232196AbhKAOFr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 10:05:47 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF8AC061764
+        for <bpf@vger.kernel.org>; Mon,  1 Nov 2021 07:03:13 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id y3so33805575ybf.2
+        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 07:03:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
-        b=pbWrcOS/E/Gkv13GNp//Zd/onyhqaNcNq2Rdu9GxPxMXEDnfiBU933SbOH0wbi0FJC
-         obvfAJ/lnAXDu938R6NR9nSq2GaJpxSmgiSW48lj5dE/iknMmNjPY7afACSmTivHY6NS
-         y03ZdwmxJmriBiBTtPYs9SVLnMg1Ho7E4e5DESub/+DGM8HwLFFo9tff2ENNEKE+ae+G
-         0zU4uHj/N4RTMuV7Fg5ejyKTvLwtcBIarPnAHOTH5CGgCJL/O8KtCf/3baCwl6E/H3wQ
-         wbxN1xEHKnirwvrIiL94fxx/ULwhEJwO/fGj2u4aPwtmVpoSSg4piz4zOTfHbIEiwv/4
-         6Wcg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=PblJKZo+k2H8JL30I1NZ2lTZq4dtq1qv335T60XMHjc=;
+        b=LrLGU+yTF8k0xi7B0gBARkCjpkV2a7fqawDlzFsFIcJO0N9DDjDInRxQAQZZD+BsWA
+         KUewVHiDAKh3KRZRG1cFHKS+sFVkrMnuSKytSg44H9xAKtkz14yvbtVVYko45qV8UOwc
+         cHrgnag9QiOkiTJ0tlAsS4BlQ1NpVb9Umu2ZmYc+H4eWVV3BoST0ObvDVxUdRcVcGJl1
+         3pkdoUcd3330DXzEwK5NThjdtiSAjgswtiriDw00u0xLnDnjtjY3+Fd/Px5w30/FW8at
+         3BisaTR9WiIIVv8T7AxVGT7hsED+8a4+vUfrS+WIFUBFXtZe6WwQuVFvPiMvIEFWrDzv
+         Q+wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
-        b=cx6kKTjNk/ihbNjt8w/uk/n16/EpvLFRbcJToKfPjoG/jaj3lVmglYlfApSJIVxNF5
-         KAqtLij9B3R5OZ24Ec1PEUsGiJc8w91d6unUInjenov+0K8cXc2dk5DZYFXJ0gHKtOIl
-         4sx0gb0Um4TBQOz5YAoDRVQpd8pIWVi5ECWRDRM8aN+R0bRKRzJsJszO6kLBjH5nk3nm
-         MI/OpEHJEJbqbP5vnMuNF2SfKXr7uBS1g1/L2fUd6obgl+M9N/jo5h+ujNKD5qyEzp4p
-         rvEKyaqRw1r6GyIUqA/cStQuz4F+K4NrS20RHR6qWVcQzLi4daKWyy+TvfKKN5oOXHtV
-         8V5Q==
-X-Gm-Message-State: AOAM530359Hn1uL8hA4ucQwcaVx4u2asOn0jWgWiTYkVyg1AKZ//vTBC
-        dlOyYXUnNLWLZXMZIlWcW8A=
-X-Google-Smtp-Source: ABdhPJxZtOo8xG7N0PRsh2O8ZZhFc5wI/xd3rxFZqqMP3xc3A++hez5iW7ovtZl1hKAhrmG1ZwjX5A==
-X-Received: by 2002:aa7:90d0:0:b0:44d:b8a:8837 with SMTP id k16-20020aa790d0000000b0044d0b8a8837mr28905418pfk.47.1635772666050;
-        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.115])
-        by smtp.gmail.com with ESMTPSA id q18sm16897419pfj.46.2021.11.01.06.17.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 06:17:45 -0700 (PDT)
-Message-ID: <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com>
-Date:   Mon, 1 Nov 2021 21:17:42 +0800
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=PblJKZo+k2H8JL30I1NZ2lTZq4dtq1qv335T60XMHjc=;
+        b=lTWy9A7ifnLiC1+dya8Fcac5HG7apcf9DwKpDcVEOhxNVL4eLxWbChoPOKg8q2r/n1
+         yPryE5Kf0grzs17ZycfnwcYlW+9hrkijcwPdXC6mdgJOH0eqNOrKFUyPhKjGCXAGD4n8
+         JGJgPTPL24UcsqVjgqVug0jM1watSU42FrZTJ2u60N0k+lUJnubiJPopnm9ztXyY/N1H
+         stC9P1Rpm8CTACtliRuabjyIn6OL209zU72R7qA456bM6dS+1La5iv9uDRNlKLIHCgOp
+         FYJc3Tjch/HbYm/R6kGE8Ojnx++bAxlI2UoZlKQ9O+6mpZ9MRFbu2xSnKElE58yQaaoM
+         8TOQ==
+X-Gm-Message-State: AOAM533Z2McTdHx7Cvo3MU9FvAtN2gscBlChRp6pRxw2/mHPtmMDvVfx
+        hpfwYsXG9wT+IxRfYyAN0mpi3SBmS7Vj0VokiC0=
+X-Google-Smtp-Source: ABdhPJz0FvhV52K0GVb+f4k8eeOmbyiALQgTpN+9RRyzweUjbEAY7Ik9EAVx1c6sveWiPu/b4VzZKNLNOPKBxvcniVU=
+X-Received: by 2002:a25:4f41:: with SMTP id d62mr31074794ybb.13.1635775392981;
+ Mon, 01 Nov 2021 07:03:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
-Content-Language: en-US
-To:     Florent Revest <revest@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org
-References: <20211028164357.1439102-1-revest@chromium.org>
- <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
- <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-In-Reply-To: <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Sender: obinnaeke50@gmail.com
+Received: by 2002:a05:7000:8c0d:0:0:0:0 with HTTP; Mon, 1 Nov 2021 07:03:12
+ -0700 (PDT)
+From:   Alary Jean Claude <claudealaryjean@gmail.com>
+Date:   Mon, 1 Nov 2021 14:03:12 +0000
+X-Google-Sender-Auth: 8r8KoBBiPMSxCyjdmhCmtq1imZw
+Message-ID: <CAPPJqg-ZfQExYcCN5CS=sJj6TPbzMVpBSbS=SN-w+yK1kwxPvQ@mail.gmail.com>
+Subject: Good Day My beloved,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Greeting My Dear,
+With due respect to your person and much sincerity of purpose I wish
+to write to you today, seeking for your urgent assistance in this
+humanitarian investment project to be established in your country for
+the mutual benefit of the orphans and the less privileged ones. My
+names are Mrs.Claude Alary Jean, a dying widow hospitalized undergoing
+treatment for brain tumor disease, I hope that you will not expose or
+betray this belief and confidence that I am about to delegate to you
+for the mutual benefit of the orphans and the less privileged ones. My
+late husband made a substantial deposit with the Bank which I have
+Strong-Willed to hand over and entrust the sum of ($
+12,000.000,Dollar) in the account under your guardianship for you to
+invest it into any social charitable project in your country. Based on
+my present health status I am permanently indisposed to handle
+finances or any financial related project.
 
+With this intention, I am determined to contact you in order to
+sustain and assist me as my rightful beneficiary and claim the money
+for humanitarian purposes for the mutual benefits of the less
+privileged ones. Because If the fund remains unclaimed with the bank I
+pass away, those gluttonous bank executives will place the fund as an
+unclaimed Fund and share it among themselves for their selfish and
+worthless ventures. In this regard, I will be grateful for your kind
+acceptance to carry out this transaction and fulfill my final wish in
+implementing the charitable project in your country as it requires
+absolute trust and devotion without any failure. Meanwhile It will be
+my pleasure to compensate you as my Investment Manager/Partner with
+40% percent of the total amount as commission/share just for you to
+take this charitable project serious and handle it with sincerity of
+mind, showing honesty and attention in our communication and in every
+aspect of this project, While 60% of the money will be invested into
+the charity project.
 
-On 2021/10/30 1:02 AM, Florent Revest wrote:
-> On Fri, Oct 29, 2021 at 12:47 AM Martin KaFai Lau <kafai@fb.com> wrote:
->>
->> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
->>> Allow the helper to be called from the perf_event_mmap hook. This is
->>> convenient to lookup vma->vm_file and implement a similar logic as
->>> perf_event_mmap_event in BPF.
->> From struct vm_area_struct:
->>         struct file * vm_file;          /* File we map to (can be NULL). */
->>
->> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
-> 
-> Thanks Martin, this is a very good point. :) Yes, vm_file can be NULL
-> in perf_event_mmap.
-> I wonder what would happen (and what we could do about it? :|).
-> bpf_d_path is called on &vma->vm_file->f_path So without NULL checks
-> (of vm_file) in BPF, the helper wouldn't be called with a NULL pointer
-> but rather with an address that is offsetof(struct file, f_path).
-> 
-
-I tested this patch with the following BCC script:
-
-    bpf_text = '''
-    #include <linux/mm_types.h>
-
-    KFUNC_PROBE(perf_event_mmap, struct vm_area_struct *vma)
-    {
-        char path[256] = {};
-
-        bpf_d_path(&vma->vm_file->f_path, path, sizeof(path));
-        bpf_trace_printk("perf_event_mmap %s", path);
-        return 0;
-    }
-    '''
-
-    b = BPF(text=bpf_text)
-    print("BPF program loaded")
-    b.trace_print()
-
-This change causes kernel panic. I think it's because of this NULL pointer.
+Thank you very much for your kind consideration and I will be happy to
+receive your prompt response for further correspondence.
+May the peace of God be with you.
+Yours beloved Sister in Christ Mrs.Claude Alary Jean.
