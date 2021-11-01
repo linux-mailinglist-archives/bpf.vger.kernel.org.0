@@ -2,92 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CDB4422F8
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 23:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB514422FA
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 23:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhKAWC6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 18:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhKAWC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 18:02:57 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5CBC061714;
-        Mon,  1 Nov 2021 15:00:23 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id k4so3026106plx.8;
-        Mon, 01 Nov 2021 15:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lQidb9JCO2tS/0bSUKgi1+mcgxOacGZsvxUTQHhQVCo=;
-        b=clC7qZvzfmQnXJfsuJsBcm+xJ5bkWRiWPjWISgR24F4fyl3VUF5Ss5xuqotGo0zjXE
-         A3l9ic0D7evlfSTL405qR2G0i7kNJtjEXMOngR/bd6S0GgkGFob2ldX9y7ZDveNVx/ga
-         dgN6WcsoV19FXTc5KyT4G5Qun84rFPEZ+ovOqjqSC6AFp6IHz+l5K2gq3FgN4v9F7NHP
-         JH8y2s7euqOSP9tI1ZgimkiC6HxULTLCnnA4U658duNPprVcftZFSczvxFa4sdT+zmaY
-         hcpNSFqSP+6KZDHOKXlbNJji/kqI357JYXVyFmjrBlU8VNQd2uQIAXRMAau8PZH9HKLs
-         btcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lQidb9JCO2tS/0bSUKgi1+mcgxOacGZsvxUTQHhQVCo=;
-        b=3epESxORpcRAXrN7FtbLkffYSWtxnUseupuLDZHFl7qJXk8iJu6T0NmQAZXWRNsYsm
-         eeVU8D20J4Ib6sX7LS8bvKD1FkcMdJUpdrGWmLzG6UXKY3RZJCp7AYBwk/tiPp+10xs/
-         F8rk7K1yVFBHtuS9KV/SNs/sXKj3CFRxyp4frfIuDgarcV32/1DWfrF4X9vFUC0ysTS+
-         rfsTGnRsVicUz9wQLDwu9f3FJa/rYfU55RdXkwP80QhIQmQTg1bRCdcnv+hGqnF+OxPC
-         +pxD1xiddap1wcH492/H+W2a90Ko/GGuzL2Y+gkXc2WRPGLii+EsZrukbVS7hYWNZubv
-         vubQ==
-X-Gm-Message-State: AOAM5320yIEHistRavJVZiT/nMt56hy9JvFEo2h0taim0vVIKD6R50iA
-        kSWG5JwBk06yAL+nsrDl8vJzc6D15zwH40nvuMU=
-X-Google-Smtp-Source: ABdhPJxsuUlznQMiJfwR4AYM4OltePlg0lfGOqzeFIiCgNE6YPQ0+SnbfkmsYDVcB6cHSBeVY91V0Lz+V3+X/0baJSQ=
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
- c6-20020a170902724600b00138a6ed66ccmr28298780pll.22.1635804022932; Mon, 01
- Nov 2021 15:00:22 -0700 (PDT)
+        id S230460AbhKAWEK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 18:04:10 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57028 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231189AbhKAWEJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 18:04:09 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mhfMx-000Df9-4a; Mon, 01 Nov 2021 23:01:31 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mhfMw-000VWU-Uf; Mon, 01 Nov 2021 23:01:30 +0100
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: clean-up bpf_verifier_vlog() for
+ BPF_LOG_KERNEL log level
+To:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20211029135321.94065-1-houtao1@huawei.com>
+ <20211029135321.94065-2-houtao1@huawei.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ebdd6730-1dfc-1889-eae9-00211bd82803@iogearbox.net>
+Date:   Mon, 1 Nov 2021 23:01:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20211101124310.3947887-1-yangyingliang@huawei.com>
-In-Reply-To: <20211101124310.3947887-1-yangyingliang@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 1 Nov 2021 15:00:11 -0700
-Message-ID: <CAADnVQJS_2St=iaqHU+zasy_0A0bidJN=STnkHrNcSNL5vO1Dg@mail.gmail.com>
-Subject: Re: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        Joanne Koong <joannekoong@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211029135321.94065-2-houtao1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26340/Mon Nov  1 09:21:46 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 5:35 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
->
-> If bpf_program__attach() fails, it never returns NULL,
-> we should use libbpf_get_error() to check the return value.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
+On 10/29/21 3:53 PM, Hou Tao wrote:
+> An extra newline will output for bpf_log() with BPF_LOG_KERNEL level
+> as shown below:
+> 
+> [   52.095704] BPF:The function test_3 has 12 arguments. Too many.
+> [   52.095704]
+> [   52.096896] Error in parsing func ptr test_3 in struct bpf_dummy_ops
+> 
+> Now all bpf_log() are ended by newline, but not all btf_verifier_log()
+> are ended by newline, so checking whether or not the log message
+> has the trailing newline and adding a newline if not.
+> 
+> Also there is no need to calculate the left userspace buffer size
+> for kernel log output and to truncate the output by '\0' which
+> has already been done by vscnprintf(), so only do these for
+> userspace log output.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
-> v2:
->   don't use 'int err'
-> ---
->  .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> index 6eeeed2913e6..4afaa4adb327 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-> @@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
->         populate_maps();
->
->         link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
-> -       if (!link) {
-> +       if (libbpf_get_error(link)) {
+>   kernel/bpf/verifier.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 3c8aa7df1773..22f0d2292c2c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -299,13 +299,15 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
+>   	WARN_ONCE(n >= BPF_VERIFIER_TMP_LOG_SIZE - 1,
+>   		  "verifier log line truncated - local buffer too short\n");
+>   
+> -	n = min(log->len_total - log->len_used - 1, n);
+> -	log->kbuf[n] = '\0';
+> -
+>   	if (log->level == BPF_LOG_KERNEL) {
+> -		pr_err("BPF:%s\n", log->kbuf);
+> +		bool newline = n > 0 && log->kbuf[n - 1] == '\n';
+> +
+> +		pr_err("BPF:%s%s", log->kbuf, newline ? "" : "\n");
 
-Please use ASSERT_OK_PTR() instead.
-See how other tests are doing it.
+nit: Given you change this anyway, is there a reason not to go with "BPF: %s%s" instead?
+
+>   		return;
+>   	}
+> +
+> +	n = min(log->len_total - log->len_used - 1, n);
+> +	log->kbuf[n] = '\0';
+>   	if (!copy_to_user(log->ubuf + log->len_used, log->kbuf, n + 1))
+>   		log->len_used += n;
+>   	else
+> 
+
