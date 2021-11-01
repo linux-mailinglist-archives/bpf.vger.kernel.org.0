@@ -2,78 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE1A441DC2
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 17:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10220441DFF
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 17:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhKAQNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 12:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhKAQNa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:13:30 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CA4C061714
-        for <bpf@vger.kernel.org>; Mon,  1 Nov 2021 09:10:57 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id v20so32730483uaj.9
-        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 09:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
-        b=FH5TYN8eReD986/BqRqV4pieSrgrMF27nEW0j54nbEeE+WF8EhU5zhHTezcM2Hn1cz
-         MIxaapgxaKAKm33lR64P5H9XzWc2P0+1dZNSaWIEQt7HrEctTrQTk4Cs0Nm+VLRgETAN
-         T0PigIYCPKmiZbefhSDNGMiZPJMYJE2erHU/GiefMGgjAewoP9seKnBYVbZoblfAz5pk
-         ZAXB6mtcsacdvRutTY4rccfrSqH9rQebVvU9p6I/S1sXi2/2pLAoeIUPC0q9h7TWWhOp
-         juS5l3a+V8IYAI7uHjEC/rPWeKn8mIvi4i7PsEOrAytvjwNxGOkUE4W+ZfOSAwV8QOT4
-         2TFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
-        b=mmqX60a1UTTIOx+WD2sf0QeNAizPHXXcSea5f2kPgrFnCBEQy5MIr8l1azRGwXDY6w
-         BONsZX8xEl1fklrItLb4QkCb/xCinymoP+ves9d5hCfm9bjnnVPs05AsEXjxcCBnPjqb
-         ++XYAELtaMESsX7UBCKOKxlLGI5sKboBwK2JXsu24T6j1Ka6ud1QuPqSuujypPmCX0yL
-         GZZXwHOCByXYFLHameCsLPtzGLpp8Smlha/FRV6pSYCH7PjdDU8KsL4EBAX5A5iDkjWL
-         AtleiKzeq1sX375b4ABeE+t7PbWGY4mJJsN7ZMDlFLCXAzXXKwcLl/KI/lKS6vjki8e7
-         cZXA==
-X-Gm-Message-State: AOAM530A/NpRNcwHxAUZDmQj2XptNMrM3I6MvS4PibsPUl2a5w2dGUJ4
-        Fxb5nivlI1TsVfiskbOhCfLeNXLYQjXLuR/EkWo=
-X-Google-Smtp-Source: ABdhPJzwOj+Q1zJdXXwzLoeP0UXkVK4TtUcP8sDjidbDTonHGJRjMYel7Si6EaYHvd0qi6z8vzi4flQVIsfHwtE5SgE=
-X-Received: by 2002:a67:ca10:: with SMTP id z16mr29584709vsk.52.1635783056487;
- Mon, 01 Nov 2021 09:10:56 -0700 (PDT)
+        id S232692AbhKAQWn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 12:22:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232693AbhKAQWm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 12:22:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C560961175;
+        Mon,  1 Nov 2021 16:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635783608;
+        bh=OptXrCd0FiA/UfuAuNlM5eF1pJvaE/59/NVDLUdYUP0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=s477AHQmBaS8z5fxwFA+Vn5weBwTLeDaSsy+v9rb3Roc/Le6vQdbgWDEo1em+kk72
+         3VAH5Kioosn2PRj8DQmoQsupOQnJZDvEtNnFwAEPdtbFEOVhT7nDPc8RshspxNOSxW
+         l73rG8MwrKG5xsnqFz7dZDfL9ffHP3nBtxz8EXCXRbAyHy9r6Yr68x9/lwDYTAmqXk
+         Em3C0q9Y1v/7qa8HpdSrt7VOgerNyMPJusy4YKn/KkIghWX8ZqWVTyeehEl6IXShxe
+         Av+eos/FiMz25O5KJqUIUhl15Jr9RHKE9JogewTG5+yq6MMtwDcW2YoigX2lProtZC
+         9+8eH82y0LEjg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B8EEA60BD0;
+        Mon,  1 Nov 2021 16:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:ab0:7c65:0:0:0:0:0 with HTTP; Mon, 1 Nov 2021 09:10:55 -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsannab56@gmail.com>
-Date:   Mon, 1 Nov 2021 09:10:55 -0700
-Message-ID: <CACg9+2_4htpFbQWSSWk=vNHGMh5_VEnaEHjierhZxUvuTKBBMg@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATHC bpf v6 1/3] skmsg: lose offset info in sk_psock_skb_ingress
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163578360875.18867.1488273405731214405.git-patchwork-notify@kernel.org>
+Date:   Mon, 01 Nov 2021 16:20:08 +0000
+References: <20211029141216.211899-1-liujian56@huawei.com>
+In-Reply-To: <20211029141216.211899-1-liujian56@huawei.com>
+To:     Liu Jian <liujian56@huawei.com>
+Cc:     john.fastabend@gmail.com, daniel@iogearbox.net,
+        jakub@cloudflare.com, lmb@cloudflare.com, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        xiyou.wangcong@gmail.com, alexei.starovoitov@gmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Friend,
+Hello:
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+On Fri, 29 Oct 2021 22:12:14 +0800 you wrote:
+> If sockmap enable strparser, there are lose offset info in
+> sk_psock_skb_ingress. If the length determined by parse_msg function
+> is not skb->len, the skb will be converted to sk_msg multiple times,
+> and userspace app will get the data multiple times.
+> 
+> Fix this by get the offset and length from strp_msg.
+> And as Cong suggestion, add one bit in skb->_sk_redir to distinguish
+> enable or disable strparser.
+> 
+> [...]
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
+Here is the summary with links:
+  - [PATHC,bpf,v6,1/3] skmsg: lose offset info in sk_psock_skb_ingress
+    https://git.kernel.org/bpf/bpf-next/c/7303524e04af
+  - [PATHC,bpf,v6,2/3] selftests, bpf: Fix test_txmsg_ingress_parser error
+    https://git.kernel.org/bpf/bpf-next/c/b556c3fd4676
+  - [PATHC,bpf,v6,3/3] selftests, bpf: Add one test for sockmap with strparser
+    https://git.kernel.org/bpf/bpf-next/c/d69672147faa
 
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
-Best Regards
-Mrs Aisha Al-Qaddafi
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
