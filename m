@@ -2,194 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86AB441CB8
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 15:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3E4441D08
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 16:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbhKAOhs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 10:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
+        id S231828AbhKAPDr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 11:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAOhs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 10:37:48 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDC7C061714;
-        Mon,  1 Nov 2021 07:35:14 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id i14so21707190ioa.13;
-        Mon, 01 Nov 2021 07:35:14 -0700 (PDT)
+        with ESMTP id S230517AbhKAPDq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 11:03:46 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBC2C061714
+        for <bpf@vger.kernel.org>; Mon,  1 Nov 2021 08:01:13 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id i12so12544586ila.12
+        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 08:01:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/dxlHLhVVeQz41NT3FXktHwc6LNqxwx1mOX2k57ETQc=;
-        b=H/1G8uLzOKFUO52ObvxuuCuV2l4rLb4ppcpv63LC7y0Tk4dE973BG8DiuIgTiz+kLZ
-         bpyTdkposK7jsR+F92tk48sbrLWZlxQmSwWgg+FTp8yGpCNho0MmcjII02ryAAYVxBgv
-         X6yFut/50QTG4V3DM6A+ST2FkB09I5Xws9xJ0FRh68XEdS1mUzmdBat2YFQTVNv+4qjs
-         iLLEx1qRt5E2fiPqF7c/BqIwMW5d8svEQl08Guopq4so8w/JOi93ZHwv4T0+34xN2ewR
-         Fx/qIl+wkLAkfRBznYLmPTxdSvF+NCPooq2tubC5/sOiwajiOM3/qG0yGmIRqpwhwqo6
-         /BEg==
+        bh=UeCamez7dYjsVrzr0y/VUZD6no3Hy/V9lIflaKTQhDk=;
+        b=m8+uc5Hqe0SMu/zS36qgvCpi65JkbeDmRFHvstBwQ5bIVE2XCLjeJjV5cXcrb+K2t6
+         IuUXrneaToxudpTgMoPzGljjZz75iTvTwwwklJ12xj78aVw99Gq6ovznhZSGex3R4JbV
+         QQqZBaTyH2qJF7UMrZcm0WNRhD5kzJgz3x6YM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/dxlHLhVVeQz41NT3FXktHwc6LNqxwx1mOX2k57ETQc=;
-        b=4iSBKOQr0a1xWj2dZnXm2Cy91WtE/q4voUhbu8DCJ0cAJ959Y000xkrySJnUe47w/D
-         lOHdIgCtV79cLOFJAAcVFhaVGQS9Wh6Zt9eXK5qXnS9X5aTd8n2j1W4z56OQdZrQb5Op
-         Fcb3HssV6/uBM7AUM/8K7wzGfUm9Ssg4kKK9Gum+Ebtp51kiJ50KZwcxE5TcdOBft63K
-         VARt1jkGHu2StDlJ9266Afu6UpD7XILelEDzCXqOiUV5Bxcud5CcQfknlo0FAkYQJVKr
-         2uxbVnDYXj8w6Gh8KkQJ/JBjg7t27EXIZTUehtV9XNUMpFDLPbAANH9VQc3Dr5ev3Gqg
-         Lwfw==
-X-Gm-Message-State: AOAM5329l2oHn0x1am9R45dhTZFOD9Pimy/pieuClhlMwc1RWwp5/oPT
-        mlcR3Gk+cKsBASKyoEWPqyN45uNeTqk0drceFqX5RWlT6CCH2iMOkzU=
-X-Google-Smtp-Source: ABdhPJxML5PM3L1wF90f7Vr07fhP4LkRyBWT2Nd3AJz21DOOUbOnidR2/cTzlniPaknpj0TIA3BSov/kzpbs+lx1tXY=
-X-Received: by 2002:a05:6602:2f0a:: with SMTP id q10mr4985724iow.202.1635777314146;
- Mon, 01 Nov 2021 07:35:14 -0700 (PDT)
+        bh=UeCamez7dYjsVrzr0y/VUZD6no3Hy/V9lIflaKTQhDk=;
+        b=V3Ql5zFEl8E98Xd+V0Ar24Z+ceieY6HXa78OXzmR8ey9Q0Q44h8SiDIrZUxCcee7Z7
+         sHaHZxbZDVc/zOcxKGp2mlVWbI1Kuc93OqlGaMJHuxXC/RDSTwbXWIQq4gAwBeZH5nAu
+         i05bzBUpmAxX1GpcDklTiQG9qGhvNqX3R+abcC8i1vUSC/WTKcvqDQKGFFWVAPIrgBEo
+         +uHGpERzQ89/0m33UPY0W3JSkHlskq/OZsMLCCWiXy35K6HAIniv6kcFbJmDSwupbmSD
+         IiZTjr4k7Xse7B2c7PnnKm2fmeT2KcflcNTRBXh06QVI6lmzSkkE7hplaAcw83jLpyQK
+         gd2g==
+X-Gm-Message-State: AOAM531JswaPOstxO9bWYxUkqfAtm6VrcOdH5Q701hM4E1D5oG/mHopK
+        uNB34HA5bqYNKwVeI3LhpMjs6S3faXaZPcMaxUK916XefYOPXQ==
+X-Google-Smtp-Source: ABdhPJwCzDoM1KKgXMm9p+bT5xCKWNES6qXpJKw0Z+anp4R+lQkPh2d5qolZHXfPnwqrdOJcfW59FWKOhQIaqaqH5IU=
+X-Received: by 2002:a05:6e02:148b:: with SMTP id n11mr2709381ilk.83.1635778873157;
+ Mon, 01 Nov 2021 08:01:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211101060419.4682-1-laoar.shao@gmail.com> <YX/0h7j/nDwoBA+J@alley>
-In-Reply-To: <YX/0h7j/nDwoBA+J@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Mon, 1 Nov 2021 22:34:30 +0800
-Message-ID: <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
+References: <20211028164357.1439102-1-revest@chromium.org> <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
+ <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com> <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com>
+In-Reply-To: <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Mon, 1 Nov 2021 16:01:02 +0100
+Message-ID: <CABRcYmJxp6-GSDRZfBQ-_7MbaJWTM_W4Ok=nSxLVEJ3+Sn7Fpw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 10:07 PM Petr Mladek <pmladek@suse.com> wrote:
+On Mon, Nov 1, 2021 at 2:17 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
-> On Mon 2021-11-01 06:04:08, Yafang Shao wrote:
-> > There're many truncated kthreads in the kernel, which may make trouble
-> > for the user, for example, the user can't get detailed device
-> > information from the task comm.
+> Hi,
+>
+>
+> On 2021/10/30 1:02 AM, Florent Revest wrote:
+> > On Fri, Oct 29, 2021 at 12:47 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> >>
+> >> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
+> >>> Allow the helper to be called from the perf_event_mmap hook. This is
+> >>> convenient to lookup vma->vm_file and implement a similar logic as
+> >>> perf_event_mmap_event in BPF.
+> >> From struct vm_area_struct:
+> >>         struct file * vm_file;          /* File we map to (can be NULL). */
+> >>
+> >> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
 > >
-> > This patchset tries to improve this problem fundamentally by extending
-> > the task comm size from 16 to 24, which is a very simple way.
+> > Thanks Martin, this is a very good point. :) Yes, vm_file can be NULL
+> > in perf_event_mmap.
+> > I wonder what would happen (and what we could do about it? :|).
+> > bpf_d_path is called on &vma->vm_file->f_path So without NULL checks
+> > (of vm_file) in BPF, the helper wouldn't be called with a NULL pointer
+> > but rather with an address that is offsetof(struct file, f_path).
 > >
-> > In order to do that, we have to do some cleanups first.
-> >
-> > 1. Make the copy of task comm always safe no matter what the task
-> >    comm size is. For example,
-> >
-> >       Unsafe                 Safe
-> >       strlcpy                strscpy_pad
-> >       strncpy                strscpy_pad
-> >       bpf_probe_read_kernel  bpf_probe_read_kernel_str
-> >                              bpf_core_read_str
-> >                              bpf_get_current_comm
-> >                              perf_event__prepare_comm
-> >                              prctl(2)
-> >
-> >    After this step, the comm size change won't make any trouble to the
-> >    kernel or the in-tree tools for example perf, BPF programs.
-> >
-> > 2. Cleanup some old hard-coded 16
-> >    Actually we don't need to convert all of them to TASK_COMM_LEN or
-> >    TASK_COMM_LEN_16, what we really care about is if the convert can
-> >    make the code more reasonable or easier to understand. For
-> >    example, some in-tree tools read the comm from sched:sched_switch
-> >    tracepoint, as it is derived from the kernel, we'd better make them
-> >    consistent with the kernel.
 >
-> The above changes make sense even if we do not extend comm[] array in
-> task_struct.
+> I tested this patch with the following BCC script:
 >
+>     bpf_text = '''
+>     #include <linux/mm_types.h>
 >
-> > 3. Extend the task comm size from 16 to 24
-> >    task_struct is growing rather regularly by 8 bytes. This size change
-> >    should be acceptable. We used to think about extending the size for
-> >    CONFIG_BASE_FULL only, but that would be a burden for maintenance
-> >    and introduce code complexity.
-> >
-> > 4. Print a warning if the kthread comm is still truncated.
-> >
-> > 5. What will happen to the out-of-tree tools after this change?
-> >    If the tool get task comm through kernel API, for example prctl(2),
-> >    bpf_get_current_comm() and etc, then it doesn't matter how large the
-> >    user buffer is, because it will always get a string with a nul
-> >    terminator. While if it gets the task comm through direct string copy,
-> >    the user tool must make sure the copied string has a nul terminator
-> >    itself. As TASK_COMM_LEN is not exposed to userspace, there's no
-> >    reason that it must require a fixed-size task comm.
+>     KFUNC_PROBE(perf_event_mmap, struct vm_area_struct *vma)
+>     {
+>         char path[256] = {};
 >
-> The amount of code that has to be updated is really high. I am pretty
-> sure that there are more potential buffer overflows left.
+>         bpf_d_path(&vma->vm_file->f_path, path, sizeof(path));
+>         bpf_trace_printk("perf_event_mmap %s", path);
+>         return 0;
+>     }
+>     '''
 >
-> You did not commented on the concerns in the thread
-> https://lore.kernel.org/all/CAADnVQKm0Ljj-w5PbkAu1ugLFnZRRPt-Vk-J7AhXxDD5xVompA@mail.gmail.com/
+>     b = BPF(text=bpf_text)
+>     print("BPF program loaded")
+>     b.trace_print()
 >
+> This change causes kernel panic. I think it's because of this NULL pointer.
 
-I thought Steven[1] and  Kees[2] have already clearly explained why we
-do it like that, so I didn't give any more words on it.
-
-[1]. https://lore.kernel.org/all/20211025170503.59830a43@gandalf.local.home/
-[2]. https://lore.kernel.org/all/202110251406.56F87A3522@keescook/
-
-> Several people suggested to use a more conservative approach.
-
-Yes, they are Al[3] and Alexei[4].
-
-[3]. https://lore.kernel.org/lkml/YVkmaSUxbg%2FJtBHb@zeniv-ca.linux.org.uk/
-[4]. https://lore.kernel.org/all/CAADnVQKm0Ljj-w5PbkAu1ugLFnZRRPt-Vk-J7AhXxDD5xVompA@mail.gmail.com/
-
-> I mean
-> to keep comm[16] as is and add a new pointer to the full name. The buffer
-> for the long name might be dynamically allocated only when needed.
->
-
-That would add a new allocation in the fork() for the threads with a long name.
-I'm not sure if it is worth it.
-
-> The pointer might be either in task_struct or struct kthread. It might
-> be used the same way as the full name stored by workqueue kthreads.
->
-
-If we decide to do it like that, I think we'd better add it in
-task_struct, then it will work for all tasks.
-
-> The advantage of the separate pointer:
->
->    + would work for names longer than 32
->    + will not open security holes in code
->
-
-Yes, those are the advantages.  And the disadvantage of it is:
-
- - new allocation in fork()
-
-
--- 
-Thanks
-Yafang
+Thank you for the testing and repro Hengqi :)
+Indeed, I was able to reproduce this panic. When vma->vm_file is NULL,
+&vma->vm_file->f_path ends up being 0x18 so d_path causes a panic.
+I suppose that this sort of issue must be relatively common in helpers
+that take a PTR_TO_BTF_ID though ? I wonder if there is anything that
+the verifier could do about this ? For example if vma->vm_file could
+be PTR_TO_BTF_ID_OR_NULL and therefore vma->vm_file->f_path somehow
+considered invalid ?
