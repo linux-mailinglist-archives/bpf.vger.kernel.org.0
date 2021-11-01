@@ -2,49 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04710441D8B
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 16:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31522441DA2
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 17:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhKAPrc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 11:47:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41768 "EHLO
+        id S232536AbhKAQDP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 12:03:15 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43922 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhKAPrc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 11:47:32 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
+        with ESMTP id S232619AbhKAQDO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 12:03:14 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mhZUS-000Eo3-QG; Mon, 01 Nov 2021 16:44:52 +0100
+        id 1mhZjk-000G2R-1n; Mon, 01 Nov 2021 17:00:40 +0100
 Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mhZUS-0002JX-DH; Mon, 01 Nov 2021 16:44:52 +0100
-Subject: Re: [PATCH bpf-next v3] bpf: Change value of MAX_TAIL_CALL_CNT from
- 32 to 33
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, illusionist.neo@gmail.com,
-        zlim.lnx@gmail.com, naveen.n.rao@linux.ibm.com,
-        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
-        iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        udknight@gmail.com, davem@davemloft.net
-References: <1635508430-2918-1-git-send-email-yangtiezhu@loongson.cn>
+        id 1mhZjj-000X5q-T2; Mon, 01 Nov 2021 17:00:39 +0100
+Subject: Re: [PATCH bpf-next 02/14] libbpf: add bpf() syscall wrapper into
+ public API
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org
+Cc:     kernel-team@fb.com, Hengqi Chen <hengqi.chen@gmail.com>
+References: <20211030045941.3514948-1-andrii@kernel.org>
+ <20211030045941.3514948-3-andrii@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f80b4756-8e74-6ee8-c367-30f8d2771bfb@iogearbox.net>
-Date:   Mon, 1 Nov 2021 16:44:51 +0100
+Message-ID: <4e19e5e1-e722-5d49-c493-fda2efd3fea1@iogearbox.net>
+Date:   Mon, 1 Nov 2021 17:00:39 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <1635508430-2918-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20211030045941.3514948-3-andrii@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,20 +44,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/29/21 1:53 PM, Tiezhu Yang wrote:
+On 10/30/21 6:59 AM, Andrii Nakryiko wrote:
+> Move internal sys_bpf() helper into bpf.h and expose as public API.
+> __NR_bpf definition logic is also moved. Renamed sys_bpf() into bpf() to
+> follow libbpf naming conventions. Adapt internal uses accordingly.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 [...]
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index b6c72af..6d10292 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1565,7 +1565,8 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
 >   
->   		if (unlikely(index >= array->map.max_entries))
->   			goto out;
-> -		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
-> +
-> +		if (unlikely(tail_call_cnt == MAX_TAIL_CALL_CNT))
->   			goto out;
->   
+> +/*
+> + * Kernel headers might be outdated, so define __NR_bpf explicitly, if necessary.
+> + */
+> +#ifndef __NR_bpf
+> +# if defined(__i386__)
+> +#  define __NR_bpf 357
+> +# elif defined(__x86_64__)
+> +#  define __NR_bpf 321
+> +# elif defined(__aarch64__)
+> +#  define __NR_bpf 280
+> +# elif defined(__sparc__)
+> +#  define __NR_bpf 349
+> +# elif defined(__s390__)
+> +#  define __NR_bpf 351
+> +# elif defined(__arc__)
+> +#  define __NR_bpf 280
+> +# else
+> +#  error __NR_bpf not defined. libbpf does not support your arch.
+> +# endif
+> +#endif
 
-Why making it less robust by going with == rather than >= ?
+Do we still need this nowadays, presumably it's been long enough that system headers do
+have __NR_bpf by now?
+
+> +static inline long bpf(enum bpf_cmd cmd, union bpf_attr *attr, unsigned int size)
+> +{
+> +	return syscall(__NR_bpf, cmd, attr, size);
+> +}
+> +
+>   struct bpf_create_map_attr {
+>   	const char *name;
+>   	enum bpf_map_type map_type;
+> 
+
