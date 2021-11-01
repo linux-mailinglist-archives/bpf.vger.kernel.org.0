@@ -2,118 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967A94422F5
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 22:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CDB4422F8
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 23:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhKAWCH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 18:02:07 -0400
-Received: from www62.your-server.de ([213.133.104.62]:56708 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhKAWCH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 18:02:07 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mhfKv-000DWv-Kp; Mon, 01 Nov 2021 22:59:25 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mhfKv-000OVr-FI; Mon, 01 Nov 2021 22:59:25 +0100
-Subject: Re: [PATCH bpf-next v2 2/2] bpf: disallow BPF_LOG_KERNEL log level
- for sys(BPF_BTF_LOAD)
-To:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20211029135321.94065-1-houtao1@huawei.com>
- <20211029135321.94065-3-houtao1@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <50a07acf-a9e9-13b1-11c8-fae221acf495@iogearbox.net>
-Date:   Mon, 1 Nov 2021 22:59:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S231791AbhKAWC6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 18:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhKAWC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 18:02:57 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5CBC061714;
+        Mon,  1 Nov 2021 15:00:23 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id k4so3026106plx.8;
+        Mon, 01 Nov 2021 15:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lQidb9JCO2tS/0bSUKgi1+mcgxOacGZsvxUTQHhQVCo=;
+        b=clC7qZvzfmQnXJfsuJsBcm+xJ5bkWRiWPjWISgR24F4fyl3VUF5Ss5xuqotGo0zjXE
+         A3l9ic0D7evlfSTL405qR2G0i7kNJtjEXMOngR/bd6S0GgkGFob2ldX9y7ZDveNVx/ga
+         dgN6WcsoV19FXTc5KyT4G5Qun84rFPEZ+ovOqjqSC6AFp6IHz+l5K2gq3FgN4v9F7NHP
+         JH8y2s7euqOSP9tI1ZgimkiC6HxULTLCnnA4U658duNPprVcftZFSczvxFa4sdT+zmaY
+         hcpNSFqSP+6KZDHOKXlbNJji/kqI357JYXVyFmjrBlU8VNQd2uQIAXRMAau8PZH9HKLs
+         btcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lQidb9JCO2tS/0bSUKgi1+mcgxOacGZsvxUTQHhQVCo=;
+        b=3epESxORpcRAXrN7FtbLkffYSWtxnUseupuLDZHFl7qJXk8iJu6T0NmQAZXWRNsYsm
+         eeVU8D20J4Ib6sX7LS8bvKD1FkcMdJUpdrGWmLzG6UXKY3RZJCp7AYBwk/tiPp+10xs/
+         F8rk7K1yVFBHtuS9KV/SNs/sXKj3CFRxyp4frfIuDgarcV32/1DWfrF4X9vFUC0ysTS+
+         rfsTGnRsVicUz9wQLDwu9f3FJa/rYfU55RdXkwP80QhIQmQTg1bRCdcnv+hGqnF+OxPC
+         +pxD1xiddap1wcH492/H+W2a90Ko/GGuzL2Y+gkXc2WRPGLii+EsZrukbVS7hYWNZubv
+         vubQ==
+X-Gm-Message-State: AOAM5320yIEHistRavJVZiT/nMt56hy9JvFEo2h0taim0vVIKD6R50iA
+        kSWG5JwBk06yAL+nsrDl8vJzc6D15zwH40nvuMU=
+X-Google-Smtp-Source: ABdhPJxsuUlznQMiJfwR4AYM4OltePlg0lfGOqzeFIiCgNE6YPQ0+SnbfkmsYDVcB6cHSBeVY91V0Lz+V3+X/0baJSQ=
+X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id
+ c6-20020a170902724600b00138a6ed66ccmr28298780pll.22.1635804022932; Mon, 01
+ Nov 2021 15:00:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211029135321.94065-3-houtao1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26340/Mon Nov  1 09:21:46 2021)
+References: <20211101124310.3947887-1-yangyingliang@huawei.com>
+In-Reply-To: <20211101124310.3947887-1-yangyingliang@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 1 Nov 2021 15:00:11 -0700
+Message-ID: <CAADnVQJS_2St=iaqHU+zasy_0A0bidJN=STnkHrNcSNL5vO1Dg@mail.gmail.com>
+Subject: Re: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/29/21 3:53 PM, Hou Tao wrote:
-> BPF_LOG_KERNEL is only used internally, so disallow bpf_btf_load()
-> to set log level as BPF_LOG_KERNEL. The same checking has already
-> been done in bpf_check(), so factor out a helper to check the
-> validity of log attributes and use it in both places.
-> 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+On Mon, Nov 1, 2021 at 5:35 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+>
+> If bpf_program__attach() fails, it never returns NULL,
+> we should use libbpf_get_error() to check the return value.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
->   include/linux/bpf_verifier.h | 6 ++++++
->   kernel/bpf/btf.c             | 3 +--
->   kernel/bpf/verifier.c        | 6 +++---
->   3 files changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index c8a78e830fca..b36a0da8d5cf 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -396,6 +396,12 @@ static inline bool bpf_verifier_log_needed(const struct bpf_verifier_log *log)
->   		 log->level == BPF_LOG_KERNEL);
->   }
->   
-> +static inline bool bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log)
-> +{
-> +	return (log->len_total >= 128 && log->len_total <= UINT_MAX >> 2 &&
-> +		log->level && log->ubuf && !(log->level & ~BPF_LOG_MASK));
+> v2:
+>   don't use 'int err'
+> ---
+>  .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> index 6eeeed2913e6..4afaa4adb327 100644
+> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> @@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
+>         populate_maps();
+>
+>         link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
+> -       if (!link) {
+> +       if (libbpf_get_error(link)) {
 
-nit: No surrounding () needed.
-
-This should probably also get a Fixes tag wrt BPF_LOG_KERNEL exposure?
-
-Is there a need to bump log->len_total for BTF so significantly?
-
-> +}
-> +
->   #define BPF_MAX_SUBPROGS 256
->   
->   struct bpf_subprog_info {
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index dbc3ad07e21b..ea8874eaedac 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -4460,8 +4460,7 @@ static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
->   		log->len_total = log_size;
->   
->   		/* log attributes have to be sane */
-> -		if (log->len_total < 128 || log->len_total > UINT_MAX >> 8 ||
-> -		    !log->level || !log->ubuf) {
-> +		if (!bpf_verifier_log_attr_valid(log)) {
->   			err = -EINVAL;
->   			goto errout;
->   		}
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 22f0d2292c2c..47ad91cea7e9 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -13935,11 +13935,11 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
->   		log->ubuf = (char __user *) (unsigned long) attr->log_buf;
->   		log->len_total = attr->log_size;
->   
-> -		ret = -EINVAL;
->   		/* log attributes have to be sane */
-> -		if (log->len_total < 128 || log->len_total > UINT_MAX >> 2 ||
-> -		    !log->level || !log->ubuf || log->level & ~BPF_LOG_MASK)
-> +		if (!bpf_verifier_log_attr_valid(log)) {
-> +			ret = -EINVAL;
->   			goto err_unlock;
-> +		}
->   	}
->   
->   	if (IS_ERR(btf_vmlinux)) {
-> 
-
+Please use ASSERT_OK_PTR() instead.
+See how other tests are doing it.
