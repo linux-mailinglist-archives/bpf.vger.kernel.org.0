@@ -2,107 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4BE441B3D
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 13:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEE2441B56
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 13:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhKAMiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 08:38:13 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13996 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbhKAMiL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:38:11 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HjXWb4WvzzZcj0;
-        Mon,  1 Nov 2021 20:33:31 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 1 Nov 2021 20:35:27 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
- 2021 20:35:27 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <linux-kselftest@vger.kernel.org>, <shuah@kernel.org>,
-        <ast@kernel.org>, <yhs@fb.com>
-Subject: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
-Date:   Mon, 1 Nov 2021 20:43:10 +0800
-Message-ID: <20211101124310.3947887-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S232529AbhKAMxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 08:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232507AbhKAMxW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:53:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FEBC061714;
+        Mon,  1 Nov 2021 05:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RL3hnt8gJU6frPUOEVXfNSSid9qg9EK1F0andJuRsYo=; b=PklqNkLpc8XThjjoH0WQp5PHjp
+        2P0kfCnLEMG73lnHd2wpZacv9Z0T6gd9jcv1KHpBh55JQBxZy3WKjvaSKGVRxPm7lxpw1wmTifrLF
+        WeubHfJwD7K1qzjPZ0h2/0cKQ8A93IceSwN4QnBJdLlQOWOgO7nru9NYqtVE/OI9PV42yGYYMmLdq
+        tO+2Rz8um+32jqjtFqQSnsk97MMI97giaV/eAmi2Ioe0uhmHAaFoO2pzBHvIBc+R8yWFzr5kMr+KE
+        mY2g9prbvDtsYBHabFLAxx5w2GljEq6zAZE8SEv3DSLtCFDfW/zXix/UnxIcHi1L3i1zlPg/LOLG9
+        ZtD9luvA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhWgN-003lwE-9H; Mon, 01 Nov 2021 12:45:15 +0000
+Date:   Mon, 1 Nov 2021 12:44:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        arnaldo.melo@gmail.com, pmladek@suse.com, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, valentin.schneider@arm.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YX/hS6nRisiiFiBD@casper.infradead.org>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101060419.4682-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If bpf_program__attach() fails, it never returns NULL,
-we should use libbpf_get_error() to check the return value.
+On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> There're many truncated kthreads in the kernel, which may make trouble
+> for the user, for example, the user can't get detailed device
+> information from the task comm.
+> 
+> This patchset tries to improve this problem fundamentally by extending
+> the task comm size from 16 to 24, which is a very simple way. 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
-v2:
-  don't use 'int err'
----
- .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+It can't be that simple if we're on v7 and at 11 patches!
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-index 6eeeed2913e6..4afaa4adb327 100644
---- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-@@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
--	if (!link) {
-+	if (libbpf_get_error(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -321,7 +321,7 @@ static void bloom_update_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_update);
--	if (!link) {
-+	if (libbpf_get_error(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -340,7 +340,7 @@ static void false_positive_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	if (libbpf_get_error(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -358,7 +358,7 @@ static void hashmap_with_bloom_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	if (libbpf_get_error(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -375,7 +375,7 @@ static void hashmap_no_bloom_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	if (libbpf_get_error(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
--- 
-2.25.1
+It would be helpful if you included links to earlier postings.  I can
+only find v5 and v6 in my inbox, so I fear I'm going to re-ask some
+questions which were already answered.
+
+Why can't we shorten the names of these kthreads?  You didn't
+give any examples, so I can't suggest any possibilities.
 
