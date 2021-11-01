@@ -2,84 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C268B441E3D
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 17:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43485441ED1
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 17:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhKAQez (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 12:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
+        id S231361AbhKAQw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 12:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232609AbhKAQez (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:34:55 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFD0C061714
-        for <bpf@vger.kernel.org>; Mon,  1 Nov 2021 09:32:21 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id j75so18252225ybj.6
-        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 09:32:21 -0700 (PDT)
+        with ESMTP id S231303AbhKAQw7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 12:52:59 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0379C061714;
+        Mon,  1 Nov 2021 09:50:25 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id y1so11914866plk.10;
+        Mon, 01 Nov 2021 09:50:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g5ol0AYm2sAGfq8l97ZO11WDDIt00r58oC9POqY6YEE=;
-        b=eSroFXBdDrgEh2Wq3xG9Hu3HcSWqx2dvFraeGErB18NX0IcrJsUVyDkuneLP4HEO2w
-         IufgizEsj/eElTRygLuF7+n3Iy0BrU809zefJtyCE3Zyfk6qKM7n3F0TF/P7eAZ1j8Tv
-         6bG518PofuS3JQruLR7HWeVPjB5hxSOIU3NcbSOlaFggr9d4hBuywrYwjM/q4bgC/vPl
-         B2AiGu5tpl+IGAnfAaZGf74lUIWVTHZgrYZvbDK/IitrASzTjN3MiURS7bndl67syadW
-         937G2NYEVc5Vzdre8st70XRjj+NKLvUxZsh4kdkT6YcJHtAjNaBNBigP28sWokP87Qhz
-         mV+A==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1lQPvAS9D0YptMbqbx4CESL2hczonDYMGmutZeU63Qs=;
+        b=Eu2gvCSrbOfvqQrgUNJpA4aXVLITzo0Rr5s2KHm4lkO4g+GGoqlRJzULM6xhsZVatz
+         /Ytrzcvgy0GStGdUWlFk2Dwqpmh5BeztdMWD3Min37Qb4AvvzT1Nx2GAqaFZYhfubv4u
+         GJzMqLVblF+R1GsAgMoj8pCPSE/Y+mVLDpNicX7YilRhxzm7+p5AzbjZvSge/1T8zUy/
+         /JCxUj30QQeKvTc+VanMVi7ZLme1zOy061siPLUb+FrOJWo2gbyUiuBZl6yUIJvXU8y5
+         +kPewJ1v5DxcEKS8vPINbiOyJb9+BrVNTs71KtbSmjb525fEdrSBOSkwAeQIDFtjx7gV
+         hzgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g5ol0AYm2sAGfq8l97ZO11WDDIt00r58oC9POqY6YEE=;
-        b=IJWGwJDf33TdFpcsB1XABcr4jxZMIQ1sjrnfBuW44txILPuVVwUNHo2jY6wklnzoev
-         KsBiQC11jjJ26/+/L+aJDMPLDMBTPsT66CIENmuENtZrvisIgr68aFtOCLKMebZ1jyKz
-         ExztHrFKnoLappiA/m/PVF43oqc5T0at8Bi38qmerch/Mug+A2EQOKR7HeCcC9fI1ojf
-         ImuQFQmd+3iUSXLMLE5TPGGhKs7/a8TGBPilTCesY99ShfzP5dxNVKTr9cJCNVDvHcoL
-         s8q8EQf8wXM4F1MTMnwdpq44Z4L1UXbTrVMBtIuJXEqdE9BqjDvGSM/U6H3yQmUY2Cui
-         9JBg==
-X-Gm-Message-State: AOAM532h4lbhEDFQzJcHRfMY2KNgNO9u2NAEIa3TvEqKToZNVL3trz+s
-        dJemQBA6kAsDzzwna+2bvMqiXXdcYoEusXzG8xMS8A==
-X-Google-Smtp-Source: ABdhPJwysFx3gFj8nEH4bDUiMYFdq3fr94iVph31pmlE+6cd1+WaxNxps8mq5qRDKABBzwRkrYrWkpknIW1pJgoXEg8=
-X-Received: by 2002:a25:6b4d:: with SMTP id o13mr30707825ybm.291.1635784340525;
- Mon, 01 Nov 2021 09:32:20 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=1lQPvAS9D0YptMbqbx4CESL2hczonDYMGmutZeU63Qs=;
+        b=uLoFDvkmltRaK2uxcbst81yZWtkTl0FMe4/LqPPR0+tEaVIguL7z1Sl2LLyuROQ+QD
+         pseiPCfS5xsDTxt9C5ctoEZxblNLlMEGzmGmDhnTUhU9faP8fWxddHiQPk12Mejgn3EB
+         d1kZcT0TDbzS9f9whR6Xph9/QSXis0r0B34gyohW3nu+Nvsd2PGTQ1acV3R/PVqR+YUk
+         mNroNWOe/SZpF1DZKfIlUVTE6FX+160jIgaEB95q2sKde00TUQ5bgCkESEzb9gHEBHbn
+         VzU0ScT505oqGVq+AFEg8eFU9dHnoRu5a/J3CRmfNK1UCLEzpFYxPEoKz739ppS2e1KH
+         kufA==
+X-Gm-Message-State: AOAM532Y3Cu6P7o9w3FNuQdTjXlSmWCLZh2hGUdA0iJPpjkw7QoeOBgE
+        rcjDWbSrZdDbitwYQPcTDRQ=
+X-Google-Smtp-Source: ABdhPJzOFIXwyz1spdxhYekeL/kTuOGhGHIxyu0jnfLkamhe22EuvazRViEA5ERRi3n99SzkXCPjfg==
+X-Received: by 2002:a17:902:7c94:b0:13b:8d10:cc4f with SMTP id y20-20020a1709027c9400b0013b8d10cc4fmr26227558pll.54.1635785425347;
+        Mon, 01 Nov 2021 09:50:25 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id v16sm16532953pfu.208.2021.11.01.09.50.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 09:50:24 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 1 Nov 2021 06:50:23 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     He Fengqing <hefengqing@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org
+Subject: Re: [PATCH] cgroup: bpf: Move wrapper for __cgroup_bpf_*() to
+ kernel/bpf/cgroup.c
+Message-ID: <YYAaz469VgwskHAq@slm.duckdns.org>
+References: <20211029023906.245294-1-hefengqing@huawei.com>
 MIME-Version: 1.0
-References: <20211031171353.4092388-1-eric.dumazet@gmail.com> <c735d5a9-cf60-13ba-83eb-86cbcd25685e@fb.com>
-In-Reply-To: <c735d5a9-cf60-13ba-83eb-86cbcd25685e@fb.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 1 Nov 2021 09:32:07 -0700
-Message-ID: <CANn89iLY7etQxhQa06ea2FThr6FyR=CNnQcig65H4NhE3fu0FQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: add missing map_delete_elem method to bloom
- filter map
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Joanne Koong <joannekoong@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        syzbot <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029023906.245294-1-hefengqing@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 31, 2021 at 9:01 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> LGTM with a suggestion below.
->
-> Acked-by: Yonghong Song <yhs@fb.com>
->
+On Fri, Oct 29, 2021 at 02:39:06AM +0000, He Fengqing wrote:
+> In commit 324bda9e6c5a("bpf: multi program support for cgroup+bpf")
+> cgroup_bpf_*() called from kernel/bpf/syscall.c, but now they are only
+> used in kernel/bpf/cgroup.c, so move these function to
+> kernel/bpf/cgroup.c, like cgroup_bpf_replace().
+> 
+> Signed-off-by: He Fengqing <hefengqing@huawei.com>
 
-> There is a pending patch
-> https://lore.kernel.org/bpf/20211029224909.1721024-2-joannekoong@fb.com/T/#u
-> to rename say lookup_elem to bloom_map_lookup_elem.
-> I think we should change
-> this delete_elem to bloom_map_delete_elem as well.
->
+Applied to cgroup/for-5.16.
 
-Thanks for letting me know.
-I can rebase my patch after yours is merged, no worries.
+Thanks.
+
+-- 
+tejun
