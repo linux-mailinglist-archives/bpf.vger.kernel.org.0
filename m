@@ -2,107 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0DD441AF2
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 12:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4BE441B3D
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 13:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbhKAMAR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 08:00:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:39158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231693AbhKAMAQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 08:00:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54F23D6E;
-        Mon,  1 Nov 2021 04:57:43 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.81.163])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 153A13F5A1;
-        Mon,  1 Nov 2021 04:57:39 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 11:57:29 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        antonio.gomez.iglesias@intel.com, tony.luck@intel.com,
-        dave.hansen@linux.intel.com, gregkh@linuxfoundation.org,
-        linux@armlinux.org.uk
-Subject: Re: [PATCH ebpf v3] bpf: Disallow unprivileged bpf by default
-Message-ID: <YX/WKa4qYamp1ml9@FVFF77S0Q05N>
-References: <0ace9ce3f97656d5f62d11093ad7ee81190c3c25.1635535215.git.pawan.kumar.gupta@linux.intel.com>
+        id S232533AbhKAMiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 08:38:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13996 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232051AbhKAMiL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 08:38:11 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HjXWb4WvzzZcj0;
+        Mon,  1 Nov 2021 20:33:31 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 20:35:27 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
+ 2021 20:35:27 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <linux-kselftest@vger.kernel.org>, <shuah@kernel.org>,
+        <ast@kernel.org>, <yhs@fb.com>
+Subject: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
+Date:   Mon, 1 Nov 2021 20:43:10 +0800
+Message-ID: <20211101124310.3947887-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ace9ce3f97656d5f62d11093ad7ee81190c3c25.1635535215.git.pawan.kumar.gupta@linux.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 12:43:54PM -0700, Pawan Gupta wrote:
-> Disabling unprivileged BPF would help prevent unprivileged users from
-> creating the conditions required for potential speculative execution
-> side-channel attacks on affected hardware. A deep dive on such attacks
-> and mitigation is available here [1].
-> 
-> Sync with what many distros are currently applying, disable unprivileged
-> BPF by default. An admin can enable this at runtime, if necessary.
-> 
-> [1] https://ebpf.io/summit-2021-slides/eBPF_Summit_2021-Keynote-Daniel_Borkmann-BPF_and_Spectre.pdf
-> 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+If bpf_program__attach() fails, it never returns NULL,
+we should use libbpf_get_error() to check the return value.
 
-FWIW:
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+v2:
+  don't use 'int err'
+---
+ .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+index 6eeeed2913e6..4afaa4adb327 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
++++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+@@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -321,7 +321,7 @@ static void bloom_update_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_update);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -340,7 +340,7 @@ static void false_positive_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -358,7 +358,7 @@ static void hashmap_with_bloom_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+@@ -375,7 +375,7 @@ static void hashmap_no_bloom_setup(void)
+ 	populate_maps();
+ 
+ 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
+-	if (!link) {
++	if (libbpf_get_error(link)) {
+ 		fprintf(stderr, "failed to attach program!\n");
+ 		exit(1);
+ 	}
+-- 
+2.25.1
 
-Mark.
-
-> ---
-> v3:
-> - Drop the conditional default for CONFIG_BPF_UNPRIV_DEFAULT_OFF until
->   we have an arch generic way to determine arch-common spectre type bugs.
->   [Mark Rutland, Daniel Borkmann].
-> - Also drop the patch to Generalize ARM's CONFIG_CPU_SPECTRE.
-> - Minor changes to commit message.
-> 
-> v2: https://lore.kernel.org/lkml/cover.1635383031.git.pawan.kumar.gupta@linux.intel.com/
-> - Generalize ARM's CONFIG_CPU_SPECTRE to be available for all architectures.
-> - Make CONFIG_BPF_UNPRIV_DEFAULT_OFF depend on CONFIG_CPU_SPECTRE.
-> - Updated commit message to reflect the dependency on CONFIG_CPU_SPECTRE.
-> - Add reference to BPF spectre presentation in commit message.
-> 
-> v1: https://lore.kernel.org/all/d37b01e70e65dced2659561ed5bc4b2ed1a50711.1635367330.git.pawan.kumar.gupta@linux.intel.com/
-> 
->  kernel/bpf/Kconfig | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> index a82d6de86522..73d446294455 100644
-> --- a/kernel/bpf/Kconfig
-> +++ b/kernel/bpf/Kconfig
-> @@ -64,6 +64,7 @@ config BPF_JIT_DEFAULT_ON
->  
->  config BPF_UNPRIV_DEFAULT_OFF
->  	bool "Disable unprivileged BPF by default"
-> +	default y
->  	depends on BPF_SYSCALL
->  	help
->  	  Disables unprivileged BPF by default by setting the corresponding
-> @@ -72,6 +73,10 @@ config BPF_UNPRIV_DEFAULT_OFF
->  	  disable it by setting it to 1 (from which no other transition to
->  	  0 is possible anymore).
->  
-> +	  Unprivileged BPF can be used to exploit potential speculative
-> +	  execution side-channel vulnerabilities on affected hardware. If you
-> +	  are concerned about it, answer Y.
-> +
->  source "kernel/bpf/preload/Kconfig"
->  
->  config BPF_LSM
-> -- 
-> 2.31.1
-> 
