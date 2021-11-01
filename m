@@ -2,135 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE399441B85
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 14:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8AC441B96
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 14:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbhKANPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 09:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
+        id S231370AbhKANUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 09:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhKANPZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 09:15:25 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08752C061714;
-        Mon,  1 Nov 2021 06:12:52 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id p204so9815768iod.8;
-        Mon, 01 Nov 2021 06:12:51 -0700 (PDT)
+        with ESMTP id S230177AbhKANUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 09:20:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1347C061714;
+        Mon,  1 Nov 2021 06:17:46 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id g11so4941286pfv.7;
+        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LRGh6td70WGdmcMGRp1Cc0ENwiVhacG+3GURE37PQRY=;
-        b=D1c3niaA50bwFpxIVPXswFp23Ns+FjPYl1hMI22JykdorR1b/ucEkfMwwKSD4aZg98
-         dn3sayONdJC9VFmOi1EL/PVGFWgDLBFFxT+zWBe/d7JIZUKyfad70zLSk7V6Imkeaa3u
-         zIIUfXU46UUcIlDJ6vj5XCl72FecPOv5raXwtIEpFGjmP5NNIkbJsqLsS618/p/qxuE+
-         /x59PrEi0ypVfSfy+W/ZShyD2MIr4zqA/jaOBpltB81M8CaV8U2KgiqHuv8H/0unfN/h
-         GG7/LLA8an1EIAjyfciAhAklGV3xdulIwie9XNx8+2UZqQee6lB+0fa9FU0bSrR40OQd
-         toww==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
+        b=pbWrcOS/E/Gkv13GNp//Zd/onyhqaNcNq2Rdu9GxPxMXEDnfiBU933SbOH0wbi0FJC
+         obvfAJ/lnAXDu938R6NR9nSq2GaJpxSmgiSW48lj5dE/iknMmNjPY7afACSmTivHY6NS
+         y03ZdwmxJmriBiBTtPYs9SVLnMg1Ho7E4e5DESub/+DGM8HwLFFo9tff2ENNEKE+ae+G
+         0zU4uHj/N4RTMuV7Fg5ejyKTvLwtcBIarPnAHOTH5CGgCJL/O8KtCf/3baCwl6E/H3wQ
+         wbxN1xEHKnirwvrIiL94fxx/ULwhEJwO/fGj2u4aPwtmVpoSSg4piz4zOTfHbIEiwv/4
+         6Wcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LRGh6td70WGdmcMGRp1Cc0ENwiVhacG+3GURE37PQRY=;
-        b=mMGM+iZ2tGKPjPHMdEGz8jxIy7t9krvqzee5DSU3y9LsfNoz1tOIMUKAHhtHHFTEnL
-         ybJK3bPxnsX+59vcKUdKeCUgNWUQZZ/HMJUI4S2jtmQcOAp9JRol/yHnkv7IQOIFXir2
-         YzHrRSup2LErXATWAxfUmlXCAM9BVZJpUdO9SizfAna38O+taDKKsk90qDRXU8hK4tuZ
-         21I1pOGNaWfvZ1LaML+qXLkdAFY+tfWss9purhUiUqY3TvLhQid0HvSvMI8ortaIK3pL
-         QG9u5iKUb5PkHKP7J+TfSNIOt2LCqkxqBFNdo94FzaBTagw9LHJRxNXc86iW2VbRjQR0
-         WnuQ==
-X-Gm-Message-State: AOAM5307y6p4t6UlnZ8WnBGr7538axVsJQ0dgmfkZxAX2yNVrWBWT5gQ
-        HSlWc5LXaubOovQs8X6vA9bxlf18zt2WNmfJR9fI+npaTzQKbCkO
-X-Google-Smtp-Source: ABdhPJyIQzixlwZawM13KFKv+/9Vrhh6ZnO8DyH1IQEASFpfh82lPE9sWf9iZMZFsPo6igJmpnwc9DB1NFy4l16FgZI=
-X-Received: by 2002:a05:6602:164b:: with SMTP id y11mr6027737iow.9.1635772371384;
- Mon, 01 Nov 2021 06:12:51 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ElXLGUufMIfi7saztQ05KyMJtRkBVmLZk3K8RMUcE/g=;
+        b=cx6kKTjNk/ihbNjt8w/uk/n16/EpvLFRbcJToKfPjoG/jaj3lVmglYlfApSJIVxNF5
+         KAqtLij9B3R5OZ24Ec1PEUsGiJc8w91d6unUInjenov+0K8cXc2dk5DZYFXJ0gHKtOIl
+         4sx0gb0Um4TBQOz5YAoDRVQpd8pIWVi5ECWRDRM8aN+R0bRKRzJsJszO6kLBjH5nk3nm
+         MI/OpEHJEJbqbP5vnMuNF2SfKXr7uBS1g1/L2fUd6obgl+M9N/jo5h+ujNKD5qyEzp4p
+         rvEKyaqRw1r6GyIUqA/cStQuz4F+K4NrS20RHR6qWVcQzLi4daKWyy+TvfKKN5oOXHtV
+         8V5Q==
+X-Gm-Message-State: AOAM530359Hn1uL8hA4ucQwcaVx4u2asOn0jWgWiTYkVyg1AKZ//vTBC
+        dlOyYXUnNLWLZXMZIlWcW8A=
+X-Google-Smtp-Source: ABdhPJxZtOo8xG7N0PRsh2O8ZZhFc5wI/xd3rxFZqqMP3xc3A++hez5iW7ovtZl1hKAhrmG1ZwjX5A==
+X-Received: by 2002:aa7:90d0:0:b0:44d:b8a:8837 with SMTP id k16-20020aa790d0000000b0044d0b8a8837mr28905418pfk.47.1635772666050;
+        Mon, 01 Nov 2021 06:17:46 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.115])
+        by smtp.gmail.com with ESMTPSA id q18sm16897419pfj.46.2021.11.01.06.17.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Nov 2021 06:17:45 -0700 (PDT)
+Message-ID: <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com>
+Date:   Mon, 1 Nov 2021 21:17:42 +0800
 MIME-Version: 1.0
-References: <20211101060419.4682-1-laoar.shao@gmail.com> <YX/hS6nRisiiFiBD@casper.infradead.org>
-In-Reply-To: <YX/hS6nRisiiFiBD@casper.infradead.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Mon, 1 Nov 2021 21:12:15 +0800
-Message-ID: <CALOAHbB5Dhiep5DhpzQ2RsJee88MuADQ=-FMwmBCLDJ21by2dw@mail.gmail.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
+Content-Language: en-US
+To:     Florent Revest <revest@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org
+References: <20211028164357.1439102-1-revest@chromium.org>
+ <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
+ <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 8:46 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
-> > There're many truncated kthreads in the kernel, which may make trouble
-> > for the user, for example, the user can't get detailed device
-> > information from the task comm.
-> >
-> > This patchset tries to improve this problem fundamentally by extending
-> > the task comm size from 16 to 24, which is a very simple way.
->
-> It can't be that simple if we're on v7 and at 11 patches!
->
-
-Most of the changes are because of hard-coded 16 that can't be easily grepped.
-In these 11 patches, patch #1, #2, #4, #5, #6, #7 and #9 are cleanups,
-which can be a different patchset.
-
-The core changes of these patchset are patch #3, #8 and #10.
-
-#11 can also be a seperate patch.
-
-> It would be helpful if you included links to earlier postings.  I can
-> only find v5 and v6 in my inbox, so I fear I'm going to re-ask some
-> questions which were already answered.
->
-
-v1: https://lore.kernel.org/lkml/20210929115036.4851-1-laoar.shao@gmail.com/
-v2: https://lore.kernel.org/lkml/20211007120752.5195-1-laoar.shao@gmail.com/
-v3: https://lore.kernel.org/lkml/20211010102429.99577-1-laoar.shao@gmail.com/
-v4: https://lore.kernel.org/lkml/20211013102346.179642-1-laoar.shao@gmail.com/
-v5: https://lore.kernel.org/lkml/20211021034516.4400-1-laoar.shao@gmail.com/
-v6: https://lore.kernel.org/lkml/20211025083315.4752-1-laoar.shao@gmail.com/
+Hi,
 
 
-> Why can't we shorten the names of these kthreads?  You didn't
-> give any examples, so I can't suggest any possibilities.
->
+On 2021/10/30 1:02 AM, Florent Revest wrote:
+> On Fri, Oct 29, 2021 at 12:47 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>>
+>> On Thu, Oct 28, 2021 at 06:43:57PM +0200, Florent Revest wrote:
+>>> Allow the helper to be called from the perf_event_mmap hook. This is
+>>> convenient to lookup vma->vm_file and implement a similar logic as
+>>> perf_event_mmap_event in BPF.
+>> From struct vm_area_struct:
+>>         struct file * vm_file;          /* File we map to (can be NULL). */
+>>
+>> Under perf_event_mmap, vm_file won't be NULL or bpf_d_path can handle it?
+> 
+> Thanks Martin, this is a very good point. :) Yes, vm_file can be NULL
+> in perf_event_mmap.
+> I wonder what would happen (and what we could do about it? :|).
+> bpf_d_path is called on &vma->vm_file->f_path So without NULL checks
+> (of vm_file) in BPF, the helper wouldn't be called with a NULL pointer
+> but rather with an address that is offsetof(struct file, f_path).
+> 
 
-Take 'jbd2/nvme0n1p2-' for example, that's a nice name, which gives a
-good description via the name.
-And I don't think it is a good idea to shorten its name.
+I tested this patch with the following BCC script:
 
--- 
-Thanks
-Yafang
+    bpf_text = '''
+    #include <linux/mm_types.h>
+
+    KFUNC_PROBE(perf_event_mmap, struct vm_area_struct *vma)
+    {
+        char path[256] = {};
+
+        bpf_d_path(&vma->vm_file->f_path, path, sizeof(path));
+        bpf_trace_printk("perf_event_mmap %s", path);
+        return 0;
+    }
+    '''
+
+    b = BPF(text=bpf_text)
+    print("BPF program loaded")
+    b.trace_print()
+
+This change causes kernel panic. I think it's because of this NULL pointer.
