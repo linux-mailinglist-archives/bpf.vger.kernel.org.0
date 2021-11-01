@@ -2,114 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D3B442239
-	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 22:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA7344229A
+	for <lists+bpf@lfdr.de>; Mon,  1 Nov 2021 22:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbhKAVF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 17:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
+        id S231511AbhKAV1n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 17:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhKAVF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 17:05:26 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFEDC061714
-        for <bpf@vger.kernel.org>; Mon,  1 Nov 2021 14:02:51 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 131so36261899ybc.7
-        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 14:02:51 -0700 (PDT)
+        with ESMTP id S230526AbhKAV1m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 17:27:42 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E6BC061714;
+        Mon,  1 Nov 2021 14:25:09 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id x5so8515167pgk.11;
+        Mon, 01 Nov 2021 14:25:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7IKfXvFpkKoqpXMaAFF4okrAnw9Aqe+ggPJ4vESijKg=;
-        b=RO+Uhd9CL//tS3WZ2hHf6+xYZlkhPQ/cTzAVumJRHqJo/Pvvf2W+WJCwcIAk/4o5zX
-         yGLgqAgmxI1xGZWAfLny0fMFvJKteJDFC8ki+twngIlKvizUDcZaoSnIcHQYT24hoaH6
-         Few8OMrXYO7MJEKe+R+nXgE/2w8EXhtEQFLqqtzPCFpkWi7TjtRH7HNu0QUIK+ypmp3S
-         q2M2ginaiiMvAi5YU9p63ssjZTPw+DczmZMg7Uw6uQRSgPrXpWIx2auupgj28KZso+hT
-         3PMuh+pq8kpkNOCbhe4wIEkRbjvX6fRQqdfn21cmKnCiiRLS5lXz53DRMyku8HVBTnl9
-         3SHg==
+        bh=+E7meb6AM3Up3QgOQ21XHUsiWwwWzfkf0vIwdCxOKxs=;
+        b=a7kBtimU8uOuU++ibPOj46yFdPczMO/8F2W0Iqd8QqCjv6b0yUaa/ZdZUF/ZWqmJ6s
+         nIlFfgWPQ6uNbc7QmwU7J/V1FIHZck1YXFEFcgOuH2r86SrXriV/gB1geESjvtzg9fUe
+         ybGtTyC5TPWUOIoCUed18/thGQ0JpWA57agtHfjFl+NRlawE746M573fdAPdpmIgVAAt
+         YRpTnBZ0bvEaI8IPJxsSXt3ty7eD1prJD8POQpcZVbpkl43tNT9A24F87OPLvjFCeLdC
+         A8HnXf5aQUWU4EVt9yaGgH+omQ6GlxkZMkWqPmlEcaRovXfNhESZEBJ5Hzd2JyK0gOTJ
+         URJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7IKfXvFpkKoqpXMaAFF4okrAnw9Aqe+ggPJ4vESijKg=;
-        b=7yUktz7EdXaAgXAVNbsV0SvbBxFj531EUXXN/9hlfpaM5YZ9N66FbK46qfjwB9tx4t
-         uQbPCFRXVzEDJhi2YFMBEUsi9SJq42uWFAUEUt8oS6kKL3IzTvORF+fSXeFncgsNwgiB
-         CIwODLZoLNEKPxTIMjl/pWpdwmnrf1YYcTHP3TIyM75gB6pJKqBEUvqd2u9zqDdZ9jjA
-         NGguNjPWSZ4uIwurLrBW1/3KAGBRcpKjknSYqp3KXX0c+IxjYcHWSA5zMcD87Vyw5H/h
-         K2bTtt2FimdlZmOzV1eUmLaKESujzDPtiEunFYvVpuQ8ezzTmO6OyoMhCdhN3xLQKOns
-         L//w==
-X-Gm-Message-State: AOAM531jCDG50UzCdOf1vxsGR2WJ95GivAMR9rJ83uB+Pk0erosNJp31
-        NKrRlRZibqF/jMJdXFd5i/MX4V1IkS+8G0ZFgGU=
-X-Google-Smtp-Source: ABdhPJz5r9dajcmIxUjCSMFaHZZghFy1esvjaK1IDyX80R5ZiYutcknAr/XjIlt+2esYnlSjspXiF7Y1U+Z6hZYvUdg=
-X-Received: by 2002:a25:afcf:: with SMTP id d15mr31831169ybj.433.1635800571182;
- Mon, 01 Nov 2021 14:02:51 -0700 (PDT)
+        bh=+E7meb6AM3Up3QgOQ21XHUsiWwwWzfkf0vIwdCxOKxs=;
+        b=iBLRs4k3aG0Um7dVUQSNBq9PEfVWdeGYJ9dnd8cJhZIT+JkqwJud/Py01xl4POcUqI
+         v8cAbCPcBWrtMy9kOeNvrn10WzGbydQo3wJmL1sJAYDUKQTgwoDeXYaHoLxaW3vElPe3
+         6vc50t0blR1cVgEI0Qr4UDiTeeca9T19oMbGy+W0ewq3mRibF8uxtZVp0t2A6x64ZYOy
+         uNc2JWaBISefJ9ilJlOHJlShbGlkEsuAz9gT9t6ubb2UBEY4gO4VAqDLRhjxqo6GYjyS
+         eRZ3PuX2+mfmCtyKVFKnQTqKGxXqALO64STNeYoK9SxzIBFS3TaXgAWcm/iYNzZVLpNs
+         hYXw==
+X-Gm-Message-State: AOAM5327qVCjqBi+h0NqywG2VUJvZNZQ9k9kXx/0xuYgv4Q1AgDEH7U1
+        OEQjOlcwOTVeCe4VrHV6ehahuNEUux+Lutwg5Ow=
+X-Google-Smtp-Source: ABdhPJwlbzsn5pZrwPu6J1tIK5VojJ7VQNmlVgEyBePXSaYtHAgjbNERb2FWQcffcSp3hmBixHd6WqcncUDWvvGDQ/4=
+X-Received: by 2002:a63:374c:: with SMTP id g12mr23874315pgn.35.1635801908608;
+ Mon, 01 Nov 2021 14:25:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211030045941.3514948-1-andrii@kernel.org> <20211030045941.3514948-3-andrii@kernel.org>
- <4e19e5e1-e722-5d49-c493-fda2efd3fea1@iogearbox.net>
-In-Reply-To: <4e19e5e1-e722-5d49-c493-fda2efd3fea1@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Nov 2021 14:02:40 -0700
-Message-ID: <CAEf4Bza8bYm_Su-EDT3wxKgQep=wjYz-+CAQDjUUFRGQ-gEKmg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/14] libbpf: add bpf() syscall wrapper into
- public API
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20211031171353.4092388-1-eric.dumazet@gmail.com>
+ <c735d5a9-cf60-13ba-83eb-86cbcd25685e@fb.com> <CANn89iLY7etQxhQa06ea2FThr6FyR=CNnQcig65H4NhE3fu0FQ@mail.gmail.com>
+In-Reply-To: <CANn89iLY7etQxhQa06ea2FThr6FyR=CNnQcig65H4NhE3fu0FQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 1 Nov 2021 14:24:57 -0700
+Message-ID: <CAADnVQLLKF_44QabyEZ0xbj+LxSssT9_gd3ydjL036E4+erG9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: add missing map_delete_elem method to bloom
+ filter map
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Yonghong Song <yhs@fb.com>, Eric Dumazet <eric.dumazet@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Joanne Koong <joannekoong@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        syzbot <syzkaller@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 9:00 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Mon, Nov 1, 2021 at 9:32 AM Eric Dumazet <edumazet@google.com> wrote:
 >
-> On 10/30/21 6:59 AM, Andrii Nakryiko wrote:
-> > Move internal sys_bpf() helper into bpf.h and expose as public API.
-> > __NR_bpf definition logic is also moved. Renamed sys_bpf() into bpf() to
-> > follow libbpf naming conventions. Adapt internal uses accordingly.
+> On Sun, Oct 31, 2021 at 9:01 PM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> [...]
 > >
-> > +/*
-> > + * Kernel headers might be outdated, so define __NR_bpf explicitly, if necessary.
-> > + */
-> > +#ifndef __NR_bpf
-> > +# if defined(__i386__)
-> > +#  define __NR_bpf 357
-> > +# elif defined(__x86_64__)
-> > +#  define __NR_bpf 321
-> > +# elif defined(__aarch64__)
-> > +#  define __NR_bpf 280
-> > +# elif defined(__sparc__)
-> > +#  define __NR_bpf 349
-> > +# elif defined(__s390__)
-> > +#  define __NR_bpf 351
-> > +# elif defined(__arc__)
-> > +#  define __NR_bpf 280
-> > +# else
-> > +#  error __NR_bpf not defined. libbpf does not support your arch.
-> > +# endif
-> > +#endif
+> >
+> > LGTM with a suggestion below.
+> >
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> >
 >
-> Do we still need this nowadays, presumably it's been long enough that system headers do
-> have __NR_bpf by now?
+> > There is a pending patch
+> > https://lore.kernel.org/bpf/20211029224909.1721024-2-joannekoong@fb.com/T/#u
+> > to rename say lookup_elem to bloom_map_lookup_elem.
+> > I think we should change
+> > this delete_elem to bloom_map_delete_elem as well.
+> >
+>
+> Thanks for letting me know.
+> I can rebase my patch after yours is merged, no worries.
 
-No idea, didn't want to risk it, tbh. But I'll just drop the change
-for now. I started this patch set by moving more `static inline` stuff
-into bpf.h that used sys_bpf(), but ended up going in a different
-direction, ultimately. So this patch isn't necessary and I'll drop it.
-We can always revisit later.
-
->
-> > +static inline long bpf(enum bpf_cmd cmd, union bpf_attr *attr, unsigned int size)
-> > +{
-> > +     return syscall(__NR_bpf, cmd, attr, size);
-> > +}
-> > +
-> >   struct bpf_create_map_attr {
-> >       const char *name;
-> >       enum bpf_map_type map_type;
-> >
->
+I rebased and patched it manually while applying.
+Thanks!
