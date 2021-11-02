@@ -2,96 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E16B5443773
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 21:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD56C4437AE
+	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 22:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhKBUqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 16:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44644 "EHLO
+        id S230256AbhKBVTB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 17:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhKBUqn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:46:43 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FBFC061714;
-        Tue,  2 Nov 2021 13:44:07 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1mi0dS-0004AG-Aa; Tue, 02 Nov 2021 21:43:58 +0100
-Date:   Tue, 2 Nov 2021 21:43:58 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229931AbhKBVTA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 17:19:00 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC97C061714;
+        Tue,  2 Nov 2021 14:16:25 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id s136so518629pgs.4;
+        Tue, 02 Nov 2021 14:16:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rTz2VfXu9BFDNEqPjGiyXjjW4rvhVHqZ6MNOJZx8WDg=;
+        b=qmUDX2EOQCUYsPSl9eI7vSyCKTI7spEk6y3kx9kM9bDYPFnRK440Bwyt3OzUTDD9rp
+         rHRSLo2RUtxezphywnzqNbMOPyqln80bU8A/YNPEWwcAnJMDqGl6drnwf4euR16KTMtD
+         bJ91m/SmvHvCjVAdEIoI9gyxhXksKL+cniMVqQCDsGUhSU8ktWkp8xEmLUQ3rFz7AmDn
+         MTKVKsU2yvBUzs3MbYee9qylJcK2Y9K4PFMn/MlQQGJmUK6FiKS1c8ZmHgSaq1Zh9ucV
+         HDH9Fmtcx6bDbDPpLn/iGNa1tSPU7J9Dr+b+qxfHGIZbNjh8ueSI3dhGasnsyJvy0ra9
+         tOsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rTz2VfXu9BFDNEqPjGiyXjjW4rvhVHqZ6MNOJZx8WDg=;
+        b=uJ6+GZQGRR/wj1ItKnIXoZteDRtiBHdFYq65Py8+8zo4DZzZuHMmR+zXcnevfG/aXA
+         JrRrRbC9CqbdOEJjtrZGnVgEk6J7Pi0n9k8pmk+KpxngqFu+8wkgnYhsqCpyPUAOpeVb
+         rD3iCyl+tsjG4j9Jk1nFTjhHmA02S2eJrwS18HTkTl+lfhIwxm8A7IovjUAGtAwZQFpZ
+         +fhgMU5jwGZJoIfD/qBj8f0PhnSOhecHnoISwpHJ9ZWGrUpiBUTLztC6mP4NlH/UQZMA
+         LO6ByuaE7qL8HA3uICFApxs1Q1yAmtAsNtkitw50SN017Z453CYy8HPAcwFjHhebVT8f
+         z9Wg==
+X-Gm-Message-State: AOAM532O6PQCVBJESHwdBAxDYhe2LhTjLF5X2UU2QANmhz8Syh8+9KG3
+        TKf/w6ZtOv7/kWVb4yKU7RR5VXZ14imWOWi8tmY=
+X-Google-Smtp-Source: ABdhPJwXqplI9yicGjFvgK5+seN5+uCcR5BmtK5nVve6Cjb9vCkNeb0U9XonYj5YjDzUbcwXpfnnvMm+mi2jPNVAQh4=
+X-Received: by 2002:a63:374c:: with SMTP id g12mr29677439pgn.35.1635887784746;
+ Tue, 02 Nov 2021 14:16:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211102084856.483534-1-zhudi2@huawei.com> <7511b8fd-c5b6-96b3-8b1d-e7eeeb0b2c33@fb.com>
+In-Reply-To: <7511b8fd-c5b6-96b3-8b1d-e7eeeb0b2c33@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 2 Nov 2021 14:16:13 -0700
+Message-ID: <CAADnVQKKqnBJ+VjAFrWdM4BgRe4KdmeF5LYm9i96gZsr_urcvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Di Zhu <zhudi2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v1 5/6] net: netfilter: Add unstable CT
- lookup helper for XDP and TC-BPF
-Message-ID: <20211102204358.GC11415@breakpoint.cc>
-References: <20211030144609.263572-1-memxor@gmail.com>
- <20211030144609.263572-6-memxor@gmail.com>
- <20211031191045.GA19266@breakpoint.cc>
- <87y2677j19.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87y2677j19.fsf@toke.dk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> > I tried to find a use case but I could not.
-> > Entry will time out soon once packets stop appearing, so it can't be
-> > used for stack bypass.  Is it for something else?  If so, what?
-> 
-> I think Maxim's use case was to implement a SYN proxy in XDP, where the
-> XDP program just needs to answer the question "do I have state for this
-> flow already". For TCP flows terminating on the local box this can be
-> done via a socket lookup, but for a middlebox, a conntrack lookup is
-> useful. Maxim, please correct me if I got your use case wrong.
-
-Looked at
-https://netdevconf.info/0x15/slides/30/Netdev%200x15%20Accelerating%20synproxy%20with%20XDP.pdf
-
-seems thats right, its only a "does it exist".
-
-> > For UDP it will work to let a packet pass through classic forward
-> > path once in a while, but this will not work for tcp, depending
-> > on conntrack settings (lose mode, liberal pickup etc. pp).
-> 
-> The idea is certainly to follow up with some kind of 'update' helper. At
-> a minimum a "keep this entry alive" update, but potentially more
-> complicated stuff as well. Details TBD, input welcome :)
-
-Depends on use case.  For bypass infra I'd target the flowtable
-infra rather than conntrack because it gets rid of the "early time out"
-problem, plus you get the output interface/dst entry.
-
-Not trivial for xdp because existing code assumes sk_buff.
-But I think it can be refactored to allow raw buffers, similar
-to flow dissector.
-
-> >> +	hash = nf_conntrack_find_get(net, &nf_ct_zone_dflt, &tuple);
+On Tue, Nov 2, 2021 at 1:11 PM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > Ok, so default zone. Depending on meaning of "unstable helper" this
-> > is ok and can be changed in incompatible way later.
-> 
-> I'm not sure about the meaning of "unstable" either, TBH, but in either
-> case I'd rather avoid changing things if we don't have to, so I think
-> adding the zone as an argument from the get-go may be better...
+> > -static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+> > -                             struct bpf_prog *old, u32 which)
+> > +static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog **pprog[],
+>
+> Can we just change "**pprog[]" to "***pprog"? In the code, you really
+> just pass the address of the decl "struct bpf_prog **pprog;" to the
+> function.
 
-Another thing I just noted:
-The above gives a nf_conn with incremented reference count.
+Di,
 
-For Maxims use case, thats unnecessary overhead. Existence can be
-determined without reference increment.  The caveat is that the pointer
-cannot be used after last rcu_read_unlock().
+this feedback was given twice already.
+You also didn't address several other points from the earlier reviews.
+Please do not resubmit until you address all points.
