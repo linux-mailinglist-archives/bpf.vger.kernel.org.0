@@ -2,244 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E7C443463
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 18:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0810A44348D
+	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 18:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhKBRPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 13:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhKBRPP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:15:15 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF423C061714;
-        Tue,  2 Nov 2021 10:12:40 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id d10so92126ybe.3;
-        Tue, 02 Nov 2021 10:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0Xq8AsbqsOaKjIvdptZcSBgPskzpXvIr/+0PC7RddRQ=;
-        b=JvvgQO1mCugdERhCmkPEpFqXivjcP0yzyis/FJpVOVFuuP0VkLrYufzhq9rg4SQPK/
-         g2eUIDXY/3OpGzp+Ua+NQJshEubSUybkvJOIkeUvCDMZ0i4e6AMyva+NQvAe+R2MHBBe
-         qefzALxpGFraymLaW/Ps4I2pwKNDHT5Qgpks1hDkt59+2Nc7rYM77/Y6sLYsE3gmnikK
-         0pmCLYVMo7MWbEQ0+wmNE8DORNsfSBoXo+g1a+ySvD+5blleH4mIDKrEeku2HaoUhPkT
-         BoJ0PUgSuaynlVN6/j3/SfiNzZRzzPfY93npB0h69jq0f91O8xVWMzWnFHXZdYy5Qb1l
-         RLtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0Xq8AsbqsOaKjIvdptZcSBgPskzpXvIr/+0PC7RddRQ=;
-        b=XAdjuBYnoH0GG7JubRj8Utoch1SCqrHqnk49S7e/o8cggR8CsjExyOF21mwQHPeut6
-         rQ7b5vzpoZGXpoFhgw1NToTe4cuB6XRRx7aU51luVrFnYA+S4h4VHHPIBIzdyiuE/4jR
-         MVPIgPh8REb9oN+S6sT2RWif7pTFHjMCQduWbl0pcf/OGbuf+7YVE95x9k7208hH0HJY
-         qTQUb1muRopfAi619XDY83TodFSlXE7m9ZHnIobbYSVL7DE15oA04SPmtTIQXY6pfE6x
-         NaIVxJ6JdKd2YA2wEmrCfTV1JtFCq3WnAB0hC3bgKT1R9+qVkLV8vkYISk3Jq7GWIAnS
-         fl+A==
-X-Gm-Message-State: AOAM532Xng+618plQqoUEh1yE8OdU4aBgY1kwwpOI4NwqjgnsANT7NQP
-        zx2zrn/FZKxnIUnmRbPRPc/YPZc85r4eU1k+mVdUjo58jhE=
-X-Google-Smtp-Source: ABdhPJyk1SaGKzxC/FcfFZLffU9qDryj0vPPnBkPElVPp7ZDgPYhX1gJpsCMoOrh5SFCCOVFor9iZYbg4D+9hoxZK5w=
-X-Received: by 2002:a05:6902:1023:: with SMTP id x3mr10873607ybt.267.1635873159908;
- Tue, 02 Nov 2021 10:12:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211027203727.208847-1-mauricio@kinvolk.io> <CAADnVQK2Bm7dDgGc6uHVosuSzi_LT0afXM6Hf3yLXByfftxV1Q@mail.gmail.com>
- <CAHap4zt7B1Zb56rr55Q8_cy8qdyaZsYcWt7ZHrs3EKr50fsA+A@mail.gmail.com>
- <CAEf4BzbDBGEnztzEcXmCFMNyzTjJ3pY41ahzieu9yJ+EDHU0dg@mail.gmail.com> <CAMy00i1NZk-33fZxMq_iLpkcgL+oNNm0hqoX-u_n6OpnWxWhww@mail.gmail.com>
-In-Reply-To: <CAMy00i1NZk-33fZxMq_iLpkcgL+oNNm0hqoX-u_n6OpnWxWhww@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 2 Nov 2021 10:12:28 -0700
-Message-ID: <CAEf4Bza6eqYLKS3GCpO3t2XRneCkZEOEkNFL1U9wBdBT+ZBm1A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] libbpf: Implement BTF Generator API
-To:     Leonardo Di Donato <leodidonato@gmail.com>
-Cc:     =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S234156AbhKBRaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 13:30:15 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18472 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230214AbhKBRaO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 2 Nov 2021 13:30:14 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1A2FoTak015369;
+        Tue, 2 Nov 2021 10:27:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=BodZDst7CzQ/ZjCgEKzfgzWETvDpRacy08DAvB+oLS0=;
+ b=MiuhOts4nEDVmqUnMjSvLetArMnV9jYoF9Z+ZjtufT6Fdls/F68gXRv6H9weHCtd0Ckw
+ ywDLPr/x88cfnpllXgwIDrSTL0r9W9LQZ4vdTJAXkRCEauw+geZc/s0xtoWxXfV6fTA2
+ Ue+zFvUXhd+hyP1RRHkBuA0orIwzJbMwO5Q= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 3c2xy6vejj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 02 Nov 2021 10:27:13 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 2 Nov 2021 10:27:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hF7QEeniuvAUS/HYn8QI8auJecy6NkroqfpWUgwzv1uTY6xJjBJtMJQ6UbTX62qmckJ8c9HcFN9dJ0OHlm7XjKY8tke8ZU/6eTwMvWFTWs0ppvffkT7h9z8mHTB3HnwEQbnfu7+AdQXTi2duM9nid4TbIqHjhZCjb2FC8DgNIyOlTwQj1YoH6njtHSYHqipZF4K7LYRn+9uf51mBH9Wj3FKa1OJzPhQ5sH/H7ZFMXI3b9+zdsvsEi5funCbjDXT0+ymF68A4kFkgILlO2o/XGjFS9wOqco0qYwycutSaGXKUylRUEdAudK+kK7mifAh/8WVGTDO82pFfyZstoX8V0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BodZDst7CzQ/ZjCgEKzfgzWETvDpRacy08DAvB+oLS0=;
+ b=RwdFS/v5PggN6HwO3jLRqjvRzxfJeEmGT4ef/6myPI0OGVFI4A5G4V87n8v5aF8qH0k/MI8tu9reTFZRs6uOHIk2okiZL14+rDU2SVg/BkLhNBXtpb8ja/cSaB+zz0lCHDf4iwnKmYQ7sWRND+zHebVqYjJfH7V6TBXvAoI17PUo/47EvJg96GLQ2zf90SMVKAEypz4v7Bp3SkOZoL4LrVCL9/hQgtaimUfnyqpIF8qITOG33jr3AQ75NVeaAmCF+W/Ril6TmC+CfCAV36p/8IV4VQW3lmyHL0QY82+45P3LOr2RWpPxtf9DAz16ajU8au77vbI8vePClzBcFDaOCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR1501MB2030.namprd15.prod.outlook.com (2603:10b6:805:3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Tue, 2 Nov
+ 2021 17:27:06 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 17:27:06 +0000
+Message-ID: <9537f384-121b-744b-cdfd-0a3df0fc713e@fb.com>
+Date:   Tue, 2 Nov 2021 10:27:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: clean-up bpf_verifier_vlog() for
+ BPF_LOG_KERNEL log level
+Content-Language: en-US
+To:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        leonardo.didonato@elastic.co
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <20211102101536.2958763-1-houtao1@huawei.com>
+ <20211102101536.2958763-2-houtao1@huawei.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20211102101536.2958763-2-houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0259.namprd04.prod.outlook.com
+ (2603:10b6:303:88::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+Received: from [IPV6:2620:10d:c085:21e8::198e] (2620:10d:c090:400::5:2e35) by MW4PR04CA0259.namprd04.prod.outlook.com (2603:10b6:303:88::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Tue, 2 Nov 2021 17:27:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fe280d74-d636-4169-3137-08d99e25fe0d
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2030:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB20308A65D1AC23F8210C6293D38B9@SN6PR1501MB2030.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NGgfa35QPLzh5vnrHH94KqO+5y2zoKGGxK5BR4jxQynoZrep/h5fE+2RLu1fXO2BnB7lM1ogbPmJzgDPL6QhkrQ08SBQw7Z2THMXnV71bGypCaBIi3ZXYqhOsoGJIGMt0aETBvl4W8dTdQ0FIQVsvCyOAVi1UzV52hKa/SME1QJ4jFeKcdlid+Dx+erWkRgZmbZ8xuQt775uvfoqJOExhOejy/fBmaX1Fd9e87JiwR9lgzAduNChJQCgG3HmeRXYmsRTsmI2WNrfmQ+h2MVlvUY6bfJzcSFsfsV3ffhg0DIg1zRK69MHdflcr1sD10XP+M2EFxDlmJQM6AFEx628JczT/GJpuL3yD4nQ7ZBW5t44FpsZH93yJje40eH8xOkWknWL52Hc9VrUE6ysJTWktHHsCWW2Ad6BRoRTRa9lhSWQPRTrHLsLA13ordC3/+RcEemsm/LEZxnQ+MgEbu7RhmeHt/4QSvm6CSp9vhsqukwoFu4CaeKrS4gJsR1fxyuOpk5DgbOt1OXUydixjXoZmZee4NcGdPgwHAbb/ely9W6v/LXm6OmbKCR+LKMmh3Yb9DTZoHk9CathUKuCn1WmusFaSfMjWX00FxgC9GcgbLfJxPVuHAN5P9kibEQ6PDxmUeIQNvQ5d3xtNBFhiEN4dSc5UwpWUY+HA73sjR3rrGOLSKKDODC1zJm7qQjaSmOP6A+gU1WH4469r/+5DZE3nhNaaFOCDHNryy6nLwLxojw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31696002)(508600001)(186003)(66946007)(8676002)(110136005)(8936002)(54906003)(66476007)(66556008)(31686004)(38100700002)(2616005)(52116002)(86362001)(316002)(83380400001)(53546011)(5660300002)(36756003)(6486002)(4744005)(2906002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NnZtQ0NrVXpjREltUEdXSS9jWGtRY3ZOaWEyT0c4S0p1dXFhdy8wekhVL0Vh?=
+ =?utf-8?B?UmNpZUgwcGUzV1FHclJWdFBGNWYzQlZMa0xtK2lLOFlTOEhwbkQxNWZSeDJv?=
+ =?utf-8?B?c1FYOXl1ZDVnMFloNUtja0JMdFQrTkU1T1RLdXFWcHNzS0FoajNQdlVuUklB?=
+ =?utf-8?B?R0d4RG1lcmxWa3N2aXliY1ZJSURia0pCSTlpUm5OcFB1SlphZVpaT2IrU3dJ?=
+ =?utf-8?B?VEU2UkhOamthUllWeWJIeDRpODNqTWtmMWhBazFxSkZBNFBVb3EzK3h2Tk96?=
+ =?utf-8?B?TWVtaGtpaXlnYnUwbVQ2S2h1UGNXcDFoZGZ6cWhrMjgzODBvd251QzMrMHVP?=
+ =?utf-8?B?THhIQmV1TVJ0RVRleElFQUE5OGtLbHcxaGxQQThjeE5sREJCa0s3akFVcTgw?=
+ =?utf-8?B?Z21kWmtYVFd0dFBMQVhoMm5KRTkzZDNvQ2Y1amduWkNOMEt4SmthUHBDVW02?=
+ =?utf-8?B?NlRya1A3aGtWYmJjYWJiUVN0cmI1RnU1VHRTWm1vQmlPdEhpTUhKdFVNSG4r?=
+ =?utf-8?B?ZnVtc1BHWUlYOVNNYWJsVlFhQThrc2c1aW1VL1Zoc2RqNHdJM0hoek5RRUZT?=
+ =?utf-8?B?NENYK01FN3psTU1wazhtUVNGWEIwVzVvSUpaeWhHbWlSWXZaazFWWHpJWE5s?=
+ =?utf-8?B?V2VvcSt4T3B2aWpoYlNMSmFHZkNvOW1QT3VBMGFZRW1Qc2NxUmZldlhKZXZ1?=
+ =?utf-8?B?RnZuZ2RieUgzc1c1NC9PV00rd2xSNlduS05RMkdXMDhzb1ErNkppRW80QWdi?=
+ =?utf-8?B?bzYwYVhPREI5UTBUYkFLWUE1U2ltU0t3elBEZmIxd0EvUjhjd3VYVFFMSm1E?=
+ =?utf-8?B?c2dhcWpsa3J0N1dobkdpSGY3WGtUVS9NNlVROXg2Y0JoV2VFWTU3d3VScWNn?=
+ =?utf-8?B?bVVLSFNMWTQyRm02S3Z0RysyU1NtbGo3OGhsVXdMTHpFSEpYaENXT2V2THN6?=
+ =?utf-8?B?em41WGxVMDBoUWc1Ni9JZi9qODljRmRiR2w2eDBIaVdGZkRrdXV3c1Z3NW5H?=
+ =?utf-8?B?eC9yOGtlbW1vZFVyUkZFY2FMZGhkL0d4bDI1OVMvYzdOcW1wWTR6K0dxSU5X?=
+ =?utf-8?B?MFpYbVhRVmErY0pBc0ovQmhPU2V5SjRkK01haVhuYXUxOVkzMUZTaWxnaEhM?=
+ =?utf-8?B?VFNxRTVxdzhTQ1NXc0NUVldTVDR4WFQ2U1JsV2dnWDU5aHRZY2FKQlVyRFo0?=
+ =?utf-8?B?a3hjR0lSbDFDb3VWc1NGTWdjaVRuR1U1OElGVHZrWXFpV0k3dFowMlkyV2hF?=
+ =?utf-8?B?NVhGRHg0U1piTGc3QU90ek53dGVodGhoNjdzOElCKzRHeWN0QU1ycGZ0VDg0?=
+ =?utf-8?B?bUV4YVRkdXhMUzBuQ2RHWTlNM043THJBazlMem5sRGJhRVN4b053UGgwc2J5?=
+ =?utf-8?B?L2I2ZjEvYTJXR0JtZVhjUjlJcmxSbWtNN0wvdjE0ZUcyKzdIeWZ5VkZ2UWZO?=
+ =?utf-8?B?MFYxNm1wVENyOVFWa2VKNFpHZ0N1d0EyZkZNd0luS3lZdlc2MUZ5ejN1T3h4?=
+ =?utf-8?B?cHVIZ0I1akowSjN1NVpyS2JEY3hxL0Vva21yNHpsQzdaMlppNzJIQnpwZ1ZL?=
+ =?utf-8?B?ZndoQVIvWGpNT1ZEa1pMMFdETTkrclo5RFNQQmM5MUlxUDZ6VkV0UmhFR0Rt?=
+ =?utf-8?B?N2ZPR21uM2JXZk9xMGVXZ1Rpdmh6eFR6WXRVWEQ4M3BudStUN0tZblk2WUNs?=
+ =?utf-8?B?U3pBU1NRalZFT2htdkpGR2UzaFBDS2dEMnFZSUF2N0lRQThieTdic08rNENr?=
+ =?utf-8?B?SXp4cWhhVS9NaE5SYmtEZTFITWNkSXN4MnIyTlF2ZWoxM1VxWHUzSk4zYVln?=
+ =?utf-8?B?RHZvclJ2VkRlQ29aY25WNlgrbjVBTlgrRVhpT1EzQnZzUzZSLzhJcng3TjRs?=
+ =?utf-8?B?aXIzOERUVHBaenB3UDYveC9JdVNaQWR3d3EwT0RWRzRNeENUMUc2dXI1WDhH?=
+ =?utf-8?B?WU1YTW1iVFVvTTJ2NDlIN0lWd01JTmJ0cUxIVk1nTlR0T3liV2wvRDY2dk1L?=
+ =?utf-8?B?elJKSVM5VTRrZmp4L0NkMmcwMVlCalorR3loNC9vUnJjSXpNcjRBWkJiTnhR?=
+ =?utf-8?B?b0tobHpGQzBoQ0NVYTU3Y3g2NEl4OWlheWoyL0sxbUFXOEpaNlpkSDdaYjlr?=
+ =?utf-8?Q?zWIMAHhWip33NBzTQydrCU/wl?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe280d74-d636-4169-3137-08d99e25fe0d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 17:27:06.4131
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZQksYNyw/hP/P1bxBvgMdZqHl+A2Q3uqwK4JHbukny1LP3hbb4fppyWlzYMKsZKd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2030
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: VVjQAhxUPg-iNcsewVMftONlLL--GAjt
+X-Proofpoint-ORIG-GUID: VVjQAhxUPg-iNcsewVMftONlLL--GAjt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=978 mlxscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111020099
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 3:59 AM Leonardo Di Donato <leodidonato@gmail.com> wrote:
->
-> On Tue, Nov 2, 2021 at 6:55 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > No, now that I understand what exactly you are doing, it won't work.
-> >
-> > But ok, I gave it quite a bit of thought and tried to find a good
-> > compromise between completely exposing all the libbpf internals as
-> > public APIs (which is a huge price I'm not willing to accept) and
-> > actually allowing you to achieve your goal (which I think is worthy to
-> > achieve).
-> >
-> > But first. https://github.com/aquasecurity/btfhub/tree/main/tools is
-> > awesome. Great work explaining a lot at exactly the right level of
-> > technical details. It would be great if you published it as a
-> > dedicated blog post, maybe splitting the more general information from
-> > the BTF minimization problem. Both are useful, but it's too long for
-> > one article. Great job, really!
-> >
-> > Now, to the problem at hand. And sorry for a long reply, but there is
-> > quite a bit of things to unpack.
-> >
-> > I see this overall problem as two distinct problems:
-> >   1. Knowing which fields and types libbpf is using from kernel BTF.
-> > Basically, observe CO-RE logic from outside.
-> >   2. Knowing information from #1, minimize BTF.
-> >
-> > Part #2 absolutely doesn't belong in libbpf. Libbpf exposes enough BTF
-> > constructing APIs to implement this in any application, bpftool or
-> > otherwise. It's also a relatively straightforward problem: mark used
-> > types and fields, create a copy of BTF with only those types and
-> > fields.
-> >
-> > So let's talk about #1, because I agree that it's extremely painful to
-> > have to reimplement most of CO-RE logic just for getting the list of
-> > types and fields. Here we have two sub-problems (assuming we let
-> > libbpf do CO-RE relocation logic for us):
-> >   a) perform CO-RE relocations but don't create BPF maps and load BPF
-> > programs. Dry-run of sorts.
-> >   b) exposing calculated relocation information.
-> >
-> > First, 1a. The problem right now is that CO-RE relocations (and
-> > relocations in general) happen in the same bpf_object__load() phase
-> > and it's not possible to do them without creating maps and
-> > subsequently loading BPF programs first. This is very suboptimal. I've
-> > actually been thinking in the background how to improve that
-> > situation, because even with the recent bpf_program__insns() API,
-> > added a few days ago, you still have to load the BPF program to be
-> > able to clone the BPF program, and so I wanted to solve that for a
-> > long while now.
-> >
-> > So how about we split bpf_object__load() phase into two:
-> > bpf_object__prepare() and bpf_object__load(). prepare() will do all
-> > the preparations (subprogs, ELF relos, also almost complete BPF map
-> > relos, but not quite; I'll get to this), basically everything that
-> > load does today short of actually creating maps and progs. load() then
-> > will ensure that bpf_object__prepare() was called (i.e., user can do
-> > just prepare(), prepare() + load() explicitly, or load() which will
-> > call prepare() implicitly).
-> >
-> > The biggest problem I see right now is what we do about BPF map
-> > relocations. I propose to perform map relocations but substitute map's
-> > internal index (so that if someone dumps prog instructions after
-> > prepare(), it's still meaningful, even if not yet validatable by
-> > verifier). After maps are actually created, we can do another quick
-> > pass over just RELO_DATA and replace map_idx with map's fd.
-> >
-> > It feels like we should split load further into two steps: creating
-> > and pinning maps (+ finalizing FDs in instructions) and actually
-> > loading programs. Again, with the same implicit calling of prepare and
-> > map creation steps if the user only calls bpf_object__load(). For ease
-> > of use and backwards compatibility.
-> >
-> > So basically, the most granular set of steps would be:
-> >   1. bpf_object__open()
-> >   2. bpf_object__prepare() (or bpf_object__relocate(), naming is hard)
-> >   3. bpf_object__create_maps();
-> >   4. bpf_object__load().
-> >
-> > But the old and trusty bpf_object__open() + bpf_object__load() will
-> > work just as well, with load() doing steps #2-#4 automatically, if
-> > necessary.
-> >
-> > So what does that split gives us. Few things:
-> >   - it's possible to "simulate" almost all libbpf logic without
-> > changing the state of the system (no maps or progs created). Yet you
-> > still validate that kconfig externs, per-cpu externs, CO-RE relos, map
-> > relos, etc, all that works.
-> >   - libbpf can store extra information between steps 1, 2, 3, and 4,
-> > but after step #4 all that extra information can be discarded and
-> > cleaned up. So advanced users will get access to stuff like
-> > bpf_program__insns() and CO-RE information, but most users won't have
-> > to pay for that because it will be freed after bpf_object__load(). So
-> > in this case, bpf_program__insns() could (should?) be discarded after
-> > actual load, because if you care about instructions, you can do steps
-> > #1-#3, grab instructions and copy them, if necessary. Then proceed to
-> > #4 (or not) and free the memory.
-> >
-> > The last point is important, because to solve the problem 1b (exposing
-> > CO-RE relo info), the best way to minimize public API commitments is
-> > to (optionally, probably) request libbpf to record its CO-RE relo
-> > decisions. Here's what I propose, specifically:
-> >   1. Add something like "bool record_core_relo_info" (awful name,
-> > don't use it) in bpf_object_open_opts.
-> >   2. If it is set to true, libbpf will keep a "log" of CO-RE
-> > relocation decisions, recording stuff like program name, instruction
-> > index, local spec (i.e., root_type_id, spec string, relo kind, maybe
-> > something else), target spec (kernel type_id, kernel spec string, also
-> > module ID, if it's not vmlinux BTF). We can also record relocated
-> > value (i.e., field offset, actual enum value, true/false for
-> > existence, etc). All these are stable concepts, so I'd feel more
-> > comfortable exposing them, compared to stuff like bpf_core_accessor
-> > and other internal details.
-> >   3. The memory for all that will be managed by libbpf for simplicity
-> > of an API, and we'll expose accessors to get those arrays (at object
-> > level or per-program level is TBD).
-> >   4. This info will be available after the prepare() step and will be
-> > discarded either at create_maps() or load().
-> >
-> > I think that solves problem #1 completely (at least for BTFGen case)
-> > and actually provides more useful information. E.g., if someone wants
-> > to track CO-RE resolution logic for some other reason, they should
-> > have pretty full information (BTFGen doesn't need all of that).
-> >
-> > It also doesn't feel like too much complication to libbpf internals
-> > (even though we'll need to be very careful with BPF map relos and
-> > double-checking that we haven't missed any other critical part of the
-> > process). And for most users there is no change in API or behavior.
-> > And given this gives us a "framework" for more sustainable libbpf
-> > "observability", I think it's a justified price to pay, overall.
-> >
-> > I still need to sleep on this, but this feels like a bit cleaner way
-> > forward. Thoughts are welcome.
-> >
-> > >
-> > > > If CO-RE matching style is necessary and it's the best approach then please
-> > > > add new logic to bpftool. I'm not sure such api would be
-> > > > useful beyond this particular case to expose as stable libbpf api.
-> > >
-> > > I agree 100%. Our goal is to have this available on bpftool so all the
-> > > community can use it. However it'd be a shame if we can't use some of
-> > > the existing logic in libbpf.
->
-> Hello Andrii,
->
-> I was experimenting on implementing this during the last few days by
-> using the preprocessor mechanism builtin in libbpf.
->
-> The bpf_object__load_progs (which happens after bpf_object__relocate)
-> calls bpf_object__load_progs, which calls bpf_program__load that, for
-> each program instance, calls a bpf_program_prep_t preprocessor. Such a
-> callback gets passed in the current program instance, its index, its
-> insn, etc.
-> The bpf_object__load_progs function gets called just after
-> bpf_object__relocate (in bpf_object__load_xattr) which finds relo
-> candidates and applies them.
-> But I guess you already know all this.
->
-> So my idea was to store  the relocation info into the program
-> instances, exposing them to the userspace implementation of the
-> aforementioned callback.
-> At that point, creating a tailored BTF for the program/s would be just
-> a matter of implementing the logic for grabbing and saving them to the
-> disk.
->
-> Would you think this would be feasible? I think this would be a good
-> use case for the preprocessor.
 
-This preprocessor API is deprecated and is going to be removed in
-libbpf 1.0. See [0].
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20211025224531.1088894-4-andrii@kernel.org/
+On 11/2/21 3:15 AM, Hou Tao wrote:
+> An extra newline will output for bpf_log() with BPF_LOG_KERNEL level
+> as shown below:
+> 
+> [   52.095704] BPF:The function test_3 has 12 arguments. Too many.
+> [   52.095704]
+> [   52.096896] Error in parsing func ptr test_3 in struct bpf_dummy_ops
+> 
+> Now all bpf_log() are ended by newline, but not all btf_verifier_log()
+> are ended by newline, so checking whether or not the log message
+> has the trailing newline and adding a newline if not.
+> 
+> Also there is no need to calculate the left userspace buffer size
+> for kernel log output and to truncate the output by '\0' which
+> has already been done by vscnprintf(), so only do these for
+> userspace log output.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 
->
-> L.
+Acked-by: Yonghong Song <yhs@fb.com>
