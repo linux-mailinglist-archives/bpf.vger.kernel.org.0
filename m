@@ -2,109 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A57E443241
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 17:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66C744344F
+	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 18:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhKBQEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 12:04:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231855AbhKBQDk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:03:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1859761152
-        for <bpf@vger.kernel.org>; Tue,  2 Nov 2021 16:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635868865;
-        bh=da1eVycy50X4otQmrik6T2V+LN6wIM3TUnD/viJWm78=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Wwjso66r66rZvnerXMejmiBymKNgEfQ/7zm+uV94JteVeOuqjG7JS1RnA3Dbkhizc
-         278wFhh2v6QGYYb7LWyUEoQdmtBrVnqy+8qRa+vB38cAsqDLMYo5ZmuRo4Nse8PKqD
-         XZiIYEn2Aat3c8slVlHJhd18P8LjkNk0uN2YZlfWwsg0wwE/+RtNohhGmO7jBug5I9
-         ue7sfh2sWgEppcQdiqxU/a6M4iUKKyh+lpKoEcpOhPyAYBN6UkznsNo7z9Bqr8Zt+n
-         med44cTYJS3K221mV9ocErdaYTY79Rjt/q+l2NsvRKTQKDQX/o8b4/GeK+RH348Fby
-         k0o1KQaDImP/Q==
-Received: by mail-ed1-f51.google.com with SMTP id o8so5835763edc.3
-        for <bpf@vger.kernel.org>; Tue, 02 Nov 2021 09:01:05 -0700 (PDT)
-X-Gm-Message-State: AOAM532MVre4NG8WA8UVO/04AFujsGA9WOgLm6aMxXVaYc0Na0A2wEIe
-        YA4FFwYr2RvbQzfc6fDORYsDgpOTkZ1bVxn5MrvhEA==
-X-Google-Smtp-Source: ABdhPJyG639/bwb24Z9ukyt2PqMYiAtaWSE+zLkSarKrvtVPKFZUqOoXO7GUwI+4z/qEm+cqjqoHsdkYPqcBwAynFTM=
-X-Received: by 2002:a05:6402:1d9a:: with SMTP id dk26mr39886443edb.222.1635868863484;
- Tue, 02 Nov 2021 09:01:03 -0700 (PDT)
+        id S229806AbhKBRJl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 13:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234928AbhKBRJk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 13:09:40 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71E2C061203;
+        Tue,  2 Nov 2021 10:07:05 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id b2-20020a1c8002000000b0032fb900951eso2518336wmd.4;
+        Tue, 02 Nov 2021 10:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8oHRsraxLr95dyqIZ4i9gXSUOIKBzXvt3sHaqmNleG0=;
+        b=OqjNpfDy0PUdCVV1P26ri7l8lKLTQsh2UcZ6l2GN0uogRjm1BD3KoebfP6om75E6rs
+         QLeJTes1JktuwmDiStKQEPhewLZ50hveU63bhUCIP7CW8LyCvQ1JWsvqifB43LEscbLd
+         TifylW4u5W2qb5V3HzJ79D6HSx0sZq1A1qU6syLF4QbknNMtz7mkUVYpGJ3FD2GWQiuL
+         uXuw8kxrS6Lb0PFGPj8eoSOH5nAVtPbeyCdPqLwORz9skH8LU8+MC1LtbflcqbuP/dPd
+         sPsj0IuFmm1ZBb7WZacOkoJ4zS7jnfpK8tY5+W3inGCj28azStpZKbetgSRJkSF3E5Vl
+         eVOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8oHRsraxLr95dyqIZ4i9gXSUOIKBzXvt3sHaqmNleG0=;
+        b=3zG44NETv7ttTRT5NkZMbEV1Ynm2kzRCLpbQmi5+SSUDwACzuHfFoEi5LuPAHbqtcB
+         Y5a5b/9tV2q2CFaVBC5F3jnG9Gt+cAjtCU6E9tkfNeP+cs0aDxjwVY17FrzWAPewJoYX
+         9etM39b2cB/XELZh7g/DDpbDECAShRt3AMAZJMGme0n8CcLBX5V0O91XMZSWDzsOcDdy
+         FLlZilHzzGQJahWVr5zExrN4yAQfZxC8XcWHTsnwjcckPAPOKRUdbfqwjBCET6AxZiBW
+         mP8q68fgpFkucWM2UBfkkRrL87s0P2XVU5TdBkdwIRat/RdCli0vUf0exbxrA84BvDQY
+         DjtA==
+X-Gm-Message-State: AOAM530UVj7cuRLqcIwgDEFoWUctXVo+DOhwgngVQmdGh7CV0gLPkoVt
+        CrKTKOBJ6oiLhrJ7/39nf1oEBkpIKmVKsecPys8=
+X-Google-Smtp-Source: ABdhPJzloyupizZ7CVP+cylrlRwT3lgpREZU9rA+BH8jQPtuqSLx4DwsJrvizBVECMnuYLbESVnlvmxl8hBhMSibCsc=
+X-Received: by 2002:a05:600c:1ca7:: with SMTP id k39mr8761216wms.74.1635872824205;
+ Tue, 02 Nov 2021 10:07:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210826235127.303505-1-kpsingh@kernel.org> <20210826235127.303505-2-kpsingh@kernel.org>
- <20210827205530.zzqawd6wz52n65qh@kafai-mbp> <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
- <20210831021132.sehzvrudvcjbzmwt@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
- <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
- <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com> <20210930184642.drfinqwgxgeuf3iz@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210930184642.drfinqwgxgeuf3iz@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 2 Nov 2021 17:00:52 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6rGT-Fvru=GfUmzaZJXxu4jocTWejC2Q2x7jydtj9UBg@mail.gmail.com>
-Message-ID: <CACYkzJ6rGT-Fvru=GfUmzaZJXxu4jocTWejC2Q2x7jydtj9UBg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
- sleepable programs
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <1635843092-12907-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1635843092-12907-1-git-send-email-yangtiezhu@loongson.cn>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 2 Nov 2021 18:06:52 +0100
+Message-ID: <CAJ+HfNhtZFnxNjzDo8gSJdyDhEEicgUo5hDdCeBYJ=rutBZ93w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4] bpf: Change value of MAX_TAIL_CALL_CNT from
+ 32 to 33
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Yonghong Song <yhs@fb.com>
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, illusionist.neo@gmail.com,
+        zlim.lnx@gmail.com, naveen.n.rao@linux.ibm.com,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, iii@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, udknight@gmail.com,
+        David Miller <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 8:47 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Tue, 2 Nov 2021 at 09:51, Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> On Tue, Aug 31, 2021 at 11:32:17PM -0700, Martin KaFai Lau wrote:
-> > > > > > > > > --- a/net/core/bpf_sk_storage.c
-> > > > > > > > > +++ b/net/core/bpf_sk_storage.c
-> > > > > > > > > @@ -13,6 +13,7 @@
-> > > > > > > > >  #include <net/sock.h>
-> > > > > > > > >  #include <uapi/linux/sock_diag.h>
-> > > > > > > > >  #include <uapi/linux/btf.h>
-> > > > > > > > > +#include <linux/rcupdate_trace.h>
-> > > > > > > > >
+> In the current code, the actual max tail call count is 33 which is greate=
+r
+> than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not consisten=
+t
+> with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and need t=
+o
+> spend some time to think about the reason at the first glance.
+>
+> We can see the historical evolution from commit 04fd61ab36ec ("bpf: allow
+> bpf programs to tail-call other bpf programs") and commit f9dabe016b63
+> ("bpf: Undo off-by-one in interpreter tail call count limit").
+>
+> In order to avoid changing existing behavior, the actual limit is 33 now,
+> this is reasonable.
+>
+> After commit 874be05f525e ("bpf, tests: Add tail call test suite"), we ca=
+n
+> see there exists failed testcase.
+>
+> On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
+>  # echo 0 > /proc/sys/net/core/bpf_jit_enable
+>  # modprobe test_bpf
+>  # dmesg | grep -w FAIL
+>  Tail call error path, max count reached jited:0 ret 34 !=3D 33 FAIL
+>
+> On some archs:
+>  # echo 1 > /proc/sys/net/core/bpf_jit_enable
+>  # modprobe test_bpf
+>  # dmesg | grep -w FAIL
+>  Tail call error path, max count reached jited:1 ret 34 !=3D 33 FAIL
+>
+> Although the above failed testcase has been fixed in commit 18935a72eb25
+> ("bpf/tests: Fix error in tail call limit tests"), it is still necessary
+> to change the value of MAX_TAIL_CALL_CNT from 32 to 33 to make the code
+> more readable, then do some small changes of the related code.
+>
+> With this patch, it does not change the current limit 33, MAX_TAIL_CALL_C=
+NT
+> can reflect the actual max tail call count, the related tailcall testcase=
+s
+> in test_bpf and selftests can work well for the interpreter and the JIT.
+>
 
 [...]
 
-> > > Or is there another way to update the verifier to recognize safe sk and inode
-> > > pointers?
-> > I was thinking specifically for this pointer walking case.
-> > Take a look at btf_struct_access().  It walks the struct
-> > in the verifier and figures out reading sock->sk will get
-> > a "struct sock *".  It marks the reg to PTR_TO_BTF_ID.
-> > This will allow the bpf prog to directly read from sk (e.g. sk->sk_num)
-> > or pass the sk to helper that takes a "struct sock *" pointer.
-> > Reading from any sk pointer is fine since it is protected by BPF_PROBE_MEM
-> > read.  However, we only allow the sk from sock->sk to be passed to the
-> > helper here because we only know this one is refcnt-ed.
-> >
-> > Take a look at check_ptr_to_btf_access().  An individual verifier_ops
-> > can also have its own btf_struct_access.  One possibility is
-> > to introduce a (new) PTR_TO_RDONLY_BTF_ID to mean it can only
-> > do BPR_PROBE_MEM read but cannot be used in helper.
-> KP,  not sure how far you are with the verifier change, if it is
-> moving well, please ignore.  Otherwise,
-> I looked at the sock a bit and I currently don't see
-> potential concern on the following pointer case without the
-> rcu_read_lock for those sock-related sleepable lsm hooks in bpf_lsm.c.
-> If cases did come up later (e.g. other lsm hooks are added or something got
-> overlooked), we could bring in a bigger hammer to make the above verifier
-> change.  I think it should be fine to stop some exotic usage
-
-+1 Makes sense.
-
-> later that is proven to be not safe.  For the lsm sleepable hook case,
-> another option is to lock the sock first before calling the bpf prog.
+> diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_com=
+p32.c
+> index e649742..ead9733 100644
+> --- a/arch/riscv/net/bpf_jit_comp32.c
+> +++ b/arch/riscv/net/bpf_jit_comp32.c
+> @@ -799,13 +799,12 @@ static int emit_bpf_tail_call(int insn, struct rv_j=
+it_context *ctx)
+>         emit_bcc(BPF_JGE, lo(idx_reg), RV_REG_T1, off, ctx);
 >
-> If you agree a similar situation is also true for inode and task,
-> do you want to respin the patches addressing other points
-> discussed in this thread.
+>         /*
+> -        * temp_tcc =3D tcc - 1;
+> -        * if (tcc < 0)
+> +        * if (--tcc < 0)
+>          *   goto out;
+>          */
+>         emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
+>         off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+> -       emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
+> +       emit_bcc(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
+>
+>         /*
+>          * prog =3D array->ptrs[index];
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index 2ca345c..9822f58 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -327,12 +327,12 @@ static int emit_bpf_tail_call(int insn, struct rv_j=
+it_context *ctx)
+>         off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+>         emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
+>
+> -       /* if (TCC-- < 0)
+> +       /* if (--tcc < 0)
+>          *     goto out;
+>          */
+>         emit_addi(RV_REG_T1, tcc, -1, ctx);
+>         off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+> -       emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
+> +       emit_branch(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
+>
+>         /* prog =3D array->ptrs[index];
+>          * if (!prog)
 
-I will respin the series with the other changes discussed.
+The RISC-V code can be simplified, to save one move:
+
+diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp3=
+2.c
+index e6497424cbf6..529a83b85c1c 100644
+--- a/arch/riscv/net/bpf_jit_comp32.c
++++ b/arch/riscv/net/bpf_jit_comp32.c
+@@ -799,11 +799,10 @@ static int emit_bpf_tail_call(int insn, struct
+rv_jit_context *ctx)
+        emit_bcc(BPF_JGE, lo(idx_reg), RV_REG_T1, off, ctx);
+
+        /*
+-        * temp_tcc =3D tcc - 1;
+-        * if (tcc < 0)
++        * if (--tcc < 0)
+         *   goto out;
+         */
+-       emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
++       emit(rv_addi(RV_REG_TCC, RV_REG_TCC, -1), ctx);
+        off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+        emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
+
+@@ -829,7 +828,6 @@ static int emit_bpf_tail_call(int insn, struct
+rv_jit_context *ctx)
+        if (is_12b_check(off, insn))
+                return -1;
+        emit(rv_lw(RV_REG_T0, off, RV_REG_T0), ctx);
+-       emit(rv_addi(RV_REG_TCC, RV_REG_T1, 0), ctx);
+        /* Epilogue jumps to *(t0 + 4). */
+        __build_epilogue(true, ctx);
+        return 0;
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp6=
+4.c
+index 2ca345c7b0bf..f4466b7997b5 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -327,12 +327,12 @@ static int emit_bpf_tail_call(int insn, struct
+rv_jit_context *ctx)
+        off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+        emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
+
+-       /* if (TCC-- < 0)
++       /* if (--TCC < 0)
+         *     goto out;
+         */
+-       emit_addi(RV_REG_T1, tcc, -1, ctx);
++       emit_addi(RV_REG_TCC, tcc, -1, ctx);
+        off =3D ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+-       emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
++       emit_branch(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
+
+        /* prog =3D array->ptrs[index];
+         * if (!prog)
+@@ -352,7 +352,6 @@ static int emit_bpf_tail_call(int insn, struct
+rv_jit_context *ctx)
+        if (is_12b_check(off, insn))
+                return -1;
+        emit_ld(RV_REG_T3, off, RV_REG_T2, ctx);
+-       emit_mv(RV_REG_TCC, RV_REG_T1, ctx);
+        __build_epilogue(true, ctx);
+        return 0;
+ }
+
+With that change applied, for RISC-V:
+
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+
+
+Bj=C3=B6rn
