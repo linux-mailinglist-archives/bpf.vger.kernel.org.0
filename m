@@ -2,89 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF574425A7
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 03:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8104425B4
+	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 03:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhKBCgA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 22:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
+        id S229947AbhKBCtn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Nov 2021 22:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhKBCgA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 22:36:00 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D69C061714
-        for <bpf@vger.kernel.org>; Mon,  1 Nov 2021 19:33:25 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id f8so13654396plo.12
-        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 19:33:25 -0700 (PDT)
+        with ESMTP id S229811AbhKBCtm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Nov 2021 22:49:42 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1FBC061714;
+        Mon,  1 Nov 2021 19:47:08 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 131so37935365ybc.7;
+        Mon, 01 Nov 2021 19:47:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bjR1hn75qkAKpYQBOR52U3342BSmFLfpgHVpS+7ucTo=;
-        b=VvEitRDdp5Juw0GPpPsdklLjuBp5d2qIvsLJnazJBopdJ8Up6N7Fd2Yn0SWjXISllm
-         QBnXK+cvVRhuN/exG+dOpXVjfV075dGhV0g6nT69IXPVOU4JkGoguZGtwJH2rug7cOun
-         7Uw10WQT0D/v9VQV3KhQUDY9xz/HWYMgGxHnENMlR8peQSNDCeAPGIW5vwFf7QyiBbPY
-         My7v3XnhhKPZMm52cwCagtF4whMOqeAhCqHmnxB3B8XAXpQdxkGF5VBor5mekeujslXE
-         GJ0/TbDoD6DlXAcpG+MIPoJl8uzY/K7RlViyFCtiexWi2YQS3Lae8cPfD6exaYftuoT6
-         FTSw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7GY8h6zM68umXpHTD3qpIkLof+dES1ipLSMSnBrE5T8=;
+        b=Gl45aXCtUBhlGR+iDCCxyJL3Y6Ofy7xmwcH19hf3JCXIToOuA1+nmquyAwHpGFCr4O
+         aOCi4ELLnzn931eNERNgBJL/UzQHhc2LAllLRvwgumMWklfXVqdwoU3H9gFc2JjjKddn
+         HfEiZd9A97clmshxUgXP6LHJUWKX9iCBtYzbACTT6Cp7ov2IUCepY/0cKFpVUikquGXN
+         CKPjuaT1bEWt7I2h026+SRE5hyASO47yKyg7aAdHJBGD4b1xr3uhYnYSMgA4ClLu4bKu
+         Xb7E+8I2Ittm6hYpzKATlf4cJ5zWsaGZ4m8GQoown/xkkHQhp1U0lE8rnBpVeLu7IPeR
+         nzHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bjR1hn75qkAKpYQBOR52U3342BSmFLfpgHVpS+7ucTo=;
-        b=LzTRkUAgGxrd42WaJoO4edWqF+AEnysnW4PWDEdjN2jZE5q4gf2NcpxltBp4O29mOD
-         sprwcDg1F05ALN/luXcv5iZx2gpZlXFxiEJRXrQsQcDNVtPg7ozGEw1oV6mNKq2h/6PG
-         WizzSXXG1Za62qEXnmCzCAjGC7MdTkt4qd+7vvLSyoh77e1tnxkvPrVAtFSSAym7wfvp
-         6r4BtURnskWExX0qOWxvrIVuCnnmysxvWfCHdrWoQ4WvKuUhXlKvtXcz7iswS5ubGuE5
-         zIB1KTHE5VryMgLNLECAmOGgwhO6qlMy+lDAfjO++0l3TPaE3tYVZHfGFj/ufsF0t2fT
-         a/Ig==
-X-Gm-Message-State: AOAM530b0OT2LbjACarH9Z/i3qO4zQiOV5aPKjTuW3fjC/R8F9+sfsQ+
-        hqC26uaJ9ad3c85p/NzqQoQ=
-X-Google-Smtp-Source: ABdhPJxZzGG8NIYKqTlp5qUKucl8nDD9wapayqMCR7bZmFMtSe+HercLRmbaZZo/VX1NKaj5JOE8wQ==
-X-Received: by 2002:a17:90a:600d:: with SMTP id y13mr3326529pji.84.1635820405371;
-        Mon, 01 Nov 2021 19:33:25 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:880e])
-        by smtp.gmail.com with ESMTPSA id fh3sm676056pjb.8.2021.11.01.19.33.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 19:33:24 -0700 (PDT)
-Date:   Mon, 1 Nov 2021 19:33:22 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, Hengqi Chen <hengqi.chen@gmail.com>
-Subject: Re: [PATCH bpf-next 05/14] libbpf: unify low-level BPF_PROG_LOAD
- APIs into bpf_prog_load()
-Message-ID: <20211102023322.6nelw3v7hxplq6lu@ast-mbp.dhcp.thefacebook.com>
-References: <20211030045941.3514948-1-andrii@kernel.org>
- <20211030045941.3514948-6-andrii@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7GY8h6zM68umXpHTD3qpIkLof+dES1ipLSMSnBrE5T8=;
+        b=cN8OaU3hmkxFg2J4pMCavmzFBbu/ih8XZ2FcjGJA3zMq2IdHgn+Zp/nHxOOzpjv+rO
+         XmGaGgnmqkzwmwkuWAKC61Ye6NMMECaMeIu3Vw7j3gMlVwl988L03y1ppho8dnwNyljw
+         cWxEXa7ZJRhztk72uocuXvTnC7W1eh2nPahNDP/jFCaZmZPQ7ea2Y0zwLhUpXNlUK3U3
+         DxqLpD+YJI2E/bCeslvvYa12e7yh6AuLumyiFxxpoydnsWAn0gk4clUFB6oYOlYsOuAV
+         QAzv8Fah0y5llYL/hB2xq1ZUQxD/sTo50HvoupXmePSHjPPIAuU/0Lywoc8MW3K1Ov4g
+         uoJA==
+X-Gm-Message-State: AOAM532darRD5tSCBbx9POGVPTj5M4yK+pP9g/i1SVBLw4nV2Mdzi63u
+        KxNeN9yn7ZuZZKfIgc8H/HrN6UBLdU7VyX1eb3s=
+X-Google-Smtp-Source: ABdhPJz1hPu/k/wxlDGHJO7gGbcjFf53NL9+t4aLujDIuhL+3Ti6dwPVa6m449dlC+1vSyPQnfW1BpJm886WDp8QO5A=
+X-Received: by 2002:a25:d16:: with SMTP id 22mr28723765ybn.51.1635821227779;
+ Mon, 01 Nov 2021 19:47:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211030045941.3514948-6-andrii@kernel.org>
+References: <20211101124310.3947887-1-yangyingliang@huawei.com>
+ <CAADnVQJS_2St=iaqHU+zasy_0A0bidJN=STnkHrNcSNL5vO1Dg@mail.gmail.com>
+ <90518c5d-36ea-ec97-9f14-0687fdd6074f@fb.com> <CAADnVQ+aeAnBEN=dp92q0RBXT+Um1ha4_F=sQ7fr08Sa3qauLQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+aeAnBEN=dp92q0RBXT+Um1ha4_F=sQ7fr08Sa3qauLQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 1 Nov 2021 19:46:56 -0700
+Message-ID: <CAEf4BzaCQecivGZuXaVJyERZPg-T6+ewPRKBEvpJ366_ZNe+2A@mail.gmail.com>
+Subject: Re: [PATCH -next v2] bpf/benchs: Fix return value check of bpf_program__attach()
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 09:59:32PM -0700, Andrii Nakryiko wrote:
-> -int bpf_prog_load(const char *file, enum bpf_prog_type type,
-> -		  struct bpf_object **pobj, int *prog_fd)
-> +COMPAT_VERSION(bpf_prog_load_deprecated, bpf_prog_load, LIBBPF_0.0.1)
-> +int bpf_prog_load_deprecated(const char *file, enum bpf_prog_type type,
-> +			     struct bpf_object **pobj, int *prog_fd)
-..
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 43580eb47740..b895861a13c0 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -395,6 +395,8 @@ LIBBPF_0.6.0 {
->  		bpf_object__next_program;
->  		bpf_object__prev_map;
->  		bpf_object__prev_program;
-> +		bpf_prog_load_deprecated;
-> +		bpf_prog_load;
->  		bpf_program__insn_cnt;
->  		bpf_program__insns;
->  		btf__add_btf;
+On Mon, Nov 1, 2021 at 3:30 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Nov 1, 2021 at 3:21 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 11/1/21 3:00 PM, Alexei Starovoitov wrote:
+> > > On Mon, Nov 1, 2021 at 5:35 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+> > >>
+> > >> If bpf_program__attach() fails, it never returns NULL,
+> > >> we should use libbpf_get_error() to check the return value.
+> > >>
+> > >> Reported-by: Hulk Robot <hulkci@huawei.com>
+> > >> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > >> Acked-by: Yonghong Song <yhs@fb.com>
+> > >> ---
+> > >> v2:
+> > >>    don't use 'int err'
+> > >> ---
+> > >>   .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
+> > >>   1 file changed, 5 insertions(+), 5 deletions(-)
+> > >>
+> > >> diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> > >> index 6eeeed2913e6..4afaa4adb327 100644
+> > >> --- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> > >> +++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+> > >> @@ -304,7 +304,7 @@ static void bloom_lookup_setup(void)
+> > >>          populate_maps();
+> > >>
+> > >>          link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
+> > >> -       if (!link) {
+> > >> +       if (libbpf_get_error(link)) {
+> > >
+> > > Please use ASSERT_OK_PTR() instead.
+> > > See how other tests are doing it.
+> >
+> > I actually looked at this. ASSERT_OK_PTR() is defined in test_progs.h
+> > and test_progs.h is ONLY included in files which eventually linked to
+> > test_progs. That is why I didn't recommend to use ASSERT_OK_PTR().
+> >
+> > Maybe it is okay to include test_progs.h in benchs/*.c. Or we may
+> > want to refactor to a separate header file to contain these macros
+> > which can be used for test_progs.h and other applications.
+>
+> hmm.
+> Looks like bench_ringbufs.c has the same issue doing:
+> if (!link)
+> and bench_rename.c too.
 
-Is it really LIBBPF_0.0.1 ? or 0.6.0 ? which one is correct.
-Maybe I'm misreading what COMPAT macro will do.
+bench.c does:
+
+libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+
+and so on error all the pointers will be NULL. So it's ok to check if
+(!link) and not use libbpf_get_error() at all.
+
+>
+> Probably would be good to fix in all bench-s.
+>
+> If test_progs.h cannot be included directly
+> copy-pasting ASSERT_OK_PTR in a reduced form into bench.h
+> is probably cleaner than open coding libbpf_get_error.
