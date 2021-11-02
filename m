@@ -2,105 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B10442740
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 07:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB36A4428FB
+	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 08:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhKBGsY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 02:48:24 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36308 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229931AbhKBGsX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 2 Nov 2021 02:48:23 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1A25BhYM015653
-        for <bpf@vger.kernel.org>; Mon, 1 Nov 2021 23:45:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=ImH5BLKTqdZKxroXvvLpP3a3aLysjTbO7t2QaIEafyw=;
- b=ph+6ZyEvzhOQtyswD7AIbDtE5MkUWuByXf0Dh9Qu2giqAfcQTDGSXJobblJcwQfUpgFf
- ng0KkItC7jqZqVIVoY3hfXyOLBmBLgHydPLeF2F8pbBXEc+PiaChFO+V9TFhVIfILe2o
- OMCF3KCV0gJIm+1yTaie0sEkHy9KLpyQ6LE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3c2xy6rcqx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 01 Nov 2021 23:45:49 -0700
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 1 Nov 2021 23:45:47 -0700
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id AFDC51C668AA; Mon,  1 Nov 2021 23:45:41 -0700 (PDT)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf-next 2/2] bpf: selftest: verifier test on refill from a smaller spill
-Date:   Mon, 1 Nov 2021 23:45:41 -0700
-Message-ID: <20211102064541.316414-1-kafai@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211102064528.315637-1-kafai@fb.com>
-References: <20211102064528.315637-1-kafai@fb.com>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: J97NK2V5P7RuoZy3uBPU-Ar6Tlv6B5XQ
-X-Proofpoint-ORIG-GUID: J97NK2V5P7RuoZy3uBPU-Ar6Tlv6B5XQ
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S231347AbhKBH64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 03:58:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52976 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230508AbhKBH6y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 03:58:54 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B46FE21956;
+        Tue,  2 Nov 2021 07:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635839778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6ap4olzBTfLejakCPItyAX9e8bDmpSosfrrPGCanr3k=;
+        b=WwJzLSQXjGdAyznGGV6SpWmdhW49bQlRnvPytZ6fgxedhPeRJVVTgMy0Ih0O5QwjOYpS6a
+        96PQR55FMHbwdMZIMobPll5efDcxRY2ZviZSkiefrXc10IHo417/75YCqs3hplKbT1wpnR
+        lqnAN+Chyaj0oXodeKoyvl4MpccGfbE=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A7312A3B88;
+        Tue,  2 Nov 2021 07:56:17 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 08:56:14 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYDvHv76tJtJht8b@alley>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+ <YX/0h7j/nDwoBA+J@alley>
+ <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
+ <YYAPhE9uX7OYTlpv@alley>
+ <CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com>
+ <20211101211845.20ff5b2e@gandalf.local.home>
+ <CALOAHbCgaJ83qZVj6qt8tgJBd4ojuLfgSp2Ce7CgzQYshM-amQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_05,2021-11-01_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=675 mlxscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111020037
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbCgaJ83qZVj6qt8tgJBd4ojuLfgSp2Ce7CgzQYshM-amQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a verifier test to ensure the verifier
-can read 8 bytes from the stack after two 32bit write at
-fp-4 and fp-8.  The test is similar to the reported case from bcc [0].
+On Tue 2021-11-02 09:26:35, Yafang Shao wrote:
+> On Tue, Nov 2, 2021 at 9:18 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > On Tue, 2 Nov 2021 09:09:50 +0800
+> > Yafang Shao <laoar.shao@gmail.com> wrote:
+> > >      Now we only care about kthread, so we can put the pointer into a
+> > > kthread specific struct.
+> > >      For example in the struct kthread, or in kthread->data (which may
+> > > conflict with workqueue).
+> >
+> > No, add a new field to the structure. "full_name" or something like that.
+> > I'm guessing it should be NULL if the name fits in TASK_COMM_LEN and
+> > allocated if the name had to be truncated.
+> >
+> > Do not overload data with this. That will just make things confusing.
+> > There's not that many kthreads, where an addition of an 8 byte pointer is
+> > going to cause issues.
+> 
+> Sure, I will add a new field named "full_name", which only be
+> allocated if the kthread's comm is truncated.
 
-[0]: https://github.com/iovisor/bcc/pull/3683
+The plan looks good to me.
 
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- .../testing/selftests/bpf/verifier/spill_fill.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+One more thing. It should obsolete the workqueue-specific solution.
+It would be great to clean up the workqueue code as the next step.
 
-diff --git a/tools/testing/selftests/bpf/verifier/spill_fill.c b/tools/test=
-ing/selftests/bpf/verifier/spill_fill.c
-index c9991c3f3bd2..7ab3de108761 100644
---- a/tools/testing/selftests/bpf/verifier/spill_fill.c
-+++ b/tools/testing/selftests/bpf/verifier/spill_fill.c
-@@ -265,3 +265,20 @@
- 	.result =3D ACCEPT,
- 	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- },
-+{
-+	"Spill a u32 scalar at fp-4 and then at fp-8",
-+	.insns =3D {
-+	/* r4 =3D 4321 */
-+	BPF_MOV32_IMM(BPF_REG_4, 4321),
-+	/* *(u32 *)(r10 -4) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -4),
-+	/* *(u32 *)(r10 -8) =3D r4 */
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_4, -8),
-+	/* r4 =3D *(u64 *)(r10 -8) */
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_4, BPF_REG_10, -8),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D ACCEPT,
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+},
---=20
-2.30.2
-
+Best Regards,
+Petr
