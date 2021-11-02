@@ -2,102 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4999944396B
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 00:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB98D443984
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 00:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhKBXTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 19:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        id S230299AbhKBXWn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 19:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbhKBXTU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:19:20 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB00C061714;
-        Tue,  2 Nov 2021 16:16:45 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id m14so457915pfc.9;
-        Tue, 02 Nov 2021 16:16:45 -0700 (PDT)
+        with ESMTP id S231825AbhKBXVn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 19:21:43 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5143AC06120D;
+        Tue,  2 Nov 2021 16:19:08 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x66so443628pfx.13;
+        Tue, 02 Nov 2021 16:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=+v3yyZb0G5ns3De2ViS1173mJGx1xEPY475SSam2m5g=;
-        b=SF2dqR4dgG9rM0vR9eefug4g+O9kU9qYOWMEoOz2wbSuLFA8ca30anZ0TdZIMaPO4R
-         ojGkfnb4+3VRJegLz0xdbh5f/8kROMMnZRvTjh3k1BlJdK5HdZ0daJYGTGj1hLYIsoad
-         hpRlMTUs+dyMSX97A6O33DnuHcEy+SLIocMlLaFOxEPxQsyTqtfStfFOTGM9NAOrZFQO
-         ghF3CvprRhTwz/XbRmLIHTgD/x6aOx56nikjyRTCm3pVnlvwqcqLQn6oZPCyuvBZCeT5
-         PaYs3QQXtLinxhSDxLN28Lz/+UTCtRMLDMMEoSoMmPP9VVr3w5vVj6CX2tK75zvrkXlB
-         WLRw==
+        bh=x3KYIl2RmfZiFMPLreQReW0AtYCyiKE94y/hBMKiNfs=;
+        b=KGVjZzKwiROgE8HWH+kQG+OxDlcR9JfCDPLvYJS4KSOi/9kY6SymRnksTVV0LmDzYw
+         g2MPztKtUF7jihnaZERfeQKXQ8r6w+V8pryGKWHmNRRahibqey2u/x72gdmobbPHQ7o8
+         JjxK9Dw02bDux7XLHz0T2HsIKANy5FCxhpuC8JvZE0Hhce9HupFoJgv/ZnhN27scVERR
+         oVYDbWXw9EP3RhJ7wCq9566WoyQDAyDWuLMU9gpZq7SOWoFYCnawX5Kt8SIU/RqQCKSb
+         k3gZ5Hksp0YwNTLtJJV863AyshElwJp/0UyzePADZi7rqtkyvuZ0lCxf8B2y2VS7djvv
+         OIUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+v3yyZb0G5ns3De2ViS1173mJGx1xEPY475SSam2m5g=;
-        b=rsSMMEjW7rDM6hRtqdh3fQmJj15ncQynBvMsUqwlVvkVt5odM+ewPnZTTWSZyQL9kx
-         LHWuwNMcuNN6NFarfu5XM+rfrVYdFMpUAOqXKZRJ3MwUh+vrHPyJ+Sr1LeyerYeADVWW
-         ecJYaS7re7K/6uydtAG7nelPeoHWZs8k07qORi6At9msZ822Cce62KOFvLrSc0yIw8RH
-         FgkvegW0axFlSDuSBQ2hICkn94VBbWF66yyr00DaxSDn6ZQVUZ8IswA7hNHgDOKoOSKe
-         XVHdWsWvi8CAlkXH/JEfl+qhkGEkmhiN7n3Vz6xteEnmWu9Z0KAzNb8k9rNHA2ySkgdf
-         d9Yg==
-X-Gm-Message-State: AOAM530VbU9+yd8aCOl7ac/s+KrxoaTbydwxEysk14jWvfYhOkZ0R8RH
-        D3eGf98gXjJQ9yss48MmYOL/1yYiG44=
-X-Google-Smtp-Source: ABdhPJycVc1WWKH4xHo3jje11uwkkvWEP89/xmIDAoqSRyAVxzmpdso/95EiY7QTSSRHFxnB6tctyQ==
-X-Received: by 2002:aa7:8149:0:b0:44c:916c:1fdb with SMTP id d9-20020aa78149000000b0044c916c1fdbmr40818515pfn.34.1635895004963;
-        Tue, 02 Nov 2021 16:16:44 -0700 (PDT)
+        bh=x3KYIl2RmfZiFMPLreQReW0AtYCyiKE94y/hBMKiNfs=;
+        b=7rk/34Gj881dUdzlp2F+8yXrU2IbYpiRU8cYqxdAwa0EULTES7wEydiOY1JD4pHMx3
+         sYwqlicZ4KH1FmnL5CAjKVL/h5Og87RPE4y2zSaNKE+7oymd0AhvPen2dd7kmws5kfsX
+         kLXqft2QhUaurA6VCcIIskLuSLKU0a57dkTGv2CSAYPr26s1VzPEKX/NnZLdcYmaChe9
+         2kgWR9FX6YUbTXLfyD0u/bAsDykv1n/PXtHk8UaSZjdJvfKPGl2mzxDUHwFgSDBfWbIy
+         CbpcxTA0rNYELvOxy7hu04vX6Uu5hiZ5IM0UwWxW1zANFVU7ZS/VvEgMwsjk8A6YI7LG
+         ehHQ==
+X-Gm-Message-State: AOAM532x73CdLwksgM/3vc7o2To28JfBVYeeU2hw3ZcljiB1MpxeeSwE
+        /COrMBk/vaBpyYmYimjSgJk=
+X-Google-Smtp-Source: ABdhPJxg5YoLmT0R43lqEDsSFk0Vktwr2XYbl2ZgPIMiiJulmETALee6zpv5jlo4ANoT08SRtpkK8Q==
+X-Received: by 2002:a05:6a00:2405:b0:3e1:9f65:9703 with SMTP id z5-20020a056a00240500b003e19f659703mr40674356pfh.6.1635895147855;
+        Tue, 02 Nov 2021 16:19:07 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9df1])
-        by smtp.gmail.com with ESMTPSA id b4sm225352pfl.60.2021.11.02.16.16.43
+        by smtp.gmail.com with ESMTPSA id ip8sm3929418pjb.9.2021.11.02.16.19.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 16:16:44 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 16:16:42 -0700
+        Tue, 02 Nov 2021 16:19:07 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 16:19:05 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Florian Westphal <fw@strlen.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v1 0/6] Introduce unstable CT lookup helpers
-Message-ID: <20211102231642.yqgocduxcoladqne@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH RFC bpf-next v1 5/6] net: netfilter: Add unstable CT
+ lookup helper for XDP and TC-BPF
+Message-ID: <20211102231905.5q6jdddyrobny63b@ast-mbp.dhcp.thefacebook.com>
 References: <20211030144609.263572-1-memxor@gmail.com>
+ <20211030144609.263572-6-memxor@gmail.com>
+ <20211031191045.GA19266@breakpoint.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211030144609.263572-1-memxor@gmail.com>
+In-Reply-To: <20211031191045.GA19266@breakpoint.cc>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 08:16:03PM +0530, Kumar Kartikeya Dwivedi wrote:
-> This series adds unstable conntrack lookup helpers using BPF kfunc support.  The
-> patch adding the lookup helper is based off of Maxim's recent patch to aid in
-> rebasing their series on top of this, all adjusted to work with kfunc support
-> [0].
+On Sun, Oct 31, 2021 at 08:10:45PM +0100, Florian Westphal wrote:
 > 
-> This is an RFC series, as I'm unsure whether the reference tracking for
-> PTR_TO_BTF_ID will be accepted.
+> Depending on meaning of "unstable helper" this
+> is ok and can be changed in incompatible way later.
 
-Yes. The patches look good overall.
-Please don't do __BPF_RET_TYPE_MAX signalling. It's an ambiguous name.
-_MAX is typically used for a different purpose. Just give it an explicit name.
-I don't fully understand why that skip is needed though.
-Why it's not one of existing RET_*. Duplication of return and
-being lazy to propagate the correct ret value into get_kfunc_return_type ?
-
-> If not, we can go back to doing it the typical
-> way with PTR_TO_NF_CONN type, guarded with #if IS_ENABLED(CONFIG_NF_CONNTRACK).
-
-Please don't. We already have a ton of special and custom types in the verifier.
-refcnted PTR_TO_BTF_ID sounds as good way to scale it.
-
-> Also, I want to understand whether it would make sense to introduce
-> check_helper_call style bpf_func_proto based argument checking for kfuncs, or
-> continue with how it is right now, since it doesn't seem correct that PTR_TO_MEM
-> can be passed where PTR_TO_BTF_ID may be expected. Only PTR_TO_CTX is enforced.
-
-Do we really allow to pass PTR_TO_MEM argument into a function that expects PTR_TO_BTF_ID ?
-That sounds like a bug that we need to fix.
+"unstable helper" means that it's not part of uapi.
+All kfuncs are like that. They can and will change.
+bpf progs that call them would have to adjust.
+Just like bpf progs that read kernel data and walk kernel types.
