@@ -2,114 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67741442F49
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 14:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29520442F50
+	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 14:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhKBNsF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 09:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S229981AbhKBNuo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 09:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhKBNsF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:48:05 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8B1C061714
-        for <bpf@vger.kernel.org>; Tue,  2 Nov 2021 06:45:30 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id m21so20155045pgu.13
-        for <bpf@vger.kernel.org>; Tue, 02 Nov 2021 06:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=qJs9hXP+oNJvxWlmugHLdNhqo44d7nTmQo9yhPUmfdg=;
-        b=mxYh+Geqo8gg5J5miJZV+McLnlOuwztCIn1UxevAZykmKJH+hqgbpApHFY9ubw+KJ1
-         DGVHdZcgxdZXkX6cqNlAGRWxwTRJhWoVtNN4USFjPuqgp/RGlqJQemEvj8be7gxB7+iX
-         HbrZuy3QQ8pjUS1o/vt1rQgqKJMXfB4r3D5F6rY7tbApq3PweVt3bdh49V82ooyMMd86
-         lvdbqb1Zo8g/cUiFXNkGl4WDR5Idctc0l5QZp7ihOS4JgUlbOD7X43CysoxLgdZ5DPby
-         zrYZYxA/EuWhpTmh028uXF7zOzWq7c+ZIbd4T9P1KeWRzxKcYmb/dCK5dI52G9oeldQB
-         mEqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=qJs9hXP+oNJvxWlmugHLdNhqo44d7nTmQo9yhPUmfdg=;
-        b=2GLgKvDF7cXdE3mccfLt8nLVKixzWUFAPfGrPMZb6seznQZhOM6fpsnA+lU7/cskWa
-         kz0FdL3x1IdDxaSLVcL6rxqUeI7tO+9guFdn/WGUYGUlvTy8oZH3ZbVyKzGoZoRafmYI
-         b89UBlFg7ClsNaeu5tuEZZq8Et1+zthxVUqLsh1RBsXSgPQq3t4K3kCeJNQmVUW5uFxA
-         n4BJKVoDSxS1tKfF0SyPvRdEOxJ8G60VdPLAa4GfeXiIdBGUO9mtu/a9Rw+rNiSQK0fo
-         7ZeXybo/fLq/4hMy8sj1xA72tKItlYfFiwdEgsdx2C6xSZ9mylcbDXpZENMPOcup8out
-         0vOQ==
-X-Gm-Message-State: AOAM5317SKQftdC6RBMycji4ucJm2yVbe6BqGkJN+95HcHZeajROgXue
-        /7wggpeltuoalH9tOYm4UIQ=
-X-Google-Smtp-Source: ABdhPJyB0Np5LpYUnx0lODJmDplnJPs+Xs6T7dJiyuig4Nbi97ygFkBtCNMficZ369zML7cm7H58oA==
-X-Received: by 2002:a05:6a00:1915:b0:47e:4c36:e9af with SMTP id y21-20020a056a00191500b0047e4c36e9afmr35469731pfi.57.1635860729996;
-        Tue, 02 Nov 2021 06:45:29 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.116])
-        by smtp.gmail.com with ESMTPSA id p6sm7639613pfo.96.2021.11.02.06.45.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 06:45:29 -0700 (PDT)
-Message-ID: <693d3227-2f34-df20-99aa-bb6a0852d187@gmail.com>
-Date:   Tue, 2 Nov 2021 21:45:26 +0800
+        with ESMTP id S229530AbhKBNun (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 09:50:43 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE26C061714;
+        Tue,  2 Nov 2021 06:48:08 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HkB796FKqz4xbd;
+        Wed,  3 Nov 2021 00:48:05 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1635860886;
+        bh=BXsWrBorknGmHfDZYTQq6a8lqYf7TkEi2iiyehPn3Q4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=LY2Qlq49JuSlQEWtKEO0vu6ZSVqEzq2uEGfLAJfHz94UdsNi5LaKp1eXCtoQ8p51Z
+         8CyEccP/WN2VLSRPzFYzfqdw+YEsW4zPPKbIpXN1JpBNREdwoqdYDhDVbgtXSiAcCE
+         1o6qP3TuH5bR4AzwJCPjAnKqT/tTcg8EMJLW8GV7wy3pdJhDeENInI8nS4K08Y+3Yu
+         l1yZBjRtup3I9D/TIimuMz+fWP8UaMptjzPaiT4mV+ZuKlbChiIcQv5sO/1AqVVWxS
+         scxhuLolZpHNsYFN0etrP/QORG0pFm4znGV5JvnwtFSMXnzz78eUJXkHj/P4T7URHG
+         PVnmDdxc2HxUw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, ast@kernel.org,
+        christophe.leroy@csgroup.eu,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hari Bathini <hbathini@linux.ibm.com>, jniethe5@gmail.com
+Cc:     andrii@kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, paulus@samba.org, songliubraving@fb.com,
+        stable@vger.kernel.org, yhs@fb.com
+Subject: Re: [PATCH] powerpc/bpf: fix write protecting JIT code
+In-Reply-To: <1635854227.x13v13l6az.naveen@linux.ibm.com>
+References: <20211025055649.114728-1-hbathini@linux.ibm.com>
+ <1635142354.46h6w5c2rx.naveen@linux.ibm.com>
+ <c8d7390b-c07c-75cd-e9e9-4b8f0b786cc6@iogearbox.net>
+ <87zgqs8upq.fsf@mpe.ellerman.id.au>
+ <1635854227.x13v13l6az.naveen@linux.ibm.com>
+Date:   Wed, 03 Nov 2021 00:48:03 +1100
+Message-ID: <87h7cu8y98.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH bpf-next 1/2] bpf: Do not reject when the stack read size
- is different from the tracked scalar size
-Content-Language: en-US
-To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Yonghong Song <yhs@fb.com>, Yonghong Song <yhs@gmail.com>
-References: <20211102064528.315637-1-kafai@fb.com>
- <20211102064535.316018-1-kafai@fb.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-In-Reply-To: <20211102064535.316018-1-kafai@fb.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Martin.
+"Naveen N. Rao" <naveen.n.rao@linux.ibm.com> writes:
+> Michael Ellerman wrote:
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>> On 10/25/21 8:15 AM, Naveen N. Rao wrote:
+>>>> Hari Bathini wrote:
+>>>>> Running program with bpf-to-bpf function calls results in data access
+>>>>> exception (0x300) with the below call trace:
+>>>>>
+>>>>> =C2=A0=C2=A0=C2=A0 [c000000000113f28] bpf_int_jit_compile+0x238/0x750=
+ (unreliable)
+>>>>> =C2=A0=C2=A0=C2=A0 [c00000000037d2f8] bpf_check+0x2008/0x2710
+>>>>> =C2=A0=C2=A0=C2=A0 [c000000000360050] bpf_prog_load+0xb00/0x13a0
+>>>>> =C2=A0=C2=A0=C2=A0 [c000000000361d94] __sys_bpf+0x6f4/0x27c0
+>>>>> =C2=A0=C2=A0=C2=A0 [c000000000363f0c] sys_bpf+0x2c/0x40
+>>>>> =C2=A0=C2=A0=C2=A0 [c000000000032434] system_call_exception+0x164/0x3=
+30
+>>>>> =C2=A0=C2=A0=C2=A0 [c00000000000c1e8] system_call_vectored_common+0xe=
+8/0x278
+>>>>>
+>>>>> as bpf_int_jit_compile() tries writing to write protected JIT code
+>>>>> location during the extra pass.
+>>>>>
+>>>>> Fix it by holding off write protection of JIT code until the extra
+>>>>> pass, where branch target addresses fixup happens.
+>>>>>
+>>>>> Cc: stable@vger.kernel.org
+>>>>> Fixes: 62e3d4210ac9 ("powerpc/bpf: Write protect JIT code")
+>>>>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+>>>>> ---
+>>>>> =C2=A0arch/powerpc/net/bpf_jit_comp.c | 2 +-
+>>>>> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>>>>=20
+>>>> Thanks for the fix!
+>>>>=20
+>>>> Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>>
+>>> LGTM, I presume this fix will be routed via Michael.
+>>=20
+>> Thanks for reviewing, I've picked it up.
+>>=20
+>>> BPF selftests have plenty of BPF-to-BPF calls in there, too bad this was
+>>> caught so late. :/
+>>=20
+>> Yeah :/
+>>=20
+>> STRICT_KERNEL_RWX is not on by default in all our defconfigs, so that's
+>> probably why no one caught it.
+>
+> Yeah, sorry - we should have caught this sooner.
+>
+>>=20
+>> I used to run the BPF selftests but they stopped building for me a while
+>> back, I'll see if I can get them going again.
+>
+> Ravi had started looking into getting the selftests working well before=20
+> he left. I will take a look at this.
 
-On 2021/11/2 2:45 PM, Martin KaFai Lau wrote:
-> Below is a simplified case from a report in bcc [0]:
-> r4 = 20
-> *(u32 *)(r10 -4) = r4
-> *(u32 *)(r10 -8) = r4  /* r4 state is tracked */
-> r4 = *(u64 *)(r10 -8)  /* Read more than the tracked 32bit scalar.
-> 			* verifier rejects as 'corrupted spill memory'.
-> 			*/
-> 
-> After commit 354e8f1970f8 ("bpf: Support <8-byte scalar spill and refill"),
-> the 8-byte aligned 32bit spill is also tracked by the verifier
-> and the reg state is stored.
-> 
-> However, if 8 bytes are read from the stack instead of the tracked
-> 4 byte scalar, the verifier currently rejects as "corrupted spill memory".
-> 
-> This patch fixes this case by allowing it to read but marks the reg as
-> unknown.
-> 
-> Also note that, if the prog is trying to corrupt/leak an
-> earlier spilled pointer by spilling another <8 bytes register on top,
-> this has already been rejected in the check_stack_write_fixed_off().
-> 
-> [0]: https://github.com/iovisor/bcc/pull/3683
-> 
-> Fixes: 354e8f1970f8 ("bpf: Support <8-byte scalar spill and refill")
-> Reported-by: Hengqi Chen <hengqi.chen@gmail.com>
-> Reported-by: Yonghong Song <yhs@gmail.com>
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
+Thanks.
 
-[...]
+I got them building with something like:
 
-Thanks for the quick fix. I've tested this patch and now the BCC tools work fine.
+ - turning on DEBUG_INFO and DEBUG_INFO_BTF and rebuilding vmlinux
+ - grabbing clang 13 from:=20
+   https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/cl=
+ang+llvm-13.0.0-powerpc64le-linux-ubuntu-18.04.tar.xz
+ - PATH=3D$HOME/clang+llvm-13.0.0-powerpc64le-linux-ubuntu-18.04/bin/:$PATH
+ - apt install:
+   - libelf-dev
+   - dwarves
+   - python-docutils
+   - libcap-dev
 
-Tested-by: Hengqi Chen <hengqi.chen@gmail.com>
 
-Cheers,
---
-Hengqi
+The DEBUG_INFO requirement is a bit of a pain for me. I generally don't
+build with that enabled, because the resulting kernels are stupidly
+large. I'm not sure if that's a hard requirement, or if the vmlinux has
+to match the running kernel exactly?
+
+There is logic in tools/testing/bpf/Makefile to use VMLINUX_H instead of
+extracting the BTF from the vmlinux (line 247), but AFAICS that's
+unreachable since 1a3449c19407 ("selftests/bpf: Clarify build error if
+no vmlinux"), which makes it a hard error to not have a VMLINUX_BTF.
+
+cheers
