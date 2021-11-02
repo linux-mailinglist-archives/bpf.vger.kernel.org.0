@@ -2,69 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B8E44262C
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 04:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A84344264A
+	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 05:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhKBDxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Nov 2021 23:53:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229807AbhKBDw7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:52:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4594C61075;
-        Tue,  2 Nov 2021 03:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635825025;
-        bh=vnvUfA1HCy5SyzmJj9QMW4rxolsLx+YQYNnEpCAD7+0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rcNrvz6PtfYXCAz8cFJhQl7xWymWNFiYPLbxiupCnPwFfhKB0Kwy3yHL00Bifm7aR
-         XRCgqKT4vyVFDwRLoOxYyypxShXkyLgr2wqZGceFOatommtzpLUyLfIs4wsqonUbY2
-         4ayu4SW5vRArFuyj56kHdsVpLcw2GNQ8g+VSi+7idVkT84YldDdyyuNeP8/mo04LQA
-         IynRgC7nVbAlK05mBenEx0jzt+rgAW2/cT4GX4MzbBK+f98eQmh2BBx1v4U4zZR37m
-         qah/geam6/YG3OAHK1tylQnxG5QwZuGgbvdJ8h5vAxpxTdsAWkjakwxovufL5Bmr+P
-         4hky+7lIp6ejw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 33EF460A0C;
-        Tue,  2 Nov 2021 03:50:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230353AbhKBEDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 00:03:21 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30893 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhKBEDU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 00:03:20 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hjx0045LXzcb60;
+        Tue,  2 Nov 2021 11:56:00 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 2 Nov 2021 12:00:29 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 2 Nov 2021 12:00:28 +0800
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: disallow BPF_LOG_KERNEL log level
+ for sys(BPF_BTF_LOAD)
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Andrii Nakryiko" <andrii@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <20211029135321.94065-1-houtao1@huawei.com>
+ <20211029135321.94065-3-houtao1@huawei.com>
+ <50a07acf-a9e9-13b1-11c8-fae221acf495@iogearbox.net>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <30561c6f-eac4-cf65-3eb9-1cd790765071@huawei.com>
+Date:   Tue, 2 Nov 2021 12:00:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <50a07acf-a9e9-13b1-11c8-fae221acf495@iogearbox.net>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf-next 2021-11-01
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163582502520.8113.559312179718011335.git-patchwork-notify@kernel.org>
-Date:   Tue, 02 Nov 2021 03:50:25 +0000
-References: <20211102013123.9005-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20211102013123.9005-1-alexei.starovoitov@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, kuba@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi,
 
-This pull request was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon,  1 Nov 2021 18:31:23 -0700 you wrote:
-> Hi David, hi Jakub,
-> 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> We've added 181 non-merge commits during the last 28 day(s) which contain
-> a total of 280 files changed, 11791 insertions(+), 5879 deletions(-).
-> 
-> [...]
-
-Here is the summary with links:
-  - pull-request: bpf-next 2021-11-01
-    https://git.kernel.org/netdev/net-next/c/b7b98f868987
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+On 11/2/2021 5:59 AM, Daniel Borkmann wrote:
+> On 10/29/21 3:53 PM, Hou Tao wrote:
+>> BPF_LOG_KERNEL is only used internally, so disallow bpf_btf_load()
+>> to set log level as BPF_LOG_KERNEL. The same checking has already
+>> been done in bpf_check(), so factor out a helper to check the
+>> validity of log attributes and use it in both places.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>   include/linux/bpf_verifier.h | 6 ++++++
+>>   kernel/bpf/btf.c             | 3 +--
+>>   kernel/bpf/verifier.c        | 6 +++---
+>>   3 files changed, 10 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>> index c8a78e830fca..b36a0da8d5cf 100644
+>> --- a/include/linux/bpf_verifier.h
+>> +++ b/include/linux/bpf_verifier.h
+>> @@ -396,6 +396,12 @@ static inline bool bpf_verifier_log_needed(const struct
+>> bpf_verifier_log *log)
+>>            log->level == BPF_LOG_KERNEL);
+>>   }
+>>   +static inline bool bpf_verifier_log_attr_valid(const struct
+>> bpf_verifier_log *log)
+>> +{
+>> +    return (log->len_total >= 128 && log->len_total <= UINT_MAX >> 2 &&
+>> +        log->level && log->ubuf && !(log->level & ~BPF_LOG_MASK));
+>
+> nit: No surrounding () needed.
+Will fix.
+>
+> This should probably also get a Fixes tag wrt BPF_LOG_KERNEL exposure?
+If log->level is set as BPF_LOG_KERNEL, the only harm is the user-space tool
+(still need being bpf_capable()) may flood the kernel with BPF error message,
+so i didn't add it. Adding the Fixes tags incurs no harm, so will do in v3.
+>
+> Is there a need to bump log->len_total for BTF so significantly?
+>
+I had noticed the values of these two max length are different, but doesn't find
+any clue about why the different is necessary. So just use the bigger one for
+the simplicity of bpf_verifier_log_attr_valid().  Will pass the required max
+length to bpf_verifier_log_attr_valid() in v3.
