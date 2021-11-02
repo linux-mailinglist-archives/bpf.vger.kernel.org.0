@@ -2,139 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DBD4437C9
-	for <lists+bpf@lfdr.de>; Tue,  2 Nov 2021 22:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7F244394C
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 00:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhKBV3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 17:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S230059AbhKBXGc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 19:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhKBV3L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Nov 2021 17:29:11 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398F6C061203
-        for <bpf@vger.kernel.org>; Tue,  2 Nov 2021 14:26:34 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id h11so469730ljk.1
-        for <bpf@vger.kernel.org>; Tue, 02 Nov 2021 14:26:34 -0700 (PDT)
+        with ESMTP id S229900AbhKBXGc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 19:06:32 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EB1C061714
+        for <bpf@vger.kernel.org>; Tue,  2 Nov 2021 16:03:57 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id y17so662847ilb.9
+        for <bpf@vger.kernel.org>; Tue, 02 Nov 2021 16:03:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uItLnRAHYLiuQK2hAUmCgUVAWaO1VnqxXTT3rliPgA4=;
-        b=EJfjUG9jNAqK6Mhsu6Sln2orQ6XxNP9jqs8EeMgAQErKLvSFeByKLPQG2kXGwd3ENJ
-         WiSL00Gq3hVfGwYdXhTSyutrAezjbzgH6LmVgkjV1N7V4QGn2kqjXY+rdcSd+Hnx65Lq
-         kaZxaByFmMAOQpQRLSA5au8gP03veeoVZaUBs=
+        bh=5ymKBrF1lHUXhO11qLF1Obbq9g7saDwiiQnV7ykje44=;
+        b=YFGSHXOnzm3Nf6cQVlx1DrAesM0CL0yllAeadoyVP9ENEoi283lOqB4RtkwGGO442f
+         BKtE7QHbG4YnEOqX97+q4xEnk8DI92aNflHXnuz95nzTy4NNSBqD82OCGswWldycNAVo
+         zyGRIN7mUNUNa/kFrCKBAVOxcg11X9TopVtUY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uItLnRAHYLiuQK2hAUmCgUVAWaO1VnqxXTT3rliPgA4=;
-        b=LyjIKx4Zczoh2hzHo3zzFpTnumX3tSezUaNE+jFk/Y5Bcee6zFPlX1uNCYD+t1Kxs1
-         Xl+5X/kxMjDFmXentVP2eGFx+MeCM6PWPFzE6bT+EVcR2k7HjeIvwH1Bo0jvRXOte77Y
-         ZTUJo1sMollD+tlmgbZUMhVs46DrQjEMAbMGuekYTp0hpm5Xtcqnm+lEnhIlEWy5HeJV
-         e3f4t8im1gtEyo7FuE1zU6ha+bMTYUggJsq0FlMWZ/Weh2cURzWgFW0eZI4UNRYPAYQR
-         QMG8famKjLHb9flX5ao/j28k1UPiEx05fJxMmKFoW73vwpob+gX7qpn39lH7YF3WNgnu
-         ek2A==
-X-Gm-Message-State: AOAM5300kO0hUsLJbgsqUEEl86kxv6WurAwsOdPkm4ihIKt8WCN2eVGV
-        ghmpd+DwIJUjj1bMgf+PW02C8bAc7vKiigxC0YRKLg==
-X-Google-Smtp-Source: ABdhPJwqux2jIRpOea05LMTtwMbunx5/Ds/j15vbbzBK3iM9otzu74Tkaoi6rq6wsTBJSnC0fFPk6Q9VoiXKq7kR0vM=
-X-Received: by 2002:a2e:9c14:: with SMTP id s20mr5354526lji.266.1635888392226;
- Tue, 02 Nov 2021 14:26:32 -0700 (PDT)
+        bh=5ymKBrF1lHUXhO11qLF1Obbq9g7saDwiiQnV7ykje44=;
+        b=oSTaXZy4j8pADI6SMR6GdBgofXLN57s7RYVsyd/rJ8UfhS2oQ2IvlPSnnQyxefvz34
+         Rp0hxkwddjWtMlFijZkFrtqYagbTd5ngeLwRHyuUWrs80z5vVHgVitYe9nnSnfywf3Iq
+         XvmvTr47gxTPRXunq2AXa/Z+ti3lhEJjfp4Kw75uSDhcbnx0tiWtytMvskVTsCg1Go6Y
+         /WVQRIND6RQs8Q6nkyd68hq7bIfstmORlDHIV1fBfrx9uEZktGKnF8chBv5HwqHHiudX
+         iW75kt021ehH+7H86EMYKktbkSFOZC59+oPrRjzICEiZiVmabgvOj40Im6v2e2GMCXdv
+         WaHw==
+X-Gm-Message-State: AOAM531HMLnHeJeAymiG13RDLo9wQE5uJoKFEkWsSPUkjyUN2NHmQou/
+        csNb6iHJIpT9g2pKTrPp8euNfko0/z9VrBaW5/g1Y1rZHs0aCg==
+X-Google-Smtp-Source: ABdhPJxrEyxWhOFvEiJ7aJJq3ROYYxHETNEMLdfVno2uwC+yHFGeEJMQiQmUDl8OJyiSFOWGSCxCSglCc2mTTjZh5PI=
+X-Received: by 2002:a92:c547:: with SMTP id a7mr15498371ilj.189.1635894236494;
+ Tue, 02 Nov 2021 16:03:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211027203727.208847-1-mauricio@kinvolk.io> <CAADnVQK2Bm7dDgGc6uHVosuSzi_LT0afXM6Hf3yLXByfftxV1Q@mail.gmail.com>
- <CAHap4zt7B1Zb56rr55Q8_cy8qdyaZsYcWt7ZHrs3EKr50fsA+A@mail.gmail.com> <CAEf4BzbDBGEnztzEcXmCFMNyzTjJ3pY41ahzieu9yJ+EDHU0dg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbDBGEnztzEcXmCFMNyzTjJ3pY41ahzieu9yJ+EDHU0dg@mail.gmail.com>
-From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Date:   Tue, 2 Nov 2021 16:26:21 -0500
-Message-ID: <CAHap4zutG7KXywstCHcTbATN8iVCKuN84ZHxLfdsXDJS9sDmEA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] libbpf: Implement BTF Generator API
+References: <20211028164357.1439102-1-revest@chromium.org> <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
+ <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
+ <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com> <CABRcYmJxp6-GSDRZfBQ-_7MbaJWTM_W4Ok=nSxLVEJ3+Sn7Fpw@mail.gmail.com>
+ <dccc55b4-9f45-4b1c-2166-184a8979bdc6@fb.com> <CAADnVQ+pwWWumw9_--jj7e_RL=n6Q3jhe6yawuSeMJzpFi_E2A@mail.gmail.com>
+ <CAEf4BzZ-YtppVG2GARkc_MNu-khqJXgS4=ThzOV4W6gic1rCxg@mail.gmail.com>
+ <CAADnVQLKkqjnTOAqm3KeP45XsbfDATWcASJr5uoNOYT33W40OQ@mail.gmail.com> <CAEf4Bzb4Prxt48bfX8qJ-GSMXPZU9ndkqExvPtOWzEsuK965ig@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb4Prxt48bfX8qJ-GSMXPZU9ndkqExvPtOWzEsuK965ig@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 3 Nov 2021 00:03:45 +0100
+Message-ID: <CABRcYmKBAssv7YKqFnw5dOBA9NTCyNJ5DnffkiP6=NUjC3+USg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Part #2 absolutely doesn't belong in libbpf. Libbpf exposes enough BTF
-> constructing APIs to implement this in any application, bpftool or
-> otherwise. It's also a relatively straightforward problem: mark used
-> types and fields, create a copy of BTF with only those types and
-> fields.
+On Tue, Nov 2, 2021 at 5:06 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Nov 1, 2021 at 8:20 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Nov 1, 2021 at 8:16 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > > > >
+> > > > >     FILE *vm_file = vma->vm_file; /* no checking is needed, vma from
+> > > > > parameter which is not NULL */
+> > > > >     if (vm_file)
+> > > > >       bpf_d_path(&vm_file->f_path, path, sizeof(path));
+> > > >
+> > > > That should work.
+> > > > The verifier can achieve that by marking certain fields as PTR_TO_BTF_ID_OR_NULL
+> > > > instead of PTR_TO_BTF_ID while walking such pointers.
+> > > > And then disallow pointer arithmetic on PTR_TO_BTF_ID_OR_NULL until it
+> > > > goes through 'if (Rx == NULL)' check inside the program and gets converted to
+> > > > PTR_TO_BTF_ID.
+> > > > Initially we can hard code such fields via BTF_ID(struct, file) macro.'
+> > > > So any pointer that results into a 'struct file' pointer will be
+> > > > PTR_TO_BTF_ID_OR_NULL.
 
-Totally agree.
+Right, this is what I had in mind originally. But I was afraid this
+could maybe prevent some existing programs from loading on newer
+kernels ? Not sure if that's an issue.
 
-> The last point is important, because to solve the problem 1b (exposing
-> CO-RE relo info), the best way to minimize public API commitments is
-> to (optionally, probably) request libbpf to record its CO-RE relo
-> decisions. Here's what I propose, specifically:
->   1. Add something like "bool record_core_relo_info" (awful name,
-> don't use it) in bpf_object_open_opts.
->   2. If it is set to true, libbpf will keep a "log" of CO-RE
-> relocation decisions, recording stuff like program name, instruction
-> index, local spec (i.e., root_type_id, spec string, relo kind, maybe
-> something else), target spec (kernel type_id, kernel spec string, also
-> module ID, if it's not vmlinux BTF). We can also record relocated
-> value (i.e., field offset, actual enum value, true/false for
-> existence, etc). All these are stable concepts, so I'd feel more
-> comfortable exposing them, compared to stuff like bpf_core_accessor
-> and other internal details.
->   3. The memory for all that will be managed by libbpf for simplicity
-> of an API, and we'll expose accessors to get those arrays (at object
-> level or per-program level is TBD).
->   4. This info will be available after the prepare() step and will be
-> discarded either at create_maps() or load().
+> > The helper can check that it's [0, few_pages] and declare it's bad.
+>
+> That's basically what happens with direct memory reads, so I guess it
+> would be fine.
+>
+> > I guess we can do that and only do what I proposed for "more than a page"
+> > math on the pointer. Or even disallow "add more than a page offset to
+> > PTR_TO_BTF_ID"
+> > for now, since it will cover 99% of the cases.
 
-I like all this proposal. It fits very well with the BTFGen use case.
+Otherwise this sounds like a straightforward solution, yes :)
+Especially if this is how direct memory accesses already work.
 
-Regarding the information to expose, IIUC that'd be slight versions of
-struct bpf_core_relo_res and struct bpf_core_spec. I think we could
-expose the following structures and a function to get it (please
-ignore the naming for now):
-
-```
-/* reduced version of struct bpf_core_spec */
-struct bpf_core_spec_pub {
-const struct btf *btf;
-__u32 root_type_id;
-enum bpf_core_relo_kind kind;
-/* raw, low-level spec: 1-to-1 with accessor spec string */ --> we can
-also use access_str_off and let the user parse it
-int raw_spec[BPF_CORE_SPEC_MAX_LEN];
-/* raw spec length */
-int raw_len;
-};
-
-struct bpf_core_relo_pub {
-const char *prog_name; --> if we expose it by program then it's not needed.
-int insn_idx;
-
-bool poison; --> allows the user to understand if the relocation
-succeeded or not.
-
-/* new field offset for field based core relos */
-__u32 new_offset;
-
-// TODO: fields for type and enum-based relos
-
-struct bpf_core_spec_pub local_spec, targ_spec; --> BTFGen only needs
-targ_spec, I suppose local spec would be useful for other use cases.
-};
-
-LIBBPF_API struct bpf_core_relo_pub *bpf_program__core_relos(struct
-bpf_program *prog);
-```
-
-I don't have strong opinions about exposing it by object or by
-program. Both cases should work the same for BTFGen.
-
-Does it make sense to you?
-
-Btw, I'm probably not the right person to give opinions about this API
-splitment. I'd be happy to have other opinions here and to make this
-change once we agree on a path forward.
+I'd be happy to look into this when I get some slack time. ;)
