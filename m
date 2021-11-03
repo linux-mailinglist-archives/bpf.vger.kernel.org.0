@@ -2,33 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A1B443DAD
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 08:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAB7443DC5
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 08:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhKCH3c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 03:29:32 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27109 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhKCH3c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:29:32 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HkdZS0sGcz1DJ8Z;
-        Wed,  3 Nov 2021 15:24:48 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 15:26:51 +0800
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 15:26:49 +0800
-Subject: Re: [PATCH bpf-next] riscv, bpf: fix some compiler error
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+        id S232088AbhKCHnv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 03:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231985AbhKCHnu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 03:43:50 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2086FC061714;
+        Wed,  3 Nov 2021 00:41:14 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u1so2073309wru.13;
+        Wed, 03 Nov 2021 00:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rEUk3hjZbgaNLemqWe9Q44RKe4LYiJjMpeJVdUSL6cI=;
+        b=SzSEr4GzUIi1n53esxrhyzEL+hnpq51VXmuNzoRbJng2jp0GsMOv6J6G+0AUT7sKib
+         WaR12lSVZFAI5pPfRFm9i0NG3DAZEN4srkUw67DLwYHYnhu3wUCn780FuNIYfO0LzT40
+         1Nj9cfpioDcXN/7KmFeruIRM9XUofAP7KZhnQMRuqUkJhuz49XhNdRrR2FIzrb8Ah5f0
+         xSfFjOU9PBmgkriGn55A5Q6gxEwiETQJqtV1yx7WGqGX849wiHMl3lVPW3SrzN3LFSmT
+         tBrMKwDkH4oSdrSOYaHSJLP2+zRMOnlibiAZVi1+gMlRLxYDs5zu6QQoVEsDBOje/AjA
+         dS4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rEUk3hjZbgaNLemqWe9Q44RKe4LYiJjMpeJVdUSL6cI=;
+        b=F4+JdGU5/88RO+OLiI1m2zc/lDBPS1ymNR832P2tBao7fVSS4yYivFG1/VuFNhEL8G
+         E5UcQuEw+9T6tg0On+llcbwOm9nhjNy8eEqJAopTfE/OZEzIiUU1OesfcbvnhfvSFJl1
+         fENZan8r/DPEJMNgFsrFFYH/shoMjs7Qol+ssar+E7zq1OoF/ROyd3wX+0EVBspBngcE
+         5dfm4rWrFPJ6/4qIZCJ6QKSeDNX+GBZQaoSQV4xdV/Hk0fuAyNnF2nhLsbgQOYh8T7+Y
+         9Kxlm5aZb1xyb5atqdkrzv7ldmPZQ32CgZT6FsjJilodJQVaXpPnP92STomciBbtlhkJ
+         4x8Q==
+X-Gm-Message-State: AOAM5315Kj9IWAeZrlAagiRFlLYOk73lmrh914R/u2sdy0qCkT5S/byQ
+        /MJpF4AFwqL7D/1rWCpN9YyYOcOdKwj8v8FTmSQy28bgcFA2Ng==
+X-Google-Smtp-Source: ABdhPJyzngaH7X863kxwlhmnQIi8Eo36rd8szhefxmDQ/tTo5iBVuHnTW5qLSd4+auf3a1fe/uazHgl4Ex4uDlBMxLU=
+X-Received: by 2002:a05:6000:12d2:: with SMTP id l18mr42076950wrx.289.1635925272752;
+ Wed, 03 Nov 2021 00:41:12 -0700 (PDT)
+MIME-Version: 1.0
 References: <20211102145642.724820-1-tongtiangen@huawei.com>
  <CAJ+HfNg1Ki=1Zc+ThW-ynvtDo5=fNAUK-XV08-icz-nY9CNoUQ@mail.gmail.com>
- <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com>
- <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+ <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com> <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
+ <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
+In-Reply-To: <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 3 Nov 2021 08:41:01 +0100
+Message-ID: <CAJ+HfNgze3=heV-ehvagHQFc5w6ymZ7XQMfKPzeWBo1M82+E-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] riscv, bpf: fix some compiler error
+To:     tongtiangen <tongtiangen@huawei.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
@@ -42,117 +68,48 @@ CC:     Paul Walmsley <paul.walmsley@sifive.com>,
         linux-riscv <linux-riscv@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-From:   tongtiangen <tongtiangen@huawei.com>
-Message-ID: <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
-Date:   Wed, 3 Nov 2021 15:26:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
-MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, 3 Nov 2021 at 08:26, tongtiangen <tongtiangen@huawei.com> wrote:
+>
 
-
-On 2021/11/3 14:10, Björn Töpel wrote:
-> On Wed, 3 Nov 2021 at 04:06, tongtiangen <tongtiangen@huawei.com> wrote:
->>
-> [...]
->>>
->> Hi Björn:
->>  From the perspective of development, introduce asm/extable.h is also prepare for the
->> subsequent modification of exception_table_entry, such as:
->>    1. https://lkml.org/lkml/2021/10/20/591
->>    2. https://lore.kernel.org/linux-arm-kernel/20211019160219.5202-11-mark.rutland@arm.com/
->>
->> Therefore, the prototype declarations and definitions related to kernel config are placed in head file,
->> which can avoid compiler error and simplify the rendering of functions.
->>
->
-> Sure, but *this* patch is about getting the broken RV32 build to work,
-> aimed for the bpf tree. Moving the extable.h is unrelated, and should
-> not be done here. IMO it would be better to have this patch small/easy
-> to read. I can't really see how this patch helps, when merging with
-> Jisheng's work.
->
-> ...and I still think that:
-> --8<--
-> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-> index 18bf338303b6..ddb7d3b99e89 100644
-> --- a/arch/riscv/mm/extable.c
-> +++ b/arch/riscv/mm/extable.c
-> @@ -11,7 +11,7 @@
->  #include <linux/module.h>
->  #include <linux/uaccess.h>
->
-> -#ifdef CONFIG_BPF_JIT
-> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
->  int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
-> struct pt_regs *regs);
->  #endif
->
-> @@ -23,7 +23,7 @@ int fixup_exception(struct pt_regs *regs)
->         if (!fixup)
->                 return 0;
->
-> -#ifdef CONFIG_BPF_JIT
-> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
->         if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
->                 return rv_bpf_fixup_exception(fixup, regs);
->  #endif
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index 2ca345c7b0bf..6372a235522d 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -459,6 +459,8 @@ static int emit_call(bool fixed, u64 addr, struct
-> rv_jit_context *ctx)
->  #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
->  #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
->
-> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
-> +                          struct pt_regs *regs);
->  int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
->                                 struct pt_regs *regs)
->  {
-> -->8--
->
-> is much simpler.
-
-Adding a function declaration in bpf_jit_comp64.c file cannot fix this compiler error:
-
-....
-when CONFIG_BPF_JIT and CONFIG_ARCH_64I is open, There is the following compiler error (W=1):
-   error: no previous prototype for 'rv_bpf_fixup_exception'
-....
-
-To fix this compiler error, you need to make a declaration in a header file, which is also
-the reason for introducing extable.h.
-
-Before making this patch, I thought about this change, but on the whole, I think the modification
-scheme of adding header files moved me.;-)
+[...]
 
 >
+> Adding a function declaration in bpf_jit_comp64.c file cannot fix this co=
+mpiler error:
 >
+
+AFAIK, there are two issues:
+
+1. https://lore.kernel.org/llvm/202110290334.2zdMyRq4-lkp@intel.com/
+2. https://lore.kernel.org/llvm/202111020610.9oy9Rr0G-lkp@intel.com/
+
+1 is a warning when W=3D1 is enabled (missing prototype from -Wmissing-prot=
+otypes)
+2 is an error, since the function is not defined when building CONFIG_ARCH_=
+RV32I
+
+You are trying to address both issues in this patch.
+
+> ....
+> when CONFIG_BPF_JIT and CONFIG_ARCH_64I is open, There is the following c=
+ompiler error (W=3D1):
+>    error: no previous prototype for 'rv_bpf_fixup_exception'
+> ....
 >
-> Thoughts?
-> Björn
+> To fix this compiler error, you need to make a declaration in a header fi=
+le, which is also
+> the reason for introducing extable.h.
 >
->
->
->
->> Thanks.
->> Tong.
->>
->>>
->>> Björn
->>> .
->>>
-> .
->
+
+No, you don't need the header file. The forward declaration is
+sufficient to get rid of the warning, and the adding CONFIG_ARCH_RV64I
+fixes the RV32I build.
+
+
+Bj=C3=B6rn
