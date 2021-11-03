@@ -2,114 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFDB444858
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 19:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4756544486B
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 19:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhKCSjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 14:39:05 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:59636 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhKCSjF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:39:05 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:56630)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1miL7b-00DM2D-Hu; Wed, 03 Nov 2021 12:36:27 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:53194 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1miL7a-0029m0-8a; Wed, 03 Nov 2021 12:36:26 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <YXrN+Hnl9pSOsWlA@arighi-desktop> <202110280955.B18CB67@keescook>
-        <878rydm56l.fsf@disp2133> <202110281136.5CE65399A7@keescook>
-        <8735okls76.fsf@disp2133> <202110290755.451B036CE9@keescook>
-        <87y2665sf8.fsf@disp2133> <202111030838.CB201E4@keescook>
-Date:   Wed, 03 Nov 2021 13:35:56 -0500
-In-Reply-To: <202111030838.CB201E4@keescook> (Kees Cook's message of "Wed, 3
-        Nov 2021 09:14:47 -0700")
-Message-ID: <87v9193x4j.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231434AbhKCSmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 14:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231402AbhKCSmH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 14:42:07 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA50C061205;
+        Wed,  3 Nov 2021 11:39:31 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id e136so5391564ybc.4;
+        Wed, 03 Nov 2021 11:39:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZtBQxj50FdO8v/Q0TtDRDnyywac0YLAeKVXvSpTYK3c=;
+        b=LL605NzBTkON5uknJc51rqMFlx4Y8vz3C4BE2xzvtJDfpw3vyd548KQy+HbDxdDKz2
+         vXp9y5DpfBhrR0lh5LGKdPGhYvZj6Af4RI7FmDfKBWzBKWFo6k+/ND0xy2cQFRmgLjli
+         HDn2tsH2FdKgClk/GPq/Pv4uW6kq6cuUPHMaM/TfdadweJzb9wZAmTL9nb77tUJVUicd
+         3PXSYhLFe868XIUB1z90HvmN8UKKPST0F4zbIsHcilbNWlnYcrzKb7jT/V+5ZmvUFLFv
+         Pj8xKzWxzh5jDXh+iW5MJ6al+iRPDZF0zbkVwmTXArF841Ack042zhtafnzgxp4WxOYj
+         ckzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZtBQxj50FdO8v/Q0TtDRDnyywac0YLAeKVXvSpTYK3c=;
+        b=4Onkmiw9SghMo/rdKonaD4Mryy9QRi/nQXO4xyCPgpMa35ZAcXrlaStiyxTdi/FbYH
+         sAV5524iW5TyAFO61QxbygjYN6iYHap7NBUnU2IZE5927v41ERzLKrFrl3rfJn0ZyAg8
+         hoVRyGANyLL4YKRkyv9kZOrAa8lL7l1iWmKt1p03cvCzm3NMHoEd85IhRFe4KWGPW/bU
+         0lV8ISnsYv7JxJaXaQoUuHfnkvMID+cicOiyIGGPfxPi+XXbcSCENvlQtMCCs++IYQaI
+         G3PXHynh2z2QoaYyarJDuqmCCz6p0Kwfd1aLen4MWT551PjY/Kjva34bgnkRltWYKf7/
+         +eYQ==
+X-Gm-Message-State: AOAM531MHHwdPp+p+WTOREHrwCnv2KGtYgmuW/XdZoR9vwwg+K37RZrM
+        gOMuzzANSewxHsAb9snbNAOxzw+H9u1wiH09TRU=
+X-Google-Smtp-Source: ABdhPJzSrwTXuz/ZzMyarM+TFStSvxihSXmdU7/3x+bcss5lKvytkFLhQShChGWSF89WKLzsGHCcZDJFlypu7QIftps=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr46347135ybj.433.1635964770161;
+ Wed, 03 Nov 2021 11:39:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1miL7a-0029m0-8a;;;mid=<87v9193x4j.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+0WoLFfWI4hGhEwAzgOXd2H2MNf3iKiEU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4816]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 551 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 14 (2.5%), b_tie_ro: 12 (2.2%), parse: 1.07
-        (0.2%), extract_message_metadata: 15 (2.6%), get_uri_detail_list: 1.40
-        (0.3%), tests_pri_-1000: 14 (2.5%), tests_pri_-950: 1.55 (0.3%),
-        tests_pri_-900: 1.22 (0.2%), tests_pri_-90: 220 (39.9%), check_bayes:
-        215 (39.0%), b_tokenize: 5 (0.9%), b_tok_get_all: 6 (1.1%),
-        b_comp_prob: 2.5 (0.5%), b_tok_touch_all: 196 (35.5%), b_finish: 1.69
-        (0.3%), tests_pri_0: 271 (49.2%), check_dkim_signature: 0.57 (0.1%),
-        check_dkim_adsp: 3.1 (0.6%), poll_dns_idle: 0.53 (0.1%), tests_pri_10:
-        2.1 (0.4%), tests_pri_500: 8 (1.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: selftests: seccomp_bpf failure on 5.15
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <1635932969-13149-1-git-send-email-alan.maguire@oracle.com> <1635932969-13149-3-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1635932969-13149-3-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 3 Nov 2021 11:39:18 -0700
+Message-ID: <CAEf4BzadDy006mGCZac4kySX_re7eFe6VY0cHgkpY3fQNRuASg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add exception handling
+ selftests for tp_bpf program
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ardb@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, andreyknvl@gmail.com,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        samitolvanen@google.com, joey.gouly@arm.com, maz@kernel.org,
+        daizhiyuan@phytium.com.cn, jthierry@redhat.com,
+        Tian Tao <tiantao6@hisilicon.com>, pcc@google.com,
+        Andrew Morton <akpm@linux-foundation.org>, rppt@kernel.org,
+        Jisheng.Zhang@synaptics.com, liu.hailong6@zte.com.cn,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-
-> On Tue, Nov 02, 2021 at 01:22:19PM -0500, Eric W. Biederman wrote:
->> Kees Cook <keescook@chromium.org> writes:
->> 
->> > On Thu, Oct 28, 2021 at 05:06:53PM -0500, Eric W. Biederman wrote:
->> >> Kees Cook <keescook@chromium.org> writes:
->> >> 
->> >> > On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
->> >> 
->> >> Is it a problem that the debugger can see the signal if the process does
->> >> not?
->> >
->> > Right, I'm trying to understand that too. However, my neighbor just lost
->> > power. :|
->> >
->> > What I was in the middle of checking was what ptrace "sees" going
->> > through a fatal SIGSYS; my initial debugging attempts were weird.
->> 
->> Kees have you regained power and had a chance to see my SA_IMMUTABLE
->> patch?
+On Wed, Nov 3, 2021 at 2:50 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> Apologies; I got busy with other stuff, but I've tested this now. It's
-> happy and I see the expected behaviors again. Note that I used the patch
-> with this change:
+> Exception handling is triggered in BPF tracing programs when
+> a NULL pointer is dereferenced; the exception handler zeroes the
+> target register and execution of the BPF program progresses.
 >
-> -#define SA_IMMUTABLE           0x008000000
-> +#define SA_IMMUTABLE           0x00800000
+> To test exception handling then, we need to trigger a NULL pointer
+> dereference for a field which should never be zero; if it is, the
+> only explanation is the exception handler ran.  The skb->sk is
+> the NULL pointer chosen (for a ping received for 127.0.0.1 there
+> is no associated socket), and the sk_sndbuf size is chosen as the
+> "should never be 0" field.  Test verifies sk is NULL and sk_sndbuf
+> is zero.
 >
-> Tested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/exhandler.c | 45 ++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/exhandler_kern.c | 35 +++++++++++++++++
+>  2 files changed, 80 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/exhandler.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/exhandler_kern.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/exhandler.c b/tools/testing/selftests/bpf/prog_tests/exhandler.c
+> new file mode 100644
+> index 0000000..5999498
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/exhandler.c
+> @@ -0,0 +1,45 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021, Oracle and/or its affiliates. */
+> +
+> +#include <test_progs.h>
+> +
+> +/* Test that verifies exception handling is working; ping to localhost
+> + * will result in a receive with a NULL skb->sk; our BPF program
+> + * then dereferences the an sk field which shouldn't be 0, and if we
+> + * see 0 we can conclude the exception handler ran when we attempted to
+> + * dereference the NULL sk and zeroed the destination register.
+> + */
+> +#include "exhandler_kern.skel.h"
+> +
+> +#define SYSTEM(...)    \
+> +       (env.verbosity >= VERBOSE_VERY ?        \
+> +        system(__VA_ARGS__) : system(__VA_ARGS__ " >/dev/null 2>&1"))
+> +
+> +void test_exhandler(void)
+> +{
+> +       struct exhandler_kern *skel;
+> +       struct exhandler_kern__bss *bss;
+> +       int err = 0, duration = 0;
+> +
+> +       skel = exhandler_kern__open_and_load();
+> +       if (CHECK(!skel, "skel_load", "skeleton failed: %d\n", err))
+> +               goto cleanup;
+> +
+> +       bss = skel->bss;
 
-Thanks.
+nit: you don't need to have a separate variable for that,
+skel->bss->exception_triggered in below check would be just as
+readable
 
-And I see you have written a test as well that should keep
-this kind of bug from happening again.
+> +
+> +       err = exhandler_kern__attach(skel);
+> +       if (CHECK(err, "attach", "attach failed: %d\n", err))
+> +               goto cleanup;
+> +
+> +       if (CHECK(SYSTEM("ping -c 1 127.0.0.1"),
 
-Eric
+Is there some other tracepoint or kernel function that could be used
+for testing and triggered without shelling out to ping binary? This
+hurts test isolation and will make it or some other ping-using
+selftests spuriously fail when running in parallel test mode (i.e.,
+sudo ./test_progs -j).
+
+> +                 "ping localhost",
+> +                 "ping localhost failed\n"))
+> +               goto cleanup;
+> +
+> +       if (CHECK(bss->exception_triggered == 0,
+
+please use ASSERT_EQ() instead, CHECK()s are kind of deprecated for new tests
+
+
+> +                 "verify exceptions were triggered",
+> +                 "no exceptions were triggered\n"))
+> +               goto cleanup;
+> +cleanup:
+> +       exhandler_kern__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/exhandler_kern.c b/tools/testing/selftests/bpf/progs/exhandler_kern.c
+> new file mode 100644
+> index 0000000..4049450
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/exhandler_kern.c
+> @@ -0,0 +1,35 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021, Oracle and/or its affiliates. */
+> +
+> +#include "vmlinux.h"
+> +
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_core_read.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +unsigned int exception_triggered;
+> +
+> +/* TRACE_EVENT(netif_rx,
+> + *         TP_PROTO(struct sk_buff *skb),
+> + */
+> +SEC("tp_btf/netif_rx")
+> +int BPF_PROG(trace_netif_rx, struct sk_buff *skb)
+> +{
+> +       struct sock *sk;
+> +       int sndbuf;
+> +
+> +       /* To verify we hit an exception we dereference skb->sk->sk_sndbuf;
+> +        * sndbuf size should never be zero, so if it is we know the exception
+> +        * handler triggered and zeroed the destination register.
+> +        */
+> +       __builtin_preserve_access_index(({
+> +               sk = skb->sk;
+> +               sndbuf = sk->sk_sndbuf;
+> +       }));
+
+you don't need __builtin_preserve_access_index(({ }) region, because
+vmlinux.h already annotates all the types with preserve_access_index
+attribute
+
+> +
+> +       if (!sk && !sndbuf)
+> +               exception_triggered++;
+> +       return 0;
+> +}
+> --
+> 1.8.3.1
+>
