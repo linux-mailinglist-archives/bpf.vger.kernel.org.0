@@ -2,159 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07240443CF0
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 07:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A70443CF3
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 07:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhKCGK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 02:10:27 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44484 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230152AbhKCGK1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Nov 2021 02:10:27 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A2LbRHe004797;
-        Tue, 2 Nov 2021 23:07:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=D3oHIt34mn2YCq9s/jxBsK8LjqAzyUxGwG6Sr1k48Vk=;
- b=oKXEE5qCGMNKsy4RX6Zue7/gQ9eh5TeMr+tqDB+Y0qh7d6sv4PPZRqlTN1HtC39yqzie
- aeKeLhXGOotirOKXtYun1Xb1l8gIr9UTx26I1OgtiyPukYJ/1u2MY6RvfCad4Du7NfVE
- JpJcFpG7xOfmxR8iYQ8X21duUExwjBgN4UA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c3ddfjh6k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 02 Nov 2021 23:07:39 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 2 Nov 2021 23:07:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nUVc11ZwUV2C0KUUW0YC3yMMV5ITTqR1l26YXhibZWkmthcjmyzdwFToJgZFusLG3Ehc/Nc2YFcdmn49yoXjTuCf/9nSto5cPuf/HbB4H11VfsEMzV4NHEPCKdAb/hvgH8HexLib7hOAtY6Lkz7dXLjYXPJ5SmHSUA0f4g7ndtqmNl1CzZPFZ6R2PhgGBAgNjeG13ZPaXkiymyDvTyFxEu+MpqEXUiIPZXmdKKCcfis8YuXi4ggdOS8oOuvdHYTwtW6hsbGLY0lwd1tRqEeoErol/FX4TCH6JYiWrlyl9PYqWByY3VZ5oNV7w7DBsWVA35XbQqBGbykdu1qaDwPiJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D3oHIt34mn2YCq9s/jxBsK8LjqAzyUxGwG6Sr1k48Vk=;
- b=Qwuf9iKdO1uud7gGxWvP6AdKl2rDluhjkzUZRprygJj84OpHEzdBLgxuygzEuEzXhr5gTIN7ZvZ5MpI8N4Wn9XCi4PP5PnwORnVes+b+C4Vu0EBbSKlwzNzPDN6vb8eBrQ5U/BWwLDfoM0H41KYGUO+Ql06H6Byo9OJjlOnEOfHbZOftVfsAI2yyGtQnUvdVNr7BBbQOD74NxooyC9892fgu7/HjlA/kHc6OXybDzDS5O2M8AtmeUqVyUHILLH2QZcBhcXWqhN5iYUKutg5RylnRrhFB7OaYhES5CXWi6TA4R0Ox4pwfrugNtNVsB21XUaskwN0220LHnt3B/AdZsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB4016.namprd15.prod.outlook.com (2603:10b6:806:84::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Wed, 3 Nov
- 2021 06:07:37 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
- 06:07:37 +0000
-Message-ID: <f17561ca-7348-720e-7009-aea2ef757a6d@fb.com>
-Date:   Tue, 2 Nov 2021 23:07:35 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH bpf-next 4/5] libbpf: fix section counting logic
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>
-References: <20211103001003.398812-1-andrii@kernel.org>
- <20211103001003.398812-5-andrii@kernel.org>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20211103001003.398812-5-andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0171.namprd03.prod.outlook.com
- (2603:10b6:303:8d::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        id S231383AbhKCGMv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 02:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhKCGMu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 02:12:50 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707CEC061714;
+        Tue,  2 Nov 2021 23:10:14 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id d5so1878844wrc.1;
+        Tue, 02 Nov 2021 23:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mhFGKftRIjcJcC/nt39v6NG9deVMAPc9B2rHmoF3Wyg=;
+        b=P47Fhjn5Z/MgIz6wosHw4ahOVYLyMYVRJiQOiVhZSePI2QLXypxPJt0siDj7VOxpSE
+         tt6VHRnzSlvLk3yXb8lE35UPJUSQCjpH9J1ImuUA+3ZSV1c8CtsfYTQ5j1NN319vdpgO
+         6NW2jbS6Kjpz4BNziepjn3GIO4IJbI+dcVJCpGwpVxAa7kHzLumr/xq2VPiwp9ncCmxY
+         paqIHZE2qpapLBJUxVuVcs3Qmdd2jkciMeJQ6YGR7AhH3E+cYxVMpN/CAd4THIlBjXS2
+         +8Ucb9AHLyJm5Hy3iDhsWFVJSSKXKKH4xy9Z2chTnNSw2G6UbBq7pRn71J86i8QVzsyu
+         WEVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mhFGKftRIjcJcC/nt39v6NG9deVMAPc9B2rHmoF3Wyg=;
+        b=WpWaztctl3C7ARmzi1wkmqmV57jLOQKZ5CmA+fi1bTctTqVOOEDEPmNK6vQ9zmgpVd
+         mxMX9WAEISdIu3DAc/CA+zPWEtc8jqdpL7qyZ6rrh5mKLFEI4eVKhaySDh4Ey83yC5A1
+         45lCY1oNWZmgWwmpThoF1qwyBjVX7zssbrhXD67E98Slo7kCyi4PzJDt3eYlkY0TEQhB
+         Azk/6J1eeLoMD8AzolH/RWVX5pmzzc+DKywTJ+alTl67vph0sDrkmbqjcjSVpIpPEEqi
+         kpZFlyc9X8UJfVMpapZBhyiqjyOimlr+N/fqrf+nl5rI4G2aU1wEdejNv04zr3bS7uA5
+         0MLQ==
+X-Gm-Message-State: AOAM530KXWUm8P57OcqLgg8fg5QYa9+AnSaagrkmE+nfYdB5B1IQzwRk
+        sBG9jHOgzPwCiG7E7PFk4jJem2aaQ2b/RilQ/jI=
+X-Google-Smtp-Source: ABdhPJyvNO5HtlrsmV3IHN1qX/3wt/nczXG/NErLEVaI5hbaOC/iHnZejymyGFs1wqQNKIcUpZDEgH/B5rtDWmAQJVE=
+X-Received: by 2002:a5d:648e:: with SMTP id o14mr3245168wri.141.1635919813053;
+ Tue, 02 Nov 2021 23:10:13 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [IPV6:2620:10d:c085:21e8::1066] (2620:10d:c090:400::5:b3c5) by MW4PR03CA0171.namprd03.prod.outlook.com (2603:10b6:303:8d::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Wed, 3 Nov 2021 06:07:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cb1a7242-33e7-478a-2a26-08d99e903c65
-X-MS-TrafficTypeDiagnostic: SA0PR15MB4016:
-X-Microsoft-Antispam-PRVS: <SA0PR15MB40161C6E7507E6092F025ECDD38C9@SA0PR15MB4016.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: daYnM7HCSCnwzo9j3GXsDFSKtLkwPz2KmeaE9HWu5nyZ54G0ukNOZTGdbRdPus+jy3NMMeNrJcOkT0gZCVEeleBWEX5gez01TUn912Tle1cqASNKZm/L0hszcCWN5EFaxJ8nryrST7go2r3Cno29nYpqvXaPMi1CCfY1lS6Kzm1G7u8HhgkZWlYbwzyM6MHy5szK2EDMwcPjOb9UEt1b8+v3GUzDTdeM1zVCmBnbsSwMgBdpQnLlDXbyxxGK2y2tmVj9Z9mgfK967lfFXha9IEu/946OjrOaB7zVfY2rHk+YcqW94SS+OGrEkMPluTbxz0tCpr6nKffuD0wZ9uuBu6hBJq2aOnxXEk0+ELfG8auPjdFGztHtDPDl6JROWCb6x4stIFY0pzAF7ZP5M69Z1nMETNnkj2/0GPAGGHhNs09h0wvzlrLuwsDX6U7yHm5fOPEwmGwwJ8P3uy4YIUIRV7VJ2K7ziMfR7rOZtEdRYJ+K7wqamx4UyqnDVViOZRQKsSWRERUwg/gr6O+zFG1pZMtRknoEw9rAvg2niAToy/CXqpMc62weSQ9yKlYBYeezWWo7X6tm+x1XxkpshXSY8BJf9DJIcMAcpVIhQrajMoP7qlW/ANhmQpkF1k19G59fAYwYzVGFguuiIP47EMWb7InN5x37o1AgrwOYQSSqXaUOEBpSJNH2+iIWhTay905CAJrrVFLM6s0/P5SAgFUAPXz6QGITe/AAESpDUSqo2qE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(31696002)(4326008)(86362001)(2906002)(186003)(31686004)(5660300002)(66946007)(2616005)(66476007)(66556008)(6486002)(4744005)(83380400001)(36756003)(8936002)(508600001)(53546011)(8676002)(52116002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TG8xKzQvYzdrWCs0eEZ3YU5LS1hOVDhsYVFJT3hyaXhKQ3JnNWJJeXZUZm9h?=
- =?utf-8?B?YVI5bWthbXRqNUNlMU5MT1pjazNZNGVac24xSW9kcFFjQ3ZNRmdpZVI4TFFq?=
- =?utf-8?B?YnJxdHMwc3RFNmlUVWozZkdxVlZ1UHZVQ1BENVJQVFpEb1FHdXdzQ0xoL0FM?=
- =?utf-8?B?K3pJdGw1ZnZKVjFsQXlXb1NrcW1obkNqNEZRV216NUZNVHU2c2NZaDd5S3BN?=
- =?utf-8?B?M1dnb3JSam5vYUFaMTdkdUkyVU05REtYOW5odEJHYkpWdFU0VnlmT3V4SEFl?=
- =?utf-8?B?USswSG1NNFArU0I4OEpuTWNMWnl5SW1LQ0MwS1pjclp0RUhVbk5jTVMyTEFL?=
- =?utf-8?B?a2V6TkRoNThhYmRkWXFZUHZJQzhxOCtkMVAxdUM0eG9vN3lmdTE1T1VHeGxq?=
- =?utf-8?B?WXE5M3ZxcDNzdkhlRG1lSUw1QWZ2dldiOC9DSDdBOVVJeTI3Ym5SNmJLb0s3?=
- =?utf-8?B?VmVtME1zbGJUSkNPekowM0wzdnpqZFE1R2ZxVU5JZ3dHc3JaazhzdmczWm04?=
- =?utf-8?B?cDRCZWcvOWNTcFFTMy9iYUNXZ0hOKzE0VmtjSU82cU9FSU1ESVdjZStHa2JY?=
- =?utf-8?B?Rm1LYkRsNHNSaVNFNE1vR1RMWDB3VVdGTnJlVmd3cHlBZkF0cENKelhkL2xL?=
- =?utf-8?B?L2hYVkswNmtpMmFJb3hBREYvR1Q3bGJBOUxyaUh0aXl5d3BpbkNNYU9IVFRj?=
- =?utf-8?B?bkE4SDJGdFNSV1V0cnNlemU4aDBSOVJNbmRTbTgxYlA3ejl0bVJFRU1Od3dk?=
- =?utf-8?B?N3Q5YWVBMC8rbkZiUWUybHB1SFpVMUI2cDBqK0FmQmdCUGNTWVhSWmp1eXQr?=
- =?utf-8?B?M3RQOEowTEhpZk8wc1p4NDZaYzRnVldyL0RWeXd5OTFvb0dNb3QycVJCYWJ3?=
- =?utf-8?B?M09RM3NtMitVdVkrcVJHSlg4Y2RtcERGR2YxMVFWeE1pRE5zOHArSVg3V21m?=
- =?utf-8?B?S1lrdC9UTGg4cE5ZaUJDVWpXdFErOVFTN01YUVNlVms4emZGS25seU1Bb3BG?=
- =?utf-8?B?WGtCQ0xtRTd0NENRa09zWXBEL0FQMXIrR2wyRE1FQzJqVEtCajdnVjhGVUlG?=
- =?utf-8?B?Sk4xOG9oS1htdDltTzBFeVh2K1ZzdW5sRFdDL3BmWTE0WnJqWmo4T1RGS2gx?=
- =?utf-8?B?ajlLMm9reWg1Snd2K0RVMlNJK0pES0x6VEVvZzJoa3Y2d3lLbUIweWVkRTNt?=
- =?utf-8?B?QnFWL1V2cDdYZ1VJOGswS1dSL0I0Qy9YVEN5Nm9LUWJkSU1mVlBYb0xESWNW?=
- =?utf-8?B?aXNjRWpRUmxJbFhldlJVN0Juc21CclVzQ3ZSelNCcEVCVHlvYjUzenBrMDA1?=
- =?utf-8?B?Vm9XNFprZDk2SVM5cHlaeHhPcXNpci9HUmpKZUp6bC9CdTlWNndGWlNvY3Rw?=
- =?utf-8?B?dSs3Y0lsaTVGM0Z4VEdTalZlcU5sSW5yR0NGNVdxM0lEWCtnaWtvaFlkb3U5?=
- =?utf-8?B?MU1VTGFacFV1QiswS2VDbjNDRC83d2tTdFJnWEVaaDZtWkJYY3RBcWpqQ3dC?=
- =?utf-8?B?N2VvdGlzZ1d3R2E1cU54d3ZEY1RXQWZoSUJXRExEMmVLcTc0OXROZkcrVzRj?=
- =?utf-8?B?amZGRHpaTlVmb2JDcTVDNXROekZtVjVpdHg4MzZoSHlBdDhoekhkNXp5dUlq?=
- =?utf-8?B?UjY2Y3JwNnIrSUJuaGNNQ2hCb0FEcHRSTUNuM3Y0TFZmdmlkeHZaOUQ1WGE3?=
- =?utf-8?B?NzVTWW93L1dsaUVLbE5SYXB2dk1WT0tVYlBjalMvR0wxdFVnSDVTcUVBT3lr?=
- =?utf-8?B?UzAxMW5aS2lYZDkzUzA2aStILzFtanZCemtRNUFiOGFBS0RKUXdFbEkyNzBh?=
- =?utf-8?B?YTVmYzN2WWhsenduSFBmN01US2NTdzZrU1g1QitsRUc4VUZJQlpvcmQvZUgy?=
- =?utf-8?B?ZDBnMUxpQmdZK3g5U3RCS29Gai9rVVFVSzFKaGJqZVo0bzRFMEU2VFB2dE1Z?=
- =?utf-8?B?bUFTUEcyM3podkZ5a01LSTVGNnJnR3dKYlRuZEJza2doVTQydllYRUY2Smxv?=
- =?utf-8?B?dWFvcjBuelE5cGpTR29xU3kyejN1MENOcXBlKzdVcWlTTmQyTjAwVDNML29T?=
- =?utf-8?B?bE5kQ2k4KzRaRHZoSldVQ013dDZnT200aFBTTzBua2FoblhselpSL3hZUy9x?=
- =?utf-8?Q?r52HI02LzlY13ft3DBQUhW3s8?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb1a7242-33e7-478a-2a26-08d99e903c65
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 06:07:37.7326
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d3FR16I2jXT5r8PMkzHgBKdy79r5c9emXHRy9Rdu1I550sg2+ym7b0Rn2kA9AJFy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4016
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: vex3V_n_KNlBUsDdRFfOPTg8tiKg98LU
-X-Proofpoint-GUID: vex3V_n_KNlBUsDdRFfOPTg8tiKg98LU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-03_01,2021-11-02_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 suspectscore=0
- bulkscore=0 mlxscore=0 clxscore=1015 mlxlogscore=890 spamscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111030037
-X-FB-Internal: deliver
+References: <20211102145642.724820-1-tongtiangen@huawei.com>
+ <CAJ+HfNg1Ki=1Zc+ThW-ynvtDo5=fNAUK-XV08-icz-nY9CNoUQ@mail.gmail.com> <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com>
+In-Reply-To: <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 3 Nov 2021 07:10:00 +0100
+Message-ID: <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] riscv, bpf: fix some compiler error
+To:     tongtiangen <tongtiangen@huawei.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, 3 Nov 2021 at 04:06, tongtiangen <tongtiangen@huawei.com> wrote:
+>
+[...]
+> >
+> Hi Bj=C3=B6rn:
+>  From the perspective of development, introduce asm/extable.h is also pre=
+pare for the
+> subsequent modification of exception_table_entry, such as:
+>    1. https://lkml.org/lkml/2021/10/20/591
+>    2. https://lore.kernel.org/linux-arm-kernel/20211019160219.5202-11-mar=
+k.rutland@arm.com/
+>
+> Therefore, the prototype declarations and definitions related to kernel c=
+onfig are placed in head file,
+> which can avoid compiler error and simplify the rendering of functions.
+>
+
+Sure, but *this* patch is about getting the broken RV32 build to work,
+aimed for the bpf tree. Moving the extable.h is unrelated, and should
+not be done here. IMO it would be better to have this patch small/easy
+to read. I can't really see how this patch helps, when merging with
+Jisheng's work.
+
+...and I still think that:
+--8<--
+diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+index 18bf338303b6..ddb7d3b99e89 100644
+--- a/arch/riscv/mm/extable.c
++++ b/arch/riscv/mm/extable.c
+@@ -11,7 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/uaccess.h>
+
+-#ifdef CONFIG_BPF_JIT
++#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+ int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+struct pt_regs *regs);
+ #endif
+
+@@ -23,7 +23,7 @@ int fixup_exception(struct pt_regs *regs)
+        if (!fixup)
+                return 0;
+
+-#ifdef CONFIG_BPF_JIT
++#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+        if (regs->epc >=3D BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGI=
+ON_END)
+                return rv_bpf_fixup_exception(fixup, regs);
+ #endif
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp6=
+4.c
+index 2ca345c7b0bf..6372a235522d 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -459,6 +459,8 @@ static int emit_call(bool fixed, u64 addr, struct
+rv_jit_context *ctx)
+ #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+ #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+
++int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
++                          struct pt_regs *regs);
+ int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+                                struct pt_regs *regs)
+ {
+-->8--
+
+is much simpler.
 
 
-On 11/2/21 5:10 PM, Andrii Nakryiko wrote:
-> e_shnum does include section #0 and as such is exactly the number of ELF
-> sections that we need to allocate memory for to use section indices as
-> array indices. Fix the off-by-one error.
-> 
-> This is purely accounting fix, previously we were overallocating one
-> too many array items. But no correctness errors otherwise.
-> 
-> Fixes: 25bbbd7a444b ("libbpf: Remove assumptions about uniqueness of .rodata/.data/.bss maps")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Thoughts?
+Bj=C3=B6rn
+
+
+
+
+> Thanks.
+> Tong.
+>
+> >
+> > Bj=C3=B6rn
+> > .
+> >
