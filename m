@@ -2,812 +2,475 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92010444AAA
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 23:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F59444AAC
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 23:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhKCWLo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Nov 2021 18:11:44 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60886 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230302AbhKCWLn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Nov 2021 18:11:43 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3KAe5e031676
-        for <bpf@vger.kernel.org>; Wed, 3 Nov 2021 15:09:06 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c3vegb80s-2
+        id S230310AbhKCWLp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Nov 2021 18:11:45 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10368 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230343AbhKCWLo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Nov 2021 18:11:44 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1A3KAeB5017257
+        for <bpf@vger.kernel.org>; Wed, 3 Nov 2021 15:09:07 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3c3dcf0qew-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 03 Nov 2021 15:09:06 -0700
-Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 03 Nov 2021 15:09:07 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 3 Nov 2021 15:09:04 -0700
+ 15.1.2308.14; Wed, 3 Nov 2021 15:09:03 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id BBFA87D65E4C; Wed,  3 Nov 2021 15:08:53 -0700 (PDT)
+        id CA54F7D65E4E; Wed,  3 Nov 2021 15:08:55 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH v2 bpf-next 03/12] libbpf: unify low-level BPF_PROG_LOAD APIs into bpf_prog_load()
-Date:   Wed, 3 Nov 2021 15:08:36 -0700
-Message-ID: <20211103220845.2676888-4-andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 04/12] libbpf: remove internal use of deprecated bpf_prog_load() variants
+Date:   Wed, 3 Nov 2021 15:08:37 -0700
+Message-ID: <20211103220845.2676888-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211103220845.2676888-1-andrii@kernel.org>
 References: <20211103220845.2676888-1-andrii@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: yF5dkYcajNXSOkDNNnKrLdjW3Z4L5LiF
-X-Proofpoint-ORIG-GUID: yF5dkYcajNXSOkDNNnKrLdjW3Z4L5LiF
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: 82sIq8L7pjskJyk8UG9c2Wok3Gb51LOG
+X-Proofpoint-ORIG-GUID: 82sIq8L7pjskJyk8UG9c2Wok3Gb51LOG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-03_06,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 mlxscore=0 adultscore=0
- impostorscore=0 spamscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 priorityscore=1501 phishscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 clxscore=1015 adultscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2111030116
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a new unified OPTS-based low-level API for program loading,
-bpf_prog_load() ([0]).  bpf_prog_load() accepts few "mandatory"
-parameters as input arguments (program type, name, license,
-instructions) and all the other optional (as in not required to specify
-for all types of BPF programs) fields into struct bpf_prog_load_opts.
-
-This makes all the other non-extensible APIs variant for BPF_PROG_LOAD
-obsolete and they are slated for deprecation in libbpf v0.7:
-  - bpf_load_program();
-  - bpf_load_program_xattr();
-  - bpf_verify_program().
-
-Implementation-wise, internal helper libbpf__bpf_prog_load is refactored
-to become a public bpf_prog_load() API. struct bpf_prog_load_params used
-internally is replaced by public struct bpf_prog_load_opts.
-
-Unfortunately, while conceptually all this is pretty straightforward,
-the biggest complication comes from the already existing bpf_prog_load()
-*high-level* API, which has nothing to do with BPF_PROG_LOAD command.
-
-We try really hard to have a new API named bpf_prog_load(), though,
-because it maps naturally to BPF_PROG_LOAD command.
-
-For that, we rename old bpf_prog_load() into bpf_prog_load_deprecated()
-and mark it as COMPAT_VERSION() for shared library users compiled
-against old version of libbpf. Statically linked users and shared lib
-users compiled against new version of libbpf headers will get "rerouted"
-to bpf_prog_deprecated() through a macro helper that decides whether to
-use new or old bpf_prog_load() based on number of input arguments (see
-___libbpf_overload in libbpf_common.h).
-
-To test that existing
-bpf_prog_load()-using code compiles and works as expected, I've compiled
-and ran selftests as is. I had to remove (locally) selftest/bpf/Makefile
--Dbpf_prog_load=bpf_prog_test_load hack because it was conflicting with
-the macro-based overload approach. I don't expect anyone else to do
-something like this in practice, though. This is testing-specific way to
-replace bpf_prog_load() calls with special testing variant of it, which
-adds extra prog_flags value. After testing I kept this selftests hack,
-but ensured that we use a new bpf_prog_load_deprecated name for this.
-
-This patch also marks bpf_prog_load() and bpf_prog_load_xattr() as deprecated.
-bpf_object interface has to be used for working with struct bpf_program.
-Libbpf doesn't support loading just a bpf_program.
-
-The silver lining is that when we get to libbpf 1.0 all these
-complication will be gone and we'll have one clean bpf_prog_load()
-low-level API with no backwards compatibility hackery surrounding it.
-
-  [0] Closes: https://github.com/libbpf/libbpf/issues/284
+Remove all the internal uses of bpf_load_program_xattr(), which is
+slated for deprecation in v0.7.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf.c                  | 149 ++++++++++++++++-----------
- tools/lib/bpf/bpf.h                  |  73 ++++++++++++-
- tools/lib/bpf/bpf_gen_internal.h     |   8 +-
- tools/lib/bpf/gen_loader.c           |  30 +++---
- tools/lib/bpf/libbpf.c               |  51 +++++----
- tools/lib/bpf/libbpf.h               |   5 +-
- tools/lib/bpf/libbpf.map             |   2 +
- tools/lib/bpf/libbpf_common.h        |  12 +++
- tools/lib/bpf/libbpf_internal.h      |  31 ------
- tools/testing/selftests/bpf/Makefile |   2 +-
- 10 files changed, 223 insertions(+), 140 deletions(-)
+ tools/lib/bpf/bpf.c           |   8 ++-
+ tools/lib/bpf/libbpf.c        | 119 +++++++++++-----------------------
+ tools/lib/bpf/libbpf_probes.c |  20 +++---
+ tools/lib/bpf/xsk.c           |  34 ++++------
+ 4 files changed, 64 insertions(+), 117 deletions(-)
 
 diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 8e6a23c42560..8f2a701cb079 100644
+index 8f2a701cb079..4ff45749f8cf 100644
 --- a/tools/lib/bpf/bpf.c
 +++ b/tools/lib/bpf/bpf.c
-@@ -28,6 +28,7 @@
- #include <asm/unistd.h>
- #include <errno.h>
- #include <linux/bpf.h>
-+#include <limits.h>
- #include "bpf.h"
- #include "libbpf.h"
- #include "libbpf_internal.h"
-@@ -254,58 +255,91 @@ alloc_zero_tailing_info(const void *orecord, __u32 cnt,
- 	return info;
+@@ -401,8 +401,12 @@ int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+ 	return libbpf_err_errno(fd);
  }
  
--int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
-+DEFAULT_VERSION(bpf_prog_load_v0_6_0, bpf_prog_load, LIBBPF_0.6.0)
-+int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
-+		         const char *prog_name, const char *license,
-+		         const struct bpf_insn *insns, size_t insn_cnt,
-+		         const struct bpf_prog_load_opts *opts)
- {
- 	void *finfo = NULL, *linfo = NULL;
-+	const char *func_info, *line_info;
-+	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
-+	__u32 func_info_rec_size, line_info_rec_size;
-+	int fd, attempts;
- 	union bpf_attr attr;
--	int fd;
-+	char *log_buf;
- 
--	if (!load_attr->log_buf != !load_attr->log_buf_sz)
-+	if (!OPTS_VALID(opts, bpf_prog_load_opts))
- 		return libbpf_err(-EINVAL);
- 
--	if (load_attr->log_level > (4 | 2 | 1) || (load_attr->log_level && !load_attr->log_buf))
-+	attempts = OPTS_GET(opts, attempts, 0);
-+	if (attempts < 0)
- 		return libbpf_err(-EINVAL);
-+	if (attempts == 0)
-+		attempts = PROG_LOAD_ATTEMPTS;
- 
- 	memset(&attr, 0, sizeof(attr));
--	attr.prog_type = load_attr->prog_type;
--	attr.expected_attach_type = load_attr->expected_attach_type;
- 
--	if (load_attr->attach_prog_fd)
--		attr.attach_prog_fd = load_attr->attach_prog_fd;
--	else
--		attr.attach_btf_obj_fd = load_attr->attach_btf_obj_fd;
--	attr.attach_btf_id = load_attr->attach_btf_id;
-+	attr.prog_type = prog_type;
-+	attr.expected_attach_type = OPTS_GET(opts, expected_attach_type, 0);
- 
--	attr.prog_ifindex = load_attr->prog_ifindex;
--	attr.kern_version = load_attr->kern_version;
-+	attr.prog_btf_fd = OPTS_GET(opts, prog_btf_fd, 0);
-+	attr.prog_flags = OPTS_GET(opts, prog_flags, 0);
-+	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
-+	attr.kern_version = OPTS_GET(opts, kern_version, 0);
- 
--	attr.insn_cnt = (__u32)load_attr->insn_cnt;
--	attr.insns = ptr_to_u64(load_attr->insns);
--	attr.license = ptr_to_u64(load_attr->license);
-+	if (prog_name)
-+		strncat(attr.prog_name, prog_name, sizeof(attr.prog_name) - 1);
-+	attr.license = ptr_to_u64(license);
- 
--	attr.log_level = load_attr->log_level;
--	if (attr.log_level) {
--		attr.log_buf = ptr_to_u64(load_attr->log_buf);
--		attr.log_size = load_attr->log_buf_sz;
--	}
-+	if (insn_cnt > UINT_MAX)
-+		return libbpf_err(-E2BIG);
- 
--	attr.prog_btf_fd = load_attr->prog_btf_fd;
--	attr.prog_flags = load_attr->prog_flags;
-+	attr.insns = ptr_to_u64(insns);
-+	attr.insn_cnt = (__u32)insn_cnt;
- 
--	attr.func_info_rec_size = load_attr->func_info_rec_size;
--	attr.func_info_cnt = load_attr->func_info_cnt;
--	attr.func_info = ptr_to_u64(load_attr->func_info);
-+	attach_prog_fd = OPTS_GET(opts, attach_prog_fd, 0);
-+	attach_btf_obj_fd = OPTS_GET(opts, attach_btf_obj_fd, 0);
- 
--	attr.line_info_rec_size = load_attr->line_info_rec_size;
--	attr.line_info_cnt = load_attr->line_info_cnt;
--	attr.line_info = ptr_to_u64(load_attr->line_info);
--	attr.fd_array = ptr_to_u64(load_attr->fd_array);
-+	if (attach_prog_fd && attach_btf_obj_fd)
-+		return libbpf_err(-EINVAL);
- 
--	if (load_attr->name)
--		memcpy(attr.prog_name, load_attr->name,
--		       min(strlen(load_attr->name), (size_t)BPF_OBJ_NAME_LEN - 1));
-+	attr.attach_btf_id = OPTS_GET(opts, attach_btf_id, 0);
-+	if (attach_prog_fd)
-+		attr.attach_prog_fd = attach_prog_fd;
-+	else
-+		attr.attach_btf_obj_fd = attach_btf_obj_fd;
- 
--	fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
-+	log_buf = OPTS_GET(opts, log_buf, NULL);
-+	log_size = OPTS_GET(opts, log_size, 0);
-+	log_level = OPTS_GET(opts, log_level, 0);
-+
-+	if (!!log_buf != !!log_size)
-+		return libbpf_err(-EINVAL);
-+	if (log_level > (4 | 2 | 1))
-+		return libbpf_err(-EINVAL);
-+	if (log_level && !log_buf)
-+		return libbpf_err(-EINVAL);
-+
-+	attr.log_level = log_level;
-+	attr.log_buf = ptr_to_u64(log_buf);
-+	attr.log_size = log_size;
-+
-+	func_info_rec_size = OPTS_GET(opts, func_info_rec_size, 0);
-+	func_info = OPTS_GET(opts, func_info, NULL);
-+	attr.func_info_rec_size = func_info_rec_size;
-+	attr.func_info = ptr_to_u64(func_info);
-+	attr.func_info_cnt = OPTS_GET(opts, func_info_cnt, 0);
-+
-+	line_info_rec_size = OPTS_GET(opts, line_info_rec_size, 0);
-+	line_info = OPTS_GET(opts, line_info, NULL);
-+	attr.line_info_rec_size = line_info_rec_size;
-+	attr.line_info = ptr_to_u64(line_info);
-+	attr.line_info_cnt = OPTS_GET(opts, line_info_cnt, 0);
-+
-+	attr.fd_array = ptr_to_u64(OPTS_GET(opts, fd_array, NULL));
-+
-+	fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
- 	if (fd >= 0)
- 		return fd;
- 
-@@ -315,11 +349,11 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
- 	 */
- 	while (errno == E2BIG && (!finfo || !linfo)) {
- 		if (!finfo && attr.func_info_cnt &&
--		    attr.func_info_rec_size < load_attr->func_info_rec_size) {
-+		    attr.func_info_rec_size < func_info_rec_size) {
- 			/* try with corrected func info records */
--			finfo = alloc_zero_tailing_info(load_attr->func_info,
--							load_attr->func_info_cnt,
--							load_attr->func_info_rec_size,
-+			finfo = alloc_zero_tailing_info(func_info,
-+							attr.func_info_cnt,
-+							func_info_rec_size,
- 							attr.func_info_rec_size);
- 			if (!finfo) {
- 				errno = E2BIG;
-@@ -327,13 +361,12 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
- 			}
- 
- 			attr.func_info = ptr_to_u64(finfo);
--			attr.func_info_rec_size = load_attr->func_info_rec_size;
-+			attr.func_info_rec_size = func_info_rec_size;
- 		} else if (!linfo && attr.line_info_cnt &&
--			   attr.line_info_rec_size <
--			   load_attr->line_info_rec_size) {
--			linfo = alloc_zero_tailing_info(load_attr->line_info,
--							load_attr->line_info_cnt,
--							load_attr->line_info_rec_size,
-+			   attr.line_info_rec_size < line_info_rec_size) {
-+			linfo = alloc_zero_tailing_info(line_info,
-+							attr.line_info_cnt,
-+							line_info_rec_size,
- 							attr.line_info_rec_size);
- 			if (!linfo) {
- 				errno = E2BIG;
-@@ -341,26 +374,26 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
- 			}
- 
- 			attr.line_info = ptr_to_u64(linfo);
--			attr.line_info_rec_size = load_attr->line_info_rec_size;
-+			attr.line_info_rec_size = line_info_rec_size;
- 		} else {
- 			break;
- 		}
- 
--		fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
-+		fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
- 		if (fd >= 0)
- 			goto done;
- 	}
- 
--	if (load_attr->log_level || !load_attr->log_buf)
-+	if (log_level || !log_buf)
- 		goto done;
- 
- 	/* Try again with log */
--	attr.log_buf = ptr_to_u64(load_attr->log_buf);
--	attr.log_size = load_attr->log_buf_sz;
-+	log_buf[0] = 0;
-+	attr.log_buf = ptr_to_u64(log_buf);
-+	attr.log_size = log_size;
- 	attr.log_level = 1;
--	load_attr->log_buf[0] = 0;
- 
--	fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
-+	fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
- done:
- 	/* free() doesn't affect errno, so we don't need to restore it */
- 	free(finfo);
-@@ -371,14 +404,13 @@ int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr)
++__attribute__((alias("bpf_load_program_xattr2")))
  int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
- 			   char *log_buf, size_t log_buf_sz)
+-			   char *log_buf, size_t log_buf_sz)
++			   char *log_buf, size_t log_buf_sz);
++
++static int bpf_load_program_xattr2(const struct bpf_load_program_attr *load_attr,
++				   char *log_buf, size_t log_buf_sz)
  {
--	struct bpf_prog_load_params p = {};
-+	LIBBPF_OPTS(bpf_prog_load_opts, p);
+ 	LIBBPF_OPTS(bpf_prog_load_opts, p);
  
- 	if (!load_attr || !log_buf != !log_buf_sz)
- 		return libbpf_err(-EINVAL);
+@@ -456,7 +460,7 @@ int bpf_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
+ 	load_attr.license = license;
+ 	load_attr.kern_version = kern_version;
  
--	p.prog_type = load_attr->prog_type;
- 	p.expected_attach_type = load_attr->expected_attach_type;
--	switch (p.prog_type) {
-+	switch (load_attr->prog_type) {
- 	case BPF_PROG_TYPE_STRUCT_OPS:
- 	case BPF_PROG_TYPE_LSM:
- 		p.attach_btf_id = load_attr->attach_btf_id;
-@@ -392,12 +424,9 @@ int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
- 		p.prog_ifindex = load_attr->prog_ifindex;
- 		p.kern_version = load_attr->kern_version;
- 	}
--	p.insn_cnt = load_attr->insns_cnt;
--	p.insns = load_attr->insns;
--	p.license = load_attr->license;
- 	p.log_level = load_attr->log_level;
- 	p.log_buf = log_buf;
--	p.log_buf_sz = log_buf_sz;
-+	p.log_size = log_buf_sz;
- 	p.prog_btf_fd = load_attr->prog_btf_fd;
- 	p.func_info_rec_size = load_attr->func_info_rec_size;
- 	p.func_info_cnt = load_attr->func_info_cnt;
-@@ -405,10 +434,10 @@ int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
- 	p.line_info_rec_size = load_attr->line_info_rec_size;
- 	p.line_info_cnt = load_attr->line_info_cnt;
- 	p.line_info = load_attr->line_info;
--	p.name = load_attr->name;
- 	p.prog_flags = load_attr->prog_flags;
- 
--	return libbpf__bpf_prog_load(&p);
-+	return bpf_prog_load(load_attr->prog_type, load_attr->name, load_attr->license,
-+			     load_attr->insns, load_attr->insns_cnt, &p);
+-	return bpf_load_program_xattr(&load_attr, log_buf, log_buf_sz);
++	return bpf_load_program_xattr2(&load_attr, log_buf, log_buf_sz);
  }
  
- int bpf_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index f35146c1d9a9..079cc81ac51e 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -72,6 +72,71 @@ LIBBPF_API int bpf_create_map_in_map(enum bpf_map_type map_type,
- 				     int inner_map_fd, int max_entries,
- 				     __u32 map_flags);
- 
-+struct bpf_prog_load_opts {
-+	size_t sz; /* size of this struct for forward/backward compatibility */
-+
-+	/* libbpf can retry BPF_PROG_LOAD command if bpf() syscall returns
-+	 * -EAGAIN. This field determines how many attempts libbpf has to
-+	 *  make. If not specified, libbpf will use default value of 5.
-+	 */
-+	int attempts;
-+
-+	enum bpf_attach_type expected_attach_type;
-+	__u32 prog_btf_fd;
-+	__u32 prog_flags;
-+	__u32 prog_ifindex;
-+	__u32 kern_version;
-+
-+	__u32 attach_btf_id;
-+	__u32 attach_prog_fd;
-+	__u32 attach_btf_obj_fd;
-+
-+	const int *fd_array;
-+
-+	/* .BTF.ext func info data */
-+	const void *func_info;
-+	__u32 func_info_cnt;
-+	__u32 func_info_rec_size;
-+
-+	/* .BTF.ext line info data */
-+	const void *line_info;
-+	__u32 line_info_cnt;
-+	__u32 line_info_rec_size;
-+
-+	/* verifier log options */
-+	__u32 log_level;
-+	__u32 log_size;
-+	char *log_buf;
-+};
-+#define bpf_prog_load_opts__last_field log_buf
-+
-+LIBBPF_API int bpf_prog_load(enum bpf_prog_type prog_type,
-+			     const char *prog_name, const char *license,
-+			     const struct bpf_insn *insns, size_t insn_cnt,
-+			     const struct bpf_prog_load_opts *opts);
-+/* this "specialization" should go away in libbpf 1.0 */
-+LIBBPF_API int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
-+				    const char *prog_name, const char *license,
-+				    const struct bpf_insn *insns, size_t insn_cnt,
-+				    const struct bpf_prog_load_opts *opts);
-+
-+/* This is an elaborate way to not conflict with deprecated bpf_prog_load()
-+ * API, defined in libbpf.h. Once we hit libbpf 1.0, all this will be gone.
-+ * With this approach, if someone is calling bpf_prog_load() with
-+ * 4 arguments, they will use the deprecated API, which keeps backwards
-+ * compatibility (both source code and binary). If bpf_prog_load() is called
-+ * with 6 arguments, though, it gets redirected to __bpf_prog_load.
-+ * So looking forward to libbpf 1.0 when this hack will be gone and
-+ * __bpf_prog_load() will be called just bpf_prog_load().
-+ */
-+#ifndef bpf_prog_load
-+#define bpf_prog_load(...) ___libbpf_overload(___bpf_prog_load, __VA_ARGS__)
-+#define ___bpf_prog_load4(file, type, pobj, prog_fd) \
-+	bpf_prog_load_deprecated(file, type, pobj, prog_fd)
-+#define ___bpf_prog_load6(prog_type, prog_name, license, insns, insn_cnt, opts) \
-+	bpf_prog_load(prog_type, prog_name, license, insns, insn_cnt, opts)
-+#endif /* bpf_prog_load */
-+
- struct bpf_load_program_attr {
- 	enum bpf_prog_type prog_type;
- 	enum bpf_attach_type expected_attach_type;
-@@ -103,13 +168,15 @@ struct bpf_load_program_attr {
- 
- /* Recommend log buffer size */
- #define BPF_LOG_BUF_SIZE (UINT32_MAX >> 8) /* verifier maximum in kernels <= 5.1 */
--LIBBPF_API int
--bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
--		       char *log_buf, size_t log_buf_sz);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_load() instead")
-+LIBBPF_API int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
-+				      char *log_buf, size_t log_buf_sz);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_load() instead")
- LIBBPF_API int bpf_load_program(enum bpf_prog_type type,
- 				const struct bpf_insn *insns, size_t insns_cnt,
- 				const char *license, __u32 kern_version,
- 				char *log_buf, size_t log_buf_sz);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_load() instead")
- LIBBPF_API int bpf_verify_program(enum bpf_prog_type type,
- 				  const struct bpf_insn *insns,
- 				  size_t insns_cnt, __u32 prog_flags,
-diff --git a/tools/lib/bpf/bpf_gen_internal.h b/tools/lib/bpf/bpf_gen_internal.h
-index d26e5472fe50..75ca9fb857b2 100644
---- a/tools/lib/bpf/bpf_gen_internal.h
-+++ b/tools/lib/bpf/bpf_gen_internal.h
-@@ -3,6 +3,8 @@
- #ifndef __BPF_GEN_INTERNAL_H
- #define __BPF_GEN_INTERNAL_H
- 
-+#include "bpf.h"
-+
- struct ksym_relo_desc {
- 	const char *name;
- 	int kind;
-@@ -50,8 +52,10 @@ int bpf_gen__finish(struct bpf_gen *gen);
- void bpf_gen__free(struct bpf_gen *gen);
- void bpf_gen__load_btf(struct bpf_gen *gen, const void *raw_data, __u32 raw_size);
- void bpf_gen__map_create(struct bpf_gen *gen, struct bpf_create_map_params *map_attr, int map_idx);
--struct bpf_prog_load_params;
--void bpf_gen__prog_load(struct bpf_gen *gen, struct bpf_prog_load_params *load_attr, int prog_idx);
-+void bpf_gen__prog_load(struct bpf_gen *gen,
-+			enum bpf_prog_type prog_type, const char *prog_name,
-+			const char *license, struct bpf_insn *insns, size_t insn_cnt,
-+			struct bpf_prog_load_opts *load_attr, int prog_idx);
- void bpf_gen__map_update_elem(struct bpf_gen *gen, int map_idx, void *value, __u32 value_size);
- void bpf_gen__map_freeze(struct bpf_gen *gen, int map_idx);
- void bpf_gen__record_attach_target(struct bpf_gen *gen, const char *name, enum bpf_attach_type type);
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index 502dea53a742..203d88f5b512 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -900,27 +900,27 @@ static void cleanup_relos(struct bpf_gen *gen, int insns)
- }
- 
- void bpf_gen__prog_load(struct bpf_gen *gen,
--			struct bpf_prog_load_params *load_attr, int prog_idx)
-+			enum bpf_prog_type prog_type, const char *prog_name,
-+			const char *license, struct bpf_insn *insns, size_t insn_cnt,
-+			struct bpf_prog_load_opts *load_attr, int prog_idx)
- {
- 	int attr_size = offsetofend(union bpf_attr, fd_array);
--	int prog_load_attr, license, insns, func_info, line_info;
-+	int prog_load_attr, license_off, insns_off, func_info, line_info;
- 	union bpf_attr attr;
- 
- 	memset(&attr, 0, attr_size);
--	pr_debug("gen: prog_load: type %d insns_cnt %zd\n",
--		 load_attr->prog_type, load_attr->insn_cnt);
-+	pr_debug("gen: prog_load: type %d insns_cnt %zd\n", prog_type, insn_cnt);
- 	/* add license string to blob of bytes */
--	license = add_data(gen, load_attr->license, strlen(load_attr->license) + 1);
-+	license_off = add_data(gen, license, strlen(license) + 1);
- 	/* add insns to blob of bytes */
--	insns = add_data(gen, load_attr->insns,
--			 load_attr->insn_cnt * sizeof(struct bpf_insn));
-+	insns_off = add_data(gen, insns, insn_cnt * sizeof(struct bpf_insn));
- 
--	attr.prog_type = load_attr->prog_type;
-+	attr.prog_type = prog_type;
- 	attr.expected_attach_type = load_attr->expected_attach_type;
- 	attr.attach_btf_id = load_attr->attach_btf_id;
- 	attr.prog_ifindex = load_attr->prog_ifindex;
- 	attr.kern_version = 0;
--	attr.insn_cnt = (__u32)load_attr->insn_cnt;
-+	attr.insn_cnt = (__u32)insn_cnt;
- 	attr.prog_flags = load_attr->prog_flags;
- 
- 	attr.func_info_rec_size = load_attr->func_info_rec_size;
-@@ -933,15 +933,15 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- 	line_info = add_data(gen, load_attr->line_info,
- 			     attr.line_info_cnt * attr.line_info_rec_size);
- 
--	memcpy(attr.prog_name, load_attr->name,
--	       min((unsigned)strlen(load_attr->name), BPF_OBJ_NAME_LEN - 1));
-+	memcpy(attr.prog_name, prog_name,
-+	       min((unsigned)strlen(prog_name), BPF_OBJ_NAME_LEN - 1));
- 	prog_load_attr = add_data(gen, &attr, attr_size);
- 
- 	/* populate union bpf_attr with a pointer to license */
--	emit_rel_store(gen, attr_field(prog_load_attr, license), license);
-+	emit_rel_store(gen, attr_field(prog_load_attr, license), license_off);
- 
- 	/* populate union bpf_attr with a pointer to instructions */
--	emit_rel_store(gen, attr_field(prog_load_attr, insns), insns);
-+	emit_rel_store(gen, attr_field(prog_load_attr, insns), insns_off);
- 
- 	/* populate union bpf_attr with a pointer to func_info */
- 	emit_rel_store(gen, attr_field(prog_load_attr, func_info), func_info);
-@@ -973,12 +973,12 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- 		emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_0, BPF_REG_7,
- 				      offsetof(union bpf_attr, attach_btf_obj_fd)));
- 	}
--	emit_relos(gen, insns);
-+	emit_relos(gen, insns_off);
- 	/* emit PROG_LOAD command */
- 	emit_sys_bpf(gen, BPF_PROG_LOAD, prog_load_attr, attr_size);
- 	debug_ret(gen, "prog_load %s insn_cnt %d", attr.prog_name, attr.insn_cnt);
- 	/* successful or not, close btf module FDs used in extern ksyms and attach_btf_obj_fd */
--	cleanup_relos(gen, insns);
-+	cleanup_relos(gen, insns_off);
- 	if (gen->attach_kind)
- 		emit_sys_close_blob(gen,
- 				    attr_field(prog_load_attr, attach_btf_obj_fd));
+ int bpf_verify_program(enum bpf_prog_type type, const struct bpf_insn *insns,
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 7fcea11ecaa9..7a82b81b8859 100644
+index 7a82b81b8859..5751cade0f66 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -221,7 +221,7 @@ struct reloc_desc {
- struct bpf_sec_def;
- 
- typedef int (*init_fn_t)(struct bpf_program *prog, long cookie);
--typedef int (*preload_fn_t)(struct bpf_program *prog, struct bpf_prog_load_params *attr, long cookie);
-+typedef int (*preload_fn_t)(struct bpf_program *prog, struct bpf_prog_load_opts *opts, long cookie);
- typedef struct bpf_link *(*attach_fn_t)(const struct bpf_program *prog, long cookie);
- 
- /* stored as sec_def->cookie for all libbpf-supported SEC()s */
-@@ -6391,16 +6391,16 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog, const char *attac
- 
- /* this is called as prog->sec_def->preload_fn for libbpf-supported sec_defs */
- static int libbpf_preload_prog(struct bpf_program *prog,
--			       struct bpf_prog_load_params *attr, long cookie)
-+			       struct bpf_prog_load_opts *opts, long cookie)
+@@ -4282,30 +4282,20 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_entries)
+ static int
+ bpf_object__probe_loading(struct bpf_object *obj)
  {
- 	enum sec_def_flags def = cookie;
- 
- 	/* old kernels might not support specifying expected_attach_type */
- 	if ((def & SEC_EXP_ATTACH_OPT) && !kernel_supports(prog->obj, FEAT_EXP_ATTACH_TYPE))
--		attr->expected_attach_type = 0;
-+		opts->expected_attach_type = 0;
- 
- 	if (def & SEC_SLEEPABLE)
--		attr->prog_flags |= BPF_F_SLEEPABLE;
-+		opts->prog_flags |= BPF_F_SLEEPABLE;
- 
- 	if ((prog->type == BPF_PROG_TYPE_TRACING ||
- 	     prog->type == BPF_PROG_TYPE_LSM ||
-@@ -6419,11 +6419,11 @@ static int libbpf_preload_prog(struct bpf_program *prog,
- 
- 		/* but by now libbpf common logic is not utilizing
- 		 * prog->atach_btf_obj_fd/prog->attach_btf_id anymore because
--		 * this callback is called after attrs were populated by
--		 * libbpf, so this callback has to update attr explicitly here
-+		 * this callback is called after opts were populated by
-+		 * libbpf, so this callback has to update opts explicitly here
- 		 */
--		attr->attach_btf_obj_fd = btf_obj_fd;
--		attr->attach_btf_id = btf_type_id;
-+		opts->attach_btf_obj_fd = btf_obj_fd;
-+		opts->attach_btf_id = btf_type_id;
- 	}
- 	return 0;
- }
-@@ -6433,7 +6433,8 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
- 					 const char *license, __u32 kern_version,
- 					 int *prog_fd)
- {
--	struct bpf_prog_load_params load_attr = {};
-+	LIBBPF_OPTS(bpf_prog_load_opts, load_attr);
-+	const char *prog_name = NULL;
+-	struct bpf_load_program_attr attr;
  	char *cp, errmsg[STRERR_BUFSIZE];
- 	size_t log_buf_size = 0;
- 	char *log_buf = NULL;
-@@ -6452,13 +6453,9 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
- 	if (!insns || !insns_cnt)
- 		return -EINVAL;
+ 	struct bpf_insn insns[] = {
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
+-	int ret;
++	int ret, insn_cnt = ARRAY_SIZE(insns);
  
--	load_attr.prog_type = prog->type;
- 	load_attr.expected_attach_type = prog->expected_attach_type;
- 	if (kernel_supports(obj, FEAT_PROG_NAME))
--		load_attr.name = prog->name;
--	load_attr.insns = insns;
--	load_attr.insn_cnt = insns_cnt;
--	load_attr.license = license;
-+		prog_name = prog->name;
- 	load_attr.attach_btf_id = prog->attach_btf_id;
- 	load_attr.attach_prog_fd = prog->attach_prog_fd;
- 	load_attr.attach_btf_obj_fd = prog->attach_btf_obj_fd;
-@@ -6492,7 +6489,8 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
- 	}
- 
- 	if (obj->gen_loader) {
--		bpf_gen__prog_load(obj->gen_loader, &load_attr,
-+		bpf_gen__prog_load(obj->gen_loader, prog->type, prog->name,
-+				   license, insns, insns_cnt, &load_attr,
- 				   prog - obj->programs);
- 		*prog_fd = -1;
+ 	if (obj->gen_loader)
  		return 0;
-@@ -6507,8 +6505,8 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
+ 
+ 	/* make sure basic loading works */
+-
+-	memset(&attr, 0, sizeof(attr));
+-	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+-	attr.insns = insns;
+-	attr.insns_cnt = ARRAY_SIZE(insns);
+-	attr.license = "GPL";
+-
+-	ret = bpf_load_program_xattr(&attr, NULL, 0);
+-	if (ret < 0) {
+-		attr.prog_type = BPF_PROG_TYPE_TRACEPOINT;
+-		ret = bpf_load_program_xattr(&attr, NULL, 0);
+-	}
++	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL", insns, insn_cnt, NULL);
++	if (ret < 0)
++		ret = bpf_prog_load(BPF_PROG_TYPE_TRACEPOINT, NULL, "GPL", insns, insn_cnt, NULL);
+ 	if (ret < 0) {
+ 		ret = errno;
+ 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+@@ -4329,28 +4319,19 @@ static int probe_fd(int fd)
+ 
+ static int probe_kern_prog_name(void)
+ {
+-	struct bpf_load_program_attr attr;
+ 	struct bpf_insn insns[] = {
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
+-	int ret;
++	int ret, insn_cnt = ARRAY_SIZE(insns);
+ 
+ 	/* make sure loading with name works */
+-
+-	memset(&attr, 0, sizeof(attr));
+-	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+-	attr.insns = insns;
+-	attr.insns_cnt = ARRAY_SIZE(insns);
+-	attr.license = "GPL";
+-	attr.name = "test";
+-	ret = bpf_load_program_xattr(&attr, NULL, 0);
++	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
+ 	return probe_fd(ret);
+ }
+ 
+ static int probe_kern_global_data(void)
+ {
+-	struct bpf_load_program_attr prg_attr;
+ 	struct bpf_create_map_attr map_attr;
+ 	char *cp, errmsg[STRERR_BUFSIZE];
+ 	struct bpf_insn insns[] = {
+@@ -4359,7 +4340,7 @@ static int probe_kern_global_data(void)
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
+-	int ret, map;
++	int ret, map, insn_cnt = ARRAY_SIZE(insns);
+ 
+ 	memset(&map_attr, 0, sizeof(map_attr));
+ 	map_attr.map_type = BPF_MAP_TYPE_ARRAY;
+@@ -4378,13 +4359,7 @@ static int probe_kern_global_data(void)
+ 
+ 	insns[0].imm = map;
+ 
+-	memset(&prg_attr, 0, sizeof(prg_attr));
+-	prg_attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+-	prg_attr.insns = insns;
+-	prg_attr.insns_cnt = ARRAY_SIZE(insns);
+-	prg_attr.license = "GPL";
+-
+-	ret = bpf_load_program_xattr(&prg_attr, NULL, 0);
++	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL", insns, insn_cnt, NULL);
+ 	close(map);
+ 	return probe_fd(ret);
+ }
+@@ -4500,30 +4475,24 @@ static int probe_kern_array_mmap(void)
+ 
+ static int probe_kern_exp_attach_type(void)
+ {
+-	struct bpf_load_program_attr attr;
++	LIBBPF_OPTS(bpf_prog_load_opts, opts, .expected_attach_type = BPF_CGROUP_INET_SOCK_CREATE);
+ 	struct bpf_insn insns[] = {
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
++	int fd, insn_cnt = ARRAY_SIZE(insns);
+ 
+-	memset(&attr, 0, sizeof(attr));
+ 	/* use any valid combination of program type and (optional)
+ 	 * non-zero expected attach type (i.e., not a BPF_CGROUP_INET_INGRESS)
+ 	 * to see if kernel supports expected_attach_type field for
+ 	 * BPF_PROG_LOAD command
+ 	 */
+-	attr.prog_type = BPF_PROG_TYPE_CGROUP_SOCK;
+-	attr.expected_attach_type = BPF_CGROUP_INET_SOCK_CREATE;
+-	attr.insns = insns;
+-	attr.insns_cnt = ARRAY_SIZE(insns);
+-	attr.license = "GPL";
+-
+-	return probe_fd(bpf_load_program_xattr(&attr, NULL, 0));
++	fd = bpf_prog_load(BPF_PROG_TYPE_CGROUP_SOCK, NULL, "GPL", insns, insn_cnt, &opts);
++	return probe_fd(fd);
+ }
+ 
+ static int probe_kern_probe_read_kernel(void)
+ {
+-	struct bpf_load_program_attr attr;
+ 	struct bpf_insn insns[] = {
+ 		BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),	/* r1 = r10 (fp) */
+ 		BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),	/* r1 += -8 */
+@@ -4532,26 +4501,21 @@ static int probe_kern_probe_read_kernel(void)
+ 		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_probe_read_kernel),
+ 		BPF_EXIT_INSN(),
+ 	};
++	int fd, insn_cnt = ARRAY_SIZE(insns);
+ 
+-	memset(&attr, 0, sizeof(attr));
+-	attr.prog_type = BPF_PROG_TYPE_KPROBE;
+-	attr.insns = insns;
+-	attr.insns_cnt = ARRAY_SIZE(insns);
+-	attr.license = "GPL";
+-
+-	return probe_fd(bpf_load_program_xattr(&attr, NULL, 0));
++	fd = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, "GPL", insns, insn_cnt, NULL);
++	return probe_fd(fd);
+ }
+ 
+ static int probe_prog_bind_map(void)
+ {
+-	struct bpf_load_program_attr prg_attr;
+ 	struct bpf_create_map_attr map_attr;
+ 	char *cp, errmsg[STRERR_BUFSIZE];
+ 	struct bpf_insn insns[] = {
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
+-	int ret, map, prog;
++	int ret, map, prog, insn_cnt = ARRAY_SIZE(insns);
+ 
+ 	memset(&map_attr, 0, sizeof(map_attr));
+ 	map_attr.map_type = BPF_MAP_TYPE_ARRAY;
+@@ -4568,13 +4532,7 @@ static int probe_prog_bind_map(void)
+ 		return ret;
  	}
  
- 	load_attr.log_buf = log_buf;
--	load_attr.log_buf_sz = log_buf_size;
--	ret = libbpf__bpf_prog_load(&load_attr);
-+	load_attr.log_size = log_buf_size;
-+	ret = bpf_prog_load(prog->type, prog_name, license, insns, insns_cnt, &load_attr);
+-	memset(&prg_attr, 0, sizeof(prg_attr));
+-	prg_attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+-	prg_attr.insns = insns;
+-	prg_attr.insns_cnt = ARRAY_SIZE(insns);
+-	prg_attr.license = "GPL";
+-
+-	prog = bpf_load_program_xattr(&prg_attr, NULL, 0);
++	prog = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL", insns, insn_cnt, NULL);
+ 	if (prog < 0) {
+ 		close(map);
+ 		return 0;
+@@ -4619,19 +4577,14 @@ static int probe_module_btf(void)
  
- 	if (ret >= 0) {
- 		if (log_buf && load_attr.log_level)
-@@ -6554,19 +6552,19 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
- 		pr_warn("-- BEGIN DUMP LOG ---\n");
- 		pr_warn("\n%s\n", log_buf);
- 		pr_warn("-- END LOG --\n");
--	} else if (load_attr.insn_cnt >= BPF_MAXINSNS) {
--		pr_warn("Program too large (%zu insns), at most %d insns\n",
--			load_attr.insn_cnt, BPF_MAXINSNS);
-+	} else if (insns_cnt >= BPF_MAXINSNS) {
-+		pr_warn("Program too large (%d insns), at most %d insns\n",
-+			insns_cnt, BPF_MAXINSNS);
- 		ret = -LIBBPF_ERRNO__PROG2BIG;
--	} else if (load_attr.prog_type != BPF_PROG_TYPE_KPROBE) {
-+	} else if (prog->type != BPF_PROG_TYPE_KPROBE) {
- 		/* Wrong program type? */
- 		int fd;
+ static int probe_perf_link(void)
+ {
+-	struct bpf_load_program_attr attr;
+ 	struct bpf_insn insns[] = {
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
+ 	int prog_fd, link_fd, err;
  
--		load_attr.prog_type = BPF_PROG_TYPE_KPROBE;
- 		load_attr.expected_attach_type = 0;
- 		load_attr.log_buf = NULL;
--		load_attr.log_buf_sz = 0;
--		fd = libbpf__bpf_prog_load(&load_attr);
-+		load_attr.log_size = 0;
-+		fd = bpf_prog_load(BPF_PROG_TYPE_KPROBE, prog_name, license,
-+				   insns, insns_cnt, &load_attr);
- 		if (fd >= 0) {
- 			close(fd);
- 			ret = -LIBBPF_ERRNO__PROGTYPE;
-@@ -9170,8 +9168,9 @@ long libbpf_get_error(const void *ptr)
+-	memset(&attr, 0, sizeof(attr));
+-	attr.prog_type = BPF_PROG_TYPE_TRACEPOINT;
+-	attr.insns = insns;
+-	attr.insns_cnt = ARRAY_SIZE(insns);
+-	attr.license = "GPL";
+-	prog_fd = bpf_load_program_xattr(&attr, NULL, 0);
++	prog_fd = bpf_prog_load(BPF_PROG_TYPE_TRACEPOINT, NULL, "GPL",
++				insns, ARRAY_SIZE(insns), NULL);
+ 	if (prog_fd < 0)
+ 		return -errno;
+ 
+@@ -9168,22 +9121,12 @@ long libbpf_get_error(const void *ptr)
  	return -errno;
  }
  
--int bpf_prog_load(const char *file, enum bpf_prog_type type,
--		  struct bpf_object **pobj, int *prog_fd)
+-COMPAT_VERSION(bpf_prog_load_deprecated, bpf_prog_load, LIBBPF_0.0.1)
+-int bpf_prog_load_deprecated(const char *file, enum bpf_prog_type type,
+-			     struct bpf_object **pobj, int *prog_fd)
+-{
+-	struct bpf_prog_load_attr attr;
+-
+-	memset(&attr, 0, sizeof(struct bpf_prog_load_attr));
+-	attr.file = file;
+-	attr.prog_type = type;
+-	attr.expected_attach_type = 0;
+-
+-	return bpf_prog_load_xattr(&attr, pobj, prog_fd);
+-}
+-
++__attribute__((alias("bpf_prog_load_xattr2")))
+ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+-			struct bpf_object **pobj, int *prog_fd)
++			struct bpf_object **pobj, int *prog_fd);
++
++static int bpf_prog_load_xattr2(const struct bpf_prog_load_attr *attr,
++				struct bpf_object **pobj, int *prog_fd)
+ {
+ 	struct bpf_object_open_attr open_attr = {};
+ 	struct bpf_program *prog, *first_prog = NULL;
+@@ -9254,6 +9197,20 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+ 	return 0;
+ }
+ 
 +COMPAT_VERSION(bpf_prog_load_deprecated, bpf_prog_load, LIBBPF_0.0.1)
 +int bpf_prog_load_deprecated(const char *file, enum bpf_prog_type type,
 +			     struct bpf_object **pobj, int *prog_fd)
- {
- 	struct bpf_prog_load_attr attr;
- 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index a364c379b998..bbc828667b22 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -676,8 +676,9 @@ struct bpf_prog_load_attr {
- 
- LIBBPF_API int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
- 				   struct bpf_object **pobj, int *prog_fd);
--LIBBPF_API int bpf_prog_load(const char *file, enum bpf_prog_type type,
--			     struct bpf_object **pobj, int *prog_fd);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_object__open() and bpf_object__load() instead")
-+LIBBPF_API int bpf_prog_load_deprecated(const char *file, enum bpf_prog_type type,
-+					struct bpf_object **pobj, int *prog_fd);
- 
- /* XDP related API */
- struct xdp_link_info {
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 43580eb47740..b895861a13c0 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -395,6 +395,8 @@ LIBBPF_0.6.0 {
- 		bpf_object__next_program;
- 		bpf_object__prev_map;
- 		bpf_object__prev_program;
-+		bpf_prog_load_deprecated;
-+		bpf_prog_load;
- 		bpf_program__insn_cnt;
- 		bpf_program__insns;
- 		btf__add_btf;
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index 0967112b933a..b21cefc9c3b6 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -41,6 +41,18 @@
- #define __LIBBPF_MARK_DEPRECATED_0_7(X)
- #endif
- 
-+/* This set of internal macros allows to do "function overloading" based on
-+ * number of arguments provided by used in backwards-compatible way during the
-+ * transition to libbpf 1.0
-+ * It's ugly but necessary evil that will be cleaned up when we get to 1.0.
-+ * See bpf_prog_load() overload for example.
-+ */
-+#define ___libbpf_cat(A, B) A ## B
-+#define ___libbpf_select(NAME, NUM) ___libbpf_cat(NAME, NUM)
-+#define ___libbpf_nth(_1, _2, _3, _4, _5, _6, N, ...) N
-+#define ___libbpf_cnt(...) ___libbpf_nth(__VA_ARGS__, 6, 5, 4, 3, 2, 1)
-+#define ___libbpf_overload(NAME, ...) ___libbpf_select(NAME, ___libbpf_cnt(__VA_ARGS__))(__VA_ARGS__)
++{
++	struct bpf_prog_load_attr attr;
 +
- /* Helper macro to declare and initialize libbpf options struct
-  *
-  * This dance with uninitialized declaration, followed by memset to zero,
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index aeb79e3a8ff9..c1e34794b829 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -276,37 +276,6 @@ int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz);
- int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
- 			 const char *str_sec, size_t str_len);
++	memset(&attr, 0, sizeof(struct bpf_prog_load_attr));
++	attr.file = file;
++	attr.prog_type = type;
++	attr.expected_attach_type = 0;
++
++	return bpf_prog_load_xattr2(&attr, pobj, prog_fd);
++}
++
+ struct bpf_link {
+ 	int (*detach)(struct bpf_link *link);
+ 	void (*dealloc)(struct bpf_link *link);
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 68f2dbf364aa..02c401e314c7 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -68,21 +68,21 @@ static void
+ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
+ 	   size_t insns_cnt, char *buf, size_t buf_len, __u32 ifindex)
+ {
+-	struct bpf_load_program_attr xattr = {};
++	LIBBPF_OPTS(bpf_prog_load_opts, opts);
+ 	int fd;
  
--struct bpf_prog_load_params {
--	enum bpf_prog_type prog_type;
--	enum bpf_attach_type expected_attach_type;
--	const char *name;
--	const struct bpf_insn *insns;
--	size_t insn_cnt;
--	const char *license;
--	__u32 kern_version;
--	__u32 attach_prog_fd;
--	__u32 attach_btf_obj_fd;
--	__u32 attach_btf_id;
--	__u32 prog_ifindex;
--	__u32 prog_btf_fd;
--	__u32 prog_flags;
+ 	switch (prog_type) {
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+-		xattr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
++		opts.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
+ 		break;
+ 	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+-		xattr.expected_attach_type = BPF_CGROUP_GETSOCKOPT;
++		opts.expected_attach_type = BPF_CGROUP_GETSOCKOPT;
+ 		break;
+ 	case BPF_PROG_TYPE_SK_LOOKUP:
+-		xattr.expected_attach_type = BPF_SK_LOOKUP;
++		opts.expected_attach_type = BPF_SK_LOOKUP;
+ 		break;
+ 	case BPF_PROG_TYPE_KPROBE:
+-		xattr.kern_version = get_kernel_version();
++		opts.kern_version = get_kernel_version();
+ 		break;
+ 	case BPF_PROG_TYPE_UNSPEC:
+ 	case BPF_PROG_TYPE_SOCKET_FILTER:
+@@ -115,13 +115,11 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
+ 		break;
+ 	}
+ 
+-	xattr.prog_type = prog_type;
+-	xattr.insns = insns;
+-	xattr.insns_cnt = insns_cnt;
+-	xattr.license = "GPL";
+-	xattr.prog_ifindex = ifindex;
++	opts.prog_ifindex = ifindex;
++	opts.log_buf = buf;
++	opts.log_size = buf_len;
+ 
+-	fd = bpf_load_program_xattr(&xattr, buf, buf_len);
++	fd = bpf_prog_load(prog_type, NULL, "GPL", insns, insns_cnt, NULL);
+ 	if (fd >= 0)
+ 		close(fd);
+ }
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 81f8fbc85e70..fdb22f5405c9 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -364,7 +364,6 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
+ static enum xsk_prog get_xsk_prog(void)
+ {
+ 	enum xsk_prog detected = XSK_PROG_FALLBACK;
+-	struct bpf_load_program_attr prog_attr;
+ 	struct bpf_create_map_attr map_attr;
+ 	__u32 size_out, retval, duration;
+ 	char data_in = 0, data_out;
+@@ -375,7 +374,7 @@ static enum xsk_prog get_xsk_prog(void)
+ 		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
+ 		BPF_EXIT_INSN(),
+ 	};
+-	int prog_fd, map_fd, ret;
++	int prog_fd, map_fd, ret, insn_cnt = ARRAY_SIZE(insns);
+ 
+ 	memset(&map_attr, 0, sizeof(map_attr));
+ 	map_attr.map_type = BPF_MAP_TYPE_XSKMAP;
+@@ -389,13 +388,7 @@ static enum xsk_prog get_xsk_prog(void)
+ 
+ 	insns[0].imm = map_fd;
+ 
+-	memset(&prog_attr, 0, sizeof(prog_attr));
+-	prog_attr.prog_type = BPF_PROG_TYPE_XDP;
+-	prog_attr.insns = insns;
+-	prog_attr.insns_cnt = ARRAY_SIZE(insns);
+-	prog_attr.license = "GPL";
 -
--	__u32 func_info_rec_size;
--	const void *func_info;
--	__u32 func_info_cnt;
+-	prog_fd = bpf_load_program_xattr(&prog_attr, NULL, 0);
++	prog_fd = bpf_prog_load(BPF_PROG_TYPE_XDP, NULL, "GPL", insns, insn_cnt, NULL);
+ 	if (prog_fd < 0) {
+ 		close(map_fd);
+ 		return detected;
+@@ -495,10 +488,13 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
+ 	};
+ 	struct bpf_insn *progs[] = {prog, prog_redirect_flags};
+ 	enum xsk_prog option = get_xsk_prog();
++	LIBBPF_OPTS(bpf_prog_load_opts, opts,
++		.log_buf = log_buf,
++		.log_size = log_buf_size,
++	);
+ 
+-	prog_fd = bpf_load_program(BPF_PROG_TYPE_XDP, progs[option], insns_cnt[option],
+-				   "LGPL-2.1 or BSD-2-Clause", 0, log_buf,
+-				   log_buf_size);
++	prog_fd = bpf_prog_load(BPF_PROG_TYPE_XDP, NULL, "LGPL-2.1 or BSD-2-Clause",
++				progs[option], insns_cnt[option], &opts);
+ 	if (prog_fd < 0) {
+ 		pr_warn("BPF log buffer:\n%s", log_buf);
+ 		return prog_fd;
+@@ -725,14 +721,12 @@ static int xsk_link_lookup(int ifindex, __u32 *prog_id, int *link_fd)
+ 
+ static bool xsk_probe_bpf_link(void)
+ {
+-	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
+-			    .flags = XDP_FLAGS_SKB_MODE);
+-	struct bpf_load_program_attr prog_attr;
++	LIBBPF_OPTS(bpf_link_create_opts, opts, .flags = XDP_FLAGS_SKB_MODE);
+ 	struct bpf_insn insns[2] = {
+ 		BPF_MOV64_IMM(BPF_REG_0, XDP_PASS),
+ 		BPF_EXIT_INSN()
+ 	};
+-	int prog_fd, link_fd = -1;
++	int prog_fd, link_fd = -1, insn_cnt = ARRAY_SIZE(insns);
+ 	int ifindex_lo = 1;
+ 	bool ret = false;
+ 	int err;
+@@ -744,13 +738,7 @@ static bool xsk_probe_bpf_link(void)
+ 	if (link_fd >= 0)
+ 		return true;
+ 
+-	memset(&prog_attr, 0, sizeof(prog_attr));
+-	prog_attr.prog_type = BPF_PROG_TYPE_XDP;
+-	prog_attr.insns = insns;
+-	prog_attr.insns_cnt = ARRAY_SIZE(insns);
+-	prog_attr.license = "GPL";
 -
--	__u32 line_info_rec_size;
--	const void *line_info;
--	__u32 line_info_cnt;
--
--	__u32 log_level;
--	char *log_buf;
--	size_t log_buf_sz;
--	int *fd_array;
--};
--
--int libbpf__bpf_prog_load(const struct bpf_prog_load_params *load_attr);
--
- struct bpf_create_map_params {
- 	const char *name;
- 	enum bpf_map_type map_type;
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 54b0a41a3775..c4497a4af3fe 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -24,7 +24,7 @@ SAN_CFLAGS	?=
- CFLAGS += -g -O0 -rdynamic -Wall $(GENFLAGS) $(SAN_CFLAGS)		\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)			\
--	  -Dbpf_prog_load=bpf_prog_test_load				\
-+	  -Dbpf_prog_load_deprecated=bpf_prog_test_load			\
- 	  -Dbpf_load_program=bpf_test_load_program
- LDLIBS += -lcap -lelf -lz -lrt -lpthread
+-	prog_fd = bpf_load_program_xattr(&prog_attr, NULL, 0);
++	prog_fd = bpf_prog_load(BPF_PROG_TYPE_XDP, NULL, "GPL", insns, insn_cnt, NULL);
+ 	if (prog_fd < 0)
+ 		return ret;
  
 -- 
 2.30.2
