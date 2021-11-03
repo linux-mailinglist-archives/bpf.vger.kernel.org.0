@@ -2,84 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387124447B9
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 18:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2D9444839
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 19:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhKCRwd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 13:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        id S230353AbhKCSYN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 14:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhKCRwa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:52:30 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DC2C061714;
-        Wed,  3 Nov 2021 10:49:53 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so1992244pjb.4;
-        Wed, 03 Nov 2021 10:49:53 -0700 (PDT)
+        with ESMTP id S229940AbhKCSYM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 14:24:12 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFE0C061714;
+        Wed,  3 Nov 2021 11:21:35 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id v64so8509602ybi.5;
+        Wed, 03 Nov 2021 11:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pPvNZoulhiJWCQBU4zryUvX6Xw6xIu9z8BZ3Chcznm4=;
-        b=gpawBxrRZngZIixIRKHyKRtR1WgFW2ojfyMQDjsOpC++wIjSzRyaFaP07qFWvCBVJ0
-         w09HXzjMctEV21CwOW+TWEmzuLPyuECfp/2c3weqPltbM7e8pPWEndEWoH1sz98pgGmO
-         n91iedxHJRVjnDnHWHDDzE9HrvdRIE1pqK3S5sp5r7WnPybj1jPUE7oShKghf2atpZAD
-         e/dKIQYxtlNE0dbUHKNLv9tka4BMpgnwDUlWJow8DjcvYfcwo6J9g3HjxcRBgfbcNxl+
-         8mXCQ+OzVlIGbvhdMn2GxBXVqP0amXRmZYcmGmzUIFmBs2dr4m74viUPzcOd0fIffcMq
-         YFYg==
+        bh=k/Y36oQavEUk/CbSUE4JbA9Hrj/lEJMM0pfmJWWGrTM=;
+        b=cjJvonAMq6S5Fm6eXejLFz0NLccrMj4ycbJ9mVLV7hqChyl7sx/fpZdcLamS/Erqix
+         DS9pwbZwoC2zldCibLTDntF3xS4wSFUUdAbS12EjvXOBt23dSpf60xXyTTO5SVSHF5P9
+         iZN0JmNOh4Pg5g8BbJjMa1wpaaTjms77RwMEiJwkRGeRi52xH+FFpwzzc+nIlMpmJ5Y+
+         VcHZXuGQmiF/bMSspjeqTZbBO0VnJMKuvZvEmL/NgRAoj85Rlq6SMlOMIf0G85X1dDvh
+         JyHUPuod61UD/3ul0kVShmE2ku8cPzYkA0VNb4m6kpf9U2238NImnXhM9qq7DyoDChZ9
+         B6mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pPvNZoulhiJWCQBU4zryUvX6Xw6xIu9z8BZ3Chcznm4=;
-        b=MtpNFDYShZ0+68eQNEAJPtbI9CpfO1qExhaJQz9cwlLLhizWOykS0YNZfsTYc1Ajw0
-         6GuXX4iqxhYrKI5Jgu2EJl/NhWW5EYWGGKDnfDV73n/Tp9bgC4ZNn+FH2IPY0KlLDKaR
-         PB2FdHnW05NBG2hcijKWYZbRGHeVGdqGCDwjBBHuLUN9IvsIa+MuhbCcKRsMOed139lo
-         8SfpvHpg4vQAxRe3SybpzORJZQ+BBXcvvhWqcjj4tNEe/CqNJ4wMZsJYKjUYrVZrlThU
-         j74z5Vbo9EAn8pw+X0iYz3sLV7uQ9bw9orZlKAXi8lRg8VlUsjHmFWiJzkl4NOUT6G49
-         AS3w==
-X-Gm-Message-State: AOAM530UMw2+PZWmB9lOa0ZNZHUgM0gVw/faa7MTCe3yvkhreWMEhZBR
-        /6cr+jYu1b0jRfaQPy48lkWRk7WuW8gWd+LEA2XP8uSD
-X-Google-Smtp-Source: ABdhPJwBy+n5eAeWFPR11/hBk/8XrZoz5ZTgXkU5n3+s8oDYIi2gp06Pm/KfcDO30PcR3yJ+Vddht3b6BoYbg92it8s=
-X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr16206841pjj.138.1635961792997;
- Wed, 03 Nov 2021 10:49:52 -0700 (PDT)
+        bh=k/Y36oQavEUk/CbSUE4JbA9Hrj/lEJMM0pfmJWWGrTM=;
+        b=4L5l/dyKuxIBhZNAxeubRBvawYRwAJ1c/UT+G5pDyK5bYkrRYps+OaIfd9AxNhVxkv
+         wsQ83s2sGeB1GJOTXVuXsByjDiwBxnZA6xRaB9k8VFQ6+2LTI7EvMhHw26940xElkxPh
+         JEE/l3NvnWg6Qh01h+9TJlwmzrN/xuBULnetYx0QTtPD3Ameb3DMbbC8aBsXrkL1jD2y
+         /PHd3tI2fp9KkrWMbxGVBu8ZCOv7eOYnxGGfiWZp+tXSkxgMVVIycJOsu0/+xKYOgNVF
+         yH7j2HlEMbwXa7QR3PBH94qhR2bZOywrLxw+RPkaR0fGuu9EvF4TnRyRHSajJXHcBrq4
+         QZ+w==
+X-Gm-Message-State: AOAM531ngrT1eCzgnXHBQmwLbvwkJ4b+OkKYjCx497gSl/sAWIie0wSc
+        ppqOezNhiWgq/JVBHzLNaQ880MDpZtwO5ROPFcg=
+X-Google-Smtp-Source: ABdhPJyKY84MoemKz2Umdb4LiuzuPIrMMGhKY9VSXDlPsLmNLrHr9IqmH0xGvjNDKacU4WEe34pi7QWS6M+q7cHSNZY=
+X-Received: by 2002:a25:d16:: with SMTP id 22mr41493565ybn.51.1635963694372;
+ Wed, 03 Nov 2021 11:21:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
- <20211103001245.muyte7exph23tmco@ast-mbp.dhcp.thefacebook.com>
- <fcec81dd-3bb9-7dcf-139d-847538b6ad20@fb.com> <CAN22DihwJ7YDFSPk+8CCs0RcSWvZOpNV=D1u+42XabztS6hcKQ@mail.gmail.com>
-In-Reply-To: <CAN22DihwJ7YDFSPk+8CCs0RcSWvZOpNV=D1u+42XabztS6hcKQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 3 Nov 2021 10:49:41 -0700
-Message-ID: <CAADnVQJ_ger=Tjn=9SuUTES6Tt5k_G0M+6T_ELzFtw_cSVs83A@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
-To:     Joe Burton <jevburton.kernel@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+References: <20211101224357.2651181-1-davemarchevsky@fb.com>
+ <CAEf4BzY_OXyWdgJu=0phg0Pyb4PW6QWcKKBHLFOf=FwAmgOjqA@mail.gmail.com> <7c6a10fb-b1c5-4f50-8f7c-75c170e24ebb@isovalent.com>
+In-Reply-To: <7c6a10fb-b1c5-4f50-8f7c-75c170e24ebb@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 3 Nov 2021 11:21:23 -0700
+Message-ID: <CAEf4BzaGcLTsG-7Wbp+R-Y45ZN29Ch2pUyBdOHvYMoXupUaYWg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/4] libbpf: deprecate bpf_program__get_prog_info_linear
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
         Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Joe Burton <jevburton@google.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 10:45 AM Joe Burton <jevburton.kernel@gmail.com> wrote:
+On Wed, Nov 3, 2021 at 4:26 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Sort of - I hit issues when defining the function in the same
-> compilation unit as the call site. For example:
+> 2021-11-02 16:06 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Mon, Nov 1, 2021 at 3:46 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> >>
+> >> bpf_program__get_prog_info_linear is a helper which wraps the
+> >> bpf_obj_get_info_by_fd BPF syscall with some niceties that put
+> >> all dynamic-length bpf_prog_info in one buffer contiguous with struct
+> >> bpf_prog_info, and simplify the selection of which dynamic data to grab.
+> >>
+> >> The resultant combined struct, bpf_prog_info_linear, is persisted to
+> >> file by 'perf' to enable later annotation of BPF prog data. libbpf
+> >> includes some vaddr <-> offset conversion helpers for
+> >> struct bpf_prog_info_linear to simplify this.
+> >>
+> >> This functionality is heavily tailored to perf's usecase, so its use as
+> >> a general prog info API should be deemphasized in favor of just calling
+> >> bpf_obj_get_info_by_fd, which can be more easily fit to purpose. Some
+> >> examples from caller migrations in this series:
+> >>
+> >>   * Some callers weren't requesting or using dynamic-sized prog info and
+> >>     are well served by a simple get_info_by_fd call (e.g.
+> >>     dump_prog_id_as_func_ptr in bpftool)
+> >>   * Some callers were requesting all of a specific dynamic info type but
+> >>     only using the first record, so can avoid unnecessary malloc by
+> >>     only requesting 1 (e.g. profile_target_name in bpftool)
+> >>   * bpftool's do_dump saves some malloc/free by growing and reusing its
+> >>     dynamic prog_info buf as it loops over progs to grab info and dump.
+> >>
+> >> Perf does need the full functionality of
+> >> bpf_program__get_prog_info_linear and its accompanying structs +
+> >> helpers, so copy the code to its codebase, migrate all other uses in the
+> >> tree, and deprecate the helper in libbpf.
+> >>
+> >> Since the deprecated symbols continue to be included in perf some
+> >> renaming was necessary in perf's copy, otherwise functionality is
+> >> unchanged.
+> >>
+> >> This work was previously discussed in libbpf's issue tracker [0].
+> >>
+> >> [0]: https://github.com/libbpf/libbpf/issues/313
+> >>
+> >> v2->v3:
+> >>   * Remove v2's patch 1 ("libbpf: Migrate internal use of
+> >>     bpf_program__get_prog_info_linear"), which was applied [Andrii]
+> >>   * Add new patch 1 migrating error checking of libbpf calls to
+> >>     new scheme [Andrii, Quentin]
+> >>   * In patch 2, fix != -1 error check of libbpf call, improper realloc
+> >>     handling, and get rid of confusing macros [Andrii]
+> >>   * In patch 4, deprecate starting from 0.6 instead of 0.7 [Andrii]
+> >
+> > LGTM. Quentin, can you please take a look and ack as well? Thanks!
 >
->   static noinline int bpf_array_map_trace_update(struct bpf_map *map,
->                 void *key, void *value, u64 map_flags)
+> Thanks Andrii for the Cc! I realised yesterday morning that I'd been hit
+> by the unsubscription incident and missed v3 of this set.
 
-Not quite :)
-You've had this issue because of 'static noinline'.
-Just 'noinline' would not have such issues even in the same file.
+Yeah, super unfortunate this unsubscription. Had to go through that as well.
 
-Reminder: please don't top post and trim your replies.
+>
+> The changes look good to me, and you can add my tag to the first three
+> patches:
+>
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+
+Thanks, I will.
+
+>
+> Regarding patch 4, looking at the latest deprecations in libbpf, I would
+> have expected the functions to be deprecated starting in v0.7, and not v0.6?
+
+The reason to do it in upcoming v0.6 is because there are no
+replacement APIs that we are going to wait for. No point in delaying
+the inevitable just for the sake of delaying it.
+
+>
+> Other than that, on patch 2 (apologies for not answering inline), it
+> would feel more natural, in do_dump()'s "for" loop in prog.c, to have
+> the memset() above the call to bpf_obj_get_info_by_fd() (and to skip the
+> zero-initialisation of "info") instead of at the end of the loop, which
+> means a useless memset() just before we exit the loop. But probably not
+> worth a respin just for that.
+
+Yeah, that bothered me a bit as well, but if you are also mentioning
+that I'll just move it up as you suggested, while applying. Thanks.
+
+>
+> Thanks,
+> Quentin
