@@ -2,214 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4756544486B
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 19:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AECC4448A3
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 19:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhKCSmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 14:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
+        id S229837AbhKCSxo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 14:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhKCSmH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:42:07 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA50C061205;
-        Wed,  3 Nov 2021 11:39:31 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id e136so5391564ybc.4;
-        Wed, 03 Nov 2021 11:39:31 -0700 (PDT)
+        with ESMTP id S229697AbhKCSxn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 14:53:43 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA1AC061714;
+        Wed,  3 Nov 2021 11:51:06 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id y3so8748533ybf.2;
+        Wed, 03 Nov 2021 11:51:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZtBQxj50FdO8v/Q0TtDRDnyywac0YLAeKVXvSpTYK3c=;
-        b=LL605NzBTkON5uknJc51rqMFlx4Y8vz3C4BE2xzvtJDfpw3vyd548KQy+HbDxdDKz2
-         vXp9y5DpfBhrR0lh5LGKdPGhYvZj6Af4RI7FmDfKBWzBKWFo6k+/ND0xy2cQFRmgLjli
-         HDn2tsH2FdKgClk/GPq/Pv4uW6kq6cuUPHMaM/TfdadweJzb9wZAmTL9nb77tUJVUicd
-         3PXSYhLFe868XIUB1z90HvmN8UKKPST0F4zbIsHcilbNWlnYcrzKb7jT/V+5ZmvUFLFv
-         Pj8xKzWxzh5jDXh+iW5MJ6al+iRPDZF0zbkVwmTXArF841Ack042zhtafnzgxp4WxOYj
-         ckzw==
+        bh=yw3M8NVGUaiaF6RQboKd6RTjrXvJsqFSMX2x6M9gO7o=;
+        b=EGkhfZFZ1h80LT4AZAOyLqRsLxXr90QPNH/ElTNArWXioFgjxzTGBhprpdF+SIbUU8
+         xYdFE7ESTvfP2BxXHX1OI4PqxXfPhjGOn/8tG+gPJton1d8a7cVmOOhEnMexhsneg7Sp
+         NzUcAhqNgkAH3Ap/cOfxAzWfH0XkImpeUhLCQ8Li8HcCkcH7yuK7yAkOYS1xVvxY1Q6+
+         mwFbPpNBvgg6rUl2xx3dOTgF10jAsdx7mbPyQGGLGTKGbv3FHiu9dwkMEc0lxxOSrsDy
+         cHqmx8wkMVvf4kFGscb9tPCLLbPspzgPuXLbM+79SFxGi9mj2/qUP5rJL6SzGEsJiLz5
+         4I6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZtBQxj50FdO8v/Q0TtDRDnyywac0YLAeKVXvSpTYK3c=;
-        b=4Onkmiw9SghMo/rdKonaD4Mryy9QRi/nQXO4xyCPgpMa35ZAcXrlaStiyxTdi/FbYH
-         sAV5524iW5TyAFO61QxbygjYN6iYHap7NBUnU2IZE5927v41ERzLKrFrl3rfJn0ZyAg8
-         hoVRyGANyLL4YKRkyv9kZOrAa8lL7l1iWmKt1p03cvCzm3NMHoEd85IhRFe4KWGPW/bU
-         0lV8ISnsYv7JxJaXaQoUuHfnkvMID+cicOiyIGGPfxPi+XXbcSCENvlQtMCCs++IYQaI
-         G3PXHynh2z2QoaYyarJDuqmCCz6p0Kwfd1aLen4MWT551PjY/Kjva34bgnkRltWYKf7/
-         +eYQ==
-X-Gm-Message-State: AOAM531MHHwdPp+p+WTOREHrwCnv2KGtYgmuW/XdZoR9vwwg+K37RZrM
-        gOMuzzANSewxHsAb9snbNAOxzw+H9u1wiH09TRU=
-X-Google-Smtp-Source: ABdhPJzSrwTXuz/ZzMyarM+TFStSvxihSXmdU7/3x+bcss5lKvytkFLhQShChGWSF89WKLzsGHCcZDJFlypu7QIftps=
-X-Received: by 2002:a25:afcf:: with SMTP id d15mr46347135ybj.433.1635964770161;
- Wed, 03 Nov 2021 11:39:30 -0700 (PDT)
+        bh=yw3M8NVGUaiaF6RQboKd6RTjrXvJsqFSMX2x6M9gO7o=;
+        b=mrwD9vehSdNUJa1MSTW43AjG3NOnpw8Tx3+cUbywZ6Txd0ihpSCepZv9kMW1NIx/M6
+         sVnSkcWYXrUS7UUQvrJHhOn6m+4Nt2tJeRU8ByVQ02xcaLD2Mxa6jy9Tsi47WFOttQFe
+         9l5bt8MjGS6yo5CJNtcblpIPHHrpOOE8ilaH+5+UKSTOHjvtSGx0DDrANX9nvFEfF9Ln
+         Ir50/7BaPHjyBe96xLl+skbTvOqMuiLe3cbbDqUHjdL/SHu5Szfgm8d5eAQiu6FNSFXa
+         EFKPYvdVZj0wgvR5k9mndMxOiZ4XyC/7X51qbvPnY5Bq5iAeQ8eSMdK9UwxkHKGAIhgh
+         Hp6w==
+X-Gm-Message-State: AOAM532IU87mZClnxB8lJaNj9GVbjpxN9D/+xNiA8Y9BvjmB2rfhA5aX
+        KUN1gPRPCC8Isxou7Lh+kDCxQgRbETBMDNPSrqk=
+X-Google-Smtp-Source: ABdhPJwo/NTzJ10taWClmCG9M2kZ7TiS5mmNQJuGgFZWgASg4bXE0LZNq40SIPaS0Kx5eIlCnnas3/CRFQFlwpXRyLE=
+X-Received: by 2002:a25:d16:: with SMTP id 22mr41679749ybn.51.1635965465937;
+ Wed, 03 Nov 2021 11:51:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <1635932969-13149-1-git-send-email-alan.maguire@oracle.com> <1635932969-13149-3-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1635932969-13149-3-git-send-email-alan.maguire@oracle.com>
+References: <20211101224357.2651181-1-davemarchevsky@fb.com>
+ <CAEf4BzY_OXyWdgJu=0phg0Pyb4PW6QWcKKBHLFOf=FwAmgOjqA@mail.gmail.com>
+ <7c6a10fb-b1c5-4f50-8f7c-75c170e24ebb@isovalent.com> <CAEf4BzaGcLTsG-7Wbp+R-Y45ZN29Ch2pUyBdOHvYMoXupUaYWg@mail.gmail.com>
+In-Reply-To: <CAEf4BzaGcLTsG-7Wbp+R-Y45ZN29Ch2pUyBdOHvYMoXupUaYWg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Nov 2021 11:39:18 -0700
-Message-ID: <CAEf4BzadDy006mGCZac4kySX_re7eFe6VY0cHgkpY3fQNRuASg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add exception handling
- selftests for tp_bpf program
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     ardb@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Wed, 3 Nov 2021 11:50:53 -0700
+Message-ID: <CAEf4BzamZ06oN4vezW1_L1Yn2hmA9SHn5Ch+JgjwqRbg08Yegg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/4] libbpf: deprecate bpf_program__get_prog_info_linear
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, andreyknvl@gmail.com,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        samitolvanen@google.com, joey.gouly@arm.com, maz@kernel.org,
-        daizhiyuan@phytium.com.cn, jthierry@redhat.com,
-        Tian Tao <tiantao6@hisilicon.com>, pcc@google.com,
-        Andrew Morton <akpm@linux-foundation.org>, rppt@kernel.org,
-        Jisheng.Zhang@synaptics.com, liu.hailong6@zte.com.cn,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 2:50 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Wed, Nov 3, 2021 at 11:21 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Exception handling is triggered in BPF tracing programs when
-> a NULL pointer is dereferenced; the exception handler zeroes the
-> target register and execution of the BPF program progresses.
+> On Wed, Nov 3, 2021 at 4:26 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >
+> > 2021-11-02 16:06 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > On Mon, Nov 1, 2021 at 3:46 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> > >>
+> > >> bpf_program__get_prog_info_linear is a helper which wraps the
+> > >> bpf_obj_get_info_by_fd BPF syscall with some niceties that put
+> > >> all dynamic-length bpf_prog_info in one buffer contiguous with struct
+> > >> bpf_prog_info, and simplify the selection of which dynamic data to grab.
+> > >>
+> > >> The resultant combined struct, bpf_prog_info_linear, is persisted to
+> > >> file by 'perf' to enable later annotation of BPF prog data. libbpf
+> > >> includes some vaddr <-> offset conversion helpers for
+> > >> struct bpf_prog_info_linear to simplify this.
+> > >>
+> > >> This functionality is heavily tailored to perf's usecase, so its use as
+> > >> a general prog info API should be deemphasized in favor of just calling
+> > >> bpf_obj_get_info_by_fd, which can be more easily fit to purpose. Some
+> > >> examples from caller migrations in this series:
+> > >>
+> > >>   * Some callers weren't requesting or using dynamic-sized prog info and
+> > >>     are well served by a simple get_info_by_fd call (e.g.
+> > >>     dump_prog_id_as_func_ptr in bpftool)
+> > >>   * Some callers were requesting all of a specific dynamic info type but
+> > >>     only using the first record, so can avoid unnecessary malloc by
+> > >>     only requesting 1 (e.g. profile_target_name in bpftool)
+> > >>   * bpftool's do_dump saves some malloc/free by growing and reusing its
+> > >>     dynamic prog_info buf as it loops over progs to grab info and dump.
+> > >>
+> > >> Perf does need the full functionality of
+> > >> bpf_program__get_prog_info_linear and its accompanying structs +
+> > >> helpers, so copy the code to its codebase, migrate all other uses in the
+> > >> tree, and deprecate the helper in libbpf.
+> > >>
+> > >> Since the deprecated symbols continue to be included in perf some
+> > >> renaming was necessary in perf's copy, otherwise functionality is
+> > >> unchanged.
+> > >>
+> > >> This work was previously discussed in libbpf's issue tracker [0].
+> > >>
+> > >> [0]: https://github.com/libbpf/libbpf/issues/313
+> > >>
+> > >> v2->v3:
+> > >>   * Remove v2's patch 1 ("libbpf: Migrate internal use of
+> > >>     bpf_program__get_prog_info_linear"), which was applied [Andrii]
+> > >>   * Add new patch 1 migrating error checking of libbpf calls to
+> > >>     new scheme [Andrii, Quentin]
+> > >>   * In patch 2, fix != -1 error check of libbpf call, improper realloc
+> > >>     handling, and get rid of confusing macros [Andrii]
+> > >>   * In patch 4, deprecate starting from 0.6 instead of 0.7 [Andrii]
+> > >
+> > > LGTM. Quentin, can you please take a look and ack as well? Thanks!
+> >
+> > Thanks Andrii for the Cc! I realised yesterday morning that I'd been hit
+> > by the unsubscription incident and missed v3 of this set.
 >
-> To test exception handling then, we need to trigger a NULL pointer
-> dereference for a field which should never be zero; if it is, the
-> only explanation is the exception handler ran.  The skb->sk is
-> the NULL pointer chosen (for a ping received for 127.0.0.1 there
-> is no associated socket), and the sk_sndbuf size is chosen as the
-> "should never be 0" field.  Test verifies sk is NULL and sk_sndbuf
-> is zero.
+> Yeah, super unfortunate this unsubscription. Had to go through that as well.
 >
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/exhandler.c | 45 ++++++++++++++++++++++
->  tools/testing/selftests/bpf/progs/exhandler_kern.c | 35 +++++++++++++++++
->  2 files changed, 80 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/exhandler.c
->  create mode 100644 tools/testing/selftests/bpf/progs/exhandler_kern.c
+> >
+> > The changes look good to me, and you can add my tag to the first three
+> > patches:
+> >
+> > Acked-by: Quentin Monnet <quentin@isovalent.com>
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/exhandler.c b/tools/testing/selftests/bpf/prog_tests/exhandler.c
-> new file mode 100644
-> index 0000000..5999498
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/exhandler.c
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021, Oracle and/or its affiliates. */
-> +
-> +#include <test_progs.h>
-> +
-> +/* Test that verifies exception handling is working; ping to localhost
-> + * will result in a receive with a NULL skb->sk; our BPF program
-> + * then dereferences the an sk field which shouldn't be 0, and if we
-> + * see 0 we can conclude the exception handler ran when we attempted to
-> + * dereference the NULL sk and zeroed the destination register.
-> + */
-> +#include "exhandler_kern.skel.h"
-> +
-> +#define SYSTEM(...)    \
-> +       (env.verbosity >= VERBOSE_VERY ?        \
-> +        system(__VA_ARGS__) : system(__VA_ARGS__ " >/dev/null 2>&1"))
-> +
-> +void test_exhandler(void)
-> +{
-> +       struct exhandler_kern *skel;
-> +       struct exhandler_kern__bss *bss;
-> +       int err = 0, duration = 0;
-> +
-> +       skel = exhandler_kern__open_and_load();
-> +       if (CHECK(!skel, "skel_load", "skeleton failed: %d\n", err))
-> +               goto cleanup;
-> +
-> +       bss = skel->bss;
-
-nit: you don't need to have a separate variable for that,
-skel->bss->exception_triggered in below check would be just as
-readable
-
-> +
-> +       err = exhandler_kern__attach(skel);
-> +       if (CHECK(err, "attach", "attach failed: %d\n", err))
-> +               goto cleanup;
-> +
-> +       if (CHECK(SYSTEM("ping -c 1 127.0.0.1"),
-
-Is there some other tracepoint or kernel function that could be used
-for testing and triggered without shelling out to ping binary? This
-hurts test isolation and will make it or some other ping-using
-selftests spuriously fail when running in parallel test mode (i.e.,
-sudo ./test_progs -j).
-
-> +                 "ping localhost",
-> +                 "ping localhost failed\n"))
-> +               goto cleanup;
-> +
-> +       if (CHECK(bss->exception_triggered == 0,
-
-please use ASSERT_EQ() instead, CHECK()s are kind of deprecated for new tests
-
-
-> +                 "verify exceptions were triggered",
-> +                 "no exceptions were triggered\n"))
-> +               goto cleanup;
-> +cleanup:
-> +       exhandler_kern__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/exhandler_kern.c b/tools/testing/selftests/bpf/progs/exhandler_kern.c
-> new file mode 100644
-> index 0000000..4049450
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/exhandler_kern.c
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021, Oracle and/or its affiliates. */
-> +
-> +#include "vmlinux.h"
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_core_read.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +unsigned int exception_triggered;
-> +
-> +/* TRACE_EVENT(netif_rx,
-> + *         TP_PROTO(struct sk_buff *skb),
-> + */
-> +SEC("tp_btf/netif_rx")
-> +int BPF_PROG(trace_netif_rx, struct sk_buff *skb)
-> +{
-> +       struct sock *sk;
-> +       int sndbuf;
-> +
-> +       /* To verify we hit an exception we dereference skb->sk->sk_sndbuf;
-> +        * sndbuf size should never be zero, so if it is we know the exception
-> +        * handler triggered and zeroed the destination register.
-> +        */
-> +       __builtin_preserve_access_index(({
-> +               sk = skb->sk;
-> +               sndbuf = sk->sk_sndbuf;
-> +       }));
-
-you don't need __builtin_preserve_access_index(({ }) region, because
-vmlinux.h already annotates all the types with preserve_access_index
-attribute
-
-> +
-> +       if (!sk && !sndbuf)
-> +               exception_triggered++;
-> +       return 0;
-> +}
-> --
-> 1.8.3.1
+> Thanks, I will.
 >
+> >
+> > Regarding patch 4, looking at the latest deprecations in libbpf, I would
+> > have expected the functions to be deprecated starting in v0.7, and not v0.6?
+>
+> The reason to do it in upcoming v0.6 is because there are no
+> replacement APIs that we are going to wait for. No point in delaying
+> the inevitable just for the sake of delaying it.
+>
+> >
+> > Other than that, on patch 2 (apologies for not answering inline), it
+> > would feel more natural, in do_dump()'s "for" loop in prog.c, to have
+> > the memset() above the call to bpf_obj_get_info_by_fd() (and to skip the
+> > zero-initialisation of "info") instead of at the end of the loop, which
+> > means a useless memset() just before we exit the loop. But probably not
+> > worth a respin just for that.
+>
+> Yeah, that bothered me a bit as well, but if you are also mentioning
+> that I'll just move it up as you suggested, while applying. Thanks.
+>
+
+Applied to bpf-next, thanks.
+
+> >
+> > Thanks,
+> > Quentin
