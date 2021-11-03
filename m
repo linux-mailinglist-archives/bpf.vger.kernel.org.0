@@ -2,115 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A2644400A
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 11:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAB4444041
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 12:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhKCKgs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 06:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhKCKgr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 06:36:47 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB49CC061203
-        for <bpf@vger.kernel.org>; Wed,  3 Nov 2021 03:34:10 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id s1so444590qta.13
-        for <bpf@vger.kernel.org>; Wed, 03 Nov 2021 03:34:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Xom/hPiNgRklPy6PHcPTBsv7vizg3n2pK7P+Hb9c8c8=;
-        b=lp00QQOsPKxBS5e3MyUDUTuCVQF3o1j2ruBENN32WTbQ+VSvXRahf/mNw9oPtwnS54
-         ZtJUwPQp518dkw+Tonau/iePibZv3mYllnivU9e1tVi6ENCUiDJOaYhytTPJEFJCWdOu
-         ZM/2FkDWVff79sfaG0CVaqxsXKUN1cCE9xt/MfZi2olugzVRuRQH936IjxK9tG/lc0zl
-         AiPmFWVBE78FPnGXQLJJKEVlFSOVsBKmyV3DgWydRK0Tq4wbzKeCSR3m8eZEhXrVgQky
-         5SOwMDYKm6RNdjbmUUjcAnb5j7KhqBOgwVw25nHfNRzaw/FKpjyWw4Vmhq7WthGYPl9g
-         DVUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Xom/hPiNgRklPy6PHcPTBsv7vizg3n2pK7P+Hb9c8c8=;
-        b=Uxz2bhSQcUDsClKMWI3etSK4nql5/8fUHX+IlbIEwwNh6FpUJSyN5QJFVQ3zEPia8n
-         VzzWMsqTJmbk7a5darHMkQKGa45UJb6tgyTjm/DtR1RTCrClgxwqwKn0KIDtUWedvqmv
-         2oOQyA5Xg3aBUqX3oa0sGJ7lGmQ3Gluj7OjgTt+htN+5VBadt/4Hh9I60HNGLYYCVp5g
-         LHMU1CVseYXcNPDYb3hD45lproxY9EaApqdVyeG0hBI7X5Gnad/DZmCJ22i4hUwXGP/0
-         /1nigftTk/5ftdSJkqeGgKuEOuGHIl9LGjpDYMlxbgGPCm4GaSL0J8PJGWX5cufTwlsH
-         640A==
-X-Gm-Message-State: AOAM5317Gs785zJktjXv+UByZkrBZcXFvfjjRG3cQYQf8we409WMRJDH
-        YK6rnOVz80wQ0N6k2EQwPJGG3Q==
-X-Google-Smtp-Source: ABdhPJwnHjhITyxdempWaCFmOm2UjBn2mXuDkwTso4NHabnTNvkdMSc8ra1hPDgpc3C+ZQcVaPDynA==
-X-Received: by 2002:a05:622a:107:: with SMTP id u7mr21943459qtw.79.1635935650114;
-        Wed, 03 Nov 2021 03:34:10 -0700 (PDT)
-Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-33-142-112-185-132.dsl.bell.ca. [142.112.185.132])
-        by smtp.googlemail.com with ESMTPSA id r7sm1329295qtw.56.2021.11.03.03.34.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 03:34:09 -0700 (PDT)
-Message-ID: <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
-Date:   Wed, 3 Nov 2021 06:34:08 -0400
+        id S230304AbhKCLDP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 07:03:15 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27171 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhKCLDO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 07:03:14 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HkkKl35PvzTgG2;
+        Wed,  3 Nov 2021 18:59:07 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 19:00:36 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 19:00:36 +0800
+Subject: Re: Question about pointer to forward type
+To:     Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Andrii Nakryiko" <andrii@kernel.org>
+References: <c19f223e-2ef5-9f9a-f741-2fcc7d89fef6@huawei.com>
+ <050ba6c6-c7b2-528c-b616-030b7b14d67e@fb.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <bb306bdd-4770-6d47-c490-a206d191b1e8@huawei.com>
+Date:   Wed, 3 Nov 2021 19:00:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+In-Reply-To: <050ba6c6-c7b2-528c-b616-030b7b14d67e@fb.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-To:     Joe Burton <jevburton.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Joe Burton <jevburton@google.com>
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-In-Reply-To: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-11-01 22:14, Joe Burton wrote:
-> From: Joe Burton<jevburton@google.com>
-> 
-> This is the third version of a patch series implementing map tracing.
-> 
-> Map tracing enables executing BPF programs upon BPF map updates. This
-> might be useful to perform upgrades of stateful programs; e.g., tracing
-> programs can propagate changes to maps that occur during an upgrade
-> operation.
-> 
-> This version uses trampoline hooks to provide the capability.
-> fentry/fexit/fmod_ret programs can attach to two new functions:
->          int bpf_map_trace_update_elem(struct bpf_map* map, void* key,
->                  void* val, u32 flags);
->          int bpf_map_trace_delete_elem(struct bpf_map* map, void* key);
-> 
-> These hooks work as intended for the following map types:
->          BPF_MAP_TYPE_ARRAY
->          BPF_MAP_TYPE_PERCPU_ARRAY
->          BPF_MAP_TYPE_HASH
->          BPF_MAP_TYPE_PERCPU_HASH
->          BPF_MAP_TYPE_LRU_HASH
->          BPF_MAP_TYPE_LRU_PERCPU_HASH
-> 
-> The only guarantee about the semantics of these hooks is that they execute
-> before the operation takes place. We cannot call them with locks held
-> because the hooked program might try to acquire the same locks. Thus they
-> may be invoked in situations where the traced map is not ultimately
-> updated.
+Hi,
 
-Sorry, I may have missed something obvious while staring at the patches,
-but:
-Dont you want the notification if the command actually was successful
-on the map? If the command failed for whatever reason theres nothing
-to synchronize? Unless you use that as an indicator to re-read the map?
+On 11/3/2021 11:58 AM, Yonghong Song wrote:
+>
+>
+> On 10/15/21 7:22 AM, Hou Tao wrote:
+>> Hi,
+>>
+>> When adding test case for BPF STRUCT OPS, I got the following error
+>> during test:
+>>
+>> libbpf: load bpf program failed: Permission denied
+>> libbpf: -- BEGIN DUMP LOG ---
+>> libbpf:
+>> R1 type=ctx expected=fp
+>> ; int BPF_PROG(test_1, struct bpf_dummy_ops_state *state)
+>> 0: (b4) w0 = -218893067
+>> ; int BPF_PROG(test_1, struct bpf_dummy_ops_state *state)
+>> 1: (79) r1 = *(u64 *)(r1 +0)
+>> func 'test_1' arg0 type FWD is not a struct
+>> invalid bpf_context access off=0 size=8
+>>
+>> The error is reported from btf_ctx_access(). And the cause is
+>> the definition of struct bpf_dummy_ops_state is separated from
+>> the definition of test_1 function:
+>>
+>> test_1 is defined in include/linux/bpf.h
+>>
+>> struct bpf_dummy_ops_state;
+>> struct bpf_dummy_ops {
+>>          int (*test_1)(struct bpf_dummy_ops_state *cb);
+>> }
+>>
+>> bpf_dummy_ops_state is defined in net/bpf/bpf_dummy_struct_ops.c
+>>
+>> struct bpf_dummy_ops_state {
+>> };
+>>
+>> So arg0 has BTF_KIND_FWD type, and the check in btf_ctx_access() fails.
+>> The problem can be fixed by moving the definition of bpf_dummy_ops_state
+>> into include/linux/bpf.h or using a void * instead of
+>> struct bpf_dummy_ops_state *. But forward declaration is possible under
+>> STRUCT_OPS scenario, so my question is whether or not it is a known issue
+>> and is there somebody working on this ?
+>
+> I suspect this is what happened.
+> The 'struct bpf_dummy_ops_state' is defined in net/bpf/bpf_dummy_struct_ops.c,
+> but this structure is not used in that file
+> so there is no definition in the bpf_dummy_struct_ops.o dwarf.
+>
+> Since in the final combined dwarf, there is no "struct bpf_dummy_ops_state"
+> definition, dedup won't be able to replace
+> forward declaration with actual definition. And this caused
+> your above issue.
+>
+> It would be good if you can verifier whether this is the case or
+> not. If bpf_dummy_ops_state definition is in the dwarf, then we
+> likely have a dedup problem.
+struct bpf_dummy_ops_state is used in net/bpf/bpf_dummy_struct_ops.c, but
+the problem still exists.
 
-cheers,
-jamal
+And it can be reproduced by moving the definition of bpf_dummy_ops_state
+from include/linux/bpf.h to bpf_dummy_struct_ops.c as shown below and
+running "./test_progs -t dummy_st_ops":
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2be6dfd68df9..1d1e6dff5ce8 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1024,9 +1024,7 @@ static inline void bpf_module_put(const void *data, struct
+module *owner)
+
+ #ifdef CONFIG_NET
+ /* Define it here to avoid the use of forward declaration */
+-struct bpf_dummy_ops_state {
+-       int val;
+-};
++struct bpf_dummy_ops_state;
+
+ struct bpf_dummy_ops {
+        int (*test_1)(struct bpf_dummy_ops_state *cb);
+diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
+index fbc896323bec..2beb755b5806 100644
+--- a/net/bpf/bpf_dummy_struct_ops.c
++++ b/net/bpf/bpf_dummy_struct_ops.c
+@@ -9,6 +9,10 @@
+
+ extern struct bpf_struct_ops bpf_bpf_dummy_ops;
+
++struct bpf_dummy_ops_state {
++       int val;
++};
++
+ /* A common type for test_N with return value in bpf_dummy_ops */
+ typedef int (*dummy_ops_test_ret_fn)(struct bpf_dummy_ops_state *state, ...);
+
+
+The following is the output of vmliux btf dump. We can see that it does
+have the definition of bpf_dummy_ops_state.
+
+# bpftool btf dump id 1 | grep "test_1\|bpf_dummy_ops_state" -A 6 -B 1
+[29190] STRUCT 'bpf_dummy_ops' size=16 vlen=2
+        'test_1' type_id=29194 bits_offset=0
+        'test_2' type_id=29196 bits_offset=64
+[29191] FUNC_PROTO '(anon)' ret_type_id=21 vlen=1
+        '(anon)' type_id=29192
+[29192] PTR '(anon)' type_id=29193
+[29193] FWD 'bpf_dummy_ops_state' fwd_kind=struct
+[29194] PTR '(anon)' type_id=29191
+
+--
+[106565] STRUCT 'bpf_dummy_ops_state' size=4 vlen=1
+        'val' type_id=21 bits_offset=0
+[106566] TYPEDEF 'dummy_ops_test_ret_fn' type_id=106567
+[106567] PTR '(anon)' type_id=106568
+
+And the definition of bpf_dummy_ops_state comes from
+bpf_dummy_struct_ops.o:
+
+# pahole -JV build/net/bpf/bpf_dummy_struct_ops.o | grep bpf_dummy_ops_state
+[1910] STRUCT bpf_dummy_ops_state size=4
+
+>
+>>
+>> Regards,
+>> Tao
+>>
+> .
+
