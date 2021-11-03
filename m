@@ -2,78 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06296443CCD
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 06:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F22443CD9
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 06:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhKCFn4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Nov 2021 01:43:56 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48698 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231138AbhKCFnx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Nov 2021 01:43:53 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A2LZFwY023387
-        for <bpf@vger.kernel.org>; Tue, 2 Nov 2021 22:41:17 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c3dch2dpj-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 02 Nov 2021 22:41:17 -0700
-Received: from intmgw003.48.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 2 Nov 2021 22:41:16 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 90A237C6976C; Tue,  2 Nov 2021 22:41:15 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: make netcnt selftests serial to avoid spurious failures
-Date:   Tue, 2 Nov 2021 22:41:13 -0700
-Message-ID: <20211103054113.2130582-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S230478AbhKCFuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 01:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230389AbhKCFuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 01:50:10 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD46C061714;
+        Tue,  2 Nov 2021 22:47:34 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id s136so1451589pgs.4;
+        Tue, 02 Nov 2021 22:47:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=13wA38efUk+CLxlcvK0usUF2pH5xqXkgtR8d+WLW2mE=;
+        b=PGLzqcKlgttwbfvq2KTYEuKreQGgNyVGvMkHhPhSODg0wRrVnittJlIa5vDniutt2f
+         HV5p7Q7zhYBhtR0U9osshZPHls9bBuV9pfvkrSk6ZplIH97bNTlQuFEf4B20ENhGo31q
+         L1qwpQifafhq1wHK9fIsItj9MuIfuG30UV2mWdMOzZd0aIqBRIs3rksroTTQg4ZCcOUm
+         52d+riRVLjDk4GrbIc1O0rhSUe+qILQmgMjsxgEb6NaNtn3fXtRH2p2AAbun0mxP+GTJ
+         AKVtls8eBWn2fPGxG1LsAAYChhF+RduGcq5YlSMCDg578/Osjp53/4zWyMX/e4pbDPCR
+         L+qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=13wA38efUk+CLxlcvK0usUF2pH5xqXkgtR8d+WLW2mE=;
+        b=PI2qrZo2W61AaHWeGVzxSIdCQA5hr9MWPcoDK2uEyTTAGkSfuBgtQqpPj08foFxfQc
+         kQCQShAHcBTxg2IhThk7an31VP5Tm5WYwhF3fw51XgfaSkaEb2fadkQt1JEYsM+8cxy4
+         pdLiuexBuJS4dAFZ4/szrBr9Ksk+AvOMAOcr/9rjHi/QQkcmNf80D9xkT/zPwgAtYP3+
+         FjPsPkHjIGQEoZ4XnruWHv3M8ILZEHzbUwglfTD4P9hDvF0cItmrtP+afkz+ELXpwSOk
+         ysLzHsH77jVYTIri+t5CHKHtM+43HhjEJAzP3Z7HPzmvcl2qXkLIoIkDslw5NcJ2rxDl
+         LnPw==
+X-Gm-Message-State: AOAM533Ff3x4xmlKXtu0WJ3qTq+v5vguvPN3jPqc5ZnYl/3dgIM+wRhi
+        4IsTCDrY27f7BHyY52ODjRU=
+X-Google-Smtp-Source: ABdhPJyS/aG/IRv7twiXT2Fqr1N5LOse4z2rWSbVQlzbnwjxliMTNLIBAeOXQVwxUgzBM96+B2+bqw==
+X-Received: by 2002:a62:8454:0:b0:480:f581:3bef with SMTP id k81-20020a628454000000b00480f5813befmr25399350pfd.2.1635918454449;
+        Tue, 02 Nov 2021 22:47:34 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id v16sm728039pgo.71.2021.11.02.22.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 22:47:34 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: zhang.mingyu@zte.com.cn
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, udknight@gmail.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] bpf, x86:remove unneeded variable
+Date:   Wed,  3 Nov 2021 05:47:22 +0000
+Message-Id: <20211103054722.25285-1-zhang.mingyu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: 4Qm89FJtzBf1CgwKAdMk-rIK1lc7I9aK
-X-Proofpoint-ORIG-GUID: 4Qm89FJtzBf1CgwKAdMk-rIK1lc7I9aK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-03_01,2021-11-02_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 bulkscore=0
- clxscore=1034 lowpriorityscore=0 priorityscore=1501 phishscore=0
- mlxlogscore=827 impostorscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111030033
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When running `./test_progs -j` test_netcnt fails with a very high
-probability, undercounting number of packets received (9999 vs expected
-10000). It seems to be conflicting with other cgroup/skb selftests. So
-make it serial for now to make parallel mode more robust.
+From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Fix the following coccinelle REVIEW:
+./arch/x86/net/bpf_jit_comp32.c:1274:5-8
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 ---
- tools/testing/selftests/bpf/prog_tests/netcnt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/net/bpf_jit_comp32.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/netcnt.c b/tools/testing/selftests/bpf/prog_tests/netcnt.c
-index 6ede48bde91b..954964f0ac3d 100644
---- a/tools/testing/selftests/bpf/prog_tests/netcnt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/netcnt.c
-@@ -8,7 +8,7 @@
- 
- #define CG_NAME "/netcnt"
- 
--void test_netcnt(void)
-+void serial_test_netcnt(void)
+diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+index da9b7cfa4632..bce7b9b5a653 100644
+--- a/arch/x86/net/bpf_jit_comp32.c
++++ b/arch/x86/net/bpf_jit_comp32.c
+@@ -1271,7 +1271,6 @@ static void emit_epilogue(u8 **pprog, u32 stack_depth)
+ static int emit_jmp_edx(u8 **pprog, u8 *ip)
  {
- 	union percpu_net_cnt *percpu_netcnt = NULL;
- 	struct bpf_cgroup_storage_key key;
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ #ifdef CONFIG_RETPOLINE
+ 	EMIT1_off32(0xE9, (u8 *)__x86_indirect_thunk_edx - (ip + 5));
+@@ -1280,7 +1279,7 @@ static int emit_jmp_edx(u8 **pprog, u8 *ip)
+ #endif
+ 	*pprog = prog;
+ 
+-	return cnt;
++	return 0;
+ }
+ 
+ /*
 -- 
-2.30.2
+2.25.1
 
