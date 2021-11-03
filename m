@@ -2,88 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6A744464C
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 17:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EB94446C2
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 18:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbhKCQzV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 12:55:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229894AbhKCQzU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B9A160F9D;
-        Wed,  3 Nov 2021 16:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635958363;
-        bh=jpB3zR7nNS9WfA7WgsUJBpE0RZcSokDysQmjcwJWEQ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NEhwOAYGzpkS9Znu24nU/esF9Ak9kY3OIREtTeSB/3KlDozHIQX/MLzAX3Qfei+j+
-         fQ7hmHZNoJhBi/tsVSm4k/i8teuUpHsjQbJ9/miH5E/2BSwTSnaT8tIbVPD5s8BDYi
-         x6hD7iR8i1wyI9X9y2L5k0U2qAV8TdLjD6cMX9aBenzXuSjrF2kCNX5XAUMlt83Zwj
-         CCCok0of0+fgXCgVeSwAX1f3b4rFTo9m+MpNBjG/t8aEySTgbkHmJtYETfkefxxU/3
-         cpjzIbpdvN5moB9YbWic7n4n96RIPYKuaBJyar0533tovc7MowfKlntUy2ZK6ghUBP
-         hvFP1XgGfVK7g==
-Date:   Wed, 3 Nov 2021 17:52:39 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCH bpf-next] bpf: introduce bpf_map_get_xdp_prog utility
- routine
-Message-ID: <YYK+Vz9xPhGaEt+L@lore-desk>
-References: <269c70c6c529a09eb6d6b489eb9bf5e5513c943a.1635196496.git.lorenzo@kernel.org>
- <CAADnVQLG-T-7mLgVY9naMKGog-Qcf3yoZRvZLJqm55iAPhFEhQ@mail.gmail.com>
- <YYHUabJ5TedbUsd/@lore-desk>
- <CAADnVQKAX-6mFBXWDDjF3Hdi-KbAzhTHtiNa2ePHSTb+3SVGDw@mail.gmail.com>
- <YYK8bmBFriIgh4O+@lore-desk>
- <CAADnVQLfTYBtj9_zfxJPt261wEu1t_nzjH_XbzQ+Zr59MmUWFg@mail.gmail.com>
+        id S229776AbhKCRPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 13:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhKCRPC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:15:02 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0137DC061714;
+        Wed,  3 Nov 2021 10:12:26 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id o12so1555524qtv.4;
+        Wed, 03 Nov 2021 10:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Yon/UNkvBv++0ELrNkjj8vCgTMl+XYKOntpW9f64Bw=;
+        b=HjYxBmcoWQoUGLuHCKKWEKX5kjOjXU6KFT8ycDPcR5Bas9M2mFqKPjupkNJ58t6CJB
+         YeOi0TDsj2ij/2mgqSHhaLPa8C1n/UvAYKEycX3B1WLXXUfs2FS1q27V3Lh1+/KzNkUJ
+         tD4fOQdX8uCaiQu+AFLzrgULjsdyEwAUPO+b1gryzbfrE06GL/Br9FYLcGsTzmUQKALY
+         i1kO1e/a/vNzdmNPvPA7Z2B++Fykd9xmlCCPshu342G1bF1W2XgM5F6cvNUYD71kThEJ
+         TBOzm3a11joNl4svA9qA81MH5EWs3eD0HCrR0WgDLRILc60+WDddSZ4O8SgAsAV43D+g
+         Uj7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Yon/UNkvBv++0ELrNkjj8vCgTMl+XYKOntpW9f64Bw=;
+        b=jAVJhxj5WejsJ2zQPZqwqV80NoVoww3XbTh4SCGBIxBlZgQJNpSQ6VLbxx2HN4VaLX
+         jgcaRiMe1aG+vZALW1LnxSWHjx2S2gR+ZJ0dK+KNsbbAc6Lu06/CDSsH5h45ptIcFNL7
+         ZHbZAUYAi3Upi0qAEsco7ABYvSZPoxsa1xQZxqQgk3kNUAa/ua090UBWvrIrmOFf4mdZ
+         bPpHk/trNUkAqyqIhwtJJeiQKWnbA3bMCULiAX4onRI14PboDOCwsH/XNqDnhhNiLiCy
+         eeJiBJzgZUiqT8sb1F6XnSg+92Gwnn/5MFvohFcOWk6J98PvvEEtJiJR49ah3jxuXAnT
+         OQBw==
+X-Gm-Message-State: AOAM532gtYt9X1lh5b0LufVvFLIN/rYRqbdRK2kdJ3LwlzIVIKbHhxoP
+        mIgZjecfB/8RiQL0gWqd/izoDhiS4K6lpY9Khw==
+X-Google-Smtp-Source: ABdhPJxq2UgyOnxT41jhoN4lP4xkSptM+QHl4MmThU3e1NiJfPJjtIHydWt1Nf7ZCOHjBe91DzZk1RJ0JUxrxUpbM+M=
+X-Received: by 2002:ac8:5bd6:: with SMTP id b22mr25897430qtb.157.1635959545206;
+ Wed, 03 Nov 2021 10:12:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YLTIh3SAPjtnnYHJ"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLfTYBtj9_zfxJPt261wEu1t_nzjH_XbzQ+Zr59MmUWFg@mail.gmail.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com> <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
+In-Reply-To: <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
+From:   Joe Burton <jevburton.kernel@gmail.com>
+Date:   Wed, 3 Nov 2021 10:12:14 -0700
+Message-ID: <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+That's a good point. Since the probe is invoked before the update takes
+place, it would not be possible to account for the possibility that the
+update failed.
 
---YLTIh3SAPjtnnYHJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Unless someone wants the `pre update' hook, I'll simply adjust the
+existing hooks' semantics so that they are invoked after the update.
+As discussed, this better suits the intended use case.
 
-> On Wed, Nov 3, 2021 at 9:44 AM Lorenzo Bianconi <lorenzo@kernel.org> wrot=
-e:
-> > > That patch alone is unnecessary.
+On Wed, Nov 3, 2021 at 3:34 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>
+> On 2021-11-01 22:14, Joe Burton wrote:
+> > From: Joe Burton<jevburton@google.com>
 > >
-> > Yes, right. Sorry for the noise.
-> > Regarding this patch, do you want me to repost with a proper commit log=
- (maybe
-> > included in the xdp multi-buff series) or do you prefer to just drop it?
->=20
-> I think this patch alone is not necessary.
-> When you'll get to the full series it could be meaningful.
-> It's hard to tell without seeing the rest of the patches.
-
-ack, fine to me. I will drop it for the moment and then we will re-evaluate.
-Thanks.
-
-Regards,
-Lorenzo
-
---YLTIh3SAPjtnnYHJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYYK+VwAKCRA6cBh0uS2t
-rK49APoCz0UQv0rbuyKd12TvezdcYQrz5eyo1jTrZkSdIBI44gEAxbauM/AZEu+t
-n8tFCguiigpwATlJ5PnSMe9hFqxHhg0=
-=NXiN
------END PGP SIGNATURE-----
-
---YLTIh3SAPjtnnYHJ--
+> > This is the third version of a patch series implementing map tracing.
+> >
+> > Map tracing enables executing BPF programs upon BPF map updates. This
+> > might be useful to perform upgrades of stateful programs; e.g., tracing
+> > programs can propagate changes to maps that occur during an upgrade
+> > operation.
+> >
+> > This version uses trampoline hooks to provide the capability.
+> > fentry/fexit/fmod_ret programs can attach to two new functions:
+> >          int bpf_map_trace_update_elem(struct bpf_map* map, void* key,
+> >                  void* val, u32 flags);
+> >          int bpf_map_trace_delete_elem(struct bpf_map* map, void* key);
+> >
+> > These hooks work as intended for the following map types:
+> >          BPF_MAP_TYPE_ARRAY
+> >          BPF_MAP_TYPE_PERCPU_ARRAY
+> >          BPF_MAP_TYPE_HASH
+> >          BPF_MAP_TYPE_PERCPU_HASH
+> >          BPF_MAP_TYPE_LRU_HASH
+> >          BPF_MAP_TYPE_LRU_PERCPU_HASH
+> >
+> > The only guarantee about the semantics of these hooks is that they execute
+> > before the operation takes place. We cannot call them with locks held
+> > because the hooked program might try to acquire the same locks. Thus they
+> > may be invoked in situations where the traced map is not ultimately
+> > updated.
+>
+> Sorry, I may have missed something obvious while staring at the patches,
+> but:
+> Dont you want the notification if the command actually was successful
+> on the map? If the command failed for whatever reason theres nothing
+> to synchronize? Unless you use that as an indicator to re-read the map?
+>
+> cheers,
+> jamal
