@@ -2,65 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FEA444422
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 16:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081F5444423
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 16:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhKCPCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S231474AbhKCPCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 3 Nov 2021 11:02:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230500AbhKCPCs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S231304AbhKCPCs (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 3 Nov 2021 11:02:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8BCDD60EBC;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 80D0E61076;
         Wed,  3 Nov 2021 15:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635951611;
-        bh=33b7lEsjBKX7zlGhVCM5u3dB6n6JAXw6hKuBCqWIzWU=;
+        bh=jWCMYuWajVvJ5x7/F1+deHeYv6zzi2sK+QhqwCuRmQQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=R7sidw6X+HQiqf4Q7XlGE4Z0T84vT6VMJJMZ43Uu1wvA8qjkcJXsp6BWuVjy3a13i
-         HoE+C2Z8OSa4HPGdTkdC//2Fk5cXBbLhFStSnmckarjcyLZhLygz/E3K69kERHBQnl
-         04/MT1+6m8Dk+KZK+nBivF6mB5JDU4WB4LuMx/NQsMFVzQJyIDs4pVVoiOhRbp5+C9
-         BocNrPXqgtGXiK1vjT6fQJi7fikyB4UloRKXR2HcbC9PnVdbAsqiJeaI8JG0PjMLGe
-         jFI8UBIld9JofBa9KhK3qVMfK5nwD7dFxvHLRzoLyF/mNzI1gPbtmtOFi9vTDmJxAO
-         vY5RH0cEldinA==
+        b=VGhewqwgfQ4yiq9+n6njXVU8BoLwRF+blPVwYEQz8bPlKh2JryogoIY8dWN2XgXLK
+         qSvK2iHB7kJlBR8NC8X72fnizpPuRHLUmZmhKbqAabaycRX5SmmWjAdHY4j2Ng18zD
+         7gFjdz7eu+Qvp9Hm54zRtyksNpXlfdeg0lcu//oaOzDo6nawoNg0KvB+6i1jXAk6uK
+         8Php8+d3CFNEdPUz/xRNZYWlG7bTx4scusf57uYOEe9+ttDUdNOZOW7xiC876eBvyi
+         A1am66n1j2eP3//KFtGyTd3tlyyfskguC6VaphLLeMf4s1wzk2W2bouVeq3H9AO1ek
+         +nbFF55h5oYIg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7CF4560A39;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6F0A56095B;
         Wed,  3 Nov 2021 15:00:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: make netcnt selftests serial to avoid
- spurious failures
+Subject: Re: [PATCH bpf-next v3 0/4] Support RENAME_EXCHANGE on bpffs
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163595161150.22644.1739857992912896755.git-patchwork-notify@kernel.org>
+Message-Id: <163595161144.22644.942879656026929279.git-patchwork-notify@kernel.org>
 Date:   Wed, 03 Nov 2021 15:00:11 +0000
-References: <20211103054113.2130582-1-andrii@kernel.org>
-In-Reply-To: <20211103054113.2130582-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
+References: <20211028094724.59043-1-lmb@cloudflare.com>
+In-Reply-To: <20211028094724.59043-1-lmb@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     viro@zeniv.linux.org.uk, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, mszeredi@redhat.com, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This series was applied to bpf/bpf.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Tue, 2 Nov 2021 22:41:13 -0700 you wrote:
-> When running `./test_progs -j` test_netcnt fails with a very high
-> probability, undercounting number of packets received (9999 vs expected
-> 10000). It seems to be conflicting with other cgroup/skb selftests. So
-> make it serial for now to make parallel mode more robust.
+On Thu, 28 Oct 2021 10:47:20 +0100 you wrote:
+> Add support for renameat2(RENAME_EXCHANGE) on bpffs. This is useful
+> for atomic upgrades of our sk_lookup control plane.
 > 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> v3:
+> - Re-use shmem_exchange (Miklos)
+> 
+> v2:
+> - Test exchanging a map and a directory (Alexei)
+> - Use ASSERT macros (Andrii)
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next] selftests/bpf: make netcnt selftests serial to avoid spurious failures
-    https://git.kernel.org/bpf/bpf/c/401a33da3a45
+  - [bpf-next,v3,1/4] libfs: move shmem_exchange to simple_rename_exchange
+    https://git.kernel.org/bpf/bpf/c/6429e46304ac
+  - [bpf-next,v3,2/4] libfs: support RENAME_EXCHANGE in simple_rename()
+    https://git.kernel.org/bpf/bpf/c/3871cb8cf741
+  - [bpf-next,v3,3/4] selftests: bpf: convert test_bpffs to ASSERT macros
+    https://git.kernel.org/bpf/bpf/c/9fc23c22e574
+  - [bpf-next,v3,4/4] selftests: bpf: test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
+    https://git.kernel.org/bpf/bpf/c/7e5ad817ec29
 
 You are awesome, thank you!
 -- 
