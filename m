@@ -2,150 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CC8443A55
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 01:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CAC443A5A
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 01:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhKCARN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Nov 2021 20:17:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233071AbhKCARN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Nov 2021 20:17:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48D8B60EDF;
-        Wed,  3 Nov 2021 00:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635898477;
-        bh=9rDBkxdbfFV5+DW4L3+/mObeMYbKCKDZDU0P7y+u3JY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s86tKUM72yIDAlNPbCgFjibjmjz1ke3aBCk8poGOZ2AXNOWrpVwtMOHBM02Ir50oI
-         8KFf4KwhOC5GZE0AfKu08FVIsgDi9wUO6nw/TNtkIpPZtjCBJlRK2pdCTn9R4IQhsF
-         xXCyXIOZqCPgs/wQqUwZYeWEN7q2WFtovdRUa9QiMA1JB6naIzA6FmydrPDkrQJEF3
-         5AtSt/eSiHPoBqr9oSIM1JW5u2fIzgbWfuemmT70wLw6LdVRXnZbM2Tv6gcHFImtPW
-         5RG6+WMK7O02tUGN16wwXifcyUtjLrYaZiiOy76bypeDK6C3tT+3yTzK2bm/V9ASa6
-         X6Y3fej3frTZw==
-Date:   Wed, 3 Nov 2021 01:14:33 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S232833AbhKCAVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Nov 2021 20:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232830AbhKCAVR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Nov 2021 20:21:17 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5740AC061714
+        for <bpf@vger.kernel.org>; Tue,  2 Nov 2021 17:18:42 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id r5so1356461pls.1
+        for <bpf@vger.kernel.org>; Tue, 02 Nov 2021 17:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tDUEIcdOvRAPLieAxDVPZgN+IYQ6GWa/YmuMVIb8ER4=;
+        b=ZTHu7vRX8K/yh7cGvV12R0B6HBm46YdBYci2qG745FK2rdAXzMICx/prw0h3qBuXJx
+         Wl4l1Bh8Ucqy1agWlZtSBtJXsiuD559sSMxvYWC5geMlTkFi71oDb4zXZ7sZFYZ8bAV8
+         6QQdg07QFl3WZky7P2PQb1Euwnwuyc6+r98H8H6XEsaLcw6I3CrndJejMSFSJtetQZER
+         iT2KFaH4EqgxZmvy2a0IV6ffrNGrYfzwgGkjFYLmyyvjSVzLVzAR/gLB7pvjZTektn7y
+         1La6lhOeAYW2XRxDCakbLKr2vOeCX2kkIT95wr9Ef33faonvvqdT2tDYBiUQaRUYURm1
+         n7gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tDUEIcdOvRAPLieAxDVPZgN+IYQ6GWa/YmuMVIb8ER4=;
+        b=3YiBehoEI1Ew4Ce3/ggrH1WbZdm5/vX3owFbjQ0U3geawLTJMIGlClEsqbZpkwTNK4
+         8QFSg5mcJ8oe15yGv8OGCWRWZ3mS3S7jYaDoYZvdCwbDzD5k3vYfTMT69Y/QHuVpNPqE
+         Wrp7q7V4N4dM7o0XuRQLTlHvo465KOE9zP++jy+8cikjqsTcB54m9/VoofB28TK1aeap
+         m6F/GklIc8K3FhfPhGJakAkt36PZ8EphuA0HO7bk/hSm0NaDIfv6WPwkqLnudl8/GtvL
+         +nICulgyPRmMZmhPpJCx12+iiblhf04QRkHo0MKXRWAkDcJ+ZkyEGxLUVPW6MTHkXPSN
+         +O0w==
+X-Gm-Message-State: AOAM533CBSWLDVWBmbyzE3HIsRvoYuR1tkhyCVaS8VRjNp4X2FR/ZE3d
+        s+zdzmj3PB7WLuDIgNzesvsDBQInd5qLm5Y95VE=
+X-Google-Smtp-Source: ABdhPJx4PpPL5nuNMY2LVzl+6/SB5Eg9uqt+Qv8aNhkvSQs5errr5krTI5AXS4YS7iNvoU/mI2a4+8BSimFuGWrKlS4=
+X-Received: by 2002:a17:902:f542:b0:141:fa0e:1590 with SMTP id
+ h2-20020a170902f54200b00141fa0e1590mr12118189plf.20.1635898721897; Tue, 02
+ Nov 2021 17:18:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <269c70c6c529a09eb6d6b489eb9bf5e5513c943a.1635196496.git.lorenzo@kernel.org>
+ <CAADnVQLG-T-7mLgVY9naMKGog-Qcf3yoZRvZLJqm55iAPhFEhQ@mail.gmail.com> <YYHUabJ5TedbUsd/@lore-desk>
+In-Reply-To: <YYHUabJ5TedbUsd/@lore-desk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 2 Nov 2021 17:18:30 -0700
+Message-ID: <CAADnVQKAX-6mFBXWDDjF3Hdi-KbAzhTHtiNa2ePHSTb+3SVGDw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: introduce bpf_map_get_xdp_prog utility routine
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Ahern <dsahern@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCH bpf-next] bpf: introduce bpf_map_get_xdp_prog utility
- routine
-Message-ID: <YYHUabJ5TedbUsd/@lore-desk>
-References: <269c70c6c529a09eb6d6b489eb9bf5e5513c943a.1635196496.git.lorenzo@kernel.org>
- <CAADnVQLG-T-7mLgVY9naMKGog-Qcf3yoZRvZLJqm55iAPhFEhQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7cw+6OMXf+opqeCE"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLG-T-7mLgVY9naMKGog-Qcf3yoZRvZLJqm55iAPhFEhQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---7cw+6OMXf+opqeCE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On Mon, Oct 25, 2021 at 2:18 PM Lorenzo Bianconi <lorenzo@kernel.org> wro=
-te:
+On Tue, Nov 2, 2021 at 5:14 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 > >
-> > Introduce bpf_map_get_xdp_prog to load an eBPF program on
-> > CPUMAP/DEVMAP entries since both of them share the same code.
-> >
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  include/linux/bpf.h |  2 ++
-> >  kernel/bpf/core.c   | 17 +++++++++++++++++
-> >  kernel/bpf/cpumap.c | 12 ++++--------
-> >  kernel/bpf/devmap.c | 16 ++++++----------
-> >  4 files changed, 29 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 26bf8c865103..891936b54b55 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1910,6 +1910,8 @@ static inline struct bpf_prog *bpf_prog_get_type(=
-u32 ufd,
-> >         return bpf_prog_get_type_dev(ufd, type, false);
-> >  }
-> >
-> > +struct bpf_prog *bpf_map_get_xdp_prog(struct bpf_map *map, int fd,
-> > +                                     enum bpf_attach_type attach_type);
-> >  void __bpf_free_used_maps(struct bpf_prog_aux *aux,
-> >                           struct bpf_map **used_maps, u32 len);
-> >
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index dee91a2eea7b..7e72c21b6589 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -2228,6 +2228,23 @@ void __bpf_free_used_maps(struct bpf_prog_aux *a=
-ux,
-> >         }
-> >  }
-> >
-> > +struct bpf_prog *bpf_map_get_xdp_prog(struct bpf_map *map, int fd,
-> > +                                     enum bpf_attach_type attach_type)
-> > +{
-> > +       struct bpf_prog *prog;
-> > +
-> > +       prog =3D bpf_prog_get_type(fd, BPF_PROG_TYPE_XDP);
-> > +       if (IS_ERR(prog))
-> > +               return prog;
-> > +
-> > +       if (prog->expected_attach_type !=3D attach_type) {
-> > +               bpf_prog_put(prog);
-> > +               return ERR_PTR(-EINVAL);
-> > +       }
-> > +
-> > +       return prog;
-> > +}
->=20
-> It is supposed to be a cleanup... but...
->=20
-> 1. it's tweaking __cpu_map_load_bpf_program()
-> to pass extra 'map' argument further into this helper,
-> but the 'map' is unused.
+> > 1. it's tweaking __cpu_map_load_bpf_program()
+> > to pass extra 'map' argument further into this helper,
+> > but the 'map' is unused.
+>
+> For xdp multi-buff we will need to extend Toke's bpf_prog_map_compatible fix
+> running bpf_prog_map_compatible routine for cpumaps and devmaps in
+> order to avoid mixing xdp mb and xdp legacy programs in a cpumaps or devmaps.
+> For this reason I guess we will need to pass map pointer to
+> __cpu_map_load_bpf_program anyway.
+> I do not have a strong opinion on it, but the main idea here is just to have a
+> common code and avoid adding the same changes to cpumap and devmap.
+> Anyway if you prefer to do it separately for cpumap  and devmap I am fine
+> with it.
 
-For xdp multi-buff we will need to extend Toke's bpf_prog_map_compatible fix
-running bpf_prog_map_compatible routine for cpumaps and devmaps in
-order to avoid mixing xdp mb and xdp legacy programs in a cpumaps or devmap=
-s.
-For this reason I guess we will need to pass map pointer to
-__cpu_map_load_bpf_program anyway.
-I do not have a strong opinion on it, but the main idea here is just to hav=
-e a
-common code and avoid adding the same changes to cpumap and devmap.
-Anyway if you prefer to do it separately for cpumap  and devmap I am fine
-with it.
-
->=20
-> 2. bpf_map_get_xdp_prog is a confusing name. what 'map' doing in there?
-
-maybe bpf_xdp_map_load_prog? (naming is always hard :))
-
-Regards,
-Lorenzo
-
->=20
-> 3. it's placed in core.c while it's really cpumap/devmap only.
->=20
-> I suggest leaving the code as-is.
-
---7cw+6OMXf+opqeCE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYYHUaQAKCRA6cBh0uS2t
-rATsAP4gD+6yKiRMo7cs7N/o1n1Qe3DukocBEzm/tUMPukrDugEA38Q0ZuoGMzmM
-gjRTbkxiDwL3s9uRWYxHc/7MtuIQ4Q8=
-=w0RC
------END PGP SIGNATURE-----
-
---7cw+6OMXf+opqeCE--
+None of that information was in the original commit log.
+Please make sure to provide such details in the future and make it
+part of the series.
+That patch alone is unnecessary.
