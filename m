@@ -2,150 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674CB444094
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 12:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25584440E4
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 12:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhKCL2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 07:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbhKCL2t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 07:28:49 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE416C061714
-        for <bpf@vger.kernel.org>; Wed,  3 Nov 2021 04:26:12 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id b12so3046093wrh.4
-        for <bpf@vger.kernel.org>; Wed, 03 Nov 2021 04:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=70FabX0ZheNRFn49OTr65H/jrEDEqwnDC4MNtvKreIs=;
-        b=SV1nP4yBZR419JvownyY1Jld80REJwUrWLDYYzx/K3Jzorm4WVrmJsIyWriK2SMSN5
-         5rDPV4HTvJk6hZw/b8lYq33paGnA/UVbVEuh426i2FXPX+jJXtnn4hIbpRIIgbX/l38E
-         r+VzN9yAIj2lUHKDIEBkYG77ovLPKD/G7LTta5+Ec5k4XdVxnK7SJ7m0QKyYu780G5gC
-         P3sNU/sdUfae2vdwLRQ+/wLoy4J6l7hqt2IqFLbYwxtM+cOHjfneFIvDMcVuk6NCHnzA
-         H7za/5wzb+orzAAsfScW4Eb7JacJObIvnctH4Ns7buSlOem9dk6lKUCxzsYmGoAEf/h0
-         ilqg==
+        id S231343AbhKCL6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 07:58:04 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:35719 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230304AbhKCL6E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 07:58:04 -0400
+Received: by mail-lj1-f178.google.com with SMTP id 1so3362122ljv.2;
+        Wed, 03 Nov 2021 04:55:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=70FabX0ZheNRFn49OTr65H/jrEDEqwnDC4MNtvKreIs=;
-        b=Cwf0WnOEwnGCsTigTtrY3n5RMVoF4xFkg43RCN1haCEpD6WZL77B1/e9IpVkaR45iq
-         STNoJMzuTLz6G8V3ISjCn0ogmzwfJkFYwQ78TrBYZ8JdSzFNuasFzdXFJNldEa0Oz4CO
-         CgJ2VzOmEEGyB+0gZO/lWcFm5ocGxOAhpVr7/6G4EljmrC70DW4Y4QnM3GiE9powvw2j
-         n1Uz3g7O7VIGd/xcWtHar3xKM982kydSx/PBWbhJBQOvhXQjhSd/OnRa/olD4Z+1BxSZ
-         KnjWDm1S1SBltVFFjP/d+r7/0Att4qSFOyocWXV2iAezOAo8tkd2k0zwF/GOCFIlaUj3
-         EAvQ==
-X-Gm-Message-State: AOAM532XrO9dcPOdJTJ3EnN5ym6gClDCuyXQcZBKK+zJTQGFSrlS7oc6
-        IRA5Yxbj6apZh3xL7TLa9m4EdQ==
-X-Google-Smtp-Source: ABdhPJzf884WwM3YcjxwxTrwGiWhSg70llb+2hUfckLm33uxhMNj/1uBmcZFd/NDEuK/sY0nF5d+xA==
-X-Received: by 2002:adf:cd06:: with SMTP id w6mr39947353wrm.431.1635938771435;
-        Wed, 03 Nov 2021 04:26:11 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.70.199])
-        by smtp.gmail.com with ESMTPSA id u2sm1610104wrr.35.2021.11.03.04.26.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 04:26:11 -0700 (PDT)
-Message-ID: <7c6a10fb-b1c5-4f50-8f7c-75c170e24ebb@isovalent.com>
-Date:   Wed, 3 Nov 2021 11:26:10 +0000
+        bh=11mAUeEzHYo4WofQQnhX6tKzbvv6UrSSLpN/q7XHPV4=;
+        b=aH/8Wn5j72LL3ny8DFPANyReAgyvGnbAQpbuRP6espgrJiMnohqIXDdxvBTHTzIDkM
+         h5NmCqr42e4krJfJOzBjWbHK2rg+IFt/CmrMNyLRLOGVbMG8BuslFhOVrm4398+4MkkN
+         3rvt0McbTJYx93C2iXW8a4GMa/et9OTznb9P9uDnZawfQvTfAnN1GaGIXWQemFbkWm9K
+         sYWU/AoMsmyzW5/QflUlkn9qUsRRWcbt7RqvO1tkDHBfgPuVrKsS0LpUXadZizEl4V5Y
+         LDwfHZ+v51NgMdAhMd/CgcPl3x9KNqHB0asy7XF2FgsxwZZNnCF5wQyg2cI7iYCkgXfs
+         5LxQ==
+X-Gm-Message-State: AOAM532gDtdcbJa57CEVucyQ20sHvzD6W7vrXNo6DvuU6Sb4SvG22TAq
+        LPzzRWChrqDBKWNkvylH7xg=
+X-Google-Smtp-Source: ABdhPJyPei1aKTKE69u+FCwdajtiXEz9jxZBU//xdhQs7vcHoF3KS+mS4SShXAwvvND1vpqm4oTlug==
+X-Received: by 2002:a05:651c:2cf:: with SMTP id f15mr19032566ljo.170.1635940526852;
+        Wed, 03 Nov 2021 04:55:26 -0700 (PDT)
+Received: from kladdkakan.. (c213-102-90-208.bredband.tele2.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id g18sm161890lfv.25.2021.11.03.04.55.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 04:55:25 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, tongtiangen@huawei.com
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        luke.r.nels@gmail.com, xi.wang@gmail.com,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH bpf-next] riscv, bpf: Fix RV32 broken build, and silence RV64 warning
+Date:   Wed,  3 Nov 2021 12:54:53 +0100
+Message-Id: <20211103115453.397209-1-bjorn@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v3 bpf-next 0/4] libbpf: deprecate
- bpf_program__get_prog_info_linear
-Content-Language: en-GB
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20211101224357.2651181-1-davemarchevsky@fb.com>
- <CAEf4BzY_OXyWdgJu=0phg0Pyb4PW6QWcKKBHLFOf=FwAmgOjqA@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAEf4BzY_OXyWdgJu=0phg0Pyb4PW6QWcKKBHLFOf=FwAmgOjqA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-11-02 16:06 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Mon, Nov 1, 2021 at 3:46 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->>
->> bpf_program__get_prog_info_linear is a helper which wraps the
->> bpf_obj_get_info_by_fd BPF syscall with some niceties that put
->> all dynamic-length bpf_prog_info in one buffer contiguous with struct
->> bpf_prog_info, and simplify the selection of which dynamic data to grab.
->>
->> The resultant combined struct, bpf_prog_info_linear, is persisted to
->> file by 'perf' to enable later annotation of BPF prog data. libbpf
->> includes some vaddr <-> offset conversion helpers for
->> struct bpf_prog_info_linear to simplify this.
->>
->> This functionality is heavily tailored to perf's usecase, so its use as
->> a general prog info API should be deemphasized in favor of just calling
->> bpf_obj_get_info_by_fd, which can be more easily fit to purpose. Some
->> examples from caller migrations in this series:
->>
->>   * Some callers weren't requesting or using dynamic-sized prog info and
->>     are well served by a simple get_info_by_fd call (e.g.
->>     dump_prog_id_as_func_ptr in bpftool)
->>   * Some callers were requesting all of a specific dynamic info type but
->>     only using the first record, so can avoid unnecessary malloc by
->>     only requesting 1 (e.g. profile_target_name in bpftool)
->>   * bpftool's do_dump saves some malloc/free by growing and reusing its
->>     dynamic prog_info buf as it loops over progs to grab info and dump.
->>
->> Perf does need the full functionality of
->> bpf_program__get_prog_info_linear and its accompanying structs +
->> helpers, so copy the code to its codebase, migrate all other uses in the
->> tree, and deprecate the helper in libbpf.
->>
->> Since the deprecated symbols continue to be included in perf some
->> renaming was necessary in perf's copy, otherwise functionality is
->> unchanged.
->>
->> This work was previously discussed in libbpf's issue tracker [0].
->>
->> [0]: https://github.com/libbpf/libbpf/issues/313
->>
->> v2->v3:
->>   * Remove v2's patch 1 ("libbpf: Migrate internal use of
->>     bpf_program__get_prog_info_linear"), which was applied [Andrii]
->>   * Add new patch 1 migrating error checking of libbpf calls to
->>     new scheme [Andrii, Quentin]
->>   * In patch 2, fix != -1 error check of libbpf call, improper realloc
->>     handling, and get rid of confusing macros [Andrii]
->>   * In patch 4, deprecate starting from 0.6 instead of 0.7 [Andrii]
-> 
-> LGTM. Quentin, can you please take a look and ack as well? Thanks!
+Commit 252c765bd764 ("riscv, bpf: Add BPF exception tables") only
+addressed RV64, and broke the RV32 build [1]. Fix by gating the exception
+tables code with CONFIG_ARCH_RV64I.
 
-Thanks Andrii for the Cc! I realised yesterday morning that I'd been hit
-by the unsubscription incident and missed v3 of this set.
+Further, silence a "-Wmissing-prototypes" warning [2] in the RV64 BPF
+JIT.
 
-The changes look good to me, and you can add my tag to the first three
-patches:
+[1] https://lore.kernel.org/llvm/202111020610.9oy9Rr0G-lkp@intel.com/
+[2] https://lore.kernel.org/llvm/202110290334.2zdMyRq4-lkp@intel.com/
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Fixes: 252c765bd764 ("riscv, bpf: Add BPF exception tables")
+Signed-off-by: Björn Töpel <bjorn@kernel.org>
+---
+Tong/Daniel: The RV32 build has been broken since Thursday. I'll try
+to fast-track a bit, and commit a quick-fix for it. Hope that's OK
+with you, Tong!
 
-Regarding patch 4, looking at the latest deprecations in libbpf, I would
-have expected the functions to be deprecated starting in v0.7, and not v0.6?
+I've verified the build on my machine using riscv32 GCC 9.3.0 and
+riscv64 GCC 11.2.0.
 
-Other than that, on patch 2 (apologies for not answering inline), it
-would feel more natural, in do_dump()'s "for" loop in prog.c, to have
-the memset() above the call to bpf_obj_get_info_by_fd() (and to skip the
-zero-initialisation of "info") instead of at the end of the loop, which
-means a useless memset() just before we exit the loop. But probably not
-worth a respin just for that.
 
-Thanks,
-Quentin
+Björn
+---
+arch/riscv/mm/extable.c         | 4 ++--
+ arch/riscv/net/bpf_jit_comp64.c | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+index 18bf338303b6..ddb7d3b99e89 100644
+--- a/arch/riscv/mm/extable.c
++++ b/arch/riscv/mm/extable.c
+@@ -11,7 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/uaccess.h>
+ 
+-#ifdef CONFIG_BPF_JIT
++#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+ int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
+ #endif
+ 
+@@ -23,7 +23,7 @@ int fixup_exception(struct pt_regs *regs)
+ 	if (!fixup)
+ 		return 0;
+ 
+-#ifdef CONFIG_BPF_JIT
++#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+ 	if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
+ 		return rv_bpf_fixup_exception(fixup, regs);
+ #endif
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 2ca345c7b0bf..f2a779c7e225 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -459,6 +459,8 @@ static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
+ #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+ #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+ 
++int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
++				struct pt_regs *regs);
+ int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+ 				struct pt_regs *regs)
+ {
+
+base-commit: cc0356d6a02e064387c16a83cb96fe43ef33181e
+-- 
+2.32.0
+
