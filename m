@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081F5444423
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 16:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624C2444420
+	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 16:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhKCPCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S230382AbhKCPCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 3 Nov 2021 11:02:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49642 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231304AbhKCPCs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S231441AbhKCPCs (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 3 Nov 2021 11:02:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 80D0E61076;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 94080610E8;
         Wed,  3 Nov 2021 15:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635951611;
-        bh=jWCMYuWajVvJ5x7/F1+deHeYv6zzi2sK+QhqwCuRmQQ=;
+        bh=AmH1lUcquZ/7tPRdAzSR1hBvSo9cYeGErGG5dSXtHWo=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VGhewqwgfQ4yiq9+n6njXVU8BoLwRF+blPVwYEQz8bPlKh2JryogoIY8dWN2XgXLK
-         qSvK2iHB7kJlBR8NC8X72fnizpPuRHLUmZmhKbqAabaycRX5SmmWjAdHY4j2Ng18zD
-         7gFjdz7eu+Qvp9Hm54zRtyksNpXlfdeg0lcu//oaOzDo6nawoNg0KvB+6i1jXAk6uK
-         8Php8+d3CFNEdPUz/xRNZYWlG7bTx4scusf57uYOEe9+ttDUdNOZOW7xiC876eBvyi
-         A1am66n1j2eP3//KFtGyTd3tlyyfskguC6VaphLLeMf4s1wzk2W2bouVeq3H9AO1ek
-         +nbFF55h5oYIg==
+        b=MVvXgh+Fd9ykethFx1oLFEpv/4d7JVKd1WAPZiGkZM2RNwGZWK7mdTDOio6/XVnsT
+         6Bo9jew9NyIf2QSZU9S3e6O4hV5j5jdzUeVpu9DG5WqAit0CVKYEUrz1IewpyHMZQX
+         H1jerJyaWDOzLgrX1IGguTETXnIRov9McX1SFPxn62mcXvmKZ0eYgWmi1zuIwrTr5r
+         V5pyrLkjoTutbE0thyGLwrRNaq11zxuJLgMZ8N46ch9Xph+UsPoyH912tp7aXJgJ4h
+         RJxEwrnjtYM4Phvoyno72qq9oexI8L5pGsIxBpM4uPfaQNuZATpDyGGNqrMp9/enD6
+         2rNdpYurAb+XA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6F0A56095B;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 84EFB60A2E;
         Wed,  3 Nov 2021 15:00:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/4] Support RENAME_EXCHANGE on bpffs
+Subject: Re: [PATCH bpf-next 0/2] bpf: Allow doing stack read with size larger
+ than the earlier spilled reg
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163595161144.22644.942879656026929279.git-patchwork-notify@kernel.org>
+Message-Id: <163595161153.22644.6536061698592430689.git-patchwork-notify@kernel.org>
 Date:   Wed, 03 Nov 2021 15:00:11 +0000
-References: <20211028094724.59043-1-lmb@cloudflare.com>
-In-Reply-To: <20211028094724.59043-1-lmb@cloudflare.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     viro@zeniv.linux.org.uk, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, mszeredi@redhat.com, gregkh@linuxfoundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20211102064528.315637-1-kafai@fb.com>
+In-Reply-To: <20211102064528.315637-1-kafai@fb.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -48,28 +48,23 @@ Hello:
 This series was applied to bpf/bpf.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Thu, 28 Oct 2021 10:47:20 +0100 you wrote:
-> Add support for renameat2(RENAME_EXCHANGE) on bpffs. This is useful
-> for atomic upgrades of our sk_lookup control plane.
+On Mon, 1 Nov 2021 23:45:28 -0700 you wrote:
+> This set fixes an issue that the verifier rejects a u64 stack read
+> after an earlier u32 scalar spill.  It is caused by the earlier commit
+> that allows tracking the spilled u32 scalar reg.
 > 
-> v3:
-> - Re-use shmem_exchange (Miklos)
-> 
-> v2:
-> - Test exchanging a map and a directory (Alexei)
-> - Use ASSERT macros (Andrii)
+> Martin KaFai Lau (2):
+>   bpf: Do not reject when the stack read size is different from the
+>     tracked scalar size
+>   bpf: selftest: verifier test on refill from a smaller spill
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v3,1/4] libfs: move shmem_exchange to simple_rename_exchange
-    https://git.kernel.org/bpf/bpf/c/6429e46304ac
-  - [bpf-next,v3,2/4] libfs: support RENAME_EXCHANGE in simple_rename()
-    https://git.kernel.org/bpf/bpf/c/3871cb8cf741
-  - [bpf-next,v3,3/4] selftests: bpf: convert test_bpffs to ASSERT macros
-    https://git.kernel.org/bpf/bpf/c/9fc23c22e574
-  - [bpf-next,v3,4/4] selftests: bpf: test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
-    https://git.kernel.org/bpf/bpf/c/7e5ad817ec29
+  - [bpf-next,1/2] bpf: Do not reject when the stack read size is different from the tracked scalar size
+    https://git.kernel.org/bpf/bpf/c/f30d4968e9ae
+  - [bpf-next,2/2] bpf: selftest: verifier test on refill from a smaller spill
+    https://git.kernel.org/bpf/bpf/c/c08455dec5ac
 
 You are awesome, thank you!
 -- 
