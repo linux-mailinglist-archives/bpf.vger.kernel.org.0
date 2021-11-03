@@ -2,214 +2,285 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8389A444AB6
-	for <lists+bpf@lfdr.de>; Wed,  3 Nov 2021 23:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA73444BBA
+	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 00:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhKCWL6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Nov 2021 18:11:58 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63792 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230383AbhKCWL6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Nov 2021 18:11:58 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3KApfs022132
-        for <bpf@vger.kernel.org>; Wed, 3 Nov 2021 15:09:21 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c3ddpgpgy-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 03 Nov 2021 15:09:21 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 3 Nov 2021 15:09:15 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 4B6B57D65E75; Wed,  3 Nov 2021 15:09:12 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH v2 bpf-next 12/12] selftests/bpf: use explicit bpf_test_load_program() helper calls
-Date:   Wed, 3 Nov 2021 15:08:45 -0700
-Message-ID: <20211103220845.2676888-13-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211103220845.2676888-1-andrii@kernel.org>
-References: <20211103220845.2676888-1-andrii@kernel.org>
+        id S229943AbhKCXnk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 19:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhKCXnj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 19:43:39 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD611C061714;
+        Wed,  3 Nov 2021 16:41:02 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id t127so10211667ybf.13;
+        Wed, 03 Nov 2021 16:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iSobEc0tLFoBwkHP6wpuX0P36ki0xsRuAYrOL/xunmk=;
+        b=Y/0QKojtA+kYcbMNgz7B8NK67vbNO+TEEl7vcjoSO/hlke+eOFlpSaJN2M80O4hU21
+         5D9u8FaepiKbn1Usc0a4n0plE4DaDXHGV1TX02yoUJDMbv4YPnfXXhl5z1haxaQ3GOnD
+         mpfCECNFijTorqkZTwloRBTAl36OO8UlOKCpE1l4pMYHlFUxApEuuKETM3fwzFnH5onl
+         KnpPAXrjl0PdWpY87O/ErVqIcf1FUhCPphwNHwMiwDqZdipCd/f1AJUcKP/oLKjShhNB
+         as9vZUpu+cWRjbBdItweyEou6i0UXB+RhC7D3eXsdmjImyRdWV3dMCk5LTBBBreZ++zd
+         D8bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iSobEc0tLFoBwkHP6wpuX0P36ki0xsRuAYrOL/xunmk=;
+        b=Cu5zGHAwn65MXDLmnlKdqV0Zf97M11Y6i8JyUcQTzqP0SkVzSH17lPRNOoDVPbvcx5
+         UKBI4JW1SwYlUnawLcrBGRaTmuUlyW0CQPPEIISjeDeYpjqpTT3X8fleaBvb4Br+dQ8L
+         T7SkDBbkfGQuXgH0xEtWcVGVzqcixD2oT5dAiEvQ2ePdWivVWHo+FCMuwbXm0ww5njqB
+         hgxw41DpkLQgI9dngVQKDEUVjLe/S37JSZUzueeTDxaxpWyiilRxsGFOGebwCfCCV0bU
+         r8qkxELEgp6gNBg+ynOhiCQLk6ro+mI3IeShYkTelBl43LVx8ef6TTj1JYmToNh1ImSm
+         5qbQ==
+X-Gm-Message-State: AOAM5324EwL1r386Ew3CazsJgeiE24SdzX9VMyW0ZpcrCmUCit4CQcXU
+        j2EdpGC6LP1TNN4caXus8itSmYI5M0GBJH5JpML6jb6a
+X-Google-Smtp-Source: ABdhPJznBhAmLdWt5UAg1k/ZwMCcrSs0IFy0MKUdHziI0BXzKwYFctxjZYQJPOfO+P1hYgPOWVweBTbHM3ZXlJW8sOs=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr48044297ybj.433.1635982861701;
+ Wed, 03 Nov 2021 16:41:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: Y2pYEqSLKXOM91p4qOLUN_IFl9AYLQhw
-X-Proofpoint-GUID: Y2pYEqSLKXOM91p4qOLUN_IFl9AYLQhw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-03_06,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1034
- adultscore=0 mlxscore=0 priorityscore=1501 bulkscore=0 malwarescore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111030115
-X-FB-Internal: deliver
+References: <20211027203727.208847-1-mauricio@kinvolk.io> <CAADnVQK2Bm7dDgGc6uHVosuSzi_LT0afXM6Hf3yLXByfftxV1Q@mail.gmail.com>
+ <CAHap4zt7B1Zb56rr55Q8_cy8qdyaZsYcWt7ZHrs3EKr50fsA+A@mail.gmail.com> <CAEf4BzbDBGEnztzEcXmCFMNyzTjJ3pY41ahzieu9yJ+EDHU0dg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbDBGEnztzEcXmCFMNyzTjJ3pY41ahzieu9yJ+EDHU0dg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 3 Nov 2021 16:40:49 -0700
+Message-ID: <CAEf4BzYYXkzmhzt55hGyRLo68orAQD_1SGaFfdAkaNK-shypqQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] libbpf: Implement BTF Generator API
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove the second part of prog loading testing helper re-definition:
+On Mon, Nov 1, 2021 at 10:53 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Oct 29, 2021 at 9:12 AM Mauricio V=C3=A1squez Bernal
+> <mauricio@kinvolk.io> wrote:
+> >
+> > > Tracing progs will be peeking into task_struct.
+> > > To describe it in the reduced BTF most of the kernel types would be n=
+eeded,
+> >
+> > That's the point of our algorithm. If a program is only accessing
+> > 'pid' on 'task_struct' we'll generate a BTF representation of
+> > task_struct that only contains the 'pid' member with the right offset,
+> > other members are not included and hence we don't need to carry on all
+> > those types that are not used by the program.
+> >
+> > > Have you considered generating kernel BTF with fields that are access=
+ed
+> > > by bpf prog only and replacing all other fields with padding ?
+> >
+> > Yeah. We're implicitly doing it as described above.
+> >
+> > > I think the algo would be quite different from the actual CO-RE logic
+> > > you're trying to reuse.
+> >
+> > I'm not 100% sure it's so easy to do without reimplementing much of
+> > the actual CO-RE logic. We don't want to copy all type members but
+> > only the ones actually used. So I'm not sure if Andrii's idea of
+> > performing the matching based only on the type name will work. I'll
+> > try to get deep into the details and will be back to you soon.
+>
+> No, now that I understand what exactly you are doing, it won't work.
+>
+> But ok, I gave it quite a bit of thought and tried to find a good
+> compromise between completely exposing all the libbpf internals as
+> public APIs (which is a huge price I'm not willing to accept) and
+> actually allowing you to achieve your goal (which I think is worthy to
+> achieve).
+>
+> But first. https://github.com/aquasecurity/btfhub/tree/main/tools is
+> awesome. Great work explaining a lot at exactly the right level of
+> technical details. It would be great if you published it as a
+> dedicated blog post, maybe splitting the more general information from
+> the BTF minimization problem. Both are useful, but it's too long for
+> one article. Great job, really!
+>
+> Now, to the problem at hand. And sorry for a long reply, but there is
+> quite a bit of things to unpack.
+>
+> I see this overall problem as two distinct problems:
+>   1. Knowing which fields and types libbpf is using from kernel BTF.
+> Basically, observe CO-RE logic from outside.
+>   2. Knowing information from #1, minimize BTF.
+>
+> Part #2 absolutely doesn't belong in libbpf. Libbpf exposes enough BTF
+> constructing APIs to implement this in any application, bpftool or
+> otherwise. It's also a relatively straightforward problem: mark used
+> types and fields, create a copy of BTF with only those types and
+> fields.
+>
+> So let's talk about #1, because I agree that it's extremely painful to
+> have to reimplement most of CO-RE logic just for getting the list of
+> types and fields. Here we have two sub-problems (assuming we let
+> libbpf do CO-RE relocation logic for us):
+>   a) perform CO-RE relocations but don't create BPF maps and load BPF
+> programs. Dry-run of sorts.
+>   b) exposing calculated relocation information.
+>
+> First, 1a. The problem right now is that CO-RE relocations (and
+> relocations in general) happen in the same bpf_object__load() phase
+> and it's not possible to do them without creating maps and
+> subsequently loading BPF programs first. This is very suboptimal. I've
+> actually been thinking in the background how to improve that
+> situation, because even with the recent bpf_program__insns() API,
+> added a few days ago, you still have to load the BPF program to be
+> able to clone the BPF program, and so I wanted to solve that for a
+> long while now.
+>
+> So how about we split bpf_object__load() phase into two:
+> bpf_object__prepare() and bpf_object__load(). prepare() will do all
+> the preparations (subprogs, ELF relos, also almost complete BPF map
+> relos, but not quite; I'll get to this), basically everything that
+> load does today short of actually creating maps and progs. load() then
+> will ensure that bpf_object__prepare() was called (i.e., user can do
+> just prepare(), prepare() + load() explicitly, or load() which will
+> call prepare() implicitly).
+>
+> The biggest problem I see right now is what we do about BPF map
+> relocations. I propose to perform map relocations but substitute map's
+> internal index (so that if someone dumps prog instructions after
+> prepare(), it's still meaningful, even if not yet validatable by
+> verifier). After maps are actually created, we can do another quick
+> pass over just RELO_DATA and replace map_idx with map's fd.
+>
+> It feels like we should split load further into two steps: creating
+> and pinning maps (+ finalizing FDs in instructions) and actually
+> loading programs. Again, with the same implicit calling of prepare and
+> map creation steps if the user only calls bpf_object__load(). For ease
+> of use and backwards compatibility.
+>
+> So basically, the most granular set of steps would be:
+>   1. bpf_object__open()
+>   2. bpf_object__prepare() (or bpf_object__relocate(), naming is hard)
+>   3. bpf_object__create_maps();
+>   4. bpf_object__load().
 
-  -Dbpf_load_program=bpf_test_load_program
+Talking with Alexei and digging through libbpf code some more, it
+might be a bit premature for now to split out create_maps(). It just
+complicates things and doesn't really add anything to the goal of
+observing CO-RE relocation results. So let's keep it under
+bpf_object__load() for now.
 
-This completes the clean up of deprecated libbpf program loading APIs.
+But that made me think we need a separate bpf_object__prepare() step
+at all. And I see two ways to go about it.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/Makefile                          | 3 +--
- .../selftests/bpf/prog_tests/cgroup_attach_autodetach.c       | 2 +-
- tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c  | 2 +-
- .../testing/selftests/bpf/prog_tests/cgroup_attach_override.c | 2 +-
- .../selftests/bpf/prog_tests/flow_dissector_load_bytes.c      | 2 +-
- .../selftests/bpf/prog_tests/flow_dissector_reattach.c        | 4 ++--
- tools/testing/selftests/bpf/prog_tests/signal_pending.c       | 2 +-
- tools/testing/selftests/bpf/test_cgroup_storage.c             | 3 ++-
- tools/testing/selftests/bpf/test_tag.c                        | 3 ++-
- 9 files changed, 12 insertions(+), 11 deletions(-)
+First approach is as follows.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 2016c583ed20..e19cc6473936 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -23,8 +23,7 @@ BPF_GCC		?= $(shell command -v bpf-gcc;)
- SAN_CFLAGS	?=
- CFLAGS += -g -O0 -rdynamic -Wall $(GENFLAGS) $(SAN_CFLAGS)		\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
--	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)			\
--	  -Dbpf_load_program=bpf_test_load_program
-+	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
- LDLIBS += -lcap -lelf -lz -lrt -lpthread
- 
- # Silence some warnings when compiled with clang
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
-index 5de485c7370f..858916d11e2e 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
-@@ -16,7 +16,7 @@ static int prog_load(void)
- 	};
- 	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
- 
--	return bpf_load_program(BPF_PROG_TYPE_CGROUP_SKB,
-+	return bpf_test_load_program(BPF_PROG_TYPE_CGROUP_SKB,
- 			       prog, insns_cnt, "GPL", 0,
- 			       bpf_log_buf, BPF_LOG_BUF_SIZE);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-index 731bea84d8ed..de9c3e12b0ea 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-@@ -66,7 +66,7 @@ static int prog_load_cnt(int verdict, int val)
- 	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
- 	int ret;
- 
--	ret = bpf_load_program(BPF_PROG_TYPE_CGROUP_SKB,
-+	ret = bpf_test_load_program(BPF_PROG_TYPE_CGROUP_SKB,
- 			       prog, insns_cnt, "GPL", 0,
- 			       bpf_log_buf, BPF_LOG_BUF_SIZE);
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
-index 10d3c33821a7..356547e849e2 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
-@@ -18,7 +18,7 @@ static int prog_load(int verdict)
- 	};
- 	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
- 
--	return bpf_load_program(BPF_PROG_TYPE_CGROUP_SKB,
-+	return bpf_test_load_program(BPF_PROG_TYPE_CGROUP_SKB,
- 			       prog, insns_cnt, "GPL", 0,
- 			       bpf_log_buf, BPF_LOG_BUF_SIZE);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_load_bytes.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_load_bytes.c
-index 6093728497c7..93ac3f28226c 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector_load_bytes.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_load_bytes.c
-@@ -30,7 +30,7 @@ void serial_test_flow_dissector_load_bytes(void)
- 
- 	/* make sure bpf_skb_load_bytes is not allowed from skb-less context
- 	 */
--	fd = bpf_load_program(BPF_PROG_TYPE_FLOW_DISSECTOR, prog,
-+	fd = bpf_test_load_program(BPF_PROG_TYPE_FLOW_DISSECTOR, prog,
- 			      ARRAY_SIZE(prog), "GPL", 0, NULL, 0);
- 	CHECK(fd < 0,
- 	      "flow_dissector-bpf_skb_load_bytes-load",
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-index f0c6c226aba8..7c79462d2702 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-@@ -47,9 +47,9 @@ static int load_prog(enum bpf_prog_type type)
- 	};
- 	int fd;
- 
--	fd = bpf_load_program(type, prog, ARRAY_SIZE(prog), "GPL", 0, NULL, 0);
-+	fd = bpf_test_load_program(type, prog, ARRAY_SIZE(prog), "GPL", 0, NULL, 0);
- 	if (CHECK_FAIL(fd < 0))
--		perror("bpf_load_program");
-+		perror("bpf_test_load_program");
- 
- 	return fd;
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/signal_pending.c b/tools/testing/selftests/bpf/prog_tests/signal_pending.c
-index fdfdcff6cbef..aecfe662c070 100644
---- a/tools/testing/selftests/bpf/prog_tests/signal_pending.c
-+++ b/tools/testing/selftests/bpf/prog_tests/signal_pending.c
-@@ -22,7 +22,7 @@ static void test_signal_pending_by_type(enum bpf_prog_type prog_type)
- 		prog[i] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0);
- 	prog[ARRAY_SIZE(prog) - 1] = BPF_EXIT_INSN();
- 
--	prog_fd = bpf_load_program(prog_type, prog, ARRAY_SIZE(prog),
-+	prog_fd = bpf_test_load_program(prog_type, prog, ARRAY_SIZE(prog),
- 				   "GPL", 0, NULL, 0);
- 	CHECK(prog_fd < 0, "test-run", "errno %d\n", errno);
- 
-diff --git a/tools/testing/selftests/bpf/test_cgroup_storage.c b/tools/testing/selftests/bpf/test_cgroup_storage.c
-index 0cda61da5d39..a63787e7bb1a 100644
---- a/tools/testing/selftests/bpf/test_cgroup_storage.c
-+++ b/tools/testing/selftests/bpf/test_cgroup_storage.c
-@@ -8,6 +8,7 @@
- 
- #include "bpf_rlimit.h"
- #include "cgroup_helpers.h"
-+#include "testing_helpers.h"
- 
- char bpf_log_buf[BPF_LOG_BUF_SIZE];
- 
-@@ -66,7 +67,7 @@ int main(int argc, char **argv)
- 
- 	prog[0].imm = percpu_map_fd;
- 	prog[7].imm = map_fd;
--	prog_fd = bpf_load_program(BPF_PROG_TYPE_CGROUP_SKB,
-+	prog_fd = bpf_test_load_program(BPF_PROG_TYPE_CGROUP_SKB,
- 				   prog, insns_cnt, "GPL", 0,
- 				   bpf_log_buf, BPF_LOG_BUF_SIZE);
- 	if (prog_fd < 0) {
-diff --git a/tools/testing/selftests/bpf/test_tag.c b/tools/testing/selftests/bpf/test_tag.c
-index 6272c784ca2a..5c7bea525626 100644
---- a/tools/testing/selftests/bpf/test_tag.c
-+++ b/tools/testing/selftests/bpf/test_tag.c
-@@ -21,6 +21,7 @@
- 
- #include "../../../include/linux/filter.h"
- #include "bpf_rlimit.h"
-+#include "testing_helpers.h"
- 
- static struct bpf_insn prog[BPF_MAXINSNS];
- 
-@@ -57,7 +58,7 @@ static int bpf_try_load_prog(int insns, int fd_map,
- 	int fd_prog;
- 
- 	bpf_filler(insns, fd_map);
--	fd_prog = bpf_load_program(BPF_PROG_TYPE_SCHED_CLS, prog, insns, "", 0,
-+	fd_prog = bpf_test_load_program(BPF_PROG_TYPE_SCHED_CLS, prog, insns, "", 0,
- 				   NULL, 0);
- 	assert(fd_prog > 0);
- 	if (fd_map > 0)
--- 
-2.30.2
+1. We don't add any new "step", keeping open and load phases only. All
+the steps that don't depend on the actual host kernel information
+(kallsyms, kconfig, etc) are moved into open() step, keeping it
+"unprivileged" and kernel-agnostic step. So as long as BPF object and
+its programs are "structurally sounds", meaning that all the subprog
+calls are relocated, map references are validated (but no map_fd is
+substituted, we just record which map has to be relocated, etc). It's
+basically a sanity check step.
 
+2. BTF upload, kallsyms + extern resolution, stops initi, map creation
+and prog loading stays in load() step.
+
+So that leaves the CO-RE relocation step. For BTFGen CO-RE has to
+happen in open() step. The problem is that CO-RE actually relies on
+kernel resource (/sys/kernel/btf/vmlinux + plus possible module BTFs),
+so it would have to be in load() step. On the other hand,
+bpf_object_open_ops  provide a way to specify custom vmlinux BTF, so
+it is possible to avoid libbpf complaining about missing BTF by
+providing custom BTF (even if it's an empty BTF).
+
+So, say, for `bpftool gen skeleton`, to avoid libbpf erroring out
+during skeleton generation, bpftool can substitute empty BTF as custom
+BTF and skeleton generation should succeed (all the CO-RE relocated
+instructions will be poisoned, but that's irrelevant for skeleton).
+
+But that does feel a bit hacky. So alternatively, we do add
+bpf_object__prepare() step, which performs all those structural steps
+and CO-RE relocation. And all the rest stays in load().
+
+I'm still leaning towards adding bpf_object__prepare(), as it has no
+changes in the observable behavior for end users. But I wonder if
+someone has strong arguments for the first approach?
+
+In either approach, bpf_object__load() will still do anything that
+requires root or CAP_BPF and modifies the state of the kernel (BTFs,
+maps, progs).
+
+>
+> But the old and trusty bpf_object__open() + bpf_object__load() will
+> work just as well, with load() doing steps #2-#4 automatically, if
+> necessary.
+>
+> So what does that split gives us. Few things:
+>   - it's possible to "simulate" almost all libbpf logic without
+> changing the state of the system (no maps or progs created). Yet you
+> still validate that kconfig externs, per-cpu externs, CO-RE relos, map
+> relos, etc, all that works.
+>   - libbpf can store extra information between steps 1, 2, 3, and 4,
+> but after step #4 all that extra information can be discarded and
+> cleaned up. So advanced users will get access to stuff like
+> bpf_program__insns() and CO-RE information, but most users won't have
+> to pay for that because it will be freed after bpf_object__load(). So
+> in this case, bpf_program__insns() could (should?) be discarded after
+> actual load, because if you care about instructions, you can do steps
+> #1-#3, grab instructions and copy them, if necessary. Then proceed to
+> #4 (or not) and free the memory.
+>
+> The last point is important, because to solve the problem 1b (exposing
+> CO-RE relo info), the best way to minimize public API commitments is
+> to (optionally, probably) request libbpf to record its CO-RE relo
+> decisions. Here's what I propose, specifically:
+>   1. Add something like "bool record_core_relo_info" (awful name,
+> don't use it) in bpf_object_open_opts.
+>   2. If it is set to true, libbpf will keep a "log" of CO-RE
+> relocation decisions, recording stuff like program name, instruction
+> index, local spec (i.e., root_type_id, spec string, relo kind, maybe
+> something else), target spec (kernel type_id, kernel spec string, also
+> module ID, if it's not vmlinux BTF). We can also record relocated
+> value (i.e., field offset, actual enum value, true/false for
+> existence, etc). All these are stable concepts, so I'd feel more
+> comfortable exposing them, compared to stuff like bpf_core_accessor
+> and other internal details.
+>   3. The memory for all that will be managed by libbpf for simplicity
+> of an API, and we'll expose accessors to get those arrays (at object
+> level or per-program level is TBD).
+>   4. This info will be available after the prepare() step and will be
+> discarded either at create_maps() or load().
+>
+> I think that solves problem #1 completely (at least for BTFGen case)
+> and actually provides more useful information. E.g., if someone wants
+> to track CO-RE resolution logic for some other reason, they should
+> have pretty full information (BTFGen doesn't need all of that).
+>
+> It also doesn't feel like too much complication to libbpf internals
+> (even though we'll need to be very careful with BPF map relos and
+> double-checking that we haven't missed any other critical part of the
+> process). And for most users there is no change in API or behavior.
+> And given this gives us a "framework" for more sustainable libbpf
+> "observability", I think it's a justified price to pay, overall.
+>
+> I still need to sleep on this, but this feels like a bit cleaner way
+> forward. Thoughts are welcome.
+>
+> >
+> > > If CO-RE matching style is necessary and it's the best approach then =
+please
+> > > add new logic to bpftool. I'm not sure such api would be
+> > > useful beyond this particular case to expose as stable libbpf api.
+> >
+> > I agree 100%. Our goal is to have this available on bpftool so all the
+> > community can use it. However it'd be a shame if we can't use some of
+> > the existing logic in libbpf.
