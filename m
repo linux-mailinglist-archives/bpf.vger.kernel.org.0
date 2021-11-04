@@ -2,236 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034644456B4
-	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 17:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D8A4456FC
+	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 17:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhKDQFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Nov 2021 12:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+        id S231624AbhKDQRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Nov 2021 12:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhKDQFw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:05:52 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B1AC061714
-        for <bpf@vger.kernel.org>; Thu,  4 Nov 2021 09:03:14 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id g26-20020a63521a000000b0029524f04f5aso4065161pgb.5
-        for <bpf@vger.kernel.org>; Thu, 04 Nov 2021 09:03:14 -0700 (PDT)
+        with ESMTP id S231419AbhKDQRj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:17:39 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C447C061714;
+        Thu,  4 Nov 2021 09:15:01 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f8so7978697plo.12;
+        Thu, 04 Nov 2021 09:15:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=OaTSiZCVwbk0WOSrCQSuGoj/xjNhXzJAkvT491kaM2A=;
-        b=p+bwUuEfehbqSFmtzgJRXpT+IMugkHLrVVma79oLvWHdM4/fPPX+y3kMMSv+5V2APX
-         ehCS4sopRsH2Brfv+Je3DDEL4HLseI6CNdtRxg7/1S2c1UtRwXZM3SL7nf4c8TfhMqXH
-         gYX1w/QKKyXde/ORLtR2pkGu6I7G6Ac9ZBRVLCLJGVgoe+TZGF/pnWTbEnJcaLTMx3bF
-         arhU0Qo3lFlDMtDfLQi+H25zTR2rz9qcAqSzBbnOfsIqI/2i3d++xlT/SCLKnjmGxOxH
-         mGzv20HlxLbyg8KEYl8G10cYD2jxWqPDMM7vu8JsUvYXz12JQIYwkzl1KJaf+rOaYPHs
-         Nw3Q==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sGhrNvp6uYs1eENGQtazLcPrJxO2giqX3yn86Q2Rjb0=;
+        b=OzWlf0h4HDva5w8/fjj8qykjVe5BGNoaTXijP4Hro17C7voOuJc2L83UigCX/Ce/Cb
+         oN9HSXKUkDlmO79igfzpN06HaVh8mgRhtICw5Ix+iFqTxY/mHUXFu+Lgs/itfW5uQ7JP
+         /U/7LGPCPa/siFewODGT5aajhljPambkIPQxtS4PXL8uVpH8iv+EZGjlNFZ3QxlCK7o9
+         JamSxoe3HUtNXrTPUDPNzdTb7qwxLf5FuxoCxowi/RFzgyF4DDITN2cMzVC/FqJnchSa
+         /qyM12DwUyQyENbiGq+bYPQTzCb3MZoQxrJHR0Uy3G+LmnPJSrTNKeUPFC7OD+OINALE
+         UQZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=OaTSiZCVwbk0WOSrCQSuGoj/xjNhXzJAkvT491kaM2A=;
-        b=6jzgd2Qc+9B0iCbYm4uy5zlICYjlLSaqfjin6lvBeXTB8xVTS4Np3V0RbwsR4Y5MtF
-         KDO65WTUMfQQPgoQPPOyjFvJW8pwgIUVWoZcufeQn/gcuZ03fu7t/nKSiLpossCK/WUJ
-         h8VhdJoN/gVQmSr9ZyvxKemtlF+I3HjAZQ34BRXwNuiDgNY3QqJyGVpUa9gRrJhQFsFG
-         5Qubs14K4HdTxgMjFCPxHMU1QR0A+u2bYlZunZUYy5V3BeQ4X/kz0sxi8KgBq3sWpqtq
-         K7VPslUm2Cux5hFzmc2gBM1dVBzE9ry+comuh01c0xHqEO+xxXiTKcbJTrtAtnnM86RP
-         xKXA==
-X-Gm-Message-State: AOAM531SV/XU8urNHYoSiVveKbAEQ0BaqhJttc7QpaNa8aCc94OLbbz3
-        P1r0ZOyXhcmpOe3v+o3RtVKnIeM=
-X-Google-Smtp-Source: ABdhPJwEXkNxwdm2AuElxlEO4vHwEV1EHs4ZSDj2P1ThmjSnp+mt27F1FVJe0zkJqylv/vukjey/0t8=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:268c:cb2d:5cc8:ad4])
- (user=sdf job=sendgmr) by 2002:a05:6a00:1816:b0:481:1010:c0f with SMTP id
- y22-20020a056a00181600b0048110100c0fmr29151759pfa.67.1636041793882; Thu, 04
- Nov 2021 09:03:13 -0700 (PDT)
-Date:   Thu,  4 Nov 2021 09:03:11 -0700
-Message-Id: <20211104160311.4028188-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH bpf-next] bpftool: add option to enable libbpf's strict mode
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sGhrNvp6uYs1eENGQtazLcPrJxO2giqX3yn86Q2Rjb0=;
+        b=Zd9YynsPhdZV/ALtmGbrtPLi1ZcShOlyEgCNdZJzrzyB2syMMisGPhHUa54mjppRsS
+         GQOV9x7Xd379wExszpqBtcpZylNkHlJ916jQwCdCyKxoCIYPPr27QNz/D+nGC6dQ3ros
+         eqgwpECeeEtp1JFAF5tICsHrx6e74KGcaycvATnZaa1PKJe6zxOps+YHdyhioqKJnS0n
+         Bcpcwn7Fuos5tCNWt0QPhU4YHMMJzM8997jtLrIJ1mGzksOExRn/kvXkwtgkRIO6p5Tv
+         /XxjFiV/xAqHlkyW6g/HyaFfNM5ssfGaaUi946dAmlkWKoppOQhPBQDIjOvYFz4mkAHR
+         DDuA==
+X-Gm-Message-State: AOAM531QKqy0vkNeOHj2ehKaGwbTOpCFSvIqxxdhhf+xcMHFegdKJaoN
+        bEFk6QbweuOG1qZ87y/rVLBEnRc5+oD4R/bOUGw=
+X-Google-Smtp-Source: ABdhPJzTreflRsKrO58KDvo836UWmeaabpCOf7NZG2guZUrj0IZFxcDX/Iaw9TuVGSrhhCktbaJ2d2suAoiggJNMJmw=
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr23239514pjj.138.1636042500356;
+ Thu, 04 Nov 2021 09:15:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+ <20211103001245.muyte7exph23tmco@ast-mbp.dhcp.thefacebook.com>
+ <fcec81dd-3bb9-7dcf-139d-847538b6ad20@fb.com> <CAN22DihwJ7YDFSPk+8CCs0RcSWvZOpNV=D1u+42XabztS6hcKQ@mail.gmail.com>
+ <CAADnVQJ_ger=Tjn=9SuUTES6Tt5k_G0M+6T_ELzFtw_cSVs83A@mail.gmail.com> <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
+In-Reply-To: <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 4 Nov 2021 09:14:49 -0700
+Message-ID: <CAADnVQK6kMbX379dy5XOo1s7DricX1z9WZ04PhUD6DoEPO+jsg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Joe Burton <jevburton.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Petar Penkov <ppenkov@google.com>,
         Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        John Fastabend <john.fastabend@gmail.com>
+        Joe Burton <jevburton@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Otherwise, attaching with bpftool doesn't work with strict section names.
+On Wed, Nov 3, 2021 at 9:23 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> asm("") indeed helped preserve the call.
+>
+> [$ ~/tmp2] cat t.c
+> int __attribute__((noinline)) foo() { asm(""); return 1; }
+> int bar() { return foo() + foo(); }
+> [$ ~/tmp2] clang -O2 -c t.c
+> [$ ~/tmp2] llvm-objdump -d t.o
+>
+> t.o:    file format elf64-x86-64
+>
+> Disassembly of section .text:
+>
+> 0000000000000000 <foo>:
+>         0: b8 01 00 00 00                movl    $1, %eax
+>         5: c3                            retq
+>         6: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
+>
+> 0000000000000010 <bar>:
+>        10: 50                            pushq   %rax
+>        11: e8 00 00 00 00                callq   0x16 <bar+0x6>
+>        16: e8 00 00 00 00                callq   0x1b <bar+0xb>
+>        1b: b8 02 00 00 00                movl    $2, %eax
+>        20: 59                            popq    %rcx
+>        21: c3                            retq
+> [$ ~/tmp2]
+>
+> Note with asm(""), foo() is called twice, but the compiler optimization
+> knows foo()'s return value is 1 so it did calculation at compiler time,
+> assign the 2 to %eax and returns.
 
-Also:
-
-- by default, don't append / to the section name; in strict
-  mode it's relevant only for a small subset of prog types
-- print a deprecation warning when requested to pin all programs
-
-+ bpftool prog loadall tools/testing/selftests/bpf/test_probe_user.o /sys/fs/bpf/kprobe type kprobe
-Warning: pinning by section name is deprecated, use --strict to pin by function name.
-See: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#pinning-path-differences
-
-+ bpftool prog loadall tools/testing/selftests/bpf/xdp_dummy.o /sys/fs/bpf/xdp type xdp
-Warning: pinning by section name is deprecated, use --strict to pin by function name.
-See: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#pinning-path-differences
-
-+ bpftool --strict prog loadall tools/testing/selftests/bpf/test_probe_user.o /sys/fs/bpf/kprobe type kprobe
-+ bpftool --strict prog loadall tools/testing/selftests/bpf/xdp_dummy.o /sys/fs/bpf/xdp type xdp
-
-Cc: Quentin Monnet <quentin@isovalent.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../bpftool/Documentation/common_options.rst  |  6 +++
- tools/bpf/bpftool/main.c                      | 13 +++++-
- tools/bpf/bpftool/main.h                      |  1 +
- tools/bpf/bpftool/prog.c                      | 40 +++++++++++--------
- 4 files changed, 43 insertions(+), 17 deletions(-)
-
-diff --git a/tools/bpf/bpftool/Documentation/common_options.rst b/tools/bpf/bpftool/Documentation/common_options.rst
-index 05d06c74dcaa..28710f9005be 100644
---- a/tools/bpf/bpftool/Documentation/common_options.rst
-+++ b/tools/bpf/bpftool/Documentation/common_options.rst
-@@ -20,3 +20,9 @@
- 	  Print all logs available, even debug-level information. This includes
- 	  logs from libbpf as well as from the verifier, when attempting to
- 	  load programs.
-+
-+-S, --strict
-+	  Use strict (aka v1.0) libbpf mode which has more stringent section
-+	  name requirements.
-+	  See https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#pinning-path-differences
-+	  for details.
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 28237d7cef67..10c72089e599 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -31,6 +31,7 @@ bool block_mount;
- bool verifier_logs;
- bool relaxed_maps;
- bool use_loader;
-+bool strict_libbpf;
- struct btf *base_btf;
- struct hashmap *refs_table;
- 
-@@ -396,6 +397,7 @@ int main(int argc, char **argv)
- 		{ "debug",	no_argument,	NULL,	'd' },
- 		{ "use-loader",	no_argument,	NULL,	'L' },
- 		{ "base-btf",	required_argument, NULL, 'B' },
-+		{ "strict",	no_argument,	NULL,	'S' },
- 		{ 0 }
- 	};
- 	int opt, ret;
-@@ -408,7 +410,7 @@ int main(int argc, char **argv)
- 	bin_name = argv[0];
- 
- 	opterr = 0;
--	while ((opt = getopt_long(argc, argv, "VhpjfLmndB:",
-+	while ((opt = getopt_long(argc, argv, "VhpjfLmndB:S",
- 				  options, NULL)) >= 0) {
- 		switch (opt) {
- 		case 'V':
-@@ -454,6 +456,9 @@ int main(int argc, char **argv)
- 		case 'L':
- 			use_loader = true;
- 			break;
-+		case 'S':
-+			strict_libbpf = true;
-+			break;
- 		default:
- 			p_err("unrecognized option '%s'", argv[optind - 1]);
- 			if (json_output)
-@@ -463,6 +468,12 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	if (strict_libbpf) {
-+		ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-+		if (ret)
-+			p_err("failed to enable libbpf strict mode: %d", ret);
-+	}
-+
- 	argc -= optind;
- 	argv += optind;
- 	if (argc < 0)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 383835c2604d..b67fa8d8532d 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -90,6 +90,7 @@ extern bool block_mount;
- extern bool verifier_logs;
- extern bool relaxed_maps;
- extern bool use_loader;
-+extern bool strict_libbpf;
- extern struct btf *base_btf;
- extern struct hashmap *refs_table;
- 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index dea7a49ec26e..47b321d32b82 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1483,8 +1483,6 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 
- 	while (argc) {
- 		if (is_prefix(*argv, "type")) {
--			char *type;
--
- 			NEXT_ARG();
- 
- 			if (common_prog_type != BPF_PROG_TYPE_UNSPEC) {
-@@ -1494,21 +1492,26 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 			if (!REQ_ARGS(1))
- 				goto err_free_reuse_maps;
- 
--			/* Put a '/' at the end of type to appease libbpf */
--			type = malloc(strlen(*argv) + 2);
--			if (!type) {
--				p_err("mem alloc failed");
--				goto err_free_reuse_maps;
--			}
--			*type = 0;
--			strcat(type, *argv);
--			strcat(type, "/");
-+			err = libbpf_prog_type_by_name(*argv, &common_prog_type,
-+						       &expected_attach_type);
-+			if (err < 0) {
-+				/* Put a '/' at the end of type to appease libbpf */
-+				char *type = malloc(strlen(*argv) + 2);
- 
--			err = get_prog_type_by_name(type, &common_prog_type,
--						    &expected_attach_type);
--			free(type);
--			if (err < 0)
--				goto err_free_reuse_maps;
-+				if (!type) {
-+					p_err("mem alloc failed");
-+					goto err_free_reuse_maps;
-+				}
-+				*type = 0;
-+				strcat(type, *argv);
-+				strcat(type, "/");
-+
-+				err = get_prog_type_by_name(type, &common_prog_type,
-+							    &expected_attach_type);
-+				free(type);
-+				if (err < 0)
-+					goto err_free_reuse_maps;
-+			}
- 
- 			NEXT_ARG();
- 		} else if (is_prefix(*argv, "map")) {
-@@ -1700,6 +1703,11 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 			goto err_close_obj;
- 		}
- 	} else {
-+		if (!strict_libbpf) {
-+			p_info("Warning: pinning by section name is deprecated, use --strict to pin by function name.\n"
-+			       "See: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#pinning-path-differences\n");
-+		}
-+
- 		err = bpf_object__pin_programs(obj, pinfile);
- 		if (err) {
- 			p_err("failed to pin all programs");
--- 
-2.33.1.1089.g2158813163f-goog
-
+Missed %eax=2 part...
+That means that asm("") is not enough.
+Maybe something like:
+int __attribute__((noinline)) foo()
+{
+  int ret = 0;
+  asm volatile("" : "=r"(var) : "0"(var));
+  return ret;
+}
