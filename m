@@ -2,26 +2,26 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA990444CE0
-	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 02:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9612444CE2
+	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 02:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhKDBKz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 21:10:55 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:27173 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhKDBKz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:10:55 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hl57l6HbFzTgHJ;
-        Thu,  4 Nov 2021 09:06:43 +0800 (CST)
+        id S232747AbhKDBK6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Nov 2021 21:10:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30916 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231248AbhKDBK5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Nov 2021 21:10:57 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hl5436T8MzcZyJ;
+        Thu,  4 Nov 2021 09:03:31 +0800 (CST)
 Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 09:08:13 +0800
+ 15.1.2308.15; Thu, 4 Nov 2021 09:08:16 +0800
 Received: from localhost.localdomain (10.175.101.6) by
  dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 09:08:12 +0800
+ 15.1.2308.15; Thu, 4 Nov 2021 09:08:16 +0800
 From:   Di Zhu <zhudi2@huawei.com>
 To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
@@ -29,10 +29,12 @@ To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <jakub@cloudflare.com>
 CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <zhudi2@huawei.com>
-Subject: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs attached to sockmap
-Date:   Thu, 4 Nov 2021 09:07:44 +0800
-Message-ID: <20211104010745.1177032-1-zhudi2@huawei.com>
+Subject: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for progs attached to sockmap
+Date:   Thu, 4 Nov 2021 09:07:45 +0800
+Message-ID: <20211104010745.1177032-2-zhudi2@huawei.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211104010745.1177032-1-zhudi2@huawei.com>
+References: <20211104010745.1177032-1-zhudi2@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -44,195 +46,145 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Right now there is no way to query whether BPF programs are
-attached to a sockmap or not.
-
-we can use the standard interface in libbpf to query, such as:
-bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
-the mapFd is the fd of sockmap.
+Add test for querying progs attached to sockmap. we use an existing
+libbpf query interface to query prog cnt before and after progs
+attaching to sockmap and check whether the queried prog id is right.
 
 Signed-off-by: Di Zhu <zhudi2@huawei.com>
 ---
-/* v2 */
-- John Fastabend <john.fastabend@gmail.com>
-  - add selftest code
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 75 +++++++++++++++++++
+ .../bpf/progs/test_sockmap_progs_query.c      | 24 ++++++
+ 2 files changed, 99 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
 
-/* v3 */
- - avoid sleeping caused by copy_to_user() in rcu critical zone
-
-/* v4 */
- - Alexei Starovoitov <alexei.starovoitov@gmail.com>
-  -split into two patches, one for core code and one for selftest.
-
-/* v5 */
- - Yonghong Song <yhs@fb.com>
-  -Some naming and formatting changes
----
- include/linux/bpf.h  |  9 ++++++
- kernel/bpf/syscall.c |  5 +++
- net/core/sock_map.c  | 74 +++++++++++++++++++++++++++++++++++++++-----
- 3 files changed, 81 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index d604c8251d88..235ea7fc5fd8 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1961,6 +1961,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
- int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
- int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
-+int sock_map_bpf_prog_query(const union bpf_attr *attr,
-+			    union bpf_attr __user *uattr);
-+
- void sock_map_unhash(struct sock *sk);
- void sock_map_close(struct sock *sk, long timeout);
- #else
-@@ -2014,6 +2017,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
- {
- 	return -EOPNOTSUPP;
- }
-+
-+static inline int sock_map_bpf_prog_query(const union bpf_attr *attr,
-+					  union bpf_attr __user *uattr)
-+{
-+	return -EINVAL;
-+}
- #endif /* CONFIG_BPF_SYSCALL */
- #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 1352ec104149..de8f91d91240 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -8,6 +8,7 @@
+ #include "test_sockmap_update.skel.h"
+ #include "test_sockmap_invalid_update.skel.h"
+ #include "test_sockmap_skb_verdict_attach.skel.h"
++#include "test_sockmap_progs_query.skel.h"
+ #include "bpf_iter_sockmap.skel.h"
  
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e50c0bfdb7d..748102c3e0c9 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3275,6 +3275,11 @@ static int bpf_prog_query(const union bpf_attr *attr,
- 	case BPF_FLOW_DISSECTOR:
- 	case BPF_SK_LOOKUP:
- 		return netns_bpf_prog_query(attr, uattr);
-+	case BPF_SK_SKB_STREAM_PARSER:
-+	case BPF_SK_SKB_STREAM_VERDICT:
-+	case BPF_SK_MSG_VERDICT:
-+	case BPF_SK_SKB_VERDICT:
-+		return sock_map_bpf_prog_query(attr, uattr);
- 	default:
- 		return -EINVAL;
+ #define TCP_REPAIR		19	/* TCP sock is under repair right now */
+@@ -315,6 +316,74 @@ static void test_sockmap_skb_verdict_attach(enum bpf_attach_type first,
+ 	test_sockmap_skb_verdict_attach__destroy(skel);
+ }
+ 
++static __u32 query_prog_id(int prog_fd)
++{
++	struct bpf_prog_info info = {};
++	__u32 info_len = sizeof(info);
++	int err;
++
++	err = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
++	if (CHECK_FAIL(err || info_len != sizeof(info))) {
++		perror("bpf_obj_get_info_by_fd");
++		return 0;
++	}
++
++	return info.id;
++}
++
++static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
++{
++	struct test_sockmap_progs_query *skel;
++	int err, map_fd, verdict_fd, duration = 0;
++	__u32 attach_flags = 0;
++	__u32 prog_ids[3] = {};
++	__u32 prog_cnt = 3;
++
++	skel = test_sockmap_progs_query__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_sockmap_progs_query__open_and_load"))
++		return;
++
++	map_fd = bpf_map__fd(skel->maps.sock_map);
++
++	if (attach_type == BPF_SK_MSG_VERDICT)
++		verdict_fd = bpf_program__fd(skel->progs.prog_skmsg_verdict);
++	else
++		verdict_fd = bpf_program__fd(skel->progs.prog_skb_verdict);
++
++	err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
++			     &attach_flags, prog_ids, &prog_cnt);
++	if (CHECK(err, "bpf_prog_query", "failed\n"))
++		goto out;
++
++	if (CHECK(attach_flags != 0, "bpf_prog_query",
++		  "wrong attach_flags on query: %u", attach_flags))
++		goto out;
++
++	if (CHECK(prog_cnt != 0, "bpf_prog_query",
++		  "wrong program count on query: %u", prog_cnt))
++		goto out;
++
++	err = bpf_prog_attach(verdict_fd, map_fd, attach_type, 0);
++	if (CHECK(err, "bpf_prog_attach", "failed\n"))
++		goto out;
++
++	prog_cnt = 1;
++	err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
++			     &attach_flags, prog_ids, &prog_cnt);
++
++	CHECK(err, "bpf_prog_query", "failed\n");
++	CHECK(attach_flags != 0, "bpf_prog_query attach_flags",
++	      "wrong attach_flags on query: %u", attach_flags);
++	CHECK(prog_cnt != 1, "bpf_prog_query prog_cnt",
++	      "wrong program count on query: %u", prog_cnt);
++	CHECK(prog_ids[0] != query_prog_id(verdict_fd), "bpf_prog_query",
++	      "wrong prog_ids on query: %u", prog_ids[0]);
++
++	bpf_prog_detach2(verdict_fd, map_fd, attach_type);
++out:
++	test_sockmap_progs_query__destroy(skel);
++}
++
+ void test_sockmap_basic(void)
+ {
+ 	if (test__start_subtest("sockmap create_update_free"))
+@@ -341,4 +410,10 @@ void test_sockmap_basic(void)
+ 		test_sockmap_skb_verdict_attach(BPF_SK_SKB_STREAM_VERDICT,
+ 						BPF_SK_SKB_VERDICT);
  	}
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index e252b8ec2b85..0320d27550fe 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1412,38 +1412,50 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
- 	return NULL;
++	if (test__start_subtest("sockmap progs query")) {
++		test_sockmap_progs_query(BPF_SK_MSG_VERDICT);
++		test_sockmap_progs_query(BPF_SK_SKB_STREAM_PARSER);
++		test_sockmap_progs_query(BPF_SK_SKB_STREAM_VERDICT);
++		test_sockmap_progs_query(BPF_SK_SKB_VERDICT);
++	}
  }
- 
--static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
--				struct bpf_prog *old, u32 which)
-+static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog ***pprog,
-+				u32 which)
- {
- 	struct sk_psock_progs *progs = sock_map_progs(map);
--	struct bpf_prog **pprog;
- 
- 	if (!progs)
- 		return -EOPNOTSUPP;
- 
- 	switch (which) {
- 	case BPF_SK_MSG_VERDICT:
--		pprog = &progs->msg_parser;
-+		*pprog = &progs->msg_parser;
- 		break;
- #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
- 	case BPF_SK_SKB_STREAM_PARSER:
--		pprog = &progs->stream_parser;
-+		*pprog = &progs->stream_parser;
- 		break;
- #endif
- 	case BPF_SK_SKB_STREAM_VERDICT:
- 		if (progs->skb_verdict)
- 			return -EBUSY;
--		pprog = &progs->stream_verdict;
-+		*pprog = &progs->stream_verdict;
- 		break;
- 	case BPF_SK_SKB_VERDICT:
- 		if (progs->stream_verdict)
- 			return -EBUSY;
--		pprog = &progs->skb_verdict;
-+		*pprog = &progs->skb_verdict;
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
- 	}
- 
-+	return 0;
+diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+new file mode 100644
+index 000000000000..9d58d61c0dee
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_SOCKMAP);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u64);
++} sock_map SEC(".maps");
++
++SEC("sk_skb")
++int prog_skb_verdict(struct __sk_buff *skb)
++{
++	return SK_PASS;
 +}
 +
-+static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
-+				struct bpf_prog *old, u32 which)
++SEC("sk_msg")
++int prog_skmsg_verdict(struct sk_msg_md *msg)
 +{
-+	struct bpf_prog **pprog;
-+	int ret;
-+
-+	ret = sock_map_prog_lookup(map, &pprog, which);
-+	if (ret)
-+		return ret;
-+
- 	if (old)
- 		return psock_replace_prog(pprog, prog, old);
- 
-@@ -1451,6 +1463,54 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
- 	return 0;
- }
- 
-+int sock_map_bpf_prog_query(const union bpf_attr *attr,
-+			    union bpf_attr __user *uattr)
-+{
-+	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
-+	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
-+	struct bpf_prog **pprog;
-+	struct bpf_prog *prog;
-+	struct bpf_map *map;
-+	struct fd f;
-+	u32 id = 0;
-+	int ret;
-+
-+	if (attr->query.query_flags)
-+		return -EINVAL;
-+
-+	f = fdget(ufd);
-+	map = __bpf_map_get(f);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	rcu_read_lock();
-+
-+	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
-+	if (ret)
-+		goto end;
-+
-+	prog = *pprog;
-+	prog_cnt = (!prog) ? 0 : 1;
-+
-+	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
-+		goto end;
-+
-+	id = prog->aux->id;
-+	if (id == 0)
-+		prog_cnt = 0;
-+
-+end:
-+	rcu_read_unlock();
-+
-+	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
-+	    (id != 0 && copy_to_user(prog_ids, &id, sizeof(u32))) ||
-+	    copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt)))
-+		ret = -EFAULT;
-+
-+	fdput(f);
-+	return ret;
++	return SK_PASS;
 +}
 +
- static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
- {
- 	switch (link->map->map_type) {
++char _license[] SEC("license") = "GPL";
 -- 
 2.27.0
 
