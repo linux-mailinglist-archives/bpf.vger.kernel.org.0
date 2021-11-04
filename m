@@ -2,40 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DBA445952
-	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 19:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65662445959
+	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 19:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhKDSL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Nov 2021 14:11:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55336 "EHLO mail.kernel.org"
+        id S231822AbhKDSNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Nov 2021 14:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234066AbhKDSL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:11:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4961611C3;
-        Thu,  4 Nov 2021 18:09:19 +0000 (UTC)
+        id S232079AbhKDSNE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Nov 2021 14:13:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8E91611EF;
+        Thu,  4 Nov 2021 18:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636049360;
-        bh=w617Qk52PmRlTRtFspvVbL+RmWBeO4qDAZ7bC45R/y4=;
+        s=k20201202; t=1636049426;
+        bh=1TGmE9EL7zaaEDM2ZfofyweIvg+JIK12Vi+NGCIQYJo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HkOMwVCxVCO+XTNjftIZtjvpM1d+5CuFtbXWGDJ40VDer4QBN+vjJhisSkeEuk2Z/
-         QQlqfXEXbdzXgaZ4ysWAMvgki4lRsn1qQ8ZrFMJBHmk+XTgji7nxKfB2R31qGFBAG/
-         qP697JT17zOG1d4p1m2xWHlT5O2GQ4JGG9GWydj08p9qdqfc8/5vcf8OdNwoLkBmCN
-         t2J/TSQVne2YthBJDUf8GBNMGXmAnaaVmgV95fAK5r5PLfS3uT0YqLnKyIcEmYq5RM
-         m/ZMFVRkNbB44pyXhvqTEriKYxdYEmagfDfrl+qWwoes8afgr2EFsctm+6bN73EHvv
-         0uUc+sMAdMsAA==
+        b=Y3IDCTlzAmaPzddLtZ2JmfZ1SacU/hd30oJoCI+fCGQzmsmJtv066+rAnlXfRT75p
+         NPdWu45bUTzNu1USfIBmn3q90J9bbfZX0y5pk8/36nGnQexy1JNSrM6+O6AtnLQF9/
+         ieBkm4UrW44JrBUBxHLkq8tXDETvM1wvyU1yXD/hlR+i542KUGPeIEFBUD2C7xg7ag
+         GHf4Hmn6+KPqkAtRTzkFMlwd+erTpAG/HdrYhYB7cunJCe3d4PpIVwTMERKyjzmAY3
+         PJdufotMAIONkrQqaH9xvP3CU3MnwljevmDilk5sPfD23sQQft7ZtfQGHuPEAItzpL
+         NcDd2kRHztZ8w==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A9976410A1; Thu,  4 Nov 2021 15:09:17 -0300 (-03)
-Date:   Thu, 4 Nov 2021 15:09:17 -0300
+        id 01129410A1; Thu,  4 Nov 2021 15:10:23 -0300 (-03)
+Date:   Thu, 4 Nov 2021 15:10:23 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
+Cc:     Quentin Monnet <quentin@isovalent.com>,
         Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge
  with upstream
-Message-ID: <YYQhzbh1tL5MPgaI@kernel.org>
+Message-ID: <YYQiD6Poe7KvjEVu@kernel.org>
 References: <YYQadWbtdZ9Ff9N4@kernel.org>
  <CAEf4Bzaj4_hXDxk18aJvk2bxJ-rPb++DpPVEeUw0pN-tJuiy0Q@mail.gmail.com>
 MIME-Version: 1.0
@@ -49,52 +48,19 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Em Thu, Nov 04, 2021 at 10:47:12AM -0700, Andrii Nakryiko escreveu:
-> On Thu, Nov 4, 2021 at 10:38 AM Arnaldo Carvalho de Melo
-> <arnaldo.melo@gmail.com> wrote:
-> >
-> >
-> > Hi Song,
-> >
-> 
+> On Thu, Nov 4, 2021 at 10:38 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+ 
 > cc Quentin as well, might be related to recent Makefiles revamp for
 > users of libbpf. But in bpf-next perf builds perfectly fine, so not
 > sure.
 
-This did the trick:
+You have to use:
 
-⬢[acme@toolbox perf]$ git show
-commit 504afe6757ec646539ca3b4aa0431820e8c92b45 (HEAD -> perf/core)
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Thu Nov 4 14:58:56 2021 -0300
+  make BUILD_BPF_SKEL=1 O=/tmp/build/perf -C tools/perf install-bin
 
-    Revert "bpftool: Remove Makefile dep. on $(LIBBPF) for $(LIBBPF_INTERNAL_HDRS)"
+Song, I think its time we make BUILD_BPF_SKEL=1 the default, wdyt?
 
-    This reverts commit 8b6c46241c774c83998092a4eafe40f054568881.
-
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index c0c30e56988f2cbe..c5ad996ee95d4e87 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -39,14 +39,14 @@ ifeq ($(BPFTOOL_VERSION),)
- BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
- endif
-
--$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR):
-+$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT):
-        $(QUIET_MKDIR)mkdir -p $@
-
- $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
-        $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
-                DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
-
--$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_DIR)
-+$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h $(LIBBPF)
-        $(call QUIET_INSTALL, $@)
-        $(Q)install -m 644 -t $(LIBBPF_HDRS_DIR) $<
-
-⬢[acme@toolbox perf]$
+- Arnaldo
  
 > >         I just did a merge with upstream and I'm getting this:
 > >
