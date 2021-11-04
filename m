@@ -2,129 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1316445364
-	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 13:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E01445402
+	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 14:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhKDM5p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Nov 2021 08:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbhKDM5o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:57:44 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039A2C061714;
-        Thu,  4 Nov 2021 05:55:07 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id q126so1383309pgq.13;
-        Thu, 04 Nov 2021 05:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1EGh8Ks1kwTPl4HlYk/VIkwHYF+RXVJORjfcoMxNQ0k=;
-        b=f8KeiW+0BHpKBKZg+GrvwjpWomrDRt0dipQqdvJIZocIqKsozCFr33jctWptn5H8Ny
-         bag//weyAbkPOWmnACA2qFj6HLHdOnF2YS+zX1gsjCQOQolJwuZ8OhzlWmH0cmCJYWiF
-         4BY75Z0/7A3pwZ2tBNSDJDe3lT8+X7OMUYgPSkHTb8lM44ST5BQRIQb+B1WMvAZx/pIZ
-         8Iqb+jsDpO9PVCsGxGMRnRacXIAvjjcwKjIQI40mOj2i4CxLHFpA15agpt2BKmUAx+iH
-         BSqxfPgRUvXo4Gdp0N+WQYUYJ1krlyDbxzRnnySiKa1nbD0r+MBMFtAyU9sCCMoeqcWD
-         3FEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1EGh8Ks1kwTPl4HlYk/VIkwHYF+RXVJORjfcoMxNQ0k=;
-        b=A22j/xZUEl3psNEPQzDaUz2/VK1oqrSsbj4Xew/YbwuOr5oVSOv0YNud6Z/evYBGsG
-         8fIfEyEGJdLP0DI4oJyyPqy/SliU/PaXZXZLX6TCNHhJERMjFr7i43DLl0T44CxcU+w5
-         EKfdSHavxqCHuixuoCzDdJpxaZ9TDBouRj1sf7PMX1P4kTe7AbNbx40v5OCU9z7qu+4R
-         8nw9PVa4WdqC8q9zyh4d2BLORafwH9EL99VfAOghx2fZf7IrM7gXUTIZX3v2Kk29QhV3
-         bN9xcAthr1wZLTYxGAZIyMfRnIn7uVvH2a0aduIA5Hal55EKZuwLhmuKMEz1y1H80WjL
-         F8tw==
-X-Gm-Message-State: AOAM531BZqjUhWcYgL1+xQPDvx51AebKTdTEahprW0TWG+6dw6Evk+Oj
-        VB2BEzggUNNz26uJDSf/MegbtkHIJk5EYw==
-X-Google-Smtp-Source: ABdhPJxirrIAw747a1+mWlD8z94haanRuiMYlL3nnbvTxRw6UeuKjFsU9H58klDOigBnF4yidY3tmQ==
-X-Received: by 2002:aa7:888d:0:b0:46b:72b2:5d61 with SMTP id z13-20020aa7888d000000b0046b72b25d61mr51337250pfe.73.1636030506511;
-        Thu, 04 Nov 2021 05:55:06 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d916:31fc:9e49:a605:b093])
-        by smtp.gmail.com with ESMTPSA id j12sm5009703pfu.33.2021.11.04.05.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 05:55:06 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 18:25:03 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S231332AbhKDNjb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Nov 2021 09:39:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56990 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231320AbhKDNja (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Nov 2021 09:39:30 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A4D0vks029134;
+        Thu, 4 Nov 2021 13:36:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=0NKqOHkWn584dsEUZYyC9VqUTTaZlKGwsHtttpGsRiM=;
+ b=JMy7EwaEriTsEHZtmKzajkEfhUKEQRZfIG08C4YGBF/jL1IwtQ3e9p/noPfpI8/CnT93
+ SLL5cHgHLCCydgbtawQjOyZ3zAH4fbil9EpYTOiZZlS9rWmtfNYU0aEd5XxRFOUsnHtq
+ pB8mkOI6WjaEKNJU9ia+QUKxtkaSVO+iw0AUXfSiH38VbqITuZnUNV7ZE7LaVnoZdh6s
+ g9AP9/F5Bs13LJUIX8LwbIOaLzkPmEC4JtpqP4s1apjTUjPpUjcNFShj/TVzs9BDHETb
+ 40uvMSbNC2dT+AiMvwarSVF516O2Z+eXHneDX43xkps5Wil3ueZQXRmZgYt4yrholJIH xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c4ftuh1wx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Nov 2021 13:36:29 +0000
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A4D0xAL029437;
+        Thu, 4 Nov 2021 13:36:29 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c4ftuh1vk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Nov 2021 13:36:28 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A4DXAKb022342;
+        Thu, 4 Nov 2021 13:36:26 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3c0wak09fq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Nov 2021 13:36:26 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A4DTtLN56295772
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Nov 2021 13:29:55 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C91611C066;
+        Thu,  4 Nov 2021 13:36:23 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5033711C064;
+        Thu,  4 Nov 2021 13:36:22 +0000 (GMT)
+Received: from sig-9-145-12-156.uk.ibm.com (unknown [9.145.12.156])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Nov 2021 13:36:22 +0000 (GMT)
+Message-ID: <b74fc5436d0b21ccd72917cf94b8bbc7eb9e5179.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v5] bpf: Change value of MAX_TAIL_CALL_CNT from
+ 32 to 33
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v1 0/6] Introduce unstable CT lookup helpers
-Message-ID: <20211104125503.smxxptjqri6jujke@apollo.localdomain>
-References: <20211030144609.263572-1-memxor@gmail.com>
- <20211102231642.yqgocduxcoladqne@ast-mbp.dhcp.thefacebook.com>
+        KP Singh <kpsingh@kernel.org>, illusionist.neo@gmail.com,
+        zlim.lnx@gmail.com, naveen.n.rao@linux.ibm.com,
+        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
+        hca@linux.ibm.com, gor@linux.ibm.com, udknight@gmail.com,
+        davem@davemloft.net
+Date:   Thu, 04 Nov 2021 14:36:22 +0100
+In-Reply-To: <1635990610-4448-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1635990610-4448-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102231642.yqgocduxcoladqne@ast-mbp.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HSMrYqAgnVrtL1PAH8GO7nx43JvD8AKD
+X-Proofpoint-GUID: GLT032ugz6i9mkefpO58Nv7IY-mLvh1W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-04_04,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111040058
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 04:46:42AM IST, Alexei Starovoitov wrote:
-> On Sat, Oct 30, 2021 at 08:16:03PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > This series adds unstable conntrack lookup helpers using BPF kfunc support.  The
-> > patch adding the lookup helper is based off of Maxim's recent patch to aid in
-> > rebasing their series on top of this, all adjusted to work with kfunc support
-> > [0].
-> >
-> > This is an RFC series, as I'm unsure whether the reference tracking for
-> > PTR_TO_BTF_ID will be accepted.
->
-> Yes. The patches look good overall.
-> Please don't do __BPF_RET_TYPE_MAX signalling. It's an ambiguous name.
-> _MAX is typically used for a different purpose. Just give it an explicit name.
-> I don't fully understand why that skip is needed though.
+On Thu, 2021-11-04 at 09:50 +0800, Tiezhu Yang wrote:
+> In the current code, the actual max tail call count is 33 which is
+> greater
+> than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not
+> consistent
+> with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and
+> need to
+> spend some time to think about the reason at the first glance.
+> 
+> We can see the historical evolution from commit 04fd61ab36ec ("bpf:
+> allow
+> bpf programs to tail-call other bpf programs") and commit
+> f9dabe016b63
+> ("bpf: Undo off-by-one in interpreter tail call count limit").
+> 
+> In order to avoid changing existing behavior, the actual limit is 33
+> now,
+> this is reasonable.
+> 
+> After commit 874be05f525e ("bpf, tests: Add tail call test suite"),
+> we can
+> see there exists failed testcase.
+> 
+> On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
+>  # echo 0 > /proc/sys/net/core/bpf_jit_enable
+>  # modprobe test_bpf
+>  # dmesg | grep -w FAIL
+>  Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
+> 
+> On some archs:
+>  # echo 1 > /proc/sys/net/core/bpf_jit_enable
+>  # modprobe test_bpf
+>  # dmesg | grep -w FAIL
+>  Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+> 
+> Although the above failed testcase has been fixed in commit
+> 18935a72eb25
+> ("bpf/tests: Fix error in tail call limit tests"), it is still
+> necessary
+> to change the value of MAX_TAIL_CALL_CNT from 32 to 33 to make the
+> code
+> more readable, then do some small changes of the related code.
+> 
+> With this patch, it does not change the current limit 33,
+> MAX_TAIL_CALL_CNT
+> can reflect the actual max tail call count, the related tailcall
+> testcases
+> in test_bpf and selftests can work well for the interpreter and the
+> JIT.
+> 
+> Here are the test results on x86_64:
+> 
+>  # uname -m
+>  x86_64
+>  # echo 0 > /proc/sys/net/core/bpf_jit_enable
+>  # modprobe test_bpf test_suite=test_tail_calls
+>  # dmesg | tail -1
+>  test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+>  # rmmod test_bpf
+>  # echo 1 > /proc/sys/net/core/bpf_jit_enable
+>  # modprobe test_bpf test_suite=test_tail_calls
+>  # dmesg | tail -1
+>  test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
+>  # rmmod test_bpf
+>  # ./test_progs -t tailcalls
+>  #142 tailcalls:OK
+>  Summary: 1/11 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Acked-by: Björn Töpel <bjorn@kernel.org>
+> ---
+> 
+> v5: Use RV_REG_TCC directly to save one move for RISC-V,
+>     suggested by Björn Töpel, thank you.
+> 
+> v4: Use >= as check condition,
+>     suggested by Daniel Borkmann, thank you.
+> 
+>  arch/arm/net/bpf_jit_32.c         |  5 +++--
+>  arch/arm64/net/bpf_jit_comp.c     |  5 +++--
+>  arch/mips/net/bpf_jit_comp32.c    |  2 +-
+>  arch/mips/net/bpf_jit_comp64.c    |  2 +-
+>  arch/powerpc/net/bpf_jit_comp32.c |  4 ++--
+>  arch/powerpc/net/bpf_jit_comp64.c |  4 ++--
+>  arch/riscv/net/bpf_jit_comp32.c   |  6 ++----
+>  arch/riscv/net/bpf_jit_comp64.c   |  7 +++----
+>  arch/s390/net/bpf_jit_comp.c      |  6 +++---
+>  arch/sparc/net/bpf_jit_comp_64.c  |  2 +-
+>  arch/x86/net/bpf_jit_comp.c       | 10 +++++-----
+>  arch/x86/net/bpf_jit_comp32.c     |  4 ++--
+>  include/linux/bpf.h               |  2 +-
+>  include/uapi/linux/bpf.h          |  2 +-
+>  kernel/bpf/core.c                 |  3 ++-
+>  lib/test_bpf.c                    |  4 ++--
+>  tools/include/uapi/linux/bpf.h    |  2 +-
+>  17 files changed, 35 insertions(+), 35 deletions(-)
 
-I needed a sentinel to skip return type checking (otherwise check that return
-type and prototype match) since existing kfunc don't have a
-get_kfunc_return_type callback, but if we add bpf_func_proto support to kfunc
-then we can probably convert existing kfuncs to that as well and skip all this
-logic. Mostly needed it for RET_PTR_TO_BTF_ID_OR_NULL.
+[...]
 
-Extending to support bpf_func_proto seemed like a bit of work so I wanted to get
-some feedback first on all this, before working on it.
+> diff --git a/arch/s390/net/bpf_jit_comp.c
+> b/arch/s390/net/bpf_jit_comp.c
+> index 1a374d0..3553cfc 100644
+> --- a/arch/s390/net/bpf_jit_comp.c
+> +++ b/arch/s390/net/bpf_jit_comp.c
+> @@ -1369,7 +1369,7 @@ static noinline int bpf_jit_insn(struct bpf_jit
+> *jit, struct bpf_prog *fp,
+>                                  jit->prg);
+>  
+>                 /*
+> -                * if (tail_call_cnt++ > MAX_TAIL_CALL_CNT)
+> +                * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
+>                  *         goto out;
+>                  */
+>  
+> @@ -1381,9 +1381,9 @@ static noinline int bpf_jit_insn(struct bpf_jit
+> *jit, struct bpf_prog *fp,
+>                 EMIT4_IMM(0xa7080000, REG_W0, 1);
+>                 /* laal %w1,%w0,off(%r15) */
+>                 EMIT6_DISP_LH(0xeb000000, 0x00fa, REG_W1, REG_W0,
+> REG_15, off);
+> -               /* clij %w1,MAX_TAIL_CALL_CNT,0x2,out */
+> +               /* clij %w1,MAX_TAIL_CALL_CNT-1,0x2,out */
+>                 patch_2_clij = jit->prg;
+> -               EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1,
+> MAX_TAIL_CALL_CNT,
+> +               EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1,
+> MAX_TAIL_CALL_CNT - 1,
+>                                  2, jit->prg);
+>  
+>                 /*
 
-> Why it's not one of existing RET_*. Duplication of return and
-> being lazy to propagate the correct ret value into get_kfunc_return_type ?
->
-> > If not, we can go back to doing it the typical
-> > way with PTR_TO_NF_CONN type, guarded with #if IS_ENABLED(CONFIG_NF_CONNTRACK).
->
-> Please don't. We already have a ton of special and custom types in the verifier.
-> refcnted PTR_TO_BTF_ID sounds as good way to scale it.
->
+For the s390 part:
 
-Understood.
+Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-> > Also, I want to understand whether it would make sense to introduce
-> > check_helper_call style bpf_func_proto based argument checking for kfuncs, or
-> > continue with how it is right now, since it doesn't seem correct that PTR_TO_MEM
-> > can be passed where PTR_TO_BTF_ID may be expected. Only PTR_TO_CTX is enforced.
->
-> Do we really allow to pass PTR_TO_MEM argument into a function that expects PTR_TO_BTF_ID ?
+[...]
 
-Sorry, that's poorly phrased. Current kfunc doesn't support PTR_TO_MEM. I meant
-it would be allowed now, with the way I implemented things, but there also isn't
-a way to signal whether PTR_TO_BTF_ID is expected (hence the question about
-bpf_func_proto). I did not understand why that was not done originally (maybe it
-was lack of usecase). PTR_TO_CTX works because the type is matched with prog
-type, so you can't pass something else there. For other cases the type of
-register is considered.
-
-> That sounds like a bug that we need to fix.
-
---
-Kartikeya
