@@ -2,490 +2,261 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CC4444D1D
-	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 02:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6ECC444DE7
+	for <lists+bpf@lfdr.de>; Thu,  4 Nov 2021 05:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbhKDBxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Nov 2021 21:53:12 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:59068 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230198AbhKDBxK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:53:10 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx72pVPINh2_EkAA--.41908S2;
-        Thu, 04 Nov 2021 09:50:14 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S229968AbhKDE0f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Nov 2021 00:26:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3192 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229866AbhKDE0e (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Nov 2021 00:26:34 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3KFulf001411;
+        Wed, 3 Nov 2021 21:23:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=aK42H2oUY2L4ISdkxfGrlDjzn2eDg/Uc0xXnbCssV/8=;
+ b=d0Yh9ZEsAicgqqfG4C+HaCA0o85a2lWpPfCAn+U2yTDgQzmkapBMQA2cRg328XyVhjTt
+ kFZcNoQ2oYfxubnsnQix3PJFD7C4ocLQsnPLIuxWPp8FznH8acOMNe+F/MevzQfoyeQe
+ Py5CgjtUmrsikEWa9k526ELet/uZEqyPZ6I= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c3vds541y-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 03 Nov 2021 21:23:42 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 3 Nov 2021 21:23:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JgLawlFr6EoUVN1/HSz0JRSmtlL81eqcj7CQjBesg5Qmv0vo2mzHcukwY2vrz1Wh1owz+helVypvS3Mhr7Ao4mbwaZBXYztxPvXTdJ8BQ804LMaHWBl3JJmlurLv7hE+QLhm6Xpn1yrkgAAULdlUsP3yNUH4Xk3BNRubcPxzM2yuncUBoNlg0e3UVrzvZ44Xite2+NGWNV1S9soGDLpN4/3uci7eNV2zrCVcsCQZlQigEblXBxfBNSqtNFsNEliDdCqI/3S+YYC3I/HGIntl2hlZtz6X7aoO92jx32K2ZB1t32Hk3t6/9eSwCAf2jVfADXljiUta4mxqtiTQMqpCmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aK42H2oUY2L4ISdkxfGrlDjzn2eDg/Uc0xXnbCssV/8=;
+ b=Y1aNvPF5IqTFlS8wM80IpTKZTH2BtCQHg1JuDZgdf7oEFUQWXb6rYkal+IHf8CRHee6Dt/y+vT+g/k+rwRt59Prn3f+iACWwyTxkI1gAZNjy/PT/dPNCVIhpGoM0Fu+e59XYe/TMeyzmmdfyuEF5vUillPvY+ScALmRPAxHjkM/mzbyd6c50+Hq/qxPI2OTj0vsqDY8DO7bXHsG/W8Ik0pqp8QzbK0wiByOpE70fiPKZMMloJZfIqJPOKjs5uauliO76NWQifXsUoprJXm3fWiyov1STYYv1Eq/8cmfTmVNGwsNaWmJfVa4LS8tf7ZltUyUP6a+iHpbW+0mH/8Ri9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2335.namprd15.prod.outlook.com (2603:10b6:805:24::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 4 Nov
+ 2021 04:23:32 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
+ 04:23:32 +0000
+Message-ID: <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
+Date:   Wed, 3 Nov 2021 21:23:29 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Joe Burton <jevburton.kernel@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, illusionist.neo@gmail.com,
-        zlim.lnx@gmail.com, naveen.n.rao@linux.ibm.com,
-        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
-        iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        udknight@gmail.com, davem@davemloft.net
-Subject: [PATCH bpf-next v5] bpf: Change value of MAX_TAIL_CALL_CNT from 32 to 33
-Date:   Thu,  4 Nov 2021 09:50:10 +0800
-Message-Id: <1635990610-4448-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+ <20211103001245.muyte7exph23tmco@ast-mbp.dhcp.thefacebook.com>
+ <fcec81dd-3bb9-7dcf-139d-847538b6ad20@fb.com>
+ <CAN22DihwJ7YDFSPk+8CCs0RcSWvZOpNV=D1u+42XabztS6hcKQ@mail.gmail.com>
+ <CAADnVQJ_ger=Tjn=9SuUTES6Tt5k_G0M+6T_ELzFtw_cSVs83A@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <CAADnVQJ_ger=Tjn=9SuUTES6Tt5k_G0M+6T_ELzFtw_cSVs83A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR15CA0031.namprd15.prod.outlook.com
+ (2603:10b6:300:ad::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx72pVPINh2_EkAA--.41908S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3tFy3XF15Cw17Gw47GryfWFg_yoW8Wry7to
-        W8tr1v9a1rK34UWF1akwn3GryDJ3WxKayfAw4IgF4ru3ZFva4YyrW7Xa1DXFyFqa45Gr1D
-        Wryfta1UXFsxKFyDn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20EY4v20xva
-        j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-        x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
-        Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI
-        0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80
-        ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4
-        AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY
-        1x02628vn2kIc2xKxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbl4EtUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Received: from [IPV6:2620:10d:c085:21e8::1253] (2620:10d:c090:400::5:d1a6) by MWHPR15CA0031.namprd15.prod.outlook.com (2603:10b6:300:ad::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Thu, 4 Nov 2021 04:23:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c157623b-94ea-4445-5a41-08d99f4adc5f
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2335:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB2335A1818DC3F33DBE84E824D38D9@SN6PR15MB2335.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v6na5QLxnJaPTewgoi6EXOJHbDOy+G2xkI0+p8eZ6WNQsrTyyg2w4OJ44OhW43kpHzeOy/gUFsbYtJpXKGzDYS/AJxIuuP045swogjgHxFRmK5DVBtmT42mS+A1Icn4v39Ptl34xhCWKl8ztyWFmNxnHJyBAMg8xEYdw/cZcJSEQednVPl4d9q0P1cCWGNhkJm7w5XdekAm0OJs222q5oL94KCmsqm/lSpF344zQSWV6MXQ+F9sgbBIOeFgugAN+yuhChXMHYiCySo2OXTU/cBfTAWlkonIUYBMIW6XybrOdhjVGehTEW2loJz89LKhCzzT1C1qQtLektzPkS0roEajBcFZyxY05I4AJ5dRexCy5LG/lRpNqnS5vfVul3siu15Li9yKE5c9NbZGPnfiv5+kk27uATROGCD4dXVIP6WNExdUjx2zck71KJDrGrIiIdtOP/2VIeinXvEjxO6whcfiMKwiuYf/RhpdFIvNPJl3I8BaC/kW4kB57I2k0aoVvEG4PPR8jICmVH+CCADeD1Pq3LpY1NIm332m36Za0hVr+hequhvAjlBq4/j59KgDkCa3BVoXrYPS91cbVWnPtbFBv35YVsiKeaOA2b9o16lGAwBu3ffsndHUfufsI9cIOzTk+xjJr1bJHIdcLbXMjYeWlEYzaL7lByDcO/S+Ans+guEGHi/rPEsykOXcThBISD2/s2uZYBD3+GEddN7+31dPEnE2ToASVoih47Xv0+60=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(86362001)(186003)(38100700002)(7416002)(8936002)(2616005)(54906003)(316002)(6486002)(110136005)(31686004)(36756003)(53546011)(508600001)(52116002)(66946007)(83380400001)(5660300002)(4326008)(66476007)(66556008)(31696002)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NUJrQ0VTa2ZIY0ljQ2RWeWFza1VkaXltS3RNaVRhWmpUOTF0Q0hDbGF2L1VD?=
+ =?utf-8?B?aFRSNE9jU3VOTHlpUnlNdU9nNEJidlRnWUFlVkovOWJXS0ZHZ0ttUEpLb0I1?=
+ =?utf-8?B?YU9HS2d1dkZYYUNqTXAwS3JLcFFQNDJkaHA5My9nVFFmOE9OK0pSWUpRZ3pv?=
+ =?utf-8?B?WDlaMnBOQ21sRUFyVWVxS1B4U1loMCtTdUNSaDg4Sld1aDUvT2ZzdmRmWDFY?=
+ =?utf-8?B?bzdBVkJRNS9XYzViL0ZPU1BSeWlVcFV5QjFLLzA1MVgvN2ZVb1lBN3lLMEdO?=
+ =?utf-8?B?M1pTeVQrVGhIVEozMk5obDRTTmpyZUlPZUVDamZ4S01KcVdQOW5ReUo4L0Ey?=
+ =?utf-8?B?WWZRMFl1OFE2ZTBaUU9mQVN1cWg0dEFxbHNrYkh5cERVYnZSSlE3NHVBQVNR?=
+ =?utf-8?B?aENqVFQ3WDFaVzRHUEs2dkJxNk1RbUY1TllXM2VuQkpGTW1CTHZ4WEk2UTRV?=
+ =?utf-8?B?aDk1WU1EQlo0NVY2Yk5aNXJvd2NnUTlZb0MzOWxLSStBV1dzK0RCaU4vS0JH?=
+ =?utf-8?B?Ni9aMGdIQ3RYYzB0Z3RoTi9xbU1vVmoxd3YzK1JUNzhSNjhjSC82VXZJSUVN?=
+ =?utf-8?B?eXBmMWpxZUR3WjI1U3dldHBWZ1o2RFc3V3lXTzl4ZExudnp2Vkhqc1BiaENM?=
+ =?utf-8?B?dEVqOUlMRUVjaGthNnVBVXhyankzYXplVzlxSVBBL1NpeHB5Q1VOQVhFekpM?=
+ =?utf-8?B?MjRtYXFUcENqK2dQSTBVaVA2NnNFR3BTdUhpd2h2ZmNOa3BxYnY4b0FGY2dw?=
+ =?utf-8?B?blk2NVUvYklZUVJxUytDb3prTTJlQVM4c1JQMWJCR0s5K1ovc1VMM2FnNHF2?=
+ =?utf-8?B?VWJNd1N5Tm9lZnp5bTl3ZFp6amwxcHRwZG1SSE95M3p0M0VlY3djemRpV3hD?=
+ =?utf-8?B?VExFUEZjeTNtRlRYblhGemRhZWhvRDlXWVZqbFM4QVQ1eDRsOHNMWFhqS0dJ?=
+ =?utf-8?B?L25ueVZlejZ5ZTVKOGlrQTRzQlJtOStzaUpSQloxNlowNFYrNHJWeWlMMEYr?=
+ =?utf-8?B?Q3ovRDUxMGlTR1QxNzBDN2NKZGdLM2QzbTB5TS9YZEZ1Nk1IVFZ4Y3M2UlND?=
+ =?utf-8?B?TDdCR0Q0cXQ1OFR0M1lNdkRvYm5NcVhadG5jdW03RXVvaUpCSVBlancyTmcy?=
+ =?utf-8?B?SkNTM0p0cXppWGFkeTRRaUtTVGVCV1BSb1NyWGhpMUtEenlxMHJKeFV5Qml2?=
+ =?utf-8?B?dVBBOFByZ0Z1OVNlaFFtOEZQcUtvK3NFZmJaUlB2Y3ZaWWRQSlFXZ3B2SklC?=
+ =?utf-8?B?b0NIT0ZhUGc2enRWUjRFckdybm81cWRBcndUMTNERXZOdDBGQmdwWGVBZmI5?=
+ =?utf-8?B?RFdYbXRVa1ZYbmxCVTJQeHNWWXduTmtuNU42SWxsZkNqcXpZR3hIaXJZaU1o?=
+ =?utf-8?B?Vm5BWXloRWlEZkthTWZrK0F4WFZwcEJvS0tpU2NNaEVicmQ4K01pOXk5T0Fo?=
+ =?utf-8?B?c0JvMUZRd1dGUXh6QzdnR3ZXbHY5L3hkUk5CL0FXU3lWK254K05kN1Z1K2dt?=
+ =?utf-8?B?czZrOVBHZ3BzdXdsWnQwd0NZQUlMZzVjOWhsdGhyN1p3cXlzWGJsWnN1Q0Rm?=
+ =?utf-8?B?RTNtRXJSUFZNQkpmTDg5TTV4VmtRbVhXOEx2TG9RbHFiR3ZiOFQ0TzdjVTVn?=
+ =?utf-8?B?aEo5alVUMDJnaFBSaGpoOWRtSktwN2FyZ2ZIVjU3bnN4eGJYVEMrcmZRVGFS?=
+ =?utf-8?B?ZUhvUWd6ZjRmemlTWEs0SlprcnluYkNkdzhFQWpJZllTMXJOV0pHWDEyM1pJ?=
+ =?utf-8?B?c2FLcXhsMGpJNlNGNHNqWS9ZVndSNnEvZHFyMVRNZEQ0SDFUYzB2V1pFZ1Ey?=
+ =?utf-8?B?Nnl1M3dBK2dJa1dTUmVGSU1LUGp1Wk9FQ2tHUzZ5WUNsOC9DdElxdTE2NzFO?=
+ =?utf-8?B?aTNYbVkvSHFCeHpGajlpc2lyYXVsMU90eVdMK01OUGV0OFZWNmRmZmVUWTVo?=
+ =?utf-8?B?ODdrL25WNjM0ZE1obW4yYkJnOWhnUmd3Zml4cEhhaFlvQjBLNWNGejJLZmhq?=
+ =?utf-8?B?SDlRaXQ1UDBPNDlHcDl5NFh1alcwVWFFR0ZLYVpleVo2R3Z3aFR0VkQyUEJk?=
+ =?utf-8?B?aXdrSVF5cFlSQkNpN1hkTytmcFRlOXFWY21xRlZlalJPZDhQNHR5VWxjNk04?=
+ =?utf-8?Q?y1AwVKKLG3q2TIBUFzCehEYBL?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c157623b-94ea-4445-5a41-08d99f4adc5f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 04:23:32.4817
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kJbycH5s4fn6TDHxAIIkyn4Wqkz1ujx4xwr0+AHWYbi7+zUdezmo4js2glbsV2n9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2335
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: 30u3QrGvVm6NTE2wXVBe_QtqZzPx8VHY
+X-Proofpoint-GUID: 30u3QrGvVm6NTE2wXVBe_QtqZzPx8VHY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-04_01,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 phishscore=0 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=963 adultscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111040024
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the current code, the actual max tail call count is 33 which is greater
-than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not consistent
-with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and need to
-spend some time to think about the reason at the first glance.
 
-We can see the historical evolution from commit 04fd61ab36ec ("bpf: allow
-bpf programs to tail-call other bpf programs") and commit f9dabe016b63
-("bpf: Undo off-by-one in interpreter tail call count limit").
 
-In order to avoid changing existing behavior, the actual limit is 33 now,
-this is reasonable.
+On 11/3/21 10:49 AM, Alexei Starovoitov wrote:
+> On Wed, Nov 3, 2021 at 10:45 AM Joe Burton <jevburton.kernel@gmail.com> wrote:
+>>
+>> Sort of - I hit issues when defining the function in the same
+>> compilation unit as the call site. For example:
+>>
+>>    static noinline int bpf_array_map_trace_update(struct bpf_map *map,
+>>                  void *key, void *value, u64 map_flags)
+> 
+> Not quite :)
+> You've had this issue because of 'static noinline'.
+> Just 'noinline' would not have such issues even in the same file.
 
-After commit 874be05f525e ("bpf, tests: Add tail call test suite"), we can
-see there exists failed testcase.
+This seems not true. With latest trunk clang,
 
-On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
- # echo 0 > /proc/sys/net/core/bpf_jit_enable
- # modprobe test_bpf
- # dmesg | grep -w FAIL
- Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
+[$ ~/tmp2] cat t.c
+int __attribute__((noinline)) foo() { return 1; }
+int bar() { return foo() + foo(); }
+[$ ~/tmp2] clang -O2 -c t.c
+[$ ~/tmp2] llvm-objdump -d t.o
 
-On some archs:
- # echo 1 > /proc/sys/net/core/bpf_jit_enable
- # modprobe test_bpf
- # dmesg | grep -w FAIL
- Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+t.o:    file format elf64-x86-64
 
-Although the above failed testcase has been fixed in commit 18935a72eb25
-("bpf/tests: Fix error in tail call limit tests"), it is still necessary
-to change the value of MAX_TAIL_CALL_CNT from 32 to 33 to make the code
-more readable, then do some small changes of the related code.
+Disassembly of section .text:
 
-With this patch, it does not change the current limit 33, MAX_TAIL_CALL_CNT
-can reflect the actual max tail call count, the related tailcall testcases
-in test_bpf and selftests can work well for the interpreter and the JIT.
+0000000000000000 <foo>:
+        0: b8 01 00 00 00                movl    $1, %eax
+        5: c3                            retq
+        6: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
 
-Here are the test results on x86_64:
+0000000000000010 <bar>:
+       10: b8 02 00 00 00                movl    $2, %eax
+       15: c3                            retq
+[$ ~/tmp2]
 
- # uname -m
- x86_64
- # echo 0 > /proc/sys/net/core/bpf_jit_enable
- # modprobe test_bpf test_suite=test_tail_calls
- # dmesg | tail -1
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
- # rmmod test_bpf
- # echo 1 > /proc/sys/net/core/bpf_jit_enable
- # modprobe test_bpf test_suite=test_tail_calls
- # dmesg | tail -1
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
- # rmmod test_bpf
- # ./test_progs -t tailcalls
- #142 tailcalls:OK
- Summary: 1/11 PASSED, 0 SKIPPED, 0 FAILED
+The compiler did the optimization and the original noinline function 
+still in the binary.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Björn Töpel <bjorn@kernel.org>
----
+With a single foo() in bar() has the same effect.
 
-v5: Use RV_REG_TCC directly to save one move for RISC-V,
-    suggested by Björn Töpel, thank you.
+asm("") indeed helped preserve the call.
 
-v4: Use >= as check condition,
-    suggested by Daniel Borkmann, thank you.
+[$ ~/tmp2] cat t.c
+int __attribute__((noinline)) foo() { asm(""); return 1; }
+int bar() { return foo() + foo(); }
+[$ ~/tmp2] clang -O2 -c t.c
+[$ ~/tmp2] llvm-objdump -d t.o
 
- arch/arm/net/bpf_jit_32.c         |  5 +++--
- arch/arm64/net/bpf_jit_comp.c     |  5 +++--
- arch/mips/net/bpf_jit_comp32.c    |  2 +-
- arch/mips/net/bpf_jit_comp64.c    |  2 +-
- arch/powerpc/net/bpf_jit_comp32.c |  4 ++--
- arch/powerpc/net/bpf_jit_comp64.c |  4 ++--
- arch/riscv/net/bpf_jit_comp32.c   |  6 ++----
- arch/riscv/net/bpf_jit_comp64.c   |  7 +++----
- arch/s390/net/bpf_jit_comp.c      |  6 +++---
- arch/sparc/net/bpf_jit_comp_64.c  |  2 +-
- arch/x86/net/bpf_jit_comp.c       | 10 +++++-----
- arch/x86/net/bpf_jit_comp32.c     |  4 ++--
- include/linux/bpf.h               |  2 +-
- include/uapi/linux/bpf.h          |  2 +-
- kernel/bpf/core.c                 |  3 ++-
- lib/test_bpf.c                    |  4 ++--
- tools/include/uapi/linux/bpf.h    |  2 +-
- 17 files changed, 35 insertions(+), 35 deletions(-)
+t.o:    file format elf64-x86-64
 
-diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-index eeb6dc0..e59b41e 100644
---- a/arch/arm/net/bpf_jit_32.c
-+++ b/arch/arm/net/bpf_jit_32.c
-@@ -1199,7 +1199,8 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 
- 	/* tmp2[0] = array, tmp2[1] = index */
- 
--	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	/*
-+	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
- 	 *	goto out;
- 	 * tail_call_cnt++;
- 	 */
-@@ -1208,7 +1209,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
- 	emit(ARM_CMP_I(tc[0], hi), ctx);
- 	_emit(ARM_COND_EQ, ARM_CMP_I(tc[1], lo), ctx);
--	_emit(ARM_COND_HI, ARM_B(jmp_offset), ctx);
-+	_emit(ARM_COND_CS, ARM_B(jmp_offset), ctx);
- 	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
- 	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
- 	arm_bpf_put_reg64(tcc, tmp, ctx);
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 3a8a714..356fb21 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -287,13 +287,14 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	emit(A64_CMP(0, r3, tmp), ctx);
- 	emit(A64_B_(A64_COND_CS, jmp_offset), ctx);
- 
--	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	/*
-+	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
- 	 *     goto out;
- 	 * tail_call_cnt++;
- 	 */
- 	emit_a64_mov_i64(tmp, MAX_TAIL_CALL_CNT, ctx);
- 	emit(A64_CMP(1, tcc, tmp), ctx);
--	emit(A64_B_(A64_COND_HI, jmp_offset), ctx);
-+	emit(A64_B_(A64_COND_CS, jmp_offset), ctx);
- 	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
- 
- 	/* prog = array->ptrs[index];
-diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
-index bd996ed..a7b424f 100644
---- a/arch/mips/net/bpf_jit_comp32.c
-+++ b/arch/mips/net/bpf_jit_comp32.c
-@@ -1382,7 +1382,7 @@ void build_prologue(struct jit_context *ctx)
- 	 * calling function jumps into the prologue after these instructions.
- 	 */
- 	emit(ctx, ori, MIPS_R_T9, MIPS_R_ZERO,
--	     min(MAX_TAIL_CALL_CNT + 1, 0xffff));
-+	     min(MAX_TAIL_CALL_CNT, 0xffff));
- 	emit(ctx, sw, MIPS_R_T9, 0, MIPS_R_SP);
- 
- 	/*
-diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
-index 815ade7..5ef8778 100644
---- a/arch/mips/net/bpf_jit_comp64.c
-+++ b/arch/mips/net/bpf_jit_comp64.c
-@@ -552,7 +552,7 @@ void build_prologue(struct jit_context *ctx)
- 	 * On a tail call, the calling function jumps into the prologue
- 	 * after this instruction.
- 	 */
--	emit(ctx, addiu, tc, MIPS_R_ZERO, min(MAX_TAIL_CALL_CNT + 1, 0xffff));
-+	emit(ctx, addiu, tc, MIPS_R_ZERO, min(MAX_TAIL_CALL_CNT, 0xffff));
- 
- 	/* === Entry-point for tail calls === */
- 
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 0da31d4..8a4faa0 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -221,13 +221,13 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- 	PPC_BCC(COND_GE, out);
- 
- 	/*
--	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
- 	 *   goto out;
- 	 */
- 	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
- 	/* tail_call_cnt++; */
- 	EMIT(PPC_RAW_ADDIC(_R0, _R0, 1));
--	PPC_BCC(COND_GT, out);
-+	PPC_BCC(COND_GE, out);
- 
- 	/* prog = array->ptrs[index]; */
- 	EMIT(PPC_RAW_RLWINM(_R3, b2p_index, 2, 0, 29));
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 8b5157c..8571aaf 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -228,12 +228,12 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
- 	PPC_BCC(COND_GE, out);
- 
- 	/*
--	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
- 	 *   goto out;
- 	 */
- 	PPC_BPF_LL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
- 	EMIT(PPC_RAW_CMPLWI(b2p[TMP_REG_1], MAX_TAIL_CALL_CNT));
--	PPC_BCC(COND_GT, out);
-+	PPC_BCC(COND_GE, out);
- 
- 	/*
- 	 * tail_call_cnt++;
-diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp32.c
-index e649742..529a83b 100644
---- a/arch/riscv/net/bpf_jit_comp32.c
-+++ b/arch/riscv/net/bpf_jit_comp32.c
-@@ -799,11 +799,10 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 	emit_bcc(BPF_JGE, lo(idx_reg), RV_REG_T1, off, ctx);
- 
- 	/*
--	 * temp_tcc = tcc - 1;
--	 * if (tcc < 0)
-+	 * if (--tcc < 0)
- 	 *   goto out;
- 	 */
--	emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
-+	emit(rv_addi(RV_REG_TCC, RV_REG_TCC, -1), ctx);
- 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
- 	emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
- 
-@@ -829,7 +828,6 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 	if (is_12b_check(off, insn))
- 		return -1;
- 	emit(rv_lw(RV_REG_T0, off, RV_REG_T0), ctx);
--	emit(rv_addi(RV_REG_TCC, RV_REG_T1, 0), ctx);
- 	/* Epilogue jumps to *(t0 + 4). */
- 	__build_epilogue(true, ctx);
- 	return 0;
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 2ca345c..f4466b7 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -327,12 +327,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
- 	emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
- 
--	/* if (TCC-- < 0)
-+	/* if (--TCC < 0)
- 	 *     goto out;
- 	 */
--	emit_addi(RV_REG_T1, tcc, -1, ctx);
-+	emit_addi(RV_REG_TCC, tcc, -1, ctx);
- 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
--	emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
-+	emit_branch(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
- 
- 	/* prog = array->ptrs[index];
- 	 * if (!prog)
-@@ -352,7 +352,6 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 	if (is_12b_check(off, insn))
- 		return -1;
- 	emit_ld(RV_REG_T3, off, RV_REG_T2, ctx);
--	emit_mv(RV_REG_TCC, RV_REG_T1, ctx);
- 	__build_epilogue(true, ctx);
- 	return 0;
- }
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 1a374d0..3553cfc 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -1369,7 +1369,7 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 				 jit->prg);
- 
- 		/*
--		 * if (tail_call_cnt++ > MAX_TAIL_CALL_CNT)
-+		 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
- 		 *         goto out;
- 		 */
- 
-@@ -1381,9 +1381,9 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 		EMIT4_IMM(0xa7080000, REG_W0, 1);
- 		/* laal %w1,%w0,off(%r15) */
- 		EMIT6_DISP_LH(0xeb000000, 0x00fa, REG_W1, REG_W0, REG_15, off);
--		/* clij %w1,MAX_TAIL_CALL_CNT,0x2,out */
-+		/* clij %w1,MAX_TAIL_CALL_CNT-1,0x2,out */
- 		patch_2_clij = jit->prg;
--		EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1, MAX_TAIL_CALL_CNT,
-+		EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1, MAX_TAIL_CALL_CNT - 1,
- 				 2, jit->prg);
- 
- 		/*
-diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
-index 9a2f20c..0bfe1c7 100644
---- a/arch/sparc/net/bpf_jit_comp_64.c
-+++ b/arch/sparc/net/bpf_jit_comp_64.c
-@@ -867,7 +867,7 @@ static void emit_tail_call(struct jit_ctx *ctx)
- 	emit(LD32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
- 	emit_cmpi(tmp, MAX_TAIL_CALL_CNT, ctx);
- #define OFFSET2 13
--	emit_branch(BGU, ctx->idx, ctx->idx + OFFSET2, ctx);
-+	emit_branch(BGEU, ctx->idx, ctx->idx + OFFSET2, ctx);
- 	emit_nop(ctx);
- 
- 	emit_alu_K(ADD, tmp, 1, ctx);
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 726700f..6318479 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -412,7 +412,7 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
-  * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
-  *   if (index >= array->map.max_entries)
-  *     goto out;
-- *   if (++tail_call_cnt > MAX_TAIL_CALL_CNT)
-+ *   if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
-  *     goto out;
-  *   prog = array->ptrs[index];
-  *   if (prog == NULL)
-@@ -446,14 +446,14 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
- 	EMIT2(X86_JBE, offset);                   /* jbe out */
- 
- 	/*
--	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
- 	 *	goto out;
- 	 */
- 	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
- 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
- 
- 	offset = ctx->tail_call_indirect_label - (prog + 2 - start);
--	EMIT2(X86_JA, offset);                    /* ja out */
-+	EMIT2(X86_JAE, offset);                   /* jae out */
- 	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
- 	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
- 
-@@ -504,14 +504,14 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
- 	int offset;
- 
- 	/*
--	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
- 	 *	goto out;
- 	 */
- 	EMIT2_off32(0x8B, 0x85, tcc_off);             /* mov eax, dword ptr [rbp - tcc_off] */
- 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);         /* cmp eax, MAX_TAIL_CALL_CNT */
- 
- 	offset = ctx->tail_call_direct_label - (prog + 2 - start);
--	EMIT2(X86_JA, offset);                        /* ja out */
-+	EMIT2(X86_JAE, offset);                       /* jae out */
- 	EMIT3(0x83, 0xC0, 0x01);                      /* add eax, 1 */
- 	EMIT2_off32(0x89, 0x85, tcc_off);             /* mov dword ptr [rbp - tcc_off], eax */
- 
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index da9b7cf..429a89c 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -1323,7 +1323,7 @@ static void emit_bpf_tail_call(u8 **pprog, u8 *ip)
- 	EMIT2(IA32_JBE, jmp_label(jmp_label1, 2));
- 
- 	/*
--	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-+	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
- 	 *     goto out;
- 	 */
- 	lo = (u32)MAX_TAIL_CALL_CNT;
-@@ -1337,7 +1337,7 @@ static void emit_bpf_tail_call(u8 **pprog, u8 *ip)
- 	/* cmp ecx,lo */
- 	EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
- 
--	/* ja out */
-+	/* jae out */
- 	EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
- 
- 	/* add eax,0x1 */
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 2be6dfd..4bce7ee 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1075,7 +1075,7 @@ struct bpf_array {
- };
- 
- #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
--#define MAX_TAIL_CALL_CNT 32
-+#define MAX_TAIL_CALL_CNT 33
- 
- #define BPF_F_ACCESS_MASK	(BPF_F_RDONLY |		\
- 				 BPF_F_RDONLY_PROG |	\
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index ba5af15..b12cfce 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1744,7 +1744,7 @@ union bpf_attr {
-  * 		if the maximum number of tail calls has been reached for this
-  * 		chain of programs. This limit is defined in the kernel by the
-  * 		macro **MAX_TAIL_CALL_CNT** (not accessible to user space),
-- * 		which is currently set to 32.
-+ *		which is currently set to 33.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 327e399..870881d 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1567,7 +1567,8 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
- 
- 		if (unlikely(index >= array->map.max_entries))
- 			goto out;
--		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
-+
-+		if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
- 			goto out;
- 
- 		tail_call_cnt++;
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index adae395..0c5cb2d 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14683,7 +14683,7 @@ static struct tail_call_test tail_call_tests[] = {
- 			BPF_EXIT_INSN(),
- 		},
- 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
--		.result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
-+		.result = (MAX_TAIL_CALL_CNT + 1) * MAX_TESTRUNS,
- 	},
- 	{
- 		"Tail call count preserved across function calls",
-@@ -14705,7 +14705,7 @@ static struct tail_call_test tail_call_tests[] = {
- 		},
- 		.stack_depth = 8,
- 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
--		.result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
-+		.result = (MAX_TAIL_CALL_CNT + 1) * MAX_TESTRUNS,
- 	},
- 	{
- 		"Tail call error path, NULL target",
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index ba5af15..b12cfce 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1744,7 +1744,7 @@ union bpf_attr {
-  * 		if the maximum number of tail calls has been reached for this
-  * 		chain of programs. This limit is defined in the kernel by the
-  * 		macro **MAX_TAIL_CALL_CNT** (not accessible to user space),
-- * 		which is currently set to 32.
-+ *		which is currently set to 33.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
--- 
-2.1.0
+Disassembly of section .text:
 
+0000000000000000 <foo>:
+        0: b8 01 00 00 00                movl    $1, %eax
+        5: c3                            retq
+        6: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
+
+0000000000000010 <bar>:
+       10: 50                            pushq   %rax
+       11: e8 00 00 00 00                callq   0x16 <bar+0x6>
+       16: e8 00 00 00 00                callq   0x1b <bar+0xb>
+       1b: b8 02 00 00 00                movl    $2, %eax
+       20: 59                            popq    %rcx
+       21: c3                            retq
+[$ ~/tmp2]
+
+Note with asm(""), foo() is called twice, but the compiler optimization
+knows foo()'s return value is 1 so it did calculation at compiler time,
+assign the 2 to %eax and returns.
+
+Having a single foo() in bar() has the same effect.
+
+[$ ~/tmp2] cat t.c
+int __attribute__((noinline)) foo() { return 1; }
+int bar() { return foo(); }
+[$ ~/tmp2] clang -O2 -c t.c
+[$ ~/tmp2] llvm-objdump -d t.o
+
+t.o:    file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000000000 <foo>:
+        0: b8 01 00 00 00                movl    $1, %eax
+        5: c3                            retq
+        6: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
+
+0000000000000010 <bar>:
+       10: b8 01 00 00 00                movl    $1, %eax
+       15: c3                            retq
+[$ ~/tmp2]
+
+I checked with a few llvm compiler engineers in Facebook.
+They mentioned there is nothing preventing compiler from doing
+optimization like poking inside the noinline function and doing
+some optimization based on that knowledge.
+
+> 
+> Reminder: please don't top post and trim your replies.
+> 
