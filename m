@@ -2,95 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BBE44694D
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 20:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530C0446952
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 20:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbhKETwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 15:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
+        id S232680AbhKETyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 15:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232329AbhKETwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 15:52:35 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDC5C061714
-        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 12:49:56 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id o10-20020a17090a3d4a00b001a6555878a8so4084056pjf.1
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 12:49:56 -0700 (PDT)
+        with ESMTP id S230063AbhKETyh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 15:54:37 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CF8C061714;
+        Fri,  5 Nov 2021 12:51:58 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id bg25so15494406oib.1;
+        Fri, 05 Nov 2021 12:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gXlN5FZf8wjatJCZa1cF2r5Z+UdMJg7+lQZ4SVQt93Q=;
-        b=oTbQ0d/+lTXVt3GBVKXQT/pp6n7r3RqdQEjEw2JoDqFrPTYGX2FQVokdLUtDEsVZ40
-         6qSS0kGc4WYQcSBq0r0SJN7kgc3ePYAI4H2FCJ6mEeZ6CJ6BML/ra3wBXUXWjqrMLQ9k
-         VLvyOOj3KNOvrQ/noz1Am8T6a8+1qu6bzRfZKIjWh8Xp3tKbcTQXWcJgAwEBj2tRRhZI
-         nQK9qzH+Qp66ipCPBTCaK4ED0BqcuN+4BkY25VPS1E63k8n1TeGknM5WN28vRFtu2Ms/
-         BsyaU2DVJz6BjvhEw7etyuFA7Oizm4jALNXV5VS1vAonicz/NXulFY8b5noLBIVxtoZA
-         Hl4g==
+        bh=Cu13afi5YdNTXVpPIxFdtRUqaXpmJXw8oN5rJSTgUfw=;
+        b=cFBJ32UAO5dTAuReqy+9vhWjg5KioPPvsgYH4/8bwdj80vrdErPlgDjMhDaQuq2vK7
+         NFicgPMRKCbJCrQjRws2WABl3oLXjTumYFj8nK1ABd6ZudT/Md56XN+tAy8Ka0Z1THu+
+         gi7PmfQ8etnwswnsidtLhfJ6q6SxbSZjs6XyngKwBvZYjYP1/M3Gr7eM2TY/q6sRlN/k
+         RtSQQYraGV6OtKDGSs4kAHTpN9GYe6aY5s3PIPdwEuZ9q2dtwSjIgZ4o605usbrWjxch
+         b+58KuYTwCXB1VY5EWNV5f91m3o/2mIuu16ZlthMQqlKank5sUcc2+/rTbDR/K9y31ss
+         UDkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gXlN5FZf8wjatJCZa1cF2r5Z+UdMJg7+lQZ4SVQt93Q=;
-        b=tV5oSDYyrLV6D/mFN1VikXDnfAm2nMi/5eTloICxQ4QjnxjlFe8KCjbfR3d+5Exn6l
-         piqZT9NA4tmNZ/SePbEfexlGAaDo3fENMrNcfnUk0sgAiXZOkZ5m+HgA8H50kB+zl/wR
-         IlztrQ0NoiVwM8Fvt3Q0x4Gu0bdfDC2vssioKTJ4EclfiBYQeOXtuvcx0wVMgETaiCT3
-         rP4jyO0N8lSRbZ7B5C7nheLGD9gLoSrt+A23cqgwZT/hPGhG8t3x3jB2FTuzrMrQKnhS
-         7ZFnpBSqQEQJL/W0Xm8fex+5x252IoJ27BMoPSLLIDAZOOyT0tBMBEX7EtaHLts15aBk
-         RyLA==
-X-Gm-Message-State: AOAM532sKHhaI6nqbAMFuL52gE0FUjDa6foTIp2gqgZDcSkI6cxhe2UK
-        wz8QU52f6P2nq5+sFXdRO/nlGRtFIso=
-X-Google-Smtp-Source: ABdhPJy1Jei+Ck+ketcco+bQgcpLPAwEzazIAeUVp/5E9QSv4AGBr/NiprU6POJCCiUC+Nuv4ORNvQ==
-X-Received: by 2002:a17:90a:f182:: with SMTP id bv2mr32222695pjb.139.1636141795300;
-        Fri, 05 Nov 2021 12:49:55 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:808])
-        by smtp.gmail.com with ESMTPSA id mg12sm9813843pjb.10.2021.11.05.12.49.54
+        bh=Cu13afi5YdNTXVpPIxFdtRUqaXpmJXw8oN5rJSTgUfw=;
+        b=XbS4kNL/5RvmGb72SloB2aqAyNPmN8PFBbhoItw85VCAaqBhDl8AORZH/MQNXPNU6F
+         gC5OhlczVU7A/mfqJylOrMFPVI9Z8iJHtLGNHMDcZ6TGdTEqHQJk3qe32XpX9mbnIAgY
+         qsPqzJ5JIDZXWgP7qgA0om5UPZzdrkN0sTrvyhyobgpmOGaB0JCN/G25B2jpW+1xDkAW
+         arc9DLP6ax8V67euPy8QhO9bytV9mWVdAuNyPEsk80kG8sO0ngDFUge0RlyMEQINbhwI
+         aKsutdvhh9XMcLmzlHpawy5JbyJfsks8/huIoO0jTeuCtWxNBvuiXV3lh3XPt/ZOay54
+         EtcA==
+X-Gm-Message-State: AOAM5310shEX+vIkVPNHQ2Od3Y0x3+nrHBvBXwj7o6QNDo5RW/Optr98
+        TkczDNuAQHmhbagj7tgQMPY=
+X-Google-Smtp-Source: ABdhPJyyj/xmEsV2riYpDqxqvSGA3gx3/VvulZ2S/W+tOa040GrFqBTndoudGnazdvmA/oApIfD8hg==
+X-Received: by 2002:a05:6808:493:: with SMTP id z19mr10290264oid.125.1636141917462;
+        Fri, 05 Nov 2021 12:51:57 -0700 (PDT)
+Received: from localhost ([2600:1700:65a0:ab60:d18c:87bf:9ef9:564d])
+        by smtp.gmail.com with ESMTPSA id y18sm1245203oov.29.2021.11.05.12.51.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 12:49:55 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 12:49:52 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>, regressions@lists.linux.dev,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: Verifier rejects previously accepted program
-Message-ID: <20211105194952.xve6u6lgh2oy46dy@ast-mbp.dhcp.thefacebook.com>
-References: <CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com>
- <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
- <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com>
+        Fri, 05 Nov 2021 12:51:56 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 12:51:55 -0700
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     Di Zhu <zhudi2@huawei.com>
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jakub@cloudflare.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+Message-ID: <YYWLW5IJhmIa2aVX@unknown>
+References: <20211104010745.1177032-1-zhudi2@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com>
+In-Reply-To: <20211104010745.1177032-1-zhudi2@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 10:41:40AM +0000, Lorenz Bauer wrote:
-> 
-> bpf-next with f30d4968e9ae on top:
-> 
->     works!
+On Thu, Nov 04, 2021 at 09:07:44AM +0800, Di Zhu wrote:
+> +int sock_map_bpf_prog_query(const union bpf_attr *attr,
+> +			    union bpf_attr __user *uattr)
+> +{
+> +	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+> +	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
+> +	struct bpf_prog **pprog;
+> +	struct bpf_prog *prog;
+> +	struct bpf_map *map;
+> +	struct fd f;
+> +	u32 id = 0;
+> +	int ret;
+> +
+> +	if (attr->query.query_flags)
+> +		return -EINVAL;
+> +
+> +	f = fdget(ufd);
+> +	map = __bpf_map_get(f);
+> +	if (IS_ERR(map))
+> +		return PTR_ERR(map);
+> +
+> +	rcu_read_lock();
+> +
+> +	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
+> +	if (ret)
+> +		goto end;
+> +
+> +	prog = *pprog;
+> +	prog_cnt = (!prog) ? 0 : 1;
+> +
+> +	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
+> +		goto end;
 
-Awesome.
+This sanity check (except prog_cnt) can be moved before RCU read lock?
 
-> commit 3e8ce29850f1 ("bpf: Prevent pointer mismatch in
-> bpf_timer_init.") (found via bisection):
-> 
->     BPF program is too large. Processed 1000001 insn
-> 
-> commit 3e8ce29850f1^ ("bpf: Add map side support for bpf timers."):
-> 
->    works!
+> +
+> +	id = prog->aux->id;
+> +	if (id == 0)
+> +		prog_cnt = 0;
 
-So with just 3e8ce29850f1 it's "too large" and with parent commit it works ?
-I've analyzed offending commit again and don't see how it can be causing
-state pruning to be more conservative for your asm.
-reg->map_uid should only be non-zero for lookups from inner maps,
-but your asm doesn't have lookups at all in that loop.
-Maybe in some case map_uid doesn't get cleared, but I couldn't find
-such code path with manual code analysis.
-I think it's worth investigating further.
-Please craft a reproducer.
+The id seems generic, so why not handle it in bpf_prog_query() for all progs?
+
+> +
+> +end:
+> +	rcu_read_unlock();
+> +
+> +	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
+
+'flags' is always 0 here, right? So this is not needed as uattr has been already
+cleared in __sys_bpf().
+
+
+Thanks.
