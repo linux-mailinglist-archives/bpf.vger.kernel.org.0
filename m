@@ -2,54 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEED445DDB
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 03:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CAD445F11
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 05:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhKECTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Nov 2021 22:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230514AbhKECTW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:19:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A24C26108F;
-        Fri,  5 Nov 2021 02:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636078603;
-        bh=L6LP6CUsxPIHiMGth/pcO4FGTULp779vN4eIy/L+DBk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VEJ4eshd3K/xA9Savw4ZtvOOHeRUfNfiyYcYOV0sHN1z/ZggA7Ozd/rbkm6O/sYr7
-         /8cIJ5PWZ+IPsQGoZMDQ1oSVETAmeYRGsp7cyGxM5Z4QpD8EIXHaK87P45yltVBKum
-         ak4sHQklWuP6mEFzCB470KO1OBFsKDVtvWp/aTPbbgXB6/wgNHR56Ko5qiZzVVzKkN
-         ih2M5y3hzsO2KdPomYelCGPp8pJUaNJIKdBhh3XvEicrP6OMZahv9SD1ahZwJyB4us
-         EIluyHaU4tmUXYoX1UozGrgHTAmqwrvSzz9rvlcrLLPxTXPN1MnSYGAbJcTqaKJLCX
-         6QfozD5+eCxPA==
-Date:   Thu, 4 Nov 2021 19:16:41 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v17 bpf-next 12/23] bpf: add multi-buff support to the
- bpf_xdp_adjust_tail() API
-Message-ID: <20211104191641.3bc9d873@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <fd0400802295a87a921ba95d880ad27b9f9b8636.1636044387.git.lorenzo@kernel.org>
-References: <cover.1636044387.git.lorenzo@kernel.org>
-        <fd0400802295a87a921ba95d880ad27b9f9b8636.1636044387.git.lorenzo@kernel.org>
+        id S230003AbhKEEQl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 00:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhKEEQk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 00:16:40 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09861C061714
+        for <bpf@vger.kernel.org>; Thu,  4 Nov 2021 21:14:02 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id gh1so6684581qvb.8
+        for <bpf@vger.kernel.org>; Thu, 04 Nov 2021 21:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3M3QCeS4mDVaZbFZVmiYltyQSCr5+JmL57wgUpkLXzc=;
+        b=md78SNnjftmzk9x0OP18x3OKM1/zcRfllCvoiYkXwVPQxWqsQFGv7KyMKOZltNXt12
+         tWST/FUQ4vLhvOxrPNupUTBYEAsg0c1M+pBOHHxlKz1GOU+xdYbak1rt42IAKO2cFnfP
+         baVzyFh0U1u9q4GsAWFSjmTmZb7LreqHRN0/UkCXffzm9WleUtgxzBsNnC/zwt0t4iPT
+         ngsoZarnsjJEAVEfBlGLhakgO+kQQxOuIyRr4ihD3hh0TXsQLcq6LmxIHHnPUtCYQIjb
+         67+fsU0m76xWj4npj66rBAr+3Lb0I1JP2/Gy4/1yyJkn1g8LXyFCQDauC7+EwTTkBnkO
+         tsyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3M3QCeS4mDVaZbFZVmiYltyQSCr5+JmL57wgUpkLXzc=;
+        b=H66KSkuCuCuolNWfQQQzALBoq1RwzGjX8NQ5C8JoYwooe3p/fXaaUVN7TiPIR5cMsP
+         z1fZbvDIklBg+5dPDkxHXoW2OeMkcU81nIQ49xvOqT0FBfmvJ4s9jU2MQ+h5fCmnLgRr
+         scOWJNHYEtcusg0O1bZGErtzsv7v0310bjMZlAp/dSBm9mOKru8omyXvgrtcPd/fc+Z3
+         6XSV5uQlUp2c/eRrOz1Nck/u5KzmJ4p3I03os3rTCtkMX6kirSEw9MLXINVvDJ7dV/Yc
+         BAg7Yv6AZx1YxjPqBrWsT3wUyO0hWHy+egNin9pAWv9ad1i7uOShOJhY4DadErzVlRqs
+         rg2A==
+X-Gm-Message-State: AOAM531Iqbzaye4KHIUG5l/8/NZG+mAPaPCwjtsfUtECPUtCOTrISLOm
+        Luot6cHeOPTbNoN6EwqoeYaPLpbmof8z9NhlfPqgDw==
+X-Google-Smtp-Source: ABdhPJwyGLgLfawjP8mPQhzHhmlLccn9z4+gou+vIr5wopKBjsNtsKAVudRS164QrP3cmG2cs0krmKoq562JK21jfOM=
+X-Received: by 2002:ad4:53a1:: with SMTP id j1mr53150339qvv.25.1636085641031;
+ Thu, 04 Nov 2021 21:14:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com>
+ <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
+ <YYRtFp7GOEAi7vQH@google.com> <CAADnVQ+ox52jub6naAoN7dfB4UC+D01r28ubt2Qrf+Q+g26Mmg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+ox52jub6naAoN7dfB4UC+D01r28ubt2Qrf+Q+g26Mmg@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 4 Nov 2021 21:13:50 -0700
+Message-ID: <CAKH8qBskFaK9NE7XBuLLHqhh7RMHgWJL0_C+v+xKV74WCpCXxA@mail.gmail.com>
+Subject: Re: Verifier rejects previously accepted program
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, regressions@lists.linux.dev,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu,  4 Nov 2021 18:35:32 +0100 Lorenzo Bianconi wrote:
-> +static int bpf_xdp_mb_shrink_tail(struct xdp_buff *xdp, int offset)
-> +{
-> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> +	int i, n_frags_free = 0, len_free = 0, tlen_free = 0;
+On Thu, Nov 4, 2021 at 6:20 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Nov 4, 2021 at 4:30 PM <sdf@google.com> wrote:
+> >
+> > On 11/04, Alexei Starovoitov wrote:
+> > > On Wed, Nov 3, 2021 at 4:55 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > > > #pragma clang loop unroll(full)
+> > > >     for (int b = 1 << 10; b >= 4; b >>= 1) {
+> > > >         if (start + b > end) {
+> > > >             continue;
+> > > >         }
+> > > >
+> > > >         // If we do 8 byte reads, we have to handle overflows which is
+> > > > slower than 4 byte reads.
+> > > >         for (int i = 0; i < b; i += 4) {
+> > > >             csum += *(uint32_t *)(start + i);
+> > > >         }
+> > > >
+> > > >         start += b;
+> > > >     }
+> > > >     if (start + 2 <= end) {
+> > > >         csum += *(uint16_t *)(start);
+> > > >         start += 2;
+> > > >     }
+> > > >     if (start + 1 <= end) {
+> > > >         csum += *(start);
+> > > >     }
+> >
+> > > Thanks for flagging!
+> > > Could you craft a test case that we can use a repro and future
+> > > test case?
+> >
+> > > > fp-88=map_value fp-96=mmmmmmmm fp-104=map_value fp-112=inv fp-120=fp
+> > > ...
+> > > > I've bisected the problem to commit 3e8ce29850f1 ("bpf: Prevent
+> > > > pointer mismatch in bpf_timer_init.") The commit seems unrelated to
+> > > > loop processing though (it does touch the verifier however). Either I
+> > > > got the bisection wrong or there is something subtle going on.
+> >
+> > > I stared at that commit and the example asm.
+> > > I suspect the bisect went wrong.
+> >
+> > > Could you try reverting a single
+> > > commit 354e8f1970f8 ("bpf: Support <8-byte scalar spill and refill")
+> > > ?
+> > > The above fp-112=inv means that the verifier is tracking scalar spill.
+> > > That could be the reason for bounded loop logic seeing different
+> > > stack state on every iteration.
+> > > But the asm snippet doesn't have the store to stack at [fp-112]
+> > > location, so it could be a red herring.
+> >
+> > > Are you using the same llvm during bisect?
+> > > The commit 354e8f1970f8 should be harmless
+> > > (when commit f30d4968e9ae ("bpf: Do not reject when the stack read
+> > > size is different from the tracked scalar size"))
+> > > is also applied. That fix is in bpf tree only, so far.
+> > > The tracking of 8-byte spill is the most useful with the latest llvm
+> > > that was taught to use 8-byte aligned stack for such spills.
+> >
+> > > Without being able to repro it's hard to investigate much further.
+> >
+> > Not to derail the conversation, but we do actually see a problem
+> > with commit 354e8f1970f8 ("bpf: Support <8-byte scalar spill and
+> > refill"). Program that passed without it now gets:
+> >
+> >   R0=inv(id=0) R1_w=invP0 R2_w=invP0 R5_w=inv0 R6=ctx(id=0,off=0,imm=0)
+> > R7=map_value(id=0,off=0,ks=4,vs=9616,imm=0) R8=inv(id=0)
+> > R9_w=map_value(id=0,off=0,ks=4,vs=9616,imm=0) R10=fp0 fp-8=mmmm????
+> > fp-16=mmmmmmmm fp-24=00000000 fp-32=inv fp-40=00000000 fp-48=inv
+> > fp-56=mmmmmmmm fp-64=mmmmmmmm
+> > 479: (79) r1 = *(u64 *)(r10 -32)
+> > corrupted spill memory
+> > processed 970 insns (limit 1000000) max_states_per_insn 2 total_states 73
+> > peak_states 73 mark_read 24
+>
+> Stan,
+> please read the 2nd part of my sentence above and try again with that patch.
 
-clang says tlen_free set but not used.
+Ah, sorry, I've missed that part. It does indeed fix it for me, thank you!
