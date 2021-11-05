@@ -2,115 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E92446534
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 15:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0D44465A3
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 16:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233212AbhKEOul (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 10:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        id S233467AbhKEP0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 11:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233152AbhKEOul (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:50:41 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190FBC061714
-        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 07:48:01 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id v15so8289864ljc.0
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 07:48:01 -0700 (PDT)
+        with ESMTP id S233429AbhKEP0i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:26:38 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA214C061714;
+        Fri,  5 Nov 2021 08:23:58 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t11so11232980plq.11;
+        Fri, 05 Nov 2021 08:23:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=zfhV6Gwgf0sNTi1LiHNLJjrEkjkdv8O0IylaTB1V6Y0=;
-        b=XDEkCdq9vbijnaUXZhE9vmtvMCpG1ac/W5v/wUUDSrfijdB5fVv7957sSp5zWsZZ2/
-         C2K85AnqNElbJBe6g896rOCaVQ5pIYggI8IHKX0RbF6D5DGd8Lmyb3pEwWxAy6LXXgVn
-         oGOp86j+3iXftmpZRb4jzb6FKWSIytairdoPc=
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=dtxaiaqX8WBZCm8iJ4NOVFM1D7iO+vs2YKjl8WFcejc=;
+        b=JDc4YDtQ+7lOLUeBklqjSnvvYcnQNeI6ZGGOh3iyW0GXvovezcuIpgYNNx8QjpqGL9
+         6Sm0DN+DgepGAdXj7S+Am2cMKaL8dL1oipBoUhcA0df+uU13Tvao1DGpYU1h116ftA5w
+         U8ONAHh2Fh6FIkqXYNyYIMlt2StU0TxO7EHcxFdAROA+FmKstxPJj2buXt8lVDjnHQ/1
+         3/5RAZ9P+rc/w9CoUKHYQbbQvtiYZp7TP56vM1gjLcd1HBDhImelM2drUEvxi3XsPmV7
+         YmZYkMyHuL13cI5qA3/yH0ASHwZ+yiEJFOnyhbsLoOj/FWY6LQ1voX2qsBXLOO1vApMI
+         MDhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=zfhV6Gwgf0sNTi1LiHNLJjrEkjkdv8O0IylaTB1V6Y0=;
-        b=1iR10jUxCOCzjhj8uAl2JhNRzFhOHQv/O7iRBcsg2zNZyQvTBIaz+1TRrVIfqa2Lwc
-         M+UOdaO4VNsr1wZhDLEEM15BMx9jBWRqONjOlHkjR+UT5yzaLkzQjsJsxDpfEs+TJI+n
-         CHxvWPdCTnVGBYouexa3TuKq81RnPdEa4xVoi7A+6F0r+LEZvEZCtOobLu37awkbx9Jz
-         G2v8hwYvk80L7f+Y3el7TeRcH5Er+snt67tIxJrubqFjN7aIrHZdL3zSS7ggYnnW2LPr
-         ZYUY0R477dXKVpQxmny5v3QkO7QiPtUW5/jQ7E20r5OCnCmDddlmM4aXFrdNxHZG1Wj7
-         kvyA==
-X-Gm-Message-State: AOAM532QZgVNDkFMrUvkvoxqW8jiEzFMKIbYYmiXRLxAM4pBP9KUawxd
-        HpPV32Ad0Acm9+eq8gcqHX20NQ==
-X-Google-Smtp-Source: ABdhPJyqGf7LHd6ltIp1FxZaIjg29uJoEhLhJOgH/6HaLKpsEWoaMg5bWUcdQFLgXGB1IwbsV0ryOw==
-X-Received: by 2002:a2e:9c0b:: with SMTP id s11mr62580170lji.259.1636123679311;
-        Fri, 05 Nov 2021 07:47:59 -0700 (PDT)
-Received: from cloudflare.com (2a01-110f-480d-6f00-ff34-bf12-0ef2-5071.aa.ipv6.supernova.orange.pl. [2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
-        by smtp.gmail.com with ESMTPSA id g19sm106394ljl.27.2021.11.05.07.47.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 07:47:58 -0700 (PDT)
-References: <20211104122304.962104-1-markpash@cloudflare.com>
- <20211104122304.962104-2-markpash@cloudflare.com>
- <32332bb4-1848-0280-9482-5189ab912b02@fb.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Yonghong Song <yhs@fb.com>,
-        Mark Pashmfouroush <markpash@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, kernel-team@cloudflare.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add ifindex to bpf_sk_lookup
-In-reply-to: <32332bb4-1848-0280-9482-5189ab912b02@fb.com>
-Date:   Fri, 05 Nov 2021 15:47:57 +0100
-Message-ID: <87y262hd5u.fsf@cloudflare.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=dtxaiaqX8WBZCm8iJ4NOVFM1D7iO+vs2YKjl8WFcejc=;
+        b=Fcx3EugN+xj0kqXDWImiJ7NChoMkjoycvT+GN0INo+yjQlo6mpB+pMrPamq2Tk6nUA
+         xVRXRcS4ZmBgl3CoDMFU5Gedi1n439YJ2Re9Vq1pFBHyZGa2APBLyX4VRNAGeru7pW2q
+         ra/ywW7pomMMBsS11L+t12zMmy+G5Wn5DfS1yXYene6vWMyprY3qFTqNXtd4cRNjkaHy
+         S8hGvH1nCwRkgEaPG3BrS/LNyHzHB1xItuFUC79a8oLKAI/MDgHbfIAEmu8jaOur81WC
+         hP5W7cW8GokTNAs4r0skm2rNAjoxoQx3HtNUkoun7Mr84w5V5CmOfmQk5+2QTOvjlH/4
+         lvNw==
+X-Gm-Message-State: AOAM530i2CLyWCfjRxL6mdrY47AWH+lpUGUGt0D5fHsDyetslnpUGlMu
+        cv9SobUCK/RFqmieLMtyOtU=
+X-Google-Smtp-Source: ABdhPJzdQjYpYbjXXxC2rfDwnMmafb5FVdnAUmvBClOKFeLkox1TwyRREtgEwJu/ipumOWQlUfC6CQ==
+X-Received: by 2002:a17:903:408c:b0:142:45a9:672c with SMTP id z12-20020a170903408c00b0014245a9672cmr5560302plc.7.1636125838356;
+        Fri, 05 Nov 2021 08:23:58 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.112])
+        by smtp.gmail.com with ESMTPSA id d7sm8415931pfj.91.2021.11.05.08.23.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 08:23:58 -0700 (PDT)
+Message-ID: <6a6dd497-4592-7e28-72e0-ae253badba8b@gmail.com>
+Date:   Fri, 5 Nov 2021 23:23:52 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH v4 bpf-next 1/2] bpf: introduce helper bpf_find_vma
+Content-Language: en-US
+To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kernel-team@fb.com, kpsingh@kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20211104213138.2779620-1-songliubraving@fb.com>
+ <20211104213138.2779620-2-songliubraving@fb.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <20211104213138.2779620-2-songliubraving@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 07:06 PM CET, 'Yonghong Song' via kernel-team+notifications wrote:
-> On 11/4/21 5:23 AM, Mark Pashmfouroush wrote:
->> It may be helpful to have access to the ifindex during bpf socket
->> lookup. An example may be to scope certain socket lookup logic to
->> specific interfaces, i.e. an interface may be made exempt from custom
->> lookup code.
->> Add the ifindex of the arriving connection to the bpf_sk_lookup API.
->> Signed-off-by: Mark Pashmfouroush <markpash@cloudflare.com>
->> diff --git a/include/linux/filter.h b/include/linux/filter.h
->> index 24b7ed2677af..0012a5176a32 100644
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -1374,6 +1374,7 @@ struct bpf_sk_lookup_kern {
->>   		const struct in6_addr *daddr;
->>   	} v6;
->>   	struct sock	*selected_sk;
->> +	u32		ifindex;
->
-> In struct __sk_buff, we have two ifindex related fields:
->
->         __u32 ingress_ifindex;
->         __u32 ifindex;
->
-> Does newly-added ifindex corresponds to skb->ingress_ifindex or
-> skb->ifindex? From comments:
->   > +	__u32 ifindex;		/* The arriving interface. Determined by inet_iif. */
->
-> looks like it corresponds to ingress? Should be use the name
-> ingress_ifindex to be consistent with __sk_buff?
->
+Hi, Song
 
-On ingress these two (skb->skb_iif and skb->dev-ifindex) are the same,
-if I read the code correctly [1].
-
-That said, I agree that ingress_ifindex would be less ambiguous (iif ->
-ingress interface, can't get that wrong).
-
-Also, as Yonghong points out __sk_buff and xdp_md context objects
-already use this identifier for the same bit of information, so it will
-be less of surprise.
-
-[1] https://elixir.bootlin.com/linux/latest/source/net/core/dev.c#L5258
+On 2021/11/5 5:31 AM, Song Liu wrote:
+> In some profiler use cases, it is necessary to map an address to the
+> backing file, e.g., a shared library. bpf_find_vma helper provides a
+> flexible way to achieve this. bpf_find_vma maps an address of a task to
+> the vma (vm_area_struct) for this address, and feed the vma to an callback
+> BPF function. The callback function is necessary here, as we need to
+> ensure mmap_sem is unlocked.
+> 
+> It is necessary to lock mmap_sem for find_vma. To lock and unlock mmap_sem
+> safely when irqs are disable, we use the same mechanism as stackmap with
+> build_id. Specifically, when irqs are disabled, the unlocked is postponed
+> in an irq_work. Refactor stackmap.c so that the irq_work is shared among
+> bpf_find_vma and stackmap helpers.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
 
 [...]
+
+>  
+> -BTF_ID_LIST(btf_task_file_ids)
+> -BTF_ID(struct, file)
+> -BTF_ID(struct, vm_area_struct)
+> -
+>  static const struct bpf_iter_seq_info task_seq_info = {
+>  	.seq_ops		= &task_seq_ops,
+>  	.init_seq_private	= init_seq_pidns,
+> @@ -586,9 +583,74 @@ static struct bpf_iter_reg task_vma_reg_info = {
+>  	.seq_info		= &task_vma_seq_info,
+>  };
+>  
+> +BPF_CALL_5(bpf_find_vma, struct task_struct *, task, u64, start,
+> +	   bpf_callback_t, callback_fn, void *, callback_ctx, u64, flags)
+> +{
+> +	struct mmap_unlock_irq_work *work = NULL;
+> +	struct vm_area_struct *vma;
+> +	bool irq_work_busy = false;
+> +	struct mm_struct *mm;
+> +	int ret = -ENOENT;
+> +
+> +	if (flags)
+> +		return -EINVAL;
+> +
+> +	if (!task)
+> +		return -ENOENT;
+> +
+> +	mm = task->mm;
+> +	if (!mm)
+> +		return -ENOENT;
+> +
+> +	irq_work_busy = bpf_mmap_unlock_get_irq_work(&work);
+> +
+> +	if (irq_work_busy || !mmap_read_trylock(mm))
+> +		return -EBUSY;
+> +
+> +	vma = find_vma(mm, start);
+> +
+
+I found that when a BPF program attach to security_file_open which is in
+the bpf_d_path helper's allowlist, the bpf_d_path helper is also allowed
+to be called inside the callback function. So we can have this in callback
+function:
+
+    bpf_d_path(&vma->vm_file->f_path, path, sizeof(path));
+
+
+I wonder whether there is a guarantee that vma->vm_file will never be null,
+as you said in the commit message, a backing file.
+
+If that is not something to be concerned, feel free to add:
+Tested-by: Hengqi Chen <hengqi.chen@gmail.com>
+
+> +	if (vma && vma->vm_start <= start && vma->vm_end > start) {
+> +		callback_fn((u64)(long)task, (u64)(long)vma,
+> +			    (u64)(long)callback_ctx, 0, 0);
+> +		ret = 0;
+> +	}
+> +	bpf_mmap_unlock_mm(work, mm);
+> +	return ret;
+> +}
+> +
+> +const struct bpf_func_proto bpf_find_vma_proto = {
+> +	.func		= bpf_find_vma,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_BTF_ID,
+> +	.arg1_btf_id	= &btf_task_struct_ids[0],
+> +	.arg2_type	= ARG_ANYTHING,
+> +	.arg3_type	= ARG_PTR_TO_FUNC,
+> +	.arg4_type	= ARG_PTR_TO_STACK_OR_NULL,
+> +	.arg5_type	= ARG_ANYTHING,
+> +};
+> +
+
+[...]
+
+Cheers,
+--
+Hengqi
