@@ -2,82 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C4E4468C6
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 20:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BBE44694D
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 20:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233197AbhKETNk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 5 Nov 2021 15:13:40 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32500 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233159AbhKETNj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 5 Nov 2021 15:13:39 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A5I74Nc030300
-        for <bpf@vger.kernel.org>; Fri, 5 Nov 2021 12:10:59 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c59kwrec8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 12:10:59 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 5 Nov 2021 12:10:58 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 424337FF890A; Fri,  5 Nov 2021 12:10:57 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: fix non-C89 loop variable declaration in gen_loader.c
-Date:   Fri, 5 Nov 2021 12:10:55 -0700
-Message-ID: <20211105191055.3324874-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: 1A9UGm7x-cJ_DsC50WFkk8cpQHapqSEq
-X-Proofpoint-ORIG-GUID: 1A9UGm7x-cJ_DsC50WFkk8cpQHapqSEq
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S232477AbhKETwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 15:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232329AbhKETwf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 15:52:35 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDC5C061714
+        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 12:49:56 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id o10-20020a17090a3d4a00b001a6555878a8so4084056pjf.1
+        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 12:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gXlN5FZf8wjatJCZa1cF2r5Z+UdMJg7+lQZ4SVQt93Q=;
+        b=oTbQ0d/+lTXVt3GBVKXQT/pp6n7r3RqdQEjEw2JoDqFrPTYGX2FQVokdLUtDEsVZ40
+         6qSS0kGc4WYQcSBq0r0SJN7kgc3ePYAI4H2FCJ6mEeZ6CJ6BML/ra3wBXUXWjqrMLQ9k
+         VLvyOOj3KNOvrQ/noz1Am8T6a8+1qu6bzRfZKIjWh8Xp3tKbcTQXWcJgAwEBj2tRRhZI
+         nQK9qzH+Qp66ipCPBTCaK4ED0BqcuN+4BkY25VPS1E63k8n1TeGknM5WN28vRFtu2Ms/
+         BsyaU2DVJz6BjvhEw7etyuFA7Oizm4jALNXV5VS1vAonicz/NXulFY8b5noLBIVxtoZA
+         Hl4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gXlN5FZf8wjatJCZa1cF2r5Z+UdMJg7+lQZ4SVQt93Q=;
+        b=tV5oSDYyrLV6D/mFN1VikXDnfAm2nMi/5eTloICxQ4QjnxjlFe8KCjbfR3d+5Exn6l
+         piqZT9NA4tmNZ/SePbEfexlGAaDo3fENMrNcfnUk0sgAiXZOkZ5m+HgA8H50kB+zl/wR
+         IlztrQ0NoiVwM8Fvt3Q0x4Gu0bdfDC2vssioKTJ4EclfiBYQeOXtuvcx0wVMgETaiCT3
+         rP4jyO0N8lSRbZ7B5C7nheLGD9gLoSrt+A23cqgwZT/hPGhG8t3x3jB2FTuzrMrQKnhS
+         7ZFnpBSqQEQJL/W0Xm8fex+5x252IoJ27BMoPSLLIDAZOOyT0tBMBEX7EtaHLts15aBk
+         RyLA==
+X-Gm-Message-State: AOAM532sKHhaI6nqbAMFuL52gE0FUjDa6foTIp2gqgZDcSkI6cxhe2UK
+        wz8QU52f6P2nq5+sFXdRO/nlGRtFIso=
+X-Google-Smtp-Source: ABdhPJy1Jei+Ck+ketcco+bQgcpLPAwEzazIAeUVp/5E9QSv4AGBr/NiprU6POJCCiUC+Nuv4ORNvQ==
+X-Received: by 2002:a17:90a:f182:: with SMTP id bv2mr32222695pjb.139.1636141795300;
+        Fri, 05 Nov 2021 12:49:55 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:808])
+        by smtp.gmail.com with ESMTPSA id mg12sm9813843pjb.10.2021.11.05.12.49.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 12:49:55 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 12:49:52 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, regressions@lists.linux.dev,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: Verifier rejects previously accepted program
+Message-ID: <20211105194952.xve6u6lgh2oy46dy@ast-mbp.dhcp.thefacebook.com>
+References: <CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com>
+ <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
+ <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-05_02,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- malwarescore=0 phishscore=0 clxscore=1015 adultscore=0 suspectscore=0
- mlxlogscore=918 impostorscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111050104
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the `int i` declaration inside the for statement. This is non-C89
-compliant. See [0] for user report breaking BCC build.
+On Fri, Nov 05, 2021 at 10:41:40AM +0000, Lorenz Bauer wrote:
+> 
+> bpf-next with f30d4968e9ae on top:
+> 
+>     works!
 
-  [0] https://github.com/libbpf/libbpf/issues/403
+Awesome.
 
-Fixes: 18f4fccbf314 ("libbpf: Update gen_loader to emit BTF_KIND_FUNC relocations")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/gen_loader.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> commit 3e8ce29850f1 ("bpf: Prevent pointer mismatch in
+> bpf_timer_init.") (found via bisection):
+> 
+>     BPF program is too large. Processed 1000001 insn
+> 
+> commit 3e8ce29850f1^ ("bpf: Add map side support for bpf timers."):
+> 
+>    works!
 
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index 502dea53a742..2e10776b6d85 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -584,8 +584,9 @@ void bpf_gen__record_extern(struct bpf_gen *gen, const char *name, bool is_weak,
- static struct ksym_desc *get_ksym_desc(struct bpf_gen *gen, struct ksym_relo_desc *relo)
- {
- 	struct ksym_desc *kdesc;
-+	int i;
- 
--	for (int i = 0; i < gen->nr_ksyms; i++) {
-+	for (i = 0; i < gen->nr_ksyms; i++) {
- 		if (!strcmp(gen->ksyms[i].name, relo->name)) {
- 			gen->ksyms[i].ref++;
- 			return &gen->ksyms[i];
--- 
-2.30.2
-
+So with just 3e8ce29850f1 it's "too large" and with parent commit it works ?
+I've analyzed offending commit again and don't see how it can be causing
+state pruning to be more conservative for your asm.
+reg->map_uid should only be non-zero for lookups from inner maps,
+but your asm doesn't have lookups at all in that loop.
+Maybe in some case map_uid doesn't get cleared, but I couldn't find
+such code path with manual code analysis.
+I think it's worth investigating further.
+Please craft a reproducer.
