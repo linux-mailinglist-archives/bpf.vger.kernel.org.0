@@ -2,107 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBF6446ADB
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 23:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730CD446ADC
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 23:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhKEWXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 18:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49078 "EHLO
+        id S233262AbhKEWYY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 18:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbhKEWXj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:23:39 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36987C061570
-        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 15:20:59 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id o12so26331200ybk.1
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 15:20:59 -0700 (PDT)
+        with ESMTP id S230498AbhKEWYX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 18:24:23 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC788C061570;
+        Fri,  5 Nov 2021 15:21:43 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id v64so26297343ybi.5;
+        Fri, 05 Nov 2021 15:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hQ5d5oMVppWeyv7bjRETMA2692X8XqEdhel7qHjvJH0=;
-        b=WyMa7GW2KHF+O2jfsiXOKBRYVx3wyccBG3KImM5dvLupXoRwUgwSHLwa/5ATe7HpZ5
-         2X+TUOj/0FIT+DV1NJuGw+xVWm1qfznAQ7FHe5yLlsOB1auZFDOpn4y4CVqTe5n5l+31
-         odEQMO+OJq3+t5jXnrvS+p9BrsLcNcbV27MI2JfIDGS+eMsQxHweIyYJ01+NxzrgDmwi
-         upF3PmWb6S2kHrBy6qZlyGf+DbxTAGU4FmbKkTA3FQ0FD0cmH97mrUSFgT+JWowbkVi5
-         TCHTcWseTz7KIqcOiNZA+fiuii/rGjEWsoNkyF/s0mga1ku+v3TvMZyTMBTOWjZQLxZu
-         B2Hw==
+        bh=WUR7lyaLNzjhSqpNUpmhgYKLntdMUM0FjSkCZaOy0zA=;
+        b=fMepmD8OhjvftffT1vA64RvtqE4M8jk2SjX7e4VcjZnVNz1gI4n1FH4g7DjXRpSW4A
+         w6xzLBbbn342dZjLBfMHxi781O4E6J5l9vTnBmGgc7d1QhebXMebELCjzGoRmJ1oM45r
+         KZIOWMLqpa8TE1tVcafVsNxuKkfjCqebrOZZbR1Z4IVdXRP/dlIs/8QJYzMNSLFX3MWd
+         T04KYWm178OHCw1gYifS1k1kBRJtxeU5ZECboPhGOvwXBsBNaQ7Tor1Rv7kvDlN7gN7e
+         7AddKx37R5fr0/EnJgoXiWUomBamyMg9xWwHnuRGuCGd+J7KWzxrb9DyPiVVImuNviqU
+         8wVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hQ5d5oMVppWeyv7bjRETMA2692X8XqEdhel7qHjvJH0=;
-        b=a0J7maleFEPt7YhKsLQcY4pt+Sncd21IXkov1W+m5Kjmy8C6vN8gU5a8YJCVIiTPb9
-         VIkXkHgx8WickG6O/ZS7gw8jZQRYDKDWy3SvJzuXSrxJRjbRQnG5y3/8qWSCmFPYyR1b
-         oVOKOoTTHckRQOGwHkpxKoX7Y7dhw4njr13eGbvyc6eQF9A52GhMR7it8C+3RM9WRnQk
-         67Yspe1KIq1nxG/fXs9FPezvNDXq1gTefcc13ImaLG+SCQ1LW5e8xAtzcTiwnsv+AtQI
-         8ltHxYEATIg60tfFCP4/xR4ieovpbA9w3+TJVh2hQ2c9Kzd3AOuQP7Chvxs6rMMlStk5
-         e1dQ==
-X-Gm-Message-State: AOAM5315XOHIvlpBJpOHXkmBXfBkOZAZH/Eh9klwSjFTyDez3GCcppVg
-        xTuvaE1Bl7rHfjaXJINFaZTCDYUPoHy8cekXEbuGGuDP
-X-Google-Smtp-Source: ABdhPJxAetvBOI7o2tF84RKherYVqZK3K3pUhIEPKpCWLtpKsAxsOE5FGfZh1ydqyspzrY3oED+8Ukbj6EFaAfoRpog=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr67593521ybj.504.1636150858417;
- Fri, 05 Nov 2021 15:20:58 -0700 (PDT)
+        bh=WUR7lyaLNzjhSqpNUpmhgYKLntdMUM0FjSkCZaOy0zA=;
+        b=HXczuFwxgpCq06w0jNJoEmhZb6QH2pIKWvnI2kLzL1eyC97cTaHN2ePmKUHbw3pG5W
+         irJGfB3o+xFLnwrFxteoWIDzimW9P11cTO+58q8SpKivpC0K4KPQXPP4+jkzaEkmHB7C
+         WsOWxOY8Mg5L0uq0EMdh/M8LCClDMmH6y9H0Wzj1SI2HYi1P3Rml2PW6YabJKnx+hzic
+         naDdBBFDsAeH+k1bylqtSIwI6b9x4AKPhxTCwsR63YXZ6Uk7dpccWqUx4bwX3Gsqdixe
+         IGURpzYciIzIigKbl4PX/3q6whxhnjCt3k8FURuxbg84Yiwbu/nS5IyEciH7TX2N3Crv
+         sMMg==
+X-Gm-Message-State: AOAM530Gv1XNQl9OzZpOGAw+xIA3AH9Mn68gm1hBjmReKmt3ynT0qHmW
+        olXouizYwJjeM0CHc+DzNGbdhIr56GYzhf/ivwk=
+X-Google-Smtp-Source: ABdhPJy9lvBILyrYvibxFtmUDuwf/AHMJIxZg7IgNSsDEt6pXsto9YrvYEUNAGCvFMZ0WKl21TO6fHsbIiVJr4Za9bE=
+X-Received: by 2002:a05:6902:1023:: with SMTP id x3mr36837887ybt.267.1636150903228;
+ Fri, 05 Nov 2021 15:21:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211105191055.3324874-1-andrii@kernel.org> <20211105204051.v7wzca6fryb774m4@apollo.localdomain>
- <CAEf4Bzb83Nz3iRa1t8+EknuowkkbYwf+zjwRj_SJSvh0ewfa+g@mail.gmail.com> <20211105220410.j2eur76wvzjd3fab@apollo.localdomain>
-In-Reply-To: <20211105220410.j2eur76wvzjd3fab@apollo.localdomain>
+References: <20211105221904.3536-1-quentin@isovalent.com>
+In-Reply-To: <20211105221904.3536-1-quentin@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 5 Nov 2021 15:20:47 -0700
-Message-ID: <CAEf4BzZncpbHtSp47jv4cE0CYZ+3tFBNqrj+HoXFcx_5EjSNbA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix non-C89 loop variable declaration in gen_loader.c
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 5 Nov 2021 15:21:32 -0700
+Message-ID: <CAEf4BzYfw3OjvDRU1GcuNQXtTgBcTkAwBJGCmO5UA7s9fSQgdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpftool: Fix SPDX tag for Makefiles and .gitignore
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Peter Wu <peter@lekensteyn.nl>, Roman Gushchin <guro@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Tobias Klauser <tklauser@distanz.ch>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 3:04 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+On Fri, Nov 5, 2021 at 3:19 PM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> On Sat, Nov 06, 2021 at 03:19:38AM IST, Andrii Nakryiko wrote:
-> > On Fri, Nov 5, 2021 at 1:40 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > >
-> > > On Sat, Nov 06, 2021 at 12:40:55AM IST, Andrii Nakryiko wrote:
-> > > > Fix the `int i` declaration inside the for statement. This is non-C89
-> > > > compliant. See [0] for user report breaking BCC build.
-> > > >
-> > > >   [0] https://github.com/libbpf/libbpf/issues/403
-> > > >
-> > > > Fixes: 18f4fccbf314 ("libbpf: Update gen_loader to emit BTF_KIND_FUNC relocations")
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > >
-> > > Thanks for the fix, and sorry about that.
-> > >
-> > > Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > >
-> >
-> > No worries, we just need to figure out which compiler flags we need to
-> > catch this. I'm surprised BCC build caught this and neither libbpf's
-> > Makefile nor selftest did. Selftests are definitely too permissive
-> > w.r.t. stuff like this.
-> >
-> > If you could take a look and see what we'll need to lock it down a
-> > bit, that would be great. I've also requested help from the original
-> > reporter of this issue (see issue on Github).
-> >
+> Bpftool is dual-licensed under GPLv2 and BSD-2-Clause. In commit
+> 907b22365115 ("tools: bpftool: dual license all files") we made sure
+> that all its source files were indeed covered by the two licenses, and
+> that they had the correct SPDX tags.
 >
-> I think you want -std=gnu89 (i.e. C89 with GNU extensions). I get the same error
-> as the reporter when building with that.
+> However, bpftool's Makefile, the Makefile for its documentation, and the
+> .gitignore file were skipped at the time (their GPL-2.0-only tag was
+> added later). Let's update the tags.
+>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andriin@fb.com>
 
-Oh, I think I tried -std=c89 and it didn't compile due to use of those
-extensions. Didn't realize gnu89 exists. Do you mind adding it to
-bpftool, libbpf, and selftests Makefiles and sending a patch?
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+> Cc: Ilya Leoshkevich <iii@linux.ibm.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Joe Stringer <joe@cilium.io>
+> Cc: Peter Wu <peter@lekensteyn.nl>
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Tobias Klauser <tklauser@distanz.ch>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/bpf/bpftool/.gitignore             | 2 +-
+>  tools/bpf/bpftool/Documentation/Makefile | 2 +-
+>  tools/bpf/bpftool/Makefile               | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 >
-> >
-> > > > [...]
-> > >
-> > > --
-> > > Kartikeya
+> diff --git a/tools/bpf/bpftool/.gitignore b/tools/bpf/bpftool/.gitignore
+> index 05ce4446b780..a736f64dc5dc 100644
+> --- a/tools/bpf/bpftool/.gitignore
+> +++ b/tools/bpf/bpftool/.gitignore
+> @@ -1,4 +1,4 @@
+> -# SPDX-License-Identifier: GPL-2.0-only
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  *.d
+>  /bootstrap/
+>  /bpftool
+> diff --git a/tools/bpf/bpftool/Documentation/Makefile b/tools/bpf/bpftool/Documentation/Makefile
+> index c49487905ceb..44b60784847b 100644
+> --- a/tools/bpf/bpftool/Documentation/Makefile
+> +++ b/tools/bpf/bpftool/Documentation/Makefile
+> @@ -1,4 +1,4 @@
+> -# SPDX-License-Identifier: GPL-2.0-only
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  include ../../../scripts/Makefile.include
+>  include ../../../scripts/utilities.mak
+>
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index c0c30e56988f..622568c7a9b8 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -1,4 +1,4 @@
+> -# SPDX-License-Identifier: GPL-2.0-only
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  include ../../scripts/Makefile.include
+>  include ../../scripts/utilities.mak
 >
 > --
-> Kartikeya
+> 2.32.0
+>
