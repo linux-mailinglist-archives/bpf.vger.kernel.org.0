@@ -2,111 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796D0446680
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 16:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740A6446695
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 16:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhKEP4B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 11:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhKEPz6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:55:58 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F843C061714;
-        Fri,  5 Nov 2021 08:53:17 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so3622480pjc.4;
-        Fri, 05 Nov 2021 08:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Khe0I5Q1+2/UsOTg7rhV0f6H2RtwXCWMhvt//siSaDk=;
-        b=pn3EYzc6w8kr6oC5ozcCwu3VCkEb8m5a+kfq5XY7ZqW1POxqtmQpp4QKBdIQcEzOFS
-         1puyWo81rZSNlvhTtV2VzdrEGIbgTrozK7bvQFE7qsXvTKYax1iu6CbyMKYFm2S5hJTS
-         5SFI4shOxTt7PUBZVBq7P5SDHCIN6iP2AxCRuJdWeJ/j/+zsaxIFVqMeM267CjqqKF8u
-         7vJGUP0kJjmC5qL/GUCgDVnpsxV7B50gkXTeXxA87RZUDZmo5sD3bdVMJ/8MIdKuz5wJ
-         MOw7hKnvdt+oZXN7o5usmeATHJqk7apwonFsXgiwWayRWY2o8AS5gI3T8JuqpdIkuSj4
-         TzzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Khe0I5Q1+2/UsOTg7rhV0f6H2RtwXCWMhvt//siSaDk=;
-        b=QnPYEbYxq996yeQc7LSz87iuyW73kStEOXkc9QJFHFsnuqSd2TqsKJkT40xt9B44y7
-         /wMhETwvxo3rUwcZBFHvmuHbBk2uTSSENNAcIG64k9ySC8+Ve0WXrUaz4Uzhvd26IeZQ
-         bPKkoBp+5ykx6sBkicBcXpx8mJUNuGdTSaLM4+u/cf7rDtRzT9C4OARmVZxsHXoEWe14
-         VDWPiml7Vo13iobNxNvSi3Ctsov6iR85wcRzuAaNM2QaJQ4zo800NvU3+3nawJl6O2Ow
-         pe2cNgYdYlqu9hs4p4YT8n5eyDivBQc2zpar6wQb7PQuhGfrx/vsWHGkKKp6b/x7udo7
-         NAYg==
-X-Gm-Message-State: AOAM5335ribtGwvq8Dgw/Eu8iJgV2pcOzsliyI+9Zq9gBQE4r7rFjvXt
-        1Lm2/t72k2uSF1KGIj7d4gBvVqxeLmBAX4NLqgM=
-X-Google-Smtp-Source: ABdhPJysMmQYIo1h3VxoqPh1PKRxUaQ2M/1AowyMPIc49/j/epzYRmiJfssaucD64MBAjBASXL0xm8s+qHvUHjVO3Fg=
-X-Received: by 2002:a17:903:2306:b0:141:e52e:457d with SMTP id
- d6-20020a170903230600b00141e52e457dmr33970309plh.3.1636127597077; Fri, 05 Nov
- 2021 08:53:17 -0700 (PDT)
+        id S233617AbhKEQCc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 12:02:32 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57688 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232285AbhKEQCb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 12:02:31 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mj1d4-000ASG-G8; Fri, 05 Nov 2021 16:59:46 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mj1d4-00007b-8a; Fri, 05 Nov 2021 16:59:46 +0100
+Subject: Re: [PATCH bpf-next] riscv, bpf: Fix RV32 broken build, and silence
+ RV64 warning
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        jszhang@kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Tong Tiangen <tongtiangen@huawei.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20211103115453.397209-1-bjorn@kernel.org>
+ <f98b15c9-bd06-267e-e404-ae4f607d8740@iogearbox.net>
+ <CAJ+HfNg9Ko93D1M5En8wv4f-7j_by=OwnewRDiM+xQ0EZLw06w@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <53fbebfd-f786-9b21-3477-437395e3e023@iogearbox.net>
+Date:   Fri, 5 Nov 2021 16:59:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <00000000000013aebd05cff8e064@google.com> <87lf224uki.ffs@tglx>
-In-Reply-To: <87lf224uki.ffs@tglx>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 5 Nov 2021 08:53:06 -0700
-Message-ID: <CAADnVQLcuMAr3XMTD1Lys5S5ybME4h=NL3=adEwib2UT6b-E9w@mail.gmail.com>
-Subject: Re: [syzbot] possible deadlock in ktime_get_coarse_ts64
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     syzbot <syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, sboyd@kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rosted@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Dmitrii Banshchikov <me@ubique.spb.ru>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJ+HfNg9Ko93D1M5En8wv4f-7j_by=OwnewRDiM+xQ0EZLw06w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26344/Fri Nov  5 09:18:44 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 6:10 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> >
-> > -> #0 (tk_core.seq.seqcount){----}-{0:0}:
-> >        check_prev_add kernel/locking/lockdep.c:3051 [inline]
-> >        check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-> >        validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3789
-> >        __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5015
-> >        lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5625
-> >        seqcount_lockdep_reader_access+0xfe/0x230 include/linux/seqlock.h:103
-> >        ktime_get_coarse_ts64+0x25/0x110 kernel/time/timekeeping.c:2255
-> >        ktime_get_coarse include/linux/timekeeping.h:120 [inline]
-> >        ktime_get_coarse_ns include/linux/timekeeping.h:126 [inline]
->
-> --> this call is invalid
->
-> >        ____bpf_ktime_get_coarse_ns kernel/bpf/helpers.c:173 [inline]
-> >        bpf_ktime_get_coarse_ns+0x7e/0x130 kernel/bpf/helpers.c:171
-> >        bpf_prog_a99735ebafdda2f1+0x10/0xb50
-> >        bpf_dispatcher_nop_func include/linux/bpf.h:721 [inline]
-> >        __bpf_prog_run include/linux/filter.h:626 [inline]
-> >        bpf_prog_run include/linux/filter.h:633 [inline]
-> >        BPF_PROG_RUN_ARRAY include/linux/bpf.h:1294 [inline]
-> >        trace_call_bpf+0x2cf/0x5d0 kernel/trace/bpf_trace.c:127
-> >        perf_trace_run_bpf_submit+0x7b/0x1d0 kernel/events/core.c:9708
-> >        perf_trace_lock+0x37c/0x440 include/trace/events/lock.h:39
-> >        trace_lock_release+0x128/0x150 include/trace/events/lock.h:58
->
-> Timestamps from within a tracepoint can only be taken with:
->
->          1) jiffies
->          2) sched_clock()
->          3) ktime_get_*_fast_ns()
->
-> Those are NMI safe and can be invoked from anywhere.
->
-> All other time getters which have to use the timekeeping seqcount
-> protection are prone to live locks and _cannot_ be used from
-> tracepoints ever.
+On 11/3/21 2:35 PM, Björn Töpel wrote:
+> On Wed, 3 Nov 2021 at 14:15, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 11/3/21 12:54 PM, Björn Töpel wrote:
+>>> Commit 252c765bd764 ("riscv, bpf: Add BPF exception tables") only
+>>> addressed RV64, and broke the RV32 build [1]. Fix by gating the exception
+>>> tables code with CONFIG_ARCH_RV64I.
+>>>
+>>> Further, silence a "-Wmissing-prototypes" warning [2] in the RV64 BPF
+>>> JIT.
+>>>
+>>> [1] https://lore.kernel.org/llvm/202111020610.9oy9Rr0G-lkp@intel.com/
+>>> [2] https://lore.kernel.org/llvm/202110290334.2zdMyRq4-lkp@intel.com/
+>>>
+>>> Fixes: 252c765bd764 ("riscv, bpf: Add BPF exception tables")
+>>> Signed-off-by: Björn Töpel <bjorn@kernel.org>
+>>> ---
+>>> Tong/Daniel: The RV32 build has been broken since Thursday. I'll try
+>>> to fast-track a bit, and commit a quick-fix for it. Hope that's OK
+>>> with you, Tong!
+>>>
+>>> I've verified the build on my machine using riscv32 GCC 9.3.0 and
+>>> riscv64 GCC 11.2.0.
+>>
+>> Thanks for the fix Bjorn!
+>>
+[...]
+>>> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+>>> +                             struct pt_regs *regs);
+>>
+>> I'm okay to take this as a quick fix, but if its not too much hassle, could we add a
+>> arch/riscv/include/asm/extable.h in similar fashion like arm64 or x86 where we move
+>> the ex_handler_bpf() signature there, did you have a chance to check?
+> 
+> OK! I've not looked into it yet!
+> 
+> There's a patch out from Jisheng on the RV list, which is starting
+> some consolidation work [1].
+> 
+> @Jisheng What do you think about adding type/handlers [2,3] as
+> arm64/x86 recently did, to your series?
 
-Obviously.
-That helper was added for networking use cases and accidentally
-enabled for tracing.
+Fyi, Bjorn, took your fix into bpf so we can move forward wrt broken build & warning
+given its small anyway and I'm doing bpf PR very soon today. Either way, Jisheng, you
+or Tong can follow-up looking into the extable streamlining wrt arm64/x86. Thanks!
+
+> [1] https://lore.kernel.org/linux-riscv/20211022001957.1eba8f04@xhacker/
+> [2] https://lore.kernel.org/linux-arm-kernel/20211019160219.5202-11-mark.rutland@arm.com/
+> [3] https://lore.kernel.org/lkml/20210908132525.211958725@linutronix.de/
