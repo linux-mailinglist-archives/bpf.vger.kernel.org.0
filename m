@@ -2,118 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0844446765
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 17:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7657544676E
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 17:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhKEQ6f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 12:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232454AbhKEQ6f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:58:35 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87CEC061714
-        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 09:55:55 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id e136so21093132ybc.4
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 09:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xm6p2TPoLkcezYPeHVT1TduSqKJLSegBj7Y2luxctLo=;
-        b=DBZRdIZendH7vZXki7OhAY8AvYcWlz1yhNr9N+pposexvq5uyfRVJpCCPBeCZ9CUzv
-         WPcALAO+l8fu2lYnG/v8D9J3kiM+r3qtHLHVSpRtlJq/utjX9ZvRM+CPNpU3suFQ/AI8
-         4M+qnl6Ta7upnzNiyOAQYSUwtum75jIJQSOgcvnRkRP/X07fLSFhyOunDXF0lRT23FPt
-         nJFKJXVFgYFzc1NglXOqNlQ2MDC9wk8jgQgvcaow1bIKj28haWfmOheFtbkjhCr8PzeD
-         lQ0aXLNQeJvwRgubJLgJ46Z+tq0lDYVjIyen/Lyp8OdXZz7WEnqCCGGus4SVeOb+R5yB
-         ck8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xm6p2TPoLkcezYPeHVT1TduSqKJLSegBj7Y2luxctLo=;
-        b=kcTr29rBsTTCoopvkTkM/8Eh3NteMzsEMGQl2N2un9U9O8wkRcoYAANef/8rX4h54C
-         yPpxr0vkVWaUFsla345moktB3Bu8kqcdzS84pr5KspUlomKf7Dp7uYXQMyXSgzt+A7Jh
-         TpqDFeH7D5PeBNF63yPKeX0OF6ttresqtT6KW+mTJFYw8GaW9LcJwoEgwaYFfi5uHWNR
-         NuPnmcSEMdb0Bke7bEoqWcr4duR8kUhGeY0unv92LCzzcLBoPZGqaVllWhjQVab32J/8
-         A480aUopvizgFxCma1q/rh1PVxtXB9EPg92JEVXWBQ36NUIBJ1JUmXOvzG1nzJKXgvLT
-         HfMg==
-X-Gm-Message-State: AOAM531O5R0BeZQCBQPxE0KvY3TddFC7DKljZhAYmC1wzZLwl8uUQ8WD
-        UxmRl5765UkLqSCpcAiwoMGAGgkwvDgXfKIRmZ9fUhOzRns=
-X-Google-Smtp-Source: ABdhPJw0ZXcMM6ODrWA4Cxi5F9B+75YrbpcugqaEgjQSKfJD56Kg/khs16VEx91jx2/3sqtsGDvORaVETpq0PXUqfJo=
-X-Received: by 2002:a25:cc4c:: with SMTP id l73mr63509880ybf.114.1636131355031;
- Fri, 05 Nov 2021 09:55:55 -0700 (PDT)
+        id S232285AbhKERAq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 13:00:46 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37182 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229763AbhKERAp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 13:00:45 -0400
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mj2XT-0001XY-RL; Fri, 05 Nov 2021 17:58:03 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: pull-request: bpf 2021-11-05
+Date:   Fri,  5 Nov 2021 17:58:03 +0100
+Message-Id: <20211105165803.29372-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20211103220845.2676888-1-andrii@kernel.org> <20211103220845.2676888-12-andrii@kernel.org>
- <3b6d0dc7-d43d-8e1d-a302-311e946fd47c@fb.com>
-In-Reply-To: <3b6d0dc7-d43d-8e1d-a302-311e946fd47c@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 5 Nov 2021 09:55:43 -0700
-Message-ID: <CAEf4BzZPqrzemG_qexXKMTnacM4QfkSrptQzLUb2eKPqAy4cNw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 11/12] selftests/bpf: use explicit
- bpf_prog_test_load() calls everywhere
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26344/Fri Nov  5 09:18:44 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 12:36 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->
-> On 11/3/21 6:08 PM, Andrii Nakryiko wrote:
-> > -Dbpf_prog_load_deprecated=bpf_prog_test_load trick is both ugly and
-> > breaks when deprecation goes into effect due to macro magic. Convert all
-> > the uses to explicit bpf_prog_test_load() calls which avoid deprecation
-> > errors and makes everything less magical.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
->
-> [...]
->
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 5588c622d266..2016c583ed20 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -24,7 +24,6 @@ SAN_CFLAGS  ?=
-> >  CFLAGS += -g -O0 -rdynamic -Wall $(GENFLAGS) $(SAN_CFLAGS)           \
-> >         -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)          \
-> >         -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)                      \
-> > -       -Dbpf_prog_load_deprecated=bpf_prog_test_load                 \
-> >         -Dbpf_load_program=bpf_test_load_program
-> >  LDLIBS += -lcap -lelf -lz -lrt -lpthread
-> >
->
-> I'm glad that this magic is going away, it's very unintuitive.
->
-> That said, I wonder if there's some way to complain loudly if a prog_test uses
-> bpf_prog_load instead of bpf_prog_test_load. Otherwise will have to manually
-> guard against it slipping in in some test. This comment applies to patch 12
-> as well for bpf_load_program.
->
+Hi David, hi Jakub,
 
-bpf_prog_test_load() shouldn't really be used going forward.
-bpf_object__open() + bpf_object__load() is a way to go. Better yet,
-stick to skeletons.
+The following pull-request contains BPF updates for your *net* tree.
 
-As for bpf_test_load_program(), the only reason for it is
-BPF_F_TEST_RND_HI32 flag, and I think we have and have had enough
-coverage for that, so there is no need to want to keep using it for
-new code.
+We've added 15 non-merge commits during the last 3 day(s) which contain
+a total of 14 files changed, 199 insertions(+), 90 deletions(-).
 
-So I think it's good as is.
+The main changes are:
 
+1) Fix regression from stack spill/fill of <8 byte scalars, from Martin KaFai Lau.
 
-> > @@ -207,6 +206,7 @@ $(OUTPUT)/test_lirc_mode2_user: testing_helpers.o
-> >  $(OUTPUT)/xdping: testing_helpers.o
-> >  $(OUTPUT)/flow_dissector_load: testing_helpers.o
-> >  $(OUTPUT)/test_maps: testing_helpers.o
-> > +$(OUTPUT)/test_verifier: testing_helpers.o
->
-> [...]
->
+2) Fix perf's build of bpftool's bootstrap version due to missing libbpf
+   headers, from Quentin Monnet.
+
+3) Fix riscv{32,64} BPF exception tables build errors and warnings, from Björn Töpel.
+
+4) Fix bpf fs to allow RENAME_EXCHANGE support for atomic upgrades on sk_lookup
+   control planes, from Lorenz Bauer.
+
+5) Fix libbpf's error reporting in bpf_map_lookup_and_delete_elem_flags() due to
+   missing libbpf_err_errno(), from Mehrdad Arshad Rad.
+
+6) Various fixes to make xdp_redirect_multi selftest more reliable, from Hangbin Liu.
+
+7) Fix netcnt selftest to make it run serial and thus avoid conflicts with other
+   cgroup/skb selftests run in parallel that could cause flakes, from Andrii Nakryiko.
+
+8) Fix reuseport_bpf_numa networking selftest to skip unavailable NUMA nodes,
+   from Kleber Sacilotto de Souza.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Arnaldo Carvalho de Melo, Christian Brauner, Hengqi Chen, Jiri Benc, 
+Miklos Szeredi, Tong Tiangen, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 92f62485b3715882cd397b0cbd80a96d179b86d6:
+
+  net: dsa: felix: fix broken VLAN-tagged PTP under VLAN-aware bridge (2021-11-03 14:22:00 +0000)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to f47d4ffe3a84ae11fc4bddc37939b9719467042c:
+
+  riscv, bpf: Fix RV32 broken build, and silence RV64 warning (2021-11-05 16:52:34 +0100)
+
+----------------------------------------------------------------
+Andrii Nakryiko (1):
+      selftests/bpf: Make netcnt selftests serial to avoid spurious failures
+
+Björn Töpel (1):
+      riscv, bpf: Fix RV32 broken build, and silence RV64 warning
+
+Hangbin Liu (4):
+      selftests/bpf/xdp_redirect_multi: Put the logs to tmp folder
+      selftests/bpf/xdp_redirect_multi: Use arping to accurate the arp number
+      selftests/bpf/xdp_redirect_multi: Give tcpdump a chance to terminate cleanly
+      selftests/bpf/xdp_redirect_multi: Limit the tests in netns
+
+Kleber Sacilotto de Souza (1):
+      selftests/net: Fix reuseport_bpf_numa by skipping unavailable nodes
+
+Lorenz Bauer (4):
+      libfs: Move shmem_exchange to simple_rename_exchange
+      libfs: Support RENAME_EXCHANGE in simple_rename()
+      selftests/bpf: Convert test_bpffs to ASSERT macros
+      selftests/bpf: Test RENAME_EXCHANGE and RENAME_NOREPLACE on bpffs
+
+Martin KaFai Lau (2):
+      bpf: Do not reject when the stack read size is different from the tracked scalar size
+      selftests/bpf: Verifier test on refill from a smaller spill
+
+Mehrdad Arshad Rad (1):
+      libbpf: Fix lookup_and_delete_elem_flags error reporting
+
+Quentin Monnet (1):
+      bpftool: Install libbpf headers for the bootstrap version, too
+
+ arch/riscv/mm/extable.c                            |  4 +-
+ arch/riscv/net/bpf_jit_comp64.c                    |  2 +
+ fs/libfs.c                                         | 29 +++++++-
+ include/linux/fs.h                                 |  2 +
+ kernel/bpf/verifier.c                              | 18 ++---
+ mm/shmem.c                                         | 24 +-----
+ tools/bpf/bpftool/Makefile                         | 32 +++++---
+ tools/lib/bpf/bpf.c                                |  4 +-
+ tools/testing/selftests/bpf/prog_tests/netcnt.c    |  2 +-
+ .../testing/selftests/bpf/prog_tests/test_bpffs.c  | 85 +++++++++++++++++++---
+ .../selftests/bpf/test_xdp_redirect_multi.sh       | 62 +++++++++-------
+ tools/testing/selftests/bpf/verifier/spill_fill.c  | 17 +++++
+ tools/testing/selftests/bpf/xdp_redirect_multi.c   |  4 +-
+ tools/testing/selftests/net/reuseport_bpf_numa.c   |  4 +
+ 14 files changed, 199 insertions(+), 90 deletions(-)
