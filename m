@@ -2,184 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7315A445DB1
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 02:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD900445DB4
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 02:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhKECAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Nov 2021 22:00:43 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:27177 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbhKECAm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:00:42 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HlkBk2DLwz8v7F;
-        Fri,  5 Nov 2021 09:56:30 +0800 (CST)
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 5 Nov 2021 09:58:01 +0800
-Received: from localhost.localdomain (10.175.101.6) by
- dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 5 Nov 2021 09:58:00 +0800
-From:   Di Zhu <zhudi2@huawei.com>
-To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <jakub@cloudflare.com>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhudi2@huawei.com>
-Subject: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for progs attached to sockmap
-Date:   Fri, 5 Nov 2021 09:57:30 +0800
-Message-ID: <20211105015730.1605333-2-zhudi2@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211105015730.1605333-1-zhudi2@huawei.com>
-References: <20211105015730.1605333-1-zhudi2@huawei.com>
+        id S231506AbhKECBC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Nov 2021 22:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230379AbhKECBB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Nov 2021 22:01:01 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C040C061203
+        for <bpf@vger.kernel.org>; Thu,  4 Nov 2021 18:58:22 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso5543265wmf.0
+        for <bpf@vger.kernel.org>; Thu, 04 Nov 2021 18:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ov9WNcUS7VnCpB+C4+JiV+oY3dJctzolS44UUkDjME=;
+        b=Jews42ylp46dhX/NQ9J0y43txE+GTZFxNE6nAT5vFWmZpWydV3ySCbDMNelaAEdpif
+         0ruQzRZnPM7RCt8yAbq5rKle/5bi053EaG88eQHznpuWhR5AOweZhc9598H91CLFLqK7
+         BkcQLHZW4rWCLy1B1p/+nBOOmZ0frKap4wGD6RjnecaRRzYMbHrt3LY4Pq3QLDP0qguF
+         PVwZc6AZ7ZmrvaCPNdyJsRuVtRS+jzszB/z7qAifSiBa8gkEv9cW4aIu/rgSqYJcHFR4
+         1pQ8HfpGSAI3oBlFKjK4+Wu0nUJ68Nvlp4/nMJqzQedoYQ1yBPM+myIwalDeRxMYwlF/
+         JK0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ov9WNcUS7VnCpB+C4+JiV+oY3dJctzolS44UUkDjME=;
+        b=m9s0XlYGNI3XeslhJn12ObnaEA0rIBg5+BC/FOE3FLU8W9dRlPj8xJDNnpZko0d2Pc
+         iK/gLKsYSj6KvBPvGcPItmZIYbrLKqH4HwhcVhtoOcGkONoLsXABRgndDxUlKEcxKT8u
+         HF05TKJ3dou/zHp+IAHFHSUqCOn757NZpw6MEFD+My/TUzBVegPQ5jZjvdCWoaGByFy/
+         wI2SOk8BfaLBuLOKPNP2oBBM8MTqzqYfc5bMDAO0WExQdk7+Hjde7iaJ1gtbewE+931W
+         ToUnSOydNb4Ml04hxfoiyQTl1C8pmKCR9Y7NTjI+KLrE1lLc9sWZhClvVBbzJfduEM/x
+         un8A==
+X-Gm-Message-State: AOAM532uD7un7KGJIB9DY6jCYMBbRqIg04QKp4K8AtIouXMUJEE7M2rZ
+        6w+15idQG0GCRABn2aWB93ybnw==
+X-Google-Smtp-Source: ABdhPJzRaA8e/IQ6iWqcLn2YiwGFbqutJDPQugbseCcKGIuQZoYilXoJLn0QHGKEFR1pL1jfI5uD3Q==
+X-Received: by 2002:a1c:98ca:: with SMTP id a193mr27600896wme.162.1636077501130;
+        Thu, 04 Nov 2021 18:58:21 -0700 (PDT)
+Received: from localhost.localdomain ([149.86.66.250])
+        by smtp.gmail.com with ESMTPSA id z15sm6628850wrr.65.2021.11.04.18.58.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 18:58:20 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf] bpftool: Install libbpf headers for the bootstrap version, too
+Date:   Fri,  5 Nov 2021 01:58:13 +0000
+Message-Id: <20211105015813.6171-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500011.china.huawei.com (7.185.36.84)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test for querying progs attached to sockmap. we use an existing
-libbpf query interface to query prog cnt before and after progs
-attaching to sockmap and check whether the queried prog id is right.
+We recently changed bpftool's Makefile to make it install libbpf's
+headers locally instead of pulling them from the source directory of the
+library. Although bpftool needs two versions of libbpf, a "regular" one
+and a "bootstrap" version, we would only install headers for the regular
+libbpf build. Given that this build always occurs before the bootstrap
+build when building bpftool, this is enough to ensure that the bootstrap
+bpftool will have access to the headers exported through the regular
+libbpf build.
 
-Signed-off-by: Di Zhu <zhudi2@huawei.com>
+However, this did not account for the case when we only want the
+bootstrap version of bpftool, through the "bootstrap" target. For
+example, perf needs the bootstrap version only, to generate BPF
+skeletons. In that case, when are the headers installed? For some time,
+the issue has been masked, because we had a step (the installation of
+headers internal to libbpf) which would depend on the regular build of
+libbpf and hence trigger the export of the headers, just for the sake of
+creating a directory. But this changed with commit 8b6c46241c77
+("bpftool: Remove Makefile dep. on $(LIBBPF) for
+$(LIBBPF_INTERNAL_HDRS)"), where we cleaned up that stage and removed
+the dependency on the regular libbpf build. As a result, when we only
+want the bootstrap bpftool version, the regular libbpf is no longer
+built. The bootstrap libbpf version is built, but headers are not
+exported, and the bootstrap bpftool build fails because of the missing
+headers.
+
+To fix this, we also install the library headers for the bootstrap
+version of libbpf, to use them for the bootstrap bpftool and for
+generating the skeletons.
+
+Fixes: f012ade10b34 ("bpftool: Install libbpf headers instead of including the dir")
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 70 +++++++++++++++++++
- .../bpf/progs/test_sockmap_progs_query.c      | 24 +++++++
- 2 files changed, 94 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+ tools/bpf/bpftool/Makefile | 32 ++++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1352ec104149..4d94b72f2d8d 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -8,6 +8,7 @@
- #include "test_sockmap_update.skel.h"
- #include "test_sockmap_invalid_update.skel.h"
- #include "test_sockmap_skb_verdict_attach.skel.h"
-+#include "test_sockmap_progs_query.skel.h"
- #include "bpf_iter_sockmap.skel.h"
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index c0c30e56988f..7cfba11c3014 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -22,24 +22,29 @@ else
+   _OUTPUT := $(CURDIR)
+ endif
+ BOOTSTRAP_OUTPUT := $(_OUTPUT)/bootstrap/
++
+ LIBBPF_OUTPUT := $(_OUTPUT)/libbpf/
+ LIBBPF_DESTDIR := $(LIBBPF_OUTPUT)
+ LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)/include
+ LIBBPF_HDRS_DIR := $(LIBBPF_INCLUDE)/bpf
++LIBBPF := $(LIBBPF_OUTPUT)libbpf.a
  
- #define TCP_REPAIR		19	/* TCP sock is under repair right now */
-@@ -315,6 +316,69 @@ static void test_sockmap_skb_verdict_attach(enum bpf_attach_type first,
- 	test_sockmap_skb_verdict_attach__destroy(skel);
- }
+-LIBBPF = $(LIBBPF_OUTPUT)libbpf.a
+-LIBBPF_BOOTSTRAP_OUTPUT = $(BOOTSTRAP_OUTPUT)libbpf/
+-LIBBPF_BOOTSTRAP = $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
++LIBBPF_BOOTSTRAP_OUTPUT := $(BOOTSTRAP_OUTPUT)libbpf/
++LIBBPF_BOOTSTRAP_DESTDIR := $(LIBBPF_BOOTSTRAP_OUTPUT)
++LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)/include
++LIBBPF_BOOTSTRAP_HDRS_DIR := $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
++LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
  
-+static __u32 query_prog_id(int prog_fd)
-+{
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
-+	int err;
+ # We need to copy hashmap.h and nlattr.h which is not otherwise exported by
+ # libbpf, but still required by bpftool.
+ LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h)
++LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h)
+ 
+ ifeq ($(BPFTOOL_VERSION),)
+ BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
+ endif
+ 
+-$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR):
++$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
+ 	$(QUIET_MKDIR)mkdir -p $@
+ 
+ $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
+@@ -52,7 +57,12 @@ $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_
+ 
+ $(LIBBPF_BOOTSTRAP): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_BOOTSTRAP_OUTPUT)
+ 	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
+-		ARCH= CC=$(HOSTCC) LD=$(HOSTLD) $@
++		DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR) prefix= \
++		ARCH= CC=$(HOSTCC) LD=$(HOSTLD) $@ install_headers
 +
-+	err = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
-+	if (!ASSERT_OK(err, "bpf_obj_get_info_by_fd") ||
-+	    !ASSERT_EQ(info_len, sizeof(info), "bpf_obj_get_info_by_fd"))
-+		return 0;
-+
-+	return info.id;
-+}
-+
-+static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
-+{
-+	struct test_sockmap_progs_query *skel;
-+	int err, map_fd, verdict_fd, duration = 0;
-+	__u32 attach_flags = 0;
-+	__u32 prog_ids[3] = {};
-+	__u32 prog_cnt = 3;
-+
-+	skel = test_sockmap_progs_query__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_sockmap_progs_query__open_and_load"))
-+		return;
-+
-+	map_fd = bpf_map__fd(skel->maps.sock_map);
-+
-+	if (attach_type == BPF_SK_MSG_VERDICT)
-+		verdict_fd = bpf_program__fd(skel->progs.prog_skmsg_verdict);
-+	else
-+		verdict_fd = bpf_program__fd(skel->progs.prog_skb_verdict);
-+
-+	err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
-+			     &attach_flags, prog_ids, &prog_cnt);
-+	if (!ASSERT_OK(err, "bpf_prog_query failed"))
-+		goto out;
-+
-+	if (!ASSERT_EQ(attach_flags,  0, "wrong attach_flags on query"))
-+		goto out;
-+
-+	if (!ASSERT_EQ(prog_cnt, 0, "wrong program count on query"))
-+		goto out;
-+
-+	err = bpf_prog_attach(verdict_fd, map_fd, attach_type, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach failed"))
-+		goto out;
-+
-+	prog_cnt = 1;
-+	err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
-+			     &attach_flags, prog_ids, &prog_cnt);
-+
-+	ASSERT_OK(err, "bpf_prog_query failed");
-+	ASSERT_EQ(attach_flags, 0, "wrong attach_flags on query");
-+	ASSERT_EQ(prog_cnt, 1, "wrong program count on query");
-+	ASSERT_EQ(prog_ids[0], query_prog_id(verdict_fd),
-+		  "wrong prog_ids on query");
-+
-+	bpf_prog_detach2(verdict_fd, map_fd, attach_type);
-+out:
-+	test_sockmap_progs_query__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -341,4 +405,10 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_attach(BPF_SK_SKB_STREAM_VERDICT,
- 						BPF_SK_SKB_VERDICT);
- 	}
-+	if (test__start_subtest("sockmap progs query")) {
-+		test_sockmap_progs_query(BPF_SK_MSG_VERDICT);
-+		test_sockmap_progs_query(BPF_SK_SKB_STREAM_PARSER);
-+		test_sockmap_progs_query(BPF_SK_SKB_STREAM_VERDICT);
-+		test_sockmap_progs_query(BPF_SK_SKB_VERDICT);
-+	}
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
-new file mode 100644
-index 000000000000..9d58d61c0dee
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sock_map SEC(".maps");
-+
-+SEC("sk_skb")
-+int prog_skb_verdict(struct __sk_buff *skb)
-+{
-+	return SK_PASS;
-+}
-+
-+SEC("sk_msg")
-+int prog_skmsg_verdict(struct sk_msg_md *msg)
-+{
-+	return SK_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
++$(LIBBPF_BOOTSTRAP_INTERNAL_HDRS): $(LIBBPF_BOOTSTRAP_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_BOOTSTRAP_HDRS_DIR)
++	$(call QUIET_INSTALL, $@)
++	$(Q)install -m 644 -t $(LIBBPF_BOOTSTRAP_HDRS_DIR) $<
+ 
+ $(LIBBPF)-clean: FORCE | $(LIBBPF_OUTPUT)
+ 	$(call QUIET_CLEAN, libbpf)
+@@ -172,11 +182,11 @@ else
+ 	$(Q)cp "$(VMLINUX_H)" $@
+ endif
+ 
+-$(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF)
++$(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+ 	$(QUIET_CLANG)$(CLANG) \
+ 		-I$(if $(OUTPUT),$(OUTPUT),.) \
+ 		-I$(srctree)/tools/include/uapi/ \
+-		-I$(LIBBPF_INCLUDE) \
++		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+ 		-g -O2 -Wall -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
+ 
+ $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
+@@ -209,8 +219,10 @@ $(BPFTOOL_BOOTSTRAP): $(BOOTSTRAP_OBJS) $(LIBBPF_BOOTSTRAP)
+ $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
+ 	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+ 
+-$(BOOTSTRAP_OUTPUT)%.o: %.c $(LIBBPF_INTERNAL_HDRS) | $(BOOTSTRAP_OUTPUT)
+-	$(QUIET_CC)$(HOSTCC) $(CFLAGS) -c -MMD -o $@ $<
++$(BOOTSTRAP_OUTPUT)%.o: %.c $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS) | $(BOOTSTRAP_OUTPUT)
++	$(QUIET_CC)$(HOSTCC) \
++		$(subst -I$(LIBBPF_INCLUDE),-I$(LIBBPF_BOOTSTRAP_INCLUDE),$(CFLAGS)) \
++		-c -MMD -o $@ $<
+ 
+ $(OUTPUT)%.o: %.c
+ 	$(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
+@@ -257,6 +269,6 @@ doc-uninstall:
+ FORCE:
+ 
+ .SECONDARY:
+-.PHONY: all FORCE clean install-bin install uninstall
++.PHONY: all FORCE bootstrap clean install-bin install uninstall
+ .PHONY: doc doc-clean doc-install doc-uninstall
+ .DEFAULT_GOAL := all
 -- 
-2.27.0
+2.32.0
 
