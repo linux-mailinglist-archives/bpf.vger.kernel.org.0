@@ -2,73 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C344465BE
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 16:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3009D446658
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 16:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbhKEPcw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 11:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233535AbhKEPct (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:32:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C2A7C60EFE;
-        Fri,  5 Nov 2021 15:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636126209;
-        bh=GHN2X9hNdhcQsX8SkapeTNsqiMfVCAoIvIpHqYs3i/U=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sdE+tOFJnvQcXfDNI+XrDZkwxCMYxW2GTrdUMo1we9WwDoviRhqiYWUCRy0lpHeEr
-         ZF+8orAqLFv6KEft80HPULqnr5LrgqxHXKlSJgBqGs+aE542HYcqpfiYmIQNn+dHIr
-         heuE2OvwVFSl1VyOvECgoxZAnIyHGA0SW8mWYYqOZfeD0fawsFHOeffJ7ywsJ2J/OR
-         +ihGcRqh5/1YKxv3p0mHMfcRs/3fQ1F/Mas9uT38T/t1Unyt/abYsS0Y4LlQZ3Xzs2
-         AzUsJnMc+Pc/hZDFU0h7rhsXIkBoyIRnEX2n7OCv336w+N4IhrMScjmCii8+O7QW6y
-         bjvR09A/1Df0g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B20FA609E6;
-        Fri,  5 Nov 2021 15:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233592AbhKEPta (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 11:49:30 -0400
+Received: from www62.your-server.de ([213.133.104.62]:55634 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233549AbhKEPt2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:49:28 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mj1QT-0008ua-Ri; Fri, 05 Nov 2021 16:46:45 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mj1QT-000TP1-JG; Fri, 05 Nov 2021 16:46:45 +0100
+Subject: Re: [PATCH bpf 0/4] Fix some issues for selftest
+ test_xdp_redirect_multi.sh
+To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiri Benc <jbenc@redhat.com>
+References: <20211027033553.962413-1-liuhangbin@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a3257169-b252-9446-1893-08ef9d1f9bcf@iogearbox.net>
+Date:   Fri, 5 Nov 2021 16:46:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpftool: Install libbpf headers for the bootstrap
- version, too
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163612620972.29979.8998296341719188720.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Nov 2021 15:30:09 +0000
-References: <20211105015813.6171-1-quentin@isovalent.com>
-In-Reply-To: <20211105015813.6171-1-quentin@isovalent.com>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        acme@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, jolsa@kernel.org, namhyung@kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <20211027033553.962413-1-liuhangbin@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26344/Fri Nov  5 09:18:44 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Fri,  5 Nov 2021 01:58:13 +0000 you wrote:
-> We recently changed bpftool's Makefile to make it install libbpf's
-> headers locally instead of pulling them from the source directory of the
-> library. Although bpftool needs two versions of libbpf, a "regular" one
-> and a "bootstrap" version, we would only install headers for the regular
-> libbpf build. Given that this build always occurs before the bootstrap
-> build when building bpftool, this is enough to ensure that the bootstrap
-> bpftool will have access to the headers exported through the regular
-> libbpf build.
+On 10/27/21 5:35 AM, Hangbin Liu wrote:
+> Jiri reported some issues in test_xdp_redirect_multi.sh. Like
+> the test logs not cleaned after testing. The tcpdump not terminated cleanly.
+> arp number count may have false positive. And the most important, after
+> creating/deleting a lot interfaces, the interface index may exceed the
+> DEVMAP max entry and cause program xdp_redirect_multi exec failed.
 > 
-> [...]
+> This patch set fix all these issues.
+> 
+> Hangbin Liu (4):
+>    selftests/bpf/xdp_redirect_multi: put the logs to tmp folder
+>    selftests/bpf/xdp_redirect_multi: use arping to accurate the arp
+>      number
+>    selftests/bpf/xdp_redirect_multi: give tcpdump a chance to terminate
+>      cleanly
+>    selftests/bpf/xdp_redirect_multi: limit the tests in netns
+> 
+>   .../selftests/bpf/test_xdp_redirect_multi.sh  | 62 +++++++++++--------
+>   .../selftests/bpf/xdp_redirect_multi.c        |  4 +-
+>   2 files changed, 37 insertions(+), 29 deletions(-)
 
-Here is the summary with links:
-  - [bpf] bpftool: Install libbpf headers for the bootstrap version, too
-    https://git.kernel.org/bpf/bpf/c/e41ac2020bca
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Applied, thanks, been fixing up a small merge conflict in the last one due to
+8fffa0e3451ab ("selftests/bpf: Normalize XDP section names in selftests"), pls
+double check.
