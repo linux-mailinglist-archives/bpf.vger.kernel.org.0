@@ -2,174 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4DA446251
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 11:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90FE446267
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 11:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhKEKod (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 06:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhKEKod (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:44:33 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC91C061714
-        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 03:41:53 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id x27so17822971lfu.5
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 03:41:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xmnVTe46GHU0w7SZuBsP49gfSkv1JiBHvxo+85QBejA=;
-        b=D1oFNgNWtAXahC9Ropy9GnV4qyoD19V0ZnFqtIhLWMErMeCbf9glfvlTdLap/jwYPK
-         FiWGEeGAj4McGXuTdr8eX2qajJIomom1nltbBlDvI1C9reytaxZO2aZVasEUxai5U3/U
-         9yfIOR141Y5HPPX0SqZgNuNclfsdYDQ0KQyH4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xmnVTe46GHU0w7SZuBsP49gfSkv1JiBHvxo+85QBejA=;
-        b=IIzM26NXAbqXdkrQ9w0Ps/vOYZjcRVnojx2s4M4mx3aSnVAcp0OBddHkZtL5ljCg3R
-         +BOg8fOPT0c0+jqBGMHNwppyqAluSUBy2QZvpvpUHA4ZZ4xXrBm2Hddc/fM32vVgN+gl
-         eDZN2InVYLuVv5GtmDzpdl8iZ8SaOMTBIdIIB4q15rsByVtZjYs60PgW+ONFN7JSW9Y/
-         Qt78WJ85ghFgw8OWoxCAfP8hcOULDQD/6RHDAV0FXbHO+pzftnuKuUIHsbpVE+sIYCce
-         EK5kTidTAPI3xuXFJ7T1Mwy5XuJQSEYOom5zVcEFn5q1BB36g8Nhjl/xmGj2rWdoqHx7
-         oe5A==
-X-Gm-Message-State: AOAM530Jk8YhFKX/dRjD4g5HAmnXoLD3wWQ/jTVz6DoEyaJ/cfubu878
-        OIrEzKlx7L6ojlZKlstVTMYpov3Vru2len5VD4s/+g==
-X-Google-Smtp-Source: ABdhPJzCY/2nbNfnPQC6rAx7r/EojV40PjJF5NGf5GyKBDjLa2EMLPX0wO1XYpHpHfWsvaDkMAGcu88uRyBP7zrgFQ4=
-X-Received: by 2002:a05:6512:39d6:: with SMTP id k22mr22986038lfu.39.1636108911882;
- Fri, 05 Nov 2021 03:41:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com>
- <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
-In-Reply-To: <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 5 Nov 2021 10:41:40 +0000
-Message-ID: <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com>
-Subject: Re: Verifier rejects previously accepted program
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S231833AbhKEK6D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 06:58:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231818AbhKEK6D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 06:58:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 631006112D;
+        Fri,  5 Nov 2021 10:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636109723;
+        bh=aq1MUVKkLEHWOaFoQZe0Z4p8O2u7B2hr14jr+EYsSXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f0dNXoJm630YIjZ+9SbxrB5wfRtRy8nCdzwALJlTS4PdfrQeU7NSs+AX5n88tUbgW
+         spSq2X275b24coeVu2HKeaMpJZLmFDanhKNk/yMt+V8FZxmUqVdNeooHJ8GVnSLLgv
+         o/BIrFQvdGyw+Dk/tO/16rZ8xsNvFboNR5N7fMS/X1qxfiQ0EeG3Q+UiTsdK8+SWTe
+         IwRvW+B6A+PXaFZfHmxyLb3bNw/2OLIoqXD9a3Br0N02OYEW+ye9kgzBpF8Be/Dd0H
+         KkvMfCq4ehKg91ighNyEI8alNKJ6o6jByzIHHIHUj1x0YzSI7dQButeQa7unKVwUfu
+         L3L+67p+rl0Wg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BF384410A1; Fri,  5 Nov 2021 07:55:20 -0300 (-03)
+Date:   Fri, 5 Nov 2021 07:55:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Quentin Monnet <quentin@isovalent.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>, regressions@lists.linux.dev,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpftool: Install libbpf headers for the bootstrap
+ version, too
+Message-ID: <YYUNmAexMZ1RQhWk@kernel.org>
+References: <20211105015813.6171-1-quentin@isovalent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105015813.6171-1-quentin@isovalent.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 4 Nov 2021 at 16:51, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> Thanks for flagging!
-> Could you craft a test case that we can use a repro and future
-> test case?
+Em Fri, Nov 05, 2021 at 01:58:13AM +0000, Quentin Monnet escreveu:
+> We recently changed bpftool's Makefile to make it install libbpf's
+> headers locally instead of pulling them from the source directory of the
+> library. Although bpftool needs two versions of libbpf, a "regular" one
+> and a "bootstrap" version, we would only install headers for the regular
+> libbpf build. Given that this build always occurs before the bootstrap
+> build when building bpftool, this is enough to ensure that the bootstrap
+> bpftool will have access to the headers exported through the regular
+> libbpf build.
+> 
+> However, this did not account for the case when we only want the
+> bootstrap version of bpftool, through the "bootstrap" target. For
+> example, perf needs the bootstrap version only, to generate BPF
+> skeletons. In that case, when are the headers installed? For some time,
+> the issue has been masked, because we had a step (the installation of
+> headers internal to libbpf) which would depend on the regular build of
+> libbpf and hence trigger the export of the headers, just for the sake of
+> creating a directory. But this changed with commit 8b6c46241c77
+> ("bpftool: Remove Makefile dep. on $(LIBBPF) for
+> $(LIBBPF_INTERNAL_HDRS)"), where we cleaned up that stage and removed
+> the dependency on the regular libbpf build. As a result, when we only
+> want the bootstrap bpftool version, the regular libbpf is no longer
+> built. The bootstrap libbpf version is built, but headers are not
+> exported, and the bootstrap bpftool build fails because of the missing
+> headers.
+> 
+> To fix this, we also install the library headers for the bootstrap
+> version of libbpf, to use them for the bootstrap bpftool and for
+> generating the skeletons.
 
-Yes, I'll give it a shot.
+Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-> > fp-88=map_value fp-96=mmmmmmmm fp-104=map_value fp-112=inv fp-120=fp
-> ...
-> > I've bisected the problem to commit 3e8ce29850f1 ("bpf: Prevent
-> > pointer mismatch in bpf_timer_init.") The commit seems unrelated to
-> > loop processing though (it does touch the verifier however). Either I
-> > got the bisection wrong or there is something subtle going on.
->
-> I stared at that commit and the example asm.
-> I suspect the bisect went wrong.
+Testing now.
 
-I tried the parent of the offending commit, and it worked fine. Weird.
-Could the problem be that there are multiple regressions? See below,
-we also get hit with the corrupted stack spill.
-
-> Could you try reverting a single
-> commit 354e8f1970f8 ("bpf: Support <8-byte scalar spill and refill")
-> ?
-> The above fp-112=inv means that the verifier is tracking scalar spill.
-> That could be the reason for bounded loop logic seeing different
-> stack state on every iteration.
-> But the asm snippet doesn't have the store to stack at [fp-112]
-> location, so it could be a red herring.
->
-> Are you using the same llvm during bisect?
-
-I'm compiling the test case once and then invoke it via git bisect
-run, so the BPF should be identical. clang-11.
-
-> The commit 354e8f1970f8 should be harmless
-> (when commit f30d4968e9ae ("bpf: Do not reject when the stack read
-> size is different from the tracked scalar size"))
-> is also applied. That fix is in bpf tree only, so far.
-
-I did some more tests. TL;DR: commit 3e8ce29850f1 ("bpf: Prevent
-pointer mismatch in bpf_timer_init.") is the first one that fails with
-"BPF program too large", it's ancestor loads OK. commit 354e8f1970f8
-("bpf: Support <8-byte scalar spill and refill") makes verification
-fail earlier with "corrupted spill memory". The following solves both
-issues:
-
-    git checkout 354e8f1970f8 # "bpf: Support <8-byte scalar spill and refill"
-    git cherry-pick f30d4968e9ae # "bpf: Do not reject when the stack
-read size is different from the tracked scalar size"
-
-I think you're on the money wrt scalar spill tracking. Maybe I
-misattributed the problem to the wrong bit of code, instead of having
-found the wrong commit?
-
-Details:
-
-bpf-next: commit be2f2d1680df ("libbpf: Deprecate bpf_program__load() API"):
-
-    ; v = *pos++;
-    1099: (79) r1 = *(u64 *)(r10 -72)
-    corrupted spill memory
-    processed 48649 insns (limit 1000000) max_states_per_insn 4
-total_states 1305 peak_states 290 mark_read 53
-
-bpf-next with f30d4968e9ae on top:
-
-    works!
-
-bpf-next with commit 354e8f1970f8 ("bpf: Support <8-byte scalar spill
-and refill") reverted:
-
-    2225: (05) goto pc+13
-    BPF program is too large. Processed 1000001 insn
-    processed 1000001 insns (limit 1000000) max_states_per_insn 28
-total_states 40641 peak_states 1104 mark_read 53
-
-commit 3e8ce29850f1 ("bpf: Prevent pointer mismatch in
-bpf_timer_init.") (found via bisection):
-
-    BPF program is too large. Processed 1000001 insn
-
-commit 3e8ce29850f1^ ("bpf: Add map side support for bpf timers."):
-
-   works!
-
-commit 3e8ce29850f1 with commit 354e8f1970f8 ("bpf: Support <8-byte
-scalar spill and refill") reverted:
-
-   doesn't revert cleanly
-
-commit 354e8f1970f8 ("bpf: Support <8-byte scalar spill and refill"):
-
-    corrupted spill memory
-
-commit 354e8f1970f8^ ("bpf: Check the other end of slot_type for STACK_SPILL"):
-
-    2225: (05) goto pc+13
-    BPF program is too large. Processed 1000001 insn
-    processed 1000001 insns (limit 1000000) max_states_per_insn 28
-total_states 40641 peak_states 1104 mark_read 53
-
-commit 354e8f1970f8~2 ("selftests/bpf: Fix btf_dump __int128 test
-failure with clang build kernel"):
-
-    same as above
+- Arnaldo
+ 
+> Fixes: f012ade10b34 ("bpftool: Install libbpf headers instead of including the dir")
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/bpf/bpftool/Makefile | 32 ++++++++++++++++++++++----------
+>  1 file changed, 22 insertions(+), 10 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index c0c30e56988f..7cfba11c3014 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -22,24 +22,29 @@ else
+>    _OUTPUT := $(CURDIR)
+>  endif
+>  BOOTSTRAP_OUTPUT := $(_OUTPUT)/bootstrap/
+> +
+>  LIBBPF_OUTPUT := $(_OUTPUT)/libbpf/
+>  LIBBPF_DESTDIR := $(LIBBPF_OUTPUT)
+>  LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)/include
+>  LIBBPF_HDRS_DIR := $(LIBBPF_INCLUDE)/bpf
+> +LIBBPF := $(LIBBPF_OUTPUT)libbpf.a
+>  
+> -LIBBPF = $(LIBBPF_OUTPUT)libbpf.a
+> -LIBBPF_BOOTSTRAP_OUTPUT = $(BOOTSTRAP_OUTPUT)libbpf/
+> -LIBBPF_BOOTSTRAP = $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
+> +LIBBPF_BOOTSTRAP_OUTPUT := $(BOOTSTRAP_OUTPUT)libbpf/
+> +LIBBPF_BOOTSTRAP_DESTDIR := $(LIBBPF_BOOTSTRAP_OUTPUT)
+> +LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)/include
+> +LIBBPF_BOOTSTRAP_HDRS_DIR := $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
+> +LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
+>  
+>  # We need to copy hashmap.h and nlattr.h which is not otherwise exported by
+>  # libbpf, but still required by bpftool.
+>  LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h)
+> +LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h)
+>  
+>  ifeq ($(BPFTOOL_VERSION),)
+>  BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
+>  endif
+>  
+> -$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR):
+> +$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
+>  	$(QUIET_MKDIR)mkdir -p $@
+>  
+>  $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
+> @@ -52,7 +57,12 @@ $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_
+>  
+>  $(LIBBPF_BOOTSTRAP): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_BOOTSTRAP_OUTPUT)
+>  	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
+> -		ARCH= CC=$(HOSTCC) LD=$(HOSTLD) $@
+> +		DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR) prefix= \
+> +		ARCH= CC=$(HOSTCC) LD=$(HOSTLD) $@ install_headers
+> +
+> +$(LIBBPF_BOOTSTRAP_INTERNAL_HDRS): $(LIBBPF_BOOTSTRAP_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_BOOTSTRAP_HDRS_DIR)
+> +	$(call QUIET_INSTALL, $@)
+> +	$(Q)install -m 644 -t $(LIBBPF_BOOTSTRAP_HDRS_DIR) $<
+>  
+>  $(LIBBPF)-clean: FORCE | $(LIBBPF_OUTPUT)
+>  	$(call QUIET_CLEAN, libbpf)
+> @@ -172,11 +182,11 @@ else
+>  	$(Q)cp "$(VMLINUX_H)" $@
+>  endif
+>  
+> -$(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF)
+> +$(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+>  	$(QUIET_CLANG)$(CLANG) \
+>  		-I$(if $(OUTPUT),$(OUTPUT),.) \
+>  		-I$(srctree)/tools/include/uapi/ \
+> -		-I$(LIBBPF_INCLUDE) \
+> +		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+>  		-g -O2 -Wall -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
+>  
+>  $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
+> @@ -209,8 +219,10 @@ $(BPFTOOL_BOOTSTRAP): $(BOOTSTRAP_OBJS) $(LIBBPF_BOOTSTRAP)
+>  $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
+>  	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+>  
+> -$(BOOTSTRAP_OUTPUT)%.o: %.c $(LIBBPF_INTERNAL_HDRS) | $(BOOTSTRAP_OUTPUT)
+> -	$(QUIET_CC)$(HOSTCC) $(CFLAGS) -c -MMD -o $@ $<
+> +$(BOOTSTRAP_OUTPUT)%.o: %.c $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS) | $(BOOTSTRAP_OUTPUT)
+> +	$(QUIET_CC)$(HOSTCC) \
+> +		$(subst -I$(LIBBPF_INCLUDE),-I$(LIBBPF_BOOTSTRAP_INCLUDE),$(CFLAGS)) \
+> +		-c -MMD -o $@ $<
+>  
+>  $(OUTPUT)%.o: %.c
+>  	$(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
+> @@ -257,6 +269,6 @@ doc-uninstall:
+>  FORCE:
+>  
+>  .SECONDARY:
+> -.PHONY: all FORCE clean install-bin install uninstall
+> +.PHONY: all FORCE bootstrap clean install-bin install uninstall
+>  .PHONY: doc doc-clean doc-install doc-uninstall
+>  .DEFAULT_GOAL := all
+> -- 
+> 2.32.0
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-www.cloudflare.com
+- Arnaldo
