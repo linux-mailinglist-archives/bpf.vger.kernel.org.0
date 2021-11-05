@@ -2,194 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE52F4468B7
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 19:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C4E4468C6
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 20:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhKETAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 15:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbhKETAu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 15:00:50 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0630C061714;
-        Fri,  5 Nov 2021 11:58:10 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id c26-20020a9d615a000000b0055bf6efab46so6199382otk.6;
-        Fri, 05 Nov 2021 11:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=eD5ugfB+vSrRzEKkXUuZRmMMIxi+ka7PwX8hq4MYkdA=;
-        b=mP3kTZy8rqA1u7CsFuynDZSDSspNAoIOVDkp3RGsZm3jBRV8IN7iwKuH69Kpu71hUO
-         LJfi7cP5BNzpy8num4g3gLdiT1z9htH1veV4ObwwB8x4x52EllrZlBY3zufpu8iNiBho
-         3sk41LVYWFqULqipJMGDPN22+/4CRj3MFNG+cvgqFStwD6S2px/JY56jWkO6DLcsv5en
-         y9AqiGtKJQomT75naH5vwNMUujRdKxVjn0xSwPOhDO+7OHXn1XnEtZ9EGsGd6fWWTQ8a
-         v7AU6HV0Q85x3jZQDjRKsWZy4sV6xCNrIuAe8jKIu5J/zQyoTKk0CWWQgwLj5EGAkz5A
-         6M8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=eD5ugfB+vSrRzEKkXUuZRmMMIxi+ka7PwX8hq4MYkdA=;
-        b=1648D/jXBwXcYqjaeJH7Mc5mY50NHbF455ystBwfFDlDBUH5AK8gPiJovOdkA0X2WG
-         GDdfnKSExxoVLcpYd9svS+ueTpcVrNhicFLKqSg+/vPzzstHxLfgVyR37fAMrrNWKPnP
-         8OSBm7z+csvPQk//6ubMC9v8HNXeFQL/yGzRCmkvoCZITHpY79r6VEKTqyUI+XfSRol8
-         3oLBvOXToQndQ7hoGKG+iS+96FOqvLyQ1Bw0B11VtbJWTaSowPDYpz4vjXGPNgCtxfVN
-         qsEAmaSJ8W26Y4QclqTBLqVEdDsgcug7liKM114AiGmt4tytYYXrQaDERY43kMN2k/0R
-         mE9g==
-X-Gm-Message-State: AOAM533o93Bpa+UsHwv25tij4ivYhKnn41qf9TmDPlTlZjPRLPRaS4ik
-        0b1LLfMPzeenkXA45rUf7pw=
-X-Google-Smtp-Source: ABdhPJy+4wpAK+OzwJ0n4pPT41Fa7ZZzNkSw1qUTYnwOoV2BngPD0tthASKEuZr7Dpx8lU1blDlldQ==
-X-Received: by 2002:a9d:764c:: with SMTP id o12mr46696924otl.129.1636138690129;
-        Fri, 05 Nov 2021 11:58:10 -0700 (PDT)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id w12sm2622224oop.19.2021.11.05.11.58.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 11:58:09 -0700 (PDT)
-Date:   Fri, 05 Nov 2021 15:57:29 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_bpf-next=5D_perf_build=3A_Insta?= =?US-ASCII?Q?ll_libbpf_headers_locally_when_building?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
-References: <20211105020244.6869-1-quentin@isovalent.com> <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
-Message-ID: <C113D239-3117-4046-AA91-DD3AAA5741B1@gmail.com>
+        id S233197AbhKETNk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 5 Nov 2021 15:13:40 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32500 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233159AbhKETNj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 5 Nov 2021 15:13:39 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A5I74Nc030300
+        for <bpf@vger.kernel.org>; Fri, 5 Nov 2021 12:10:59 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c59kwrec8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 12:10:59 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Fri, 5 Nov 2021 12:10:58 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 424337FF890A; Fri,  5 Nov 2021 12:10:57 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] libbpf: fix non-C89 loop variable declaration in gen_loader.c
+Date:   Fri, 5 Nov 2021 12:10:55 -0700
+Message-ID: <20211105191055.3324874-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: 1A9UGm7x-cJ_DsC50WFkk8cpQHapqSEq
+X-Proofpoint-ORIG-GUID: 1A9UGm7x-cJ_DsC50WFkk8cpQHapqSEq
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-05_02,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 adultscore=0 suspectscore=0
+ mlxlogscore=918 impostorscore=0 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111050104
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Fix the `int i` declaration inside the for statement. This is non-C89
+compliant. See [0] for user report breaking BCC build.
 
+  [0] https://github.com/libbpf/libbpf/issues/403
 
-On November 5, 2021 3:38:50 PM GMT-03:00, Andrii Nakryiko <andrii=2Enakryi=
-ko@gmail=2Ecom> wrote:
->On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent=2Ecom> w=
-rote:
->>
->> API headers from libbpf should not be accessed directly from the
->> library's source directory=2E Instead, they should be exported with "ma=
-ke
->> install_headers"=2E Let's adjust perf's Makefile to install those heade=
-rs
->> locally when building libbpf=2E
->>
->> Signed-off-by: Quentin Monnet <quentin@isovalent=2Ecom>
->> ---
->> Note: Sending to bpf-next because it's directly related to libbpf, and
->> to similar patches merged through bpf-next, but maybe Arnaldo prefers t=
-o
->> take it?
->
->Arnaldo would know better how to thoroughly test it, so I'd prefer to
->route this through perf tree=2E Any objections, Arnaldo?
+Fixes: 18f4fccbf314 ("libbpf: Update gen_loader to emit BTF_KIND_FUNC relocations")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/gen_loader.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
+index 502dea53a742..2e10776b6d85 100644
+--- a/tools/lib/bpf/gen_loader.c
++++ b/tools/lib/bpf/gen_loader.c
+@@ -584,8 +584,9 @@ void bpf_gen__record_extern(struct bpf_gen *gen, const char *name, bool is_weak,
+ static struct ksym_desc *get_ksym_desc(struct bpf_gen *gen, struct ksym_relo_desc *relo)
+ {
+ 	struct ksym_desc *kdesc;
++	int i;
+ 
+-	for (int i = 0; i < gen->nr_ksyms; i++) {
++	for (i = 0; i < gen->nr_ksyms; i++) {
+ 		if (!strcmp(gen->ksyms[i].name, relo->name)) {
+ 			gen->ksyms[i].ref++;
+ 			return &gen->ksyms[i];
+-- 
+2.30.2
 
-Sure, I'll review and test it=2E
-
-- Arnaldo
->
->> ---
->>  tools/perf/Makefile=2Eperf | 24 +++++++++++++-----------
->>  1 file changed, 13 insertions(+), 11 deletions(-)
->>
->> diff --git a/tools/perf/Makefile=2Eperf b/tools/perf/Makefile=2Eperf
->> index b856afa6eb52=2E=2E3a81b6c712a9 100644
->> --- a/tools/perf/Makefile=2Eperf
->> +++ b/tools/perf/Makefile=2Eperf
->> @@ -241,7 +241,7 @@ else # force_fixdep
->>
->>  LIB_DIR         =3D $(srctree)/tools/lib/api/
->>  TRACE_EVENT_DIR =3D $(srctree)/tools/lib/traceevent/
->> -BPF_DIR         =3D $(srctree)/tools/lib/bpf/
->> +LIBBPF_DIR      =3D $(srctree)/tools/lib/bpf/
->>  SUBCMD_DIR      =3D $(srctree)/tools/lib/subcmd/
->>  LIBPERF_DIR     =3D $(srctree)/tools/lib/perf/
->>  DOC_DIR         =3D $(srctree)/tools/perf/Documentation/
->> @@ -293,7 +293,6 @@ strip-libs =3D $(filter-out -l%,$(1))
->>  ifneq ($(OUTPUT),)
->>    TE_PATH=3D$(OUTPUT)
->>    PLUGINS_PATH=3D$(OUTPUT)
->> -  BPF_PATH=3D$(OUTPUT)
->>    SUBCMD_PATH=3D$(OUTPUT)
->>    LIBPERF_PATH=3D$(OUTPUT)
->>  ifneq ($(subdir),)
->> @@ -305,7 +304,6 @@ else
->>    TE_PATH=3D$(TRACE_EVENT_DIR)
->>    PLUGINS_PATH=3D$(TRACE_EVENT_DIR)plugins/
->>    API_PATH=3D$(LIB_DIR)
->> -  BPF_PATH=3D$(BPF_DIR)
->>    SUBCMD_PATH=3D$(SUBCMD_DIR)
->>    LIBPERF_PATH=3D$(LIBPERF_DIR)
->>  endif
->> @@ -324,7 +322,10 @@ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS =3D $(if $(find=
-string -static,$(LDFLAGS)),,$(DY
->>  LIBAPI =3D $(API_PATH)libapi=2Ea
->>  export LIBAPI
->>
->> -LIBBPF =3D $(BPF_PATH)libbpf=2Ea
->> +LIBBPF_OUTPUT =3D $(OUTPUT)libbpf
->> +LIBBPF_DESTDIR =3D $(LIBBPF_OUTPUT)
->> +LIBBPF_INCLUDE =3D $(LIBBPF_DESTDIR)/include
->> +LIBBPF =3D $(LIBBPF_OUTPUT)/libbpf=2Ea
->>
->>  LIBSUBCMD =3D $(SUBCMD_PATH)libsubcmd=2Ea
->>
->> @@ -829,12 +830,14 @@ $(LIBAPI)-clean:
->>         $(call QUIET_CLEAN, libapi)
->>         $(Q)$(MAKE) -C $(LIB_DIR) O=3D$(OUTPUT) clean >/dev/null
->>
->> -$(LIBBPF): FORCE
->> -       $(Q)$(MAKE) -C $(BPF_DIR) O=3D$(OUTPUT) $(OUTPUT)libbpf=2Ea FEA=
-TURES_DUMP=3D$(FEATURE_DUMP_EXPORT)
->> +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
->> +       $(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=3D$(FEATURE_DUMP_EXP=
-ORT) \
->> +               O=3D OUTPUT=3D$(LIBBPF_OUTPUT)/ DESTDIR=3D$(LIBBPF_DEST=
-DIR) prefix=3D \
->> +               $@ install_headers
->>
->>  $(LIBBPF)-clean:
->>         $(call QUIET_CLEAN, libbpf)
->> -       $(Q)$(MAKE) -C $(BPF_DIR) O=3D$(OUTPUT) clean >/dev/null
->> +       $(Q)$(RM) -r -- $(LIBBPF_OUTPUT)
->>
->>  $(LIBPERF): FORCE
->>         $(Q)$(MAKE) -C $(LIBPERF_DIR) EXTRA_CFLAGS=3D"$(LIBPERF_CFLAGS)=
-" O=3D$(OUTPUT) $(OUTPUT)libperf=2Ea
->> @@ -1036,14 +1039,13 @@ SKELETONS +=3D $(SKEL_OUT)/bperf_cgroup=2Eskel=
-=2Eh
->>
->>  ifdef BUILD_BPF_SKEL
->>  BPFTOOL :=3D $(SKEL_TMP_OUT)/bootstrap/bpftool
->> -LIBBPF_SRC :=3D $(abspath =2E=2E/lib/bpf)
->> -BPF_INCLUDE :=3D -I$(SKEL_TMP_OUT)/=2E=2E -I$(BPF_PATH) -I$(LIBBPF_SRC=
-)/=2E=2E
->> +BPF_INCLUDE :=3D -I$(SKEL_TMP_OUT)/=2E=2E -I$(LIBBPF_INCLUDE)
->>
->> -$(SKEL_TMP_OUT):
->> +$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
->>         $(Q)$(MKDIR) -p $@
->>
->>  $(BPFTOOL): | $(SKEL_TMP_OUT)
->> -       CFLAGS=3D $(MAKE) -C =2E=2E/bpf/bpftool \
->> +       $(Q)CFLAGS=3D $(MAKE) -C =2E=2E/bpf/bpftool \
->>                 OUTPUT=3D$(SKEL_TMP_OUT)/ bootstrap
->>
->>  VMLINUX_BTF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                        =
-   \
->> --
->> 2=2E32=2E0
->>
