@@ -2,165 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D840C44688D
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 19:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2C4446894
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 19:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhKESlm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 14:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        id S232490AbhKESoV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 14:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbhKESlm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:41:42 -0400
+        with ESMTP id S231904AbhKESoU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 14:44:20 -0400
 Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEB4C061714;
-        Fri,  5 Nov 2021 11:39:02 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id v138so25016406ybb.8;
-        Fri, 05 Nov 2021 11:39:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D354EC061714
+        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 11:41:40 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id e136so21771769ybc.4
+        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 11:41:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=muRMsH1mcsMSZOhj1DDwe0i6rrLFXbtuuonC6NLt3f4=;
-        b=CHRyE3fzkXzyxCy0B+viABzD8ZmeNUfQeI6zDk+6WZov2vT5zEuPJfrJPNZLbuLzXq
-         sogw/sp4zGOr/cagRsY9ViMwu9SeHSVpVnc7GUKjehuApSxysoEv1kjbi2KzBpCEpxrP
-         mYFJ+LnEko0XsgPqaZ/1/ASRhM7s9L1EHm+uLtcHAB8rCKvX+tuLaazmyDI2gcvrunc4
-         YuYXf2+6UlTY+MrCOSQnmPigCNsTNHjP3XR1ixKgrFXEJTic2VvTkZxCITGTIQ+/6CEJ
-         DVZ7RDpJ4XBgbUIreICwzV1lAiWwalwfukgPW0mYx6Ut89Ex67kdhGVsQf3fI0k1RpJw
-         YLnw==
+         :cc:content-transfer-encoding;
+        bh=8lafwY9HLFroXJZTyoZZ+4j86I42togXPYiisKD3oWU=;
+        b=NmtlWTEj6lksa1QzxAyKUcl8vc04w793+x8oIrHsxs22aFN7Nv8SXWRuCJUmedH9cD
+         8k28o8iOVXXle7fW2lisY0UTobTXy6GjCWWgsFL0q8awRBxtjIS0iutWtGF5gvb7Jehx
+         Q4CA5b+3g2mUTPWsuFmc0+9oXui9OfnBjGl7zh2deW0ZLTwDwkG+ixkq9m+dxX+AQ0Ph
+         F7EieLFVIzeV5p0OXJk/f/M/g/JEEAFV1ryoeMowgTN/+yAS/JWdX+zTmoNHbNxTxB5A
+         7MHjsg1hOLrP18skEVVvdUJJJqpoKP8WQKPKGhlAk+x2qM26Y/XVplzGC42uuvhLyzm/
+         V4ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=muRMsH1mcsMSZOhj1DDwe0i6rrLFXbtuuonC6NLt3f4=;
-        b=jKgGb5lR1/O/c6BZKG1SC2rb+/nmQKZKwpLkc6anQtzRy6Xu4ITR3Eg/w4Hc2ykzfQ
-         fyOwkLJVUBPKrQXmZ5QjZBAiicoIGdnJ26/JB5oOWuinmA5ZIRKM3D1q1Z6HsYzYEGC+
-         UL3rkvcGDthF5oRaKiaRccX0/+tk1ccojG5k7kPAey+bFCoheuopruBPVWgw0a52luLt
-         rlrQ6m5ZmHsUNeXa/vMmAwY8SXDMieKsyVPGVrf5wemZRgVL5qPkuZ7Db5O2hxfWH7b7
-         hBtK+Axq60FhW4vfD7s4J/guF+Ycdhwe9iWx9kgRPNOQbrPoztDsAWot7IXA0Q+b3hh2
-         Xlog==
-X-Gm-Message-State: AOAM532kT/hPgocqfrRlwlrpJ9N2rEYBDLAMW6sIYLd43g3vBngjXDdR
-        vGTrNMN6puvWUqPq6LG4FyV25VrDWdcOc0vt/YcIDbZv
-X-Google-Smtp-Source: ABdhPJySCs+hNkr88RuBfZRy1pXFERF52pnRtTde7PL7HIvBDL8qL0MckVhMoMC/D/cLfcZ4PTJT5tSpdhvXHXYV/RY=
-X-Received: by 2002:a25:d010:: with SMTP id h16mr59087873ybg.225.1636137541773;
- Fri, 05 Nov 2021 11:39:01 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8lafwY9HLFroXJZTyoZZ+4j86I42togXPYiisKD3oWU=;
+        b=343TWyNu+1f8X2/H4qpAVtK17BqCXP+5QD70WOI1SCUnMELV0jU2kvJo5WA0dCU4H1
+         /U8ppmki4xXeQCLsBsJdvMAelANXWucFKzBJk2Ek7JQ3qVhLyF9wEo9pbIEm4ZQuSF5Y
+         SNYzhilTrhagu5OiXQinJeBT0js1hviwlQEQDQeWOYguldEVUNEXkEVSyBlCCANvF4if
+         3uAZQPfUvlz3eVWhcpnQ1ST1kBbj++njYk0OEBpb07AXs5hBvDrUs5mjPIlDqYmP6sfm
+         bJiWGqr5cOvatXmH4QH4w8zpsta4mJ+bUiMr9IBBQsT4nv6p086vIxFd78eZ2UtbdhYX
+         zJlw==
+X-Gm-Message-State: AOAM532RFoPZj9Ydrhu94xGEKo+KOCPV7G65Cy2MqnTCRHHFdgx5eiOW
+        uT2mHfoDuHNAD/b6nSLSrQGIIvwAkIuBE71wL6c=
+X-Google-Smtp-Source: ABdhPJyI9992aWI1Fr2W/ZPoOu36+4lN9RQani6hyiOboZRbTEnbZawUztt1PxX4DDEN9D/iSu968Kb7r/G2bFV8Io4=
+X-Received: by 2002:a25:d010:: with SMTP id h16mr59106958ybg.225.1636137700136;
+ Fri, 05 Nov 2021 11:41:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211105020244.6869-1-quentin@isovalent.com>
-In-Reply-To: <20211105020244.6869-1-quentin@isovalent.com>
+References: <20211104122911.779034-1-toke@redhat.com> <CAEf4BzYGjV5DQB7tqRkSKz6pz-3QtU7uSWQVNJMW4eSjnpF98A@mail.gmail.com>
+ <87a6iismca.fsf@toke.dk>
+In-Reply-To: <87a6iismca.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 5 Nov 2021 11:38:50 -0700
-Message-ID: <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] perf build: Install libbpf headers locally when building
-To:     Quentin Monnet <quentin@isovalent.com>
+Date:   Fri, 5 Nov 2021 11:41:28 -0700
+Message-ID: <CAEf4BzY9WxjBX65sa=8SJh4XGLGfHgxGKciRGiSUMJAxbQWWYg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: demote log message about unrecognised
+ data sections back down to debug
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Ciara Loftus <ciara.loftus@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent.com> wrote:
+On Fri, Nov 5, 2021 at 7:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> API headers from libbpf should not be accessed directly from the
-> library's source directory. Instead, they should be exported with "make
-> install_headers". Let's adjust perf's Makefile to install those headers
-> locally when building libbpf.
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
-> Note: Sending to bpf-next because it's directly related to libbpf, and
-> to similar patches merged through bpf-next, but maybe Arnaldo prefers to
-> take it?
+> > On Thu, Nov 4, 2021 at 5:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+> >>
+> >> When loading a BPF object, libbpf will output a log message when it
+> >> encounters an unrecognised data section. Since commit
+> >> 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating ELF=
+")
+> >> they are printed at "info" level so they will show up on the console b=
+y
+> >> default.
+> >>
+> >> The rationale in the commit cited above is to "increase visibility" of=
+ such
+> >> errors, but there can be legitimate, and completely harmless, uses of =
+extra
+> >> data sections. In particular, libxdp uses custom data sections to stor=
+e
+> >
+> > What if we make those extra sections to be ".rodata.something" and
+> > ".data.something", but without ALLOC flag in ELF, so that libbpf won't
+> > create maps for them. Libbpf also will check that program code never
+> > references anything from those sections.
+> >
+> > The worry I have about allowing arbitrary sections is that if in the
+> > future we want to add other special sections, then we might run into a
+> > conflict with some applications. So having some enforced naming
+> > convention would help prevent this. WDYT?
+>
+> Hmm, I see your point, but as the libxdp example shows, this has not
+> really been "disallowed" before. I.e., having these arbitrary sections
+> has worked just fine.
 
-Arnaldo would know better how to thoroughly test it, so I'd prefer to
-route this through perf tree. Any objections, Arnaldo?
+A bunch of things were not disallowed, but that is changing for libbpf
+1.0, so now is the right time :)
 
-> ---
->  tools/perf/Makefile.perf | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
 >
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index b856afa6eb52..3a81b6c712a9 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -241,7 +241,7 @@ else # force_fixdep
+> How about we do the opposite: claim a namespace for future libbpf
+> extensions and disallow (as in, hard fail) if anything unrecognised is
+> in those sections? For instance, this could be any section names
+> starting with .BPF?
+
+Looking at what we added (.maps, .kconfig, .ksym), there is no common
+prefix besides ".". I'd be ok to reserve anything starting with "."
+for future use by libbpf. We can allow any non-dot section without a
+warning (but it would have to be non-allocatable section). Would that
+work?
+
 >
->  LIB_DIR         = $(srctree)/tools/lib/api/
->  TRACE_EVENT_DIR = $(srctree)/tools/lib/traceevent/
-> -BPF_DIR         = $(srctree)/tools/lib/bpf/
-> +LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
->  SUBCMD_DIR      = $(srctree)/tools/lib/subcmd/
->  LIBPERF_DIR     = $(srctree)/tools/lib/perf/
->  DOC_DIR         = $(srctree)/tools/perf/Documentation/
-> @@ -293,7 +293,6 @@ strip-libs = $(filter-out -l%,$(1))
->  ifneq ($(OUTPUT),)
->    TE_PATH=$(OUTPUT)
->    PLUGINS_PATH=$(OUTPUT)
-> -  BPF_PATH=$(OUTPUT)
->    SUBCMD_PATH=$(OUTPUT)
->    LIBPERF_PATH=$(OUTPUT)
->  ifneq ($(subdir),)
-> @@ -305,7 +304,6 @@ else
->    TE_PATH=$(TRACE_EVENT_DIR)
->    PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
->    API_PATH=$(LIB_DIR)
-> -  BPF_PATH=$(BPF_DIR)
->    SUBCMD_PATH=$(SUBCMD_DIR)
->    LIBPERF_PATH=$(LIBPERF_DIR)
->  endif
-> @@ -324,7 +322,10 @@ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DY
->  LIBAPI = $(API_PATH)libapi.a
->  export LIBAPI
->
-> -LIBBPF = $(BPF_PATH)libbpf.a
-> +LIBBPF_OUTPUT = $(OUTPUT)libbpf
-> +LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
-> +LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
-> +LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
->
->  LIBSUBCMD = $(SUBCMD_PATH)libsubcmd.a
->
-> @@ -829,12 +830,14 @@ $(LIBAPI)-clean:
->         $(call QUIET_CLEAN, libapi)
->         $(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) clean >/dev/null
->
-> -$(LIBBPF): FORCE
-> -       $(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) $(OUTPUT)libbpf.a FEATURES_DUMP=$(FEATURE_DUMP_EXPORT)
-> +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
-> +       $(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
-> +               O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
-> +               $@ install_headers
->
->  $(LIBBPF)-clean:
->         $(call QUIET_CLEAN, libbpf)
-> -       $(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) clean >/dev/null
-> +       $(Q)$(RM) -r -- $(LIBBPF_OUTPUT)
->
->  $(LIBPERF): FORCE
->         $(Q)$(MAKE) -C $(LIBPERF_DIR) EXTRA_CFLAGS="$(LIBPERF_CFLAGS)" O=$(OUTPUT) $(OUTPUT)libperf.a
-> @@ -1036,14 +1039,13 @@ SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h
->
->  ifdef BUILD_BPF_SKEL
->  BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
-> -LIBBPF_SRC := $(abspath ../lib/bpf)
-> -BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(BPF_PATH) -I$(LIBBPF_SRC)/..
-> +BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE)
->
-> -$(SKEL_TMP_OUT):
-> +$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
->         $(Q)$(MKDIR) -p $@
->
->  $(BPFTOOL): | $(SKEL_TMP_OUT)
-> -       CFLAGS= $(MAKE) -C ../bpf/bpftool \
-> +       $(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
->                 OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
->
->  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
-> --
-> 2.32.0
+> -Toke
 >
