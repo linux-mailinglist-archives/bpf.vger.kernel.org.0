@@ -2,113 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCC8446502
-	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 15:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E92446534
+	for <lists+bpf@lfdr.de>; Fri,  5 Nov 2021 15:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbhKEOg5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 10:36:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52396 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233105AbhKEOg5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 5 Nov 2021 10:36:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636122857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jXcjTf98RBg39p7qE5KWevwR1yUeicHmGqCbX9E43a4=;
-        b=clMzb1CRo8iLkuajtVxhqt44zXGtcK4JQijplCdQZhyBP5sTq9OPHUaFj1eYskdOLaKn8l
-        bcs1oo1JjRm6dw7r/Zwg4oV0WQCjOdNZdOzNDIOe/Wis51wRyx0hX+3xIzo0+AJsR6fd6L
-        AumjEkoy7u9Lg6uU7yozfczfm66kk8Y=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-5DB86zPwMdSHmiGCA8P57A-1; Fri, 05 Nov 2021 10:34:16 -0400
-X-MC-Unique: 5DB86zPwMdSHmiGCA8P57A-1
-Received: by mail-ed1-f70.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso9065862edj.13
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 07:34:16 -0700 (PDT)
+        id S233212AbhKEOul (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 10:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233152AbhKEOul (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 10:50:41 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190FBC061714
+        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 07:48:01 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id v15so8289864ljc.0
+        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 07:48:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=zfhV6Gwgf0sNTi1LiHNLJjrEkjkdv8O0IylaTB1V6Y0=;
+        b=XDEkCdq9vbijnaUXZhE9vmtvMCpG1ac/W5v/wUUDSrfijdB5fVv7957sSp5zWsZZ2/
+         C2K85AnqNElbJBe6g896rOCaVQ5pIYggI8IHKX0RbF6D5DGd8Lmyb3pEwWxAy6LXXgVn
+         oGOp86j+3iXftmpZRb4jzb6FKWSIytairdoPc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=jXcjTf98RBg39p7qE5KWevwR1yUeicHmGqCbX9E43a4=;
-        b=SR4phhQzmsf+9fuyh5OYOSfKTvs5xybdfj4EIRyT2o3WiO5l/pw6tBHINxBw4qXAF/
-         3887MppMG2sUipuwT8NmvVOSCdjO4QwiFVnJTEzbob2Xo0qosSKEzQbEsdGj1c2tWpDa
-         Vrl5+ICy91CJiAr0iyQ/fSMRSG6qdGNKTtnI1Zb3fSYoHZCObXWp6oHNzdppExXpEOzt
-         A3fEQvFmwzsMRCYEbB/pF9KhjwotYO7TCsYotLk7HjRavQz2R0d5VBm9KsJtvBOMb1RC
-         cXMrCgUJqPsQpi/asmMkq18llB9noOSkn+zqQ3z6ktkRpxPm4rsiGuk2I3jdo/To3cWh
-         cGxQ==
-X-Gm-Message-State: AOAM533UlXbZWBbO+ILEiiowu0QOVROkEGOzKwZfjCZDRzEB7Ni5dO5p
-        kfhGQrcaTJIIEcjb4z6y8Jx9c6qd6dU+PP1D7t18+lu7hRlC2xmcPOuTZNcUP1Dl6ToYEL51NMq
-        TtjEFRrVS4kgt
-X-Received: by 2002:a05:6402:354c:: with SMTP id f12mr36821400edd.108.1636122854686;
-        Fri, 05 Nov 2021 07:34:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyL923YcZsRbLzCuKVlPXnT9Wbnkrp+pxMuQhXvlvpVKdOFJ9dGTvXYMq05nJL/w7/mzMrsbw==
-X-Received: by 2002:a05:6402:354c:: with SMTP id f12mr36821347edd.108.1636122854231;
-        Fri, 05 Nov 2021 07:34:14 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id g1sm2978807eje.105.2021.11.05.07.34.13
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=zfhV6Gwgf0sNTi1LiHNLJjrEkjkdv8O0IylaTB1V6Y0=;
+        b=1iR10jUxCOCzjhj8uAl2JhNRzFhOHQv/O7iRBcsg2zNZyQvTBIaz+1TRrVIfqa2Lwc
+         M+UOdaO4VNsr1wZhDLEEM15BMx9jBWRqONjOlHkjR+UT5yzaLkzQjsJsxDpfEs+TJI+n
+         CHxvWPdCTnVGBYouexa3TuKq81RnPdEa4xVoi7A+6F0r+LEZvEZCtOobLu37awkbx9Jz
+         G2v8hwYvk80L7f+Y3el7TeRcH5Er+snt67tIxJrubqFjN7aIrHZdL3zSS7ggYnnW2LPr
+         ZYUY0R477dXKVpQxmny5v3QkO7QiPtUW5/jQ7E20r5OCnCmDddlmM4aXFrdNxHZG1Wj7
+         kvyA==
+X-Gm-Message-State: AOAM532QZgVNDkFMrUvkvoxqW8jiEzFMKIbYYmiXRLxAM4pBP9KUawxd
+        HpPV32Ad0Acm9+eq8gcqHX20NQ==
+X-Google-Smtp-Source: ABdhPJyqGf7LHd6ltIp1FxZaIjg29uJoEhLhJOgH/6HaLKpsEWoaMg5bWUcdQFLgXGB1IwbsV0ryOw==
+X-Received: by 2002:a2e:9c0b:: with SMTP id s11mr62580170lji.259.1636123679311;
+        Fri, 05 Nov 2021 07:47:59 -0700 (PDT)
+Received: from cloudflare.com (2a01-110f-480d-6f00-ff34-bf12-0ef2-5071.aa.ipv6.supernova.orange.pl. [2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
+        by smtp.gmail.com with ESMTPSA id g19sm106394ljl.27.2021.11.05.07.47.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 07:34:13 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0FCD018026D; Fri,  5 Nov 2021 15:34:13 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        Fri, 05 Nov 2021 07:47:58 -0700 (PDT)
+References: <20211104122304.962104-1-markpash@cloudflare.com>
+ <20211104122304.962104-2-markpash@cloudflare.com>
+ <32332bb4-1848-0280-9482-5189ab912b02@fb.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Yonghong Song <yhs@fb.com>,
+        Mark Pashmfouroush <markpash@cloudflare.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Ciara Loftus <ciara.loftus@intel.com>
-Subject: Re: [PATCH bpf-next] libbpf: demote log message about unrecognised
- data sections back down to debug
-In-Reply-To: <CAEf4BzYGjV5DQB7tqRkSKz6pz-3QtU7uSWQVNJMW4eSjnpF98A@mail.gmail.com>
-References: <20211104122911.779034-1-toke@redhat.com>
- <CAEf4BzYGjV5DQB7tqRkSKz6pz-3QtU7uSWQVNJMW4eSjnpF98A@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 05 Nov 2021 15:34:13 +0100
-Message-ID: <87a6iismca.fsf@toke.dk>
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, kernel-team@cloudflare.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add ifindex to bpf_sk_lookup
+In-reply-to: <32332bb4-1848-0280-9482-5189ab912b02@fb.com>
+Date:   Fri, 05 Nov 2021 15:47:57 +0100
+Message-ID: <87y262hd5u.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Thu, Nov 4, 2021 at 5:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> When loading a BPF object, libbpf will output a log message when it
->> encounters an unrecognised data section. Since commit
->> 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating ELF")
->> they are printed at "info" level so they will show up on the console by
->> default.
->>
->> The rationale in the commit cited above is to "increase visibility" of s=
-uch
->> errors, but there can be legitimate, and completely harmless, uses of ex=
-tra
->> data sections. In particular, libxdp uses custom data sections to store
+On Thu, Nov 04, 2021 at 07:06 PM CET, 'Yonghong Song' via kernel-team+notifications wrote:
+> On 11/4/21 5:23 AM, Mark Pashmfouroush wrote:
+>> It may be helpful to have access to the ifindex during bpf socket
+>> lookup. An example may be to scope certain socket lookup logic to
+>> specific interfaces, i.e. an interface may be made exempt from custom
+>> lookup code.
+>> Add the ifindex of the arriving connection to the bpf_sk_lookup API.
+>> Signed-off-by: Mark Pashmfouroush <markpash@cloudflare.com>
+>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> index 24b7ed2677af..0012a5176a32 100644
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -1374,6 +1374,7 @@ struct bpf_sk_lookup_kern {
+>>   		const struct in6_addr *daddr;
+>>   	} v6;
+>>   	struct sock	*selected_sk;
+>> +	u32		ifindex;
 >
-> What if we make those extra sections to be ".rodata.something" and
-> ".data.something", but without ALLOC flag in ELF, so that libbpf won't
-> create maps for them. Libbpf also will check that program code never
-> references anything from those sections.
+> In struct __sk_buff, we have two ifindex related fields:
 >
-> The worry I have about allowing arbitrary sections is that if in the
-> future we want to add other special sections, then we might run into a
-> conflict with some applications. So having some enforced naming
-> convention would help prevent this. WDYT?
+>         __u32 ingress_ifindex;
+>         __u32 ifindex;
+>
+> Does newly-added ifindex corresponds to skb->ingress_ifindex or
+> skb->ifindex? From comments:
+>   > +	__u32 ifindex;		/* The arriving interface. Determined by inet_iif. */
+>
+> looks like it corresponds to ingress? Should be use the name
+> ingress_ifindex to be consistent with __sk_buff?
+>
 
-Hmm, I see your point, but as the libxdp example shows, this has not
-really been "disallowed" before. I.e., having these arbitrary sections
-has worked just fine.
+On ingress these two (skb->skb_iif and skb->dev-ifindex) are the same,
+if I read the code correctly [1].
 
-How about we do the opposite: claim a namespace for future libbpf
-extensions and disallow (as in, hard fail) if anything unrecognised is
-in those sections? For instance, this could be any section names
-starting with .BPF?
+That said, I agree that ingress_ifindex would be less ambiguous (iif ->
+ingress interface, can't get that wrong).
 
--Toke
+Also, as Yonghong points out __sk_buff and xdp_md context objects
+already use this identifier for the same bit of information, so it will
+be less of surprise.
 
+[1] https://elixir.bootlin.com/linux/latest/source/net/core/dev.c#L5258
+
+[...]
