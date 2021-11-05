@@ -2,106 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17198446B56
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 00:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2EB446B61
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 00:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhKEXpq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 19:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232923AbhKEXpq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 19:45:46 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E393BC061570
-        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 16:43:05 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id g11so10190681pfv.7
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 16:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0eybG4zgHlHZXaO8p1AODx4E9lk0YJrK/wZsukAYNjw=;
-        b=g9i0qkcGuQ7KLO5DRxzRKkEhp7ZMRTYWbr2oRHMTTKHtaoCd52ZQVJgjg5mtQzgKIZ
-         56DoSwzTsKOHDBp30u/+tLMsOjnXLkcPuUoL/5Oj+eGXDeeIy59V5y7vET3GIlUE/9k+
-         yIsOqXJvCG+JcqG47u3nCadTwrJ+QL4tAwYiLn4ymMJlcplT+3rBApT5x10rUBsXzeEn
-         COmtgzPLt5nbXc87s3zmnB2cv4esDzEhfvZqRhT6o0v64OXFBm6FilNg+wCf/kwY+mqy
-         Zx9SNpuwN9dqNGdRGoHQFpXRf5hMhznUk187mL7md9szfiWWNXbfA3q3jF6aZ7cemrXH
-         76Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0eybG4zgHlHZXaO8p1AODx4E9lk0YJrK/wZsukAYNjw=;
-        b=69FvGuPTnslZJI+frl3ErjHoxZfNZ34RA+AGxBS0v3ik0Mxgq1JT1k0mqe12I6rCLF
-         bE10M9bAadxW3kt4lIH8XBpxHa/3VXdEvhMpOETqZXy8GpQ3tPiYluoH5m9TmskFWRIi
-         0RxySRLMCmmKbVgiytEZgz89tUP0PcK2xJYBjX2dVClEaqUIhLy6ifElBfHxOK0Yl8w0
-         qqc+7ujYE2TGm6Gg51QIuMrE+wjAYmup42DnDTaID1/SGs73wbAqXs8ihXqZqpjahb4N
-         ctc9LrU+xQ3Uudlgw3Y98u61vBSL3JPF9dRXnbZ/54/R6t4s+8OwYRByeap1i0IyI2e+
-         3pcA==
-X-Gm-Message-State: AOAM530dqEf3QXSuOReDHTMyEFEA8EbN32Ei+uSFZllhwLHNN+9SC/tn
-        QG5ieaN3jvicvQx8aQaNHPDUzkxkrBIypw==
-X-Google-Smtp-Source: ABdhPJyCRmGt4d7+qUg3Jd1XloF1LBkh0Kt6xByJRPcoxZG4VHbVY6i/WNJpaNvXrPdETTffCvKVzg==
-X-Received: by 2002:a05:6a00:c81:b029:30e:21bf:4c15 with SMTP id a1-20020a056a000c81b029030e21bf4c15mr62314964pfv.70.1636155785203;
-        Fri, 05 Nov 2021 16:43:05 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d916:31fc:9e49:a605:b093])
-        by smtp.gmail.com with ESMTPSA id s6sm8580213pfu.137.2021.11.05.16.43.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 16:43:04 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next v1 6/6] selftests/bpf: Compile using -std=gnu89
-Date:   Sat,  6 Nov 2021 05:12:43 +0530
-Message-Id: <20211105234243.390179-7-memxor@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211105234243.390179-1-memxor@gmail.com>
-References: <20211105234243.390179-1-memxor@gmail.com>
+        id S233365AbhKEX76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 19:59:58 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:20332 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233311AbhKEX75 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 19:59:57 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HmHVb6HGFzBs;
+        Sat,  6 Nov 2021 00:57:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1636156635; bh=m5pndQqsZAfsS+FW1lbAnLViWscX+7vW/HS+H4mYBKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hhhHpB7ZS4HG39gN9VN9s41HVGTMpArfwk+CIFrRRUhAAn2nVMgZajsgWsAEvJ5Uh
+         E5kVQtH50Hw+vS/SQw2R4N2aAeNeaQxjqX7ir5sEPslX0+QLwnK90B76F+LeCC0oAQ
+         PIxCMskP3Gv3nwVt/hQmWgI+O03uONbc4LfkN9p5SDeJJBZ6ZRwwme7leUxbDszrVm
+         dEbpNMH+ZwjXs15naK6R98AzrEPJWYY5dGiGyLyQtkGFN9d/rjaiicUDQ2N/I12qdE
+         3ePV/0GKFuuOK26dKbitWlt3+bMzUazhaKZ5rx7dILwSez6IuMQDIpnakNB9l+ZBGt
+         /qCnycePN9fPQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sat, 6 Nov 2021 00:57:06 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+ <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
+ <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1624; h=from:subject; bh=E6MXCGxoOvlgGE9ca71nhl0pQaB51dC/kNCa6tTnyhk=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhhb9BJuvuXyfVou8At7IZJTi5/CboTE2qzZvr/GW/ rmAaZGiJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYYW/QQAKCRBM4MiGSL8RyiIBD/ 9JU/GeU1xwSbW2iPIh16vB0KsU0OM4jGOltpyCsO2C81a5e553JTiIXrxRfRKvW/+Lzp8jB4qgV4Iv ORlVE8AozzgdOW6lVvRQPx8DpjkAUocgPEgoKDBKK9C1xhfx238sGZR9hKCv6vAEdi4ZycjCHP6k8U 0F2K13fsMVseg89+wczrlzZLFjpQJ8QVBMNS5zZlJYcw7kFagPtxS1UGaH+KjcwHUdedtWpByfo9BA JuYBvA3U8yp7RJS4u70ZBUdmIDZSDTd8QbPZNanAyYfihehcxqJSFPriTwo4frMCmyOa1xX9aWC1TW B0slr9So6qaox5/mdorw5K/ek/ZAZRYjW7k/Qs7FXiomyW/vJyQaXptZ7WPjryENL9hbi9EIuWEdvf 2c+yFgI08njp7KLSkv7KazgXssmnygv7Ps4ojrBUdo3t8hIA4/ur18p6eE9+GaFgDZOg5tPRb1o9Zq IvCQb4gLjdlz3zb2NZYJYh4xjhNoPCk5GL0qEJ0q82LdbJ+x8iuPXtZI4tWeE9Idjb4lLbwJnUQts5 ftKFJYZNJNQ+XBavFc7/4Hbu8HbVlxssmLO3j4UNSLAAF4bDQ2i1Spvo+1u51pwt97ypdAckBWYtoM 0ITthS0ZSJtHxB87WgqilKRm6600EGfAVM/OkvJN+55rXMdJzHjRRNQbkRKQ==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The minimum supported C standard version is C89, with use of GNU
-extensions, hence make sure to catch any instances that would break
-the build for this mode by passing -std=gnu89.
+On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
+> On Thu, Nov 4, 2021 at 9:37 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
+> >
+> > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> > > There're many truncated kthreads in the kernel, which may make trouble
+> > > for the user, for example, the user can't get detailed device
+> > > information from the task comm.
+> > >
+> > > This patchset tries to improve this problem fundamentally by extending
+> > > the task comm size from 16 to 24, which is a very simple way.
+> > [...]
+> >
+> > Hi,
+> >
+> > I've tried something like this a few years back. My attempt got mostly
+> > lost in the mailing lists, but I'm still carrying the patches in my
+> > tree [1]. My target was userspace thread names, and it turned out more
+> > involved than I had time for.
+> >
+> > [1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
+> >     and its parents
+> >
+> 
+> Hi Michal,
+> 
+> Thanks for the information.
+> 
+> I have looked through your patches.  It seems to contain six patches
+> now and can be divided into three parts per my understanding.
+> 
+> 1. extend task comm len
+> This parts contains below 4 patches:
+> [prctl: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=cfd99db9cf911bb4d106889aeba1dfe89b6527d0)
+> [bluetooth: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=ba2805f5196865b81cc6fc938ea53af2c7c2c892)
+> [taskstats: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=4d29bfedc57b36607915a0171f4864ec504908ca)
+> [mm: make TASK_COMM_LEN
+> configurable](https://rere.qmqm.pl/git/?p=linux;a=commit;h=362acc35582445174589184c738c4d86ec7d174b)
+> 
+> What kind of userspace issues makes you extend the task comm length ?
+> Why not just use /proc/[pid]/cmdline ?
 
-Also, copy out CFLAGS for C++ test so that we don't end up passing
--std=gnu89 to g++, otherwise the build generates a (harmless) warning:
+This was to enable longer thread names (as set by pthread_setname_np()).
+Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox'es
+threads. I believe that FreeBSD has 32-byte limit and so I expect that
+major portable code is already prepared for bigger thread names.
 
-cc1plus: warning: command-line option â€˜-std=gnu90â€™ is valid for C/ObjC but not for C++
+> 2.  A fix
+> Below patch:
+> [procfs: signal /proc/PID/comm write
+> truncation](https://rere.qmqm.pl/git/?p=linux;a=commit;h=d72027388d4d95db5438a7a574e0a03ae4b5d6d7)
+> 
+> It seems this patch is incomplete ?   I don't know what it means to do.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/Makefile | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Currently writes to /proc/PID/comm are silently truncated. This patch
+makes the write() call return the actual number of bytes actually written
+and on subsequent calls return -ENOSPC. glibc checks the length in
+pthread_setname_np() before write(), so the change is not currently
+relevant for it. I don't know/remember what other runtimes do, though.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 54b0a41a3775..6239e51c310f 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -33,6 +33,9 @@ ifneq ($(LLVM),)
- CFLAGS += -Wno-unused-command-line-argument
- endif
- 
-+CXXFLAGS := $(CFLAGS)
-+CFLAGS += -std=gnu89
-+
- # Order correspond to 'make run_tests' order
- TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test_progs \
- 	test_verifier_log test_dev_cgroup \
-@@ -519,7 +522,7 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
- # Make sure we are able to include and link libbpf against c++.
- $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
- 	$(call msg,CXX,,$@)
--	$(Q)$(CXX) $(CFLAGS) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
-+	$(Q)$(CXX) $(CXXFLAGS) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
- 
- # Benchmark runner
- $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h $(BPFOBJ)
--- 
-2.33.1
+> 3. A feature provided for pthread_getname_np
+> Below patch:
+> [procfs: lseek(/proc/PID/comm, 0,
+> SEEK_END)](https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a)
+> 
+> It seems this patch is useful. With this patch the userspace can
+> directly get the TASK_COMM_LEN through the API.
 
+This one I'm not really fond of because it abuses lseek() in that it
+doesn't move the write pointer. But in case of /proc files this normally
+would return EINVAL anyway.
+
+Best Regards
+Micha³ Miros³aw
