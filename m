@@ -2,89 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7B0446B53
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 00:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0EB446B54
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 00:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhKEXpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Nov 2021 19:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
+        id S232930AbhKEXpj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Nov 2021 19:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232923AbhKEXpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Nov 2021 19:45:36 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14887C061570
-        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 16:42:56 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t11so11952029plq.11
-        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 16:42:56 -0700 (PDT)
+        with ESMTP id S232923AbhKEXpj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Nov 2021 19:45:39 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE4BC061570
+        for <bpf@vger.kernel.org>; Fri,  5 Nov 2021 16:42:59 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u141so2247717pfc.4
+        for <bpf@vger.kernel.org>; Fri, 05 Nov 2021 16:42:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y3qUN7Q6vHz1/cNFucwj2czWifJwk5nCJLMum+Tt9nQ=;
-        b=i84S42fAeDPUxN30Ob/3alT0un319o3FOY9wlVB2mgyIz2Nlq8v7V6QS4/2J2DxWGi
-         4Y90hgor+hVM/gnZSfc7qzOjmyY9E2i8DSvE32MbzGvKdmo9Ib3ZZOY9nn5v6WTcyU5x
-         Oln8jlOg12OZxwh8onlRTc8Zy3uVdD1Qg/9ZvRwcBZgT2y22ArsleuMYaAZ0ZM7mU+C7
-         tkQ5KmDvXJ+WJXWUfQI15pAlKxN3uUFr5N1xAWotRPMyiRcq57iQE5Lnlw0QM+j1UsVO
-         YrroH6LKTWf3+MVt5xKqFPGjxVv/vEEqsLXl57VgYy1xJXhA3F/I8s/01ft2AEhvDIKT
-         SV9A==
+        bh=RcW1TMa8i021xAugZ9tpKPX8GKQUfG/oqDAu9xJXZmM=;
+        b=Pv8rS/p5EmImmdZp30MnevnHIJq2GuZ6HDn3OO1y5xjMHk9w9oqTsnM5vgkM2aJvsi
+         XMcE8vi94i+/viqgq+i3/fk50y/Hr2Gt6WyT/iAp+qAoYDsFSZ4IhvMS7fIXO8sdMHP3
+         wdW/FU9Ml6sJwJseV8rE4TjUUJiA0YU1ykreQ0vyKKv/baUKz19+W9Mim28E3TkR6WWP
+         BiTyuxdCV8frJ37vn1L6XCehlKXlbebGB3DBo0pOCZmz1QRFsBiv+KYMHdShPbPd56TL
+         fcqlGCFp1KdKia2IZwhVyeHgQX0FSXGxHpNAvhEusXsgEDVib3B/VmT2g9bJmlDr6K0S
+         WvYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y3qUN7Q6vHz1/cNFucwj2czWifJwk5nCJLMum+Tt9nQ=;
-        b=w4a9WkkSyAb2YnQhBrf+ZsqkLtkyhItHjGBhcizMZKYrLrfhw+cIKd1uIgoBqu9Q4S
-         4/iZC9302aBDS5ChXfL7Wm3VSELmO5vwqv7zu77uGmd0+k1zHb4+y5Wl6/R84VaOjyYT
-         HaIoMUyqI6qZh/dwTiYgcfCKo2DUltOIPosF+U+yqkXq2/Vkzqc52qS5Gu5bMWgHlj7h
-         3MxSaGJY9jYN6+Sb+h34+8yCev4Nfx7CX9t7ReslD26S/tHJVRO0Sr+GSytcf5ve4Xue
-         TOIxsH94eQ/tfXEqUf17geiQDM+nlZB9wj3u+9xQw9j1zPsupQCWzlIDNafyOjuCj2le
-         LL9g==
-X-Gm-Message-State: AOAM531yVAMMO4XUrltbA9av/ZOUz9TVH7Sk0EcP0y4eLy2VrhZgqjmS
-        WFGShcH3ZkIdakDvDqEdEkBJpuEmzQAzjg==
-X-Google-Smtp-Source: ABdhPJyw1HiSXT8fblwbO2ljwYoClGJyFNpi3iPmh1s3zB7ikFcU4CwZWAwYu5sYsHE2sJvcvRpewg==
-X-Received: by 2002:a17:902:7608:b0:141:9a53:ceff with SMTP id k8-20020a170902760800b001419a53ceffmr51718862pll.78.1636155775462;
-        Fri, 05 Nov 2021 16:42:55 -0700 (PDT)
+        bh=RcW1TMa8i021xAugZ9tpKPX8GKQUfG/oqDAu9xJXZmM=;
+        b=32ja5HoUVqVmA8kQ1sLsRbvu23Huuybi5m9NT5dAEUQIYPeRsel17UiS8493KPQ85Y
+         o8puXoQxrqcIhzWwClWK/w55YHj7VAgeBrkGp06GGTIZE6UNMx1Ei+o7AnSkvTZ7c+R9
+         Bjy9Ll1ERX4TzS68I6kWwqMSuPdWNWIIOz9GsHjqiyOST7ei1OxMUxFBBR3wLDEAgZfx
+         CUWDQsSN8wF2ylL7Tpr+d/o/N+0fhQpgzabUF8Jz10tqtHjBwXqfVLnPIc4AN/IYJJ1g
+         /Nz/sdbSqgWf76ORI2bVXQ1GdTtMdgMRHWpc19ckFwayBIxYq0mQ7lGaGJrZpIvZpcxm
+         frkg==
+X-Gm-Message-State: AOAM530iWjBB8yPaQdFOaJtN5lQyy2c/uSeiQ95shiSSmqeHgRnz6rb4
+        fPtrQH5GNnC0p/XLfVvKtgu3UqWQmURUqA==
+X-Google-Smtp-Source: ABdhPJyNklMlwqOGPFoi0OJEQMc7iv9JOix1Ir7etzL1rcCWkKJK3wD8wE6f9LwKxKqHE8+FqKI7bQ==
+X-Received: by 2002:a63:82c7:: with SMTP id w190mr30106542pgd.13.1636155778556;
+        Fri, 05 Nov 2021 16:42:58 -0700 (PDT)
 Received: from localhost ([2405:201:6014:d916:31fc:9e49:a605:b093])
-        by smtp.gmail.com with ESMTPSA id f3sm159709pfg.167.2021.11.05.16.42.54
+        by smtp.gmail.com with ESMTPSA id c198sm6838557pga.6.2021.11.05.16.42.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 16:42:55 -0700 (PDT)
+        Fri, 05 Nov 2021 16:42:58 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next v1 3/6] libbpf: Compile using -std=gnu89
-Date:   Sat,  6 Nov 2021 05:12:40 +0530
-Message-Id: <20211105234243.390179-4-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 4/6] selftests/bpf: Fix non-C89 loop variable declaration instances
+Date:   Sat,  6 Nov 2021 05:12:41 +0530
+Message-Id: <20211105234243.390179-5-memxor@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211105234243.390179-1-memxor@gmail.com>
 References: <20211105234243.390179-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=709; h=from:subject; bh=kaZmcZxbO1LcThXofU2qQtWMmvcubBwOGn2qVhrVF1c=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhhb9A+Og280rCTOInJOgGOL9xQSchgsqCp9OEIKtQ qMlwWvaJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYYW/QAAKCRBM4MiGSL8RyizCD/ wMZIkm4IIXbXKE/rVVJXxtcthAT3bmCHEn1ghw2F2g4f7DmSlRN45mOCwEESHuyFTyphhgDbfhqVXS qeu9zwsXLA1MBRr/Kts+qelkve3xhJ5JBL5NhDhqW7A3XHCw7NtQULdlJJ/NvBG0HcG99IYAxWFdWl zSrPonk8ywFDrsAVLlSL53dp/oDGnrx/UjmiQVIAhk430Ie3loVNWJGD1BMC40u3OuZcgmQOl0EV4c pVhgFDI81Llk5Ju1t+a+XcezvLDhbNJUbqJEC19WMDQVYdFnogxfGjYYpCHr13omsIpi1vCdISg8GU BKLtl41ykfLYeR7UwXJLesA2B+gRWnSNd/KaYBLtgY5qiOl7b35qnjEqDmTt7azFZbPQmMAJop4y9b b4RsxXXPrZMQYrDzGb4F7YONv+wwzbryMx8u2v1rTq9AhXf9wTg6qhPigWQeMtGU/9yczxqwKi0nOa IRrMNp0wxeL8FRpYwycRIlwrABoknB+2iDDsF1Jp+/UB0viO9TIxGuXWQMNs4XoqZCWRKNQcSNamep s/V9UzzM57fqMybkmnEAhcUiK6nTMiU2dgWpCRqBWooz+cjfZ+pQcxwBPiK4Xjg9JZ622GIX+hRKYf nf/Vpzn6eJft3yx8DlaUcnlTaIUu2NZmCah8hzWnSGv8CwwIaFEgC4u7ZTig==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4129; h=from:subject; bh=SI9IDJn+6GPGCEu0/Mil2+ybHWj1m+z829zOGoWH/B8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhhb9AJEgQp7uhXVRR4q7lsZg4gW9cny2TS6B4q+tQ HZwwmCOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYYW/QAAKCRBM4MiGSL8RytJAD/ 9/v/1cd/XBEx+7jW0KyiVTZKzfP6rdVbRgNNK1skDWONkZ2N56ehp98J1QgMaqdroVuDDLeHUuf7om X3hl5R0PEZIJkb6UKZN+qc1c2VXCePRyU+atb76sZS3+U00q0U0gX8hLaqm6ZR0ypvTDHPbjLUrLwW UXQp0+CdVimSZh1wfDdmKT9b5gsYpvlj8PptQFatgZYAw1XS7L8XfSdI2Zt2+cYCMVsOVOILIrOa40 r0oKfBKEKI3YpunHXZYZPy0erYHG+MFc+sJGWKy7KXmQhGw7xD3ADzm4Q1GTtjylnMh8qeswEqNRx4 DDyQwOK5ah4YVv/ZRMIJla/rfqolN2uU61BjjqgCC9aNb/o2q9ZL+vufqXCsdLcE1LkNJbGnL5TANa F4fS9kGB1EtiQ3MKSz28AiTZfbVZR8PbZ5G6RFgKMWfESViQuTwnc8gl42SN2S1X/Ko85uavi1eB/d HPryZXwTA74BXW4dx0Ex/NkEJ4mi8kaaN/GBIhYTiA8gAdsosEmM0NAbYMWgjOVpViKMyy9RojJLZ5 3J4kfrEvQY6okwbytSxRqWASDfKE4IhxNqXxfTwpYygL5+dDXvP/vJHfA/Yoq5UcwkVXxFB5ZvWcZF HyKR3hU45XxJIige/qD3hiURBV7h6popvm2UfTrczXu3u6J4lHxuScPuV1QQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The minimum supported C standard version is C89, with use of GNU
-extensions, hence make sure to catch any instances that would break
-the build for this mode by passing -std=gnu89.
+Fix the `int i` declaration inside the for statement. This is non-C89
+compliant. Doing all of them in this change since they are trivial.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- tools/lib/bpf/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/bpf/prog_tests/d_path.c      | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/timer_mim.c   | 6 +++---
+ tools/testing/selftests/bpf/prog_tests/xdp_bonding.c | 4 ++--
+ tools/testing/selftests/bpf/test_progs.c             | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index b393b5e82380..5f7086fae31c 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -84,6 +84,7 @@ else
- endif
+diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
+index 0a577a248d34..cc787ad68081 100644
+--- a/tools/testing/selftests/bpf/prog_tests/d_path.c
++++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
+@@ -103,7 +103,7 @@ void test_d_path(void)
+ {
+ 	struct test_d_path__bss *bss;
+ 	struct test_d_path *skel;
+-	int err;
++	int err, i;
  
- # Append required CFLAGS
-+override CFLAGS += -std=gnu89
- override CFLAGS += $(EXTRA_WARNINGS) -Wno-switch-enum
- override CFLAGS += -Werror -Wall
- override CFLAGS += $(INCLUDES)
+ 	skel = test_d_path__open_and_load();
+ 	if (CHECK(!skel, "setup", "d_path skeleton failed\n"))
+@@ -130,7 +130,7 @@ void test_d_path(void)
+ 		  "trampoline for filp_close was not called\n"))
+ 		goto cleanup;
+ 
+-	for (int i = 0; i < MAX_FILES; i++) {
++	for (i = 0; i < MAX_FILES; i++) {
+ 		CHECK(strncmp(src.paths[i], bss->paths_stat[i], MAX_PATH_LEN),
+ 		      "check",
+ 		      "failed to get stat path[%d]: %s vs %s\n",
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer_mim.c b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
+index 949a0617869d..f12536c32e2d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/timer_mim.c
++++ b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
+@@ -6,9 +6,9 @@
+ 
+ static int timer_mim(struct timer_mim *timer_skel)
+ {
++	int err, prog_fd, key1 = 1, i;
+ 	__u32 duration = 0, retval;
+ 	__u64 cnt1, cnt2;
+-	int err, prog_fd, key1 = 1;
+ 
+ 	err = timer_mim__attach(timer_skel);
+ 	if (!ASSERT_OK(err, "timer_attach"))
+@@ -23,7 +23,7 @@ static int timer_mim(struct timer_mim *timer_skel)
+ 
+ 	/* check that timer_cb[12] are incrementing 'cnt' */
+ 	cnt1 = READ_ONCE(timer_skel->bss->cnt);
+-	for (int i = 0; i < 100; i++) {
++	for (i = 0; i < 100; i++) {
+ 		cnt2 = READ_ONCE(timer_skel->bss->cnt);
+ 		if (cnt2 != cnt1)
+ 			break;
+@@ -41,7 +41,7 @@ static int timer_mim(struct timer_mim *timer_skel)
+ 
+ 	/* check that timer_cb[12] are no longer running */
+ 	cnt1 = READ_ONCE(timer_skel->bss->cnt);
+-	for (int i = 0; i < 100; i++) {
++	for (i = 0; i < 100; i++) {
+ 		usleep(200); /* 100 times more than interval */
+ 		cnt2 = READ_ONCE(timer_skel->bss->cnt);
+ 		if (cnt2 == cnt1)
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
+index faa22b84f2ee..e5b8666e59eb 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
+@@ -335,7 +335,7 @@ static void test_xdp_bonding_redirect_multi(struct skeletons *skeletons)
+ {
+ 	static const char * const ifaces[] = {"bond2", "veth2_1", "veth2_2"};
+ 	int veth1_1_rx, veth1_2_rx;
+-	int err;
++	int err, i;
+ 
+ 	if (bonding_setup(skeletons, BOND_MODE_ROUNDROBIN, BOND_XMIT_POLICY_LAYER23,
+ 			  BOND_ONE_NO_ATTACH))
+@@ -346,7 +346,7 @@ static void test_xdp_bonding_redirect_multi(struct skeletons *skeletons)
+ 		goto out;
+ 
+ 	/* populate the devmap with the relevant interfaces */
+-	for (int i = 0; i < ARRAY_SIZE(ifaces); i++) {
++	for (i = 0; i < ARRAY_SIZE(ifaces); i++) {
+ 		int ifindex = if_nametoindex(ifaces[i]);
+ 		int map_fd = bpf_map__fd(skeletons->xdp_redirect_multi_kern->maps.map_all);
+ 
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index c65986bd9d07..0096051e7560 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -1146,7 +1146,7 @@ static int server_main(void)
+ 	/* run serial tests */
+ 	save_netns();
+ 
+-	for (int i = 0; i < prog_test_cnt; i++) {
++	for (i = 0; i < prog_test_cnt; i++) {
+ 		struct prog_test_def *test = &prog_test_defs[i];
+ 		struct test_result *result = &test_results[i];
+ 
 -- 
 2.33.1
 
