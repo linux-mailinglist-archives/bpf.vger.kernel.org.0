@@ -2,165 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6F244701D
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 20:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD70D447046
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 20:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhKFTcB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 15:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232498AbhKFTcA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:32:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BC7960E8B;
-        Sat,  6 Nov 2021 19:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636226959;
-        bh=SSh/MjS6+Voc6TzAoE/tOg6RTP+gVHgAW32sKjAaUmo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SXqJNXbi7+Hpa/cw0Vjccw8nQKSQMJkl7lXbA/6SwRDWDbDUdXr4dkb1l/OrrhWmM
-         5mV9ebOfySX0U7bmMYdjX838818NsWyoNOuRVTzFzU5sIjvQsPkgnfcOIoidXWI7MD
-         i729Kuh7MinnyKWhzQi8i/6/in5NGXaDxb/JueMNDMEJNFQfmuzQdQIN0Bb9Hx2wa+
-         otJLWnHuZj/6esupGjPv1MP+18cBZEl6KsvHNX9UJHbkHz8Y45eXbPNJ6gvPMBia8S
-         IAlzvfSvQTAd27KrSeAxSSWFZ9dOUCo5stT+Z4RVgyPYFO5eoAlCiDZLnD93us3Cfn
-         J38uz+wCDksTA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C4C0C410A2; Sat,  6 Nov 2021 16:29:16 -0300 (-03)
-Date:   Sat, 6 Nov 2021 16:29:16 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
+        id S233822AbhKFT7N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Nov 2021 15:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229727AbhKFT7N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:59:13 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773D6C061570
+        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 12:56:31 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id d10so32076958ybe.3
+        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 12:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HBiLur7cgz5df44IEpiZd5XBiwgdR3uUccMS5wsXqL8=;
+        b=g5/g9VHSiQ6dC1Kc11sACKWK/0VFeKgQgZXVeAFFhNs7r4fHVRnA9D/2jLntyHpVef
+         7nhW7l4LgE28JXK1/1yCVR9oYxKEzT2jwY3U5men142MeLUMmgkr8XermdWXe8VtLIxe
+         nnDsS07LW/mTc9jNIv7GQc9wx483U1a9hT8Uzcl2ISdGm00r8A0QYUXZgXRlj69cNIRL
+         8mmvZb2zGQ6WUnV5uFhdO/8rfu7ZfThq61JeNuUsWURdFe8BrSXqDOtXOac0S2sp6omL
+         mi30IPxdykE0PDIvi9c9ijECOsfsYZ9O0jrd29vMtgAvFrQX/MnYEsPTugrDHCCSbJ1p
+         dFWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HBiLur7cgz5df44IEpiZd5XBiwgdR3uUccMS5wsXqL8=;
+        b=YFxRu4ourM2dmrtdzNxB2hu52gfDjsC6I6PR96I6Chb7C3Q/6wnPMK2IWP6wgP5Pl1
+         tOmx62ubgguV1HQig9JJP/7K12BbVHogQeRVhKDiUmsVUalkXyP9IVvHKElqew0TEnFx
+         Rq+ALqTZe/PATqjA4xpp0PNtOgNjpghGQiLYuil0bLqFAIycuGvCyKTqB5Ji/0i86lyE
+         HIMRC0BnN5Ub/RDYwXtZ0MmFVy9bGg6aO8hJru8UB7HOee1CsxTYvYHackEkcgFkJAkQ
+         h26AQ2optMLOaa16qA7lkCDkPsi3b6Q1oXnWqQBL86hY3Dg+FE43AobYHGVKrM12fKOp
+         DsFg==
+X-Gm-Message-State: AOAM531F/498gwkkwGlargytCTS0j6IppKgHHSfPFvnW9C97Dtg7X2IB
+        67ui4EbBNrKWgj3c3Gq1u+8dKM05lgtfBFjAcdARAvSu
+X-Google-Smtp-Source: ABdhPJy4g9gWcFCIOGQs+xlKi+9Yyne5oSHT/ZLHJ0AWuj3H4aTbbOHgewD8xaREHeKwhLQpdOAkL9nxddh6+4uwb6c=
+X-Received: by 2002:a25:d010:: with SMTP id h16mr67453714ybg.225.1636228590649;
+ Sat, 06 Nov 2021 12:56:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211105191055.3324874-1-andrii@kernel.org> <CAADnVQJ6REFCJZYCLzk0NNqo5p9C5KpOmko9REaF1KYkBEaa9w@mail.gmail.com>
+In-Reply-To: <CAADnVQJ6REFCJZYCLzk0NNqo5p9C5KpOmko9REaF1KYkBEaa9w@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 6 Nov 2021 12:56:19 -0700
+Message-ID: <CAEf4BzaehmbFQ50tZrZYtC+cTe+XTPBs2KBEXsjnmsSHWBYoUg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix non-C89 loop variable declaration in gen_loader.c
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] perf build: Install libbpf headers locally when
- building
-Message-ID: <YYbXjE1aAdNjI+aY@kernel.org>
-References: <20211105020244.6869-1-quentin@isovalent.com>
- <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Nov 05, 2021 at 11:38:50AM -0700, Andrii Nakryiko escreveu:
-> On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent.com> wrote:
+On Sat, Nov 6, 2021 at 9:38 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Nov 5, 2021 at 12:11 PM Andrii Nakryiko <andrii@kernel.org> wrote:
 > >
-> > API headers from libbpf should not be accessed directly from the
-> > library's source directory. Instead, they should be exported with "make
-> > install_headers". Let's adjust perf's Makefile to install those headers
-> > locally when building libbpf.
+> > Fix the `int i` declaration inside the for statement. This is non-C89
+> > compliant. See [0] for user report breaking BCC build.
 > >
-> > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> > ---
-> > Note: Sending to bpf-next because it's directly related to libbpf, and
-> > to similar patches merged through bpf-next, but maybe Arnaldo prefers to
-> > take it?
-> 
-> Arnaldo would know better how to thoroughly test it, so I'd prefer to
-> route this through perf tree. Any objections, Arnaldo?
+> >   [0] https://github.com/libbpf/libbpf/issues/403
+>
+> I'd prefer to fix bcc and/or its derivatives instead.
+> It's year 2021.
 
-Preliminary testing passed for 'BUILD_BPF_SKEL=1' with without
-LIBBPF_DYNAMIC=1 (using the system's libbpf-devel to build perf), so far
-so good, so I tentatively applied it, will see with the full set of
-containers.
-
-Thanks!
-
-- Arnaldo
- 
-> > ---
-> >  tools/perf/Makefile.perf | 24 +++++++++++++-----------
-> >  1 file changed, 13 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > index b856afa6eb52..3a81b6c712a9 100644
-> > --- a/tools/perf/Makefile.perf
-> > +++ b/tools/perf/Makefile.perf
-> > @@ -241,7 +241,7 @@ else # force_fixdep
-> >
-> >  LIB_DIR         = $(srctree)/tools/lib/api/
-> >  TRACE_EVENT_DIR = $(srctree)/tools/lib/traceevent/
-> > -BPF_DIR         = $(srctree)/tools/lib/bpf/
-> > +LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
-> >  SUBCMD_DIR      = $(srctree)/tools/lib/subcmd/
-> >  LIBPERF_DIR     = $(srctree)/tools/lib/perf/
-> >  DOC_DIR         = $(srctree)/tools/perf/Documentation/
-> > @@ -293,7 +293,6 @@ strip-libs = $(filter-out -l%,$(1))
-> >  ifneq ($(OUTPUT),)
-> >    TE_PATH=$(OUTPUT)
-> >    PLUGINS_PATH=$(OUTPUT)
-> > -  BPF_PATH=$(OUTPUT)
-> >    SUBCMD_PATH=$(OUTPUT)
-> >    LIBPERF_PATH=$(OUTPUT)
-> >  ifneq ($(subdir),)
-> > @@ -305,7 +304,6 @@ else
-> >    TE_PATH=$(TRACE_EVENT_DIR)
-> >    PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
-> >    API_PATH=$(LIB_DIR)
-> > -  BPF_PATH=$(BPF_DIR)
-> >    SUBCMD_PATH=$(SUBCMD_DIR)
-> >    LIBPERF_PATH=$(LIBPERF_DIR)
-> >  endif
-> > @@ -324,7 +322,10 @@ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DY
-> >  LIBAPI = $(API_PATH)libapi.a
-> >  export LIBAPI
-> >
-> > -LIBBPF = $(BPF_PATH)libbpf.a
-> > +LIBBPF_OUTPUT = $(OUTPUT)libbpf
-> > +LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
-> > +LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
-> > +LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
-> >
-> >  LIBSUBCMD = $(SUBCMD_PATH)libsubcmd.a
-> >
-> > @@ -829,12 +830,14 @@ $(LIBAPI)-clean:
-> >         $(call QUIET_CLEAN, libapi)
-> >         $(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) clean >/dev/null
-> >
-> > -$(LIBBPF): FORCE
-> > -       $(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) $(OUTPUT)libbpf.a FEATURES_DUMP=$(FEATURE_DUMP_EXPORT)
-> > +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
-> > +       $(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
-> > +               O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
-> > +               $@ install_headers
-> >
-> >  $(LIBBPF)-clean:
-> >         $(call QUIET_CLEAN, libbpf)
-> > -       $(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) clean >/dev/null
-> > +       $(Q)$(RM) -r -- $(LIBBPF_OUTPUT)
-> >
-> >  $(LIBPERF): FORCE
-> >         $(Q)$(MAKE) -C $(LIBPERF_DIR) EXTRA_CFLAGS="$(LIBPERF_CFLAGS)" O=$(OUTPUT) $(OUTPUT)libperf.a
-> > @@ -1036,14 +1039,13 @@ SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h
-> >
-> >  ifdef BUILD_BPF_SKEL
-> >  BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
-> > -LIBBPF_SRC := $(abspath ../lib/bpf)
-> > -BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(BPF_PATH) -I$(LIBBPF_SRC)/..
-> > +BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE)
-> >
-> > -$(SKEL_TMP_OUT):
-> > +$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
-> >         $(Q)$(MKDIR) -p $@
-> >
-> >  $(BPFTOOL): | $(SKEL_TMP_OUT)
-> > -       CFLAGS= $(MAKE) -C ../bpf/bpftool \
-> > +       $(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
-> >                 OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
-> >
-> >  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
-> > --
-> > 2.32.0
-> >
-
--- 
-
-- Arnaldo
+Fixing BCC and derivatives is a separate topic. This is the only
+instance of non-C89 compliant for() loop in libbpf and I'd prefer to
+fix it at the very least for style consistency.
