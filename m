@@ -2,232 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BC6446D17
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 10:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEF8446D9E
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 12:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhKFJNk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 05:13:40 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:30922 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbhKFJNj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 05:13:39 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HmWgw3hGtzcb0P;
-        Sat,  6 Nov 2021 17:06:04 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 17:10:51 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
- 2021 17:10:49 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <axboe@kernel.dk>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kbusch@kernel.org>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>, <yebin10@huawei.com>
-Subject: [PATCH] blk-mq: don't free tags if the tag_set is used by other device in queue initialztion
-Date:   Sat, 6 Nov 2021 17:23:31 +0800
-Message-ID: <20211106092331.3162749-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S234042AbhKFLcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Nov 2021 07:32:41 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:60803 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhKFLcl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Nov 2021 07:32:41 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HmZss2pjdz8K;
+        Sat,  6 Nov 2021 12:29:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1636198197; bh=WAutzEgYEkmalNSwQrpbordkhKZLQ/Y22509TsCal1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MoSDr5iITx3E3YPjbwkyIUAMMz2VmRaGqyp931kZX9YG+QyaLES6TvE+QwQNSCXlJ
+         fpc5I73Jklg2OzmXxu2LMdsy9vNLA7EBPNnzQtR/b7pam2rbJ41auAZmoiKWDoGoTh
+         33ZJgvXhhdDgMv5Gftq0VWNj2quwtGMnCQ05Vicp9WOB1XHJmcwdB4C6fV5moIbunY
+         2pHxjtQgDkyQmIbCl5sYp6e9aq2kjDEzW8DTwxKTUYFbt5WG7t6QG/dNh1ogsZV3La
+         pN/Cdf+ZUSXgzppa++BQRGky7Z/Oiq8oAuUHz4R2kaNp0awXgwxWySm/P9++rhyRyL
+         YNV8/t5iEpSKQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sat, 6 Nov 2021 12:29:51 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYZnL58B+GsNypEn@qmqm.qmqm.pl>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+ <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
+ <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
+ <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
+ <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Our test report a UAF on v5.10:
+On Sat, Nov 06, 2021 at 05:12:24PM +0800, Yafang Shao wrote:
+> On Sat, Nov 6, 2021 at 7:57 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
+> >
+> > On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
+> > > On Thu, Nov 4, 2021 at 9:37 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
+> > > >
+> > > > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> > > > > There're many truncated kthreads in the kernel, which may make trouble
+> > > > > for the user, for example, the user can't get detailed device
+> > > > > information from the task comm.
+> > > > >
+> > > > > This patchset tries to improve this problem fundamentally by extending
+> > > > > the task comm size from 16 to 24, which is a very simple way.
+> > > > [...]
+> > > >
+> > > > Hi,
+> > > >
+> > > > I've tried something like this a few years back. My attempt got mostly
+> > > > lost in the mailing lists, but I'm still carrying the patches in my
+> > > > tree [1]. My target was userspace thread names, and it turned out more
+> > > > involved than I had time for.
+> > > >
+> > > > [1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
+> > > >     and its parents
+> > > >
+> > >
+> > > Hi Michal,
+> > >
+> > > Thanks for the information.
+> > >
+> > > I have looked through your patches.  It seems to contain six patches
+> > > now and can be divided into three parts per my understanding.
+> > >
+> > > 1. extend task comm len
+> > > This parts contains below 4 patches:
+> > > [prctl: prepare for bigger
+> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=cfd99db9cf911bb4d106889aeba1dfe89b6527d0)
+> > > [bluetooth: prepare for bigger
+> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=ba2805f5196865b81cc6fc938ea53af2c7c2c892)
+> > > [taskstats: prepare for bigger
+> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=4d29bfedc57b36607915a0171f4864ec504908ca)
+> > > [mm: make TASK_COMM_LEN
+> > > configurable](https://rere.qmqm.pl/git/?p=linux;a=commit;h=362acc35582445174589184c738c4d86ec7d174b)
+> > >
+> > > What kind of userspace issues makes you extend the task comm length ?
+> > > Why not just use /proc/[pid]/cmdline ?
+> >
+> > This was to enable longer thread names (as set by pthread_setname_np()).
+> > Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox'es
+> > threads. I believe that FreeBSD has 32-byte limit and so I expect that
+> > major portable code is already prepared for bigger thread names.
+> >
+> 
+> The comm len in FreeBSD is (19 + 1) bytes[1], but that is still larger
+> than Linux :)
+> The task comm is short for many applications, that is why cmdline is
+> introduced per my understanding, but pthread_{set, get}name_np() is
+> reading/writing the comm or via prctl(2) rather than reading/writing
+> the cmdline...
+> 
+> Is the truncated Chrome or Firefox thread comm really harmful or is
+> extending the task comm just for portable?
+> Could you pls show me some examples if the short comm is really harmful?
+> 
+> Per my understanding, if the short comm is harmful to applications
+> then it is worth extending it.
+> But if it is only for portable code, it may not be worth extending it.
+> 
+> [1]. https://github.com/freebsd/freebsd-src/blob/main/sys/sys/param.h#L126
 
-[ 1446.674930] ==================================================================
-[ 1446.675970] BUG: KASAN: use-after-free in blk_mq_get_driver_tag+0x9a4/0xa90
-[ 1446.676902] Read of size 8 at addr ffff8880185afd10 by task kworker/1:2/12348
-[ 1446.677851]
-[ 1446.678073] CPU: 1 PID: 12348 Comm: kworker/1:2 Not tainted 5.10.0-10177-gc9c81b1e346a #2
-[ 1446.679168] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[ 1446.680692] Workqueue: kthrotld blk_throtl_dispatch_work_fn
-[ 1446.681448] Call Trace:
-[ 1446.681800]  dump_stack+0x9b/0xce
-[ 1446.682259]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-[ 1446.682916]  print_address_description.constprop.6+0x3e/0x60
-[ 1446.683688]  ? __cpuidle_text_end+0x5/0x5
-[ 1446.684239]  ? vprintk_func+0x6b/0x120
-[ 1446.684748]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-[ 1446.685373]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-[ 1446.685999]  kasan_report.cold.9+0x22/0x3a
-[ 1446.686559]  ? blk_mq_get_driver_tag+0x9a4/0xa90
-[ 1446.687186]  blk_mq_get_driver_tag+0x9a4/0xa90
-[ 1446.687785]  blk_mq_dispatch_rq_list+0x21a/0x1d40
-[ 1446.688427]  ? __sbitmap_get_word+0xc3/0xe0
-[ 1446.688992]  ? blk_mq_dequeue_from_ctx+0x960/0x960
-[ 1446.689641]  ? _raw_spin_lock+0x7a/0xd0
-[ 1446.690164]  ? _raw_spin_lock_irq+0xd0/0xd0
-[ 1446.690727]  ? sbitmap_get_shallow+0x3c9/0x4e0
-[ 1446.691329]  ? sbitmap_any_bit_set+0x128/0x190
-[ 1446.691928]  ? kyber_completed_request+0x290/0x290
-[ 1446.692576]  __blk_mq_do_dispatch_sched+0x394/0x830
-[ 1446.693237]  ? blk_mq_sched_request_inserted+0x100/0x100
-[ 1446.693948]  ? __blk_queue_split+0x31d/0x1380
-[ 1446.694540]  ? blk_integrity_merge_bio+0xc1/0x370
-[ 1446.695182]  ? ll_back_merge_fn+0x694/0x1490
-[ 1446.695758]  __blk_mq_sched_dispatch_requests+0x398/0x4f0
-[ 1446.696484]  ? bio_attempt_back_merge+0x1cc/0x340
-[ 1446.697121]  ? blk_mq_do_dispatch_ctx+0x570/0x570
-[ 1446.697756]  ? _raw_spin_lock+0x7a/0xd0
-[ 1446.698279]  blk_mq_sched_dispatch_requests+0xdf/0x140
-[ 1446.698967]  __blk_mq_run_hw_queue+0xc0/0x270
-[ 1446.699561]  __blk_mq_delay_run_hw_queue+0x4cc/0x550
-[ 1446.700231]  ? kyber_has_work+0x9a/0x140
-[ 1446.700760]  ? kyber_completed_request+0x290/0x290
-[ 1446.701407]  blk_mq_run_hw_queue+0x13b/0x2b0
-[ 1446.701982]  ? kyber_has_work+0x140/0x140
-[ 1446.702593]  blk_mq_sched_insert_requests+0x1de/0x390
-[ 1446.703309]  blk_mq_flush_plug_list+0x4b4/0x760
-[ 1446.703946]  ? blk_mq_insert_requests+0x4b0/0x4b0
-[ 1446.704644]  ? __bpf_trace_block_bio_complete+0x30/0x30
-[ 1446.705408]  blk_flush_plug_list+0x2c5/0x480
-[ 1446.706026]  ? blk_insert_cloned_request+0x460/0x460
-[ 1446.706717]  ? _raw_spin_lock_irq+0x7b/0xd0
-[ 1446.707292]  ? _raw_spin_lock_irqsave+0xe0/0xe0
-[ 1446.707901]  ? set_next_entity+0x235/0x2210
-[ 1446.708471]  blk_finish_plug+0x55/0xa0
-[ 1446.708980]  blk_throtl_dispatch_work_fn+0x23b/0x2e0
-[ 1446.709653]  ? tg_prfill_limit+0x8a0/0x8a0
-[ 1446.710216]  ? read_word_at_a_time+0xe/0x20
-[ 1446.710780]  ? strscpy+0x9a/0x320
-[ 1446.711236]  process_one_work+0x6d4/0xfe0
-[ 1446.711778]  worker_thread+0x91/0xc80
-[ 1446.712281]  ? __kthread_parkme+0xb0/0x110
-[ 1446.712834]  ? process_one_work+0xfe0/0xfe0
-[ 1446.713400]  kthread+0x32d/0x3f0
-[ 1446.713840]  ? kthread_park+0x170/0x170
-[ 1446.714362]  ret_from_fork+0x1f/0x30
-[ 1446.714846]
-[ 1446.715062] Allocated by task 1:
-[ 1446.715509]  kasan_save_stack+0x19/0x40
-[ 1446.716026]  __kasan_kmalloc.constprop.1+0xc1/0xd0
-[ 1446.716673]  blk_mq_init_tags+0x6d/0x330
-[ 1446.717207]  blk_mq_alloc_rq_map+0x50/0x1c0
-[ 1446.717769]  __blk_mq_alloc_map_and_request+0xe5/0x320
-[ 1446.718459]  blk_mq_alloc_tag_set+0x679/0xdc0
-[ 1446.719050]  scsi_add_host_with_dma.cold.3+0xa0/0x5db
-[ 1446.719736]  virtscsi_probe+0x7bf/0xbd0
-[ 1446.720265]  virtio_dev_probe+0x402/0x6c0
-[ 1446.720808]  really_probe+0x276/0xde0
-[ 1446.721320]  driver_probe_device+0x267/0x3d0
-[ 1446.721892]  device_driver_attach+0xfe/0x140
-[ 1446.722491]  __driver_attach+0x13a/0x2c0
-[ 1446.723037]  bus_for_each_dev+0x146/0x1c0
-[ 1446.723603]  bus_add_driver+0x3fc/0x680
-[ 1446.724145]  driver_register+0x1c0/0x400
-[ 1446.724693]  init+0xa2/0xe8
-[ 1446.725091]  do_one_initcall+0x9e/0x310
-[ 1446.725626]  kernel_init_freeable+0xc56/0xcb9
-[ 1446.726231]  kernel_init+0x11/0x198
-[ 1446.726714]  ret_from_fork+0x1f/0x30
-[ 1446.727212]
-[ 1446.727433] Freed by task 26992:
-[ 1446.727882]  kasan_save_stack+0x19/0x40
-[ 1446.728420]  kasan_set_track+0x1c/0x30
-[ 1446.728943]  kasan_set_free_info+0x1b/0x30
-[ 1446.729517]  __kasan_slab_free+0x111/0x160
-[ 1446.730084]  kfree+0xb8/0x520
-[ 1446.730507]  blk_mq_free_map_and_requests+0x10b/0x1b0
-[ 1446.731206]  blk_mq_realloc_hw_ctxs+0x8cb/0x15b0
-[ 1446.731844]  blk_mq_init_allocated_queue+0x374/0x1380
-[ 1446.732540]  blk_mq_init_queue_data+0x7f/0xd0
-[ 1446.733155]  scsi_mq_alloc_queue+0x45/0x170
-[ 1446.733730]  scsi_alloc_sdev+0x73c/0xb20
-[ 1446.734281]  scsi_probe_and_add_lun+0x9a6/0x2d90
-[ 1446.734916]  __scsi_scan_target+0x208/0xc50
-[ 1446.735500]  scsi_scan_channel.part.3+0x113/0x170
-[ 1446.736149]  scsi_scan_host_selected+0x25a/0x360
-[ 1446.736783]  store_scan+0x290/0x2d0
-[ 1446.737275]  dev_attr_store+0x55/0x80
-[ 1446.737782]  sysfs_kf_write+0x132/0x190
-[ 1446.738313]  kernfs_fop_write_iter+0x319/0x4b0
-[ 1446.738921]  new_sync_write+0x40e/0x5c0
-[ 1446.739429]  vfs_write+0x519/0x720
-[ 1446.739877]  ksys_write+0xf8/0x1f0
-[ 1446.740332]  do_syscall_64+0x2d/0x40
-[ 1446.740802]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 1446.741462]
-[ 1446.741670] The buggy address belongs to the object at ffff8880185afd00
-[ 1446.741670]  which belongs to the cache kmalloc-256 of size 256
-[ 1446.743276] The buggy address is located 16 bytes inside of
-[ 1446.743276]  256-byte region [ffff8880185afd00, ffff8880185afe00)
-[ 1446.744765] The buggy address belongs to the page:
-[ 1446.745416] page:ffffea0000616b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x185ac
-[ 1446.746694] head:ffffea0000616b00 order:2 compound_mapcount:0 compound_pincount:0
-[ 1446.747719] flags: 0x1fffff80010200(slab|head)
-[ 1446.748337] raw: 001fffff80010200 ffffea00006a3208 ffffea000061bf08 ffff88801004f240
-[ 1446.749404] raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-[ 1446.750455] page dumped because: kasan: bad access detected
-[ 1446.751227]
-[ 1446.751445] Memory state around the buggy address:
-[ 1446.752102]  ffff8880185afc00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 1446.753090]  ffff8880185afc80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 1446.754079] >ffff8880185afd00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[ 1446.755065]                          ^
-[ 1446.755589]  ffff8880185afd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[ 1446.756574]  ffff8880185afe00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 1446.757566] ==================================================================
+I don't think it is harmful as in exposing a bug or something. It's just
+inconvenient when debugging a system where you can't differentiate
+between threads because their names have been cut too short.
 
-Flag 'BLK_MQ_F_TAG_QUEUE_SHARED' will be set if the second device on the
-same host initializes it's queue successfully. However, if the second
-device failed to allocate memory in blk_mq_alloc_and_init_hctx() from
-blk_mq_realloc_hw_ctxs() from blk_mq_init_allocated_queue(),
-__blk_mq_free_map_and_rqs() will be called on error path, and if
-'BLK_MQ_TAG_HCTX_SHARED' is not set, 'tag_set->tags' will be freed
-while it's still used by the first device.
-
-Fix the problem by checking if 'tag_set->tag_list' is emptly before
-freeing 'tag_set->tag' during queue initialization.
-
-Fixes: 868f2f0b7206 ("blk-mq: dynamic h/w context count")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-mq.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 3527ee251a85..529ad8c47377 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -3571,7 +3571,7 @@ static struct blk_mq_hw_ctx *blk_mq_alloc_and_init_hctx(
- }
- 
- static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
--						struct request_queue *q)
-+				   struct request_queue *q)
- {
- 	int i, j, end;
- 	struct blk_mq_hw_ctx **hctxs = q->queue_hw_ctx;
-@@ -3636,9 +3636,17 @@ static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
- 
- 	for (; j < end; j++) {
- 		struct blk_mq_hw_ctx *hctx = hctxs[j];
-+		bool free_tags = !blk_mq_is_shared_tags(set->flags) &&
-+			!q->nr_hw_queues && list_empty(&set->tag_list);
- 
- 		if (hctx) {
--			__blk_mq_free_map_and_rqs(set, j);
-+			/*
-+			 * tags should not be freed if other device is using the
-+			 * tagset. q->nr_hw_queues is zero means current
-+			 * function is called from queue initialization.
-+			 */
-+			if (free_tags)
-+				__blk_mq_free_map_and_rqs(set, j);
- 			blk_mq_exit_hctx(q, set, hctx, j);
- 			hctxs[j] = NULL;
- 		}
--- 
-2.31.1
-
+Best Regards
+Micha³ Miros³aw
