@@ -2,102 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2308F447050
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 21:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7516447053
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 21:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhKFUFF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 16:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        id S233534AbhKFUJx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Nov 2021 16:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbhKFUFE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 16:05:04 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CB9C061570
-        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 13:02:23 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id q74so31996156ybq.11
-        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 13:02:23 -0700 (PDT)
+        with ESMTP id S231844AbhKFUJx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Nov 2021 16:09:53 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5469C061570;
+        Sat,  6 Nov 2021 13:07:11 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id s186so32028378yba.12;
+        Sat, 06 Nov 2021 13:07:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0yoaA4TbjsXwn1z2dwHqJh3n6gzS1VVqIDVL0LK8Jqw=;
-        b=MQXfEf+3grK8+7Hs/8wz5GT2/2xX2LtBJJs3HV7q4hXa1z7jpRMDfE4kAj/O4VHcpk
-         rSPoVotjSQ/Y305+3UZubuHf2hX7+6t4npyK5O9b8Sk0T4P/KneS1MIsvw1MY+cPj9Tc
-         YG0pt3rCTwCskYftgALkmPWcAoO4MEzCIDs+wT0wH9nzjkilNz7GPPibFgctQUho9hHS
-         0X4Koqqh0v9g5phGx2yXNrhzpvIEk+k7pJ6HTnkHkAtWkiAqSusSpcmDU/314G1L6Ykc
-         +Fsi5J530w2qXnCpad3ALX7UdG1qFbvowZ0y/AX5MGfZ9NoTIuEU9umjeGsU6w5CSyEc
-         jpHg==
+        bh=7PMk2LODnuYK2JswHOw8gmG1okLs8PvKewJG/qmyDUo=;
+        b=VbXyxqBRMH3vNZ9ruMpmI4BPOoHmrLVQYCRRi9Qggn5wtQEacC7zAxv8wUv78iM0dg
+         L2fl5hFBP1/G0K/YsBjGwUQeQrljaEUJTBJYBuaVdE2oiE2b74ZPjkcqE8PmG2lssKt/
+         n9pid7vECQ1D3NbOgugSxgRlPXtU2axkdWmJQ9b8VN45Ao8gGqjqBm71bXoG+G9Gcvrr
+         ebgjKULdi8Io473y0oBGzCRmOASERJQgLHTseqSlGdYO+7KHqRTYx81iNlQkGnhyfC7G
+         eaySoB+m3Zy9i+MhOFoiDXGiRl+JUagJ9lQX9dHcpQKQjlH3KkM2NvNWhoQ9Y/pkp6fr
+         vAlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0yoaA4TbjsXwn1z2dwHqJh3n6gzS1VVqIDVL0LK8Jqw=;
-        b=5cLTjfLh4hlB512p3hmtwboweC5lcVzrdLBCXNmx+/QRq76WsMEZ6YdPj5wumtRa4/
-         uCymjlFC9+jPVHeOUlk2W587S4ZB9LbAKLXpFCT9Ibx6uqD6+gHIPIAyb2XutLoGle3z
-         xzz9u5LMYMpOsHAhVjkCkogOMYJwSe8XedYDVvo0TuRhr6aplYSIqq3LLkhDWbpXmarg
-         48rsowHnNVmQ/qDkiKrOTmBjb9SQB1widHw91xw4w+qU+BMBkeW20onbZqoAs9aeEVoN
-         lIqgqNEMzluvKmYe0Q6g32T7DAxRiCNue2JVWefKshlja+sh7JhctkW9XFeyY2rmBpGN
-         gXEQ==
-X-Gm-Message-State: AOAM531FxO3LKBvgI8KemKQaPdmEcB3tiFAZsK5ZNAVhbl4jxo81Pl9T
-        1/FGyyAjvIQbtVX5nKUM3CZDHylTFNBy/EXt4R8=
-X-Google-Smtp-Source: ABdhPJxMQTtah1txvMwEQFArmXbF7r9D67652K9xNWXrPoMDruS94YQiHD8l9aAsNqzK5I9/qMpf/TvA99566uTX37A=
-X-Received: by 2002:a25:d16:: with SMTP id 22mr63879821ybn.51.1636228942635;
- Sat, 06 Nov 2021 13:02:22 -0700 (PDT)
+        bh=7PMk2LODnuYK2JswHOw8gmG1okLs8PvKewJG/qmyDUo=;
+        b=ySuMKhXCY8rpG0kT+Io7CWNeXWc4uE+2pLqnm9C2CW/D4pUCwkDtujLVryNLA8GfT+
+         CqFY7KI2H5ZEpHFxGigJN9nH/K2HimwqoEJPq+vz6h0UjvlluY8OD1FSMNstX3Rgb/Oh
+         tiQ1Azq8crAxjhpVyzJ91IoA3LCpHXn12SkLjBX1FQHx7VehphohdOgnGPhdo/vl4oD3
+         Jgj29bet7FNNSFqMMNIdidMt6Md1Yf3xqHuvIGeTFHmegrNrDS59hzYzLuf2QV00dYL2
+         lkK/yB5MDjykkVM2qhIgej2mVf6KMSqAJP9jTEk1dfjnGjMWZhG9JJ3ta7BapsMS8PG1
+         a62Q==
+X-Gm-Message-State: AOAM531fqvwV4oRnZFI1MJctC/5mPLlujMIY2O8kHnqS9VRgayhKBrDT
+        KYAUbCq2Lkxx78+M5/Hog/Lqos7poONpBsqn2Lk=
+X-Google-Smtp-Source: ABdhPJw+ELjeeKeABYfUUh9A9Wq3EiTksUXSUnO1DHxXcVCfEP8ebEHHx0UN6A4EKUd4t5A/yPzHU3ovK0Upg8POHes=
+X-Received: by 2002:a25:d187:: with SMTP id i129mr60183246ybg.2.1636229231186;
+ Sat, 06 Nov 2021 13:07:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211105234243.390179-1-memxor@gmail.com> <CAADnVQ+6D7_7WQr2OdDRHr9tp9L-4zUvSMWh09j=-t8w-1BzCQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+6D7_7WQr2OdDRHr9tp9L-4zUvSMWh09j=-t8w-1BzCQ@mail.gmail.com>
+References: <20211106132822.1396621-1-houtao1@huawei.com> <20211106132822.1396621-2-houtao1@huawei.com>
+ <20211106192602.knmfk2x7ogcjuzvw@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211106192602.knmfk2x7ogcjuzvw@ast-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 6 Nov 2021 13:02:11 -0700
-Message-ID: <CAEf4BzYGG04bXBFEv-yk9jmV6amxxzGM-Zr0=0CoJAMRGxg6kA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/6] Change bpftool, libbpf, selftests to
- force GNU89 mode
+Date:   Sat, 6 Nov 2021 13:07:00 -0700
+Message-ID: <CAEf4BzZ-g2U-=kLihD3xNkWsZrkg+B29Es=WZqCH1+r5V95sVg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf: add bpf_strncmp helper
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Cc:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 9:34 AM Alexei Starovoitov
+On Sat, Nov 6, 2021 at 12:26 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, Nov 5, 2021 at 6:36 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> On Sat, Nov 06, 2021 at 09:28:21PM +0800, Hou Tao wrote:
+> > The helper compares two strings: one string is a null-terminated
+> > read-only string, and another one has const max storage size. And
+> > it can be used to compare file name in tracing or LSM program.
 > >
-> > Fix any remaining instances that fail the build in this mode.  For selftests, we
-> > also need to separate CXXFLAGS from CFLAGS, since adding it to CFLAGS simply
-> > would generate a warning when used with g++.
-> >
-> > This also cherry-picks Andrii's patch to fix the instance in libbpf. Also tested
-> > introducing new invalid usage of C99 features.
-> >
-> > Andrii Nakryiko (1):
-> >   libbpf: fix non-C89 loop variable declaration in gen_loader.c
-> >
-> > Kumar Kartikeya Dwivedi (5):
-> >   bpftool: Compile using -std=gnu89
-> >   libbpf: Compile using -std=gnu89
-> >   selftests/bpf: Fix non-C89 loop variable declaration instances
-> >   selftests/bpf: Switch to non-unicode character in output
-> >   selftests/bpf: Compile using -std=gnu89
+> > We don't check whether or not s2 in bpf_strncmp() is null-terminated,
+> > because its content may be changed by malicous program, and we only
+> > ensure the memory accessed is bounded by s2_sz.
 >
-> Please don't.
-> I'd rather go the other way and drop gnu89 from everywhere.
-> for (int i = 0
-> is so much cleaner.
+> I think "malicous" adjective is unnecessary and misleading.
+> It's also misspelled.
+> Just mention that 2nd argument doesn't have to be null terminated.
+>
+> > + * long bpf_strncmp(const char *s1, const char *s2, u32 s2_sz)
+> ...
+> > +BPF_CALL_3(bpf_strncmp, const char *, s1, const char *, s2, size_t, s2_sz)
+>
+> probably should match u32 instead of size_t.
+>
+> > @@ -1210,6 +1210,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >               return &bpf_get_branch_snapshot_proto;
+> >       case BPF_FUNC_trace_vprintk:
+> >               return bpf_get_trace_vprintk_proto();
+> > +     case BPF_FUNC_strncmp:
+> > +             return &bpf_strncmp_proto;
+>
+> why tracing only?
+> Should probably be in bpf_base_func_proto.
+>
+> I was thinking whether the proto could be:
+> long bpf_strncmp(const char *s1, u32 s1_sz, const char *s2)
+> but I think your version is better though having const string as 1st arg
+> is a bit odd in normal C.
 
-I agree that for (int i) is better, but it's kernel code style which
-we followed so far pretty closely for libbpf and bpftool. So I think
-this is the right move for bpftool and libbpf.
+Why do you think it's better? This is equivalent to `123 == x` if it
+was integer comparison, so it feels like bpf_strncmp(s, sz, "blah") is
+indeed more natural. No big deal, just curious what's better about it.
 
-Selftests are less consistent in styling and lack of unicode character
-in bench is annoying, so I don't mind leaving selftest more
-permissive.
-
-And even with all that, we've managed to keep BPF program code
-consistently in C89 here in selftests and in bcc/libbpf-tools. The
-code style uniformity is nice.
-
-Whether to relax BCC compilation flags is a separate discussion (and I
-don't have any strong opinion). I'd still enforce -std=gnu89 for BPF
-source code for consistency across many BPF projects.
+>
+> Would it make sense to add bpf_memchr as well while we are at it?
+> And
+> static inline bpf_strnlen(const char *s, u32 sz)
+> {
+>   return bpf_memchr(s, sz, 0);
+> }
+> to bpf_helpers.h ?
