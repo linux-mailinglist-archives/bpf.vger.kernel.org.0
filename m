@@ -2,123 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA40E447056
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 21:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 561EF44705A
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 21:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbhKFUK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 16:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhKFUK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 16:10:26 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC343C061570
-        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 13:07:43 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso750734wml.1
-        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 13:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YTwExqzbaLzxuqvV/oJ9V6E17L9+TERCkYUMoZe/UPM=;
-        b=2/tfJl2l+6tcayj/K3ATETjvDd2NNQorHEsPZjv/kiLQQ/PtrwOB1jckPRS8AtfFsj
-         6i71NrLYm72TuGZe+K0ANABFbD5uxpN4P2j2iF+6ERtYQCaZdENvOY7DNKmD5AupQAeP
-         TVxA88yV0S8EDqls5mlwbc6PkueL4iTcZvbHe1tf7lvgkhtVf3ckdIE57ec5UFPhH9s8
-         ckypZQl2B9hkRPAUuyBXtpZvnZQ1k4TuFePlhSoVYr0FU1hkxG7g5DPGmCBPmuHVU7C6
-         2XYHK0KRk/pZ0Kgn3yDMeOI9oQp96gWf61+sKP2AjhuaxRnGjsccSQQlEDyr/SRtOW2N
-         U/Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YTwExqzbaLzxuqvV/oJ9V6E17L9+TERCkYUMoZe/UPM=;
-        b=qM5anLei6yeCPhZCmekzpvlqrqlyP325HTglPPeZOEXGDTC7hAKlQoO/TyD7aSSBsx
-         jLIImt8ijbEqasYmc9iye5bPTP+28u6uDt7ixkTV9/PUwB4r5CkNqf+MiOoDYwMsnL7D
-         H1clXRxQakcalBoQklYaRSLDgVLiSg29FhKlcuTPjOJ2RjWKoJctfLCPcC1nL2IWG2Vj
-         7tbbS0F84OPo57P8wASg9b6Erds3gS2a3sNG8uOATKAH00EMg94IGwQGsR/3BRet9HTU
-         ZBgGGGu3M0NkEoIixoJKespUsm+QS2+guaR+gA7xczqAU/JFi9UwQ0rqWnSobSSBKOQT
-         C68Q==
-X-Gm-Message-State: AOAM533Nze7OF5Plwm9NM2E5WxCp5BqLeiMxFOTT/iqcqVk5Q/alVhPR
-        2IzxqQl0/Jn/Aijy53zKlfbNrA==
-X-Google-Smtp-Source: ABdhPJyBgw/+HTFOY0WehGT/wpO/NKWSOmcw3aJMNosWNWzOPztp2YAs24zEZ8taCCQNRv9qfleTKg==
-X-Received: by 2002:a05:600c:5101:: with SMTP id o1mr40540284wms.81.1636229262302;
-        Sat, 06 Nov 2021 13:07:42 -0700 (PDT)
-Received: from localhost ([91.75.210.37])
-        by smtp.gmail.com with ESMTPSA id o9sm11571286wrs.4.2021.11.06.13.07.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 13:07:41 -0700 (PDT)
-Date:   Sun, 7 Nov 2021 00:07:33 +0400
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        syzbot <syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, sboyd@kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rosted@goodmis.org>,
+        id S229892AbhKFUPe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Nov 2021 16:15:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229598AbhKFUPd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Nov 2021 16:15:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B667461058;
+        Sat,  6 Nov 2021 20:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636229571;
+        bh=VExLNn2H7AysruulvVY/PSyrJByHUoO+ctvfj3Yeg0s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cpfWVJYmndSZxfdMLc7vMgX70OE7eQczm/sezO3uy4rNKm483WTP2zktP637sKROi
+         Os8s76dB5XGZy6ePPiGhFOAaHFQFZGwv/ShwoUURVYREgOg768OmlsBnCMRU6CrMgZ
+         B9wgcii/xZIUDD8KE+RcSZHW/s7VjL/5PeRBX7o6dWqPEpvuQjt15voLQXQwrghV2d
+         39c2lwIZMA6qJXxCHrqgHu7ojYOYVZU/8EkDtRHRCjccl5P3dN/cvlx15kkT/yUXH0
+         ZLIdHkYRBCJioikqvr8HC6XzMy8g/WrgqQHPwF+VOV4JABTCwrn6VWgHmUAgauf4Uq
+         I8X3oddq3JZsA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 744E6410A1; Sat,  6 Nov 2021 17:12:48 -0300 (-03)
+Date:   Sat, 6 Nov 2021 17:12:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [syzbot] possible deadlock in ktime_get_coarse_ts64
-Message-ID: <20211106200733.meank7oonwvsdjy4@amnesia>
-References: <00000000000013aebd05cff8e064@google.com>
- <87lf224uki.ffs@tglx>
- <CAADnVQLcuMAr3XMTD1Lys5S5ybME4h=NL3=adEwib2UT6b-E9w@mail.gmail.com>
- <20211105170328.fjnzr6bnbca7mdfq@amnesia>
- <875yt64isx.ffs@tglx>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] perf build: Install libbpf headers locally when
+ building
+Message-ID: <YYbhwPnn4OvnybzQ@kernel.org>
+References: <20211105020244.6869-1-quentin@isovalent.com>
+ <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
+ <YYbXjE1aAdNjI+aY@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <875yt64isx.ffs@tglx>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YYbXjE1aAdNjI+aY@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 06:24:30PM +0100, Thomas Gleixner wrote:
-> On Fri, Nov 05 2021 at 21:03, Dmitrii Banshchikov wrote:
-> > On Fri, Nov 05, 2021 at 08:53:06AM -0700, Alexei Starovoitov wrote:
-> >> > Timestamps from within a tracepoint can only be taken with:
-> >> >
-> >> >          1) jiffies
-> >> >          2) sched_clock()
-> >> >          3) ktime_get_*_fast_ns()
-> >> >
-> >> > Those are NMI safe and can be invoked from anywhere.
-> >> >
-> >> > All other time getters which have to use the timekeeping seqcount
-> >> > protection are prone to live locks and _cannot_ be used from
-> >> > tracepoints ever.
-> >> 
-> >> Obviously.
-> >> That helper was added for networking use cases and accidentally
-> >> enabled for tracing.
-> >
-> > Sorry for that.
-> > I'm preparing a patch that will forbid using bpf_ktime_get_coarse_ns()
-> > helper in BPF_LINK_TYPE_RAW_TRACEPOINT.
+Em Sat, Nov 06, 2021 at 04:29:16PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Nov 05, 2021 at 11:38:50AM -0700, Andrii Nakryiko escreveu:
+> > On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent.com> wrote:
+> > >
+> > > API headers from libbpf should not be accessed directly from the
+> > > library's source directory. Instead, they should be exported with "make
+> > > install_headers". Let's adjust perf's Makefile to install those headers
+> > > locally when building libbpf.
+> > >
+> > > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> > > ---
+> > > Note: Sending to bpf-next because it's directly related to libbpf, and
+> > > to similar patches merged through bpf-next, but maybe Arnaldo prefers to
+> > > take it?
+> > 
+> > Arnaldo would know better how to thoroughly test it, so I'd prefer to
+> > route this through perf tree. Any objections, Arnaldo?
 > 
-> It cannot be used in TRACING and PERF_EVENT either. But those contexts
-> have to exclude other functions as well:
-> 
->      bpf_ktime_get_ns
->      bpf_ktime_get_boot_ns
-> 
-> along with
-> 
->     bpf_spin_lock/unlock
->     bpf_timer_*
+> Preliminary testing passed for 'BUILD_BPF_SKEL=1' with without
+> LIBBPF_DYNAMIC=1 (using the system's libbpf-devel to build perf), so far
+> so good, so I tentatively applied it, will see with the full set of
+> containers.
 
-1) bpf_ktime_get_ns and bpf_ktime_get_boot_ns use
-ktime_get_{mono,boot}_fast_ns.
-2) bpf_spin_lock/unlock have notrace attribute set.
-3) bpf_timer_* helpers fail early if they are in NMI.
+Because all the preliminary tests used O= to have that OUTPUT variable
+set, when we do simply:
 
-Why they have to be excluded?
+	make -C tools/perf
+
+it breaks:
+
+⬢[acme@toolbox perf]$ make -C tools clean > /dev/null 2>&1
+⬢[acme@toolbox perf]$ make JOBS=1 -C tools/perf
+make: Entering directory '/var/home/acme/git/perf/tools/perf'
+  BUILD:   Doing 'make -j1' parallel build
+  HOSTCC  fixdep.o
+  HOSTLD  fixdep-in.o
+  LINK    fixdep
+<SNIP ABI sync warnings>
+
+Auto-detecting system features:
+...                         dwarf: [ on  ]
+...            dwarf_getlocations: [ on  ]
+...                         glibc: [ on  ]
+...                        libbfd: [ on  ]
+...                libbfd-buildid: [ on  ]
+...                        libcap: [ on  ]
+...                        libelf: [ on  ]
+...                       libnuma: [ on  ]
+...        numa_num_possible_cpus: [ on  ]
+...                       libperl: [ on  ]
+...                     libpython: [ on  ]
+...                     libcrypto: [ on  ]
+...                     libunwind: [ on  ]
+...            libdw-dwarf-unwind: [ on  ]
+...                          zlib: [ on  ]
+...                          lzma: [ on  ]
+...                     get_cpuid: [ on  ]
+...                           bpf: [ on  ]
+...                        libaio: [ on  ]
+...                       libzstd: [ on  ]
+...        disassembler-four-args: [ on  ]
 
 
+  CC      fd/array.o
+  LD      fd/libapi-in.o
+  CC      fs/fs.o
+  CC      fs/tracing_path.o
+  CC      fs/cgroup.o
+  LD      fs/libapi-in.o
+  CC      cpu.o
+  CC      debug.o
+  CC      str_error_r.o
+  LD      libapi-in.o
+  AR      libapi.a
+  CC      exec-cmd.o
+  CC      help.o
+  CC      pager.o
+  CC      parse-options.o
+  CC      run-command.o
+  CC      sigchain.o
+  CC      subcmd-config.o
+  LD      libsubcmd-in.o
+  AR      libsubcmd.a
+  CC      core.o
+  CC      cpumap.o
+  CC      threadmap.o
+  CC      evsel.o
+  CC      evlist.o
+  CC      mmap.o
+  CC      zalloc.o
+  CC      xyarray.o
+  CC      lib.o
+  LD      libperf-in.o
+  AR      libperf.a
+make[2]: *** No rule to make target 'libbpf', needed by 'libbpf/libbpf.a'.  Stop.
+make[1]: *** [Makefile.perf:240: sub-make] Error 2
+make: *** [Makefile:70: all] Error 2
+make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+⬢[acme@toolbox perf]$
 
--- 
+Trying to fix...
 
-Dmitrii Banshchikov
+- Arnaldo
