@@ -2,77 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD70D447046
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 20:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2308F447050
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 21:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhKFT7N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 15:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
+        id S230316AbhKFUFF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Nov 2021 16:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbhKFT7N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:59:13 -0400
+        with ESMTP id S229727AbhKFUFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Nov 2021 16:05:04 -0400
 Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773D6C061570
-        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 12:56:31 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id d10so32076958ybe.3
-        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 12:56:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CB9C061570
+        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 13:02:23 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id q74so31996156ybq.11
+        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 13:02:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HBiLur7cgz5df44IEpiZd5XBiwgdR3uUccMS5wsXqL8=;
-        b=g5/g9VHSiQ6dC1Kc11sACKWK/0VFeKgQgZXVeAFFhNs7r4fHVRnA9D/2jLntyHpVef
-         7nhW7l4LgE28JXK1/1yCVR9oYxKEzT2jwY3U5men142MeLUMmgkr8XermdWXe8VtLIxe
-         nnDsS07LW/mTc9jNIv7GQc9wx483U1a9hT8Uzcl2ISdGm00r8A0QYUXZgXRlj69cNIRL
-         8mmvZb2zGQ6WUnV5uFhdO/8rfu7ZfThq61JeNuUsWURdFe8BrSXqDOtXOac0S2sp6omL
-         mi30IPxdykE0PDIvi9c9ijECOsfsYZ9O0jrd29vMtgAvFrQX/MnYEsPTugrDHCCSbJ1p
-         dFWQ==
+        bh=0yoaA4TbjsXwn1z2dwHqJh3n6gzS1VVqIDVL0LK8Jqw=;
+        b=MQXfEf+3grK8+7Hs/8wz5GT2/2xX2LtBJJs3HV7q4hXa1z7jpRMDfE4kAj/O4VHcpk
+         rSPoVotjSQ/Y305+3UZubuHf2hX7+6t4npyK5O9b8Sk0T4P/KneS1MIsvw1MY+cPj9Tc
+         YG0pt3rCTwCskYftgALkmPWcAoO4MEzCIDs+wT0wH9nzjkilNz7GPPibFgctQUho9hHS
+         0X4Koqqh0v9g5phGx2yXNrhzpvIEk+k7pJ6HTnkHkAtWkiAqSusSpcmDU/314G1L6Ykc
+         +Fsi5J530w2qXnCpad3ALX7UdG1qFbvowZ0y/AX5MGfZ9NoTIuEU9umjeGsU6w5CSyEc
+         jpHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HBiLur7cgz5df44IEpiZd5XBiwgdR3uUccMS5wsXqL8=;
-        b=YFxRu4ourM2dmrtdzNxB2hu52gfDjsC6I6PR96I6Chb7C3Q/6wnPMK2IWP6wgP5Pl1
-         tOmx62ubgguV1HQig9JJP/7K12BbVHogQeRVhKDiUmsVUalkXyP9IVvHKElqew0TEnFx
-         Rq+ALqTZe/PATqjA4xpp0PNtOgNjpghGQiLYuil0bLqFAIycuGvCyKTqB5Ji/0i86lyE
-         HIMRC0BnN5Ub/RDYwXtZ0MmFVy9bGg6aO8hJru8UB7HOee1CsxTYvYHackEkcgFkJAkQ
-         h26AQ2optMLOaa16qA7lkCDkPsi3b6Q1oXnWqQBL86hY3Dg+FE43AobYHGVKrM12fKOp
-         DsFg==
-X-Gm-Message-State: AOAM531F/498gwkkwGlargytCTS0j6IppKgHHSfPFvnW9C97Dtg7X2IB
-        67ui4EbBNrKWgj3c3Gq1u+8dKM05lgtfBFjAcdARAvSu
-X-Google-Smtp-Source: ABdhPJy4g9gWcFCIOGQs+xlKi+9Yyne5oSHT/ZLHJ0AWuj3H4aTbbOHgewD8xaREHeKwhLQpdOAkL9nxddh6+4uwb6c=
-X-Received: by 2002:a25:d010:: with SMTP id h16mr67453714ybg.225.1636228590649;
- Sat, 06 Nov 2021 12:56:30 -0700 (PDT)
+        bh=0yoaA4TbjsXwn1z2dwHqJh3n6gzS1VVqIDVL0LK8Jqw=;
+        b=5cLTjfLh4hlB512p3hmtwboweC5lcVzrdLBCXNmx+/QRq76WsMEZ6YdPj5wumtRa4/
+         uCymjlFC9+jPVHeOUlk2W587S4ZB9LbAKLXpFCT9Ibx6uqD6+gHIPIAyb2XutLoGle3z
+         xzz9u5LMYMpOsHAhVjkCkogOMYJwSe8XedYDVvo0TuRhr6aplYSIqq3LLkhDWbpXmarg
+         48rsowHnNVmQ/qDkiKrOTmBjb9SQB1widHw91xw4w+qU+BMBkeW20onbZqoAs9aeEVoN
+         lIqgqNEMzluvKmYe0Q6g32T7DAxRiCNue2JVWefKshlja+sh7JhctkW9XFeyY2rmBpGN
+         gXEQ==
+X-Gm-Message-State: AOAM531FxO3LKBvgI8KemKQaPdmEcB3tiFAZsK5ZNAVhbl4jxo81Pl9T
+        1/FGyyAjvIQbtVX5nKUM3CZDHylTFNBy/EXt4R8=
+X-Google-Smtp-Source: ABdhPJxMQTtah1txvMwEQFArmXbF7r9D67652K9xNWXrPoMDruS94YQiHD8l9aAsNqzK5I9/qMpf/TvA99566uTX37A=
+X-Received: by 2002:a25:d16:: with SMTP id 22mr63879821ybn.51.1636228942635;
+ Sat, 06 Nov 2021 13:02:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211105191055.3324874-1-andrii@kernel.org> <CAADnVQJ6REFCJZYCLzk0NNqo5p9C5KpOmko9REaF1KYkBEaa9w@mail.gmail.com>
-In-Reply-To: <CAADnVQJ6REFCJZYCLzk0NNqo5p9C5KpOmko9REaF1KYkBEaa9w@mail.gmail.com>
+References: <20211105234243.390179-1-memxor@gmail.com> <CAADnVQ+6D7_7WQr2OdDRHr9tp9L-4zUvSMWh09j=-t8w-1BzCQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+6D7_7WQr2OdDRHr9tp9L-4zUvSMWh09j=-t8w-1BzCQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 6 Nov 2021 12:56:19 -0700
-Message-ID: <CAEf4BzaehmbFQ50tZrZYtC+cTe+XTPBs2KBEXsjnmsSHWBYoUg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix non-C89 loop variable declaration in gen_loader.c
+Date:   Sat, 6 Nov 2021 13:02:11 -0700
+Message-ID: <CAEf4BzYGG04bXBFEv-yk9jmV6amxxzGM-Zr0=0CoJAMRGxg6kA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/6] Change bpftool, libbpf, selftests to
+ force GNU89 mode
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 9:38 AM Alexei Starovoitov
+On Sat, Nov 6, 2021 at 9:34 AM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, Nov 5, 2021 at 12:11 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> On Fri, Nov 5, 2021 at 6:36 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > >
-> > Fix the `int i` declaration inside the for statement. This is non-C89
-> > compliant. See [0] for user report breaking BCC build.
+> > Fix any remaining instances that fail the build in this mode.  For selftests, we
+> > also need to separate CXXFLAGS from CFLAGS, since adding it to CFLAGS simply
+> > would generate a warning when used with g++.
 > >
-> >   [0] https://github.com/libbpf/libbpf/issues/403
+> > This also cherry-picks Andrii's patch to fix the instance in libbpf. Also tested
+> > introducing new invalid usage of C99 features.
+> >
+> > Andrii Nakryiko (1):
+> >   libbpf: fix non-C89 loop variable declaration in gen_loader.c
+> >
+> > Kumar Kartikeya Dwivedi (5):
+> >   bpftool: Compile using -std=gnu89
+> >   libbpf: Compile using -std=gnu89
+> >   selftests/bpf: Fix non-C89 loop variable declaration instances
+> >   selftests/bpf: Switch to non-unicode character in output
+> >   selftests/bpf: Compile using -std=gnu89
 >
-> I'd prefer to fix bcc and/or its derivatives instead.
-> It's year 2021.
+> Please don't.
+> I'd rather go the other way and drop gnu89 from everywhere.
+> for (int i = 0
+> is so much cleaner.
 
-Fixing BCC and derivatives is a separate topic. This is the only
-instance of non-C89 compliant for() loop in libbpf and I'd prefer to
-fix it at the very least for style consistency.
+I agree that for (int i) is better, but it's kernel code style which
+we followed so far pretty closely for libbpf and bpftool. So I think
+this is the right move for bpftool and libbpf.
+
+Selftests are less consistent in styling and lack of unicode character
+in bench is annoying, so I don't mind leaving selftest more
+permissive.
+
+And even with all that, we've managed to keep BPF program code
+consistently in C89 here in selftests and in bcc/libbpf-tools. The
+code style uniformity is nice.
+
+Whether to relax BCC compilation flags is a separate discussion (and I
+don't have any strong opinion). I'd still enforce -std=gnu89 for BPF
+source code for consistency across many BPF projects.
