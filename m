@@ -2,187 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F024470A5
-	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 22:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D62104470DD
+	for <lists+bpf@lfdr.de>; Sat,  6 Nov 2021 23:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235125AbhKFVWz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 17:22:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233912AbhKFVWz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 17:22:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16E7861139;
-        Sat,  6 Nov 2021 21:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636233613;
-        bh=En7ugPZwMj4wEOcXJ2z95aMtHtRSF4XCmNpI+QBG1nk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nib81Xv8Z6A/Gb8YlZgPUiGfIaETHFoBUvGGkBi61eSu9y6H+jz/rsF8OsjI06PCb
-         akZZTjGQQc8pKXDc3Z44D3YD6/bTskMCb5OTPd3I3iylM1OX9jERjFYHWrrnqK6UT4
-         PNJBQp7AqqgtaFBlXI9og0OoYG8lHBzLCI0TZGAn5HGZ9ISYvi5PdEqtBhg+01OiXk
-         JkA/Ddgt+20fdHSwjhWoxw5N6V7QTe0RUoRWzNt/8EpfN4uDWuF0Va4Lj/bNYgYOJy
-         nygT5z6epy3bFHLIK9WLCU/rjBK4RdXsm0axWKJmjyzOISB1Zne+wzIFEKL3UQ9rX0
-         XmCCnjas/eslw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 97558410A1; Sat,  6 Nov 2021 18:20:10 -0300 (-03)
-Date:   Sat, 6 Nov 2021 18:20:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] Re: [PATCH bpf-next] perf build: Install libbpf headers
- locally when building
-Message-ID: <YYbxigLXFkomexsZ@kernel.org>
-References: <20211105020244.6869-1-quentin@isovalent.com>
- <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
- <YYbXjE1aAdNjI+aY@kernel.org>
- <YYbhwPnn4OvnybzQ@kernel.org>
- <YYbuA347Y5nMJ4Xm@kernel.org>
+        id S234641AbhKFWGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Nov 2021 18:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234590AbhKFWGQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Nov 2021 18:06:16 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B48C061714
+        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 15:03:34 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id e10so23997760uab.3
+        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 15:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=qutJC8n6H43HINvUPTrtINVuYQ9ygabU7dwSYjUUx60=;
+        b=kb4LbdCVhdKfvbYuzdhxPe+qmwWc7cNsFa2CGR9Hlo8bBtp0SKGlcUasymgrzKgz3C
+         hRRzGBjAJekhG4/GpX/Wf3kbiYQ0Vvx5krLgeTAErbJ/x/bsTH5/xAe/8jI3zY0+qORU
+         ElkMVgSeeacwDKLBj/oB3rdtQstwZHG1qaajw5xVLqMB3/RtIzFzZ3Wf+eSjLRzVFm8p
+         /jMBbXLc6V7CT9VbQBl50ipOBgBC69U3Z10NPgWA65UZT0RzGBYr0+Aj54qnGcP7gLjo
+         CX/E231sQ8UVg753v/WH5X4JkbE1Ksl9DEfHvSTrYKjMpHxV3KHdmSBc0SzJnsmL71yl
+         qXZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=qutJC8n6H43HINvUPTrtINVuYQ9ygabU7dwSYjUUx60=;
+        b=ASLzkHbnaPCScf+LPWZb0pUxd1B47M7TeTGBr7j5Akcg8DlvNKS04Tdxc59XizI1qM
+         p76zh1kmlsJ3/+fnH9CaoHQFAIprblDSDhVDOhc3kW1KTmcyMWm/6btbs2Jq5+VgQD+k
+         YyDO7q37Vkerq5ZxPIBDfkjleSjKS2lcD3PJG9QfoGQriqGRHWZYXFmP1fsJjNf8zU12
+         p6sfz7eBf58NAx6bQP3s0WXG7tWoLW3P8fmlAhuo7ee383RcCMXFQAVSUjN1idIcGOBj
+         DN+s69ZU3OXdIczGafgJLIhW7soySX/uh2VCOa8RpUeVuLn0gi7Mra9dWkVn6J/HrpWw
+         7Ulw==
+X-Gm-Message-State: AOAM532XG6rrzVk5OeZT/t/SudlIhqg1yP+waS+VKmOh+JqrNxT8J1I7
+        pVa/F0pXpI23jN/tUTI6uj7B8L8Tk8NEqb4LwTU=
+X-Google-Smtp-Source: ABdhPJyXBTJHL2Nq1/APC5slnveUElCJkWUZYqffUP8K3vBzWRRbeAF5UK05k+iecs7l8rMNLzL83qPwkPjgC1lqcj0=
+X-Received: by 2002:a05:6122:169e:: with SMTP id 30mr15389125vkl.12.1636234516260;
+ Sat, 06 Nov 2021 14:35:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYbuA347Y5nMJ4Xm@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Sender: aishamummar69@gmail.com
+Received: by 2002:a59:9c02:0:b0:23d:5314:c01f with HTTP; Sat, 6 Nov 2021
+ 14:35:15 -0700 (PDT)
+From:   "Mrs. Aisha Gaddafi" <aishamammarg@gmail.com>
+Date:   Sat, 6 Nov 2021 14:35:15 -0700
+X-Google-Sender-Auth: Bo4fycOq1V-Xy7k1qJHh4vrz7h4
+Message-ID: <CAHxmc9fo1yFQm=1T2XEcwp2-oH7PeA-WcY3iG4gWh2LZXC7Vsw@mail.gmail.com>
+Subject: ASSALAMU ALAIKUM
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat, Nov 06, 2021 at 06:05:07PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Sat, Nov 06, 2021 at 05:12:48PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Sat, Nov 06, 2021 at 04:29:16PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Fri, Nov 05, 2021 at 11:38:50AM -0700, Andrii Nakryiko escreveu:
-> > > > On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent.com> wrote:
-> > > > >
-> > > > > API headers from libbpf should not be accessed directly from the
-> > > > > library's source directory. Instead, they should be exported with "make
-> > > > > install_headers". Let's adjust perf's Makefile to install those headers
-> > > > > locally when building libbpf.
-> > > > >
-> > > > > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> > > > > ---
-> > > > > Note: Sending to bpf-next because it's directly related to libbpf, and
-> > > > > to similar patches merged through bpf-next, but maybe Arnaldo prefers to
-> > > > > take it?
-> > > > 
-> > > > Arnaldo would know better how to thoroughly test it, so I'd prefer to
-> > > > route this through perf tree. Any objections, Arnaldo?
-> > > 
-> > > Preliminary testing passed for 'BUILD_BPF_SKEL=1' with without
-> > > LIBBPF_DYNAMIC=1 (using the system's libbpf-devel to build perf), so far
-> > > so good, so I tentatively applied it, will see with the full set of
-> > > containers.
-> > 
-> > Because all the preliminary tests used O= to have that OUTPUT variable
-> > set, when we do simply:
-> > 
-> > 	make -C tools/perf
-> 
-> So I'll have to remove it now as my container builds test both O= and
-> in-place builds (make -C tools/perf), I know many people (Jiri for
-> instance) don't use O=.
-> 
-> I tried to fix this but run out of time today, visits arriving soon, so
-> I'll try to come back to this tomorrow early morning, to push what I
-> have in to Linus, that is blocked by this now :-\
+--=20
+DearPartner,
 
-What I have, with your patch, is at:
+I am Mrs. Aisha Gaddafi, the only biological daughter of Former
+President of Libya Col. Muammar Gaddafi. Am a mother and a Widow with
+three Children, I am writing this mail with tears and sorrow from my
+heart asking for your help at this time.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tmp.perf/core
+I got your contact while searching for a trustworthy someone who will
+understand my present condition and come to my rescue here in Oman
+where I have been granted asylum, I have passed through pains and
+sorrowful moment since the death of my late father and brothers, all
+our foreign and local accounts have been blocked and we are not
+allowed to make transfer or receive money from any country or any
+source.
 
-It has both patches, as its needed for the BUILD_BPF_SKEL=1 mode to
-build correctly with/without LIBBPF_DYNAMIC=1.
+I received an urgent email  from Oman government stated that the new
+Libya government are tracing hidden deposit of my late father account
+which was deposited at Eco Bank, though I don't want them to be aware
+of this particular funds, the sum of (=C2=A353.9 Million Great British
+Pounds deposited in Eco Bank.
+If you can be of any assistant to me, kindly get back to me so that I
+can furnish you with the full details and contact address of the Eco
+Bank,to enable you to contact the bank for the final release of the
+funds to your onward accredited account in your Country.
 
-- Arnaldo
- 
-> - Arnaldo
->  
-> > it breaks:
-> > 
-> > ⬢[acme@toolbox perf]$ make -C tools clean > /dev/null 2>&1
-> > ⬢[acme@toolbox perf]$ make JOBS=1 -C tools/perf
-> > make: Entering directory '/var/home/acme/git/perf/tools/perf'
-> >   BUILD:   Doing 'make -j1' parallel build
-> >   HOSTCC  fixdep.o
-> >   HOSTLD  fixdep-in.o
-> >   LINK    fixdep
-> > <SNIP ABI sync warnings>
-> > 
-> > Auto-detecting system features:
-> > ...                         dwarf: [ on  ]
-> > ...            dwarf_getlocations: [ on  ]
-> > ...                         glibc: [ on  ]
-> > ...                        libbfd: [ on  ]
-> > ...                libbfd-buildid: [ on  ]
-> > ...                        libcap: [ on  ]
-> > ...                        libelf: [ on  ]
-> > ...                       libnuma: [ on  ]
-> > ...        numa_num_possible_cpus: [ on  ]
-> > ...                       libperl: [ on  ]
-> > ...                     libpython: [ on  ]
-> > ...                     libcrypto: [ on  ]
-> > ...                     libunwind: [ on  ]
-> > ...            libdw-dwarf-unwind: [ on  ]
-> > ...                          zlib: [ on  ]
-> > ...                          lzma: [ on  ]
-> > ...                     get_cpuid: [ on  ]
-> > ...                           bpf: [ on  ]
-> > ...                        libaio: [ on  ]
-> > ...                       libzstd: [ on  ]
-> > ...        disassembler-four-args: [ on  ]
-> > 
-> > 
-> >   CC      fd/array.o
-> >   LD      fd/libapi-in.o
-> >   CC      fs/fs.o
-> >   CC      fs/tracing_path.o
-> >   CC      fs/cgroup.o
-> >   LD      fs/libapi-in.o
-> >   CC      cpu.o
-> >   CC      debug.o
-> >   CC      str_error_r.o
-> >   LD      libapi-in.o
-> >   AR      libapi.a
-> >   CC      exec-cmd.o
-> >   CC      help.o
-> >   CC      pager.o
-> >   CC      parse-options.o
-> >   CC      run-command.o
-> >   CC      sigchain.o
-> >   CC      subcmd-config.o
-> >   LD      libsubcmd-in.o
-> >   AR      libsubcmd.a
-> >   CC      core.o
-> >   CC      cpumap.o
-> >   CC      threadmap.o
-> >   CC      evsel.o
-> >   CC      evlist.o
-> >   CC      mmap.o
-> >   CC      zalloc.o
-> >   CC      xyarray.o
-> >   CC      lib.o
-> >   LD      libperf-in.o
-> >   AR      libperf.a
-> > make[2]: *** No rule to make target 'libbpf', needed by 'libbpf/libbpf.a'.  Stop.
-> > make[1]: *** [Makefile.perf:240: sub-make] Error 2
-> > make: *** [Makefile:70: all] Error 2
-> > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-> > ⬢[acme@toolbox perf]$
-> > 
-> > Trying to fix...
-> > 
-> > - Arnaldo
-> 
-> -- 
-> 
-> - Arnaldo
+I am willing to reward you bountifully with 40% while I myself will
+also share 60% ratio, If you are sure that you are interested to help
+me, please  kindly contact me immediately via my private email for more det=
+ails.
 
--- 
+E-mail address: (aishamammarg@gmail.com)
+Your urgent reply will be appreciated.
 
-- Arnaldo
+Thanks and may Allah bless you
+Mrs. Aisha Gaddafi.
