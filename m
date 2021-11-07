@@ -2,99 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D074B4470F6
-	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 00:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9E1447112
+	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 01:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbhKFXXg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 19:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        id S233374AbhKGAYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Nov 2021 20:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhKFXXf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 19:23:35 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04BDC061570
-        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 16:20:53 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id x16-20020a17090a789000b001a69735b339so5954074pjk.5
-        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 16:20:53 -0700 (PDT)
+        with ESMTP id S233267AbhKGAYI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Nov 2021 20:24:08 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86085C061714
+        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 17:21:26 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id w29so8410295wra.12
+        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 17:21:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vcVcAWMuMSbvOw005beBd3hIKeaOr7s/n/JoldgYRQA=;
-        b=YeYgPTfUe3SV8aQMiKYl93WBeQWFzZHp6gvsXxU0jyL9iHARgW8P4Six0fKNWe6UIz
-         XRoZakU/4irlbLHmswaqGwH9wO7ztcjV/LZow/2F0i9rJ+SiofJU/EPwYtdQMKSxu9d8
-         kEW7nyORLryqu9g+lfnptTBWN+e2rCSeifUpYWQ3yT297cDX4xDMZYdnC1fB2MYITs/B
-         re+ydicdgKAB3AIBCKIkWcTJlFEbiimAFgRbFWy4SwvNOfxnvieXZo6Uib+chbdzD9Md
-         MYxz34B774y1qglZbFQFsYeD+NGmoiuoSmHHkxtX4ANsemiaYkK/GeNAxaq0P6bBLPtG
-         Mcdg==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=si5tlyn6HjXs/k2N6uFM1eCM7PYGPBsMizUHEFvUaTA=;
+        b=S0RjQ23foC6IYzsZDlw+lK8l00W9mxKm+R635i1iCUBTIpIUbJwCrIGfT5JS7d/GX+
+         1IbNy7RZT87Uq2uS/lmB66/uxowtaFIQbePZ/h5sB9mGemv2jgOd361tM+pu7QAX3TLX
+         Thk+VZUQKE0zvEE8GrHcc6wvI68sTqzu/Xl/36PRUklAFcvnz7TslNtmFjn7HpeA+RuU
+         RtJx5z6La8yxz/FSOGd+J1Nlc30bW3FMMp5Wp8UIyreUfIU9RFVv5YiZJN4J5G7nmjMJ
+         isizlRjHMQKDZ/EUihY+m6fsAmqsgRU+QNWYYg/lqp9T4A9tKi2AscfL5gvkZwdtdpbz
+         cgyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vcVcAWMuMSbvOw005beBd3hIKeaOr7s/n/JoldgYRQA=;
-        b=t1UQ960S4Xt6nbGx14jfgy49fUK43jpbgTmCWZ6VWLBMwu4r3BW7B8ohKd/l3lQMLz
-         4Knc91E3j7POusvFB8GclotqHCWLlZDyCEL9oAlSU+kkiOw3oKfcvolNpguqCsk+EBUW
-         c87Mhr4iC3i14yOm9LAAJd9UG/JB7VPpfMx3YnsZNYSys3BbByD0y+uo0n0ru++RfABe
-         v484VxwA4izmhsr102plE92aOpsk5TYooQ27OqJXAOAyUsnhhY8lMHUDC6FrL+zqBmp9
-         M/59iAqtGqPBxJ2XLjHuDxc+j9tXipitTjCT+LKrybzgZc1bfHPVdK4r99TyLOhzN13j
-         Fvbw==
-X-Gm-Message-State: AOAM530x7lfo4AntkVOUeuHxZdnQLl1SSNAjJZEySjhJGVbml1qwD+tg
-        /yC1IQH2sWcR/OyyX15ypHbRufJstyn322bQdwg=
-X-Google-Smtp-Source: ABdhPJwEm6nR+tdyyt8KXdNRRZDvh8S77Bxbo0LXG87HgFL98qFwa8ZAtBe6P05niMnYfGNIi0J/ocUxK6aeFREyH+E=
-X-Received: by 2002:a17:903:2306:b0:141:e52e:457d with SMTP id
- d6-20020a170903230600b00141e52e457dmr42465862plh.3.1636240853262; Sat, 06 Nov
- 2021 16:20:53 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=si5tlyn6HjXs/k2N6uFM1eCM7PYGPBsMizUHEFvUaTA=;
+        b=vszrQHE32289+9l3BdHJDSYkVVFYY/H+g1/uGOQDhVmTUGVxdVHG9Bw1NvYHZwahZu
+         yyf0ouyOhk0/LXMV+JcfscBJxvOQFxx0T8LQbLoZ5z0zSASnnVKYxNb/crSBgLreA9Q8
+         xomJGnsEipBP3ZNkYZgCEUHG7kahir3OTjCszHmCanKwsJ+A9f0DlIqzPy1ap2m4hdr/
+         m+WJ//noC1+ZZ/u1w79ZAbwsT3gTZCwhhSOD4oGv7UChAtF/90Dq8g5EPrhw3H/FzWHl
+         ZoARSdAOflCk1TBXbX0yOSGJgmyd46zJDGJlPNhjT2ivDpznfTBZKNGZFj0bWr39wLuV
+         BNWQ==
+X-Gm-Message-State: AOAM533SUHJy9YWAtZJTWgyPieTqiEcGmtI8Ncs4l9ERM30hPaPSo12E
+        YOW59SqW4bz3+LJ2e1rYWzHWZw==
+X-Google-Smtp-Source: ABdhPJw0BPZlS9F5R6uB1wvtU2kjB0wbgQMfPuogrmeglxKThlY1fHRZcYgV0FvfCa8lUw8tUPF+rw==
+X-Received: by 2002:adf:fe8e:: with SMTP id l14mr50633476wrr.177.1636244485013;
+        Sat, 06 Nov 2021 17:21:25 -0700 (PDT)
+Received: from [192.168.1.11] ([149.86.67.25])
+        by smtp.gmail.com with ESMTPSA id o9sm11979624wrs.4.2021.11.06.17.21.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Nov 2021 17:21:24 -0700 (PDT)
+Message-ID: <813cc0db-51d0-65b3-70f4-f1a823b0d029@isovalent.com>
+Date:   Sun, 7 Nov 2021 00:21:23 +0000
 MIME-Version: 1.0
-References: <20211105234243.390179-1-memxor@gmail.com> <CAADnVQ+6D7_7WQr2OdDRHr9tp9L-4zUvSMWh09j=-t8w-1BzCQ@mail.gmail.com>
- <CAEf4BzYGG04bXBFEv-yk9jmV6amxxzGM-Zr0=0CoJAMRGxg6kA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYGG04bXBFEv-yk9jmV6amxxzGM-Zr0=0CoJAMRGxg6kA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 6 Nov 2021 16:20:42 -0700
-Message-ID: <CAADnVQLAcgdbjOiT33ED3qD7wP-D8gnzLdHA3zxjdEmaKkipkA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/6] Change bpftool, libbpf, selftests to
- force GNU89 mode
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [BUG] Re: [PATCH bpf-next] perf build: Install libbpf headers
+ locally when building
+Content-Language: en-GB
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211105020244.6869-1-quentin@isovalent.com>
+ <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
+ <YYbXjE1aAdNjI+aY@kernel.org> <YYbhwPnn4OvnybzQ@kernel.org>
+ <YYbuA347Y5nMJ4Xm@kernel.org> <YYbxigLXFkomexsZ@kernel.org>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <YYbxigLXFkomexsZ@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 1:02 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Nov 6, 2021 at 9:34 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Nov 5, 2021 at 6:36 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > >
-> > > Fix any remaining instances that fail the build in this mode.  For selftests, we
-> > > also need to separate CXXFLAGS from CFLAGS, since adding it to CFLAGS simply
-> > > would generate a warning when used with g++.
-> > >
-> > > This also cherry-picks Andrii's patch to fix the instance in libbpf. Also tested
-> > > introducing new invalid usage of C99 features.
-> > >
-> > > Andrii Nakryiko (1):
-> > >   libbpf: fix non-C89 loop variable declaration in gen_loader.c
-> > >
-> > > Kumar Kartikeya Dwivedi (5):
-> > >   bpftool: Compile using -std=gnu89
-> > >   libbpf: Compile using -std=gnu89
-> > >   selftests/bpf: Fix non-C89 loop variable declaration instances
-> > >   selftests/bpf: Switch to non-unicode character in output
-> > >   selftests/bpf: Compile using -std=gnu89
-> >
-> > Please don't.
-> > I'd rather go the other way and drop gnu89 from everywhere.
-> > for (int i = 0
-> > is so much cleaner.
->
-> I agree that for (int i) is better, but it's kernel code style which
-> we followed so far pretty closely for libbpf and bpftool. So I think
-> this is the right move for bpftool and libbpf.
+2021-11-06 18:20 UTC-0300 ~ Arnaldo Carvalho de Melo <acme@kernel.org>
+> Em Sat, Nov 06, 2021 at 06:05:07PM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Sat, Nov 06, 2021 at 05:12:48PM -0300, Arnaldo Carvalho de Melo escreveu:
+>>> Em Sat, Nov 06, 2021 at 04:29:16PM -0300, Arnaldo Carvalho de Melo escreveu:
+>>>> Em Fri, Nov 05, 2021 at 11:38:50AM -0700, Andrii Nakryiko escreveu:
+>>>>> On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>>>>>>
+>>>>>> API headers from libbpf should not be accessed directly from the
+>>>>>> library's source directory. Instead, they should be exported with "make
+>>>>>> install_headers". Let's adjust perf's Makefile to install those headers
+>>>>>> locally when building libbpf.
+>>>>>>
+>>>>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>>>>>> ---
+>>>>>> Note: Sending to bpf-next because it's directly related to libbpf, and
+>>>>>> to similar patches merged through bpf-next, but maybe Arnaldo prefers to
+>>>>>> take it?
+>>>>>
+>>>>> Arnaldo would know better how to thoroughly test it, so I'd prefer to
+>>>>> route this through perf tree. Any objections, Arnaldo?
+>>>>
+>>>> Preliminary testing passed for 'BUILD_BPF_SKEL=1' with without
+>>>> LIBBPF_DYNAMIC=1 (using the system's libbpf-devel to build perf), so far
+>>>> so good, so I tentatively applied it, will see with the full set of
+>>>> containers.
+>>>
+>>> Because all the preliminary tests used O= to have that OUTPUT variable
+>>> set, when we do simply:
+>>>
+>>> 	make -C tools/perf
+>>
+>> So I'll have to remove it now as my container builds test both O= and
+>> in-place builds (make -C tools/perf), I know many people (Jiri for
+>> instance) don't use O=.
+>>
+>> I tried to fix this but run out of time today, visits arriving soon, so
+>> I'll try to come back to this tomorrow early morning, to push what I
+>> have in to Linus, that is blocked by this now :-\
+> 
+> What I have, with your patch, is at:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tmp.perf/core
+> 
+> It has both patches, as its needed for the BUILD_BPF_SKEL=1 mode to
+> build correctly with/without LIBBPF_DYNAMIC=1.
 
-The kernel coding style is not white and black.
-Certain style preferences are archaic to say the least.
-It's not the right move to follow it blindly.
+Hi Arnaldo, thanks for the review and testing. Apologies, I missed that
+the recipe for the $(LIBBPF_OUTPUT) directory was located under the
+"ifdef BUILD_BPF_SKEL". I'm sending a v2 that will handle this case better.
+
+Quentin
