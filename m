@@ -2,172 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08A0447116
-	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 01:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB58447158
+	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 04:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhKGA2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Nov 2021 20:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhKGA2N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Nov 2021 20:28:13 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EC4C061714
-        for <bpf@vger.kernel.org>; Sat,  6 Nov 2021 17:25:31 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso8652375wmh.0
-        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 17:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y1HVp9FmknLhxKbjSBkY/pQ0aUWzycOIYNg60LBlRKM=;
-        b=PAbMbOaQQ02yfasQOcEshLjXpHu7XBvVm7m+hl+4bBemu4SE021mzHq5KFv41qSW56
-         /liAwYw0evxi/w0LKmIZ1ZaJ4wDdVMDGkqY9kK1J1r0U6MtPm1jLleE2vbB277D1NASH
-         1y7GijXY1TxH3j9plJTuUgmaBob2o2FpwMzkmj6qtyGf36Fi8o1dmZztJYmy6GEzWwN2
-         fZRUd9fJuWUeOPlk4r+A45D7PeOAgu5rmPplOW0M6JNYZJ/NTstax5ljxvq8gDP7Nniz
-         6BrM/u9DN7OQyDJJ971LADJ6LC+ehcf7dWG8acutBtrZwRHPx3G1JsLA6zwzDzWskr6+
-         +prg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y1HVp9FmknLhxKbjSBkY/pQ0aUWzycOIYNg60LBlRKM=;
-        b=5mkpVNxeXvSJM2GfHE/y/URogwBCMcvbz/5dXPNz4pklbvvcgEdLLYPvnFGe1Q9rIW
-         Py5pd4OoRUDk++qk/02UanNbWv31V+t36J9PWdD2ssowPo3Njo72y3ArMbF0y2bzELly
-         txbjsrvJN5m1UlOSp2BlAu+7C1/3O4z8w0aP39kj0nWue+xVeRitPJtwGSVVz+p0VwtE
-         EcYREeCPRAxHpBxA82qjeHjryifwaXD2/MFjvCjCv3C/t7pr4hZKT5cSYzMf84+DsS8O
-         FvtZtfejefJZxl7dpvd8AtepjXPSLOhJmOZAYHKoDdPyypGtxKxZGA9G9XaTszOOEpvk
-         Lx9w==
-X-Gm-Message-State: AOAM533Eaw8zaX1CNkqUY6h6ipXRolpus56WPdL9VTevqJK0fWE1CBm4
-        Bq8dkhFsu/oQYSxmf3GpwlLrEw==
-X-Google-Smtp-Source: ABdhPJwjQg4523Hu5mJSwF08gsTlYIStemQsKCmYcOBSNVcPiZT5Yov83jxn3fksBDfgDikt1iukcA==
-X-Received: by 2002:a05:600c:b41:: with SMTP id k1mr43615221wmr.4.1636244729930;
-        Sat, 06 Nov 2021 17:25:29 -0700 (PDT)
-Received: from localhost.localdomain ([149.86.67.25])
-        by smtp.gmail.com with ESMTPSA id h1sm11698919wmb.7.2021.11.06.17.25.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 17:25:29 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH v2] perf build: Install libbpf headers locally when building
-Date:   Sun,  7 Nov 2021 00:24:45 +0000
-Message-Id: <20211107002445.4790-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <813cc0db-51d0-65b3-70f4-f1a823b0d029@isovalent.com>
-References: <813cc0db-51d0-65b3-70f4-f1a823b0d029@isovalent.com>
+        id S234731AbhKGD7E convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 6 Nov 2021 23:59:04 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20342 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231126AbhKGD7E (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 6 Nov 2021 23:59:04 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1A70Uod7006293
+        for <bpf@vger.kernel.org>; Sat, 6 Nov 2021 20:56:21 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 3c5n7ccj97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 20:56:21 -0700
+Received: from intmgw001.05.prn6.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Sat, 6 Nov 2021 20:56:20 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 281FA8288914; Sat,  6 Nov 2021 20:56:14 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/9] Fix leaks in libbpf and selftests
+Date:   Sat, 6 Nov 2021 20:56:10 -0700
+Message-ID: <20211107035610.536469-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: 56cxt842-nGaMGoVOyal_mOoaWncFW6f
+X-Proofpoint-GUID: 56cxt842-nGaMGoVOyal_mOoaWncFW6f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-07_01,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
+ mlxlogscore=902 suspectscore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111070022
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-API headers from libbpf should not be accessed directly from the
-library's source directory. Instead, they should be exported with "make
-install_headers". Let's adjust perf's Makefile to install those headers
-locally when building libbpf.
+Fix all the memory leaks reported by ASAN. All but one are just improper
+resource clean up in selftests. But one memory leak was discovered in libbpf,
+leaving inner map's name leaked.
 
-v2:
-- Fix $(LIBBPF_OUTPUT) when $(OUTPUT) is null.
-- Make sure the recipe for $(LIBBPF_OUTPUT) is not under a "ifdef".
+First patch fixes selftests' Makefile by passing through SAN_CFLAGS to linker.
+Without that compiling with SAN_CFLAGS=-fsanitize=address kept failing.
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/perf/Makefile.perf | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+Running selftests under ASAN in BPF CI is the next step, we just need to make
+sure all the necessary libraries (libasan and liblsan) are installed on the
+host and inside the VM. Would be great to get some help with that, but for now
+make sure that test_progs run is clean from leak sanitizer errors.
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index b856afa6eb52..e01ada5c9876 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -241,7 +241,7 @@ else # force_fixdep
- 
- LIB_DIR         = $(srctree)/tools/lib/api/
- TRACE_EVENT_DIR = $(srctree)/tools/lib/traceevent/
--BPF_DIR         = $(srctree)/tools/lib/bpf/
-+LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
- SUBCMD_DIR      = $(srctree)/tools/lib/subcmd/
- LIBPERF_DIR     = $(srctree)/tools/lib/perf/
- DOC_DIR         = $(srctree)/tools/perf/Documentation/
-@@ -293,7 +293,6 @@ strip-libs = $(filter-out -l%,$(1))
- ifneq ($(OUTPUT),)
-   TE_PATH=$(OUTPUT)
-   PLUGINS_PATH=$(OUTPUT)
--  BPF_PATH=$(OUTPUT)
-   SUBCMD_PATH=$(OUTPUT)
-   LIBPERF_PATH=$(OUTPUT)
- ifneq ($(subdir),)
-@@ -305,7 +304,6 @@ else
-   TE_PATH=$(TRACE_EVENT_DIR)
-   PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
-   API_PATH=$(LIB_DIR)
--  BPF_PATH=$(BPF_DIR)
-   SUBCMD_PATH=$(SUBCMD_DIR)
-   LIBPERF_PATH=$(LIBPERF_DIR)
- endif
-@@ -324,7 +322,14 @@ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DY
- LIBAPI = $(API_PATH)libapi.a
- export LIBAPI
- 
--LIBBPF = $(BPF_PATH)libbpf.a
-+ifneq ($(OUTPUT),)
-+  LIBBPF_OUTPUT = $(abspath $(OUTPUT))/libbpf
-+else
-+  LIBBPF_OUTPUT = $(CURDIR)/libbpf
-+endif
-+LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
-+LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
-+LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
- 
- LIBSUBCMD = $(SUBCMD_PATH)libsubcmd.a
- 
-@@ -829,12 +834,14 @@ $(LIBAPI)-clean:
- 	$(call QUIET_CLEAN, libapi)
- 	$(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) clean >/dev/null
- 
--$(LIBBPF): FORCE
--	$(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) $(OUTPUT)libbpf.a FEATURES_DUMP=$(FEATURE_DUMP_EXPORT)
-+$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
-+	$(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
-+		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
-+		$@ install_headers
- 
- $(LIBBPF)-clean:
- 	$(call QUIET_CLEAN, libbpf)
--	$(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) clean >/dev/null
-+	$(Q)$(RM) -r -- $(LIBBPF_OUTPUT)
- 
- $(LIBPERF): FORCE
- 	$(Q)$(MAKE) -C $(LIBPERF_DIR) EXTRA_CFLAGS="$(LIBPERF_CFLAGS)" O=$(OUTPUT) $(OUTPUT)libperf.a
-@@ -1034,16 +1041,15 @@ SKELETONS := $(SKEL_OUT)/bpf_prog_profiler.skel.h
- SKELETONS += $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_follower.skel.h
- SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h
- 
-+$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
-+	$(Q)$(MKDIR) -p $@
-+
- ifdef BUILD_BPF_SKEL
- BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
--LIBBPF_SRC := $(abspath ../lib/bpf)
--BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(BPF_PATH) -I$(LIBBPF_SRC)/..
--
--$(SKEL_TMP_OUT):
--	$(Q)$(MKDIR) -p $@
-+BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE)
- 
- $(BPFTOOL): | $(SKEL_TMP_OUT)
--	CFLAGS= $(MAKE) -C ../bpf/bpftool \
-+	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
- 		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
- 
- VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
+Andrii Nakryiko (9):
+  selftests/bpf: pass sanitizer flags to linker through LDFLAGS
+  libbpf: free up resources used by inner map definition
+  selftests/bpf: fix memory leaks in btf_type_c_dump() helper
+  selftests/bpf: free per-cpu values array in bpf_iter selftest
+  selftests/bpf: free inner strings index in btf selftest
+  selftests/bpf: clean up btf and btf_dump in dump_datasec test
+  selftests/bpf: avoid duplicate btf__parse() call
+  selftests/bpf: destroy XDP link correctly
+  selftests/bpf: fix bpf_object leak in skb_ctx selftest
+
+ tools/lib/bpf/libbpf.c                                   | 1 +
+ tools/testing/selftests/bpf/Makefile                     | 1 +
+ tools/testing/selftests/bpf/btf_helpers.c                | 9 +++++++--
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c        | 1 +
+ tools/testing/selftests/bpf/prog_tests/btf.c             | 6 ++----
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c        | 8 ++++++--
+ tools/testing/selftests/bpf/prog_tests/core_reloc.c      | 2 +-
+ .../testing/selftests/bpf/prog_tests/migrate_reuseport.c | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/skb_ctx.c         | 2 ++
+ 9 files changed, 23 insertions(+), 11 deletions(-)
+
 -- 
-2.32.0
+2.30.2
 
