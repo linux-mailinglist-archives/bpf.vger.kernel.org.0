@@ -2,77 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7F544716B
-	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 05:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60DA44728E
+	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 11:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhKGEHH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 7 Nov 2021 00:07:07 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62198 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229743AbhKGEHG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 7 Nov 2021 00:07:06 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1A73nWoJ029038
-        for <bpf@vger.kernel.org>; Sat, 6 Nov 2021 21:04:23 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3c5n7cck1s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 06 Nov 2021 21:04:23 -0700
-Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Sat, 6 Nov 2021 21:04:22 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 2F8E38289C78; Sat,  6 Nov 2021 21:04:11 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 9/9] selftests/bpf: fix bpf_object leak in skb_ctx selftest
-Date:   Sat, 6 Nov 2021 21:03:43 -0700
-Message-ID: <20211107040343.583332-10-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211107040343.583332-1-andrii@kernel.org>
-References: <20211107040343.583332-1-andrii@kernel.org>
+        id S234117AbhKGKex (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Nov 2021 05:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232211AbhKGKex (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Nov 2021 05:34:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD901C061570;
+        Sun,  7 Nov 2021 02:32:10 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636281128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rd3ffGQQJChg/Hb94WlJufijU/0aWer4s6t1U07NuVA=;
+        b=kOiv5v2+u8C1UOLT1f1I2XzxTlDJVp6IcSJ2fBFqASpU/Ny1xOEUiv9eWaHRRrgq5rh6gC
+        Iid1LKOLo2EhRKWnIcZxah/chirl0IdFyKKhLrxqRC5btmJB5nUiTaj8vPmy1ccTfa3EHT
+        LEPQH85k9hlkiUoj6l7Deiko2nkjUCXMn4HGmruyAf8qk2GZPyHskjYS7rARxU7vcWYZCw
+        Vi7OW3bHoBfG/iLqlKDHnD+BWarvPTMXKl4lBdDxfq7dO6fd0B3tO7RBwLEdE0sOZ6s7Jl
+        DGAqOMZx7LSgm4V7fXnrO//ZUqybhypbTVlSLXQdxycPeBN64ob92Djrred3FA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636281128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rd3ffGQQJChg/Hb94WlJufijU/0aWer4s6t1U07NuVA=;
+        b=f1338RiamZStL8yRo6YOlOH4bHwoHKfb6/iRJVbwUWWpHSbop0chV7X1JQ/Cmau0U/7iSj
+        yBfncaMJNiL9n/AQ==
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        syzbot <syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, sboyd@kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rosted@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [syzbot] possible deadlock in ktime_get_coarse_ts64
+In-Reply-To: <20211106200733.meank7oonwvsdjy4@amnesia>
+References: <00000000000013aebd05cff8e064@google.com> <87lf224uki.ffs@tglx>
+ <CAADnVQLcuMAr3XMTD1Lys5S5ybME4h=NL3=adEwib2UT6b-E9w@mail.gmail.com>
+ <20211105170328.fjnzr6bnbca7mdfq@amnesia> <875yt64isx.ffs@tglx>
+ <20211106200733.meank7oonwvsdjy4@amnesia>
+Date:   Sun, 07 Nov 2021 11:32:07 +0100
+Message-ID: <87zgqg2r4o.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
 Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: rGkvhXEeOZbT9SPkpThjForNRTRKrWx_
-X-Proofpoint-GUID: rGkvhXEeOZbT9SPkpThjForNRTRKrWx_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-07_01,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
- mlxlogscore=703 suspectscore=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111070023
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-skb_ctx selftest didn't close bpf_object implicitly allocated by
-bpf_prog_test_load() helper. Fix the problem by explicitly calling
-bpf_object__close() at the end of the test.
+Dmitrii,
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/skb_ctx.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Sun, Nov 07 2021 at 00:07, Dmitrii Banshchikov wrote:
+> On Fri, Nov 05, 2021 at 06:24:30PM +0100, Thomas Gleixner wrote:
+>> It cannot be used in TRACING and PERF_EVENT either. But those contexts
+>> have to exclude other functions as well:
+>> 
+>>      bpf_ktime_get_ns
+>>      bpf_ktime_get_boot_ns
+>> 
+>> along with
+>> 
+>>     bpf_spin_lock/unlock
+>>     bpf_timer_*
+>
+> 1) bpf_ktime_get_ns and bpf_ktime_get_boot_ns use
+> ktime_get_{mono,boot}_fast_ns.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-index c437e6ba8fe2..db4d72563aae 100644
---- a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-@@ -111,4 +111,6 @@ void test_skb_ctx(void)
- 		   "ctx_out_mark",
- 		   "skb->mark == %u, expected %d\n",
- 		   skb.mark, 10);
-+
-+	bpf_object__close(obj);
- }
--- 
-2.30.2
+Ok. That's fine then. I was just going from the bpf function names and
+missed the implementation detail.
 
+> 2) bpf_spin_lock/unlock have notrace attribute set.
+
+How is that supposed to help?
+
+You cannot take a spinlock from NMI context if that same lock can be
+taken by other contexts as well.
+
+Also notrace on the public function is not guaranteeing that the inlines
+(as defined) are not traceable and it does not exclude it from being
+kprobed.
+
+> 3) bpf_timer_* helpers fail early if they are in NMI.
+>
+> Why they have to be excluded?
+
+Because timers take locks and you can just end up in the very same
+situation that you create invers lock dependencies or deadlocks when you
+use that from a tracepoint.
+
+hrtimer_start()
+  lock_base();
+  trace_hrtimer...()
+    perf_event()
+      bpf_run()
+        bpf_timer_start()
+          hrtimer_start()
+            lock_base()         <- DEADLOCK
+
+Tracepoints and perf events are very limited in what they can actually
+do. Just because it's BPF these rules are not magically going away.
+
+Thanks,
+
+        tglx
