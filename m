@@ -2,79 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC9D4473EF
-	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 17:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AD644740A
+	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 17:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234852AbhKGQte convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 7 Nov 2021 11:49:34 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8924 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235835AbhKGQte (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 7 Nov 2021 11:49:34 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A7GIU75008338
-        for <bpf@vger.kernel.org>; Sun, 7 Nov 2021 08:46:51 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c698waw4x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 07 Nov 2021 08:46:51 -0800
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Sun, 7 Nov 2021 08:46:50 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id F2C7B838FAE5; Sun,  7 Nov 2021 08:46:43 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH v3 bpf-next 9/9] selftests/bpf: fix bpf_object leak in skb_ctx selftest
-Date:   Sun, 7 Nov 2021 08:46:24 -0800
-Message-ID: <20211107164624.4137512-10-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211107164624.4137512-1-andrii@kernel.org>
-References: <20211107164624.4137512-1-andrii@kernel.org>
+        id S235877AbhKGQxD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Nov 2021 11:53:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235055AbhKGQxC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Nov 2021 11:53:02 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42320C061764
+        for <bpf@vger.kernel.org>; Sun,  7 Nov 2021 08:50:19 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id o14so14257650plg.5
+        for <bpf@vger.kernel.org>; Sun, 07 Nov 2021 08:50:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=CGgoC4BsgHelzytn+/VTrKwS3n0T68QEW7GeWdpL8zfErEA81MOI4RL138iNx/cHCC
+         3mOCWFKMwLBKqHyI1x8QZIxdZmn/T2z7wxCAL1QJSDwY+yMd/5vpY5vZsY6UEO3VfUIk
+         NmE02Lf+f1FnTMQjl4bIN7/MkullBrFIYleaUA1lhngjIcmWGropAefRtmKn85kF4AjF
+         9REnU8D8TvvsrxnzIdJuHntvDW0z4R21EhRUYYG9p+p2KSbQQtyOBLs4eMyycwEMv9DU
+         iYxtgVtsDfraOGEV3mHhUsdsFHn4Oc6mkCc25JbUs6k1jHra7jUoaikUuMgz3yZaGGWB
+         oWWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=ya5Kbh/TsOCKsoLRqHhoj4MKwEaRMIDYNKU0+jNwK44s4snC7wqZdXcGOTvAX0KhTm
+         pLdQR//XDGWxxSJvfDQYuVvuR2C6Rc88aO0LXjeceooMj1WpALF6NRIFnryzWw4rGouU
+         QC7siqMc8RVeh4QvNak0RgLBGFTdR8GkJLINUiWe8av85KtuKbj/HJkLFZcv3Hjt9+OJ
+         6soJpa+HBjR4L5/bM6KngLFEvzboT9wSrMPSR5b1ULj6PwPgW0FecKxP7xY3Sica5AQA
+         YaOkDXD01DVkIxhsvm1jK6GmceyRIDpOsvfScqvRKH5sdUIrNT/hbnqGG+BtstltCnlz
+         oO0w==
+X-Gm-Message-State: AOAM530kOM/yMOl7UBUJ5pDHpColjc5PW+PwlOTYWQ25msk0I3Q0yy1E
+        CZFqV6aVC1pZXVJ1hk+TDniTHhgC3uIQhb2/dQk=
+X-Google-Smtp-Source: ABdhPJwRzqzdXmZqk+E0BGOtRSVuotVxv3vktjD61tF3yrYnFRN7LmPJ9X2Sktepu1Y4J0ZwltgXDIouReyvwFUOa3w=
+X-Received: by 2002:a17:902:d2ce:b0:141:f710:922 with SMTP id
+ n14-20020a170902d2ce00b00141f7100922mr42873278plc.7.1636303818711; Sun, 07
+ Nov 2021 08:50:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: Ciq-oYyOJxNY7yzsQ_RJBWt7PJokCGAh
-X-Proofpoint-ORIG-GUID: Ciq-oYyOJxNY7yzsQ_RJBWt7PJokCGAh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-07_09,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- adultscore=0 suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0
- mlxlogscore=726 malwarescore=0 phishscore=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111070109
-X-FB-Internal: deliver
+Received: by 2002:a05:6a10:4a14:0:0:0:0 with HTTP; Sun, 7 Nov 2021 08:50:18
+ -0800 (PST)
+Reply-To: amabenchambers00@gmail.com
+From:   Amadou Benjamin <ousmanekarim54@gmail.com>
+Date:   Sun, 7 Nov 2021 08:50:18 -0800
+Message-ID: <CAJFAt4ZtDp1d-Lyr-uxqQ9skQkUswz-oAXSiT_oB13J29FH1QQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-skb_ctx selftest didn't close bpf_object implicitly allocated by
-bpf_prog_test_load() helper. Fix the problem by explicitly calling
-bpf_object__close() at the end of the test.
-
-Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/skb_ctx.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-index c437e6ba8fe2..db4d72563aae 100644
---- a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-@@ -111,4 +111,6 @@ void test_skb_ctx(void)
- 		   "ctx_out_mark",
- 		   "skb->mark == %u, expected %d\n",
- 		   skb.mark, 10);
-+
-+	bpf_object__close(obj);
- }
 -- 
-2.30.2
+Hello good day.
 
+I am Barrister Amadou Benjamin by name, with due respect, I am
+contacting you to help get the deposit 10.5 million Dollars, my late
+client Engineer Vasiliy left in his Bank before his sudden death on
+April 21, 2007, to avoid confiscation by Lloyds bank. Please write me
+back through this email (amabenchambers00@gmail.com)for more
+information about this transaction or send me your private email to
+Contact you myself.
+
+Sincerely,
+Barrister Amadou Benjamin Esq
