@@ -2,136 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D0B4473D9
-	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 17:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11904473DD
+	for <lists+bpf@lfdr.de>; Sun,  7 Nov 2021 17:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235187AbhKGQhL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Nov 2021 11:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        id S235223AbhKGQj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Nov 2021 11:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhKGQhK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:37:10 -0500
+        with ESMTP id S233677AbhKGQjZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Nov 2021 11:39:25 -0500
 Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D56C061570
-        for <bpf@vger.kernel.org>; Sun,  7 Nov 2021 08:34:27 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id p17so13038459pgj.2
-        for <bpf@vger.kernel.org>; Sun, 07 Nov 2021 08:34:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A37C061570
+        for <bpf@vger.kernel.org>; Sun,  7 Nov 2021 08:36:42 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id e65so13034097pgc.5
+        for <bpf@vger.kernel.org>; Sun, 07 Nov 2021 08:36:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=e5ViK/GMepA9rWNuZCvCcH/TZSuE7AxWxFaCYbj5zyo=;
-        b=ci5Cu2XF4a98cKfgnakUnzwOayVuo9uIxS0hDzRLKiLOo88TPBD+FaDIIVCBEleFPE
-         z8uoil/uSZ7qBX36aISDuAjdnMNnlyT2PCWsiJCnCxOzezplZ6yFNAPL1vzlj0TWCDKa
-         RK93W5WPy3+WtiVKAdxN4Aj7ld7GItA12y4ym4pW9uFuGfZtUfgOOu2SAeEYRuEaAd6Y
-         WWA1EDfqbmqKNZmXS7G6E53j7vZcenlodhy2OL9skqFJ/eaat8108RNuKR28bvAFoeIi
-         LyhBSGMJxan0afEafnrJF4RIlHfDWV2lVReyKMr/zQKh+B3JExQyU67nRSZuTYQsglaj
-         tcgg==
+        bh=RBIg6sevORHc5CjTwqOJ310R7+5wbcE9iIrn7MIs1F0=;
+        b=ZQJKD0/8jctpF8bLHPPh2SdCHFhxtpjAc7AwszvEA1BH8YbTxTby06u6inOeARR9MK
+         A258Lck579dqwHejdf3q7XfB7Q1FGRtNFxnbSYuCS9HQPY25ut33zQmWXm2q1QtAhwPA
+         a8UPhbqkxtps+5cwaki4rYTec5LZH7r+goRSdr18QmPwGhtJTxlaycG1JaX6COkRG6C0
+         gvV6SMNEgzFZcMJM165EBC+mn2tSBsj/6Up8IpPejS0pq0mwK1PUfLC2CWjRHPn8i/Ak
+         JswfNfaxO08fz4EysBPNy8Ff5e4L1BaWnHb7iaJAEUZVaLTH2u9WuKumgnfya2mid+oV
+         jIHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=e5ViK/GMepA9rWNuZCvCcH/TZSuE7AxWxFaCYbj5zyo=;
-        b=tPcpo6qK3dEzQ0RaXtlG2Uti/aCdgATz2tbD9dO5Jc9F6tiAe1is9/FryYGC9uZxlZ
-         Cwm1eaT10G2XVG1aQfp4L7DWNVItpqlhBgUmMWEeInARKjK4ndCnfeQPqokPNj2R3Hq9
-         s9y/JUNCZwQcyWimDF7b+gfWP0iVcpbywTnWmKWZ3xMf0IZ0Kx0EZa3v+0JtOKrOK1z9
-         CtmYC3CXKxHk2Nb/7hSSUMgFGTNfOBNUnd2OOjx8CQagsqIzEFKrqlpXA3M/2CKz59Re
-         PL4p6vmm1b2k1d6xavEfx64a1GCwY9iYsSuA9EYKThTIn65WwasylQieDzfU6C/gExPg
-         8CRg==
-X-Gm-Message-State: AOAM532A7v3Wgmogwy5mUSEMAj3dayZWA/kUv6aC4xfdUIPkMAIchQZD
-        Pcrr5t4BgYO7EJjF6xcGVdQ=
-X-Google-Smtp-Source: ABdhPJzNCl9YSBNhxji0chyFppWbegHIBzahBE9aZdKK2j/Jh4MXe3J/AKcwTxAWnxJ2McOob4TKAQ==
-X-Received: by 2002:a65:6158:: with SMTP id o24mr55715992pgv.141.1636302867442;
-        Sun, 07 Nov 2021 08:34:27 -0800 (PST)
-Received: from [192.168.255.10] ([203.205.141.112])
-        by smtp.gmail.com with ESMTPSA id h3sm14003545pfi.207.2021.11.07.08.34.25
+        bh=RBIg6sevORHc5CjTwqOJ310R7+5wbcE9iIrn7MIs1F0=;
+        b=wSPneHqfMnOJMrkoIzifcK/BilVGqAjY+T73c4TRW4qa9VntJ3NqflF35CglcXvjiF
+         dyxt4AWYLPBJpBnSMkrCTBQnu5DN4TkKVLMq3JOfC0ZRwelCPML9W2BF0mH9zwiaOyR0
+         sKUJz2tU+XpDQAL0Bf57H1nqGt73Wss4r9JCgF5XJwToRqSd3RfLlMBFJRtX7fw8aBup
+         ArOH9beKKQyxHtN+werjHYGHsHY0znkgoZM7dM/P4LlJ2RBRMIALdJKMv2kDCKt3ivZ3
+         oOEqby00u/VvErrAlwuNGvOIND9F6hBSHrKscwHe+7aN6eBVE/VrwhSr6SM0tdo2Z6/u
+         36hg==
+X-Gm-Message-State: AOAM532VQhbg5IjMrAuZoZPOgPVF1fB+PAQxM3RVNGh5aWKLQgr4Fjgk
+        vrRFB79MIasEay7nlUO2pd1uPTcUjsZzZw==
+X-Google-Smtp-Source: ABdhPJwWMJ9auSdjJgA4ci9XGCFnxvkoW4d7bx3UJn6mKns9LxJxvhKewfKJLmXJwadpaNesnygZkA==
+X-Received: by 2002:a63:7d0f:: with SMTP id y15mr55267156pgc.446.1636303002611;
+        Sun, 07 Nov 2021 08:36:42 -0800 (PST)
+Received: from [192.168.255.10] ([203.205.141.114])
+        by smtp.gmail.com with ESMTPSA id s28sm5121259pfg.147.2021.11.07.08.36.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 08:34:27 -0800 (PST)
-Message-ID: <604aa1cc-53fe-631b-42fc-8ff76a2e3010@gmail.com>
-Date:   Mon, 8 Nov 2021 00:34:23 +0800
+        Sun, 07 Nov 2021 08:36:41 -0800 (PST)
+Message-ID: <134771f5-0218-17e6-3781-6f6fcd1f944d@gmail.com>
+Date:   Mon, 8 Nov 2021 00:36:39 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v2 bpf-next 4/9] selftests/bpf: free per-cpu values array
- in bpf_iter selftest
+Subject: Re: [PATCH v2 bpf-next 0/9] Fix leaks in libbpf and selftests
 Content-Language: en-US
 To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net
 Cc:     kernel-team@fb.com
 References: <20211107040343.583332-1-andrii@kernel.org>
- <20211107040343.583332-5-andrii@kernel.org>
 From:   Hengqi Chen <hengqi.chen@gmail.com>
-In-Reply-To: <20211107040343.583332-5-andrii@kernel.org>
+In-Reply-To: <20211107040343.583332-1-andrii@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Andrii
+
 
 On 2021/11/7 12:03 PM, Andrii Nakryiko wrote:
-> Array holding per-cpu values wasn't freed. Fix that.
+> Fix all the memory leaks reported by ASAN. All but one are just improper
+> resource clean up in selftests. But one memory leak was discovered in libbpf,
+> leaving inner map's name leaked.
 > 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 1 +
->  1 file changed, 1 insertion(+)
+> First patch fixes selftests' Makefile by passing through SAN_CFLAGS to linker.
+> Without that compiling with SAN_CFLAGS=-fsanitize=address kept failing.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 9454331aaf85..71c724a3f988 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -770,6 +770,7 @@ static void test_bpf_percpu_hash_map(void)
->  	bpf_link__destroy(link);
->  out:
->  	bpf_iter_bpf_percpu_hash_map__destroy(skel);
-> +	free(val);
->  }
->  
->  static void test_bpf_array_map(void)
+> Running selftests under ASAN in BPF CI is the next step, we just need to make
+> sure all the necessary libraries (libasan and liblsan) are installed on the
+> host and inside the VM. Would be great to get some help with that, but for now
+> make sure that test_progs run is clean from leak sanitizer errors.
+> 
+> v1->v2:
+>   - call bpf_map__destroy() conditionally if map->inner_map is present.
+> 
+> Andrii Nakryiko (9):
+>   selftests/bpf: pass sanitizer flags to linker through LDFLAGS
+>   libbpf: free up resources used by inner map definition
+>   selftests/bpf: fix memory leaks in btf_type_c_dump() helper
+>   selftests/bpf: free per-cpu values array in bpf_iter selftest
+>   selftests/bpf: free inner strings index in btf selftest
+>   selftests/bpf: clean up btf and btf_dump in dump_datasec test
+>   selftests/bpf: avoid duplicate btf__parse() call
+>   selftests/bpf: destroy XDP link correctly
+>   selftests/bpf: fix bpf_object leak in skb_ctx selftest
+> 
+>  tools/lib/bpf/libbpf.c                                   | 5 ++++-
+>  tools/testing/selftests/bpf/Makefile                     | 1 +
+>  tools/testing/selftests/bpf/btf_helpers.c                | 9 +++++++--
+>  tools/testing/selftests/bpf/prog_tests/bpf_iter.c        | 1 +
+>  tools/testing/selftests/bpf/prog_tests/btf.c             | 6 ++----
+>  tools/testing/selftests/bpf/prog_tests/btf_dump.c        | 8 ++++++--
+>  tools/testing/selftests/bpf/prog_tests/core_reloc.c      | 2 +-
+>  .../testing/selftests/bpf/prog_tests/migrate_reuseport.c | 4 ++--
+>  tools/testing/selftests/bpf/prog_tests/skb_ctx.c         | 2 ++
+>  9 files changed, 26 insertions(+), 12 deletions(-)
 > 
 
-The val is allocated at the very beginning of this function,
-when bpf_iter_bpf_percpu_hash_map__open failed, the val still
-leaked.
+For the series, feel free to add:
 
-So we should have:
+Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index 9454331aaf85..ee6727389ef6 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -686,7 +686,7 @@ static void test_bpf_percpu_hash_map(void)
- {
-        __u32 expected_key_a = 0, expected_key_b = 0;
-        DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
--       struct bpf_iter_bpf_percpu_hash_map *skel;
-+       struct bpf_iter_bpf_percpu_hash_map *skel = NULL;
-        int err, i, j, len, map_fd, iter_fd;
-        union bpf_iter_link_info linfo;
-        __u32 expected_val = 0;
-@@ -704,7 +704,7 @@ static void test_bpf_percpu_hash_map(void)
-        skel = bpf_iter_bpf_percpu_hash_map__open();
-        if (CHECK(!skel, "bpf_iter_bpf_percpu_hash_map__open",
-                  "skeleton open failed\n"))
--               return;
-+               goto out;
- 
-        skel->rodata->num_cpus = bpf_num_possible_cpus();
- 
-@@ -770,6 +770,7 @@ static void test_bpf_percpu_hash_map(void)
-        bpf_link__destroy(link);
- out:
-        bpf_iter_bpf_percpu_hash_map__destroy(skel);
-+       free(val);
- }
- 
- static void test_bpf_array_map(void)
-
-Right?
-
-Cheers,
---
-Hengqi
