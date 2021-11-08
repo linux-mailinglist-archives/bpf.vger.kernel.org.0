@@ -2,111 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E849449B8E
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 19:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92138449BA8
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 19:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbhKHSXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 13:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235228AbhKHSXk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:23:40 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B18C061570;
-        Mon,  8 Nov 2021 10:20:56 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id q74so45934785ybq.11;
-        Mon, 08 Nov 2021 10:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r7XPmJ4Slk0Ee3SezOzVKKKVWOfK/ZMFCj2/Il/40bw=;
-        b=iz01UfRunQAw2bNi51uhKvnwK2/Te9f/yoUFFKDmp5I6iZld01jP8o5venupoJWDO+
-         mT94brOYF2rsnQ9uqe12t0Y+xbOW7arQ2DH21TpPvZeFWaXI5omzz1VApkGnM2MZ15FJ
-         1zrT4C+5b5xSRAioqhGnsxz35d7mTG9TJy1xlk8nSZNpch7bGx/VzMczpRLQYkDGKLgP
-         5ReQhsl85aBI38ZkG/w/Zi2jMhqZqgCQ5fiW15aIJpYxdPWKRvVUhoLq9j1KgTwlCnT9
-         nr2UlZ5lWY9ldfsGC+IC+8RUNbeyEOvkY8IZR5FH5Fq96rFeepMMgtBf9TwyowqfnTsJ
-         FQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r7XPmJ4Slk0Ee3SezOzVKKKVWOfK/ZMFCj2/Il/40bw=;
-        b=I7ZRzP1GYj+660QOf/Kt6LiEsIkKcyoIpw3wizWepEdoy3kXYg2N3VTdnxZoyow3Rm
-         ssB2A1Cs3SKFavu78EP4+/iKylfDBvSHoTO2Bozo8mZLqbCC9Y5eMyFEj8C8wYr8F15N
-         baIcTl/SNJLFaDJ7GHefrE9AKmZzCSYdY0vF6r0qfUwt9qw/eUdQDLu3my5JBQ0vKO0H
-         A6hUhg8gdOJ39ZAHM2PrrqzkuaTzB5Jpibk+bW8MHbsVRWfcaeU6MqAsHEVqP4ClbSdf
-         XR+GU7Phcj7ZtuYM2FW6AejYtlc4TDYoXU+ndybHOxSAbAdOUfa1mt6npVaS/3XejMNA
-         mdqg==
-X-Gm-Message-State: AOAM5333zwdGKHmvt/V7GGahPeAHbRzuzySF5bnmBwsjHdYT82ekRhBT
-        S+OQQ396a2BdoaJXMex2weXiM3TsN+DShiR7iOyyNBlpM0s=
-X-Google-Smtp-Source: ABdhPJzKAxzbKjPtiiGNx7AYawm+AKqI67L99mxmMg0zsCRfBfiQ633kM0HeDLshFyAnNtdF6Ej5bom8rFbvvTcqyW4=
-X-Received: by 2002:a25:cc4c:: with SMTP id l73mr1441620ybf.114.1636395655412;
- Mon, 08 Nov 2021 10:20:55 -0800 (PST)
+        id S229999AbhKHSd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 13:33:56 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:43904 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235611AbhKHSdx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 13:33:53 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6F5861FD4E;
+        Mon,  8 Nov 2021 18:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636396266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XCt44ciTjHPqBO2xWONoM27y235Uqj1XS1pgFKfh1lY=;
+        b=oR4Rs8LrrE2wh0pjmmsoiEgZk4Uco+owPrA8z7rJMAyfH9HUrmu0/vaxkGJNBvrGAAEpUL
+        qAKkN5X6PkDnnWkRKCRblD+UodYxnQVbJMtjIbyB3cXBxzkOxKx7xpx6A4FOztkrilWaD2
+        qiyjPZSGEBbFG9romrvi61mp7Vjd2q0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636396266;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XCt44ciTjHPqBO2xWONoM27y235Uqj1XS1pgFKfh1lY=;
+        b=5XKQZm3A0GQgccfJjWJc/L5fHp7SL2/HrLb6lUCIHOQg3+qixevztH+dmKeA/W8tlGx326
+        04jfgETojWoLCOCw==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 42AC0A3B85;
+        Mon,  8 Nov 2021 18:31:05 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 19:31:05 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+cc:     jeyu@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, mcgrof@kernel.org
+Subject: Re: [PATCH] module: Fix implicit type conversion
+In-Reply-To: <1635473169-1848729-1-git-send-email-jiasheng@iscas.ac.cn>
+Message-ID: <alpine.LSU.2.21.2111081925580.1710@pobox.suse.cz>
+References: <1635473169-1848729-1-git-send-email-jiasheng@iscas.ac.cn>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20211108083840.4627-1-laoar.shao@gmail.com> <20211108083840.4627-6-laoar.shao@gmail.com>
-In-Reply-To: <20211108083840.4627-6-laoar.shao@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Nov 2021 10:20:44 -0800
-Message-ID: <CAEf4BzYn3PwjhjzWV8oPD3A8ozLN_Y4ef7xAHW+oECOMgtMgcA@mail.gmail.com>
-Subject: Re: [PATCH 5/7] samples/bpf/test_overhead_kprobe_kern: make it adopt
- to task comm size change
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 12:39 AM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> bpf_probe_read_kernel_str() will add a nul terminator to the dst, then
-> we don't care about if the dst size is big enough. This patch also
-> replaces the hard-coded 16 with TASK_COMM_LEN to make it adopt to task
-> comm size change.
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
+[CCing Luis]
+
+Hi,
+
+On Fri, 29 Oct 2021, Jiasheng Jiang wrote:
+
+> The variable 'cpu' is defined as unsigned int.
+> However in the for_each_possible_cpu, its values is assigned to -1.
+> That doesn't make sense and in the cpumask_next() it is implicitly
+> type conversed to int.
+> It is universally accepted that the implicit type conversion is
+> terrible.
+> Also, having the good programming custom will set an example for
+> others.
+> Thus, it might be better to change the definition of 'cpu' from
+> unsigned int to int.
+
+Frankly, I don't see a benefit of changing this. It seems fine to me. 
+Moreover this is not, by far, the only place in the kernel with the same 
+pattern.
+
+Miroslav
+
+> Fixes: 10fad5e ("percpu, module: implement and use is_kernel/module_percpu_address()")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 > ---
+>  kernel/module.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 927d46c..f10d611 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -632,7 +632,7 @@ static void percpu_modcopy(struct module *mod,
+>  bool __is_module_percpu_address(unsigned long addr, unsigned long *can_addr)
+>  {
+>  	struct module *mod;
+> -	unsigned int cpu;
+> +	int cpu;
+>  
+>  	preempt_disable();
+>  
+> -- 
+> 2.7.4
+> 
 
-LGTM.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  samples/bpf/offwaketime_kern.c          |  4 ++--
->  samples/bpf/test_overhead_kprobe_kern.c | 11 ++++++-----
->  samples/bpf/test_overhead_tp_kern.c     |  5 +++--
->  3 files changed, 11 insertions(+), 9 deletions(-)
->
-
-[...]
