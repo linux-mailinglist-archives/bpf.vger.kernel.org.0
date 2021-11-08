@@ -2,366 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E410B449A3E
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 17:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB164449A49
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 17:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241398AbhKHQtb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 11:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241394AbhKHQt3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:49:29 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B54EC061767
-        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 08:46:44 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id d5so28013254wrc.1
-        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 08:46:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xlkSwHvVis3zyKX1+l8yfQICPR58JdyZ7i+Tj5kci14=;
-        b=RQavl9DV/rao3JSBjgSBDYTZJTgNPCHZlJaxjokErKWpcQ6KZbCSkHqlBM6loFtWjI
-         mdzNyoNgNXheNCzCtSZHTGYdVFUzfgFVLJ/ytI2s7WufkmFs/g+RHOfnXOGB8irjn4Os
-         qM3ussRRtvMjflmcotu0dmWpQxBNO/Pooa4RKuEWIG97tXZxWnmSHNaC31o4WOuPUqXE
-         W4X4r+dhlqII0zrCR+jMmMfyD8xsikdocZ29pQkDfwvCC0/4hR8UbGzNeTeFPdOezHVI
-         wHDT4rkfG/45Lc4HP79rGWBeJLJTqbfaeHLGrpG0iuqjiBOz0K/US4G4TVHSZPTq70Is
-         9UqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xlkSwHvVis3zyKX1+l8yfQICPR58JdyZ7i+Tj5kci14=;
-        b=55NOGkW6FjxXMn/dVixDrrWGvY2Y/TE0GWx3E6aMnMHbiv9wF6MS/vAZPpEPamAjNp
-         Jf5M7p4Z67ZqC7jcpA4blqmTw9gNIgRx5ARK+iVYqJr326lcyGnK0nu/JGL1fjNJYbzk
-         Jdc244JFW7uv3EzYV0MYvEZ59mCrPh8ERaqKbu1n9r7lVjk7hGOIGNzxiMKssBBRzZSE
-         MQ5tSc3ZhUpEUrO+PhBjPOgxYRsgrUWFcd/HTq+XATBZ6TerDkNZJ+hf/1QGEByR9cVa
-         1H56qEyAH4+y3OilRGRgT833YfgGTXbsorV/dbMR5S0VGVElJqe05WveCf6cTPQgKcjt
-         TNSw==
-X-Gm-Message-State: AOAM532qIB1RFuLEnkE1nvTCO0MWnJcYUu4eELspzqyPR14FSWOcezyx
-        xTZeEQkRL6qOPTTEmlxpbhi5btqvJxFcHQeWtC2xQQ==
-X-Google-Smtp-Source: ABdhPJwa97ahpatI8qSOkX0vqsTX5mObmhSSUcKGQAhktWnbm7JODLZ9wlfC4Fx+FZcjsEvQvZfF+g==
-X-Received: by 2002:a5d:5850:: with SMTP id i16mr584812wrf.197.1636390002789;
-        Mon, 08 Nov 2021 08:46:42 -0800 (PST)
-Received: from localhost ([91.75.210.37])
-        by smtp.gmail.com with ESMTPSA id o2sm18176771wrg.1.2021.11.08.08.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 08:46:42 -0800 (PST)
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     bpf@vger.kernel.org
-Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com,
-        john.stultz@linaro.org, sboyd@kernel.org, peterz@infradead.org,
-        mark.rutland@arm.com, rosted@goodmis.org
-Subject: [PATCH bpf 2/2] selftests/bpf: Add tests for allowed helpers
-Date:   Mon,  8 Nov 2021 20:46:20 +0400
-Message-Id: <20211108164620.407305-3-me@ubique.spb.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211108164620.407305-1-me@ubique.spb.ru>
-References: <20211108164620.407305-1-me@ubique.spb.ru>
+        id S238713AbhKHQva (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 11:51:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231330AbhKHQva (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 11:51:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B653610A3;
+        Mon,  8 Nov 2021 16:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636390125;
+        bh=O2kvEdbaEtHMwFnvPTppO4ra6nMHq0KjSKGtW5owMLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fEbYHQFBjZpsQgCGCmLcw6QepoK+qbU0s0vT85B5kkyR6W28tkac5XMj62oyotEUd
+         SUbaGGoS0NjBretzYrTVlvXahkiM2NqjOEaI9grElFeGQGV/HhmFlH5mplqajs6DpW
+         V7m4C3ZoADB08yjG8Bl9/CW3o9kxYLUUcz2je0keaUEyiDv12RUc+Pv4ZGt7jaWvq6
+         IEWPdhsgphlf3/2Knjps0zY/1qNvL5vANnyp12qG2TjfHlC0KwmgY+rSRmteicb4Qy
+         EY0SCnwQyk5IjAmn9UedkTZSag2i95/I7YDDtR/Ocb4wDk3tplhk9SPlZCsFLv6A59
+         RTftkGfJ+mVEA==
+Date:   Mon, 8 Nov 2021 17:48:42 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: Re: [PATCH v17 bpf-next 20/23] net: xdp: introduce bpf_xdp_pointer
+ utility routine
+Message-ID: <YYlU6nuZu7aUFLQT@lore-desk>
+References: <cover.1636044387.git.lorenzo@kernel.org>
+ <273cc085c8cbe5913defe302800fc69da650e7b1.1636044387.git.lorenzo@kernel.org>
+ <20211105162944.5f58487e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="AsmBTGevGnjm9UDq"
+Content-Disposition: inline
+In-Reply-To: <20211105162944.5f58487e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds tests that bpf_ktime_get_coarse_ns() and bpf_timer_* and
-bpf_spin_lock()/bpf_spin_unlock() helpers are forbidden in tracing
-progs as it may result in various locking issues.
 
-Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
----
- tools/testing/selftests/bpf/test_verifier.c   |  36 +++-
- .../selftests/bpf/verifier/helper_allowed.c   | 196 ++++++++++++++++++
- 2 files changed, 231 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/helper_allowed.c
+--AsmBTGevGnjm9UDq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 25afe423b3f0..e16eab6fc3a9 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -92,6 +92,7 @@ struct bpf_test {
- 	int fixup_map_event_output[MAX_FIXUPS];
- 	int fixup_map_reuseport_array[MAX_FIXUPS];
- 	int fixup_map_ringbuf[MAX_FIXUPS];
-+	int fixup_map_timer[MAX_FIXUPS];
- 	/* Expected verifier log output for result REJECT or VERBOSE_ACCEPT.
- 	 * Can be a tab-separated sequence of expected strings. An empty string
- 	 * means no log verification.
-@@ -605,7 +606,7 @@ static int create_cgroup_storage(bool percpu)
-  *   struct bpf_spin_lock l;
-  * };
-  */
--static const char btf_str_sec[] = "\0bpf_spin_lock\0val\0cnt\0l";
-+static const char btf_str_sec[] = "\0bpf_spin_lock\0val\0cnt\0l\0bpf_timer\0";
- static __u32 btf_raw_types[] = {
- 	/* int */
- 	BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
-@@ -616,6 +617,8 @@ static __u32 btf_raw_types[] = {
- 	BTF_TYPE_ENC(15, BTF_INFO_ENC(BTF_KIND_STRUCT, 0, 2), 8),
- 	BTF_MEMBER_ENC(19, 1, 0), /* int cnt; */
- 	BTF_MEMBER_ENC(23, 2, 32),/* struct bpf_spin_lock l; */
-+	/* struct bpf_timer */				/* [4] */
-+	BTF_TYPE_ENC(25, BTF_INFO_ENC(BTF_KIND_STRUCT, 0, 0), 16),
- };
- 
- static int load_btf(void)
-@@ -696,6 +699,29 @@ static int create_sk_storage_map(void)
- 	return fd;
- }
- 
-+static int create_map_timer(void)
-+{
-+	struct bpf_create_map_attr attr = {
-+		.name = "test_map",
-+		.map_type = BPF_MAP_TYPE_ARRAY,
-+		.key_size = 4,
-+		.value_size = 16,
-+		.max_entries = 1,
-+		.btf_key_type_id = 1,
-+		.btf_value_type_id = 4,
-+	};
-+	int fd, btf_fd;
-+
-+	btf_fd = load_btf();
-+	if (btf_fd < 0)
-+		return -1;
-+	attr.btf_fd = btf_fd;
-+	fd = bpf_create_map_xattr(&attr);
-+	if (fd < 0)
-+		printf("Failed to create map with timer\n");
-+	return fd;
-+}
-+
- static char bpf_vlog[UINT_MAX >> 8];
- 
- static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
-@@ -722,6 +748,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	int *fixup_map_event_output = test->fixup_map_event_output;
- 	int *fixup_map_reuseport_array = test->fixup_map_reuseport_array;
- 	int *fixup_map_ringbuf = test->fixup_map_ringbuf;
-+	int *fixup_map_timer = test->fixup_map_timer;
- 
- 	if (test->fill_helper) {
- 		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-@@ -907,6 +934,13 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 			fixup_map_ringbuf++;
- 		} while (*fixup_map_ringbuf);
- 	}
-+	if (*fixup_map_timer) {
-+		map_fds[21] = create_map_timer();
-+		do {
-+			prog[*fixup_map_timer].imm = map_fds[21];
-+			fixup_map_timer++;
-+		} while (*fixup_map_timer);
-+	}
- }
- 
- struct libcap {
-diff --git a/tools/testing/selftests/bpf/verifier/helper_allowed.c b/tools/testing/selftests/bpf/verifier/helper_allowed.c
-new file mode 100644
-index 000000000000..aeba8ef866a9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/helper_allowed.c
-@@ -0,0 +1,196 @@
-+{
-+	"bpf_ktime_get_coarse_ns isn't allowed in BPF_PROG_TYPE_KPROBE",
-+	.insns = {
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ktime_get_coarse_ns),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_KPROBE,
-+},
-+{
-+	"bpf_ktime_get_coarse_ns isn't allowed in BPF_PROG_TYPE_TRACEPOINT",
-+	.insns = {
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ktime_get_coarse_ns),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+},
-+{
-+	"bpf_ktime_get_coarse_ns isn't allowed in BPF_PROG_TYPE_PERF_EVENT",
-+	.insns = {
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ktime_get_coarse_ns),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_PERF_EVENT,
-+},
-+{
-+	"bpf_ktime_get_coarse_ns isn't allowed in BPF_PROG_TYPE_RAW_TRACEPOINT",
-+	.insns = {
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ktime_get_coarse_ns),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_RAW_TRACEPOINT,
-+},
-+{
-+	"bpf_timer_init isn't allowed in BPF_PROG_TYPE_KPROBE",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 4),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LD_MAP_FD(BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_3, 1),
-+	BPF_EMIT_CALL(BPF_FUNC_timer_init),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_timer = { 3, 8 },
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_KPROBE,
-+},
-+{
-+	"bpf_timer_init isn't allowed in BPF_PROG_TYPE_PERF_EVENT",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 4),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LD_MAP_FD(BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_3, 1),
-+	BPF_EMIT_CALL(BPF_FUNC_timer_init),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_timer = { 3, 8 },
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_PERF_EVENT,
-+},
-+{
-+	"bpf_timer_init isn't allowed in BPF_PROG_TYPE_TRACEPOINT",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 4),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LD_MAP_FD(BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_3, 1),
-+	BPF_EMIT_CALL(BPF_FUNC_timer_init),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_timer = { 3, 8 },
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+},
-+{
-+	"bpf_timer_init isn't allowed in BPF_PROG_TYPE_RAW_TRACEPOINT",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 4),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LD_MAP_FD(BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_3, 1),
-+	BPF_EMIT_CALL(BPF_FUNC_timer_init),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_timer = { 3, 8 },
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_RAW_TRACEPOINT,
-+},
-+{
-+	"bpf_spin_lock isn't allowed in BPF_PROG_TYPE_KPROBE",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_EMIT_CALL(BPF_FUNC_spin_lock),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_spin_lock = { 3 },
-+	.errstr = "tracing progs cannot use bpf_spin_lock yet",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_KPROBE,
-+},
-+{
-+	"bpf_spin_lock isn't allowed in BPF_PROG_TYPE_TRACEPOINT",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_EMIT_CALL(BPF_FUNC_spin_lock),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_spin_lock = { 3 },
-+	.errstr = "tracing progs cannot use bpf_spin_lock yet",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+},
-+{
-+	"bpf_spin_lock isn't allowed in BPF_PROG_TYPE_PERF_EVENT",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_EMIT_CALL(BPF_FUNC_spin_lock),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_spin_lock = { 3 },
-+	.errstr = "tracing progs cannot use bpf_spin_lock yet",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_PERF_EVENT,
-+},
-+{
-+	"bpf_spin_lock isn't allowed in BPF_PROG_TYPE_RAW_TRACEPOINT",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_EMIT_CALL(BPF_FUNC_spin_lock),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_spin_lock = { 3 },
-+	.errstr = "tracing progs cannot use bpf_spin_lock yet",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_RAW_TRACEPOINT,
-+},
--- 
-2.25.1
+> On Thu,  4 Nov 2021 18:35:40 +0100 Lorenzo Bianconi wrote:
+> > Similar to skb_header_pointer, introduce bpf_xdp_pointer utility routine
+> > to return a pointer to a given position in the xdp_buff if the requested
+> > area (offset + len) is contained in a contiguous memory area otherwise =
+it
+> > will be copied in a bounce buffer provided by the caller.
+> > Similar to the tc counterpart, introduce the two following xdp helpers:
+> > - bpf_xdp_load_bytes
+> > - bpf_xdp_store_bytes
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>=20
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 386dd2fffded..534305037ad7 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -3840,6 +3840,135 @@ static const struct bpf_func_proto bpf_xdp_adju=
+st_head_proto =3D {
+> >  	.arg2_type	=3D ARG_ANYTHING,
+> >  };
+> > =20
+> > +static void bpf_xdp_copy_buf(struct xdp_buff *xdp, u32 offset,
+> > +			     u32 len, void *buf, bool flush)
+> > +{
+> > +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
+> > +	u32 headsize =3D xdp->data_end - xdp->data;
+> > +	u32 count =3D 0, frame_offset =3D headsize;
+> > +	int i =3D 0;
+> > +
+> > +	if (offset < headsize) {
+> > +		int size =3D min_t(int, headsize - offset, len);
+> > +		void *src =3D flush ? buf : xdp->data + offset;
+> > +		void *dst =3D flush ? xdp->data + offset : buf;
+> > +
+> > +		memcpy(dst, src, size);
+> > +		count =3D size;
+> > +		offset =3D 0;
+> > +	}
+> > +
+> > +	while (count < len && i < sinfo->nr_frags) {
+>=20
+> nit: for (i =3D 0; ...; i++) ?
 
+ack, I will fix it in v18
+
+>=20
+> > +		skb_frag_t *frag =3D &sinfo->frags[i++];
+> > +		u32 frag_size =3D skb_frag_size(frag);
+> > +
+> > +		if  (offset < frame_offset + frag_size) {
+>=20
+> nit: double space after if
+
+ack, I will fix it in v18
+>=20
+> > +			int size =3D min_t(int, frag_size - offset, len - count);
+> > +			void *addr =3D skb_frag_address(frag);
+> > +			void *src =3D flush ? buf + count : addr + offset;
+> > +			void *dst =3D flush ? addr + offset : buf + count;
+> > +
+> > +			memcpy(dst, src, size);
+> > +			count +=3D size;
+> > +			offset =3D 0;
+> > +		}
+> > +		frame_offset +=3D frag_size;
+> > +	}
+> > +}
+> > +
+> > +static void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset,
+> > +			     u32 len, void *buf)
+> > +{
+> > +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
+> > +	u32 size =3D xdp->data_end - xdp->data;
+> > +	void *addr =3D xdp->data;
+> > +	int i;
+> > +
+> > +	if (unlikely(offset > 0xffff))
+> > +		return ERR_PTR(-EFAULT);
+> > +
+> > +	if (offset + len > xdp_get_buff_len(xdp))
+> > +		return ERR_PTR(-EINVAL);
+>=20
+> I don't think it breaks anything but should we sanity check len?
+> Maybe make the test above (offset | len) > 0xffff -> EFAULT?
+
+ack, I will add it in v18
+
+>=20
+> > +	if (offset < size) /* linear area */
+> > +		goto out;
+> > +
+> > +	offset -=3D size;
+> > +	for (i =3D 0; i < sinfo->nr_frags; i++) { /* paged area */
+> > +		u32 frag_size =3D skb_frag_size(&sinfo->frags[i]);
+> > +
+> > +		if  (offset < frag_size) {
+> > +			addr =3D skb_frag_address(&sinfo->frags[i]);
+> > +			size =3D frag_size;
+> > +			break;
+> > +		}
+> > +		offset -=3D frag_size;
+> > +	}
+> > +
+> > +out:
+> > +	if (offset + len < size)
+> > +		return addr + offset; /* fast path - no need to copy */
+> > +
+> > +	if (!buf) /* no copy to the bounce buffer */
+> > +		return NULL;
+> > +
+> > +	/* slow path - we need to copy data into the bounce buffer */
+> > +	bpf_xdp_copy_buf(xdp, offset, len, buf, false);
+> > +	return buf;
+> > +}
+> > +
+> > +BPF_CALL_4(bpf_xdp_load_bytes, struct xdp_buff *, xdp, u32, offset,
+> > +	   void *, buf, u32, len)
+> > +{
+> > +	void *ptr;
+> > +
+> > +	ptr =3D bpf_xdp_pointer(xdp, offset, len, buf);
+> > +	if (IS_ERR(ptr))
+> > +		return PTR_ERR(ptr);
+> > +
+> > +	if (ptr !=3D buf)
+> > +		memcpy(buf, ptr, len);
+>=20
+> Maybe we should just call out to bpf_xdp_copy_buf() like store does
+> instead of putting one but not the other inside bpf_xdp_pointer().
+>=20
+> We'll have to refactor this later for the real bpf_xdp_pointer,
+> I'd lean on the side of keeping things symmetric for now.
+
+ack, I agree. I will move bpf_xdp_copy_buf out of bpf_xdp_pointer so
+bpf_xdp_load_bytes and bpf_xdp_store_bytes are symmetric
+
+Regards,
+Lorenzo
+
+>=20
+> > +	return 0;
+> > +}
+>=20
+> > +BPF_CALL_4(bpf_xdp_store_bytes, struct xdp_buff *, xdp, u32, offset,
+> > +	   void *, buf, u32, len)
+> > +{
+> > +	void *ptr;
+> > +
+> > +	ptr =3D bpf_xdp_pointer(xdp, offset, len, NULL);
+> > +	if (IS_ERR(ptr))
+> > +		return PTR_ERR(ptr);
+> > +
+> > +	if (!ptr)
+> > +		bpf_xdp_copy_buf(xdp, offset, len, buf, true);
+> > +	else
+> > +		memcpy(ptr, buf, len);
+> > +
+> > +	return 0;
+> > +}
+
+--AsmBTGevGnjm9UDq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYYlU6QAKCRA6cBh0uS2t
+rFAMAP92t9LG0vTYodP+rXQUqVeJAeMc9n6cpaGDoC66nP+upgEA7eyee7VN6s1W
+BrLDuyz08ws7DZ2BJQ01vtAs0uDx6g4=
+=+z/b
+-----END PGP SIGNATURE-----
+
+--AsmBTGevGnjm9UDq--
