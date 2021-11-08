@@ -2,83 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7AA449E3A
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 22:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDFB449E64
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 22:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240330AbhKHVcw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 16:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52594 "EHLO mail.kernel.org"
+        id S239757AbhKHVnt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 16:43:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239289AbhKHVcw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:32:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5C20B61181;
-        Mon,  8 Nov 2021 21:30:07 +0000 (UTC)
+        id S238555AbhKHVnt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 16:43:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD15461159;
+        Mon,  8 Nov 2021 21:41:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636407007;
-        bh=spRHXcGTXUYBf46hJjqceMd3cP9sEtQ9oVe+PiZLYFs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=K7wO4kL8/3mD4COANLC2woAr4SU779+wtR9arXyDV68fe4z75LLMiQmDIsR83cGUa
-         d7v5x2eYk3Xfay/eHLnWRXgJTo83cJfA4cTLOkUqij6FFSOhreX+nOe0CJSyb6zx6y
-         DAJ6XDhi6/vQeX2K9cMaiCkobKgvMR1l95KJABiMzbBr7mv6Hjw6601yKb/aXqqTRA
-         gyigOLIf3q7AM/DLVmI0Muy0ouLb752rehmqPYA/Vam/cxiPXNfkUVjhBHZL3eI294
-         mX+To6S+v3aam4nBW+wz0NjLyd6h4bY0C0zg/BmhXmklpPMUrNPbuS8bczp3eqZ/Wj
-         IxQxlS7/AEIjg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A5B360A23;
-        Mon,  8 Nov 2021 21:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1636407664;
+        bh=vlApOlZg8tuxZYUqxaGvAFGDPBEScZWGaGGKOnJSs2I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DjoiNDBpndRoL13n3ZhjI9oyQHSAU9exwXH7nVlLQLkORpxbDZL8ibSXDD3RjZylv
+         m6W9O/KHAvHd0T9uGefQcM4lW87gDipbQ6J+MkIofvEVCMFkLl/A+qUX+UtXN/r1Px
+         Jmy5L0i8l241le+ambikNLddi1TA6FO4ztE2nqfdh9TwOlA/qOaAkSm4K184hv6ftf
+         owQq/89M9C3G6czmk1O5khizV16VGbuU7qBMGv1iI1cxKUIfeLUsduNfhcKd7y3g2I
+         oNIxKr6ltH3LMRGc6WEK7wcnKpbkB2TcwdnObtJ/61GL1HGfknOe6gE4vmHVfgWKEi
+         dMjsOhLGklkxg==
+Date:   Mon, 8 Nov 2021 13:40:59 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v17 bpf-next 12/23] bpf: add multi-buff support to the
+ bpf_xdp_adjust_tail() API
+Message-ID: <20211108134059.738ce863@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YYl1P+nPSuMjI+e6@lore-desk>
+References: <cover.1636044387.git.lorenzo@kernel.org>
+        <fd0400802295a87a921ba95d880ad27b9f9b8636.1636044387.git.lorenzo@kernel.org>
+        <20211105162941.46b807e5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YYlWcuUwcKGYtWAR@lore-desk>
+        <87fss6r058.fsf@toke.dk>
+        <YYl1P+nPSuMjI+e6@lore-desk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/2] arm64/bpf: remove 128MB limit for BPF JIT
- programs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163640700729.18756.3678999671690416622.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Nov 2021 21:30:07 +0000
-References: <1636131046-5982-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1636131046-5982-1-git-send-email-alan.maguire@oracle.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     ardb@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org, zlim.lnx@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, andreyknvl@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        samitolvanen@google.com, joey.gouly@arm.com, maz@kernel.org,
-        daizhiyuan@phytium.com.cn, jthierry@redhat.com,
-        tiantao6@hisilicon.com, pcc@google.com, akpm@linux-foundation.org,
-        rppt@kernel.org, Jisheng.Zhang@synaptics.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Fri,  5 Nov 2021 16:50:44 +0000 you wrote:
-> There is a 128MB limit on BPF JIT program allocations; this is
-> to ensure BPF programs are in branching range of each other.
-> Patch 1 in this series removes this restriction.  To verify
-> exception handling still works, a test case to validate
-> exception handling in BPF programs is added in patch 2.
+On Mon, 8 Nov 2021 20:06:39 +0100 Lorenzo Bianconi wrote:
+> > Not sure I get what the issue is with this either? But having a test
+> > that can be run to validate this on hardware would be great in any case,
+> > I suppose - we've been discussing more general "compliance tests" for
+> > XDP before...  
 > 
-> There was previous discussion around this topic [1], in particular
-> would be good to get feedback from Daniel if this approach makes
-> sense.
-> 
-> [...]
+> what about option 2? We can add a frag_size field to rxq [0] that is set by
+> the driver initializing the xdp_buff. frag_size set to 0 means we can use
+> all the buffer.
 
-Here is the summary with links:
-  - [v2,bpf-next,1/2] arm64/bpf: remove 128MB limit for BPF JIT programs
-    https://git.kernel.org/bpf/bpf-next/c/b89ddf4cca43
-  - [v2,bpf-next,2/2] selftests/bpf: add exception handling selftests for tp_bpf program
-    https://git.kernel.org/bpf/bpf-next/c/c23551c9c36a
+So 0 would mean xdp->frame_sz can be used for extending frags?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I was expecting that we'd used rxq->frag_size in place of xdp->frame_sz.
 
-
+For devices doing payload packing we will not be able to extend the
+last frag at all. Wouldn't it be better to keep 0 for the case where
+extending is not allowed?
