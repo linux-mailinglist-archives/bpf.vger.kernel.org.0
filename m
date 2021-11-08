@@ -2,149 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD39A449B48
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 19:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE357449B6D
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 19:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234180AbhKHSD2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 13:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbhKHSD1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:03:27 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EA1C061570;
-        Mon,  8 Nov 2021 10:00:42 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id v138so45819744ybb.8;
-        Mon, 08 Nov 2021 10:00:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TDrGiI4L7RxZNaXJ1B9oCpvhbFjp7zEuBUTa+BV4F04=;
-        b=EDiGqXI/tlBUNeIjK/3Wg6Lpr1RkZDyF1yPWZDSukVvs26fl0Y8jld+QM6xlkVQ2KA
-         HukINDwEkFEB+D44GZtd+iIUbsBxvBuHxjE+Fnkr1fUjEuiUCJd7HWnl9KslxC5ZnUdl
-         zfg6Dett/JVbNHxKp2q7pbsBSuCQAWdC9k5o8iMEH4ZqkJ+Pa8pq3JQX4EhybnRSPn79
-         1+I+qi5eKQu0IzpH+XS2hUs7QL0hpLSQj9qOXLEgQLY3+GkrkX6meGg6x737avtaMNap
-         jpJUjh3gLdJk8StZG57eSnf+N3lrVM7jMOCpSaOqymaNnCzsn5DWo5baJsKHeWDacGVa
-         jOAA==
+        id S234929AbhKHSKy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 13:10:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55183 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234885AbhKHSKy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Nov 2021 13:10:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636394889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=92tSlxcyAg6RieGAjyG4n5v1Q4GuVYjlOG1zKn/iHhQ=;
+        b=WhfhlL0K6/175tMisSkrqLVU0LRkWei5PUtgeOWxffsBlq1WGGcf16oGxw+dirqqGcqPF7
+        tUdryaLRP9v0N8y3IJHp9eRWENygciRrSHGYFxFkP7Ck/btr5yNYDPjO6jajI0SsY+kCaS
+        7xTyJJhMkEUU0bfOZe7zRRulDHdoYg0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-MTT9OWeRMgGDIUeAX9mO7Q-1; Mon, 08 Nov 2021 13:08:07 -0500
+X-MC-Unique: MTT9OWeRMgGDIUeAX9mO7Q-1
+Received: by mail-ed1-f69.google.com with SMTP id h18-20020a056402281200b003e2e9ea00edso11052138ede.16
+        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 10:08:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TDrGiI4L7RxZNaXJ1B9oCpvhbFjp7zEuBUTa+BV4F04=;
-        b=NTAvow+nauvbCKZIXfYqrNx0I5bKIo/2o5UaxAeGyEOJr++8UP1osZz9psy5K79mNP
-         4JQQh34szQ0MnebbdAPHeVgkSfRndBu268Ejks53W5k2nKbx7PT2vFlThVGZpBtp0/mx
-         vh8Hg1tnV/UgExQBOiThsNA0vj2Ylxq8P+Da0bEGXzPSiWYbTjfftmtyif4hDtN291W4
-         qzfa5T1aMl1D34JmfRfb41p5CLtq6FynTsdhvUFi+6hTY3Ac0ZJ+SjTocNCYCK8/ZVZJ
-         qav7ywijKi2beXEKf8U4w85ZJndv4okwzAW4Ipq07y54zKerQqxOWUm9lEHraKv/i038
-         1krg==
-X-Gm-Message-State: AOAM533GM9aA1vFyHZgP5HdLksorIWymbRHyf4TnL9jF64WXE2q7UH4A
-        676ggzE53Qg4wQP9Utvefa3/LviTQs/GVPbZd1M=
-X-Google-Smtp-Source: ABdhPJwykaxu64mwKDWOim14usaFG7Pu62cTiNOPP7NoVtcR0J9e8Q4cx5SmoCKBr/+PVIGcNMyu7N/jLix8fd9iw3w=
-X-Received: by 2002:a25:cec1:: with SMTP id x184mr1171745ybe.455.1636394441825;
- Mon, 08 Nov 2021 10:00:41 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=92tSlxcyAg6RieGAjyG4n5v1Q4GuVYjlOG1zKn/iHhQ=;
+        b=RS8O0IFhR6PCSERtfiww4GBxqmBdIofUyUvimO0eWqBag3pa/iyIfxtKbLP9XRhZJi
+         2ooMP4ir0gZcxyyMTji13H0JMRK3K1afyt+s+zkZDrpz80s2MFYYcMqmdyBvn8tDaH+W
+         XRsHSxjVDEot+pYzJJGY1CdFQcCO50VJ0DhOZiDzsr8orjI4Jfdj1kcJdiiFTMt4bOL/
+         PlJ2XvWT/vz2czB7OMAx8uzjnsEC1Co5rKtQlS0OSOd4L/hHcrI5/hOlR9d5bohk1N1x
+         y8QZ2A51DBmwOIi5ySRR8SEnDBzInMO9shpQ0/1h5JGKk66EaCiBbz0iMyXBGdf+QoOS
+         XUEw==
+X-Gm-Message-State: AOAM5309+o8I29ig5bRCR+RFjtv2xxl4l9P+r1r1DtbcCkYNtODP3LAJ
+        byFaTywjycq8CVaKU/FTl2F3f1AUxViyfVx7Ssxhane+ATS85vP7uLXbIGxMd5/x2e1xF13jK3Z
+        8I7wMzalR8X5K
+X-Received: by 2002:a17:906:a1da:: with SMTP id bx26mr1429330ejb.558.1636394885855;
+        Mon, 08 Nov 2021 10:08:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz93B2AV89r1ymFJQ+wwa/FG2nea1AqvyhJPFBi0z5drQrLhm5wg/TLvmHQ2uJWMUsNk/qiog==
+X-Received: by 2002:a17:906:a1da:: with SMTP id bx26mr1429273ejb.558.1636394885405;
+        Mon, 08 Nov 2021 10:08:05 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id jt24sm8242608ejb.59.2021.11.08.10.08.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 10:08:04 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D6F9218026D; Mon,  8 Nov 2021 19:08:03 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v17 bpf-next 12/23] bpf: add multi-buff support to the
+ bpf_xdp_adjust_tail() API
+In-Reply-To: <YYlWcuUwcKGYtWAR@lore-desk>
+References: <cover.1636044387.git.lorenzo@kernel.org>
+ <fd0400802295a87a921ba95d880ad27b9f9b8636.1636044387.git.lorenzo@kernel.org>
+ <20211105162941.46b807e5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYlWcuUwcKGYtWAR@lore-desk>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 08 Nov 2021 19:08:03 +0100
+Message-ID: <87fss6r058.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20211106132822.1396621-1-houtao1@huawei.com> <20211106132822.1396621-3-houtao1@huawei.com>
- <20211106184307.7gbztgkeprktbohz@ast-mbp.dhcp.thefacebook.com> <c8f473f7-57ec-3161-e634-fc2e6925ec3d@huawei.com>
-In-Reply-To: <c8f473f7-57ec-3161-e634-fc2e6925ec3d@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Nov 2021 10:00:30 -0800
-Message-ID: <CAEf4BzZpDiMXjk2AqeAGdjHqpMTy5ycEodK7JUtmqCHZ0v_Hew@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/2] selftests/bpf: add benchmark bpf_strcmp
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 6:05 AM Hou Tao <houtao1@huawei.com> wrote:
->
-> HI,
->
-> On 11/7/2021 2:43 AM, Alexei Starovoitov wrote:
-> > On Sat, Nov 06, 2021 at 09:28:22PM +0800, Hou Tao wrote:
-> >> The benchmark runs a loop 5000 times. In the loop it reads the file name
-> >> from kprobe argument into stack by using bpf_probe_read_kernel_str(),
-> >> and compares the file name with a target character or string.
-> >>
-> >> Three cases are compared: only compare one character, compare the whole
-> >> string by a home-made strncmp() and compare the whole string by
-> >> bpf_strcmp().
-> >>
-> >> The following is the result:
-> >>
-> >> x86-64 host:
-> >>
-> >> one character: 2613499 ns
-> >> whole str by strncmp: 2920348 ns
-> >> whole str by helper: 2779332 ns
-> >>
-> >> arm64 host:
-> >>
-> >> one character: 3898867 ns
-> >> whole str by strncmp: 4396787 ns
-> >> whole str by helper: 3968113 ns
-> >>
-> >> Compared with home-made strncmp, the performance of bpf_strncmp helper
-> >> improves 80% under x86-64 and 600% under arm64. The big performance win
-> >> on arm64 may comes from its arch-optimized strncmp().
-> > 80% and 600% improvement?!
-> > I don't understand how this math works.
-> > Why one char is barely different in total nsec than the whole string?
-> > The string shouldn't miscompare on the first char as far as I understand the test.
-> Because the result of "one character" includes the overhead of process filtering and
-> string read.
-> My bad, I should explain the tests results in more details.
+Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-Maybe use bench framework for your benchmark? It allows to setup the
-benchmark and collect measurements in a more structured way. Check
-some existing benchmarks under benchs/ in selftests/bpf directory.
+>> On Thu,  4 Nov 2021 18:35:32 +0100 Lorenzo Bianconi wrote:
+>> > This change adds support for tail growing and shrinking for XDP multi-buff.
+>> > 
+>> > When called on a multi-buffer packet with a grow request, it will always
+>> > work on the last fragment of the packet. So the maximum grow size is the
+>> > last fragments tailroom, i.e. no new buffer will be allocated.
+>> > 
+>> > When shrinking, it will work from the last fragment, all the way down to
+>> > the base buffer depending on the shrinking size. It's important to mention
+>> > that once you shrink down the fragment(s) are freed, so you can not grow
+>> > again to the original size.
+>> 
+>> > +static int bpf_xdp_mb_increase_tail(struct xdp_buff *xdp, int offset)
+>> > +{
+>> > +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+>> > +	skb_frag_t *frag = &sinfo->frags[sinfo->nr_frags - 1];
+>> > +	int size, tailroom;
+>> > +
+>> > +	tailroom = xdp->frame_sz - skb_frag_size(frag) - skb_frag_off(frag);
+>> 
+>> I know I complained about this before but the assumption that we can
+>> use all the space up to xdp->frame_sz makes me uneasy.
+>> 
+>> Drivers may not expect the idea that core may decide to extend the 
+>> last frag.. I don't think the skb path would ever do this.
+>> 
+>> How do you feel about any of these options: 
+>>  - dropping this part for now (return an error for increase)
+>>  - making this an rxq flag or reading the "reserved frag size"
+>>    from rxq (so that drivers explicitly opt-in)
+>>  - adding a test that can be run on real NICs
+>> ?
+>
+> I think this has been added to be symmetric with bpf_xdp_adjust_tail().
+> I do think there is a real use-case for it so far so I am fine to just
+> support the shrink part.
+>
+> @Eelco, Jesper, Toke: any comments on it?
 
-To actually test just bpf_strncmp() don't add
-bpf_probe_read_kernel_str() into the loop logic, set your data in
-global variable and just search it. This will give you more accurate
-microbenchmark data.
+Well, tail adjust is useful for things like encapsulations that need to
+add a trailer. Don't see why that wouldn't be something people would
+want to do for jumboframes as well?
 
->
-> Three tests are exercised:
->
-> (1) one character
-> Filter unexpected caller by bpf_get_current_pid_tgid()
-> Use bpf_probe_read_kernel_str() to read the file name into 64-bytes sized-buffer
-> in stack
-> Only compare the first character of file name
->
-> (2) whole str by strncmp
-> Filter unexpected caller by bpf_get_current_pid_tgid()
-> Use bpf_probe_read_kernel_str() to read the file name into 64-bytes sized-buffer
-> in stack
-> Compare by using home-made strncmp(): the compared two strings are the same, so
-> the whole string is compared
->
-> (3) whole str by helper
-> Filter unexpected caller by bpf_get_current_pid_tgid()
-> Use bpf_probe_read_kernel_str() to read the file name into 64-bytes sized-buffer
-> in stack
-> Compare by using bpf_strncmp: the compared two strings are the same, so
-> the whole string is compared
->
-> Now "(1) one character" is used to calculate the overhead of process filtering and
-> string read. So under x86-64, the overhead of strncmp() is
->
->   total time of whole str by strncmp  test  - total time of no character test =
-> 306849 ns.
->
-> The overhead of bpf_strncmp() is:
->   total time of whole str by helper test - total time of no character test =
-> 165833 ns
->
-> So the performance win is about (306849  / 165833 ) * 100 - 100 = ~85%
->
-> And the win under arm64 is about (497920 / 69246) * 100 - 100 = ~600%
+Not sure I get what the issue is with this either? But having a test
+that can be run to validate this on hardware would be great in any case,
+I suppose - we've been discussing more general "compliance tests" for
+XDP before...
+
+-Toke
+
