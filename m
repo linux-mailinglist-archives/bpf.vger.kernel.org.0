@@ -2,178 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEC7449B75
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 19:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E849449B8E
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 19:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234962AbhKHSMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 13:12:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32817 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234982AbhKHSMA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Nov 2021 13:12:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636394955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1cEuhXaEuhD+GKL/lBmFj9KF6WCNj/n+YccNImJPdjg=;
-        b=Qe0ArsfQZRCC0E6pJ6ixO+6pLcqxNtKHbsnYD/qAEUJ7HnZtXViJXUahRjR61wWklUI4UM
-        0rXzSq4Kdvp24qmviX8PyYsySZWPax4OeG0IakHgbBNIJiGvvSa2+mnKIks2Gi99ILpAlD
-        b1kMwdMu5EKO/BRF0sw8XqvHXFrhUnI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-eXrh2DszO5OmDgtXlGqmvg-1; Mon, 08 Nov 2021 13:09:14 -0500
-X-MC-Unique: eXrh2DszO5OmDgtXlGqmvg-1
-Received: by mail-ed1-f70.google.com with SMTP id f20-20020a0564021e9400b003e2ad3eae74so15599861edf.5
-        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 10:09:13 -0800 (PST)
+        id S235329AbhKHSXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 13:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235228AbhKHSXk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 13:23:40 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B18C061570;
+        Mon,  8 Nov 2021 10:20:56 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id q74so45934785ybq.11;
+        Mon, 08 Nov 2021 10:20:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r7XPmJ4Slk0Ee3SezOzVKKKVWOfK/ZMFCj2/Il/40bw=;
+        b=iz01UfRunQAw2bNi51uhKvnwK2/Te9f/yoUFFKDmp5I6iZld01jP8o5venupoJWDO+
+         mT94brOYF2rsnQ9uqe12t0Y+xbOW7arQ2DH21TpPvZeFWaXI5omzz1VApkGnM2MZ15FJ
+         1zrT4C+5b5xSRAioqhGnsxz35d7mTG9TJy1xlk8nSZNpch7bGx/VzMczpRLQYkDGKLgP
+         5ReQhsl85aBI38ZkG/w/Zi2jMhqZqgCQ5fiW15aIJpYxdPWKRvVUhoLq9j1KgTwlCnT9
+         nr2UlZ5lWY9ldfsGC+IC+8RUNbeyEOvkY8IZR5FH5Fq96rFeepMMgtBf9TwyowqfnTsJ
+         FQFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=1cEuhXaEuhD+GKL/lBmFj9KF6WCNj/n+YccNImJPdjg=;
-        b=doGF79au3Q8uzSGSpveJNyCyS/mxC0R+rqLVHjphCCn+JJ9ydbQlpm9RatvYVN1wRQ
-         /ui9gb0wSBmwAcDnJy60q9er6meFWLoaleN4Q5v5B2rldraykB0PpmDDJix2XKyvvahw
-         MH+zh8xOWUX539iBcYhRquHZY8Y76R7THHS0HVs/Hgbi5pUdegRyvFkIKNBi83H6UKhY
-         SznGdxp3vmlmMxhi+zHYMyXXYXQ0fS0KMLdilalIqgsR9eGO+pK+3GgUdhTQiW4VEANf
-         9bzTd3NlKq/qdlByQgda4AqFqVAvkftrwVdXnkm89l2ToJVysTE13Zimp1xigmU+SS6p
-         DPRA==
-X-Gm-Message-State: AOAM532yFXSRNcS1meebtrwyd2R/3faRbVVZf2SXn7FsfXayMAqTtwFu
-        GaNRDwaFgaso7a9IVKPoe6PB74kJ5ACNAzpeiNEVFzE65cRXmWXEVan5ELmHoEnaT9p/V+DdHpd
-        l8pdet/tfPROr
-X-Received: by 2002:a17:907:8692:: with SMTP id qa18mr1467266ejc.7.1636394950734;
-        Mon, 08 Nov 2021 10:09:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyClv8tcSrI/UxXplWxRW76JXyVsa3nEi/pu2Ka0nP1mqXKVKeTujb2Aq2XU4+3KU1tY6N6lw==
-X-Received: by 2002:a17:907:8692:: with SMTP id qa18mr1467121ejc.7.1636394949701;
-        Mon, 08 Nov 2021 10:09:09 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id gn16sm8739933ejc.67.2021.11.08.10.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 10:09:08 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1A5BA18026D; Mon,  8 Nov 2021 19:09:08 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Sameeh Jubran <sameehj@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
- statistics
-In-Reply-To: <20211108132113.5152-1-alexandr.lobakin@intel.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
- <20210803163641.3743-4-alexandr.lobakin@intel.com>
- <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
- <20211026092323.165-1-alexandr.lobakin@intel.com>
- <20211105164453.29102-1-alexandr.lobakin@intel.com>
- <87v912ri7h.fsf@toke.dk>
- <20211108132113.5152-1-alexandr.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 08 Nov 2021 19:09:08 +0100
-Message-ID: <87cznar03f.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r7XPmJ4Slk0Ee3SezOzVKKKVWOfK/ZMFCj2/Il/40bw=;
+        b=I7ZRzP1GYj+660QOf/Kt6LiEsIkKcyoIpw3wizWepEdoy3kXYg2N3VTdnxZoyow3Rm
+         ssB2A1Cs3SKFavu78EP4+/iKylfDBvSHoTO2Bozo8mZLqbCC9Y5eMyFEj8C8wYr8F15N
+         baIcTl/SNJLFaDJ7GHefrE9AKmZzCSYdY0vF6r0qfUwt9qw/eUdQDLu3my5JBQ0vKO0H
+         A6hUhg8gdOJ39ZAHM2PrrqzkuaTzB5Jpibk+bW8MHbsVRWfcaeU6MqAsHEVqP4ClbSdf
+         XR+GU7Phcj7ZtuYM2FW6AejYtlc4TDYoXU+ndybHOxSAbAdOUfa1mt6npVaS/3XejMNA
+         mdqg==
+X-Gm-Message-State: AOAM5333zwdGKHmvt/V7GGahPeAHbRzuzySF5bnmBwsjHdYT82ekRhBT
+        S+OQQ396a2BdoaJXMex2weXiM3TsN+DShiR7iOyyNBlpM0s=
+X-Google-Smtp-Source: ABdhPJzKAxzbKjPtiiGNx7AYawm+AKqI67L99mxmMg0zsCRfBfiQ633kM0HeDLshFyAnNtdF6Ej5bom8rFbvvTcqyW4=
+X-Received: by 2002:a25:cc4c:: with SMTP id l73mr1441620ybf.114.1636395655412;
+ Mon, 08 Nov 2021 10:20:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211108083840.4627-1-laoar.shao@gmail.com> <20211108083840.4627-6-laoar.shao@gmail.com>
+In-Reply-To: <20211108083840.4627-6-laoar.shao@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Nov 2021 10:20:44 -0800
+Message-ID: <CAEf4BzYn3PwjhjzWV8oPD3A8ozLN_Y4ef7xAHW+oECOMgtMgcA@mail.gmail.com>
+Subject: Re: [PATCH 5/7] samples/bpf/test_overhead_kprobe_kern: make it adopt
+ to task comm size change
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
-
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Date: Mon, 08 Nov 2021 12:37:54 +0100
+On Mon, Nov 8, 2021 at 12:39 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 >
->> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
->>=20
->> > From: Alexander Lobakin <alexandr.lobakin@intel.com>
->> > Date: Tue, 26 Oct 2021 11:23:23 +0200
->> >
->> >> From: Saeed Mahameed <saeed@kernel.org>
->> >> Date: Tue, 03 Aug 2021 16:57:22 -0700
->> >>=20
->> >> [ snip ]
->> >>=20
->> >> > XDP is going to always be eBPF based ! why not just report such sta=
-ts
->> >> > to a special BPF_MAP ? BPF stack can collect the stats from the dri=
-ver
->> >> > and report them to this special MAP upon user request.
->> >>=20
->> >> I really dig this idea now. How do you see it?
->> >> <ifindex:channel:stat_id> as a key and its value as a value or ...?
->> >
->> > Ideas, suggestions, anyone?
->>=20
->> I don't like the idea of putting statistics in a map instead of the
->> regular statistics counters. Sure, for bespoke things people want to put
->> into their XDP programs, use a map, but for regular packet/byte
->> counters, update the regular counters so XDP isn't "invisible".
+> bpf_probe_read_kernel_str() will add a nul terminator to the dst, then
+> we don't care about if the dst size is big enough. This patch also
+> replaces the hard-coded 16 with TASK_COMM_LEN to make it adopt to task
+> comm size change.
 >
-> I wanted to provide an `ip link` command for getting these stats
-> from maps and printing them in a usual format as well, but seems
-> like that's an unneeded overcomplication of things since using
-> maps for "regular"/"generic" XDP stats really has no reason except
-> for "XDP means eBPF means maps".
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> ---
 
-Yeah, don't really see why it would have to: to me, one of the benefits
-of XDP is being integrated closely with the kernel so we can have a
-"fast path" *without* reinventing everything...
+LGTM.
 
->> As Jesper pointed out, batching the updates so the global counters are
->> only updated once per NAPI cycle is the way to avoid a huge performance
->> overhead of this...
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  samples/bpf/offwaketime_kern.c          |  4 ++--
+>  samples/bpf/test_overhead_kprobe_kern.c | 11 ++++++-----
+>  samples/bpf/test_overhead_tp_kern.c     |  5 +++--
+>  3 files changed, 11 insertions(+), 9 deletions(-)
 >
-> That's how I do things currently, seems to work just fine.
 
-Awesome!
-
--Toke
-
+[...]
