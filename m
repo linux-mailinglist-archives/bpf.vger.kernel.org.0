@@ -2,140 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C61449BB8
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 19:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0DF449C2D
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 20:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhKHSjG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 13:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhKHSjG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:39:06 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00C3C061570;
-        Mon,  8 Nov 2021 10:36:21 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so9492454pji.5;
-        Mon, 08 Nov 2021 10:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Pe1bWLXlIi/2zH+f+tSQAtO/51QNXQXJBH+pOwSHeKQ=;
-        b=Ug3VXcIVP7QId+X/LluYtSipQRCwoKj+uwYaaEQEo21LVVdguxNhN6/nhel16lgEHh
-         mfLxowE57m6nwDvxJWFmlfVvDH60XJxg/i2RG1xesjKV8iM+ZdY/1BzRLSHowtN9XrhU
-         ZvTKLMZZpFrRxCyirHOaNRMXCXeNV8+G4pRtTI+OM+WTwhmREeN4D4D24wjX8GLfeUK6
-         kWQFfLWoO/+mYLSkispBOZwsZsqs3t6O0innQNvEo6yq9jX7jDwmVp2frGlQB5P22dio
-         eK/HwQ8/mrxoV4iXwAWugF3v36Wbbw5D/sRV78L3cM5WyW2i+AbMKmhmVXCA2sSTrPsw
-         r2PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pe1bWLXlIi/2zH+f+tSQAtO/51QNXQXJBH+pOwSHeKQ=;
-        b=szJNP1oTwJ7SqwJyzcMGz54I6NdxDVNtyqstOe+CPxYUhs2aXRcrGmTfZcrJ3m24Iz
-         xAChhrIOsAIHfgbPr1lwAfd/QyWKRhtMGo9MCXwcyYIrM7sq8EusJAtlp3KtZYYbDdBK
-         k6E+GqZVSy8RJRKOciREIFGlTXzGSDLgOizxDCyXjI9F6OGvFBQabRWVkbUathdSKTgP
-         moRjNTI+pDbVILsHlG2th4NBUnB8N0j8fqW2JlUawdzoIfZs5TmjsK7GsboAR9BNzbxF
-         AHh0RD8EInU3iLyPGUkrOb2fKsA/YUx3u/ozjtNjg4PBCpJh4X3C8pvj2M1P8VFXTSbf
-         5pKQ==
-X-Gm-Message-State: AOAM531wjJ6kYoEMFOWa2VPweg8jcoFcpwQh4Lc6bnlkGJr0hdxrK/1c
-        fCbO4stCW+Ipps6kR4XCAX1Jxgj4PzQ=
-X-Google-Smtp-Source: ABdhPJwZRoAmRuFHDQpo+XfoZIfq/HK0Ql63fB5CUylRJ3HkiDhafG4IcLvFhWoUZwjdtRUjUfPuaw==
-X-Received: by 2002:a17:902:714f:b0:142:892d:a46 with SMTP id u15-20020a170902714f00b00142892d0a46mr1263538plm.39.1636396581261;
-        Mon, 08 Nov 2021 10:36:21 -0800 (PST)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id h130sm4993293pfe.85.2021.11.08.10.36.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 10:36:20 -0800 (PST)
-Subject: Re: [PATCH v5 bpf-next 1/2] bpf: introduce helper bpf_find_vma
-To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kernel-team@fb.com, kpsingh@kernel.org, hengqi.chen@gmail.com,
-        Yonghong Song <yhs@fb.com>
-References: <20211105232330.1936330-1-songliubraving@fb.com>
- <20211105232330.1936330-2-songliubraving@fb.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0ee9be06-6552-d8e3-74c7-7a96a46c8888@gmail.com>
-Date:   Mon, 8 Nov 2021 10:36:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S236605AbhKHTJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 14:09:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236573AbhKHTJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 14:09:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B41461181;
+        Mon,  8 Nov 2021 19:06:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636398403;
+        bh=pd0VCkggWE2iPh69ltI+nfP+BwOWPf0TnwVTYOnczxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mriAKXRtWZh1jXLC2uP+eja0pXUzB9G5zjA5vLhVJ8SyqzH1IjeDtTsBSxwOR2+jp
+         AZfhTfbmhCagYiki6W4AF45i1uwsWpBIg9WepFU3GuBIJAImdADV2mjcCEgTW3IfPO
+         0xYbjh7tWWwbE1LsHhAoiKm7Gzh8U7x9UM5HVgP6SgIpwj/YYtnk8d8urzF85Sw9bm
+         8wOKEGFIaD2DkAY3QUG5gzpa9o7t0xbtxA86CQA/Kj2nP/vRCmQkeROlIdBVYiawJf
+         fsIXeX6bPwy8GxV71G7tzQ5salX7DwYS/YzzOme/jO0qO4Bm+4e2p0bFRz9c5Ht2Bm
+         NFEJXFpEiIrvw==
+Date:   Mon, 8 Nov 2021 20:06:39 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        shayagr@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v17 bpf-next 12/23] bpf: add multi-buff support to the
+ bpf_xdp_adjust_tail() API
+Message-ID: <YYl1P+nPSuMjI+e6@lore-desk>
+References: <cover.1636044387.git.lorenzo@kernel.org>
+ <fd0400802295a87a921ba95d880ad27b9f9b8636.1636044387.git.lorenzo@kernel.org>
+ <20211105162941.46b807e5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YYlWcuUwcKGYtWAR@lore-desk>
+ <87fss6r058.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20211105232330.1936330-2-songliubraving@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="p3KXfLdNpNEkKsaf"
+Content-Disposition: inline
+In-Reply-To: <87fss6r058.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+--p3KXfLdNpNEkKsaf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 11/5/21 4:23 PM, Song Liu wrote:
-> In some profiler use cases, it is necessary to map an address to the
-> backing file, e.g., a shared library. bpf_find_vma helper provides a
-> flexible way to achieve this. bpf_find_vma maps an address of a task to
-> the vma (vm_area_struct) for this address, and feed the vma to an callback
-> BPF function. The callback function is necessary here, as we need to
-> ensure mmap_sem is unlocked.
-> 
-> It is necessary to lock mmap_sem for find_vma. To lock and unlock mmap_sem
-> safely when irqs are disable, we use the same mechanism as stackmap with
-> build_id. Specifically, when irqs are disabled, the unlocked is postponed
-> in an irq_work. Refactor stackmap.c so that the irq_work is shared among
-> bpf_find_vma and stackmap helpers.
-> 
-> Acked-by: Yonghong Song <yhs@fb.com>
-> Tested-by: Hengqi Chen <hengqi.chen@gmail.com>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
+> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+>=20
+> >> On Thu,  4 Nov 2021 18:35:32 +0100 Lorenzo Bianconi wrote:
+> >> > This change adds support for tail growing and shrinking for XDP mult=
+i-buff.
+> >> >=20
+> >> > When called on a multi-buffer packet with a grow request, it will al=
+ways
+> >> > work on the last fragment of the packet. So the maximum grow size is=
+ the
+> >> > last fragments tailroom, i.e. no new buffer will be allocated.
+> >> >=20
+> >> > When shrinking, it will work from the last fragment, all the way dow=
+n to
+> >> > the base buffer depending on the shrinking size. It's important to m=
+ention
+> >> > that once you shrink down the fragment(s) are freed, so you can not =
+grow
+> >> > again to the original size.
+> >>=20
+> >> > +static int bpf_xdp_mb_increase_tail(struct xdp_buff *xdp, int offse=
+t)
+> >> > +{
+> >> > +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xd=
+p);
+> >> > +	skb_frag_t *frag =3D &sinfo->frags[sinfo->nr_frags - 1];
+> >> > +	int size, tailroom;
+> >> > +
+> >> > +	tailroom =3D xdp->frame_sz - skb_frag_size(frag) - skb_frag_off(fr=
+ag);
+> >>=20
+> >> I know I complained about this before but the assumption that we can
+> >> use all the space up to xdp->frame_sz makes me uneasy.
+> >>=20
+> >> Drivers may not expect the idea that core may decide to extend the=20
+> >> last frag.. I don't think the skb path would ever do this.
+> >>=20
+> >> How do you feel about any of these options:=20
+> >>  - dropping this part for now (return an error for increase)
+> >>  - making this an rxq flag or reading the "reserved frag size"
+> >>    from rxq (so that drivers explicitly opt-in)
+> >>  - adding a test that can be run on real NICs
+> >> ?
+> >
+> > I think this has been added to be symmetric with bpf_xdp_adjust_tail().
+> > I do think there is a real use-case for it so far so I am fine to just
+> > support the shrink part.
+> >
+> > @Eelco, Jesper, Toke: any comments on it?
+>=20
+> Well, tail adjust is useful for things like encapsulations that need to
+> add a trailer. Don't see why that wouldn't be something people would
+> want to do for jumboframes as well?
+>=20
 
-...
+I agree this would be useful for protocols that add a trailer.
 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index dbc3ad07e21b6..cdb0fba656006 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6342,7 +6342,10 @@ const struct bpf_func_proto bpf_btf_find_by_name_kind_proto = {
->  	.arg4_type	= ARG_ANYTHING,
->  };
->  
-> -BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
-> +BTF_ID_LIST_GLOBAL(btf_task_struct_ids)
-> +BTF_ID(struct, task_struct)
-> +BTF_ID(struct, file)
-> +BTF_ID(struct, vm_area_struct)
+> Not sure I get what the issue is with this either? But having a test
+> that can be run to validate this on hardware would be great in any case,
+> I suppose - we've been discussing more general "compliance tests" for
+> XDP before...
 
-$ nm -v vmlinux |grep -A3 btf_task_struct_ids
-ffffffff82adfd9c R btf_task_struct_ids
-ffffffff82adfda0 r __BTF_ID__struct__file__715
-ffffffff82adfda4 r __BTF_ID__struct__vm_area_struct__716
-ffffffff82adfda8 r bpf_skb_output_btf_ids
+what about option 2? We can add a frag_size field to rxq [0] that is set by
+the driver initializing the xdp_buff. frag_size set to 0 means we can use
+all the buffer.
 
-KASAN thinks btf_task_struct_ids has 4 bytes only.
+Regards,
+Lorenzo
 
-BUG: KASAN: global-out-of-bounds in task_iter_init+0x212/0x2e7 kernel/bpf/task_iter.c:661
-Read of size 4 at addr ffffffff90297404 by task swapper/0/1
+[0] pahole -C xdp_rxq_info vmlinux
+struct xdp_rxq_info {
+	struct net_device *        dev;                  /*     0     8 */
+	u32                        queue_index;          /*     8     4 */
+	u32                        reg_state;            /*    12     4 */
+	struct xdp_mem_info        mem;                  /*    16     8 */
+	unsigned int               napi_id;              /*    24     4 */
 
-CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xf/0x309 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- task_iter_init+0x212/0x2e7 kernel/bpf/task_iter.c:661
- do_one_initcall+0x103/0x650 init/main.c:1295
- do_initcall_level init/main.c:1368 [inline]
- do_initcalls init/main.c:1384 [inline]
- do_basic_setup init/main.c:1403 [inline]
- kernel_init_freeable+0x6b1/0x73a init/main.c:1606
- kernel_init+0x1a/0x1d0 init/main.c:1497
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
+	/* size: 64, cachelines: 1, members: 5 */
+	/* padding: 36 */
+} __attribute__((__aligned__(64)));
 
-The buggy address belongs to the variable:
- btf_task_struct_ids+0x4/0x40
+>=20
+> -Toke
+>=20
+
+--p3KXfLdNpNEkKsaf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYYl1PwAKCRA6cBh0uS2t
+rGnqAQD1pTkY4LULPI8QwzvwJAcHV6GwG9GDqOYZk2vVxzPFNwD+NbfDdSShTSro
+XXRWopIZmeepdZVp7zdj/qOZEGkFtAU=
+=Kfff
+-----END PGP SIGNATURE-----
+
+--p3KXfLdNpNEkKsaf--
