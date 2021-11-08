@@ -2,83 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36DA447B93
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 09:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F61F447BFC
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 09:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237565AbhKHIMb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 03:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhKHIMa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:12:30 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B17C061570
-        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 00:09:46 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id i9so15999519ilu.8
-        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 00:09:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=usyR4seZAxYW/JvaQC78X8ukx747nmE1iKwDlQWCKB8=;
-        b=Jrf5jyo23Um4uLQyttxNd0J5sbSU6IWwl8gZGKV0kst2pYmDrC4hXpMdp9J9Kv8o7g
-         4nWCT+RnQmZsqt0j93ekgUZwGN/NKbaevqxo3E7GnKCXDkLehJ4s6eQgfwtihZKH2Y4K
-         U3CYhwPgyzY2WGYy3xPLg/Ru/bj5UwExbkb7BbAhY605ileuL61+c4PgdlPvOhbajpkJ
-         kfc+6Q5wxVvOk5hB2UKAEVMH+mKO5yD+wAlrd61jVjV+s2DTH5inieix4zEpPBntbL8a
-         kwXrLba9tkTwzl+G1x7X10t3yESDS5UtGQEvF515kD8f5FdooHbWT0LCZUGZOjmj4waG
-         HlPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=usyR4seZAxYW/JvaQC78X8ukx747nmE1iKwDlQWCKB8=;
-        b=kVrcXNZO3HEcMFYIXAVZ/YrVSOexdIFtGjuR3H61Nxe+2jAPC7lzajWIp90EE/wUNz
-         +CFF6W2SQ8HZKAX2+FvKtOy9hXEWXgZtuU7Ax2klKUMLPv+XszDu8Up5ZdkhioqClQas
-         309W4b6uWDx1lsIud0obdyJi1o+8JI5/9YvSIdu71umo47a1xQnQpf/OJZtSOol7mcFh
-         wF8lO6GyVRerWitrWA3PdFzpKO8aKCTRS5Oquet4kSQ2ktJS2/oTVGj36HOj5axAtAwt
-         5q890BfTTg73Xq7xZIcf3puFYEGJn3B6clUcYXHh7UrxdlB0mH9IeUA6AZeX/R6+tqh5
-         Ywhg==
-X-Gm-Message-State: AOAM5303aT9HDhH4CpDVN0ckAHhvfPThg9htMoiCGJFcXApKeJDG7QVY
-        Aq0N535zz0ReYBTOYNLq+nN0F2er13pMvTw93LA=
-X-Google-Smtp-Source: ABdhPJxF+RndgCVilzc2+EbhH31O90Ik9XvukpElzduYvi6em1rMkeIqGTdxCnl3R4ytidAc/pwVqJ9SnBwzWLrDjEs=
-X-Received: by 2002:a92:d14d:: with SMTP id t13mr42665906ilg.194.1636358985943;
- Mon, 08 Nov 2021 00:09:45 -0800 (PST)
+        id S238057AbhKHIkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 03:40:00 -0500
+Received: from mail.mysalegroup.pl ([195.231.78.231]:47730 "EHLO
+        mail.mysalegroup.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238052AbhKHIkA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 03:40:00 -0500
+X-Greylist: delayed 383 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Nov 2021 03:39:59 EST
+Received: by mail.mysalegroup.pl (Postfix, from userid 1001)
+        id A4C42A23AC; Mon,  8 Nov 2021 08:30:51 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mysalegroup.pl;
+        s=mail; t=1636360251;
+        bh=XHM0xVJoMVtauG8nXsboODHs7zx9g1wKm7YTPWfPUkY=;
+        h=Date:From:To:Subject:From;
+        b=Ug9tNEqCqQ8lFt1skvKkP2MRccD7pt5GAubU2NZw+IKowaIYaykIOelEuoacpITmY
+         3hc4sYo+NWa/a554Uoo7rJbgr7cDrYBHSfnY36Tm/br3y8Li+9iuwbEfjzT7j/9uJm
+         gIvfJSZe2mbUK96hW9AkmRbrk9tYdjQwxGXevKoZBEAwrUWpGwUMzCrp7Z+jPOnKx6
+         0hw7X2tSY8XBZ/96yAN/m7WOPwAJpvijABYtX04FWEsA4wCW9njZLqkZ+8yWQ7rsWw
+         R8JQqvvAB/uspUxnsdMv5d69KMRW41jmaIJj3Onj3y38KDRuXZQ4TkQcz8dJDuHsZr
+         BuzAD+Z8qSqBA==
+Received: by mail.mysalegroup.pl for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 08:30:49 GMT
+Message-ID: <20211108074500-0.1.59.ag7y.0.24tqdq3n1t@mysalegroup.pl>
+Date:   Mon,  8 Nov 2021 08:30:49 GMT
+From:   =?UTF-8?Q? "Micha=C5=82_G=C3=B3recki" ?= 
+        <michal.gorecki@mysalegroup.pl>
+To:     <bpf@vger.kernel.org>
+Subject: Koszty instalacji fotowoltaicznej
+X-Mailer: mail.mysalegroup.pl
 MIME-Version: 1.0
-Received: by 2002:a05:6602:1403:0:0:0:0 with HTTP; Mon, 8 Nov 2021 00:09:45
- -0800 (PST)
-Reply-To: aalqaddafi96@gmail.com
-From:   "Aisha Al-Qadafi.," <ammazn76@gmail.com>
-Date:   Mon, 8 Nov 2021 09:09:45 +0100
-Message-ID: <CAERwekgMS9Moihiq5XEteEufRe4cvsL=yZ-=5AK8DEXd7Bnh+Q@mail.gmail.com>
-Subject: Aisha Al-Qaddafi
-To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Dear Friend (Assalamu Alaikum)
+Dzie=C5=84 dobry,
 
-Greetings to you from the city of Muscat Oman
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only daughter to
-Former President of Libya Col. Muammar Al-Qaddafi. Am a Widow with
-Children.
+stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
+ obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
+acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
+ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
+Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
+=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
+=2E
 
-If you are willing to handle this project on my behalf, kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
-Your Urgent Reply Will Be Appreciated
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
 
-Best Regards
-Aisha Al-Qaddafi
+Pozdrawiam,
+Micha=C5=82 G=C3=B3recki
