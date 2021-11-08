@@ -2,147 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5AD447F67
-	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 13:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1752244802C
+	for <lists+bpf@lfdr.de>; Mon,  8 Nov 2021 14:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239495AbhKHMTQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 07:19:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51528 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239523AbhKHMTL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Nov 2021 07:19:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636373786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vocr124ad3jPXg2gEgxmsFweYoUU2YKye8AipAjolqA=;
-        b=OpzdCjy6HyG7DQf6GYyQL4qCcResCSM3pqrY+aAJ84E6XwIW+ZvgesPgsUJbV2L8CGTptG
-        v2h4JVTC/XTVmFBq/taO092QKewZOVEK/XieF8u6QOPSQJcbr+bmLm/NEsd4FN1lOd6ZOI
-        I8JwV8o/20+hURVODPFxfxtTSpKeHPo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-BxkAPfyEORiy5VPUY1zeLg-1; Mon, 08 Nov 2021 07:16:25 -0500
-X-MC-Unique: BxkAPfyEORiy5VPUY1zeLg-1
-Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso14623084edj.20
-        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 04:16:25 -0800 (PST)
+        id S237601AbhKHNYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 08:24:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236259AbhKHNYJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 08:24:09 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33ECFC061570
+        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 05:21:25 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id p16so36135884lfa.2
+        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 05:21:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Abd0jR/GPc/ldbm03xGS4P3FzSYysNQiB55mYY9QSlI=;
+        b=JG+cUBs7S17n3hphaRbLhvQyaVVV36L9W3d71xuxF6617lSpj5AKftKe9ZL+Zw3jdP
+         V96ese14N0oFfYwi4wPuOHDT1kMdfYugvoLeBN4EHL/O7u1zm6Ah0L0gQDOzl1ijwymd
+         YSGDY4dCnM/r4hehRC+iNqr4dlzSxGOJSJc5M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Vocr124ad3jPXg2gEgxmsFweYoUU2YKye8AipAjolqA=;
-        b=OKakQezeWLWWp1PQRcepHEWLVbNa4/q0r9oUKwHtckYKFWpCpSBAigqkHnImfcfjnX
-         C5Yb0fT7pmXO3OAtcNt90rKT9VPX4QvdK23tlRtVS8ug3zVpypKM84oxOufY2M/rRObl
-         pJlLyIPUlaIiFz8XTWwzosKypNwTaHxOeT7wJPnXZqUf2j8YhOoQwgHsSPB4Cxa2mduC
-         L9blGRvNVSf3vuior9y60Cm/ObKHxQ+X4FOg5alfnPxobt6ph9ejivpnESCFSV7fYvXc
-         P6FGmPmuozVwsMRj2Ql7cmrqSMN195dWRgXyWxqT/ycnhCZ2WD6BtQIgvzyp/SBUrj2X
-         +PJw==
-X-Gm-Message-State: AOAM531FJvepa/dLTKw+rGhnb2LFWdDIrEZb2dnKlWOpJkX8UBfNTAAu
-        zPRtK0b8S0hoJYjyRpeB0hSkgtiYyY+IigiPZcGi8rmH/bRnwvXY2Y+7yLphp2ZSZif4ulXPzVE
-        tzZljZV6KXwJm
-X-Received: by 2002:a17:906:1450:: with SMTP id q16mr101147344ejc.213.1636373784481;
-        Mon, 08 Nov 2021 04:16:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwfa461Zcf2DxifgkuloXCvQmSLdTKSU2K/+OR/eAFgmifmQ9YjqS6nqyBvyQa4BprFeJJVCw==
-X-Received: by 2002:a17:906:1450:: with SMTP id q16mr101147288ejc.213.1636373784132;
-        Mon, 08 Nov 2021 04:16:24 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id i15sm9297892edk.2.2021.11.08.04.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 04:16:23 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2F3D618026D; Mon,  8 Nov 2021 13:16:23 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Ciara Loftus <ciara.loftus@intel.com>
-Subject: Re: [PATCH bpf-next] libbpf: demote log message about unrecognised
- data sections back down to debug
-In-Reply-To: <CAEf4BzY9WxjBX65sa=8SJh4XGLGfHgxGKciRGiSUMJAxbQWWYg@mail.gmail.com>
-References: <20211104122911.779034-1-toke@redhat.com>
- <CAEf4BzYGjV5DQB7tqRkSKz6pz-3QtU7uSWQVNJMW4eSjnpF98A@mail.gmail.com>
- <87a6iismca.fsf@toke.dk>
- <CAEf4BzY9WxjBX65sa=8SJh4XGLGfHgxGKciRGiSUMJAxbQWWYg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 08 Nov 2021 13:16:23 +0100
-Message-ID: <87pmrargfc.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Abd0jR/GPc/ldbm03xGS4P3FzSYysNQiB55mYY9QSlI=;
+        b=LokJjtYMWdcR7eXA/FlOkoxwLfEt0oXUijOIyHPizdLTGPKl56TOiaFDp3eGvBckHZ
+         8Uay7p5WlJJhz2IvYPgfohckoYCtq1HJolPHPoV9xxsoNGINbt01XNBQrZWZvDUc1bYn
+         fKsvkRaOY3mo4wV0zfTdp5BPoEVPE3u+q9ocWPUjTVGLNKeb/QAxm+t5Y5B/Ijs5TO1f
+         ct5E8rXmluLezTkcWNb0i8zdMKlYr4XBMK6ykPRAImWZC5GDgdRU72JIlfvDE9t0T4tw
+         u30+qiUyEI403/HlClDvv77C/a0mYNqiZ27keMGHk5OhhdKy4pdv48C8Jq5wIlXDj7QQ
+         WxPw==
+X-Gm-Message-State: AOAM5334o97BnwgLMG+DJ2SEph67zn8NfKoNcBBKDaWsO1o9RzFBKvde
+        a9J+641fzbilieePLssw4EXGck/RS48qnAB4LzZUVw==
+X-Google-Smtp-Source: ABdhPJx3CZ1C3FEwWHMZdrX5gLKGvFgimTH/KuyL0Oj9c/IAXYyKqiqpkx/ApsVDqPEI+EScogLC095PkUdJlo3XxB4=
+X-Received: by 2002:a19:5e42:: with SMTP id z2mr40235736lfi.102.1636377683518;
+ Mon, 08 Nov 2021 05:21:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com>
+ <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
+ <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com> <20211105194952.xve6u6lgh2oy46dy@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211105194952.xve6u6lgh2oy46dy@ast-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 8 Nov 2021 13:21:12 +0000
+Message-ID: <CACAyw99KGdTAz+G3aU8G3eqC926YYpgD57q-A+NFNVqqiJPY3g@mail.gmail.com>
+Subject: Re: Verifier rejects previously accepted program
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, regressions@lists.linux.dev,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Fri, Nov 5, 2021 at 7:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Thu, Nov 4, 2021 at 5:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
->> >>
->> >> When loading a BPF object, libbpf will output a log message when it
->> >> encounters an unrecognised data section. Since commit
->> >> 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating EL=
-F")
->> >> they are printed at "info" level so they will show up on the console =
-by
->> >> default.
->> >>
->> >> The rationale in the commit cited above is to "increase visibility" o=
-f such
->> >> errors, but there can be legitimate, and completely harmless, uses of=
- extra
->> >> data sections. In particular, libxdp uses custom data sections to sto=
-re
->> >
->> > What if we make those extra sections to be ".rodata.something" and
->> > ".data.something", but without ALLOC flag in ELF, so that libbpf won't
->> > create maps for them. Libbpf also will check that program code never
->> > references anything from those sections.
->> >
->> > The worry I have about allowing arbitrary sections is that if in the
->> > future we want to add other special sections, then we might run into a
->> > conflict with some applications. So having some enforced naming
->> > convention would help prevent this. WDYT?
->>
->> Hmm, I see your point, but as the libxdp example shows, this has not
->> really been "disallowed" before. I.e., having these arbitrary sections
->> has worked just fine.
+On Fri, 5 Nov 2021 at 19:49, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> A bunch of things were not disallowed, but that is changing for libbpf
-> 1.0, so now is the right time :)
+> On Fri, Nov 05, 2021 at 10:41:40AM +0000, Lorenz Bauer wrote:
+> >
+> > bpf-next with f30d4968e9ae on top:
+> >
+> >     works!
 >
->>
->> How about we do the opposite: claim a namespace for future libbpf
->> extensions and disallow (as in, hard fail) if anything unrecognised is
->> in those sections? For instance, this could be any section names
->> starting with .BPF?
+> Awesome.
 >
-> Looking at what we added (.maps, .kconfig, .ksym), there is no common
-> prefix besides ".". I'd be ok to reserve anything starting with "."
-> for future use by libbpf. We can allow any non-dot section without a
-> warning (but it would have to be non-allocatable section). Would that
-> work?
+> > commit 3e8ce29850f1 ("bpf: Prevent pointer mismatch in
+> > bpf_timer_init.") (found via bisection):
+> >
+> >     BPF program is too large. Processed 1000001 insn
+> >
+> > commit 3e8ce29850f1^ ("bpf: Add map side support for bpf timers."):
+> >
+> >    works!
+>
+> So with just 3e8ce29850f1 it's "too large" and with parent commit it works ?
+> I've analyzed offending commit again and don't see how it can be causing
+> state pruning to be more conservative for your asm.
+> reg->map_uid should only be non-zero for lookups from inner maps,
+> but your asm doesn't have lookups at all in that loop.
 
-Not really :(
+I misattributed the problem to the loop, since it was really prominent
+in the verifier output. We use nested maps extensively, most likely
+those are what's causing the problem.
 
-We already use .xdp_run_config as one of the section names in libxdp, so
-if libbpf errors out on any .-prefixed section, we'll no longer be able
-to load old BPF files. While we can update the calling code to deal with
-any compatibility issues by detecting the libbpf version at compile-time
-we don't have control over the BPF files we load. So there has to be a
-way to opt out of any new stricter libbpf behaviour when loading BPF
-files; I believe we had a similar discussion around map section names.
+> Maybe in some case map_uid doesn't get cleared, but I couldn't find
+> such code path with manual code analysis.
+> I think it's worth investigating further.
+> Please craft a reproducer.
 
-Any application using libbpf to load BPF files that wants to stay
-compatible with old programs will have the same issue, BTW. iproute2
-comes to mind as one...
+I've started with some verifier log analysis to narrow the problem down.
 
--Toke
+* Same test case as before
+* Dump verifier output with log_level=2 for both 3e8ce29850f1 and 3e8ce29850f1^
+* Use diff to find the first non-matching line
 
+3e8ce29850f1 makes the verifier do a lot more work on our code. Some
+later commit then drops the complexity below what the verifier will
+accept, probably the more precise scalar spill tracking.
+
+3e8ce29850f1^:                  295498 insns
+3e8ce29850f1:                > 1000000 insns
+be2f2d1680df + bd479d103883:    450161 insns
+
+Trace from 3e8ce29850f1^ (working):
+
+1033: R0=map_value(id=0,off=0,ks=4,vs=36,imm=0) R1_w=invP0
+R3_w=map_value(id=0,off=0,ks=4,vs=36,imm=0) R6=ctx(id=0,off=0,imm=0)
+R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0) R9=inv0 R10=fp0
+fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0 fp-48=mmmm0000
+fp-56=00000000 fp-64=00000000 fp-72=0000mmmm fp-80=mmmmmmmm
+fp-88=map_value fp-96=pkt_end fp-104=map_value fp-112=pkt fp-120=fp
+fp-128=map_value
+1033: (16) if w1 == 0x0 goto pc+43
+1077: safe
+1178: R0=inv0 R1=map_ptr(id=0,off=0,ks=4,vs=4,imm=0) R2_w=inv0
+R3=inv2388976653695081527 R4=inv-8645972361240307355 R5=inv(id=6898)
+R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
+R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
+fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
+fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
+fp-112=pkt fp-120=fp fp-128=map_value
+1178: (63) *(u32 *)(r10 -32) = r7
+<...>
+processed 295498 insns (limit 1000000) max_states_per_insn 29
+total_states 14527 peak_states 1322 mark_read 53
+
+Trace from 3e8ce29850f1 (broken):
+
+1033: R0=map_value(id=0,off=0,ks=4,vs=36,imm=0) R1_w=invP0
+R3_w=map_value(id=0,off=0,ks=4,vs=36,imm=0) R6=ctx(id=0,off=0,imm=0)
+R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0) R9=inv0 R10=fp0
+fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0 fp-48=mmmm0000
+fp-56=00000000 fp-64=00000000 fp-72=0000mmmm fp-80=mmmmmmmm
+fp-88=map_value fp-96=pkt_end fp-104=map_value fp-112=pkt fp-120=fp
+fp-128=map_value
+1033: (16) if w1 == 0x0 goto pc+43
+1077: R0=map_value(id=0,off=0,ks=4,vs=36,imm=0) R1_w=invP0
+R3_w=map_value(id=0,off=0,ks=4,vs=36,imm=0) R6=ctx(id=0,off=0,imm=0)
+R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0) R9=inv0 R10=fp0
+fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0 fp-48=mmmm0000
+fp-56=00000000 fp-64=00000000 fp-72=0000mmmm fp-80=mmmmmmmm
+fp-88=map_value fp-96=pkt_end fp-104=map_value fp-112=pkt fp-120=fp
+fp-128=map_value
+1077: (79) r2 = *(u64 *)(r10 -128)
+1078: R0=map_value(id=0,off=0,ks=4,vs=36,imm=0) R1_w=invP0
+R2_w=map_value(id=0,off=0,ks=4,vs=32,imm=0)
+R3_w=map_value(id=0,off=0,ks=4,vs=36,imm=0) R6=ctx(id=0,off=0,imm=0)
+R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0) R9=inv0 R10=fp0
+fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0 fp-48=mmmm0000
+fp-56=00000000 fp-64=00000000 fp-72=0000mmmm fp-80=mmmmmmmm
+fp-88=map_value fp-96=pkt_end fp-104=map_value fp-112=pkt fp-120=fp
+fp-128=map_value
+1078: (79) r1 = *(u64 *)(r2 +0)
+<...>
+(truncated)
+
+Trace from be2f2d1680df ("libbpf: Deprecate bpf_program__load() API")
+with bd479d103883 ("bpf: Do not reject when the stack read size is
+different from the tracked scalar size") cherry picked:
+
+processed 450161 insns (limit 1000000) max_states_per_insn 19
+total_states 19452 peak_states 1319 mark_read 53
+
+r2 is the result of a lookup from a per-CPU array, ts_metrics in the
+snippet below:
+
+struct bpf_map_def traffic_set_metrics_map __section("maps") = {
+    .type        = BPF_MAP_TYPE_PERCPU_ARRAY,
+    .key_size    = sizeof(traffic_set_id_t),
+    .value_size  = sizeof(traffic_set_metrics_t),
+    .max_entries = SET_BY_USERSPACE,
+};
+
+    traffic_set_metrics_t *ts_metrics =
+bpf_map_lookup_elem(&traffic_set_metrics_map, &meta->ts_id);
+    if (ts_metrics == NULL) {
+        return XDP_ABORTED;
+    }
+
+   <...>
+
+   if (meta->from_plurimog) {
+        ts_metrics->packets_total_plurimog_ingress++;
+    } else {
+        ts_metrics->packets_total_main++; // insn 1078
+    }
+
+Lorenz
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
