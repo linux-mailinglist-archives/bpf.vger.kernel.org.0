@@ -2,103 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD03844B295
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 19:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F82844B2AD
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 19:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242181AbhKIST7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Nov 2021 13:19:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
+        id S242378AbhKISYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Nov 2021 13:24:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242168AbhKIST6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:19:58 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59A4C061767
-        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 10:17:12 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 200so819661pga.1
-        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 10:17:12 -0800 (PST)
+        with ESMTP id S242366AbhKISYS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Nov 2021 13:24:18 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FA2C061766
+        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 10:21:31 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id k4so26402plx.8
+        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 10:21:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=YOqlZrA3M1NbCnfldZU6DBKVKCYvlENSsVuwD1wea5I=;
-        b=PrwFZacaTHainZ0qaAJV/zGD84dkGdMP8wEbnN7L/byt2i65mFA4DL8wDIaDA2pijb
-         EYto4KmnQvazARA+jFcSeg4gqw+SoCMbY+BNStbubXZIVdonzY8uuiHYm0OCOnU6fCa7
-         WqWrWZcODnRH9XLy9J6OKpT4D2b2E0tOCqlwgLozReAYbmZULzJBD8uoMd+qTgx7Q7RV
-         rpiAupfnbd9bvCephkTGO3XgK5alwjY9cC9BptnwVVwJVErwNoAfdSoJlJ+SoNzw0QSh
-         pXAVkpVngZtCTnpp6Gj9xy6YOs0lEK5oZcXYWNr4Ztu0xSb9Kaxyso8k+LcXjBVLXuvg
-         LIGQ==
+        bh=TGxOv0gddSpwluqIrv18wDGZRjC0D9opnAifSiyYv58=;
+        b=k0LfeGT39s8+3T4MluMVKw/2ohsDGHgKFC3T07j2Yvq8W900u9h6l5HMXXMU0lJP2Y
+         3wH/gnzMnE5vx+sVZlbnbMKxbCFyOjX8IME1DH3F9IxOZgIiyXu1m6KEIFt8wH0GkIOB
+         HSnW+rNpJCYh8EFivYY8U/b+4GlGnJip2CKssWJNzFrC/K3qre1iuD9g0iHzXnhV8Hlz
+         dXa/w3o9MqkKPKsn9CHRz0/195ZStq/6A1138SGkbr7vCMxUlWzTw9aD2EqIzsVfkKiw
+         LfF2gWPMkyXruOMQQB+vxM3If8aUsA6dqqtQD/3K/HqVgoTYgNWQBZ24dlg3IYApvlPu
+         cf9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YOqlZrA3M1NbCnfldZU6DBKVKCYvlENSsVuwD1wea5I=;
-        b=yZxC508UWY/h2ZBF9GZGxJ7/7Nlfc3GpPU2FAQ1s08HM1xCGW/aBpiRROaOQ3uefTM
-         AG6LkslwiEA2153+cASNRB0mUGg9D3xC9w2Eb2pCv4L+0pB02AHXk6kPYP8gRPaBJfch
-         h85zte+dD53Pgn9RP9Jnx3663bUxxesZjSAHXkFGt2jJlILQRTbquKH3oiYABQRPdIDa
-         +A5SQjC/TVZnJODjwR8bFTxHGGHFNf+8hYi/WVptMxJ+Cb9ODJGBWKNv3qxMbJa9t62x
-         mTCS+o0sYR72plrknOA4YJ6KOx/y8jSTT+ktWE5HgdfjfLTQ7SyJRI8JOqAgVvBmVn6Z
-         28Bg==
-X-Gm-Message-State: AOAM5324x/zdvm3/3upRsJ7SBx5pfWMfwY1iZ+M84RK1+2aG2k+MFoKs
-        OqvuS+uxfoS3iAPpI3rlwA6rFQ==
-X-Google-Smtp-Source: ABdhPJzXPKln9Vs5wQ4NRjyaxaIz3t4F1JVcwtodx5Uka/2wN4nWHcbBXb871xxDR6EuplXpiPb8Rg==
-X-Received: by 2002:a05:6a00:1946:b0:492:64f1:61b5 with SMTP id s6-20020a056a00194600b0049264f161b5mr10239921pfk.52.1636481832009;
-        Tue, 09 Nov 2021 10:17:12 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id gv23sm3281540pjb.17.2021.11.09.10.17.11
+        bh=TGxOv0gddSpwluqIrv18wDGZRjC0D9opnAifSiyYv58=;
+        b=SpA4Bgwf8rDef7WjONjnwlR5jdnfWUn0Fee0sq6yhFrKOFduOMJdBYXXumuC2dcGbS
+         8mL4nstj7OUZyl7rWC1bLF+Q4OE80sXcfEZhmibrRBETEIat4NyBTRsfCmNyQqx55Hq2
+         r+9J9qpTYkFvSpx0U82ifdHDC0QqwGgea5CXwBbinQxnU70OehlBWDv0h5s4AGQ1gW65
+         q/EAZiq/z6frMC+Yud6YmzhEKDV2mVetcGb0JBoA5HVwZ0fIYi9KUx190DeWKNC8iJxR
+         NEyYcajD/f8+tUfSKCfYVeztMN0Wa+LPfhOyoW+66XVyJdQKRRZ8soFdIdX2QIwzuCsM
+         y8xQ==
+X-Gm-Message-State: AOAM530DkT/7dBkHNoQ+LBG8vtd6mankXLKCEFVtL5extQEFhnCkRNQJ
+        KYlHEt/bGwGxlTHY0ttYSFk=
+X-Google-Smtp-Source: ABdhPJzdE8aXFYR5K1luNdkAgnnSis3nmzJQgwwMDv19Z65i8ovWLlrS2CS8ypeh+86LXL5mwajyWA==
+X-Received: by 2002:a17:90a:4a06:: with SMTP id e6mr9562849pjh.228.1636482090986;
+        Tue, 09 Nov 2021 10:21:30 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f8f1])
+        by smtp.gmail.com with ESMTPSA id p25sm19977886pfh.86.2021.11.09.10.21.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 10:17:11 -0800 (PST)
-Date:   Tue, 9 Nov 2021 18:17:08 +0000
-From:   Joe Burton <jevburton@google.com>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Joe Burton <jevburton.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Tue, 09 Nov 2021 10:21:30 -0800 (PST)
+Date:   Tue, 9 Nov 2021 10:21:28 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: Re: [RFC PATCH v3 2/3] bpf: Add selftests
-Message-ID: <YYq7JHdIAdc2bU55@google.com>
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
- <20211102021432.2807760-3-jevburton.kernel@gmail.com>
- <98178f0f-ff43-b996-f78b-778f74b44a6b@huawei.com>
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/9] bpf: Clean up _OR_NULL arg types
+Message-ID: <20211109182128.hhbaqv3j52fddayq@ast-mbp.dhcp.thefacebook.com>
+References: <20211109021624.1140446-1-haoluo@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <98178f0f-ff43-b996-f78b-778f74b44a6b@huawei.com>
+In-Reply-To: <20211109021624.1140446-1-haoluo@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thu, Nov 04, 2021 at 02:32:37PM +0800, Hou Tao wrote:
+On Mon, Nov 08, 2021 at 06:16:15PM -0800, Hao Luo wrote:
+> This is a pure cleanup patchset that tries to use flag to mark whether
+> an arg may be null. It replaces enum bpf_arg_type with a struct. Doing
+> so allows us to embed the properties of arguments in the struct, which
+> is a more scalable solution than introducing a new enum. This patchset
+> performs this transformation only on arg_type. If it looks good,
+> follow-up patches will do the same on reg_type and ret_type.
+> 
+> The first patch replaces 'enum bpf_arg_type' with 'struct bpf_arg_type'
+> and each of the rest patches transforms one type of ARG_XXX_OR_NULLs.
 
-> In fentry__x64_sys_write(), you just do trigger updates to maps, so for the
-> portability of the test
-> (e.g. run-able for arm64)
+Nice. Thank you for working on it!
 
-Agreed that the test should be runnable on arm64. I haven't tested there
-yet but I'll do that before sending out v4.
+The enum->struct conversion works for bpf_arg_type, but applying
+the same technique to bpf_reg_type could be problematic.
+Since it's part of bpf_reg_state which in turn is multiplied by a large factor.
+Growing enum from 4 bytes to 8 byte struct will consume quite
+a lot of extra memory.
 
-> and minimal dependency (e.g. don't depends on /tmp),
-> why do you
-> using nanosleep() and replacing fentry_x64_sys_write by
-> tp/syscalls/sys_enter_nanosleep instead.
+>  19 files changed, 932 insertions(+), 780 deletions(-)
 
-As written, the example actually modifies the return of write(), so I
-don't think I can switch to tp/syscalls/* without significantly
-reworking the example. To minimize the amount of reworking while
-improving compatibility, how does this sound:
+Just bpf_arg_type refactoring adds a lot of churn which could make
+backports of future fixes not automatic anymore.
+Similar converstion for bpf_reg_type and bpf_return_type will
+be even more churn.
+Have you considered using upper bits to represent flags?
 
-1. Add #ifdefs to support arm64
-2. Instead of opening /tmp/map_trace_test_file, open /dev/null
+Instead of diff:
+-       .arg1_type      = ARG_CONST_MAP_PTR,
+-       .arg2_type      = ARG_PTR_TO_FUNC,
+-       .arg3_type      = ARG_PTR_TO_STACK_OR_NULL,
+-       .arg4_type      = ARG_ANYTHING,
++       .arg1           = { .type = ARG_CONST_MAP_PTR },
++       .arg2           = { .type = ARG_PTR_TO_FUNC },
++       .arg3           = { .type = ARG_PTR_TO_STACK_OR_NULL },
++       .arg4           = { .type = ARG_ANYTHING },
 
-Of course this isn't as portable as your proposal but I think it might
-be an acceptable compromise.
+can we make it look like:
+       .arg1_type      = ARG_CONST_MAP_PTR,
+       .arg2_type      = ARG_PTR_TO_FUNC,
+-      .arg3_type      = ARG_PTR_TO_STACK_OR_NULL,
++      .arg3_type      = ARG_PTR_TO_STACK | MAYBE_NULL,
+       .arg4_type      = ARG_ANYTHING,
 
-Best,
-Joe
+Ideally all three (bpf_reg_type, bpf_return_type, and bpf_arg_type)
+would share the same flag bit: MAYBE_NULL.
+Then static bool arg_type_may_be_null() will be comparing only single bit ?
 
+While
+        if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+            arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+            arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+will become:
+        arg_type &= FLAG_MASK;
+        if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+            arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE) {
+
+Most of the time I would prefer explicit .type and .flag structure,
+but saving memory is important for bpf_reg_type, so explicit bit
+operations are probably justified.
