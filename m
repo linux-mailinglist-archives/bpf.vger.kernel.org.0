@@ -2,78 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C39449F4E
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 01:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4891449F8B
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 01:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhKIAMx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 19:12:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhKIAMw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:12:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D120E610E8;
-        Tue,  9 Nov 2021 00:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636416607;
-        bh=JamjZWibutImFEYvx1MNvVZ56By2lemhHwMB/YXOVIY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=K8UoBJAAsXhUmDglxudq1bP7vBxqbPCd1Yf7KvW90r7bASKrmK7dw/84Mnn3ApXXC
-         tE1NOuC+WrzSJLqemMWUl2Rpj3/tOQ01eAjYiIJfesj00QXfPyATh/oH4q59IRXu0x
-         SDpCXB3wPx0igqNK0AC/3DC4Z0AynV89cd0T/82I2T+4UQll5fxwTh+XmfInO8T/U8
-         mvW6VdNnnphq4BebcFqfjZaXNtztSv7IXHn73zDU8ly5SbLO+t9nMDXNmRTA/iamEq
-         4Z698bh33RekvAAQ53raH0ueOmSqYLyIg5hHOiMKPDZMP+1OeT/G4RDvSTwzEIEBr+
-         YG91kBBeg9mXw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C09B860A3A;
-        Tue,  9 Nov 2021 00:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v2 0/5] bpf, sockmap: fixes stress testing and regression
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163641660778.28301.17812187648892119851.git-patchwork-notify@kernel.org>
-Date:   Tue, 09 Nov 2021 00:10:07 +0000
-References: <20211103204736.248403-1-john.fastabend@gmail.com>
-In-Reply-To: <20211103204736.248403-1-john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        joamaki@gmail.com, xiyou.wangcong@gmail.com, jakub@cloudflare.com
+        id S232740AbhKIAd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 19:33:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhKIAd4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 19:33:56 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E4CC061570
+        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 16:31:11 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id f16-20020a170902ce9000b001436ba39b2bso761757plg.3
+        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 16:31:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LEenkkXYDa5VwCQJSviVj3LjzjAWnUa4z4PbuhfAajc=;
+        b=VSvi5KZ9a4iNDjYKvGVS2zJkp6y+l1ywpKs4duSZckPVIAgs9hk43cRdxewpyHxDmc
+         JC20cRW+ZPutrHHLeWcYQ5u7FuBpLG+GjWF4yL9PXjjTSzGaoHG0xjRNw2mg8vO2USNe
+         LqSxtCwke9yDbVh/Q920GOtVUQCNNOTgvfQFAGTK69qI3TGETycJADtPnoCbP/1Bhi4n
+         EZvUCeV9XoXo5Ri2yFnzdJUVu7hJq5SYYCGc1HGgRPb8Sm40Msq11C/dAUlFsURe+naa
+         vAFl7bFfkZ8XEy6f6JcM5xfVJn3+oyOaNwpO8Id4wpsY11bPr+PYjJLv+RpO/FYTJvKh
+         5d0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LEenkkXYDa5VwCQJSviVj3LjzjAWnUa4z4PbuhfAajc=;
+        b=vfgv/AXXYRa3su97HEIdIyopNRbEQMKWqY2uUe5eDtK7h6hw0rUTZr0GkwYFDfaETa
+         TSWOk4w/Na85IMueeURzRrOCSrp7GOv8IZoWV//Xg6AKYks8WTUwnBfdMUa+HoevD3uE
+         fk8A0G/GRq/IvHDIx5G1J2YwNeAULZQw5LmHbRGA7rZ1AobsGNAyYuuptr1gGeAbrZYd
+         CUzj8D17yOs+98YIY9GqLjPjWWjKk/kIfDB1Kj1R4O3Y+WRUCYiayeeEHVG0ZYNj1PqP
+         tAPHUObCyt6gcpuGJS3+FdsVgmIkmuhaL/lujYzrqvlw5mkOY1XeuUc5fUFnjH9dpsn0
+         IVdw==
+X-Gm-Message-State: AOAM530+qIqi0rbn/JhpjEzMXm+0SkqbKILP9hQWzAuyVIACRheV1kj2
+        QwHcwlnvppUrP/Yoh2AxitNWBqc2BR8=
+X-Google-Smtp-Source: ABdhPJy7f3q+omleFdgpf7Daa23yF2VOLlFryzRYqSP7j8uR0wixZC0eqDs/lpRVBbEN1Pq11agnNc77YXc=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:4c6:4bbe:e4c5:ff76])
+ (user=haoluo job=sendgmr) by 2002:a17:90a:c3:: with SMTP id
+ v3mr93995pjd.0.1636417870138; Mon, 08 Nov 2021 16:31:10 -0800 (PST)
+Date:   Mon,  8 Nov 2021 16:30:49 -0800
+Message-Id: <20211109003052.3499225-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+Subject: [PATCH v3 bpf-next 0/3] bpf: Prevent writing read-only memory
+From:   Hao Luo <haoluo@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+There are currently two ways to modify a kernel memory in bpf programs:
+ 1. declare a ksym of scalar type and directly modify its memory.
+ 2. Pass a RDONLY_BUF into a helper function which will override
+ its arguments. For example, bpf_d_path, bpf_snprintf.
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+This patchset fixes these two problem. For the first, we introduce a
+new reg type PTR_TO_RDONLY_MEM for the scalar typed ksym, which forbids
+writing. For the second, we introduce a new arg type ARG_CONST_PTR_TO_MEM
+to differentiate the arg types that only read the memory from those
+that may write the memory. The previous ARG_PTR_TO_MEM is now only
+compatible with writable memories. If a helper doesn't write into its
+argument, it can use ARG_CONST_PTR_TO_MEM, which is also compatible
+with read-only memories.
 
-On Wed,  3 Nov 2021 13:47:31 -0700 you wrote:
-> Attached are 5 patches that fix issues we found by either stress testing
-> or updating our CI to LTS kernels.
-> 
-> Thanks to Jussi for all the hard work tracking down issues and getting
-> stress testing/CI running.
-> 
-> First patch was suggested by Jakub to ensure sockets in CLOSE state
-> were safe from helper side.
-> 
-> [...]
+In v2, Andrii suggested using the name "ARG_PTR_TO_RDONLY_MEM", but I
+find it is sort of misleading. Because the new arg_type is compatible
+with both write and read-only memory. So I chose ARG_CONST_PTR_TO_MEM
+instead.
 
-Here is the summary with links:
-  - [bpf,v2,1/5] bpf, sockmap: Use stricter sk state checks in sk_lookup_assign
-    https://git.kernel.org/bpf/bpf/c/40a34121ac1d
-  - [bpf,v2,2/5] bpf, sockmap: Remove unhash handler for BPF sockmap usage
-    https://git.kernel.org/bpf/bpf/c/b8b8315e39ff
-  - [bpf,v2,3/5] bpf, sockmap: Fix race in ingress receive verdict with redirect to self
-    https://git.kernel.org/bpf/bpf/c/c5d2177a72a1
-  - [bpf,v2,4/5] bpf: sockmap, strparser, and tls are reusing qdisc_skb_cb and colliding
-    https://git.kernel.org/bpf/bpf/c/e0dc3b93bd7b
-  - [bpf,v2,5/5] bpf, sockmap: sk_skb data_end access incorrect when src_reg = dst_reg
-    https://git.kernel.org/bpf/bpf/c/b2c4618162ec
+Hao Luo (3):
+  bpf: Prevent write to ksym memory
+  bpf: Introduce ARG_CONST_PTR_TO_MEM
+  bpf/selftests: Test PTR_TO_RDONLY_MEM
 
-You are awesome, thank you!
+ include/linux/bpf.h                           | 20 +++++-
+ include/uapi/linux/bpf.h                      |  4 +-
+ kernel/bpf/btf.c                              |  2 +-
+ kernel/bpf/cgroup.c                           |  2 +-
+ kernel/bpf/helpers.c                          | 12 ++--
+ kernel/bpf/ringbuf.c                          |  2 +-
+ kernel/bpf/syscall.c                          |  2 +-
+ kernel/bpf/verifier.c                         | 60 +++++++++++++----
+ kernel/trace/bpf_trace.c                      | 26 ++++----
+ net/core/filter.c                             | 64 +++++++++----------
+ tools/include/uapi/linux/bpf.h                |  4 +-
+ .../selftests/bpf/prog_tests/ksyms_btf.c      | 14 ++++
+ .../bpf/progs/test_ksyms_btf_write_check.c    | 29 +++++++++
+ 13 files changed, 168 insertions(+), 73 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.0.rc0.344.g81b53c2807-goog
 
