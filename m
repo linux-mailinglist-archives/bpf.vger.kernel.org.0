@@ -2,99 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F0044B2B6
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 19:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86A344B367
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 20:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242455AbhKISbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Nov 2021 13:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S243824AbhKITpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Nov 2021 14:45:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhKISbH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:31:07 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E77C061767
-        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 10:28:20 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id b11so23683pld.12
-        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 10:28:20 -0800 (PST)
+        with ESMTP id S243810AbhKITpH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Nov 2021 14:45:07 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0637C061764
+        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 11:42:21 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id i11so12557121ilv.13
+        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 11:42:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YqtAkERQI/ln6XRRI9t4KGym2pBKGt4SPOY54xOyYmc=;
-        b=PGOJkkhM/AspXaJubyodGGt3bokcuo1nWeF66Ozy2PSHqL4ozl1ealnJ2sESU77Daa
-         5PCgxSnMKmr5LSn7P+UZw5lKAiqvWF452/e/zcO5+QvHTusOJTtt+u60C6PqqZ1Yg/LF
-         XnAN//7pVh4I0+4GH1pCdd6cp3HnHcZsIY7gg=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CqTAQriJWxt9mAKXbU3F2fqXg6VvRaRE8bdJSKqe7ZM=;
+        b=BTSC0YwhGhmkfCza/8E48z9JoCpAPakOi8MCko6A9rolYL1FU3G+1JEiNBVHJvjIz4
+         uaCeCW2RwJ96H11DbkgqcIDEIRfnf9r4tQrG1RlhbZ94SlXeTYU9j4HhjUz/mMWkzP0S
+         CaOGR5MS0W1eWYqsWCwSJrl446dZI9x3+eUKYT3ftVJWEytozxqVYCc4IV+I5QM04uFC
+         QYnG087plfTQObX+TnoXJ3K7HkebLbRnydxwEA+QBpCtVUcUck/goNp5A7I3R3T0Rhmj
+         UD2+oq7+zYG9Dtl8i0mbay/StAXQMsHUfQv2aY4kpI3Fkg/I0VodxoRmgOedbcBCqZNg
+         pRtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YqtAkERQI/ln6XRRI9t4KGym2pBKGt4SPOY54xOyYmc=;
-        b=2wMolLSl3B5JzsKjcN1fWvMfNa9cqdL77BAuiMXVxSQaiGAf+leTJ6hqzE+F27v5rf
-         48mFrM30s7I8vVupGXjsIwBob18CmL7KYQqL3TeSvtYMxkhSN0zrgTA2DqNoXU2i04Pw
-         jnIO7Ksk/kej4MZROGqe+YDx2NMXcpiZzX0pmLe2DQmQ1mQmvZuehXiJm8oKzcMEOecK
-         NeoX4NG3P5edg6YY+eic66CBb6uxhA1lm1bGsXHhf23iOsm0zLxTBTR4cgMjW/NVd+0+
-         YxiQrV0ks/G4iQWht4EBg3I1Ty8vqbAwFRlgCYq+jjG4nvKYgSImgqTLIuzlEObavB3t
-         LLag==
-X-Gm-Message-State: AOAM533CBRADs1J41ov7odrZdNFGcYkRkA9orUlo8Ap0ytIYCKEa8BIC
-        Z2nZYXmTLFTd48YjhLs2+AQD3A==
-X-Google-Smtp-Source: ABdhPJw56zqbHPhzHi/UjO1EuTMs0ckASHUWtACCQVftB6fOpzf6idVKbxIvoc6DXqmWnHNuFyu1UQ==
-X-Received: by 2002:a17:90b:3a89:: with SMTP id om9mr9485773pjb.29.1636482500572;
-        Tue, 09 Nov 2021 10:28:20 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u11sm7194577pfk.152.2021.11.09.10.28.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 10:28:20 -0800 (PST)
-Date:   Tue, 9 Nov 2021 10:28:19 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH 0/7] task comm cleanups
-Message-ID: <202111091027.DEF1B6DD@keescook>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CqTAQriJWxt9mAKXbU3F2fqXg6VvRaRE8bdJSKqe7ZM=;
+        b=1Q185zS4wq4frWF9Gf3fpIYob/xihoeDJT8kOPObYxSF6mF+1jKIc7UVjlKxdcj9mz
+         /AewdV0txptpcdpdfjSFL+q/XAZNTO97SrIkaAYH5DiYSQYXGVi3Sjr8INsmOUOnZEgh
+         GA3qu0paxpCrXxvBlCw8hLI8FJE1o63TxdlJgPmUthMIYYooStX0xiIeiNAKw+vpAXTD
+         2qhWMx78Zh/GWOnGRP7K8kKehQV++SKEfo1ERfbZC9HV5SIUaQhtnHW3hh+4RaiYTi/I
+         Ph4WpPCfED0dz1mD6GUUf8719D7HMfvinmr2AG/Sl8WUFLnMGyiEGPXj7zacvdilWWlg
+         8Few==
+X-Gm-Message-State: AOAM530iI1e65H+sPcaKzdHRt17XdFTwIQElXu78Pz35LQW5bslBMn7T
+        OYYmroRUS2ON+ygMdte5Yqvrg0j6x4bpxgGA4t6log==
+X-Google-Smtp-Source: ABdhPJz9piffFKdnFFVFajNggcN1uukLqExQ5VCF97RNO+/CCWW95QhzHOb2ku9J1f+XDGaZ53sOYVFkpuPZVMwTqu4=
+X-Received: by 2002:a05:6e02:bc9:: with SMTP id c9mr7162004ilu.309.1636486940821;
+ Tue, 09 Nov 2021 11:42:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108083840.4627-1-laoar.shao@gmail.com>
+References: <20211109021624.1140446-1-haoluo@google.com> <20211109182128.hhbaqv3j52fddayq@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211109182128.hhbaqv3j52fddayq@ast-mbp.dhcp.thefacebook.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 9 Nov 2021 11:42:09 -0800
+Message-ID: <CA+khW7hZC43ZrCSRL9SqffDPeDyxObzXtcvGneaEiW37=X11hA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/9] bpf: Clean up _OR_NULL arg types
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 08:38:33AM +0000, Yafang Shao wrote:
-> This patchset is part of the patchset "extend task comm from 16 to 24"[1].
-> Now we have different opinion that dynamically allocates memory to store 
-> kthread's long name into a separate pointer, so I decide to take the useful
-> cleanups apart from the original patchset and send it separately[2].
-> 
-> These useful cleanups can make the usage around task comm less
-> error-prone. Furthermore, it will be useful if we want to extend task
-> comm in the future.
-> 
-> All of the patches except patch #4 have either a reviewed-by or a
-> acked-by now. I have verfied that the vmcore/crash works well after
-> patch #4.
-> 
-> [1]. https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
-> [2]. https://lore.kernel.org/lkml/CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com/
+On Tue, Nov 9, 2021 at 10:21 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Nov 08, 2021 at 06:16:15PM -0800, Hao Luo wrote:
+> > This is a pure cleanup patchset that tries to use flag to mark whether
+> > an arg may be null. It replaces enum bpf_arg_type with a struct. Doing
+> > so allows us to embed the properties of arguments in the struct, which
+> > is a more scalable solution than introducing a new enum. This patchset
+> > performs this transformation only on arg_type. If it looks good,
+> > follow-up patches will do the same on reg_type and ret_type.
+> >
+> > The first patch replaces 'enum bpf_arg_type' with 'struct bpf_arg_type'
+> > and each of the rest patches transforms one type of ARG_XXX_OR_NULLs.
+>
+> Nice. Thank you for working on it!
 
-Thanks for collecting this! It all looks good to me.
+No problem. :)
 
-Andrew, can you take these?
+>
+> The enum->struct conversion works for bpf_arg_type, but applying
+> the same technique to bpf_reg_type could be problematic.
+> Since it's part of bpf_reg_state which in turn is multiplied by a large factor.
+> Growing enum from 4 bytes to 8 byte struct will consume quite
+> a lot of extra memory.
+>
+> >  19 files changed, 932 insertions(+), 780 deletions(-)
+>
+> Just bpf_arg_type refactoring adds a lot of churn which could make
+> backports of future fixes not automatic anymore.
+> Similar converstion for bpf_reg_type and bpf_return_type will
+> be even more churn.
 
--Kees
+Acknowledged.
 
--- 
-Kees Cook
+> Have you considered using upper bits to represent flags?
+
+Yes, I thought about that. Some of my thoughts are:
+
+- I wasn't sure how many bits should be reserved. Maybe 16 bits is good enough?
+- What if we run out of flag bits in future?
+- We could fold btf_id in the structure in this patchset. And new
+fields could be easily added if needed.
+
+So with these questions, I didn't pursue that approach in the first
+place. But I admit that it does look better by writing
+
++      .arg3_type      = ARG_PTR_TO_STACK | MAYBE_NULL,
+
+Instead of
+
++       .arg3    = {
++               .type = ARG_PTR_TO_MAP_VALUE,
++               .flag = ARG_FLAG_MAYBE_NULL,
++       },
+
+Let's see if there is any further comment. I can go take a look and
+prepare for that approach in the next revision.
+
+
+
+>
+> Instead of diff:
+> -       .arg1_type      = ARG_CONST_MAP_PTR,
+> -       .arg2_type      = ARG_PTR_TO_FUNC,
+> -       .arg3_type      = ARG_PTR_TO_STACK_OR_NULL,
+> -       .arg4_type      = ARG_ANYTHING,
+> +       .arg1           = { .type = ARG_CONST_MAP_PTR },
+> +       .arg2           = { .type = ARG_PTR_TO_FUNC },
+> +       .arg3           = { .type = ARG_PTR_TO_STACK_OR_NULL },
+> +       .arg4           = { .type = ARG_ANYTHING },
+>
+> can we make it look like:
+>        .arg1_type      = ARG_CONST_MAP_PTR,
+>        .arg2_type      = ARG_PTR_TO_FUNC,
+> -      .arg3_type      = ARG_PTR_TO_STACK_OR_NULL,
+> +      .arg3_type      = ARG_PTR_TO_STACK | MAYBE_NULL,
+>        .arg4_type      = ARG_ANYTHING,
+>
+> Ideally all three (bpf_reg_type, bpf_return_type, and bpf_arg_type)
+> would share the same flag bit: MAYBE_NULL.
+> Then static bool arg_type_may_be_null() will be comparing only single bit ?
+>
+> While
+>         if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+>             arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+>             arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+> will become:
+>         arg_type &= FLAG_MASK;
+>         if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+>             arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE) {
+>
+> Most of the time I would prefer explicit .type and .flag structure,
+> but saving memory is important for bpf_reg_type, so explicit bit
+> operations are probably justified.
