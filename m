@@ -2,273 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4AA44B20B
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 18:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B4644B214
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 18:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241167AbhKIRha (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Nov 2021 12:37:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
+        id S240802AbhKIRnh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Nov 2021 12:43:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241148AbhKIRh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Nov 2021 12:37:27 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E309CC061767
-        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 09:34:40 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id p17so19146805pgj.2
-        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 09:34:40 -0800 (PST)
+        with ESMTP id S239402AbhKIRnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Nov 2021 12:43:37 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E95C061764
+        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 09:40:51 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id t21so22237747plr.6
+        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 09:40:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=YtCMrd8soCJwqQdYqfS1Uxj+jvIWsqJW9Sfp+I5znK0=;
-        b=RnI334WgYGo1s2xg0PnNwh/LwyjwkbeECYSptgpgWOUMErGKHmsDK/ZLGV9pEMwl/O
-         ekYV7g3Qyj7iroFAawbog28LZq8j9E8ozPsy6LbXEeNYDfaWne0pF0iY2RKw20oFgoi+
-         iUWeYVTxBO9NJJ4Hp1KyWtYKI60Ou3f9tZSZ4=
+        bh=ls2c2SdVgxBHoHh8i6MJER7qk62nRwWJBvEeEOoLFtg=;
+        b=Zh3ngkMaulORxbhzjGKRbXKaNu6CSNjgrZWUqi8JjjZlvOn2eyUXScD2Ixi2Etzcys
+         7m8YBa9lVP2rXYWPX9E9hpEm5QnbHQmNJZKLUFvTFTPVUX6uyaQ83nkqNtA1616cPj+y
+         ELYJfSZc7wB6ktc5L58+58M4xsYQqJxinmkz7u15yrgCLWd1X4+qAyrY4j58Qh4JY6mV
+         G2DoUS1FCQV0qTWPvBeqCIb9nPE1zIqwMXdDBw13mVUXh3gwm+imxdvgSaEBNYkkJ6wr
+         65jv/gqTMDLNmZ8Fuq4SyGi9Dkf+UWIjrTQpNWaSTYhIjvnO3c5RO79Pb5Cx8sLeZFju
+         2VGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YtCMrd8soCJwqQdYqfS1Uxj+jvIWsqJW9Sfp+I5znK0=;
-        b=zRv4UnXRetRTuK37VhZP7tpUtMP3WP2auofNl/4OLWOC1jZJqlWxXSebWTOODhCa+e
-         lCVX/5hpyXu+nrnS9yDRAuzWFlR6xefn9cnDrlrpnDTVrfZeVeuyTtYVuxsPo/qHxZPk
-         McIDHb3+pOf276c3UI5YUGpK24tq4dwc+Zmy7GtnRZZ/to1pY3JpT+HNL7pr164lGkDp
-         uFfrfImYMwNAveJFhMxXblembR5uIctWDEC+M7NlAujYdSlH7jss5Qp/hmcmiZVNcXfU
-         tK6mu3riBh+eXTWu1UkN1n11guM7YlDavXIhdl8YHKjF4WYoW2NrmRSf6axdf9b+8Pqf
-         CIIw==
-X-Gm-Message-State: AOAM530xcwyrp0DNtDEMmnMC054uuRYBQL7aeXm3nb4MrR2fQkek3T4s
-        WxOi9RB1kOEzxIL3pB/RU8jeSQ==
-X-Google-Smtp-Source: ABdhPJzSUauLeZJaFQUg6w2y5hqN0XLLDLzRlcMe5/CcpZD5KWsYDIDxVT3fGawLe51+TwjHa4Pryg==
-X-Received: by 2002:a63:e710:: with SMTP id b16mr7200956pgi.38.1636479280328;
-        Tue, 09 Nov 2021 09:34:40 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q9sm20769593pfj.88.2021.11.09.09.34.39
+        bh=ls2c2SdVgxBHoHh8i6MJER7qk62nRwWJBvEeEOoLFtg=;
+        b=Y/NhtSwAR1JEM5jaR6pz1pY1yPNZ/jvbKw5zfHccRSnX4m/MyIFl6qMaOfP+uwuGxb
+         qsIiBndWvaYPuaCqLXnoU2TB6mI0gXgmo7GFzYl6Uvc0u2OACMPbU1rNDJdrKxC1hbft
+         FV+U2BDrzMSXV71uKD0BjBsltrzcEP6ztyaW/5j0nigoE+E5jy5UvkJoEeRsOzm88NcE
+         SSjjqN1VWIS8AtYgByoySmRYYVYLLoaTVg8IzFwQVkis/SybNh4Q3SjvdLhpbw1JIpZI
+         Ea5LrNzB/HXt2+ykC3TP1AZao6iYP3fFlyR0qB40st1ISULXNghN3NmSnNFrMF4QYH35
+         h3Tw==
+X-Gm-Message-State: AOAM532uznhmSdmYKTAi/OVW/z9IU9TTt2UlouT70t3OYF02epKNtP/T
+        ajwi7pUlHnCeDVeT6PSgkj968pb6hrc=
+X-Google-Smtp-Source: ABdhPJy3fdjr5cTxMTQq+azDn2swEG0J1D+9UAagG/qyfv0UcDTmfdOPpFOyiiwiQOXFoKAIu2+3Gw==
+X-Received: by 2002:a17:90b:390f:: with SMTP id ob15mr9321625pjb.32.1636479650367;
+        Tue, 09 Nov 2021 09:40:50 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f8f1])
+        by smtp.gmail.com with ESMTPSA id f11sm15587004pga.11.2021.11.09.09.40.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 09:34:39 -0800 (PST)
-Date:   Tue, 9 Nov 2021 09:34:39 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] kthread: dynamically allocate memory to store kthread's
- full name
-Message-ID: <202111090930.75BBF4678@keescook>
-References: <20211108084142.4692-1-laoar.shao@gmail.com>
+        Tue, 09 Nov 2021 09:40:49 -0800 (PST)
+Date:   Tue, 9 Nov 2021 09:40:48 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 06/11] libbpf: ensure btf_dump__new() and
+ btf_dump_opts are future-proof
+Message-ID: <20211109174048.dzovealltpr3rwcq@ast-mbp.dhcp.thefacebook.com>
+References: <20211108061316.203217-1-andrii@kernel.org>
+ <20211108061316.203217-7-andrii@kernel.org>
+ <20211109033839.yf3v7xcbqco6fddp@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYoF3233To8EQb3qHA_NASN+1c5Xw3WJAyMq9CBZ9N2Lg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108084142.4692-1-laoar.shao@gmail.com>
+In-Reply-To: <CAEf4BzYoF3233To8EQb3qHA_NASN+1c5Xw3WJAyMq9CBZ9N2Lg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 08:41:42AM +0000, Yafang Shao wrote:
-> When I was implementing a new per-cpu kthread cfs_migration, I found the
-> comm of it "cfs_migration/%u" is truncated due to the limitation of
-> TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
-> all with the same name "cfs_migration/1", which will confuse the user. This
-> issue is not critical, because we can get the corresponding CPU from the
-> task's Cpus_allowed. But for kthreads correspoinding to other hardware
-> devices, it is not easy to get the detailed device info from task comm,
-> for example,
+On Tue, Nov 09, 2021 at 07:37:48AM -0800, Andrii Nakryiko wrote:
+> On Mon, Nov 8, 2021 at 7:38 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sun, Nov 07, 2021 at 10:13:11PM -0800, Andrii Nakryiko wrote:
+> > > +#define btf_dump__new(a1, a2, a3, a4) __builtin_choose_expr(               \
+> > > +     __builtin_types_compatible_p(typeof(a4), btf_dump_printf_fn_t) +      \
+> > > +     __builtin_types_compatible_p(typeof(a4),                              \
+> > > +                                  void(void *, const char *, va_list)),    \
+> > > +     btf_dump__new_deprecated((void *)a1, (void *)a2, (void *)a3, (void *)a4),\
+> > > +     btf_dump__new((void *)a1, (void *)a2, (void *)a3, (void *)a4))
+> >
+> > why '+' in the above? The return type of __builtin_types_compatible_p() is bool.
+> > What is bool + bool ?
+> > It suppose to be logical 'OR', right?
 > 
->     jbd2/nvme0n1p2-
->     xfs-reclaim/sdf
+> __builtin_types_compatible_p() is defined as returning 0 or 1 (not
+> true/false). And __builtin_choose_expr() is also defined as comparing
+> first argument against 0, not as true/false. But in practice it
+> doesn't matter because bool is converted to 0 or 1 in arithmetic
+> operations. So I can switch to || with no effect. Let me know if you
+> still prefer logical || and I'll change.
 > 
-> Currently there are so many truncated kthreads:
-> 
->     rcu_tasks_kthre
->     rcu_tasks_rude_
->     rcu_tasks_trace
->     poll_mpt3sas0_s
->     ext4-rsv-conver
->     xfs-reclaim/sd{a, b, c, ...}
->     xfs-blockgc/sd{a, b, c, ...}
->     xfs-inodegc/sd{a, b, c, ...}
->     audit_send_repl
->     ecryptfs-kthrea
->     vfio-irqfd-clea
->     jbd2/nvme0n1p2-
->     ...
-> 
-> We can shorten these names to work around this problem, but it may be
-> not applied to all of the truncated kthreads. Take 'jbd2/nvme0n1p2-' for
-> example, it is a nice name, and it is not a good idea to shorten it.
-> 
-> One possible way to fix this issue is extending the task comm size, but
-> as task->comm is used in lots of places, that may cause some potential
-> buffer overflows. Another more conservative approach is introducing a new
-> pointer to store kthread's full name if it is truncated, which won't
-> introduce too much overhead as it is in the non-critical path. Finally we
-> make a dicision to use the second approach. See also the discussions in
-> this thread:
-> https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
-> 
-> After this change, the full name of these truncated kthreads will be
-> displayed via /proc/[pid]/comm:
-> 
->     rcu_tasks_kthread
->     rcu_tasks_rude_kthread
->     rcu_tasks_trace_kthread
->     poll_mpt3sas0_statu
->     ext4-rsv-conversion
->     xfs-reclaim/sdf1
->     xfs-blockgc/sdf1
->     xfs-inodegc/sdf1
->     audit_send_reply
->     ecryptfs-kthread
->     vfio-irqfd-cleanup
->     jbd2/nvme0n1p2-8
-> 
-> Suggested-by: Petr Mladek <pmladek@suse.com>
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
-> TODO: will cleanup worker comm in the next step. 
-> 
-> ---
->  fs/proc/array.c         |  3 +++
->  include/linux/kthread.h |  1 +
->  kernel/kthread.c        | 32 +++++++++++++++++++++++++++++++-
->  3 files changed, 35 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/proc/array.c b/fs/proc/array.c
-> index 49be8c8ef555..860e4deafa65 100644
-> --- a/fs/proc/array.c
-> +++ b/fs/proc/array.c
-> @@ -92,6 +92,7 @@
->  #include <linux/string_helpers.h>
->  #include <linux/user_namespace.h>
->  #include <linux/fs_struct.h>
-> +#include <linux/kthread.h>
->  
->  #include <asm/processor.h>
->  #include "internal.h"
-> @@ -102,6 +103,8 @@ void proc_task_name(struct seq_file *m, struct task_struct *p, bool escape)
->  
->  	if (p->flags & PF_WQ_WORKER)
->  		wq_worker_comm(tcomm, sizeof(tcomm), p);
-> +	else if (p->flags & PF_KTHREAD)
-> +		get_kthread_comm(tcomm, sizeof(tcomm), p);
->  	else
->  		__get_task_comm(tcomm, sizeof(tcomm), p);
->  
-> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-> index 346b0f269161..2a5c04494663 100644
-> --- a/include/linux/kthread.h
-> +++ b/include/linux/kthread.h
-> @@ -33,6 +33,7 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
->  					  unsigned int cpu,
->  					  const char *namefmt);
->  
-> +void get_kthread_comm(char *buf, size_t buf_size, struct task_struct *tsk);
->  void set_kthread_struct(struct task_struct *p);
->  
->  void kthread_set_per_cpu(struct task_struct *k, int cpu);
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 5b37a8567168..ce8258231eea 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -60,6 +60,8 @@ struct kthread {
->  #ifdef CONFIG_BLK_CGROUP
->  	struct cgroup_subsys_state *blkcg_css;
->  #endif
-> +	/* To store the full name if task comm is truncated. */
-> +	char *full_name;
->  };
->  
->  enum KTHREAD_BITS {
-> @@ -93,6 +95,18 @@ static inline struct kthread *__to_kthread(struct task_struct *p)
->  	return kthread;
->  }
->  
-> +void get_kthread_comm(char *buf, size_t buf_size, struct task_struct *tsk)
-> +{
-> +	struct kthread *kthread = to_kthread(tsk);
-> +
-> +	if (!kthread || !kthread->full_name) {
-> +		__get_task_comm(buf, buf_size, tsk);
-> +		return;
-> +	}
-> +
-> +	strscpy_pad(buf, kthread->full_name, buf_size);
-> +}
-> +
->  void set_kthread_struct(struct task_struct *p)
->  {
->  	struct kthread *kthread;
-> @@ -121,6 +135,7 @@ void free_kthread_struct(struct task_struct *k)
->  #ifdef CONFIG_BLK_CGROUP
->  	WARN_ON_ONCE(kthread && kthread->blkcg_css);
->  #endif
-> +	kfree(kthread->full_name);
->  	kfree(kthread);
->  }
->  
-> @@ -399,12 +414,27 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
->  	if (!IS_ERR(task)) {
->  		static const struct sched_param param = { .sched_priority = 0 };
->  		char name[TASK_COMM_LEN];
-> +		va_list aq;
-> +		int len;
->  
->  		/*
->  		 * task is already visible to other tasks, so updating
->  		 * COMM must be protected.
->  		 */
-> -		vsnprintf(name, sizeof(name), namefmt, args);
-> +		va_copy(aq, args);
-> +		len = vsnprintf(name, sizeof(name), namefmt, aq);
-> +		va_end(aq);
-> +		if (len >= TASK_COMM_LEN) {
-> +			struct kthread *kthread = to_kthread(task);
-> +			char *full_name;
-> +
-> +			full_name = kvasprintf(GFP_KERNEL, namefmt, args);
-> +			if (!full_name) {
-> +				kfree(create);
-> +				return ERR_PTR(-ENOMEM);
+> But yes to your last question, it's logical OR.
 
-I'm not a fan of this out-of-line free/return. Why not just leave it
-truncated when out of memory? For example just do:
+Interesting. Looking at LLVM code it does indeed returns 'int'.
+At least typeof(_builtin_types_compatible_p(..)) seems to be 'int'.
 
-			struct kthread *kthread = to_kthread(task);
+At the same type LLVM tests are using this macro:
+#define check_same_type(type1, type2) __builtin_types_compatible_p(type1, type2) && __builtin_types_compatible_p(type1 *, type2 *)
 
-			kthread->full_name = kvasprintf(GFP_KERNEL, namefmt, args);
+While kernel has this macro:
+#define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
 
-> +			}
-> +			kthread->full_name = full_name;
-> +		}
->  		set_task_comm(task, name);
->  		/*
->  		 * root may have changed our (kthreadd's) priority or CPU mask.
-> -- 
-> 2.17.1
+Guessing that extra typeof() may resolve the difference between fn and &fn ?
+Not sure why LLVM took that approach.
+
+Anyway it will be removed once we hit 1.0, so no need to dig too deep.
+I think changing + to || is still worth doing.
+
+> >
+> > Maybe checking for ops type would be more robust ?
 > 
+> opts can be NULL. At which point it's actually only compatible with
+> void *. 
 
--- 
-Kees Cook
+Assuming that fn pointer in btf_dump__new_deprecated() will never be NULL?
