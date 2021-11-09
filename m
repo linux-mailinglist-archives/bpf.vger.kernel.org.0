@@ -2,144 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBCD44AD79
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 13:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CD544AFB3
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 15:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242204AbhKIMZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Nov 2021 07:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
+        id S238985AbhKIOrS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Nov 2021 09:47:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242082AbhKIMZ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Nov 2021 07:25:26 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7E3C061764
-        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 04:22:40 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id s13so32689726wrb.3
-        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 04:22:40 -0800 (PST)
+        with ESMTP id S238960AbhKIOrS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Nov 2021 09:47:18 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0407CC061766
+        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 06:44:32 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id s24so36747935lji.12
+        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 06:44:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jGGxV5hRcr0wdAm1Axn32TXl8p4NQnFAiW+DU8mCDhk=;
-        b=CVuj3yd4LZaAVrvocsGXAK3VqK2hgBR2j1Ok6AuNnXyeCSB92d3ccpQbXIxmAuNc/d
-         36xjh2fO7SszLqc5+Dgph1KVcm5HA+RhE14Bq/YGF1woju9mJSYWAHhKHlBvGKpR1seD
-         Z8CwnIzkHbkf0W7rLv1gV7qzYtXmTQ5qMon/AUh0XknPyOtwjslFM/20c06dD8S9CEu8
-         Dbrv7YqoG2zG0++/FRZO0m/aHBzkm/MQfz6nJ/K0PanroUdF76z9o/Za7TUMj79CVpuX
-         VZCM++NhOmcOfwVsgcXUql+mFEMi7KlCBeHCqereJDtAgdMyotpz/n4qmLbir/hmWQEr
-         cqMQ==
+        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=380uvh5+sUqb8TraF7vmPFyBkLi6WjO5zrWJDuYOuW8=;
+        b=hx92lP6a6ki8mts7VTpqY8I/zBlOUm6b89CcYV+vGebMWqbTW7oG/3nzH+Z2sevs+M
+         hi/bH6j00gm2iIfY2gT6dj51crE7Md+HZZzW/yJQ89NUPvQyyZe6PZMEJrV2a9ckVSTl
+         SxdU4qgUitmcs2ioGzF8pwPt1c5L4Nrnk8sz+97/YbZxaazGf5xX7Q6VOJnJpXKLi2/i
+         umQRnvt34xvkchkuavC1qrgIf36NGAi46ZPoRjR0ylOZIc/M5S32woBiS36tcaHnk+t4
+         qY2QG6S5a8w2xtlcp1AcGdYy+WmcR97EFQOYH65XMBNm08PFCYAjUszr25JQzjtgMmPz
+         wfGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jGGxV5hRcr0wdAm1Axn32TXl8p4NQnFAiW+DU8mCDhk=;
-        b=ici+H5whIL5qx/RiZxTqpHodOKAuU/xyY9qxko3h3o6C8AbH5cI0Z2MfRUdJ3CttmN
-         BApLWQh5cymkH63Bs5CSsOxsBJlDb0AZwr/tRUQFm6TWAowV/zjp++EcmcILCMG00Oq3
-         b4tUPZ6T0PduD7bLwnKw6uDVWsOCw+vBuklokBK/bPWIfbdnKe+U8dH31IvksPBOxUfn
-         cnj2VtHXVuAiDXKjZMrp2yszvSybD41CxD2IIChZreZjizpBnWz2Ys1XtH6AVSAM7hJw
-         Yau0Ou3DslvtDl9zaA8vrlPHqesdD07nEOkFFE1Htq5Ng0z2MdforC1vuLs4Js5JGcis
-         umWg==
-X-Gm-Message-State: AOAM531Sbeap/OLmqvLAZDmIAQoKP4jQX+rL5I7tEJkLiAbZFpRHhky0
-        U6aeBK/B8kxWFkccTyeW+l+pxw==
-X-Google-Smtp-Source: ABdhPJwVncvyWqpMtaGBtNmQxzHu9oM0ibXss97hRjSlw6b9nJhCbhm44df/U9FQj98N7elyEUzKwg==
-X-Received: by 2002:a5d:550c:: with SMTP id b12mr8817289wrv.427.1636460558780;
-        Tue, 09 Nov 2021 04:22:38 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:d20d:9fab:cbe:339])
-        by smtp.gmail.com with ESMTPSA id n32sm2815777wms.1.2021.11.09.04.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 04:22:38 -0800 (PST)
-Date:   Tue, 9 Nov 2021 13:22:32 +0100
-From:   Marco Elver <elver@google.com>
-To:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com
-Cc:     syzbot <syzbot+23843634c323e144fd0b@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: [PATCH] perf: Ignore sigtrap for tracepoints destined for other tasks
-Message-ID: <YYpoCOBmC/kJWfmI@elver.google.com>
-References: <00000000000053692705d05a17c1@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=380uvh5+sUqb8TraF7vmPFyBkLi6WjO5zrWJDuYOuW8=;
+        b=cd5EIzutzcBNYmbnvM5Ns2YlbaZu2NChYVyY6lrylyx2J6Ld2DidoNVuVlHhoOQc5H
+         FgDO9YLlc9qMdzqOupUqHOgt9aX6LwmvYAYalIvnJeh+OLusudJPhnkA+AFc1RRFvovh
+         h1AdMKI/uKqQEMxVGrzN4q/OtYcNrAS4AVLMlsrQlsv4ktOsQe+FguXoiXxWY0oHyfwH
+         jnDoi8BHzNKqsDPQxuAu1CcoubgHs1L3/eTHrcDVp+lyvL+8mj3sdsZKFoO2rxq7poSk
+         nQFoqvre89AbIURm3J2NdhKqlwgAtymtpGkvGDC6MJlIC3vUdvMdpnQ++4xwiYQqrcmY
+         O+mQ==
+X-Gm-Message-State: AOAM530r27nI6mg1O3AiyP/a8kdaXcURyHcmiSC2jsQs9WJBv35RQ6k6
+        ny41CtZTwZQ18Om5WNDvgfjHYmgepFfYwgNRFk18uA==
+X-Google-Smtp-Source: ABdhPJwa5+ZdRbBDkHA1aLBKxJ03FggnzVQhStS9KMhKJ1ZXqodBkZbmYEH21Hl0dNGUdqQH46VK7gKlqzglelSw/b0=
+X-Received: by 2002:a2e:b88b:: with SMTP id r11mr7984204ljp.474.1636469070153;
+ Tue, 09 Nov 2021 06:44:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000053692705d05a17c1@google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+References: <20211109103101.92382-1-louis.amas@eho.link>
+In-Reply-To: <20211109103101.92382-1-louis.amas@eho.link>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Tue, 9 Nov 2021 15:44:18 +0100
+Message-ID: <CAPv3WKeHN3c_C4Y+QrAR9=BnQ_+tdhyKKAk=-o_DpyQ_6KyzAQ@mail.gmail.com>
+Subject: Re: [PATCH] net: mvpp2: fix XDP rx queues registering
+To:     Louis Amas <louis.amas@eho.link>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Emmanuel Deloget <emmanuel.deloget@eho.link>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot reported that the warning in perf_sigtrap() fires, saying that
-the event's task does not match current:
+Hi,
 
- | WARNING: CPU: 0 PID: 9090 at kernel/events/core.c:6446 perf_pending_event+0x40d/0x4b0 kernel/events/core.c:6513
- | Modules linked in:
- | CPU: 0 PID: 9090 Comm: syz-executor.1 Not tainted 5.15.0-syzkaller #0
- | Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
- | RIP: 0010:perf_sigtrap kernel/events/core.c:6446 [inline]
- | RIP: 0010:perf_pending_event_disable kernel/events/core.c:6470 [inline]
- | RIP: 0010:perf_pending_event+0x40d/0x4b0 kernel/events/core.c:6513
- | ...
- | Call Trace:
- |  <IRQ>
- |  irq_work_single+0x106/0x220 kernel/irq_work.c:211
- |  irq_work_run_list+0x6a/0x90 kernel/irq_work.c:242
- |  irq_work_run+0x4f/0xd0 kernel/irq_work.c:251
- |  __sysvec_irq_work+0x95/0x3d0 arch/x86/kernel/irq_work.c:22
- |  sysvec_irq_work+0x8e/0xc0 arch/x86/kernel/irq_work.c:17
- |  </IRQ>
- |  <TASK>
- |  asm_sysvec_irq_work+0x12/0x20 arch/x86/include/asm/idtentry.h:664
- | RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
- | RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:194
- | ...
- |  coredump_task_exit kernel/exit.c:371 [inline]
- |  do_exit+0x1865/0x25c0 kernel/exit.c:771
- |  do_group_exit+0xe7/0x290 kernel/exit.c:929
- |  get_signal+0x3b0/0x1ce0 kernel/signal.c:2820
- |  arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
- |  handle_signal_work kernel/entry/common.c:148 [inline]
- |  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- |  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
- |  __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- |  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- |  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- |  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-On x86 this shouldn't happen, which has arch_irq_work_raise().
+wt., 9 lis 2021 o 11:31 Louis Amas <louis.amas@eho.link> napisa=C5=82(a):
+>
+> The registration of XDP queue information is incorrect because the RX que=
+ue id we use is invalid.
+> When port->id =3D=3D 0 it appears to works as expected yet it's no longer=
+ the case when port->id !=3D 0.
+>
+> This is due to the fact that the value we use (rxq->id) is not the per-po=
+rt queue index which
+> XDP expects -- it's a global index which should not be used in this case.=
+ Instead we shall use
+> rxq->logic_rxq which is the correct, per-port value.
+>
+> Signed-off-by: Louis Amas <louis.amas@eho.link>
+> Signed-off-by: Emmanuel Deloget <emmanuel.deloget@eho.link>
+> ---
+>
+> As we were trying to capture packets using XDP on our mv8040-powered
+> MacchiatoBin, we experienced an issue related to rx queue numbering.
+>
+> Before I get to the problem itself, a bit of setup:
+>
+> * the Macchiato has several ports, all of them handled using the mvpp2
+>   ethernet driver. We are able to reproduce our issue on any device whose
+>   port->id !=3D 0 (we used eth2 for our tests). When port->id =3D=3D 0 (f=
+or
+>   example on eth0) everything works as expected ;
+>
+> * we use xdp-tutorial for our tests ; more specifically, we used the
+>   advanced03-AF_XDP tutorial as it provides a simple testbed. We modified
+>   the kernel to simplify it:
+>
+>         SEC("xdp_sock")
+>         int xdp_sock_prog(struct xdp_md *ctx)
+>         {
+>                 int index =3D ctx->rx_queue_index;
+>
+>                 /* A set entry here means that the correspnding queue_id
+>                  * has an active AF_XDP socket bound to it. */
+>                 if (bpf_map_lookup_elem(&xsks_map, &index))
+>                         return bpf_redirect_map(&xsks_map, index, 0);
+>
+>                 return XDP_PASS;
+>         }
+>
+> * we tested kernel 5.10 (out target) and 5.15 (for reference) ; both kern=
+els
+>   exhibits the same symptoms ; I expect kernel 5.9 (the first linux kerne=
+l
+>   with XDP support in the mvpp2 driver) to exhibit the same problem.
+>
+> The normal invocation of this program would be:
+>
+>         ./af_xdp_user -d ETHDEV
+>
+> We should then capture packets on this interface. When ETHDEV is eth0
+> (port->id =3D=3D 0) everything works as expcted ; when using ETHDEV =3D=
+=3D eth2
+> we fail to capture anything.
+>
+> We investigated the issue and found that XDP rx queues (setup as
+> struct xdp_rxq_info by the mvpp2 driver) for this device were wrong. XDP
+> expected them to be numbered in [0..3] but we found numbers in [32..35].
+>
+> The reason for this lies in mvpp2_main.c at lines 2962 and 2966 which are
+> of the form (symbolic notation, close to actual code, function
+> mvpp2_rxq_init()):
+>
+>         err =3D xdp_rxq_info_reg(&rxq->some_xdp_rxqinfo, port->dev, rxq->=
+id, 0);
+>
+> The rxq->id value we pass to this function is incorrect - it's a virtual =
+queue
+> id which is computed as (symbolic notation, not actual code):
+>
+>         rxq->id =3D port->id * max_rxq_count + queue_id
+>
+> In our case, max_rxq_count =3D=3D 32 and port->id =3D=3D 1 for eth2, mean=
+ing our
+> rxq->id are in the range [32..35] (for 4 queues).
+>
+> We tried to force the rx queue id on the XDP side by using:
+>
+>         ./af_xdp_user -d eth2 -Q 32
+>
+> But that failed -- as expected, because we should not have more than 4
+> rx queues.
+>
+> The computing of rxq->id is valid, but the use of rxq->id in this context=
+ is
+> not. What we really want here is the rx queue id for this port, and this =
+value
+> is stored in rxq->logic_rxq -- as hinted by the code in mvpp2_rxq_init().
+> Replacing rxq->id by this value in the two xdp_rxq_info_reg() calls fixed=
+ the
+> issue and allowed us to use XDP on all the Macchiato ethernet ports.
+>
+> drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
+t/ethernet/marvell/mvpp2/mvpp2_main.c
+> index 587def69a6f7..f0ea377341c6 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> @@ -2959,11 +2959,11 @@ static int mvpp2_rxq_init(struct mvpp2_port *port=
+,
+>         mvpp2_rxq_status_update(port, rxq->id, 0, rxq->size);
+>
+>         if (priv->percpu_pools) {
+> -               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_short, port->dev, =
+rxq->id, 0);
+> +               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_short, port->dev, =
+rxq->logic_rxq, 0);
+>                 if (err < 0)
+>                         goto err_free_dma;
+>
+> -               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_long, port->dev, r=
+xq->id, 0);
+> +               err =3D xdp_rxq_info_reg(&rxq->xdp_rxq_long, port->dev, r=
+xq->logic_rxq, 0);
+>                 if (err < 0)
+>                         goto err_unregister_rxq_short;
+>
 
-The test program sets up a perf event with sigtrap set to fire on the
-'sched_wakeup' tracepoint, which fired in ttwu_do_wakeup().
+Thank you for the patch and the detailed explanation. I think "Fixes:"
+tag should be added to the commit message:
+Fixes: b27db2274ba8 ("mvpp2: use page_pool allocator")
 
-This happened because the 'sched_wakeup' tracepoint also takes a task
-argument passed on to perf_tp_event(), which is used to deliver the
-event to that other task.
+Other than that - LGTM, so you can add my:
+Reviewed-by: Marcin Wojtas <mw@semihalf.com>
 
-Since we cannot deliver synchronous signals to other tasks, skip an event if
-perf_tp_event() is targeted at another task and perf_event_attr::sigtrap is
-set, which will avoid ever entering perf_sigtrap() for such events.
-
-Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
-Reported-by: syzbot+663359e32ce6f1a305ad@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/events/core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index f23ca260307f..91653c6e41a7 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9729,6 +9729,9 @@ void perf_tp_event(u16 event_type, u64 count, void *record, int entry_size,
- 				continue;
- 			if (event->attr.config != entry->type)
- 				continue;
-+			/* Cannot deliver synchronous signal to other task. */
-+			if (event->attr.sigtrap)
-+				continue;
- 			if (perf_tp_event_match(event, &data, regs))
- 				perf_swevent_event(event, count, &data, regs);
- 		}
--- 
-2.34.0.rc0.344.g81b53c2807-goog
+Best regards,
+Marcin
