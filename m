@@ -2,90 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C01844B3B8
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 21:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95ADB44B459
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 21:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244146AbhKIUIp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Nov 2021 15:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S241667AbhKIU7s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Nov 2021 15:59:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244130AbhKIUIp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Nov 2021 15:08:45 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6C8C061764
-        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 12:05:58 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id g14so1238878edz.2
-        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 12:05:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=NWtIycQHSeI97P9ROGWWPqnNbO7HVSDZEQKdeZMuQpc=;
-        b=BSkwUz0znKYPBBDzXxiaXzyiS/MTjsLcbELJ0NIVihAP9ftpnctoQh3MVYT8lsbv6F
-         +IBov4WYxkjEsddOdNIYivX4rWX+WyEYrsru5OFUfSzFvNPCb3ZAA9IEhBzg2u4Vip2Y
-         bK5OjLGLbueH5Kn8P+HnMxZn9ezO8qnfQRUmr63nTH/Ab98X12Xq+e4u0j2/0AB/XJTd
-         V+S3CE+FhFzmLR8vkuRmj6kAwBQvVlQ7WpYoFWSrlGV5r5aVVbhxzE3fQcSG/z8MfXra
-         Kkb1SoeaBF8YeB3cJpC7Y40UPPKRJYSRRFtcyPTgBYQCmdewPmjecRfKNi0ZBoOV80/2
-         9Arg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=NWtIycQHSeI97P9ROGWWPqnNbO7HVSDZEQKdeZMuQpc=;
-        b=1Y2EFnMGB2ns1C1Z/PW2STF+CSv9ZY9wyXMUDYCSq+pXM1g4tjZ+/+XzP7l1m0h+kE
-         pP/Dqo2ZEbfei/hJZQKAE/2QaiCpUdky/1Ibqd75R8yJoF/UlXr/AV6M5MMP5luMosda
-         Bi9eoZRtr4Js8P3zWUvSib/SfvLsuoSLtLSq410K0zcLlYsJIxbNnRTUMrDwZ6zoUJ12
-         HDIs+dhtajCWtt+aMiOLWIFyiu0z65RKOBZ7xdFyEHpWn26ig5O18LS5AFEkzdFhasSy
-         JKiJPs+YauMxk1M6JEv9GLAFv9TU7+YtK/LKuDmSnfWndbxFR06jmetMoF6kAt4poGYW
-         5TgA==
-X-Gm-Message-State: AOAM530WMLiG2UUqKmF305giz0XYIKHp+OE1HveozNCoYJEvG6GNIyKY
-        8j3+1ZcV2bPImzolwS45Jc4P73UjrMAM7vVecDw=
-X-Google-Smtp-Source: ABdhPJwuuBn3MBiANcZvlebfbNTYzLF+HnjCmPewfPJAwb9yELz0Yej6YbPllJUddqMuZcO6avRm2jF0Ov5SAV3FtTw=
-X-Received: by 2002:a50:d984:: with SMTP id w4mr13546480edj.375.1636488357133;
- Tue, 09 Nov 2021 12:05:57 -0800 (PST)
+        with ESMTP id S240544AbhKIU7r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Nov 2021 15:59:47 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CA7C061764;
+        Tue,  9 Nov 2021 12:57:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=io+S8wCULLmvLhnauHLk8AUTXaXOEWfxvjfG3NBW+zc=; b=PBuQp3iHbchkeGx7A50hzzZ1xG
+        NuPQ3LSXHuvUXvp3V6y8dRKECTE6jqpeXUZ+jOgZRk9LtmnforGpeRdPwoSBWjm+yeweIsWo9vWk1
+        0qsLYsA94fJ8KsLS9gtRn/cDloZ0LxK1MBbOClUfKsyLbltSHLKZ/Ucdw6cVykCAmg5I8o7BJf/A+
+        D2XJkz5lJAJPFMiM1QxXcfQbODGDO2DmxuEvLN8d2k3QfBracd+/SOtmNxCYqvdsfGtiuM9vnyj5d
+        iK+6Bm9SYxD39C66fI5yKPcHjBEJnSMOITyEgJuZe6nWR2AVkNNpQISU0Ci+E28jSvVt6s0vy0wlj
+        fg2wQm1Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkYAY-003FWh-E2; Tue, 09 Nov 2021 20:56:38 +0000
+Date:   Tue, 9 Nov 2021 12:56:38 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Miroslav Benes <mbenes@suse.cz>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, jeyu@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, mcgrof@kernel.org
+Subject: Re: [PATCH] module: Fix implicit type conversion
+Message-ID: <YYrghnBqTq5ZF2ZR@bombadil.infradead.org>
+References: <1635473169-1848729-1-git-send-email-jiasheng@iscas.ac.cn>
+ <alpine.LSU.2.21.2111081925580.1710@pobox.suse.cz>
 MIME-Version: 1.0
-Sender: sandrinejohnpaul30@gmail.com
-Received: by 2002:a54:3652:0:0:0:0:0 with HTTP; Tue, 9 Nov 2021 12:05:56 -0800 (PST)
-From:   "mrs.sophia.robin" <mrs.sophiar.robin424@gmail.com>
-Date:   Tue, 9 Nov 2021 21:05:56 +0100
-X-Google-Sender-Auth: q7Bke1S-BpkryUXKVYgBk6wBN2c
-Message-ID: <CANWjYXiz5xPxxTjvQ8Ww+E6=q-y_kswFisitsokDNJ+LQ8GRjw@mail.gmail.com>
-Subject: Hello My Dearest
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2111081925580.1710@pobox.suse.cz>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-i'm Mrs.Sophia Robin,a citizen of the united state of America,I work
-at HSBC Bank in Milan Italy,as Telex Manager charge of wire transfer
-department,i'm contacting you personally for investment assistance and
-a long term business relationship in your Country.i'm contacting you
-for an important and  urgent business transaction,I want the bank to
-transfer the money left by Dr.Cheng Chao,a Chinese Politician who
-died,March 17th 2020,without any trace of his family members,he used
-our bank to launder money overseas through the help of their Political
-advisers.and most of the funds which they transferred out of the
-shores of China, were gold and oil money that was supposed to have
-been used to develop the continent.
+On Mon, Nov 08, 2021 at 07:31:05PM +0100, Miroslav Benes wrote:
+> [CCing Luis]
+> 
+> Hi,
+> 
+> On Fri, 29 Oct 2021, Jiasheng Jiang wrote:
+> 
+> > The variable 'cpu' is defined as unsigned int.
+> > However in the for_each_possible_cpu, its values is assigned to -1.
+> > That doesn't make sense and in the cpumask_next() it is implicitly
+> > type conversed to int.
+> > It is universally accepted that the implicit type conversion is
+> > terrible.
+> > Also, having the good programming custom will set an example for
+> > others.
+> > Thus, it might be better to change the definition of 'cpu' from
+> > unsigned int to int.
+> 
+> Frankly, I don't see a benefit of changing this. It seems fine to me. 
+> Moreover this is not, by far, the only place in the kernel with the same 
+> pattern.
+> 
+> Miroslav
+> 
+> > Fixes: 10fad5e ("percpu, module: implement and use is_kernel/module_percpu_address()")
+> > Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> > ---
+> >  kernel/module.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/module.c b/kernel/module.c
+> > index 927d46c..f10d611 100644
+> > --- a/kernel/module.c
+> > +++ b/kernel/module.c
+> > @@ -632,7 +632,7 @@ static void percpu_modcopy(struct module *mod,
+> >  bool __is_module_percpu_address(unsigned long addr, unsigned long *can_addr)
+> >  {
+> >  	struct module *mod;
+> > -	unsigned int cpu;
+> > +	int cpu;
+> >  
+> >  	preempt_disable();
 
-Can you invest this money and also help the poor? The amount value at
-$15.5million Dollars($US15,500,000),left in his account still
-unclaimed,if you know that you are capable to invest this fund into
-any profitable business in your country kindly send me your details
-information as listed below to enable me draft you an application form
-of claim along with the deposit certificate which you are going to
-fill with your bank account detail necessary and contact the HSBC Bank
-in Italy for immediate transfer of the Amounted sum into your bank
-account direct. Percentage share will be 60,for me/40,for you.
+If we're going to do this we we must ask, is it really worth it and
+moving forward then add a semantic patch rule which will pick up on
+misuses.
 
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your  Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) Your photo.......................................
+@ finds_for_each_cpu_unsigned_int @
+identifier x;
+iterator name for_each_possible_cpu;
+iterator name for_each_online_cpu;
+iterator name for_each_present_cpu;
+statement S;
+@@
 
-Thanks with my best regards.Mrs. Sophia Robin,
-Telex Manager Milan Italy  (H.S.B.C)
+-unsigned
+int x;
+<+...
+(
+for_each_possible_cpu(x) S
+|
+for_each_online_cpu(x) S
+|
+for_each_present_cpu(x) S
+)
+...+>
+
+
+This produces:
+
+ arch/arm/mm/cache-b15-rac.c                        |  2 +-
+ arch/arm/mm/cache-uniphier.c                       |  2 +-
+ arch/arm64/kernel/mte.c                            |  2 +-
+ arch/arm64/kernel/smp.c                            |  2 +-
+ arch/arm64/kvm/arm.c                               |  2 +-
+ arch/ia64/kernel/smp.c                             |  2 +-
+ arch/ia64/kernel/topology.c                        |  2 +-
+ arch/ia64/mm/contig.c                              |  4 ++--
+ arch/mips/kernel/mips-cm.c                         |  2 +-
+ arch/mips/kernel/mips-cpc.c                        |  2 +-
+ arch/mips/kernel/smp.c                             |  6 +++---
+ arch/mips/mm/init.c                                |  2 +-
+ arch/openrisc/kernel/smp.c                         |  2 +-
+ arch/parisc/kernel/topology.c                      |  2 +-
+ arch/powerpc/kernel/cacheinfo.c                    |  4 ++--
+ arch/powerpc/kernel/iommu.c                        |  2 +-
+ arch/powerpc/kernel/setup_32.c                     |  4 ++--
+ arch/powerpc/kernel/setup_64.c                     |  8 ++++----
+ arch/powerpc/kernel/smp.c                          |  2 +-
+ arch/powerpc/mm/numa.c                             |  2 +-
+ arch/powerpc/platforms/ps3/interrupt.c             |  2 +-
+ arch/powerpc/platforms/pseries/hotplug-cpu.c       |  6 +++---
+ arch/powerpc/platforms/pseries/mobility.c          |  2 +-
+ arch/powerpc/platforms/pseries/setup.c             |  2 +-
+ arch/s390/pci/pci_irq.c                            |  4 ++--
+ arch/sh/kernel/topology.c                          |  2 +-
+ arch/sh/mm/cache-j2.c                              |  6 +++---
+ arch/sparc/kernel/iommu-common.c                   |  2 +-
+ arch/sparc/kernel/smp_64.c                         |  4 ++--
+ arch/x86/events/amd/uncore.c                       |  4 ++--
+ arch/x86/kernel/apic/apic_numachip.c               |  2 +-
+ arch/x86/kernel/apic/bigsmp_32.c                   |  2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c              |  2 +-
+ arch/x86/kernel/apic/x2apic_uv_x.c                 |  2 +-
+ arch/x86/kernel/cpu/mce/apei.c                     |  2 +-
+ arch/x86/kernel/cpu/microcode/core.c               |  2 +-
+ arch/x86/kernel/setup_percpu.c                     |  4 ++--
+ arch/x86/kernel/smpboot.c                          |  4 ++--
+ arch/x86/mm/cpu_entry_area.c                       |  2 +-
+ arch/x86/mm/pti.c                                  |  2 +-
+ arch/x86/xen/mmu_pv.c                              |  2 +-
+ arch/x86/xen/smp_pv.c                              |  4 ++--
+ arch/xtensa/kernel/irq.c                           |  2 +-
+ arch/xtensa/kernel/smp.c                           |  4 ++--
+ arch/xtensa/kernel/traps.c                         |  2 +-
+ drivers/base/arch_numa.c                           |  2 +-
+ drivers/base/arch_topology.c                       |  2 +-
+ drivers/block/rnbd/rnbd-clt.c                      |  2 +-
+ drivers/cpufreq/acpi-cpufreq.c                     |  4 ++--
+ drivers/cpufreq/cpufreq_ondemand.c                 |  2 +-
+ drivers/cpufreq/intel_pstate.c                     |  2 +-
+ drivers/cpufreq/qcom-cpufreq-nvmem.c               |  4 ++--
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c             |  4 ++--
+ drivers/idle/intel_idle.c                          |  2 +-
+ drivers/iommu/iova.c                               |  4 ++--
+ drivers/irqchip/irq-bcm6345-l1.c                   |  2 +-
+ drivers/irqchip/irq-gic.c                          |  2 +-
+ drivers/irqchip/irq-jcore-aic.c                    |  2 +-
+ drivers/irqchip/irq-mips-gic.c                     |  2 +-
+ drivers/macintosh/rack-meter.c                     |  2 +-
+ drivers/net/ethernet/chelsio/libcxgb/libcxgb_ppm.c |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_fcoe.c      |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |  2 +-
+ drivers/net/ethernet/marvell/mvneta.c              |  2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |  4 ++--
+ drivers/pci/controller/pcie-iproc-msi.c            |  2 +-
+ drivers/scsi/bnx2fc/bnx2fc_fcoe.c                  |  2 +-
+ drivers/scsi/bnx2i/bnx2i_init.c                    |  2 +-
+ drivers/scsi/bnx2i/bnx2i_iscsi.c                   |  2 +-
+ drivers/scsi/fcoe/fcoe.c                           |  6 +++---
+ drivers/scsi/fcoe/fcoe_transport.c                 |  2 +-
+ drivers/scsi/libfc/fc_exch.c                       |  4 ++--
+ drivers/scsi/libfc/fc_lport.c                      |  2 +-
+ drivers/soc/bcm/brcmstb/biuctrl.c                  |  2 +-
+ drivers/xen/events/events_base.c                   |  2 +-
+ drivers/xen/events/events_fifo.c                   |  2 +-
+ fs/fscache/main.c                                  |  2 +-
+ kernel/cpu.c                                       |  4 ++--
+ kernel/livepatch/transition.c                      | 12 ++++++------
+ kernel/module.c                                    |  2 +-
+ kernel/relay.c                                     |  8 ++++----
+ kernel/sched/deadline.c                            |  2 +-
+ kernel/sched/rt.c                                  |  2 +-
+ kernel/smpboot.c                                   |  4 ++--
+ kernel/stop_machine.c                              |  2 +-
+ kernel/taskstats.c                                 |  2 +-
+ kernel/trace/trace_hwlat.c                         |  4 ++--
+ lib/cpu_rmap.c                                     |  6 +++---
+ lib/test_lockup.c                                  |  2 +-
+ mm/kmemleak.c                                      |  4 ++--
+ mm/percpu-vm.c                                     |  4 ++--
+ mm/percpu.c                                        |  8 ++++----
+ mm/slub.c                                          |  2 +-
+ mm/swap_slots.c                                    |  2 +-
+ net/core/dev.c                                     |  2 +-
+ net/ipv4/netfilter/arp_tables.c                    |  2 +-
+ net/ipv4/netfilter/ip_tables.c                     |  2 +-
+ net/ipv4/route.c                                   |  2 +-
+ net/ipv6/netfilter/ip6_tables.c                    |  2 +-
+ net/netfilter/x_tables.c                           |  4 ++--
+ net/rds/page.c                                     |  2 +-
+ net/sunrpc/svc.c                                   |  2 +-
+ 102 files changed, 148 insertions(+), 148 deletions(-)
