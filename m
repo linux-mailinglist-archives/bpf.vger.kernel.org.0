@@ -2,98 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721E744B50F
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 22:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2806E44B6C3
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 23:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241341AbhKIWBC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Nov 2021 17:01:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237422AbhKIWBC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:01:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24FCD61177;
-        Tue,  9 Nov 2021 21:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636495095;
-        bh=K7/RWXNmIZ4b5Efp504XvDWDV1msyyr7fkDycknssRw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X88s04fFVzqgHjNi2f0rD8hcfBwDtnZjsaw2joEHdm58Ym6WPWAyYNOkAfrJ8LnIb
-         s2Na+XPYO1DNK82NWPmelXlogUdRy9EjrbwZDz7VFFC+O1INWZzHV74KW5m4ANGxFQ
-         pi5VE0fneK2rIXZIbFb2M8hDhlGaIxwzJWPAnVV/3a8LRQ8rst1VqTeDfhA7yDVyUo
-         BtCpV1wkjBUtOFTch4XND55d6aUt7R6499opRTRquw7HqpVUYm+ytjtDyL+OusQaqw
-         tFZ90M2LtM+FDxhstRYpyQC3X147Ff+48fd9L/ioo/D/0P/VCN49RVhrJKPkSyCIa4
-         mW1C/5T7TTqKg==
-Date:   Tue, 9 Nov 2021 22:58:11 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com
-Subject: Re: [PATCH v17 bpf-next 12/23] bpf: add multi-buff support to the
- bpf_xdp_adjust_tail() API
-Message-ID: <YYru8wI3XAC3P1r3@lore-desk>
-References: <cover.1636044387.git.lorenzo@kernel.org>
- <fd0400802295a87a921ba95d880ad27b9f9b8636.1636044387.git.lorenzo@kernel.org>
- <20211105162941.46b807e5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YYlWcuUwcKGYtWAR@lore-desk>
- <87fss6r058.fsf@toke.dk>
- <YYl1P+nPSuMjI+e6@lore-desk>
- <20211108134059.738ce863@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1344452AbhKIW3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Nov 2021 17:29:49 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63796 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344278AbhKIW1t (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Nov 2021 17:27:49 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A9M8OF6004520
+        for <bpf@vger.kernel.org>; Tue, 9 Nov 2021 14:25:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=LozLCoIbVuwHkpTKVctjNR5MPn0RyCZVgLY+uqWjIRU=;
+ b=fLvBRiK9kqo4RJQLKc60oLs/ZyuL0Zyd9rb6Mn3Pvw7Zxn3kbOo8Q2T6xMrfNkQc8Scw
+ XM/kVoilVRe8Xh13MbcG4vxJoNooLV9TODn68eqzAkGRGmv5fJN9sKFAKE+C4g5Pwr82
+ DFwyPoYONX/MPQi4TQtm4GcABM/15ighBnE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c81h203x2-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 14:25:02 -0800
+Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 9 Nov 2021 14:25:00 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 8D8AE1ED8332F; Tue,  9 Nov 2021 14:24:53 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: [PATCH bpf-next] bpf: fix btf_task_struct_ids w/o CONFIG_DEBUG_INFO_BTF
+Date:   Tue, 9 Nov 2021 14:24:47 -0800
+Message-ID: <20211109222447.3251621-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GMfHRMkChqh/b365"
-Content-Disposition: inline
-In-Reply-To: <20211108134059.738ce863@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: rVK43x0iSuucYGJEP0lyzgTonpLtKxL9
+X-Proofpoint-ORIG-GUID: rVK43x0iSuucYGJEP0lyzgTonpLtKxL9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-09_07,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ bulkscore=0 mlxlogscore=904 priorityscore=1501 mlxscore=0 clxscore=1015
+ spamscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111090121
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This fixes KASAN oops like
 
---GMfHRMkChqh/b365
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+BUG: KASAN: global-out-of-bounds in task_iter_init+0x212/0x2e7 kernel/bpf=
+/task_iter.c:661
+Read of size 4 at addr ffffffff90297404 by task swapper/0/1
 
-> On Mon, 8 Nov 2021 20:06:39 +0100 Lorenzo Bianconi wrote:
-> > > Not sure I get what the issue is with this either? But having a test
-> > > that can be run to validate this on hardware would be great in any ca=
-se,
-> > > I suppose - we've been discussing more general "compliance tests" for
-> > > XDP before... =20
-> >=20
-> > what about option 2? We can add a frag_size field to rxq [0] that is se=
-t by
-> > the driver initializing the xdp_buff. frag_size set to 0 means we can u=
-se
-> > all the buffer.
->=20
-> So 0 would mean xdp->frame_sz can be used for extending frags?
->=20
-> I was expecting that we'd used rxq->frag_size in place of xdp->frame_sz.
->=20
-> For devices doing payload packing we will not be able to extend the
-> last frag at all. Wouldn't it be better to keep 0 for the case where
-> extending is not allowed?
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-syzkaller #0
+Hardware name: ... Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+<TASK>
+__dump_stack lib/dump_stack.c:88 [inline]
+dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+print_address_description.constprop.0.cold+0xf/0x309 mm/kasan/report.c:25=
+6
+__kasan_report mm/kasan/report.c:442 [inline]
+kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+task_iter_init+0x212/0x2e7 kernel/bpf/task_iter.c:661
+do_one_initcall+0x103/0x650 init/main.c:1295
+do_initcall_level init/main.c:1368 [inline]
+do_initcalls init/main.c:1384 [inline]
+do_basic_setup init/main.c:1403 [inline]
+kernel_init_freeable+0x6b1/0x73a init/main.c:1606
+kernel_init+0x1a/0x1d0 init/main.c:1497
+ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+</TASK>
 
-ack, I am fine with it. I will integrate it in v18. Thanks.
+Reported-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ kernel/bpf/btf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Regards,
-Lorenzo
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index cdb0fba656006..6db929a5826d4 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6342,10 +6342,14 @@ const struct bpf_func_proto bpf_btf_find_by_name_=
+kind_proto =3D {
+ 	.arg4_type	=3D ARG_ANYTHING,
+ };
+=20
++#ifdef CONFIG_DEBUG_INFO_BTF
+ BTF_ID_LIST_GLOBAL(btf_task_struct_ids)
+ BTF_ID(struct, task_struct)
+ BTF_ID(struct, file)
+ BTF_ID(struct, vm_area_struct)
++#else
++u32 btf_task_struct_ids[3];
++#endif
+=20
+ /* BTF ID set registration API for modules */
+=20
+--=20
+2.30.2
 
---GMfHRMkChqh/b365
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYYru8wAKCRA6cBh0uS2t
-rJwcAP9ZjowUOGVsaq6eqvKxwSIN2OZjO6Duwbsvk6SFqs7E8gD9Gx+fpU7dJSL/
-TadXjt1knOB1fTUtGMGuKZT9e9tzuwQ=
-=O8z+
------END PGP SIGNATURE-----
-
---GMfHRMkChqh/b365--
