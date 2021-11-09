@@ -2,115 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8D944A64D
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 06:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC50B44A702
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 07:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236498AbhKIFcj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Nov 2021 00:32:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
+        id S229591AbhKIGvc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Nov 2021 01:51:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhKIFci (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Nov 2021 00:32:38 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E8DC061764
-        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 21:29:52 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id n8so18872755plf.4
-        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 21:29:52 -0800 (PST)
+        with ESMTP id S241000AbhKIGvb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Nov 2021 01:51:31 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF26DC061766
+        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 22:48:44 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso1049164wmd.3
+        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 22:48:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4DsNC5GzNOHaDAjaPC2+u9+MfH+j95NhbnjPHc6cwLY=;
-        b=T0E0X5PWx9xF+tV2nHlf8hH6SpNRL0O+0iMpI5AgUifDka15SYiiRWRKZdP6dMS6JX
-         sO+e90JigDf3CS37LRY+Kk39G7N9GOSG5uJyHqVl42xPkFhvpmbZjYpo0iEizRvgRsSv
-         aNHLFMPCnEmcHcty4ASUaBEXm7vFm1X3xhVYX5eCyKprI/HySiGG6gx4UUHouGxx8RCo
-         lbTN0ZadmOV2HkE4mABN0XJmD37w+sUyjr11f4rQP+ic9lzfYU/lrUHHmT0zqW04KJTR
-         lY3CADlsG8nEFXt2iXWTZC0YzqjKm3Rh4Sc3PJW+ai8Nq1xGb5wUjIuP3v5E7AtATfBB
-         jlbQ==
+        d=ubique-spb-ru.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eDg4EfYyQlktMfASerfzCufE4z7AwT0PxzRc+DnymYM=;
+        b=y1To8VpQmwo5VU6Ze1EuRL4i8u1RkUTtv8zEzUfCqbW/HiuXbX8FTSszTfhOA/Df6i
+         IjFmWuKGvP2pJ+lXDZuuDHQ4x7x9S5PiNTEVI/cd7xpc7v+kbKzddFkbjcthW0ZtJcKk
+         +SxIg34aC25VrQJAne835WTNQJCQryCLl2v5Eq/oPIzrbU2pR/3rtdHlTO8ZCNbwcmEg
+         bIQoPLSNrRqMJXw0zrsOKG3kMsvG3rNXL/LCtLZeUk35W2OQJ+F5Pv4zZ7UI0d5reZgd
+         NlJbkTM9fPJ5GoJ6W8LU6ALOKlyu+h8oRsQr++lDDSxeRVU6/0gIO/CfaGmfYWGX3tV6
+         Yzrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4DsNC5GzNOHaDAjaPC2+u9+MfH+j95NhbnjPHc6cwLY=;
-        b=Hxq8FR4qra8KtW0XL/svBrd5mzgBS1m9r3po8i9rRombXm+HSgegY5m/9YosZGsGbp
-         GyyJdscyuGcLcjHcSActQKOoVgRbUqaLdSaGziLDLj8JXfqm5Et5KCASC6/IF/NYokHZ
-         Dp8ZsEyaDQe2bVWOGmGdu+NmLtxJC8K8BVQKY6tMFvujlJHx7XC4TL4UGja2d09JQSJk
-         6m1lt2MbnCRcDPgXtXZ1FSLfhjaS3GXuh+EEV1F1588grsAY0Ihbpc9mcniHBZlrKjS4
-         j5MqOyH12qgqB4TeWo2lzmqOrHJvFTiUzoVWjyKVWuOsIzRKcNFvxcagdRDP8tdhkb05
-         WvTg==
-X-Gm-Message-State: AOAM530HdYNbmRBISTc2dZdluzfQALZAsbV4+hLLc7QkHEsJzTkIf52N
-        XJLtgHWGPFQGTpVGluDzYOpQ9ZkjhRtovlpLltl6ChkEd34=
-X-Google-Smtp-Source: ABdhPJxRU+mtpLIYQqs2CfQ9ozmdMKbprxEaJSYe/yRkmCTzoDZ+XZVNsJkWxrN0/av6gwScqwbwArViDf5j4uR9dBk=
-X-Received: by 2002:a17:902:d491:b0:142:892d:a89 with SMTP id
- c17-20020a170902d49100b00142892d0a89mr4808725plg.20.1636435792326; Mon, 08
- Nov 2021 21:29:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eDg4EfYyQlktMfASerfzCufE4z7AwT0PxzRc+DnymYM=;
+        b=MGN+Pzoslpz0wYP13ve0RuIFPIB9cPEj9R9EsyMeGGcxe++aLFBCA66axoxXss3eNs
+         EWCcVP+X5eUSo/EJNrwEFZcwo/nZpLTue1ZwwEl1xuBwOEv5fg4OIzXpvmymA1rmnTFB
+         q3AtV7mmXOR8+sZRxwcyTC+Am5+SkV/T9zggabb+luoWdz511KugSkdk07uwqlbxdhIO
+         yu206aO8LYhKmdWTupu+DJW94/+3sCW6Vs3PIPPeQ4ULDPaNi4KeafItPf2VeFvZv+a5
+         CRz+yyBMNZ3MEb7YdATvLUXVurGHrYwF5phByFJxExglTy9AGDZU6WB0Hyx4AVydFZ8C
+         bs5A==
+X-Gm-Message-State: AOAM533HulxUgmp41Blx9aB33nmsI6sSo1v/kuTrC26u0asQHKJ2xwOj
+        dL4oiG+4k2OFpohFMVPucMiNEcZqOf+p9nPHZRY=
+X-Google-Smtp-Source: ABdhPJzGmax9buTiHVqEJkHAzARS1fg5sYe4LbJYbfcnI3urUJklCzBxgH4DMtXJTSWBGwtCFFh5LQ==
+X-Received: by 2002:a1c:1f06:: with SMTP id f6mr4540613wmf.55.1636440522693;
+        Mon, 08 Nov 2021 22:48:42 -0800 (PST)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id o1sm19242782wru.91.2021.11.08.22.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 22:48:42 -0800 (PST)
+Date:   Tue, 9 Nov 2021 10:48:37 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, rdna@fb.com, john.stultz@linaro.org,
+        sboyd@kernel.org, peterz@infradead.org, mark.rutland@arm.com,
+        rosted@goodmis.org
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: Add tests for allowed helpers
+Message-ID: <20211109064837.qtokqcxf6yj6zbig@amnesia>
+References: <20211108164620.407305-1-me@ubique.spb.ru>
+ <20211108164620.407305-3-me@ubique.spb.ru>
 MIME-Version: 1.0
-References: <36467ea3-8b19-f385-c2d0-02e2bd9c934e@polito.it>
-In-Reply-To: <36467ea3-8b19-f385-c2d0-02e2bd9c934e@polito.it>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 8 Nov 2021 21:29:41 -0800
-Message-ID: <CAADnVQLszubAWyq+Mch0xRneyhVpqNwQhrW3u_eocN6NzRcpEw@mail.gmail.com>
-Subject: Re: Add variable offset to packet pointer in XDP/TC programs
-To:     Federico Parola <federico.parola@polito.it>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108164620.407305-3-me@ubique.spb.ru>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 6:04 AM Federico Parola
-<federico.parola@polito.it> wrote:
->
-> Dear all,
-> I found out that every time an offset stored in a 2 (or more) bytes
-> variable is added to a packet pointer subsequent checks against packet
-> boundaries become ineffective.
-> Here is a toy example to test the problem (it doesn't do anything useful):
->
-> int test(struct __sk_buff *ctx) {
->      void *data = (void *)(long)ctx->data;
->      void *data_end = (void *)(long)ctx->data_end;
->
->      /* Skipping an amount of bytes stored in __u8 works */
->      if (data + sizeof(__u8) > data_end)
->          return TC_ACT_OK;
->      bpf_trace_printk("Skipping %d bytes", *(__u8 *)data);
->      data += *(__u8 *)data;
->
->      /* Skipping an amount of bytes stored in __u16 works but... */
->      if (data + sizeof(__u16) > data_end)
->          return TC_ACT_OK;
->      bpf_trace_printk("Skipping %d bytes", *(__u16 *)data);
->      data += *(__u16 *)data;
->
->      /* ...this check is not effective and packet access is rejected */
->      if (data + sizeof(__u8) > data_end)
->          return TC_ACT_OK;
->      bpf_trace_printk("Next byte is %x", *(__u8 *)data);
->
->      return TC_ACT_OK;
-> }
->
-> My practical use case would be skipping variable-size TLS header
-> extensions until I reach the desired one (the length of these options is
-> 2 bytes long).
-> Another use case can be found here:
-> https://lists.iovisor.org/g/iovisor-dev/topic/access_packet_payload_in_tc/86442134
-> After I use the bpf_skb_pull_data() I would like to directly jump to the
-> part of packet I was working on and avoid re-parsing everything from
-> scratch, however if I save the offset in a 2 bytes variable and then add
-> it to the packet pointer I'm no longer able to access it (if the offset
-> is stored in a 1 byte var everything works).
->
-> Is this a verifier bug?
+On Mon, Nov 08, 2021 at 08:46:20PM +0400, Dmitrii Banshchikov wrote:
+> This patch adds tests that bpf_ktime_get_coarse_ns() and bpf_timer_* and
+> bpf_spin_lock()/bpf_spin_unlock() helpers are forbidden in tracing
+> progs as it may result in various locking issues.
+> 
+> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> ---
+>  tools/testing/selftests/bpf/test_verifier.c   |  36 +++-
+>  .../selftests/bpf/verifier/helper_allowed.c   | 196 ++++++++++++++++++
+>  2 files changed, 231 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/verifier/helper_allowed.c
+> 
+> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+> index 25afe423b3f0..e16eab6fc3a9 100644
+> --- a/tools/testing/selftests/bpf/test_verifier.c
+> +++ b/tools/testing/selftests/bpf/test_verifier.c
+> @@ -92,6 +92,7 @@ struct bpf_test {
+>  	int fixup_map_event_output[MAX_FIXUPS];
+>  	int fixup_map_reuseport_array[MAX_FIXUPS];
+>  	int fixup_map_ringbuf[MAX_FIXUPS];
+> +	int fixup_map_timer[MAX_FIXUPS];
+>  	/* Expected verifier log output for result REJECT or VERBOSE_ACCEPT.
+>  	 * Can be a tab-separated sequence of expected strings. An empty string
+>  	 * means no log verification.
+> @@ -605,7 +606,7 @@ static int create_cgroup_storage(bool percpu)
+>   *   struct bpf_spin_lock l;
+>   * };
+>   */
+> -static const char btf_str_sec[] = "\0bpf_spin_lock\0val\0cnt\0l";
+> +static const char btf_str_sec[] = "\0bpf_spin_lock\0val\0cnt\0l\0bpf_timer\0";
 
-It's because of:
-        if (dst_reg->umax_value > MAX_PACKET_OFF ||
-            dst_reg->umax_value + dst_reg->off > MAX_PACKET_OFF)
-                /* Risk of overflow.  For instance, ptr + (1<<63) may be less
-                 * than pkt_end, but that's because it's also less than pkt.
-                 */
-                return;
+There is extra null byte at the end.
 
-by adding u16 scalar the offset becomes bigger than MAX_PACKET_OFF.
-Could you try clamping the value before 'data += ' ?
+
+-- 
+
+Dmitrii Banshchikov
