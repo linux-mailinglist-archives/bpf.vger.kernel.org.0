@@ -2,146 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E010A44A486
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 03:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E44D44A55F
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 04:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238905AbhKICTf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 21:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        id S238391AbhKIDl2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 22:41:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238836AbhKICTe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 21:19:34 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999DFC061570
-        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 18:16:49 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id u10-20020a170902e80a00b001421d86afc4so7246507plg.9
-        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 18:16:49 -0800 (PST)
+        with ESMTP id S236843AbhKIDl1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 22:41:27 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23E7C061570
+        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 19:38:42 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id e65so17183266pgc.5
+        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 19:38:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=ow/bQhJ5ayiiUZXllV41DC1Xq3tIA+rpjyEckAEfFb0=;
-        b=Ol46RKgIm961Ys4mFFcuf7Uacjeo05BLEdNccYkZTjX20rMnPt1EQ95hsyIoNdbobE
-         FJ/rNHrmvySzdh0oxfHkMJMBPdn/XoZiCXLcBKm/sNS9D6835UhiCsk5HvDcZEsZApqj
-         qFhsifEO37GRRKja/JOtOQpHzXimV2cLK+QIBWzUDLXf716vDQrEIPUCTdtl0FQW6KMo
-         2Ve3Eaps3hskOrZ2Q3AccdE/xy4S85KkBFu+BQoK783suW/WjuoTLTmBrmMBJ2uVddMB
-         EUVQMTJ+RsbZzL7+mOQeRo5YB2ZKUiX3FIvLISOtCgrc8peAA88xeZm8Ukm37rLcnV2u
-         VZVQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SMFg9QPC5pw46fWPrYbSwJaUwcvgw73TWYPsfswb4qk=;
+        b=HX2AqtDeKd8yo0LFjO8EubQ9HGu0UAH2lsb/wfIVkzykmKuTTCDSsdX0apfJeGLmZU
+         +qd9IriY745jlty7TPeW2Y810d0/s83kJdJBZ936gGh+wuVnwNBOy3SRuLRivcKkD9qu
+         UYwwMHDZvARfAgyizv3n7B29mY/0LEuNjuIqR4L2cSRllTzqkxtL5vE9gQ00QQKOprzI
+         e2CYkPkjxbBt6dMV6yKTN39RsddhpMoD7QDES9cnTV8UdrAbXJogHJYLDV8jyMpsnRQJ
+         TUHY6G/dvG1j4RUeF6rToS/5d+wpa5E0g3JZlKVPDn13i8T1pRrbXRerN4IOnTq3Jo96
+         TYgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ow/bQhJ5ayiiUZXllV41DC1Xq3tIA+rpjyEckAEfFb0=;
-        b=zfQIJ+Z/8+LgeC25N3t7CHqEz54kfjnOSh6fn5q5dTRDN+5gjf7AWyU/VgfMa5IWUF
-         bX05/hICXk7RQ3TQlFHB2z2aqvGi7UmNVKGexx+VfkdDOjfEr5/UrtQhcC1rWiMYTK5L
-         g2FoAzIknV+otOz48Ga3UR5Wl5vkLhXXGa8sYiaGPhoT83HSJLvE7qyXxNAs0OYVxzgt
-         GZnYcd9g/RXaDv477UodN+FAKW74W13AEsin80+1iz0CeY5zO87WclXWB7Gq7kXlv+mD
-         LlNT1Ir9tZMRVj9ftcQC+3H+WmtxRukVn+pI5Mmvc69Bt+b1uRiidMlGDJXLayl0gxFZ
-         EHvA==
-X-Gm-Message-State: AOAM531VLBIxg1/Mm3xk0kQNURJNwatybpfKksfuz9tdJvUZR9FzjhOx
-        383OlO91NeLNAgY1T6fLQ7bObXso2fc=
-X-Google-Smtp-Source: ABdhPJy3Cb5kzc9a5RxO/VEBuTOIXhOQO8ibQg5j8ZPayd/v34LTFrOx+AXwYano+A1tIuTV1T2+XpCFXyM=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:4c6:4bbe:e4c5:ff76])
- (user=haoluo job=sendgmr) by 2002:a17:903:2283:b0:141:f858:f9af with SMTP id
- b3-20020a170903228300b00141f858f9afmr3497273plh.80.1636424209120; Mon, 08 Nov
- 2021 18:16:49 -0800 (PST)
-Date:   Mon,  8 Nov 2021 18:16:24 -0800
-In-Reply-To: <20211109021624.1140446-1-haoluo@google.com>
-Message-Id: <20211109021624.1140446-10-haoluo@google.com>
-Mime-Version: 1.0
-References: <20211109021624.1140446-1-haoluo@google.com>
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [RFC PATCH bpf-next 9/9] bpf: Rename ARG_PTR_TO_STACK_OR_NULL
-From:   Hao Luo <haoluo@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        bpf@vger.kernel.org, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SMFg9QPC5pw46fWPrYbSwJaUwcvgw73TWYPsfswb4qk=;
+        b=HdUJe+yqbRI/HfnHX83Xbr16awllykp7NNGp90QQYr7FQBBuBbQZJ9cOIgg474qjrx
+         0dRhzOxRo75OAE/VPwxbq6xzfua7c0NDvKBQ0lfxYZnwj70kMP2bCqlDa5jVlo+v1NaG
+         acgE0CyiON6ITyT6DvoMnWKESMpirn6Aml6o7VY904KH21CXa0WU4OoqhEU19exSJMgf
+         EtvUGvoWB5zrYhYNioX25HzLJPQ/apb36dAurb+pI2kNrF24agOBIrL4c1VsWHgblWY8
+         TPgd0XH/1A3CS0xmgK7+3FyyRq9zMbVSEu+uJQoAXO4Oe0/azBwI8+OYB7f0kpSaiQmc
+         y/BA==
+X-Gm-Message-State: AOAM531JbhrGMM31UI84D3VpuGb8oHjpNCQZF2a+8N7mAN8GKcGwiqTd
+        Lz53m8qDO3eKjWtVZT5sk7Y=
+X-Google-Smtp-Source: ABdhPJxb6el9P8apmE5vM0RoiOgf2s7JMzVw8YFE6CVF6JhWI55m6MzrmtubD6ADWNZn0UUVUgR1Hw==
+X-Received: by 2002:a63:1441:: with SMTP id 1mr3581813pgu.66.1636429122133;
+        Mon, 08 Nov 2021 19:38:42 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e262])
+        by smtp.gmail.com with ESMTPSA id 130sm17223551pfu.170.2021.11.08.19.38.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 19:38:41 -0800 (PST)
+Date:   Mon, 8 Nov 2021 19:38:39 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 06/11] libbpf: ensure btf_dump__new() and
+ btf_dump_opts are future-proof
+Message-ID: <20211109033839.yf3v7xcbqco6fddp@ast-mbp.dhcp.thefacebook.com>
+References: <20211108061316.203217-1-andrii@kernel.org>
+ <20211108061316.203217-7-andrii@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108061316.203217-7-andrii@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Rename ARG_PTR_TO_STACK_OR_NULL to ARG_PTR_TO_STACK and use flag
-to mark that the argument may be null.
+On Sun, Nov 07, 2021 at 10:13:11PM -0800, Andrii Nakryiko wrote:
+> +#define btf_dump__new(a1, a2, a3, a4) __builtin_choose_expr(		      \
+> +	__builtin_types_compatible_p(typeof(a4), btf_dump_printf_fn_t) +      \
+> +	__builtin_types_compatible_p(typeof(a4),			      \
+> +				     void(void *, const char *, va_list)),    \
+> +	btf_dump__new_deprecated((void *)a1, (void *)a2, (void *)a3, (void *)a4),\
+> +	btf_dump__new((void *)a1, (void *)a2, (void *)a3, (void *)a4))
 
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- include/linux/bpf.h    | 2 +-
- kernel/bpf/bpf_iter.c  | 5 ++++-
- kernel/bpf/task_iter.c | 5 ++++-
- kernel/bpf/verifier.c  | 5 ++---
- 4 files changed, 11 insertions(+), 6 deletions(-)
+why '+' in the above? The return type of __builtin_types_compatible_p() is bool.
+What is bool + bool ?
+It suppose to be logical 'OR', right?
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a6dd5e85113d..da4fa15127d6 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -336,7 +336,7 @@ struct bpf_arg_type {
- 		ARG_PTR_TO_BTF_ID_SOCK_COMMON,	/* pointer to in-kernel sock_common or bpf-mirrored bpf_sock */
- 		ARG_PTR_TO_PERCPU_BTF_ID,	/* pointer to in-kernel percpu type */
- 		ARG_PTR_TO_FUNC,	/* pointer to a bpf program function */
--		ARG_PTR_TO_STACK_OR_NULL,	/* pointer to stack or NULL */
-+		ARG_PTR_TO_STACK,	/* pointer to stack */
- 		ARG_PTR_TO_CONST_STR,	/* pointer to a null terminated read-only string */
- 		ARG_PTR_TO_TIMER,	/* pointer to bpf_timer */
- 		__BPF_ARG_TYPE_MAX,
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 4fdf225c01f9..d3bded3e05d3 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -711,6 +711,9 @@ const struct bpf_func_proto bpf_for_each_map_elem_proto = {
- 	.ret_type	= RET_INTEGER,
- 	.arg1		= { .type = ARG_CONST_MAP_PTR },
- 	.arg2		= { .type = ARG_PTR_TO_FUNC },
--	.arg3		= { .type = ARG_PTR_TO_STACK_OR_NULL },
-+	.arg3		= {
-+		.type = ARG_PTR_TO_STACK,
-+		.flag = ARG_FLAG_MAYBE_NULL,
-+	},
- 	.arg4		= { .type = ARG_ANYTHING },
- };
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 0a5e3cf593b5..fc72701ae6b6 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -625,7 +625,10 @@ const struct bpf_func_proto bpf_find_vma_proto = {
- 	.arg1_btf_id	= &btf_task_struct_ids[0],
- 	.arg2		= { .type = ARG_ANYTHING },
- 	.arg3		= { .type = ARG_PTR_TO_FUNC },
--	.arg4		= { .type = ARG_PTR_TO_STACK_OR_NULL },
-+	.arg4		= {
-+		.type = ARG_PTR_TO_STACK,
-+		.flag = ARG_FLAG_MAYBE_NULL,
-+	},
- 	.arg5		= { .type = ARG_ANYTHING },
- };
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9c4a8df25ef2..9c68b664f4f4 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -480,8 +480,7 @@ static bool arg_type_may_be_refcounted(struct bpf_arg_type arg)
- 
- static bool arg_type_may_be_null(struct bpf_arg_type arg)
- {
--	return arg.flag & ARG_FLAG_MAYBE_NULL ||
--	       arg.type == ARG_PTR_TO_STACK_OR_NULL;
-+	return arg.flag & ARG_FLAG_MAYBE_NULL;
- }
- 
- /* Determine whether the function releases some resources allocated by another
-@@ -5101,7 +5100,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
- 	[ARG_PTR_TO_LONG]		= &int_ptr_types,
- 	[ARG_PTR_TO_PERCPU_BTF_ID]	= &percpu_btf_ptr_types,
- 	[ARG_PTR_TO_FUNC]		= &func_ptr_types,
--	[ARG_PTR_TO_STACK_OR_NULL]	= &stack_ptr_types,
-+	[ARG_PTR_TO_STACK]		= &stack_ptr_types,
- 	[ARG_PTR_TO_CONST_STR]		= &const_str_ptr_types,
- 	[ARG_PTR_TO_TIMER]		= &timer_types,
- };
--- 
-2.34.0.rc0.344.g81b53c2807-goog
-
+Maybe checking for ops type would be more robust ?
+Like:
+#define btf_dump__new(a1, a2, a3, a4) __builtin_choose_expr(		      \
+	__builtin_types_compatible_p(typeof(a4), const struct btf_dump_opts*), \
+	btf_dump__new((void *)a1, (void *)a2, (void *)a3, (void *)a4),        \
+	btf_dump__new_deprecated((void *)a1, (void *)a2, (void *)a3, (void *)a4))
