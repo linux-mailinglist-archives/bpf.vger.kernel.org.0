@@ -2,155 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42989449F90
-	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 01:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD3844A47E
+	for <lists+bpf@lfdr.de>; Tue,  9 Nov 2021 03:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241228AbhKIAeC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Nov 2021 19:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
+        id S238723AbhKICTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Nov 2021 21:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234045AbhKIAeC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Nov 2021 19:34:02 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0E7C061570
-        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 16:31:17 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id r11-20020a170902be0b00b0013f4f30d71cso7412135pls.21
-        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 16:31:17 -0800 (PST)
+        with ESMTP id S230190AbhKICTQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Nov 2021 21:19:16 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCABC061570
+        for <bpf@vger.kernel.org>; Mon,  8 Nov 2021 18:16:31 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so28182295yba.11
+        for <bpf@vger.kernel.org>; Mon, 08 Nov 2021 18:16:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=cpQzAa3EBOvVvuHvvTdB14x957PA1348N8TM5uerBGM=;
-        b=ta9+n+de+AMLdMBwzc5GfH3Yg1sVQ3atTdWVBIEFwhRz6tz+x1RYckdcxtpRhjDLaV
-         8wccn+h0TRhq+LIkmq5/Cm2JwwA7jBatFdzbSREriTTYy6kiMycHyuHsjiclS4mv2KeR
-         7rk4x3IDEiR1yBnQLlpKOuv/8zZNv6dxiT92FpeaAUlu6LPeHYS1oa5hWSGb4gNAP8Iz
-         8xNOz9DlTEtlia6kxlNqN1NIL8Ltlu37/lZx5PHDs5zogKR7JkSLZreAYJDqUYUHEhXt
-         0pPWGpMFbixBiqvIb6DsEzjASGTFb7m47jyr9M/bSceGi8hcxWPAoET0aWonZe9SXl8L
-         TS4A==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=qz5scgADGMichO5oLtQ0V6IHs/3BfBRxB07mIzET0NY=;
+        b=Iwwxnk5OkhlAfXhDT6v4K7iPSdJsJmLzC4KeityQ6kZP+on6D1nhkA81KD8Jf4BG9f
+         a+l3OOcEWGFs2Kg183d3Pd19gvLHsipuZDXTewJCkoAvuV0vZuAg1CbB4hQbrR1X0MB9
+         cCMG9RCXGznSd8FzHAmXvmZ2LKG+p7g2f2HdvflcfQfPTcqknXd2TuWxM6IY5lGa+J2W
+         rvylr3Ov3N4L/djKd70CqhXIFfUhrUzPJ8DJKOL3I+647pkil2sHwk0tvD+SSbAqnhGv
+         0iIP/vOGIlaSqKb+TTthh9v8b1gpUmoCoeGU/+zVfGYWGO/k7Vub6IGmWFxTvkcKHLqz
+         oPTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=cpQzAa3EBOvVvuHvvTdB14x957PA1348N8TM5uerBGM=;
-        b=Kzz4oorwHRnKwYgEiKt86h+9DINdyePW2L9A8G9OsLCBASexAFab9eH2PvQos6CGWM
-         XjjZCUV2QNP79MYt+xzV6E+XKXuoVLfasKmXRJhHMEJTITe0LitqdSodvXxGaakm09oX
-         OGnrgkNmuzll4YU0OK4TUCy1iFWoJ0aEwy/+CX4mByz3XFNfuxqbSYnXtX+wGQVdsKiM
-         t7E+DGchYR7NS9ETvWCZlF0orkDJNvOVpcDuRRpyQhDzVt+f2AhjcrNMRd2m7zfNazD5
-         AFh21/tW8BbHXXaVUIUvfisIR/ucx01iwrvzAx6KFacGLR2Pb+wOLWpAVo/LlzjsAiJz
-         b/QQ==
-X-Gm-Message-State: AOAM532k7TxW4pdlEuR8PogczqMmI070Bhlg5MTr7VYLoeiGrHYgIVpA
-        s2G3Gyr0/R3LbT1OPaMTNMYMwDe8+Mw=
-X-Google-Smtp-Source: ABdhPJzSLtAdRu1IgVtcGYMhtCP9dDVHWOzQ1y5SXZa8KMi26VOsF9PZFyuMfOWzQmrbSwvGLHTMSFG4ybY=
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=qz5scgADGMichO5oLtQ0V6IHs/3BfBRxB07mIzET0NY=;
+        b=1BW5IOf7BPI5LyIiMOYv6CyjUMKlChzHs9tL64SQwCdbRA3J/eMnRK8Bm3s+Oid6yx
+         9AW454OYU9vct3ROsL7WljwhIBGzubkF+Av5cL4AB79QFaguWIADKhsZ+qfYwrxqtRz2
+         5zqIh+6u+4l73FkCpo/hy5zbEfa/ltjL48cgEVSVxYm2Jpg8r/RI0Ys5H/tNEAMF9HWq
+         odOO8kKA3Zene+3xIWXPLgBY8PvXSjZoJ7pubzL8E8WkRMdJYxA7zyGbVy1jaUtGciU4
+         zGF5TV7mmUYPNoY0JXaMtoZQUdtemeXtsiodPz8alQ1/xBzjskZwvkxzmgYRHDGUJaim
+         r5kQ==
+X-Gm-Message-State: AOAM530rFa4VzsalJm0iH7aJSQxPsVdDncEXIaNFXdqQgiEay8z1lVIp
+        5OZYI3hOEcyyt9xQI+yI4x890g48px0=
+X-Google-Smtp-Source: ABdhPJxkj4ABQ9pfAk1qoe/N3DBrXZ6cs3FY97/3GRrbdy0PDhObnS2LqXGD2pC1vURhPezpzGf47BPQr08=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:4c6:4bbe:e4c5:ff76])
- (user=haoluo job=sendgmr) by 2002:a17:90a:17a5:: with SMTP id
- q34mr2621049pja.122.1636417876712; Mon, 08 Nov 2021 16:31:16 -0800 (PST)
-Date:   Mon,  8 Nov 2021 16:30:52 -0800
-In-Reply-To: <20211109003052.3499225-1-haoluo@google.com>
-Message-Id: <20211109003052.3499225-4-haoluo@google.com>
+ (user=haoluo job=sendgmr) by 2002:a25:42d7:: with SMTP id p206mr4294370yba.494.1636424190756;
+ Mon, 08 Nov 2021 18:16:30 -0800 (PST)
+Date:   Mon,  8 Nov 2021 18:16:15 -0800
+Message-Id: <20211109021624.1140446-1-haoluo@google.com>
 Mime-Version: 1.0
-References: <20211109003052.3499225-1-haoluo@google.com>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v3 bpf-next 3/3] bpf/selftests: Test PTR_TO_RDONLY_MEM
+Subject: [RFC PATCH bpf-next 0/9] bpf: Clean up _OR_NULL arg types
 From:   Hao Luo <haoluo@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Cc:     KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        Hao Luo <haoluo@google.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        bpf@vger.kernel.org, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test verifies that a ksym of non-struct can not be directly
-updated.
+This is a pure cleanup patchset that tries to use flag to mark whether
+an arg may be null. It replaces enum bpf_arg_type with a struct. Doing
+so allows us to embed the properties of arguments in the struct, which
+is a more scalable solution than introducing a new enum. This patchset
+performs this transformation only on arg_type. If it looks good,
+follow-up patches will do the same on reg_type and ret_type.
 
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- Changes since v2:
-  - Rebase
+The first patch replaces 'enum bpf_arg_type' with 'struct bpf_arg_type'
+and each of the rest patches transforms one type of ARG_XXX_OR_NULLs.
 
- Changes since v1:
-  - Replaced CHECK() with ASSERT_ERR_PTR()
-  - Commented in the test for the reason of verification failure.
+This is purely refactoring patch and should not have any behavior
+changes.
 
- .../selftests/bpf/prog_tests/ksyms_btf.c      | 14 +++++++++
- .../bpf/progs/test_ksyms_btf_write_check.c    | 29 +++++++++++++++++++
- 2 files changed, 43 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
+Hao Luo (9):
+  bpf: Replace enum bpf_arg_type with struct.
+  bpf: Remove ARG_PTR_TO_MAP_VALUE_OR_NULL
+  bpf: Remove ARG_PTR_TO_MEM_OR_NULL
+  bpf: Remove ARG_CONST_SIZE_OR_ZERO
+  bpf: Remove ARG_PTR_TO_CTX_OR_NULL
+  bpf: Remove ARG_PTR_TO_SOCKET_OR_NULL
+  bpf: Remove ARG_PTR_TO_ALLOC_MEM_OR_NULL
+  bpf: Rename ARG_CONST_ALLOC_SIZE_OR_ZERO
+  bpf: Rename ARG_PTR_TO_STACK_OR_NULL
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-index 79f6bd1e50d6..f6933b06daf8 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-@@ -8,6 +8,7 @@
- #include "test_ksyms_btf_null_check.skel.h"
- #include "test_ksyms_weak.skel.h"
- #include "test_ksyms_weak.lskel.h"
-+#include "test_ksyms_btf_write_check.skel.h"
- 
- static int duration;
- 
-@@ -137,6 +138,16 @@ static void test_weak_syms_lskel(void)
- 	test_ksyms_weak_lskel__destroy(skel);
- }
- 
-+static void test_write_check(void)
-+{
-+	struct test_ksyms_btf_write_check *skel;
-+
-+	skel = test_ksyms_btf_write_check__open_and_load();
-+	ASSERT_ERR_PTR(skel, "unexpected load of a prog writing to ksym memory\n");
-+
-+	test_ksyms_btf_write_check__destroy(skel);
-+}
-+
- void test_ksyms_btf(void)
- {
- 	int percpu_datasec;
-@@ -167,4 +178,7 @@ void test_ksyms_btf(void)
- 
- 	if (test__start_subtest("weak_ksyms_lskel"))
- 		test_weak_syms_lskel();
-+
-+	if (test__start_subtest("write_check"))
-+		test_write_check();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
-new file mode 100644
-index 000000000000..2180c41cd890
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google */
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+
-+extern const int bpf_prog_active __ksym; /* int type global var. */
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	int *active;
-+	__u32 cpu;
-+
-+	cpu = bpf_get_smp_processor_id();
-+	active = (int *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
-+	if (active) {
-+		/* Kernel memory obtained from bpf_{per,this}_cpu_ptr
-+		 * is read-only, should _not_ pass verification.
-+		 */
-+		/* WRITE_ONCE */
-+		*(volatile int *)active = -1;
-+	}
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ include/linux/bpf.h            | 102 ++---
+ kernel/bpf/bpf_inode_storage.c |  15 +-
+ kernel/bpf/bpf_iter.c          |  11 +-
+ kernel/bpf/bpf_lsm.c           |  10 +-
+ kernel/bpf/bpf_task_storage.c  |  15 +-
+ kernel/bpf/btf.c               |   8 +-
+ kernel/bpf/cgroup.c            |  31 +-
+ kernel/bpf/core.c              |   8 +-
+ kernel/bpf/helpers.c           | 138 ++++---
+ kernel/bpf/ringbuf.c           |  32 +-
+ kernel/bpf/stackmap.c          |  45 +-
+ kernel/bpf/syscall.c           |  16 +-
+ kernel/bpf/task_iter.c         |  13 +-
+ kernel/bpf/verifier.c          | 179 ++++----
+ kernel/trace/bpf_trace.c       | 267 +++++++-----
+ net/core/bpf_sk_storage.c      |  41 +-
+ net/core/filter.c              | 729 +++++++++++++++++----------------
+ net/core/sock_map.c            |  48 +--
+ net/ipv4/bpf_tcp_ca.c          |   4 +-
+ 19 files changed, 932 insertions(+), 780 deletions(-)
+
 -- 
 2.34.0.rc0.344.g81b53c2807-goog
 
