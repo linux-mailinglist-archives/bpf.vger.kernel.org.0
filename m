@@ -2,159 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6E744BD94
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 10:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B135644BFE2
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 12:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhKJJJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 04:09:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        id S231601AbhKJLNa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 06:13:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhKJJJI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:09:08 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E205C061764;
-        Wed, 10 Nov 2021 01:06:21 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id bk22so1847021qkb.6;
-        Wed, 10 Nov 2021 01:06:21 -0800 (PST)
+        with ESMTP id S231366AbhKJLNP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:13:15 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE19C061764
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:10:21 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d27so3316156wrb.6
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:10:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ImnqB797AKnJuD4oPIYf8Tox3YCxcvXVphwHiRaIbIY=;
-        b=oMfCBYvauO8zRBwa2KehEw6l9I/gVh/IsHK2ianpEu/xIihkSVB/V6SY3F/ttzaM9E
-         nezbT4CmBgHKehn2yU5PaH/ZIe37KBZYxptntmlE84NkrCX9sBVx5fvOJ97WuHyjLu81
-         ySMip7zDVDJzC8Ud+eLEDqMIyFDT68YJu/vMGfrUMMkvIb9Gy3UDZ9KieYePa59ndf9w
-         2iNH/0Swtlcmca7uxTSVZ6+cgn0aA6kyAsyRtDOUv343TMFcvYUnDbmDYL36Evv24Use
-         DEXFPEpNZYt0Ltjw511zdD5Yt5ts2oQXhSF1bjzx+hLVoi83rzncSdyXWjhsWQZSkQMW
-         9DAA==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IUDHpGzMacjmb5vscFO1ZQI4jzKJdqLW2tjJmDZCTGY=;
+        b=e0HGi1o0OW/CvRSmXyNNsAPjmzbmcCZyI3r6zSN7bHdb6aCtmwXCBsLshGnMo7bdq3
+         AajkSrzaAkmVg5MdXNrS0MoxO9faGxPOsmGA1537LCjC+8dRgjaGG1mivCGrMz8u22N4
+         yk2Z47tR/xXTbHq/ghVLn6B2LLRwa6dBbYXxk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ImnqB797AKnJuD4oPIYf8Tox3YCxcvXVphwHiRaIbIY=;
-        b=ZHPMhG1+eAE+XkQoyRl7mhWJuUqqVqyiabOx+0COCv+ahau8SNoIei1BkhJyn2eeot
-         1YIkXijJhN9Ln70UBrF31t4+Z4LjdJGA3F1qzThf0RlEJ4v5RFtpjhQch4gLc/v0agiu
-         3EiGG5g3VEU3+8n/CJfREpxT2pFNL8jCcnDgBbKsVAMhFYzceBM+vcErw9JDFMHesUf9
-         LqaUG1f2s+kDSd9KWQ+RGOlrrg7HYlm9BuRMA8xHwV8bfY7zRumokPUA3s3YI/LKq/sx
-         g/JYDrxWjzr/ecqV5dhBWbjBTq6Yt/Av17ngtpdYOS5l4gvIUcXnsZXYJlusSJLg/lN6
-         sCtg==
-X-Gm-Message-State: AOAM531D3c52Gu8LD0gPKcS8wwpSsqrtLyYN5fbPMu8bEOQtyae8VYBQ
-        EaoPcF8GYwcUbVyOnb7f9my+n8QMiZYGdxqp+Gk=
-X-Google-Smtp-Source: ABdhPJxecwxlgh5Be+apIVbyhK9b5EOBmc1BMU6ZqqxInFojT85GAhLJhs4ImfIMb89COAJxX42mTS13PbNiDO5tpM0=
-X-Received: by 2002:a37:e97:: with SMTP id 145mr11499308qko.116.1636535180801;
- Wed, 10 Nov 2021 01:06:20 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IUDHpGzMacjmb5vscFO1ZQI4jzKJdqLW2tjJmDZCTGY=;
+        b=TVBZkJWcixgPMRJ1BC2bYl+KOki3vHlx7LyTz3FbMI1S287HAxOxM4qPhqeWzYRoWN
+         C8MsMLpIKcYVe9ZgTfio5i/P/xvj8fAR1pZAOxaAcOGbTFqmBY/xsUFr7QA7sWollmoa
+         fdGZqtle/rHuPxABkSwJP2s40RvcDZuZS/i1GNdxFM2H9EWw9ZwzIkL5oWkbXhnMlOhi
+         ZJxW9WGiPsz/pHoRRcTEGqz5XzHKfRLYEWDc0n9DXn+wn020IJI2RG8I2B4EKrnsRKcF
+         3lFx2zkQ6fwul71VbeZV6zuKm+N58MwCn4AADOhhW2MM/tR1UO7IV0oG9KcOKQ7gjl2A
+         bOGQ==
+X-Gm-Message-State: AOAM531A5yQvcPqm7bUMzGPLMm1KVuGPiI/v6sAGHM0+D6o1P+pzUd8V
+        LlVdVbX0qCvsdk3/6cXRET2wzQ==
+X-Google-Smtp-Source: ABdhPJw/PkgMUja9aiApBdcdEdqp64kZuxk4Z/t9mZCQEtFh04MMnZf92NvjhSGpv9hE/1Q8SpaXdg==
+X-Received: by 2002:a5d:550c:: with SMTP id b12mr18659969wrv.427.1636542619771;
+        Wed, 10 Nov 2021 03:10:19 -0800 (PST)
+Received: from kharboze.dr-pashinator-m-d.gmail.com.beta.tailscale.net (cust97-dsl60.idnet.net. [212.69.60.97])
+        by smtp.gmail.com with ESMTPSA id m14sm18780682wrp.28.2021.11.10.03.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 03:10:19 -0800 (PST)
+From:   Mark Pashmfouroush <markpash@cloudflare.com>
+To:     markpash@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/2] Get ingress_ifindex in BPF_SK_LOOKUP prog type
+Date:   Wed, 10 Nov 2021 11:10:14 +0000
+Message-Id: <20211110111016.5670-1-markpash@cloudflare.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211108083840.4627-1-laoar.shao@gmail.com> <20211108083840.4627-2-laoar.shao@gmail.com>
- <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
-In-Reply-To: <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 10 Nov 2021 17:05:44 +0800
-Message-ID: <CALOAHbCexkBs7FCdmQcatQbc+RsGTSoJkNBop0khsZX=g8Ftkg@mail.gmail.com>
-Subject: Re: [PATCH 1/7] fs/exec: make __set_task_comm always set a nul
- terminated string
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 4:28 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 08.11.21 09:38, Yafang Shao wrote:
-> > Make sure the string set to task comm is always nul terminated.
-> >
->
-> strlcpy: "the result is always a valid NUL-terminated string that fits
-> in the buffer"
->
-> The only difference seems to be that strscpy_pad() pads the remainder
-> with zeroes.
->
-> Is this description correct and I am missing something important?
->
+BPF_SK_LOOKUP users may want to have access to the ifindex of the skb
+which triggered the socket lookup. This may be useful for selectively
+applying programmable socket lookup logic to packets that arrive on a
+specific interface, or excluding packets from an interface.
 
-In a earlier version [1], the checkpatch.py found a warning:
-WARNING: Prefer strscpy over strlcpy - see:
-https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
-So I replaced strlcpy() with strscpy() to fix this warning.
-And then in v5[2], the strscpy() was replaced with strscpy_pad() to
-make sure there's no garbade data and also make get_task_comm() be
-consistent with get_task_comm().
+v3:
+- Rename ifindex field to ingress_ifindex for consistency. (Yonghong)
 
-This commit log didn't clearly describe the historical changes.  So I
-think we can update the commit log and subject with:
+v2:
+- Fix inaccurate comment (Alexei)
+- Add more details to commit messages (John)
 
-Subject: use strscpy_pad with strlcpy in __set_task_comm
-Commit log:
-strlcpy is not suggested to use by the checkpatch.pl, so we'd better
-recplace it with strscpy.
-To avoid leaving garbage data and be consistent with the usage in
-__get_task_comm(), the strscpy_pad is used here.
+Mark Pashmfouroush (2):
+  bpf: Add ingress_ifindex to bpf_sk_lookup
+  selftests/bpf: Add tests for accessing ingress_ifindex in
+    bpf_sk_lookup
 
-WDYT?
-
-[1]. https://lore.kernel.org/lkml/20211007120752.5195-3-laoar.shao@gmail.com/
-[2]. https://lore.kernel.org/lkml/20211021034516.4400-2-laoar.shao@gmail.com/
-
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  fs/exec.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/fs/exec.c b/fs/exec.c
-> > index a098c133d8d7..404156b5b314 100644
-> > --- a/fs/exec.c
-> > +++ b/fs/exec.c
-> > @@ -1224,7 +1224,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
-> >  {
-> >       task_lock(tsk);
-> >       trace_task_rename(tsk, buf);
-> > -     strlcpy(tsk->comm, buf, sizeof(tsk->comm));
-> > +     strscpy_pad(tsk->comm, buf, sizeof(tsk->comm));
-> >       task_unlock(tsk);
-> >       perf_event_comm(tsk, exec);
-> >  }
-> >
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
-
+ include/linux/filter.h                        |  7 ++--
+ include/uapi/linux/bpf.h                      |  1 +
+ net/core/filter.c                             |  7 ++++
+ net/ipv4/inet_hashtables.c                    |  8 ++---
+ net/ipv4/udp.c                                |  8 ++---
+ net/ipv6/inet6_hashtables.c                   |  8 ++---
+ net/ipv6/udp.c                                |  8 ++---
+ tools/include/uapi/linux/bpf.h                |  1 +
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 31 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sk_lookup.c      |  8 +++++
+ .../selftests/bpf/verifier/ctx_sk_lookup.c    | 32 +++++++++++++++++++
+ 11 files changed, 101 insertions(+), 18 deletions(-)
 
 -- 
-Thanks
-Yafang
+2.31.1
+
