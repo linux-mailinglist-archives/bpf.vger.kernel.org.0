@@ -2,177 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324BC44CAE5
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 21:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE9C44CB4D
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 22:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233204AbhKJU5p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 15:57:45 -0500
-Received: from mga05.intel.com ([192.55.52.43]:28558 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233045AbhKJU5p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 15:57:45 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10164"; a="318969274"
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="318969274"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 12:54:25 -0800
-X-IronPort-AV: E=Sophos;i="5.87,224,1631602800"; 
-   d="scan'208";a="452440497"
-Received: from wson-mobl.amr.corp.intel.com (HELO vcostago-mobl3.intel.com) ([10.209.125.254])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 12:54:24 -0800
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     bpf@vger.kernel.org
-Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        memxor@gmail.com, kafai@fb.com, andrii@kernel.org,
+        id S233220AbhKJV2q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 16:28:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232242AbhKJV2p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Nov 2021 16:28:45 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1788C061766;
+        Wed, 10 Nov 2021 13:25:57 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id m26so3784743pff.3;
+        Wed, 10 Nov 2021 13:25:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7t8P8Q4j/y6WykkDsECi+hA6gTG4UAWOCLccneL7O0Y=;
+        b=KNVYELvEFH8mBkAfPuf2YY5J6TLGj+RiZc2ebrsshM/fA9BbmQU1OXGhnsyWT4ZyZr
+         uArgiF0JyiTiTUOffJC/a7xPx1WGq8gYSRcZaU1bNErMmEA6XQZt94dun0Q/8Tqox9DR
+         hvDgatQ1aNxY1yF+oj0XDAvrmcbv28X3KEynJ6RVASip//cq29NhO1aT8s6DFsw+TYsU
+         OEEBgFICT7uePsvyqJlmIJHNJZLGSbwz4P81GVtz6T8UVOLpXJcCSBdyzB1hRJLCayef
+         hf1MBjev9rj6rRrY1rCdSNRk3WIik70lTwbMuRWxaKofnrReEYbu8KxJom011VsZw6aH
+         HNSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7t8P8Q4j/y6WykkDsECi+hA6gTG4UAWOCLccneL7O0Y=;
+        b=5GH19JLib2PD72bsw5N1oaeXAXUzcSLV55a0YCYvHy8cfs0iFpuR4YiGmQevBJPvPa
+         5nxn03H/C7LedrO90kiq3Z8N6yoJF1IHLHh3cQxNZEEL7I+CLh/y3zqJ6QWQKXOR9iFw
+         U83P+cYgkDygGSdvrM3tL2FRcWaiiKnHVfotfTXRpq0wyMWor1T3hrxQeoVNc1oHPFhd
+         sRIw4BJ55wtbKF1MT6DA5qem/VFb3uWbeSbpQ5trWZYbBEq0+PwIkuPBmTVRzsHqYwJy
+         iDbfLAqC+QED6EDCmIK1b1MwdVK5UCn8OZEtoolwai3Ubo0XhWp6O0ZkeQfyLjFHp2qP
+         N/tA==
+X-Gm-Message-State: AOAM532CqncBYoY085xDGxuxumU9haO+c+ztQoBReJAbklurxc3AF8WE
+        D52lEdKBZzWs5kQQWpLnisk=
+X-Google-Smtp-Source: ABdhPJx0kIy6PXhciEVv9Ca2RI46mgs/wQnd4mZdy5xG/0l/nwnVgXwqTD7YHxfE59iTrxsAi2/45g==
+X-Received: by 2002:a63:6e4d:: with SMTP id j74mr1248223pgc.257.1636579557352;
+        Wed, 10 Nov 2021 13:25:57 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
+        by smtp.gmail.com with ESMTPSA id f11sm412263pga.11.2021.11.10.13.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 13:25:57 -0800 (PST)
+Date:   Thu, 11 Nov 2021 02:55:53 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, andrii@kernel.org,
         songliubraving@fb.com, yhs@fb.com
-Subject: [PATCH net v2] bpf: Fix build when CONFIG_BPF_SYSCALL is disabled
-Date:   Wed, 10 Nov 2021 12:54:18 -0800
-Message-Id: <20211110205418.332403-1-vinicius.gomes@intel.com>
-X-Mailer: git-send-email 2.32.0
+Subject: Re: [PATCH net v2] bpf: Fix build when CONFIG_BPF_SYSCALL is disabled
+Message-ID: <20211110212553.e2xnltq3dqduhjnj@apollo.localdomain>
+References: <20211110205418.332403-1-vinicius.gomes@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110205418.332403-1-vinicius.gomes@intel.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When CONFIG_DEBUG_INFO_BTF is enabled and CONFIG_BPF_SYSCALL is
-disabled, the following compilation error can be seen:
+On Thu, Nov 11, 2021 at 02:24:18AM IST, Vinicius Costa Gomes wrote:
+> When CONFIG_DEBUG_INFO_BTF is enabled and CONFIG_BPF_SYSCALL is
+> disabled, the following compilation error can be seen:
+>
+>   GEN     .version
+>   CHK     include/generated/compile.h
+>   UPD     include/generated/compile.h
+>   CC      init/version.o
+>   AR      init/built-in.a
+>   LD      vmlinux.o
+>   MODPOST vmlinux.symvers
+>   MODINFO modules.builtin.modinfo
+>   GEN     modules.builtin
+>   LD      .tmp_vmlinux.btf
+> ld: net/ipv4/tcp_cubic.o: in function `cubictcp_unregister':
+> net/ipv4/tcp_cubic.c:545: undefined reference to `bpf_tcp_ca_kfunc_list'
+> ld: net/ipv4/tcp_cubic.c:545: undefined reference to `unregister_kfunc_btf_id_set'
+> ld: net/ipv4/tcp_cubic.o: in function `cubictcp_register':
+> net/ipv4/tcp_cubic.c:539: undefined reference to `bpf_tcp_ca_kfunc_list'
+> ld: net/ipv4/tcp_cubic.c:539: undefined reference to `register_kfunc_btf_id_set'
+>   BTF     .btf.vmlinux.bin.o
+> pahole: .tmp_vmlinux.btf: No such file or directory
+>   LD      .tmp_vmlinux.kallsyms1
+> .btf.vmlinux.bin.o: file not recognized: file format not recognized
+> make: *** [Makefile:1187: vmlinux] Error 1
+>
+> 'bpf_tcp_ca_kfunc_list', 'register_kfunc_btf_id_set()' and
+> 'unregister_kfunc_btf_id_set()' are only defined when
+> CONFIG_BPF_SYSCALL is enabled.
+>
+> Fix that by moving those definitions somewhere that doesn't depend on
+> the bpf() syscall.
+>
+> Fixes: 14f267d95fe4 ("bpf: btf: Introduce helpers for dynamic BTF set registration")
+> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 
-  GEN     .version
-  CHK     include/generated/compile.h
-  UPD     include/generated/compile.h
-  CC      init/version.o
-  AR      init/built-in.a
-  LD      vmlinux.o
-  MODPOST vmlinux.symvers
-  MODINFO modules.builtin.modinfo
-  GEN     modules.builtin
-  LD      .tmp_vmlinux.btf
-ld: net/ipv4/tcp_cubic.o: in function `cubictcp_unregister':
-net/ipv4/tcp_cubic.c:545: undefined reference to `bpf_tcp_ca_kfunc_list'
-ld: net/ipv4/tcp_cubic.c:545: undefined reference to `unregister_kfunc_btf_id_set'
-ld: net/ipv4/tcp_cubic.o: in function `cubictcp_register':
-net/ipv4/tcp_cubic.c:539: undefined reference to `bpf_tcp_ca_kfunc_list'
-ld: net/ipv4/tcp_cubic.c:539: undefined reference to `register_kfunc_btf_id_set'
-  BTF     .btf.vmlinux.bin.o
-pahole: .tmp_vmlinux.btf: No such file or directory
-  LD      .tmp_vmlinux.kallsyms1
-.btf.vmlinux.bin.o: file not recognized: file format not recognized
-make: *** [Makefile:1187: vmlinux] Error 1
+Thanks for the fix.
 
-'bpf_tcp_ca_kfunc_list', 'register_kfunc_btf_id_set()' and
-'unregister_kfunc_btf_id_set()' are only defined when
-CONFIG_BPF_SYSCALL is enabled.
+But instead of moving this to core.c, you can probably make the btf.h
+declaration conditional on CONFIG_BPF_SYSCALL, since this is not useful in
+isolation (only used by verifier for module kfunc support). For the case of
+kfunc_btf_id_list variables, just define it as an empty struct and static
+variables, since the definition is still inside btf.c. So it becomes a noop for
+!CONFIG_BPF_SYSCALL.
 
-Fix that by moving those definitions somewhere that doesn't depend on
-the bpf() syscall.
+I am also not sure whether BTF is useful without BPF support, but maybe I'm
+missing some usecase.
 
-Fixes: 14f267d95fe4 ("bpf: btf: Introduce helpers for dynamic BTF set registration")
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
----
- kernel/bpf/btf.c  | 33 ---------------------------------
- kernel/bpf/core.c | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 33 deletions(-)
+That's just my opinion however, I'll defer to BPF maintainers.
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index dbc3ad07e21b..cc9868376345 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6344,33 +6344,8 @@ const struct bpf_func_proto bpf_btf_find_by_name_kind_proto = {
- 
- BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
- 
--/* BTF ID set registration API for modules */
--
--struct kfunc_btf_id_list {
--	struct list_head list;
--	struct mutex mutex;
--};
--
- #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
- 
--void register_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
--			       struct kfunc_btf_id_set *s)
--{
--	mutex_lock(&l->mutex);
--	list_add(&s->list, &l->list);
--	mutex_unlock(&l->mutex);
--}
--EXPORT_SYMBOL_GPL(register_kfunc_btf_id_set);
--
--void unregister_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
--				 struct kfunc_btf_id_set *s)
--{
--	mutex_lock(&l->mutex);
--	list_del_init(&s->list);
--	mutex_unlock(&l->mutex);
--}
--EXPORT_SYMBOL_GPL(unregister_kfunc_btf_id_set);
--
- bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist, u32 kfunc_id,
- 			      struct module *owner)
- {
-@@ -6390,11 +6365,3 @@ bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist, u32 kfunc_id,
- }
- 
- #endif
--
--#define DEFINE_KFUNC_BTF_ID_LIST(name)                                         \
--	struct kfunc_btf_id_list name = { LIST_HEAD_INIT(name.list),           \
--					  __MUTEX_INITIALIZER(name.mutex) };   \
--	EXPORT_SYMBOL_GPL(name)
--
--DEFINE_KFUNC_BTF_ID_LIST(bpf_tcp_ca_kfunc_list);
--DEFINE_KFUNC_BTF_ID_LIST(prog_test_kfunc_list);
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 2405e39d800f..f2939a6d8199 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2456,6 +2456,43 @@ int __weak bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- DEFINE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
- EXPORT_SYMBOL(bpf_stats_enabled_key);
- 
-+/* BTF ID set registration API for modules */
-+
-+struct kfunc_btf_id_list {
-+	struct list_head list;
-+	struct mutex mutex;
-+};
-+
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+
-+void register_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
-+			       struct kfunc_btf_id_set *s)
-+{
-+	mutex_lock(&l->mutex);
-+	list_add(&s->list, &l->list);
-+	mutex_unlock(&l->mutex);
-+}
-+EXPORT_SYMBOL_GPL(register_kfunc_btf_id_set);
-+
-+void unregister_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
-+				 struct kfunc_btf_id_set *s)
-+{
-+	mutex_lock(&l->mutex);
-+	list_del_init(&s->list);
-+	mutex_unlock(&l->mutex);
-+}
-+EXPORT_SYMBOL_GPL(unregister_kfunc_btf_id_set);
-+
-+#endif
-+
-+#define DEFINE_KFUNC_BTF_ID_LIST(name)                                         \
-+	struct kfunc_btf_id_list name = { LIST_HEAD_INIT(name.list),           \
-+					  __MUTEX_INITIALIZER(name.mutex) };   \
-+	EXPORT_SYMBOL_GPL(name)
-+
-+DEFINE_KFUNC_BTF_ID_LIST(bpf_tcp_ca_kfunc_list);
-+DEFINE_KFUNC_BTF_ID_LIST(prog_test_kfunc_list);
-+
- /* All definitions of tracepoints related to BPF. */
- #define CREATE_TRACE_POINTS
- #include <linux/bpf_trace.h>
--- 
-2.32.0
-
+--
+Kartikeya
