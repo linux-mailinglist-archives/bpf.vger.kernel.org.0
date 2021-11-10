@@ -2,129 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6B944C9E4
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 20:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6C744CA70
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 21:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhKJT5y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 14:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S232005AbhKJUUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 15:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhKJT5x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:57:53 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6910C061764
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 11:55:05 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id f8so15220988edy.4
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 11:55:05 -0800 (PST)
+        with ESMTP id S230345AbhKJUUX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Nov 2021 15:20:23 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03611C061764
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 12:17:35 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so2814784pjb.4
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 12:17:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OMbT9S4gWfsi71zwwXv8lVadOojP2gn4XUqm8PUgzgk=;
-        b=Dexx0zsryUc6zio4uVgOrrokBHoK/M5jwsy5WZQoCmj2iiLWT4TsLYGqYGBIGYBNQh
-         nziBL9csFDOV+lujNgN6KexfWqd7qCVKBh92HX3Vo3tDoHOrwR+zYcEVaWg22Wpzs0mQ
-         ILeeoK6Bydnl40XtBzJ5eMQVhFcxRhRSCIxsEqd13RIolBPLfH2Yzh0bqKjZNTc/0GBp
-         qXLh4JIudPcO30wPBW65MGdMDgdUTRi5SKohcbq/ZznN4jPbJxfe/PHLAYtRRV4RiHn5
-         uskDJvs5jj1SXGefxvEHeQDuv6jsahrvAMFHEByJkrLVQvPWTcEhEuXrds8u74aKLU+Q
-         5/yw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kJ30f4yltU8P9D1vIvrgm4JmaUKFVTUymd542MzbX34=;
+        b=g9lNF+pd24Lg+MqAqHCV7wh24XIQNX4IMaEiJo9WPFtT4ECrdlVpmAPO8QVV2WHbFK
+         nQ+O9QSeWTirPqQxEh3uFPZ+WLk8Q0CYxvBO5RUARXtXksYhPr4lmu5668PzlePyOmcl
+         As4OgFb6VXL9nsV00X1BkxHIuNlUxiMXmbd8w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OMbT9S4gWfsi71zwwXv8lVadOojP2gn4XUqm8PUgzgk=;
-        b=CW3Pqmk/ih2SOL32IW24CY+PEA1xPDSw/3WruYi4dhL+cUKRg3QijnBrXYlDV2M4E0
-         Gjdw2CP8uPL7mtVmKWFF5nAjxBJ15733Z4/nFS3EvE8ziUwS2TH6rsFTgQy7rLfL2XKN
-         ZiChh8E9A1zxiX6krleq3y9rV/3Zc+7aG9ox1nOd+rbkKfnOSHZCUYlj0jDwA275Msun
-         ONl3WHtdym1s7VqcHU501dgXADosYkU7qtP+rasYDhFhGuSquhw1RvlGCQr8ASbxPcha
-         GDUueS4FOsFL5+bEHuWgYphpAvYYZOZ5ggapL3TTbTvzYFpGlmFr/jmRqJWwaHsjDYpg
-         44aQ==
-X-Gm-Message-State: AOAM530ZCuPsJW4EIYgxi9vdEKPKtM1Mk9n+hwE3ERaqLD0tYIpZM7Jw
-        4/E48WvWSlxY7RA0vpDJHsaF5YIMsPRsNwur0Ng4ZA==
-X-Google-Smtp-Source: ABdhPJzcz/WyI+pPOW7ZRL5g8/pNdTJw0tEog01ypWe3UHJVeulo0B+mfwbfMtiZf+mH07yARfNnYkMpO/g1X/3yPs8=
-X-Received: by 2002:a05:6402:95b:: with SMTP id h27mr2108073edz.116.1636574104072;
- Wed, 10 Nov 2021 11:55:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kJ30f4yltU8P9D1vIvrgm4JmaUKFVTUymd542MzbX34=;
+        b=feuPzynIVIsL7bUF84Tp4Wrle/xwZ85PmrR0uYQjKI3FOmj0mHdoEUOQ1rSSanCqaJ
+         o7ljBPQRw4nHqJlTR8FkmyesHisGwk1PaIFlno+zBtS86AVLZ9GX7k7DHNWSNT9GyilD
+         J6s6eXOjEvN9G9XtnczIhyt5CAJdyUzEahPkknHh/RNEwLbQXN0h8faLKvfxfkBEOjZv
+         ATOzYIPkccpOVxyhUEi0dNmJhs4NE/KDVOoT3TMYdoLJLRjVuDQ8GIIl00X7tzju7L5H
+         Snaziru/2JHoF5Er5pg/KrPDEl8fb9C+Nj8vtf9ghLdd2Ce9eeM8iqH+EJTGW3tGzQHY
+         6h3A==
+X-Gm-Message-State: AOAM532D4ywFNwyNqXMKsl734lIv+VsuG1zaxtsxLchL9Xr0dBz3+zYE
+        mBcIlitrUCwsEnrSOfKL3adnsw==
+X-Google-Smtp-Source: ABdhPJy9OJ/YGW/eEJO6u7l+llSGLL86Mlc82irnMKIDFwKNMwM8Slu26rVYUZa6XKnHewItU9EAMw==
+X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr1928527pjb.66.1636575455497;
+        Wed, 10 Nov 2021 12:17:35 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id fw21sm6200587pjb.25.2021.11.10.12.17.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 12:17:35 -0800 (PST)
+Date:   Wed, 10 Nov 2021 12:17:34 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        oliver.sang@intel.com, lkp@intel.com,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH 1/7] fs/exec: make __set_task_comm always set a nul
+ terminated string
+Message-ID: <202111101215.A42612FEC@keescook>
+References: <20211108083840.4627-1-laoar.shao@gmail.com>
+ <20211108083840.4627-2-laoar.shao@gmail.com>
+ <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
 MIME-Version: 1.0
-References: <20211109003052.3499225-1-haoluo@google.com> <CAEf4BzZn0Oa_AXYFbsCXX3SXqeZCRNVGPQRrkVH5VGPiOBe04A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZn0Oa_AXYFbsCXX3SXqeZCRNVGPQRrkVH5VGPiOBe04A@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 10 Nov 2021 11:54:52 -0800
-Message-ID: <CA+khW7g3SP5+0TYr-jtZ6Ookq9wwBWtR-bJhzPhDopxwkCbB2w@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/3] bpf: Prevent writing read-only memory
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 8:43 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Nov 8, 2021 at 4:31 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > There are currently two ways to modify a kernel memory in bpf programs:
-> >  1. declare a ksym of scalar type and directly modify its memory.
-> >  2. Pass a RDONLY_BUF into a helper function which will override
-> >  its arguments. For example, bpf_d_path, bpf_snprintf.
-> >
-> > This patchset fixes these two problem. For the first, we introduce a
-> > new reg type PTR_TO_RDONLY_MEM for the scalar typed ksym, which forbids
-> > writing. For the second, we introduce a new arg type ARG_CONST_PTR_TO_MEM
-> > to differentiate the arg types that only read the memory from those
-> > that may write the memory. The previous ARG_PTR_TO_MEM is now only
-> > compatible with writable memories. If a helper doesn't write into its
-> > argument, it can use ARG_CONST_PTR_TO_MEM, which is also compatible
-> > with read-only memories.
-> >
-> > In v2, Andrii suggested using the name "ARG_PTR_TO_RDONLY_MEM", but I
-> > find it is sort of misleading. Because the new arg_type is compatible
-> > with both write and read-only memory. So I chose ARG_CONST_PTR_TO_MEM
-> > instead.
->
-> I find ARG_CONST_PTR_TO_MEM misleading. It's the difference between
-> `char * const` (const pointer to mutable memory) vs `const char *`
-> (pointer to an immutable memory). We need the latter semantics, and
-> that *is* PTR_TO_RDONLY_MEM in BPF verifier terms.
->
+On Wed, Nov 10, 2021 at 09:28:12AM +0100, David Hildenbrand wrote:
+> On 08.11.21 09:38, Yafang Shao wrote:
+> > Make sure the string set to task comm is always nul terminated.
+> > 
+> 
+> strlcpy: "the result is always a valid NUL-terminated string that fits
+> in the buffer"
+> 
+> The only difference seems to be that strscpy_pad() pads the remainder
+> with zeroes.
+> 
+> Is this description correct and I am missing something important?
 
-Ah, I am aware of the semantic difference between 'char * const' and
-'const char *', but your explanation in the bracket helps me see your
-point better. It does seem PTR_TO_RDONLY_MEM matches the semantics
-now. Let me fix and send an update.
+Yes, this makes sure it's zero padded just to be robust against full
+tsk->comm copies that got noticed in other places.
 
-> Drawing further analogies from C, you can pass `char *` (pointer to
-> mutable memory) to any function that expects `const char *`, because
-> it's safe to do so, but not the other way.
->
-> So I don't think it's confusing at all that it is PTR_TO_RDONLY_MEM
-> and that you can pass PTR_TO_MEM register to a helper that expects
-> ARG_PTR_TO_RDONLY_MEM.
->
-> >
-> > Hao Luo (3):
-> >   bpf: Prevent write to ksym memory
-> >   bpf: Introduce ARG_CONST_PTR_TO_MEM
-> >   bpf/selftests: Test PTR_TO_RDONLY_MEM
-> >
-> >  include/linux/bpf.h                           | 20 +++++-
-> >  include/uapi/linux/bpf.h                      |  4 +-
-> >  kernel/bpf/btf.c                              |  2 +-
-> >  kernel/bpf/cgroup.c                           |  2 +-
-> >  kernel/bpf/helpers.c                          | 12 ++--
-> >  kernel/bpf/ringbuf.c                          |  2 +-
-> >  kernel/bpf/syscall.c                          |  2 +-
-> >  kernel/bpf/verifier.c                         | 60 +++++++++++++----
-> >  kernel/trace/bpf_trace.c                      | 26 ++++----
-> >  net/core/filter.c                             | 64 +++++++++----------
-> >  tools/include/uapi/linux/bpf.h                |  4 +-
-> >  .../selftests/bpf/prog_tests/ksyms_btf.c      | 14 ++++
-> >  .../bpf/progs/test_ksyms_btf_write_check.c    | 29 +++++++++
-> >  13 files changed, 168 insertions(+), 73 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
-> >
-> > --
-> > 2.34.0.rc0.344.g81b53c2807-goog
-> >
+The only other change is that we want to remove strlcpy() from the
+kernel generally since it can trigger out-of-bound reads on the source
+string[1].
+
+So, in this case, the most robust version is to use strscpy_pad().
+
+-Kees
+
+[1] https://github.com/KSPP/linux/issues/89
+
+> 
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl> 
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Petr Mladek <pmladek@suse.com>
+> > ---
+> >  fs/exec.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/exec.c b/fs/exec.c
+> > index a098c133d8d7..404156b5b314 100644
+> > --- a/fs/exec.c
+> > +++ b/fs/exec.c
+> > @@ -1224,7 +1224,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
+> >  {
+> >  	task_lock(tsk);
+> >  	trace_task_rename(tsk, buf);
+> > -	strlcpy(tsk->comm, buf, sizeof(tsk->comm));
+> > +	strscpy_pad(tsk->comm, buf, sizeof(tsk->comm));
+> >  	task_unlock(tsk);
+> >  	perf_event_comm(tsk, exec);
+> >  }
+> > 
+> 
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+
+-- 
+Kees Cook
