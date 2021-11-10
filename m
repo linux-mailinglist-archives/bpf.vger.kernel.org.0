@@ -2,102 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFA444BAFE
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 06:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4020544BB00
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 06:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbhKJFVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 00:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhKJFVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 00:21:09 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA099C061764
-        for <bpf@vger.kernel.org>; Tue,  9 Nov 2021 21:18:22 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id x64so1583989pfd.6
-        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 21:18:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L2T1Ndy0vLfzpkDagdZTkmNPDlcNTU0Dcwt9N+X8qhw=;
-        b=o0akGjJwLOo0+aoao8WvAbmcMIoOctl/G++Aa5jSEjHGc+myPrupw7mb04EwrwMVfY
-         vrxU/QgTVV3iddKCdEX+bO/f0Fyr1t9lV1jwKnWITzNUfIsx0oKz6wzvjtUGzbKTHeFF
-         6WCJahqszk0uCrjIIsETjOTNoLZQuZPh6Qx1p4PvkMym3EVx9h5rp0l4iAeR+dRhPRDf
-         MHLXV4ro1cdvnW+ljfv6gD1LEYs0cAjlpK1Nux3nrFw9iUu6z6a4ooFVNFP6OOC98coS
-         2gC3BUMXRBMj+IHEh1/yVBj8AY7L4WQH2d4bcAASTaHP22YjT3DxYzG5w95j7MMUHUTF
-         zTew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L2T1Ndy0vLfzpkDagdZTkmNPDlcNTU0Dcwt9N+X8qhw=;
-        b=wvrxtvgEJMfCW44xvQKF4xh7kXFTA2l2dEbWJ9KWqL6Q8YcGNdDn7XXgMcNoWTbUFN
-         w5KpwpeNFa6H83KJmKezA5exN7cIlPBgqGcLLgYtUHHeNbGlDnmxZyQDFwtd1ua3m0VX
-         v4ccLxTZt1sbq81lP84LyU7M/sY9yWYNQo0Kl3YJA4BAVFs021pYYOnpT+zkL0Y4mgXE
-         ZBjnN6+sE+2Gf4ffgNXhftTL6cA1v78sG5HLO9W/jLsgjWmnNjLZuyQGA7vc+EI58T2e
-         OxusXPQg8qpus25zpCFS9bTNzvldRsTK+rngcvBQkvcMdKpAJtLoLdSCzWiqeOZt6lag
-         xoow==
-X-Gm-Message-State: AOAM530Rpx9qa0QB2KZz6Dq35/hAc9vCkM1gYzchHEpw0HxM6W7OHvml
-        TJdVyuxhFVC+SrCQ8+wjkQM=
-X-Google-Smtp-Source: ABdhPJzFWb/W96cKN55V2XWomGCjq/2lg+62igW+IXSvp+E9AZkMCt0J9jwvN4pjRZoJGnVZCqb+Hg==
-X-Received: by 2002:a63:7141:: with SMTP id b1mr6218330pgn.321.1636521502221;
-        Tue, 09 Nov 2021 21:18:22 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8f53])
-        by smtp.gmail.com with ESMTPSA id q13sm22951261pfj.26.2021.11.09.21.18.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 21:18:21 -0800 (PST)
-Date:   Tue, 9 Nov 2021 21:18:19 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
+        id S229470AbhKJFWk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 00:22:40 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59976 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229493AbhKJFWj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Nov 2021 00:22:39 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AA54GNI013699
+        for <bpf@vger.kernel.org>; Tue, 9 Nov 2021 21:19:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=s2+WCEnOjGzPd0Z5BesDiedZ6AaDgOZtJA2HV4qxcVo=;
+ b=eBlvu0GBbg/9omBweyFwolrbYxbU5eAsm/zfm1xy5AcJFMSlH9pYNEI03SLf/Qq0zRTo
+ FNqarx5RvNCsM39hEB586ihMOdzk/CcbXW/F0MT/qsqTzwQ1QzC6JNopkGR2klo+oM++
+ HYobrnq78acFbOA2kFI8rMwol7MqSVTmglQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c7vm9mer4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 09 Nov 2021 21:19:52 -0800
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 9 Nov 2021 21:19:51 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id D2D332361123; Tue,  9 Nov 2021 21:19:40 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/9] bpf: Clean up _OR_NULL arg types
-Message-ID: <20211110051819.shc7ozmymwy4eqn3@ast-mbp.dhcp.thefacebook.com>
-References: <20211109021624.1140446-1-haoluo@google.com>
- <20211109182128.hhbaqv3j52fddayq@ast-mbp.dhcp.thefacebook.com>
- <CA+khW7hZC43ZrCSRL9SqffDPeDyxObzXtcvGneaEiW37=X11hA@mail.gmail.com>
- <CAEf4BzachpsSefRmoyLOdD3wY_+oihiB4uv=M9Yz5neNiOtLEA@mail.gmail.com>
- <CAEf4Bzav5H4cFjoa4Q=9XvgAghY7VXm5X-pMeGRNgLxAKEzRfw@mail.gmail.com>
- <CAADnVQKLWW_-HQ06SbZtWOZ0gE4bUun4CSD6eQxwfTRS7UfJ_A@mail.gmail.com>
- <CAEf4BzZgXTi_h0fL3uHxYM9DOqR=Z_1U6gAuYL3xu-5oMU9wkg@mail.gmail.com>
+        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
+        <kernel-team@fb.com>
+Subject: [PATCH bpf-next 00/10] Support BTF_KIND_TYPE_TAG for btf_type_tag attributes
+Date:   Tue, 9 Nov 2021 21:19:40 -0800
+Message-ID: <20211110051940.367472-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: IzN9ypbH_1C_MS05DC6KO15nJ18Ynay7
+X-Proofpoint-ORIG-GUID: IzN9ypbH_1C_MS05DC6KO15nJ18Ynay7
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZgXTi_h0fL3uHxYM9DOqR=Z_1U6gAuYL3xu-5oMU9wkg@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-10_01,2021-11-08_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=676 spamscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111100024
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 09:00:25PM -0800, Andrii Nakryiko wrote:
-> 
-> But also one specific example from kernel/bpf/verifier.c:
-> 
-> if (register_is_null(reg) && arg_type_may_be_null(arg_type))
->     goto skip_type_check;
-> 
-> Currently arg_type_may_be_null(arg_type) returns false for
-> ARG_CONST_SIZE_OR_ZERO. If we are not careful and blindly check the
-> MAYBE_NULL flag (which the current patch set seems to be doing), we'll
-> start returning true for it and some other _OR_ZERO arg types. It
-> might be benign in this particular case, I haven't traced if
-> ARG_CONST_SIZE_OR_ZERO can be passed in that particular code path, but
-> it was hardly intended this way, no?
+LLVM patches ([1] for clang, [2] and [3] for BPF backend)
+added support for btf_type_tag attributes. This patch
+added support for the kernel.
 
-I think it's an example where uniform handling of MAYBE_ZERO flag would have helped.
-The case of arg_type_may_be_null() missing in ARG_CONST_SIZE_OR_ZERO doesn't hurt.
-The subsequent check_reg_type() is just doing unnecessary work
-(it's checking that reg is scalar, but register_is_null already did that).
+The main motivation for btf_type_tag is to bring kernel
+annotations __user, __rcu etc. to btf. With such information
+available in btf, bpf verifier can detect mis-usages
+and reject the program. For example, for __user tagged pointer,
+developers can then use proper helper like bpf_probe_read_kernel()
+etc. to read the data.
 
-I think such application of flags would have positive result.
-Doesn't mean that we should apply it blindly.
-There could be a case where it would be incorrect, but as this example
-demonstrated it's more likely to find cases where it's safe to do.
-We just forgot to include all of OR_NULL flavors here and could be in other places too.
+BTF_KIND_TYPE_TAG may also useful for other tracing
+facility where instead of to require user to specify
+kernel/user address type, the kernel can detect it
+by itself with btf.
 
-I think your main point that gotta be very careful about introducing the flags.
-That's for sure. As anything that touches the verifier.
+Patch 1 added support in kernel, Patch 2 for libbpf and Patch 3
+for bpftool. Patches 4-9 are for bpf selftests and Patch 10
+updated docs/bpf/btf.rst file with new btf kind.
+
+  [1] https://reviews.llvm.org/D111199
+  [2] https://reviews.llvm.org/D113222
+  [3] https://reviews.llvm.org/D113496
+
+Yonghong Song (10):
+  bpf: Support BTF_KIND_TYPE_TAG for btf_type_tag attributes
+  libbpf: Support BTF_KIND_TYPE_TAG
+  bpftool: Support BTF_KIND_TYPE_TAG
+  selftests/bpf: Test libbpf API function btf__add_type_tag()
+  selftests/bpf: Add BTF_KIND_TYPE_TAG unit tests
+  selftests/bpf: Test BTF_KIND_DECL_TAG for deduplication
+  selftests/bpf: Rename progs/tag.c to progs/btf_decl_tag.c
+  selftests/bpf: Add a C test for btf_type_tag
+  selftests/bpf: Clarify llvm dependency with btf_tag selftest
+  docs/bpf: Update documentation for BTF_KIND_TYPE_TAG support
+
+ Documentation/bpf/btf.rst                     | 13 +++-
+ include/uapi/linux/btf.h                      |  3 +-
+ kernel/bpf/btf.c                              | 14 +++-
+ tools/bpf/bpftool/btf.c                       |  2 +
+ tools/include/uapi/linux/btf.h                |  3 +-
+ tools/lib/bpf/btf.c                           | 23 +++++++
+ tools/lib/bpf/btf.h                           |  9 ++-
+ tools/lib/bpf/btf_dump.c                      |  9 +++
+ tools/lib/bpf/libbpf.c                        | 31 ++++++++-
+ tools/lib/bpf/libbpf.map                      |  1 +
+ tools/lib/bpf/libbpf_internal.h               |  2 +
+ tools/testing/selftests/bpf/README.rst        |  9 +--
+ tools/testing/selftests/bpf/btf_helpers.c     |  4 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c  | 64 ++++++++++++++++--
+ .../selftests/bpf/prog_tests/btf_tag.c        | 44 ++++++++++--
+ .../selftests/bpf/prog_tests/btf_write.c      | 67 +++++++++++--------
+ .../bpf/progs/{tag.c =3D> btf_decl_tag.c}       |  0
+ .../selftests/bpf/progs/btf_type_tag.c        | 29 ++++++++
+ tools/testing/selftests/bpf/test_btf.h        |  3 +
+ 19 files changed, 281 insertions(+), 49 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{tag.c =3D> btf_decl_tag.c} (100%)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_type_tag.c
+
+--=20
+2.30.2
+
