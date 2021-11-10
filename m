@@ -2,191 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FE244C03F
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 12:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30E044C044
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 12:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhKJLoJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 06:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
+        id S231210AbhKJLtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 06:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhKJLoJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:44:09 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DCCC061764
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:41:21 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 13so4661630ljj.11
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:41:21 -0800 (PST)
+        with ESMTP id S231131AbhKJLtY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:49:24 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F9AC061764
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:46:36 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id d3so3488866wrh.8
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:46:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=csmTgtaZMnyvU7jhPmCPCXw06UF8KdqBzZmK1KMCI6o=;
-        b=QhmY5KuYe0XdpWl7mKeMIy/WVvxYHv/BXvIrQukvJNN+zYtG7FaI9dc6ohVUtjEqyX
-         XoSQB1OuxL8X/onouOs9GEENzOYrok3YqfvL/NZ/uf8imt/TO+A7OQoDt7tEIljikIgc
-         6pXdy1pwSlazlj3uAQ4yk7ZrbqknDC6UK9Hsw=
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kjHd0Kr0ymQ3a10ENDIboaCgm2YTIHCHTF3U6cm7HUg=;
+        b=smrMgPz/PdOvuy4BKoFdtbXDyOFYkAfUEbCjFH8yI/4ulUYkKidxaDqNe6F2Mm3ap4
+         92bn8RGNDbepC8kqKFdGM1ehzQvTP8NHpl+cjvsKZ4+ewYbVQTz5pqlqChe1Qt3gv5zP
+         1Jbt2/+vd72sTXheXp/cGlg6XGtMmtGn7KjZVeWz2RH+XS7G0D0XhFoOSl8Yi4v7Y15J
+         azs0fLS1SC455Tc3OjU4tGTB6LKGVJFTl7ETuBEONoNo8O0T+Agk8228fblewZuAMYdw
+         f4zcKJ+MRJ3jwhUrvo4s+Un5/0Swo6tHn5nSTvMLYljdGysc7DqRNJrFFF7tz20muV8N
+         MmUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=csmTgtaZMnyvU7jhPmCPCXw06UF8KdqBzZmK1KMCI6o=;
-        b=KyE3pwULcSk9g0I1zTyByOdXY23Wa0gOHD5W/gq6u/7y3tTHJg8oqpMftbHRShxtNx
-         1eT9tqtPRl1Tyt/HQBKiEbS08ez3sbjLBjqNVetXq4jV59TkEUfCrEPFlvrOtuCLa4+M
-         DtCPSfRBp3LzcrBwIP3dzrMPCvGhHCERUkwidQG19RT1TagkL4perDZjLoDvflRP8sOd
-         T1XLsF4CgoX0DUniDtWH2EC/2vgD1vtIyYrQI7wgHirIMBwJroLkLza0Rxl+34o0jZ1D
-         85qR2Q6vEQ36KGQgIk4BVUzQknGia2nq0gpmuokv/hJL6LwuR97OsAqmugPgZMyQes4Z
-         M5yg==
-X-Gm-Message-State: AOAM5317oVX5Khu6VyQ2K8We1r0Zh3zQkNJAS0Kjq/Xgq0HpCGWmWlMv
-        oV17T3HJ4Ld2UW7lJQqaQ8TA6nr82tkfysX0LjqJPg==
-X-Google-Smtp-Source: ABdhPJwg3ODydwUYEKknDDnRtSuPDjfEhEAzaBDjNvT4+ZA3qibPjvBsZvquxzyGi6U0EeSCcvuLWnZdwf8Dxs4QE68=
-X-Received: by 2002:a2e:9c02:: with SMTP id s2mr15129322lji.121.1636544480017;
- Wed, 10 Nov 2021 03:41:20 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kjHd0Kr0ymQ3a10ENDIboaCgm2YTIHCHTF3U6cm7HUg=;
+        b=51BT3ydodb8CGpIZsolEI0gIt3Wxhh5hzEekzXC8WtFBn31yTm4r3eVjCriLX1KXXu
+         PihxgNLrUGCWVmwYXwZItiDK9dFOw8ZxHX0IfK6Z+eVzk/0h/LXPONEO7e2jITta+QSu
+         PSEqbNNP4z+A1RZf29+tkHldFOjvs86HAEXuUBRDkMc8regXyou944WFe9III8vWF1Fw
+         +FUkQ4tYkCioDlQ/IiCG5xXelP1GEcTg836nDM8/igV7TE+GuGApYDX5SZf2sLgL7ULt
+         08kMcoFDXD2miZXxXcg12XdkUXvjvPLuQkAkPUMRiP1xvMXppyJeAM4AnkCD0bwGoPFz
+         eSDQ==
+X-Gm-Message-State: AOAM532hgsGjm6Vd1pn/L9SJvwROBHczVIE0rRs7u5QjmM8EzCQjQPCR
+        2t5O+rom+KJUtX3kbhkTgClfsESnOdFpMQ==
+X-Google-Smtp-Source: ABdhPJy3MBxnYrFBRaaBIYguino2d8UdpUPEN6l1WISYeWXrbpo1Z2s8FmxmZtMpVhfc7/eojE76kg==
+X-Received: by 2002:a05:6000:1201:: with SMTP id e1mr18403404wrx.298.1636544795181;
+        Wed, 10 Nov 2021 03:46:35 -0800 (PST)
+Received: from localhost.localdomain ([149.86.79.190])
+        by smtp.gmail.com with ESMTPSA id i15sm6241152wmq.18.2021.11.10.03.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Nov 2021 03:46:34 -0800 (PST)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next 0/6] bpftool: miscellaneous fixes
+Date:   Wed, 10 Nov 2021 11:46:26 +0000
+Message-Id: <20211110114632.24537-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com>
- <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
- <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com>
- <20211105194952.xve6u6lgh2oy46dy@ast-mbp.dhcp.thefacebook.com>
- <CACAyw99KGdTAz+G3aU8G3eqC926YYpgD57q-A+NFNVqqiJPY3g@mail.gmail.com> <20211110042530.6ye65mpspre7au5f@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20211110042530.6ye65mpspre7au5f@ast-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 10 Nov 2021 11:41:09 +0000
-Message-ID: <CACAyw9-s0ahY8m7WtMd1OK=ZF9w5gS9gktQ6S8Kak2pznXgw0w@mail.gmail.com>
-Subject: Re: Verifier rejects previously accepted program
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>, regressions@lists.linux.dev,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 10 Nov 2021 at 04:25, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> but it goes into R2 from non-inner map which ruins all my theories.
+This set contains several independent minor fixes for bpftool, its
+Makefile, and its documentation. Please refer to individual commits for
+details.
 
-The trace does contain modifications from inner maps, but they aren't
-at the start of the block at 1077. Your suggested hack makes this
-clear:
+Quentin Monnet (6):
+  bpftool: Fix memory leak in prog_dump()
+  bpftool: Remove inclusion of utilities.mak from Makefiles
+  bpftool: Use $(OUTPUT) and not $(O) for VMLINUX_BTF_PATHS in Makefile
+  bpftool: Fix indent in option lists in the documentation
+  bpftool: Update the lists of names for maps and prog-attach types
+  bpftool: Fix mixed indentation in documentation
 
-1033: R0=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0) R1_w=invP0
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-1033: (16) if w1 == 0x0 goto pc+43
-1077: R0=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0) R1_w=invP0
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-1077: (79) r2 = *(u64 *)(r10 -128)
-1078: R0=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0) R1_w=invP0
-R2_w=map_value(id=0,off=0,ks=4,vs=32,uid=0,imm=0)
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-
-r2 is the per-CPU array. r0, r3 are from an inner map. There are
-accesses to r3 a couple instructions later:
-
-1081: R0=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0)
-R1_w=inv(id=0) R2_w=map_value(id=0,off=0,ks=4,vs=32,uid=0,imm=0)
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-1081: (71) r1 = *(u8 *)(r3 +32)
- R0=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0) R1_w=inv(id=0)
-R2_w=map_value(id=0,off=0,ks=4,vs=32,uid=0,imm=0)
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-
-> The verbose() part will help to confirm that R2 in the above should be uid=0.
-
-Yes, uid=0, see above.
-
-> After that please try only with:
-> -               if (memcmp(rold, rcur, offsetof(struct bpf_reg_state, id)))
-> +               if (memcmp(rold, rcur, offsetof(struct bpf_reg_state, map_uid)))
->
-> It should resolve the regression, but will break timer safety check and makes
-> the map_uid logic not quite right (though no existing test will show it).
-
-This doesn't help.
-
->
-> If offsetof(map_uid) doesn't help another guess would be:
-> @@ -10496,7 +10497,7 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
->                  * it's valid for all map elements regardless of the key
->                  * used in bpf_map_lookup()
->                  */
-> -               return memcmp(rold, rcur, offsetof(struct bpf_reg_state, id)) == 0 &&
-> +               return memcmp(rold, rcur, offsetof(struct bpf_reg_state, map_uid)) == 0 &&
->                        range_within(rold, rcur) &&
->                        tnum_in(rold->var_off, rcur->var_off);
-> that's for PTR_TO_MAP_VALUE and that would be a different theory which makes even less sense.
-
-This change resolves the regression. The first five occurrences of
-insn 1077 in the trace, with your logging applied:
-
-1077: R0=map_value(id=0,off=0,ks=4,vs=36,uid=13,imm=0) R1=invP0
-R3=map_value(id=0,off=0,ks=4,vs=36,uid=13,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=00000000 fp-32=0000mmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-1077: R0=map_value(id=0,off=0,ks=4,vs=36,uid=6875,imm=0) R1_w=invP0
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6875,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=00000000 fp-32=0000mmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-1077: R0=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0) R1_w=invP0
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6900,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-1077: R0=map_value(id=0,off=0,ks=4,vs=36,uid=6908,imm=0) R1_w=invP0
-R3_w=map_value(id=0,off=0,ks=4,vs=36,uid=6908,imm=0)
-R6=ctx(id=0,off=0,imm=0) R7=inv(id=0) R8=pkt(id=0,off=18,r=38,imm=0)
-R9=inv0 R10=fp0 fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmm00m0
-fp-48=mmmm0000 fp-56=00000000 fp-64=00000000 fp-72=0000mmmm
-fp-80=mmmmmmmm fp-88=map_value fp-96=pkt_end fp-104=map_value
-fp-112=pkt fp-120=fp fp-128=map_value
-1077: R0=map_value(id=0,off=0,ks=16,vs=36,uid=0,imm=0) R1=invP0
-R2=map_value(id=0,off=0,ks=4,vs=368,uid=0,imm=0)
-R3=map_value(id=0,off=0,ks=16,vs=36,uid=0,imm=0)
-R6=ctx(id=0,off=0,imm=0)
-R7=map_value(id=0,off=0,ks=4,vs=368,uid=0,imm=0)
-R8=pkt(id=0,off=18,r=38,imm=0) R9=inv0 R10=fp0 fp-24=mmmmmmmm
-fp-32=mmmmmmmm fp-40=mmmm00m0 fp-48=mmmm0000 fp-56=00000000
-fp-64=00000000 fp-72=0000mmmm fp-80=mmmmmmmm fp-88=map_value
-fp-96=pkt_end fp-104=map_value fp-112=pkt fp-120=fp fp-128=map_value
-
-uid changes on every invocation, and therefore regsafe() returns false?
+ tools/bpf/bpftool/Documentation/Makefile      |  1 -
+ .../bpf/bpftool/Documentation/bpftool-btf.rst |  2 +-
+ .../bpftool/Documentation/bpftool-cgroup.rst  | 12 ++--
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |  2 +-
+ .../bpftool/Documentation/bpftool-link.rst    |  2 +-
+ .../bpf/bpftool/Documentation/bpftool-map.rst |  8 +--
+ .../bpf/bpftool/Documentation/bpftool-net.rst | 62 +++++++++----------
+ .../bpftool/Documentation/bpftool-prog.rst    |  8 +--
+ tools/bpf/bpftool/Documentation/bpftool.rst   |  6 +-
+ tools/bpf/bpftool/Makefile                    |  3 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  3 +-
+ tools/bpf/bpftool/common.c                    |  1 +
+ tools/bpf/bpftool/map.c                       |  3 +-
+ tools/bpf/bpftool/prog.c                      | 15 +++--
+ 14 files changed, 66 insertions(+), 62 deletions(-)
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.32.0
 
-www.cloudflare.com
