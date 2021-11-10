@@ -2,185 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAAA44BFE6
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 12:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B4F44C01E
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 12:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhKJLNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 06:13:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231441AbhKJLNY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:13:24 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83819C06120A
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:10:24 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id u1so3276533wru.13
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:10:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=V6Nfvgybe3gWaIfJceTq1wzqKHM3tdQPjimGmPusYRo=;
-        b=J3UwV1YoXUQzHhK+O3d4Nv+8eiho2ZrpJgFPC30VSJ5PZ6km9SZLkJMdgTUh1YWfqt
-         ps6IbzwQZpw/QMXGF2BCbtkp39IYi4NgNcsCKo8wTpRp5dnmbYarEFMWEtjiaLnllE6R
-         zXxWlAR0yOljUWOLJRyFSy1nsO23VsyvNULWs=
+        id S231186AbhKJLax (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 06:30:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41468 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230440AbhKJLaw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Nov 2021 06:30:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636543684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yy8X/nNTlW/us5XEVCcNQ+a76b6anMgOpn+9RDa9uBM=;
+        b=do6ZCS+YdG58y19B5FK4SO8Y0iyMOmdHayZOS5nDfnV9TM6RYmxHtp0V8jbV3HHwwiCy1d
+        Q35njNP32tv544cLurWCN11iN/CHkiLeRILUBodJ4vNYg+BwIgOrzNSWwmBwZIbZLvheSu
+        WsX0VcXoA6YTDuktIkUuo3aWeikwE9c=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-dh3PHn3AOY-2EK3NVyWX6A-1; Wed, 10 Nov 2021 06:28:03 -0500
+X-MC-Unique: dh3PHn3AOY-2EK3NVyWX6A-1
+Received: by mail-ed1-f72.google.com with SMTP id f20-20020a0564021e9400b003e2ad3eae74so2069863edf.5
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:28:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=V6Nfvgybe3gWaIfJceTq1wzqKHM3tdQPjimGmPusYRo=;
-        b=gW+ly0Tl/toNhQ7cwrqfBv66EkDriEk2XMrMsE4OOyg4Lj+6XOMmQJ8mT7YOgaVDox
-         nL8q+ouS4Ir8L9AHBJFYHS5Wumx3U1h+B/6jXq39t8xgg0kSu4Id8JQahSUqr4JbdcS+
-         JKzG6dL0pu3TTs4o5DCJE9IB4ZMC/cR3JMueXkrWJRUJ2gXuISjK4+XtUSgiiswZLiVz
-         S8buPtP6zto30gv9D87p1poGpGLEEkijUpMhnZmeEqFDQQL+xEHUNUyv7sYNGFQp+b8i
-         3X/Wgqcd+yCKNgZiNNxGAauJlzi213mzJ7wI/osI/pA1IiCsurn/xgZeLtiw9e+FpzBu
-         uCDA==
-X-Gm-Message-State: AOAM530UH4mjXdztnGRiSFQjdFNzuZPbPXh4IXYIfLWtu9FKrc4MQGVn
-        bL5c5owq/d6iQApXHSIrgrXgNw==
-X-Google-Smtp-Source: ABdhPJyc7vJ2FW2FH5ljnEAGvH2JAEs+Zlo1oQmgqPTp03RkNlsazcmM6iTdsH7gZAj4BJrVXLmvOg==
-X-Received: by 2002:adf:e84d:: with SMTP id d13mr19222447wrn.72.1636542623030;
-        Wed, 10 Nov 2021 03:10:23 -0800 (PST)
-Received: from kharboze.dr-pashinator-m-d.gmail.com.beta.tailscale.net (cust97-dsl60.idnet.net. [212.69.60.97])
-        by smtp.gmail.com with ESMTPSA id m14sm18780682wrp.28.2021.11.10.03.10.22
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Yy8X/nNTlW/us5XEVCcNQ+a76b6anMgOpn+9RDa9uBM=;
+        b=a1bFXmPrNzgA8B+RL/y9fXGF8fHKkrHlC5LUdnpMtOFXze3eFL7geohYEh0xTVnJI8
+         CLredOhnjrA1ojquInh9fpGx1ZP1tAkDuPFeroDEuuoS+PlkEKNt6yG3JovRUSwLGpFZ
+         wD2OeJH5V1bvooyNczPP5Sb18trRVk84KSTgJNcuVO2g0Ti/RRtU0sxcaXyr9roPzaHy
+         obSrTID0bSuXUtOH7m9zpWsvlj7eUHiraDubigxYlnzOc4TIc8Ay73nEblXRsGEHa3aM
+         Fk9Je9/mwxahmnBRXn1ybQoA5X/OUwhZd9VwSs9ydxyjiQ3KMSWZj1F6qKaaaKEugFj1
+         PXYQ==
+X-Gm-Message-State: AOAM5331hBqHuGFb3rEuzeJ9kDJCy0LEfQbJ3f0JOiJ7+8j9WgHUNLyT
+        2+SfLU9lInZgI1gx8pdLmmpmIy4sklZxvaqcgHvHg0nZhVTN6yS9BA5wgHaQCFGm850iGJL2LjG
+        SSNLwpqbGqR7T
+X-Received: by 2002:a17:906:a10c:: with SMTP id t12mr19310175ejy.429.1636543681397;
+        Wed, 10 Nov 2021 03:28:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxlXG0JR9BaSSXxYNbhobNEmdzy7EYQA9mpHkSp+FeD1FdoaTeUox55TncdB8AXaJIUhxmxqw==
+X-Received: by 2002:a17:906:a10c:: with SMTP id t12mr19309959ejy.429.1636543679692;
+        Wed, 10 Nov 2021 03:27:59 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id u4sm10779606ejc.19.2021.11.10.03.27.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 03:10:22 -0800 (PST)
-From:   Mark Pashmfouroush <markpash@cloudflare.com>
-To:     markpash@cloudflare.com, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Wed, 10 Nov 2021 03:27:59 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4BFAA18026D; Wed, 10 Nov 2021 12:27:57 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@cloudflare.com, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests for accessing ingress_ifindex in bpf_sk_lookup
-Date:   Wed, 10 Nov 2021 11:10:16 +0000
-Message-Id: <20211110111016.5670-3-markpash@cloudflare.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211110111016.5670-1-markpash@cloudflare.com>
-References: <20211110111016.5670-1-markpash@cloudflare.com>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Ciara Loftus <ciara.loftus@intel.com>
+Subject: Re: [PATCH bpf-next] libbpf: demote log message about unrecognised
+ data sections back down to debug
+In-Reply-To: <CAEf4BzbysA058zK8wvnxeA=rrqCb+x3bP2X7wOqCj90tAHeFXQ@mail.gmail.com>
+References: <20211104122911.779034-1-toke@redhat.com>
+ <CAEf4BzYGjV5DQB7tqRkSKz6pz-3QtU7uSWQVNJMW4eSjnpF98A@mail.gmail.com>
+ <87a6iismca.fsf@toke.dk>
+ <CAEf4BzY9WxjBX65sa=8SJh4XGLGfHgxGKciRGiSUMJAxbQWWYg@mail.gmail.com>
+ <87pmrargfc.fsf@toke.dk>
+ <CAEf4BzbysA058zK8wvnxeA=rrqCb+x3bP2X7wOqCj90tAHeFXQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 10 Nov 2021 12:27:57 +0100
+Message-ID: <87ilx0p7wi.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new field was added to the bpf_sk_lookup data that users can access.
-Add tests that validate that the new ingress_ifindex field contains the
-right data.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Signed-off-by: Mark Pashmfouroush <markpash@cloudflare.com>
+> On Mon, Nov 8, 2021 at 4:16 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Fri, Nov 5, 2021 at 7:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+>> >>
+>> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>> >>
+>> >> > On Thu, Nov 4, 2021 at 5:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+>> >> >>
+>> >> >> When loading a BPF object, libbpf will output a log message when it
+>> >> >> encounters an unrecognised data section. Since commit
+>> >> >> 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating=
+ ELF")
+>> >> >> they are printed at "info" level so they will show up on the conso=
+le by
+>> >> >> default.
+>> >> >>
+>> >> >> The rationale in the commit cited above is to "increase visibility=
+" of such
+>> >> >> errors, but there can be legitimate, and completely harmless, uses=
+ of extra
+>> >> >> data sections. In particular, libxdp uses custom data sections to =
+store
+>> >> >
+>> >> > What if we make those extra sections to be ".rodata.something" and
+>> >> > ".data.something", but without ALLOC flag in ELF, so that libbpf wo=
+n't
+>> >> > create maps for them. Libbpf also will check that program code never
+>> >> > references anything from those sections.
+>> >> >
+>> >> > The worry I have about allowing arbitrary sections is that if in the
+>> >> > future we want to add other special sections, then we might run int=
+o a
+>> >> > conflict with some applications. So having some enforced naming
+>> >> > convention would help prevent this. WDYT?
+>> >>
+>> >> Hmm, I see your point, but as the libxdp example shows, this has not
+>> >> really been "disallowed" before. I.e., having these arbitrary sections
+>> >> has worked just fine.
+>> >
+>> > A bunch of things were not disallowed, but that is changing for libbpf
+>> > 1.0, so now is the right time :)
+>> >
+>> >>
+>> >> How about we do the opposite: claim a namespace for future libbpf
+>> >> extensions and disallow (as in, hard fail) if anything unrecognised is
+>> >> in those sections? For instance, this could be any section names
+>> >> starting with .BPF?
+>> >
+>> > Looking at what we added (.maps, .kconfig, .ksym), there is no common
+>> > prefix besides ".". I'd be ok to reserve anything starting with "."
+>> > for future use by libbpf. We can allow any non-dot section without a
+>> > warning (but it would have to be non-allocatable section). Would that
+>> > work?
+>>
+>> Not really :(
+>>
+>> We already use .xdp_run_config as one of the section names in libxdp, so
+>
+> Are any of those sections allocatable? What if libbpf complains about
+> allocatable ones only?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index 6db07401bc49..57846cc7ce36 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -937,6 +937,37 @@ static void test_drop_on_lookup(struct test_sk_lookup *skel)
- 			.connect_to	= { EXT_IP6, EXT_PORT },
- 			.listen_at	= { EXT_IP6, INT_PORT },
- 		},
-+		/* The program will drop on success, meaning that the ifindex
-+		 * was 1.
-+		 */
-+		{
-+			.desc		= "TCP IPv4 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_STREAM,
-+			.connect_to	= { EXT_IP4, EXT_PORT },
-+			.listen_at	= { EXT_IP4, EXT_PORT },
-+		},
-+		{
-+			.desc		= "TCP IPv6 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_STREAM,
-+			.connect_to	= { EXT_IP6, EXT_PORT },
-+			.listen_at	= { EXT_IP6, EXT_PORT },
-+		},
-+		{
-+			.desc		= "UDP IPv4 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_DGRAM,
-+			.connect_to	= { EXT_IP4, EXT_PORT },
-+			.listen_at	= { EXT_IP4, EXT_PORT },
-+		},
-+		{
-+			.desc		= "UDP IPv6 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_DGRAM,
-+			.connect_to	= { EXT_IP6, EXT_PORT },
-+			.listen_at	= { EXT_IP6, EXT_PORT },
-+		},
- 	};
- 	const struct test *t;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-index 19d2465d9442..83b0aaa52ef7 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-@@ -84,6 +84,14 @@ int lookup_drop(struct bpf_sk_lookup *ctx)
- 	return SK_DROP;
- }
- 
-+SEC("sk_lookup")
-+int check_ifindex(struct bpf_sk_lookup *ctx)
-+{
-+	if (ctx->ingress_ifindex == 1)
-+		return SK_DROP;
-+	return SK_PASS;
-+}
-+
- SEC("sk_reuseport")
- int reuseport_pass(struct sk_reuseport_md *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-index d78627be060f..a2b006e2fd06 100644
---- a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-@@ -229,6 +229,24 @@
- 		BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
- 			    offsetof(struct bpf_sk_lookup, local_port)),
- 
-+		/* 1-byte read from ingress_ifindex field */
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex)),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex) + 1),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex) + 2),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex) + 3),
-+		/* 2-byte read from ingress_ifindex field */
-+		BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex)),
-+		BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex) + 2),
-+		/* 4-byte read from ingress_ifindex field */
-+		BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex)),
-+
- 		/* 8-byte read from sk field */
- 		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
- 			    offsetof(struct bpf_sk_lookup, sk)),
-@@ -351,6 +369,20 @@
- 	.expected_attach_type = BPF_SK_LOOKUP,
- 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
- },
-+{
-+	"invalid 8-byte read from bpf_sk_lookup ingress_ifindex field",
-+	.insns = {
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ingress_ifindex)),
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.errstr = "invalid bpf_context access",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_SK_LOOKUP,
-+	.expected_attach_type = BPF_SK_LOOKUP,
-+	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
-+},
- /* invalid 1,2,4-byte reads from 8-byte fields in bpf_sk_lookup */
- {
- 	"invalid 4-byte read from bpf_sk_lookup sk field",
--- 
-2.31.1
+They are:
+  5 .xdp_run_config 00000010  0000000000000000  0000000000000000  00000e70 =
+ 2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+
+They are just defined using the SEC() macro, like:
+
+#define _CONCAT(x,y) x ## y
+#define XDP_RUN_CONFIG(f) _CONCAT(_,f) SEC(".xdp_run_config")
+struct {
+	__uint(priority, 10);
+	__uint(XDP_PASS, 1);
+} XDP_RUN_CONFIG(FUNCNAME);
+
+Is there a way to avoid the sections being marked as allocatable using
+such macros?
+
+> Also, how widely libxdp is used so that it's already impossible to
+> change anything?
+
+Well, we've been shipping it in three or four RHEL point releases at
+this point, but I don't think we have any actual usage data, so I
+honestly don't know.
+
+I'm not against changing it, though; the XDP_RUN_CONFIG macro above is
+defined in a header file we ship with libxdp, so it's straight-forward
+to redefine it. I don't mind being strict by default either, I just want
+to be able to do something like:
+
+obj =3D bpf_object__open_file(filename, opts);
+if (!obj && errno =3D=3D EINVALIDSECTION) { /* or some other way of discove=
+ring this */
+  warn("found invalid section, consider recompiling program; continuing any=
+way\n");
+  opts.allow_arbitrary_sections=3Dtrue;
+  obj =3D bpf_object__open_file(filename, opts);
+}
+
+This is similar to how iproute2 sets relaxed_maps when opening a file so
+it can deal with its old map definition types, so there is some precedent...
+
+-Toke
 
