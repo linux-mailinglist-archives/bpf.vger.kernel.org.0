@@ -2,151 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ACD44BD5F
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 09:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6E744BD94
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 10:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhKJI41 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 03:56:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229931AbhKJI41 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Nov 2021 03:56:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636534419;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9cR5sqbN1957iQ/bal6X9SNI5rajv2fdoOQTfC/GcDE=;
-        b=BS+2GJPORhOauX6ZxKUUWRT3Nn4SJa10an1BGNqDMouo0dhAL90v5nPRowv0yw9e6RvmFu
-        ZcYHafmAbtrowpV12SFdU3jpPuo7iY5QzWS/dbN+PKPyNUVDcWfGduZ5mH0pAEbnnnbVS4
-        YXolE8/vRWHkooczPXlfjGuqwEKGZVw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-160-zvNsPDCqNpGOv_1RPx9Aig-1; Wed, 10 Nov 2021 03:53:38 -0500
-X-MC-Unique: zvNsPDCqNpGOv_1RPx9Aig-1
-Received: by mail-ed1-f70.google.com with SMTP id w12-20020aa7da4c000000b003e28acbf765so1723654eds.6
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 00:53:38 -0800 (PST)
+        id S230257AbhKJJJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 04:09:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhKJJJI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Nov 2021 04:09:08 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E205C061764;
+        Wed, 10 Nov 2021 01:06:21 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id bk22so1847021qkb.6;
+        Wed, 10 Nov 2021 01:06:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ImnqB797AKnJuD4oPIYf8Tox3YCxcvXVphwHiRaIbIY=;
+        b=oMfCBYvauO8zRBwa2KehEw6l9I/gVh/IsHK2ianpEu/xIihkSVB/V6SY3F/ttzaM9E
+         nezbT4CmBgHKehn2yU5PaH/ZIe37KBZYxptntmlE84NkrCX9sBVx5fvOJ97WuHyjLu81
+         ySMip7zDVDJzC8Ud+eLEDqMIyFDT68YJu/vMGfrUMMkvIb9Gy3UDZ9KieYePa59ndf9w
+         2iNH/0Swtlcmca7uxTSVZ6+cgn0aA6kyAsyRtDOUv343TMFcvYUnDbmDYL36Evv24Use
+         DEXFPEpNZYt0Ltjw511zdD5Yt5ts2oQXhSF1bjzx+hLVoi83rzncSdyXWjhsWQZSkQMW
+         9DAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
-         :subject:content-language:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=9cR5sqbN1957iQ/bal6X9SNI5rajv2fdoOQTfC/GcDE=;
-        b=PFQhAS6mhffhkqVXcuNjH3T92lWb67YQdwUs6xEA5nr6hRY6xYUElScztW88tcCp+n
-         gufXAlfEslY5Q2DQ7emfx+ls4UM1j3q8B8z5YHi9CVPmYEFgmNIv1DT2eHxiUpvag+Ap
-         nz06msIqMKl3479+AzV4fQBoqWL6CpXcWqkZYphQ0OxsB/XHztZEQ5F7Py1bGhlhLZpB
-         wkmaYnvVT2cyrGYt+gqIXqzffM39cWZ42WFhHQOz0x8fTc4/uk5JCfEjhn29oHDOwOWl
-         OiNyO921ROX4vi5jQImXsicnvmDYIRnyiTbVVR8MxEsslhD/xrO4ERUdCfznXPzZzFij
-         1PYw==
-X-Gm-Message-State: AOAM531JBFEDtWq3p6pRKyJOhTSr74mpg6jrS6H3BeGe+Piepf++dvCP
-        fslZ38P0T4AmZnx0G+kuxabLT98E2CARblB/vUsIMfq63nkxcgiUj/HgrnKFMVi5iJk7khgdUnB
-        giV25vd43fxHy
-X-Received: by 2002:a17:906:cd18:: with SMTP id oz24mr18338199ejb.166.1636534417419;
-        Wed, 10 Nov 2021 00:53:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyKJaoLZ/EZKOb6+YOSDdmJl1tIhkXRCt9cQq0I+y+4Q41Ds7ob43uAUnoCI9K3PLc4Ab2RUA==
-X-Received: by 2002:a17:906:cd18:: with SMTP id oz24mr18338169ejb.166.1636534417199;
-        Wed, 10 Nov 2021 00:53:37 -0800 (PST)
-Received: from [192.168.2.13] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id r22sm10690912ejd.109.2021.11.10.00.53.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 00:53:36 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <3d5a4644-62d8-8eac-fb6a-4dc9468372c3@redhat.com>
-Date:   Wed, 10 Nov 2021 09:53:35 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ImnqB797AKnJuD4oPIYf8Tox3YCxcvXVphwHiRaIbIY=;
+        b=ZHPMhG1+eAE+XkQoyRl7mhWJuUqqVqyiabOx+0COCv+ahau8SNoIei1BkhJyn2eeot
+         1YIkXijJhN9Ln70UBrF31t4+Z4LjdJGA3F1qzThf0RlEJ4v5RFtpjhQch4gLc/v0agiu
+         3EiGG5g3VEU3+8n/CJfREpxT2pFNL8jCcnDgBbKsVAMhFYzceBM+vcErw9JDFMHesUf9
+         LqaUG1f2s+kDSd9KWQ+RGOlrrg7HYlm9BuRMA8xHwV8bfY7zRumokPUA3s3YI/LKq/sx
+         g/JYDrxWjzr/ecqV5dhBWbjBTq6Yt/Av17ngtpdYOS5l4gvIUcXnsZXYJlusSJLg/lN6
+         sCtg==
+X-Gm-Message-State: AOAM531D3c52Gu8LD0gPKcS8wwpSsqrtLyYN5fbPMu8bEOQtyae8VYBQ
+        EaoPcF8GYwcUbVyOnb7f9my+n8QMiZYGdxqp+Gk=
+X-Google-Smtp-Source: ABdhPJxecwxlgh5Be+apIVbyhK9b5EOBmc1BMU6ZqqxInFojT85GAhLJhs4ImfIMb89COAJxX42mTS13PbNiDO5tpM0=
+X-Received: by 2002:a37:e97:: with SMTP id 145mr11499308qko.116.1636535180801;
+ Wed, 10 Nov 2021 01:06:20 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Cc:     brouer@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jiri Olsa <jolsa@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Peter Wu <peter@lekensteyn.nl>, Roman Gushchin <guro@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Tobias Klauser <tklauser@distanz.ch>
-Subject: Re: [PATCH bpf-next] bpftool: Fix SPDX tag for Makefiles and
- .gitignore
-Content-Language: en-US
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <20211105221904.3536-1-quentin@isovalent.com>
-In-Reply-To: <20211105221904.3536-1-quentin@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211108083840.4627-1-laoar.shao@gmail.com> <20211108083840.4627-2-laoar.shao@gmail.com>
+ <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
+In-Reply-To: <c3571571-320a-3e25-8409-5653ddca895c@redhat.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 10 Nov 2021 17:05:44 +0800
+Message-ID: <CALOAHbCexkBs7FCdmQcatQbc+RsGTSoJkNBop0khsZX=g8Ftkg@mail.gmail.com>
+Subject: Re: [PATCH 1/7] fs/exec: make __set_task_comm always set a nul
+ terminated string
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Nov 10, 2021 at 4:28 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 08.11.21 09:38, Yafang Shao wrote:
+> > Make sure the string set to task comm is always nul terminated.
+> >
+>
+> strlcpy: "the result is always a valid NUL-terminated string that fits
+> in the buffer"
+>
+> The only difference seems to be that strscpy_pad() pads the remainder
+> with zeroes.
+>
+> Is this description correct and I am missing something important?
+>
+
+In a earlier version [1], the checkpatch.py found a warning:
+WARNING: Prefer strscpy over strlcpy - see:
+https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+So I replaced strlcpy() with strscpy() to fix this warning.
+And then in v5[2], the strscpy() was replaced with strscpy_pad() to
+make sure there's no garbade data and also make get_task_comm() be
+consistent with get_task_comm().
+
+This commit log didn't clearly describe the historical changes.  So I
+think we can update the commit log and subject with:
+
+Subject: use strscpy_pad with strlcpy in __set_task_comm
+Commit log:
+strlcpy is not suggested to use by the checkpatch.pl, so we'd better
+recplace it with strscpy.
+To avoid leaving garbage data and be consistent with the usage in
+__get_task_comm(), the strscpy_pad is used here.
+
+WDYT?
+
+[1]. https://lore.kernel.org/lkml/20211007120752.5195-3-laoar.shao@gmail.com/
+[2]. https://lore.kernel.org/lkml/20211021034516.4400-2-laoar.shao@gmail.com/
+
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Petr Mladek <pmladek@suse.com>
+> > ---
+> >  fs/exec.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/fs/exec.c b/fs/exec.c
+> > index a098c133d8d7..404156b5b314 100644
+> > --- a/fs/exec.c
+> > +++ b/fs/exec.c
+> > @@ -1224,7 +1224,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
+> >  {
+> >       task_lock(tsk);
+> >       trace_task_rename(tsk, buf);
+> > -     strlcpy(tsk->comm, buf, sizeof(tsk->comm));
+> > +     strscpy_pad(tsk->comm, buf, sizeof(tsk->comm));
+> >       task_unlock(tsk);
+> >       perf_event_comm(tsk, exec);
+> >  }
+> >
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
 
 
-On 05/11/2021 23.19, Quentin Monnet wrote:
-> Bpftool is dual-licensed under GPLv2 and BSD-2-Clause. In commit
-> 907b22365115 ("tools: bpftool: dual license all files") we made sure
-> that all its source files were indeed covered by the two licenses, and
-> that they had the correct SPDX tags.
-> 
-> However, bpftool's Makefile, the Makefile for its documentation, and the
-> .gitignore file were skipped at the time (their GPL-2.0-only tag was
-> added later). Let's update the tags.
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Joe Stringer <joe@cilium.io>
-> Cc: Peter Wu <peter@lekensteyn.nl>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Tobias Klauser <tklauser@distanz.ch>
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->   tools/bpf/bpftool/.gitignore             | 2 +-
->   tools/bpf/bpftool/Documentation/Makefile | 2 +-
->   tools/bpf/bpftool/Makefile               | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/.gitignore b/tools/bpf/bpftool/.gitignore
-> index 05ce4446b780..a736f64dc5dc 100644
-> --- a/tools/bpf/bpftool/.gitignore
-> +++ b/tools/bpf/bpftool/.gitignore
-> @@ -1,4 +1,4 @@
-> -# SPDX-License-Identifier: GPL-2.0-only
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->   *.d
->   /bootstrap/
->   /bpftool
-> diff --git a/tools/bpf/bpftool/Documentation/Makefile b/tools/bpf/bpftool/Documentation/Makefile
-> index c49487905ceb..44b60784847b 100644
-> --- a/tools/bpf/bpftool/Documentation/Makefile
-> +++ b/tools/bpf/bpftool/Documentation/Makefile
-> @@ -1,4 +1,4 @@
-> -# SPDX-License-Identifier: GPL-2.0-only
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->   include ../../../scripts/Makefile.include
->   include ../../../scripts/utilities.mak
->   
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index c0c30e56988f..622568c7a9b8 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -1,4 +1,4 @@
-> -# SPDX-License-Identifier: GPL-2.0-only
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->   include ../../scripts/Makefile.include
->   include ../../scripts/utilities.mak
->   
-> 
-
+-- 
+Thanks
+Yafang
