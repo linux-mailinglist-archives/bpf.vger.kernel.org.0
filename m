@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5586B44C04C
-	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 12:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD2A44C04F
+	for <lists+bpf@lfdr.de>; Wed, 10 Nov 2021 12:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhKJLt2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 06:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S231466AbhKJLt3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 06:49:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhKJLt1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:49:27 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56033C061766
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:46:40 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso4376621wmc.2
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:46:40 -0800 (PST)
+        with ESMTP id S231473AbhKJLt2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:49:28 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E12C061767
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:46:41 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso3440323wmh.0
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 03:46:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xKjwFhBQSI7LBT94YR7j5voYDL7V60GODHnD8sNb0VA=;
-        b=U0G4KC8fi0rqH4UNf50TsZUJW8VA5IHAPSOrXRktg9DfrZFRW9fRrdR4AqTHCVSMTR
-         ZZfJ1j86C7AeSVm7Dey2cvXVgncxI77qUkDOnYlqzexQamfJg6BSqiq5xYg8bu5xJskN
-         hErHHd3w1H3zpPYV3xvJhSfpTG1jK3z2xJ+seSA/P6FNS6TbofxiYpK39iX+JyCK059Q
-         kAkdB6M3e0qmQ1pptXLDyk4v8UpUOjo+mTfBtHPCPpCVSN61vJXVRehr1BQO9uI2FJpi
-         toSNk67/S2OqXoIz0i8FnKeFdQqH7VDkM5lmLZaKlUsOMu9ldJA1r9vz2apnaQWqfDdJ
-         wV6A==
+        bh=czAlx45XekS6T7E6vCDjy/iYH9MvCYJzu7jpipCouho=;
+        b=yKmTdcdutKR305mFcuyPviyqxNGSrNMBCloV/7DKiITAeJxRm8/gKgb2tyHfCN2++k
+         jH9Zk3OVlIg7TewyylbO3z8FeSVmTwwBjQZ4JxuowCBfjHMua7fMVLGCHxp87S53z7oP
+         Ld89268IMEOjZ5rJxSpDgroEvocdwHyF3KfYCnMCv1ArCSKCh4J+sA+KPLomCA1sLnK7
+         sNHiWN+/TELe+Um9Lji2NlrUbfc/0/XskJFcpVS3sPsUHe9URctNOlI8jY7a+9P6Q65Z
+         mq68dceX43MMHqGv1cRMZtBbROJ15IW4/n4LXJpTK7ngDsYq9la1bET9SIxFUWb3Hb8b
+         uY5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xKjwFhBQSI7LBT94YR7j5voYDL7V60GODHnD8sNb0VA=;
-        b=0uCH8we+eaNPGIePgY38iDYOJlwjikvKnahIg7QP7oDvewwngQtoWaQQaDdOSjv6sx
-         xNopg2/DKxbHfla5/oTdU32A6JlyVdFS+p/0w2O7UBYowgMmLvldbCqbob3ikbZlL3x6
-         aQaCuPGpVOP3lcShpYvhC7V+OLttLA3uVYfmd0q+ttpKcCc/ngUWuF3lKJh3MEYHljA3
-         irwfT9zOmHJ30Fij+a1yYj8iI/pwhCTfdn+5VOsKtTsbk6HtNLhZWjmP3TPkVpdjJfWc
-         i+yY2BvngDGiHOJC9V2kM/SXLtWHXIKM40VAwwZ4OerjS52yLsc+4EafZgjQ7maB6APZ
-         lIUQ==
-X-Gm-Message-State: AOAM531KDeCxyFuhZLKpvQo1dV+EA5xQ1b2HWsCH1CdAN0Re7ErESWMD
-        GOr/S72MLkAZEpNxnNS2Ds2XXQ==
-X-Google-Smtp-Source: ABdhPJywio37gAXUeAlgc2fMqGZkFs+eby6R/oTQiZbSRzC34obMp28KRzPMuGA2EIpzi2ieu8LW6w==
-X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr15303616wmq.77.1636544798959;
-        Wed, 10 Nov 2021 03:46:38 -0800 (PST)
+        bh=czAlx45XekS6T7E6vCDjy/iYH9MvCYJzu7jpipCouho=;
+        b=n9nT7lEffxwg1Gao77KWpQGyXwddY6ItA9MbV8D71Albsm8OThrmLrCcBo6hEzte26
+         l+Sm1Vc7lFFSHS9G0lkCGd5C7sVic1fqk1Ni5Cljg73TKLCTJenJMpqRMR1/qt6qOFeN
+         SKrLV/c54l9sTmUs4+dkPV+bSYJhF32q4M65IppoqJ0QoXTriSGOUGaiE8s5P9p3vMPV
+         SsHSQP5+npPLHZ6on7Pp3BSJQKqjn3ODlB8Gv+k7zRGgDUj6E93etuESlBV0iqQwzefB
+         OlQ6SnFbyYD4REXvYOvVY4SqzEI7oVu8pNBe/IInsiDcTXZIqpbS9ObNGt9GUV5NB1Z3
+         q5JQ==
+X-Gm-Message-State: AOAM533f/4iU1yDk6lmCoxvC6PoDa1nKD72DtBcCm6vYjqsMEFP3EuEZ
+        wmb9BeTMqnbuPNgLwrT4x3vshmsd0Zw2AA==
+X-Google-Smtp-Source: ABdhPJxJ8a3seoMJLfdJVggYTKQNpgbOUoC3EZca3uGdC/2c355Z5J/PTV7zmc3WtHY+29aOxtEi0w==
+X-Received: by 2002:a05:600c:2206:: with SMTP id z6mr15498712wml.132.1636544799753;
+        Wed, 10 Nov 2021 03:46:39 -0800 (PST)
 Received: from localhost.localdomain ([149.86.79.190])
-        by smtp.gmail.com with ESMTPSA id i15sm6241152wmq.18.2021.11.10.03.46.38
+        by smtp.gmail.com with ESMTPSA id i15sm6241152wmq.18.2021.11.10.03.46.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 03:46:38 -0800 (PST)
+        Wed, 10 Nov 2021 03:46:39 -0800 (PST)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 4/6] bpftool: Fix indent in option lists in the documentation
-Date:   Wed, 10 Nov 2021 11:46:30 +0000
-Message-Id: <20211110114632.24537-5-quentin@isovalent.com>
+Subject: [PATCH bpf-next 5/6] bpftool: Update the lists of names for maps and prog-attach types
+Date:   Wed, 10 Nov 2021 11:46:31 +0000
+Message-Id: <20211110114632.24537-6-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211110114632.24537-1-quentin@isovalent.com>
 References: <20211110114632.24537-1-quentin@isovalent.com>
@@ -65,146 +65,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Mixed indentation levels in the lists of options in bpftool's
-documentation produces some unexpected results. For the "bpftool" man
-page, it prints a warning:
+To support the different BPF map or attach types, bpftool must remain
+up-to-date with the types supported by the kernel. Let's update the
+lists, by adding the missing Bloom filter map type and the perf_event
+attach type.
 
-    $ make -C bpftool.8
-      GEN     bpftool.8
-    <stdin>:26: (ERROR/3) Unexpected indentation.
+Both missing items were found with test_bpftool_synctypes.py.
 
-For other pages, there is no warning, but it results in a line break
-appearing in the option lists in the generated man pages.
-
-RST paragraphs should have a uniform indentation level. Let's fix it.
-
-Fixes: c07ba629df97 ("tools: bpftool: Update and synchronise option list in doc and help msg")
-Fixes: 8cc8c6357c8f ("tools: bpftool: Document and add bash completion for -L, -B options")
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- tools/bpf/bpftool/Documentation/bpftool-btf.rst    | 2 +-
- tools/bpf/bpftool/Documentation/bpftool-cgroup.rst | 2 +-
- tools/bpf/bpftool/Documentation/bpftool-gen.rst    | 2 +-
- tools/bpf/bpftool/Documentation/bpftool-link.rst   | 2 +-
- tools/bpf/bpftool/Documentation/bpftool-map.rst    | 6 +++---
- tools/bpf/bpftool/Documentation/bpftool-prog.rst   | 8 ++++----
- tools/bpf/bpftool/Documentation/bpftool.rst        | 6 +++---
- 7 files changed, 14 insertions(+), 14 deletions(-)
+ tools/bpf/bpftool/Documentation/bpftool-map.rst | 2 +-
+ tools/bpf/bpftool/bash-completion/bpftool       | 3 ++-
+ tools/bpf/bpftool/common.c                      | 1 +
+ tools/bpf/bpftool/map.c                         | 3 ++-
+ 4 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-index 88b28aa7431f..4425d942dd39 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-@@ -13,7 +13,7 @@ SYNOPSIS
- 	**bpftool** [*OPTIONS*] **btf** *COMMAND*
- 
- 	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | {**-d** | **--debug** } |
--		{ **-B** | **--base-btf** } }
-+	{ **-B** | **--base-btf** } }
- 
- 	*COMMANDS* := { **dump** | **help** }
- 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-index 3e4395eede4f..13a217a2503d 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-@@ -13,7 +13,7 @@ SYNOPSIS
- 	**bpftool** [*OPTIONS*] **cgroup** *COMMAND*
- 
- 	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } |
--		{ **-f** | **--bpffs** } }
-+	{ **-f** | **--bpffs** } }
- 
- 	*COMMANDS* :=
- 	{ **show** | **list** | **tree** | **attach** | **detach** | **help** }
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index 2ef2f2df0279..2a137f8a4cea 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -13,7 +13,7 @@ SYNOPSIS
- 	**bpftool** [*OPTIONS*] **gen** *COMMAND*
- 
- 	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } |
--		{ **-L** | **--use-loader** } }
-+	{ **-L** | **--use-loader** } }
- 
- 	*COMMAND* := { **object** | **skeleton** | **help** }
- 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-link.rst b/tools/bpf/bpftool/Documentation/bpftool-link.rst
-index 0de90f086238..9434349636a5 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-link.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-link.rst
-@@ -13,7 +13,7 @@ SYNOPSIS
- 	**bpftool** [*OPTIONS*] **link** *COMMAND*
- 
- 	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } |
--		{ **-f** | **--bpffs** } | { **-n** | **--nomount** } }
-+	{ **-f** | **--bpffs** } | { **-n** | **--nomount** } }
- 
- 	*COMMANDS* := { **show** | **list** | **pin** | **help** }
- 
 diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index d0c4abe08aba..1445cadc15d4 100644
+index 1445cadc15d4..991d18fd84f2 100644
 --- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
 +++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -13,11 +13,11 @@ SYNOPSIS
- 	**bpftool** [*OPTIONS*] **map** *COMMAND*
+@@ -52,7 +52,7 @@ MAP COMMANDS
+ |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
+ |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
+ |		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
+-		| **task_storage** }
++|		| **task_storage** | **bloom_filter** }
  
- 	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } |
--		{ **-f** | **--bpffs** } | { **-n** | **--nomount** } }
-+	{ **-f** | **--bpffs** } | { **-n** | **--nomount** } }
+ DESCRIPTION
+ ===========
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 88e2bcf16cca..b57f318ed649 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -710,7 +710,8 @@ _bpftool()
+                                 hash_of_maps devmap devmap_hash sockmap cpumap \
+                                 xskmap sockhash cgroup_storage reuseport_sockarray \
+                                 percpu_cgroup_storage queue stack sk_storage \
+-                                struct_ops inode_storage task_storage ringbuf'
++                                struct_ops ringbuf inode_storage task_storage \
++                                bloom_filter'
+                             COMPREPLY=( $( compgen -W "$BPFTOOL_MAP_CREATE_TYPES" -- "$cur" ) )
+                             return 0
+                             ;;
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 511eccdbdfe6..fa8eb8134344 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -74,6 +74,7 @@ const char * const attach_type_name[__MAX_BPF_ATTACH_TYPE] = {
+ 	[BPF_XDP]			= "xdp",
+ 	[BPF_SK_REUSEPORT_SELECT]	= "sk_skb_reuseport_select",
+ 	[BPF_SK_REUSEPORT_SELECT_OR_MIGRATE]	= "sk_skb_reuseport_select_or_migrate",
++	[BPF_PERF_EVENT]		= "perf_event",
+ };
  
- 	*COMMANDS* :=
--	{ **show** | **list** | **create** | **dump** | **update** | **lookup** | **getnext**
--	| **delete** | **pin** | **help** }
-+	{ **show** | **list** | **create** | **dump** | **update** | **lookup** | **getnext** |
-+	**delete** | **pin** | **help** }
+ void p_err(const char *fmt, ...)
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index cae1f1119296..68cb121e65c4 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -53,6 +53,7 @@ const char * const map_type_name[] = {
+ 	[BPF_MAP_TYPE_RINGBUF]			= "ringbuf",
+ 	[BPF_MAP_TYPE_INODE_STORAGE]		= "inode_storage",
+ 	[BPF_MAP_TYPE_TASK_STORAGE]		= "task_storage",
++	[BPF_MAP_TYPE_BLOOM_FILTER]		= "bloom_filter",
+ };
  
- MAP COMMANDS
- =============
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 91608cb7e44a..f27265bd589b 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -13,12 +13,12 @@ SYNOPSIS
- 	**bpftool** [*OPTIONS*] **prog** *COMMAND*
- 
- 	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } |
--		{ **-f** | **--bpffs** } | { **-m** | **--mapcompat** } | { **-n** | **--nomount** } |
--		{ **-L** | **--use-loader** } }
-+	{ **-f** | **--bpffs** } | { **-m** | **--mapcompat** } | { **-n** | **--nomount** } |
-+	{ **-L** | **--use-loader** } }
- 
- 	*COMMANDS* :=
--	{ **show** | **list** | **dump xlated** | **dump jited** | **pin** | **load**
--	| **loadall** | **help** }
-+	{ **show** | **list** | **dump xlated** | **dump jited** | **pin** | **load** |
-+	**loadall** | **help** }
- 
- PROG COMMANDS
- =============
-diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
-index bb23f55bb05a..8ac86565c501 100644
---- a/tools/bpf/bpftool/Documentation/bpftool.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool.rst
-@@ -19,14 +19,14 @@ SYNOPSIS
- 	*OBJECT* := { **map** | **program** | **cgroup** | **perf** | **net** | **feature** }
- 
- 	*OPTIONS* := { { **-V** | **--version** } |
--		{ **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } }
-+	{ **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } }
- 
- 	*MAP-COMMANDS* :=
- 	{ **show** | **list** | **create** | **dump** | **update** | **lookup** | **getnext** |
--		**delete** | **pin** | **event_pipe** | **help** }
-+	**delete** | **pin** | **event_pipe** | **help** }
- 
- 	*PROG-COMMANDS* := { **show** | **list** | **dump jited** | **dump xlated** | **pin** |
--		**load** | **attach** | **detach** | **help** }
-+	**load** | **attach** | **detach** | **help** }
- 
- 	*CGROUP-COMMANDS* := { **show** | **list** | **attach** | **detach** | **help** }
- 
+ const size_t map_type_name_size = ARRAY_SIZE(map_type_name);
+@@ -1477,7 +1478,7 @@ static int do_help(int argc, char **argv)
+ 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
+ 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
+ 		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
+-		"                 task_storage }\n"
++		"                 task_storage | bloom_filter }\n"
+ 		"       " HELP_SPEC_OPTIONS " |\n"
+ 		"                    {-f|--bpffs} | {-n|--nomount} }\n"
+ 		"",
 -- 
 2.32.0
 
