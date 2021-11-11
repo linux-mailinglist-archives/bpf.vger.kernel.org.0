@@ -2,82 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD9044DB2A
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 18:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EAE44DB3C
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 18:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhKKRgj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 12:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234311AbhKKRgj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 12:36:39 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B574C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 09:33:50 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mlDxM-0001JY-7v; Thu, 11 Nov 2021 18:33:48 +0100
-Message-ID: <8de74135-f272-ea06-fed6-730937f348d1@leemhuis.info>
-Date:   Thu, 11 Nov 2021 18:33:47 +0100
+        id S232777AbhKKRtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 12:49:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233705AbhKKRtF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 12:49:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19DF361268;
+        Thu, 11 Nov 2021 17:46:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636652776;
+        bh=t4v6QOc8d9eGSyxQQvFgi8E+t/3B1gGlPGRtk+Vx7oY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lUUYvyrdTrYhN6QE+b8PSFlD4+yIrsonGhp8QuubwS/ADwuoOc6Vl+eXUNPmb/FpD
+         vA9ab5TQD3Kk+tp2rIAU25qeMj0OrzVnGajTZV2RIFJtsTtaebpfsqXqHDmDh8jjyN
+         idhQFydwkOaxdrHuqut8J/SVrmlYNg6zXscEU4h+jj/zHYOjyCQyi8hxvmF/QE53MX
+         XnpuQNjxim6UEaNEUv/ocyyVVeH7aLNY1abgddaUzbezBSIjHLMeQyh2EofS+AmO2i
+         7eTMbhSRv2iprdlK1X+NlxDIN5J8N/t/RqOYoLUFwqnqepa9f7r8Bhek9mKvzIToVf
+         s/4U3aZLaHifA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0FD8E410A1; Thu, 11 Nov 2021 14:46:13 -0300 (-03)
+Date:   Thu, 11 Nov 2021 14:46:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH dwarves v2 0/2] btf: support typedef
+ DW_TAG_LLVM_annotation
+Message-ID: <YY1W5FlMlaN6DGaN@kernel.org>
+References: <20211102233500.1024582-1-yhs@fb.com>
+ <CAEf4BzZXVjTgZH-t0kXP6rwyA=dxQqc3VAHdmh-eFHY5OdbGYA@mail.gmail.com>
+ <e89bbd11-724a-d186-26d6-ce34435702f1@fb.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: Verifier rejects previously accepted program
-Content-Language: en-BW
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
-References: <CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com>
- <CAADnVQKsK_2HHfOLs4XK7h_LC4+b7tfFw9261Psy5St8P+GWFA@mail.gmail.com>
- <CACAyw9_GmNotSyG0g1OOt648y9kx5Bd72f58TtS-QQD9FaV06w@mail.gmail.com>
- <20211105194952.xve6u6lgh2oy46dy@ast-mbp.dhcp.thefacebook.com>
- <CACAyw99KGdTAz+G3aU8G3eqC926YYpgD57q-A+NFNVqqiJPY3g@mail.gmail.com>
- <20211110042530.6ye65mpspre7au5f@ast-mbp.dhcp.thefacebook.com>
- <CACAyw9-s0ahY8m7WtMd1OK=ZF9w5gS9gktQ6S8Kak2pznXgw0w@mail.gmail.com>
- <20211110165044.kkjqrjpmnz7hkmq3@ast-mbp.dhcp.thefacebook.com>
- <7e7f180c-6cf6-ba86-e8fd-49b3b291e81e@leemhuis.info>
- <CAADnVQ+1xY2fGKH2=VxeukSwBUc0D=+6ChqCgwEMPGMPKeKiOA@mail.gmail.com>
- <b1b8bf55-1db5-3343-29da-d284a33d10d4@leemhuis.info>
- <CACAyw9-=JM9OeabH-xSaa00SzXUTzXkSN6A4nBY5Te8TD7RK3A@mail.gmail.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <CACAyw9-=JM9OeabH-xSaa00SzXUTzXkSN6A4nBY5Te8TD7RK3A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1636652030;6f9a21e8;
-X-HE-SMSGID: 1mlDxM-0001JY-7v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e89bbd11-724a-d186-26d6-ce34435702f1@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11.11.21 18:10, Lorenz Bauer wrote:
-> On Wed, 10 Nov 2021 at 19:50, Thorsten Leemhuis
-> <regressions@leemhuis.info> wrote:
->>
->>>
->>> I don't think you're familiar with bpf process of applying patches.
->>
->> That's totally correct, but why should someone working as a regression
->> tracker for all of the Linux kernel has to know the exact inner workings
->> of all the various subsystems?
+Em Tue, Nov 09, 2021 at 09:23:30PM -0800, Yonghong Song escreveu:
 > 
-> I think I'm responsible for a misunderstanding between you and Alexei,
-> sorry. I saw your regression tracker mentioned, and wanted to give it
-> a try.
+> 
+> On 11/2/21 5:11 PM, Andrii Nakryiko wrote:
+> > On Tue, Nov 2, 2021 at 4:35 PM Yonghong Song <yhs@fb.com> wrote:
+> > > 
+> > > Latest llvm is able to generate DW_TAG_LLVM_annotation for typedef
+> > > declarations. Latest bpf-next supports BTF_KIND_DECL_TAG for
+> > > typedef declarations. This patch implemented dwarf DW_TAG_LLVM_annotation
+> > > to btf BTF_KIND_DECL_TAG conversion. Patch 1 is for dwarf_loader
+> > > to process DW_TAG_LLVM_annotation tags. Patch 2 is for the
+> > > dwarf->btf conversion.
+> > > 
+> > > Changelog:
+> > >    v1 -> v2:
+> > >     - change some "if" statements to "switch" statement.
+> > > 
+> > 
+> > LGTM.
+> > 
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> Arnaldo, did you get chance to look at this patch set?
 
-Many thx for that. You were the first person besides me to give it a try
-since it ran for real (and everything worked as it was supposed to),
-that's why I on twitter already promised to get you a beer or other
-beverage of choice should we ever meet on a conference. :-)
+Yeah, I've merged and put it in the tmp.master branch so that libbpf's
+CI can have a go on it.
 
-> Alexei wasn't aware of this and therefore lacked context when
-> you replied.
+I'm also updating my clang/llvm build to test it.
 
-Well, I think the mail explained it, but I guess it was a bit too long,
-complicated, or something like that. Whatever, no worries. :-D
+Thanks,
 
-> For the purpose of this report I'll send an email to regzbot when the
-> commit has made its way into the bpf tree. I hope this works for you
-> and Alexei.
+- Arnaldo
+ 
+> > 
+> > > Yonghong Song (2):
+> > >    dwarf_loader: support typedef DW_TAG_LLVM_annotation
+> > >    btf_encoder: generate BTF_KIND_DECL_TAGs for typedef btf_decl_tag
+> > >      attributes
+> > > 
+> > >   btf_encoder.c  | 17 ++++++++++++++---
+> > >   dwarf_loader.c |  7 ++-----
+> > >   2 files changed, 16 insertions(+), 8 deletions(-)
+> > > 
+> > > --
+> > > 2.30.2
+> > > 
 
-Sure it does, many thx!
+-- 
 
-Ciao, Thorsten
+- Arnaldo
