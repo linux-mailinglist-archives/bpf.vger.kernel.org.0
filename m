@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5CF44D4C1
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 11:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C916444D4CC
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 11:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhKKKLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 05:11:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28918 "EHLO
+        id S232535AbhKKKOA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 05:14:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60069 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232871AbhKKKLO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 05:11:14 -0500
+        by vger.kernel.org with ESMTP id S230021AbhKKKN7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 05:13:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636625305;
+        s=mimecast20190719; t=1636625469;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GiHlgUAmwsKT+hTugq3VkakjXKCs0k5+tiUaL6hbwdA=;
-        b=J1Dlqh1ezSCuU5WBAK40eNEzwXjdReBVb6Fwl7iFbz7MaQL+WI7TbvS6TLlr+VXUDLy8d3
-        x2dNn6KR4fdSVZfO7BbLxn+VwveMJlAG8Gh9QFyg1tC/pLEvPhAPy/rCsQcPqhtN/l4FMD
-        K/1ryc8T+Tu7jz/DTcSOehK0avRdWLM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-74-s_UL-jtQPdiRnprdjcTL_w-1; Thu, 11 Nov 2021 05:08:24 -0500
-X-MC-Unique: s_UL-jtQPdiRnprdjcTL_w-1
-Received: by mail-wm1-f71.google.com with SMTP id m18-20020a05600c3b1200b0033283ea5facso1617147wms.1
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 02:08:24 -0800 (PST)
+        bh=0rA+4QDY7fcYCncOWJtOa/HujeNT5Vt9NxjUSIUPHvs=;
+        b=QXVTVZPP85huloPsfDZEZ7uTJtTN6mgpd1/wdYzj8qHNiwVP5SKjIDlZT3LgRKghuYZClJ
+        A55JK1Eunwz/NhQWUq237Jr6jyqF+jI7Y8x9rFL2HZnr0WbLHEuTVRLp7H4UvUxF1Mwc3B
+        w1RNE77ZK2o0M1+KseOrLcEFHv+oIvg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-6dKGMigrNdCjs6huV6i0Zg-1; Thu, 11 Nov 2021 05:11:07 -0500
+X-MC-Unique: 6dKGMigrNdCjs6huV6i0Zg-1
+Received: by mail-wr1-f70.google.com with SMTP id b1-20020a5d6341000000b001901ddd352eso130284wrw.7
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 02:11:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=GiHlgUAmwsKT+hTugq3VkakjXKCs0k5+tiUaL6hbwdA=;
-        b=wc6SMAhfHsduJlEVlagAQRyA4SbKn1QGb+HUDRINAdyOmRQr6+RN4OOA/TibwnJsO0
-         MchhoBb4ld/juCLBTBOvmhdbAbvs85MZY02x6jymO1VJaKV9hE4joSMetUNzWfXbiy6/
-         86b3Si4YjKIjbsfTGyOchwsOXYmrTjRnM0VQkTEN2COxd4LK6NamI/YhL7HB85etMYVy
-         D/JtgHGO03lESvb31xRhkVz56lNyGjoSLo0faMFDTSou9vIqFGKinYishqiafPEOpCt4
-         lJloIVj50TYmdAQfQhMrVG9z+boEXVAjX03mRdinHreRFQZb9kxQ7WAUzPT52bFzQNFV
-         h1DQ==
-X-Gm-Message-State: AOAM531feVj4QmI7a2Kh6gDVjh177RzslN6sQlG9kz2acnewp5KR/gNQ
-        Uxih1TQZda31AAVyQfBQQBMVwx6GVdBcV9tmye738vfeCBRB8DojXcD0s962s4ddfGPEaMjxmJH
-        d2dryP83LyOLq
-X-Received: by 2002:a05:6000:2a3:: with SMTP id l3mr7550623wry.415.1636625303235;
-        Thu, 11 Nov 2021 02:08:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz6xfbJxVXU/0Vk9IV0rvq5JIqAJLSbOfFYTCvTXeNfro03lA0NI5R+gVHhWEw6LtsXRfL2QQ==
-X-Received: by 2002:a05:6000:2a3:: with SMTP id l3mr7550593wry.415.1636625303017;
-        Thu, 11 Nov 2021 02:08:23 -0800 (PST)
+        bh=0rA+4QDY7fcYCncOWJtOa/HujeNT5Vt9NxjUSIUPHvs=;
+        b=ngAy2wsv53kj9j1Z2utrVVMOR/mSje+lLopzeQl21UHI3zfVqibCK2AQdkh3bNc+vF
+         9vWZqU045V4224KkZdo3U5rBy6hOfl0Q+v3nautPfYWvRSU0Gc3QZScwh2WmtBNzPM+O
+         GCyvOr07Qv8sLTUSJhf9jNP6re/Vr+gLMrVJFKBJv1OsTb2iUov/GK/46YMvzkF6P/y8
+         Og2tj1PWm6gK7TLmmbqxI+iOO7PNFtX+XOfAoo1gP+50xWBfyhw3dr/2srp0+hCqcmiz
+         3Ow5XDcmyWnLFWNLbzns8p+27GNVe6e6hjbkUyId+hSDN4CI1HaYJE4YqX3g9wZTM+dk
+         Wa6g==
+X-Gm-Message-State: AOAM533dN1IoH4bYNWppHrTwhdxkz0SjykGX8GNKl7p+Y0iBmvD9kbZ8
+        TvARQjzSuF2acwMoMM4/57VCp+ScZ2CjPvwCyHYn/tryMYc7TwZXF4HZe/wEniqh1QvFL4fPA4V
+        Re3OY0j1fasYF
+X-Received: by 2002:adf:f0c5:: with SMTP id x5mr7303227wro.320.1636625466724;
+        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzOcg/IBIObd/PrNSThzuPmbYflfz+NcWv98QuuE6NH2tE/x226NzWn+mDBhgZ2vITILodW1Q==
+X-Received: by 2002:adf:f0c5:: with SMTP id x5mr7303188wro.320.1636625466497;
+        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
 Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
-        by smtp.gmail.com with ESMTPSA id l4sm2372769wrv.94.2021.11.11.02.08.20
+        by smtp.gmail.com with ESMTPSA id t8sm2094352wmn.44.2021.11.11.02.11.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 02:08:22 -0800 (PST)
-Message-ID: <e7778942-6220-949b-72f1-fa4fc4ffbfee@redhat.com>
-Date:   Thu, 11 Nov 2021 11:08:20 +0100
+        Thu, 11 Nov 2021 02:11:06 -0800 (PST)
+Message-ID: <24b685c3-f16a-9ced-fb39-bf6a0b9f994e@redhat.com>
+Date:   Thu, 11 Nov 2021 11:11:04 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 6/7] tools/bpf/bpftool/skeleton: use
- bpf_probe_read_kernel_str to get task comm
+Subject: Re: [PATCH 7/7] tools/testing/selftests/bpf: make it adopt to task
+ comm size change
 Content-Language: en-US
 To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
@@ -67,7 +67,6 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Andrii Nakryiko <andrii@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -77,10 +76,10 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Kees Cook <keescook@chromium.org>,
         Petr Mladek <pmladek@suse.com>
 References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-7-laoar.shao@gmail.com>
+ <20211108083840.4627-8-laoar.shao@gmail.com>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20211108083840.4627-7-laoar.shao@gmail.com>
+In-Reply-To: <20211108083840.4627-8-laoar.shao@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -88,14 +87,26 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 08.11.21 09:38, Yafang Shao wrote:
-> bpf_probe_read_kernel_str() will add a nul terminator to the dst, then
-> we don't care about if the dst size is big enough.
+> The hard-coded 16 is used in various bpf progs. These progs get task
+> comm either via bpf_get_current_comm() or prctl() or
+> bpf_core_read_str(), all of which can work well even if the task comm size
+> is changed.
+> 
+> In these BPF programs, one thing to be improved is the
+> sched:sched_switch tracepoint args. As the tracepoint args are derived
+> from the kernel, we'd better make it same with the kernel. So the macro
+> TASK_COMM_LEN is converted to type enum, then all the BPF programs can
+> get it through BTF.
+> 
+> The BPF program which wants to use TASK_COMM_LEN should include the header
+> vmlinux.h. Regarding the test_stacktrace_map and test_tracepoint, as the
+> type defined in linux/bpf.h are also defined in vmlinux.h, so we don't
+> need to include linux/bpf.h again.
 > 
 > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 > Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
 > Cc: Peter Zijlstra <peterz@infradead.org>
@@ -106,7 +117,8 @@ On 08.11.21 09:38, Yafang Shao wrote:
 > Cc: Kees Cook <keescook@chromium.org>
 > Cc: Petr Mladek <pmladek@suse.com>
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+
+Acked-by: David Hildenbrand <david@redhat.com>
 
 
 -- 
