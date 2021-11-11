@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42C744DE77
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 00:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 493BC44DE78
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 00:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbhKKX2z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 18:28:55 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37930 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233119AbhKKX2y (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 18:28:54 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ABNKqMw031790
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:26:05 -0800
+        id S233498AbhKKX3B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 18:29:01 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15682 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233119AbhKKX27 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 18:28:59 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ABMe1ja007989
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:26:09 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=VGzWXxwe0xjTQKcrKXPP+FuiYOLYaan5Pc29qZZioT0=;
- b=aH8gkbZ5Oq7kIZMmINCiOQ/3MDd7DXJU6iPrjisvU59kUZLYonDcjVOFjnAK/4zboeSa
- RNI7EKPg9q2fTqFKdQGQ0ArUVDbtICfFVefvWA58smuhbIC/Zbv8+DKfBMVx4G4j3aF2
- UQmCYL5hAlHw7dzbnxsdGrbQ8Bm5d0WOJjk= 
+ bh=5zs13Hko4MKCOKwdyuzTuBwdujt6QCU+vOVHxDac2R4=;
+ b=bk6ONPLUeZDmrsFqHI+IxsY67jxf4TcvFu+94t+h0Hwd/h0EiFXZyzjvaAR52/9PM9zq
+ 2Sw1H9N7/+WqCnobWViaEstOK+qJRY3clupr4V2wxYctV4DoPC8KPcH2sJvNZ208EHM/
+ 9ML0YB/QRASGdBY/x+noUBlEDmx8dC1GHeU= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c9bp7rdwk-5
+        by mx0a-00082601.pphosted.com with ESMTP id 3c9bnf0jyj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:26:05 -0800
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:208::11) by
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:26:09 -0800
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 11 Nov 2021 15:26:03 -0800
+ 15.1.2308.14; Thu, 11 Nov 2021 15:26:07 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 3D38224B3DCA; Thu, 11 Nov 2021 15:25:59 -0800 (PST)
+        id 9926624B3DFA; Thu, 11 Nov 2021 15:26:05 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -38,9 +38,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "Jose E . Marchesi" <jose.marchesi@oracle.com>,
         <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 03/10] bpftool: Support BTF_KIND_TYPE_TAG
-Date:   Thu, 11 Nov 2021 15:25:59 -0800
-Message-ID: <20211111232559.788814-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 04/10] selftests/bpf: Test libbpf API function btf__add_type_tag()
+Date:   Thu, 11 Nov 2021 15:26:05 -0800
+Message-ID: <20211111232605.789690-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211111232543.786041-1-yhs@fb.com>
 References: <20211111232543.786041-1-yhs@fb.com>
@@ -49,51 +49,167 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: 1MMh4qdF72vGUHUvL2_AINOZZWXB9S-s
-X-Proofpoint-ORIG-GUID: 1MMh4qdF72vGUHUvL2_AINOZZWXB9S-s
+X-Proofpoint-ORIG-GUID: nPCvgGH76tS9Rs2EP7RHOKt7hW6877Nt
+X-Proofpoint-GUID: nPCvgGH76tS9Rs2EP7RHOKt7hW6877Nt
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-11_09,2021-11-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 clxscore=1015 mlxscore=0 spamscore=0 mlxlogscore=877
- phishscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111110118
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 suspectscore=0
+ mlxlogscore=932 impostorscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111110118
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add bpftool support for BTF_KIND_TYPE_TAG.
+Add unit tests for btf__add_type_tag().
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/bpf/bpftool/btf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/bpf/btf_helpers.c     |  4 +-
+ .../selftests/bpf/prog_tests/btf_write.c      | 67 +++++++++++--------
+ 2 files changed, 43 insertions(+), 28 deletions(-)
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 015d2758f826..e77dda35d1de 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -39,6 +39,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] =3D=
- {
+diff --git a/tools/testing/selftests/bpf/btf_helpers.c b/tools/testing/se=
+lftests/bpf/btf_helpers.c
+index 3d1a748d09d8..89e717961c43 100644
+--- a/tools/testing/selftests/bpf/btf_helpers.c
++++ b/tools/testing/selftests/bpf/btf_helpers.c
+@@ -25,11 +25,12 @@ static const char * const btf_kind_str_mapping[] =3D =
+{
  	[BTF_KIND_DATASEC]	=3D "DATASEC",
  	[BTF_KIND_FLOAT]	=3D "FLOAT",
  	[BTF_KIND_DECL_TAG]	=3D "DECL_TAG",
 +	[BTF_KIND_TYPE_TAG]	=3D "TYPE_TAG",
  };
 =20
- struct btf_attach_point {
-@@ -142,6 +143,7 @@ static int dump_btf_type(const struct btf *btf, __u32=
- id,
+ static const char *btf_kind_str(__u16 kind)
+ {
+-	if (kind > BTF_KIND_DECL_TAG)
++	if (kind > BTF_KIND_TYPE_TAG)
+ 		return "UNKNOWN";
+ 	return btf_kind_str_mapping[kind];
+ }
+@@ -109,6 +110,7 @@ int fprintf_btf_type_raw(FILE *out, const struct btf =
+*btf, __u32 id)
  	case BTF_KIND_VOLATILE:
  	case BTF_KIND_RESTRICT:
  	case BTF_KIND_TYPEDEF:
 +	case BTF_KIND_TYPE_TAG:
- 		if (json_output)
- 			jsonw_uint_field(w, "type_id", t->type);
- 		else
+ 		fprintf(out, " type_id=3D%u", t->type);
+ 		break;
+ 	case BTF_KIND_ARRAY: {
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_write.c b/tools/t=
+esting/selftests/bpf/prog_tests/btf_write.c
+index b912eeb0b6b4..addf99c05896 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_write.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_write.c
+@@ -297,6 +297,16 @@ static void gen_btf(struct btf *btf)
+ 	ASSERT_EQ(btf_decl_tag(t)->component_idx, 1, "tag_component_idx");
+ 	ASSERT_STREQ(btf_type_raw_dump(btf, 19),
+ 		     "[19] DECL_TAG 'tag2' type_id=3D14 component_idx=3D1", "raw_dump"=
+);
++
++	/* TYPE_TAG */
++	id =3D btf__add_type_tag(btf, "tag1", 1);
++	ASSERT_EQ(id, 20, "tag_id");
++	t =3D btf__type_by_id(btf, 20);
++	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "tag1", "tag_value")=
+;
++	ASSERT_EQ(btf_kind(t), BTF_KIND_TYPE_TAG, "tag_kind");
++	ASSERT_EQ(t->type, 1, "tag_type");
++	ASSERT_STREQ(btf_type_raw_dump(btf, 20),
++		     "[20] TYPE_TAG 'tag1' type_id=3D1", "raw_dump");
+ }
+=20
+ static void test_btf_add()
+@@ -337,7 +347,8 @@ static void test_btf_add()
+ 		"[17] DATASEC 'datasec1' size=3D12 vlen=3D1\n"
+ 		"\ttype_id=3D1 offset=3D4 size=3D8",
+ 		"[18] DECL_TAG 'tag1' type_id=3D16 component_idx=3D-1",
+-		"[19] DECL_TAG 'tag2' type_id=3D14 component_idx=3D1");
++		"[19] DECL_TAG 'tag2' type_id=3D14 component_idx=3D1",
++		"[20] TYPE_TAG 'tag1' type_id=3D1");
+=20
+ 	btf__free(btf);
+ }
+@@ -359,7 +370,7 @@ static void test_btf_add_btf()
+ 	gen_btf(btf2);
+=20
+ 	id =3D btf__add_btf(btf1, btf2);
+-	if (!ASSERT_EQ(id, 20, "id"))
++	if (!ASSERT_EQ(id, 21, "id"))
+ 		goto cleanup;
+=20
+ 	VALIDATE_RAW_BTF(
+@@ -391,35 +402,37 @@ static void test_btf_add_btf()
+ 		"\ttype_id=3D1 offset=3D4 size=3D8",
+ 		"[18] DECL_TAG 'tag1' type_id=3D16 component_idx=3D-1",
+ 		"[19] DECL_TAG 'tag2' type_id=3D14 component_idx=3D1",
++		"[20] TYPE_TAG 'tag1' type_id=3D1",
+=20
+ 		/* types appended from the second BTF */
+-		"[20] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNE=
+D",
+-		"[21] PTR '(anon)' type_id=3D20",
+-		"[22] CONST '(anon)' type_id=3D24",
+-		"[23] VOLATILE '(anon)' type_id=3D22",
+-		"[24] RESTRICT '(anon)' type_id=3D23",
+-		"[25] ARRAY '(anon)' type_id=3D21 index_type_id=3D20 nr_elems=3D10",
+-		"[26] STRUCT 's1' size=3D8 vlen=3D2\n"
+-		"\t'f1' type_id=3D20 bits_offset=3D0\n"
+-		"\t'f2' type_id=3D20 bits_offset=3D32 bitfield_size=3D16",
+-		"[27] UNION 'u1' size=3D8 vlen=3D1\n"
+-		"\t'f1' type_id=3D20 bits_offset=3D0 bitfield_size=3D16",
+-		"[28] ENUM 'e1' size=3D4 vlen=3D2\n"
++		"[21] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNE=
+D",
++		"[22] PTR '(anon)' type_id=3D21",
++		"[23] CONST '(anon)' type_id=3D25",
++		"[24] VOLATILE '(anon)' type_id=3D23",
++		"[25] RESTRICT '(anon)' type_id=3D24",
++		"[26] ARRAY '(anon)' type_id=3D22 index_type_id=3D21 nr_elems=3D10",
++		"[27] STRUCT 's1' size=3D8 vlen=3D2\n"
++		"\t'f1' type_id=3D21 bits_offset=3D0\n"
++		"\t'f2' type_id=3D21 bits_offset=3D32 bitfield_size=3D16",
++		"[28] UNION 'u1' size=3D8 vlen=3D1\n"
++		"\t'f1' type_id=3D21 bits_offset=3D0 bitfield_size=3D16",
++		"[29] ENUM 'e1' size=3D4 vlen=3D2\n"
+ 		"\t'v1' val=3D1\n"
+ 		"\t'v2' val=3D2",
+-		"[29] FWD 'struct_fwd' fwd_kind=3Dstruct",
+-		"[30] FWD 'union_fwd' fwd_kind=3Dunion",
+-		"[31] ENUM 'enum_fwd' size=3D4 vlen=3D0",
+-		"[32] TYPEDEF 'typedef1' type_id=3D20",
+-		"[33] FUNC 'func1' type_id=3D34 linkage=3Dglobal",
+-		"[34] FUNC_PROTO '(anon)' ret_type_id=3D20 vlen=3D2\n"
+-		"\t'p1' type_id=3D20\n"
+-		"\t'p2' type_id=3D21",
+-		"[35] VAR 'var1' type_id=3D20, linkage=3Dglobal-alloc",
+-		"[36] DATASEC 'datasec1' size=3D12 vlen=3D1\n"
+-		"\ttype_id=3D20 offset=3D4 size=3D8",
+-		"[37] DECL_TAG 'tag1' type_id=3D35 component_idx=3D-1",
+-		"[38] DECL_TAG 'tag2' type_id=3D33 component_idx=3D1");
++		"[30] FWD 'struct_fwd' fwd_kind=3Dstruct",
++		"[31] FWD 'union_fwd' fwd_kind=3Dunion",
++		"[32] ENUM 'enum_fwd' size=3D4 vlen=3D0",
++		"[33] TYPEDEF 'typedef1' type_id=3D21",
++		"[34] FUNC 'func1' type_id=3D35 linkage=3Dglobal",
++		"[35] FUNC_PROTO '(anon)' ret_type_id=3D21 vlen=3D2\n"
++		"\t'p1' type_id=3D21\n"
++		"\t'p2' type_id=3D22",
++		"[36] VAR 'var1' type_id=3D21, linkage=3Dglobal-alloc",
++		"[37] DATASEC 'datasec1' size=3D12 vlen=3D1\n"
++		"\ttype_id=3D21 offset=3D4 size=3D8",
++		"[38] DECL_TAG 'tag1' type_id=3D36 component_idx=3D-1",
++		"[39] DECL_TAG 'tag2' type_id=3D34 component_idx=3D1",
++		"[40] TYPE_TAG 'tag1' type_id=3D21");
+=20
+ cleanup:
+ 	btf__free(btf1);
 --=20
 2.30.2
 
