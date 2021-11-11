@@ -2,185 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6310844DBC7
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 19:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CEC44DBC8
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 19:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbhKKSw5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 13:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S233728AbhKKSxE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 13:53:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbhKKSw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 13:52:57 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3145C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:50:07 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id g17so17308727ybe.13
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:50:07 -0800 (PST)
+        with ESMTP id S233245AbhKKSxE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 13:53:04 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B1FC061766
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:50:15 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id y7so6585111plp.0
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:50:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HQqJYSjKLICPrq4vheXAZ/SXWmehyghKAZpiTnSno8I=;
-        b=M9X/YIFXPyr8HxlgfxpEy8V9o6+WOby4MFpur6TGjuNczYlpQMl2eq49m71XJlBJrL
-         /I//O+6TTcu9CewB3fJhoPmKMhjjJqD1aKimEDyL4qKwpqYF53Th+eKwACvtHuzELPDY
-         da6UP/0CLRN9/gNFAjuOfaUE7wLe36161oTLSo8lGMod3jn1Amk9x82A0URfswIJ/gdx
-         6Tlv7eQ5SBdQLulSu5Y5yILUaeUJv/6msA8zxqC62CFOLikRcqKnC9nmA6E9png9I7mm
-         oK43FXpkLxDKei0jfEeGxabU221kx0xPvwt9XkGdgUOv+6wBoHFyZYIF+xoEgouVdSIV
-         J8dQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OYyuVtUuCBcxTDQ7D8RRE694ZchOx2+P5mULhwha9So=;
+        b=QwnAqGn0NIpvJqaV47mITxXlEAsI7JvnrKMGaMz+UfMb3torZU875tyNsVNp8g74qk
+         5wUN8LI6SKAtHjTx7H1PhR/eKZwpHRqSYPqXatItSMJewqpERaKV3YdVXzI/eTvLykJW
+         0x9VMesRA6PXjVJuUTnrkI7gzeeqkwq0H8cJkTJBqfEoXysA6Mu+cpIDuQh7X4C3E42W
+         uHm8W3Q2cCOre9UGSIl7dmkWGXIfnbYEYB7XT0Mib+Ov83aNsCAOZkwKARteHGDD5vGS
+         qalKIxUiliQeES1iHJ7vA6laUH7T62AAITTiLQLtW7ejLUETQqVYRo7LvCYwvzWIKEa5
+         4vOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HQqJYSjKLICPrq4vheXAZ/SXWmehyghKAZpiTnSno8I=;
-        b=OXw9CNkdhlwmrVbEDzbOHbvdP8DKX/MuwL2XYs+7JNzARhAcVcxdCALHfP1QhiFpUK
-         i/G264H807sj8nfXcmNheBcAmToSf7iR/7bu1W7dEKprFJBE8+iD1oJLPcOxkFOX4yLm
-         tRyg54vaHlIl5y4IjXXFoF3EQgTsEk1df32JQvMt7+IzvhymyxozxT0C1PfKQgRkAnNL
-         qlN3tQVhtSB1jYDRbaHYqEI9I4tVsxUqEocirDew7O3pGgSScSQsEvRMl0XwoApp2Mcj
-         VFg4b3TiPRiW3ScUyWuaNripApEO8GbQeuVdGAvBUm+yVlEb7JWm464onqnitIMSPTjK
-         MPXg==
-X-Gm-Message-State: AOAM530+X3PkNcBYw5Tt1qq6GHAD/tyIIxVXcMGMV98R7WkRCGMXAPjf
-        RTY0fiXnWAJ7cKo/lEdsmWnHJXoheQIZXREMQkiTONlw
-X-Google-Smtp-Source: ABdhPJzn7jDQIu3VlCp7zzVpUw1GIZyDqjPRH/Mra2g56X1T3K4QEjz/6AY8qVHE30REvrKCavXK5RxS8zo6JnnxR+w=
-X-Received: by 2002:a25:d16:: with SMTP id 22mr10127572ybn.51.1636656607161;
- Thu, 11 Nov 2021 10:50:07 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OYyuVtUuCBcxTDQ7D8RRE694ZchOx2+P5mULhwha9So=;
+        b=jzwaLmyBIe6R0yZ1gUjtOLfKXnkik7Ppjj/MtkjXYqSOViTUwTKGIQ7b8gq/SHMLQm
+         KyiBMI6z80JWdBhpfd7TEK9hkm3jOHRHdBa960j4i+ZCPzHHhi5bFfk/PQcneRKqKKIJ
+         wD5HoYhG0iX9Iyx9FnzPBtLp36M+Rx7vDc4utq0PYoM2vFPCngBn4VVtbMW4DeGyHcwG
+         RXC2TY2U/xdlM4bx/vyi+rL9+19WciG0raxiAldA75HXFfcgx8DVJp4RJcoUd+1hC16F
+         xwT55EVOLBVi6OmcuNI75/2YdfIH9GgBiXy8Mxnr19HZC3HM9iaVvL6YmQpJJv9blR6N
+         FOMg==
+X-Gm-Message-State: AOAM533QSPWlmOUuxBixUp3Soqgp/6y7mqB+MUvmAypgkmnFPRDy72Ms
+        cV6X3h22MlDPNlwa/AkdbCch9p+VRgJQppYWwg==
+X-Google-Smtp-Source: ABdhPJwpcOUQ3VxheOniZN8gdvsulwDMln8WAMMjyDxitAKRzLQzJbfqe2rRZ8aXniD+kYeV4o3ih0ksqsLrhdh8rtg=
+X-Received: by 2002:a17:902:e405:b0:141:b2fa:b00 with SMTP id
+ m5-20020a170902e40500b00141b2fa0b00mr1195909ple.22.1636656614631; Thu, 11 Nov
+ 2021 10:50:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110051940.367472-1-yhs@fb.com> <20211110052012.371411-1-yhs@fb.com>
-In-Reply-To: <20211110052012.371411-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Nov 2021 10:49:55 -0800
-Message-ID: <CAEf4BzYgzKtTqMYkvSYr-PRtdQzN6KMDbXJTM0TA8J5icic==A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 06/10] selftests/bpf: Test BTF_KIND_DECL_TAG for deduplication
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        Kernel Team <kernel-team@fb.com>
+Received: by 2002:a17:90b:1bc5:0:0:0:0 with HTTP; Thu, 11 Nov 2021 10:50:14
+ -0800 (PST)
+Reply-To: filefileo532@naver.com
+From:   Victor Nelson <ubagroupplc9@gmail.com>
+Date:   Thu, 11 Nov 2021 19:50:14 +0100
+Message-ID: <CAEoctr4Zo8zTCEZ5HEuuohJwtfRj5cf1naOqVwc+pRaBiMozSA@mail.gmail.com>
+Subject: Re: Your atm card is ready
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 9:21 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/btf.c | 46 ++++++++++++++++++--
->  1 file changed, 42 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-> index ebd0ead5f4bc..91b19c41729f 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-> @@ -6889,15 +6889,16 @@ const struct btf_dedup_test dedup_tests[] = {
->                         BTF_RESTRICT_ENC(8),                                            /* [11] restrict */
->                         BTF_FUNC_PROTO_ENC(1, 2),                                       /* [12] func_proto */
->                                 BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 1),
-> -                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 8),
-> +                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 18),
->                         BTF_FUNC_ENC(NAME_TBD, 12),                                     /* [13] func */
->                         BTF_TYPE_FLOAT_ENC(NAME_TBD, 2),                                /* [14] float */
->                         BTF_DECL_TAG_ENC(NAME_TBD, 13, -1),                             /* [15] decl_tag */
->                         BTF_DECL_TAG_ENC(NAME_TBD, 13, 1),                              /* [16] decl_tag */
->                         BTF_DECL_TAG_ENC(NAME_TBD, 7, -1),                              /* [17] decl_tag */
-> +                       BTF_TYPE_TAG_ENC(NAME_TBD, 8),                                  /* [18] type_tag */
->                         BTF_END_RAW,
->                 },
-> -               BTF_STR_SEC("\0A\0B\0C\0D\0E\0F\0G\0H\0I\0J\0K\0L\0M\0N\0O\0P\0Q"),
-> +               BTF_STR_SEC("\0A\0B\0C\0D\0E\0F\0G\0H\0I\0J\0K\0L\0M\0N\0O\0P\0Q\0R"),
->         },
->         .expect = {
->                 .raw_types = {
-> @@ -6918,15 +6919,16 @@ const struct btf_dedup_test dedup_tests[] = {
->                         BTF_RESTRICT_ENC(8),                                            /* [11] restrict */
->                         BTF_FUNC_PROTO_ENC(1, 2),                                       /* [12] func_proto */
->                                 BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 1),
-> -                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 8),
-> +                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 18),
->                         BTF_FUNC_ENC(NAME_TBD, 12),                                     /* [13] func */
->                         BTF_TYPE_FLOAT_ENC(NAME_TBD, 2),                                /* [14] float */
->                         BTF_DECL_TAG_ENC(NAME_TBD, 13, -1),                             /* [15] decl_tag */
->                         BTF_DECL_TAG_ENC(NAME_TBD, 13, 1),                              /* [16] decl_tag */
->                         BTF_DECL_TAG_ENC(NAME_TBD, 7, -1),                              /* [17] decl_tag */
-> +                       BTF_TYPE_TAG_ENC(NAME_TBD, 8),                                  /* [18] type_tag */
->                         BTF_END_RAW,
->                 },
-> -               BTF_STR_SEC("\0A\0B\0C\0D\0E\0F\0G\0H\0I\0J\0K\0L\0M\0N\0O\0P\0Q"),
-> +               BTF_STR_SEC("\0A\0B\0C\0D\0E\0F\0G\0H\0I\0J\0K\0L\0M\0N\0O\0P\0Q\0R"),
->         },
->         .opts = {
->                 .dont_resolve_fwds = false,
-> @@ -7254,6 +7256,42 @@ const struct btf_dedup_test dedup_tests[] = {
->                 .dont_resolve_fwds = false,
->         },
->  },
-> +{
-> +       .descr = "dedup: btf_tag_type",
-> +       .input = {
-> +               .raw_types = {
-> +                       /* int */
-> +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
-> +                       /* tag: tag1, tag2 */
-> +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),               /* [2] */
-> +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 2),               /* [3] */
-> +                       BTF_PTR_ENC(3),                                 /* [4] */
-> +                       /* tag: tag1, tag2 */
-> +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),               /* [5] */
-> +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 5),               /* [6] */
-> +                       BTF_PTR_ENC(6),                                 /* [7] */
-> +                       /* tag: tag1 */
-> +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),               /* [8] */
-> +                       BTF_PTR_ENC(8),                                 /* [9] */
-> +                       BTF_END_RAW,
-> +               },
-> +               BTF_STR_SEC("\0tag1\0tag2"),
-> +       },
+Attention: Beneficiary,
 
-Can you please add a test for two more situations:
+This is to bring to your notice that because of the impossibility of
+your fund transfer through our western union network, we have credited
+your total fund of $15,500,000.00 into an ATM VISA card,and we have
+paid the delivery fee of your ATM VISA card for you, we paid it
+because your ATM VISA card worth of $15,500,000.00 which we have
+registered for deliver, has less than 16 days to expire in the custody
+of the UPS Company and when it expires, the money will go into federal
+government treasury account.
 
-First, like this:
+For that we decided to help you pay off the money so that your ATM
+VISA card will not expire, because we trust that when you receive this
+your ATM VISA card, definitely you must pay us back and even
+compensate us for helping you. Like we stated earlier, the delivery
+charges has been paid ,therefore the only money you were advice to
+send to them is their official security keeping fees of $25usd every
+day.
 
-tag1 -> tag2 -> int
-tag1 -> int
+Like I stated earlier, the crediting re-activation, delivery and the
+company registration charges has been paid by me, but I  did not pay
+their official security keeping fees since they refused, they refused
+and the reason is that they do not know when you are going to contact
+them and the demurrage might have increased by then, They told me that
+their official  security keeping fees is $$25.00 per a day , and I
+deposited it yesterday by 10:am in the morning to their office.
 
-tag1's shouldn't be deduped
+Therefore you should contact them with the below contact information;
 
-Second, like this
 
-tag1 -> tag2 -> int
-tag2 -> tag1 -> int
+Contact person name: (Victor nelson)
+Email; filefileo532@gmail.com
+Logistic Manager: Mr Fransisco F,
 
-Nothing gets deduped.
 
-Actually, also third situation:
+Try to contact them today and also send them the official security
+keeping charge to avoid increasing of their fee and let me know once
+you receive this your ATM VISA CARD.
 
-tag1 -> int
-tag1 -> long
+Contact them today with your full information requested below;
 
-Nothing gets deduped.
+Your Full Name;
+Your Country;
+Your Residence Home Address:
+Your Direct Phone :
+Your Cell:
+Age/Sex:
 
-That will document expected behavior.
+Try to indicate all this codes to them because it will prove that you
+are the rightful person that own the ATM visa card deposited in their
+custody.
 
-Thanks.
+Shipment Code awb :33xzs,
+ATM Card Registered Code No: xgt442
+Security Code sctc:2021dhx:567:
+Transaction Code 233:cstc:101:33028:
+Certificate Deposit code: sctc:bun.xxiv:78:01
+Depositor:Mrs. Linda Tutu
+Manager of UBA Bank Plc
 
-> +       .expect = {
-> +               .raw_types = {
-> +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
-> +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),               /* [2] */
-> +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 2),               /* [3] */
-> +                       BTF_PTR_ENC(3),                                 /* [4] */
-> +                       BTF_PTR_ENC(2),                                 /* [5] */
-> +                       BTF_END_RAW,
-> +               },
-> +               BTF_STR_SEC("\0tag1\0tag2"),
-> +       },
-> +       .opts = {
-> +               .dont_resolve_fwds = false,
-> +       },
-> +},
->
->  };
->
-> --
-> 2.30.2
->
+This is to avoid wrong delivery, do that urgent to avoid increase of
+their keeping fees and let us know once you receive your ATM VISA
+CARD.
+
+Yours sincerely
+Victor nelson
