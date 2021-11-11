@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A710644DBE0
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 19:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1381F44DBE2
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 19:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhKKS7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 13:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32888 "EHLO
+        id S233234AbhKKS7g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 13:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233003AbhKKS7F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 13:59:05 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10894C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:56:14 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id d10so17509610ybe.3
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:56:14 -0800 (PST)
+        with ESMTP id S229785AbhKKS7f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 13:59:35 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B18C061766
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:56:46 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id y3so17524204ybf.2
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:56:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ErqFIvW9PcJ5s8cA1ZIVAY0RDKThUMnFOK+iEmSPbh4=;
-        b=Xd0egUr7E/PzNa780TPM3kxVchsjAdN8b3Ay9jZkK04YUmITa7325mz8+Id3sKBG2a
-         58tWINwE/cPlTMbeWI9zc0NT9t6i9Geuj2TDi0JJMgDwv0Uz44EjVb56XJhm3K3BFYkI
-         9WJTvHlEtqcsy8WSB49hvE3y/lVg2h7tCE+dweSc8kXfPRn3zQurnSyTqq9gyBQTS4+0
-         qbiCZuNfCjGLg3Kf3UZBDnzv5InPzFiGwDEofxw2avEw2ybAJ3QSx+9TS6+Fpn5ORqJJ
-         3QHrK34U926luMcI9RG61l7Z+54QqJ+qXh0KEO3VqN63dK6siU3AsgHT3eR422xuARdD
-         6EUg==
+        bh=dnIc47purjwMpUl5e3CLm7Ww5Sx8C0i487XgWjDX+Zk=;
+        b=FJN3sDx+2YrS8cbTpI5MGhTiZCoPbz4tHrWPK0QktWOHHU5f1g9ApBtBaZHAQOfyuv
+         tCrdhyz7DHdOs4/eu+m6qr0tVfDbZVyIfNpF3/QiFBRvR+Xh73LRaQUs0X9dFDHYY6jA
+         VhoHN9H/hlmyPnNdzJY5CgP3d9hlSQEV6qmmHJ2NVMDkoQLcu2x6xuH7njaZ/ygQ0Q+0
+         d9xmqXeQLstlmhwHbqN/0UIZgiTJ/cey95t3hYoHwjrI+sZVMh7aV98lOYKwgR7BDtKJ
+         JZuo1IsRIm0Upjzkpk0e4y1KRLPw1l5HPtaPonfXdD8EiewedGr10kJpH7nGJpfM29ux
+         flQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ErqFIvW9PcJ5s8cA1ZIVAY0RDKThUMnFOK+iEmSPbh4=;
-        b=SwuNM1soxN+gAlMHbwsSl9Kz54D1R+SSMlh1RKTumLcdDqqca12QVSy8qY2FuD/cxM
-         TYB6NHoTuEJt2aTQD92mYJZOqwq4z4zAChI8UZC+FVkv/PUEDkVJbofM+uy4vp3LJtrL
-         T1iXydnvKGNOh4hohzHTSe14C/lJWWyx0v//WcgB8cuzX1BoVWNSi3f3jkqxFR/n/rF0
-         opwgoYQAq22U+P3EvZR+SvnsmzIX174CjjxA3kXwTjKFRv1bi21+wH3x512SolzcZ0l7
-         DGlrBBeeBJKNLosRHWXlvZieM+DXg9qVYH3tL7+6Zbg08Ln+4monCfA0yJkGEENskY99
-         8hHA==
-X-Gm-Message-State: AOAM532fr4IFWBzqs0heFlMM2+UVL/5O7XvcopD4V2NPwO3/xd72TvBO
-        nJ7ju12KGrgUCIqZ8D0BCzRp755qWsLQLXKncYLdSeJgZSg=
-X-Google-Smtp-Source: ABdhPJybmdNjMXS+efTkteweULDexoE6+KNS34TEWdPgTEtoOtOgNqe0VI1++UgESOaWKFuyxkebcYCIoCNgys4x+3Y=
-X-Received: by 2002:a25:d16:: with SMTP id 22mr10167689ybn.51.1636656973313;
- Thu, 11 Nov 2021 10:56:13 -0800 (PST)
+        bh=dnIc47purjwMpUl5e3CLm7Ww5Sx8C0i487XgWjDX+Zk=;
+        b=d4ADn+0BhQ+yUiAY4vt14AYx9/MvkOpDF+WHZkDMrSvncQJH5iy8jaDFRQxltOnAJX
+         1MD1ahvYjyahz1YXNGhkXTfrI3B613/jWJGljhj6j0DktAJzWZXdlJZJW4ksibEjLHHT
+         s8hRO/HdpME5HlVzMMfwcr+GQnFVpIdT9eHwqLHtmsLWThm+L8PK17gF5CEa+whe/sJ8
+         r0nclY2J78tWhazfZ2Y0mzG9h11HzNyoTt1z6NIZRn4cKSqed61SPtCODHPig0KRhLvI
+         aJF5jKr20oi8JkKGec9Q/ThE6TTtbdmgKx2DrbT647ESRSH4El7TJoY5RGDT7qwnsJId
+         D+1w==
+X-Gm-Message-State: AOAM5335g2PyzUnMsjKzxbzaL1WPRN5EEbMkJNPEFiEdACzq9thKKaJJ
+        y461icR+RoxFQ8/ciuY/97v1EapiHtAhSytmxlgn+8Ygja0=
+X-Google-Smtp-Source: ABdhPJxCo7gJUUhzAOt+WU+ujNeq+h3As18WKhA3BVHqj+qvCHJofm6ppxVqg1l/JJHDhmdu9NTvSivCd3vPIsGdq5c=
+X-Received: by 2002:a25:d010:: with SMTP id h16mr11252898ybg.225.1636657005775;
+ Thu, 11 Nov 2021 10:56:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110051940.367472-1-yhs@fb.com> <20211110052028.372604-1-yhs@fb.com>
-In-Reply-To: <20211110052028.372604-1-yhs@fb.com>
+References: <20211110051940.367472-1-yhs@fb.com> <20211110052033.372886-1-yhs@fb.com>
+In-Reply-To: <20211110052033.372886-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Nov 2021 10:56:02 -0800
-Message-ID: <CAEf4BzYV-u+ceGMfRkfX7vgB7F4NY6jBt0ToqNRipgwp8g1BVg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 09/10] selftests/bpf: Clarify llvm dependency
- with btf_tag selftest
+Date:   Thu, 11 Nov 2021 10:56:34 -0800
+Message-ID: <CAEf4Bzaj1=FPSQW1Bcujgwh9emQ5ncQf8tgxgzKBm5+8WOFYJw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 10/10] docs/bpf: Update documentation for
+ BTF_KIND_TYPE_TAG support
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -64,16 +64,15 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Nov 9, 2021 at 9:20 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> btf_tag selftest needs certain llvm versions (>= llvm14).
-> Make it clear in the selftests README.rst file.
+> Add BTF_KIND_TYPE_TAG documentation in btf.rst.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  tools/testing/selftests/bpf/README.rst | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  Documentation/bpf/btf.rst | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 >
 
 [...]
