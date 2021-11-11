@@ -2,84 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD5144D48E
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 11:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6866844D496
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 11:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhKKKC5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 05:02:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35825 "EHLO
+        id S229668AbhKKKE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 05:04:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48156 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232627AbhKKKCo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 05:02:44 -0500
+        by vger.kernel.org with ESMTP id S232705AbhKKKEZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 05:04:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636624794;
+        s=mimecast20190719; t=1636624896;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JJZyqwp1ZfPiiIIAKWZ1DfaVeDawYq4abX63m+PU+To=;
-        b=CBD3UekzsM0cjDmDC6yBOVHPPQIpUVeN4OeXD2fz/5R7eSRVF9eaWzWiNEoMsw2Mmfbiv6
-        D6hhInDH6SKtndEOTMYexqh4uqQE5i7HiaL4WL7c9d0WTxmx0jk1lu9OxpYDt+k4NJ4QhT
-        BFWDeCxYBgxZQ2b1pfuh2M5SuYOeCqg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-ykho_32AOhO3jdQlnF7IvA-1; Thu, 11 Nov 2021 04:59:53 -0500
-X-MC-Unique: ykho_32AOhO3jdQlnF7IvA-1
-Received: by mail-wr1-f72.google.com with SMTP id b1-20020a5d6341000000b001901ddd352eso121082wrw.7
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 01:59:53 -0800 (PST)
+        bh=CNcPNFwkNZzPAAuuM2VldGNI2vkzqJbh7gXLQwgsqaU=;
+        b=bFTsg27RyE/7HLS40f8LKVx6Zzs0DWZEwrABN/4SocG0hj+xt06I42uf/8u8JRtOlCkmf9
+        HNoDCYt7XTse7LmKxUXEnyIPrH77f9/pxhIzFqWAK2JKmwOuliJ+59TtV7aqzxjn3DvRpY
+        G8HjBzBfMiwtbvJoL7jjl8HhCC5/Deo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-MoH0nIbHOweT9MbDcRo9ow-1; Thu, 11 Nov 2021 05:01:35 -0500
+X-MC-Unique: MoH0nIbHOweT9MbDcRo9ow-1
+Received: by mail-wr1-f70.google.com with SMTP id h13-20020adfa4cd000000b001883fd029e8so925725wrb.11
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 02:01:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=JJZyqwp1ZfPiiIIAKWZ1DfaVeDawYq4abX63m+PU+To=;
-        b=6wieu23gdPDHaH5FD/jJRhfjOUSLiKuQ/GSkGxnPKvmcmRxwnC+6QYEPaT3nlUe3eH
-         dqqO0PdQAe/oZdhdMDroRZ4OdcBbl1FQ+IP2AapneC/SBxh4oHRvVXtyGn84CsqGD5YJ
-         qPUgRlex2AOsvskBYOiXqc1sgaSNDq7iOHJak1FqtnqWq4r0+GnOXQ/SHU7yKPbPGdbh
-         VPXJ8Vj6XjrWDF94jsBU7RWdgTGeOXi5z6LKUe6+fy3VDB6cfK0PYSKpTODiAl2/Rq/j
-         ByGpMWcYqVoVCcvHpP8BxmgHXw3aIa3RsuIQ44tMtwUjUYC6iaBK6mid+yWfrxQSpSXD
-         bN4w==
-X-Gm-Message-State: AOAM532GfKf/IvuG2ZNZfOE1/EGUEo4lNneQ+7mReKmExDuuizubxkG8
-        KJswQ7CvMmEm5vQgMwMbPUwfZSR8ifpa57sY1i5ZImkqBGFD2A85rslG3DA+qWxaAljUksjX8/y
-        sRUC7/1/opiu0
-X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr7515135wry.398.1636624792246;
-        Thu, 11 Nov 2021 01:59:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwCMFguV57azEtjX0H9g2qbHnrf05evwsn7R3U/X/5WhRj7wS9zZ6r9M/+fj7ufva631F1UwQ==
-X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr7515110wry.398.1636624792096;
-        Thu, 11 Nov 2021 01:59:52 -0800 (PST)
+        bh=CNcPNFwkNZzPAAuuM2VldGNI2vkzqJbh7gXLQwgsqaU=;
+        b=y5IBjq0xpwF5ovdVJ/Up49xRBFIpSeENG57xziTUR2WzBakphHbUgI5LH6M2d6E6jd
+         McJLYvaPgUmvFgCfdlT6wtscVprEkKzsreg1wz+Rq6I3moHCnwTzvW3R0zWmB0KY19/b
+         XYXYtx0p0nIx3hWY3zjsbdF7XAGooClLPMWAcLla3A4k/LbFt3UQzaYNyMBKRWKQ6ZtT
+         05VuRI2HEg5Mnt+5sBpo/C7iHzAgVJvljsjohzlqkc/x+45k1T9z+I5OmADJQ+EPuJ7P
+         1r+SorIHydBPHYQHxtkbdt3ILxwxvkKywqGuhDiF0iluHjrviVq0sgM9OcW2JmlAB7dh
+         bz9Q==
+X-Gm-Message-State: AOAM530crtkhsXv7YUYMIut/rr5Lzek8NwBqPSIXm9TaOkZ+rzH2InSo
+        JHnFkBO+y/k+l3ZMqHXp5dfHjuXe1KsK5ufD8OclB+nGWZBn4Y/JBVvRsS1mxA3uW7XtdWaTzTb
+        Ti5jRN5yVk3J9
+X-Received: by 2002:a1c:f601:: with SMTP id w1mr24132442wmc.112.1636624894481;
+        Thu, 11 Nov 2021 02:01:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy+YnB30s3H7o5szg4rvm692l/bAna1bgr0sO3KWz/TpfPh1f2WsLYXFlxrtbeUq96NmLkNQw==
+X-Received: by 2002:a1c:f601:: with SMTP id w1mr24132395wmc.112.1636624894177;
+        Thu, 11 Nov 2021 02:01:34 -0800 (PST)
 Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
-        by smtp.gmail.com with ESMTPSA id d6sm2404299wrx.60.2021.11.11.01.59.50
+        by smtp.gmail.com with ESMTPSA id a22sm2227713wme.19.2021.11.11.02.01.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 01:59:51 -0800 (PST)
-Message-ID: <864f67e1-6250-57ac-511b-60a3590af2c2@redhat.com>
-Date:   Thu, 11 Nov 2021 10:59:50 +0100
+        Thu, 11 Nov 2021 02:01:33 -0800 (PST)
+Message-ID: <794ecf14-a25e-8222-9f9c-7a77796fff6d@redhat.com>
+Date:   Thu, 11 Nov 2021 11:01:31 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 2/7] fs/exec: make __get_task_comm always get a nul
- terminated string
+Subject: Re: [PATCH 3/7] drivers/infiniband: use get_task_comm instead of
+ open-coded string copy
 Content-Language: en-US
 To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         oliver.sang@intel.com, lkp@intel.com,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
         Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Matthew Wilcox <willy@infradead.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
         Petr Mladek <pmladek@suse.com>
 References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-3-laoar.shao@gmail.com>
+ <20211108083840.4627-4-laoar.shao@gmail.com>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20211108083840.4627-3-laoar.shao@gmail.com>
+In-Reply-To: <20211108083840.4627-4-laoar.shao@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -87,15 +88,12 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 08.11.21 09:38, Yafang Shao wrote:
-> If the dest buffer size is smaller than sizeof(tsk->comm), the buffer
-> will be without null ternimator, that may cause problem. Using
-> strscpy_pad() instead of strncpy() in __get_task_comm() can make the string
-> always nul ternimated.
+> Use get_task_comm() instead of open-coded strlcpy() to make the comm always
+> nul terminated. As the comment above the hard-coded 16, we can replace it
+> with TASK_COMM_LEN, then it will adopt to the comm size change.
 > 
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
 > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
