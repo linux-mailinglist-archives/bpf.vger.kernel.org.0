@@ -2,124 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5244944D1B3
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 06:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EFC44D1FA
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 07:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhKKFkK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 11 Nov 2021 00:40:10 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12880 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230127AbhKKFkE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 00:40:04 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AB5Y3K4006748
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 21:37:15 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c8n7su0rm-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 21:37:15 -0800
-Received: from intmgw002.48.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 10 Nov 2021 21:36:45 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 14E778B10670; Wed, 10 Nov 2021 21:36:44 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 9/9] bpftool: update btf_dump__new() and perf_buffer__new_raw() calls
-Date:   Wed, 10 Nov 2021 21:36:24 -0800
-Message-ID: <20211111053624.190580-10-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211111053624.190580-1-andrii@kernel.org>
-References: <20211111053624.190580-1-andrii@kernel.org>
+        id S230027AbhKKGqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 01:46:09 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:43715 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhKKGqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 01:46:09 -0500
+Received: by mail-il1-f200.google.com with SMTP id e15-20020a92194f000000b00275b13f2b6aso3437528ilm.10
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 22:43:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mnls3d+B5dNpFY4b4y80Brjr8wlqrHuUE32ifq4dCs8=;
+        b=zWv2Y4LgsgtmJJ0haFJYRV5f4jFc4d9XqeO0T/vnND6xaw4jf1BmlxboZKKRsJuveJ
+         Gk+T4EVUuSWOEBiXbdb82Eg8XjKdHKPlznKIJQW9A1BILATa366wknxms7UwnZpqWjeP
+         5WgUsY47n3op5hUY8WTm4j2KbzWCCBVYb3rcCiph3E7nZLZlh/9ipCpy1aWsS0qHi42B
+         7gqJSmQKcjzk5iShp0Pc0u6htGWaI4zsiboAsl0e2lBGwK4Qor6Xz9PzzCl36aFQLB8f
+         CCWb/Z6hi7SJurwLkGBr98yoY/UyZ89uX8qN9PKDrc9eb+ROlvXfBbMHthrl9l08uNbD
+         JIzQ==
+X-Gm-Message-State: AOAM530efq4uIwy2xC5CyTPPnUfS+9z0ucEFgPlonanSAl2lWSZPzVLD
+        /y8LXNcFD8mKBUvXC0fBAkabMjYCDaj5ie7VwwMtohPXQJXO
+X-Google-Smtp-Source: ABdhPJwA57G8Lx4oLqI477r2EWE3KPXCpaPPjX1Ze5ECwkKzAOip1D1Ie0wh3HxAAwqEy/qD2XyMFpdoT6dMY3KnFpfmeynDLMds
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: qc8CYyRkoSTSV_-c0dnfaX7I-4SU23NJ
-X-Proofpoint-ORIG-GUID: qc8CYyRkoSTSV_-c0dnfaX7I-4SU23NJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-11_01,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
- clxscore=1015 suspectscore=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111110029
-X-FB-Internal: deliver
+X-Received: by 2002:a05:6e02:1561:: with SMTP id k1mr2998713ilu.135.1636613000688;
+ Wed, 10 Nov 2021 22:43:20 -0800 (PST)
+Date:   Wed, 10 Nov 2021 22:43:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008a7c9605d07da846@google.com>
+Subject: [syzbot] WARNING in __dev_change_net_namespace
+From:   syzbot <syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, avagin@gmail.com,
+        bpf@vger.kernel.org, cong.wang@bytedance.com, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, johannes.berg@intel.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use v1.0-compatible variants of btf_dump and perf_buffer "constructors".
-This is also a demonstration of reusing struct perf_buffer_raw_opts as
-OPTS-style option struct for new perf_buffer__new_raw() API.
+Hello,
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+syzbot found the following issue on:
+
+HEAD commit:    512b7931ad05 Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b45fb6b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=99780e4a2873b273
+dashboard link: https://syzkaller.appspot.com/bug?extid=5434727aa485c3203fed
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com
+
+RAX: ffffffffffffffda RBX: 00007f02bf014f60 RCX: 00007f02bef01ae9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
+RBP: 00007f02bc4771d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007ffcc2738d7f R14: 00007f02bc477300 R15: 0000000000022000
+ </TASK>
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 4974 at net/core/dev.c:11254 __dev_change_net_namespace+0x1079/0x1330 net/core/dev.c:11254
+Modules linked in:
+CPU: 0 PID: 4974 Comm: syz-executor.2 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__dev_change_net_namespace+0x1079/0x1330 net/core/dev.c:11254
+Code: c7 c7 80 9b 8c 8a c6 05 ba 0e 3b 06 01 e8 36 73 d5 01 0f 0b e9 69 f0 ff ff e8 e3 95 57 fa 0f 0b e9 60 fb ff ff e8 d7 95 57 fa <0f> 0b e9 2a fb ff ff 41 bd ea ff ff ff e9 62 f2 ff ff e8 f0 38 9e
+RSP: 0018:ffffc900217aed70 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc9000b291000
+RDX: 0000000000040000 RSI: ffffffff87202d59 RDI: 0000000000000003
+RBP: ffff88815cbea000 R08: 0000000000000000 R09: ffff88815cbea64b
+R10: ffffffff87202882 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffffffff8d0e3dc0 R14: ffff88815cbeac00 R15: ffffffff8d0e3f0c
+FS:  00007f02bc477700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b32027000 CR3: 0000000162d58000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ do_setlink+0x275/0x3970 net/core/rtnetlink.c:2624
+ __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5571
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f02bef01ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f02bc477188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f02bf014f60 RCX: 00007f02bef01ae9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
+RBP: 00007f02bc4771d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007ffcc2738d7f R14: 00007f02bc477300 R15: 0000000000022000
+ </TASK>
+
+
 ---
- tools/bpf/bpftool/btf.c           | 2 +-
- tools/bpf/bpftool/gen.c           | 2 +-
- tools/bpf/bpftool/map_perf_ring.c | 9 +++------
- 3 files changed, 5 insertions(+), 8 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 015d2758f826..223ac7676027 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -418,7 +418,7 @@ static int dump_btf_c(const struct btf *btf,
- 	struct btf_dump *d;
- 	int err = 0, i;
- 
--	d = btf_dump__new(btf, NULL, NULL, btf_dump_printf);
-+	d = btf_dump__new(btf, btf_dump_printf, NULL, NULL);
- 	if (IS_ERR(d))
- 		return PTR_ERR(d);
- 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 5c18351290f0..89f0e828bbfa 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -218,7 +218,7 @@ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
- 	char sec_ident[256], map_ident[256];
- 	int i, err = 0;
- 
--	d = btf_dump__new(btf, NULL, NULL, codegen_btf_dump_printf);
-+	d = btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
- 	if (IS_ERR(d))
- 		return PTR_ERR(d);
- 
-diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
-index b98ea702d284..6b0c410152de 100644
---- a/tools/bpf/bpftool/map_perf_ring.c
-+++ b/tools/bpf/bpftool/map_perf_ring.c
-@@ -124,7 +124,7 @@ int do_event_pipe(int argc, char **argv)
- 		.wakeup_events = 1,
- 	};
- 	struct bpf_map_info map_info = {};
--	struct perf_buffer_raw_opts opts = {};
-+	LIBBPF_OPTS(perf_buffer_raw_opts, opts);
- 	struct event_pipe_ctx ctx = {
- 		.all_cpus = true,
- 		.cpu = -1,
-@@ -190,14 +190,11 @@ int do_event_pipe(int argc, char **argv)
- 		ctx.idx = 0;
- 	}
- 
--	opts.attr = &perf_attr;
--	opts.event_cb = print_bpf_output;
--	opts.ctx = &ctx;
- 	opts.cpu_cnt = ctx.all_cpus ? 0 : 1;
- 	opts.cpus = &ctx.cpu;
- 	opts.map_keys = &ctx.idx;
--
--	pb = perf_buffer__new_raw(map_fd, MMAP_PAGE_CNT, &opts);
-+	pb = perf_buffer__new_raw(map_fd, MMAP_PAGE_CNT, &perf_attr,
-+				  print_bpf_output, &ctx, &opts);
- 	err = libbpf_get_error(pb);
- 	if (err) {
- 		p_err("failed to create perf buffer: %s (%d)",
--- 
-2.30.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
