@@ -2,129 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3A744DA2E
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 17:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B772C44DA29
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 17:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhKKQTV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 11:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
+        id S233890AbhKKQST (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 11:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbhKKQTU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 11:19:20 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFECC061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 08:16:31 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d5so10716900wrc.1
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 08:16:31 -0800 (PST)
+        with ESMTP id S234168AbhKKQSP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 11:18:15 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40EEC061766
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 08:15:25 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id l24so8660974uak.2
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 08:15:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zZzTrI1QtHZbOvnogUJcn8Oi+ZOfkI6aUO7akFnlCjA=;
-        b=SAM5agZP3GMBP/IpB7d3S+lK9AY9976cRX6uEoH9Ok3+8wwrdcx6oDUDosZ8KW1MfM
-         sqsvdreXTsXqay/E9oknCW4WUkKyNeLQLJGkuK6dS/LZijturuN1oosyxo0PKbYMXTxc
-         vrU0PczUHvUGWbNNIR4uZg0V5NIQe7m9PU3ZE=
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=ePYZWHXANTLAfCGNIrDqR/tKQ8RPUIxsEL1GS7U8994=;
+        b=E1Xxms6gst8Y+U42fFDDifFdK3KFCPK2pOwJmNWwVickTF3HxDJFovsKcjT++yZY6M
+         U747yxToDYQLzpUnTurPT6izzSKL0dhkV1LS1K6+2FQNBhFCAPpctmyOdGlBTsYNZ0z3
+         Najd6pTKXi9lr1IBUL9BO/uS2VSQp+pbQ7RkMGNTciVTn6AyMQJnf+IKZwsgvsO3VZqS
+         pFGI9baGWECZrIMI7jdPSHTG9C6cG0xHn9feE9C2nM+v11AvNkfOqwmmKSV88NiK0tr8
+         axBzcCpq6AgEe1M6zFIv8K1K6O7anAcLkI/I1DO9zH3fno/qOwoSud3GtRC4tUX5BdkD
+         00hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zZzTrI1QtHZbOvnogUJcn8Oi+ZOfkI6aUO7akFnlCjA=;
-        b=gRodI2zthEw4jbMaE6soP4S7ole27VrR4ZK/bsdT29J8pImmZEZyMC6WOi5JNEVNOG
-         Vd0Far8dbkr4GMXffQd2yz8UPjEyFS/lrYoZhInJ6jONAJUeAYw9X3Ge+rSVRyCN9bfr
-         dO/TO0rbnKJNaWMOiq0+GnhMStP9Jpu8i954QTW//HNKi8Yn6pT+1+q+Wwe6kl7K1lkz
-         08lgWgtu45AGZvDeLP7szF/CWfnZAKJhZ7XAEwsKyKtvVwVuGu81h0zH4jZG+AJaz8Rl
-         iRtzrBvcv3V35fcYjXqdcURVUteaEBNre44f4Ex7/aLCoYMsji4BRPF7G9zwgIgtufQb
-         hxRg==
-X-Gm-Message-State: AOAM533qnzHZEosWUE1no2RpN1TgLnqF5BvEpb9KMsMJtr4Sh84Tc2Ze
-        cJHU6t3RDqJjD18UT7ob/PzDSQ==
-X-Google-Smtp-Source: ABdhPJwjaosR8hkghnBSlj44uWNymczb7pey8hyaK4vEct0nk/EoziO0oAKUmdzuY5E5nEgXdFTCzA==
-X-Received: by 2002:a5d:6351:: with SMTP id b17mr9796155wrw.151.1636647389927;
-        Thu, 11 Nov 2021 08:16:29 -0800 (PST)
-Received: from altair.lan (e.2.7.a.0.3.c.5.8.8.6.b.d.5.0.8.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:805d:b688:5c30:a72e])
-        by smtp.googlemail.com with ESMTPSA id o5sm3219857wrx.83.2021.11.11.08.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 08:16:29 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] selftests: bpf: check map in map pruning
-Date:   Thu, 11 Nov 2021 16:14:52 +0000
-Message-Id: <20211111161452.86864-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=ePYZWHXANTLAfCGNIrDqR/tKQ8RPUIxsEL1GS7U8994=;
+        b=vg6SNlvhonbIdAjqLV5RmWr/oXMzOBDBhz1e+48qgcmREs2XOkW8mI/BKa8jVU1hbS
+         wSiKSsQ2wi+MBBGnXe9E5xNCFAjzOQoQ5bxDnImdNQrzaIK0/G5zqjYWX1I6imSPVcZ+
+         +Rsfh1qs2bEiAQmcUBxTuBNuJYd+ZBV0Zg1vbwrfLJ0ErMCYs3UkjFEcpH8aTNNdp5D2
+         7hiYEnNMJD8VzXZlf1jCO3Xefxva5fonCHJ9iaox04mz6AVXSAmOCkd/4cOr3PNqlJPx
+         eJEDEfby5BeefIt/6yTMf7F3V2ZXQ73X5ugirF/ZmM8QFCPA3TpkmB5lLqFaAY05cUQM
+         nBew==
+X-Gm-Message-State: AOAM531uFgzA/2v9sld0rk7t769Cc60k/yc/Ia6HCsYXykwYXutNIDbR
+        n4aVzNknXQNNbIibnujP5DPD6JfpR9NJFiINiKs=
+X-Google-Smtp-Source: ABdhPJz+A9iAyeVZlGv3Q6bfiPFvlu7kL6T0Z8Q8kVnSC9SsouK7Y6EuxvItsQ8039ctz4YTfqJJKkdQKO21DMlh9lU=
+X-Received: by 2002:a05:6102:292a:: with SMTP id cz42mr12028496vsb.47.1636647323930;
+ Thu, 11 Nov 2021 08:15:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: rubywilliams266@gmail.com
+Received: by 2002:ab0:5543:0:0:0:0:0 with HTTP; Thu, 11 Nov 2021 08:15:23
+ -0800 (PST)
+From:   Anderson Theresa <anderson.thereza24@gmail.com>
+Date:   Thu, 11 Nov 2021 08:15:23 -0800
+X-Google-Sender-Auth: VlNveTVkiF10sEY5MWThzvwL2ww
+Message-ID: <CAKcGFabNsZSgqc7+p7D1pu-t-ric5NWVfwkGEjh8Mz0rnni9xw@mail.gmail.com>
+Subject: Re: Greetings My Dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ensure that two registers with a map_value loaded from a nested
-map are considered equivalent for the purpose of state pruning
-and don't cause the verifier to revisit a pruning point.
+Greetings,
 
-This uses a rather crude match on the number of insns visited by
-the verifier, which might change in the future. I've therefore
-tried to keep the code as "unpruneable" as possible by having
-the code paths only converge on the second to last instruction.
+I sent this mail praying it will find you in a good condition, since I
+myself am in a very critical health condition in which I sleep every
+night without knowing if I may be alive to see the next day. I am
+mrs.theresa anderson, a widow suffering from a long time illness. I
+have some funds I inherited from my late husband, the sum of
+($11,000,000.00, Eleven Million Dollars) my Doctor told me recently
+that I have serious sickness which is a cancer problem. What disturbs
+me most is my stroke sickness. Having known my condition, I decided to
+donate this fund to a good person that will utilize it the way I am
+going to instruct herein. I need a very honest God.
 
-Should you require to adjust the test in the future, reducing the
-number of processed instructions should always be safe. Increasing
-them could cause another regression, so proceed with caution.
+fearing a person who can claim this money and use it for Charity
+works, for orphanages, widows and also build schools for less
+privileges that will be named after my late husband if possible and to
+promote the word of God and the effort that the house of God is
+maintained. I do not want a situation where this money will be used in
+an ungodly manner. That's why I' making this decision. I'm not afraid
+of death so I know where I'm going. I accept this decision because I
+do not have any child who will inherit this money after I die. Please
+I want your sincere and urgent answer to know if you will be able to
+execute this project, and I will give you more information on how the
+fund will be transferred to your bank account. I am waiting for your
+reply.
 
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Link: https://lore.kernel.org/bpf/CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com/
----
- .../selftests/bpf/verifier/map_in_map.c       | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/verifier/map_in_map.c b/tools/testing/selftests/bpf/verifier/map_in_map.c
-index 2798927ee9ff..f46c7121e216 100644
---- a/tools/testing/selftests/bpf/verifier/map_in_map.c
-+++ b/tools/testing/selftests/bpf/verifier/map_in_map.c
-@@ -18,6 +18,39 @@
- 	.fixup_map_in_map = { 3 },
- 	.result = ACCEPT,
- },
-+{
-+	"map in map state pruning",
-+	.insns = {
-+	BPF_ST_MEM(0, BPF_REG_10, -4, 0),
-+	BPF_MOV64_REG(BPF_REG_6, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, -4),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 11),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_in_map = { 4, 14 },
-+	.flags = BPF_F_TEST_STATE_FREQ,
-+	.result = VERBOSE_ACCEPT,
-+	.errstr = "processed 25 insns",
-+},
- {
- 	"invalid inner map pointer",
- 	.insns = {
--- 
-2.32.0
-
+May God Bless you,
+mrs.theresa anderson.
