@@ -2,77 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1381F44DBE2
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 19:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C582644DBE7
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 19:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhKKS7g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 13:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
+        id S233746AbhKKTCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 14:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhKKS7f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 13:59:35 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B18C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:56:46 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id y3so17524204ybf.2
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 10:56:46 -0800 (PST)
+        with ESMTP id S231825AbhKKTCV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 14:02:21 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F52CC061766;
+        Thu, 11 Nov 2021 10:59:32 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id j75so17478760ybj.6;
+        Thu, 11 Nov 2021 10:59:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dnIc47purjwMpUl5e3CLm7Ww5Sx8C0i487XgWjDX+Zk=;
-        b=FJN3sDx+2YrS8cbTpI5MGhTiZCoPbz4tHrWPK0QktWOHHU5f1g9ApBtBaZHAQOfyuv
-         tCrdhyz7DHdOs4/eu+m6qr0tVfDbZVyIfNpF3/QiFBRvR+Xh73LRaQUs0X9dFDHYY6jA
-         VhoHN9H/hlmyPnNdzJY5CgP3d9hlSQEV6qmmHJ2NVMDkoQLcu2x6xuH7njaZ/ygQ0Q+0
-         d9xmqXeQLstlmhwHbqN/0UIZgiTJ/cey95t3hYoHwjrI+sZVMh7aV98lOYKwgR7BDtKJ
-         JZuo1IsRIm0Upjzkpk0e4y1KRLPw1l5HPtaPonfXdD8EiewedGr10kJpH7nGJpfM29ux
-         flQg==
+        bh=Hk/jkCF3NnmetG2VnhLTRlUShF6p+8d6T3wHQ5hjpWA=;
+        b=PnOWwjGfij1P4RDR2xksGVWXWmS0CCCuAHF4MZl7ZobmlFhE2R5xVx6pkDaW8tBwSq
+         OSZrPWPCqqJ8IGlWALXrOKCeFJKpkzJbfEij5kqtysauvuLwKLwilSpOcg4tQCFdMaug
+         Qx2M7+uLAz1fNLh+46WYT8C5JD2gptNm31Auon2CdRyCCFpf+W5kYPkGV+hklmlM1b4d
+         e2bbI7XA3Zu/gMutlNOSkqhT+sRoS/ctdCPNfJCAhUvwzy4yKbVTAaqQ6VZq1gzb3sAh
+         9ozgW1Sdq6UHycg0zdCecxRN7/yaN3G74wEjhHPx9bwWhCOJZNmb3GbZstv+XFIQKqEG
+         SuJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dnIc47purjwMpUl5e3CLm7Ww5Sx8C0i487XgWjDX+Zk=;
-        b=d4ADn+0BhQ+yUiAY4vt14AYx9/MvkOpDF+WHZkDMrSvncQJH5iy8jaDFRQxltOnAJX
-         1MD1ahvYjyahz1YXNGhkXTfrI3B613/jWJGljhj6j0DktAJzWZXdlJZJW4ksibEjLHHT
-         s8hRO/HdpME5HlVzMMfwcr+GQnFVpIdT9eHwqLHtmsLWThm+L8PK17gF5CEa+whe/sJ8
-         r0nclY2J78tWhazfZ2Y0mzG9h11HzNyoTt1z6NIZRn4cKSqed61SPtCODHPig0KRhLvI
-         aJF5jKr20oi8JkKGec9Q/ThE6TTtbdmgKx2DrbT647ESRSH4El7TJoY5RGDT7qwnsJId
-         D+1w==
-X-Gm-Message-State: AOAM5335g2PyzUnMsjKzxbzaL1WPRN5EEbMkJNPEFiEdACzq9thKKaJJ
-        y461icR+RoxFQ8/ciuY/97v1EapiHtAhSytmxlgn+8Ygja0=
-X-Google-Smtp-Source: ABdhPJxCo7gJUUhzAOt+WU+ujNeq+h3As18WKhA3BVHqj+qvCHJofm6ppxVqg1l/JJHDhmdu9NTvSivCd3vPIsGdq5c=
-X-Received: by 2002:a25:d010:: with SMTP id h16mr11252898ybg.225.1636657005775;
- Thu, 11 Nov 2021 10:56:45 -0800 (PST)
+        bh=Hk/jkCF3NnmetG2VnhLTRlUShF6p+8d6T3wHQ5hjpWA=;
+        b=jEHrtUnR/eYEhIdKytXCF0Yq6r8dQvHvWUOr8Mph9fFOrTYZtMZnpo/drpzKCTIBqZ
+         Kcl4reH7x1lWtGn/4bjiPZwI+W7tfC+lCvy5y0BOiz2VyqPOZimpN8F1ceqbYCaNKS8M
+         Ep0qrW2batpUS1ZQy5oVcFxwi4guvIwp9+cfsgaQ9f1ZXN7DeyOHOcJZ3QAP2Jry7AnV
+         9zOTzgi2phSh0+Eb0CpypkqyRrzssgUui+7Y3hnFlrGJjX27y6HQBPNt48OUbsi0STcn
+         6BVC2DnvcYFUCGB7d5rLefnyeXF1Yng36xw/4t9bCkzOFWIe2URhwy2dO0JpP0urVJkZ
+         yVwg==
+X-Gm-Message-State: AOAM532o67CaK516lHVX4vyNDwlTX5ODIBKoWGZp4xyqrWOKfv/JMQIx
+        I2jNy2B3+DqW5lBjy7h4ZNxWL9vCKtGuO6fOz+E=
+X-Google-Smtp-Source: ABdhPJyUl2ioPOpq9RUHCkikL4QZw2KPE01/wsZYcwtjyVxHVsF0ngroqvhhU8PbK8/caP011PqAmTNZmOCop5gy0sE=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr10686409ybj.504.1636657171758;
+ Thu, 11 Nov 2021 10:59:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110051940.367472-1-yhs@fb.com> <20211110052033.372886-1-yhs@fb.com>
-In-Reply-To: <20211110052033.372886-1-yhs@fb.com>
+References: <20211110114632.24537-1-quentin@isovalent.com> <20211110114632.24537-4-quentin@isovalent.com>
+In-Reply-To: <20211110114632.24537-4-quentin@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Nov 2021 10:56:34 -0800
-Message-ID: <CAEf4Bzaj1=FPSQW1Bcujgwh9emQ5ncQf8tgxgzKBm5+8WOFYJw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 10/10] docs/bpf: Update documentation for
- BTF_KIND_TYPE_TAG support
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Thu, 11 Nov 2021 10:59:20 -0800
+Message-ID: <CAEf4BzbtC8S_j7oZP9vqK+FwoSvBmt8Hp4_ZyzbwUifg8JfUUA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] bpftool: Use $(OUTPUT) and not $(O) for
+ VMLINUX_BTF_PATHS in Makefile
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 9:20 PM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Nov 10, 2021 at 3:46 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Add BTF_KIND_TYPE_TAG documentation in btf.rst.
+> The Makefile for bpftool relies on $(OUTPUT), and not on $(O), for
+> passing the output directory. So $(VMLINUX_BTF_PATHS), used for
+> searching for kernel BTF info, should use the same variable.
 >
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> Fixes: 05aca6da3b5a ("tools/bpftool: Generalize BPF skeleton support and generate vmlinux.h")
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 > ---
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  Documentation/bpf/btf.rst | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
+>  tools/bpf/bpftool/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 2a846cb92120..40abf50b59d4 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -150,7 +150,7 @@ $(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
+>  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+>  $(OBJS): $(LIBBPF) $(LIBBPF_INTERNAL_HDRS)
+>
+> -VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
+> +VMLINUX_BTF_PATHS ?= $(if $(OUTPUT),$(OUTPUT)/vmlinux)                 \
+>                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)    \
 
-[...]
+But you still check KBUILD_OUTPUT? O overrides KBUILD_OUTPUT as far as
+kernel build goes. So if you still support KBUILD_OUTPUT, you should
+support O. And the $(OUTPUT) seems to be completely unrelated, as that
+defines the output of bpftool build files, not the vmlinux image. Or
+am I missing something?
+
+>                      ../../../vmlinux                                   \
+>                      /sys/kernel/btf/vmlinux                            \
+> --
+> 2.32.0
+>
