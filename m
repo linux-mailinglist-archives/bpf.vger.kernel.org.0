@@ -2,116 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8445444DE7D
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 00:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD9244DE92
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 00:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbhKKX3g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 18:29:36 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:24580 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233119AbhKKX3f (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 18:29:35 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1ABN4ijj031907
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:26:45 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=uVehdkB3+qWtuYGqhYCRCo+VupSAY2T+5cAOH7RThss=;
- b=bY8joiBqs5roUDptMKpD/h/LTZIACVPrsYAyGKGbbCktbvj2ROWvF1i3rOQYlBM8XK7U
- 5trzNPiJagwEgydnD09G6WoOww3foCRrmUrjoBLP/swyh1F1KlTIgkGsVicbrWjxx/AS
- xxDE3FRjDRqJ0kW0OQmiNDJtExoCF4W+otE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3c9brfggws-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:26:45 -0800
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 11 Nov 2021 15:26:44 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 69C5324B3F22; Thu, 11 Nov 2021 15:26:40 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 10/10] docs/bpf: Update documentation for BTF_KIND_TYPE_TAG support
-Date:   Thu, 11 Nov 2021 15:26:39 -0800
-Message-ID: <20211111232640.793157-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211111232543.786041-1-yhs@fb.com>
-References: <20211111232543.786041-1-yhs@fb.com>
+        id S234258AbhKKXmX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 18:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234256AbhKKXmW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 18:42:22 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D816CC061767
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:39:32 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id b3so15374918uam.1
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 15:39:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j4v9BoUqE5THR/POP2rwQKiOwF7muwwRuvyZdm8EX68=;
+        b=r7xCDzugzkcIEDTjq0dBmc1CNg6/gxATCWmGlqsCZ8j6kpYB50T6v4XoRm1ncufWTv
+         MruD5HlYdhfznkMtjBFzbMZ65vpXiG0Vdk/Gu5MKvBoEjHYFR6ufgWJR7+XIpvKzx4CU
+         3L+n6CmN68YcN22fm3psS6W8j/KYuA6cki9+6UqKVwI4Ko2ntIiodmFRu981ugGPrLUM
+         mF5d4Q4s5jrzTXCRCEzvoc3WQ7Bg0x62ud9mpaQpeq2x2OGydOIuwpEltvWdJ3QoWC7/
+         gJcXUmZ1Rq6pWpumyBtlp/SNdmdK+LNvnv2XyOYdpuVDi/V+3ifpOsiatDRl+VnJ7pWl
+         AJWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j4v9BoUqE5THR/POP2rwQKiOwF7muwwRuvyZdm8EX68=;
+        b=FforGhYcCrX694GVy+eOUqZOZQGXQ9LL+pQT7+t9twuGZrFrUOaURikiHn4Z92TAl1
+         9vZPnw6PiTbtpENZ2s1BMHJ6NsxWiGEBj9IIcK+p1//rQtIIIZT7yYFXrDAKcDNwoI04
+         pk3RpZhJAc3DXRt0ERhnrZMVQ7tBgKy5M5Zg6YJezWn+DbH/Vpv4nMSlZLTXUQD8Y9sL
+         xYeOptWwcNZ9zV/K3QaiAuy5doJYlRSEFU/BXB7/363DqtKh1AijzokCT9ZUNPlFB79w
+         hKZfYEiv3Gp1zE9j1GnCY5U7Ha9LEemFznCzPXw8qScsQp2RO2mwhQhJl/N2ejhHrSsS
+         cmBw==
+X-Gm-Message-State: AOAM532rWIiGUm2teeMjEfxAgQ79gk5ldItoLxSDmZbDws10ZQRG6ml/
+        itWms+Q4+RiD2vRluMlOl0aOEFYduTXOaZvIXQSmlw==
+X-Google-Smtp-Source: ABdhPJw7YArV8KIKD31+kY7xNsztsjLS5qUO2+5uT6jhMhu7oJkT6TGo1uOzEdLdfz9COB9iQqI8gSJK0e8R1o42CEo=
+X-Received: by 2002:a67:e896:: with SMTP id x22mr3790169vsn.0.1636673971818;
+ Thu, 11 Nov 2021 15:39:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: b4Z-wT-BygM-o4NHnHDEgZHcVbh2w4jm
-X-Proofpoint-GUID: b4Z-wT-BygM-o4NHnHDEgZHcVbh2w4jm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-11_09,2021-11-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111110118
-X-FB-Internal: deliver
+References: <20211110114632.24537-1-quentin@isovalent.com> <20211110114632.24537-4-quentin@isovalent.com>
+ <CAEf4BzbtC8S_j7oZP9vqK+FwoSvBmt8Hp4_ZyzbwUifg8JfUUA@mail.gmail.com>
+In-Reply-To: <CAEf4BzbtC8S_j7oZP9vqK+FwoSvBmt8Hp4_ZyzbwUifg8JfUUA@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Thu, 11 Nov 2021 23:39:20 +0000
+Message-ID: <CACdoK4JnbpU6ijcNr5n6HMj+yOb=OhEwO3DUQOgNYRvoe+EgfQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] bpftool: Use $(OUTPUT) and not $(O) for
+ VMLINUX_BTF_PATHS in Makefile
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add BTF_KIND_TYPE_TAG documentation in btf.rst.
+On Thu, 11 Nov 2021 at 18:59, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Nov 10, 2021 at 3:46 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >
+> > The Makefile for bpftool relies on $(OUTPUT), and not on $(O), for
+> > passing the output directory. So $(VMLINUX_BTF_PATHS), used for
+> > searching for kernel BTF info, should use the same variable.
+> >
+> > Fixes: 05aca6da3b5a ("tools/bpftool: Generalize BPF skeleton support and generate vmlinux.h")
+> > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> > ---
+> >  tools/bpf/bpftool/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> > index 2a846cb92120..40abf50b59d4 100644
+> > --- a/tools/bpf/bpftool/Makefile
+> > +++ b/tools/bpf/bpftool/Makefile
+> > @@ -150,7 +150,7 @@ $(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
+> >  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+> >  $(OBJS): $(LIBBPF) $(LIBBPF_INTERNAL_HDRS)
+> >
+> > -VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
+> > +VMLINUX_BTF_PATHS ?= $(if $(OUTPUT),$(OUTPUT)/vmlinux)                 \
+> >                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)    \
+>
+> But you still check KBUILD_OUTPUT? O overrides KBUILD_OUTPUT as far as
+> kernel build goes. So if you still support KBUILD_OUTPUT, you should
+> support O. And the $(OUTPUT) seems to be completely unrelated, as that
+> defines the output of bpftool build files, not the vmlinux image. Or
+> am I missing something?
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/btf.rst | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+OK, I think I'm the one who missed the point. I simply figured we
+meant to search the output directory, and that it should be $(OUTPUT)
+like everywhere else in the Makefile. But from what I understand now,
+it's not the case. Let's drop this patch.
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index 9ad4218a751f..d0ec40d00c28 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -86,6 +86,7 @@ sequentially and type id is assigned to each recognized=
- type starting from id
-     #define BTF_KIND_DATASEC        15      /* Section      */
-     #define BTF_KIND_FLOAT          16      /* Floating point       */
-     #define BTF_KIND_DECL_TAG       17      /* Decl Tag     */
-+    #define BTF_KIND_TYPE_TAG       18      /* Type Tag     */
-=20
- Note that the type section encodes debug info, not just pure types.
- ``BTF_KIND_FUNC`` is not a type, and it represents a defined subprogram.
-@@ -107,7 +108,7 @@ Each type contains the following common data::
-          * "size" tells the size of the type it is describing.
-          *
-          * "type" is used by PTR, TYPEDEF, VOLATILE, CONST, RESTRICT,
--         * FUNC, FUNC_PROTO and DECL_TAG.
-+         * FUNC, FUNC_PROTO, DECL_TAG and TYPE_TAG.
-          * "type" is a type_id referring to another type.
-          */
-         union {
-@@ -492,6 +493,16 @@ the attribute is applied to a ``struct``/``union`` m=
-ember or
- a ``func`` argument, and ``btf_decl_tag.component_idx`` should be a
- valid index (starting from 0) pointing to a member or an argument.
-=20
-+2.2.17 BTF_KIND_TYPE_TAG
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+``struct btf_type`` encoding requirement:
-+ * ``name_off``: offset to a non-empty string
-+ * ``info.kind_flag``: 0
-+ * ``info.kind``: BTF_KIND_TYPE_TAG
-+ * ``info.vlen``: 0
-+ * ``type``: the type with ``btf_type_tag`` attribute
-+
- 3. BTF Kernel API
- *****************
-=20
---=20
-2.30.2
+If the rest of the set looks good to you, can you just skip this
+patch, or do you prefer me to send a v2?
 
+Quentin
