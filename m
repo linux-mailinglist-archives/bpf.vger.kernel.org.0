@@ -2,174 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7D744D60E
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 12:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B4444D6E9
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 13:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbhKKLu1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 06:50:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41140 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233137AbhKKLu0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Nov 2021 06:50:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636631257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3FPfS7kZXFceS9Lgp1RH/lsyVsBLRGLqfS3FoOXYSuE=;
-        b=JUG0zHkr9XKE+vyp2JQ6ZOnO7o1vblP3jalWF4kINFFMYiaplaDm9Z8PxGwLW6pMoGFutK
-        wClQirNVbisXCdAvgSvn5/0BWygrFVn7hTc6h0yMsuV02eUZe+0OWYyMOyWav098hjC4q7
-        vgY/hnArrBuzrOh7X+lXS0JHzwP2DMc=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-fTgJTxNyPD6AJ0m_gJJ9jw-1; Thu, 11 Nov 2021 06:47:35 -0500
-X-MC-Unique: fTgJTxNyPD6AJ0m_gJJ9jw-1
-Received: by mail-wm1-f69.google.com with SMTP id 69-20020a1c0148000000b0033214e5b021so2596597wmb.3
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 03:47:35 -0800 (PST)
+        id S232701AbhKKNAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 08:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhKKNAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 08:00:19 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8F9C061766
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 04:57:29 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id r12so23803905edt.6
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 04:57:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=TpTcTcivucgwkiyqkj1zzJWU3hB8dDNMbilNVwfOU0A=;
+        b=Q6gcGmwDLnpCf1Jic1BfdfQO8Xuo5wIEkdUpDkVccJRnMCy1gP+JTTd0D5ugopf4qf
+         PAkJa8yOkOKeWq/sTmcBI+1zGbtaMazYNt8fmN9ZbCIZKyVlsErU2t6lgz7VWL1wlhKW
+         nnOMjLuu/IPYzrHXu7Bs+A92U3Nv8RjXBym4+afFic0W1eSXBaV/zxqAV6pU0IeKagM7
+         t2lY7Vu/a73/szpbKK5LhVCLSROxQ2UGGNNt1v80YrEFKmQsIXq3UlK4BlRM8reHh7O3
+         GQILVRhxeYj5bQVEACdctlon2ycAZWH8dcK4pGTXANDyUMHeW9Gb/WL3fJ7lwSpyy/6S
+         u6dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=3FPfS7kZXFceS9Lgp1RH/lsyVsBLRGLqfS3FoOXYSuE=;
-        b=fJPncSE1qnEnNPVt0zMDYpk9P+9M9CsoriHGP39rv/FuUK8z2hntjtakEa4TYrmrmK
-         P5uHmJVIsh/LwPjSfBfEgBhbghaEHlTEmCbOKFnDpNBrYMJD97+dxD/vt9ijkMLNT8XE
-         jDgwRkvvZKbmrKjIzIaTQFDwUroIezDD8aYhVDsZbVzlDJ1Fr+w3U0NklQP72fxeC8SG
-         +1mXzaAj2EfnaDgB+mQSi1GK7DEwO8n1x/yfthlC0hBvwYyxY+gI84gFWTwGuWWxKk+o
-         F/t41hHMX7S7CQoBXXf//+vD1P8vPHDp5sRCPMUaNQGSviPY2XcF5XihRPoXjRaPTKHr
-         qr3A==
-X-Gm-Message-State: AOAM533ikLDRZfureHMTLY3ZGf9UQbvoK0dW6eoPdX29u6S+nCKQHGIv
-        TTfYFhO0KGuIJidENlZfm9lkzQ0McOlhtKl0OjKIZYrTdvmqZJGWO0fV9g84L+NG3NMYf0KjIdY
-        lfTduJLzYeaC8
-X-Received: by 2002:a5d:45cc:: with SMTP id b12mr8082373wrs.164.1636631254683;
-        Thu, 11 Nov 2021 03:47:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwO566pckJvXEcwz+OG93YPsApF+toGZKExvaMFLBrnliRRTv/LgjAiYUOFAAaeaDr4bLvTMw==
-X-Received: by 2002:a5d:45cc:: with SMTP id b12mr8082352wrs.164.1636631254480;
-        Thu, 11 Nov 2021 03:47:34 -0800 (PST)
-Received: from [192.168.3.132] (p4ff23ee8.dip0.t-ipconnect.de. [79.242.62.232])
-        by smtp.gmail.com with ESMTPSA id d8sm2782565wrm.76.2021.11.11.03.47.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 03:47:33 -0800 (PST)
-Message-ID: <70dd5e1c-99c9-c1ca-4e3f-1a894896cf06@redhat.com>
-Date:   Thu, 11 Nov 2021 12:47:33 +0100
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=TpTcTcivucgwkiyqkj1zzJWU3hB8dDNMbilNVwfOU0A=;
+        b=LbLc4qCGAN/vCUUKP44J8M9+B58d+NCvSqUrTZ/vyklXXQcGISwouLB0EWsARajiqa
+         kyVIYT15PwvUDSMDzno3aelIQ2YGG+gvAq2GR7yLSrX9CTmXF7QyBL69dJar+lBS5C+N
+         2uHPQSjMe8k8qbTAaUGU25MnOYKxQ/fhah7fGBFsyvtzHUKsBhnmhWZFRNbr9Jb9lruS
+         I4HECaoTo0kVwKJ/45Aj1ipp7e6B2LeGihAh1IG0w0Dc+DRFp/z9v2hqAAg6oHA1Dufo
+         5NMP8MKvFUg9VAcuvEiFV8KlAFy7k/Pl3UqLySPTkM3Tfu6Nz2vke5Kh6NdaStzbOkkg
+         o54A==
+X-Gm-Message-State: AOAM531CYYyK2eNvrQ7QbnYTxAIWTz1kmmlkDiFuJUU29eQyi3h3fxxc
+        IV1AQJMlFKz5iZCrBHNQWAoTt8qlZhwKNDqxPNY=
+X-Google-Smtp-Source: ABdhPJwFaUZ7XyVSUlJmKABlTKiZB1hswikYtk6NZlLq3VblW7Ofz8aKUkh5xzNYrCe24AildRYk8G1egqf7K+nM49o=
+X-Received: by 2002:a17:907:7f11:: with SMTP id qf17mr8996551ejc.196.1636635448252;
+ Thu, 11 Nov 2021 04:57:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 4/7] fs/binfmt_elf: use get_task_comm instead of
- open-coded string copy
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <20211108083840.4627-1-laoar.shao@gmail.com>
- <20211108083840.4627-5-laoar.shao@gmail.com>
- <a13c0541-59a3-6561-6d42-b51fef9f7c8b@redhat.com>
- <b495d38d-5cdd-8a33-b9d3-de721095ccab@redhat.com> <YYz/4bSdSXR3Palz@alley>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YYz/4bSdSXR3Palz@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ab4:a806:0:0:0:0:0 with HTTP; Thu, 11 Nov 2021 04:57:27
+ -0800 (PST)
+Reply-To: kathrynh566@gmail.com
+From:   Kathryn Hensley <kiyomorikinzo@gmail.com>
+Date:   Thu, 11 Nov 2021 04:57:27 -0800
+Message-ID: <CABPcjqkUuOnQbLxk1xXgBXv-_kCnWrOQSxB=GmcHqaCpC1Uujg@mail.gmail.com>
+Subject: URGENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11.11.21 12:34, Petr Mladek wrote:
-> On Thu 2021-11-11 11:06:04, David Hildenbrand wrote:
->> On 11.11.21 11:03, David Hildenbrand wrote:
->>> On 08.11.21 09:38, Yafang Shao wrote:
->>>> It is better to use get_task_comm() instead of the open coded string
->>>> copy as we do in other places.
->>>>
->>>> struct elf_prpsinfo is used to dump the task information in userspace
->>>> coredump or kernel vmcore. Below is the verfication of vmcore,
->>>>
->>>> crash> ps
->>>>    PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
->>>>       0      0   0  ffffffff9d21a940  RU   0.0       0      0  [swapper/0]
->>>>>     0      0   1  ffffa09e40f85e80  RU   0.0       0      0  [swapper/1]
->>>>>     0      0   2  ffffa09e40f81f80  RU   0.0       0      0  [swapper/2]
->>>>>     0      0   3  ffffa09e40f83f00  RU   0.0       0      0  [swapper/3]
->>>>>     0      0   4  ffffa09e40f80000  RU   0.0       0      0  [swapper/4]
->>>>>     0      0   5  ffffa09e40f89f80  RU   0.0       0      0  [swapper/5]
->>>>       0      0   6  ffffa09e40f8bf00  RU   0.0       0      0  [swapper/6]
->>>>>     0      0   7  ffffa09e40f88000  RU   0.0       0      0  [swapper/7]
->>>>>     0      0   8  ffffa09e40f8de80  RU   0.0       0      0  [swapper/8]
->>>>>     0      0   9  ffffa09e40f95e80  RU   0.0       0      0  [swapper/9]
->>>>>     0      0  10  ffffa09e40f91f80  RU   0.0       0      0  [swapper/10]
->>>>>     0      0  11  ffffa09e40f93f00  RU   0.0       0      0  [swapper/11]
->>>>>     0      0  12  ffffa09e40f90000  RU   0.0       0      0  [swapper/12]
->>>>>     0      0  13  ffffa09e40f9bf00  RU   0.0       0      0  [swapper/13]
->>>>>     0      0  14  ffffa09e40f98000  RU   0.0       0      0  [swapper/14]
->>>>>     0      0  15  ffffa09e40f9de80  RU   0.0       0      0  [swapper/15]
->>>>
->>>> It works well as expected.
->>>>
->>>> Suggested-by: Kees Cook <keescook@chromium.org>
->>>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->>>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>>> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
->>>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->>>> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
->>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>> Cc: Steven Rostedt <rostedt@goodmis.org>
->>>> Cc: Matthew Wilcox <willy@infradead.org>
->>>> Cc: David Hildenbrand <david@redhat.com>
->>>> Cc: Al Viro <viro@zeniv.linux.org.uk>
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Cc: Petr Mladek <pmladek@suse.com>
->>>> ---
->>>>  fs/binfmt_elf.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
->>>> index a813b70f594e..138956fd4a88 100644
->>>> --- a/fs/binfmt_elf.c
->>>> +++ b/fs/binfmt_elf.c
->>>> @@ -1572,7 +1572,7 @@ static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
->>>>  	SET_UID(psinfo->pr_uid, from_kuid_munged(cred->user_ns, cred->uid));
->>>>  	SET_GID(psinfo->pr_gid, from_kgid_munged(cred->user_ns, cred->gid));
->>>>  	rcu_read_unlock();
->>>> -	strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
->>>> +	get_task_comm(psinfo->pr_fname, p);
->>>>  
->>>>  	return 0;
->>>>  }
->>>>
->>>
->>> We have a hard-coded "pr_fname[16]" as well, not sure if we want to
->>> adjust that to use TASK_COMM_LEN?
->>
->> But if the intention is to chance TASK_COMM_LEN later, we might want to
->> keep that unchanged.
-> 
-> It seems that len will not change in the end. Another solution is
-> going to be used for the long names, see
-> https://lore.kernel.org/r/20211108084142.4692-1-laoar.shao@gmail.com.
-
-Yes, that's what I recall as well. The I read the patch
-subjects+descriptions in this series "make it adopt to task comm size
-change" and was slightly confused.
-
-Maybe we should just remove any notion of "task comm size change" from
-this series and instead just call it a cleanup.
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+5bCK5pWs55qE5YWI55Sf77yMDQrmiJHmnInkuIDnrJTkuqTmmJPmtonlj4oxNzkw5LiH576O5YWD
+55qE5aSW5ZWG5oqV6LWE77yM5aaC5p6c5oKo5pyJ5YW06Laj77yM6K+35Zue5aSN77yaa2F0aHJ5
+bmg1NjZAZ21haWwuY29t5LqG6Kej5pu05aSa6K+m5oOF44CCDQrosKLosKLkvaDjgIINCg0KDQoN
+CkRlYXIgU2lyLA0KSSBoYXZlIGEgdHJhbnNhY3Rpb24gdGhhdCBpbnZvbHZlcyB0aGUgdHJhbnNm
+ZXIgb2YgJDE3LjkgbWlsbGlvbiBmb3INCmZvcmVpZ24gaW52ZXN0bWVudCwgaWYgeW91IGFyZSBp
+bnRlcmVzdGVkIGtpbmRseSByZXBseSB0bzoNCmthdGhyeW5oNTY2QGdtYWlsLmNvbSAgIGZvciBt
+b3JlIHNwZWNpZmljIGRldGFpbHMuDQpUaGFuayB5b3UuDQo=
