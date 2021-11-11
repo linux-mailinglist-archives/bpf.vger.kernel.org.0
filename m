@@ -2,147 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E45044CE2A
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 01:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A31F844CF39
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 02:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbhKKAQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Nov 2021 19:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
+        id S232816AbhKKBuQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Nov 2021 20:50:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233567AbhKKAQu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Nov 2021 19:16:50 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DF9C061766;
-        Wed, 10 Nov 2021 16:14:02 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id q17so4309659plr.11;
-        Wed, 10 Nov 2021 16:14:02 -0800 (PST)
+        with ESMTP id S232723AbhKKBuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Nov 2021 20:50:16 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD6BC061766
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 17:47:28 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id v20so4500116plo.7
+        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 17:47:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4xw9KKTY+RnOSMKZ1a6CWSpNS+Pk9GVsvV7dPNOyn1k=;
-        b=hBBTABDqpuPxyOUnQ38hH91zj+bdJ2bBCi2F8DV7QcHe98ZuNsrPUFiPyGjbF1GeSS
-         FoErFNP/vkhtCnO6CIOdr7ZmqNUNZSAK7QkNNmWG03RuB8feo3xOLbl7d4kOXhEBY2fU
-         xCzWXwHI305xnpi9P41p8vdf6eqT2t+T8msGztNxyTt3Xz/H8nSOc34MdLAcPTf0sh4S
-         3zgwU835Sy5/UkDh4IcliSx6S2fYOjtZDce7S5GfhucikJe2bgot5+iHpFmFm9zfD0nN
-         1LdTZ5WqEw62GFHlZfVjKrms5/qVncmLj0SEVhwZ3oYwLdfUVy4AlIgXKPKGXD5ssWqc
-         nybQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AtBTFiy71hsD0821NhxHVyTBZ661/Kn40KuRVNo8yZY=;
+        b=o5nqb3tLpYD5r5qPR35I+dXehN+HUmU7F/WUQWKzadq4uF96HkDhH0DAriW21ZfXlx
+         pDn4GS8BQxRvIl8R5PkT7f5uxQYIyfMjtqgIT58CJciVpB8ODVuMyl5j0/HG9etyBcI8
+         0EjRsmhmaaCSWdNC2w69+gpwkTe5RRfYX0fP9icc1SOT3Nv9CZUBKDtUVY4+jZQC+ef9
+         nVF9rzmWRzZxvnI9HIKySY5uknXJud+jeqjGLo/G4r/Y+0Ls23HKic0RnHQmsnHjeDpU
+         nUlTxWr8v1qZA8t6s47MDUbugY0zb/ktUSiSt24kQ/lm7T/00SWbPpB4Aw9apB2Db+GF
+         mWdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4xw9KKTY+RnOSMKZ1a6CWSpNS+Pk9GVsvV7dPNOyn1k=;
-        b=nUmzKC+WAz9tFJPocg7DkjSrqM99lkMGEft9Z+iCyAxh17KDd22C6/iQGtZZ0MHy3M
-         BxGsZiW168Wr1/Cxj8Usv3kzZtmufIfsDSSfZKDkdE6LUfWfoFC3njmlqkA9ewZZQC3r
-         K0umPbkP0fvxbYl4/Ar056+8QfqSJ8KJhf8WjvwyUfebLId/MXJpo7F0FwWqvhPMMN0c
-         kwsrfesLpEmRfiD66qUQgJ2wkSDaSsNpgXJE4HGHvI0m2C1sd7zh3mn/rEmwmuWhYU7b
-         q1eIaBIsKY/zVDZly4Dn2IuD5qfSIkDMwuhPfV7jUwESHaMtxJ9RFYl1FcJzPy5yXOCX
-         s6rQ==
-X-Gm-Message-State: AOAM532BQQfPpgiXTL3YLrNklMUyJY57xIecnUl7XU+PE556L8JybE7V
-        nNTl8Tla9kPgwBEghEJi2xI=
-X-Google-Smtp-Source: ABdhPJzMey32c/wx1NBp6k41zkmEdSOJdPvXVm9vrCNiwW5Rk05Suz5tLtbzfDrxUhsorGr/O47DUQ==
-X-Received: by 2002:a17:90a:6f61:: with SMTP id d88mr3574220pjk.109.1636589642230;
-        Wed, 10 Nov 2021 16:14:02 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id t4sm747576pfq.163.2021.11.10.16.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 16:14:01 -0800 (PST)
-Date:   Thu, 11 Nov 2021 05:43:59 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH net v2] bpf: Fix build when CONFIG_BPF_SYSCALL is disabled
-Message-ID: <20211111001359.3v2yjha5nxkdtoju@apollo.localdomain>
-References: <20211110205418.332403-1-vinicius.gomes@intel.com>
- <20211110212553.e2xnltq3dqduhjnj@apollo.localdomain>
- <CAADnVQKqjLM1P7X+iTfnH-QFw5=z5L_w8MLsWtcNWbh5QR7VVg@mail.gmail.com>
- <878rxvbmcm.fsf@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AtBTFiy71hsD0821NhxHVyTBZ661/Kn40KuRVNo8yZY=;
+        b=mDSA4DxJt9VnOCpkhkwVqEW7qofIJXOpKFFgmuPEU9nJF7UXMIVTMKZq02Z84J0Znm
+         wwwzPpAfosp7lzdTsjeR/Mstb/n2Cck9X/3m5q1JRjxtnB1ak4OvC+EPWzmd6zN8e3MZ
+         24y5eAeT1+Dm/DDoip9SbMrSOP8VEsCDP02T3RXa+DFPeElw+bb47PkxaKtdVT5sPgcy
+         qkyX1avhAkpHYtl2zEJLQi6iKwqL0Y3KFPWiyTTHBb1mb0jbolXvdohw+cLIUJZYZsV8
+         ekYWxy89FKXDp7N8SLbICkEicMghgSTXeSo6z9NWwuf8eLwlwPY8vcGpT6RiHD8PjRPq
+         2GOA==
+X-Gm-Message-State: AOAM530NROsWJcETv1Fp/i/QMLNljWiWd7tzAY72n+96Bk5VaycI4+cO
+        AXcRDY/GvWinRUYirdlCXO/fA0MjY4MWwLnLn04=
+X-Google-Smtp-Source: ABdhPJxFrRT9oaRqpFnE8aUpOht/Pu6E6/n0obd1EF833mDEOplt07X4VJNLUbkI2EXG6uJ7KxO5SiXsQlbWbjkzIOg=
+X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr22011964pja.122.1636595247564;
+ Wed, 10 Nov 2021 17:47:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878rxvbmcm.fsf@intel.com>
+References: <20211110051940.367472-1-yhs@fb.com> <20211110052805.qds3qzhabhdr3ah4@ast-mbp.dhcp.thefacebook.com>
+ <d2546d58-67ee-0aee-5741-113f0583365b@fb.com> <CAADnVQLeW3s2Dx8+t8ajt=H3r-r8x40wFF18ia+wMbv6WYqdnw@mail.gmail.com>
+ <69e9af56-02d8-1ec6-637c-80666788dc08@fb.com>
+In-Reply-To: <69e9af56-02d8-1ec6-637c-80666788dc08@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 10 Nov 2021 17:47:16 -0800
+Message-ID: <CAADnVQJxML8BUU7O=gEJpEpdRJ1bf_3EhAUzz2SAqUO3hpjj8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/10] Support BTF_KIND_TYPE_TAG for btf_type_tag attributes
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 05:21:53AM IST, Vinicius Costa Gomes wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On Wed, Nov 10, 2021 at 9:04 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> >> Thanks for the fix.
+>
+>
+> On 11/10/21 8:40 AM, Alexei Starovoitov wrote:
+> > On Tue, Nov 9, 2021 at 10:26 PM Yonghong Song <yhs@fb.com> wrote:
 > >>
-> >> But instead of moving this to core.c, you can probably make the btf.h
-> >> declaration conditional on CONFIG_BPF_SYSCALL, since this is not useful in
-> >> isolation (only used by verifier for module kfunc support). For the case of
-> >> kfunc_btf_id_list variables, just define it as an empty struct and static
-> >> variables, since the definition is still inside btf.c. So it becomes a noop for
-> >> !CONFIG_BPF_SYSCALL.
 > >>
-> >> I am also not sure whether BTF is useful without BPF support, but maybe I'm
-> >> missing some usecase.
+> >>
+> >> On 11/9/21 9:28 PM, Alexei Starovoitov wrote:
+> >>> On Tue, Nov 09, 2021 at 09:19:40PM -0800, Yonghong Song wrote:
+> >>>> LLVM patches ([1] for clang, [2] and [3] for BPF backend)
+> >>>> added support for btf_type_tag attributes. This patch
+> >>>> added support for the kernel.
+> >>>>
+> >>>> The main motivation for btf_type_tag is to bring kernel
+> >>>> annotations __user, __rcu etc. to btf. With such information
+> >>>> available in btf, bpf verifier can detect mis-usages
+> >>>> and reject the program. For example, for __user tagged pointer,
+> >>>> developers can then use proper helper like bpf_probe_read_kernel()
+> >>>> etc. to read the data.
+> >>>
+> >>> +#define __tag1 __attribute__((btf_type_tag("tag1")))
+> >>> +#define __tag2 __attribute__((btf_type_tag("tag2")))
+> >>> +
+> >>> +struct btf_type_tag_test {
+> >>> +       int __tag1 * __tag1 __tag2 *p;
+> >>> +} g;
+> >>>
+> >>> Can we build the kernel with the latest clang and get __user in BTF ?
+> >>
+> >> Not yet. The following are the steps:
+> >>     1. land this patch set in the kernel
+> >>     2. sync to libbpf repo.
+> >>     3. pahole sync with libbpf repo, and pahole convert btf_type_tag
+> >>        in llvm to BTF
+> >>     4. another kernel patch to define __user as
+> >>        __attribute__((btf_type_tag("user")))
+> >> and then we will get __user in vmlinux BTF.
 > >
-> > Unlikely. I would just disallow such config instead of sprinkling
-> > the code with ifdefs.
+> > Makes sense. I was wondering whether clang can handle
+> > the whole kernel source code with
+> > #define __user __attribute__((btf_type_tag("user")))
+> > Steps 1,2,3 are necessary to make use of it,
+> > but step 4 can be tried out already?
 >
-> Is something like this what you have in mind?
+> Yes, you try clang -> vmlinux dwarf part of step 4 with
+> the following kernel hack:
 >
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 6fdbf9613aec..eae860c86e26 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -316,6 +316,7 @@ config DEBUG_INFO_BTF
->  	bool "Generate BTF typeinfo"
->  	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
->  	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
-> +	depends on BPF_SYSCALL
->  	help
->  	  Generate deduplicated BTF type information from DWARF debug info.
->  	  Turning this on expects presence of pahole tool, which will convert
->
->
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 05ceb2e92b0e..30e199c30a53 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -32,7 +32,7 @@ static inline void __chk_io_ptr(const volatile void
+> __iomem *ptr) { }
+>   # ifdef STRUCTLEAK_PLUGIN
+>   #  define __user       __attribute__((user))
+>   # else
+> -#  define __user
+> +#  define __user       __attribute__((btf_type_tag("user")))
+>   # endif
+>   # define __iomem
+>   # define __percpu
 
-BTW, you will need a little more than that, I suspect the compiler optimizes out
-the register/unregister call so we don't see a build failure, but adding a side
-effect gives me errors, so something like this should resolve the problem (since
-kfunc_btf_id_list variable definition is behind CONFIG_BPF_SYSCALL).
+I've tried the latest LLVM with the above diff and it seems to work!
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 203eef993d76..e9881ef9e9aa 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -254,6 +254,8 @@ void unregister_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
-                                 struct kfunc_btf_id_set *s);
- bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist, u32 kfunc_id,
-                              struct module *owner);
-+extern struct kfunc_btf_id_list bpf_tcp_ca_kfunc_list;
-+extern struct kfunc_btf_id_list prog_test_kfunc_list;
- #else
- static inline void register_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
-                                             struct kfunc_btf_id_set *s)
-@@ -268,13 +270,13 @@ static inline bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist,
- {
-        return false;
- }
-+struct kfunc_btf_id_list {};
-+static struct kfunc_btf_id_list bpf_tcp_ca_kfunc_list __maybe_unused;
-+static struct kfunc_btf_id_list prog_test_kfunc_list __maybe_unused;
-+
- #endif
+$ llvm-dwarfdump kernel/bpf/built-in.a |grep -3 btf_type_tag|head
+0x00003ace:   DW_TAG_pointer_type
 
- #define DEFINE_KFUNC_BTF_ID_SET(set, name)                                     \
-        struct kfunc_btf_id_set name = { LIST_HEAD_INIT(name.list), (set),     \
-                                         THIS_MODULE }
--
--extern struct kfunc_btf_id_list bpf_tcp_ca_kfunc_list;
--extern struct kfunc_btf_id_list prog_test_kfunc_list;
--
- #endif
+0x00003acf:     DW_TAG_LLVM_annotation
+                  DW_AT_name    ("btf_type_tag")
+                  DW_AT_const_value    ("user")
 
---
-Kartikeya
+
+Nice!
+Didn't notice any warnings. Great.
