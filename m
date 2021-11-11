@@ -2,83 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069A244D77E
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 14:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EAD44D7B8
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 15:00:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhKKNt2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 08:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbhKKNtZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:49:25 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E8AC0613F5
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 05:46:36 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id k22so6902498iol.13
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 05:46:36 -0800 (PST)
+        id S232699AbhKKOCy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 09:02:54 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:10210 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231739AbhKKOCx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 09:02:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=vIF0HCtULT8/Hj4oEOKhM3wVM2dbK4vAQWbMA06NHEs=;
-        b=cioBpwvprb0EslWpAlKWfSGjHsHWkVVX6Ax63uvQI+XSHEFni5gF+BbPXcUMk018Zt
-         3KoBgBghBE12cezBudV6JpF+MWSHvkOyekzOy2v2E289GZtLVXhftjKRCn916qnekziU
-         x6JeFN/v7ZPy5sV75/4Jyx/CxaBzftixo+Oug0aCho/nnnjh6y6ftrcCFb3CSpSGawjB
-         jkDdBpfgAI+bh8RX/Z5+ksl9Zv/Dj4PMQO7ivCZWf914PIPk1I0wmDywk9NDeFDA5tWS
-         oSk5J5jJspyKi54GlKTVjXuvbUcML8TQGCgaX30y9kgbPkJtJS78L6E0itSuCuIf3iSf
-         G28w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=vIF0HCtULT8/Hj4oEOKhM3wVM2dbK4vAQWbMA06NHEs=;
-        b=XYaVpshFf/IZ9x5Ce1jj9oCEcE+Wd9MhRlhQuNcfIBKkjaNrm3tBlg5h7zoV8eRtcp
-         gE+Zpv6++RaNryA68S3vVGWBzAqpo31hktuzvNZOqBmB6HHT7OkQQ8Dz+yOS01aWxZ0D
-         PsDWdatV0hjNF8r6XgGd0DtRuSPug40O4jZ0B6GqXxJemfo59f755cFmLDv94eomOIZX
-         thweNiJMtYV1qgAsVvHSEUXtHcYZwu25+B/SWPaTsjFCGlAIy/s2GIYkqGm7aQHNzrem
-         4ZktcOfv1BuRalOKABNNM0hrYxT3I1C789i4GmKAraT0WQXGZFWx+Ic4jSeGhzjtYxIE
-         HAVw==
-X-Gm-Message-State: AOAM533IpVHdzV+2YNZ2xtIIuZ9oepoqqRgluXUcsG3bLUjlQr9M/K55
-        hidpNTr8/WYV8nw882+WvLP71tOyFaAW6T6rqZI=
-X-Google-Smtp-Source: ABdhPJzdkqP8u46Pv+f08+qZTZU7T1ww5tUB42v+e4vMtI63HgDGOvnAPiHot5RxcbAhjsaI+aIK6v0yZu9Kgv2aITc=
-X-Received: by 2002:a5d:8903:: with SMTP id b3mr5142604ion.44.1636638396153;
- Thu, 11 Nov 2021 05:46:36 -0800 (PST)
+  d=axis.com; q=dns/txt; s=axis-central1; t=1636639205;
+  x=1668175205;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RFcG43MDtINsUV9C/D4kpj+78WwyKwfn64tSQhJrSn8=;
+  b=dHPXd1tqw+n6RIIpjF8+O8CkdgEnRQaKCghI5/p0yBbvRNyWWLJCKImm
+   LggvCs+0ANwG7FBbzhD5xESXjlj/s0nuTInGLCOEs7iJ53QKIpP+bkIhJ
+   c9EehaEwV8acSflQ96BWZVYSKyo3JeHWqVU8Dlf1CZRu8aGAMDKe/NH+T
+   cbldJc/5kTNmwgPBiF1k8+U2kLIroTLhwgRcrrySlsAQRYN6OR7deg3Nh
+   H2/Q0hfGUgmmbTXJ94DbtdnOO+PPzAHSCEUN071qQcdB4+DdDjkm4tBHw
+   YJ40senz4jiSCGQsITdyI8ugUnvrq9pA7l3kjJ2gbXV9pCa1l7izPl2xl
+   w==;
+Date:   Thu, 11 Nov 2021 15:00:02 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Jiang Wang <jiang.wang@bytedance.com>
+CC:     <bpf@vger.kernel.org>, <cong.wang@bytedance.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Dumazet <edumazet@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Rao Shoaib <Rao.Shoaib@oracle.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf v1] unix: fix an issue in unix_shutdown causing the
+ other end read/write failures
+Message-ID: <20211111140000.GA10779@axis.com>
+References: <20211004232530.2377085-1-jiang.wang@bytedance.com>
 MIME-Version: 1.0
-Reply-To: salkavar2@gmail.com
-Sender: mrmaxwellkojo@gmail.com
-Received: by 2002:a05:6638:210f:0:0:0:0 with HTTP; Thu, 11 Nov 2021 05:46:35
- -0800 (PST)
-From:   "Mr.Sal kavar" <salkavar2@gmail.com>
-Date:   Thu, 11 Nov 2021 14:46:35 +0100
-X-Google-Sender-Auth: aT41MU__Zm8K05spNW8RV1FFKWk
-Message-ID: <CAKYa8HZ91Vu_UkZ0O1S8Q38_euuSmmCD0rB+9dfhaQMfnRu-QA@mail.gmail.com>
-Subject: Yours Faithful,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211004232530.2377085-1-jiang.wang@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I assume you and your family are in good health. I am the foreign
-operations Manager
+On Mon, Oct 04, 2021 at 11:25:28PM +0000, Jiang Wang wrote:
+> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
+> sets unix domain socket peer state to TCP_CLOSE
+> in unix_shutdown. This could happen when the local end is shutdown
+> but the other end is not. Then the other end will get read or write
+> failures which is not expected.
+> 
+> Fix the issue by setting the local state to shutdown.
+> 
+> Fixes: 94531cfcbe79 (af_unix: Add unix_stream_proto for sockmap)
+> Suggested-by: Cong Wang <cong.wang@bytedance.com>
+> Reported-by: Casey Schaufler <casey@schaufler-ca.com>
+> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
 
-This being a wide world in which it can be difficult to make new
-acquaintances and because it is virtually impossible to know who is
-trustworthy and who can be believed, i have decided to repose
-confidence in you after much fasting and prayer. It is only because of
-this that I have decided to confide in you and to share with you this
-confidential business.
+This patch changed the behaviour of read(2) after a shutdown(2) on the
+local end of a UDS.  Before this patch, reading from a UDS after a local
+shutdown(SHUT_RDWR) would return the data written or EOF if there is no
+data, but now it always returns -EINVAL.
 
-overdue and unclaimed sum of $15.5m, (Fifteen Million Five Hundred
-Thousand Dollars Only) when the account holder suddenly passed on, he
-left no beneficiary who would be entitled to the receipt of this fund.
-For this reason, I have found it expedient to transfer this fund to a
-trustworthy individual with capacity to act as foreign business
-partner.
+For example, the following test program succeeds with "read 16 bytes" on
+v5.14 but fails with "read: Invalid argument" on v5.15 and mainline:
 
-Thus i humbly request your assistance to claim this fund. Upon the
-transfer of this fund in your account, you will take 45% as your share
-from the total fund, 10% will be shared to Charity Organizations in
-both country and 45% will be for me.
+#include <err.h>
+#include <errno.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/unistd.h>
 
-Yours Faithful,
-Mr.Sal Kavar.
+int main(int argc, char *argv[]) {
+  int sock[2];
+  int ret;
+
+  ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
+  if (ret < 0)
+    err(1, "socketpair");
+
+  char buf[16] = {};
+  ret = write(sock[1], buf, sizeof(buf));
+  if (ret < 0)
+    err(1, "write");
+
+  ret = shutdown(sock[0], SHUT_RDWR);
+  if (ret < 0)
+    err(1, "shutdown");
+
+  ssize_t bytes = read(sock[0], buf, sizeof(buf));
+  if (bytes < 0)
+    err(1, "read");
+
+  printf("read %zd bytes\n", bytes);
+
+  return 0;
+}
