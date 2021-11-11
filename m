@@ -2,122 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EFC44D1FA
-	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 07:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48C644D2B4
+	for <lists+bpf@lfdr.de>; Thu, 11 Nov 2021 08:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhKKGqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 01:46:09 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:43715 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhKKGqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 01:46:09 -0500
-Received: by mail-il1-f200.google.com with SMTP id e15-20020a92194f000000b00275b13f2b6aso3437528ilm.10
-        for <bpf@vger.kernel.org>; Wed, 10 Nov 2021 22:43:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mnls3d+B5dNpFY4b4y80Brjr8wlqrHuUE32ifq4dCs8=;
-        b=zWv2Y4LgsgtmJJ0haFJYRV5f4jFc4d9XqeO0T/vnND6xaw4jf1BmlxboZKKRsJuveJ
-         Gk+T4EVUuSWOEBiXbdb82Eg8XjKdHKPlznKIJQW9A1BILATa366wknxms7UwnZpqWjeP
-         5WgUsY47n3op5hUY8WTm4j2KbzWCCBVYb3rcCiph3E7nZLZlh/9ipCpy1aWsS0qHi42B
-         7gqJSmQKcjzk5iShp0Pc0u6htGWaI4zsiboAsl0e2lBGwK4Qor6Xz9PzzCl36aFQLB8f
-         CCWb/Z6hi7SJurwLkGBr98yoY/UyZ89uX8qN9PKDrc9eb+ROlvXfBbMHthrl9l08uNbD
-         JIzQ==
-X-Gm-Message-State: AOAM530efq4uIwy2xC5CyTPPnUfS+9z0ucEFgPlonanSAl2lWSZPzVLD
-        /y8LXNcFD8mKBUvXC0fBAkabMjYCDaj5ie7VwwMtohPXQJXO
-X-Google-Smtp-Source: ABdhPJwA57G8Lx4oLqI477r2EWE3KPXCpaPPjX1Ze5ECwkKzAOip1D1Ie0wh3HxAAwqEy/qD2XyMFpdoT6dMY3KnFpfmeynDLMds
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1561:: with SMTP id k1mr2998713ilu.135.1636613000688;
- Wed, 10 Nov 2021 22:43:20 -0800 (PST)
-Date:   Wed, 10 Nov 2021 22:43:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a7c9605d07da846@google.com>
-Subject: [syzbot] WARNING in __dev_change_net_namespace
-From:   syzbot <syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, avagin@gmail.com,
-        bpf@vger.kernel.org, cong.wang@bytedance.com, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, johannes.berg@intel.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+        id S231367AbhKKHxg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 02:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhKKHxd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 02:53:33 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80EC061766;
+        Wed, 10 Nov 2021 23:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=4HCVFFk19upOjTLWNUM/OfRNFSnFhC8rZPL5tgGbIYE=;
+        t=1636617044; x=1637826644; b=lX02yLfzgZEG3RvUVNmrUq3brvZPz/Sddu9O3r/KE3wP593
+        k6RPCXWohDWxiCt0nTb02/eymF+eJfJ4hAIIBMqv2AA5YSDfzEuQ7nkApgU4F2goas2IQAAr66Kgz
+        o84YXX9RiXgMMbO11adU+9wyIU2sT1IwkpG0hu/SSPu3HA02DCderbhB0tG/3Red3zQdn6juLqT3A
+        Ct13Ot1jsvA4bjaHELuB/FSMT/lTurqMUx+PwUvPNULLm5xhyLQHw4lRLIaSsrxXYZq4v0FcCbjHQ
+        RRLdBjB0dagHzQd14N+x6l80rT9DajWuLaV4GKgYoRd64x0xL/H7xA5NlegRL4NA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1ml4qx-00Dh6U-8K;
+        Thu, 11 Nov 2021 08:50:35 +0100
+Message-ID: <e6bfbffa089c711fa3ea21f5f8ab852aaa4d9c00.camel@sipsolutions.net>
+Subject: Re: [syzbot] WARNING in __dev_change_net_namespace
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     syzbot <syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "avagin@gmail.com" <avagin@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "yhs@fb.com" <yhs@fb.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Thu, 11 Nov 2021 08:50:33 +0100
+In-Reply-To: <0000000000008a7c9605d07da846@google.com>
+References: <0000000000008a7c9605d07da846@google.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Thu, 2021-11-11 at 06:43 +0000, syzbot wrote:
+> 
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15b45fb6b00000
 
-syzbot found the following issue on:
+So we see that fault injection is triggering a memory allocation failure
+deep within the device_rename():
 
-HEAD commit:    512b7931ad05 Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b45fb6b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=99780e4a2873b273
-dashboard link: https://syzkaller.appspot.com/bug?extid=5434727aa485c3203fed
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5434727aa485c3203fed@syzkaller.appspotmail.com
-
-RAX: ffffffffffffffda RBX: 00007f02bf014f60 RCX: 00007f02bef01ae9
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00007f02bc4771d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007ffcc2738d7f R14: 00007f02bc477300 R15: 0000000000022000
- </TASK>
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 4974 at net/core/dev.c:11254 __dev_change_net_namespace+0x1079/0x1330 net/core/dev.c:11254
-Modules linked in:
-CPU: 0 PID: 4974 Comm: syz-executor.2 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__dev_change_net_namespace+0x1079/0x1330 net/core/dev.c:11254
-Code: c7 c7 80 9b 8c 8a c6 05 ba 0e 3b 06 01 e8 36 73 d5 01 0f 0b e9 69 f0 ff ff e8 e3 95 57 fa 0f 0b e9 60 fb ff ff e8 d7 95 57 fa <0f> 0b e9 2a fb ff ff 41 bd ea ff ff ff e9 62 f2 ff ff e8 f0 38 9e
-RSP: 0018:ffffc900217aed70 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc9000b291000
-RDX: 0000000000040000 RSI: ffffffff87202d59 RDI: 0000000000000003
-RBP: ffff88815cbea000 R08: 0000000000000000 R09: ffff88815cbea64b
-R10: ffffffff87202882 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffffffff8d0e3dc0 R14: ffff88815cbeac00 R15: ffffffff8d0e3f0c
-FS:  00007f02bc477700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b32027000 CR3: 0000000162d58000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- do_setlink+0x275/0x3970 net/core/rtnetlink.c:2624
- __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5571
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f02bef01ae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f02bc477188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f02bf014f60 RCX: 00007f02bef01ae9
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00007f02bc4771d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007ffcc2738d7f R14: 00007f02bc477300 R15: 0000000000022000
- </TASK>
+int __dev_change_net_namespace(struct net_device *dev, struct net *net,
+                               const char *pat, int new_ifindex)
+{
+...
+        /* Fixup kobjects */
+        err = device_rename(&dev->dev, dev->name);
+        WARN_ON(err);
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+So we hit that WARN_ON().
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I'm not really sure what to do about that though. Feels like we should
+be able to cope with failures here, but clearly we don't, and it seems
+like it would also be tricky to do after all the work already done at
+this point.
+
+Perhaps device_rename() could grow an API to preallocate all the
+memories, but that would also be fairly involved, I imagine?
+
+johannes
+
