@@ -2,48 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099AB44EE27
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 21:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5863044EE44
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 22:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235932AbhKLUxt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Nov 2021 15:53:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55236 "EHLO mail.kernel.org"
+        id S235619AbhKLVC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Nov 2021 16:02:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235940AbhKLUw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Nov 2021 15:52:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id A3A3160EBD;
-        Fri, 12 Nov 2021 20:50:07 +0000 (UTC)
+        id S235576AbhKLVC6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Nov 2021 16:02:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7E75360231;
+        Fri, 12 Nov 2021 21:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636750207;
-        bh=lwjAWwAg4DrbN15ZktK7sl/Nn904/HeWrcHovPV0roE=;
+        s=k20201202; t=1636750807;
+        bh=ag2Tdmm/lYDghBFg1BWUUWn+s7sh3z1VhWqDjuapc7c=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lbYBddhvG88lOdDAlIsyroMjlRZ0Ge5HDUYD1wj/VA03iZb9ho9m9tsatW1u27Vpf
-         7PnpLrMWGHWj6lrM+ozapz+t69vPULjcKOBi96kDSlgYUJ1I9TWBsPIwlDiAjaAqMV
-         uk7yQ9/5Yt761/qTmmDhibI0z8nkeAlt8BAntYSUz3915s1v6O5JzThuUvY9GWCV6T
-         hazzHH1enLH18XGQWhTZnh/23/06Iu+LKSSjRxywBXxHf15wWjlDqI3h5G9w1Y6Rse
-         fszI3j56oDJc9NsANgodJKIXS8oRJ1Q5EIMRRVaBe4jHaJ9eMWcOCtnXn9O0G7IaIc
-         YCO2tZxjoga1g==
+        b=S7oweAo++rAisUn0dOr0NO0Kpk6+ZKSVWYBrJoZqcgHxCAupOfazpkJwM7+rzV1Pm
+         pxlQVr90JSQAM02EhvSFlWvMswjvk1tDDbMUNGzQ9isLCJPAY+hTjBdDpLPky2iLRz
+         HdrXJsnUYi3U15EeOZw7e4W9Gmx+c4bxxq7pTzWLL6R4e0NobEVBW7EECtynrw0Slx
+         BbuSY7zmT7wd/LX29Ms+6mRxq78Ms2mecz3jzp053jQWHsF3m9yo2PnV0VXmb6Un6G
+         282HuU9Ql9JIqtq5dGsDe8gahCOrGedtEEw5j6m1NRlN4gEI337RnVdcsykYKG6ALR
+         PGmZOQL0LeBOg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 956EA609F8;
-        Fri, 12 Nov 2021 20:50:07 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 71D48609F8;
+        Fri, 12 Nov 2021 21:00:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] samples: bpf: fix summary per-sec stats in
- xdp_sample_user
+Subject: Re: [PATCH bpf] tools/runqslower: Fix cross-build
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163675020760.12842.17692151581487954557.git-patchwork-notify@kernel.org>
-Date:   Fri, 12 Nov 2021 20:50:07 +0000
-References: <20211111215703.690-1-alexandr.lobakin@intel.com>
-In-Reply-To: <20211111215703.690-1-alexandr.lobakin@intel.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, jesse.brandeburg@intel.com,
-        maciej.fijalkowski@intel.com, michal.swiatkowski@intel.com,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        memxor@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Message-Id: <163675080746.17861.4035490534028049921.git-patchwork-notify@kernel.org>
+Date:   Fri, 12 Nov 2021 21:00:07 +0000
+References: <20211112155128.565680-1-jean-philippe@linaro.org>
+In-Reply-To: <20211112155128.565680-1-jean-philippe@linaro.org>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org,
+        quentin@isovalent.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -53,25 +50,23 @@ Hello:
 This patch was applied to bpf/bpf.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Thu, 11 Nov 2021 22:57:03 +0100 you wrote:
-> sample_summary_print() uses accumulated period to calculate and
-> display per-sec averages. This period gets incremented by sampling
-> interval each time a new sample is formed, and thus equals to the
-> number of samples collected multiplied by this interval.
-> However, the totals are being calculated differently, they receive
-> current sample statistics already divided by the interval gotten as
-> a difference between sample timestamps for better precision -- in
-> other words, they are being incremented by the per-sec values each
-> sample.
-> This leads to the excessive division of summary per-secs when
-> interval != 1 sec. It is obvious pps couldn't become two times
-> lower just from picking a different sampling interval value:
+On Fri, 12 Nov 2021 15:51:30 +0000 you wrote:
+> Commit be79505caf3f ("tools/runqslower: Install libbpf headers when
+> building") uses the target libbpf to build the host bpftool, which
+> doesn't work when cross-building:
+> 
+>   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C tools/bpf/runqslower O=/tmp/runqslower
+>   ...
+>     LINK    /tmp/runqslower/bpftool/bpftool
+>   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a(libbpf-in.o): Relocations in generic ELF (EM: 183)
+>   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a: error adding symbols: file in wrong format
+>   collect2: error: ld returned 1 exit status
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] samples: bpf: fix summary per-sec stats in xdp_sample_user
-    https://git.kernel.org/bpf/bpf/c/b51a6682d432
+  - [bpf] tools/runqslower: Fix cross-build
+    https://git.kernel.org/bpf/bpf/c/c9213bcf2fe1
 
 You are awesome, thank you!
 -- 
