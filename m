@@ -2,45 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5863044EE44
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 22:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE4E44EE5B
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 22:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235619AbhKLVC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Nov 2021 16:02:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56510 "EHLO mail.kernel.org"
+        id S235675AbhKLVM6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Nov 2021 16:12:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235576AbhKLVC6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Nov 2021 16:02:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7E75360231;
-        Fri, 12 Nov 2021 21:00:07 +0000 (UTC)
+        id S235619AbhKLVM6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Nov 2021 16:12:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1B1C660F42;
+        Fri, 12 Nov 2021 21:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636750807;
-        bh=ag2Tdmm/lYDghBFg1BWUUWn+s7sh3z1VhWqDjuapc7c=;
+        s=k20201202; t=1636751407;
+        bh=vCdub3yQIwLyBPqVIF93PHJsv30+nq9GlbAjhpdKCao=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=S7oweAo++rAisUn0dOr0NO0Kpk6+ZKSVWYBrJoZqcgHxCAupOfazpkJwM7+rzV1Pm
-         pxlQVr90JSQAM02EhvSFlWvMswjvk1tDDbMUNGzQ9isLCJPAY+hTjBdDpLPky2iLRz
-         HdrXJsnUYi3U15EeOZw7e4W9Gmx+c4bxxq7pTzWLL6R4e0NobEVBW7EECtynrw0Slx
-         BbuSY7zmT7wd/LX29Ms+6mRxq78Ms2mecz3jzp053jQWHsF3m9yo2PnV0VXmb6Un6G
-         282HuU9Ql9JIqtq5dGsDe8gahCOrGedtEEw5j6m1NRlN4gEI337RnVdcsykYKG6ALR
-         PGmZOQL0LeBOg==
+        b=WIEh1s6Ks7UsBOQVB/+VWEtrYAdrHVOqwYNNOvS/MuFja+tBG94xCXX7QUlFlq2MY
+         52hjlgeurJZPEN+3uOW5P337V5oPwGwDHro2BYVYeJrgRbxOK9Z9GuIcNVmfK7Q/kp
+         PmAaXWlQ3ZwX771tJ0e97X/nEugx91Pzu33/0iHwOWgDJTWOlnDFGpT00zE2MrB3MP
+         N74g6RbszSQiz3YCFpobV2yqMITpFb2K33myeEYzgRCybXkdUg4yLgXjyMNJ5x2LUH
+         CO1NPPWYqKBeIQYWLX8sF8vgrTo+P6TRwpJKH1TORCEcQvNTNbAx0fi4qVCyBM4ds6
+         cUDlM+gvV5HRQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 71D48609F8;
-        Fri, 12 Nov 2021 21:00:07 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0C2F4608FE;
+        Fri, 12 Nov 2021 21:10:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] tools/runqslower: Fix cross-build
+Subject: Re: [PATCH bpf] bpf: Fix incorrect use of strlen in xdp_redirect_cpu
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163675080746.17861.4035490534028049921.git-patchwork-notify@kernel.org>
-Date:   Fri, 12 Nov 2021 21:00:07 +0000
-References: <20211112155128.565680-1-jean-philippe@linaro.org>
-In-Reply-To: <20211112155128.565680-1-jean-philippe@linaro.org>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org,
-        quentin@isovalent.com, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
+Message-Id: <163675140704.22228.8160589380637311123.git-patchwork-notify@kernel.org>
+Date:   Fri, 12 Nov 2021 21:10:07 +0000
+References: <20211112020301.528357-1-memxor@gmail.com>
+In-Reply-To: <20211112020301.528357-1-memxor@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -50,23 +46,22 @@ Hello:
 This patch was applied to bpf/bpf.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Fri, 12 Nov 2021 15:51:30 +0000 you wrote:
-> Commit be79505caf3f ("tools/runqslower: Install libbpf headers when
-> building") uses the target libbpf to build the host bpftool, which
-> doesn't work when cross-building:
+On Fri, 12 Nov 2021 07:33:01 +0530 you wrote:
+> Commit b599015f044d tried to fix a bug where sizeof was incorrectly
+> applied to a pointer instead of the array string was being copied to, to
+> find the destination buffer size, but ended up using strlen, which is
+> still incorrect. However, on closer look ifname_buf has no other use,
+> hence directly use optarg.
 > 
->   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C tools/bpf/runqslower O=/tmp/runqslower
->   ...
->     LINK    /tmp/runqslower/bpftool/bpftool
->   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a(libbpf-in.o): Relocations in generic ELF (EM: 183)
->   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a: error adding symbols: file in wrong format
->   collect2: error: ld returned 1 exit status
+> Fixes: b599015f044d ("samples/bpf: Fix application of sizeof to pointer")
+> Fixes: e531a220cc59 ("samples: bpf: Convert xdp_redirect_cpu to XDP samples helper")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] tools/runqslower: Fix cross-build
-    https://git.kernel.org/bpf/bpf/c/c9213bcf2fe1
+  - [bpf] bpf: Fix incorrect use of strlen in xdp_redirect_cpu
+    https://git.kernel.org/bpf/bpf/c/ed95f45142fa
 
 You are awesome, thank you!
 -- 
