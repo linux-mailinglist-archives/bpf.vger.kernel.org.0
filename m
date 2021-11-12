@@ -2,103 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F3044E017
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 03:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A6A44E044
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 03:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhKLCFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 21:05:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S233501AbhKLC3Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 21:29:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhKLCFy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 21:05:54 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE12C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 18:03:05 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id 136so2077149pgc.0
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 18:03:05 -0800 (PST)
+        with ESMTP id S231965AbhKLC3Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 21:29:25 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BED6C061766
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 18:26:35 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id y1so7224122plk.10
+        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 18:26:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4o/ctiQ0jvWgZMbna/z83qQu926M0K6T0rgJ7jRDjq8=;
-        b=pOohNHMesnALo9DCB1f2FmqkCDtuzOOhYdyBJj7/yXNV5zis50fFL7N0dhOsxJIQwi
-         yooKBpMQ4+ipgwj4e5y4qIYodgCb4Ys0xoQvwMUm5o8NULUIvgUiR99HyQLV9zAzlRr6
-         DOS5122SQlN+LGLB8jSu/saiXiDM4/+kGhV7QA78mOYsH2YBoWqTQBrZFmQDg8sirXjl
-         tY7YucJCykABt5bkuYUTIcqykztwaR9UM1sb1LHeUQPVhpbWa/Z6YT55xZcjVo8F1nm0
-         Iybdqfn9JCG4738mHu1XdWOI1LFS1zn22uQgswPqvVsZYS8vbgJdkjumPxF2ls0/DpUl
-         TgIg==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jg8T2SnQ6iLy7JP57Lnsl6uAObuUeGWr5YxqLf6oiWk=;
+        b=NBDVXOK1XHhgBEPRgmk3eXQJcThGg7Iri1F8bjM4ns9qd3TKS0P3AdZS+Z/tW3GpWP
+         jzPSgZOnl1bVAcnp0sjeDX+uaqEl7eRVHXcospqWiKEqn9OCE/NpA/b2MX9It9GrCAxK
+         zYtFk0vvfSS2tDuMaD+sa7LZ0lNA9Vyb0vldgZA2McKslZfy8KImHAuV/bDvPrjuJxMS
+         PJo9FZ0pPLPuJV+wuwE8apShsHPKJQ72el8kF3FXZZMVV0k5HatqhKH0N7vTA2Zkx4XM
+         d+yLanP7TcEjfzXM+IQqIWwlhIIKm/IDYdLBxSiGcVuCC9/QS7+8MVYV1lpKCjqBlM7D
+         he/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4o/ctiQ0jvWgZMbna/z83qQu926M0K6T0rgJ7jRDjq8=;
-        b=xi3gsbGP9dkSQzfXNVR7io2sJVhWX3S4kqpTIf84wIi4soqEeQzUCJNlu/Hbg0sKyJ
-         Hi5c2Eb8MQ86GyQcVx+7Nmq6FgRECqU0aqm3Kl5f62eXZHlSflFt3JIpewylUrTvB8re
-         xdyFUO57uSA49vithumDAqyWFfUxiPEBtcKZwkrOVPGp6gOwqEELop8vyhekqu9RlONM
-         j6EhAibuwvccqCyVrLWKFPksHig/kwY0g1Pdw30gQ+ip9RuGDYGh/bTmYqVwBVidicPi
-         lVWP/NowpA7hPglwHEoTgdLVKf3RzIhq7vhHjFpLIxnyelDR04Vfm8vpCqLbK566pbpI
-         jh0A==
-X-Gm-Message-State: AOAM5317yqlg5wtwcn58Ad6JIYqhSupEO6C82LQ35T/wed0o/CrurGak
-        PtPI2FMRrc7SnKF/piMmvEiiUqpeSuRZ1g==
-X-Google-Smtp-Source: ABdhPJyFoqNciIhyg5MdWWaTeSqSUlkO6/6+Fe8f4skiaIFZmZx69/45IkCKwORCZCuPTjizBcUc8w==
-X-Received: by 2002:a63:90c4:: with SMTP id a187mr7583961pge.297.1636682584643;
-        Thu, 11 Nov 2021 18:03:04 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id e8sm4497814pfn.45.2021.11.11.18.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 18:03:04 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf] bpf: Fix incorrect use of strlen in xdp_redirect_cpu
-Date:   Fri, 12 Nov 2021 07:33:01 +0530
-Message-Id: <20211112020301.528357-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=jg8T2SnQ6iLy7JP57Lnsl6uAObuUeGWr5YxqLf6oiWk=;
+        b=6cSN3IVlRN+CVKMDsQNGe/BPNyOhvccH0OkBu+R3sp5FEC5N0dR4JyTfc3eZK61umX
+         qfnqH2+X+yHjZYMfI+sjgt+ESjk/cDPXDxI/kkUBWL9VIu5/S2CcQKqvzNq948ut2l0O
+         cwwRsw+hrkOoH1niMgEgKkVCHM3XYVf+uRNsKj9MhYB6/oE5CLxcaIcqxSNxVuggASmi
+         W5zCj1T8WjMnjPe64enPjKDyw2blJcwqftFrUGBGp1N3mAdv0qeGhDsjPHnRMT9CJUBe
+         4Nx/jhfsmMQfIyD5zHaYi7I8z7ipalP0HpgnnvjemGkLtdEOM41a0jyl6hojL1wstHSt
+         a3MA==
+X-Gm-Message-State: AOAM532GAWeYlmzymfyxfUMEjXXG5enrXUDGbUwWYCUBk8Dhqu63z2ni
+        tL/F7QLtXnjyqXdqvS8SK8z8+pKVbVQgo3u2Ml0=
+X-Google-Smtp-Source: ABdhPJzQ/Gi6yrlImPIrMA2jlRq/dBkU6J0v6NQCPfDaU69n3n9kZqsJgeGMYodV/qv3qFklQAZBMkIM/X81O4mLPBI=
+X-Received: by 2002:a17:90b:4c03:: with SMTP id na3mr13782545pjb.62.1636683994534;
+ Thu, 11 Nov 2021 18:26:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 11 Nov 2021 18:26:23 -0800
+Message-ID: <CAADnVQJ6jSitKSNKyxOrUzwY2qDRX0sPkJ=VLGHuCLVJ=qOt9g@mail.gmail.com>
+Subject: fd leak in lskel
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit b599015f044d tried to fix a bug where sizeof was incorrectly
-applied to a pointer instead of the array string was being copied to, to
-find the destination buffer size, but ended up using strlen, which is
-still incorrect. However, on closer look ifname_buf has no other use,
-hence directly use optarg.
+Hi Kumar,
 
-Fixes: b599015f044d ("samples/bpf: Fix application of sizeof to pointer")
-Fixes: e531a220cc59 ("samples: bpf: Convert xdp_redirect_cpu to XDP samples helper")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- samples/bpf/xdp_redirect_cpu_user.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I think I noticed a small regression:
 
-diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
-index d84e6949007c..a81704d3317b 100644
---- a/samples/bpf/xdp_redirect_cpu_user.c
-+++ b/samples/bpf/xdp_redirect_cpu_user.c
-@@ -309,7 +309,6 @@ int main(int argc, char **argv)
- 	const char *mprog_filename = NULL, *mprog_name = NULL;
- 	struct xdp_redirect_cpu *skel;
- 	struct bpf_map_info info = {};
--	char ifname_buf[IF_NAMESIZE];
- 	struct bpf_cpumap_val value;
- 	__u32 infosz = sizeof(info);
- 	int ret = EXIT_FAIL_OPTION;
-@@ -390,10 +389,10 @@ int main(int argc, char **argv)
- 		case 'd':
- 			if (strlen(optarg) >= IF_NAMESIZE) {
- 				fprintf(stderr, "-d/--dev name too long\n");
-+				usage(argv, long_options, __doc__, mask, true, skel->obj);
- 				goto end_cpu;
- 			}
--			safe_strncpy(ifname_buf, optarg, strlen(ifname_buf));
--			ifindex = if_nametoindex(ifname_buf);
-+			ifindex = if_nametoindex(optarg);
- 			if (!ifindex)
- 				ifindex = strtoul(optarg, NULL, 0);
- 			if (!ifindex) {
--- 
-2.33.1
+$ bpftool prog load -L ./test_ksyms_module.o
 
+will print:
+"loader prog leaked 2 FDs"
+
+That's a builtin sanity test in bpftool that checks
+that loader prog is doing the right thing.
+I suspect the cleanup path of ksym patches is leaving FD opened.
+
+$ cat /sys/kernel/debug/tracing/trace_pipe
+         bpftool-1356    [002] d..21   175.537998: bpf_trace_printk:
+btf_load size 1895 r=5
+         bpftool-1356    [002] d..21   175.538085: bpf_trace_printk:
+map_create test_ksy.bss idx 0 type 2 value_size 4 value_btf_id 32 r=6
+         bpftool-1356    [002] d..21   175.538108: bpf_trace_printk:
+update_elem idx 0 value_size 4 r=0
+         bpftool-1356    [002] d..21   175.538165: bpf_trace_printk:
+map_create test_ksy.rodata idx 1 type 2 value_size 4 value_btf_id 34
+r=7
+         bpftool-1356    [002] d..21   175.538187: bpf_trace_printk:
+update_elem idx 1 value_size 4 r=0
+         bpftool-1356    [002] d..21   175.538191: bpf_trace_printk:
+map_freeze r=0
+         bpftool-1356    [002] d..21   175.540873: bpf_trace_printk:
+find_by_name_kind(bpf_testmod_invalid_mod_kfunc,12) r=-2
+         bpftool-1356    [002] d..21   175.540876: bpf_trace_printk:
+func (bpf_testmod_invalid_mod_kfunc:count=1): imm: 0, off: 0
+         bpftool-1356    [002] d..21   175.540877: bpf_trace_printk:
+func (bpf_testmod_invalid_mod_kfunc:count=1): btf_fd r=0
+         bpftool-1356    [002] d..21   175.543305: bpf_trace_printk:
+find_by_name_kind(bpf_testmod_test_mod_kfunc,12) r=-2
+
+I see this leak with other tests too as long as they fail to load.
+On success the cleanup of FD is good.
+
+Any idea?
