@@ -2,101 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B77544DFE4
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 02:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252FE44DFEA
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 02:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhKLBs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 20:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhKLBs5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 20:48:57 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D811C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 17:46:08 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so6044147pjl.2
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 17:46:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jDCsBHbV8od8GRczENL1rwrYnS8Z44BcmYulsw6L8NE=;
-        b=EdWosODTx6fQ6lKw5r+L8QC4a9W3cxIdt12KBSGpNc/e9j3lTit5ae+Bh1arTGugxe
-         2QLBjKQc245ARKiX4ifxJAXaR6jHhaqZRa02B5yr0SDNw6rA6a5iAWIEVXalSXXzC1vr
-         7keRCzcQjiSy52OlZfV78RtITqCpApu9R4iqNrnK1QqxEo19KYWfSI5hKRjKj0rgV0cD
-         nUBz9yW05q/pHqfM7vLDBC7+BBcm925K1xEqDCZvVRU0tXSXwhyZknt+0f6in9x7y8By
-         rv7J4cVX6NszOed+wNs2+BlTygzJeuYUbnvVjeKgJASqlbY0uOlg6do3qU9/Y0sxX5Pn
-         nRHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jDCsBHbV8od8GRczENL1rwrYnS8Z44BcmYulsw6L8NE=;
-        b=kVFbp3g15EDYF91SN5mQMPK0xJoYyKjv1jx+fd3t4XEg3qPqeGIVxfCKVDmj6bQJ6R
-         UlUz/MYoMtLlVrZTJoS3KTa9tHG4mOesuddXULa5A6/k91uaONK3h9pvO+sWKlajjfte
-         ZXbL7Y3rkHRl9dfAAgM0weabFkr2fBIFepd05GS4A5E+rHh++n3X9ZfbbgikybiTVR6y
-         e/OVrw6oBfFQW+c4XR3jPFflHbSCTRTVtvuC4z2Bt4sKoQvW5zQE57RKsb5/wS3NPN3e
-         ZXBepnvyUYjw6tuHB2gnT879/cIfUdeZJgXmbbei2I1/w5SW89LwnbKoYTe9vzeNgvp1
-         lsIA==
-X-Gm-Message-State: AOAM532bGyAvIeikJ5cXYm1mC9ryNXrXVOLV19ZRUgViBcZfllU6mh8v
-        8wIwhWdXLEziFNihPECTg/zHUd1j9zIyFCtxgqg=
-X-Google-Smtp-Source: ABdhPJwyPaXKANCxUPmMEJHFjA+ebOe2yKY0dZPU2SCENjeAkO2xpWkRyPTksOFdvf+cTeqcFSCdH/GkU2SJx6vy6fo=
-X-Received: by 2002:a17:902:d491:b0:142:892d:a89 with SMTP id
- c17-20020a170902d49100b00142892d0a89mr4097123plg.20.1636681567514; Thu, 11
- Nov 2021 17:46:07 -0800 (PST)
+        id S231919AbhKLBtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 20:49:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230308AbhKLBtq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 20:49:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB5060F94;
+        Fri, 12 Nov 2021 01:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636681616;
+        bh=5aW4+ULRFBb8KEf0hwe2BA1rQMqSqqJAvuU8Wm2H1vQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hUw7PcSEd7Xslz0bH7qny/EW+RdY2tila+rkBNpfkPMK/Y++qidXBy+rhGy9uF7UB
+         iwO9aVI0WuOLxlBTsBEmtv4/lPiFATaUrQNZtL6Cy8qG6TxpfcC3O8u2Ttrlu90fXs
+         7ZPu8bAM2+V7Pkvhkc+xalN1ORr9LkRtGHFprGLYgnGftiDB5CUDxgBbI7L3zeTNkL
+         u/DyXKoJvQOh9O/uJHBpYP74F1V7A0+fImbHNIrTqxc/lmO/yaKTq1Y288E1ZEOWcZ
+         Q0u7NS/wCS4rTYtOEBP7WOK/HaRMx4coDiztGBes4I9lcz4WDlO0qVjIzjyQGk1/0E
+         cz8r8zTnK2tVg==
+Date:   Thu, 11 Nov 2021 17:46:54 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        linux-can@vger.kernel.org
+Subject: 32bit x86 build broken (was: Re: [GIT PULL] Networking for
+ 5.16-rc1)
+Message-ID: <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
+References: <20211111163301.1930617-1-kuba@kernel.org>
+        <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
 MIME-Version: 1.0
-References: <20211112012604.1504583-1-yhs@fb.com>
-In-Reply-To: <20211112012604.1504583-1-yhs@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 11 Nov 2021 17:45:56 -0800
-Message-ID: <CAADnVQKm3bT-fA_zXv75MpM6E+UaL-iHnGKQmJ09X6bB2khm+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 00/10] Support BTF_KIND_TYPE_TAG for
- btf_type_tag attributes
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 5:26 PM Yonghong Song <yhs@fb.com> wrote:
->
-> LLVM patches ([1] for clang, [2] and [3] for BPF backend)
-> added support for btf_type_tag attributes. This patch
-> added support for the kernel.
->
-> The main motivation for btf_type_tag is to bring kernel
-> annotations __user, __rcu etc. to btf. With such information
-> available in btf, bpf verifier can detect mis-usages
-> and reject the program. For example, for __user tagged pointer,
-> developers can then use proper helper like bpf_probe_read_kernel()
-> etc. to read the data.
->
-> BTF_KIND_TYPE_TAG may also useful for other tracing
-> facility where instead of to require user to specify
-> kernel/user address type, the kernel can detect it
-> by itself with btf.
->
-> Patch 1 added support in kernel, Patch 2 for libbpf and Patch 3
-> for bpftool. Patches 4-9 are for bpf selftests and Patch 10
-> updated docs/bpf/btf.rst file with new btf kind.
->
->   [1] https://reviews.llvm.org/D111199
->   [2] https://reviews.llvm.org/D113222
->   [3] https://reviews.llvm.org/D113496
->
-> Changelogs:
->   v2 -> v3:
->     - rebase to resolve merge conflicts.
->   v1 -> v2:
->     - add more dedup tests.
->     - remove build requirement for LLVM=1.
->     - remove testing macro __has_attribute in bpf programs
->       as it is always defined in recent clang compilers.
+On Thu, 11 Nov 2021 23:09:07 +0000 pr-tracker-bot@kernel.org wrote:
+> The pull request you sent on Thu, 11 Nov 2021 08:33:01 -0800:
+>=20
+> > git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5=
+.16-rc1 =20
+>=20
+> has been merged into torvalds/linux.git:
+> https://git.kernel.org/torvalds/c/f54ca91fe6f25c2028f953ce82f19ca2ea0f07bb
 
-Applied. Thanks.
-Cannot wait to get tags available in vmlinux.
+Rafael, Srinivas, we're getting 32 bit build failures after pulling back
+from Linus today.
+
+make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
+make: *** [Makefile:219: __sub-make] Error 2
+../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In funct=
+ion =E2=80=98send_mbox_cmd=E2=80=99:
+../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37: er=
+ror: implicit declaration of function =E2=80=98readq=E2=80=99; did you mean=
+ =E2=80=98readl=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+   79 |                         *cmd_resp =3D readq((void __iomem *) (proc_=
+priv->mmio_base + MBOX_OFFSET_DATA));
+      |                                     ^~~~~
+      |                                     readl
+
+Is there an ETA on getting this fixed?
+
+
