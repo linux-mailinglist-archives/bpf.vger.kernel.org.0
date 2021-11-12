@@ -2,138 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066D844E00E
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 02:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF56844E012
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 03:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhKLCC2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 21:02:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
+        id S234441AbhKLCEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 21:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhKLCC2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 21:02:28 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53516C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 17:59:38 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id r5so837540pgi.6
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 17:59:38 -0800 (PST)
+        with ESMTP id S229908AbhKLCEf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 21:04:35 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1DEC061766;
+        Thu, 11 Nov 2021 18:01:45 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id y7so7350221plp.0;
+        Thu, 11 Nov 2021 18:01:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+KcXGClM0aCpbQRU+vR/odFZJexM++iz9VeCV3vVOVg=;
-        b=U6weuC4L6rWUB7knMLCOhFQ/XrUiG03/u13y9Bod5Gd9WLhgrfmFLjqMSdlt9lk86B
-         hy+Ug8S4OsvBpp83vlgyfTnCBhlmnGpUajDYUqTZGIPht3kRIF8tPOGJA09YCYyRclim
-         OArRsY/d+T/aRGC65lZSeFNiuoErzlCix5/o/XxuOeT7CP4rOahOKA951u80PtVrHHmk
-         111smD8ARzHBu99fJCkt3MADEV0jdLj9J+aiKm8k9ohTEHKFHVtaSXQjXcVL2VcigayC
-         AEXFnMStA9H9Pi2W3piOZqvpITdwHtgDmdQVE5T156+Wy7amhFSk3noF0GY5aAKzENBd
-         QQEQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8D7y19sbzroYP4XFrv6hEdIbLGS8yEPwCoDraIsxJkk=;
+        b=RLtHwGFgkQ2JNPE31SyiZGBID/v6FskhlucpmGFugCy/0r+E5PfW1ArXXUuj3sCeVp
+         13qyZVrPu0o234xKJLL8HtyjAbO5OWhP6dtHweJJ9w0G65qAguhIiXukDGcsBRsNALCd
+         l9h6v3ZIqG5ndkjSyCaEk514B6hK6DpRkLfrmlUgQImQrS2SD9FlLKN8T7XOJ6hlZ5XW
+         6gENaO7wrMNT4sauImpeo2NhV/xcDoL155z0NXijvM941lx5hfbPN+e4hauYM/vH5wnI
+         ztxCtRva9DDwQ6R7iHgSXdhg6tPXBe/SWB0+C6nnPZjQHO0FRUvYbkxTZKp4Ef4cmmbx
+         XOvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+KcXGClM0aCpbQRU+vR/odFZJexM++iz9VeCV3vVOVg=;
-        b=qYpJhTakBkuV3i5DI1VaZRp8HkZG0Sl3apVfEve8ErriIqTvxs4u+bHGULL6BG7aqZ
-         RUZyVzPP93CYaWAyjpn4x/vtl6+iqU0TfRbF4Q2BjBYr5M7m5pgJ9hk3+HYghM/b7YxT
-         SCc/vaqyjfqp3xjqS6zGMfXmrk/H9XpxIUBsWydpz2oAb1eOAiv5rrJl58TuMwmKeYNb
-         TXv8Z2NkgMEcAteyxYHbFn8Hsm6v9hBAT3xSNoFUTlfIurOXHTAgQPwezTuAIHSLSWOJ
-         BNUEEXDBKQ8BzQmOBmlIqPjoO6tjRLRKsdc+cyvInLOljVlVuNFwKlI+E6WUPYf69DWo
-         hmIA==
-X-Gm-Message-State: AOAM530JUsSbsbbZUYXJgbGuUfGmGpPVtIJAUVkAXVL4q9uSRJ3qR05a
-        DjVWDcPKAeR0WyCdiDLnrW40eq3H+pkW6w==
-X-Google-Smtp-Source: ABdhPJwqdKxEWuYSCaBceGEQWijcHM8UIAk6f7nXri2NSmNVyYRhdCIyujZyWPDXaK5filwQp77L8Q==
-X-Received: by 2002:aa7:8611:0:b0:49f:a5b3:14b4 with SMTP id p17-20020aa78611000000b0049fa5b314b4mr10951085pfn.30.1636682377615;
-        Thu, 11 Nov 2021 17:59:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8D7y19sbzroYP4XFrv6hEdIbLGS8yEPwCoDraIsxJkk=;
+        b=cGOpmItJzQLABJ1pu7KOJqmfxPVsq0g4156ZhSE0ybjnsEKFzoJhlIuki+a2bvQ7/G
+         BARvAqcJ4AIQACamonbB+5+I323Cb310Iei15exsqaLezaN4P+gAGFsz+RaxlRzSaDn0
+         LqprCWc2bGd3/dmeAtgwwpyk3EHLsnufwdKMwkEmaNVtVemMm1IJYgwhyDXFgai1gW2Z
+         WVxcmIgcPKjZBbtRm/hvWcsUvv7+G2j4DzDht3VU41zjSSi44xzvQ3zAMhO2LZDVyq9S
+         WfRF+nX1/284cx0QrKeKUPPvOPodHecGmWjnR+qFK9MZ6Yt74wiygFhGf7rRKqnjnM2q
+         TviQ==
+X-Gm-Message-State: AOAM531tNQ2Bh7uBbnPnJF6gkZmPNSELnMhtBYTaUQW98uevIxXIN66a
+        DJ5X1nqH7SYzWnEhL7ZT7CI=
+X-Google-Smtp-Source: ABdhPJwP0gH7+NhULLlo59HvvabqTXOPWslj7lSlJAPjnw301UcjNMUFggS3yqaXyvDBzds6Af+0Uw==
+X-Received: by 2002:a17:90a:fd93:: with SMTP id cx19mr31063638pjb.190.1636682505160;
+        Thu, 11 Nov 2021 18:01:45 -0800 (PST)
 Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id n16sm4083154pfj.47.2021.11.11.17.59.36
+        by smtp.gmail.com with ESMTPSA id n7sm4333748pfd.37.2021.11.11.18.01.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 17:59:37 -0800 (PST)
+        Thu, 11 Nov 2021 18:01:44 -0800 (PST)
+Date:   Fri, 12 Nov 2021 07:31:42 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf] bpf: Make CONFIG_DEBUG_INFO_BTF depend upon CONFIG_BPF_SYSCALL
-Date:   Fri, 12 Nov 2021 07:29:34 +0530
-Message-Id: <20211112015934.527181-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf] samples: bpf: fix summary per-sec stats in
+ xdp_sample_user
+Message-ID: <20211112020142.q656zeu35qjtmvy5@apollo.localdomain>
+References: <20211111215703.690-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111215703.690-1-alexandr.lobakin@intel.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Vinicius Costa Gomes reported [0] that build fails when
-CONFIG_DEBUG_INFO_BTF is enabled and CONFIG_BPF_SYSCALL is disabled.
-This leads to btf.c not being compiled, and then no symbol being present
-in vmlinux for the declarations in btf.h. Since BTF is not useful
-without enabling BPF subsystem, disallow this combination.
+On Fri, Nov 12, 2021 at 03:27:03AM IST, Alexander Lobakin wrote:
+> sample_summary_print() uses accumulated period to calculate and
+> display per-sec averages. This period gets incremented by sampling
+> interval each time a new sample is formed, and thus equals to the
+> number of samples collected multiplied by this interval.
+> However, the totals are being calculated differently, they receive
+> current sample statistics already divided by the interval gotten as
+> a difference between sample timestamps for better precision -- in
+> other words, they are being incremented by the per-sec values each
+> sample.
+> This leads to the excessive division of summary per-secs when
+> interval != 1 sec. It is obvious pps couldn't become two times
+> lower just from picking a different sampling interval value:
+>
+> $ samples/bpf/xdp_redirect_cpu -p xdp_prognum_n1_inverse_qnum -c all
+>   -s -d 6 -i 1
+> < snip >
+>   Packets received    : 2,197,230,321
+>   Average packets/s   : 22,887,816
+>   Packets redirected  : 2,197,230,472
+>   Average redir/s     : 22,887,817
+> $ samples/bpf/xdp_redirect_cpu -p xdp_prognum_n1_inverse_qnum -c all
+>   -s -d 6 -i 2
+> < snip >
+>   Packets received    : 159,566,498
+>   Average packets/s   : 11,397,607
+>   Packets redirected  : 159,566,995
+>   Average redir/s     : 11,397,642
+>
+> This can be easily fixed by treating the divisor not as a period,
+> but rather as a total number of samples, and thus incrementing it
+> by 1 instead of interval. As a nice side effect, we can now remove
+> so-named argument from a couple of functions. Let us also create
+> an "alias" for sample_output::rx_cnt::pps named 'num' using a union
+> since this field is used to store this number (period previously)
+> as well, and the resulting counter-intuitive code might've been
+> a reason for this bug.
+>
+> Fixes: 156f886cf697 ("samples: bpf: Add basic infrastructure for XDP samples")
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> ---
 
-However, theoretically disabling both now could still fail, as the
-symbol for kfunc_btf_id_list variables is not available. This isn't a
-problem as the compiler usually optimizes the whole register/unregister
-call, but at lower optimization levels it can fail the build in linking
-stage.
+Ouch. Thank you for the fix.
 
-Fix that by adding dummy variables so that modules taking address of
-them still work, but the whole thing is a noop.
+Reviewed-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-  [0]: https://lore.kernel.org/bpf/20211110205418.332403-1-vinicius.gomes@intel.com
+> [...]
 
-Fixes: 14f267d95fe4 ("bpf: btf: Introduce helpers for dynamic BTF set registration")
-Reported-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- include/linux/btf.h | 10 +++++++---
- lib/Kconfig.debug   |  1 +
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 203eef993d76..db935b9a0074 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -254,6 +254,9 @@ void unregister_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
- 				 struct kfunc_btf_id_set *s);
- bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist, u32 kfunc_id,
- 			      struct module *owner);
-+
-+extern struct kfunc_btf_id_list bpf_tcp_ca_kfunc_list;
-+extern struct kfunc_btf_id_list prog_test_kfunc_list;
- #else
- static inline void register_kfunc_btf_id_set(struct kfunc_btf_id_list *l,
- 					     struct kfunc_btf_id_set *s)
-@@ -268,13 +271,14 @@ static inline bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist,
- {
- 	return false;
- }
-+
-+struct kfunc_btf_id_list {};
-+static struct kfunc_btf_id_list bpf_tcp_ca_kfunc_list __maybe_unused;
-+static struct kfunc_btf_id_list prog_test_kfunc_list __maybe_unused;
- #endif
- 
- #define DEFINE_KFUNC_BTF_ID_SET(set, name)                                     \
- 	struct kfunc_btf_id_set name = { LIST_HEAD_INIT(name.list), (set),     \
- 					 THIS_MODULE }
- 
--extern struct kfunc_btf_id_list bpf_tcp_ca_kfunc_list;
--extern struct kfunc_btf_id_list prog_test_kfunc_list;
--
- #endif
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 6fdbf9613aec..eae860c86e26 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -316,6 +316,7 @@ config DEBUG_INFO_BTF
- 	bool "Generate BTF typeinfo"
- 	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
- 	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
-+	depends on BPF_SYSCALL
- 	help
- 	  Generate deduplicated BTF type information from DWARF debug info.
- 	  Turning this on expects presence of pahole tool, which will convert
--- 
-2.33.1
-
+--
+Kartikeya
