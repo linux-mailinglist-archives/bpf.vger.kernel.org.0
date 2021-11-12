@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4097844ED3F
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 20:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFC144ED40
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 20:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhKLT3U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Nov 2021 14:29:20 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11688 "EHLO
+        id S231795AbhKLT3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Nov 2021 14:29:43 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7594 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229810AbhKLT3U (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Nov 2021 14:29:20 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ACIjFNd023049
-        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 11:26:29 -0800
+        by vger.kernel.org with ESMTP id S229810AbhKLT3m (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Nov 2021 14:29:42 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ACItqX9025329
+        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 11:26:52 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=7TD35CBBrxBt0ONHPRciJj2id40BUzhUtfDucGsvGdQ=;
- b=VZRel+HNGW1pFOO61IEQbkwWBQLzShEJMu1kFNnS0R+xt9z4F9k/WLD/fS4hSGciSIB6
- ZAqDK7OKkgrWhWIwPo3Jev4XpyZwCbHo6ubwbx+AHGG1hOrvzdLhLJFPd0is5LOlXykW
- dUWMKQp/ukgecF2rAoshbLTBUzNkd8WDqF4= 
+ bh=qrUiNveXt2dgUSQRVAh90JyUsOsXLRK1sshmlj1wQ9A=;
+ b=rGAfhvGK2K5dS6vPk/j46JBumaGs+YkV7InF4e7JboMYcKWHTr+B4SIxv8It0Xh/Yj14
+ kIfrW1MpL9rqOlXSV7mHnUlJEGWuaY6NrobqsvzrrO1ZMkq13n+mGQaFEKVtJWXUwc56
+ nMZma9qIV41v0NOprsXEOyoSsDp2gcLdyZg= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3c98k59js2-8
+        by mx0a-00082601.pphosted.com with ESMTP id 3c9wysr78g-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 11:26:29 -0800
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 11:26:51 -0800
+Received: from intmgw001.27.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 12 Nov 2021 11:25:49 -0800
+ 15.1.2308.14; Fri, 12 Nov 2021 11:25:44 -0800
 Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id BB7606C83835; Fri, 12 Nov 2021 11:25:39 -0800 (PST)
+        id C0FCA6C83837; Fri, 12 Nov 2021 11:25:39 -0800 (PST)
 From:   Yucong Sun <fallentree@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     <andrii@kernel.org>, <fallentree@fb.com>,
         Yucong Sun <sunyucong@gmail.com>
-Subject: [PATCH bpf-next 1/4] selftests/bpf: Move summary line after the error logs
-Date:   Fri, 12 Nov 2021 11:25:32 -0800
-Message-ID: <20211112192535.898352-2-fallentree@fb.com>
+Subject: [PATCH bpf-next 2/4] selftests/bpf: variable naming fix
+Date:   Fri, 12 Nov 2021 11:25:33 -0800
+Message-ID: <20211112192535.898352-3-fallentree@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211112192535.898352-1-fallentree@fb.com>
 References: <20211112192535.898352-1-fallentree@fb.com>
@@ -46,16 +46,16 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: _JuZp_1LlFCL0opSRRxx5krXks_akHdD
-X-Proofpoint-GUID: _JuZp_1LlFCL0opSRRxx5krXks_akHdD
+X-Proofpoint-GUID: bJJT6CLlCcIeFMf9y1Csta02NpjmO6ag
+X-Proofpoint-ORIG-GUID: bJJT6CLlCcIeFMf9y1Csta02NpjmO6ag
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-12_05,2021-11-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 malwarescore=0 mlxscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111120102
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=755 priorityscore=1501 bulkscore=0
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111120102
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -63,47 +63,66 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Yucong Sun <sunyucong@gmail.com>
 
-Makes it easier to find the summary line when there is a lot of logs to
-scroll back.
+Change log_fd to log_fp to reflect its type correctly.
 
 Signed-off-by: Yucong Sun <sunyucong@gmail.com>
 ---
- tools/testing/selftests/bpf/test_progs.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/test_progs.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/sel=
 ftests/bpf/test_progs.c
-index c65986bd9d07..d129ea5c9a48 100644
+index d129ea5c9a48..926475aa10bb 100644
 --- a/tools/testing/selftests/bpf/test_progs.c
 +++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -1198,11 +1198,11 @@ static int server_main(void)
- 		env.sub_succ_cnt +=3D result->sub_succ_cnt;
- 	}
+@@ -939,7 +939,7 @@ static void *dispatch_thread(void *ctx)
+ {
+ 	struct dispatch_data *data =3D ctx;
+ 	int sock_fd;
+-	FILE *log_fd =3D NULL;
++	FILE *log_fp =3D NULL;
 =20
-+	print_all_error_logs();
-+
- 	fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
- 		env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
+ 	sock_fd =3D data->sock_fd;
 =20
--	print_all_error_logs();
--
- 	/* reap all workers */
- 	for (i =3D 0; i < env.workers; i++) {
- 		int wstatus, pid;
-@@ -1484,11 +1484,11 @@ int main(int argc, char **argv)
- 	if (env.list_test_names)
- 		goto out;
+@@ -1002,8 +1002,8 @@ static void *dispatch_thread(void *ctx)
 =20
-+	print_all_error_logs();
-+
- 	fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
- 		env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
+ 			/* collect all logs */
+ 			if (msg_test_done.test_done.have_log) {
+-				log_fd =3D open_memstream(&result->log_buf, &result->log_cnt);
+-				if (!log_fd)
++				log_fp =3D open_memstream(&result->log_buf, &result->log_cnt);
++				if (!log_fp)
+ 					goto error;
 =20
--	print_all_error_logs();
--
- 	close(env.saved_netns_fd);
- out:
- 	if (!env.list_test_names && env.has_testmod)
+ 				while (true) {
+@@ -1014,12 +1014,12 @@ static void *dispatch_thread(void *ctx)
+ 					if (msg_log.type !=3D MSG_TEST_LOG)
+ 						goto error;
+=20
+-					fprintf(log_fd, "%s", msg_log.test_log.log_buf);
++					fprintf(log_fp, "%s", msg_log.test_log.log_buf);
+ 					if (msg_log.test_log.is_last)
+ 						break;
+ 				}
+-				fclose(log_fd);
+-				log_fd =3D NULL;
++				fclose(log_fp);
++				log_fp =3D NULL;
+ 			}
+ 			/* output log */
+ 			{
+@@ -1045,8 +1045,8 @@ static void *dispatch_thread(void *ctx)
+ 	if (env.debug)
+ 		fprintf(stderr, "[%d]: Protocol/IO error: %s.\n", data->worker_id, str=
+error(errno));
+=20
+-	if (log_fd)
+-		fclose(log_fd);
++	if (log_fp)
++		fclose(log_fp);
+ done:
+ 	{
+ 		struct msg msg_exit;
 --=20
 2.30.2
 
