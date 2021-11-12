@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC0144EE74
+	by mail.lfdr.de (Postfix) with ESMTP id D7A1644EE75
 	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 22:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235722AbhKLVVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S235748AbhKLVVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 12 Nov 2021 16:21:14 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:45769 "EHLO
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56637 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235742AbhKLVVK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Nov 2021 16:21:10 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id B61755C0281;
-        Fri, 12 Nov 2021 16:18:18 -0500 (EST)
+        by vger.kernel.org with ESMTP id S235720AbhKLVVL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Nov 2021 16:21:11 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2CEC45C0103;
+        Fri, 12 Nov 2021 16:18:20 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 12 Nov 2021 16:18:18 -0500
+  by compute4.internal (MEProxy); Fri, 12 Nov 2021 16:18:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dtucker.co.uk;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=Xjw24Epbvpnmw
-        XQfWSQ4XDh3wmzOWsWHUx+m8uFJnSU=; b=Ah1lZHrudb/xUlIfsBAKMQJ2bXcmN
-        HxRDS+8XHz+E/ebQCwKMvIPc1ItsHcBoLVjf/m+HEHsUmJm2XNBSOOTlcflXBaJI
-        MjWJl1UHetLRLqciU5fW675Y1x+4ua26CsPXkM8gIwdTX8vAiyNvjmT3Sp2695nP
-        PpBjL6ww8wR44QfYERP/EFqcLC9x11uDwSbqH+tCE2Uyg2YKnJKexVk14j15RPy2
-        LXymWQZrXT9N43SDiHPKQZmjv72wIZ8WM/8f6PRqmjdT538eBAtjrvWOmhkGW3Ik
-        bGj97HVdsKfo4Il1wbvm+NKgoewIT5yOEHa87xOutQPrSNuXdAPjSU+sA==
+        :mime-version:content-transfer-encoding; s=fm1; bh=zhsxRFYx12PVn
+        PzhB8XDhZMWRq7Rlfgl+sFJ+LaEwls=; b=Z6wGvVq8dlQIqM9nVliPqfi5hr8Wt
+        cgNyncVjfDiCp+8029S6mIzc0SVZI1ibyjRdcjMWicFVqQISB/xJRohEtodh230s
+        LlfLf8arvpyaAK1B+zw3T6ClR+qqC/Sd4VmWLz+muM59AEe42OF+LcEaZkAtu5LJ
+        V991zc2tV3MksyDMxCjWUfZDqvEfzV+wkaj9duuUa3Amedx1OXQALqR40FrfwwYu
+        W5P3+FbdZAFee9mcQK4NuMYFu3ML9xe2fD40Z2oglh1EN1c6ucGE1OyVERHX4MFK
+        oII2V5+qFh/crByRBYb2ZrZ5EZeu9Qp74dO2hgtrgsnFSJiA78NScfjkg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=Xjw24EpbvpnmwXQfWSQ4XDh3wmzOWsWHUx+m8uFJnSU=; b=DIN1QjiR
-        ps2g04eM2UXLST9MLrvepLOtvUySBxelu6soRGlWV/I06Wnukf4uDAnrOMVqi41f
-        1vTjiBZ+GxDTuhgy5FtycEyRsddlkEtxsXi5OAF/c9nL8wq6Km2fnyc3u+cJcLDb
-        TARjWXorjWppMDuuLlLcVV1Jq/sTqYowBiUHAAK288EXXFyJho1OmyscGOmvPu+x
-        fUqmssMaok26eBvInEtVsVLdq4IW6XAJdDBzQv+rSRR0LfsaBLc7G5YuKBL0Hwwn
-        HaBNGDeyMQWcb+t8gQfHNPsHNAWiHoq/28ZI1MJqqTx6eMKB9vYZoann2FdqBNyw
-        G7JxczhG86B7mA==
-X-ME-Sender: <xms:GtqOYearyj-oz8h-hOcA9hXgqFjXIte7n7q3dYAb0e9OcnBP7Gewtg>
-    <xme:GtqOYRbxuXO6LZSkszk-6VCkISxSrHDm0ve47FZOr_nChNmD6sisXTbIX9uglXjRH
-    uZcX7Q2lEM8E7bsRw>
-X-ME-Received: <xmr:GtqOYY_CbaBPxlCPvBJ67perKWWIFdftpOHEEnMJ4IFQ_KGt3sBytimXD2g6AfYbBipA6LINyug2>
+        fm1; bh=zhsxRFYx12PVnPzhB8XDhZMWRq7Rlfgl+sFJ+LaEwls=; b=BeApdezt
+        OEb4zKL7Z0ZS/gDKWuH4GUfNIb1qrOYylinhVGcE+mCNf06rivIEO2Oi6KmXKgXR
+        dgqLb5lOEw8dAlwer8OSDMPbQoY68nVP1qwXkJk6VSat7lBW1qM3AMptxHgw9vWt
+        R91F+q619Thdt1VRFu/tA4NrIAqCh3yqjy3kcX+oBjDengziftIOPPYAPuuWdEWf
+        FKVNEhMiOh4WV3b5ik3Ba/RJ25R0rHDSOLIkbmfnUbwBbH+t8QV9XmzNdH0UoM/N
+        VUVJB7f/DGyMNwRhAHwNjxnDeSvT68Z4xmdBGnFjtvz4aNNynDc7D8VYsUGZltJo
+        zxhsMdrY7G99SA==
+X-ME-Sender: <xms:HNqOYUds-sePBbKIM4yGW-5hMxAkt6K-Wr3xR7nIF9QP431_jyr4SA>
+    <xme:HNqOYWMAUs4b6Ky00kNAStVszfTBIRp7G3bSyKVebotaM_wzDPFEr8vK-TgCSDTVC
+    KqieBDRPQuuTQXlXA>
+X-ME-Received: <xmr:HNqOYVh057ENnInPgfpTemdTDqdf4hR4maY90yxOhjLbn392CRQBuEZ59wz6MTcPaM4G57gE4dI5>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdefgddugeegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -47,21 +47,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdefgddugeegucetufdoteggod
     rhdrtghordhukheqnecuggftrfgrthhtvghrnhepvefgtdelhfehteevtdeuveekuedvtd
     eiieefffdtiefgveevudekuddvieeujefgnecuvehluhhsthgvrhfuihiivgeptdenucfr
     rghrrghmpehmrghilhhfrhhomhepuggrvhgvseguthhutghkvghrrdgtohdruhhk
-X-ME-Proxy: <xmx:GtqOYQq9P45PlLf2wFZsoHtD35olk6U6uLpHmJta3xJPspD-aJfb_A>
-    <xmx:GtqOYZo9dgLm0ky2bjRKtugotEUTGjXDP45BK5nM8lmdJWfrnDugTQ>
-    <xmx:GtqOYeQyjx4PsEqQEdc56yc1x1G3DKc1JWNTqdfQf2nj0f2ZYXHKuw>
-    <xmx:GtqOYdds3pf0BssAuUTAngp0glAeLy5MCfljYmUcAmpM7V-Q3NZU3w>
+X-ME-Proxy: <xmx:HNqOYZ8FF4ivf2FJpPMbs3s7bOWSi1-dK-DJ-sDtki-ehfQFoAKwTw>
+    <xmx:HNqOYQsDsu2jD57yBP_wuQlbhsPGDcO2M8YIYT-jvhmg-iNeIOHrxA>
+    <xmx:HNqOYQHKkfxXToLK32kGX9PJKG0ZcTkmTIHwCZyyIG3Btut1o4KSqA>
+    <xmx:HNqOYeAiPOrUkiBFcRf6x2Le3XPLG91KBilzyzYvZEUxEzeonXfsTA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 12 Nov 2021 16:18:17 -0500 (EST)
+ 12 Nov 2021 16:18:19 -0500 (EST)
 From:   Dave Tucker <dave@dtucker.co.uk>
 To:     bpf@vger.kernel.org
 Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org,
         Dave Tucker <dave@dtucker.co.uk>
-Subject: [PATCH bpf-next 1/3] docs: change underline in btf to match style guide
-Date:   Fri, 12 Nov 2021 21:17:22 +0000
-Message-Id: <981b27485cc294206480df36fca46817e2553e39.1636749493.git.dave@dtucker.co.uk>
+Subject: [PATCH bpf-next 2/3] docs: Rename bpf_lsm.rst to prog_lsm.rst
+Date:   Fri, 12 Nov 2021 21:17:23 +0000
+Message-Id: <49fe0f370a2b28500c1b60f1fdb6fb7ec90de28a.1636749493.git.dave@dtucker.co.uk>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <cover.1636749493.git.dave@dtucker.co.uk>
 References: <cover.1636749493.git.dave@dtucker.co.uk>
@@ -71,201 +71,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This changes the type of underline used to follow the guidelines in
-Documentation/doc-guide/sphinx.rst which also ensures that the headings
-are rendered at the correct level in the HTML sidebar
+This allows for documentation relating to BPF Program Types to be
+matched by the glob pattern prog_* for inclusion in a sphinx toctree
 
 Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
 ---
- Documentation/bpf/btf.rst | 44 +++++++++++++++++++--------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ Documentation/bpf/{bpf_lsm.rst => prog_lsm.rst} | 0
+ MAINTAINERS                                     | 2 +-
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename Documentation/bpf/{bpf_lsm.rst => prog_lsm.rst} (100%)
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index d0ec40d00c28..1ebf4c5c7ddc 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -3,7 +3,7 @@ BPF Type Format (BTF)
- =====================
- 
- 1. Introduction
--***************
-+===============
- 
- BTF (BPF Type Format) is the metadata format which encodes the debug info
- related to BPF program/map. The name BTF was used initially to describe data
-@@ -30,7 +30,7 @@ sections are discussed in details in :ref:`BTF_Type_String`.
- .. _BTF_Type_String:
- 
- 2. BTF Type and String Encoding
--*******************************
-+===============================
- 
- The file ``include/uapi/linux/btf.h`` provides high-level definition of how
- types/strings are encoded.
-@@ -57,13 +57,13 @@ little-endian target. The ``btf_header`` is designed to be extensible with
- generated.
- 
- 2.1 String Encoding
--===================
-+-------------------
- 
- The first string in the string section must be a null string. The rest of
- string table is a concatenation of other null-terminated strings.
- 
- 2.2 Type Encoding
--=================
-+-----------------
- 
- The type id ``0`` is reserved for ``void`` type. The type section is parsed
- sequentially and type id is assigned to each recognized type starting from id
-@@ -504,7 +504,7 @@ valid index (starting from 0) pointing to a member or an argument.
-  * ``type``: the type with ``btf_type_tag`` attribute
- 
- 3. BTF Kernel API
--*****************
-+=================
- 
- The following bpf syscall command involves BTF:
-    * BPF_BTF_LOAD: load a blob of BTF data into kernel
-@@ -547,14 +547,14 @@ The workflow typically looks like:
- 
- 
- 3.1 BPF_BTF_LOAD
--================
-+----------------
- 
- Load a blob of BTF data into kernel. A blob of data, described in
- :ref:`BTF_Type_String`, can be directly loaded into the kernel. A ``btf_fd``
- is returned to a userspace.
- 
- 3.2 BPF_MAP_CREATE
--==================
-+------------------
- 
- A map can be created with ``btf_fd`` and specified key/value type id.::
- 
-@@ -581,7 +581,7 @@ automatically.
- .. _BPF_Prog_Load:
- 
- 3.3 BPF_PROG_LOAD
--=================
-+-----------------
- 
- During prog_load, func_info and line_info can be passed to kernel with proper
- values for the following attributes:
-@@ -631,7 +631,7 @@ For line_info, the line number and column number are defined as below:
-     #define BPF_LINE_INFO_LINE_COL(line_col)        ((line_col) & 0x3ff)
- 
- 3.4 BPF_{PROG,MAP}_GET_NEXT_ID
--==============================
-+------------------------------
- 
- In kernel, every loaded program, map or btf has a unique id. The id won't
- change during the lifetime of a program, map, or btf.
-@@ -641,13 +641,13 @@ each command, to user space, for bpf program or maps, respectively, so an
- inspection tool can inspect all programs and maps.
- 
- 3.5 BPF_{PROG,MAP}_GET_FD_BY_ID
--===============================
-+-------------------------------
- 
- An introspection tool cannot use id to get details about program or maps.
- A file descriptor needs to be obtained first for reference-counting purpose.
- 
- 3.6 BPF_OBJ_GET_INFO_BY_FD
--==========================
-+--------------------------
- 
- Once a program/map fd is acquired, an introspection tool can get the detailed
- information from kernel about this fd, some of which are BTF-related. For
-@@ -656,7 +656,7 @@ example, ``bpf_map_info`` returns ``btf_id`` and key/value type ids.
- bpf byte codes, and jited_line_info.
- 
- 3.7 BPF_BTF_GET_FD_BY_ID
--========================
-+------------------------
- 
- With ``btf_id`` obtained in ``bpf_map_info`` and ``bpf_prog_info``, bpf
- syscall command BPF_BTF_GET_FD_BY_ID can retrieve a btf fd. Then, with
-@@ -668,10 +668,10 @@ tool has full btf knowledge and is able to pretty print map key/values, dump
- func signatures and line info, along with byte/jit codes.
- 
- 4. ELF File Format Interface
--****************************
-+============================
- 
- 4.1 .BTF section
--================
-+----------------
- 
- The .BTF section contains type and string data. The format of this section is
- same as the one describe in :ref:`BTF_Type_String`.
-@@ -679,7 +679,7 @@ same as the one describe in :ref:`BTF_Type_String`.
- .. _BTF_Ext_Section:
- 
- 4.2 .BTF.ext section
--====================
-+--------------------
- 
- The .BTF.ext section encodes func_info and line_info which needs loader
- manipulation before loading into the kernel.
-@@ -743,7 +743,7 @@ bpf_insn``. For ELF API, the ``insn_off`` is the byte offset from the
- beginning of section (``btf_ext_info_sec->sec_name_off``).
- 
- 4.2 .BTF_ids section
--====================
-+--------------------
- 
- The .BTF_ids section encodes BTF ID values that are used within the kernel.
- 
-@@ -804,10 +804,10 @@ All the BTF ID lists and sets are compiled in the .BTF_ids section and
- resolved during the linking phase of kernel build by ``resolve_btfids`` tool.
- 
- 5. Using BTF
--************
-+============
- 
- 5.1 bpftool map pretty print
--============================
-+----------------------------
- 
- With BTF, the map key/value can be printed based on fields rather than simply
- raw bytes. This is especially valuable for large structure or if your data
-@@ -849,7 +849,7 @@ bpftool is able to pretty print like below:
-       ]
- 
- 5.2 bpftool prog dump
--=====================
-+---------------------
- 
- The following is an example showing how func_info and line_info can help prog
- dump with better kernel symbol names, function prototypes and line
-@@ -883,7 +883,7 @@ information.::
-     [...]
- 
- 5.3 Verifier Log
--================
-+----------------
- 
- The following is an example of how line_info can help debugging verification
- failure.::
-@@ -909,7 +909,7 @@ failure.::
-         R2 offset is outside of the packet
- 
- 6. BTF Generation
--*****************
-+=================
- 
- You need latest pahole
- 
-@@ -1016,6 +1016,6 @@ format.::
-             .long   8206                    # Line 8 Col 14
- 
- 7. Testing
--**********
-+==========
- 
- Kernel bpf selftest `test_btf.c` provides extensive set of BTF-related tests.
+diff --git a/Documentation/bpf/bpf_lsm.rst b/Documentation/bpf/prog_lsm.rst
+similarity index 100%
+rename from Documentation/bpf/bpf_lsm.rst
+rename to Documentation/bpf/prog_lsm.rst
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f96aa662ee32..bd690d1ba272 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3529,7 +3529,7 @@ R:	Florent Revest <revest@chromium.org>
+ R:	Brendan Jackman <jackmanb@chromium.org>
+ L:	bpf@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/bpf/bpf_lsm.rst
++F:	Documentation/bpf/prog_lsm.rst
+ F:	include/linux/bpf_lsm.h
+ F:	kernel/bpf/bpf_lsm.c
+ F:	security/bpf/
 -- 
 2.33.1
 
