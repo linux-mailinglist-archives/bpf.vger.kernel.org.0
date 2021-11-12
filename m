@@ -2,72 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252FE44DFEA
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 02:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADED44E002
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 02:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhKLBtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 20:49:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230308AbhKLBtq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 20:49:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB5060F94;
-        Fri, 12 Nov 2021 01:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636681616;
-        bh=5aW4+ULRFBb8KEf0hwe2BA1rQMqSqqJAvuU8Wm2H1vQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hUw7PcSEd7Xslz0bH7qny/EW+RdY2tila+rkBNpfkPMK/Y++qidXBy+rhGy9uF7UB
-         iwO9aVI0WuOLxlBTsBEmtv4/lPiFATaUrQNZtL6Cy8qG6TxpfcC3O8u2Ttrlu90fXs
-         7ZPu8bAM2+V7Pkvhkc+xalN1ORr9LkRtGHFprGLYgnGftiDB5CUDxgBbI7L3zeTNkL
-         u/DyXKoJvQOh9O/uJHBpYP74F1V7A0+fImbHNIrTqxc/lmO/yaKTq1Y288E1ZEOWcZ
-         Q0u7NS/wCS4rTYtOEBP7WOK/HaRMx4coDiztGBes4I9lcz4WDlO0qVjIzjyQGk1/0E
-         cz8r8zTnK2tVg==
-Date:   Thu, 11 Nov 2021 17:46:54 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     torvalds@linux-foundation.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-can@vger.kernel.org
-Subject: 32bit x86 build broken (was: Re: [GIT PULL] Networking for
- 5.16-rc1)
-Message-ID: <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
-References: <20211111163301.1930617-1-kuba@kernel.org>
-        <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
+        id S231470AbhKLBzl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 20:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230308AbhKLBzl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 20:55:41 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB5BC061766;
+        Thu, 11 Nov 2021 17:52:51 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id v138so19739038ybb.8;
+        Thu, 11 Nov 2021 17:52:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZDSeHLLhGxHcPHudA96pLrr0NfbznFOxkpI1rPKILTQ=;
+        b=XW81GIb1hqQ5nUIXfj1zIBSjA8c69MNZDfikCsPHVaCp+ZJB79qxCQrfDGf58tSvaN
+         0lGuia8zrywt7JrQXCTRligK++ZVZr8ukBZGOKdZrjwi6FV8moHfegRjRiPNTyF0y4aC
+         MKli97srOJ2xLs+zPS9LMmyZ/LvG0J5wNAtJrgx6Hsk8JSvDwqu4g8zGfNbPJ/Z6Fk0L
+         5b/Y6miWMKWJA5CW5kMZruAT/d1DtV+rGCo8QAsTB1t0tLwkRaUoZc5iP1dbBDSYKfAl
+         ivGJ3NgAbpufpk4Rm5srfaFx1u0uRkZEx8A2izBM4C2oJ6OyuRld1ExqEOd4VJW5qZRw
+         WOIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZDSeHLLhGxHcPHudA96pLrr0NfbznFOxkpI1rPKILTQ=;
+        b=IxyUfGG5Kz9Cqa9BDqTtvJktI095DfxZSKil9+0k8T3b+YObvJBhY39hKz0AZTocIC
+         iTzBapTsePKirqsZV4kYuHRSyxPb4a3nfyeSmQx719a9UDPJF8xkwCQUQjODGzy+38VT
+         prPgBfUZYsOf7IaESWAwFHXm6E3GbWwNm45gF7cn8L7LIP+doLIpB30Cz3xSgqb7Xnsr
+         I09XyKMBfF7B/VNjju7bTTtJnRPikuazZFRM3i5FBuE59eDlIxRT/3FoQrS/yEUyrhuZ
+         8gVd0PllOWjXhRsUw63czGp2Q7nz9aomdkQx0zM+JW5ryfOvtXJUMvb/L1w2GuGa2cLg
+         pS8Q==
+X-Gm-Message-State: AOAM532mKQZ+Ikz6voyT0bZt5RVquV4radjoBlrAkHqsqdNx8m7SdmQ0
+        mtTSeH2tnM8ggywhJ1I6hxkE7rQ3vq0cAA8oF2ODA9rm
+X-Google-Smtp-Source: ABdhPJzBaFDGUVWleBoMii66fQHpVAt7TCraUWlglPC4SFkXmwhrtmqbZZA3KFhlf4BgE23CoRTwwYiDJT4PpVW/uas=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr11784805ybj.433.1636681970725;
+ Thu, 11 Nov 2021 17:52:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211110114632.24537-1-quentin@isovalent.com> <20211110114632.24537-4-quentin@isovalent.com>
+ <CAEf4BzbtC8S_j7oZP9vqK+FwoSvBmt8Hp4_ZyzbwUifg8JfUUA@mail.gmail.com> <CACdoK4JnbpU6ijcNr5n6HMj+yOb=OhEwO3DUQOgNYRvoe+EgfQ@mail.gmail.com>
+In-Reply-To: <CACdoK4JnbpU6ijcNr5n6HMj+yOb=OhEwO3DUQOgNYRvoe+EgfQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 11 Nov 2021 17:52:39 -0800
+Message-ID: <CAEf4Bzbp=4Nj1btO7=SmeOw09wWwtrAcf_6wk-3KV8YBLOuOOg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] bpftool: Use $(OUTPUT) and not $(O) for
+ VMLINUX_BTF_PATHS in Makefile
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 11 Nov 2021 23:09:07 +0000 pr-tracker-bot@kernel.org wrote:
-> The pull request you sent on Thu, 11 Nov 2021 08:33:01 -0800:
->=20
-> > git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5=
-.16-rc1 =20
->=20
-> has been merged into torvalds/linux.git:
-> https://git.kernel.org/torvalds/c/f54ca91fe6f25c2028f953ce82f19ca2ea0f07bb
+On Thu, Nov 11, 2021 at 3:39 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> On Thu, 11 Nov 2021 at 18:59, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Nov 10, 2021 at 3:46 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> > >
+> > > The Makefile for bpftool relies on $(OUTPUT), and not on $(O), for
+> > > passing the output directory. So $(VMLINUX_BTF_PATHS), used for
+> > > searching for kernel BTF info, should use the same variable.
+> > >
+> > > Fixes: 05aca6da3b5a ("tools/bpftool: Generalize BPF skeleton support and generate vmlinux.h")
+> > > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> > > ---
+> > >  tools/bpf/bpftool/Makefile | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> > > index 2a846cb92120..40abf50b59d4 100644
+> > > --- a/tools/bpf/bpftool/Makefile
+> > > +++ b/tools/bpf/bpftool/Makefile
+> > > @@ -150,7 +150,7 @@ $(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
+> > >  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+> > >  $(OBJS): $(LIBBPF) $(LIBBPF_INTERNAL_HDRS)
+> > >
+> > > -VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
+> > > +VMLINUX_BTF_PATHS ?= $(if $(OUTPUT),$(OUTPUT)/vmlinux)                 \
+> > >                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)    \
+> >
+> > But you still check KBUILD_OUTPUT? O overrides KBUILD_OUTPUT as far as
+> > kernel build goes. So if you still support KBUILD_OUTPUT, you should
+> > support O. And the $(OUTPUT) seems to be completely unrelated, as that
+> > defines the output of bpftool build files, not the vmlinux image. Or
+> > am I missing something?
+>
+> OK, I think I'm the one who missed the point. I simply figured we
+> meant to search the output directory, and that it should be $(OUTPUT)
+> like everywhere else in the Makefile. But from what I understand now,
+> it's not the case. Let's drop this patch.
+>
+> If the rest of the set looks good to you, can you just skip this
+> patch, or do you prefer me to send a v2?
+>
 
-Rafael, Srinivas, we're getting 32 bit build failures after pulling back
-from Linus today.
+I can just drop it when applying.
 
-make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
-make: *** [Makefile:219: __sub-make] Error 2
-../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In funct=
-ion =E2=80=98send_mbox_cmd=E2=80=99:
-../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37: er=
-ror: implicit declaration of function =E2=80=98readq=E2=80=99; did you mean=
- =E2=80=98readl=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-   79 |                         *cmd_resp =3D readq((void __iomem *) (proc_=
-priv->mmio_base + MBOX_OFFSET_DATA));
-      |                                     ^~~~~
-      |                                     readl
-
-Is there an ETA on getting this fixed?
-
-
+> Quentin
