@@ -2,374 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9B244EE76
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 22:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 917C544EEAF
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 22:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235752AbhKLVVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Nov 2021 16:21:14 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:48829 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235757AbhKLVVN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Nov 2021 16:21:13 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id A2A785C0279;
-        Fri, 12 Nov 2021 16:18:21 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 12 Nov 2021 16:18:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dtucker.co.uk;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=fIRWMwdKzJeyc
-        z/KDiOpYPUx3KPnYCbztqg09wWSwTM=; b=yS8vunQCqRQD9MBbBfCrE3VLSQSY+
-        SSvN8VjsSHLAdtGy0bcivbZ2RlyBqHrlr4QHxLhQMPvW6LlgUpa9bE24ypt4JI/7
-        Q6H0JcpACQQjwzqW9y2tBW7EeM8RHPMrE8anYyXtyAnu6ejmS0ShvDpBgF951Lf4
-        Ww239vhurTuYe5eK7ZoMDHw2JulBk5c7ByngjetXs1fczRzsI3/ZIsXeax3jaPd9
-        dOw3183JWc23/aywHm3zjDGCE97P88ceKrm0pdRitJVHtELUarGfQyfPALOlRBvj
-        7HYwxFHIeXQf/aN9mBAnNAqFgxzN9xWIWIZkFX5nRaUlgSaM41uRCXbsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=fIRWMwdKzJeycz/KDiOpYPUx3KPnYCbztqg09wWSwTM=; b=Ia7fP8gx
-        TVGNfQHM4Wmp30NAsdk66SIT0CiyVWTMczkXOfEja2CvYaJkfX24zrXpFXnBkvDt
-        pZakFoGBXmyqcOdE7xFEFsZwFO7/2yFMoS3uPkrv7KLr3E+4k+7+MG1P8cSuu76L
-        cAXemPFb5hI9ts+0gYRdvcP4wrnY2wg/awnfRmADsWa0SnPKfO0OuMuZqE5G/CNf
-        lfd6p68bJgBQMAr4ebtcfRe1hpMAUxrmx+WHyqxO4PcyxnozX9yHfdBIiXgsB/BD
-        c73Gb+qAfu+fRD9G2nQxTCWvFkqwUT5zHIutp0+4jzFmKi1aftPCxzhnPU08r312
-        hUkEVHX5lPveJA==
-X-ME-Sender: <xms:HdqOYY-iYiDenbWEQxaGFCWIzACk2dP5Els1mVmmnzletUkH11PIPg>
-    <xme:HdqOYQvN1Y1dpp5EBeh6iTJ55nbcxNvdNVEdObjsg_SMqfMREP1uJphUDCjZs4e52
-    SmIds1i2_gt-1XBbg>
-X-ME-Received: <xmr:HdqOYeCHxAEyqz5p0lOOWcwKzngCegOKCaG5uKAzBMqSrewyaIHlkbKmX4jbd5KNZKsW2Hf8iHlw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdefgddugeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomhepffgrvhgvucfvuhgtkhgvrhcuoegurghvvgesughtuhgtkhgv
-    rhdrtghordhukheqnecuggftrfgrthhtvghrnhepudduiedtiedvffeugeeuveeluddtve
-    fhtdevheelfeejleeflefggfehuddtvefhnecuffhomhgrihhnpehmrghnjedrohhrghdp
-    khgvrhhnvghlrdhorhhgpdgtihhlihhumhdrihhopdhrvggrughthhgvughotghsrdhioh
-    dpthhhihhsihhsughotghumhgvnhhtrghtihhonhhfohhrlhhisggsphhfrghushgvrhhs
-    phgrtggvlhhisghrrghrhihfohhrlhhorgguihhnghgrnhguihhnthgvrhgrtghtihhngh
-    ifihhthhgsphhfphhrohhgrhgrmhhsrdhfohhrrghpihguohgtuhhmvghnthgrthhiohhn
-    shgvvghthhgvvhgvrhhsihhonhgvuggrphhiughotghumhgvnhhtrghtihhonhhsihhtvg
-    hhthhtphhsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepuggrvhgvseguthhutghkvghrrdgtohdruhhk
-X-ME-Proxy: <xmx:HdqOYYeGJBpCjmye6pt-KJ7g0ValqssKbRIa_RxrGb5h8zBsqvuDrg>
-    <xmx:HdqOYdNVIkVY7DQVgcBk4xUnSGrmxIYcLadfLuqUW1ykNEiBmnD1SQ>
-    <xmx:HdqOYSm5JOKW_2RWkBQld-5mgHhZF6W8rZ2EZLCm4DAaKqKvltpvSQ>
-    <xmx:HdqOYWgoJcUkCmN9-LeuAzfFEfHe5F8O6aaJN3jVNpqLH6TPM7tZyQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 12 Nov 2021 16:18:21 -0500 (EST)
-From:   Dave Tucker <dave@dtucker.co.uk>
-To:     bpf@vger.kernel.org
-Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        Dave Tucker <dave@dtucker.co.uk>
-Subject: [PATCH bpf-next 3/3] docs: fix ordering of bpf documentation
-Date:   Fri, 12 Nov 2021 21:17:24 +0000
-Message-Id: <1a1eed800e7b9dc13b458de113a489641519b0cc.1636749493.git.dave@dtucker.co.uk>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1636749493.git.dave@dtucker.co.uk>
-References: <cover.1636749493.git.dave@dtucker.co.uk>
+        id S235749AbhKLVhF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Nov 2021 16:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231877AbhKLVhF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Nov 2021 16:37:05 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED677C061766
+        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 13:34:13 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 136so4458075pgc.0
+        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 13:34:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TKihG9dhLVrR3j8LqT6pIgYxp3DXDcFgJpy65gWmXRI=;
+        b=k1J5hg2ZKPcy72ddWhR0R3r+lm6MpuOsSW/+FoIj6HqH0H3pcQrnX+B6QQy+Jc1+vZ
+         eZxI2RYxCI30NHOzE4rf/YOZF9VoU12Y0EKGXSPZ7Ho3Ud8UnjJIJjEoCCjfBfy8+D/+
+         DX9NSatqaPufPVW/ZRBZv7wH1KGuszrif+79WTKSN7VCo8LanHwgb3sZV5XBQILbacmm
+         qJy8z7Ltt5i5gvEGfk9Wd2VkDwDLfRD/o98/RC6rzrKl5G4VeW11OCfLbMNq8VZ4aj+X
+         qBaZyrYOjIQo18ZfvmHbFXaR5uLNHs5aRbaUBnQs/QwvJnw9S/tIu67yZrfSe0DQ1+Dh
+         yiIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TKihG9dhLVrR3j8LqT6pIgYxp3DXDcFgJpy65gWmXRI=;
+        b=TbT16J6w5iTsSMrWgf7D51bcs+0cJXRGZYbNN+ha5BfJCvHb7EVL1OjNK69/yo8RoM
+         7a2Fu6+5jHWKpPtUi2Grzk8GQ9600xE4YqDqH6fF3nwmZsd+J3bcUzLgHmWSN34SYOy5
+         Pd2CmdA1xDONTG9sF3NHoHqhx45IiQqsaq+VHQymS9bdCKE3vZiQNHGfAKzlc+eJseWr
+         oQHiE33l3H7oT+W2ND2XQ6hpL0sKzcm2xWV6q/vHPrtB7CptfT49XLgQfGdq/opVlBFK
+         hwjY7ySpWIFwEWvmtUV5UHC4BrEGrzhkYf1x9Yejh/mUOH/vc7snA13AeC+212fyApQM
+         3/Zw==
+X-Gm-Message-State: AOAM533ijoclTRqWf+hB7hwzu9GeXvjuJiI0vABKzPNCReY7t2J3qWba
+        CimDb5PteP4WLBk/B+eJoyY=
+X-Google-Smtp-Source: ABdhPJwzhom2x+Csz3DLF4vvBn107uYJzZt3ga0CP+MMiPGZty7m4TtU7nS0hHsXIcbwPpTmvQGRCg==
+X-Received: by 2002:a05:6a00:1993:b0:49f:d53f:ec1f with SMTP id d19-20020a056a00199300b0049fd53fec1fmr16608168pfl.49.1636752853355;
+        Fri, 12 Nov 2021 13:34:13 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8382])
+        by smtp.gmail.com with ESMTPSA id d24sm6996864pfn.62.2021.11.12.13.34.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 13:34:12 -0800 (PST)
+Date:   Fri, 12 Nov 2021 13:34:11 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH bpf] libbpf: Perform map fd cleanup for gen_loader in
+ case of error
+Message-ID: <20211112213411.m3uxisnzkzkyf2os@ast-mbp.dhcp.thefacebook.com>
+References: <20211112202421.720179-1-memxor@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112202421.720179-1-memxor@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit fixes the display of the BPF documentation in the sidebar
-when rendered as HTML.
+On Sat, Nov 13, 2021 at 01:54:21AM +0530, Kumar Kartikeya Dwivedi wrote:
+> 
+> diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
+> index 7b73f97b1fa1..558479c13c77 100644
+> --- a/tools/lib/bpf/gen_loader.c
+> +++ b/tools/lib/bpf/gen_loader.c
+> @@ -18,7 +18,7 @@
+>  #define MAX_USED_MAPS	64
+>  #define MAX_USED_PROGS	32
+>  #define MAX_KFUNC_DESCS 256
+> -#define MAX_FD_ARRAY_SZ (MAX_USED_PROGS + MAX_KFUNC_DESCS)
+> +#define MAX_FD_ARRAY_SZ (MAX_USED_MAPS + MAX_KFUNC_DESCS)
 
-Before this patch, the sidebar would render as follows for some
-sections:
+Lol. Not sure how I missed it during code review :)
 
-| BPF Documentation
-  |- BPF Type Format (BTF)
-    |- BPF Type Format (BTF)
+>  void bpf_gen__init(struct bpf_gen *gen, int log_level)
+>  {
+>  	size_t stack_sz = sizeof(struct loader_stack);
+> @@ -120,8 +146,12 @@ void bpf_gen__init(struct bpf_gen *gen, int log_level)
+>  
+>  	/* jump over cleanup code */
+>  	emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0,
+> -			      /* size of cleanup code below */
+> -			      (stack_sz / 4) * 3 + 2));
+> +			      /* size of cleanup code below (including map fd cleanup) */
+> +			      (stack_sz / 4) * 3 + 2 + (MAX_USED_MAPS *
+> +			      /* 6 insns for emit_sys_close_blob,
+> +			       * 6 insns for debug_regs in emit_sys_close_blob
+> +			       */
+> +			      (6 + (gen->log_level ? 6 : 0)))));
+>  
+>  	/* remember the label where all error branches will jump to */
+>  	gen->cleanup_label = gen->insn_cur - gen->insn_start;
+> @@ -131,37 +161,19 @@ void bpf_gen__init(struct bpf_gen *gen, int log_level)
+>  		emit(gen, BPF_JMP_IMM(BPF_JSLE, BPF_REG_1, 0, 1));
+>  		emit(gen, BPF_EMIT_CALL(BPF_FUNC_sys_close));
+>  	}
+> +	gen->fd_array = add_data(gen, NULL, MAX_FD_ARRAY_SZ * sizeof(int));
 
-This was due to creating a heading in index.rst followed by
-a sphinx toctree, where the file referenced carries the same
-title as the section heading.
+could you move this line to be the first thing in bpf_gen__init() ?
+Otherwise it looks like that fd_array is only used in cleanup part while
+it's actually needed everywhere.
 
-To fix this I applied a pattern that has been established in other
-subfolders of Documentation:
+> +	for (i = 0; i < MAX_USED_MAPS; i++)
+> +		emit_sys_close_blob(gen, blob_fd_array_off(gen, i));
 
-1. Re-wrote index.rst to have a single toctree
-2. Split the sections out in to their own files
+I confess that commit 30f51aedabda ("libbpf: Cleanup temp FDs when intermediate sys_bpf fails.")
+wasn't great in terms of redundant code gen for closing all 32 + 64 FDs.
+But can we make it better while we're at it?
+Most bpf files don't have 32 progs and 64 maps while gen_loader emits
+(32 + 64) * 6 = 576 instructions (without debug).
+While debugging/developing gen_loader this large cleanup code is just noise.
 
-Additionally maps.rst and programs.rst make use of a glob pattern to
-include map_* or prog_* rst files in their toctree, meaning future map
-or program type documentation will be automatically included.
+I tested the following:
 
-Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
----
- Documentation/bpf/faq.rst          | 11 ++++
- Documentation/bpf/helpers.rst      |  7 +++
- Documentation/bpf/index.rst        | 97 ++++--------------------------
- Documentation/bpf/libbpf/index.rst |  4 +-
- Documentation/bpf/maps.rst         |  9 +++
- Documentation/bpf/other.rst        |  9 +++
- Documentation/bpf/programs.rst     |  9 +++
- Documentation/bpf/syscall_api.rst  | 11 ++++
- Documentation/bpf/test_debug.rst   |  9 +++
- 9 files changed, 80 insertions(+), 86 deletions(-)
- create mode 100644 Documentation/bpf/faq.rst
- create mode 100644 Documentation/bpf/helpers.rst
- create mode 100644 Documentation/bpf/maps.rst
- create mode 100644 Documentation/bpf/other.rst
- create mode 100644 Documentation/bpf/programs.rst
- create mode 100644 Documentation/bpf/syscall_api.rst
- create mode 100644 Documentation/bpf/test_debug.rst
+diff --git a/tools/lib/bpf/bpf_gen_internal.h b/tools/lib/bpf/bpf_gen_internal.h
+index 75ca9fb857b2..cc486a77db65 100644
+--- a/tools/lib/bpf/bpf_gen_internal.h
++++ b/tools/lib/bpf/bpf_gen_internal.h
+@@ -47,8 +47,8 @@ struct bpf_gen {
+        int nr_fd_array;
+ };
 
-diff --git a/Documentation/bpf/faq.rst b/Documentation/bpf/faq.rst
-new file mode 100644
-index 000000000000..a622602ce9ad
---- /dev/null
-+++ b/Documentation/bpf/faq.rst
-@@ -0,0 +1,11 @@
-+================================
-+Frequently asked questions (FAQ)
-+================================
-+
-+Two sets of Questions and Answers (Q&A) are maintained.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   bpf_design_QA
-+   bpf_devel_QA
-diff --git a/Documentation/bpf/helpers.rst b/Documentation/bpf/helpers.rst
-new file mode 100644
-index 000000000000..c4ee0cc20dec
---- /dev/null
-+++ b/Documentation/bpf/helpers.rst
-@@ -0,0 +1,7 @@
-+Helper functions
-+================
-+
-+* `bpf-helpers(7)`_ maintains a list of helpers available to eBPF programs.
-+
-+.. Links
-+.. _bpf-helpers(7): https://man7.org/linux/man-pages/man7/bpf-helpers.7.html
-\ No newline at end of file
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index 37f273a7e8b6..413f50101eca 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -12,97 +12,26 @@ BPF instruction-set.
- The Cilium project also maintains a `BPF and XDP Reference Guide`_
- that goes into great technical depth about the BPF Architecture.
- 
--libbpf
--======
--
--Documentation/bpf/libbpf/libbpf.rst is a userspace library for loading and interacting with bpf programs.
--
--BPF Type Format (BTF)
--=====================
--
- .. toctree::
-    :maxdepth: 1
- 
-+   libbpf/index
-    btf
--
--
--Frequently asked questions (FAQ)
--================================
--
--Two sets of Questions and Answers (Q&A) are maintained.
--
--.. toctree::
--   :maxdepth: 1
--
--   bpf_design_QA
--   bpf_devel_QA
--
--Syscall API
--===========
--
--The primary info for the bpf syscall is available in the `man-pages`_
--for `bpf(2)`_. For more information about the userspace API, see
--Documentation/userspace-api/ebpf/index.rst.
--
--Helper functions
--================
--
--* `bpf-helpers(7)`_ maintains a list of helpers available to eBPF programs.
--
--
--Program types
--=============
--
--.. toctree::
--   :maxdepth: 1
--
--   prog_cgroup_sockopt
--   prog_cgroup_sysctl
--   prog_flow_dissector
--   bpf_lsm
--   prog_sk_lookup
--
--
--Map types
--=========
--
--.. toctree::
--   :maxdepth: 1
--
--   map_cgroup_storage
--
--
--Testing and debugging BPF
--=========================
--
--.. toctree::
--   :maxdepth: 1
--
--   drgn
--   s390
--
--
--Licensing
--=========
--
--.. toctree::
--   :maxdepth: 1
--
-+   faq
-+   syscall_api
-+   helpers
-+   programs
-+   maps
-    bpf_licensing
-+   test_debug
-+   other
- 
-+.. only::  subproject and html
- 
--Other
--=====
--
--.. toctree::
--   :maxdepth: 1
-+   Indices
-+   =======
- 
--   ringbuf
--   llvm_reloc
-+   * :ref:`genindex`
- 
- .. Links:
--.. _networking-filter: ../networking/filter.rst
--.. _man-pages: https://www.kernel.org/doc/man-pages/
--.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
--.. _bpf-helpers(7): https://man7.org/linux/man-pages/man7/bpf-helpers.7.html
--.. _BPF and XDP Reference Guide: https://docs.cilium.io/en/latest/bpf/
-+.. _BPF and XDP Reference Guide: https://docs.cilium.io/en/latest/bpf/
-\ No newline at end of file
-diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/libbpf/index.rst
-index 4f8adfc3ab83..4e8c656b539a 100644
---- a/Documentation/bpf/libbpf/index.rst
-+++ b/Documentation/bpf/libbpf/index.rst
-@@ -3,8 +3,6 @@
- libbpf
- ======
- 
--For API documentation see the `versioned API documentation site <https://libbpf.readthedocs.io/en/latest/api.html>`_.
--
- .. toctree::
-    :maxdepth: 1
- 
-@@ -14,6 +12,8 @@ For API documentation see the `versioned API documentation site <https://libbpf.
- This is documentation for libbpf, a userspace library for loading and
- interacting with bpf programs.
- 
-+For API documentation see the `versioned API documentation site <https://libbpf.readthedocs.io/en/latest/api.html>`_.
-+
- All general BPF questions, including kernel functionality, libbpf APIs and
- their application, should be sent to bpf@vger.kernel.org mailing list.
- You can `subscribe <http://vger.kernel.org/vger-lists.html#bpf>`_ to the
-diff --git a/Documentation/bpf/maps.rst b/Documentation/bpf/maps.rst
-new file mode 100644
-index 000000000000..2084b0e7cde8
---- /dev/null
-+++ b/Documentation/bpf/maps.rst
-@@ -0,0 +1,9 @@
-+=========
-+Map Types
-+=========
-+
-+.. toctree::
-+   :maxdepth: 1
-+   :glob:
-+
-+   map_*
-\ No newline at end of file
-diff --git a/Documentation/bpf/other.rst b/Documentation/bpf/other.rst
-new file mode 100644
-index 000000000000..3d61963403b4
---- /dev/null
-+++ b/Documentation/bpf/other.rst
-@@ -0,0 +1,9 @@
-+=====
-+Other
-+=====
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   ringbuf
-+   llvm_reloc
-\ No newline at end of file
-diff --git a/Documentation/bpf/programs.rst b/Documentation/bpf/programs.rst
-new file mode 100644
-index 000000000000..620eb667ac7a
---- /dev/null
-+++ b/Documentation/bpf/programs.rst
-@@ -0,0 +1,9 @@
-+=============
-+Program Types
-+=============
-+
-+.. toctree::
-+   :maxdepth: 1
-+   :glob:
-+
-+   prog_*
-diff --git a/Documentation/bpf/syscall_api.rst b/Documentation/bpf/syscall_api.rst
-new file mode 100644
-index 000000000000..f0a1dff087ad
---- /dev/null
-+++ b/Documentation/bpf/syscall_api.rst
-@@ -0,0 +1,11 @@
-+===========
-+Syscall API
-+===========
-+
-+The primary info for the bpf syscall is available in the `man-pages`_
-+for `bpf(2)`_. For more information about the userspace API, see
-+Documentation/userspace-api/ebpf/index.rst.
-+
-+.. Links:
-+.. _man-pages: https://www.kernel.org/doc/man-pages/
-+.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
-\ No newline at end of file
-diff --git a/Documentation/bpf/test_debug.rst b/Documentation/bpf/test_debug.rst
-new file mode 100644
-index 000000000000..ebf0caceb6a6
---- /dev/null
-+++ b/Documentation/bpf/test_debug.rst
-@@ -0,0 +1,9 @@
-+=========================
-+Testing and debugging BPF
-+=========================
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   drgn
-+   s390
--- 
-2.33.1
+-void bpf_gen__init(struct bpf_gen *gen, int log_level);
+-int bpf_gen__finish(struct bpf_gen *gen);
++void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps);
++int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps);
+ void bpf_gen__free(struct bpf_gen *gen);
+ void bpf_gen__load_btf(struct bpf_gen *gen, const void *raw_data, __u32 raw_size);
+ void bpf_gen__map_create(struct bpf_gen *gen, struct bpf_create_map_params *map_attr, int map_idx);
+diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
+index 7b73f97b1fa1..f7b78478a9d3 100644
+--- a/tools/lib/bpf/gen_loader.c
++++ b/tools/lib/bpf/gen_loader.c
+@@ -102,7 +102,7 @@ static void emit2(struct bpf_gen *gen, struct bpf_insn insn1, struct bpf_insn in
+        emit(gen, insn2);
+ }
 
+-void bpf_gen__init(struct bpf_gen *gen, int log_level)
++void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps)
+ {
+        size_t stack_sz = sizeof(struct loader_stack);
+        int i;
+@@ -359,10 +359,15 @@ static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off)
+        __emit_sys_close(gen);
+ }
+
+-int bpf_gen__finish(struct bpf_gen *gen)
++int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
+ {
+        int i;
+
++       if (nr_progs != gen->nr_progs || nr_maps != gen->nr_maps) {
++               pr_warn("progs/maps mismatch\n");
++               gen->error = -EFAULT;
++               return gen->error;
++       }
+        emit_sys_close_stack(gen, stack_off(btf_fd));
+        for (i = 0; i < gen->nr_progs; i++)
+                move_stack2ctx(gen,
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index de7e09a6b5ec..f6faa33c80fa 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -7263,7 +7263,7 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+        }
+
+        if (obj->gen_loader)
+-               bpf_gen__init(obj->gen_loader, attr->log_level);
++               bpf_gen__init(obj->gen_loader, attr->log_level, obj->nr_programs, obj->nr_maps);
+
+        err = bpf_object__probe_loading(obj);
+        err = err ? : bpf_object__load_vmlinux_btf(obj, false);
+@@ -7282,7 +7282,7 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+                for (i = 0; i < obj->nr_maps; i++)
+                        obj->maps[i].fd = -1;
+                if (!err)
+-                       err = bpf_gen__finish(obj->gen_loader);
++                       err = bpf_gen__finish(obj->gen_loader, obj->nr_programs, obj->nr_maps);
+        }
+
+        /* clean up fd_array */
+
+and it seems to work.
+
+So cleanup code can close only nr_progs + nr_maps FDs.
+gen_loader prog will be much shorter and will be processed by the verifier faster.
+MAX_FD_ARRAY_SZ can stay fixed. Reducing data size is not worth it.
+wdyt?
