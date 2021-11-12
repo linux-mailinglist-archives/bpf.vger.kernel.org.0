@@ -2,96 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A6A44E044
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 03:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B0244E074
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 03:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhKLC3Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 21:29:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231965AbhKLC3Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 21:29:25 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BED6C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 18:26:35 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id y1so7224122plk.10
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 18:26:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=jg8T2SnQ6iLy7JP57Lnsl6uAObuUeGWr5YxqLf6oiWk=;
-        b=NBDVXOK1XHhgBEPRgmk3eXQJcThGg7Iri1F8bjM4ns9qd3TKS0P3AdZS+Z/tW3GpWP
-         jzPSgZOnl1bVAcnp0sjeDX+uaqEl7eRVHXcospqWiKEqn9OCE/NpA/b2MX9It9GrCAxK
-         zYtFk0vvfSS2tDuMaD+sa7LZ0lNA9Vyb0vldgZA2McKslZfy8KImHAuV/bDvPrjuJxMS
-         PJo9FZ0pPLPuJV+wuwE8apShsHPKJQ72el8kF3FXZZMVV0k5HatqhKH0N7vTA2Zkx4XM
-         d+yLanP7TcEjfzXM+IQqIWwlhIIKm/IDYdLBxSiGcVuCC9/QS7+8MVYV1lpKCjqBlM7D
-         he/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=jg8T2SnQ6iLy7JP57Lnsl6uAObuUeGWr5YxqLf6oiWk=;
-        b=6cSN3IVlRN+CVKMDsQNGe/BPNyOhvccH0OkBu+R3sp5FEC5N0dR4JyTfc3eZK61umX
-         qfnqH2+X+yHjZYMfI+sjgt+ESjk/cDPXDxI/kkUBWL9VIu5/S2CcQKqvzNq948ut2l0O
-         cwwRsw+hrkOoH1niMgEgKkVCHM3XYVf+uRNsKj9MhYB6/oE5CLxcaIcqxSNxVuggASmi
-         W5zCj1T8WjMnjPe64enPjKDyw2blJcwqftFrUGBGp1N3mAdv0qeGhDsjPHnRMT9CJUBe
-         4Nx/jhfsmMQfIyD5zHaYi7I8z7ipalP0HpgnnvjemGkLtdEOM41a0jyl6hojL1wstHSt
-         a3MA==
-X-Gm-Message-State: AOAM532GAWeYlmzymfyxfUMEjXXG5enrXUDGbUwWYCUBk8Dhqu63z2ni
-        tL/F7QLtXnjyqXdqvS8SK8z8+pKVbVQgo3u2Ml0=
-X-Google-Smtp-Source: ABdhPJzQ/Gi6yrlImPIrMA2jlRq/dBkU6J0v6NQCPfDaU69n3n9kZqsJgeGMYodV/qv3qFklQAZBMkIM/X81O4mLPBI=
-X-Received: by 2002:a17:90b:4c03:: with SMTP id na3mr13782545pjb.62.1636683994534;
- Thu, 11 Nov 2021 18:26:34 -0800 (PST)
+        id S231965AbhKLCtw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 21:49:52 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27201 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhKLCtv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 21:49:51 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hr2xs1CN3z8vNN;
+        Fri, 12 Nov 2021 10:45:21 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Fri, 12 Nov 2021 10:46:48 +0800
+Received: from [10.174.179.215] (10.174.179.215) by
+ dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Fri, 12 Nov 2021 10:46:47 +0800
+Subject: Re: 32bit x86 build broken (was: Re: [GIT PULL] Networking for
+ 5.16-rc1)
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+CC:     <torvalds@linux-foundation.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
+        <linux-can@vger.kernel.org>
+References: <20211111163301.1930617-1-kuba@kernel.org>
+ <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
+ <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <c8e95de5-ae1e-a36b-06ac-101132ac2da3@huawei.com>
+Date:   Fri, 12 Nov 2021 10:46:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 11 Nov 2021 18:26:23 -0800
-Message-ID: <CAADnVQJ6jSitKSNKyxOrUzwY2qDRX0sPkJ=VLGHuCLVJ=qOt9g@mail.gmail.com>
-Subject: fd leak in lskel
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kumar,
+On 2021/11/12 9:46, Jakub Kicinski wrote:
+> On Thu, 11 Nov 2021 23:09:07 +0000 pr-tracker-bot@kernel.org wrote:
+>> The pull request you sent on Thu, 11 Nov 2021 08:33:01 -0800:
+>>
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.16-rc1  
+>>
+>> has been merged into torvalds/linux.git:
+>> https://git.kernel.org/torvalds/c/f54ca91fe6f25c2028f953ce82f19ca2ea0f07bb
+> 
+> Rafael, Srinivas, we're getting 32 bit build failures after pulling back
+> from Linus today.
+> 
+> make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
+> make: *** [Makefile:219: __sub-make] Error 2
+> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c: In function ‘send_mbox_cmd’:
+> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:79:37: error: implicit declaration of function ‘readq’; did you mean ‘readl’? [-Werror=implicit-function-declaration]
+>    79 |                         *cmd_resp = readq((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
+>       |                                     ^~~~~
+>       |                                     readl
+> 
+> Is there an ETA on getting this fixed?
 
-I think I noticed a small regression:
+This is fixed by:
+https://lore.kernel.org/lkml/a22a1eeb-c7a0-74c1-46e2-0a7bada73520@infradead.org/T/
 
-$ bpftool prog load -L ./test_ksyms_module.o
-
-will print:
-"loader prog leaked 2 FDs"
-
-That's a builtin sanity test in bpftool that checks
-that loader prog is doing the right thing.
-I suspect the cleanup path of ksym patches is leaving FD opened.
-
-$ cat /sys/kernel/debug/tracing/trace_pipe
-         bpftool-1356    [002] d..21   175.537998: bpf_trace_printk:
-btf_load size 1895 r=5
-         bpftool-1356    [002] d..21   175.538085: bpf_trace_printk:
-map_create test_ksy.bss idx 0 type 2 value_size 4 value_btf_id 32 r=6
-         bpftool-1356    [002] d..21   175.538108: bpf_trace_printk:
-update_elem idx 0 value_size 4 r=0
-         bpftool-1356    [002] d..21   175.538165: bpf_trace_printk:
-map_create test_ksy.rodata idx 1 type 2 value_size 4 value_btf_id 34
-r=7
-         bpftool-1356    [002] d..21   175.538187: bpf_trace_printk:
-update_elem idx 1 value_size 4 r=0
-         bpftool-1356    [002] d..21   175.538191: bpf_trace_printk:
-map_freeze r=0
-         bpftool-1356    [002] d..21   175.540873: bpf_trace_printk:
-find_by_name_kind(bpf_testmod_invalid_mod_kfunc,12) r=-2
-         bpftool-1356    [002] d..21   175.540876: bpf_trace_printk:
-func (bpf_testmod_invalid_mod_kfunc:count=1): imm: 0, off: 0
-         bpftool-1356    [002] d..21   175.540877: bpf_trace_printk:
-func (bpf_testmod_invalid_mod_kfunc:count=1): btf_fd r=0
-         bpftool-1356    [002] d..21   175.543305: bpf_trace_printk:
-find_by_name_kind(bpf_testmod_test_mod_kfunc,12) r=-2
-
-I see this leak with other tests too as long as they fail to load.
-On success the cleanup of FD is good.
-
-Any idea?
+> 
+> 
+> .
+> 
