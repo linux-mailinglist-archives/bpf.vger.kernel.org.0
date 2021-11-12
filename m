@@ -2,91 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A0944DF77
-	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 01:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC4B44DF85
+	for <lists+bpf@lfdr.de>; Fri, 12 Nov 2021 02:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhKLBCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Nov 2021 20:02:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S234647AbhKLBIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Nov 2021 20:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbhKLBCC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Nov 2021 20:02:02 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6154C061766
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 16:59:12 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id c4so7072209pfj.2
-        for <bpf@vger.kernel.org>; Thu, 11 Nov 2021 16:59:12 -0800 (PST)
+        with ESMTP id S234625AbhKLBH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Nov 2021 20:07:59 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD68EC061766;
+        Thu, 11 Nov 2021 17:05:08 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id f20so6734304qtb.4;
+        Thu, 11 Nov 2021 17:05:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R4RxUyDyQgyTinlQCQGjenkQgQ4iWswHHCcjm77mi8s=;
-        b=YIvY2ZPSf+IwwiMnPpcLfgm35zlQzG9Ws9rAD/UOOyir3qGI9IxrsviIXZrCXLm/f0
-         fke0aZlO6xSoxihpYRZH9fIiQnADi76BEdFAQ1/u1jciJWsBXo1yc+THFVDt+nI1Bk/F
-         lrpdzQHbHswpwbBqUKvz32pw9EY3DcxfSo6fdsjEuCDpEW8Cxp8ONqBN59L+ZznK6L7U
-         x7MqZiA7hG4h8IoHoZFmFYDC20FTI2EWn/tOytFaThOytthRKBPv0JM6UgenphwIxgsg
-         OGLpE5TKi6lNP3rJysQc6C3ftNN3zeug3OTwSnmfWHTx92IIGEmEJ0HHiK2fSsSEMPYB
-         UaMQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fXIzR4H7rC51zoCliJSnruG3gN++VRKIsy1ed6L1uZ0=;
+        b=nahxv2cN/OPoduTjxYuNz1wjlJTPzrf+j7EJDi5o315fzmzSXE3lk519tlit7AgmLM
+         5L+QlE/H1xO1r/kc91HECc3YRKpLyqx09c7oT9vn30n1jm02RW0i3xGEO5eWeGgHlfW9
+         6VSQdjPR377+WUR0sMdg1l0I2yKNEPUpBdOBKXM5mRfUXpdGzfVLFuZ8Nv7DupTynkIe
+         BF7YIEyZd9xN4RyU/T0a3pssM65Mm0RFjAE9wPHqBCGDh6n7uCw3hnU/o5XV5q3vJC1G
+         vMmIqWVH0lig3JTV3iJQ1yYRpvRc5WjWSA+7kXGzvVrDnaxWW2oMoBUcVnDn4yJM/VhM
+         xcNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R4RxUyDyQgyTinlQCQGjenkQgQ4iWswHHCcjm77mi8s=;
-        b=UEX1PsqBW3mr2nSnQfQvgeGBjFLaMjPXpWlKJ7NacP0ysu+f3j+DP8tKPEuRVKgVqq
-         utM05WA0LKnuxHTB5hM4iIVTUct49dT/TKmZO/8sffYmU18ZFXIbmY43UumynX/CYaob
-         Vj5yRKVxumRU0sAGHJkTkf5jJqKqIUkyRePjI3rl3HBNyBwnwBriRwEAEFKtPQf+jjTH
-         vKK78UMfLYNkf3hs6EfQNJaDVCu59KyEmzBfnaKu+6MUGBgD9M3vdHBNDydVrFu9lHNv
-         cbkh9x1JFfGN4tyf3TSuBerA94eDwM2LpZueKIF7KXn0wljA7w3pt9b7FuU1eXXI8p+2
-         Sw0g==
-X-Gm-Message-State: AOAM532a4Va5QLdFDw/5jdzvJqZdNji/Z6eQf+L2iLVniP9uZnMa+Udv
-        cPZULPoTEOiu258e5+vnAuqUbsFSG6I=
-X-Google-Smtp-Source: ABdhPJyGo2S9ZWZFEGTqv6EBxP5ARcJPnAkdQrWBNXoUYb4b6xfcd0BafKImGCEHlyc3a2ZcuxvN8w==
-X-Received: by 2002:a63:dc42:: with SMTP id f2mr7390119pgj.275.1636678752414;
-        Thu, 11 Nov 2021 16:59:12 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9ee9])
-        by smtp.gmail.com with ESMTPSA id z4sm3970693pfg.101.2021.11.11.16.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 16:59:12 -0800 (PST)
-Date:   Thu, 11 Nov 2021 16:59:10 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 0/9] Future-proof more tricky libbpf APIs
-Message-ID: <20211112005910.ktvjmbkgxpp5qfvr@ast-mbp.dhcp.thefacebook.com>
-References: <20211111053624.190580-1-andrii@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fXIzR4H7rC51zoCliJSnruG3gN++VRKIsy1ed6L1uZ0=;
+        b=6B8d6Ei8jxsqv10zFU9gU2qrAo3kkRdQvMW0bhmqMAQ3ahS6oICodG0FJPv1N0cGbs
+         sVF9dysQxX6qnkmnGfZJD9Yhg1kOtCrdVyGH48XICrq6CMxQ7tvRXW/AOj/bUyFCnRBU
+         RE0LCTm6h9h9Ey3q2+m7J2saxq1ByzkPXIjXH5c0ZslXaefLTeRhp94xhmrCMawy9yHm
+         RIbPEeYDm5Y14+pHqmBRbTH52Aw7D3XeKteofNnqIwlblXVzNB2BT23C8qfIRK1lnuic
+         oSxqzHN+6sq4/xNC2CkFHKP3CHt2R8vL0gdCaiSIpOCZ1t9lp5wRHLohDv8gYJM+9KMd
+         hjRA==
+X-Gm-Message-State: AOAM531IC256vqhIsoTOsN434vApuy6p7sSEbAcnbKQLZjZqZNDz69++
+        mU8NL3rw4sGhdGJK1JcLMd+doIwAUb0b9J49V7M=
+X-Google-Smtp-Source: ABdhPJyI15v6hfbPLVFglCWNTP1c+ur2pT58CD6zvbF3WVkubZRvuIGJW+6csH/fYOnC6Xy11GFkA/YMw9b/TRBReIw=
+X-Received: by 2002:a05:622a:194:: with SMTP id s20mr12323495qtw.66.1636679107925;
+ Thu, 11 Nov 2021 17:05:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111053624.190580-1-andrii@kernel.org>
+References: <20211108083840.4627-1-laoar.shao@gmail.com> <20211108083840.4627-5-laoar.shao@gmail.com>
+ <a13c0541-59a3-6561-6d42-b51fef9f7c8b@redhat.com> <b495d38d-5cdd-8a33-b9d3-de721095ccab@redhat.com>
+ <YYz/4bSdSXR3Palz@alley>
+In-Reply-To: <YYz/4bSdSXR3Palz@alley>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 12 Nov 2021 09:03:40 +0800
+Message-ID: <CALOAHbBYguv8RbhBayGFHORKbW2TVHRyp_NtjYUmLTOwwJeR1A@mail.gmail.com>
+Subject: Re: [PATCH 4/7] fs/binfmt_elf: use get_task_comm instead of
+ open-coded string copy
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 09:36:15PM -0800, Andrii Nakryiko wrote:
-> This patch set continues the work of revamping libbpf APIs that are not
-> extensible, as they were added before we figured out all the intricacies of
-> building APIs that can preserve ABI compatibility (both backward and forward).
-> 
-> What makes them tricky is that (most of) these APIs are actively used by
-> multiple applications, so we need to be careful about refactoring them. See
-> individual patches for details, but the general approach is similar to
-> previous bpf_prog_load() API revamp. The biggest different and complexity is
-> in changing btf_dump__new(), because function overloading through macro magic
-> doesn't work based on number of arguments, as both new and old APIs have
-> 4 arguments. Because of that, another overloading approach is taken; overload
-> happens based on argument types.
-> 
-> I've validated manually (by using local test_progs-shared flavor that is
-> compiling test_progs against libbpf as a shared library) that compiling "old
-> application" (selftests before being adapted to using new variants of revamped
-> APIs) are compiled and successfully run against newest libbpf version as well
-> as the older libbpf version (provided no new variants are used). All these
-> scenarios seem to be working as expected.
-> 
-> v1->v2:
->   - add explicit printf_fn NULL check in btf_dump__new() (Alexei);
->   - replaced + with || in __builtin_choose_expr() (Alexei);
->   - dropped test_progs-shared flavor (Alexei).
+On Thu, Nov 11, 2021 at 7:35 PM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Thu 2021-11-11 11:06:04, David Hildenbrand wrote:
+> > On 11.11.21 11:03, David Hildenbrand wrote:
+> > > On 08.11.21 09:38, Yafang Shao wrote:
+> > >> It is better to use get_task_comm() instead of the open coded string
+> > >> copy as we do in other places.
+> > >>
+> > >> struct elf_prpsinfo is used to dump the task information in userspace
+> > >> coredump or kernel vmcore. Below is the verfication of vmcore,
+> > >>
+> > >> crash> ps
+> > >>    PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
+> > >>       0      0   0  ffffffff9d21a940  RU   0.0       0      0  [swapper/0]
+> > >>>     0      0   1  ffffa09e40f85e80  RU   0.0       0      0  [swapper/1]
+> > >>>     0      0   2  ffffa09e40f81f80  RU   0.0       0      0  [swapper/2]
+> > >>>     0      0   3  ffffa09e40f83f00  RU   0.0       0      0  [swapper/3]
+> > >>>     0      0   4  ffffa09e40f80000  RU   0.0       0      0  [swapper/4]
+> > >>>     0      0   5  ffffa09e40f89f80  RU   0.0       0      0  [swapper/5]
+> > >>       0      0   6  ffffa09e40f8bf00  RU   0.0       0      0  [swapper/6]
+> > >>>     0      0   7  ffffa09e40f88000  RU   0.0       0      0  [swapper/7]
+> > >>>     0      0   8  ffffa09e40f8de80  RU   0.0       0      0  [swapper/8]
+> > >>>     0      0   9  ffffa09e40f95e80  RU   0.0       0      0  [swapper/9]
+> > >>>     0      0  10  ffffa09e40f91f80  RU   0.0       0      0  [swapper/10]
+> > >>>     0      0  11  ffffa09e40f93f00  RU   0.0       0      0  [swapper/11]
+> > >>>     0      0  12  ffffa09e40f90000  RU   0.0       0      0  [swapper/12]
+> > >>>     0      0  13  ffffa09e40f9bf00  RU   0.0       0      0  [swapper/13]
+> > >>>     0      0  14  ffffa09e40f98000  RU   0.0       0      0  [swapper/14]
+> > >>>     0      0  15  ffffa09e40f9de80  RU   0.0       0      0  [swapper/15]
+> > >>
+> > >> It works well as expected.
+> > >>
+> > >> Suggested-by: Kees Cook <keescook@chromium.org>
+> > >> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > >> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > >> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > >> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > >> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+> > >> Cc: Peter Zijlstra <peterz@infradead.org>
+> > >> Cc: Steven Rostedt <rostedt@goodmis.org>
+> > >> Cc: Matthew Wilcox <willy@infradead.org>
+> > >> Cc: David Hildenbrand <david@redhat.com>
+> > >> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > >> Cc: Kees Cook <keescook@chromium.org>
+> > >> Cc: Petr Mladek <pmladek@suse.com>
+> > >> ---
+> > >>  fs/binfmt_elf.c | 2 +-
+> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> > >> index a813b70f594e..138956fd4a88 100644
+> > >> --- a/fs/binfmt_elf.c
+> > >> +++ b/fs/binfmt_elf.c
+> > >> @@ -1572,7 +1572,7 @@ static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
+> > >>    SET_UID(psinfo->pr_uid, from_kuid_munged(cred->user_ns, cred->uid));
+> > >>    SET_GID(psinfo->pr_gid, from_kgid_munged(cred->user_ns, cred->gid));
+> > >>    rcu_read_unlock();
+> > >> -  strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
+> > >> +  get_task_comm(psinfo->pr_fname, p);
+> > >>
+> > >>    return 0;
+> > >>  }
+> > >>
+> > >
+> > > We have a hard-coded "pr_fname[16]" as well, not sure if we want to
+> > > adjust that to use TASK_COMM_LEN?
+> >
+> > But if the intention is to chance TASK_COMM_LEN later, we might want to
+> > keep that unchanged.
+>
+> It seems that len will not change in the end. Another solution is
+> going to be used for the long names, see
+> https://lore.kernel.org/r/20211108084142.4692-1-laoar.shao@gmail.com.
+>
+> > (replacing the 16 by a define might still be a good idea, similar to how
+> > it's done for ELF_PRARGSZ, but just a thought)
+>
+> If the code would need some tweaking when the size changes, you could
+> still use TASK_COMM_LEN and trigger a compilation error when the size
+> gets modified. For example, static_assert(TASK_COMM_LEN == 16);
+>
+> It will make it clear that it needs attention if the size is ever modified.
+>
 
-Applied, Thanks
+I think we can just add some comments to make it grepable, for example,
+
++  /* TASK_COMM_LEN */
+    char pr_fname[16];
+
+or a more detailed explanation:
+
++  /*
++   * The hard-coded 16 is derived from TASK_COMM_LEN, but it can be changed as
++   *  it is exposed to userspace. We'd better make it hard-coded here.
++   */
+char pr_fname[16];
+
+-- 
+Thanks
+Yafang
