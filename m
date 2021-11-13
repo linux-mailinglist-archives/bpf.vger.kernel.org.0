@@ -2,193 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4FF44F409
-	for <lists+bpf@lfdr.de>; Sat, 13 Nov 2021 16:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D85144F51E
+	for <lists+bpf@lfdr.de>; Sat, 13 Nov 2021 20:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhKMPvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Nov 2021 10:51:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
+        id S233898AbhKMUBx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Nov 2021 15:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhKMPvP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Nov 2021 10:51:15 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C153DC061766;
-        Sat, 13 Nov 2021 07:48:22 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id bu11so8359946qvb.0;
-        Sat, 13 Nov 2021 07:48:22 -0800 (PST)
+        with ESMTP id S233692AbhKMUBw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Nov 2021 15:01:52 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2BBC061766
+        for <bpf@vger.kernel.org>; Sat, 13 Nov 2021 11:59:00 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id e136so33656972ybc.4
+        for <bpf@vger.kernel.org>; Sat, 13 Nov 2021 11:59:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oXbQA6YsK/Yb8I1ufwTowmeWehU5ZLa6WqLwd/WJnR0=;
-        b=ImBzKERFqdjBGrGwyXdvLPxokVVH/YOD6syxy5Ry7EoZ7JA1ZgRpH36/Ir2IBUSx8W
-         gS0HmCEFLrPn8WeyKPwEHIKMJ8MsoQKXk07euxX0IcdQLNiTUxjGZQqX9d7aI435mJq7
-         QePMM1Q6vqImAExonnt61+8iV7HOUhqKsJvwCo+s5DSG0p8dfVub4pnX3y3g9rWeXJGP
-         s9Mi2AmGn/L6seJC8NjdI8dnnTh/v07eZIEcb9LSYEY+5wguwcQdBUGlxdKg1fR7SASX
-         PlYXoa7CPenBQheitAgVSHtWNxpkfdc6wMn6uumIY9JQJs7Eb1xfWp0PpdG4DXYQNu/x
-         ADAw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=bdsvl1UwZuOHxPwopT9QunKFFT2xiibkhLWpB5BPk7U=;
+        b=MwPpgUC6La8rMMmNmO2R4uXQdga0uRRhtzIsMgk0x/WELjx7SBtFQohtip0lCRo5dK
+         wtSSDeOi/O7gwmPstM1jV1MlGkgVqMCirjN7i3KhMTZ972gI5YsUYHWcm+I03tZSKPXL
+         W0PXx9cX4HPRReKGw9zCo0Mo04YyiPgEkivftGTEr/kooX1y+J7qHvPtANFK3E9C6+5G
+         fqW9LFetU9NdNVf6e7k/2JanocXeuJVmLgJ3ykAB19UegmZr/oNLLvUZ8L19E+JnpnD2
+         +fs6KBn2Cj6DHyi3JMnij24hCmN2l1gHHoUWHGqpJtoL9QQU5TIU8L8aMXgMCFF4ajSj
+         rzAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oXbQA6YsK/Yb8I1ufwTowmeWehU5ZLa6WqLwd/WJnR0=;
-        b=Gk/WIU2vM07u3Zx6rEpgVFkjLlWAMk/MWTkuCjka30m4LQZGnLWqzbzMDMv6E1UllS
-         ihwXA/9gtyQUHELXOKx+KSrvrPSxr0lxLoFMhe2gLXOvd7Xef9mSKhYvSsTk3BX4Ytpj
-         BPMxZl8PChFqowG88kF/0bxsSPNUfGZ0qMUa4GFV1MWA7B9Fiin6uWmCI5VMBCASjFWx
-         lmyCapcRQOLv8LmCN1t4zArH3HaRo7qok6UzXpm+3JC6In1gdhvCJTPblhDcONtAo9BS
-         EGfS5GlQbsjpw9kLl1vGLedPh6hlUvwetHMxU86q8a77csS0tbLISRGPp4H6U4o9+r3u
-         HOGA==
-X-Gm-Message-State: AOAM531SEEUOXfA1ss0BGonTBbQ8kl6lo5bFZc8OBCevLOyozQ4rGt+8
-        CM6W8SKzoGhAJxF/82OaX7TrB/Usws++vsuuPzs=
-X-Google-Smtp-Source: ABdhPJwHPNIdUDZB1WofY0EyhE09P++WglgHkH4uOkSjWwuZbEIP1MOmjqdsr8nWmrB6p2F41NZVSXMsSppxTlGYQ68=
-X-Received: by 2002:a05:6214:f2d:: with SMTP id iw13mr23317601qvb.13.1636818501919;
- Sat, 13 Nov 2021 07:48:21 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=bdsvl1UwZuOHxPwopT9QunKFFT2xiibkhLWpB5BPk7U=;
+        b=htTs8BqxeaqtsWaOh6o0IrzuKJYZcMRycUgVUo9Zb98yw1YttGKtFfRbbh/Dj+yc0g
+         /1AvwhYiMHT4tXJDp6J5qUpYpFC2jJg4s24LothRmscy0PJC31O7tUhkx8rXP2lTvaAm
+         gqpFMUTWfs1qGKUNN95AWHzYFqJO1qd8HXP1cEUs39bs/dTZ7R7Qh5X/tngtXbERM1kF
+         2E6qj6oCO6Y6SBkCaXIqQh4JUIqv50fVfzxN1bHk3JQYdzniTbTObBrKZ++YYQUq6Awp
+         +T2Mz8/TTAxefHwn0/a5YLEYD07WlAX5Z9Wx7nvL1aSMmjyGR4dWiXO1EfXUVQKommYm
+         9e2A==
+X-Gm-Message-State: AOAM531/owaIq5U5DKGmWLNoDeE088EKvdGg1xrVHOmTjSRmixjLrONy
+        pX45zcv6/GuN1eQ/koKw0IN+Z36h0oq7wgjO2Ok=
+X-Google-Smtp-Source: ABdhPJyG24sd+kaDpkzwo79Tdja3oq6ZbnW1+9ggltSYQ2Yz+DPdk10Hbp0l3U2FW5XiIcYkuF5CuoUjDIPZ6s6cTI4=
+X-Received: by 2002:a25:e704:: with SMTP id e4mr26538368ybh.490.1636833539390;
+ Sat, 13 Nov 2021 11:58:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20211108084142.4692-1-laoar.shao@gmail.com> <YY6JhZK/oiLUwHyZ@alley>
-In-Reply-To: <YY6JhZK/oiLUwHyZ@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 13 Nov 2021 23:47:45 +0800
-Message-ID: <CALOAHbA5LBHyJn=EC1roHYt7ar-QqHzLE=KHQ6uC=a__3Pwxfw@mail.gmail.com>
-Subject: Re: [PATCH] kthread: dynamically allocate memory to store kthread's
- full name
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
+Received: by 2002:a05:7010:49a8:b0:1df:805:1803 with HTTP; Sat, 13 Nov 2021
+ 11:58:58 -0800 (PST)
+Reply-To: mmamie_shimirah@yahoo.com
+From:   "Miss.Mmamie Shimirah" <mecryjen239@gmail.com>
+Date:   Sat, 13 Nov 2021 11:58:58 -0800
+Message-ID: <CAOkw-3dNON280tnvfN7=VMwNXeeXyPNFES9d=0cvr5DyDbz+Yg@mail.gmail.com>
+Subject: Regarding Of My Late Father's Fund $10,200,000,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 11:34 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Mon 2021-11-08 08:41:42, Yafang Shao wrote:
-> > When I was implementing a new per-cpu kthread cfs_migration, I found the
-> > comm of it "cfs_migration/%u" is truncated due to the limitation of
-> > TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
-> > all with the same name "cfs_migration/1", which will confuse the user. This
-> > issue is not critical, because we can get the corresponding CPU from the
-> > task's Cpus_allowed. But for kthreads correspoinding to other hardware
-> > devices, it is not easy to get the detailed device info from task comm,
-> > for example,
-> >
-> > After this change, the full name of these truncated kthreads will be
-> > displayed via /proc/[pid]/comm:
-> >
-> > --- a/fs/proc/array.c
-> > +++ b/fs/proc/array.c
-> > @@ -102,6 +103,8 @@ void proc_task_name(struct seq_file *m, struct task_struct *p, bool escape)
-> >
-> >       if (p->flags & PF_WQ_WORKER)
-> >               wq_worker_comm(tcomm, sizeof(tcomm), p);
->
-> Just for record. I though that this patch obsoleted wq_worker_comm()
-> but it did not. wq_worker_comm() returns different values
-> depending on the last proceed work item and has to stay.
->
+dear,
 
-Right. worker comm is changed dynamically, which is combined by
-(task_comm+worker_desc) or (task_comm-worker_desc).
-I planned to remove the whole worker->desc and set it dynamically to
-the new kthread full_name but I found it may not be a good idea.
+I got your contact through the internet due to serious searching for a
+reliable personality.  I am Mmamie Shimirah from FreeTown Capital of
+Sierra Leone.
 
+Time of opposed to the government of President Ahmad Tejan Kebbah the
+ex-leader since 21st November 2005 But I am current residing in Calavi
+Benin due to war of my country, my mother killed on 04/01/2002 for
+Sierra Leone civilian war and I am only child for my family bad news
+that my father passed away on 25/11/2018. During the war my father
+made a lot of money through the illegal sales of Diamonds to the tune
+of $10,200,000.
 
-> > +     else if (p->flags & PF_KTHREAD)
-> > +             get_kthread_comm(tcomm, sizeof(tcomm), p);
-> >       else
-> >               __get_task_comm(tcomm, sizeof(tcomm), p);
-> >
-> > --- a/kernel/kthread.c
-> > +++ b/kernel/kthread.c
-> > @@ -121,6 +135,7 @@ void free_kthread_struct(struct task_struct *k)
->
-> Hmm, there is the following comment:
->
->         /*
->          * Can be NULL if this kthread was created by kernel_thread()
->          * or if kmalloc() in kthread() failed.
->          */
->         kthread = to_kthread(k);
->
-> And indeed, set_kthread_struct() is called only by kthread()
-> and init_idle().
->
-> For example, call_usermodehelper_exec_sync() calls kernel_thread()
-> but given @fn does not call set_kthread_struct(). Also init_idle()
-> continues even when the allocation failed.
->
+This money is currently and secretly kept in ECOWAS security company
+in Porto-Novo Benin, but because of the political turmoil which still
+exists in Africa, I can not invest the money by myself, hence am
+soliciting your help to help me take these funds into your custody for
+invest.
 
-Yes, it really can be NULL.
-
->
-> >  #ifdef CONFIG_BLK_CGROUP
-> >       WARN_ON_ONCE(kthread && kthread->blkcg_css);
-> >  #endif
-> > +     kfree(kthread->full_name);
->
-> Hence, we have to make sure that it is not NULL here. I suggest
-> something like:
->
-
-Agreed.  I will do it.
-
-> void free_kthread_struct(struct task_struct *k)
-> {
->         struct kthread *kthread;
->
->         /*
->          * Can be NULL if this kthread was created by kernel_thread()
->          * or if kmalloc() in kthread() failed.
->          */
->         kthread = to_kthread(k);
->         if (!kthread)
->                 return;
->
-> #ifdef CONFIG_BLK_CGROUP
->         WARN_ON_ONCE(kthread->blkcg_css);
-> #endif
->         kfree(kthread->full_name);
->         kfree(kthread);
-> }
->
->
-> Side note: The possible NULL pointer looks dangerous to
->     me. to_kthread() is dereferenced without any check on
->     several locations.
->
->     For example, kthread_create_on_cpu() looks safe. It is a kthread
->     crated by kthread(). It will exists only when the allocation
->     succeeded.
->
->     kthread_stop() is probably safe only because it used only for
->     the classic kthreads created by kthread(). But the API
->     is not safe.
->
->     kthread_use_mm() is probably used only by classic kthreads as
->     well. But it is less clear to me.
->
->     All this unsafe APIs looks like a ticking bomb to me. But
->     it is beyond this patchset.
->
-
-I will analyze it in depth and try to dismantle this ticking bomb.
-
-
--- 
-Thanks
-Yafang
+I want to add here that if agreed 35% that's $3,570,000 of the total
+worth of the fund will be yours minus your total expenses incurred
+during the clearing of the fund in Porto Novo Benin. I would like to
+invest on heavy duty agricultural equipment and earth moving machines
+to enable me go into a full scale mechanized farming. l wait to hear
