@@ -2,98 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7D344F062
-	for <lists+bpf@lfdr.de>; Sat, 13 Nov 2021 02:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEB944F094
+	for <lists+bpf@lfdr.de>; Sat, 13 Nov 2021 02:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhKMBIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Nov 2021 20:08:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
+        id S234920AbhKMBaJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Nov 2021 20:30:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhKMBIf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Nov 2021 20:08:35 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCEDC061766
-        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 17:05:44 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id z6so9860198pfe.7
-        for <bpf@vger.kernel.org>; Fri, 12 Nov 2021 17:05:44 -0800 (PST)
+        with ESMTP id S232113AbhKMBaJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Nov 2021 20:30:09 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F45DC061766;
+        Fri, 12 Nov 2021 17:27:17 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id np3so8115192pjb.4;
+        Fri, 12 Nov 2021 17:27:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=radOxXXni+ujVr62vdigYgGNyE1EqLyrpdmlMQkf1y8=;
-        b=gLtQX6F6v1I2X5+RhlWWsau1TDANC1r7KUfd554/n7DukL5yJAH9QOWp+SuZ0/yBkJ
-         jtLwzFmboTmLfdEU9KRinRfBPdywzgfcA5L6e2ubrMZOttQ8za4G2RwamZTdo5zOr1m+
-         mSPuENq4jm5K0VONyrmDC5+XriXf6pXr3K6xPQ/EqYy42QLuQdh6u9fasXN71jlRWI98
-         dieh14MRuo0PPiGV4adaMxzbF+WH4dnUpERnBtoWXbhVpZLZMZ5/BwgyIB8bWJyNPqE2
-         2fImP3rW4dL8VTraYrtPPwkkGFzpxbIiRZBPHDnxbZKKMRHonpg1muJB9nQo7nVrKsky
-         IRXA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cpHelnxym1ZdzaK+IqqiuDWAYBCX9hEY4y5A2JWqrOM=;
+        b=mxoL5gHLYKVBpe2SOIVblh1WZx6+fNDRummF4BQepLO0bJleW4XdHlUXfd0W5IyiTO
+         Yc2aTw+YndP87tQoU9Ysibu/hcdtzMuNSFhej952uMy3ELmtAZRlUlkQICuscFmA8VBi
+         0SCatR2QKAtwet675yzV/5WqU9srmJKNnAK7uZbima7v8GHT8OyS0eiHaW5Yomj2ATBn
+         Do/TjFqzlXbeM1NCqu5VTvqrYy4RfA9m0oEP8TPB41POmSZRzaHhZGOuA56c/m32LenP
+         GhWHelx/NcosQ71Knt6THcRysk+2cOtnLZ+rS7NZD6yDxjDFWwdtgCvXvGtHJ9aXL5+J
+         dnig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=radOxXXni+ujVr62vdigYgGNyE1EqLyrpdmlMQkf1y8=;
-        b=MhlLMF+k/HyoSECS4G8moWG2NqWwYx9sihWbG1SfaeTsBUsyEg5UFmfccOBPP9jBtF
-         7thk+9HrafanrYhBZUz749bhkTnYO3EyeO3U694wJuGJpD/fW9D4rrHLpEVRtFvNkXkl
-         PO4aAYdoDhBTpLuQY0xjVqV57h2DEPVJQ4OgIqfFkbqG9o+YcN4xhVuE8GLmEIlZEGuH
-         NTf6JPgx/l8hQtQj4sW0qtdPexRO5JwmgCLe5/sb4GNEuCDqePSbkxTM/RDB5GAtKMJs
-         c2Cfw/BQDfDWlcgWB0Bk92D06rH/azE0OzCjWwo1DNgFxIpCQHzGoG5zUXMMpxn9Pn+N
-         QAhA==
-X-Gm-Message-State: AOAM5333i+IncE59MpRm3mohc1ktePc1cyp25ov72i7kN15tzO5gucsl
-        FuZe/xonSC5pgYyJaBN0nbs=
-X-Google-Smtp-Source: ABdhPJwXysY4vYJS3HXCgXE+p2I563AbzClJsPi/Dlmpppbfbd6Tjz9+3JcfwGLzSWtD++ZivpeHHw==
-X-Received: by 2002:a63:f702:: with SMTP id x2mr12599706pgh.162.1636765544229;
-        Fri, 12 Nov 2021 17:05:44 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id p20sm7746302pfw.96.2021.11.12.17.05.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 17:05:43 -0800 (PST)
-Date:   Sat, 13 Nov 2021 06:35:41 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH bpf v2] libbpf: Perform map fd cleanup for gen_loader in
- case of error
-Message-ID: <20211113010541.7xhqokpchexe3px6@apollo.localdomain>
-References: <20211112232022.899074-1-memxor@gmail.com>
- <20211113005707.7kcqlvywfzk5jfdx@ast-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cpHelnxym1ZdzaK+IqqiuDWAYBCX9hEY4y5A2JWqrOM=;
+        b=DS4ilc10CnAUgHKA6OiCrGHTp9xJG8XiZxnPzJ2T+Vfe0ainMlY2jH5hgNYVtklWAH
+         umjceovk4c2n+S2QB4EoggMr8H8gC4qEq5/YUvK0Z0ZUmA4DHoKOaxMorO/9FluBh4tt
+         WJO4BC919hNYl9pW2Iqc34p2pV9BhcnXbQdYF3f0qLu7kzMhCEqjse6kZXxRzgz2E1XS
+         /Qu2Nb21HQlvsSzuzU+H+d7nGey/JVp/oF2fdR8IwHOW50SULI+3vOJxsuF/FGIKnAjm
+         YA8blO2pQzReuHiCtCO4FsL6kNBVLpn3PnRW/69HM2wSroQz9oOOeSTtD9wokbk0ZKMr
+         wD4A==
+X-Gm-Message-State: AOAM533lJWz8+YJ+ReEQuwJuFVfvQ+CkYzqpgMXl868zzpZQKBZf/WuO
+        e3711rSvx/ICyLYm5ClqfGPepDHL7BHNL5VV8K4=
+X-Google-Smtp-Source: ABdhPJyHwvS/jKW7DRlCUoys/2r2PYkL2HJJEPUsWZK0TMk4zkEsYzYwO0GghgPbqeR33/HUixUyHrQaxUYC0TF1Fzg=
+X-Received: by 2002:a17:903:2306:b0:141:e52e:457d with SMTP id
+ d6-20020a170903230600b00141e52e457dmr13068957plh.3.1636766836907; Fri, 12 Nov
+ 2021 17:27:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211113005707.7kcqlvywfzk5jfdx@ast-mbp.dhcp.thefacebook.com>
+References: <20211111161452.86864-1-lmb@cloudflare.com>
+In-Reply-To: <20211111161452.86864-1-lmb@cloudflare.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 12 Nov 2021 17:27:05 -0800
+Message-ID: <CAADnVQKWk5VNT9Z_Cy6COO9NMjkUg1p9gYTsPPzH-fi1qCrDiw@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests: bpf: check map in map pruning
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 06:27:07AM IST, Alexei Starovoitov wrote:
-> On Sat, Nov 13, 2021 at 04:50:22AM +0530, Kumar Kartikeya Dwivedi wrote:
-> >
-> > +	/* amount of stack actually used, only used to calculate iterations, not stack offset */
-> > +	nr_progs_sz = offsetof(struct loader_stack, prog_fd[nr_progs + 1]);
+On Thu, Nov 11, 2021 at 8:16 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
-> I think '+ 1' would be one too many.
-> When nr_progs == 1 the offsetof(struct loader_stack, prog_fd[1])
-> would cover btf_fd, inner_map_fd, and prog_fd[0].
+> Ensure that two registers with a map_value loaded from a nested
+> map are considered equivalent for the purpose of state pruning
+> and don't cause the verifier to revisit a pruning point.
 >
+> This uses a rather crude match on the number of insns visited by
+> the verifier, which might change in the future. I've therefore
+> tried to keep the code as "unpruneable" as possible by having
+> the code paths only converge on the second to last instruction.
+>
+> Should you require to adjust the test in the future, reducing the
+> number of processed instructions should always be safe. Increasing
+> them could cause another regression, so proceed with caution.
+>
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Link: https://lore.kernel.org/bpf/CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com/
+> ---
+>  .../selftests/bpf/verifier/map_in_map.c       | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/verifier/map_in_map.c b/tools/testing/selftests/bpf/verifier/map_in_map.c
+> index 2798927ee9ff..f46c7121e216 100644
+> --- a/tools/testing/selftests/bpf/verifier/map_in_map.c
+> +++ b/tools/testing/selftests/bpf/verifier/map_in_map.c
+> @@ -18,6 +18,39 @@
+>         .fixup_map_in_map = { 3 },
+>         .result = ACCEPT,
+>  },
+> +{
+> +       "map in map state pruning",
+> +       .insns = {
+> +       BPF_ST_MEM(0, BPF_REG_10, -4, 0),
+> +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_10),
+> +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, -4),
+> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
+> +       BPF_LD_MAP_FD(BPF_REG_1, 0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
+> +       BPF_EXIT_INSN(),
+> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
+> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 11),
+> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
+> +       BPF_LD_MAP_FD(BPF_REG_1, 0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
+> +       BPF_EXIT_INSN(),
+> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
+> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
+> +       BPF_EXIT_INSN(),
+> +       BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .fixup_map_in_map = { 4, 14 },
+> +       .flags = BPF_F_TEST_STATE_FREQ,
+> +       .result = VERBOSE_ACCEPT,
+> +       .errstr = "processed 25 insns",
+> +},
 
-Ooh, right, my bad, thanks for fixing it :).
+Not sure how you've tested it, but it doesn't work in unpriv:
+$ test_verifier 789
+#789/u map in map state pruning FAIL
+processed 26 insns (limit 1000000) max_states_per_insn 0 total_states
+2 peak_states 2 mark_read 1
+#789/p map in map state pruning OK
 
-> >  	/* jump over cleanup code */
-> >  	emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0,
-> > -			      /* size of cleanup code below */
-> > -			      (stack_sz / 4) * 3 + 2));
-> > +			      /* size of cleanup code below (including map fd cleanup) */
-> > +			      (nr_progs_sz / 4) * 3 + 2 +
-> > +			      /* 6 insns for emit_sys_close_blob,
-> > +			       * 6 insns for debug_regs in emit_sys_close_blob
-> > +			       */
-> > +			      (nr_maps * (6 + (gen->log_level ? 6 : 0)))));
->
-> I've removed the extra () in the above.
->
-> And pushed to bpf tree.
-> Please confirm that +1 removal was correct.
->
-> Thanks for the quick debugging and fix. Much appreciate it.
-
---
-Kartikeya
+I've added
+.prog_type = BPF_PROG_TYPE_XDP,
+and force pushed.
