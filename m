@@ -2,82 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D85144F51E
-	for <lists+bpf@lfdr.de>; Sat, 13 Nov 2021 20:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77B944F65B
+	for <lists+bpf@lfdr.de>; Sun, 14 Nov 2021 04:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbhKMUBx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Nov 2021 15:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbhKMUBw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Nov 2021 15:01:52 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2BBC061766
-        for <bpf@vger.kernel.org>; Sat, 13 Nov 2021 11:59:00 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id e136so33656972ybc.4
-        for <bpf@vger.kernel.org>; Sat, 13 Nov 2021 11:59:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=bdsvl1UwZuOHxPwopT9QunKFFT2xiibkhLWpB5BPk7U=;
-        b=MwPpgUC6La8rMMmNmO2R4uXQdga0uRRhtzIsMgk0x/WELjx7SBtFQohtip0lCRo5dK
-         wtSSDeOi/O7gwmPstM1jV1MlGkgVqMCirjN7i3KhMTZ972gI5YsUYHWcm+I03tZSKPXL
-         W0PXx9cX4HPRReKGw9zCo0Mo04YyiPgEkivftGTEr/kooX1y+J7qHvPtANFK3E9C6+5G
-         fqW9LFetU9NdNVf6e7k/2JanocXeuJVmLgJ3ykAB19UegmZr/oNLLvUZ8L19E+JnpnD2
-         +fs6KBn2Cj6DHyi3JMnij24hCmN2l1gHHoUWHGqpJtoL9QQU5TIU8L8aMXgMCFF4ajSj
-         rzAw==
+        id S231720AbhKNDuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Nov 2021 22:50:11 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37800 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233306AbhKNDuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Nov 2021 22:50:10 -0500
+Received: by mail-io1-f72.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso9353836iov.4
+        for <bpf@vger.kernel.org>; Sat, 13 Nov 2021 19:47:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=bdsvl1UwZuOHxPwopT9QunKFFT2xiibkhLWpB5BPk7U=;
-        b=htTs8BqxeaqtsWaOh6o0IrzuKJYZcMRycUgVUo9Zb98yw1YttGKtFfRbbh/Dj+yc0g
-         /1AvwhYiMHT4tXJDp6J5qUpYpFC2jJg4s24LothRmscy0PJC31O7tUhkx8rXP2lTvaAm
-         gqpFMUTWfs1qGKUNN95AWHzYFqJO1qd8HXP1cEUs39bs/dTZ7R7Qh5X/tngtXbERM1kF
-         2E6qj6oCO6Y6SBkCaXIqQh4JUIqv50fVfzxN1bHk3JQYdzniTbTObBrKZ++YYQUq6Awp
-         +T2Mz8/TTAxefHwn0/a5YLEYD07WlAX5Z9Wx7nvL1aSMmjyGR4dWiXO1EfXUVQKommYm
-         9e2A==
-X-Gm-Message-State: AOAM531/owaIq5U5DKGmWLNoDeE088EKvdGg1xrVHOmTjSRmixjLrONy
-        pX45zcv6/GuN1eQ/koKw0IN+Z36h0oq7wgjO2Ok=
-X-Google-Smtp-Source: ABdhPJyG24sd+kaDpkzwo79Tdja3oq6ZbnW1+9ggltSYQ2Yz+DPdk10Hbp0l3U2FW5XiIcYkuF5CuoUjDIPZ6s6cTI4=
-X-Received: by 2002:a25:e704:: with SMTP id e4mr26538368ybh.490.1636833539390;
- Sat, 13 Nov 2021 11:58:59 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=biEAlanjXu5KZeV9Gu9FU+bDJjKpZ2YbWs2R3M2bcbg=;
+        b=lqjBsOxhcLUdyEj3h50nBExnWFbVzoAKlEM6G6zrihdgu2sXQUSFDTwdey14a9DB7a
+         WRltQxYvJ7h7SX+i/m31+k9tAyg5NsDUt6ZgIXxq3UVQvrjWVvsldi48O/w6qA64bCL2
+         rqbCJm4QlPxCvYeTsMlN93SMCUIFbNf/jAU9IW17YYH/VE9DiZb/6yOC3lt+zXiyMXcC
+         rUTrMPrrUIh380Jhy5XBoiR6nxbOxBUx+oJsvbdF0ebT5h4R/4wpUR1PuPojFj4V+FUa
+         V9FszEF9tJSQTPKhyecqZNiB7lJBcHN0eq4WZ0ZVX4dyKokQZJ+YGdQ4zIPcSigomf7V
+         kLsQ==
+X-Gm-Message-State: AOAM5319F8xhdaFWR3LbymuKg4jgbX/94806Smh6NxMExgf5dIXLCzGi
+        BDVymNLSTv8/y9mK50IrahSnhsC06KNUuZVBTDaigfw6mRYC
+X-Google-Smtp-Source: ABdhPJw3imt+67b1yx3kVEiE/+yRzr8SduEln1gJPpEflAHp9Naeb4L5yP/1RvpuokljiQz8XzSNWQ/8ypuCecUrLFbEYxs25iav
 MIME-Version: 1.0
-Received: by 2002:a05:7010:49a8:b0:1df:805:1803 with HTTP; Sat, 13 Nov 2021
- 11:58:58 -0800 (PST)
-Reply-To: mmamie_shimirah@yahoo.com
-From:   "Miss.Mmamie Shimirah" <mecryjen239@gmail.com>
-Date:   Sat, 13 Nov 2021 11:58:58 -0800
-Message-ID: <CAOkw-3dNON280tnvfN7=VMwNXeeXyPNFES9d=0cvr5DyDbz+Yg@mail.gmail.com>
-Subject: Regarding Of My Late Father's Fund $10,200,000,
-To:     undisclosed-recipients:;
+X-Received: by 2002:a05:6638:1506:: with SMTP id b6mr11131891jat.31.1636861636892;
+ Sat, 13 Nov 2021 19:47:16 -0800 (PST)
+Date:   Sat, 13 Nov 2021 19:47:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000069e12f05d0b78c2d@google.com>
+Subject: [syzbot] BUG: MAX_LOCKDEP_CHAINS too low! (3)
+From:   syzbot <syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andy@greyhouse.net, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, j.vosburgh@gmail.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        vfalico@gmail.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-dear,
+Hello,
 
-I got your contact through the internet due to serious searching for a
-reliable personality.  I am Mmamie Shimirah from FreeTown Capital of
-Sierra Leone.
+syzbot found the following issue on:
 
-Time of opposed to the government of President Ahmad Tejan Kebbah the
-ex-leader since 21st November 2005 But I am current residing in Calavi
-Benin due to war of my country, my mother killed on 04/01/2002 for
-Sierra Leone civilian war and I am only child for my family bad news
-that my father passed away on 25/11/2018. During the war my father
-made a lot of money through the illegal sales of Diamonds to the tune
-of $10,200,000.
+HEAD commit:    66f4beaa6c1d Merge branch 'linus' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16adc769b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a249628ae32ea7de3a2
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-This money is currently and secretly kept in ECOWAS security company
-in Porto-Novo Benin, but because of the political turmoil which still
-exists in Africa, I can not invest the money by myself, hence am
-soliciting your help to help me take these funds into your custody for
-invest.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I want to add here that if agreed 35% that's $3,570,000 of the total
-worth of the fund will be yours minus your total expenses incurred
-during the clearing of the fund in Porto Novo Benin. I would like to
-invest on heavy duty agricultural equipment and earth moving machines
-to enable me go into a full scale mechanized farming. l wait to hear
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com
+
+BUG: MAX_LOCKDEP_CHAINS too low!
+turning off the locking correctness validator.
+CPU: 0 PID: 31504 Comm: kworker/u4:13 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bond1944 bond_mii_monitor
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ add_chain_cache kernel/locking/lockdep.c:3649 [inline]
+ lookup_chain_cache_add kernel/locking/lockdep.c:3748 [inline]
+ validate_chain kernel/locking/lockdep.c:3769 [inline]
+ __lock_acquire.cold+0x372/0x3ab kernel/locking/lockdep.c:5027
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ lock_timer_base+0x5a/0x1f0 kernel/time/timer.c:946
+ __mod_timer+0x398/0xe30 kernel/time/timer.c:1019
+ __queue_delayed_work+0x1a7/0x270 kernel/workqueue.c:1678
+ queue_delayed_work_on+0x105/0x120 kernel/workqueue.c:1703
+ queue_delayed_work include/linux/workqueue.h:517 [inline]
+ bond_mii_monitor+0x95b/0x1af0 drivers/net/bonding/bond_main.c:2759
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
