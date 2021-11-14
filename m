@@ -2,101 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77B944F65B
-	for <lists+bpf@lfdr.de>; Sun, 14 Nov 2021 04:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B720E44F8AE
+	for <lists+bpf@lfdr.de>; Sun, 14 Nov 2021 16:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhKNDuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Nov 2021 22:50:11 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:37800 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233306AbhKNDuK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Nov 2021 22:50:10 -0500
-Received: by mail-io1-f72.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso9353836iov.4
-        for <bpf@vger.kernel.org>; Sat, 13 Nov 2021 19:47:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=biEAlanjXu5KZeV9Gu9FU+bDJjKpZ2YbWs2R3M2bcbg=;
-        b=lqjBsOxhcLUdyEj3h50nBExnWFbVzoAKlEM6G6zrihdgu2sXQUSFDTwdey14a9DB7a
-         WRltQxYvJ7h7SX+i/m31+k9tAyg5NsDUt6ZgIXxq3UVQvrjWVvsldi48O/w6qA64bCL2
-         rqbCJm4QlPxCvYeTsMlN93SMCUIFbNf/jAU9IW17YYH/VE9DiZb/6yOC3lt+zXiyMXcC
-         rUTrMPrrUIh380Jhy5XBoiR6nxbOxBUx+oJsvbdF0ebT5h4R/4wpUR1PuPojFj4V+FUa
-         V9FszEF9tJSQTPKhyecqZNiB7lJBcHN0eq4WZ0ZVX4dyKokQZJ+YGdQ4zIPcSigomf7V
-         kLsQ==
-X-Gm-Message-State: AOAM5319F8xhdaFWR3LbymuKg4jgbX/94806Smh6NxMExgf5dIXLCzGi
-        BDVymNLSTv8/y9mK50IrahSnhsC06KNUuZVBTDaigfw6mRYC
-X-Google-Smtp-Source: ABdhPJw3imt+67b1yx3kVEiE/+yRzr8SduEln1gJPpEflAHp9Naeb4L5yP/1RvpuokljiQz8XzSNWQ/8ypuCecUrLFbEYxs25iav
+        id S230169AbhKNPOl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 14 Nov 2021 10:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhKNPOk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 14 Nov 2021 10:14:40 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273A4C061746;
+        Sun, 14 Nov 2021 07:11:46 -0800 (PST)
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636902703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1kkq3dBvp9yP0qQAQfqCNJaAwZ1cH/dykhm1gc7U1DE=;
+        b=vYJ8tPv3bsai8XxzNGduhUb1IKvTJSSmuIbZBy3nMOcGzBMjYZyqnHuz9yCL5HIEuRDB7H
+        97XC5Tsd6kSgTG5DQh8YFUHji/NG/fVBzcazmlSZpxo+8BtTbIA5L/Yuwcnys7USo0y1Fl
+        UIrZtMrV/qQJguy9Mw8h5uA1/06LHdbQuduD2ehZhlrzz4zFj8zTTm13lkFyFYprl68vy0
+        MrMGNV9J4B+GByCzXVHqNh8JBY9SdTyd4Zu+zL8PRVCeQVF1elcybURbXbsFKpFrUdcyUU
+        sckfG46gRzJTkbE6w799xEITQFSR99CfVIi4z6nneK83T0zkM1RZyy0E42H+Hw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636902703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1kkq3dBvp9yP0qQAQfqCNJaAwZ1cH/dykhm1gc7U1DE=;
+        b=qWwEbKfHle08FAuryZkVz3s5AzyG3q0EEIWSwNf5liyxjKTuIrjIq6uSqr4mqvwYJNEON0
+        pD3CKRcpWl55prDA==
+To:     Ong Boon Leong <boon.leong.ong@intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        alexandre.torgue@foss.st.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: Re: [PATCH net-next 1/1] net: stmmac: enhance XDP ZC driver level
+ switching performance
+In-Reply-To: <20211111143949.2806049-1-boon.leong.ong@intel.com>
+References: <20211111143949.2806049-1-boon.leong.ong@intel.com>
+Date:   Sun, 14 Nov 2021 16:11:41 +0100
+Message-ID: <87v90urcuq.fsf@kurt>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1506:: with SMTP id b6mr11131891jat.31.1636861636892;
- Sat, 13 Nov 2021 19:47:16 -0800 (PST)
-Date:   Sat, 13 Nov 2021 19:47:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000069e12f05d0b78c2d@google.com>
-Subject: [syzbot] BUG: MAX_LOCKDEP_CHAINS too low! (3)
-From:   syzbot <syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, andy@greyhouse.net, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, j.vosburgh@gmail.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        vfalico@gmail.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+--=-=-=
+Content-Type: text/plain
 
-syzbot found the following issue on:
+On Thu Nov 11 2021, Ong Boon Leong wrote:
+> The previous stmmac_xdp_set_prog() implementation uses stmmac_release()
+> and stmmac_open() which tear down the PHY device and causes undesirable
+> autonegotiation which causes a delay whenever AFXDP ZC is setup.
+>
+> This patch introduces two new functions that just sufficiently tear
+> down DMA descriptors, buffer, NAPI process, and IRQs and reestablish
+> them accordingly in both stmmac_xdp_release() and stammac_xdp_open().
+>
+> As the results of this enhancement, we get rid of transient state
+> introduced by the link auto-negotiation:
+>
+> $ ./xdpsock -i eth0 -t -z
+>
+>  sock0@eth0:0 txonly xdp-drv
+>                    pps            pkts           1.00
+> rx                 0              0
+> tx                 634444         634560
+>
+>  sock0@eth0:0 txonly xdp-drv
+>                    pps            pkts           1.00
+> rx                 0              0
+> tx                 632330         1267072
+>
+>  sock0@eth0:0 txonly xdp-drv
+>                    pps            pkts           1.00
+> rx                 0              0
+> tx                 632438         1899584
+>
+>  sock0@eth0:0 txonly xdp-drv
+>                    pps            pkts           1.00
+> rx                 0              0
+> tx                 632502         2532160
+>
+> Reported-by: Kurt Kanzenbach <kurt@linutronix.de>
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 
-HEAD commit:    66f4beaa6c1d Merge branch 'linus' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16adc769b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
-dashboard link: https://syzkaller.appspot.com/bug?extid=8a249628ae32ea7de3a2
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com
+-----BEGIN PGP SIGNATURE-----
 
-BUG: MAX_LOCKDEP_CHAINS too low!
-turning off the locking correctness validator.
-CPU: 0 PID: 31504 Comm: kworker/u4:13 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bond1944 bond_mii_monitor
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- add_chain_cache kernel/locking/lockdep.c:3649 [inline]
- lookup_chain_cache_add kernel/locking/lockdep.c:3748 [inline]
- validate_chain kernel/locking/lockdep.c:3769 [inline]
- __lock_acquire.cold+0x372/0x3ab kernel/locking/lockdep.c:5027
- lock_acquire kernel/locking/lockdep.c:5637 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
- lock_timer_base+0x5a/0x1f0 kernel/time/timer.c:946
- __mod_timer+0x398/0xe30 kernel/time/timer.c:1019
- __queue_delayed_work+0x1a7/0x270 kernel/workqueue.c:1678
- queue_delayed_work_on+0x105/0x120 kernel/workqueue.c:1703
- queue_delayed_work include/linux/workqueue.h:517 [inline]
- bond_mii_monitor+0x95b/0x1af0 drivers/net/bonding/bond_main.c:2759
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmGRJy0THGt1cnRAbGlu
+dXRyb25peC5kZQAKCRB5KluBy5jwpivSD/0e/X3EiWzkobuBPwRB+/E+Anc/4S4/
+lsMxq95qm2fzteKb8nUBUDNOxEtW+/tZv3SfBkt0waa1o3AR8Z70VVvE0lw4JXEb
+PoavzUhFWiRTZSDCuv6ANnlid1DH74eDkvZC9ICX95bDQ7XrqtHM6YpCFh3BAesw
+eZsYOfXOBgXXgBu9uUWQvYXelvyfMikSygUjQuSlHfGiuqRy1AmbYRFDUJFv4T1d
+DLjo2wNIyc+Nml/mitvwm6hHyG0YVd/zwkVD4EfEIp04ZcEgnJABsI/dOAoevjLa
+YaGWwnCSJDxb8PR5crfre74DwtypEgWbGg+p3fwbMy4EJ1rvJ7u44cUNafPJPmKs
+Juo5CFeeElks3qJ/S/gN5ssVWGb9QcnKgQu5MDTfu3/U21/LnoUg/Wbvrkn2275c
+srycG2sc7UH9oV6qxaxyG4l5xfZ8jOVLRB+rTRapv047wZuThETrxIg7Y2f7whf9
+vY4mUYx1N3H0EJMGAqlUCKlIV8OWOLSx/NftbYKK+LkIsuDs8HQCD+xPJbSPXdS+
+6mVT0So4v5wX00LwP5bnoCmPCzMG2vGuYFFHNuT9QzRzSUQotS5W7blWY7hdpDYh
+aKNTbCwKvuL5Ao8bvbOYi+oVhribjafnM0O41ScxIatYg7diemQKuYi7DQ/kysr/
+u+KICu9nMU5lZA==
+=Lx50
+-----END PGP SIGNATURE-----
+--=-=-=--
