@@ -2,125 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B720E44F8AE
-	for <lists+bpf@lfdr.de>; Sun, 14 Nov 2021 16:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382C544F9F4
+	for <lists+bpf@lfdr.de>; Sun, 14 Nov 2021 19:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhKNPOl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 14 Nov 2021 10:14:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        id S231128AbhKNSlo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 14 Nov 2021 13:41:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhKNPOk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 14 Nov 2021 10:14:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273A4C061746;
-        Sun, 14 Nov 2021 07:11:46 -0800 (PST)
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636902703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kkq3dBvp9yP0qQAQfqCNJaAwZ1cH/dykhm1gc7U1DE=;
-        b=vYJ8tPv3bsai8XxzNGduhUb1IKvTJSSmuIbZBy3nMOcGzBMjYZyqnHuz9yCL5HIEuRDB7H
-        97XC5Tsd6kSgTG5DQh8YFUHji/NG/fVBzcazmlSZpxo+8BtTbIA5L/Yuwcnys7USo0y1Fl
-        UIrZtMrV/qQJguy9Mw8h5uA1/06LHdbQuduD2ehZhlrzz4zFj8zTTm13lkFyFYprl68vy0
-        MrMGNV9J4B+GByCzXVHqNh8JBY9SdTyd4Zu+zL8PRVCeQVF1elcybURbXbsFKpFrUdcyUU
-        sckfG46gRzJTkbE6w799xEITQFSR99CfVIi4z6nneK83T0zkM1RZyy0E42H+Hw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636902703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kkq3dBvp9yP0qQAQfqCNJaAwZ1cH/dykhm1gc7U1DE=;
-        b=qWwEbKfHle08FAuryZkVz3s5AzyG3q0EEIWSwNf5liyxjKTuIrjIq6uSqr4mqvwYJNEON0
-        pD3CKRcpWl55prDA==
-To:     Ong Boon Leong <boon.leong.ong@intel.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        alexandre.torgue@foss.st.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: Re: [PATCH net-next 1/1] net: stmmac: enhance XDP ZC driver level
- switching performance
-In-Reply-To: <20211111143949.2806049-1-boon.leong.ong@intel.com>
-References: <20211111143949.2806049-1-boon.leong.ong@intel.com>
-Date:   Sun, 14 Nov 2021 16:11:41 +0100
-Message-ID: <87v90urcuq.fsf@kurt>
+        with ESMTP id S234667AbhKNSlk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 14 Nov 2021 13:41:40 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740D5C061766;
+        Sun, 14 Nov 2021 10:38:43 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id t21so12583892plr.6;
+        Sun, 14 Nov 2021 10:38:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UvJGR+BpffWIpCuUyE/6KwF0J+HuYMAHzwfbQC6QDfI=;
+        b=Cb5vGxDDHQzCi9s/bWP6YG7n1sv6nGdpmZFtXU0TScWjLJ33BnFyZXXtfJ3XCeqNjm
+         u8rtR8oHnAMXGB8YJ7fXEpnIuISGA5/VPefcr3DRuIVJrsIMcnpvtPVev5C8N2Iy8RQF
+         OrZIkLuCnUBe5dwCKuxpckMxXMxYaPxD+UYq0jdYsH0i0kxJC0dmrCDrAz2r2Wp3ObBr
+         0tZoj5yEMsxNQPM5I51WRXfnzaZrcRwFOOK7ivBYb0wYpBxzV6Jy/BX26t91rc5rZn9J
+         Lq9AobxpH1jeREAAs2N5kg5QZ/3AgnxjtCD9UjFj0NSxy0s395pMxaBA1kFY9vbEKX1J
+         KGLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UvJGR+BpffWIpCuUyE/6KwF0J+HuYMAHzwfbQC6QDfI=;
+        b=7ihZ0GIT/PtXgP0iwpKUJhxhNP1g4KLFFtG+JeIIT80JTRutk2t1iPFhrRcH3SCZ0d
+         kmZyxPaWva+qc7PB69aii1Cyz5gzTRbDhG0NLNw/9I9Oi6C63ssWkste/sXJgPqXcoRc
+         iTGCx6LfxpfJayweAObISfjNFQ/hgU9AHLQfsG2njadLH95pL7HE60sz1bOXR7H9NNHY
+         G7HYnvDWlxGUXxS+Q/tyOQSE4tgTWDDtOG9MO6orFrBaHwsZxUnwiB+eeDucTFY1spiS
+         5djuetITRUdgPMqNSKsMtQ1pKxbDYwR2w23Nv0lxx+ejeiVCufVF7rVr50z+5jjcdWZQ
+         32hA==
+X-Gm-Message-State: AOAM531s6h4jcxJFXA266XL03x5850hIJ747Oqx8cllmbXwTf2fhyffI
+        LGWGhrtzmCvfrNNjhcPicZAKbOGXFNPWCBv/xiM=
+X-Google-Smtp-Source: ABdhPJxqbzHOq7RjUDX2Q+I0OsXBVQY90Fy5nsU2QByKzzmlFjlMo03dd8vMJ6s7khL9pNEK3IG/9jCcqwAgfKXREKQ=
+X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr39295068pjy.138.1636915122903;
+ Sun, 14 Nov 2021 10:38:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+References: <20211113142227.566439-1-me@ubique.spb.ru>
+In-Reply-To: <20211113142227.566439-1-me@ubique.spb.ru>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 14 Nov 2021 10:38:31 -0800
+Message-ID: <CAADnVQ+zo-DMC=yqqphEno9pxwhBQ3soQzKd=2yLPNoLyBcFHw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 0/2] Forbid bpf_ktime_get_coarse_ns and bpf_timer_*
+ in tracing progs
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrey Ignatov <rdna@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On Sat, Nov 13, 2021 at 6:22 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+>
+> Various locking issues are possible with bpf_ktime_get_coarse_ns() and
+> bpf_timer_* set of helpers.
+>
+> syzbot found a locking issue with bpf_ktime_get_coarse_ns() helper executed in
+> BPF_PROG_TYPE_PERF_EVENT prog type - [1]. The issue is possible because the
+> helper uses non fast version of time accessor that isn't safe for any context.
+> The helper was added because it provided performance benefits in comparison to
+> bpf_ktime_get_ns() helper.
+>
+> A similar locking issue is possible with bpf_timer_* set of helpers when used
+> in tracing progs.
+>
+> The solution is to restrict use of the helpers in tracing progs.
+>
+> In the [1] discussion it was stated that bpf_spin_lock related helpers shall
+> also be excluded for tracing progs. The verifier has a compatibility check
+> between a map and a program. If a tracing program tries to use a map which
+> value has struct bpf_spin_lock the verifier fails that is why bpf_spin_lock is
+> already restricted.
+>
+> Patch 1 restricts helpers
+> Patch 2 adds tests
+>
+> v1 -> v2:
+>  * Limit the helpers via func proto getters instead of allowed callback
+>  * Add note about helpers' restrictions to linux/bpf.h
+>  * Add Fixes tag
+>  * Remove extra \0 from btf_str_sec
+>  * Beside asm tests add prog tests
+>  * Trim CC
+>
+> 1. https://lore.kernel.org/all/00000000000013aebd05cff8e064@google.com/
 
-On Thu Nov 11 2021, Ong Boon Leong wrote:
-> The previous stmmac_xdp_set_prog() implementation uses stmmac_release()
-> and stmmac_open() which tear down the PHY device and causes undesirable
-> autonegotiation which causes a delay whenever AFXDP ZC is setup.
->
-> This patch introduces two new functions that just sufficiently tear
-> down DMA descriptors, buffer, NAPI process, and IRQs and reestablish
-> them accordingly in both stmmac_xdp_release() and stammac_xdp_open().
->
-> As the results of this enhancement, we get rid of transient state
-> introduced by the link auto-negotiation:
->
-> $ ./xdpsock -i eth0 -t -z
->
->  sock0@eth0:0 txonly xdp-drv
->                    pps            pkts           1.00
-> rx                 0              0
-> tx                 634444         634560
->
->  sock0@eth0:0 txonly xdp-drv
->                    pps            pkts           1.00
-> rx                 0              0
-> tx                 632330         1267072
->
->  sock0@eth0:0 txonly xdp-drv
->                    pps            pkts           1.00
-> rx                 0              0
-> tx                 632438         1899584
->
->  sock0@eth0:0 txonly xdp-drv
->                    pps            pkts           1.00
-> rx                 0              0
-> tx                 632502         2532160
->
-> Reported-by: Kurt Kanzenbach <kurt@linutronix.de>
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-
-Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmGRJy0THGt1cnRAbGlu
-dXRyb25peC5kZQAKCRB5KluBy5jwpivSD/0e/X3EiWzkobuBPwRB+/E+Anc/4S4/
-lsMxq95qm2fzteKb8nUBUDNOxEtW+/tZv3SfBkt0waa1o3AR8Z70VVvE0lw4JXEb
-PoavzUhFWiRTZSDCuv6ANnlid1DH74eDkvZC9ICX95bDQ7XrqtHM6YpCFh3BAesw
-eZsYOfXOBgXXgBu9uUWQvYXelvyfMikSygUjQuSlHfGiuqRy1AmbYRFDUJFv4T1d
-DLjo2wNIyc+Nml/mitvwm6hHyG0YVd/zwkVD4EfEIp04ZcEgnJABsI/dOAoevjLa
-YaGWwnCSJDxb8PR5crfre74DwtypEgWbGg+p3fwbMy4EJ1rvJ7u44cUNafPJPmKs
-Juo5CFeeElks3qJ/S/gN5ssVWGb9QcnKgQu5MDTfu3/U21/LnoUg/Wbvrkn2275c
-srycG2sc7UH9oV6qxaxyG4l5xfZ8jOVLRB+rTRapv047wZuThETrxIg7Y2f7whf9
-vY4mUYx1N3H0EJMGAqlUCKlIV8OWOLSx/NftbYKK+LkIsuDs8HQCD+xPJbSPXdS+
-6mVT0So4v5wX00LwP5bnoCmPCzMG2vGuYFFHNuT9QzRzSUQotS5W7blWY7hdpDYh
-aKNTbCwKvuL5Ao8bvbOYi+oVhribjafnM0O41ScxIatYg7diemQKuYi7DQ/kysr/
-u+KICu9nMU5lZA==
-=Lx50
------END PGP SIGNATURE-----
---=-=-=--
+Applied. Thanks
