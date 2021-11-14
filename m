@@ -2,104 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382C544F9F4
-	for <lists+bpf@lfdr.de>; Sun, 14 Nov 2021 19:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D591E44F9FB
+	for <lists+bpf@lfdr.de>; Sun, 14 Nov 2021 19:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhKNSlo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 14 Nov 2021 13:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S233136AbhKNSq7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 14 Nov 2021 13:46:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234667AbhKNSlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 14 Nov 2021 13:41:40 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740D5C061766;
-        Sun, 14 Nov 2021 10:38:43 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id t21so12583892plr.6;
-        Sun, 14 Nov 2021 10:38:43 -0800 (PST)
+        with ESMTP id S231128AbhKNSq6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 14 Nov 2021 13:46:58 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331AFC061746
+        for <bpf@vger.kernel.org>; Sun, 14 Nov 2021 10:44:02 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id o14so12605652plg.5
+        for <bpf@vger.kernel.org>; Sun, 14 Nov 2021 10:44:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UvJGR+BpffWIpCuUyE/6KwF0J+HuYMAHzwfbQC6QDfI=;
-        b=Cb5vGxDDHQzCi9s/bWP6YG7n1sv6nGdpmZFtXU0TScWjLJ33BnFyZXXtfJ3XCeqNjm
-         u8rtR8oHnAMXGB8YJ7fXEpnIuISGA5/VPefcr3DRuIVJrsIMcnpvtPVev5C8N2Iy8RQF
-         OrZIkLuCnUBe5dwCKuxpckMxXMxYaPxD+UYq0jdYsH0i0kxJC0dmrCDrAz2r2Wp3ObBr
-         0tZoj5yEMsxNQPM5I51WRXfnzaZrcRwFOOK7ivBYb0wYpBxzV6Jy/BX26t91rc5rZn9J
-         Lq9AobxpH1jeREAAs2N5kg5QZ/3AgnxjtCD9UjFj0NSxy0s395pMxaBA1kFY9vbEKX1J
-         KGLw==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=O/AU4xV0e+kE9WGJeArrRLRectMLS+zdUOPUaGEEC8w=;
+        b=TpY4P8kVeYst5zazDWLtoXN4/lLpWoc1x/Lj36p6tRTF2AsnzqUXcRBPdwm0ipyJ7J
+         gJ6QaCkNc8YL7FuywMZXSlc/xk6lhwHYdU9W8OOXs/0W85ArRRHfaaPi1eY++FYVX041
+         lohe8n8tXWWFdO2Dr+Qs967r780EUbR8fKQmnwZDetShJUnGE1YasDCCO6gCRMWaxtKI
+         +xZrdiK7YUe7a99Z1Rf8nT5JQZBZIWtkO0Dskpx8VXDuzgFEm/brKWV9VLI5gSeiugtm
+         U39EokV0Uio2F9diVp6DOtVK9QmwjNhQ24RAyc6CPg1nwMcmO6BNHPgXG6Lt7Fui7er2
+         KMVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UvJGR+BpffWIpCuUyE/6KwF0J+HuYMAHzwfbQC6QDfI=;
-        b=7ihZ0GIT/PtXgP0iwpKUJhxhNP1g4KLFFtG+JeIIT80JTRutk2t1iPFhrRcH3SCZ0d
-         kmZyxPaWva+qc7PB69aii1Cyz5gzTRbDhG0NLNw/9I9Oi6C63ssWkste/sXJgPqXcoRc
-         iTGCx6LfxpfJayweAObISfjNFQ/hgU9AHLQfsG2njadLH95pL7HE60sz1bOXR7H9NNHY
-         G7HYnvDWlxGUXxS+Q/tyOQSE4tgTWDDtOG9MO6orFrBaHwsZxUnwiB+eeDucTFY1spiS
-         5djuetITRUdgPMqNSKsMtQ1pKxbDYwR2w23Nv0lxx+ejeiVCufVF7rVr50z+5jjcdWZQ
-         32hA==
-X-Gm-Message-State: AOAM531s6h4jcxJFXA266XL03x5850hIJ747Oqx8cllmbXwTf2fhyffI
-        LGWGhrtzmCvfrNNjhcPicZAKbOGXFNPWCBv/xiM=
-X-Google-Smtp-Source: ABdhPJxqbzHOq7RjUDX2Q+I0OsXBVQY90Fy5nsU2QByKzzmlFjlMo03dd8vMJ6s7khL9pNEK3IG/9jCcqwAgfKXREKQ=
-X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr39295068pjy.138.1636915122903;
- Sun, 14 Nov 2021 10:38:42 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=O/AU4xV0e+kE9WGJeArrRLRectMLS+zdUOPUaGEEC8w=;
+        b=M/g5vyDzR1ccwUID/aLCs5qNwu58AGCYUIl/iSv1MaViDbVbiAg/FpW+TosNXC1xsm
+         63FqfdWDEjAxM/O1PFZvUUEGfrXJvOUALyJGl7a984ApBcfPjS2//4VoljNbvIV+7CO3
+         4XeahuC4JLWyL0vO3sk9QjNtwDPlk80ZEZl7f0SlfXhhQrgvbLwg8fWsMhuUbEnAQWMf
+         2hq8h7B+Ukb2Mz8/ajKMCmPx/Q4+72aWenmg4Oj4zGjt9uWNCNEGrklAErq87G5FVtgu
+         yo92YHBPzteifz+vU5GmO6yHiAKO0A7NckvA5MySt7pbU7o6JTHqUiIa4wo2kmExIXK8
+         Rzeg==
+X-Gm-Message-State: AOAM532B3brYXYptl5r5JXCbRPg5JwEEadPBPP/US3OU1uHGeh9psx/c
+        KEf8AV3Qc69scNpdtvbJv/1eMP3/dDG5DLLa9jC9KVaT+gs=
+X-Google-Smtp-Source: ABdhPJz1tCxcFlgf1idmueth+lhRwKn7q7XJ58t5JX3sPEuLaC3S1ouGu52s3bCKuz6Gb+UURtcFojzF9xWtZmeYIFU=
+X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr56569555pja.122.1636915440983;
+ Sun, 14 Nov 2021 10:44:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20211113142227.566439-1-me@ubique.spb.ru>
-In-Reply-To: <20211113142227.566439-1-me@ubique.spb.ru>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 14 Nov 2021 10:38:31 -0800
-Message-ID: <CAADnVQ+zo-DMC=yqqphEno9pxwhBQ3soQzKd=2yLPNoLyBcFHw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 0/2] Forbid bpf_ktime_get_coarse_ns and bpf_timer_*
- in tracing progs
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Sun, 14 Nov 2021 10:43:49 -0800
+Message-ID: <CAADnVQKEPYYrr6MUSKL4Fd7FYp0y5MQFoDteU5T++E6fySDADw@mail.gmail.com>
+Subject: sockmap test is broken
+To:     John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrey Ignatov <rdna@fb.com>
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        joamaki@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 6:22 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
->
-> Various locking issues are possible with bpf_ktime_get_coarse_ns() and
-> bpf_timer_* set of helpers.
->
-> syzbot found a locking issue with bpf_ktime_get_coarse_ns() helper executed in
-> BPF_PROG_TYPE_PERF_EVENT prog type - [1]. The issue is possible because the
-> helper uses non fast version of time accessor that isn't safe for any context.
-> The helper was added because it provided performance benefits in comparison to
-> bpf_ktime_get_ns() helper.
->
-> A similar locking issue is possible with bpf_timer_* set of helpers when used
-> in tracing progs.
->
-> The solution is to restrict use of the helpers in tracing progs.
->
-> In the [1] discussion it was stated that bpf_spin_lock related helpers shall
-> also be excluded for tracing progs. The verifier has a compatibility check
-> between a map and a program. If a tracing program tries to use a map which
-> value has struct bpf_spin_lock the verifier fails that is why bpf_spin_lock is
-> already restricted.
->
-> Patch 1 restricts helpers
-> Patch 2 adds tests
->
-> v1 -> v2:
->  * Limit the helpers via func proto getters instead of allowed callback
->  * Add note about helpers' restrictions to linux/bpf.h
->  * Add Fixes tag
->  * Remove extra \0 from btf_str_sec
->  * Beside asm tests add prog tests
->  * Trim CC
->
-> 1. https://lore.kernel.org/all/00000000000013aebd05cff8e064@google.com/
+test_maps is failing in bpf tree:
 
-Applied. Thanks
+$ ./test_maps
+Failed sockmap recv
+
+and causing BPF CI to stay red.
+
+Since bpf-next is fine, I suspect it is one of John's or Jussi's patches.
+
+Please take a look.
