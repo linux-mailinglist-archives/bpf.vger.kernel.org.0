@@ -2,102 +2,239 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FDE451F90
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 01:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 840AB451F8E
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 01:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhKPAmr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 19:42:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
+        id S242428AbhKPAmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 19:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348841AbhKPAkk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1350236AbhKPAkk (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 15 Nov 2021 19:40:40 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C5FC073AE3
-        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 14:59:00 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r8so33645570wra.7
-        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 14:58:59 -0800 (PST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CE5C073AE4
+        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 14:59:01 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id d5so33721926wrc.1
+        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 14:59:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ntIoOGpBUqK62R78xU+kVL3iJ/TX6m4TbEuagn27zMg=;
-        b=H3RvVgPXZs2xIWzoRiHbAvTQkcuASpgtzHZHS9wDyl0Z+EBmiDsqqyr0NYkaqZFRJa
-         DLXYUT47Eqwq35UNmdk4jGZPYO+tB2ZmiqgoPqxfPjX6RgKHm7UQmd8BBQHkvksaj6Bo
-         jrmMAWm2HL2FcgxQSKl8wGb9XC+1NgtDrqmkJ8VdrQ6DgrKUMYo9MqIu9UfG5kHUCq2j
-         9lVeZ9YwE1qPuOTFJQ9hqSf6L8lw7yfLHB3RkZI2z11u3TMsSKwElAHzXXBwdqP/+REm
-         PMXLPRteZYYyO0BGrmizaUY4WSWTYyr5URlHYB0dSuMsKGj1M0aeiZevvqbcZH5I+HoH
-         ttfw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MgNgZa/B9gbbQJkFhSDhOixcZt0zjFXwu7Dm3LL/ENw=;
+        b=CK5ayWgne4kD2OrKtiYGetoZHTTRh4uveC2qvye5cH5Hwh2J3U8mp12F5m2TIxjZG+
+         P7XxMojrRVGyAN9goOr901ufOBBHH/5Dgh8GRXK1E3Nl+6FlcyhVbyrb6cP3WMy+Wr/P
+         uZUL9Xmjp5gI9jVF2tb/PXEx34eA08lZ/xxgzndZ7IiT28qR+Nq+AEbRdxTeJuacd/Lp
+         Swj5z8x3It8pzYsvgyJg0IYKFRA3d3vsFo3H8+X6qIUqd6vQJVnTBYdINZDvEFzf9MI/
+         SyyMK43e4b1nCt2j9Va66yx/NRggL9gq4wrJR/JCkELyb6VVJPuvtgAynXlzj3Erc4EZ
+         8l3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ntIoOGpBUqK62R78xU+kVL3iJ/TX6m4TbEuagn27zMg=;
-        b=rqxAoqDldSTG1ysuqZHHzJJ3qbZwNG5JdiAUfn/hxRZ7TdsRdFY3jJ8G2SQ6MKbuU0
-         NX/mvONJ1ROUKMcgBaN3eyj2h6OWnyt7Jabkgj1752SMBXaXDSjDrI/i1DfmBTJAu99m
-         PCQwP0QPWeciriCbx96KWtNR8fL5FdQUkBlgTtWBn3qe2oBBTpB1tZV6wUG91Hrg+vPv
-         SZ2xEPcOjJNkJ8ThbwyHf8ktK0r+mpc9G4gJdGOmbcsks4x5aj8fClM5A9txFlwUwVUI
-         gTZm6YQxrJIKaj3xojwy/ubaZP1sK+Xdbmfu+QCsF+UF2kb/AcCc+AI3kx7MUrK5WANF
-         psLQ==
-X-Gm-Message-State: AOAM530dY9HZXMvdqVHnq5NYSnnS06DSSPwmbHv6mD6mNnBRH0z94GGN
-        vLxjmzIHxqfIe1XoXlbKz9q5ZQ==
-X-Google-Smtp-Source: ABdhPJx4BQgo05AotdxDQQa6AMQL6jYJ7Pr+foXmqc1eYDSMmAMr9hkihoFHHxTIEKqs0vkk7q7Gsg==
-X-Received: by 2002:a5d:64ea:: with SMTP id g10mr3556395wri.242.1637017138625;
-        Mon, 15 Nov 2021 14:58:58 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MgNgZa/B9gbbQJkFhSDhOixcZt0zjFXwu7Dm3LL/ENw=;
+        b=q6runkBFZ2SrQHf4wttkQxkvKGetaSh8IjQUgCRFthOAY1KOUz+laWEwJ5Zvzh7Wrp
+         9yC+qwteIrA2nLA9RAE/ZTzG79SzGtdDGS/qOHsudy4Kwdn9eGF6jIoFc8rmC401LEeq
+         Fr7GclUrEvmSgjK0kEq4A2dsA5rRx4YHHg9J09URv6Yw/jJZ4qcjjPRvrAodVsF5JH1M
+         m8efYYWaHzDdz4XEFUBOwEZ8sJWmdDwhz9kRPzTQgnMK9Qj0mTTEVR2hS0Ct3hELl+EW
+         skw4hQxr0XJ5ru5aWxIdI8zqyn5A9rhUxaYqU4z/P7eca2NWEQ6b9LO52n/TzRGbG35X
+         kKQg==
+X-Gm-Message-State: AOAM533yHa372704Qn9Jlo2658Xtt0TTaOIm9JxFNtZ8oKUrFPM75wlh
+        x5BISA+PzP3TJJFn5YlLK3R/vcyIq7kkvw==
+X-Google-Smtp-Source: ABdhPJwZZ42hJ7VhW2ZBr9bqZ/Gmxc2uh3puUPA7/WAlaY0yGbv8zXgBn/y30h+CD4rO58rjtaVylw==
+X-Received: by 2002:a5d:6d41:: with SMTP id k1mr3362233wri.134.1637017139733;
+        Mon, 15 Nov 2021 14:58:59 -0800 (PST)
 Received: from localhost.localdomain ([149.86.89.157])
-        by smtp.gmail.com with ESMTPSA id y12sm15467619wrn.73.2021.11.15.14.58.57
+        by smtp.gmail.com with ESMTPSA id y12sm15467619wrn.73.2021.11.15.14.58.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 14:58:58 -0800 (PST)
+        Mon, 15 Nov 2021 14:58:59 -0800 (PST)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 0/3] bpftool: update documentation and fix checks
-Date:   Mon, 15 Nov 2021 22:58:41 +0000
-Message-Id: <20211115225844.33943-1-quentin@isovalent.com>
+Subject: [PATCH bpf-next 1/3] bpftool: Add SPDX tags to RST documentation files
+Date:   Mon, 15 Nov 2021 22:58:42 +0000
+Message-Id: <20211115225844.33943-2-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211115225844.33943-1-quentin@isovalent.com>
+References: <20211115225844.33943-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This set updates the list of options for bpftool commands, as displayed in
-the summary of the man pages. It also updates the script that checks those
-option lists, to make it more robust, and more reusable if the layout of
-bpftool's directory changed.
+Most files in the kernel repository have a SPDX tags. The files that
+don't have such a tag (or another license boilerplate) tend to fall
+under the GPL-2.0 license. In the past, bpftool's Makefile (for example)
+has been marked as GPL-2.0 for that reason, when in fact all bpftool is
+dual-licensed.
 
-Checkpatch complained about the missing SPDX tag when I added a new file
-under bpftool/Documentation; I fixed it by adding the tag, and while at it,
-I also added the tags to all RST files for bpftool's documentation (see
-first patch of this set).
+To prevent a similar confusion from happening with the RST documentation
+files for bpftool, let's explicitly mark all files as dual-licensed.
 
-Quentin Monnet (3):
-  bpftool: Add SPDX tags to RST documentation files
-  bpftool: Update doc (use susbtitutions) and test_bpftool_synctypes.py
-  selftests/bpf: Configure dir paths via env in
-    test_bpftool_synctypes.py
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ tools/bpf/bpftool/Documentation/Makefile               | 2 +-
+ tools/bpf/bpftool/Documentation/bpftool-btf.rst        | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-cgroup.rst     | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-feature.rst    | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-gen.rst        | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-iter.rst       | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-link.rst       | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-map.rst        | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-net.rst        | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-perf.rst       | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst       | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst | 2 ++
+ tools/bpf/bpftool/Documentation/bpftool.rst            | 2 ++
+ tools/bpf/bpftool/Documentation/common_options.rst     | 2 ++
+ 14 files changed, 27 insertions(+), 1 deletion(-)
 
- tools/bpf/bpftool/Documentation/Makefile      |  2 +-
- .../bpf/bpftool/Documentation/bpftool-btf.rst |  7 +-
- .../bpftool/Documentation/bpftool-cgroup.rst  |  7 +-
- .../bpftool/Documentation/bpftool-feature.rst |  6 +-
- .../bpf/bpftool/Documentation/bpftool-gen.rst |  7 +-
- .../bpftool/Documentation/bpftool-iter.rst    |  6 +-
- .../bpftool/Documentation/bpftool-link.rst    |  7 +-
- .../bpf/bpftool/Documentation/bpftool-map.rst |  7 +-
- .../bpf/bpftool/Documentation/bpftool-net.rst |  6 +-
- .../bpftool/Documentation/bpftool-perf.rst    |  6 +-
- .../bpftool/Documentation/bpftool-prog.rst    |  6 +-
- .../Documentation/bpftool-struct_ops.rst      |  6 +-
- tools/bpf/bpftool/Documentation/bpftool.rst   |  7 +-
- .../bpftool/Documentation/common_options.rst  |  2 +
- .../bpftool/Documentation/substitutions.rst   |  3 +
- .../selftests/bpf/test_bpftool_synctypes.py   | 94 ++++++++++++++++---
- 16 files changed, 145 insertions(+), 34 deletions(-)
- create mode 100644 tools/bpf/bpftool/Documentation/substitutions.rst
-
+diff --git a/tools/bpf/bpftool/Documentation/Makefile b/tools/bpf/bpftool/Documentation/Makefile
+index 692e1b947490..ac8487dcff1d 100644
+--- a/tools/bpf/bpftool/Documentation/Makefile
++++ b/tools/bpf/bpftool/Documentation/Makefile
+@@ -24,7 +24,7 @@ man: man8
+ man8: $(DOC_MAN8)
+ 
+ RST2MAN_DEP := $(shell command -v rst2man 2>/dev/null)
+-RST2MAN_OPTS += --verbose
++RST2MAN_OPTS += --verbose --strip-comments
+ 
+ list_pages = $(sort $(basename $(filter-out $(1),$(MAN8_RST))))
+ see_also = $(subst " ",, \
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+index 4425d942dd39..2d2ceb7163f6 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-btf
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+index 8069d37dd991..b954faeb0f07 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-cgroup
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
+index ab9f57ee4c3a..b1471788a15f 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ===============
+ bpftool-feature
+ ===============
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+index 2a137f8a4cea..51e2e8de5208 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-gen
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-iter.rst b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
+index 471f363a725a..51914c9e8a54 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-iter.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ============
+ bpftool-iter
+ ============
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-link.rst b/tools/bpf/bpftool/Documentation/bpftool-link.rst
+index 9434349636a5..31371bcf605a 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-link.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-link.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-link
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+index 991d18fd84f2..e22c918c069c 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-map
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+index 7ec57535a7c1..6d1aa374529f 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-net
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-perf.rst b/tools/bpf/bpftool/Documentation/bpftool-perf.rst
+index ce52798a917d..ad554806faa2 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-perf.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-perf.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-perf
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+index f27265bd589b..d31148571403 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ bpftool-prog
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
+index 02afc0fc14cb..77b845b5ac61 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ==================
+ bpftool-struct_ops
+ ==================
+diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
+index 8ac86565c501..1248b35e67ae 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ ================
+ BPFTOOL
+ ================
+diff --git a/tools/bpf/bpftool/Documentation/common_options.rst b/tools/bpf/bpftool/Documentation/common_options.rst
+index 75adf23202d8..908487b9c2ad 100644
+--- a/tools/bpf/bpftool/Documentation/common_options.rst
++++ b/tools/bpf/bpftool/Documentation/common_options.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
+ -h, --help
+ 	  Print short help message (similar to **bpftool help**).
+ 
 -- 
 2.32.0
 
