@@ -2,85 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C75451D23
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 01:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E94451C98
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 01:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348104AbhKPAZU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 19:25:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349937AbhKOUUf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Nov 2021 15:20:35 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B40C043192
-        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 11:55:12 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id k37so46573999lfv.3
-        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 11:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BPFT2BwevL0ZeUyPKnfSNKcI8gspp3l6LKeTTYtK9bs=;
-        b=jBuJDKAh5iXvekwU2FZbH34FBlnxuEzvo0BkgMc5qfY690rB609pgwK1OfFYgxsrLW
-         OrOjERQs8UszfgZdLPOPnS21Jv8ljzG+oMS2ijfdkbmDdYs8auIyTz5Pu0sfaJl7+CUo
-         HT9noSBXBEVLgEpgRKQbydwNQoPS9j04fKv622mvydsHjlbRHZT2Sd/iVWbXCLClB0OQ
-         jfwRx+B3Wtaowcf1OYMMS5hHC0mGyuuPZmk9mTogl+i5Y7hzjIPWlDZTxABwQot7sbQ4
-         rCnRqjzMjxbpHac4V5dLLICC+uWuiv38vE5Yuxitf7hcFVrqfCchibG6seuNYDZuZbGU
-         09Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BPFT2BwevL0ZeUyPKnfSNKcI8gspp3l6LKeTTYtK9bs=;
-        b=nFPCfLzYiqWjxbb0HV8v3STGr314xJO4f39qAK++ZFkXVLXhlsWjFruVo4oXDAJepe
-         abt/vFeYlHtPFm/IC39N69k0Hi8F8xz4OwmmlWnpkilSpXQH2p1aB5lwbK54ComvzPh0
-         G+5djKrMX6ERWro8OdU1zLMzXUdmhASsWimpo9SCdH+3+0HoIBaZOJoJ++ZS4pSsmvzl
-         MHixqDOxZfBxs2+YTncd67OmSmDyErlq5Vkslg9GRcdlwEWX4gC/OtZb8GnRihzxBheV
-         iQ0vjzqBmFMbKsXK3EBaL2GCwPlPHG+TRnWMQYTpNGoOXhvSKg7pusg0XejiMJD0ggb6
-         060w==
-X-Gm-Message-State: AOAM532Nj54dxIP8WhSHTGFMtBrsncEVGym6VbqKo5GXPdI5qRt9Wyqw
-        wQKc7k6wvF2t5ns6ulo3KqUkrHfUj8CmysrVDys=
-X-Google-Smtp-Source: ABdhPJzh9WY5SxehJAFiwdu9wy9ukzRENm1qB4KQXNOVT0jEmw4C6kGDYabNYw5KVt+BsFZImbs30NZhd6Bes4x4wjQ=
-X-Received: by 2002:a05:6512:33d6:: with SMTP id d22mr1167274lfg.564.1637006110894;
- Mon, 15 Nov 2021 11:55:10 -0800 (PST)
+        id S1345071AbhKPAVi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 19:21:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24408 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351965AbhKOUje (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 15 Nov 2021 15:39:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637008598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p4Qgk9BqdfmLLByf7+qq+OORA7tMlVVgID7iwPx2sJg=;
+        b=CY61NMdHQUJR1dXl0DLaayOkssF0+FxGFt8TQZrAdl8jNKC1x2QZJXpOZLg72UK7yN802L
+        FqLMW50H/BjyiRNoTDrI+N38STVhneghYP7jQxcQB/WOuUGZmnKfqHHTSwqxdcFIRMo38G
+        ohsNt7RVBelB5nIbd41nlbTvh/KXNlY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-7jjdhSTtPnine07XcaEjUQ-1; Mon, 15 Nov 2021 15:36:32 -0500
+X-MC-Unique: 7jjdhSTtPnine07XcaEjUQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD9231006AA1;
+        Mon, 15 Nov 2021 20:36:30 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BA3A367847;
+        Mon, 15 Nov 2021 20:36:26 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id D23F33247FDD7;
+        Mon, 15 Nov 2021 21:36:25 +0100 (CET)
+Subject: [PATCH net-next 1/2] igc: AF_XDP zero-copy metadata adjust breaks
+ SKBs on XDP_PASS
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        anthony.l.nguyen@intel.com, jesse.brandeburg@intel.com,
+        intel-wired-lan@lists.osuosl.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org
+Date:   Mon, 15 Nov 2021 21:36:25 +0100
+Message-ID: <163700858579.565980.15265721798644582439.stgit@firesoul>
+In-Reply-To: <163700856423.565980.10162564921347693758.stgit@firesoul>
+References: <163700856423.565980.10162564921347693758.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <CAADnVQKEPYYrr6MUSKL4Fd7FYp0y5MQFoDteU5T++E6fySDADw@mail.gmail.com>
- <6191ee3e8a1e1_86942087@john.notmuch>
-In-Reply-To: <6191ee3e8a1e1_86942087@john.notmuch>
-From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Mon, 15 Nov 2021 11:54:44 -0800
-Message-ID: <CAJygYd3sdsv25AvJbe6so2KaU1XPsUJ+rd_4vURLgWFfJDm-WQ@mail.gmail.com>
-Subject: Re: sockmap test is broken
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        joamaki@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 9:22 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Alexei Starovoitov wrote:
-> > test_maps is failing in bpf tree:
-> >
-> > $ ./test_maps
-> > Failed sockmap recv
-> >
-> > and causing BPF CI to stay red.
-> >
-> > Since bpf-next is fine, I suspect it is one of John's or Jussi's patches.
+Driver already implicitly supports XDP metadata access in AF_XDP
+zero-copy mode, as xsk_buff_pool's xp_alloc() naturally set xdp_buff
+data_meta equal data.
 
-bpf-next is also broken
+This works fine for XDP and AF_XDP, but if a BPF-prog adjust via
+bpf_xdp_adjust_meta() and choose to call XDP_PASS, then igc function
+igc_construct_skb_zc() will construct an invalid SKB packet. The
+function correctly include the xdp->data_meta area in the memcpy, but
+forgot to pull header to take metasize into account.
 
-eg. https://github.com/kernel-patches/bpf/runs/4215545454?check_suite_focus=true
+Fixes: fc9df2a0b520 ("igc: Enable RX via AF_XDP zero-copy")
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 8e448288ee26..76b0a7311369 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -2448,8 +2448,10 @@ static struct sk_buff *igc_construct_skb_zc(struct igc_ring *ring,
+ 
+ 	skb_reserve(skb, xdp->data_meta - xdp->data_hard_start);
+ 	memcpy(__skb_put(skb, totalsize), xdp->data_meta, totalsize);
+-	if (metasize)
++	if (metasize) {
+ 		skb_metadata_set(skb, metasize);
++		__skb_pull(skb, metasize);
++	}
+ 
+ 	return skb;
+ }
 
 
-> >
-> > Please take a look.
->
-> I'll look into it thanks.
->
-> .John
