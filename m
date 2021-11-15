@@ -2,611 +2,433 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38123450954
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 17:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CA4450984
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 17:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhKOQPD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 11:15:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54895 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232181AbhKOQOn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 15 Nov 2021 11:14:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636992706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jDyhNSIqycSUwF0nzVV7M5Y+xWJF/i//2mp0zLaqr8A=;
-        b=f+gvi9XDZN2ZPpBOwYgcecVWlw8G7zYORCJ04WzlVIKBPhy0VPtTU+O2CWQG4CUS3scca5
-        nITKc86oRb50xa8oq4s9XDqFjPP0GeEHzKzDaSZZ7geLeObdc0y0JAZnjkuj1Gm6004lDu
-        4UW/gd4rjQY8fmTc0S0Vx21427yZzHc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-q5cUZusiOUCrTqf47qLlnA-1; Mon, 15 Nov 2021 11:11:44 -0500
-X-MC-Unique: q5cUZusiOUCrTqf47qLlnA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CADE0871805;
-        Mon, 15 Nov 2021 16:11:43 +0000 (UTC)
-Received: from gerbillo.fritz.box (unknown [10.39.194.235])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 39F4510023B8;
-        Mon, 15 Nov 2021 16:11:42 +0000 (UTC)
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [RFC PATCH 2/2] bpf: let bpf_warn_invalid_xdp_action() report more info
-Date:   Mon, 15 Nov 2021 17:10:44 +0100
-Message-Id: <c48e1392bdb0937fd33d3524e1c955a1dae66f49.1636987322.git.pabeni@redhat.com>
-In-Reply-To: <cover.1636987322.git.pabeni@redhat.com>
-References: <cover.1636987322.git.pabeni@redhat.com>
+        id S233752AbhKOQX3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 11:23:29 -0500
+Received: from www62.your-server.de ([213.133.104.62]:47448 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236780AbhKOQXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 11:23:09 -0500
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mmeiH-00017B-14; Mon, 15 Nov 2021 17:20:09 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii@kernel.org, quentin@isovalent.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2021-11-15
+Date:   Mon, 15 Nov 2021 17:20:08 +0100
+Message-Id: <20211115162008.25916-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26354/Mon Nov 15 10:21:07 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In non trivial scenarios, the single action id is not sufficient
-to identify the program causing the warning. Let's additionally
-include the program id, the attach type and the relevant device
-name.
+Hi David, hi Jakub,
 
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
----
- drivers/net/ethernet/amazon/ena/ena_netdev.c           | 2 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c          | 2 +-
- drivers/net/ethernet/cavium/thunder/nicvf_main.c       | 2 +-
- drivers/net/ethernet/freescale/dpaa/dpaa_eth.c         | 2 +-
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c       | 2 +-
- drivers/net/ethernet/freescale/enetc/enetc.c           | 2 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c            | 2 +-
- drivers/net/ethernet/intel/i40e/i40e_xsk.c             | 2 +-
- drivers/net/ethernet/intel/ice/ice_txrx.c              | 2 +-
- drivers/net/ethernet/intel/ice/ice_xsk.c               | 2 +-
- drivers/net/ethernet/intel/igb/igb_main.c              | 2 +-
- drivers/net/ethernet/intel/igc/igc_main.c              | 2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c          | 2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c           | 2 +-
- drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c      | 2 +-
- drivers/net/ethernet/marvell/mvneta.c                  | 2 +-
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c        | 2 +-
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 2 +-
- drivers/net/ethernet/mellanox/mlx4/en_rx.c             | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c       | 2 +-
- drivers/net/ethernet/netronome/nfp/nfp_net_common.c    | 2 +-
- drivers/net/ethernet/qlogic/qede/qede_fp.c             | 2 +-
- drivers/net/ethernet/sfc/rx.c                          | 2 +-
- drivers/net/ethernet/socionext/netsec.c                | 2 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c      | 2 +-
- drivers/net/ethernet/ti/cpsw_priv.c                    | 2 +-
- drivers/net/hyperv/netvsc_bpf.c                        | 2 +-
- drivers/net/tun.c                                      | 2 +-
- drivers/net/veth.c                                     | 4 ++--
- drivers/net/virtio_net.c                               | 4 ++--
- drivers/net/xen-netfront.c                             | 2 +-
- include/linux/filter.h                                 | 2 +-
- kernel/bpf/cpumap.c                                    | 4 ++--
- kernel/bpf/devmap.c                                    | 4 ++--
- net/core/dev.c                                         | 2 +-
- net/core/filter.c                                      | 6 +++---
- 36 files changed, 42 insertions(+), 42 deletions(-)
+The following pull-request contains BPF updates for your *net-next* tree.
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 7d5d885d85d5..3b46f1df5609 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -434,7 +434,7 @@ static int ena_xdp_execute(struct ena_ring *rx_ring, struct xdp_buff *xdp)
- 		xdp_stat = &rx_ring->rx_stats.xdp_pass;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(verdict);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, verdict);
- 		xdp_stat = &rx_ring->rx_stats.xdp_invalid;
- 	}
- 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index c8083df5e0ab..52fad0fdeacf 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -195,7 +195,7 @@ bool bnxt_rx_xdp(struct bnxt *bp, struct bnxt_rx_ring_info *rxr, u16 cons,
- 		*event |= BNXT_REDIRECT_EVENT;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(bp->dev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(bp->dev, xdp_prog, act);
-diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_main.c b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-index bb45d5df2856..30450efccad7 100644
---- a/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-@@ -590,7 +590,7 @@ static inline bool nicvf_xdp_rx(struct nicvf *nic, struct bpf_prog *prog,
- 		nicvf_xdp_sq_append_pkt(nic, sq, (u64)xdp.data, dma_addr, len);
- 		return true;
- 	default:
--		bpf_warn_invalid_xdp_action(action);
-+		bpf_warn_invalid_xdp_action(nic->netdev, prog, action);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(nic->netdev, prog, action);
-diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-index 6b2927d863e2..39fafb7d43b2 100644
---- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-@@ -2623,7 +2623,7 @@ static u32 dpaa_run_xdp(struct dpaa_priv *priv, struct qm_fd *fd, void *vaddr,
- 		}
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(xdp_act);
-+		bpf_warn_invalid_xdp_action(priv->net_dev, xdp_prog, xdp_act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(priv->net_dev, xdp_prog, xdp_act);
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-index 714e961e7a77..f113469bd479 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-@@ -374,7 +374,7 @@ static u32 dpaa2_eth_run_xdp(struct dpaa2_eth_priv *priv,
- 		dpaa2_eth_xdp_enqueue(priv, ch, fd, vaddr, rx_fq->flowid);
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(xdp_act);
-+		bpf_warn_invalid_xdp_action(priv->net_dev, xdp_prog, xdp_act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(priv->net_dev, xdp_prog, xdp_act);
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
-index 504e12554079..eacb41f86bdb 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1547,7 +1547,7 @@ static int enetc_clean_rx_ring_xdp(struct enetc_bdr *rx_ring,
- 
- 		switch (xdp_act) {
- 		default:
--			bpf_warn_invalid_xdp_action(xdp_act);
-+			bpf_warn_invalid_xdp_action(rx_ring->ndev, prog, xdp_act);
- 			fallthrough;
- 		case XDP_ABORTED:
- 			trace_xdp_exception(rx_ring->ndev, prog, xdp_act);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index 10a83e5385c7..b399ca649f09 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -2322,7 +2322,7 @@ static int i40e_run_xdp(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
- 		result = I40E_XDP_REDIR;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index ea06e957393e..945b1bb9c6f4 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -176,7 +176,7 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
- 			goto out_failure;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index bc3ba19dc88f..56940bb908bc 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -561,7 +561,7 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
- 			goto out_failure;
- 		return ICE_XDP_REDIR;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index ff55cb415b11..eb68a5824e9a 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -482,7 +482,7 @@ ice_run_xdp_zc(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
- 			goto out_failure;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 836be0d3b291..bdce483d4c0e 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -8422,7 +8422,7 @@ static struct sk_buff *igb_run_xdp(struct igb_adapter *adapter,
- 		result = IGB_XDP_REDIR;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(adapter->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 8e448288ee26..4ea212ddcc9b 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2231,7 +2231,7 @@ static int __igc_xdp_run_prog(struct igc_adapter *adapter,
- 		return IGC_XDP_REDIRECT;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(adapter->netdev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 0f9f022260d7..265bc52aacf8 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -2235,7 +2235,7 @@ static struct sk_buff *ixgbe_run_xdp(struct ixgbe_adapter *adapter,
- 		result = IXGBE_XDP_REDIR;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index db2bc58dfcfd..b3fd8e5cd85b 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -131,7 +131,7 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
- 			goto out_failure;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-index d81811ab4ec4..757fe0dace88 100644
---- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-+++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-@@ -1070,7 +1070,7 @@ static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
- 			goto out_failure;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- out_failure:
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 5a7bdca22a63..c457a765a828 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2212,7 +2212,7 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 			mvneta_xdp_put_buff(pp, rxq, xdp, sinfo, sync);
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(pp->dev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(pp->dev, prog, act);
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 2b18d89d9756..e7b7200af5c3 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -3820,7 +3820,7 @@ mvpp2_run_xdp(struct mvpp2_port *port, struct bpf_prog *prog,
- 		}
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(port->dev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(port->dev, prog, act);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 0cc6353254bf..7c4068c5d1ac 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -1198,7 +1198,7 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
- 		put_page(page);
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(pfvf->netdev, prog, act);
- 		break;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(pfvf->netdev, prog, act);
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 650e6a1844ae..8cfc649f226b 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -812,7 +812,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
- 				trace_xdp_exception(dev, xdp_prog, act);
- 				goto xdp_drop_no_cnt; /* Drop on xmit failure */
- 			default:
--				bpf_warn_invalid_xdp_action(act);
-+				bpf_warn_invalid_xdp_action(dev, xdp_prog, act);
- 				fallthrough;
- 			case XDP_ABORTED:
- 				trace_xdp_exception(dev, xdp_prog, act);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 2f0df5cc1a2d..338d65e2c9ce 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -151,7 +151,7 @@ bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct mlx5e_dma_info *di,
- 		rq->stats->xdp_redirect++;
- 		return true;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rq->netdev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- xdp_abort:
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-index 850bfdf83d0a..56ef3d64e30d 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-@@ -1944,7 +1944,7 @@ static int nfp_net_rx(struct nfp_net_rx_ring *rx_ring, int budget)
- 							    xdp_prog, act);
- 				continue;
- 			default:
--				bpf_warn_invalid_xdp_action(act);
-+				bpf_warn_invalid_xdp_action(dp->netdev, xdp_prog, act);
- 				fallthrough;
- 			case XDP_ABORTED:
- 				trace_xdp_exception(dp->netdev, xdp_prog, act);
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-index 065e9004598e..32c6e14814bb 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-@@ -1152,7 +1152,7 @@ static bool qede_rx_xdp(struct qede_dev *edev,
- 		qede_rx_bd_ring_consume(rxq);
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(edev->ndev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(edev->ndev, prog, act);
-diff --git a/drivers/net/ethernet/sfc/rx.c b/drivers/net/ethernet/sfc/rx.c
-index 606750938b89..2375cef577e4 100644
---- a/drivers/net/ethernet/sfc/rx.c
-+++ b/drivers/net/ethernet/sfc/rx.c
-@@ -338,7 +338,7 @@ static bool efx_do_xdp(struct efx_nic *efx, struct efx_channel *channel,
- 		break;
- 
- 	default:
--		bpf_warn_invalid_xdp_action(xdp_act);
-+		bpf_warn_invalid_xdp_action(efx->net_dev, xdp_prog, xdp_act);
- 		efx_free_rx_buffers(rx_queue, rx_buf, 1);
- 		channel->n_rx_xdp_bad_drops++;
- 		trace_xdp_exception(efx->net_dev, xdp_prog, xdp_act);
-diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-index de7d8bf2c226..25dcd8eda5fc 100644
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -933,7 +933,7 @@ static u32 netsec_run_xdp(struct netsec_priv *priv, struct bpf_prog *prog,
- 		}
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(priv->ndev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(priv->ndev, prog, act);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index d3f350c25b9b..4cb34001c9ac 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -4690,7 +4690,7 @@ static int __stmmac_xdp_run_prog(struct stmmac_priv *priv,
- 			res = STMMAC_XDP_REDIRECT;
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(priv->dev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(priv->dev, prog, act);
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
-index ecc2a6b7e28f..e9fdf60ba1a8 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.c
-+++ b/drivers/net/ethernet/ti/cpsw_priv.c
-@@ -1360,7 +1360,7 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
- 		xdp_do_flush_map();
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(ndev, prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(ndev, prog, act);
-diff --git a/drivers/net/hyperv/netvsc_bpf.c b/drivers/net/hyperv/netvsc_bpf.c
-index aa877da113f8..7856905414eb 100644
---- a/drivers/net/hyperv/netvsc_bpf.c
-+++ b/drivers/net/hyperv/netvsc_bpf.c
-@@ -68,7 +68,7 @@ u32 netvsc_run_xdp(struct net_device *ndev, struct netvsc_channel *nvchan,
- 		break;
- 
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(ndev, prog, act);
- 	}
- 
- out:
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index fecc9a1d293a..0d47d34ba4e7 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1546,7 +1546,7 @@ static int tun_xdp_act(struct tun_struct *tun, struct bpf_prog *xdp_prog,
- 	case XDP_PASS:
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(tun->dev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(tun->dev, xdp_prog, act);
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 50eb43e5bf45..f64dbd8b6403 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -651,7 +651,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
- 			rcu_read_unlock();
- 			goto xdp_xmit;
- 		default:
--			bpf_warn_invalid_xdp_action(act);
-+			bpf_warn_invalid_xdp_action(rq->dev, xdp_prog, act);
- 			fallthrough;
- 		case XDP_ABORTED:
- 			trace_xdp_exception(rq->dev, xdp_prog, act);
-@@ -801,7 +801,7 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 		rcu_read_unlock();
- 		goto xdp_xmit;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(rq->dev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(rq->dev, xdp_prog, act);
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 1771d6e5224f..105cd413df52 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -812,7 +812,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 			rcu_read_unlock();
- 			goto xdp_xmit;
- 		default:
--			bpf_warn_invalid_xdp_action(act);
-+			bpf_warn_invalid_xdp_action(vi->dev, xdp_prog, act);
- 			fallthrough;
- 		case XDP_ABORTED:
- 			trace_xdp_exception(vi->dev, xdp_prog, act);
-@@ -1025,7 +1025,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 			rcu_read_unlock();
- 			goto xdp_xmit;
- 		default:
--			bpf_warn_invalid_xdp_action(act);
-+			bpf_warn_invalid_xdp_action(vi->dev, xdp_prog, act);
- 			fallthrough;
- 		case XDP_ABORTED:
- 			trace_xdp_exception(vi->dev, xdp_prog, act);
-diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-index 911f43986a8c..7b7eb617051a 100644
---- a/drivers/net/xen-netfront.c
-+++ b/drivers/net/xen-netfront.c
-@@ -930,7 +930,7 @@ static u32 xennet_run_xdp(struct netfront_queue *queue, struct page *pdata,
- 		break;
- 
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(queue->info->netdev, prog, act);
- 	}
- 
- 	return act;
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 24b7ed2677af..c21d14fe0156 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1030,7 +1030,7 @@ void xdp_do_flush(void);
-  */
- #define xdp_do_flush_map xdp_do_flush
- 
--void bpf_warn_invalid_xdp_action(u32 act);
-+void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act);
- 
- #ifdef CONFIG_INET
- struct sock *bpf_run_sk_reuseport(struct sock_reuseport *reuse, struct sock *sk,
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 585b2b77ccc4..f7359bcb8fa3 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -195,7 +195,7 @@ static void cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
- 			}
- 			return;
- 		default:
--			bpf_warn_invalid_xdp_action(act);
-+			bpf_warn_invalid_xdp_action(skb->dev, rcpu->prog, act);
- 			fallthrough;
- 		case XDP_ABORTED:
- 			trace_xdp_exception(skb->dev, rcpu->prog, act);
-@@ -254,7 +254,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- 			}
- 			break;
- 		default:
--			bpf_warn_invalid_xdp_action(act);
-+			bpf_warn_invalid_xdp_action(xdpf->dev_rx, rcpu->prog, act);
- 			fallthrough;
- 		case XDP_DROP:
- 			xdp_return_frame(xdpf);
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index f02d04540c0c..79bcf2169881 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -348,7 +348,7 @@ static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
- 				frames[nframes++] = xdpf;
- 			break;
- 		default:
--			bpf_warn_invalid_xdp_action(act);
-+			bpf_warn_invalid_xdp_action(dev, xdp_prog, act);
- 			fallthrough;
- 		case XDP_ABORTED:
- 			trace_xdp_exception(dev, xdp_prog, act);
-@@ -507,7 +507,7 @@ static u32 dev_map_bpf_prog_run_skb(struct sk_buff *skb, struct bpf_dtab_netdev
- 		__skb_push(skb, skb->mac_len);
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(dst->dev, dst->xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(dst->dev, dst->xdp_prog, act);
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 15ac064b5562..cf2691d17dd2 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4824,7 +4824,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	case XDP_PASS:
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(act);
-+		bpf_warn_invalid_xdp_action(skb->dev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
- 		trace_xdp_exception(skb->dev, xdp_prog, act);
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 3ba584bb23f8..348e392a337f 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8179,13 +8179,13 @@ static bool xdp_is_valid_access(int off, int size,
- 	return __is_valid_xdp_access(off, size);
- }
- 
--void bpf_warn_invalid_xdp_action(u32 act)
-+void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act)
- {
- 	const u32 act_max = XDP_REDIRECT;
- 
--	pr_warn_once("%s XDP return value %u, expect packet loss!\n",
-+	pr_warn_once("%s XDP return value %u on prog %d dev %s attach type %d, expect packet loss!\n",
- 		     act > act_max ? "Illegal" : "Driver unsupported",
--		     act);
-+		     act, prog->aux->id, dev->name, prog->expected_attach_type);
- }
- EXPORT_SYMBOL_GPL(bpf_warn_invalid_xdp_action);
- 
--- 
-2.33.1
+There are two merge conflicts in tools/bpf/bpftool/Makefile due to commit
+e41ac2020bca ("bpftool: Install libbpf headers for the bootstrap version, too")
+from bpf tree and commit 6501182c08f7 ("bpftool: Normalize compile rules to
+specify output file last") from bpf-next tree. Resolve as follows:
 
+Conflict 1:
+
+<<<<<<< HEAD
+                -I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+                -g -O2 -Wall -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
+=======
+                -I$(LIBBPF_INCLUDE) \
+                -g -O2 -Wall -target bpf -c $< -o $@
+        $(Q)$(LLVM_STRIP) -g $@
+>>>>>>> e5043894b21f7d99d3db31ad06308d6c5726caa6
+
+Result should look like:
+
+$(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+        $(QUIET_CLANG)$(CLANG) \
+                -I$(if $(OUTPUT),$(OUTPUT),.) \
+                -I$(srctree)/tools/include/uapi/ \
+                -I$(LIBBPF_BOOTSTRAP_INCLUDE) \
+                -g -O2 -Wall -target bpf -c $< -o $@
+        $(Q)$(LLVM_STRIP) -g $@
+
+Conflict 2:
+
+<<<<<<< HEAD
+$(BOOTSTRAP_OUTPUT)%.o: %.c $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS) | $(BOOTSTRAP_OUTPUT)
+        $(QUIET_CC)$(HOSTCC) \
+                $(subst -I$(LIBBPF_INCLUDE),-I$(LIBBPF_BOOTSTRAP_INCLUDE),$(CFLAGS)) \
+                -c -MMD -o $@ $<
+=======
+$(BOOTSTRAP_OUTPUT)%.o: %.c $(LIBBPF_INTERNAL_HDRS) | $(BOOTSTRAP_OUTPUT)
+        $(QUIET_CC)$(HOSTCC) $(CFLAGS) -c -MMD $< -o $@
+>>>>>>> e5043894b21f7d99d3db31ad06308d6c5726caa6
+
+Result should look like:
+
+$(BOOTSTRAP_OUTPUT)%.o: %.c $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS) | $(BOOTSTRAP_OUTPUT)
+        $(QUIET_CC)$(HOSTCC) \
+                $(subst -I$(LIBBPF_INCLUDE),-I$(LIBBPF_BOOTSTRAP_INCLUDE),$(CFLAGS)) \
+                -c -MMD $< -o $@
+
+We've added 72 non-merge commits during the last 13 day(s) which contain
+a total of 171 files changed, 2728 insertions(+), 1143 deletions(-).
+
+The main changes are:
+
+1) Add btf_type_tag attributes to bring kernel annotations like __user/__rcu to
+   BTF such that BPF verifier will be able to detect misuse, from Yonghong Song.
+
+2) Big batch of libbpf improvements including various fixes, future proofing APIs,
+   and adding a unified, OPTS-based bpf_prog_load() low-level API, from Andrii Nakryiko.
+
+3) Add ingress_ifindex to BPF_SK_LOOKUP program type for selectively applying the
+   programmable socket lookup logic to packets from a given netdev, from Mark Pashmfouroush.
+
+4) Remove the 128M upper JIT limit for BPF programs on arm64 and add selftest to
+   ensure exception handling still works, from Russell King and Alan Maguire.
+
+5) Add a new bpf_find_vma() helper for tracing to map an address to the backing
+   file such as shared library, from Song Liu.
+
+6) Batch of various misc fixes to bpftool, fixing a memory leak in BPF program dump,
+   updating documentation and bash-completion among others, from Quentin Monnet.
+
+7) Deprecate libbpf bpf_program__get_prog_info_linear() API and migrate its users as
+   the API is heavily tailored around perf and is non-generic, from Dave Marchevsky.
+
+8) Enable libbpf's strict mode by default in bpftool and add a --legacy option as an
+   opt-out for more relaxed BPF program requirements, from Stanislav Fomichev.
+
+9) Fix bpftool to use libbpf_get_error() to check for errors, from Hengqi Chen.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alan Maguire, Alexei Starovoitov, Andrii Nakryiko, Dave Marchevsky, Eric 
+Dumazet, Hengqi Chen, Jakub Kicinski, Jean-Philippe Brucker, Jesper 
+Dangaard Brouer, Joe Stringer, Kumar Kartikeya Dwivedi, Quentin Monnet, 
+Song Liu, Tobias Klauser, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit cc0356d6a02e064387c16a83cb96fe43ef33181e:
+
+  Merge tag 'x86_core_for_v5.16_rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2021-11-02 07:56:47 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to e5043894b21f7d99d3db31ad06308d6c5726caa6:
+
+  bpftool: Use libbpf_get_error() to check error (2021-11-14 18:38:13 -0800)
+
+----------------------------------------------------------------
+Alan Maguire (1):
+      selftests/bpf: Add exception handling selftests for tp_bpf program
+
+Alexei Starovoitov (9):
+      Merge branch 'libbpf ELF sanity checking improvements'
+      Merge branch 'libbpf: add unified bpf_prog_load() low-level API'
+      Merge branch 'Fix leaks in libbpf and selftests'
+      Merge branch 'introduce bpf_find_vma'
+      Merge branch 'Get ingress_ifindex in BPF_SK_LOOKUP prog type'
+      Merge branch 'selftests/bpf: fix test_progs' log_level logic'
+      Merge branch 'Future-proof more tricky libbpf APIs'
+      Merge branch 'Support BTF_KIND_TYPE_TAG for btf_type_tag attributes'
+      Merge branch 'introduce btf_tracing_ids'
+
+Andrii Nakryiko (41):
+      Merge branch 'libbpf: deprecate bpf_program__get_prog_info_linear'
+      libbpf: Detect corrupted ELF symbols section
+      libbpf: Improve sanity checking during BTF fix up
+      libbpf: Validate that .BTF and .BTF.ext sections contain data
+      libbpf: Fix section counting logic
+      libbpf: Improve ELF relo sanitization
+      libbpf: Deprecate bpf_program__load() API
+      libbpf: Fix non-C89 loop variable declaration in gen_loader.c
+      libbpf: Rename DECLARE_LIBBPF_OPTS into LIBBPF_OPTS
+      libbpf: Pass number of prog load attempts explicitly
+      libbpf: Unify low-level BPF_PROG_LOAD APIs into bpf_prog_load()
+      libbpf: Remove internal use of deprecated bpf_prog_load() variants
+      libbpf: Stop using to-be-deprecated APIs
+      bpftool: Stop using deprecated bpf_load_program()
+      libbpf: Remove deprecation attribute from struct bpf_prog_prep_result
+      selftests/bpf: Fix non-strict SEC() program sections
+      selftests/bpf: Convert legacy prog load APIs to bpf_prog_load()
+      selftests/bpf: Merge test_stub.c into testing_helpers.c
+      selftests/bpf: Use explicit bpf_prog_test_load() calls everywhere
+      selftests/bpf: Use explicit bpf_test_load_program() helper calls
+      selftests/bpf: Pass sanitizer flags to linker through LDFLAGS
+      libbpf: Free up resources used by inner map definition
+      selftests/bpf: Fix memory leaks in btf_type_c_dump() helper
+      selftests/bpf: Free per-cpu values array in bpf_iter selftest
+      selftests/bpf: Free inner strings index in btf selftest
+      selftests/bpf: Clean up btf and btf_dump in dump_datasec test
+      selftests/bpf: Avoid duplicate btf__parse() call
+      selftests/bpf: Destroy XDP link correctly
+      selftests/bpf: Fix bpf_object leak in skb_ctx selftest
+      libbpf: Add ability to get/set per-program load flags
+      selftests/bpf: Fix bpf_prog_test_load() logic to pass extra log level
+      bpftool: Normalize compile rules to specify output file last
+      selftests/bpf: Minor cleanups and normalization of Makefile
+      libbpf: Turn btf_dedup_opts into OPTS-based struct
+      libbpf: Ensure btf_dump__new() and btf_dump_opts are future-proof
+      libbpf: Make perf_buffer__new() use OPTS-based interface
+      selftests/bpf: Migrate all deprecated perf_buffer uses
+      selftests/bpf: Update btf_dump__new() uses to v1.0+ variant
+      tools/runqslower: Update perf_buffer__new() calls
+      bpftool: Update btf_dump__new() and perf_buffer__new_raw() calls
+      Merge branch 'bpftool: miscellaneous fixes'
+
+Dave Marchevsky (4):
+      bpftool: Migrate -1 err checks of libbpf fn calls
+      bpftool: Use bpf_obj_get_info_by_fd directly
+      perf: Pull in bpf_program__get_prog_info_linear
+      libbpf: Deprecate bpf_program__get_prog_info_linear
+
+Hengqi Chen (1):
+      bpftool: Use libbpf_get_error() to check error
+
+Kumar Kartikeya Dwivedi (1):
+      libbpf: Compile using -std=gnu89
+
+Mark Pashmfouroush (2):
+      bpf: Add ingress_ifindex to bpf_sk_lookup
+      selftests/bpf: Add tests for accessing ingress_ifindex in bpf_sk_lookup
+
+Quentin Monnet (6):
+      bpftool: Fix SPDX tag for Makefiles and .gitignore
+      bpftool: Fix memory leak in prog_dump()
+      bpftool: Remove inclusion of utilities.mak from Makefiles
+      bpftool: Fix indent in option lists in the documentation
+      bpftool: Update the lists of names for maps and prog-attach types
+      bpftool: Fix mixed indentation in documentation
+
+Russell King (1):
+      arm64/bpf: Remove 128MB limit for BPF JIT programs
+
+Song Liu (4):
+      bpf: Introduce helper bpf_find_vma
+      selftests/bpf: Add tests for bpf_find_vma
+      bpf: Extend BTF_ID_LIST_GLOBAL with parameter for number of IDs
+      bpf: Introduce btf_tracing_ids
+
+Stanislav Fomichev (1):
+      bpftool: Enable libbpf's strict mode by default
+
+Yonghong Song (12):
+      bpf: Support BTF_KIND_TYPE_TAG for btf_type_tag attributes
+      libbpf: Support BTF_KIND_TYPE_TAG
+      bpftool: Support BTF_KIND_TYPE_TAG
+      selftests/bpf: Test libbpf API function btf__add_type_tag()
+      selftests/bpf: Add BTF_KIND_TYPE_TAG unit tests
+      selftests/bpf: Test BTF_KIND_DECL_TAG for deduplication
+      selftests/bpf: Rename progs/tag.c to progs/btf_decl_tag.c
+      selftests/bpf: Add a C test for btf_type_tag
+      selftests/bpf: Clarify llvm dependency with btf_tag selftest
+      docs/bpf: Update documentation for BTF_KIND_TYPE_TAG support
+      selftests/bpf: Fix an unused-but-set-variable compiler warning
+      selftests/bpf: Fix a tautological-constant-out-of-range-compare compiler warning
+
+ Documentation/bpf/btf.rst                          |  13 +-
+ arch/arm64/include/asm/extable.h                   |   9 -
+ arch/arm64/include/asm/memory.h                    |   5 +-
+ arch/arm64/kernel/traps.c                          |   2 +-
+ arch/arm64/mm/ptdump.c                             |   2 -
+ arch/arm64/net/bpf_jit_comp.c                      |   7 +-
+ include/linux/bpf.h                                |   1 +
+ include/linux/btf_ids.h                            |  20 +-
+ include/linux/filter.h                             |   7 +-
+ include/uapi/linux/bpf.h                           |  21 ++
+ include/uapi/linux/btf.h                           |   3 +-
+ kernel/bpf/bpf_task_storage.c                      |   4 +-
+ kernel/bpf/btf.c                                   |  19 +-
+ kernel/bpf/mmap_unlock_work.h                      |  65 ++++
+ kernel/bpf/stackmap.c                              |  82 +----
+ kernel/bpf/task_iter.c                             |  82 ++++-
+ kernel/bpf/verifier.c                              |  34 ++
+ kernel/trace/bpf_trace.c                           |   6 +-
+ net/core/filter.c                                  |  13 +-
+ net/ipv4/inet_hashtables.c                         |   8 +-
+ net/ipv4/udp.c                                     |   8 +-
+ net/ipv6/inet6_hashtables.c                        |   8 +-
+ net/ipv6/udp.c                                     |   8 +-
+ tools/bpf/bpftool/.gitignore                       |   2 +-
+ tools/bpf/bpftool/Documentation/Makefile           |   3 +-
+ tools/bpf/bpftool/Documentation/bpftool-btf.rst    |   2 +-
+ tools/bpf/bpftool/Documentation/bpftool-cgroup.rst |  12 +-
+ tools/bpf/bpftool/Documentation/bpftool-gen.rst    |   2 +-
+ tools/bpf/bpftool/Documentation/bpftool-link.rst   |   2 +-
+ tools/bpf/bpftool/Documentation/bpftool-map.rst    |   8 +-
+ tools/bpf/bpftool/Documentation/bpftool-net.rst    |  66 ++--
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst   |   8 +-
+ tools/bpf/bpftool/Documentation/bpftool.rst        |   6 +-
+ tools/bpf/bpftool/Documentation/common_options.rst |   9 +
+ tools/bpf/bpftool/Makefile                         |  19 +-
+ tools/bpf/bpftool/bash-completion/bpftool          |   5 +-
+ tools/bpf/bpftool/btf.c                            |  13 +-
+ tools/bpf/bpftool/btf_dumper.c                     |  42 ++-
+ tools/bpf/bpftool/common.c                         |   1 +
+ tools/bpf/bpftool/feature.c                        |   2 +-
+ tools/bpf/bpftool/gen.c                            |  12 +-
+ tools/bpf/bpftool/iter.c                           |   7 +-
+ tools/bpf/bpftool/main.c                           |  13 +-
+ tools/bpf/bpftool/main.h                           |   3 +-
+ tools/bpf/bpftool/map.c                            |  13 +-
+ tools/bpf/bpftool/map_perf_ring.c                  |   9 +-
+ tools/bpf/bpftool/prog.c                           | 214 +++++++++---
+ tools/bpf/bpftool/struct_ops.c                     |  16 +-
+ tools/bpf/runqslower/runqslower.c                  |   6 +-
+ tools/include/uapi/linux/bpf.h                     |  21 ++
+ tools/include/uapi/linux/btf.h                     |   3 +-
+ tools/lib/bpf/Makefile                             |   1 +
+ tools/lib/bpf/bpf.c                                | 166 +++++----
+ tools/lib/bpf/bpf.h                                |  74 +++-
+ tools/lib/bpf/bpf_gen_internal.h                   |   8 +-
+ tools/lib/bpf/btf.c                                |  69 ++--
+ tools/lib/bpf/btf.h                                |  80 ++++-
+ tools/lib/bpf/btf_dump.c                           |  40 ++-
+ tools/lib/bpf/gen_loader.c                         |  33 +-
+ tools/lib/bpf/libbpf.c                             | 376 ++++++++++++---------
+ tools/lib/bpf/libbpf.h                             | 102 +++++-
+ tools/lib/bpf/libbpf.map                           |  13 +
+ tools/lib/bpf/libbpf_common.h                      |  14 +-
+ tools/lib/bpf/libbpf_internal.h                    |  33 +-
+ tools/lib/bpf/libbpf_legacy.h                      |   1 +
+ tools/lib/bpf/libbpf_probes.c                      |  20 +-
+ tools/lib/bpf/linker.c                             |   4 +-
+ tools/lib/bpf/xsk.c                                |  34 +-
+ tools/perf/Documentation/perf.data-file-format.txt |   2 +-
+ tools/perf/util/Build                              |   1 +
+ tools/perf/util/annotate.c                         |   3 +-
+ tools/perf/util/bpf-event.c                        |  41 ++-
+ tools/perf/util/bpf-event.h                        |   2 +-
+ tools/perf/util/bpf-utils.c                        | 261 ++++++++++++++
+ tools/perf/util/bpf-utils.h                        |  76 +++++
+ tools/perf/util/bpf_counter.c                      |   6 +-
+ tools/perf/util/dso.c                              |   1 +
+ tools/perf/util/env.c                              |   1 +
+ tools/perf/util/header.c                           |  13 +-
+ tools/testing/selftests/bpf/Makefile               |  71 ++--
+ tools/testing/selftests/bpf/README.rst             |   9 +-
+ .../selftests/bpf/benchs/bench_bloom_filter_map.c  |  17 +-
+ .../testing/selftests/bpf/benchs/bench_ringbufs.c  |   8 +-
+ tools/testing/selftests/bpf/btf_helpers.c          |  17 +-
+ tools/testing/selftests/bpf/flow_dissector_load.h  |   3 +-
+ tools/testing/selftests/bpf/get_cgroup_id_user.c   |   5 +-
+ tools/testing/selftests/bpf/prog_tests/align.c     |  11 +-
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c  |   8 +-
+ .../testing/selftests/bpf/prog_tests/bpf_obj_id.c  |   2 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c       | 207 +++++++++---
+ .../selftests/bpf/prog_tests/btf_dedup_split.c     |   6 +-
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c  |  41 ++-
+ tools/testing/selftests/bpf/prog_tests/btf_split.c |   4 +-
+ tools/testing/selftests/bpf/prog_tests/btf_tag.c   |  44 ++-
+ tools/testing/selftests/bpf/prog_tests/btf_write.c |  67 ++--
+ .../bpf/prog_tests/cgroup_attach_autodetach.c      |   2 +-
+ .../selftests/bpf/prog_tests/cgroup_attach_multi.c |   2 +-
+ .../bpf/prog_tests/cgroup_attach_override.c        |   2 +-
+ .../testing/selftests/bpf/prog_tests/core_reloc.c  |   2 +-
+ tools/testing/selftests/bpf/prog_tests/exhandler.c |  43 +++
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |   8 +-
+ .../selftests/bpf/prog_tests/fexit_stress.c        |  33 +-
+ tools/testing/selftests/bpf/prog_tests/find_vma.c  | 117 +++++++
+ .../bpf/prog_tests/flow_dissector_load_bytes.c     |   2 +-
+ .../bpf/prog_tests/flow_dissector_reattach.c       |   4 +-
+ .../selftests/bpf/prog_tests/get_stack_raw_tp.c    |   9 +-
+ .../testing/selftests/bpf/prog_tests/global_data.c |   2 +-
+ .../selftests/bpf/prog_tests/global_func_args.c    |   2 +-
+ tools/testing/selftests/bpf/prog_tests/kfree_skb.c |   8 +-
+ tools/testing/selftests/bpf/prog_tests/l4lb_all.c  |   2 +-
+ .../selftests/bpf/prog_tests/load_bytes_relative.c |   2 +-
+ tools/testing/selftests/bpf/prog_tests/map_lock.c  |   4 +-
+ .../selftests/bpf/prog_tests/migrate_reuseport.c   |   4 +-
+ .../testing/selftests/bpf/prog_tests/perf_buffer.c |   6 +-
+ .../testing/selftests/bpf/prog_tests/pkt_access.c  |   2 +-
+ .../selftests/bpf/prog_tests/pkt_md_access.c       |   2 +-
+ .../selftests/bpf/prog_tests/queue_stack_map.c     |   2 +-
+ .../raw_tp_writable_reject_nbd_invalid.c           |  14 +-
+ .../bpf/prog_tests/raw_tp_writable_test_run.c      |  29 +-
+ .../selftests/bpf/prog_tests/signal_pending.c      |   2 +-
+ tools/testing/selftests/bpf/prog_tests/sk_lookup.c |  31 ++
+ tools/testing/selftests/bpf/prog_tests/skb_ctx.c   |   4 +-
+ .../testing/selftests/bpf/prog_tests/skb_helpers.c |   2 +-
+ tools/testing/selftests/bpf/prog_tests/sockopt.c   |  19 +-
+ tools/testing/selftests/bpf/prog_tests/spinlock.c  |   4 +-
+ .../selftests/bpf/prog_tests/stacktrace_map.c      |   2 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c         |   2 +-
+ tools/testing/selftests/bpf/prog_tests/tailcalls.c |  18 +-
+ .../selftests/bpf/prog_tests/task_fd_query_rawtp.c |   2 +-
+ .../selftests/bpf/prog_tests/task_fd_query_tp.c    |   4 +-
+ .../testing/selftests/bpf/prog_tests/tcp_estats.c  |   2 +-
+ .../selftests/bpf/prog_tests/tp_attach_query.c     |   2 +-
+ tools/testing/selftests/bpf/prog_tests/xdp.c       |   2 +-
+ .../selftests/bpf/prog_tests/xdp_adjust_tail.c     |   6 +-
+ .../testing/selftests/bpf/prog_tests/xdp_attach.c  |   6 +-
+ .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   7 +-
+ tools/testing/selftests/bpf/prog_tests/xdp_info.c  |   2 +-
+ tools/testing/selftests/bpf/prog_tests/xdp_perf.c  |   2 +-
+ .../selftests/bpf/progs/{tag.c => btf_decl_tag.c}  |   4 -
+ tools/testing/selftests/bpf/progs/btf_type_tag.c   |  25 ++
+ tools/testing/selftests/bpf/progs/exhandler_kern.c |  43 +++
+ tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c  |   2 +-
+ tools/testing/selftests/bpf/progs/find_vma.c       |  69 ++++
+ tools/testing/selftests/bpf/progs/find_vma_fail1.c |  29 ++
+ tools/testing/selftests/bpf/progs/find_vma_fail2.c |  29 ++
+ tools/testing/selftests/bpf/progs/test_l4lb.c      |   2 +-
+ .../selftests/bpf/progs/test_l4lb_noinline.c       |   2 +-
+ tools/testing/selftests/bpf/progs/test_map_lock.c  |   2 +-
+ .../selftests/bpf/progs/test_queue_stack_map.h     |   2 +-
+ tools/testing/selftests/bpf/progs/test_sk_lookup.c |   8 +
+ tools/testing/selftests/bpf/progs/test_skb_ctx.c   |   2 +-
+ tools/testing/selftests/bpf/progs/test_spin_lock.c |   2 +-
+ .../testing/selftests/bpf/progs/test_tcp_estats.c  |   2 +-
+ tools/testing/selftests/bpf/test_btf.h             |   3 +
+ tools/testing/selftests/bpf/test_cgroup_storage.c  |   3 +-
+ tools/testing/selftests/bpf/test_dev_cgroup.c      |   3 +-
+ tools/testing/selftests/bpf/test_lirc_mode2_user.c |   6 +-
+ tools/testing/selftests/bpf/test_lru_map.c         |   9 +-
+ tools/testing/selftests/bpf/test_maps.c            |   7 +-
+ tools/testing/selftests/bpf/test_sock.c            |  23 +-
+ tools/testing/selftests/bpf/test_sock_addr.c       |  13 +-
+ tools/testing/selftests/bpf/test_stub.c            |  44 ---
+ tools/testing/selftests/bpf/test_sysctl.c          |  23 +-
+ tools/testing/selftests/bpf/test_tag.c             |   3 +-
+ tools/testing/selftests/bpf/test_tcpnotify_user.c  |   7 +-
+ tools/testing/selftests/bpf/test_verifier.c        |  38 +--
+ tools/testing/selftests/bpf/testing_helpers.c      |  60 ++++
+ tools/testing/selftests/bpf/testing_helpers.h      |   6 +
+ .../testing/selftests/bpf/verifier/ctx_sk_lookup.c |  32 ++
+ tools/testing/selftests/bpf/xdping.c               |   3 +-
+ tools/testing/selftests/bpf/xdpxceiver.c           |   2 -
+ 171 files changed, 2728 insertions(+), 1143 deletions(-)
+ create mode 100644 kernel/bpf/mmap_unlock_work.h
+ create mode 100644 tools/perf/util/bpf-utils.c
+ create mode 100644 tools/perf/util/bpf-utils.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/exhandler.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/find_vma.c
+ rename tools/testing/selftests/bpf/progs/{tag.c => btf_decl_tag.c} (94%)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_type_tag.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exhandler_kern.c
+ create mode 100644 tools/testing/selftests/bpf/progs/find_vma.c
+ create mode 100644 tools/testing/selftests/bpf/progs/find_vma_fail1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/find_vma_fail2.c
+ delete mode 100644 tools/testing/selftests/bpf/test_stub.c
