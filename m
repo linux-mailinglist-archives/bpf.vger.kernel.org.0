@@ -2,82 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14224518AC
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 00:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C078451A3B
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 00:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347612AbhKOXFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 18:05:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350947AbhKOXDI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Nov 2021 18:03:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7B8146124B;
-        Mon, 15 Nov 2021 23:00:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637017209;
-        bh=N8vy7Ciqk3MUgXenShMP/984Gc3+qw7T2saMQMt4meQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=o5ILMxlQKhBlia8NToVIE/JiaA+lzdTYNM02/IaXtZxIfeNBN3h3IHVRga4kOnFBN
-         8RLq351UP05ECIqSCKjSCZc9zborUmxl2c7B4pqZW/eKvE1ZuXLguXpKGkcVpRx3ZT
-         J8VfnxVseZPlEWSobch4MptDZHhtnMTyLZmoNJ4YuxApJNesZeLV1J7oIS9mBjCMms
-         sduBa4sxE+K5Au3G+tLOu/8a2o96MAOX6AJBtB+IMV4YHLTLRiyGwJBbKaZ0nFgJQs
-         k7XdKeiOHHuboHAnMkir+OCps24pz2R8A2h6Vw+ySDoSizWgd0dMWxeEEXTpYshjTK
-         41uLR/q9K+EkQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6AE5C6095A;
-        Mon, 15 Nov 2021 23:00:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1346015AbhKOXfU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 18:35:20 -0500
+Received: from www62.your-server.de ([213.133.104.62]:53340 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353101AbhKOXdO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 18:33:14 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mmlQO-000Ci8-7O; Tue, 16 Nov 2021 00:30:08 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mmlQN-000GXA-PZ; Tue, 16 Nov 2021 00:30:07 +0100
+Subject: Re: [PATCH] bpf: Enable bpf support for reading branch records in
+ powerpc
+To:     Kajol Jain <kjain@linux.ibm.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     acme@kernel.org, peterz@infradead.org, songliubraving@fb.com,
+        andrii@kernel.org, kafai@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, davem@davemloft.net, kpsingh@kernel.org,
+        hawk@kernel.org, kuba@kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
+        rnsastry@linux.ibm.com
+References: <20211115044437.12047-1-kjain@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5a185d6b-7090-23f0-1ec9-140a31ee5fb4@iogearbox.net>
+Date:   Tue, 16 Nov 2021 00:30:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] samples: bpf: fix build error due to -isystem removal
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163701720943.28601.12990584204511867827.git-patchwork-notify@kernel.org>
-Date:   Mon, 15 Nov 2021 23:00:09 +0000
-References: <20211115130741.3584-1-alexandr.lobakin@intel.com>
-In-Reply-To: <20211115130741.3584-1-alexandr.lobakin@intel.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, jesse.brandeburg@intel.com,
-        maciej.fijalkowski@intel.com, michal.swiatkowski@linux.intel.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, adobriyan@gmail.com, masahiroy@kernel.org,
-        ardb@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+In-Reply-To: <20211115044437.12047-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26354/Mon Nov 15 10:21:07 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon, 15 Nov 2021 14:07:41 +0100 you wrote:
-> Since recent Kbuild updates we no longer include files from compiler
-> directories. However, samples/bpf/hbm_kern.h hasn't been tuned for
-> this (LLVM 13):
+On 11/15/21 5:44 AM, Kajol Jain wrote:
+> Branch data available to bpf programs can be very useful to get
+> stack traces out of userspace applications.
 > 
->   CLANG-bpf  samples/bpf/hbm_out_kern.o
-> In file included from samples/bpf/hbm_out_kern.c:55:
-> samples/bpf/hbm_kern.h:12:10: fatal error: 'stddef.h' file not found
->          ^~~~~~~~~~
-> 1 error generated.
->   CLANG-bpf  samples/bpf/hbm_edt_kern.o
-> In file included from samples/bpf/hbm_edt_kern.c:53:
-> samples/bpf/hbm_kern.h:12:10: fatal error: 'stddef.h' file not found
->          ^~~~~~~~~~
-> 1 error generated.
+> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
+> added bpf support to capture branch records in x86. Enable this feature
+> for powerpc as well.
 > 
-> [...]
+> Commit 67306f84ca78 ("selftests/bpf: Add bpf_read_branch_records()
+> selftest") adds selftest corresponding to bpf branch read
+> function bpf_read_branch_records(). Used this selftest to
+> test bpf support, for reading branch records in powerpc.
+> 
+> Selftest result in power9 box before this patch changes:
+> 
+> [command]# ./test_progs -t perf_branches
+> Failed to load bpf_testmod.ko into the kernel: -8
+> WARNING! Selftests relying on bpf_testmod.ko will be skipped.
+> test_perf_branches_common:PASS:test_perf_branches_load 0 nsec
+> test_perf_branches_common:PASS:attach_perf_event 0 nsec
+> test_perf_branches_common:PASS:set_affinity 0 nsec
+> check_good_sample:PASS:output not valid 0 nsec
+> check_good_sample:FAIL:read_branches_size err -2
+> check_good_sample:FAIL:read_branches_stack err -2
+> check_good_sample:FAIL:read_branches_stack stack bytes written=-2
+> not multiple of struct size=24
+> check_good_sample:FAIL:read_branches_global err -2
+> check_good_sample:FAIL:read_branches_global global bytes written=-2
+> not multiple of struct size=24
+> check_good_sample:PASS:read_branches_size 0 nsec
+>   #75/1 perf_branches_hw:FAIL
+>   #75/2 perf_branches_no_hw:OK
+>   #75 perf_branches:FAIL
+> Summary: 0/1 PASSED, 0 SKIPPED, 2 FAILED
+> 
+> Selftest result in power9 box after this patch changes:
+> 
+> [command]#: ./test_progs -t perf_branches
+>   #75/1 perf_branches_hw:OK
+>   #75/2 perf_branches_no_hw:OK
+>   #75 perf_branches:OK
+> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Signed-off-by: Kajol Jain<kjain@linux.ibm.com>
+> ---
+>   kernel/trace/bpf_trace.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index fdd14072fc3b..2b7343b64bb7 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1245,7 +1245,7 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
+>   BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>   	   void *, buf, u32, size, u64, flags)
+>   {
+> -#ifndef CONFIG_X86
+> +#if !(defined(CONFIG_X86) || defined(CONFIG_PPC64))
 
-Here is the summary with links:
-  - [bpf] samples: bpf: fix build error due to -isystem removal
-    https://git.kernel.org/bpf/bpf/c/6e528ca494d4
+Can this really be enabled generically? Looking at 3925f46bb590 ("powerpc/perf: Enable
+branch stack sampling framework") it says POWER8 [and beyond]. Should there be a generic
+Kconfig symbol like ARCH_HAS_BRANCH_RECORDS that can be selected by archs instead?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>   	return -ENOENT;
+>   #else
+>   	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
+> 
 
