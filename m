@@ -2,113 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A52450E97
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 19:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B24450ABD
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 18:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237015AbhKOSQl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 13:16:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240695AbhKOSLr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:11:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB9063317;
-        Mon, 15 Nov 2021 17:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998476;
-        bh=QeOx66bLaohTdP8iS3no5arKK1EF+YLTTkG3AQMRpUo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Jb2HN69OhqmKTu7S6RducJLBtUirHxHsVXOD+qgMG71LqRpE+awp1PiHnhE5bQXa
-         td3fp6odRlsECRtYzvyrBL1hlGN5nJXLzTTlaaxP5A3FH2hpzecsFFrb5p/4jfMvdS
-         RtkVcZty+lX5gXCTqSzUUMv26b4iQBLlI+HM4CEM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 523/575] perf bpf: Add missing free to bpf_event__print_bpf_prog_info()
-Date:   Mon, 15 Nov 2021 18:04:08 +0100
-Message-Id: <20211115165401.758780025@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232338AbhKOROU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 12:14:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236756AbhKORMd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 15 Nov 2021 12:12:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636996177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wscZ0cgeMoeQ6rtb9cbLe3FKWGxA97hDuF+nauPvdro=;
+        b=GnlsQbFYPrkgczbNEAcB8CG1O7fnodYCNUBE8YeTceWifkThFk5FEASpi7nPMndvG6AILo
+        sdsC131S8Z5aFtgf/vDvz9pPK8sc5zmBv47vOkUZVF9EI4H8250APWfglpBg1bq1+p+pfR
+        eS38o8gP2GMsfhlB6lO7L3V+fYnr9hM=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-Bwlr8KxpNpa_Ci4jjKBvQA-1; Mon, 15 Nov 2021 12:09:36 -0500
+X-MC-Unique: Bwlr8KxpNpa_Ci4jjKBvQA-1
+Received: by mail-il1-f200.google.com with SMTP id d8-20020a928748000000b0027585828bc3so10980373ilm.7
+        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 09:09:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=wscZ0cgeMoeQ6rtb9cbLe3FKWGxA97hDuF+nauPvdro=;
+        b=GKvd2D1Bp+DS/DO03hptJ8IvlzgXFTBgVxMWl4jqwqGB9+meHEzWvvqgD1Rn1x7Jvj
+         EyMZ/Uck2aUETn61Z+OI5urJ0vOWRhntlxMYMZsQuMkmvVQjucppXUpdniOWubUGy8eT
+         SduzhMeUWLegxelK1CMalJ57sMtxtcjpScXriMfB1sl/wUNWLfIGrxEN8ZgOSY8vRZYa
+         dCHE0u/LNj8D8oeNryJ5pVsD981cV+PdH8zXvsqMoCCL3Id1FNKUmKuis6pm993e3vF1
+         uDPDpbZspO0l5xWIX0c2noHU6dPlLe0VlaCG1oQqHSIeMbajJ3Pos4aWdIrUzCtvmufc
+         MDfQ==
+X-Gm-Message-State: AOAM532pkenGz5FOO3U80ukhl2NEWPRAAZJTnCLqxzwaptpfpQJ8lPF8
+        G9cNGxKFNgLyS54KotPhu1x4xB3Mk3eqXctDq9E5WJ337H4bIY3JeuHuA20HNEOHFw5IXiQimGn
+        oX6PlQTXpOaD0
+X-Received: by 2002:a5e:9918:: with SMTP id t24mr234703ioj.161.1636996174268;
+        Mon, 15 Nov 2021 09:09:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwIq1SSOWARdDNhtSTT3PjZXFYqHRPnZwgI+hWF++rvFF1LFklRt/iRLXkUW/lJMDGY+eTpaw==
+X-Received: by 2002:a5e:9918:: with SMTP id t24mr234588ioj.161.1636996172536;
+        Mon, 15 Nov 2021 09:09:32 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id s17sm10547264iln.44.2021.11.15.09.09.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 09:09:32 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C667E18026E; Mon, 15 Nov 2021 18:09:28 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] bpf: let bpf_warn_invalid_xdp_action() report
+ more info
+In-Reply-To: <1b9bf5f4327699c74f93c297433012400769a60f.camel@redhat.com>
+References: <cover.1636987322.git.pabeni@redhat.com>
+ <c48e1392bdb0937fd33d3524e1c955a1dae66f49.1636987322.git.pabeni@redhat.com>
+ <8735nxo08o.fsf@toke.dk>
+ <1b9bf5f4327699c74f93c297433012400769a60f.camel@redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 15 Nov 2021 18:09:28 +0100
+Message-ID: <87zgq5mjlj.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+Paolo Abeni <pabeni@redhat.com> writes:
 
-[ Upstream commit 88c42f4d6cb249eb68524282f8d4cc32f9059984 ]
+>> > -	pr_warn_once("%s XDP return value %u, expect packet loss!\n",
+>> > +	pr_warn_once("%s XDP return value %u on prog %d dev %s attach type %d, expect packet loss!\n",
+>> >  		     act > act_max ? "Illegal" : "Driver unsupported",
+>> > -		     act);
+>> > +		     act, prog->aux->id, dev->name, prog->expected_attach_type);
+>> 
+>> This will only ever trigger once per reboot even if the message differs,
+>> right? Which makes it less useful as a debugging aid; so I'm not sure if
+>> it's really worth it with this intrusive change unless we also do
+>> something to add a proper debugging aid (like a tracepoint)...
+>
+> Yes, the idea would be to add a tracepoint there, if there is general
+> agreement about this change.
+>
+> I think this patch is needed because the WARN_ONCE splat gives
+> implicitly information about the related driver and attach type.
+> Replacing with a simple printk we lose them.
 
-If btf__new() is called then there needs to be a corresponding btf__free().
+Ah, right, good point. Pointing that out in the commit message might be
+a good idea; otherwise people may miss that ;)
 
-Fixes: f8dfeae009effc0b ("perf bpf: Show more BPF program info in print_bpf_prog_info()")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20211106053733.3580931-2-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/bpf-event.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 3742511a08d15..c8101575dbf45 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -557,7 +557,7 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
- 		synthesize_bpf_prog_name(name, KSYM_NAME_LEN, info, btf, 0);
- 		fprintf(fp, "# bpf_prog_info %u: %s addr 0x%llx size %u\n",
- 			info->id, name, prog_addrs[0], prog_lens[0]);
--		return;
-+		goto out;
- 	}
- 
- 	fprintf(fp, "# bpf_prog_info %u:\n", info->id);
-@@ -567,4 +567,6 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
- 		fprintf(fp, "# \tsub_prog %u: %s addr 0x%llx size %u\n",
- 			i, name, prog_addrs[i], prog_lens[i]);
- 	}
-+out:
-+	btf__free(btf);
- }
--- 
-2.33.0
-
-
+-Toke
 
