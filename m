@@ -2,113 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7381B45147D
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 21:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4544445147A
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 21:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344882AbhKOUIK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 15:08:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344908AbhKOTZm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0B0C636E9;
-        Mon, 15 Nov 2021 19:06:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637003202;
-        bh=pppEKA1xdqr9mZaw9WCFjTzjBBLvrCTXY22vIoJ0THM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AbUAYk+fkSZ1sQs2GP4Hfhb+M2himCo+SxJa1MNMmIi26FTBlApHnDb0IrYbLNkq+
-         0m/vIEVSvCGmORJBh++T4O/bg1etgzHhMv15jHINkCaCugk5QHlWvM3SZzAGT+4swv
-         5OTTAGVYo6yKRSwF1XLsgT1IGdOqTAliFeGKBQwg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S1344562AbhKOUH5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 15:07:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344744AbhKOTZU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:25:20 -0500
+X-Greylist: delayed 866 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 15 Nov 2021 10:38:18 PST
+Received: from mx0b-00206401.pphosted.com (mx0b-00206401.pphosted.com [IPv6:2620:100:9005:15::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36893C04F54D;
+        Mon, 15 Nov 2021 10:38:17 -0800 (PST)
+Received: from pps.filterd (m0093025.ppops.net [127.0.0.1])
+        by mx0b-00206401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AFGRe0r013173;
+        Mon, 15 Nov 2021 10:23:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=default; bh=a0aGUTT83/LL+eF5quHv5xRe7ePbAt9odq1NU78fU9A=;
+ b=TkEKZezp3eAmSWPK/NzQ2GYfT9mzux9Vvsw9jAwBW6MJEVKYruXD5JkNTyLQ1+9p8oWZ
+ jGwmR29K7GwuSyajlk20BT/bFv0QVzZkTtBhxkJ/+uRh3kDn3lKyqdg5zdoqbikFNI9q
+ Pdj86jLAaeVKq1UJNF/g/xue2wDOUfktu4iGiPrA8yIktP7WeU7ypogmMODg0OIMy8pa
+ GTBTtcLG8yXSTMxVqm4Fft0mSmG1T+Mafo+stPGiTKM7fdvYq0Hv7tGAYcTucfnRRODn
+ IctmBqZiD+TohhZdXH3cpIwU3XOdvB+RpukUsey6EAzWlebbUstU9Mu4+5C4tPt6+0CU Ug== 
+Received: from 04wpexch04.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
+        by mx0b-00206401.pphosted.com (PPS) with ESMTPS id 3cb9d89dr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Nov 2021 10:23:24 -0800
+Received: from 04wpexch03.crowdstrike.sys (10.100.11.93) by
+ 04wpexch04.crowdstrike.sys (10.100.11.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.14; Mon, 15 Nov 2021 18:23:23 +0000
+Received: from 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2]) by
+ 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2%5]) with mapi id
+ 15.02.0922.014; Mon, 15 Nov 2021 18:23:23 +0000
+From:   Martin Kelly <martin.kelly@crowdstrike.com>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 815/917] perf bpf: Add missing free to bpf_event__print_bpf_prog_info()
-Date:   Mon, 15 Nov 2021 18:05:10 +0100
-Message-Id: <20211115165456.664905447@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
-User-Agent: quilt/0.66
+        "David S. Miller" <davem@davemloft.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Clarification on bpftool dual licensing
+Thread-Topic: Clarification on bpftool dual licensing
+Thread-Index: AdfaSwvKSqjQdenjT462p++ykpRerg==
+Date:   Mon, 15 Nov 2021 18:20:59 +0000
+Deferred-Delivery: Mon, 15 Nov 2021 18:20:03 +0000
+Message-ID: <54d3cb9669644995b6ae787b4d532b73@crowdstrike.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.100.11.84]
+x-disclaimer: USA
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-15_14,2021-11-15_01,2020-04-07_01
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+Hi,
 
-[ Upstream commit 88c42f4d6cb249eb68524282f8d4cc32f9059984 ]
+I have a question regarding the dual licensing provision of bpftool. I=20
+understand that bpftool can be distributed as either GPL 2.0 or BSD 2-claus=
+e.=20
+That said, bpftool can also auto-generate BPF code that gets specified inli=
+ne=20
+in the skeleton header file, and it's possible that the BPF code generated =
+is=20
+GPL. What I'm wondering is what happens if bpftool generates GPL-licensed B=
+PF=20
+code inside the skeleton header, so that you get a header like this:
 
-If btf__new() is called then there needs to be a corresponding btf__free().
+something.skel.h:
+/* this file is BSD 2-clause, by nature of dual licensing */
 
-Fixes: f8dfeae009effc0b ("perf bpf: Show more BPF program info in print_bpf_prog_info()")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20211106053733.3580931-2-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/bpf-event.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+/* THIS FILE IS AUTOGENERATED! */
 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 1a7112a87736a..a410b3968b3af 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -576,7 +576,7 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
- 		synthesize_bpf_prog_name(name, KSYM_NAME_LEN, info, btf, 0);
- 		fprintf(fp, "# bpf_prog_info %u: %s addr 0x%llx size %u\n",
- 			info->id, name, prog_addrs[0], prog_lens[0]);
--		return;
-+		goto out;
- 	}
- 
- 	fprintf(fp, "# bpf_prog_info %u:\n", info->id);
-@@ -586,4 +586,6 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
- 		fprintf(fp, "# \tsub_prog %u: %s addr 0x%llx size %u\n",
- 			i, name, prog_addrs[i], prog_lens[i]);
- 	}
-+out:
-+	btf__free(btf);
- }
--- 
-2.33.0
+/* standard skeleton definitions */
 
+...
 
+s->data_sz =3D XXX;
+s->data =3D (void *)"\
+<eBPF bytecode, produced by GPL 2.0 sources, specified in binary>
+";
 
+My guess is that, based on the choice to dual-license bpftool, the header i=
+s=20
+meant to still be BSD 2-clause, and the s->data inline code's GPL license i=
+s=20
+not meant to change the licensing of the header itself, but I wanted to=20
+double-check, especially as I am not a lawyer. If this is indeed the intent=
+,=20
+is there any opposition to a patch clarifying this more explicitly in=20
+Documentation/bpf/bpf_licensing.rst?
+
+Thanks,
+Martin
