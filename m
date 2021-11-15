@@ -2,107 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4544445147A
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 21:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790D045147E
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 21:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344562AbhKOUH5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 15:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
+        id S1345040AbhKOUI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 15:08:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344744AbhKOTZU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:25:20 -0500
-X-Greylist: delayed 866 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 15 Nov 2021 10:38:18 PST
-Received: from mx0b-00206401.pphosted.com (mx0b-00206401.pphosted.com [IPv6:2620:100:9005:15::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36893C04F54D;
-        Mon, 15 Nov 2021 10:38:17 -0800 (PST)
-Received: from pps.filterd (m0093025.ppops.net [127.0.0.1])
-        by mx0b-00206401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AFGRe0r013173;
-        Mon, 15 Nov 2021 10:23:24 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=default; bh=a0aGUTT83/LL+eF5quHv5xRe7ePbAt9odq1NU78fU9A=;
- b=TkEKZezp3eAmSWPK/NzQ2GYfT9mzux9Vvsw9jAwBW6MJEVKYruXD5JkNTyLQ1+9p8oWZ
- jGwmR29K7GwuSyajlk20BT/bFv0QVzZkTtBhxkJ/+uRh3kDn3lKyqdg5zdoqbikFNI9q
- Pdj86jLAaeVKq1UJNF/g/xue2wDOUfktu4iGiPrA8yIktP7WeU7ypogmMODg0OIMy8pa
- GTBTtcLG8yXSTMxVqm4Fft0mSmG1T+Mafo+stPGiTKM7fdvYq0Hv7tGAYcTucfnRRODn
- IctmBqZiD+TohhZdXH3cpIwU3XOdvB+RpukUsey6EAzWlebbUstU9Mu4+5C4tPt6+0CU Ug== 
-Received: from 04wpexch04.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-        by mx0b-00206401.pphosted.com (PPS) with ESMTPS id 3cb9d89dr9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 10:23:24 -0800
-Received: from 04wpexch03.crowdstrike.sys (10.100.11.93) by
- 04wpexch04.crowdstrike.sys (10.100.11.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.14; Mon, 15 Nov 2021 18:23:23 +0000
-Received: from 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2]) by
- 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2%5]) with mapi id
- 15.02.0922.014; Mon, 15 Nov 2021 18:23:23 +0000
-From:   Martin Kelly <martin.kelly@crowdstrike.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Clarification on bpftool dual licensing
-Thread-Topic: Clarification on bpftool dual licensing
-Thread-Index: AdfaSwvKSqjQdenjT462p++ykpRerg==
-Date:   Mon, 15 Nov 2021 18:20:59 +0000
-Deferred-Delivery: Mon, 15 Nov 2021 18:20:03 +0000
-Message-ID: <54d3cb9669644995b6ae787b4d532b73@crowdstrike.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.100.11.84]
-x-disclaimer: USA
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_14,2021-11-15_01,2020-04-07_01
+        with ESMTP id S1347427AbhKOTjv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:39:51 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385B9C03541C
+        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 11:31:08 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso28556161ybj.1
+        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 11:31:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4uSzuTcwVIaWHj9mOBdqmeLq8zoZlReWYD6+yqHjK7w=;
+        b=B0ygsEcxpyi9/suFEKLR81K66yi2KGN23Crva/YVNYqEsJoA1tmUHqX7aBKJPkGd4U
+         fSY+qEoMnFtGx3lA3nRfsm8SB4PtZW0ApzXc0X5dE8C3slCsuHw1TfJF5CyaXwIuSags
+         lW/QqSiAJ9cd4+ws49dsTNiX1im5s2FvA/7eNhyjV1NBJ8pnsHhulKkqfISz9anHSEts
+         t0Gyqw9rwlsXfOXf/MeZY2fzaHxoj2BseikTjsd75HbDcMRl4K/pZrdruPUZ2aiV+w3O
+         /o9dmZcMz8HHmpcegWRku0WJIWb0uKW0PK2oes/F4Q0CMkfpljUoU19qxC2XQNmahS4W
+         DDLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4uSzuTcwVIaWHj9mOBdqmeLq8zoZlReWYD6+yqHjK7w=;
+        b=oKB/asa7inMCXmtlk0OYoSpj7ftNxIzuOUIeaK6jYIemYtStIsk2NJYAC6qwkUZs/K
+         nrFioy3k7KvYWYcIbMw+ej0/1naMAjZfZCWElla+OTeTxjXY5IZBpGN8A8ClmjpnnHW0
+         sRXgY8xtrepb/Qcet1/UXlhwP+5DMy+4vcGL2+sy2ikWAKEJIVHRPydlhZOzkcfHZLna
+         oilII0Lt8pG9Bg8+f6gHls+aZvWXPmtI7SRX3Teyebq6aEXzzzs7bzFFVt8NwuxpatL8
+         qC5JxxxGb0e5P+Y2mF/TVGmsyU4hjo9LA6f1HozmY+2r+0eOnwYZm7CvbWb4tLAk/cL3
+         H5UQ==
+X-Gm-Message-State: AOAM531NTsNTvH6llGM/eY910bXDexbbOBjraGtgpLrBx26eHGT52xoz
+        +wpk7AOe88igir8PbzdK/mZAhOQ=
+X-Google-Smtp-Source: ABdhPJytAWI4KPZsWIikMibV8nJzJ28kBVZg7YdtJbWDUVMDJpTI8G3PxhgKxZG7EHtm4MR8in9j1j8=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:b159:a155:9460:f1ca])
+ (user=sdf job=sendgmr) by 2002:a25:5954:: with SMTP id n81mr1457941ybb.435.1637004667476;
+ Mon, 15 Nov 2021 11:31:07 -0800 (PST)
+Date:   Mon, 15 Nov 2021 11:31:05 -0800
+Message-Id: <20211115193105.1952656-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
+Subject: [PATCH bpf-next v2] bpftool: add current libbpf_strict mode to
+ version output
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
++ bpftool --legacy --version
+bpftool v5.15.0
+features: libbfd, skeletons
++ bpftool --version
+bpftool v5.15.0
+features: libbfd, libbpf_strict, skeletons
 
-I have a question regarding the dual licensing provision of bpftool. I=20
-understand that bpftool can be distributed as either GPL 2.0 or BSD 2-claus=
-e.=20
-That said, bpftool can also auto-generate BPF code that gets specified inli=
-ne=20
-in the skeleton header file, and it's possible that the BPF code generated =
-is=20
-GPL. What I'm wondering is what happens if bpftool generates GPL-licensed B=
-PF=20
-code inside the skeleton header, so that you get a header like this:
++ bpftool --legacy --help
+Usage: bpftool [OPTIONS] OBJECT { COMMAND | help }
+       bpftool batch file FILE
+       bpftool version
 
-something.skel.h:
-/* this file is BSD 2-clause, by nature of dual licensing */
+       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter }
+       OPTIONS := { {-j|--json} [{-p|--pretty}] | {-d|--debug} | {-l|--legacy} |
+                    {-V|--version} }
++ bpftool --help
+Usage: bpftool [OPTIONS] OBJECT { COMMAND | help }
+       bpftool batch file FILE
+       bpftool version
 
-/* THIS FILE IS AUTOGENERATED! */
+       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter }
+       OPTIONS := { {-j|--json} [{-p|--pretty}] | {-d|--debug} | {-l|--legacy} |
+                    {-V|--version} }
 
-/* standard skeleton definitions */
++ bpftool --legacy
+Usage: bpftool [OPTIONS] OBJECT { COMMAND | help }
+       bpftool batch file FILE
+       bpftool version
 
-...
+       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter }
+       OPTIONS := { {-j|--json} [{-p|--pretty}] | {-d|--debug} | {-l|--legacy} |
+                    {-V|--version} }
++ bpftool
+Usage: bpftool [OPTIONS] OBJECT { COMMAND | help }
+       bpftool batch file FILE
+       bpftool version
 
-s->data_sz =3D XXX;
-s->data =3D (void *)"\
-<eBPF bytecode, produced by GPL 2.0 sources, specified in binary>
-";
+       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter }
+       OPTIONS := { {-j|--json} [{-p|--pretty}] | {-d|--debug} | {-l|--legacy} |
+                    {-V|--version} }
 
-My guess is that, based on the choice to dual-license bpftool, the header i=
-s=20
-meant to still be BSD 2-clause, and the s->data inline code's GPL license i=
-s=20
-not meant to change the licensing of the header itself, but I wanted to=20
-double-check, especially as I am not a lawyer. If this is indeed the intent=
-,=20
-is there any opposition to a patch clarifying this more explicitly in=20
-Documentation/bpf/bpf_licensing.rst?
++ bpftool --legacy version
+bpftool v5.15.0
+features: libbfd, skeletons
++ bpftool version
+bpftool v5.15.0
+features: libbfd, libbpf_strict, skeletons
 
-Thanks,
-Martin
++ bpftool --json --legacy version
+{"version":"5.15.0","features":{"libbfd":true,"libbpf_strict":false,"skeletons":true}}
++ bpftool --json version
+{"version":"5.15.0","features":{"libbfd":true,"libbpf_strict":true,"skeletons":true}}
+
+v2:
+- fixes for -h and -V (Quentin Monnet)
+
+Suggested-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/bpf/bpftool/main.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 473791e87f7d..601d0ee5e6d3 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -93,6 +93,7 @@ static int do_version(int argc, char **argv)
+ 		jsonw_name(json_wtr, "features");
+ 		jsonw_start_object(json_wtr);	/* features */
+ 		jsonw_bool_field(json_wtr, "libbfd", has_libbfd);
++		jsonw_bool_field(json_wtr, "libbpf_strict", !legacy_libbpf);
+ 		jsonw_bool_field(json_wtr, "skeletons", has_skeletons);
+ 		jsonw_end_object(json_wtr);	/* features */
+ 
+@@ -106,6 +107,10 @@ static int do_version(int argc, char **argv)
+ 			printf(" libbfd");
+ 			nb_features++;
+ 		}
++		if (!legacy_libbpf) {
++			printf("%s libbpf_strict", nb_features++ ? "," : "");
++			nb_features++;
++		}
+ 		if (has_skeletons)
+ 			printf("%s skeletons", nb_features++ ? "," : "");
+ 		printf("\n");
+@@ -414,9 +419,11 @@ int main(int argc, char **argv)
+ 				  options, NULL)) >= 0) {
+ 		switch (opt) {
+ 		case 'V':
+-			return do_version(argc, argv);
++			last_do_help = do_version;
++			break;
+ 		case 'h':
+-			return do_help(argc, argv);
++			last_do_help = do_help;
++			break;
+ 		case 'p':
+ 			pretty_output = true;
+ 			/* fall through */
+@@ -476,7 +483,7 @@ int main(int argc, char **argv)
+ 
+ 	argc -= optind;
+ 	argv += optind;
+-	if (argc < 0)
++	if (argc < 1)
+ 		usage();
+ 
+ 	ret = cmd_select(cmds, argc, argv, do_help);
+-- 
+2.34.0.rc1.387.gb447b232ab-goog
+
