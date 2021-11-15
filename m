@@ -2,146 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D616444FDF9
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 05:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C92344FE25
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 06:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhKOEsk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 14 Nov 2021 23:48:40 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13398 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229790AbhKOEsi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 14 Nov 2021 23:48:38 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AF2i8eG018734;
-        Mon, 15 Nov 2021 04:45:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=lpvOwaRxKrxUcq3pF62L2S7luuODp2ko37HAwXLJdcA=;
- b=MA6xiBdpy3WgszOBuZAdAQDIPoMyVK9KeO4KNfju4GSMgUahD+DHOAvbHNlCwDwxb215
- iwZ7uRKZLzGCqKMHK+PBnFcdy1T7DBS27uoB0rhSccRAPhCuwU0FcoSPDjWiVD0xmHsO
- L6D6Tzy0YxBcYSTtpVg1LiEXkcwVCBIaN+W8jTYR3beAezKZjwBJsNmftsHW5L0vamDl
- WDMZ4hDtLfOQBt6E1N/yI3wmNth49rFWNd4c1xd8M6g7TEMm4KpYX0twUZM6o/mlQ5El
- YAR6hnsZjm03UbSbEXjhokpRyq2IU3UgDwpNtd0BCXyFvFvKakz5w98v+7M8U8OzO3Lh 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cbf181yrj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 04:45:13 +0000
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AF4TMGa001735;
-        Mon, 15 Nov 2021 04:45:12 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cbf181ypx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 04:45:12 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AF4ggIf025481;
-        Mon, 15 Nov 2021 04:45:10 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3ca4mjgs7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Nov 2021 04:45:10 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AF4j6V146530866
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Nov 2021 04:45:06 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B93F8AE05F;
-        Mon, 15 Nov 2021 04:45:06 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BF7DAE045;
-        Mon, 15 Nov 2021 04:45:01 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.4.103])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Nov 2021 04:45:00 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, peterz@infradead.org, songliubraving@fb.com,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, davem@davemloft.net, kpsingh@kernel.org,
-        hawk@kernel.org, kuba@kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        rnsastry@linux.ibm.com, kjain@linux.ibm.com
-Subject: [PATCH] bpf: Enable bpf support for reading branch records in powerpc
-Date:   Mon, 15 Nov 2021 10:14:37 +0530
-Message-Id: <20211115044437.12047-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: c0-yq0-S8LeDucJ7wZuPPcwKlv6r9XGm
-X-Proofpoint-ORIG-GUID: l-8JHcdGQCpR-O5pBRSI67xYxRjnUNaW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_03,2021-11-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 lowpriorityscore=0 clxscore=1011 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111150025
+        id S229488AbhKOFYO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 00:24:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhKOFYI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 00:24:08 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C820DC061746
+        for <bpf@vger.kernel.org>; Sun, 14 Nov 2021 21:21:11 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id w22so19661421ioa.1
+        for <bpf@vger.kernel.org>; Sun, 14 Nov 2021 21:21:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:message-id:in-reply-to:references:subject:mime-version
+         :content-transfer-encoding;
+        bh=K/du4LuLyFgRVeI0c6urbpLLrOOx7mRgAuN+3DTwtBY=;
+        b=eCAwoF/U2mRxCTxESkyHvu6ragO4Qh8uqq3tGV0WuK9QKa+8X5rYKt57j30XM4M+Co
+         tfendU7Mh5RAR6pejY7PDlGZqdqvgDyrFrNKQCLB/YMou9MhuhDe2tsQWrNQr8f4GgDR
+         XzPFuByHzhMNMz6fNri0+VLMjiWKLiBIgXj9K+oBoEcdxPA4vNHjxEwBpms/PBGwNPet
+         QEBdG7zSj+sGCfj9CZ+ERicdics2Qr3opma3u30Uq4z3rdOm8i+C4qN7GE16hqzkJKKM
+         ERS16BZq3L9h2NjVoVK3u6Kpyre/PbiyjFJzCa/i6XfKFpPUP+GZSPPDidOLHtdRrwy8
+         Pahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:message-id:in-reply-to:references
+         :subject:mime-version:content-transfer-encoding;
+        bh=K/du4LuLyFgRVeI0c6urbpLLrOOx7mRgAuN+3DTwtBY=;
+        b=wVynziPMJXTcTy9pjo6Ox1m097x1Y0fluq2VCwSO6kavL+gE1Cf36s+1VZ+s0ev7Bn
+         nVsiHLuR2lbL+eC3NrJk7DYNy3w1gj6ieO7gaifFQqvur6IDeUyVstOx4tYm0tZJ6jaZ
+         dCycxJDvPQG1Khz9e80bN08A4aOg/ZvQ8cuRIC2cgqFBWRmDPhTxuQk9ReNyQv1YJBjv
+         L9OBD7rLuzgX5a5la14lSVt5IPiSZXvodoeTA5CCjPDb8v5atq9I8nymCle3AE8lB3ud
+         Vm+2BXvhPL72IgNIQJpdlJLoWzemiz250EIrUjjG0Dd4wttmJmgLcBf77CrqSJulnZ5R
+         tmRA==
+X-Gm-Message-State: AOAM533vuMvyacXADEUvs72KSUNLShemLibCbfo6Cfx/f/41FKRwTnF/
+        cMBE5oQ+iTsWNSl+PS0OKpc=
+X-Google-Smtp-Source: ABdhPJxR3Dl7LLOcFWqi9eLwCxA+JFPrYtjnY4O1fdAPFdZcpNZvxUcNfAICWQk71/IUVNKpFSEvgQ==
+X-Received: by 2002:a6b:700e:: with SMTP id l14mr23751617ioc.20.1636953671033;
+        Sun, 14 Nov 2021 21:21:11 -0800 (PST)
+Received: from localhost ([172.243.151.11])
+        by smtp.gmail.com with ESMTPSA id g11sm8588873ioo.3.2021.11.14.21.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Nov 2021 21:21:10 -0800 (PST)
+Date:   Sun, 14 Nov 2021 21:21:02 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        joamaki@gmail.com
+Message-ID: <6191ee3e8a1e1_86942087@john.notmuch>
+In-Reply-To: <CAADnVQKEPYYrr6MUSKL4Fd7FYp0y5MQFoDteU5T++E6fySDADw@mail.gmail.com>
+References: <CAADnVQKEPYYrr6MUSKL4Fd7FYp0y5MQFoDteU5T++E6fySDADw@mail.gmail.com>
+Subject: RE: sockmap test is broken
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Branch data available to bpf programs can be very useful to get
-stack traces out of userspace applications.
+Alexei Starovoitov wrote:
+> test_maps is failing in bpf tree:
+> 
+> $ ./test_maps
+> Failed sockmap recv
+> 
+> and causing BPF CI to stay red.
+> 
+> Since bpf-next is fine, I suspect it is one of John's or Jussi's patches.
+> 
+> Please take a look.
 
-Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
-added bpf support to capture branch records in x86. Enable this feature
-for powerpc as well.
+I'll look into it thanks.
 
-Commit 67306f84ca78 ("selftests/bpf: Add bpf_read_branch_records()
-selftest") adds selftest corresponding to bpf branch read
-function bpf_read_branch_records(). Used this selftest to
-test bpf support, for reading branch records in powerpc.
-
-Selftest result in power9 box before this patch changes:
-
-[command]# ./test_progs -t perf_branches
-Failed to load bpf_testmod.ko into the kernel: -8
-WARNING! Selftests relying on bpf_testmod.ko will be skipped.
-test_perf_branches_common:PASS:test_perf_branches_load 0 nsec
-test_perf_branches_common:PASS:attach_perf_event 0 nsec
-test_perf_branches_common:PASS:set_affinity 0 nsec
-check_good_sample:PASS:output not valid 0 nsec
-check_good_sample:FAIL:read_branches_size err -2
-check_good_sample:FAIL:read_branches_stack err -2
-check_good_sample:FAIL:read_branches_stack stack bytes written=-2
-not multiple of struct size=24
-check_good_sample:FAIL:read_branches_global err -2
-check_good_sample:FAIL:read_branches_global global bytes written=-2
-not multiple of struct size=24
-check_good_sample:PASS:read_branches_size 0 nsec
- #75/1 perf_branches_hw:FAIL
- #75/2 perf_branches_no_hw:OK
- #75 perf_branches:FAIL
-Summary: 0/1 PASSED, 0 SKIPPED, 2 FAILED
-
-Selftest result in power9 box after this patch changes:
-
-[command]#: ./test_progs -t perf_branches
- #75/1 perf_branches_hw:OK
- #75/2 perf_branches_no_hw:OK
- #75 perf_branches:OK
-Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Kajol Jain<kjain@linux.ibm.com>
----
- kernel/trace/bpf_trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index fdd14072fc3b..2b7343b64bb7 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1245,7 +1245,7 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
- BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
- 	   void *, buf, u32, size, u64, flags)
- {
--#ifndef CONFIG_X86
-+#if !(defined(CONFIG_X86) || defined(CONFIG_PPC64))
- 	return -ENOENT;
- #else
- 	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
--- 
-2.27.0
-
+.John
