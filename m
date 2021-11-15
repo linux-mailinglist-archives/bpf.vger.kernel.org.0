@@ -2,165 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2F0451676
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 22:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C8F45187F
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 23:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343973AbhKOVZG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 16:25:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237709AbhKOUjw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 15 Nov 2021 15:39:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637008615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f2TutiekFMTaKNriZYHOVfGQpVSzepL0rcZb/D7ZuAw=;
-        b=EnroqIJKGVja2Polk03wYWDxuio8zyDmydvcJ3MI+4iRYPhRTu17cSHbZbj6g/So5q+2of
-        2RYqAEmfMv1JQHp7Wg9YOl0sYMREI2J6P/ovq6GxAjJY+Gebu2eM9o1X0khtbjAY/s5DUg
-        2iiGB7kjRn+yCFDCqdGxJU17375YyHc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-tsKGtkodPTmdsphWHtAVvQ-1; Mon, 15 Nov 2021 15:36:52 -0500
-X-MC-Unique: tsKGtkodPTmdsphWHtAVvQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E766E1851721;
-        Mon, 15 Nov 2021 20:36:50 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 648845BAF0;
-        Mon, 15 Nov 2021 20:36:32 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id E4EA830027803;
-        Mon, 15 Nov 2021 21:36:30 +0100 (CET)
-Subject: [PATCH net-next 2/2] igc: enable XDP metadata in driver
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        anthony.l.nguyen@intel.com, jesse.brandeburg@intel.com,
-        intel-wired-lan@lists.osuosl.org, magnus.karlsson@intel.com,
-        bjorn@kernel.org
-Date:   Mon, 15 Nov 2021 21:36:30 +0100
-Message-ID: <163700859087.565980.3578855072170209153.stgit@firesoul>
-In-Reply-To: <163700856423.565980.10162564921347693758.stgit@firesoul>
-References: <163700856423.565980.10162564921347693758.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S1349635AbhKOXA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 18:00:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350937AbhKOWeD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 17:34:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3A3C63246
+        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 22:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637015467;
+        bh=mqnR1THDXts7xjd5u3HL2dRewThBweafrUfUFFECMAE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WoKx0spJsl5HRUfTZ+IotfH4uQ+ffKDrHnAsXj2h+RGXe1T9CrtOlzC+m/CoHE8GF
+         Gj1IhcUNDBtdGS6A33fqFiWCLMYGKqcG5vZN5JID2PK8YMnza8zasU+LE429w7IX9N
+         Ab2QugAf4/U+T2cNpoOenUgbTOEWGalp5RRvkZWt+7BV8GIohxsXuy1wdTM0wt4ynh
+         5abyDBOyExhad+pDHGBE+W6nutkqeEUaaXrOdWCl6bTIKKL5CNjP1J9z4JhcOFa84O
+         kVmGibjTCt81BJnvXy059k6WG5QLnoSwFhHCygKUQkJ7ze/og4ili7+v79hKReta0g
+         oi2+cfZDzsAuQ==
+Received: by mail-ed1-f42.google.com with SMTP id g14so14902850edb.8
+        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 14:31:06 -0800 (PST)
+X-Gm-Message-State: AOAM5310Cp1AQJwy+dEysIYDw4CK4pEIj0IDzxxUumWjdkOIkc6gJ57S
+        cKPPihoOjvOIrhaNfCwMoH4b4ai/8iegtQla4MKoMQ==
+X-Google-Smtp-Source: ABdhPJyvdS2ddY91KjTgsqkctCOFOOVXVJDFwxz8j0/OTtmJqtiN1fbEHPD18GcJ87Bdy8XwQkJgl1Igq/ks4E3ugN4=
+X-Received: by 2002:a17:907:7805:: with SMTP id la5mr3261733ejc.188.1637015465447;
+ Mon, 15 Nov 2021 14:31:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <cover.1636749493.git.dave@dtucker.co.uk> <49fe0f370a2b28500c1b60f1fdb6fb7ec90de28a.1636749493.git.dave@dtucker.co.uk>
+In-Reply-To: <49fe0f370a2b28500c1b60f1fdb6fb7ec90de28a.1636749493.git.dave@dtucker.co.uk>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Mon, 15 Nov 2021 23:30:54 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ4MFRedC1j1PK4EU3AjVKzPOYMX1ngSxGa-iUHuBKXmew@mail.gmail.com>
+Message-ID: <CACYkzJ4MFRedC1j1PK4EU3AjVKzPOYMX1ngSxGa-iUHuBKXmew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] docs: Rename bpf_lsm.rst to prog_lsm.rst
+To:     Dave Tucker <dave@dtucker.co.uk>
+Cc:     bpf@vger.kernel.org, corbet@lwn.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, john.fastabend@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Enabling the XDP bpf_prog access to data_meta area is a very small
-change. Hint passing 'true' to xdp_prepare_buff().
+On Fri, Nov 12, 2021 at 10:18 PM Dave Tucker <dave@dtucker.co.uk> wrote:
+>
+> This allows for documentation relating to BPF Program Types to be
+> matched by the glob pattern prog_* for inclusion in a sphinx toctree
+>
+> Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
+> ---
+>  Documentation/bpf/{bpf_lsm.rst => prog_lsm.rst} | 0
+>  MAINTAINERS                                     | 2 +-
+>  2 files changed, 1 insertion(+), 1 deletion(-)
+>  rename Documentation/bpf/{bpf_lsm.rst => prog_lsm.rst} (100%)
+>
+> diff --git a/Documentation/bpf/bpf_lsm.rst b/Documentation/bpf/prog_lsm.rst
+> similarity index 100%
+> rename from Documentation/bpf/bpf_lsm.rst
+> rename to Documentation/bpf/prog_lsm.rst
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f96aa662ee32..bd690d1ba272 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3529,7 +3529,7 @@ R:        Florent Revest <revest@chromium.org>
+>  R:     Brendan Jackman <jackmanb@chromium.org>
+>  L:     bpf@vger.kernel.org
+>  S:     Maintained
+> -F:     Documentation/bpf/bpf_lsm.rst
+> +F:     Documentation/bpf/prog_lsm.rst
+>  F:     include/linux/bpf_lsm.h
+>  F:     kernel/bpf/bpf_lsm.c
+>  F:     security/bpf/
+> --
 
-The SKB layers can also access data_meta area, which required more
-driver changes to support. Reviewers, notice the igc driver have two
-different functions that can create SKBs, depending on driver config.
-
-Hint for testers, ethtool priv-flags legacy-rx enables
-the function igc_construct_skb()
-
- ethtool --set-priv-flags DEV legacy-rx on
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- drivers/net/ethernet/intel/igc/igc_main.c |   29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 76b0a7311369..b516f1b301b4 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -1718,24 +1718,26 @@ static void igc_add_rx_frag(struct igc_ring *rx_ring,
- 
- static struct sk_buff *igc_build_skb(struct igc_ring *rx_ring,
- 				     struct igc_rx_buffer *rx_buffer,
--				     union igc_adv_rx_desc *rx_desc,
--				     unsigned int size)
-+				     struct xdp_buff *xdp)
- {
--	void *va = page_address(rx_buffer->page) + rx_buffer->page_offset;
-+	unsigned int size = xdp->data_end - xdp->data;
- 	unsigned int truesize = igc_get_rx_frame_truesize(rx_ring, size);
-+	unsigned int metasize = xdp->data - xdp->data_meta;
- 	struct sk_buff *skb;
- 
- 	/* prefetch first cache line of first page */
--	net_prefetch(va);
-+	net_prefetch(xdp->data);
- 
- 	/* build an skb around the page buffer */
--	skb = build_skb(va - IGC_SKB_PAD, truesize);
-+	skb = build_skb(xdp->data_hard_start, truesize);
- 	if (unlikely(!skb))
- 		return NULL;
- 
- 	/* update pointers within the skb to store the data */
--	skb_reserve(skb, IGC_SKB_PAD);
-+	skb_reserve(skb, xdp->data - xdp->data_hard_start);
- 	__skb_put(skb, size);
-+	if (metasize)
-+		skb_metadata_set(skb, metasize);
- 
- 	igc_rx_buffer_flip(rx_buffer, truesize);
- 	return skb;
-@@ -1746,6 +1748,7 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
- 					 struct xdp_buff *xdp,
- 					 ktime_t timestamp)
- {
-+	unsigned int metasize = xdp->data - xdp->data_meta;
- 	unsigned int size = xdp->data_end - xdp->data;
- 	unsigned int truesize = igc_get_rx_frame_truesize(rx_ring, size);
- 	void *va = xdp->data;
-@@ -1756,7 +1759,7 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
- 	net_prefetch(va);
- 
- 	/* allocate a skb to store the frags */
--	skb = napi_alloc_skb(&rx_ring->q_vector->napi, IGC_RX_HDR_LEN);
-+	skb = napi_alloc_skb(&rx_ring->q_vector->napi, IGC_RX_HDR_LEN + metasize);
- 	if (unlikely(!skb))
- 		return NULL;
- 
-@@ -1769,7 +1772,13 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
- 		headlen = eth_get_headlen(skb->dev, va, IGC_RX_HDR_LEN);
- 
- 	/* align pull length to size of long to optimize memcpy performance */
--	memcpy(__skb_put(skb, headlen), va, ALIGN(headlen, sizeof(long)));
-+	memcpy(__skb_put(skb, headlen + metasize), xdp->data_meta,
-+	       ALIGN(headlen + metasize, sizeof(long)));
-+
-+	if (metasize) {
-+		skb_metadata_set(skb, metasize);
-+		__skb_pull(skb, metasize);
-+	}
- 
- 	/* update all of the pointers */
- 	size -= headlen;
-@@ -2354,7 +2363,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
- 		if (!skb) {
- 			xdp_init_buff(&xdp, truesize, &rx_ring->xdp_rxq);
- 			xdp_prepare_buff(&xdp, pktbuf - igc_rx_offset(rx_ring),
--					 igc_rx_offset(rx_ring) + pkt_offset, size, false);
-+					 igc_rx_offset(rx_ring) + pkt_offset, size, true);
- 
- 			skb = igc_xdp_run_prog(adapter, &xdp);
- 		}
-@@ -2378,7 +2387,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
- 		} else if (skb)
- 			igc_add_rx_frag(rx_ring, rx_buffer, skb, size);
- 		else if (ring_uses_build_skb(rx_ring))
--			skb = igc_build_skb(rx_ring, rx_buffer, rx_desc, size);
-+			skb = igc_build_skb(rx_ring, rx_buffer, &xdp);
- 		else
- 			skb = igc_construct_skb(rx_ring, rx_buffer, &xdp,
- 						timestamp);
-
-
+Acked-by: KP Singh <kpsingh@kernel.org>
