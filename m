@@ -2,95 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E74E450679
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 15:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A686A450882
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 16:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhKOOU6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 09:20:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        id S236689AbhKOPfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 10:35:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbhKOOUg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Nov 2021 09:20:36 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC4EC061570;
-        Mon, 15 Nov 2021 06:17:39 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id o4so15088129pfp.13;
-        Mon, 15 Nov 2021 06:17:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+aDIq7mXZHK+RlyKih0pkpnCUcfMGHr49uqFeuSXHro=;
-        b=mlKlfu92peTp/1KS46hBctFzV+s+5JJZ79aLeL+8YqVrT9RIlLn5OwGrmUC5Z5bJBv
-         Yranh4tQT/wfcYZGYw8fIPPaCIomGRzRysRJVBx7RFiU42mmlQQsAoZscoIJGV4tW0J7
-         GOOq+J9XB6NTr0bkfVfcPK0R0oqaubQQU3IuwFEwhmnr5HvFtNHN1KgIx9e1lPejk7d1
-         BVfYUU90tupr2jUAG/IV3eT9HRRl2FreUGxpYgg0snpkpyhZPY0zKEDwoAWSRO3nkptp
-         S++IkMyib4gU1klh9b9NYcEuElwO0O0y5//w8KxtuEVsOXMo91ti2fzWYMGYEu9sO2VK
-         AunQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+aDIq7mXZHK+RlyKih0pkpnCUcfMGHr49uqFeuSXHro=;
-        b=1XpbLFdx5i7en5nbk/zCXB+btSqGlmiweHpamPv9qu2NgvkMlFa3uGD+/7NmVfmcAQ
-         zcDyxlT4AucnHSW0jA5QX+rR9HOqd9kZDjeBANDu1TasLH4lFmC/LiQYLw06d8OiRIyW
-         3Mwybc+lurITJ6fJjk0ld3N+sq28jAgczY3Fm5pGywC9WNtP8DtEm1+lSfwuosItyLsU
-         cIjRt8GgKibA7FDd0GOplPziA6oy/KfFSXZJR/nCKSpsHR5Afials0j32rlGMJ1SS86F
-         fHb9LK4b1S1/BJ3+Kprb9lXrXanXeBR/fz0i7yYxq59ex6X67RzkJYxzCPGAy5scgrLF
-         Ggaw==
-X-Gm-Message-State: AOAM530QVHDFllB3SLHNhv4Byp59gSoqt1o4bZeS82Hg+hi2qc1TJOB2
-        Qi2SZyu4hjScN+iOZMXAM6s=
-X-Google-Smtp-Source: ABdhPJzwYeSA1M7+Fx0lb7Vz5Gu8SyfHSiqr/5e7hOzVowVqcWxz3+pHBPpPzDNU8uZiRkTyBH1LDw==
-X-Received: by 2002:a05:6a00:15c1:b0:49f:d21f:1d63 with SMTP id o1-20020a056a0015c100b0049fd21f1d63mr32672826pfu.18.1636985858948;
-        Mon, 15 Nov 2021 06:17:38 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id w129sm15167238pfd.61.2021.11.15.06.17.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 06:17:38 -0800 (PST)
-Date:   Mon, 15 Nov 2021 19:47:35 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     ast@kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: "resolve_btfids: unresolved" warnings while building v5.16-rc1
-Message-ID: <20211115141735.o4reo2jruu73a2vf@apollo.localdomain>
-References: <1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com>
+        with ESMTP id S236667AbhKOPfB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 10:35:01 -0500
+X-Greylist: delayed 101 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 15 Nov 2021 07:32:02 PST
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70C9C061766;
+        Mon, 15 Nov 2021 07:31:59 -0800 (PST)
+Received: from iva8-d2cd82b7433e.qloud-c.yandex.net (iva8-d2cd82b7433e.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:a88e:0:640:d2cd:82b7])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 8D3A02E101C;
+        Mon, 15 Nov 2021 18:30:17 +0300 (MSK)
+Received: from iva4-f06c35e68a0a.qloud-c.yandex.net (iva4-f06c35e68a0a.qloud-c.yandex.net [2a02:6b8:c0c:152e:0:640:f06c:35e6])
+        by iva8-d2cd82b7433e.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 7dSigTEJay-UGsqMU5B;
+        Mon, 15 Nov 2021 18:30:17 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
+        t=1636990217; bh=hD/D+1kSstlQTTh1W7AK2gOCb2Yqt/7WhBUur9GwPEE=;
+        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
+        b=fPA/J5cJ+KSQ2lo7J8Yek4Rba35NcqCckCHG+gypfrbfShMPMcSb7M/+iOHWOziDh
+         QjFWAOYYtoAtQSBdBSmWqxrbCY6ATECDFFzn3x6zwIefxT/JjBS1G5Z1YGMw3o8pyr
+         5602p2DrL5l2GnzbcUl7r41teYHZxGLlIThyKr74=
+Authentication-Results: iva8-d2cd82b7433e.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
+Received: from dellarbn.yandex.net (dynamic-red3.dhcp.yndx.net [2a02:6b8:0:107:3e85:844d:5b1d:60a])
+        by iva4-f06c35e68a0a.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id wuqDqjnGag-UGxaT0Z8;
+        Mon, 15 Nov 2021 18:30:16 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Andrey Ryabinin <arbn@yandex-team.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Andrey Ryabinin <arbn@yandex-team.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 6/6] vhost_net: use RCU callbacks instead of synchronize_rcu()
+Date:   Mon, 15 Nov 2021 18:30:03 +0300
+Message-Id: <20211115153003.9140-6-arbn@yandex-team.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211115153003.9140-1-arbn@yandex-team.com>
+References: <20211115153003.9140-1-arbn@yandex-team.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 07:04:51PM IST, Pavel Skripkin wrote:
-> Hi, net/bpf developers!
->
-> While building newest kernel for fuzzing I met following warnings:
->
-> ```
->   BTFIDS  vmlinux
-> WARN: resolve_btfids: unresolved symbol tcp_dctcp_kfunc_ids
-> WARN: resolve_btfids: unresolved symbol tcp_cubic_kfunc_ids
-> WARN: resolve_btfids: unresolved symbol tcp_bbr_kfunc_ids
->   SORTTAB vmlinux
->
-> ```
->
-> I haven't seen such warnings before and have no idea are they important or
-> not. Config is attached.
->
-> My host is openSUSE Tumbleweed with gcc (SUSE Linux) 10.3.1 20210707
-> [revision 048117e16c77f82598fca9af585500572d46ad73] if it's important :)
->
->
+Currently vhost_net_release() uses synchronize_rcu() to synchronize
+freeing with vhost_zerocopy_callback(). However synchronize_rcu()
+is quite costly operation. It take more than 10 seconds
+to shutdown qemu launched with couple net devices like this:
+	-netdev tap,id=tap0,..,vhost=on,queues=80
+because we end up calling synchronize_rcu() netdev_count*queues times.
 
-I'll take a look later today.
+Free vhost net structures in rcu callback instead of using
+synchronize_rcu() to fix the problem.
 
->
-> With regards,
-> Pavel Skripkin
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+---
+ drivers/vhost/net.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
---
-Kartikeya
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index 97a209d6a527..0699d30e83d5 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -132,6 +132,7 @@ struct vhost_net {
+ 	struct vhost_dev dev;
+ 	struct vhost_net_virtqueue vqs[VHOST_NET_VQ_MAX];
+ 	struct vhost_poll poll[VHOST_NET_VQ_MAX];
++	struct rcu_head rcu;
+ 	/* Number of TX recently submitted.
+ 	 * Protected by tx vq lock. */
+ 	unsigned tx_packets;
+@@ -1389,6 +1390,18 @@ static void vhost_net_flush(struct vhost_net *n)
+ 	}
+ }
+ 
++static void vhost_net_free(struct rcu_head *rcu_head)
++{
++	struct vhost_net *n = container_of(rcu_head, struct vhost_net, rcu);
++
++	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
++	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
++	kfree(n->dev.vqs);
++	if (n->page_frag.page)
++		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
++	kvfree(n);
++}
++
+ static int vhost_net_release(struct inode *inode, struct file *f)
+ {
+ 	struct vhost_net *n = f->private_data;
+@@ -1404,15 +1417,8 @@ static int vhost_net_release(struct inode *inode, struct file *f)
+ 		sockfd_put(tx_sock);
+ 	if (rx_sock)
+ 		sockfd_put(rx_sock);
+-	/* Make sure no callbacks are outstanding */
+-	synchronize_rcu();
+ 
+-	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
+-	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
+-	kfree(n->dev.vqs);
+-	if (n->page_frag.page)
+-		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
+-	kvfree(n);
++	call_rcu(&n->rcu, vhost_net_free);
+ 	return 0;
+ }
+ 
+-- 
+2.32.0
+
