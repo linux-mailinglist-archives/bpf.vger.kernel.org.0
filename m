@@ -2,127 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A686A450882
-	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 16:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61187450950
+	for <lists+bpf@lfdr.de>; Mon, 15 Nov 2021 17:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236689AbhKOPfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Nov 2021 10:35:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236667AbhKOPfB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Nov 2021 10:35:01 -0500
-X-Greylist: delayed 101 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 15 Nov 2021 07:32:02 PST
-Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70C9C061766;
-        Mon, 15 Nov 2021 07:31:59 -0800 (PST)
-Received: from iva8-d2cd82b7433e.qloud-c.yandex.net (iva8-d2cd82b7433e.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:a88e:0:640:d2cd:82b7])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 8D3A02E101C;
-        Mon, 15 Nov 2021 18:30:17 +0300 (MSK)
-Received: from iva4-f06c35e68a0a.qloud-c.yandex.net (iva4-f06c35e68a0a.qloud-c.yandex.net [2a02:6b8:c0c:152e:0:640:f06c:35e6])
-        by iva8-d2cd82b7433e.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 7dSigTEJay-UGsqMU5B;
-        Mon, 15 Nov 2021 18:30:17 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
-        t=1636990217; bh=hD/D+1kSstlQTTh1W7AK2gOCb2Yqt/7WhBUur9GwPEE=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=fPA/J5cJ+KSQ2lo7J8Yek4Rba35NcqCckCHG+gypfrbfShMPMcSb7M/+iOHWOziDh
-         QjFWAOYYtoAtQSBdBSmWqxrbCY6ATECDFFzn3x6zwIefxT/JjBS1G5Z1YGMw3o8pyr
-         5602p2DrL5l2GnzbcUl7r41teYHZxGLlIThyKr74=
-Authentication-Results: iva8-d2cd82b7433e.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
-Received: from dellarbn.yandex.net (dynamic-red3.dhcp.yndx.net [2a02:6b8:0:107:3e85:844d:5b1d:60a])
-        by iva4-f06c35e68a0a.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id wuqDqjnGag-UGxaT0Z8;
-        Mon, 15 Nov 2021 18:30:16 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-From:   Andrey Ryabinin <arbn@yandex-team.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Andrey Ryabinin <arbn@yandex-team.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 6/6] vhost_net: use RCU callbacks instead of synchronize_rcu()
-Date:   Mon, 15 Nov 2021 18:30:03 +0300
-Message-Id: <20211115153003.9140-6-arbn@yandex-team.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211115153003.9140-1-arbn@yandex-team.com>
-References: <20211115153003.9140-1-arbn@yandex-team.com>
+        id S231716AbhKOQOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 11:14:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34584 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231428AbhKOQOk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 15 Nov 2021 11:14:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636992704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sdPNsUt5ET11fnQU5zA7SZiidRIb9KqsblL/TZmoJ+E=;
+        b=gOthx3+xsnhGFKiYmi4TE0DCLJSykzrrl7+i58E0+3YEzgre1pGDbrmOu7KGreSe+CoNEm
+        /qGSqeaXoXWAVW/fWY8cFg1ArvX+LXGf+6ba9Dr7ExKxILJGp//QmfarKUSTo5SC9gr2sK
+        H6Lk3sgK0rJsBgjeOaqLmX32rxSiWf8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-GZsYOxVYP1-B-u12Ah4NPw-1; Mon, 15 Nov 2021 11:11:41 -0500
+X-MC-Unique: GZsYOxVYP1-B-u12Ah4NPw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22D42802C8F;
+        Mon, 15 Nov 2021 16:11:40 +0000 (UTC)
+Received: from gerbillo.fritz.box (unknown [10.39.194.235])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A11B1100EBBE;
+        Mon, 15 Nov 2021 16:11:29 +0000 (UTC)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [RFC PATCH 0/2] bpf: do not WARN in bpf_warn_invalid_xdp_action()
+Date:   Mon, 15 Nov 2021 17:10:42 +0100
+Message-Id: <cover.1636987322.git.pabeni@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently vhost_net_release() uses synchronize_rcu() to synchronize
-freeing with vhost_zerocopy_callback(). However synchronize_rcu()
-is quite costly operation. It take more than 10 seconds
-to shutdown qemu launched with couple net devices like this:
-	-netdev tap,id=tap0,..,vhost=on,queues=80
-because we end up calling synchronize_rcu() netdev_count*queues times.
+The mentioned WARN is quite noisy, especially vs fuzzers and
+apparently used only to track the relevant BPF program and/or
+involved driver.
 
-Free vhost net structures in rcu callback instead of using
-synchronize_rcu() to fix the problem.
+The first patch replace it with a pr_warn_once(), and the 2nd
+patch allow dumps relevant info to track the reported issue.
 
-Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
----
- drivers/vhost/net.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+This is quite invasive, but the mentioned WARN makes the hunt
+for some bugs reported by syzkaller quite difficult.
 
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index 97a209d6a527..0699d30e83d5 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -132,6 +132,7 @@ struct vhost_net {
- 	struct vhost_dev dev;
- 	struct vhost_net_virtqueue vqs[VHOST_NET_VQ_MAX];
- 	struct vhost_poll poll[VHOST_NET_VQ_MAX];
-+	struct rcu_head rcu;
- 	/* Number of TX recently submitted.
- 	 * Protected by tx vq lock. */
- 	unsigned tx_packets;
-@@ -1389,6 +1390,18 @@ static void vhost_net_flush(struct vhost_net *n)
- 	}
- }
- 
-+static void vhost_net_free(struct rcu_head *rcu_head)
-+{
-+	struct vhost_net *n = container_of(rcu_head, struct vhost_net, rcu);
-+
-+	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
-+	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
-+	kfree(n->dev.vqs);
-+	if (n->page_frag.page)
-+		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
-+	kvfree(n);
-+}
-+
- static int vhost_net_release(struct inode *inode, struct file *f)
- {
- 	struct vhost_net *n = f->private_data;
-@@ -1404,15 +1417,8 @@ static int vhost_net_release(struct inode *inode, struct file *f)
- 		sockfd_put(tx_sock);
- 	if (rx_sock)
- 		sockfd_put(rx_sock);
--	/* Make sure no callbacks are outstanding */
--	synchronize_rcu();
- 
--	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
--	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
--	kfree(n->dev.vqs);
--	if (n->page_frag.page)
--		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
--	kvfree(n);
-+	call_rcu(&n->rcu, vhost_net_free);
- 	return 0;
- }
- 
+Paolo Abeni (2):
+  bpf: do not WARN in bpf_warn_invalid_xdp_action()
+  bpf: let bpf_warn_invalid_xdp_action() report more info
+
+ drivers/net/ethernet/amazon/ena/ena_netdev.c           | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c          | 2 +-
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c       | 2 +-
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c         | 2 +-
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c       | 2 +-
+ drivers/net/ethernet/freescale/enetc/enetc.c           | 2 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c            | 2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c             | 2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c              | 2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c               | 2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c              | 2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c              | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c          | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c           | 2 +-
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c      | 2 +-
+ drivers/net/ethernet/marvell/mvneta.c                  | 2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c        | 2 +-
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c             | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c       | 2 +-
+ drivers/net/ethernet/netronome/nfp/nfp_net_common.c    | 2 +-
+ drivers/net/ethernet/qlogic/qede/qede_fp.c             | 2 +-
+ drivers/net/ethernet/sfc/rx.c                          | 2 +-
+ drivers/net/ethernet/socionext/netsec.c                | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c      | 2 +-
+ drivers/net/ethernet/ti/cpsw_priv.c                    | 2 +-
+ drivers/net/hyperv/netvsc_bpf.c                        | 2 +-
+ drivers/net/tun.c                                      | 2 +-
+ drivers/net/veth.c                                     | 4 ++--
+ drivers/net/virtio_net.c                               | 4 ++--
+ drivers/net/xen-netfront.c                             | 2 +-
+ include/linux/filter.h                                 | 2 +-
+ kernel/bpf/cpumap.c                                    | 4 ++--
+ kernel/bpf/devmap.c                                    | 4 ++--
+ net/core/dev.c                                         | 2 +-
+ net/core/filter.c                                      | 8 ++++----
+ 36 files changed, 43 insertions(+), 43 deletions(-)
+
 -- 
-2.32.0
+2.33.1
 
