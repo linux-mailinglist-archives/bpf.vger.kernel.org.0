@@ -2,93 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C11B452ED8
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 11:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A1D4531DE
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 13:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbhKPKUC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 05:20:02 -0500
-Received: from www62.your-server.de ([213.133.104.62]:38926 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233872AbhKPKTx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 05:19:53 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mmvWF-000Clo-IG; Tue, 16 Nov 2021 11:16:51 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mmvWF-0004pP-9d; Tue, 16 Nov 2021 11:16:51 +0100
-Subject: Re: Clarification on bpftool dual licensing
-To:     Martin Kelly <martin.kelly@crowdstrike.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <54d3cb9669644995b6ae787b4d532b73@crowdstrike.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0b80c79b-de0c-931c-262d-4da6e2add9f9@iogearbox.net>
-Date:   Tue, 16 Nov 2021 11:16:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S235965AbhKPMOa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 07:14:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235927AbhKPMOX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 07:14:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CED3F61B3F;
+        Tue, 16 Nov 2021 12:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637064686;
+        bh=vq95HKLfHO9piwN5lsf/MCq9657Jh2pFENCGhyxmjLo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SGZM9xNJKSSd9zG64wbGKiexBM6w+eZXR08apIpufSrM9cni6UGZ7lPrrHiB75CeL
+         rHJb+z39/th7FCQuXO5pPiitXv0fw12QpxOsxiKREduVjglCmDJgitnVlnmSBRLw/x
+         us3Sy7Hnu2QaYoNqizRvyAP22VcHW1DCdSQxQ/jdqnRn859aNByM6HQAl5TXZbZKcl
+         8WoeJoRFFXs6EbSE/a1jePnDacyUUKxLnbXmh5WMn1vtB5AJCH9cBk4duqW6cRERv7
+         J5C5zQM47FcF0zSNe/lN8hjKpBpmtjpQSDKeLh3GtuB+CXQ492809BlXN9w9JOnBS6
+         BEURxXLKLvNnA==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mmxJ6-00A9LO-AD; Tue, 16 Nov 2021 12:11:24 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 0/4] Address some bad references to Kernel docs
+Date:   Tue, 16 Nov 2021 12:11:19 +0000
+Message-Id: <cover.1637064577.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <54d3cb9669644995b6ae787b4d532b73@crowdstrike.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26354/Mon Nov 15 10:21:07 2021)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/15/21 7:20 PM, Martin Kelly wrote:
-> Hi,
-> 
-> I have a question regarding the dual licensing provision of bpftool. I
-> understand that bpftool can be distributed as either GPL 2.0 or BSD 2-clause.
-> That said, bpftool can also auto-generate BPF code that gets specified inline
-> in the skeleton header file, and it's possible that the BPF code generated is
-> GPL. What I'm wondering is what happens if bpftool generates GPL-licensed BPF
-> code inside the skeleton header, so that you get a header like this:
-> 
-> something.skel.h:
-> /* this file is BSD 2-clause, by nature of dual licensing */
+Hi Jon,
 
-Fwiw, the generated header contains an SPDX identifier:
+It follows 4 patches addressing some issues during the 5.16 Kernel development
+cycle that were sent to the MLs but weren't merged yet. 
 
-  /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-  /* THIS FILE IS AUTOGENERATED! */
+They apply cleanly on the top of 5.16-rc1.
 
-> /* THIS FILE IS AUTOGENERATED! */
-> 
-> /* standard skeleton definitions */
-> 
-> ...
-> 
-> s->data_sz = XXX;
-> s->data = (void *)"\
-> <eBPF bytecode, produced by GPL 2.0 sources, specified in binary>
-> ";
-> 
-> My guess is that, based on the choice to dual-license bpftool, the header is
-> meant to still be BSD 2-clause, and the s->data inline code's GPL license is
-> not meant to change the licensing of the header itself, but I wanted to
-> double-check, especially as I am not a lawyer. If this is indeed the intent,
-> is there any opposition to a patch clarifying this more explicitly in
-> Documentation/bpf/bpf_licensing.rst?
+Regards,
 
-Not a lawyer either, but my interpretation is that this point related to "packaging"
-of BPF programs from the bpf_licensing.rst would apply here (given this is what it
-does after all):
+Mauro Carvalho Chehab (4):
+  libbpf: update index.rst reference
+  docs: accounting: update delay-accounting.rst reference
+  Documentation: update vcpu-requests.rst reference
+  Documentation/process: fix a cross reference
 
-   Packaging BPF programs with user space applications
-   ===================================================
+ Documentation/admin-guide/sysctl/kernel.rst  | 2 +-
+ Documentation/bpf/index.rst                  | 2 +-
+ Documentation/process/submitting-patches.rst | 4 ++--
+ arch/riscv/kvm/vcpu.c                        | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-   Generally, proprietary-licensed applications and GPL licensed BPF programs
-   written for the Linux kernel in the same package can co-exist because they are
-   separate executable processes. This applies to both cBPF and eBPF programs.
+-- 
+2.33.1
+
+
