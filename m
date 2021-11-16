@@ -2,102 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3027D453573
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 16:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1211E4535B1
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 16:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhKPPQ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 10:16:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230513AbhKPPQ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 10:16:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DEE761A09;
-        Tue, 16 Nov 2021 15:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637075638;
-        bh=sCRg+YijOR+Er2GVfz1HNXQ37gOOQOAsgSeLP69+EDQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Wdtzbmqpmc8SgD6FHndv+hrtby+jhtCp1/ITiH2PYb0vzdUDymB0+CG8BGzR6LMkJ
-         kWn6UapDp2SAmAyi6ZbKtUO96OTcez+6Zc/fg2IYmwkRybuvslq7442gacoi2d3zTz
-         ucj/NGeggj51B1EE6SSRB0LN6LwdOlH2h+IGn6IC1RfQkhMESU5VELsizkdn8KgnF8
-         6H1Sd8Rp8cvnEJi0E4tsmpMULABeVWi5evD+sa/Ak1aP6jH80+eUkLiaeOGAo/Cwyn
-         RwYlKG4rywZqCCYUOJ8toGhq0zSQ2fGgMjIyy+sFQKJn1h81DLjRfRI54PMf3CkOUl
-         LDZahupLZGz1A==
-Date:   Tue, 16 Nov 2021 07:13:57 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v18 bpf-next 20/23] net: xdp: introduce bpf_xdp_pointer
- utility routine
-Message-ID: <20211116071357.36c18edf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <ce5ad30af8f9b4d2b8128e7488818449a5c0d833.1637013639.git.lorenzo@kernel.org>
-References: <cover.1637013639.git.lorenzo@kernel.org>
-        <ce5ad30af8f9b4d2b8128e7488818449a5c0d833.1637013639.git.lorenzo@kernel.org>
+        id S238237AbhKPPZg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 10:25:36 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46146 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238272AbhKPPZ1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Nov 2021 10:25:27 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AGF8VNf004354;
+        Tue, 16 Nov 2021 15:21:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ZlwSjdOa2ZugEmtyH2Nsm1uDnyQ7Qoyz+enJxDnJ/Hc=;
+ b=oDJ7Jz9y5GatlBVs5y6GkrV0OcW7aCcoFx5OHVkDAENGF6djj3so6v4+4y9fprGwpn+O
+ +np+CjGedEegh5QFrti04IuPun5yKlu6NgHS2On3V702cKOxSr8cPha0Y/o8ntWn8Qk9
+ sE01ZOsexMR1UJVSpiqezw3m8nUt1GWc8L2ACADckEWBmRPaV4MDHzeXNHk8E99mlGrS
+ HcjiMb58De+vcl9BH3iQJCxEPMvbFWbh2lvcM3vyqAF+kBPWlK9H9j099X70a0AREe7I
+ NjC/AEJtxZ4xOKCA5vIOltdQV44/9J9wktRWlOT4afulJDRBjxDWzlvdNkS5c+3l0X0E 5Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ccdsdawx8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Nov 2021 15:21:46 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AGFBcJN020599;
+        Tue, 16 Nov 2021 15:21:45 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ccdsdawwd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Nov 2021 15:21:45 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AGFF0ST025244;
+        Tue, 16 Nov 2021 15:21:43 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 3ca4mk0757-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Nov 2021 15:21:43 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AGFLeVi5440088
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Nov 2021 15:21:40 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D4C9A404D;
+        Tue, 16 Nov 2021 15:21:40 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A435A4053;
+        Tue, 16 Nov 2021 15:21:36 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.25.142])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Nov 2021 15:21:35 +0000 (GMT)
+Subject: Re: [PATCH] bpf: Enable bpf support for reading branch records in
+ powerpc
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        songliubraving@fb.com, andrii@kernel.org, kafai@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, davem@davemloft.net, kpsingh@kernel.org,
+        hawk@kernel.org, kuba@kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
+        rnsastry@linux.ibm.com
+References: <20211115044437.12047-1-kjain@linux.ibm.com>
+ <5a185d6b-7090-23f0-1ec9-140a31ee5fb4@iogearbox.net>
+ <20211116083454.GY174703@worktop.programming.kicks-ass.net>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <36487948-9180-7180-9b04-d4cd18767c47@linux.ibm.com>
+Date:   Tue, 16 Nov 2021 20:51:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211116083454.GY174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eDx13e6caN-uUeCHq9WjtPPDQ6YbCng0
+X-Proofpoint-ORIG-GUID: XBi-TBt3mrbchl0m4wGOEronlSoT6dLP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-16_03,2021-11-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111160072
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 15 Nov 2021 23:33:14 +0100 Lorenzo Bianconi wrote:
-> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> +	u32 headsize = xdp->data_end - xdp->data;
-> +	u32 count = 0, frame_offset = headsize;
-> +	int i;
-> +
-> +	if (offset < headsize) {
-> +		int size = min_t(int, headsize - offset, len);
-> +		void *src = flush ? buf : xdp->data + offset;
-> +		void *dst = flush ? xdp->data + offset : buf;
-> +
-> +		memcpy(dst, src, size);
-> +		count = size;
-> +		offset = 0;
-> +	}
 
-is this missing
-	else
-		offset -= headsize;
-?
 
-I'm struggling to understand this. Say
-	headsize = 400
-	frag[0].size = 200
+On 11/16/21 2:04 PM, Peter Zijlstra wrote:
+> On Tue, Nov 16, 2021 at 12:30:07AM +0100, Daniel Borkmann wrote:
+> 
+>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>>> index fdd14072fc3b..2b7343b64bb7 100644
+>>> --- a/kernel/trace/bpf_trace.c
+>>> +++ b/kernel/trace/bpf_trace.c
+>>> @@ -1245,7 +1245,7 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
+>>>   BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>>>   	   void *, buf, u32, size, u64, flags)
+>>>   {
+>>> -#ifndef CONFIG_X86
+>>> +#if !(defined(CONFIG_X86) || defined(CONFIG_PPC64))
+>>
+>> Can this really be enabled generically? Looking at 3925f46bb590 ("powerpc/perf: Enable
+>> branch stack sampling framework") it says POWER8 [and beyond]. Should there be a generic
+>> Kconfig symbol like ARCH_HAS_BRANCH_RECORDS that can be selected by archs instead?
+> 
 
-	offset = 500
-	len = 50
+Hi Peterz/Daniel,
+    Thanks for reviewing the patch
 
-we enter the loop having missed the previous if...
+> I conplained about it before as well. I'd just take it out entirely.
 
-> +	for (i = 0; i < sinfo->nr_frags; i++) {
-> +		skb_frag_t *frag = &sinfo->frags[i];
-> +		u32 frag_size = skb_frag_size(frag);
-> +
-> +		if (count >= len)
-> +			break;
-> +
-> +		if (offset < frame_offset + frag_size) {
+I agree, it make more sense to entirely remove this arch check from
+here. Because anyway, incase any arch doesn't support this
+functionality, bpf_read_branch_records will return -EINVAL.
 
-		500 < 400 + 200 => true
+> 
+> If perf_snapshot_branch_stack isn't implemnted it'll return 0 and then
+> we'll -Esomething anyway.
 
-> +			int size = min_t(int, frag_size - offset, len - count);
+In this patch, we are basically adding powerpc support to capture
+branch records via bpf_read_branch_records function. We are still
+looking into adding support for perf_snapshot_branch_stack for powerpc.
 
-			size = min(200 - 500, 50 - 0)
-			size = -300 ??
+ I will send a follow up to remove arch check in bpf_read_branch_records
+function.
 
-> +			void *addr = skb_frag_address(frag);
-> +			void *src = flush ? buf + count : addr + offset;
-> +			void *dst = flush ? addr + offset : buf + count;
-> +
-> +			memcpy(dst, src, size);
-> +			count += size;
-> +			offset = 0;
-> +		}
-> +		frame_offset += frag_size;
+Thanks,
+Kajol Jain
+> 
+> 
