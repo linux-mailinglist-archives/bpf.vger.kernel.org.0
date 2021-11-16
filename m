@@ -2,97 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90814452A46
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 07:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49A2452A5E
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 07:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237648AbhKPGCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 01:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
+        id S229969AbhKPGNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 01:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240253AbhKPGBo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 01:01:44 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8D1C04A403;
-        Mon, 15 Nov 2021 21:43:03 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id h24so14828435pjq.2;
-        Mon, 15 Nov 2021 21:43:03 -0800 (PST)
+        with ESMTP id S231527AbhKPGNN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 01:13:13 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA303C061570;
+        Mon, 15 Nov 2021 22:10:15 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 131so54230288ybc.7;
+        Mon, 15 Nov 2021 22:10:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xNMq9GJJA7CIRiH95ibik9uHs9CfsmAe2wbOXiKepoU=;
-        b=DzKnaQB+wUFswdwz06sOh6UuNIMNlcZRdYQsNZBecS2AIpjnisA6sds54G2OSNl7OW
-         0BXKzD7OAl+lmAWARnW6ZtymVwexFT9BaqU4PAfy9t5rcW8HUA97MKvP3G23I5YkxW/A
-         zD2s8N/Psyf/mj0nQNl7HbL6lCk/vQTkna3R5uecrU0AYlxilcZPsUdmisttgRuHzLE/
-         qwTdobzPkDJDmJSbxk/lMw568IqQnD2NfCjdWeo0HwLwSo+jbqDCiSXrOpT0pqpV0n39
-         z9L1wob7VRPvtHXqJsPegehHTGfEM12hgdYubcl2FgG7qKY5KPV3+UpBH0bGrzsyGuRN
-         z77Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BS3V9ZFiQuQx5sGhaVvxlp3tQZvQUYn0CxpmzAd9h/0=;
+        b=IkoAiQwEjjhwLdEb3iEhseLmoeXU3PhOgvRVbqZ1rk3D4WWg0qAjq6uDLc+Uyv4uje
+         BCnT1b7Juxb1XhfeyjtRiK4JF31AtKpY2hhwCAUCrNnz7lu8DgO/IlJ6CE/8BKPmH5IN
+         eVUeJHbblM1T62OHHFCnzDVxq1j8AVPB6H6awq4C1l4dIUGXcVVF9TrT14rf4WatIKvW
+         rrAEg3k4cXh0QYmBKR+AtH/5tbKO/umEsMnUpe3eXXDeXnzc9gHCd8mfPx/GEcL7asca
+         3n2qT8acHznVb/N8i6JkM1q94XxJOFEDPnsngnk+1XkbfJRJzSGHgf9PTa4Y6IKmclNE
+         aqMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xNMq9GJJA7CIRiH95ibik9uHs9CfsmAe2wbOXiKepoU=;
-        b=N8VNYrur8Jew/JG2Ue5FKfcFFFQDJBMa+tFgt6tgoQPkl4saJBlsul8YcGptm1dhY5
-         EQqIFqDNoJXW1pJH8hN1famPMAgWuOKf86Cv8VBcbBpl9p+fE98cx2EIgSjmi4KSgVKo
-         OPeqroHl/HbyzbTSayJC8tPZ0NOk49GzldD7FCPDcGNBRHyouABUshaxheTDGUZFQEM1
-         /EMaRD95z9QJONmLWE8dJL9z5HIL/tOU3K369q+0NdAGuHzfM/25KJq5ZMtLLIKviPNE
-         d7sorCnWmGeQSa0GXHEOSN1UhZoFPDchEuJIVQCuCqmSUdpWazB1VCtD3+KfrMjO3H16
-         P9rA==
-X-Gm-Message-State: AOAM5334azeaUAkZHP3/ThHEcdWN/eJJJr50lsi2dlo5yWIB7KFHl4sm
-        O409M22mtwVuEr8OW9vIMZ/wM6Z4gk0=
-X-Google-Smtp-Source: ABdhPJy4/Tbd2aBvDPZSWjue0LOPAsIvPxsbhzWx8MaZWaM8Q0AGneg204Vq85uE5NeNSMe0eAfTCw==
-X-Received: by 2002:a17:90a:c091:: with SMTP id o17mr5526836pjs.35.1637041383082;
-        Mon, 15 Nov 2021 21:43:03 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id mm22sm1015953pjb.28.2021.11.15.21.43.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 21:43:02 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Alexander Mihalicyn <alexander@mihalicyn.com>,
-        Andrei Vagin <avagin@gmail.com>, criu@openvz.org,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH bpf-next v1 8/8] selftests/bpf: Fix btf_dump test for bpf_iter_link_info
-Date:   Tue, 16 Nov 2021 11:12:37 +0530
-Message-Id: <20211116054237.100814-9-memxor@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211116054237.100814-1-memxor@gmail.com>
-References: <20211116054237.100814-1-memxor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BS3V9ZFiQuQx5sGhaVvxlp3tQZvQUYn0CxpmzAd9h/0=;
+        b=MpIyVYEg+h4wjCSJufgQpeAVJhe7Dsy+a2q2H6kd44MVzVh5DV3OGxtTeqy5pL5K8X
+         EMAS1Zd/aos4jPEsUGBD/sH0jcIolxMMRH1i5A4g6+6P188aJ2/TWAgjgB2WIEepV0LB
+         Yzvgvh8rryJhoYGJPwllXipzbg/A0ldSNcu+CK+PD8CGju36sqtTDnQRZC2HXyZZIRhB
+         JX00Ta2jmadJuJK2EOnsjfaDF/xMFdXgddlcl6x5qdMj5MONigjlPH6vcXwUJ3GoAOeQ
+         pFHorlSLaVdjorJoqRYO3LsUulHqR6nsR/wiqWxha9hLYfh2J4ywLcwZjc6YZp8fzLEf
+         PsZQ==
+X-Gm-Message-State: AOAM533SX0ob+wgg/hlSDvq2z+dukI601yHhiVYbe372PTXtDFUh6kQk
+        8lLv2MXv9rwRQ/ymintN8Zqk3BnXZ+Q+TfjCGds=
+X-Google-Smtp-Source: ABdhPJw+yz0E/TV+dfgEdSDWXQzvt2+zFLlF76FxNEzbyIrgRqbtAqR8VpYn8vFjHjRMXF4elVl9pscLOmco9Kg9czM=
+X-Received: by 2002:a25:d16:: with SMTP id 22mr5524100ybn.51.1637043015216;
+ Mon, 15 Nov 2021 22:10:15 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1199; h=from:subject; bh=2OeAqoVgm3UE8yo/6xItJyebkuS6bvyJvQVD3m8v6N4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhk0S7cp9vrG4vOU0yZvr5SpV+sCHwxBvUfioYCwMq 0lXCH8qJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYZNEuwAKCRBM4MiGSL8RyksmD/ 9ykap1OxzGchcNWyb6qBJwWVb2/xIlSSGHWzo99rRvEZvoNlQdwX5ys7GV/8m7U6NLzhx0w1MrQG4O +WvaLbLSff4Gb2Q8DfmQug+XAF26EFhhd6E3VI2h8qR4CJ5uhbqvZp9q+o/lYlb2tUWY32dXcZnvYq bQXA/3FkSofOhUKPq5/CHTic8w69GAs59wugR3GlmQVTDT38STrcptrKCPXQ5OVpWKP8cU8HqGPgn+ fAw0KzQ+sdnzaNMW5eA+eD3WUC3wbKkLO78kcYFaA9/QtHq5Ulb6YtO2t/71Uh7F2qhdLX9o+RhsFz 3h0yPPR+ihC46gpovjzl2tITdUr/TK9ORgGTf0YwRrukGtqiNKk2VUuBABngKOTIZ0aOeV4MLLlfrH bWmpzZ1NKGdwra3g+fzNOKY25D77sQw+Ckhoh9XenHs/2XREDdHeNYgqmDnsGjFW8gmqm0PRG/kRNO A8/MezsfRwxNo8vwDY1XXqdm0nABIntz/w+IRpyvPxYff0jAXUKz+V+6E51EmrRJ+BdaM/FLDd0Op4 saQP5nKttNeElk2g8pjLpPKgczDO7qYB+tPZs0gohBu1PRkPHwLCFDlWFIbWuCuB2ym+jo9Do4Hwe1 WkhAUwcTS0HSDOOXxgMaTS7dnnNy05Yoy373veKRNJNhyTpJF/LjfBEuO5fA==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+References: <20211112155128.565680-1-jean-philippe@linaro.org>
+ <d3a19501-01ee-a160-2275-c83fb0fb04b7@isovalent.com> <YY6WLDizLBxnhgnP@myrica>
+In-Reply-To: <YY6WLDizLBxnhgnP@myrica>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 15 Nov 2021 22:10:03 -0800
+Message-ID: <CAEf4BzbS-4sWORntzqh7qhEo=5cpzca0WA5ars70LxwzZwxgKA@mail.gmail.com>
+Subject: Re: [PATCH bpf] tools/runqslower: Fix cross-build
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since we changed the definition while adding io_uring and epoll iterator
-support, adjust the selftest to check against the updated definition.
+On Fri, Nov 12, 2021 at 8:28 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> On Fri, Nov 12, 2021 at 04:17:21PM +0000, Quentin Monnet wrote:
+> > 2021-11-12 15:51 UTC+0000 ~ Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > > Commit be79505caf3f ("tools/runqslower: Install libbpf headers when
+> > > building") uses the target libbpf to build the host bpftool, which
+> > > doesn't work when cross-building:
+> > >
+> > >   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C tools/bpf/runqslower O=/tmp/runqslower
+> > >   ...
+> > >     LINK    /tmp/runqslower/bpftool/bpftool
+> > >   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a(libbpf-in.o): Relocations in generic ELF (EM: 183)
+> > >   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a: error adding symbols: file in wrong format
+> > >   collect2: error: ld returned 1 exit status
+> > >
+> > > When cross-building, the target architecture differs from the host. The
+> > > bpftool used for building runqslower is executed on the host, and thus
+> > > must use a different libbpf than that used for runqslower itself.
+> > > Remove the LIBBPF_OUTPUT and LIBBPF_DESTDIR parameters, so the bpftool
+> > > build makes its own library if necessary.
+> > >
+> > > In the selftests, pass the host bpftool, already a prerequisite for the
+> > > runqslower recipe, as BPFTOOL_OUTPUT. The runqslower Makefile will use
+> > > the bpftool that's already built for selftests instead of making a new
+> > > one.
+> > >
+> > > Fixes: be79505caf3f ("tools/runqslower: Install libbpf headers when building")
+> > > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+> >
+> > I realised too late I should have cc-ed you on those patches, apologies
+> > for not doing so. Thank you for the fix!
+>
+> No worries, I usually try to catch build issues in bpf-next but missed it
+> this time. I'm still slowly working towards getting automated testing on
+> Arm targets, which will catch regressions quicker.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/btf_dump.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Are you planning to contribute it to BPF CI? Or you meant you have
+your own separate system?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-index d6272013a5a3..a2fc006e074a 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -736,7 +736,9 @@ static void test_btf_dump_struct_data(struct btf *btf, struct btf_dump *d,
- 
- 	/* union with nested struct */
- 	TEST_BTF_DUMP_DATA(btf, d, "union", str, union bpf_iter_link_info, BTF_F_COMPACT,
--			   "(union bpf_iter_link_info){.map = (struct){.map_fd = (__u32)1,},}",
-+			   "(union bpf_iter_link_info){.map = (struct){.map_fd = (__u32)1,},"
-+			   ".io_uring = (struct){.io_uring_fd = (__u32)1,},"
-+			   ".epoll = (struct){.epoll_fd = (__u32)1,},}",
- 			   { .map = { .map_fd = 1 }});
- 
- 	/* struct skb with nested structs/unions; because type output is so
--- 
-2.33.1
-
+>
+> Thanks,
+> Jean
