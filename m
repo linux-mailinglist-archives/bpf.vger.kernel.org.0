@@ -2,136 +2,357 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2CB4539BB
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 20:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7EB453A1A
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 20:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239435AbhKPTGt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 14:06:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
+        id S239792AbhKPT1L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 14:27:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239422AbhKPTGt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:06:49 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A5AC061570;
-        Tue, 16 Nov 2021 11:03:51 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id y68so55196289ybe.1;
-        Tue, 16 Nov 2021 11:03:51 -0800 (PST)
+        with ESMTP id S239789AbhKPT1K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 14:27:10 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F97C061570
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 11:24:12 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id e9so735873ljl.5
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 11:24:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=kinvolk.io; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vNMHd0m7YSjAFUJ4/2Md5Ysd8NvQljw8TBpQtRS8+nE=;
-        b=bpI2osQtpaAIKgDvkCOHlFOIMewfPSKRSXQyeOpDbOS451zRGrWHP4I5JQtg5PqMhR
-         Wa8/lvTYyTVFWjxtBHXDtKWBWEHBYdnx9MwvM7vc/dJpJjM8C0uPcljFHpnmfJeqazka
-         WytZokJibQQqs3yPyEZ7CfvbKVf2vgWW8JBGv0icUjWcybgTkIGVczuoDp4QmFAkLzU9
-         672BPrxaB6bKjrbGmKHFYK4HoRlOc5g7NTZlHNmDVVvdaZnFfJdtRLPb2Rew7D34OGMH
-         GNW096odU/QAmqvIxXCH8olkOLCkqlfvXwaOhsuoY0MCcJD61VMRqyY0Y0toARsfQwmy
-         gdyw==
+         :cc:content-transfer-encoding;
+        bh=3PSgyrapkFOKU3o8DSdLliFS+3YAZg3FkTQ8U/TL7VA=;
+        b=UI4n43xtXr0yEedrW+NnzMrcrsv2hXOpIN2vp2cYnCUK7MxFeXfQ4MdAfOzpsnuCyc
+         4Th9bQwxqQEahUu/ehUqWdS7OPNEvOBE5pLyTLeEub99Ux1LC4qZkdN//bK/9iUbpk2I
+         vXm/SmwWGqRMko39kw9VtHT80/vNMXRJDOS4M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vNMHd0m7YSjAFUJ4/2Md5Ysd8NvQljw8TBpQtRS8+nE=;
-        b=qugNoZJX7VplJxYGa5fzsgFrhdJRaEHR4OBOUN5TI8+bhqVGJ2VOkq3sYlunN9LxOs
-         HprxlRIkFJuyzoC2wDdFlXjuGwBv33pgtI6NtMKyLeY0pyaOfUdKDltZ2b+ReTh2E4oW
-         Y09Ej+CcosMIN65c0XlbtPrWAucFa/XhEj+xNceA/QDgDvG6BNUTAiiwg24IHPwYTvIf
-         Qh068BDYVCWvAPn3aTZwYJmSiSEuHtQNGTHKo6Nue5Pu4Qnv3LtyQimuMtPKkn+A8SY0
-         36SDjugCY0cZi83Ks7sujFYvrklo8msAmaG6OGOiEr4jJsLUn6VHhLPV8JqdR4yzNYTv
-         u40Q==
-X-Gm-Message-State: AOAM533lbi7VpjwRfzKP+Z1XJ/TULPTfRxBRpcgg4iPKjCcB2KGDppL+
-        yLSx5hM3hmhJxKtcNTwMhfQfszaeZ74bfUKo7v8=
-X-Google-Smtp-Source: ABdhPJxoJMxbGLKsE/I2W9+DQ2IO1iiAZqV9793JzrMgVL9FNzbZU/MxYM5LlTnfVNdV1azhSlrJxcfZYVXroxx1ggw=
-X-Received: by 2002:a05:6902:1023:: with SMTP id x3mr10395367ybt.267.1637089431079;
- Tue, 16 Nov 2021 11:03:51 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3PSgyrapkFOKU3o8DSdLliFS+3YAZg3FkTQ8U/TL7VA=;
+        b=T0knfWa0NGmOxid8oEahqKDh3sjtLH3Les6FSGMjrQOb7HugJ+ONb3RS5PNZy6lbm9
+         U0qkVzmCUajN8mx4W3IiLdyOMb8Am+IrwkNKOYiY+uWlGGDvQlvYsAuXDtSqXZJsfD0q
+         BkaP+ZIG5i8CNpXwF0R3++Q7n9gt0XpTQwngIgEXfEVEQpdKgdkxW6O1Xbxl9D9NZ2VH
+         wdfUZn0hdMaIa1zt4vU7Ej5nJ5RjlpywY/W3bSxsLfuIgbeiAgRqVghFzLUkDdZdCnKz
+         3ZTxXKcHi3v36+YWqm1K6ti9+y4iJVbgo7zo4UMMO4q19oTbceQepR1gLM7F9efSNN+o
+         s2lA==
+X-Gm-Message-State: AOAM530FKEsgB0EOIqEAakCzJLS4+MBzATOUZdUJB8P0HkdlG8B1JQqg
+        p3odYRE4BwHPObISI8kiCl8COIQirtSzAz0/gUKcPQ==
+X-Google-Smtp-Source: ABdhPJyU7fmOlbiji4ddM69LF02t4pcts+b6Bcfsl+pKoX9DCzRJDM4ORRS9rbFl+B62vkIWg7pMN/V0nq4hIA/Ka+4=
+X-Received: by 2002:a2e:890c:: with SMTP id d12mr1765281lji.218.1637090650634;
+ Tue, 16 Nov 2021 11:24:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112155128.565680-1-jean-philippe@linaro.org>
- <d3a19501-01ee-a160-2275-c83fb0fb04b7@isovalent.com> <YY6WLDizLBxnhgnP@myrica>
- <CAEf4BzbS-4sWORntzqh7qhEo=5cpzca0WA5ars70LxwzZwxgKA@mail.gmail.com> <YZNuWUEBG9Jbzerx@myrica>
-In-Reply-To: <YZNuWUEBG9Jbzerx@myrica>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Nov 2021 11:03:40 -0800
-Message-ID: <CAEf4BzbkU87MX22w0-W8N4SV0hY=gkhYi8JcQZ4B5q6xjhfhXw@mail.gmail.com>
-Subject: Re: [PATCH bpf] tools/runqslower: Fix cross-build
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20211116164208.164245-1-mauricio@kinvolk.io> <20211116164208.164245-4-mauricio@kinvolk.io>
+In-Reply-To: <20211116164208.164245-4-mauricio@kinvolk.io>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Tue, 16 Nov 2021 14:23:59 -0500
+Message-ID: <CAHap4zv=-YV6oXdncZW9DRaBu16b6-81HXretRX-orL2d=B4sQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] libbpf: Introduce 'bpf_object__prepare()'
+To:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 12:40 AM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
+On Tue, Nov 16, 2021 at 11:42 AM Mauricio V=C3=A1squez <mauricio@kinvolk.io=
+> wrote:
 >
-> On Mon, Nov 15, 2021 at 10:10:03PM -0800, Andrii Nakryiko wrote:
-> > On Fri, Nov 12, 2021 at 8:28 AM Jean-Philippe Brucker
-> > <jean-philippe@linaro.org> wrote:
-> > >
-> > > On Fri, Nov 12, 2021 at 04:17:21PM +0000, Quentin Monnet wrote:
-> > > > 2021-11-12 15:51 UTC+0000 ~ Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > > > > Commit be79505caf3f ("tools/runqslower: Install libbpf headers when
-> > > > > building") uses the target libbpf to build the host bpftool, which
-> > > > > doesn't work when cross-building:
-> > > > >
-> > > > >   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C tools/bpf/runqslower O=/tmp/runqslower
-> > > > >   ...
-> > > > >     LINK    /tmp/runqslower/bpftool/bpftool
-> > > > >   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a(libbpf-in.o): Relocations in generic ELF (EM: 183)
-> > > > >   /usr/bin/ld: /tmp/runqslower/libbpf/libbpf.a: error adding symbols: file in wrong format
-> > > > >   collect2: error: ld returned 1 exit status
-> > > > >
-> > > > > When cross-building, the target architecture differs from the host. The
-> > > > > bpftool used for building runqslower is executed on the host, and thus
-> > > > > must use a different libbpf than that used for runqslower itself.
-> > > > > Remove the LIBBPF_OUTPUT and LIBBPF_DESTDIR parameters, so the bpftool
-> > > > > build makes its own library if necessary.
-> > > > >
-> > > > > In the selftests, pass the host bpftool, already a prerequisite for the
-> > > > > runqslower recipe, as BPFTOOL_OUTPUT. The runqslower Makefile will use
-> > > > > the bpftool that's already built for selftests instead of making a new
-> > > > > one.
-> > > > >
-> > > > > Fixes: be79505caf3f ("tools/runqslower: Install libbpf headers when building")
-> > > > > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > > > Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-> > > >
-> > > > I realised too late I should have cc-ed you on those patches, apologies
-> > > > for not doing so. Thank you for the fix!
-> > >
-> > > No worries, I usually try to catch build issues in bpf-next but missed it
-> > > this time. I'm still slowly working towards getting automated testing on
-> > > Arm targets, which will catch regressions quicker.
-> >
-> > Are you planning to contribute it to BPF CI? Or you meant you have
-> > your own separate system?
+> BTFGen[0] requires access to the result of the CO-RE relocations without
+> actually loading the bpf programs. The current libbpf API doesn't allow
+> it because all the object preparation (subprogs, relocations: co-re,
+> elf, maps) happens inside bpf_object__load().
 >
-> At the moment I'm looking at adding it to LKFT, which does regression
-> testing on various Arm boards (https://lkft.linaro.org/about/). The only
-> bit missing for that is support for cross-building tools with clang, which
-> I'll send shortly.
-
-Detecting regressions is good, but preventing regressions is even
-better. That's what we are doing with BPF CI. We create a Github PR
-and run BPF selftests before patches are applied (see [0] for the
-current list of patch sets being reviewed and thus tested). It would
-be good to have more support for various architectures there. We
-currently have x86-64 and s390x was added just recently. Regressions
-still happen, obviously (we don't also control all the other parts of
-the kernel so after tree merges things quite often are a bit unstable
-and broken, but the system has caught many issues already), but it's
-been a tremendous help and time saver. So consider contributing, if
-you care about those architectures.
-
-  [0] https://github.com/kernel-patches/bpf/pulls
-
+> This commit introduces a new bpf_object__prepare() function to perform
+> all the preparation steps than an ebpf object requires, allowing users
+> to access the result of those preparation steps without having to load
+> the program. Almost all the steps that were done in bpf_object__load()
+> are now done in bpf_object__prepare(), except map creation and program
+> loading.
 >
-> Thanks,
-> Jean
+> Map relocations require a bit more attention as maps are only created in
+> bpf_object__load(). For this reason bpf_object__prepare() relocates maps
+> using BPF_PSEUDO_MAP_IDX, if someone dumps the instructions before
+> loading the program they get something meaningful. Map relocations are
+> completed in bpf_object__load() once the maps are created and we have
+> their fd to use with BPF_PSEUDO_MAP_FD.
+>
+> Users won=E2=80=99t see any visible changes if they=E2=80=99re using bpf_=
+object__open()
+> + bpf_object__load() because this commit keeps backwards compatibility
+> by calling bpf_object__prepare() in bpf_object_load() if it wasn=E2=80=99=
+t
+> called by the user.
+>
+> bpf_object__prepare_xattr() is not implemented as their counterpart
+> bpf_object__load_xattr() will be deprecated[1]. New options will be
+> added only to bpf_object_open_opts.
+>
+> [0]: https://github.com/kinvolk/btfgen/
+> [1]: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#libbp=
+fh-high-level-apis
+>
+> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> ---
+>  tools/lib/bpf/libbpf.c   | 130 ++++++++++++++++++++++++++++-----------
+>  tools/lib/bpf/libbpf.h   |   2 +
+>  tools/lib/bpf/libbpf.map |   1 +
+>  3 files changed, 98 insertions(+), 35 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6ca76365c6da..f50f9428bb03 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -514,6 +514,7 @@ struct bpf_object {
+>         int nr_extern;
+>         int kconfig_map_idx;
+>
+> +       bool prepared;
+>         bool loaded;
+>         bool has_subcalls;
+>         bool has_rodata;
+> @@ -5576,34 +5577,19 @@ bpf_object__relocate_data(struct bpf_object *obj,=
+ struct bpf_program *prog)
+>
+>                 switch (relo->type) {
+>                 case RELO_LD64:
+> -                       if (obj->gen_loader) {
+> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX;
+> -                               insn[0].imm =3D relo->map_idx;
+> -                       } else {
+> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_FD;
+> -                               insn[0].imm =3D obj->maps[relo->map_idx].=
+fd;
+> -                       }
+> +                       insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX;
+> +                       insn[0].imm =3D relo->map_idx;
+>                         break;
+>                 case RELO_DATA:
+>                         insn[1].imm =3D insn[0].imm + relo->sym_off;
+> -                       if (obj->gen_loader) {
+> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX_VA=
+LUE;
+> -                               insn[0].imm =3D relo->map_idx;
+> -                       } else {
+> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_VALUE;
+> -                               insn[0].imm =3D obj->maps[relo->map_idx].=
+fd;
+> -                       }
+> +                       insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX_VALUE;
+> +                       insn[0].imm =3D relo->map_idx;
+>                         break;
+>                 case RELO_EXTERN_VAR:
+>                         ext =3D &obj->externs[relo->sym_off];
+>                         if (ext->type =3D=3D EXT_KCFG) {
+> -                               if (obj->gen_loader) {
+> -                                       insn[0].src_reg =3D BPF_PSEUDO_MA=
+P_IDX_VALUE;
+> -                                       insn[0].imm =3D obj->kconfig_map_=
+idx;
+> -                               } else {
+> -                                       insn[0].src_reg =3D BPF_PSEUDO_MA=
+P_VALUE;
+> -                                       insn[0].imm =3D obj->maps[obj->kc=
+onfig_map_idx].fd;
+> -                               }
+> +                               insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX_VA=
+LUE;
+> +                               insn[0].imm =3D obj->kconfig_map_idx;
+>                                 insn[1].imm =3D ext->kcfg.data_off;
+>                         } else /* EXT_KSYM */ {
+>                                 if (ext->ksym.type_id && ext->is_set) { /=
+* typed ksyms */
+> @@ -6144,8 +6130,50 @@ bpf_object__relocate(struct bpf_object *obj, const=
+ char *targ_btf_path)
+>                         return err;
+>                 }
+>         }
+> -       if (!obj->gen_loader)
+> -               bpf_object__free_relocs(obj);
+> +
+> +       return 0;
+> +}
+> +
+> +/* relocate instructions that refer to map fds */
+> +static int
+> +bpf_object__finish_relocate(struct bpf_object *obj)
+> +{
+> +       int i, j;
+> +
+> +       if (obj->gen_loader)
+> +               return 0;
+> +
+> +       for (i =3D 0; i < obj->nr_programs; i++) {
+> +               struct bpf_program *prog =3D &obj->programs[i];
+> +
+> +               if (prog_is_subprog(obj, prog))
+> +                       continue;
+> +               for (j =3D 0; j < prog->nr_reloc; j++) {
+> +                       struct reloc_desc *relo =3D &prog->reloc_desc[j];
+> +                       struct bpf_insn *insn =3D &prog->insns[relo->insn=
+_idx];
+> +                       struct extern_desc *ext;
+> +
+> +                       switch (relo->type) {
+> +                       case RELO_LD64:
+> +                               insn[0].src_reg =3D BPF_PSEUDO_MAP_FD;
+> +                               insn[0].imm =3D obj->maps[relo->map_idx].=
+fd;
+> +                               break;
+> +                       case RELO_DATA:
+> +                               insn[0].src_reg =3D BPF_PSEUDO_MAP_VALUE;
+> +                               insn[0].imm =3D obj->maps[relo->map_idx].=
+fd;
+> +                               break;
+> +                       case RELO_EXTERN_VAR:
+> +                               ext =3D &obj->externs[relo->sym_off];
+> +                               if (ext->type =3D=3D EXT_KCFG) {
+> +                                       insn[0].src_reg =3D BPF_PSEUDO_MA=
+P_VALUE;
+> +                                       insn[0].imm =3D obj->maps[obj->kc=
+onfig_map_idx].fd;
+> +                               }
+> +                       default:
+> +                               break;
+> +                       }
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
+>
+> @@ -6706,8 +6734,8 @@ bpf_object__load_progs(struct bpf_object *obj, int =
+log_level)
+>                 if (err)
+>                         return err;
+>         }
+> -       if (obj->gen_loader)
+> -               bpf_object__free_relocs(obj);
+> +
+> +       bpf_object__free_relocs(obj);
+>         return 0;
+>  }
+>
+> @@ -7258,6 +7286,39 @@ static int bpf_object__resolve_externs(struct bpf_=
+object *obj,
+>         return 0;
+>  }
+>
+> +static int __bpf_object__prepare(struct bpf_object *obj, int log_level,
+> +                                const char *target_btf_path)
+> +{
+> +       int err;
+> +
+> +       if (obj->prepared) {
+> +               pr_warn("object '%s': prepare can't be attempted twice\n"=
+, obj->name);
+> +               return libbpf_err(-EINVAL);
+> +       }
+> +
+> +       if (obj->gen_loader)
+> +               bpf_gen__init(obj->gen_loader, log_level);
+> +
+> +       err =3D bpf_object__probe_loading(obj);
+> +       err =3D err ? : bpf_object__load_vmlinux_btf(obj, false);
+> +       err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+> +       err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
+> +       err =3D err ? : bpf_object__sanitize_maps(obj);
+> +       err =3D err ? : bpf_object__init_kern_struct_ops_maps(obj);
+> +       err =3D err ? : bpf_object__relocate(obj, obj->btf_custom_path ? =
+: target_btf_path);
+> +
+> +       obj->prepared =3D true;
+> +
+> +       return err;
+> +}
+> +
+> +LIBBPF_API int bpf_object__prepare(struct bpf_object *obj)
+> +{
+> +       if (!obj)
+> +               return libbpf_err(-EINVAL);
+> +       return __bpf_object__prepare(obj, 0, NULL);
+> +}
+> +
+>  int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+>  {
+>         struct bpf_object *obj;
+> @@ -7274,17 +7335,14 @@ int bpf_object__load_xattr(struct bpf_object_load=
+_attr *attr)
+>                 return libbpf_err(-EINVAL);
+>         }
+>
+> -       if (obj->gen_loader)
+> -               bpf_gen__init(obj->gen_loader, attr->log_level);
+> +       if (!obj->prepared) {
+> +               err =3D __bpf_object__prepare(obj, attr->log_level, attr-=
+>target_btf_path);
+> +               if (err)
+> +                       return err;
+> +       }
+>
+> -       err =3D bpf_object__probe_loading(obj);
+
+After sending the patches we realized they weren't working without
+root privileges in systems with unprivileged BPF disabled. This line
+should not be moved to bpf_object__prepare indeed. We'll fix it in the
+next iteration.
+
+
+> -       err =3D err ? : bpf_object__load_vmlinux_btf(obj, false);
+> -       err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+> -       err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
+> -       err =3D err ? : bpf_object__sanitize_maps(obj);
+> -       err =3D err ? : bpf_object__init_kern_struct_ops_maps(obj);
+> -       err =3D err ? : bpf_object__create_maps(obj);
+> -       err =3D err ? : bpf_object__relocate(obj, obj->btf_custom_path ? =
+: attr->target_btf_path);
+> +       err =3D bpf_object__create_maps(obj);
+> +       err =3D err ? : bpf_object__finish_relocate(obj);
+>         err =3D err ? : bpf_object__load_progs(obj, attr->log_level);
+>
+>         if (obj->gen_loader) {
+> @@ -7940,6 +7998,8 @@ void bpf_object__close(struct bpf_object *obj)
+>         bpf_object__elf_finish(obj);
+>         bpf_object_unload(obj);
+>         btf__free(obj->btf);
+> +       if (!obj->user_provided_btf_vmlinux)
+> +               btf__free(obj->btf_vmlinux_override);
+>         btf_ext__free(obj->btf_ext);
+>
+>         for (i =3D 0; i < obj->nr_maps; i++)
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 908ab04dc9bd..d206b4400a4d 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -148,6 +148,8 @@ LIBBPF_API int bpf_object__unpin_programs(struct bpf_=
+object *obj,
+>  LIBBPF_API int bpf_object__pin(struct bpf_object *object, const char *pa=
+th);
+>  LIBBPF_API void bpf_object__close(struct bpf_object *object);
+>
+> +LIBBPF_API int bpf_object__prepare(struct bpf_object *obj);
+> +
+>  struct bpf_object_load_attr {
+>         struct bpf_object *obj;
+>         int log_level;
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index c9555f8655af..459b41228933 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -415,4 +415,5 @@ LIBBPF_0.6.0 {
+>                 perf_buffer__new_raw;
+>                 perf_buffer__new_raw_deprecated;
+>                 btf__save_raw;
+> +               bpf_object__prepare;
+>  } LIBBPF_0.5.0;
+> --
+> 2.25.1
+>
