@@ -2,330 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F204523F2
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 02:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA74945268C
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 03:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349492AbhKPBfh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 15 Nov 2021 20:35:37 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21498 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1380835AbhKPBdu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 15 Nov 2021 20:33:50 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AG19fsY013607
-        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 17:30:53 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cb86ws9wk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 17:30:53 -0800
-Received: from intmgw002.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 15 Nov 2021 17:30:52 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id CF6B9953A9DD; Mon, 15 Nov 2021 17:30:42 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next] selftests/bpf: add uprobe triggering overhead benchmarks
-Date:   Mon, 15 Nov 2021 17:30:41 -0800
-Message-ID: <20211116013041.4072571-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S1345133AbhKPCHM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Nov 2021 21:07:12 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48956 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359221AbhKPCFF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Nov 2021 21:05:05 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637028124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZMg9fmCqWKgDZlhQO/4xgIOO/cxGdUEDsgEbELE2koQ=;
+        b=PtGsSqdS8ZFYHVR2YNOxGNnN/l/ScW3r6zS+JRsqXtGURSw1/d++9cng0m8QsxTPec6PMB
+        1CtzNH0eqcqkJuvd3MOAtIFVRVggGjrxIMJk8u4xYq/CU+Ac8DKHhzLQwdOYaKGumXr3ah
+        l284rMDtcn1T1v6Nh8roCJIGKm/knCIctjxRf5DHCVpqvhAK87/rHs6zq1LFmpLMtbn+aU
+        UvtujUb+Qu7r0i26TMqEi8NC9bSbFbx+MygM/SziKFOnmVpJjz8dC+awYcSTk7H8USirVa
+        mdebv+ZN1CgSMDrZWrhqW2Sg0CvfyP+O1gMoQYx+xfiNAZvAqYFjckUloWZ+kQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637028124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZMg9fmCqWKgDZlhQO/4xgIOO/cxGdUEDsgEbELE2koQ=;
+        b=gkvX//yqjD7yr+ZB45nM18+mQVrYM6MVMWx6PQlYrcVQ2R+ZD4QQpDFL2xXuMNLBMFoX1B
+        LPbpJcRVhexAt3Aw==
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>, bpf@vger.kernel.org
+Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com,
+        syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com
+Subject: Re: [PATCH bpf v2 1/2] bpf: Forbid bpf_ktime_get_coarse_ns and
+ bpf_timer_* in tracing progs
+In-Reply-To: <20211113142227.566439-2-me@ubique.spb.ru>
+References: <20211113142227.566439-1-me@ubique.spb.ru>
+ <20211113142227.566439-2-me@ubique.spb.ru>
+Date:   Tue, 16 Nov 2021 03:02:03 +0100
+Message-ID: <87o86k6ep0.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-X-FB-Source: Intern
-X-Proofpoint-GUID: BJQHFiH55K3WIU9i4XxdDxDxG51PJdzD
-X-Proofpoint-ORIG-GUID: BJQHFiH55K3WIU9i4XxdDxDxG51PJdzD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-15_16,2021-11-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- malwarescore=0 mlxscore=0 impostorscore=0 adultscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111160004
-X-FB-Internal: deliver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add benchmark to measure overhead of uprobes and uretprobes. Also have
-a baseline (no uprobe attached) benchmark.
+Dmitrii.
 
-On my dev machine, baseline benchmark can trigger 130M user_target()
-invocations. When uprobe is attached, this falls to just 700K. With
-uretprobe, we get down to 520K:
+On Sat, Nov 13 2021 at 18:22, Dmitrii Banshchikov wrote:
+> Use of bpf_ktime_get_coarse_ns() and bpf_timer_* helpers in tracing
+> progs may result in locking issues.
 
-  $ sudo ./bench trig-uprobe-base -a
-  Summary: hits  131.289 ± 2.872M/s
+"may result in locking issues"? There is no 'may'. This is simply a matter
+of fact that this can and will result in deadlocks. Please spell it out.
 
-  # UPROBE
-  $ sudo ./bench -a trig-uprobe-without-nop
-  Summary: hits    0.729 ± 0.007M/s
+It's a bug, so what. Why do you need to whitewash it?
+.
+> @@ -4632,6 +4632,9 @@ union bpf_attr {
+>   * 		system boot, in nanoseconds. Does not include time the system
+>   * 		was suspended.
+>   *
+> + *		Tracing programs cannot use **bpf_ktime_get_coarse_ns**\() (but
+> + *		this may change in the future).
 
-  $ sudo ./bench -a trig-uprobe-with-nop
-  Summary: hits    1.798 ± 0.017M/s
+Sorry no. This is a bug fix and there is no place for 'may change in the
+future' nonsense. It's simply not possible right now and unless you have
+a plan to make this work backed up by actual patches this comment is
+worse than wishful thinking.
 
-  # URETPROBE
-  $ sudo ./bench -a trig-uretprobe-without-nop
-  Summary: hits    0.508 ± 0.012M/s
+> + *
+>   * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
+>   * 	Return
+>   * 		Current *ktime*.
+> @@ -4804,6 +4807,9 @@ union bpf_attr {
+>   *		All other bits of *flags* are reserved.
+>   *		The verifier will reject the program if *timer* is not from
+>   *		the same *map*.
+> + *
+> + *		Tracing programs cannot use **bpf_timer_init**\() (but this may
+> + *		change in the future).
 
-  $ sudo ./bench -a trig-uretprobe-with-nop
-  Summary: hits    0.883 ± 0.008M/s
+This is even worse than the above because it cannot happen ever. Please
+stop this nonsensical wishful thinking crap. It does not add any value,
+it just adds confusion.
 
-So there is almost 2.5x performance difference between probing nop vs
-non-nop instruction for entry uprobe. And 1.7x difference for uretprobe.
+Timers will have to take spinlocks no matter what even if the kernel has
+been reimplemented in BPF someday. Tracing happens at any arbitrary
+place which includes places inisde locked sections. So what are you
+hallucinating about?
 
-This means that non-nop uprobe overhead is around 1.4 microseconds for uprobe
-and 2 microseconds for non-nop uretprobe.
+I completely understand that you are all enthused about the "unlimited"
+power of BPF, but please take a step back and understand that BPF has
+very well defined limitations as any other instrumentation facility has.
 
-For nop variants, uprobe and uretprobe overhead is down to 0.556 and
-1.13 microseconds, respectively.
+That said, I agree with the code changes but I vehemently NAK comments
+which are built on wishful thinking or worse.
 
-For comparison, just doing a very low-overhead syscall (with no BPF
-programs attached anywhere) gives:
+Thanks,
 
-  $ sudo ./bench trig-base -a
-  Summary: hits    4.830 ± 0.036M/s
-
-So uprobes are about 2.67x slower than pure context switch.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/Makefile          |   4 +-
- tools/testing/selftests/bpf/bench.c           |  10 ++
- .../selftests/bpf/benchs/bench_trigger.c      | 146 ++++++++++++++++++
- .../selftests/bpf/progs/trigger_bench.c       |   7 +
- 4 files changed, 166 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 0470802c907c..35684d61aaeb 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -533,7 +533,9 @@ $(OUTPUT)/bench_ringbufs.o: $(OUTPUT)/ringbuf_bench.skel.h \
- $(OUTPUT)/bench_bloom_filter_map.o: $(OUTPUT)/bloom_filter_bench.skel.h
- $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
- $(OUTPUT)/bench: LDLIBS += -lm
--$(OUTPUT)/bench: $(OUTPUT)/bench.o $(OUTPUT)/testing_helpers.o \
-+$(OUTPUT)/bench: $(OUTPUT)/bench.o \
-+		 $(OUTPUT)/testing_helpers.o \
-+		 $(OUTPUT)/trace_helpers.o \
- 		 $(OUTPUT)/bench_count.o \
- 		 $(OUTPUT)/bench_rename.o \
- 		 $(OUTPUT)/bench_trigger.o \
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index cc4722f693e9..c75e7ee28746 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -359,6 +359,11 @@ extern const struct bench bench_trig_kprobe;
- extern const struct bench bench_trig_fentry;
- extern const struct bench bench_trig_fentry_sleep;
- extern const struct bench bench_trig_fmodret;
-+extern const struct bench bench_trig_uprobe_base;
-+extern const struct bench bench_trig_uprobe_with_nop;
-+extern const struct bench bench_trig_uretprobe_with_nop;
-+extern const struct bench bench_trig_uprobe_without_nop;
-+extern const struct bench bench_trig_uretprobe_without_nop;
- extern const struct bench bench_rb_libbpf;
- extern const struct bench bench_rb_custom;
- extern const struct bench bench_pb_libbpf;
-@@ -385,6 +390,11 @@ static const struct bench *benchs[] = {
- 	&bench_trig_fentry,
- 	&bench_trig_fentry_sleep,
- 	&bench_trig_fmodret,
-+	&bench_trig_uprobe_base,
-+	&bench_trig_uprobe_with_nop,
-+	&bench_trig_uretprobe_with_nop,
-+	&bench_trig_uprobe_without_nop,
-+	&bench_trig_uretprobe_without_nop,
- 	&bench_rb_libbpf,
- 	&bench_rb_custom,
- 	&bench_pb_libbpf,
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index f41a491a8cc0..049a5ad56f65 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2020 Facebook */
- #include "bench.h"
- #include "trigger_bench.skel.h"
-+#include "trace_helpers.h"
- 
- /* BPF triggering benchmarks */
- static struct trigger_ctx {
-@@ -107,6 +108,101 @@ static void *trigger_consumer(void *input)
- 	return NULL;
- }
- 
-+/* make sure call is not inlined and not avoided by compiler, so __weak and
-+ * inline asm volatile in the body of the function
-+ *
-+ * There is a performance difference between uprobing at nop location vs other
-+ * instructions. So use two different targets, one of which starts with nop
-+ * and another doesn't.
-+ *
-+ * GCC doesn't generate stack setup preample for these functions due to them
-+ * having no input arguments and doing nothing in the body.
-+ */
-+__weak void uprobe_target_with_nop(void)
-+{
-+	asm volatile ("nop");
-+}
-+
-+__weak void uprobe_target_without_nop(void)
-+{
-+	asm volatile ("");
-+}
-+
-+static void *uprobe_base_producer(void *input)
-+{
-+	while (true) {
-+		uprobe_target_with_nop();
-+		atomic_inc(&base_hits.value);
-+	}
-+	return NULL;
-+}
-+
-+static void *uprobe_producer_with_nop(void *input)
-+{
-+	while (true)
-+		uprobe_target_with_nop();
-+	return NULL;
-+}
-+
-+static void *uprobe_producer_without_nop(void *input)
-+{
-+	while (true)
-+		uprobe_target_without_nop();
-+	return NULL;
-+}
-+
-+static void usetup(bool use_retprobe, bool use_nop)
-+{
-+	size_t uprobe_offset;
-+	ssize_t base_addr;
-+	struct bpf_link *link;
-+
-+	setup_libbpf();
-+
-+	ctx.skel = trigger_bench__open_and_load();
-+	if (!ctx.skel) {
-+		fprintf(stderr, "failed to open skeleton\n");
-+		exit(1);
-+	}
-+
-+	base_addr = get_base_addr();
-+	if (use_nop)
-+		uprobe_offset = get_uprobe_offset(&uprobe_target_with_nop, base_addr);
-+	else
-+		uprobe_offset = get_uprobe_offset(&uprobe_target_without_nop, base_addr);
-+
-+	link = bpf_program__attach_uprobe(ctx.skel->progs.bench_trigger_uprobe,
-+					  use_retprobe,
-+					  -1 /* all PIDs */,
-+					  "/proc/self/exe",
-+					  uprobe_offset);
-+	if (!link) {
-+		fprintf(stderr, "failed to attach uprobe!\n");
-+		exit(1);
-+	}
-+	ctx.skel->links.bench_trigger_uprobe = link;
-+}
-+
-+static void uprobe_setup_with_nop()
-+{
-+	usetup(false, true);
-+}
-+
-+static void uretprobe_setup_with_nop()
-+{
-+	usetup(true, true);
-+}
-+
-+static void uprobe_setup_without_nop()
-+{
-+	usetup(false, false);
-+}
-+
-+static void uretprobe_setup_without_nop()
-+{
-+	usetup(true, false);
-+}
-+
- const struct bench bench_trig_base = {
- 	.name = "trig-base",
- 	.validate = trigger_validate,
-@@ -182,3 +278,53 @@ const struct bench bench_trig_fmodret = {
- 	.report_progress = hits_drops_report_progress,
- 	.report_final = hits_drops_report_final,
- };
-+
-+const struct bench bench_trig_uprobe_base = {
-+	.name = "trig-uprobe-base",
-+	.setup = NULL, /* no uprobe/uretprobe is attached */
-+	.producer_thread = uprobe_base_producer,
-+	.consumer_thread = trigger_consumer,
-+	.measure = trigger_base_measure,
-+	.report_progress = hits_drops_report_progress,
-+	.report_final = hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_uprobe_with_nop = {
-+	.name = "trig-uprobe-with-nop",
-+	.setup = uprobe_setup_with_nop,
-+	.producer_thread = uprobe_producer_with_nop,
-+	.consumer_thread = trigger_consumer,
-+	.measure = trigger_measure,
-+	.report_progress = hits_drops_report_progress,
-+	.report_final = hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_uretprobe_with_nop = {
-+	.name = "trig-uretprobe-with-nop",
-+	.setup = uretprobe_setup_with_nop,
-+	.producer_thread = uprobe_producer_with_nop,
-+	.consumer_thread = trigger_consumer,
-+	.measure = trigger_measure,
-+	.report_progress = hits_drops_report_progress,
-+	.report_final = hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_uprobe_without_nop = {
-+	.name = "trig-uprobe-without-nop",
-+	.setup = uprobe_setup_without_nop,
-+	.producer_thread = uprobe_producer_without_nop,
-+	.consumer_thread = trigger_consumer,
-+	.measure = trigger_measure,
-+	.report_progress = hits_drops_report_progress,
-+	.report_final = hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_uretprobe_without_nop = {
-+	.name = "trig-uretprobe-without-nop",
-+	.setup = uretprobe_setup_without_nop,
-+	.producer_thread = uprobe_producer_without_nop,
-+	.consumer_thread = trigger_consumer,
-+	.measure = trigger_measure,
-+	.report_progress = hits_drops_report_progress,
-+	.report_final = hits_drops_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-index 9a4d09590b3d..2098f3f27f18 100644
---- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-+++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-@@ -52,3 +52,10 @@ int bench_trigger_fmodret(void *ctx)
- 	__sync_add_and_fetch(&hits, 1);
- 	return -22;
- }
-+
-+SEC("uprobe/self/uprobe_target")
-+int bench_trigger_uprobe(void *ctx)
-+{
-+	__sync_add_and_fetch(&hits, 1);
-+	return 0;
-+}
--- 
-2.30.2
-
+        tglx
