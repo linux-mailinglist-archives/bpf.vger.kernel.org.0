@@ -2,157 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6A8452957
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 06:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68896452A29
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 06:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237174AbhKPFEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 00:04:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55013 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237215AbhKPFEK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 16 Nov 2021 00:04:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637038864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NZbJVFSsiYxk6JEYO0Xpu55G92qAXMwmH+tm+8XpReU=;
-        b=AxtLH/8vHIUJ3uoKaIj3dRD5pDN39ed/qKFYiIYwBVAb3cUlr4n8NreW15bHlprCVzZHuU
-        CljWU1dPEkKsUSVmS/DxwZVIAsJXXETChTwCMlHmY7DUhMce5bMEUmaX7Qc6tKt1BJcTh9
-        Sju7aCV3M/1JLuBnh/rnWbAfJa/jZ2c=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-aCMeat4GOYGT65X2UKuyIQ-1; Tue, 16 Nov 2021 00:01:02 -0500
-X-MC-Unique: aCMeat4GOYGT65X2UKuyIQ-1
-Received: by mail-lf1-f69.google.com with SMTP id k5-20020a05651210c500b0040934a07fbdso2064583lfg.22
-        for <bpf@vger.kernel.org>; Mon, 15 Nov 2021 21:01:02 -0800 (PST)
+        id S240299AbhKPGBs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 01:01:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240160AbhKPGBm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 01:01:42 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED89C06122F;
+        Mon, 15 Nov 2021 21:42:40 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso1281638pji.0;
+        Mon, 15 Nov 2021 21:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZiJH60W16gunzDy5ORNJzHgGIx+W/lmdguHzEJZNQTc=;
+        b=O85NyUsoiW6yAvdHx9ILdEwQiPiLRH/dVfS3A6VoLliYaupHGM4tClqLJ95tJa45ZE
+         7Zj7NyFUvbae52r7+ITMxeVdy1Od1yfztC7YDCYULqbajuP/cM0I/fyU91I7uzxkPZkb
+         IpF80167wo19h1x5d8aCyIKYNMgRheqIVC/GMg/UPqe1mjxk1S/5seWWEEwoAUKXj8DX
+         /3eDmrNIEi0u+yP1Qbd8RAV7g2tbMgM8FLa71CTiEZ+fKgyAGQMuUYJHpFq48BnIyIA7
+         YEkzbkwoP8reew3Vtdl8Y50FZAnLV3oQtH1lxN7UjsMMYavYvOUzCdhcxl6lyRnrtwvh
+         CwfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NZbJVFSsiYxk6JEYO0Xpu55G92qAXMwmH+tm+8XpReU=;
-        b=zR5ydfLzGKkTvJPC8vPzW/AWUwC2EHC+xM6qKXVtDIVbRAS5TPwLA55dvfsA7+sN6e
-         WuzqLOVR7cIarVLyl1y+5jVHfS214aUg+V0J0hmO3t9fm2cAMRK7w3bQKYnbcYHlPG+r
-         KPZ22MIl7poGkyMI6IYlDTlfsR98jNfEaZYvLrJz3G+82kRmqXsDvJQquzm3YXEaiNPn
-         Tj0EX78Of2CMbA7ebIRAbP4QUzWvpZQaFtTab/Rveob1SF1H0XeJTJNg7IDvtguZLsUx
-         HAq4YcPXb8HfsuZXv5oSimchHnanjG5FMAC7Fgn7jXVsGbm+DF0FN9pVUcuFwZtvdf9i
-         pkTA==
-X-Gm-Message-State: AOAM533DsZIaczKZDFfPjd1ogIyTGUsGx75g4hjdiOBigrmfGlvhHtMg
-        JW9qv/qQtnZHX9XHdB8MUVycXziztL7V5fU6MG4MK3Ai+SNZ3wkjG2pGoAnU7LZKUnFI3jXST2U
-        5HoXBtGKP7CDnnnTC2NzQHXFrM1tl
-X-Received: by 2002:ac2:518b:: with SMTP id u11mr3980762lfi.498.1637038861107;
-        Mon, 15 Nov 2021 21:01:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwmwi8ZBJDwkdhthf+6U7z0+K409Zl2U1G1z4cKoLh4WJGn9JeAOqnszcmQh+p5V5nQXwNj+ySZvlSCNDXcV2U=
-X-Received: by 2002:ac2:518b:: with SMTP id u11mr3980732lfi.498.1637038860836;
- Mon, 15 Nov 2021 21:01:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20211115153003.9140-1-arbn@yandex-team.com> <20211115153003.9140-6-arbn@yandex-team.com>
-In-Reply-To: <20211115153003.9140-6-arbn@yandex-team.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 16 Nov 2021 13:00:50 +0800
-Message-ID: <CACGkMEumax9RFVNgWLv5GyoeQAmwo-UgAq=DrUd4yLxPAUUqBw@mail.gmail.com>
-Subject: Re: [PATCH 6/6] vhost_net: use RCU callbacks instead of synchronize_rcu()
-To:     Andrey Ryabinin <arbn@yandex-team.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZiJH60W16gunzDy5ORNJzHgGIx+W/lmdguHzEJZNQTc=;
+        b=owzKa6djrj4ZeUSnuCS0dqlOgDnZhEcOcY9quBjM8oFUiNzajVQgZ7Y9l2sEgRud2B
+         eP29UGZCDg8jRANXusMiQ2M/I/K2NHCXPgRisaetKNYj4wMc7TK+FZ8fT/ssUq4yrrdt
+         2WCvRjPR+ZKCexFhE2vEwbHpn2CvvJAPwm+ncAVR492PaqZ+hKm/GpB2krSr6yIMSX1P
+         5aGHIGu4X8dQGt/66cJHs+28N6kp044XTLqqqgQ/jSi8Qd5fpWshhGnBwwj9h2xU278d
+         vVr+MvT6Idp1Lui2c6FgvNeeeMGTc7IsuhZc0+C19LISz+xAiyYpukOlkno2TvsDOvpk
+         TbWA==
+X-Gm-Message-State: AOAM532/CEeNE3MKiUfFwHEBFbNH+qkoLp0buRtNUhKXkImFXeedcVKN
+        VTK8kTkryPvIsEnGhj7E9WPTSOl/y6E=
+X-Google-Smtp-Source: ABdhPJz3CAzWCScgu+wjIIaTr/6w+pL0qeMP/zUB+sZ54+WOpBoLekkuYi1hyqCE6LN1W5FhUR1vXw==
+X-Received: by 2002:a17:902:bc85:b0:143:954e:8548 with SMTP id bb5-20020a170902bc8500b00143954e8548mr40988891plb.82.1637041359666;
+        Mon, 15 Nov 2021 21:42:39 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
+        by smtp.gmail.com with ESMTPSA id n1sm16753963pfj.193.2021.11.15.21.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 21:42:39 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Alexander Mihalicyn <alexander@mihalicyn.com>,
+        Andrei Vagin <avagin@gmail.com>, criu@openvz.org,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH bpf-next v1 0/8]  Introduce BPF iterators for io_uring and epoll
+Date:   Tue, 16 Nov 2021 11:12:29 +0530
+Message-Id: <20211116054237.100814-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3556; h=from:subject; bh=SlD5HGZzKxuIYkJkdaUqV0OTyvwRfj3yhC7ub0JOPQw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhk0S6c8t+Ojz65eZNTVAFmrDa1s2rNuMB8kElx5ev mbNO73GJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYZNEugAKCRBM4MiGSL8RyminEA C0NadbANkkUkEjQcUwGjmXCSUIzxBrkI2yWAd/PMxxJzh24HSDYrJN79DMwQT7D6Kx/haZDhrWKhnE ciYBGgj+mvOzeunr1YNqER2UQAJCdhvPle9gQj2GhKgwfA46JBrtNJq5wwJhmZ3xUC9YH44ZKpb0yp lf3nD8Jf0IctZdz84xjAmGjzRwT5ztQL4e/DqSlBGFKXLLyKwaThpACzs1GCGib2ypazD9M+N3JfQ/ eRTZhzaiiwgaq5dRIQH/WPRYMOwCzgSDEci4QxXk7oNpHbe5EVTwjtsrGK28V4uGvnlKNUgruJn/FW e34WK2Nm/jcYeaiv/k0VqDiS2TST0cntKcI0xLFilO7c9Er1PEcGi6QwRCLl+YW0C5MabPW9BAQPMs buUZzIYmgezL/uHdz3PxGVhl+RHh/twYXbHmj97TpUnlmf89Hhoi92MP48TdiI5RnDBYxBZkPKmlwG 1765ZPSMPelJEWvtASTZnYM/WISA0d9zmnTXwLMEF1oo9onifadKMEwhBWpODCDUcW1gC+/EBujB3S Lf5/z9cvfnOFTFFJdPSBTp1z4dFB7hHc3AU/pNPv/8PONA2+K7Vnp1vTD+diQRGoKUjUcpURcbnG5X VbWv1Vajnha14dBkwK8/hr62tXkAdnkmfW1ztg+OtFzDLylI0hb+fNQCaZZg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:32 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
->
-> Currently vhost_net_release() uses synchronize_rcu() to synchronize
-> freeing with vhost_zerocopy_callback(). However synchronize_rcu()
-> is quite costly operation. It take more than 10 seconds
-> to shutdown qemu launched with couple net devices like this:
->         -netdev tap,id=tap0,..,vhost=on,queues=80
-> because we end up calling synchronize_rcu() netdev_count*queues times.
->
-> Free vhost net structures in rcu callback instead of using
-> synchronize_rcu() to fix the problem.
+ The CRIU [0] project developers are exploring potential uses of the BPF
+ subsystem to do complicated tasks that are difficult to add support for in the
+ kernel using existing interfaces.  Even if they are implemented using procfs,
+ or kcmp, it is difficult to make it perform well without having some kind of
+ programmable introspection into the kernel data structures. Moreover, for
+ procfs based state inspection, the output format once agreed upon is set in
+ stone and hard to extend, and at the same time inefficient to consume from
+ programs (where it is first converted from machine readable form to human
+ readable form, only to be converted again to machine readable form).  In
+ addition to this, kcmp based file set matching algorithm performs poorly since
+ each file in one set needs to be compared to each file in another set, to
+ determine struct file equivalence.
 
-I admit the release code is somehow hard to understand. But I wonder
-if the following case can still happen with this:
+ This set adds a io_uring file iterator (for registered files), a io_uring ubuf
+ iterator (for registered buffers), and a epoll iterator (for registered items
+ (files, registered using EPOLL_CTL_ADD)) to overcome these limitations.  Using
+ existing task, task_file, task_vma iterators, all of these can be combined
+ together to significantly enhance and speed up the task dumping procedure.
 
-CPU 0 (vhost_dev_cleanup)   CPU1
-(vhost_net_zerocopy_callback()->vhost_work_queue())
-                                                if (!dev->worker)
-dev->worker = NULL
+ The two immediate use cases are io_uring checkpoint/restore support and epoll
+ checkpoint/restore support. The first is unimplemented, and the second is being
+ expedited using a new epoll iterator. In the future, more stages of the
+ checkpointing sequence can be offloaded to eBPF programs to reduce process
+ downtime, e.g. in pre-dump stage, before task is seized.
 
-wake_up_process(dev->worker)
+ The io_uring file iterator is even more important now due to the advent of
+ descriptorless files in io_uring [1], which makes dumping a task's files a lot
+ more harder for CRIU, since there is no visibility into these hidden
+ descriptors that the task depends upon for operation. Similarly, the
+ io_uring_ubuf iterator is useful in case original VMA used in registering a
+ buffer has been destroyed.
 
-If this is true. It seems the fix is to move RCU synchronization stuff
-in vhost_net_ubuf_put_and_wait()?
+ Please see the individual patches for more details.
 
-Thanks
+   [0]: https://criu.org/Main_Page
+   [1]: https://lwn.net/Articles/863071
 
->
-> Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
-> ---
->  drivers/vhost/net.c | 22 ++++++++++++++--------
->  1 file changed, 14 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> index 97a209d6a527..0699d30e83d5 100644
-> --- a/drivers/vhost/net.c
-> +++ b/drivers/vhost/net.c
-> @@ -132,6 +132,7 @@ struct vhost_net {
->         struct vhost_dev dev;
->         struct vhost_net_virtqueue vqs[VHOST_NET_VQ_MAX];
->         struct vhost_poll poll[VHOST_NET_VQ_MAX];
-> +       struct rcu_head rcu;
->         /* Number of TX recently submitted.
->          * Protected by tx vq lock. */
->         unsigned tx_packets;
-> @@ -1389,6 +1390,18 @@ static void vhost_net_flush(struct vhost_net *n)
->         }
->  }
->
-> +static void vhost_net_free(struct rcu_head *rcu_head)
-> +{
-> +       struct vhost_net *n = container_of(rcu_head, struct vhost_net, rcu);
-> +
-> +       kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
-> +       kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
-> +       kfree(n->dev.vqs);
-> +       if (n->page_frag.page)
-> +               __page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
-> +       kvfree(n);
-> +}
-> +
->  static int vhost_net_release(struct inode *inode, struct file *f)
->  {
->         struct vhost_net *n = f->private_data;
-> @@ -1404,15 +1417,8 @@ static int vhost_net_release(struct inode *inode, struct file *f)
->                 sockfd_put(tx_sock);
->         if (rx_sock)
->                 sockfd_put(rx_sock);
-> -       /* Make sure no callbacks are outstanding */
-> -       synchronize_rcu();
->
-> -       kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
-> -       kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
-> -       kfree(n->dev.vqs);
-> -       if (n->page_frag.page)
-> -               __page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
-> -       kvfree(n);
-> +       call_rcu(&n->rcu, vhost_net_free);
->         return 0;
->  }
->
-> --
-> 2.32.0
->
+Kumar Kartikeya Dwivedi (8):
+  io_uring: Implement eBPF iterator for registered buffers
+  bpf: Add bpf_page_to_pfn helper
+  io_uring: Implement eBPF iterator for registered files
+  epoll: Implement eBPF iterator for registered items
+  selftests/bpf: Add test for io_uring BPF iterators
+  selftests/bpf: Add test for epoll BPF iterator
+  selftests/bpf: Test partial reads for io_uring, epoll iterators
+  selftests/bpf: Fix btf_dump test for bpf_iter_link_info
+
+ fs/eventpoll.c                                | 196 +++++++++-
+ fs/io_uring.c                                 | 334 ++++++++++++++++
+ include/linux/bpf.h                           |   6 +
+ include/uapi/linux/bpf.h                      |  15 +
+ kernel/trace/bpf_trace.c                      |   2 +
+ scripts/bpf_doc.py                            |   2 +
+ tools/include/uapi/linux/bpf.h                |  15 +
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 362 +++++++++++++++++-
+ .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
+ .../selftests/bpf/progs/bpf_iter_epoll.c      |  33 ++
+ .../selftests/bpf/progs/bpf_iter_io_uring.c   |  50 +++
+ 11 files changed, 1015 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_epoll.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_io_uring.c
+
+-- 
+2.33.1
 
