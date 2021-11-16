@@ -2,404 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C5A4537F5
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 17:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478FD45389A
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 18:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbhKPQpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 11:45:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235732AbhKPQp3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:45:29 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31179C061570
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 08:42:32 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id v22so14879593qtx.8
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 08:42:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VNIFvJHTViq4ZUikEVSAjHLl5lPz7kvTObI4mC3qcIg=;
-        b=FA6Fl8Iix03z936EctLNC6pCi5n1E22e6gjXHpk0uRw8u+2FyJNKhK/X2oZKi/3QLm
-         HSisHtp/VYZG3oPzokygnbIfl38PyBiyWnKEuT1/qLr2n9Xw8UkSJ3LiBduOqYnV8pJ7
-         U1sYoI4mTd01u7cata4k3nAVZTIGlwS4bsZi4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VNIFvJHTViq4ZUikEVSAjHLl5lPz7kvTObI4mC3qcIg=;
-        b=qrUpu4U1xZqnmbqEEnJano8INgGqAStavJgvjEXKe8fzu1894lraMH1TJbg1l55Ier
-         oYIKLksRFY9VcJBz+XddXUeEU/7t9BWzWeM2Dfia89s6cSniX3AeF6buGB3He2NpFsU8
-         PWFtRKBLN/YnBzMMJg5rE9LiFp3QeskpjhK4KPUwuEaTSucgdYdoXvqSeyPjtiL9CvzZ
-         dHdrKbhIIRbu7PhPZBHWM2PwlHddqGdY4J9aKUpPBTxcBPF4wjMuC4C9g82MV8IOZd2h
-         WFy2OLISx7hsGnLWtsnC8dOcB79Udm7kNAlmjdBcIufNJK7wV4DHC7+2ythEbozIUAH4
-         0Zfw==
-X-Gm-Message-State: AOAM531tL25fJAQX/QF9F73FaLaFke/zQNVwWPU5NqklIiZWOjwoNBpK
-        E8LYkJRlKcrCQC4J/I5r706zHw==
-X-Google-Smtp-Source: ABdhPJwmHSw0ISoCYUeRtD5puUGU17fkh2JOr6xmnWB+j492SbozmV1edBVS/ItSSB4hQ0udacS+ug==
-X-Received: by 2002:ac8:5855:: with SMTP id h21mr9049322qth.8.1637080950235;
-        Tue, 16 Nov 2021 08:42:30 -0800 (PST)
-Received: from localhost.localdomain ([191.91.82.96])
-        by smtp.gmail.com with ESMTPSA id bk18sm7309121qkb.35.2021.11.16.08.42.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 08:42:29 -0800 (PST)
-From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Subject: [PATCH bpf-next v2 4/4] libbpf: Expose CO-RE relocation results
-Date:   Tue, 16 Nov 2021 11:42:08 -0500
-Message-Id: <20211116164208.164245-5-mauricio@kinvolk.io>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211116164208.164245-1-mauricio@kinvolk.io>
-References: <20211116164208.164245-1-mauricio@kinvolk.io>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S238876AbhKPRhr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 12:37:47 -0500
+Received: from mga04.intel.com ([192.55.52.120]:9713 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233537AbhKPRhq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 12:37:46 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232468379"
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="232468379"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 09:19:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,239,1631602800"; 
+   d="scan'208";a="454322572"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga003.jf.intel.com with ESMTP; 16 Nov 2021 09:19:54 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 16 Nov 2021 09:19:53 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 16 Nov 2021 09:19:53 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Tue, 16 Nov 2021 09:19:53 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Tue, 16 Nov 2021 09:19:53 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d0y7G7Y6Nig1C4smkBP7ZLUa8Hh9+4pe6NulAOX9GVL49B4+xCRiT9tp9lKSUlsSdEHh/5ZgL+oB0P5P5zNUE+mryPPXRryy+Ekqm45nzx4CqPVjwaGzHWdgTuFHqr4ETa88BgpjbnkLB2K/29o3NtfEJEGWINl0Bco9SkYBjSKlk4gMIiuR4aCgRRiubqMSjxvym+X2If5AAZA7gDSgscpiTRr53zFloLft2U3JwuR8Ntceq92ojYgf9mylPirgcWi3GAfobbeiSRpSCbxuj+zOztzIurN/lqqORkCgxhzxyrOGDAmdnKT+3hIfc3EwqTAWW1GdxE2vk8ztWHffhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H4+UXQUg7j6boDKH8O5UH6hs3R1YMhMEO8SkirVQTRQ=;
+ b=LkUabjJg9dcqPAGsTGgp8/GfHgxzanUL7OtFyjtCLOAWF+ndY45Z/xwgcaukEtY6Wqx1wjg2NgRXegmgcwmYfgKfyS3OcwP+mIktKs9UC3Iwr8pzEYOL3YzRBrygjZhoAsR/n+rkvGh34B1sI/4WDda1g8kc/erCey81QjFYOM3NNYLdi+m0m68BZdp4roQDXyo5iGOBjqD4evyFL77wQriMTRFvV0jRHOb1/yln2S/zgF4RgXAw+iOw2ugyvJuLMvpZQ/CAkQ8NSzXlaniSSinfmAgxGh//6q2MEPSevpva1/OlahqVHIqwbEVx0QlLle2WmWg9ddjZ74IieIqtHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H4+UXQUg7j6boDKH8O5UH6hs3R1YMhMEO8SkirVQTRQ=;
+ b=TEiatnZyF77wLzPYktvIR5+leszUcrUTdJPcN8AGdUPn2YTocewLKO9dqh/YGrsOExw1z/nM3rDJqpweaz5THnlESXt+Ku320lJ8fsQJU1SHvN8whgPDcMKh7cTRHU1hygHjnc6BmY2bKJMQ73XuyiG2FdQjSpDAPAklkdrgbH0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5326.namprd11.prod.outlook.com (2603:10b6:5:391::8) by
+ DM6PR11MB4706.namprd11.prod.outlook.com (2603:10b6:5:2a5::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4690.26; Tue, 16 Nov 2021 17:19:52 +0000
+Received: from DM4PR11MB5326.namprd11.prod.outlook.com
+ ([fe80::1c89:2776:b68b:6ce5]) by DM4PR11MB5326.namprd11.prod.outlook.com
+ ([fe80::1c89:2776:b68b:6ce5%5]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 17:19:52 +0000
+Message-ID: <ce7f36b6-fa4f-f6a4-a055-28893069cfa0@intel.com>
+Date:   Tue, 16 Nov 2021 18:19:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.3.0
+Subject: Re: 32bit x86 build broken (was: Re: [GIT PULL] Networking for
+ 5.16-rc1)
+Content-Language: en-US
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>
+CC:     David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        <linux-can@vger.kernel.org>
+References: <20211111163301.1930617-1-kuba@kernel.org>
+ <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
+ <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAHk-=wiNEdrLirAbHwJvmp_s2Kjjd5eV680hTZnbBT2gXK4QbQ@mail.gmail.com>
+ <20211112063355.16cb9d3b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <9999b559abecea2eeb72b0b6973a31fcd39087c1.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+In-Reply-To: <9999b559abecea2eeb72b0b6973a31fcd39087c1.camel@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM6P194CA0106.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:209:8f::47) To DM4PR11MB5326.namprd11.prod.outlook.com
+ (2603:10b6:5:391::8)
+MIME-Version: 1.0
+Received: from [192.168.100.217] (213.134.175.214) by AM6P194CA0106.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:8f::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 16 Nov 2021 17:19:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d19ce72c-2b8f-454e-fb7f-08d9a9254d0c
+X-MS-TrafficTypeDiagnostic: DM6PR11MB4706:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB4706979B477FDFE095BAC2ECCB999@DM6PR11MB4706.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EWi75tC5zG8hBXgvibZ9RSXxglGKIIi7oSqCo3ez+Y8yup8x2j+OFJ24JbVsolMwt5+/o5HWJYGhrTaJuYL5Yoo6pO33S2FtYN328rgeMVN8QPqfAGGwjlTHJtcE98rkP2P8/wLXkEn8iCJfIQxMXopdt8XfrYX6Hdfysr5EWfSQOA8P3qcgoJdunlo/43AJlnhcobvSp0G4yxGT7Bc7gCqpnV6DaAAzm2Uz0YoJqiAfd/lU/1S648WTUdw9DVvpG6aqyhLLBMK2z0fHxZuHNO18ThcunPzohCr6CPgDf2rZzKIKUGYIA5T+L11dWApnjrU+JhSsU/VbsW4D19nKaKSvOJ/QO0gi+Uk+QJVXBAWK7vkuUZemFCJcdpxzut1FDwkUdapvZAjqqyMY7P9GFxMbWftHy9yEYQO7zSkIIJQPcxlrPaom5/BnhTCRgdt6+BtQ9dMFbC+UcxeG82Kgt1L3nUKaLfqnHgBPb/EAz5MZz6T7CNLgLsM8XM9+Nwob8ID2a25lneouqxsdKU9jNJ/D5HxYhFZJkgf7Eg2e27zfdosrTaHTlxlekswCaLaDimZGbMl+Oe66Kcb/0w3iKYfYlZwHmWXfIFiYf/AGLjau7tvTMr6QUkk6z3F0ZucLosnWC0lmwn6B3Vgnm/SnTBgASzusufiHlgZcYNnLLjrcI/WqPDubZXZRiGXgy/EHNHg8WiwG5DLxEY8rsViaGWlJLvm7CsyC23UjFqKF6pM4Y6i/5sXjXiG2wcIZSWa2ZigzO88qVrTgvx50yk+x+Ed1GjPLYfMxALCMbCjcYD366gnsesxAgI4TvBUfrSUg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5326.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(186003)(316002)(4326008)(5660300002)(7416002)(53546011)(16576012)(8676002)(36756003)(38100700002)(4001150100001)(54906003)(110136005)(31686004)(8936002)(6666004)(956004)(2616005)(86362001)(26005)(66946007)(2906002)(83380400001)(31696002)(966005)(36916002)(508600001)(66556008)(66476007)(6486002)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bCswNHM4aUM5MEhsWHByZVUzbTJMMHhNWUlVMTNMbElzNHpTZ1dSNGRFTDBL?=
+ =?utf-8?B?L0FZT1BSSWJVc21Ba29HOVZjalRTdlFQREpVZ2YzWXY1N0xZWFVWcmhrVXI4?=
+ =?utf-8?B?dlkxUktHT0tjdTU2bXV1bkppdEhBb0FTUnJ3eFg0WHgyWGdJU0ZFdHI0Y3Mz?=
+ =?utf-8?B?NTlLOTFLeURqNU8rNnZxcVF2NVhudFJUVmxhb2RJb1hwSnd6OG1KWU41RERi?=
+ =?utf-8?B?c2RYM1RFNmhKYXlqcUMxRXg0NDAvRUlRbHJHUWJmdlc3Q0pCZENuTkxJOUNu?=
+ =?utf-8?B?WVRLRHVBTmNrZmJFY1VLZGw2N1I0RlpVT0tSRVVma3QzNkM3Y08vMVY1L3Vx?=
+ =?utf-8?B?VHBkb3orTTV0OWl5YStmV0lWMkhXNGlHeFlRLzI4Z0MxZVJWUkwwUmNzR1Av?=
+ =?utf-8?B?QmZ6YUVCZGJ6THVTUHdyYUY0RXl2LytjMUJPcVJPSG4xZzFja20rUVYvbGV1?=
+ =?utf-8?B?dzFlbENLMHBlcnVhMUNOeEhMZHh2ZVFVSHNRcW9VTzYzTXVNMHEvQnQ5YUdy?=
+ =?utf-8?B?dVhzUkZ4b1FieHRiVTJIcUZoVENTc1VsS3RWd0c1T094dmhyZHJLSml4MDE5?=
+ =?utf-8?B?MzU5c1Nib2V4Rkt0VmFJaUg1YjdUVUVUOXZNd1VMVVlIbGNNNzhpKzI1cmJP?=
+ =?utf-8?B?bjlQeDZQV1lnZjh1RWt3OVBOODhWL3J4Y0VkUUFrSDU4cDdTL2o0QXhQRE9k?=
+ =?utf-8?B?K2N4SU1WNkRGbnl5bkxEb2k3L08zQXdZVzBhQzNuQXR3TDNZTUt5UklZSXJM?=
+ =?utf-8?B?Z2tLdE9QWXlTNFNSakozL0JLSStlcWh6cUtQajJDeTFFcjBnSXFBb1ZBU2sr?=
+ =?utf-8?B?SDAzMkdzZUxZclFSUEI5eUdyVDVrSG0wU05OeUFvR0sva2tCZk45V1hKTFV1?=
+ =?utf-8?B?aXdXcWt4VVNJSW1hUlh3cXV0QnlCWlZBZFdSRUYxMm1tRnNLMDluWDVqeEN0?=
+ =?utf-8?B?YndqbG94NldLUU9UMDJ3dTBIYUUvVldWMmEvaWR0MC9MUXVFM2E4MTNuWE1h?=
+ =?utf-8?B?OEIvTXhuZG5uOFI4TTV4TDkwb3BlOWdncVhVVXNmSENTODBPNGpYdm9vQ1d1?=
+ =?utf-8?B?ME4reWk3eVc3b2lzc01laGtkeFVrWHhCTzN2ZXhzZjlGUHNaUURUMjBMSkJJ?=
+ =?utf-8?B?cUxxOHRpUVJnSmhUYVBuMkloR1pPSmlRYWtFend6K1puTDNQV2xoMHFiT1NO?=
+ =?utf-8?B?R202d3lXcWRHU2hKeFRZci9FY1Q2V2YxaEZYRXV3ellzbFA4R1A2cHlVZytR?=
+ =?utf-8?B?bmFLc2tXV0x6Q0JlZzJOL2o3VFBIS09hUXdXdGFHVDNuR2wxQ000MjBDY3ll?=
+ =?utf-8?B?Q2l4dHJrWmh6UjYwaUJsL2VWb2I0MFBKdUtEVGRhSzVIdTZTa1pXMzJVeUh2?=
+ =?utf-8?B?akhPUHhCKzlGUDdSRndPVVN0QVAzTUVDNUFsMmZFdW5JWGJraGtEVG92ZXBs?=
+ =?utf-8?B?ZUhHYXZIZW1UWFZEN2R2b21nYVlvTzgyVTFrN20xQ0hCWS9zWjVFYlR4cTQ0?=
+ =?utf-8?B?ZTJKeElYU3ZkSi9EWGRLNSt4bmdWRkRFeW55ZHhyOUgvSHJwWjNRVS9Fa3Rz?=
+ =?utf-8?B?dmplNjBrOE5SL2FHdFJsM2RvZHFicDZRUWd6YStmdXFGbUttd2JlMEpPa2hT?=
+ =?utf-8?B?UHB5Vk1aZmQ1RHlGRHRmaWVxK2ZaSm1XY1A5SDEyc1ZoMnkyUFFKMHlCZXRD?=
+ =?utf-8?B?Y09rbVlnRXVKMGU2ZXE4L0pIQmhBcnFHVUUrQlZJRzRXMHo1VXJkQnBFcnNH?=
+ =?utf-8?B?MEdYTHplN2pUOVZQVE5jN0dER2UxTFlENTZyUzdibkZMWGFCcHdyNm9hNENR?=
+ =?utf-8?B?RWk3VlB2SzBFWkwvMmNKZkd0aWVmazgrNXlLUnU3MTFnWDh0WXVFTkFiSEhk?=
+ =?utf-8?B?bjJvNGNkOUxwNU9RU0R6ZnpGL1ExVmFpVlJrbWlDcU1XK24rdGxTMDFTTFBW?=
+ =?utf-8?B?MGFsVTNlNU9SNmRZRVVZSEJMS0JpNzFzNU1nZXpIMDJKYkhFcXJDcW5YY05m?=
+ =?utf-8?B?VE1tcWp5amV2R2lFUDJHUU14eURWa0FYbkNLUTJielFYSUxhdXYyMitQOTR2?=
+ =?utf-8?B?bW1QU0wweVc1WHJUaTFrYUp6SGs5VUFQK2ZlbGdUTkpvZVpLOFFkVmtBcm4y?=
+ =?utf-8?B?THdKQUo0NnhoSU5HbTA0RlZjOVZPVWsyWk40Y3UwRVhubDBpR3FKSlBJNlUr?=
+ =?utf-8?B?cGdVaWdOTm83NWppVGtESnh2OXl5U29uM25ucjRaRmR3Qy9ndEZpUFRaMDJO?=
+ =?utf-8?Q?SewpFPfwlnyYy6XP0/yxbNGneXrX5zjR6bBXCuRbc8=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d19ce72c-2b8f-454e-fb7f-08d9a9254d0c
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5326.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 17:19:52.2839
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: obQdnXBFobnqYw+7ujxyhBkIEk0uWVVsEqeOlJeU7Bgbkw5Bq/MDoFU81yaS/G49DnLmri2AvoC9xw/8Ck7lz+bQLzac5/8/+9jxk/eHKTs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4706
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The result of the CO-RE relocations can be useful for some use cases
-like BTFGen[0]. This commit adds a new ‘record_core_relos’ option to
-save the result of such relocations and a couple of functions to access
-them.
+On 11/12/2021 4:04 PM, Srinivas Pandruvada wrote:
+> On Fri, 2021-11-12 at 06:33 -0800, Jakub Kicinski wrote:
+>> On Thu, 11 Nov 2021 18:48:43 -0800 Linus Torvalds wrote:
+>>> On Thu, Nov 11, 2021 at 5:46 PM Jakub Kicinski <kuba@kernel.org>
+>>> wrote:
+>>>> Rafael, Srinivas, we're getting 32 bit build failures after pulling
+>>>> back
+>>>> from Linus today.
+>>>>
+>>>> make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
+>>>> make: *** [Makefile:219: __sub-make] Error 2
+>>>> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:
+>>>> In function ‘send_mbox_cmd’:
+>>>> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:7
+>>>> 9:37: error: implicit declaration of function ‘readq’; did you mean
+>>>> ‘readl’? [-Werror=implicit-function-declaration]
+>>>>     79 |                         *cmd_resp = readq((void __iomem *)
+>>>> (proc_priv->mmio_base + MBOX_OFFSET_DATA));
+>>>>        |                                     ^~~~~
+>>>>        |                                     readl
+>>> Gaah.
+>>>
+>>> The trivial fix is *probably* just a simple
+>> To be sure - are you planning to wait for the fix to come via
+>> the usual path?  We can hold applying new patches to net on the
+>> off chance that you'd apply the fix directly and we can fast
+>> forward again :)
+>>
+>> Not that 32bit x86 matters all that much in practice, it's just
+>> for preventing new errors (64b divs, mostly) from sneaking in.
+>>
+>> I'm guessing Rafeal may be AFK for the independence day weekend.
+> He was off, but not sure if he is back. I requested Daniel to send PULL
+> request for
+> https://lore.kernel.org/lkml/a22a1eeb-c7a0-74c1-46e2-0a7bada73520@infradead.org/T/
+>
+>
+>
+Sorry for the delay, I'd been offline for the last few days.
 
-[0]: https://github.com/kinvolk/btfgen/
+I'm back now and I will be picking up the Arnd's patch shortly even 
+though the simple fix is already there.
 
-Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
----
- tools/lib/bpf/libbpf.c    | 63 ++++++++++++++++++++++++++++++++++++++-
- tools/lib/bpf/libbpf.h    | 49 +++++++++++++++++++++++++++++-
- tools/lib/bpf/libbpf.map  |  2 ++
- tools/lib/bpf/relo_core.c | 28 +++++++++++++++--
- tools/lib/bpf/relo_core.h | 21 ++-----------
- 5 files changed, 140 insertions(+), 23 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index f50f9428bb03..a5da977a9f5d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -306,6 +306,10 @@ struct bpf_program {
- 
- 	struct reloc_desc *reloc_desc;
- 	int nr_reloc;
-+
-+	struct bpf_core_relo_result *core_relos;
-+	int nr_core_relos;
-+
- 	int log_level;
- 
- 	struct {
-@@ -519,6 +523,9 @@ struct bpf_object {
- 	bool has_subcalls;
- 	bool has_rodata;
- 
-+	/* Record CO-RE relocations for the different programs in prog->core_relos */
-+	bool record_core_relos;
-+
- 	struct bpf_gen *gen_loader;
- 
- 	/* Information when doing ELF related work. Only valid if efile.elf is not NULL */
-@@ -614,8 +621,10 @@ static void bpf_program__exit(struct bpf_program *prog)
- 	zfree(&prog->pin_name);
- 	zfree(&prog->insns);
- 	zfree(&prog->reloc_desc);
-+	zfree(&prog->core_relos);
- 
- 	prog->nr_reloc = 0;
-+	prog->nr_core_relos = 0;
- 	prog->insns_cnt = 0;
- 	prog->sec_idx = -1;
- }
-@@ -5408,6 +5417,7 @@ static int bpf_core_apply_relo(struct bpf_program *prog,
- 			       struct hashmap *cand_cache)
- {
- 	const void *type_key = u32_as_hash_key(relo->type_id);
-+	struct bpf_core_relo_result *core_relo = NULL;
- 	struct bpf_core_cand_list *cands = NULL;
- 	const char *prog_name = prog->name;
- 	const struct btf_type *local_type;
-@@ -5459,7 +5469,18 @@ static int bpf_core_apply_relo(struct bpf_program *prog,
- 		}
- 	}
- 
--	return bpf_core_apply_relo_insn(prog_name, insn, insn_idx, relo, relo_idx, local_btf, cands);
-+	if (prog->obj->record_core_relos) {
-+		prog->core_relos = libbpf_reallocarray(prog->core_relos,
-+						       sizeof(*prog->core_relos),
-+						       prog->nr_core_relos + 1);
-+		if (!prog->core_relos)
-+			return -ENOMEM;
-+
-+		core_relo = &prog->core_relos[prog->nr_core_relos++];
-+	}
-+
-+	return bpf_core_apply_relo_insn(prog_name, insn, insn_idx, relo, relo_idx, local_btf, cands,
-+					core_relo);
- }
- 
- static int
-@@ -5815,6 +5836,28 @@ static int append_subprog_relos(struct bpf_program *main_prog, struct bpf_progra
- 	return 0;
- }
- 
-+static int append_subprog_core_relos(struct bpf_program *main_prog, struct bpf_program *subprog)
-+{
-+	int new_cnt = main_prog->nr_core_relos + subprog->nr_core_relos;
-+	struct bpf_core_relo_result *relos;
-+	int i;
-+
-+	if (main_prog == subprog)
-+		return 0;
-+	relos = libbpf_reallocarray(main_prog->core_relos, new_cnt, sizeof(*relos));
-+	if (!relos)
-+		return -ENOMEM;
-+	memcpy(relos + main_prog->nr_core_relos, subprog->core_relos,
-+	       sizeof(*relos) * subprog->nr_core_relos);
-+
-+	for (i = main_prog->nr_core_relos; i < new_cnt; i++)
-+		relos[i].insn_idx += subprog->sub_insn_off;
-+
-+	main_prog->core_relos = relos;
-+	main_prog->nr_core_relos = new_cnt;
-+	return 0;
-+}
-+
- static int
- bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
- 		       struct bpf_program *prog)
-@@ -5918,6 +5961,11 @@ bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
- 			err = append_subprog_relos(main_prog, subprog);
- 			if (err)
- 				return err;
-+
-+			err = append_subprog_core_relos(main_prog, subprog);
-+			if (err)
-+				return err;
-+
- 			err = bpf_object__reloc_code(obj, main_prog, subprog);
- 			if (err)
- 				return err;
-@@ -6168,6 +6216,7 @@ bpf_object__finish_relocate(struct bpf_object *obj)
- 					insn[0].src_reg = BPF_PSEUDO_MAP_VALUE;
- 					insn[0].imm = obj->maps[obj->kconfig_map_idx].fd;
- 				}
-+				break;
- 			default:
- 				break;
- 			}
-@@ -6845,6 +6894,8 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
- 		}
- 	}
- 
-+	obj->record_core_relos = OPTS_GET(opts, record_core_relos, false);
-+
- 	err = bpf_object__elf_init(obj);
- 	err = err ? : bpf_object__check_endianness(obj);
- 	err = err ? : bpf_object__elf_collect(obj);
-@@ -8253,6 +8304,16 @@ size_t bpf_program__insn_cnt(const struct bpf_program *prog)
- 	return prog->insns_cnt;
- }
- 
-+const struct bpf_core_relo_result *bpf_program__core_relos(struct bpf_program *prog)
-+{
-+	return prog->core_relos;
-+}
-+
-+int bpf_program__core_relos_cnt(struct bpf_program *prog)
-+{
-+	return prog->nr_core_relos;
-+}
-+
- int bpf_program__set_prep(struct bpf_program *prog, int nr_instances,
- 			  bpf_program_prep_t prep)
- {
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index d206b4400a4d..47c8ac41f61b 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -111,8 +111,12 @@ struct bpf_object_open_opts {
- 	 * struct_ops, etc) will need actual kernel BTF at /sys/kernel/btf/vmlinux.
- 	 */
- 	struct btf *btf_custom;
-+	/* Keep track of CO-RE relocation results. This information can be retrieved
-+	 * with bpf_program__core_relos() after the object is prepared.
-+	 */
-+	bool record_core_relos;
- };
--#define bpf_object_open_opts__last_field btf_custom
-+#define bpf_object_open_opts__last_field record_core_relos
- 
- LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
- LIBBPF_API struct bpf_object *
-@@ -286,6 +290,49 @@ LIBBPF_API int bpf_program__pin(struct bpf_program *prog, const char *path);
- LIBBPF_API int bpf_program__unpin(struct bpf_program *prog, const char *path);
- LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
- 
-+/* bpf_core_relo_kind encodes which aspect of captured field/type/enum value
-+ * has to be adjusted by relocations.
-+ */
-+enum bpf_core_relo_kind {
-+	BPF_FIELD_BYTE_OFFSET = 0,	/* field byte offset */
-+	BPF_FIELD_BYTE_SIZE = 1,	/* field size in bytes */
-+	BPF_FIELD_EXISTS = 2,		/* field existence in target kernel */
-+	BPF_FIELD_SIGNED = 3,		/* field signedness (0 - unsigned, 1 - signed) */
-+	BPF_FIELD_LSHIFT_U64 = 4,	/* bitfield-specific left bitshift */
-+	BPF_FIELD_RSHIFT_U64 = 5,	/* bitfield-specific right bitshift */
-+	BPF_TYPE_ID_LOCAL = 6,		/* type ID in local BPF object */
-+	BPF_TYPE_ID_TARGET = 7,		/* type ID in target kernel */
-+	BPF_TYPE_EXISTS = 8,		/* type existence in target kernel */
-+	BPF_TYPE_SIZE = 9,		/* type size in bytes */
-+	BPF_ENUMVAL_EXISTS = 10,	/* enum value existence in target kernel */
-+	BPF_ENUMVAL_VALUE = 11,		/* enum value integer value */
-+};
-+
-+#define BPF_CORE_SPEC_MAX_LEN 64
-+
-+struct bpf_core_relo_spec {
-+	const struct btf *btf;
-+	__u32 root_type_id;
-+	/* accessor spec */
-+	int spec[BPF_CORE_SPEC_MAX_LEN];
-+	int spec_len;
-+};
-+
-+struct bpf_core_relo_result {
-+	struct bpf_core_relo_spec local_spec, targ_spec;
-+	int insn_idx;
-+	enum bpf_core_relo_kind relo_kind;
-+	/* true if libbpf wasn't able to perform the relocation */
-+	bool poison;
-+	/* original value in the instruction */
-+	__u32 orig_val;
-+	/* new value that the instruction needs to be patched up to */
-+	__u32 new_val;
-+};
-+
-+LIBBPF_API const struct bpf_core_relo_result *bpf_program__core_relos(struct bpf_program *prog);
-+LIBBPF_API int bpf_program__core_relos_cnt(struct bpf_program *prog);
-+
- struct bpf_link;
- 
- LIBBPF_API struct bpf_link *bpf_link__open(const char *path);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 459b41228933..4aeb5db9c4e3 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -416,4 +416,6 @@ LIBBPF_0.6.0 {
- 		perf_buffer__new_raw_deprecated;
- 		btf__save_raw;
- 		bpf_object__prepare;
-+		bpf_program__core_relos;
-+		bpf_program__core_relos_cnt;
- } LIBBPF_0.5.0;
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index b5b8956a1be8..11b04c5961a1 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -13,8 +13,6 @@
- #include "str_error.h"
- #include "libbpf_internal.h"
- 
--#define BPF_CORE_SPEC_MAX_LEN 64
--
- /* represents BPF CO-RE field or array element accessor */
- struct bpf_core_accessor {
- 	__u32 type_id;		/* struct/union type or array element type */
-@@ -1092,6 +1090,18 @@ static void bpf_core_dump_spec(int level, const struct bpf_core_spec *spec)
- 	}
- }
- 
-+static void copy_core_spec(const struct bpf_core_spec *src, struct bpf_core_relo_spec *dst)
-+{
-+	int i;
-+
-+	dst->root_type_id = src->root_type_id;
-+	dst->btf = src->btf;
-+	dst->spec_len = src->raw_len;
-+
-+	for (i = 0; i < src->raw_len; i++)
-+		dst->spec[i] = src->raw_spec[i];
-+}
-+
- /*
-  * CO-RE relocate single instruction.
-  *
-@@ -1147,7 +1157,8 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
- 			     const struct bpf_core_relo *relo,
- 			     int relo_idx,
- 			     const struct btf *local_btf,
--			     struct bpf_core_cand_list *cands)
-+			     struct bpf_core_cand_list *cands,
-+			     struct bpf_core_relo_result *core_relo)
- {
- 	struct bpf_core_spec local_spec, cand_spec, targ_spec = {};
- 	struct bpf_core_relo_res cand_res, targ_res;
-@@ -1291,5 +1302,16 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
- 		return -EINVAL;
- 	}
- 
-+	if (core_relo) {
-+		copy_core_spec(&local_spec, &core_relo->local_spec);
-+		copy_core_spec(&targ_spec, &core_relo->targ_spec);
-+
-+		core_relo->insn_idx = insn_idx;
-+		core_relo->poison = targ_res.poison;
-+		core_relo->relo_kind = targ_spec.relo_kind;
-+		core_relo->orig_val = targ_res.orig_val;
-+		core_relo->new_val = targ_res.new_val;
-+	}
-+
- 	return 0;
- }
-diff --git a/tools/lib/bpf/relo_core.h b/tools/lib/bpf/relo_core.h
-index 3b9f8f18346c..89d7c4c31ccd 100644
---- a/tools/lib/bpf/relo_core.h
-+++ b/tools/lib/bpf/relo_core.h
-@@ -4,23 +4,7 @@
- #ifndef __RELO_CORE_H
- #define __RELO_CORE_H
- 
--/* bpf_core_relo_kind encodes which aspect of captured field/type/enum value
-- * has to be adjusted by relocations.
-- */
--enum bpf_core_relo_kind {
--	BPF_FIELD_BYTE_OFFSET = 0,	/* field byte offset */
--	BPF_FIELD_BYTE_SIZE = 1,	/* field size in bytes */
--	BPF_FIELD_EXISTS = 2,		/* field existence in target kernel */
--	BPF_FIELD_SIGNED = 3,		/* field signedness (0 - unsigned, 1 - signed) */
--	BPF_FIELD_LSHIFT_U64 = 4,	/* bitfield-specific left bitshift */
--	BPF_FIELD_RSHIFT_U64 = 5,	/* bitfield-specific right bitshift */
--	BPF_TYPE_ID_LOCAL = 6,		/* type ID in local BPF object */
--	BPF_TYPE_ID_TARGET = 7,		/* type ID in target kernel */
--	BPF_TYPE_EXISTS = 8,		/* type existence in target kernel */
--	BPF_TYPE_SIZE = 9,		/* type size in bytes */
--	BPF_ENUMVAL_EXISTS = 10,	/* enum value existence in target kernel */
--	BPF_ENUMVAL_VALUE = 11,		/* enum value integer value */
--};
-+#include "libbpf.h"
- 
- /* The minimum bpf_core_relo checked by the loader
-  *
-@@ -92,7 +76,8 @@ int bpf_core_apply_relo_insn(const char *prog_name,
- 			     struct bpf_insn *insn, int insn_idx,
- 			     const struct bpf_core_relo *relo, int relo_idx,
- 			     const struct btf *local_btf,
--			     struct bpf_core_cand_list *cands);
-+			     struct bpf_core_cand_list *cands,
-+			     struct bpf_core_relo_result *core_relo);
- int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
- 			      const struct btf *targ_btf, __u32 targ_id);
- 
--- 
-2.25.1
 
