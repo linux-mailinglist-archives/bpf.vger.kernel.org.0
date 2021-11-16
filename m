@@ -2,357 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7EB453A1A
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 20:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C60453C0B
+	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 23:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239792AbhKPT1L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 14:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S231728AbhKPWD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 17:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239789AbhKPT1K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 14:27:10 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F97C061570
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 11:24:12 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id e9so735873ljl.5
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 11:24:12 -0800 (PST)
+        with ESMTP id S231699AbhKPWD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 17:03:28 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E608C061570;
+        Tue, 16 Nov 2021 14:00:31 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id e136so1077902ybc.4;
+        Tue, 16 Nov 2021 14:00:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3PSgyrapkFOKU3o8DSdLliFS+3YAZg3FkTQ8U/TL7VA=;
-        b=UI4n43xtXr0yEedrW+NnzMrcrsv2hXOpIN2vp2cYnCUK7MxFeXfQ4MdAfOzpsnuCyc
-         4Th9bQwxqQEahUu/ehUqWdS7OPNEvOBE5pLyTLeEub99Ux1LC4qZkdN//bK/9iUbpk2I
-         vXm/SmwWGqRMko39kw9VtHT80/vNMXRJDOS4M=
+         :cc;
+        bh=IhxZXD5NEyOlbJBzVToA3gUj1KVfrk+O3Zu96bMrpOk=;
+        b=H9C6fELVjUQLJuG9T4sRvylDFgeWhj7p59TauhrHUIYRpQGfmZgfmtf9x3vHstCKuc
+         wtHaS+69PAbJnNs3onAIUBO9lH8fszRfLIgxpL23l1CRQOMDFhZZsFuWJLIx2A5GGtym
+         Rxy5nWJSl1QtjguUgzC9SlUKdv1cpqPkUcmehGMz2zvQ2gXFfLkTj1SzDH/nyLKqPCAM
+         uH3QffC67U+Pb0dJp6e+cWdUjb8bBfMozObFDfaKspyJk002gK0p47/ycgZ7PCdgJYJB
+         8EEkCCB0ZTp08yp3sDZ0dI6zuzJXxYA9db6MskdNE62SXCsWNykKNH7CgjACt8YsHNdF
+         BdzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3PSgyrapkFOKU3o8DSdLliFS+3YAZg3FkTQ8U/TL7VA=;
-        b=T0knfWa0NGmOxid8oEahqKDh3sjtLH3Les6FSGMjrQOb7HugJ+ONb3RS5PNZy6lbm9
-         U0qkVzmCUajN8mx4W3IiLdyOMb8Am+IrwkNKOYiY+uWlGGDvQlvYsAuXDtSqXZJsfD0q
-         BkaP+ZIG5i8CNpXwF0R3++Q7n9gt0XpTQwngIgEXfEVEQpdKgdkxW6O1Xbxl9D9NZ2VH
-         wdfUZn0hdMaIa1zt4vU7Ej5nJ5RjlpywY/W3bSxsLfuIgbeiAgRqVghFzLUkDdZdCnKz
-         3ZTxXKcHi3v36+YWqm1K6ti9+y4iJVbgo7zo4UMMO4q19oTbceQepR1gLM7F9efSNN+o
-         s2lA==
-X-Gm-Message-State: AOAM530FKEsgB0EOIqEAakCzJLS4+MBzATOUZdUJB8P0HkdlG8B1JQqg
-        p3odYRE4BwHPObISI8kiCl8COIQirtSzAz0/gUKcPQ==
-X-Google-Smtp-Source: ABdhPJyU7fmOlbiji4ddM69LF02t4pcts+b6Bcfsl+pKoX9DCzRJDM4ORRS9rbFl+B62vkIWg7pMN/V0nq4hIA/Ka+4=
-X-Received: by 2002:a2e:890c:: with SMTP id d12mr1765281lji.218.1637090650634;
- Tue, 16 Nov 2021 11:24:10 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=IhxZXD5NEyOlbJBzVToA3gUj1KVfrk+O3Zu96bMrpOk=;
+        b=COzRBU54/ZsPMjDR1ePp6loFZcdHBHbqdU4/Y+R1YaXfvDRqslzHKlXxYa/hVe7+5o
+         gqVOOoPQy+aiXVuECE0oPB/nY+j8Fwhat5YmgC8vX8C1x+TI7E+cD/CaPG7HNZBevYMd
+         7TzuJHQC2cr7EBgHALsarAynZCyTLkO9W0f5fUl2UuVxyzKeVuVvzReHd9iAFiqVv8zE
+         Yp5fqx9FgduswMc9y0/22fV1eWg05cmUsLR1bnmzsW5ZzMdK7SKjG2Kpd/MTQta1kcG2
+         Otb6j6ALLJUQee3ZU12rcPpl0cd/aaGA7b5DuhiKmcfw3nI8BIfB74yMYu44GSdqxmMk
+         yaFQ==
+X-Gm-Message-State: AOAM532o2khbxzUYd90DQkHGJmglm8VUGGBBipGTkakA5ocDbx/QLorU
+        iFn0yJr8RFY7tBvnvs0jCUAOr/ENthCj9qJwi1w=
+X-Google-Smtp-Source: ABdhPJx39gY4v+RDAEyNKPNnkxArx5NkgQPrhzVox7loApPpnqfkAGM+708ESMPgFkPM8zEajuE2xRnD5EcsrzxR2LA=
+X-Received: by 2002:a25:cc4c:: with SMTP id l73mr11561801ybf.114.1637100030581;
+ Tue, 16 Nov 2021 14:00:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20211116164208.164245-1-mauricio@kinvolk.io> <20211116164208.164245-4-mauricio@kinvolk.io>
-In-Reply-To: <20211116164208.164245-4-mauricio@kinvolk.io>
-From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Date:   Tue, 16 Nov 2021 14:23:59 -0500
-Message-ID: <CAHap4zv=-YV6oXdncZW9DRaBu16b6-81HXretRX-orL2d=B4sQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] libbpf: Introduce 'bpf_object__prepare()'
-To:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
+References: <54d3cb9669644995b6ae787b4d532b73@crowdstrike.com> <0b80c79b-de0c-931c-262d-4da6e2add9f9@iogearbox.net>
+In-Reply-To: <0b80c79b-de0c-931c-262d-4da6e2add9f9@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 16 Nov 2021 14:00:19 -0800
+Message-ID: <CAEf4BzaheW1EGczxS8zXmObBte81gR7pepa9cLi8Z=UvwJdnrg@mail.gmail.com>
+Subject: Re: Clarification on bpftool dual licensing
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin Kelly <martin.kelly@crowdstrike.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 11:42 AM Mauricio V=C3=A1squez <mauricio@kinvolk.io=
-> wrote:
+On Tue, Nov 16, 2021 at 2:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> BTFGen[0] requires access to the result of the CO-RE relocations without
-> actually loading the bpf programs. The current libbpf API doesn't allow
-> it because all the object preparation (subprogs, relocations: co-re,
-> elf, maps) happens inside bpf_object__load().
+> On 11/15/21 7:20 PM, Martin Kelly wrote:
+> > Hi,
+> >
+> > I have a question regarding the dual licensing provision of bpftool. I
+> > understand that bpftool can be distributed as either GPL 2.0 or BSD 2-clause.
+> > That said, bpftool can also auto-generate BPF code that gets specified inline
+> > in the skeleton header file, and it's possible that the BPF code generated is
+> > GPL. What I'm wondering is what happens if bpftool generates GPL-licensed BPF
+> > code inside the skeleton header, so that you get a header like this:
+> >
+> > something.skel.h:
+> > /* this file is BSD 2-clause, by nature of dual licensing */
 >
-> This commit introduces a new bpf_object__prepare() function to perform
-> all the preparation steps than an ebpf object requires, allowing users
-> to access the result of those preparation steps without having to load
-> the program. Almost all the steps that were done in bpf_object__load()
-> are now done in bpf_object__prepare(), except map creation and program
-> loading.
+> Fwiw, the generated header contains an SPDX identifier:
 >
-> Map relocations require a bit more attention as maps are only created in
-> bpf_object__load(). For this reason bpf_object__prepare() relocates maps
-> using BPF_PSEUDO_MAP_IDX, if someone dumps the instructions before
-> loading the program they get something meaningful. Map relocations are
-> completed in bpf_object__load() once the maps are created and we have
-> their fd to use with BPF_PSEUDO_MAP_FD.
+>   /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+>   /* THIS FILE IS AUTOGENERATED! */
 >
-> Users won=E2=80=99t see any visible changes if they=E2=80=99re using bpf_=
-object__open()
-> + bpf_object__load() because this commit keeps backwards compatibility
-> by calling bpf_object__prepare() in bpf_object_load() if it wasn=E2=80=99=
-t
-> called by the user.
->
-> bpf_object__prepare_xattr() is not implemented as their counterpart
-> bpf_object__load_xattr() will be deprecated[1]. New options will be
-> added only to bpf_object_open_opts.
->
-> [0]: https://github.com/kinvolk/btfgen/
-> [1]: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#libbp=
-fh-high-level-apis
->
-> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> ---
->  tools/lib/bpf/libbpf.c   | 130 ++++++++++++++++++++++++++++-----------
->  tools/lib/bpf/libbpf.h   |   2 +
->  tools/lib/bpf/libbpf.map |   1 +
->  3 files changed, 98 insertions(+), 35 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 6ca76365c6da..f50f9428bb03 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -514,6 +514,7 @@ struct bpf_object {
->         int nr_extern;
->         int kconfig_map_idx;
->
-> +       bool prepared;
->         bool loaded;
->         bool has_subcalls;
->         bool has_rodata;
-> @@ -5576,34 +5577,19 @@ bpf_object__relocate_data(struct bpf_object *obj,=
- struct bpf_program *prog)
->
->                 switch (relo->type) {
->                 case RELO_LD64:
-> -                       if (obj->gen_loader) {
-> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX;
-> -                               insn[0].imm =3D relo->map_idx;
-> -                       } else {
-> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_FD;
-> -                               insn[0].imm =3D obj->maps[relo->map_idx].=
-fd;
-> -                       }
-> +                       insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX;
-> +                       insn[0].imm =3D relo->map_idx;
->                         break;
->                 case RELO_DATA:
->                         insn[1].imm =3D insn[0].imm + relo->sym_off;
-> -                       if (obj->gen_loader) {
-> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX_VA=
-LUE;
-> -                               insn[0].imm =3D relo->map_idx;
-> -                       } else {
-> -                               insn[0].src_reg =3D BPF_PSEUDO_MAP_VALUE;
-> -                               insn[0].imm =3D obj->maps[relo->map_idx].=
-fd;
-> -                       }
-> +                       insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX_VALUE;
-> +                       insn[0].imm =3D relo->map_idx;
->                         break;
->                 case RELO_EXTERN_VAR:
->                         ext =3D &obj->externs[relo->sym_off];
->                         if (ext->type =3D=3D EXT_KCFG) {
-> -                               if (obj->gen_loader) {
-> -                                       insn[0].src_reg =3D BPF_PSEUDO_MA=
-P_IDX_VALUE;
-> -                                       insn[0].imm =3D obj->kconfig_map_=
-idx;
-> -                               } else {
-> -                                       insn[0].src_reg =3D BPF_PSEUDO_MA=
-P_VALUE;
-> -                                       insn[0].imm =3D obj->maps[obj->kc=
-onfig_map_idx].fd;
-> -                               }
-> +                               insn[0].src_reg =3D BPF_PSEUDO_MAP_IDX_VA=
-LUE;
-> +                               insn[0].imm =3D obj->kconfig_map_idx;
->                                 insn[1].imm =3D ext->kcfg.data_off;
->                         } else /* EXT_KSYM */ {
->                                 if (ext->ksym.type_id && ext->is_set) { /=
-* typed ksyms */
-> @@ -6144,8 +6130,50 @@ bpf_object__relocate(struct bpf_object *obj, const=
- char *targ_btf_path)
->                         return err;
->                 }
->         }
-> -       if (!obj->gen_loader)
-> -               bpf_object__free_relocs(obj);
-> +
-> +       return 0;
-> +}
-> +
-> +/* relocate instructions that refer to map fds */
-> +static int
-> +bpf_object__finish_relocate(struct bpf_object *obj)
-> +{
-> +       int i, j;
-> +
-> +       if (obj->gen_loader)
-> +               return 0;
-> +
-> +       for (i =3D 0; i < obj->nr_programs; i++) {
-> +               struct bpf_program *prog =3D &obj->programs[i];
-> +
-> +               if (prog_is_subprog(obj, prog))
-> +                       continue;
-> +               for (j =3D 0; j < prog->nr_reloc; j++) {
-> +                       struct reloc_desc *relo =3D &prog->reloc_desc[j];
-> +                       struct bpf_insn *insn =3D &prog->insns[relo->insn=
-_idx];
-> +                       struct extern_desc *ext;
-> +
-> +                       switch (relo->type) {
-> +                       case RELO_LD64:
-> +                               insn[0].src_reg =3D BPF_PSEUDO_MAP_FD;
-> +                               insn[0].imm =3D obj->maps[relo->map_idx].=
-fd;
-> +                               break;
-> +                       case RELO_DATA:
-> +                               insn[0].src_reg =3D BPF_PSEUDO_MAP_VALUE;
-> +                               insn[0].imm =3D obj->maps[relo->map_idx].=
-fd;
-> +                               break;
-> +                       case RELO_EXTERN_VAR:
-> +                               ext =3D &obj->externs[relo->sym_off];
-> +                               if (ext->type =3D=3D EXT_KCFG) {
-> +                                       insn[0].src_reg =3D BPF_PSEUDO_MA=
-P_VALUE;
-> +                                       insn[0].imm =3D obj->maps[obj->kc=
-onfig_map_idx].fd;
-> +                               }
-> +                       default:
-> +                               break;
-> +                       }
-> +               }
-> +       }
-> +
->         return 0;
->  }
->
-> @@ -6706,8 +6734,8 @@ bpf_object__load_progs(struct bpf_object *obj, int =
-log_level)
->                 if (err)
->                         return err;
->         }
-> -       if (obj->gen_loader)
-> -               bpf_object__free_relocs(obj);
-> +
-> +       bpf_object__free_relocs(obj);
->         return 0;
->  }
->
-> @@ -7258,6 +7286,39 @@ static int bpf_object__resolve_externs(struct bpf_=
-object *obj,
->         return 0;
->  }
->
-> +static int __bpf_object__prepare(struct bpf_object *obj, int log_level,
-> +                                const char *target_btf_path)
-> +{
-> +       int err;
-> +
-> +       if (obj->prepared) {
-> +               pr_warn("object '%s': prepare can't be attempted twice\n"=
-, obj->name);
-> +               return libbpf_err(-EINVAL);
-> +       }
-> +
-> +       if (obj->gen_loader)
-> +               bpf_gen__init(obj->gen_loader, log_level);
-> +
-> +       err =3D bpf_object__probe_loading(obj);
-> +       err =3D err ? : bpf_object__load_vmlinux_btf(obj, false);
-> +       err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
-> +       err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
-> +       err =3D err ? : bpf_object__sanitize_maps(obj);
-> +       err =3D err ? : bpf_object__init_kern_struct_ops_maps(obj);
-> +       err =3D err ? : bpf_object__relocate(obj, obj->btf_custom_path ? =
-: target_btf_path);
-> +
-> +       obj->prepared =3D true;
-> +
-> +       return err;
-> +}
-> +
-> +LIBBPF_API int bpf_object__prepare(struct bpf_object *obj)
-> +{
-> +       if (!obj)
-> +               return libbpf_err(-EINVAL);
-> +       return __bpf_object__prepare(obj, 0, NULL);
-> +}
-> +
->  int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
->  {
->         struct bpf_object *obj;
-> @@ -7274,17 +7335,14 @@ int bpf_object__load_xattr(struct bpf_object_load=
-_attr *attr)
->                 return libbpf_err(-EINVAL);
->         }
->
-> -       if (obj->gen_loader)
-> -               bpf_gen__init(obj->gen_loader, attr->log_level);
-> +       if (!obj->prepared) {
-> +               err =3D __bpf_object__prepare(obj, attr->log_level, attr-=
->target_btf_path);
-> +               if (err)
-> +                       return err;
-> +       }
->
-> -       err =3D bpf_object__probe_loading(obj);
+> > /* THIS FILE IS AUTOGENERATED! */
+> >
+> > /* standard skeleton definitions */
+> >
+> > ...
+> >
+> > s->data_sz = XXX;
+> > s->data = (void *)"\
+> > <eBPF bytecode, produced by GPL 2.0 sources, specified in binary>
+> > ";
+> >
+> > My guess is that, based on the choice to dual-license bpftool, the header is
+> > meant to still be BSD 2-clause, and the s->data inline code's GPL license is
+> > not meant to change the licensing of the header itself, but I wanted to
 
-After sending the patches we realized they weren't working without
-root privileges in systems with unprivileged BPF disabled. This line
-should not be moved to bpf_object__prepare indeed. We'll fix it in the
-next iteration.
+Yes, definitely that is the intent (but not a lawyer either).
 
 
-> -       err =3D err ? : bpf_object__load_vmlinux_btf(obj, false);
-> -       err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
-> -       err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
-> -       err =3D err ? : bpf_object__sanitize_maps(obj);
-> -       err =3D err ? : bpf_object__init_kern_struct_ops_maps(obj);
-> -       err =3D err ? : bpf_object__create_maps(obj);
-> -       err =3D err ? : bpf_object__relocate(obj, obj->btf_custom_path ? =
-: attr->target_btf_path);
-> +       err =3D bpf_object__create_maps(obj);
-> +       err =3D err ? : bpf_object__finish_relocate(obj);
->         err =3D err ? : bpf_object__load_progs(obj, attr->log_level);
+> > double-check, especially as I am not a lawyer. If this is indeed the intent,
+> > is there any opposition to a patch clarifying this more explicitly in
+> > Documentation/bpf/bpf_licensing.rst?
 >
->         if (obj->gen_loader) {
-> @@ -7940,6 +7998,8 @@ void bpf_object__close(struct bpf_object *obj)
->         bpf_object__elf_finish(obj);
->         bpf_object_unload(obj);
->         btf__free(obj->btf);
-> +       if (!obj->user_provided_btf_vmlinux)
-> +               btf__free(obj->btf_vmlinux_override);
->         btf_ext__free(obj->btf_ext);
+> Not a lawyer either, but my interpretation is that this point related to "packaging"
+> of BPF programs from the bpf_licensing.rst would apply here (given this is what it
+> does after all):
 >
->         for (i =3D 0; i < obj->nr_maps; i++)
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 908ab04dc9bd..d206b4400a4d 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -148,6 +148,8 @@ LIBBPF_API int bpf_object__unpin_programs(struct bpf_=
-object *obj,
->  LIBBPF_API int bpf_object__pin(struct bpf_object *object, const char *pa=
-th);
->  LIBBPF_API void bpf_object__close(struct bpf_object *object);
+>    Packaging BPF programs with user space applications
+>    ===================================================
 >
-> +LIBBPF_API int bpf_object__prepare(struct bpf_object *obj);
-> +
->  struct bpf_object_load_attr {
->         struct bpf_object *obj;
->         int log_level;
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index c9555f8655af..459b41228933 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -415,4 +415,5 @@ LIBBPF_0.6.0 {
->                 perf_buffer__new_raw;
->                 perf_buffer__new_raw_deprecated;
->                 btf__save_raw;
-> +               bpf_object__prepare;
->  } LIBBPF_0.5.0;
-> --
-> 2.25.1
->
+>    Generally, proprietary-licensed applications and GPL licensed BPF programs
+>    written for the Linux kernel in the same package can co-exist because they are
+>    separate executable processes. This applies to both cBPF and eBPF programs.
+
+Yep. If someone packages proprietary BPF ELF into a skeleton, that
+doesn't make the BPF ELF suddenly GPL or BSD, I'd imagine.
