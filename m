@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32252453D5F
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 01:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3BE453D6C
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 02:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhKQBBc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 20:01:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
+        id S229544AbhKQBH6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 20:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbhKQBBc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 20:01:32 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB4AC061570
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 16:58:34 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id g17so2043204ybe.13
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 16:58:34 -0800 (PST)
+        with ESMTP id S229543AbhKQBH6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 20:07:58 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70227C061570
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 17:05:00 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id y3so2265542ybf.2
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 17:05:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RE8b2UKzhUFZb3fU8ktsYnwcR9zYve7dDadoUV5LmBE=;
-        b=SJsxfQGiRxSJo701NYqvGUT7IfjjVQHamEHGfhEJIQsFLwgbiotbTaGnM9v4d/DAUf
-         Q1NIpPsMka5O5gG4daaL0KGtq55OA0j/mmEl4G9+SdAv1n4HDukb+Cg2azWzllagwnW3
-         n3Z0tdchG+d/W8KrDDIKNbYTz6AIIir8idp57+GOUwvWpDKzXCcUY6SNZXrA6XriXBrW
-         90LVoYMN1HQbzB0+HFweRPppgmLt9WJuBG6Wjeg8kZaoOGaJ5DtFHwX64094wZxhJohw
-         fFRMR4o5qRRkB83CQl6LbirMieC0Zayh1Kcpxnwo68t72OGAqHAn2b657TNHKcyK6JTB
-         41kQ==
+        bh=QScWFhAyt7JisOGMTxhfvpHler0Yi2xqmrRkLfwleis=;
+        b=Vy8MUq8ADpjwUy0YMF8hKOzkRYXIoNLEjjEUA9Mmp2CQZKPs/5kjb87dgf5/qKlZLC
+         DiJdRXkECh/fbRoiXDJh6CmFlA2mv4MsZQ7R8tnKIoFWG1kdJuxpYURxQcS+kytDAgW9
+         YzX/SHBv+SBJ5wKfpFXIaC20FSix47R2K0mJ75QSlvKBGlRzR4zKdn9pJJALiLmfhX6+
+         V7q1Hq6iqHZwAtyVO/p3SOW7mxIF46L9j+JH1rYSaZ12u9wn1apjXoUbyTyqlN/xeN8s
+         KZE64UMtwPcMi0MqmOVXAro+UQEoLE35dr4Q3KKzmswDEXiegj59RmgneETmK7IF1xzi
+         JC/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RE8b2UKzhUFZb3fU8ktsYnwcR9zYve7dDadoUV5LmBE=;
-        b=sOojYND4qwRqZ2IODKEmVwYLJTF+5FKyu+EpfadRAq7KR53dADcI6y6DG/CjjZ3Lqy
-         IyRa+PhE6ePs86InyvLSEKuFXNR6pkZY7Y5+LMwHE0o2KUbptzGiGmsIto3NMbkmSBJi
-         slQ4ujAA2DdI9y/BhUAeFhClCW9X2kf9nPEFu4mH24pLqLWYVLM0OvwPrBFZsTMWg/mg
-         AiO3GyJhSEMfffZbb5Tc+efjOtpK1idsy+GfOKjbQqjYNSdRjVVcM1dMAPpIJjk3p+1Q
-         idTdGh3Ksks/HWnBg+uMPPVleQdZ6nCI8Heg+rpQqBdgWBxMYWLtKlM5KqRjS20bH3Ca
-         54ig==
-X-Gm-Message-State: AOAM531mfZdxtPmvrGqL08Anz5MLjgYDIyKAN4sjAHyI1JUUI5iQl7bc
-        FJP9B8alD1xV13qihi05H6aarlGIZ4FIv/c3HoeOO1dR
-X-Google-Smtp-Source: ABdhPJylxf5gKBLelQej96fr8cARzNgRrMWU1ebNKMjNVhiQuzpPACS8kFFi/4NqFGjgFQQDkHLn2ISd4mO6CuMyaFE=
-X-Received: by 2002:a25:afcf:: with SMTP id d15mr12250307ybj.433.1637110713928;
- Tue, 16 Nov 2021 16:58:33 -0800 (PST)
+        bh=QScWFhAyt7JisOGMTxhfvpHler0Yi2xqmrRkLfwleis=;
+        b=LQZOFgDhJVBRiJLpXJa3NZpEzDNHvd54P8MrZr+OcbZzS/qQJ63EHI1zwaBsYWDV++
+         La507PaOQAaKqws7tzDr/ctbTPFn1fgV2QePCJ/CIn+uVDZfngTSjoqhmaQwQdvo06Ru
+         qRw7ChsKJ4mM59OVzg5g1keT8jiY7MH+/Cd6Gz2p9twSdwIW1zyxr0xiUbNLrLut2ugU
+         4Fp4Zy4IHshG2wLmN9bJtQamXWvGLkCZ2DpaBJRq4GJIzeXWafy4xZY3ESBbiO6MVdnz
+         RD+jQeXlKyR/ThskcOG+uzqao7QOcwvUFA9sgPVx1Kel5G5cbyGT7UENOJizBlS4Qint
+         HEIA==
+X-Gm-Message-State: AOAM533/nImGew9eUDnaIjBQ7oqAhWx3h2d0/qf/38cCSDdscFvEVP+8
+        YYPWyTDDNO1/iwAOBnh6UgBtkqvxf8Wo58bdV9qOucQZ
+X-Google-Smtp-Source: ABdhPJyk9NnYN4GvcAuNXm4XvcobNiCGpWIUVBmptZ+YMoZFJqD3vC4haewk/ZnzKtaZQ7jDzInan1+Ue+IvkB5ByIY=
+X-Received: by 2002:a25:cec1:: with SMTP id x184mr13269526ybe.455.1637111099673;
+ Tue, 16 Nov 2021 17:04:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112050230.85640-1-alexei.starovoitov@gmail.com> <20211112050230.85640-4-alexei.starovoitov@gmail.com>
-In-Reply-To: <20211112050230.85640-4-alexei.starovoitov@gmail.com>
+References: <20211112050230.85640-1-alexei.starovoitov@gmail.com> <20211112050230.85640-5-alexei.starovoitov@gmail.com>
+In-Reply-To: <20211112050230.85640-5-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Nov 2021 16:58:23 -0800
-Message-ID: <CAEf4BzaY=waUdY2stYjmU=tT92BfqLoSiV7ytE_WX_sCr8RL=w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 03/12] bpf: Prepare relo_core.c for kernel duty.
+Date:   Tue, 16 Nov 2021 17:04:48 -0800
+Message-ID: <CAEf4BzYNCt4EyvXv2ktpW5Un5=Mr+gNavMLXDKF0VL5iEnqYeg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 04/12] bpf: Define enum bpf_core_relo_kind as uapi.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,142 +65,60 @@ On Thu, Nov 11, 2021 at 9:02 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Make relo_core.c to be compiled with kernel and with libbpf.
+> enum bpf_core_relo_kind is generated by llvm and processed by libbpf.
+> It's a de-facto uapi.
+> With CO-RE in the kernel the bpf_core_relo_kind values become uapi de-jure.
+> Also rename them with BPF_CORE_ prefix to distinguish from conflicting names in
+> bpf_core_read.h. The enums bpf_field_info_kind, bpf_type_id_kind,
+> bpf_type_info_kind, bpf_enum_value_kind are passing different values from bpf
+> program into llvm.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  include/linux/btf.h       | 82 +++++++++++++++++++++++++++++++++++++++
->  kernel/bpf/Makefile       |  4 ++
->  kernel/bpf/btf.c          | 26 +++++++++++++
->  tools/lib/bpf/relo_core.c | 71 ++++++++++++++++++++++++++++-----
->  4 files changed, 174 insertions(+), 9 deletions(-)
+>  include/uapi/linux/bpf.h       | 19 ++++++++
+>  tools/include/uapi/linux/bpf.h | 19 ++++++++
+>  tools/lib/bpf/libbpf.c         |  2 +-
+>  tools/lib/bpf/relo_core.c      | 84 +++++++++++++++++-----------------
+>  tools/lib/bpf/relo_core.h      | 18 --------
+>  5 files changed, 81 insertions(+), 61 deletions(-)
 >
 
 [...]
 
->  static inline const struct btf_member *btf_type_member(const struct btf_type *t)
->  {
->         return (const struct btf_member *)(t + 1);
->  }
->
-> +
+> index 3b9f8f18346c..7720af11f96f 100644
+> --- a/tools/lib/bpf/relo_core.h
+> +++ b/tools/lib/bpf/relo_core.h
+> @@ -4,24 +4,6 @@
+>  #ifndef __RELO_CORE_H
+>  #define __RELO_CORE_H
 
-accidental empty line or intentional?
-
-> +static inline struct btf_array *btf_array(const struct btf_type *t)
-> +{
-> +       return (struct btf_array *)(t + 1);
-> +}
-> +
-
-[...]
-
-> +int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
-> +                             const struct btf *targ_btf, __u32 targ_id)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +
-> +static bool bpf_core_is_flavor_sep(const char *s)
-> +{
-> +       /* check X___Y name pattern, where X and Y are not underscores */
-> +       return s[0] != '_' &&                                 /* X */
-> +              s[1] == '_' && s[2] == '_' && s[3] == '_' &&   /* ___ */
-> +              s[4] != '_';                                   /* Y */
-> +}
-> +
-> +size_t bpf_core_essential_name_len(const char *name)
-
-I might have missed something, but this seems to be used only
-internally, so should be static. Otherwise there would be a
-compilation warning due to the missing prototype, no?
-
-> +{
-> +       size_t n = strlen(name);
-> +       int i;
-> +
-> +       for (i = n - 5; i >= 0; i--) {
-> +               if (bpf_core_is_flavor_sep(name + i))
-> +                       return i + 1;
-> +       }
-> +       return n;
-> +}
-
-[...]
-
-> +       t = btf_type_by_id(btf, type_id);
-> +       t = btf_resolve_size(btf, t, &size);
-> +       if (IS_ERR(t))
-> +               return PTR_ERR(t);
-> +       return size;
-> +}
-
-nit: empty line would be good here and after enum
-
-> +enum libbpf_print_level {
-> +       LIBBPF_WARN,
-> +       LIBBPF_INFO,
-> +       LIBBPF_DEBUG,
-> +};
-> +#undef pr_warn
-> +#undef pr_info
-> +#undef pr_debug
-> +#define pr_warn(fmt, log, ...) bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
-> +#define pr_info(fmt, log, ...) bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
-> +#define pr_debug(fmt, log, ...)        bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
-> +#define libbpf_print(level, fmt, ...)  bpf_log((void *)prog_name, fmt, ##__VA_ARGS__)
-> +#else
->  #include <stdio.h>
->  #include <string.h>
->  #include <errno.h>
-> @@ -12,8 +64,9 @@
->  #include "btf.h"
->  #include "str_error.h"
->  #include "libbpf_internal.h"
-> +#endif
->
-> -#define BPF_CORE_SPEC_MAX_LEN 64
-> +#define BPF_CORE_SPEC_MAX_LEN 32
-
-This is worth calling out in the commit description, should have
-practical implications, but good to mention.
+Can you please add #include <linux/bpf.h> here for enum
+bpf_core_relo_kind? It should be fine for both libbpf and kernel
+modes. Implicit #include dependency is very confusing.
 
 >
->  /* represents BPF CO-RE field or array element accessor */
->  struct bpf_core_accessor {
-> @@ -272,8 +325,8 @@ static int bpf_core_parse_spec(const struct btf *btf,
->                                 return sz;
->                         spec->bit_offset += access_idx * sz * 8;
->                 } else {
-> -                       pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
-> -                               type_id, spec_str, i, id, btf_kind_str(t));
-> +/*                     pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
-> +                               type_id, spec_str, i, id, btf_kind_str(t));*/
-
-we can totally pass prog_name and add "prog '%s': " to uncomment this.
-bpf_core_parse_spec() is called in the "context" of program, so it's
-known
-
->                         return -EINVAL;
->                 }
->         }
-> @@ -346,8 +399,8 @@ static int bpf_core_fields_are_compat(const struct btf *local_btf,
->                 targ_id = btf_array(targ_type)->type;
->                 goto recur;
->         default:
-> -               pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
-> -                       btf_kind(local_type), local_id, targ_id);
-> +/*             pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
-> +                       btf_kind(local_type), local_id, targ_id);*/
-
-sigh... it's a bit too intrusive to pass prog_name here but it's also
-highly unlikely that this happens (unless some compiler bug or
-corruption) and even in that case it's semantically correct that
-fields just don't match. So I'd just drop this pr_warn() instead of
-commenting it out
-
->                 return 0;
->         }
->  }
-
-[...]
+> -/* bpf_core_relo_kind encodes which aspect of captured field/type/enum value
+> - * has to be adjusted by relocations.
+> - */
+> -enum bpf_core_relo_kind {
+> -       BPF_FIELD_BYTE_OFFSET = 0,      /* field byte offset */
+> -       BPF_FIELD_BYTE_SIZE = 1,        /* field size in bytes */
+> -       BPF_FIELD_EXISTS = 2,           /* field existence in target kernel */
+> -       BPF_FIELD_SIGNED = 3,           /* field signedness (0 - unsigned, 1 - signed) */
+> -       BPF_FIELD_LSHIFT_U64 = 4,       /* bitfield-specific left bitshift */
+> -       BPF_FIELD_RSHIFT_U64 = 5,       /* bitfield-specific right bitshift */
+> -       BPF_TYPE_ID_LOCAL = 6,          /* type ID in local BPF object */
+> -       BPF_TYPE_ID_TARGET = 7,         /* type ID in target kernel */
+> -       BPF_TYPE_EXISTS = 8,            /* type existence in target kernel */
+> -       BPF_TYPE_SIZE = 9,              /* type size in bytes */
+> -       BPF_ENUMVAL_EXISTS = 10,        /* enum value existence in target kernel */
+> -       BPF_ENUMVAL_VALUE = 11,         /* enum value integer value */
+> -};
+> -
+>  /* The minimum bpf_core_relo checked by the loader
+>   *
+>   * CO-RE relocation captures the following data:
+> --
+> 2.30.2
+>
