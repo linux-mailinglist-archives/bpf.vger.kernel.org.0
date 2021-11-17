@@ -2,234 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2585E454EE8
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 22:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64C7454F6D
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 22:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbhKQVIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 16:08:20 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:50672 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbhKQVIK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:08:10 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:36194)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnS7C-00GZT5-5q; Wed, 17 Nov 2021 14:05:10 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:38220 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnS78-0080bA-F7; Wed, 17 Nov 2021 14:05:09 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
-        <202111171049.3F9C5F1@keescook>
-        <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
-        <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
-Date:   Wed, 17 Nov 2021 15:04:31 -0600
-In-Reply-To: <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
-        (Kyle Huey's message of "Wed, 17 Nov 2021 11:09:14 -0800")
-Message-ID: <87k0h6334w.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S240306AbhKQVjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 16:39:32 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22886 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239950AbhKQVjb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Nov 2021 16:39:31 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHLT36G001686;
+        Wed, 17 Nov 2021 13:36:31 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=TXZF+wYkUZqluy7BUqpkHXEA0x0/993roHoNTlrCGs8=;
+ b=pZcnmFFuTV2PnAvSik0EBSCFk+h274CqVjTiG97EX5pt122BiSe/g+dEnClK6pJ2r33+
+ 0+mRPXG1uBobxFjgS/tgWE9KeCw9mSS1tptb62QmdmG7tOPEbMgqSRVegeDmDq5U8KfF
+ abI9EBK0KVCKwpd6ZVYG6r+S8yqKwc+UwmY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cd4bxaq9k-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 17 Nov 2021 13:36:31 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 17 Nov 2021 13:36:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZMKKuAZoVL43cv+pejQjNgTlppIOxg6PpJTP8g5+8GCC5vnwy4ybcIznrRpT4Vfoa42+bOeMz8L9hphngOvTKL17JlaGtzvxMrPLnJSR2bPmHoTZTwGZxLMrH/frn+3sHElSU6UoKd8FleBmCoXPVlhLP9QUlY/eJoTwc9DSCcy4eYrc5gJHzF/V6nXk/JD7EgHQ0ViI6/J5dn3m/g2DGDA9psoTaBm+NM8IqkuPZTYCpx5yocqPrVAuNExvkcuQi9OB5uYUKndPRGGW/sAbYV/4fg47zyXOeKIUDwwgNFij7rsYMwmCAGYB/RIXwkTobKQqCMl2sTH7x6GRwRE5kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TXZF+wYkUZqluy7BUqpkHXEA0x0/993roHoNTlrCGs8=;
+ b=FszuhC4OdHpkBYSQlZI3E3LeckrnXC95FKxZnr0rvORhNIELikIIRBsgRDCjMFdUu9F6/4ADG9ExCfy8XV0n1wTwMk5hK29jnZdm12H+L1ThD5U8yGRcrmDAxvf93slGMMdKlRUqhZLplOEgVGSJ9h/uZ8Q5JGi+deVLEV2lICIwCQGHMa8H2MFzvyv/hAf7T7R7fILEwAl7G8gKx3oMv3DcbJvcbcDmaPcJZcNjk0WtR69S5bDqzLS/t/pgNBAECRKUQavQHsTN03tUZKLfAb3z7pZJ4l/s1ZRf2DJRUtlkgVO9VJsN1iV3y9ckaHzCtx6S6rUkB2Kcai5zBoDlTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA1PR15MB5137.namprd15.prod.outlook.com (2603:10b6:806:231::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Wed, 17 Nov
+ 2021 21:36:27 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::f826:e515:ee1a:a33]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::f826:e515:ee1a:a33%4]) with mapi id 15.20.4713.021; Wed, 17 Nov 2021
+ 21:36:27 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+CC:     the arch/x86 maintainers <x86@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 2/7] set_memory: introduce
+ set_memory_[ro|x]_noalias
+Thread-Topic: [PATCH bpf-next 2/7] set_memory: introduce
+ set_memory_[ro|x]_noalias
+Thread-Index: AQHX2rsqg2QxafvOqk+EnT2R5OJ5LqwFyq6AgAJ2NAA=
+Date:   Wed, 17 Nov 2021 21:36:27 +0000
+Message-ID: <768FB93A-E239-4B21-A0F1-C1206112E37E@fb.com>
+References: <20211116071347.520327-1-songliubraving@fb.com>
+ <20211116071347.520327-3-songliubraving@fb.com>
+ <20211116080051.GU174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211116080051.GU174703@worktop.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 02633aa0-1ae3-4920-2352-08d9aa124ffe
+x-ms-traffictypediagnostic: SA1PR15MB5137:
+x-microsoft-antispam-prvs: <SA1PR15MB5137F4326C13A90E024FFC3FB39A9@SA1PR15MB5137.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OJSN7p/2E6+Wfc5/7134JZPjqj2ceqOGSBWLt2Cxo2B1T+yUqXYVy7ln6P3BSsSJt1/EMM7kG2p81moYcW7L1y5QxUfdzDv5hVmaiMxmGW+AGooPsKkoRiB7HXNF+Qo8O2aM8b/X7ATiBI5kAdMArPjHCBX4AFkmgU5d2yd/Q5HLvo+LaQzvF7P62qSaf2LRNvIDpk69+yEMREexpHV6x2KDoh+QD3fowH3nWJYgJDLRU/flDU61SeaS7vbs5lKcScoue1QjB4+3vAEnotNHwaynHCkXpJo9VOjJyd+xpjHP5r3zuCrK8dZ4DwaKOmvH9NktZaH2uW+Jri0Z5pqdjHvJxGNErP1nCuwzKxMNj0cc03HLWWiL17W0GhxaWXjwXD1CColByKlWbqPVuJZ+HVoTFCDOD9rjqiLHu2sRODtx9QiB/wke3UjBGTf0OPI/qsdpDcgFDUy6u14f84lbmQsQejozPWCgvu0m0yKeMeGF1Uunbnq/TAI4HoDeiNt4YD11lt0c+PAptQWcOfIKD1Rj+Th0kFQqPpglSKx8GpRpNjg3l3IHb7nMrK5oDJjSjCbUyH/oLyl3zCWG0i/DV3N5Qeh4ZRfzR8ct6tvAizQpzFb5+2AtpliS/rYNzIR+TWkidNPy8R7tPAYgTZBCKRc7LTNLcoBlboihG8JqkOezfYSiG97c5oWTtM0hnzQqhUmAqiw+C9Wb7A0D9hoMthNnruw+ZG/KIKZKjbRxqiJ3tnrA9CkxUDUxRF62xtXN
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(33656002)(2616005)(4326008)(186003)(6506007)(83380400001)(7416002)(66946007)(86362001)(38070700005)(71200400001)(122000001)(6486002)(38100700002)(36756003)(110136005)(54906003)(6512007)(66556008)(76116006)(64756008)(91956017)(2906002)(8676002)(66446008)(508600001)(8936002)(66476007)(5660300002)(316002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rcZMiG8ijUjCjLnQjypSOV+yYhcJPdlRjf2qBmDRy6quyr7D8WgHWddq+Olp?=
+ =?us-ascii?Q?hwTFhbi3QKZ0dTSfsN1ZUC9Awmr1ycVlCiofPWQBRlkzFBB0/4Q7h2sOons6?=
+ =?us-ascii?Q?Qnd1TlpBglJmaV+TPBRE3d5uD+vCEMPZPKuC6NVQ2Gy0dMqNHFU4EeNnwv7y?=
+ =?us-ascii?Q?OU1hbt/qypvOpfwzpcozC4UvFrX5hTtc/tmXRG823b+C0Kl42RQ/gOoovNAD?=
+ =?us-ascii?Q?WSXjJXnw4eejke0E+YPeRhdiZ7jIvQbARGdiw/AaHvmflavQycmFBYGFYTMq?=
+ =?us-ascii?Q?0babDXa9sgBC528YNnFZ1uIbV2EL3lGdgt0sKNf4OR/2UF1WBFrFLwfw9Tux?=
+ =?us-ascii?Q?6RJKVhfBf+Ouos5PyiqMw6V0vsgOJbW4K4Mh4Vs0cdh0Re3e/EH13oc6IhWt?=
+ =?us-ascii?Q?uSVgGbJ6RLxfK2KN582baaxeQ1/TQashY/UCIGGDPp5HLh8oN9OHFAPt8iZL?=
+ =?us-ascii?Q?qaWrzS0sVl0mMzogz8+ZMT9IColZ8k/eAR4/LSMqxIjfudubJvNRgH13jD7q?=
+ =?us-ascii?Q?NUZtrl7TK+S9rHTEilY0alVT4YnzqtvbOn1gP/FGPNIdbolL2w3BYik3GSXY?=
+ =?us-ascii?Q?y3tmk5WqsQqmP1hnzUa9b+vP3wOgylb/brC8aPjDraWZ1nIpZr+9TTe285jL?=
+ =?us-ascii?Q?dxfvG8/wTuZsA0XB8+xsBGcCvb+EW1Q7//e9g22ksJ59GHDuW0wYadoB3DXz?=
+ =?us-ascii?Q?xJcLwekFXus3DcQPZpaXt/9CAX7HwwSzVrCFypB11DvU9kTOf3sfB5T0FUX2?=
+ =?us-ascii?Q?VqWE5Q4uJQ2BqW/WlACmff6FMkBhy0nyulj9oQhRY+ImObF5bRWVlaiNFD1+?=
+ =?us-ascii?Q?4KLKff1QPTaW/ymz7976LElj9kHPutS9D7fl/hYrPAf/tL0E96+PHMMZEoX3?=
+ =?us-ascii?Q?U9CwEy018JNWp7ehN3y+54FYypYJxhGzUKTNu/ufoMjONsK/RUmi7EjGl1Ry?=
+ =?us-ascii?Q?Sxp9k1YzAZn7U7pq6b6CJswz21RSx398RBTaTjH894atayffavkzMvWpZiqA?=
+ =?us-ascii?Q?zmowmoGOmytlscHTZpYFqG3RfcssnK2ZxRqLt3nEgM4ri+iSY7TMSzkFo9Oj?=
+ =?us-ascii?Q?uCtCv6SFXquyNPAOcvFTXD9p950jE3vynIRJ9TOLc/hbWGkCCbIfo+Wd/Zuk?=
+ =?us-ascii?Q?C/2tTGc5HoRVs/NU2TLkOWsUa/Ij9zoQ5t6pmivLjMV90lxFCRKOp7eFpwNU?=
+ =?us-ascii?Q?FYc23VKP3CwgdLwIdfBAWYu3pnyGTmy4k+WNvTaADiNt1P4mTLLf2Ws45acm?=
+ =?us-ascii?Q?/tovyqz2XSSdGbSdoQk4jdFN+wWdbMlFEUTdvBhaWO7+iDH6LjXQ62Kz8H+p?=
+ =?us-ascii?Q?m4X0QFjUKGynPaWUQpFCzmCTVD/4ULnLlqjN3OLIa7Ka/dyDUEygVLnngJNs?=
+ =?us-ascii?Q?rvP9PSC07CVlhOqF02vOua/IQHtbdBrr8uP0Wm3XVtG8i9RJj4Mi4bjZ1K8r?=
+ =?us-ascii?Q?E57FXaWZzBLgTn0ponjqqTNnDtQ2Q327bZI7pO0RDTyVCPbM1biCmgg9IcAW?=
+ =?us-ascii?Q?N1QN1r8NoErN37XnIiP3zHquL1YHSX9wEZr+z+OD1yjY+Dr1UEZReGIR4keP?=
+ =?us-ascii?Q?hHrEss1dyRcBS8WqLFfWl0vLdsQOUthpmpNAAApw1oSFscnluA6GKJ0KP5Dk?=
+ =?us-ascii?Q?FxoCzoUoRxNWhtSpam/EGVJ9wKdFC2nSe8B7IXcFvZIXNEaehfRNd33Si2JB?=
+ =?us-ascii?Q?Sn+mVw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <137D37CAC1074E4DBDF968068859F5F6@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mnS78-0080bA-F7;;;mid=<87k0h6334w.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19k7z6hiJZlBFtRIljKy3t8xb3GbD3g610=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.4 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01,XM_B_SpammyWords autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Kyle Huey <me@kylehuey.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 3069 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 12 (0.4%), b_tie_ro: 10 (0.3%), parse: 2.3 (0.1%),
-         extract_message_metadata: 34 (1.1%), get_uri_detail_list: 7 (0.2%),
-        tests_pri_-1000: 35 (1.2%), tests_pri_-950: 1.52 (0.0%),
-        tests_pri_-900: 1.13 (0.0%), tests_pri_-90: 2038 (66.4%), check_bayes:
-        2036 (66.3%), b_tokenize: 15 (0.5%), b_tok_get_all: 14 (0.5%),
-        b_comp_prob: 6 (0.2%), b_tok_touch_all: 1995 (65.0%), b_finish: 1.26
-        (0.0%), tests_pri_0: 925 (30.1%), check_dkim_signature: 2.1 (0.1%),
-        check_dkim_adsp: 3.2 (0.1%), poll_dns_idle: 0.39 (0.0%), tests_pri_10:
-        2.4 (0.1%), tests_pri_500: 10 (0.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02633aa0-1ae3-4920-2352-08d9aa124ffe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2021 21:36:27.7595
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CePoIvdc+Mr4djQIkrsq1CJQeCPJx3LzABAyT6qK3EWjmiDSe6VZapRqfi0YRMLREq6kexUPO2RPWbpn8jLC9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5137
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: QsX2MUHCJLzDDZ_tqEjfmSh2Sfx1y-r-
+X-Proofpoint-ORIG-GUID: QsX2MUHCJLzDDZ_tqEjfmSh2Sfx1y-r-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-17_08,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ malwarescore=0 mlxlogscore=679 impostorscore=0 phishscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111170097
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kyle Huey <me@kylehuey.com> writes:
 
-> On Wed, Nov 17, 2021 at 11:05 AM Kyle Huey <me@kylehuey.com> wrote:
->>
->> On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
->> >
->> > On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
->> > > rr, a userspace record and replay debugger[0], is completely broken on
->> > > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
->> > >
->> > > That patch makes two changes, it blocks sigaction from changing signal
->> > > handlers once the kernel has decided to force the program to take a
->> > > signal and it also stops notifying ptracers of the signal in the same
->> > > circumstances. The latter behavior is just wrong. There's no reason
->> > > that ptrace should not be able to observe and even change
->> > > (non-SIGKILL) forced signals.  It should be reverted.
->> > >
->> > > This behavior change is also observable in gdb. If you take a program
->> > > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
->> > > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
->> > > when the SIGSYS is raised, let you inspect program state, etc. After
->> > > the SA_IMMUTABLE change gdb won't stop until the program has already
->> > > died of SIGSYS.
->> >
->> > Ah, hm, this was trying to fix the case where a program trips
->> > SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
->> > before. I guess the fix was too broad...
->>
->> Perhaps I don't understand precisely what you mean by this, but gdb's
->> behavior for a program that is SECCOMP_RET_KILLed was not changed by
->> this patch (the SIGSYS is not observed until after program exit before
->> or after this change).
->
-> Ah, maybe that behavior changed in 5.15 (my "before" here is a 5.14
-> kernel).  I would argue that the debugger seeing the SIGSYS for
-> SECCOMP_RET_KILL is desirable though ...
 
-This is definitely worth discussing, and probably in need of fixing (aka
-something in rr seems to have broken).
-
-We definitely need protection against the race with sigaction.
-
-The fundamental question becomes does it make sense and is it safe
-to allow a debugger to stop at, and possibly change these signals.
-
-Stopping at something SA_IMMUTABLE as long as the signal is allowed to
-continue and kill the process when PTRACE_CONT happens seems harmless.
-
-Allowing the debugger to change the signal, or change it's handling
-I don't know.
-
-All of this is channeled through the following function.
-
-> static int
-> force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool sigdfl)
-> {
-> 	unsigned long int flags;
-> 	int ret, blocked, ignored;
-> 	struct k_sigaction *action;
-> 	int sig = info->si_signo;
+> On Nov 16, 2021, at 12:00 AM, Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> 	spin_lock_irqsave(&t->sighand->siglock, flags);
-> 	action = &t->sighand->action[sig-1];
-> 	ignored = action->sa.sa_handler == SIG_IGN;
-> 	blocked = sigismember(&t->blocked, sig);
-> 	if (blocked || ignored || sigdfl) {
-> 		action->sa.sa_handler = SIG_DFL;
-> 		action->sa.sa_flags |= SA_IMMUTABLE;
-> 		if (blocked) {
-> 			sigdelset(&t->blocked, sig);
-> 			recalc_sigpending_and_wake(t);
-> 		}
-> 	}
-> 	/*
-> 	 * Don't clear SIGNAL_UNKILLABLE for traced tasks, users won't expect
-> 	 * debugging to leave init killable.
-> 	 */
-> 	if (action->sa.sa_handler == SIG_DFL && !t->ptrace)
-> 		t->signal->flags &= ~SIGNAL_UNKILLABLE;
-> 	ret = send_signal(sig, info, t, PIDTYPE_PID);
-> 	spin_unlock_irqrestore(&t->sighand->siglock, flags);
+> On Mon, Nov 15, 2021 at 11:13:42PM -0800, Song Liu wrote:
+>> These allow setting ro/x for module_alloc() mapping, while leave the
+>> linear mapping rw/nx.
 > 
-> 	return ret;
-> }
+> This needs a very strong rationale for *why*. How does this not
+> trivially circumvent W^X ?
 
-Right now we have 3 conditions that trigger SA_IMMUTABLE.
-- The sigdfl parameter is passed asking that userspace not be able to
-  change the handling of the signal.
+In this case, we want to have multiple BPF programs sharing the 2MB page. 
+When the JIT engine is working on one program, we would rather existing
+BPF programs on the same page stay on RO+X mapping (the module_alloc() 
+address). The solution in this version is to let the JIT engine write to 
+the page via linear address. 
 
-- A synchronous exception is taken and the signal is blocked.
+An alternative is to only use the module_alloc() address, and flip the 
+read-only bit (of the whole 2MB page) back and forth. However, this 
+requires some serialization among different JIT jobs. 
 
-- A synchronous exception is taken and the signal is ignored.
+Johannes also noticed that set_memory_[ro|x] for kernel modules and BPF 
+programs causes splitting the 1GB linear mapping. This leads to visible 
+performance degradation in the tests. CC'ing him for more details on this. 
 
-Today because of how things are implemented the code most change the
-userspace state to allow the signal to kill the process.  I really want
-to get rid of that, because that has other side effects.  As part of
-getting rid of changing the state it is my plan to get rid of
-SA_IMMUTABLE as well.  If I don't have to allow the debugger to stop and
-observe what is happening with the signal that change is much easier to
-implement.
-
-The classic trigger of sigdfl is a recursive SIGSEGV.
-
-However we have other cases like SECCOMP_RET_KILL where the kernel
-has never allowed userspace to intercept the killing of the
-process.  Things that have messages like: "seccomp tried to change
-syscall nr or ip"
-
-My brain is drawing a blank on how to analyze those.  
-
-Kees I am back to asking the question I had before I figured out
-SA_IMMUTABLE.  Are there security concerns with debuggers intercepting
-SECCOMP_RET_KILL.
-
-I think I can modify dequeue_synchronous_signal so that we can perform
-the necessary logic in get_signal rather than hack up the signal
-handling state in force_sig_info_to_task.
-
-Except for the cases like SECCOMP_RET_KILL where the kernel has never
-allowed userspace to intercept the handling.  I don't see any
-fundamental reason why ptrace could not intercept the signal.  The
-handling is overriden to force the process to die, because the way
-userspace is currently configured to handle the signal does not work so
-it is necessary to kill the process.
-
-I think there are cases where the userspace state is known to be
-sufficiently wrong that the kernel can not safely allow anything more
-than inspecting the state.
-
-I can revisit the code to see if the kernel will get confused if
-something more is allowed.  Still I really like the current semantics of
-SA_IMMUTABLE because these are cases where something wrong.  If someone
-miscalculates how things are wrong it could result in the kernel getting
-confused and doing the wrong thing.  Allowing the debugger to intercept
-the signal requires we risk miscalculating what is wrong.
-
-Kyle how exactly is rr broken?  Certainly a historical usage does not
-work.  How does this affect actual real world debugging sessions?
-
-You noticed this and bisected the change quickly so I fully expect
-this does affect real world debugging sessions.  I just want to know
-exactly how so that exactly what is wrong can be fixed.
-
-As far as I can tell SA_IMMUTABLE has only been backported to v5.15.x
-where in cleaning things up I made SECCOMP_RET_KILL susceptible to races
-with sigaction, and ptrace.  Those races need to be closed or we need to
-decide that we don't actually care if the debugger does things.
-
-Eric
+Thanks,
+Song
