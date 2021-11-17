@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CAC454D63
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 19:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCBD454D6C
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 19:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240203AbhKQSu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 13:50:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
+        id S240221AbhKQSyb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 13:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbhKQSu3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 13:50:29 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5199DC061570
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 10:47:30 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id e3so15457508edu.4
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 10:47:30 -0800 (PST)
+        with ESMTP id S238988AbhKQSya (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 13:54:30 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED82C061764
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 10:51:32 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id d64so1024678pgc.7
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 10:51:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=2GQP2tRGysNgPEKNCjI+dwty2vanWOhkRb6VoLXLY6c=;
-        b=cwihSbWXg/XvJyyox4hBavRvB43vlOFqjx0Ds7R7QUBkVvFBWqFdGsRVpbdaqduTXV
-         lWY/xgnS2OvmtgH0WOAYFCikajlVm8p7uWcpv/7XvH7YVsRymkbcLTFNZhoMH0OkFNib
-         x61xgU0vbY/zNqkzXCo3Wcdgl/mo2Dc+R/xPntSCtRJmojF9TQ/2taROZZJBYzLvHDlG
-         Ua4m3kTdCLHG4QSdfXIk/EfcdIYLaEpoQkQdYKY4GPayfIKKDcMzsPtUmVfgsoZJc0Jy
-         f5Pwr4cJV70tcrnPJXyRXfmym7oh/x1Ug7FP2E5gm1tDNXuGrayTDOMDF7tcZ5secqag
-         Q6nA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YMm7uqc0PVoZ5CKUw9P95CjYEyE4WkTA6NNCCrs9xIk=;
+        b=WSeVLf0WoWRPuWMFmJfO/1Sv1V44Dthw2bD8KQUn6ImGf1LCbzwoKatBL8My9+PWzi
+         BVE9VI6Ez3QFzNaVT6KtRDOQp1ziApY8DPqftRX+V9PXePgc0brzwXGb7pj1BQbO+YOm
+         Pf8FxsTEyrMX0999e7vBYfcmKbyfeTGgVEsWQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=2GQP2tRGysNgPEKNCjI+dwty2vanWOhkRb6VoLXLY6c=;
-        b=rd9NAgg1Wssk/WCkC1gelnb+v9xsSFZe06pcONzHhlXSbWMgU9r8TV6v3vyVby37WU
-         i3BiKJFSrb5/QNX2lrGuAh+Hbs9s484t3lTiZVdMtGXvV+Sa0/80l9RJHs+Opf2ziCxx
-         FPnaFlh8axsnq9YPQ66+7re8uUn+E93jnB29GKnZw/PZ8LlDZmPB/N0JI0FNZJ+yqj++
-         sNi2G6C/QHIWz5j43vAYBIeXSmtP4f0g5nTFx8GqffxyTAIDRCCnIYTdj/QW0nWIWvZl
-         xNSysPFn0EO3hrvqAqIwUCgOUYKMzntnWpSCfalYJf8SqpVoYIKThdnBj5K8tiPGH5aV
-         fXkQ==
-X-Gm-Message-State: AOAM532N55wzIR7QnLDi7WcnzsPc+hv+4k0HCWxqwj1c/YJJG6BcLx34
-        Qbap2r1uhLUpU4fYH7i31kfbce/NXSj95GXMHf9Dhw==
-X-Google-Smtp-Source: ABdhPJzzVIVN1wyydH6f4f7OlGu6N3bX8zKWGU3H6C2rPo0t+oyEeAHFI/swWYHkGFU26QqJA7D3qJ52L+jOiMsxclQ=
-X-Received: by 2002:a17:906:140b:: with SMTP id p11mr24492849ejc.116.1637174848825;
- Wed, 17 Nov 2021 10:47:28 -0800 (PST)
-MIME-Version: 1.0
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Wed, 17 Nov 2021 10:47:13 -0800
-Message-ID: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
-Subject: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YMm7uqc0PVoZ5CKUw9P95CjYEyE4WkTA6NNCCrs9xIk=;
+        b=rRj/SJarPI/Iq4Gk+I1Ibq+V2a5giProzkQWamWaQfuUwRNdnfCAeYWQd+c2vJlDjQ
+         e4DnZDWN544WhZxS/zbGqyI8jdvaNy+6tAo+klNI9PEVL8i1n/7xohUJU1l3rigVliTd
+         Tz5YdFHAyUOefaqcy5kPkz6UPUWaW99+h3bnIz8429RUHXB/coaoQr0FQF3KzuebaQl+
+         OxJ/i++owFWn/S4cD3cKdw7JXiipeR0FCiCLPa4ZmKTPebbOgrUMlOR3G/oxiFRTh0V9
+         UgqxMuwsKNPSMVJayu5IS3dLC+T67hERXri2m/XPIMQ8BzhXhqPkVadXGyfT+s20U1tw
+         RK0Q==
+X-Gm-Message-State: AOAM531IdLWt2aQZYtpjDVBQtD0O21NXML45fNZznc2sdpfqzRcswnwz
+        hIDsdVEM6osHZkcn61Ima6C6tQ==
+X-Google-Smtp-Source: ABdhPJzegaq20Wc2oLUBixdUIX3fnDf0TFKeDD46xxqB6a0a/DVlPYO5Xe1+GZALYnEX4GfVGrsXfg==
+X-Received: by 2002:a63:ea4e:: with SMTP id l14mr6827570pgk.406.1637175091571;
+        Wed, 17 Nov 2021 10:51:31 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o6sm361555pfh.70.2021.11.17.10.51.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 10:51:31 -0800 (PST)
+Date:   Wed, 17 Nov 2021 10:51:30 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
         Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Andy Lutomirski <luto@amacapital.net>,
@@ -58,29 +58,39 @@ Cc:     Andrea Righi <andrea.righi@canonical.com>,
         open list <linux-kernel@vger.kernel.org>,
         linux-hardening@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Robert O'Callahan <rocallahan@gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+Message-ID: <202111171049.3F9C5F1@keescook>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-rr, a userspace record and replay debugger[0], is completely broken on
-5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
+> rr, a userspace record and replay debugger[0], is completely broken on
+> 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+> 
+> That patch makes two changes, it blocks sigaction from changing signal
+> handlers once the kernel has decided to force the program to take a
+> signal and it also stops notifying ptracers of the signal in the same
+> circumstances. The latter behavior is just wrong. There's no reason
+> that ptrace should not be able to observe and even change
+> (non-SIGKILL) forced signals.  It should be reverted.
+> 
+> This behavior change is also observable in gdb. If you take a program
+> that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
+> SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
+> when the SIGSYS is raised, let you inspect program state, etc. After
+> the SA_IMMUTABLE change gdb won't stop until the program has already
+> died of SIGSYS.
 
-That patch makes two changes, it blocks sigaction from changing signal
-handlers once the kernel has decided to force the program to take a
-signal and it also stops notifying ptracers of the signal in the same
-circumstances. The latter behavior is just wrong. There's no reason
-that ptrace should not be able to observe and even change
-(non-SIGKILL) forced signals.  It should be reverted.
+Ah, hm, this was trying to fix the case where a program trips
+SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
+before. I guess the fix was too broad...
 
-This behavior change is also observable in gdb. If you take a program
-that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
-SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
-when the SIGSYS is raised, let you inspect program state, etc. After
-the SA_IMMUTABLE change gdb won't stop until the program has already
-died of SIGSYS.
-
-- Kyle
-
-[0] https://rr-project.org/
+-- 
+Kees Cook
