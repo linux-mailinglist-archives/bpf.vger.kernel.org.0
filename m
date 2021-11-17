@@ -2,71 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA932454927
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 15:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24F54549E2
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 16:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhKQOxI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 09:53:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229751AbhKQOxI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 09:53:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5F71661269;
-        Wed, 17 Nov 2021 14:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637160609;
-        bh=uOkBXmF0eKEMD5cHiFoZj2GHd8g6R7EKxmFyrk/Xe8g=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LHbWmiVRsxQpFheMi0kDVhYCtB57wodeEgGT0QBlJphbPgXC3l7oqurye/o4UEuEL
-         /9l/4SjiMVjQCfhAsvQ6/yuKjjCotZR7yKISJqIlOw9f9qGVdqTTv+CUqOPPjOkpv0
-         sKWQ0icRk7KUNChkSPGffHMUpRT3IhL5iKXrErtLFcq5YjI8J3xzwRTK2amo0FjNMP
-         WUW4rziraEFtihMa3e2R4+G1B3jdX22sgNSZC7prIEj8r4X4A7hhcPIb47LzheVPuL
-         5Au1I1ct2zfhbxjwzqbv0L9RVNfWffF9eU9FpJVUUmSdaZhts0N1N8JImSNkZ0jK76
-         kk3J/FQ9v5VnA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4F4FB60A4E;
-        Wed, 17 Nov 2021 14:50:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236695AbhKQPbs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 10:31:48 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:36078 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhKQPbr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 10:31:47 -0500
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 0E20620C56D1
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 07:28:49 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0E20620C56D1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1637162929;
+        bh=rNEY0TBABFQgU3JV3Pca4VGni4BTQEUdOLPn7LFs0cM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nZxcRMucMD1/XBRlhX44i0E9OIIloi5l26+ve64DqvSUHHWCK4PWPYG0aE+PqJokN
+         m1PpoR6ZZchRYiEowYv91KmsC77tptFAl8dZpRljExpT1z6uIKpIGMM/l+1UU3wHd4
+         1nNbwj1LS/3yBdo9tAmJcHjMMjfZgb9M/gBRrDP4=
+Received: by mail-pj1-f44.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so2880072pjb.4
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 07:28:48 -0800 (PST)
+X-Gm-Message-State: AOAM531feltD/KvSFFj37igV4+TUBxdE5rE6MKyEXGNUvWkL5KoLlJqI
+        XYPHquiVBPckIE9kTZmQluQkFJEQkCjXCRdsCRo=
+X-Google-Smtp-Source: ABdhPJyjy6CIUe5NSfRfCVXvhU/BpRLzsdysYU63uT/r3xDHMMDifHp8QUzEIWkoF2DTtoItR6ewJveRqcx5uvSBVmc=
+X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr679244pjb.20.1637162928580;
+ Wed, 17 Nov 2021 07:28:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf, x86: Fix "no previous prototype" warning
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163716060931.12308.3728121323940964364.git-patchwork-notify@kernel.org>
-Date:   Wed, 17 Nov 2021 14:50:09 +0000
-References: <20211117125708.769168-1-bjorn@kernel.org>
-In-Reply-To: <20211117125708.769168-1-bjorn@kernel.org>
-To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm5Aa2VybmVsLm9yZz4=?=@ci.codeaurora.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkp@intel.com
+References: <20211112050230.85640-1-alexei.starovoitov@gmail.com>
+ <CAFnufp20BUGADHQLPWsa2BDorS+_pDxT2Sn1GKkSHGBw1RgMFA@mail.gmail.com> <CAEf4BzbhzNU-ydvTYa8XG3jRxae+83d_w7EkHaOkySQVH1BHww@mail.gmail.com>
+In-Reply-To: <CAEf4BzbhzNU-ydvTYa8XG3jRxae+83d_w7EkHaOkySQVH1BHww@mail.gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 17 Nov 2021 16:28:12 +0100
+X-Gmail-Original-Message-ID: <CAFnufp1f_==QV3L31z4iknZVvoWzH6yKJ3zttvVpMJEj+kOxEA@mail.gmail.com>
+Message-ID: <CAFnufp1f_==QV3L31z4iknZVvoWzH6yKJ3zttvVpMJEj+kOxEA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/12] bpf: CO-RE support in the kernel
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Nov 17, 2021 at 5:34 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Nov 16, 2021 at 4:48 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> >
+> > On Fri, Nov 12, 2021 at 6:02 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > v1->v2:
+> > > . Refactor uapi to pass 'struct bpf_core_relo' from LLVM into libbpf and further
+> > > into the kernel instead of bpf_core_apply_relo() bpf helper. Because of this
+> > > change the CO-RE algorithm has an ability to log error and debug events through
+> > > the standard bpf verifer log mechanism which was not possible with helper
+> > > approach.
+> > > . #define RELO_CORE macro was removed and replaced with btf_member_bit_offset() patch.
+> > >
+> > > This set introduces CO-RE support in the kernel.
+> > > There are several reasons to add such support:
+> > > 1. It's a step toward signed BPF programs.
+> > > 2. It allows golang like languages that struggle to adopt libbpf
+> > >    to take advantage of CO-RE powers.
+> > > 3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
+> > >    by the verifier purely based on +10 offset. If R1 points to a union
+> > >    the verifier picks one of the fields at this offset.
+> > >    With CO-RE the kernel can disambiguate the field access.
+> > >
+> >
+> > Great, I tested the same code which was failing with the RFC series,
+> > now there isn't any error.
+> > This is the output with pr_debug() enabled:
+> >
+> > root@debian64:~/core# ./core
+> > [    5.690268] prog '(null)': relo #-2115894237: kind <(null)>
+> > (163299788), spec is
+> > [    5.690272] prog '(null)': relo #-2115894246: (null) candidate #-2115185528
+> > [    5.690392] prog '(null)': relo #2: patched insn #208 (LDX/ST/STX)
+> > off 208 -> 208
+> > [    5.691045] prog '(efault)': relo #-2115894237: kind <(null)>
+> > (163299788), spec is
+> > [    5.691047] prog '(efault)': relo #-2115894246: (null) candidate
+> > #-2115185528
+> > [    5.691148] prog '(efault)': relo #3: patched insn #208
+> > (LDX/ST/STX) off 208 -> 208
+> > [    5.692456] prog '(null)': relo #-2115894237: kind <(null)>
+> > (163302708), spec is
+> > [    5.692459] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
+> > [    5.692564] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
+> > off 104 -> 104
+> > [    5.693179] prog '(efault)': relo #-2115894237: kind <(null)>
+> > (163299788), spec is
+> > [    5.693181] prog '(efault)': relo #-2115894246: (null) candidate
+> > #-2115185528
+> > [    5.693258] prog '(efault)': relo #3: patched insn #208
+> > (LDX/ST/STX) off 208 -> 208
+> > [    5.696141] prog '(null)': relo #-2115894237: kind <(null)>
+> > (163302708), spec is
+> > [    5.696143] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
+> > [    5.696255] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
+> > off 104 -> 104
+> > [    5.696733] prog '(efault)': relo #-2115894237: kind <(null)>
+> > (163299788), spec is
+> > [    5.696734] prog '(efault)': relo #-2115894246: (null) candidate
+> > #-2115185528
+> > [    5.696833] prog '(efault)': relo #3: patched insn #208
+> > (LDX/ST/STX) off 208 -> 208
+>
+> All the logged values are completely wrong, some corruption somewhere.
+>
+> But I tried to see it for myself and I couldn't figure out how to get
+> these logs with lskel. How did you get the above?
+>
+> Alexei, any guidance on how to get those verifier logs back with
+> test_progs? ./test_progs -vvv didn't help, I also checked trace_pipe
+> output, it was empty. I thought that maybe verifier truncates logs on
+> success and simulated failed prog validation, but still nothing.
+>
+> >
+> > And the syscall returns success:
+> >
+> > bpf(BPF_PROG_TEST_RUN, {test={prog_fd=4, retval=0, data_size_in=0,
+> > data_size_out=0, data_in=NULL, data_out=NULL, repeat=0, duration=0,
+> > ctx_size_in=68, ctx_size_out=0, ctx_in=0x5590b97dd2a0, ctx_out=NULL}},
+> > 160) = 0
+> >
+> > Regards,
+> > --
+> > per aspera ad upstream
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Sorry, there was an off-by-one in the macro.
+I just aliased all the pr_* to printk, this is the correct output:
 
-On Wed, 17 Nov 2021 13:57:08 +0100 you wrote:
-> The arch_prepare_bpf_dispatcher function does not have a prototype,
-> and yields the following warning when W=1 is enabled for the kernel
-> build.
-> 
->   >> arch/x86/net/bpf_jit_comp.c:2188:5: warning: no previous \
->   prototype for 'arch_prepare_bpf_dispatcher' [-Wmissing-prototypes]
->         2188 | int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, \
-> 	int num_funcs)
->              |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> [...]
+# core/core
+[    3.686333] prog '': relo #0: kind <byte_off> (0), spec is
+[    3.686337] prog '': relo #0: matching candidate #0
+[    3.686471] prog '': relo #0: patched insn #2 (LDX/ST/STX) off 208 -> 208
+[    3.687209] prog '': relo #1: kind <byte_off> (0), spec is
+[    3.687211] prog '': relo #1: matching candidate #0
+[    3.687251] prog '': relo #1: patched insn #3 (LDX/ST/STX) off 208 -> 208
+[    3.688193] prog '': relo #0: kind <byte_off> (0), spec is
+[    3.688196] prog '': relo #0: matching candidate #0
+[    3.688238] prog '': relo #0: patched insn #2 (LDX/ST/STX) off 104 -> 104
+[    3.688781] prog '': relo #1: kind <byte_off> (0), spec is
+[    3.688783] prog '': relo #1: matching candidate #0
+[    3.688820] prog '': relo #1: patched insn #3 (LDX/ST/STX) off 208 -> 208
+[    3.691529] prog '': relo #0: kind <byte_off> (0), spec is
+[    3.691531] prog '': relo #0: matching candidate #0
+[    3.691610] prog '': relo #0: patched insn #2 (LDX/ST/STX) off 104 -> 104
+[    3.692158] prog '': relo #1: kind <byte_off> (0), spec is
+[    3.692160] prog '': relo #1: matching candidate #0
+[    3.692256] prog '': relo #1: patched insn #3 (LDX/ST/STX) off 208 -> 208
 
-Here is the summary with links:
-  - [bpf] bpf, x86: Fix "no previous prototype" warning
-    https://git.kernel.org/bpf/bpf/c/f45b2974cc0a
-
-You are awesome, thank you!
+Regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+per aspera ad upstream
