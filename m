@@ -2,44 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980B2453D57
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 01:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32252453D5F
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 01:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhKQAvw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 19:51:52 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:57508 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhKQAvv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 19:51:51 -0500
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 26BDB20C6376
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 16:48:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 26BDB20C6376
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637110134;
-        bh=75twU7NIZAcfuLZqCWb4kRzr01+M2zUdyS7YeyJGBaI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jXHYjHxPQU8C0tGUgBrifak8pUwpPZGIinOE82xUF+OSrv98L3iyRrm8Mjz0VcgPh
-         OIM1rO4DCBq0z/xkB/gioG06RPUfI1zFBhcvwnn2qWlRb6dB2gUn75L9dBtuAIXns5
-         5hZUuQ3lPhsbe25ipqWkjcJFP5kdQBZjq183CVns=
-Received: by mail-pj1-f49.google.com with SMTP id p18-20020a17090ad31200b001a78bb52876so3722641pju.3
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 16:48:54 -0800 (PST)
-X-Gm-Message-State: AOAM530nxtGa1OM1kxrCdB2rpkcnWGVw17kh81GPigYB13IwYcYcnpr1
-        xkfRQWAyOqBjTLSVZr8IEJ9l8cyMnlLJwc4gSRw=
-X-Google-Smtp-Source: ABdhPJw0KvgaKNCgBM6SmidhKHIGMHVdBBG4G9UBVRdDnryUfWIJYsPT70yiD1+zutIPYbkQfgaR9cUGNcn1EW8fLHk=
-X-Received: by 2002:a17:902:d4d0:b0:141:c13d:6c20 with SMTP id
- o16-20020a170902d4d000b00141c13d6c20mr50510593plg.44.1637110133637; Tue, 16
- Nov 2021 16:48:53 -0800 (PST)
+        id S230127AbhKQBBc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 20:01:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhKQBBc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 20:01:32 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB4AC061570
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 16:58:34 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id g17so2043204ybe.13
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 16:58:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RE8b2UKzhUFZb3fU8ktsYnwcR9zYve7dDadoUV5LmBE=;
+        b=SJsxfQGiRxSJo701NYqvGUT7IfjjVQHamEHGfhEJIQsFLwgbiotbTaGnM9v4d/DAUf
+         Q1NIpPsMka5O5gG4daaL0KGtq55OA0j/mmEl4G9+SdAv1n4HDukb+Cg2azWzllagwnW3
+         n3Z0tdchG+d/W8KrDDIKNbYTz6AIIir8idp57+GOUwvWpDKzXCcUY6SNZXrA6XriXBrW
+         90LVoYMN1HQbzB0+HFweRPppgmLt9WJuBG6Wjeg8kZaoOGaJ5DtFHwX64094wZxhJohw
+         fFRMR4o5qRRkB83CQl6LbirMieC0Zayh1Kcpxnwo68t72OGAqHAn2b657TNHKcyK6JTB
+         41kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RE8b2UKzhUFZb3fU8ktsYnwcR9zYve7dDadoUV5LmBE=;
+        b=sOojYND4qwRqZ2IODKEmVwYLJTF+5FKyu+EpfadRAq7KR53dADcI6y6DG/CjjZ3Lqy
+         IyRa+PhE6ePs86InyvLSEKuFXNR6pkZY7Y5+LMwHE0o2KUbptzGiGmsIto3NMbkmSBJi
+         slQ4ujAA2DdI9y/BhUAeFhClCW9X2kf9nPEFu4mH24pLqLWYVLM0OvwPrBFZsTMWg/mg
+         AiO3GyJhSEMfffZbb5Tc+efjOtpK1idsy+GfOKjbQqjYNSdRjVVcM1dMAPpIJjk3p+1Q
+         idTdGh3Ksks/HWnBg+uMPPVleQdZ6nCI8Heg+rpQqBdgWBxMYWLtKlM5KqRjS20bH3Ca
+         54ig==
+X-Gm-Message-State: AOAM531mfZdxtPmvrGqL08Anz5MLjgYDIyKAN4sjAHyI1JUUI5iQl7bc
+        FJP9B8alD1xV13qihi05H6aarlGIZ4FIv/c3HoeOO1dR
+X-Google-Smtp-Source: ABdhPJylxf5gKBLelQej96fr8cARzNgRrMWU1ebNKMjNVhiQuzpPACS8kFFi/4NqFGjgFQQDkHLn2ISd4mO6CuMyaFE=
+X-Received: by 2002:a25:afcf:: with SMTP id d15mr12250307ybj.433.1637110713928;
+ Tue, 16 Nov 2021 16:58:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112050230.85640-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20211112050230.85640-1-alexei.starovoitov@gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 17 Nov 2021 01:48:17 +0100
-X-Gmail-Original-Message-ID: <CAFnufp20BUGADHQLPWsa2BDorS+_pDxT2Sn1GKkSHGBw1RgMFA@mail.gmail.com>
-Message-ID: <CAFnufp20BUGADHQLPWsa2BDorS+_pDxT2Sn1GKkSHGBw1RgMFA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/12] bpf: CO-RE support in the kernel
+References: <20211112050230.85640-1-alexei.starovoitov@gmail.com> <20211112050230.85640-4-alexei.starovoitov@gmail.com>
+In-Reply-To: <20211112050230.85640-4-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 16 Nov 2021 16:58:23 -0800
+Message-ID: <CAEf4BzaY=waUdY2stYjmU=tT92BfqLoSiV7ytE_WX_sCr8RL=w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 03/12] bpf: Prepare relo_core.c for kernel duty.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
@@ -48,76 +60,147 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 6:02 AM Alexei Starovoitov
+On Thu, Nov 11, 2021 at 9:02 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> v1->v2:
-> . Refactor uapi to pass 'struct bpf_core_relo' from LLVM into libbpf and further
-> into the kernel instead of bpf_core_apply_relo() bpf helper. Because of this
-> change the CO-RE algorithm has an ability to log error and debug events through
-> the standard bpf verifer log mechanism which was not possible with helper
-> approach.
-> . #define RELO_CORE macro was removed and replaced with btf_member_bit_offset() patch.
+> Make relo_core.c to be compiled with kernel and with libbpf.
 >
-> This set introduces CO-RE support in the kernel.
-> There are several reasons to add such support:
-> 1. It's a step toward signed BPF programs.
-> 2. It allows golang like languages that struggle to adopt libbpf
->    to take advantage of CO-RE powers.
-> 3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
->    by the verifier purely based on +10 offset. If R1 points to a union
->    the verifier picks one of the fields at this offset.
->    With CO-RE the kernel can disambiguate the field access.
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  include/linux/btf.h       | 82 +++++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/Makefile       |  4 ++
+>  kernel/bpf/btf.c          | 26 +++++++++++++
+>  tools/lib/bpf/relo_core.c | 71 ++++++++++++++++++++++++++++-----
+>  4 files changed, 174 insertions(+), 9 deletions(-)
 >
 
-Great, I tested the same code which was failing with the RFC series,
-now there isn't any error.
-This is the output with pr_debug() enabled:
+[...]
 
-root@debian64:~/core# ./core
-[    5.690268] prog '(null)': relo #-2115894237: kind <(null)>
-(163299788), spec is
-[    5.690272] prog '(null)': relo #-2115894246: (null) candidate #-2115185528
-[    5.690392] prog '(null)': relo #2: patched insn #208 (LDX/ST/STX)
-off 208 -> 208
-[    5.691045] prog '(efault)': relo #-2115894237: kind <(null)>
-(163299788), spec is
-[    5.691047] prog '(efault)': relo #-2115894246: (null) candidate
-#-2115185528
-[    5.691148] prog '(efault)': relo #3: patched insn #208
-(LDX/ST/STX) off 208 -> 208
-[    5.692456] prog '(null)': relo #-2115894237: kind <(null)>
-(163302708), spec is
-[    5.692459] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
-[    5.692564] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
-off 104 -> 104
-[    5.693179] prog '(efault)': relo #-2115894237: kind <(null)>
-(163299788), spec is
-[    5.693181] prog '(efault)': relo #-2115894246: (null) candidate
-#-2115185528
-[    5.693258] prog '(efault)': relo #3: patched insn #208
-(LDX/ST/STX) off 208 -> 208
-[    5.696141] prog '(null)': relo #-2115894237: kind <(null)>
-(163302708), spec is
-[    5.696143] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
-[    5.696255] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
-off 104 -> 104
-[    5.696733] prog '(efault)': relo #-2115894237: kind <(null)>
-(163299788), spec is
-[    5.696734] prog '(efault)': relo #-2115894246: (null) candidate
-#-2115185528
-[    5.696833] prog '(efault)': relo #3: patched insn #208
-(LDX/ST/STX) off 208 -> 208
+>  static inline const struct btf_member *btf_type_member(const struct btf_type *t)
+>  {
+>         return (const struct btf_member *)(t + 1);
+>  }
+>
+> +
 
-And the syscall returns success:
+accidental empty line or intentional?
 
-bpf(BPF_PROG_TEST_RUN, {test={prog_fd=4, retval=0, data_size_in=0,
-data_size_out=0, data_in=NULL, data_out=NULL, repeat=0, duration=0,
-ctx_size_in=68, ctx_size_out=0, ctx_in=0x5590b97dd2a0, ctx_out=NULL}},
-160) = 0
+> +static inline struct btf_array *btf_array(const struct btf_type *t)
+> +{
+> +       return (struct btf_array *)(t + 1);
+> +}
+> +
 
-Regards,
--- 
-per aspera ad upstream
+[...]
+
+> +int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
+> +                             const struct btf *targ_btf, __u32 targ_id)
+> +{
+> +       return -EOPNOTSUPP;
+> +}
+> +
+> +static bool bpf_core_is_flavor_sep(const char *s)
+> +{
+> +       /* check X___Y name pattern, where X and Y are not underscores */
+> +       return s[0] != '_' &&                                 /* X */
+> +              s[1] == '_' && s[2] == '_' && s[3] == '_' &&   /* ___ */
+> +              s[4] != '_';                                   /* Y */
+> +}
+> +
+> +size_t bpf_core_essential_name_len(const char *name)
+
+I might have missed something, but this seems to be used only
+internally, so should be static. Otherwise there would be a
+compilation warning due to the missing prototype, no?
+
+> +{
+> +       size_t n = strlen(name);
+> +       int i;
+> +
+> +       for (i = n - 5; i >= 0; i--) {
+> +               if (bpf_core_is_flavor_sep(name + i))
+> +                       return i + 1;
+> +       }
+> +       return n;
+> +}
+
+[...]
+
+> +       t = btf_type_by_id(btf, type_id);
+> +       t = btf_resolve_size(btf, t, &size);
+> +       if (IS_ERR(t))
+> +               return PTR_ERR(t);
+> +       return size;
+> +}
+
+nit: empty line would be good here and after enum
+
+> +enum libbpf_print_level {
+> +       LIBBPF_WARN,
+> +       LIBBPF_INFO,
+> +       LIBBPF_DEBUG,
+> +};
+> +#undef pr_warn
+> +#undef pr_info
+> +#undef pr_debug
+> +#define pr_warn(fmt, log, ...) bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
+> +#define pr_info(fmt, log, ...) bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
+> +#define pr_debug(fmt, log, ...)        bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
+> +#define libbpf_print(level, fmt, ...)  bpf_log((void *)prog_name, fmt, ##__VA_ARGS__)
+> +#else
+>  #include <stdio.h>
+>  #include <string.h>
+>  #include <errno.h>
+> @@ -12,8 +64,9 @@
+>  #include "btf.h"
+>  #include "str_error.h"
+>  #include "libbpf_internal.h"
+> +#endif
+>
+> -#define BPF_CORE_SPEC_MAX_LEN 64
+> +#define BPF_CORE_SPEC_MAX_LEN 32
+
+This is worth calling out in the commit description, should have
+practical implications, but good to mention.
+
+>
+>  /* represents BPF CO-RE field or array element accessor */
+>  struct bpf_core_accessor {
+> @@ -272,8 +325,8 @@ static int bpf_core_parse_spec(const struct btf *btf,
+>                                 return sz;
+>                         spec->bit_offset += access_idx * sz * 8;
+>                 } else {
+> -                       pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
+> -                               type_id, spec_str, i, id, btf_kind_str(t));
+> +/*                     pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
+> +                               type_id, spec_str, i, id, btf_kind_str(t));*/
+
+we can totally pass prog_name and add "prog '%s': " to uncomment this.
+bpf_core_parse_spec() is called in the "context" of program, so it's
+known
+
+>                         return -EINVAL;
+>                 }
+>         }
+> @@ -346,8 +399,8 @@ static int bpf_core_fields_are_compat(const struct btf *local_btf,
+>                 targ_id = btf_array(targ_type)->type;
+>                 goto recur;
+>         default:
+> -               pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
+> -                       btf_kind(local_type), local_id, targ_id);
+> +/*             pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
+> +                       btf_kind(local_type), local_id, targ_id);*/
+
+sigh... it's a bit too intrusive to pass prog_name here but it's also
+highly unlikely that this happens (unless some compiler bug or
+corruption) and even in that case it's semantically correct that
+fields just don't match. So I'd just drop this pr_warn() instead of
+commenting it out
+
+>                 return 0;
+>         }
+>  }
+
+[...]
