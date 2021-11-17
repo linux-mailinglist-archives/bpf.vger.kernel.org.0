@@ -2,101 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35991453FEE
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 06:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC9D45402B
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 06:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhKQFXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 00:23:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
+        id S231591AbhKQF2d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 00:28:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbhKQFXx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:23:53 -0500
+        with ESMTP id S229585AbhKQF2c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 00:28:32 -0500
 Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBFBC061570
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:20:55 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id i194so3803959yba.6
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:20:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8415C061570;
+        Tue, 16 Nov 2021 21:25:34 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id e71so3780398ybh.10;
+        Tue, 16 Nov 2021 21:25:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WSnOhBdo7nIssGtC/kMfshOI6+QT3XFzLh+A325DbvM=;
-        b=PLRMXbODa4Vv8LIeX00GdxQQEs8+wIkx99MTZ9HJyAVCmCH655J8UrSuZ4uPSd+G08
-         GcVszW9/9F7TOLNXK69idxjyzl3OhBaWt4VWwjpUz9keYs8VfPNJhdU1cfAb6OgnG36g
-         sKA05rY22Xsj1j+w/zmKLk2R60ZCBRS3mbJX2f4SE4fmdSXzX9QRjap36ocehHWxpt8+
-         mguVE7TG16HJyqAfOxH8kVlDyvCCZqqroZOH/6GcRFib0SztNba2HsPjY9UbS60Zk4Uq
-         C5rUsfFPpNdO0eSwpd0E4R7gOJ+qxjZ3o7Cu7/m/nsmB+2+miC8knnP50Ld6hJhVyPtz
-         3tAw==
+         :cc:content-transfer-encoding;
+        bh=Gctl7Lkc3igXRBCDfY8pcYxUuUrxwRiXZOBZPfzfPig=;
+        b=Aqj8EuNIGd/UvajhEbSMIaTFfA10+wfawzgrMiZEIsQWeq+JpPiHXWwHhEp8Nqu3iL
+         wk8o6fCNI/+EN/MEt46OkNPvqZ769l7ztupIvYDUsNkH0UzSJIG90iRgA4E5Xtx2yX2S
+         RdpH8SEg871+ZHsVl344yfb5dMnc6GYCaui868FIhi1RloFqX5T9YqCVQW08V6FkHbYp
+         w2faY8VMWKvIxcnZ5PGzfAu/r+wnmXelkJaevtPNS+XlJ6ctaZO96zdULqkR+kCezkoz
+         SDvMiiBKyH1gP/S2wubh//5CmNZT2wgAUdUWK5qcVt0i9W3pKI4FBMqSoCus96krRVN/
+         Gf6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WSnOhBdo7nIssGtC/kMfshOI6+QT3XFzLh+A325DbvM=;
-        b=B9gY8+6qkKzpDN4MXG0vTVdnJUkAh1Io38UgIBychJAoaI1xoc2iXNQ9Ae05waSRW7
-         Vb9wuerveawxyimND0L9DN9J4w5g8n1Y5zBuBRaU7Oihd0BJwhAjWyeWZYOuUPF6sgWw
-         uH3l/afLXLqkwles1SbbrGToLOuNBwGXijnko/f8eK4V3Mz8tmmqXxWhKbU3vhEyF0ni
-         RY0efaHYLPxdTzFfq51O/mmpoL2GmCjVef1z9mJY0aeO8+StZCvgFbFxitVz7M88AEQe
-         LGSQYaM3U8GO6Jv+LiMFM7bMaHUG1SXMRN57lXlMh+pI2Uw/BvYS37tw+7jfvgDFw3/h
-         2UMA==
-X-Gm-Message-State: AOAM530DEvj6dimP8oEC+TLOecdAYWjPbbtzjWCHd4rGr86md4konIWL
-        v1jzY0eTKyOe+53w/xXEz1tsDYHvHjX4UYsTsic=
-X-Google-Smtp-Source: ABdhPJx5gPZMVg90LYJaDxq8N5br2QKplFm7R6JojgQG4JtQB+dvGWqHorCjy2xj1RDROspv/2UCSCyBB94nrTk9qoE=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr14956232ybj.504.1637126454486;
- Tue, 16 Nov 2021 21:20:54 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Gctl7Lkc3igXRBCDfY8pcYxUuUrxwRiXZOBZPfzfPig=;
+        b=Q/J0IWYyRHtSVcJFDBCIOXVd1BBMph1li2piyv7MQHXrh1ZnhTo/HSRfrWszML/qnw
+         pmBGWoi3rYhhJhCTLMBZp7KAR+NugHN6Qtvub6DtfzzYVH8tZ7lRFFwIwE/+dwgeThCS
+         PH8m/fEqRfRCsiPWakuz6zhkNGXaTEJ5NG2LGVWslQbowxUnY7I++RgOVXx71XI3YidS
+         0MZw9Hn26JxJ/AbPNsU9zkU5F0GC/zyxZy7pah6XqLZNRN3nIhTsVGA4dccE//a5uSDL
+         3hdJ44NOM8EdypwZHQPItEjU82Vl7TcWXHpXPoq4tqGRvKAc/vtll/Er8Rujdcbe5VGH
+         G5EQ==
+X-Gm-Message-State: AOAM533nQpoLxNGjAj+LTj5aYksbAozMVsgoyb1MM1Qad7dxuMgRzBw8
+        4YBSrJy7Gg7QlW6fcvcc4YMNLz3XbvAsS0uLdxs=
+X-Google-Smtp-Source: ABdhPJwe4twla80yWOuUNFrFQ9caQCzMw15KvxdHjj+UKx/5SNaj1I0UExZFccCdEWTX+AobGoj5zvANoDp+l7a1x1k=
+X-Received: by 2002:a25:d010:: with SMTP id h16mr16276801ybg.225.1637126733967;
+ Tue, 16 Nov 2021 21:25:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20211115191840.496263-1-memxor@gmail.com> <20211115191840.496263-4-memxor@gmail.com>
-In-Reply-To: <20211115191840.496263-4-memxor@gmail.com>
+References: <20211116164208.164245-1-mauricio@kinvolk.io> <20211116164208.164245-2-mauricio@kinvolk.io>
+In-Reply-To: <20211116164208.164245-2-mauricio@kinvolk.io>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Nov 2021 21:20:43 -0800
-Message-ID: <CAEf4BzaNrXU1rDwHw14aoQYrwY5nWWyFmzgTrpRxVT2yNWHUCQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 3/3] tools/resolve_btfids: Demote unresolved symbol
- message to debug
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Pavel Skripkin <paskripkin@gmail.com>,
+Date:   Tue, 16 Nov 2021 21:25:23 -0800
+Message-ID: <CAEf4BzZOu4frtBqzqYO0dkmw+bXuhr91qQ7o5Lyrv_44eniN9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] libbpf: Implement btf__save_raw()
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 11:18 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Nov 16, 2021 at 8:42 AM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
+ wrote:
 >
-> resolve_btfids prints a warning when it finds an unresolved symbol,
-> (id == 0) in id_patch. This can be the case for BTF sets that are empty
-> (due to disabled config options), hence printing warnings for certain
-> builds, most recently seen in [0]. Hence, demote the warning to debug
-> log level to avoid build time noise.
+> Implement helper function to save the contents of a BTF object to a
+> file.
 >
->   [0]: https://lore.kernel.org/all/1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com
->
-> Fixes: 0e32dfc80bae ("bpf: Enable TCP congestion control kfunc from modules")
-> Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
 > ---
->  tools/bpf/resolve_btfids/main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/lib/bpf/btf.c      | 30 ++++++++++++++++++++++++++++++
+>  tools/lib/bpf/btf.h      |  2 ++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 33 insertions(+)
 >
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index a59cb0ee609c..833bfcc9ccf6 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -569,7 +569,7 @@ static int id_patch(struct object *obj, struct btf_id *id)
->         int i;
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index fadf089ae8fe..96a242f91832 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -1121,6 +1121,36 @@ struct btf *btf__parse_split(const char *path, str=
+uct btf *base_btf)
+>         return libbpf_ptr(btf_parse(path, base_btf, NULL));
+>  }
 >
->         if (!id->id) {
-> -               pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
-> +               pr_debug("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
+> +int btf__save_raw(const struct btf *btf, const char *path)
+> +{
+> +       const void *data;
+> +       FILE *f =3D NULL;
+> +       __u32 data_sz;
+> +       int err =3D 0;
+> +
+> +       data =3D btf__raw_data(btf, &data_sz);
+> +       if (!data) {
+> +               err =3D -ENOMEM;
+> +               goto out;
+> +       }
+> +
+> +       f =3D fopen(path, "wb");
+> +       if (!f) {
+> +               err =3D -errno;
+> +               goto out;
+> +       }
+> +
+> +       if (fwrite(data, 1, data_sz, f) !=3D data_sz) {
+> +               err =3D -errno;
+> +               goto out;
+> +       }
+> +
+> +out:
+> +       if (f)
+> +               fclose(f);
+> +       return libbpf_err(err);
+> +}
+> +
+>  static void *btf_get_raw_data(const struct btf *btf, __u32 *size, bool s=
+wap_endian);
+>
+>  int btf__load_into_kernel(struct btf *btf)
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index 5c73a5b0a044..4f8d3f303aa6 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -114,6 +114,8 @@ LIBBPF_API struct btf *btf__parse_elf_split(const cha=
+r *path, struct btf *base_b
+>  LIBBPF_API struct btf *btf__parse_raw(const char *path);
+>  LIBBPF_API struct btf *btf__parse_raw_split(const char *path, struct btf=
+ *base_btf);
+>
+> +LIBBPF_API int btf__save_raw(const struct btf *btf, const char *path);
+> +
+>  LIBBPF_API struct btf *btf__load_vmlinux_btf(void);
+>  LIBBPF_API struct btf *btf__load_module_btf(const char *module_name, str=
+uct btf *vmlinux_btf);
+>  LIBBPF_API struct btf *libbpf_find_kernel_btf(void);
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 6a59514a48cf..c9555f8655af 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -414,4 +414,5 @@ LIBBPF_0.6.0 {
+>                 perf_buffer__new_deprecated;
+>                 perf_buffer__new_raw;
+>                 perf_buffer__new_raw_deprecated;
+> +               btf__save_raw;
 
-This is an important warning that helps detect some misconfiguration,
-we cannot just hide it. If it really is happening for empty lists
-(why?), we should handle empty lists better, but not hide the warning.
+this is a sorted list, please keep it so
 
->         }
->
->         for (i = 0; i < id->addr_cnt; i++) {
+>  } LIBBPF_0.5.0;
 > --
-> 2.33.1
+> 2.25.1
 >
