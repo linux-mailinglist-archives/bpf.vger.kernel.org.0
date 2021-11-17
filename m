@@ -2,133 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E6A4550EB
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 00:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AFB455119
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 00:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhKQXMT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 18:12:19 -0500
-Received: from www62.your-server.de ([213.133.104.62]:54978 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhKQXMT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 18:12:19 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mnU35-000DUb-EN; Thu, 18 Nov 2021 00:09:03 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mnU35-000DpZ-32; Thu, 18 Nov 2021 00:09:03 +0100
-Subject: Re: [PATCH 1/2] bpf, docs: prune all references to "internal BPF"
-To:     Christoph Hellwig <hch@lst.de>, Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20211115130715.121395-1-hch@lst.de>
- <20211115130715.121395-2-hch@lst.de>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1bb1c024-55a0-b9bf-8aa1-2bfd7a3c367d@iogearbox.net>
-Date:   Thu, 18 Nov 2021 00:09:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S241588AbhKQX1o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 18:27:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241585AbhKQX1m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 18:27:42 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3498CC061764
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 15:24:43 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id y13so18118165edd.13
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 15:24:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Rq1p7FgqjQgLj6wWCnFTWOkKeEiQAkvoX+FiUPaLW4=;
+        b=YPCr00kDBxh/itERVSRooieksGZWtLMe/RdKR3aooxI8lobYRND0Mg50ayCY7r9TWr
+         3amekzEnVXhAZqAGNhFMSZ/ZDbuCr8jH9a9ExaHWadzVgWJ17upYM+lUM07qt0D6194p
+         dYHbGUQG2vLoKGnH58h11FwDhffXU7NWQ5oU0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Rq1p7FgqjQgLj6wWCnFTWOkKeEiQAkvoX+FiUPaLW4=;
+        b=hf2LM9ehrpwbreNImtFpY2+T/jcn/ZCXOviLWeusWcyH5ToyNQn/bNvZaEkmdlPnyW
+         78ByzcWOnbGHQTl1gMoBtRu/nrRgNyz9nQsYZLNA9zGZxR+3nEZrCSSvQF6ILrlNjcf0
+         BGTorZVZcUIpUJJsUKFPQ8tE6hWkdUogM7wdp/xZNQTSX2WhFN2CBW9wMR6N4Yfi239b
+         lcFouNrYkI4T1qoGwydoBQZWHtlKLAvYpk1dzBN0sT00M83PlpuTBO6vEr+9Ob/9Iv/U
+         VHmz5SZ1vYx+S4jJAH+rmm49wHJs2aMHcWb9EQNcZZkTTPphN5Cq072mFqp5UXNlstKI
+         4yYg==
+X-Gm-Message-State: AOAM531LnqvlsZBk8Pf7UmPag8tnpRe0ezKLEDfk13ujC/zO9UT3lhuR
+        iFL07c6d5bYG/3ugV3WNOMGrGyL9pV/JxLsf
+X-Google-Smtp-Source: ABdhPJxp9B7XFCSDRaYOyi55RZSY+hZS7vWXzYpV+o7yRKBvevEFdBz5fI30+M2IVBGlorSI200LnQ==
+X-Received: by 2002:a05:6402:114f:: with SMTP id g15mr3772767edw.333.1637191481526;
+        Wed, 17 Nov 2021 15:24:41 -0800 (PST)
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
+        by smtp.gmail.com with ESMTPSA id x7sm171507edd.28.2021.11.17.15.24.40
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Nov 2021 15:24:40 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso3386813wmf.0
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 15:24:40 -0800 (PST)
+X-Received: by 2002:a1c:7405:: with SMTP id p5mr4139475wmc.152.1637191480450;
+ Wed, 17 Nov 2021 15:24:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211115130715.121395-2-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26356/Wed Nov 17 10:26:25 2021)
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+ <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+ <87k0h6334w.fsf@email.froward.int.ebiederm.org> <202111171341.41053845C3@keescook>
+In-Reply-To: <202111171341.41053845C3@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 17 Nov 2021 15:24:24 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+Message-ID: <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kyle Huey <me@kylehuey.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/15/21 2:07 PM, Christoph Hellwig wrote:
-> The eBPF name has completely taken over from eBPF in general usage, so
-> prune all remaining references to "internal BPF".
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   Documentation/networking/filter.rst | 22 +++++++++++-----------
->   arch/arm/net/bpf_jit_32.c           |  2 +-
->   arch/arm64/net/bpf_jit_comp.c       |  2 +-
->   arch/sparc/net/bpf_jit_comp_64.c    |  2 +-
->   arch/x86/net/bpf_jit_comp.c         |  2 +-
->   kernel/bpf/core.c                   |  4 ++--
->   net/core/filter.c                   | 11 +++++------
->   7 files changed, 22 insertions(+), 23 deletions(-)
-> 
-[...]
-> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-> index eeb6dc0ecf463..a00821e820019 100644
-> --- a/arch/arm/net/bpf_jit_32.c
-> +++ b/arch/arm/net/bpf_jit_32.c
-> @@ -163,7 +163,7 @@ static const s8 bpf2a32[][2] = {
->   	[BPF_REG_9] = {STACK_OFFSET(BPF_R9_HI), STACK_OFFSET(BPF_R9_LO)},
->   	/* Read only Frame Pointer to access Stack */
->   	[BPF_REG_FP] = {STACK_OFFSET(BPF_FP_HI), STACK_OFFSET(BPF_FP_LO)},
-> -	/* Temporary Register for internal BPF JIT, can be used
-> +	/* Temporary Register for eBPF JIT, can be used
+On Wed, Nov 17, 2021 at 1:54 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> The SA_IMMUTABLE change was to deal with failures seen in the seccomp
+> test suite after the recent fatal signal refactoring. Mainly that a
+> process that should have effectively performed do_exit() was suddenly
+> visible to the tracer.
 
-Thanks for the cleanup! For the code occurrences with 'internal BPF', I would
-just drop the term 'internal' so it's only 'BPF' which is consistent with the
-rest in the kernel. Usually eBPF is implied given all the old cBPF stuff is
-translated to it anyway. Bit confusing, but that's where it converged over the
-years in the kernel including git log. eBPF vs cBPF unless it's explicitly
-intended to be called out (like in the filter.rst docs).
+I think this basically shows that the conversion from do_exit() to
+fatal_signal() was just wrong. The "do_exit()" wasn't really a signal,
+and can't be treated as such.
 
->   	 * for constant blindings and others.
->   	 */
->   	[TMP_REG_1] = {ARM_R7, ARM_R6},
-[...]
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 2405e39d800fe..355aa51899d62 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1891,7 +1891,7 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
->   
->   /**
->    *	bpf_prog_select_runtime - select exec runtime for BPF program
-> - *	@fp: bpf_prog populated with internal BPF program
-> + *	@fp: bpf_prog populated with eBPF program
->    *	@err: pointer to error variable
->    *
->    * Try to JIT eBPF program, if JIT is not available, use interpreter.
-> @@ -2300,7 +2300,7 @@ static void bpf_prog_free_deferred(struct work_struct *work)
->   	}
->   }
->   
-> -/* Free internal BPF program */
-> +/* Free eBPF program */
+That said, instead of reverting, maybe we can just mark the cases
+where it really is about sending a synchronous signal, vs sending an
+explicitly fatal signal.
 
-nit: We can probably just drop that comment since it's not very useful anyway
-and already implied by the function name.
+It's basically the "true" condition to force_sig_info_to_task(), so
+the fix might be just
 
->   void bpf_prog_free(struct bpf_prog *fp)
->   {
->   	struct bpf_prog_aux *aux = fp->aux;
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index e471c9b096705..634e21647fe30 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -1242,10 +1242,9 @@ static struct bpf_prog *bpf_migrate_filter(struct bpf_prog *fp)
->   	int err, new_len, old_len = fp->len;
->   	bool seen_ld_abs = false;
->   
-> -	/* We are free to overwrite insns et al right here as it
-> -	 * won't be used at this point in time anymore internally
-> -	 * after the migration to the internal BPF instruction
-> -	 * representation.
-> +	/* We are free to overwrite insns et al right here as itwon't be used at
+  @@ -1323,7 +1323,8 @@ force_sig_info_to_task(struct kernel_siginfo
+*info, struct task_struct *t, bool
+        blocked = sigismember(&t->blocked, sig);
+        if (blocked || ignored || sigdfl) {
+                action->sa.sa_handler = SIG_DFL;
+  -             action->sa.sa_flags |= SA_IMMUTABLE;
+  +             if (sigdfl)
+  +                     action->sa.sa_flags |= SA_IMMUTABLE;
+                if (blocked) {
+                        sigdelset(&t->blocked, sig);
+                        recalc_sigpending_and_wake(t);
 
-nit: itwon't
+Kyle, does that fix your test-case? And Kees - yours?
 
-> +	 * this point in time anymore internally after the migration to the eBPF
-> +	 * instruction representation.> diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+               Linus
