@@ -2,83 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2BF4542EA
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 09:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E265B45456D
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 12:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbhKQIu4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 03:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234596AbhKQIu4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 03:50:56 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9D8C061746
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 00:47:58 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id b1so5233362lfs.13
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 00:47:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9yJIKBkP/hglrN2GamqzYCPrI09C09Ls8U6CmGp4m+U=;
-        b=moB0PXTl70rf/MyP3I0QeYk8t7ub0FlTGV1HzUVW4qwLq9Xj14xVXFtjVrLyw6BZHV
-         PTmyfSC619Hw0rOzwl0Gk8aRJOCpTa0zxRrY6sqOBykhpNz3XTKB0B6Z+9CNxkXOfpnG
-         TmJYkMRwdSN83eXS1M0KI1XKU441hSMu5dKP0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9yJIKBkP/hglrN2GamqzYCPrI09C09Ls8U6CmGp4m+U=;
-        b=P/Jg3JF5Go1l40WGMJ53MKd+pRph0LAdl9mEVoJIwyYgzaKA2m00TDoClbRws380GH
-         Hp/y1BesxU88oOm/vs/ML/FJWES1x9Y2rxeLfy0gRiKTYaOUYYyMRsl8ynkbfDj4tPlz
-         eZZB/RsSalxqQ7ECB6Oz7vcEtIz8fBs4On2GWYAUIHIpy15oVGBTT403m2/9exoRCb++
-         x3DNYqbQLbvm2D6McUvoiN7uEM0lg46ZN73GmoyZdSwv+FjjQwWcjwiojTdagVHnmjIg
-         Jcv4icBSCs8Jz31WbGgZ9ZmMDhbyufHsBmHB5NjSEkbZvLEv1Oj7JIo2ERW0y2DbX2Ny
-         OqVg==
-X-Gm-Message-State: AOAM533hYkgK84jdHZpSp+3ICHRpGg6XZHyl4o7q+bok3E0pWudTGSMe
-        +AlMHvhjbrsugyelF0urByoWBw3QfYcIAh3An+XUPQ==
-X-Google-Smtp-Source: ABdhPJyup6wdQP7lq2iQ9eWNfwCJm2OJVL9q/glWYOp3IJ6/yAujHKV3SscAIeCa4bAYjVrQ+AV3riR5SoORtlHBpM4=
-X-Received: by 2002:a05:6512:31d:: with SMTP id t29mr13381740lfp.331.1637138876438;
- Wed, 17 Nov 2021 00:47:56 -0800 (PST)
+        id S236679AbhKQLQA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 06:16:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233710AbhKQLQA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 06:16:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E20A61B51;
+        Wed, 17 Nov 2021 11:13:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637147582;
+        bh=4TPDgKRXy11DMS8G6r5f3T4MtXQsAGt89Wz3+ccC0tE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AR+IHrw1JI4mQ4lsjxeM3btRBSgMBOlItBwZhFfGxp9tjslfN/4keivFutHqUWaEy
+         7NRu9X7/y6U59muPtywbk3vW7QOpJbZQ8bnCr/Ebo3IjEuIyGU2nIHHZLljdErvUQw
+         0Tfe0k2k1k78uFB0rJafmlVLluyvmJ7JblBguGsH9F68GJCuc+OoBjoFL4cfdYsoFW
+         7UvLZK/umgJt2kfqDyg8ZvU9ur+jHu2RzEAHGSGMhW8XZcY/U5SkhKabs9W4ke31Va
+         oGilim8y8XShWaYi0XgelYG3+nMUlaHNXhtbmJGQqxbo8acNNJmF04dhR0mCL/Nfnz
+         5JVwbxsEB61zg==
+Date:   Wed, 17 Nov 2021 12:12:58 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: Re: [PATCH v18 bpf-next 20/23] net: xdp: introduce bpf_xdp_pointer
+ utility routine
+Message-ID: <YZTjuuQwLVTNaoTt@lore-desk>
+References: <cover.1637013639.git.lorenzo@kernel.org>
+ <ce5ad30af8f9b4d2b8128e7488818449a5c0d833.1637013639.git.lorenzo@kernel.org>
+ <20211116071357.36c18edf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YZRI+ac4c0j/eue5@lore-desk>
+ <20211116163159.56e1c957@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20211111161452.86864-1-lmb@cloudflare.com> <CAADnVQKWk5VNT9Z_Cy6COO9NMjkUg1p9gYTsPPzH-fi1qCrDiw@mail.gmail.com>
-In-Reply-To: <CAADnVQKWk5VNT9Z_Cy6COO9NMjkUg1p9gYTsPPzH-fi1qCrDiw@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 17 Nov 2021 08:47:45 +0000
-Message-ID: <CACAyw99EhJ8k4f3zeQMf3pRC+L=hQhK=Rb3UwSz19wt9gnMPrA@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests: bpf: check map in map pruning
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WdM0+DS2xhexbHLR"
+Content-Disposition: inline
+In-Reply-To: <20211116163159.56e1c957@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 13 Nov 2021 at 01:27, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> Not sure how you've tested it, but it doesn't work in unpriv:
-> $ test_verifier 789
-> #789/u map in map state pruning FAIL
-> processed 26 insns (limit 1000000) max_states_per_insn 0 total_states
-> 2 peak_states 2 mark_read 1
-> #789/p map in map state pruning OK
 
-Strange, I have a script that I use for bisecting which uses a minimal
-.config + virtue to run a vm, plus I was debugging in gdb at the same
-time. I might have missed this, apologies.
+--WdM0+DS2xhexbHLR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I guess vmtest.sh is the canonical way to run tests now?
+> On Wed, 17 Nov 2021 01:12:41 +0100 Lorenzo Bianconi wrote:
+> > ack, you are right. Sorry for the issue.
+> > I did not trigger the problem with xdp-mb self-tests since we will not =
+run
+> > bpf_xdp_copy_buf() in this specific case, but just the memcpy()
+> > (but what you reported is a bug and must be fixed). I will add more
+> > self-tests.
+> > Moreover, reviewing the code I guess we can just update bpf_xdp_copy() =
+for our case.
+> > Something like:
+>=20
+> Seems reasonable.  We could probably play some tricks with double
+> pointers to avoid the ternary operator being re-evaluated for each
+> chunk. But even if it's faster it is probably not worth the ugliness
+> of the code.
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+ack, moreover I guess the slowest operation here is the mempcy().
+I added a new self-test to cover the case where buf is across frag0
+and frag1.
+I will wait for some more feedbacks and then I will post a new version.
+Thanks.
 
-www.cloudflare.com
+Regards,
+Lorenzo
+
+--WdM0+DS2xhexbHLR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYZTjugAKCRA6cBh0uS2t
+rJYPAP9SlkRSbeWIhBw44PBH7vhThgAkXhPXN8FkQsr3vLEd1AD8DALSPCxniGjh
+xP4RrZ0eTt4gm4Yz5aKkgdeVdrCZ3Qk=
+=ENIZ
+-----END PGP SIGNATURE-----
+
+--WdM0+DS2xhexbHLR--
