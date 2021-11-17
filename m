@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CEF453F6A
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 05:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07131453F99
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 05:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhKQEVy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 23:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
+        id S233153AbhKQEh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 23:37:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhKQEVy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 23:21:54 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6B6C061570
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 20:18:56 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id q74so3334839ybq.11
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 20:18:56 -0800 (PST)
+        with ESMTP id S233104AbhKQEh2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 23:37:28 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8E5C061570
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 20:34:30 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id y68so3587213ybe.1
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 20:34:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4JuF7rIDzotceMltKWWrENLgYSDo4ya5enVhTAJ7Nzg=;
-        b=lPp4h1/WYbCJ1+/Xg44VVloRs6rv6fvV8FhBIwoQAJj36R+iNy6jm5UT/36iqOW2Pu
-         cULiH3K6bv9XI/+XLm2WABWYFA5+okIhHp/eWl0beXEY3BZntws/NXYikRYuBuJcB0SL
-         nSWhDfsf/KLCyV80de7xCWvLq2nR3QotYvETD7afiB8AB+4RumTwDx3CqTqKEflchhhP
-         s0bv12+0LdA7EkyqyyqH2JMBhIijxBjk3kfieU6GGF4PREbeIVmqSNZWnP81PfMiSDRC
-         lJgxZ8GyjtWfD55uL7ge2ZoBc3R/JwC9KoTCBN0xdGiJ7nL0MkcPoO/Dm97OwdqqAng9
-         u/Bg==
+        bh=3TAVAfGSMmJmurZRiyAoNjlpP3rtzD/xVVAAf7zzrYM=;
+        b=I64NBN1iwNX1GayZpF5/W6zi+ydq9A2IzCHJ/c5KWtbhUuZoicQdcME6wUfjdpgkJR
+         vejRqVAcab1MdAC6OXjIyez/HHesqZrm9Mrj4H6AEiZo3UFvO14UQC9Zcqk1uIXuuKox
+         bzYfdiAd5Leq3Q+kPmgk/TIXf5TEf+KxmPCjgjHzO/LssdP4lOj9ygBtRHO0nQTe5Qg8
+         lrD4ZuHiU84tyTjVO05Oy50dANNaq5J+3klbZ6s00pydxBnge6T8ewKIft3DRl+FNAU3
+         U4uZc5amG76rus7pPLAsU6tQG2DRMjETdnZqtHJIrILW05/uUyIWXlr/osjcRTGVO86f
+         DZdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4JuF7rIDzotceMltKWWrENLgYSDo4ya5enVhTAJ7Nzg=;
-        b=nefCO5frUNSTLAk42mBELCbMmHgDd3I1zvNvSH+NZIVG12vGe/qXvlO4D4ZN7NoU2L
-         IRJ3BsmzM98NOFWqiaqHxZQWq7voHmzxcoZNlGfLaMHEZelox2Jn77UODaHHlQPezqRY
-         8TBoWiJhe76rZSXeksY/liNzZomXGiUlBK4x9ANOdahynRQv33FCSVikH4stNSZPsKqC
-         qY9ogErzA4UeU6JKopc8GTyJUn/hfyyiVK+mF9R0TH90jj9KG1gQjlZ9wKPtlG0nfB0T
-         z4TcmdwLYMMa6LoL3to4IbA5FatBe7EJjeW0yQdcxvhfnNJqbqRqSTDwjASstdPxjEK1
-         kWaQ==
-X-Gm-Message-State: AOAM530Vsul41by31kowAXo6bMyK7aZiqxFJW3CRLoFe/9xqHgUhbxvo
-        pF1yi67+ycOd3txHqVW8lbFQ0t/cVYklHbvQ7g4=
-X-Google-Smtp-Source: ABdhPJy7BquEo94NlKhIJWH3opTSczIcgfzwSB+DzGgfU+sJIXtC8+eagOREpYgKigrVYuPUVerAXeh2n0F4ZzYGc8w=
-X-Received: by 2002:a05:6902:1023:: with SMTP id x3mr13993287ybt.267.1637122735651;
- Tue, 16 Nov 2021 20:18:55 -0800 (PST)
+        bh=3TAVAfGSMmJmurZRiyAoNjlpP3rtzD/xVVAAf7zzrYM=;
+        b=wt9MNGzYQt8bxyro8437D5si8hNoeRws2qHHWFZCNnNf4ENzZvB/cdkMiSpkO9uK68
+         fuA+Oz1RLiJRDrKwMjuFXNkZdBrnPeTM5Tl39p9D8iVokF3/4eyxFa3nOptR/J93V/sd
+         2alwcym78mv0LaR3RbtkMzQ5MlrWu7DDjHhRsUVXYer38w1LDA6+W7docani6J8KNPiK
+         ohd7wTpCKBAP7qI6Dqddz2gt9wGUXZrocL309oHziGUyzOEpKb9epv+g1tiAM+HIcnL1
+         nYgtvzGwPPHmja+IEK599FveHifkR5gFlZY4hA2PVwfmLnqGnHgw53V484N0x20we9av
+         Djvg==
+X-Gm-Message-State: AOAM533uVgHYoTauBO46G81OZyS5kC7ckZJGOAtlOoOiKlvzU8sFZKH3
+        hRG0aiFZWC4t4I8iPJo/HcSA0nzTlWD1/hu2M2s=
+X-Google-Smtp-Source: ABdhPJxwFEqfm0YlHsGeke1ksm86t5MDDzOxe1hC7rxRYCNmZi0KnRTX/a8P8i8/k+CNKtgv8GaLGz8Pb5PRh22w74w=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr14703595ybj.504.1637123669308;
+ Tue, 16 Nov 2021 20:34:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112050230.85640-1-alexei.starovoitov@gmail.com> <20211112050230.85640-13-alexei.starovoitov@gmail.com>
-In-Reply-To: <20211112050230.85640-13-alexei.starovoitov@gmail.com>
+References: <20211112050230.85640-1-alexei.starovoitov@gmail.com> <CAFnufp20BUGADHQLPWsa2BDorS+_pDxT2Sn1GKkSHGBw1RgMFA@mail.gmail.com>
+In-Reply-To: <CAFnufp20BUGADHQLPWsa2BDorS+_pDxT2Sn1GKkSHGBw1RgMFA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Nov 2021 20:18:44 -0800
-Message-ID: <CAEf4BzZXFvSn=h3ZgP4U-ydQyrRQXQRQgk0gGPyhjg3vvhRY4A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 12/12] selftests/bpf: Additional test for
- CO-RE in the kernel.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+Date:   Tue, 16 Nov 2021 20:34:18 -0800
+Message-ID: <CAEf4BzbhzNU-ydvTYa8XG3jRxae+83d_w7EkHaOkySQVH1BHww@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/12] bpf: CO-RE support in the kernel
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
@@ -61,67 +61,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 9:03 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Nov 16, 2021 at 4:48 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> On Fri, Nov 12, 2021 at 6:02 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > v1->v2:
+> > . Refactor uapi to pass 'struct bpf_core_relo' from LLVM into libbpf and further
+> > into the kernel instead of bpf_core_apply_relo() bpf helper. Because of this
+> > change the CO-RE algorithm has an ability to log error and debug events through
+> > the standard bpf verifer log mechanism which was not possible with helper
+> > approach.
+> > . #define RELO_CORE macro was removed and replaced with btf_member_bit_offset() patch.
+> >
+> > This set introduces CO-RE support in the kernel.
+> > There are several reasons to add such support:
+> > 1. It's a step toward signed BPF programs.
+> > 2. It allows golang like languages that struggle to adopt libbpf
+> >    to take advantage of CO-RE powers.
+> > 3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
+> >    by the verifier purely based on +10 offset. If R1 points to a union
+> >    the verifier picks one of the fields at this offset.
+> >    With CO-RE the kernel can disambiguate the field access.
+> >
 >
-> Additional test where randmap() function is appended to three different bpf
-> programs. That action checks struct bpf_core_relo replication logic and offset
-> adjustment.
+> Great, I tested the same code which was failing with the RFC series,
+> now there isn't any error.
+> This is the output with pr_debug() enabled:
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  2 +-
->  .../selftests/bpf/prog_tests/core_kern.c      | 21 +++++++
->  tools/testing/selftests/bpf/progs/core_kern.c | 60 +++++++++++++++++++
->  3 files changed, 82 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/core_kern.c
->  create mode 100644 tools/testing/selftests/bpf/progs/core_kern.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 539a70b3b770..df6a9865b3b5 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -326,7 +326,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
->
->  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
->         test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
-> -       kfunc_call_test_subprog.c map_ptr_kern.c
-> +       kfunc_call_test_subprog.c map_ptr_kern.c core_kern.c
->  # Generate both light skeleton and libbpf skeleton for these
->  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c
->  SKEL_BLACKLIST += $$(LSKELS)
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_kern.c b/tools/testing/selftests/bpf/prog_tests/core_kern.c
-> new file mode 100644
-> index 000000000000..f64843c5728c
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_kern.c
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Facebook */
-> +
-> +#include "test_progs.h"
-> +#include "core_kern.lskel.h"
-> +
-> +void test_core_kern_lskel(void)
-> +{
-> +       struct core_kern_lskel *skel;
-> +       int err;
-> +
-> +       skel = core_kern_lskel__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "open_and_load"))
-> +               goto cleanup;
-> +
-> +       err = core_kern_lskel__attach(skel);
+> root@debian64:~/core# ./core
+> [    5.690268] prog '(null)': relo #-2115894237: kind <(null)>
+> (163299788), spec is
+> [    5.690272] prog '(null)': relo #-2115894246: (null) candidate #-2115185528
+> [    5.690392] prog '(null)': relo #2: patched insn #208 (LDX/ST/STX)
+> off 208 -> 208
+> [    5.691045] prog '(efault)': relo #-2115894237: kind <(null)>
+> (163299788), spec is
+> [    5.691047] prog '(efault)': relo #-2115894246: (null) candidate
+> #-2115185528
+> [    5.691148] prog '(efault)': relo #3: patched insn #208
+> (LDX/ST/STX) off 208 -> 208
+> [    5.692456] prog '(null)': relo #-2115894237: kind <(null)>
+> (163302708), spec is
+> [    5.692459] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
+> [    5.692564] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
+> off 104 -> 104
+> [    5.693179] prog '(efault)': relo #-2115894237: kind <(null)>
+> (163299788), spec is
+> [    5.693181] prog '(efault)': relo #-2115894246: (null) candidate
+> #-2115185528
+> [    5.693258] prog '(efault)': relo #3: patched insn #208
+> (LDX/ST/STX) off 208 -> 208
+> [    5.696141] prog '(null)': relo #-2115894237: kind <(null)>
+> (163302708), spec is
+> [    5.696143] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
+> [    5.696255] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
+> off 104 -> 104
+> [    5.696733] prog '(efault)': relo #-2115894237: kind <(null)>
+> (163299788), spec is
+> [    5.696734] prog '(efault)': relo #-2115894246: (null) candidate
+> #-2115185528
+> [    5.696833] prog '(efault)': relo #3: patched insn #208
+> (LDX/ST/STX) off 208 -> 208
 
-Why attaching if you are never triggering it? This test is about
-testing load, right? Let's drop the attach then.
+All the logged values are completely wrong, some corruption somewhere.
 
-> +       if (!ASSERT_OK(err, "attach"))
-> +               goto cleanup;
-> +cleanup:
-> +       core_kern_lskel__destroy(skel);
-> +}
+But I tried to see it for myself and I couldn't figure out how to get
+these logs with lskel. How did you get the above?
 
-[...]
+Alexei, any guidance on how to get those verifier logs back with
+test_progs? ./test_progs -vvv didn't help, I also checked trace_pipe
+output, it was empty. I thought that maybe verifier truncates logs on
+success and simulated failed prog validation, but still nothing.
+
+>
+> And the syscall returns success:
+>
+> bpf(BPF_PROG_TEST_RUN, {test={prog_fd=4, retval=0, data_size_in=0,
+> data_size_out=0, data_in=NULL, data_out=NULL, repeat=0, duration=0,
+> ctx_size_in=68, ctx_size_out=0, ctx_in=0x5590b97dd2a0, ctx_out=NULL}},
+> 160) = 0
+>
+> Regards,
+> --
+> per aspera ad upstream
