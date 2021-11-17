@@ -2,158 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36CE454F9D
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 22:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481BD455019
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 23:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240832AbhKQV5P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 16:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
+        id S240898AbhKQWEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 17:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240763AbhKQV5P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 16:57:15 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B19C061764
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 13:54:16 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso3770124pjb.2
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 13:54:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TyflncBo4THYgrqhCPbCdrMH0wmAnukogB9h7+aZLPc=;
-        b=LD3wx/0WsV+K5ZaVvJGk4B58b755LoG9yNHQCbOtNiqYXf1JDa0B+6STmSNAX7UiAb
-         a3bbZGG3lI8FB7Pl+jZRC+07aI4FLb75KMMbKB0dR/ZKgf6bHAM460JE2ur0VB+b1BaR
-         zFUCpk6hp28mvlZ/CRH8MbCstWvltcN1qAWsc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TyflncBo4THYgrqhCPbCdrMH0wmAnukogB9h7+aZLPc=;
-        b=TbCAjoWkJVLRaq8k7ACL8Un2yfq599tRYP3Dq7dqAi3rAcuK4xawt7D22YTM1QbncJ
-         +7sX/c5c7awUcxKzaglgIelRfv9fI/y/igw4WppYUKIyHBOdpDlKJRv266D2Nk5IJ6ND
-         wx2Ty6i8X4G7sVX5qI/ZzS/yg9kT2+KoUnYB4goynLowYWdrgw7Eip6Ebs8AyAGARdnr
-         FkNNBM1kC8vGqmzwaSXvV3ixKBOohnf06+mHDLCdwVjDvfUbOmvqMlt5WXBaeZKZwrB0
-         4CU9Dx9v+/GvSLllkmEtybdWgjvH8Wdr1ovGEwkPeQK52Eq/cpVmhvvSvFWOolxjiRhD
-         dQiw==
-X-Gm-Message-State: AOAM532glYxb0ruo88+/EE2cjaHp+Be9AIzewEcf9I0hZGoMFpaLw/LV
-        sh7moWsXO8VLJQiQKqHY54PRng==
-X-Google-Smtp-Source: ABdhPJzcvx+Omftengr4Y3I++Ne+CRyHy9ruaviogn9sbmiRhSOCY96nnx7Ca6k41hOfhn1CeyD3VQ==
-X-Received: by 2002:a17:90b:4f45:: with SMTP id pj5mr3890617pjb.70.1637186055666;
-        Wed, 17 Nov 2021 13:54:15 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id oc10sm6963920pjb.26.2021.11.17.13.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 13:54:15 -0800 (PST)
-Date:   Wed, 17 Nov 2021 13:54:14 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kyle Huey <me@kylehuey.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert O'Callahan <rocallahan@gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-Message-ID: <202111171341.41053845C3@keescook>
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
- <202111171049.3F9C5F1@keescook>
- <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
- <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
- <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+        with ESMTP id S240955AbhKQWEt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:04:49 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFBDC0613B9;
+        Wed, 17 Nov 2021 14:01:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L3GGIZdD9hoVvIH8EBTTSSEtLrVfUIWllTDZ8pEqguE=; b=Oq9RtqYp++nfD+OUmXGmFF8b5Z
+        cauxRRcafZhxgwvgebVpmtVH8kNQOM9239jT675AysaPMtCj68vC+Q6YU0b8oeWkuE7S3T2mmJx48
+        cF+CF/0OKxHVYlNiPT5QN5jLqPjGuv2rvXPkudfedTcQCjlGHma+9ZqrLXwpyPxonH6cUjy749GiS
+        Sp130h1/OhEUEdpDCQsWbV8EKOmuzNRC51DSjB6Vsa/oJvWZ9HGaTZGEsN3CeXVeo4BUX/lwgeCag
+        ReqYR/stRGCwvmZLbIxbTNXiJZoIIPCd/pYyzSzIGtLza1D+lf37JgY9eUMWrLKimB7Wtxj1/AmiO
+        XdiTlGxg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnSzl-00GZrB-9U; Wed, 17 Nov 2021 22:01:33 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E19B1982234; Wed, 17 Nov 2021 23:01:32 +0100 (CET)
+Date:   Wed, 17 Nov 2021 23:01:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 2/7] set_memory: introduce
+ set_memory_[ro|x]_noalias
+Message-ID: <20211117220132.GC174703@worktop.programming.kicks-ass.net>
+References: <20211116071347.520327-1-songliubraving@fb.com>
+ <20211116071347.520327-3-songliubraving@fb.com>
+ <20211116080051.GU174703@worktop.programming.kicks-ass.net>
+ <768FB93A-E239-4B21-A0F1-C1206112E37E@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <768FB93A-E239-4B21-A0F1-C1206112E37E@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 03:04:31PM -0600, Eric W. Biederman wrote:
-> Kyle Huey <me@kylehuey.com> writes:
+On Wed, Nov 17, 2021 at 09:36:27PM +0000, Song Liu wrote:
 > 
-> > On Wed, Nov 17, 2021 at 11:05 AM Kyle Huey <me@kylehuey.com> wrote:
-> >>
-> >> On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
-> >> >
-> >> > On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
-> >> > > rr, a userspace record and replay debugger[0], is completely broken on
-> >> > > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
-> >> > >
-> >> > > That patch makes two changes, it blocks sigaction from changing signal
-> >> > > handlers once the kernel has decided to force the program to take a
-> >> > > signal and it also stops notifying ptracers of the signal in the same
-> >> > > circumstances. The latter behavior is just wrong. There's no reason
-> >> > > that ptrace should not be able to observe and even change
-> >> > > (non-SIGKILL) forced signals.  It should be reverted.
-> >> > >
-> >> > > This behavior change is also observable in gdb. If you take a program
-> >> > > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
-> >> > > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
-> >> > > when the SIGSYS is raised, let you inspect program state, etc. After
-> >> > > the SA_IMMUTABLE change gdb won't stop until the program has already
-> >> > > died of SIGSYS.
-> >> >
-> >> > Ah, hm, this was trying to fix the case where a program trips
-> >> > SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
-> >> > before. I guess the fix was too broad...
-> >>
-> >> Perhaps I don't understand precisely what you mean by this, but gdb's
-> >> behavior for a program that is SECCOMP_RET_KILLed was not changed by
-> >> this patch (the SIGSYS is not observed until after program exit before
-> >> or after this change).
-
-The SA_IMMUTABLE change was to deal with failures seen in the seccomp
-test suite after the recent fatal signal refactoring. Mainly that a
-process that should have effectively performed do_exit() was suddenly
-visible to the tracer.
-
-> > Ah, maybe that behavior changed in 5.15 (my "before" here is a 5.14
-> > kernel).  I would argue that the debugger seeing the SIGSYS for
-> > SECCOMP_RET_KILL is desirable though ...
 > 
-> This is definitely worth discussing, and probably in need of fixing (aka
-> something in rr seems to have broken).
+> > On Nov 16, 2021, at 12:00 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Mon, Nov 15, 2021 at 11:13:42PM -0800, Song Liu wrote:
+> >> These allow setting ro/x for module_alloc() mapping, while leave the
+> >> linear mapping rw/nx.
+> > 
+> > This needs a very strong rationale for *why*. How does this not
+> > trivially circumvent W^X ?
 > 
-> We definitely need protection against the race with sigaction.
+> In this case, we want to have multiple BPF programs sharing the 2MB page. 
+> When the JIT engine is working on one program, we would rather existing
+> BPF programs on the same page stay on RO+X mapping (the module_alloc() 
+> address). The solution in this version is to let the JIT engine write to 
+> the page via linear address. 
 > 
-> The fundamental question becomes does it make sense and is it safe
-> to allow a debugger to stop at, and possibly change these signals.
+> An alternative is to only use the module_alloc() address, and flip the 
+> read-only bit (of the whole 2MB page) back and forth. However, this 
+> requires some serialization among different JIT jobs. 
 
-I have no problem with a debugger getting notified about a fatal
-(SECCOMP_RET_KILL*-originated) SIGSYS. But whatever happens, the kernel
-needs to make sure the process does not continue. (i.e. signal can't be
-changed/removed/etc.)
+Neither options seem acceptible to me as they both violate W^X.
 
-> Stopping at something SA_IMMUTABLE as long as the signal is allowed to
-> continue and kill the process when PTRACE_CONT happens seems harmless.
-> 
-> Allowing the debugger to change the signal, or change it's handling
-> I don't know.
+Please have a close look at arch/x86/kernel/alternative.c:__text_poke()
+for how we modify active text. I think that or something very similar is
+the only option. By having an alias in a special (user) address space
+that is not accessible by any other CPU, only the poking CPU can expoit
+this (temporary) hole, which is a much larger ask than any of the
+proposed options.
 
-Right -- I'm fine with a visibility change (the seccomp test suite is
-just checking for various expected state machine changes across the
-various signal/death cases: as long as it _dies_, that's what we want.
-If a extra notification appears before it dies, that's okay, it just
-needs the test suite to change).
-
-> [...]
-> Kees I am back to asking the question I had before I figured out
-> SA_IMMUTABLE.  Are there security concerns with debuggers intercepting
-> SECCOMP_RET_KILL.
-
-I see no problem with allowing a tracer to observe the signal, but the
-signalled process must have no way to continue running. If we end up in
-such a state, then a seccomp process with access to clone() and
-ptrace() can escape the seccomp sandbox. This is why seccomp had been
-using the big do_exit() hammer -- I really want to absolutely never have
-a bug manifest with a bypassed SECCOMP_RET_KILL: having a completely
-unavoidable "dying" state is needed.
-
--- 
-Kees Cook
