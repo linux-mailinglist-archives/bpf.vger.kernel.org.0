@@ -2,80 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FDF453FE4
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 06:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35991453FEE
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 06:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhKQFO0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 00:14:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41992 "EHLO
+        id S230438AbhKQFXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 00:23:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhKQFO0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 00:14:26 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A1AC061570
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:11:28 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id q74so3668276ybq.11
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:11:28 -0800 (PST)
+        with ESMTP id S230387AbhKQFXx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 00:23:53 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBFBC061570
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:20:55 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id i194so3803959yba.6
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:20:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lGE8eRpF9DMzm/+OAi0ISyojj5fR+OmUUaiVgM7m8kA=;
-        b=DsAVcgfuOzH3CEYycFcEJROsgr++r8QJof/4BjpV75favBz9f15B+l7Onqdiy8KoYz
-         nfVAQyoSBYHTOEawy4k8pCumAp7HjZgidRCy8Y0EmJoVA6g70OShShvYYVhbW6k0V1fM
-         0xeQFQlNdUQBbmCaCSUj3ghVT2v9AqOQYbfnLx9u2eCSh/9xud7gr42UDRTqQ1Q0AZVC
-         AyP8z5qav0cbo7YYFGRKyyXw6D5xAqs8G5DMa5vsY7vG+dRMJtHinjF075rl1tFuwZ6/
-         AF5j7iLt8j5bXSWn8TfrDdDH4Eu0j5G7yF56Dy11FTueKe2Oz4IlOR6qcUlbS81yLu2q
-         +XmA==
+        bh=WSnOhBdo7nIssGtC/kMfshOI6+QT3XFzLh+A325DbvM=;
+        b=PLRMXbODa4Vv8LIeX00GdxQQEs8+wIkx99MTZ9HJyAVCmCH655J8UrSuZ4uPSd+G08
+         GcVszW9/9F7TOLNXK69idxjyzl3OhBaWt4VWwjpUz9keYs8VfPNJhdU1cfAb6OgnG36g
+         sKA05rY22Xsj1j+w/zmKLk2R60ZCBRS3mbJX2f4SE4fmdSXzX9QRjap36ocehHWxpt8+
+         mguVE7TG16HJyqAfOxH8kVlDyvCCZqqroZOH/6GcRFib0SztNba2HsPjY9UbS60Zk4Uq
+         C5rUsfFPpNdO0eSwpd0E4R7gOJ+qxjZ3o7Cu7/m/nsmB+2+miC8knnP50Ld6hJhVyPtz
+         3tAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lGE8eRpF9DMzm/+OAi0ISyojj5fR+OmUUaiVgM7m8kA=;
-        b=0oQ1SnsDbupeNZaUf3oiga/umdxW0jBVXLLM2YKci9kbSHrW103TmPnS4+SZ16uWKH
-         JFiScSDpJS547xvy1hKOE1/GSPdserJM7Xes8c34BzneTt92Z9GQLL6otZ/FNaeN9pRJ
-         EpPPlXpNe9BaaxnJS5tiTP8yCb2btOv8Wgh8Ojuhgt54GbCMxqy9oFNmZqG87n2Njarm
-         lKupPhKy3pdfFfGACFDKUAGoOVa9nHN77pqVtqKCgRj7Y9JPkpP+A/KptiUg4FjgeQtk
-         LTEP7ddgz2P2oEZMXHB1WYOfTkJYB8ougjfxCkSn6o8cat1DvrW4wsLqfa+mgCDJr3j2
-         uusw==
-X-Gm-Message-State: AOAM5330lxIVZEL6KTiuEl1zQZThMbQ+4i0WKRkSAuKHWYeGnv1ItLki
-        AWIw57+iPa/ahywlzOPlEVzOgjbU4ST5g5UhwcA3xWKy
-X-Google-Smtp-Source: ABdhPJwmk8absi3UI1jhr51cdDvLqNKcz2OE5m2ey9l3Wh8Rh/l+Z6F/V/Qlr0ttJE+EfgDdEqr7h07VR4Ng3uakAbw=
-X-Received: by 2002:a25:cc4c:: with SMTP id l73mr14268117ybf.114.1637125887675;
- Tue, 16 Nov 2021 21:11:27 -0800 (PST)
+        bh=WSnOhBdo7nIssGtC/kMfshOI6+QT3XFzLh+A325DbvM=;
+        b=B9gY8+6qkKzpDN4MXG0vTVdnJUkAh1Io38UgIBychJAoaI1xoc2iXNQ9Ae05waSRW7
+         Vb9wuerveawxyimND0L9DN9J4w5g8n1Y5zBuBRaU7Oihd0BJwhAjWyeWZYOuUPF6sgWw
+         uH3l/afLXLqkwles1SbbrGToLOuNBwGXijnko/f8eK4V3Mz8tmmqXxWhKbU3vhEyF0ni
+         RY0efaHYLPxdTzFfq51O/mmpoL2GmCjVef1z9mJY0aeO8+StZCvgFbFxitVz7M88AEQe
+         LGSQYaM3U8GO6Jv+LiMFM7bMaHUG1SXMRN57lXlMh+pI2Uw/BvYS37tw+7jfvgDFw3/h
+         2UMA==
+X-Gm-Message-State: AOAM530DEvj6dimP8oEC+TLOecdAYWjPbbtzjWCHd4rGr86md4konIWL
+        v1jzY0eTKyOe+53w/xXEz1tsDYHvHjX4UYsTsic=
+X-Google-Smtp-Source: ABdhPJx5gPZMVg90LYJaDxq8N5br2QKplFm7R6JojgQG4JtQB+dvGWqHorCjy2xj1RDROspv/2UCSCyBB94nrTk9qoE=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr14956232ybj.504.1637126454486;
+ Tue, 16 Nov 2021 21:20:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112192535.898352-1-fallentree@fb.com>
-In-Reply-To: <20211112192535.898352-1-fallentree@fb.com>
+References: <20211115191840.496263-1-memxor@gmail.com> <20211115191840.496263-4-memxor@gmail.com>
+In-Reply-To: <20211115191840.496263-4-memxor@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Nov 2021 21:11:16 -0800
-Message-ID: <CAEf4BzZ+z2-LN2rvg1Fnxt3xKdU4AJfuL_fVDb0ZRrJeSqdDcw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: improve test_progs
-To:     Yucong Sun <fallentree@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Date:   Tue, 16 Nov 2021 21:20:43 -0800
+Message-ID: <CAEf4BzaNrXU1rDwHw14aoQYrwY5nWWyFmzgTrpRxVT2yNWHUCQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v1 3/3] tools/resolve_btfids: Demote unresolved symbol
+ message to debug
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Pavel Skripkin <paskripkin@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 11:29 AM Yucong Sun <fallentree@fb.com> wrote:
+On Mon, Nov 15, 2021 at 11:18 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> various improvement to test_progs, including new '--timing' feature.
+> resolve_btfids prints a warning when it finds an unresolved symbol,
+> (id == 0) in id_patch. This can be the case for BTF sets that are empty
+> (due to disabled config options), hence printing warnings for certain
+> builds, most recently seen in [0]. Hence, demote the warning to debug
+> log level to avoid build time noise.
 >
-> Yucong Sun (4):
->   selftests/bpf: Move summary line after the error logs
->   selftests/bpf: variable naming fix
->   selftests/bpf: mark variable as static
->   selftests/bpf: Add timing to tests_progs
+>   [0]: https://lore.kernel.org/all/1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com
+>
+> Fixes: 0e32dfc80bae ("bpf: Enable TCP congestion control kfunc from modules")
+> Reported-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  tools/bpf/resolve_btfids/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index a59cb0ee609c..833bfcc9ccf6 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+> @@ -569,7 +569,7 @@ static int id_patch(struct object *obj, struct btf_id *id)
+>         int i;
+>
+>         if (!id->id) {
+> -               pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
+> +               pr_debug("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
 
-I've applied the first three fixes as they are completely independent
-from the timing feature. Let's continue discussion on timing
-separately.
+This is an important warning that helps detect some misconfiguration,
+we cannot just hide it. If it really is happening for empty lists
+(why?), we should handle empty lists better, but not hide the warning.
 
+>         }
 >
->  tools/testing/selftests/bpf/test_progs.c | 153 +++++++++++++++++++----
->  tools/testing/selftests/bpf/test_progs.h |   2 +
->  2 files changed, 134 insertions(+), 21 deletions(-)
->
+>         for (i = 0; i < id->addr_cnt; i++) {
 > --
-> 2.30.2
+> 2.33.1
 >
