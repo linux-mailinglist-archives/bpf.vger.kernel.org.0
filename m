@@ -2,148 +2,360 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07131453F99
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 05:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3F5453FDC
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 06:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhKQEh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 23:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        id S229585AbhKQFJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 00:09:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbhKQEh2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 23:37:28 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8E5C061570
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 20:34:30 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id y68so3587213ybe.1
-        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 20:34:30 -0800 (PST)
+        with ESMTP id S229436AbhKQFJr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 00:09:47 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB213C061570
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:06:49 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id d10so3772637ybe.3
+        for <bpf@vger.kernel.org>; Tue, 16 Nov 2021 21:06:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3TAVAfGSMmJmurZRiyAoNjlpP3rtzD/xVVAAf7zzrYM=;
-        b=I64NBN1iwNX1GayZpF5/W6zi+ydq9A2IzCHJ/c5KWtbhUuZoicQdcME6wUfjdpgkJR
-         vejRqVAcab1MdAC6OXjIyez/HHesqZrm9Mrj4H6AEiZo3UFvO14UQC9Zcqk1uIXuuKox
-         bzYfdiAd5Leq3Q+kPmgk/TIXf5TEf+KxmPCjgjHzO/LssdP4lOj9ygBtRHO0nQTe5Qg8
-         lrD4ZuHiU84tyTjVO05Oy50dANNaq5J+3klbZ6s00pydxBnge6T8ewKIft3DRl+FNAU3
-         U4uZc5amG76rus7pPLAsU6tQG2DRMjETdnZqtHJIrILW05/uUyIWXlr/osjcRTGVO86f
-         DZdQ==
+        bh=eMrHlFslAtu5nsOhP8hWktV8XujxELIzntPVHJCXCVQ=;
+        b=EoiGSPfRD4mcenOibTYkFe3riyyjK/RJJSqq2R75EMv4+1fUg+v2GK5GFj0y7qKUYf
+         9tu2eDcb151rqgerxHojDO/CnBmLo2JXmEwivhnQxdtcwBnNBbcgSXZyrjELSfve0sAw
+         qwfsnPIbs1Zl6Ok1619yFBZXWC5c9VsElT81DyNqARFUR/fGnsepn0isBwSF2ynI4PfB
+         xNcdV6yqeELn64J6/dDI6xy1SF8zU753qopr3C0A6aZzVB6W0fNeDbHiojLV4DtpFgxa
+         7+NvfvJlKa+afscPIV/CaMjOA3VZXfoEoTW6VWSpNtLGFeRQ/oYUyXGheDj9dyDvEfT8
+         u99Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3TAVAfGSMmJmurZRiyAoNjlpP3rtzD/xVVAAf7zzrYM=;
-        b=wt9MNGzYQt8bxyro8437D5si8hNoeRws2qHHWFZCNnNf4ENzZvB/cdkMiSpkO9uK68
-         fuA+Oz1RLiJRDrKwMjuFXNkZdBrnPeTM5Tl39p9D8iVokF3/4eyxFa3nOptR/J93V/sd
-         2alwcym78mv0LaR3RbtkMzQ5MlrWu7DDjHhRsUVXYer38w1LDA6+W7docani6J8KNPiK
-         ohd7wTpCKBAP7qI6Dqddz2gt9wGUXZrocL309oHziGUyzOEpKb9epv+g1tiAM+HIcnL1
-         nYgtvzGwPPHmja+IEK599FveHifkR5gFlZY4hA2PVwfmLnqGnHgw53V484N0x20we9av
-         Djvg==
-X-Gm-Message-State: AOAM533uVgHYoTauBO46G81OZyS5kC7ckZJGOAtlOoOiKlvzU8sFZKH3
-        hRG0aiFZWC4t4I8iPJo/HcSA0nzTlWD1/hu2M2s=
-X-Google-Smtp-Source: ABdhPJxwFEqfm0YlHsGeke1ksm86t5MDDzOxe1hC7rxRYCNmZi0KnRTX/a8P8i8/k+CNKtgv8GaLGz8Pb5PRh22w74w=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr14703595ybj.504.1637123669308;
- Tue, 16 Nov 2021 20:34:29 -0800 (PST)
+        bh=eMrHlFslAtu5nsOhP8hWktV8XujxELIzntPVHJCXCVQ=;
+        b=OhXoHxjDitlRWtdsTKOAH0oGh19vAI3SCKn3/cUzkyD4g9wb00l22UeWKdQ2NmkQXz
+         BkLGBDal1VuG/1BPdMIrDUl9yFGkXN7d83itZyXxYut/Lry0Zj4ap4MnMSqgSuN99HKM
+         1Cuwv0dqZQel9QX4kydSd16YzHGFK4pBJ3SO8d3ovQNzN5YL/yeMjDSWkJjakatvxFXK
+         WoFF0GWTgWdlM0eyBOymLLBIhw8HBJ1QbCZudo0cJfygfbxgl+gWvD18+SODee1lSNZ6
+         vn1LvJ7mR+vYaV0O51iSl8cjGoBhXdyg7X75UwfmF5Dv3v07fvT5/vd63eM73mvmrCKc
+         P+bw==
+X-Gm-Message-State: AOAM531bEN7+O8ILjUlc5cpDgnYBPAf/m47L7Rhq3pH7IzXc5dMLSUE/
+        gG1CieSlSV3cPokTGGpNZjdO4XeKvUhyU5Pj1Rw=
+X-Google-Smtp-Source: ABdhPJwvdtTxZnv8o48odQN1eeBDwDsqplQgcgl6kxViwtt0BsZEkKHFAxtKXxSCPgOdr1a17u0ZXOJJFUJIa6PGvDA=
+X-Received: by 2002:a05:6902:1023:: with SMTP id x3mr14240090ybt.267.1637125608940;
+ Tue, 16 Nov 2021 21:06:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20211112050230.85640-1-alexei.starovoitov@gmail.com> <CAFnufp20BUGADHQLPWsa2BDorS+_pDxT2Sn1GKkSHGBw1RgMFA@mail.gmail.com>
-In-Reply-To: <CAFnufp20BUGADHQLPWsa2BDorS+_pDxT2Sn1GKkSHGBw1RgMFA@mail.gmail.com>
+References: <20211112192535.898352-1-fallentree@fb.com> <20211112192535.898352-5-fallentree@fb.com>
+In-Reply-To: <20211112192535.898352-5-fallentree@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Nov 2021 20:34:18 -0800
-Message-ID: <CAEf4BzbhzNU-ydvTYa8XG3jRxae+83d_w7EkHaOkySQVH1BHww@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/12] bpf: CO-RE support in the kernel
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Tue, 16 Nov 2021 21:06:38 -0800
+Message-ID: <CAEf4Bzb0AiDdpXayjG=o42bfSE-vpGgec=yuTyRUP0=jfDPc9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add timing to tests_progs
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Yucong Sun <sunyucong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 4:48 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+On Fri, Nov 12, 2021 at 11:29 AM Yucong Sun <fallentree@fb.com> wrote:
 >
-> On Fri, Nov 12, 2021 at 6:02 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > v1->v2:
-> > . Refactor uapi to pass 'struct bpf_core_relo' from LLVM into libbpf and further
-> > into the kernel instead of bpf_core_apply_relo() bpf helper. Because of this
-> > change the CO-RE algorithm has an ability to log error and debug events through
-> > the standard bpf verifer log mechanism which was not possible with helper
-> > approach.
-> > . #define RELO_CORE macro was removed and replaced with btf_member_bit_offset() patch.
-> >
-> > This set introduces CO-RE support in the kernel.
-> > There are several reasons to add such support:
-> > 1. It's a step toward signed BPF programs.
-> > 2. It allows golang like languages that struggle to adopt libbpf
-> >    to take advantage of CO-RE powers.
-> > 3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
-> >    by the verifier purely based on +10 offset. If R1 points to a union
-> >    the verifier picks one of the fields at this offset.
-> >    With CO-RE the kernel can disambiguate the field access.
-> >
+> From: Yucong Sun <sunyucong@gmail.com>
 >
-> Great, I tested the same code which was failing with the RFC series,
-> now there isn't any error.
-> This is the output with pr_debug() enabled:
->
-> root@debian64:~/core# ./core
-> [    5.690268] prog '(null)': relo #-2115894237: kind <(null)>
-> (163299788), spec is
-> [    5.690272] prog '(null)': relo #-2115894246: (null) candidate #-2115185528
-> [    5.690392] prog '(null)': relo #2: patched insn #208 (LDX/ST/STX)
-> off 208 -> 208
-> [    5.691045] prog '(efault)': relo #-2115894237: kind <(null)>
-> (163299788), spec is
-> [    5.691047] prog '(efault)': relo #-2115894246: (null) candidate
-> #-2115185528
-> [    5.691148] prog '(efault)': relo #3: patched insn #208
-> (LDX/ST/STX) off 208 -> 208
-> [    5.692456] prog '(null)': relo #-2115894237: kind <(null)>
-> (163302708), spec is
-> [    5.692459] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
-> [    5.692564] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
-> off 104 -> 104
-> [    5.693179] prog '(efault)': relo #-2115894237: kind <(null)>
-> (163299788), spec is
-> [    5.693181] prog '(efault)': relo #-2115894246: (null) candidate
-> #-2115185528
-> [    5.693258] prog '(efault)': relo #3: patched insn #208
-> (LDX/ST/STX) off 208 -> 208
-> [    5.696141] prog '(null)': relo #-2115894237: kind <(null)>
-> (163302708), spec is
-> [    5.696143] prog '(null)': relo #-2115894246: (null) candidate #-2115185668
-> [    5.696255] prog '(null)': relo #2: patched insn #104 (LDX/ST/STX)
-> off 104 -> 104
-> [    5.696733] prog '(efault)': relo #-2115894237: kind <(null)>
-> (163299788), spec is
-> [    5.696734] prog '(efault)': relo #-2115894246: (null) candidate
-> #-2115185528
-> [    5.696833] prog '(efault)': relo #3: patched insn #208
-> (LDX/ST/STX) off 208 -> 208
+> This patch adds '--timing' to test_progs. It tracks and print timing
+> information for each tests, it also prints top 10 slowest tests in the
+> summary.
 
-All the logged values are completely wrong, some corruption somewhere.
-
-But I tried to see it for myself and I couldn't figure out how to get
-these logs with lskel. How did you get the above?
-
-Alexei, any guidance on how to get those verifier logs back with
-test_progs? ./test_progs -vvv didn't help, I also checked trace_pipe
-output, it was empty. I thought that maybe verifier truncates logs on
-success and simulated failed prog validation, but still nothing.
+The timing doesn't work in serial mode, is that intended?
 
 >
-> And the syscall returns success:
+> Example output:
+>   $./test_progs --timing -j
+>   #1 align:OK (16 ms)
+>   ...
+>   #203 xdp_bonding:OK (2019 ms)
+>   #206 xdp_cpumap_attach:OK (3 ms)
+>   #207 xdp_devmap_attach:OK (4 ms)
+>   #208 xdp_info:OK (4 ms)
+>   #209 xdp_link:OK (4 ms)
+
+See below, I wonder if we should just always output duration. Except
+outputting it at the end obscures OK or FAIL verdict, so maybe right
+after the test number (and make sure that we don't break naming
+alignment by using %5d for milliseconds. Something like:
+
+#203 [ 2019ms] xdp_bonding:OK
+#206 [    3ms] xdp_cpumap_attach:OK
+
+See also below, this should be also nicely sortable by sort command.
+
 >
-> bpf(BPF_PROG_TEST_RUN, {test={prog_fd=4, retval=0, data_size_in=0,
-> data_size_out=0, data_in=NULL, data_out=NULL, repeat=0, duration=0,
-> ctx_size_in=68, ctx_size_out=0, ctx_in=0x5590b97dd2a0, ctx_out=NULL}},
-> 160) = 0
+>   Top 10 Slowest tests:
+>   #48 fexit_stress: 34356 ms
+>   #160 test_lsm: 29602 ms
+>   #161 test_overhead: 29190 ms
+>   #159 test_local_storage: 28959 ms
+>   #158 test_ima: 28521 ms
+>   #185 verif_scale_pyperf600: 19524 ms
+>   #199 vmlinux: 17310 ms
+>   #154 tc_redirect: 11491 ms (serial)
+>   #147 task_local_storage: 7612 ms
+>   #183 verif_scale_pyperf180: 7186 ms
+>   Summary: 212/973 PASSED, 3 SKIPPED, 0 FAILED
 >
-> Regards,
+> Signed-off-by: Yucong Sun <sunyucong@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/test_progs.c | 125 +++++++++++++++++++++--
+>  tools/testing/selftests/bpf/test_progs.h |   2 +
+>  2 files changed, 120 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 296928948bb9..d4786e1a540f 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -491,6 +491,7 @@ enum ARG_KEYS {
+>         ARG_TEST_NAME_GLOB_DENYLIST = 'd',
+>         ARG_NUM_WORKERS = 'j',
+>         ARG_DEBUG = -1,
+> +       ARG_TIMING = -2,
+>  };
+>
+>  static const struct argp_option opts[] = {
+> @@ -516,6 +517,8 @@ static const struct argp_option opts[] = {
+>           "Number of workers to run in parallel, default to number of cpus." },
+>         { "debug", ARG_DEBUG, NULL, 0,
+>           "print extra debug information for test_progs." },
+> +       { "timing", ARG_TIMING, NULL, 0,
+> +         "track and print timing information for each test." },
+
+nit: all the description (except for debug and timing) start with a
+capital letter, let's fix both to keep everything consistent
+
+>         {},
+>  };
+>
+> @@ -696,6 +699,9 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+>         case ARG_DEBUG:
+>                 env->debug = true;
+>                 break;
+> +       case ARG_TIMING:
+> +               env->timing = true;
+> +               break;
+>         case ARGP_KEY_ARG:
+>                 argp_usage(state);
+>                 break;
+> @@ -848,6 +854,7 @@ struct test_result {
+>         int error_cnt;
+>         int skip_cnt;
+>         int sub_succ_cnt;
+> +       __u32 duration_ms;
+>
+>         size_t log_cnt;
+>         char *log_buf;
+> @@ -905,9 +912,29 @@ static int recv_message(int sock, struct msg *msg)
+>         return ret;
+>  }
+>
+> -static void run_one_test(int test_num)
+> +static __u32 timespec_diff_ms(struct timespec start, struct timespec end)
+> +{
+> +       struct timespec temp;
+> +
+> +       if ((end.tv_nsec - start.tv_nsec) < 0) {
+> +               temp.tv_sec = end.tv_sec - start.tv_sec - 1;
+> +               temp.tv_nsec = 1000000000 + end.tv_nsec - start.tv_nsec;
+> +       } else {
+> +               temp.tv_sec = end.tv_sec - start.tv_sec;
+> +               temp.tv_nsec = end.tv_nsec - start.tv_nsec;
+> +       }
+> +       return (temp.tv_sec * 1000) + (temp.tv_nsec / 1000000);
+> +}
+> +
+> +
+> +static double run_one_test(int test_num)
+>  {
+>         struct prog_test_def *test = &prog_test_defs[test_num];
+> +       struct timespec start = {}, end = {};
+
+instead of dealing with timespec, why not add a helper function that
+will do clock_gettime(CLOCK_MONOTONIC) internally and convert
+timespace to single nanosecond timestamp. We can put it into
+testing_helpers.c and reuse it for other purposes. Actually, we have
+such function in bench.h already (get_time_ns()), let's copy/paste it
+into test_progs.h, it's useful (there are a bunch of existing
+selftests that could use it instead of explicit clock_gettime() calls.
+
+You won't need timespec_diff_ms() then, it will be just (end - start )
+/ 1000000 for millisecond duration.
+
+> +       __u32 duration_ms = 0;
+> +
+> +       if (env.timing)
+> +               clock_gettime(CLOCK_MONOTONIC, &start);
+
+it's cheap to measure this, we can always capture the duration, don't
+even need to check env.timing
+
+>
+>         env.test = test;
+>
+> @@ -928,6 +955,13 @@ static void run_one_test(int test_num)
+>         restore_netns();
+>         if (test->need_cgroup_cleanup)
+>                 cleanup_cgroup_environment();
+> +
+> +       if (env.timing) {
+> +               clock_gettime(CLOCK_MONOTONIC, &end);
+> +               duration_ms = timespec_diff_ms(start, end);
+> +       }
+> +
+> +       return duration_ms;
+>  }
+>
+>  struct dispatch_data {
+> @@ -999,6 +1033,7 @@ static void *dispatch_thread(void *ctx)
+>                         result->error_cnt = msg_test_done.test_done.error_cnt;
+>                         result->skip_cnt = msg_test_done.test_done.skip_cnt;
+>                         result->sub_succ_cnt = msg_test_done.test_done.sub_succ_cnt;
+> +                       result->duration_ms = msg_test_done.test_done.duration_ms;
+>
+>                         /* collect all logs */
+>                         if (msg_test_done.test_done.have_log) {
+> @@ -1023,6 +1058,8 @@ static void *dispatch_thread(void *ctx)
+>                         }
+>                         /* output log */
+>                         {
+> +                               char buf[255] = {};
+> +
+>                                 pthread_mutex_lock(&stdout_output_lock);
+>
+>                                 if (result->log_cnt) {
+> @@ -1032,9 +1069,15 @@ static void *dispatch_thread(void *ctx)
+>                                                 fprintf(stdout, "\n");
+>                                 }
+>
+> -                               fprintf(stdout, "#%d %s:%s\n",
+> +                               if (env.timing) {
+> +                                       snprintf(buf, sizeof(buf), " (%u ms)", result->duration_ms);
+> +                                       buf[sizeof(buf) - 1] = '\0';
+> +                               }
+
+you don't really need a separate buf, you can split below fprintf to
+move out \n into a separate fprintf, and then have optional extra
+fprintf for timing
+
+> +
+> +                               fprintf(stdout, "#%d %s:%s%s\n",
+>                                         test->test_num, test->test_name,
+> -                                       result->error_cnt ? "FAIL" : (result->skip_cnt ? "SKIP" : "OK"));
+> +                                       result->error_cnt ? "FAIL" : (result->skip_cnt ? "SKIP" : "OK"),
+> +                                       buf);
+>
+>                                 pthread_mutex_unlock(&stdout_output_lock);
+>                         }
+> @@ -1092,6 +1135,57 @@ static void print_all_error_logs(void)
+>         }
+>  }
+>
+> +struct item {
+> +       int id;
+> +       __u32 duration_ms;
+> +};
+> +
+> +static int rcompitem(const void *a, const void *b)
+> +{
+> +       __u32 val_a = ((struct item *)a)->duration_ms;
+> +       __u32 val_b = ((struct item *)b)->duration_ms;
+> +
+> +       if (val_a > val_b)
+> +               return -1;
+> +       if (val_a < val_b)
+> +               return 1;
+> +       return 0;
+> +}
+> +
+> +static void print_slow_tests(void)
+
+I'm a bit on the fence about test_progs needing to do such "timing
+summary", tbh. If we just output timing information (and we probably
+can do it always, no need for --timing), then with a simple `sort -rn
+-k <timing_column>` command. And it will be up to user to determine
+how many top N items they want with extra head.
+
+> +{
+> +       int i;
+
+[...]
+
+> @@ -1200,6 +1303,9 @@ static int server_main(void)
+>
+>         print_all_error_logs();
+>
+> +       if (env.timing)
+> +               print_slow_tests();
+> +
+>         fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
+>                 env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
+>
+> @@ -1236,6 +1342,7 @@ static int worker_main(int sock)
+>                         int test_to_run;
+>                         struct prog_test_def *test;
+>                         struct msg msg_done;
+> +                       __u32 duration_ms = 0;
+>
+>                         test_to_run = msg.do_test.test_num;
+>                         test = &prog_test_defs[test_to_run];
+> @@ -1248,7 +1355,7 @@ static int worker_main(int sock)
+>
+>                         stdio_hijack();
+>
+> -                       run_one_test(test_to_run);
+> +                       duration_ms = run_one_test(test_to_run);
+
+why not just add duration_ms to prog_test_def, just like error_cnt,
+skip_cnt, etc?
+
+>
+>                         stdio_restore();
+>
+> @@ -1258,6 +1365,7 @@ static int worker_main(int sock)
+>                         msg_done.test_done.error_cnt = test->error_cnt;
+>                         msg_done.test_done.skip_cnt = test->skip_cnt;
+>                         msg_done.test_done.sub_succ_cnt = test->sub_succ_cnt;
+> +                       msg_done.test_done.duration_ms = duration_ms;
+>                         msg_done.test_done.have_log = false;
+>
+>                         if (env.verbosity > VERBOSE_NONE || test->force_log || test->error_cnt) {
+> @@ -1486,6 +1594,9 @@ int main(int argc, char **argv)
+>
+>         print_all_error_logs();
+>
+> +       if (env.timing)
+> +               print_slow_tests();
+> +
+>         fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
+>                 env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
+>
+> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> index 93c1ff705533..16b8c0a9ba5f 100644
+> --- a/tools/testing/selftests/bpf/test_progs.h
+> +++ b/tools/testing/selftests/bpf/test_progs.h
+> @@ -64,6 +64,7 @@ struct test_env {
+>         bool verifier_stats;
+>         bool debug;
+>         enum verbosity verbosity;
+> +       bool timing;
+>
+>         bool jit_enabled;
+>         bool has_testmod;
+> @@ -109,6 +110,7 @@ struct msg {
+>                         int sub_succ_cnt;
+>                         int error_cnt;
+>                         int skip_cnt;
+> +                       __u32 duration_ms;
+>                         bool have_log;
+>                 } test_done;
+>                 struct {
 > --
-> per aspera ad upstream
+> 2.30.2
+>
