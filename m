@@ -2,46 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D2F4550AB
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 23:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E6A4550EB
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 00:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241363AbhKQWpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 17:45:09 -0500
-Received: from www62.your-server.de ([213.133.104.62]:51840 "EHLO
+        id S232578AbhKQXMT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 18:12:19 -0500
+Received: from www62.your-server.de ([213.133.104.62]:54978 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241317AbhKQWpJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:45:09 -0500
+        with ESMTP id S229634AbhKQXMT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 18:12:19 -0500
 Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mnTcz-0009qo-Kq; Wed, 17 Nov 2021 23:42:05 +0100
+        id 1mnU35-000DUb-EN; Thu, 18 Nov 2021 00:09:03 +0100
 Received: from [85.1.206.226] (helo=linux.home)
         by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mnTcz-000DgA-7Y; Wed, 17 Nov 2021 23:42:05 +0100
-Subject: Re: [PATCH] selftests/bpf: fix array_size.cocci warning:
-To:     Guo Zhengkui <guozhengkui@vivo.com>, Shuah Khan <shuah@kernel.org>,
+        id 1mnU35-000DpZ-32; Thu, 18 Nov 2021 00:09:03 +0100
+Subject: Re: [PATCH 1/2] bpf, docs: prune all references to "internal BPF"
+To:     Christoph Hellwig <hch@lst.de>, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com
-References: <20211117132024.11509-1-guozhengkui@vivo.com>
+        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20211115130715.121395-1-hch@lst.de>
+ <20211115130715.121395-2-hch@lst.de>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8f387f33-51f7-feea-d366-ceb5bbed0b51@iogearbox.net>
-Date:   Wed, 17 Nov 2021 23:42:04 +0100
+Message-ID: <1bb1c024-55a0-b9bf-8aa1-2bfd7a3c367d@iogearbox.net>
+Date:   Thu, 18 Nov 2021 00:09:02 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20211117132024.11509-1-guozhengkui@vivo.com>
+In-Reply-To: <20211115130715.121395-2-hch@lst.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,43 +50,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/17/21 2:20 PM, Guo Zhengkui wrote:
-> Use ARRAY_SIZE() because it uses __must_be_array(arr) to make sure
-> arr is really an array.
+On 11/15/21 2:07 PM, Christoph Hellwig wrote:
+> The eBPF name has completely taken over from eBPF in general usage, so
+> prune all remaining references to "internal BPF".
 > 
-> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->   .../testing/selftests/bpf/prog_tests/cgroup_attach_override.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   Documentation/networking/filter.rst | 22 +++++++++++-----------
+>   arch/arm/net/bpf_jit_32.c           |  2 +-
+>   arch/arm64/net/bpf_jit_comp.c       |  2 +-
+>   arch/sparc/net/bpf_jit_comp_64.c    |  2 +-
+>   arch/x86/net/bpf_jit_comp.c         |  2 +-
+>   kernel/bpf/core.c                   |  4 ++--
+>   net/core/filter.c                   | 11 +++++------
+>   7 files changed, 22 insertions(+), 23 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
-> index 356547e849e2..1921c5040d8c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
-> @@ -1,5 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0
+[...]
+> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> index eeb6dc0ecf463..a00821e820019 100644
+> --- a/arch/arm/net/bpf_jit_32.c
+> +++ b/arch/arm/net/bpf_jit_32.c
+> @@ -163,7 +163,7 @@ static const s8 bpf2a32[][2] = {
+>   	[BPF_REG_9] = {STACK_OFFSET(BPF_R9_HI), STACK_OFFSET(BPF_R9_LO)},
+>   	/* Read only Frame Pointer to access Stack */
+>   	[BPF_REG_FP] = {STACK_OFFSET(BPF_FP_HI), STACK_OFFSET(BPF_FP_LO)},
+> -	/* Temporary Register for internal BPF JIT, can be used
+> +	/* Temporary Register for eBPF JIT, can be used
+
+Thanks for the cleanup! For the code occurrences with 'internal BPF', I would
+just drop the term 'internal' so it's only 'BPF' which is consistent with the
+rest in the kernel. Usually eBPF is implied given all the old cBPF stuff is
+translated to it anyway. Bit confusing, but that's where it converged over the
+years in the kernel including git log. eBPF vs cBPF unless it's explicitly
+intended to be called out (like in the filter.rst docs).
+
+>   	 * for constant blindings and others.
+>   	 */
+>   	[TMP_REG_1] = {ARM_R7, ARM_R6},
+[...]
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 2405e39d800fe..355aa51899d62 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1891,7 +1891,7 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
 >   
-> +#include <linux/kernel.h>
->   #include <test_progs.h>
-
-No need for the extra include. test_progs.h already includes bpf_util.h, please check
-such trivialities before submission. Simple grep would have revealed use of ARRAY_SIZE()
-in various places under tools/testing/selftests/bpf/prog_tests/.
-
->   #include "cgroup_helpers.h"
-> @@ -16,10 +17,9 @@ static int prog_load(int verdict)
->   		BPF_MOV64_IMM(BPF_REG_0, verdict), /* r0 = verdict */
->   		BPF_EXIT_INSN(),
->   	};
-> -	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
+>   /**
+>    *	bpf_prog_select_runtime - select exec runtime for BPF program
+> - *	@fp: bpf_prog populated with internal BPF program
+> + *	@fp: bpf_prog populated with eBPF program
+>    *	@err: pointer to error variable
+>    *
+>    * Try to JIT eBPF program, if JIT is not available, use interpreter.
+> @@ -2300,7 +2300,7 @@ static void bpf_prog_free_deferred(struct work_struct *work)
+>   	}
+>   }
 >   
->   	return bpf_test_load_program(BPF_PROG_TYPE_CGROUP_SKB,
-> -			       prog, insns_cnt, "GPL", 0,
-> +			       prog, ARRAY_SIZE(prog), "GPL", 0,
->   			       bpf_log_buf, BPF_LOG_BUF_SIZE);
+> -/* Free internal BPF program */
+> +/* Free eBPF program */
 
-There are many more similar occurrences. Please just send one cleanup patch to reduce
-churn in the git log.
+nit: We can probably just drop that comment since it's not very useful anyway
+and already implied by the function name.
 
-Thanks,
-Daniel
+>   void bpf_prog_free(struct bpf_prog *fp)
+>   {
+>   	struct bpf_prog_aux *aux = fp->aux;
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index e471c9b096705..634e21647fe30 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -1242,10 +1242,9 @@ static struct bpf_prog *bpf_migrate_filter(struct bpf_prog *fp)
+>   	int err, new_len, old_len = fp->len;
+>   	bool seen_ld_abs = false;
+>   
+> -	/* We are free to overwrite insns et al right here as it
+> -	 * won't be used at this point in time anymore internally
+> -	 * after the migration to the internal BPF instruction
+> -	 * representation.
+> +	/* We are free to overwrite insns et al right here as itwon't be used at
+
+nit: itwon't
+
+> +	 * this point in time anymore internally after the migration to the eBPF
+> +	 * instruction representation.> diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
