@@ -2,199 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFE7454E1A
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 20:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CCF454E1E
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 20:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhKQTo0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 17 Nov 2021 14:44:26 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25720 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240567AbhKQToV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Nov 2021 14:44:21 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHJdrM8032602
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:41:21 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3ccuxsd2vu-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:41:21 -0800
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 17 Nov 2021 11:41:20 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 0E5BB98F1136; Wed, 17 Nov 2021 11:41:17 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: add btf_dedup case with duplicated structs within CU
-Date:   Wed, 17 Nov 2021 11:41:14 -0800
-Message-ID: <20211117194114.347675-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211117194114.347675-1-andrii@kernel.org>
-References: <20211117194114.347675-1-andrii@kernel.org>
+        id S239921AbhKQTqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 14:46:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhKQTqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 14:46:09 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C02CC061570
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:43:10 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id n2so6412641yba.2
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:43:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wi2ZXeAxl1Jrt+mW7451DwqL69lzKyqTqtVFaf6ioKo=;
+        b=kNMsL4uDwWu33Wjr2sMuiysAIv66bug7yn9uvE8bSm6Ul/3uM+bRbdibsBRCvChObU
+         FkBy1jXWRtdgQMThr9Eyj7EisliEdpGai3DcJbBtRHfYg5IUjZsIcoOxG9SlxLFZn247
+         ehbPvd4gkL5/eWWNiCHKU2v0tLqv78zJZ5uyC//UQgGlC3vxThQcGHWjR9Qzwvv2EqHR
+         AUe9uNkqyMEngkBE6rHVOfN5qaElIKRly9/SeWhv86gEREuquII+R4LmTnQUnWUHGrW5
+         cN277/LdDNuAeodk+lxFm76JJoy7wo2Uk/foc5tL09NsLxLclLfUTHXAb45n7qiF6Drt
+         GTVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wi2ZXeAxl1Jrt+mW7451DwqL69lzKyqTqtVFaf6ioKo=;
+        b=XVCBJ5Lx1QCL/puUN7QjWdGjJqilkYaNbIr6WUMOsYHKK343SoR62oH08LqEvC9FAF
+         feoKilU08ffE4Jdccy/CUNTYG9ltlAtHPGc8/Qu4TpEy7qf0mgrIbF+JS+zarSwQgipO
+         AsyYMHxGdh9830aE6HdbG1vUrW6w59ZXZAvunaD9Hp3o3zn6Wr4FM5BHIEbDKfzgAnPa
+         fiB+QUwaqdOvjd95pOiH+2Ksxxpq3oAANpf2fXFmGayjwsiyEjsAqDaAN0ybVO5QPdPu
+         vvS+uzHBM7TlGC40oa+aeHViqCb5J/jhSuwMm3Bt7NJ6LHpds2c/auPljDczLMJPT8tJ
+         7IVQ==
+X-Gm-Message-State: AOAM531nxYOC2+QKi4ueGiCjRoSp72iIEweOWffXNnVUipSRVcvDmbM7
+        Xfjz16hB3WMrZIu76DDgYzUyQksjmKZybC0X/aY=
+X-Google-Smtp-Source: ABdhPJwzT1wwZE4eMoyDLYV7nB37MaQUXVhcElGkAYdb21w3DnCOlTiIX4Wm6hH1F8OerUEZzuzHmoDgZYU4dsveVS0=
+X-Received: by 2002:a25:d010:: with SMTP id h16mr22789265ybg.225.1637178189777;
+ Wed, 17 Nov 2021 11:43:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: PAKJ2OHytBf8k86KYMSt6gCpg2fn23A3
-X-Proofpoint-ORIG-GUID: PAKJ2OHytBf8k86KYMSt6gCpg2fn23A3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-17_07,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 mlxlogscore=755 adultscore=0 spamscore=0 mlxscore=0
- phishscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
- impostorscore=0 clxscore=1034 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111170086
-X-FB-Internal: deliver
+References: <20211117194114.347675-1-andrii@kernel.org>
+In-Reply-To: <20211117194114.347675-1-andrii@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 17 Nov 2021 11:42:58 -0800
+Message-ID: <CAEf4Bza2NSV8MBb0jSokmUcrzy0SpLvY2uqu4mG9ObxnT-jQLw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: accommodate DWARF/compiler bug with
+ duplicated structs
+To:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+On Wed, Nov 17, 2021 at 11:41 AM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> According to [0], compilers sometimes might produce duplicate DWARF
+> definitions for exactly the same struct/union within the same
+> compilation unit (CU). We've had similar issues with identical arrays
+> and handled them with a similar workaround in 6b6e6b1d09aa ("libbpf:
+> Accomodate DWARF/compiler bug with duplicated identical arrays"). Do the
+> same for struct/union by ensuring that two structs/unions are exactly
+> the same, down to the integer values of field referenced type IDs.
 
-Add an artificial minimal example simulating compilers producing two
-different types within a single CU that correspond to identical struct
-definitions.
+Jiri, can you please try this in your setup and see if that handles
+all situations or there are more complicated ones still. We'll need a
+test for more complicated ones in that case :( Thanks.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/prog_tests/btf_dedup_split.c          | 113 ++++++++++++++++++
- 1 file changed, 113 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-index 9d3b8d7a1537..94ff9757557a 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-@@ -314,6 +314,117 @@ static void test_split_struct_duped() {
- 	btf__free(btf1);
- }
- 
-+static void btf_add_dup_struct_in_cu(struct btf *btf, int start_id)
-+{
-+#define ID(n) (start_id + n)
-+	btf__set_pointer_size(btf, 8); /* enforce 64-bit arch */
-+
-+	btf__add_int(btf, "int", 4, BTF_INT_SIGNED);    /* [1] int */
-+
-+	btf__add_struct(btf, "s", 8);                   /* [2] struct s { */
-+	btf__add_field(btf, "a", ID(3), 0, 0);          /*      struct anon a; */
-+	btf__add_field(btf, "b", ID(4), 0, 0);          /*      struct anon b; */
-+							/* } */
-+
-+	btf__add_struct(btf, "(anon)", 8);              /* [3] struct anon { */
-+	btf__add_field(btf, "f1", ID(1), 0, 0);         /*      int f1; */
-+	btf__add_field(btf, "f2", ID(1), 32, 0);        /*      int f2; */
-+							/* } */
-+
-+	btf__add_struct(btf, "(anon)", 8);              /* [4] struct anon { */
-+	btf__add_field(btf, "f1", ID(1), 0, 0);         /*      int f1; */
-+	btf__add_field(btf, "f2", ID(1), 32, 0);        /*      int f2; */
-+							/* } */
-+#undef ID
-+}
-+
-+static void test_split_dup_struct_in_cu()
-+{
-+	struct btf *btf1, *btf2;
-+	int err;
-+
-+	/* generate the base data.. */
-+	btf1 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf1, "empty_main_btf"))
-+		return;
-+
-+	btf_add_dup_struct_in_cu(btf1, 0);
-+
-+	VALIDATE_RAW_BTF(
-+			btf1,
-+			"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+			"[2] STRUCT 's' size=8 vlen=2\n"
-+			"\t'a' type_id=3 bits_offset=0\n"
-+			"\t'b' type_id=4 bits_offset=0",
-+			"[3] STRUCT '(anon)' size=8 vlen=2\n"
-+			"\t'f1' type_id=1 bits_offset=0\n"
-+			"\t'f2' type_id=1 bits_offset=32",
-+			"[4] STRUCT '(anon)' size=8 vlen=2\n"
-+			"\t'f1' type_id=1 bits_offset=0\n"
-+			"\t'f2' type_id=1 bits_offset=32");
-+
-+	/* ..dedup them... */
-+	err = btf__dedup(btf1, NULL, NULL);
-+	if (!ASSERT_OK(err, "btf_dedup"))
-+		goto cleanup;
-+
-+	VALIDATE_RAW_BTF(
-+			btf1,
-+			"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+			"[2] STRUCT 's' size=8 vlen=2\n"
-+			"\t'a' type_id=3 bits_offset=0\n"
-+			"\t'b' type_id=3 bits_offset=0",
-+			"[3] STRUCT '(anon)' size=8 vlen=2\n"
-+			"\t'f1' type_id=1 bits_offset=0\n"
-+			"\t'f2' type_id=1 bits_offset=32");
-+
-+	/* and add the same data on top of it */
-+	btf2 = btf__new_empty_split(btf1);
-+	if (!ASSERT_OK_PTR(btf2, "empty_split_btf"))
-+		goto cleanup;
-+
-+	btf_add_dup_struct_in_cu(btf2, 3);
-+
-+	VALIDATE_RAW_BTF(
-+			btf2,
-+			"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+			"[2] STRUCT 's' size=8 vlen=2\n"
-+			"\t'a' type_id=3 bits_offset=0\n"
-+			"\t'b' type_id=3 bits_offset=0",
-+			"[3] STRUCT '(anon)' size=8 vlen=2\n"
-+			"\t'f1' type_id=1 bits_offset=0\n"
-+			"\t'f2' type_id=1 bits_offset=32",
-+			"[4] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+			"[5] STRUCT 's' size=8 vlen=2\n"
-+			"\t'a' type_id=6 bits_offset=0\n"
-+			"\t'b' type_id=7 bits_offset=0",
-+			"[6] STRUCT '(anon)' size=8 vlen=2\n"
-+			"\t'f1' type_id=4 bits_offset=0\n"
-+			"\t'f2' type_id=4 bits_offset=32",
-+			"[7] STRUCT '(anon)' size=8 vlen=2\n"
-+			"\t'f1' type_id=4 bits_offset=0\n"
-+			"\t'f2' type_id=4 bits_offset=32");
-+
-+	err = btf__dedup(btf2, NULL, NULL);
-+	if (!ASSERT_OK(err, "btf_dedup"))
-+		goto cleanup;
-+
-+	/* after dedup it should match the original data */
-+	VALIDATE_RAW_BTF(
-+			btf2,
-+			"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+			"[2] STRUCT 's' size=8 vlen=2\n"
-+			"\t'a' type_id=3 bits_offset=0\n"
-+			"\t'b' type_id=3 bits_offset=0",
-+			"[3] STRUCT '(anon)' size=8 vlen=2\n"
-+			"\t'f1' type_id=1 bits_offset=0\n"
-+			"\t'f2' type_id=1 bits_offset=32");
-+
-+cleanup:
-+	btf__free(btf2);
-+	btf__free(btf1);
-+}
-+
- void test_btf_dedup_split()
- {
- 	if (test__start_subtest("split_simple"))
-@@ -322,4 +433,6 @@ void test_btf_dedup_split()
- 		test_split_struct_duped();
- 	if (test__start_subtest("split_fwd_resolve"))
- 		test_split_fwd_resolve();
-+	if (test__start_subtest("split_dup_struct_in_cu"))
-+		test_split_dup_struct_in_cu();
- }
--- 
-2.30.2
-
+>
+> Solving this more generically (allowing referenced types to be
+> equivalent, but using different type IDs, all within a single CU)
+> requires a huge complexity increase to handle many-to-many mappings
+> between canonidal and candidate type graphs. Before we invest in that,
+> let's see if this approach handles all the instances of this issue in
+> practice. Thankfully it's pretty rare, it seems.
+>
+>   [0] https://lore.kernel.org/bpf/YXr2NFlJTAhHdZqq@krava/
+>
+> Reported-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/lib/bpf/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 41 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index b6be579e0dc6..e97217a77196 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -3477,8 +3477,8 @@ static long btf_hash_struct(struct btf_type *t)
+>  }
+>
+>  /*
+> - * Check structural compatibility of two FUNC_PROTOs, ignoring referenced type
+> - * IDs. This check is performed during type graph equivalence check and
+> + * Check structural compatibility of two STRUCTs/UNIONs, ignoring referenced
+> + * type IDs. This check is performed during type graph equivalence check and
+>   * referenced types equivalence is checked separately.
+>   */
+>  static bool btf_shallow_equal_struct(struct btf_type *t1, struct btf_type *t2)
+> @@ -3851,6 +3851,31 @@ static int btf_dedup_identical_arrays(struct btf_dedup *d, __u32 id1, __u32 id2)
+>         return btf_equal_array(t1, t2);
+>  }
+>
+> +/* Check if given two types are identical STRUCT/UNION definitions */
+> +static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id2)
+> +{
+> +       const struct btf_member *m1, *m2;
+> +       struct btf_type *t1, *t2;
+> +       int n, i;
+> +
+> +       t1 = btf_type_by_id(d->btf, id1);
+> +       t2 = btf_type_by_id(d->btf, id2);
+> +
+> +       if (!btf_is_composite(t1) || btf_kind(t1) != btf_kind(t2))
+> +               return false;
+> +
+> +       if (!btf_shallow_equal_struct(t1, t2))
+> +               return false;
+> +
+> +       m1 = btf_members(t1);
+> +       m2 = btf_members(t2);
+> +       for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
+> +               if (m1->type != m2->type)
+> +                       return false;
+> +       }
+> +       return true;
+> +}
+> +
+>  /*
+>   * Check equivalence of BTF type graph formed by candidate struct/union (we'll
+>   * call it "candidate graph" in this description for brevity) to a type graph
+> @@ -3962,6 +3987,8 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
+>
+>         hypot_type_id = d->hypot_map[canon_id];
+>         if (hypot_type_id <= BTF_MAX_NR_TYPES) {
+> +               if (hypot_type_id == cand_id)
+> +                       return 1;
+>                 /* In some cases compiler will generate different DWARF types
+>                  * for *identical* array type definitions and use them for
+>                  * different fields within the *same* struct. This breaks type
+> @@ -3970,8 +3997,18 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
+>                  * types within a single CU. So work around that by explicitly
+>                  * allowing identical array types here.
+>                  */
+> -               return hypot_type_id == cand_id ||
+> -                      btf_dedup_identical_arrays(d, hypot_type_id, cand_id);
+> +               if (btf_dedup_identical_arrays(d, hypot_type_id, cand_id))
+> +                       return 1;
+> +               /* It turns out that similar situation can happen with
+> +                * struct/union sometimes, sigh... Handle the case where
+> +                * structs/unions are exactly the same, down to the referenced
+> +                * type IDs. Anything more complicated (e.g., if referenced
+> +                * types are different, but equivalent) is *way more*
+> +                * complicated and requires a many-to-many equivalence mapping.
+> +                */
+> +               if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
+> +                       return 1;
+> +               return 0;
+>         }
+>
+>         if (btf_dedup_hypot_map_add(d, canon_id, cand_id))
+> --
+> 2.30.2
+>
