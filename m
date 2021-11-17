@@ -2,106 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36530454DA9
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 20:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF9B454E1B
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 20:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240358AbhKQTMa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 14:12:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240355AbhKQTMa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 14:12:30 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7E0C061766
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:09:31 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id z5so15743215edd.3
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:09:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nAnJBXzy+j+SKp6UpMgT2UvLgTzhaItKFp8lDVP8bOI=;
-        b=D/3ogEfrPySNe/eJXcy3nGapEBgOa+bO4XpTO1fHqcR4gIHauBxVp2s2PTCG9AaMaK
-         6HWXJWr8+wvWMSmhSClExdjqN7fIaWTvI88IJ4lZYAdC8nYnUZjTmKgMelEW/vM09ccU
-         Qks8YqTAJMBzwsuPvYilwCulORTIf0cXhHfvOl1OhxuXmyIY27x1FpiDzKLUaqgkYwKB
-         C4v3tbaU8kPkutz5A52B6ixWVsBCyKtWU+GHbDqkM/8L0FIBtcnKvUHfdrsn54sJNHuv
-         M4Jx0a+DRZ3mZ/77iFaGAc4PDOLRQcqNNvk+V2hm+kIow9E02xqjp0Qbp8qHiPFiZ+qY
-         E0/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nAnJBXzy+j+SKp6UpMgT2UvLgTzhaItKFp8lDVP8bOI=;
-        b=oNyZdZLBeRKSN2oLPGNXR6bEU16R4fBr7DTOiGgE6nIuML7S3pvRDa6V/f77QNKWyG
-         KmeW8j3wS9L0RNt3Rf+9AuI4JPhIkmYIYR8AUJb/1GJzCXusk52kBD4YEEFPFcivESvT
-         bb/UelA7a41CYRURVg4IS9Gn1AD/LqGzImJGgj2FX69YKfM1Y5hU7X8sUwL5pMLVj6rd
-         F5ZaSaXPjC7ymxer3+iJOMhRHJa943/6A7lHTfBwtTW8eT3CxBUP9MErvGqXxFRhSToz
-         Dh/Gwr7BkZejESNkwjz7mubVOEgmZ1fWAykx9vSss2iFF51GbyW9A0f1TazkDKsl5XP/
-         iKbA==
-X-Gm-Message-State: AOAM531tRylMNo/dcq0AoFdmi+4IZtZtReGa/lHNbiz3Yn7F7XanKM7v
-        Zk8Hcb2eiYbiUq1xQW7BU/eVZDDnFKCnXJo0DZDCxw==
-X-Google-Smtp-Source: ABdhPJwIlcvt3E3+hGdYyhRGnWjeE/5pkW4ELjc8AjM1yuatRjqoO/EXVWvQGxDOJO05Ugr9afaP14IXrq92digDejs=
-X-Received: by 2002:a05:6402:1a58:: with SMTP id bf24mr1604937edb.16.1637176169875;
- Wed, 17 Nov 2021 11:09:29 -0800 (PST)
+        id S239917AbhKQTo1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 17 Nov 2021 14:44:27 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27650 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S240591AbhKQToY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Nov 2021 14:44:24 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1AHJdqWn004815
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:41:25 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3cd3ahtfw3-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 11:41:25 -0800
+Received: from intmgw001.46.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 17 Nov 2021 11:41:23 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 049FC98F112F; Wed, 17 Nov 2021 11:41:14 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH bpf-next 1/2] libbpf: accommodate DWARF/compiler bug with duplicated structs
+Date:   Wed, 17 Nov 2021 11:41:13 -0800
+Message-ID: <20211117194114.347675-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: Ig_5iSHulreq94IXnZhmklYEnPjnE-En
+X-Proofpoint-ORIG-GUID: Ig_5iSHulreq94IXnZhmklYEnPjnE-En
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
- <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
-In-Reply-To: <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Wed, 17 Nov 2021 11:09:14 -0800
-Message-ID: <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-17_07,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111170086
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 11:05 AM Kyle Huey <me@kylehuey.com> wrote:
->
-> On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
-> > > rr, a userspace record and replay debugger[0], is completely broken on
-> > > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
-> > >
-> > > That patch makes two changes, it blocks sigaction from changing signal
-> > > handlers once the kernel has decided to force the program to take a
-> > > signal and it also stops notifying ptracers of the signal in the same
-> > > circumstances. The latter behavior is just wrong. There's no reason
-> > > that ptrace should not be able to observe and even change
-> > > (non-SIGKILL) forced signals.  It should be reverted.
-> > >
-> > > This behavior change is also observable in gdb. If you take a program
-> > > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
-> > > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
-> > > when the SIGSYS is raised, let you inspect program state, etc. After
-> > > the SA_IMMUTABLE change gdb won't stop until the program has already
-> > > died of SIGSYS.
-> >
-> > Ah, hm, this was trying to fix the case where a program trips
-> > SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
-> > before. I guess the fix was too broad...
->
-> Perhaps I don't understand precisely what you mean by this, but gdb's
-> behavior for a program that is SECCOMP_RET_KILLed was not changed by
-> this patch (the SIGSYS is not observed until after program exit before
-> or after this change).
+According to [0], compilers sometimes might produce duplicate DWARF
+definitions for exactly the same struct/union within the same
+compilation unit (CU). We've had similar issues with identical arrays
+and handled them with a similar workaround in 6b6e6b1d09aa ("libbpf:
+Accomodate DWARF/compiler bug with duplicated identical arrays"). Do the
+same for struct/union by ensuring that two structs/unions are exactly
+the same, down to the integer values of field referenced type IDs.
 
-Ah, maybe that behavior changed in 5.15 (my "before" here is a 5.14
-kernel).  I would argue that the debugger seeing the SIGSYS for
-SECCOMP_RET_KILL is desirable though ...
+Solving this more generically (allowing referenced types to be
+equivalent, but using different type IDs, all within a single CU)
+requires a huge complexity increase to handle many-to-many mappings
+between canonidal and candidate type graphs. Before we invest in that,
+let's see if this approach handles all the instances of this issue in
+practice. Thankfully it's pretty rare, it seems.
 
-- Kyle
+  [0] https://lore.kernel.org/bpf/YXr2NFlJTAhHdZqq@krava/
+
+Reported-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 41 insertions(+), 4 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index b6be579e0dc6..e97217a77196 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -3477,8 +3477,8 @@ static long btf_hash_struct(struct btf_type *t)
+ }
+ 
+ /*
+- * Check structural compatibility of two FUNC_PROTOs, ignoring referenced type
+- * IDs. This check is performed during type graph equivalence check and
++ * Check structural compatibility of two STRUCTs/UNIONs, ignoring referenced
++ * type IDs. This check is performed during type graph equivalence check and
+  * referenced types equivalence is checked separately.
+  */
+ static bool btf_shallow_equal_struct(struct btf_type *t1, struct btf_type *t2)
+@@ -3851,6 +3851,31 @@ static int btf_dedup_identical_arrays(struct btf_dedup *d, __u32 id1, __u32 id2)
+ 	return btf_equal_array(t1, t2);
+ }
+ 
++/* Check if given two types are identical STRUCT/UNION definitions */
++static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id2)
++{
++	const struct btf_member *m1, *m2;
++	struct btf_type *t1, *t2;
++	int n, i;
++
++	t1 = btf_type_by_id(d->btf, id1);
++	t2 = btf_type_by_id(d->btf, id2);
++
++	if (!btf_is_composite(t1) || btf_kind(t1) != btf_kind(t2))
++		return false;
++
++	if (!btf_shallow_equal_struct(t1, t2))
++		return false;
++
++	m1 = btf_members(t1);
++	m2 = btf_members(t2);
++	for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
++		if (m1->type != m2->type)
++			return false;
++	}
++	return true;
++}
++
+ /*
+  * Check equivalence of BTF type graph formed by candidate struct/union (we'll
+  * call it "candidate graph" in this description for brevity) to a type graph
+@@ -3962,6 +3987,8 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
+ 
+ 	hypot_type_id = d->hypot_map[canon_id];
+ 	if (hypot_type_id <= BTF_MAX_NR_TYPES) {
++		if (hypot_type_id == cand_id)
++			return 1;
+ 		/* In some cases compiler will generate different DWARF types
+ 		 * for *identical* array type definitions and use them for
+ 		 * different fields within the *same* struct. This breaks type
+@@ -3970,8 +3997,18 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
+ 		 * types within a single CU. So work around that by explicitly
+ 		 * allowing identical array types here.
+ 		 */
+-		return hypot_type_id == cand_id ||
+-		       btf_dedup_identical_arrays(d, hypot_type_id, cand_id);
++		if (btf_dedup_identical_arrays(d, hypot_type_id, cand_id))
++			return 1;
++		/* It turns out that similar situation can happen with
++		 * struct/union sometimes, sigh... Handle the case where
++		 * structs/unions are exactly the same, down to the referenced
++		 * type IDs. Anything more complicated (e.g., if referenced
++		 * types are different, but equivalent) is *way more*
++		 * complicated and requires a many-to-many equivalence mapping.
++		 */
++		if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
++			return 1;
++		return 0;
+ 	}
+ 
+ 	if (btf_dedup_hypot_map_add(d, canon_id, cand_id))
+-- 
+2.30.2
+
