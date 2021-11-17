@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EA8454EAD
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 21:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055E1454EAF
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 21:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhKQUmX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 15:42:23 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14064 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229899AbhKQUmX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Nov 2021 15:42:23 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1AHJvkwK015507
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 12:39:24 -0800
+        id S233054AbhKQUm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 15:42:28 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32794 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233168AbhKQUm1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Nov 2021 15:42:27 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHJtsQ3030266
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 12:39:28 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Klq+czeme1epCOq7zE4Yy+b5gyDkMw6F8TxUd6VIsr0=;
- b=Yd/BnOHVXVJaFs+XmnxGGGo4FEvMLuAxvM2tliblpo9JSiV0oJqBIP01LAvzaXet4vVx
- 5yjEU/RsOsP/uaS6Xhq67b3OaEErms4/ftUBjLE3USSqc47Ab8qeyq7BE5GCiDl+UpTh
- LYZQa861svQG6TXxpW4KKrEBKloAiQMKoEE= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=1cHLL3iWpwMqaVlMHki013cZBahrITWBc5FwCVnt1eM=;
+ b=p/zfdJksIxRAQRQ6hfUh8e9WzqTovZwLhCb0VqAWsEGYOpvaIF9XeSNoyn/8HtvD7WBp
+ mPBhkYH+L0vZRvyUVlFTqMT/Mltomb44XZQPOEWlQFRZI7Xb2pzX4+fdMc/z05ZB6nKi
+ +IUuiF0ikAwI/z7TgcFIlouOCpUKjme6xtk= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3cd3ahtv03-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3ccx48csyd-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 12:39:23 -0800
-Received: from intmgw001.05.ash7.facebook.com (2620:10d:c085:108::4) by
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 12:39:28 -0800
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 17 Nov 2021 12:39:22 -0800
+ 15.1.2308.14; Wed, 17 Nov 2021 12:39:27 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 615AE28FDBF6; Wed, 17 Nov 2021 12:39:19 -0800 (PST)
+        id 9844228FDC09; Wed, 17 Nov 2021 12:39:24 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
         <bpf@vger.kernel.org>
@@ -39,114 +39,214 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "Jose E . Marchesi" <jose.marchesi@oracle.com>,
         <kernel-team@fb.com>
-Subject: [RFC PATCH bpf-next 1/3] compiler_types: define __user as __attribute__((btf_type_tag("user")))
-Date:   Wed, 17 Nov 2021 12:39:19 -0800
-Message-ID: <20211117203919.3356040-1-yhs@fb.com>
+Subject: [RFC PATCH bpf-next 2/3] bpf: reject program if a __user tagged memory accessed in kernel way
+Date:   Wed, 17 Nov 2021 12:39:24 -0800
+Message-ID: <20211117203924.3356336-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211117203914.3355618-1-yhs@fb.com>
 References: <20211117203914.3355618-1-yhs@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: ZOsMgOxhtRL6XanmccQf-Ir1CyUxpCV5
-X-Proofpoint-ORIG-GUID: ZOsMgOxhtRL6XanmccQf-Ir1CyUxpCV5
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: tKwMGjB35V6DG_IRPEjIZDFuXBs9RV6h
+X-Proofpoint-GUID: tKwMGjB35V6DG_IRPEjIZDFuXBs9RV6h
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-17_07,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111170092
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 impostorscore=0 bulkscore=0 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 spamscore=0 priorityscore=1501 suspectscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111170092
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If pahole and compiler supports btf_type_tag attributes,
-during kernel build, we can define __user as
-__attribute__((btf_type_tag("user"))). This will encode __user
-information in BTF. Such information, encoded in BTF
-as BTF_KIND_TYPE_TAG, can help bpf verifier to
-ensure proper memory dereference mechanism depending
-on user memory or kernel memory.
+BPF verifier supports direct access, e.g., a->b. If "a" is a pointer
+pointing to kernel memory, bpf verifier will allow user to write
+code in C like a->b and bpf verifier will translate it to a kernel
+load properly. If "a" is a pointer to user memory, it is expected
+that bpf developer should be bpf_probe_read_user() helper to
+get the value a->b. In the current mechanism, if "a" is a user pointer,
+a->b access may trigger a page fault and the verifier generated
+code will simulate bpf_probe_read() and return 0 for a->b, which
+may not be correct value.
 
-The encoded __user info is also useful for other tracing
-facility where instead of to require user to specify
-kernel/user address type, the kernel can detect it
-by itself with btf.
-
-The following is an example with latest upstream clang
-(clang14, [1]) and latest pahole:
-  [$ ~] cat test.c
-  #define __tag1 __attribute__((btf_type_tag("tag1")))
-  int foo(int __tag1 *arg) {
-          return *arg;
-  }
-  [$ ~] clang -O2 -g -c test.c
-  [$ ~] pahole -JV test.o
-  ...
-  [1] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
-  [2] TYPE_TAG tag1 type_id=3D1
-  [3] PTR (anon) type_id=3D2
-  [4] FUNC_PROTO (anon) return=3D1 args=3D(3 arg)
-  [5] FUNC foo type_id=3D4
-  [$ ~]
-
-You can see for the function argument "int __tag1 *arg",
-its type is described as
-  PTR -> TYPE_TAG(tag1) -> INT
-
-The kernel can take advantage of this information
-to bpf verification or other use cases.
-
-Current btf_type_tag is only supported in clang (>=3D clang14).
-gcc support is also proposed and under development ([2]).
-
-  [1] https://reviews.llvm.org/D111199
-  [2] https://www.spinics.net/lists/bpf/msg45773.html
+Now BTF contains __user information, it can check whether the
+pointer points to a user memory or not. If it is, the verifier
+can reject the program and force users to use bpf_probe_read_user()
+helper explicitly.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- include/linux/compiler_types.h | 2 ++
- lib/Kconfig.debug              | 5 +++++
- 2 files changed, 7 insertions(+)
+ include/linux/bpf.h          |  1 +
+ include/linux/bpf_verifier.h |  1 +
+ include/linux/btf.h          |  5 +++++
+ kernel/bpf/btf.c             | 15 ++++++++++++---
+ kernel/bpf/verifier.c        | 16 +++++++++++++---
+ 5 files changed, 32 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 1d32f4c03c9e..65725e183a38 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -31,6 +31,8 @@ static inline void __chk_io_ptr(const volatile void __iom=
-em *ptr) { }
- # define __kernel
- # ifdef STRUCTLEAK_PLUGIN
- #  define __user	__attribute__((user))
-+# elif defined(CONFIG_PAHOLE_HAS_BTF_TAG) && __has_attribute(btf_type_tag)
-+#  define __user	__attribute__((btf_type_tag("user")))
- # else
- #  define __user
- # endif
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 9ef7ce18b4f5..bf21b501c66d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -324,6 +324,11 @@ config DEBUG_INFO_BTF
- config PAHOLE_HAS_SPLIT_BTF
- 	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-=
-9]+)/\1\2/'` -ge "119")
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index cc7a0c36e7df..d09df9ec3100 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -473,6 +473,7 @@ struct bpf_insn_access_aux {
+ 		struct {
+ 			struct btf *btf;
+ 			u32 btf_id;
++			bool is_user;
+ 		};
+ 	};
+ 	struct bpf_verifier_log *log; /* for verbose logs */
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index c8a78e830fca..2ddba4767118 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -66,6 +66,7 @@ struct bpf_reg_state {
+ 		struct {
+ 			struct btf *btf;
+ 			u32 btf_id;
++			bool is_user;
+ 		};
 =20
-+config PAHOLE_HAS_BTF_TAG
-+	depends on DEBUG_INFO_BTF
-+	depends on CC_IS_CLANG
-+	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-=
-9]+)/\1\2/'` -ge "122")
+ 		u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 203eef993d76..fcb6041f8fff 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -169,6 +169,11 @@ static inline bool btf_type_is_var(const struct btf_=
+type *t)
+ 	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_VAR;
+ }
+=20
++static inline bool btf_type_is_type_tag(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_TYPE_TAG;
++}
 +
- config DEBUG_INFO_BTF_MODULES
- 	def_bool y
- 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+ /* union is only a special case of struct:
+  * all its offsetof(member) =3D=3D 0
+  */
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 6b9d23be1e99..dadf1680a677 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4999,6 +4999,14 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
+cess_type type,
+ 	info->btf =3D btf;
+ 	info->btf_id =3D t->type;
+ 	t =3D btf_type_by_id(btf, t->type);
++
++	if (btf_type_is_type_tag(t)) {
++		const char *tag_value =3D __btf_name_by_offset(btf, t->name_off);
++
++		if (strcmp(tag_value, "user") =3D=3D 0)
++			info->is_user =3D true;
++	}
++
+ 	/* skip modifiers */
+ 	while (btf_type_is_modifier(t)) {
+ 		info->btf_id =3D t->type;
+@@ -5010,8 +5018,9 @@ bool btf_ctx_access(int off, int size, enum bpf_acc=
+ess_type type,
+ 			tname, arg, btf_kind_str[BTF_INFO_KIND(t->info)]);
+ 		return false;
+ 	}
+-	bpf_log(log, "func '%s' arg%d has btf_id %d type %s '%s'\n",
+-		tname, arg, info->btf_id, btf_kind_str[BTF_INFO_KIND(t->info)],
++	bpf_log(log, "func '%s' arg%d has btf_id %d is_user %d type %s '%s'\n",
++		tname, arg, info->btf_id, info->is_user,
++		btf_kind_str[BTF_INFO_KIND(t->info)],
+ 		__btf_name_by_offset(btf, t->name_off));
+ 	return true;
+ }
+@@ -5030,7 +5039,7 @@ static int btf_struct_walk(struct bpf_verifier_log =
+*log, const struct btf *btf,
+ 	u32 i, moff, mtrue_end, msize =3D 0, total_nelems =3D 0;
+ 	const struct btf_type *mtype, *elem_type =3D NULL;
+ 	const struct btf_member *member;
+-	const char *tname, *mname;
++	const char *tname, *mname, *tag_value;
+ 	u32 vlen, elem_id, mid;
+=20
+ again:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 0763cca139a7..07ba7c8f6aa3 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -647,7 +647,8 @@ static void print_verifier_state(struct bpf_verifier_=
+env *env,
+ 			if (t =3D=3D PTR_TO_BTF_ID ||
+ 			    t =3D=3D PTR_TO_BTF_ID_OR_NULL ||
+ 			    t =3D=3D PTR_TO_PERCPU_BTF_ID)
+-				verbose(env, "%s", kernel_type_name(reg->btf, reg->btf_id));
++				verbose(env, "%s,is_user=3D%d", kernel_type_name(reg->btf, reg->btf_=
+id),
++					reg->is_user);
+ 			verbose(env, "(id=3D%d", reg->id);
+ 			if (reg_type_may_be_refcounted_or_null(t))
+ 				verbose(env, ",ref_obj_id=3D%d", reg->ref_obj_id);
+@@ -3551,7 +3552,7 @@ static int check_packet_access(struct bpf_verifier_=
+env *env, u32 regno, int off,
+ /* check access to 'struct bpf_context' fields.  Supports fixed offsets =
+only */
+ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, =
+int off, int size,
+ 			    enum bpf_access_type t, enum bpf_reg_type *reg_type,
+-			    struct btf **btf, u32 *btf_id)
++			    struct btf **btf, u32 *btf_id, bool *is_user)
+ {
+ 	struct bpf_insn_access_aux info =3D {
+ 		.reg_type =3D *reg_type,
+@@ -3572,6 +3573,7 @@ static int check_ctx_access(struct bpf_verifier_env=
+ *env, int insn_idx, int off,
+ 		if (*reg_type =3D=3D PTR_TO_BTF_ID || *reg_type =3D=3D PTR_TO_BTF_ID_O=
+R_NULL) {
+ 			*btf =3D info.btf;
+ 			*btf_id =3D info.btf_id;
++			*is_user =3D info.is_user;
+ 		} else {
+ 			env->insn_aux_data[insn_idx].ctx_field_size =3D info.ctx_field_size;
+ 		}
+@@ -4116,6 +4118,13 @@ static int check_ptr_to_btf_access(struct bpf_veri=
+fier_env *env,
+ 		return -EACCES;
+ 	}
+=20
++	if (reg->is_user) {
++		verbose(env,
++			"R%d is ptr_%s access user memory: off=3D%d\n",
++			regno, tname, off);
++		return -EACCES;
++	}
++
+ 	if (env->ops->btf_struct_access) {
+ 		ret =3D env->ops->btf_struct_access(&env->log, reg->btf, t,
+ 						  off, size, atype, &btf_id);
+@@ -4374,7 +4383,7 @@ static int check_mem_access(struct bpf_verifier_env=
+ *env, int insn_idx, u32 regn
+ 		if (err < 0)
+ 			return err;
+=20
+-		err =3D check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,=
+ &btf_id);
++		err =3D check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,=
+ &btf_id, &is_user);
+ 		if (err)
+ 			verbose_linfo(env, insn_idx, "; ");
+ 		if (!err && t =3D=3D BPF_READ && value_regno >=3D 0) {
+@@ -4399,6 +4408,7 @@ static int check_mem_access(struct bpf_verifier_env=
+ *env, int insn_idx, u32 regn
+ 				    reg_type =3D=3D PTR_TO_BTF_ID_OR_NULL) {
+ 					regs[value_regno].btf =3D btf;
+ 					regs[value_regno].btf_id =3D btf_id;
++					regs[value_regno].is_user =3D is_user;
+ 				}
+ 			}
+ 			regs[value_regno].type =3D reg_type;
 --=20
 2.30.2
 
