@@ -2,119 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C60453C0B
-	for <lists+bpf@lfdr.de>; Tue, 16 Nov 2021 23:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203B6453D0A
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 01:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhKPWD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Nov 2021 17:03:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbhKPWD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Nov 2021 17:03:28 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E608C061570;
-        Tue, 16 Nov 2021 14:00:31 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id e136so1077902ybc.4;
-        Tue, 16 Nov 2021 14:00:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IhxZXD5NEyOlbJBzVToA3gUj1KVfrk+O3Zu96bMrpOk=;
-        b=H9C6fELVjUQLJuG9T4sRvylDFgeWhj7p59TauhrHUIYRpQGfmZgfmtf9x3vHstCKuc
-         wtHaS+69PAbJnNs3onAIUBO9lH8fszRfLIgxpL23l1CRQOMDFhZZsFuWJLIx2A5GGtym
-         Rxy5nWJSl1QtjguUgzC9SlUKdv1cpqPkUcmehGMz2zvQ2gXFfLkTj1SzDH/nyLKqPCAM
-         uH3QffC67U+Pb0dJp6e+cWdUjb8bBfMozObFDfaKspyJk002gK0p47/ycgZ7PCdgJYJB
-         8EEkCCB0ZTp08yp3sDZ0dI6zuzJXxYA9db6MskdNE62SXCsWNykKNH7CgjACt8YsHNdF
-         BdzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IhxZXD5NEyOlbJBzVToA3gUj1KVfrk+O3Zu96bMrpOk=;
-        b=COzRBU54/ZsPMjDR1ePp6loFZcdHBHbqdU4/Y+R1YaXfvDRqslzHKlXxYa/hVe7+5o
-         gqVOOoPQy+aiXVuECE0oPB/nY+j8Fwhat5YmgC8vX8C1x+TI7E+cD/CaPG7HNZBevYMd
-         7TzuJHQC2cr7EBgHALsarAynZCyTLkO9W0f5fUl2UuVxyzKeVuVvzReHd9iAFiqVv8zE
-         Yp5fqx9FgduswMc9y0/22fV1eWg05cmUsLR1bnmzsW5ZzMdK7SKjG2Kpd/MTQta1kcG2
-         Otb6j6ALLJUQee3ZU12rcPpl0cd/aaGA7b5DuhiKmcfw3nI8BIfB74yMYu44GSdqxmMk
-         yaFQ==
-X-Gm-Message-State: AOAM532o2khbxzUYd90DQkHGJmglm8VUGGBBipGTkakA5ocDbx/QLorU
-        iFn0yJr8RFY7tBvnvs0jCUAOr/ENthCj9qJwi1w=
-X-Google-Smtp-Source: ABdhPJx39gY4v+RDAEyNKPNnkxArx5NkgQPrhzVox7loApPpnqfkAGM+708ESMPgFkPM8zEajuE2xRnD5EcsrzxR2LA=
-X-Received: by 2002:a25:cc4c:: with SMTP id l73mr11561801ybf.114.1637100030581;
- Tue, 16 Nov 2021 14:00:30 -0800 (PST)
+        id S229642AbhKQAPm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Nov 2021 19:15:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhKQAPm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Nov 2021 19:15:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BA8261A7D;
+        Wed, 17 Nov 2021 00:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637107964;
+        bh=bnxLxXhbTIGvV08pkQI2uRDy+1S2Cvb0CnyBspITtFA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tqcCwoCqHG81hXrszQlfop41TQ6qJ4jcv9+r/UfjNiDqugsgejMicyxBEj2z55N5Q
+         z9+wgTBO/wCnJikknShXCENmCUe+Cyb7wSd/jxEk/6CNOeU1Gvi3HxcNVIa8ZLjO98
+         3uDPMDSrEqoR4AaCr1dlcLnelkjAIqPteCWFyfgV0c2M23BC6enHe/aZgOmczT9DuS
+         oaU6CzsnFnU1MJdvwWcnnrGSSJ35bqk4KGaL5QreJdcQlNsJ5qB9Dd2s5bJ9UhnpW/
+         REfbAvKaWPamQGYGwpvUF4HxVE9Zt4F1Z1F0PB2hn3rw0/caQldpqtJxh9pZGah4kw
+         uKdO2zRshCX/g==
+Date:   Wed, 17 Nov 2021 01:12:41 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: Re: [PATCH v18 bpf-next 20/23] net: xdp: introduce bpf_xdp_pointer
+ utility routine
+Message-ID: <YZRI+ac4c0j/eue5@lore-desk>
+References: <cover.1637013639.git.lorenzo@kernel.org>
+ <ce5ad30af8f9b4d2b8128e7488818449a5c0d833.1637013639.git.lorenzo@kernel.org>
+ <20211116071357.36c18edf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <54d3cb9669644995b6ae787b4d532b73@crowdstrike.com> <0b80c79b-de0c-931c-262d-4da6e2add9f9@iogearbox.net>
-In-Reply-To: <0b80c79b-de0c-931c-262d-4da6e2add9f9@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Nov 2021 14:00:19 -0800
-Message-ID: <CAEf4BzaheW1EGczxS8zXmObBte81gR7pepa9cLi8Z=UvwJdnrg@mail.gmail.com>
-Subject: Re: Clarification on bpftool dual licensing
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin Kelly <martin.kelly@crowdstrike.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TrINBws+5W8mkGW0"
+Content-Disposition: inline
+In-Reply-To: <20211116071357.36c18edf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 2:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 11/15/21 7:20 PM, Martin Kelly wrote:
-> > Hi,
-> >
-> > I have a question regarding the dual licensing provision of bpftool. I
-> > understand that bpftool can be distributed as either GPL 2.0 or BSD 2-clause.
-> > That said, bpftool can also auto-generate BPF code that gets specified inline
-> > in the skeleton header file, and it's possible that the BPF code generated is
-> > GPL. What I'm wondering is what happens if bpftool generates GPL-licensed BPF
-> > code inside the skeleton header, so that you get a header like this:
-> >
-> > something.skel.h:
-> > /* this file is BSD 2-clause, by nature of dual licensing */
->
-> Fwiw, the generated header contains an SPDX identifier:
->
->   /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
->   /* THIS FILE IS AUTOGENERATED! */
->
-> > /* THIS FILE IS AUTOGENERATED! */
-> >
-> > /* standard skeleton definitions */
-> >
-> > ...
-> >
-> > s->data_sz = XXX;
-> > s->data = (void *)"\
-> > <eBPF bytecode, produced by GPL 2.0 sources, specified in binary>
-> > ";
-> >
-> > My guess is that, based on the choice to dual-license bpftool, the header is
-> > meant to still be BSD 2-clause, and the s->data inline code's GPL license is
-> > not meant to change the licensing of the header itself, but I wanted to
 
-Yes, definitely that is the intent (but not a lawyer either).
+--TrINBws+5W8mkGW0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> On Mon, 15 Nov 2021 23:33:14 +0100 Lorenzo Bianconi wrote:
+> > +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
+> > +	u32 headsize =3D xdp->data_end - xdp->data;
+> > +	u32 count =3D 0, frame_offset =3D headsize;
+> > +	int i;
+> > +
+> > +	if (offset < headsize) {
+> > +		int size =3D min_t(int, headsize - offset, len);
+> > +		void *src =3D flush ? buf : xdp->data + offset;
+> > +		void *dst =3D flush ? xdp->data + offset : buf;
+> > +
+> > +		memcpy(dst, src, size);
+> > +		count =3D size;
+> > +		offset =3D 0;
+> > +	}
+>=20
+> is this missing
+> 	else
+> 		offset -=3D headsize;
+> ?
+>=20
+> I'm struggling to understand this. Say
+> 	headsize =3D 400
+> 	frag[0].size =3D 200
+>=20
+> 	offset =3D 500
+> 	len =3D 50
+>=20
+> we enter the loop having missed the previous if...
+>=20
+> > +	for (i =3D 0; i < sinfo->nr_frags; i++) {
+> > +		skb_frag_t *frag =3D &sinfo->frags[i];
+> > +		u32 frag_size =3D skb_frag_size(frag);
+> > +
+> > +		if (count >=3D len)
+> > +			break;
+> > +
+> > +		if (offset < frame_offset + frag_size) {
+>=20
+> 		500 < 400 + 200 =3D> true
+>=20
+> > +			int size =3D min_t(int, frag_size - offset, len - count);
+>=20
+> 			size =3D min(200 - 500, 50 - 0)
+> 			size =3D -300 ??
+
+ack, you are right. Sorry for the issue.
+I did not trigger the problem with xdp-mb self-tests since we will not run
+bpf_xdp_copy_buf() in this specific case, but just the memcpy()
+(but what you reported is a bug and must be fixed). I will add more
+self-tests.
+Moreover, reviewing the code I guess we can just update bpf_xdp_copy() for =
+our case.
+Something like:
+
+static void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off,
+			     void *buf, unsigned long len, bool flush)
+{
+	unsigned long ptr_len, ptr_off =3D 0;
+	skb_frag_t *next_frag, *end_frag;
+	struct skb_shared_info *sinfo;
+	void *src, *dst;
+	u8 *ptr_buf;
+
+	if (likely(xdp->data_end - xdp->data >=3D off + len)) {
+		src =3D flush ? buf : xdp->data + off;
+		dst =3D flush ? xdp->data + off : buf;
+		memcpy(dst, src, len);
+		return;
+	}
+
+	sinfo =3D xdp_get_shared_info_from_buff(xdp);
+	end_frag =3D &sinfo->frags[sinfo->nr_frags];
+	next_frag =3D &sinfo->frags[0];
+
+	ptr_len =3D xdp->data_end - xdp->data;
+	ptr_buf =3D xdp->data;
+
+	while (true) {
+		if (off < ptr_off + ptr_len) {
+			unsigned long copy_off =3D off - ptr_off;
+			unsigned long copy_len =3D min(len, ptr_len - copy_off);
+
+			src =3D flush ? buf : ptr_buf + copy_off;
+			dst =3D flush ? ptr_buf + copy_off : buf;
+			memcpy(dst, src, copy_len);
+
+			off +=3D copy_len;
+			len -=3D copy_len;
+			buf +=3D copy_len;
+		}
+
+		if (!len || next_frag =3D=3D end_frag)
+			break;
+
+		ptr_off +=3D ptr_len;
+		ptr_buf =3D skb_frag_address(next_frag);
+		ptr_len =3D skb_frag_size(next_frag);
+		next_frag++;
+	}
+}
+
+=2E..
+
+static unsigned long bpf_xdp_copy(void *dst, const void *ctx,
+				  unsigned long off, unsigned long len)
+{
+	struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+
+	bpf_xdp_copy_buf(xdp, off, dst, len, false);
+	return 0;
+}
+
+What do you think?
+
+Regards,
+Lorenzo
 
 
-> > double-check, especially as I am not a lawyer. If this is indeed the intent,
-> > is there any opposition to a patch clarifying this more explicitly in
-> > Documentation/bpf/bpf_licensing.rst?
->
-> Not a lawyer either, but my interpretation is that this point related to "packaging"
-> of BPF programs from the bpf_licensing.rst would apply here (given this is what it
-> does after all):
->
->    Packaging BPF programs with user space applications
->    ===================================================
->
->    Generally, proprietary-licensed applications and GPL licensed BPF programs
->    written for the Linux kernel in the same package can co-exist because they are
->    separate executable processes. This applies to both cBPF and eBPF programs.
+>=20
+> > +			void *addr =3D skb_frag_address(frag);
+> > +			void *src =3D flush ? buf + count : addr + offset;
+> > +			void *dst =3D flush ? addr + offset : buf + count;
+> > +
+> > +			memcpy(dst, src, size);
+> > +			count +=3D size;
+> > +			offset =3D 0;
+> > +		}
+> > +		frame_offset +=3D frag_size;
 
-Yep. If someone packages proprietary BPF ELF into a skeleton, that
-doesn't make the BPF ELF suddenly GPL or BSD, I'd imagine.
+--TrINBws+5W8mkGW0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYZRI+QAKCRA6cBh0uS2t
+rA1KAQC0qvrK2dx8H1heh+zjVq02R9Jx+GP8qtGLeUrlJs9HCQD/Ze6+i31A7sPZ
+Nx3kP6SD6vmetGa7P5aK7WMuNcseFw8=
+=lUF4
+-----END PGP SIGNATURE-----
+
+--TrINBws+5W8mkGW0--
