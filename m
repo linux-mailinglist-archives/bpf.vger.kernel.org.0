@@ -2,91 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481BD455019
-	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 23:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65DE45507C
+	for <lists+bpf@lfdr.de>; Wed, 17 Nov 2021 23:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240898AbhKQWEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 17:04:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        id S241285AbhKQWdO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 17:33:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240955AbhKQWEt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 17:04:49 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFBDC0613B9;
-        Wed, 17 Nov 2021 14:01:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L3GGIZdD9hoVvIH8EBTTSSEtLrVfUIWllTDZ8pEqguE=; b=Oq9RtqYp++nfD+OUmXGmFF8b5Z
-        cauxRRcafZhxgwvgebVpmtVH8kNQOM9239jT675AysaPMtCj68vC+Q6YU0b8oeWkuE7S3T2mmJx48
-        cF+CF/0OKxHVYlNiPT5QN5jLqPjGuv2rvXPkudfedTcQCjlGHma+9ZqrLXwpyPxonH6cUjy749GiS
-        Sp130h1/OhEUEdpDCQsWbV8EKOmuzNRC51DSjB6Vsa/oJvWZ9HGaTZGEsN3CeXVeo4BUX/lwgeCag
-        ReqYR/stRGCwvmZLbIxbTNXiJZoIIPCd/pYyzSzIGtLza1D+lf37JgY9eUMWrLKimB7Wtxj1/AmiO
-        XdiTlGxg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mnSzl-00GZrB-9U; Wed, 17 Nov 2021 22:01:33 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E19B1982234; Wed, 17 Nov 2021 23:01:32 +0100 (CET)
-Date:   Wed, 17 Nov 2021 23:01:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 2/7] set_memory: introduce
- set_memory_[ro|x]_noalias
-Message-ID: <20211117220132.GC174703@worktop.programming.kicks-ass.net>
-References: <20211116071347.520327-1-songliubraving@fb.com>
- <20211116071347.520327-3-songliubraving@fb.com>
- <20211116080051.GU174703@worktop.programming.kicks-ass.net>
- <768FB93A-E239-4B21-A0F1-C1206112E37E@fb.com>
+        with ESMTP id S241267AbhKQWdF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 17:33:05 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315B2C0613B9
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 14:30:06 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id e3so17827483edu.4
+        for <bpf@vger.kernel.org>; Wed, 17 Nov 2021 14:30:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/dbCdpFMMa63XSMKyMFWQhocelYW9Pi1PBQWlvxTsug=;
+        b=ObaRcTnhtplTRGzScpGB7fdNOCVwBaZbweGKJhnPwOQoppmt4/L7czLDRFB2DwTnM/
+         K0TzYgu2fGU3JYykOTCWKC5KTZ/BHnjhsvVRk8JLyk+hJuM06wi6fkXTAaX99/JyyCEY
+         w4fCnQ3yJNoZssKTgpIGcylSmmOK07bBT8XmkR2IaWIZHQmy61xLFzlvQzesMqaK15qw
+         0Kho8hyS91sJwuZsUR07r+3cFmc56FSI8IMt2XQnvgp+JopZ5zUP4BoVssqhnsP7+her
+         0WSXatbzrhFaPt1NSFZoNcHXtA5Azwm2VsVqEAH0v4NSOXzgetIJg0oPJwUTOkG7JqEF
+         QZ2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/dbCdpFMMa63XSMKyMFWQhocelYW9Pi1PBQWlvxTsug=;
+        b=yLjA7KcNLV6rqcAnUPLKDMZdDcaAHefaefmkdVgowVnFHBazkHrbtMS4+9jr4er3zI
+         GdURiTH6K6nviF84Emfbe554gfoEJwYI8E6B7XDyTZmP4Vl5NvmY0ir5uCAfUNgqDR0b
+         Bvn7U8lDbiVV0iJTy0IF/Qtxx6zp61fPT4m82c9GI2TRgheZ6gxhXBzzTEALhIgXmmlr
+         k1MvtGeSOrLjKwfUSdBjnfhtgOUp6+9+SFEPQyzO4kv6aoD73lcKwv7kuyg1+wQQ0NEY
+         PmfrzAaBTyPRpjJlXp+gBkG4d26kq0CYLpMP9vOFx1CGz3rCue1zKCzbiNo8WpfCjwaE
+         iiKQ==
+X-Gm-Message-State: AOAM531i9CCJau9kju+qxh5gIDrQa8hl1yKWLdp9TXT5xPx1fUrtjCYZ
+        O/+eLDJWWrlU/UG/kXJcFc2oCf03O1OoGuOX6ncUyg==
+X-Google-Smtp-Source: ABdhPJyn59BQm41DfYh6GNKdmsbDn3XuE6GIPwQRfQZe7cJQlxXegYj155Z4J3iyTzG3Diq+flRBzAbqWrZKJ6F/Gfc=
+X-Received: by 2002:a50:e608:: with SMTP id y8mr3389833edm.39.1637188204599;
+ Wed, 17 Nov 2021 14:30:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <768FB93A-E239-4B21-A0F1-C1206112E37E@fb.com>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+ <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com> <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Wed, 17 Nov 2021 14:29:53 -0800
+Message-ID: <CAP045AqeXdZpSicKmQ_VU0SkA-igJ-VKM0E=VF+-gzgNS=ckdw@mail.gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 09:36:27PM +0000, Song Liu wrote:
-> 
-> 
-> > On Nov 16, 2021, at 12:00 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > On Mon, Nov 15, 2021 at 11:13:42PM -0800, Song Liu wrote:
-> >> These allow setting ro/x for module_alloc() mapping, while leave the
-> >> linear mapping rw/nx.
-> > 
-> > This needs a very strong rationale for *why*. How does this not
-> > trivially circumvent W^X ?
-> 
-> In this case, we want to have multiple BPF programs sharing the 2MB page. 
-> When the JIT engine is working on one program, we would rather existing
-> BPF programs on the same page stay on RO+X mapping (the module_alloc() 
-> address). The solution in this version is to let the JIT engine write to 
-> the page via linear address. 
-> 
-> An alternative is to only use the module_alloc() address, and flip the 
-> read-only bit (of the whole 2MB page) back and forth. However, this 
-> requires some serialization among different JIT jobs. 
+On Wed, Nov 17, 2021 at 1:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Kyle Huey <me@kylehuey.com> writes:
+>
+> > On Wed, Nov 17, 2021 at 11:05 AM Kyle Huey <me@kylehuey.com> wrote:
+> >>
+> >> On Wed, Nov 17, 2021 at 10:51 AM Kees Cook <keescook@chromium.org> wrote:
+> >> >
+> >> > On Wed, Nov 17, 2021 at 10:47:13AM -0800, Kyle Huey wrote:
+> >> > > rr, a userspace record and replay debugger[0], is completely broken on
+> >> > > 5.16rc1. I bisected this to 00b06da29cf9dc633cdba87acd3f57f4df3fd5c7.
+> >> > >
+> >> > > That patch makes two changes, it blocks sigaction from changing signal
+> >> > > handlers once the kernel has decided to force the program to take a
+> >> > > signal and it also stops notifying ptracers of the signal in the same
+> >> > > circumstances. The latter behavior is just wrong. There's no reason
+> >> > > that ptrace should not be able to observe and even change
+> >> > > (non-SIGKILL) forced signals.  It should be reverted.
+> >> > >
+> >> > > This behavior change is also observable in gdb. If you take a program
+> >> > > that sets SIGSYS to SIG_IGN and then raises a SIGSYS via
+> >> > > SECCOMP_RET_TRAP and run it under gdb on a good kernel gdb will stop
+> >> > > when the SIGSYS is raised, let you inspect program state, etc. After
+> >> > > the SA_IMMUTABLE change gdb won't stop until the program has already
+> >> > > died of SIGSYS.
+> >> >
+> >> > Ah, hm, this was trying to fix the case where a program trips
+> >> > SECCOMP_RET_KILL (which is a "fatal SIGSYS"), and had been unobservable
+> >> > before. I guess the fix was too broad...
+> >>
+> >> Perhaps I don't understand precisely what you mean by this, but gdb's
+> >> behavior for a program that is SECCOMP_RET_KILLed was not changed by
+> >> this patch (the SIGSYS is not observed until after program exit before
+> >> or after this change).
+> >
+> > Ah, maybe that behavior changed in 5.15 (my "before" here is a 5.14
+> > kernel).  I would argue that the debugger seeing the SIGSYS for
+> > SECCOMP_RET_KILL is desirable though ...
+>
+> This is definitely worth discussing, and probably in need of fixing (aka
+> something in rr seems to have broken).
 
-Neither options seem acceptible to me as they both violate W^X.
+I mean this in the nicest possible way: fixing this is not optional.
 
-Please have a close look at arch/x86/kernel/alternative.c:__text_poke()
-for how we modify active text. I think that or something very similar is
-the only option. By having an alias in a special (user) address space
-that is not accessible by any other CPU, only the poking CPU can expoit
-this (temporary) hole, which is a much larger ask than any of the
-proposed options.
+> We definitely need protection against the race with sigaction.
 
+Sure, no argument here, and that doesn't cause any problems for us.
+
+> The fundamental question becomes does it make sense and is it safe
+> to allow a debugger to stop at, and possibly change these signals.
+
+And the answer is yes, because at least some of these signals are
+generated by actions of the debugger (e.g. setting a breakpoint).
+
+> Stopping at something SA_IMMUTABLE as long as the signal is allowed to
+> continue and kill the process when PTRACE_CONT happens seems harmless.
+>
+> Allowing the debugger to change the signal, or change it's handling
+> I don't know.
+
+This is required to support breakpoints.
+
+> All of this is channeled through the following function.
+>
+> > static int
+> > force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool sigdfl)
+> > {
+> >       unsigned long int flags;
+> >       int ret, blocked, ignored;
+> >       struct k_sigaction *action;
+> >       int sig = info->si_signo;
+> >
+> >       spin_lock_irqsave(&t->sighand->siglock, flags);
+> >       action = &t->sighand->action[sig-1];
+> >       ignored = action->sa.sa_handler == SIG_IGN;
+> >       blocked = sigismember(&t->blocked, sig);
+> >       if (blocked || ignored || sigdfl) {
+> >               action->sa.sa_handler = SIG_DFL;
+> >               action->sa.sa_flags |= SA_IMMUTABLE;
+> >               if (blocked) {
+> >                       sigdelset(&t->blocked, sig);
+> >                       recalc_sigpending_and_wake(t);
+> >               }
+> >       }
+> >       /*
+> >        * Don't clear SIGNAL_UNKILLABLE for traced tasks, users won't expect
+> >        * debugging to leave init killable.
+> >        */
+> >       if (action->sa.sa_handler == SIG_DFL && !t->ptrace)
+> >               t->signal->flags &= ~SIGNAL_UNKILLABLE;
+> >       ret = send_signal(sig, info, t, PIDTYPE_PID);
+> >       spin_unlock_irqrestore(&t->sighand->siglock, flags);
+> >
+> >       return ret;
+> > }
+>
+> Right now we have 3 conditions that trigger SA_IMMUTABLE.
+> - The sigdfl parameter is passed asking that userspace not be able to
+>   change the handling of the signal.
+>
+> - A synchronous exception is taken and the signal is blocked.
+>
+> - A synchronous exception is taken and the signal is ignored.
+
+Delivering signals to a ptracee in the latter two cases is simply not
+optional. As it stands with your change, a program that blocks SIGTRAP
+or sets its SIGTRAP handler to SIG_IGN becomes undebuggable.  If a
+debugger injects a breakpoint or uses PTRACE_SINGLESTEP on a tracee
+the delivery of that signal can't be controlled by the tracee's signal
+state.
+
+> Today because of how things are implemented the code most change the
+> userspace state to allow the signal to kill the process.  I really want
+> to get rid of that, because that has other side effects.  As part of
+> getting rid of changing the state it is my plan to get rid of
+> SA_IMMUTABLE as well.  If I don't have to allow the debugger to stop and
+> observe what is happening with the signal that change is much easier to
+> implement.
+>
+> The classic trigger of sigdfl is a recursive SIGSEGV.
+>
+> However we have other cases like SECCOMP_RET_KILL where the kernel
+> has never allowed userspace to intercept the killing of the
+> process.  Things that have messages like: "seccomp tried to change
+> syscall nr or ip"
+>
+> My brain is drawing a blank on how to analyze those.
+>
+> Kees I am back to asking the question I had before I figured out
+> SA_IMMUTABLE.  Are there security concerns with debuggers intercepting
+> SECCOMP_RET_KILL.
+>
+> I think I can modify dequeue_synchronous_signal so that we can perform
+> the necessary logic in get_signal rather than hack up the signal
+> handling state in force_sig_info_to_task.
+>
+> Except for the cases like SECCOMP_RET_KILL where the kernel has never
+> allowed userspace to intercept the handling.  I don't see any
+> fundamental reason why ptrace could not intercept the signal.  The
+> handling is overriden to force the process to die, because the way
+> userspace is currently configured to handle the signal does not work so
+> it is necessary to kill the process.
+>
+> I think there are cases where the userspace state is known to be
+> sufficiently wrong that the kernel can not safely allow anything more
+> than inspecting the state.
+>
+> I can revisit the code to see if the kernel will get confused if
+> something more is allowed.  Still I really like the current semantics of
+> SA_IMMUTABLE because these are cases where something wrong.  If someone
+> miscalculates how things are wrong it could result in the kernel getting
+> confused and doing the wrong thing.  Allowing the debugger to intercept
+> the signal requires we risk miscalculating what is wrong.
+>
+> Kyle how exactly is rr broken?  Certainly a historical usage does not
+> work.  How does this affect actual real world debugging sessions?
+
+rr is broken across the board because of specific things related to
+its handling of exit_group (namely we first block all signals in the
+tracee, so that we don't catch a signal during our handling of it,
+then we hijack the tracee to do some cleanup before exit_group is
+really allowed to execute, and we use e.g. PTRACE_SINGLESTEP that
+expects to punch through the signal blocking). But even if I fixed
+that, I expect there would be other issues. The expectation that these
+signals will be delivered is deeply embedded.
+
+> You noticed this and bisected the change quickly so I fully expect
+> this does affect real world debugging sessions.  I just want to know
+> exactly how so that exactly what is wrong can be fixed.
+
+I noticed this because we have a test suite we run against new kernel
+releases precisely to catch regressions like this.
+
+You don't need rr to reproduce the underlying issue though.  Compile
+the following
+
+```
+#include <signal.h>
+#include <stdio.h>
+
+int main() {
+  signal(SIGTRAP, SIG_IGN);
+  printf("Hello World\n");
+  return 0;
+}
+```
+
+And try to break on the printf under gdb.  After you fix that (and the
+equivalent where SIGTRAP is blocked) rr should be fine.
+
+- Kyle
+
+> As far as I can tell SA_IMMUTABLE has only been backported to v5.15.x
+> where in cleaning things up I made SECCOMP_RET_KILL susceptible to races
+> with sigaction, and ptrace.  Those races need to be closed or we need to
+> decide that we don't actually care if the debugger does things.
+>
+> Eric
