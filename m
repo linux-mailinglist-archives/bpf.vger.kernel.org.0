@@ -2,122 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518DE4565C9
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 23:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504B74565DD
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 23:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhKRWma (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 17:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        id S229662AbhKRWv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 17:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhKRWma (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:42:30 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D91C061574
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 14:39:29 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id v64so22610083ybi.5
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 14:39:29 -0800 (PST)
+        with ESMTP id S229580AbhKRWv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 17:51:27 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C50C061574;
+        Thu, 18 Nov 2021 14:48:26 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id v138so22642340ybb.8;
+        Thu, 18 Nov 2021 14:48:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ccC/K4H1VoL2Ge0Ae32TLp83ekKe+WlIXZqkGc3TxbI=;
-        b=a5I6JqMQW7sJzsBI9/P8ne6krJZsyHNvI1DAyO8eEsvw7WF3UXNuahQjjhjP+CxWyF
-         V781j+3tJSiHPu5j+7Gn5KYQGac3yjP3Pv+ExY4ZVTRQFttTUN4UH+5wrHResIqRJ/8E
-         VaFFNCrH4/Gxw0nUe/jWXZNdV9x/9SloMwImkGxar6Fmu4Mqr3TPzpeGTU+7FxSE1Tae
-         VqmUzJwzx9c6p792Wob9uZFe6/W3S3c7+f424aMipoAxnQbh8iyx+O01/XsuEqIA4t26
-         8oUsecbkDYwg7GOrMnki8KlwkZYHfH1KIEKm1MSzfpfaoZxVsKMr4n+eDNZhH2MFVqDu
-         OZ0A==
+        bh=1A4I+IvpMnd1wIeiEMqnfEVMSvtyrpGJNH7+WyrCADg=;
+        b=XPMPejQ4hp2jZEecf8S1x6d/hnxHl1myxWtrkVVOmM+/h4+9WyAkpMOtdPU9tZyJ7u
+         0WQb62j2C7OKPp0I/2a4UsVmQZtuJk4yTj3nvvwt9ev4r6FDADcLdjAuFAjdWElPmS53
+         pMOkWcLnonOZPjbbWCI6pd3gEnvmjc3gnmEzwZYm6xQa/TmseBChoCc41alLALVwIczz
+         JIu/gO76XnEI4aKW6Bfpq/CrJUbN+n680utr5GPjKzSx9Ond368KrPs4S90e0O/IEg+T
+         OSbRoMU4MbjXKUbeBW1CSH9eihXsz9EAfmncPfGu0xzn2uXiyek9VIQ+kiUfRvtWMWRI
+         qksg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ccC/K4H1VoL2Ge0Ae32TLp83ekKe+WlIXZqkGc3TxbI=;
-        b=POhIcudv2c+FosGZ61tZvduOItKvRUtyy1Xz7GrdIfuytp6T071nVMJjhs7icUr9mS
-         XQg6SHKEK5StaO5zNWCM3SWvKHPwS2v21grAxrmFCUz5YR+JldT04kU/l3MN58n5+Rq3
-         ZBTPqKc1IlNw2MHWxybS9Clq6g3WRq4ufpL3kzUrsz3B9xZgikbtCxLuKw8vzgA37YIC
-         MeTAXLwb+lFlVtu1BkWkK0uBl1B4+fki0oeJY+SJnS9FLJukDR8B1U9ceCYk4xEfY80P
-         UTO254iDxkHBnI6pnR5obtkcfminM/LGaR7HpIgFqdBe8//GJn08KhMlrwqrYOlN+X68
-         hzPA==
-X-Gm-Message-State: AOAM533j8QrXsG+30xGTJyTSJShGLmpweHFrXL5OeXwniWDjsO/QE8bd
-        BpUJG5uWzRiNBMu0t9CRT5/1Dl/iinIAAWKVL/Lf76eB
-X-Google-Smtp-Source: ABdhPJyJZKWq+bK7wf/AYv4tI9yliAqYPmHvwNrfc6iVgs5TUVY4sITSiIwnq4rboJmLrVyHmfUcAQAMF5d7ni/NhSg=
-X-Received: by 2002:a25:d16:: with SMTP id 22mr31499988ybn.51.1637275168820;
- Thu, 18 Nov 2021 14:39:28 -0800 (PST)
+        bh=1A4I+IvpMnd1wIeiEMqnfEVMSvtyrpGJNH7+WyrCADg=;
+        b=Em7GTfiWb73eyGHGxTgeG5WKTFtQSyTUBRFaYQLBBRRCPkrv1s+ZoDpxyOXbhdCm2W
+         mAHwRlJzw57GTxUynLaxdyWG/4p9D0+r8D7sT6Dzwu8Q3j1iW6tKQcVCbfDX646HFEB1
+         BP0ROt2+9ddHLUAJR1Va8tRUMyKNQp//sTmWrtImGA4QdzwkWYcPCP59jrnoBNVqR/Qg
+         WIxsdlSqwpZUNFCV8PZeRVAQdbDeuuRyqcuGEBZbsVHGV6bpPJhz47XLcWEWug4KmXfD
+         1+kdRlkB6OFEV2bQ8my0pPcQjxMzHp940ZG356g2mUsnDJ00ZU84CTxRo9MwKm2Zp1UX
+         xmwQ==
+X-Gm-Message-State: AOAM531uzkxT8s4RaG/XzacYFsAkr7JFtOlWMpd9rzdtjBXEgLpQZnuO
+        mVr+sG0L1KUJkdKbHsDs4d+XVGBdG+YpWirtYtLS3r4Q
+X-Google-Smtp-Source: ABdhPJwUgfAuSgKLD26HnNHOrJPhk6SCNwQM2Dn26pOeI2qdLecIAvpsaXTS1kklB/ODwGB376Xm1xXl2h4EKAoY5X8=
+X-Received: by 2002:a25:d187:: with SMTP id i129mr31194995ybg.2.1637275705946;
+ Thu, 18 Nov 2021 14:48:25 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK-59YFPU3qO+_pXWOH+c1LSA=8WA1yabJZfREjOEXNHAqgXNg@mail.gmail.com>
-In-Reply-To: <CAK-59YFPU3qO+_pXWOH+c1LSA=8WA1yabJZfREjOEXNHAqgXNg@mail.gmail.com>
+References: <20211118130507.170154-1-kjain@linux.ibm.com>
+In-Reply-To: <20211118130507.170154-1-kjain@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Nov 2021 14:39:17 -0800
-Message-ID: <CAEf4BzZM480NkS+At2Cb=mJaj1FowgUTbepp5QPreXXDriTBLg@mail.gmail.com>
-Subject: Re: Custom 'hello' BPF CO-RE example failed on Debian 10 again for
- some reason
-To:     Pony Sew <poony20115@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Thu, 18 Nov 2021 14:48:14 -0800
+Message-ID: <CAEf4BzbDgCVLj0r=3iponPp81aVAGokhGti8WLfWKhHuTLdA8w@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: Remove config check to enable bpf support for
+ branch records
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        rnsastry@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 1:48 AM Pony Sew <poony20115@gmail.com> wrote:
+On Thu, Nov 18, 2021 at 5:10 AM Kajol Jain <kjain@linux.ibm.com> wrote:
 >
-> Hello,
-> This (https://github.com/sartura/ebpf-core-sample) is the code I'm using.
-> But I add " #define BPF_NO_GLOBAL_DATA 1 " on 'hello.bpf.c' so that
-> Debian 10 is able to execute it.
-> Compiled on default Debian11 amd64 environment with clang package
-> installed from mirror source.
-> Both 'hello' and 'maps' used to work on Debian10 about a month ago.
-> But 'hello' now can't. I'd like to improve this result.
-> -----------------------------------------------------------------------------------------
-> This is how I compiled them in steps:
+> Branch data available to bpf programs can be very useful to get
+> stack traces out of userspace application.
 >
-> # bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-> # clang -g -O2 -target bpf -D__TARGET_ARCH_x86_64 -I . -c hello.bpf.c -o
-> # hello.bpf.o
-> # bpftool gen skeleton hello.bpf.o > hello.skel.h
-> # clang -g -O2 -Wall -I . -c hello.c -o hello.o
-> # git clone https://github.com/libbpf/libbpf
-> # cd libbpf/src
-> # make BUILD_STATIC_ONLY=1 OBJDIR=../build/libbpf DESTDIR=../build
-> INCLUDEDIR= LIBDIR= UAPIDIR= install
-> # cd ../../
-> # clang -Wall -O2 -g hello.o libbpf/build/libbpf.a -lelf -lz -o hello
+> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
+> added bpf support to capture branch records in x86. Enable this feature
+> for other architectures as well by removing check specific to x86.
+> Incase any platform didn't support branch stack, it will return with
+> -EINVAL.
 >
-> There was only one warning message: "libbpf: elf: skipping
-> unrecognized data section(4) .rodata.str1.1", which appeared during
-> the generation of 'hello.skel.h'. There are no other warning and error
-> messages during this whole 'hello' and 'maps' compilation.
-> -------------------------------------------------------------------------------------------------------------------
-> Result of executing 'hello' on default amd64 Debian10 environment:
+> Selftest 'perf_branches' result on power9 machine with branch stacks
+> support.
 >
-> libbpf: kernel doesn't support global data
-
-Sorry for the late reply, I didn't ignore or forget, I was trying to
-come up with the best solution.
-
-In short, I suspect it's because of the recent libbpf feature to
-support multiple .rodata.* sections. In your case, kernel is old and
-doesn't support those special maps, but Clang actually sometimes emits
-unused .rodata.strN.M sections. No code is referencing them, yet
-compiler stubbornly emits them. After recent changes libbpf will try
-to create a map for such sections which is causing "kernel doesn't
-support global data" error.
-
-I think I'm going to teach libbpf to recognize such maps that are not
-referenced from BPF program code and not create them, if kernel
-doesn't support global data. Will need to see how to do it in the
-least intrusive way, but I'm going to solve this before official 0.6
-release.
-
-Thanks for reporting. Stay tuned for the solution.
-
-> libbpf: failed to load object 'hello_bpf'
-> libbpf: failed to load BPF skeleton 'hello_bpf': -95
-> failed to load BPF object -95
-> -------------------------------------------------------------------------------------------------------------------
-> From what I can remember, That warning message used to appear even
-> when I'm executing 'hello' on Debian10. But the BPF program work just
-> fine then. Maybe there is something else I can do?
+> Before this patch changes:
+> [command]# ./test_progs -t perf_branches
+>  #88/1 perf_branches/perf_branches_hw:FAIL
+>  #88/2 perf_branches/perf_branches_no_hw:OK
+>  #88 perf_branches:FAIL
+> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
 >
-> Sincerely,
-> Poony.
+> After this patch changes:
+> [command]# ./test_progs -t perf_branches
+>  #88/1 perf_branches/perf_branches_hw:OK
+>  #88/2 perf_branches/perf_branches_no_hw:OK
+>  #88 perf_branches:OK
+> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Selftest 'perf_branches' result on power9 machine which doesn't
+> support branch stack
+>
+> After this patch changes:
+> [command]# ./test_progs -t perf_branches
+>  #88/1 perf_branches/perf_branches_hw:SKIP
+>  #88/2 perf_branches/perf_branches_no_hw:OK
+>  #88 perf_branches:OK
+> Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
+>
+> Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>
+> Tested this patch changes on power9 machine using selftest
+> 'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
+> Add bpf_read_branch_records()")
+>
+> Changelog:
+> v1 -> v2
+> - Inorder to add bpf support to capture branch record in
+>   powerpc, rather then adding config for powerpc, entirely
+>   remove config check from bpf_read_branch_records function
+>   as suggested by Peter Zijlstra
+
+what will be returned for architectures that don't support branch
+records? Will it be zero instead of -ENOENT?
+
+>
+> - Link to the v1 patch: https://lkml.org/lkml/2021/11/14/434
+>
+>  kernel/trace/bpf_trace.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 7396488793ff..5e445985c6b4 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1402,9 +1402,6 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
+>  BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>            void *, buf, u32, size, u64, flags)
+>  {
+> -#ifndef CONFIG_X86
+> -       return -ENOENT;
+> -#else
+>         static const u32 br_entry_size = sizeof(struct perf_branch_entry);
+>         struct perf_branch_stack *br_stack = ctx->data->br_stack;
+>         u32 to_copy;
+> @@ -1425,7 +1422,6 @@ BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>         memcpy(buf, br_stack->entries, to_copy);
+>
+>         return to_copy;
+> -#endif
+>  }
+>
+>  static const struct bpf_func_proto bpf_read_branch_records_proto = {
+> --
+> 2.27.0
+>
