@@ -2,155 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687EF45524A
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 02:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803A84552F1
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 03:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242301AbhKRBlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 20:41:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S242278AbhKRC57 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 21:57:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240916AbhKRBlm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 20:41:42 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C30C061570;
-        Wed, 17 Nov 2021 17:38:43 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id i194so13101243yba.6;
-        Wed, 17 Nov 2021 17:38:43 -0800 (PST)
+        with ESMTP id S240790AbhKRC56 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 21:57:58 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF76AC061570;
+        Wed, 17 Nov 2021 18:54:58 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id 8so4507813pfo.4;
+        Wed, 17 Nov 2021 18:54:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ffX9lZnZ5C5/MWpiSmumwABgSvb0YSntYiPxoSe6be4=;
-        b=LeQcW2wtvS9wBTSnyOBb+P91DyOfbjtV24PHs2ulIZrLa/01giQC+vyN1KE2hWnqIT
-         Ewev4XsAF4f3rN7aoHIUtsNBN08W7brKV1UE2cQKngDESKLuhRYJgqYFHGGgeMufcQDz
-         zJVTPAzkoMX8k5F8kC64SuWnA2Kmk973IzIPApNwq8bo8lyw7xUGoEXspO20+UzydXh4
-         NztgVLaB9NK4nf7AEKLCkcRFn8iBtNbDbDSzVSmFqtj2h/ZeMmPysyvNHCY28SqadlLZ
-         ite1wIVTVDbEfC5QeanG4Of5dJAVzHAXNr2aPhB4fHBgf6JpXOzjNIZ1SGzn1CctRAD2
-         WIZQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=77sXzKb3qBixJ++XdkRbMoa0EMCrbI7IHQol4+NzyOE=;
+        b=Vznxm/aa3HjY+YYXl6cGDc/uSN6ZsMWBnjlfA9TTPt1TUWK5TINwUrlDs89DD3WNDN
+         ANKkgUGHXj7K28Y265Pf+4KxOf2tPVfwQdGPoui5wgx8k2kAZHKwMXIlX7wpoGv6MH49
+         R7iPt1NQ7eYbM9Gul0rK849PON9UgAwghKZl5Z6TEbmHMUP3faFm/X4oShklfCRUDbVy
+         seaoeKBPME/yE+j7I9V+xeARgFsxw1Lm8wq+9nGbS8QW19x6fpH/hn4glQ1St7LGBh/4
+         krH8KRQ6W9K6tmXt13/KP+rQpmfltAITQ+D6zNcPFG/wUGmb68zkF0jL8QT8X0n1sspi
+         pQKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ffX9lZnZ5C5/MWpiSmumwABgSvb0YSntYiPxoSe6be4=;
-        b=MBZIjys0419AooLU9ysxveoGP1Ztt2U+TqBsLPpAFDftQNySUWhuKd7K1wYiuivpyL
-         84kGJ9/fE7hsoAW7hM8tu5nUwpG+6VUUr06s/NcfcGiRkVIf8EFUQ+VEm/Z85goePHXt
-         vTuzx7G9TzyqLft7e4u6h6nTCN8kNeolMlxAlahkkFchqnSOsWDYzFqwx9J2d/f+Hlfh
-         9pDrp7atfIeclQMorrwl9cGQgKTmjK4zkocfMgM7e65tIjUbzD48xViHrf620pDxmzFG
-         K+/+/TA6+2yOHv57wS/EJPjE+1hVdY2gZZNYaSfxZYh3j647tz5wQSWWrpcN14fu/ASR
-         1FVQ==
-X-Gm-Message-State: AOAM533pQjpcrdk0IBD8FvDp8eaYppmZ24Rx2DXV3IHEq6q6MHzM2a2j
-        yXJaoqCQB/X324cXdupft7o8xX8C77WRJ9kA61E=
-X-Google-Smtp-Source: ABdhPJwaE6rvp6crwixYCjHbr56n9Y4PKxXBNy7QLEBZnHa0VwzHhqjp8SyzMxe/jycSk0lfGmh/czM9OVEbBYZ84vc=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr23549511ybj.504.1637199522877;
- Wed, 17 Nov 2021 17:38:42 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=77sXzKb3qBixJ++XdkRbMoa0EMCrbI7IHQol4+NzyOE=;
+        b=nnoar2uZonPwESOYhZjNNN4MLi5N3eclY1bqMexXDFxB/Ra3rdISxsBkqUcDjKgSSC
+         JWQzO21w0IUf6samGsfnsI18scBYvAQla9T9MYvKzW/JsvuoKLhrPr3SPMlp582tptf/
+         ZbeFFV+PtsQU0ZaaIH9/S+JDdGnyp8SnpxYfbEW8hKxswQ/SjOoFI43SBw0nlPTYYtN4
+         CfSG6/YMfAfFEmau4B0ihiTZXM/2PwaDA2C4ETp4+7CwKHUJ7GBCfE3XKnV2vr4Kqsy3
+         gau4TlCKRDZdrHYr1qJn4ufQOzU0VIo7eA97yI5MpC2ecwZPThzSIiRi+yk8hhtGrEk6
+         6rXg==
+X-Gm-Message-State: AOAM531vqVdc5ld8kvVEXvRhjES6vni3w4wGWA/9JCxs5j7xTiaOLUUM
+        QT2LcnFv3dBy+yIkW5uoKwE=
+X-Google-Smtp-Source: ABdhPJwDOLhpnqhm0ivUMgz3f9BSSWLw+re/TmubZXcsrA+/xDsqVai7QPQKZhbeI1BhQdzROSEj0w==
+X-Received: by 2002:a63:a5f:: with SMTP id z31mr8840139pgk.426.1637204098298;
+        Wed, 17 Nov 2021 18:54:58 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:2349])
+        by smtp.gmail.com with ESMTPSA id z10sm994382pfh.106.2021.11.17.18.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 18:54:57 -0800 (PST)
+Date:   Wed, 17 Nov 2021 18:54:55 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Ciara Loftus <ciara.loftus@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, toke@redhat.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, maciej.fijalkowski@intel.com
+Subject: Re: [RFC PATCH bpf-next 0/8] XDP_REDIRECT_XSK and Batched AF_XDP Rx
+Message-ID: <20211118025455.5nizcavybink4a4b@ast-mbp.dhcp.thefacebook.com>
+References: <20211116073742.7941-1-ciara.loftus@intel.com>
 MIME-Version: 1.0
-References: <20211111161452.86864-1-lmb@cloudflare.com> <CAADnVQKWk5VNT9Z_Cy6COO9NMjkUg1p9gYTsPPzH-fi1qCrDiw@mail.gmail.com>
- <CACAyw99EhJ8k4f3zeQMf3pRC+L=hQhK=Rb3UwSz19wt9gnMPrA@mail.gmail.com>
- <20211118010059.c2mixoshcrcz4ywq@ast-mbp> <CAEf4Bza=ZipeiwhvUvLLs9r4dbOUQ6JQTAotmgF6tUr1DAc9pw@mail.gmail.com>
-In-Reply-To: <CAEf4Bza=ZipeiwhvUvLLs9r4dbOUQ6JQTAotmgF6tUr1DAc9pw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 17 Nov 2021 17:38:31 -0800
-Message-ID: <CAEf4BzZTiyyKLg2y_dSvEEgzjSsCRCeRgt99DmFAHJyGqht8tw@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests: bpf: check map in map pruning
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116073742.7941-1-ciara.loftus@intel.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 5:29 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Nov 17, 2021 at 5:01 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Nov 17, 2021 at 08:47:45AM +0000, Lorenz Bauer wrote:
-> > > On Sat, 13 Nov 2021 at 01:27, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > Not sure how you've tested it, but it doesn't work in unpriv:
-> > > > $ test_verifier 789
-> > > > #789/u map in map state pruning FAIL
-> > > > processed 26 insns (limit 1000000) max_states_per_insn 0 total_states
-> > > > 2 peak_states 2 mark_read 1
-> > > > #789/p map in map state pruning OK
-> > >
-> > > Strange, I have a script that I use for bisecting which uses a minimal
-> > > .config + virtue to run a vm, plus I was debugging in gdb at the same
-> > > time. I might have missed this, apologies.
-> > >
-> > > I guess vmtest.sh is the canonical way to run tests now?
-> >
-> > vmtest.sh runs test_progs only. That's the minimum bar that
->
-> It runs test_progs by default, unless something else is requested. You
-> can run anything inside it, e.g.:
->
-> ./vmtest.sh -- ./test_maps
->
-> BTW, we recently moved configs around in libbpf repo on Github, so
-> this script broke. I'm sending a fix in a few minutes, hopefully.
+On Tue, Nov 16, 2021 at 07:37:34AM +0000, Ciara Loftus wrote:
+> The common case for AF_XDP sockets (xsks) is creating a single xsk on a queue for sending and 
+> receiving frames as this is analogous to HW packet steering through RSS and other classification 
+> methods in the NIC. AF_XDP uses the xdp redirect infrastructure to direct packets to the socket. It 
+> was designed for the much more complicated case of DEVMAP xdp_redirects which directs traffic to 
+> another netdev and thus potentially another driver. In the xsk redirect case, by skipping the 
+> unnecessary parts of this common code we can significantly improve performance and pave the way 
+> for batching in the driver. This RFC proposes one such way to simplify the infrastructure which 
+> yields a 27% increase in throughput and a decrease in cycles per packet of 24 cycles [1]. The goal 
+> of this RFC is to start a discussion on how best to simplify the single-socket datapath while 
+> providing one method as an example.
+> 
+> Current approach:
+> 1. XSK pointer: an xsk is created and a handle to the xsk is stored in the XSKMAP.
+> 2. XDP program: bpf_redirect_map helper triggers the XSKMAP lookup which stores the result (handle 
+> to the xsk) and the map type (XSKMAP) in the percpu bpf_redirect_info struct. The XDP_REDIRECT 
+> action is returned.
+> 3. XDP_REDIRECT handling called by the driver: the map type (XSKMAP) is read from the 
+> bpf_redirect_info which selects the xsk_map_redirect path. The xsk pointer is retrieved from the
+> bpf_redirect_info and the XDP descriptor is pushed to the xsk's Rx ring. The socket is added to a
+> list for flushing later.
+> 4. xdp_do_flush: iterate through the lists of all maps that can be used for redirect (CPUMAP, 
+> DEVMAP and XSKMAP). When XSKMAP is flushed, go through all xsks that had any traffic redirected to 
+> them and bump the Rx ring head pointer(s).
+> 
+> For the end goal of submitting the descriptor to the Rx ring and bumping the head pointer of that 
+> ring, only some of these steps are needed. The rest is overhead. The bpf_redirect_map 
+> infrastructure is needed for all other redirect operations, but is not necessary when redirecting 
+> to a single AF_XDP socket. And similarly, flushing the list for every map type in step 4 is not 
+> necessary when only one socket needs to be flushed.
+> 
+> Proposed approach:
+> 1. XSK pointer: an xsk is created and a handle to the xsk is stored both in the XSKMAP and also the 
+> netdev_rx_queue struct.
+> 2. XDP program: new bpf_redirect_xsk helper returns XDP_REDIRECT_XSK.
+> 3. XDP_REDIRECT_XSK handling called by the driver: the xsk pointer is retrieved from the 
+> netdev_rx_queue struct and the XDP descriptor is pushed to the xsk's Rx ring.
+> 4. xsk_flush: fetch the handle from the netdev_rx_queue and flush the xsk.
+> 
+> This fast path is triggered on XDP_REDIRECT_XSK if:
+>   (i) AF_XDP socket SW Rx ring configured
+>  (ii) Exactly one xsk attached to the queue
+> If any of these conditions are not met, fall back to the same behavior as the original approach: 
+> xdp_redirect_map. This is handled under-the-hood in the new bpf_xdp_redirect_xsk helper so the user
+> does not need to be aware of these conditions.
 
-... and of course it's not that simple. [0] recently changed how we
-build qemu image and vmtest.sh had some assumptions. Some trivial
-things I fixed, but I'm not too familiar with the init scripts stuff.
-Adding Ilya and KP to hopefully help with this. Ilya, KP, can you
-please help restore vmtest.sh functionality?
-
-After fixing few paths:
-
-diff --git a/tools/testing/selftests/bpf/vmtest.sh
-b/tools/testing/selftests/bpf/vmtest.sh
-index 027198768fad..7ea40108b85d 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -13,8 +13,8 @@ DEFAULT_COMMAND="./test_progs"
- MOUNT_DIR="mnt"
- ROOTFS_IMAGE="root.img"
- OUTPUT_DIR="$HOME/.bpf_selftests"
--KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
--KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/latest.config"
-+KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/config-latest.x86_64"
-+KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/config-latest.x86_64"
- INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
- NUM_COMPILE_JOBS="$(nproc)"
- LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
-@@ -85,7 +85,7 @@ newest_rootfs_version()
- {
-        {
-        for file in "${!URLS[@]}"; do
--               if [[ $file =~ ^libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
-+               if [[ $file =~
-^x86_64/libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
-                        echo "${BASH_REMATCH[1]}"
-                fi
-        done
-
-... the next problem is more severe. Script complains about missing
-/etc/rcS.d, if I just force-created it, when kernel boots we get:
-
-
-[    1.050803] ---[ end Kernel panic - not syncing: No working init
-found.  Try passing init= option to kernel. See Linux
-Documentation/admin-guide/init.rst for guidance. ]---
-
-
-Please help.
-
-  [0] https://github.com/libbpf/libbpf/pull/204
-
->
-> > developers have to pass before sending patches.
-> > BPF CI runs test_progs, test_progs-no_alu32, test_verifier and test_maps.
-> > If in doubt run them all.
+I don't think the micro optimization for specific use case warrants addition of new apis.
+Please optimize it without adding new actions and new helpers.
