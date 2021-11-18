@@ -2,198 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943684565E0
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 23:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0C545668F
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 00:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhKRWwt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 17:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
+        id S233324AbhKRXzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 18:55:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhKRWws (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:52:48 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEAAC061574
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 14:49:47 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id e71so22651442ybh.10
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 14:49:47 -0800 (PST)
+        with ESMTP id S231630AbhKRXzX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 18:55:23 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BDDC061574
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 15:52:23 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so9593677pjc.4
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 15:52:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VdIxpMyt3SWjRJBdtzvosHaDxrAWUqys1OSuqAlao9g=;
-        b=KjfvSU1SYQu6uLcLUB1z5tJV5GziUM+Xq4YN18WIStQVb3EMERv8MN5SEJSaHj0oCg
-         2TEOT7KxzOvQtYBS6+DM6ZgOUb+b/VV2EcrCdbgz2sgGMA8eB+A7nIVr8qAFXQ1KjWQg
-         A0ZVWzfQ20Tf6E0XmwZUMsrdxshZPoyiqIrDckVG9ytYkcH9M2tcVdKkvy9/kGhv44z8
-         SMB0IzneMpiRtZtBBphXyA6JmJg+/IanT52SlMd8EhpjwvgEhnlb8wg0Eolo1LnMpfs+
-         Vgy9OUvUDKm4srrpTqCUwi8dusiMK9z3/VFG+voZE1LA5TVQq4FE9YekwICrbfTOt4gq
-         5R8w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5csrtvGfUTJpKF36Wio1zVqY+YzQi+hNlntFmMAP5yg=;
+        b=g2lurF0Wk+tsvpUW7wbChUs+KopNziAVGrGyEwWVUi1JL40npMY/P45frOYQltqlkN
+         HzbTpOa+CSf20GXvlzUwZ8r1nWk4P/Ny/5RI7MKoq5WedFas/awujDCP280w60AFULjw
+         YMWA+8q4b3wlhHjXQIyMkcJCsDB9rkL7L5vqc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VdIxpMyt3SWjRJBdtzvosHaDxrAWUqys1OSuqAlao9g=;
-        b=Lod5ozLzNlAAVzyKDG/s8K5GqcuThzFv1NJiWiVCeLf3L8Lx0bfpeiB/IVNy6vM51q
-         2R4gFXihZG2hBw3ZO9npEhzdNVSRnnoVXvtfEQzQ5KM8NWzPiaqQCg68o7JTfPIa2AOU
-         c987BV+tqIhV37zjduhj0NOcAPlgfw8WEfF6qcUcX+Rwt1PzXC0P7Bw6VKZAxa14pH7o
-         8ul3zhEcOFTN4tB9sS2UKs2POCMd3DAmJ9NDHaE4wjxmoPlrDeQ/J/DG+qHgg6wYAlp1
-         XwRKVMr5vYoJQJyDO+XbK3tMhLx3yf1kPjqtZlyEYRyq/qLG+iUdr1R0sJBXVMmq+9vf
-         evrw==
-X-Gm-Message-State: AOAM5305sM8VHuadaPxIVSYpmd0N8GT3cdonJ1ukZaQJ2jobOeSOLtjx
-        V7yPuC/qSHb+N6hEWEy3LJM3cWi85e+nh9aOcjo=
-X-Google-Smtp-Source: ABdhPJw43d3hZT7VGSpsRmX3ue+4ty6NQEwRnxLN1J+Nzc3LxW/ReFNZdSnuIdmFJu+UaO5kEu7XdrOTYHkjYpZ35Zo=
-X-Received: by 2002:a25:ccd4:: with SMTP id l203mr8748113ybf.225.1637275786936;
- Thu, 18 Nov 2021 14:49:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5csrtvGfUTJpKF36Wio1zVqY+YzQi+hNlntFmMAP5yg=;
+        b=vgp/IePL5x1WnnCoMFbJ24gmkgMwYRT0v698kODOgHJLHkZuCdD4dvxTT88lSB9i2B
+         xnv+7j7sV0SQYVEdcwXhuGZVtM4RdwhJSWVNJnOWzGdt4SX9zOKhcyVFiheI6nsxLq39
+         vFSTz3Mj8ASxeJA2ElMfoRZX51ZvQWmvE6hupzJ06gGD4TKK9w4vZQLaw2ZcBAIv6bvt
+         giZ9FUTMR5cDluKoNDWw9vOWFALSWYZIUrYq8oVahROr+gchxkYANGzJ7Xybpjljzo49
+         GCJVmGnexKIBWdkfSB/T16Zo5NYjTCjhs1t0he6BNyqJHhFCiYaN5iBSxtORxUn3XbQa
+         SKHQ==
+X-Gm-Message-State: AOAM530yhzecI7HPZ0YzCKqe+n2RsGEhIWuu0M47214EsB41Yfbah/QC
+        Kxf3o++mSxd+su8Rb6kWoy6WPg==
+X-Google-Smtp-Source: ABdhPJyCkMcnVji2etMSb9tSf8G2lX6aXR4fLRsukFT9YdqZmATb5ELAUMXF/+B7nHJtvSt9Daa/CA==
+X-Received: by 2002:a17:903:1105:b0:143:a593:dc6e with SMTP id n5-20020a170903110500b00143a593dc6emr68520805plh.6.1637279542582;
+        Thu, 18 Nov 2021 15:52:22 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id oc10sm10128805pjb.26.2021.11.18.15.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 15:52:22 -0800 (PST)
+Date:   Thu, 18 Nov 2021 15:52:21 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
+        lkp@intel.com
+Subject: Re: [PATCH 1/2] signal: Don't always set SA_IMMUTABLE for forced
+ signals
+Message-ID: <202111181551.FE7B4825B0@keescook>
+References: <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+ <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+ <202111171341.41053845C3@keescook>
+ <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+ <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
+ <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
+ <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
+ <202111171728.D85A4E2571@keescook>
+ <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
+ <877dd5qfw5.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-References: <20211117194114.347675-1-andrii@kernel.org> <CAEf4Bza2NSV8MBb0jSokmUcrzy0SpLvY2uqu4mG9ObxnT-jQLw@mail.gmail.com>
- <YZZiwnWReYnthtzH@krava>
-In-Reply-To: <YZZiwnWReYnthtzH@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Nov 2021 14:49:35 -0800
-Message-ID: <CAEf4BzZ9E3Yg2jjCvzdfDN2dCX-hJBqt1cHFvVNzujrx7KWdgg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: accommodate DWARF/compiler bug with
- duplicated structs
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dd5qfw5.fsf_-_@email.froward.int.ebiederm.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 6:27 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Nov 17, 2021 at 11:42:58AM -0800, Andrii Nakryiko wrote:
-> > On Wed, Nov 17, 2021 at 11:41 AM Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > According to [0], compilers sometimes might produce duplicate DWARF
-> > > definitions for exactly the same struct/union within the same
-> > > compilation unit (CU). We've had similar issues with identical arrays
-> > > and handled them with a similar workaround in 6b6e6b1d09aa ("libbpf:
-> > > Accomodate DWARF/compiler bug with duplicated identical arrays"). Do the
-> > > same for struct/union by ensuring that two structs/unions are exactly
-> > > the same, down to the integer values of field referenced type IDs.
-> >
-> > Jiri, can you please try this in your setup and see if that handles
-> > all situations or there are more complicated ones still. We'll need a
-> > test for more complicated ones in that case :( Thanks.
->
-> it seems to help largely, but I still see few modules (67 out of 780)
-> that keep 'struct module' for some reason.. their struct module looks
-> completely the same as is in vmlinux
+On Thu, Nov 18, 2021 at 04:04:58PM -0600, Eric W. Biederman wrote:
+> 
+> Recently to prevent issues with SECCOMP_RET_KILL and similar signals
+> being changed before they are delivered SA_IMMUTABLE was added.
+> 
+> Unfortunately this broke debuggers[1][2] which reasonably expect to be
+> able to trap synchronous SIGTRAP and SIGSEGV even when the target
+> process is not configured to handle those signals.
+> 
+> Update force_sig_to_task to support both the case when we can
+> allow the debugger to intercept and possibly ignore the
+> signal and the case when it is not safe to let userspace
+> known about the signal until the process has exited.
+> 
+> Reported-by: Kyle Huey <me@kylehuey.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Cc: stable@vger.kernel.org
+> [1] https://lkml.kernel.org/r/CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com
+> [2] https://lkml.kernel.org/r/20211117150258.GB5403@xsang-OptiPlex-902
+> Fixes: 00b06da29cf9 ("signal: Add SA_IMMUTABLE to ensure forced siganls do not get changed")
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Curious, what's the size of all the module BTFs now? And yes, please
-try to narrow down what is causing the bloat this time. I think this
-change can go in anyways, it's conceptually the same as a workaround
-for duplicate arrays produced by the compiler.
+Thanks! This passes the seccomp self-tests.
 
->
-> I uploaded one of the module with vmlinux in here:
->   http://people.redhat.com/~jolsa/kmodbtf/2/
->
-> I will do some debugging and find out why it did not work in this module
-> and try to come up with another test
->
-> thanks,
-> jirka
->
-> >
-> > >
-> > > Solving this more generically (allowing referenced types to be
-> > > equivalent, but using different type IDs, all within a single CU)
-> > > requires a huge complexity increase to handle many-to-many mappings
-> > > between canonidal and candidate type graphs. Before we invest in that,
-> > > let's see if this approach handles all the instances of this issue in
-> > > practice. Thankfully it's pretty rare, it seems.
-> > >
-> > >   [0] https://lore.kernel.org/bpf/YXr2NFlJTAhHdZqq@krava/
-> > >
-> > > Reported-by: Jiri Olsa <jolsa@kernel.org>
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++----
-> > >  1 file changed, 41 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > > index b6be579e0dc6..e97217a77196 100644
-> > > --- a/tools/lib/bpf/btf.c
-> > > +++ b/tools/lib/bpf/btf.c
-> > > @@ -3477,8 +3477,8 @@ static long btf_hash_struct(struct btf_type *t)
-> > >  }
-> > >
-> > >  /*
-> > > - * Check structural compatibility of two FUNC_PROTOs, ignoring referenced type
-> > > - * IDs. This check is performed during type graph equivalence check and
-> > > + * Check structural compatibility of two STRUCTs/UNIONs, ignoring referenced
-> > > + * type IDs. This check is performed during type graph equivalence check and
-> > >   * referenced types equivalence is checked separately.
-> > >   */
-> > >  static bool btf_shallow_equal_struct(struct btf_type *t1, struct btf_type *t2)
-> > > @@ -3851,6 +3851,31 @@ static int btf_dedup_identical_arrays(struct btf_dedup *d, __u32 id1, __u32 id2)
-> > >         return btf_equal_array(t1, t2);
-> > >  }
-> > >
-> > > +/* Check if given two types are identical STRUCT/UNION definitions */
-> > > +static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32 id1, __u32 id2)
-> > > +{
-> > > +       const struct btf_member *m1, *m2;
-> > > +       struct btf_type *t1, *t2;
-> > > +       int n, i;
-> > > +
-> > > +       t1 = btf_type_by_id(d->btf, id1);
-> > > +       t2 = btf_type_by_id(d->btf, id2);
-> > > +
-> > > +       if (!btf_is_composite(t1) || btf_kind(t1) != btf_kind(t2))
-> > > +               return false;
-> > > +
-> > > +       if (!btf_shallow_equal_struct(t1, t2))
-> > > +               return false;
-> > > +
-> > > +       m1 = btf_members(t1);
-> > > +       m2 = btf_members(t2);
-> > > +       for (i = 0, n = btf_vlen(t1); i < n; i++, m1++, m2++) {
-> > > +               if (m1->type != m2->type)
-> > > +                       return false;
-> > > +       }
-> > > +       return true;
-> > > +}
-> > > +
-> > >  /*
-> > >   * Check equivalence of BTF type graph formed by candidate struct/union (we'll
-> > >   * call it "candidate graph" in this description for brevity) to a type graph
-> > > @@ -3962,6 +3987,8 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
-> > >
-> > >         hypot_type_id = d->hypot_map[canon_id];
-> > >         if (hypot_type_id <= BTF_MAX_NR_TYPES) {
-> > > +               if (hypot_type_id == cand_id)
-> > > +                       return 1;
-> > >                 /* In some cases compiler will generate different DWARF types
-> > >                  * for *identical* array type definitions and use them for
-> > >                  * different fields within the *same* struct. This breaks type
-> > > @@ -3970,8 +3997,18 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
-> > >                  * types within a single CU. So work around that by explicitly
-> > >                  * allowing identical array types here.
-> > >                  */
-> > > -               return hypot_type_id == cand_id ||
-> > > -                      btf_dedup_identical_arrays(d, hypot_type_id, cand_id);
-> > > +               if (btf_dedup_identical_arrays(d, hypot_type_id, cand_id))
-> > > +                       return 1;
-> > > +               /* It turns out that similar situation can happen with
-> > > +                * struct/union sometimes, sigh... Handle the case where
-> > > +                * structs/unions are exactly the same, down to the referenced
-> > > +                * type IDs. Anything more complicated (e.g., if referenced
-> > > +                * types are different, but equivalent) is *way more*
-> > > +                * complicated and requires a many-to-many equivalence mapping.
-> > > +                */
-> > > +               if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
-> > > +                       return 1;
-> > > +               return 0;
-> > >         }
-> > >
-> > >         if (btf_dedup_hypot_map_add(d, canon_id, cand_id))
-> > > --
-> > > 2.30.2
-> > >
-> >
->
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Tested-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
+> ---
+>  kernel/signal.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 7c4b7ae714d4..02058c983bd6 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1298,6 +1298,12 @@ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p
+>  	return ret;
+>  }
+>  
+> +enum sig_handler {
+> +	HANDLER_CURRENT, /* If reachable use the current handler */
+> +	HANDLER_SIG_DFL, /* Always use SIG_DFL handler semantics */
+> +	HANDLER_EXIT,	 /* Only visible as the proces exit code */
+> +};
+> +
+>  /*
+>   * Force a signal that the process can't ignore: if necessary
+>   * we unblock the signal and change any SIG_IGN to SIG_DFL.
+> @@ -1310,7 +1316,8 @@ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p
+>   * that is why we also clear SIGNAL_UNKILLABLE.
+>   */
+>  static int
+> -force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool sigdfl)
+> +force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t,
+> +	enum sig_handler handler)
+>  {
+>  	unsigned long int flags;
+>  	int ret, blocked, ignored;
+> @@ -1321,9 +1328,10 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
+>  	action = &t->sighand->action[sig-1];
+>  	ignored = action->sa.sa_handler == SIG_IGN;
+>  	blocked = sigismember(&t->blocked, sig);
+> -	if (blocked || ignored || sigdfl) {
+> +	if (blocked || ignored || (handler != HANDLER_CURRENT)) {
+>  		action->sa.sa_handler = SIG_DFL;
+> -		action->sa.sa_flags |= SA_IMMUTABLE;
+> +		if (handler == HANDLER_EXIT)
+> +			action->sa.sa_flags |= SA_IMMUTABLE;
+>  		if (blocked) {
+>  			sigdelset(&t->blocked, sig);
+>  			recalc_sigpending_and_wake(t);
+> @@ -1343,7 +1351,7 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
+>  
+>  int force_sig_info(struct kernel_siginfo *info)
+>  {
+> -	return force_sig_info_to_task(info, current, false);
+> +	return force_sig_info_to_task(info, current, HANDLER_CURRENT);
+>  }
+>  
+>  /*
+> @@ -1660,7 +1668,7 @@ void force_fatal_sig(int sig)
+>  	info.si_code = SI_KERNEL;
+>  	info.si_pid = 0;
+>  	info.si_uid = 0;
+> -	force_sig_info_to_task(&info, current, true);
+> +	force_sig_info_to_task(&info, current, HANDLER_SIG_DFL);
+>  }
+>  
+>  /*
+> @@ -1693,7 +1701,7 @@ int force_sig_fault_to_task(int sig, int code, void __user *addr
+>  	info.si_flags = flags;
+>  	info.si_isr = isr;
+>  #endif
+> -	return force_sig_info_to_task(&info, t, false);
+> +	return force_sig_info_to_task(&info, t, HANDLER_CURRENT);
+>  }
+>  
+>  int force_sig_fault(int sig, int code, void __user *addr
+> @@ -1813,7 +1821,8 @@ int force_sig_seccomp(int syscall, int reason, bool force_coredump)
+>  	info.si_errno = reason;
+>  	info.si_arch = syscall_get_arch(current);
+>  	info.si_syscall = syscall;
+> -	return force_sig_info_to_task(&info, current, force_coredump);
+> +	return force_sig_info_to_task(&info, current,
+> +		force_coredump ? HANDLER_EXIT : HANDLER_CURRENT);
+>  }
+>  
+>  /* For the crazy architectures that include trap information in
+> -- 
+> 2.20.1
+
+-- 
+Kees Cook
