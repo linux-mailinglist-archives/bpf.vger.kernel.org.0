@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06776455A58
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 12:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6332455A5A
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 12:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344120AbhKRLca (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 06:32:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37247 "EHLO
+        id S1344050AbhKRLcc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 06:32:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33665 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344047AbhKRLa1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Nov 2021 06:30:27 -0500
+        by vger.kernel.org with ESMTP id S1344051AbhKRLaa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Nov 2021 06:30:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637234845;
+        s=mimecast20190719; t=1637234849;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4w9z59EHFbXqy0WBMfhQAPvo2GwQkbl/oaYCrbS/5SI=;
-        b=R5Imxqdok16BEfHDNRWA3hr7aWj/tqdd4tUeLA1UThtyhf9F507/Jc6QYvvB1irGaXD/wz
-        QD2nzxD4ZTc+X708WMBEGCDDOsGiz/BaiAzAilsuLIGIp6c40T4/8wysK+I5vRasmA682W
-        k2OLoG2RPIicsqUl4hHIKkKSOVYEMBE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ErIJJtuMRUhbIPvfUeZOmACetWYxDXUh4cGQYrVEag4=;
+        b=BKQOu9ViWFTJFIA8DdrtQrEasyCndVq49GlFV8DEWEMbIDpoU+3MO/8dD8nbIFPnB+PKXy
+        a0gCOZttg4FtnJEm+88PCLCoKGjo7U6J43SnZUPTHhpZsWEG7x7WDZxwbDxppb8a0uk8C4
+        F1bTmha7JDuniM3h98nZ9lvXkESGENk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-420-N1K7Dl23O9GAaWcwyqbp8A-1; Thu, 18 Nov 2021 06:27:22 -0500
-X-MC-Unique: N1K7Dl23O9GAaWcwyqbp8A-1
-Received: by mail-ed1-f72.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso5008795edj.13
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 03:27:22 -0800 (PST)
+ us-mta-402-U6BfmVH3MVqxTu8bmd2aiQ-1; Thu, 18 Nov 2021 06:27:28 -0500
+X-MC-Unique: U6BfmVH3MVqxTu8bmd2aiQ-1
+Received: by mail-ed1-f69.google.com with SMTP id v22-20020a50a456000000b003e7cbfe3dfeso4985462edb.11
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 03:27:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4w9z59EHFbXqy0WBMfhQAPvo2GwQkbl/oaYCrbS/5SI=;
-        b=izdWg019ZUAGoV7UFN0kp771808GhNEdk6LixmKyf48OTv3cLI55rmgYADsCswLIxJ
-         T1dGFGkS/kFTPtw/DJl4IBycnEYV5RiuLmgr7tAUbczlSFBBPrMGFwSDEjUSFaNfdsY0
-         cnLX813unTnLhwDGFuYDtDl3EXkvMDlSAHY6h3IkQL2ICJhz8UIs86QPMXnBk44amf6E
-         jAUnUJiR+Ed/vRguuLqJ1gwuj/1NdolgfxQkP0mx4iRvhQFCEwaN0Kr6N4iTA1wOzZ+K
-         aotAyiz+Rl5OAEtg9TmwcHUsxmKP3DALJe8oUWr3PwR17Mh+EwaPMEsxGU9EegKgkc+C
-         0RqA==
-X-Gm-Message-State: AOAM533pNUm/1luuK5QVq8mVCI+dpoKqmOl2l6aj4vmN/yMfyAW2oQQc
-        jQ8alqasIpwJ8qSJij/FgfMRYbTd+AYTzeu/RhHCQYYZZoU+p7dVPudosgnuNW3jqwQU9Grm6rv
-        88eCm3r5iOfFO
-X-Received: by 2002:a17:907:94d4:: with SMTP id dn20mr32268023ejc.379.1637234841216;
-        Thu, 18 Nov 2021 03:27:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzpUiSvo4L4FdhFPvzMoyJYHsklqk2A5x6i6r+T8jxcf7dzlN5sh71H1PqoDctmR8fxgzeGzw==
-X-Received: by 2002:a17:907:94d4:: with SMTP id dn20mr32267998ejc.379.1637234841044;
-        Thu, 18 Nov 2021 03:27:21 -0800 (PST)
+        bh=ErIJJtuMRUhbIPvfUeZOmACetWYxDXUh4cGQYrVEag4=;
+        b=EfB+o2nAZ8AjSCoiNvbDowGtXBN2Yfc/6uN+VxY4PSSm14zq4EWggBeWj4crKb8nrh
+         3XgSy8t8Rb/JwQlldJPWFqQxcvs3U5cz96YqMnE3snYj5jul0xw/2x6bH0ECU88EqLgb
+         XQcmt3jgtcx5np8HVPLTnpUR2EAEIlwqiVOgLTF26Fus4zkWn36ssKM3i4P4jV892Izl
+         pCozA9/2wgPG6TYGcA5LS1hUJ2NoPrFqJa1CcLXwaoBXWtBsEWNeBuzTQc46iwad2kAP
+         b+mXSAZZi61hnyhSLmvBjDOAt2/Dh6L6AUN9A18OLVrJxfqf5bo5QlltEFzZGvA0MQaI
+         rWMw==
+X-Gm-Message-State: AOAM532zZ3eW/NqJS5qJ5pcXLHxy83eEKZ1jVam1pbse/rpioma+mrC1
+        23+doDrD+MOwR4bvEx/bsAKO+2Qew5f1ED+pxwdioUYC5xFmPLl0sp4vLuYmxoFgwYae45fnxqV
+        R7pi5ueaXnNhI
+X-Received: by 2002:a50:9eca:: with SMTP id a68mr9846448edf.127.1637234847326;
+        Thu, 18 Nov 2021 03:27:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzVH4BLqavpth5rV3X5MI3BbxRqmLyd3X53WvVpD0g4ofqtUoGZrAXTWYLTfvCekr4fdXLXoQ==
+X-Received: by 2002:a50:9eca:: with SMTP id a68mr9846425edf.127.1637234847146;
+        Thu, 18 Nov 2021 03:27:27 -0800 (PST)
 Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id j3sm1157057ejo.2.2021.11.18.03.27.20
+        by smtp.gmail.com with ESMTPSA id hd18sm1109071ejc.84.2021.11.18.03.27.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 03:27:20 -0800 (PST)
+        Thu, 18 Nov 2021 03:27:26 -0800 (PST)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -61,9 +61,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>
-Subject: [PATCH bpf-next 24/29] selftests/bpf: Add fentry multi func test
-Date:   Thu, 18 Nov 2021 12:24:50 +0100
-Message-Id: <20211118112455.475349-25-jolsa@kernel.org>
+Subject: [PATCH bpf-next 25/29] selftests/bpf: Add fexit multi func test
+Date:   Thu, 18 Nov 2021 12:24:51 +0100
+Message-Id: <20211118112455.475349-26-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211118112455.475349-1-jolsa@kernel.org>
 References: <20211118112455.475349-1-jolsa@kernel.org>
@@ -73,69 +73,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding selftest for fentry multi func test that attaches
+Adding selftest for fexit multi func test that attaches
 to bpf_fentry_test* functions and checks argument values
 based on the processed function.
 
-We need to cast to real arguments types in multi_arg_check,
-because the checked value can be shorter than u64.
-
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile          |  4 +-
- .../bpf/prog_tests/multi_fentry_test.c        | 30 +++++++++
- .../testing/selftests/bpf/progs/multi_check.c | 63 +++++++++++++++++++
- .../selftests/bpf/progs/multi_fentry.c        | 17 +++++
- 4 files changed, 113 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_fentry_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/multi_check.c
- create mode 100644 tools/testing/selftests/bpf/progs/multi_fentry.c
+ tools/testing/selftests/bpf/Makefile          |  3 +-
+ .../bpf/prog_tests/multi_fexit_test.c         | 31 +++++++++++++++++++
+ .../testing/selftests/bpf/progs/multi_check.c | 23 ++++++++++++++
+ .../testing/selftests/bpf/progs/multi_fexit.c | 20 ++++++++++++
+ 4 files changed, 76 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_fexit_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/multi_fexit.c
 
 diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 35684d61aaeb..fa29ddd47cbe 100644
+index fa29ddd47cbe..42b67834d803 100644
 --- a/tools/testing/selftests/bpf/Makefile
 +++ b/tools/testing/selftests/bpf/Makefile
-@@ -322,7 +322,8 @@ endef
- SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
+@@ -323,7 +323,7 @@ SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
  
  LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
--		linked_vars.skel.h linked_maps.skel.h
-+		linked_vars.skel.h linked_maps.skel.h			\
-+		multi_fentry_test.skel.h
+ 		linked_vars.skel.h linked_maps.skel.h			\
+-		multi_fentry_test.skel.h
++		multi_fentry_test.skel.h multi_fexit_test.skel.h
  
  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
  	test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c
-@@ -334,6 +335,7 @@ test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
- linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
+@@ -336,6 +336,7 @@ linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
  linked_vars.skel.h-deps := linked_vars1.o linked_vars2.o
  linked_maps.skel.h-deps := linked_maps1.o linked_maps2.o
-+multi_fentry_test.skel.h-deps := multi_fentry.o multi_check.o
+ multi_fentry_test.skel.h-deps := multi_fentry.o multi_check.o
++multi_fexit_test.skel.h-deps := multi_fexit.o multi_check.o
  
  LINKED_BPF_SRCS := $(patsubst %.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
  
-diff --git a/tools/testing/selftests/bpf/prog_tests/multi_fentry_test.c b/tools/testing/selftests/bpf/prog_tests/multi_fentry_test.c
+diff --git a/tools/testing/selftests/bpf/prog_tests/multi_fexit_test.c b/tools/testing/selftests/bpf/prog_tests/multi_fexit_test.c
 new file mode 100644
-index 000000000000..8dc08c3e715f
+index 000000000000..d9b0eedd9f45
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/multi_fentry_test.c
-@@ -0,0 +1,30 @@
++++ b/tools/testing/selftests/bpf/prog_tests/multi_fexit_test.c
+@@ -0,0 +1,31 @@
 +// SPDX-License-Identifier: GPL-2.0
 +#include <test_progs.h>
-+#include "multi_fentry_test.skel.h"
++#include "multi_fexit_test.skel.h"
 +#include "trace_helpers.h"
 +
-+void test_multi_fentry_test(void)
++void test_multi_fexit_test(void)
 +{
-+	struct multi_fentry_test *skel = NULL;
++	struct multi_fexit_test *skel = NULL;
 +	__u32 duration = 0, retval;
 +	int err, prog_fd;
 +
-+	skel = multi_fentry_test__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fentry_multi_skel_load"))
++	skel = multi_fexit_test__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "fexit_multi_skel_load"))
 +		goto cleanup;
 +
-+	err = multi_fentry_test__attach(skel);
-+	if (!ASSERT_OK(err, "fentry_attach"))
++	err = multi_fexit_test__attach(skel);
++	if (!ASSERT_OK(err, "fexit_attach"))
 +		goto cleanup;
 +
 +	prog_fd = bpf_program__fd(skel->progs.test);
@@ -144,86 +139,49 @@ index 000000000000..8dc08c3e715f
 +	ASSERT_OK(err, "test_run");
 +	ASSERT_EQ(retval, 0, "test_run");
 +
-+	ASSERT_EQ(skel->bss->test_result, 8, "test_result");
++	ASSERT_EQ(skel->bss->test_arg_result, 8, "fexit_multi_arg_result");
++	ASSERT_EQ(skel->bss->test_ret_result, 8, "fexit_multi_ret_result");
 +
 +cleanup:
-+	multi_fentry_test__destroy(skel);
++	multi_fexit_test__destroy(skel);
 +}
 diff --git a/tools/testing/selftests/bpf/progs/multi_check.c b/tools/testing/selftests/bpf/progs/multi_check.c
-new file mode 100644
-index 000000000000..82acc9ee7715
---- /dev/null
+index 82acc9ee7715..2f14d232dd77 100644
+--- a/tools/testing/selftests/bpf/progs/multi_check.c
 +++ b/tools/testing/selftests/bpf/progs/multi_check.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
+@@ -61,3 +61,26 @@ void multi_arg_check(__u64 *ctx, __u64 *test_result)
+ 		*test_result += 1;
+ 	}
+ }
 +
-+extern const void bpf_fentry_test1 __ksym;
-+extern const void bpf_fentry_test2 __ksym;
-+extern const void bpf_fentry_test3 __ksym;
-+extern const void bpf_fentry_test4 __ksym;
-+extern const void bpf_fentry_test5 __ksym;
-+extern const void bpf_fentry_test6 __ksym;
-+extern const void bpf_fentry_test7 __ksym;
-+extern const void bpf_fentry_test8 __ksym;
-+
-+void multi_arg_check(__u64 *ctx, __u64 *test_result)
++void multi_ret_check(void *ctx, __u64 *test_result)
 +{
 +	void *ip = (void *) bpf_get_func_ip(ctx);
++	int ret = (int) bpf_ret_value(ctx);
 +
-+	if (ip == &bpf_fentry_test1) {
-+		int a = (int) ctx[0];
-+
-+		*test_result += a == 1;
-+	} else if (ip == &bpf_fentry_test2) {
-+		int a = (int) bpf_arg(ctx, 0);
-+		__u64 b = bpf_arg(ctx, 1);
-+
-+		*test_result += a == 2 && b == 3;
-+	} else if (ip == &bpf_fentry_test3) {
-+		char a = (int) bpf_arg(ctx, 0);
-+		int b = (int) bpf_arg(ctx, 1);
-+		__u64 c = bpf_arg(ctx, 2);
-+
-+		*test_result += a == 4 && b == 5 && c == 6;
-+	} else if (ip == &bpf_fentry_test4) {
-+		void *a = (void *) bpf_arg(ctx, 0);
-+		char b = (char) bpf_arg(ctx, 1);
-+		int c = (int) bpf_arg(ctx, 2);
-+		__u64 d = bpf_arg(ctx, 3);
-+
-+		*test_result += a == (void *) 7 && b == 8 && c == 9 && d == 10;
-+	} else if (ip == &bpf_fentry_test5) {
-+		__u64 a = bpf_arg(ctx, 0);
-+		void *b = (void *) bpf_arg(ctx, 1);
-+		short c = (short) bpf_arg(ctx, 2);
-+		int d = (int) bpf_arg(ctx, 3);
-+		__u64 e = bpf_arg(ctx, 4);
-+
-+		*test_result += a == 11 && b == (void *) 12 && c == 13 && d == 14 && e == 15;
-+	} else if (ip == &bpf_fentry_test6) {
-+		__u64 a = bpf_arg(ctx, 0);
-+		void *b = (void *) bpf_arg(ctx, 1);
-+		short c = (short) bpf_arg(ctx, 2);
-+		int d = (int) bpf_arg(ctx, 3);
-+		void *e = (void *) bpf_arg(ctx, 4);
-+		__u64 f = bpf_arg(ctx, 5);
-+
-+		*test_result += a == 16 && b == (void *) 17 && c == 18 && d == 19 && e == (void *) 20 && f == 21;
-+	} else if (ip == &bpf_fentry_test7) {
-+		*test_result += 1;
-+	} else if (ip == &bpf_fentry_test8) {
-+		*test_result += 1;
-+	}
++	if (ip == &bpf_fentry_test1)
++		*test_result += ret == 2;
++	else if (ip == &bpf_fentry_test2)
++		*test_result += ret == 5;
++	else if (ip == &bpf_fentry_test3)
++		*test_result += ret == 15;
++	else if (ip == &bpf_fentry_test4)
++		*test_result += ret == 34;
++	else if (ip == &bpf_fentry_test5)
++		*test_result += ret == 65;
++	else if (ip == &bpf_fentry_test6)
++		*test_result += ret == 111;
++	else if (ip == &bpf_fentry_test7)
++		*test_result += ret == 0;
++	else if (ip == &bpf_fentry_test8)
++		*test_result += ret == 0;
 +}
-diff --git a/tools/testing/selftests/bpf/progs/multi_fentry.c b/tools/testing/selftests/bpf/progs/multi_fentry.c
+diff --git a/tools/testing/selftests/bpf/progs/multi_fexit.c b/tools/testing/selftests/bpf/progs/multi_fexit.c
 new file mode 100644
-index 000000000000..b78d36772aa6
+index 000000000000..54624acc7071
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/multi_fentry.c
-@@ -0,0 +1,17 @@
++++ b/tools/testing/selftests/bpf/progs/multi_fexit.c
+@@ -0,0 +1,20 @@
 +// SPDX-License-Identifier: GPL-2.0
 +#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
@@ -231,14 +189,17 @@ index 000000000000..b78d36772aa6
 +
 +char _license[] SEC("license") = "GPL";
 +
-+__u64 test_result = 0;
-+
 +__hidden extern void multi_arg_check(__u64 *ctx, __u64 *test_result);
++__hidden extern void multi_ret_check(void *ctx, __u64 *test_result);
 +
-+SEC("fentry.multi/bpf_fentry_test*")
-+int BPF_PROG(test, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f)
++__u64 test_arg_result = 0;
++__u64 test_ret_result = 0;
++
++SEC("fexit.multi/bpf_fentry_test*")
++int BPF_PROG(test)
 +{
-+	multi_arg_check(ctx, &test_result);
++	multi_arg_check(ctx, &test_arg_result);
++	multi_ret_check(ctx, &test_ret_result);
 +	return 0;
 +}
 -- 
