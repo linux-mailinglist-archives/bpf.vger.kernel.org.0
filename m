@@ -2,140 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC51345653A
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 22:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABAA45654C
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 23:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhKRWBS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 17:01:18 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:36338 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhKRWBM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 17:01:12 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51]:46794)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnpQ2-00115C-O4; Thu, 18 Nov 2021 14:58:10 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:52636 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mnpQ1-0048Wm-LN; Thu, 18 Nov 2021 14:58:10 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-Cc:     Kyle Huey <me@kylehuey.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
-        lkp@intel.com
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
-        <202111171049.3F9C5F1@keescook>
-        <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
-        <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
-        <87k0h6334w.fsf@email.froward.int.ebiederm.org>
-        <202111171341.41053845C3@keescook>
-        <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
-        <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
-        <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
-        <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
-        <202111171728.D85A4E2571@keescook>
-Date:   Thu, 18 Nov 2021 15:58:02 -0600
-In-Reply-To: <202111171728.D85A4E2571@keescook> (Kees Cook's message of "Wed,
-        17 Nov 2021 17:32:20 -0800")
-Message-ID: <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231166AbhKRWFa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 17:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhKRWFa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 17:05:30 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7CAC061574;
+        Thu, 18 Nov 2021 14:02:29 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id g28so6710492pgg.3;
+        Thu, 18 Nov 2021 14:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8fh25Uj6YoBvqabkRqtjeDWkpKjWk2JP2GTPGCVb4fw=;
+        b=ddSjjAwKtkJ5FN0JMAPArzeYHb8DoBJo54IAiteYJVVOz1gPw92lhRM3IwDvvfub4c
+         8eNobr+J17FSrQo1JAnACftnyQzw1tfOUDzeMY152J+fKowx13UCZc1QFTzj9dGQsSQI
+         Hfoo38oWz+tx2j58HLzGBIRLvPqNAvhXxXFW//qttykdMr5sKz23xozcTe+69e4qwL1P
+         Aqfxa6AF+pkIfrYhUfSEmmTgR+WO+YPYzFuoWcg0OlIQ6vBbpXuRR1dF+n/DJc2dYVPJ
+         DhYglKkB2PPssdpPR3HgGG4R0ZsTN7ADEe+O8v22autDHeVUJOVfhDmwMhAbAfiS0S3g
+         9JBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8fh25Uj6YoBvqabkRqtjeDWkpKjWk2JP2GTPGCVb4fw=;
+        b=mnG7RGiqUkaXrdrjfVP/FHyKvbGXotXqivQLQuNfxDkquh3UoIdBMaz93BY+tC2CAY
+         7H2OrxX1k3UphfrVUYBPR7l+q/tdQDTZ/P7n1VoyrMSRoqUl3ojRPU/MzoOmKpnfDlEO
+         o5H664fDSqqXyJ03+6NKd7e3ISfZ4mmErh7XJfUta7SMhywlKZAkpVNlGOfczQjIF0aA
+         uU75kp4fUSjrSMmKctXtNTKZ1ZDxxpofpHLLdBEwoP98PIppKn9k/Yql2SaQwycwcMq6
+         5SYOZ3iDfjlN+PGvgheG/B6GEGDu5xI4mjHodjgGgGCCKcLkHZsfTyqH2ZLaiQtW3X5E
+         trlg==
+X-Gm-Message-State: AOAM531ggxln1SOFZ1OHI/Mf1wp2+Rmq4FPNd9cEf+Gtk+QHiWi6LKP0
+        lhrggqZg274CqjYoVDvcVtd5iljCus0=
+X-Google-Smtp-Source: ABdhPJwSxHjZbxBxsDpQ3Yv8kgFa69flZgG3R8Q2pPP2B89P9cbEqO8gbVUygG5a0cKU1S3+FRKO9w==
+X-Received: by 2002:a63:6c44:: with SMTP id h65mr13775544pgc.423.1637272949121;
+        Thu, 18 Nov 2021 14:02:29 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::1:6926])
+        by smtp.gmail.com with ESMTPSA id h6sm587662pfi.174.2021.11.18.14.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 14:02:28 -0800 (PST)
+Date:   Thu, 18 Nov 2021 14:02:26 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Alexander Mihalicyn <alexander@mihalicyn.com>,
+        Andrei Vagin <avagin@gmail.com>, criu@openvz.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 1/8] io_uring: Implement eBPF iterator for
+ registered buffers
+Message-ID: <20211118220226.ritjbjeh5s4yw7hl@ast-mbp.dhcp.thefacebook.com>
+References: <20211116054237.100814-1-memxor@gmail.com>
+ <20211116054237.100814-2-memxor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mnpQ1-0048Wm-LN;;;mid=<87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX188U8Ali6pt3gI0MiWxDnFXisSnqx50bZA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4859]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 441 ms - load_scoreonly_sql: 0.14 (0.0%),
-        signal_user_changed: 12 (2.8%), b_tie_ro: 10 (2.3%), parse: 1.67
-        (0.4%), extract_message_metadata: 5 (1.1%), get_uri_detail_list: 1.79
-        (0.4%), tests_pri_-1000: 6 (1.4%), tests_pri_-950: 1.74 (0.4%),
-        tests_pri_-900: 1.46 (0.3%), tests_pri_-90: 126 (28.5%), check_bayes:
-        124 (28.0%), b_tokenize: 14 (3.1%), b_tok_get_all: 9 (2.0%),
-        b_comp_prob: 3.7 (0.8%), b_tok_touch_all: 93 (21.0%), b_finish: 1.08
-        (0.2%), tests_pri_0: 264 (59.9%), check_dkim_signature: 0.62 (0.1%),
-        check_dkim_adsp: 3.1 (0.7%), poll_dns_idle: 1.14 (0.3%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 6 (1.5%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 0/2] SA_IMMUTABLE fixes
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116054237.100814-2-memxor@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Nov 16, 2021 at 11:12:30AM +0530, Kumar Kartikeya Dwivedi wrote:
+> This change adds eBPF iterator for buffers registered in io_uring ctx.
+> It gives access to the ctx, the index of the registered buffer, and a
+> pointer to the io_uring_ubuf itself. This allows the iterator to save
+> info related to buffers added to an io_uring instance, that isn't easy
+> to export using the fdinfo interface (like exact struct page composing
+> the registered buffer).
+> 
+> The primary usecase this is enabling is checkpoint/restore support.
+> 
+> Note that we need to use mutex_trylock when the file is read from, in
+> seq_start functions, as the order of lock taken is opposite of what it
+> would be when io_uring operation reads the same file.  We take
+> seq_file->lock, then ctx->uring_lock, while io_uring would first take
+> ctx->uring_lock and then seq_file->lock for the same ctx.
+> 
+> This can lead to a deadlock scenario described below:
+> 
+>       CPU 0				CPU 1
+> 
+>       vfs_read
+>       mutex_lock(&seq_file->lock)	io_read
+> 					mutex_lock(&ctx->uring_lock)
+>       mutex_lock(&ctx->uring_lock) # switched to mutex_trylock
+> 					mutex_lock(&seq_file->lock)
+> 
+> The trylock also protects the case where io_uring tries to read from
+> iterator attached to itself (same ctx), where the order of locks would
+> be:
+>  io_uring_enter
+>   mutex_lock(&ctx->uring_lock) <-----------.
+>   io_read				    \
+>    seq_read				     \
+>     mutex_lock(&seq_file->lock)		     /
+>     mutex_lock(&ctx->uring_lock) # deadlock-`
+> 
+> In both these cases (recursive read and contended uring_lock), -EDEADLK
+> is returned to userspace.
+> 
+> In the future, this iterator will be extended to directly support
+> iteration of bvec Flexible Array Member, so that when there is no
+> corresponding VMA that maps to the registered buffer (e.g. if VMA is
+> destroyed after pinning pages), we are able to reconstruct the
+> registration on restore by dumping the page contents and then replaying
+> them into a temporary mapping used for registration later. All this is
+> out of scope for the current series however, but builds upon this
+> iterator.
 
-SA_IMMUTABLE fixed issues with force_sig_seccomp and the introduction
-for force_sig_fatal where the exit previously could not be interrupted
-but now it can.  Unfortunately it added that behavior to all force_sig
-functions under the right conditions which debuggers usage of SIG_TRAP
-and debuggers handling of SIGSEGV.
-
-Solve that by limiting SA_IMMUTABLE to just the cases that historically
-debuggers have not been able to intercept.
-
-The first patch changes force_sig_info_to_task to take a flag
-that requests which behavior is desired.
-
-The second patch adds force_exit_sig which replaces force_fatal_sig
-in the cases where historically userspace would only find out about
-the ``signal'' after the process has exited.
-
-The first one with the hunk changing force_fatal_sig removed should be
-suitable for backporting to v5.15. v5.15 does not implement
-force_fatal_sig.
-
-This should be enough to fix the regressions.
-
-Kyle if you can double check me that I have properly fixed these issues
-that would be appreciated.
-
-Any other review or suggestions to improve the names would be
-appreciated.  I think I have named things reasonably well but I am very
-close to the code so it is easy for me to miss things.
-
-Eric W. Biederman (2):
-      signal: Don't always set SA_IMMUTABLE for forced signals
-      signal: Replace force_fatal_sig with force_exit_sig when in doubt
-
- arch/m68k/kernel/traps.c              |  2 +-
- arch/powerpc/kernel/signal_32.c       |  2 +-
- arch/powerpc/kernel/signal_64.c       |  4 ++--
- arch/s390/kernel/traps.c              |  2 +-
- arch/sparc/kernel/signal_32.c         |  4 ++--
- arch/sparc/kernel/windows.c           |  2 +-
- arch/x86/entry/vsyscall/vsyscall_64.c |  2 +-
- arch/x86/kernel/vm86_32.c             |  2 +-
- include/linux/sched/signal.h          |  1 +
- kernel/entry/syscall_user_dispatch.c  |  4 ++--
- kernel/signal.c                       | 36 ++++++++++++++++++++++++++++-------
- 11 files changed, 42 insertions(+), 19 deletions(-)
-
-Eric
+From BPF infra perspective these new iterators fit very well and
+I don't see any issues maintaining this interface while kernel keeps
+changing, but this commit log and shallowness of the selftests
+makes me question feasibility of this approach in particular with io_uring.
+Is it even possible to scan all internal bits of io_uring and reconstruct
+it later? The bpf iter is only the read part. Don't you need the write part
+for CRIU ? Even for reads only... io_uring has complex inner state.
+Like bpf itself which cannot be realistically CRIU-ed.
+I don't think we can merge this in pieces. We need to wait until there is
+full working CRIU framework that uses these new iterators.
