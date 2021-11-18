@@ -2,132 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081D245580E
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 10:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB71945591B
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 11:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245162AbhKRJe2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 04:34:28 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:46748 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243206AbhKRJe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:34:26 -0500
-Received: by mail-il1-f200.google.com with SMTP id a5-20020a92c545000000b0026b54ead1b1so3644740ilj.13
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 01:31:26 -0800 (PST)
+        id S245333AbhKRKgw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 05:36:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245619AbhKRKgn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 05:36:43 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC8AC061764
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 02:33:43 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 137so1291231wma.1
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 02:33:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rZJn2yys8DcTAzYwQDSGPoDW37F/570yrxTfXh7kbsc=;
+        b=j4Wu6KWzKYfAlYvq2HS1I/TeKC8AAa6xsTmh/G6sIlISKHIi3zcS/VT87Fb8dfWOFh
+         mGaM3N1bGpEJ7c916ANWKgIeBDSDLCiGb6IKWDlyAtQhXVsY8Z+rjpFaSqCc5ZliNv+B
+         sthyb66VCxH2V0DQePenA6GGCoaZllSZUwugA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=WkXPHSDdF1/3uLg3WzVhRO8Ez4oXsew4MO68MI5bYBw=;
-        b=tqTfnL3iNAIZ45I3xhG8RJ1aW4133eQnp3G0YmTT/Mpf41cDY54G6uBBi46yG/gTHp
-         uGqDLF7pUPZTFiBtoBtSXDxHzhJf5uxKIdEugThC2LIGPXg5cHad6kJJN8opQSfaZlf3
-         dv9ezFG/JjJBdtwAMq0AkElFne5t2Gpvd6L3saM0SG1jEL7W/kDlRKqZzJpZ3sqBJOdi
-         dtuMqYUkgb2wKgrq0D3XTEi0X951yVrTM9cHQ7vd9x+B4eFj1uE+6IOyPPMwzaLeYEua
-         A28Hi0Sxs6nRedCRP5PoTw/wkRyZByIsmN1fft9lB632dYoSbm6YxDLKjpGCbUW7GGD1
-         niog==
-X-Gm-Message-State: AOAM533ffUx1xDF+zDWI9w7N9/uMSpsYwdMg+VDN28oXVnLHiLJsHy6U
-        dSCnZXdcCHrWzBcEOBbQRNj5MbQV+/pfyOaTFNmKlsphjz6j
-X-Google-Smtp-Source: ABdhPJzDlXBCvYsnc0HSMfL9ECwM5IDifVksfqYDpVp4pU6koI0n8kWLUV9BFkj1rma2pBpTFH++Qo5fc/gIe2LcW91j2Q/X08yO
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rZJn2yys8DcTAzYwQDSGPoDW37F/570yrxTfXh7kbsc=;
+        b=apRxK3T/7ALfOMwIQ0DFwsMW+j25VQEtc25cdw+p7Z17eb+1ykEh7aEjH0nZ0+xCFG
+         OrLTnREYbjyjDPAfZXYkuI5a4Mr+zYXhYEe7BDUukfRKHSN0neV9Nm9lu0bhMuJITE7F
+         cMds4anSgtrvCox7lBxEgtPWS7YVn3axYE3dttbHWajhnpk23YYM5qgNcb3kgGnpBK0R
+         oOYL4PLa6GupLuAnqy/m+ShAOB9BAnPjV0rOx0/1QXTMf8/uRP4QSZ+NwjW2h3fL7nHr
+         lYmLQYXhv5JC6vBBIEDxvLGrwTN+LCRRC5DEWgn5cnRe3TFG1iWHMF9KtMi3zV4otGvr
+         TZ1g==
+X-Gm-Message-State: AOAM532z2RF31ihGGCxhYQdCa7kie5ZeSOzpn4wxTOVJRjhsQ5tfWvPZ
+        ghRvcJQ2Au7sJeMdpHHWZ2OTe9eotf6OgA==
+X-Google-Smtp-Source: ABdhPJzEsJWXGbz1Yv47x3W5We/ddCiXHLTj/MjqS/zki0onTjpbbxJOqCPuhAQQbo/bE3PHXyoF6Q==
+X-Received: by 2002:a05:600c:1d97:: with SMTP id p23mr8650388wms.186.1637231621534;
+        Thu, 18 Nov 2021 02:33:41 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:58e0:dffc:78e8:484])
+        by smtp.gmail.com with ESMTPSA id h15sm10097484wmq.32.2021.11.18.02.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 02:33:41 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next] libbpf: Add ability to clear per-program load flags
+Date:   Thu, 18 Nov 2021 11:33:35 +0100
+Message-Id: <20211118103335.1208372-1-revest@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-X-Received: by 2002:a02:1949:: with SMTP id b70mr19221470jab.7.1637227886297;
- Thu, 18 Nov 2021 01:31:26 -0800 (PST)
-Date:   Thu, 18 Nov 2021 01:31:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009448bd05d10cd2bc@google.com>
-Subject: [syzbot] WARNING: refcount bug in nsim_destroy
-From:   syzbot <syzbot+0d65c9e2e3bcb8873be4@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Recently, bpf_program__flags and bpf_program__set_extra_flags were
+introduced to the libbpf API but they only allow adding load flags.
 
-syzbot found the following issue on:
+We have a use-case where we construct a skeleton with a sleepable
+program and if it fails to load then we want to make it non-sleepable by
+clearing BPF_F_SLEEPABLE.
 
-HEAD commit:    66f4beaa6c1d Merge branch 'linus' of git://git.kernel.org/..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ff99c6b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
-dashboard link: https://syzkaller.appspot.com/bug?extid=0d65c9e2e3bcb8873be4
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0d65c9e2e3bcb8873be4@syzkaller.appspotmail.com
-
-netdevsim netdevsim4 netdevsim2 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
-------------[ cut here ]------------
-refcount_t: decrement hit 0; leaking memory.
-WARNING: CPU: 1 PID: 13920 at lib/refcount.c:31 refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
-Modules linked in:
-CPU: 1 PID: 13920 Comm: syz-executor.4 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
-Code: 1d 9e 9c 81 09 31 ff 89 de e8 6d 11 9d fd 84 db 75 e0 e8 84 0d 9d fd 48 c7 c7 60 cb e4 89 c6 05 7e 9c 81 09 01 e8 78 77 1c 05 <0f> 0b eb c4 e8 68 0d 9d fd 0f b6 1d 6d 9c 81 09 31 ff 89 de e8 38
-RSP: 0018:ffffc90002d5f1e8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815f39c8 RDI: fffff520005abe2f
-RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815ed79e R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc90002d5f330 R14: ffff88807c3545b0 R15: ffff888071c4a400
-FS:  00007fa593aa9700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2ca2c000 CR3: 000000003d640000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __refcount_dec include/linux/refcount.h:344 [inline]
- refcount_dec include/linux/refcount.h:359 [inline]
- dev_put include/linux/netdevice.h:4166 [inline]
- unregister_netdevice_many+0x12c9/0x1790 net/core/dev.c:11114
- unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:11011
- unregister_netdevice include/linux/netdevice.h:2989 [inline]
- nsim_destroy+0x3f/0x190 drivers/net/netdevsim/netdev.c:382
- __nsim_dev_port_del+0x191/0x250 drivers/net/netdevsim/dev.c:1429
- nsim_dev_port_del_all drivers/net/netdevsim/dev.c:1442 [inline]
- nsim_dev_reload_destroy+0x12b/0x300 drivers/net/netdevsim/dev.c:1650
- nsim_dev_reload_down+0xdf/0x180 drivers/net/netdevsim/dev.c:964
- devlink_reload+0x53b/0x6b0 net/core/devlink.c:4042
- devlink_nl_cmd_reload+0x6ed/0x11d0 net/core/devlink.c:4163
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa596533ae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fa593aa9188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fa596646f60 RCX: 00007fa596533ae9
-RDX: 0000000000000000 RSI: 00000000200003c0 RDI: 0000000000000003
-RBP: 00007fa59658df6d R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffed384289f R14: 00007fa593aa9300 R15: 0000000000022000
- </TASK>
-
-
+Signed-off-by: Florent Revest <revest@chromium.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/lib/bpf/libbpf.c   | 9 +++++++++
+ tools/lib/bpf/libbpf.h   | 1 +
+ tools/lib/bpf/libbpf.map | 1 +
+ 3 files changed, 11 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index de7e09a6b5ec..dcb7fced5fd2 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8305,6 +8305,15 @@ int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags)
+ 	return 0;
+ }
+ 
++int bpf_program__clear_flags(struct bpf_program *prog, __u32 flags)
++{
++	if (prog->obj->loaded)
++		return libbpf_err(-EBUSY);
++
++	prog->prog_flags &= ~flags;
++	return 0;
++}
++
+ #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {			    \
+ 	.sec = sec_pfx,							    \
+ 	.prog_type = BPF_PROG_TYPE_##ptype,				    \
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 4ec69f224342..08f108e49841 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -495,6 +495,7 @@ bpf_program__set_expected_attach_type(struct bpf_program *prog,
+ 
+ LIBBPF_API __u32 bpf_program__flags(const struct bpf_program *prog);
+ LIBBPF_API int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags);
++LIBBPF_API int bpf_program__clear_flags(struct bpf_program *prog, __u32 flags);
+ 
+ LIBBPF_API int
+ bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog_fd,
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 6a59514a48cf..eeff700240dc 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -401,6 +401,7 @@ LIBBPF_0.6.0 {
+ 		bpf_program__insn_cnt;
+ 		bpf_program__insns;
+ 		bpf_program__set_extra_flags;
++		bpf_program__clear_flags;
+ 		btf__add_btf;
+ 		btf__add_decl_tag;
+ 		btf__add_type_tag;
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
+
