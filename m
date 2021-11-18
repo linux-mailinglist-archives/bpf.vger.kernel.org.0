@@ -2,97 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F434551DD
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 01:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E6E4551F1
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 02:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbhKRA7S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Nov 2021 19:59:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
+        id S242091AbhKRBEW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Nov 2021 20:04:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234120AbhKRA7P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:59:15 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A6AC061570;
-        Wed, 17 Nov 2021 16:56:16 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 136so3816463pgc.0;
-        Wed, 17 Nov 2021 16:56:16 -0800 (PST)
+        with ESMTP id S242118AbhKRBEA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Nov 2021 20:04:00 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644A7C061766;
+        Wed, 17 Nov 2021 17:01:01 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id p17so3792056pgj.2;
+        Wed, 17 Nov 2021 17:01:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=8D2EoFezMd3GTWFdDBCZbiurCMPRo1KyJLa15TK9Byo=;
-        b=RbjRLOfVDGBdoY7zWUE6TdkffsS7DYP3K33hmYf+OC3fOP5zbXy/r+KGVkg8y501FK
-         DInXykxRLrUB4ixBwL95nkLmTXw7KaWRits/UIsu6YtCk/C9FeQlWOzllLLOF2+QLF0b
-         AAQqG0HqkTrObSGLmG8rVjv4+npv2150DbyRm4DdRtZPXOEZHGmVsBXuDwUhX0B5Lq07
-         E4YPMBkHRQkytNTRUUwz96mJjkYtE2kMYtJCRCBWhvw9HXC19+GrvwwjncX1LjrLSGkX
-         Sk5XAUDoqDXyFpqY1LBwwE3h0eLMFm1tHUje75fk1vp482OYe3pZC0ZhiBL0xrZuA94c
-         MOFg==
+        bh=CldWxF+xHdMGvS6Ww1B8FNZQUYPzrzWUDuo2TU0I4PM=;
+        b=IXgkU6U+xtO8Ku5gLtxEqkE+vVeF2WpddqjXMgSDNbjqghnhEYbjAq0UKoge6akEA3
+         tIyUDzAoUHxIAC5WF4aVf2dWN9i6drJVqdfWMwjb0R2wH7gLmWN3Eni/PSW1zaRP7h3Y
+         9d3tL7uqSuQ8MHTy4hbKSw3mlz3SkZvcAkof6wkMyrbLdfU0tJ0rmBh5fdRPY1x80AvW
+         A/wpKOr/u4mV4kf1yqeiF6ItMSbYAvzteKET1BwFU6pPXCufKCrGhJvkQ9KjOJ3fl1At
+         F9eqjhTpZJS9e+n1lEGQaWrSjSBeqL1ADwvSdnHfQmsWfyMcOmgqbIg7iqvLJwgk4l7m
+         Qd/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8D2EoFezMd3GTWFdDBCZbiurCMPRo1KyJLa15TK9Byo=;
-        b=2Ltw+6I2m3FU00zgOQ3ScpICDDYfewn97YTrJEwbSoQfd3piWJJIjA00O17ANfxRKQ
-         SRV+rmblvn6sILu/kTFwMdSwTyw7eO2eSqBwwdZIpfYQ+dipyMRLY9n5bD7J3HSBitcj
-         XsvuSAgq4G1T4DRMhx2mpaQrCFm/dC6IRTfuw+fe2DMj+uDCKBql7gQ7Tk58Eo/0Dx7i
-         XVQaenpHDoaTeng9xqhRLsXDqvGHAG6SeP0+38n5hP3XW/bXG5RbOYboB2JEfU2wjg3U
-         1LxnHbY/+JfZgUTRXeum3eoRhXIA9F+4xYsV4pzzFEj7lvOTWThcfWR2Q2ZEcOzNrD1X
-         57Iw==
-X-Gm-Message-State: AOAM532+X1RkfN3XzNZ6eZnsSbdQjVoOagL0TosfzVOdCngiJuQAG5ju
-        68CpCthomIRmFS6kfgElAlg=
-X-Google-Smtp-Source: ABdhPJz7QPstrYe55jfGRBxbYgFm9OJvEy1hOMtX21l0BSLPBkW0ZVQfZ6Rr4OMMZu/oQFirdEyeNw==
-X-Received: by 2002:a62:884c:0:b0:49f:9947:e5cd with SMTP id l73-20020a62884c000000b0049f9947e5cdmr11149344pfd.45.1637196975898;
-        Wed, 17 Nov 2021 16:56:15 -0800 (PST)
+        bh=CldWxF+xHdMGvS6Ww1B8FNZQUYPzrzWUDuo2TU0I4PM=;
+        b=MTnNzfgKQZq4dSoEaw1wMpIbVMmb5Q61lHBgIhgPPlYxetnOK9qhiOogyPrYxKQQah
+         snufY3BvUtPUQglBbupqJVDAjABhZXdwZvYCRE3cJgSmM/nrV3AbIR3fnq2ciPLT5V23
+         Vt0hTOW0uyoLZaNqRuzU57P1yyA5gyMGx7OYCfoiWF5yhf2FT3UbKwKSTKqMsgKTDIPE
+         UbiIB1SlpVUlnm6Ta5i1ZZVuNAdQo5dWsLgpyxjF4Yqib4/iHqPrZZcYK3o1t4dorO0G
+         zYzpvR8GZ055GmB/TiFXlRIv1tVnI8f1T5B0wk5fqPsR0PypiXoMFIgAxEhclecUtTIu
+         e2cA==
+X-Gm-Message-State: AOAM530aXoYyjWfriCQNI68vEvJyinV+Kz1Yo1m36tVakQfnt5DavyiB
+        0inX4a5ZRKZ3eyyGaocAOPg=
+X-Google-Smtp-Source: ABdhPJwvQI25wT11ooPWmvblcwDtsd2TZz/VblITP8t0Z8TTBiF4LO6D6NNriPTY1X6BIjEfcMRIsA==
+X-Received: by 2002:a62:18d2:0:b0:4a2:b2d0:c39f with SMTP id 201-20020a6218d2000000b004a2b2d0c39fmr30558131pfy.69.1637197260931;
+        Wed, 17 Nov 2021 17:01:00 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:6d])
-        by smtp.gmail.com with ESMTPSA id c20sm809202pfl.201.2021.11.17.16.56.14
+        by smtp.gmail.com with ESMTPSA id d3sm860320pfv.57.2021.11.17.17.00.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 16:56:15 -0800 (PST)
-Date:   Wed, 17 Nov 2021 16:56:13 -0800
+        Wed, 17 Nov 2021 17:01:00 -0800 (PST)
+Date:   Wed, 17 Nov 2021 17:00:59 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/2] bpf, doc: split general purpose eBPF documentation
- out of filter.rst
-Message-ID: <20211118005613.g4sqaq2ucgykqk2m@ast-mbp>
-References: <20211115130715.121395-1-hch@lst.de>
- <20211115130715.121395-3-hch@lst.de>
+        kernel-team <kernel-team@cloudflare.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf] selftests: bpf: check map in map pruning
+Message-ID: <20211118010059.c2mixoshcrcz4ywq@ast-mbp>
+References: <20211111161452.86864-1-lmb@cloudflare.com>
+ <CAADnVQKWk5VNT9Z_Cy6COO9NMjkUg1p9gYTsPPzH-fi1qCrDiw@mail.gmail.com>
+ <CACAyw99EhJ8k4f3zeQMf3pRC+L=hQhK=Rb3UwSz19wt9gnMPrA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211115130715.121395-3-hch@lst.de>
+In-Reply-To: <CACAyw99EhJ8k4f3zeQMf3pRC+L=hQhK=Rb3UwSz19wt9gnMPrA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:07:15PM +0100, Christoph Hellwig wrote:
-> filter.rst starts out documenting the classic BPF and then spills into
-> introducing and documentating eBPF.  Split the eBPF documentation into
-> three new files under Documentation/bpf/ and link to that.
+On Wed, Nov 17, 2021 at 08:47:45AM +0000, Lorenz Bauer wrote:
+> On Sat, 13 Nov 2021 at 01:27, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > Not sure how you've tested it, but it doesn't work in unpriv:
+> > $ test_verifier 789
+> > #789/u map in map state pruning FAIL
+> > processed 26 insns (limit 1000000) max_states_per_insn 0 total_states
+> > 2 peak_states 2 mark_read 1
+> > #789/p map in map state pruning OK
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  Documentation/bpf/index.rst           |   30 +-
->  Documentation/bpf/instruction-set.rst |  491 ++++++++++++
->  Documentation/bpf/maps.rst            |   43 +
->  Documentation/bpf/verifier.rst        |  533 +++++++++++++
->  Documentation/networking/filter.rst   | 1059 +------------------------
-...
-> +.. Links:
-> +.. _eBPF: ../bpf/instrution-set.rst
+> Strange, I have a script that I use for bisecting which uses a minimal
+> .config + virtue to run a vm, plus I was debugging in gdb at the same
+> time. I might have missed this, apologies.
+> 
+> I guess vmtest.sh is the canonical way to run tests now?
 
-I think the split would be good in the long term, but please make the links
-more obvious somehow in the filter.rst, since a bunch of posts on the web
-link back to that file. The folks who will be reading the revamped filter.rst
-would need a very obvious way to navigate to new pages.
-
-In terms of followups and cleanup... please share what you have in mind.
+vmtest.sh runs test_progs only. That's the minimum bar that
+developers have to pass before sending patches.
+BPF CI runs test_progs, test_progs-no_alu32, test_verifier and test_maps.
+If in doubt run them all.
