@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E090C4563EC
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 21:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28ED5456400
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 21:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhKRUSH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 15:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S232864AbhKRU0m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 15:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhKRUSG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 15:18:06 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C34EC061574
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 12:15:06 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id j77so780530ybg.6
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 12:15:06 -0800 (PST)
+        with ESMTP id S231934AbhKRU0k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 15:26:40 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DD0C061574
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 12:23:39 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id g17so21535579ybe.13
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 12:23:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MI8AehGrVQH5jcKA4GQdrzRDlpG92nDDochuxjNeOeE=;
-        b=db20ykvNw0t089fJY+8hcih7CffiPqlKDZ+B9Fbi9c52C4v6M0s+wLBeOG0Xl0wRaD
-         q8sZGSpHixpvsNwvGFTMbvQ6Hw9KajaUxedTn8u2qA+FDJ5KyQqfuok+p9GA5SMCc4js
-         Ck6yrM1OaW9dGklo+N/9yy9oAaB3X7yvTd8FbOZJS8ACVZiXreJ9IWs80EoEPu5RKZgg
-         yiHJFkV64TtebG5p6HwEjG04dBxOMC2nawlKq5170spn5gqu12YiJNJ2cd+F+p6K4Umm
-         YHSY1c19OHZ6xhPI8pQhkQsgSf0yxKYx1H+RNk3iQWLpzqsVBjZSpbpbEPN1znuvpef0
-         gKlQ==
+        bh=HQYgxvi1E4/+ApQSsFK6eALdCLWECkKcThoUYXIzkCQ=;
+        b=mWOPVdJYQorNcUOGu7pfkrppMfFJIDUsCayumY9YLElplS+3hSjweUpgzl6HzKqUeY
+         88mbtMBG9fLawc1sHKkEzQyG8A/Q8ws7CH5mQkP8S9WezOJw3bm4rDswepW81JeelunB
+         kUSK3NKeaaVhcLVg0J7U5dsTz3LjTBxfMIATv8VdCYxqePVkx1wJkDv3UFOS3fmA2Mlz
+         dy9HF7saR2x8iB4fsy+4bgvkeAgwTqQR9Ki+YA4Sq4WXCG0s/lMSJRbtxVYnasUewm2N
+         /M8ZK40Nu6TAaFiOLLaqAlJd4zhV9AvxRwQEoG3s9pnnLeGZH9wayVyx9oQ8k9iLm2tc
+         ZZUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MI8AehGrVQH5jcKA4GQdrzRDlpG92nDDochuxjNeOeE=;
-        b=oehniYlXiHpk04F+kx80FKnvIVACoJbjeZcAJ9OFyVvDRrBINKP4Bv9q4wbGpQoH2c
-         72kRCQArT3WwhocQ5CcV4+DoHDunXNLvjRIqP64EqEvZ1i7HtMmoPwsjXnNa5TKPjITO
-         hRzIWX9/yehZsc6K0VSbUVcSbkXADPOUNRKXZHLeY1cBgnojrVxdsRtbCGTGnSkwGTwD
-         iMR+h8o8ZFArzSqC/IrdB6TZS6R36gdfbTqrp8eCoZCHmV3xj68j0XV7oIpgaA4yhAaO
-         ZTvpPP7ti2QqQ9GVYlYFXCcdwKJfY7PNHlNQfASIlILLrpFIMWXuu1yQbFBsa0+anuog
-         0XgA==
-X-Gm-Message-State: AOAM530F3tIxNgs6wpXKIDtfyEud8WpEn1L1BjP4Y3OwOBMw+0zAMmAt
-        dZOPMaPMk+LbKtqtm5NRgSSFpB3vqvJG5a2p3Ok=
-X-Google-Smtp-Source: ABdhPJxZuCUdqzq5BDUdHpJQhuPrlOUB+RwIh0MwzDhDNL2OSs5gd+e+Tj4/RFCQ6rwQ182lR9qnPc3qAetoeSFOBEs=
-X-Received: by 2002:a25:d187:: with SMTP id i129mr30103264ybg.2.1637266505587;
- Thu, 18 Nov 2021 12:15:05 -0800 (PST)
+        bh=HQYgxvi1E4/+ApQSsFK6eALdCLWECkKcThoUYXIzkCQ=;
+        b=32fduuUrd+M10SKg1d+y+InJs1ohy/73KbJuA7Xw7wYXIBUCu5TkVeWOwM1Uo4wxei
+         cV1G9hrtNF6AML9+lPZxevINCOrg1lyhcjJQyqbRkODAEZyk8uDXXOvIHLdiM59n822l
+         BwUYrnt5uQFDxQnt4N5VdRmPqAmDDRGXgS8QdQqgP2BdbEArPmh+cA4EBXoadmC+dbej
+         Fc4LcZGXoJCDY01l75RdcER9bdhebcMGMaNKpZ/wILCNzEbHWklZ3DNHgHwPtJXxSYNI
+         vdt+SwctFteT822oWealeYs4JBOvvXDaAbEnrvqKhvag+L9XXWDyVjz5c+ze6g1xZTb3
+         laYA==
+X-Gm-Message-State: AOAM5331W9sI1CvA4lEEv5Icq+uMffuCd/kMcTCIZZcAt76DKdI+8lN7
+        vgse5oyDM8939TplbE0P9RyQ3Jmut2VIjir1DCm8S/la
+X-Google-Smtp-Source: ABdhPJwB6OGN5edx1w4GHAWmlNI3LdT3apajBuFYOzMrScGKRX0SBvu7TgqrlROeJ0U1Oc3W9drN3tEq/DP9cHtxbfs=
+X-Received: by 2002:a25:cc4c:: with SMTP id l73mr30337731ybf.114.1637267018671;
+ Thu, 18 Nov 2021 12:23:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20211118010404.2415864-1-joannekoong@fb.com> <20211118010404.2415864-2-joannekoong@fb.com>
-In-Reply-To: <20211118010404.2415864-2-joannekoong@fb.com>
+References: <20211118010404.2415864-1-joannekoong@fb.com> <20211118010404.2415864-3-joannekoong@fb.com>
+In-Reply-To: <20211118010404.2415864-3-joannekoong@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Nov 2021 12:14:54 -0800
-Message-ID: <CAEf4BzZV-n9uSM1kDONLfn0jLz50OkjXqy=avZ2oE4dhxVm9gQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Add bpf_for_each helper
+Date:   Thu, 18 Nov 2021 12:23:27 -0800
+Message-ID: <CAEf4BzYKdK3Oj0=cKPof+MZCmnSAgNcA7TTyswcq7oNY6+s9Gg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Add tests for bpf_for_each
 To:     Joanne Koong <joannekoong@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -60,189 +60,272 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 5:06 PM Joanne Koong <joannekoong@fb.com> wrote:
+On Wed, Nov 17, 2021 at 5:07 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> This patch adds the kernel-side and API changes for a new helper
-> function, bpf_for_each:
+> In this patch -
+> 1) Add a new prog "for_each_helper" which tests the basic functionality of
+> the bpf_for_each helper.
 >
-> long bpf_for_each(u32 nr_interations, void *callback_fn,
-> void *callback_ctx, u64 flags);
-
-foreach in other languages are usually used when you are iterating
-elements of some data structure or stream of data, so the naming feels
-slightly off. bpf_loop() for bpf_for_range() seems to be more directly
-pointing to what's going on. My 2 cents, it's subjective, of course.
-
-
+> 2) Add pyperf600_foreach and strobemeta_foreach to test the performance
+> of using bpf_for_each instead of a for loop
 >
-> bpf_for_each invokes the "callback_fn" nr_iterations number of times
-> or until the callback_fn returns 1.
-
-As Toke mentioned, we don't really check 1. Enforcing it on verifier
-side is just going to cause more troubles for users and doesn't seem
-important. I can see two ways to define the semantics, with error
-propagation and without.
-
-For error propagation, we can define:
-  - >0, break and return number of iterations performed in total;
-  - 0, continue to next iteration, if no more iterations, return
-number of iterations performed;
-  - <0, break and return that error value (but no way to know at which
-iteration this happened, except through custom context);
-
-Or we can make it simpler and just:
-  - 0, continue;
-  - != 0, break;
-  - always return number of iterations performed.
-
-
-No strong preferences on my side, I see benefits to both ways.
-
+> The results of pyperf600 and strobemeta are as follows:
 >
-> A few things to please note:
-> ~ The "u64 flags" parameter is currently unused but is included in
-> case a future use case for it arises.
-> ~ In the kernel-side implementation of bpf_for_each (kernel/bpf/bpf_iter.c),
-> bpf_callback_t is used as the callback function cast.
-> ~ A program can have nested bpf_for_each calls but the program must
-> still adhere to the verifier constraint of its stack depth (the stack depth
-> cannot exceed MAX_BPF_STACK))
-> ~ The next patch will include the tests and benchmark
+> ~strobemeta~
+>
+> Baseline
+>     verification time 6808200 usec
+>     stack depth 496
+>     processed 592132 insns (limit 1000000) max_states_per_insn 14
+>     total_states 16018 peak_states 13684 mark_read 3132
+>     #188 verif_scale_strobemeta:OK (unrolled loop)
+>
+> Using bpf_for_each
+>     verification time 31589 usec
+>     stack depth 96+408
+>     processed 1630 insns (limit 1000000) max_states_per_insn 4
+>     total_states 107 peak_states 107 mark_read 60
+>     #189 verif_scale_strobemeta_foreach:OK
+>
+> ~pyperf600~
+>
+> Baseline
+>     verification time 29702486 usec
+>     stack depth 368
+>     processed 626838 insns (limit 1000000) max_states_per_insn 7
+>     total_states 30368 peak_states 30279 mark_read 748
+>     #182 verif_scale_pyperf600:OK (unrolled loop)
+>
+> Using bpf_for_each
+>     verification time 148488 usec
+
+200x, this is awesome
+
+>     stack depth 320+40
+>     processed 10518 insns (limit 1000000) max_states_per_insn 10
+>     total_states 705 peak_states 517 mark_read 38
+>     #183 verif_scale_pyperf600_foreach:OK
+>
+> Using the bpf_for_each helper led to approximately a 100% decrease
+> in the verification time and in the number of instructions.
 >
 > Signed-off-by: Joanne Koong <joannekoong@fb.com>
 > ---
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       | 23 +++++++++++++++++++++++
->  kernel/bpf/bpf_iter.c          | 32 ++++++++++++++++++++++++++++++++
->  kernel/bpf/helpers.c           |  2 ++
->  kernel/bpf/verifier.c          | 28 ++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 23 +++++++++++++++++++++++
->  6 files changed, 109 insertions(+)
+>  .../bpf/prog_tests/bpf_verif_scale.c          | 12 +++
+>  .../selftests/bpf/prog_tests/for_each.c       | 61 ++++++++++++++++
+>  .../selftests/bpf/progs/for_each_helper.c     | 69 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/pyperf.h    | 70 +++++++++++++++++-
+>  .../selftests/bpf/progs/pyperf600_foreach.c   |  5 ++
+>  .../testing/selftests/bpf/progs/strobemeta.h  | 73 ++++++++++++++++++-
+>  .../selftests/bpf/progs/strobemeta_foreach.c  |  9 +++
+
+let's split out strobemeta and pyperf refactorings into a separate
+patch from dedicated tests for bpf_for_each helper, they are logically
+quite different and independent
+
+>  7 files changed, 295 insertions(+), 4 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/for_each_helper.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/pyperf600_foreach.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/strobemeta_foreach.c
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 6deebf8bf78f..d9b69a896c91 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2107,6 +2107,7 @@ extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
->  extern const struct bpf_func_proto bpf_task_storage_get_proto;
->  extern const struct bpf_func_proto bpf_task_storage_delete_proto;
->  extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
-> +extern const struct bpf_func_proto bpf_for_each_proto;
->  extern const struct bpf_func_proto bpf_btf_find_by_name_kind_proto;
->  extern const struct bpf_func_proto bpf_sk_setsockopt_proto;
->  extern const struct bpf_func_proto bpf_sk_getsockopt_proto;
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index bd0c9f0487f6..ea5098920ed2 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -4750,6 +4750,28 @@ union bpf_attr {
->   *             The number of traversed map elements for success, **-EINVAL** for
->   *             invalid **flags**.
->   *
-> + * long bpf_for_each(u32 nr_iterations, void *callback_fn, void *callback_ctx, u64 flags)
-> + *     Description
-> + *             For **nr_iterations**, call **callback_fn** function with
-> + *             **callback_ctx** as the context parameter.
-> + *             The **callback_fn** should be a static function and
-> + *             the **callback_ctx** should be a pointer to the stack.
-> + *             The **flags** is used to control certain aspects of the helper.
-> + *             Currently, the **flags** must be 0.
-> + *
-> + *             long (\*callback_fn)(u32 index, void \*ctx);
-> + *
-> + *             where **index** is the current index in the iteration. The index
-> + *             is zero-indexed.
-> + *
-> + *             If **callback_fn** returns 0, the helper will continue to the next
-> + *             iteration. If return value is 1, the helper will skip the rest of
-> + *             the iterations and return. Other return values are not used now.
-> + *
-> + *     Return
-> + *             The number of iterations performed, **-EINVAL** for invalid **flags**
-> + *             or a null **callback_fn**.
-> + *
->   * long bpf_snprintf(char *str, u32 str_size, const char *fmt, u64 *data, u32 data_len)
->   *     Description
->   *             Outputs a string into the **str** buffer of size **str_size**
-> @@ -5105,6 +5127,7 @@ union bpf_attr {
->         FN(sock_from_file),             \
->         FN(check_mtu),                  \
->         FN(for_each_map_elem),          \
-> +       FN(for_each),                   \
-
-you can't change the order of the function definitions, this breaks
-ABI, please add it at the end
-
->         FN(snprintf),                   \
->         FN(sys_bpf),                    \
->         FN(btf_find_by_name_kind),      \
-> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-> index b2ee45064e06..cb742c50898a 100644
-> --- a/kernel/bpf/bpf_iter.c
-> +++ b/kernel/bpf/bpf_iter.c
-> @@ -714,3 +714,35 @@ const struct bpf_func_proto bpf_for_each_map_elem_proto = {
->         .arg3_type      = ARG_PTR_TO_STACK_OR_NULL,
->         .arg4_type      = ARG_ANYTHING,
->  };
-> +
-> +BPF_CALL_4(bpf_for_each, u32, nr_iterations, void *, callback_fn, void *, callback_ctx,
-> +          u64, flags)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+> index 867349e4ed9e..77396484fde7 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+> @@ -115,6 +115,12 @@ void test_verif_scale_pyperf600()
+>         scale_test("pyperf600.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
+>  }
+>
+> +void test_verif_scale_pyperf600_foreach(void)
 > +{
-> +       bpf_callback_t callback = (bpf_callback_t)callback_fn;
-> +       u64 err;
-> +       u32 i;
-> +
-
-I wonder if we should have some high but reasonable number of
-iteration limits. It would be too easy for users to cause some
-overflow and not notice it, and then pass 4bln iterations and freeze
-the kernel. I think limiting to something like 1mln or 8mln might be
-ok. Thoughts?
-
-
-> +       if (flags)
-> +               return -EINVAL;
-> +
-> +       for (i = 0; i < nr_iterations; i++) {
-> +               err = callback((u64)i, (u64)(long)callback_ctx, 0, 0, 0);
-> +               /* return value: 0 - continue, 1 - stop and return */
-> +               if (err) {
-
-nit: not really error (at least in the current semantics), "ret" would
-be more appropriate
-
-> +                       i++;
-> +                       break;
-> +               }
-> +       }
-> +
-> +       return i;
+> +       /* use the bpf_for_each helper*/
+> +       scale_test("pyperf600_foreach.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
 > +}
 > +
-
-[...]
-
->  static int set_timer_callback_state(struct bpf_verifier_env *env,
->                                     struct bpf_func_state *caller,
->                                     struct bpf_func_state *callee,
-> @@ -6482,6 +6503,13 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->                         return -EINVAL;
->         }
+>  void test_verif_scale_pyperf600_nounroll()
+>  {
+>         /* no unroll at all.
+> @@ -165,6 +171,12 @@ void test_verif_scale_strobemeta()
+>         scale_test("strobemeta.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
+>  }
 >
-> +       if (func_id == BPF_FUNC_for_each) {
-> +               err = __check_func_call(env, insn, insn_idx_p, meta.subprogno,
-> +                                       set_for_each_callback_state);
-> +               if (err < 0)
-> +                       return -EINVAL;
-> +       }
+> +void test_verif_scale_strobemeta_foreach(void)
+> +{
+> +       /* use the bpf_for_each helper*/
+> +       scale_test("strobemeta_foreach.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
+> +}
 > +
+>  void test_verif_scale_strobemeta_nounroll1()
+>  {
+>         /* no unroll, tiny loops */
+> diff --git a/tools/testing/selftests/bpf/prog_tests/for_each.c b/tools/testing/selftests/bpf/prog_tests/for_each.c
+> index 68eb12a287d4..529573a82334 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/for_each.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/for_each.c
+> @@ -4,6 +4,7 @@
+>  #include <network_helpers.h>
+>  #include "for_each_hash_map_elem.skel.h"
+>  #include "for_each_array_map_elem.skel.h"
+> +#include "for_each_helper.skel.h"
+>
+>  static unsigned int duration;
+>
+> @@ -121,10 +122,70 @@ static void test_array_map(void)
+>         for_each_array_map_elem__destroy(skel);
+>  }
+>
+> +static void test_for_each_helper(void)
+> +{
+> +       struct for_each_helper *skel;
+> +       __u32 retval;
+> +       int err;
+> +
+> +       skel = for_each_helper__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "for_each_helper__open_and_load"))
+> +               return;
+> +
+> +       skel->bss->nr_iterations = 100;
+> +       err = bpf_prog_test_run(bpf_program__fd(skel->progs.test_prog),
+> +                               1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
+> +                               &retval, &duration);
+> +       if (CHECK(err || retval, "bpf_for_each helper test_prog",
 
-we should convert these ifs (they are not even if elses!) into a
-switch. And move if (err < 0) return err; outside. It will only keep
-growing.
+please don't use CHECK() in new test, stick to ASSERT_XXX()
 
->         if (func_id == BPF_FUNC_timer_set_callback) {
->                 err = __check_func_call(env, insn, insn_idx_p, meta.subprogno,
->                                         set_timer_callback_state);
+
+> +                 "err %d errno %d retval %d\n", err, errno, retval))
+> +               goto out;
+> +       ASSERT_EQ(skel->bss->nr_iterations_completed, skel->bss->nr_iterations,
+> +                 "nr_iterations mismatch");
+> +       ASSERT_EQ(skel->bss->g_output, (100 * 99) / 2, "wrong output");
+> +
+> +       /* test callback_fn returning 1 to stop iteration */
+> +       skel->bss->nr_iterations = 400;
+> +       skel->data->stop_index = 50;
+> +       err = bpf_prog_test_run(bpf_program__fd(skel->progs.test_prog),
+> +                               1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
+> +                               &retval, &duration);
+> +       if (CHECK(err || retval, "bpf_for_each helper test_prog",
+> +                 "err %d errno %d retval %d\n", err, errno, retval))
+> +               goto out;
+> +       ASSERT_EQ(skel->bss->nr_iterations_completed, skel->data->stop_index + 1,
+> +                 "stop_index not followed");
+> +       ASSERT_EQ(skel->bss->g_output, (50 * 49) / 2, "wrong output");
+> +
+> +       /* test passing in a null ctx */
+> +       skel->bss->nr_iterations = 10;
+> +       err = bpf_prog_test_run(bpf_program__fd(skel->progs.prog_null_ctx),
+> +                               1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
+> +                               &retval, &duration);
+> +       if (CHECK(err || retval, "bpf_for_each helper prog_null_ctx",
+> +                 "err %d errno %d retval %d\n", err, errno, retval))
+> +               goto out;
+> +       ASSERT_EQ(skel->bss->nr_iterations_completed, skel->bss->nr_iterations,
+> +                 "nr_iterations mismatch");
+> +
+> +       /* test invalid flags */
+> +       err = bpf_prog_test_run(bpf_program__fd(skel->progs.prog_invalid_flags),
+> +                               1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
+> +                               &retval, &duration);
+> +       if (CHECK(err || retval, "bpf_for_each helper prog_invalid_flags",
+> +                 "err %d errno %d retval %d\n", err, errno, retval))
+> +               goto out;
+> +       ASSERT_EQ(skel->bss->err, -EINVAL, "invalid_flags");
+> +
+> +out:
+> +       for_each_helper__destroy(skel);
+> +}
+> +
+>  void test_for_each(void)
+>  {
+>         if (test__start_subtest("hash_map"))
+>                 test_hash_map();
+>         if (test__start_subtest("array_map"))
+>                 test_array_map();
+> +       if (test__start_subtest("for_each_helper"))
+> +               test_for_each_helper();
+
+those hash_map and array_map are conceptually very different tests,
+it's probably best to have a separate file under prog_tests dedicated
+to this new helper.
+
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/for_each_helper.c b/tools/testing/selftests/bpf/progs/for_each_helper.c
+> new file mode 100644
+> index 000000000000..4404d0cb32a6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/for_each_helper.c
+> @@ -0,0 +1,69 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct callback_ctx {
+> +       int output;
+> +};
+> +
+> +/* This should be set by the user program */
+> +u32 nr_iterations;
+> +u32 stop_index = -1;
+> +
+> +/* Making these global variables so that the userspace program
+> + * can verify the output through the skeleton
+> + */
+> +int nr_iterations_completed;
+> +int g_output;
+> +int err;
+> +
+> +static int callback_fn(__u32 index, void *data)
+> +{
+> +       struct callback_ctx *ctx = data;
+> +
+> +       if (index >= stop_index)
+> +               return 1;
+> +
+> +       ctx->output += index;
+> +
+> +       return 0;
+> +}
+> +
+> +static int empty_callback_fn(__u32 index, void *data)
+> +{
+> +       return 0;
+> +}
+> +
+> +SEC("tc")
+> +int test_prog(struct __sk_buff *skb)
+> +{
+> +       struct callback_ctx data = {};
+> +
+> +       nr_iterations_completed = bpf_for_each(nr_iterations, callback_fn, &data, 0);
+> +
+> +       g_output = data.output;
+> +
+> +       return 0;
+> +}
+> +
+> +SEC("tc")
+> +int prog_null_ctx(struct __sk_buff *skb)
+> +{
+> +       nr_iterations_completed = bpf_for_each(nr_iterations, empty_callback_fn, NULL, 0);
+> +
+> +       return 0;
+> +}
+> +
+> +SEC("tc")
+> +int prog_invalid_flags(struct __sk_buff *skb)
+> +{
+> +       struct callback_ctx data = {};
+> +
+> +       err = bpf_for_each(nr_iterations, callback_fn, &data, 1);
+> +
+> +       return 0;
+> +}
+
+You mentioned that nested loops works, let's have a test for that.
 
 [...]
