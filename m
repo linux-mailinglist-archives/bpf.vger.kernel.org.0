@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72CB455A54
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 12:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46552455A56
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 12:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344107AbhKRLcN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 06:32:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56138 "EHLO
+        id S1344037AbhKRLcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 06:32:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49834 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344034AbhKRLaL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Nov 2021 06:30:11 -0500
+        by vger.kernel.org with ESMTP id S1344041AbhKRLaS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Nov 2021 06:30:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637234831;
+        s=mimecast20190719; t=1637234837;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bifxS4z5leMtv9W8fU/+OTbvzsJd1lcEkpE8E9OLG6I=;
-        b=OAIZf4x/yaPDg+mMZgRWjAtxv/ADg5YGlbjOrUiieGZRayzMMyCvkOC6JJR9Gfm09mbkJj
-        /3Gq5HRMy7gGFivX/Ou1pIDqGNFYFb/H8e7YtgImzP2MdxHd4NtfoeN7hqDbvmYI/rWjpl
-        4IWfFN8itOfEgJXDzxXNpeKD5myw3xc=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=x9XHLN69dMYL16w7embbO4+Aae5TE1ecNy2oyFj9C+I=;
+        b=U/uTPB7wB8G12qwdQyeAqxpZTG+/KSr7FwORCdQ+ci9HXicknH1qJ71RSAA4op3rf3RnVg
+        1AYOpJTIRpd/rQMK1K7H3W6gi9P58PLv5zJZcmV4RS2tWGcUZsTt9w/mfbDGPE5y5xWugQ
+        NpipQ6+yTKU6H2X/J59Dj7bC8DlGLR4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-493-hFWEwRExPemnyX_2nbaU0Q-1; Thu, 18 Nov 2021 06:27:10 -0500
-X-MC-Unique: hFWEwRExPemnyX_2nbaU0Q-1
-Received: by mail-ed1-f72.google.com with SMTP id f4-20020a50e084000000b003db585bc274so4961774edl.17
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 03:27:10 -0800 (PST)
+ us-mta-563-BQwrOkpoNyS0RAbhkru7CA-1; Thu, 18 Nov 2021 06:27:16 -0500
+X-MC-Unique: BQwrOkpoNyS0RAbhkru7CA-1
+Received: by mail-ed1-f71.google.com with SMTP id r16-20020a056402019000b003e6cbb77ed2so4996057edv.10
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 03:27:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bifxS4z5leMtv9W8fU/+OTbvzsJd1lcEkpE8E9OLG6I=;
-        b=yOlswn4ZNOb0gqjSpripnC8Mo2Y/l1pz7FZv0nVnHZN7OivU2h3ZQ3E5gb/Nu012Xj
-         U4kaM7cNc+T1neVMtX2ijvs+zXH5u+3VdHwjnfHFQNMX1PgS8EG8bjw5FOiZvOiWAZ4M
-         huuUr1YlNzbC559za8PCYOHsAIaLo8M+J1vd9U/NL59USANikQvURL4DMLMrOSrnpJUt
-         etNuZtv1HHhSo2MtlEzWgfR9cgfegdKypc2yWKg7jM0V/9IsO8ktfAL8CSEWzcGiVRlF
-         1DiNp0JjZNZUnQ53GS0SbA7+MU6EHbDuobnwzWah+Owz8dI4PGBH6JKgx3UYfuf+5N06
-         bqxw==
-X-Gm-Message-State: AOAM531k2qRum8q5y8MspbZAUdO3ARYwIWabk5ptheVw+SD+wComDGki
-        xOeK1yUK6JVVUuv1sQ33ilNt/0tCkE478UW6jfccefOCLC46Yh04FcS23VhUiIeNwvI6/eO6FU+
-        8MjUGMlj8HyFz
-X-Received: by 2002:a17:907:972a:: with SMTP id jg42mr33022572ejc.398.1637234829292;
-        Thu, 18 Nov 2021 03:27:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzXNac21cC6ptXLwE8vb976WG6H1rW4zE4vFEKA+xATsZW9m+DG21K1kz5v58zfN/C4PnINUw==
-X-Received: by 2002:a17:907:972a:: with SMTP id jg42mr33022545ejc.398.1637234829081;
-        Thu, 18 Nov 2021 03:27:09 -0800 (PST)
+        bh=x9XHLN69dMYL16w7embbO4+Aae5TE1ecNy2oyFj9C+I=;
+        b=mhJMXb0sCntYedHZLMs9S/+/VgWCUmGISRmguledlyXCCjFd6NbhES1OUiUyTUVq1/
+         Sa2SF3kgwfydXwB9WTdMne+CHdMzl3laajzygHKPeT7M2bap7EUGvkpDj5Ar0Fh149lh
+         RfifibFUFlzWrtgamXRhchj9vFAZEin9+g2nEr0/HvM8JTMdAf+etsEQ1sf6EUKYGEaD
+         NpM4/XHBSEEO8uZt+gZUnT2e7kiAwCwuF92080pAsAM9dTRcqLUIYJ/1xyR4gnYNJN1d
+         an5R9I59cv5QHAFaocHA88cnvoXgiKN/OSr4rhk4TvWc4gItAzhQog890IOGdd51JpcQ
+         MX9A==
+X-Gm-Message-State: AOAM530sotQF6cynIi0lEWrjGp20QMwBGHqU33MqsL/VOjhGymoN0/tV
+        8dWxbqdDgmY8cAGxWzqRsPtmI9IQgzCG1RjUdhvq9L8yef179usokD4JDAShFD40t8rll1yXWOX
+        C1/V9MjMKoRUn
+X-Received: by 2002:a17:907:7d89:: with SMTP id oz9mr32106285ejc.450.1637234835244;
+        Thu, 18 Nov 2021 03:27:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxKZvEuUwu+FksxFjKTVn0La4xirfYOertt9DeRVat7py3YVHTo0B7rY1K6/fJpo/KnT+8RDg==
+X-Received: by 2002:a17:907:7d89:: with SMTP id oz9mr32106258ejc.450.1637234835060;
+        Thu, 18 Nov 2021 03:27:15 -0800 (PST)
 Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id bd12sm1464972edb.11.2021.11.18.03.27.08
+        by smtp.gmail.com with ESMTPSA id hr11sm1230357ejc.108.2021.11.18.03.27.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 03:27:08 -0800 (PST)
+        Thu, 18 Nov 2021 03:27:14 -0800 (PST)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -61,9 +61,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>
-Subject: [PATCH bpf-next 22/29] libbpf: Add support to link multi func tracing program
-Date:   Thu, 18 Nov 2021 12:24:48 +0100
-Message-Id: <20211118112455.475349-23-jolsa@kernel.org>
+Subject: [PATCH bpf-next 23/29] selftests/bpf: Add bpf_arg/bpf_ret_value test
+Date:   Thu, 18 Nov 2021 12:24:49 +0100
+Message-Id: <20211118112455.475349-24-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211118112455.475349-1-jolsa@kernel.org>
 References: <20211118112455.475349-1-jolsa@kernel.org>
@@ -73,185 +73,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding support to link multi func tracing program
-through link_create interface.
-
-Adding special types for multi func programs:
-
-  fentry.multi
-  fexit.multi
-
-so you can define multi func programs like:
-
-  SEC("fentry.multi/bpf_fentry_test*")
-  int BPF_PROG(test1, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f)
-
-that defines test1 to be attached to bpf_fentry_test* functions.
-The test1 program is loaded with BPF_F_MULTI_FUNC flag.
-
-If functions are not specified the program needs to be attached
-manually.
-
-Adding new btf_ids/btf_ids_cnt fields to bpf_link_create_opts,
-that define functions to attach the program to.
+Adding tests for bpf_arg/bpf_ret_value helpers on
+both fentry and fexit programs.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/bpf.c    |  7 +++++
- tools/lib/bpf/bpf.h    |  6 +++-
- tools/lib/bpf/libbpf.c | 66 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 78 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/args_test.c      | 34 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/args_test.c | 30 ++++++++++++++++
+ 2 files changed, 64 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/args_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/args_test.c
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 94560ba31724..86a95419e501 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -784,6 +784,13 @@ int bpf_link_create(int prog_fd, int target_fd,
- 		if (!OPTS_ZEROED(opts, perf_event))
- 			return libbpf_err(-EINVAL);
- 		break;
-+	case BPF_TRACE_FENTRY:
-+	case BPF_TRACE_FEXIT:
-+		attr.link_create.multi.btf_ids = (__u64) OPTS_GET(opts, multi.btf_ids, 0);
-+		attr.link_create.multi.btf_ids_cnt = OPTS_GET(opts, multi.btf_ids_cnt, 0);
-+		if (!OPTS_ZEROED(opts, multi))
-+			return libbpf_err(-EINVAL);
-+		break;
- 	default:
- 		if (!OPTS_ZEROED(opts, flags))
- 			return libbpf_err(-EINVAL);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 079cc81ac51e..e55abf3528b3 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -249,10 +249,14 @@ struct bpf_link_create_opts {
- 		struct {
- 			__u64 bpf_cookie;
- 		} perf_event;
-+		struct {
-+			__u32 *btf_ids;
-+			__u32  btf_ids_cnt;
-+		} multi;
- 	};
- 	size_t :0;
- };
--#define bpf_link_create_opts__last_field perf_event
-+#define bpf_link_create_opts__last_field multi
- 
- LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
- 			       enum bpf_attach_type attach_type,
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index de7e09a6b5ec..4c11d38b1f92 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -246,6 +246,8 @@ enum sec_def_flags {
- 	SEC_SLEEPABLE = 8,
- 	/* allow non-strict prefix matching */
- 	SEC_SLOPPY_PFX = 16,
-+	/* BPF program type allows multiple functions attachment */
-+	SEC_MULTI_FUNC = 32,
- };
- 
- struct bpf_sec_def {
-@@ -6723,6 +6725,9 @@ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object
- 			continue;
- 		}
- 
-+		if (prog->sec_def->cookie & SEC_MULTI_FUNC)
-+			prog->prog_flags |= BPF_F_MULTI_FUNC;
+diff --git a/tools/testing/selftests/bpf/prog_tests/args_test.c b/tools/testing/selftests/bpf/prog_tests/args_test.c
+new file mode 100644
+index 000000000000..1938f2616ee9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/args_test.c
+@@ -0,0 +1,34 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include "args_test.skel.h"
 +
- 		bpf_program__set_type(prog, prog->sec_def->prog_type);
- 		bpf_program__set_expected_attach_type(prog, prog->sec_def->expected_attach_type);
- 
-@@ -8318,6 +8323,7 @@ static struct bpf_link *attach_kprobe(const struct bpf_program *prog, long cooki
- static struct bpf_link *attach_tp(const struct bpf_program *prog, long cookie);
- static struct bpf_link *attach_raw_tp(const struct bpf_program *prog, long cookie);
- static struct bpf_link *attach_trace(const struct bpf_program *prog, long cookie);
-+static struct bpf_link *attach_trace_multi(const struct bpf_program *prog, long cookie);
- static struct bpf_link *attach_lsm(const struct bpf_program *prog, long cookie);
- static struct bpf_link *attach_iter(const struct bpf_program *prog, long cookie);
- 
-@@ -8345,6 +8351,8 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("fentry.s/",		TRACING, BPF_TRACE_FENTRY, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
- 	SEC_DEF("fmod_ret.s/",		TRACING, BPF_MODIFY_RETURN, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
- 	SEC_DEF("fexit.s/",		TRACING, BPF_TRACE_FEXIT, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
-+	SEC_DEF("fentry.multi/",	TRACING, BPF_TRACE_FENTRY, SEC_MULTI_FUNC, attach_trace_multi),
-+	SEC_DEF("fexit.multi/",		TRACING, BPF_TRACE_FEXIT, SEC_MULTI_FUNC, attach_trace_multi),
- 	SEC_DEF("freplace/",		EXT, 0, SEC_ATTACH_BTF, attach_trace),
- 	SEC_DEF("lsm/",			LSM, BPF_LSM_MAC, SEC_ATTACH_BTF, attach_lsm),
- 	SEC_DEF("lsm.s/",		LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
-@@ -8797,6 +8805,9 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog, const char *attac
- 	__u32 attach_prog_fd = prog->attach_prog_fd;
- 	int err = 0;
- 
-+	if (prog->prog_flags & BPF_F_MULTI_FUNC)
-+		return 0;
-+
- 	/* BPF program's BTF ID */
- 	if (attach_prog_fd) {
- 		err = libbpf_find_prog_btf_id(attach_name, attach_prog_fd);
-@@ -10216,6 +10227,61 @@ static struct bpf_link *bpf_program__attach_btf_id(const struct bpf_program *pro
- 	return (struct bpf_link *)link;
- }
- 
-+static struct bpf_link *bpf_program__attach_multi(const struct bpf_program *prog)
++void test_args_test(void)
 +{
-+	char *pattern = prog->sec_name + strlen(prog->sec_def->sec);
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	enum bpf_attach_type attach_type;
-+	int prog_fd, link_fd, cnt, err;
-+	struct bpf_link *link = NULL;
-+	__u32 *ids = NULL;
++	struct args_test *skel = NULL;
++	__u32 duration = 0, retval;
++	int err, prog_fd;
 +
-+	prog_fd = bpf_program__fd(prog);
-+	if (prog_fd < 0) {
-+		pr_warn("prog '%s': can't attach before loaded\n", prog->name);
-+		return ERR_PTR(-EINVAL);
-+	}
++	skel = args_test__open();
++	if (!ASSERT_OK_PTR(skel, "args_test__open"))
++		return;
 +
-+	err = bpf_object__load_vmlinux_btf(prog->obj, true);
-+	if (err)
-+		return ERR_PTR(err);
++	err = args_test__load(skel);
++	if (!ASSERT_OK(err, "args_test__load"))
++		goto cleanup;
 +
-+	cnt = btf__find_by_glob_kind(prog->obj->btf_vmlinux, BTF_KIND_FUNC,
-+				     pattern, NULL, &ids);
-+	if (cnt <= 0)
-+		return ERR_PTR(-EINVAL);
++	err = args_test__attach(skel);
++	if (!ASSERT_OK(err, "args_test__attach"))
++		goto cleanup;
 +
-+	link = calloc(1, sizeof(*link));
-+	if (!link) {
-+		err = -ENOMEM;
-+		goto out_err;
-+	}
-+	link->detach = &bpf_link__detach_fd;
++	prog_fd = bpf_program__fd(skel->progs.test1);
++	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
++				NULL, NULL, &retval, &duration);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(retval, 0, "test_run");
 +
-+	opts.multi.btf_ids = ids;
-+	opts.multi.btf_ids_cnt = cnt;
++	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
++	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
 +
-+	attach_type = bpf_program__get_expected_attach_type(prog);
-+	link_fd = bpf_link_create(prog_fd, 0, attach_type, &opts);
-+	if (link_fd < 0) {
-+		err = -errno;
-+		goto out_err;
-+	}
-+	link->fd = link_fd;
-+	free(ids);
-+	return link;
++cleanup:
++	args_test__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/args_test.c b/tools/testing/selftests/bpf/progs/args_test.c
+new file mode 100644
+index 000000000000..7fc8e9fb41bd
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/args_test.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
 +
-+out_err:
-+	free(link);
-+	free(ids);
-+	return ERR_PTR(err);
++char _license[] SEC("license") = "GPL";
++
++__u64 test1_result = 0;
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(test1)
++{
++	__u64 a = bpf_arg(ctx, 0);
++	__u64 x = bpf_arg(ctx, 1);
++
++	test1_result = (int) a == 1 && x == 0;
++	return 0;
 +}
 +
-+static struct bpf_link *attach_trace_multi(const struct bpf_program *prog, long cookie)
++__u64 test2_result = 0;
++SEC("fexit/bpf_fentry_test2")
++int BPF_PROG(test2)
 +{
-+	return bpf_program__attach_multi(prog);
-+}
++	__u64 ret = bpf_ret_value(ctx);
++	__u64 a = bpf_arg(ctx, 0);
++	__u64 b = bpf_arg(ctx, 1);
++	__u64 x = bpf_arg(ctx, 2);
 +
- struct bpf_link *bpf_program__attach_trace(const struct bpf_program *prog)
- {
- 	return bpf_program__attach_btf_id(prog);
++	test2_result = (int) a == 2 && b == 3 && ret == 5 && x == 0;
++	return 0;
++}
 -- 
 2.31.1
 
