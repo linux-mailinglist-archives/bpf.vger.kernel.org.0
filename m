@@ -2,120 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB71945591B
-	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 11:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C49455986
+	for <lists+bpf@lfdr.de>; Thu, 18 Nov 2021 11:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245333AbhKRKgw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 05:36:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245619AbhKRKgn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 05:36:43 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC8AC061764
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 02:33:43 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 137so1291231wma.1
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 02:33:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rZJn2yys8DcTAzYwQDSGPoDW37F/570yrxTfXh7kbsc=;
-        b=j4Wu6KWzKYfAlYvq2HS1I/TeKC8AAa6xsTmh/G6sIlISKHIi3zcS/VT87Fb8dfWOFh
-         mGaM3N1bGpEJ7c916ANWKgIeBDSDLCiGb6IKWDlyAtQhXVsY8Z+rjpFaSqCc5ZliNv+B
-         sthyb66VCxH2V0DQePenA6GGCoaZllSZUwugA=
+        id S245658AbhKRLCB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 06:02:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235730AbhKRLB7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Nov 2021 06:01:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637233138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kaJ4JTGV/useo1QJJf01J8ZkPaZO3mYQ/FtttjXduPM=;
+        b=UsSzJTJ9WZE/hYMipeO8o3A5BewK85f80t5kqsqxxr4lrT59SxC29yePtpvDmtRoPXN7d/
+        FWv+KpVhAzbrpCDh9EaZUZU/wMvXE/ZOwa+ZQv9DtdY3jHylE44R0nSfmSTItJexrjAM0o
+        e6yDnuKKRnN1bW4ZjwuJMIzMzSDosm0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-295-QcyfLXnePGispGCg0HRSZA-1; Thu, 18 Nov 2021 05:58:57 -0500
+X-MC-Unique: QcyfLXnePGispGCg0HRSZA-1
+Received: by mail-ed1-f70.google.com with SMTP id v22-20020a50a456000000b003e7cbfe3dfeso4920958edb.11
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 02:58:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rZJn2yys8DcTAzYwQDSGPoDW37F/570yrxTfXh7kbsc=;
-        b=apRxK3T/7ALfOMwIQ0DFwsMW+j25VQEtc25cdw+p7Z17eb+1ykEh7aEjH0nZ0+xCFG
-         OrLTnREYbjyjDPAfZXYkuI5a4Mr+zYXhYEe7BDUukfRKHSN0neV9Nm9lu0bhMuJITE7F
-         cMds4anSgtrvCox7lBxEgtPWS7YVn3axYE3dttbHWajhnpk23YYM5qgNcb3kgGnpBK0R
-         oOYL4PLa6GupLuAnqy/m+ShAOB9BAnPjV0rOx0/1QXTMf8/uRP4QSZ+NwjW2h3fL7nHr
-         lYmLQYXhv5JC6vBBIEDxvLGrwTN+LCRRC5DEWgn5cnRe3TFG1iWHMF9KtMi3zV4otGvr
-         TZ1g==
-X-Gm-Message-State: AOAM532z2RF31ihGGCxhYQdCa7kie5ZeSOzpn4wxTOVJRjhsQ5tfWvPZ
-        ghRvcJQ2Au7sJeMdpHHWZ2OTe9eotf6OgA==
-X-Google-Smtp-Source: ABdhPJzEsJWXGbz1Yv47x3W5We/ddCiXHLTj/MjqS/zki0onTjpbbxJOqCPuhAQQbo/bE3PHXyoF6Q==
-X-Received: by 2002:a05:600c:1d97:: with SMTP id p23mr8650388wms.186.1637231621534;
-        Thu, 18 Nov 2021 02:33:41 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:58e0:dffc:78e8:484])
-        by smtp.gmail.com with ESMTPSA id h15sm10097484wmq.32.2021.11.18.02.33.40
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=kaJ4JTGV/useo1QJJf01J8ZkPaZO3mYQ/FtttjXduPM=;
+        b=L8f9+oJvYQs58yrDQYdn6moA4pJiJo6c1cgjCUS4lrbPKOVP9WDi0/qMl3sJh8XvAf
+         SroBHByIH/MJ5MvSJeI96QxDEGzdZ1deYuGcIrsydCA/W0xTGg/WJzwWi2FC4untm5dK
+         YGz0fnfqHud8C4aAJOYY3lFLTY0RrCjUPfDnb9KibiFfgWu261c16O5mjLbiBLr9cuvu
+         PpcZRXrIpAZ0IPHwAkCosIAE65Be2JYlYJIV12bA49jsWGD1q1xp8wxAK0mVGKou04Ds
+         aLnuS3by6yIkA+0k+dGPM6iQ8hRpWmS/YHGhIyDXQewRK10IJ7hdasMLAuSUEqE++OaO
+         wp8A==
+X-Gm-Message-State: AOAM5325NDQLkndhIPiKCTy4qTe8plGqLBH1NNlvnbA3x8A9xQZMkAmR
+        GFRGm3tl28Gj15uspO1UzXtnykTo0VeSpu7ZCiR3qiOrNtve4ZsK+WIYTJIf2Be4K2b2WXbtzdX
+        FXT+Lm3xVY5Ob
+X-Received: by 2002:aa7:c50b:: with SMTP id o11mr9982740edq.160.1637233136188;
+        Thu, 18 Nov 2021 02:58:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyu5tbFjz0Ifq9bVZL101160u2GPyacVXsjy0Ui7hipCBOTYoBoOKdpj4Lo+UxlToZdS2kEmA==
+X-Received: by 2002:aa7:c50b:: with SMTP id o11mr9982675edq.160.1637233135741;
+        Thu, 18 Nov 2021 02:58:55 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id g11sm496574edz.53.2021.11.18.02.58.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 02:33:41 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next] libbpf: Add ability to clear per-program load flags
-Date:   Thu, 18 Nov 2021 11:33:35 +0100
-Message-Id: <20211118103335.1208372-1-revest@chromium.org>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+        Thu, 18 Nov 2021 02:58:54 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 2193A180270; Thu, 18 Nov 2021 11:58:54 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     andrii@kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] libbpf: add runtime APIs to query libbpf version
+In-Reply-To: <20211118012018.2124797-1-andrii@kernel.org>
+References: <20211118012018.2124797-1-andrii@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 18 Nov 2021 11:58:54 +0100
+Message-ID: <87zgq1enm9.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Recently, bpf_program__flags and bpf_program__set_extra_flags were
-introduced to the libbpf API but they only allow adding load flags.
+Andrii Nakryiko <andrii@kernel.org> writes:
 
-We have a use-case where we construct a skeleton with a sleepable
-program and if it fails to load then we want to make it non-sleepable by
-clearing BPF_F_SLEEPABLE.
+> Libbpf provided LIBBPF_MAJOR_VERSION and LIBBPF_MINOR_VERSION macros to
+> check libbpf version at compilation time. This doesn't cover all the
+> needs, though, because version of libbpf that application is compiled
+> against doesn't necessarily match the version of libbpf at runtime,
+> especially if libbpf is used as a shared library.
+>
+> Add libbpf_major_version() and libbpf_minor_version() returning major
+> and minor versions, respectively, as integers. Also add a convenience
+> libbpf_version_string() for various tooling using libbpf to print out
+> libbpf version in a human-readable form. Currently it will return
+> "v0.6", but in the future it can contains some extra information, so the
+> format itself is not part of a stable API and shouldn't be relied upon.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- tools/lib/bpf/libbpf.c   | 9 +++++++++
- tools/lib/bpf/libbpf.h   | 1 +
- tools/lib/bpf/libbpf.map | 1 +
- 3 files changed, 11 insertions(+)
+Great!
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index de7e09a6b5ec..dcb7fced5fd2 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8305,6 +8305,15 @@ int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags)
- 	return 0;
- }
- 
-+int bpf_program__clear_flags(struct bpf_program *prog, __u32 flags)
-+{
-+	if (prog->obj->loaded)
-+		return libbpf_err(-EBUSY);
-+
-+	prog->prog_flags &= ~flags;
-+	return 0;
-+}
-+
- #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {			    \
- 	.sec = sec_pfx,							    \
- 	.prog_type = BPF_PROG_TYPE_##ptype,				    \
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 4ec69f224342..08f108e49841 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -495,6 +495,7 @@ bpf_program__set_expected_attach_type(struct bpf_program *prog,
- 
- LIBBPF_API __u32 bpf_program__flags(const struct bpf_program *prog);
- LIBBPF_API int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags);
-+LIBBPF_API int bpf_program__clear_flags(struct bpf_program *prog, __u32 flags);
- 
- LIBBPF_API int
- bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog_fd,
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 6a59514a48cf..eeff700240dc 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -401,6 +401,7 @@ LIBBPF_0.6.0 {
- 		bpf_program__insn_cnt;
- 		bpf_program__insns;
- 		bpf_program__set_extra_flags;
-+		bpf_program__clear_flags;
- 		btf__add_btf;
- 		btf__add_decl_tag;
- 		btf__add_type_tag;
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
