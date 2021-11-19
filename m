@@ -2,72 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589DA45726E
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 17:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96D2457308
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 17:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236256AbhKSQNL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 11:13:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236254AbhKSQNL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:13:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 35A7061B1E;
-        Fri, 19 Nov 2021 16:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637338209;
-        bh=wuOUrKo/0di+/m4e+5yxpdWb3cb116QGLa57zTJMCXg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=SJ32QyKco+0oIkCdbCYg8TcuKIzLS+NChNclry7VWgxAdVznqZ0AJYKHY2r1INDgs
-         UOarfKi/iSAvpYz+FqvXDnJb9sl7/0ArtRwMPBawkM8U7HMdDiyttQ0hTkv+tSjkmm
-         G+/g8w+AraQ5sItm9Ykz7pFA05sVxCf1PYAP2+UJTA4tO7k5IA33Mr8KB/ze2XPs59
-         g+StU4nVg+9LNeP26djBsiB7MbYFAATg7DJLCtGz+m/EmXB100/KiYN9oNt3uJ90nn
-         5omBuNKbt4eYEMRpGvDP35X6cRSMX3Z0HGfvuUK675e/W5dnrupbnc4X8QZJM1vmpO
-         UdcJTkKSX4mZQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 22CFB60979;
-        Fri, 19 Nov 2021 16:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236499AbhKSQfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 11:35:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236354AbhKSQfg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:35:36 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC768C061574;
+        Fri, 19 Nov 2021 08:32:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=rOZ+ANybst6AtHDNRAt3UP4pF4f4L5Iq5XPXW8zXicM=; b=tqBqXPXFtj8PRSYSvxUcyOPHTK
+        uGSBIB0GkgrR2QGN7rzpMJBTyWwxhjHVqqekripIXcq19KDobqC1wu2lY0gd6ZxLg2FUPtrRJgc5E
+        8C1ghTQjU2nK4FZ0EN3lC7RzqevCYI8MeDURLIyxdE3DmiW8V6seeN++yLN8yJEOditwq1wu9JM7N
+        xTNi6w0Ntau3EH0oWaOmeXeYqUXufVFH6s1D+jJkybsWC3jzsX4uuwsja7r4ZAlvv9fYEboV3IOPe
+        yUQE+ttevi+FNt8I4XDNC2eSGVN6RONzxnPaHSomz7TEA4ye68kNWwCfyHzPCgsmDE/Lp+M4XBBDK
+        h+BgCAcg==;
+Received: from [2001:4bb8:180:22b2:ffb8:fd25:b81f:ac15] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mo6oC-009gCj-Cj; Fri, 19 Nov 2021 16:32:17 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: split up filter.rst v2
+Date:   Fri, 19 Nov 2021 17:32:10 +0100
+Message-Id: <20211119163215.971383-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 1/2] libbpf: accommodate DWARF/compiler bug with
- duplicated structs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163733820913.382.2673548319147264667.git-patchwork-notify@kernel.org>
-Date:   Fri, 19 Nov 2021 16:10:09 +0000
-References: <20211117194114.347675-1-andrii@kernel.org>
-In-Reply-To: <20211117194114.347675-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, jolsa@kernel.org
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi all,
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+for historical reasons filter.rst not only documents the classic Berkely
+Packet Filter, but also contains some of the most fundamental eBPF
+documentation.  This series moves the actual eBPF documentation into newly
+created files under Documentation/bpf/ instead.  Note that the instruction
+set document is still a bit of a mess due to all the references to classic
+BPF, but if this split goes through I plan to start on working to clean
+that up as well.
 
-On Wed, 17 Nov 2021 11:41:13 -0800 you wrote:
-> According to [0], compilers sometimes might produce duplicate DWARF
-> definitions for exactly the same struct/union within the same
-> compilation unit (CU). We've had similar issues with identical arrays
-> and handled them with a similar workaround in 6b6e6b1d09aa ("libbpf:
-> Accomodate DWARF/compiler bug with duplicated identical arrays"). Do the
-> same for struct/union by ensuring that two structs/unions are exactly
-> the same, down to the integer values of field referenced type IDs.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,1/2] libbpf: accommodate DWARF/compiler bug with duplicated structs
-    https://git.kernel.org/bpf/bpf-next/c/efdd3eb8015e
-  - [bpf-next,2/2] selftests/bpf: add btf_dedup case with duplicated structs within CU
-    https://git.kernel.org/bpf/bpf-next/c/9a49afe6f5a5
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Changes since v1:
+ - rebased to the latest bpf-next
+ - just refernence BPF instead of eBPF in most code
+ - split the patches further up
+ - better link the BPF documentation from filter.rst
 
 
+Diffstat:
+ Documentation/bpf/index.rst           |    9 
+ Documentation/bpf/instruction-set.rst |  467 +++++++++++++++
+ Documentation/bpf/maps.rst            |   43 +
+ Documentation/bpf/verifier.rst        |  529 +++++++++++++++++
+ Documentation/networking/filter.rst   | 1036 ----------------------------------
+ arch/arm/net/bpf_jit_32.c             |    2 
+ arch/arm64/net/bpf_jit_comp.c         |    2 
+ arch/sparc/net/bpf_jit_comp_64.c      |    2 
+ arch/x86/net/bpf_jit_comp.c           |    4 
+ kernel/bpf/core.c                     |    3 
+ net/core/filter.c                     |   11 
+ 11 files changed, 1063 insertions(+), 1045 deletions(-)
