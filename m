@@ -2,266 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9D84567DE
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 03:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0888456831
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 03:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhKSCNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 21:13:01 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26329 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233873AbhKSCNA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:13:00 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HwKk46rXQzbhjk;
-        Fri, 19 Nov 2021 10:05:00 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+        id S229805AbhKSCig (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 21:38:36 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1080 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231217AbhKSCif (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Nov 2021 21:38:35 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AILFnRR019190;
+        Thu, 18 Nov 2021 18:35:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=T1S3h7IgEm9hne3DKvdnKY8PcLqKZMMgRdA2WObJqLQ=;
+ b=FXFexWPAIc4hGv/l8BjCXJOp7dF3/cwibg2xPUcKKOiNzLXrq9wP3S9KhG1b4mwBcAKU
+ KGbT1BmcRrl2j/KVLbPMXmjJfQWnsLutnFbAPNTtMOlFCpGK04x8WpNz8XWhuu+Gg5Yz
+ Sv7DlatQhEHLG4tfpR6FZXZ+qmYVOaWaFmA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cds394mda-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 18 Nov 2021 18:35:20 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 19 Nov 2021 10:09:57 +0800
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 19 Nov 2021 10:09:55 +0800
-Subject: Re: [PATCH 03/12] riscv: switch to relative exception tables
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "Nick Desaulniers" <ndesaulniers@google.com>
-References: <20211118192130.48b8f04c@xhacker>
- <20211118192251.749c04f7@xhacker>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kbuild@vger.kernel.org>
-From:   tongtiangen <tongtiangen@huawei.com>
-Message-ID: <bc466684-b02e-c6b0-13cf-a071eeebff8c@huawei.com>
-Date:   Fri, 19 Nov 2021 10:09:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+ 15.1.2308.14; Thu, 18 Nov 2021 18:35:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S0KrSNXBLxV3fEIIirj8vKeIVhWJOOCnKC7jP9c3qVxWtNBuxQUJpHZ9KDavACmGBbfY6WDFvGEF5dnD238nsIK87AuVF0zl0puZVkyribIifAn8Vqt+ABBr0nxB6jhafgDJ5dId2XFdEOeRfZKUrlOSUXLrI4QXyi+sYSuABrwlhupQb68bI15/YULn/rRkaPUgU+EGejsvhKs5b0HZ0vKrBoyTTPOYUEk5ynat2woL6e2ii5cp/taVH/ojfaqgPiyrpul+o0IVA141Z7NbwT7IZY2K0iFlPxw9576oP9DbrXjLvGAjnk7U8bFpqHJ/XvMUUkmGjU3XpdqTzbdidQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=T1S3h7IgEm9hne3DKvdnKY8PcLqKZMMgRdA2WObJqLQ=;
+ b=Pk1Qp1ZeS5BYvCYOiP+pE8VIyIuF1OdW0guSMq7yMuOWyDjOqQ4EeJm3yZQDRa6VxYBWzgqHdssFlyNsVvG3jolMZlf2CvpYeK4JfYOKqchVaxrgKKq7pjDJdfY17yZMHROO7DElL2gf8RINVL9HNHCRf8RaGC/9/Q1b7TmokphY/jbr+aQk+kC+z6mPX7n7uMhB4XrZ+5R0SO4YeS27nb5qi7fZ9ne1IJqWJNxcUBv6JT+Zlp9K03oAZ7O3Y0fcL5KUzGWMskSpJrAt8RzJEFgheoNMMIukQXpJ+CFzwyIJy4v6nquuw9EAWpJyKXSq3wfHzWc1yNc9RwsgTNuqlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com (2603:10b6:806:194::23)
+ by SN6PR15MB2447.namprd15.prod.outlook.com (2603:10b6:805:21::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19; Fri, 19 Nov
+ 2021 02:35:18 +0000
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::853:8eb0:5412:13b]) by SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::853:8eb0:5412:13b%9]) with mapi id 15.20.4713.022; Fri, 19 Nov 2021
+ 02:35:18 +0000
+Message-ID: <a1c10bc8-4d97-508b-f7c4-a362b5692f3b@fb.com>
+Date:   Thu, 18 Nov 2021 18:35:10 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH bpf-next 0/3] Add bpf_for_each helper
+Content-Language: en-US
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        <bpf@vger.kernel.org>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kafai@fb.com>, <Kernel-team@fb.com>
+References: <20211118010404.2415864-1-joannekoong@fb.com>
+ <87tug9emwv.fsf@toke.dk>
+From:   Joanne Koong <joannekoong@fb.com>
+In-Reply-To: <87tug9emwv.fsf@toke.dk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW2PR16CA0003.namprd16.prod.outlook.com (2603:10b6:907::16)
+ To SA1PR15MB4465.namprd15.prod.outlook.com (2603:10b6:806:194::23)
 MIME-Version: 1.0
-In-Reply-To: <20211118192251.749c04f7@xhacker>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+Received: from [IPV6:2620:10d:c085:21d6::18af] (2620:10d:c090:400::5:8825) by MW2PR16CA0003.namprd16.prod.outlook.com (2603:10b6:907::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Fri, 19 Nov 2021 02:35:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4de525cf-f21f-4b8d-9b95-08d9ab0539a1
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2447:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB244782515A8588653F597A74D29C9@SN6PR15MB2447.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: N8vJ6l2ivjo3JassqHRRhJIkmZtFqeE8WB2eGKiwYYkPip2BMDQAqePeH1/t7dJ1ce010Ve09tQemYM5fJhK7wAsHCMOQDUNyZyhLvdEUy9dyu6a3DojREuI5Ho7EZUnfEAhCmQRGdiuDo1/fRzBpCLtm5x434BTC5BRfcQldHnN04XiKHXhn+NQjO7jSYsxlypEXDEwSHtWGbppDoA5rCZrsxs1Yn1nxi3Du6SjPzRmZ7mh35URQpjRWUtsoNErPsJ6ZMWMd6VJWYYIO/Emn4D7nxMUZ2idLyn0JNWArqEjACtV1fWJrC5Bbu9CqbLYCoFlzvhQ5ViGYvQvvcza25+v0pKr0g7kAP6RG/StFX1oDF4rWWc7UP1LoLJxN3kNawc//GlvYKFKwX7+tWkv62+iJ2MDsXg6g2fPko2GPgcHOgdq3WexWYGagF2jlMkObnTGlxEwrIo4gLbHLGalnpmj5koaBHIwfF7J69wSFuW+L84GlOLaswM+5oaDKduReH1mCNm+qI3QN8je8MYdYMR+iSqtR6Uegaaa6WQYATGCJ7L/+xENZ0OclZf6BbHFCWgH2/eZZWGn1/1JGn7f4vPcNkMlB9uTxsOaamVP6o+cyRTyLIizs/CumspC0N4hDiYiEH0Et4ssBbTd/sjKz0hKNPANlggj4smmwhl8YaQHOkWqrpr/l4E0RJXZydcOZViVtde17mK5+eQbXapqCOjBerRNbzsbO4eDrrWmqX4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4465.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(31686004)(316002)(36756003)(38100700002)(5660300002)(4326008)(2616005)(186003)(31696002)(2906002)(6666004)(66574015)(508600001)(86362001)(8676002)(83380400001)(66946007)(6486002)(66476007)(66556008)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TXd0c3MvVWhycVFFMGZBRTA4cnV0bStkT3BuWjJNZ0pkbWVLcWhYb3NnaFVE?=
+ =?utf-8?B?dXQyWXRHU2pLRlFBeEoxQ0w2RzNHS2d2ejhwVm1jNW1FYzhGK2FJTWxqaVJS?=
+ =?utf-8?B?WWVDa2RxRkhybVh4QWozZ3BVVWZEem9IMUpIRzFGSTgxbmJVMXA1VXZ0VE9K?=
+ =?utf-8?B?Q09sVDZjek5zZlpEM3ZSWDNvdkZYNUI0WG91UmQ3Ti9BdVdOODY0QlJmdlA2?=
+ =?utf-8?B?MWZxM0F0bE8yQUVqUnJFdGlwaFZrSHppaDZ3YlRMTGxkRUZCUVd5SUd2dUpO?=
+ =?utf-8?B?K2M0djUzcS91Y2RaR0dScU1FQW05NzhiN2drUHRjOXY1L0U2bTZ0ME9WYlpE?=
+ =?utf-8?B?U0YzNlkyblROSnY0d202L1VVY0duQW9xN3dUWENScHBSQk1yR0hQVEJqUDJU?=
+ =?utf-8?B?VVlUVW5ZU2FEOWM0WFRvTjJGVTNwajJIR1BxTzZzd1JLZXBXeU1PVy9tSUcw?=
+ =?utf-8?B?c2FiOXNkMFRTSkdraFpVY2o2Z1JsUHJKOThsL09TWDNWYkF5aTMyaHJzdEFZ?=
+ =?utf-8?B?VzJCUnFmV0xnTytxb3NxUGszaHEvWTVkSCtRRXRWRHFwaVEvQjhNMjZjc0d3?=
+ =?utf-8?B?bWd0VE1Sd1hsTFAzQ0V2VU1BQkxaUk9tbzkyWVplZ0pEbnpMT3Jhb0NHSGQ2?=
+ =?utf-8?B?aHQzYTFKQlAvR0dSNWpoUE9HZDNINXBKc0xpSWxXV0RVVzZNbWg4NVllT005?=
+ =?utf-8?B?S3l4UTN0clRUSmMwZzlRTXA4R2J3Q1g1ODlhQ0daQ3hZS2JSVy9WeUZLN2FH?=
+ =?utf-8?B?VnViSG9hMWxLSkRFbEhsVVBwMTdJcG4zTGZ2WFp5cFN5a0wreEJGUGxEeTB5?=
+ =?utf-8?B?S29LcHA2eDlHVFcvNkN6amhUZTJ2L2k0VFlFc0RqcUYyRGZ6MTQ3Z1NWZTBi?=
+ =?utf-8?B?TXpKTld4am12RkJKTi8rd3Z2TFd6MW9ka2U1ZURpUSsyMjFWVmNFMUNSallF?=
+ =?utf-8?B?akxpVGVsLzJUZmZpYzNmSGk0c3EvUEE4b3R1TXM2UGs2TUk1S0pGYTl5bDdT?=
+ =?utf-8?B?L1hkR2VBbnVhZGlwL3ZqekExV3dEVEdKRXQrcUNWMkdxbURoM0VWQ05wZGM2?=
+ =?utf-8?B?bVE0NDlJZjBVb1FDTVRHdUhKN3hVMHZlYUUrcW0xOTB0RnYyREhPNzJKLzIr?=
+ =?utf-8?B?eHNCS3pwMkdYRUlsY3pxc1VWMFJLQlBCUEVBNFRWUWRndTI0V0pDVVBFWE91?=
+ =?utf-8?B?UHdESFg0UHU2R0FycS9WdFVURmptc0hNekswWXI5R0lnTk5TSXFLbTlKblFk?=
+ =?utf-8?B?eHZrM0QrdTVqZ0xWU1FKTXBPZzVOWGxTb01nL1E4WjFyd0U0TmgrVk5iRnlh?=
+ =?utf-8?B?MHE3djh5dXlKRFY4M002bUZQQmNEN3RIT2o3bjI3ajlTUEhPaGVMMzlyMHUv?=
+ =?utf-8?B?RE5nWUtHcXA4RmRET2tJcmhKME5hWjhSTXFHZXhEWG9kY3A0ZnNQN0dobWdC?=
+ =?utf-8?B?Q1hIL0ZyMGc2cEVyNkFQMWorM1AxUVN1dkNIQkZsdmVJZHdwRzBaVkdtMmcr?=
+ =?utf-8?B?NjN5QkNxS0s4Z3hZeWMrRWU3SFJ2Q3l1S3ErcXB2MnVqUWIyRFZrRFRxcnEx?=
+ =?utf-8?B?NVFQTnN6QnFWRHdEREJpTU9EOXBzU05vbGNrUnVuU0cyVzdycnpxY1QvT0xW?=
+ =?utf-8?B?VU9LYW52WVhnbFpkTzJOUE1uN0c5aDRlM2QyS1ozcHp4Wk0xWmpwanlCUHFS?=
+ =?utf-8?B?eUF4YjZIQ1JlcGxOMGs0TVFqR3dYa2I3ZkxWT0Z0YXVyWFAvS0dlYWVYVmUy?=
+ =?utf-8?B?NUlwL3BIMmtZSUVXMGNrK2VoNys3NzFrSEtiLy9EVStDMEVlMDhjODA0bXU2?=
+ =?utf-8?B?SmI0MkZoTTVjSllST2ZsZ2hhK0pRUkNaaUNudlNvNFdSSEZ3Z0U5QmNqb3Jo?=
+ =?utf-8?B?NkJDMXM1MVFlNjFBeVdhKzBSNzZndEtnNlc0Wnk5SWx0MlRSUDZSRzlYWExy?=
+ =?utf-8?B?eG5OWWtaQjZLWWJIUlhOcCt0ZmtEMXlwbHR2VVdxWXRpaDNwSFlaRXQzQWND?=
+ =?utf-8?B?SW5vaTQ1WUFLZTA2VnRzd0Rra2Ezd3padW1rY0JRN2FZdDdZNmtmMllNdDRy?=
+ =?utf-8?B?aHhhMFBxVzBBaGRaRzdITDVSTXpLRVNWNDNuc3FDOVZ5TnI1cS9TSzVTa0Na?=
+ =?utf-8?B?VEtlTVAvMXpyTXFXdFhqS0hrQVNvK3NjMkZoQzZaUEVSWXBaejc3ZWdQMFds?=
+ =?utf-8?Q?nu3mw1DOFOYldmh3ZKi9mxbaKeKmJk67Uzq67b6pSS95?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4de525cf-f21f-4b8d-9b95-08d9ab0539a1
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4465.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2021 02:35:18.1446
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lPIbOJhipP+uojhoVNalr2oUudK7mqA6XyBA7Bo88VZhQkWugz6FAqw1pOJy1vGX6JLFekF/DqF6bbdaSsfT4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2447
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: MUCt7HODrA_J7N43lOLPVA_3arcvQpTi
+X-Proofpoint-GUID: MUCt7HODrA_J7N43lOLPVA_3arcvQpTi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-19_01,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 priorityscore=1501 malwarescore=0
+ bulkscore=0 mlxlogscore=520 phishscore=0 spamscore=0 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111190009
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi jisheng:
-eBPF's exception tables needs to be modified to relative synchronously.
+On 11/18/21 3:14 AM, Toke Høiland-Jørgensen wrote:
 
-I modified and verified the code as follows:
+> Joanne Koong <joannekoong@fb.com> writes:
+>
+>> This patchset add a new helper, bpf_for_each.
+>>
+>> One of the complexities of using for loops in bpf programs is that the verifier
+>> needs to ensure that in every possibility of the loop logic, the loop will always
+>> terminate. As such, there is a limit on how many iterations the loop can do.
+>>
+>> The bpf_for_each helper moves the loop logic into the kernel and can thereby
+>> guarantee that the loop will always terminate. The bpf_for_each helper simplifies
+>> a lot of the complexity the verifier needs to check, as well as removes the
+>> constraint on the number of loops able to be run.
+>>
+>>  From the test results, we see that using bpf_for_each in place
+>> of the traditional for loop led to a decrease in verification time
+>> and number of bpf instructions by 100%. The benchmark results show
+>> that as the number of iterations increases, the overhead per iteration
+>> decreases.
+> Small nit with the "by 100%" formulation: when giving such relative
+> quantities 100% has a particular meaning, namely "eliminates entirely".
+> Which this doesn't, obviously, it *almost* eliminates the verification
+> overhead. So I'd change this to 99.5% instead (which is the actual value
+> from your numbers in patch 2).
+>
+Great point!! I will change this to "~99%" (and make this change in 
+patch #2's
+commit message as well). Thanks for reviewing this patchset!
 
-===================
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -499,7 +499,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
-         offset = pc - (long)&ex->insn;
-         if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-                 return -ERANGE;
--       ex->insn = pc;
-+       ex->insn = offset;
-===================
-
-Thanks.
-
-Reviewed-by:Tong Tiangen <tongtiangen@huawei.com>
-
-On 2021/11/18 19:22, Jisheng Zhang wrote:
-> From: Jisheng Zhang <jszhang@kernel.org>
->
-> Similar as other architectures such as arm64, x86 and so on, use
-> offsets relative to the exception table entry values rather than
-> absolute addresses for both the exception locationand the fixup.
->
-> However, RISCV label difference will actually produce two relocations,
-> a pair of R_RISCV_ADD32 and R_RISCV_SUB32. Take below simple code for
-> example:
->
-> $ cat test.S
-> .section .text
-> 1:
->         nop
-> .section __ex_table,"a"
->         .balign 4
->         .long (1b - .)
-> .previous
->
-> $ riscv64-linux-gnu-gcc -c test.S
-> $ riscv64-linux-gnu-readelf -r test.o
-> Relocation section '.rela__ex_table' at offset 0x100 contains 2 entries:
->   Offset          Info           Type           Sym. Value    Sym. Name + Addend
-> 000000000000  000600000023 R_RISCV_ADD32     0000000000000000 .L1^B1 + 0
-> 000000000000  000500000027 R_RISCV_SUB32     0000000000000000 .L0  + 0
->
-> The modpost will complain the R_RISCV_SUB32 relocation, so we need to
-> patch modpost.c to skip this relocation for .rela__ex_table section.
->
-> After this patch, the __ex_table section size of defconfig vmlinux is
-> reduced from 7072 Bytes to 3536 Bytes.
->
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  arch/riscv/include/asm/Kbuild    |  1 -
->  arch/riscv/include/asm/extable.h | 25 +++++++++++++++++++++++++
->  arch/riscv/include/asm/uaccess.h |  4 ++--
->  arch/riscv/lib/uaccess.S         |  4 ++--
->  arch/riscv/mm/extable.c          |  2 +-
->  scripts/mod/modpost.c            | 15 +++++++++++++++
->  scripts/sorttable.c              |  2 +-
->  7 files changed, 46 insertions(+), 7 deletions(-)
->  create mode 100644 arch/riscv/include/asm/extable.h
->
-> diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
-> index 445ccc97305a..57b86fd9916c 100644
-> --- a/arch/riscv/include/asm/Kbuild
-> +++ b/arch/riscv/include/asm/Kbuild
-> @@ -1,6 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0
->  generic-y += early_ioremap.h
-> -generic-y += extable.h
->  generic-y += flat.h
->  generic-y += kvm_para.h
->  generic-y += user.h
-> diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
-> new file mode 100644
-> index 000000000000..84760392fc69
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/extable.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_RISCV_EXTABLE_H
-> +#define _ASM_RISCV_EXTABLE_H
-> +
-> +/*
-> + * The exception table consists of pairs of relative offsets: the first
-> + * is the relative offset to an instruction that is allowed to fault,
-> + * and the second is the relative offset at which the program should
-> + * continue. No registers are modified, so it is entirely up to the
-> + * continuation code to figure out what to do.
-> + *
-> + * All the routines below use bits of fixup code that are out of line
-> + * with the main instruction path.  This means when everything is well,
-> + * we don't even have to jump over them.  Further, they do not intrude
-> + * on our cache or tlb entries.
-> + */
-> +
-> +struct exception_table_entry {
-> +	int insn, fixup;
-> +};
-> +
-> +#define ARCH_HAS_RELATIVE_EXTABLE
-> +
-> +int fixup_exception(struct pt_regs *regs);
-> +#endif
-> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
-> index 714cd311d9f1..0f2c5b9d2e8f 100644
-> --- a/arch/riscv/include/asm/uaccess.h
-> +++ b/arch/riscv/include/asm/uaccess.h
-> @@ -12,8 +12,8 @@
->
->  #define _ASM_EXTABLE(from, to)						\
->  	"	.pushsection	__ex_table, \"a\"\n"			\
-> -	"	.balign "	RISCV_SZPTR "	 \n"			\
-> -	"	" RISCV_PTR	"(" #from "), (" #to ")\n"		\
-> +	"	.balign		4\n"					\
-> +	"	.long		(" #from " - .), (" #to " - .)\n"	\
->  	"	.popsection\n"
->
->  /*
-> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-> index 63bc691cff91..55f80f84e23f 100644
-> --- a/arch/riscv/lib/uaccess.S
-> +++ b/arch/riscv/lib/uaccess.S
-> @@ -7,8 +7,8 @@
->  100:
->  	\op \reg, \addr
->  	.section __ex_table,"a"
-> -	.balign RISCV_SZPTR
-> -	RISCV_PTR 100b, \lbl
-> +	.balign 4
-> +	.long (100b - .), (\lbl - .)
->  	.previous
->  	.endm
->
-> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-> index ddb7d3b99e89..d8d239c2c1bd 100644
-> --- a/arch/riscv/mm/extable.c
-> +++ b/arch/riscv/mm/extable.c
-> @@ -28,6 +28,6 @@ int fixup_exception(struct pt_regs *regs)
->  		return rv_bpf_fixup_exception(fixup, regs);
->  #endif
->
-> -	regs->epc = fixup->fixup;
-> +	regs->epc = (unsigned long)&fixup->fixup + fixup->fixup;
->  	return 1;
->  }
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index cb8ab7d91d30..6bfa33217914 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -1830,6 +1830,14 @@ static int addend_mips_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
->  	return 0;
->  }
->
-> +#ifndef EM_RISCV
-> +#define EM_RISCV		243
-> +#endif
-> +
-> +#ifndef R_RISCV_SUB32
-> +#define R_RISCV_SUB32		39
-> +#endif
-> +
->  static void section_rela(const char *modname, struct elf_info *elf,
->  			 Elf_Shdr *sechdr)
->  {
-> @@ -1866,6 +1874,13 @@ static void section_rela(const char *modname, struct elf_info *elf,
->  		r_sym = ELF_R_SYM(r.r_info);
->  #endif
->  		r.r_addend = TO_NATIVE(rela->r_addend);
-> +		switch (elf->hdr->e_machine) {
-> +		case EM_RISCV:
-> +			if (!strcmp("__ex_table", fromsec) &&
-> +			    ELF_R_TYPE(r.r_info) == R_RISCV_SUB32)
-> +				continue;
-> +			break;
-> +		}
->  		sym = elf->symtab_start + r_sym;
->  		/* Skip special sections */
->  		if (is_shndx_special(sym->st_shndx))
-> diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-> index b7c2ad71f9cf..0c031e47a419 100644
-> --- a/scripts/sorttable.c
-> +++ b/scripts/sorttable.c
-> @@ -376,6 +376,7 @@ static int do_file(char const *const fname, void *addr)
->  	case EM_PARISC:
->  	case EM_PPC:
->  	case EM_PPC64:
-> +	case EM_RISCV:
->  		custom_sort = sort_relative_table;
->  		break;
->  	case EM_ARCOMPACT:
-> @@ -383,7 +384,6 @@ static int do_file(char const *const fname, void *addr)
->  	case EM_ARM:
->  	case EM_MICROBLAZE:
->  	case EM_MIPS:
-> -	case EM_RISCV:
->  	case EM_XTENSA:
->  		break;
->  	default:
->
