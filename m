@@ -2,147 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FA945725D
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 17:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D582457261
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 17:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235677AbhKSQJM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 11:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        id S236152AbhKSQK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 11:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235669AbhKSQJL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:09:11 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14080C06173E
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:06:10 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id q64so10671120qkd.5
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:06:10 -0800 (PST)
+        with ESMTP id S235253AbhKSQKz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:10:55 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FA0C06173E
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:07:53 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id r25so7777943edq.7
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:07:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HFhcjl14oj6JKPH6G2Vmu003nCz3g5LyuBNRdC5X630=;
-        b=4neyC06bXSazYMm8nXkFYvvWMrpH3uJUlR8hcXm1yWruiXZBaCqNUTMo70SJSa4JBl
-         OvspU6Ls1poiQ6AXK58wWMM8S8TZcDD4UqV5FxTwjjanep5Qf0sNFfD+M0T4eWEkmNKD
-         p2cV0ZYmwQiMbYU4QBg4j6qoqjwk4KIDAQ38k7AXAskxaBLFcYTHMSu5jnC9KUMJcEMa
-         6t6YOIPZTLvCOcANUAD9ABCoJUKjUUIeaWH21mV5ym476dOkC0JYS4fPT0PwO9BeKmHY
-         DMtUzPdEUxy6SFZp3K9JzrDdpoS4vhfnZ+Hknx1M0o8I6L8CS2chQ8I8k491epmPixGH
-         T6Ew==
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6J5BffBBnPWzW6VDKn7rj5am2GbMmTLCLYv70xXQS+8=;
+        b=PjiU6zXPWE7V6Wkz+pySnqmQ+kWNo8w9Gx69VPCRIpjWDYl3LdRp4ye+HQf6hXYjkN
+         a+wElY99oQX1pZtwRtzh5/3NAgNa3ET+uNNK+af6QD/DJD22kS8VgfJtSdu01jWxXH1o
+         K1Mr6tYm0X8j3f9UOWHwH+d+XlDo4yDCuHigQvPYPvF8AIR3pPCaBxO4df4a8cLicnBB
+         UCmgJafyNamln+rU+9453jJyf8tNixhuM/96MA/RfneM/GovkIEHqwxqSDslbHZuF5wB
+         Zr/p8uaQpezsTspNNGBdAbyNrMqOK4A1JeU/4JhYdig9QUoM0lFUnQkdnEbryaApE7vz
+         S1IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HFhcjl14oj6JKPH6G2Vmu003nCz3g5LyuBNRdC5X630=;
-        b=eDlkwDVhl6w5TTkitxgQzFgh1+94JCwAGukdiwzniGq/CG+p8bWy2inglq4OMABg/a
-         e6xdfAcCHsLzFoFqluXWda37H48XxvtqPxSFW4z58DE/KcOY4KlQLr5auI4TETfVCfVC
-         qiXBHMTMeQeVgRyGAioapRR98B3zb9gQ1NinrGdK3p45G+uG7+YiOWcPomq+fojSQKkA
-         zesXfMGQ8FHqB4Mg8VkCK+0LG3i/3Ob4lmosaFVBa4ZvMX3i0cljJXl6Y8XkFdSG17kJ
-         lYcUEiPfrvKPB1yYyfv9i0Ej/AipzRZFoHx0R17le7bvmvuhLqoyCsynh72pYqno9jpr
-         e3lQ==
-X-Gm-Message-State: AOAM532skKbiDEu/W9GykHveKN0dZUgDnJJx7xaDAIjGUwQUCAFs0fzw
-        AYPhgETQsK+63cReLAAh+X1MGb2JYJfIDg==
-X-Google-Smtp-Source: ABdhPJxKn2M9OnoZ13kpE/W37MCL5q5vgZsQvImymmI/TT90mia4a2sIIS4KzCQxeTCXqgSOCA0zlQ==
-X-Received: by 2002:a37:44e:: with SMTP id 75mr28567014qke.417.1637337969203;
-        Fri, 19 Nov 2021 08:06:09 -0800 (PST)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id j22sm68726qko.68.2021.11.19.08.06.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:06:08 -0800 (PST)
-Date:   Fri, 19 Nov 2021 11:06:07 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 2/7] set_memory: introduce
- set_memory_[ro|x]_noalias
-Message-ID: <YZfLb/AEoA5UBAnY@cmpxchg.org>
-References: <768FB93A-E239-4B21-A0F1-C1206112E37E@fb.com>
- <20211117220132.GC174703@worktop.programming.kicks-ass.net>
- <73EBD706-4FEC-4976-9041-036EB3032478@fb.com>
- <20211118075447.GG174703@worktop.programming.kicks-ass.net>
- <9DB9C25B-735F-4310-B937-56124DB59CDF@fb.com>
- <20211118182842.GJ174703@worktop.programming.kicks-ass.net>
- <510E6FAA-0485-4786-87AA-DF2CEE0C4903@fb.com>
- <20211118185854.GL174703@worktop.programming.kicks-ass.net>
- <7DFF8615-6DEF-4CE6-8353-0AF48C204A84@fb.com>
- <YZdv/NLUU9qLHP2g@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6J5BffBBnPWzW6VDKn7rj5am2GbMmTLCLYv70xXQS+8=;
+        b=aWV4ZjTUbeXZfCbmGnYHzlHEe5L30i8NnfGzkAMMqA1IyYn2/7hyO/AQT2tcARARZs
+         baWLZqKiA0+MQeaot71eyKuW8Ga8Mihznwy0cQM5piTON1X2DXZ3DAML6GdbtZzdO9iU
+         vuCpKFQb4ACr870Lx3ODErk1W3gww8vLP+XyJXzupr5ZB6FaEFEeXDDSAgAkEJUXlM1/
+         a1fsAze7Kfd0yq0MaI7jOASP228cjBj0UhyZ+5JiAGiT0y3B4UWJZIEJmI6/Glksjs2Y
+         o4x5yBwJDqxjwnYmq+yYK/hElP9NCHsQPjqT8vM4gOiZyGSwMmtrlF5SJ3fK4FqBfMCy
+         RpHA==
+X-Gm-Message-State: AOAM532rdlRe/T/3fiwd2lJT2FoM1opwbeqtfMztA22nclNHqMx7l0NS
+        w9vxyiXHHAeaZ+d24sCmhapsQR77JjkDixt10HaXwg==
+X-Google-Smtp-Source: ABdhPJzJ384uxRx8dMOneSKbUIyyuHtV/LDITFeoDAhCDkLIH6C/hXGFNoQoAiwwXorLi/jUgg6El4F1jXThPtbLifc=
+X-Received: by 2002:a05:6402:1a58:: with SMTP id bf24mr25933106edb.16.1637338072069;
+ Fri, 19 Nov 2021 08:07:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZdv/NLUU9qLHP2g@hirez.programming.kicks-ass.net>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+ <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+ <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+ <87k0h6334w.fsf@email.froward.int.ebiederm.org> <202111171341.41053845C3@keescook>
+ <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+ <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
+ <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
+ <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
+ <202111171728.D85A4E2571@keescook> <875ysp1m39.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <875ysp1m39.fsf@email.froward.int.ebiederm.org>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Fri, 19 Nov 2021 08:07:36 -0800
+Message-ID: <CAP045Aq06LV_jbXVc85bYU62h5EoVQ=rD9pDn+nGaUJ+iWe62w@mail.gmail.com>
+Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 10:35:56AM +0100, Peter Zijlstra wrote:
-> On Fri, Nov 19, 2021 at 04:14:46AM +0000, Song Liu wrote:
-> > 
-> > 
-> > > On Nov 18, 2021, at 10:58 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > > 
-> > > On Thu, Nov 18, 2021 at 06:39:49PM +0000, Song Liu wrote:
-> > > 
-> > >>> You're going to have to do that anyway if you're going to write to the
-> > >>> directmap while executing from the alias.
-> > >> 
-> > >> Not really. If you look at current version 7/7, the logic is mostly 
-> > >> straightforward. We just make all the writes to the directmap, while 
-> > >> calculate offset from the alias. 
-> > > 
-> > > Then you can do the exact same thing but do the writes to a temp buffer,
-> > > no different.
-> > 
-> > There will be some extra work, but I guess I will give it a try. 
-> > 
-> > > 
-> > >>>> The BPF program could have up to 1000000 (BPF_COMPLEXITY_LIMIT_INSNS)
-> > >>>> instructions (BPF instructions). So it could easily go beyond a few 
-> > >>>> pages. Mapping the 2MB page all together should make the logic simpler. 
-> > >>> 
-> > >>> Then copy it in smaller chunks I suppose.
-> > >> 
-> > >> How fast/slow is the __text_poke routine? I guess we cannot do it thousands
-> > >> of times per BPF program (in chunks of a few bytes)? 
-> > > 
-> > > You can copy in at least 4k chunks since any 4k will at most use 2
-> > > pages, which is what it does. If that's not fast enough we can look at
-> > > doing bigger chunks.
-> > 
-> > If we do JIT in a buffer first, 4kB chunks should be fast enough. 
-> > 
-> > Another side of this issue is the split of linear mapping (1GB => 
-> > many 4kB). If we only split to PMD, but not PTE, we can probably 
-> > recover most of the regression. I will check this with Johannes. 
-> 
-> __text_poke() shouldn't affect the fragmentation of the kernel
-> mapping, it's a user-space alias into the same physical memory. For all
-> it cares we're poking into GB pages.
+On Thu, Nov 18, 2021 at 8:12 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> Kyle thank you for your explanation of what breaks.  For future kernels
+> I do need to do some work in this area and I will copy on the patches
+> going forward.  In particular I strongly suspect that changing the
+> sigaction and blocked state of the signal for these synchronous signals
+> is the wrong thing to do, especially if the process is not killed.  I
+> want to find another solution that does not break things but that also
+> does not change the program state behind the programs back so things
+> work differently under the debugger.
 
-Right, __text_poke won't, it's the initial set_memory_ro/x against the
-vmap space that does it, since the linear mapping is updated as an
-alias with the same granularity.
+The heads up in the future is appreciated, thanks.
 
-However, my guess would also be that once we stop doing that with 4k
-pages for every single bpf program, and batch into shared 2M pages
-instead, the problem will be much smaller. Maybe negligible.*
-
-So ro linear mapping + __text_poke() sounds like a good idea to me.
-
-[ If not, we could consider putting the linear mapping updates behind
-  a hardening option similar to RETPOLINE, PAGE_TABLE_ISOLATION,
-  STRICT_MODULE_RWX. The __text_poke() method would mean independence
-  from the linear mapping and we can do with that what we want
-  then. Many machines aren't exposed enough to necessarily care about
-  W^X if the price is too high - and the impact of losing the GB
-  mappings is actually significant on central workloads right now.
-
-  But yeah, hopefully we won't have to go there. ]
+- Kyle
