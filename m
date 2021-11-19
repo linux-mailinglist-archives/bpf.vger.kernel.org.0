@@ -2,137 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145DA457977
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 00:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9377D4579BA
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 00:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhKSXXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 18:23:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
+        id S229760AbhKSXy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 18:54:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhKSXXG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:23:06 -0500
-Received: from mx0a-00206401.pphosted.com (mx0a-00206401.pphosted.com [IPv6:2620:100:9001:15::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02761C061574;
-        Fri, 19 Nov 2021 15:20:03 -0800 (PST)
-Received: from pps.filterd (m0282761.ppops.net [127.0.0.1])
-        by mx0b-00206401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AJHRDS2018277;
-        Fri, 19 Nov 2021 14:16:46 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=default; bh=UojmxxivjkQawng4ZsEgyTIZQFXvzS/8KVJ+yqfR9zU=;
- b=Dz2wNLEWPTHPuBawQ+RMo+Lb5/rGRvfMoxIkEU6wVX1AJj+0NDDRClGQfJ/31/MQk3d9
- LMpvEXeTfbBrTMhV/qe1eIZ085jpBfFJjhVtNlnxx5v52Q+RWGrGm1U5F/e3n8Zfr7NK
- ZicvYM+XUusYG0+QbROZSVSzGvVPQEAPwQ9k7SvzrdRJ8cRh3rT9dE76IV3tPcJTwPVG
- TepUqWfUbeBo4xNV3nOlsme0yCF2t9tfoAzaDqHrMwQr+fzzStrHg8OFxMIMBkO5NjmF
- 97RQxBa2dpX2LX/u9Xyawu7rA+cCS692lc0PTHEGdizIOsDIJaXmOQOkjePA/bvG/Zsg TQ== 
-Received: from 04wpexch03.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-        by mx0b-00206401.pphosted.com (PPS) with ESMTPS id 3ce33dhd4t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 14:16:46 -0800
-Received: from 04wpexch03.crowdstrike.sys (10.100.11.93) by
- 04wpexch03.crowdstrike.sys (10.100.11.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 22:16:44 +0000
-Received: from 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2]) by
- 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2%5]) with mapi id
- 15.02.0922.019; Fri, 19 Nov 2021 22:16:44 +0000
-From:   Martin Kelly <martin.kelly@crowdstrike.com>
-To:     "toke@redhat.com" <toke@redhat.com>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "andrii@kernel.org" <andrii@kernel.org>
-Subject: RE: RE: Re: Re: Clarification on bpftool dual licensing
-Thread-Topic: RE: Re: Re: Clarification on bpftool dual licensing
-Thread-Index: AdfdkjhNfsy17BBgRbaSQ5rYr6Jc1g==
-Date:   Fri, 19 Nov 2021 22:16:38 +0000
-Deferred-Delivery: Fri, 19 Nov 2021 22:16:30 +0000
-Message-ID: <eec3a813ac644b57ae225264a8506d05@crowdstrike.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.100.11.84]
-x-disclaimer: USA
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229553AbhKSXy0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 18:54:26 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060ACC061574;
+        Fri, 19 Nov 2021 15:51:24 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso10076534pjb.2;
+        Fri, 19 Nov 2021 15:51:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ffhLH0NwpgWw7E9Yn9HnKis1gEoPIxlbU3f/JfNHwEA=;
+        b=VF0uTo9HspY6wdi0StIQLi0ZaTQ10ngLqMLkt2VvlRyTErcxXzM3rv9LoPoo/aieAq
+         /UNrtpWqZs6NGz4v7eFFpDve8RHu9C1kpzkWKg+pX4qFT78feMe4pKSwlNwcqv7OzIDj
+         3smgNNoSo/tSHNzA7EeTTFTnuzANSh5BdL701jBMk7zS2+hclSd6va4ZBE9D3F7ijmoz
+         KjH1gx5ueuuUO3swBIN0CJ+pZJIq2XZ7j5ffnYlxJ87jzNV4VaNTmYBv9Y43nzLju/4k
+         nHrROMkWAk/P6WOqVQUufiiovROJwHkpktsfrY4Z+NE3hqg0cjzoYMfCNg1OuiArkB3K
+         3h0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ffhLH0NwpgWw7E9Yn9HnKis1gEoPIxlbU3f/JfNHwEA=;
+        b=HYv9EcvCNlnVv2IHiqX8NCigbUhFwuJ/jjxfyo6nYdkRzZ9GTIrrooaqFdEP/FHLrW
+         27d34a7EIokJz5aVr5NQ+L3oLErV4iadxv9xXcvnSQz5CqeNPEORGlPIbtEAjeKaHOr6
+         GnkX8W9Bqpa8SYBDdwJJT03bQwtW2IrWMmoUlgWSpexu4KgpQ9SCB1Jti0gd+PK9Ftbh
+         DQ4U0alFmsWEj8oDxDoD7AGIEqpsEWEwQfCa0pwrzbFJv/zjLtxzgKbuzQwaxOvq3nvZ
+         neL9hUfliaFWIycDGCI3ySnQK0M3qhThWSxHouKeDkk6gtnfTlvkyWmQrg0wlz6PfcYa
+         KdUA==
+X-Gm-Message-State: AOAM5318FGwDmT6z3bd82r3oAVZtc/Jln39OW20M1nBmvmSpJd7+VS5K
+        nxHYO6tF9oRSV2kV5eXegnmytz9yVX8=
+X-Google-Smtp-Source: ABdhPJzmm344D4RXCrLDJWc7Hy15wORJAA7VjQgFFKeNGHHEeSEsc2OnBzszg/+3SwXKjhoulZ43SA==
+X-Received: by 2002:a17:90a:db81:: with SMTP id h1mr4789560pjv.46.1637365883457;
+        Fri, 19 Nov 2021 15:51:23 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:a858])
+        by smtp.gmail.com with ESMTPSA id qe12sm12708622pjb.29.2021.11.19.15.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 15:51:23 -0800 (PST)
+Date:   Fri, 19 Nov 2021 15:51:21 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Mauricio =?utf-8?Q?V=C3=A1squez?= <mauricio@kinvolk.io>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+Subject: Re: [PATCH bpf-next v2 4/4] libbpf: Expose CO-RE relocation results
+Message-ID: <20211119235121.kze7xiguhlcbzftc@ast-mbp.dhcp.thefacebook.com>
+References: <20211116164208.164245-1-mauricio@kinvolk.io>
+ <20211116164208.164245-5-mauricio@kinvolk.io>
+ <CAEf4BzZ0pEXzEvArpzL=0qbVC65z=hmeVuP7cbLKk-0_Gv5Y+A@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_15,2021-11-17_01,2020-04-07_01
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZ0pEXzEvArpzL=0qbVC65z=hmeVuP7cbLKk-0_Gv5Y+A@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
-> Sent: Friday, November 19, 2021 4:54 AM
-> To: Martin Kelly <martin.kelly@crowdstrike.com>; andrii.nakryiko@gmail.co=
-m
-> Cc: daniel@iogearbox.net; bpf@vger.kernel.org; ast@kernel.org;
-> netdev@vger.kernel.org; kernel-team@fb.com; davem@davemloft.net;
-> andrii@kernel.org
-> Subject: [External] RE: Re: Re: Clarification on bpftool dual licensing
->=20
-> Martin Kelly <martin.kelly@crowdstrike.com> writes:
->=20
-> >> > One other, related question: vmlinux.h (generated by "bpftool btf du=
-mp
-> file
-> >> /sys/kernel/btf/vmlinux format c"), does not currently contain a licen=
-se
-> >> declaration. I assume this would have to be a GPL header, since vmlinu=
-x.h
-> >> references many GPL'd Linux kernel structs and similar, though again I=
-'m not
-> a
-> >> lawyer and therefore am not certain. Would you all agree with this? If=
- so,
-> any
-> >> objection to a patch adding an SPDX line to the generated vmlinux.h?
-> >>
-> >> Is vmlinux DWARF data GPL'ed? I certainly hope not. So vmlinux.h
-> >> shouldn't be licensed under GPL.
+On Fri, Nov 19, 2021 at 09:25:03AM -0800, Andrii Nakryiko wrote:
+> On Tue, Nov 16, 2021 at 8:42 AM Mauricio Vásquez <mauricio@kinvolk.io> wrote:
 > >
-> > I have no idea; I had assumed that a struct definition coming from a
-> > GPL-licensed header would have to be GPL, but again, not a lawyer, and
-> > I could totally be wrong. If not GPL though, what would the license
-> > be? Is it just "output of a program" and therefore license-less, even
-> > though the output happens to be code?
->=20
-> Totally not a lawyer either, but:
->=20
-> There's (generally, in many jurisdictions, etc), a minimum bar for when
-> something is considered a "creative work" and thus copyrightable. Debug
-> output *could* fall short of this (and thus not be copyrightable at
-> all). It could also fall under the same "API" umbrella as that famous
-> Google v Oracle case. Or it could fall under the "syscall exception" of
-> the kernel source.
->=20
-> I guess it would take a court decision to know either way. IMO it would
-> make sense if vmlinux.h is not copyrightable for whatever reason, but,
-> again, IANAL :)
->=20
-> Anyway, while we obviously can't resolve legal matters on the mailing,
-> we can express the *intention* of the community, which is what the
-> licensing document is trying to do. So it totally makes sense to mention
-> vmlinux.h here; the question is what should such a text say?
->=20
+> > The result of the CO-RE relocations can be useful for some use cases
+> > like BTFGen[0]. This commit adds a new ‘record_core_relos’ option to
+> > save the result of such relocations and a couple of functions to access
+> > them.
+> >
+> > [0]: https://github.com/kinvolk/btfgen/
+> >
+> > Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
+> > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> > ---
+> >  tools/lib/bpf/libbpf.c    | 63 ++++++++++++++++++++++++++++++++++++++-
+> >  tools/lib/bpf/libbpf.h    | 49 +++++++++++++++++++++++++++++-
+> >  tools/lib/bpf/libbpf.map  |  2 ++
+> >  tools/lib/bpf/relo_core.c | 28 +++++++++++++++--
+> >  tools/lib/bpf/relo_core.h | 21 ++-----------
+> >  5 files changed, 140 insertions(+), 23 deletions(-)
+> >
+> 
+> Ok, I've meditated on this patch set long enough. I still don't like
+> that libbpf will be doing all this just for the sake of BTFGen's use
+> case.
+> 
+> In the end, I think giving bpftool access to internal APIs of libbpf
+> is more appropriate, and it seems like it's pretty easy to achieve. It
+> might actually clean up gen_loader parts a bit as well. So we'll need
+> to coordinate all this with Alexei's current work on CO-RE for kernel
+> as well.
+> 
+> But here's what I think could be done to keep libbpf internals simple.
+> We split bpf_core_apply_relo() into two parts: 1) calculating the
+> struct bpf_core_relo_res and 2) patching the instruction. If you look
+> at bpf_core_apply_relo, it needs prog just for prog_name (which we can
+> just pass everywhere for logging purposes) and to extract one specific
+> instruction to be patched. This instruction is passed at the very end
+> to bpf_core_patch_insn() after bpf_core_relo_res is calculated. So I
+> propose to make those two explicitly separate steps done by libbpf. So
+> bpf_core_apply_relo() (which we should rename to bpf_core_calc_relo()
+> or something like that) won't do any modification to the program
+> instructions. bpf_object__relocate_core() will do bpf_core_calc_relo()
+> first, if that's successful, it will pass the result into
+> bpf_core_patch_insn(). Simple and clean, unless I missed some
+> complication (happens all the time, but..)
 
-Yep, I completely agree with your assessment; trying to decide this definit=
-ively is probably hard even for lawyers, considering the number of contribu=
-tors involved, and various differences in copyright law around the world, s=
-o I'm hoping we can at least agree on intention.
+I was thinking about such split as well, but for a different reason :)
+Since we've discussed future kernel flag 'check what libbpf had done'
+the idea is to use bpf_core_relo_res after first step and let kernel
+look at insn to see whether libbpf relocated the insn the same way
+as kernel is going to do.
 
-Based on what I've heard so far, it sounds like:
-- There is good consensus that that the generated skeleton file is dual-lic=
-ensed BSD/GPL regardless of the licensing status of the embedded eBPF code;=
- in other words, the eBPF code has no bearing on the license of the skeleto=
-n header itself.
+Also I was thinking to pass struct bpf_core_spec [3] and
+struct bpf_core_relo_res [2] as two arrays into bpf_core_calc_relo() to
+reduce stack size, since reduction of BPF_CORE_SPEC_MAX_LEN to 32
+is not enough when all kconfig debugs are on on some architectures.
 
-- Toke, it sounds like you believe vmlinux.h should be "license-less" such =
-that someone generating it could relicense it as anything they want. This s=
-eems reasonable to me, but I welcome others' thoughts as well.
+I was planning to work on that as a follow up to my set.
+
+In the light of BTFgen I was thinking whether bpf_core_relo_res should
+be part of uapi returned by the kernel, but that is probably overkill.
