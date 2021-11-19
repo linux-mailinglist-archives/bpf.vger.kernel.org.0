@@ -2,103 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D76456983
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 06:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA5F4569E4
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 07:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhKSF1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 00:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        id S231372AbhKSGEb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 01:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbhKSF1e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 00:27:34 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320F8C061574;
-        Thu, 18 Nov 2021 21:24:33 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso7861723pjo.3;
-        Thu, 18 Nov 2021 21:24:33 -0800 (PST)
+        with ESMTP id S229629AbhKSGEb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 01:04:31 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD84C061574;
+        Thu, 18 Nov 2021 22:01:29 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id m27so38023535lfj.12;
+        Thu, 18 Nov 2021 22:01:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9IDHNEjGPGvONU7x6f+PkPEoXhdxrms0/T5Tg3t65pM=;
-        b=QvRRG0AO7JnNqk8ym6ubBMIFN9IgkfkXAcXiVf2NeAkexw/SYix0UnIEkSFTJrlVcl
-         hW3EVLeg8OVYve5Hb7PdZoQLi+r+z7BZYlg337yqE1aQ2/bAPznOBlcPtV9vYdPSopCL
-         cjV2NOCmGMZJwUZyBqQOhP8G5sLiEi+Iggmg7Le7BgVMTvZVaPWfXXQ27rXVVHTvEhRs
-         IoE1iyMXeGlNLxvkiMpisI29uEWiTKA49nJMp7CGXLFeStrgozHGvV+e5crpVHBkdA/W
-         st2CrY1nkmX6UtE6ugFxrAUiwWOa4UpJrgHurhVbbE/W8HfJDl6fd0PuELnPr86EJml0
-         PjVQ==
+        bh=cpacwUyzE+yZQi2HRsigmJjkmcIiIOSGZw3OzHsfooo=;
+        b=RldlS2C/ckDa2ilqyd5cvlc3AjbT6JqCEXn82gXQCs6cELL7iYMIp14cSXKt0Pkve1
+         jTesFFg+9gJSMX1G5oBdXRmcbNMdvb2tp21b0Cny/h3y4O81NUztrQExa82xCOsaoSYp
+         ZUTJhomesLSaZWLLRMRpB+jgTQkwqv7IEDCbLcEBADbtKyUw6915Z5srh7D55OKNossi
+         h0dcACKcphWlDBXg6grG4gE7CPxc7kyPmJwHgO8qCxXOWCpyvmhf3cQRglqv5k807Hd9
+         x9bareYiM2HG5ucRSP21DZl0qs3ZYj8HICCV5GfknAxsyJYEJmZNSkr1YDswhBvmK47K
+         GNKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9IDHNEjGPGvONU7x6f+PkPEoXhdxrms0/T5Tg3t65pM=;
-        b=GK5aLwTwv9qdOp0mbjJa4ukVBLt8p83cTolAO2MsHy18uNQr0V4XLVYcr5VSrohmoD
-         9wOtDcMG7njxyWsdlWWIsDvRlU2etzc1uKTt8ExiwK2ElJGHBsvdqWeVlffDjIs3JyvS
-         hDoCEQ4xgxK55zdUBUMe9TGRSlsZZO+lDQfzUpfC/ZvxpB5fWbD+kpsXNZShxMX4k2Ic
-         EKL9Fp7O6z1zx3MpblPqqZ/Z8VSKFvk36E8AKuUBcnXnFKrulfcoAiYPlgWKQBEAgcNJ
-         KtIbiXJdGYYaj9Xxpy539QnOAW8jzc2KXOwProGLNeCuv3HV1lfRmZoXGWThsTtcUSO9
-         FWSA==
-X-Gm-Message-State: AOAM531AOZZSIqnfRdg6myYvNK/jE9RR6W8kR7SvNt6Dnrb2MnRoEZbZ
-        KrGsaiVnHJWnUuJWAvxF8GqSvYcpmkCDCqDoL4c=
-X-Google-Smtp-Source: ABdhPJzgbhwyup9AIF5jH3P6fIwej2paCmuZCkDgrrDNXXYTDms4i/1OSBUkuYcC7vSiEUrlgQ6VOfRjelFK0vq+BEU=
-X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr1402308pjy.138.1637299472703;
- Thu, 18 Nov 2021 21:24:32 -0800 (PST)
+        bh=cpacwUyzE+yZQi2HRsigmJjkmcIiIOSGZw3OzHsfooo=;
+        b=S/v/ZwkLwAnq5eOdCAVsxxFMAO6Jz+izzQO3aTsvT/Vq3qfkhgyR/aPxWWXmkvf6fe
+         WYfEO1zGmniQJ1odysjUt34HNABP5RI3yEElfoBDP7QdbNYefsN/UQJ0evdIUR5xfMmm
+         J88BGcgDiVPIImwIzKosFw7imylZaXTgiWZckkIJvV8bw1wZfEvws5Q8WmuskXJwOsV6
+         vD1M5JxJc3YAkDMANbrsPPpWyaTl0pmu+KT6dhwjKx+4Mx8gn2FZIum4Tk2yudjYoO5Z
+         19TG1CXWxfxiSUaeNMW0HFb55dHwrTaxKz+GrmFbJIE11gKxUaW095WigOSMvdA1edbI
+         KKaw==
+X-Gm-Message-State: AOAM533Nywbhy8TECdAa3YqrkvNKYOE3SVP7R+KMaLxuSPiiK6KI7weN
+        shwMqHueOxbzZ5LHJDZqRk+j70ign6PxGVhchskLlqA3DB0XWKyi
+X-Google-Smtp-Source: ABdhPJwlfHbZdUmS+LrGu/838FzHKha8BHY1wMTXd2lj5AAMagnhC97ToIXsmSKtjIb5cKExksbkS2+JiTQteRHu6FM=
+X-Received: by 2002:a2e:b6d4:: with SMTP id m20mr23968361ljo.471.1637301687274;
+ Thu, 18 Nov 2021 22:01:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20211116054237.100814-1-memxor@gmail.com> <20211116054237.100814-2-memxor@gmail.com>
- <20211118220226.ritjbjeh5s4yw7hl@ast-mbp.dhcp.thefacebook.com>
- <20211119041523.cf427s3hzj75f7jr@apollo.localdomain> <20211119045659.vriegs5nxgszo3p3@ast-mbp.dhcp.thefacebook.com>
- <20211119051657.5334zvkcqga754z3@apollo.localdomain>
-In-Reply-To: <20211119051657.5334zvkcqga754z3@apollo.localdomain>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 18 Nov 2021 21:24:21 -0800
-Message-ID: <CAADnVQ+rdAh2LaHOHxqk7z4aheMQ2gjzMFegrehzEfE_6twBdg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/8] io_uring: Implement eBPF iterator for
- registered buffers
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+References: <20211118202840.1001787-1-Kenny.Ho@amd.com> <20211118202840.1001787-5-Kenny.Ho@amd.com>
+ <20211119043326.a4pmgitlkljpamgh@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211119043326.a4pmgitlkljpamgh@ast-mbp.dhcp.thefacebook.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Fri, 19 Nov 2021 01:01:15 -0500
+Message-ID: <CAOWid-dFFjrBx1YxRxssP=uAWAjQ75iU2jj_uRkBnx4Vt5YrpA@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/4] bpf,cgroup,perf: extend bpf-cgroup to support
+ tracepoint attachment
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Alexander Mihalicyn <alexander@mihalicyn.com>,
-        Andrei Vagin <avagin@gmail.com>, criu@openvz.org,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 9:17 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Thu, Nov 18, 2021 at 11:33 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, Nov 19, 2021 at 10:26:59AM IST, Alexei Starovoitov wrote:
-> > On Fri, Nov 19, 2021 at 09:45:23AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > >
-> > > Also, this work is part of GSoC. There is already code that is waiting for this
-> > > to fill in the missing pieces [0]. If you want me to add a sample/selftest that
-> > > demonstrates/tests how this can be used to reconstruct a task's io_uring, I can
-> > > certainly do that. We've already spent a few months contemplating on a few
-> > > approaches and this turned out to be the best/most powerful. At one point I had
-> > > to scrap some my earlier patches completely because they couldn't work with
-> > > descriptorless io_uring. Iterator seem like the best solution so far that can
-> > > adapt gracefully to feature additions in something seeing as heavy development
-> > > as io_uring.
-> > >
-> > >   [0]: https://github.com/checkpoint-restore/criu/commit/cfa3f405d522334076fc4d687bd077bee3186ccf#diff-d2cfa5a05213c854d539de003a23a286311ae81431026d3d50b0068c0cb5a852
-> > >   [1]: https://github.com/checkpoint-restore/criu/pull/1597
-> >
-> > Is that the main PR? 1095 changed files? Is it stale or something?
-> > Is there a way to view the actual logic that exercises these bpf iterators?
+> On Thu, Nov 18, 2021 at 03:28:40PM -0500, Kenny Ho wrote:
+> > +     for_each_possible_cpu(cpu) {
+> > +             /* allocate first, connect the cgroup later */
+> > +             events[i] = perf_event_create_kernel_counter(attr, cpu, NULL, NULL, NULL);
 >
-> No, there is no code exercising BPF iterator in that PR yet (since it wouldn't
-> build/run in CI). There's some code I have locally that uses these to collect
-> the necessary information, I can post that, either as a sample or selftest in
-> the next version, or separately on GH for you to take a look.
->
-> I still rebased it so that you can see the rest of the actual code.
+> This is a very heavy hammer for this task.
+> There is really no need for perf_event to be created.
+> Did you consider using raw_tp approach instead?
 
-I would like to see a working end to end solution.
+I came across raw_tp but I don't have a good understanding of it yet.
+Initially I was hoping perf event/tracepoint is a stepping stone to
+raw tp but that doesn't seem to be the case (and unfortunately I
+picked the perf event/tracepoint route to dive in first because I saw
+cgroup usage.)  Can you confirm if the following statements are true?
 
-Also I'd like to hear what Jens and Pavel have to say about
-applicability of CRIU to io_uring in general.
+- is raw_tp related to writable tracepoint
+- are perf_event/tracepoint/kprobe/uprobe and fentry/fexit/raw_tp
+considered two separate 'things' (even though both of their purpose is
+tracing)?
+
+> It doesn't need this heavy stuff.
+> Also I suspect in follow up you'd be adding tracepoints to GPU code?
+> Did you consider just leaving few __weak global functions in GPU code
+> and let bpf progs attach to them as fentry?
+There are already tracepoints in the GPU code.  And I do like fentry
+way of doing things more but my head was very much focused on cgroup,
+and tracepoint/kprobe path seems to have something for it.  I
+suspected this would be a bit too heavy after seeing the scalability
+discussion but I wasn't sure so I whip this up quickly to get some
+feedback (while learning more about perf/bpf/cgroup.)
+
+> I suspect the true hierarchical nature of bpf-cgroup framework isn't necessary.
+> The bpf program itself can filter for given cgroup.
+> We have bpf_current_task_under_cgroup() and friends.
+Is there a way to access cgroup local storage from a prog that is not
+attached to a bpf-cgroup?  Although, I guess I can just store/read
+things using a map with the cg id as key.  And with the
+bpf_get_current_ancestor_cgroup_id below I can just simulate the
+values being propagated if the hierarchy ends up being relevant.  Then
+again, is there a way to atomically update multiple elements of a map?
+ I am trying to figure out how to support a multi-user multi-app
+sharing use case (like user A given quota X and user B given quota Y
+with app 1 and 2 each having a quota assigned by A and app 8 and 9
+each having quota assigned by B.)  Is there some kind of 'lock'
+mechanism for me to keep quota 1,2,X in sync? (Same for 8,9,Y.)
+
+> I suggest to sprinkle __weak empty funcs in GPU and see what
+> you can do with it with fentry and bpf_current_task_under_cgroup.
+> There is also bpf_get_current_ancestor_cgroup_id().
