@@ -2,193 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19C5456758
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 02:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9D84567DE
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 03:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhKSBRJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 20:17:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhKSBRI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:17:08 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629ABC06174A
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 17:14:06 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id t5so35650796edd.0
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 17:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tMATBO9ysyU+08F7274xPF36JtWrj7gJdRWN8Esowvw=;
-        b=F0lg0ofqm2qN554EDAxroXtEceDC2I4ZmYURRw8rXQxDtOCoIFd8d6ygxiIoG4nDe5
-         3OWfqc7R0+RUvEDtOhpqR9Bz085xgPeHHM0vFmQtlJUG6OZjfiz0aQMl8HYYz02pNKwz
-         fcTG4kc4N1i5eBs6HReWnVO/IK49E21rqICDyWAydaxneAbLLn+kOIon3+jkeRyrYh/4
-         NRj3k7nyY9c8NrnvtVfpI2xnscq1yvmXcpI7rBKKw4ghI2LhGQiGgMzCR0vARYTC76Dp
-         YWK98gBSKy3ZUxnoNbu7soBe/DV9E5oTfTopVDtKkhK0uAMy+OzOw914pFcUWVEZzZLh
-         3+6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tMATBO9ysyU+08F7274xPF36JtWrj7gJdRWN8Esowvw=;
-        b=6fATG5ElNx/cgGD5oSmXECDpfoTEejiydM5gSyvt7tKZCcef4Hm6o45jqe2FM4X4zt
-         yqgcFJQHjwUV7Rqu9oHgQCKa/BWYTSFXbJJqSzmBH4V/22MVumIajB+Kl3TEzw/y8Fg4
-         DL+kJB71nxYJv1vvkyWTmRQQ4jAz9GdPFapeVnAnfMZu35XfWH9V2eJwlupXzz5ofhjj
-         RPcKAhPp1m4RI1kC573FXwXajY+fa02ASAWR2uBKhWJCVVuYReamhxQbaLbWe/42G+iJ
-         4Muc39pIwooGJ9XTngHjp/sPFXKSSqWXDJTuRBdPAkPlmL2jsnTBTSHAvpSq19J30+4T
-         AnfA==
-X-Gm-Message-State: AOAM5324y4TnSvTJEoXStXP4d1kxLAOhLhsQndwbzjs+UQ/UVbJOrpZu
-        4kSXa68chaRCJZYoWaEVSVIbC0ZqmGJuWGh2tQLh5Q==
-X-Google-Smtp-Source: ABdhPJz5derP9yku9LYM7aE9l5YVII8m00Gkd3fLlekKm1DPilHAhQrEpyIBHBt3pBboGZQAsvQAq6I1GlGsoiHuAR8=
-X-Received: by 2002:a17:906:390:: with SMTP id b16mr2562163eja.123.1637284444878;
- Thu, 18 Nov 2021 17:14:04 -0800 (PST)
-MIME-Version: 1.0
-References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
- <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
- <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
- <87k0h6334w.fsf@email.froward.int.ebiederm.org> <202111171341.41053845C3@keescook>
- <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
- <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
- <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
- <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
- <202111171728.D85A4E2571@keescook> <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
- <877dd5qfw5.fsf_-_@email.froward.int.ebiederm.org>
-In-Reply-To: <877dd5qfw5.fsf_-_@email.froward.int.ebiederm.org>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Thu, 18 Nov 2021 17:13:52 -0800
-Message-ID: <CAP045Aose7Lg_OE0-MijGBg27gWo+Sk3hbxuN3AtQ8OPC9w9+w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] signal: Don't always set SA_IMMUTABLE for forced signals
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
+        id S230118AbhKSCNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 21:13:01 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26329 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233873AbhKSCNA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 21:13:00 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HwKk46rXQzbhjk;
+        Fri, 19 Nov 2021 10:05:00 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 19 Nov 2021 10:09:57 +0800
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 19 Nov 2021 10:09:55 +0800
+Subject: Re: [PATCH 03/12] riscv: switch to relative exception tables
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "Nick Desaulniers" <ndesaulniers@google.com>
+References: <20211118192130.48b8f04c@xhacker>
+ <20211118192251.749c04f7@xhacker>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kbuild@vger.kernel.org>
+From:   tongtiangen <tongtiangen@huawei.com>
+Message-ID: <bc466684-b02e-c6b0-13cf-a071eeebff8c@huawei.com>
+Date:   Fri, 19 Nov 2021 10:09:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <20211118192251.749c04f7@xhacker>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.234]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 2:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
->
-> Recently to prevent issues with SECCOMP_RET_KILL and similar signals
-> being changed before they are delivered SA_IMMUTABLE was added.
->
-> Unfortunately this broke debuggers[1][2] which reasonably expect to be
-> able to trap synchronous SIGTRAP and SIGSEGV even when the target
-> process is not configured to handle those signals.
->
-> Update force_sig_to_task to support both the case when we can
-> allow the debugger to intercept and possibly ignore the
-> signal and the case when it is not safe to let userspace
-> known about the signal until the process has exited.
+Hi jisheng:
+eBPF's exception tables needs to be modified to relative synchronously.
 
-s/known/know/
+I modified and verified the code as follows:
 
+===================
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -499,7 +499,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
+         offset = pc - (long)&ex->insn;
+         if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
+                 return -ERANGE;
+-       ex->insn = pc;
++       ex->insn = offset;
+===================
+
+Thanks.
+
+Reviewed-by:Tong Tiangen <tongtiangen@huawei.com>
+
+On 2021/11/18 19:22, Jisheng Zhang wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
 >
-> Reported-by: Kyle Huey <me@kylehuey.com>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Cc: stable@vger.kernel.org
-> [1] https://lkml.kernel.org/r/CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com
-> [2] https://lkml.kernel.org/r/20211117150258.GB5403@xsang-OptiPlex-902
-
-This link doesn't work.
-
-> Fixes: 00b06da29cf9 ("signal: Add SA_IMMUTABLE to ensure forced siganls do not get changed")
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> Similar as other architectures such as arm64, x86 and so on, use
+> offsets relative to the exception table entry values rather than
+> absolute addresses for both the exception locationand the fixup.
+>
+> However, RISCV label difference will actually produce two relocations,
+> a pair of R_RISCV_ADD32 and R_RISCV_SUB32. Take below simple code for
+> example:
+>
+> $ cat test.S
+> .section .text
+> 1:
+>         nop
+> .section __ex_table,"a"
+>         .balign 4
+>         .long (1b - .)
+> .previous
+>
+> $ riscv64-linux-gnu-gcc -c test.S
+> $ riscv64-linux-gnu-readelf -r test.o
+> Relocation section '.rela__ex_table' at offset 0x100 contains 2 entries:
+>   Offset          Info           Type           Sym. Value    Sym. Name + Addend
+> 000000000000  000600000023 R_RISCV_ADD32     0000000000000000 .L1^B1 + 0
+> 000000000000  000500000027 R_RISCV_SUB32     0000000000000000 .L0  + 0
+>
+> The modpost will complain the R_RISCV_SUB32 relocation, so we need to
+> patch modpost.c to skip this relocation for .rela__ex_table section.
+>
+> After this patch, the __ex_table section size of defconfig vmlinux is
+> reduced from 7072 Bytes to 3536 Bytes.
+>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->  kernel/signal.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
+>  arch/riscv/include/asm/Kbuild    |  1 -
+>  arch/riscv/include/asm/extable.h | 25 +++++++++++++++++++++++++
+>  arch/riscv/include/asm/uaccess.h |  4 ++--
+>  arch/riscv/lib/uaccess.S         |  4 ++--
+>  arch/riscv/mm/extable.c          |  2 +-
+>  scripts/mod/modpost.c            | 15 +++++++++++++++
+>  scripts/sorttable.c              |  2 +-
+>  7 files changed, 46 insertions(+), 7 deletions(-)
+>  create mode 100644 arch/riscv/include/asm/extable.h
 >
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index 7c4b7ae714d4..02058c983bd6 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -1298,6 +1298,12 @@ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p
->         return ret;
->  }
->
-> +enum sig_handler {
-> +       HANDLER_CURRENT, /* If reachable use the current handler */
-> +       HANDLER_SIG_DFL, /* Always use SIG_DFL handler semantics */
-> +       HANDLER_EXIT,    /* Only visible as the proces exit code */
+> diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
+> index 445ccc97305a..57b86fd9916c 100644
+> --- a/arch/riscv/include/asm/Kbuild
+> +++ b/arch/riscv/include/asm/Kbuild
+> @@ -1,6 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  generic-y += early_ioremap.h
+> -generic-y += extable.h
+>  generic-y += flat.h
+>  generic-y += kvm_para.h
+>  generic-y += user.h
+> diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
+> new file mode 100644
+> index 000000000000..84760392fc69
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/extable.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_RISCV_EXTABLE_H
+> +#define _ASM_RISCV_EXTABLE_H
+> +
+> +/*
+> + * The exception table consists of pairs of relative offsets: the first
+> + * is the relative offset to an instruction that is allowed to fault,
+> + * and the second is the relative offset at which the program should
+> + * continue. No registers are modified, so it is entirely up to the
+> + * continuation code to figure out what to do.
+> + *
+> + * All the routines below use bits of fixup code that are out of line
+> + * with the main instruction path.  This means when everything is well,
+> + * we don't even have to jump over them.  Further, they do not intrude
+> + * on our cache or tlb entries.
+> + */
+> +
+> +struct exception_table_entry {
+> +	int insn, fixup;
 > +};
 > +
->  /*
->   * Force a signal that the process can't ignore: if necessary
->   * we unblock the signal and change any SIG_IGN to SIG_DFL.
-> @@ -1310,7 +1316,8 @@ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p
->   * that is why we also clear SIGNAL_UNKILLABLE.
->   */
->  static int
-> -force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool sigdfl)
-> +force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t,
-> +       enum sig_handler handler)
->  {
->         unsigned long int flags;
->         int ret, blocked, ignored;
-> @@ -1321,9 +1328,10 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
->         action = &t->sighand->action[sig-1];
->         ignored = action->sa.sa_handler == SIG_IGN;
->         blocked = sigismember(&t->blocked, sig);
-> -       if (blocked || ignored || sigdfl) {
-> +       if (blocked || ignored || (handler != HANDLER_CURRENT)) {
->                 action->sa.sa_handler = SIG_DFL;
-> -               action->sa.sa_flags |= SA_IMMUTABLE;
-> +               if (handler == HANDLER_EXIT)
-> +                       action->sa.sa_flags |= SA_IMMUTABLE;
->                 if (blocked) {
->                         sigdelset(&t->blocked, sig);
->                         recalc_sigpending_and_wake(t);
-> @@ -1343,7 +1351,7 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
+> +#define ARCH_HAS_RELATIVE_EXTABLE
+> +
+> +int fixup_exception(struct pt_regs *regs);
+> +#endif
+> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+> index 714cd311d9f1..0f2c5b9d2e8f 100644
+> --- a/arch/riscv/include/asm/uaccess.h
+> +++ b/arch/riscv/include/asm/uaccess.h
+> @@ -12,8 +12,8 @@
 >
->  int force_sig_info(struct kernel_siginfo *info)
->  {
-> -       return force_sig_info_to_task(info, current, false);
-> +       return force_sig_info_to_task(info, current, HANDLER_CURRENT);
->  }
+>  #define _ASM_EXTABLE(from, to)						\
+>  	"	.pushsection	__ex_table, \"a\"\n"			\
+> -	"	.balign "	RISCV_SZPTR "	 \n"			\
+> -	"	" RISCV_PTR	"(" #from "), (" #to ")\n"		\
+> +	"	.balign		4\n"					\
+> +	"	.long		(" #from " - .), (" #to " - .)\n"	\
+>  	"	.popsection\n"
 >
 >  /*
-> @@ -1660,7 +1668,7 @@ void force_fatal_sig(int sig)
->         info.si_code = SI_KERNEL;
->         info.si_pid = 0;
->         info.si_uid = 0;
-> -       force_sig_info_to_task(&info, current, true);
-> +       force_sig_info_to_task(&info, current, HANDLER_SIG_DFL);
->  }
+> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+> index 63bc691cff91..55f80f84e23f 100644
+> --- a/arch/riscv/lib/uaccess.S
+> +++ b/arch/riscv/lib/uaccess.S
+> @@ -7,8 +7,8 @@
+>  100:
+>  	\op \reg, \addr
+>  	.section __ex_table,"a"
+> -	.balign RISCV_SZPTR
+> -	RISCV_PTR 100b, \lbl
+> +	.balign 4
+> +	.long (100b - .), (\lbl - .)
+>  	.previous
+>  	.endm
 >
->  /*
-> @@ -1693,7 +1701,7 @@ int force_sig_fault_to_task(int sig, int code, void __user *addr
->         info.si_flags = flags;
->         info.si_isr = isr;
+> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+> index ddb7d3b99e89..d8d239c2c1bd 100644
+> --- a/arch/riscv/mm/extable.c
+> +++ b/arch/riscv/mm/extable.c
+> @@ -28,6 +28,6 @@ int fixup_exception(struct pt_regs *regs)
+>  		return rv_bpf_fixup_exception(fixup, regs);
 >  #endif
-> -       return force_sig_info_to_task(&info, t, false);
-> +       return force_sig_info_to_task(&info, t, HANDLER_CURRENT);
+>
+> -	regs->epc = fixup->fixup;
+> +	regs->epc = (unsigned long)&fixup->fixup + fixup->fixup;
+>  	return 1;
+>  }
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index cb8ab7d91d30..6bfa33217914 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -1830,6 +1830,14 @@ static int addend_mips_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
+>  	return 0;
 >  }
 >
->  int force_sig_fault(int sig, int code, void __user *addr
-> @@ -1813,7 +1821,8 @@ int force_sig_seccomp(int syscall, int reason, bool force_coredump)
->         info.si_errno = reason;
->         info.si_arch = syscall_get_arch(current);
->         info.si_syscall = syscall;
-> -       return force_sig_info_to_task(&info, current, force_coredump);
-> +       return force_sig_info_to_task(&info, current,
-> +               force_coredump ? HANDLER_EXIT : HANDLER_CURRENT);
->  }
+> +#ifndef EM_RISCV
+> +#define EM_RISCV		243
+> +#endif
+> +
+> +#ifndef R_RISCV_SUB32
+> +#define R_RISCV_SUB32		39
+> +#endif
+> +
+>  static void section_rela(const char *modname, struct elf_info *elf,
+>  			 Elf_Shdr *sechdr)
+>  {
+> @@ -1866,6 +1874,13 @@ static void section_rela(const char *modname, struct elf_info *elf,
+>  		r_sym = ELF_R_SYM(r.r_info);
+>  #endif
+>  		r.r_addend = TO_NATIVE(rela->r_addend);
+> +		switch (elf->hdr->e_machine) {
+> +		case EM_RISCV:
+> +			if (!strcmp("__ex_table", fromsec) &&
+> +			    ELF_R_TYPE(r.r_info) == R_RISCV_SUB32)
+> +				continue;
+> +			break;
+> +		}
+>  		sym = elf->symtab_start + r_sym;
+>  		/* Skip special sections */
+>  		if (is_shndx_special(sym->st_shndx))
+> diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+> index b7c2ad71f9cf..0c031e47a419 100644
+> --- a/scripts/sorttable.c
+> +++ b/scripts/sorttable.c
+> @@ -376,6 +376,7 @@ static int do_file(char const *const fname, void *addr)
+>  	case EM_PARISC:
+>  	case EM_PPC:
+>  	case EM_PPC64:
+> +	case EM_RISCV:
+>  		custom_sort = sort_relative_table;
+>  		break;
+>  	case EM_ARCOMPACT:
+> @@ -383,7 +384,6 @@ static int do_file(char const *const fname, void *addr)
+>  	case EM_ARM:
+>  	case EM_MICROBLAZE:
+>  	case EM_MIPS:
+> -	case EM_RISCV:
+>  	case EM_XTENSA:
+>  		break;
+>  	default:
 >
->  /* For the crazy architectures that include trap information in
-> --
-> 2.20.1
-
-- Kyle
