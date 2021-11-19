@@ -2,120 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FF44574DD
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 17:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53992457568
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 18:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236353AbhKSRBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 12:01:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S236210AbhKSR2S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 12:28:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbhKSRBm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 12:01:42 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C73C06173E
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:58:40 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id t5so45625995edd.0
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:58:40 -0800 (PST)
+        with ESMTP id S229811AbhKSR2R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 12:28:17 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5338C061574;
+        Fri, 19 Nov 2021 09:25:15 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id n2so25809197yba.2;
+        Fri, 19 Nov 2021 09:25:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ErEg5lH429+YsanJojZrUh0d3Z7cACpSQZvZBHsD9aM=;
-        b=gHr/2RgEtdOpErOyPDZJcCcSeofSSueWvK1Gfx8uT/hKpyS19T+uOdZRQndugSs/JL
-         KUgewbkMC1HIXARDMGn/NhLLyYOcArTvlm0XSfpZnx468ig2jb1/IwKczWH2d+MDGlvv
-         SbV4gwUgLZ4ZflXxnrD5a5v8CRg1Maib65SwwknmkSoOMLMGzQtaGyrqSbxacY7ZZGLY
-         LhSL2UK6eqbSa/NpDeESxZNHOxkKHgCWECMr7xpyIJ1+RnNTHOScEG36IeoaaiYFT28w
-         zyuiDH/3ReGX3xplGxCk/+zuQEwa9nIf46f6Kw5v/QhIjqHrJ1oWcm97n9ux2SYWpGQz
-         dA3w==
+         :cc:content-transfer-encoding;
+        bh=pCBiavxBuqxxK+6oz6nLWeSo45Gu0oX9PmaxhSwJXSI=;
+        b=pMEOQL+9F6O4VSb959TXev/SqBe1ClrAu9VNlyvhMs6+2PeN0se/ecAHRJxcidkAp7
+         Y2XMd9Qhofka/0/gidWQ8s3cclCENNn06l2qCb6pAIn8ypMYKoVguh4I40XiCL/Abwgb
+         AwB0MF8UOC4jpJdb1Vm4mDYA0IXUUlHJargyqSOBr3eIRxKA6K8VU+BBfqNgngcEW8Ja
+         ESbOlqpgeCuPg4WL9vZON40a5x1iKmEHQJLAsTcStKeeFB7IThWckUH34gKWQGmHccP5
+         noV9U4odE4duh0yMttE1tkFyrEiGOGYocnrZbVAJX19A1b8FvgOLsPrlwWjmHBrYmPee
+         /dYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ErEg5lH429+YsanJojZrUh0d3Z7cACpSQZvZBHsD9aM=;
-        b=vZyJ+vHW1aCXOPIAEN6z1eybkWP7ZnGJoDlKnsukWinivpXdjBcZllu8UbHu9E2GYr
-         1mK/q/6+JwTFTkBtapq70NjEZ2RLGcbNGk8FDVY5f8gOSJH7IeIwSxEhKsbPCZRMPzq6
-         jkVMNlyvmQZHhmiDlsL8UjAla/ogXXwjazFgU/Mswlcr7LNQByZcO6Kz04FADBXAfhxn
-         HLihL/FrDIYOCbmb7rkK08Hsx31VRMYyPZ6wBJiqaE+14GflnuNG47KzzbJcfYX0d85K
-         yNelRO9iz0+dy1POYx43/ckuuI2E9IbvSOA6DQpxnCiT2T938PY3aaM2syRFDB7P+iF/
-         +cGQ==
-X-Gm-Message-State: AOAM532uF/FpWvbMPv0cO3pRL5stZ1i/ZvXGHtQoqykUllabyMOm3u1J
-        uKzItXyFB5BM+HzHNL3tg18KsprCBG4iNJkkzgYlOw==
-X-Google-Smtp-Source: ABdhPJwjwYFQF5TH1tiK/c/KeHtkYUZ2Q17dm1zRuaodp9PMZ8lS3WsNKveiq1lhKT/gzcOUbADx50wPsTEZO1po6ic=
-X-Received: by 2002:a17:906:4791:: with SMTP id cw17mr9656058ejc.493.1637341119226;
- Fri, 19 Nov 2021 08:58:39 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pCBiavxBuqxxK+6oz6nLWeSo45Gu0oX9PmaxhSwJXSI=;
+        b=CZjLI/7NVbw/yzAeQvKN2g9NjWkdcOsmNATHaBrdkC7jfTFdydvGLI6lLdKW/AdOuz
+         /UFK1mIX/l96Gib6pnXWvQvVexvZAAO7bvQ/Dzi5LuKiKz9kE+7OcPVRwUa8nDp+qUkZ
+         8LxLeELnPpNbPwHQfq3NdRPHEdNRVeSMYio86ojrJEvi8fB4cvZhvnrO3vmjUNv/MX/h
+         MnB1MdBTXVqDh4CNXCi2En0pqhYdOLjeVM2THD7YoF1EMHQZ2LJwlLmGXoUfcXPj0sbp
+         YIoMFKZWyex/vbkDPXlQnHhrbg/IJ6Ktuw75g9yRvtLr1EZLtoqs/R2b9NahQoU+vocH
+         LHTA==
+X-Gm-Message-State: AOAM532y8zFrQN0oBmDwa7TlePi5KL7JkwYfaHdtl0W6/KNpC8sgwhFh
+        oKUOIo7X+ZoqDSdAfqIq10eAEtO4OD5MT6XSw66OZRI8D/U=
+X-Google-Smtp-Source: ABdhPJy4cbwacDjCWqrysIoLCLR4DqwoZkoOdCfOS4ofuHeVBh6JIeAyNAJhOg3aHuNoWjQCB7qlcw96ii9yPXXeQz0=
+X-Received: by 2002:a25:d16:: with SMTP id 22mr38566464ybn.51.1637342715080;
+ Fri, 19 Nov 2021 09:25:15 -0800 (PST)
 MIME-Version: 1.0
-References: <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
- <87k0h6334w.fsf@email.froward.int.ebiederm.org> <202111171341.41053845C3@keescook>
- <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
- <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
- <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
- <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
- <202111171728.D85A4E2571@keescook> <875ysp1m39.fsf@email.froward.int.ebiederm.org>
- <CAP045Aq06LV_jbXVc85bYU62h5EoVQ=rD9pDn+nGaUJ+iWe62w@mail.gmail.com> <202111190829.C0B365D4@keescook>
-In-Reply-To: <202111190829.C0B365D4@keescook>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Fri, 19 Nov 2021 08:58:24 -0800
-Message-ID: <CAP045Aq6SvnBpOsTKkwprYSdae1eppJhbhkYrxn_-vcFvzoPgQ@mail.gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
+References: <20211116164208.164245-1-mauricio@kinvolk.io> <20211116164208.164245-5-mauricio@kinvolk.io>
+In-Reply-To: <20211116164208.164245-5-mauricio@kinvolk.io>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 19 Nov 2021 09:25:03 -0800
+Message-ID: <CAEf4BzZ0pEXzEvArpzL=0qbVC65z=hmeVuP7cbLKk-0_Gv5Y+A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] libbpf: Expose CO-RE relocation results
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        "Robert O'Callahan" <rocallahan@gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:36 AM Kees Cook <keescook@chromium.org> wrote:
+On Tue, Nov 16, 2021 at 8:42 AM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
+ wrote:
 >
-> On Fri, Nov 19, 2021 at 08:07:36AM -0800, Kyle Huey wrote:
-> > On Thu, Nov 18, 2021 at 8:12 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > > Kyle thank you for your explanation of what breaks.  For future kernels
-> > > I do need to do some work in this area and I will copy on the patches
-> > > going forward.  In particular I strongly suspect that changing the
-> > > sigaction and blocked state of the signal for these synchronous signals
-> > > is the wrong thing to do, especially if the process is not killed.  I
-> > > want to find another solution that does not break things but that also
-> > > does not change the program state behind the programs back so things
-> > > work differently under the debugger.
-> >
-> > The heads up in the future is appreciated, thanks.
+> The result of the CO-RE relocations can be useful for some use cases
+> like BTFGen[0]. This commit adds a new =E2=80=98record_core_relos=E2=80=
+=99 option to
+> save the result of such relocations and a couple of functions to access
+> them.
 >
-> Yeah, I wonder if we could add you as a Reviewer in the MAINTAINERS file
-> for ptrace/signal stuff? Then anyone using scripts/get_maintainers.pl
-> would have a CC to you added.
-
-I don't object to that. I guess we'll see how manageable the email load is.
-
-> Also, are there more instructions about running the rr tests? When the
-> execve refactoring was happening, I tried it[1], but the results were
-> unclear (there seemed to be a lot of warnings and it made me think I'd
-> done something wrong on my end).
-
-It's a standard cmake test suite. The easiest way to run it is just to
-run `make check`, wait a while, and see what gets printed out at the
-end as failing.  There's a couple thousand tests that run and they
-print all sorts of output ... some of them even crash intentionally to
-make sure we can record specific types of crashes, so the ctest
-pass/fail output at the very end is the only reliable indicator.
-
-If you have specific issues you're seeing I'm happy to follow up here
-or off list.
-
-- Kyle
-
-> -Kees
+> [0]: https://github.com/kinvolk/btfgen/
 >
-> [1] https://github.com/rr-debugger/rr/wiki/Building-And-Installing#tests
+> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> ---
+>  tools/lib/bpf/libbpf.c    | 63 ++++++++++++++++++++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.h    | 49 +++++++++++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.map  |  2 ++
+>  tools/lib/bpf/relo_core.c | 28 +++++++++++++++--
+>  tools/lib/bpf/relo_core.h | 21 ++-----------
+>  5 files changed, 140 insertions(+), 23 deletions(-)
 >
-> --
-> Kees Cook
+
+Ok, I've meditated on this patch set long enough. I still don't like
+that libbpf will be doing all this just for the sake of BTFGen's use
+case.
+
+In the end, I think giving bpftool access to internal APIs of libbpf
+is more appropriate, and it seems like it's pretty easy to achieve. It
+might actually clean up gen_loader parts a bit as well. So we'll need
+to coordinate all this with Alexei's current work on CO-RE for kernel
+as well.
+
+But here's what I think could be done to keep libbpf internals simple.
+We split bpf_core_apply_relo() into two parts: 1) calculating the
+struct bpf_core_relo_res and 2) patching the instruction. If you look
+at bpf_core_apply_relo, it needs prog just for prog_name (which we can
+just pass everywhere for logging purposes) and to extract one specific
+instruction to be patched. This instruction is passed at the very end
+to bpf_core_patch_insn() after bpf_core_relo_res is calculated. So I
+propose to make those two explicitly separate steps done by libbpf. So
+bpf_core_apply_relo() (which we should rename to bpf_core_calc_relo()
+or something like that) won't do any modification to the program
+instructions. bpf_object__relocate_core() will do bpf_core_calc_relo()
+first, if that's successful, it will pass the result into
+bpf_core_patch_insn(). Simple and clean, unless I missed some
+complication (happens all the time, but..)
+
+At this point, we can teach bpftool to just take btf_ext (from BPF
+object file), iterate over all CO-RE relos and call only
+bpf_core_calc_relo() (no instruction patching). Using
+bpf_core_relo_res bpftool will know types and fields that need to be
+preserved and it will be able to construct minimal btf. So interface
+for bpftool looks like this:
+
+   bpftool gen distill_btf (or whatever the name) <file.bpf.o>
+<distilled_raw.btf>
+
+BTFGen as a solution, then, can use bpftool to process each pair of
+btf + bpf object.
+
+Thoughts?
+
+[...]
