@@ -2,108 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2126457323
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 17:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AFD457340
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 17:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbhKSQjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 11:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236548AbhKSQjC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:39:02 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8FCC06173E
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:36:00 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u11so8541306plf.3
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 08:36:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mUA1Ik1IrEtjZziXrTIENZOvTLv8BEae3qCpSE+YCyM=;
-        b=HrLUCriF+D8Cvoif6PoPXuZ01iT7CVMXAmIoIU345nrBpdU8RCDZ+XDjy4aMpyqWxX
-         1mwslROiPVbi4rQFrNiFLaQRmGBi3X/LId8fpbBu1EBXodx74x0ejyq7NGD7dF6bmaCd
-         XHh44079HyOoO48w9cAB4WkzNpBCpXyILFZkU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mUA1Ik1IrEtjZziXrTIENZOvTLv8BEae3qCpSE+YCyM=;
-        b=DCw4dSi8o2stWOA0U5sD3hria8YsN9E5YhqBxNsQZ3jw7GMQPJTDkScACT1wzxCMCz
-         ji0k6c6IPu5yjl8gPGLn8CMS2TqkjkBbn3zI+V5+AQ/BIlnzjsB9azp1Hyq2tzzZyFtK
-         c31Izi1T29/F1SFzOasxOJb0FXHcMheBLczmadZEwRpDNltalfbVPR/gL1WqE6CG/Vw5
-         YL6+Fkwnig0GvLRmUS/hjOuV9UGfh6aYNYGqywWZndjFG4v3rPs83UStu84YXECDxMtJ
-         TeovpuZNh30/iUwNZFH416GiIHBBtNfmXZ8uhlwcO4M2tbj/8G4bcYteUp9vGJr/GleH
-         PgtQ==
-X-Gm-Message-State: AOAM533vrU39Vrdtgf6ipyMdTISImLm2ieTIn+ryb7K0yMp4zPBLNW2x
-        FHbOL+wNdgN9G0FqG+Pm7IbDUOjZuQ+X2g==
-X-Google-Smtp-Source: ABdhPJwVGtrRIcvhQKROwLYzVQy0XXGjw4lU4UVPO7uYFvU2N/IYecAtrr5pfHvRHECUwfWCqLA7aQ==
-X-Received: by 2002:a17:90a:e00c:: with SMTP id u12mr1072545pjy.139.1637339759754;
-        Fri, 19 Nov 2021 08:35:59 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w37sm184115pgk.87.2021.11.19.08.35.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:35:59 -0800 (PST)
-Date:   Fri, 19 Nov 2021 08:35:58 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Robert O'Callahan <rocallahan@gmail.com>
-Subject: Re: [REGRESSION] 5.16rc1: SA_IMMUTABLE breaks debuggers
-Message-ID: <202111190829.C0B365D4@keescook>
-References: <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
- <87k0h6334w.fsf@email.froward.int.ebiederm.org>
- <202111171341.41053845C3@keescook>
- <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
- <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
- <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
- <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
- <202111171728.D85A4E2571@keescook>
- <875ysp1m39.fsf@email.froward.int.ebiederm.org>
- <CAP045Aq06LV_jbXVc85bYU62h5EoVQ=rD9pDn+nGaUJ+iWe62w@mail.gmail.com>
+        id S236624AbhKSQns (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 11:43:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59952 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236569AbhKSQns (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Nov 2021 11:43:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637340045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sdPNsUt5ET11fnQU5zA7SZiidRIb9KqsblL/TZmoJ+E=;
+        b=O9bJdwmO+SP+3SpUzZppkcpB+B/EMMOfuy8VYRJP1ivXwqPy78VBBK6theBN6OONgIYKnL
+        kKYy+sHfwhyn0rmiROr/wwRE61jqB+IyzCFphffB9ZzPj/kEpxlWzk8ANiS1taLvVDHxeT
+        cUnidh0IAA6NNsodHiVwIHq6Dp6NsNc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-431-hNm8gD4TPjCS5T72cy7rsg-1; Fri, 19 Nov 2021 11:40:44 -0500
+X-MC-Unique: hNm8gD4TPjCS5T72cy7rsg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 316A4425CB;
+        Fri, 19 Nov 2021 16:40:43 +0000 (UTC)
+Received: from gerbillo.redhat.com (unknown [10.39.193.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B28E860BF1;
+        Fri, 19 Nov 2021 16:40:41 +0000 (UTC)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH net-next 0/2] bpf: do not WARN in bpf_warn_invalid_xdp_action()
+Date:   Fri, 19 Nov 2021 17:39:14 +0100
+Message-Id: <cover.1637339774.git.pabeni@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP045Aq06LV_jbXVc85bYU62h5EoVQ=rD9pDn+nGaUJ+iWe62w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 08:07:36AM -0800, Kyle Huey wrote:
-> On Thu, Nov 18, 2021 at 8:12 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > Kyle thank you for your explanation of what breaks.  For future kernels
-> > I do need to do some work in this area and I will copy on the patches
-> > going forward.  In particular I strongly suspect that changing the
-> > sigaction and blocked state of the signal for these synchronous signals
-> > is the wrong thing to do, especially if the process is not killed.  I
-> > want to find another solution that does not break things but that also
-> > does not change the program state behind the programs back so things
-> > work differently under the debugger.
-> 
-> The heads up in the future is appreciated, thanks.
+The mentioned WARN is quite noisy, especially vs fuzzers and
+apparently used only to track the relevant BPF program and/or
+involved driver.
 
-Yeah, I wonder if we could add you as a Reviewer in the MAINTAINERS file
-for ptrace/signal stuff? Then anyone using scripts/get_maintainers.pl
-would have a CC to you added.
+The first patch replace it with a pr_warn_once(), and the 2nd
+patch allow dumps relevant info to track the reported issue.
 
-Also, are there more instructions about running the rr tests? When the
-execve refactoring was happening, I tried it[1], but the results were
-unclear (there seemed to be a lot of warnings and it made me think I'd
-done something wrong on my end).
+This is quite invasive, but the mentioned WARN makes the hunt
+for some bugs reported by syzkaller quite difficult.
 
--Kees
+Paolo Abeni (2):
+  bpf: do not WARN in bpf_warn_invalid_xdp_action()
+  bpf: let bpf_warn_invalid_xdp_action() report more info
 
-[1] https://github.com/rr-debugger/rr/wiki/Building-And-Installing#tests
+ drivers/net/ethernet/amazon/ena/ena_netdev.c           | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c          | 2 +-
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c       | 2 +-
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c         | 2 +-
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c       | 2 +-
+ drivers/net/ethernet/freescale/enetc/enetc.c           | 2 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c            | 2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c             | 2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c              | 2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c               | 2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c              | 2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c              | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c          | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c           | 2 +-
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c      | 2 +-
+ drivers/net/ethernet/marvell/mvneta.c                  | 2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c        | 2 +-
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c             | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c       | 2 +-
+ drivers/net/ethernet/netronome/nfp/nfp_net_common.c    | 2 +-
+ drivers/net/ethernet/qlogic/qede/qede_fp.c             | 2 +-
+ drivers/net/ethernet/sfc/rx.c                          | 2 +-
+ drivers/net/ethernet/socionext/netsec.c                | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c      | 2 +-
+ drivers/net/ethernet/ti/cpsw_priv.c                    | 2 +-
+ drivers/net/hyperv/netvsc_bpf.c                        | 2 +-
+ drivers/net/tun.c                                      | 2 +-
+ drivers/net/veth.c                                     | 4 ++--
+ drivers/net/virtio_net.c                               | 4 ++--
+ drivers/net/xen-netfront.c                             | 2 +-
+ include/linux/filter.h                                 | 2 +-
+ kernel/bpf/cpumap.c                                    | 4 ++--
+ kernel/bpf/devmap.c                                    | 4 ++--
+ net/core/dev.c                                         | 2 +-
+ net/core/filter.c                                      | 8 ++++----
+ 36 files changed, 43 insertions(+), 43 deletions(-)
 
 -- 
-Kees Cook
+2.33.1
+
