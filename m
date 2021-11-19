@@ -2,93 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E43456EAD
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 13:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177BB456EC0
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 13:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhKSMI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 07:08:28 -0500
-Received: from smtp1.axis.com ([195.60.68.17]:15691 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230520AbhKSMI2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:08:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1637323527;
-  x=1668859527;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=57/QJ6in35nvPvU4ig8kvOqeNLXlQjO2HkYYKefPH8A=;
-  b=V5HnyaO7fWb+WPv8Upjj+2s7EMr0DowlAdcyp0uRsC7VXfhKhhXpngGV
-   GvneCUueSqCRRW44bN72sgXYbZIBrt7okQyP4D/aybGpqvn1crFFGNKsD
-   enQqJ5+qMYWXt9zitWVgVbfYUKpq7nwVUuiss/ECgVepHcyd7ZX9z10i9
-   UyN5m35FXL3PqOlgLYIPBg5i5HVLwgFqcA64C77+prYoYtMCM2dNYhcch
-   uZuzCPj2A8o2LZETIg+lcOOUW7M3fEwDyPhOpTrR542lz7C+PH7VmUhKR
-   8QTZuOuAd1l8x5qmFdOMbyoH3muFk7DtX2iUN3bKJHja8VeGDfLUhmrNS
-   A==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: [PATCH] af_unix: fix regression in read after shutdown
-Date:   Fri, 19 Nov 2021 13:05:21 +0100
-Message-ID: <20211119120521.18813-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.33.1
+        id S234843AbhKSMVG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 07:21:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37082 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234665AbhKSMVF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Nov 2021 07:21:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637324283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T5sacKdmvf7Zw/fCWtoiBAx64x6GCxsrBijsCkaBzNI=;
+        b=bsg45TpLR2rm2OklCJ4K1dqrjicopCIQHOzZpQxHLmY+a6CNBcsPJ64kPStMhbjIMDb14S
+        6lxviQKD6HzqSbiMhRbSdEm2lI/Q4Tek4MAnZoUwATyRe90SOpqguJ8ncBZeh5IpNWcbPx
+        pFKQPqb8mNtlEzX9Jmv6yeyGulVMxrE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-512-3ptaR5_oOEGOfNdc_H-sDQ-1; Fri, 19 Nov 2021 07:18:02 -0500
+X-MC-Unique: 3ptaR5_oOEGOfNdc_H-sDQ-1
+Received: by mail-ed1-f71.google.com with SMTP id c1-20020aa7c741000000b003e7bf1da4bcso8193202eds.21
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 04:18:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=T5sacKdmvf7Zw/fCWtoiBAx64x6GCxsrBijsCkaBzNI=;
+        b=IdtryFh8s/318Nl4IF6CHapLI3MKI7fpMgZn7aPvjKkm2jyBv4v2eI4nAB3ZZRBoEZ
+         7sOYXbnSZ3kScJoKMgYu+KGOxc898wdxSAzKjMnRaoao/mllgmMqKg6jIwU2rTaSBQxL
+         CVIQLi07LCKFu+0zFHZEkJuavdTSVJeicEEQn/pN5qsLl2C+R6JkKWoBLRGbM4NGxfY/
+         d9RuSUnUeCQXkBySQSsnCwww3clwaxT8/vKVrupx/DyGA7G3JakU1tB1eSZLQLMwIULW
+         xsHXNXBtTHy2xjVvz00U0IpseTXeWswApo8OZWQGcbxQBsRogvp8gTNCpR6YJta1PyPe
+         56Gw==
+X-Gm-Message-State: AOAM533qPewt8HBZ41jsjjEmnmOEpQJDYP9pYP+QMKFuWQk9H8fn2FhD
+        jayJ68qMl8+2meSKMRp2naXk8w4xjYg6GMs9HLTRNOKpxpsUmW5/G9hE1bCOKPMtTKcKSsm1WlT
+        LeBUqmZWpp96w
+X-Received: by 2002:a50:bf01:: with SMTP id f1mr23493173edk.102.1637324281102;
+        Fri, 19 Nov 2021 04:18:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxYgh2ryKZ4i84VDb0X766eQxXPhAOxy2o2VGc0FX2bHGr10+KOByZ3Vc1MnHrG9bdcHWNCTg==
+X-Received: by 2002:a50:bf01:: with SMTP id f1mr23493115edk.102.1637324280751;
+        Fri, 19 Nov 2021 04:18:00 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w5sm1521819edc.58.2021.11.19.04.17.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 04:18:00 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 508F1180270; Fri, 19 Nov 2021 13:17:59 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Yonghong Song <yhs@fb.com>, Joanne Koong <joannekoong@fb.com>,
+        bpf@vger.kernel.org
+Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, Kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/3] bpf: Add bpf_for_each helper
+In-Reply-To: <43eae5e9-1741-001f-45fa-a516f291fecb@fb.com>
+References: <20211118010404.2415864-1-joannekoong@fb.com>
+ <20211118010404.2415864-2-joannekoong@fb.com> <87wnl5en13.fsf@toke.dk>
+ <43eae5e9-1741-001f-45fa-a516f291fecb@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 19 Nov 2021 13:17:59 +0100
+Message-ID: <87fsrse3uw.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On kernels before v5.15, calling read() on a unix socket after
-shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
-previously written or EOF.  But now, while read() after
-shutdown(SHUT_RD) still behaves the same way, read() after
-shutdown(SHUT_RDWR) always fails with -EINVAL.
+Yonghong Song <yhs@fb.com> writes:
 
-This behaviour change was apparently inadvertently introduced as part of
-a bug fix for a different regression caused by the commit adding sockmap
-support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
-unix_stream_proto for sockmap").  Those commits, for unclear reasons,
-started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
-while this state change had previously only been done in
-unix_release_sock().
+> On 11/18/21 3:11 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Joanne Koong <joannekoong@fb.com> writes:
+>>=20
+>>> This patch adds the kernel-side and API changes for a new helper
+>>> function, bpf_for_each:
+>>>
+>>> long bpf_for_each(u32 nr_interations, void *callback_fn,
+>>> void *callback_ctx, u64 flags);
+>>>
+>>> bpf_for_each invokes the "callback_fn" nr_iterations number of times
+>>> or until the callback_fn returns 1.
+>>>
+>>> A few things to please note:
+>>> ~ The "u64 flags" parameter is currently unused but is included in
+>>> case a future use case for it arises.
+>>> ~ In the kernel-side implementation of bpf_for_each (kernel/bpf/bpf_ite=
+r.c),
+>>> bpf_callback_t is used as the callback function cast.
+>>> ~ A program can have nested bpf_for_each calls but the program must
+>>> still adhere to the verifier constraint of its stack depth (the stack d=
+epth
+>>> cannot exceed MAX_BPF_STACK))
+>>> ~ The next patch will include the tests and benchmark
+>>>
+>>> Signed-off-by: Joanne Koong <joannekoong@fb.com>
+>>=20
+>> Great to see this! One small nit, below, but otherwise:
+>>=20
+>> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>=20
+>>=20
+>>> ---
+>>>   include/linux/bpf.h            |  1 +
+>>>   include/uapi/linux/bpf.h       | 23 +++++++++++++++++++++++
+>>>   kernel/bpf/bpf_iter.c          | 32 ++++++++++++++++++++++++++++++++
+>>>   kernel/bpf/helpers.c           |  2 ++
+>>>   kernel/bpf/verifier.c          | 28 ++++++++++++++++++++++++++++
+>>>   tools/include/uapi/linux/bpf.h | 23 +++++++++++++++++++++++
+>>>   6 files changed, 109 insertions(+)
+>>>
+>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>> index 6deebf8bf78f..d9b69a896c91 100644
+>>> --- a/include/linux/bpf.h
+>>> +++ b/include/linux/bpf.h
+>>> @@ -2107,6 +2107,7 @@ extern const struct bpf_func_proto bpf_get_socket=
+_ptr_cookie_proto;
+>>>   extern const struct bpf_func_proto bpf_task_storage_get_proto;
+>>>   extern const struct bpf_func_proto bpf_task_storage_delete_proto;
+>>>   extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
+>>> +extern const struct bpf_func_proto bpf_for_each_proto;
+>>>   extern const struct bpf_func_proto bpf_btf_find_by_name_kind_proto;
+>>>   extern const struct bpf_func_proto bpf_sk_setsockopt_proto;
+>>>   extern const struct bpf_func_proto bpf_sk_getsockopt_proto;
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>> index bd0c9f0487f6..ea5098920ed2 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -4750,6 +4750,28 @@ union bpf_attr {
+>>>    *		The number of traversed map elements for success, **-EINVAL** for
+>>>    *		invalid **flags**.
+>>>    *
+>>> + * long bpf_for_each(u32 nr_iterations, void *callback_fn, void *callb=
+ack_ctx, u64 flags)
+>>> + *	Description
+>>> + *		For **nr_iterations**, call **callback_fn** function with
+>>> + *		**callback_ctx** as the context parameter.
+>>> + *		The **callback_fn** should be a static function and
+>>> + *		the **callback_ctx** should be a pointer to the stack.
+>>> + *		The **flags** is used to control certain aspects of the helper.
+>>> + *		Currently, the **flags** must be 0.
+>>> + *
+>>> + *		long (\*callback_fn)(u32 index, void \*ctx);
+>>> + *
+>>> + *		where **index** is the current index in the iteration. The index
+>>> + *		is zero-indexed.
+>>> + *
+>>> + *		If **callback_fn** returns 0, the helper will continue to the next
+>>> + *		iteration. If return value is 1, the helper will skip the rest of
+>>> + *		the iterations and return. Other return values are not used now.
+>>=20
+>> The code will actually return for any non-zero value, though? So
+>> shouldn't the documentation reflect this? Or, alternatively, should the
+>> verifier enforce that the function can only return 0 or 1?
+>
+> This is enforced in verifier.c prepare_func_exit().
+>
+>          if (callee->in_callback_fn) {
+>                  /* enforce R0 return value range [0, 1]. */
+>                  struct tnum range =3D tnum_range(0, 1);
+>
+>                  if (r0->type !=3D SCALAR_VALUE) {
+>                          verbose(env, "R0 not a scalar value\n");
+>                          return -EACCES;
+>                  }
+>                  if (!tnum_in(range, r0->var_off)) {
+>                          verbose_invalid_scalar(env, r0, &range,=20
+> "callback return", "R0");
+>                          return -EINVAL;
+>                  }
+>          }
 
-Restore the original behaviour.  The sockmap tests in
-tests/selftests/bpf continue to pass after this patch.
+Ah, right! I went looking for this but couldn't find it - thanks for the
+pointer!
 
-Fixes: d0c6416bd7091647f60 ("unix: Fix an issue in unix_shutdown causing the other end read/write failures")
-Link: https://lore.kernel.org/lkml/20211111140000.GA10779@axis.com/
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- net/unix/af_unix.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 78e08e82c08c..b0bfc78e421c 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2882,9 +2882,6 @@ static int unix_shutdown(struct socket *sock, int mode)
- 
- 	unix_state_lock(sk);
- 	sk->sk_shutdown |= mode;
--	if ((sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET) &&
--	    mode == SHUTDOWN_MASK)
--		sk->sk_state = TCP_CLOSE;
- 	other = unix_peer(sk);
- 	if (other)
- 		sock_hold(other);
--- 
-2.33.1
+-Toke
 
