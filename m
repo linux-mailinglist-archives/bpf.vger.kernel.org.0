@@ -2,119 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3870D457917
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 23:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145DA457977
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 00:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhKSWxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 17:53:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
+        id S233025AbhKSXXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 18:23:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhKSWxR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:53:17 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB45C061574
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 14:50:14 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id e71so32253113ybh.10
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 14:50:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jFnAyqRNBDZXgciB9ocFvfGpVuJAFrXbU4gUZrut3RA=;
-        b=OxzUxx19XgCmBs/Mpz/zPlIuuGUHEE/mNnQg26O9g+Y2VbhPVV9TLDYw+DA+jerm6R
-         Ijf4T3Y2mqxhmvQ9pQrkHo21NNw1EsqYGsaD8aT1dqbqdQ73dy+2yaLeCCazo90WNlwn
-         gbsvwIDbVZ9YPP3PQ4/DxQrRHZCtJ1DUJHZxNOErLI0yrnBjp1TLFvqnSlN/J5wU/xBb
-         wS6VcviLdxCKkR+HLuAF7e4VPuSx9vASi8fxpyJ6mhdd5yPfRo7xT06s3BjuBXP39wq5
-         Yy745v9wXSWRcIAfzP98xl+3sm0K/qT64tGEsW5M+ZHr6+Cl9dsoV7+xSkjIUtZOUrkR
-         HupA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jFnAyqRNBDZXgciB9ocFvfGpVuJAFrXbU4gUZrut3RA=;
-        b=rdfUFMp/uk+4C0aJvJq6YUefwMSvDLeg9OQuiF9Xzrm+2EaNs+Tmf9fVfvz/KQV94D
-         6x60Bow5gt/SW5rJ14gVhGzhgMrYk7IC9XcG63fhXmCmUjlxZzyxe5WPpf/SfZiI3Atl
-         nyH7KZe4KTlFZXajFiExwl0fTeYLPHubKZsRTC+4ZDHOillG3bKoy2CBHO3vZbywuU5I
-         g23IFkmvwDB4c1BGQdxIN9Qo4UgbcQhlpPCDh/cZX2SOlUP6A2BCaQS/mYvORSL1zcnE
-         olBU7GVa0LMZnVXlPdSoS7SVcQr0h4kiENgc4xiALg7Dq7qvUrtYY6bPsgqA+HJiIKzM
-         mjzw==
-X-Gm-Message-State: AOAM530dHgB+NJJbfXcAXFEvnhU9YgOAIIi3/jPpedir6QFX+YpsQBIj
-        nzI+mgXiYWlpHEzlqaVpcujUtm9jb9x3meGWmJE=
-X-Google-Smtp-Source: ABdhPJx8KqKDgpQw7jUgi3+q/eC8G0k7RxMR8S494+8QV/nIgfD0sweO/eG8tfN0JUc35r1SGq2KJ9FZxAacdWpVMDo=
-X-Received: by 2002:a25:d16:: with SMTP id 22mr40872759ybn.51.1637362214196;
- Fri, 19 Nov 2021 14:50:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20211118010404.2415864-1-joannekoong@fb.com> <20211118010404.2415864-4-joannekoong@fb.com>
- <87r1bdemq4.fsf@toke.dk> <CAEf4BzZMJfSqx9wLq9ntSK+n4kE82S_ifgFhBVtjYiy0vz4Gyg@mail.gmail.com>
- <874k88e1or.fsf@toke.dk>
-In-Reply-To: <874k88e1or.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 19 Nov 2021 14:50:03 -0800
-Message-ID: <CAEf4BzZKtV1_=s7mXUnvvR4BQT6CFm60uuc8F1gv5Hzb=_xkKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftest/bpf/benchs: add bpf_for_each benchmark
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S230351AbhKSXXG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 18:23:06 -0500
+Received: from mx0a-00206401.pphosted.com (mx0a-00206401.pphosted.com [IPv6:2620:100:9001:15::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02761C061574;
+        Fri, 19 Nov 2021 15:20:03 -0800 (PST)
+Received: from pps.filterd (m0282761.ppops.net [127.0.0.1])
+        by mx0b-00206401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AJHRDS2018277;
+        Fri, 19 Nov 2021 14:16:46 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=default; bh=UojmxxivjkQawng4ZsEgyTIZQFXvzS/8KVJ+yqfR9zU=;
+ b=Dz2wNLEWPTHPuBawQ+RMo+Lb5/rGRvfMoxIkEU6wVX1AJj+0NDDRClGQfJ/31/MQk3d9
+ LMpvEXeTfbBrTMhV/qe1eIZ085jpBfFJjhVtNlnxx5v52Q+RWGrGm1U5F/e3n8Zfr7NK
+ ZicvYM+XUusYG0+QbROZSVSzGvVPQEAPwQ9k7SvzrdRJ8cRh3rT9dE76IV3tPcJTwPVG
+ TepUqWfUbeBo4xNV3nOlsme0yCF2t9tfoAzaDqHrMwQr+fzzStrHg8OFxMIMBkO5NjmF
+ 97RQxBa2dpX2LX/u9Xyawu7rA+cCS692lc0PTHEGdizIOsDIJaXmOQOkjePA/bvG/Zsg TQ== 
+Received: from 04wpexch03.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
+        by mx0b-00206401.pphosted.com (PPS) with ESMTPS id 3ce33dhd4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Nov 2021 14:16:46 -0800
+Received: from 04wpexch03.crowdstrike.sys (10.100.11.93) by
+ 04wpexch03.crowdstrike.sys (10.100.11.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 22:16:44 +0000
+Received: from 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2]) by
+ 04wpexch03.crowdstrike.sys ([fe80::79d6:26ee:13ba:99d2%5]) with mapi id
+ 15.02.0922.019; Fri, 19 Nov 2021 22:16:44 +0000
+From:   Martin Kelly <martin.kelly@crowdstrike.com>
+To:     "toke@redhat.com" <toke@redhat.com>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
+CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "andrii@kernel.org" <andrii@kernel.org>
+Subject: RE: RE: Re: Re: Clarification on bpftool dual licensing
+Thread-Topic: RE: Re: Re: Clarification on bpftool dual licensing
+Thread-Index: AdfdkjhNfsy17BBgRbaSQ5rYr6Jc1g==
+Date:   Fri, 19 Nov 2021 22:16:38 +0000
+Deferred-Delivery: Fri, 19 Nov 2021 22:16:30 +0000
+Message-ID: <eec3a813ac644b57ae225264a8506d05@crowdstrike.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.100.11.84]
+x-disclaimer: USA
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-19_15,2021-11-17_01,2020-04-07_01
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 5:04 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Thu, Nov 18, 2021 at 3:18 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
+> From: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
+> Sent: Friday, November 19, 2021 4:54 AM
+> To: Martin Kelly <martin.kelly@crowdstrike.com>; andrii.nakryiko@gmail.co=
+m
+> Cc: daniel@iogearbox.net; bpf@vger.kernel.org; ast@kernel.org;
+> netdev@vger.kernel.org; kernel-team@fb.com; davem@davemloft.net;
+> andrii@kernel.org
+> Subject: [External] RE: Re: Re: Clarification on bpftool dual licensing
+>=20
+> Martin Kelly <martin.kelly@crowdstrike.com> writes:
+>=20
+> >> > One other, related question: vmlinux.h (generated by "bpftool btf du=
+mp
+> file
+> >> /sys/kernel/btf/vmlinux format c"), does not currently contain a licen=
+se
+> >> declaration. I assume this would have to be a GPL header, since vmlinu=
+x.h
+> >> references many GPL'd Linux kernel structs and similar, though again I=
+'m not
+> a
+> >> lawyer and therefore am not certain. Would you all agree with this? If=
+ so,
+> any
+> >> objection to a patch adding an SPDX line to the generated vmlinux.h?
 > >>
-> >> Joanne Koong <joannekoong@fb.com> writes:
-> >>
-> >> > Add benchmark to measure the overhead of the bpf_for_each call
-> >> > for a specified number of iterations.
-> >> >
-> >> > Testing this on qemu on my dev machine on 1 thread, the data is
-> >> > as follows:
-> >>
-> >> Absolute numbers from some random dev machine are not terribly useful;
-> >> others have no way of replicating your tests. A more meaningful
-> >> benchmark would need a baseline to compare to; in this case I guess th=
-at
-> >> would be a regular loop? Do you have any numbers comparing the callbac=
-k
-> >> to just looping?
+> >> Is vmlinux DWARF data GPL'ed? I certainly hope not. So vmlinux.h
+> >> shouldn't be licensed under GPL.
 > >
-> > Measuring empty for (int i =3D 0; i < N; i++) is meaningless, you shoul=
-d
-> > expect a number in billions of "operations" per second on modern
-> > server CPUs. So that will give you no idea. Those numbers are useful
-> > as a ballpark number of what's the overhead of bpf_for_each() helper
-> > and callbacks. And 12ns per "iteration" is meaningful to have a good
-> > idea of how slow that can be. Depending on your hardware it can be
-> > different by 2x, maybe 3x, but not 100x.
-> >
-> > But measuring inc + cmp + jne as a baseline is both unrealistic and
-> > doesn't give much more extra information. But you can assume 2B/s,
-> > give or take.
-> >
-> > And you also can run this benchmark on your own on your hardware to
-> > get "real" numbers, as much as you can expect real numbers from
-> > artificial microbenchmark, of course.
-> >
-> >
-> > I read those numbers as "plenty fast" :)
->
-> Hmm, okay, fair enough, but I think it would be good to have the "~12 ns
-> per iteration" figure featured prominently in the commit message, then :)
->
+> > I have no idea; I had assumed that a struct definition coming from a
+> > GPL-licensed header would have to be GPL, but again, not a lawyer, and
+> > I could totally be wrong. If not GPL though, what would the license
+> > be? Is it just "output of a program" and therefore license-less, even
+> > though the output happens to be code?
+>=20
+> Totally not a lawyer either, but:
+>=20
+> There's (generally, in many jurisdictions, etc), a minimum bar for when
+> something is considered a "creative work" and thus copyrightable. Debug
+> output *could* fall short of this (and thus not be copyrightable at
+> all). It could also fall under the same "API" umbrella as that famous
+> Google v Oracle case. Or it could fall under the "syscall exception" of
+> the kernel source.
+>=20
+> I guess it would take a court decision to know either way. IMO it would
+> make sense if vmlinux.h is not copyrightable for whatever reason, but,
+> again, IANAL :)
+>=20
+> Anyway, while we obviously can't resolve legal matters on the mailing,
+> we can express the *intention* of the community, which is what the
+> licensing document is trying to do. So it totally makes sense to mention
+> vmlinux.h here; the question is what should such a text say?
+>=20
 
-We discussed with Joanne offline adding an ops_report_final() helper
-that will output both throughput (X ops/s) and latency/overhead (
-(1000000000/X) ns/op), so that no one had to do any math.
+Yep, I completely agree with your assessment; trying to decide this definit=
+ively is probably hard even for lawyers, considering the number of contribu=
+tors involved, and various differences in copyright law around the world, s=
+o I'm hoping we can at least agree on intention.
 
-> -Toke
->
+Based on what I've heard so far, it sounds like:
+- There is good consensus that that the generated skeleton file is dual-lic=
+ensed BSD/GPL regardless of the licensing status of the embedded eBPF code;=
+ in other words, the eBPF code has no bearing on the license of the skeleto=
+n header itself.
+
+- Toke, it sounds like you believe vmlinux.h should be "license-less" such =
+that someone generating it could relicense it as anything they want. This s=
+eems reasonable to me, but I welcome others' thoughts as well.
