@@ -2,102 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97059456886
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 04:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D638D456891
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 04:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhKSDUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 22:20:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
+        id S232720AbhKSDX1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 22:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhKSDUU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 22:20:20 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72647C061574
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 19:17:19 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id r130so8136631pfc.1
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 19:17:19 -0800 (PST)
+        with ESMTP id S232080AbhKSDX1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 22:23:27 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B39C061574
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 19:20:26 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id y7so7112637plp.0
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 19:20:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=MIMROgfQmSVaGv17RE8PCxwovyKCt6VaO1BxDNbYnSg=;
-        b=WgM74/KFHxAnuxJriasM8wA/0zTK71gj2jq/MH6gJkfDuQnmDkovut7Ret5Pk40sZU
-         GRi8T87kg2tV3EfGsVwP9mhT4OOlQ0r0Ba98d5pFni4mYIXxZ1aaPN12a5Vue+DhTz5e
-         0ymuIWfOnvUQZWLBD7ac3iv5NcyGL7pExo8dE5JTYv1+S6Mz1+XRQ2WB7tElGNW1diYm
-         IgePG49VgnlChq0vOJR5Puhjq1sG1Lgs0Llp49iGX4As/RujqVCp1dWn9uxc1G2Np5R6
-         k9u4M5PPGXBLyhxxx0FJBE/OObHWY6vkMi+4KZ8gv3we7/M8ztsZoRinc2ARHiV4Jod9
-         Pz2A==
+        bh=YZA+Aa1dg4lbYaiYjWtjEPIpIpUleKnf2U3Y2yl+Epc=;
+        b=VHe/6XWMarNpWih1JqrWRbFEdaLgnoh9UST4FjO1BHfeF36SvQMqQTLo/3+oyqqsgi
+         1g9IL1PQdJQ32qrI46tTY9rH1jx/+vhyPlpS49wUOJvmkNSuMonsDrpNF+Fzihg7gaov
+         0+VwKUgpTGc6wkgnVSwktaycmKyleO9DXYIyZhYJf+TROZCFCJfTdOZ8C6xRnaWQZ8ft
+         sGiHNRcBgjcKQtJBFMtgHehtYNYJNF5Wg+jlWClLdOhNTWm54yoS/pBWzUq8TYwnm1GE
+         eFcwHmpt7d4N/jBVuuj/eXhXfntojKubo4Gu8PNP21UwipSyaEMCwG0w+WC1PCJazxqD
+         ECMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=MIMROgfQmSVaGv17RE8PCxwovyKCt6VaO1BxDNbYnSg=;
-        b=y9McAKbNJdNHo7tpa+cjbhxZ+u2as8DF1kUfVmkxTLd23olggrFId7Ve9b1N9Pb8IB
-         gwCR7KkezHiJoau0Qra8j96XceZIZOAbrMO3Aa1E8bG+Wzqmnsd0gEI3mZcSdsD01K2A
-         hgb5V5KFE+vQVl2P6+wMoi62ZNRGMy8C2B03ADHNgwFFrJaUyv6u3Z+6tzEhV3CE80gh
-         zPxRR4jVrQkfggEj/L5HUFPVIIwfrB8hcLhfvKX+Sq74Yx5ls7r/VbLWdBQP6oMYQqJN
-         RTPp/RBh9si4zZmAXvh/TnuH8jpIqeyiBzijpN6kV4eJvCAk/jPxu9sEPNP4rVwt+Red
-         PXVQ==
-X-Gm-Message-State: AOAM531abS5J31bJYlY8tYWays2W/BXEpv5V3fcn1R1wbFQ4R6RISF70
-        6UTWPaXyh5r8C8x9NeE4LVs=
-X-Google-Smtp-Source: ABdhPJzXFMwwN9NUEDDpq5QZ5jEQDOLCOZtF9OUkg4etpoE5BzgM6+uc+DbFZvx/WV/munLAxx4uOg==
-X-Received: by 2002:a63:2c8c:: with SMTP id s134mr15008168pgs.221.1637291838874;
-        Thu, 18 Nov 2021 19:17:18 -0800 (PST)
+        bh=YZA+Aa1dg4lbYaiYjWtjEPIpIpUleKnf2U3Y2yl+Epc=;
+        b=j2dvXCxed/X3fFfHh5GkdeJmVKatKlPgkGbNEZh2fpS/UQTkldtlPbvG4alFrTCcdC
+         MpczJ2n6QO4yfwx2NP8RpQf+iyz8C63zAxx8GS0YEQJVn0e0tPMdVC0YwLeb21cEGYgs
+         ftmLitqypxLblB3Vo9+Fy+EJTFSDY8xsY36u8D5H9b6P3fphGCqmrMdCjf199GRSMQhb
+         JlpKrPuqnT86UuSNnDLvzK1GR+F09utPjvwACpTH/r/SUZKncY0MHZbtJIp5AVFI4h+j
+         O6PQs1XRynA/BBoVjFtah4unXWjrNeYaHf5pe7fONB8t6c2j8S1OgcpPVlIaJok5P+/g
+         DHgw==
+X-Gm-Message-State: AOAM532L0fqH+YRZJ+Uj31w3N2xnpAlv1rvWevX9Ssg+Gc9KyohRSVvo
+        NQG9189GjP0menqppQCZ26QiqDao65U=
+X-Google-Smtp-Source: ABdhPJwTopaOj/Hw5F9Tr6zIoVUpNqrCs7gseS7n6exeyniIOQ7w6WXgJkPLyzSB6tMtt1kJfms0cg==
+X-Received: by 2002:a17:90a:af94:: with SMTP id w20mr515886pjq.223.1637292026287;
+        Thu, 18 Nov 2021 19:20:26 -0800 (PST)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4e33])
-        by smtp.gmail.com with ESMTPSA id ml24sm821047pjb.16.2021.11.18.19.17.17
+        by smtp.gmail.com with ESMTPSA id g17sm983196pfv.136.2021.11.18.19.20.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 19:17:18 -0800 (PST)
-Date:   Thu, 18 Nov 2021 19:17:16 -0800
+        Thu, 18 Nov 2021 19:20:26 -0800 (PST)
+Date:   Thu, 18 Nov 2021 19:20:24 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 02/12] bpf: Rename btf_member accessors.
-Message-ID: <20211119031716.47gpmk7wahpfuixw@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH v2 bpf-next 03/12] bpf: Prepare relo_core.c for kernel
+ duty.
+Message-ID: <20211119032024.kjk5wz3sbr5inaiz@ast-mbp.dhcp.thefacebook.com>
 References: <20211112050230.85640-1-alexei.starovoitov@gmail.com>
- <20211112050230.85640-3-alexei.starovoitov@gmail.com>
- <CAEf4BzYjvg+iqs8wB9bMYWJ-BAH6s4iM89vvB9ZywjHKQBJg8g@mail.gmail.com>
+ <20211112050230.85640-4-alexei.starovoitov@gmail.com>
+ <CAEf4BzaY=waUdY2stYjmU=tT92BfqLoSiV7ytE_WX_sCr8RL=w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYjvg+iqs8wB9bMYWJ-BAH6s4iM89vvB9ZywjHKQBJg8g@mail.gmail.com>
+In-Reply-To: <CAEf4BzaY=waUdY2stYjmU=tT92BfqLoSiV7ytE_WX_sCr8RL=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 04:38:18PM -0800, Andrii Nakryiko wrote:
+On Tue, Nov 16, 2021 at 04:58:23PM -0800, Andrii Nakryiko wrote:
 > >
-> > -static inline u32 btf_member_bit_offset(const struct btf_type *struct_type,
-> > -                                       const struct btf_member *member)
-> > +static inline u32 __btf_member_bit_offset(const struct btf_type *struct_type,
-> > +                                         const struct btf_member *member)
+> > -#define BPF_CORE_SPEC_MAX_LEN 64
+> > +#define BPF_CORE_SPEC_MAX_LEN 32
 > 
-> a bit surprised you didn't choose to just remove them, given you had
-> to touch all 24 places in the kernel that call this helper
-> > -                       if (btf_member_bitfield_size(t, member)) {
-> > +                       if (__btf_member_bitfield_size(t, member)) {
-> 
-> like in this case it would be btf_member_bitfield_size(t, j)
+> This is worth calling out in the commit description, should have
+> practical implications, but good to mention.
 
-In this and few other cases it's indeed possible, but not in net/ipv4/bpf_tcp_ca.c
-It has two callbacks:
-struct bpf_struct_ops {
-        const struct bpf_verifier_ops *verifier_ops;
-        int (*init)(struct btf *btf);
-        int (*check_member)(const struct btf_type *t,
-                            const struct btf_member *member);
-        int (*init_member)(const struct btf_type *t,
-                           const struct btf_member *member,
-so they cannot be changed without massive refactoring.
-Also member pointer vs index is arguably a better api.
-I'm not sure compiler can optimize index into pointer in case like below
-and won't introduce redundant loads.
+good point.
 
-> >         for_each_member(i, t, member) {
-> > -               moff = btf_member_bit_offset(t, member) / 8;
-> > +               moff = __btf_member_bit_offset(t, member) / 8;
 > 
-> same here, seema like in all the cases we already have member_idx (i
-> in this case)
+> >
+> >  /* represents BPF CO-RE field or array element accessor */
+> >  struct bpf_core_accessor {
+> > @@ -272,8 +325,8 @@ static int bpf_core_parse_spec(const struct btf *btf,
+> >                                 return sz;
+> >                         spec->bit_offset += access_idx * sz * 8;
+> >                 } else {
+> > -                       pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
+> > -                               type_id, spec_str, i, id, btf_kind_str(t));
+> > +/*                     pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
+> > +                               type_id, spec_str, i, id, btf_kind_str(t));*/
+> 
+> we can totally pass prog_name and add "prog '%s': " to uncomment this.
+> bpf_core_parse_spec() is called in the "context" of program, so it's
+> known
+
+Sure.
+
+> >                         return -EINVAL;
+> >                 }
+> >         }
+> > @@ -346,8 +399,8 @@ static int bpf_core_fields_are_compat(const struct btf *local_btf,
+> >                 targ_id = btf_array(targ_type)->type;
+> >                 goto recur;
+> >         default:
+> > -               pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
+> > -                       btf_kind(local_type), local_id, targ_id);
+> > +/*             pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
+> > +                       btf_kind(local_type), local_id, targ_id);*/
+> 
+> sigh... it's a bit too intrusive to pass prog_name here but it's also
+> highly unlikely that this happens (unless some compiler bug or
+> corruption) and even in that case it's semantically correct that
+> fields just don't match. So I'd just drop this pr_warn() instead of
+> commenting it out
+
+makes sense to me. will do.
