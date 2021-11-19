@@ -2,121 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAFD457641
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 19:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AABA04576B1
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 19:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbhKSSVe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 13:21:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbhKSSVd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 13:21:33 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5627C061574
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 10:18:31 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id i12so11025181ila.12
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 10:18:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=tdLTFdg3pJJF3nSm4KjNclgDVRbzhV6EnwREp6ueFTY=;
-        b=lhfZJcd7yqAJ+yvZZWTnfrALDDiM0L3n1JHTxW5mRc5xfPrQtbgupYx57yed4UVluu
-         bK9hn8b7f8WpP3QdHhJGBD402ylpiueZ1e1GPcdWU+eRgDhtpcWmpr/uCCfuW7HAt3F/
-         Ztsh543LigI1IwGZn9Fk4g/H4DuaAM8RfjEL8o9GjZIT4tBjy2w7osN4jtz4PxpfGo4U
-         oC+dGvu/ZyOXIlhKDKPC0byuLhhgC0koZsXNEsIIK/XT5iwlljaBq0fSZpoNfep5hxOZ
-         nXuR6eHOSfrmMwwVIVc3zk/eS77rV4ZTcUzEqofJ/d9FzSKxAGELBoiokrOGvz4h8mGN
-         LV1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=tdLTFdg3pJJF3nSm4KjNclgDVRbzhV6EnwREp6ueFTY=;
-        b=GuuWxDlSnMvUwuF24JAOtOqGtr5xHpwSuGWPLHj8w7GkAAFN9FMMJos3vGMefx4OlY
-         +tZqvW8+Q3LKXt3EQIDZ/Vfw3ZXkr/tDTxp3wS5clGeXXzsjJX48McHgmQABREydaajy
-         S2TdEmCQBj+cZ72f8IEdCSm0S99XbKpVZQnror3+a7R3QRvzAGKDsreDYz/MgmDgpazV
-         rVv3OkQt/FFDja7vsTYj3NyBN7vUJzAyhj/U/ZO++kWx4U1h9Uh3RDBP4fI5iv0Y+tWS
-         MkDRuOS70jje8STBb6a62tBjD0ltgXdum5tPdsep6oS0NLh16nAcO44w6ItoxN2k+iMv
-         MbNw==
-X-Gm-Message-State: AOAM532TU6Z0uzQpxHsyXCu/zeukZqBWk+NR0jmY5rMj05ZMYStL+JzA
-        zOTxZthWHZ5ZxV6KfNRBT88=
-X-Google-Smtp-Source: ABdhPJyoDPwwyxz2KjkHc2jeLw5v5ar2gCSKRHzlUh5gEjazqPEX8hcmme8+B7InRT9CWFwsXYzifw==
-X-Received: by 2002:a05:6e02:1bcc:: with SMTP id x12mr6442953ilv.106.1637345911323;
-        Fri, 19 Nov 2021 10:18:31 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id y6sm324276iln.74.2021.11.19.10.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 10:18:30 -0800 (PST)
-Date:   Fri, 19 Nov 2021 10:18:23 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Jussi Maki <joamaki@gmail.com>
-Message-ID: <6197ea6f350b7_56706208c2@john.notmuch>
-In-Reply-To: <6195e2ae7a82f_2b4cc20884@john.notmuch>
-References: <CAADnVQKEPYYrr6MUSKL4Fd7FYp0y5MQFoDteU5T++E6fySDADw@mail.gmail.com>
- <6191ee3e8a1e1_86942087@john.notmuch>
- <CAEf4Bza3OC1pAvVvwoPhyuixf8_VpA1w0F7HAsX09x2DSYbYbA@mail.gmail.com>
- <6195432baf114_1f40a208aa@john.notmuch>
- <CAEf4Bza6HHeVTFxrmPJRUgsLYU7g06MctMoAGy3ayKq8ES9FTQ@mail.gmail.com>
- <6195e2ae7a82f_2b4cc20884@john.notmuch>
-Subject: Re: sockmap test is broken
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S234941AbhKSSxz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 13:53:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233284AbhKSSxu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 13:53:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ABAE61A86;
+        Fri, 19 Nov 2021 18:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637347847;
+        bh=PStOTv82i8pael9g1fxcdETYpOj1sWI/gPQbeKPOwis=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WseMCbzNWirZm4T67HTcHhNITypIPr7Bdc1Oxy1MlT17j83xrSXyYxOaiPUo8skXS
+         twnbNqFqygpzcSQBh606v+xrQ8XkqsoBvpd8lAHAt/70tSMhAWLoITnVj5yAc5sVvO
+         r5HB6tWFMxNYg85LFVwe9sYm+fap6ZVIu4872tUO6tcZ06sZQQ6u1YDuLxT6Se+QhV
+         +jqNUjFzTaCuan9Z8RoGr4hPy1UXhBNtDhJsH+JTBWSSJ/FKRp9BZQeOBiLZYmez3w
+         aVqTVGF9XFNf6uhccTlBaxSgR5TaDUhwI2QLwlAW7Ma8QTH3LyQHKkx/1823GG+9IR
+         Ai8Czxui17Eng==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Subject: [RFC bpf-next 0/6] bpf: remove the cgroup -> bpf header dependecy
+Date:   Fri, 19 Nov 2021 10:50:37 -0800
+Message-Id: <20211119185043.3937836-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend wrote:
-> Andrii Nakryiko wrote:
-> > On Wed, Nov 17, 2021 at 10:00 AM John Fastabend
-> > <john.fastabend@gmail.com> wrote:
-> > >
-> > > Andrii Nakryiko wrote:
-> > > > On Sun, Nov 14, 2021 at 9:21 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> > > > >
-> > > > > Alexei Starovoitov wrote:
-> > > > > > test_maps is failing in bpf tree:
-> > > > > >
-> > > > > > $ ./test_maps
-> > > > > > Failed sockmap recv
-> > > > > >
-> > > > > > and causing BPF CI to stay red.
-> > > > > >
-> > > > > > Since bpf-next is fine, I suspect it is one of John's or Jussi's patches.
-> > > > > >
-> > > > > > Please take a look.
-> > > > >
-> > > > > I'll look into it thanks.
-> > > >
-> > > > Any updates, John? Should we just disable test_maps in CI to make it
-> > > > useful again?
-> > >
-> > > I'm debugging this now. Hopefully I'll have a fix shortly (today I hope).
-> > > Maybe, it makes sense to wait for EOD and if I still don't have the fix
-> > > disable it then. Anyways fixing it is top of list now.
-> > 
-> > Sounds good, let's hope you find it and fix it today.
-> 
-> OK got the fix, but its fairly subtle. Whats happening is when socks are
-> removed from a map their programs are not actually being removed. They
-> continue to live with the sock for the lifetime of the socket or until
-> the last reference held from BPF side is lost. At which point all progs
-> are dropped and socket returns to normal/preBPF state. We never noticed
-> it on our real use cases because once we move sockets into BPF we never
-> release them until the socket is free. The fix is to null the set progs
-> and then do the update_sk_prot call which will decide based on the
-> configured programs what proto ops need to be set to.
+Changes to bpf.h tend to clog up our build systems. The netdev/bpf
+build bot does incremental builds to save time (reusing the build
+directory to only rebuild changed objects).
 
-Fix posted here,
+This is the rough breakdown of how many objects needs to be rebuilt
+based on file touched:
 
-https://lore.kernel.org/bpf/20211119181418.353932-1-john.fastabend@gmail.com/
+kernel.h      40633
+bpf.h         17881
+bpf-cgroup.h  17875
+skbuff.h      10696
+bpf-netns.h    7604
+netdevice.h    7452
+filter.h       5003
+tcp.h          4048
+sock.h         4959
 
-Thanks,
-John
+As the stats show touching bpf.h is _very_ expensive. Recent 20+ patch
+series from Jirka took 10 hours to build patch-by-patch on a 72 CPU VM.
+
+Bulk of the objects get rebuilt because MM includes cgroup headers.
+Luckily bpf-cgroup.h does not fundamentally depend on bpf.h so we
+can break that dependency and reduce the number of objects.
+
+With the patches applied touching bpf.h causes 5019 objects to be rebuilt
+(17881 / 5019 = 3.56x). That's pretty much down to filter.h plus noise.
+
+Sending as an RFC because:
+ - bpf-link.h or bpf_link.h ?
+ - we probably want the header include fixes to go via bpf first
+
+Jakub Kicinski (6):
+  treewide: add missing includes masked by cgroup -> bpf dependency
+  bpf: add header for enum bpf_cgroup_storage_type
+  bpf: create a header for cgroup_storage_type()
+  bpf: create a header for struct bpf_link
+  bpf: remove the cgroup -> bpf header dependecy
+  bpf: push down the bpf-link include
+
+ block/fops.c                                  |  1 +
+ drivers/gpu/drm/drm_gem_shmem_helper.c        |  1 +
+ drivers/gpu/drm/i915/gt/intel_gtt.c           |  1 +
+ drivers/gpu/drm/i915/i915_request.c           |  1 +
+ drivers/gpu/drm/lima/lima_device.c            |  1 +
+ drivers/gpu/drm/msm/msm_gem_shrinker.c        |  1 +
+ drivers/gpu/drm/ttm/ttm_tt.c                  |  1 +
+ .../net/ethernet/huawei/hinic/hinic_sriov.c   |  1 +
+ .../ethernet/marvell/octeontx2/nic/otx2_ptp.c |  2 ++
+ drivers/pci/controller/dwc/pci-exynos.c       |  1 +
+ drivers/pci/controller/dwc/pcie-qcom-ep.c     |  1 +
+ drivers/usb/cdns3/host.c                      |  1 +
+ include/linux/bpf-cgroup-storage.h            | 17 ++++++++++++++
+ include/linux/bpf-cgroup-types.h              | 13 +++++++++++
+ include/linux/bpf-cgroup.h                    | 13 +++--------
+ include/linux/bpf-link.h                      | 23 +++++++++++++++++++
+ include/linux/bpf.h                           | 19 ++-------------
+ include/linux/device/driver.h                 |  1 +
+ include/linux/filter.h                        |  2 +-
+ kernel/bpf/bpf_iter.c                         |  1 +
+ kernel/bpf/helpers.c                          |  1 +
+ kernel/bpf/local_storage.c                    |  1 +
+ kernel/bpf/syscall.c                          |  1 +
+ mm/damon/vaddr.c                              |  1 +
+ mm/memory_hotplug.c                           |  1 +
+ mm/swap_slots.c                               |  1 +
+ net/core/dev.c                                |  1 +
+ 27 files changed, 81 insertions(+), 28 deletions(-)
+ create mode 100644 include/linux/bpf-cgroup-storage.h
+ create mode 100644 include/linux/bpf-cgroup-types.h
+ create mode 100644 include/linux/bpf-link.h
+
+-- 
+2.31.1
+
