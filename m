@@ -2,124 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214F445770E
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 20:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E337457749
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 20:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbhKSThr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 14:37:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhKSThr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:37:47 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52145C061574
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 11:34:45 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id n8so8888778plf.4
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 11:34:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QMrFKIT3oR8UyazbeORxiR0N3a26btD+YS6HbleR1ZU=;
-        b=dJm19ot2JQ+yLDsriADiUQAf7cZQDYa40GJIY5LuEszQ+dfZQ9Y6Zt2p6Un5Hnpcnd
-         TrnsIcOi6zLGCtEeiKl05HQUUAq/N/bNUoQLwbIyGejos2EkPhX1MNLpWUVnzgNGgbJB
-         yPFijzhZobrzMQRoEGYZ3aM3zTRp844OAGuuGM7tYFV3kh5V1k5nBFrmdUI3iXhAHR2F
-         xMdk3MrM/dq9R14v87HtagW2NeC1f6c8tlXYi0glkqsIDEe3/Pj1DRE2WaDPZimeDe5n
-         WoO0ZqBX5/uYe+RI1C21//WJCL0uJYOAxSAOcLCESJKKaUFRYvrdhlBglqBa9fG2WGMC
-         pcbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QMrFKIT3oR8UyazbeORxiR0N3a26btD+YS6HbleR1ZU=;
-        b=KIttXR0cPmDLAvnKYoyoXS4ly2CPO3jIDJD4biQtG9PiZyNO5NQhBzE1FTRhihfGJB
-         c4VdmSrtWQ/9TkP44ZNdYkLGcFkF3SS7CiGzlaXI93Wi5tbzTISEG3sg9NN2rT3LySgW
-         WiM2YHZvqF4+U68xVTbZsjDJ3KtSxClygXjksbPB/KRDXu+L30+iVOak5Qa/xSb1qe9U
-         irCCktPLpcpukiAAlx+XeIYbJZ4vTspV2sy93jrmDXLAFmy9WYoibAVAFYU5yhkc3L/V
-         vR5hLx3L1YE72CRMHgmF4fzmPMQssgzaViA9AMbnZxhXf7JeN98yUi8gU/SWMu11xk8o
-         YoHA==
-X-Gm-Message-State: AOAM533SH4yYHtEqyLBUidUYOIUm71Mgsic7CHVrIPDpo4t+jdFWjhAF
-        wqp9C6XqLylx9NVyh/jxl74=
-X-Google-Smtp-Source: ABdhPJwHkGhu2nBNqh7EF7A1v0FvSJLg4X2MdnziaxmvLSjY/0D0vRrmGWhRMARsXWvkqGxtuwLEtg==
-X-Received: by 2002:a17:902:9684:b0:143:cc70:6472 with SMTP id n4-20020a170902968400b00143cc706472mr43443910plp.70.1637350484701;
-        Fri, 19 Nov 2021 11:34:44 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:502e:73f4:8af1:9522])
-        by smtp.gmail.com with ESMTPSA id d6sm370939pgv.48.2021.11.19.11.34.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 11:34:44 -0800 (PST)
-Date:   Sat, 20 Nov 2021 01:04:36 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Pavel Skripkin <paskripkin@gmail.com>,
+        id S236283AbhKSTtU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 14:49:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236232AbhKSTtT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 14:49:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2CD4961A58;
+        Fri, 19 Nov 2021 19:46:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637351177;
+        bh=4ZRhkhKQzjMc0Aq2r6UVZumAqiBxVZvS+ST/nhZP81Q=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=jkfI7pMiXM+i3scSJZFYVlA7BQLyQ8LJlGVhU2EeddX/fSbLFz+ohfiwCVSMRb+X/
+         rUckzn0gIl7TyS5XYo0K4EO88ENNXDfdlYUPIE6Oc347Wmd86v8dR5PQlykvwanyxD
+         YQqqLXRe+mvNPSQ478wAMWF9l233yPL6IGBXRWArmQYeAO7EFRMlNhSp8pOxBDckKo
+         13bc41FtACOz2Y88xBNB8fG6OsC6OoRAHuqsk0xXD6MT8+/ZWHWjbPUtNEJlyERrbX
+         G+yKXEsvk+ouxmT0fxf7xkInVnCD59U1CGgsqb+6fN0cgMPL2mfWw+dKgIf6Xl9hTH
+         ahTu0vHOyVbNw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2528460977;
+        Fri, 19 Nov 2021 19:46:17 +0000 (UTC)
+Subject: Re: [GIT PULL] SA_IMMUTABLE fixes for v5.16-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87r1bcnoea.fsf_-_@email.froward.int.ebiederm.org>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+        <202111171049.3F9C5F1@keescook>
+        <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+        <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+        <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+        <202111171341.41053845C3@keescook>
+        <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+        <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
+        <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
+        <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
+        <202111171728.D85A4E2571@keescook>
+        <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
+        <CAP045Ap=1U07er7Y2XO9wmiRtKLoKL4u8zek48ROU668=G9D3A@mail.gmail.com> <87r1bcnoea.fsf_-_@email.froward.int.ebiederm.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <87r1bcnoea.fsf_-_@email.froward.int.ebiederm.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git SA_IMMUTABLE-fixes-for-v5.16-rc2
+X-PR-Tracked-Commit-Id: fcb116bc43c8c37c052530ead79872f8b2615711
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7af959b5d5c8497b423e802e2b0ad847cb29b3d3
+Message-Id: <163735117714.2946.16511312928809475443.pr-tracker-bot@kernel.org>
+Date:   Fri, 19 Nov 2021 19:46:17 +0000
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH bpf v1 3/3] tools/resolve_btfids: Demote unresolved
- symbol message to debug
-Message-ID: <20211119193436.3lab7arqh2txe4ga@apollo.localdomain>
-References: <20211115191840.496263-1-memxor@gmail.com>
- <20211115191840.496263-4-memxor@gmail.com>
- <CAEf4BzaNrXU1rDwHw14aoQYrwY5nWWyFmzgTrpRxVT2yNWHUCQ@mail.gmail.com>
- <20211119191658.4kp5q7qyweoqb5pr@apollo.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119191658.4kp5q7qyweoqb5pr@apollo.localdomain>
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
+        kbuild test robot <lkp@intel.com>,
+        Kyle Huey <me@kylehuey.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 12:46:58AM IST, Kumar Kartikeya Dwivedi wrote:
-> On Wed, Nov 17, 2021 at 10:50:43AM IST, Andrii Nakryiko wrote:
-> > On Mon, Nov 15, 2021 at 11:18 AM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > resolve_btfids prints a warning when it finds an unresolved symbol,
-> > > (id == 0) in id_patch. This can be the case for BTF sets that are empty
-> > > (due to disabled config options), hence printing warnings for certain
-> > > builds, most recently seen in [0]. Hence, demote the warning to debug
-> > > log level to avoid build time noise.
-> > >
-> > >   [0]: https://lore.kernel.org/all/1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com
-> > >
-> > > Fixes: 0e32dfc80bae ("bpf: Enable TCP congestion control kfunc from modules")
-> > > Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> > >  tools/bpf/resolve_btfids/main.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> > > index a59cb0ee609c..833bfcc9ccf6 100644
-> > > --- a/tools/bpf/resolve_btfids/main.c
-> > > +++ b/tools/bpf/resolve_btfids/main.c
-> > > @@ -569,7 +569,7 @@ static int id_patch(struct object *obj, struct btf_id *id)
-> > >         int i;
-> > >
-> > >         if (!id->id) {
-> > > -               pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
-> > > +               pr_debug("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
-> >
-> > This is an important warning that helps detect some misconfiguration,
-> > we cannot just hide it. If it really is happening for empty lists
-> > (why?), we should handle empty lists better, but not hide the warning.
-> >
->
-> +Cc Jiri
->
-> Sorry for the delay. The 'why' is because in case of empty BTF set, the id->cnt
-> aliasing over id->id (for non-set __BTF_ID_*) is zero, so it trips over when it
-> sees it as 0 for empty set in id_patch.
->
-> So, what would be your opinion on how to handle this case? Ignore the warning
-> case for empty sets specifically? (e.g. using string comparison in id_patch for
-> id->name, or split id and cnt out of union and assign non-zero to id in case cnt
+The pull request you sent on Fri, 19 Nov 2021 09:41:49 -0600:
 
-Ah, I realized after sending that actually would be far more work (and also
-confusing/error prone), since it is copied to ptr[idx] as id->id once in
-id_patch and then used as cnt for sorting in sets_patch, which would break
-qsort. Just recording that it is a set in btf_id struct might be better.
+> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git SA_IMMUTABLE-fixes-for-v5.16-rc2
 
---
-Kartikeya
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7af959b5d5c8497b423e802e2b0ad847cb29b3d3
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
