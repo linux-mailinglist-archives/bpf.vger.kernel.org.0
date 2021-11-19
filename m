@@ -2,170 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A3C4578FC
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 23:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3870D457917
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 23:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbhKSWs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 17:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        id S231166AbhKSWxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 17:53:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232960AbhKSWs6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:48:58 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA06C061574;
-        Fri, 19 Nov 2021 14:45:55 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id u60so32218237ybi.9;
-        Fri, 19 Nov 2021 14:45:55 -0800 (PST)
+        with ESMTP id S229585AbhKSWxR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:53:17 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB45C061574
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 14:50:14 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id e71so32253113ybh.10
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 14:50:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rr7GosNridUgCichnRpqxfdlmu9o3h8VXM4z78MLYXI=;
-        b=n80/74gs/8IzC5NV4oK8MbGUyyyNxHPlXZ/s1Z4WCrJHYx7BPhs29b/jo1GITbq9IN
-         A7XJXA2FnuTtDysbauy/CuA13CEjCeb1PD8+Gc5Xk3jvefKQVX9rYqllUqUB0aPZ67o+
-         EryDYyLdpNayTjUr0NiJe7aXB6oGuZ6xA/ObBHXHhHXzTo2kDvAOJnH2GyOdmNQLz/Fx
-         IaLQTw0fUQ7ciQv08DhfcG6PlfovrQeQEyMz5uzYn3Wt4HacTdCfO1/ge6GoBqFKUC5S
-         RN0XqzNblfVc+1mvRUpUytGmWZ4tb3AuhEhedB/RD+t0VpPs7kExKTI7/ttSvOiUPMaa
-         bBgQ==
+         :cc:content-transfer-encoding;
+        bh=jFnAyqRNBDZXgciB9ocFvfGpVuJAFrXbU4gUZrut3RA=;
+        b=OxzUxx19XgCmBs/Mpz/zPlIuuGUHEE/mNnQg26O9g+Y2VbhPVV9TLDYw+DA+jerm6R
+         Ijf4T3Y2mqxhmvQ9pQrkHo21NNw1EsqYGsaD8aT1dqbqdQ73dy+2yaLeCCazo90WNlwn
+         gbsvwIDbVZ9YPP3PQ4/DxQrRHZCtJ1DUJHZxNOErLI0yrnBjp1TLFvqnSlN/J5wU/xBb
+         wS6VcviLdxCKkR+HLuAF7e4VPuSx9vASi8fxpyJ6mhdd5yPfRo7xT06s3BjuBXP39wq5
+         Yy745v9wXSWRcIAfzP98xl+3sm0K/qT64tGEsW5M+ZHr6+Cl9dsoV7+xSkjIUtZOUrkR
+         HupA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rr7GosNridUgCichnRpqxfdlmu9o3h8VXM4z78MLYXI=;
-        b=QGcgkjGXo9C5GrT03jtOR0JNqF64BAIim/2Y8Wa6JD9nFKa9koT3bScKti0/wPe35W
-         7+d+iqpxU5CiCvAwHMvUkW9RFx3oC9hug/643sp71OfYVslJ1Q/rmxHmdtdgBZTCK+Po
-         jQpYhl6LG6Lj1vjml75Sfi8a02JKjoAbodVL6kb8Tqg23lwdYx22UkwZfPnNLfdEyA+i
-         aNzz++P93aJ3vvvq+QFTbFPqtMnG7Mzl4rfHnl7nGSFfnnD6znD5BWHIu7X6lm/+YhWs
-         Z2jS/1MNzTsH1uLyiMhRQOYaYzwCKwY1pUIxGezDmqwCxobPhJrC24OMVw8G/piZU4Zy
-         BKnw==
-X-Gm-Message-State: AOAM5333Z5R3ZajLO5CkfXhQAgcx3dqfQI74+L1ldYpvJgLcd19YogOC
-        RESYiA8JpmEFTtOLhMqmHc9iqHN7nnfQEalQgOE=
-X-Google-Smtp-Source: ABdhPJzz12bhH990y5fPJOLeKkBTx0wvXzv5HEg5GxMJitU46sVTSZcwSdanNzal4QgCxIWPPuZz46VxJIC61R+oaBg=
-X-Received: by 2002:a25:cec1:: with SMTP id x184mr41689748ybe.455.1637361954220;
- Fri, 19 Nov 2021 14:45:54 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jFnAyqRNBDZXgciB9ocFvfGpVuJAFrXbU4gUZrut3RA=;
+        b=rdfUFMp/uk+4C0aJvJq6YUefwMSvDLeg9OQuiF9Xzrm+2EaNs+Tmf9fVfvz/KQV94D
+         6x60Bow5gt/SW5rJ14gVhGzhgMrYk7IC9XcG63fhXmCmUjlxZzyxe5WPpf/SfZiI3Atl
+         nyH7KZe4KTlFZXajFiExwl0fTeYLPHubKZsRTC+4ZDHOillG3bKoy2CBHO3vZbywuU5I
+         g23IFkmvwDB4c1BGQdxIN9Qo4UgbcQhlpPCDh/cZX2SOlUP6A2BCaQS/mYvORSL1zcnE
+         olBU7GVa0LMZnVXlPdSoS7SVcQr0h4kiENgc4xiALg7Dq7qvUrtYY6bPsgqA+HJiIKzM
+         mjzw==
+X-Gm-Message-State: AOAM530dHgB+NJJbfXcAXFEvnhU9YgOAIIi3/jPpedir6QFX+YpsQBIj
+        nzI+mgXiYWlpHEzlqaVpcujUtm9jb9x3meGWmJE=
+X-Google-Smtp-Source: ABdhPJx8KqKDgpQw7jUgi3+q/eC8G0k7RxMR8S494+8QV/nIgfD0sweO/eG8tfN0JUc35r1SGq2KJ9FZxAacdWpVMDo=
+X-Received: by 2002:a25:d16:: with SMTP id 22mr40872759ybn.51.1637362214196;
+ Fri, 19 Nov 2021 14:50:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20211118130507.170154-1-kjain@linux.ibm.com> <CAEf4BzbDgCVLj0r=3iponPp81aVAGokhGti8WLfWKhHuTLdA8w@mail.gmail.com>
- <ce150f51-ef50-de85-fc52-0f2ee3a3000f@linux.ibm.com> <859f8b57-7ae2-3c68-5642-93bec7a59a20@iogearbox.net>
-In-Reply-To: <859f8b57-7ae2-3c68-5642-93bec7a59a20@iogearbox.net>
+References: <20211118010404.2415864-1-joannekoong@fb.com> <20211118010404.2415864-4-joannekoong@fb.com>
+ <87r1bdemq4.fsf@toke.dk> <CAEf4BzZMJfSqx9wLq9ntSK+n4kE82S_ifgFhBVtjYiy0vz4Gyg@mail.gmail.com>
+ <874k88e1or.fsf@toke.dk>
+In-Reply-To: <874k88e1or.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 19 Nov 2021 14:45:43 -0800
-Message-ID: <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: Remove config check to enable bpf support for
- branch records
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     kajoljain <kjain@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        rnsastry@linux.ibm.com
+Date:   Fri, 19 Nov 2021 14:50:03 -0800
+Message-ID: <CAEf4BzZKtV1_=s7mXUnvvR4BQT6CFm60uuc8F1gv5Hzb=_xkKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftest/bpf/benchs: add bpf_for_each benchmark
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Fri, Nov 19, 2021 at 5:04 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On 11/19/21 10:35 AM, kajoljain wrote:
-> > On 11/19/21 4:18 AM, Andrii Nakryiko wrote:
-> >> On Thu, Nov 18, 2021 at 5:10 AM Kajol Jain <kjain@linux.ibm.com> wrote:
-> >>>
-> >>> Branch data available to bpf programs can be very useful to get
-> >>> stack traces out of userspace application.
-> >>>
-> >>> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
-> >>> added bpf support to capture branch records in x86. Enable this feature
-> >>> for other architectures as well by removing check specific to x86.
-> >>> Incase any platform didn't support branch stack, it will return with
-> >>> -EINVAL.
-> >>>
-> >>> Selftest 'perf_branches' result on power9 machine with branch stacks
-> >>> support.
-> >>>
-> >>> Before this patch changes:
-> >>> [command]# ./test_progs -t perf_branches
-> >>>   #88/1 perf_branches/perf_branches_hw:FAIL
-> >>>   #88/2 perf_branches/perf_branches_no_hw:OK
-> >>>   #88 perf_branches:FAIL
-> >>> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
-> >>>
-> >>> After this patch changes:
-> >>> [command]# ./test_progs -t perf_branches
-> >>>   #88/1 perf_branches/perf_branches_hw:OK
-> >>>   #88/2 perf_branches/perf_branches_no_hw:OK
-> >>>   #88 perf_branches:OK
-> >>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> >>>
-> >>> Selftest 'perf_branches' result on power9 machine which doesn't
-> >>> support branch stack
-> >>>
-> >>> After this patch changes:
-> >>> [command]# ./test_progs -t perf_branches
-> >>>   #88/1 perf_branches/perf_branches_hw:SKIP
-> >>>   #88/2 perf_branches/perf_branches_no_hw:OK
-> >>>   #88 perf_branches:OK
-> >>> Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
-> >>>
-> >>> Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
-> >>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> >>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> >>> ---
-> >>>
-> >>> Tested this patch changes on power9 machine using selftest
-> >>> 'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
-> >>> Add bpf_read_branch_records()")
-> >>>
-> >>> Changelog:
-> >>> v1 -> v2
-> >>> - Inorder to add bpf support to capture branch record in
-> >>>    powerpc, rather then adding config for powerpc, entirely
-> >>>    remove config check from bpf_read_branch_records function
-> >>>    as suggested by Peter Zijlstra
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Thu, Nov 18, 2021 at 3:18 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
 > >>
-> >> what will be returned for architectures that don't support branch
-> >> records? Will it be zero instead of -ENOENT?
+> >> Joanne Koong <joannekoong@fb.com> writes:
+> >>
+> >> > Add benchmark to measure the overhead of the bpf_for_each call
+> >> > for a specified number of iterations.
+> >> >
+> >> > Testing this on qemu on my dev machine on 1 thread, the data is
+> >> > as follows:
+> >>
+> >> Absolute numbers from some random dev machine are not terribly useful;
+> >> others have no way of replicating your tests. A more meaningful
+> >> benchmark would need a baseline to compare to; in this case I guess th=
+at
+> >> would be a regular loop? Do you have any numbers comparing the callbac=
+k
+> >> to just looping?
 > >
-> > Hi Andrii,
-> >       Incase any architecture doesn't support branch records and if it
-> > tries to do branch sampling with sample type as
-> > PERF_SAMPLE_BRANCH_STACK, perf_event_open itself will fail.
+> > Measuring empty for (int i =3D 0; i < N; i++) is meaningless, you shoul=
+d
+> > expect a number in billions of "operations" per second on modern
+> > server CPUs. So that will give you no idea. Those numbers are useful
+> > as a ballpark number of what's the overhead of bpf_for_each() helper
+> > and callbacks. And 12ns per "iteration" is meaningful to have a good
+> > idea of how slow that can be. Depending on your hardware it can be
+> > different by 2x, maybe 3x, but not 100x.
 > >
-> > And even if, perf_event_open succeeds  we have appropriate checks in
-> > bpf_read_branch_records function, which will return -EINVAL for those
-> > architectures.
+> > But measuring inc + cmp + jne as a baseline is both unrealistic and
+> > doesn't give much more extra information. But you can assume 2B/s,
+> > give or take.
 > >
-> > Reference from linux/kernel/trace/bpf_trace.c
+> > And you also can run this benchmark on your own on your hardware to
+> > get "real" numbers, as much as you can expect real numbers from
+> > artificial microbenchmark, of course.
 > >
-> > Here, br_stack will be empty, for unsupported architectures.
 > >
-> > BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
-> >          void *, buf, u32, size, u64, flags)
-> > {
-> > .....
-> >       if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
-> >               return -EINVAL;
-> >
-> >       if (unlikely(!br_stack))
-> >               return -EINVAL;
+> > I read those numbers as "plenty fast" :)
 >
-> In that case for unsupported archs we should probably bail out with -ENOENT here
-> as helper doc says '**-ENOENT** if architecture does not support branch records'
-> (see bpf_read_branch_records() doc in include/uapi/linux/bpf.h).
-
-Yep, I think so too.
-
+> Hmm, okay, fair enough, but I think it would be good to have the "~12 ns
+> per iteration" figure featured prominently in the commit message, then :)
 >
-> > ....
-> > }
-> >
-> > Thanks,
-> > Kajol Jain
+
+We discussed with Joanne offline adding an ops_report_final() helper
+that will output both throughput (X ops/s) and latency/overhead (
+(1000000000/X) ns/op), so that no one had to do any math.
+
+> -Toke
+>
