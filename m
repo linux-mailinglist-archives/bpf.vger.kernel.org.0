@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048E2456753
-	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 02:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19C5456758
+	for <lists+bpf@lfdr.de>; Fri, 19 Nov 2021 02:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhKSBPh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Nov 2021 20:15:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
+        id S231288AbhKSBRJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Nov 2021 20:17:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbhKSBPg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:15:36 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCEBC06173E
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 17:12:35 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id w1so35201958edd.10
-        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 17:12:35 -0800 (PST)
+        with ESMTP id S232829AbhKSBRI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Nov 2021 20:17:08 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629ABC06174A
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 17:14:06 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id t5so35650796edd.0
+        for <bpf@vger.kernel.org>; Thu, 18 Nov 2021 17:14:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kylehuey.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wK6B2URQKiioFYJXC3wE9DBQbAOigpHXbFKyVO8IlQQ=;
-        b=CMnubC1liyKFsF4BuJRRELgsahf4EFnmYx/5rfqjarwViMgTKogdGAuqvGirTScTFC
-         X89dngrDbB1iS4+Ayufls7UNs2Xaiu2xsh4n92JH/UWCkZJirUXTyRKPcMRNHGdjlQLY
-         JSxuobyyyZBnHUfL5x/t0TAznCCNdksF+0IOgXo6atgDV2Sbj3juB1WiRfhsNKFdLJIO
-         zi6++ueH7f4yd0Q7x6GBaqihSYUQ+fDRtjCRHGngZw74SbNa0ceAPn28hdTUCE9X/szE
-         s5X1qj5IglVC+EVbT51I2lJQ6hO2u3waIMQnyWm+jN50uxqzoDoB7n7qUd3mikHyttHa
-         +VAg==
+        bh=tMATBO9ysyU+08F7274xPF36JtWrj7gJdRWN8Esowvw=;
+        b=F0lg0ofqm2qN554EDAxroXtEceDC2I4ZmYURRw8rXQxDtOCoIFd8d6ygxiIoG4nDe5
+         3OWfqc7R0+RUvEDtOhpqR9Bz085xgPeHHM0vFmQtlJUG6OZjfiz0aQMl8HYYz02pNKwz
+         fcTG4kc4N1i5eBs6HReWnVO/IK49E21rqICDyWAydaxneAbLLn+kOIon3+jkeRyrYh/4
+         NRj3k7nyY9c8NrnvtVfpI2xnscq1yvmXcpI7rBKKw4ghI2LhGQiGgMzCR0vARYTC76Dp
+         YWK98gBSKy3ZUxnoNbu7soBe/DV9E5oTfTopVDtKkhK0uAMy+OzOw914pFcUWVEZzZLh
+         3+6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wK6B2URQKiioFYJXC3wE9DBQbAOigpHXbFKyVO8IlQQ=;
-        b=pCeXusV0e0HmAxuLU20mdFHRcwIsrnwQAvLD7jxEQWyOoN/UNMuoPqF2pyTYRZAP5T
-         RPZXLv5uBA7MS2yXLDvtBK72AjyLI36q2tQ+IezZlWH/Mfh1FLuxHA9BRKeqwZIoRUQb
-         fYSgWI9T0cg2FB0Egoa8H7A0Z/voZ/wQoapByvneTS4oKepo67emlnbgBsdwMIiT7g44
-         MAzLVhVfKSDaAvq6oO3CfRU+bFoNm1wlSoq4JwfUF7SBQT1Hme4O5/QkxZh93Y+d1Ui/
-         PpQxnNKlgbWFlUDuwZmQ4+q6Wu6FHd6HvI3uSepEaa9amxn8yr4efDm7BMDPURNKWAod
-         BaBg==
-X-Gm-Message-State: AOAM531IHALNrWqdGyi7/tvxG+u+e8IudVP5aKKb/3Y417wD5/A76HgM
-        n5l1kEX6XJ+IfRYZvSvjw+n4huxm45zexMd7wQUzKA==
-X-Google-Smtp-Source: ABdhPJwSApuFMiEaAZ9GvVXe7oBeoItavBWlFOpqOtLkWC4On9DpcbKroIBsOHBEybKZYMbP19DQalCAbSM826hBDHA=
-X-Received: by 2002:a05:6402:3590:: with SMTP id y16mr18592508edc.343.1637284354160;
- Thu, 18 Nov 2021 17:12:34 -0800 (PST)
+        bh=tMATBO9ysyU+08F7274xPF36JtWrj7gJdRWN8Esowvw=;
+        b=6fATG5ElNx/cgGD5oSmXECDpfoTEejiydM5gSyvt7tKZCcef4Hm6o45jqe2FM4X4zt
+         yqgcFJQHjwUV7Rqu9oHgQCKa/BWYTSFXbJJqSzmBH4V/22MVumIajB+Kl3TEzw/y8Fg4
+         DL+kJB71nxYJv1vvkyWTmRQQ4jAz9GdPFapeVnAnfMZu35XfWH9V2eJwlupXzz5ofhjj
+         RPcKAhPp1m4RI1kC573FXwXajY+fa02ASAWR2uBKhWJCVVuYReamhxQbaLbWe/42G+iJ
+         4Muc39pIwooGJ9XTngHjp/sPFXKSSqWXDJTuRBdPAkPlmL2jsnTBTSHAvpSq19J30+4T
+         AnfA==
+X-Gm-Message-State: AOAM5324y4TnSvTJEoXStXP4d1kxLAOhLhsQndwbzjs+UQ/UVbJOrpZu
+        4kSXa68chaRCJZYoWaEVSVIbC0ZqmGJuWGh2tQLh5Q==
+X-Google-Smtp-Source: ABdhPJz5derP9yku9LYM7aE9l5YVII8m00Gkd3fLlekKm1DPilHAhQrEpyIBHBt3pBboGZQAsvQAq6I1GlGsoiHuAR8=
+X-Received: by 2002:a17:906:390:: with SMTP id b16mr2562163eja.123.1637284444878;
+ Thu, 18 Nov 2021 17:14:04 -0800 (PST)
 MIME-Version: 1.0
 References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
  <202111171049.3F9C5F1@keescook> <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
@@ -53,11 +53,12 @@ References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
  <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
  <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
  <202111171728.D85A4E2571@keescook> <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
-In-Reply-To: <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
+ <877dd5qfw5.fsf_-_@email.froward.int.ebiederm.org>
+In-Reply-To: <877dd5qfw5.fsf_-_@email.froward.int.ebiederm.org>
 From:   Kyle Huey <me@kylehuey.com>
-Date:   Thu, 18 Nov 2021 17:12:23 -0800
-Message-ID: <CAP045Ap=1U07er7Y2XO9wmiRtKLoKL4u8zek48ROU668=G9D3A@mail.gmail.com>
-Subject: Re: [PATCH 0/2] SA_IMMUTABLE fixes
+Date:   Thu, 18 Nov 2021 17:13:52 -0800
+Message-ID: <CAP045Aose7Lg_OE0-MijGBg27gWo+Sk3hbxuN3AtQ8OPC9w9+w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] signal: Don't always set SA_IMMUTABLE for forced signals
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
@@ -78,59 +79,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 1:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+On Thu, Nov 18, 2021 at 2:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
 >
-> SA_IMMUTABLE fixed issues with force_sig_seccomp and the introduction
-> for force_sig_fatal where the exit previously could not be interrupted
-> but now it can.  Unfortunately it added that behavior to all force_sig
-> functions under the right conditions which debuggers usage of SIG_TRAP
-> and debuggers handling of SIGSEGV.
+> Recently to prevent issues with SECCOMP_RET_KILL and similar signals
+> being changed before they are delivered SA_IMMUTABLE was added.
 >
-> Solve that by limiting SA_IMMUTABLE to just the cases that historically
-> debuggers have not been able to intercept.
+> Unfortunately this broke debuggers[1][2] which reasonably expect to be
+> able to trap synchronous SIGTRAP and SIGSEGV even when the target
+> process is not configured to handle those signals.
 >
-> The first patch changes force_sig_info_to_task to take a flag
-> that requests which behavior is desired.
->
-> The second patch adds force_exit_sig which replaces force_fatal_sig
-> in the cases where historically userspace would only find out about
-> the ``signal'' after the process has exited.
->
-> The first one with the hunk changing force_fatal_sig removed should be
-> suitable for backporting to v5.15. v5.15 does not implement
-> force_fatal_sig.
->
-> This should be enough to fix the regressions.
->
-> Kyle if you can double check me that I have properly fixed these issues
-> that would be appreciated.
->
-> Any other review or suggestions to improve the names would be
-> appreciated.  I think I have named things reasonably well but I am very
-> close to the code so it is easy for me to miss things.
->
-> Eric W. Biederman (2):
->       signal: Don't always set SA_IMMUTABLE for forced signals
->       signal: Replace force_fatal_sig with force_exit_sig when in doubt
->
->  arch/m68k/kernel/traps.c              |  2 +-
->  arch/powerpc/kernel/signal_32.c       |  2 +-
->  arch/powerpc/kernel/signal_64.c       |  4 ++--
->  arch/s390/kernel/traps.c              |  2 +-
->  arch/sparc/kernel/signal_32.c         |  4 ++--
->  arch/sparc/kernel/windows.c           |  2 +-
->  arch/x86/entry/vsyscall/vsyscall_64.c |  2 +-
->  arch/x86/kernel/vm86_32.c             |  2 +-
->  include/linux/sched/signal.h          |  1 +
->  kernel/entry/syscall_user_dispatch.c  |  4 ++--
->  kernel/signal.c                       | 36 ++++++++++++++++++++++++++++-------
->  11 files changed, 42 insertions(+), 19 deletions(-)
->
-> Eric
+> Update force_sig_to_task to support both the case when we can
+> allow the debugger to intercept and possibly ignore the
+> signal and the case when it is not safe to let userspace
+> known about the signal until the process has exited.
 
-rr's test suite passes with both diffs applied
+s/known/know/
 
-Tested-by: Kyle Huey <khuey@kylehuey.com>
+>
+> Reported-by: Kyle Huey <me@kylehuey.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Cc: stable@vger.kernel.org
+> [1] https://lkml.kernel.org/r/CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com
+> [2] https://lkml.kernel.org/r/20211117150258.GB5403@xsang-OptiPlex-902
+
+This link doesn't work.
+
+> Fixes: 00b06da29cf9 ("signal: Add SA_IMMUTABLE to ensure forced siganls do not get changed")
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  kernel/signal.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 7c4b7ae714d4..02058c983bd6 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1298,6 +1298,12 @@ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p
+>         return ret;
+>  }
+>
+> +enum sig_handler {
+> +       HANDLER_CURRENT, /* If reachable use the current handler */
+> +       HANDLER_SIG_DFL, /* Always use SIG_DFL handler semantics */
+> +       HANDLER_EXIT,    /* Only visible as the proces exit code */
+> +};
+> +
+>  /*
+>   * Force a signal that the process can't ignore: if necessary
+>   * we unblock the signal and change any SIG_IGN to SIG_DFL.
+> @@ -1310,7 +1316,8 @@ int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p
+>   * that is why we also clear SIGNAL_UNKILLABLE.
+>   */
+>  static int
+> -force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool sigdfl)
+> +force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t,
+> +       enum sig_handler handler)
+>  {
+>         unsigned long int flags;
+>         int ret, blocked, ignored;
+> @@ -1321,9 +1328,10 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
+>         action = &t->sighand->action[sig-1];
+>         ignored = action->sa.sa_handler == SIG_IGN;
+>         blocked = sigismember(&t->blocked, sig);
+> -       if (blocked || ignored || sigdfl) {
+> +       if (blocked || ignored || (handler != HANDLER_CURRENT)) {
+>                 action->sa.sa_handler = SIG_DFL;
+> -               action->sa.sa_flags |= SA_IMMUTABLE;
+> +               if (handler == HANDLER_EXIT)
+> +                       action->sa.sa_flags |= SA_IMMUTABLE;
+>                 if (blocked) {
+>                         sigdelset(&t->blocked, sig);
+>                         recalc_sigpending_and_wake(t);
+> @@ -1343,7 +1351,7 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t, bool
+>
+>  int force_sig_info(struct kernel_siginfo *info)
+>  {
+> -       return force_sig_info_to_task(info, current, false);
+> +       return force_sig_info_to_task(info, current, HANDLER_CURRENT);
+>  }
+>
+>  /*
+> @@ -1660,7 +1668,7 @@ void force_fatal_sig(int sig)
+>         info.si_code = SI_KERNEL;
+>         info.si_pid = 0;
+>         info.si_uid = 0;
+> -       force_sig_info_to_task(&info, current, true);
+> +       force_sig_info_to_task(&info, current, HANDLER_SIG_DFL);
+>  }
+>
+>  /*
+> @@ -1693,7 +1701,7 @@ int force_sig_fault_to_task(int sig, int code, void __user *addr
+>         info.si_flags = flags;
+>         info.si_isr = isr;
+>  #endif
+> -       return force_sig_info_to_task(&info, t, false);
+> +       return force_sig_info_to_task(&info, t, HANDLER_CURRENT);
+>  }
+>
+>  int force_sig_fault(int sig, int code, void __user *addr
+> @@ -1813,7 +1821,8 @@ int force_sig_seccomp(int syscall, int reason, bool force_coredump)
+>         info.si_errno = reason;
+>         info.si_arch = syscall_get_arch(current);
+>         info.si_syscall = syscall;
+> -       return force_sig_info_to_task(&info, current, force_coredump);
+> +       return force_sig_info_to_task(&info, current,
+> +               force_coredump ? HANDLER_EXIT : HANDLER_CURRENT);
+>  }
+>
+>  /* For the crazy architectures that include trap information in
+> --
+> 2.20.1
 
 - Kyle
