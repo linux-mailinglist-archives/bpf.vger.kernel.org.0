@@ -2,86 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFB1457EE8
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 16:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DB1457EF4
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 16:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237415AbhKTP3I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Nov 2021 10:29:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230038AbhKTP3I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Nov 2021 10:29:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5B5B60EB6;
-        Sat, 20 Nov 2021 15:26:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637421964;
-        bh=sL04+7/Tziaw15CHiE2bty/Bv6qeql7yB4oQSwHL8Rw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N35/MX+Bk5IfQeZQiu16BeV4YuD31Ephij5WJvzDmZ2G+K+MjYa+HWqb1ahmMn5Hb
-         8nTHe95BsmdqkyFWylC9DLYJd5w68+maTSegSteQm994SJN2V2euBCo7o5awfS7MX1
-         1EqL1r1uDdGsdYVLkB0LepzAMd/DMg1DnO37cYnq/TOnx6T6gg4l1tr4VYZFrfdNBr
-         fu07uKG0PLQcKTAn5J7IOkR76pmhpIN6NdZJHm5NPKAY2SAGobyGEmgVfnmJURZZPl
-         Ncx/4o043Jc/OWEbZSwAM5dDl3KRkS71kl4wzNRFF/bIFRAmgFMC+aeEM6/O5rxXi9
-         UVuYgRSm1FojA==
-Date:   Sat, 20 Nov 2021 07:26:02 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Peter Chen <peter.chen@kernel.org>
-Cc:     bpf@vger.kernel.org, axboe@kernel.dk,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, yuq825@gmail.com, robdclark@gmail.com,
-        sean@poorly.run, christian.koenig@amd.com, ray.huang@amd.com,
-        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, jingoohan1@gmail.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, krzysztof.kozlowski@canonical.com,
-        mani@kernel.org, pawell@cadence.com, rogerq@kernel.org,
-        a-govindraju@ti.com, gregkh@linuxfoundation.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sj@kernel.org, akpm@linux-foundation.org,
-        thomas.hellstrom@linux.intel.com, matthew.auld@intel.com,
-        colin.king@intel.com, geert@linux-m68k.org,
-        linux-block@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH bpf] treewide: add missing includes masked by cgroup ->
- bpf dependency
-Message-ID: <20211120072602.22f9e722@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211120073011.GA36650@Peter>
-References: <20211120035253.72074-1-kuba@kernel.org>
-        <20211120073011.GA36650@Peter>
+        id S234449AbhKTPar (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Nov 2021 10:30:47 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:33910 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231390AbhKTPaq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Nov 2021 10:30:46 -0500
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 636D620CDF2A
+        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 07:27:43 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 636D620CDF2A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1637422063;
+        bh=XCO8wxy8y3eAw5ZaB/NNQPz9daEH4IXNdyOczZ+4vAY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cT3FAktzG6aQgzpDlWiba0j3RbyX99vjf7lDwoex6aHIhOfMhzVDwUhtrIoz3Y+v8
+         nje1gZ9zOXUc01LoDtGKPXz0XhPe0LXe8nG2sDkh5R40Fa9SNEMULKoAZwN2LhkEtn
+         ZglGjPqqCk+jt/QeeoeLOxbuLR9AcbQt0dF6sg5w=
+Received: by mail-pl1-f172.google.com with SMTP id o14so10426647plg.5
+        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 07:27:43 -0800 (PST)
+X-Gm-Message-State: AOAM533xHhxQS+iqkgHeU7jYq1h0TtyT1CPSonOCdLiFQYC9p7dqvMTs
+        tABGLBsbjVzo2hNis7AkPBrMiyWI9r2lKLNWiog=
+X-Google-Smtp-Source: ABdhPJx6nTgCEnWTAh7wTxkuaedxobrgRYwiv4+iTMbTVRwodEJz+qOQbKy+3pbs3cRu77In9zo3O98EKyr3asVW8ZU=
+X-Received: by 2002:a17:90a:fe0b:: with SMTP id ck11mr10968911pjb.15.1637422062907;
+ Sat, 20 Nov 2021 07:27:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211120033255.91214-1-alexei.starovoitov@gmail.com> <20211120033255.91214-4-alexei.starovoitov@gmail.com>
+In-Reply-To: <20211120033255.91214-4-alexei.starovoitov@gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Sat, 20 Nov 2021 16:27:06 +0100
+X-Gmail-Original-Message-ID: <CAFnufp1ncBbD=K3bJxjzLNCg-VgHeQruJTdVE+9rj+E85+kc9w@mail.gmail.com>
+Message-ID: <CAFnufp1ncBbD=K3bJxjzLNCg-VgHeQruJTdVE+9rj+E85+kc9w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 03/13] bpf: Prepare relo_core.c for kernel duty.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 20 Nov 2021 15:30:11 +0800 Peter Chen wrote:
-> > diff --git a/drivers/usb/cdns3/host.c b/drivers/usb/cdns3/host.c
-> > index 84dadfa726aa..9643b905e2d8 100644
-> > --- a/drivers/usb/cdns3/host.c
-> > +++ b/drivers/usb/cdns3/host.c
-> > @@ -10,6 +10,7 @@
-> >   */
-> > =20
-> >  #include <linux/platform_device.h>
-> > +#include <linux/slab.h> =20
->=20
-> Should be "#include <linux/module.h>"?
+On Sat, Nov 20, 2021 at 4:33 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Make relo_core.c to be compiled for the kernel and for user space libbpf.
+>
+> Note the patch is reducing BPF_CORE_SPEC_MAX_LEN from 64 to 32.
+> This is the maximum number of nested structs and arrays.
+> For example:
+>  struct sample {
+>      int a;
+>      struct {
+>          int b[10];
+>      };
+>  };
+>
+>  struct sample *s = ...;
+>  int y = &s->b[5];
 
-Why? Different files are missing different includes, this one needs
-slab.h:
+I don't understand this. Is this intentional, or it should be one of:
 
-../drivers/usb/cdns3/host.c: In function =E2=80=98__cdns_host_init=E2=80=99:
-../drivers/usb/cdns3/host.c:86:2: error: implicit declaration of function =
-=E2=80=98kfree=E2=80=99; did you mean =E2=80=98vfree=E2=80=99? [-Werror=3Di=
-mplicit-function-declaration]
-  kfree(cdns->xhci_plat_data);
-  ^~~~~
-  vfree
+int y = s->b[5];
+int *y = &s->b[5];
+
+Regards,
+-- 
+per aspera ad upstream
