@@ -2,47 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289DB457F90
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 17:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB97457F93
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 17:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237364AbhKTQoE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Nov 2021 11:44:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237479AbhKTQoD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Nov 2021 11:44:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66BBC60E78;
-        Sat, 20 Nov 2021 16:40:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637426459;
-        bh=uEE90k9xSWDUNioG65OuNL3V8OHHKUkxHHhIwU71oc0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BPEaXlCd6kMeJZGmSg27wWVvfZq0hmldu+BsDQ0wSKoII6VQ+xLCrYHasdUvBgnd/
-         4INJitNkLB1zqjFHV5zlqw8Mu8IgHzLDFEwS23FYeWBWcWp1RDt6Qz4mG9t2frRbbe
-         pErxAAvqlBvPlCiFXOiAhGFwzd9LGntfQXuECam1HEU1HeGDquZsWVeO5psfeyN6tH
-         orJmjpu+GbNqCDShC28ob/DMXKQMSFVoxQaZX9Yl497uK0wvm1H6Toog+MTqLgQdDU
-         q7XTIcIJ6l72YvLaBAdk2n9NxSDlC/1cMHLDdNuDti+1EeY9y/kj4erKEbNcRwBBvM
-         xdlIVtw05Dniw==
-Date:   Sat, 20 Nov 2021 08:40:58 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     bpf@vger.kernel.org, kbuild-all@lists.01.org
-Subject: Re: [PATCH bpf] treewide: add missing includes masked by cgroup ->
- bpf dependency
-Message-ID: <20211120084058.243eecb8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <202111201532.vX7CVJz5-lkp@intel.com>
-References: <20211120035253.72074-1-kuba@kernel.org>
-        <202111201532.vX7CVJz5-lkp@intel.com>
+        id S233591AbhKTQpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Nov 2021 11:45:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237329AbhKTQpO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Nov 2021 11:45:14 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A91C061574;
+        Sat, 20 Nov 2021 08:42:10 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id bu11so9343104qvb.0;
+        Sat, 20 Nov 2021 08:42:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=t8r7bKcKFHRPqOVzgDbxjDzzRnS35ClMkrkGRCFzA8I=;
+        b=Ldw75VmXkqfRKtsYnMtC871Va6WGsWQoBLtT9za89s2ZxpatbQKIJCShGZLfhpTwcF
+         kUhF4rXxJ+/XTPVWIcN7qvkBrK0HYmCuXiYSzqQLPPlDTdJowtxMmSqLpt2/RRL6up2y
+         RyWZnJeVfhQV/1hG1OE1djDJwBn3SkPzLEvw/pP6Ox9Jejf0Cu+o3d4fYB5rJRQklB8R
+         v6injLpPVCdQaBrWFB74BuVHNTLCnSaiNSAGjyVY/B28zvnzbj7XumiOxBOeTcW11qY3
+         FcRm18lKt4xlS5SHu8LOLaLKBCi9NQPk88b/tk1AhVCyZN1l/YnGE0GqiYlvar4xfrAP
+         kxOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=t8r7bKcKFHRPqOVzgDbxjDzzRnS35ClMkrkGRCFzA8I=;
+        b=Dnvx1vc4mqtHm9fMM3xGFq7ZcngHXKCGr5L+vnuw0WIQZCV8MNTA0WBhvYhAzo8kgG
+         eI+X6j8Ls7yw/sHnYJGP6lOdIKwtaVqsDu9/8FqV7tNRkn9bJP4DkyD37N9fAapogqqC
+         tR94mh1Zh6kC9RCIcLdSSmBcM7LEUKH51KgAy0dLK0Ath+uptyyUmOlzzPBqnnBmHNOd
+         E7vVWDhT+yoqIQbWOyEoNt7zj9rt4PBUVlcoZQlMCLHFphBlBkwlnRX22g3TH0X5V7EU
+         NROQNsD9gRmVXv+W1vVWwbVo9qkHZh6Iw/jhRcAO8/xWOQ2LZCTRe3JiWjtu9WJvz45n
+         n//g==
+X-Gm-Message-State: AOAM531Hiso8RxfZI53qAeeRV8E3RVLG8BB/5lToxibQxlJs7pSmylL3
+        42dRfARcRT7xRjO1GiA3rYpnPPB/8tKp+iCNZVs=
+X-Google-Smtp-Source: ABdhPJxJi2XzIGEQCQtLIrdvwnPS+Skoe9aTKAltDA3g7jhXl/+cTnV6ECXlqLYm6lalV+fVbwy0e3RB60tzSUPtlZU=
+X-Received: by 2002:a05:6214:e83:: with SMTP id hf3mr85096014qvb.52.1637426529756;
+ Sat, 20 Nov 2021 08:42:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Hui-Chun Feng <foxhoundsk.tw@gmail.com>
+Date:   Sun, 21 Nov 2021 00:41:59 +0800
+Message-ID: <CAFbkdV1y8xHQs7eUj1cM1hPNM9at1rA+FoWUuLTXKXj3D=VX5w@mail.gmail.com>
+Subject: Re: [PATCH rfc 0/6] Scheduler BPF
+To:     guro@fb.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgorman@techsingularity.net, mingo@redhat.com, peterz@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 20 Nov 2021 15:01:35 +0800 kernel test robot wrote:
->    In file included from include/linux/cpu.h:17,
->                     from include/linux/cacheinfo.h:6,
+Hi list,
 
-Yeah, okay, I think cacheinfo.h including cpu.h is the least sane part
-of this chain. Let me try to attack that.
+Is there any reason why this patch only got a few comments so far?
+
+IMHO, by using static keys, the patch should add barely observable overhead
+to sched when no BPF progs loaded. Or is it because of the point that Yousef
+mentioned earlier? I.e. sched BPF may encourage people to fix sched problems
+with BPF progs instead of fixing sched directly.
+
+Thanks!
