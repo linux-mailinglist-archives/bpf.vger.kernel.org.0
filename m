@@ -2,68 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F3A457EFE
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 16:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FD3457F7D
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 17:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhKTPhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Nov 2021 10:37:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229710AbhKTPhg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Nov 2021 10:37:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B14960E97;
-        Sat, 20 Nov 2021 15:34:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637422472;
-        bh=+Xzo38AaASEagYKM/4p1d6KqgOBRNXTKUc1F1YqdU5w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GijOpZN3Tlt2tP8nQ+J3USldu6mF6EQ13zPJ7OhwaCYFsGORenDhJLBsKmeHrBbTo
-         G226mclWIgg5Uwko5+JN9GPvCTo04kcgNxxfTTF5NIpgRYMVHjgwObHSFKmgbkyt6z
-         2dll4T8WSoWcoit6KBwNZEX1oDjLq7Q8FJ0ecUaXaAz2LkZFUsm/QeoK+muQNknAaK
-         xpaJ2SXrCvwB2tlmmovCrERysK21RLsqGPGFKLwbyJRWCftxpa4rqd16P9zRb85R3m
-         OwSsTxxW1Hz3OdmQ1ko0asfuD1J6dxTrWrV2jsJYpl3OERWokpd3Pzc6iAAwe00f70
-         ywUuEVSeYjX+A==
-Date:   Sat, 20 Nov 2021 07:34:31 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     bpf@vger.kernel.org, kbuild-all@lists.01.org, axboe@kernel.dk,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com
-Subject: Re: [PATCH bpf] treewide: add missing includes masked by cgroup ->
- bpf dependency
-Message-ID: <20211120073431.363c2819@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <202111201602.tm0dlDfP-lkp@intel.com>
-References: <20211120035253.72074-1-kuba@kernel.org>
-        <202111201602.tm0dlDfP-lkp@intel.com>
+        id S236686AbhKTQ1O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Nov 2021 11:27:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231669AbhKTQ1O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Nov 2021 11:27:14 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7142C061574
+        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 08:24:10 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id q12so11299340pgh.5
+        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 08:24:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hVvl0Js0wI5fswO2QLOYNb3hVwkVi5oHoZq46yQ6A+A=;
+        b=oofkEBbduFC9D12zGNBeOwESkg9MQj5CK6pX0ZSizdbKRJURuLT5WiW8lBdZ07qzB1
+         yrv+QgKPiqG42bpLiICxFeCtlzDufyyo6KYic62I7bJmbB3mQyDSnjKJZ/Pd8bzfUsab
+         8nQ05gVltgThsL2E2JajaVZHe7IDkRpZOEGc1HAorbohSmNbls1ylFrGjJ+2BOU1a1XF
+         CErEocSjheReCtQeQ5WP0wDgeij/zzp7cZ2tcBTOyEUXS19lsjDdpQdEoGPc5Y+U4Pu7
+         eSh5m6jNZM2vtN5AYw8aZaBn2m7QhBKY+vYsVKR8VV4vd+2mu4gSr+6l1NKTX31wAKk6
+         +PZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hVvl0Js0wI5fswO2QLOYNb3hVwkVi5oHoZq46yQ6A+A=;
+        b=ZqBLYxceO2nj5iDwq6nglpGteOcFRlyzo5HiRl14Nq51SEDga9VADK4DKDz5uFP0xX
+         6rNTmwY/2ztJGN2tVy7hltZQ8Zf9b7szjd8R2WbC3bZ7lyIpo4VqlvgwI92WKAVz6OGU
+         M3R0w63emCUx8VYAlbGdHsqRACmvPdHNL87rJeWBOiNXr62BMMtA1Pe+ft3eyzQ2ySl7
+         5TphXg7zmSU73iinuxaZV8yq0gF+DguKhZnh7dxpwLSqP/2J2J00Zeh/iKiaUhOVrd1t
+         eK/VUvpw1SJL3yuZyBwzdCT0BaFK8yApbfxUm9EnTvTs9ygQ2PyPS0tycWjbGK44PUOJ
+         CiFg==
+X-Gm-Message-State: AOAM530B9ckUtyJ7fRCTMbinGFLd7D+qUTCJqh7rDMlbVgHws0udlP8c
+        AaHcpws2heZ176jkS6amqvxblIIwRNhMm6gxNFc=
+X-Google-Smtp-Source: ABdhPJz5R9kmsU3FlZQ9juhtLQa7aS6r6Zq2iTUarIEcdHUpZKJ5XtCZAY+idgF7CGHJ7RQxQpyoOwVYgXGbLfCoeZQ=
+X-Received: by 2002:a63:a50a:: with SMTP id n10mr16005277pgf.310.1637425450183;
+ Sat, 20 Nov 2021 08:24:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
+ <20211120033255.91214-4-alexei.starovoitov@gmail.com> <CAFnufp1ncBbD=K3bJxjzLNCg-VgHeQruJTdVE+9rj+E85+kc9w@mail.gmail.com>
+In-Reply-To: <CAFnufp1ncBbD=K3bJxjzLNCg-VgHeQruJTdVE+9rj+E85+kc9w@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 20 Nov 2021 08:23:59 -0800
+Message-ID: <CAADnVQLA-A2WiEjFUpEMebz_W=4mdzFYX-K0VYG1Ny_2uUyYVg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 03/13] bpf: Prepare relo_core.c for kernel duty.
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 20 Nov 2021 16:55:16 +0800 kernel test robot wrote:
-> Hi Jakub,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on bpf/master]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Jakub-Kicinski/treewide-add-missing-includes-masked-by-cgroup-bpf-dependency/20211120-115325
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-> config: riscv-rv32_defconfig (attached as .config)
-> compiler: riscv32-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/e31b3bdd266ef8f63543f27cf7493e98112fd74a
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Jakub-Kicinski/treewide-add-missing-includes-masked-by-cgroup-bpf-dependency/20211120-115325
->         git checkout e31b3bdd266ef8f63543f27cf7493e98112fd74a
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=riscv SHELL=/bin/bash
+On Sat, Nov 20, 2021 at 7:27 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> On Sat, Nov 20, 2021 at 4:33 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Make relo_core.c to be compiled for the kernel and for user space libbpf.
+> >
+> > Note the patch is reducing BPF_CORE_SPEC_MAX_LEN from 64 to 32.
+> > This is the maximum number of nested structs and arrays.
+> > For example:
+> >  struct sample {
+> >      int a;
+> >      struct {
+> >          int b[10];
+> >      };
+> >  };
+> >
+> >  struct sample *s = ...;
+> >  int y = &s->b[5];
+>
+> I don't understand this. Is this intentional, or it should be one of:
+>
+> int y = s->b[5];
+> int *y = &s->b[5];
 
-False positive, riscv seems to have a broken module.h so including 
-it in more places results in more of the same errors.
+Eagle eye. I copy pasted this typo from libbpf.
+Will fix in all places at once either in a respin or in a separate patch.
+For the purpose of the example it could be either.
+int *y = &s->b[5]; is a relocatable ADD.
+int y = s->b[5]; is a relocatable LDX.
