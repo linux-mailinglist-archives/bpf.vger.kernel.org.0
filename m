@@ -2,150 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C423457FAF
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 17:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD46457FF3
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 19:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhKTQ6e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Nov 2021 11:58:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230248AbhKTQ6e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Nov 2021 11:58:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CB0960E9B;
-        Sat, 20 Nov 2021 16:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637427330;
-        bh=RTeT79yElQusYDmhJbFnRvEJSbYhiimKujwcu/GXqHQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ki5Acw6aMrrfdWh43qyIBRxWq2IEyrnd3mGQYJVz+VQKyguNmqVXuPqYrT0pbBgSe
-         +Ss+HLBORi8JAS6Arl6vyjkJZaeZHipl+zhU8FwzzjWMCMy2KsEXB8xyrXJfSXqc7K
-         jZ7P6zRPX+nnMwqPzXtHdTT8oGRTLsumDvZqYPhPm8uodg8jaXEwge81VeAjXrH1/3
-         CcP4oiyTKfidiEksBV5nsE7FOSnnnp5qBDZW8VVY4lhUqbQb53y7uJwukMuuQ2MMCq
-         gd0lC4yizl7BgGBGzPRHnNXRi5jRy2B1B2owNJ1yYcmfXCqgBtbE6gz8LEKuB2nfvh
-         DLmk6wSxF+Kpg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     fenghua.yu@intel.com, reinette.chatre@intel.com
-Cc:     bpf@vger.kernel.org, james.morse@arm.com,
-        Jakub Kicinski <kuba@kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, peterz@infradead.org,
-        will@kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH bpf] cacheinfo: move get_cpu_cacheinfo_id() back out
-Date:   Sat, 20 Nov 2021 08:55:28 -0800
-Message-Id: <20211120165528.197359-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S236806AbhKTSDQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Nov 2021 13:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhKTSDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Nov 2021 13:03:16 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D183C061574
+        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 10:00:12 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id n12so59264077lfe.1
+        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 10:00:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=//FP34TjOh54WQTyCHnU1I0Mh0H/EWWNbNtPMSeL35I=;
+        b=mtGZI5El2JdBBuWgI2glvW83d/8X97Ib9JvcjqKX/11CGobziCEYRJngoqZlcF5lCF
+         NB2QrByuNj9hsUAJUp+xCcqbMcTFa6xT3UrySSOji51bNS6lFPKy8VXbvbu0hRKz9R4X
+         vnaP52cCF8I8STK75rUfHGmdmzQxhnU/xxhtLIp4v0HfZY/5S/enoJRGTYsCuk+z5jM1
+         LVOik4MTBlXkvpExYCQ0fd6kJ3SC6Fzq2pFFJ/VneP9FNGfTTOmw1RoR52VQ2OSZ6wPZ
+         BAZN4AFuyOv3vDKCBXDNmcHX7RHyHDulqduMBI3ju/xg5AZM3PeJtWQqacsILFaYWO4a
+         lG+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=//FP34TjOh54WQTyCHnU1I0Mh0H/EWWNbNtPMSeL35I=;
+        b=3vvmbDMD7k+AJ1u3FLqYoroT/+CcdBtYKEHApxvBmgq3qh58soVhe7dC9rMeKtATBh
+         VHZS+ue0Dpt0eKthsXO9Fr+EpG3r9SNKKQmQQbPdJFsEHneNepTxpfz2Kukn1ngYNlKi
+         kYBHT5fx1qaLxjmH6tm+pavSu5ETgfQwSxcrDYxNdnSPhRRKNcZBGdyQJnIBekyv0kv5
+         UwdeHZKNHCgYSpeVgk14cJ3ic84lOXcPmvezwBQRKpqxhUX273+r6Ee56PVd2IV0mL8g
+         93lq4usTQmeZfjO+7JWTRJWKu1DENjvgJqSXFrnWqnqww7gaTZMSSxdK2lKQ6HmZqO3+
+         1HMA==
+X-Gm-Message-State: AOAM531qQr2NxxUUy992cSkBXqovkIGzAYt7nyWkueBKy94ne/WAkLcS
+        8SPdIZmO07gfjB0PjzZGFvX32PLQnLdsPAkrvmo3Oncw5GY=
+X-Google-Smtp-Source: ABdhPJz4pRaOo4xvqrZYGdB/BCmPaNDicTJpKrN47LMoFIhKf6VX7Gxbmhm6fCie2zqmy8kyTutsBVIQa38JVe1oRdk=
+X-Received: by 2002:a2e:a7c9:: with SMTP id x9mr36722038ljp.26.1637431200287;
+ Sat, 20 Nov 2021 10:00:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6520:260a:b0:14d:aa2f:2637 with HTTP; Sat, 20 Nov 2021
+ 09:59:59 -0800 (PST)
+Reply-To: generaleleanorp3@gmail.com
+From:   "General Eleanor." <mr.sohalarfan.latif888@gmail.com>
+Date:   Sat, 20 Nov 2021 09:59:59 -0800
+Message-ID: <CAJLrsjo9CMGJ_9v2kP_huwLf+N1nAs3QVAmdo9Xpypi80dVvEQ@mail.gmail.com>
+Subject: STRICTLY AND CONFIDENT.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit more or less reverts commit 709c4362725a ("cacheinfo:
-Move resctrl's get_cache_id() to the cacheinfo header file").
+Dear Beloved.
 
-There are no users of the static inline helper outside of resctrl/core.c
-and cpu.h is a pretty heavy include, it pulls in device.h etc. This
-trips up architectures like riscv which want to access cacheinfo
-in low level headers like elf.h.
+I am General Eleanor from the USA working in the US Army but presently
+in Yemen, for a peacekeeping mission, I sincerely apologize for
+intruding into your privacy. I have something very important to
+discuss with you.
+Some money in various currencies where discovered in barrels at a farm
+house in the middle East during a rescue operation in Iraq War and it
+was agreed by Sergeant Kenneth Buff and myself that some part of these
+money be shared between us, I was given a total of ($13.5 Million US
+Dollars) as my own share , I kept this money in a security company for
+a long while now which i declared and deposit as my personal and
+family treasure and it has been secured and protected for years now
+with the security company.
 
-Link: https://lore.kernel.org/all/20211120035253.72074-1-kuba@kernel.org/
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: fenghua.yu@intel.com
-CC: reinette.chatre@intel.com
-CC: tglx@linutronix.de
-CC: mingo@redhat.com
-CC: bp@alien8.de
-CC: dave.hansen@linux.intel.com
-CC: x86@kernel.org
-CC: hpa@zytor.com
-CC: paul.walmsley@sifive.com
-CC: palmer@dabbelt.com
-CC: aou@eecs.berkeley.edu
-CC: peterz@infradead.org
-CC: will@kernel.org
-CC: linux-riscv@lists.infradead.org
+Now, the WAR in Iraq is over, and all possible problems that could
+have emanated from the shared money has been totally cleaned up and
+all files closed, all what was discovered in the Middle East is no
+more discussed, i am ready to retire from active services by the end
+of next month, but, i need a trustworthy person that can help me take
+possession of this funds and keep it safe while i work on my
+retirement letter to join you so that we could discuss possible
+business partnership together with the money.
+I'll tell you what! No compensation can make up for the risk we are
+taking with our lives.You can confirm the genuineness of the findings
+by clicking on this website.
 
-x86 resctrl folks, does this look okay?
+http://news.bbc.co.uk/2/hi/middle_east/2988455.stm
 
-I'd like to do some bpf header cleanups in -next which this is blocking.
-How would you like to handle that? This change looks entirely harmless,
-can I get an ack and take this via bpf/netdev to Linus ASAP so it
-propagates to all trees?
----
- arch/x86/kernel/cpu/resctrl/core.c | 20 ++++++++++++++++++++
- include/linux/cacheinfo.h          | 21 ---------------------
- 2 files changed, 20 insertions(+), 21 deletions(-)
+I=E2=80=99m seeking your kind assistance to move the sum of US$13.5 Million
+Dollars to you as long as you will assure me that the money will be
+safe in your care until I complete my service here in (Yemen) before
+the end of next month.
+The most important thing is; =E2=80=9CCan I Trust you=E2=80=9D?As an office=
+r on ACTIVE
+DUTY I am not allowed to have access to money, therefore, I have
+declared the content of the consignment as personal and my treasure. I
+would like to deliver to you. You will be rewarded with 30% of this
+funds for your assistance, all that I require is your mutual trust
+between us. Don't betray me when you receive the consignment.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index bb1c3f5f60c8..3c0b2c34be23 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -284,6 +284,26 @@ static void rdt_get_cdp_l2_config(void)
- 	rdt_get_cdp_config(RDT_RESOURCE_L2);
- }
- 
-+/*
-+ * Get the id of the cache associated with @cpu at level @level.
-+ * cpuhp lock must be held.
-+ */
-+static int get_cpu_cacheinfo_id(int cpu, int level)
-+{
-+	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(cpu);
-+	int i;
-+
-+	for (i = 0; i < ci->num_leaves; i++) {
-+		if (ci->info_list[i].level == level) {
-+			if (ci->info_list[i].attributes & CACHE_ID)
-+				return ci->info_list[i].id;
-+			return -1;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
- static void
- mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
- {
-diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
-index 2f909ed084c6..c8c71eea237d 100644
---- a/include/linux/cacheinfo.h
-+++ b/include/linux/cacheinfo.h
-@@ -3,7 +3,6 @@
- #define _LINUX_CACHEINFO_H
- 
- #include <linux/bitops.h>
--#include <linux/cpu.h>
- #include <linux/cpumask.h>
- #include <linux/smp.h>
- 
-@@ -102,24 +101,4 @@ int acpi_find_last_cache_level(unsigned int cpu);
- 
- const struct attribute_group *cache_get_priv_group(struct cacheinfo *this_leaf);
- 
--/*
-- * Get the id of the cache associated with @cpu at level @level.
-- * cpuhp lock must be held.
-- */
--static inline int get_cpu_cacheinfo_id(int cpu, int level)
--{
--	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(cpu);
--	int i;
--
--	for (i = 0; i < ci->num_leaves; i++) {
--		if (ci->info_list[i].level == level) {
--			if (ci->info_list[i].attributes & CACHE_ID)
--				return ci->info_list[i].id;
--			return -1;
--		}
--	}
--
--	return -1;
--}
--
- #endif /* _LINUX_CACHEINFO_H */
--- 
-2.31.1
-
+Sincerely,
+General Eleanor.
