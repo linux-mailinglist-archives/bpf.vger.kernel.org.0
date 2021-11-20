@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5020457ACC
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 04:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A41F457ACD
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 04:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbhKTDgK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 22:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
+        id S234456AbhKTDgM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 22:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234456AbhKTDgG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 22:36:06 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F953C061748
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:33:04 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id y8so9592918plg.1
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:33:04 -0800 (PST)
+        with ESMTP id S233478AbhKTDgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 22:36:09 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60BFC061574
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:33:06 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id o14so9577522plg.5
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:33:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=x3Ulcj0uimrO7JRI7qOTOlQr5FsHdUG1dBlMocUWbmc=;
-        b=X9zG59ShOrBXaz9YNP0wI7YmpQnA/NLhOEpabcCST6+MCrSLqr6N372XoMe5r7H4gV
-         TIaBoLq0geRxqe1bZb6moSfHaopMxl80ANGwhQLVGJM0c3W4wVamPORn0E6LXRPfAfSq
-         ryAxIK/vdhiQEvrwllxJcA89L5YSGC9yiFGFQQlnbpfSdrcaLPuG8LpRKwnxrPAHnB6A
-         iARayxwzEHSQRk5ET1aDYYW7g5ZinyYeH8spSplVsWu/IKv9NS9BazuxtUPszoUhBkUe
-         weerjfhjrzVF5fZMeqfZObW+m+mkiitpgSGhV7/0vuYNROH6nDXiw284n2cmnEIP53mv
-         I/wA==
+        bh=BG36sJQ9MfBLdqI92ccTNoXQULz6bv6eCdssEvM9e1o=;
+        b=lB42t7BakspDYPefi0uaS9m9x2l7D0p78bgD+XZxnivLsRSZb3ZQ1ufxffeNrNhg0x
+         g1a/SqFCb94+DO36gLz2pnIlG6pVVMMspj3eNxqJN5lwqJvIL02Qg8dPcsZ+8ZyuOOt2
+         ZpYuafh4SlHHzvjghFUuJbiKK0NdOix6tWSQOgcIcb6X8HnvY+81uZ6CwsDoipJNmtVg
+         4TRGrMfrWRwePzMMkoiktHYrn4TaynsCV79/0114fYqfCiBhUNgvHe/E8SanF1wnwdaL
+         9PsgIMvzuU32bYAI/AWzP+pI4R2+/WKL9OxqIekXdogY2Ie7SOzreszxXAg/twQq7lCR
+         Z8ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=x3Ulcj0uimrO7JRI7qOTOlQr5FsHdUG1dBlMocUWbmc=;
-        b=YsAmJa73NLY1GADml1IrW13gtpIR/4ZJDkgQ62xf9aWjFMbv2DDpHi0mxm3ftuf2vb
-         BApgtG+hMvHNW9wUPcORsv9peQMh95axekkbAmqjHZkVKOZGCUnFHBa1zUqSWkj0BN/x
-         LpcTyZlCoXRP6bzkeCsh6HVrFKqx36x6tqx+/G0e9+B1ilZPt1i5XFa5B+KTM0vdArxx
-         wye6i0s9l/XvCQP8+zLYNbCOQbCsqy3OUYMiKpUTKANPCqOpvxpORL10jCHNoP4UO8V2
-         MTTJA5FE+1d2B7U1wN1W2e7P2yp93mKdztAfVEYpZWN5UlUx1dhhZKFigddxbmkt3PYI
-         jSlA==
-X-Gm-Message-State: AOAM532wQTb/hHlf8owozVVbmS6P6jmZt0cqtEINNQ7pEBxGEToRg8iF
-        fYlz80uosIcy1rAeaReE7A0=
-X-Google-Smtp-Source: ABdhPJxKnL1aIMiUk8uZY49gfkMZXfLFGgJ1pYC/lKaNhPCYUrMKS1A4ILjOvH0YHTeP/CcRUO9ohQ==
-X-Received: by 2002:a17:90b:4d8c:: with SMTP id oj12mr6243183pjb.100.1637379183663;
-        Fri, 19 Nov 2021 19:33:03 -0800 (PST)
+        bh=BG36sJQ9MfBLdqI92ccTNoXQULz6bv6eCdssEvM9e1o=;
+        b=IQxJcSno2ZMErx++aHKadElgsQXjuM9xGj+NZ1jRiRbHNuvXgfHskPGQZsAYtk8j2b
+         aXfvIO8vSPgnmq9fr8Zz4FTLmgGSmGoQvHtx9GQgW4efiaXQ4HSNJYE7kmq7oa5imKel
+         zRgn9mOvRG2mrpEhzbqLphA4ayrQ6TTcm8mcm2jXg5F8HeXIUj8DeDRnmrc2uEGN0BE2
+         3JJHHDzU+w2lRlDLJIBsc6sOkyhm7EVdEi3rLUm+vnXciwwBsNqqaOL9fATDQvfCdKnN
+         WqBkG3Fqtc1hAC3t/3mtdpNSIE/zIx/TYnm4ycjoRiKIdON03B2KeJJ45qI+MAsv+UOX
+         K3Xw==
+X-Gm-Message-State: AOAM53128pF35BKI/oLwIr2sC9Qw51edvS2K4XT59yvfCBj/M9dKfpRg
+        fcbc9ECfaUUGAwizg/jbQgE=
+X-Google-Smtp-Source: ABdhPJzNQng2xdkvZC5zwxuQJKaegb84JbCzT+//F/0WRsgOjXcs1IvSkJ51JF9W/1qKrnuhMwCWCw==
+X-Received: by 2002:a17:902:da85:b0:142:11b4:b5c0 with SMTP id j5-20020a170902da8500b0014211b4b5c0mr84063945plx.53.1637379186452;
+        Fri, 19 Nov 2021 19:33:06 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:a858])
-        by smtp.gmail.com with ESMTPSA id v10sm994852pfu.123.2021.11.19.19.33.02
+        by smtp.gmail.com with ESMTPSA id a31sm790147pgm.43.2021.11.19.19.33.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Nov 2021 19:33:03 -0800 (PST)
+        Fri, 19 Nov 2021 19:33:06 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v3 bpf-next 02/13] bpf: Rename btf_member accessors.
-Date:   Fri, 19 Nov 2021 19:32:44 -0800
-Message-Id: <20211120033255.91214-3-alexei.starovoitov@gmail.com>
+Subject: [PATCH v3 bpf-next 03/13] bpf: Prepare relo_core.c for kernel duty.
+Date:   Fri, 19 Nov 2021 19:32:45 -0800
+Message-Id: <20211120033255.91214-4-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
 References: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
@@ -65,167 +65,339 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Rename btf_member_bit_offset() and btf_member_bitfield_size() to
-avoid conflicts with similarly named helpers in libbpf's btf.h.
-Rename the kernel helpers, since libbpf helpers are part of uapi.
+Make relo_core.c to be compiled for the kernel and for user space libbpf.
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Note the patch is reducing BPF_CORE_SPEC_MAX_LEN from 64 to 32.
+This is the maximum number of nested structs and arrays.
+For example:
+ struct sample {
+     int a;
+     struct {
+         int b[10];
+     };
+ };
+
+ struct sample *s = ...;
+ int y = &s->b[5];
+This field access is encoded as "0:1:0:5" and spec len is 4.
+
+The follow up patch might bump it back to 64.
+
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/btf.h         |  8 ++++----
- kernel/bpf/bpf_struct_ops.c |  6 +++---
- kernel/bpf/btf.c            | 18 +++++++++---------
- net/ipv4/bpf_tcp_ca.c       |  6 +++---
- 4 files changed, 19 insertions(+), 19 deletions(-)
+ include/linux/btf.h       | 81 +++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/Makefile       |  4 ++
+ kernel/bpf/btf.c          | 26 +++++++++++++
+ tools/lib/bpf/relo_core.c | 76 ++++++++++++++++++++++++++++++------
+ 4 files changed, 176 insertions(+), 11 deletions(-)
 
 diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 203eef993d76..956f70388f69 100644
+index 956f70388f69..acef6ef28768 100644
 --- a/include/linux/btf.h
 +++ b/include/linux/btf.h
-@@ -194,15 +194,15 @@ static inline bool btf_type_kflag(const struct btf_type *t)
- 	return BTF_INFO_KFLAG(t->info);
+@@ -144,6 +144,53 @@ static inline bool btf_type_is_enum(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_ENUM;
  }
  
--static inline u32 btf_member_bit_offset(const struct btf_type *struct_type,
--					const struct btf_member *member)
-+static inline u32 __btf_member_bit_offset(const struct btf_type *struct_type,
-+					  const struct btf_member *member)
++static inline bool str_is_empty(const char *s)
++{
++	return !s || !s[0];
++}
++
++static inline u16 btf_kind(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info);
++}
++
++static inline bool btf_is_enum(const struct btf_type *t)
++{
++	return btf_kind(t) == BTF_KIND_ENUM;
++}
++
++static inline bool btf_is_composite(const struct btf_type *t)
++{
++	u16 kind = btf_kind(t);
++
++	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
++}
++
++static inline bool btf_is_array(const struct btf_type *t)
++{
++	return btf_kind(t) == BTF_KIND_ARRAY;
++}
++
++static inline bool btf_is_int(const struct btf_type *t)
++{
++	return btf_kind(t) == BTF_KIND_INT;
++}
++
++static inline bool btf_is_ptr(const struct btf_type *t)
++{
++	return btf_kind(t) == BTF_KIND_PTR;
++}
++
++static inline u8 btf_int_offset(const struct btf_type *t)
++{
++	return BTF_INT_OFFSET(*(u32 *)(t + 1));
++}
++
++static inline u8 btf_int_encoding(const struct btf_type *t)
++{
++	return BTF_INT_ENCODING(*(u32 *)(t + 1));
++}
++
+ static inline bool btf_type_is_scalar(const struct btf_type *t)
  {
- 	return btf_type_kflag(struct_type) ? BTF_MEMBER_BIT_OFFSET(member->offset)
- 					   : member->offset;
+ 	return btf_type_is_int(t) || btf_type_is_enum(t);
+@@ -184,6 +231,11 @@ static inline u16 btf_type_vlen(const struct btf_type *t)
+ 	return BTF_INFO_VLEN(t->info);
  }
  
--static inline u32 btf_member_bitfield_size(const struct btf_type *struct_type,
--					   const struct btf_member *member)
-+static inline u32 __btf_member_bitfield_size(const struct btf_type *struct_type,
-+					     const struct btf_member *member)
++static inline u16 btf_vlen(const struct btf_type *t)
++{
++	return btf_type_vlen(t);
++}
++
+ static inline u16 btf_func_linkage(const struct btf_type *t)
  {
- 	return btf_type_kflag(struct_type) ? BTF_MEMBER_BITFIELD_SIZE(member->offset)
+ 	return BTF_INFO_VLEN(t->info);
+@@ -208,11 +260,40 @@ static inline u32 __btf_member_bitfield_size(const struct btf_type *struct_type,
  					   : 0;
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 8ecfe4752769..21069dbe9138 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -165,7 +165,7 @@ void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
- 				break;
- 			}
+ }
  
--			if (btf_member_bitfield_size(t, member)) {
-+			if (__btf_member_bitfield_size(t, member)) {
- 				pr_warn("bit field member %s in struct %s is not supported\n",
- 					mname, st_ops->name);
- 				break;
-@@ -296,7 +296,7 @@ static int check_zero_holes(const struct btf_type *t, void *data)
- 	const struct btf_type *mtype;
++static inline struct btf_member *btf_members(const struct btf_type *t)
++{
++	return (struct btf_member *)(t + 1);
++}
++
++static inline u32 btf_member_bit_offset(const struct btf_type *t, u32 member_idx)
++{
++	const struct btf_member *m = btf_members(t) + member_idx;
++
++	return __btf_member_bit_offset(t, m);
++}
++
++static inline u32 btf_member_bitfield_size(const struct btf_type *t, u32 member_idx)
++{
++	const struct btf_member *m = btf_members(t) + member_idx;
++
++	return __btf_member_bitfield_size(t, m);
++}
++
+ static inline const struct btf_member *btf_type_member(const struct btf_type *t)
+ {
+ 	return (const struct btf_member *)(t + 1);
+ }
  
- 	for_each_member(i, t, member) {
--		moff = btf_member_bit_offset(t, member) / 8;
-+		moff = __btf_member_bit_offset(t, member) / 8;
- 		if (moff > prev_mend &&
- 		    memchr_inv(data + prev_mend, 0, moff - prev_mend))
- 			return -EINVAL;
-@@ -387,7 +387,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 		struct bpf_prog *prog;
- 		u32 moff;
- 
--		moff = btf_member_bit_offset(t, member) / 8;
-+		moff = __btf_member_bit_offset(t, member) / 8;
- 		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
- 		if (ptype == module_type) {
- 			if (*(void **)(udata + moff))
++static inline struct btf_array *btf_array(const struct btf_type *t)
++{
++	return (struct btf_array *)(t + 1);
++}
++
++static inline struct btf_enum *btf_enum(const struct btf_type *t)
++{
++	return (struct btf_enum *)(t + 1);
++}
++
+ static inline const struct btf_var_secinfo *btf_type_var_secinfo(
+ 		const struct btf_type *t)
+ {
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index cf6ca339f3cd..c1a9be6a4b9f 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -36,3 +36,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
+ obj-${CONFIG_BPF_LSM} += bpf_lsm.o
+ endif
+ obj-$(CONFIG_BPF_PRELOAD) += preload/
++
++obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
++$(obj)/relo_core.o: $(srctree)/tools/lib/bpf/relo_core.c FORCE
++	$(call if_changed_rule,cc_o_c)
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 6b9d23be1e99..f4119a99da7b 100644
+index f4119a99da7b..c79595aad55b 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -2969,7 +2969,7 @@ static s32 btf_struct_check_meta(struct btf_verifier_env *env,
+@@ -6413,3 +6413,29 @@ bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist, u32 kfunc_id,
+ 
+ DEFINE_KFUNC_BTF_ID_LIST(bpf_tcp_ca_kfunc_list);
+ DEFINE_KFUNC_BTF_ID_LIST(prog_test_kfunc_list);
++
++int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
++			      const struct btf *targ_btf, __u32 targ_id)
++{
++	return -EOPNOTSUPP;
++}
++
++static bool bpf_core_is_flavor_sep(const char *s)
++{
++	/* check X___Y name pattern, where X and Y are not underscores */
++	return s[0] != '_' &&				      /* X */
++	       s[1] == '_' && s[2] == '_' && s[3] == '_' &&   /* ___ */
++	       s[4] != '_';				      /* Y */
++}
++
++size_t bpf_core_essential_name_len(const char *name)
++{
++	size_t n = strlen(name);
++	int i;
++
++	for (i = n - 5; i >= 0; i--) {
++		if (bpf_core_is_flavor_sep(name + i))
++			return i + 1;
++	}
++	return n;
++}
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index c0904f4cb514..56dbe6d16664 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -1,6 +1,60 @@
+ // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+ /* Copyright (c) 2019 Facebook */
+ 
++#ifdef __KERNEL__
++#include <linux/bpf.h>
++#include <linux/btf.h>
++#include <linux/string.h>
++#include <linux/bpf_verifier.h>
++#include "relo_core.h"
++
++static const char *btf_kind_str(const struct btf_type *t)
++{
++	return btf_type_str(t);
++}
++
++static bool is_ldimm64_insn(struct bpf_insn *insn)
++{
++	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
++}
++
++static const struct btf_type *
++skip_mods_and_typedefs(const struct btf *btf, u32 id, u32 *res_id)
++{
++	return btf_type_skip_modifiers(btf, id, res_id);
++}
++
++static const char *btf__name_by_offset(const struct btf *btf, u32 offset)
++{
++	return btf_name_by_offset(btf, offset);
++}
++
++static s64 btf__resolve_size(const struct btf *btf, u32 type_id)
++{
++	const struct btf_type *t;
++	int size;
++
++	t = btf_type_by_id(btf, type_id);
++	t = btf_resolve_size(btf, t, &size);
++	if (IS_ERR(t))
++		return PTR_ERR(t);
++	return size;
++}
++
++enum libbpf_print_level {
++	LIBBPF_WARN,
++	LIBBPF_INFO,
++	LIBBPF_DEBUG,
++};
++
++#undef pr_warn
++#undef pr_info
++#undef pr_debug
++#define pr_warn(fmt, log, ...)	bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
++#define pr_info(fmt, log, ...)	bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
++#define pr_debug(fmt, log, ...)	bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
++#define libbpf_print(level, fmt, ...)	bpf_log((void *)prog_name, fmt, ##__VA_ARGS__)
++#else
+ #include <stdio.h>
+ #include <string.h>
+ #include <errno.h>
+@@ -12,8 +66,9 @@
+ #include "btf.h"
+ #include "str_error.h"
+ #include "libbpf_internal.h"
++#endif
+ 
+-#define BPF_CORE_SPEC_MAX_LEN 64
++#define BPF_CORE_SPEC_MAX_LEN 32
+ 
+ /* represents BPF CO-RE field or array element accessor */
+ struct bpf_core_accessor {
+@@ -150,7 +205,7 @@ static bool core_relo_is_enumval_based(enum bpf_core_relo_kind kind)
+  * Enum value-based relocations (ENUMVAL_EXISTS/ENUMVAL_VALUE) use access
+  * string to specify enumerator's value index that need to be relocated.
+  */
+-static int bpf_core_parse_spec(const struct btf *btf,
++static int bpf_core_parse_spec(const char *prog_name, const struct btf *btf,
+ 			       __u32 type_id,
+ 			       const char *spec_str,
+ 			       enum bpf_core_relo_kind relo_kind,
+@@ -272,8 +327,8 @@ static int bpf_core_parse_spec(const struct btf *btf,
+ 				return sz;
+ 			spec->bit_offset += access_idx * sz * 8;
+ 		} else {
+-			pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
+-				type_id, spec_str, i, id, btf_kind_str(t));
++			pr_warn("prog '%s': relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
++				prog_name, type_id, spec_str, i, id, btf_kind_str(t));
  			return -EINVAL;
  		}
- 
--		offset = btf_member_bit_offset(t, member);
-+		offset = __btf_member_bit_offset(t, member);
- 		if (is_union && offset) {
- 			btf_verifier_log_member(env, t, member,
- 						"Invalid member bits_offset");
-@@ -3094,7 +3094,7 @@ static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t
- 		if (off != -ENOENT)
- 			/* only one such field is allowed */
- 			return -E2BIG;
--		off = btf_member_bit_offset(t, member);
-+		off = __btf_member_bit_offset(t, member);
- 		if (off % 8)
- 			/* valid C code cannot generate such BTF */
- 			return -EINVAL;
-@@ -3184,8 +3184,8 @@ static void __btf_struct_show(const struct btf *btf, const struct btf_type *t,
- 
- 		btf_show_start_member(show, member);
- 
--		member_offset = btf_member_bit_offset(t, member);
--		bitfield_size = btf_member_bitfield_size(t, member);
-+		member_offset = __btf_member_bit_offset(t, member);
-+		bitfield_size = __btf_member_bitfield_size(t, member);
- 		bytes_offset = BITS_ROUNDDOWN_BYTES(member_offset);
- 		bits8_offset = BITS_PER_BYTE_MASKED(member_offset);
- 		if (bitfield_size) {
-@@ -5060,7 +5060,7 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 		if (array_elem->nelems != 0)
- 			goto error;
- 
--		moff = btf_member_bit_offset(t, member) / 8;
-+		moff = __btf_member_bit_offset(t, member) / 8;
- 		if (off < moff)
- 			goto error;
- 
-@@ -5083,14 +5083,14 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 
- 	for_each_member(i, t, member) {
- 		/* offset of the field in bytes */
--		moff = btf_member_bit_offset(t, member) / 8;
-+		moff = __btf_member_bit_offset(t, member) / 8;
- 		if (off + size <= moff)
- 			/* won't find anything, field is already too far */
- 			break;
- 
--		if (btf_member_bitfield_size(t, member)) {
--			u32 end_bit = btf_member_bit_offset(t, member) +
--				btf_member_bitfield_size(t, member);
-+		if (__btf_member_bitfield_size(t, member)) {
-+			u32 end_bit = __btf_member_bit_offset(t, member) +
-+				__btf_member_bitfield_size(t, member);
- 
- 			/* off <= moff instead of off == moff because clang
- 			 * does not generate a BTF member for anonymous
-diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-index 2cf02b4d77fb..67466dbff152 100644
---- a/net/ipv4/bpf_tcp_ca.c
-+++ b/net/ipv4/bpf_tcp_ca.c
-@@ -169,7 +169,7 @@ static u32 prog_ops_moff(const struct bpf_prog *prog)
- 	t = bpf_tcp_congestion_ops.type;
- 	m = &btf_type_member(t)[midx];
- 
--	return btf_member_bit_offset(t, m) / 8;
-+	return __btf_member_bit_offset(t, m) / 8;
+ 	}
+@@ -346,8 +401,6 @@ static int bpf_core_fields_are_compat(const struct btf *local_btf,
+ 		targ_id = btf_array(targ_type)->type;
+ 		goto recur;
+ 	default:
+-		pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
+-			btf_kind(local_type), local_id, targ_id);
+ 		return 0;
+ 	}
  }
- 
- static const struct bpf_func_proto *
-@@ -244,7 +244,7 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
- 	utcp_ca = (const struct tcp_congestion_ops *)udata;
- 	tcp_ca = (struct tcp_congestion_ops *)kdata;
- 
--	moff = btf_member_bit_offset(t, member) / 8;
-+	moff = __btf_member_bit_offset(t, member) / 8;
- 	switch (moff) {
- 	case offsetof(struct tcp_congestion_ops, flags):
- 		if (utcp_ca->flags & ~TCP_CONG_MASK)
-@@ -274,7 +274,7 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
- static int bpf_tcp_ca_check_member(const struct btf_type *t,
- 				   const struct btf_member *member)
+@@ -1045,7 +1098,7 @@ static int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
+  * [<type-id>] (<type-name>) + <raw-spec> => <offset>@<spec>,
+  * where <spec> is a C-syntax view of recorded field access, e.g.: x.a[3].b
+  */
+-static void bpf_core_dump_spec(int level, const struct bpf_core_spec *spec)
++static void bpf_core_dump_spec(const char *prog_name, int level, const struct bpf_core_spec *spec)
  {
--	if (is_unsupported(btf_member_bit_offset(t, member) / 8))
-+	if (is_unsupported(__btf_member_bit_offset(t, member) / 8))
- 		return -ENOTSUPP;
- 	return 0;
- }
+ 	const struct btf_type *t;
+ 	const struct btf_enum *e;
+@@ -1167,7 +1220,8 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+ 	if (str_is_empty(spec_str))
+ 		return -EINVAL;
+ 
+-	err = bpf_core_parse_spec(local_btf, local_id, spec_str, relo->kind, &local_spec);
++	err = bpf_core_parse_spec(prog_name, local_btf, local_id, spec_str,
++				  relo->kind, &local_spec);
+ 	if (err) {
+ 		pr_warn("prog '%s': relo #%d: parsing [%d] %s %s + %s failed: %d\n",
+ 			prog_name, relo_idx, local_id, btf_kind_str(local_type),
+@@ -1178,7 +1232,7 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+ 
+ 	pr_debug("prog '%s': relo #%d: kind <%s> (%d), spec is ", prog_name,
+ 		 relo_idx, core_relo_kind_str(relo->kind), relo->kind);
+-	bpf_core_dump_spec(LIBBPF_DEBUG, &local_spec);
++	bpf_core_dump_spec(prog_name, LIBBPF_DEBUG, &local_spec);
+ 	libbpf_print(LIBBPF_DEBUG, "\n");
+ 
+ 	/* TYPE_ID_LOCAL relo is special and doesn't need candidate search */
+@@ -1204,14 +1258,14 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+ 		if (err < 0) {
+ 			pr_warn("prog '%s': relo #%d: error matching candidate #%d ",
+ 				prog_name, relo_idx, i);
+-			bpf_core_dump_spec(LIBBPF_WARN, &cand_spec);
++			bpf_core_dump_spec(prog_name, LIBBPF_WARN, &cand_spec);
+ 			libbpf_print(LIBBPF_WARN, ": %d\n", err);
+ 			return err;
+ 		}
+ 
+ 		pr_debug("prog '%s': relo #%d: %s candidate #%d ", prog_name,
+ 			 relo_idx, err == 0 ? "non-matching" : "matching", i);
+-		bpf_core_dump_spec(LIBBPF_DEBUG, &cand_spec);
++		bpf_core_dump_spec(prog_name, LIBBPF_DEBUG, &cand_spec);
+ 		libbpf_print(LIBBPF_DEBUG, "\n");
+ 
+ 		if (err == 0)
 -- 
 2.30.2
 
