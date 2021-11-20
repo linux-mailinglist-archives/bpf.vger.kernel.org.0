@@ -2,69 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4069457D37
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 12:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA78457D42
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 12:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhKTLIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Nov 2021 06:08:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        id S230456AbhKTLbD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Nov 2021 06:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhKTLIw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Nov 2021 06:08:52 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3657C061574
-        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 03:05:49 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id bi37so55747685lfb.5
-        for <bpf@vger.kernel.org>; Sat, 20 Nov 2021 03:05:49 -0800 (PST)
+        with ESMTP id S230324AbhKTLbC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Nov 2021 06:31:02 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F467C061574;
+        Sat, 20 Nov 2021 03:27:59 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id p18-20020a17090ad31200b001a78bb52876so12921130pju.3;
+        Sat, 20 Nov 2021 03:27:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=bGNrqBGvmIVyIyIc3/VMFu1MAhUILJCImKL8LNplbww=;
-        b=JNqir7VVLx7CMPFRwetcfvX8CCO3vErcXIAINZQeycY/KwULmnbWnZsH85PuQcpxAs
-         +t2YeEgSH+saoqi+YdQ0ExzN4hkr7qpxDKNyml+CMxy1T7GKwQmlGUomBsE6cuSuex5a
-         6LpxFyQDfCRw3q70db4NnAPagFdzBjUrXgLZ38cVzfRC58wcw21CrG2Z29wUl+oH9DRV
-         OZXuKzKYcwaIegINLq5M7dUDHWnJJuqZlgILcsX9AndM+52HTMzsFcEamEexfoSvm7BK
-         lpd48NZ9Dxr/K+UlQZZ3BkbWZenp6DKSISXoW9zrgKqUrzIqS2VVhOkewGPjNXB9xSvf
-         iRJQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mgmaoQ7WVjX7ocxIMV0FACmVlj4LoHfwU5mj0OexKdM=;
+        b=S4y3JwNRrMAGuMJwsosIe3PcJ6XbMkUHIl9d954eAGt+u+QBFQcKtabuwG91d5g0jl
+         IrZqpSurc/H8YMbS9n/LDTla/KFUN9aX9mVT75HQ5Qa06BJQ5Fb2wAE544GL63b123Ey
+         6/PEmk/PWD18fAIWvNaXduPSG8WPUa+D0QY+rlqnXhr8EGUwJ5oUXPs/9QlGXcv+aXSS
+         3emz8G442htfK6TmiJ1jgPNS68AEnqsD2UnWYg2sgq/H/MeZ1E/A3PR7otTqF9lEa13J
+         wV8AnvYPh99RbLsZTetAkg9ad+hQcTJzbdMcM+QtNSPJXYP6sNdWzlcUqrgjWKk5Wn59
+         XqlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=bGNrqBGvmIVyIyIc3/VMFu1MAhUILJCImKL8LNplbww=;
-        b=J/1F3owDMxkQa40cjh8Xas6eI+CF0TkNaRCvd1Fau3sejxBdlEr2Z9jfPkj2PGOJAS
-         cKK6pgdsvSWvWJ1/wbFMx/VL4Rd/OMaHkvRckhHMPv9nHPIKVdqOS4zIp5h0eyHO9dv9
-         P912jBZmnniO7jgNOL/YEtIrvyjMWQLseqnKMEnkyfklar/fQmZ4cxl4fVmMCF/EgFIG
-         BITLQR06wcAeN6bq/p4elqsjUwkk3mvOoOCpa/OahjW3EsMOC13SpCnHFQuseUz8seKN
-         jvVgDT8OoAeLmwx8m14UzwBG8XLZihUkounN19PS0MpwQTkduN3wCNWsu6hM9JMP8t2O
-         kNlw==
-X-Gm-Message-State: AOAM533KZ4aeZeh/u1gfW8pnuQKx22xEDDhC7IatiN3yUDnY85os1OZ2
-        jl6xhMy4UuJaklnk5axmzcL6PMYqZTrzwefZ4g==
-X-Google-Smtp-Source: ABdhPJzsDSP7O75nV/2EDoGn5/cdTY5R1x7jqGScfclhOVI04uC1MpZsQTN2uPxs1dPGyxXY8etpsIyT3QdfKPeXLR8=
-X-Received: by 2002:a19:c216:: with SMTP id l22mr38671066lfc.387.1637406347372;
- Sat, 20 Nov 2021 03:05:47 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mgmaoQ7WVjX7ocxIMV0FACmVlj4LoHfwU5mj0OexKdM=;
+        b=NPr1042hhLFAixHTEeWCF2b5u1kGwbc+Vtj7PddkZ4pl6pyVHYBBKX/uoWbiE77TNR
+         kcpP5257lXmV6Dato2qOu0Ied9dMtA2fRxmHlrUDF7kb/Y2hDx/oF1jNU4GS+i6D/6bd
+         uxEh516RF/FK8tbNZRb7mJkjYzMiIxq7fcDsdwO3ORXEO1+wgbzr+VXWm4q237qM7wZt
+         ToKoEASkg5rENMiHQzz7wfnSa094XFFth0Kxa+4KbkORJ6fi5N7cs7XTNrz8naF1ZuQT
+         V2UDLf/G/hQatgscYec99NPhJw5fxVzFxPuSXaRLdn80+c4tAnc6LdmGukp9QcDTxTf5
+         g+wA==
+X-Gm-Message-State: AOAM5314fpfPPRmMEJolaeGubtrpUTuAQtVWBN2FKcl86cONpgqv1QNS
+        VvSLiDLzkyyyaMIzDlqNgHU=
+X-Google-Smtp-Source: ABdhPJyxGUG4Lf6ezqV5ps6fISVl14knM2EzOSeswUoGLe+KRCige/jJED6Ic8dKukjHNTV2PFTiKA==
+X-Received: by 2002:a17:90a:c398:: with SMTP id h24mr9332156pjt.73.1637407679121;
+        Sat, 20 Nov 2021 03:27:59 -0800 (PST)
+Received: from vultr.guest ([66.42.104.82])
+        by smtp.gmail.com with ESMTPSA id q17sm2835490pfu.117.2021.11.20.03.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Nov 2021 03:27:58 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        oliver.sang@intel.com, lkp@intel.com,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH v2 0/7] task comm cleanups 
+Date:   Sat, 20 Nov 2021 11:27:31 +0000
+Message-Id: <20211120112738.45980-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Received: by 2002:a19:7b01:0:0:0:0:0 with HTTP; Sat, 20 Nov 2021 03:05:46
- -0800 (PST)
-Reply-To: mduku5550@gmail.com
-From:   mr michel <mondy.mike012@googlemail.com>
-Date:   Sat, 20 Nov 2021 11:05:46 +0000
-Message-ID: <CADr-3kdYQFi_fzegsfJ+Xa_tmjXeAY1do9B-ATQR34LpJn0wVQ@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Greetings,
+This patchset is part of the patchset "extend task comm from 16 to 24"[1].
+Now we have different opinion that dynamically allocates memory to store
+kthread's long name into a separate pointer, so I decide to take the useful
+cleanups apart from the original patchset and send it separately[2].
 
-With due respect to your person, I make this contact with you as I
-believe that you can be of great assistance to me. I need your urgent
-assistance in transferring the sum of $11.3million to your private
-account where this money can be shared between us.
+These useful cleanups can make the usage around task comm less
+error-prone. Furthermore, it will be useful if we want to extend task
+comm in the future.
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+[1]. https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
+[2]. https://lore.kernel.org/lkml/CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com/
 
-Thanks,
-Duku Michel.
+Changes since v1:
+- improve the subject and description
+- add comment to explain the hard-coded 16 in patch #4
+
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Petr Mladek <pmladek@suse.com>
+
+Yafang Shao (7):
+  fs/exec: replace strlcpy with strscpy_pad in __set_task_comm
+  fs/exec: replace strncpy with strscpy_pad in __get_task_comm
+  drivers/infiniband: replace open-coded string copy with get_task_comm
+  fs/binfmt_elf: replace open-coded string copy with get_task_comm
+  samples/bpf/test_overhead_kprobe_kern: replace bpf_probe_read_kernel
+    with bpf_probe_read_kernel_str to get task comm
+  tools/bpf/bpftool/skeleton: replace bpf_probe_read_kernel with
+    bpf_probe_read_kernel_str to get task comm
+  tools/testing/selftests/bpf: replace open-coded 16 with TASK_COMM_LEN
+
+ drivers/infiniband/hw/qib/qib.h                       |  2 +-
+ drivers/infiniband/hw/qib/qib_file_ops.c              |  2 +-
+ fs/binfmt_elf.c                                       |  2 +-
+ fs/exec.c                                             |  5 +++--
+ include/linux/elfcore-compat.h                        |  5 +++++
+ include/linux/elfcore.h                               |  5 +++++
+ include/linux/sched.h                                 |  9 +++++++--
+ samples/bpf/offwaketime_kern.c                        |  4 ++--
+ samples/bpf/test_overhead_kprobe_kern.c               | 11 ++++++-----
+ samples/bpf/test_overhead_tp_kern.c                   |  5 +++--
+ tools/bpf/bpftool/skeleton/pid_iter.bpf.c             |  4 ++--
+ .../testing/selftests/bpf/progs/test_stacktrace_map.c |  6 +++---
+ tools/testing/selftests/bpf/progs/test_tracepoint.c   |  6 +++---
+ 13 files changed, 42 insertions(+), 24 deletions(-)
+
+-- 
+2.17.1
+
