@@ -2,59 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3FF457ACA
-	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 04:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234BE457ACB
+	for <lists+bpf@lfdr.de>; Sat, 20 Nov 2021 04:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhKTDgI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Nov 2021 22:36:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
+        id S234831AbhKTDgJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Nov 2021 22:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbhKTDgE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Nov 2021 22:36:04 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5345C061574
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:32:58 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id r130so10945692pfc.1
-        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:32:58 -0800 (PST)
+        with ESMTP id S234360AbhKTDgF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Nov 2021 22:36:05 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E5CC06173E
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:33:01 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id m24so9563615pls.10
+        for <bpf@vger.kernel.org>; Fri, 19 Nov 2021 19:33:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZmF24yrzEw00EzVXLQohzQU9+idce0hqZv+zSNXjQLQ=;
-        b=GNtAo1vJ7eI8VPa63p198k1v9OPhBJ5KAPcxelrlGsV8kUO0SMCI2jh8t1mKrSM1rX
-         DqsJYZtYT63SbFiId3MSJahAB+M2isls00iX46few1zDPCSTnLwAvPkgvfpaYEFnF49u
-         AqS0Myp5SoZw9aARCqYwkOPSKhb0/LiPvXfrAsU94Z0CG9qyXPU+yXHcItB1dryAyOht
-         biqv2RE4dUo913hn1E9sRBDtY9pmMLo59HdLVNDJ215+ADslUk0G5zlW1LxGnRPT3Mvq
-         ulc67smy9+afW5TbveDzzi4ih/eyik9v/ebnGKW782BGZA+lxHWTKYJFSxkjKYSUsygg
-         tLhw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IEnoFM2S78w2/4v1vtXOkI2w0mmp3ovJnlD0eVLOwvw=;
+        b=pbIYWaAyCM29AblfAMxMdr29uhZ7VuzuMy4WGDNjdWkV+mr5uEn7irRGrSgxNoUaaQ
+         qxIQoswLiP/mU5xekTlaMVrBQ+jogY6I7vRAXQ7TZQ+1psfLw7NApGbEHxVjSbXN2om6
+         6SLgYnySpJ9F63cJER+lTlOndNB1yK3N4e5blbdk0lr0f08PlA7N36tmgqquNLf5q8p6
+         En5dWsWbIUknbND2raccWPm8JFLD4uSQndAlRQiP84VGksf1OkrTasOGgRfefftzff1F
+         pIVhWMjhH81KtPsrFpPcf/FFalajiDLR61ExEmGawtdRYCRJ3Q3VxEYv7pSbn6ZrM0Sa
+         FBvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZmF24yrzEw00EzVXLQohzQU9+idce0hqZv+zSNXjQLQ=;
-        b=3WWwvyMnvF1AE56lPFwaVc6vGeNrlebpIT0L3yzUtm4SgE1pWFa1RccVSkPEVFm1WO
-         ISY58NxxPI9NvPycNcnZwH/MR84rs0PAxqKxXF6ik6SlPRNrzgOynRhhUqhVksAU715v
-         BaynTuhVkxg5mBJB7YMMsDiQ/yorf830m4StayPA1FtkKHc+pdJ70+pAxUXPcbiDeQAp
-         /N7xzfOKT9DeKanfQi36EV6zszFSRZqWbPY+Lb3edRZ7Y/h0qtMu/C45Hx1IHcPoGeAD
-         mk5uY16jkSFoBcAbpszQji/nQCxC07IYm4m5Uuu7txb17EVqLAGCw3ObsVV7snmCJ8md
-         CYDQ==
-X-Gm-Message-State: AOAM5310rIsj/TTaToJQRh9gSUo3LNtBxp3Ngbl+SsF42TX0ZfHagzfH
-        h3qyymJSUfNGNdLIuBcyn8I=
-X-Google-Smtp-Source: ABdhPJz1W7wWkr2R+GoMnDvq2Bbms7jEOrRojkpNPhleA/8anNAiJwA1XNf6pFLXsmLT6hid2pYV6w==
-X-Received: by 2002:a63:2b03:: with SMTP id r3mr6156344pgr.328.1637379178137;
-        Fri, 19 Nov 2021 19:32:58 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IEnoFM2S78w2/4v1vtXOkI2w0mmp3ovJnlD0eVLOwvw=;
+        b=ifdlJG+8j7TDE1w+uLg1qnlz6QwRFa9jrFVI+afw4M3qkM938WXYd3gtEOm8lcedr2
+         C8hUFn7BVpF7d7NkZHQH7A+5AjfwBHj/4/SzQ/1uHW7WRDvQ/Ukax55K54mVcpqbyV8W
+         mGLNrC3X6J2eDhr138bldXTj8SKZSXoa+2SYbmuqxrvV4Ho+Ms7hd8n1u03uwo8vIhJO
+         QQUzAKSDm7AZXpKcp80XkJhbTcPz/KSSee1Dwzj3Lstzdcrf5k9JPUINwkEt0dbqNC9v
+         HfuFJbWR+v0PsBR9uispnwaAr0qmuUTgjOHeS3n0MaD23McWHqKCYGhyzh8tYRNHS23l
+         VkcQ==
+X-Gm-Message-State: AOAM532+MNhkjbqpZtQSw8i8R1V45aCCJlz5+RTRCE10PsbzmnMDXVs8
+        kS+c7yeazNFgu26zlMukIuc=
+X-Google-Smtp-Source: ABdhPJxRigBAnTncDMqQTqhUJeYeafsX0MitMC/4WSHmTjetpNY3v7wVvoUk9d4aHYsExBeEqaREqw==
+X-Received: by 2002:a17:90b:351:: with SMTP id fh17mr6382132pjb.19.1637379180867;
+        Fri, 19 Nov 2021 19:33:00 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:a858])
-        by smtp.gmail.com with ESMTPSA id w37sm775273pgk.87.2021.11.19.19.32.56
+        by smtp.gmail.com with ESMTPSA id me7sm13752360pjb.9.2021.11.19.19.33.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Nov 2021 19:32:57 -0800 (PST)
+        Fri, 19 Nov 2021 19:33:00 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v3 bpf-next 00/13] bpf: CO-RE support in the kernel
-Date:   Fri, 19 Nov 2021 19:32:42 -0800
-Message-Id: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
+Subject: [PATCH v3 bpf-next 01/13] libbpf: Replace btf__type_by_id() with btf_type_by_id().
+Date:   Fri, 19 Nov 2021 19:32:43 -0800
+Message-Id: <20211120033255.91214-2-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
+References: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -63,74 +65,122 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-v2->v3:
-. addressed Andrii's feedback in every patch.
-  New field in union bpf_attr changed from "core_relo" to "core_relos".
-. added one more test and checkpatch.pl-ed the set.
+To prepare relo_core.c to be compiled in the kernel and the user space
+replace btf__type_by_id with btf_type_by_id.
 
-v1->v2:
-. Refactor uapi to pass 'struct bpf_core_relo' from LLVM into libbpf and further
-into the kernel instead of bpf_core_apply_relo() bpf helper. Because of this
-change the CO-RE algorithm has an ability to log error and debug events through
-the standard bpf verifer log mechanism which was not possible with helper
-approach.
-. #define RELO_CORE macro was removed and replaced with btf_member_bit_offset() patch.
+In libbpf btf__type_by_id and btf_type_by_id have different behavior.
 
-This set introduces CO-RE support in the kernel.
-There are several reasons to add such support:
-1. It's a step toward signed BPF programs.
-2. It allows golang like languages that struggle to adopt libbpf
-   to take advantage of CO-RE powers.
-3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
-   by the verifier purely based on +10 offset. If R1 points to a union
-   the verifier picks one of the fields at this offset.
-   With CO-RE the kernel can disambiguate the field access.
+bpf_core_apply_relo_insn() needs behavior of uapi btf__type_by_id
+vs internal btf_type_by_id, but type_id range check is already done
+in bpf_core_apply_relo(), so it's safe to replace it everywhere.
+The kernel btf_type_by_id() does the check anyway. It doesn't hurt.
 
-Alexei Starovoitov (13):
-  libbpf: Replace btf__type_by_id() with btf_type_by_id().
-  bpf: Rename btf_member accessors.
-  bpf: Prepare relo_core.c for kernel duty.
-  bpf: Define enum bpf_core_relo_kind as uapi.
-  bpf: Pass a set of bpf_core_relo-s to prog_load command.
-  bpf: Add bpf_core_add_cands() and wire it into
-    bpf_core_apply_relo_insn().
-  libbpf: Use CO-RE in the kernel in light skeleton.
-  libbpf: Support init of inner maps in light skeleton.
-  selftests/bpf: Add lskel version of kfunc test.
-  selftests/bpf: Improve inner_map test coverage.
-  selftests/bpf: Convert map_ptr_kern test to use light skeleton.
-  selftests/bpf: Additional test for CO-RE in the kernel.
-  selftest/bpf: Revert CO-RE removal in test_ksyms_weak.
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ tools/lib/bpf/btf.c             |  2 +-
+ tools/lib/bpf/libbpf_internal.h |  2 +-
+ tools/lib/bpf/relo_core.c       | 19 ++++++++-----------
+ 3 files changed, 10 insertions(+), 13 deletions(-)
 
- include/linux/bpf.h                           |  11 +
- include/linux/btf.h                           |  89 ++++++++-
- include/uapi/linux/bpf.h                      |  78 +++++++-
- kernel/bpf/Makefile                           |   4 +
- kernel/bpf/bpf_struct_ops.c                   |   6 +-
- kernel/bpf/btf.c                              | 188 +++++++++++++++++-
- kernel/bpf/syscall.c                          |   2 +-
- kernel/bpf/verifier.c                         |  77 +++++++
- net/ipv4/bpf_tcp_ca.c                         |   6 +-
- tools/include/uapi/linux/bpf.h                |  78 +++++++-
- tools/lib/bpf/bpf_gen_internal.h              |   4 +
- tools/lib/bpf/btf.c                           |   2 +-
- tools/lib/bpf/gen_loader.c                    |  68 ++++++-
- tools/lib/bpf/libbpf.c                        | 116 +++++++----
- tools/lib/bpf/libbpf_internal.h               |   2 +-
- tools/lib/bpf/relo_core.c                     | 179 +++++++++++------
- tools/lib/bpf/relo_core.h                     |  71 +------
- tools/testing/selftests/bpf/Makefile          |   5 +-
- .../selftests/bpf/prog_tests/core_kern.c      |  14 ++
- .../selftests/bpf/prog_tests/kfunc_call.c     |  24 +++
- .../selftests/bpf/prog_tests/ksyms_btf.c      |   4 +-
- .../selftests/bpf/prog_tests/map_ptr.c        |  16 +-
- tools/testing/selftests/bpf/progs/core_kern.c |  60 ++++++
- .../selftests/bpf/progs/map_ptr_kern.c        |  16 +-
- .../selftests/bpf/progs/test_ksyms_weak.c     |   2 +-
- 25 files changed, 911 insertions(+), 211 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/core_kern.c
- create mode 100644 tools/testing/selftests/bpf/progs/core_kern.c
-
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index e97217a77196..4a1115eb39b4 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -454,7 +454,7 @@ const struct btf *btf__base_btf(const struct btf *btf)
+ }
+ 
+ /* internal helper returning non-const pointer to a type */
+-struct btf_type *btf_type_by_id(struct btf *btf, __u32 type_id)
++struct btf_type *btf_type_by_id(const struct btf *btf, __u32 type_id)
+ {
+ 	if (type_id == 0)
+ 		return &btf_void;
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index f7ac349650a1..1e1250e1dfa3 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -172,7 +172,7 @@ static inline void *libbpf_reallocarray(void *ptr, size_t nmemb, size_t size)
+ struct btf;
+ struct btf_type;
+ 
+-struct btf_type *btf_type_by_id(struct btf *btf, __u32 type_id);
++struct btf_type *btf_type_by_id(const struct btf *btf, __u32 type_id);
+ const char *btf_kind_str(const struct btf_type *t);
+ const struct btf_type *skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id);
+ 
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index b5b8956a1be8..c0904f4cb514 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -51,7 +51,7 @@ static bool is_flex_arr(const struct btf *btf,
+ 		return false;
+ 
+ 	/* has to be the last member of enclosing struct */
+-	t = btf__type_by_id(btf, acc->type_id);
++	t = btf_type_by_id(btf, acc->type_id);
+ 	return acc->idx == btf_vlen(t) - 1;
+ }
+ 
+@@ -388,7 +388,7 @@ static int bpf_core_match_member(const struct btf *local_btf,
+ 		return 0;
+ 
+ 	local_id = local_acc->type_id;
+-	local_type = btf__type_by_id(local_btf, local_id);
++	local_type = btf_type_by_id(local_btf, local_id);
+ 	local_member = btf_members(local_type) + local_acc->idx;
+ 	local_name = btf__name_by_offset(local_btf, local_member->name_off);
+ 
+@@ -580,7 +580,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+ 		return -EUCLEAN; /* request instruction poisoning */
+ 
+ 	acc = &spec->spec[spec->len - 1];
+-	t = btf__type_by_id(spec->btf, acc->type_id);
++	t = btf_type_by_id(spec->btf, acc->type_id);
+ 
+ 	/* a[n] accessor needs special handling */
+ 	if (!acc->name) {
+@@ -729,7 +729,7 @@ static int bpf_core_calc_enumval_relo(const struct bpf_core_relo *relo,
+ 	case BPF_ENUMVAL_VALUE:
+ 		if (!spec)
+ 			return -EUCLEAN; /* request instruction poisoning */
+-		t = btf__type_by_id(spec->btf, spec->spec[0].type_id);
++		t = btf_type_by_id(spec->btf, spec->spec[0].type_id);
+ 		e = btf_enum(t) + spec->spec[0].idx;
+ 		*val = e->val;
+ 		break;
+@@ -805,8 +805,8 @@ static int bpf_core_calc_relo(const char *prog_name,
+ 		if (res->orig_sz != res->new_sz) {
+ 			const struct btf_type *orig_t, *new_t;
+ 
+-			orig_t = btf__type_by_id(local_spec->btf, res->orig_type_id);
+-			new_t = btf__type_by_id(targ_spec->btf, res->new_type_id);
++			orig_t = btf_type_by_id(local_spec->btf, res->orig_type_id);
++			new_t = btf_type_by_id(targ_spec->btf, res->new_type_id);
+ 
+ 			/* There are two use cases in which it's safe to
+ 			 * adjust load/store's mem size:
+@@ -1054,7 +1054,7 @@ static void bpf_core_dump_spec(int level, const struct bpf_core_spec *spec)
+ 	int i;
+ 
+ 	type_id = spec->root_type_id;
+-	t = btf__type_by_id(spec->btf, type_id);
++	t = btf_type_by_id(spec->btf, type_id);
+ 	s = btf__name_by_offset(spec->btf, t->name_off);
+ 
+ 	libbpf_print(level, "[%u] %s %s", type_id, btf_kind_str(t), str_is_empty(s) ? "<anon>" : s);
+@@ -1158,10 +1158,7 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+ 	int i, j, err;
+ 
+ 	local_id = relo->type_id;
+-	local_type = btf__type_by_id(local_btf, local_id);
+-	if (!local_type)
+-		return -EINVAL;
+-
++	local_type = btf_type_by_id(local_btf, local_id);
+ 	local_name = btf__name_by_offset(local_btf, local_type->name_off);
+ 	if (!local_name)
+ 		return -EINVAL;
 -- 
 2.30.2
 
