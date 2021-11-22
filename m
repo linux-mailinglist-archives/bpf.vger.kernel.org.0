@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CCB459877
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 00:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B317045988A
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 00:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhKVXkx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Nov 2021 18:40:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
+        id S231906AbhKVXuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Nov 2021 18:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhKVXkx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:40:53 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C93C061574
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 15:37:46 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id v64so54461871ybi.5
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 15:37:46 -0800 (PST)
+        with ESMTP id S230366AbhKVXuf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:50:35 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57608C061574
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 15:47:28 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id d10so54563291ybe.3
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 15:47:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BfAyVJ3cJVfTT2myVWz/jMktQfCq85CF7cMgcUWHAC8=;
-        b=q1F1L6UXOoWfkj6aGsTk8GIycyFuaCHOhcOft1iKoreT02xHdm4pxfFLddo2W++HPi
-         e2AfpW34mxrvdrQrOE9O53LL9BtzYKIU9Oq5DWUpTt3OZNc3zNWmW88+4JIrktxLjgLZ
-         Jb/5mFVBNnB2ecNwSsoh3pHHr/Ykb1OqcDjFu1lcu0ntFpOI76M2rYBUZcmfuJU8MVp4
-         DHcZQ+ooJpALPuqy1Fm/jLLJyYNqoNnfG4ILZ1d5k+PEsjLSgjJZD1UNNrJrn7M5DN7G
-         Rm0rMQa4oNs0hsa0Ir35TmUQD0Wdl+lN7mWFGTczlBp4CfZSo3X8q/ZeTc46XBZEork7
-         deUQ==
+        bh=9AIUvp/gVmEQH39qA+wOuvYK1TL/jLp9JHB/qjrH2zY=;
+        b=OIvNq3J2KPvmSnVdBbsG770nOdgbg2Z9Gfijs4rHHqE163IoN1MjgvdD6xUuJ7+Fi1
+         mbu57Fk2VH6dhFAJyxXd1Ykt7ZVu9K4dBYBN+pXf9KLV6+3jn8IaPZI8M8RCE4sf3D2Y
+         FvcDAIzf4haZC1B32JbeFWhXHAkJ8EFRQ82MkoV1t7PeuBkTYCtJ8/EcgZsq+9j8e+AW
+         z2MRgyQAQHyYxqjct6dNL7CmKnb71JOL3LIB77ovLA2DTcYo4atnHI54Y5X1AdPSR8wC
+         yEoAMftAP8WFgLsLbWl8BYjut0iheGqOCq+3fzuBDOiJF88VFp1XmGMMw6ugwm7Ptv8O
+         G1AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BfAyVJ3cJVfTT2myVWz/jMktQfCq85CF7cMgcUWHAC8=;
-        b=mcgP+hopVDe6Lnpv3b+5f1zALTJBtWcX/rAOKN+b3qz+DDoaSO5R4mO/H8h+3wUUiQ
-         ifROph+DIPL/PqCC5mqH3D3O4cDmSNleCOWj+kbmZOyMOCl2MpM3GtiDXmYqtYPQY8yj
-         b4AYbo4PngcR1J22WozHIDE1MrG9LU0P8fkxxH19uwAUvp7E9oXobUJqyEWqC3OtfNtj
-         jHUUr/i8Fc16ZIQ7euzYhhs4h310GoGSzW9vZZ1XBUa8pyQZXjzcgeXNI1wSMmqiavyR
-         Gay4IRxW+Oy/OM9P//t3Q0I8pUd0fFA5TtE6x/mgUwkuH5d7FUjDz7ZI8pMypmz5pVR7
-         4NHw==
-X-Gm-Message-State: AOAM530iMeDlvHtJlGV02mK1Q8fgHAF4LgIH9zKgzRkN1KSJVzbw2L1U
-        AIKKikqZ9rCV+iKZTdN5iOMrLYg62aGQd+yFhRw=
-X-Google-Smtp-Source: ABdhPJwelHlGO0QZ0856RhwJZ53fZ0xQef1dLfXfKEyfapAQIxz4G7hGk5BYzCZy+QYRjuaDYq2sqpG0Q2F7+860Zqc=
-X-Received: by 2002:a25:ccd4:: with SMTP id l203mr1140747ybf.225.1637624265336;
- Mon, 22 Nov 2021 15:37:45 -0800 (PST)
+        bh=9AIUvp/gVmEQH39qA+wOuvYK1TL/jLp9JHB/qjrH2zY=;
+        b=3N4kQYnVdshBBodJouGBwqvQ/SHGxrd8VBNnWsaSXi/mjiYY57ll5AjkYJ94UJJtaO
+         EKhNgJseXQB1L0Yz7oSjxTA0/0uxsDQDU2KgFspG3L4qWSQhfqQksOH9DwIM7aGqOSj3
+         VA2Gx4bzKNhItfcQncbF3EfQq2aNgbsVgXc2l+2qXC/qOEBJa9/wyo6kb+Dl4y9e0xQk
+         JTFTPWk7peMSf0pfmxzhsiccUSKBC6HHmcWSZPHs4UWgIiasD/mOZX9hPyFINzsFMIBU
+         BfBlJlDJzzDZil8cp1B/2k7j2R81Uq4s153IpbQUmptWZu9N1oq/lqCIj7ptLG6na3w1
+         vWWw==
+X-Gm-Message-State: AOAM532DRuIZR5MRCxcAbns11vQubV7nJOPH/pFEhL7TfiHOKhccCs5/
+        6u9gOaJ3Aa2dCkLN/cbWd4qCTjAmvHat+zfZqYQ=
+X-Google-Smtp-Source: ABdhPJwbNSPDR+7Dmj6mV3OtKsAhYpyYmB4LZiBYyKNVfL21yI/Ck3eL7sbB+I+nVML53vgZFAovFEpJ3SIn61kqBS8=
+X-Received: by 2002:a25:cec1:: with SMTP id x184mr1102784ybe.455.1637624847597;
+ Mon, 22 Nov 2021 15:47:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20211120033255.91214-1-alexei.starovoitov@gmail.com> <20211120033255.91214-6-alexei.starovoitov@gmail.com>
-In-Reply-To: <20211120033255.91214-6-alexei.starovoitov@gmail.com>
+References: <20211120033255.91214-1-alexei.starovoitov@gmail.com> <20211120033255.91214-7-alexei.starovoitov@gmail.com>
+In-Reply-To: <20211120033255.91214-7-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Nov 2021 15:37:34 -0800
-Message-ID: <CAEf4BzYh0PjU8JJpaRNwQojAh1=V3_J=Ym+xUXdTnD2nGyPRrw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 05/13] bpf: Pass a set of bpf_core_relo-s to
- prog_load command.
+Date:   Mon, 22 Nov 2021 15:47:16 -0800
+Message-ID: <CAEf4BzZWiXEi3FmBsAScPpUnuHzVHL64hXrBj46HQAmx_qUH5Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/13] bpf: Add bpf_core_add_cands() and wire
+ it into bpf_core_apply_relo_insn().
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,31 +66,54 @@ On Fri, Nov 19, 2021 at 7:33 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> struct bpf_core_relo is generated by llvm and processed by libbpf.
-> It's a de-facto uapi.
-> With CO-RE in the kernel the struct bpf_core_relo becomes uapi de-jure.
-> Add an ability to pass a set of 'struct bpf_core_relo' to prog_load command
-> and let the kernel perform CO-RE relocations.
->
-> Note the struct bpf_line_info and struct bpf_func_info have the same
-> layout when passed from LLVM to libbpf and from libbpf to the kernel
-> except "insn_off" fields means "byte offset" when LLVM generates it.
-> Then libbpf converts it to "insn index" to pass to the kernel.
-> The struct bpf_core_relo's "insn_off" field is always "byte offset".
+> Given BPF program's BTF perform a linear search through kernel BTFs for
+> a possible candidate.
+> Then wire the result into bpf_core_apply_relo_insn().
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  include/linux/bpf.h            | 11 +++++
->  include/uapi/linux/bpf.h       | 59 +++++++++++++++++++++++++-
->  kernel/bpf/btf.c               | 10 +++++
->  kernel/bpf/syscall.c           |  2 +-
->  kernel/bpf/verifier.c          | 77 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 59 +++++++++++++++++++++++++-
->  tools/lib/bpf/relo_core.h      | 53 -----------------------
->  7 files changed, 215 insertions(+), 56 deletions(-)
+>  kernel/bpf/btf.c | 136 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 135 insertions(+), 1 deletion(-)
 >
 
 [...]
+
+>  int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+>                    int relo_idx, void *insn)
+>  {
+> -       return -EOPNOTSUPP;
+> +       if (relo->kind != BPF_CORE_TYPE_ID_LOCAL) {
+> +               struct bpf_core_cand_list *cands;
+> +
+> +               cands = bpf_core_find_cands(ctx, relo->type_id);
+
+this is wrong for many reasons:
+
+1. you will overwrite previous ctx->cands, if it was already set,
+which leaks memory
+2. this list of candidates should be keyed by relo->type_id ("root
+type"). Different root types get their own independent lists; so it
+has to be some sort of look up table from type_id to a list of
+candidates.
+
+2) means that if you had a bunch of relos against struct task_struct,
+you'll crate a list of candidates when processing first relo that
+starts at task_struct. All the subsequent relos that have task_struct
+as root type will re-used that list and potentially trim it down. If
+there are some other relos against, say, struct mm_struct, they will
+have their independent list of candidates.
+
+
+> +               if (IS_ERR(cands)) {
+> +                       bpf_log(ctx->log, "target candidate search failed for %d\n",
+> +                               relo->type_id);
+> +                       return PTR_ERR(cands);
+> +               }
+> +               ctx->cands = cands;
+> +       }
+> +       return bpf_core_apply_relo_insn((void *)ctx->log, insn, relo->insn_off / 8,
+> +                                       relo, relo_idx, ctx->btf, ctx->cands);
+>  }
+> --
+> 2.30.2
+>
