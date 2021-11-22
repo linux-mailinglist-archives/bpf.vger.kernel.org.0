@@ -2,137 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43E2459030
-	for <lists+bpf@lfdr.de>; Mon, 22 Nov 2021 15:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9005B459056
+	for <lists+bpf@lfdr.de>; Mon, 22 Nov 2021 15:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239491AbhKVOar (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Nov 2021 09:30:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59002 "EHLO
+        id S237298AbhKVOl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Nov 2021 09:41:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21398 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239459AbhKVOaq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 22 Nov 2021 09:30:46 -0500
+        by vger.kernel.org with ESMTP id S235215AbhKVOlZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Nov 2021 09:41:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637591259;
+        s=mimecast20190719; t=1637591898;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zFQJvfa4OZk16n3wLOP2Dt0JQ9f6i9EOHANKKj/bnX8=;
-        b=YN+amN4jeUgIJQiA8mD8bm3nxIJun0qOw5Pmko36/y+GCU8ScGcm6921urjOITWhJiT/g2
-        wMezknNPzS50CUxcVYC8fqWz4MPkZOJd2huNpnt9vepOia0TWWKa+Daom8wQXhvoFE6H9w
-        YO/g8U5VADpEr/5/xzgqhTij3yIwJnk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=QRmIAGPqwXnlRks2d1cwbTHEDrQ1Q+ulK/8aQg4dlNs=;
+        b=XCJ0zXNMvCQgGpk/bgUc0bF1FdvkQfcaFHhmU2yfKHVtXdsxCOREwUHXdXMptny4wNeBnO
+        Tb0Gs3P2xI0o0NYnUe4zbiZ6jewFnyxFyp2Sr2TO6z0b+T1WXhJ98EjkR8OIFBOg7nqaC5
+        aByE6W6RK6NV4xCbWK3f1Bs629/vkpI=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-428-ctQ7vpQfNIiIFRCBlQYizw-1; Mon, 22 Nov 2021 09:27:11 -0500
-X-MC-Unique: ctQ7vpQfNIiIFRCBlQYizw-1
-Received: by mail-ed1-f71.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so14990147edq.8
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 06:27:10 -0800 (PST)
+ us-mta-123-T_1JrRU6NyC0y3aSh2WyeA-1; Mon, 22 Nov 2021 09:38:17 -0500
+X-MC-Unique: T_1JrRU6NyC0y3aSh2WyeA-1
+Received: by mail-ed1-f69.google.com with SMTP id i19-20020a05640242d300b003e7d13ebeedso14970793edc.7
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 06:38:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=zFQJvfa4OZk16n3wLOP2Dt0JQ9f6i9EOHANKKj/bnX8=;
-        b=O+OkVU69XfE/hgSOk87m7onSeSXneiVK06uQyzXYI1tF4o6Q2Z4zec8V16uF3O1PoE
-         89fq590XeV73zm8RCcw9NosdDeGGnak+ihgjiWFpKUkiQ/MF78u+MY+/PUqkeF15Qatw
-         CHXPvWGbTLrD2Vf0ecKmgbERpS/VRP+M9WQVIpHqOlk/OIxxAUhJKHNdV8T3pplBIjoP
-         9d00U4rleLUm7Eoo7WQP1tlwkpr2bRRvk4e0+JmYeo8AoOfikEwYblzL3i64kTXtrmyS
-         ilN+swovplCp1G2hJzkCIl7w4fDD8Bo7Ia9Zh6TRhHFDU+KhwlBrtGWXSA1MtKfqan4U
-         UaNA==
-X-Gm-Message-State: AOAM531vozECxIzb5S+u6KiItqhqYiQRdN4+mC9qZD55xF1pb1ycOYgD
-        Bu1mA1qD/jzUtTt+tZpS2DTZCfLPXqWMr26W6wHhgqmQd8ihR772B1m51ej0mFJWXKm3FdA67WC
-        1cNq6G8ZpwBQ0
-X-Received: by 2002:a17:906:31c2:: with SMTP id f2mr41581509ejf.341.1637591227495;
-        Mon, 22 Nov 2021 06:27:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy2CoDdLaLQFnvzR6cn6Ze4ae/9QmiYWP4g20CkeX0fiyRQRyHkXp+mxoV4rBTxK/5eB9/zSQ==
-X-Received: by 2002:a17:906:31c2:: with SMTP id f2mr41581454ejf.341.1637591227143;
-        Mon, 22 Nov 2021 06:27:07 -0800 (PST)
+         :message-id:mime-version;
+        bh=QRmIAGPqwXnlRks2d1cwbTHEDrQ1Q+ulK/8aQg4dlNs=;
+        b=aL1Vthhy7ecwyubTmm7OISxv9C8KZZujE6gH0xget/IjXxYro7Sa6vX0RRQgHFIN0C
+         FR0iqfjVfYDkSpURQgziX9pEMWnsP+Gn4vd8oQ9OXKW4njoS4AXgrS29ivssHoiEpbIq
+         mvRxGo/FEnMlhYv/WyESW2+aDcTuUpNZBHpTCEqb5SaKXARPLxCih1xP++M+zHgyRa3N
+         oOX2BadHjR28uqry+7XDxusB3D6G5H35pa62gITXggawnGcCoaJWgOGd7/3smZ2peF4o
+         JdvHTNmO/U22rEr9vE0EkGmZi3RzC9rU9LbkXMuZhdRCenvQl6zvZglfY6oTofh7Ksur
+         mwEQ==
+X-Gm-Message-State: AOAM5335hCwOefpxpImNMr0ktdzFLhTY2a8wQBaEgHnsM5LSAl1sRC+t
+        t1eJLsNX7CaAeKbuCAzdFQ1ZtkGgFuDBRdFKSfd8xiBknhZycvjVD4ZxlWGIRhZOrWWV3HQqvv4
+        bNAAWbrqCYzLV
+X-Received: by 2002:a05:6402:849:: with SMTP id b9mr33971796edz.371.1637591895758;
+        Mon, 22 Nov 2021 06:38:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx5mfOko3YHpF1iUTnlUbefbUEAWQuN71vmGW587xwaHHCSvDd0W0UGjkOJB3hp6R/+JcQeGw==
+X-Received: by 2002:a05:6402:849:: with SMTP id b9mr33971728edz.371.1637591895385;
+        Mon, 22 Nov 2021 06:38:15 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z6sm4327061edc.76.2021.11.22.06.27.02
+        by smtp.gmail.com with ESMTPSA id sc7sm4096953ejc.50.2021.11.22.06.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 06:27:03 -0800 (PST)
+        Mon, 22 Nov 2021 06:38:14 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1F391180270; Mon, 22 Nov 2021 15:27:02 +0100 (CET)
+        id DD90F180270; Mon, 22 Nov 2021 15:38:13 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 3/3] selftest/bpf/benchs: add bpf_for_each
- benchmark
-In-Reply-To: <CAEf4BzZKtV1_=s7mXUnvvR4BQT6CFm60uuc8F1gv5Hzb=_xkKQ@mail.gmail.com>
-References: <20211118010404.2415864-1-joannekoong@fb.com>
- <20211118010404.2415864-4-joannekoong@fb.com> <87r1bdemq4.fsf@toke.dk>
- <CAEf4BzZMJfSqx9wLq9ntSK+n4kE82S_ifgFhBVtjYiy0vz4Gyg@mail.gmail.com>
- <874k88e1or.fsf@toke.dk>
- <CAEf4BzZKtV1_=s7mXUnvvR4BQT6CFm60uuc8F1gv5Hzb=_xkKQ@mail.gmail.com>
+To:     "Loftus, Ciara" <ciara.loftus@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Cc:     "brouer@redhat.com" <brouer@redhat.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+Subject: RE: [RFC PATCH bpf-next 0/8] XDP_REDIRECT_XSK and Batched AF_XDP Rx
+In-Reply-To: <PH0PR11MB4791ABCE7F631A4BBEAF1B5E8E9C9@PH0PR11MB4791.namprd11.prod.outlook.com>
+References: <20211116073742.7941-1-ciara.loftus@intel.com>
+ <5a121fc4-fb6c-c70b-d674-9bf13c325b64@redhat.com>
+ <PH0PR11MB4791D63AFE9595CAA9A6EC378E999@PH0PR11MB4791.namprd11.prod.outlook.com>
+ <87mtm2g8r9.fsf@toke.dk>
+ <PH0PR11MB4791ABCE7F631A4BBEAF1B5E8E9C9@PH0PR11MB4791.namprd11.prod.outlook.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 22 Nov 2021 15:27:02 +0100
-Message-ID: <87lf1gcll5.fsf@toke.dk>
+Date:   Mon, 22 Nov 2021 15:38:13 +0100
+Message-ID: <87ilwkcl2i.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+"Loftus, Ciara" <ciara.loftus@intel.com> writes:
 
-> On Fri, Nov 19, 2021 at 5:04 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Thu, Nov 18, 2021 at 3:18 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
+>> "Loftus, Ciara" <ciara.loftus@intel.com> writes:
+>> 
+>> >> I'm fine with adding a new helper, but I don't like introducing a new
+>> >> XDP_REDIRECT_XSK action, which requires updating ALL the drivers.
 >> >>
->> >> Joanne Koong <joannekoong@fb.com> writes:
+>> >> With XDP_REDIRECT infra we beleived we didn't need to add more
+>> >> XDP-action code to drivers, as we multiplex/add new features by
+>> >> extending the bpf_redirect_info.
+>> >> In this extreme performance case, it seems the this_cpu_ptr "lookup" of
+>> >> bpf_redirect_info is the performance issue itself.
 >> >>
->> >> > Add benchmark to measure the overhead of the bpf_for_each call
->> >> > for a specified number of iterations.
->> >> >
->> >> > Testing this on qemu on my dev machine on 1 thread, the data is
->> >> > as follows:
->> >>
->> >> Absolute numbers from some random dev machine are not terribly useful;
->> >> others have no way of replicating your tests. A more meaningful
->> >> benchmark would need a baseline to compare to; in this case I guess t=
-hat
->> >> would be a regular loop? Do you have any numbers comparing the callba=
-ck
->> >> to just looping?
+>> >> Could you experiement with different approaches that modify
+>> >> xdp_do_redirect() to handle if new helper bpf_redirect_xsk was called,
+>> >> prior to this_cpu_ptr() call.
+>> >> (Thus, avoiding to introduce a new XDP-action).
 >> >
->> > Measuring empty for (int i =3D 0; i < N; i++) is meaningless, you shou=
-ld
->> > expect a number in billions of "operations" per second on modern
->> > server CPUs. So that will give you no idea. Those numbers are useful
->> > as a ballpark number of what's the overhead of bpf_for_each() helper
->> > and callbacks. And 12ns per "iteration" is meaningful to have a good
->> > idea of how slow that can be. Depending on your hardware it can be
->> > different by 2x, maybe 3x, but not 100x.
->> >
->> > But measuring inc + cmp + jne as a baseline is both unrealistic and
->> > doesn't give much more extra information. But you can assume 2B/s,
->> > give or take.
->> >
->> > And you also can run this benchmark on your own on your hardware to
->> > get "real" numbers, as much as you can expect real numbers from
->> > artificial microbenchmark, of course.
->> >
->> >
->> > I read those numbers as "plenty fast" :)
->>
->> Hmm, okay, fair enough, but I think it would be good to have the "~12 ns
->> per iteration" figure featured prominently in the commit message, then :)
->>
+>> > Thanks for your feedback Jesper.
+>> > I understand the hesitation of adding a new action. If we can achieve the
+>> same improvement without
+>> > introducing a new action I would be very happy!
+>> > Without new the action we'll need a new way to indicate that the
+>> bpf_redirect_xsk helper was
+>> > called. Maybe another new field in the netdev alongside the xsk_refcnt. Or
+>> else extend
+>> > bpf_redirect_info - if we find a new home for it that it's too costly to
+>> access.
+>> > Thanks for your suggestions. I'll experiment as you suggested and
+>> > report back.
+>> 
+>> I'll add a +1 to the "let's try to solve this without a new return code" :)
+>> 
+>> Also, I don't think we need a new helper either; the bpf_redirect()
+>> helper takes a flags argument, so we could just use ifindex=0,
+>> flags=DEV_XSK or something like that.
 >
-> We discussed with Joanne offline adding an ops_report_final() helper
-> that will output both throughput (X ops/s) and latency/overhead (
-> (1000000000/X) ns/op), so that no one had to do any math.
+> The advantage of a new helper is that we can access the netdev 
+> struct from it and check if there's a valid xsk stored in it, before
+> returning XDP_REDIRECT without the xskmap lookup. However,
+> I think your suggestion could work too. We would just
+> have to delay the check until xdp_do_redirect. At this point
+> though, if there isn't a valid xsk we might have to drop the packet
+> instead of falling back to the xskmap.
 
-Alright, sounds good, thanks!
+I think it's OK to require the user to make sure that there is such a
+socket loaded before using that flag...
+
+>> Also, I think the batching in the driver idea can be generalised: we
+>> just need to generalise the idea of "are all these packets going to the
+>> same place" and have a batched version of xdp_do_redirect(), no? The
+>> other map types do batching internally already, though, so I'm wondering
+>> why batching in the driver helps XSK?
+>> 
+>
+> With the current infrastructure figuring out if "all the packets are going
+> to the same place" looks like an expensive operation which could undo
+> the benefits of the batching that would come after it. We would need
+> to run the program N=batch_size times, store the actions and
+> bpf_redirect_info for each run and perform a series of compares. The new
+> action really helped here because it could easily indicate if all the
+> packets in a batch were going to the same place. But I understand it's
+> not an option. Maybe if we can mitigate the cost of accessing the
+> bpf_redirect_info as Jesper suggested, we can use a flag in it to signal
+> what the new action was signalling.
+
+Yes, it would probably require comparing the contents of the whole
+bpf_redirect_info, at least as it is now; but assuming we can find a way
+to mitigate the cost of accessing that structure, this may not be so
+bad, and I believe there is some potential for compressing the state
+further so we can get down to a single, or maybe two, 64-bit compares...
 
 -Toke
 
