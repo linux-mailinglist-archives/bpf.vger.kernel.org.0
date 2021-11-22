@@ -2,98 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282A745899D
-	for <lists+bpf@lfdr.de>; Mon, 22 Nov 2021 08:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C120458AEA
+	for <lists+bpf@lfdr.de>; Mon, 22 Nov 2021 09:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbhKVHJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Nov 2021 02:09:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S229906AbhKVI77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Nov 2021 03:59:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhKVHJd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Nov 2021 02:09:33 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32484C061714
-        for <bpf@vger.kernel.org>; Sun, 21 Nov 2021 23:06:27 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id p18-20020a17090ad31200b001a78bb52876so16065813pju.3
-        for <bpf@vger.kernel.org>; Sun, 21 Nov 2021 23:06:27 -0800 (PST)
+        with ESMTP id S229716AbhKVI77 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Nov 2021 03:59:59 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450F3C061574
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 00:56:53 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso27885282ote.0
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 00:56:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=rhg9TzsQGoRy8u1OLujkUnb4ClXkAMqCNEBp1eYj7W4=;
-        b=WKXNZRlrfWoEvbd3Mt43sBZcp9wgXb3skAh5izBElWBnr0tpnYwGDQC+yAADHI2lDp
-         guE2Q2gc52+yEiuMw1pHyyFssT+vqM8WQpQ1NipliQseEEXYaAPQ01jYM4WAzUkOM0Fy
-         uPH0xcHFEHECpzFVJUX5i8n7bSrSOiL8lQVRlWutemDwWH5VeL4Qvsxux45xeaPtw0Pz
-         /Dgi9MKBk5NBcCloWvcxKqtDvQExoEq4tsvTryTf6bUOzwEQAfkBGhoBtFN3i/mUTzgZ
-         difrDbraEYN5ybP1wVX4W+049BvzleSGzETJWQPx86KyvMwQZM73EYtZ47AJn8pT+L30
-         Oc9g==
+        bh=KAbhMQt4nCgWni6Pt6IcGkUBR1XzjBlAXekRoPKEnOo=;
+        b=bnJk9BXBDIBwCHVMymSn+XZSXxXGkTDS26rAaw+t2tmPHCjM1BO5uEmmksaO1x63EP
+         UQ3/d5XMcs7U0gIXjrA2VGOgouZwnkK+Ugdk8elkP/fgE3HDqSOP/KWE09Kb6FH24r2M
+         enmJdAvpuEmWqlMbHJtMVGQ1QWHFek8tiSDxdlvRA96zHJXJ36vVefZhanUYOMXLRWG+
+         IStesZwGFSKM6d+BN86t++1phv4Z6Pko82yxFCWvdt8WLpfw/ATmMHnTaHdCDd6eH1c+
+         q9pXS8T0/Ro/rSizWxAOwFdqHVssyI1Uxn1mJ33qXG97VPx5z2yhTBv0ESd5BbyFP3Vu
+         /JsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rhg9TzsQGoRy8u1OLujkUnb4ClXkAMqCNEBp1eYj7W4=;
-        b=Ch8eFMdHlzSEXDXVMd922MqROZd/T6OZKv/FKswTY82lkd/+AWefMd6bm5OHgNeVNb
-         yg5IWv0kbn/9tXv8/3PIJheY34Ko35bKTOsVhmpfoz+0Q3y36nOts/qdbYReGOOs+a53
-         VDP2gmQMUekuNoG5DB8RwNshwbBUUWpmj6p5PgG8rnIQp8FJLKoPTnc5nltsgoVnWEig
-         clPI/5gfg5oQTNI9hWkPyEFWeXhkPNA7CrozqpUe7cS8namxmw9Qy/AQOJcukrUyg+eD
-         Qose6hr4lXwC7O5gIieJg9qb3/P3ctsrb91EvGFoJy7hoHX0TT5ySYmNuk4kJdPghZXL
-         rP5w==
-X-Gm-Message-State: AOAM533o2CRuTyL+4LOPOEiOHxicIAhsKWLUsGiSkEfkvzJt/e3RHlSY
-        owU89TjK7e1qlw0cm9JMAnEfYw==
-X-Google-Smtp-Source: ABdhPJwAGuNBy2ut5ulgnJSYyO0MNQHn/zLEJfG36fGPimpq7gsDYUwwU4YvFRXGfyX0qYRyqpqKnQ==
-X-Received: by 2002:a17:90a:3009:: with SMTP id g9mr28516847pjb.205.1637564786708;
-        Sun, 21 Nov 2021 23:06:26 -0800 (PST)
-Received: from localhost.localdomain ([156.146.34.70])
-        by smtp.gmail.com with ESMTPSA id d9sm14281305pjs.2.2021.11.21.23.06.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 23:06:26 -0800 (PST)
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: [PATCH] selftests/bpf: Fix trivial typo
-Date:   Sun, 21 Nov 2021 23:05:30 -0800
-Message-Id: <20211122070528.837806-1-dfustini@baylibre.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=KAbhMQt4nCgWni6Pt6IcGkUBR1XzjBlAXekRoPKEnOo=;
+        b=CUeuE5TtEwopfvZQ0zVrHm849DF5Pj1Z5b+3OJozjTV8KDFqaYMWBcRLVMXM5dZAe6
+         gBNSovV0hNoqZbnqGanIVnUFeGcOlxQAEay2u6zn4uONrltfbmaks0SU5AhcBMiQ991T
+         g7lxCRt0tk2G/Nzk4YImqwauLDJJ/lYelvhs9nFRlKqKZg1HuyQ3kwg+iL4KCf4r6faX
+         +vQ2ZWdMpnjP0QglOIg8ON6nNRQAu9P1HvoVBjEBdJgFlLUaZCA55XcVLetGyEJogDdy
+         XEyX3YIKiXNTxrA6VFSxHuXc9O3w7FmDLB4Nx+qIcC7uBIPtnZh5QyHg/zDy0Z177T4I
+         ayYg==
+X-Gm-Message-State: AOAM5334OfPbh75Eczp3BZb1uR82qznmLFDd98RM469sQRcluaeYLON7
+        nXu9m9jg/xVZr2EPGl4YHNtzPhQe7ALPVPYd07Y=
+X-Google-Smtp-Source: ABdhPJzNWL0EX1n5YSx0w4mnRIokbe1AbOH12+SRJRqry0XBeWRDXpqotIDPQk9o2sXkl6Dc/x8fkCgcC4qXFxKNtio=
+X-Received: by 2002:a05:6830:195:: with SMTP id q21mr22903584ota.355.1637571412553;
+ Mon, 22 Nov 2021 00:56:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a4a:7a49:0:0:0:0:0 with HTTP; Mon, 22 Nov 2021 00:56:51
+ -0800 (PST)
+Reply-To: justinseydou@gmail.com
+From:   Justin Seydou <hamidfaith031@gmail.com>
+Date:   Mon, 22 Nov 2021 09:56:52 +0100
+Message-ID: <CAFepVPoo4nr8LRjnba7Gwmqv5Mh-wsT53pT6s0oLCV1Gz38XYg@mail.gmail.com>
+Subject: Proposal
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix trivial typo in comment from 'oveflow' to 'overflow'.
+Estimado amigo,
 
-Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Drew Fustini <dfustini@baylibre.com>
----
- tools/testing/selftests/bpf/prog_tests/btf_dump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Con mucha sinceridad de coraz=C3=B3n les escribo para informarles sobre un =
+negocio
+propuesta que tengo que me gustar=C3=ADa manejar con ustedes.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-index aa76360d8f49..87e907add701 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -761,7 +761,7 @@ static void test_btf_dump_struct_data(struct btf *btf, struct btf_dump *d,
- 	/* overflow bpf_sock_ops struct with final element nonzero/zero.
- 	 * Regardless of the value of the final field, we don't have all the
- 	 * data we need to display it, so we should trigger an overflow.
--	 * In other words oveflow checking should trump "is field zero?"
-+	 * In other words overflow checking should trump "is field zero?"
- 	 * checks because if we've overflowed, it shouldn't matter what the
- 	 * field is - we can't trust its value so shouldn't display it.
- 	 */
--- 
-2.27.0
+Indique amablemente su inter=C3=A9s para habilitar
+Yo les doy m=C3=A1s detalles de la propuesta.
 
+Esperando por tu respuesta.
+
+Atentamente,
+
+Se=C3=B1or Justin Seydou.
+
+
+
+
+Dear friend,
+
+With much sincerity of heart I write to inform you about a business
+proposal I have which I would like to handle with you.
+
+Kindly indicate your interest so as to enable
+me give you more details of the proposal.
+
+Waiting for your response.
+
+Yours faithfully,
+
+Mr.Justin Seydou.
