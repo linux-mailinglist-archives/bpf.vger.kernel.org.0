@@ -2,99 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CF8459B51
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 05:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE851459B52
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 05:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhKWE71 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Nov 2021 23:59:27 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55192 "EHLO
+        id S232042AbhKWE73 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Nov 2021 23:59:29 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39686 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232042AbhKWE7Z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 22 Nov 2021 23:59:25 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN0KvY3027315
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 20:56:17 -0800
+        by vger.kernel.org with ESMTP id S232196AbhKWE73 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Nov 2021 23:59:29 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN1AAvB032287
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 20:56:21 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=qtjS8xP6CrGJj3lDFdR91pFv2LGHHb1sQvlyBlNayAs=;
- b=MY21VKElWfzlEd1MtGYbdv6feLGpk7fpxr5o/de0/AvOlDy0w55AfN5UvmXTMojgQvil
- Ak89vYf2hpC5kYRhYtjlDVYn7f5woiX5ZZ+W76s1yjeHUWqI7kunQrcDuYDUAdMfGnfF
- YqEZndG2BSsI2MPS/t8VLRopSspgxAASIWs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cgnnth8xa-3
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=a78C0wwhT21pTsAPYqJfGkREY3KHax2NpA1BpwS6jbI=;
+ b=RZSiXQw9rWwDu+/3zi4slA/ooYK7dHSD0EjOWSDEAK7hr70dj+UPuAoEr1TvAIEhulRQ
+ QnYqsQ+ka7B0zBG45pqj4W2HlxJ3jkFtT/c6CpmzLM3Syhb8iMFiNiuGii0hI2ZT79In
+ oK6Z3pT2ZTkY7+5HVbkV8Ag11OLId4XFWWc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cgpcy0vkx-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 20:56:17 -0800
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 20:56:21 -0800
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 22 Nov 2021 20:56:16 -0800
+ 15.1.2308.14; Mon, 22 Nov 2021 20:56:18 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 50B092CD493D; Mon, 22 Nov 2021 20:56:12 -0800 (PST)
+        id 8CF322CD4951; Mon, 22 Nov 2021 20:56:17 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
         <dwarves@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH dwarves v2 0/4] btf: support btf_type_tag attribute
-Date:   Mon, 22 Nov 2021 20:56:12 -0800
-Message-ID: <20211123045612.1387544-1-yhs@fb.com>
+Subject: [PATCH dwarves v2 1/4] libbpf: sync with latest libbpf repo
+Date:   Mon, 22 Nov 2021 20:56:17 -0800
+Message-ID: <20211123045617.1387921-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211123045612.1387544-1-yhs@fb.com>
+References: <20211123045612.1387544-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: -rB6ZZ0KHmH-f_wBBlv4MesyPUZrsNso
-X-Proofpoint-GUID: -rB6ZZ0KHmH-f_wBBlv4MesyPUZrsNso
+X-Proofpoint-ORIG-GUID: BZMBDavH62mhYOQZB2sYUhMHBndNLU0N
+X-Proofpoint-GUID: BZMBDavH62mhYOQZB2sYUhMHBndNLU0N
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-23_01,2021-11-22_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
- mlxlogscore=803 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=791
+ suspectscore=0 spamscore=0 clxscore=1015 phishscore=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2111230025
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-btf_type_tag is a new llvm type attribute which is used similar
-to kernel __user/__rcu attributes. The format of btf_type_tag looks like
-  __attribute__((btf_type_tag("tag1")))
-For the case where the attribute applied to a pointee like
-  #define __tag1 __attribute__((btf_type_tag("tag1")))
-  #define __tag2 __attribute__((btf_type_tag("tag2")))
-  int __tag1 * __tag1 __tag2 *g;
-the information will be encoded in dwarf.
+Sync up to commit 94a49850c5ee ("Makefile: enforce gnu89 standard").
+This is needed to support BTF_KIND_TYPE_TAG.
 
-In BTF, the attribute is encoded as a new kind
-BTF_KIND_TYPE_TAG and latest bpf-next supports it.
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ lib/bpf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The patch added support in pahole, specifically
-converts llvm dwarf btf_type_tag attributes to
-BTF types. Please see individual patches for details.
-
-Changelog:
-  v1 -> v2:
-     - reorg an if condition to reduce nesting level.
-     - add more comments to explain how to chain type tag types.
-
-Yonghong Song (4):
-  libbpf: sync with latest libbpf repo
-  dutil: move DW_TAG_LLVM_annotation definition to dutil.h
-  dwarf_loader: support btf_type_tag attribute
-  btf_encoder: support btf_type_tag attribute
-
- btf_encoder.c  |   7 +++
- dutil.h        |   4 ++
- dwarf_loader.c | 140 ++++++++++++++++++++++++++++++++++++++++++++++---
- dwarves.h      |  38 +++++++++++++-
- lib/bpf        |   2 +-
- pahole.c       |   8 +++
- 6 files changed, 190 insertions(+), 9 deletions(-)
-
+diff --git a/lib/bpf b/lib/bpf
+index f05791d..94a4985 160000
+--- a/lib/bpf
++++ b/lib/bpf
+@@ -1 +1 @@
+-Subproject commit f05791d8cfcbbf9092b4099b9d011bb72e241ef8
++Subproject commit 94a49850c5ee61ea02dfcbabf48013391e8cecdf
 --=20
 2.30.2
 
