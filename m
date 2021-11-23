@@ -2,110 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A5645AB46
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 19:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FE445AB4E
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 19:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhKWSfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 13:35:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbhKWSfi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:35:38 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1DCC061574;
-        Tue, 23 Nov 2021 10:32:30 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id j2so25340505ybg.9;
-        Tue, 23 Nov 2021 10:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nkN6cHNpZJHGhsD6Qe/d+ZTHGrl47aqCVGHqvTGs5Iw=;
-        b=MNE/Z9z19SHPijt3nHYq2UjoY+FZCklWbDg+gqqakj0m3yhe7o+73LhEGm/MYtkYDs
-         c0cwJmk/6F1VlnXzsSLrrAqPYQPhMhn/PeaEZmb3LNYIRwuhcSutxba8J9+7vsSMDVWz
-         mvdldHL/1ApGHIbUb+XOmgefZ32+TaBkFy4J8iELyW32Gcrrf7exf39cxCFofhFblKLL
-         H8PM4Fi3kXcQtUCtNNds5JwQo82LXp2jhzvwtcaCbHrXsEX3ndpvIF/W54iNvcU4H/cN
-         SyKOKTQvR1gG1N7R6DwKmoM41lrXfTqsPfFq2YvD0+uDK3T+nxEDwaJd5KW1zj7dD8NL
-         2HUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nkN6cHNpZJHGhsD6Qe/d+ZTHGrl47aqCVGHqvTGs5Iw=;
-        b=UzuVT+sXU++FGAdqy6mRM56G1J83VeEFaO3PI2HHLdcCtYPHm4I0Ivw1ZGe4KIKmxt
-         HkTx0mArUEZi7Le5oirf/sYEHpm68iRmNidDanOfR0Pzr55hcC7RZhl0u9IBAckt3mvs
-         TyP6xg8SzKlXusuopBohfJunZqKgGWRZkAuxHbKUHke3T//g0s6UfSyrjhC6IldJxEGM
-         iWgkYkDLFXunP80qiB7VJPVvbnM7n25Ci3+FvX1baWFayBMHRSBfg1/UmphRIWrEBelW
-         sFVXXXK8MN0zhvyxHHu3GKTL7APv5O03y/0H0C0NGEAkkRuIGkfFHxPCgYMTeXo0Cuis
-         7THg==
-X-Gm-Message-State: AOAM533ppO0T0BA/1NRI+5cGLsZLJAl97nIw+H7GW3M8pl4gsp0TU+fQ
-        wqOCeRshvsFJ3uvJ0gvjurTl7CL+X2ofYWj2vUA=
-X-Google-Smtp-Source: ABdhPJwW6suPgdDSkGUDJeKXHN7Ft3uKRlo+ggY7NF+39iY81m7jZLo1QL3mZHZ8fxUzw3LolPY92JyISMbGhFNtW0g=
-X-Received: by 2002:a05:6902:114a:: with SMTP id p10mr8548275ybu.267.1637692349746;
- Tue, 23 Nov 2021 10:32:29 -0800 (PST)
+        id S239210AbhKWShj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 13:37:39 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45472 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238991AbhKWShj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Nov 2021 13:37:39 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1ANGTjOZ022785
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 10:34:30 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=yW5P0kp4PoxHVzjM73dJtvjrt4icaPG2wHRgl8enhNg=;
+ b=Q49E4FrZSdFP6N0BfSEUMj2PFoITOYGvLu94obHA64XK33qqRCEUi0G1tnSJSlLnRHw6
+ k0Opa5P/FeEYZOoGVjyMoRCZWgKpfkaFzEbBm3uaSCm86hjeQcdt3I0eCl4eHrqjOzEB
+ ZM9IHLx07eoCnrJXLMIq4jl+o5L/VFzm4q8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 3ch3v50yaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 10:34:30 -0800
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 23 Nov 2021 10:34:29 -0800
+Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
+        id E00DB533D29F; Tue, 23 Nov 2021 10:34:21 -0800 (PST)
+From:   Joanne Koong <joannekoong@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
+Subject: [PATCH v2 bpf-next 0/4] Add bpf_loop_helper
+Date:   Tue, 23 Nov 2021 10:34:05 -0800
+Message-ID: <20211123183409.3599979-1-joannekoong@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211123045612.1387544-1-yhs@fb.com>
-In-Reply-To: <20211123045612.1387544-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Nov 2021 10:32:18 -0800
-Message-ID: <CAEf4BzbEMzpXKQ18FmFxgozAmbx8Mz87YamONpbAWaKDCULGjg@mail.gmail.com>
-Subject: Re: [PATCH dwarves v2 0/4] btf: support btf_type_tag attribute
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: 5J37OjtY54gCnIvylGs1waNqNKBzVjkV
+X-Proofpoint-GUID: 5J37OjtY54gCnIvylGs1waNqNKBzVjkV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-23_06,2021-11-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ mlxscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=592 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111230090
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 8:56 PM Yonghong Song <yhs@fb.com> wrote:
->
-> btf_type_tag is a new llvm type attribute which is used similar
-> to kernel __user/__rcu attributes. The format of btf_type_tag looks like
->   __attribute__((btf_type_tag("tag1")))
-> For the case where the attribute applied to a pointee like
->   #define __tag1 __attribute__((btf_type_tag("tag1")))
->   #define __tag2 __attribute__((btf_type_tag("tag2")))
->   int __tag1 * __tag1 __tag2 *g;
-> the information will be encoded in dwarf.
->
-> In BTF, the attribute is encoded as a new kind
-> BTF_KIND_TYPE_TAG and latest bpf-next supports it.
->
-> The patch added support in pahole, specifically
-> converts llvm dwarf btf_type_tag attributes to
-> BTF types. Please see individual patches for details.
->
-> Changelog:
->   v1 -> v2:
->      - reorg an if condition to reduce nesting level.
->      - add more comments to explain how to chain type tag types.
->
-> Yonghong Song (4):
->   libbpf: sync with latest libbpf repo
->   dutil: move DW_TAG_LLVM_annotation definition to dutil.h
->   dwarf_loader: support btf_type_tag attribute
->   btf_encoder: support btf_type_tag attribute
->
+This patchset add a new helper, bpf_loop.
 
-I thought that v1 was already applied, but either way LGTM. I'm not
-super familiar with the DWARF loader parts, so I mostly just read it
-very superficially :)
+One of the complexities of using for loops in bpf programs is that the ve=
+rifier
+needs to ensure that in every possibility of the loop logic, the loop wil=
+l always
+terminate. As such, there is a limit on how many iterations the loop can =
+do.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+The bpf_loop helper moves the loop logic into the kernel and can thereby
+guarantee that the loop will always terminate. The bpf_loop helper simpli=
+fies
+a lot of the complexity the verifier needs to check, as well as removes t=
+he
+constraint on the number of loops able to be run.
+
+From the test results, we see that using bpf_loop in place
+of the traditional for loop led to a decrease in verification time
+and number of bpf instructions by 100%. The benchmark results show
+that as the number of iterations increases, the overhead per iteration
+decreases.
+
+The high-level overview of the patches -
+Patch 1 - kernel-side + API changes for adding bpf_loop
+Patch 2 - tests
+Patch 3 - use bpf_loop in strobemeta + pyperf600 and measure verifier per=
+formance
+Patch 4 - benchmark for throughput + latency of bpf_loop call
+
+v1 -> v2:
+~ Change helper name to bpf_loop (instead of bpf_for_each)
+~ Set max nr_loops (~8 million loops) for bpf_loop call
+~ Split tests + strobemeta/pyperf600 changes into two patches
+~ Add new ops_report_final helper for outputting throughput and latency
 
 
->  btf_encoder.c  |   7 +++
->  dutil.h        |   4 ++
->  dwarf_loader.c | 140 ++++++++++++++++++++++++++++++++++++++++++++++---
->  dwarves.h      |  38 +++++++++++++-
->  lib/bpf        |   2 +-
->  pahole.c       |   8 +++
->  6 files changed, 190 insertions(+), 9 deletions(-)
->
-> --
-> 2.30.2
->
+Joanne Koong (4):
+  bpf: Add bpf_loop helper
+  selftests/bpf: Add bpf_loop test
+  selftests/bpf: measure bpf_loop verifier performance
+  selftest/bpf/benchs: add bpf_loop benchmark
+
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |  25 ++++
+ kernel/bpf/bpf_iter.c                         |  35 +++++
+ kernel/bpf/helpers.c                          |   2 +
+ kernel/bpf/verifier.c                         |  97 +++++++-----
+ tools/include/uapi/linux/bpf.h                |  25 ++++
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/bench.c           |  26 ++++
+ tools/testing/selftests/bpf/bench.h           |   1 +
+ .../selftests/bpf/benchs/bench_bpf_loop.c     | 105 +++++++++++++
+ .../bpf/benchs/run_bench_bpf_loop.sh          |  15 ++
+ .../selftests/bpf/benchs/run_common.sh        |  15 ++
+ .../selftests/bpf/prog_tests/bpf_loop.c       | 138 ++++++++++++++++++
+ .../bpf/prog_tests/bpf_verif_scale.c          |  12 ++
+ tools/testing/selftests/bpf/progs/bpf_loop.c  |  99 +++++++++++++
+ .../selftests/bpf/progs/bpf_loop_bench.c      |  26 ++++
+ tools/testing/selftests/bpf/progs/pyperf.h    |  71 ++++++++-
+ .../selftests/bpf/progs/pyperf600_bpf_loop.c  |   6 +
+ .../testing/selftests/bpf/progs/strobemeta.h  |  75 +++++++++-
+ .../selftests/bpf/progs/strobemeta_bpf_loop.c |   9 ++
+ 20 files changed, 745 insertions(+), 42 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_loop.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_loop=
+.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_loop.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_loop.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_loop_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/strobemeta_bpf_loop=
+.c
+
+--=20
+2.30.2
+
