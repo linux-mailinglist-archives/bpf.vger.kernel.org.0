@@ -2,260 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD4645AB30
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 19:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2A045AB36
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 19:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239603AbhKWSWz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 13:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbhKWSWy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:22:54 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D53CC061574
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 10:19:46 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id v7so92211ybq.0
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 10:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gBfKxrGQeJXS9J/dE4N41R9gdbfSYdgG2ZNjCxdXLJU=;
-        b=qD1G+14sbPSO0aQZyo8pmhfHKVt6glta2XSxXVLQsOoN/HgC7bEw54D0F98/SQo8kD
-         lq1MNLznq+Wryg2tRchQdkVKUuDXAkMBeY5rs8EO1JCe3z/bzGY194sdQugMtXpRmkZs
-         HPbWlizXBiQhzSH73Y6EOzr2rYpnSUpT8baPqCeqviMGVn32JoGGc7LkrP+Wvb+Wf81l
-         BhcndxaWrVBij1IX2/rUK9bR+fCkPr4Ur/QTWIR2wLo7LoKgbZQKaoMHxQO7fKQajJcy
-         5sA825chsMvaaFCWjydPt5J29r7JYjqVel5hwhTBusTLbzPZ9bd5jrulF+2+iC6hGhAL
-         5JIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gBfKxrGQeJXS9J/dE4N41R9gdbfSYdgG2ZNjCxdXLJU=;
-        b=kap0iCLVT5DYpWa9PszJpTvUB2F+ddc9266FgZRN9yxwIttWwtV7bDTKS+BHaM/kEt
-         +kXe46cOPg2KzO5uR9sgyxr1ET00Ru4j0jC+iJpCdhbUnJNNjdWJJw1bMIP4oZBdczRB
-         6rbmYFkgfH3cteeDJGLMuYdg/jn7ib65mSkQ2LoByFFCwOTIbsRK2YV8HIkB7r2jSvN8
-         gnyi+Tpg/lCKC9ytsJ3VY7SMQXwOB5+8VKBWdSOLd+1E/T/u3GCrieuIsKO2IVtntflO
-         5N2mzOB+NbzvaDqxqdKA0TlpaUFTTkYzsKz+UijlnoEQ+0547HKVIDeodRsrVMOKcv9v
-         LavQ==
-X-Gm-Message-State: AOAM5305vsNh+aJR+McMIS2HiBULcbbi8Xcg5Th8SjKLiH74Fd5UBnaB
-        ebY+7lnaVgr7tBcfleUXS0gdcr5mOqxvAIuMth4=
-X-Google-Smtp-Source: ABdhPJzgy3nB9e19jsNp4vBwQpd/NtA8g/GxDAg2HEihTSV4gSG4Ua/mvKueZT3zxKKbF0qV4cDkN8acvQ9wdE1gd60=
-X-Received: by 2002:a25:d16:: with SMTP id 22mr8421600ybn.51.1637691585620;
- Tue, 23 Nov 2021 10:19:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
- <20211120033255.91214-7-alexei.starovoitov@gmail.com> <CAEf4BzZWiXEi3FmBsAScPpUnuHzVHL64hXrBj46HQAmx_qUH5Q@mail.gmail.com>
- <CAADnVQJ6Nt1v05dSjq4touYddPSjihMNZAPZMsux8vHBMu9WDg@mail.gmail.com>
- <CAEf4BzbzQR22NsWu_aRJu705ehsP3nL47ZW9MBygonna8KbNEw@mail.gmail.com>
- <CAADnVQLZASm0tUfLALeLmZbdmfUZq4umRpRDBT06a1cF1aJWhg@mail.gmail.com>
- <CAEf4BzYb6Cb5-g77rX6Unz29EYwRCHbGgaGJWZnpp2vhh8Z56g@mail.gmail.com> <CAADnVQ+-2=8-zd7dOrHbceke26repHC7_xgbf3cKGSmVHMi3vA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+-2=8-zd7dOrHbceke26repHC7_xgbf3cKGSmVHMi3vA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Nov 2021 10:19:34 -0800
-Message-ID: <CAEf4BzbLRBCToDzztAFTBQ66p_uYKyc8zKN_2MXXCYq_+MN=kg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 06/13] bpf: Add bpf_core_add_cands() and wire
- it into bpf_core_apply_relo_insn().
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        id S239573AbhKWSZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 13:25:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232326AbhKWSZN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Nov 2021 13:25:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4A3660D42;
+        Tue, 23 Nov 2021 18:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637691724;
+        bh=nM7fgaxkRFS5mGaZ25hbUUi44HaYsNWb3yhK4dfsOWI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tUTcOMMXdRslm9H8Du9hlh8NkWy2jAWYBohAWMnitUkEz3fnd9k1PThwzP56pJbAI
+         eQjM33v+t2kA0eN1T8ki2OT0t5AgaEE93qbXLl4yCjWUpuUCpPQfpOphulv4lSdHum
+         ChaURSMm92Q6VjCt+qdrkSTpehK/RuToWbOFU3k7hsdhtq/j0KQOM8Q5hC8jFim5nf
+         Rw9uoZZQiKOGM9iCYDTpYxxdyWTITCuPk8P2U8qPgbdHX1Jgq69ns6pxy5tHeI3//+
+         kIQDMHXNtmEP/ZfNOpmD4OxcyGJWKcgtBvKwK8n0LiHYYLlb7XF/KVVIrkRCcMx0XJ
+         T3ObWt/3dO9sA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 640365C0E4E; Tue, 23 Nov 2021 10:22:04 -0800 (PST)
+Date:   Tue, 23 Nov 2021 10:22:04 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
+ sleepable programs
+Message-ID: <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210827205530.zzqawd6wz52n65qh@kafai-mbp>
+ <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
+ <20210831021132.sehzvrudvcjbzmwt@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
+ <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
+ <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
+ <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 9:04 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Nov 22, 2021 at 7:44 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+On Tue, Nov 23, 2021 at 06:11:14PM +0100, KP Singh wrote:
+> On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
 > >
-> > On Mon, Nov 22, 2021 at 7:15 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Nov 22, 2021 at 5:44 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
+> > On Wed, Sep 01, 2021 at 01:26:05PM -0700, Paul E. McKenney wrote:
+> > > On Tue, Aug 31, 2021 at 11:32:17PM -0700, Martin KaFai Lau wrote:
+> > > > On Tue, Aug 31, 2021 at 09:38:01PM +0200, KP Singh wrote:
+> > > > [ ... ]
 > > > >
-> > > > On Mon, Nov 22, 2021 at 4:43 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > > > > > > @@ -131,7 +149,7 @@ bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
+> > > > > > > > > > >           SDATA(selem))
+> > > > > > > > > > >               RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
+> > > > > > > > > > >
+> > > > > > > > > > > -     kfree_rcu(selem, rcu);
+> > > > > > > > > > > +     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+> > > > > > > > > > Although the common use case is usually storage_get() much more often
+> > > > > > > > > > than storage_delete(), do you aware any performance impact for
+> > > > > > > > > > the bpf prog that does a lot of storage_delete()?
+> > > > > > > > >
+> > > > > > > > > I have not really measured the impact on deletes, My understanding is
+> > > > > > > > > that it should
+> > > > > > > > > not impact the BPF program, but yes, if there are some critical
+> > > > > > > > > sections that are prolonged
+> > > > > > > > > due to a sleepable program "sleeping" too long, then it would pile up
+> > > > > > > > > the callbacks.
+> > > > > > > > >
+> > > > > > > > > But this is not something new, as we have a similar thing in BPF
+> > > > > > > > > trampolines. If this really
+> > > > > > > > > becomes an issue, we could add a flag BPF_F_SLEEPABLE_STORAGE and only maps
+> > > > > > > > > with this flag would be allowed in sleepable progs.
+> > > > > > > > Agree that is similar to trampoline updates but not sure it is comparable
+> > > > > > > > in terms of the frequency of elems being deleted here.  e.g. many
+> > > > > > > > short lived tcp connections created by external traffic.
+> > > > > > > >
+> > > > > > > > Adding a BPF_F_SLEEPABLE_STORAGE later won't work.  It will break
+> > > > > > > > existing sleepable bpf prog.
+> > > > > > > >
+> > > > > > > > I don't know enough on call_rcu_tasks_trace() here, so the
+> > > > > > > > earlier question on perf/callback-pile-up implications in order to
+> > > > > > > > decide if extra logic or knob is needed here or not.
+> > > > > > >
+> > > > > > > I will defer to the others, maybe Alexei and Paul,
+> > > > > >
+> > > > > > > we could also just
+> > > > > > > add the flag to not affect existing performance characteristics?
+> > > > > > I would see if it is really necessary first.  Other sleepable
+> > > > > > supported maps do not need a flag.  Adding one here for local
+> > > > > > storage will be confusing especially if it turns out to be
+> > > > > > unnecessary.
+> > > > > >
+> > > > > > Could you run some tests first which can guide the decision?
 > > > > >
-> > > > > On Mon, Nov 22, 2021 at 3:47 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Nov 19, 2021 at 7:33 PM Alexei Starovoitov
-> > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > >
-> > > > > > > From: Alexei Starovoitov <ast@kernel.org>
-> > > > > > >
-> > > > > > > Given BPF program's BTF perform a linear search through kernel BTFs for
-> > > > > > > a possible candidate.
-> > > > > > > Then wire the result into bpf_core_apply_relo_insn().
-> > > > > > >
-> > > > > > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > > > > > > ---
-> > > > > > >  kernel/bpf/btf.c | 136 ++++++++++++++++++++++++++++++++++++++++++++++-
-> > > > > > >  1 file changed, 135 insertions(+), 1 deletion(-)
-> > > > > > >
-> > > > > >
-> > > > > > [...]
-> > > > > >
-> > > > > > >  int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
-> > > > > > >                    int relo_idx, void *insn)
-> > > > > > >  {
-> > > > > > > -       return -EOPNOTSUPP;
-> > > > > > > +       if (relo->kind != BPF_CORE_TYPE_ID_LOCAL) {
-> > > > > > > +               struct bpf_core_cand_list *cands;
-> > > > > > > +
-> > > > > > > +               cands = bpf_core_find_cands(ctx, relo->type_id);
-> > > > > >
-> > > > > > this is wrong for many reasons:
-> > > > > >
-> > > > > > 1. you will overwrite previous ctx->cands, if it was already set,
-> > > > > > which leaks memory
-> > > > > > 2. this list of candidates should be keyed by relo->type_id ("root
-> > > > > > type"). Different root types get their own independent lists; so it
-> > > > > > has to be some sort of look up table from type_id to a list of
-> > > > > > candidates.
-> > > > > >
-> > > > > > 2) means that if you had a bunch of relos against struct task_struct,
-> > > > > > you'll crate a list of candidates when processing first relo that
-> > > > > > starts at task_struct. All the subsequent relos that have task_struct
-> > > > > > as root type will re-used that list and potentially trim it down. If
-> > > > > > there are some other relos against, say, struct mm_struct, they will
-> > > > > > have their independent list of candidates.
+> > > > > I think the performance impact would happen only in the worst case which
+> > > > > needs some work to simulate. What do you think about:
 > > > > >
-> > > > > right.
-> > > > > Your prior comment confused me. I didn't do this reuse of cands
-> > > > > to avoid introducing hashtable here like libbpf does,
-> > > > > since it does too little to actually help.
+> > > > > A bprm_committed_creds program that processes a large argv
+> > > > > and also gets a storage on the inode.
+> > > > >
+> > > > > A file_open program that tries to delete the local storage on the inode.
+> > > > >
+> > > > > Trigger this code in parallel. i.e. lots of programs that execute with a very
+> > > > > large argv and then in parallel the executable being opened to trigger the
+> > > > > delete.
+> > > > >
+> > > > > Do you have any other ideas? Is there something we could re-use from
+> > > > > the selftests?
 > > > >
-> > > > Since when avoiding millions of iterations for each relocation is "too
-> > > > little help"?
-> > >
-> > > because it is a premature optimization for a case that
-> > > may or may not be relevant.
-> > > If 180 sk_buff relocations somehow makes the loading too slow
-> > > 180 relocations of 180 different types would produce exactly
-> > > the same slow down and hashtable cache won't help.
-> >
-> > Likelihood of using 180 different root types in real application is
-> > very small. Using 180 relocations (either with explicit BPF_CORE_READ,
-> > field accesses in fentry, or just through always_inline helpers doing
-> > either and being inlined in multiple places) is very real in
-> > real-world non-trivial applications. And the cost of optimizing that
-> > in the kernel later is very high, you'll be waiting for a new kernel
-> > release to get everywhere to rely on this optimization. The cost of
-> > further optimizing this in libbpf is much smaller (and libbpf still
-> > did the optimization from the get go and I stand by that decision).
-> >
-> > If you think I'm making this up, we have one security-related BPF app
-> > with 1076 CO-RE relocations across 11 BPF programs. It's using 22
-> > different root types.
->
-> I suspect you're talking about selftests/bpf/profiler* tests.
-> bpftool prog load -L profile1.o
-> [  873.449749] nr_core_relo 106
-> [  873.614186] nr_core_relo 297
-> [  874.107470] nr_core_relo 19
-> [  874.144146] nr_core_relo 102
-> [  874.306462] nr_core_relo 258
-> [  874.692219] nr_core_relo 410
-> [  875.329652] nr_core_relo 238
-> [  875.689900] nr_core_relo 9
->
-> 8 different progs with a bunch of core relos.
-
-Nope, I was talking about real production app here at Meta:
-
-Section            Reloc cnt
------------------- ----------
-.text              80
-kprobe/...         217
-kprobe/...         2
-kprobe/...         4
-kprobe/...         83
-kprobe/...         261
-kprobe/...         163
-kretprobe/...      1
-kretprobe/...      174
-raw_tracepoint/... 82
-raw_tracepoint/... 9
-
-
-> On a debug kernel with lockdep and kasan it takes 2.3 seconds to load
-> while kernel bpf_core_add_cands() is doing that loop
-> more than a thousand times.
-> libbpf takes 1.7 seconds.
-> So it's an extra 0.5 second due to the loop.
->
-> I haven't found the bug in lksel with core_kern.c + balancer_ingress yet.
-> But just doing balancer_ingress (test_verif_scale2) as lskel I get:
-> 0m0.827s
->
-> while verif_scale2 is 6 seconds!
->
-> Turned out due to attr.prog_flags = BPF_F_TEST_RND_HI32
-> without it it's 0m0.574s.
->
-> So 0.25 sec is spent in the add_cands loop.
->
-
-Not sure whether you agree it's unnecessary slow or not :) But we have
-teams worrying about 300ms total verification time, so there's that.
-
-> > >
-> > > > BTW, I've tried to measure how noticeable this will be and added
-> > > > test_verif_scale2 to core_kern with only change to use vmlinux.h (so
-> > > > that __sk_buff accesses are CO-RE relocated). I didn't manage to get
-> > > > it loaded, so something else is going there. So please take a look, I
-> > > > don't really know how to debug lskel stuff. Here are the changes:
-> > >
-> > > Looking. Thanks for the test.
-> > >
-> > > > > If we actually need to optimize this part of loading
-> > > > > we better do persistent cache of
-> > > > > name -> kernel btf_type-s
-> > > > > and reuse it across different programs.
+> > > > There is a bench framework in tools/testing/selftests/bpf/benchs/
+> > > > that has a parallel thread setup which could be useful.
 > > > >
-> > > > You can't reuse it because the same type name in a BPF object BTF can
-> > > > be resolved to different kernel types (e.g., if we still had
-> > > > ring_buffer name collision),
+> > > > Don't know how to simulate the "sleeping" too long which
+> > > > then pile-up callbacks.  This is not bpf specific.
+> > > > Paul, I wonder if you have similar test to trigger this to
+> > > > compare between call_rcu_tasks_trace() and call_rcu()?
 > > >
-> > > well and the candidate list will have two kernel types with the same name.
-> > > Both kept in a cache.
-> > > so cache_lookup("ring_buffer") will return two kernel types.
-> > > That would be the case for all progs being loaded.
-> > > What am I missing?
+> > > It is definitely the case that call_rcu() is way more scalable than
+> > > is call_rcu_tasks_trace().  Something about call_rcu_tasks_trace()
+> > > acquiring a global lock. ;-)
+> > >
+> > > So actually testing it makes a lot of sense.
+> > >
+> > > I do have an rcuscale module, but it is set up more for synchronous grace
+> > > periods such as synchronize_rcu() and synchronize_rcu_tasks_trace().  It
+> > > has the beginnings of support for call_rcu() and call_rcu_tasks_trace(),
+> > > but I would not yet trust them.
+> > >
+> > > But I also have a test for global locking:
+> > >
+> > > $ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=16" --bootargs "refscale.scale_type=lock refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot" --trust-make
+> > >
+> > > This gives a median lock overhead of 960ns.  Running a single CPU rather
+> > > than 16 of them:
+> > >
+> > > $ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=16" --bootargs "refscale.scale_type=lock refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot" --trust-make
+> > >
+> > > This gives a median lock overhead of 4.1ns, which is way faster.
+> > > And the greater the number of CPUs, the greater the lock overhead.
+> > Thanks for the explanation and numbers!
 > >
-> > if there are two matching types with the same matching field but field
-> > offsets are different (and thus there is ambiguity), that's an error.
-> > So the correct (by current definition, at least) program has to result
-> > in one of such two incompatible ring_buffer types and only one. If
-> > there are multiple duplicates, though, (like task_struct and
-> > task_struct___2) they will have identical sets of fields at the same
-> > offsets, so both will remain possible candidates and that's not an
-> > error. But for actually two different types, there can be only one
-> > winner.
->
-> I'm not proposing to cache the result of refined bpf_core_cand_list
-> after bpf_core_apply_relo_insn() did its job.
-> I'm saying the kernel can cache the result of the add_cands loop across
-> vmlinux BTFs for all progs.
-> The bpf_core_apply_relo_insn() will be called with a copy of
-> bpf_core_cand_list from a cache.
-> I'm thinking to keep this cache in 'struct btf'
+> > I think the global lock will be an issue for the current non-sleepable
+> > netdev bpf-prog which could be triggered by external traffic,  so a flag
+> > is needed here to provide a fast path.  I suspect other non-prealloc map
+> > may need it in the future, so probably
+> > s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
+> 
+> I was re-working the patches and had a couple of questions.
+> 
+> There are two data structures that get freed under RCU here:
+> 
+> struct bpf_local_storage
+> struct bpf_local_storage_selem
+> 
+> We can choose to free the bpf_local_storage_selem under
+> call_rcu_tasks_trace based on
+> whether the map it belongs to is sleepable with something like:
+> 
+> if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
+>     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+> else
+>     kfree_rcu(selem, rcu);
+> 
+> Questions:
+> 
+> * Can we free bpf_local_storage under kfree_rcu by ensuring it's
+> always accessed in a
+>   classical RCU critical section? Or maybe I am missing something and
+> this also needs to be freed
+>   under trace RCU if any of the selems are from a sleepable map.
+> 
+> * There is an issue with nested raw spinlocks, e.g. in
+> bpf_inode_storage.c:bpf_inode_storage_free
+> 
+>   hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+>   /* Always unlink from map before unlinking from
+>   * local_storage.
+>   */
+>   bpf_selem_unlink_map(selem);
+>   free_inode_storage = bpf_selem_unlink_storage_nolock(
+>                  local_storage, selem, false);
+>   }
+>   raw_spin_unlock_bh(&local_storage->lock);
+> 
+> in bpf_selem_unlink_storage_nolock (if we add the above logic with the
+> flag in place of kfree_rcu)
+> call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
+> raw spin lock.
+> 
+> I am moving the freeing code out of the spinlock, saving the selems on
+> a local list and then
+> doing the free RCU (trace or normal) callbacks at the end. WDYT?
 
-I wouldn't start with that for sure, because the next question is
-garbage collection. What if someone just did some experiments, used
-some obscure types that are not really used (typically), potentially
-lots of them. Now the kernel will keep these extra cache entries
-forever. You are basically talking about a lazily-built by-name index,
-it might be useful in some other cases as well, but it definitely
-comes with extra cost and I'm not convinced yet that we need to pay
-this price right now.
+Depending on the urgency, another approach is to rely on my ongoing work
+removing the call_rcu_tasks_trace() bottleneck.  This commit on branch
+"dev" in the -rcu tree allows boot-time setting of per-CPU callback
+queues for call_rcu_tasks_trace(), along with the other RCU-tasks flavors:
 
-But then again, I don't see why it's so hard to build a local hashmap
-or rbtree for the duration of program load and discard it after load.
-You haven't provided a clear argument why not.
+0b886cc4b10f ("rcu-tasks: Add rcupdate.rcu_task_enqueue_lim to set initial queueing")
+
+Preceding commits actually set up the queues.  With these commits, you
+could boot with rcupdate.rcu_task_enqueue_lim=N, where N greater than
+or equal to the number of CPUs on your system, to get per-CPU queuing.
+These commits probably still have a bug or three, but on the other hand,
+they have survived a couple of weeks worth of rcutorture runs.
+
+This week's work will allow automatic transition between single-queue
+and per-CPU-queue operation based on lock contention and the number of
+callbacks queued.
+
+My current plan is to get this into the next merge window (v5.17).
+
+Thoughts?
+
+							Thanx, Paul
+
+> - KP
+> 
+> >
+> > [ ... ]
+> >
+> > > > [  143.376587] =============================
+> > > > [  143.377068] WARNING: suspicious RCU usage
+> > > > [  143.377541] 5.14.0-rc5-01271-g68e5bda2b18e #4966 Tainted: G           O
+> > > > [  143.378378] -----------------------------
+> > > > [  143.378857] kernel/bpf/bpf_local_storage.c:114 suspicious rcu_dereference_check() usage!
+> > > > [  143.379914]
+> > > > [  143.379914] other info that might help us debug this:
+> > > > [  143.379914]
+> > > > [  143.380838]
+> > > > [  143.380838] rcu_scheduler_active = 2, debug_locks = 1
+> > > > [  143.381602] 4 locks held by mv/1781:
+> > > > [  143.382025]  #0: ffff888121e7c438 (sb_writers#6){.+.+}-{0:0}, at: do_renameat2+0x2f5/0xa80
+> > > > [  143.383009]  #1: ffff88812ce68760 (&type->i_mutex_dir_key#5/1){+.+.}-{3:3}, at: lock_rename+0x1f4/0x250
+> > > > [  143.384144]  #2: ffffffff843fbc60 (rcu_read_lock_trace){....}-{0:0}, at: __bpf_prog_enter_sleepable+0x45/0x160
+> > > > [  143.385326]  #3: ffff88811d8348b8 (&storage->lock){..-.}-{2:2}, at: __bpf_selem_unlink_storage+0x7d/0x170
+> > > > [  143.386459]
+> > > > [  143.386459] stack backtrace:
+> > > > [  143.386983] CPU: 2 PID: 1781 Comm: mv Tainted: G           O      5.14.0-rc5-01271-g68e5bda2b18e #4966
+> > > > [  143.388071] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.9.3-1.el7.centos 04/01/2014
+> > > > [  143.389146] Call Trace:
+> > > > [  143.389446]  dump_stack_lvl+0x5b/0x82
+> > > > [  143.389901]  dump_stack+0x10/0x12
+> > > > [  143.390302]  lockdep_rcu_suspicious+0x15c/0x167
+> > > > [  143.390854]  bpf_selem_unlink_storage_nolock+0x2e1/0x6d0
+> > > > [  143.391501]  __bpf_selem_unlink_storage+0xb7/0x170
+> > > > [  143.392085]  bpf_selem_unlink+0x1b/0x30
+> > > > [  143.392554]  bpf_inode_storage_delete+0x57/0xa0
+> > > > [  143.393112]  bpf_prog_31e277fe2c132665_inode_rename+0x9c/0x268
+> > > > [  143.393814]  bpf_trampoline_6442476301_0+0x4e/0x1000
+> > > > [  143.394413]  bpf_lsm_inode_rename+0x5/0x10
+> > >
+> > > I am not sure what line 114 is (it is a blank line in bpf-next), but
+> > > you might be missing a rcu_read_lock_trace_held() in the second argument
+> > > of rcu_dereference_check().
+> > Right, this path is only under rcu_read_lock_trace().
