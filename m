@@ -2,87 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6D745A232
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 13:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF75145A263
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 13:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbhKWMJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 07:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236033AbhKWMJs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:09:48 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27936C061714
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 04:06:40 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id w23so43194458uao.5
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 04:06:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=SxKMV54OQv6qlhT1IxFNclwk4/XFWMxvQX9/uVjdtsA=;
-        b=fCRoNv2dQeOPzCUdzsJD7zbWmytSxb6DCrF2hLhojDu/VAiEoS38LQZefRS6QDdnLq
-         VxRYTiUs90lNTgZBYDrvRB89+FToc2pHD1jIkiHTpFxq70+rK5r2AxVoz+OrMZ6Ymy5y
-         bhgvl22KlYRNavwkrWgzZfC1Vo7jyv5jaF+k6dxHGcSSP1HMA3I4r9ySaQEyFgTK0S2O
-         r5nEk0psexIoaIxn6IyYm7GWGphtrAfzMe4AjkzOBHZas/ysYeD7LDXMbwzDokhdSXtK
-         brESnReamE+i8cfIuEcB4RxwXY0AGNpCeiwEQH+svaYRLFiE4AVeVB1OL/gdF86ro2Me
-         WKnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=SxKMV54OQv6qlhT1IxFNclwk4/XFWMxvQX9/uVjdtsA=;
-        b=ntmBUhd9bnLaHMR0lFqyisXH1N/LaXxzOMfSNH8sZAXXhBNcwjJdEaqDyqn+zx7ABK
-         Vfakea41dWIbFRXB78Z7EnQkK9Q+DY2B9KsLnfdVmlcuSlWY1jnsCrhVPOHh6w5ifCPZ
-         18OmNheo+6jaRjfuNd3kEm8gnInrZEsCqsOptPkciHPSrMHoQneLbOqjxGbtZW5hLhgy
-         CGbCzTjibwZbKC8m+6yYwGa84Q5NzmFbl+eedU6M+hm3B5mcNd+lP6iawLoGpdbHKfCR
-         ilBU6kwSJZ/aWTlmyASYUMkxAxwsf77ncRW3+ghtIptFMA0YrnDg7KNpIAWhxcw4Oc8h
-         WzgA==
-X-Gm-Message-State: AOAM531RqltqdHSVHSmBiPfrVeGS+0horQ6NaXQoV62/IU9u/1P/+hDv
-        jypgB/5iVk1v0KUPHrgzBIgbwiku6avRkiDwUzo=
-X-Google-Smtp-Source: ABdhPJy2FHj83lw7o7dw1KLO7PuSviplPbvjQJVizBl6uFCBrlqEqH+TSUgHG6+Ykhj/LRRgqTPB0aK+f9/Tm93adgM=
-X-Received: by 2002:a67:fdc3:: with SMTP id l3mr7982786vsq.42.1637669198986;
- Tue, 23 Nov 2021 04:06:38 -0800 (PST)
+        id S237016AbhKWMXS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 07:23:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236950AbhKWMXS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Nov 2021 07:23:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 319CE61059;
+        Tue, 23 Nov 2021 12:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637670010;
+        bh=FByJjHBHP4GP4unvEkFsQTrtBWUAfXpkJ5xHO0fOVo8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qcPHoFlU49k2oGAOIN1UMAqHQDigOU4AOiJxAVvJBMFx3Nm2Ww1uJpc+OYqQ/JWrJ
+         rsla5DlDgcsH+zZ5efk9jJcM6e3cxxZqLgaHaVe219OW9IYdvHbhA964DCXCuoBozS
+         OFFvoxwh4qx+cLtemWn+Z4+xiE7w19MGNNOMViK1Eub5Hj6K1TH/KzCDS0ajNNr4HK
+         4xXIAum6kszxdS0NlB47es9dBksOhO2530K+9uRcJPTJMEwpT5KhfsP65XuFIaFXUQ
+         btRo1HVOvrsZB12Gl+CESOUAEzDYVBF6n0g0s4hdE/w8rhgNkA9ha6SfEfmU/74lM9
+         HyC6ivq+LNM0g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 25BB8609BB;
+        Tue, 23 Nov 2021 12:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:ab0:2255:0:0:0:0:0 with HTTP; Tue, 23 Nov 2021 04:06:37
- -0800 (PST)
-Reply-To: nistelvaraj@gmail.com
-From:   Anitha Selvaraj <ranfra1112211@gmail.com>
-Date:   Tue, 23 Nov 2021 13:06:37 +0100
-Message-ID: <CAJeXS621iVoTWfDcgPAD5v1bzkwwC7U9fRuCrRi=4C=dj9EhjA@mail.gmail.com>
-Subject: Rakkain Kristuksessa,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/2][pull request] Intel Wired LAN Driver Updates
+ 2021-11-22
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163767001014.10565.1715922992675329504.git-patchwork-notify@kernel.org>
+Date:   Tue, 23 Nov 2021 12:20:10 +0000
+References: <20211122184522.147331-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20211122184522.147331-1-anthony.l.nguyen@intel.com>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-Rakkain Kristuksessa,
+Hello:
 
-Olen rouva Anitha Selvaraj, olin naimisissa herra Francis Selvarajin kanssa
-19 vuotta ilman lasta ja mieheni kuoli vuonna 2007. Otan sinuun yhteytt=C3=
-=A4,
-jotta tied=C3=A4t haluni lahjoittaa perim=C3=A4ni summa (6 500 000 dollaria=
-).
-edesmenneest=C3=A4 aviomiehest=C3=A4ni hyv=C3=A4ntekev=C3=A4isyyteen, t=C3=
-=A4ll=C3=A4 hetkell=C3=A4 rahasto on
-edelleen pankissa. =C3=84skett=C3=A4in l=C3=A4=C3=A4k=C3=A4rini kertoi minu=
-lle, ett=C3=A4 minulla on
-vakava sairaus, joka on sy=C3=B6p=C3=A4ongelma, enk=C3=A4 kest=C3=A4 seuraa=
-vaa 2 kuukautta.
+This series was applied to netdev/net.git (master)
+by Tony Nguyen <anthony.l.nguyen@intel.com>:
 
-Haluan henkil=C3=B6n, joka k=C3=A4ytt=C3=A4=C3=A4 t=C3=A4t=C3=A4 rahastoa o=
-rpokodeihin, kouluihin,
-kirkkoihin, leskiin, levitt=C3=A4=C3=A4kseen Jumalan sanaa maassaan.
-Vastaa minulle saadaksesi lis=C3=A4tietoja ja l=C3=A4het=C3=A4 minulle my=
-=C3=B6s seuraavat
-tiedot alla olevan mukaisesti.
+On Mon, 22 Nov 2021 10:45:20 -0800 you wrote:
+> Maciej Fijalkowski says:
+> 
+> Here are the two fixes for issues around ethtool's set_channels()
+> callback for ice driver. Both are related to XDP resources. First one
+> corrects the size of vsi->txq_map that is used to track the usage of Tx
+> resources and the second one prevents the wrong refcounting of bpf_prog.
+> 
+> [...]
 
-Koko nimesi ..........
-Osoite .........
-Valokuva ...............
-Pysy=C3=A4 siunattuna
-Siskosi Kristuksessa
-Rouva Anitha Selvaraj
+Here is the summary with links:
+  - [net,1/2] ice: fix vsi->txq_map sizing
+    https://git.kernel.org/netdev/net/c/792b2086584f
+  - [net,2/2] ice: avoid bpf_prog refcount underflow
+    https://git.kernel.org/netdev/net/c/f65ee535df77
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
