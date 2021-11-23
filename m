@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AD145992B
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 01:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4959C45993D
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 01:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhKWAf4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Nov 2021 19:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
+        id S229776AbhKWAqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Nov 2021 19:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhKWAf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:35:56 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D08AC061574
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:32:49 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso1354055pjb.2
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:32:49 -0800 (PST)
+        with ESMTP id S229619AbhKWAqM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Nov 2021 19:46:12 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC271C061574
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:43:04 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id r5so16693222pgi.6
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:43:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cvzhsp+Vac0FB6rdWN4NAL1yHJzcPpxVK46WCj5TJbM=;
-        b=psVAw1pjGs62iQgrXYaoc691GBkoZ5ib/ZQu63VD8Pd35LgkiieDXuXYdcpq8TfMwd
-         98OTAj7z7hho0zWEYe3dEZnUAJdy+/wROscqVvzkBjXLm/+e6X8nLActEHoI4TEJanNV
-         RFf/w/isvnh8mhzRAJp5zYeqnqZQqGoBsM5jT61ezWPZELacK76bW0PKOJtgd/ANs2iR
-         BhuN+/ss4w1gCbP3geo37qm9ZNrcFPp7G9EwHggjNOcV8qqwUYyoN2CLT8Pxaq8C2Uo1
-         52JM/zcaBgJPwd0VZ7vV/Tk9m47DiPrQYpnxtTrmmloIlWBvx6s8FWw+12dYQ6liXVbG
-         UCJw==
+        bh=c1AP0IbAYUumhlNTExSNL2dQvu1eX0MUJpipCOzO0hk=;
+        b=ch7vwmSISIZ5N/V2AbXsTOweS4GATJjlvTwtEi+D9QYybfUZuQ9Zv5AoZf7APWAD5h
+         OWNbaoGCMSGtUptjRgbzXaa/ajVwqBu4ADzhsboYSF5OUG0led30cNHlIFHIdsIllmxS
+         Rs9FL51kROiRo8wS7WI665s4LdBFUvZfhz9lHKZvsoT2aRmG3oKJwsjbToeKWAsqaalL
+         GYV0CQIP2lJi+rw0HMXP0ixLqLWvIep7KUHLyK0xoQC5r/H0jHsej/ls43lUK6eDTucP
+         B0hv2dhF6/3y2sbTEhvTf8t/rzv6qV6nw2txWL/Y+BkFAUfT3ZzA0p66CtNfe8Brj0Fr
+         O1cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cvzhsp+Vac0FB6rdWN4NAL1yHJzcPpxVK46WCj5TJbM=;
-        b=1zK83RQWZMmFv/UGoUCeFul6qksily98F9i/cMj9OVyJcTGT3Iw26ZeR3TS+mrFRLn
-         L9+pX6cPNs3uTIKKcHr6Df/5IPI7KEPNisOzPWdMlrQvZluTJL17wTvycPwJrMZ1Rn+k
-         8X0TgAurPgKUxKIvcIHLLjLJQbsFz+Cq/mdy5bmSO7eRpHP0N4apUGLUayDu8PNwBzYN
-         HVXMPAr3iAicxALn1ZJx2MFJnY9jHpc0CkGgzGE2fNo7aW9aqKnvmdSrh3cUtj2s4Az6
-         wQzsKclInwr2X/WYZNk7fk7lGkkhBBBYcrwxurbC7QyJizzmgXFznXvuKt+2kXN+LLTE
-         cnxg==
-X-Gm-Message-State: AOAM531V/7nVi+e53nqsu/c/guPXoX6SLdSNSJFJT9Z/FNJcFCJe2gEu
-        61YI7Fq7jNehxBAiMI4pTSgPALHdwhq5F+U0DgQ=
-X-Google-Smtp-Source: ABdhPJyA6B8A4o1zhebAamwhYqwaE0AkYI8qT+lrH81FGdFW8eKHa66qLBRdDUpaCN5eznTvaFHDnau7lV0vb2iL6J8=
-X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr1343509pjy.138.1637627568644;
- Mon, 22 Nov 2021 16:32:48 -0800 (PST)
+        bh=c1AP0IbAYUumhlNTExSNL2dQvu1eX0MUJpipCOzO0hk=;
+        b=Zf2F/IdGjquyObyKI+8n83QslUOID3U2b7St7CkFgC25miKOr6ojkZmTNOFMfkyiye
+         pT56j8qC0fozCAo+mNj5C0tICtGiMfo5MRMdUddV7HmiKo9hjF8EdI2fHrJtJzrlgLTE
+         s2QTn6jI2laHNF13+z8jmLTDD9XOrM1i20dYE8X/Y8rm8QrDkbSstANQfgu8ZI8f79yF
+         E1zC9kVbwGAhtSUyNhQXIApOyEo4ouMDERw2lfeOkQAibgPTqi8cBHSsHWFWfwYGOEr9
+         0BdnYy04dxvwtrxbMcms/BW5B0NMz6wR0i0QhrLFIg4MU8zVPPXHApYahfB/RzCqf7Fb
+         6EzA==
+X-Gm-Message-State: AOAM533hwcVNEkZS/xpYJuHhViXzKt7RcjOWqB9aHgrGYay8DmI5wbNI
+        QIzLaDJTWDb+V5xI+gw9ORky28u5Z0mdvT+tajo=
+X-Google-Smtp-Source: ABdhPJzTZLkvUyLRPsOfHvoTB3t34xHGuhom6+0Pxbcd0RLdQGrq+eLS70KoxvSJBWunRpbAnBbm5eb86vz3xp59diQ=
+X-Received: by 2002:a63:a50a:: with SMTP id n10mr862693pgf.310.1637628184304;
+ Mon, 22 Nov 2021 16:43:04 -0800 (PST)
 MIME-Version: 1.0
 References: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
- <20211120033255.91214-14-alexei.starovoitov@gmail.com> <20211123002306.dng6mv2ryih4qq2j@apollo.localdomain>
-In-Reply-To: <20211123002306.dng6mv2ryih4qq2j@apollo.localdomain>
+ <20211120033255.91214-7-alexei.starovoitov@gmail.com> <CAEf4BzZWiXEi3FmBsAScPpUnuHzVHL64hXrBj46HQAmx_qUH5Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzZWiXEi3FmBsAScPpUnuHzVHL64hXrBj46HQAmx_qUH5Q@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 22 Nov 2021 16:32:37 -0800
-Message-ID: <CAADnVQLVBDJjVwmzwOVXEO8XHTqEWimCb2tJ+HwwjBQkBHrSnQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 13/13] selftest/bpf: Revert CO-RE removal in test_ksyms_weak.
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Mon, 22 Nov 2021 16:42:53 -0800
+Message-ID: <CAADnVQJ6Nt1v05dSjq4touYddPSjihMNZAPZMsux8vHBMu9WDg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/13] bpf: Add bpf_core_add_cands() and wire
+ it into bpf_core_apply_relo_insn().
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -61,36 +62,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 4:23 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Mon, Nov 22, 2021 at 3:47 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Sat, Nov 20, 2021 at 09:02:55AM IST, Alexei Starovoitov wrote:
+> On Fri, Nov 19, 2021 at 7:33 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
 > > From: Alexei Starovoitov <ast@kernel.org>
 > >
-> > The commit 087cba799ced ("selftests/bpf: Add weak/typeless ksym test for light skeleton")
-> > added test_ksyms_weak to light skeleton testing, but remove CO-RE access.
-> > Revert that part of commit, since light skeleton can use CO-RE in the kernel.
+> > Given BPF program's BTF perform a linear search through kernel BTFs for
+> > a possible candidate.
+> > Then wire the result into bpf_core_apply_relo_insn().
 > >
 > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > > ---
-> >  tools/testing/selftests/bpf/prog_tests/ksyms_btf.c  | 4 ++--
-> >  tools/testing/selftests/bpf/progs/test_ksyms_weak.c | 2 +-
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> >  kernel/bpf/btf.c | 136 ++++++++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 135 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> > index 79f6bd1e50d6..988f5db3e342 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> > @@ -101,7 +101,7 @@ static void test_weak_syms(void)
-> >       usleep(1);
-> >
-> >       data = skel->data;
-> > -     ASSERT_EQ(data->out__existing_typed, 0, "existing typed ksym");
-> > +     ASSERT_GE(data->out__existing_typed, 0, "existing typed ksym");
 >
-> I think original test (2211c825e7b6b) was doing ASSERT_EQ, since per cpu ptr for
-> runqueue is from CPU 0.
+> [...]
+>
+> >  int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+> >                    int relo_idx, void *insn)
+> >  {
+> > -       return -EOPNOTSUPP;
+> > +       if (relo->kind != BPF_CORE_TYPE_ID_LOCAL) {
+> > +               struct bpf_core_cand_list *cands;
+> > +
+> > +               cands = bpf_core_find_cands(ctx, relo->type_id);
+>
+> this is wrong for many reasons:
+>
+> 1. you will overwrite previous ctx->cands, if it was already set,
+> which leaks memory
+> 2. this list of candidates should be keyed by relo->type_id ("root
+> type"). Different root types get their own independent lists; so it
+> has to be some sort of look up table from type_id to a list of
+> candidates.
+>
+> 2) means that if you had a bunch of relos against struct task_struct,
+> you'll crate a list of candidates when processing first relo that
+> starts at task_struct. All the subsequent relos that have task_struct
+> as root type will re-used that list and potentially trim it down. If
+> there are some other relos against, say, struct mm_struct, they will
+> have their independent list of candidates.
 
-Thanks for the explanation.
-I saw that the value is zero, but didn't dig that far to see that
-it's fixed due to runqueue design.
+right.
+Your prior comment confused me. I didn't do this reuse of cands
+to avoid introducing hashtable here like libbpf does,
+since it does too little to actually help.
+I think I will go back to the prior version: linear search for every relo.
+If we actually need to optimize this part of loading
+we better do persistent cache of
+name -> kernel btf_type-s
+and reuse it across different programs.
