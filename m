@@ -2,66 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E39D459BCB
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 06:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34499459CFE
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 08:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbhKWFjl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 00:39:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhKWFjj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:39:39 -0500
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3C1C061574
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 21:36:31 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id b192so11731603vkf.3
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 21:36:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=f1ViolND3wkoes1QthBmyxMEvqbmFO9WyQp/Qum2Iq0=;
-        b=Qr92+MJQ8OLVxV2BOyfLiLjBBSOnoXMzrBjMP1P3/+zhle7314s1ZecPN8zcd23Yik
-         n3E0kcbEz55I/XEJvJX1J2nPawtirf9ZHUqNPelHT70mL0gawkYCerG9mRcudDVg9zzE
-         hzlynB1Tpg9S2NZzsrLqLhTTdolUQtzfJmzAL9ZtOXmFXisuvfjSLandOygVE9FrUGNr
-         EmZRAsAQ3dSmPswTRBWdpMkTt9C6dH0XWF3BSXvMbem8EMpPK790piFQBdMD7gVBW8s+
-         EFxMVN+oEQFCyXhI4bZ+DAlo+yCrHoMhGu4UcMz/Ai1s8acJZfiy8t5JKldSjqrvYQJ5
-         lIvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=f1ViolND3wkoes1QthBmyxMEvqbmFO9WyQp/Qum2Iq0=;
-        b=nnz7rLusO2s5CaBsFyDNVxPaAkc7WumcVilHDv6Y25uBLSsr/++6vwKos8Czio/qPv
-         azaPRVrHNkjQcrZbVI7gcDQejRFi+zQ1qi9uoe24xn0gwzNyR9a5ZlCQCDlDzQ3m3vqH
-         jO/afM8p/2nppY7eCmpUpxEY0yN45nCXPZ/r1P6qngOl9Pw7v9qwd0NbBlnMBVcYWEXZ
-         TFUHAzJEFQ3aO9pL+KsZfYMBBVRXp80/0uk2GgXxP0jQWePCxQamri0Y+nF0Xm2+hbGB
-         ZFwqBguL2E71nXbpgRsLjSU97+NNssAtkCUW6eZjLq6YQIzLI3YrCghV9YRrEdEPE3J2
-         cJhw==
-X-Gm-Message-State: AOAM530b10QS3G63JsGLW7IeW34MYZeeSRs7kmUlHaKyIqaPTh53Vt/u
-        VLIfy5vkIspw6D5Pu8/BMJsL08cDUBOJO/N3pww=
-X-Google-Smtp-Source: ABdhPJzimDpSBLATFhAW634F/LRtc40WMzQFGxPX+Bds3oD0mMnrfYqImfZFYhiwCO4/KRgebZyumN0qhWRlBkmtnX8=
-X-Received: by 2002:a05:6122:886:: with SMTP id 6mr3095028vkf.7.1637645790161;
- Mon, 22 Nov 2021 21:36:30 -0800 (PST)
+        id S234345AbhKWHrs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 02:47:48 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45262 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234323AbhKWHrr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Nov 2021 02:47:47 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN4NmBY022251;
+        Tue, 23 Nov 2021 07:44:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7Izikt7bjG0cERrkxtMGGYIUF55KdaFWdipbuzLRGmM=;
+ b=bOAot3E6AnxIcv9A94dzcHKMqUnoa625+oMLbt38nIypt2ITZZgfmLp7AfDOK6fYjL8f
+ 0lvnpwkFLiMiA/CeHAGg39pz8B9qLmir/mXIX2q0P/3upOSoVaY/Q5+cCoOk+r5hZifr
+ gV2Bcnqyk1RrhsJyhVuAIsCGEGDvKSJhHvFSll6EzpZllhO2t0WrfOoMIcIhV3M2EFFe
+ wKLMyeoAz3OiRApaR551NU2dGYP5ZDmiDF/Q84KYRjDiR14U2iRA9OPpJE9asMR6h4IK
+ jd25Sm3osEVSWT8NITC/Au6UyDZXnEQynhNMt1jkz08CyazF8QGi4inE2hiUvDW5UUPl hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgs7tb00q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 07:44:18 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AN7YoVA006748;
+        Tue, 23 Nov 2021 07:44:18 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgs7tb002-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 07:44:17 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AN7gGd8029841;
+        Tue, 23 Nov 2021 07:44:15 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3cern9m0cn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 07:44:15 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AN7b3BK62783776
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Nov 2021 07:37:03 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E0172A405C;
+        Tue, 23 Nov 2021 07:44:11 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8203BA4054;
+        Tue, 23 Nov 2021 07:44:05 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.21.81])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Nov 2021 07:44:05 +0000 (GMT)
+Subject: Re: [PATCH v2] bpf: Remove config check to enable bpf support for
+ branch records
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        rnsastry@linux.ibm.com
+References: <20211118130507.170154-1-kjain@linux.ibm.com>
+ <CAEf4BzbDgCVLj0r=3iponPp81aVAGokhGti8WLfWKhHuTLdA8w@mail.gmail.com>
+ <ce150f51-ef50-de85-fc52-0f2ee3a3000f@linux.ibm.com>
+ <859f8b57-7ae2-3c68-5642-93bec7a59a20@iogearbox.net>
+ <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <814c0e79-b8fd-38f1-bf17-cbf0993479bf@linux.ibm.com>
+Date:   Tue, 23 Nov 2021 13:14:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: by 2002:a9f:2338:0:0:0:0:0 with HTTP; Mon, 22 Nov 2021 21:36:29
- -0800 (PST)
-Reply-To: ninacoulibaly04@hotmail.com
-From:   nina coulibaly <ninacoulibaly10.info@gmail.com>
-Date:   Tue, 23 Nov 2021 06:36:29 +0100
-Message-ID: <CAMnOr-oTaMVPgSPsj3+nv7_O5duALC1D0BCjKayaY+=neaq5yA@mail.gmail.com>
-Subject: from nina coulibaly
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: v7ir4QnkF6C65nsvbPFNGOpgqbtQ1UTr
+X-Proofpoint-ORIG-GUID: zuk4d111fp2t7655P5cJAQxqKC5sido5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-23_02,2021-11-22_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 phishscore=0 suspectscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111230038
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear ,
 
-Please grant me the permission to share important discussion with
-you.I am looking forward to hearing from you at your earliest
-convenience.
 
-Best Regards.
+On 11/20/21 4:15 AM, Andrii Nakryiko wrote:
+> On Fri, Nov 19, 2021 at 8:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> On 11/19/21 10:35 AM, kajoljain wrote:
+>>> On 11/19/21 4:18 AM, Andrii Nakryiko wrote:
+>>>> On Thu, Nov 18, 2021 at 5:10 AM Kajol Jain <kjain@linux.ibm.com> wrote:
+>>>>>
+>>>>> Branch data available to bpf programs can be very useful to get
+>>>>> stack traces out of userspace application.
+>>>>>
+>>>>> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
+>>>>> added bpf support to capture branch records in x86. Enable this feature
+>>>>> for other architectures as well by removing check specific to x86.
+>>>>> Incase any platform didn't support branch stack, it will return with
+>>>>> -EINVAL.
+>>>>>
+>>>>> Selftest 'perf_branches' result on power9 machine with branch stacks
+>>>>> support.
+>>>>>
+>>>>> Before this patch changes:
+>>>>> [command]# ./test_progs -t perf_branches
+>>>>>   #88/1 perf_branches/perf_branches_hw:FAIL
+>>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
+>>>>>   #88 perf_branches:FAIL
+>>>>> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+>>>>>
+>>>>> After this patch changes:
+>>>>> [command]# ./test_progs -t perf_branches
+>>>>>   #88/1 perf_branches/perf_branches_hw:OK
+>>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
+>>>>>   #88 perf_branches:OK
+>>>>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+>>>>>
+>>>>> Selftest 'perf_branches' result on power9 machine which doesn't
+>>>>> support branch stack
+>>>>>
+>>>>> After this patch changes:
+>>>>> [command]# ./test_progs -t perf_branches
+>>>>>   #88/1 perf_branches/perf_branches_hw:SKIP
+>>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
+>>>>>   #88 perf_branches:OK
+>>>>> Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
+>>>>>
+>>>>> Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
+>>>>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+>>>>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+>>>>> ---
+>>>>>
+>>>>> Tested this patch changes on power9 machine using selftest
+>>>>> 'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
+>>>>> Add bpf_read_branch_records()")
+>>>>>
+>>>>> Changelog:
+>>>>> v1 -> v2
+>>>>> - Inorder to add bpf support to capture branch record in
+>>>>>    powerpc, rather then adding config for powerpc, entirely
+>>>>>    remove config check from bpf_read_branch_records function
+>>>>>    as suggested by Peter Zijlstra
+>>>>
+>>>> what will be returned for architectures that don't support branch
+>>>> records? Will it be zero instead of -ENOENT?
+>>>
+>>> Hi Andrii,
+>>>       Incase any architecture doesn't support branch records and if it
+>>> tries to do branch sampling with sample type as
+>>> PERF_SAMPLE_BRANCH_STACK, perf_event_open itself will fail.
+>>>
+>>> And even if, perf_event_open succeeds  we have appropriate checks in
+>>> bpf_read_branch_records function, which will return -EINVAL for those
+>>> architectures.
+>>>
+>>> Reference from linux/kernel/trace/bpf_trace.c
+>>>
+>>> Here, br_stack will be empty, for unsupported architectures.
+>>>
+>>> BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>>>          void *, buf, u32, size, u64, flags)
+>>> {
+>>> .....
+>>>       if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
+>>>               return -EINVAL;
+>>>
+>>>       if (unlikely(!br_stack))
+>>>               return -EINVAL;
+>>
+>> In that case for unsupported archs we should probably bail out with -ENOENT here
+>> as helper doc says '**-ENOENT** if architecture does not support branch records'
+>> (see bpf_read_branch_records() doc in include/uapi/linux/bpf.h).
+> 
+> Yep, I think so too.
+> 
 
-Mrs Nina Coulibaly
+Hi Andrii/Daniel,
+     I agree, changing return type to -ENOENT make sense, I will update
+in next version of this patch.
+
+Thanks,
+Kajol Jain
+
+>>
+>>> ....
+>>> }
+>>>
+>>> Thanks,
+>>> Kajol Jain
