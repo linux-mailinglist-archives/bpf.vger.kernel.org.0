@@ -2,204 +2,333 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71B945AFC2
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 00:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0CF45AFD4
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 00:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhKWXJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 18:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhKWXJt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:09:49 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B92C061574;
-        Tue, 23 Nov 2021 15:06:41 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso736206pjb.0;
-        Tue, 23 Nov 2021 15:06:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DJfk8BcmICotrkto9QK0fhNW+LePmR911sFhN5fSxj0=;
-        b=SX2sKm1mQRcJMBZbVdhFqWjULJaNNJASVq+7B8dyl5socBw1O/ZZu8SRKVmTsFqX32
-         +bbfKQSFUvGlTVzq8HoDuozhqu9Iw9Ishc0F/Iv4UcPWfvj9/1T4ALER20rj7cqgx032
-         3WFBAm1REBDiP56AK4B1F42DWAiDvy5PKb8+3wjyzDA1e2JiklgcN5o8Hjca10YHiSd4
-         lcV5+i0pt1axNiElu/R0ArmYZq24SwYzatw1JkmCYL2br66zs5wvdhd1ZDQauMql6sTV
-         hlY2RRh+SdSu2FYRE1uorhU6CjU5vKglsbNQaPh8gZTme4iBWYIZESnIujM8KmY67jKU
-         YsuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DJfk8BcmICotrkto9QK0fhNW+LePmR911sFhN5fSxj0=;
-        b=eEX71d0NfaaggowTZaXvxpovmSfgUDnYOnzApRNlh/t9VGbhIlCYZfee3Kl2aFngeS
-         Pdsru0k30gHoAM5M+z9htkWUsRDORsKdmzETCmx+BIoHHHxwsLQoDAhZ9KIe6b8k89Wv
-         9CRJkY3xJJJ6mNcxS2F1zyS8Bf+hkOt8Hzz5gq275Buu6nfoiLX7tBLLRbj2Rr7jP0kE
-         u0LlufwsZ2oAiCc5ZVE8LUAKgUIAhi29y/46TWTX2kQX8JwWzA0n7Ad6V+zzQO2FTHnq
-         NyVRTO34iVbblX3/0sqFiafd83qTNeNqVqfCkeSoPkFDMf1pJJZUa3kCi6kbIo53Koi0
-         c5Ew==
-X-Gm-Message-State: AOAM530OhuIoGIB8SmTPFdusqjBbblgWtUvdrlbRhK0UT7R5VbaB8a0U
-        VTeFu7EiPrXRXbf8nGXAtUg=
-X-Google-Smtp-Source: ABdhPJybuomYRfd7QdEflkII9GI4dj/tolMPXuytg1Xezhm8N02yuw7m1SYTiWBebOB6nhnq9X2fEw==
-X-Received: by 2002:a17:902:e74a:b0:142:114c:1f1e with SMTP id p10-20020a170902e74a00b00142114c1f1emr11878437plf.78.1637708800434;
-        Tue, 23 Nov 2021 15:06:40 -0800 (PST)
-Received: from athina.mtv.corp.google.com ([2620:15c:211:200:cd70:5ac2:9066:1bb8])
-        by smtp.gmail.com with ESMTPSA id g11sm9646673pgn.41.2021.11.23.15.06.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 15:06:39 -0800 (PST)
-From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Lorenzo Colitti <lorenzo@google.com>
-Subject: [PATCH bpf-next] net-bpf: bpf_skb_change_proto() - add support for ipv6 fragments
-Date:   Tue, 23 Nov 2021 15:06:32 -0800
-Message-Id: <20211123230632.1503854-1-zenczykowski@gmail.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+        id S230146AbhKWXPJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 18:15:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234434AbhKWXPI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:15:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E73660FE8
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 23:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637709119;
+        bh=PE6GhuItxX2KdslXE9qQ+XzmIQmq4FYhkCUthLP8GJY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YyylHcTrvYfuu2lOyo8dqMkkBv2bivzy804gxAVsZnECAhXSZj7tZaIpgEM6J2olF
+         KLPeDzJ0v6SPC0BGESZ1lbTTu97m4iRaZUfuMccrdL4Ifdl9Tcb72j0AB3pOQ/xFst
+         498F7WNRdneGVjHf/74yvJ2QrRYXq4bLH6maVp4r1u9+xARRB1JChUwEmRssNM7geI
+         T2HPlQQtDjn4fdYgQ+PmcEyDD2ceDtc/rcz4nDstPv88qFqyxrA3yQpQo5co/ETjZp
+         4oLV70eru0BGuyM0molPASzcBMI19r9el2K5k9WWXfAu+tY3zwvePisKXC1se89FpJ
+         J4CwJItKMiEhg==
+Received: by mail-ed1-f49.google.com with SMTP id r25so1712694edq.7
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 15:11:59 -0800 (PST)
+X-Gm-Message-State: AOAM532Z8EhP3qjWdtK7YiPlGm2Oao8FXfBA6vMP41opXbohMdGjoJqh
+        0ybBq6sta01/VCjDAjUzkq76fagbg46PVOfZyy7DWw==
+X-Google-Smtp-Source: ABdhPJykcTnWZhQRO31wtZ44oyFHGWM0PMgJBLrDiRCCFsSU/SkWd93019SbxP+7lDEA3ifQZVPT48ga4uP2NHaYX/M=
+X-Received: by 2002:a17:907:9711:: with SMTP id jg17mr13520652ejc.242.1637709117667;
+ Tue, 23 Nov 2021 15:11:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210827205530.zzqawd6wz52n65qh@kafai-mbp> <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
+ <20210831021132.sehzvrudvcjbzmwt@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
+ <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
+ <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
+ <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1> <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com> <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Wed, 24 Nov 2021 00:11:46 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ5V_UzsJegrG_PxrdzhOupMjeCqV1Ako8q+qjcTH0d-QA@mail.gmail.com>
+Message-ID: <CACYkzJ5V_UzsJegrG_PxrdzhOupMjeCqV1Ako8q+qjcTH0d-QA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
+ sleepable programs
+To:     paulmck@kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+On Tue, Nov 23, 2021 at 7:22 PM Paul E. McKenney <paulmck@kernel.org> wrote=
+:
+>
+> On Tue, Nov 23, 2021 at 06:11:14PM +0100, KP Singh wrote:
+> > On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Wed, Sep 01, 2021 at 01:26:05PM -0700, Paul E. McKenney wrote:
+> > > > On Tue, Aug 31, 2021 at 11:32:17PM -0700, Martin KaFai Lau wrote:
+> > > > > On Tue, Aug 31, 2021 at 09:38:01PM +0200, KP Singh wrote:
+> > > > > [ ... ]
+> > > > >
+> > > > > > > > > > > > @@ -131,7 +149,7 @@ bool bpf_selem_unlink_storage_n=
+olock(struct bpf_local_storage *local_storage,
+> > > > > > > > > > > >           SDATA(selem))
+> > > > > > > > > > > >               RCU_INIT_POINTER(local_storage->cache=
+[smap->cache_idx], NULL);
+> > > > > > > > > > > >
+> > > > > > > > > > > > -     kfree_rcu(selem, rcu);
+> > > > > > > > > > > > +     call_rcu_tasks_trace(&selem->rcu, bpf_selem_f=
+ree_rcu);
+> > > > > > > > > > > Although the common use case is usually storage_get()=
+ much more often
+> > > > > > > > > > > than storage_delete(), do you aware any performance i=
+mpact for
+> > > > > > > > > > > the bpf prog that does a lot of storage_delete()?
+> > > > > > > > > >
+> > > > > > > > > > I have not really measured the impact on deletes, My un=
+derstanding is
+> > > > > > > > > > that it should
+> > > > > > > > > > not impact the BPF program, but yes, if there are some =
+critical
+> > > > > > > > > > sections that are prolonged
+> > > > > > > > > > due to a sleepable program "sleeping" too long, then it=
+ would pile up
+> > > > > > > > > > the callbacks.
+> > > > > > > > > >
+> > > > > > > > > > But this is not something new, as we have a similar thi=
+ng in BPF
+> > > > > > > > > > trampolines. If this really
+> > > > > > > > > > becomes an issue, we could add a flag BPF_F_SLEEPABLE_S=
+TORAGE and only maps
+> > > > > > > > > > with this flag would be allowed in sleepable progs.
+> > > > > > > > > Agree that is similar to trampoline updates but not sure =
+it is comparable
+> > > > > > > > > in terms of the frequency of elems being deleted here.  e=
+.g. many
+> > > > > > > > > short lived tcp connections created by external traffic.
+> > > > > > > > >
+> > > > > > > > > Adding a BPF_F_SLEEPABLE_STORAGE later won't work.  It wi=
+ll break
+> > > > > > > > > existing sleepable bpf prog.
+> > > > > > > > >
+> > > > > > > > > I don't know enough on call_rcu_tasks_trace() here, so th=
+e
+> > > > > > > > > earlier question on perf/callback-pile-up implications in=
+ order to
+> > > > > > > > > decide if extra logic or knob is needed here or not.
+> > > > > > > >
+> > > > > > > > I will defer to the others, maybe Alexei and Paul,
+> > > > > > >
+> > > > > > > > we could also just
+> > > > > > > > add the flag to not affect existing performance characteris=
+tics?
+> > > > > > > I would see if it is really necessary first.  Other sleepable
+> > > > > > > supported maps do not need a flag.  Adding one here for local
+> > > > > > > storage will be confusing especially if it turns out to be
+> > > > > > > unnecessary.
+> > > > > > >
+> > > > > > > Could you run some tests first which can guide the decision?
+> > > > > >
+> > > > > > I think the performance impact would happen only in the worst c=
+ase which
+> > > > > > needs some work to simulate. What do you think about:
+> > > > > >
+> > > > > > A bprm_committed_creds program that processes a large argv
+> > > > > > and also gets a storage on the inode.
+> > > > > >
+> > > > > > A file_open program that tries to delete the local storage on t=
+he inode.
+> > > > > >
+> > > > > > Trigger this code in parallel. i.e. lots of programs that execu=
+te with a very
+> > > > > > large argv and then in parallel the executable being opened to =
+trigger the
+> > > > > > delete.
+> > > > > >
+> > > > > > Do you have any other ideas? Is there something we could re-use=
+ from
+> > > > > > the selftests?
+> > > > >
+> > > > > There is a bench framework in tools/testing/selftests/bpf/benchs/
+> > > > > that has a parallel thread setup which could be useful.
+> > > > >
+> > > > > Don't know how to simulate the "sleeping" too long which
+> > > > > then pile-up callbacks.  This is not bpf specific.
+> > > > > Paul, I wonder if you have similar test to trigger this to
+> > > > > compare between call_rcu_tasks_trace() and call_rcu()?
+> > > >
+> > > > It is definitely the case that call_rcu() is way more scalable than
+> > > > is call_rcu_tasks_trace().  Something about call_rcu_tasks_trace()
+> > > > acquiring a global lock. ;-)
+> > > >
+> > > > So actually testing it makes a lot of sense.
+> > > >
+> > > > I do have an rcuscale module, but it is set up more for synchronous=
+ grace
+> > > > periods such as synchronize_rcu() and synchronize_rcu_tasks_trace()=
+.  It
+> > > > has the beginnings of support for call_rcu() and call_rcu_tasks_tra=
+ce(),
+> > > > but I would not yet trust them.
+> > > >
+> > > > But I also have a test for global locking:
+> > > >
+> > > > $ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale =
+--allcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=3D16=
+" --bootargs "refscale.scale_type=3Dlock refscale.loops=3D10000 refscale.ho=
+ldoff=3D20 torture.disable_onoff_at_boot" --trust-make
+> > > >
+> > > > This gives a median lock overhead of 960ns.  Running a single CPU r=
+ather
+> > > > than 16 of them:
+> > > >
+> > > > $ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale =
+--allcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=3D16=
+" --bootargs "refscale.scale_type=3Dlock refscale.loops=3D10000 refscale.ho=
+ldoff=3D20 torture.disable_onoff_at_boot" --trust-make
+> > > >
+> > > > This gives a median lock overhead of 4.1ns, which is way faster.
+> > > > And the greater the number of CPUs, the greater the lock overhead.
+> > > Thanks for the explanation and numbers!
+> > >
+> > > I think the global lock will be an issue for the current non-sleepabl=
+e
+> > > netdev bpf-prog which could be triggered by external traffic,  so a f=
+lag
+> > > is needed here to provide a fast path.  I suspect other non-prealloc =
+map
+> > > may need it in the future, so probably
+> > > s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
+> >
+> > I was re-working the patches and had a couple of questions.
+> >
+> > There are two data structures that get freed under RCU here:
+> >
+> > struct bpf_local_storage
+> > struct bpf_local_storage_selem
+> >
+> > We can choose to free the bpf_local_storage_selem under
+> > call_rcu_tasks_trace based on
+> > whether the map it belongs to is sleepable with something like:
+> >
+> > if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
+> >     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+> > else
+> >     kfree_rcu(selem, rcu);
+> >
+> > Questions:
+> >
+> > * Can we free bpf_local_storage under kfree_rcu by ensuring it's
+> > always accessed in a
+> >   classical RCU critical section? Or maybe I am missing something and
+> > this also needs to be freed
+> >   under trace RCU if any of the selems are from a sleepable map.
+> >
+> > * There is an issue with nested raw spinlocks, e.g. in
+> > bpf_inode_storage.c:bpf_inode_storage_free
+> >
+> >   hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> >   /* Always unlink from map before unlinking from
+> >   * local_storage.
+> >   */
+> >   bpf_selem_unlink_map(selem);
+> >   free_inode_storage =3D bpf_selem_unlink_storage_nolock(
+> >                  local_storage, selem, false);
+> >   }
+> >   raw_spin_unlock_bh(&local_storage->lock);
+> >
+> > in bpf_selem_unlink_storage_nolock (if we add the above logic with the
+> > flag in place of kfree_rcu)
+> > call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
+> > raw spin lock.
+> >
+> > I am moving the freeing code out of the spinlock, saving the selems on
+> > a local list and then
+> > doing the free RCU (trace or normal) callbacks at the end. WDYT?
+>
+> Depending on the urgency, another approach is to rely on my ongoing work
 
-IPv4 fragments (20 byte IPv4 header) need to be translated to/from
-IPv6 fragments (40 byte IPv6 header with additional 8 byte IPv6
-fragmentation header).
+It's best to wait for your patches to land and keep this code simple.
 
-This allows this to be done by adding an extra flag BPF_F_IPV6_FRAGMENT
-to bpf_skb_change_proto().
+> removing the call_rcu_tasks_trace() bottleneck.  This commit on branch
+> "dev" in the -rcu tree allows boot-time setting of per-CPU callback
+> queues for call_rcu_tasks_trace(), along with the other RCU-tasks flavors=
+:
+>
+> 0b886cc4b10f ("rcu-tasks: Add rcupdate.rcu_task_enqueue_lim to set initia=
+l queueing")
+>
+> Preceding commits actually set up the queues.  With these commits, you
+> could boot with rcupdate.rcu_task_enqueue_lim=3DN, where N greater than
+> or equal to the number of CPUs on your system, to get per-CPU queuing.
+> These commits probably still have a bug or three, but on the other hand,
+> they have survived a couple of weeks worth of rcutorture runs.
 
-I think this is already technically achievable via the use of
-bpf_skb_adjust_room() which was added in v4.12 commit 2be7e212d541,
-but this is far easier to use and eliminates the need to call two
-helper functions, so it's also faster.
+Thank you so much, this would make my life a lot easier :)
 
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
----
- include/uapi/linux/bpf.h | 24 ++++++++++++++++++++++--
- net/core/filter.c        | 19 ++++++++++---------
- 2 files changed, 32 insertions(+), 11 deletions(-)
+- KP
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index ba5af15e25f5..0187c2f0a4bc 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2188,8 +2188,10 @@ union bpf_attr {
-  * 		checked and segments are recalculated by the GSO/GRO engine.
-  * 		The size for GSO target is adapted as well.
-  *
-- * 		All values for *flags* are reserved for future usage, and must
-- * 		be left at zero.
-+ * 		*flags* may be set to **BPF_F_IPV6_FRAGMENT** to treat ipv6 as
-+ * 		a 48 byte header instead of the normal 40 (this leaves 8 bytes
-+ * 		of space for the IPv6 Fragmentation Header). All other bits in
-+ * 		*flags* are reserved for future usage, and must be left at zero.
-  *
-  * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-@@ -5164,6 +5166,24 @@ enum {
- 	BPF_F_TUNINFO_IPV6		= (1ULL << 0),
- };
- 
-+/* BPF_FUNC_skb_change_proto flags. */
-+enum {
-+	/* Bits 0-15 are reserved for possible future expansion into
-+	 * a potential signed 8 bit field, which allows for corrections
-+	 * to account for ipv4 options and/or additional ipv6 expansion headers,
-+	 * but for now we support *only* the 8 byte ipv6 frag header.
-+	 *
-+	 * This is most useful, because ipv4 without options supports fragments,
-+	 * while ipv6 does not, so the 20 byte ipv4-frag <-> 48 byte ipv6
-+	 * conversion is not a terribly rare case (UDP DNS queries for example).
-+	 *
-+	 * Only use bits <16 for other purposes if we run out of >15 bits first.
-+	 *
-+	 * 1ULL << 3 is equal to +8 and is the ipv6 frag header size.
-+	 */
-+	BPF_F_IPV6_FRAGMENT		= (1ULL << 3),
-+};
-+
- /* flags for both BPF_FUNC_get_stackid and BPF_FUNC_get_stack. */
- enum {
- 	BPF_F_SKIP_FIELD_MASK		= 0xffULL,
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 6102f093d59a..13020368fb4a 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3219,9 +3219,8 @@ static int bpf_skb_net_hdr_pop(struct sk_buff *skb, u32 off, u32 len)
- 	return ret;
- }
- 
--static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
-+static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u32 len_diff)
- {
--	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
- 	u32 off = skb_mac_header_len(skb);
- 	int ret;
- 
-@@ -3249,9 +3248,8 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
- 	return 0;
- }
- 
--static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
-+static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u32 len_diff)
- {
--	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
- 	u32 off = skb_mac_header_len(skb);
- 	int ret;
- 
-@@ -3279,17 +3277,17 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 	return 0;
- }
- 
--static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
-+static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u32 len_diff)
- {
- 	__be16 from_proto = skb->protocol;
- 
- 	if (from_proto == htons(ETH_P_IP) &&
- 	      to_proto == htons(ETH_P_IPV6))
--		return bpf_skb_proto_4_to_6(skb);
-+		return bpf_skb_proto_4_to_6(skb, len_diff);
- 
- 	if (from_proto == htons(ETH_P_IPV6) &&
- 	      to_proto == htons(ETH_P_IP))
--		return bpf_skb_proto_6_to_4(skb);
-+		return bpf_skb_proto_6_to_4(skb, len_diff);
- 
- 	return -ENOTSUPP;
- }
-@@ -3297,9 +3295,10 @@ static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
- BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- 	   u64, flags)
- {
-+	u32 len_diff;
- 	int ret;
- 
--	if (unlikely(flags))
-+	if (unlikely(flags & ~(BPF_F_IPV6_FRAGMENT)))
- 		return -EINVAL;
- 
- 	/* General idea is that this helper does the basic groundwork
-@@ -3319,7 +3318,9 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- 	 * that. For offloads, we mark packet as dodgy, so that headers
- 	 * need to be verified first.
- 	 */
--	ret = bpf_skb_proto_xlat(skb, proto);
-+	len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr)
-+		   + ((flags & BPF_F_IPV6_FRAGMENT) ? sizeof(struct frag_hdr) : 0);
-+	ret = bpf_skb_proto_xlat(skb, proto, len_diff);
- 	bpf_compute_data_pointers(skb);
- 	return ret;
- }
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+>
+> This week's work will allow automatic transition between single-queue
+> and per-CPU-queue operation based on lock contention and the number of
+> callbacks queued.
+>
+> My current plan is to get this into the next merge window (v5.17).
+>
+> Thoughts?
+>
+>                                                         Thanx, Paul
+>
+> > - KP
+> >
+> > >
+> > > [ ... ]
+> > >
+> > > > > [  143.376587] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > [  143.377068] WARNING: suspicious RCU usage
+> > > > > [  143.377541] 5.14.0-rc5-01271-g68e5bda2b18e #4966 Tainted: G   =
+        O
+> > > > > [  143.378378] -----------------------------
+> > > > > [  143.378857] kernel/bpf/bpf_local_storage.c:114 suspicious rcu_=
+dereference_check() usage!
+> > > > > [  143.379914]
+> > > > > [  143.379914] other info that might help us debug this:
+> > > > > [  143.379914]
+> > > > > [  143.380838]
+> > > > > [  143.380838] rcu_scheduler_active =3D 2, debug_locks =3D 1
+> > > > > [  143.381602] 4 locks held by mv/1781:
+> > > > > [  143.382025]  #0: ffff888121e7c438 (sb_writers#6){.+.+}-{0:0}, =
+at: do_renameat2+0x2f5/0xa80
+> > > > > [  143.383009]  #1: ffff88812ce68760 (&type->i_mutex_dir_key#5/1)=
+{+.+.}-{3:3}, at: lock_rename+0x1f4/0x250
+> > > > > [  143.384144]  #2: ffffffff843fbc60 (rcu_read_lock_trace){....}-=
+{0:0}, at: __bpf_prog_enter_sleepable+0x45/0x160
+> > > > > [  143.385326]  #3: ffff88811d8348b8 (&storage->lock){..-.}-{2:2}=
+, at: __bpf_selem_unlink_storage+0x7d/0x170
+> > > > > [  143.386459]
+> > > > > [  143.386459] stack backtrace:
+> > > > > [  143.386983] CPU: 2 PID: 1781 Comm: mv Tainted: G           O  =
+    5.14.0-rc5-01271-g68e5bda2b18e #4966
+> > > > > [  143.388071] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
+96), BIOS 1.9.3-1.el7.centos 04/01/2014
+> > > > > [  143.389146] Call Trace:
+> > > > > [  143.389446]  dump_stack_lvl+0x5b/0x82
+> > > > > [  143.389901]  dump_stack+0x10/0x12
+> > > > > [  143.390302]  lockdep_rcu_suspicious+0x15c/0x167
+> > > > > [  143.390854]  bpf_selem_unlink_storage_nolock+0x2e1/0x6d0
+> > > > > [  143.391501]  __bpf_selem_unlink_storage+0xb7/0x170
+> > > > > [  143.392085]  bpf_selem_unlink+0x1b/0x30
+> > > > > [  143.392554]  bpf_inode_storage_delete+0x57/0xa0
+> > > > > [  143.393112]  bpf_prog_31e277fe2c132665_inode_rename+0x9c/0x268
+> > > > > [  143.393814]  bpf_trampoline_6442476301_0+0x4e/0x1000
+> > > > > [  143.394413]  bpf_lsm_inode_rename+0x5/0x10
+> > > >
+> > > > I am not sure what line 114 is (it is a blank line in bpf-next), bu=
+t
+> > > > you might be missing a rcu_read_lock_trace_held() in the second arg=
+ument
+> > > > of rcu_dereference_check().
+> > > Right, this path is only under rcu_read_lock_trace().
