@@ -2,114 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B862B45B056
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 00:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51A145B069
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 00:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbhKWXkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 18:40:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229674AbhKWXkH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:40:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BD8B60FE6;
-        Tue, 23 Nov 2021 23:36:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637710618;
-        bh=goEt95AjqVyH7lqA1ttHp+MQMzGgIEXhQBLPDNXZlQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L14BQu617FKOQu5F0ATt5iA79RaSYzq3A/GUpoGfOMWJU0+1J3hd3hURai18zIw38
-         y8G/yuU0jMtPboFPafIqydLPeqF6YLZVvyijpLo6vAh+M7LMALzghKpWmiwxFw3WqI
-         5iOI+GS65jxd1iWGj8SIeBGwPt0bqs6WJSpiEoJ2yFKrbuHSMf2LZlj8I6xeJoUnjl
-         k3HsQcO3USsN1TUGbJuQqDnUglWMmG1t0WHR3u1BNq8KemxJC1ZlPn09nfM38LDMSU
-         uH9Wd4bXIV7noDdh/1hwuoyt5Ml3HHXhXr9bnlD/sKlQogh14oLVjfw4AoK8Pr1sID
-         0/wK6CEIq4IxA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DB88740002; Tue, 23 Nov 2021 20:36:55 -0300 (-03)
-Date:   Tue, 23 Nov 2021 20:36:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        id S233785AbhKWXsy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 18:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229674AbhKWXsy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:48:54 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B444EC061574;
+        Tue, 23 Nov 2021 15:45:45 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id j17so944473qtx.2;
+        Tue, 23 Nov 2021 15:45:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aSwWHHk6hLb9/N5LwVurTbg0m12fvHHJ19aB7t+3LRk=;
+        b=TFCmX2UIynzL35f+i4CgrO744Vl4Yk50o/DuEAh7dXDWnNyNP6l0lFVR6JZBOJ8HJY
+         FJRgKFO1vAdJctHLwcMVVAgsiJPzVX0mAdRMGYqHVM0elPuUMeBrqlojYBLSUW/m0Gd4
+         bwGb+4zlkJdjsRcR/YaDugRhK1AppA77qLmxnJdzat7Qk0F5Z8gp6e1Xfi0po7d8zxzu
+         7dRn9zXv7buGzNm0EgFAwq+9OcKLwkSX7VhB6vS3IlNW7DlmGa+ijNDDkzvGr1EOxUx4
+         CYEHumjioa5y5uJoKMkwqRB2J0/PmVYe0C/2GzQ6Wtdqj6PMfm67R4NeKQ5C3Xz6xpFn
+         tUPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aSwWHHk6hLb9/N5LwVurTbg0m12fvHHJ19aB7t+3LRk=;
+        b=K/KIbDRLyusfVm1/TMsqzpBkqq79AXTyMa9lucN2Fybq121lr5Frvs6cjVKV4TJSsA
+         SVlxDtI9JLl5/QAuNgGcZaAkifOC94tva32vAhYfZ7jR27RFm5NGhxUOhxW5e8ew4k85
+         pVP3E+HQmvWlpLP/JhdJsDDSnm7MZ7Snf+yeCWNE3EJJxDm23v2ZkcaupjyYXaCh54rN
+         TiCRAAKjt5nWAXNCJlfLxMjFeUZZ9NfgsPcW7vit6yCLOPbe6Sas305oisCg2zln8I+u
+         ZTu3RbQ3ynO0wqLp/oGKM3HkuFI/PoGcVeUM9/vcS2KkJk4rUeoctZ2z5//tsKQpHH4r
+         QTBg==
+X-Gm-Message-State: AOAM531NfOxrrSNCWfjxkOArLArpyZUKs6hnQmvYyt5jIuoz9ehES3He
+        NfzMhZyAndBEtLl0YWKN92A=
+X-Google-Smtp-Source: ABdhPJzAVlDI0kRuMk+kMS3N70UqoXOL98FwsKJLEU9O09bi9pGfR1J2fJ+RENcFe8nqcyDHF5QpPA==
+X-Received: by 2002:ac8:5ac5:: with SMTP id d5mr1651131qtd.153.1637711144846;
+        Tue, 23 Nov 2021 15:45:44 -0800 (PST)
+Received: from localhost ([2600:1700:65a0:ab60:ed62:84b1:6aa6:3403])
+        by smtp.gmail.com with ESMTPSA id e20sm7057259qty.14.2021.11.23.15.45.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 15:45:44 -0800 (PST)
+Date:   Tue, 23 Nov 2021 15:45:43 -0800
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH dwarves v2 0/4] btf: support btf_type_tag attribute
-Message-ID: <YZ17F85k9Ddhjgnc@kernel.org>
-References: <20211123045612.1387544-1-yhs@fb.com>
- <CAEf4BzbEMzpXKQ18FmFxgozAmbx8Mz87YamONpbAWaKDCULGjg@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>, kernel@axis.com,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] af_unix: fix regression in read after shutdown
+Message-ID: <YZ19J+jZrOXxR1oR@unknown>
+References: <20211119120521.18813-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbEMzpXKQ18FmFxgozAmbx8Mz87YamONpbAWaKDCULGjg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20211119120521.18813-1-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Nov 23, 2021 at 10:32:18AM -0800, Andrii Nakryiko escreveu:
-> On Mon, Nov 22, 2021 at 8:56 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > btf_type_tag is a new llvm type attribute which is used similar
-> > to kernel __user/__rcu attributes. The format of btf_type_tag looks like
-> >   __attribute__((btf_type_tag("tag1")))
-> > For the case where the attribute applied to a pointee like
-> >   #define __tag1 __attribute__((btf_type_tag("tag1")))
-> >   #define __tag2 __attribute__((btf_type_tag("tag2")))
-> >   int __tag1 * __tag1 __tag2 *g;
-> > the information will be encoded in dwarf.
-> >
-> > In BTF, the attribute is encoded as a new kind
-> > BTF_KIND_TYPE_TAG and latest bpf-next supports it.
-> >
-> > The patch added support in pahole, specifically
-> > converts llvm dwarf btf_type_tag attributes to
-> > BTF types. Please see individual patches for details.
-> >
-> > Changelog:
-> >   v1 -> v2:
-> >      - reorg an if condition to reduce nesting level.
-> >      - add more comments to explain how to chain type tag types.
-> >
-> > Yonghong Song (4):
-> >   libbpf: sync with latest libbpf repo
-> >   dutil: move DW_TAG_LLVM_annotation definition to dutil.h
-> >   dwarf_loader: support btf_type_tag attribute
-> >   btf_encoder: support btf_type_tag attribute
-> >
+On Fri, Nov 19, 2021 at 01:05:21PM +0100, Vincent Whitchurch wrote:
+> On kernels before v5.15, calling read() on a unix socket after
+> shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
+> previously written or EOF.  But now, while read() after
+> shutdown(SHUT_RD) still behaves the same way, read() after
+> shutdown(SHUT_RDWR) always fails with -EINVAL.
+
+Maybe just lift the socket tate check in unix_stream_read_generic()?
+
 > 
-> I thought that v1 was already applied, but either way LGTM. I'm not
+> This behaviour change was apparently inadvertently introduced as part of
+> a bug fix for a different regression caused by the commit adding sockmap
+> support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
+> unix_stream_proto for sockmap").  Those commits, for unclear reasons,
+> started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
 
-To the next branch, and the libbpf pahole CI is failing, since a few
-days, can you please take a look?
+Not sure why it is unclear here, for an connection oriented socket, it
+can be closed for just one direction, in this case we want to prevent it
+from being redirected in sockmap, hence the point of the commits.
 
-> super familiar with the DWARF loader parts, so I mostly just read it
-> very superficially :)
-
-I replaced the patches that changed, re-added the S-o-B for Yonghong and
-tested it with llvm-project HEAD.
-
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-Adding it to the csets.
-
-Thanks!
-
-- Arnaldo
- 
+> while this state change had previously only been done in
+> unix_release_sock().
 > 
-> >  btf_encoder.c  |   7 +++
-> >  dutil.h        |   4 ++
-> >  dwarf_loader.c | 140 ++++++++++++++++++++++++++++++++++++++++++++++---
-> >  dwarves.h      |  38 +++++++++++++-
-> >  lib/bpf        |   2 +-
-> >  pahole.c       |   8 +++
-> >  6 files changed, 190 insertions(+), 9 deletions(-)
-> >
-> > --
-> > 2.30.2
-> >
+> Restore the original behaviour.  The sockmap tests in
+> tests/selftests/bpf continue to pass after this patch.
 
--- 
+Isn't this because we don't have shutdown() in sockmap tests?
 
-- Arnaldo
+Thanks.
