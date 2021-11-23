@@ -2,177 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5709C45AFEE
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 00:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B862B45B056
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 00:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234202AbhKWXRu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 18:17:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
+        id S232825AbhKWXkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 18:40:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233425AbhKWXRu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:17:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 866F960FD8
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 23:14:41 +0000 (UTC)
+        id S229674AbhKWXkH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:40:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BD8B60FE6;
+        Tue, 23 Nov 2021 23:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637709281;
-        bh=jE6WpKXuksZ6IQMRtvuYW70N3PAtc3DsQmXn+wImq2w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CNfD0Xxd1S4tcp04KBiD+zP/an/lI6Fs5HOaD4L0pPJGrkda/JkFO6JQ98tnLthai
-         YDojQhGSHyolQGaTXi8DB06tLbIUnNnw7SmhDJ7A7jOIgSYhr9YX1oOUc3qfHHshC8
-         W+QKE/padOwie3EvXbyMDBK36N6MZItKDB/yWwKYwVXsVF1beRlpR7D+IRelbthojJ
-         jhKY2zPvybH5OFy/jgxXbFSC1BKRflxfa1X5yrtIIAgh+iZWNFIPOX6FHMa+KEEq2E
-         g+U3RYdwr6xd2FSuynPoIMZ4CB0O02J1ExDH7fgRf1jcRFR0/qiBoFt3Jb5t6d0+gT
-         h4L7KksOIlXSg==
-Received: by mail-ed1-f49.google.com with SMTP id x6so1782276edr.5
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 15:14:41 -0800 (PST)
-X-Gm-Message-State: AOAM530hheB4xMna3wvQZ3YNrEb854Q0O/9/8PC4qf6kF7OgRS68GoT3
-        T/uGtMJQJmm+qGdQNzRN8L8/M3oBjH/PfFg5xN55lQ==
-X-Google-Smtp-Source: ABdhPJwNJHCjHsbFAr9VT1/VLim9gRg9Dz+gvxZVaMXGxxpCFRwJKTnisCutYdlxJMt/y2NKzFwDldwWLIWUKSjHEZQ=
-X-Received: by 2002:aa7:dc14:: with SMTP id b20mr15790151edu.133.1637709279919;
- Tue, 23 Nov 2021 15:14:39 -0800 (PST)
-MIME-Version: 1.0
-References: <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
- <20210831021132.sehzvrudvcjbzmwt@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
- <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
- <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
- <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1> <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
- <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1> <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 24 Nov 2021 00:14:29 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6TP19iV3hstamRge42R-7uKynbMQKcMHVLzCyTVEzVKw@mail.gmail.com>
-Message-ID: <CACYkzJ6TP19iV3hstamRge42R-7uKynbMQKcMHVLzCyTVEzVKw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
- sleepable programs
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        s=k20201202; t=1637710618;
+        bh=goEt95AjqVyH7lqA1ttHp+MQMzGgIEXhQBLPDNXZlQg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L14BQu617FKOQu5F0ATt5iA79RaSYzq3A/GUpoGfOMWJU0+1J3hd3hURai18zIw38
+         y8G/yuU0jMtPboFPafIqydLPeqF6YLZVvyijpLo6vAh+M7LMALzghKpWmiwxFw3WqI
+         5iOI+GS65jxd1iWGj8SIeBGwPt0bqs6WJSpiEoJ2yFKrbuHSMf2LZlj8I6xeJoUnjl
+         k3HsQcO3USsN1TUGbJuQqDnUglWMmG1t0WHR3u1BNq8KemxJC1ZlPn09nfM38LDMSU
+         uH9Wd4bXIV7noDdh/1hwuoyt5Ml3HHXhXr9bnlD/sKlQogh14oLVjfw4AoK8Pr1sID
+         0/wK6CEIq4IxA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DB88740002; Tue, 23 Nov 2021 20:36:55 -0300 (-03)
+Date:   Tue, 23 Nov 2021 20:36:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH dwarves v2 0/4] btf: support btf_type_tag attribute
+Message-ID: <YZ17F85k9Ddhjgnc@kernel.org>
+References: <20211123045612.1387544-1-yhs@fb.com>
+ <CAEf4BzbEMzpXKQ18FmFxgozAmbx8Mz87YamONpbAWaKDCULGjg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbEMzpXKQ18FmFxgozAmbx8Mz87YamONpbAWaKDCULGjg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 11:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Tue, Nov 23, 2021 at 10:22:04AM -0800, Paul E. McKenney wrote:
-> > On Tue, Nov 23, 2021 at 06:11:14PM +0100, KP Singh wrote:
-> > > On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > I think the global lock will be an issue for the current non-sleepable
-> > > > netdev bpf-prog which could be triggered by external traffic,  so a flag
-> > > > is needed here to provide a fast path.  I suspect other non-prealloc map
-> > > > may need it in the future, so probably
-> > > > s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
-> > >
-> > > I was re-working the patches and had a couple of questions.
-> > >
-> > > There are two data structures that get freed under RCU here:
-> > >
-> > > struct bpf_local_storage
-> > > struct bpf_local_storage_selem
-> > >
-> > > We can choose to free the bpf_local_storage_selem under
-> > > call_rcu_tasks_trace based on
-> > > whether the map it belongs to is sleepable with something like:
-> > >
-> > > if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
-> Paul's current work (mentioned by his previous email) will improve the
-> performance of call_rcu_tasks_trace, so it probably can avoid the
-> new BPF_F_SLEEPABLE flag and make it easier to use.
->
-> > >     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> > > else
-> > >     kfree_rcu(selem, rcu);
-> > >
-> > > Questions:
-> > >
-> > > * Can we free bpf_local_storage under kfree_rcu by ensuring it's
-> > >   always accessed in a  classical RCU critical section?
-> >>    Or maybe I am missing something and this also needs to be freed
-> > >   under trace RCU if any of the selems are from a sleepable map.
-> In the inode_storage_lookup() of this patch:
->
-> +#define bpf_local_storage_rcu_lock_held()                      \
-> +       (rcu_read_lock_held() || rcu_read_lock_trace_held() ||  \
-> +        rcu_read_lock_bh_held())
->
-> @@ -44,7 +45,8 @@ static struct bpf_local_storage_data *inode_storage_lookup(struct inode *inode,
->         if (!bsb)
->                 return NULL;
->
-> -       inode_storage = rcu_dereference(bsb->storage);
-> +       inode_storage = rcu_dereference_protected(bsb->storage,
-> +                                                 bpf_local_storage_rcu_lock_held());
->
-> Thus, it is not always in classical RCU critical.
-
-I was planning on adding a classical RCU read side critical section
-whenever we called the lookup functions.
-
-Would that have worked? (for the sake of learning).
-
->
-> > >
-> > > * There is an issue with nested raw spinlocks, e.g. in
-> > > bpf_inode_storage.c:bpf_inode_storage_free
-> > >
-> > >   hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > >   /* Always unlink from map before unlinking from
-> > >   * local_storage.
-> > >   */
-> > >   bpf_selem_unlink_map(selem);
-> > >   free_inode_storage = bpf_selem_unlink_storage_nolock(
-> > >                  local_storage, selem, false);
-> > >   }
-> > >   raw_spin_unlock_bh(&local_storage->lock);
-> > >
-> > > in bpf_selem_unlink_storage_nolock (if we add the above logic with the
-> > > flag in place of kfree_rcu)
-> > > call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
-> > > raw spin lock.
-> > >
-> > > I am moving the freeing code out of the spinlock, saving the selems on
-> > > a local list and then doing the free RCU (trace or normal) callbacks
-> > > at the end. WDYT?
-> There could be more than one selem to save.
->
-> I think the splat is from CONFIG_PROVE_RAW_LOCK_NESTING=y.
->
-> Just happened to bump into Paul briefly offline, his work probably can
-> also avoid the spin_lock in call_rcu_tasks_trace().
->
-> I would ignore this splat for now which should go away when it is
-> merged with Paul's work in the 5.17 merge cycle.
-
-Agreed.
-
->
-> > Depending on the urgency, another approach is to rely on my ongoing work
-> > removing the call_rcu_tasks_trace() bottleneck.  This commit on branch
-> > "dev" in the -rcu tree allows boot-time setting of per-CPU callback
-> > queues for call_rcu_tasks_trace(), along with the other RCU-tasks flavors:
+Em Tue, Nov 23, 2021 at 10:32:18AM -0800, Andrii Nakryiko escreveu:
+> On Mon, Nov 22, 2021 at 8:56 PM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > 0b886cc4b10f ("rcu-tasks: Add rcupdate.rcu_task_enqueue_lim to set initial queueing")
+> > btf_type_tag is a new llvm type attribute which is used similar
+> > to kernel __user/__rcu attributes. The format of btf_type_tag looks like
+> >   __attribute__((btf_type_tag("tag1")))
+> > For the case where the attribute applied to a pointee like
+> >   #define __tag1 __attribute__((btf_type_tag("tag1")))
+> >   #define __tag2 __attribute__((btf_type_tag("tag2")))
+> >   int __tag1 * __tag1 __tag2 *g;
+> > the information will be encoded in dwarf.
 > >
-> > Preceding commits actually set up the queues.  With these commits, you
-> > could boot with rcupdate.rcu_task_enqueue_lim=N, where N greater than
-> > or equal to the number of CPUs on your system, to get per-CPU queuing.
-> > These commits probably still have a bug or three, but on the other hand,
-> > they have survived a couple of weeks worth of rcutorture runs.
+> > In BTF, the attribute is encoded as a new kind
+> > BTF_KIND_TYPE_TAG and latest bpf-next supports it.
 > >
-> > This week's work will allow automatic transition between single-queue
-> > and per-CPU-queue operation based on lock contention and the number of
-> > callbacks queued.
+> > The patch added support in pahole, specifically
+> > converts llvm dwarf btf_type_tag attributes to
+> > BTF types. Please see individual patches for details.
 > >
-> > My current plan is to get this into the next merge window (v5.17).
-> That would be great.
+> > Changelog:
+> >   v1 -> v2:
+> >      - reorg an if condition to reduce nesting level.
+> >      - add more comments to explain how to chain type tag types.
+> >
+> > Yonghong Song (4):
+> >   libbpf: sync with latest libbpf repo
+> >   dutil: move DW_TAG_LLVM_annotation definition to dutil.h
+> >   dwarf_loader: support btf_type_tag attribute
+> >   btf_encoder: support btf_type_tag attribute
+> >
+> 
+> I thought that v1 was already applied, but either way LGTM. I'm not
 
-+1 :)
+To the next branch, and the libbpf pahole CI is failing, since a few
+days, can you please take a look?
+
+> super familiar with the DWARF loader parts, so I mostly just read it
+> very superficially :)
+
+I replaced the patches that changed, re-added the S-o-B for Yonghong and
+tested it with llvm-project HEAD.
+
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+Adding it to the csets.
+
+Thanks!
+
+- Arnaldo
+ 
+> 
+> >  btf_encoder.c  |   7 +++
+> >  dutil.h        |   4 ++
+> >  dwarf_loader.c | 140 ++++++++++++++++++++++++++++++++++++++++++++++---
+> >  dwarves.h      |  38 +++++++++++++-
+> >  lib/bpf        |   2 +-
+> >  pahole.c       |   8 +++
+> >  6 files changed, 190 insertions(+), 9 deletions(-)
+> >
+> > --
+> > 2.30.2
+> >
+
+-- 
+
+- Arnaldo
