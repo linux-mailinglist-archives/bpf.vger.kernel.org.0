@@ -2,58 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E8E4598F7
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 01:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9767F4598FF
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 01:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhKWALq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Nov 2021 19:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
+        id S230096AbhKWAMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Nov 2021 19:12:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhKWALo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:11:44 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B83C061714
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:08:37 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id gt5so15157756pjb.1
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:08:37 -0800 (PST)
+        with ESMTP id S229973AbhKWAMl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Nov 2021 19:12:41 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8698CC061574
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:09:34 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id j2so18039100ybg.9
+        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 16:09:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wZR6Ao4RLGixmxbUccPgLB1l5tsOaxtCOa9SyDc/pS0=;
-        b=AYAu2u3PC4vy500pmIbDhYCrfEMYPvLJto9rmQCyD4XI4USN5f5+W8eJy2pMjWkgym
-         rE8M74KF7QHEQEntto4v4tmFeYI939RIpfjibiCBoqn/GEPXuJcYODheq88NWYLDnokI
-         wNsIV57fI8pKJYZYL07uLtLWNSVxhmkj7HHVS1BEZejQkGTvqIFvKkuysijduS0dh+zu
-         4o9E0AOEVcM7tKIkJCmdSX318K8abIi/YY5BekB/3zdiYCatPZYnPwiaE7QlvqEc2EU6
-         BPyZFGivVyZY5I32GehOYh+EdglGf7tZfubzZokd5KgJJrxCc3UWq0oHNJp50AyDJ4To
-         2pig==
+        bh=6KRzJ/dWrWfzzg1egg6OO/+zNMXyWkAW4RukKlIBFyM=;
+        b=OPySmW/H80RsrY4oNNpjKiaVua34x8HjM2/4rTGC+Mkopr1N+iwGvmOiUtoLzGkWo8
+         Z+Frqo2q9w/OdWWje4kRUp/3qmckOYiUyObOrzaGspEJ5Y9s2B2NRCU5cg7+AYtgM+MQ
+         de0Qd+gCLPsSapGkEU9gT3MD9opTJiLPoMYJHvbe2TG4FxD3nHTGX+QeC7t49Z7uwepB
+         OEa4j1ALCAj/owBxvRbWAcK1ph94N3zBgqy648g0exujKWJiM0NZMIER/uTr0p9/XxzO
+         ICAexDl7pY1n/7zzElJhmUYXXJ3eBJLPhYCHfGswfiBAMS7/4DQCq/yLMBsTxGsbC3kL
+         cKpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wZR6Ao4RLGixmxbUccPgLB1l5tsOaxtCOa9SyDc/pS0=;
-        b=YHlC5ig1t83rZKH0dy8n+ydXphxgWhY8RFOSJqvlmqubS4DasKXZ9MWexZd8wBnqtm
-         qkCQpakZT2KY/v0kF2Cpfx7MgpGwzK6Rs8dnjXcNbn9XjVjA4NMvMbmoa1xfzf6HtZrk
-         Tau8sOixeNue7F256YBDZiu1N+Ee9WXcKABisXH1zE4dVIgRSleM6RONox++LsOcOGqw
-         LkTbprfVwZ7xvkb24LmH5uNffyX+Ky09FGyDowrAqYUtUDq1vVEokYNDyvvLu+ghcA7C
-         vrhAB+1krz9ty4KusQZavarLbJO0Z1yyWuIWRBJV6ydQOJLZRGxfgWUt4o68ZTdo3zWt
-         CYrg==
-X-Gm-Message-State: AOAM530FrWuMbLGMl/s7cHvmS+wZ9mOr3Ysi6fjdHD6k5BLVWMTWAFTM
-        mhpB4N320l435gH5cFnPWWX9aAvngF3KFCS1BANciD8O+yw=
-X-Google-Smtp-Source: ABdhPJwjdRTLs/Q6vlTN4rUcDoXVhIg4bsNhQp4AnvN0IK8w4l2sJfzXIe2PkCsez+A/OYPjE3MyFADfsPIyoGfc7FQ=
-X-Received: by 2002:a17:902:d491:b0:142:892d:a89 with SMTP id
- c17-20020a170902d49100b00142892d0a89mr1518249plg.20.1637626116575; Mon, 22
- Nov 2021 16:08:36 -0800 (PST)
+        bh=6KRzJ/dWrWfzzg1egg6OO/+zNMXyWkAW4RukKlIBFyM=;
+        b=qHlxlfChL4n+Unspn3YBvg1sPSkiYqMK4eOp+Lb/M/STpARmpBWc7KSIRrwhKFb86s
+         XtKnDB3Te4DMcOTcxGMdUlnmDJ0/KAd9Vj+2EJXhjh1WFQW/B7bO+keucDH40sdMOl+b
+         EYM6JzPUeeuWBJJvKJomi5BKs3HgZfw+sUXrcoyUmDRf+Mil2+GuCjwbWwOp00/5t0p2
+         Wccn2hvNwvuIh3Jf67aOVpQZCMe+LCTIot27qkB7ziuYJauaOy5X7S1warbujzfv4OVf
+         jEFL4tS4osHa1YzbYEq0/Qaq6AXsB9zw+N26aRVqZGt+HpTFe83ZmbzfZrufXwLlR/y1
+         /obQ==
+X-Gm-Message-State: AOAM530PKi23pgKHnXw0b+HE8XF9awTZ5b8ZWE+psorj3JdwcqUFHZLK
+        aN4dGDmIreVhw9iQRQz4ruYF5n2tbCd99SoEkgc=
+X-Google-Smtp-Source: ABdhPJydBCK34FnoN0xnGfGqGDfaD0KdUfgWbs6uwr4V/Mo5T04ORiXLAC4PoXbPs3TIE97Zt6MYNQgijRe/ecs3La0=
+X-Received: by 2002:a05:6902:68d:: with SMTP id i13mr1398027ybt.2.1637626173805;
+ Mon, 22 Nov 2021 16:09:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
- <20211120033255.91214-8-alexei.starovoitov@gmail.com> <CAEf4BzYXO_T7rLSs3aReF+oLfdjgd6WEzw9WNUynom7UOwtyNw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYXO_T7rLSs3aReF+oLfdjgd6WEzw9WNUynom7UOwtyNw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 22 Nov 2021 16:08:25 -0800
-Message-ID: <CAADnVQ+W5YNrhk=1C41LTtuEHGR4yDZL6sXvK3d98u-gOqxAnA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 07/13] libbpf: Use CO-RE in the kernel in
- light skeleton.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+References: <20211120033255.91214-1-alexei.starovoitov@gmail.com> <20211120033255.91214-13-alexei.starovoitov@gmail.com>
+In-Reply-To: <20211120033255.91214-13-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 22 Nov 2021 16:09:23 -0800
+Message-ID: <CAEf4BzbR6a3UrPZj9DcJtARYL74iZJKndkKhHkrKSNuhLGfDyA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 12/13] selftests/bpf: Additional test for
+ CO-RE in the kernel.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -63,94 +61,135 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 4:04 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Nov 19, 2021 at 7:33 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, Nov 19, 2021 at 7:33 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Without lskel the CO-RE relocations are processed by libbpf before any other
-> > work is done. Instead, when lskel is needed, remember relocation as RELO_CORE
-> > kind. Then when loader prog is generated for a given bpf program pass CO-RE
-> > relos of that program to gen loader via bpf_gen__record_relo_core(). The gen
-> > loader will remember them as-is and pass it later as-is into the kernel.
-> >
-> > The normal libbpf flow is to process CO-RE early before call relos happen. In
-> > case of gen_loader the core relos have to be added to other relos to be copied
-> > together when bpf static function is appended in different places to other main
-> > bpf progs. During the copy the append_subprog_relos() will adjust insn_idx for
-> > normal relos and for RELO_CORE kind too. When that is done each struct
-> > reloc_desc has good relos for specific main prog.
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >  tools/lib/bpf/bpf_gen_internal.h |   3 +
-> >  tools/lib/bpf/gen_loader.c       |  41 +++++++++++-
-> >  tools/lib/bpf/libbpf.c           | 108 ++++++++++++++++++++++---------
-> >  3 files changed, 119 insertions(+), 33 deletions(-)
-> >
+> From: Alexei Starovoitov <ast@kernel.org>
 >
-> [...]
->
-> >         if (relo->kind != BPF_CORE_TYPE_ID_LOCAL &&
-> > @@ -5653,6 +5679,9 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
-> >                 case RELO_CALL:
-> >                         /* handled already */
-> >                         break;
-> > +               case RELO_CORE:
-> > +                       /* will be handled by bpf_program_record_relos() */
-> > +                       break;
-> >                 default:
-> >                         pr_warn("prog '%s': relo #%d: bad relo type %d\n",
-> >                                 prog->name, i, relo->type);
-> > @@ -6090,6 +6119,35 @@ bpf_object__free_relocs(struct bpf_object *obj)
-> >         }
-> >  }
-> >
-> > +static int cmp_relocs(const void *_a, const void *_b)
-> > +{
-> > +       const struct reloc_desc *a = _a;
-> > +       const struct reloc_desc *b = _b;
-> > +
-> > +       if (a->insn_idx != b->insn_idx)
-> > +               return a->insn_idx < b->insn_idx ? -1 : 1;
-> > +
-> > +       /* no two relocations should have the same insn_idx, but ... */
-> > +       if (a->type != b->type)
-> > +               return a->type < b->type ? -1 : 1;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void bpf_object__sort_relos(struct bpf_object *obj)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < obj->nr_programs; i++) {
-> > +               struct bpf_program *p = &obj->programs[i];
-> > +
-> > +               if (!p->nr_reloc)
-> > +                       continue;
-> > +
-> > +               qsort(p->reloc_desc, p->nr_reloc, sizeof(*p->reloc_desc), cmp_relocs);
-> > +       }
-> > +}
-> > +
-> >  static int
-> >  bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
-> >  {
-> > @@ -6104,6 +6162,8 @@ bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
-> >                                 err);
-> >                         return err;
-> >                 }
-> > +               if (obj->gen_loader)
-> > +                       bpf_object__sort_relos(obj);
->
-> libbpf sorts relos because it does binary search on them (see
-> find_prog_insn_relo).
+> Additional test where randmap() function is appended to three different bpf
+> programs. That action checks struct bpf_core_relo replication logic and offset
 
-exactly.
-After co-re relos were added the array has to be sorted again.
-find_prog_insn_relo() will be called after this step.
+typo: replication -> relocation?
+
+> adjustment.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/Makefile          |  2 +-
+>  .../selftests/bpf/prog_tests/core_kern.c      | 14 +++++
+>  tools/testing/selftests/bpf/progs/core_kern.c | 60 +++++++++++++++++++
+>  3 files changed, 75 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/core_kern.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/core_kern.c
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 4fd040f5944b..139d7e5e0a5f 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -326,7 +326,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
+>
+>  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
+>         test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
+> -       map_ptr_kern.c
+> +       map_ptr_kern.c core_kern.c
+>  # Generate both light skeleton and libbpf skeleton for these
+>  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test_subprog.c
+>  SKEL_BLACKLIST += $$(LSKELS)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/core_kern.c b/tools/testing/selftests/bpf/prog_tests/core_kern.c
+> new file mode 100644
+> index 000000000000..561c5185d886
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/core_kern.c
+> @@ -0,0 +1,14 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include "test_progs.h"
+> +#include "core_kern.lskel.h"
+> +
+> +void test_core_kern_lskel(void)
+> +{
+> +       struct core_kern_lskel *skel;
+> +
+> +       skel = core_kern_lskel__open_and_load();
+> +       ASSERT_OK_PTR(skel, "open_and_load");
+> +       core_kern_lskel__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/core_kern.c b/tools/testing/selftests/bpf/progs/core_kern.c
+> new file mode 100644
+> index 000000000000..3b4571d68369
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/core_kern.c
+> @@ -0,0 +1,60 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +#include "vmlinux.h"
+> +
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __type(key, u32);
+> +       __type(value, u32);
+> +       __uint(max_entries, 256);
+> +} array1 SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __type(key, u32);
+> +       __type(value, u32);
+> +       __uint(max_entries, 256);
+> +} array2 SEC(".maps");
+> +
+> +int randmap(int v)
+> +{
+> +       struct bpf_map *map = (struct bpf_map *)&array1;
+> +       int key = bpf_get_prandom_u32() & 0xff;
+> +       int *val;
+> +
+> +       if (bpf_get_prandom_u32() & 1)
+> +               map = (struct bpf_map *)&array2;
+> +
+> +       val = bpf_map_lookup_elem(map, &key);
+> +       if (val)
+> +               *val = bpf_get_prandom_u32() + v;
+> +
+> +       return 0;
+
+If I understand correctly the intent, this function should have had
+some CO-RE relocations, no? So that after its code is appended to the
+three entry-level progs below CO-RE relocations are performed
+correctly, right? But as far as I can see, this function doesn't do
+any CO-RE relocations or am I missing something? If it was accessing
+map->type or something along those lines (probably through
+BPF_CORE_READ() macro), then it would have CO-RE relocs.
+
+> +}
+> +
+> +SEC("tp_btf/xdp_devmap_xmit")
+> +int BPF_PROG(tp_xdp_devmap_xmit_multi, const struct net_device
+> +            *from_dev, const struct net_device *to_dev, int sent, int drops,
+> +            int err)
+> +{
+> +       return randmap(from_dev->ifindex);
+> +}
+> +
+> +SEC("fentry/eth_type_trans")
+> +int BPF_PROG(fentry_eth_type_trans, struct sk_buff *skb,
+> +            struct net_device *dev, unsigned short protocol)
+> +{
+> +       return randmap(dev->ifindex + skb->len);
+> +}
+> +
+> +SEC("fexit/eth_type_trans")
+> +int BPF_PROG(fexit_eth_type_trans, struct sk_buff *skb,
+> +            struct net_device *dev, unsigned short protocol)
+> +{
+> +       return randmap(dev->ifindex + skb->len);
+> +}
+> +
+> +char LICENSE[] SEC("license") = "GPL";
+> --
+> 2.30.2
+>
