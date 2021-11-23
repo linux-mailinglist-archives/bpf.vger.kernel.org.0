@@ -2,211 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB0A4599D1
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 02:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D294599E2
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 02:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhKWBr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Nov 2021 20:47:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        id S232087AbhKWB4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Nov 2021 20:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhKWBr2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:47:28 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B87C061574
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 17:44:20 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id v7so55293870ybq.0
-        for <bpf@vger.kernel.org>; Mon, 22 Nov 2021 17:44:20 -0800 (PST)
+        with ESMTP id S232241AbhKWB4N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Nov 2021 20:56:13 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E30C061714;
+        Mon, 22 Nov 2021 17:53:05 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id 131so55166596ybc.7;
+        Mon, 22 Nov 2021 17:53:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bBdpwbIkcHigs0Jy3z07cs4e2JnlmQ5JBif970W1adE=;
-        b=GM0tAHdFir2ugMYucsqUL0S9r3xD1oDK+6ZYf7d4737wRJHzNixc3wxxn3kKWkeL5c
-         GUImN1yJXCKS/2oMZ85yyvxM8jOqeWX5WhdMmVaXmJoz6hwntxqrA1k4jRhI775AG5Vq
-         WqY/7ceTr0pDr6fCqZspZejJ58afnfPVLDdbgzXBrBHg3camwiNvpBTWkjeW6N3JOIha
-         sRDsPH6sM+Ce4ZHeBC6q8YFYCNhrCNtjk+s3zjgq0PpxoTRgCMweEU2uw+IYLIgJEjxn
-         8Mgs/ClRHuI4eHlAKtbRMqCutQiNGGIK87AskaRiy9k2ZuB9LVDZP6gSOCFPCuNc1cLf
-         5rdw==
+        bh=KQew24gCw32BEspXmTN0N3jE47f4UUvD6aEt6ZjVBM8=;
+        b=SqTpL5iLKjNITSh8GNz3LyLP3iRqTXMLaNlyu/KLT4J9FjA2cYxZ3FRiP/LEde6S2+
+         24eU8da+O9N9PepEmwWTHVN2GOTQcHnaw+9fLVis/5DqNf9wL2PGk0T8cp5L8/YYhqIu
+         46uiCrqKJGeAhLFjbOdPQuMgy2SL1ga7b5luZ5yIYPSXctvhP4071sAWyF0s0trmY3NY
+         vT/cnIRtQzVYTnIKmJLgxhiBlmK0sseV6z6EoeBju/SoPD36zW11BnzMrr8nxSwg8WJc
+         ysAeXaS/5ssVNis/cHEvzkJ8Hc42hFZHyY2/fTRyye/5ayDIXEYY25O7DE6ho9dJuO9Z
+         ak0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bBdpwbIkcHigs0Jy3z07cs4e2JnlmQ5JBif970W1adE=;
-        b=0+SSb1K/VW9L9wlG7CzDCsAOCWkemxuUvuxJIDOKYRpM9WjrmJkJnnOsJshHDzdQlA
-         PqoPDyaMZP+BIhiupkeNiKbvXTTEDBLbqHjAijcKzWB/CLWK1M5EhSECHzgSnepCEZiZ
-         /VErcp+grZKiHAKagpBIg6YdvCZFsMal/DSDbDieLc7aoegOTBe34tnw8vmxA/ZEzr9j
-         p7jiejUWh1B+Xo4UP0NJTviPGxDEVUC6eHSGe4jPxStHwp6M1iYHiL1Q7rctfLQyZNAM
-         P9osD48IwGkDziwoU6Qz2Cg5tmR6o1WBSZ218t6o7eH6J4Sc2J0XmDWxCth40EK2NNFs
-         eZYw==
-X-Gm-Message-State: AOAM531xVc8cZeAEAGjBWwY43N8MyzkEaFh/PCBEQpZ2yH4En1X9ZLi/
-        4ujS3H95mF1j9rW9Wpws4Wt6yudKCsiU3S3WS68=
-X-Google-Smtp-Source: ABdhPJwqGmtD2E9Itt2TJnHAV3ckgiyBUHfSjSEXc6nHamOIInd8JmcM3cAS90JiV+D1zNOMrnS3qCfLpZ7RJ1hzy9A=
-X-Received: by 2002:a25:42c1:: with SMTP id p184mr1675370yba.433.1637631860075;
- Mon, 22 Nov 2021 17:44:20 -0800 (PST)
+        bh=KQew24gCw32BEspXmTN0N3jE47f4UUvD6aEt6ZjVBM8=;
+        b=Xz3gK5gRAoLugnUyg6c8PurEyUpTongL7MdIfWbpxcTQi7psMV5esPiW2WyQEQFTTi
+         Bp8S3e4rCxCEA76x4hXvHvEjulfhhy1g4HRKxvpmOkSRAjnvwFMq/0RphFaEpv+LlXG3
+         t0YmdjEgWpt8XrbvNnRdUrrXhAqpY2pBjhxpgZdNdD4GZ7eoi9twqTaSbeH9JltS2dqy
+         htch5BtQaxjNT9tIowjpfFTDcuFz71qn/JtB1wjga28fFEXWas3VReRBJL6qZWSIv6iK
+         2euQoRMiYX2zDWADbIXGFBimYiS2h9Sj4UAhunUXccMOE40ZT5Ffu4FM0OsSzYlyw0ir
+         vTOg==
+X-Gm-Message-State: AOAM533Ym1+Y5VUkrI+2iUC+b2486Wet8uDG8uNKpI3ixcTgDisw063P
+        DMhNZWHP7MsD5Gi0U6c3D8rQ5Ke+EKTGaeVr3aY=
+X-Google-Smtp-Source: ABdhPJxMV9h5aFoIbdAovbXihTGjlzX4KhZCL6E5x6hEkwIfy2qL5oYVdphR1hxtTbZX9spvq6WBzHzBLTPnteV1I9w=
+X-Received: by 2002:a25:ccd4:: with SMTP id l203mr2076380ybf.225.1637632384690;
+ Mon, 22 Nov 2021 17:53:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20211120033255.91214-1-alexei.starovoitov@gmail.com>
- <20211120033255.91214-7-alexei.starovoitov@gmail.com> <CAEf4BzZWiXEi3FmBsAScPpUnuHzVHL64hXrBj46HQAmx_qUH5Q@mail.gmail.com>
- <CAADnVQJ6Nt1v05dSjq4touYddPSjihMNZAPZMsux8vHBMu9WDg@mail.gmail.com>
-In-Reply-To: <CAADnVQJ6Nt1v05dSjq4touYddPSjihMNZAPZMsux8vHBMu9WDg@mail.gmail.com>
+References: <20211117202214.3268824-1-yhs@fb.com> <20211117202229.3270304-1-yhs@fb.com>
+In-Reply-To: <20211117202229.3270304-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Nov 2021 17:44:08 -0800
-Message-ID: <CAEf4BzbzQR22NsWu_aRJu705ehsP3nL47ZW9MBygonna8KbNEw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 06/13] bpf: Add bpf_core_add_cands() and wire
- it into bpf_core_apply_relo_insn().
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Mon, 22 Nov 2021 17:52:53 -0800
+Message-ID: <CAEf4Bzbcx0ExE+TsOL4G+56KZ3dLs5vJV_y1=9_Cpt=4Y=c5uA@mail.gmail.com>
+Subject: Re: [PATCH dwarves 3/4] dwarf_loader: support btf_type_tag attribute
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 4:43 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Nov 17, 2021 at 12:25 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Mon, Nov 22, 2021 at 3:47 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Nov 19, 2021 at 7:33 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > From: Alexei Starovoitov <ast@kernel.org>
-> > >
-> > > Given BPF program's BTF perform a linear search through kernel BTFs for
-> > > a possible candidate.
-> > > Then wire the result into bpf_core_apply_relo_insn().
-> > >
-> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > > ---
-> > >  kernel/bpf/btf.c | 136 ++++++++++++++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 135 insertions(+), 1 deletion(-)
-> > >
-> >
-> > [...]
-> >
-> > >  int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
-> > >                    int relo_idx, void *insn)
-> > >  {
-> > > -       return -EOPNOTSUPP;
-> > > +       if (relo->kind != BPF_CORE_TYPE_ID_LOCAL) {
-> > > +               struct bpf_core_cand_list *cands;
-> > > +
-> > > +               cands = bpf_core_find_cands(ctx, relo->type_id);
-> >
-> > this is wrong for many reasons:
-> >
-> > 1. you will overwrite previous ctx->cands, if it was already set,
-> > which leaks memory
-> > 2. this list of candidates should be keyed by relo->type_id ("root
-> > type"). Different root types get their own independent lists; so it
-> > has to be some sort of look up table from type_id to a list of
-> > candidates.
-> >
-> > 2) means that if you had a bunch of relos against struct task_struct,
-> > you'll crate a list of candidates when processing first relo that
-> > starts at task_struct. All the subsequent relos that have task_struct
-> > as root type will re-used that list and potentially trim it down. If
-> > there are some other relos against, say, struct mm_struct, they will
-> > have their independent list of candidates.
+> LLVM patches ([1] for clang, [2] and [3] for BPF backend)
+> added support for btf_type_tag attributes. The following is
+> an example:
+>   [$ ~] cat t.c
+>   #define __tag1 __attribute__((btf_type_tag("tag1")))
+>   #define __tag2 __attribute__((btf_type_tag("tag2")))
+>   int __tag1 * __tag1 __tag2 *g __attribute__((section(".data..percpu")));
+>   [$ ~] clang -O2 -g -c t.c
+>   [$ ~] llvm-dwarfdump --debug-info t.o
+>   t.o:    file format elf64-x86-64
+>   ...
+>   0x0000001e:   DW_TAG_variable
+>                   DW_AT_name      ("g")
+>                   DW_AT_type      (0x00000033 "int **")
+>                   DW_AT_external  (true)
+>                   DW_AT_decl_file ("/home/yhs/t.c")
+>                   DW_AT_decl_line (3)
+>                   DW_AT_location  (DW_OP_addr 0x0)
+>   0x00000033:   DW_TAG_pointer_type
+>                   DW_AT_type      (0x0000004b "int *")
+>   0x00000038:     DW_TAG_LLVM_annotation
+>                     DW_AT_name    ("btf_type_tag")
+>                     DW_AT_const_value     ("tag1")
+>   0x00000041:     DW_TAG_LLVM_annotation
+>                     DW_AT_name    ("btf_type_tag")
+>                     DW_AT_const_value     ("tag2")
+>   0x0000004a:     NULL
+>   0x0000004b:   DW_TAG_pointer_type
+>                   DW_AT_type      (0x0000005a "int")
+>   0x00000050:     DW_TAG_LLVM_annotation
+>                     DW_AT_name    ("btf_type_tag")
+>                     DW_AT_const_value     ("tag1")
+>   0x00000059:     NULL
+>   0x0000005a:   DW_TAG_base_type
+>                   DW_AT_name      ("int")
+>                   DW_AT_encoding  (DW_ATE_signed)
+>                   DW_AT_byte_size (0x04)
+>   0x00000061:   NULL
 >
-> right.
-> Your prior comment confused me. I didn't do this reuse of cands
-> to avoid introducing hashtable here like libbpf does,
-> since it does too little to actually help.
+> From the above example, you can see that DW_TAG_pointer_type
+> may contain one or more DW_TAG_LLVM_annotation btf_type_tag tags.
+> If DW_TAG_LLVM_annotation tags are present inside
+> DW_TAG_pointer_type, for BTF encoding, pahole will need
+> to follow [3] to generate a type chain like
+>   var -> ptr -> tag2 -> tag1 -> ptr -> tag1 -> int
+>
+> This patch implemented dwarf_loader support. If a pointer type
+> contains DW_TAG_LLVM_annotation tags, a new type
+> btf_type_tag_ptr_type will be created which will store
+> the pointer tag itself and all DW_TAG_LLVM_annotation tags.
+> During recoding stage, the type chain will be formed properly
+> based on the above example.
+>
+> An option "--skip_encoding_btf_type_tag" is added to disable
+> this new functionality.
+>
+>   [1] https://reviews.llvm.org/D111199
+>   [2] https://reviews.llvm.org/D113222
+>   [3] https://reviews.llvm.org/D113496
+> ---
+>  dwarf_loader.c | 116 +++++++++++++++++++++++++++++++++++++++++++++++--
+>  dwarves.h      |  33 +++++++++++++-
+>  pahole.c       |   8 ++++
+>  3 files changed, 153 insertions(+), 4 deletions(-)
+>
 
-Since when avoiding millions of iterations for each relocation is "too
-little help"?
+[...]
 
-BTW, I've tried to measure how noticeable this will be and added
-test_verif_scale2 to core_kern with only change to use vmlinux.h (so
-that __sk_buff accesses are CO-RE relocated). I didn't manage to get
-it loaded, so something else is going there. So please take a look, I
-don't really know how to debug lskel stuff. Here are the changes:
+> +
+> +static struct tag *die__create_new_pointer_tag(Dwarf_Die *die, struct cu *cu,
+> +                                              struct conf_load *conf)
+> +{
+> +       struct btf_type_tag_ptr_type *tag = NULL;
+> +       struct btf_type_tag_type *annot;
+> +       Dwarf_Die *cdie, child;
+> +       const char *name;
+> +       uint32_t id;
+> +
+> +       /* If no child tags or skipping btf_type_tag encoding, just create a new tag
+> +        * and return
+> +        */
+> +       if (!dwarf_haschildren(die) || dwarf_child(die, &child) != 0 ||
+> +           conf->skip_encoding_btf_type_tag)
+> +               return tag__new(die, cu);
+> +
+> +       /* Otherwise, check DW_TAG_LLVM_annotation child tags */
+> +       cdie = &child;
+> +       do {
+> +               if (dwarf_tag(cdie) == DW_TAG_LLVM_annotation) {
 
-diff --git a/tools/testing/selftests/bpf/progs/core_kern.c
-b/tools/testing/selftests/bpf/progs/core_kern.c
-index 3b4571d68369..9916cf059883 100644
---- a/tools/testing/selftests/bpf/progs/core_kern.c
-+++ b/tools/testing/selftests/bpf/progs/core_kern.c
-@@ -4,6 +4,10 @@
+nit: inverting the condition and doing continue would reduce nestedness level
 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+#define ATTR __always_inline
-+#include "test_jhash.h"
+> +                       /* Only check btf_type_tag annotations */
+> +                       name = attr_string(cdie, DW_AT_name, conf);
+> +                       if (strcmp(name, "btf_type_tag") != 0)
+> +                               continue;
+> +
+> +                       if (tag == NULL) {
+> +                               /* Create a btf_type_tag_ptr type. */
+> +                               tag = die__create_new_btf_type_tag_ptr_type(die, cu);
+> +                               if (!tag)
+> +                                       return NULL;
+> +                       }
+> +
+> +                       /* Create a btf_type_tag type for this annotation. */
+> +                       annot = die__create_new_btf_type_tag_type(cdie, cu, conf);
+> +                       if (annot == NULL)
+> +                               return NULL;
+> +
+> +                       if (cu__table_add_tag(cu, &annot->tag, &id) < 0)
+> +                               return NULL;
+> +
+> +                       struct dwarf_tag *dtag = annot->tag.priv;
+> +                       dtag->small_id = id;
+> +                       cu__hash(cu, &annot->tag);
+> +
+> +                       /* For a list of DW_TAG_LLVM_annotation like tag1 -> tag2 -> tag3,
+> +                        * the tag->tags contains tag3 -> tag2 -> tag1.
+> +                        */
+> +                       list_add(&annot->node, &tag->tags);
+> +               }
+> +       } while (dwarf_siblingof(cdie, cdie) == 0);
+> +
+> +       return tag ? &tag->tag : tag__new(die, cu);
+> +}
+> +
+>  static struct tag *die__create_new_ptr_to_member_type(Dwarf_Die *die,
+>                                                       struct cu *cu)
+>  {
+> @@ -1903,12 +1985,13 @@ static struct tag *__die__process_tag(Dwarf_Die *die, struct cu *cu,
+>         case DW_TAG_const_type:
+>         case DW_TAG_imported_declaration:
+>         case DW_TAG_imported_module:
+> -       case DW_TAG_pointer_type:
+>         case DW_TAG_reference_type:
+>         case DW_TAG_restrict_type:
+>         case DW_TAG_unspecified_type:
+>         case DW_TAG_volatile_type:
+>                 tag = die__create_new_tag(die, cu);             break;
+> +       case DW_TAG_pointer_type:
+> +               tag = die__create_new_pointer_tag(die, cu, conf);       break;
+>         case DW_TAG_ptr_to_member_type:
+>                 tag = die__create_new_ptr_to_member_type(die, cu); break;
+>         case DW_TAG_enumeration_type:
+> @@ -2192,6 +2275,26 @@ static void lexblock__recode_dwarf_types(struct lexblock *tag, struct cu *cu)
+>         }
+>  }
+>
+> +static void dwarf_cu__recode_btf_type_tag_ptr(struct btf_type_tag_ptr_type *tag,
+> +                                             uint32_t pointee_type)
+> +{
+> +       struct btf_type_tag_type *annot;
+> +       struct dwarf_tag *annot_dtag;
+> +       struct tag *prev_tag;
+> +
+> +       /* If tag->tags contains tag3 -> tag2 -> tag1, the final type chain
+> +        * looks like:
+> +        *   pointer -> tag3 -> tag2 -> tag1 -> pointee
+> +        */
 
- struct {
-  __uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -57,4 +61,27 @@ int BPF_PROG(fexit_eth_type_trans, struct sk_buff *skb,
-  return randmap(dev->ifindex + skb->len);
- }
+is the comment accurate or the final one should have looked like
+pointer -> tag1 -> tag2 -> tag3 -> pointee? Basically, trying to
+understand if the final BTF represents the source-level order of tags
+or not?
 
-+SEC("tc")
-+int balancer_ingress(struct __sk_buff *ctx)
-+{
-+ void *data_end = (void *)(long)ctx->data_end;
-+ void *data = (void *)(long)ctx->data;
-+ void *ptr;
-+ int ret = 0, nh_off, i = 0;
-+
-+ nh_off = 14;
-+
-+ /* pragma unroll doesn't work on large loops */
-+
-+#define C do { \
-+ ptr = data + i; \
-+ if (ptr + nh_off > data_end) \
-+ break; \
-+ ctx->tc_index = jhash(ptr, nh_off, ctx->cb[0] + i++); \
-+ } while (0);
-+#define C30 C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;C;
-+ C30;C30;C30; /* 90 calls */
-+ return 0;
-+}
-+
- char LICENSE[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_verif_scale2.c
-b/tools/testing/selftests/bpf/progs/test_verif_scale2.c
-index f024154c7be7..9e2c2a6954cb 100644
---- a/tools/testing/selftests/bpf/progs/test_verif_scale2.c
-+++ b/tools/testing/selftests/bpf/progs/test_verif_scale2.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019 Facebook
--#include <linux/bpf.h>
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #define ATTR __always_inline
- #include "test_jhash.h"
+> +       prev_tag = &tag->tag;
+> +       list_for_each_entry(annot, &tag->tags, node) {
+> +               annot_dtag = annot->tag.priv;
+> +               prev_tag->type = annot_dtag->small_id;
+> +               prev_tag = &annot->tag;
+> +       }
+> +       prev_tag->type = pointee_type;
+> +}
+> +
 
-
-The version with libbpf does load successfully, while lskel one gives:
-
-#35 core_kern_lskel:FAIL
-test_core_kern_lskel:FAIL:open_and_load unexpected error: -22
-
-Same stuff with libbpf skeleton successfully loaded.
-
-If you manage to get it working, you'll have a BPF program 181 CO-RE
-relocations, let's see how noticeable it will be to do 181 iterations
-over ~2mln vmlinux BTF types.
-
-> I think I will go back to the prior version: linear search for every relo.
-
-I don't understand the resistance, the kernel has both rbtree and
-hashmaps, what's the problem just using that?
-
-> If we actually need to optimize this part of loading
-> we better do persistent cache of
-> name -> kernel btf_type-s
-> and reuse it across different programs.
-
-You can't reuse it because the same type name in a BPF object BTF can
-be resolved to different kernel types (e.g., if we still had
-ring_buffer name collision), so this is all per-BPF object (or at
-least per BPF program). We still have duplicated types in some more
-fuller kernel configurations, and it can always happen down the road.
+[...]
