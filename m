@@ -2,174 +2,293 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7DC45A9AA
-	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 18:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1313B45A9BB
+	for <lists+bpf@lfdr.de>; Tue, 23 Nov 2021 18:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbhKWRMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Nov 2021 12:12:33 -0500
-Received: from mail-eopbgr00057.outbound.protection.outlook.com ([40.107.0.57]:53984
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232689AbhKWRMc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:12:32 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aJwBiA8ziYMby5WKwr/gBxIyrjH93ijZ/m6ieIVNaUdm0P0RhFnWWwvfjfii1baf2jTN1RM8MttbxNDOemAPiAfRPihWU3QtsIc9EdIakS/fvUD3Da9EBmF8dgHJY6tfhwV75g/IXm9gG0r8o5SLAaLMxNQvGuOFdDFgQqDxVOOJaaIsHl0iDfxWWCFqZrGYGfEQ4jMAHs8ZKWI09/bnA6q/YRi1vbQJKFEcznTuhXiPIqehH4uS8azU0aDBsan5jpep6AZoH+HwPRe71vyoC3k621R0G5CEh1JTlci4Q1m6NihrHyskAV+17mlqN/fb4d4FHCG6xy1uhF+gaerZvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sFz8A3wXe6ul8zGLV68nnO5cVIPwkGj77v3JaDaAJVE=;
- b=lF9nLvakRCkNKcaKVDySEB71J+3JBDcpNpPRdenBwhFJCtyrM6W0Sz9zQnaD1wTWlIR4v/ThQ9byyQSqtVxZr5u0NP1f41ZCzLwJDXeWFtXc2CZjbNtF0PypHnYn2nFBNYDgenltsH7odcvDVF/I4YhfB7HjEO4vSsUNWwOKpbY7J2iHJEaZqGb4kC2qxw/uaNRzaedLwlzDLIy/hgMN337dELeNHr8dnFmqbCfNR/kgH2P23VCyNAyYv2iSI+N0yZ/AcZ5I4VA2/qpvaD8V4lC/RyealKkyF0cryxeXLpMqikUdpk/j5cN6kGRMQGkazxBD02zbWWeiP5I91BOIJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sFz8A3wXe6ul8zGLV68nnO5cVIPwkGj77v3JaDaAJVE=;
- b=GcHU34rBadAUTzje8qtWsYAZAK0gSnkshj/iWGAuycN/yNyLE6AK3K2o49F/2rVSztwK6MrSDS43PeUM6v1yKpnZyA0xPq/aG8TvM9b/MJBX4TGT7iDOm+m+M7V9ZLqWy2o6X4hKR+erZSx+NjpEsFXcdMm/PYGf/TJQstPX9/U=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB3071.eurprd04.prod.outlook.com (2603:10a6:802:3::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24; Tue, 23 Nov
- 2021 17:09:21 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5%7]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
- 17:09:21 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        id S238958AbhKWROf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Nov 2021 12:14:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238234AbhKWROe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:14:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7310A60F90
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 17:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637687486;
+        bh=xsJScN1jm6Ya6FpvQ2CbavJ5tOBUIZ6K536mrQfFk2k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GGxzILhnKiNAzfvwlnnihLAAJLCV2E2oQOk7v1NSh1aTMMuLoHh5dkexZW0NoZBhw
+         o2dISd64o/4Z/MfbCOd7cJ9fINGrN6kZikqiB5y+vy+0HKN4l3YGAHT8UVQtKMXce6
+         kMNTqcMbJyN1459bkZdX3YFT3lb16nPWyx39puaCVwIzpzF9frdkdF9Zwa9xN+R/C1
+         mWUehjnoH+8ZBOcsWQhlG8cXK7hq9WluxoSCigb6IM5O9e2L7UOj6cX/pD1ORipald
+         cnlsy2UCmJ5cdFnvTj81T0nnt+12JU3pZPjuYiS2cKv7Kd2HP1o1jwmfkOGMB+uX0m
+         SJYiWvVsky8yw==
+Received: by mail-ed1-f47.google.com with SMTP id r25so58164486edq.7
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 09:11:26 -0800 (PST)
+X-Gm-Message-State: AOAM5321FKujFpf7h7L2AtJA0UC5DmRqnIVu6SMX7u1VAYi7N61wgEkm
+        /SfMaz0pSNlScv+qblAmE+HAnSD/ju44L1E/Es7deQ==
+X-Google-Smtp-Source: ABdhPJyKKWv0vLB7oZ44c7hlxAyy8Fop0fC+ADq267Ie1L6VAzHZRKbwXPGIquemRn8KysW+k4Sv/51MflKKwe8hmu8=
+X-Received: by 2002:a17:906:4791:: with SMTP id cw17mr9633629ejc.493.1637687484773;
+ Tue, 23 Nov 2021 09:11:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20210826235127.303505-1-kpsingh@kernel.org> <20210826235127.303505-2-kpsingh@kernel.org>
+ <20210827205530.zzqawd6wz52n65qh@kafai-mbp> <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
+ <20210831021132.sehzvrudvcjbzmwt@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
+ <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
+ <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
+ <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1> <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 23 Nov 2021 18:11:14 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
+Message-ID: <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
+ sleepable programs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v2 net-next 05/26] enetc: implement generic XDP stats
- callbacks
-Thread-Topic: [PATCH v2 net-next 05/26] enetc: implement generic XDP stats
- callbacks
-Thread-Index: AQHX4Ij/XaaTEUdaCEG47cK497YtaqwRWKMA
-Date:   Tue, 23 Nov 2021 17:09:20 +0000
-Message-ID: <20211123170920.wgactazyupm32yqu@skbuf>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211123163955.154512-6-alexandr.lobakin@intel.com>
-In-Reply-To: <20211123163955.154512-6-alexandr.lobakin@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e74f17ea-6e6f-4040-5d43-08d9aea3fdf3
-x-ms-traffictypediagnostic: VI1PR04MB3071:
-x-microsoft-antispam-prvs: <VI1PR04MB30719CF0A26B35757B8CBD79E0609@VI1PR04MB3071.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RlWa2d6GjAouN0DWrAYJ2wE9bZKDQBOINPHM1T4CvfJHSGQWhJVpezsgOuMMiBW3TBGlGM1JtxMwT5d3+7zxq2HSeoepN71Kzll4xxRC67afDjofU5O49Iql5o65C39MrTyadJtQHey4o56ddamFIvlB35RT2D21MhUKTXwIvSp7Z/XKfxLZYE2dC9rw9sAszI5o/yik2BSBrBLzLyh8hSYzvLQJ1ZLkh/ZQeWmmuf4Z4bQCtFCF/uUQs8plQ9q7ZwvLtwjNnUT2Gn9wLFETa739dIg2KZMdlGJPAWiFbqi+4LX7vJdo2moCkkXVEQXEtw84uyXyJuIjpHNIAsUggN2iLqN1Khvh59fzZ4c49pTMk+gJdNyeo+L4N5AHg1IlZ+D4IdbC1hzx+bREutqm0fUuvnO+lOdAKuqGtHabZY9EDjSn5JFI9TdozjkPrKxnb+erWLEqOCVzxfH/A5PaRPX9pBLVEagGNybgQd6CGrDVb041TWX8qFUlZtUZH1kodL2ppgSGX78m1izcMIDrNJFhhJQbnMpePpORNuGXKjRG//PVtyzK5alvxYgz5SOfdYUVIYTYoFMjPVNG8OC8gbLeanVhM4v5nYdXFTwKW7euVo6pO32Y99nKxuqoajbkOp2lCaAmRlkewLpGY6IRXTC5ojV6jRc6FlUm36btBfCUtOoueygaukIN84We+3KMPCbrKd6uzp0tHN7xglouHQsEdoIx7ss03WRNS5hlc2E=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(5660300002)(316002)(6506007)(26005)(86362001)(54906003)(122000001)(38100700002)(38070700005)(76116006)(33716001)(4744005)(4326008)(7416002)(6916009)(44832011)(2906002)(186003)(91956017)(66946007)(66446008)(64756008)(66556008)(66476007)(71200400001)(7406005)(83380400001)(1076003)(508600001)(6486002)(8676002)(8936002)(6512007)(9686003)(41533002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?JW8yOrmhlIJ9W7FBJS5OwQSrzUXEchdRLunt3XzgWBHSRd+tJnGMS7+IiM?=
- =?iso-8859-1?Q?5HGB+RE7KlZQGU/inOKrCMlBtw/JxpiIWF2KQgeVDpoxF8PfC4X/tJhgjU?=
- =?iso-8859-1?Q?+DDMx9TXwm97u2nDFphW/BY03PwcSM+UA8of3Mw7ZLvUhLbA4TVyWcdSnH?=
- =?iso-8859-1?Q?SZDYcbvvq2uXCY5ea1Nuc/Udh7ISolPYGQU+eKD2HDbFz9cYF2WV974d7j?=
- =?iso-8859-1?Q?x97KNMsvowD2TX2NQpINjIEG11hzLi+lxaUQddpnZj0DyS1CtW5CY2iWRQ?=
- =?iso-8859-1?Q?IEcUXtDS3f9GsXkNCcgJkRlmEYPlo3qj3f7uuDn+88sxfqJuRfYYzZfIZl?=
- =?iso-8859-1?Q?eFoMlHzhek4wCOe6CR5bzTmp5RcEeCza/4CCEHMZqT/BZ3PySW2TaLGwxm?=
- =?iso-8859-1?Q?0NiIQZyaz/Eg36TQYjzRtInhFVkqrNYwlMJZn11sJ3xqjWc5AnOAxueG4+?=
- =?iso-8859-1?Q?AgE1ZXzYjCsZ1Ed3ZTOlJiqkP8qkTuS1dSBvUNgsCy5TXB+0GFEca0YZm/?=
- =?iso-8859-1?Q?z0D8bnoN4eFEYpKWNdHpQbRBn2X+91QH9Ul8i5Ym3O82bJtP0YfbYraKEU?=
- =?iso-8859-1?Q?40nBLfK8FYdzlOVyeB2hIJTUX7r3rgutBFy/Tm1KqB3m+hNf36vzXstBbe?=
- =?iso-8859-1?Q?8eB/3bNG2mvhVAbTbXCD/fTTbWMxuFRloThL8ByXtzTkZiwA0hMrcAI41N?=
- =?iso-8859-1?Q?EEN1Sc1EjaxTKab8Bdrc4VLsdqNkFWPp8TF1yFwKRNR3jIEp27RrN/0wCd?=
- =?iso-8859-1?Q?J8FV/bP2b+K3+4fA0eH1NKQpxcT8uH/Y8/1R00eajGR0nYyPRxZCfGbZNC?=
- =?iso-8859-1?Q?WmxVxfeaX3/koStWP4zvZnj2Qb7Hy6YwlC1agevDaNd67UO7l8nuvvHcvd?=
- =?iso-8859-1?Q?xYrrVhYG46CjP8D7KGRXyc/7udCAPYFLsHv8vVWjyKg784f2QiFrFOUeiK?=
- =?iso-8859-1?Q?pgBtduUAiUX3XkchgfoDAIDi8btuLzh5CJn40++iyWPZr04w77/4j+fUn2?=
- =?iso-8859-1?Q?2K/OI15nlESHcSOKtSA+x+x4Rqk8iSRP+hsAo0yWJVs+6GqMr4b+jpE3UH?=
- =?iso-8859-1?Q?H0l4/r7sixxKxWa5P9LVxiGU6varfrJlegWSz1m2a7Hy1890cIBoQ3pSMT?=
- =?iso-8859-1?Q?IweZaLOoZsLNCSGFxA29sD5UQDo8Aof5O9m7feJXwUIzmUPnWaFJGeNnT8?=
- =?iso-8859-1?Q?YizqAmUVQysaH0KN4zOYwWuK+kSzNEMQoilb21lMsAZQNuxQkwwqvoXYnA?=
- =?iso-8859-1?Q?fcI/cXZ3smkT2ThfOouSlKq2voFfr03rZGwH+3k0EmmNsJ9AxMk7DTtXPO?=
- =?iso-8859-1?Q?NxflatyjrzlxPqQ8yYTpbYVsnEFt+/950jEJ7lNNOnQm6P5mV3xZhyxiWD?=
- =?iso-8859-1?Q?UnBtfKBMB78G3ip900BO7DaQGvEaaprrjrpe2iQ16HSSqrNFlteclrWANy?=
- =?iso-8859-1?Q?Js9XvNNHCZ4SLBsAr3YW5b8VhKD2EMC6aQ0xV0kpBSZwqq1+07PF83BVWy?=
- =?iso-8859-1?Q?vX14UrTRQNFybOodT887Ib+P4htGioShitSREhWu8PFFMlyTqH1GOi3PXM?=
- =?iso-8859-1?Q?sGDZe++s01TTpPYFp/nr1f5MCOTRZSepUnowI3RXnnzxxDA85H2gLP//B4?=
- =?iso-8859-1?Q?gcsxwfOrBvL5zUGUL72BooskgRqSUo6R3ekA5oEZ1U8WwS8VoIWyzsaYJP?=
- =?iso-8859-1?Q?mxhFSNWr+3ZYSG39zLE=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <2AA94709EC439448AF69418ED7F16FA2@eurprd04.prod.outlook.com>
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e74f17ea-6e6f-4040-5d43-08d9aea3fdf3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 17:09:21.0244
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3QRrG693W66XYh+Xso8p+euLwEA0GaS06tX919y8ci0c/vCVmUmntDvACx4stx7kXc8M4O6Ba7tt7xIHMDa2xA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3071
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 05:39:34PM +0100, Alexander Lobakin wrote:
-> Similarly to dpaa2, enetc stores 5 per-channel counters for XDP.
-> Add necessary callbacks to be able to access them using new generic
-> XDP stats infra.
->=20
-> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> ---
+On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Wed, Sep 01, 2021 at 01:26:05PM -0700, Paul E. McKenney wrote:
+> > On Tue, Aug 31, 2021 at 11:32:17PM -0700, Martin KaFai Lau wrote:
+> > > On Tue, Aug 31, 2021 at 09:38:01PM +0200, KP Singh wrote:
+> > > [ ... ]
+> > >
+> > > > > > > > > > @@ -131,7 +149,7 @@ bool bpf_selem_unlink_storage_noloc=
+k(struct bpf_local_storage *local_storage,
+> > > > > > > > > >           SDATA(selem))
+> > > > > > > > > >               RCU_INIT_POINTER(local_storage->cache[sma=
+p->cache_idx], NULL);
+> > > > > > > > > >
+> > > > > > > > > > -     kfree_rcu(selem, rcu);
+> > > > > > > > > > +     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_=
+rcu);
+> > > > > > > > > Although the common use case is usually storage_get() muc=
+h more often
+> > > > > > > > > than storage_delete(), do you aware any performance impac=
+t for
+> > > > > > > > > the bpf prog that does a lot of storage_delete()?
+> > > > > > > >
+> > > > > > > > I have not really measured the impact on deletes, My unders=
+tanding is
+> > > > > > > > that it should
+> > > > > > > > not impact the BPF program, but yes, if there are some crit=
+ical
+> > > > > > > > sections that are prolonged
+> > > > > > > > due to a sleepable program "sleeping" too long, then it wou=
+ld pile up
+> > > > > > > > the callbacks.
+> > > > > > > >
+> > > > > > > > But this is not something new, as we have a similar thing i=
+n BPF
+> > > > > > > > trampolines. If this really
+> > > > > > > > becomes an issue, we could add a flag BPF_F_SLEEPABLE_STORA=
+GE and only maps
+> > > > > > > > with this flag would be allowed in sleepable progs.
+> > > > > > > Agree that is similar to trampoline updates but not sure it i=
+s comparable
+> > > > > > > in terms of the frequency of elems being deleted here.  e.g. =
+many
+> > > > > > > short lived tcp connections created by external traffic.
+> > > > > > >
+> > > > > > > Adding a BPF_F_SLEEPABLE_STORAGE later won't work.  It will b=
+reak
+> > > > > > > existing sleepable bpf prog.
+> > > > > > >
+> > > > > > > I don't know enough on call_rcu_tasks_trace() here, so the
+> > > > > > > earlier question on perf/callback-pile-up implications in ord=
+er to
+> > > > > > > decide if extra logic or knob is needed here or not.
+> > > > > >
+> > > > > > I will defer to the others, maybe Alexei and Paul,
+> > > > >
+> > > > > > we could also just
+> > > > > > add the flag to not affect existing performance characteristics=
+?
+> > > > > I would see if it is really necessary first.  Other sleepable
+> > > > > supported maps do not need a flag.  Adding one here for local
+> > > > > storage will be confusing especially if it turns out to be
+> > > > > unnecessary.
+> > > > >
+> > > > > Could you run some tests first which can guide the decision?
+> > > >
+> > > > I think the performance impact would happen only in the worst case =
+which
+> > > > needs some work to simulate. What do you think about:
+> > > >
+> > > > A bprm_committed_creds program that processes a large argv
+> > > > and also gets a storage on the inode.
+> > > >
+> > > > A file_open program that tries to delete the local storage on the i=
+node.
+> > > >
+> > > > Trigger this code in parallel. i.e. lots of programs that execute w=
+ith a very
+> > > > large argv and then in parallel the executable being opened to trig=
+ger the
+> > > > delete.
+> > > >
+> > > > Do you have any other ideas? Is there something we could re-use fro=
+m
+> > > > the selftests?
+> > >
+> > > There is a bench framework in tools/testing/selftests/bpf/benchs/
+> > > that has a parallel thread setup which could be useful.
+> > >
+> > > Don't know how to simulate the "sleeping" too long which
+> > > then pile-up callbacks.  This is not bpf specific.
+> > > Paul, I wonder if you have similar test to trigger this to
+> > > compare between call_rcu_tasks_trace() and call_rcu()?
+> >
+> > It is definitely the case that call_rcu() is way more scalable than
+> > is call_rcu_tasks_trace().  Something about call_rcu_tasks_trace()
+> > acquiring a global lock. ;-)
+> >
+> > So actually testing it makes a lot of sense.
+> >
+> > I do have an rcuscale module, but it is set up more for synchronous gra=
+ce
+> > periods such as synchronize_rcu() and synchronize_rcu_tasks_trace().  I=
+t
+> > has the beginnings of support for call_rcu() and call_rcu_tasks_trace()=
+,
+> > but I would not yet trust them.
+> >
+> > But I also have a test for global locking:
+> >
+> > $ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --al=
+lcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=3D16" --=
+bootargs "refscale.scale_type=3Dlock refscale.loops=3D10000 refscale.holdof=
+f=3D20 torture.disable_onoff_at_boot" --trust-make
+> >
+> > This gives a median lock overhead of 960ns.  Running a single CPU rathe=
+r
+> > than 16 of them:
+> >
+> > $ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --al=
+lcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=3D16" --=
+bootargs "refscale.scale_type=3Dlock refscale.loops=3D10000 refscale.holdof=
+f=3D20 torture.disable_onoff_at_boot" --trust-make
+> >
+> > This gives a median lock overhead of 4.1ns, which is way faster.
+> > And the greater the number of CPUs, the greater the lock overhead.
+> Thanks for the explanation and numbers!
+>
+> I think the global lock will be an issue for the current non-sleepable
+> netdev bpf-prog which could be triggered by external traffic,  so a flag
+> is needed here to provide a fast path.  I suspect other non-prealloc map
+> may need it in the future, so probably
+> s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+I was re-working the patches and had a couple of questions.
 
-These counters can be dropped from ethtool, nobody depends on having
-them there.
+There are two data structures that get freed under RCU here:
 
-Side question: what does "nch" stand for?=
+struct bpf_local_storage
+struct bpf_local_storage_selem
+
+We can choose to free the bpf_local_storage_selem under
+call_rcu_tasks_trace based on
+whether the map it belongs to is sleepable with something like:
+
+if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
+    call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+else
+    kfree_rcu(selem, rcu);
+
+Questions:
+
+* Can we free bpf_local_storage under kfree_rcu by ensuring it's
+always accessed in a
+  classical RCU critical section? Or maybe I am missing something and
+this also needs to be freed
+  under trace RCU if any of the selems are from a sleepable map.
+
+* There is an issue with nested raw spinlocks, e.g. in
+bpf_inode_storage.c:bpf_inode_storage_free
+
+  hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+  /* Always unlink from map before unlinking from
+  * local_storage.
+  */
+  bpf_selem_unlink_map(selem);
+  free_inode_storage =3D bpf_selem_unlink_storage_nolock(
+                 local_storage, selem, false);
+  }
+  raw_spin_unlock_bh(&local_storage->lock);
+
+in bpf_selem_unlink_storage_nolock (if we add the above logic with the
+flag in place of kfree_rcu)
+call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
+raw spin lock.
+
+I am moving the freeing code out of the spinlock, saving the selems on
+a local list and then
+doing the free RCU (trace or normal) callbacks at the end. WDYT?
+
+
+
+- KP
+
+>
+> [ ... ]
+>
+> > > [  143.376587] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > [  143.377068] WARNING: suspicious RCU usage
+> > > [  143.377541] 5.14.0-rc5-01271-g68e5bda2b18e #4966 Tainted: G       =
+    O
+> > > [  143.378378] -----------------------------
+> > > [  143.378857] kernel/bpf/bpf_local_storage.c:114 suspicious rcu_dere=
+ference_check() usage!
+> > > [  143.379914]
+> > > [  143.379914] other info that might help us debug this:
+> > > [  143.379914]
+> > > [  143.380838]
+> > > [  143.380838] rcu_scheduler_active =3D 2, debug_locks =3D 1
+> > > [  143.381602] 4 locks held by mv/1781:
+> > > [  143.382025]  #0: ffff888121e7c438 (sb_writers#6){.+.+}-{0:0}, at: =
+do_renameat2+0x2f5/0xa80
+> > > [  143.383009]  #1: ffff88812ce68760 (&type->i_mutex_dir_key#5/1){+.+=
+.}-{3:3}, at: lock_rename+0x1f4/0x250
+> > > [  143.384144]  #2: ffffffff843fbc60 (rcu_read_lock_trace){....}-{0:0=
+}, at: __bpf_prog_enter_sleepable+0x45/0x160
+> > > [  143.385326]  #3: ffff88811d8348b8 (&storage->lock){..-.}-{2:2}, at=
+: __bpf_selem_unlink_storage+0x7d/0x170
+> > > [  143.386459]
+> > > [  143.386459] stack backtrace:
+> > > [  143.386983] CPU: 2 PID: 1781 Comm: mv Tainted: G           O      =
+5.14.0-rc5-01271-g68e5bda2b18e #4966
+> > > [  143.388071] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),=
+ BIOS 1.9.3-1.el7.centos 04/01/2014
+> > > [  143.389146] Call Trace:
+> > > [  143.389446]  dump_stack_lvl+0x5b/0x82
+> > > [  143.389901]  dump_stack+0x10/0x12
+> > > [  143.390302]  lockdep_rcu_suspicious+0x15c/0x167
+> > > [  143.390854]  bpf_selem_unlink_storage_nolock+0x2e1/0x6d0
+> > > [  143.391501]  __bpf_selem_unlink_storage+0xb7/0x170
+> > > [  143.392085]  bpf_selem_unlink+0x1b/0x30
+> > > [  143.392554]  bpf_inode_storage_delete+0x57/0xa0
+> > > [  143.393112]  bpf_prog_31e277fe2c132665_inode_rename+0x9c/0x268
+> > > [  143.393814]  bpf_trampoline_6442476301_0+0x4e/0x1000
+> > > [  143.394413]  bpf_lsm_inode_rename+0x5/0x10
+> >
+> > I am not sure what line 114 is (it is a blank line in bpf-next), but
+> > you might be missing a rcu_read_lock_trace_held() in the second argumen=
+t
+> > of rcu_dereference_check().
+> Right, this path is only under rcu_read_lock_trace().
