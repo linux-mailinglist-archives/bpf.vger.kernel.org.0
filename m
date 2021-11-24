@@ -2,111 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C370545B65C
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 09:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 113A545B6B9
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 09:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhKXISI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 03:18:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229733AbhKXISI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:18:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34FEC61055
-        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 08:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637741699;
-        bh=dko9EeLRbwlSDjDLJNhUXUtMjKbVVTOsFc2Z8Xm8EYM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oOShSW/snMf2l47amNurzb1YazgWBF0jFLhgJ9/LrMhwdOjBXln3LxBxabY5CAPz9
-         SRPlX12JfovoIk+FcWI/pmVA+LyUDo8Kq9eHTCT22QWRSJt913Ax1aZbfZBLDu0uUF
-         UeS35Cwm7GL9nG/5zST7///6DVXeY/hSI8kfAZeicsMupG8G4WVZxg0U6BpF/93511
-         0jvpUiGDhEshMd3x/J2OWc79UfCCZmRT9IzW8Zxug4OrLyRn1dprApwBebLmns1ckJ
-         kOu9cvIr+9yQ8vRShCXoqWFy1/zJt57+8G0VK5JIyL6zI/1xlcSItfAgJWdxOHAVc+
-         VvI67ZohYk7Fw==
-Received: by mail-yb1-f170.google.com with SMTP id v7so5093756ybq.0
-        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 00:14:59 -0800 (PST)
-X-Gm-Message-State: AOAM532yihYAudWIQLh/bhDLKb9DLlaxn5+brI3l28Frfi5QWpqH9lE/
-        7PJ1P8UnF2QQMEpuqf0vwcDhGf4ewRh6QuvtVus=
-X-Google-Smtp-Source: ABdhPJwkh+xkx/h2SQ1t5DS0cTDPoNSK7vXv6fwwvYjVa8G70GBlI/v3I9rjRGzuZJrw9su8IxEHobLfI7hp1UWhGUs=
-X-Received: by 2002:a25:344d:: with SMTP id b74mr14908992yba.317.1637741698268;
- Wed, 24 Nov 2021 00:14:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20211120165528.197359-1-kuba@kernel.org> <CAPhsuW4g1PhdczQh=iqDR_CzB=6FoM4QPF9DmknEP0hZ_Ac3TA@mail.gmail.com>
- <d4c52f8f-7efb-3d2a-8f2e-c983cd0c8cce@arm.com>
-In-Reply-To: <d4c52f8f-7efb-3d2a-8f2e-c983cd0c8cce@arm.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 23 Nov 2021 22:14:46 -1000
-X-Gmail-Original-Message-ID: <CAPhsuW6CMBymKpOMdL-bianESBLfbKa5JwmFypKL3dx4k0rmSQ@mail.gmail.com>
-Message-ID: <CAPhsuW6CMBymKpOMdL-bianESBLfbKa5JwmFypKL3dx4k0rmSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] cacheinfo: move get_cpu_cacheinfo_id() back out
-To:     James Morse <james.morse@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S236391AbhKXIpz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 03:45:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33491 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241500AbhKXIod (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Nov 2021 03:44:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637743283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=u/va+vlehAJlaxnJ1ZxySwl63uZqtCxIq5+CeD0JTug=;
+        b=B3zkKhcWjDONF5v00LAQ8W9Z7LGb4kkIXRnHXfthsLJzDwZR9qTScc9XKvJI5BZg6jZnIR
+        Vu43Olx/sJXtsz4xd/UtBNnNcwZHfhroFm652OhDflTEq0G2u65en7yKzFyfnEvDGpSivC
+        ETMHeG5wXpG5ZM0G713xn3VgkBp7QRc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-556-OdrQBsk6OFi89pC2r9xtqQ-1; Wed, 24 Nov 2021 03:41:22 -0500
+X-MC-Unique: OdrQBsk6OFi89pC2r9xtqQ-1
+Received: by mail-wm1-f70.google.com with SMTP id l6-20020a05600c4f0600b0033321934a39so1008929wmq.9
+        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 00:41:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u/va+vlehAJlaxnJ1ZxySwl63uZqtCxIq5+CeD0JTug=;
+        b=4KhfBvca6tcdIvDmErp4TZsv05yc5MIXYBPYTjpSSdY1JMK4RNNfU0tk2GnRG0CmLL
+         +lwVYVa26XWmN39vHT6BrPulOy8svs5aFImXHZSe9emY1XXRSOkwohuxuQ6gmiZmGbOJ
+         C9ukNTFzwn9s42Zjik9Jr1pSPlYHJ1shqf7tFqtmwd3PV106QOsO9b2dT+ixps2BuCrH
+         3cvhMf6cUII3+lha7VIgiSdohGBIClq0WogijB2PqX7Nd1oGY4udVJmVbRd/k7g8THIu
+         fkZyhlhGeGzaukVOPR7fwBfwnGss052RLW8NTp5mALiaqPWrK76U8s8MP5qNbdaVlHGp
+         DSpw==
+X-Gm-Message-State: AOAM531v1cLJddSrRuqGzHsJdxci0mCRQsU4f/XvLj3ZbLpmwbSVHx9v
+        u4lT/yno8KjHwSG4XevKPYrlrlpA0xifyoRvWB2/1NligqcC5OTSbldqY4j++rrSx8LLrQmrmXJ
+        4fsWiPcalq1py
+X-Received: by 2002:a5d:47a1:: with SMTP id 1mr15880043wrb.436.1637743280717;
+        Wed, 24 Nov 2021 00:41:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyWGTplK/9gxTkHrPX7ToYBzdn9CjvD6F3A+rSgEpL5LIhBlGtlV2H4nGfmNsCx7aWrxZljvg==
+X-Received: by 2002:a5d:47a1:: with SMTP id 1mr15880016wrb.436.1637743280545;
+        Wed, 24 Nov 2021 00:41:20 -0800 (PST)
+Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id bg12sm5272528wmb.5.2021.11.24.00.41.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 00:41:20 -0800 (PST)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, bpf <bpf@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        dave.hansen@linux.intel.com, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: [RFC 0/8] perf/bpf: Add batch support for [ku]probes attach
+Date:   Wed, 24 Nov 2021 09:41:11 +0100
+Message-Id: <20211124084119.260239-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 8:49 AM James Morse <james.morse@arm.com> wrote:
->
-> Hello,
->
-> On 23/11/2021 17:45, Song Liu wrote:
-> > On Sat, Nov 20, 2021 at 6:55 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> >>
-> >> This commit more or less reverts commit 709c4362725a ("cacheinfo:
-> >> Move resctrl's get_cache_id() to the cacheinfo header file").
-> >>
-> >> There are no users of the static inline helper outside of resctrl/core.c
-> >> and cpu.h is a pretty heavy include, it pulls in device.h etc. This
-> >> trips up architectures like riscv which want to access cacheinfo
-> >> in low level headers like elf.h.
-> >>
-> >> Link: https://lore.kernel.org/all/20211120035253.72074-1-kuba@kernel.org/
-> >> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> >> ---
->
-> >> x86 resctrl folks, does this look okay?
-> >>
-> >> I'd like to do some bpf header cleanups in -next which this is blocking.
-> >> How would you like to handle that? This change looks entirely harmless,
-> >> can I get an ack and take this via bpf/netdev to Linus ASAP so it
-> >> propagates to all trees?
-> >
-> > Does this patch target the bpf tree, or the bpf-next tree? If we want to unblock
-> > bpf header cleanup in -next, we can simply include it in a set for bpf-next.
->
->
-> Some background: this is part of the mpam tree that wires up resctrl for arm64. This patch
-> floated to the top and got merged with some cleanup as it was independent of the wider
-> resctrl changes.
->
-> If the cpu.h include is the problem, I can't see what that is needed for. It almost
-> certainly came in with a lockdep annotation that got replaced by a comment instead.
+hi,
+adding support to create multiple kprobes/uprobes within single
+perf event. This way we can associate single bpf program with
+multiple kprobes.
 
-Thanks for the information.
+Sending this as RFC because I'm not completely sure I haven't
+missed anything in the trace/events area.
 
-I can ack the patch for the patch itself.
+Also it needs following uprobe fix to work properly:
+  https://lore.kernel.org/lkml/20211123142801.182530-1-jolsa@kernel.org/
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/kuprobe_batch
 
-But I am not sure whether we should ship it via bpf tree. It seems to
-me that the
-only reason we ship it via bpf tree is to get it to upstream ASAP?
+thanks,
+jirka
 
-Alexei/Daniel/Andrii, what do you think about this?
 
-Thanks,
-Song
+---
+Jiri Olsa (8):
+      perf/kprobe: Add support to create multiple probes
+      perf/uprobe: Add support to create multiple probes
+      libbpf: Add libbpf__kallsyms_parse function
+      libbpf: Add struct perf_event_open_args
+      libbpf: Add support to attach multiple [ku]probes
+      libbpf: Add support for k[ret]probe.multi program section
+      selftest/bpf: Add kprobe multi attach test
+      selftest/bpf: Add uprobe multi attach test
+
+ include/uapi/linux/perf_event.h                            |   1 +
+ kernel/trace/trace_event_perf.c                            | 214 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ kernel/trace/trace_kprobe.c                                |  47 ++++++++++++++++---
+ kernel/trace/trace_probe.c                                 |   2 +-
+ kernel/trace/trace_probe.h                                 |   6 ++-
+ kernel/trace/trace_uprobe.c                                |  43 +++++++++++++++--
+ tools/include/uapi/linux/perf_event.h                      |   1 +
+ tools/lib/bpf/libbpf.c                                     | 235 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------
+ tools/lib/bpf/libbpf.h                                     |  25 +++++++++-
+ tools/lib/bpf/libbpf_internal.h                            |   5 ++
+ tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c |  83 +++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c |  97 ++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/multi_kprobe.c           |  58 +++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/multi_uprobe.c           |  26 +++++++++++
+ 14 files changed, 765 insertions(+), 78 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/multi_kprobe.c
+ create mode 100644 tools/testing/selftests/bpf/progs/multi_uprobe.c
+
