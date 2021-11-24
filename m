@@ -2,123 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9498B45CD69
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 20:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA8945CDE7
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 21:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhKXTnL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 14:43:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbhKXTnK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:43:10 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983B8C061574
-        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 11:40:00 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id t6so4176790qkg.1
-        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 11:40:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LuGAYRuUxuKMsobGmynQjPVsLqR9gWtfIY1YGNkDRrU=;
-        b=L1K1ofYIP0K7QL9llWTxxr4VRpVPMqR/RqhvstzLl6HosVz9Hs2a6tILaXhUajwDuA
-         a5OJ4SHOZrjCkhK6yWbNnYkM+Gh+ZtPQ8B03eaXeuj9uk0+TcJcMlCiF56XsQiU5fZeh
-         eKSHFw9jySOAvdQ2Vr+nm40L5X/gwitNxffoCtGXSZLeIfUVjaueAM7avoaQRvj+XXYz
-         0BF7qtWdaB3V+4hTDDVK/bwz3fTTm1wDUHiVnteYAC8xMFe21hZQoS2ichzRy5LFCvTk
-         v+YTMTL10ApA3+25PVFoU06c2uZ+gZXuOUG1xABd0K1MDM0Lk2Cgdu2LcxfYto2D3+pC
-         ORFQ==
+        id S243043AbhKXUY4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 15:24:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60627 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237467AbhKXUYx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Nov 2021 15:24:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637785302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N1vUQaxlrdWienJBZ/hTNe8wlE9HiB2BtlS1FdXZL0M=;
+        b=Er4mxsJHlGHyRbh2Cx6kcrQ9+ohZGDr0sPE5ImsI47KAVhn8wf57XvSy/uiyd8Gj3aKu/L
+        Kk3rOyARanxwQY7YawXYvdtHpYsuaVvnegtbjPrxJN4AFwczRuMmHpk4jKQJdc9YxuZ0AI
+        9BsaNHRwVrFnDQmDC/n8PrfzS/BLN6s=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-556-mtccxS_KOAOxbnB_FA6_EA-1; Wed, 24 Nov 2021 15:21:38 -0500
+X-MC-Unique: mtccxS_KOAOxbnB_FA6_EA-1
+Received: by mail-ed1-f70.google.com with SMTP id l15-20020a056402124f00b003e57269ab87so3415012edw.6
+        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 12:21:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LuGAYRuUxuKMsobGmynQjPVsLqR9gWtfIY1YGNkDRrU=;
-        b=cFM6BEhQtdqz2t/i+eXCsjfzO6D3fvN5Gnmy/uEUvHD7iM/Tpy4ihhyPqZsANAzyi+
-         ICdWVxYQV7ZV1u3UPEaRfB6Fv5JcKvxfuP65ZclUreVqaMdrB560pD4qsqmVwHJHpOJc
-         k/O4MRNukdg+cjnSRpbbUY6E207uEKbCy+fAjUaAwYaMoLUEXm0loWgTmscrvxmSBfyM
-         5gLBdKlXNA5p+wpeUvg1/3ynPzqdrBkZMZ2d8tksYiHW0MWXNHOSoHEkuoVQ4LvniL3/
-         qZ2GDJb71KP2zOCaNO6LzEu6A/XqMZspUzka0AnuaoSNGB4EtUQiQK5civ44jMBq7Flb
-         sgeg==
-X-Gm-Message-State: AOAM530hxq9K2P+OVBBXby1K5ji4zd2IkGwD3/A6eBUrHaUHya28MTOQ
-        cw4RDne0Lqbr9oW1ZvUvjPiPCufY+aP+52gQL8A=
-X-Google-Smtp-Source: ABdhPJxoIDlZovYwohHXrCIzjMjlxwSjb3Bp0nOsPPjvreZRU6hOLH9AZbsVljDdN5EEpqo2DRiuc60XFe5UVoGh1Zk=
-X-Received: by 2002:a25:d16:: with SMTP id 22mr19914125ybn.51.1637782799819;
- Wed, 24 Nov 2021 11:39:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20211124193233.3115996-1-andrii@kernel.org>
-In-Reply-To: <20211124193233.3115996-1-andrii@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Nov 2021 11:39:48 -0800
-Message-ID: <CAEf4BzbLC2BcYJ412LYwTrxw6UYkOsDqE9fUcD55J7KqrMVSPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/4] libbpf: unify low-level map creation APIs
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N1vUQaxlrdWienJBZ/hTNe8wlE9HiB2BtlS1FdXZL0M=;
+        b=n+rDByY/POinj+t7LGVF7WhIJUKO7P6SoP6GeoFaUXbgaJ7tepcxHyWNbQZN3H7dwD
+         TrOAAHuvDlQDRN1hIv4oyXFnPuFsnnTdOWGEKt3TB/jg0xdE1+GDArscqLMck3eoWVUA
+         sTvi5/xXbaSsqDIBax+QxMnL1lXl0w5HS/cs0hyYr8gZxOA5BezU6SaTRrJx3UDoK1zb
+         SgZiuAM87dVkO0Bq8UBjEBky7sM0I4fI+hBVes3vVsTC2UYOpy0VR5+msSHri8+/ycd7
+         /cBt3A3Xnk+BkMDL5ycKfh6i9pPr10SK3wUaApE/WZadcVipuw2keg1SqXlT5Zo+Xk0o
+         gsMA==
+X-Gm-Message-State: AOAM532WgeIb99NjsUCYNx+rwPPvk2rzaFwQXssBu9/+PrTK4E0yE2F7
+        bloCAwMDl9O6jzvFW8gPj2PFcm2mNkdaAfBpXr3xmj7gcZDaXiYa6d/hU3YD3sA9nPF+CYmaOMM
+        4J4dGrKSWw5Hi
+X-Received: by 2002:a17:906:2b16:: with SMTP id a22mr23258355ejg.447.1637785296909;
+        Wed, 24 Nov 2021 12:21:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyeXjBvfO4j30b7KVa+rrxFaCRUJtpBy+QfbBghZt0liNvNZmZcE0t0xgoehxUeHbfTUhA8Nw==
+X-Received: by 2002:a17:906:2b16:: with SMTP id a22mr23258329ejg.447.1637785296726;
+        Wed, 24 Nov 2021 12:21:36 -0800 (PST)
+Received: from krava ([83.240.60.218])
+        by smtp.gmail.com with ESMTPSA id v3sm691027edc.69.2021.11.24.12.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 12:21:36 -0800 (PST)
+Date:   Wed, 24 Nov 2021 21:21:34 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf-next 1/2] libbpf: accommodate DWARF/compiler bug with
+ duplicated structs
+Message-ID: <YZ6ezpVG8jgLV12k@krava>
+References: <20211117194114.347675-1-andrii@kernel.org>
+ <CAEf4Bza2NSV8MBb0jSokmUcrzy0SpLvY2uqu4mG9ObxnT-jQLw@mail.gmail.com>
+ <YZZiwnWReYnthtzH@krava>
+ <CAEf4BzZ9E3Yg2jjCvzdfDN2dCX-hJBqt1cHFvVNzujrx7KWdgg@mail.gmail.com>
+ <YZ4kUzG26392CvWi@krava>
+ <YZ5UFmJlb7rf4mKI@krava>
+ <CAEf4BzZ5DXdKAVD15r4tViH8neaKV4Pq82P6bWKRT2SAt7Jd9Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZ5DXdKAVD15r4tViH8neaKV4Pq82P6bWKRT2SAt7Jd9Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:32 AM Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> Add new OPTS-based bpf_map_create() API. Schedule deprecation of 6 (!)
-> existing non-extensible variants. Clean up both internal libbpf use of
-> to-be-deprecated APIs as well as selftests/bpf.
->
-> Thankfully, as opposed to bpf_prog_load() and few other *_opts structs
-> refactorings, this one is very straightforward and doesn't require any macro
-> magic.
->
-> Third patch also ensures that when libbpf 0.7 development starts we won't be
-> getting deprecation warning for using our own xsk_* APIs. Without that it's
-> hard to simulate libbpf 0.7 and ensure that there are no upcoming
-> deprecation warnings.
->
-> v1->v2:
->   - fix one instance of bpf_map_create() passing unnecessary opts (CI).
+On Wed, Nov 24, 2021 at 11:20:42AM -0800, Andrii Nakryiko wrote:
+> On Wed, Nov 24, 2021 at 7:02 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Wed, Nov 24, 2021 at 12:39:00PM +0100, Jiri Olsa wrote:
+> > > On Thu, Nov 18, 2021 at 02:49:35PM -0800, Andrii Nakryiko wrote:
+> > > > On Thu, Nov 18, 2021 at 6:27 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > >
+> > > > > On Wed, Nov 17, 2021 at 11:42:58AM -0800, Andrii Nakryiko wrote:
+> > > > > > On Wed, Nov 17, 2021 at 11:41 AM Andrii Nakryiko <andrii@kernel.org> wrote:
+> > > > > > >
+> > > > > > > According to [0], compilers sometimes might produce duplicate DWARF
+> > > > > > > definitions for exactly the same struct/union within the same
+> > > > > > > compilation unit (CU). We've had similar issues with identical arrays
+> > > > > > > and handled them with a similar workaround in 6b6e6b1d09aa ("libbpf:
+> > > > > > > Accomodate DWARF/compiler bug with duplicated identical arrays"). Do the
+> > > > > > > same for struct/union by ensuring that two structs/unions are exactly
+> > > > > > > the same, down to the integer values of field referenced type IDs.
+> > > > > >
+> > > > > > Jiri, can you please try this in your setup and see if that handles
+> > > > > > all situations or there are more complicated ones still. We'll need a
+> > > > > > test for more complicated ones in that case :( Thanks.
+> > > > >
+> > > > > it seems to help largely, but I still see few modules (67 out of 780)
+> > > > > that keep 'struct module' for some reason.. their struct module looks
+> > > > > completely the same as is in vmlinux
+> > > >
+> > > > Curious, what's the size of all the module BTFs now?
+> > >
+> > > sorry for delay, I was waiting for s390x server
+> > >
+> > > so with 'current' fedora kernel rawhide I'm getting slightly different
+> > > total size number than before, so something has changed after the merge
+> > > window..
+> > >
+> > > however the increase with BTF enabled in modules is now from 16M to 18M,
+> > > so the BTF data adds just about 2M, which I think we can live with
+> > >
+> 
+> 16MB for vmlinux BTF is quite a lot. Is it a allmodyesconfig or something?
 
-This was in test_maps.c, should have mentioned that.
+looks like my english betrayed me again.. sry ;-)
 
->
-> Andrii Nakryiko (4):
->   libbpf: unify low-level map creation APIs w/ new bpf_map_create()
->   libbpf: use bpf_map_create() consistently internally
->   libbpf: prevent deprecation warnings in xsk.c
->   selftests/bpf: migrate selftests to bpf_map_create()
->
->  tools/lib/bpf/bpf.c                           | 140 ++++++++----------
->  tools/lib/bpf/bpf.h                           |  33 ++++-
->  tools/lib/bpf/bpf_gen_internal.h              |   5 +-
->  tools/lib/bpf/gen_loader.c                    |  46 ++----
->  tools/lib/bpf/libbpf.c                        |  63 +++-----
->  tools/lib/bpf/libbpf.map                      |   1 +
->  tools/lib/bpf/libbpf_internal.h               |  21 ---
->  tools/lib/bpf/libbpf_probes.c                 |  30 ++--
->  tools/lib/bpf/skel_internal.h                 |   3 +-
->  tools/lib/bpf/xsk.c                           |  18 +--
->  .../bpf/map_tests/array_map_batch_ops.c       |  13 +-
->  .../bpf/map_tests/htab_map_batch_ops.c        |  13 +-
->  .../bpf/map_tests/lpm_trie_map_batch_ops.c    |  15 +-
->  .../selftests/bpf/map_tests/sk_storage_map.c  |  50 +++----
->  .../bpf/prog_tests/bloom_filter_map.c         |  36 ++---
->  .../selftests/bpf/prog_tests/bpf_iter.c       |   8 +-
->  tools/testing/selftests/bpf/prog_tests/btf.c  |  51 +++----
->  .../bpf/prog_tests/cgroup_attach_multi.c      |  12 +-
->  .../selftests/bpf/prog_tests/pinning.c        |   4 +-
->  .../selftests/bpf/prog_tests/ringbuf_multi.c  |   4 +-
->  .../bpf/prog_tests/select_reuseport.c         |  21 +--
->  .../selftests/bpf/prog_tests/sockmap_basic.c  |   4 +-
->  .../selftests/bpf/prog_tests/sockmap_ktls.c   |   2 +-
->  .../selftests/bpf/prog_tests/sockmap_listen.c |   4 +-
->  .../selftests/bpf/prog_tests/test_bpffs.c     |   2 +-
->  .../selftests/bpf/test_cgroup_storage.c       |   8 +-
->  tools/testing/selftests/bpf/test_lpm_map.c    |  27 ++--
->  tools/testing/selftests/bpf/test_lru_map.c    |  16 +-
->  tools/testing/selftests/bpf/test_maps.c       | 110 +++++++-------
->  tools/testing/selftests/bpf/test_tag.c        |   5 +-
->  tools/testing/selftests/bpf/test_verifier.c   |  52 +++----
->  31 files changed, 357 insertions(+), 460 deletions(-)
->
-> --
-> 2.30.2
->
+size of all modules without BTF is 16M,
+size of all modules with BTF is 18M,
+
+so it's overall 2M increase
+
+also note that each module is compressed with xz
+
+jirka
+
+> 
+> > > > And yes, please
+> > > > try to narrow down what is causing the bloat this time. I think this
+> > >
+> > > I'm on it
+> >
+> > I'm seeing vmlinux BTF having just FWD record for sctp_mib struct,
+> > while the kernel module has the full definition
+> >
+> > kernel:
+> >
+> >         [2798] STRUCT 'netns_sctp' size=296 vlen=46
+> >                 'sctp_statistics' type_id=2800 bits_offset=0
+> >
+> >         [2799] FWD 'sctp_mib' fwd_kind=struct
+> >         [2800] PTR '(anon)' type_id=2799
+> >
+> >
+> > module before dedup:
+> >
+> >         [78928] STRUCT 'netns_sctp' size=296 vlen=46
+> >                 'sctp_statistics' type_id=78930 bits_offset=0
+> >
+> >         [78929] STRUCT 'sctp_mib' size=272 vlen=1
+> >                 'mibs' type_id=80518 bits_offset=0
+> >         [78930] PTR '(anon)' type_id=78929
+> >
+> >
+> > this field is referenced from within 'struct module' so it won't
+> > match its kernel version and as a result extra 'struct module'
+> > stays in the module's BTF
+> >
+> 
+> Yeah, not much we could do about that short of just blindly matching
+> FWD to STRUCT/UNION/ENUM by name, which sounds bad to me, I avoided
+> doing that in BTF dedup algorithm. We only resolve FWD to
+> STRUCT/UNION/ENUM when we have some containing struct with a field
+> that points to FWD and (in another instance of the containing struct)
+> to STRUCT/UNION/ENUM. That way we have sort of a proof that we are
+> resolving the right FWD. While in this case it would be a blind guess
+> based on name alone.
+> 
+> > I'll need to check debuginfo/pahole if that FWD is correct, but
+> > I guess it's normal that some structs might end up unwinded only
+> > in modules and not necessarily in vmlinux
+> 
+> It can happen, yes. If that's a very common case, ideally we should
+> make sure that modules keep FWD or that vmlinux BTF does have a full
+> struct instead of FWD.
+> 
+> 
+> >
+> > jirka
+> >
+> 
+
