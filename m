@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C76245B6C1
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 09:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676B045B6C7
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 09:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241526AbhKXIqG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 03:46:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34006 "EHLO
+        id S241441AbhKXIqY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 03:46:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27128 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241540AbhKXIov (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Nov 2021 03:44:51 -0500
+        by vger.kernel.org with ESMTP id S241444AbhKXIo6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Nov 2021 03:44:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637743302;
+        s=mimecast20190719; t=1637743308;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VUpNCIf6I4xx/xoebeS2tiWidAHCtrV6dZkFUmxD4cc=;
-        b=FgoVu18gtjma/DGnyax3NdOfNuUcsnEIs3pT65b9wgdTNw5I1QIW8uZesEQtCb8MFUEg3r
-        xR+iWGT7iZEbcwqQuqXq8UsepfcVcSSTolbs5mRVNyGYpBLVJ+KZ40G0ELE2o1pFTJWfQJ
-        foCezp3zf4yzFTe4PwF5KDNmicv7B9E=
+        bh=mSbLxSzQQlSj2l2ivmebco5pJQPSDB4IoLoCnSyzCyI=;
+        b=hLVoGQIB5w3VUlfaejALPn+wH/si+iB1nWfZ1GeHvt9WCGVjsHZUFgn/BGRORDh2lkmpeE
+        7GBZcnz0379PYy3QoRPwsqy/FTQWZ7wnrO3L8dazcupwcz9jG2X0vIkKBiiDZ13RjtzuYy
+        3yR5Rb4Jd9OFM4UY67JQe4N/qyG97aE=
 Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
  [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-153-hkzUUpD9MtCr8wKBBksL2A-1; Wed, 24 Nov 2021 03:41:40 -0500
-X-MC-Unique: hkzUUpD9MtCr8wKBBksL2A-1
-Received: by mail-wm1-f70.google.com with SMTP id n16-20020a05600c3b9000b003331973fdbbso1052979wms.0
-        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 00:41:40 -0800 (PST)
+ us-mta-504-j8lISBVHMsyItXOcGxy35A-1; Wed, 24 Nov 2021 03:41:47 -0500
+X-MC-Unique: j8lISBVHMsyItXOcGxy35A-1
+Received: by mail-wm1-f70.google.com with SMTP id 138-20020a1c0090000000b00338bb803204so974289wma.1
+        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 00:41:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VUpNCIf6I4xx/xoebeS2tiWidAHCtrV6dZkFUmxD4cc=;
-        b=lv5Ivr7JTkNpvPBnDZeIsESB29FG8lr6bI4fSU1DzHwGw5dInDG4D45M3ZTOuItUK9
-         X9074Tr7rDxBDYwIjJto2OBaYB64l3+xKeKux3BPkTAa8Zcsh1zsYfiKyyvOUfJG+mDU
-         z70wMy4EVUL1gAQtsf3Ar4derC1RPSCDHKxWH8JgYNdCz57zFufEwxd6Vj7yAp4vuPpW
-         tOxnQeoy79dnyoDMHBQssLVTo2+Vic/1pvfCmzxApuJ/I70bHH4TdXOoTeV52Vq950No
-         h1VEcQh4iXCCE8o6PL9Nr+R7S7wtNC23AR975awEgUwSH9YlswaR0LmifOn9iTc7ZIIE
-         xWPg==
-X-Gm-Message-State: AOAM532crSRftXimUuLHsgoMG9qh0l0lBaWgwO4HL+YZzgH0/yu3IfZa
-        gIVLEE3BBgky7T20U+odNJbdIUvSEai0I+3PyihoN/EmycAUxcFbsmBaZrJk9H0LfBnriVc9M5n
-        FC2Cfog2GYltd
-X-Received: by 2002:a5d:548f:: with SMTP id h15mr16213857wrv.99.1637743299420;
-        Wed, 24 Nov 2021 00:41:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyz1415SFxfiE43cMAnbGJQqe7kyuGSNL3YexfDBsTFRpB49fmucVAQmngtlVjsFf5uIYlC/A==
-X-Received: by 2002:a5d:548f:: with SMTP id h15mr16213828wrv.99.1637743299253;
-        Wed, 24 Nov 2021 00:41:39 -0800 (PST)
+        bh=mSbLxSzQQlSj2l2ivmebco5pJQPSDB4IoLoCnSyzCyI=;
+        b=1AcFjWq/CwPnWjAx3G+02icx7Xjuld2yinI4f58LCLl5bchnAnmpxE/2HY6ez1VRhG
+         9bsDCwC3c4+nH4dHbFUDA1LppCSxIChx0JrF3Sq1kiEOtTjRK9Rqk2lEz+ju2mLKHPNR
+         ASJDT0OBVwpJf9q7k+SSXdlJNo45VlyNjydG1CjZG1YBxx+CJBx5c5foO7xqo5cmAo8X
+         mnmMO/Zx3oGT+he9YS7MtfUQhgakt8n8Dzjo0qRdRTMszHv4kHM/jNYworuqI9uggTg8
+         Yf0K/9Hb1r3dlfInKpsRZnuiFNS3IoQdEDE6bYT30ukCSuEuAuwzP9LIr+t2EaadyEQI
+         hrRg==
+X-Gm-Message-State: AOAM532gw4cv/ltqAVJjSvtRg5aMhHPHYNKFKBCaK3zDp9lxVuHPYMqv
+        jz3xbBjtExylWRtHLW2tbGqhR1XFbVMK7Lb69ExdyhTmo/ayR6Z+wC4zCKTTfvExBcwWytLfx8x
+        mh8c/Mg/xzfPX
+X-Received: by 2002:a05:600c:a0b:: with SMTP id z11mr12965520wmp.147.1637743305721;
+        Wed, 24 Nov 2021 00:41:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJymrcuFByLsguSft6KExGLu1wEeNTSixB9Q5EfKs0oZ76e3br1ZPdJy/9cjaU2K/51mela6sg==
+X-Received: by 2002:a05:600c:a0b:: with SMTP id z11mr12965499wmp.147.1637743305551;
+        Wed, 24 Nov 2021 00:41:45 -0800 (PST)
 Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id x4sm3649097wmi.3.2021.11.24.00.41.38
+        by smtp.gmail.com with ESMTPSA id d1sm13789041wrz.92.2021.11.24.00.41.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 00:41:38 -0800 (PST)
+        Wed, 24 Nov 2021 00:41:45 -0800 (PST)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -70,9 +70,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: [PATCH 3/8] libbpf: Add libbpf__kallsyms_parse function
-Date:   Wed, 24 Nov 2021 09:41:14 +0100
-Message-Id: <20211124084119.260239-4-jolsa@kernel.org>
+Subject: [PATCH 4/8] libbpf: Add struct perf_event_open_args
+Date:   Wed, 24 Nov 2021 09:41:15 +0100
+Message-Id: <20211124084119.260239-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211124084119.260239-1-jolsa@kernel.org>
 References: <20211124084119.260239-1-jolsa@kernel.org>
@@ -82,124 +82,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move the kallsyms parsing in internal libbpf__kallsyms_parse
-function, so it can be used from other places.
-
-It will be used in following changes.
+Adding struct perf_event_open_args to hold arguments for
+perf_event_open_probe, because there's already 6 arguments
+and more will come in following changes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/libbpf.c          | 62 ++++++++++++++++++++-------------
- tools/lib/bpf/libbpf_internal.h |  5 +++
- 2 files changed, 43 insertions(+), 24 deletions(-)
+ tools/lib/bpf/libbpf.c | 42 ++++++++++++++++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 10 deletions(-)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index af405c38aadc..b55c0fbfcc03 100644
+index b55c0fbfcc03..34219a0c39a7 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -6950,12 +6950,10 @@ static int bpf_object__sanitize_maps(struct bpf_object *obj)
- 	return 0;
- }
+@@ -9625,11 +9625,20 @@ static int determine_uprobe_retprobe_bit(void)
+ #define PERF_UPROBE_REF_CTR_OFFSET_BITS 32
+ #define PERF_UPROBE_REF_CTR_OFFSET_SHIFT 32
  
--static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
-+int libbpf__kallsyms_parse(void *arg, kallsyms_cb_t cb)
+-static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+-				 uint64_t offset, int pid, size_t ref_ctr_off)
++struct perf_event_open_args {
++	bool retprobe;
++	const char *name;
++	uint64_t offset;
++	int pid;
++	size_t ref_ctr_off;
++};
++
++static int perf_event_open_probe(bool uprobe, struct perf_event_open_args *args)
  {
- 	char sym_type, sym_name[500];
- 	unsigned long long sym_addr;
--	const struct btf_type *t;
--	struct extern_desc *ext;
- 	int ret, err = 0;
- 	FILE *f;
++	size_t ref_ctr_off = args->ref_ctr_off;
+ 	struct perf_event_attr attr = {};
+ 	char errmsg[STRERR_BUFSIZE];
++	int pid = args->pid;
+ 	int type, pfd, err;
  
-@@ -6974,35 +6972,51 @@ static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
- 		if (ret != 3) {
- 			pr_warn("failed to read kallsyms entry: %d\n", ret);
- 			err = -EINVAL;
--			goto out;
-+			break;
- 		}
- 
--		ext = find_extern_by_name(obj, sym_name);
--		if (!ext || ext->type != EXT_KSYM)
--			continue;
--
--		t = btf__type_by_id(obj->btf, ext->btf_id);
--		if (!btf_is_var(t))
--			continue;
--
--		if (ext->is_set && ext->ksym.addr != sym_addr) {
--			pr_warn("extern (ksym) '%s' resolution is ambiguous: 0x%llx or 0x%llx\n",
--				sym_name, ext->ksym.addr, sym_addr);
--			err = -EINVAL;
--			goto out;
--		}
--		if (!ext->is_set) {
--			ext->is_set = true;
--			ext->ksym.addr = sym_addr;
--			pr_debug("extern (ksym) %s=0x%llx\n", sym_name, sym_addr);
--		}
-+		err = cb(arg, sym_addr, sym_type, sym_name);
-+		if (err)
-+			break;
+ 	if (ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
+@@ -9643,7 +9652,7 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 			libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+ 		return type;
  	}
+-	if (retprobe) {
++	if (args->retprobe) {
+ 		int bit = uprobe ? determine_uprobe_retprobe_bit()
+ 				 : determine_kprobe_retprobe_bit();
  
--out:
- 	fclose(f);
- 	return err;
- }
+@@ -9658,8 +9667,8 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 	attr.size = sizeof(attr);
+ 	attr.type = type;
+ 	attr.config |= (__u64)ref_ctr_off << PERF_UPROBE_REF_CTR_OFFSET_SHIFT;
+-	attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
+-	attr.config2 = offset;		 /* kprobe_addr or probe_offset */
++	attr.config1 = ptr_to_u64(args->name); /* kprobe_func or uprobe_path */
++	attr.config2 = args->offset;		 /* kprobe_addr or probe_offset */
  
-+static int kallsyms_cb(void *arg, unsigned long long sym_addr,
-+		       char sym_type, const char *sym_name)
-+{
-+	struct bpf_object *obj = arg;
-+	const struct btf_type *t;
-+	struct extern_desc *ext;
-+
-+	ext = find_extern_by_name(obj, sym_name);
-+	if (!ext || ext->type != EXT_KSYM)
-+		return 0;
-+
-+	t = btf__type_by_id(obj->btf, ext->btf_id);
-+	if (!btf_is_var(t))
-+		return 0;
-+
-+	if (ext->is_set && ext->ksym.addr != sym_addr) {
-+		pr_warn("extern (ksym) '%s' resolution is ambiguous: 0x%llx or 0x%llx\n",
-+			sym_name, ext->ksym.addr, sym_addr);
-+		return -EINVAL;
-+	}
-+	if (!ext->is_set) {
-+		ext->is_set = true;
-+		ext->ksym.addr = sym_addr;
-+		pr_debug("extern (ksym) %s=0x%llx\n", sym_name, sym_addr);
-+	}
-+	return 0;
-+}
-+
-+static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
-+{
-+	return libbpf__kallsyms_parse(obj, kallsyms_cb);
-+}
-+
- static int find_ksym_btf_id(struct bpf_object *obj, const char *ksym_name,
- 			    __u16 kind, struct btf **res_btf,
- 			    struct module_btf **res_mod_btf)
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index f7ac349650a1..511cb09f593f 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -406,6 +406,11 @@ __s32 btf__find_by_name_kind_own(const struct btf *btf, const char *type_name,
+ 	/* pid filter is meaningful only for uprobes */
+ 	pfd = syscall(__NR_perf_event_open, &attr,
+@@ -9791,9 +9800,15 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
  
- extern enum libbpf_strict_mode libbpf_mode;
+ 	legacy = determine_kprobe_perf_type() < 0;
+ 	if (!legacy) {
+-		pfd = perf_event_open_probe(false /* uprobe */, retprobe,
+-					    func_name, offset,
+-					    -1 /* pid */, 0 /* ref_ctr_off */);
++		struct perf_event_open_args args = {
++			.retprobe = retprobe,
++			.name = func_name,
++			.offset = offset,
++			.pid = -1,
++			.ref_ctr_off = 0,
++		};
++
++		pfd = perf_event_open_probe(false /* uprobe */, &args);
+ 	} else {
+ 		char probe_name[256];
  
-+typedef int (*kallsyms_cb_t)(void *arg, unsigned long long sym_addr,
-+			     char sym_type, const char *sym_name);
+@@ -9984,8 +9999,15 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 
+ 	legacy = determine_uprobe_perf_type() < 0;
+ 	if (!legacy) {
+-		pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
+-					    func_offset, pid, ref_ctr_off);
++		struct perf_event_open_args args = {
++			.retprobe = retprobe,
++			.name = binary_path,
++			.offset = func_offset,
++			.pid = pid,
++			.ref_ctr_off = ref_ctr_off,
++		};
 +
-+int libbpf__kallsyms_parse(void *arg, kallsyms_cb_t cb);
-+
- /* handle direct returned errors */
- static inline int libbpf_err(int ret)
- {
++		pfd = perf_event_open_probe(true /* uprobe */, &args);
+ 	} else {
+ 		char probe_name[512];
+ 
 -- 
 2.33.1
 
