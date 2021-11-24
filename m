@@ -2,101 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD2545B6EC
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 09:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A319A45B70D
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 10:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbhKXIw5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 03:52:57 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28101 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbhKXIw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:52:57 -0500
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HzZPs5w9Vz1DJWN;
-        Wed, 24 Nov 2021 16:47:13 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 16:49:45 +0800
-Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Clear the noisy tail buffer for
- bpf_d_path() helper
-To:     xufeng zhang <yunbo.xufeng@linux.alibaba.com>, <jolsa@kernel.org>,
-        <kpsingh@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <andriin@fb.com>
-References: <20211120051839.28212-1-yunbo.xufeng@linux.alibaba.com>
- <20211120051839.28212-2-yunbo.xufeng@linux.alibaba.com>
- <9c83d1c1-f8da-8c5b-74dc-d763ab444774@linux.alibaba.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <26009981-d1a4-ff37-ca60-f21a43fc7a8c@huawei.com>
-Date:   Wed, 24 Nov 2021 16:49:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S240830AbhKXJDo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 04:03:44 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37608 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240975AbhKXJDl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Nov 2021 04:03:41 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axl+gq_51hSfAAAA--.4428S2;
+        Wed, 24 Nov 2021 17:00:27 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf, mips: Fix build errors about __NR_bpf undeclared
+Date:   Wed, 24 Nov 2021 17:00:26 +0800
+Message-Id: <1637744426-22044-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-In-Reply-To: <9c83d1c1-f8da-8c5b-74dc-d763ab444774@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+X-CM-TRANSID: AQAAf9Axl+gq_51hSfAAAA--.4428S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWryruFWxWryrXrW8Jw48Xrb_yoW5Kw4Dpr
+        42kFy8tw1UGa17K34fZFWFqw43Jwn2yrWjvFWUCws7CFW5Ja1xGr4jvFZ5CF4aqr4vva47
+        ur15G345ury8Aw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFWl42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5dGYtUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Add the __NR_bpf definitions to fix the following build errors for mips.
 
-On 11/24/2021 12:15 PM, xufeng zhang wrote:
-> Jiri and KP,
->
-> Any suggestion?
->
->
-> Thanks in advance!
->
-> Xufeng
->
-> 在 2021/11/20 下午1:18, Xufeng Zhang 写道:
->> From: "Xufeng Zhang" <yunbo.xufeng@linux.alibaba.com>
->>
->> The motivation behind this change is to use the returned full path
->> for lookup keys in BPF_MAP_TYPE_HASH map.
->> bpf_d_path() prepend the path string from the end of the input
->> buffer, and call memmove() to copy the full path from the tail
->> buffer to the head of buffer before return. So although the
->> returned buffer string is NULL terminated, there is still
->> noise data at the tail of buffer.
->> If using the returned full path buffer as the key of hash map,
->> the noise data is also calculated and makes map lookup failed.
->> To resolve this problem, we could memset the noisy tail buffer
->> before return.
->>
->> Signed-off-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
->> ---
->>   kernel/trace/bpf_trace.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index 25ea521fb8f1..ec4a6823c024 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -903,6 +903,8 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf,
->> u32, sz)
->>       } else {
->>           len = buf + sz - p;
->>           memmove(buf, p, len);
->> +        /* Clear the noisy tail buffer before return */
->> +        memset(buf + len, 0, sz - len);
-Is implementing bpf_memset() helper a better idea ? So those who need to
-clear the buffer after the terminated null character can use the helper to
-do that.
+ $ cd tools/bpf/bpftool
+ $ make
+ [...]
+ bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not support your arch.
+  #  error __NR_bpf not defined. libbpf does not support your arch.
+     ^~~~~
+ bpf.c: In function ‘sys_bpf’:
+ bpf.c:66:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+   return syscall(__NR_bpf, cmd, attr, size);
+                  ^~~~~~~~
+                  __NR_brk
+ [...]
+ In file included from gen_loader.c:15:0:
+ skel_internal.h: In function ‘skel_sys_bpf’:
+ skel_internal.h:53:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+   return syscall(__NR_bpf, cmd, attr, size);
+                  ^~~~~~~~
+                  __NR_brk
 
-Regards,
-Tao
+We can see the following generated definitions:
 
->>       }
->>         return len;
-> .
+ $ grep -r "#define __NR_bpf" arch/mips
+ arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_bpf (__NR_Linux + 355)
+ arch/mips/include/generated/uapi/asm/unistd_n64.h:#define __NR_bpf (__NR_Linux + 315)
+ arch/mips/include/generated/uapi/asm/unistd_n32.h:#define __NR_bpf (__NR_Linux + 319)
+
+So use the GCC pre-defined macro _ABIO32, _ABIN32 and _ABI64 [1] to define
+the corresponding __NR_bpf.
+
+This patch is similar with commit bad1926dd2f6 ("bpf, s390: fix build for
+libbpf and selftest suite").
+
+[1] https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/mips/mips.h#l549
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/build/feature/test-bpf.c |  6 ++++++
+ tools/lib/bpf/bpf.c            |  6 ++++++
+ tools/lib/bpf/skel_internal.h  | 10 ++++++++++
+ 3 files changed, 22 insertions(+)
+
+diff --git a/tools/build/feature/test-bpf.c b/tools/build/feature/test-bpf.c
+index 82070ea..ebc7a2a 100644
+--- a/tools/build/feature/test-bpf.c
++++ b/tools/build/feature/test-bpf.c
+@@ -14,6 +14,12 @@
+ #  define __NR_bpf 349
+ # elif defined(__s390__)
+ #  define __NR_bpf 351
++# elif defined(__mips__) && defined(_ABIO32)
++#  define __NR_bpf (__NR_Linux + 355)
++# elif defined(__mips__) && defined(_ABIN32)
++#  define __NR_bpf (__NR_Linux + 319)
++# elif defined(__mips__) && defined(_ABI64)
++#  define __NR_bpf (__NR_Linux + 315)
+ # else
+ #  error __NR_bpf not defined. libbpf does not support your arch.
+ # endif
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 94560ba..60422404 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -50,6 +50,12 @@
+ #  define __NR_bpf 351
+ # elif defined(__arc__)
+ #  define __NR_bpf 280
++# elif defined(__mips__) && defined(_ABIO32)
++#  define __NR_bpf (__NR_Linux + 355)
++# elif defined(__mips__) && defined(_ABIN32)
++#  define __NR_bpf (__NR_Linux + 319)
++# elif defined(__mips__) && defined(_ABI64)
++#  define __NR_bpf (__NR_Linux + 315)
+ # else
+ #  error __NR_bpf not defined. libbpf does not support your arch.
+ # endif
+diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
+index 9cf6670..6ff4939 100644
+--- a/tools/lib/bpf/skel_internal.h
++++ b/tools/lib/bpf/skel_internal.h
+@@ -7,6 +7,16 @@
+ #include <sys/syscall.h>
+ #include <sys/mman.h>
+ 
++#ifndef __NR_bpf
++# if defined(__mips__) && defined(_ABIO32)
++#  define __NR_bpf (__NR_Linux + 355)
++# elif defined(__mips__) && defined(_ABIN32)
++#  define __NR_bpf (__NR_Linux + 319)
++# elif defined(__mips__) && defined(_ABI64)
++#  define __NR_bpf (__NR_Linux + 315)
++# endif
++#endif
++
+ /* This file is a base header for auto-generated *.lskel.h files.
+  * Its contents will change and may become part of auto-generation in the future.
+  *
+-- 
+2.1.0
 
