@@ -2,243 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E51E45CF85
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 22:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9212945CFFB
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 23:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244786AbhKXWC1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 17:02:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50965 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244346AbhKXWC0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Nov 2021 17:02:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637791156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tne9DSPkYK3oYpj21wMODg7Pkl387TQe224GfF4MK60=;
-        b=WdAhKz0U+nCQJA8weBzHbVADvU2m8B4ovNhX3EIhQQfVLg10YqCiV92d6L/qElOcTqj62Z
-        n6I8uJv5B+LDyNHE14dPehnhXNwdNxbS9dqRgbtR+UxJrSbJ/C4FcNqQdbvSVUeJEOjjff
-        lKD2OQvTDxKmZf3LiIB9WgFDfj/bqgo=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-425-A7R83Sa-NxiHbMjKjCK6ZA-1; Wed, 24 Nov 2021 16:59:14 -0500
-X-MC-Unique: A7R83Sa-NxiHbMjKjCK6ZA-1
-Received: by mail-ed1-f70.google.com with SMTP id bx28-20020a0564020b5c00b003e7c42443dbso3566132edb.15
-        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 13:59:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=tne9DSPkYK3oYpj21wMODg7Pkl387TQe224GfF4MK60=;
-        b=6KtNON2GsKRI5HOxQLl47RrACu/4vg2oo60zwtKTAcSGEOVEenNon8q5sy8AHk5YhN
-         44RaujcScc2GhHVRd3S3glenAodEGM25k0dDGlYIR2lAMXHB755XUnng6An7Nm7UmYSL
-         k7jf4EdR5XIfvRCvMWlg4D5pfsbAocc5lJPDtVhSM8yf1FNVJ/NfYiHvfmblZ95NyZl1
-         B5STPCaPcmNwu/INIKwoWQtNjKrmGdRGrB7iFIrCNFMNxnuSm2lkndiZuur/tGKnkh1u
-         mYbbt2MljNiZXDBml/KWpmwFy2/Z/ydw1G8DcGdoljCRPdk9fAgPNL1uDVOJBWTfiV3P
-         1rFg==
-X-Gm-Message-State: AOAM5333pk7SXd5r6xlHuGCbTqLvGJY3orFfaMhuKglYBTn6WZri1OZw
-        0LrGr0cprHm+eQ/Y2LFHJUX2i8rolaFEeo6LPE0tebkn08/3wd3xUWlUseXyCKCk8x+vQUgvn1R
-        sxZAHRXfASxOY
-X-Received: by 2002:a17:907:3f04:: with SMTP id hq4mr24401499ejc.202.1637791152996;
-        Wed, 24 Nov 2021 13:59:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzqew4EIen51FrsivFPvoEFJO/NRGk99pcb6iyivDuFKGgInYOvRXdy3mDsSaYbh4MJMK5KmA==
-X-Received: by 2002:a17:907:3f04:: with SMTP id hq4mr24401378ejc.202.1637791152094;
-        Wed, 24 Nov 2021 13:59:12 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id jy28sm495734ejc.118.2021.11.24.13.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 13:59:11 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A588D18029C; Wed, 24 Nov 2021 22:59:10 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S243516AbhKXWYD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 17:24:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245727AbhKXWYD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Nov 2021 17:24:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C5761058
+        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 22:20:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637792453;
+        bh=QuOKEd8wjRRmJ4cGqPjvltrZYL2dOTdPrZF2ytNqfYc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lKuTfa4aB2hQgUDSX3cYorFDs5TIg6zERwH2RypIlhBS2G+ht2GmgblMRdgWA5Ptw
+         92LWsHCT8jf8UEA077ST4vvaZzlvxIBxhH8wa44y5yDdjrMGO8dHpqnFOcoYb2+Y7J
+         mbfd9A/qhdvSO/gbH8PRmfNInezQIuSQYoG/zw/tkU86KZFrBloQ4nKzESnTcHCCKh
+         gLJeUx2MGxmZRP43zn6LqYeDI/OS/Hiw9sH6ZpApVmOoWJfwdFGq8LfrHaSaGwODBY
+         aMPmhXr+KwFyYHpN08JGrFwCGWfZHamGkXimg2Zkk52sba3WGLKQ+PxR1pDwNkLUHb
+         Y7ix8jZYl5EpQ==
+Received: by mail-ed1-f52.google.com with SMTP id x6so16800650edr.5
+        for <bpf@vger.kernel.org>; Wed, 24 Nov 2021 14:20:52 -0800 (PST)
+X-Gm-Message-State: AOAM533032LkMbPCcEwNyduTJvYaLUtkvzhDJK2eX5g+OxHE+GMhhReT
+        IYtH9uJVebsUMY3NDQWc4Ykife44hZ/4xSFlfsVExQ==
+X-Google-Smtp-Source: ABdhPJyJRCiPZZOd58+a8uleGo6lyKl5T+txuC+2vHBzshPgIzPGSC0LTUAyisykCYQNUke1G9t4V186uSu7pk1gu1Y=
+X-Received: by 2002:a05:6402:4311:: with SMTP id m17mr30424754edc.103.1637792451360;
+ Wed, 24 Nov 2021 14:20:51 -0800 (PST)
+MIME-Version: 1.0
+References: <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
+ <20210831021132.sehzvrudvcjbzmwt@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
+ <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
+ <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
+ <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1> <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
+ <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1> <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Wed, 24 Nov 2021 23:20:40 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ4VDMzp2ggtVL30xq+6Q2+2OqOLhuoi173=8mdyRbS+QQ@mail.gmail.com>
+Message-ID: <CACYkzJ4VDMzp2ggtVL30xq+6Q2+2OqOLhuoi173=8mdyRbS+QQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
+ sleepable programs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 4/4] selftest/bpf/benchs: add bpf_loop
- benchmark
-In-Reply-To: <CAEf4BzbB6utDjOJLZzwbBEoAgdO774=PX8O9dWeZJRzM2kdxaQ@mail.gmail.com>
-References: <20211123183409.3599979-1-joannekoong@fb.com>
- <20211123183409.3599979-5-joannekoong@fb.com> <87y25ebry1.fsf@toke.dk>
- <3eaa1a93-c3f1-830a-b711-117b27102cc5@fb.com> <87r1b5btl0.fsf@toke.dk>
- <CAEf4BzbB6utDjOJLZzwbBEoAgdO774=PX8O9dWeZJRzM2kdxaQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 24 Nov 2021 22:59:10 +0100
-Message-ID: <87lf1db4gh.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Wed, Nov 24, 2021 at 4:56 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Joanne Koong <joannekoong@fb.com> writes:
->>
->> > On 11/23/21 11:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >
->> >> Joanne Koong <joannekoong@fb.com> writes:
->> >>
->> >>> Add benchmark to measure the throughput and latency of the bpf_loop
->> >>> call.
->> >>>
->> >>> Testing this on qemu on my dev machine on 1 thread, the data is
->> >>> as follows:
->> >>>
->> >>>          nr_loops: 1
->> >>> bpf_loop - throughput: 43.350 =C2=B1 0.864 M ops/s, latency: 23.068 =
-ns/op
->> >>>
->> >>>          nr_loops: 10
->> >>> bpf_loop - throughput: 69.586 =C2=B1 1.722 M ops/s, latency: 14.371 =
-ns/op
->> >>>
->> >>>          nr_loops: 100
->> >>> bpf_loop - throughput: 72.046 =C2=B1 1.352 M ops/s, latency: 13.880 =
-ns/op
->> >>>
->> >>>          nr_loops: 500
->> >>> bpf_loop - throughput: 71.677 =C2=B1 1.316 M ops/s, latency: 13.951 =
-ns/op
->> >>>
->> >>>          nr_loops: 1000
->> >>> bpf_loop - throughput: 69.435 =C2=B1 1.219 M ops/s, latency: 14.402 =
-ns/op
->> >>>
->> >>>          nr_loops: 5000
->> >>> bpf_loop - throughput: 72.624 =C2=B1 1.162 M ops/s, latency: 13.770 =
-ns/op
->> >>>
->> >>>          nr_loops: 10000
->> >>> bpf_loop - throughput: 75.417 =C2=B1 1.446 M ops/s, latency: 13.260 =
-ns/op
->> >>>
->> >>>          nr_loops: 50000
->> >>> bpf_loop - throughput: 77.400 =C2=B1 2.214 M ops/s, latency: 12.920 =
-ns/op
->> >>>
->> >>>          nr_loops: 100000
->> >>> bpf_loop - throughput: 78.636 =C2=B1 2.107 M ops/s, latency: 12.717 =
-ns/op
->> >>>
->> >>>          nr_loops: 500000
->> >>> bpf_loop - throughput: 76.909 =C2=B1 2.035 M ops/s, latency: 13.002 =
-ns/op
->> >>>
->> >>>          nr_loops: 1000000
->> >>> bpf_loop - throughput: 77.636 =C2=B1 1.748 M ops/s, latency: 12.881 =
-ns/op
->> >>>
->> >>>  From this data, we can see that the latency per loop decreases as t=
-he
->> >>> number of loops increases. On this particular machine, each loop had=
- an
->> >>> overhead of about ~13 ns, and we were able to run ~70 million loops
->> >>> per second.
->> >> The latency figures are great, thanks! I assume these numbers are with
->> >> retpolines enabled? Otherwise 12ns seems a bit much... Or is this
->> >> because of qemu?
->> > I just tested it on a machine (without retpoline enabled) that runs on
->> > actual
->> > hardware and here is what I found:
->> >
->> >              nr_loops: 1
->> >      bpf_loop - throughput: 46.780 =C2=B1 0.064 M ops/s, latency: 21.3=
-77 ns/op
->> >
->> >              nr_loops: 10
->> >      bpf_loop - throughput: 198.519 =C2=B1 0.155 M ops/s, latency: 5.0=
-37 ns/op
->> >
->> >              nr_loops: 100
->> >      bpf_loop - throughput: 247.448 =C2=B1 0.305 M ops/s, latency: 4.0=
-41 ns/op
->> >
->> >              nr_loops: 500
->> >      bpf_loop - throughput: 260.839 =C2=B1 0.380 M ops/s, latency: 3.8=
-34 ns/op
->> >
->> >              nr_loops: 1000
->> >      bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3.8=
-05 ns/op
->> >
->> >              nr_loops: 5000
->> >      bpf_loop - throughput: 264.211 =C2=B1 1.508 M ops/s, latency: 3.7=
-85 ns/op
->> >
->> >              nr_loops: 10000
->> >      bpf_loop - throughput: 265.366 =C2=B1 3.054 M ops/s, latency: 3.7=
-68 ns/op
->> >
->> >              nr_loops: 50000
->> >      bpf_loop - throughput: 235.986 =C2=B1 20.205 M ops/s, latency: 4.=
-238 ns/op
->> >
->> >              nr_loops: 100000
->> >      bpf_loop - throughput: 264.482 =C2=B1 0.279 M ops/s, latency: 3.7=
-81 ns/op
->> >
->> >              nr_loops: 500000
->> >      bpf_loop - throughput: 309.773 =C2=B1 87.713 M ops/s, latency: 3.=
-228 ns/op
->> >
->> >              nr_loops: 1000000
->> >      bpf_loop - throughput: 262.818 =C2=B1 4.143 M ops/s, latency: 3.8=
-05 ns/op
->> >
->> > The latency is about ~4ns / loop.
->> >
->> > I will update the commit message in v3 with these new numbers as well.
->>
->> Right, awesome, thank you for the additional test. This is closer to
->> what I would expect: on the hardware I'm usually testing on, a function
->> call takes ~1.5ns, but the difference might just be the hardware, or
->> because these are indirect calls.
->>
->> Another comparison just occurred to me (but it's totally OK if you don't
->> want to add any more benchmarks):
->>
->> The difference between a program that does:
->>
->> bpf_loop(nr_loops, empty_callback, NULL, 0);
->>
->> and
->>
->> for (i =3D 0; i < nr_loops; i++)
->>   empty_callback();
+On Tue, Nov 23, 2021 at 11:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> You are basically trying to measure the overhead of bpf_loop() helper
-> call itself, because other than that it should be identical.
-
-No, I'm trying to measure the difference between the indirect call in
-the helper, and the direct call from the BPF program. Should be minor
-without retpolines, and somewhat higher where they are enabled...
-
-> We can estimate that already from the numbers Joanne posted above:
+> On Tue, Nov 23, 2021 at 10:22:04AM -0800, Paul E. McKenney wrote:
+> > On Tue, Nov 23, 2021 at 06:11:14PM +0100, KP Singh wrote:
+> > > On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > I think the global lock will be an issue for the current non-sleepable
+> > > > netdev bpf-prog which could be triggered by external traffic,  so a flag
+> > > > is needed here to provide a fast path.  I suspect other non-prealloc map
+> > > > may need it in the future, so probably
+> > > > s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
+> > >
+> > > I was re-working the patches and had a couple of questions.
+> > >
+> > > There are two data structures that get freed under RCU here:
+> > >
+> > > struct bpf_local_storage
+> > > struct bpf_local_storage_selem
+> > >
+> > > We can choose to free the bpf_local_storage_selem under
+> > > call_rcu_tasks_trace based on
+> > > whether the map it belongs to is sleepable with something like:
+> > >
+> > > if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
+> Paul's current work (mentioned by his previous email) will improve the
+> performance of call_rcu_tasks_trace, so it probably can avoid the
+> new BPF_F_SLEEPABLE flag and make it easier to use.
 >
->              nr_loops: 1
->       bpf_loop - throughput: 46.780 =C2=B1 0.064 M ops/s, latency: 21.377=
- ns/op
->              nr_loops: 1000
->       bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3.805=
- ns/op
+> > >     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+> > > else
+> > >     kfree_rcu(selem, rcu);
+> > >
+> > > Questions:
+> > >
+> > > * Can we free bpf_local_storage under kfree_rcu by ensuring it's
+> > >   always accessed in a  classical RCU critical section?
+> >>    Or maybe I am missing something and this also needs to be freed
+> > >   under trace RCU if any of the selems are from a sleepable map.
+> In the inode_storage_lookup() of this patch:
 >
-> nr_loops:1 is bpf_loop() overhead and one static callback call.
-> bpf_loop()'s own overhead will be in the ballpark of 21.4 - 3.8 =3D
-> 17.6ns. I don't think we need yet another benchmark just for this.
+> +#define bpf_local_storage_rcu_lock_held()                      \
+> +       (rcu_read_lock_held() || rcu_read_lock_trace_held() ||  \
+> +        rcu_read_lock_bh_held())
+>
+> @@ -44,7 +45,8 @@ static struct bpf_local_storage_data *inode_storage_lookup(struct inode *inode,
+>         if (!bsb)
+>                 return NULL;
+>
+> -       inode_storage = rcu_dereference(bsb->storage);
+> +       inode_storage = rcu_dereference_protected(bsb->storage,
+> +                                                 bpf_local_storage_rcu_lock_held());
+>
+> Thus, it is not always in classical RCU critical.
+>
+> > >
+> > > * There is an issue with nested raw spinlocks, e.g. in
+> > > bpf_inode_storage.c:bpf_inode_storage_free
+> > >
+> > >   hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> > >   /* Always unlink from map before unlinking from
+> > >   * local_storage.
+> > >   */
+> > >   bpf_selem_unlink_map(selem);
+> > >   free_inode_storage = bpf_selem_unlink_storage_nolock(
+> > >                  local_storage, selem, false);
+> > >   }
+> > >   raw_spin_unlock_bh(&local_storage->lock);
+> > >
+> > > in bpf_selem_unlink_storage_nolock (if we add the above logic with the
+> > > flag in place of kfree_rcu)
+> > > call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
+> > > raw spin lock.
+> > >
+> > > I am moving the freeing code out of the spinlock, saving the selems on
+> > > a local list and then doing the free RCU (trace or normal) callbacks
+> > > at the end. WDYT?
+> There could be more than one selem to save.
 
-That seems really high, though? The helper is a pretty simple function,
-and the call to it should just be JIT'ed into a single regular function
-call, right? So why the order-of-magnitude difference?
+Yes, that's why I was saving them on a local list and then calling
+kfree_rcu or call_rcu_tasks_trace after unlocking the raw_spin_lock
 
--Toke
+INIT_HLIST_HEAD(&free_list);
+raw_spin_lock_irqsave(&local_storage->lock, flags);
+hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+    bpf_selem_unlink_map(selem);
+    free_local_storage = bpf_selem_unlink_storage_nolock(
+    local_storage, selem, false);
+    hlist_add_head(&selem->snode, &free_list);
+}
+raw_spin_unlock_irqrestore(&local_storage->lock, flags);
 
+/* The element needs to be freed outside the raw spinlock because spin
+* locks cannot nest inside a raw spin locks and call_rcu_tasks_trace
+* grabs a spinklock when the RCU code calls into the scheduler.
+*
+* free_local_storage should always be true as long as
+* local_storage->list was non-empty.
+*/
+hlist_for_each_entry_safe(selem, n, &free_list, snode) {
+    if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
+        call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+    else
+        kfree_rcu(selem, rcu);
+}
+
+But... we won't need this anymore.
+
+>
+> I think the splat is from CONFIG_PROVE_RAW_LOCK_NESTING=y.
+>
+> Just happened to bump into Paul briefly offline, his work probably can
+> also avoid the spin_lock in call_rcu_tasks_trace().
+>
+> I would ignore this splat for now which should go away when it is
+> merged with Paul's work in the 5.17 merge cycle.
+>
+> > Depending on the urgency, another approach is to rely on my ongoing work
+> > removing the call_rcu_tasks_trace() bottleneck.  This commit on branch
+> > "dev" in the -rcu tree allows boot-time setting of per-CPU callback
+> > queues for call_rcu_tasks_trace(), along with the other RCU-tasks flavors:
+> >
+> > 0b886cc4b10f ("rcu-tasks: Add rcupdate.rcu_task_enqueue_lim to set initial queueing")
+> >
+> > Preceding commits actually set up the queues.  With these commits, you
+> > could boot with rcupdate.rcu_task_enqueue_lim=N, where N greater than
+> > or equal to the number of CPUs on your system, to get per-CPU queuing.
+> > These commits probably still have a bug or three, but on the other hand,
+> > they have survived a couple of weeks worth of rcutorture runs.
+> >
+> > This week's work will allow automatic transition between single-queue
+> > and per-CPU-queue operation based on lock contention and the number of
+> > callbacks queued.
+> >
+> > My current plan is to get this into the next merge window (v5.17).
+> That would be great.
