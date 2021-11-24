@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BDA45B422
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 07:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D86845B423
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 07:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhKXGFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 01:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        id S234228AbhKXGFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 01:05:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234183AbhKXGFt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Nov 2021 01:05:49 -0500
+        with ESMTP id S234200AbhKXGFw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Nov 2021 01:05:52 -0500
 Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA96BC061574
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 22:02:40 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id iq11so1602960pjb.3
-        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 22:02:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4277FC061574
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 22:02:43 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so3601619pjj.0
+        for <bpf@vger.kernel.org>; Tue, 23 Nov 2021 22:02:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bVY6eVxviZg8xiPFaNj1olJC38mpBiTzlr43IK0kzAY=;
-        b=HjXptZxqdaUc8OGSJO6sXPZXYD0xFQVerk9xp6hAfxaAcPcpYZc09aTeeP3JK48k4r
-         Dv7GDODUD1Qrx0hJlzDaF6YIij9hw9gLnVFki0NOqlEEqVeX969bDtLp7DrhgJLaPGpG
-         qmimyyAMSbMBDzyvA76MIaC0uR2pCAipohsAN2FNQABwoseFnnsGgDv/AaZ4bS4UkDHG
-         Dzd0O3sBg+xLasG9e1TZWgu5tXK+PSGTQq3XK0uWbS67SoPG8Uz1ROWWAL0BLA8xpdTw
-         pFduUBlbYGI7v4Ro7fvgNoGLHgJEP9LioDgE3WUpbo9RJIC8B3od1C+R+Z5KHusXokqa
-         3uag==
+        bh=1sTqqJv+t6dZCYugr+KFX3yThcXdzVlHC+f9b6EubaM=;
+        b=BKvkbrLSNQdnzNOjXfNXCdyRI2b14MBXtjMQ9feVd5Ug7S5pyZyGOsjRV2R/CAODA5
+         +K8cxYO306KryD96mMnuq2DGWawuZXmn8ic+p8sXfnu6UmLLtVFt/MplQ/rrtgN7FSAP
+         Pdm95PIJssYs2epf6MIEo9Ku/tzAbJ+Kr4o35+nA5vp+cObw06OJEZeU4NtJrtIt+CzG
+         qN4mN3S0jyDhjleFjXzjKnJwb5cxHES7kl0U90DM92Mn8LOf7GID17u46nelq8wXanxv
+         HHCuWwOMg4l69tqZjjssM3j1IiIcgvTlq8uhFKJOMUAyMCutJ5jmYEd0mYoAvkEC44JF
+         URlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bVY6eVxviZg8xiPFaNj1olJC38mpBiTzlr43IK0kzAY=;
-        b=C5pgwOjLHOO6espsfEHySZ2VHmMGjhed4FYIbiITPrk/Sv8bgtwz94i8Qr1RcI83qn
-         Lt69l9C5O8AcW873/4cGdxGxLiBZVM+BIeWy9jvih2zGGMgAHpRx+nh29Ssh+e829Qli
-         8dU087dA9fhPce0UTxnSqVTaZuQa1lQmbrXGu77IJvqPlDnp2Qw2PsF2DzkZYWjLSIPc
-         ONVref2MgOflGjI36hkUYIvTL5kEshj0LZUqUqiB1n6x/j/MZV7phne0WLVCoa2i4azO
-         X5WCAZ7CD1gY+wBEdzzLRoo7eD7AruG/vNQjuUcazSJdnvXpeNYKAb0R6Hor/elGUXA6
-         zdsw==
-X-Gm-Message-State: AOAM5332hpazT1Kd7kAK5ByUckdHMKYxKZdwigC8g4iH4nOODDnP8Bdv
-        XnUel38jkGCIKvEGGOfC0nVsh4Lpuuo=
-X-Google-Smtp-Source: ABdhPJzwa6J7cZ3xrpZ/t4H8JhcKhAeh4nKCT7N6Zy4IIKhwRrNPKWi202oVoTWwC02JxEJ/SaQWPw==
-X-Received: by 2002:a17:90b:3ec6:: with SMTP id rm6mr11663140pjb.94.1637733760169;
-        Tue, 23 Nov 2021 22:02:40 -0800 (PST)
+        bh=1sTqqJv+t6dZCYugr+KFX3yThcXdzVlHC+f9b6EubaM=;
+        b=elmIh0Ou5JTnwJs8egXAGYndcec8xk8o2HZ+3e8p4QaPbpcahgL6HgJ0bzbsyx1ndo
+         mat2bSPiDGkMWqxI4dhAhg/jNKGDFhSAKp5h8+BLehuiu6X1Uj0nhJ3GFuSC7IP7hcHa
+         ZvjG91I6c5/PGYnUvjUFxdXQUeqiZ8RC3lcMBfam4bMyGfa/z5BGRfGexdu4soRHwh23
+         yYcZ9cEO+Za8QuHJc5tnJUOsa1wQ5D2TXsq2FKKu/RotcAzi+36pNTQjy735en/sVIuJ
+         Y52gyjBcBqxypJzENn3UOQ2QZACuf2+8pvcAwYzRwCT6y/mldotGd6MNqfJPzvLOdwPp
+         5tJg==
+X-Gm-Message-State: AOAM532r7Z8j7V2yqutQQDjCZWevAnyDdCCo1sw8MNxD3TV6eejFv66L
+        0MnnO8364IJ85r7Gk2481E0=
+X-Google-Smtp-Source: ABdhPJyup37l4wxs1DuhRzGuHPqJ2OXCfn7ebF0RDX6zpgWewH5DN7+rh50YlIk6Y7SjqOVfFCcTkg==
+X-Received: by 2002:a17:90a:a396:: with SMTP id x22mr5323955pjp.14.1637733762863;
+        Tue, 23 Nov 2021 22:02:42 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:8fd1])
-        by smtp.gmail.com with ESMTPSA id nm13sm3044216pjb.56.2021.11.23.22.02.39
+        by smtp.gmail.com with ESMTPSA id oc10sm3534354pjb.26.2021.11.23.22.02.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Nov 2021 22:02:39 -0800 (PST)
+        Tue, 23 Nov 2021 22:02:42 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 10/16] libbpf: Clean gen_loader's attach kind.
-Date:   Tue, 23 Nov 2021 22:02:03 -0800
-Message-Id: <20211124060209.493-11-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 11/16] selftests/bpf: Add lskel version of kfunc test.
+Date:   Tue, 23 Nov 2021 22:02:04 -0800
+Message-Id: <20211124060209.493-12-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211124060209.493-1-alexei.starovoitov@gmail.com>
 References: <20211124060209.493-1-alexei.starovoitov@gmail.com>
@@ -65,33 +65,75 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-The gen_loader has to clear attach_kind otherwise the programs
-without attach_btf_id will fail load if they follow programs
-with attach_btf_id.
+Add light skeleton version of kfunc_call_test_subprog test.
 
-Fixes: 67234743736a ("libbpf: Generate loader program out of BPF ELF file.")
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/lib/bpf/gen_loader.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/Makefile          |  2 +-
+ .../selftests/bpf/prog_tests/kfunc_call.c     | 24 +++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index 9066d1ae3461..3e9cc2312f0a 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -1015,9 +1015,11 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- 	debug_ret(gen, "prog_load %s insn_cnt %d", attr.prog_name, attr.insn_cnt);
- 	/* successful or not, close btf module FDs used in extern ksyms and attach_btf_obj_fd */
- 	cleanup_relos(gen, insns_off);
--	if (gen->attach_kind)
-+	if (gen->attach_kind) {
- 		emit_sys_close_blob(gen,
- 				    attr_field(prog_load_attr, attach_btf_obj_fd));
-+		gen->attach_kind = 0;
-+	}
- 	emit_check_err(gen);
- 	/* remember prog_fd in the stack, if successful */
- 	emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_7,
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 35684d61aaeb..0c9f1837ece2 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -327,7 +327,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+ LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
+ 	test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c
+ # Generate both light skeleton and libbpf skeleton for these
+-LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c
++LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test_subprog.c
+ SKEL_BLACKLIST += $$(LSKELS)
+ 
+ test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+index 5c9c0176991b..7d7445ccc141 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
++++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+@@ -4,6 +4,7 @@
+ #include <network_helpers.h>
+ #include "kfunc_call_test.lskel.h"
+ #include "kfunc_call_test_subprog.skel.h"
++#include "kfunc_call_test_subprog.lskel.h"
+ 
+ static void test_main(void)
+ {
+@@ -49,6 +50,26 @@ static void test_subprog(void)
+ 	kfunc_call_test_subprog__destroy(skel);
+ }
+ 
++static void test_subprog_lskel(void)
++{
++	struct kfunc_call_test_subprog_lskel *skel;
++	int prog_fd, retval, err;
++
++	skel = kfunc_call_test_subprog_lskel__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel"))
++		return;
++
++	prog_fd = skel->progs.kfunc_call_test1.prog_fd;
++	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
++				NULL, NULL, (__u32 *)&retval, NULL);
++	ASSERT_OK(err, "bpf_prog_test_run(test1)");
++	ASSERT_EQ(retval, 10, "test1-retval");
++	ASSERT_NEQ(skel->data->active_res, -1, "active_res");
++	ASSERT_EQ(skel->data->sk_state_res, BPF_TCP_CLOSE, "sk_state_res");
++
++	kfunc_call_test_subprog_lskel__destroy(skel);
++}
++
+ void test_kfunc_call(void)
+ {
+ 	if (test__start_subtest("main"))
+@@ -56,4 +77,7 @@ void test_kfunc_call(void)
+ 
+ 	if (test__start_subtest("subprog"))
+ 		test_subprog();
++
++	if (test__start_subtest("subprog_lskel"))
++		test_subprog_lskel();
+ }
 -- 
 2.30.2
 
