@@ -2,150 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD2145B754
-	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 10:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D081C45B7E6
+	for <lists+bpf@lfdr.de>; Wed, 24 Nov 2021 11:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhKXJZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 04:25:26 -0500
-Received: from mga11.intel.com ([192.55.52.93]:54155 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229817AbhKXJZT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:25:19 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="232735576"
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="232735576"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 01:21:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="674799246"
-Received: from sashimi-thinkstation-p920.png.intel.com ([10.158.65.178])
-  by orsmga005.jf.intel.com with ESMTP; 24 Nov 2021 01:21:05 -0800
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     bjorn@kernel.org, Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH bpf-next 4/4] samples/bpf: xdpsock: add time-out for cleaning Tx
-Date:   Wed, 24 Nov 2021 17:18:21 +0800
-Message-Id: <20211124091821.3916046-5-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211124091821.3916046-1-boon.leong.ong@intel.com>
-References: <20211124091821.3916046-1-boon.leong.ong@intel.com>
+        id S232774AbhKXKDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 05:03:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237447AbhKXKDL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Nov 2021 05:03:11 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32894C061574;
+        Wed, 24 Nov 2021 02:00:02 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id az34-20020a05600c602200b0033bf8662572so1596721wmb.0;
+        Wed, 24 Nov 2021 02:00:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fDGLhfDjPWff/jphpjh1PfEIbNyQ4NbvKbsbx5VhX88=;
+        b=PKN9ml0gWOiIaXGyeiOp+axDTXn416NLwErJ724mtIXPheMMggpeBGduxFgTYHU0Ov
+         ONnF3amnm6fNLVnp8A2npngkVIuuyj6LvR+aFsorG9J9clu7YnFwb4lJsFYWye94K1jU
+         zg2legOMMJEb+VWY3rRWKirmoInhddtRho9pMvcoJP99xjk9RGWzzULk9jWDsdvoxrQ3
+         wJIyw6WwfavcBkvJJXyRGE4qliNmAO45fMM0nlH+iTVevFAZbSzcyp9ueCdzbU7i44Q6
+         Wf3/RqR8O3+1JAaJ0qocfc48CChk0CE18EmKLZswQKjTZEG2aKa5/C/Jltv9+StwXXCi
+         nxQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fDGLhfDjPWff/jphpjh1PfEIbNyQ4NbvKbsbx5VhX88=;
+        b=eevskUXdAu8SYDOCpZro+/jhSP3o5k/IUN9mOANOZBqwWR49mf0/89rD5+jN5g+O8g
+         oub5HJJw0bpfHTdQi+2oer+PZnKq+Iuecij/TNjChDlvzvyKNZKSbvwwiHkHfCurGh/W
+         +gQW2zeqSvO3N90pj61VmtPeMCnF+znz0vwDfhN2O7r2w+7lkFPQQ+g0VHsYgii6KLvs
+         qkOLs7FFJgEHTlCGB8EvPFxPD9gu3C8qrao9YKH/VaJZQhm/pw+elGuNHGvfPkZjfNt4
+         SWyliY1ZUYPnM1/Jl1vocIvD8I6ci4/zYuXcLSysbwtchUE3NMUm7Dt4j4Swut6WOkTe
+         32Lw==
+X-Gm-Message-State: AOAM530j+Ndbo5+A121Hy29FrxrfeKlLrDe7AFfLJKAeRHz2UZWSaRa3
+        hB7n0HzQwqo3k/FotUuc6qA=
+X-Google-Smtp-Source: ABdhPJwShWfZ+RfN+bWeHfHazhCO4KTtkR/Dkk4iDYcfF0Pd4Pbhsgu9oCwZRwoCIGwJwitNMguipw==
+X-Received: by 2002:a1c:f30d:: with SMTP id q13mr13130994wmq.55.1637748000734;
+        Wed, 24 Nov 2021 02:00:00 -0800 (PST)
+Received: from [80.5.213.92] (cpc108963-cmbg20-2-0-cust347.5-4.cable.virginm.net. [80.5.213.92])
+        by smtp.gmail.com with ESMTPSA id y12sm14655857wrn.73.2021.11.24.02.00.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 02:00:00 -0800 (PST)
+Subject: Re: [PATCH v2 net-next 11/26] sf100, sfx: implement generic XDP stats
+ callbacks
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Martin Habets <habetsm.xilinx@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-12-alexandr.lobakin@intel.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <e6e31c0e-c3a0-aecf-54f0-d7ee3bf3c7c2@gmail.com>
+Date:   Wed, 24 Nov 2021 09:59:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211123163955.154512-12-alexandr.lobakin@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When user sets tx-pkt-count and in case where there are invalid Tx frame,
-the complete_tx_only_all() process polls indefinitely. So, this patch
-adds a time-out mechanism into the process so that the application
-can terminate automatically after it retries 3*polling interval duration.
+On 23/11/2021 16:39, Alexander Lobakin wrote:
+> Export 4 per-channel XDP counters for both sf100 and sfx drivers
+> using generic XDP stats infra.
+> 
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+The usual Subject: prefix for these drivers is sfc:
+ (or occasionally sfc_ef100: for ef100-specific stuff).
 
- sock0@enp0s29f1:2 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 136383         1000000
-rx dropped         0              0
-rx invalid         0              0
-tx invalid         35             245
-rx queue full      0              0
-fill ring empty    0              1
-tx ring empty      957            7011
+> +int efx_get_xdp_stats_nch(const struct net_device *net_dev, u32 attr_id)
+> +{
+> +	const struct efx_nic *efx = netdev_priv(net_dev);
+> +
+> +	switch (attr_id) {
+> +	case IFLA_XDP_XSTATS_TYPE_XDP:
+> +		return efx->n_channels;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +int efx_get_xdp_stats(const struct net_device *net_dev, u32 attr_id,
+> +		      void *attr_data)
+> +{
+> +	struct ifla_xdp_stats *xdp_stats = attr_data;
+> +	struct efx_nic *efx = netdev_priv(net_dev);
+> +	const struct efx_channel *channel;
+> +
+> +	switch (attr_id) {
+> +	case IFLA_XDP_XSTATS_TYPE_XDP:
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	spin_lock_bh(&efx->stats_lock);
+> +
+> +	efx_for_each_channel(channel, efx) {
+> +		xdp_stats->drop = channel->n_rx_xdp_drops;
+> +		xdp_stats->errors = channel->n_rx_xdp_bad_drops;
+> +		xdp_stats->redirect = channel->n_rx_xdp_redirect;
+> +		xdp_stats->tx = channel->n_rx_xdp_tx;
+> +
+> +		xdp_stats++;
+> +	}What guarantees that efx->n_channels won't change between these two
+ calls, potentially overrunning the buffer?
 
- sock0@enp0s29f1:2 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 0              1000000
-rx dropped         0              0
-rx invalid         0              0
-tx invalid         0              245
-rx queue full      0              0
-fill ring empty    0              1
-tx ring empty      1              7012
-
- sock0@enp0s29f1:2 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 0              1000000
-rx dropped         0              0
-rx invalid         0              0
-tx invalid         0              245
-rx queue full      0              0
-fill ring empty    0              1
-tx ring empty      1              7013
-
- sock0@enp0s29f1:2 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 0              1000000
-rx dropped         0              0
-rx invalid         0              0
-tx invalid         0              245
-rx queue full      0              0
-fill ring empty    0              1
-tx ring empty      1              7014
-
- sock0@enp0s29f1:2 txonly xdp-drv
-                   pps            pkts           1.00
-rx                 0              0
-tx                 0              1000000
-rx dropped         0              0
-rx invalid         0              0
-tx invalid         0              245
-rx queue full      0              0
-fill ring empty    0              1
-tx ring empty      0              7014
-
- sock0@enp0s29f1:2 txonly xdp-drv
-                   pps            pkts           0.00
-rx                 0              0
-tx                 0              1000000
-rx dropped         0              0
-rx invalid         0              0
-tx invalid         0              245
-rx queue full      0              0
-fill ring empty    0              1
-tx ring empty      0              7014
-
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- samples/bpf/xdpsock_user.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 61d4063f11a..9c3311329ec 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -1410,6 +1410,7 @@ static inline int get_batch_size(int pkt_cnt)
- 
- static void complete_tx_only_all(void)
- {
-+	u32 retries = 3;
- 	bool pending;
- 	int i;
- 
-@@ -1421,7 +1422,8 @@ static void complete_tx_only_all(void)
- 				pending = !!xsks[i]->outstanding_tx;
- 			}
- 		}
--	} while (pending);
-+		sleep(opt_interval);
-+	} while (pending && retries-- > 0);
- }
- 
- static void tx_only_all(void)
--- 
-2.25.1
-
+-ed
