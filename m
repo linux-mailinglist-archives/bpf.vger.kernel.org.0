@@ -2,133 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335E645D806
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 11:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5240A45D956
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 12:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354398AbhKYKPX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 05:15:23 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:43622 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354391AbhKYKNW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:13:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1637835012;
-  x=1669371012;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GdIrusbwRXXLYGW13kTKv3iwu2ddLrB+iTcqiTjJaeo=;
-  b=jajnKAODDJwFxONv7H5T9Qay8wejY2kquQX/fSlORGliWeym1PwFAoaX
-   c+hyYHlj5mL9IdgHRChiHz0W+fpW6Z0S1J/jruCVLNumsKzTIKYXQNndT
-   SZrgyEBkd9x2yqf12eC11Gq7qUmN0D7Z3Ii0llbwI3uv7hkk6S7PHYN5D
-   YQZ9KD/4Aoy4D8FOAMFtzMkX34JbDP8p71KdWu1o4s8Af4w0pBu8e3ivk
-   2lnq6TqqavbaUAdIFxwQqJ4YexQGCVR6n9JTmxsNvu3KKxw6bAZj4lVli
-   UG+e3drTpZek+n8GmfUBw64JH6b6uocq4peGodIA4gfYQoGNyfv3NsOpT
-   Q==;
-Date:   Thu, 25 Nov 2021 11:10:07 +0100
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S229597AbhKYLkk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 06:40:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59041 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237335AbhKYLik (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 25 Nov 2021 06:38:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637840129;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NI/gNqi3N+vZdomXUYOU6ci4Q+Mp+HGhk30IjdDA2MI=;
+        b=c6w9d6jPQfOWfBkte/UsuUs2bTuD+lb94B+ZT1Zp+m8v73o7GYW7rg/M2qtduxzHE1gHkd
+        tn1p0LSXTYrxkGvHSaVg4WAOWLZVNMaIilfn3WrX7tC+MF+SrBPASX2J1ZnF6+Cgs14RkY
+        SOu4uH86PICX/8UmFjoLt45nsAxHKuw=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-123-fV4xAdWQMLura89BpUOpJQ-1; Thu, 25 Nov 2021 06:35:27 -0500
+X-MC-Unique: fV4xAdWQMLura89BpUOpJQ-1
+Received: by mail-qk1-f199.google.com with SMTP id u8-20020a05620a454800b00468482aac5dso6218023qkp.18
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 03:35:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=NI/gNqi3N+vZdomXUYOU6ci4Q+Mp+HGhk30IjdDA2MI=;
+        b=KWyGDE7OlHrJVc9C4mvP9WNYqfMN4Hyl2f3ym6ZwOgD+iSJo9rSO9yDYrI3eJM6tDh
+         NNRJLMIpLnd5HKK4MQGJqtqfyGW0ocrWGQOm2dVBjG8f2RafWBHzUTSxAfMNaWnWDge1
+         T4kLO7Cu0iv9CMbxzAmSCdQa+TroyV1uWaCKvWI1X4r4s7ShlphHlNGRk/rGDrhFDC2d
+         PzBuG4r/jk6/4HfvZLgVv5QHRnY5BK5lIfuCyMGWFPEet8GLLnKBhDs9UGxVAeUl4WTX
+         wrZLyidsTZ2ycJS8A5ScovXG5Kz0pAttMP1xaVlQ2qtnQodAVGBcC4sQbkwyUAmdMrp2
+         6BVQ==
+X-Gm-Message-State: AOAM532GAxDYD8eNf75ELQowNYNocR4cg1ZUD2yIcRAh4/17oH9WTDNA
+        xBI/hDK2GbBMP31RDwZu0cXX0DHcbAvY1EtGtVy6S/xLWFXrWaVPXldR4VaGBNhb/JT3DW+OeD5
+        bGcUX5tOE+teM
+X-Received: by 2002:a0c:80e4:: with SMTP id 91mr16314885qvb.57.1637840126481;
+        Thu, 25 Nov 2021 03:35:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwtjxv7gf2/ZabGmh0Tktgq8kJTmAPofpqBlVqjBhx3MmoyMh0V8V72ZwVbddSlIEUUdc/YLA==
+X-Received: by 2002:a0c:80e4:: with SMTP id 91mr16314757qvb.57.1637840125529;
+        Thu, 25 Nov 2021 03:35:25 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id a15sm1391223qtb.5.2021.11.25.03.35.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 03:35:25 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 384411802A0; Thu, 25 Nov 2021 12:35:23 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Joanne Koong <joannekoong@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel <kernel@axis.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] af_unix: fix regression in read after shutdown
-Message-ID: <20211125101007.GA13511@axis.com>
-References: <20211119120521.18813-1-vincent.whitchurch@axis.com>
- <YZ19J+jZrOXxR1oR@unknown>
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 4/4] selftest/bpf/benchs: add bpf_loop
+ benchmark
+In-Reply-To: <5d363ea7-16c6-b8e8-b6ee-11cbe9bf1cf2@fb.com>
+References: <20211123183409.3599979-1-joannekoong@fb.com>
+ <20211123183409.3599979-5-joannekoong@fb.com> <87y25ebry1.fsf@toke.dk>
+ <3eaa1a93-c3f1-830a-b711-117b27102cc5@fb.com> <87r1b5btl0.fsf@toke.dk>
+ <CAEf4BzbB6utDjOJLZzwbBEoAgdO774=PX8O9dWeZJRzM2kdxaQ@mail.gmail.com>
+ <87lf1db4gh.fsf@toke.dk> <5d363ea7-16c6-b8e8-b6ee-11cbe9bf1cf2@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 25 Nov 2021 12:35:23 +0100
+Message-ID: <87ee74bh8k.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YZ19J+jZrOXxR1oR@unknown>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:45:43AM +0100, Cong Wang wrote:
-> On Fri, Nov 19, 2021 at 01:05:21PM +0100, Vincent Whitchurch wrote:
-> > On kernels before v5.15, calling read() on a unix socket after
-> > shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
-> > previously written or EOF.  But now, while read() after
-> > shutdown(SHUT_RD) still behaves the same way, read() after
-> > shutdown(SHUT_RDWR) always fails with -EINVAL.
-> 
-> Maybe just lift the socket tate check in unix_stream_read_generic()?
+Joanne Koong <joannekoong@fb.com> writes:
 
-That would have have handled the specific case of read(2) on
-SOCK_STREAM, but the sk->sk_state is checked in many other places in
-af_unix.c so there would still be userspace-visible behaviour changes in
-several other situations, which could cause regressions.  Just to give
-one such example, the sendfile(2) call in the following program gets
-killed by SIGPIPE on earlier kernels but would now instead start to
-return -ENOTCONN:
+> On 11/24/21 1:59 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>>> On Wed, Nov 24, 2021 at 4:56 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+>>>> Joanne Koong <joannekoong@fb.com> writes:
+>>>>
+>>>>> On 11/23/21 11:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>>>
+>>>>>> Joanne Koong <joannekoong@fb.com> writes:
+>>>>>>
+>>>>>>> Add benchmark to measure the throughput and latency of the bpf_loop
+>>>>>>> call.
+>>>>>>>
+>>>>>>> Testing this on qemu on my dev machine on 1 thread, the data is
+>>>>>>> as follows:
+>>>>>>>
+>>>>>>>           nr_loops: 1
+>>>>>>> bpf_loop - throughput: 43.350 =C2=B1 0.864 M ops/s, latency: 23.068=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 10
+>>>>>>> bpf_loop - throughput: 69.586 =C2=B1 1.722 M ops/s, latency: 14.371=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 100
+>>>>>>> bpf_loop - throughput: 72.046 =C2=B1 1.352 M ops/s, latency: 13.880=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 500
+>>>>>>> bpf_loop - throughput: 71.677 =C2=B1 1.316 M ops/s, latency: 13.951=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 1000
+>>>>>>> bpf_loop - throughput: 69.435 =C2=B1 1.219 M ops/s, latency: 14.402=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 5000
+>>>>>>> bpf_loop - throughput: 72.624 =C2=B1 1.162 M ops/s, latency: 13.770=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 10000
+>>>>>>> bpf_loop - throughput: 75.417 =C2=B1 1.446 M ops/s, latency: 13.260=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 50000
+>>>>>>> bpf_loop - throughput: 77.400 =C2=B1 2.214 M ops/s, latency: 12.920=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 100000
+>>>>>>> bpf_loop - throughput: 78.636 =C2=B1 2.107 M ops/s, latency: 12.717=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 500000
+>>>>>>> bpf_loop - throughput: 76.909 =C2=B1 2.035 M ops/s, latency: 13.002=
+ ns/op
+>>>>>>>
+>>>>>>>           nr_loops: 1000000
+>>>>>>> bpf_loop - throughput: 77.636 =C2=B1 1.748 M ops/s, latency: 12.881=
+ ns/op
+>>>>>>>
+>>>>>>>   From this data, we can see that the latency per loop decreases as=
+ the
+>>>>>>> number of loops increases. On this particular machine, each loop ha=
+d an
+>>>>>>> overhead of about ~13 ns, and we were able to run ~70 million loops
+>>>>>>> per second.
+>>>>>> The latency figures are great, thanks! I assume these numbers are wi=
+th
+>>>>>> retpolines enabled? Otherwise 12ns seems a bit much... Or is this
+>>>>>> because of qemu?
+>>>>> I just tested it on a machine (without retpoline enabled) that runs on
+>>>>> actual
+>>>>> hardware and here is what I found:
+>>>>>
+>>>>>               nr_loops: 1
+>>>>>       bpf_loop - throughput: 46.780 =C2=B1 0.064 M ops/s, latency: 21=
+.377 ns/op
+>>>>>
+>>>>>               nr_loops: 10
+>>>>>       bpf_loop - throughput: 198.519 =C2=B1 0.155 M ops/s, latency: 5=
+.037 ns/op
+>>>>>
+>>>>>               nr_loops: 100
+>>>>>       bpf_loop - throughput: 247.448 =C2=B1 0.305 M ops/s, latency: 4=
+.041 ns/op
+>>>>>
+>>>>>               nr_loops: 500
+>>>>>       bpf_loop - throughput: 260.839 =C2=B1 0.380 M ops/s, latency: 3=
+.834 ns/op
+>>>>>
+>>>>>               nr_loops: 1000
+>>>>>       bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3=
+.805 ns/op
+>>>>>
+>>>>>               nr_loops: 5000
+>>>>>       bpf_loop - throughput: 264.211 =C2=B1 1.508 M ops/s, latency: 3=
+.785 ns/op
+>>>>>
+>>>>>               nr_loops: 10000
+>>>>>       bpf_loop - throughput: 265.366 =C2=B1 3.054 M ops/s, latency: 3=
+.768 ns/op
+>>>>>
+>>>>>               nr_loops: 50000
+>>>>>       bpf_loop - throughput: 235.986 =C2=B1 20.205 M ops/s, latency: =
+4.238 ns/op
+>>>>>
+>>>>>               nr_loops: 100000
+>>>>>       bpf_loop - throughput: 264.482 =C2=B1 0.279 M ops/s, latency: 3=
+.781 ns/op
+>>>>>
+>>>>>               nr_loops: 500000
+>>>>>       bpf_loop - throughput: 309.773 =C2=B1 87.713 M ops/s, latency: =
+3.228 ns/op
+>>>>>
+>>>>>               nr_loops: 1000000
+>>>>>       bpf_loop - throughput: 262.818 =C2=B1 4.143 M ops/s, latency: 3=
+.805 ns/op
+>>>>>
+>>>>> The latency is about ~4ns / loop.
+>>>>>
+>>>>> I will update the commit message in v3 with these new numbers as well.
+>>>> Right, awesome, thank you for the additional test. This is closer to
+>>>> what I would expect: on the hardware I'm usually testing on, a function
+>>>> call takes ~1.5ns, but the difference might just be the hardware, or
+>>>> because these are indirect calls.
+>>>>
+>>>> Another comparison just occurred to me (but it's totally OK if you don=
+'t
+>>>> want to add any more benchmarks):
+>>>>
+>>>> The difference between a program that does:
+>>>>
+>>>> bpf_loop(nr_loops, empty_callback, NULL, 0);
+>>>>
+>>>> and
+>>>>
+>>>> for (i =3D 0; i < nr_loops; i++)
+>>>>    empty_callback();
+>>> You are basically trying to measure the overhead of bpf_loop() helper
+>>> call itself, because other than that it should be identical.
+>> No, I'm trying to measure the difference between the indirect call in
+>> the helper, and the direct call from the BPF program. Should be minor
+>> without retpolines, and somewhat higher where they are enabled...
+>>
+>>> We can estimate that already from the numbers Joanne posted above:
+>>>
+>>>               nr_loops: 1
+>>>        bpf_loop - throughput: 46.780 =C2=B1 0.064 M ops/s, latency: 21.=
+377 ns/op
+>>>               nr_loops: 1000
+>>>        bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3.=
+805 ns/op
+>>>
+>>> nr_loops:1 is bpf_loop() overhead and one static callback call.
+>>> bpf_loop()'s own overhead will be in the ballpark of 21.4 - 3.8 =3D
+>>> 17.6ns. I don't think we need yet another benchmark just for this.
+>> That seems really high, though? The helper is a pretty simple function,
+>> and the call to it should just be JIT'ed into a single regular function
+>> call, right? So why the order-of-magnitude difference?
+> I think the overhead of triggering the bpf program from the userspace
+> benchmarking program is also contributing to this. When nr_loops =3D 1, we
+> have to do the context switch between userspace + kernel per every 1000=20
+> loops;
+> this overhead also contributes to the latency numbers above
 
-#include <err.h>
-#include <errno.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <sys/unistd.h>
-#include <sys/sendfile.h>
-#include <sys/types.h>
-#include <fcntl.h>
+Right okay. But then that data point is not really measuring what it's
+purporting to measure? That's a bit misleading, so maybe better to leave
+it out entirely?
 
-int main(int argc, char *argv[]) {
-  int sock[2];
-  int ret;
+-Toke
 
-  ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
-  if (ret < 0)
-    err(1, "socketpair");
-
-  ret = shutdown(sock[0], SHUT_RDWR);
-  if (ret < 0)
-    err(1, "shutdown");
-
-  ssize_t bytes = sendfile(sock[0], open(argv[0], O_RDONLY), NULL, 16);
-  if (bytes < 0)
-    err(1, "sendfile");
-
-  printf("sendfile %zd bytes\n", bytes);
-
-  return 0;
-}
-
-> > 
-> > This behaviour change was apparently inadvertently introduced as part of
-> > a bug fix for a different regression caused by the commit adding sockmap
-> > support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
-> > unix_stream_proto for sockmap").  Those commits, for unclear reasons,
-> > started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
-> 
-> Not sure why it is unclear here, for an connection oriented socket, it
-> can be closed for just one direction, in this case we want to prevent it
-> from being redirected in sockmap, hence the point of the commits.
-
-I must admit I'm not really familiar with either af_unix.c or sockmap,
-but clearly the existing code in af_unix.c does not expect sk_state to
-be changed in shutdown.  If we want to prevent UNIX sockets which have
-had shutdown(SHUT_RDWR) called on then from being redirect to sockmap,
-then maybe some other flag should be used to achieve that?
-
-(Also, I wonder why the code added by the patch handled SHUT_RDWR
- differently from a SHUT_RD followed by a SHUT_WR?)
-
-> > while this state change had previously only been done in
-> > unix_release_sock().
-> > 
-> > Restore the original behaviour.  The sockmap tests in
-> > tests/selftests/bpf continue to pass after this patch.
-> 
-> Isn't this because we don't have shutdown() in sockmap tests?
-
-That may well be the case, I just assumed that the tests added along
-with the new feature were comprehensive.
