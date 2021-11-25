@@ -2,80 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26D545D64C
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 09:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DB345D701
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 10:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350388AbhKYIjl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 03:39:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352750AbhKYIiM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:38:12 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A018BC061759
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 00:35:01 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id u3so14387294lfl.2
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 00:35:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=ZrLRMGglwSYW/GrbGuymwfxTUNc8BQ+Pt/JJxD1BNmU=;
-        b=WHmHb/Qhr5ypJcaO7+1J/4yNo7wgJHw4zIO3a3ZgePyw7Z8AW2xfqv8apEelnT3/TG
-         9tnjMHtvYpQKZZ2i0bGROOmdNceKAoyGnJ9Myo3NMb7FQgYeXGiVmVI5GYJLLJJLY7d6
-         OUA/bKIybx+a5YA7aUdcqZ/OjM8Ni9zLWs6rW+W3c7l6VRLSF0vnUdwVSCr9UqtHr6Az
-         bp0foC0/dcrori8iTS8l7ZBXWt/GB5BSrcaUG5LTaLwv8+7NGIs9udY7qvw9PxT3YY4F
-         opO6fUMVfPMBNGeVQ4dNIVlgLMBYbQw9rzO22UZyH0fPNmrOUlN7tNBrrye1gGSBpggW
-         EOkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=ZrLRMGglwSYW/GrbGuymwfxTUNc8BQ+Pt/JJxD1BNmU=;
-        b=nWqyv3KfVosjh0XZSTlgY6CCT9FRmz3Pwfn3/6+NVudMbG3AgiLJnj0BGtYRLThnzv
-         ilRnafhYBTeTVFIKkG2OXiheBbSzQva1HuYSVsmze5MRL7X6yM5c5ZedUjjv2nqHv/4x
-         h8jUPqmTTS2PZNY1yhn1plH0ELBlk9GBuyZB6pHW5SqjDJDEc7bTrB+vRC+ZnBLSpnsV
-         lPntjfd+ZWHyVaS7Qy8TO4dOXe9l3gzica8gPTjuzlU5NS/Zvgf58X4t9qcepz8mftPO
-         iBAWuPfZaGQZfqx9OKbALKEahRb6ccB5uiro3xcZDOiXdCAjOyaPMv+EVZMMOMKKOaft
-         bTBg==
-X-Gm-Message-State: AOAM531Ku4wHQt5n6RmrFtCVT4BqeN/ociUzreEMlxTHJ25xQm4an6H1
-        Wy5yNm2FEpEsRtNSGkwqvnCsrt53lG7BZ4lkanulU6p0LRNY4Q==
-X-Google-Smtp-Source: ABdhPJyb+404wve10ngOjtIGSGV9jS47WS2jLhTzkA4Fg15lL/XkRxBZwf83rhPyRZlPwAOFvQ+X98Qh73BLDwwfSEI=
-X-Received: by 2002:a05:6512:3090:: with SMTP id z16mr22350337lfd.335.1637829299834;
- Thu, 25 Nov 2021 00:34:59 -0800 (PST)
+        id S1349336AbhKYJXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 04:23:21 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:54716 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350483AbhKYJVU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Nov 2021 04:21:20 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 648EE1FD37;
+        Thu, 25 Nov 2021 09:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637831888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wwiQDOJPEAtzx84W81WwUuy+jKhgNVXmO5+Woa5hQic=;
+        b=M/Ek+AulDH/wV30n8i89uCsJvOx1LasGO0CEKw1mF3nTtKNvw6GHp/8BcGum68QkcGGe0Y
+        QNtXCVqyOlG6pGGmb6vvn2p2Cod/bdekR9z1FNTtZ93mC7vd9QvrjY4mBgWRpuTF1MGmg5
+        EevC5cXRISLOJ6H5f4vGzbUcE63Et+U=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id F35B4A3B81;
+        Thu, 25 Nov 2021 09:18:07 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 10:18:07 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2] kthread: dynamically allocate memory to store
+ kthread's full name
+Message-ID: <YZ9Uz3m42lfNR9pf@alley>
+References: <20211120112850.46047-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-From:   Yahui Chen <goodluckwillcomesoon@gmail.com>
-Date:   Thu, 25 Nov 2021 16:34:48 +0800
-Message-ID: <CAPydje8FKWzRCR33RanGZkucavFZNb2zSGhfQdrd49Uvgc2YxQ@mail.gmail.com>
-Subject: can add a new bpf helper function bpf_map_compare_and_update_elem?
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Cc:     zhangwei123171@jd.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211120112850.46047-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Suppose we have a map, MAP_A, and the user program does the following:
+On Sat 2021-11-20 11:28:50, Yafang Shao wrote:
+> When I was implementing a new per-cpu kthread cfs_migration, I found the
+> comm of it "cfs_migration/%u" is truncated due to the limitation of
+> TASK_COMM_LEN.
+> 
+> One possible way to fix this issue is extending the task comm size, but
+> as task->comm is used in lots of places, that may cause some potential
+> buffer overflows. Another more conservative approach is introducing a new
+> pointer to store kthread's full name if it is truncated, which won't
+> introduce too much overhead as it is in the non-critical path. Finally we
+> make a dicision to use the second approach. See also the discussions in
+> this thread:
+> https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
+> 
+> After this change, the full name of these truncated kthreads will be
+> displayed via /proc/[pid]/comm:
 
-1. bpf_map_lookup_elem(MAP_A, key, value)
-2. change the value
-3. bpf_map_update_elem(MAP_A, key, value, FLAG)
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-At the same time, the kernel's BPF program may also be modifying the value.
+Looks good to me:
 
-Then we have concurrency problems.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Therefore, can we add a helper function like compare and swap?
-
-Let's call it bpf_map_compare_and_update_elem.
-
-So, the map operations will be modified as follows:
-
-for true {
-    1. bpf_map_lookup_elem(MAP_A, key, old_value)
-    2. change value
-    3. ret = bpf_map_compare_and_update_elem(MAP_A, key, old_value,
-new_value, FLAG)
-    4. if ret == 0 { break }
-}
-
-
-thank you
+Best Regards,
+Petr
