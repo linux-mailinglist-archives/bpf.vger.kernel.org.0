@@ -2,83 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DB345D701
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 10:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCE745D793
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 10:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349336AbhKYJXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 04:23:21 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:54716 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350483AbhKYJVU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:21:20 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 648EE1FD37;
-        Thu, 25 Nov 2021 09:18:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637831888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wwiQDOJPEAtzx84W81WwUuy+jKhgNVXmO5+Woa5hQic=;
-        b=M/Ek+AulDH/wV30n8i89uCsJvOx1LasGO0CEKw1mF3nTtKNvw6GHp/8BcGum68QkcGGe0Y
-        QNtXCVqyOlG6pGGmb6vvn2p2Cod/bdekR9z1FNTtZ93mC7vd9QvrjY4mBgWRpuTF1MGmg5
-        EevC5cXRISLOJ6H5f4vGzbUcE63Et+U=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1354119AbhKYJwm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 04:52:42 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:55683 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348015AbhKYJum (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Nov 2021 04:50:42 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F35B4A3B81;
-        Thu, 25 Nov 2021 09:18:07 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 10:18:07 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v2] kthread: dynamically allocate memory to store
- kthread's full name
-Message-ID: <YZ9Uz3m42lfNR9pf@alley>
-References: <20211120112850.46047-1-laoar.shao@gmail.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J0Chx2Xtwz4xcb;
+        Thu, 25 Nov 2021 20:47:29 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     ast@kernel.org, daniel@iogearbox.net, naveen.n.rao@linux.ibm.com,
+        mpe@ellerman.id.au, christophe.leroy@csgroup.eu,
+        Hari Bathini <hbathini@linux.ibm.com>
+Cc:     songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, paulus@samba.org,
+        kpsingh@kernel.org, kafai@fb.com, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20211012123056.485795-1-hbathini@linux.ibm.com>
+References: <20211012123056.485795-1-hbathini@linux.ibm.com>
+Subject: Re: [RESEND PATCH v4 0/8] bpf powerpc: Add BPF_PROBE_MEM support in powerpc JIT compiler
+Message-Id: <163783298812.1228879.148537426457628310.b4-ty@ellerman.id.au>
+Date:   Thu, 25 Nov 2021 20:36:28 +1100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211120112850.46047-1-laoar.shao@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat 2021-11-20 11:28:50, Yafang Shao wrote:
-> When I was implementing a new per-cpu kthread cfs_migration, I found the
-> comm of it "cfs_migration/%u" is truncated due to the limitation of
-> TASK_COMM_LEN.
+On Tue, 12 Oct 2021 18:00:48 +0530, Hari Bathini wrote:
+> Patch #1 & #2 are simple cleanup patches. Patch #3 refactors JIT
+> compiler code with the aim to simplify adding BPF_PROBE_MEM support.
+> Patch #4 introduces PPC_RAW_BRANCH() macro instead of open coding
+> branch instruction. Patch #5 & #7 add BPF_PROBE_MEM support for PPC64
+> & PPC32 JIT compilers respectively. Patch #6 & #8 handle bad userspace
+> pointers for PPC64 & PPC32 cases respectively.
 > 
-> One possible way to fix this issue is extending the task comm size, but
-> as task->comm is used in lots of places, that may cause some potential
-> buffer overflows. Another more conservative approach is introducing a new
-> pointer to store kthread's full name if it is truncated, which won't
-> introduce too much overhead as it is in the non-critical path. Finally we
-> make a dicision to use the second approach. See also the discussions in
-> this thread:
-> https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
-> 
-> After this change, the full name of these truncated kthreads will be
-> displayed via /proc/[pid]/comm:
+> [...]
 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Applied to powerpc/next.
 
-Looks good to me:
+[1/8] bpf powerpc: Remove unused SEEN_STACK
+      https://git.kernel.org/powerpc/c/c9ce7c36e4870bd307101ba7a00a39d9aad270f3
+[2/8] bpf powerpc: Remove extra_pass from bpf_jit_build_body()
+      https://git.kernel.org/powerpc/c/04c04205bc35d0ecdc57146995ca9eb957d4f379
+[3/8] bpf powerpc: refactor JIT compiler code
+      https://git.kernel.org/powerpc/c/efa95f031bf38c85cf865413335a3dc044e3194e
+[4/8] powerpc/ppc-opcode: introduce PPC_RAW_BRANCH() macro
+      https://git.kernel.org/powerpc/c/f15a71b3880bf07b40810644e5ac6f177c2a7c8f
+[5/8] bpf ppc64: Add BPF_PROBE_MEM support for JIT
+      https://git.kernel.org/powerpc/c/983bdc0245a29cdefcd30d9d484d3edbc4b6d787
+[6/8] bpf ppc64: Access only if addr is kernel address
+      https://git.kernel.org/powerpc/c/9c70c7147ffec31de67d33243570a533b29f9759
+[7/8] bpf ppc32: Add BPF_PROBE_MEM support for JIT
+      https://git.kernel.org/powerpc/c/23b51916ee129833453d8a3d6bde0ff392f82fce
+[8/8] bpf ppc32: Access only if addr is kernel address
+      https://git.kernel.org/powerpc/c/e919c0b2323bedec00e1ecc6280498ff81f59b15
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+cheers
