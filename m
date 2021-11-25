@@ -2,84 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E794945DCF1
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 16:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9347245DE6F
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 17:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236929AbhKYPMe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 10:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        id S234707AbhKYQQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 11:16:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237385AbhKYPL1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:11:27 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB1C06173E
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 07:08:11 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id iq11so5365281pjb.3
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 07:08:11 -0800 (PST)
+        with ESMTP id S233537AbhKYQOv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Nov 2021 11:14:51 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC30AC061A3F
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 07:59:17 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id m24so4842966pls.10
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 07:59:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=W6HF8+a6zTsY4rv6PtkRLbmbCGOOj5493cLaXYHrusE=;
-        b=Ajmom/1AzdigEGWWhHDIG4VO2TsgIXvrXl0I1Dl3OpkwCBU5I3QBjANSLv7h5n6sgf
-         YkHMvdvzSeJO6Ojy/llSOrZNleFiiICLB5wnrovpO/YB+FBwRh5MbgGjQuHUEzbyK9k3
-         8h5tCoNm6PWa/l0Q8jjdrak5oW7mqaiy1c/H3b2KGzDNbftw+42Dh38uB4h2Mfw+r2RL
-         81b1jj9Upyi3lfwk4UkAo4nRdQo/DItNNt05+TD+C6oycCEgCD6076GOYunTyH+udC/7
-         2c99oSXFLzvQY8OQhmgEt8idwaSrGd6cyWEH8HMSV/H8S/rDUeCWw9uhGxvNiINIPZcd
-         7s7w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IVT/h/b1JxXgPsghZbme6MV/FB5PifGmFBJ6WbiXN8U=;
+        b=mBA310ouSV2pzyNALCaaR62JWArRGnIAL5pcXXyHshM6yx1Lpf0y0mbWaFTCAay2fd
+         NKGvOgd18u46/e/rR9P6TCUZShhKCrW+/4UG4BCMqOubFV6vHl0ontxZ/1Rg67TECkrD
+         IgMnEyRLxM/k0PnSaEslQLsLZabeFAupFkvlX92JVFeXS8+au/b9UGMsLuilFT4GuX8Q
+         geM+OXizmPRk+fVgX0nMPZHY34Buw+3VgZ+SF9aXmdboVBcvSneGF9K4JXGenQ1KcLAK
+         ThmB0KdzHCEE91f59JPQUZr2l8aKevpW75sMt6ud2LaDdWoX5WeKnFfQCC1IMmxidDBZ
+         uYNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=W6HF8+a6zTsY4rv6PtkRLbmbCGOOj5493cLaXYHrusE=;
-        b=ZWpep9rOYX09d85II2n0E0OcXCWTs3lZsPMDzrov9g7fTD0dxD2D0UsfhgmU7x4lSW
-         QExI8QXG/OiZ0qkAknRsf/XQoLwdU1MWGA7QOdTpa/nGG9M3HKfhMtMqyIF8jD68dSvN
-         nKSzAwrooEFkjnElhzhAkd4Rsj5T8sljV28eemc4NxEzQMtTdGO6z56k9/0kuPhRQTG9
-         akOoHr2aoiThdYMisrPp6cs5hzCScke83Jnnj9VX3XMqUZrqFGDQi1fqHRnA4dfkCED5
-         JaQj3MUd8AOLWaCNDpZ0c6dS1TaDzt0cgitl9LdClMU7O46Kp2k6oMLyPI+0MzxS+RUJ
-         hR3A==
-X-Gm-Message-State: AOAM533T7HVd4Ay4l8S+PGX8poa6ldjUM+7jOuXvJ4PQvNmN0xzvCZbk
-        ObKSyIJBQvr7yQ0KJyvVmeRQWugY9EVqgI1xwjc=
-X-Google-Smtp-Source: ABdhPJxUZW2DkzumqzOpjeBgQS4oEKImNh4p+pN92wXNqbg43qUovEN14HOyMewbLcCIwk+uKVsqO6wmmJaNba44dY8=
-X-Received: by 2002:a17:90b:1bcf:: with SMTP id oa15mr7835028pjb.161.1637852890536;
- Thu, 25 Nov 2021 07:08:10 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IVT/h/b1JxXgPsghZbme6MV/FB5PifGmFBJ6WbiXN8U=;
+        b=my1BOxw6k8u+eN1PgtpSwIVmERnJQ67Mnf0ah/8PVAKa4L+EfYcQPB3/Bnp40hLzn9
+         IzHtzMyZbvTC8+Cei0nzzlq3Sr+lOna0BtL7pq68OszWHvmpJVYZxCZCpIDcoVyYoXqi
+         rajdv8qsh2RQEB8+zd1C0RWg/xcvf5jd315Ovp/y6iCqY061lZtebwaDyzqXrPDSAttS
+         Mzxwdh6ZcFvRrLcAGtIYVpS/Du33yX6hIe17ZCqILe4zovAnQ8cOAMwChNoOcGzyDpQ4
+         i473tECihbpKxejyNiZjHrcpEmdLHiiCl16RYVxr34cF6wBjAooqfwUsn1zH/xGrg5TS
+         jp2g==
+X-Gm-Message-State: AOAM532983iHBi3cD+7Z/5AEGtTgefm2KYzi9XUXd7MXuI/q7MVYDCfZ
+        osztXu5C5srZZRrJIWP5pgIH0uVo2EPoMcGxvZs=
+X-Google-Smtp-Source: ABdhPJzOI5UrU+4xlknefr2amNHx+hymVWs98IjoAUyQ3buD1ZmrzUhLA2BNeP7CTsdNj4hQXTC79ApGINK3CsXxdnA=
+X-Received: by 2002:a17:902:b588:b0:143:b732:834 with SMTP id
+ a8-20020a170902b58800b00143b7320834mr30907940pls.22.1637855957399; Thu, 25
+ Nov 2021 07:59:17 -0800 (PST)
 MIME-Version: 1.0
-Sender: hgjfjdjxhggfrudbdhx@gmail.com
-Received: by 2002:a05:6a10:cc9d:0:0:0:0 with HTTP; Thu, 25 Nov 2021 07:08:10
- -0800 (PST)
-From:   Mrs Carlsen monika <carlsen.monika@gmail.com>
-Date:   Thu, 25 Nov 2021 16:08:10 +0100
-X-Google-Sender-Auth: uMRK61WWXtw9JtsxYccQ121Do6M
-Message-ID: <CAKX3iPoPHkneozuvmeb=H9zLGGFw61VuOHAJJ5Th8KqL7V7CFA@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
+References: <20211120165528.197359-1-kuba@kernel.org> <CAPhsuW4g1PhdczQh=iqDR_CzB=6FoM4QPF9DmknEP0hZ_Ac3TA@mail.gmail.com>
+ <d4c52f8f-7efb-3d2a-8f2e-c983cd0c8cce@arm.com> <CAPhsuW6CMBymKpOMdL-bianESBLfbKa5JwmFypKL3dx4k0rmSQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW6CMBymKpOMdL-bianESBLfbKa5JwmFypKL3dx4k0rmSQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 25 Nov 2021 08:59:06 -0700
+Message-ID: <CAADnVQ+2kPhfG_DOrYpibDfs-COC5AHyKEDbqPNWnPhLhrV=uA@mail.gmail.com>
+Subject: Re: [PATCH bpf] cacheinfo: move get_cpu_cacheinfo_id() back out
+To:     Song Liu <song@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, reinette.chatre@intel.com,
+        bpf <bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-  I sent this mail praying it will found you in a good condition of
-health,since I myself are in a very critical health condition in which
-I sleep every night without knowing if I may be alive to see the next
-day.I'm Mrs.Monika John Carlsen,wife of late Mr John Carlsen, a widow
-suffering from long time illness. I have some funds I inherited from
-my late husband,the sum of($11.000.000,eleven million dollars)my
-Doctor told me recently that I have serious sickness  which is cancer
-problem. What disturbs me most is my stroke sickness.Having known my
-condition, I decided to donate this fund to a good person that will
-utilize it the way i am going to instruct herein.I need a very honest
-and God fearing person who can claim this money and use it for Charity
-works,for orphanages,widows and also build schools for less privileges
-that will be named after my late husband if possible and to promote
-the word of God and the effort that the house of God is maintained.
+On Wed, Nov 24, 2021 at 1:14 AM Song Liu <song@kernel.org> wrote:
+>
+> On Tue, Nov 23, 2021 at 8:49 AM James Morse <james.morse@arm.com> wrote:
+> >
+> > Hello,
+> >
+> > On 23/11/2021 17:45, Song Liu wrote:
+> > > On Sat, Nov 20, 2021 at 6:55 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > >>
+> > >> This commit more or less reverts commit 709c4362725a ("cacheinfo:
+> > >> Move resctrl's get_cache_id() to the cacheinfo header file").
+> > >>
+> > >> There are no users of the static inline helper outside of resctrl/core.c
+> > >> and cpu.h is a pretty heavy include, it pulls in device.h etc. This
+> > >> trips up architectures like riscv which want to access cacheinfo
+> > >> in low level headers like elf.h.
+> > >>
+> > >> Link: https://lore.kernel.org/all/20211120035253.72074-1-kuba@kernel.org/
+> > >> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > >> ---
+> >
+> > >> x86 resctrl folks, does this look okay?
+> > >>
+> > >> I'd like to do some bpf header cleanups in -next which this is blocking.
+> > >> How would you like to handle that? This change looks entirely harmless,
+> > >> can I get an ack and take this via bpf/netdev to Linus ASAP so it
+> > >> propagates to all trees?
+> > >
+> > > Does this patch target the bpf tree, or the bpf-next tree? If we want to unblock
+> > > bpf header cleanup in -next, we can simply include it in a set for bpf-next.
+> >
+> >
+> > Some background: this is part of the mpam tree that wires up resctrl for arm64. This patch
+> > floated to the top and got merged with some cleanup as it was independent of the wider
+> > resctrl changes.
+> >
+> > If the cpu.h include is the problem, I can't see what that is needed for. It almost
+> > certainly came in with a lockdep annotation that got replaced by a comment instead.
+>
+> Thanks for the information.
+>
+> I can ack the patch for the patch itself.
+>
+> Acked-by: Song Liu <songliubraving@fb.com>
+>
+> But I am not sure whether we should ship it via bpf tree. It seems to
+> me that the
+> only reason we ship it via bpf tree is to get it to upstream ASAP?
+>
+> Alexei/Daniel/Andrii, what do you think about this?
 
-I do not want a situation where this money will be used in an ungodly
-manner. That's why I'm taking this decision. I'm not afraid of death
-so I know where I'm going. I accept this decision because I do not
-have any child who will inherit this money after I die. Please I want
-your sincerely and urgent answer to know if you will be able to
-execute this project, and I will give you more information on how the
-fund will be transferred to your bank account. I am waiting for your
-reply.
-
-Best Regards,
-Mrs.Monika John Carlsen
+I don't completely understand why it cannot go via -next along
+with other patches, but if Jakub needs it asap here is my
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+and probably the fastest is for Jakub to take it via net tree directly.
