@@ -2,164 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD9245DCA9
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 15:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E794945DCF1
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 16:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349901AbhKYOwU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 09:52:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22248 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1355921AbhKYOuU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Nov 2021 09:50:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637851628;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r0YfT7b8wVOeig/3+IUDAZI2A/DKcXL2UWIWBuICztQ=;
-        b=ej9W3Fbf/IUcF9HbEuPoaqklwj3tyoT4a5DQQfJ+2UwZUs/c+3qa4sklIhVj5s+gA/Nvrf
-        fhN0bk1hIe0S8/Z5Z2AkqAdOiPPUTo2EWJFC/yl/IOFf60vMMKRjUZw6MOxjrpSQZ0CGW6
-        BwXdiuk7fA6WQGi7h++Sb9A/2d1dKZg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-348-puaTqF-HPLynKxlt5HNPpA-1; Thu, 25 Nov 2021 09:47:07 -0500
-X-MC-Unique: puaTqF-HPLynKxlt5HNPpA-1
-Received: by mail-wm1-f70.google.com with SMTP id z138-20020a1c7e90000000b003319c5f9164so5085154wmc.7
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 06:47:07 -0800 (PST)
+        id S236929AbhKYPMe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 10:12:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237385AbhKYPL1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:11:27 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB1C06173E
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 07:08:11 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id iq11so5365281pjb.3
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 07:08:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=W6HF8+a6zTsY4rv6PtkRLbmbCGOOj5493cLaXYHrusE=;
+        b=Ajmom/1AzdigEGWWhHDIG4VO2TsgIXvrXl0I1Dl3OpkwCBU5I3QBjANSLv7h5n6sgf
+         YkHMvdvzSeJO6Ojy/llSOrZNleFiiICLB5wnrovpO/YB+FBwRh5MbgGjQuHUEzbyK9k3
+         8h5tCoNm6PWa/l0Q8jjdrak5oW7mqaiy1c/H3b2KGzDNbftw+42Dh38uB4h2Mfw+r2RL
+         81b1jj9Upyi3lfwk4UkAo4nRdQo/DItNNt05+TD+C6oycCEgCD6076GOYunTyH+udC/7
+         2c99oSXFLzvQY8OQhmgEt8idwaSrGd6cyWEH8HMSV/H8S/rDUeCWw9uhGxvNiINIPZcd
+         7s7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=r0YfT7b8wVOeig/3+IUDAZI2A/DKcXL2UWIWBuICztQ=;
-        b=dJdk9bfZQTX55gMrVKSfiV6+ulM6/O686xiGNRqa4lLonIQERFKehYlV6R5bXIYXbr
-         hMgiAGOgPiBv51zzW8f7gCQRpzcwcGKFHt7AxyP2dT4SqzuhTf01W8BiPrACBSMD7thI
-         dYD1MSSeS3EB+4o1xAEcGvLwaSQt/EA3tMo9jJM0u9WUUG+/iNbSix+uCBFMSPy4ovPo
-         gEoWgRysQ0hnPfu0t9j9xJbbco8Rk5VGElRUZRfuau9ldEJyQWBlH8on/UfNhLlIlv+7
-         cuMb8dNRxSKTMLbYIgdDb4C7qEjAYtxhTy2UD+xw+mpD8qnX/s/p3JIPdILWApDtOMfc
-         W6iA==
-X-Gm-Message-State: AOAM530XHwcuTOsUC5UUWbAmx3EfYnnFoesqDvOM9erm+HmziqhjkPR2
-        +d2RGWidRMfxOOVnFQBvE4ynqmVnRkgNyd/RUedLiJRzwzrTz3ccwjgm2loCUj+xVvnnhL4EQgB
-        c2gEtKmqo+WUA
-X-Received: by 2002:a7b:c763:: with SMTP id x3mr7962968wmk.31.1637851626023;
-        Thu, 25 Nov 2021 06:47:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwWw5wfsPq7LRSM9hRLSA4XFFZZK0hqXGaWJlTIAPX0085VuaF1bzZGOZEdl44rHrNuL6HnNg==
-X-Received: by 2002:a7b:c763:: with SMTP id x3mr7962942wmk.31.1637851625817;
-        Thu, 25 Nov 2021 06:47:05 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c679e.dip0.t-ipconnect.de. [91.12.103.158])
-        by smtp.gmail.com with ESMTPSA id be3sm9930088wmb.1.2021.11.25.06.47.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 06:47:05 -0800 (PST)
-Message-ID: <68615778-08cc-6216-1def-764dff112a72@redhat.com>
-Date:   Thu, 25 Nov 2021 15:47:04 +0100
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=W6HF8+a6zTsY4rv6PtkRLbmbCGOOj5493cLaXYHrusE=;
+        b=ZWpep9rOYX09d85II2n0E0OcXCWTs3lZsPMDzrov9g7fTD0dxD2D0UsfhgmU7x4lSW
+         QExI8QXG/OiZ0qkAknRsf/XQoLwdU1MWGA7QOdTpa/nGG9M3HKfhMtMqyIF8jD68dSvN
+         nKSzAwrooEFkjnElhzhAkd4Rsj5T8sljV28eemc4NxEzQMtTdGO6z56k9/0kuPhRQTG9
+         akOoHr2aoiThdYMisrPp6cs5hzCScke83Jnnj9VX3XMqUZrqFGDQi1fqHRnA4dfkCED5
+         JaQj3MUd8AOLWaCNDpZ0c6dS1TaDzt0cgitl9LdClMU7O46Kp2k6oMLyPI+0MzxS+RUJ
+         hR3A==
+X-Gm-Message-State: AOAM533T7HVd4Ay4l8S+PGX8poa6ldjUM+7jOuXvJ4PQvNmN0xzvCZbk
+        ObKSyIJBQvr7yQ0KJyvVmeRQWugY9EVqgI1xwjc=
+X-Google-Smtp-Source: ABdhPJxUZW2DkzumqzOpjeBgQS4oEKImNh4p+pN92wXNqbg43qUovEN14HOyMewbLcCIwk+uKVsqO6wmmJaNba44dY8=
+X-Received: by 2002:a17:90b:1bcf:: with SMTP id oa15mr7835028pjb.161.1637852890536;
+ Thu, 25 Nov 2021 07:08:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] kthread: dynamically allocate memory to store
- kthread's full name
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <20211120112850.46047-1-laoar.shao@gmail.com>
- <435fab0b-d345-3698-79af-ff858181666a@redhat.com> <YZ+hsx52TyDuHvE1@alley>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YZ+hsx52TyDuHvE1@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Sender: hgjfjdjxhggfrudbdhx@gmail.com
+Received: by 2002:a05:6a10:cc9d:0:0:0:0 with HTTP; Thu, 25 Nov 2021 07:08:10
+ -0800 (PST)
+From:   Mrs Carlsen monika <carlsen.monika@gmail.com>
+Date:   Thu, 25 Nov 2021 16:08:10 +0100
+X-Google-Sender-Auth: uMRK61WWXtw9JtsxYccQ121Do6M
+Message-ID: <CAKX3iPoPHkneozuvmeb=H9zLGGFw61VuOHAJJ5Th8KqL7V7CFA@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 25.11.21 15:46, Petr Mladek wrote:
-> On Thu 2021-11-25 10:36:49, David Hildenbrand wrote:
->> On 20.11.21 12:28, Yafang Shao wrote:
->>> When I was implementing a new per-cpu kthread cfs_migration, I found the
->>> comm of it "cfs_migration/%u" is truncated due to the limitation of
->>> TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
->>> all with the same name "cfs_migration/1", which will confuse the user. This
->>> issue is not critical, because we can get the corresponding CPU from the
->>> task's Cpus_allowed. But for kthreads correspoinding to other hardware
->>> devices, it is not easy to get the detailed device info from task comm,
->>> for example,
->>>
->>>     jbd2/nvme0n1p2-
->>>     xfs-reclaim/sdf
->>>
->>> Currently there are so many truncated kthreads:
->>>
->>>     rcu_tasks_kthre
->>>     rcu_tasks_rude_
->>>     rcu_tasks_trace
->>>     poll_mpt3sas0_s
->>>     ext4-rsv-conver
->>>     xfs-reclaim/sd{a, b, c, ...}
->>>     xfs-blockgc/sd{a, b, c, ...}
->>>     xfs-inodegc/sd{a, b, c, ...}
->>>     audit_send_repl
->>>     ecryptfs-kthrea
->>>     vfio-irqfd-clea
->>>     jbd2/nvme0n1p2-
->>>     ...
->>>
->>> We can shorten these names to work around this problem, but it may be
->>> not applied to all of the truncated kthreads. Take 'jbd2/nvme0n1p2-' for
->>> example, it is a nice name, and it is not a good idea to shorten it.
->>>
->>> One possible way to fix this issue is extending the task comm size, but
->>> as task->comm is used in lots of places, that may cause some potential
->>> buffer overflows. Another more conservative approach is introducing a new
->>> pointer to store kthread's full name if it is truncated, which won't
->>> introduce too much overhead as it is in the non-critical path. Finally we
->>> make a dicision to use the second approach. See also the discussions in
->>> this thread:
->>> https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
->>>
->>> After this change, the full name of these truncated kthreads will be
->>> displayed via /proc/[pid]/comm:
->>>
->>>     rcu_tasks_kthread
->>>     rcu_tasks_rude_kthread
->>>     rcu_tasks_trace_kthread
->>>     poll_mpt3sas0_statu
->>>     ext4-rsv-conversion
->>>     xfs-reclaim/sdf1
->>>     xfs-blockgc/sdf1
->>>     xfs-inodegc/sdf1
->>>     audit_send_reply
->>>     ecryptfs-kthread
->>>     vfio-irqfd-cleanup
->>>     jbd2/nvme0n1p2-8
->>
->> I do wonder if that could break some user space that assumes these names
->> have maximum length ..
-> 
-> There is high chance that we will be on the safe side. Workqueue
-> kthreads already provided longer names. They are even dynamic
-> because the currently handled workqueue name is part of the name,
-> see wq_worker_comm().
+  I sent this mail praying it will found you in a good condition of
+health,since I myself are in a very critical health condition in which
+I sleep every night without knowing if I may be alive to see the next
+day.I'm Mrs.Monika John Carlsen,wife of late Mr John Carlsen, a widow
+suffering from long time illness. I have some funds I inherited from
+my late husband,the sum of($11.000.000,eleven million dollars)my
+Doctor told me recently that I have serious sickness  which is cancer
+problem. What disturbs me most is my stroke sickness.Having known my
+condition, I decided to donate this fund to a good person that will
+utilize it the way i am going to instruct herein.I need a very honest
+and God fearing person who can claim this money and use it for Charity
+works,for orphanages,widows and also build schools for less privileges
+that will be named after my late husband if possible and to promote
+the word of God and the effort that the house of God is maintained.
 
-Great, thanks!
+I do not want a situation where this money will be used in an ungodly
+manner. That's why I'm taking this decision. I'm not afraid of death
+so I know where I'm going. I accept this decision because I do not
+have any child who will inherit this money after I die. Please I want
+your sincerely and urgent answer to know if you will be able to
+execute this project, and I will give you more information on how the
+fund will be transferred to your bank account. I am waiting for your
+reply.
 
-
--- 
-Thanks,
-
-David / dhildenb
-
+Best Regards,
+Mrs.Monika John Carlsen
