@@ -2,70 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47FE45E192
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 21:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF6145E1C6
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 21:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbhKYUb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 15:31:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350097AbhKYU34 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:29:56 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3343EC0613F1
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 12:24:42 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id e144so8897176iof.3
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 12:24:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=do0Xbn6HilLuW8HOVUEAMlULKqOM9wL8+/0bws2l460=;
-        b=OZhqmZjTwS8xYGPaPKfYwk80vh+ghSTu5jwEheqVJN3PYV3F67dDUnqwb8lznVM1wX
-         Ctqf+h4fGz61D/Pzsi0JWbuID201vYxW5G5+ySfj/KCRGCKfblhp+6R6CtDkd468ThcG
-         u41lsLWDiieSgi+IcgAE0m+38Z39NcOfUA3MloC02FHUhKwE0KM7BqnyH97vSsh5B8rg
-         RMjbCm9zfi4ocPFJ495/u7tHBVfGHTbXOllFHsBn3OPuBoGAqBFmGQo0utYWTZPssqzc
-         nh4GaCQsd9Wcte/a+rFMqgxr9tuOmxd5mSQgl+AOKiJXPDSyH9v47ep0jlwaOGZlsMOB
-         IA4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=do0Xbn6HilLuW8HOVUEAMlULKqOM9wL8+/0bws2l460=;
-        b=E/FAujvLsjq5dKUjbKy0bCzQRH1FHRyIad8E65wy8ugnMeJC/RmxELzb5RJJfIAhT2
-         phem7cANyqOOO1JRObADUWT7OR23VGG7wgT0ULqtGKKz7/0QLvVIMId13/P5JjccBHx2
-         cJ6vdBi80xS1SPoC+hQI+SqOhT+Md00SlR6d1BFzQ49XklLu+T5bTkn6N2e78C70bpNC
-         xAIjIPfXcuWb77F+obaDPq0oxBrFdVRZOQZkuXXhOk39NHOIlOTqkWQOXsAHcq6odNSY
-         iICGB1VSO8ZJYC38qq0dhddaUXnO2xqVfjqUD7pC/8faYwtdvELM4Tod6ngZNjG2xu+6
-         H0BQ==
-X-Gm-Message-State: AOAM531B7vY+gmpTdTRjN4np2EtCXgAXhBkLiVbKovn/6xhS+nwitsaq
-        6hHsGOp39kwRCkxJDjEkH8/O8Eoamxm9dI1U/Lg=
-X-Google-Smtp-Source: ABdhPJxO/CchyzxY9ONCH6Bi9P73Cx6SJAq/FFsty1lrqqqP+q5fFgJ3LC++42J0Vibk1wvKK5BiZ1SX9atYmuof6p8=
-X-Received: by 2002:a02:a11d:: with SMTP id f29mr31786565jag.78.1637871880898;
- Thu, 25 Nov 2021 12:24:40 -0800 (PST)
+        id S242697AbhKYUrk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 15:47:40 -0500
+Received: from mga01.intel.com ([192.55.52.88]:61986 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237103AbhKYUpk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Nov 2021 15:45:40 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="259465349"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="259465349"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 12:40:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="554722254"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Nov 2021 12:40:31 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1APKeSEZ023254;
+        Thu, 25 Nov 2021 20:40:28 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic per-channel statistics
+Date:   Thu, 25 Nov 2021 21:40:07 +0100
+Message-Id: <20211125204007.133064-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com> <20211123163955.154512-22-alexandr.lobakin@intel.com> <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net> <87bl28bga6.fsf@toke.dk> <20211125170708.127323-1-alexandr.lobakin@intel.com> <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Received: by 2002:a5e:a80c:0:0:0:0:0 with HTTP; Thu, 25 Nov 2021 12:24:39
- -0800 (PST)
-Reply-To: justinseydou@gmail.com
-From:   Justin Seydou <felixfernando.6500@gmail.com>
-Date:   Thu, 25 Nov 2021 21:24:39 +0100
-Message-ID: <CAA6riO1W_tQc-iuJ2f0u+hOty1yynBZcbyp1S4u74U+s8rXDTA@mail.gmail.com>
-Subject: Proposal
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear friend,
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Thu, 25 Nov 2021 09:44:40 -0800
 
-With much sincerity of heart I write to inform you about a business
-proposal I have which I would like to handle with you.
+> On Thu, 25 Nov 2021 18:07:08 +0100 Alexander Lobakin wrote:
+> > > This I agree with, and while I can see the layering argument for putting
+> > > them into 'ip' and rtnetlink instead of ethtool, I also worry that these
+> > > counters will simply be lost in obscurity, so I do wonder if it wouldn't
+> > > be better to accept the "layering violation" and keeping them all in the
+> > > 'ethtool -S' output?  
+> > 
+> > I don't think we should harm the code and the logics in favor of
+> > 'some of the users can face something'. We don't control anything
+> > related to XDP using Ethtool at all, but there is some XDP-related
+> > stuff inside iproute2 code, so for me it's even more intuitive to
+> > have them there.
+> > Jakub, may be you'd like to add something at this point?
+> 
+> TBH I wasn't following this thread too closely since I saw Daniel
+> nacked it already. I do prefer rtnl xstats, I'd just report them 
+> in -s if they are non-zero. But doesn't sound like we have an agreement
+> whether they should exist or not.
 
-Kindly indicate your interest so as to enable
-me give you more details of the proposal.
+Right, just -s is fine, if we drop the per-channel approach.
 
-Waiting for your response.
+> Can we think of an approach which would make cloudflare and cilium
+> happy? Feels like we're trying to make the slightly hypothetical 
+> admin happy while ignoring objections of very real users.
 
-Yours faithfully,
+The initial idea was to only uniform the drivers. But in general
+you are right, 10 drivers having something doesn't mean it's
+something good.
 
-Mr.Justin Seydou.
+Maciej, I think you were talking about Cilium asking for those stats
+in Intel drivers? Could you maybe provide their exact usecases/needs
+so I'll orient myself? I certainly remember about XSK Tx packets and
+bytes.
+And speaking of XSK Tx, we have per-socket stats, isn't that enough?
+
+> > > > +  xdp-channel0-rx_xdp_redirect: 7
+> > > > +  xdp-channel0-rx_xdp_redirect_errors: 8
+> > > > +  xdp-channel0-rx_xdp_tx: 9
+> > > > +  xdp-channel0-rx_xdp_tx_errors: 10
+> > > > +  xdp-channel0-tx_xdp_xmit_packets: 11
+> > > > +  xdp-channel0-tx_xdp_xmit_bytes: 12
+> > > > +  xdp-channel0-tx_xdp_xmit_errors: 13
+> > > > +  xdp-channel0-tx_xdp_xmit_full: 14
+> 
+> Please leave the per-channel stats out. They make a precedent for
+> channel stats which should be an attribute of a channel. Working for 
+> a large XDP user for a couple of years now I can tell you from my own
+> experience I've not once found them useful. In fact per-queue stats are
+> a major PITA as they crowd the output.
+
+Oh okay. My very first iterations were without this, but then I
+found most of the drivers expose their XDP stats per-channel. Since
+I didn't plan to degrade the functionality, they went that way.
+
+Al
