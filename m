@@ -2,167 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F63545D277
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 02:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDD145D29B
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 02:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347737AbhKYBlY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Nov 2021 20:41:24 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:50660 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234909AbhKYBjX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:39:23 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx+NGI6J5hPTQBAA--.2223S2;
-        Thu, 25 Nov 2021 09:36:08 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] bpf, mips: Fix build errors about __NR_bpf undeclared
-Date:   Thu, 25 Nov 2021 09:36:07 +0800
-Message-Id: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
+        id S234788AbhKYBw5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Nov 2021 20:52:57 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:37614 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245252AbhKYBvK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Nov 2021 20:51:10 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yunbo.xufeng@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UyBz7c0_1637804876;
+Received: from IT-C02XP11YJHD2.local(mailfrom:yunbo.xufeng@linux.alibaba.com fp:SMTPD_---0UyBz7c0_1637804876)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 25 Nov 2021 09:47:58 +0800
+Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Clear the noisy tail buffer for
+ bpf_d_path() helper
+To:     Hou Tao <houtao1@huawei.com>, jolsa@kernel.org, kpsingh@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andriin@fb.com
+References: <20211120051839.28212-1-yunbo.xufeng@linux.alibaba.com>
+ <20211120051839.28212-2-yunbo.xufeng@linux.alibaba.com>
+ <9c83d1c1-f8da-8c5b-74dc-d763ab444774@linux.alibaba.com>
+ <26009981-d1a4-ff37-ca60-f21a43fc7a8c@huawei.com>
+From:   xufeng zhang <yunbo.xufeng@linux.alibaba.com>
+Message-ID: <cd06789a-9f10-097f-0dce-6c1dad2089d1@linux.alibaba.com>
+Date:   Thu, 25 Nov 2021 09:47:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <26009981-d1a4-ff37-ca60-f21a43fc7a8c@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx+NGI6J5hPTQBAA--.2223S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWryruFWxWryrXrW8Jw48Xrb_yoWrWrWxpr
-        42kFy8tw1UGay7K34fZFWFqw43Jwn2yrWjqFWUu3ykCa1Fqa1fJr429rZ5CF1aqr4vva47
-        ur13W345ury8Aw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
-        6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1ItC7UUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add the __NR_bpf definitions to fix the following build errors for mips.
+Hi Tao,
 
- $ cd tools/bpf/bpftool
- $ make
- [...]
- bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not support your arch.
-  #  error __NR_bpf not defined. libbpf does not support your arch.
-     ^~~~~
- bpf.c: In function ‘sys_bpf’:
- bpf.c:66:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
-   return syscall(__NR_bpf, cmd, attr, size);
-                  ^~~~~~~~
-                  __NR_brk
- [...]
- In file included from gen_loader.c:15:0:
- skel_internal.h: In function ‘skel_sys_bpf’:
- skel_internal.h:53:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
-   return syscall(__NR_bpf, cmd, attr, size);
-                  ^~~~~~~~
-                  __NR_brk
+在 2021/11/24 下午4:49, Hou Tao 写道:
+> Hi,
+>
+> On 11/24/2021 12:15 PM, xufeng zhang wrote:
+>> Jiri and KP,
+>>
+>> Any suggestion?
+>>
+>>
+>> Thanks in advance!
+>>
+>> Xufeng
+>>
+>> 在 2021/11/20 下午1:18, Xufeng Zhang 写道:
+>>> From: "Xufeng Zhang" <yunbo.xufeng@linux.alibaba.com>
+>>>
+>>> The motivation behind this change is to use the returned full path
+>>> for lookup keys in BPF_MAP_TYPE_HASH map.
+>>> bpf_d_path() prepend the path string from the end of the input
+>>> buffer, and call memmove() to copy the full path from the tail
+>>> buffer to the head of buffer before return. So although the
+>>> returned buffer string is NULL terminated, there is still
+>>> noise data at the tail of buffer.
+>>> If using the returned full path buffer as the key of hash map,
+>>> the noise data is also calculated and makes map lookup failed.
+>>> To resolve this problem, we could memset the noisy tail buffer
+>>> before return.
+>>>
+>>> Signed-off-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
+>>> ---
+>>>    kernel/trace/bpf_trace.c | 2 ++
+>>>    1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>>> index 25ea521fb8f1..ec4a6823c024 100644
+>>> --- a/kernel/trace/bpf_trace.c
+>>> +++ b/kernel/trace/bpf_trace.c
+>>> @@ -903,6 +903,8 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf,
+>>> u32, sz)
+>>>        } else {
+>>>            len = buf + sz - p;
+>>>            memmove(buf, p, len);
+>>> +        /* Clear the noisy tail buffer before return */
+>>> +        memset(buf + len, 0, sz - len);
+> Is implementing bpf_memset() helper a better idea ? So those who need to
+> clear the buffer after the terminated null character can use the helper to
+> do that.
 
-We can see the following generated definitions:
+This is a good point.
 
- $ grep -r "#define __NR_bpf" arch/mips
- arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_bpf (__NR_Linux + 355)
- arch/mips/include/generated/uapi/asm/unistd_n64.h:#define __NR_bpf (__NR_Linux + 315)
- arch/mips/include/generated/uapi/asm/unistd_n32.h:#define __NR_bpf (__NR_Linux + 319)
+I think the reason why mainline has not such a helper yet is because a 
+LLVM __builtin_memset() is
 
-The __NR_Linux is defined in arch/mips/include/uapi/asm/unistd.h:
+already available, but clearly this __builtin_memset() has too much 
+limitation which can't meet all the needs,
 
- $ grep -r "#define __NR_Linux" arch/mips
- arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux	4000
- arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux	5000
- arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux	6000
+there might be other concerns to implement such a memset helper which I 
+don't know, but I think your suggestion
 
-That is to say, __NR_bpf is
-4000 + 355 = 4355 for mips o32,
-6000 + 319 = 6319 for mips n32,
-5000 + 315 = 5315 for mips n64.
+is a good idea.
 
-So use the GCC pre-defined macro _ABIO32, _ABIN32 and _ABI64 [1] to define
-the corresponding __NR_bpf.
 
-This patch is similar with commit bad1926dd2f6 ("bpf, s390: fix build for
-libbpf and selftest suite").
+Xufeng
 
-[1] https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/mips/mips.h#l549
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v2: use a final number without __NR_Linux to define __NR_bpf
-    suggested by Andrii Nakryiko, thank you.
-
- tools/build/feature/test-bpf.c |  6 ++++++
- tools/lib/bpf/bpf.c            |  6 ++++++
- tools/lib/bpf/skel_internal.h  | 10 ++++++++++
- 3 files changed, 22 insertions(+)
-
-diff --git a/tools/build/feature/test-bpf.c b/tools/build/feature/test-bpf.c
-index 82070ea..727d22e 100644
---- a/tools/build/feature/test-bpf.c
-+++ b/tools/build/feature/test-bpf.c
-@@ -14,6 +14,12 @@
- #  define __NR_bpf 349
- # elif defined(__s390__)
- #  define __NR_bpf 351
-+# elif defined(__mips__) && defined(_ABIO32)
-+#  define __NR_bpf 4355
-+# elif defined(__mips__) && defined(_ABIN32)
-+#  define __NR_bpf 6319
-+# elif defined(__mips__) && defined(_ABI64)
-+#  define __NR_bpf 5315
- # else
- #  error __NR_bpf not defined. libbpf does not support your arch.
- # endif
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 94560ba..17f9fe2 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -50,6 +50,12 @@
- #  define __NR_bpf 351
- # elif defined(__arc__)
- #  define __NR_bpf 280
-+# elif defined(__mips__) && defined(_ABIO32)
-+#  define __NR_bpf 4355
-+# elif defined(__mips__) && defined(_ABIN32)
-+#  define __NR_bpf 6319
-+# elif defined(__mips__) && defined(_ABI64)
-+#  define __NR_bpf 5315
- # else
- #  error __NR_bpf not defined. libbpf does not support your arch.
- # endif
-diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
-index 9cf6670..064da66 100644
---- a/tools/lib/bpf/skel_internal.h
-+++ b/tools/lib/bpf/skel_internal.h
-@@ -7,6 +7,16 @@
- #include <sys/syscall.h>
- #include <sys/mman.h>
- 
-+#ifndef __NR_bpf
-+# if defined(__mips__) && defined(_ABIO32)
-+#  define __NR_bpf 4355
-+# elif defined(__mips__) && defined(_ABIN32)
-+#  define __NR_bpf 6319
-+# elif defined(__mips__) && defined(_ABI64)
-+#  define __NR_bpf 5315
-+# endif
-+#endif
-+
- /* This file is a base header for auto-generated *.lskel.h files.
-  * Its contents will change and may become part of auto-generation in the future.
-  *
--- 
-2.1.0
-
+>
+> Regards,
+> Tao
+>
+>>>        }
+>>>          return len;
+>> .
