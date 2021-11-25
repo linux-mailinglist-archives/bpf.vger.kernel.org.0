@@ -2,254 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5240A45D956
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 12:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BBF45D9A5
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 12:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbhKYLkk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 06:40:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59041 "EHLO
+        id S240326AbhKYMBT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 07:01:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38952 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237335AbhKYLik (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Nov 2021 06:38:40 -0500
+        by vger.kernel.org with ESMTP id S235081AbhKYL7T (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 25 Nov 2021 06:59:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637840129;
+        s=mimecast20190719; t=1637841367;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NI/gNqi3N+vZdomXUYOU6ci4Q+Mp+HGhk30IjdDA2MI=;
-        b=c6w9d6jPQfOWfBkte/UsuUs2bTuD+lb94B+ZT1Zp+m8v73o7GYW7rg/M2qtduxzHE1gHkd
-        tn1p0LSXTYrxkGvHSaVg4WAOWLZVNMaIilfn3WrX7tC+MF+SrBPASX2J1ZnF6+Cgs14RkY
-        SOu4uH86PICX/8UmFjoLt45nsAxHKuw=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Zn5qUDNHigeTHkfOIEeNHxGhyTGmOPHFVQziaWMqPvM=;
+        b=aeJ6eK25GzeZU9x8GJIoFRRYMIhOKi3XTHMKa40e7VIsZGdKb3n0c1Mzi6GiGWWnG1Q6tj
+        PV9Oyz5ZixOsB0LQm9LMJqy1zOVTUtqWFoq5+OQ7qobJdzdJ2zlOs3EuhEsDYdLSdq0NTV
+        sGr7e8o1wWcusTOu5sSqd3A09wpmSM4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-123-fV4xAdWQMLura89BpUOpJQ-1; Thu, 25 Nov 2021 06:35:27 -0500
-X-MC-Unique: fV4xAdWQMLura89BpUOpJQ-1
-Received: by mail-qk1-f199.google.com with SMTP id u8-20020a05620a454800b00468482aac5dso6218023qkp.18
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 03:35:27 -0800 (PST)
+ us-mta-540-fZQv0__-PXimP7llq225bg-1; Thu, 25 Nov 2021 06:56:06 -0500
+X-MC-Unique: fZQv0__-PXimP7llq225bg-1
+Received: by mail-ed1-f71.google.com with SMTP id q17-20020aa7da91000000b003e7c0641b9cso5315959eds.12
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 03:56:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=NI/gNqi3N+vZdomXUYOU6ci4Q+Mp+HGhk30IjdDA2MI=;
-        b=KWyGDE7OlHrJVc9C4mvP9WNYqfMN4Hyl2f3ym6ZwOgD+iSJo9rSO9yDYrI3eJM6tDh
-         NNRJLMIpLnd5HKK4MQGJqtqfyGW0ocrWGQOm2dVBjG8f2RafWBHzUTSxAfMNaWnWDge1
-         T4kLO7Cu0iv9CMbxzAmSCdQa+TroyV1uWaCKvWI1X4r4s7ShlphHlNGRk/rGDrhFDC2d
-         PzBuG4r/jk6/4HfvZLgVv5QHRnY5BK5lIfuCyMGWFPEet8GLLnKBhDs9UGxVAeUl4WTX
-         wrZLyidsTZ2ycJS8A5ScovXG5Kz0pAttMP1xaVlQ2qtnQodAVGBcC4sQbkwyUAmdMrp2
-         6BVQ==
-X-Gm-Message-State: AOAM532GAxDYD8eNf75ELQowNYNocR4cg1ZUD2yIcRAh4/17oH9WTDNA
-        xBI/hDK2GbBMP31RDwZu0cXX0DHcbAvY1EtGtVy6S/xLWFXrWaVPXldR4VaGBNhb/JT3DW+OeD5
-        bGcUX5tOE+teM
-X-Received: by 2002:a0c:80e4:: with SMTP id 91mr16314885qvb.57.1637840126481;
-        Thu, 25 Nov 2021 03:35:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwtjxv7gf2/ZabGmh0Tktgq8kJTmAPofpqBlVqjBhx3MmoyMh0V8V72ZwVbddSlIEUUdc/YLA==
-X-Received: by 2002:a0c:80e4:: with SMTP id 91mr16314757qvb.57.1637840125529;
-        Thu, 25 Nov 2021 03:35:25 -0800 (PST)
+         :message-id:mime-version;
+        bh=Zn5qUDNHigeTHkfOIEeNHxGhyTGmOPHFVQziaWMqPvM=;
+        b=jpAhYzXzCBqJ+YpdAOXNS+faOyEGYNY0mJqsRbu6SKunlfzDVsn45WtGYgu2gMqNW9
+         jjo4AN05xAmvps/o8lo7Ly10Mxks2umRZK4JseN9zQ9OQnPkD/vp1Th79v0QwzPDQyfI
+         3W0uoCcs2Pw1k0gov5zrP8dj/19RjKl//yDHjVpPr63xXd9tDDBG9L0Qv87bzK9l4eH+
+         30vJMi8zIRDtNrFW4a3+Lk+LG1cDq1n8/KzbH3N4Aqm1WOyAxkL1CXuQaBQr50IsYgT2
+         uYAzDa6EU7QscAkPf45BequXCynQ+ZgR1Rb05xDEmAjy+LkqgxEzLmxXA0QYZf/9cnma
+         LRCg==
+X-Gm-Message-State: AOAM530oq8F9f57q1A/AO8LQ3kOaXy2gfH/fVko41438k9omAHfiN9xq
+        Af3NvmU1ZfkGUiLEsfB3paKNeeWQ7duU2epstmJw67pfFn6FYjZza1q6DIulp0L4CrIMgyGv+kY
+        0H4zwLWQ1YN0N
+X-Received: by 2002:a17:906:4904:: with SMTP id b4mr29488590ejq.174.1637841364378;
+        Thu, 25 Nov 2021 03:56:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxy2FXQerCQWL0wz8KKtmO9VIUCLeFCt/3u04ynCT2Qttsffm9/94f9BQjkCB8lwUvJzBQCww==
+X-Received: by 2002:a17:906:4904:: with SMTP id b4mr29488392ejq.174.1637841362580;
+        Thu, 25 Nov 2021 03:56:02 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a15sm1391223qtb.5.2021.11.25.03.35.24
+        by smtp.gmail.com with ESMTPSA id ne33sm1507828ejc.6.2021.11.25.03.56.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 03:35:25 -0800 (PST)
+        Thu, 25 Nov 2021 03:56:01 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 384411802A0; Thu, 25 Nov 2021 12:35:23 +0100 (CET)
+        id 2A0F21802A0; Thu, 25 Nov 2021 12:56:01 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Joanne Koong <joannekoong@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 4/4] selftest/bpf/benchs: add bpf_loop
- benchmark
-In-Reply-To: <5d363ea7-16c6-b8e8-b6ee-11cbe9bf1cf2@fb.com>
-References: <20211123183409.3599979-1-joannekoong@fb.com>
- <20211123183409.3599979-5-joannekoong@fb.com> <87y25ebry1.fsf@toke.dk>
- <3eaa1a93-c3f1-830a-b711-117b27102cc5@fb.com> <87r1b5btl0.fsf@toke.dk>
- <CAEf4BzbB6utDjOJLZzwbBEoAgdO774=PX8O9dWeZJRzM2kdxaQ@mail.gmail.com>
- <87lf1db4gh.fsf@toke.dk> <5d363ea7-16c6-b8e8-b6ee-11cbe9bf1cf2@fb.com>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
+ per-channel statistics
+In-Reply-To: <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-22-alexandr.lobakin@intel.com>
+ <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 25 Nov 2021 12:35:23 +0100
-Message-ID: <87ee74bh8k.fsf@toke.dk>
+Date:   Thu, 25 Nov 2021 12:56:01 +0100
+Message-ID: <87bl28bga6.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Joanne Koong <joannekoong@fb.com> writes:
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-> On 11/24/21 1:59 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Hi Alexander,
 >
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->>> On Wed, Nov 24, 2021 at 4:56 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
->>>> Joanne Koong <joannekoong@fb.com> writes:
->>>>
->>>>> On 11/23/21 11:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>>>
->>>>>> Joanne Koong <joannekoong@fb.com> writes:
->>>>>>
->>>>>>> Add benchmark to measure the throughput and latency of the bpf_loop
->>>>>>> call.
->>>>>>>
->>>>>>> Testing this on qemu on my dev machine on 1 thread, the data is
->>>>>>> as follows:
->>>>>>>
->>>>>>>           nr_loops: 1
->>>>>>> bpf_loop - throughput: 43.350 =C2=B1 0.864 M ops/s, latency: 23.068=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 10
->>>>>>> bpf_loop - throughput: 69.586 =C2=B1 1.722 M ops/s, latency: 14.371=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 100
->>>>>>> bpf_loop - throughput: 72.046 =C2=B1 1.352 M ops/s, latency: 13.880=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 500
->>>>>>> bpf_loop - throughput: 71.677 =C2=B1 1.316 M ops/s, latency: 13.951=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 1000
->>>>>>> bpf_loop - throughput: 69.435 =C2=B1 1.219 M ops/s, latency: 14.402=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 5000
->>>>>>> bpf_loop - throughput: 72.624 =C2=B1 1.162 M ops/s, latency: 13.770=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 10000
->>>>>>> bpf_loop - throughput: 75.417 =C2=B1 1.446 M ops/s, latency: 13.260=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 50000
->>>>>>> bpf_loop - throughput: 77.400 =C2=B1 2.214 M ops/s, latency: 12.920=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 100000
->>>>>>> bpf_loop - throughput: 78.636 =C2=B1 2.107 M ops/s, latency: 12.717=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 500000
->>>>>>> bpf_loop - throughput: 76.909 =C2=B1 2.035 M ops/s, latency: 13.002=
- ns/op
->>>>>>>
->>>>>>>           nr_loops: 1000000
->>>>>>> bpf_loop - throughput: 77.636 =C2=B1 1.748 M ops/s, latency: 12.881=
- ns/op
->>>>>>>
->>>>>>>   From this data, we can see that the latency per loop decreases as=
- the
->>>>>>> number of loops increases. On this particular machine, each loop ha=
-d an
->>>>>>> overhead of about ~13 ns, and we were able to run ~70 million loops
->>>>>>> per second.
->>>>>> The latency figures are great, thanks! I assume these numbers are wi=
-th
->>>>>> retpolines enabled? Otherwise 12ns seems a bit much... Or is this
->>>>>> because of qemu?
->>>>> I just tested it on a machine (without retpoline enabled) that runs on
->>>>> actual
->>>>> hardware and here is what I found:
->>>>>
->>>>>               nr_loops: 1
->>>>>       bpf_loop - throughput: 46.780 =C2=B1 0.064 M ops/s, latency: 21=
-.377 ns/op
->>>>>
->>>>>               nr_loops: 10
->>>>>       bpf_loop - throughput: 198.519 =C2=B1 0.155 M ops/s, latency: 5=
-.037 ns/op
->>>>>
->>>>>               nr_loops: 100
->>>>>       bpf_loop - throughput: 247.448 =C2=B1 0.305 M ops/s, latency: 4=
-.041 ns/op
->>>>>
->>>>>               nr_loops: 500
->>>>>       bpf_loop - throughput: 260.839 =C2=B1 0.380 M ops/s, latency: 3=
-.834 ns/op
->>>>>
->>>>>               nr_loops: 1000
->>>>>       bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3=
-.805 ns/op
->>>>>
->>>>>               nr_loops: 5000
->>>>>       bpf_loop - throughput: 264.211 =C2=B1 1.508 M ops/s, latency: 3=
-.785 ns/op
->>>>>
->>>>>               nr_loops: 10000
->>>>>       bpf_loop - throughput: 265.366 =C2=B1 3.054 M ops/s, latency: 3=
-.768 ns/op
->>>>>
->>>>>               nr_loops: 50000
->>>>>       bpf_loop - throughput: 235.986 =C2=B1 20.205 M ops/s, latency: =
-4.238 ns/op
->>>>>
->>>>>               nr_loops: 100000
->>>>>       bpf_loop - throughput: 264.482 =C2=B1 0.279 M ops/s, latency: 3=
-.781 ns/op
->>>>>
->>>>>               nr_loops: 500000
->>>>>       bpf_loop - throughput: 309.773 =C2=B1 87.713 M ops/s, latency: =
-3.228 ns/op
->>>>>
->>>>>               nr_loops: 1000000
->>>>>       bpf_loop - throughput: 262.818 =C2=B1 4.143 M ops/s, latency: 3=
-.805 ns/op
->>>>>
->>>>> The latency is about ~4ns / loop.
->>>>>
->>>>> I will update the commit message in v3 with these new numbers as well.
->>>> Right, awesome, thank you for the additional test. This is closer to
->>>> what I would expect: on the hardware I'm usually testing on, a function
->>>> call takes ~1.5ns, but the difference might just be the hardware, or
->>>> because these are indirect calls.
->>>>
->>>> Another comparison just occurred to me (but it's totally OK if you don=
-'t
->>>> want to add any more benchmarks):
->>>>
->>>> The difference between a program that does:
->>>>
->>>> bpf_loop(nr_loops, empty_callback, NULL, 0);
->>>>
->>>> and
->>>>
->>>> for (i =3D 0; i < nr_loops; i++)
->>>>    empty_callback();
->>> You are basically trying to measure the overhead of bpf_loop() helper
->>> call itself, because other than that it should be identical.
->> No, I'm trying to measure the difference between the indirect call in
->> the helper, and the direct call from the BPF program. Should be minor
->> without retpolines, and somewhat higher where they are enabled...
->>
->>> We can estimate that already from the numbers Joanne posted above:
->>>
->>>               nr_loops: 1
->>>        bpf_loop - throughput: 46.780 =C2=B1 0.064 M ops/s, latency: 21.=
-377 ns/op
->>>               nr_loops: 1000
->>>        bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3.=
-805 ns/op
->>>
->>> nr_loops:1 is bpf_loop() overhead and one static callback call.
->>> bpf_loop()'s own overhead will be in the ballpark of 21.4 - 3.8 =3D
->>> 17.6ns. I don't think we need yet another benchmark just for this.
->> That seems really high, though? The helper is a pretty simple function,
->> and the call to it should just be JIT'ed into a single regular function
->> call, right? So why the order-of-magnitude difference?
-> I think the overhead of triggering the bpf program from the userspace
-> benchmarking program is also contributing to this. When nr_loops =3D 1, we
-> have to do the context switch between userspace + kernel per every 1000=20
-> loops;
-> this overhead also contributes to the latency numbers above
+> On 11/23/21 5:39 PM, Alexander Lobakin wrote:
+> [...]
+>
+> Just commenting on ice here as one example (similar applies to other drivers):
+>
+>> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+>> index 1dd7e84f41f8..7dc287bc3a1a 100644
+>> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+>> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+>> @@ -258,6 +258,8 @@ static void ice_clean_xdp_irq(struct ice_tx_ring *xdp_ring)
+>>   		xdp_ring->next_dd = ICE_TX_THRESH - 1;
+>>   	xdp_ring->next_to_clean = ntc;
+>>   	ice_update_tx_ring_stats(xdp_ring, total_pkts, total_bytes);
+>> +	xdp_update_tx_drv_stats(&xdp_ring->xdp_stats->xdp_tx, total_pkts,
+>> +				total_bytes);
+>>   }
+>> 
+>>   /**
+>> @@ -277,6 +279,7 @@ int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
+>>   		ice_clean_xdp_irq(xdp_ring);
+>> 
+>>   	if (!unlikely(ICE_DESC_UNUSED(xdp_ring))) {
+>> +		xdp_update_tx_drv_full(&xdp_ring->xdp_stats->xdp_tx);
+>>   		xdp_ring->tx_stats.tx_busy++;
+>>   		return ICE_XDP_CONSUMED;
+>>   	}
+>> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+>> index ff55cb415b11..62ef47a38d93 100644
+>> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+>> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+>> @@ -454,42 +454,58 @@ ice_construct_skb_zc(struct ice_rx_ring *rx_ring, struct xdp_buff **xdp_arr)
+>>    * @xdp: xdp_buff used as input to the XDP program
+>>    * @xdp_prog: XDP program to run
+>>    * @xdp_ring: ring to be used for XDP_TX action
+>> + * @lrstats: onstack Rx XDP stats
+>>    *
+>>    * Returns any of ICE_XDP_{PASS, CONSUMED, TX, REDIR}
+>>    */
+>>   static int
+>>   ice_run_xdp_zc(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
+>> -	       struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring)
+>> +	       struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring,
+>> +	       struct xdp_rx_drv_stats_local *lrstats)
+>>   {
+>>   	int err, result = ICE_XDP_PASS;
+>>   	u32 act;
+>> 
+>> +	lrstats->bytes += xdp->data_end - xdp->data;
+>> +	lrstats->packets++;
+>> +
+>>   	act = bpf_prog_run_xdp(xdp_prog, xdp);
+>> 
+>>   	if (likely(act == XDP_REDIRECT)) {
+>>   		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+>> -		if (err)
+>> +		if (err) {
+>> +			lrstats->redirect_errors++;
+>>   			goto out_failure;
+>> +		}
+>> +		lrstats->redirect++;
+>>   		return ICE_XDP_REDIR;
+>>   	}
+>> 
+>>   	switch (act) {
+>>   	case XDP_PASS:
+>> +		lrstats->pass++;
+>>   		break;
+>>   	case XDP_TX:
+>>   		result = ice_xmit_xdp_buff(xdp, xdp_ring);
+>> -		if (result == ICE_XDP_CONSUMED)
+>> +		if (result == ICE_XDP_CONSUMED) {
+>> +			lrstats->tx_errors++;
+>>   			goto out_failure;
+>> +		}
+>> +		lrstats->tx++;
+>>   		break;
+>>   	default:
+>>   		bpf_warn_invalid_xdp_action(act);
+>> -		fallthrough;
+>> +		lrstats->invalid++;
+>> +		goto out_failure;
+>>   	case XDP_ABORTED:
+>> +		lrstats->aborted++;
+>>   out_failure:
+>>   		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
+>> -		fallthrough;
+>> +		result = ICE_XDP_CONSUMED;
+>> +		break;
+>>   	case XDP_DROP:
+>>   		result = ICE_XDP_CONSUMED;
+>> +		lrstats->drop++;
+>>   		break;
+>>   	}
+>
+> Imho, the overall approach is way too bloated. I can see the
+> packets/bytes but now we have 3 counter updates with return codes
+> included and then the additional sync of the on-stack counters into
+> the ring counters via xdp_update_rx_drv_stats(). So we now need
+> ice_update_rx_ring_stats() as well as xdp_update_rx_drv_stats() which
+> syncs 10 different stat counters via u64_stats_add() into the per ring
+> ones. :/
+>
+> I'm just taking our XDP L4LB in Cilium as an example: there we already
+> count errors and export them via per-cpu map that eventually lead to
+> XDP_DROP cases including the /reason/ which caused the XDP_DROP (e.g.
+> Prometheus can then scrape these insights from all the nodes in the
+> cluster). Given the different action codes are very often application
+> specific, there's not much debugging that you can do when /only/
+> looking at `ip link xdpstats` to gather insight on *why* some of these
+> actions were triggered (e.g. fib lookup failure, etc). If really of
+> interest, then maybe libxdp could have such per-action counters as
+> opt-in in its call chain..
 
-Right okay. But then that data point is not really measuring what it's
-purporting to measure? That's a bit misleading, so maybe better to leave
-it out entirely?
+To me, standardising these counters is less about helping people debug
+their XDP programs (as you say, you can put your own telemetry into
+those), and more about making XDP less "mystical" to the system
+administrator (who may not be the same person who wrote the XDP
+programs). So at the very least, they need to indicate "where are the
+packets going", which means at least counters for DROP, REDIRECT and TX
+(+ errors for tx/redirect) in addition to the "processed by XDP" initial
+counter. Which in the above means 'pass', 'invalid' and 'aborted' could
+be dropped, I guess; but I don't mind terribly keeping them either given
+that there's no measurable performance impact.
+
+> But then it also seems like above in ice_xmit_xdp_ring() we now need
+> to bump counters twice just for sake of ethtool vs xdp counters which
+> sucks a bit, would be nice to only having to do it once:
+
+This I agree with, and while I can see the layering argument for putting
+them into 'ip' and rtnetlink instead of ethtool, I also worry that these
+counters will simply be lost in obscurity, so I do wonder if it wouldn't
+be better to accept the "layering violation" and keeping them all in the
+'ethtool -S' output?
+
+[...]
+
+> +  xdp-channel0-rx_xdp_redirect: 7
+> +  xdp-channel0-rx_xdp_redirect_errors: 8
+> +  xdp-channel0-rx_xdp_tx: 9
+> +  xdp-channel0-rx_xdp_tx_errors: 10
+> +  xdp-channel0-tx_xdp_xmit_packets: 11
+> +  xdp-channel0-tx_xdp_xmit_bytes: 12
+> +  xdp-channel0-tx_xdp_xmit_errors: 13
+> +  xdp-channel0-tx_xdp_xmit_full: 14
+>
+>  From a user PoV to avoid confusion, maybe should be made more clear that the latter refers
+> to xsk.
+
++1, these should probably be xdp-channel0-tx_xsk_* or something like
+that...
 
 -Toke
 
