@@ -2,158 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0BC45D760
-	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 10:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335E645D806
+	for <lists+bpf@lfdr.de>; Thu, 25 Nov 2021 11:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354197AbhKYJmG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 04:42:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47335 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353950AbhKYJkG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Nov 2021 04:40:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637833014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1j3sEyc7U5pLLP7CDKkBf36qc69o78zC3HxT76AE2R0=;
-        b=bxRJ0cHsxVoxBs1osi2vNK1d6yKSDIANe8hUIprtvQXyQakPTxZj/SOPZ0+va5e/YNIpVY
-        rb6YaaHCbSWIMMqm5xoBeS0xDjfGoN4HGNJ68DAsnEgQPNHKKOB+6LZ2myBieOASq1iAKG
-        AdFkwIJTwM1ZAax1+w2bMmUp8/wOZhs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-340-SQoEO-_QNgGIoZd8xzCKjg-1; Thu, 25 Nov 2021 04:36:53 -0500
-X-MC-Unique: SQoEO-_QNgGIoZd8xzCKjg-1
-Received: by mail-wm1-f70.google.com with SMTP id n16-20020a05600c3b9000b003331973fdbbso3196515wms.0
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 01:36:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=1j3sEyc7U5pLLP7CDKkBf36qc69o78zC3HxT76AE2R0=;
-        b=bWj1127/7J37ZbBhzMI8bSW25RoCNvw2SSGmzV31suQiXcavLqoCrYndpyTngV/PvV
-         VjoEByA84hRpx/mF3f0qtBJ1B1NQ0Gjb3QgcBLQPw6S3tm9iLNiHNvGWlFilxphcJy8e
-         WcVj3IFdkclptd9XsfBEs/Rqwi13NMBv88LMRCPcXMMKai9Ilafi87QluLKlEBp/URXl
-         WZYyIMDD9TEGaoV1TjJJUW6k0jAUXWQaihXDuQodsDhrCrseWbEmhysM/37x5TQPeUOG
-         JpsY53JJ8XmTQevNS7xtPfVmbn4jixlkIrkemSGbmTHLVqUKJ+OykYhAVgEXEPHxHY/7
-         ZfrA==
-X-Gm-Message-State: AOAM5302f4HkLhnD6UptJVb9gtmWkvbwfTeCEQbGcFRgqnJVpUt+WqNi
-        wj8XKjGghMQrsw8OnTT2D2C6+o0SQ5HEQTZZCsA0fTHQCvRyG6qbsbyLScuT4aiIikDStWQ5LAu
-        Teqz3GZsAssZV
-X-Received: by 2002:a1c:4c19:: with SMTP id z25mr5259389wmf.177.1637833011739;
-        Thu, 25 Nov 2021 01:36:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxNT7yd66eB6qLpcYDn59R65nZF06/c+i4fTo/9h0VU3346D4G4ZX5Keq0oDymUbsMTzkxV8g==
-X-Received: by 2002:a1c:4c19:: with SMTP id z25mr5259366wmf.177.1637833011529;
-        Thu, 25 Nov 2021 01:36:51 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c679e.dip0.t-ipconnect.de. [91.12.103.158])
-        by smtp.gmail.com with ESMTPSA id d2sm2428646wmb.31.2021.11.25.01.36.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 01:36:50 -0800 (PST)
-Message-ID: <435fab0b-d345-3698-79af-ff858181666a@redhat.com>
-Date:   Thu, 25 Nov 2021 10:36:49 +0100
+        id S1354398AbhKYKPX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 05:15:23 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:43622 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354391AbhKYKNW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Nov 2021 05:13:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1637835012;
+  x=1669371012;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GdIrusbwRXXLYGW13kTKv3iwu2ddLrB+iTcqiTjJaeo=;
+  b=jajnKAODDJwFxONv7H5T9Qay8wejY2kquQX/fSlORGliWeym1PwFAoaX
+   c+hyYHlj5mL9IdgHRChiHz0W+fpW6Z0S1J/jruCVLNumsKzTIKYXQNndT
+   SZrgyEBkd9x2yqf12eC11Gq7qUmN0D7Z3Ii0llbwI3uv7hkk6S7PHYN5D
+   YQZ9KD/4Aoy4D8FOAMFtzMkX34JbDP8p71KdWu1o4s8Af4w0pBu8e3ivk
+   2lnq6TqqavbaUAdIFxwQqJ4YexQGCVR6n9JTmxsNvu3KKxw6bAZj4lVli
+   UG+e3drTpZek+n8GmfUBw64JH6b6uocq4peGodIA4gfYQoGNyfv3NsOpT
+   Q==;
+Date:   Thu, 25 Nov 2021 11:10:07 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel <kernel@axis.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH] af_unix: fix regression in read after shutdown
+Message-ID: <20211125101007.GA13511@axis.com>
+References: <20211119120521.18813-1-vincent.whitchurch@axis.com>
+ <YZ19J+jZrOXxR1oR@unknown>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] kthread: dynamically allocate memory to store
- kthread's full name
-Content-Language: en-US
-To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <20211120112850.46047-1-laoar.shao@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211120112850.46047-1-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YZ19J+jZrOXxR1oR@unknown>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 20.11.21 12:28, Yafang Shao wrote:
-> When I was implementing a new per-cpu kthread cfs_migration, I found the
-> comm of it "cfs_migration/%u" is truncated due to the limitation of
-> TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
-> all with the same name "cfs_migration/1", which will confuse the user. This
-> issue is not critical, because we can get the corresponding CPU from the
-> task's Cpus_allowed. But for kthreads correspoinding to other hardware
-> devices, it is not easy to get the detailed device info from task comm,
-> for example,
+On Wed, Nov 24, 2021 at 12:45:43AM +0100, Cong Wang wrote:
+> On Fri, Nov 19, 2021 at 01:05:21PM +0100, Vincent Whitchurch wrote:
+> > On kernels before v5.15, calling read() on a unix socket after
+> > shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
+> > previously written or EOF.  But now, while read() after
+> > shutdown(SHUT_RD) still behaves the same way, read() after
+> > shutdown(SHUT_RDWR) always fails with -EINVAL.
 > 
->     jbd2/nvme0n1p2-
->     xfs-reclaim/sdf
+> Maybe just lift the socket tate check in unix_stream_read_generic()?
+
+That would have have handled the specific case of read(2) on
+SOCK_STREAM, but the sk->sk_state is checked in many other places in
+af_unix.c so there would still be userspace-visible behaviour changes in
+several other situations, which could cause regressions.  Just to give
+one such example, the sendfile(2) call in the following program gets
+killed by SIGPIPE on earlier kernels but would now instead start to
+return -ENOTCONN:
+
+#include <err.h>
+#include <errno.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/unistd.h>
+#include <sys/sendfile.h>
+#include <sys/types.h>
+#include <fcntl.h>
+
+int main(int argc, char *argv[]) {
+  int sock[2];
+  int ret;
+
+  ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
+  if (ret < 0)
+    err(1, "socketpair");
+
+  ret = shutdown(sock[0], SHUT_RDWR);
+  if (ret < 0)
+    err(1, "shutdown");
+
+  ssize_t bytes = sendfile(sock[0], open(argv[0], O_RDONLY), NULL, 16);
+  if (bytes < 0)
+    err(1, "sendfile");
+
+  printf("sendfile %zd bytes\n", bytes);
+
+  return 0;
+}
+
+> > 
+> > This behaviour change was apparently inadvertently introduced as part of
+> > a bug fix for a different regression caused by the commit adding sockmap
+> > support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
+> > unix_stream_proto for sockmap").  Those commits, for unclear reasons,
+> > started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
 > 
-> Currently there are so many truncated kthreads:
+> Not sure why it is unclear here, for an connection oriented socket, it
+> can be closed for just one direction, in this case we want to prevent it
+> from being redirected in sockmap, hence the point of the commits.
+
+I must admit I'm not really familiar with either af_unix.c or sockmap,
+but clearly the existing code in af_unix.c does not expect sk_state to
+be changed in shutdown.  If we want to prevent UNIX sockets which have
+had shutdown(SHUT_RDWR) called on then from being redirect to sockmap,
+then maybe some other flag should be used to achieve that?
+
+(Also, I wonder why the code added by the patch handled SHUT_RDWR
+ differently from a SHUT_RD followed by a SHUT_WR?)
+
+> > while this state change had previously only been done in
+> > unix_release_sock().
+> > 
+> > Restore the original behaviour.  The sockmap tests in
+> > tests/selftests/bpf continue to pass after this patch.
 > 
->     rcu_tasks_kthre
->     rcu_tasks_rude_
->     rcu_tasks_trace
->     poll_mpt3sas0_s
->     ext4-rsv-conver
->     xfs-reclaim/sd{a, b, c, ...}
->     xfs-blockgc/sd{a, b, c, ...}
->     xfs-inodegc/sd{a, b, c, ...}
->     audit_send_repl
->     ecryptfs-kthrea
->     vfio-irqfd-clea
->     jbd2/nvme0n1p2-
->     ...
-> 
-> We can shorten these names to work around this problem, but it may be
-> not applied to all of the truncated kthreads. Take 'jbd2/nvme0n1p2-' for
-> example, it is a nice name, and it is not a good idea to shorten it.
-> 
-> One possible way to fix this issue is extending the task comm size, but
-> as task->comm is used in lots of places, that may cause some potential
-> buffer overflows. Another more conservative approach is introducing a new
-> pointer to store kthread's full name if it is truncated, which won't
-> introduce too much overhead as it is in the non-critical path. Finally we
-> make a dicision to use the second approach. See also the discussions in
-> this thread:
-> https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
-> 
-> After this change, the full name of these truncated kthreads will be
-> displayed via /proc/[pid]/comm:
-> 
->     rcu_tasks_kthread
->     rcu_tasks_rude_kthread
->     rcu_tasks_trace_kthread
->     poll_mpt3sas0_statu
->     ext4-rsv-conversion
->     xfs-reclaim/sdf1
->     xfs-blockgc/sdf1
->     xfs-inodegc/sdf1
->     audit_send_reply
->     ecryptfs-kthread
->     vfio-irqfd-cleanup
->     jbd2/nvme0n1p2-8
+> Isn't this because we don't have shutdown() in sockmap tests?
 
-I do wonder if that could break some user space that assumes these names
-have maximum length ..
-
-But LGTM
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+That may well be the case, I just assumed that the tests added along
+with the new feature were comprehensive.
