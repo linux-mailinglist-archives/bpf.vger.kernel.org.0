@@ -2,90 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962DE45E890
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 08:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A8345E9D4
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 10:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359300AbhKZHnB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Nov 2021 02:43:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244165AbhKZHlB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:41:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0542161153
-        for <bpf@vger.kernel.org>; Fri, 26 Nov 2021 07:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637912269;
-        bh=nrs5ypmRjBq49jVUOTKuSotKgSuiWhGmNAKsUJJC8WU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tIcAVxB+fWrCf/RM9auzCjCGl0xLSJtT7VoTE37Z/pOg0bkALirsUGbjyR1fTwJnO
-         hi1ghGn1Qqm16+bZGW6iT0+zqI6iTaSdCU4nGfjXoNJ3mCdpiyIuG2jXohs7d16oK9
-         UraIJvL3y9GhQxv7oqP5zwm1rLN2/N5tHmT7F7S8SOkFm8cXn4r+6QUv3n8P5TdsvO
-         4HqGAwHSY3OrKTaUTmJHkyvap91k5v/rwLd5Jry14He4KzrxICv0BC5D5bso/pHWPK
-         QaY4ILfheW2cdfG6ejYl0LzIKJscHRuSWFDdvrGQzfpDV/sn1TLN3jDaazkacfNUd+
-         ktNGjQfL4qUSw==
-Received: by mail-yb1-f171.google.com with SMTP id v138so17898145ybb.8
-        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 23:37:48 -0800 (PST)
-X-Gm-Message-State: AOAM533g014RKLaSZSn+jyaQHr+UBS60tSDEQO9aZxZBjwJgwa5NukLj
-        uK0kRFFq/nRos3a7UH/71sDHxhN8GkijcbReHF4=
-X-Google-Smtp-Source: ABdhPJzN7wVByynntTNv/aE6ZeMezUcunyEtlf2QN+yaAbOkL+3QWm/7ZUioqWe/fpH7yJB8khfiMXByO5VdNAe2MrY=
-X-Received: by 2002:a25:660d:: with SMTP id a13mr13254154ybc.460.1637912268231;
- Thu, 25 Nov 2021 23:37:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20211122144742.477787-1-memxor@gmail.com> <20211122144742.477787-4-memxor@gmail.com>
-In-Reply-To: <20211122144742.477787-4-memxor@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 25 Nov 2021 23:37:37 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7xSdStywDboiQs6HHLmwreSCd9xfJDPOeb9ZUCSvyfHg@mail.gmail.com>
-Message-ID: <CAPhsuW7xSdStywDboiQs6HHLmwreSCd9xfJDPOeb9ZUCSvyfHg@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 3/3] tools/resolve_btfids: Skip unresolved symbol
- warning for empty BTF sets
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
+        id S1348013AbhKZJGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Nov 2021 04:06:37 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60032
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1359872AbhKZJEf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Nov 2021 04:04:35 -0500
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4CF504001B
+        for <bpf@vger.kernel.org>; Fri, 26 Nov 2021 09:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637917281;
+        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=D8idFLkyy6NiQjr57fzJYJK7QbMdIc3v5nW0Z33wcLVK+IOhVb3bPJUa6CZYxKT2G
+         dc8gBah51WcYSHYB/r7fZAMqTkfrAxyzNucz9kSTcyHfP/S0UpmrUT/E4fF/m4lMXE
+         XWEkPRIHNBkboEBLEF2rblSWDHSCqBcR4A/RJtXB30ZDca0SKq1OL0il16H+XGLmgt
+         TllzPyDmZFq7BaxjV846RZGuXdL3F+nYZ67nNl4SHyuiOuYh7mb/LrFMoOGGBw0Ss1
+         OtTssg4wPWKAjwY1itKglwKNWOTJImIQdHc3CiJ3+1zXqB1IlbK6JfscXhaaAaYMh+
+         9B5EaGEBldipQ==
+Received: by mail-ed1-f72.google.com with SMTP id w4-20020aa7cb44000000b003e7c0f7cfffso7487494edt.2
+        for <bpf@vger.kernel.org>; Fri, 26 Nov 2021 01:01:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
+        b=LMNCyBUYm/DrqYsxdm8a7e1S4rRPRXPtXkq7dSFL1B8cCzHeV03ShYoPajoSB5I0FD
+         W4f6fhBlaKD3mA7P9C+ZqLB//Cvfzbkfn4tW5L0dc3Jqbiq8P2beXvkaIZhz/CuJf8ZP
+         fCQCa/y1GCja0fodyPwLUImF0br9tHSR0YOHckxqAJrKHgvtOQexXiD5Vs6ti0rl9fT7
+         w0otsveuBj46RohqcWC6xpLeFPzKoZKA27a6+nrD/IGhfKpsks4I/AC14LQVEqjB+rDI
+         JKv4z2wROPXAZLyS8Eg6GQUEI/r1q8pBm5ubx3z9PwK64JLxgKcZEc0IXhIrAhTQdYdu
+         BLow==
+X-Gm-Message-State: AOAM531ry96BpXr/ClXzoqFu+AAvtAn/8x1JWd2ffYRZ++yqcW137GMW
+        Xp6MHv7eeZ1C1VUtU/4H1lLrlK6CMJN+EgRkT6kwyxr0Fuxldg8kOdtdoRJU8HcW1UJ3dAAqOeP
+        X4hmUp64y51t0ABosGXG+O8PwU90bZA==
+X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510568edw.318.1637917280840;
+        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxA/gPOhfwr63nIN4QqNwMF4BDsoXBkVZzPKhinuy/tb4GYEkRp4MHzCZGHTX+pLz5/8jbGgQ==
+X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510536edw.318.1637917280547;
+        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id e4sm3026588ejs.13.2021.11.26.01.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 01:01:19 -0800 (PST)
+Date:   Fri, 26 Nov 2021 10:01:19 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/seccomp: fix check of fds being assigned
+Message-ID: <YaCiX+ypndYf/0QP@arighi-desktop>
+References: <20211115165227.101124-1-andrea.righi@canonical.com>
+ <202111180933.BE5101720@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202111180933.BE5101720@keescook>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 6:47 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> resolve_btfids prints a warning when it finds an unresolved symbol,
-> (id == 0) in id_patch. This can be the case for BTF sets that are empty
-> (due to disabled config options), hence printing warnings for certain
-> builds, most recently seen in [0].
->
-> The reason behind this is because id->cnt aliases id->id in btf_id
-> struct, leading to empty set showing up as ID 0 when we get to id_patch,
-> which triggers the warning. Since sets are an exception here, accomodate
-> by reusing hole in btf_id for bool is_set member, setting it to true for
-> BTF set when setting id->cnt, and use that to skip extraneous warning.
->
->   [0]: https://lore.kernel.org/all/1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com
->
-> Before:
->
-> ; ./tools/bpf/resolve_btfids/resolve_btfids -v -b vmlinux net/ipv4/tcp_cubic.ko
-> adding symbol tcp_cubic_kfunc_ids
-> WARN: resolve_btfids: unresolved symbol tcp_cubic_kfunc_ids
-> patching addr     0: ID       0 [tcp_cubic_kfunc_ids]
-> sorting  addr     4: cnt      0 [tcp_cubic_kfunc_ids]
-> update ok for net/ipv4/tcp_cubic.ko
->
-> After:
->
-> ; ./tools/bpf/resolve_btfids/resolve_btfids -v -b vmlinux net/ipv4/tcp_cubic.ko
-> adding symbol tcp_cubic_kfunc_ids
-> patching addr     0: ID       0 [tcp_cubic_kfunc_ids]
-> sorting  addr     4: cnt      0 [tcp_cubic_kfunc_ids]
-> update ok for net/ipv4/tcp_cubic.ko
->
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Fixes: 0e32dfc80bae ("bpf: Enable TCP congestion control kfunc from modules")
-> Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Thu, Nov 18, 2021 at 09:37:03AM -0800, Kees Cook wrote:
+> On Mon, Nov 15, 2021 at 05:52:27PM +0100, Andrea Righi wrote:
+> > There might be an arbitrary free open fd slot when we run the addfd
+> > sub-test, so checking for progressive numbers of file descriptors
+> > starting from memfd is not always a reliable check and we could get the
+> > following failure:
+> > 
+> >   #  RUN           global.user_notification_addfd ...
+> >   # seccomp_bpf.c:3989:user_notification_addfd:Expected listener (18) == nextfd++ (9)
+> 
+> What injected 9 extra fds into this test?
+> 
 
-Acked-by: Song Liu <songliubraving@fb.com>
+We run the kselftest inside a framework (bash/python scripts basically)
+and this is what I see (I added a simple `ls -l /proc/pid/fd` in
+seccomp_bpf.c after memfd is created):
+
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # #  RUN           global.user_notification_addfd ...
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # total 0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 0 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 1 -> pipe:[28844]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 10 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 11 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 12 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.DEBUG
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 13 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.INFO
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 14 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.WARNING
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 15 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.ERROR
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 16 -> pipe:[27608]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 17 -> pipe:[27609]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 2 -> pipe:[28844]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 3 -> pipe:[27803]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 4 -> pipe:[26387]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 5 -> /home/ubuntu/autotest/client/results/default/debug/client.WARNING
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 6 -> /home/ubuntu/autotest/client/results/default/debug/client.ERROR
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 7 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 8 -> /memfd:test (deleted)
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 9 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # # seccomp_bpf.c:3993:user_notification_addfd:Expected listener (18) == nextfd++ (9)
+11/26 08:50:09 DEBUG|     utils:0153| [stdout] # # user_notification_addfd: Test terminated by assertion
+11/26 08:50:09 DEBUG|     utils:0153| [stdout] # #          FAIL  global.user_notification_addfd
+
+As we can see memfd has been allocated in a hole (fd=8) and listener
+will get fd=18, so checking for sequential fd numbers is not working in
+this case.
+
+> >   # user_notification_addfd: Test terminated by assertion
+> > 
+> > Simply check if memfd and listener are valid file descriptors and start
+> > counting for progressive file checking with the listener fd.
+> 
+> Hm, so I attempted to fix this once already:
+> 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
+> so I'm not sure the proposed patch really improves it in the general
+> case.
+
+I agree that my patch doesn't fix 100% of the cases, we may still have
+fd holes.
+
+> 
+> > Fixes: 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
+> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> > ---
+> >  tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > index d425688cf59c..4f37153378a1 100644
+> > --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > @@ -3975,18 +3975,17 @@ TEST(user_notification_addfd)
+> >  	/* There may be arbitrary already-open fds at test start. */
+> >  	memfd = memfd_create("test", 0);
+> >  	ASSERT_GE(memfd, 0);
+> > -	nextfd = memfd + 1;
+> >  
+> >  	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+> >  	ASSERT_EQ(0, ret) {
+> >  		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
+> >  	}
+> >  
+> > -	/* fd: 4 */
+> >  	/* Check that the basic notification machinery works */
+> >  	listener = user_notif_syscall(__NR_getppid,
+> >  				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
+> > -	ASSERT_EQ(listener, nextfd++);
+> > +	ASSERT_GE(listener, 0);
+> > +	nextfd = listener + 1;
+> 
+> e.g. if there was a hole in the fd map for memfd, why not listener too?
+> 
+> Should the test dup2 memfd up to fd 100 and start counting there or
+> something? What is the condition that fills the fds for this process?
+
+How about getting the allocated fd numbers from /proc/pid/fd and
+figuring out the next fd number taking also the holes into account?
+
+Thanks,
+-Andrea
