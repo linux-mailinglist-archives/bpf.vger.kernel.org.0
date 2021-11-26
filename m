@@ -2,214 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DF245E3FF
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 02:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C97745E401
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 02:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357284AbhKZB1g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Nov 2021 20:27:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        id S235650AbhKZB2g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Nov 2021 20:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbhKZBZe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:25:34 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6C8C06175A;
-        Thu, 25 Nov 2021 17:22:22 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id v138so15950732ybb.8;
-        Thu, 25 Nov 2021 17:22:22 -0800 (PST)
+        with ESMTP id S1349802AbhKZB0e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Nov 2021 20:26:34 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA619C061759
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 17:23:22 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id j2so15888009ybg.9
+        for <bpf@vger.kernel.org>; Thu, 25 Nov 2021 17:23:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/AuK3UsdxLLun6xgCFMS/tOh8hgjjFh2UXvJjyqMQ+4=;
-        b=dNQ9V7RFgOtI5LBHlHWvWSUZJBuOOikWTaMvde/ve4l1TW5imDIyIl8Sq1BOHYylzh
-         ycMvrCkfceZNsVJEsZ4Fn6y5dTwcA+HNu7radLD+nW5LgDdht9VAltzGE5DoqTRuX/Jk
-         Ql36+QOatU3MFfGtJ2E2+/yTPYnrBkx5mcxRo7ItPr1jHPfPLgK1KKqVJSs0o6ZroKyl
-         GG7RwHaFlrSGpsUW2UU7ylzro66IfQAVWNXeJxR2+lyKuKLSUwLU25fJzpbfAAisPDAs
-         zauHc9xdhotzwyNDSH77FcC7K6b699Dc0V5QHWduq2SMvzSnn55E+AibuyW+F5ZzBgHg
-         klzw==
+         :cc;
+        bh=/pHcRmWGDQEUZmkkRe5oI7dY8CNJXZ+gxx1pZWhtIvA=;
+        b=Z3ZvqlMPFbbZGvxU2bWYSQJGu5Y4H2T8prlsoRuFb3hART9jhKk0WRA+nKEKyM8Nvl
+         L2/jgbfWd/LooHz3NQpbDgOQ8xUA/0aflA78VB0/jc+VrKaAtMxtlclpoksvgWFS/Zns
+         Q6ZhX2shCs2yyOy2UZYgKU1ohoPmzVRHWygmdA8Zj1EWGNPJVFnIf7HekQTDN/savjtw
+         fuagxFk+elsfq7TWfACV+OvqyWCOHADOKzmlxqGZ0YFmVMxSkGenqaL4sDmubUCTuHce
+         CvN7CKAGHeS4Xg5Do/mcXfh1f9Ukg5Gc04aettspddxB+GOlMMNHNu/F1N/J/YdIc1vx
+         GJCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/AuK3UsdxLLun6xgCFMS/tOh8hgjjFh2UXvJjyqMQ+4=;
-        b=3BxN4PD1HaI4fKe45LwGHDjvVoduU284VXjKJLwkYUjp5lFt5XRV7MUtmtCinyeJTG
-         0seCJVtvt5vYGnrzWu2LfoCPeIYxBNRjWbl9+Co7SY2oUlZw8Oe6lhetwp6pK3CCOphV
-         8FTMcY/SX9nkodqlM4tyLL1sblOKQrAhlHQmdAHYgdKyVkquaAx9/NNRpo8Uk3EpLV/8
-         YbE+mIu+oXq8EhKCXu1IhDdUpaJwelUoQCBqCnHwEwSfDi1B6Exdq0/BWbnttmd3gKt4
-         qipkmfAK+N2cIeggTWLdV0Zif/fpZbfBFMPI2GHvGY4XZtatIZY85ZID8sxQDMcvyrAw
-         8nNw==
-X-Gm-Message-State: AOAM530RYZPYeNVsevy3D0U7eLEpM/5ZuAwDZtc9msQ7yijLL8s3JDXA
-        PduSYwFGmYJO3tuXfpOFoDIquDrkPypyX6AJzaU=
-X-Google-Smtp-Source: ABdhPJyK99pr86Wn5ega0gJnlezD61CL0sntzSsHRpGMfE6i6M3xUD9FpfXEvmBq1ZiYa6r7dqCPI5oWfmM35ZlJpP0=
-X-Received: by 2002:a05:6902:68d:: with SMTP id i13mr11443772ybt.2.1637889741663;
- Thu, 25 Nov 2021 17:22:21 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=/pHcRmWGDQEUZmkkRe5oI7dY8CNJXZ+gxx1pZWhtIvA=;
+        b=PdlJ7a7qWd5+q9afkQp622TNkP8r5YzDA5FFvRoMuDn/zZN0pnb8Ok+1hVR27cAcbq
+         qh3thvaprRA3orcUWfhEunA8VXsyidtZWuP9xqFgdh62oMCM7H6Vw7qZMa6c8SAnLAzT
+         APtA3s/nHwsSz22M+HFqvmz5L1FTtTwKNmAYEeDMpOuVMcywHDu3tdAYl2RvplBNcL15
+         Ma2ewQpPXhLQRnleQFp+Jwqfbd71spjm7DsFkNrTmWBfNGIsjUGgdcYHxi3H2hUTbxgI
+         6svRykBvqC09pYqzWYmk52CIfqrT5MiWxr+5l0z45JtudqPbTG+7nHj6m5kuh5NkzD02
+         IRCw==
+X-Gm-Message-State: AOAM531nYzT54OhG8E3gogab5f7maD59qZ2MEPOW+MUcgD7juhnAwoYh
+        Zj5MUoa/aMCr+d+2olH3EcNQX27A3IAo9sBVBgoQezNyVd4=
+X-Google-Smtp-Source: ABdhPJyBLBAd0i5VXcGl9T479yyHPijZSW9lTRKKmndN3RTD4hZN9V5tjxiG9Pnc86Pdis+J8lbj6PpafOwZgDvqMGc=
+X-Received: by 2002:a25:42c1:: with SMTP id p184mr10252330yba.433.1637889802115;
+ Thu, 25 Nov 2021 17:23:22 -0800 (PST)
 MIME-Version: 1.0
-References: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn> <0ca847a8-78a5-6ad9-ab4b-62dcda33df7c@iogearbox.net>
-In-Reply-To: <0ca847a8-78a5-6ad9-ab4b-62dcda33df7c@iogearbox.net>
+References: <20211124002325.1737739-1-andrii@kernel.org> <20211124002325.1737739-4-andrii@kernel.org>
+ <9e00239a-b44c-88d9-39b4-5e0ad7d49f3b@iogearbox.net> <8350db18-6e13-66da-220c-c1e53562326e@iogearbox.net>
+In-Reply-To: <8350db18-6e13-66da-220c-c1e53562326e@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Nov 2021 17:22:10 -0800
-Message-ID: <CAEf4BzYiEeSW=9dCnPdNhA4ORSFUL6y7ZVFOiHR5k9AcccFv+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf, mips: Fix build errors about __NR_bpf undeclared
+Date:   Thu, 25 Nov 2021 17:23:11 -0800
+Message-ID: <CAEf4BzZ5AEJHr9p0zBn6A=-EAkMhToVdjLx7eijXsJYeyX2_rg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 03/13] libbpf: prevent UBSan from complaining
+ about integer overflow
 To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 3:05 PM Daniel Borkmann <daniel@iogearbox.net> wrot=
-e:
+On Thu, Nov 25, 2021 at 3:19 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> [ +Johan ]
+> On 11/25/21 11:21 PM, Daniel Borkmann wrote:
+> > On 11/24/21 1:23 AM, Andrii Nakryiko wrote:
+> >> Integer overflow is intentional, silence the sanitizer. It works
+> >> completely reliably on sane compilers and architectures.
+> >>
+> >> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> >> ---
+> >>   tools/lib/bpf/btf.c | 1 +
+> >>   1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> >> index 8024fe355ca8..be1dafd56a13 100644
+> >> --- a/tools/lib/bpf/btf.c
+> >> +++ b/tools/lib/bpf/btf.c
+> >> @@ -3127,6 +3127,7 @@ struct btf_dedup {
+> >>       struct strset *strs_set;
+> >>   };
+> >> +__attribute__((no_sanitize("signed-integer-overflow")))
+> >>   static long hash_combine(long h, long value)
+> >>   {
+> >>       return h * 31 + value;
+> >>
+> >
+> > Sgtm, I guess my only question, was there a reason for not using e.g. __u64 in
+> > the first place? Meaning, __u64 hash_combine(__u64 h, __u64 value) plus the
+> > call-sites where you have h variable re-feeding into hash_combine().
 >
-> On 11/25/21 2:36 AM, Tiezhu Yang wrote:
-> > Add the __NR_bpf definitions to fix the following build errors for mips=
-.
-> >
-> >   $ cd tools/bpf/bpftool
-> >   $ make
-> >   [...]
-> >   bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not suppo=
-rt your arch.
-> >    #  error __NR_bpf not defined. libbpf does not support your arch.
-> >       ^~~~~
-> >   bpf.c: In function =E2=80=98sys_bpf=E2=80=99:
-> >   bpf.c:66:17: error: =E2=80=98__NR_bpf=E2=80=99 undeclared (first use =
-in this function); did you mean =E2=80=98__NR_brk=E2=80=99?
-> >     return syscall(__NR_bpf, cmd, attr, size);
-> >                    ^~~~~~~~
-> >                    __NR_brk
-> >   [...]
-> >   In file included from gen_loader.c:15:0:
-> >   skel_internal.h: In function =E2=80=98skel_sys_bpf=E2=80=99:
-> >   skel_internal.h:53:17: error: =E2=80=98__NR_bpf=E2=80=99 undeclared (=
-first use in this function); did you mean =E2=80=98__NR_brk=E2=80=99?
-> >     return syscall(__NR_bpf, cmd, attr, size);
-> >                    ^~~~~~~~
-> >                    __NR_brk
-> >
-> > We can see the following generated definitions:
-> >
-> >   $ grep -r "#define __NR_bpf" arch/mips
-> >   arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_bpf (_=
-_NR_Linux + 355)
-> >   arch/mips/include/generated/uapi/asm/unistd_n64.h:#define __NR_bpf (_=
-_NR_Linux + 315)
-> >   arch/mips/include/generated/uapi/asm/unistd_n32.h:#define __NR_bpf (_=
-_NR_Linux + 319)
-> >
-> > The __NR_Linux is defined in arch/mips/include/uapi/asm/unistd.h:
-> >
-> >   $ grep -r "#define __NR_Linux" arch/mips
-> >   arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux      4000
-> >   arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux      5000
-> >   arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux      6000
-> >
-> > That is to say, __NR_bpf is
-> > 4000 + 355 =3D 4355 for mips o32,
-> > 6000 + 319 =3D 6319 for mips n32,
-> > 5000 + 315 =3D 5315 for mips n64.
-> >
-> > So use the GCC pre-defined macro _ABIO32, _ABIN32 and _ABI64 [1] to def=
-ine
-> > the corresponding __NR_bpf.
-> >
-> > This patch is similar with commit bad1926dd2f6 ("bpf, s390: fix build f=
-or
-> > libbpf and selftest suite").
-> >
-> > [1] https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/mips/m=
-ips.h#l549
-> >
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >
-> > v2: use a final number without __NR_Linux to define __NR_bpf
-> >      suggested by Andrii Nakryiko, thank you.
-> >
-> >   tools/build/feature/test-bpf.c |  6 ++++++
-> >   tools/lib/bpf/bpf.c            |  6 ++++++
-> >   tools/lib/bpf/skel_internal.h  | 10 ++++++++++
-> >   3 files changed, 22 insertions(+)
-> >
-> > diff --git a/tools/build/feature/test-bpf.c b/tools/build/feature/test-=
-bpf.c
-> > index 82070ea..727d22e 100644
-> > --- a/tools/build/feature/test-bpf.c
-> > +++ b/tools/build/feature/test-bpf.c
-> > @@ -14,6 +14,12 @@
-> >   #  define __NR_bpf 349
-> >   # elif defined(__s390__)
-> >   #  define __NR_bpf 351
-> > +# elif defined(__mips__) && defined(_ABIO32)
-> > +#  define __NR_bpf 4355
-> > +# elif defined(__mips__) && defined(_ABIN32)
-> > +#  define __NR_bpf 6319
-> > +# elif defined(__mips__) && defined(_ABI64)
-> > +#  define __NR_bpf 5315
-> >   # else
-> >   #  error __NR_bpf not defined. libbpf does not support your arch.
-> >   # endif
-> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > index 94560ba..17f9fe2 100644
-> > --- a/tools/lib/bpf/bpf.c
-> > +++ b/tools/lib/bpf/bpf.c
-> > @@ -50,6 +50,12 @@
-> >   #  define __NR_bpf 351
-> >   # elif defined(__arc__)
-> >   #  define __NR_bpf 280
-> > +# elif defined(__mips__) && defined(_ABIO32)
-> > +#  define __NR_bpf 4355
-> > +# elif defined(__mips__) && defined(_ABIN32)
-> > +#  define __NR_bpf 6319
-> > +# elif defined(__mips__) && defined(_ABI64)
-> > +#  define __NR_bpf 5315
-> >   # else
-> >   #  error __NR_bpf not defined. libbpf does not support your arch.
-> >   # endif
-> > diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_interna=
-l.h
-> > index 9cf6670..064da66 100644
-> > --- a/tools/lib/bpf/skel_internal.h
-> > +++ b/tools/lib/bpf/skel_internal.h
-> > @@ -7,6 +7,16 @@
-> >   #include <sys/syscall.h>
-> >   #include <sys/mman.h>
-> >
-> > +#ifndef __NR_bpf
-> > +# if defined(__mips__) && defined(_ABIO32)
-> > +#  define __NR_bpf 4355
-> > +# elif defined(__mips__) && defined(_ABIN32)
-> > +#  define __NR_bpf 6319
-> > +# elif defined(__mips__) && defined(_ABI64)
-> > +#  define __NR_bpf 5315
-> > +# endif
-> > +#endif
->
-> Bit unfortunate that mips is the only arch where we run into this apparen=
-tly? :/
-> Given we also redefine a skel_sys_bpf(), maybe libbpf should just provide=
- something
-> like a `LIBBPF_API int libbpf_sys_bpf(enum bpf_cmd cmd, [...])` so we rel=
-y implicitly
-> only on the libbpf-internal __NR_bpf instead of duplicating again?
+> Given the remainder of the series is all straight forward, I took that in already,
+> but would still be nice if we can silence the sanitizer complaint w/o such attribute
+> workaround.
 
-Unfortunately the point of skel_internal.h is to not depend on libbpf
-APIs. I think for now it should be fine to have this duplication (not
-that those numbers are going to change ever) and we can improve this
-later.
+You are right, I'll follow up with u64 conversion and will drop the attribute.
 
 >
-> >   /* This file is a base header for auto-generated *.lskel.h files.
-> >    * Its contents will change and may become part of auto-generation in=
- the future.
-> >    *
-> >
->
+> Thanks,
+> Daniel
