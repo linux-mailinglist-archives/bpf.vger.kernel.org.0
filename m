@@ -2,98 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5B245F5FB
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 21:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAB345F60E
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 21:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239448AbhKZUpB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Nov 2021 15:45:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
+        id S229752AbhKZUsy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Nov 2021 15:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbhKZUnA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Nov 2021 15:43:00 -0500
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D405C06175D
-        for <bpf@vger.kernel.org>; Fri, 26 Nov 2021 12:36:36 -0800 (PST)
-Received: by mail-vk1-xa29.google.com with SMTP id s17so6698281vka.5
-        for <bpf@vger.kernel.org>; Fri, 26 Nov 2021 12:36:36 -0800 (PST)
+        with ESMTP id S229840AbhKZUqy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Nov 2021 15:46:54 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6583FC0613FE;
+        Fri, 26 Nov 2021 12:41:13 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id i9so15973595qki.3;
+        Fri, 26 Nov 2021 12:41:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TFS0HFFa3DF2mBq7mbNDhAUEHsq6tdnEc4bL+Qa6DAo=;
-        b=sB677R+7siP73YQaUzij/Y16nHFk7kDMyLTPn2sUE/p+yn0lxsmOGgtqIlrWLPXq5l
-         E4SgtZ3lo7QEwSeqOZHXKiAefJFBZQMqOvzuCvlN7hdiLKne+ndjPfaeKqN+MjzS0x2t
-         wIkL6xSw+IMzVDyitDUWMmwt+dhKN4wxIAKEN26Zu3+n5ekdAijvZZRuLquOJlXCad9K
-         YbOu5oRYMn9BZ9R/ObE7VX3prABrTeUZPV7VEjsBA6unQeA57vqnRJTqaw6JnhSYFBP0
-         sJuQ1NkDaeUeEvxmxKPTx7AMo9Xy+vK0WuxnyuAcGeN65Wem+sQ43SHEJfu09qLcVmRm
-         lKrQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HNz3Duqca+HlLoVbIohH9bsymmp0UBoU7O3wxp6FWTc=;
+        b=qLkPySkLuhaBpRl6cbqyMiEjOMcORxCs8lmYoVHL3zOktNz7uxXz5M0Ey01TvY8a/i
+         0Q+2Mx6NBMVRF4UqrmrhtQwyCQ9XU6Ed0WXVyu9tbo3ga5pE5U1lE4P1FHTF8lz7sJvS
+         5xz7+FvibkcBLdQ1QjKAP9Gi4S0sUxvWNgl/NWlYOujbVtJKKD3oTWHj+HC/QBvJnH9j
+         t9t9sLcD8czCHoVJzptoFfRrcIjbyDT9a/yF+/WpCUR17CwMDkL5WeTv/RZWxitQorPK
+         0ij7bECPo3Ur/c3CxsOCjyp5AGioMc+6U4fsV4mJ2wjFeJhhB3MypNWtg7bHYTrCcGAC
+         Bsyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TFS0HFFa3DF2mBq7mbNDhAUEHsq6tdnEc4bL+Qa6DAo=;
-        b=hL0XN+UKO9CJ5S+hmTk8gDb99rxgEET26ICA6DAQ8uKB9XYLynf4vLbNdmn4GRJvhE
-         e+2NFEaf6cpfysZ5OAyEX0DYRYbvpbdqJEpBAkZQlkhLRlsx0zPePewcy0CWDD3I1u9F
-         YNnMbVK9d+FH4kBwOXz4h36xN7wHTgs+6mw2qY8+xgFbE3JEhGSZvFZQLK7xkfo7VorX
-         xb9reMtZoEEsOsvkL4D0hGp2A211Rlb1TWdKVMT9GdCQrmwNW2NWIOoma9DyI2FOisX2
-         xkWog1GiqUmcWQKEJt3qnIqJj7tMWBS2Z8TV9t11tFdy+fUA+8agRNhou+E9V+xeSi8M
-         1KVA==
-X-Gm-Message-State: AOAM531jxHtEHMelT3LrDU3i8r+cH02e3/I9PdglKN+iNQlZ4On5J4J3
-        N3vcbW9Z+6qa56NRE2hSyj/sFYsR4l4mtcAnKmIl9Q==
-X-Google-Smtp-Source: ABdhPJy1Ry9bvIoqLWKjyr7uxvRb9zSPZNweFHhl21DQUT21sbAa6ndli5VfyOGAXaIGih4UMJ0aEvqRdsVvHvKGdvQ=
-X-Received: by 2002:a05:6122:1813:: with SMTP id ay19mr22170144vkb.24.1637958995634;
- Fri, 26 Nov 2021 12:36:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20211122192019.1277299-1-jean-philippe@linaro.org>
-In-Reply-To: <20211122192019.1277299-1-jean-philippe@linaro.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Fri, 26 Nov 2021 20:36:24 +0000
-Message-ID: <CACdoK4JWJRH0VuStA2N+xziTsC5d_ewuWpQEO2aHhVbsWuAq0g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/6] tools/bpf: Enable cross-building with clang
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HNz3Duqca+HlLoVbIohH9bsymmp0UBoU7O3wxp6FWTc=;
+        b=n7qIGzlP7sFrR65BigmihES2YKm8+qZAz1InEYfQoWF1tbSJw5KJBhUQXe54BTQG6N
+         T3R+M903JapkUhJkvuRc/Ye6aO1u6ADfzJOZPsfAnpiT9ICRLBW2YcZS6GIauF0aCF1X
+         TxLJNsmQdUEIfPCO9TuP8aEWIxbopAjC81BDMLDNXtwOXCzoAr+gRGg88TdMaq0ght+c
+         Rd7rBnEEEj7We278zL4+g+zLANyz188LeiK1LNfQPq1FpY5p1OuyxwHWhJE/5yyvJgCu
+         8lAR7hXukb2BhDFZ+noueP3fldcvwVFJRkVmizV85tgxaFM6n8E004jc+btxFgn+pwke
+         Y0zA==
+X-Gm-Message-State: AOAM531xl5ANGljw2TOgjlbtFxNkTP/MmK3ltubI1QHg1QCVLQI+iCm7
+        N+KpEyhLjqWLwXV+YSp8KCnvYJI9c6M=
+X-Google-Smtp-Source: ABdhPJxAOm9aVpJZaK6e4MyIWbYMdoYb4tPmazjB76XigeV8UTYeqpx4Hsh87ZnnqviPA+i1Jr7ydg==
+X-Received: by 2002:a05:620a:2447:: with SMTP id h7mr23937005qkn.75.1637959272386;
+        Fri, 26 Nov 2021 12:41:12 -0800 (PST)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:4fa:e845:6c9f:cd5b])
+        by smtp.gmail.com with ESMTPSA id u188sm3675024qkh.30.2021.11.26.12.41.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 12:41:12 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, nathan@kernel.org,
-        ndesaulniers@google.com, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH bpf] libbpf: fix missing section "sk_skb/skb_verdict"
+Date:   Fri, 26 Nov 2021 12:41:08 -0800
+Message-Id: <20211126204108.11530-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 22 Nov 2021 at 19:23, Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
->
-> Add support for cross-building BPF tools and selftests with clang, by
-> passing LLVM=1 or CC=clang to make, as well as CROSS_COMPILE. A single
-> clang toolchain can generate binaries for multiple architectures, so
-> instead of having prefixes such as aarch64-linux-gnu-gcc, clang uses the
-> -target parameter: `clang -target aarch64-linux-gnu'.
->
-> Patch 1 adds the parameter in Makefile.include so tools can easily
-> support this. Patch 2 prepares for the libbpf change from patch 3 (keep
-> building resolve_btfids's libbpf in the host arch, when cross-building
-> the kernel with clang). Patches 3-6 enable cross-building BPF tools with
-> clang.
+From: Cong Wang <cong.wang@bytedance.com>
 
-The set looks good to me. I checked that the tools are still building
-(without cross-compiling). I currently have issues building the
-selftests on my setup, but they don't appear to be related to this
-patchset.
+When BPF_SK_SKB_VERDICT was introduced, I forgot to add
+a section mapping for it in libbpf.
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Fixes: a7ba4558e69a ("sock_map: Introduce BPF_SK_SKB_VERDICT")
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+ tools/lib/bpf/libbpf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Note that on bpf-next, patch 5 (runqslower) has a conflict with
-be79505caf3f ("tools/runqslower: Install libbpf headers when
-building").
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7c74342bb668..92fbebb12591 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8346,6 +8346,7 @@ static const struct bpf_sec_def section_defs[] = {
+ 	SEC_DEF("sockops",		SOCK_OPS, BPF_CGROUP_SOCK_OPS, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+ 	SEC_DEF("sk_skb/stream_parser",	SK_SKB, BPF_SK_SKB_STREAM_PARSER, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+ 	SEC_DEF("sk_skb/stream_verdict",SK_SKB, BPF_SK_SKB_STREAM_VERDICT, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
++	SEC_DEF("sk_skb/skb_verdict",	SK_SKB, BPF_SK_SKB_VERDICT, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+ 	SEC_DEF("sk_skb",		SK_SKB, 0, SEC_NONE | SEC_SLOPPY_PFX),
+ 	SEC_DEF("sk_msg",		SK_MSG, BPF_SK_MSG_VERDICT, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+ 	SEC_DEF("lirc_mode2",		LIRC_MODE2, BPF_LIRC_MODE2, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+-- 
+2.30.2
 
-Did you consider enabling cross-compiling for the BPF samples too? I'm
-asking because the build system is pretty similar to the BPF tools.
-
-Thanks,
-Quentin
