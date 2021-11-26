@@ -2,75 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08E745F134
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 17:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F1A45F19C
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 17:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351271AbhKZQE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Nov 2021 11:04:26 -0500
-Received: from mga14.intel.com ([192.55.52.115]:1580 "EHLO mga14.intel.com"
+        id S236663AbhKZQWu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Nov 2021 11:22:50 -0500
+Received: from mga14.intel.com ([192.55.52.115]:3819 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354276AbhKZQC0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:02:26 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="235920619"
+        id S236771AbhKZQUt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:20:49 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="235926324"
 X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="235920619"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:54:54 -0800
+   d="scan'208";a="235926324"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 08:17:36 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="539280176"
+   d="scan'208";a="742390899"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 26 Nov 2021 07:54:51 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 26 Nov 2021 08:17:33 -0800
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AQFsn7W000916;
-        Fri, 26 Nov 2021 15:54:49 GMT
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AQGHWJj004949;
+        Fri, 26 Nov 2021 16:17:32 GMT
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        brouer@redhat.com, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, bjorn@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <borkmann@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>, magnus.karlsson@intel.com
-Subject: Re: [Intel-wired-lan] [PATCH net-next 1/2] igc: AF_XDP zero-copy metadata adjust breaks SKBs on XDP_PASS
-Date:   Fri, 26 Nov 2021 16:54:08 +0100
-Message-Id: <20211126155408.147211-1-alexandr.lobakin@intel.com>
+        anthony.l.nguyen@intel.com, jesse.brandeburg@intel.com,
+        intel-wired-lan@lists.osuosl.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 2/2] igc: enable XDP metadata in driver
+Date:   Fri, 26 Nov 2021 17:16:49 +0100
+Message-Id: <20211126161649.151100-1-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <66f62ef7-f4c6-08df-a8e1-dbbe34b9b125@redhat.com>
-References: <163700856423.565980.10162564921347693758.stgit@firesoul> <163700858579.565980.15265721798644582439.stgit@firesoul> <YaD8UHOxHasBkqEW@boxer> <66f62ef7-f4c6-08df-a8e1-dbbe34b9b125@redhat.com>
+In-Reply-To: <163700859087.565980.3578855072170209153.stgit@firesoul>
+References: <163700856423.565980.10162564921347693758.stgit@firesoul> <163700859087.565980.3578855072170209153.stgit@firesoul>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-Date: Fri, 26 Nov 2021 16:32:47 +0100
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+Date: Mon, 15 Nov 2021 21:36:30 +0100
 
-> On 26/11/2021 16.25, Maciej Fijalkowski wrote:
-> > On Mon, Nov 15, 2021 at 09:36:25PM +0100, Jesper Dangaard Brouer wrote:
-> >> Driver already implicitly supports XDP metadata access in AF_XDP
-> >> zero-copy mode, as xsk_buff_pool's xp_alloc() naturally set xdp_buff
-> >> data_meta equal data.
-> >>
-> >> This works fine for XDP and AF_XDP, but if a BPF-prog adjust via
-> >> bpf_xdp_adjust_meta() and choose to call XDP_PASS, then igc function
-> >> igc_construct_skb_zc() will construct an invalid SKB packet. The
-> >> function correctly include the xdp->data_meta area in the memcpy, but
-> >> forgot to pull header to take metasize into account.
-> >>
-> >> Fixes: fc9df2a0b520 ("igc: Enable RX via AF_XDP zero-copy")
-> >> Signed-off-by: Jesper Dangaard Brouer<brouer@redhat.com>
-> > Acked-by: Maciej Fijalkowski<maciej.fijalkowski@intel.com>
-> > 
-> > Great catch. Will take a look at other ZC enabled Intel drivers if they
-> > are affected as well.
+> Enabling the XDP bpf_prog access to data_meta area is a very small
+> change. Hint passing 'true' to xdp_prepare_buff().
+> 
+> The SKB layers can also access data_meta area, which required more
+> driver changes to support. Reviewers, notice the igc driver have two
+> different functions that can create SKBs, depending on driver config.
+> 
+> Hint for testers, ethtool priv-flags legacy-rx enables
+> the function igc_construct_skb()
+> 
+>  ethtool --set-priv-flags DEV legacy-rx on
+> 
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  drivers/net/ethernet/intel/igc/igc_main.c |   29 +++++++++++++++++++----------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> index 76b0a7311369..b516f1b301b4 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> @@ -1718,24 +1718,26 @@ static void igc_add_rx_frag(struct igc_ring *rx_ring,
+>  
+>  static struct sk_buff *igc_build_skb(struct igc_ring *rx_ring,
+>  				     struct igc_rx_buffer *rx_buffer,
+> -				     union igc_adv_rx_desc *rx_desc,
+> -				     unsigned int size)
+> +				     struct xdp_buff *xdp)
+>  {
+> -	void *va = page_address(rx_buffer->page) + rx_buffer->page_offset;
+> +	unsigned int size = xdp->data_end - xdp->data;
+>  	unsigned int truesize = igc_get_rx_frame_truesize(rx_ring, size);
+> +	unsigned int metasize = xdp->data - xdp->data_meta;
+>  	struct sk_buff *skb;
+>  
+>  	/* prefetch first cache line of first page */
+> -	net_prefetch(va);
+> +	net_prefetch(xdp->data);
 
-They are. We'll cover them in a separate series, much thanks for
-revealing that (:
+I'd prefer prefetching xdp->data_meta here. GRO layer accesses it.
+Maximum meta size for now is 32, so at least 96 bytes of the frame
+will stil be prefetched.
 
-> Thanks a lot for taking this task!!! :-)
-> --Jesper
+>  
+>  	/* build an skb around the page buffer */
+> -	skb = build_skb(va - IGC_SKB_PAD, truesize);
+> +	skb = build_skb(xdp->data_hard_start, truesize);
+>  	if (unlikely(!skb))
+>  		return NULL;
+>  
+>  	/* update pointers within the skb to store the data */
+> -	skb_reserve(skb, IGC_SKB_PAD);
+> +	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+>  	__skb_put(skb, size);
+> +	if (metasize)
+> +		skb_metadata_set(skb, metasize);
+>  
+>  	igc_rx_buffer_flip(rx_buffer, truesize);
+>  	return skb;
+> @@ -1746,6 +1748,7 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
+>  					 struct xdp_buff *xdp,
+>  					 ktime_t timestamp)
+>  {
+> +	unsigned int metasize = xdp->data - xdp->data_meta;
+>  	unsigned int size = xdp->data_end - xdp->data;
+>  	unsigned int truesize = igc_get_rx_frame_truesize(rx_ring, size);
+>  	void *va = xdp->data;
+> @@ -1756,7 +1759,7 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
+>  	net_prefetch(va);
 
+...here as well.
+
+>  
+>  	/* allocate a skb to store the frags */
+> -	skb = napi_alloc_skb(&rx_ring->q_vector->napi, IGC_RX_HDR_LEN);
+> +	skb = napi_alloc_skb(&rx_ring->q_vector->napi, IGC_RX_HDR_LEN + metasize);
+>  	if (unlikely(!skb))
+>  		return NULL;
+>  
+> @@ -1769,7 +1772,13 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
+>  		headlen = eth_get_headlen(skb->dev, va, IGC_RX_HDR_LEN);
+>  
+>  	/* align pull length to size of long to optimize memcpy performance */
+> -	memcpy(__skb_put(skb, headlen), va, ALIGN(headlen, sizeof(long)));
+> +	memcpy(__skb_put(skb, headlen + metasize), xdp->data_meta,
+> +	       ALIGN(headlen + metasize, sizeof(long)));
+> +
+> +	if (metasize) {
+> +		skb_metadata_set(skb, metasize);
+> +		__skb_pull(skb, metasize);
+> +	}
+>  
+>  	/* update all of the pointers */
+>  	size -= headlen;
+> @@ -2354,7 +2363,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
+>  		if (!skb) {
+>  			xdp_init_buff(&xdp, truesize, &rx_ring->xdp_rxq);
+>  			xdp_prepare_buff(&xdp, pktbuf - igc_rx_offset(rx_ring),
+> -					 igc_rx_offset(rx_ring) + pkt_offset, size, false);
+> +					 igc_rx_offset(rx_ring) + pkt_offset, size, true);
+>  
+>  			skb = igc_xdp_run_prog(adapter, &xdp);
+>  		}
+> @@ -2378,7 +2387,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
+>  		} else if (skb)
+>  			igc_add_rx_frag(rx_ring, rx_buffer, skb, size);
+>  		else if (ring_uses_build_skb(rx_ring))
+> -			skb = igc_build_skb(rx_ring, rx_buffer, rx_desc, size);
+> +			skb = igc_build_skb(rx_ring, rx_buffer, &xdp);
+>  		else
+>  			skb = igc_construct_skb(rx_ring, rx_buffer, &xdp,
+>  						timestamp);
+
+Thanks!
 Al
