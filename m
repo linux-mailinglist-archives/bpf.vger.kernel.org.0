@@ -2,149 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FD745E77D
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 06:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C331845E787
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 06:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345828AbhKZFnh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Nov 2021 00:43:37 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53870 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1358571AbhKZFlg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Nov 2021 00:41:36 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AQ3hfK0002006;
-        Thu, 25 Nov 2021 21:38:06 -0800
+        id S1351992AbhKZFti (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Nov 2021 00:49:38 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6286 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244991AbhKZFri (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Nov 2021 00:47:38 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AQ1GSPm025029;
+        Thu, 25 Nov 2021 21:44:02 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=G1tjHBwhuzjMOY3gYe+IS2zmO8dzCA+nlZeBL/kBnjE=;
- b=deVNbJ+09Fz8/G8HHQ2kHSP1oABfDT9qOCPbdgDzf3LoCWyhhF7WB8N/vY4xEjufMWDO
- iKD+dqjWQXLTozhajo8QKA2txeyxj0mvm6SbsOiJrmyyxSEYKlWrdEaIRD6E8+NGNoss
- KbQPsoUxhQXone6f4B8IvU0itLvdPBBACJ0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cj8txcmjk-1
+ bh=+dRCzsljmfRDH/14+zraS146B2inNjkvPecLf/DAVNg=;
+ b=efmVJOEyp4wZeuWq5r6rdQAkAfdA1udgQkmTqfqNws9FQaXZEA5FO7O0wz2YYnOQ8guh
+ k7ks7RRRsdmy6MVjMLADKiGlSePLOLiGEPDou4o4TuMehLAjWvScvmxATgH/K6L/Nb6g
+ 5BEt3j/7xglFxJM9fhZFvyk3XQ6oTRBJG60= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cjnru0tgu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 25 Nov 2021 21:38:06 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+        Thu, 25 Nov 2021 21:44:01 -0800
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 25 Nov 2021 21:38:05 -0800
+ 15.1.2308.20; Thu, 25 Nov 2021 21:44:00 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HVuQt2I4ZE17qAxou3i9oSEpgARkE+CKq/JXR/QyqU5hryvxWlVgiq5p32x/Lh5VHLuws1GkKHErAllxAQ7ykNBd2zXxFR/Vnpyx+BPC7HVVrLsBnGc8bqFcBCRH6NhpVrJBulJDNC7VZuCBpRIgX7+DoYKLCIbgyYufGe+bkBT2XR8v1VsrjdqeaH0vPGudBfdcuA6Y5FavaMhyaAL0wRUwSjK0ujGU+zr/Y989fcAR54bVgs2R1baFabmfHnf8q3M1eaPn0SPn+9xIkdXQQ7SDQQ1jpqbZu0HrKQjhyBLdsuPvgqTrpzlQW2mB9Tc01ZMm7jdnnXatGKHBJ9mT0Q==
+ b=fPGHMcXuQnoWHqHuuQTE6aZBNWFDKNza5tlKuGmvonqwfxY9ZwlqzSQQtQCCNosms1DuetHPEsKYjoWC+EXXrwS7+d6iDoWRjPwkCXJeJmWQm3sLhajHZ23HQHxD6Jp310cRT79GMTv5V5kNJWMekGbyygtglklSpJcinVndFaffdMeutJZInILl3+JIkAhhrhg+yH/7HKXbG61CtSsBh2AfLrU5DOtLWPpPvbMojy6X4J9erO8KV4PthuBue8B5sH8k+EI+TcrILsQbeeNXn9JTw/+8to3US8WsUvbN/8lTsDbqmXMtQb1uGO6SANTJ6/oGpot8GnzrwQluU3m1NQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G1tjHBwhuzjMOY3gYe+IS2zmO8dzCA+nlZeBL/kBnjE=;
- b=nMwhsF+/NTaWRCzd9o82Q+xYjHgvPfWDXn11fpneDk8lcvfZIgh/rHVFrxBRLxFYCBw7c2fuwgscTxa+igXgaRQl56QCCxJV+XQju5r/i4W1Vy4M9LcwoiSpN1RBI9DkFdz8pkfNFRv4ilIzSqQbLj13wemfVppalnXirXS6dA/+ndQJHPKhVZaSq4OwxDdL6DJbY0OMW1vFklfrnwLajrXndkPdfgJo4V+jqBzv/1HNWxo6sfuNesYu7Rs1rzbjfpzLcmkcBRf9uyRv/3uNnl76A3MQAE4burrQfqwX+v5dnIpiJ913xFAqp8Ao8/74EHey2LT+/Q1bqWm/Y/OIlA==
+ bh=+dRCzsljmfRDH/14+zraS146B2inNjkvPecLf/DAVNg=;
+ b=IzHa9PsevMVbXia2QnRMBgWudTDw8w7TF2V6ZdMcJgTixrN92B6Oizt5WZ2pPBgiX/LSekM+M/vG2ui/yC8CPXxSgqi1l1ZoOT5kUhvaF2mBDlZ9LwTlKwrXn+7WhQHNV3Ox4m581HnvPGBk3HZAbqJKQfKVny3xeFikMGOh5jRXcnJX/Axw6tztXALSEymBLye9X6JBkQGqq4F8GrBUyojN2KQJ4qU/Zv9WJXgKsh7f4CGrxQXmfvCusvrEHQUsHeHVizthbvUYdqpXSUGp7eujPkWw4Cp3iSuQRP8gX9AseIbSThjWp5r3Ue9n+IfgC4ocbHR2O9wEOUOqjhDK4A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4920.namprd15.prod.outlook.com (2603:10b6:806:1d3::8) with
+ by SN6PR1501MB4093.namprd15.prod.outlook.com (2603:10b6:805:63::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Fri, 26 Nov
- 2021 05:38:03 +0000
+ 2021 05:43:58 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::a91b:fba1:b79c:812c]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::a91b:fba1:b79c:812c%5]) with mapi id 15.20.4713.027; Fri, 26 Nov 2021
- 05:38:03 +0000
-Message-ID: <fde40fb7-f88f-bcc2-f9d8-2ef55e61b16b@fb.com>
-Date:   Thu, 25 Nov 2021 21:37:59 -0800
+ 05:43:58 +0000
+Message-ID: <f08fa9aa-8b0d-8217-1823-2830b2b2587c@fb.com>
+Date:   Thu, 25 Nov 2021 21:43:54 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.3.2
-Subject: Re: [PATCH dwarves v2 0/4] btf: support btf_type_tag attribute
+Subject: Re: [PATCH bpf-next 09/10] bpf: Add a helper to issue timestamp
+ cookies in XDP
 Content-Language: en-US
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <dwarves@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20211123045612.1387544-1-yhs@fb.com>
- <CAEf4BzbEMzpXKQ18FmFxgozAmbx8Mz87YamONpbAWaKDCULGjg@mail.gmail.com>
- <YZ17F85k9Ddhjgnc@kernel.org>
- <CAEf4BzYH86PEKA0EDs2VkMCXrKjpLqxB+5Ry0Jsr9aoO+Mi88w@mail.gmail.com>
- <YaABLmIMey52fotW@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Joe Stringer <joe@cilium.io>, Tariq Toukan <tariqt@nvidia.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        <clang-built-linux@googlegroups.com>
+References: <20211019144655.3483197-1-maximmi@nvidia.com>
+ <20211019144655.3483197-10-maximmi@nvidia.com>
+ <CACAyw9_MT-+n_b1pLYrU+m6OicgRcndEBiOwb5Kc1w0CANd_9A@mail.gmail.com>
+ <87y26nekoc.fsf@toke.dk> <1901a631-25c0-158d-b37f-df6d23d8e8ab@nvidia.com>
+ <103c5154-cc29-a5ab-3c30-587fc0fbeae2@fb.com>
+ <1b9b3c40-f933-59c3-09e6-aa6c3dda438f@nvidia.com>
+ <68a63a77-f856-1690-cb60-327fc753b476@fb.com>
+ <3e673e1a-2711-320b-f0be-2432cf4bbe9c@nvidia.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <YaABLmIMey52fotW@kernel.org>
+In-Reply-To: <3e673e1a-2711-320b-f0be-2432cf4bbe9c@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-ClientProxiedBy: MWHPR14CA0032.namprd14.prod.outlook.com
- (2603:10b6:300:12b::18) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MWHPR22CA0032.namprd22.prod.outlook.com
+ (2603:10b6:300:69::18) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
-Received: from [IPV6:2620:10d:c085:21e8::1060] (2620:10d:c090:400::5:b5af) by MWHPR14CA0032.namprd14.prod.outlook.com (2603:10b6:300:12b::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23 via Frontend Transport; Fri, 26 Nov 2021 05:38:02 +0000
+MIME-Version: 1.0
+Received: from [IPV6:2620:10d:c085:21e8::1060] (2620:10d:c090:400::5:b5af) by MWHPR22CA0032.namprd22.prod.outlook.com (2603:10b6:300:69::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend Transport; Fri, 26 Nov 2021 05:43:56 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b47c3d1-576e-4cd6-1917-08d9b09eea21
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4920:
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4920E3B2DF20DF573F27143ED3639@SA1PR15MB4920.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: d686657f-e9ba-45f4-2abf-08d9b09fbe27
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB4093:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB40932340E51D5FD3B2CAB030D3639@SN6PR1501MB4093.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zpOGr3/fcOkQs9eT4nrHUYi33VwopGcAQ5l95jg4Mk85XxSW/rdYGaHSXVlOT0cMDvaEU2dBuezcHcnGdLQDhjEmBobte6BNlZtkL9Pa7WEwfysNUEKRAx1Fz+oKk3b0gYrSZEP8kXv2HzNynDu1QLrb7nA4jNB0ov+yFJxLvURp0LLvtdPAQGv5IlnujczE0o2AkkkivOz1LqNWMFz/LJ59WPJUJUAnEKt0vWLbuWCLB+8DCS/PVDYLeY4NVYpschX+Sp6E0zFc+7+CS8i1zw0KroMvb2RMiWOIGLz6rqzUPfIZGtDtpXvRdbJsShIfU3GvbAgbOEo5W4S9LWwZBm50RDqXMn7k+muR5ul/7M4WxDWnJjk8/M22Bu5/saU0hsVRgrr0Tj4dr0diyUxGS8+mucs/45JbZjqVm9MRyX61OkFQwjGt51N+0N036WQDO6kFEdfVeyVZdqlb6NXbIUkTEa6I91dW+Z/TfT6m2NHqeXDJQkoikIROoNTBMYviCONM2sZHxMDwBfdcSDdC2PAMw+loKWIaywAxoI/B4XV08xzSgUJLVBPXlHloV1RVnTXRHOPl7Q/qmVHCKdFQSu7dQjMhecOABUekOkmMqjEjSrGChEu4ale6YonkiL5/gVJoN3VSZmWiyOT4zX30xDIU6iBY7DbqoDjeVcp1Z27QPxNkEefizkaa/3PavmfZ+yzLXkM6X1iFW7BcC9aIA9c3x8HALdeZS/M0FglZt9/Mcw4eKSBlfPe92OB3swrd4K3EWNZs8EhTA3aGXHB2/OjiDAUWdBJQHv8/MnOoYDy03WRxuzUObEywkCekbytF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31696002)(38100700002)(83380400001)(36756003)(5660300002)(508600001)(2906002)(31686004)(316002)(8676002)(53546011)(66476007)(66556008)(186003)(4326008)(2616005)(52116002)(54906003)(8936002)(6666004)(86362001)(66946007)(6486002)(110136005)(966005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: jfJ59cd+LPQ6b0hfvh+Hzn5dn1Ep/AxBOYJeeYqhvMgwkkYWWM23IHjQWMPc48S1TZfFoPUOYnE8NXHrMK3LFvvGEuKK+9XyNi58Ezg77tJe0j/nXdxNhhVSqN4clTC9mjMEndzwlpP4k+R9WituCjHlE/qO4QJjm/VvxPyToY1hMvWh0g3/vmbD8pNLnARIExQbnR2dIzTSNgn7k2Pptn6aLX5mkKKi89Y8KZIhFIQ/gM6dQq4QhebMHScs/xfFofZfEeZnMXb1RYCX892pYc09vU4ocpJfby0N66/OODLdREsETzZ1fuZX3Gt1JC+2aETf1ryDTnC8+rj69tujf33RGZ1l3g2Tr2zMsshOm12jdR4dsT/CTPia6bAY4HrsFF85+MmbY513e5qOjnpvJUKpINKTH4fZAJkJmiDhe6cHDOEDfyMH27mp6SkMLGRxXcVfJhTbNpf+EOH9+BDBsl7uSgsXrsuAh5hiN3rR8VLzRAV/G0ebm10WzuLW9yIIo/QPa+Lv7yaPW2lNzmK8h/GkElknJXfvObWd2awpi+9Oz5VmPrQQ1LI/Qzn0PjDZyKRaAfMRXQnpHRubhG+iDTdDgLbIpToYEw1JzFm8wtMLruQGB2s9DPoT9yIj6IOppa+ylHI/fppoYWsZgHNhiammRAHqyAACJxqh2a8rCCsTJZw+KmIhzLRUm43vu9P3369huKt1NvKrW+/l06DH97UbURZ8XlLfdzLOALEqT1PiLCO60TLMeGfkK/GTv+zJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(186003)(7416002)(508600001)(4001150100001)(86362001)(36756003)(8676002)(66574015)(4326008)(8936002)(31696002)(66476007)(110136005)(52116002)(53546011)(5660300002)(66556008)(66946007)(83380400001)(6486002)(316002)(38100700002)(2906002)(2616005)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWFyOGJ6S2N0RFNuMDB5eXBtelNodHhxcHRkOVZUdHlEaVVJazlYNHM0Q0x1?=
- =?utf-8?B?b1FzNlhFc2l5ME10QXBjclRRTmZnd2RIUkc2dWt6ems2TmdQRWVXbkVPTFUz?=
- =?utf-8?B?VUEybXNkVGwzTVdPMlVIN3pHTjhoaXNrUEtaZUkyK2FkcXB0UGw1bXk2YTJL?=
- =?utf-8?B?SExJL01YTlJoY2xQNU40elJtMVZodmdMSWIwVFpYa2VFWnpISmx3ZjFKSFhG?=
- =?utf-8?B?L2NjaXJpaThIWElCQTlkRkkzYXRjdE8vOGRqUGJTa29UelBHZE1pMUw3dUZ5?=
- =?utf-8?B?bUFuSis0d3JNMUQ3VEdEZ0xCUVNTeWZMdjJOdENqc2VZYUtyclJ1V0s0OXVy?=
- =?utf-8?B?eUw4cnNKQkFYQ2IxYWJjM3BBSW1KSmJ4eEIwZFVRQ1ZOcGJzOWR0VlBtL29O?=
- =?utf-8?B?THEwemdFbnRQWnFqRnpzMnJvaHNyNmJETVRyM0lLYmloOHZ5RVhNNy9oVHJU?=
- =?utf-8?B?eWhTZ0ZKTVFQMzBvcENNUEdYWUhZNW0za3QxODBVVGVUTDBUM3J5UnRUdllu?=
- =?utf-8?B?eHVLdEY5bzJrS052a09wQUFhcXhTSlNsb1NicFlwWFZaZ1JSbTJhTzhIMVE0?=
- =?utf-8?B?OVhLdkZ4VWg5SGV5b3RBR0R2a3JjMW1XakZtY1hva0dyNmh5THZmS014YVBZ?=
- =?utf-8?B?V0VpeEU2aUVOWlU1cXQ3VTFKbjBEdHk0Ny9maDF4aEorbE1RUUV1QTdvdXRK?=
- =?utf-8?B?bEtaWVNPb1U5VWtEcWg5TkRZRUZ6V1BraVBoMk81Nm5nRVVsQUZlQnNIbnJP?=
- =?utf-8?B?MythR3dVWk0xSEU1bTdWRnVGek9BbEtTdTN0OEszM2gwM3NpVEs2alI0eGE2?=
- =?utf-8?B?amhhU0Jtc3ZwWXkvQ1lNTzh1SWhnenhqV2NFMjJJUVRweFJzMkcxMTNLU0VR?=
- =?utf-8?B?N2tIUmZaNHpkMnVMUXE2YXhyTTc4SkhtMllOcmlnYkhVMzhzK3Q5RmhlREQy?=
- =?utf-8?B?R01FUnR4cVRFUEs1WkxzSG9hWjI3R1hRaEpSMXNMZHArcU1IMHQydGxOQVJp?=
- =?utf-8?B?M2RjNlNYSXlTQnRNeHpha2xaVDB5WWltMWZrSUFQQUxvbW84N1FEMi8vSWJN?=
- =?utf-8?B?bUloM3Rsanl2TVFXRmJGMHcrV1dXZmNmQnR6Wnlrd2l5R05CZXdabHBCSm5C?=
- =?utf-8?B?NDd6RGJKTHRINlgzcnNUWk9hRFN5N2tnSUFVbDBXajE0L0ZGRndmeVFhaG5O?=
- =?utf-8?B?dnRGazY4YlRMVm92V1Noak8ySUFYMTNKeDFIRXg4WEIrd1JqYW9Ua0xuRlpQ?=
- =?utf-8?B?Ylh0aWlocm5jcTZIV1kxcnFKbk0yNTltQWpHcExzaEhoNE8vVUMxaFN4LzNF?=
- =?utf-8?B?SjFhd0hkd2ZZc3ZFRStOU0huQ1JyTGNVbzdJMFdQamJIcHNBdkZHak85VHZj?=
- =?utf-8?B?VG1kQndSRGQrU2xtK2pHWjV0dGE2ZWFWUCt2SWp6MWlqdkpwN2N4ODZhQTJw?=
- =?utf-8?B?SHk5R2F6eFQ1K05lWmFWMktYVFV2UEhST0VOR2NlUmtsbWdIMitJUkhVMEgv?=
- =?utf-8?B?cnhDYXU5N2tiQ2dUNlRCOFRVbm0rZUc4cnJlS2hFakdPN2w5cndLdXRzVktL?=
- =?utf-8?B?c0F4T2JtSHdGaXJWVmIyWERUWnZqRlBHazN3cFNOaEl1US9UM25OOE1xRGZD?=
- =?utf-8?B?V0taRmMrL1lKWkNPNjQrYkxZQ1FsVmlpT292WXFxaURxYVFMeDU1UlNweUtK?=
- =?utf-8?B?WnFBWXlHOUVoVFdrRm5BbCtzMnlwNlpnN21wc2VMNnloTDV0cmxEZnhiREFm?=
- =?utf-8?B?UGc0SHc4eVk4eGE3MWpMMkJRMnNzZW5oNjBmV09iNkhhZTZpNkw0azFqNmNR?=
- =?utf-8?B?VkZqWUovRVpqSUNBSzl0R0V4RitIUXcyMWd1aXdCamxuMkRZaXRrMHJ4YzdF?=
- =?utf-8?B?WkNWcWhhRTMxb0I1ejNkTGR4eGpzVkpBQXhxMUNFZEg2UHd0aDhIUFVFdldq?=
- =?utf-8?B?QXloYmRiM1V4S1VndUhzU0J6SldDWjYwNXlhYjl6L0RudTQ3Z2NLTHM4K2Fa?=
- =?utf-8?B?dEFHeC9DWEszaTl5VXVSNzE2UW01Uzh5eDZiOUl6NXp5RnZpbGE5YkxKQnJ5?=
- =?utf-8?B?WFh5TlAxWm90bDNCWlRVbnBNRFJYVEozQVIvVlp5QWhka016NTRFR0dXZkdm?=
- =?utf-8?Q?fhGSwJ10JYSKxrGRQeQtDRVG+?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b47c3d1-576e-4cd6-1917-08d9b09eea21
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1ZGYkhkZWhmS1VmLzhzTGN0aEZIczdmaC9mS2R0QXlnb3BkSE5mK0UzRHky?=
+ =?utf-8?B?VnJMR1ppR29FOFBpVG43UnNNdTF2WWtxVk8rdDdHNnNQQmlpRW5qbmtKRlMw?=
+ =?utf-8?B?L2VaaU5FYzFOWUduS1pDVDN6MkdZeGNqVngvNEw0dStseXZML0svKzV6YlJY?=
+ =?utf-8?B?enpVZVVUVU9EZnlrNmNZTU5EUFlFTjYwV1g5bFFJNnpOdThRdVhVcVByL0hL?=
+ =?utf-8?B?RDJjWmdNVk1PcGRuYjN0aFVCY0xsRmRBbm1VbGNuWTJYOW0yRlJSN3JhSGlr?=
+ =?utf-8?B?NXJEQmg3QkI0ekdDaERSYldGTTJ5dlVqc0tzcDhhakRUMXEzalNXMGFOMFhC?=
+ =?utf-8?B?Q1FzR3NKaUJWdEhCMGdaN1hvclFtVk1NZFNBSklnRitiVi9MTjlBVndrajVw?=
+ =?utf-8?B?Y1E0UUJ5SHI2YTFFS25sKzNHOHZLOXR2a3ZMWTNvRHNoYzkxUmYvakV1b3VT?=
+ =?utf-8?B?OGZYOWNhdXVNSDJEcXJtbU5zdmdENnZUZjVSMnpaSjUzRnU5YXk1TGhKRVVt?=
+ =?utf-8?B?WDQ3RUNaRFA0aURpRG4zV1J5MUhSd2t3eW9PVmYwWWNYeTBZQUFoM3Q5ZndC?=
+ =?utf-8?B?SzgwYzNJQmxPK0twSWZsMWpWaEI0U0ZLTW5HQTJzZGdreTh3VlQ4TlRidGhm?=
+ =?utf-8?B?eEp0V29jWUxKcnRHLzZ2S29DcS9ZZHZzQ3ZWSE5zVkpkdXAzbGRBbTY0bzVt?=
+ =?utf-8?B?UzNiNUV2T21iTGY0WEFsWWJjS1N3RkUwYjB1bVdmYnEybDNuVGl5aU9nTDBZ?=
+ =?utf-8?B?eTM2eVVZR3k0T3UwNE1SSzVYVS9DWGZLN1lJNTF2cFNobXVZRi9JWEdjY0k0?=
+ =?utf-8?B?OUVvR3hPN1gyeDB2TnExWkx6bHhrQmFkanNPcG9RazB4b0pkZHdHcGxKblBP?=
+ =?utf-8?B?Z0U2ZGd1SUhGSUhwWHpXc2dDTDY2eHRRUk0rYU1WSjFUZWIwOXJ6ejBtb0M2?=
+ =?utf-8?B?R0tEMnhtVHBIeDllOSt1OHMzdDBLYjFtUEZBU1BnQ1FBUElEcEJwUlloTVNs?=
+ =?utf-8?B?YXZzS1pJQURSK1dpRGZRSFE1SHBKZVhHYjV6Nm54cnk5UURQU3l0THJMdVZL?=
+ =?utf-8?B?TldCZGZNMVREZVpOVUVxK29wdGdxZzNVNnVzNHNOMlZZczk1UXo2TjIxUEdp?=
+ =?utf-8?B?QWpuTzVhck1oTG1oK3Jrd3QwOExVNmpob2ZCNE9UK0ZMdTdPYlkrT0RqL0pl?=
+ =?utf-8?B?bk41T010MlZYSVMxNXZHK0FaTlFnSEhFdzJuOUw5bVdSb2VXMWZjdEV3WndE?=
+ =?utf-8?B?OFJSQlp2MlJXdnBEbS9hVVQxdzJRNFNTWUR5RjZvR0laSWh0cUc1Mkh5TUlH?=
+ =?utf-8?B?WHkrbmRxQXlYemNRSmV2ZHVYU3M4eE1YZUJEODVwa3puK0YxRmxyVmV4dEpY?=
+ =?utf-8?B?dEh5RUVqc3RYR1kvM1p2UDdob1JQWXYxUDFLbG9BbmN4dnhvb0wvMEIzMTRl?=
+ =?utf-8?B?aTVyTDFOWnI1VmJYS1NWeG1OcVRmaWNOWGMzTDFLSGNDRUFVcVc0akRseFJl?=
+ =?utf-8?B?bEpRT29vbStJT0lXWlppVk1HSzM4ejJURy9haHYweTdLalVjUHRVSEFJOTBQ?=
+ =?utf-8?B?ZW9obExTcGlyZHA3NVNzRlRVVUFjMWdiU0czY1pqZDlaMzIwN0cvTW41eUts?=
+ =?utf-8?B?UWpUbUxRZkJ0ejR0ZmNMdGUxSmxOWUlsZnRyODBqMmVDVGozVnRmditlKytS?=
+ =?utf-8?B?cmlOTnE4SDNKM2R6bmxwLzVkM1VEMXI0cHlkeFZWUnkzNGV1a3Nyci92aEdN?=
+ =?utf-8?B?WExDb01YRzBQc1ZwZ29ZRWdDUGY4bnNGcEZjY1FqakFGeklKQW9NQ0tkVHFN?=
+ =?utf-8?B?d2hJdEJEMXgvRVprV0hwcW1EamVmOXRIbTRHTXQ0OWNYNWdWSlhDZGxoR1ov?=
+ =?utf-8?B?QXM1Z2lLTTJUd3VxYjFjMGdsQXpRb0Jrd1Q5UkNXM0k4V1hBZEJ5dlBzVGxG?=
+ =?utf-8?B?elBtU3AwOXErTkFzUGdPRys1ZVI0REFCUE5nVVNhUzBpbHdueXZ2cFc0VG9K?=
+ =?utf-8?B?b1lXVWthOStCTTZSVDhjMWt6MTE0YjhyL2E0ZEhsUnlIZktrdnRjOXBob0hZ?=
+ =?utf-8?B?OWlrMjRNbkU2OWJmRkRsK0x3WThiNWhuTXdjTC9USXl4TGR5eW90K3BsK2li?=
+ =?utf-8?B?YmwzMVBuL0FzRkJjNVA3UXZvUlhCems0bXYyalBDWWZMdVlrOXdzTThaeEpp?=
+ =?utf-8?B?cGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d686657f-e9ba-45f4-2abf-08d9b09fbe27
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2021 05:38:03.0374
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2021 05:43:58.7591
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ykr6UcSxSM030M0exkTWFPpJdAQWU/Hc+dBzmM8iUmwsk+rhNS878xn3Er1H4j4R
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4920
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6pQG2xDRmaS0JzztaKGfma2TCQQY/qiunkALSm06swb5YF1taHCjZMfrudrj11Uk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB4093
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: N14mkWJ_1fRFYwBX2lHAKIzFsIS_9GR4
-X-Proofpoint-ORIG-GUID: N14mkWJ_1fRFYwBX2lHAKIzFsIS_9GR4
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: g7CDktSOQtNGFox7rlKNHtzNdhapJA5c
+X-Proofpoint-GUID: g7CDktSOQtNGFox7rlKNHtzNdhapJA5c
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-26_01,2021-11-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
- bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111260031
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1011 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111260031
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -152,99 +172,112 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 11/25/21 1:33 PM, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Nov 23, 2021 at 08:49:17PM -0800, Andrii Nakryiko escreveu:
->> On Tue, Nov 23, 2021 at 3:36 PM Arnaldo Carvalho de Melo
->> <acme@kernel.org> wrote:
->>>
->>> Em Tue, Nov 23, 2021 at 10:32:18AM -0800, Andrii Nakryiko escreveu:
->>>> On Mon, Nov 22, 2021 at 8:56 PM Yonghong Song <yhs@fb.com> wrote:
->>>>>
->>>>> btf_type_tag is a new llvm type attribute which is used similar
->>>>> to kernel __user/__rcu attributes. The format of btf_type_tag looks like
->>>>>    __attribute__((btf_type_tag("tag1")))
->>>>> For the case where the attribute applied to a pointee like
->>>>>    #define __tag1 __attribute__((btf_type_tag("tag1")))
->>>>>    #define __tag2 __attribute__((btf_type_tag("tag2")))
->>>>>    int __tag1 * __tag1 __tag2 *g;
->>>>> the information will be encoded in dwarf.
->>>>>
->>>>> In BTF, the attribute is encoded as a new kind
->>>>> BTF_KIND_TYPE_TAG and latest bpf-next supports it.
->>>>>
->>>>> The patch added support in pahole, specifically
->>>>> converts llvm dwarf btf_type_tag attributes to
->>>>> BTF types. Please see individual patches for details.
->>>>>
->>>>> Changelog:
->>>>>    v1 -> v2:
->>>>>       - reorg an if condition to reduce nesting level.
->>>>>       - add more comments to explain how to chain type tag types.
->>>>>
->>>>> Yonghong Song (4):
->>>>>    libbpf: sync with latest libbpf repo
->>>>>    dutil: move DW_TAG_LLVM_annotation definition to dutil.h
->>>>>    dwarf_loader: support btf_type_tag attribute
->>>>>    btf_encoder: support btf_type_tag attribute
->>>>>
->>>>
->>>> I thought that v1 was already applied, but either way LGTM. I'm not
->>>
->>> To the next branch, and the libbpf pahole CI is failing, since a few
->>> days, can you please take a look?
+On 11/25/21 6:34 AM, Maxim Mikityanskiy wrote:
+> On 2021-11-09 09:11, Yonghong Song wrote:
 >>
->> We've had Clang regression which Yonghong fixed very quickly, but then
->> we were blocked on Clang nightly builds being broken for days. Seems
->> like we got a new Clang today, so hopefully libbpf CI will be back to
->> green again.
-> 
-> It is back to green, so I moved next to master, i.e. this series is now
-> on master.
-
-Arnaldo,
-
-Is it possible that we could cut a pahole release in the near future?
-My kernel using btf_type_tag patch ([1]) needs a pahole version check. 
-In old pahole versions, a warning about pointer type subtags not 
-supported will be emitted and btf_type_tag attributes (as pointer type 
-subtags) will be ignored.
-
-   [1] https://lore.kernel.org/bpf/20211118184810.1846996-1-yhs@fb.com/
-
-Thanks!
-
-> 
-> - Arnaldo
->   
->>>
->>>> super familiar with the DWARF loader parts, so I mostly just read it
->>>> very superficially :)
->>>
->>> I replaced the patches that changed, re-added the S-o-B for Yonghong and
->>> tested it with llvm-project HEAD.
->>>
->>>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->>>
->>> Adding it to the csets.
->>>
->>> Thanks!
->>>
->>> - Arnaldo
->>>
+>>
+>> On 11/3/21 7:02 AM, Maxim Mikityanskiy wrote:
+>>> On 2021-11-03 04:10, Yonghong Song wrote:
 >>>>
->>>>>   btf_encoder.c  |   7 +++
->>>>>   dutil.h        |   4 ++
->>>>>   dwarf_loader.c | 140 ++++++++++++++++++++++++++++++++++++++++++++++---
->>>>>   dwarves.h      |  38 +++++++++++++-
->>>>>   lib/bpf        |   2 +-
->>>>>   pahole.c       |   8 +++
->>>>>   6 files changed, 190 insertions(+), 9 deletions(-)
+>>>>
+>>>> On 11/1/21 4:14 AM, Maxim Mikityanskiy wrote:
+>>>>> On 2021-10-20 19:16, Toke Høiland-Jørgensen wrote:
+>>>>>> Lorenz Bauer <lmb@cloudflare.com> writes:
+>>>>>>
+>>>>>>>> +bool cookie_init_timestamp_raw(struct tcphdr *th, __be32 
+>>>>>>>> *tsval, __be32 *tsecr)
+>>>>>>>
+>>>>>>> I'm probably missing context, Is there something in this function 
+>>>>>>> that
+>>>>>>> means you can't implement it in BPF?
+>>>>>>
+>>>>>> I was about to reply with some other comments but upon closer 
+>>>>>> inspection
+>>>>>> I ended up at the same conclusion: this helper doesn't seem to be 
+>>>>>> needed
+>>>>>> at all?
 >>>>>
->>>>> --
->>>>> 2.30.2
+>>>>> After trying to put this code into BPF (replacing the underlying 
+>>>>> ktime_get_ns with ktime_get_mono_fast_ns), I experienced issues 
+>>>>> with passing the verifier.
 >>>>>
+>>>>> In addition to comparing ptr to end, I had to add checks that 
+>>>>> compare ptr to data_end, because the verifier can't deduce that end 
+>>>>> <= data_end. More branches will add a certain slowdown (not measured).
+>>>>>
+>>>>> A more serious issue is the overall program complexity. Even though 
+>>>>> the loop over the TCP options has an upper bound, and the pointer 
+>>>>> advances by at least one byte every iteration, I had to limit the 
+>>>>> total number of iterations artificially. The maximum number of 
+>>>>> iterations that makes the verifier happy is 10. With more 
+>>>>> iterations, I have the following error:
+>>>>>
+>>>>> BPF program is too large. Processed 1000001 insn
+>>>>>
+>>>>>                         processed 1000001 insns (limit 1000000) 
+>>>>> max_states_per_insn 29 total_states 35489 peak_states 596 mark_read 45
+>>>>>
+>>>>> I assume that BPF_COMPLEXITY_LIMIT_INSNS (1 million) is the 
+>>>>> accumulated amount of instructions that the verifier can process in 
+>>>>> all branches, is that right? It doesn't look realistic that my 
+>>>>> program can run 1 million instructions in a single run, but it 
+>>>>> might be that if you take all possible flows and add up the 
+>>>>> instructions from these flows, it will exceed 1 million.
+>>>>>
+>>>>> The limitation of maximum 10 TCP options might be not enough, given 
+>>>>> that valid packets are permitted to include more than 10 NOPs. An 
+>>>>> alternative of using bpf_load_hdr_opt and calling it three times 
+>>>>> doesn't look good either, because it will be about three times 
+>>>>> slower than going over the options once. So maybe having a helper 
+>>>>> for that is better than trying to fit it into BPF?
+>>>>>
+>>>>> One more interesting fact is the time that it takes for the 
+>>>>> verifier to check my program. If it's limited to 10 iterations, it 
+>>>>> does it pretty fast, but if I try to increase the number to 11 
+>>>>> iterations, it takes several minutes for the verifier to reach 1 
+>>>>> million instructions and print the error then. I also tried 
+>>>>> grouping the NOPs in an inner loop to count only 10 real options, 
+>>>>> and the verifier has been running for a few hours without any 
+>>>>> response. Is it normal? 
+>>>>
+>>>> Maxim, this may expose a verifier bug. Do you have a reproducer I 
+>>>> can access? I would like to debug this to see what is the root case. 
+>>>> Thanks!
 >>>
->>> --
+>>> Thanks, I appreciate your help in debugging it. The reproducer is 
+>>> based on the modified XDP program from patch 10 in this series. 
+>>> You'll need to apply at least patches 6, 7, 8 from this series to get 
+>>> new BPF helpers needed for the XDP program (tell me if that's a 
+>>> problem, I can try to remove usage of new helpers, but it will affect 
+>>> the program length and may produce different results in the verifier).
 >>>
->>> - Arnaldo
+>>> See the C code of the program that passes the verifier (compiled with 
+>>> clang version 12.0.0-1ubuntu1) in the bottom of this email. If you 
+>>> increase the loop boundary from 10 to at least 11 in 
+>>> cookie_init_timestamp_raw(), it fails the verifier after a few minutes. 
+>>
+>> I tried to reproduce with latest llvm (llvm-project repo),
+>> loop boundary 10 is okay and 11 exceeds the 1M complexity limit. For 10,
+>> the number of verified instructions is 563626 (more than 0.5M) so it is
+>> totally possible that one more iteration just blows past the limit.
 > 
+> So, does it mean that the verifying complexity grows exponentially with 
+> increasing the number of loop iterations (options parsed)?
+
+Depending on verification time pruning results, it is possible slightly 
+increase number of branches could result quite some (2x, 4x, etc.) of
+to-be-verified dynamic instructions.
+
+> 
+> Is it a good enough reason to keep this code as a BPF helper, rather 
+> than trying to fit it into the BPF program?
+
+Another option is to use global function, which is verified separately
+from the main bpf program.
+
+> 
+>>
+>>> If you apply this tiny change, it fails the verifier after about 3 
+>>> hours:
+>>>
+[...]
