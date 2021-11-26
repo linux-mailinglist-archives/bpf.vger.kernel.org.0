@@ -2,173 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A8345E9D4
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 10:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DE345EC72
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 12:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348013AbhKZJGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Nov 2021 04:06:37 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60032
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1359872AbhKZJEf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Nov 2021 04:04:35 -0500
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S237371AbhKZLYt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Nov 2021 06:24:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28451 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237658AbhKZLWt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Nov 2021 06:22:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637925576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qkz3t6yTtCyGGIa4smq1sgd2IxE223NuLT4wxqa7ekM=;
+        b=ez9Lf3Z5u+9LWb5I6jxb1fZ6U04qYQdJOwSltICweDvsAjxWXHrLNjkzdtQNTebYRa1jXE
+        Vkv9+TACK+nswkZrg6IwqmYtMUHNRL/HCWz+bW/9XMXGEUA5We15aAFxbAb5po8TRMPxFd
+        +k+n1uyfHh9cOszUq+6MnK7ts7SJScI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-432-HCoO5XZEMrWFZARas5sMyA-1; Fri, 26 Nov 2021 06:19:35 -0500
+X-MC-Unique: HCoO5XZEMrWFZARas5sMyA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4CF504001B
-        for <bpf@vger.kernel.org>; Fri, 26 Nov 2021 09:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637917281;
-        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=D8idFLkyy6NiQjr57fzJYJK7QbMdIc3v5nW0Z33wcLVK+IOhVb3bPJUa6CZYxKT2G
-         dc8gBah51WcYSHYB/r7fZAMqTkfrAxyzNucz9kSTcyHfP/S0UpmrUT/E4fF/m4lMXE
-         XWEkPRIHNBkboEBLEF2rblSWDHSCqBcR4A/RJtXB30ZDca0SKq1OL0il16H+XGLmgt
-         TllzPyDmZFq7BaxjV846RZGuXdL3F+nYZ67nNl4SHyuiOuYh7mb/LrFMoOGGBw0Ss1
-         OtTssg4wPWKAjwY1itKglwKNWOTJImIQdHc3CiJ3+1zXqB1IlbK6JfscXhaaAaYMh+
-         9B5EaGEBldipQ==
-Received: by mail-ed1-f72.google.com with SMTP id w4-20020aa7cb44000000b003e7c0f7cfffso7487494edt.2
-        for <bpf@vger.kernel.org>; Fri, 26 Nov 2021 01:01:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
-        b=LMNCyBUYm/DrqYsxdm8a7e1S4rRPRXPtXkq7dSFL1B8cCzHeV03ShYoPajoSB5I0FD
-         W4f6fhBlaKD3mA7P9C+ZqLB//Cvfzbkfn4tW5L0dc3Jqbiq8P2beXvkaIZhz/CuJf8ZP
-         fCQCa/y1GCja0fodyPwLUImF0br9tHSR0YOHckxqAJrKHgvtOQexXiD5Vs6ti0rl9fT7
-         w0otsveuBj46RohqcWC6xpLeFPzKoZKA27a6+nrD/IGhfKpsks4I/AC14LQVEqjB+rDI
-         JKv4z2wROPXAZLyS8Eg6GQUEI/r1q8pBm5ubx3z9PwK64JLxgKcZEc0IXhIrAhTQdYdu
-         BLow==
-X-Gm-Message-State: AOAM531ry96BpXr/ClXzoqFu+AAvtAn/8x1JWd2ffYRZ++yqcW137GMW
-        Xp6MHv7eeZ1C1VUtU/4H1lLrlK6CMJN+EgRkT6kwyxr0Fuxldg8kOdtdoRJU8HcW1UJ3dAAqOeP
-        X4hmUp64y51t0ABosGXG+O8PwU90bZA==
-X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510568edw.318.1637917280840;
-        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxA/gPOhfwr63nIN4QqNwMF4BDsoXBkVZzPKhinuy/tb4GYEkRp4MHzCZGHTX+pLz5/8jbGgQ==
-X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510536edw.318.1637917280547;
-        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id e4sm3026588ejs.13.2021.11.26.01.01.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 01:01:19 -0800 (PST)
-Date:   Fri, 26 Nov 2021 10:01:19 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/seccomp: fix check of fds being assigned
-Message-ID: <YaCiX+ypndYf/0QP@arighi-desktop>
-References: <20211115165227.101124-1-andrea.righi@canonical.com>
- <202111180933.BE5101720@keescook>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 489F61853022;
+        Fri, 26 Nov 2021 11:19:34 +0000 (UTC)
+Received: from gerbillo.fritz.box (unknown [10.39.194.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 796E960BF4;
+        Fri, 26 Nov 2021 11:19:19 +0000 (UTC)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH net-next v2 0/2] bpf: do not WARN in bpf_warn_invalid_xdp_action()
+Date:   Fri, 26 Nov 2021 12:19:09 +0100
+Message-Id: <cover.1637924200.git.pabeni@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111180933.BE5101720@keescook>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 09:37:03AM -0800, Kees Cook wrote:
-> On Mon, Nov 15, 2021 at 05:52:27PM +0100, Andrea Righi wrote:
-> > There might be an arbitrary free open fd slot when we run the addfd
-> > sub-test, so checking for progressive numbers of file descriptors
-> > starting from memfd is not always a reliable check and we could get the
-> > following failure:
-> > 
-> >   #  RUN           global.user_notification_addfd ...
-> >   # seccomp_bpf.c:3989:user_notification_addfd:Expected listener (18) == nextfd++ (9)
-> 
-> What injected 9 extra fds into this test?
-> 
+The mentioned WARN is quite noisy, especially vs fuzzers and
+apparently used only to track the relevant BPF program and/or
+involved driver.
 
-We run the kselftest inside a framework (bash/python scripts basically)
-and this is what I see (I added a simple `ls -l /proc/pid/fd` in
-seccomp_bpf.c after memfd is created):
+The first patch replace it with a pr_warn_once(), and the 2nd
+patch allow dumps relevant info to track the reported issue.
 
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # #  RUN           global.user_notification_addfd ...
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # total 0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 0 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 1 -> pipe:[28844]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 10 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 11 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 12 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.DEBUG
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 13 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.INFO
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 14 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.WARNING
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 15 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.ERROR
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 16 -> pipe:[27608]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 17 -> pipe:[27609]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 2 -> pipe:[28844]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 3 -> pipe:[27803]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 4 -> pipe:[26387]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 5 -> /home/ubuntu/autotest/client/results/default/debug/client.WARNING
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 6 -> /home/ubuntu/autotest/client/results/default/debug/client.ERROR
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 7 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 8 -> /memfd:test (deleted)
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 9 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # # seccomp_bpf.c:3993:user_notification_addfd:Expected listener (18) == nextfd++ (9)
-11/26 08:50:09 DEBUG|     utils:0153| [stdout] # # user_notification_addfd: Test terminated by assertion
-11/26 08:50:09 DEBUG|     utils:0153| [stdout] # #          FAIL  global.user_notification_addfd
+This is quite invasive, but the mentioned WARN makes the hunt
+for some bugs reported by syzkaller quite difficult.
 
-As we can see memfd has been allocated in a hole (fd=8) and listener
-will get fd=18, so checking for sequential fd numbers is not working in
-this case.
+v1 -> v2:
+ - do not include the device name for maps caller (Toke)
 
-> >   # user_notification_addfd: Test terminated by assertion
-> > 
-> > Simply check if memfd and listener are valid file descriptors and start
-> > counting for progressive file checking with the listener fd.
-> 
-> Hm, so I attempted to fix this once already:
-> 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
-> so I'm not sure the proposed patch really improves it in the general
-> case.
+Paolo Abeni (2):
+  bpf: do not WARN in bpf_warn_invalid_xdp_action()
+  bpf: let bpf_warn_invalid_xdp_action() report more info
 
-I agree that my patch doesn't fix 100% of the cases, we may still have
-fd holes.
+ drivers/net/ethernet/amazon/ena/ena_netdev.c           | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c          | 2 +-
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c       | 2 +-
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c         | 2 +-
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c       | 2 +-
+ drivers/net/ethernet/freescale/enetc/enetc.c           | 2 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c            | 2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c             | 2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c              | 2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c               | 2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c              | 2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c              | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c          | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c           | 2 +-
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c      | 2 +-
+ drivers/net/ethernet/marvell/mvneta.c                  | 2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c        | 2 +-
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c             | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c       | 2 +-
+ drivers/net/ethernet/microsoft/mana/mana_bpf.c         | 2 +-
+ drivers/net/ethernet/netronome/nfp/nfp_net_common.c    | 2 +-
+ drivers/net/ethernet/qlogic/qede/qede_fp.c             | 2 +-
+ drivers/net/ethernet/sfc/rx.c                          | 2 +-
+ drivers/net/ethernet/socionext/netsec.c                | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c      | 2 +-
+ drivers/net/ethernet/ti/cpsw_priv.c                    | 2 +-
+ drivers/net/hyperv/netvsc_bpf.c                        | 2 +-
+ drivers/net/tun.c                                      | 2 +-
+ drivers/net/veth.c                                     | 4 ++--
+ drivers/net/virtio_net.c                               | 4 ++--
+ drivers/net/xen-netfront.c                             | 2 +-
+ include/linux/filter.h                                 | 2 +-
+ kernel/bpf/cpumap.c                                    | 4 ++--
+ kernel/bpf/devmap.c                                    | 4 ++--
+ net/core/dev.c                                         | 2 +-
+ net/core/filter.c                                      | 8 ++++----
+ 37 files changed, 44 insertions(+), 44 deletions(-)
 
-> 
-> > Fixes: 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > ---
-> >  tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> > index d425688cf59c..4f37153378a1 100644
-> > --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> > +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> > @@ -3975,18 +3975,17 @@ TEST(user_notification_addfd)
-> >  	/* There may be arbitrary already-open fds at test start. */
-> >  	memfd = memfd_create("test", 0);
-> >  	ASSERT_GE(memfd, 0);
-> > -	nextfd = memfd + 1;
-> >  
-> >  	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-> >  	ASSERT_EQ(0, ret) {
-> >  		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-> >  	}
-> >  
-> > -	/* fd: 4 */
-> >  	/* Check that the basic notification machinery works */
-> >  	listener = user_notif_syscall(__NR_getppid,
-> >  				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
-> > -	ASSERT_EQ(listener, nextfd++);
-> > +	ASSERT_GE(listener, 0);
-> > +	nextfd = listener + 1;
-> 
-> e.g. if there was a hole in the fd map for memfd, why not listener too?
-> 
-> Should the test dup2 memfd up to fd 100 and start counting there or
-> something? What is the condition that fills the fds for this process?
+-- 
+2.33.1
 
-How about getting the allocated fd numbers from /proc/pid/fd and
-figuring out the next fd number taking also the holes into account?
-
-Thanks,
--Andrea
