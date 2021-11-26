@@ -2,83 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D3E45F637
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 22:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CAF45F648
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 22:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241922AbhKZVUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Nov 2021 16:20:55 -0500
-Received: from www62.your-server.de ([213.133.104.62]:34098 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234251AbhKZVSz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Nov 2021 16:18:55 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mqiZC-0000Wj-Dz; Fri, 26 Nov 2021 22:15:34 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mqiZC-000SZt-2A; Fri, 26 Nov 2021 22:15:34 +0100
-Subject: Re: [PATCH bpf-next 0/6] tools/bpf: Enable cross-building with clang
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, nathan@kernel.org,
-        ndesaulniers@google.com, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, llvm@lists.linux.dev
-References: <20211122192019.1277299-1-jean-philippe@linaro.org>
- <CACdoK4JWJRH0VuStA2N+xziTsC5d_ewuWpQEO2aHhVbsWuAq0g@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2fc51beb-cf28-2896-8377-2f2442b4712b@iogearbox.net>
-Date:   Fri, 26 Nov 2021 22:15:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S240106AbhKZVZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Nov 2021 16:25:22 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:49532 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244403AbhKZVXW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Nov 2021 16:23:22 -0500
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F50A6237E;
+        Fri, 26 Nov 2021 21:20:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id ACE6F6008E;
+        Fri, 26 Nov 2021 21:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637961608;
+        bh=moi86rKF1ITSxySSx4zc0RuevUbXQCMXQfYVDU/TYEM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bN1YktrI6PDk/jFYOjBQyVGkjnr31bSYzdmY9IiSPBXR0HeldaYZMU2UCOkQKj0+w
+         ql6YSdfjYRHS0HpWQlgBxX+FfA5pZX0gonPVbCqQX7aRFOKbm7c2jKqqe5ddyetkj6
+         g+PeY4Nw2K1+egXuC4DAyu/1HJ+KbwCFbJHQebRM9Nyjvnl3LsIQHdVdyfGGNfkZJS
+         FGxqR6QNlVuQGeWywYnP/n/yVuUf2mr5pzmpjqZJDODPTQH5TTolHdibdJIOLO2eOx
+         u1xDoqi1NC3TIb6YQMCFw38y4ySKOx7lHaE+/skVAK76xGbdh2XqC4AsTVMPegNYPs
+         WW+F3GbqvWdhQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A332360A6C;
+        Fri, 26 Nov 2021 21:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CACdoK4JWJRH0VuStA2N+xziTsC5d_ewuWpQEO2aHhVbsWuAq0g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26365/Fri Nov 26 10:23:49 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] bpf,
+ mips: Fix build errors about __NR_bpf undeclared
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163796160866.30899.10399099274793745280.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Nov 2021 21:20:08 +0000
+References: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        lixuefeng@loongson.cn, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/26/21 9:36 PM, Quentin Monnet wrote:
-> On Mon, 22 Nov 2021 at 19:23, Jean-Philippe Brucker
-> <jean-philippe@linaro.org> wrote:
->>
->> Add support for cross-building BPF tools and selftests with clang, by
->> passing LLVM=1 or CC=clang to make, as well as CROSS_COMPILE. A single
->> clang toolchain can generate binaries for multiple architectures, so
->> instead of having prefixes such as aarch64-linux-gnu-gcc, clang uses the
->> -target parameter: `clang -target aarch64-linux-gnu'.
->>
->> Patch 1 adds the parameter in Makefile.include so tools can easily
->> support this. Patch 2 prepares for the libbpf change from patch 3 (keep
->> building resolve_btfids's libbpf in the host arch, when cross-building
->> the kernel with clang). Patches 3-6 enable cross-building BPF tools with
->> clang.
-> 
-> The set looks good to me. I checked that the tools are still building
-> (without cross-compiling). I currently have issues building the
-> selftests on my setup, but they don't appear to be related to this
-> patchset.
-> 
-> Acked-by: Quentin Monnet <quentin@isovalent.com>
-> 
-> Note that on bpf-next, patch 5 (runqslower) has a conflict with
-> be79505caf3f ("tools/runqslower: Install libbpf headers when
-> building").
+Hello:
 
-Jean-Philippe, please do one rebase spin for addressing the above.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Thanks,
-Daniel
+On Thu, 25 Nov 2021 09:36:07 +0800 you wrote:
+> Add the __NR_bpf definitions to fix the following build errors for mips.
+> 
+>  $ cd tools/bpf/bpftool
+>  $ make
+>  [...]
+>  bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not support your arch.
+>   #  error __NR_bpf not defined. libbpf does not support your arch.
+>      ^~~~~
+>  bpf.c: In function ‘sys_bpf’:
+>  bpf.c:66:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+>    return syscall(__NR_bpf, cmd, attr, size);
+>                   ^~~~~~~~
+>                   __NR_brk
+>  [...]
+>  In file included from gen_loader.c:15:0:
+>  skel_internal.h: In function ‘skel_sys_bpf’:
+>  skel_internal.h:53:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+>    return syscall(__NR_bpf, cmd, attr, size);
+>                   ^~~~~~~~
+>                   __NR_brk
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2] bpf, mips: Fix build errors about __NR_bpf undeclared
+    https://git.kernel.org/bpf/bpf-next/c/e32cb12ff52a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
