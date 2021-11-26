@@ -2,114 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B8145F61D
-	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 21:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D3E45F637
+	for <lists+bpf@lfdr.de>; Fri, 26 Nov 2021 22:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240583AbhKZVBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Nov 2021 16:01:33 -0500
-Received: from mga18.intel.com ([134.134.136.126]:35263 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233512AbhKZU7c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Nov 2021 15:59:32 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="222587285"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="222587285"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 12:56:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="539369728"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 26 Nov 2021 12:56:16 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqiGV-0008aY-M1; Fri, 26 Nov 2021 20:56:15 +0000
-Date:   Sat, 27 Nov 2021 04:55:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH net-next v2 2/2] bpf: let bpf_warn_invalid_xdp_action()
- report more info
-Message-ID: <202111270414.XuXZgoE5-lkp@intel.com>
-References: <277a9483b38f9016bc78ce66707753681684fbd7.1637924200.git.pabeni@redhat.com>
+        id S241922AbhKZVUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Nov 2021 16:20:55 -0500
+Received: from www62.your-server.de ([213.133.104.62]:34098 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234251AbhKZVSz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Nov 2021 16:18:55 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mqiZC-0000Wj-Dz; Fri, 26 Nov 2021 22:15:34 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mqiZC-000SZt-2A; Fri, 26 Nov 2021 22:15:34 +0100
+Subject: Re: [PATCH bpf-next 0/6] tools/bpf: Enable cross-building with clang
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, nathan@kernel.org,
+        ndesaulniers@google.com, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, llvm@lists.linux.dev
+References: <20211122192019.1277299-1-jean-philippe@linaro.org>
+ <CACdoK4JWJRH0VuStA2N+xziTsC5d_ewuWpQEO2aHhVbsWuAq0g@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2fc51beb-cf28-2896-8377-2f2442b4712b@iogearbox.net>
+Date:   Fri, 26 Nov 2021 22:15:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <277a9483b38f9016bc78ce66707753681684fbd7.1637924200.git.pabeni@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CACdoK4JWJRH0VuStA2N+xziTsC5d_ewuWpQEO2aHhVbsWuAq0g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26365/Fri Nov 26 10:23:49 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Paolo,
+On 11/26/21 9:36 PM, Quentin Monnet wrote:
+> On Mon, 22 Nov 2021 at 19:23, Jean-Philippe Brucker
+> <jean-philippe@linaro.org> wrote:
+>>
+>> Add support for cross-building BPF tools and selftests with clang, by
+>> passing LLVM=1 or CC=clang to make, as well as CROSS_COMPILE. A single
+>> clang toolchain can generate binaries for multiple architectures, so
+>> instead of having prefixes such as aarch64-linux-gnu-gcc, clang uses the
+>> -target parameter: `clang -target aarch64-linux-gnu'.
+>>
+>> Patch 1 adds the parameter in Makefile.include so tools can easily
+>> support this. Patch 2 prepares for the libbpf change from patch 3 (keep
+>> building resolve_btfids's libbpf in the host arch, when cross-building
+>> the kernel with clang). Patches 3-6 enable cross-building BPF tools with
+>> clang.
+> 
+> The set looks good to me. I checked that the tools are still building
+> (without cross-compiling). I currently have issues building the
+> selftests on my setup, but they don't appear to be related to this
+> patchset.
+> 
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+> 
+> Note that on bpf-next, patch 5 (runqslower) has a conflict with
+> be79505caf3f ("tools/runqslower: Install libbpf headers when
+> building").
 
-Thank you for the patch! Perhaps something to improve:
+Jean-Philippe, please do one rebase spin for addressing the above.
 
-[auto build test WARNING on net-next/master]
-
-url:    https://github.com/0day-ci/linux/commits/Paolo-Abeni/bpf-do-not-WARN-in-bpf_warn_invalid_xdp_action/20211126-192252
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 35bf8c86eeb8ae609f61c43aeab3b530fedcf1b4
-config: riscv-randconfig-r036-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270414.XuXZgoE5-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install riscv cross compiling tool for clang build
-        # apt-get install binutils-riscv64-linux-gnu
-        # https://github.com/0day-ci/linux/commit/afb829c16c3bd86f86b24c880601cea9e21c5d3e
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Paolo-Abeni/bpf-do-not-WARN-in-bpf_warn_invalid_xdp_action/20211126-192252
-        git checkout afb829c16c3bd86f86b24c880601cea9e21c5d3e
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash net/core/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> net/core/filter.c:8190:50: warning: address of array 'dev->name' will always evaluate to 'true' [-Wpointer-bool-conversion]
-                        act, prog->aux->name, prog->aux->id, dev->name ? dev->name : "");
-                                                             ~~~~~^~~~ ~
-   include/linux/printk.h:608:42: note: expanded from macro 'pr_warn_once'
-           printk_once(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
-                                                   ^~~~~~~~~~~
-   include/linux/printk.h:589:30: note: expanded from macro 'printk_once'
-           DO_ONCE_LITE(printk, fmt, ##__VA_ARGS__)
-                                       ^~~~~~~~~~~
-   include/linux/once_lite.h:11:32: note: expanded from macro 'DO_ONCE_LITE'
-           DO_ONCE_LITE_IF(true, func, ##__VA_ARGS__)
-                                         ^~~~~~~~~~~
-   include/linux/once_lite.h:19:9: note: expanded from macro 'DO_ONCE_LITE_IF'
-                           func(__VA_ARGS__);                              \
-                                ^~~~~~~~~~~
-   include/linux/printk.h:450:60: note: expanded from macro 'printk'
-   #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-                                                              ^~~~~~~~~~~
-   include/linux/printk.h:422:19: note: expanded from macro 'printk_index_wrap'
-                   _p_func(_fmt, ##__VA_ARGS__);                           \
-                                   ^~~~~~~~~~~
-   1 warning generated.
-
-
-vim +8190 net/core/filter.c
-
-  8183	
-  8184	void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act)
-  8185	{
-  8186		const u32 act_max = XDP_REDIRECT;
-  8187	
-  8188		pr_warn_once("%s XDP return value %u on prog %s (id %d) dev %s, expect packet loss!\n",
-  8189			     act > act_max ? "Illegal" : "Driver unsupported",
-> 8190			     act, prog->aux->name, prog->aux->id, dev->name ? dev->name : "");
-  8191	}
-  8192	EXPORT_SYMBOL_GPL(bpf_warn_invalid_xdp_action);
-  8193	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Daniel
