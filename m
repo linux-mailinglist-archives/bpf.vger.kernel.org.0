@@ -2,94 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8DB45FFE3
-	for <lists+bpf@lfdr.de>; Sat, 27 Nov 2021 16:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF10D460039
+	for <lists+bpf@lfdr.de>; Sat, 27 Nov 2021 17:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbhK0PhE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Nov 2021 10:37:04 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38648 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347347AbhK0PfE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 27 Nov 2021 10:35:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=cuibixuan@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UyTp5Uj_1638027102;
-Received: from VM20210331-25.tbsite.net(mailfrom:cuibixuan@linux.alibaba.com fp:SMTPD_---0UyTp5Uj_1638027102)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 27 Nov 2021 23:31:46 +0800
-From:   Bixuan Cui <cuibixuan@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     cuibixuan@linux.alibaba.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Subject: [PATCH -next] bpf: Add oversize check before call kvmalloc()
-Date:   Sat, 27 Nov 2021 23:31:42 +0800
-Message-Id: <1638027102-22686-1-git-send-email-cuibixuan@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S233901AbhK0Qhl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Nov 2021 11:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233676AbhK0Qfi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Nov 2021 11:35:38 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4056C061574;
+        Sat, 27 Nov 2021 08:32:23 -0800 (PST)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1638030740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GZvVDx4SLV0ZlxNGlpAB1UsnTh8jqn1OEreuU3ILtTg=;
+        b=HwkYuxv1h2ZXPoA1nfTCif/nvj8TPr0pUiU/vE+AH+24EigR4NE+XntT5FXaJdK6WBa+c+
+        BKMdBtNYHqrXxB9iC+M2nhn4N9/T5iuySl9fbcIomlIFXmBk7rWICH7AqSH899dD1eY0bF
+        z/JZh+40gtTkw9rPrI7x1jJd6OfzumSDu9ALRtHpoY/itgUelAc9+Nw8l4ts1i+dz7BdJC
+        SUk6R7AaNKuliSOHJYUPLE7uy0KqXu/DGox+C0Xj+roT3Yk6gmjOspdtNZggB831Z45Ujl
+        be8EdxTvdcMpvUBAJjWGgrkdk2ixSlYIKKR3mpQnP9kHS/WSa/UCTAE5kgPxSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1638030740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GZvVDx4SLV0ZlxNGlpAB1UsnTh8jqn1OEreuU3ILtTg=;
+        b=Oxmr03AAbIVvBd1mhQevKZRDjNDhNI3O5WrXCS9B7STwvVNuyB1iGLFYIQBoUaGIrl6bfZ
+        Lzi8pn8ZnAui5SDg==
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/2] Update non-RT users of migrate_disable().
+Date:   Sat, 27 Nov 2021 17:31:58 +0100
+Message-Id: <20211127163200.10466-1-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add
-the oversize check. When the allocation is larger than what kvmalloc()
-supports, the following warning triggered:
+While browsing through code I noticed outdated code/ documentation
+regarding migrate_disable() on non-PREEMPT_RT kernels.
 
-WARNING: CPU: 1 PID: 372 at mm/util.c:597 kvmalloc_node+0x111/0x120
-mm/util.c:597
-Modules linked in:
-CPU: 1 PID: 372 Comm: syz-executor.4 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-Google 01/01/2011
-RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-Code: 01 00 00 00 4c 89 e7 e8 7d f7 0c 00 49 89 c5 e9 69 ff ff ff e8 60
-20 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 4f 20 d1 ff <0f> 0b e9
-4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 36
-RSP: 0018:ffffc90002bf7c98 EFLAGS: 00010216
-RAX: 00000000000000ec RBX: 1ffff9200057ef9f RCX: ffffc9000ac63000
-RDX: 0000000000040000 RSI: ffffffff81a6a621 RDI: 0000000000000003
-RBP: 0000000000102cc0 R08: 000000007fffffff R09: 00000000ffffffff
-R10: ffffffff81a6a5de R11: 0000000000000000 R12: 00000000ffff9aaa
-R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
-FS:  00007f05f2573700(0000) GS:ffff8880b9d00000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2f424000 CR3: 0000000027d2c000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- kvmalloc include/linux/slab.h:741 [inline]
- map_lookup_elem kernel/bpf/syscall.c:1090 [inline]
- __sys_bpf+0x3a5b/0x5f00 kernel/bpf/syscall.c:4603
- __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4720
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The type of 'value_size' is u32, its value may exceed INT_MAX.
-
-Reported-by: syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com
-Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
----
- kernel/bpf/syscall.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 1033ee8..f5bc380 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1094,6 +1094,10 @@ static int map_lookup_elem(union bpf_attr *attr)
- 	}
- 
- 	value_size = bpf_map_value_size(map);
-+	if (value_size > INT_MAX) {
-+		err = -EINVAL;
-+		goto err_put;
-+	}
- 
- 	err = -ENOMEM;
- 	value = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
--- 
-1.8.3.1
+Sebastian
 
