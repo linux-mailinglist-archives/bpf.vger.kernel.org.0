@@ -2,65 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4462C45FDCF
-	for <lists+bpf@lfdr.de>; Sat, 27 Nov 2021 10:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B2045FE2B
+	for <lists+bpf@lfdr.de>; Sat, 27 Nov 2021 11:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353508AbhK0J5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Nov 2021 04:57:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29924 "EHLO
+        id S229711AbhK0Kql (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Nov 2021 05:46:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47788 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354084AbhK0JzN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 27 Nov 2021 04:55:13 -0500
+        by vger.kernel.org with ESMTP id S233006AbhK0Kol (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 27 Nov 2021 05:44:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638006718;
+        s=mimecast20190719; t=1638009686;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=p75atS3SnkNsb8S2VmpxFfNaOxa+SCCGx3bM477zQ0Y=;
-        b=HoqmbhznI73eO1aZ2F1MK/kW2sGGjxCHPumzykh1PcXVXIuKfW1qyNRtUoh0nKIFtm1WYv
-        hCpdUvTOgZb+E3BUobLyyd5TJ/nLPM3jbaF+Y35IiWO8qvqJDYJpgxZ8WG2ZIPfkysD4dD
-        BZ9bQrFk2AhLErg12Ezv4sl+cPFJ1a0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=+oCtSZw+hU9Geau33+wFsSslq0uK7JYa5qmKFZ7JrpA=;
+        b=bJr/DMBwofKchbc8PB73rAH7iJTg6BRY4wwp25ZFNnf7dAI6lIzXNoQNvPTzSeg/8cAA9m
+        hReU/XJzf73mk03N0Z/qVpRuoIYSxptE83THHObePB7iW6grbQBFzjKXBKfXRSnDRedlN8
+        KJN3Q85FO8LeKlsIlI6DUGiQaMUchwI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-530-hH5rzfUyMsaQObFYxcHfnw-1; Sat, 27 Nov 2021 04:51:57 -0500
-X-MC-Unique: hH5rzfUyMsaQObFYxcHfnw-1
-Received: by mail-wm1-f69.google.com with SMTP id r129-20020a1c4487000000b00333629ed22dso8429824wma.6
-        for <bpf@vger.kernel.org>; Sat, 27 Nov 2021 01:51:56 -0800 (PST)
+ us-mta-132-QBxOrr85Mqee6XdLJr_wyg-1; Sat, 27 Nov 2021 05:41:25 -0500
+X-MC-Unique: QBxOrr85Mqee6XdLJr_wyg-1
+Received: by mail-wm1-f72.google.com with SMTP id a85-20020a1c7f58000000b0033ddc0eacc8so6605055wmd.9
+        for <bpf@vger.kernel.org>; Sat, 27 Nov 2021 02:41:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
          :subject:content-language:to:references:in-reply-to
          :content-transfer-encoding;
-        bh=p75atS3SnkNsb8S2VmpxFfNaOxa+SCCGx3bM477zQ0Y=;
-        b=1GYAOAyH5S8fKjx1T1/IWUaG5Xa2D+iKiNykIp8SHoHU6UwVAIWWbC3dvm+cN0P2Bv
-         kODnC5hQq8hfxng2fgjNR7ZJEf4+I/sfjIJib69epoYyQ6O5eU4fB7LYjyOXO6i00MCc
-         XvxiU4y3d2B21VQZ9+RWbjkkO2DDg6bNzJFhnCq4fyf6xXMvZz1k4ST1edkWc6ocTLyH
-         zKHPqvTYspcXw14dGwRUCFbTCQoc607dRCj+kC6nWGI9W9dsHkFHfg7r71DC191SKtb9
-         COEMHgB6WGZSV3P7CZMersN+LKdPySr6nNJ/2fplsTEHNdC5jR4VYn6fyIrIM8t9Hm40
-         rYrw==
-X-Gm-Message-State: AOAM532ovNfmWU+NqxtzEuQ7MkXT0RcPwGwJ0d5pmSOaqsJJyj7hvD+R
-        ufo4Xm9nlUZLvz9Ri8b87M5KD2/wHHJsNZqLfUBrldoDZsj6kycXwg/GDnC7EbkEQhv+3H3328t
-        3xTZcysRUSR3g
-X-Received: by 2002:a1c:2047:: with SMTP id g68mr22167716wmg.181.1638006715493;
-        Sat, 27 Nov 2021 01:51:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwrC1pkgjEewkKotBw1LkGeoMrE6rp5r7iq42oOQXf6GEEveAUFje8X+iRIbN6+ivpoegAexw==
-X-Received: by 2002:a1c:2047:: with SMTP id g68mr22167699wmg.181.1638006715350;
-        Sat, 27 Nov 2021 01:51:55 -0800 (PST)
+        bh=+oCtSZw+hU9Geau33+wFsSslq0uK7JYa5qmKFZ7JrpA=;
+        b=pzAfiXDXtJPH42ELx6nGOK4jdVNMUn7R7Qz+Ymow4urDWTv4mRNJMXQaL3R8NJeAjK
+         DrbXlFc8q2bC+aHFP7VwXIzv33+YQNlbGWKtCyYtCQfkLKkBKC/v3vwwd6mWut5hGImW
+         o4yWrXI/l7pP98k3jGsM1CmIVZpd681RHJK2ZD9zkNzljgJbHyPMQS3pvjvQUbWnN1QQ
+         wrwmjdqTb64N5Alw1szjX63r7mHO+Z/yyCsM2aJxvGq29gjzLRZdPkMQHFzAb0EVzGMB
+         udBBo7Knxrqd6WLs461Lrr684UfcETMto1ENAoVqp4Eq8q0kQWe10jIXSNdhxjVkr4GN
+         m07A==
+X-Gm-Message-State: AOAM531+Mj+dNamEUkbOXQXAO7DxxUKGjMUcN1oSbYS4OD0282RU09gZ
+        stzFB7ER1jCweR2EKaGusAZjqIIX8/TxRbjOJuvicCD0VWJqbtHeyC1k6og45DmlQ64iA/3YMht
+        G9BIwRc88c4+j
+X-Received: by 2002:a1c:9d48:: with SMTP id g69mr22496027wme.188.1638009683873;
+        Sat, 27 Nov 2021 02:41:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx1IaEBbJWuRPGq00LIOJhB7+MEfEQpVy32cGu/bVRUHgm5FT5gDXP+M17dNi3TJn2AI9ZJvw==
+X-Received: by 2002:a1c:9d48:: with SMTP id g69mr22496006wme.188.1638009683598;
+        Sat, 27 Nov 2021 02:41:23 -0800 (PST)
 Received: from [192.168.2.13] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id 8sm12598430wmg.24.2021.11.27.01.51.54
+        by smtp.gmail.com with ESMTPSA id q123sm13157656wma.30.2021.11.27.02.41.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Nov 2021 01:51:54 -0800 (PST)
+        Sat, 27 Nov 2021 02:41:22 -0800 (PST)
 From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
 X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <804e9942-8697-4703-3cde-5f74d916e325@redhat.com>
-Date:   Sat, 27 Nov 2021 10:51:53 +0100
+Message-ID: <7a3b7d98-d882-5197-3dae-80ffe1e59af6@redhat.com>
+Date:   Sat, 27 Nov 2021 11:41:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
 Cc:     brouer@redhat.com, bjorn@kernel.org,
         Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S . Miller" <davem@davemloft.net>,
@@ -68,15 +69,17 @@ Cc:     brouer@redhat.com, bjorn@kernel.org,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next 2/4] samples/bpf: xdpsock: add Dest and Src MAC
- setting for Tx-only operation
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH bpf-next 3/4] samples/bpf: xdpsock: add period cycle time
+ to Tx operation
 Content-Language: en-US
 To:     Ong Boon Leong <boon.leong.ong@intel.com>, bpf@vger.kernel.org,
         netdev@vger.kernel.org
 References: <20211124091821.3916046-1-boon.leong.ong@intel.com>
- <20211124091821.3916046-3-boon.leong.ong@intel.com>
-In-Reply-To: <20211124091821.3916046-3-boon.leong.ong@intel.com>
+ <20211124091821.3916046-4-boon.leong.ong@intel.com>
+In-Reply-To: <20211124091821.3916046-4-boon.leong.ong@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -86,22 +89,230 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 24/11/2021 10.18, Ong Boon Leong wrote:
-> To set Dest MAC address (-G|--tx-dmac) only:
->   $ xdpsock -i eth0 -t -N -z -G aa:bb:cc:dd:ee:ff
+> Tx cycle time is in micro-seconds unit. By combining the batch size (-b M)
+> and Tx cycle time (-T|--tx-cycle N), xdpsock now can transmit batch-size of
+> packets every N-us periodically.
+
+Does this also work for --poll mode (which is a wakeup mode) ?
+
+> For example to transmit 1 packet each 1ms cycle time for total of 2000000
+> packets:
 > 
-> To set Source MAC address (-H|--tx-smac) only:
->   $ xdpsock -i eth0 -t -N -z -H 11:22:33:44:55:66
+>   $ xdpsock -i eth0 -T -N -z -T 1000 -b 1 -C 2000000
 > 
-> To set both Dest and Source MAC address:
->   $ xdpsock -i eth0 -t -N -z -G aa:bb:cc:dd:ee:ff \
->     -H 11:22:33:44:55:66
+>   sock0@enp0s29f1:2 txonly xdp-drv
+>                     pps            pkts           1.00
+> rx                 0              0
+> tx                 1000           1996872
 > 
-> The default Dest and Source MAC address remain the same as before.
+>   sock0@enp0s29f1:2 txonly xdp-drv
+>                     pps            pkts           1.00
+> rx                 0              0
+> tx                 1000           1997872
 > 
-> Signed-off-by: Ong Boon Leong<boon.leong.ong@intel.com>
+>   sock0@enp0s29f1:2 txonly xdp-drv
+>                     pps            pkts           1.00
+> rx                 0              0
+> tx                 1000           1998872
+> 
+>   sock0@enp0s29f1:2 txonly xdp-drv
+>                     pps            pkts           1.00
+> rx                 0              0
+> tx                 1000           1999872
+> 
+>   sock0@enp0s29f1:2 txonly xdp-drv
+>                     pps            pkts           1.00
+> rx                 0              0
+> tx                 128            2000000
+> 
+>   sock0@enp0s29f1:2 txonly xdp-drv
+>                     pps            pkts           0.00
+> rx                 0              0
+> tx                 0              2000000
+> 
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 > ---
 >   samples/bpf/xdpsock_user.c | 36 +++++++++++++++++++++++++++++++-----
 >   1 file changed, 31 insertions(+), 5 deletions(-)
+> 
+> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+> index 691f442bbb2..61d4063f11a 100644
+> --- a/samples/bpf/xdpsock_user.c
+> +++ b/samples/bpf/xdpsock_user.c
+> @@ -111,6 +111,7 @@ static u32 opt_num_xsks = 1;
+>   static u32 prog_id;
+>   static bool opt_busy_poll;
+>   static bool opt_reduced_cap;
+> +static unsigned long opt_cycle_time;
+>   
+>   struct vlan_ethhdr {
+>   	unsigned char h_dest[6];
+> @@ -173,6 +174,8 @@ struct xsk_socket_info {
+>   	struct xsk_app_stats app_stats;
+>   	struct xsk_driver_stats drv_stats;
+>   	u32 outstanding_tx;
+> +	unsigned long prev_tx_time;
+> +	unsigned long tx_cycle_time;
+>   };
+>   
+>   static int num_socks;
+> @@ -972,6 +975,7 @@ static struct option long_options[] = {
+>   	{"tx-vlan-pri", required_argument, 0, 'K'},
+>   	{"tx-dmac", required_argument, 0, 'G'},
+>   	{"tx-smac", required_argument, 0, 'H'},
+> +	{"tx-cycle", required_argument, 0, 'T'},
+>   	{"extra-stats", no_argument, 0, 'x'},
+>   	{"quiet", no_argument, 0, 'Q'},
+>   	{"app-stats", no_argument, 0, 'a'},
+> @@ -1017,6 +1021,7 @@ static void usage(const char *prog)
+>   		"  -K, --tx-vlan-pri=n  Tx VLAN Priority [0-7]. Default: %d (For -V|--tx-vlan)\n"
+>   		"  -G, --tx-dmac=<MAC>  Dest MAC addr of TX frame in aa:bb:cc:dd:ee:ff format (For -V|--tx-vlan)\n"
+>   		"  -H, --tx-smac=<MAC>  Src MAC addr of TX frame in aa:bb:cc:dd:ee:ff format (For -V|--tx-vlan)\n"
+> +		"  -T, --tx-cycle=n     Tx cycle time in micro-seconds (For -t|--txonly).\n"
+>   		"  -x, --extra-stats	Display extra statistics.\n"
+>   		"  -Q, --quiet          Do not display any stats.\n"
+>   		"  -a, --app-stats	Display application (syscall) statistics.\n"
+> @@ -1039,7 +1044,7 @@ static void parse_command_line(int argc, char **argv)
+>   	opterr = 0;
+>   
+>   	for (;;) {
+> -		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:VJ:K:G:H:xQaI:BR",
+> +		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:VJ:K:G:H:T:xQaI:BR",
+>   				long_options, &option_index);
+>   		if (c == -1)
+>   			break;
+> @@ -1145,6 +1150,10 @@ static void parse_command_line(int argc, char **argv)
+>   				usage(basename(argv[0]));
+>   			}
+>   			break;
+> +		case 'T':
+> +			opt_cycle_time = atoi(optarg);
+> +			opt_cycle_time *= 1000;
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Converting to nanosec, right(?).
+
+> +			break;
+>   		case 'x':
+>   			opt_extra_stats = 1;
+>   			break;
+> @@ -1350,16 +1359,25 @@ static void rx_drop_all(void)
+>   	}
+>   }
+>   
+> -static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
+> +static int tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
+>   {
+>   	u32 idx;
+>   	unsigned int i;
+>   
+> +	if (xsk->tx_cycle_time) {
+> +		unsigned long now = get_nsecs();
+> +
+> +		if ((now - xsk->prev_tx_time) < xsk->tx_cycle_time)
+> +			return 0;
+
+So, this test is actively spinning until the time is reached, spending 
+100% CPU time on this. I guess we can have this as a test for most 
+accurate transmit (cyclic period) with AF_XDP.
+
+Do you have a use-case for this?
+
+I have a customer use-case, but my customer don't want to actively spin.
+My plan is to use clock_nanosleep() and wakeup slightly before the 
+target time and then we can spin shortly for the Tx time slot.
+
+I will need to code this up for the customer soon anyway... perhaps we 
+can extend your code with this idea?
+
+I have coded the period cycle Tx with UDP packets, here[1], if you like 
+to see some code using clock_nanosleep().  Next step (for me) is doing 
+this for AF_XDP (likely in my example[2].
+
+[1] 
+https://github.com/netoptimizer/network-testing/blob/master/src/udp_pacer.c
+
+[2] 
+https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
+
+> +
+> +		xsk->prev_tx_time = now;
+
+Would it be valuable to know how-much we shoot "over" the tx_cycle_time?
+
+For my use-case, I will be monitoring the other-side receiving the 
+packets (and using HW RX-time) to evaluate how accurate my sender is. In 
+this case, I would like to know if my software "knew" if was not 100% 
+accurate.
+
+
+> +	}
+> +
+>   	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) <
+>   				      batch_size) {
+>   		complete_tx_only(xsk, batch_size);
+>   		if (benchmark_done)
+> -			return;
+> +			return 0;
+>   	}
+
+I wonder if this step can introduce jitter/delay before the actual Tx 
+happens?
+
+I mean, the real transmit cannot happen before xsk_ring_prod__submit() 
+is called.  If the cycles spend are exactly the same, it doesn't matter 
+if you tx_cycle_time timestamp is done above.
+Here you have a potential call to complete_tx_only(), which can 
+introduce variance for your period.
+
+I will suggest moving the TX completion handling, so it doesn't 
+interfere with accurate TX.
+
+>   
+>   	for (i = 0; i < batch_size; i++) {
+> @@ -1375,6 +1393,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
+>   	*frame_nb += batch_size;
+>   	*frame_nb %= NUM_FRAMES;
+>   	complete_tx_only(xsk, batch_size);
+> +
+> +	return batch_size;
+>   }
+>   
+>   static inline int get_batch_size(int pkt_cnt)
+> @@ -1407,6 +1427,7 @@ static void complete_tx_only_all(void)
+>   static void tx_only_all(void)
+>   {
+>   	struct pollfd fds[MAX_SOCKS] = {};
+> +	unsigned long now = get_nsecs();
+>   	u32 frame_nb[MAX_SOCKS] = {};
+>   	int pkt_cnt = 0;
+>   	int i, ret;
+> @@ -1414,10 +1435,15 @@ static void tx_only_all(void)
+>   	for (i = 0; i < num_socks; i++) {
+>   		fds[0].fd = xsk_socket__fd(xsks[i]->xsk);
+>   		fds[0].events = POLLOUT;
+> +		if (opt_cycle_time) {
+> +			xsks[i]->prev_tx_time = now;
+> +			xsks[i]->tx_cycle_time = opt_cycle_time;
+> +		}
+>   	}
+>   
+>   	while ((opt_pkt_count && pkt_cnt < opt_pkt_count) || !opt_pkt_count) {
+>   		int batch_size = get_batch_size(pkt_cnt);
+> +		int tx_cnt = 0;
+>   
+>   		if (opt_poll) {
+>   			for (i = 0; i < num_socks; i++)
+> @@ -1431,9 +1457,9 @@ static void tx_only_all(void)
+>   		}
+>   
+>   		for (i = 0; i < num_socks; i++)
+> -			tx_only(xsks[i], &frame_nb[i], batch_size);
+> +			tx_cnt += tx_only(xsks[i], &frame_nb[i], batch_size);
+>   
+> -		pkt_cnt += batch_size;
+> +		pkt_cnt += tx_cnt;
+>   
+>   		if (benchmark_done)
+>   			break;
+> 
 
