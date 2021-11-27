@@ -2,317 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B2045FE2B
-	for <lists+bpf@lfdr.de>; Sat, 27 Nov 2021 11:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8DB45FFE3
+	for <lists+bpf@lfdr.de>; Sat, 27 Nov 2021 16:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhK0Kql (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Nov 2021 05:46:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47788 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233006AbhK0Kol (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 27 Nov 2021 05:44:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638009686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+oCtSZw+hU9Geau33+wFsSslq0uK7JYa5qmKFZ7JrpA=;
-        b=bJr/DMBwofKchbc8PB73rAH7iJTg6BRY4wwp25ZFNnf7dAI6lIzXNoQNvPTzSeg/8cAA9m
-        hReU/XJzf73mk03N0Z/qVpRuoIYSxptE83THHObePB7iW6grbQBFzjKXBKfXRSnDRedlN8
-        KJN3Q85FO8LeKlsIlI6DUGiQaMUchwI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-132-QBxOrr85Mqee6XdLJr_wyg-1; Sat, 27 Nov 2021 05:41:25 -0500
-X-MC-Unique: QBxOrr85Mqee6XdLJr_wyg-1
-Received: by mail-wm1-f72.google.com with SMTP id a85-20020a1c7f58000000b0033ddc0eacc8so6605055wmd.9
-        for <bpf@vger.kernel.org>; Sat, 27 Nov 2021 02:41:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
-         :subject:content-language:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=+oCtSZw+hU9Geau33+wFsSslq0uK7JYa5qmKFZ7JrpA=;
-        b=pzAfiXDXtJPH42ELx6nGOK4jdVNMUn7R7Qz+Ymow4urDWTv4mRNJMXQaL3R8NJeAjK
-         DrbXlFc8q2bC+aHFP7VwXIzv33+YQNlbGWKtCyYtCQfkLKkBKC/v3vwwd6mWut5hGImW
-         o4yWrXI/l7pP98k3jGsM1CmIVZpd681RHJK2ZD9zkNzljgJbHyPMQS3pvjvQUbWnN1QQ
-         wrwmjdqTb64N5Alw1szjX63r7mHO+Z/yyCsM2aJxvGq29gjzLRZdPkMQHFzAb0EVzGMB
-         udBBo7Knxrqd6WLs461Lrr684UfcETMto1ENAoVqp4Eq8q0kQWe10jIXSNdhxjVkr4GN
-         m07A==
-X-Gm-Message-State: AOAM531+Mj+dNamEUkbOXQXAO7DxxUKGjMUcN1oSbYS4OD0282RU09gZ
-        stzFB7ER1jCweR2EKaGusAZjqIIX8/TxRbjOJuvicCD0VWJqbtHeyC1k6og45DmlQ64iA/3YMht
-        G9BIwRc88c4+j
-X-Received: by 2002:a1c:9d48:: with SMTP id g69mr22496027wme.188.1638009683873;
-        Sat, 27 Nov 2021 02:41:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1IaEBbJWuRPGq00LIOJhB7+MEfEQpVy32cGu/bVRUHgm5FT5gDXP+M17dNi3TJn2AI9ZJvw==
-X-Received: by 2002:a1c:9d48:: with SMTP id g69mr22496006wme.188.1638009683598;
-        Sat, 27 Nov 2021 02:41:23 -0800 (PST)
-Received: from [192.168.2.13] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id q123sm13157656wma.30.2021.11.27.02.41.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Nov 2021 02:41:22 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <7a3b7d98-d882-5197-3dae-80ffe1e59af6@redhat.com>
-Date:   Sat, 27 Nov 2021 11:41:21 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Cc:     brouer@redhat.com, bjorn@kernel.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH bpf-next 3/4] samples/bpf: xdpsock: add period cycle time
- to Tx operation
-Content-Language: en-US
-To:     Ong Boon Leong <boon.leong.ong@intel.com>, bpf@vger.kernel.org,
+        id S235179AbhK0PhE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Nov 2021 10:37:04 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38648 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347347AbhK0PfE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 27 Nov 2021 10:35:04 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=cuibixuan@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UyTp5Uj_1638027102;
+Received: from VM20210331-25.tbsite.net(mailfrom:cuibixuan@linux.alibaba.com fp:SMTPD_---0UyTp5Uj_1638027102)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 27 Nov 2021 23:31:46 +0800
+From:   Bixuan Cui <cuibixuan@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         netdev@vger.kernel.org
-References: <20211124091821.3916046-1-boon.leong.ong@intel.com>
- <20211124091821.3916046-4-boon.leong.ong@intel.com>
-In-Reply-To: <20211124091821.3916046-4-boon.leong.ong@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Cc:     cuibixuan@linux.alibaba.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Subject: [PATCH -next] bpf: Add oversize check before call kvmalloc()
+Date:   Sat, 27 Nov 2021 23:31:42 +0800
+Message-Id: <1638027102-22686-1-git-send-email-cuibixuan@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add
+the oversize check. When the allocation is larger than what kvmalloc()
+supports, the following warning triggered:
 
+WARNING: CPU: 1 PID: 372 at mm/util.c:597 kvmalloc_node+0x111/0x120
+mm/util.c:597
+Modules linked in:
+CPU: 1 PID: 372 Comm: syz-executor.4 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+Google 01/01/2011
+RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
+Code: 01 00 00 00 4c 89 e7 e8 7d f7 0c 00 49 89 c5 e9 69 ff ff ff e8 60
+20 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 4f 20 d1 ff <0f> 0b e9
+4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 36
+RSP: 0018:ffffc90002bf7c98 EFLAGS: 00010216
+RAX: 00000000000000ec RBX: 1ffff9200057ef9f RCX: ffffc9000ac63000
+RDX: 0000000000040000 RSI: ffffffff81a6a621 RDI: 0000000000000003
+RBP: 0000000000102cc0 R08: 000000007fffffff R09: 00000000ffffffff
+R10: ffffffff81a6a5de R11: 0000000000000000 R12: 00000000ffff9aaa
+R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
+FS:  00007f05f2573700(0000) GS:ffff8880b9d00000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f424000 CR3: 0000000027d2c000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kvmalloc include/linux/slab.h:741 [inline]
+ map_lookup_elem kernel/bpf/syscall.c:1090 [inline]
+ __sys_bpf+0x3a5b/0x5f00 kernel/bpf/syscall.c:4603
+ __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4720
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-On 24/11/2021 10.18, Ong Boon Leong wrote:
-> Tx cycle time is in micro-seconds unit. By combining the batch size (-b M)
-> and Tx cycle time (-T|--tx-cycle N), xdpsock now can transmit batch-size of
-> packets every N-us periodically.
+The type of 'value_size' is u32, its value may exceed INT_MAX.
 
-Does this also work for --poll mode (which is a wakeup mode) ?
+Reported-by: syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com
+Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
+---
+ kernel/bpf/syscall.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> For example to transmit 1 packet each 1ms cycle time for total of 2000000
-> packets:
-> 
->   $ xdpsock -i eth0 -T -N -z -T 1000 -b 1 -C 2000000
-> 
->   sock0@enp0s29f1:2 txonly xdp-drv
->                     pps            pkts           1.00
-> rx                 0              0
-> tx                 1000           1996872
-> 
->   sock0@enp0s29f1:2 txonly xdp-drv
->                     pps            pkts           1.00
-> rx                 0              0
-> tx                 1000           1997872
-> 
->   sock0@enp0s29f1:2 txonly xdp-drv
->                     pps            pkts           1.00
-> rx                 0              0
-> tx                 1000           1998872
-> 
->   sock0@enp0s29f1:2 txonly xdp-drv
->                     pps            pkts           1.00
-> rx                 0              0
-> tx                 1000           1999872
-> 
->   sock0@enp0s29f1:2 txonly xdp-drv
->                     pps            pkts           1.00
-> rx                 0              0
-> tx                 128            2000000
-> 
->   sock0@enp0s29f1:2 txonly xdp-drv
->                     pps            pkts           0.00
-> rx                 0              0
-> tx                 0              2000000
-> 
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-> ---
->   samples/bpf/xdpsock_user.c | 36 +++++++++++++++++++++++++++++++-----
->   1 file changed, 31 insertions(+), 5 deletions(-)
-> 
-> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> index 691f442bbb2..61d4063f11a 100644
-> --- a/samples/bpf/xdpsock_user.c
-> +++ b/samples/bpf/xdpsock_user.c
-> @@ -111,6 +111,7 @@ static u32 opt_num_xsks = 1;
->   static u32 prog_id;
->   static bool opt_busy_poll;
->   static bool opt_reduced_cap;
-> +static unsigned long opt_cycle_time;
->   
->   struct vlan_ethhdr {
->   	unsigned char h_dest[6];
-> @@ -173,6 +174,8 @@ struct xsk_socket_info {
->   	struct xsk_app_stats app_stats;
->   	struct xsk_driver_stats drv_stats;
->   	u32 outstanding_tx;
-> +	unsigned long prev_tx_time;
-> +	unsigned long tx_cycle_time;
->   };
->   
->   static int num_socks;
-> @@ -972,6 +975,7 @@ static struct option long_options[] = {
->   	{"tx-vlan-pri", required_argument, 0, 'K'},
->   	{"tx-dmac", required_argument, 0, 'G'},
->   	{"tx-smac", required_argument, 0, 'H'},
-> +	{"tx-cycle", required_argument, 0, 'T'},
->   	{"extra-stats", no_argument, 0, 'x'},
->   	{"quiet", no_argument, 0, 'Q'},
->   	{"app-stats", no_argument, 0, 'a'},
-> @@ -1017,6 +1021,7 @@ static void usage(const char *prog)
->   		"  -K, --tx-vlan-pri=n  Tx VLAN Priority [0-7]. Default: %d (For -V|--tx-vlan)\n"
->   		"  -G, --tx-dmac=<MAC>  Dest MAC addr of TX frame in aa:bb:cc:dd:ee:ff format (For -V|--tx-vlan)\n"
->   		"  -H, --tx-smac=<MAC>  Src MAC addr of TX frame in aa:bb:cc:dd:ee:ff format (For -V|--tx-vlan)\n"
-> +		"  -T, --tx-cycle=n     Tx cycle time in micro-seconds (For -t|--txonly).\n"
->   		"  -x, --extra-stats	Display extra statistics.\n"
->   		"  -Q, --quiet          Do not display any stats.\n"
->   		"  -a, --app-stats	Display application (syscall) statistics.\n"
-> @@ -1039,7 +1044,7 @@ static void parse_command_line(int argc, char **argv)
->   	opterr = 0;
->   
->   	for (;;) {
-> -		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:VJ:K:G:H:xQaI:BR",
-> +		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:VJ:K:G:H:T:xQaI:BR",
->   				long_options, &option_index);
->   		if (c == -1)
->   			break;
-> @@ -1145,6 +1150,10 @@ static void parse_command_line(int argc, char **argv)
->   				usage(basename(argv[0]));
->   			}
->   			break;
-> +		case 'T':
-> +			opt_cycle_time = atoi(optarg);
-> +			opt_cycle_time *= 1000;
-
-Converting to nanosec, right(?).
-
-> +			break;
->   		case 'x':
->   			opt_extra_stats = 1;
->   			break;
-> @@ -1350,16 +1359,25 @@ static void rx_drop_all(void)
->   	}
->   }
->   
-> -static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
-> +static int tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
->   {
->   	u32 idx;
->   	unsigned int i;
->   
-> +	if (xsk->tx_cycle_time) {
-> +		unsigned long now = get_nsecs();
-> +
-> +		if ((now - xsk->prev_tx_time) < xsk->tx_cycle_time)
-> +			return 0;
-
-So, this test is actively spinning until the time is reached, spending 
-100% CPU time on this. I guess we can have this as a test for most 
-accurate transmit (cyclic period) with AF_XDP.
-
-Do you have a use-case for this?
-
-I have a customer use-case, but my customer don't want to actively spin.
-My plan is to use clock_nanosleep() and wakeup slightly before the 
-target time and then we can spin shortly for the Tx time slot.
-
-I will need to code this up for the customer soon anyway... perhaps we 
-can extend your code with this idea?
-
-I have coded the period cycle Tx with UDP packets, here[1], if you like 
-to see some code using clock_nanosleep().  Next step (for me) is doing 
-this for AF_XDP (likely in my example[2].
-
-[1] 
-https://github.com/netoptimizer/network-testing/blob/master/src/udp_pacer.c
-
-[2] 
-https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
-
-> +
-> +		xsk->prev_tx_time = now;
-
-Would it be valuable to know how-much we shoot "over" the tx_cycle_time?
-
-For my use-case, I will be monitoring the other-side receiving the 
-packets (and using HW RX-time) to evaluate how accurate my sender is. In 
-this case, I would like to know if my software "knew" if was not 100% 
-accurate.
-
-
-> +	}
-> +
->   	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) <
->   				      batch_size) {
->   		complete_tx_only(xsk, batch_size);
->   		if (benchmark_done)
-> -			return;
-> +			return 0;
->   	}
-
-I wonder if this step can introduce jitter/delay before the actual Tx 
-happens?
-
-I mean, the real transmit cannot happen before xsk_ring_prod__submit() 
-is called.  If the cycles spend are exactly the same, it doesn't matter 
-if you tx_cycle_time timestamp is done above.
-Here you have a potential call to complete_tx_only(), which can 
-introduce variance for your period.
-
-I will suggest moving the TX completion handling, so it doesn't 
-interfere with accurate TX.
-
->   
->   	for (i = 0; i < batch_size; i++) {
-> @@ -1375,6 +1393,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
->   	*frame_nb += batch_size;
->   	*frame_nb %= NUM_FRAMES;
->   	complete_tx_only(xsk, batch_size);
-> +
-> +	return batch_size;
->   }
->   
->   static inline int get_batch_size(int pkt_cnt)
-> @@ -1407,6 +1427,7 @@ static void complete_tx_only_all(void)
->   static void tx_only_all(void)
->   {
->   	struct pollfd fds[MAX_SOCKS] = {};
-> +	unsigned long now = get_nsecs();
->   	u32 frame_nb[MAX_SOCKS] = {};
->   	int pkt_cnt = 0;
->   	int i, ret;
-> @@ -1414,10 +1435,15 @@ static void tx_only_all(void)
->   	for (i = 0; i < num_socks; i++) {
->   		fds[0].fd = xsk_socket__fd(xsks[i]->xsk);
->   		fds[0].events = POLLOUT;
-> +		if (opt_cycle_time) {
-> +			xsks[i]->prev_tx_time = now;
-> +			xsks[i]->tx_cycle_time = opt_cycle_time;
-> +		}
->   	}
->   
->   	while ((opt_pkt_count && pkt_cnt < opt_pkt_count) || !opt_pkt_count) {
->   		int batch_size = get_batch_size(pkt_cnt);
-> +		int tx_cnt = 0;
->   
->   		if (opt_poll) {
->   			for (i = 0; i < num_socks; i++)
-> @@ -1431,9 +1457,9 @@ static void tx_only_all(void)
->   		}
->   
->   		for (i = 0; i < num_socks; i++)
-> -			tx_only(xsks[i], &frame_nb[i], batch_size);
-> +			tx_cnt += tx_only(xsks[i], &frame_nb[i], batch_size);
->   
-> -		pkt_cnt += batch_size;
-> +		pkt_cnt += tx_cnt;
->   
->   		if (benchmark_done)
->   			break;
-> 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 1033ee8..f5bc380 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1094,6 +1094,10 @@ static int map_lookup_elem(union bpf_attr *attr)
+ 	}
+ 
+ 	value_size = bpf_map_value_size(map);
++	if (value_size > INT_MAX) {
++		err = -EINVAL;
++		goto err_put;
++	}
+ 
+ 	err = -ENOMEM;
+ 	value = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
+-- 
+1.8.3.1
 
