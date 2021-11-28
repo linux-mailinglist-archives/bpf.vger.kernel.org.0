@@ -2,158 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA174601B2
-	for <lists+bpf@lfdr.de>; Sat, 27 Nov 2021 22:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C21A24605AF
+	for <lists+bpf@lfdr.de>; Sun, 28 Nov 2021 11:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbhK0Vd5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Nov 2021 16:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
+        id S235431AbhK1KkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Nov 2021 05:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243015AbhK0Vb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Nov 2021 16:31:57 -0500
+        with ESMTP id S234612AbhK1KiP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Nov 2021 05:38:15 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B57C061574
-        for <bpf@vger.kernel.org>; Sat, 27 Nov 2021 13:28:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDBBC061574;
+        Sun, 28 Nov 2021 02:34:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC9D860F20
-        for <bpf@vger.kernel.org>; Sat, 27 Nov 2021 21:28:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43E6AC53FCB
-        for <bpf@vger.kernel.org>; Sat, 27 Nov 2021 21:28:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D88F260F17;
+        Sun, 28 Nov 2021 10:34:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D3F1C004E1;
+        Sun, 28 Nov 2021 10:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638048521;
-        bh=oNjNiBM7jPAXXMoGY48ZvKh4t5/WAb36VpbM1Fl4/Kc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=azcpqD5vSPU3LxgaG02gJft2SmHCegF99zJxo+GdeYYdjA6wQQc6zHEA8xg3fsCIt
-         FzTzpr290EZvnKpWPzHqgSlgfBOj/vDt0/LM+uFminoup5fXCX+cEkqh+rDxWn1ABZ
-         Ylb9aUzoViq1PpeSEjoio3OjSxcPWB6utXln86QccTukbL8iAqaf+pw9OmkW3lrmhJ
-         uxSEhx5uCB3jmP71ajAeKKK0bCzh1jNsoXH9u86Z9Gg/y3LS19p/ecmDWpanrUqGwp
-         z8dKXC6pbwKG2uF6Eal4us3cmGksDH5HwK0vm/i3flVFsxboiUH5wlsYEh/dN1wOnu
-         d5O4VRVv0LgVg==
-Received: by mail-yb1-f175.google.com with SMTP id f186so29986280ybg.2
-        for <bpf@vger.kernel.org>; Sat, 27 Nov 2021 13:28:41 -0800 (PST)
-X-Gm-Message-State: AOAM532i0FSMJGg+Sug+WWtza8+iFtC+o+DzZJE07yFebyeWMLElI5yq
-        S7pubRyuulyy6vP7VFICloUMaA5672Jje90pywI=
-X-Google-Smtp-Source: ABdhPJys0GvFP9Kt1sjU3vi5F4yJXWlbEGL/h6Rxi1hGE+ah9qIOjuf4x/PNN9zOO92McqG/7fZ2OOwJ+GUJBKGbTR8=
-X-Received: by 2002:a25:660d:: with SMTP id a13mr26172183ybc.460.1638048520282;
- Sat, 27 Nov 2021 13:28:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20211127210200.1104120-1-grantseltzer@gmail.com>
-In-Reply-To: <20211127210200.1104120-1-grantseltzer@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Sat, 27 Nov 2021 13:28:29 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6+LiLZf0SsGbOT+2BNHGB28TZazoEELwb6anbo5_mLPQ@mail.gmail.com>
-Message-ID: <CAPhsuW6+LiLZf0SsGbOT+2BNHGB28TZazoEELwb6anbo5_mLPQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add doc comments in libb.h
-To:     grantseltzer <grantseltzer@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        s=k20201202; t=1638095698;
+        bh=+8T3JcjffAOWYDApIveGl9HhTHeoo4rTTyhbueXv0QI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q/2TbPHtAaSsEKff9XOEXMGU1xfRPZTrMxRtH1qzxYWwGLCS+Ucw59axB7CeqKkTL
+         aJOIf3/Za+8U4Ajcc5S9YWVYztV7HkuGSi5lIVHfIAcY0ni0CZXihirmlgaFH8F7Yr
+         QE31eqW/NUz7bg0mALlcHlZ1p1kiKqaM8FwvJW8rTs1xpVGbVr3/m8AmAwhKXU2SUw
+         e2CSH6rpD7r8Fq6GX0m5S95aBpVuFO7Ryd4xoa6e8lRcbINArqn5AXY+Ex9xRTj2IN
+         tv55Gf+cSsvyPhGcPN+7DarOAZFrR4mPFK8g9dsTrxc21l0XotbujLEKWYp6+9ngjW
+         okUnX0rKuyP6A==
+Date:   Sun, 28 Nov 2021 19:34:50 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Steven Rostedt <rostedt@goodmis.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [RFC 0/8] perf/bpf: Add batch support for [ku]probes attach
+Message-Id: <20211128193450.8147832ab7d0d10494102ffb@kernel.org>
+In-Reply-To: <20211124084119.260239-1-jolsa@kernel.org>
+References: <20211124084119.260239-1-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 1:04 PM grantseltzer <grantseltzer@gmail.com> wrote:
->
-> From: Grant Seltzer <grantseltzer@gmail.com>
->
-> This adds comments above functions in libbpf.h which document
-> their uses. These comments are of a format that doxygen and sphinx
-> can pick up and render. These are rendered by libbpf.readthedocs.org
->
-> These doc comments are for:
->
-> - bpf_object__open_file()
-> - bpf_object__open_mem()
-> - bpf_program__attach_uprobe()
-> - bpf_program__attach_uprobe_opts()
->
-> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+Hi Jiri,
 
-s/libb.h/libbpf.h/ in subject
+On Wed, 24 Nov 2021 09:41:11 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
 
+> hi,
+> adding support to create multiple kprobes/uprobes within single
+> perf event. This way we can associate single bpf program with
+> multiple kprobes.
+
+Thanks for the change, basically, you can repeatedly call the
+create_local_trace_kprobe() and register it.
+
+> 
+> Sending this as RFC because I'm not completely sure I haven't
+> missed anything in the trace/events area.
+
+OK let me check that.
+
+Thanks,
+
+> 
+> Also it needs following uprobe fix to work properly:
+>   https://lore.kernel.org/lkml/20211123142801.182530-1-jolsa@kernel.org/
+> 
+> Also available at:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   bpf/kuprobe_batch
+> 
+> thanks,
+> jirka
+> 
+> 
 > ---
->  tools/lib/bpf/libbpf.h | 45 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 4ec69f224342..acfb207e71d1 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -108,8 +108,26 @@ struct bpf_object_open_opts {
->  #define bpf_object_open_opts__last_field btf_custom_path
->
->  LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
-> +
-> +/**
-> + * @brief **bpf_object__open_file()** creates a bpf_object by opening
-> + * the BPF object file pointed to by the passed path and loading it
-> + * into memory.
-> + * @param path BPF object file relative or absolute path
-> + * @param opts options for how to load the bpf object
-> + * @return pointer to the new bpf_object
+> Jiri Olsa (8):
+>       perf/kprobe: Add support to create multiple probes
+>       perf/uprobe: Add support to create multiple probes
+>       libbpf: Add libbpf__kallsyms_parse function
+>       libbpf: Add struct perf_event_open_args
+>       libbpf: Add support to attach multiple [ku]probes
+>       libbpf: Add support for k[ret]probe.multi program section
+>       selftest/bpf: Add kprobe multi attach test
+>       selftest/bpf: Add uprobe multi attach test
+> 
+>  include/uapi/linux/perf_event.h                            |   1 +
+>  kernel/trace/trace_event_perf.c                            | 214 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+>  kernel/trace/trace_kprobe.c                                |  47 ++++++++++++++++---
+>  kernel/trace/trace_probe.c                                 |   2 +-
+>  kernel/trace/trace_probe.h                                 |   6 ++-
+>  kernel/trace/trace_uprobe.c                                |  43 +++++++++++++++--
+>  tools/include/uapi/linux/perf_event.h                      |   1 +
+>  tools/lib/bpf/libbpf.c                                     | 235 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------
+>  tools/lib/bpf/libbpf.h                                     |  25 +++++++++-
+>  tools/lib/bpf/libbpf_internal.h                            |   5 ++
+>  tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c |  83 +++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c |  97 ++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/multi_kprobe.c           |  58 +++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/multi_uprobe.c           |  26 +++++++++++
+>  14 files changed, 765 insertions(+), 78 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/multi_kprobe.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/multi_uprobe.c
+> 
 
-Please document return value on errors, i.e. libbpf_err_ptr(err)
-instead of NULL. Same for all functions here.
 
-> + */
->  LIBBPF_API struct bpf_object *
->  bpf_object__open_file(const char *path, const struct bpf_object_open_opts *opts);
-> +
-> +/**
-> + * @brief **bpf_object__open_mem()** creates a bpf_object by reading
-> + * the BPF objects raw bytes from an in memory buffer.
-> + * @param obj_buf pointer to the buffer containing bpf object bytes
-> + * @param obj_buf_sz number of bytes in the buffer
-> + * @param opts options for how to load the bpf object
-> + * @return pointer to the new bpf_object
-> + */
->  LIBBPF_API struct bpf_object *
->  bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
->                      const struct bpf_object_open_opts *opts);
-> @@ -344,10 +362,37 @@ struct bpf_uprobe_opts {
->  };
->  #define bpf_uprobe_opts__last_field retprobe
->
-> +/**
-> + * @brief **bpf_program__attach_uprobe** attaches a BPF program
-> + * to the userspace function which is found by binary path and
-> + * offset. You can optionally specify a particular proccess to attach
-s/proccess/process/
-
-> + * to. You can also optionally attach the program to the function
-> + * exit instead of entry.
-> + *
-> + * @param prog BPF program to attach
-> + * @param retprobe Attach to function exit
-> + * @param pid Process ID to attach the uprobe to, -1 for all processes
-> + * @param binary_path Path to binary that contains the function symbol
-> + * @param func_offset Offset within the binary of the function symbol
-> + * @return Reference to the newly created BPF link
-> + */
->  LIBBPF_API struct bpf_link *
->  bpf_program__attach_uprobe(const struct bpf_program *prog, bool retprobe,
->                            pid_t pid, const char *binary_path,
->                            size_t func_offset);
-> +
-> +/**
-> + * @brief **bpf_program__attach_uprobe_opts** is just like
-> + * bpf_program__attach_uprobe except with a options struct
-> + * for various configurations.
-> + *
-> + * @param prog BPF program to attach
-> + * @param pid Process ID to attach the uprobe to, -1 for all processes
-> + * @param binary_path Path to binary that contains the function symbol
-> + * @param func_offset Offset within the binary of the function symbol
-> + * @param opts Options for altering program attachment
-
-Let's also document details about these options.
-
-> + * @return Reference to the newly created BPF link
-> + */
->  LIBBPF_API struct bpf_link *
->  bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
->                                 const char *binary_path, size_t func_offset,
-> --
-> 2.31.1
->
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
