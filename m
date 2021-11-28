@@ -2,194 +2,397 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBB946083C
-	for <lists+bpf@lfdr.de>; Sun, 28 Nov 2021 18:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F71346086B
+	for <lists+bpf@lfdr.de>; Sun, 28 Nov 2021 19:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359093AbhK1SAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Nov 2021 13:00:16 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:42821 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239305AbhK1R6P (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 28 Nov 2021 12:58:15 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5B9425802EE;
-        Sun, 28 Nov 2021 12:54:58 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sun, 28 Nov 2021 12:54:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=UUHBKcGQTfc55BryKks38P9q1VVkigTZnH+REkQ6S
-        Co=; b=iYiN+YmWJhZj5r+gfNGtNnX5WxIBt9yrnzuHllXQ5/GUOrZwgE+2B6kqq
-        v1LacLeZi5zTVMsNqmYhaoCVMmR7ErWb/6IMezfXpj4u51pcnQtnt5/PL1NDm5AK
-        d9CZlDHePScIbPZ7dXxmGzpUDRkVmvPH5Em/yqEQ5o71cDbP6BJlajUs4CRXojAc
-        LzDVEKJNK78Vz3a45eafY2sJ76R61tmWYjTYc4AtkcIHMr9qmajW5sqDYL0fpYei
-        h6Pe7CTiBbD0MbI7zqJGjx+gCDQ2nW3O0Uo+4yN6QuRPMxk6JKI8Svoa6WW0kNuo
-        tVzHESLM+PoWuo8LTnmU9cpdyMP3A==
-X-ME-Sender: <xms:cMKjYWPd5DduNFfJjqZGpi_Wq71dAWE-J_wxpNXVNN7XTVtZ_QJQOw>
-    <xme:cMKjYU9Rk6Tqx55hmFgiPLQKDLq2WNdabM2IbEvkxdvab2oCAl8BYbJpTf3_rCUOp
-    53xpJsCz_pSqq8>
-X-ME-Received: <xmr:cMKjYdTw-ttGcSarl-eU2ZcZwmqsKK1hsatFaqZGuF6YohTU7eyzmsq4leif>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrheeigddutdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekrodttddtudenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepieevhfevtdejhfethedvkefgudetudegudethfdtfeefleektdekkeefjeel
-    tedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghh
-    sehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:cMKjYWtuij49OVBZsOZ08kX7vOuYx2zKXpEQngCdpqkooYt8LbI4gQ>
-    <xmx:cMKjYefpDNGR53rK7VKwO17_5hlV0ErgOrbjeks77FFLX_bPwm1JjA>
-    <xmx:cMKjYa29fxDeX6UVEYihZVEcU-Ns9Ce4QLuSS0jmtGkEHd2vzlMc1w>
-    <xmx:csKjYbWeDFzgpl2GEEg_ew_X8_3slLF376ZQh0yCCLJ9kVNpVD_Ylw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 28 Nov 2021 12:54:55 -0500 (EST)
-Date:   Sun, 28 Nov 2021 19:54:53 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        id S1358967AbhK1SLc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Nov 2021 13:11:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23493 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1359059AbhK1SJc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 28 Nov 2021 13:09:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638122775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tDukD4of9nNIRicDpK3V5azZ4kNPV+/+p7YPjPPgpGU=;
+        b=Sye3dnbMWubtodoSg6twr3HW6iCLMY9oos4BNYMOiupJnh9HcX3ASxyGT8p8psXbEphg9f
+        C5US5ZzZKPOPEJOGjdr/ydEWkI9iT5YhwHOAB64sKdtJQrTovQAcCLlKu8/MPuflSSciHj
+        3Vd+oDsSaET6nACgnWPA+a+C+3YPifo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-21-WPOc1KFBMXu5eq0WZXTLmg-1; Sun, 28 Nov 2021 13:06:14 -0500
+X-MC-Unique: WPOc1KFBMXu5eq0WZXTLmg-1
+Received: by mail-wm1-f69.google.com with SMTP id z138-20020a1c7e90000000b003319c5f9164so10593561wmc.7
+        for <bpf@vger.kernel.org>; Sun, 28 Nov 2021 10:06:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tDukD4of9nNIRicDpK3V5azZ4kNPV+/+p7YPjPPgpGU=;
+        b=2VCfzO3ByERmui3H/a3PADxGCNSm/clSrSMVjX949D/8OQzU9UMiKQ/GC94bBht7K0
+         DJJJ2Qko/A11Amu9J3awPkCmYDXj1fY18zRsAVQGAb4NjrxN+9OGVtmCuybm3XW3t26g
+         dx3ULkc8HLEufT1SGODeujpShtk8XUtmd1teYnWrftz+Pin0EIdK4BggA5uWgYu0ZVEB
+         Te5U2aGg9Hbf5LwjAed1mrvuVcB9ZxEDBScAEy47xoi/ua6CZotD5+KKrjjV2d8musk+
+         kE5QW7levCrB5NZ7DbP1fvUNTIsBseWqDHzhxTKglO2uC20O4xSARsU/t4Ie4SMc+k5W
+         i+fw==
+X-Gm-Message-State: AOAM532HwROh1l5gPGjQbv0oWOhYX2PEIDqK6FZuSrkwdJdfOyNB2s3T
+        QPkg9S8XYwwFPrL5AmXTMUYjccdJvOVkzJvbf/CeJD/qhRmYr37n/TysYT3BTYFyr0UIAmqAAOZ
+        gDRt1P8Jsnify
+X-Received: by 2002:a05:600c:3494:: with SMTP id a20mr30990760wmq.195.1638122772646;
+        Sun, 28 Nov 2021 10:06:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwsW/FFSZbhkVRAuH06zCbfXBldfIVjx5Z+gjYbHJwi5VNyviUAAZ9fBUc6Cm+csdK7IsQGQQ==
+X-Received: by 2002:a05:600c:3494:: with SMTP id a20mr30990723wmq.195.1638122772343;
+        Sun, 28 Nov 2021 10:06:12 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id v15sm11508826wro.35.2021.11.28.10.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 10:06:12 -0800 (PST)
+Date:   Sun, 28 Nov 2021 19:06:10 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, petrm@nvidia.com,
-        nikolay@nvidia.com
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-Message-ID: <YaPCbaMVaVlxXcHC@shredder>
-References: <20211123163955.154512-22-alexandr.lobakin@intel.com>
- <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
- <87bl28bga6.fsf@toke.dk>
- <20211125170708.127323-1-alexandr.lobakin@intel.com>
- <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211125204007.133064-1-alexandr.lobakin@intel.com>
- <87sfvj9k13.fsf@toke.dk>
- <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87ee72ah56.fsf@toke.dk>
- <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next 06/29] bpf: Add bpf_arg/bpf_ret_value helpers
+ for tracing programs
+Message-ID: <YaPFEpAqIREeUMU7@krava>
+References: <20211118112455.475349-1-jolsa@kernel.org>
+ <20211118112455.475349-7-jolsa@kernel.org>
+ <CAEf4Bza0UZv6EFdELpg30o=67-Zzs6ggZext4u40+if9a5oQDg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAEf4Bza0UZv6EFdELpg30o=67-Zzs6ggZext4u40+if9a5oQDg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-+Petr, Nik
-
-On Fri, Nov 26, 2021 at 11:14:31AM -0800, Jakub Kicinski wrote:
-> On Fri, 26 Nov 2021 19:47:17 +0100 Toke Høiland-Jørgensen wrote:
-> > > Fair. In all honesty I said that hoping to push for a more flexible
-> > > approach hidden entirely in BPF, and not involving driver changes.
-> > > Assuming the XDP program has more fine grained stats we should be able
-> > > to extract those instead of double-counting. Hence my vague "let's work
-> > > with apps" comment.
-> > >
-> > > For example to a person familiar with the workload it'd be useful to
-> > > know if program returned XDP_DROP because of configured policy or
-> > > failure to parse a packet. I don't think that sort distinction is
-> > > achievable at the level of standard stats.
-> > >
-> > > The information required by the admin is higher level. As you say the
-> > > primary concern there is "how many packets did XDP eat".  
-> > 
-> > Right, sure, I am also totally fine with having only a somewhat
-> > restricted subset of stats available at the interface level and make
-> > everything else be BPF-based. I'm hoping we can converge of a common
-> > understanding of what this "minimal set" should be :)
-> > 
-> > > Speaking of which, one thing that badly needs clarification is our
-> > > expectation around XDP packets getting counted towards the interface
-> > > stats.  
-> > 
-> > Agreed. My immediate thought is that "XDP packets are interface packets"
-> > but that is certainly not what we do today, so not sure if changing it
-> > at this point would break things?
+On Wed, Nov 24, 2021 at 01:43:22PM -0800, Andrii Nakryiko wrote:
+> On Thu, Nov 18, 2021 at 3:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > Adding bpf_arg/bpf_ret_value helpers for tracing programs
+> > that returns traced function arguments.
+> >
+> > Get n-th argument of the traced function:
+> >   long bpf_arg(void *ctx, int n)
+> >
+> > Get return value of the traced function:
+> >   long bpf_ret_value(void *ctx)
+> >
+> > The trampoline now stores number of arguments on ctx-8
+> > address, so it's easy to verify argument index and find
+> > return value argument.
+> >
+> > Moving function ip address on the trampoline stack behind
+> > the number of functions arguments, so it's now stored
+> > on ctx-16 address.
+> >
+> > Both helpers are inlined by verifier.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
 > 
-> I'd vote for taking the risk and trying to align all the drivers.
+> It would be great to land these changes separate from your huge patch
+> set. There are some upcoming BPF trampoline related changes that will
+> touch this (to add BPF cookie support for fentry/fexit progs), so
+> would be nice to minimize the interdependencies. So maybe post this
+> patch separately (probably after holidays ;) ).
 
-I agree. I think IFLA_STATS64 in RTM_NEWLINK should contain statistics
-of all the packets seen by the netdev. The breakdown into software /
-hardware / XDP should be reported via RTM_NEWSTATS.
+ok
 
-Currently, for soft devices such as VLANs, bridges and GRE, user space
-only sees statistics of packets forwarded by software, which is quite
-useless when forwarding is offloaded from the kernel to hardware.
+> 
+> >  arch/x86/net/bpf_jit_comp.c    | 18 +++++++++++---
+> >  include/uapi/linux/bpf.h       | 14 +++++++++++
+> >  kernel/bpf/verifier.c          | 45 ++++++++++++++++++++++++++++++++--
+> >  kernel/trace/bpf_trace.c       | 38 +++++++++++++++++++++++++++-
+> >  tools/include/uapi/linux/bpf.h | 14 +++++++++++
+> >  5 files changed, 122 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index 631847907786..67e8ac9aaf0d 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -1941,7 +1941,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+> >                                 void *orig_call)
+> >  {
+> >         int ret, i, nr_args = m->nr_args;
+> > -       int stack_size = nr_args * 8;
+> > +       int stack_size = nr_args * 8 + 8 /* nr_args */;
+> 
+> this /* nr_args */ next to 8 is super confusing, would be better to
+> expand the comment; might be a good idea to have some sort of a
+> description of possible stack layouts (e.g., fexit has some extra
+> stuff on the stack, I think, but it's impossible to remember and need
+> to recover that knowledge from the assembly code, basically).
+> 
+> >         struct bpf_tramp_progs *fentry = &tprogs[BPF_TRAMP_FENTRY];
+> >         struct bpf_tramp_progs *fexit = &tprogs[BPF_TRAMP_FEXIT];
+> >         struct bpf_tramp_progs *fmod_ret = &tprogs[BPF_TRAMP_MODIFY_RETURN];
+> > @@ -1987,12 +1987,22 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+> >                 EMIT4(0x48, 0x83, 0xe8, X86_PATCH_SIZE);
+> >                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -stack_size);
+> >
+> > -               /* Continue with stack_size for regs storage, stack will
+> > -                * be correctly restored with 'leave' instruction.
+> > -                */
+> > +               /* Continue with stack_size for 'nr_args' storage */
+> 
+> same, I don't think this comment really helps, just confuses some more
 
-Petr is working on exposing hardware statistics for such devices via
-rtnetlink. Unlike XDP (?), we need to be able to let user space enable /
-disable hardware statistics as we have a limited number of hardware
-counters and they can also reduce the bandwidth when enabled. We are
-thinking of adding a new RTM_SETSTATS for that:
+ok, I'll put some more comments with list of possible the stack layouts
 
-# ip stats set dev swp1 hw_stats on
+> 
+> >                 stack_size -= 8;
+> >         }
+> >
+> > +       /* Store number of arguments of the traced function:
+> > +        *   mov rax, nr_args
+> > +        *   mov QWORD PTR [rbp - stack_size], rax
+> > +        */
+> > +       emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_args);
+> > +       emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -stack_size);
+> > +
+> > +       /* Continue with stack_size for regs storage, stack will
+> > +        * be correctly restored with 'leave' instruction.
+> > +        */
+> > +       stack_size -= 8;
+> 
+> I think "stack_size" as a name outlived itself and it just makes
+> everything harder to understand. It's used more like a stack offset
+> (relative to rsp or rbp) for different things. Would it make code
+> worse if we had few offset variables instead (or rather in addition,
+> we still need to calculate a full stack_size; it's just it's constant
+> re-adjustment is what's hard to keep track of), like regs_off,
+> ret_ip_off, arg_cnt_off, etc?
 
-For query, something like (under discussion):
+let's see, I'll try that
 
-# ip stats show dev swp1 // all groups
-# ip stats show dev swp1 group link
-# ip stats show dev swp1 group offload // all sub-groups
-# ip stats show dev swp1 group offload sub-group cpu
-# ip stats show dev swp1 group offload sub-group hw
+> 
+> > +
+> >         save_regs(m, &prog, nr_args, stack_size);
+> >
+> >         if (flags & BPF_TRAMP_F_CALL_ORIG) {
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index a69e4b04ffeb..fc8b344eecba 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -4957,6 +4957,18 @@ union bpf_attr {
+> >   *             **-ENOENT** if *task->mm* is NULL, or no vma contains *addr*.
+> >   *             **-EBUSY** if failed to try lock mmap_lock.
+> >   *             **-EINVAL** for invalid **flags**.
+> > + *
+> > + * long bpf_arg(void *ctx, int n)
+> 
+> __u32 n ?
 
-Like other iproute2 commands, these follow the nesting of the
-RTM_{NEW,GET}STATS uAPI.
+ok
 
-Looking at patch #1 [1], I think that whatever you decide to expose for
-XDP can be queried via:
+> 
+> > + *     Description
+> > + *             Get n-th argument of the traced function (for tracing programs).
+> > + *     Return
+> > + *             Value of the argument.
+> 
+> What about errors? those need to be documented.
 
-# ip stats show dev swp1 group xdp
-# ip stats show dev swp1 group xdp sub-group regular
-# ip stats show dev swp1 group xdp sub-group xsk
+ok
 
-Regardless, the following command should show statistics of all the
-packets seen by the netdev:
+> 
+> > + *
+> > + * long bpf_ret_value(void *ctx)
+> > + *     Description
+> > + *             Get return value of the traced function (for tracing programs).
+> > + *     Return
+> > + *             Return value of the traced function.
+> 
+> Same, errors not documented. Also would be good to document what
+> happens when ret_value is requested in the context where there is no
+> ret value (e.g., fentry)
 
-# ip -s link show dev swp1
+ugh, that's not handled at the moment.. should we fail when
+we see bpf_ret_value helper call in fentry program?
 
-There is a PR [2] for node_exporter to use rtnetlink to fetch netdev
-statistics instead of the old proc interface. It should be possible to
-extend it to use RTM_*STATS for more fine-grained statistics.
+> 
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -5140,6 +5152,8 @@ union bpf_attr {
+> >         FN(skc_to_unix_sock),           \
+> >         FN(kallsyms_lookup_name),       \
+> >         FN(find_vma),                   \
+> > +       FN(arg),                        \
+> > +       FN(ret_value),                  \
+> 
+> We already have bpf_get_func_ip, so why not continue a tradition and
+> call these bpf_get_func_arg() and bpf_get_func_ret(). Nice, short,
+> clean, consistent.
 
-[1] https://lore.kernel.org/netdev/20211123163955.154512-2-alexandr.lobakin@intel.com/
-[2] https://github.com/prometheus/node_exporter/pull/2074
+ok
+
+> 
+> BTW, a wild thought. Wouldn't it be cool to have these functions work
+> with kprobe/kretprobe as well? Do you think it's possible?
+
+right, bpf_get_func_ip already works for kprobes
+
+struct kprobe could have the btf_func_model of the traced function,
+so in case we trace function directly on the entry point we could
+read arguments registers based on the btf_func_model
+
+I'll check with Massami
+
+> 
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index fac0c3518add..d4249ef6ca7e 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -13246,11 +13246,52 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> >                         continue;
+> >                 }
+> >
+> > +               /* Implement bpf_arg inline. */
+> > +               if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > +                   insn->imm == BPF_FUNC_arg) {
+> > +                       /* Load nr_args from ctx - 8 */
+> > +                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +                       insn_buf[1] = BPF_JMP32_REG(BPF_JGE, BPF_REG_2, BPF_REG_0, 4);
+> > +                       insn_buf[2] = BPF_ALU64_IMM(BPF_MUL, BPF_REG_2, 8);
+> > +                       insn_buf[3] = BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1);
+> > +                       insn_buf[4] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0);
+> > +                       insn_buf[5] = BPF_JMP_A(1);
+> > +                       insn_buf[6] = BPF_MOV64_IMM(BPF_REG_0, 0);
+> > +
+> > +                       new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 7);
+> > +                       if (!new_prog)
+> > +                               return -ENOMEM;
+> > +
+> > +                       delta    += 6;
+> > +                       env->prog = prog = new_prog;
+> > +                       insn      = new_prog->insnsi + i + delta;
+> > +                       continue;
+> 
+> nit: this whole sequence of steps and calculations seems like
+> something that might be abstracted and hidden behind a macro or helper
+> func? Not related to your change, though. But wouldn't it be easier to
+> understand if it was just written as:
+> 
+> PATCH_INSNS(
+>     BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+>     BPF_JMP32_REG(BPF_JGE, BPF_REG_2, BPF_REG_0, 4);
+>     BPF_ALU64_IMM(BPF_MUL, BPF_REG_2, 8);
+>     BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1);
+>     BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0);
+>     BPF_JMP_A(1);
+>     BPF_MOV64_IMM(BPF_REG_0, 0));
+> continue;
+
+yep, looks better ;-) I'll check
+
+> 
+> ?
+> 
+> 
+> > +               }
+> > +
+> > +               /* Implement bpf_ret_value inline. */
+> > +               if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > +                   insn->imm == BPF_FUNC_ret_value) {
+> > +                       /* Load nr_args from ctx - 8 */
+> > +                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, -8);
+> > +                       insn_buf[1] = BPF_ALU64_IMM(BPF_MUL, BPF_REG_2, 8);
+> > +                       insn_buf[2] = BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1);
+> > +                       insn_buf[3] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0);
+> > +
+> > +                       new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 4);
+> > +                       if (!new_prog)
+> > +                               return -ENOMEM;
+> > +
+> > +                       delta    += 3;
+> > +                       env->prog = prog = new_prog;
+> > +                       insn      = new_prog->insnsi + i + delta;
+> > +                       continue;
+> > +               }
+> > +
+> >                 /* Implement bpf_get_func_ip inline. */
+> >                 if (prog_type == BPF_PROG_TYPE_TRACING &&
+> >                     insn->imm == BPF_FUNC_get_func_ip) {
+> > -                       /* Load IP address from ctx - 8 */
+> > -                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +                       /* Load IP address from ctx - 16 */
+> > +                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -16);
+> >
+> >                         new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 1);
+> >                         if (!new_prog)
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 25ea521fb8f1..3844cfb45490 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1012,7 +1012,7 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> >  BPF_CALL_1(bpf_get_func_ip_tracing, void *, ctx)
+> >  {
+> >         /* This helper call is inlined by verifier. */
+> > -       return ((u64 *)ctx)[-1];
+> > +       return ((u64 *)ctx)[-2];
+> >  }
+> >
+> >  static const struct bpf_func_proto bpf_get_func_ip_proto_tracing = {
+> > @@ -1091,6 +1091,38 @@ static const struct bpf_func_proto bpf_get_branch_snapshot_proto = {
+> >         .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
+> >  };
+> >
+> > +BPF_CALL_2(bpf_arg, void *, ctx, int, n)
+> > +{
+> > +       /* This helper call is inlined by verifier. */
+> > +       u64 nr_args = ((u64 *)ctx)[-1];
+> > +
+> > +       if ((u64) n >= nr_args)
+> > +               return 0;
+> 
+> We'll need bpf_get_func_arg_cnt() helper as well to be able to know
+> the actual number of arguments traced function has. It's impossible to
+> know whether the argument is zero or there is no argument, otherwise.
+
+my idea was that the program will call those helpers based
+on get_func_ip with proper argument indexes
+
+but with bpf_get_func_arg_cnt we could make a simple program
+that would just print function with all its arguments easily, ok ;-)
+
+> 
+> > +       return ((u64 *)ctx)[n];
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_arg_proto = {
+> > +       .func           = bpf_arg,
+> > +       .gpl_only       = true,
+> > +       .ret_type       = RET_INTEGER,
+> > +       .arg1_type      = ARG_PTR_TO_CTX,
+> > +       .arg1_type      = ARG_ANYTHING,
+> > +};
+> > +
+> > +BPF_CALL_1(bpf_ret_value, void *, ctx)
+> > +{
+> > +       /* This helper call is inlined by verifier. */
+> > +       u64 nr_args = ((u64 *)ctx)[-1];
+> > +
+> > +       return ((u64 *)ctx)[nr_args];
+> 
+> we should return 0 for fentry or disable this helper for anything but
+> fexit? It's going to return garbage otherwise.
+
+disabling seems like right choice to me
+
+thanks,
+jirka
+
