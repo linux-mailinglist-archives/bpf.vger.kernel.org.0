@@ -2,159 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBB44606C8
-	for <lists+bpf@lfdr.de>; Sun, 28 Nov 2021 15:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC65146080A
+	for <lists+bpf@lfdr.de>; Sun, 28 Nov 2021 18:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357840AbhK1OWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Nov 2021 09:22:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352701AbhK1OUV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Nov 2021 09:20:21 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305D8C06174A
-        for <bpf@vger.kernel.org>; Sun, 28 Nov 2021 06:17:05 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id f65so13198808pgc.0
-        for <bpf@vger.kernel.org>; Sun, 28 Nov 2021 06:17:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sRSj3UwUhl0qJFcWyI3i8TMm0nkJ3eYM2Pf5+NbknNs=;
-        b=Kps3Xd88iIkPpPgsQOIKf2TJ4oDgqSXZ28Dif5XfSarf4OqjzgLdJVj0s0+A4SOy9Y
-         NNEuNWfj2E+I3tp1hlVUGSM6lCzB7s6s88IkGyDr64DiYEs9wg4Tl212Oa1qT70xOLKs
-         KPuN5DhWPXn+c3y21m4Ju1hKk3c3heUHTQN3fAhRSWOPxd3a5VvgnmWIuAM0h/J83TSA
-         EJ4Q+Hopxbt6vJQg/A7KJcRfTyKW3/n/d+SHKKUintnMhLC8/XewswKy9lIvKk5KUuXr
-         ezR4UlwO2NqFqsMGjFpFGyaPEB7+k0J5J0pp2E62u6GpiYxS6CHOn4NYBIZjU4UdIO+6
-         4vyA==
+        id S236958AbhK1RaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Nov 2021 12:30:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40313 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235073AbhK1R2H (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 28 Nov 2021 12:28:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638120290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2I2UUd/Y3ibOkvKx2aPdI/birA/k8JHGGbXx66nCrG4=;
+        b=Cd9QsR9w57afm+UK6harx9yql6ylhng8pDrA/thoBkmURsEWG20qrOasD+ZIZ1raYVscKG
+        sfHNwFIY7ZpYLbfDfGTXlLhnyuO+1GXGJrDUv7Jg4dCTexUEASLowZug/n0H25ufiCLp3G
+        K+DMuJ7IJRncp1u9HcIu1nSt9D7rWt4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-424-O-8_RfwXN_23TQIIMzpBIg-1; Sun, 28 Nov 2021 12:24:48 -0500
+X-MC-Unique: O-8_RfwXN_23TQIIMzpBIg-1
+Received: by mail-wm1-f69.google.com with SMTP id a64-20020a1c7f43000000b003335e5dc26bso7728618wmd.8
+        for <bpf@vger.kernel.org>; Sun, 28 Nov 2021 09:24:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sRSj3UwUhl0qJFcWyI3i8TMm0nkJ3eYM2Pf5+NbknNs=;
-        b=x8LPylGR7bnKE0SUxp0M0X3myY89h1PtWF1s7WEJEYGtgE9LeWWj8fY/JuBVB4aLKM
-         cB3nxln7tlenX3NBSAKFd6BysfSTXa2bycVVE2sqfExqoA83vM6p6DGYmT6PEHklrtXZ
-         keoiqY/2dMf4Lc1LN/gwtcNhZDoegDNghMUyxIJ52TsbWk9fHN1RqV+/mJMoo8pFnEtf
-         593vdfERueR3l1im0/XaaJOSjxbqLOxnCSGthxQuOEbPZmf6pmeAuCHSnzsRKOc7310O
-         axQ05sVaJEMUUuHEj2MI7FEngiusaFyXWhJXaDYC7K99p0k4eCbq2+SykBfuOOCjvjoe
-         gJWQ==
-X-Gm-Message-State: AOAM533z5mrLVQipsQQitjReyCDjI5RTVYOGWg4ogUWM8+NhxN4W2qBl
-        l+jTcmKPCdXHAp+KayStZOXnZKQgPmY=
-X-Google-Smtp-Source: ABdhPJyFSGv94SsoW47BFWDiXbzIdTRFEID6wuqoIFFvwajaH28U8n+c113Ubr5FdGjuRbNlwSpNVg==
-X-Received: by 2002:a63:d257:: with SMTP id t23mr16324135pgi.533.1638109024547;
-        Sun, 28 Nov 2021 06:17:04 -0800 (PST)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id b6sm14513583pfm.170.2021.11.28.06.17.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2I2UUd/Y3ibOkvKx2aPdI/birA/k8JHGGbXx66nCrG4=;
+        b=Y1+fkBOrhnpojn2miRjajrlKcOd26ecOdmTHYq1F2/408lefMNjouNVGG0TprvLXvQ
+         rjhow2BX+EYpOoRPa4TwlCrq48KfwXT4LQzJCz1W4TS9FiEPE8VISeTpODQk73jdmhgj
+         Dz/TKMZz4EOpDlSKP3F1c6oyVUCmbE1xS1gN+3Z2kcJ7XOOfzY9nDV1uBBpAC6GL5Cs1
+         32BRs+DbvmsK2rLcsrCC0qQaOxM9HI9ZiDSLhmS3ROfIFAwMMpBUwi3ONeJ7HXgZW5ZT
+         DAejAxwUXM3PmWeBKiLYeN8iqGrvtwwECf1wd/G/1caKpbPjONUKeliz9pu6ojsQS/Zl
+         1h3w==
+X-Gm-Message-State: AOAM533esqfwmS9Fbgzs8w85sRz7343PcWNpMJ2v7Z35DDg7ClOMUZ39
+        W+C7slAfX76fl+mM6bYR/GWkfSRcSe5ajitMcTpiKDvsKRNLfsY/yKKHjSbtcRBdab1hEu+hqn2
+        aNwa4AOWYEFfG
+X-Received: by 2002:a05:600c:1e8c:: with SMTP id be12mr31607830wmb.4.1638120287470;
+        Sun, 28 Nov 2021 09:24:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxOLjOGpE6bw3PNu3qXlEy1Mlm3200tLGAlZWOu64AOtlMwbqpNQLU0fzBoBTrngO5ptf/SBQ==
+X-Received: by 2002:a05:600c:1e8c:: with SMTP id be12mr31607808wmb.4.1638120287275;
+        Sun, 28 Nov 2021 09:24:47 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id x13sm11513672wrr.47.2021.11.28.09.24.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 06:17:04 -0800 (PST)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        hengqi.chen@gmail.com
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Test BPF_MAP_TYPE_PROG_ARRAY static initialization
-Date:   Sun, 28 Nov 2021 22:16:33 +0800
-Message-Id: <20211128141633.502339-3-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211128141633.502339-1-hengqi.chen@gmail.com>
-References: <20211128141633.502339-1-hengqi.chen@gmail.com>
+        Sun, 28 Nov 2021 09:24:46 -0800 (PST)
+Date:   Sun, 28 Nov 2021 18:24:44 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next 08/29] bpf: Keep active attached trampoline in
+ bpf_prog
+Message-ID: <YaO7XAwPBmwp3ulP@krava>
+References: <20211118112455.475349-1-jolsa@kernel.org>
+ <20211118112455.475349-9-jolsa@kernel.org>
+ <CAEf4BzbZZLedE+Xbsu5VewtJThEzJZYiEn4WMQ-AjfiGeTAAAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbZZLedE+Xbsu5VewtJThEzJZYiEn4WMQ-AjfiGeTAAAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add testcase for BPF_MAP_TYPE_PROG_ARRAY static initialization.
+On Wed, Nov 24, 2021 at 01:48:09PM -0800, Andrii Nakryiko wrote:
+> On Thu, Nov 18, 2021 at 3:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > Keeping active attached trampoline in bpf_prog so it can be used
+> > in following changes to account for multiple functions attachments
+> > in program.
+> >
+> > As EXT programs are not going to be supported in multiple functions
+> > attachment for now, I'm keeping them stored in link.
+> 
+> can the same EXT program be attached twice? If not, why can't you just
+> use the same prog->aux->trampoline instead of the if/else everywhere?
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- .../bpf/prog_tests/prog_array_init.c          | 32 +++++++++++++++
- .../bpf/progs/test_prog_array_init.c          | 39 +++++++++++++++++++
- 2 files changed, 71 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/prog_array_init.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_prog_array_init.c
+I recall that was my initial change, but it was clashing with
+fentry/fexit programs because extensions are special
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/prog_array_init.c b/tools/testing/selftests/bpf/prog_tests/prog_array_init.c
-new file mode 100644
-index 000000000000..fc4657619739
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/prog_array_init.c
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2021 Hengqi Chen */
-+
-+#include <test_progs.h>
-+#include "test_prog_array_init.skel.h"
-+
-+void test_prog_array_init(void)
-+{
-+	struct test_prog_array_init *skel;
-+	int err;
-+
-+	skel = test_prog_array_init__open();
-+	if (!ASSERT_OK_PTR(skel, "could not open BPF object"))
-+		return;
-+
-+	skel->rodata->my_pid = getpid();
-+
-+	err = test_prog_array_init__load(skel);
-+	if (!ASSERT_OK(err, "could not load BPF object"))
-+		goto cleanup;
-+
-+	skel->links.entry = bpf_program__attach_raw_tracepoint(skel->progs.entry, "sys_enter");
-+	if (!ASSERT_OK_PTR(skel->links.entry, "could not attach BPF program"))
-+		goto cleanup;
-+
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->value, 42, "unexpected value");
-+
-+cleanup:
-+	test_prog_array_init__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_prog_array_init.c b/tools/testing/selftests/bpf/progs/test_prog_array_init.c
-new file mode 100644
-index 000000000000..2cd138356126
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_prog_array_init.c
-@@ -0,0 +1,39 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2021 Hengqi Chen */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+const volatile pid_t my_pid = 0;
-+int value = 0;
-+
-+SEC("raw_tp/sys_enter")
-+int tailcall_1(void *ctx)
-+{
-+	value = 42;
-+	return 0;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 2);
-+	__uint(key_size, sizeof(__u32));
-+	__array(values, int (void *));
-+} prog_array_init SEC(".maps") = {
-+	.values = {
-+		[1] = (void *)&tailcall_1,
-+	},
-+};
-+
-+SEC("raw_tp/sys_enter")
-+int entry(void *ctx)
-+{
-+	pid_t pid = bpf_get_current_pid_tgid() >> 32;
-+
-+	if (pid != my_pid)
-+		return 0;
-+
-+	bpf_tail_call(ctx, &prog_array_init, 1);
-+	return 0;
-+}
---
-2.30.2
+I'll re-check and try to make this generic
+
+jirka
+
+> 
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/bpf.h  |  1 +
+> >  kernel/bpf/syscall.c | 34 +++++++++++++++++++++++++++++-----
+> >  2 files changed, 30 insertions(+), 5 deletions(-)
+> >
+> 
+
