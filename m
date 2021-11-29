@@ -2,150 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2564946288B
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B06946289B
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhK2XuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 18:50:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        id S232609AbhK2Xyg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 18:54:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbhK2XuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 18:50:16 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844CFC061574
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:46:58 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id 131so47119189ybc.7
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:46:58 -0800 (PST)
+        with ESMTP id S233148AbhK2Xyg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 18:54:36 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227B4C061714;
+        Mon, 29 Nov 2021 15:51:18 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id v203so47157841ybe.6;
+        Mon, 29 Nov 2021 15:51:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=k0M/YVuIMnnbo6SkHLfn1/C0MQY+t5bE6qhJP7oYRyI=;
-        b=NtbXt5EoIeoCguoIwrYHHlUrLwDLmBEu59PWKaU8O6foEWI+WtasaWm6Kr8W2y/Fc0
-         z7pCWpSzWEjt7EJGsF/4VTGrkcefI2WfYEeWPSpc1cyIksp7fLWyOkjUjoD7WaJBlsid
-         806CiSzBq9eHaa15UeBXQxJCkjTpuNCIahbVvHVdu70HKEyt3zAEIAthF9m4BD6B31b9
-         7mpInPdHwYcOBNJYpRMkh3XynruwhdeL2LWOXfigAE8ppJOI4/Bw79czpaBWeclW/m0u
-         7PAsOxvQhdPe+G2FUf3GdhipEwerxo7IQIoRBikRItCf5AQakgZSbHR/Os+DOmFPbdM9
-         5QVg==
+        bh=l7Mp/d6Rqmx/LRmJ5y1bc/kVe95zOiVJ5beMB8pxyLE=;
+        b=j8OyLd7WUyHnCqZgxAHtSFGz5+Km4xZtxVyoPrepgt7SGdsw4c3GrNLK2KIY3x7lf2
+         M1/tyM4i6ihC84jcEsnYoaRTkuL8QEYU2nEoLjF5lrOX6sP+JWNxsOplFuB9Q5a81Tei
+         JBZUxJ0QKv4t/hLUbi+1VZJoBFbhZO+iUv5vhb0h9FrNgviSe0CibK4JttaqVGh90N3A
+         WVtiZI+9gX7tcLY0enGqsewMTZ+bmfiNXCsMv86ccyYeRQKtAPY7t3KzeQtqDLkjwUK+
+         BvaWGuUBm6J1TtP0uk46Z6sSIIOwaODThwwsU6g/53xivsfOsmwS8V3giUyUhsXfQglc
+         /vUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=k0M/YVuIMnnbo6SkHLfn1/C0MQY+t5bE6qhJP7oYRyI=;
-        b=HjjoeHfvHRcqIT2gSjCggBVm7WxZN1auHSMJ55Cf2+fy2o44EZV9KknOWbjry4etiO
-         UlSsM42eZO/sQ+ZcSdCgMTUTUuGZYUIu6kSqeJ9A3geSy6he4t5VzjwmEk/9jnYMXL0+
-         nf2P9oqMJMSXA/YHhp6Z/VYeLX3qZ85ZsFW2vAhccLub7DfQXxr42q9LWGrcsySUwum2
-         1VEPODCQupCMrfbLa5CPcGb0/+46fLMFlLAUPtGPyMckrrdzYU4IWM9dcsAjmQ9BY1WF
-         yrGocxwQPpgOr0dhgcAotefeYhIsFfsrWbqt0S3hJzifkgz97YIxL/hiyLW0wp3doBkl
-         eX4w==
-X-Gm-Message-State: AOAM533+3eF9SBD8LrriqTQy0y6nGHmztXNlaOA7ps4h2J/uXqMZ9Osj
-        WjS6rsJaTiEWUsd2uMozyFy6izpSAgTeXJ9Pqj01wEUbkBc=
-X-Google-Smtp-Source: ABdhPJwRtIZHY3wCTjVotu8RJU6agYH5y0TMZvqd+F8xCo0IFURVQgDeTiKl13pHAm3ewj9J/bC17gecZJD3y2SuFPM=
-X-Received: by 2002:a25:6d4:: with SMTP id 203mr36959670ybg.83.1638229617749;
- Mon, 29 Nov 2021 15:46:57 -0800 (PST)
+        bh=l7Mp/d6Rqmx/LRmJ5y1bc/kVe95zOiVJ5beMB8pxyLE=;
+        b=CxXSnY75Wya3RHdxzK4BgTCi43dkhLaFLrsHIHg+k+Xrb7/uXmenkKbFCgrJEunKkq
+         jSVnt99NHbxb4Clxtk0PlHDTNfFZshvIvh/OiW0iTBntePJkHRQOv24VhvcxiIkSm1dv
+         Pwy60+Eup17E1erUPW9O/6wBayFdhLkOapvH5cAEZffYNDqFLUrNoK7VLCiJe07lfZcf
+         A+T4XoUzUHAZJ+pw5E4UJCxIIyXQBcQtvM0Zxqxy7cqVkcMLx9lE1A08r1PWqiUb4VNo
+         159waABLRY//oNYJsajscKWMXh25AJBo68TmBgPBFQkvm9/ZIeJ+jY80EVDhN6i5ag++
+         nPug==
+X-Gm-Message-State: AOAM530aFPAXdasdH7zd/v+0mAn1ow+8SbmUysklVRDb//+iNooaJNjE
+        5BjVcDO5rXptoigQaH4LcQpecngo2bG416NwYuQ=
+X-Google-Smtp-Source: ABdhPJwX81cDy3z4JXfLLsmO+XgVE9RTxTxaZ1TEENhIP4OzNX5qEis71t77WGOnNYYUG6A7Po0ir83tHv32XJB2Afw=
+X-Received: by 2002:a05:6902:1006:: with SMTP id w6mr39165243ybt.252.1638229877383;
+ Mon, 29 Nov 2021 15:51:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20211122144742.477787-1-memxor@gmail.com> <20211122144742.477787-4-memxor@gmail.com>
-In-Reply-To: <20211122144742.477787-4-memxor@gmail.com>
+References: <20211122192019.1277299-1-jean-philippe@linaro.org> <20211122192019.1277299-4-jean-philippe@linaro.org>
+In-Reply-To: <20211122192019.1277299-4-jean-philippe@linaro.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Nov 2021 15:46:46 -0800
-Message-ID: <CAEf4BzbLGhxCAUbU-UFscuMub+kO3a=k=1fosR_Keobk=E4AQw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 3/3] tools/resolve_btfids: Skip unresolved symbol
- warning for empty BTF sets
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 29 Nov 2021 15:51:06 -0800
+Message-ID: <CAEf4BzYgeNQXHq2sWR1b2FNs6fC=FOQjxdNdtFVf5+-4Fory+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] tools/libbpf: Enable cross-building with clang
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 6:47 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Mon, Nov 22, 2021 at 11:24 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
 >
-> resolve_btfids prints a warning when it finds an unresolved symbol,
-> (id == 0) in id_patch. This can be the case for BTF sets that are empty
-> (due to disabled config options), hence printing warnings for certain
-> builds, most recently seen in [0].
+> Cross-building using clang requires passing the "-target" flag rather
+> than using the CROSS_COMPILE prefix. Makefile.include transforms
+> CROSS_COMPILE into CLANG_CROSS_FLAGS. Add them to the CFLAGS.
 >
-> The reason behind this is because id->cnt aliases id->id in btf_id
-
-do we need to alias this, btw? We are trying to save 4 bytes on 800+
-struct (addr[ADDR_CNT] is big) and instead are getting more confusion
-in the code.
-
-> struct, leading to empty set showing up as ID 0 when we get to id_patch,
-> which triggers the warning. Since sets are an exception here, accomodate
-> by reusing hole in btf_id for bool is_set member, setting it to true for
-> BTF set when setting id->cnt, and use that to skip extraneous warning.
->
->   [0]: https://lore.kernel.org/all/1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com
->
-> Before:
->
-> ; ./tools/bpf/resolve_btfids/resolve_btfids -v -b vmlinux net/ipv4/tcp_cubic.ko
-> adding symbol tcp_cubic_kfunc_ids
-> WARN: resolve_btfids: unresolved symbol tcp_cubic_kfunc_ids
-> patching addr     0: ID       0 [tcp_cubic_kfunc_ids]
-> sorting  addr     4: cnt      0 [tcp_cubic_kfunc_ids]
-> update ok for net/ipv4/tcp_cubic.ko
->
-> After:
->
-> ; ./tools/bpf/resolve_btfids/resolve_btfids -v -b vmlinux net/ipv4/tcp_cubic.ko
-> adding symbol tcp_cubic_kfunc_ids
-> patching addr     0: ID       0 [tcp_cubic_kfunc_ids]
-> sorting  addr     4: cnt      0 [tcp_cubic_kfunc_ids]
-> update ok for net/ipv4/tcp_cubic.ko
->
-> Cc: Jiri Olsa <jolsa@kernel.org>
-
-Jiri, can you please take a look as well?
-
-> Fixes: 0e32dfc80bae ("bpf: Enable TCP congestion control kfunc from modules")
-> Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 > ---
->  tools/bpf/resolve_btfids/main.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  tools/lib/bpf/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index a59cb0ee609c..73409e27be01 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -83,6 +83,7 @@ struct btf_id {
->                 int      cnt;
->         };
->         int              addr_cnt;
-> +       bool             is_set;
->         Elf64_Addr       addr[ADDR_CNT];
->  };
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index 5f7086fae31c..fe9201862aed 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -90,6 +90,7 @@ override CFLAGS += -Werror -Wall
+>  override CFLAGS += $(INCLUDES)
+>  override CFLAGS += -fvisibility=hidden
+>  override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+> +override CFLAGS += $(CLANG_CROSS_FLAGS)
 >
-> @@ -451,8 +452,10 @@ static int symbols_collect(struct object *obj)
->                          * in symbol's size, together with 'cnt' field hence
->                          * that - 1.
->                          */
-> -                       if (id)
-> +                       if (id) {
->                                 id->cnt = sym.st_size / sizeof(int) - 1;
-> +                               id->is_set = true;
-> +                       }
->                 } else {
->                         pr_err("FAILED unsupported prefix %s\n", prefix);
->                         return -1;
-> @@ -568,9 +571,8 @@ static int id_patch(struct object *obj, struct btf_id *id)
->         int *ptr = data->d_buf;
->         int i;
+>  # flags specific for shared library
+>  SHLIB_FLAGS := -DSHARED -fPIC
+> @@ -162,7 +163,7 @@ $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
+>  $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
 >
-> -       if (!id->id) {
-> +       if (!id->id && !id->is_set)
->                 pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
-> -       }
->
->         for (i = 0; i < id->addr_cnt; i++) {
->                 unsigned long addr = id->addr[i];
+>  $(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN_SHARED) $(VERSION_SCRIPT)
+> -       $(QUIET_LINK)$(CC) $(LDFLAGS) \
+> +       $(QUIET_LINK)$(CC) $(CLANG_CROSS_FLAGS) $(LDFLAGS) \
+
+I haven't checked, but what would happen if we just use $(CFLAGS)
+here? Would it still work?
+
+>                 --shared -Wl,-soname,libbpf.so.$(LIBBPF_MAJOR_VERSION) \
+>                 -Wl,--version-script=$(VERSION_SCRIPT) $< -lelf -lz -o $@
+>         @ln -sf $(@F) $(OUTPUT)libbpf.so
 > --
-> 2.34.0
+> 2.33.1
 >
