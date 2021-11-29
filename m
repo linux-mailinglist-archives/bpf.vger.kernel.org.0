@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D444627EE
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9E84627F5
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbhK2XPz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 18:15:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43064 "EHLO
+        id S233536AbhK2XQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 18:16:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236744AbhK2XPq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 18:15:46 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16BDC0C20C5
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:52:58 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id v138so46796551ybb.8
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:52:58 -0800 (PST)
+        with ESMTP id S234318AbhK2XQJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 18:16:09 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F43C0C2344
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:55:48 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id v64so46854399ybi.5
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:55:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7kYmBGF67/pAyT07WaCOIi5zWPZO4b50NU0R2MXiWPM=;
-        b=SqI/jk5k0RhgmYXYCrluaeGSvkZotVNqmrP/sggo+hkRrX87IT8hiWmoWVhQsuy8M1
-         ZX3O5dvN3AWMVklbcV7wn8hRE6aYZ5TcI1XkA5fT3kPBJiUndHZCE2Yr4iZbAHvnrqeC
-         hyw/bUIKIM4uSfucOL0Kz3nC5+LX81mxphOpDmTonEAk0paq7CM/dudNbV6hjDuqx1ty
-         u2MNtvl4YzLlYIdGrmABp789h2A292iLyV4gdWdKg65ZxqI0HVWSWHO+a+K064TnCDve
-         QCFGut8GiWWgApvMkCX+7IWKs3kb1AcrkL1Dt3qyjUH6xv7KPm26k6xISob35gzPvmTb
-         vagw==
+        bh=r6Mnx4w0akf050BCbAHxNmiCQz+3Stwvv6BMamywb1U=;
+        b=VQ4uYqqtVyKHBsaBZju/e8/Uykb4qSxwti4KAO5SGdQH12zBkIscCtX68IqrMRfJ43
+         062mQmafOTBF0ymxTYEdzEta1s/JrBl4Cr8iSpLjkIDIC6RdfDipimYged6/GRDPmE9y
+         cT6y9iZT1U9EFDJG/lf0Ioobe4WdcWAF0lPRi2nk9fTusiYOQBM+lc0rm0ujMWbKbSPq
+         sMZGDrTo01uhHTqD5K7X8H+HbKHpfsupHl5sGxjIQM15FK7UBYKotL8hrXs6WI7MKmks
+         LNo4Qyia3EwSvpsOH7IGpyHsSP2yDXQ+yTYj2MUYRHodvDcopUqW4cIW7ACECe+gXCm6
+         iwJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7kYmBGF67/pAyT07WaCOIi5zWPZO4b50NU0R2MXiWPM=;
-        b=IYqxZQUz0Ss887jLhoYqWHkQyrgvfdXmEmkDaVQSEqYEjzN8WzWxkbNia4rCvTkE9a
-         tf5NvXzss6vulEzw3MLBU13u4E+wxZmnURsyqB/brgc4SFy1rFVF6QH7PMSNa8hf2AuR
-         ++xTaMuUGIFu6WmRYfFaCa1pN5G+z0JpXEfRPhxSmgdnp4HGGsMl88DZh4T1I+qR48gx
-         zBl5lI+EKHhdqfzuI7G8KzvAj7pPUzBBaFuFcQrXA/3EEJFGSJSSspSx19rYt5s4e5Ul
-         YTJigOVfjv0NJrVHvqb1mq6oxVRTOCzPk+Eg67Mav2PYTIjFLKLtY+u4wytsdZLUXx2Z
-         aGMA==
-X-Gm-Message-State: AOAM532JJmCP09VsXKbR1WrxG3v9LDGJ7aG4YGQ4ZbX1PmJ4Wx2ULXOA
-        HzzGMKFiJBT+n65kjqNy72kMzRboNA0kvyQM2l8=
-X-Google-Smtp-Source: ABdhPJxEjUh+qp2+Ge4pp6eV9UFd2TOi66fqm2DY0umlyJXpaExrU/7WjoBvi8lCzfM2fZMY+weSZ3tvUbHbHUrz/4Q=
-X-Received: by 2002:a25:e617:: with SMTP id d23mr9433133ybh.555.1638226378139;
- Mon, 29 Nov 2021 14:52:58 -0800 (PST)
+        bh=r6Mnx4w0akf050BCbAHxNmiCQz+3Stwvv6BMamywb1U=;
+        b=A916WlIueRMvDmZuq0QmcwtYtjukdBS5CrXZkj7KCoJGb42UADL5KzwB4geglOvcVE
+         p0fmK9R7LWfcJ+QJzvZNuwCo3tlpkVEen4vJ/Z9OdyCzoENBdXMZv1L21D6dhenVhzjg
+         PfoWLFCcTogswrLnyRuMmAxY6eFbBpVN1OfVZkf464dvkxDBTYLA/HwKLB9xqADOMrB7
+         ISujH8YetU+wECwWzXJpkYE5mevhJhR4/+dqZ2bqOv6lBMrMajKgXLyHuKkYr7ZWWAhF
+         k+6lc4vdxXyPDtaZ1DhUIkh1j6I3wvKkjhM6JCewSwrvMVwARgqhGffKT0GlcKRfPB+k
+         yuQQ==
+X-Gm-Message-State: AOAM531hpqH/+YnVKf51waVO+Ss/ZodQGQJQ5MjNJvGbAelDj4Srxpr+
+        +G5XfV2EyfZ8B13obbcBpHNSdx4+bh0RLGearxc=
+X-Google-Smtp-Source: ABdhPJyW18fNPyGcZv4tbcNJn2OtK3HBaBFUelqg3wfS9HAJTtx+U/lCj2jpYHBvRwC2ddJ5BncL8n68CQwihyH2Rew=
+X-Received: by 2002:a25:54e:: with SMTP id 75mr36255536ybf.393.1638226547813;
+ Mon, 29 Nov 2021 14:55:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20211129223725.2770730-1-joannekoong@fb.com> <20211129223725.2770730-3-joannekoong@fb.com>
-In-Reply-To: <20211129223725.2770730-3-joannekoong@fb.com>
+References: <20211129223725.2770730-1-joannekoong@fb.com> <20211129223725.2770730-4-joannekoong@fb.com>
+In-Reply-To: <20211129223725.2770730-4-joannekoong@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Nov 2021 14:52:46 -0800
-Message-ID: <CAEf4BzbCnkocXKARDKAYtxJjWrn1k03J0B5CEG0PL-w+yaZQqA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/4] selftests/bpf: Add bpf_loop test
+Date:   Mon, 29 Nov 2021 14:55:36 -0800
+Message-ID: <CAEf4BzbSbYow+SmiggZtd0sD32zV0xA+b6itv-aOprKpmDiZgw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 3/4] selftests/bpf: measure bpf_loop verifier performance
 To:     Joanne Koong <joannekoong@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -62,36 +62,111 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Nov 29, 2021 at 2:39 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> Add test for bpf_loop testing a variety of cases:
-> various nr_loops, null callback ctx, invalid flags, nested callbacks.
+> This patch tests bpf_loop in pyperf and strobemeta, and measures the
+> verifier performance of replacing the traditional for loop
+> with bpf_loop.
+>
+> The results are as follows:
+>
+> ~strobemeta~
+>
+> Baseline
+>     verification time 6808200 usec
+>     stack depth 496
+>     processed 554252 insns (limit 1000000) max_states_per_insn 16
+>     total_states 15878 peak_states 13489  mark_read 3110
+>     #192 verif_scale_strobemeta:OK (unrolled loop)
+>
+> Using bpf_loop
+>     verification time 31589 usec
+>     stack depth 96+400
+>     processed 1513 insns (limit 1000000) max_states_per_insn 2
+>     total_states 106 peak_states 106 mark_read 60
+>     #193 verif_scale_strobemeta_bpf_loop:OK
+>
+> ~pyperf600~
+>
+> Baseline
+>     verification time 29702486 usec
+>     stack depth 368
+>     processed 626838 insns (limit 1000000) max_states_per_insn 7
+>     total_states 30368 peak_states 30279 mark_read 748
+>     #182 verif_scale_pyperf600:OK (unrolled loop)
+>
+> Using bpf_loop
+>     verification time 148488 usec
+>     stack depth 320+40
+>     processed 10518 insns (limit 1000000) max_states_per_insn 10
+>     total_states 705 peak_states 517 mark_read 38
+>     #183 verif_scale_pyperf600_bpf_loop:OK
+>
+> Using the bpf_loop helper led to approximately a 99% decrease
+> in the verification time and in the number of instructions.
 >
 > Signed-off-by: Joanne Koong <joannekoong@fb.com>
 > ---
 
-LGTM, one small nit below.
-
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  .../selftests/bpf/prog_tests/bpf_loop.c       | 138 ++++++++++++++++++
->  tools/testing/selftests/bpf/progs/bpf_loop.c  |  99 +++++++++++++
->  2 files changed, 237 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_loop.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_loop.c
+>  .../bpf/prog_tests/bpf_verif_scale.c          | 12 +++
+>  tools/testing/selftests/bpf/progs/pyperf.h    | 71 +++++++++++++++++-
+>  .../selftests/bpf/progs/pyperf600_bpf_loop.c  |  6 ++
+>  .../testing/selftests/bpf/progs/strobemeta.h  | 75 ++++++++++++++++++-
+>  .../selftests/bpf/progs/strobemeta_bpf_loop.c |  9 +++
+>  5 files changed, 169 insertions(+), 4 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
 >
 
-> +       err = bpf_prog_test_run(bpf_program__fd(skel->progs.test_prog),
-> +                               1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-> +                               &retval, &duration);
-> +       if (!ASSERT_OK(err, "err") || !ASSERT_OK(retval, "retval"))
-> +               return;
+[...]
 
-Still think that usleep(1) is better and cleaner... pkt_v4 has nothing
-to do with what you are testing.
+>                 /* Unwind python stack */
+>                 for (int i = 0; i < STACK_MAX_LEN; ++i) {
+>                         if (frame_ptr && get_frame_data(frame_ptr, pidData, &frame, &sym)) {
+> @@ -251,6 +319,7 @@ int __on_event(struct bpf_raw_tracepoint_args *ctx)
+>                                 frame_ptr = frame.f_back;
+>                         }
+>                 }
+> +#endif /* USE_BPF_LOOP */
+>                 event->stack_complete = frame_ptr == NULL;
+>         } else {
+>                 event->stack_complete = 1;
+> diff --git a/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c b/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
+> new file mode 100644
+> index 000000000000..bde8baed4ca6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
+> @@ -0,0 +1,6 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2021 Facebook
 
-> +       ASSERT_EQ(skel->bss->nr_loops_returned, skel->bss->nr_loops,
-> +                 "0 loops");
+nit: should be /* ... */
+
 > +
-> +       /* test 500 loops */
-> +       skel->bss->nr_loops = 500;
+> +#define STACK_MAX_LEN 600
+> +#define USE_BPF_LOOP
+> +#include "pyperf.h"
 
 [...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c b/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
+> new file mode 100644
+> index 000000000000..e6f9f920e68a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
+> @@ -0,0 +1,9 @@
+> +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> +// Copyright (c) 2021 Facebook
+
+same
+
+> +
+> +#define STROBE_MAX_INTS 2
+> +#define STROBE_MAX_STRS 25
+> +#define STROBE_MAX_MAPS 100
+> +#define STROBE_MAX_MAP_ENTRIES 20
+> +#define USE_BPF_LOOP
+> +#include "strobemeta.h"
+> --
+> 2.30.2
+>
