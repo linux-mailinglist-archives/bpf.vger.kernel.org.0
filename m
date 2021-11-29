@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019684625C1
-	for <lists+bpf@lfdr.de>; Mon, 29 Nov 2021 23:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CE94625C7
+	for <lists+bpf@lfdr.de>; Mon, 29 Nov 2021 23:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhK2WnO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 17:43:14 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23704 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234440AbhK2Wmc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 29 Nov 2021 17:42:32 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ATIl9Hg028187
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:39:14 -0800
+        id S234785AbhK2WnT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 17:43:19 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44854 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234476AbhK2Wmm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Nov 2021 17:42:42 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1ATIlEuT032320
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:39:21 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=dpXhiDBTwKVQTfgQ2Q52Vxe4Z5Ecxc3KRtOR39SbR4o=;
- b=U97aBJZDcEG/ZABgFVg0gs4CZD+aWa9wvLaRd0Gj3I4MsTkvEsNcXYlEC9/S+k2E+h1K
- wX/Q9PHWX5VPNCkiQ+y8ZEaxNRITAMsc9sj7rDpbW88KoxfkZje8NDLfT0MV0MdcU7Nv
- H2c96p6qkLXg9zu1nS3vJFcNfLu2YpIGerw= 
+ bh=DWuMcgzsePvnDOqpUfTPzKKcBrmFwGkrHsCnNzQ1+7A=;
+ b=Ctu3ijULxikA9QQoEZ6M4BixRFQGsP5fhpke3OLJPzQMn5FL2P3kmYvNpgIpwoICUtUV
+ uLJAYbh1gzk9//BnS6g0LohGXNfWr6QJuBchmeBrrHa4jJhiBNKwc7WVsa6IMwO8Aqv3
+ +2xxfi76ltwnzWTyPmMgVqB5/0fYlPfG2BE= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cn1as37dx-2
+        by m0089730.ppops.net with ESMTP id 3cmna6778y-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:39:14 -0800
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:39:20 -0800
 Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.20; Mon, 29 Nov 2021 14:39:12 -0800
 Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id 45A49570A527; Mon, 29 Nov 2021 14:39:00 -0800 (PST)
+        id 59FDC570A529; Mon, 29 Nov 2021 14:39:00 -0800 (PST)
 From:   Joanne Koong <joannekoong@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH v3 bpf-next 2/4] selftests/bpf: Add bpf_loop test
-Date:   Mon, 29 Nov 2021 14:37:23 -0800
-Message-ID: <20211129223725.2770730-3-joannekoong@fb.com>
+Subject: [PATCH v3 bpf-next 3/4] selftests/bpf: measure bpf_loop verifier performance
+Date:   Mon, 29 Nov 2021 14:37:24 -0800
+Message-ID: <20211129223725.2770730-4-joannekoong@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211129223725.2770730-1-joannekoong@fb.com>
 References: <20211129223725.2770730-1-joannekoong@fb.com>
@@ -46,287 +46,359 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: TXQtRA7PUAPuvdbYL7wK5tO5fJu-7M-g
-X-Proofpoint-ORIG-GUID: TXQtRA7PUAPuvdbYL7wK5tO5fJu-7M-g
+X-Proofpoint-GUID: sbN1BCd6ap6Cv5zSbVyDCaeQ71X0mqt_
+X-Proofpoint-ORIG-GUID: sbN1BCd6ap6Cv5zSbVyDCaeQ71X0mqt_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-29_11,2021-11-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
- spamscore=0 phishscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0
- mlxlogscore=898 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111290106
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxlogscore=832
+ spamscore=0 bulkscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ mlxscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111290107
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test for bpf_loop testing a variety of cases:
-various nr_loops, null callback ctx, invalid flags, nested callbacks.
+This patch tests bpf_loop in pyperf and strobemeta, and measures the
+verifier performance of replacing the traditional for loop
+with bpf_loop.
+
+The results are as follows:
+
+~strobemeta~
+
+Baseline
+    verification time 6808200 usec
+    stack depth 496
+    processed 554252 insns (limit 1000000) max_states_per_insn 16
+    total_states 15878 peak_states 13489  mark_read 3110
+    #192 verif_scale_strobemeta:OK (unrolled loop)
+
+Using bpf_loop
+    verification time 31589 usec
+    stack depth 96+400
+    processed 1513 insns (limit 1000000) max_states_per_insn 2
+    total_states 106 peak_states 106 mark_read 60
+    #193 verif_scale_strobemeta_bpf_loop:OK
+
+~pyperf600~
+
+Baseline
+    verification time 29702486 usec
+    stack depth 368
+    processed 626838 insns (limit 1000000) max_states_per_insn 7
+    total_states 30368 peak_states 30279 mark_read 748
+    #182 verif_scale_pyperf600:OK (unrolled loop)
+
+Using bpf_loop
+    verification time 148488 usec
+    stack depth 320+40
+    processed 10518 insns (limit 1000000) max_states_per_insn 10
+    total_states 705 peak_states 517 mark_read 38
+    #183 verif_scale_pyperf600_bpf_loop:OK
+
+Using the bpf_loop helper led to approximately a 99% decrease
+in the verification time and in the number of instructions.
 
 Signed-off-by: Joanne Koong <joannekoong@fb.com>
 ---
- .../selftests/bpf/prog_tests/bpf_loop.c       | 138 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_loop.c  |  99 +++++++++++++
- 2 files changed, 237 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_loop.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_loop.c
+ .../bpf/prog_tests/bpf_verif_scale.c          | 12 +++
+ tools/testing/selftests/bpf/progs/pyperf.h    | 71 +++++++++++++++++-
+ .../selftests/bpf/progs/pyperf600_bpf_loop.c  |  6 ++
+ .../testing/selftests/bpf/progs/strobemeta.h  | 75 ++++++++++++++++++-
+ .../selftests/bpf/progs/strobemeta_bpf_loop.c |  9 +++
+ 5 files changed, 169 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/strobemeta_bpf_loop=
+.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_loop.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_loop.c
-new file mode 100644
-index 000000000000..31b8e7715f07
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "bpf_loop.skel.h"
-+
-+static void check_nr_loops(struct bpf_loop *skel)
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/t=
+ools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+index 27f5d8ea7964..1fb16f8dad56 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+@@ -115,6 +115,12 @@ void test_verif_scale_pyperf600()
+ 	scale_test("pyperf600.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
+ }
+=20
++void test_verif_scale_pyperf600_bpf_loop(void)
 +{
-+	__u32 retval, duration;
-+	int err;
-+
-+	/* test 0 loops */
-+	skel->bss->nr_loops =3D 0;
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.test_prog),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+	if (!ASSERT_OK(err, "err") || !ASSERT_OK(retval, "retval"))
-+		return;
-+	ASSERT_EQ(skel->bss->nr_loops_returned, skel->bss->nr_loops,
-+		  "0 loops");
-+
-+	/* test 500 loops */
-+	skel->bss->nr_loops =3D 500;
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.test_prog),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+	if (!ASSERT_OK(err, "err") ||
-+	    !ASSERT_OK(retval, "retval"))
-+		return;
-+	ASSERT_EQ(skel->bss->nr_loops_returned, skel->bss->nr_loops,
-+		  "500 loops");
-+	ASSERT_EQ(skel->bss->g_output, (500 * 499) / 2, "g_output");
-+
-+	/* test exceeding the max limit */
-+	skel->bss->nr_loops =3D -1;
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.test_prog),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+	if (!ASSERT_OK(err, "err") || !ASSERT_OK(retval, "retval"))
-+		return;
-+	ASSERT_EQ(skel->bss->err, -E2BIG, "over max limit");
++	/* use the bpf_loop helper*/
++	scale_test("pyperf600_bpf_loop.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false)=
+;
 +}
 +
-+static void check_callback_fn_stop(struct bpf_loop *skel)
+ void test_verif_scale_pyperf600_nounroll()
+ {
+ 	/* no unroll at all.
+@@ -165,6 +171,12 @@ void test_verif_scale_strobemeta()
+ 	scale_test("strobemeta.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
+ }
+=20
++void test_verif_scale_strobemeta_bpf_loop(void)
 +{
-+	__u32 retval, duration;
-+	int err;
-+
-+	skel->bss->nr_loops =3D 400;
-+	skel->data->stop_index =3D 50;
-+
-+	/* testing that loop is stopped when callback_fn returns 1 */
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.test_prog),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+
-+	if (!ASSERT_OK(err, "err") || !ASSERT_OK(retval, "retval"))
-+		return;
-+
-+	ASSERT_EQ(skel->bss->nr_loops_returned, skel->data->stop_index + 1,
-+		  "nr_loops_returned");
-+	ASSERT_EQ(skel->bss->g_output, (50 * 49) / 2,
-+		  "g_output");
++	/* use the bpf_loop helper*/
++	scale_test("strobemeta_bpf_loop.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false=
+);
 +}
 +
-+static void check_null_callback_ctx(struct bpf_loop *skel)
-+{
-+	__u32 retval, duration;
-+	int err;
-+
-+	skel->bss->nr_loops =3D 10;
-+
-+	/* check that user is able to pass in a null callback_ctx */
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.prog_null_ctx),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+
-+	if (!ASSERT_OK(err, "err") || !ASSERT_OK(retval, "retval"))
-+		return;
-+
-+	ASSERT_EQ(skel->bss->nr_loops_returned, skel->bss->nr_loops,
-+		  "nr_loops_returned");
-+}
-+
-+static void check_invalid_flags(struct bpf_loop *skel)
-+{
-+	__u32 retval, duration;
-+	int err;
-+
-+	/* check that passing in non-zero flags returns -EINVAL */
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.prog_invalid_flag=
-s),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+
-+	if (!ASSERT_OK(err, "err") || !ASSERT_OK(retval, "retval"))
-+		return;
-+
-+	ASSERT_EQ(skel->bss->err, -EINVAL, "err");
-+}
-+
-+static void check_nested_calls(struct bpf_loop *skel)
-+{
-+	__u32 nr_loops =3D 100, nested_callback_nr_loops =3D 4;
-+	__u32 retval, duration;
-+	int err;
-+
-+	skel->bss->nr_loops =3D nr_loops;
-+	skel->bss->nested_callback_nr_loops =3D nested_callback_nr_loops;
-+
-+	/* check that nested calls are supported */
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.prog_nested_calls=
-),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+	if (!ASSERT_OK(err, "err") || !ASSERT_OK(retval, "retval"))
-+		return;
-+	ASSERT_EQ(skel->bss->nr_loops_returned, nr_loops * nested_callback_nr_l=
-oops
-+		  * nested_callback_nr_loops, "nr_loops_returned");
-+	ASSERT_EQ(skel->bss->g_output, (4 * 3) / 2 * nested_callback_nr_loops
-+		* nr_loops, "g_output");
-+}
-+
-+void test_bpf_loop(void)
-+{
-+	struct bpf_loop *skel;
-+
-+	skel =3D bpf_loop__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_loop__open_and_load"))
-+		return;
-+
-+	check_nr_loops(skel);
-+	check_callback_fn_stop(skel);
-+	check_null_callback_ctx(skel);
-+	check_invalid_flags(skel);
-+	check_nested_calls(skel);
-+
-+	bpf_loop__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_loop.c b/tools/testing=
-/selftests/bpf/progs/bpf_loop.c
-new file mode 100644
-index 000000000000..f5437792fe0f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_loop.c
-@@ -0,0 +1,99 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct callback_ctx {
-+	int output;
+ void test_verif_scale_strobemeta_nounroll1()
+ {
+ 	/* no unroll, tiny loops */
+diff --git a/tools/testing/selftests/bpf/progs/pyperf.h b/tools/testing/s=
+elftests/bpf/progs/pyperf.h
+index 2fb7adafb6b6..1ed28882daf3 100644
+--- a/tools/testing/selftests/bpf/progs/pyperf.h
++++ b/tools/testing/selftests/bpf/progs/pyperf.h
+@@ -159,6 +159,59 @@ struct {
+ 	__uint(value_size, sizeof(long long) * 127);
+ } stackmap SEC(".maps");
+=20
++#ifdef USE_BPF_LOOP
++struct process_frame_ctx {
++	int cur_cpu;
++	int32_t *symbol_counter;
++	void *frame_ptr;
++	FrameData *frame;
++	PidData *pidData;
++	Symbol *sym;
++	Event *event;
++	bool done;
 +};
 +
-+/* These should be set by the user program */
-+u32 nested_callback_nr_loops;
-+u32 stop_index =3D -1;
-+u32 nr_loops;
++#define barrier_var(var) asm volatile("" : "=3Dr"(var) : "0"(var))
 +
-+/* Making these global variables so that the userspace program
-+ * can verify the output through the skeleton
-+ */
-+int nr_loops_returned;
-+int g_output;
-+int err;
-+
-+static int callback(__u32 index, void *data)
++static int process_frame_callback(__u32 i, struct process_frame_ctx *ctx=
+)
 +{
-+	struct callback_ctx *ctx =3D data;
++	int zero =3D 0;
++	void *frame_ptr =3D ctx->frame_ptr;
++	PidData *pidData =3D ctx->pidData;
++	FrameData *frame =3D ctx->frame;
++	int32_t *symbol_counter =3D ctx->symbol_counter;
++	int cur_cpu =3D ctx->cur_cpu;
++	Event *event =3D ctx->event;
++	Symbol *sym =3D ctx->sym;
 +
-+	if (index >=3D stop_index)
-+		return 1;
++	if (frame_ptr && get_frame_data(frame_ptr, pidData, frame, sym)) {
++		int32_t new_symbol_id =3D *symbol_counter * 64 + cur_cpu;
++		int32_t *symbol_id =3D bpf_map_lookup_elem(&symbolmap, sym);
 +
-+	ctx->output +=3D index;
++		if (!symbol_id) {
++			bpf_map_update_elem(&symbolmap, sym, &zero, 0);
++			symbol_id =3D bpf_map_lookup_elem(&symbolmap, sym);
++			if (!symbol_id) {
++				ctx->done =3D true;
++				return 1;
++			}
++		}
++		if (*symbol_id =3D=3D new_symbol_id)
++			(*symbol_counter)++;
 +
++		barrier_var(i);
++		if (i >=3D STACK_MAX_LEN)
++			return 1;
++
++		event->stack[i] =3D *symbol_id;
++
++		event->stack_len =3D i + 1;
++		frame_ptr =3D frame->f_back;
++	}
 +	return 0;
 +}
++#endif /* USE_BPF_LOOP */
 +
-+static int empty_callback(__u32 index, void *data)
+ #ifdef GLOBAL_FUNC
+ __noinline
+ #elif defined(SUBPROGS)
+@@ -228,11 +281,26 @@ int __on_event(struct bpf_raw_tracepoint_args *ctx)
+ 		int32_t* symbol_counter =3D bpf_map_lookup_elem(&symbolmap, &sym);
+ 		if (symbol_counter =3D=3D NULL)
+ 			return 0;
++#ifdef USE_BPF_LOOP
++	struct process_frame_ctx ctx =3D {
++		.cur_cpu =3D cur_cpu,
++		.symbol_counter =3D symbol_counter,
++		.frame_ptr =3D frame_ptr,
++		.frame =3D &frame,
++		.pidData =3D pidData,
++		.sym =3D &sym,
++		.event =3D event,
++	};
++
++	bpf_loop(STACK_MAX_LEN, process_frame_callback, &ctx, 0);
++	if (ctx.done)
++		return 0;
++#else
+ #ifdef NO_UNROLL
+ #pragma clang loop unroll(disable)
+ #else
+ #pragma clang loop unroll(full)
+-#endif
++#endif /* NO_UNROLL */
+ 		/* Unwind python stack */
+ 		for (int i =3D 0; i < STACK_MAX_LEN; ++i) {
+ 			if (frame_ptr && get_frame_data(frame_ptr, pidData, &frame, &sym)) {
+@@ -251,6 +319,7 @@ int __on_event(struct bpf_raw_tracepoint_args *ctx)
+ 				frame_ptr =3D frame.f_back;
+ 			}
+ 		}
++#endif /* USE_BPF_LOOP */
+ 		event->stack_complete =3D frame_ptr =3D=3D NULL;
+ 	} else {
+ 		event->stack_complete =3D 1;
+diff --git a/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c b/too=
+ls/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
+new file mode 100644
+index 000000000000..bde8baed4ca6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
+@@ -0,0 +1,6 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2021 Facebook
++
++#define STACK_MAX_LEN 600
++#define USE_BPF_LOOP
++#include "pyperf.h"
+diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testi=
+ng/selftests/bpf/progs/strobemeta.h
+index 60c93aee2f4a..753718595c26 100644
+--- a/tools/testing/selftests/bpf/progs/strobemeta.h
++++ b/tools/testing/selftests/bpf/progs/strobemeta.h
+@@ -445,6 +445,48 @@ static __always_inline void *read_map_var(struct str=
+obemeta_cfg *cfg,
+ 	return payload;
+ }
+=20
++#ifdef USE_BPF_LOOP
++enum read_type {
++	READ_INT_VAR,
++	READ_MAP_VAR,
++	READ_STR_VAR,
++};
++
++struct read_var_ctx {
++	struct strobemeta_payload *data;
++	void *tls_base;
++	struct strobemeta_cfg *cfg;
++	void *payload;
++	/* value gets mutated */
++	struct strobe_value_generic *value;
++	enum read_type type;
++};
++
++static int read_var_callback(__u32 index, struct read_var_ctx *ctx)
 +{
++	switch (ctx->type) {
++	case READ_INT_VAR:
++		if (index >=3D STROBE_MAX_INTS)
++			return 1;
++		read_int_var(ctx->cfg, index, ctx->tls_base, ctx->value, ctx->data);
++		break;
++	case READ_MAP_VAR:
++		if (index >=3D STROBE_MAX_MAPS)
++			return 1;
++		ctx->payload =3D read_map_var(ctx->cfg, index, ctx->tls_base,
++					    ctx->value, ctx->data, ctx->payload);
++		break;
++	case READ_STR_VAR:
++		if (index >=3D STROBE_MAX_STRS)
++			return 1;
++		ctx->payload +=3D read_str_var(ctx->cfg, index, ctx->tls_base,
++					     ctx->value, ctx->data, ctx->payload);
++		break;
++	}
 +	return 0;
 +}
++#endif /* USE_BPF_LOOP */
 +
-+static int nested_callback2(__u32 index, void *data)
-+{
-+	nr_loops_returned +=3D bpf_loop(nested_callback_nr_loops, callback, dat=
-a, 0);
+ /*
+  * read_strobe_meta returns NULL, if no metadata was read; otherwise ret=
+urns
+  * pointer to *right after* payload ends
+@@ -475,11 +517,36 @@ static void *read_strobe_meta(struct task_struct *t=
+ask,
+ 	 */
+ 	tls_base =3D (void *)task;
+=20
++#ifdef USE_BPF_LOOP
++	struct read_var_ctx ctx =3D {
++		.cfg =3D cfg,
++		.tls_base =3D tls_base,
++		.value =3D &value,
++		.data =3D data,
++		.payload =3D payload,
++	};
++	int err;
 +
-+	return 0;
-+}
++	ctx.type =3D READ_INT_VAR;
++	err =3D bpf_loop(STROBE_MAX_INTS, read_var_callback, &ctx, 0);
++	if (err !=3D STROBE_MAX_INTS)
++		return NULL;
 +
-+static int nested_callback1(__u32 index, void *data)
-+{
-+	bpf_loop(nested_callback_nr_loops, nested_callback2, data, 0);
-+	return 0;
-+}
++	ctx.type =3D READ_STR_VAR;
++	err =3D bpf_loop(STROBE_MAX_STRS, read_var_callback, &ctx, 0);
++	if (err !=3D STROBE_MAX_STRS)
++		return NULL;
 +
-+SEC("tc")
-+int test_prog(struct __sk_buff *skb)
-+{
-+	struct callback_ctx data =3D {};
++	ctx.type =3D READ_MAP_VAR;
++	err =3D bpf_loop(STROBE_MAX_MAPS, read_var_callback, &ctx, 0);
++	if (err !=3D STROBE_MAX_MAPS)
++		return NULL;
++#else
+ #ifdef NO_UNROLL
+ #pragma clang loop unroll(disable)
+ #else
+ #pragma unroll
+-#endif
++#endif /* NO_UNROLL */
+ 	for (int i =3D 0; i < STROBE_MAX_INTS; ++i) {
+ 		read_int_var(cfg, i, tls_base, &value, data);
+ 	}
+@@ -487,7 +554,7 @@ static void *read_strobe_meta(struct task_struct *tas=
+k,
+ #pragma clang loop unroll(disable)
+ #else
+ #pragma unroll
+-#endif
++#endif /* NO_UNROLL */
+ 	for (int i =3D 0; i < STROBE_MAX_STRS; ++i) {
+ 		payload +=3D read_str_var(cfg, i, tls_base, &value, data, payload);
+ 	}
+@@ -495,10 +562,12 @@ static void *read_strobe_meta(struct task_struct *t=
+ask,
+ #pragma clang loop unroll(disable)
+ #else
+ #pragma unroll
+-#endif
++#endif /* NO_UNROLL */
+ 	for (int i =3D 0; i < STROBE_MAX_MAPS; ++i) {
+ 		payload =3D read_map_var(cfg, i, tls_base, &value, data, payload);
+ 	}
++#endif /* USE_BPF_LOOP */
 +
-+	nr_loops_returned =3D bpf_loop(nr_loops, callback, &data, 0);
+ 	/*
+ 	 * return pointer right after end of payload, so it's possible to
+ 	 * calculate exact amount of useful data that needs to be sent
+diff --git a/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c b/to=
+ols/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
+new file mode 100644
+index 000000000000..e6f9f920e68a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
+@@ -0,0 +1,9 @@
++// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
++// Copyright (c) 2021 Facebook
 +
-+	if (nr_loops_returned < 0)
-+		err =3D nr_loops_returned;
-+	else
-+		g_output =3D data.output;
-+
-+	return 0;
-+}
-+
-+SEC("tc")
-+int prog_null_ctx(struct __sk_buff *skb)
-+{
-+	nr_loops_returned =3D bpf_loop(nr_loops, empty_callback, NULL, 0);
-+
-+	return 0;
-+}
-+
-+SEC("tc")
-+int prog_invalid_flags(struct __sk_buff *skb)
-+{
-+	struct callback_ctx data =3D {};
-+
-+	err =3D bpf_loop(nr_loops, callback, &data, 1);
-+
-+	return 0;
-+}
-+
-+SEC("tc")
-+int prog_nested_calls(struct __sk_buff *skb)
-+{
-+	struct callback_ctx data =3D {};
-+
-+	nr_loops_returned =3D 0;
-+	bpf_loop(nr_loops, nested_callback1, &data, 0);
-+
-+	g_output =3D data.output;
-+
-+	return 0;
-+}
++#define STROBE_MAX_INTS 2
++#define STROBE_MAX_STRS 25
++#define STROBE_MAX_MAPS 100
++#define STROBE_MAX_MAP_ENTRIES 20
++#define USE_BPF_LOOP
++#include "strobemeta.h"
 --=20
 2.30.2
 
