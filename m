@@ -2,167 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837D3461A4E
-	for <lists+bpf@lfdr.de>; Mon, 29 Nov 2021 15:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8F8461A80
+	for <lists+bpf@lfdr.de>; Mon, 29 Nov 2021 15:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhK2Oxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 09:53:32 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:47462 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345713AbhK2OvP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 09:51:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E929F6155F;
-        Mon, 29 Nov 2021 14:47:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AD3C004E1;
-        Mon, 29 Nov 2021 14:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638197277;
-        bh=CoopZV0b/bKiDlV+HhvUfNkMdjiGJvIMlADMRIGNB4I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rYabvzP1gx9omCtgDIauPYZdStR3jR6UpWkgTE6hmLhH4cRWrQHf6TxS28YeH+RKr
-         SRcur0lcx5xMeZ+8gBonuXpPN+wFYA1Lnq5+OdnzLkc8KNVKvQ8FTjiUENH4dADxoG
-         /CQRR1zslN7soB04e2Atkf4XOvb5euaKzwtxmB7CrfEi+/pw8J501IDFdgTQfoX+qh
-         aU4MOGaSBGWP/0MNcgDm38CsdUb3iakU5Lv602Tqilqvw1F59jAhtD4rzXmCOi1oyk
-         ChqJVkhxVGeMImLerX7GfVKOyFo1URKOnTAfJ/U54kUQVPz3vbu3h0tj4JGlrxsuaC
-         gexT8LLb6/BNw==
-Date:   Mon, 29 Nov 2021 06:47:55 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1347018AbhK2PBx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 10:01:53 -0500
+Received: from mga01.intel.com ([192.55.52.88]:61839 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345390AbhK2O7v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 09:59:51 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10182"; a="259897689"
+X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; 
+   d="scan'208";a="259897689"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2021 06:53:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; 
+   d="scan'208";a="558829786"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Nov 2021 06:53:07 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1ATEr5m0005092;
+        Mon, 29 Nov 2021 14:53:05 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>, brouer@redhat.com,
+        bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, petrm@nvidia.com,
-        nikolay@nvidia.com
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-Message-ID: <20211129064755.539099c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YaPCbaMVaVlxXcHC@shredder>
-References: <20211123163955.154512-22-alexandr.lobakin@intel.com>
-        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
-        <87bl28bga6.fsf@toke.dk>
-        <20211125170708.127323-1-alexandr.lobakin@intel.com>
-        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211125204007.133064-1-alexandr.lobakin@intel.com>
-        <87sfvj9k13.fsf@toke.dk>
-        <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87ee72ah56.fsf@toke.dk>
-        <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YaPCbaMVaVlxXcHC@shredder>
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        anthony.l.nguyen@intel.com, jesse.brandeburg@intel.com,
+        intel-wired-lan@lists.osuosl.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 2/2] igc: enable XDP metadata in driver
+Date:   Mon, 29 Nov 2021 15:53:03 +0100
+Message-Id: <20211129145303.10507-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <6de05aea-9cf4-c938-eff2-9e3b138512a4@redhat.com>
+References: <163700856423.565980.10162564921347693758.stgit@firesoul> <163700859087.565980.3578855072170209153.stgit@firesoul> <20211126161649.151100-1-alexandr.lobakin@intel.com> <6de05aea-9cf4-c938-eff2-9e3b138512a4@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 28 Nov 2021 19:54:53 +0200 Ido Schimmel wrote:
-> > > Right, sure, I am also totally fine with having only a somewhat
-> > > restricted subset of stats available at the interface level and make
-> > > everything else be BPF-based. I'm hoping we can converge of a common
-> > > understanding of what this "minimal set" should be :)
-> > > 
-> > > Agreed. My immediate thought is that "XDP packets are interface packets"
-> > > but that is certainly not what we do today, so not sure if changing it
-> > > at this point would break things?  
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Date: Mon, 29 Nov 2021 15:39:04 +0100
+
+> On 26/11/2021 17.16, Alexander Lobakin wrote:
+> > From: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Date: Mon, 15 Nov 2021 21:36:30 +0100
 > > 
-> > I'd vote for taking the risk and trying to align all the drivers.  
+> >> Enabling the XDP bpf_prog access to data_meta area is a very small
+> >> change. Hint passing 'true' to xdp_prepare_buff().
+> >>
+> >> The SKB layers can also access data_meta area, which required more
+> >> driver changes to support. Reviewers, notice the igc driver have two
+> >> different functions that can create SKBs, depending on driver config.
+> >>
+> >> Hint for testers, ethtool priv-flags legacy-rx enables
+> >> the function igc_construct_skb()
+> >>
+> >>   ethtool --set-priv-flags DEV legacy-rx on
+> >>
+> >> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> >> ---
+> >>   drivers/net/ethernet/intel/igc/igc_main.c |   29 +++++++++++++++++++----------
+> >>   1 file changed, 19 insertions(+), 10 deletions(-)
+> >>
+> >> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> >> index 76b0a7311369..b516f1b301b4 100644
+> >> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> >> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> >> @@ -1718,24 +1718,26 @@ static void igc_add_rx_frag(struct igc_ring *rx_ring,
+> >>   
+> >>   static struct sk_buff *igc_build_skb(struct igc_ring *rx_ring,
+> >>   				     struct igc_rx_buffer *rx_buffer,
+> >> -				     union igc_adv_rx_desc *rx_desc,
+> >> -				     unsigned int size)
+> >> +				     struct xdp_buff *xdp)
+> >>   {
+> >> -	void *va = page_address(rx_buffer->page) + rx_buffer->page_offset;
+> >> +	unsigned int size = xdp->data_end - xdp->data;
+> >>   	unsigned int truesize = igc_get_rx_frame_truesize(rx_ring, size);
+> >> +	unsigned int metasize = xdp->data - xdp->data_meta;
+> >>   	struct sk_buff *skb;
+> >>   
+> >>   	/* prefetch first cache line of first page */
+> >> -	net_prefetch(va);
+> >> +	net_prefetch(xdp->data);
+> > 
+> > I'd prefer prefetching xdp->data_meta here. GRO layer accesses it.
+> > Maximum meta size for now is 32, so at least 96 bytes of the frame
+> > will stil be prefetched.
 > 
-> I agree. I think IFLA_STATS64 in RTM_NEWLINK should contain statistics
-> of all the packets seen by the netdev. The breakdown into software /
-> hardware / XDP should be reported via RTM_NEWSTATS.
+> Prefetch works for "full" cachelines. Intel CPUs often prefect two 
+> cache-lines, when doing this, thus I guess we still get xdp->data.
 
-Hm, in the offload case "seen by the netdev" may be unclear. For 
-the offload case I believe our recommendation was phrased more like 
-"all packets which would be seen by the netdev if there was no
-routing/tc offload", right?
+Sure. I mean, net_prefetch() prefetches 128 bytes in a row.
+xdp->data is usually aligned to XDP_PACKET_HEADROOM (or two bytes
+to the right). If our CL is 64 and the meta is present, then... ah
+right, 64 to the left and 64 starting from data to the right.
 
-> Currently, for soft devices such as VLANs, bridges and GRE, user space
-> only sees statistics of packets forwarded by software, which is quite
-> useless when forwarding is offloaded from the kernel to hardware.
-> 
-> Petr is working on exposing hardware statistics for such devices via
-> rtnetlink. Unlike XDP (?), we need to be able to let user space enable /
-> disable hardware statistics as we have a limited number of hardware
-> counters and they can also reduce the bandwidth when enabled. We are
-> thinking of adding a new RTM_SETSTATS for that:
-> 
-> # ip stats set dev swp1 hw_stats on
+> I don't mind prefetching xdp->data_meta, but (1) I tried to keep the 
+> change minimal as current behavior was data area I kept that. (2) 
+> xdp->data starts on a cacheline and we know NIC hardware have touched 
+> that, it is not a full-cache-miss due to DDIO/DCA it is known to be in 
+> L3 cache (gain is around 2-3 ns in my machine for data prefetch).
+> Given this is only a 2.5 Gbit/s driver/HW I doubt this make any difference.
 
-Does it belong on the switch port? Not the netdev we want to track?
+Code constistency at least. On 10+ Gbps we prefetch meta, and I plan
+to continue doing this in my series.
 
-> For query, something like (under discussion):
-> 
-> # ip stats show dev swp1 // all groups
-> # ip stats show dev swp1 group link
-> # ip stats show dev swp1 group offload // all sub-groups
-> # ip stats show dev swp1 group offload sub-group cpu
-> # ip stats show dev swp1 group offload sub-group hw
-> 
-> Like other iproute2 commands, these follow the nesting of the
-> RTM_{NEW,GET}STATS uAPI.
+> Tony is it worth resending a V2 of this patch?
 
-But we do have IFLA_STATS_LINK_OFFLOAD_XSTATS, isn't it effectively 
-the same use case?
+Tony, you can take it as it is if you want, I'll correct it later in
+mine. Up to you.
 
-> Looking at patch #1 [1], I think that whatever you decide to expose for
-> XDP can be queried via:
-> 
-> # ip stats show dev swp1 group xdp
-> # ip stats show dev swp1 group xdp sub-group regular
-> # ip stats show dev swp1 group xdp sub-group xsk
-> 
-> Regardless, the following command should show statistics of all the
-> packets seen by the netdev:
-> 
-> # ip -s link show dev swp1
-> 
-> There is a PR [2] for node_exporter to use rtnetlink to fetch netdev
-> statistics instead of the old proc interface. It should be possible to
-> extend it to use RTM_*STATS for more fine-grained statistics.
-> 
-> [1] https://lore.kernel.org/netdev/20211123163955.154512-2-alexandr.lobakin@intel.com/
-> [2] https://github.com/prometheus/node_exporter/pull/2074
+Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 
-Nice!
+> >>   
+> >>   	/* build an skb around the page buffer */
+> >> -	skb = build_skb(va - IGC_SKB_PAD, truesize);
+> >> +	skb = build_skb(xdp->data_hard_start, truesize);
+> >>   	if (unlikely(!skb))
+> >>   		return NULL;
+> >>   
+> >>   	/* update pointers within the skb to store the data */
+> >> -	skb_reserve(skb, IGC_SKB_PAD);
+> >> +	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+> >>   	__skb_put(skb, size);
+> >> +	if (metasize)
+> >> +		skb_metadata_set(skb, metasize);
+> >>   
+> >>   	igc_rx_buffer_flip(rx_buffer, truesize);
+> >>   	return skb;
+> >> @@ -1746,6 +1748,7 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
+> >>   					 struct xdp_buff *xdp,
+> >>   					 ktime_t timestamp)
+> >>   {
+> >> +	unsigned int metasize = xdp->data - xdp->data_meta;
+> >>   	unsigned int size = xdp->data_end - xdp->data;
+> >>   	unsigned int truesize = igc_get_rx_frame_truesize(rx_ring, size);
+> >>   	void *va = xdp->data;
+> >> @@ -1756,7 +1759,7 @@ static struct sk_buff *igc_construct_skb(struct igc_ring *rx_ring,
+> >>   	net_prefetch(va);
+> > 
+> > ...here as well.
+> >
+
+Thanks,
+Al
