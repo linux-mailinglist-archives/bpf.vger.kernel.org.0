@@ -2,236 +2,305 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524DF461FD9
-	for <lists+bpf@lfdr.de>; Mon, 29 Nov 2021 20:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBF04620C9
+	for <lists+bpf@lfdr.de>; Mon, 29 Nov 2021 20:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344918AbhK2TIh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 14:08:37 -0500
-Received: from mga11.intel.com ([192.55.52.93]:16347 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237628AbhK2TGh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 14:06:37 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="233552372"
-X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; 
-   d="scan'208";a="233552372"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2021 11:03:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; 
-   d="scan'208";a="600310166"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Nov 2021 11:03:17 -0800
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+        id S235981AbhK2TrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 14:47:12 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4180 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236353AbhK2TpM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Nov 2021 14:45:12 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ATIl8qp004319;
+        Mon, 29 Nov 2021 11:41:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=sUyNombQvGbh5Xi/MWFgQt/o30hMKNtUjXodAz48gBQ=;
+ b=NAQ0BrtSSUoT/H5zotALAid21tHzVBzmOTQ+OkmoULvEImffY6XTKtK3J0/mFGxE/WWt
+ ED6xi9CXin1mD0ppkBOUHXuGxyo8kKBJthZrKg1/NPRILatgLQoaigedCZWVMM8SBPIJ
+ KfH9Tah7tipi6RMelGVILzrsRLdIaca+tiM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cmyfmjyu3-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 29 Nov 2021 11:41:37 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 29 Nov 2021 11:03:17 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 29 Nov 2021 11:03:16 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20 via Frontend Transport; Mon, 29 Nov 2021 11:03:16 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.20; Mon, 29 Nov 2021 11:03:16 -0800
+ 15.1.2308.20; Mon, 29 Nov 2021 11:41:35 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C/UhQRMiz0uFzhEmv37YCmuWbG1rRmFEm+sfWOTcmZuu+O6fcBOLvfSykrEHnKGshKXIFDV810IqLvBMNgAt08H9RdtI7Ut2ucd8/dlIxIWV9ZXvrVzcKmKbLJ33nYkn5fmXfiRLzbqrvV3tQ7ndkAlVDP0SN7zvJ0vZXMma/PL5OyI69ezk9QZxFPx0y339i6i/uy4SJiYp+reM3StyWmhzDe2HFsSGwqFHJYW/riwyuXWv7YTj9nPgOsrjqnGV5Y5iBUHSs66APiuUjBGMfYGSoOg6HMKsjCkXO8lQ2iYzCAxgWHRYiwV3QpWNAmUAQDMzU1m/Q66k7xqzxIJ6nQ==
+ b=P9LmudoWlfmb6Xpi56Hm0ujNrtAqLTv2cl2+FdKrcE4fsZK2eEaLKEQCg2dQwIdbEBzq5bOu/uh4LJTSf566Id4VSQ8XaeejmNVynBzaHvlePt5rEAhMrke19w+jijCB0kIKZQIhsnuopRlLcagbgIq3KJA016613SXe3ZiQSvaTwgu6UVGju+GHbct7zeTNcGUsARt7gGD93Hmztije1/DYMrfZxb8KxFpPvqNJFIId1H9XY9aPwUVYrM3VU9SYakFXf+oF+jis/vicCXPhZblAJc0yVda2hZZ+PHf+ysQ/zh7eWq78bRr5HJDdHFB3fX592t8taQy9wVamUTE2hg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AeCPkIJg6FDImUbht4sBu3Ug628JcUJDGqLYZmZS8wo=;
- b=KHeu5YOa0Eo1RxmhEMbgb9cTDoco8wxj0O/zv8nDKHNl2bESI8AiY9MOFD9qLt0B6j8ZFV+C8xVFVhfDtwteRUxb597Egsn0It6eyZ+cv25raKC4NiTg1/+l6HJvmGqdiNRJhSa4Sp4cCbW5xxnvu1l93CBhjZy5doBoiENTDFitSwv5rSGN2yK7X08DQJCf4tPR3SUCTx/gb4Xo3PX4oqv/A7hNB7s3KZSsU61VWJdshP+0CT+V1dNCyNvmQROnJx35b6BCl0tlGFqp7VzzN94M9H0Rn/qUye6ci6hPfpFAdyoyowXBkGV883/ZQQYxPl0z9RvpOh/RRuKRgMLhPw==
+ bh=sUyNombQvGbh5Xi/MWFgQt/o30hMKNtUjXodAz48gBQ=;
+ b=bm/aQ1mppe5bmTRo4MBWg6kV4doMjakU4AZpzSrZuq9sEFEfWWPRJL1AwhiWWPN2izSWLjeecOYFN7TUQDuXhqM95CNFXPorTy68d48s1i1S3bhXMbnFb1IVR9FYd8Ml/hOLasiepD4z5zBVt3gnkTlyTu+1SG6F/nrCz2OD3dWk6RZOA1kNENRysBUCRRxB1gJe4aEd/aZPsDO/56NuOSnjoDIIok8lhqiPvhUPkfA+vCIMDT6A0lwh+vUZSHFplx+b2LWIEqOgiJl4ZkLudpzLrROpH2oeDe/04c/vFROdavFBJRSdHwGUu5JOtlg+uOvInMQkH18pe/qmpvKFRw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AeCPkIJg6FDImUbht4sBu3Ug628JcUJDGqLYZmZS8wo=;
- b=SOyV+RDyDiBaMbLu3oWk8lBD6364J7zsNQ683ihhZpofoxbGGGEW4sg8tf1uVLfE19jXvpdLgB+o1CEYS/1sMPH8rax1beVCPy83yE0J44Z/970C8UAxJR6FYw5WHx9PY9srCczUcutPdyX/dk1MhNUnSH6BWL3W4kLJs6V3S0s=
-Received: from SN6PR11MB3229.namprd11.prod.outlook.com (2603:10b6:805:ba::28)
- by SA0PR11MB4686.namprd11.prod.outlook.com (2603:10b6:806:97::7) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com (2603:10b6:806:194::23)
+ by SA1PR15MB5013.namprd15.prod.outlook.com (2603:10b6:806:1d8::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Mon, 29 Nov
- 2021 19:03:15 +0000
-Received: from SN6PR11MB3229.namprd11.prod.outlook.com
- ([fe80::a5ee:3fab:456b:86d8]) by SN6PR11MB3229.namprd11.prod.outlook.com
- ([fe80::a5ee:3fab:456b:86d8%7]) with mapi id 15.20.4734.024; Mon, 29 Nov 2021
- 19:03:15 +0000
-From:   "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-To:     "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
-        "jbrouer@redhat.com" <jbrouer@redhat.com>
-CC:     "borkmann@iogearbox.net" <borkmann@iogearbox.net>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next 2/2] igc: enable XDP metadata in driver
-Thread-Topic: [PATCH net-next 2/2] igc: enable XDP metadata in driver
-Thread-Index: AQHX2mCW3qOYExLw3UOcMLuBafaes6wWDUaAgASbrwCAAAPogIAAN/UAgAANowA=
-Date:   Mon, 29 Nov 2021 19:03:15 +0000
-Message-ID: <9948428f33d013105108872d51f7e6ebec21203c.camel@intel.com>
-References: <163700856423.565980.10162564921347693758.stgit@firesoul>
-         <163700859087.565980.3578855072170209153.stgit@firesoul>
-         <20211126161649.151100-1-alexandr.lobakin@intel.com>
-         <6de05aea-9cf4-c938-eff2-9e3b138512a4@redhat.com>
-         <20211129145303.10507-1-alexandr.lobakin@intel.com>
-         <20211129181320.579477-1-alexandr.lobakin@intel.com>
-In-Reply-To: <20211129181320.579477-1-alexandr.lobakin@intel.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.21; Mon, 29 Nov
+ 2021 19:41:34 +0000
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::853:8eb0:5412:13b]) by SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::853:8eb0:5412:13b%9]) with mapi id 15.20.4734.024; Mon, 29 Nov 2021
+ 19:41:34 +0000
+Message-ID: <00185053-c2e2-2b9c-5042-b162e5b406f9@fb.com>
+Date:   Mon, 29 Nov 2021 11:41:29 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.2
+Subject: Re: [PATCH v2 bpf-next 4/4] selftest/bpf/benchs: add bpf_loop
+ benchmark
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.40.4 (3.40.4-1.fc34) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7fa8bd1a-74fa-4ca7-a9cb-08d9b36ae611
-x-ms-traffictypediagnostic: SA0PR11MB4686:
-x-microsoft-antispam-prvs: <SA0PR11MB46862FBEE60C85E5E2CBABC6C6669@SA0PR11MB4686.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZLfQMdVL5SUAwflq6vW73/3HEWIcy2pnrluzm5gItysBa0lXX1j8enTni/+qxW3FA26wSuWaZ45WEdw0GrP8yVVbtgrdjR6+tR8cgwPgjlr96K+7tkHaD6s90Q66b4wRyj+5Hvr1cM8n+xfyjvRz5DrDmkN+djC+kEoyTbP902aDCa6kG9ffih3Xu1c72s9CMa42wetd50pWv/TfD/jBjMg+sF4Eb+Fu5Q7B1PcjNEHCL3up+68AgsmFm8Q1lHB9AjgddU42gmELViC16TkfWt1N2yPWydPHmiI397NUyPy0wL1zK7peFRRI2Xrph3arwyezIO3dG5o1kpup1Iu7B/cQeOyUqkMmMoZa+o6ufS+ynAxXPxSGiCKNmqrFcGk/9G8XicIuQCrOI9f9YMzpb6ztBjGaip5sFiOXiAEdQz8WUzliLL5cZ/+Kdd40qi8nhQ5dbmgTWkQD8bLtCdbq5DSc7PtI7wlwrCjaATgJyNOYIWWXWmiU14UozvS9n72jQP46vvXchKeSPMHZllk4uKmae1mAvpktPzunxvm964DMWip/2aLmx3ylJh+voSStxp4dbod5CcboSaEGd49bey6ogi/lkDu40JymUyRghf9e1wGk0VmkmZ1NkLP1L0eHSKYwfXFhCMQWxSBA7hcCEZNpL6/3YTENPy8Y/ZoncFMNn1Ca8Vqi+5eJTwEtzOPTjR51dhXnh/EC7Xap8viSyA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3229.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(8676002)(66476007)(76116006)(66556008)(71200400001)(26005)(2906002)(122000001)(66446008)(64756008)(316002)(83380400001)(5660300002)(38070700005)(6506007)(6486002)(4326008)(82960400001)(86362001)(186003)(6512007)(54906003)(8936002)(2616005)(110136005)(36756003)(38100700002)(66946007)(4001150100001)(91956017);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VGZDckFsd2NiWk5EMnc2THc4Rmt4MDRkVHMzZ1pnWUJjdmlDL0I5MzBEWkJG?=
- =?utf-8?B?NldsLzQ2TXNVczBsRE5Ed3lNdjVkWG9LKzdJUmFsczFURGNYNU12aVdjME5i?=
- =?utf-8?B?ZVdjdjdlZ2pHV2JLT3lDTTBBUnpPYkN0YldneE9rQlVwVk9MT3Rrb1dIYldu?=
- =?utf-8?B?VVFQVWtVanVYZTlWM25vMXp5NUJZZTVYMHpBdi95TkN2eEhiZG90cnA2NFZO?=
- =?utf-8?B?SEV5bndydE5yb3huVzBYcUR6MTE5cEdLWGtueEVpaGh0VHZsWm56MS9tV3Bp?=
- =?utf-8?B?YmxiaTdETmZsL2lvWXpZR3NYVmxyRG1HS01hVUpuUmJJeW1vZmpzRW5UM3FW?=
- =?utf-8?B?T3RWWklITUEzNUJMckFLcHdQN2x0MjEvN1pSR0ZLaytIY1VaRm9PeWdiMGtJ?=
- =?utf-8?B?RC9HVVVZODZYd2VvVitjREs3SzNlS1AzalhQUi9pUjlkRS9IMUZFd1N6TytH?=
- =?utf-8?B?K09aU0Z3V3p4MjdYN3pETXlwNTNqS0VyYk9iZ0hTQjdKQmFaRk9aazZQcS81?=
- =?utf-8?B?V0g4bkozSmtmRE44bjZERzI1eHB1eFBvdjJDQ1lCa2FlRUswUUpFblFMQWdj?=
- =?utf-8?B?TDliL01aTFMzdlVuOWJzUXg0Qy85M29uM3JUUVY5TkhjbVY3V1lMbWZMTUIy?=
- =?utf-8?B?K3hGcjNzMlhxeEh4dXVXSFQ4eUZJY0VhL0J1N2pNRGErYUlONU1XcnRqSzhS?=
- =?utf-8?B?dDVmT0hXZTRHQ3ZhaXM3OFBEazlUMEl6NlF1eCtpS0xjMDdHVGpxZlZjV2Yr?=
- =?utf-8?B?UnJOL2pPaXdKT0ErczlpYnZmb1ZaRVdrMlpuYVlhUGU2SFhOY0dDeW9VQ09r?=
- =?utf-8?B?QTFPa3MxdTlxelVQMUwvTDF4K3NBNFpUY2JlQ216UEU4Tk85ekpZTlo0TmlB?=
- =?utf-8?B?RElsSHdxYXJSL05FZ3dLa1dPQStCQVBrMHhuWU1iTysyTWNSbFNaVThneU1x?=
- =?utf-8?B?NGlFTjlxVU80QWs3VWY0N2FVcitFbTJMcVZTdTgzM0hKdFNsL1l1ZDV5MlNq?=
- =?utf-8?B?dHVBdForaHFHbTVnN0NvZ1JmeEozc2d6a0QyMmZPbVhNNE5xbWtMYUdLSXZk?=
- =?utf-8?B?Z2lpdVdhRVFIM2RTc0tDaUdZSnlKRkZDcWwyMEVFUTVhdTl5TnRDVmRKRVBz?=
- =?utf-8?B?RnZUY0sraUhidGhSbVJ4OXJuSVE2VWRsWVBtZXdHU243SXdiZ00wUVUvS1Rt?=
- =?utf-8?B?MGg2cnBOVlR6SnlUZUdlZHU2YW5MY2ltMUFOczhjeXBOUU5wK3lzZk4vWnpU?=
- =?utf-8?B?RS9JbENmTlVldEU2dEpoWTJoMENya1drQklJWjhBOU43a09SMktMbldramZL?=
- =?utf-8?B?YnFUSWVva0lrQ2YxQXcvMHpxK1JReXZ6eWZSY0EzRkNRT1BqcDNZUHFjekRn?=
- =?utf-8?B?UXpPRFFYeFplU2xjTDNXLzZqbjl2OUZwMTNiTjFESytCSDJVeGtKVWpQSUdq?=
- =?utf-8?B?NnNpTkRjQk44QkJEb2ZldDNvRDlnU1FlUHkySlBrZStURlVZQWNhdGJFbkZu?=
- =?utf-8?B?WlBHenJPdWp6Y1NxNTNhbEpaZXc3QWNBYWd2NzYvcnhxWjI2N0RWWFlBUS8z?=
- =?utf-8?B?OUhMTStCbVhrbVBVNkRmZDJMSkJNVGhXSURCQ3p3ZEVXSXdjeTBVMlRIaXps?=
- =?utf-8?B?a3plRWhZd2g3SjRvTWgxWkYraWhubVQ1RmRtU3lETVpySktSVk9zcmQwT3ZV?=
- =?utf-8?B?anNjbHlQQ09ldGRTay80R25NSzhFbGxBLzBCNWFRYnZHVjNFdVgzNUNuRDYz?=
- =?utf-8?B?Tm4zL3MvQlhHZnNqVHdVL3FCV3d6a25SM2Zzd2RGdEw1QmN0UGplRm90Y2N1?=
- =?utf-8?B?VGRQWXh6TFUyYm91ZnRzSFBmeStmV0dZQ1F4dUl2d0dwSDVzWm1obm13SUhY?=
- =?utf-8?B?Nm5ySnZFVmJmT2xFWDFHdlYrMkxZQnMxSU5RS0M4V3RoNEJWUVBxT253aHJ2?=
- =?utf-8?B?QmNYZi9TbXRiVmRmd1RJUXJTOG11Nk81UWJFcUJ0aEM0NXVNQVBwc0hnY0h5?=
- =?utf-8?B?QmpXVktiZ0xvM3g4Rm5yRzBrazdySDBVYXVtVGhWZDg4eDBqZDlOMjMvZDZT?=
- =?utf-8?B?Y3pZNHFCZ3dHTU9BbDlucnVTd29QTWU4MU9ZT1VBOHhja3lQZFhzQUdtTGZp?=
- =?utf-8?B?TlAvaS80aXN1M3JzM2JTSVF5dTdrZFBSOCt1d0tDK3VURFB0eXNDRFJ0NFN0?=
- =?utf-8?B?WXNPbGVNWmwyL3kzaUcrR0NDWnpFeTEvc2luNXJ5cU9UQzVYWWNMYXFmMkhy?=
- =?utf-8?Q?r7s+Q2H+L5g3jOjL70IPmePf5KGSyXCmCW4BfpSO+M=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A62250879B2934469703AD6C5CF20DE8@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+References: <20211123183409.3599979-1-joannekoong@fb.com>
+ <20211123183409.3599979-5-joannekoong@fb.com> <87y25ebry1.fsf@toke.dk>
+ <3eaa1a93-c3f1-830a-b711-117b27102cc5@fb.com> <87r1b5btl0.fsf@toke.dk>
+ <CAEf4BzbB6utDjOJLZzwbBEoAgdO774=PX8O9dWeZJRzM2kdxaQ@mail.gmail.com>
+ <87lf1db4gh.fsf@toke.dk> <5d363ea7-16c6-b8e8-b6ee-11cbe9bf1cf2@fb.com>
+ <87ee74bh8k.fsf@toke.dk>
+From:   Joanne Koong <joannekoong@fb.com>
+In-Reply-To: <87ee74bh8k.fsf@toke.dk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0038.namprd04.prod.outlook.com
+ (2603:10b6:303:6a::13) To SA1PR15MB4465.namprd15.prod.outlook.com
+ (2603:10b6:806:194::23)
 MIME-Version: 1.0
+Received: from [IPV6:2620:10d:c083:1409:25:469d:91d7:d5f8] (2620:10d:c090:500::7699) by MW4PR04CA0038.namprd04.prod.outlook.com (2603:10b6:303:6a::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.21 via Frontend Transport; Mon, 29 Nov 2021 19:41:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dbcc7d66-94d9-4498-327d-08d9b3703fab
+X-MS-TrafficTypeDiagnostic: SA1PR15MB5013:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB50132250FBF61CABDD64F972D2669@SA1PR15MB5013.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RPeWJvOV00ah/ddNzt40bP9TsBopEzt3RsMp6QK/5Pw2MeAnkTY4+FKdxJxXNq0BoB9fwSB/7On+oYaXBzb0N3AbrVQKyf4aKwkdW4MDDVC7TFfVi2g7h0IUAGUg6rsJ8MiYPY7xMglVR84MBpkDVFOobrEK785mEyBnTUW+bKO96qUVvFdEls10H2oN/nC6FmdhEJ1+uvKV3eAmqoN+f8Sj2Jrwp2t+FR+8lZ/A6v0jiwyEGaU0Q+uFYV/mDmYgwDJYX1VE939zaDIrgg8lLgdKRCKmCzRnlUYNv+DNveVZDiTocFuBh2c3RHeRlks9nnfvbiP8XFD6ZM/M3bR5k+8UeowiLdxukXSccOEhtrqbitM4F7D8A/p6PL2ubEOy54m7eRDQz/C+S4rYK1yhmXcfaUZVIL9Xm8Ipfbo8og8w77tDFoOCoQzgWwW4/+w4Zdx04VhMaHTiKWBthRrSA942bUDH071LiEaC1gGzKrt8NjHaFWm19PkuSs4wtfOfNMK96qhdugQ21LmH+lf/qE4+4iehtC3M7K/iLznGws7yImyGk7Ymslsz5u93Y9NcEKK4BZWvPDLxWXcI7gKXshMO5QjSqMfTmoB+/n3bmsJJQWaiTv/JzSNioTah3iGYy+okIocQexPF0BTMglhrj5f0JZS1EgoV1cdn3VHhv7R9I//ti9RJjFpfYa8NjMM4K9zROK4M5q9O/mgugx8TjuwWmiSEOZVUCEkA7zinJVc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4465.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(31686004)(36756003)(83380400001)(53546011)(66556008)(508600001)(5660300002)(8676002)(66476007)(6486002)(86362001)(4326008)(2616005)(8936002)(316002)(110136005)(54906003)(66574015)(31696002)(2906002)(186003)(38100700002)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0w1ZlpDRktpMmtlUEx0ZnIyK3M3eEl5Q05JM2VxeERtMXZXM2swbHptOVVz?=
+ =?utf-8?B?KzJMTjdNVGFoWlVWdnpEcVFjVllXNSs4amovVDJtSG1qNXVVUHYySlRVM0l0?=
+ =?utf-8?B?dnFMMzFYVWhTeVgwb3RQL2ZVY3hQUkpxQmh1bXQybU9CajQ4N09wOVo1VmM4?=
+ =?utf-8?B?YXAwR0tqOUhJeUxIQ3hJMWMrNTJhbHcwQTFxY2FtWDFmV1BjMEJ5UCtzWXVB?=
+ =?utf-8?B?QkdyV3F6N1lTRTFHQWNVSEl6UDdyd2xyY0ZIYnprU1lEVWZYQVhKQUVwMk9U?=
+ =?utf-8?B?Tm1sSk84Zzl5Vk5FWmNZQkp0ZzhIZkxRMUZhRzZheFpvUFlxYnRDbHhSandO?=
+ =?utf-8?B?ckZLYkwza2pGeWpiVnMzRVlDUUpJbnptMjZJd3pZaTdlQzMrWEplVE95bXBp?=
+ =?utf-8?B?SFRuMTV0NXRNL0hxQVN3SStjNnNrdzg1NFpRdStyT25hMmR4TFRITUVPejVX?=
+ =?utf-8?B?Rktia0FieG1WZ1Y3QXR4REg5YzgzTEs5RzV1MWFiSlI4UmRVZzFlc2tSV3Nw?=
+ =?utf-8?B?WGIyMFRWek1zODY5SHdpSmlQWU9wWUtGc1BPWGNxQ2ZaMUVlZE5wSnpWNVpj?=
+ =?utf-8?B?SFNCenh5WHI4ckZCK1VqSEU5WXF1SGJvRmNIbjJvOTVaZDZBY0FzWjNxWkpy?=
+ =?utf-8?B?NGgrVk1PQWl5Nm9qZmdHYkt4MzVHTmVuS09RaldQYkhoQ3h6NW9KckQ5Ymxy?=
+ =?utf-8?B?NVN5K3ovaTk5N2gyMi9IVzVKdWxXd3dsMWxJbkxoa3JuTHkyeFpRQlZwOVR2?=
+ =?utf-8?B?VDNMeStLVHRhK01PYXZlOHMzNnNsbWR0WEJwaFAxUTlqUjN2amM2NnhMTXg5?=
+ =?utf-8?B?WVZSbTZlRjEyblZqUVdmaXJqUWdvY3lPWE1ZczJyY2FWMXQ2dm4zb0x2SUl0?=
+ =?utf-8?B?OFBkVFVSRi8xOU9PS2dLUUFEazVMVytMMTQzUHpzMXpiZitTWmluYUtlV2tt?=
+ =?utf-8?B?VFEzbE1HV3gzS2k5L3dvdVVTS25kakVNY1Vkd1B5MnZoaDF6VFBzQk5GSkI4?=
+ =?utf-8?B?ajJESnQyYzVEeTBWSndCejVlVXRrbTFIOFY3MEZDSlVWS2Y2ell0dUxDZDRo?=
+ =?utf-8?B?R3Z5TDZ1MFhMVSttaUtqTDZmcUJoY01xNFkxbWJpUllzQjJ1aHFjeHltbTI2?=
+ =?utf-8?B?ZklvWTdRUFJOM1BnOWN2dWkyN2RoVmpPNFBJR1FXa05qOXg2bU4xTjdPbXdX?=
+ =?utf-8?B?Z25JMzZoRmtMUDMvZk12ZDRpVFplOUZuSmVkMW94MHRVelBzZkpUVElKeHBD?=
+ =?utf-8?B?YzYxVjEwbFR5V1RIYlBiZG1qZC94VU5nK2lmdWE4SWRuMW9PTEtUYnAxVThv?=
+ =?utf-8?B?YldVd3FYSDZmNkdpWEk1KzU2OWkwK3I1d0dzS00wYk1aUThwQ2Z0c0tTdld6?=
+ =?utf-8?B?cm5CM2hMODBXbFJiTDYyVWZXc1lrdG42aWM0WkFTc05aSTNMSlpHcWdKUEI3?=
+ =?utf-8?B?T1E3Y1RGWUQrWXZJNnRUUWpaNWdZTTVkblVUMlA5Nm1CZy9ZajQzVkMyY3Za?=
+ =?utf-8?B?Q3ZjOGl3SDBEZkxXRjRDSVdqQ2t6ZDd3MHJ2c0NUV3REV21iUHFNRkxvWEtk?=
+ =?utf-8?B?VlJYcHdCTG9Fb3FoYlNMQzZ0TFdZRldYRzM5R3JyRVJZZFBsQVRBM2xVOXAx?=
+ =?utf-8?B?MnhqNDhxbDBpMW5rcW95OWVJUkZzNkJKQWZHd2toWEVnc1U2Q2M2NDE0WGlP?=
+ =?utf-8?B?c3RwOFZVWEcxRHlKYnJjbVlGSnNYbGtDaGVFME9MaDZYZ3c4bm5Rekh2NHRF?=
+ =?utf-8?B?VEdDV3BTdGFoV2ZoMGhzVHRqanZOekY5aDNSdk0rRVNRMmFKak4xSDJyTmNV?=
+ =?utf-8?B?MnFGTjBoZW5Ybi9yUE9kSDBuWUhrcGNNOTlaVWl6amgzd0dOZU5YUm5BcGtJ?=
+ =?utf-8?B?c3o5QVFGU2VkbWpreWplTVc2RnU4a1k3T0drOTNnb0xCS2ZwYmJYSUpKeDlE?=
+ =?utf-8?B?MlhZenJyWk5hWm8waExlZzZJYzF0MHRqSnNab245ayt1dk9lWFZhVkpWY1M5?=
+ =?utf-8?B?dExOV0tXajcrZE5vVnJJNUNaQ0ZVSEFYNTRJdFV6S0VFVFBDK3pQOUNVR1FB?=
+ =?utf-8?B?RjNoRDByYjY1SS9RTklYQzRaUGJORkZUMkp3ODFEcVFkV1ptRExIckR4N3Uz?=
+ =?utf-8?B?T2dqdjNZOURnajdMN1IvSVZNdUFxaE9QeFlDLytQTk03RnFscEwzSStyM0dJ?=
+ =?utf-8?Q?Wtpb8MwNSB80ul9WGsRUo4zP8bxt3lqkqAsna3BltV1I?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: dbcc7d66-94d9-4498-327d-08d9b3703fab
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4465.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3229.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fa8bd1a-74fa-4ca7-a9cb-08d9b36ae611
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2021 19:03:15.6538
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2021 19:41:33.8814
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QTckxvm5pMYXbvW6EnSo8tbAg9EYZFQUDKpsRJuVKEMkKG23DW8Yip/uiRrcqZ/r7Dl9kRkqWvV09j29Wg7ZYbnHzv7b4I5m/Yp1eEZwEMo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4686
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MhzKNtdOBKn5BMxdTAdTe+pB+s4TOoLRLQuEYIxZcx/8p4vUGkcqVgbI+86PgUsMVwPH7/etPhkt+jx2tBskzw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5013
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: rTsXdXEs7U5JBCbqD2uwVM0_OsiY03ud
+X-Proofpoint-ORIG-GUID: rTsXdXEs7U5JBCbqD2uwVM0_OsiY03ud
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-29_11,2021-11-28_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
+ phishscore=0 mlxscore=0 adultscore=0 bulkscore=0 spamscore=0
+ suspectscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111290091
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTExLTI5IGF0IDE5OjEzICswMTAwLCBBbGV4YW5kZXIgTG9iYWtpbiB3cm90
-ZToKPiBGcm9tOiBBbGV4YW5kZXIgTG9iYWtpbiA8YWxleGFuZHIubG9iYWtpbkBpbnRlbC5jb20+
-Cj4gRGF0ZTogTW9uLCAyOSBOb3YgMjAyMSAxNTo1MzowMyArMDEwMAo+IAo+ID4gRnJvbTogSmVz
-cGVyIERhbmdhYXJkIEJyb3VlciA8amJyb3VlckByZWRoYXQuY29tPgo+ID4gRGF0ZTogTW9uLCAy
-OSBOb3YgMjAyMSAxNTozOTowNCArMDEwMAo+ID4gCj4gPiA+IE9uIDI2LzExLzIwMjEgMTcuMTYs
-IEFsZXhhbmRlciBMb2Jha2luIHdyb3RlOgo+ID4gPiA+IEZyb206IEplc3BlciBEYW5nYWFyZCBC
-cm91ZXIgPGJyb3VlckByZWRoYXQuY29tPgo+ID4gPiA+IERhdGU6IE1vbiwgMTUgTm92IDIwMjEg
-MjE6MzY6MzAgKzAxMDAKPiA+ID4gPiAKPiA+ID4gPiA+IEVuYWJsaW5nIHRoZSBYRFAgYnBmX3By
-b2cgYWNjZXNzIHRvIGRhdGFfbWV0YSBhcmVhIGlzIGEgdmVyeQo+ID4gPiA+ID4gc21hbGwKPiA+
-ID4gPiA+IGNoYW5nZS4gSGludCBwYXNzaW5nICd0cnVlJyB0byB4ZHBfcHJlcGFyZV9idWZmKCku
-Cj4gCj4gWyBzbmlwIF0KPiAKPiA+ID4gUHJlZmV0Y2ggd29ya3MgZm9yICJmdWxsIiBjYWNoZWxp
-bmVzLiBJbnRlbCBDUFVzIG9mdGVuIHByZWZlY3QKPiA+ID4gdHdvIAo+ID4gPiBjYWNoZS1saW5l
-cywgd2hlbiBkb2luZyB0aGlzLCB0aHVzIEkgZ3Vlc3Mgd2Ugc3RpbGwgZ2V0IHhkcC0KPiA+ID4g
-PmRhdGEuCj4gPiAKPiA+IFN1cmUuIEkgbWVhbiwgbmV0X3ByZWZldGNoKCkgcHJlZmV0Y2hlcyAx
-MjggYnl0ZXMgaW4gYSByb3cuCj4gPiB4ZHAtPmRhdGEgaXMgdXN1YWxseSBhbGlnbmVkIHRvIFhE
-UF9QQUNLRVRfSEVBRFJPT00gKG9yIHR3byBieXRlcwo+ID4gdG8gdGhlIHJpZ2h0KS4gSWYgb3Vy
-IENMIGlzIDY0IGFuZCB0aGUgbWV0YSBpcyBwcmVzZW50LCB0aGVuLi4uIGFoCj4gPiByaWdodCwg
-NjQgdG8gdGhlIGxlZnQgYW5kIDY0IHN0YXJ0aW5nIGZyb20gZGF0YSB0byB0aGUgcmlnaHQuCj4g
-PiAKPiA+ID4gSSBkb24ndCBtaW5kIHByZWZldGNoaW5nIHhkcC0+ZGF0YV9tZXRhLCBidXQgKDEp
-IEkgdHJpZWQgdG8ga2VlcAo+ID4gPiB0aGUgCj4gPiA+IHhkcC0+ZGF0YSBzdGFydHMgb24gYSBj
-YWNoZWxpbmUgYW5kIHdlIGtub3cgTklDIGhhcmR3YXJlIGhhdmUKPiA+ID4gdG91Y2hlZCAKPiA+
-ID4gdGhhdCwgaXQgaXMgbm90IGEgZnVsbC1jYWNoZS1taXNzIGR1ZSB0byBERElPL0RDQSBpdCBp
-cyBrbm93biB0bwo+ID4gPiBiZSBpbiAKPiA+ID4gTDMgY2FjaGUgKGdhaW4gaXMgYXJvdW5kIDIt
-MyBucyBpbiBteSBtYWNoaW5lIGZvciBkYXRhIHByZWZldGNoKS4KPiA+ID4gR2l2ZW4gdGhpcyBp
-cyBvbmx5IGEgMi41IEdiaXQvcyBkcml2ZXIvSFcgSSBkb3VidCB0aGlzIG1ha2UgYW55Cj4gPiA+
-IGRpZmZlcmVuY2UuCj4gPiAKPiA+IENvZGUgY29uc3Rpc3RlbmN5IGF0IGxlYXN0LiBPbiAxMCsg
-R2JwcyB3ZSBwcmVmZXRjaCBtZXRhLCBhbmQgSQo+ID4gcGxhbgo+ID4gdG8gY29udGludWUgZG9p
-bmcgdGhpcyBpbiBteSBzZXJpZXMuCj4gPiAKPiA+ID4gVG9ueSBpcyBpdCB3b3J0aCByZXNlbmRp
-bmcgYSBWMiBvZiB0aGlzIHBhdGNoPwo+ID4gCj4gPiBUb255LCB5b3UgY2FuIHRha2UgaXQgYXMg
-aXQgaXMgaWYgeW91IHdhbnQsIEknbGwgY29ycmVjdCBpdCBsYXRlcgo+ID4gaW4KPiA+IG1pbmUu
-IFVwIHRvIHlvdS4KPiAKPiBNeSAiZml4dXAiIGxvb2tzIGxpa2UgKGluIGNhc2Ugb2YgdjIgbmVl
-ZGVkIG9yIHNvKToKClRoYW5rcyBBbC4gSWYgSmVzcGVyIGlzIG9rIHdpdGggdGhpcywgSSdsbCBp
-bmNvcnBvcmF0ZSBpdCBpbiBiZWZvcmUKc2VuZGluZyB0aGUgcHVsbCByZXF1ZXN0IHRvIG5ldGRl
-di4gT3RoZXJ3aXNlLCB5b3UgY2FuIGRvIGl0IGFzIGZvbGxvdwpvbiBpbiB0aGUgb3RoZXIgc2Vy
-aWVzIHlvdSBwcmV2aW91c2x5IHJlZmVyZW5jZWQuCgpUaGFua3MsClRvbnkKCj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2NfbWFpbi5jCj4gYi9kcml2ZXJz
-L25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX21haW4uYwo+IGluZGV4IGI1MTZmMWIzMDFiNC4u
-MTQyYzU3YjdhNDUxIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ln
-Yy9pZ2NfbWFpbi5jCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdjL2lnY19t
-YWluLmMKPiBAQCAtMTcyNiw3ICsxNzI2LDcgQEAgc3RhdGljIHN0cnVjdCBza19idWZmICppZ2Nf
-YnVpbGRfc2tiKHN0cnVjdAo+IGlnY19yaW5nICpyeF9yaW5nLAo+IMKgwqDCoMKgwqDCoMKgwqBz
-dHJ1Y3Qgc2tfYnVmZiAqc2tiOwo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoC8qIHByZWZldGNoIGZp
-cnN0IGNhY2hlIGxpbmUgb2YgZmlyc3QgcGFnZSAqLwo+IC3CoMKgwqDCoMKgwqDCoG5ldF9wcmVm
-ZXRjaCh4ZHAtPmRhdGEpOwo+ICvCoMKgwqDCoMKgwqDCoG5ldF9wcmVmZXRjaCh4ZHAtPmRhdGFf
-bWV0YSk7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgLyogYnVpbGQgYW4gc2tiIGFyb3VuZCB0aGUg
-cGFnZSBidWZmZXIgKi8KPiDCoMKgwqDCoMKgwqDCoMKgc2tiID0gYnVpbGRfc2tiKHhkcC0+ZGF0
-YV9oYXJkX3N0YXJ0LCB0cnVlc2l6ZSk7Cj4gQEAgLTE3NTYsMTAgKzE3NTYsMTEgQEAgc3RhdGlj
-IHN0cnVjdCBza19idWZmCj4gKmlnY19jb25zdHJ1Y3Rfc2tiKHN0cnVjdCBpZ2NfcmluZyAqcnhf
-cmluZywKPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IHNrX2J1ZmYgKnNrYjsKPiDCoAo+IMKgwqDC
-oMKgwqDCoMKgwqAvKiBwcmVmZXRjaCBmaXJzdCBjYWNoZSBsaW5lIG9mIGZpcnN0IHBhZ2UgKi8K
-PiAtwqDCoMKgwqDCoMKgwqBuZXRfcHJlZmV0Y2godmEpOwo+ICvCoMKgwqDCoMKgwqDCoG5ldF9w
-cmVmZXRjaCh4ZHAtPmRhdGFfbWV0YSk7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgLyogYWxsb2Nh
-dGUgYSBza2IgdG8gc3RvcmUgdGhlIGZyYWdzICovCj4gLcKgwqDCoMKgwqDCoMKgc2tiID0gbmFw
-aV9hbGxvY19za2IoJnJ4X3JpbmctPnFfdmVjdG9yLT5uYXBpLCBJR0NfUlhfSERSX0xFTgo+ICsg
-bWV0YXNpemUpOwo+ICvCoMKgwqDCoMKgwqDCoHNrYiA9IG5hcGlfYWxsb2Nfc2tiKCZyeF9yaW5n
-LT5xX3ZlY3Rvci0+bmFwaSwKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIElHQ19SWF9IRFJfTEVOICsgbWV0YXNpemUpOwo+IMKgwqDCoMKg
-wqDCoMKgwqBpZiAodW5saWtlbHkoIXNrYikpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqByZXR1cm4gTlVMTDsKPiDCoAo+IEBAIC0yMzYzLDcgKzIzNjQsOCBAQCBzdGF0aWMgaW50
-IGlnY19jbGVhbl9yeF9pcnEoc3RydWN0IGlnY19xX3ZlY3Rvcgo+ICpxX3ZlY3RvciwgY29uc3Qg
-aW50IGJ1ZGdldCkKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICghc2tiKSB7
-Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgeGRwX2lu
-aXRfYnVmZigmeGRwLCB0cnVlc2l6ZSwgJnJ4X3JpbmctCj4gPnhkcF9yeHEpOwo+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHhkcF9wcmVwYXJlX2J1ZmYo
-JnhkcCwgcGt0YnVmIC0KPiBpZ2Nfcnhfb2Zmc2V0KHJ4X3JpbmcpLAo+IC3CoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgaWdjX3J4X29mZnNldChyeF9yaW5nKSArCj4gcGt0X29mZnNldCwgc2l6ZSwgdHJ1
-ZSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZ2Nfcnhfb2Zmc2V0KHJ4X3JpbmcpICsKPiBw
-a3Rfb2Zmc2V0LAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2l6ZSwgdHJ1ZSk7Cj4gwqAKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBza2IgPSBpZ2Nf
-eGRwX3J1bl9wcm9nKGFkYXB0ZXIsICZ4ZHApOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgfQoK
+On 11/25/21 3:35 AM, Toke Høiland-Jørgensen wrote:
+
+> Joanne Koong <joannekoong@fb.com> writes:
+>
+>> On 11/24/21 1:59 PM, Toke Høiland-Jørgensen wrote:
+>>
+>>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>>
+>>>> On Wed, Nov 24, 2021 at 4:56 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>>> Joanne Koong <joannekoong@fb.com> writes:
+>>>>>
+>>>>>> On 11/23/21 11:19 AM, Toke Høiland-Jørgensen wrote:
+>>>>>>
+>>>>>>> Joanne Koong <joannekoong@fb.com> writes:
+>>>>>>>
+>>>>>>>> Add benchmark to measure the throughput and latency of the bpf_loop
+>>>>>>>> call.
+>>>>>>>>
+>>>>>>>> Testing this on qemu on my dev machine on 1 thread, the data is
+>>>>>>>> as follows:
+>>>>>>>>
+>>>>>>>>            nr_loops: 1
+>>>>>>>> bpf_loop - throughput: 43.350 ± 0.864 M ops/s, latency: 23.068 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 10
+>>>>>>>> bpf_loop - throughput: 69.586 ± 1.722 M ops/s, latency: 14.371 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 100
+>>>>>>>> bpf_loop - throughput: 72.046 ± 1.352 M ops/s, latency: 13.880 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 500
+>>>>>>>> bpf_loop - throughput: 71.677 ± 1.316 M ops/s, latency: 13.951 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 1000
+>>>>>>>> bpf_loop - throughput: 69.435 ± 1.219 M ops/s, latency: 14.402 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 5000
+>>>>>>>> bpf_loop - throughput: 72.624 ± 1.162 M ops/s, latency: 13.770 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 10000
+>>>>>>>> bpf_loop - throughput: 75.417 ± 1.446 M ops/s, latency: 13.260 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 50000
+>>>>>>>> bpf_loop - throughput: 77.400 ± 2.214 M ops/s, latency: 12.920 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 100000
+>>>>>>>> bpf_loop - throughput: 78.636 ± 2.107 M ops/s, latency: 12.717 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 500000
+>>>>>>>> bpf_loop - throughput: 76.909 ± 2.035 M ops/s, latency: 13.002 ns/op
+>>>>>>>>
+>>>>>>>>            nr_loops: 1000000
+>>>>>>>> bpf_loop - throughput: 77.636 ± 1.748 M ops/s, latency: 12.881 ns/op
+>>>>>>>>
+>>>>>>>>    From this data, we can see that the latency per loop decreases as the
+>>>>>>>> number of loops increases. On this particular machine, each loop had an
+>>>>>>>> overhead of about ~13 ns, and we were able to run ~70 million loops
+>>>>>>>> per second.
+>>>>>>> The latency figures are great, thanks! I assume these numbers are with
+>>>>>>> retpolines enabled? Otherwise 12ns seems a bit much... Or is this
+>>>>>>> because of qemu?
+>>>>>> I just tested it on a machine (without retpoline enabled) that runs on
+>>>>>> actual
+>>>>>> hardware and here is what I found:
+>>>>>>
+>>>>>>                nr_loops: 1
+>>>>>>        bpf_loop - throughput: 46.780 ± 0.064 M ops/s, latency: 21.377 ns/op
+>>>>>>
+>>>>>>                nr_loops: 10
+>>>>>>        bpf_loop - throughput: 198.519 ± 0.155 M ops/s, latency: 5.037 ns/op
+>>>>>>
+>>>>>>                nr_loops: 100
+>>>>>>        bpf_loop - throughput: 247.448 ± 0.305 M ops/s, latency: 4.041 ns/op
+>>>>>>
+>>>>>>                nr_loops: 500
+>>>>>>        bpf_loop - throughput: 260.839 ± 0.380 M ops/s, latency: 3.834 ns/op
+>>>>>>
+>>>>>>                nr_loops: 1000
+>>>>>>        bpf_loop - throughput: 262.806 ± 0.629 M ops/s, latency: 3.805 ns/op
+>>>>>>
+>>>>>>                nr_loops: 5000
+>>>>>>        bpf_loop - throughput: 264.211 ± 1.508 M ops/s, latency: 3.785 ns/op
+>>>>>>
+>>>>>>                nr_loops: 10000
+>>>>>>        bpf_loop - throughput: 265.366 ± 3.054 M ops/s, latency: 3.768 ns/op
+>>>>>>
+>>>>>>                nr_loops: 50000
+>>>>>>        bpf_loop - throughput: 235.986 ± 20.205 M ops/s, latency: 4.238 ns/op
+>>>>>>
+>>>>>>                nr_loops: 100000
+>>>>>>        bpf_loop - throughput: 264.482 ± 0.279 M ops/s, latency: 3.781 ns/op
+>>>>>>
+>>>>>>                nr_loops: 500000
+>>>>>>        bpf_loop - throughput: 309.773 ± 87.713 M ops/s, latency: 3.228 ns/op
+>>>>>>
+>>>>>>                nr_loops: 1000000
+>>>>>>        bpf_loop - throughput: 262.818 ± 4.143 M ops/s, latency: 3.805 ns/op
+>>>>>>
+>>>>>> The latency is about ~4ns / loop.
+>>>>>>
+>>>>>> I will update the commit message in v3 with these new numbers as well.
+>>>>> Right, awesome, thank you for the additional test. This is closer to
+>>>>> what I would expect: on the hardware I'm usually testing on, a function
+>>>>> call takes ~1.5ns, but the difference might just be the hardware, or
+>>>>> because these are indirect calls.
+>>>>>
+>>>>> Another comparison just occurred to me (but it's totally OK if you don't
+>>>>> want to add any more benchmarks):
+>>>>>
+>>>>> The difference between a program that does:
+>>>>>
+>>>>> bpf_loop(nr_loops, empty_callback, NULL, 0);
+>>>>>
+>>>>> and
+>>>>>
+>>>>> for (i = 0; i < nr_loops; i++)
+>>>>>     empty_callback();
+>>>> You are basically trying to measure the overhead of bpf_loop() helper
+>>>> call itself, because other than that it should be identical.
+>>> No, I'm trying to measure the difference between the indirect call in
+>>> the helper, and the direct call from the BPF program. Should be minor
+>>> without retpolines, and somewhat higher where they are enabled...
+>>>
+>>>> We can estimate that already from the numbers Joanne posted above:
+>>>>
+>>>>                nr_loops: 1
+>>>>         bpf_loop - throughput: 46.780 ± 0.064 M ops/s, latency: 21.377 ns/op
+>>>>                nr_loops: 1000
+>>>>         bpf_loop - throughput: 262.806 ± 0.629 M ops/s, latency: 3.805 ns/op
+>>>>
+>>>> nr_loops:1 is bpf_loop() overhead and one static callback call.
+>>>> bpf_loop()'s own overhead will be in the ballpark of 21.4 - 3.8 =
+>>>> 17.6ns. I don't think we need yet another benchmark just for this.
+>>> That seems really high, though? The helper is a pretty simple function,
+>>> and the call to it should just be JIT'ed into a single regular function
+>>> call, right? So why the order-of-magnitude difference?
+>> I think the overhead of triggering the bpf program from the userspace
+>> benchmarking program is also contributing to this. When nr_loops = 1, we
+>> have to do the context switch between userspace + kernel per every 1000
+>> loops;
+>> this overhead also contributes to the latency numbers above
+> Right okay. But then that data point is not really measuring what it's
+> purporting to measure? That's a bit misleading, so maybe better to leave
+> it out entirely?
+Sure, I will leave this nr_loops = 1 datapoint out in v3 of this 
+patchset :)
+The overhead of triggering the bpf program from the userspace benchmarks
+is present in every datapoint, but for nr_loops = 1, it's especially 
+emphasized
+since this overhead is per 1000 loops whereas for other datapoints, it is
+per every 1000 * nr_loops.
+> -Toke
+>
