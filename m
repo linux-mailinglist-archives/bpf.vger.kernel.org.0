@@ -2,208 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D166A46284C
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2564946288B
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhK2Xfu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 18:35:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
+        id S233794AbhK2XuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 18:50:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbhK2Xfu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 18:35:50 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58938C061574
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:32:32 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id 131so47047414ybc.7
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:32:32 -0800 (PST)
+        with ESMTP id S229841AbhK2XuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 18:50:16 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844CFC061574
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:46:58 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id 131so47119189ybc.7
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:46:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bj8i2c/cNVse3r570Tfmch9hehb6lP78+VAK/92ECyA=;
-        b=YRsTrSkfFxE+2fb5K3hVkTE9h8Ri4udrPMNs0KWrYfZ2FwIGmZE6ZiEjweOaADHQbM
-         Q95ktoiPyQusrdC82n7yQe2pGXQXdpbFEA5OSUr1GCDvIirDPDi424lB0B0A3Y6GZ/63
-         TobvFB86YzR8N9HLOmp+z0Rhu/HiXPrKdvjXhUiVNlhgMppjuiTJ4fK1xBGPVfTJzD3E
-         uOWksH18Yp8VtWfo2OWPez6pTSs0hRZa64Y9m7b76DBaUKykVPNZ+XFzFGBS9/Ue1xVZ
-         XaIVkygLPDC+HYpzYWenD4PXoZ0YrcZu7OpKJV0nGu+EzCahcf9pftWkH86DUze9RuYO
-         MMMw==
+        bh=k0M/YVuIMnnbo6SkHLfn1/C0MQY+t5bE6qhJP7oYRyI=;
+        b=NtbXt5EoIeoCguoIwrYHHlUrLwDLmBEu59PWKaU8O6foEWI+WtasaWm6Kr8W2y/Fc0
+         z7pCWpSzWEjt7EJGsF/4VTGrkcefI2WfYEeWPSpc1cyIksp7fLWyOkjUjoD7WaJBlsid
+         806CiSzBq9eHaa15UeBXQxJCkjTpuNCIahbVvHVdu70HKEyt3zAEIAthF9m4BD6B31b9
+         7mpInPdHwYcOBNJYpRMkh3XynruwhdeL2LWOXfigAE8ppJOI4/Bw79czpaBWeclW/m0u
+         7PAsOxvQhdPe+G2FUf3GdhipEwerxo7IQIoRBikRItCf5AQakgZSbHR/Os+DOmFPbdM9
+         5QVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bj8i2c/cNVse3r570Tfmch9hehb6lP78+VAK/92ECyA=;
-        b=av32vjFM76otBaayFanEdpirlkUQ+y32tiSjfJFGxNWJdsYD9hDg2biBokx59d9+i3
-         yFG6qPi697FcxdKptTPYhl1oVH/La9LfVwKP+uSvBtauDrehVwJgV745m1m+relxIOrJ
-         h9Vql6KonRhSktFsbXSOgKyyVRvN8MkbJlQLSSywIF0dQH/WhwrTiXMqI57QGlJWkTtj
-         WALHJgSTN9BouyGRGJE8Pw29qLbZXbs6CXSVK4iS343QRfpT3Ubds+KnvjL/BwGy+fXh
-         Iw95Sm9iQ1+K7SmuCjZEYRhgn6BLwgsIJLJeeA2luScBmThsZCCeyvGBgK2RJFzo0PrC
-         ZAZA==
-X-Gm-Message-State: AOAM530x84cihn+438JsTW7CgPFi6aTlI+G0wG6j7nFPSw8BdmZB39oV
-        b+2MqrJ0mwhF/nVsFbakxnX6ac7LzAnpHd99nQE=
-X-Google-Smtp-Source: ABdhPJzdhsi894dTgfPXxIzAH8Pc73NP6S0y5XXUJdisn3kBc7ROeS3W5zN1NlCMiFyGr4wdB7cUBO7OupZyD1z+ybk=
-X-Received: by 2002:a25:b204:: with SMTP id i4mr38308645ybj.263.1638228751469;
- Mon, 29 Nov 2021 15:32:31 -0800 (PST)
+        bh=k0M/YVuIMnnbo6SkHLfn1/C0MQY+t5bE6qhJP7oYRyI=;
+        b=HjjoeHfvHRcqIT2gSjCggBVm7WxZN1auHSMJ55Cf2+fy2o44EZV9KknOWbjry4etiO
+         UlSsM42eZO/sQ+ZcSdCgMTUTUuGZYUIu6kSqeJ9A3geSy6he4t5VzjwmEk/9jnYMXL0+
+         nf2P9oqMJMSXA/YHhp6Z/VYeLX3qZ85ZsFW2vAhccLub7DfQXxr42q9LWGrcsySUwum2
+         1VEPODCQupCMrfbLa5CPcGb0/+46fLMFlLAUPtGPyMckrrdzYU4IWM9dcsAjmQ9BY1WF
+         yrGocxwQPpgOr0dhgcAotefeYhIsFfsrWbqt0S3hJzifkgz97YIxL/hiyLW0wp3doBkl
+         eX4w==
+X-Gm-Message-State: AOAM533+3eF9SBD8LrriqTQy0y6nGHmztXNlaOA7ps4h2J/uXqMZ9Osj
+        WjS6rsJaTiEWUsd2uMozyFy6izpSAgTeXJ9Pqj01wEUbkBc=
+X-Google-Smtp-Source: ABdhPJwRtIZHY3wCTjVotu8RJU6agYH5y0TMZvqd+F8xCo0IFURVQgDeTiKl13pHAm3ewj9J/bC17gecZJD3y2SuFPM=
+X-Received: by 2002:a25:6d4:: with SMTP id 203mr36959670ybg.83.1638229617749;
+ Mon, 29 Nov 2021 15:46:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20211127210200.1104120-1-grantseltzer@gmail.com> <CAPhsuW6+LiLZf0SsGbOT+2BNHGB28TZazoEELwb6anbo5_mLPQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW6+LiLZf0SsGbOT+2BNHGB28TZazoEELwb6anbo5_mLPQ@mail.gmail.com>
+References: <20211122144742.477787-1-memxor@gmail.com> <20211122144742.477787-4-memxor@gmail.com>
+In-Reply-To: <20211122144742.477787-4-memxor@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Nov 2021 15:32:20 -0800
-Message-ID: <CAEf4BzZa=xFdsWwqt0u_4u0jSwJErGUTcfXiswMWof=XnruK1g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add doc comments in libb.h
-To:     Song Liu <song@kernel.org>
-Cc:     grantseltzer <grantseltzer@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Mon, 29 Nov 2021 15:46:46 -0800
+Message-ID: <CAEf4BzbLGhxCAUbU-UFscuMub+kO3a=k=1fosR_Keobk=E4AQw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 3/3] tools/resolve_btfids: Skip unresolved symbol
+ warning for empty BTF sets
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 1:28 PM Song Liu <song@kernel.org> wrote:
+On Mon, Nov 22, 2021 at 6:47 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Sat, Nov 27, 2021 at 1:04 PM grantseltzer <grantseltzer@gmail.com> wrote:
-> >
-> > From: Grant Seltzer <grantseltzer@gmail.com>
-> >
-> > This adds comments above functions in libbpf.h which document
-> > their uses. These comments are of a format that doxygen and sphinx
-> > can pick up and render. These are rendered by libbpf.readthedocs.org
-> >
-> > These doc comments are for:
-> >
-> > - bpf_object__open_file()
-> > - bpf_object__open_mem()
-> > - bpf_program__attach_uprobe()
-> > - bpf_program__attach_uprobe_opts()
-> >
-> > Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> resolve_btfids prints a warning when it finds an unresolved symbol,
+> (id == 0) in id_patch. This can be the case for BTF sets that are empty
+> (due to disabled config options), hence printing warnings for certain
+> builds, most recently seen in [0].
 >
-> s/libb.h/libbpf.h/ in subject
+> The reason behind this is because id->cnt aliases id->id in btf_id
+
+do we need to alias this, btw? We are trying to save 4 bytes on 800+
+struct (addr[ADDR_CNT] is big) and instead are getting more confusion
+in the code.
+
+> struct, leading to empty set showing up as ID 0 when we get to id_patch,
+> which triggers the warning. Since sets are an exception here, accomodate
+> by reusing hole in btf_id for bool is_set member, setting it to true for
+> BTF set when setting id->cnt, and use that to skip extraneous warning.
 >
-> > ---
-> >  tools/lib/bpf/libbpf.h | 45 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 45 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index 4ec69f224342..acfb207e71d1 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -108,8 +108,26 @@ struct bpf_object_open_opts {
-> >  #define bpf_object_open_opts__last_field btf_custom_path
-> >
-> >  LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
-> > +
-> > +/**
-> > + * @brief **bpf_object__open_file()** creates a bpf_object by opening
-> > + * the BPF object file pointed to by the passed path and loading it
-
-Would be nice to mention that it's ELF, no? "BPF ELF object file", maybe?
-
-> > + * into memory.
-> > + * @param path BPF object file relative or absolute path
-
-I started worrying about relative vs absolute paths after reading this
-:) I think just stating "BPF object file path" should be totally fine.
-Relative vs absolute works totally fine as expected with any API that
-accepts file paths.
-
-
-> > + * @param opts options for how to load the bpf object
-
-let's mention that opts are optional (i.e., you can pass NULL)
-
-> > + * @return pointer to the new bpf_object
+>   [0]: https://lore.kernel.org/all/1b99ae14-abb4-d18f-cc6a-d7e523b25542@gmail.com
 >
-> Please document return value on errors, i.e. libbpf_err_ptr(err)
-> instead of NULL. Same for all functions here.
-
-With libbpf 1.0 and forward APIs like this will return NULL on error,
-so let's use that as the convention in documentation. So something
-like "NULL is returned on error, error code is stored in errno"?
-
+> Before:
 >
-> > + */
-> >  LIBBPF_API struct bpf_object *
-> >  bpf_object__open_file(const char *path, const struct bpf_object_open_opts *opts);
-> > +
-> > +/**
-> > + * @brief **bpf_object__open_mem()** creates a bpf_object by reading
-> > + * the BPF objects raw bytes from an in memory buffer.
-
-typo: "an in"? Also it's even more important to mention that those
-bytes should be a valid BPF ELF object file?
-
-> > + * @param obj_buf pointer to the buffer containing bpf object bytes
-
-s/bpf object bytes/ELF file bytes/ ?
-
-> > + * @param obj_buf_sz number of bytes in the buffer
-> > + * @param opts options for how to load the bpf object
-> > + * @return pointer to the new bpf_object
-> > + */
-> >  LIBBPF_API struct bpf_object *
-> >  bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
-> >                      const struct bpf_object_open_opts *opts);
-> > @@ -344,10 +362,37 @@ struct bpf_uprobe_opts {
-> >  };
-> >  #define bpf_uprobe_opts__last_field retprobe
-> >
-> > +/**
-> > + * @brief **bpf_program__attach_uprobe** attaches a BPF program
-
-missing () after attach_uprobe
-
-> > + * to the userspace function which is found by binary path and
-> > + * offset. You can optionally specify a particular proccess to attach
-> s/proccess/process/
+> ; ./tools/bpf/resolve_btfids/resolve_btfids -v -b vmlinux net/ipv4/tcp_cubic.ko
+> adding symbol tcp_cubic_kfunc_ids
+> WARN: resolve_btfids: unresolved symbol tcp_cubic_kfunc_ids
+> patching addr     0: ID       0 [tcp_cubic_kfunc_ids]
+> sorting  addr     4: cnt      0 [tcp_cubic_kfunc_ids]
+> update ok for net/ipv4/tcp_cubic.ko
 >
-> > + * to. You can also optionally attach the program to the function
-> > + * exit instead of entry.
-> > + *
-> > + * @param prog BPF program to attach
-> > + * @param retprobe Attach to function exit
-> > + * @param pid Process ID to attach the uprobe to, -1 for all processes
-
-There is also 0 for self (own process).
-
-> > + * @param binary_path Path to binary that contains the function symbol
-> > + * @param func_offset Offset within the binary of the function symbol
-> > + * @return Reference to the newly created BPF link
-
-or NULL on error (errno is set to error code).
-
-> > + */
-> >  LIBBPF_API struct bpf_link *
-> >  bpf_program__attach_uprobe(const struct bpf_program *prog, bool retprobe,
-> >                            pid_t pid, const char *binary_path,
-> >                            size_t func_offset);
-> > +
-> > +/**
-> > + * @brief **bpf_program__attach_uprobe_opts** is just like
-
-() missing
-
-> > + * bpf_program__attach_uprobe except with a options struct
-
-(), let's use that around referenced to functions to make it clear
-
-> > + * for various configurations.
-> > + *
-> > + * @param prog BPF program to attach
-> > + * @param pid Process ID to attach the uprobe to, -1 for all processes
-> > + * @param binary_path Path to binary that contains the function symbol
-> > + * @param func_offset Offset within the binary of the function symbol
-> > + * @param opts Options for altering program attachment
+> After:
 >
-> Let's also document details about these options.
-
-yep, but on uprobe_opts struct itself
-
+> ; ./tools/bpf/resolve_btfids/resolve_btfids -v -b vmlinux net/ipv4/tcp_cubic.ko
+> adding symbol tcp_cubic_kfunc_ids
+> patching addr     0: ID       0 [tcp_cubic_kfunc_ids]
+> sorting  addr     4: cnt      0 [tcp_cubic_kfunc_ids]
+> update ok for net/ipv4/tcp_cubic.ko
 >
-> > + * @return Reference to the newly created BPF link
-> > + */
-> >  LIBBPF_API struct bpf_link *
-> >  bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
-> >                                 const char *binary_path, size_t func_offset,
-> > --
-> > 2.31.1
-> >
+> Cc: Jiri Olsa <jolsa@kernel.org>
+
+Jiri, can you please take a look as well?
+
+> Fixes: 0e32dfc80bae ("bpf: Enable TCP congestion control kfunc from modules")
+> Reported-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  tools/bpf/resolve_btfids/main.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index a59cb0ee609c..73409e27be01 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+> @@ -83,6 +83,7 @@ struct btf_id {
+>                 int      cnt;
+>         };
+>         int              addr_cnt;
+> +       bool             is_set;
+>         Elf64_Addr       addr[ADDR_CNT];
+>  };
+>
+> @@ -451,8 +452,10 @@ static int symbols_collect(struct object *obj)
+>                          * in symbol's size, together with 'cnt' field hence
+>                          * that - 1.
+>                          */
+> -                       if (id)
+> +                       if (id) {
+>                                 id->cnt = sym.st_size / sizeof(int) - 1;
+> +                               id->is_set = true;
+> +                       }
+>                 } else {
+>                         pr_err("FAILED unsupported prefix %s\n", prefix);
+>                         return -1;
+> @@ -568,9 +571,8 @@ static int id_patch(struct object *obj, struct btf_id *id)
+>         int *ptr = data->d_buf;
+>         int i;
+>
+> -       if (!id->id) {
+> +       if (!id->id && !id->is_set)
+>                 pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
+> -       }
+>
+>         for (i = 0; i < id->addr_cnt; i++) {
+>                 unsigned long addr = id->addr[i];
+> --
+> 2.34.0
+>
