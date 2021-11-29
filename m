@@ -2,171 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9E84627F5
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A109462803
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 00:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhK2XQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 18:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        id S233852AbhK2XRq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 18:17:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234318AbhK2XQJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 18:16:09 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F43C0C2344
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:55:48 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id v64so46854399ybi.5
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 14:55:48 -0800 (PST)
+        with ESMTP id S231891AbhK2XRQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 18:17:16 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9E9C048F79
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:02:28 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id f186so46816183ybg.2
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 15:02:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r6Mnx4w0akf050BCbAHxNmiCQz+3Stwvv6BMamywb1U=;
-        b=VQ4uYqqtVyKHBsaBZju/e8/Uykb4qSxwti4KAO5SGdQH12zBkIscCtX68IqrMRfJ43
-         062mQmafOTBF0ymxTYEdzEta1s/JrBl4Cr8iSpLjkIDIC6RdfDipimYged6/GRDPmE9y
-         cT6y9iZT1U9EFDJG/lf0Ioobe4WdcWAF0lPRi2nk9fTusiYOQBM+lc0rm0ujMWbKbSPq
-         sMZGDrTo01uhHTqD5K7X8H+HbKHpfsupHl5sGxjIQM15FK7UBYKotL8hrXs6WI7MKmks
-         LNo4Qyia3EwSvpsOH7IGpyHsSP2yDXQ+yTYj2MUYRHodvDcopUqW4cIW7ACECe+gXCm6
-         iwJQ==
+         :cc:content-transfer-encoding;
+        bh=kGdciiRtU2zcsEj4DOiueJ4koz7w2ZBp7qEunWQfGAM=;
+        b=TQHK+Lf+TkAkktwdhggL67OHRnWPdbYkgHifKNyaCWLKiITMzTMx0Ub7sq6NNo8p4i
+         yZuDPn9i6FkaTG7R8My5CWh0gMjZL4FnHi7Ulp/c/xD9fVwojdIflEoGxxyDtkCBHGQD
+         glkvxNM0XmFkgfvLrzICY1dVKNyz2ncOPu11e4hX7Ymz1JQYJs1pudynTFaKVyREGFfk
+         NWDuJ/VGfacm68uTXLILEryIffJz2r5vvSmcVp9tH2xuKqqcSV2KVc+n2rFJfGpcPrkb
+         FjwBUdT9BgQvrDmqP9bGNoAy+bMlLr7OuevQMASdrMHtp1Tly5Uz4Wqk76u3buDTf1qA
+         HzCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r6Mnx4w0akf050BCbAHxNmiCQz+3Stwvv6BMamywb1U=;
-        b=A916WlIueRMvDmZuq0QmcwtYtjukdBS5CrXZkj7KCoJGb42UADL5KzwB4geglOvcVE
-         p0fmK9R7LWfcJ+QJzvZNuwCo3tlpkVEen4vJ/Z9OdyCzoENBdXMZv1L21D6dhenVhzjg
-         PfoWLFCcTogswrLnyRuMmAxY6eFbBpVN1OfVZkf464dvkxDBTYLA/HwKLB9xqADOMrB7
-         ISujH8YetU+wECwWzXJpkYE5mevhJhR4/+dqZ2bqOv6lBMrMajKgXLyHuKkYr7ZWWAhF
-         k+6lc4vdxXyPDtaZ1DhUIkh1j6I3wvKkjhM6JCewSwrvMVwARgqhGffKT0GlcKRfPB+k
-         yuQQ==
-X-Gm-Message-State: AOAM531hpqH/+YnVKf51waVO+Ss/ZodQGQJQ5MjNJvGbAelDj4Srxpr+
-        +G5XfV2EyfZ8B13obbcBpHNSdx4+bh0RLGearxc=
-X-Google-Smtp-Source: ABdhPJyW18fNPyGcZv4tbcNJn2OtK3HBaBFUelqg3wfS9HAJTtx+U/lCj2jpYHBvRwC2ddJ5BncL8n68CQwihyH2Rew=
-X-Received: by 2002:a25:54e:: with SMTP id 75mr36255536ybf.393.1638226547813;
- Mon, 29 Nov 2021 14:55:47 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kGdciiRtU2zcsEj4DOiueJ4koz7w2ZBp7qEunWQfGAM=;
+        b=71foVymkh8cVn72RTBZjo1aJDF74CqcIZrNUOEwGh6fYErvTnTTj3Tc+XZJ/TYehWN
+         QTsskejJkpUB1NEEZfDX/C3BQjSOdVjbs4IMAAvALr3FXrwyXxYyTTqnKgD0hVUF9vD/
+         6hQ4PmytIzMRSwrBlvH0zXsOip6AfsXt/ddea4B37Inr83otAO5ZBImQs/ZwmwZopCJD
+         H7mtErHkW4GYbDfmqdeRxlRClVD7ZoZIFpZFExKGcJah7eD1jbIcmD1voWG6aojdQQ6U
+         6ryli0gV/P715xRKRZ9RhrWWEn+tKI1GseQnxDvNyZQ049aHZlrYSj4FHIEIAU2X56md
+         851Q==
+X-Gm-Message-State: AOAM532ncN0It3F777Yj0oYn4Ds3DlW14LfvdwnLAgJGD3NGRKigmzx+
+        F2srK/Ie8TAdyx3tiTnEkuxSqSRPQjvH1ZG2QQ8=
+X-Google-Smtp-Source: ABdhPJwpZB3BtcLuGPjCXdiwubzAuvpS/4GAZ6+56DY3ZJOMNQOtOjFW3OrAmpcCCBC50R0Pao5BVJh1X0Q2J8c2Umk=
+X-Received: by 2002:a25:b204:: with SMTP id i4mr38191007ybj.263.1638226947873;
+ Mon, 29 Nov 2021 15:02:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20211129223725.2770730-1-joannekoong@fb.com> <20211129223725.2770730-4-joannekoong@fb.com>
-In-Reply-To: <20211129223725.2770730-4-joannekoong@fb.com>
+References: <20211129223725.2770730-1-joannekoong@fb.com> <20211129223725.2770730-5-joannekoong@fb.com>
+In-Reply-To: <20211129223725.2770730-5-joannekoong@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Nov 2021 14:55:36 -0800
-Message-ID: <CAEf4BzbSbYow+SmiggZtd0sD32zV0xA+b6itv-aOprKpmDiZgw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 3/4] selftests/bpf: measure bpf_loop verifier performance
+Date:   Mon, 29 Nov 2021 15:02:16 -0800
+Message-ID: <CAEf4BzauvgM0zd1f5UX2rAqHG2cgp0r578nvG_QRhmfN8i+jqw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 4/4] selftest/bpf/benchs: add bpf_loop benchmark
 To:     Joanne Koong <joannekoong@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Nov 29, 2021 at 2:39 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> This patch tests bpf_loop in pyperf and strobemeta, and measures the
-> verifier performance of replacing the traditional for loop
-> with bpf_loop.
+> Add benchmark to measure the throughput and latency of the bpf_loop
+> call.
 >
-> The results are as follows:
+> Testing this on my dev machine on 1 thread, the data is as follows:
 >
-> ~strobemeta~
+>         nr_loops: 10
+> bpf_loop - throughput: 198.519 =C2=B1 0.155 M ops/s, latency: 5.037 ns/op
 >
-> Baseline
->     verification time 6808200 usec
->     stack depth 496
->     processed 554252 insns (limit 1000000) max_states_per_insn 16
->     total_states 15878 peak_states 13489  mark_read 3110
->     #192 verif_scale_strobemeta:OK (unrolled loop)
+>         nr_loops: 100
+> bpf_loop - throughput: 247.448 =C2=B1 0.305 M ops/s, latency: 4.041 ns/op
 >
-> Using bpf_loop
->     verification time 31589 usec
->     stack depth 96+400
->     processed 1513 insns (limit 1000000) max_states_per_insn 2
->     total_states 106 peak_states 106 mark_read 60
->     #193 verif_scale_strobemeta_bpf_loop:OK
+>         nr_loops: 500
+> bpf_loop - throughput: 260.839 =C2=B1 0.380 M ops/s, latency: 3.834 ns/op
 >
-> ~pyperf600~
+>         nr_loops: 1000
+> bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3.805 ns/op
 >
-> Baseline
->     verification time 29702486 usec
->     stack depth 368
->     processed 626838 insns (limit 1000000) max_states_per_insn 7
->     total_states 30368 peak_states 30279 mark_read 748
->     #182 verif_scale_pyperf600:OK (unrolled loop)
+>         nr_loops: 5000
+> bpf_loop - throughput: 264.211 =C2=B1 1.508 M ops/s, latency: 3.785 ns/op
 >
-> Using bpf_loop
->     verification time 148488 usec
->     stack depth 320+40
->     processed 10518 insns (limit 1000000) max_states_per_insn 10
->     total_states 705 peak_states 517 mark_read 38
->     #183 verif_scale_pyperf600_bpf_loop:OK
+>         nr_loops: 10000
+> bpf_loop - throughput: 265.366 =C2=B1 3.054 M ops/s, latency: 3.768 ns/op
 >
-> Using the bpf_loop helper led to approximately a 99% decrease
-> in the verification time and in the number of instructions.
+>         nr_loops: 50000
+> bpf_loop - throughput: 235.986 =C2=B1 20.205 M ops/s, latency: 4.238 ns/o=
+p
+>
+>         nr_loops: 100000
+> bpf_loop - throughput: 264.482 =C2=B1 0.279 M ops/s, latency: 3.781 ns/op
+>
+>         nr_loops: 500000
+> bpf_loop - throughput: 309.773 =C2=B1 87.713 M ops/s, latency: 3.228 ns/o=
+p
+>
+>         nr_loops: 1000000
+> bpf_loop - throughput: 262.818 =C2=B1 4.143 M ops/s, latency: 3.805 ns/op
+>
+> From this data, we can see that the latency per loop decreases as the
+> number of loops increases. On this particular machine, each loop had an
+> overhead of about ~4 ns, and we were able to run ~250 million loops
+> per second.
 >
 > Signed-off-by: Joanne Koong <joannekoong@fb.com>
 > ---
 
+LGTM.
+
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  .../bpf/prog_tests/bpf_verif_scale.c          | 12 +++
->  tools/testing/selftests/bpf/progs/pyperf.h    | 71 +++++++++++++++++-
->  .../selftests/bpf/progs/pyperf600_bpf_loop.c  |  6 ++
->  .../testing/selftests/bpf/progs/strobemeta.h  | 75 ++++++++++++++++++-
->  .../selftests/bpf/progs/strobemeta_bpf_loop.c |  9 +++
->  5 files changed, 169 insertions(+), 4 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
->  create mode 100644 tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
->
+>  tools/testing/selftests/bpf/Makefile          |   4 +-
+>  tools/testing/selftests/bpf/bench.c           |  37 ++++++
+>  tools/testing/selftests/bpf/bench.h           |   2 +
+>  .../selftests/bpf/benchs/bench_bpf_loop.c     | 105 ++++++++++++++++++
+>  .../bpf/benchs/run_bench_bpf_loop.sh          |  15 +++
+>  .../selftests/bpf/benchs/run_common.sh        |  15 +++
+>  .../selftests/bpf/progs/bpf_loop_bench.c      |  26 +++++
+>  7 files changed, 203 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_loop.c
+>  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_loop=
+.sh
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_loop_bench.c
 
 [...]
-
->                 /* Unwind python stack */
->                 for (int i = 0; i < STACK_MAX_LEN; ++i) {
->                         if (frame_ptr && get_frame_data(frame_ptr, pidData, &frame, &sym)) {
-> @@ -251,6 +319,7 @@ int __on_event(struct bpf_raw_tracepoint_args *ctx)
->                                 frame_ptr = frame.f_back;
->                         }
->                 }
-> +#endif /* USE_BPF_LOOP */
->                 event->stack_complete = frame_ptr == NULL;
->         } else {
->                 event->stack_complete = 1;
-> diff --git a/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c b/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
-> new file mode 100644
-> index 000000000000..bde8baed4ca6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/pyperf600_bpf_loop.c
-> @@ -0,0 +1,6 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2021 Facebook
-
-nit: should be /* ... */
-
-> +
-> +#define STACK_MAX_LEN 600
-> +#define USE_BPF_LOOP
-> +#include "pyperf.h"
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c b/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
-> new file mode 100644
-> index 000000000000..e6f9f920e68a
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/strobemeta_bpf_loop.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> +// Copyright (c) 2021 Facebook
-
-same
-
-> +
-> +#define STROBE_MAX_INTS 2
-> +#define STROBE_MAX_STRS 25
-> +#define STROBE_MAX_MAPS 100
-> +#define STROBE_MAX_MAP_ENTRIES 20
-> +#define USE_BPF_LOOP
-> +#include "strobemeta.h"
-> --
-> 2.30.2
->
