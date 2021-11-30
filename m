@@ -2,134 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337D04641CD
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 23:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8E04641F3
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 00:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236337AbhK3W4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 17:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
+        id S1345172AbhK3XKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 18:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhK3W4s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 17:56:48 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57053C061574;
-        Tue, 30 Nov 2021 14:53:28 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 131so57399969ybc.7;
-        Tue, 30 Nov 2021 14:53:28 -0800 (PST)
+        with ESMTP id S1345147AbhK3XKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 18:10:09 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37EEC061574
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 15:06:49 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id s37so11806337pga.9
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 15:06:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IWmAAXa9pjC4EoqzChkZJaBqSIgJLKarMG+xKoHvRDs=;
-        b=VmwSq84INeu/Qn3AsnjWJ0DU7BawUMaHEwht0V2qDRsbDAKFVMFTWtLa0+FbSAZcd2
-         W5csmdUvHO3LDaG4XQiuLRKzEPQ+AEgvEv5GCeh0V6i6YY0tB8yxAY5RvyOgYHIxr6wN
-         wdpGvxtWnaWOWshLRHa5vNrSHBcHchSIRbYNDt8Xt9c/Vivwh3+dG+QJ4bfzpoRXMb27
-         ixkRqrTaTaos4/NyZ7VMAprmNyQwHiWR/HlCj0Nf08P+mbopAZxUmXVVYYu3Ujo99OUI
-         6yHUi+UBd+BZh4UqrYdBieJhc0vWPX/aXEN2bRLgnL4LQqIuQqbGVJZumNkX58i25c8C
-         lssw==
+        bh=oHwrcHrIJwWcCrvTdxYQG+7BVovCnxTMMiiKKYYbZw4=;
+        b=hitJX1nTwj29tU9ZkH6s5H31Qu5TrxQv/2egbLWThWgQhK2yER0i/WV290M7WdcPru
+         NrD74896zNIQi3g/H6vHNk7Og2LCbyt0xDkHuhuR+RxsL9EJzhSr2+8zXVkODsRhnPaD
+         ibUGAYFt5QO9gKZQZGjckk3PUQPWkhLhjzU195yqkmrl/ZoETXPDbgtmldUmL0cWT1XE
+         OI0wHSc/depgNe/hvapmYxpC7e0YMm7ZN24Crzfr5ci+lJpY5ccw5iYLwYLBQIiKqBd5
+         9543ZWku4yjTz8Uz00zeikGtbiuuyEjcJnapham6uF9md7XnZILRmSzmKvu/umY+KW03
+         UzWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IWmAAXa9pjC4EoqzChkZJaBqSIgJLKarMG+xKoHvRDs=;
-        b=gevsea9fSM17IIG/YGJnNpCHBWoDnR3A1RhnbdLmMeXg0g6Dhmyvc+kRfMbC3KK0aD
-         GZ4LQjGOuvMr/B1yz1f0KU+T2PbERNwzN6BI8duc2Towa+OIBm9q/ZaRPgHFDqAEDSOD
-         C3fD47JhlHO/1XOEwrJTI9DM3fPmjH9GjCVWRBZYIYUz7fAOJ+is2lw8qVX4YEq9bjJE
-         Y9WOBl9amNiNCM/TnhrdFYZ9nChjdxJ9NyYESFjJnvmPUBhjjIISzxD7X+DQlxLJWTXs
-         eJsZ0N5J7s9Q5l4kiIpFlYKtVYM+YhSU5PT8NNyeowfAIYSFSWOUA5PlX/LXLXdh8/Dh
-         UibQ==
-X-Gm-Message-State: AOAM532yh3USp2IBr6AifnRHjY6ux9eUyZ9dgGgFpn7jFqgKVjOm4Wow
-        jC0bD6yl84SN7GHldUuG2xuXrzwOjUG4mYZRzTY=
-X-Google-Smtp-Source: ABdhPJzUU4qXaHZ7S/0ey52ccLEJxZXY/ZqwQOyktHVC6pgjLhE3jqkNaxjz8nDisWn7VsfLQ8vZEeZYXJhieuHwWBc=
-X-Received: by 2002:a25:54e:: with SMTP id 75mr2440929ybf.393.1638312807553;
- Tue, 30 Nov 2021 14:53:27 -0800 (PST)
+        bh=oHwrcHrIJwWcCrvTdxYQG+7BVovCnxTMMiiKKYYbZw4=;
+        b=kNIqakV3ifJkZBTpCPoF7M25Yua+1ReYYO/GLXdDCQ+4HNf19iFBOD2uW/d7lVXPCO
+         GlBYEBo0zeSy3C3kBDWklQ+gddl/raU31BZC50J1U9BmUI/CTJGv11es63JNF13zPFAH
+         Kkihj1pbX6WGRQyIUTE4YS2mYOpzpxAKMhNMetiv083L1tLAkDih+ekaL95YUHFPfaaW
+         yBzlTcsyK1OPnF6S92RhMdIJ70ciYqvQ1CR42kI58RT/B1O+yRP3wzgPisIuTNUt5yNp
+         QM8fS4uB7tSoecRamGvYenCoQAyoeMcVsevI0LCmlaHwFGJ+Fax+ZKtY/rbi773lWJPb
+         B7RQ==
+X-Gm-Message-State: AOAM532m6RcYUT99zbtn8+tinSKxTRYiGmax+fwUE32cklOEqUlhoLTo
+        Vl2xk7RNLo6Ze4yzy2jvA0ARtUQD+pe5hWJ35jo=
+X-Google-Smtp-Source: ABdhPJx+ykeEl+/KhKg1qPX551g/qvRVeZ8P/onoCiCUKyxQBpihYCs50/pfoQ7H1NdyHolSBAZEFIW/NT+ewVgTPaI=
+X-Received: by 2002:a63:6881:: with SMTP id d123mr1682340pgc.497.1638313609394;
+ Tue, 30 Nov 2021 15:06:49 -0800 (PST)
 MIME-Version: 1.0
-References: <1638027102-22686-1-git-send-email-cuibixuan@linux.alibaba.com>
-In-Reply-To: <1638027102-22686-1-git-send-email-cuibixuan@linux.alibaba.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Nov 2021 14:53:16 -0800
-Message-ID: <CAEf4BzbV=s+C=dFS5YfAdJhiBv+3ocanaZ-NNHoPz8RzHhGCbQ@mail.gmail.com>
-Subject: Re: [PATCH -next] bpf: Add oversize check before call kvmalloc()
-To:     Bixuan Cui <cuibixuan@linux.alibaba.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20211124060209.493-1-alexei.starovoitov@gmail.com>
+ <20211124060209.493-8-alexei.starovoitov@gmail.com> <CAEf4BzYNkgP-t_icXjLAxddOPWgN7GZZ7vWrsLbCDycN=z9KzA@mail.gmail.com>
+ <20211130031819.7ulr5cfqrqagioza@ast-mbp.dhcp.thefacebook.com> <CAEf4Bzb3E5qyf3WtOAWHWSiq9ptPLXErGg5pCFQTAdz0LhZCBw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb3E5qyf3WtOAWHWSiq9ptPLXErGg5pCFQTAdz0LhZCBw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 30 Nov 2021 15:06:37 -0800
+Message-ID: <CAADnVQ+k3jbreSF5JOUROCXKWjuWzTmK3DVm-1L3pAaQoQ+mKw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 07/16] bpf: Add bpf_core_add_cands() and wire
+ it into bpf_core_apply_relo_insn().
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 7:32 AM Bixuan Cui <cuibixuan@linux.alibaba.com> wrote:
+On Mon, Nov 29, 2021 at 8:10 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add
-> the oversize check. When the allocation is larger than what kvmalloc()
-> supports, the following warning triggered:
+> oh, I thought you added those fields initially and forgot to delete or
+> something, didn't notice that you are just "opting them out" for
+> __KERNEL__. I think libbpf code doesn't strictly need this, here's the
+> diff that completely removes their use, it's pretty straightforward
+> and minimal, so maybe instead of #ifdef'ing let's just do that?
 >
-> WARNING: CPU: 1 PID: 372 at mm/util.c:597 kvmalloc_node+0x111/0x120
-> mm/util.c:597
-> Modules linked in:
-> CPU: 1 PID: 372 Comm: syz-executor.4 Not tainted 5.15.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 01/01/2011
-> RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-> Code: 01 00 00 00 4c 89 e7 e8 7d f7 0c 00 49 89 c5 e9 69 ff ff ff e8 60
-> 20 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 4f 20 d1 ff <0f> 0b e9
-> 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 36
-> RSP: 0018:ffffc90002bf7c98 EFLAGS: 00010216
-> RAX: 00000000000000ec RBX: 1ffff9200057ef9f RCX: ffffc9000ac63000
-> RDX: 0000000000040000 RSI: ffffffff81a6a621 RDI: 0000000000000003
-> RBP: 0000000000102cc0 R08: 000000007fffffff R09: 00000000ffffffff
-> R10: ffffffff81a6a5de R11: 0000000000000000 R12: 00000000ffff9aaa
-> R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
-> FS:  00007f05f2573700(0000) GS:ffff8880b9d00000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000001b2f424000 CR3: 0000000027d2c000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  kvmalloc include/linux/slab.h:741 [inline]
->  map_lookup_elem kernel/bpf/syscall.c:1090 [inline]
->  __sys_bpf+0x3a5b/0x5f00 kernel/bpf/syscall.c:4603
->  __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
->  __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4720
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index b59fede08ba7..95fa57eea289 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -5179,15 +5179,18 @@ static int bpf_core_add_cands(struct
+> bpf_core_cand *local_cand,
+>                    struct bpf_core_cand_list *cands)
+>  {
+>      struct bpf_core_cand *new_cands, *cand;
+> -    const struct btf_type *t;
+> -    const char *targ_name;
+> +    const struct btf_type *t, *local_t;
+> +    const char *targ_name, *local_name;
+>      size_t targ_essent_len;
+>      int n, i;
 >
-> The type of 'value_size' is u32, its value may exceed INT_MAX.
+> +    local_t = btf__type_by_id(local_cand->btf, local_cand->id);
+> +    local_name = btf__str_by_offset(local_cand->btf, local_t->name_off);
+> +
+>      n = btf__type_cnt(targ_btf);
+>      for (i = targ_start_id; i < n; i++) {
+>          t = btf__type_by_id(targ_btf, i);
+> -        if (btf_kind(t) != btf_kind(local_cand->t))
+> +        if (btf_kind(t) != btf_kind(local_t))
+>              continue;
 >
-> Reported-by: syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com
-> Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
-> ---
->  kernel/bpf/syscall.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>          targ_name = btf__name_by_offset(targ_btf, t->name_off);
+> @@ -5198,12 +5201,12 @@ static int bpf_core_add_cands(struct
+> bpf_core_cand *local_cand,
+>          if (targ_essent_len != local_essent_len)
+>              continue;
 >
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 1033ee8..f5bc380 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1094,6 +1094,10 @@ static int map_lookup_elem(union bpf_attr *attr)
->         }
+> -        if (strncmp(local_cand->name, targ_name, local_essent_len) != 0)
+> +        if (strncmp(local_name, targ_name, local_essent_len) != 0)
+>              continue;
 >
->         value_size = bpf_map_value_size(map);
-> +       if (value_size > INT_MAX) {
-> +               err = -EINVAL;
+>          pr_debug("CO-RE relocating [%d] %s %s: found target candidate
+> [%d] %s %s in [%s]\n",
+> -             local_cand->id, btf_kind_str(local_cand->t),
+> -             local_cand->name, i, btf_kind_str(t), targ_name,
+> +             local_cand->id, btf_kind_str(local_t),
+> +             local_name, i, btf_kind_str(t), targ_name,
+>               targ_btf_name);
+>          new_cands = libbpf_reallocarray(cands->cands, cands->len + 1,
+>                            sizeof(*cands->cands));
+> @@ -5212,8 +5215,6 @@ static int bpf_core_add_cands(struct
+> bpf_core_cand *local_cand,
+>
+>          cand = &new_cands[cands->len];
+>          cand->btf = targ_btf;
+> -        cand->t = t;
+> -        cand->name = targ_name;
+>          cand->id = i;
+>
+>          cands->cands = new_cands;
+> @@ -5320,18 +5321,20 @@ bpf_core_find_cands(struct bpf_object *obj,
+> const struct btf *local_btf, __u32 l
+>      struct bpf_core_cand local_cand = {};
+>      struct bpf_core_cand_list *cands;
+>      const struct btf *main_btf;
+> +    const struct btf_type *local_t;
+> +    const char *local_name;
+>      size_t local_essent_len;
+>      int err, i;
+>
+>      local_cand.btf = local_btf;
+> -    local_cand.t = btf__type_by_id(local_btf, local_type_id);
+> -    if (!local_cand.t)
+> +    local_t = btf__type_by_id(local_btf, local_type_id);
+> +    if (!local_t)
+>          return ERR_PTR(-EINVAL);
 
--E2BIG makes a bit more sense in this scenario?
+Heh. Looks like you only compile-tested it :)
+I was surprised that CO-RE in the kernel was working,
+but libbpf CO-RE didn't :)
+Thankfully the fix was simple:
 
-> +               goto err_put;
-> +       }
->
->         err = -ENOMEM;
->         value = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> --
-> 1.8.3.1
->
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 24d1cbc30084..1341ce539662 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5333,6 +5333,7 @@ bpf_core_find_cands(struct bpf_object *obj,
+const struct btf *local_btf, __u32 l
+        int err, i;
+
+        local_cand.btf = local_btf;
++       local_cand.id = local_type_id;
+        local_t = btf__type_by_id(local_btf, local_type_id);
+
+Just fyi.
