@@ -2,194 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C23463B83
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 17:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D121463BA6
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 17:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238639AbhK3QVZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 11:21:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32816 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243901AbhK3QUy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Nov 2021 11:20:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638289049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bh2xH2WYNc1n+eZ6WtfnZ4QpRuO9aH5y18ufnjGl1cA=;
-        b=N1jTE+/R0rhhw2cAe8Q7hFcuv1pxTQwMq+OXkpyc/eTCG9rxbitHH4iyZlIiyRWznVLmA1
-        soUtq2HISlAKvh3Z7HR7kFGG3lJ75SY6FTqiYH79Pr9tPcfrckFsqvgw/uZ5LF6q1crxkR
-        oWFym05dj7kIXwaObPNLOgRHu+2rSJg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-439-S08CnuPTO0WX-wjqcTIsAg-1; Tue, 30 Nov 2021 11:17:27 -0500
-X-MC-Unique: S08CnuPTO0WX-wjqcTIsAg-1
-Received: by mail-ed1-f70.google.com with SMTP id t9-20020aa7d709000000b003e83403a5cbso17432736edq.19
-        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 08:17:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Bh2xH2WYNc1n+eZ6WtfnZ4QpRuO9aH5y18ufnjGl1cA=;
-        b=ui0LZdInwKuolaJ8XHlidHtBVEndisTUTVO686Ch/eHPxc+ENS/fRx3exTJ4PEsctB
-         qQfFDDU0EjSxShT7nATGI7TAzQ6fGggUswaA9UFcfjcj5TWlJN5x0oeiFzVBJAHq9W22
-         fYrevmYUiN4ZIVcpwwVmCQGEF7sEmKHG0zJe6/QijNxA+z1en15j7V+pXjf72S7QHKJ3
-         eu1axox4jf4ny+Ysip99nPRK0jGk/sERLo86dQg1aVhtrbZgOeL26Te2a8Q9Wn/GClPv
-         /JmpzITLQJCdxoUS2I3nedxw6NjaRsxLSodLWkpC4D9J11GjsrCrlfe7l0ZwLWw01YCF
-         vCug==
-X-Gm-Message-State: AOAM532mHTK6m4CadSQc/2xsYgfJxlO89+vdaTKDZLc+bTFpxPiWw6w1
-        Zub1e6rHYKDEOfIopSYJrpPhHfx/FaHEI3YQG8UDNU/wXHduxa7NppPJY3h9yJgbcwKP4wfEZAF
-        yVlZHubtH1EO0
-X-Received: by 2002:a17:906:d54d:: with SMTP id cr13mr22665ejc.409.1638289045902;
-        Tue, 30 Nov 2021 08:17:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzm7jXoK2TvSroiJ5tHiLFjrswRyG0q/IaZ6d4NOHuATUVkXigtSnHPZVM/QNjl22FRlNuJYA==
-X-Received: by 2002:a17:906:d54d:: with SMTP id cr13mr22591ejc.409.1638289045383;
-        Tue, 30 Nov 2021 08:17:25 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id u23sm11967828edi.88.2021.11.30.08.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Nov 2021 08:17:24 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 39B381802A0; Tue, 30 Nov 2021 17:17:24 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        id S243570AbhK3Q0C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 11:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238933AbhK3Q0A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 11:26:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F05C061746
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 08:22:40 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DDA03B81A62
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 16:22:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A73AC53FC7
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 16:22:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638289357;
+        bh=kx6tOFtzH3bbd7DHCBZUKNLdaNLaZdzSVGnTJB/tvK8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=n8pIq8XvSX16ot49x2WDh4kthT6Qqud51B+dE0i6OZW9hKWAA5VJ12XBzCp4LXOBV
+         tUi4nC+te6N41/055tTHYRujCIO8dz+QwqahnPvZdkfLJYRnxXNlg1Ssg+W2jJidf8
+         n2s8Y0vd8KXywYin4JC/3hMozNNuGGi+0EADC9QBh1UFFeL6RHHnqxdMZG15zgEngB
+         8tqk6VdFA2hYtNVPPYYz6shzDAouWFSYtd8omG03Jfei6HNVQKyRZKEKPmkSDi4pYh
+         HJ2kXCCGGEATvn11Z1cqjErxG+ElOKUK0V6XMTdSGqvzUBmFsWweFQZ5wKqjC6mIGm
+         nij9ZafVwOXVQ==
+Received: by mail-ed1-f41.google.com with SMTP id r25so23703515edq.7
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 08:22:37 -0800 (PST)
+X-Gm-Message-State: AOAM532xvTkH4A+Qk5PFGEHJDzdIktKc3x1uta3mPWIKYhAAOZMnFIck
+        Ujry6BEBTdXunKovkI1mgbooSyWqPdSOBFA1ka+rFw==
+X-Google-Smtp-Source: ABdhPJyjFGGoqVzq2i0H2CIZDQ8QJ9LRJvzoNPx3Y7TxYtnV4JxmSyea3T0lTRiXQzq0sh61ypMCY18Nb0fs4usDqcA=
+X-Received: by 2002:a50:ef12:: with SMTP id m18mr85543243eds.381.1638289355873;
+ Tue, 30 Nov 2021 08:22:35 -0800 (PST)
+MIME-Version: 1.0
+References: <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
+ <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
+ <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
+ <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1> <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
+ <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1> <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ4VDMzp2ggtVL30xq+6Q2+2OqOLhuoi173=8mdyRbS+QQ@mail.gmail.com> <20211130023410.hmyw7fhxwpskf6ba@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211130023410.hmyw7fhxwpskf6ba@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 30 Nov 2021 17:22:25 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7+V=ui7kS-8u7zQoHPT3zZE6X3QuRROG3898Mai9JAcg@mail.gmail.com>
+Message-ID: <CACYkzJ7+V=ui7kS-8u7zQoHPT3zZE6X3QuRROG3898Mai9JAcg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
+ sleepable programs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP stats
-In-Reply-To: <20211130155612.594688-1-alexandr.lobakin@intel.com>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211130155612.594688-1-alexandr.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 30 Nov 2021 17:17:24 +0100
-Message-ID: <871r2x8vor.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
-
-> From: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Date: Tue, 23 Nov 2021 17:39:29 +0100
+On Tue, Nov 30, 2021 at 3:34 AM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Ok, open questions:
+> On Wed, Nov 24, 2021 at 11:20:40PM +0100, KP Singh wrote:
+> > On Tue, Nov 23, 2021 at 11:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Tue, Nov 23, 2021 at 10:22:04AM -0800, Paul E. McKenney wrote:
+> > > > On Tue, Nov 23, 2021 at 06:11:14PM +0100, KP Singh wrote:
+> > > > > On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > > > I think the global lock will be an issue for the current non-sleepable
+> > > > > > netdev bpf-prog which could be triggered by external traffic,  so a flag
+> > > > > > is needed here to provide a fast path.  I suspect other non-prealloc map
+> > > > > > may need it in the future, so probably
+> > > > > > s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
+> > > > >
+> > > > > I was re-working the patches and had a couple of questions.
+> > > > >
+> > > > > There are two data structures that get freed under RCU here:
+> > > > >
+> > > > > struct bpf_local_storage
+> > > > > struct bpf_local_storage_selem
+> > > > >
+> > > > > We can choose to free the bpf_local_storage_selem under
+> > > > > call_rcu_tasks_trace based on
+> > > > > whether the map it belongs to is sleepable with something like:
+> > > > >
+> > > > > if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
+> > > Paul's current work (mentioned by his previous email) will improve the
+> > > performance of call_rcu_tasks_trace, so it probably can avoid the
+> > > new BPF_F_SLEEPABLE flag and make it easier to use.
+> > >
+> > > > >     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+> > > > > else
+> > > > >     kfree_rcu(selem, rcu);
+> > > > >
+> > > > > Questions:
+> > > > >
+> > > > > * Can we free bpf_local_storage under kfree_rcu by ensuring it's
+> > > > >   always accessed in a  classical RCU critical section?
+> > > >>    Or maybe I am missing something and this also needs to be freed
+> > > > >   under trace RCU if any of the selems are from a sleepable map.
+> > > In the inode_storage_lookup() of this patch:
+> > >
+> > > +#define bpf_local_storage_rcu_lock_held()                      \
+> > > +       (rcu_read_lock_held() || rcu_read_lock_trace_held() ||  \
+> > > +        rcu_read_lock_bh_held())
+> > >
+> > > @@ -44,7 +45,8 @@ static struct bpf_local_storage_data *inode_storage_lookup(struct inode *inode,
+> > >         if (!bsb)
+> > >                 return NULL;
+> > >
+> > > -       inode_storage = rcu_dereference(bsb->storage);
+> > > +       inode_storage = rcu_dereference_protected(bsb->storage,
+> > > +                                                 bpf_local_storage_rcu_lock_held());
+> > >
+> > > Thus, it is not always in classical RCU critical.
+> > >
+> > > > >
+> > > > > * There is an issue with nested raw spinlocks, e.g. in
+> > > > > bpf_inode_storage.c:bpf_inode_storage_free
+> > > > >
+> > > > >   hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> > > > >   /* Always unlink from map before unlinking from
+> > > > >   * local_storage.
+> > > > >   */
+> > > > >   bpf_selem_unlink_map(selem);
+> > > > >   free_inode_storage = bpf_selem_unlink_storage_nolock(
+> > > > >                  local_storage, selem, false);
+> > > > >   }
+> > > > >   raw_spin_unlock_bh(&local_storage->lock);
+> > > > >
+> > > > > in bpf_selem_unlink_storage_nolock (if we add the above logic with the
+> > > > > flag in place of kfree_rcu)
+> > > > > call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
+> > > > > raw spin lock.
+> > > > >
+> > > > > I am moving the freeing code out of the spinlock, saving the selems on
+> > > > > a local list and then doing the free RCU (trace or normal) callbacks
+> > > > > at the end. WDYT?
+> > > There could be more than one selem to save.
+> >
+> > Yes, that's why I was saving them on a local list and then calling
+> > kfree_rcu or call_rcu_tasks_trace after unlocking the raw_spin_lock
+> >
+> > INIT_HLIST_HEAD(&free_list);
+> > raw_spin_lock_irqsave(&local_storage->lock, flags);
+> > hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> >     bpf_selem_unlink_map(selem);
+> >     free_local_storage = bpf_selem_unlink_storage_nolock(
+> >     local_storage, selem, false);
+> >     hlist_add_head(&selem->snode, &free_list);
+> > }
+> > raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+> >
+> > /* The element needs to be freed outside the raw spinlock because spin
+> > * locks cannot nest inside a raw spin locks and call_rcu_tasks_trace
+> > * grabs a spinklock when the RCU code calls into the scheduler.
+> > *
+> > * free_local_storage should always be true as long as
+> > * local_storage->list was non-empty.
+> > */
+> > hlist_for_each_entry_safe(selem, n, &free_list, snode) {
+> >     if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
+> >         call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
+> >     else
+> >         kfree_rcu(selem, rcu);
+> > }
+> >
+> > But... we won't need this anymore.
+> Yep, Paul's work (thanks!) will make this piece simpler.
+
++100
+
 >
-> 1. Channels vs queues vs global.
->
-> Jakub: no per-channel.
-> David (Ahern): it's worth it to separate as Rx/Tx.
-> Toke is fine with globals at the end I think?
+> KP, this set functionally does not depend on Paul's changes.
+> Do you want to spin a new version so that it can be reviewed in parallel?
 
-Well, I don't like throwing data away, so in that sense I do like
-per-queue stats, but it's not a very strong preference (i.e., I can live
-with either)...
+Sure, I will fix the remaining issues (i.e. with RCU locks and renames) and
+spin a new version.
 
-> My point was that for most of the systems we have 1:1 Rx:Tx
-> (usually num_online_cpus()), so asking drivers separately for
-> the number of RQs and then SQs would end up asking for the same
-> number twice.
-> But the main reason TBH was that most of the drivers store stats
-> on a per-channel basis and I didn't want them to regress in
-> functionality. I'm fine with reporting only netdev-wide if
-> everyone are.
->
-> In case if we keep per-channel: report per-channel only by request
-> and cumulative globals by default to not flood the output?
-
-... however if we do go with per-channel stats I do agree that they
-shouldn't be in the default output. I guess netlink could still split
-them out and iproute2 could just sum them before display?
-
-> 2. Count all errors as "drops" vs separately.
->
-> Daniel: account everything as drops, plus errors should be
-> reported as exceptions for tracing sub.
-> Jesper: we shouldn't mix drops and errors.
->
-> My point: we shouldn't, that's why there are patches for 2 drivers
-> to give errors a separate counter.
-> I provided an option either to report all errors together ('errors'
-> in stats structure) or to provide individual counters for each of
-> them (sonamed ctrs), but personally prefer detailed errors. However,
-> they might "go detailed" under trace_xdp_exception() only, sound
-> fine (OTOH in RTNL stats we have both "general" errors and detailed
-> error counters).
-
-I agree it would be nice to have a separate error counter, but a single
-counter is enough when combined with the tracepoints.
-
-> 3. XDP and XSK ctrs separately or not.
->
-> My PoV is that those are two quite different worlds.
-> However, stats for actions on XSK really make a little sense since
-> 99% of time we have xskmap redirect. So I think it'd be fine to just
-> expand stats structure with xsk_{rx,tx}_{packets,bytes} and count
-> the rest (actions, errors) together with XDP.
-
-A whole set of separate counters for XSK is certainly overkill. No
-strong preference as to whether they need a separate counter at all...
-
-> Rest:
->  - don't create a separate `ip` command and report under `-s`;
->  - save some RTNL skb space by skipping zeroed counters.
->
-> Also, regarding that I count all on the stack and then add to the
-> storage once in a polling cycle -- most drivers don't do that and
-> just increment the values in the storage directly, but this can be
-> less performant for frequently updated stats (or it's just my
-> embedded past).
-> Re u64 vs u64_stats_t -- the latter is more universal and
-> architecture-friendly, the former is used directly in most of the
-> drivers primarily because those drivers and the corresponding HW
-> are being run on 64-bit systems in the vast majority of cases, and
-> Ethtools stats themselves are not so critical to guard them with
-> anti-tearing. Anyways, local64_t is cheap on ARM64/x86_64 I guess?
-
-I'm generally a fan of correctness first, so since you're touching all
-the drivers anyway why I'd say go for u64_stats_t :)
-
--Toke
-
+> When the rcu-task changes land in -next, it can probably
+> be merged into bpf-next first before landing the sleepable
+> bpf storage work.
