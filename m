@@ -2,81 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C3E463DF6
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 19:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DE1463E37
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 19:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245528AbhK3SrD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 13:47:03 -0500
-Received: from mga12.intel.com ([192.55.52.136]:10335 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244935AbhK3SrC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 13:47:02 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10184"; a="216309789"
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="216309789"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2021 10:37:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="511648276"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Nov 2021 10:37:40 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AUIbcaG013253;
-        Tue, 30 Nov 2021 18:37:39 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        id S230376AbhK3S7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 13:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239907AbhK3S7E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 13:59:04 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4B4C061574;
+        Tue, 30 Nov 2021 10:55:45 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id b13so15683982plg.2;
+        Tue, 30 Nov 2021 10:55:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qv79wVTcK+nZ5LSvR3T9ntnRBhY6KehuqGBysRBPuRE=;
+        b=fNUaEzNSlII0Vfa59e+1be7oMLK8TQ7us7zeZxsLaU9dikgRXmTDdr1un4Eh3cwvuL
+         NABoPv86mfNDNV31zgWBztC5ZmiULBzdT53duK9FNI5G4JMR63bUgeiGc9E5HdK86ndo
+         zVOfiXoLajoPQSj97S8aNISyNTY6tQ0j4veaRKrQDUTsQCSTBikgoNwWo4/1JLYDnvJI
+         aPCRVuS86eY39RI0Jxny1nlohMCgeCfr/F88nOLJ4LPywgk3mLJDQikYGuv7Ul/g6cSe
+         OZf/3MVt1K33FmGUc86Mi3s2Pmru22CKasp02I56eLLmvd1vovHJKbn2Pd0TRQRnzYVS
+         o7OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qv79wVTcK+nZ5LSvR3T9ntnRBhY6KehuqGBysRBPuRE=;
+        b=YP6qCgw06zkH5gAq+L6gAhS070OWlAkcv45dcm+Ufg+hxdAUs7G/HQgoioOqaeiJuo
+         esGPlvSV48B6/mvQlYQSTIrbMZZiYOCJ2E5X5mcGzk6AhY8UtjGHxOJtNHjJ98K6uPKL
+         94Bnw1XBeaFwA7T8NUwX0pGBMTegJ8/zs2mZviQYa+Gddmcxsl/d4jf4rFlgDQLN61qo
+         /4+lwRZbT+HKEvM6QqNZf0W5aVfec8Aosn5KkghxaGA4z+mVobwdanOWyXGdyFqeLyiG
+         3bDYmq3DyEnIfIE8ql/bvsyVy7dUA0aPu7PMqnA6C/E4fZOj55LdjxW+WJZ1ZuO3exhJ
+         Uigw==
+X-Gm-Message-State: AOAM531FO41M/8lUHDXfWiV2r+Jvz64/f3Mqyd6jUckFO8PikMrUCaGb
+        MoLauoPU3mZB26xrY8QVWvuBuL/Fe4uppEyo978=
+X-Google-Smtp-Source: ABdhPJyNnukIlGCEjBI/qU6SfJP5DjYZ5pJQl8SyGBTZLU+zruRWUvFKNCWKti6h2p/r8e103Xphua89ismzUHqqSuc=
+X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr972516pja.122.1638298544945;
+ Tue, 30 Nov 2021 10:55:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20211119163215.971383-1-hch@lst.de>
+In-Reply-To: <20211119163215.971383-1-hch@lst.de>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 30 Nov 2021 10:55:33 -0800
+Message-ID: <CAADnVQKymbNQw3U5YhO_f8Aecon4KXbx9HvuZz=syc1LgOCT1w@mail.gmail.com>
+Subject: Re: split up filter.rst v2
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Cristian Dumitrescu <cristian.dumitrescu@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] ice: remove dead store on XSK hotpath
-Date:   Tue, 30 Nov 2021 19:36:49 +0100
-Message-Id: <20211130183649.1166842-2-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211130183649.1166842-1-alexandr.lobakin@intel.com>
-References: <20211130183649.1166842-1-alexandr.lobakin@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        KP Singh <kpsingh@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The 'if (ntu == rx_ring->count)' block in ice_alloc_rx_buffers_zc()
-was previously residing in the loop, but after introducing the
-batched interface it is used only to wrap-around the NTU descriptor,
-thus no more need to assign 'xdp'.
+On Fri, Nov 19, 2021 at 8:32 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Hi all,
+>
+> for historical reasons filter.rst not only documents the classic Berkely
+> Packet Filter, but also contains some of the most fundamental eBPF
+> documentation.  This series moves the actual eBPF documentation into newly
+> created files under Documentation/bpf/ instead.  Note that the instruction
+> set document is still a bit of a mess due to all the references to classic
+> BPF, but if this split goes through I plan to start on working to clean
+> that up as well.
+>
+> Changes since v1:
+>  - rebased to the latest bpf-next
+>  - just refernence BPF instead of eBPF in most code
+>  - split the patches further up
+>  - better link the BPF documentation from filter.rst
 
-Fixes: db804cfc21e9 ("ice: Use the xsk batched rx allocation interface")
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index ff55cb415b11..8573d2a3d873 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -391,7 +391,6 @@ bool ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- 	ntu += nb_buffs;
- 	if (ntu == rx_ring->count) {
- 		rx_desc = ICE_RX_DESC(rx_ring, 0);
--		xdp = rx_ring->xdp_buf;
- 		ntu = 0;
- 	}
- 
--- 
-2.33.1
-
+Applied. Thanks
