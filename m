@@ -2,199 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802FB4641CA
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 23:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337D04641CD
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 23:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344702AbhK3Wyx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 17:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
+        id S236337AbhK3W4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 17:56:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344681AbhK3Wyw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 17:54:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B60BC061574
-        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 14:51:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0EA54B81D7B
-        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 22:51:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5A51C53FC7;
-        Tue, 30 Nov 2021 22:51:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638312689;
-        bh=00/Gi5WBvw+LbFmvsI+NCEKKTfjEKvNFzCXk/JlAB7o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=GtLo2owuMsr3RqcXwHHe/leMSEERMQUkSWDLquRuiHw/L+1lrzcv7ESw9MK2AdwoF
-         fG+YY3QOmhZGp5c4tPddW4C23EZZPQnOoX5vdQtw9YXYMWWZSbbuAznj4V+Ogmpbxy
-         g1nJPoIXAeHA7BTmAj3jZYTxt7QKJBWwv5AAglYe39M6yB09jjBDdu2P5XO0O2TbyC
-         noosbIaTXcLq3xhy8PWr/fT49jIQ+AJ4J0XfsNC2GkmrnmuvRf37KBY0r703j1LOri
-         R1q4Esg5kjhF8UheVYmjlS1/wwYxth2EMyPHK0kEoZ15A6WKuno14rZ3+ztEI3jQR6
-         TxnOMn4g8Cklg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 67D8E5C0367; Tue, 30 Nov 2021 14:51:29 -0800 (PST)
-Date:   Tue, 30 Nov 2021 14:51:29 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S233731AbhK3W4s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 17:56:48 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57053C061574;
+        Tue, 30 Nov 2021 14:53:28 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 131so57399969ybc.7;
+        Tue, 30 Nov 2021 14:53:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IWmAAXa9pjC4EoqzChkZJaBqSIgJLKarMG+xKoHvRDs=;
+        b=VmwSq84INeu/Qn3AsnjWJ0DU7BawUMaHEwht0V2qDRsbDAKFVMFTWtLa0+FbSAZcd2
+         W5csmdUvHO3LDaG4XQiuLRKzEPQ+AEgvEv5GCeh0V6i6YY0tB8yxAY5RvyOgYHIxr6wN
+         wdpGvxtWnaWOWshLRHa5vNrSHBcHchSIRbYNDt8Xt9c/Vivwh3+dG+QJ4bfzpoRXMb27
+         ixkRqrTaTaos4/NyZ7VMAprmNyQwHiWR/HlCj0Nf08P+mbopAZxUmXVVYYu3Ujo99OUI
+         6yHUi+UBd+BZh4UqrYdBieJhc0vWPX/aXEN2bRLgnL4LQqIuQqbGVJZumNkX58i25c8C
+         lssw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IWmAAXa9pjC4EoqzChkZJaBqSIgJLKarMG+xKoHvRDs=;
+        b=gevsea9fSM17IIG/YGJnNpCHBWoDnR3A1RhnbdLmMeXg0g6Dhmyvc+kRfMbC3KK0aD
+         GZ4LQjGOuvMr/B1yz1f0KU+T2PbERNwzN6BI8duc2Towa+OIBm9q/ZaRPgHFDqAEDSOD
+         C3fD47JhlHO/1XOEwrJTI9DM3fPmjH9GjCVWRBZYIYUz7fAOJ+is2lw8qVX4YEq9bjJE
+         Y9WOBl9amNiNCM/TnhrdFYZ9nChjdxJ9NyYESFjJnvmPUBhjjIISzxD7X+DQlxLJWTXs
+         eJsZ0N5J7s9Q5l4kiIpFlYKtVYM+YhSU5PT8NNyeowfAIYSFSWOUA5PlX/LXLXdh8/Dh
+         UibQ==
+X-Gm-Message-State: AOAM532yh3USp2IBr6AifnRHjY6ux9eUyZ9dgGgFpn7jFqgKVjOm4Wow
+        jC0bD6yl84SN7GHldUuG2xuXrzwOjUG4mYZRzTY=
+X-Google-Smtp-Source: ABdhPJzUU4qXaHZ7S/0ey52ccLEJxZXY/ZqwQOyktHVC6pgjLhE3jqkNaxjz8nDisWn7VsfLQ8vZEeZYXJhieuHwWBc=
+X-Received: by 2002:a25:54e:: with SMTP id 75mr2440929ybf.393.1638312807553;
+ Tue, 30 Nov 2021 14:53:27 -0800 (PST)
+MIME-Version: 1.0
+References: <1638027102-22686-1-git-send-email-cuibixuan@linux.alibaba.com>
+In-Reply-To: <1638027102-22686-1-git-send-email-cuibixuan@linux.alibaba.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 30 Nov 2021 14:53:16 -0800
+Message-ID: <CAEf4BzbV=s+C=dFS5YfAdJhiBv+3ocanaZ-NNHoPz8RzHhGCbQ@mail.gmail.com>
+Subject: Re: [PATCH -next] bpf: Add oversize check before call kvmalloc()
+To:     Bixuan Cui <cuibixuan@linux.alibaba.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
- sleepable programs
-Message-ID: <20211130225129.GB641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
- <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
- <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1>
- <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
- <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1>
- <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ4VDMzp2ggtVL30xq+6Q2+2OqOLhuoi173=8mdyRbS+QQ@mail.gmail.com>
- <20211130023410.hmyw7fhxwpskf6ba@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ7+V=ui7kS-8u7zQoHPT3zZE6X3QuRROG3898Mai9JAcg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACYkzJ7+V=ui7kS-8u7zQoHPT3zZE6X3QuRROG3898Mai9JAcg@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 05:22:25PM +0100, KP Singh wrote:
-> On Tue, Nov 30, 2021 at 3:34 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Wed, Nov 24, 2021 at 11:20:40PM +0100, KP Singh wrote:
-> > > On Tue, Nov 23, 2021 at 11:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > >
-> > > > On Tue, Nov 23, 2021 at 10:22:04AM -0800, Paul E. McKenney wrote:
-> > > > > On Tue, Nov 23, 2021 at 06:11:14PM +0100, KP Singh wrote:
-> > > > > > On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > > > > I think the global lock will be an issue for the current non-sleepable
-> > > > > > > netdev bpf-prog which could be triggered by external traffic,  so a flag
-> > > > > > > is needed here to provide a fast path.  I suspect other non-prealloc map
-> > > > > > > may need it in the future, so probably
-> > > > > > > s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
-> > > > > >
-> > > > > > I was re-working the patches and had a couple of questions.
-> > > > > >
-> > > > > > There are two data structures that get freed under RCU here:
-> > > > > >
-> > > > > > struct bpf_local_storage
-> > > > > > struct bpf_local_storage_selem
-> > > > > >
-> > > > > > We can choose to free the bpf_local_storage_selem under
-> > > > > > call_rcu_tasks_trace based on
-> > > > > > whether the map it belongs to is sleepable with something like:
-> > > > > >
-> > > > > > if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
-> > > > Paul's current work (mentioned by his previous email) will improve the
-> > > > performance of call_rcu_tasks_trace, so it probably can avoid the
-> > > > new BPF_F_SLEEPABLE flag and make it easier to use.
-> > > >
-> > > > > >     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> > > > > > else
-> > > > > >     kfree_rcu(selem, rcu);
-> > > > > >
-> > > > > > Questions:
-> > > > > >
-> > > > > > * Can we free bpf_local_storage under kfree_rcu by ensuring it's
-> > > > > >   always accessed in a  classical RCU critical section?
-> > > > >>    Or maybe I am missing something and this also needs to be freed
-> > > > > >   under trace RCU if any of the selems are from a sleepable map.
-> > > > In the inode_storage_lookup() of this patch:
-> > > >
-> > > > +#define bpf_local_storage_rcu_lock_held()                      \
-> > > > +       (rcu_read_lock_held() || rcu_read_lock_trace_held() ||  \
-> > > > +        rcu_read_lock_bh_held())
-> > > >
-> > > > @@ -44,7 +45,8 @@ static struct bpf_local_storage_data *inode_storage_lookup(struct inode *inode,
-> > > >         if (!bsb)
-> > > >                 return NULL;
-> > > >
-> > > > -       inode_storage = rcu_dereference(bsb->storage);
-> > > > +       inode_storage = rcu_dereference_protected(bsb->storage,
-> > > > +                                                 bpf_local_storage_rcu_lock_held());
-> > > >
-> > > > Thus, it is not always in classical RCU critical.
-> > > >
-> > > > > >
-> > > > > > * There is an issue with nested raw spinlocks, e.g. in
-> > > > > > bpf_inode_storage.c:bpf_inode_storage_free
-> > > > > >
-> > > > > >   hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > > > > >   /* Always unlink from map before unlinking from
-> > > > > >   * local_storage.
-> > > > > >   */
-> > > > > >   bpf_selem_unlink_map(selem);
-> > > > > >   free_inode_storage = bpf_selem_unlink_storage_nolock(
-> > > > > >                  local_storage, selem, false);
-> > > > > >   }
-> > > > > >   raw_spin_unlock_bh(&local_storage->lock);
-> > > > > >
-> > > > > > in bpf_selem_unlink_storage_nolock (if we add the above logic with the
-> > > > > > flag in place of kfree_rcu)
-> > > > > > call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
-> > > > > > raw spin lock.
-> > > > > >
-> > > > > > I am moving the freeing code out of the spinlock, saving the selems on
-> > > > > > a local list and then doing the free RCU (trace or normal) callbacks
-> > > > > > at the end. WDYT?
-> > > > There could be more than one selem to save.
-> > >
-> > > Yes, that's why I was saving them on a local list and then calling
-> > > kfree_rcu or call_rcu_tasks_trace after unlocking the raw_spin_lock
-> > >
-> > > INIT_HLIST_HEAD(&free_list);
-> > > raw_spin_lock_irqsave(&local_storage->lock, flags);
-> > > hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > >     bpf_selem_unlink_map(selem);
-> > >     free_local_storage = bpf_selem_unlink_storage_nolock(
-> > >     local_storage, selem, false);
-> > >     hlist_add_head(&selem->snode, &free_list);
-> > > }
-> > > raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> > >
-> > > /* The element needs to be freed outside the raw spinlock because spin
-> > > * locks cannot nest inside a raw spin locks and call_rcu_tasks_trace
-> > > * grabs a spinklock when the RCU code calls into the scheduler.
-> > > *
-> > > * free_local_storage should always be true as long as
-> > > * local_storage->list was non-empty.
-> > > */
-> > > hlist_for_each_entry_safe(selem, n, &free_list, snode) {
-> > >     if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
-> > >         call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> > >     else
-> > >         kfree_rcu(selem, rcu);
-> > > }
-> > >
-> > > But... we won't need this anymore.
-> > Yep, Paul's work (thanks!) will make this piece simpler.
-> 
-> +100
-> 
-> >
-> > KP, this set functionally does not depend on Paul's changes.
-> > Do you want to spin a new version so that it can be reviewed in parallel?
-> 
-> Sure, I will fix the remaining issues (i.e. with RCU locks and renames) and
-> spin a new version.
-> 
-> > When the rcu-task changes land in -next, it can probably
-> > be merged into bpf-next first before landing the sleepable
-> > bpf storage work.
+On Sat, Nov 27, 2021 at 7:32 AM Bixuan Cui <cuibixuan@linux.alibaba.com> wrote:
+>
+> Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add
+> the oversize check. When the allocation is larger than what kvmalloc()
+> supports, the following warning triggered:
+>
+> WARNING: CPU: 1 PID: 372 at mm/util.c:597 kvmalloc_node+0x111/0x120
+> mm/util.c:597
+> Modules linked in:
+> CPU: 1 PID: 372 Comm: syz-executor.4 Not tainted 5.15.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
+> Code: 01 00 00 00 4c 89 e7 e8 7d f7 0c 00 49 89 c5 e9 69 ff ff ff e8 60
+> 20 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 4f 20 d1 ff <0f> 0b e9
+> 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 36
+> RSP: 0018:ffffc90002bf7c98 EFLAGS: 00010216
+> RAX: 00000000000000ec RBX: 1ffff9200057ef9f RCX: ffffc9000ac63000
+> RDX: 0000000000040000 RSI: ffffffff81a6a621 RDI: 0000000000000003
+> RBP: 0000000000102cc0 R08: 000000007fffffff R09: 00000000ffffffff
+> R10: ffffffff81a6a5de R11: 0000000000000000 R12: 00000000ffff9aaa
+> R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
+> FS:  00007f05f2573700(0000) GS:ffff8880b9d00000(0000)
+> knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b2f424000 CR3: 0000000027d2c000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  kvmalloc include/linux/slab.h:741 [inline]
+>  map_lookup_elem kernel/bpf/syscall.c:1090 [inline]
+>  __sys_bpf+0x3a5b/0x5f00 kernel/bpf/syscall.c:4603
+>  __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
+>  __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4720
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> The type of 'value_size' is u32, its value may exceed INT_MAX.
+>
+> Reported-by: syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com
+> Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
+> ---
+>  kernel/bpf/syscall.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 1033ee8..f5bc380 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1094,6 +1094,10 @@ static int map_lookup_elem(union bpf_attr *attr)
+>         }
+>
+>         value_size = bpf_map_value_size(map);
+> +       if (value_size > INT_MAX) {
+> +               err = -EINVAL;
 
-And I just now got both the expand-queues and shrink-queues code at
-least pretending to work, and it will be picked up in the next -next.
-I was probably too late for today's edition, but there is always tomorrow.
+-E2BIG makes a bit more sense in this scenario?
 
-There are probably still bugs, but it is passing much nastier tests than
-a couple of weeks ago, so here is hoping...
-
-							Thanx, Paul
+> +               goto err_put;
+> +       }
+>
+>         err = -ENOMEM;
+>         value = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
+> --
+> 1.8.3.1
+>
