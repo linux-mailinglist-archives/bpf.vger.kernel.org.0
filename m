@@ -2,151 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3D64629B9
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 02:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AF74629EB
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 02:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhK3Bdb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 20:33:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
+        id S236824AbhK3Bq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 20:46:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236353AbhK3Bdb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 20:33:31 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131F3C061574
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 17:30:13 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id x30-20020a637c1e000000b00324ab629735so9389283pgc.17
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 17:30:13 -0800 (PST)
+        with ESMTP id S236822AbhK3Bq1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 20:46:27 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2ABC061714;
+        Mon, 29 Nov 2021 17:43:09 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id h24so14113488pjq.2;
+        Mon, 29 Nov 2021 17:43:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=tIo4NQB2J6g4Hf4krhnrfGGhfKr0Xa56iI/vDDUeAes=;
-        b=DNaqCXZP8B8MXG4PEHZeXsBTvQeMrY9vaWvfCSkSgjTm8GBdqdwRWiZvjq6TMMJh8A
-         3qaxICZLOiu+g50Bbl3TEw7ucGyi41prne1qNGUfx75lm3j2F77sXmharSLyTJEcwtau
-         a53YEU4roq+UDyi4lVphLFZhvNQIfUF1SRJhjTuFUXQlVm+lEj7Osvy3OHNqZeuoIwjl
-         wFMnn8LieyN+q3DTC3dSInWgm7fJ8aVFgU6rPsEF5iOxNKQuqcMbBJHsF4cpPEpA2ofd
-         dntYBDGpcEOZ+Idt97rgMnixTxG7cwG/fRqiArsi/YDeViWBAY7D9451L8H6JWAJOQRh
-         5S+A==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JY7fwQCwIaLfvZtlRwfTmDedzscAuvWuqTYb3KzttUg=;
+        b=mH0iAA8d4E8HBrmhuCRlvw2GL8ByI1FrcQflgOVinjg69pqvwkhifJHFW9rJundWbd
+         E6PlUHkS2sQViTk1As18ReK+Y5flLu7jUWfZRliBUF4wZV9s7m6tirR3rEuPWEtoDDb2
+         HNSXwuchL/ZGoLNpKS6SFvxakonv3yIkfttMiiDpaBhGGPYsgWIR/m52UwYoqvcEy08l
+         nIaNPF01Nn0vfRS6sD1DmUUA1OLcuQsZlaXppe5NrZnk4BWgr5xUi1KfBwlxLCG7nb/I
+         DazJ8YVWT8YpJFsuegXr34AtTVjbcYaw0QYVgaC/28Dh3c/2jChM2lbWC7PTTQdFX/7O
+         MLuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=tIo4NQB2J6g4Hf4krhnrfGGhfKr0Xa56iI/vDDUeAes=;
-        b=jOlNR/0lqihKn7hcU018gOTfrkpzFb66LRh+XhY3NzgSNeRJpnQfAEOy8iMOo45t2e
-         uU6Hmc5rcCfTtL8845OGr2zfCFajQDXNsI2WNgruAqJ2jz49wiPR0ycqH7/NgT7UqNgL
-         8cJJGyJg39vkXivaORQndkK7MN1i0R54YoJcPWOkxEKP4wdF3HjJElRA3/hHpnNVXEYb
-         GlmJJe12pdBmPbIxTLVe/mCzkPMdwiTGxZ+hGVvEBE8eAp2Xxzzsady+T9uUFZ+xk5sB
-         9mt/+puUbFVXzsJdnMVbzFpz8/DlfDWSXNmlPX+koAxMnzSWxdEvIY9KeIvl0E9FgZ/5
-         Z1Kg==
-X-Gm-Message-State: AOAM532q6J09xkIVO7EdQrEXHXXHgFnGbGsiyDiyY9IyrBNX/2/xuLKy
-        3UOdtCPy1V1F5gvLE/8d58rkVzCykr4=
-X-Google-Smtp-Source: ABdhPJwIvkaB2Fty1cJ8q967Bd8/XFgGEHDortfiP1AFvG3gyebbNY0V8QHabRnXlgri2k4Er97XHp0GDRg=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:bbf5:5c09:9dfe:483c])
- (user=haoluo job=sendgmr) by 2002:a17:902:d4cf:b0:141:d36c:78f6 with SMTP id
- o15-20020a170902d4cf00b00141d36c78f6mr64989837plg.56.1638235812579; Mon, 29
- Nov 2021 17:30:12 -0800 (PST)
-Date:   Mon, 29 Nov 2021 17:29:48 -0800
-In-Reply-To: <20211130012948.380602-1-haoluo@google.com>
-Message-Id: <20211130012948.380602-10-haoluo@google.com>
-Mime-Version: 1.0
-References: <20211130012948.380602-1-haoluo@google.com>
-X-Mailer: git-send-email 2.34.0.384.gca35af8252-goog
-Subject: [RFC PATCH bpf-next v2 9/9] bpf/selftests: Test PTR_TO_RDONLY_MEM
-From:   Hao Luo <haoluo@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        bpf@vger.kernel.org, Hao Luo <haoluo@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JY7fwQCwIaLfvZtlRwfTmDedzscAuvWuqTYb3KzttUg=;
+        b=bsP+4+LSodng8lfbm7U00sp+B9PhDmLbTrInA93ud4uHcpujAlfgxO9g81dr9JhKjC
+         gVj4eyWBVvWAaSU9ezqw3b2ScanNkAXv+UhQk1rEy1eJHKAZqScsLV14znNfDLIcwTJx
+         8usI0tgITKD4CVSORBxZoCAKpwMURkbaQSKKHe4ERF1U33AW97DbxqOweerAonTVPi1a
+         yLFm1+pagfBeUwRrafnBH2hgKHJrFmkFLlmuO0NtxyZxfH1o5zoZxeO5KaDgGGxrl4xb
+         n6m4z6HxFfyUhY0MQMTSv2dnDDwTn/lYos/kWiBCAwsY5GVT5KyHc2eLB4b8LQI51L5I
+         wvYw==
+X-Gm-Message-State: AOAM5335WLny58ERxgpB4bAHJ2MlCz/fWFMx855gG1QiaULztiMeoVoL
+        hJdYwASDIDsk/xsrXbLM000jXMseHQpxK+Op97s=
+X-Google-Smtp-Source: ABdhPJxQh1DY/xLlyMot6KckjYcWPrvNOctDL3HP93M8an6dWdCJ1ioZqcv63qE4ZB2jiDnn24AEUFIZ1oCU5ApBTM4=
+X-Received: by 2002:a17:903:2306:b0:141:e52e:457d with SMTP id
+ d6-20020a170903230600b00141e52e457dmr64272456plh.3.1638236589015; Mon, 29 Nov
+ 2021 17:43:09 -0800 (PST)
+MIME-Version: 1.0
+References: <20211123205607.452497-1-zenczykowski@gmail.com>
+In-Reply-To: <20211123205607.452497-1-zenczykowski@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 29 Nov 2021 17:42:57 -0800
+Message-ID: <CAADnVQJG8_vHfHZJkN9MkZvK_70s8mQ2KyUVHWY6-tndLDfqdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: allow readonly direct path access for skfilter
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test verifies that a ksym of non-struct can not be directly
-updated.
+On Tue, Nov 23, 2021 at 12:56 PM Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
+>
+> From: Maciej =C5=BBenczykowski <maze@google.com>
+>
+> skfilter bpf programs can read the packet directly via llvm.bpf.load.byte=
+/
+> /half/word which are 8/16/32-bit primitive bpf instructions and thus
+> behave basically as well as DPA reads.  But there is no 64-bit equivalent=
+,
+> due to the support for the equivalent 64-bit bpf opcode never having been
+> added (unclear why, there was a patch posted).
+> DPA uses a slightly different mechanism, so doesn't suffer this limitatio=
+n.
+>
+> Using 64-bit reads, 128-bit ipv6 address comparisons can be done in just
+> 2 steps, instead of the 4 steps needed with llvm.bpf.word.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- .../selftests/bpf/prog_tests/ksyms_btf.c      | 14 +++++++++
- .../bpf/progs/test_ksyms_btf_write_check.c    | 29 +++++++++++++++++++
- 2 files changed, 43 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
+llvm.bpf.word is a pseudo instruction.
+It's actually a function call for classic bpf.
+See bpf_gen_ld_abs.
+We used to have ugly special cases for them in JITs,
+but then got rid of it.
+Don't use them if performance is a requirement.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-index 79f6bd1e50d6..f6933b06daf8 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-@@ -8,6 +8,7 @@
- #include "test_ksyms_btf_null_check.skel.h"
- #include "test_ksyms_weak.skel.h"
- #include "test_ksyms_weak.lskel.h"
-+#include "test_ksyms_btf_write_check.skel.h"
- 
- static int duration;
- 
-@@ -137,6 +138,16 @@ static void test_weak_syms_lskel(void)
- 	test_ksyms_weak_lskel__destroy(skel);
- }
- 
-+static void test_write_check(void)
-+{
-+	struct test_ksyms_btf_write_check *skel;
-+
-+	skel = test_ksyms_btf_write_check__open_and_load();
-+	ASSERT_ERR_PTR(skel, "unexpected load of a prog writing to ksym memory\n");
-+
-+	test_ksyms_btf_write_check__destroy(skel);
-+}
-+
- void test_ksyms_btf(void)
- {
- 	int percpu_datasec;
-@@ -167,4 +178,7 @@ void test_ksyms_btf(void)
- 
- 	if (test__start_subtest("weak_ksyms_lskel"))
- 		test_weak_syms_lskel();
-+
-+	if (test__start_subtest("write_check"))
-+		test_write_check();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
-new file mode 100644
-index 000000000000..2180c41cd890
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google */
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+
-+extern const int bpf_prog_active __ksym; /* int type global var. */
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	int *active;
-+	__u32 cpu;
-+
-+	cpu = bpf_get_smp_processor_id();
-+	active = (int *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
-+	if (active) {
-+		/* Kernel memory obtained from bpf_{per,this}_cpu_ptr
-+		 * is read-only, should _not_ pass verification.
-+		 */
-+		/* WRITE_ONCE */
-+		*(volatile int *)active = -1;
-+	}
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.0.384.gca35af8252-goog
+> This should hopefully allow simpler (less instructions, and possibly less
+> logic and maybe even less jumps) programs.  Less jumps may also mean vast=
+ly
+> faster bpf verifier times (it can be exponential in the number of jumps..=
+.).
+>
+> This can be particularly important when trying to do something like scan
+> a netlink message for a pattern (2000 iteration loop) to decide whether
+> a message should be dropped, or delivered to userspace (thus waking it up=
+).
+>
+> I'm requiring CAP_NET_ADMIN because I'm not sure of the security
+> implications...
+>
+> Tested: only build tested
+> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+> ---
+>  kernel/bpf/verifier.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 331b170d9fcc..0c2e25fb9844 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3258,6 +3258,11 @@ static bool may_access_direct_pkt_data(struct bpf_=
+verifier_env *env,
+>         enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
+>
+>         switch (prog_type) {
+> +       case BPF_PROG_TYPE_SOCKET_FILTER:
+> +               if (meta || !capable(CAP_NET_ADMIN))
+> +                       return false;
 
+probably needs CAP_BPF too.
+
+Other than that I think it's fine.
