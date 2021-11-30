@@ -2,117 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D82446396D
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 16:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD35463A89
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 16:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238817AbhK3PMN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 10:12:13 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:32900 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244928AbhK3PKd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 10:10:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 426B1B81A1D;
-        Tue, 30 Nov 2021 15:07:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68A3AC53FC7;
-        Tue, 30 Nov 2021 15:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638284831;
-        bh=jFQ+6eYpfo8AQTphnbl6MyyOotoZuBDGCJKxTEg5dTg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=okOaZXwVQha6VENLbtkW/K3UpmSv4x49LI137OshO7/GQ3udI34yAew/t1F4aeWjp
-         9RRQJdhcJifvYVBtH1uv9s90R9dXC+jkftp+VyKrmGOwTZU1drMlxR78YGJ4tUsNTb
-         ZeHxC/J1Ylt1+gxhsRnzopmxV2PFCL0Mi6ejlLDDN9agiengKlehxRxCy8hak+mcD+
-         XhyTEYILzqgFd9PW/SlVvRy6r+/OiSN8cbVsLxju8oy1ZuZ5WtvL/qEwyU58CrvAEg
-         mq/1Ni4N4qOnq/1dV/zSGy7z/TRfGgF4iADeKw5XsZJKXHsXoz5d70RsGtE3tfVb+j
-         UOXFLXcmuzxxw==
-Date:   Tue, 30 Nov 2021 07:07:09 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Petr Machata <petrm@nvidia.com>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdl?= =?UTF-8?B?bnNlbg==?= 
-        <toke@redhat.com>,
-        "Alexander Lobakin" <alexandr.lobakin@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Shay Agroskin" <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        "David Arinzon" <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        "Saeed Bishara" <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "Claudiu Manoil" <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        "Martin Habets" <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        "Vladimir Oltean" <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, <netdev@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>, <nikolay@nvidia.com>
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-Message-ID: <20211130070709.0ddf19f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87o861q2m4.fsf@nvidia.com>
-References: <20211123163955.154512-22-alexandr.lobakin@intel.com>
-        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
-        <87bl28bga6.fsf@toke.dk>
-        <20211125170708.127323-1-alexandr.lobakin@intel.com>
-        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211125204007.133064-1-alexandr.lobakin@intel.com>
-        <87sfvj9k13.fsf@toke.dk>
-        <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87ee72ah56.fsf@toke.dk>
-        <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YaPCbaMVaVlxXcHC@shredder>
-        <20211129064755.539099c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <874k7vq7tl.fsf@nvidia.com>
-        <20211129080502.53f7d316@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87sfveq48z.fsf@nvidia.com>
-        <20211129091713.2dc8462f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87o861q2m4.fsf@nvidia.com>
+        id S239651AbhK3Pu6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 10:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237639AbhK3Puy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 10:50:54 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD748C061574;
+        Tue, 30 Nov 2021 07:47:30 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id 193so27223356qkh.10;
+        Tue, 30 Nov 2021 07:47:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0E8rI2pldC/kJRYfFj5pOe4f4oCd/4elC+07mJ7cezg=;
+        b=M3TECrBfeRNcmU2wzwJW8xakJwOsl96F7/wzhKVZtGVC4XSClhkZtPmX4O/ArG22Sh
+         jjA+g1x4pyJ/4pviilYQPG+KhhSz3F4DZuFRxnjDPTFhjqCEG4DtQvvJ8KQb64m6allX
+         yyKpYEUobSoiHyXxASAEYQUGG6RRUph0Z3VWpZpdz7lmDRWto1u3+zXWvSbLxkDosk3G
+         7B4KO4BxCe1+OrGLaCgzq2a913mzBdZ+eBV/20lQAFekOCsIcFyVxoB2ZV2YfjeK8rzK
+         SXg7rom0+dWxy0uNUSNNlxxK6f6+bXyctj/awauwEt7A4J/lXSd6tDQSaieEQdgMmo+8
+         LQbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0E8rI2pldC/kJRYfFj5pOe4f4oCd/4elC+07mJ7cezg=;
+        b=aEDwJF6lOKVALR1v3UyQRQHeogd81xev40Ew9jIUQetifgumoPkmSjjzUdbBwJT8gh
+         Aox3c91O/AsZOkas/dnjUVoMHEKtOpCjn/UUfA6phKawDM/kKaQ1B9Jr5QkDaIf6nDCH
+         PfW8pzA2oVoG51jWAqeerte6/2x2L78t2d5Ru4qh5G3cUhWIae1/IOJNKhGXebFubQZ/
+         r7H/QT/CWsGNkIbnt2nj1GG+HkiVc2hpTBie2sgjFp2N7MrxiHQZ2+CLyrYRvWHXwDZ0
+         hkBJf7DXD5f00W1s4GzRDqMTV6Zdg1unpDcr5IvLN92/hkPlP0uQwsGrZWki6uEYxrjz
+         89cQ==
+X-Gm-Message-State: AOAM533lBt32BQn2kBPAMjB0bGD6Ra/DUZEVGI4su675A82UvO8XfFFU
+        D13u9KzrvtZDYnMof721w+pUpy489osVr2bX3rA=
+X-Google-Smtp-Source: ABdhPJztrZJR8wzz1uvKDh9tgCXsCwcvYHaAV5LAj9Tyfjkwz7VlVZjHRc1l9DQlQzaVs/JoaW2gQFPu+qw5proo6JA=
+X-Received: by 2002:a05:620a:134a:: with SMTP id c10mr46334061qkl.207.1638287249916;
+ Tue, 30 Nov 2021 07:47:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211120112738.45980-1-laoar.shao@gmail.com> <20211120112738.45980-8-laoar.shao@gmail.com>
+ <yt9d35nf1d84.fsf@linux.ibm.com> <20211129123043.5cfd687a@gandalf.local.home>
+ <CALOAHbCVJcPdYq2j_VvhHBE-xLBnizRRx2oBu-KNgOr5jMf6RQ@mail.gmail.com> <20211130092333.77408a81@gandalf.local.home>
+In-Reply-To: <20211130092333.77408a81@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 30 Nov 2021 23:46:54 +0800
+Message-ID: <CALOAHbDvxpjW9eD2_FeKMJzXdbEkWJykbdcjtk1Et_+=ybvgVw@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] tools/testing/selftests/bpf: replace open-coded 16
+ with TASK_COMM_LEN
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Tom Zanussi <zanussi@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 30 Nov 2021 12:55:47 +0100 Petr Machata wrote:
-> I still think it would be better to report HW_STATS explicitly as well
-> though. One reason is simply convenience. The other is that OK, now we
-> have SW stats, and XDP stats, and total stats, and I (as a client) don't
-> necessarily know how it all fits together. But the contract for HW_STATS
-> is very clear.
+On Tue, Nov 30, 2021 at 10:23 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 30 Nov 2021 11:03:48 +0800
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > Many thanks for the quick fix!
+> > It seems this fix should be ahead of patch #7.
+> > I will send v3 which contains your fix.
+>
+> Don't bother. I'm actually going to send this to Linus as a bug fix.
+>
 
-Would be good to check with Jiri, my recollection is that this argument
-was brought up when CPU_HIT stats were added. I don't recall the
-reasoning.
+Great!  Thanks for the work.
 
-<insert xkcd standards>
+-- 
+Thanks
+Yafang
