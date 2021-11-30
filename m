@@ -2,78 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46873463417
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 13:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D13D4635EE
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 14:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbhK3MXb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 07:23:31 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:55196 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237270AbhK3MXa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 07:23:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61079B818AB;
-        Tue, 30 Nov 2021 12:20:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1853EC53FD3;
-        Tue, 30 Nov 2021 12:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638274809;
-        bh=KKGscqz2GT9cYg5Qa0tAq4MUqlpoum9QwbrX2J9dTJU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Egm7xbgQ6IrhXaKkvxQpUHk5vWck/kVZhwWLcJu81vKf+gWejGxTknlMJRXt8K/eP
-         h3gZjtpBRlE5Qr5v7+e25OYYxmMeRzMwegkVM31XRg/uDwvJbxHx0CqzI0C6OhYkzp
-         YEztBbcESdQWExLiSqSEvaPp7mtuxglgJOgB8aNLdo6SCnXox490VQ05JK+dmni1xk
-         y/0wHMvPCcPf226znbwjrfmiUiRVVPl4MJ9r+9b9FK7CqtU5RED4GRrY9vKXN/zHID
-         s+GDKD5rbVnsXuW+VQdOh+GZpkd4bQNkLLStqWFzp3bweSuDKkMB1MZIacU99uwHaN
-         p7/NZUeFrcJgw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F292960A50;
-        Tue, 30 Nov 2021 12:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S241755AbhK3OAx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 09:00:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhK3OAx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 09:00:53 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2427C061748
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 05:57:32 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id x32so52807505ybi.12
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 05:57:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i8mC6OqW0NDo60h/ey+ips1XwWpcV67dhd9iu/BhDz0=;
+        b=WRlEVbKlNULbDO6M6gbl896ndTKr+un9IDkTKhxYx3kDhMjanE6bsjMsPGAzq97Hs9
+         crYTXwAvhcyMq0NWjblhRU+XgfOOV8KfhaRjJK5IdAOTnu2vDmQtmO7FOn8mSBDsKa4m
+         YW5rnK8qkBbukBswLIUOA56UjHBAV5lJj+siep6KiR6wcCMAEFsdlxJxGMWoJ0cU2ZeO
+         EpGx1VdKsIXJbD+GHuwD4rtflOshZHkR4BLyyawq8g2S9UDZi/AWRB+14W+nxsqaUXTR
+         /EoGaAHK0pdgbtQ6FUYKHkvKvtWBroMuvCqWmhqPx5vLQF26e030cQ3Su0fjv+eMkVZZ
+         jovQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i8mC6OqW0NDo60h/ey+ips1XwWpcV67dhd9iu/BhDz0=;
+        b=r+NJUsnAZFlOc9gSFJbqKQ6EWk1BWNTUk/XxAvtoyuClSa1FYo8ieGauaEHgTP/AqR
+         ErRGtYQRQN3kVUhcgWrMsLJPRpD4BuPYHHYVVzOZi8AhyP8UzH4nZphel/DGl9hJAjB5
+         vThqbZ4B0YXJl52NKrejqg3AIUQB0/5u3DcpFl6Htkjb+b4x/EC/r5IFsKgZkiC0WlGu
+         HpY9eLdeNxB+SCr/HXKVBcVI/DzDnUjUy44LkefKiq0yfkR3Q9uYwy75pubaOfOeByvr
+         7vqiD6P/Wsd3aD0kzj1O96Drjoe2QyHOT5Q87EWQeAffIwZ88G9F1PKdqqjxzX+akBFb
+         uSMg==
+X-Gm-Message-State: AOAM531tFnI2EGcP+BzddJn2bbfGjJizITKQkn74XmcqFG+MNrVaqJLT
+        MAWciLFZQKxOyDpt/VzeqL06gRlR/PPD6kaiYeXaIlJW+VsusQ==
+X-Google-Smtp-Source: ABdhPJy/BtczKyJzappms/4cO8+1NIBYpHuseK0gvuukRHbl9fVIpSbl33dqQ/eIMS4vDHBMIe0jGEVN1VclOswS83I=
+X-Received: by 2002:a25:94d:: with SMTP id u13mr14311330ybm.723.1638280651971;
+ Tue, 30 Nov 2021 05:57:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/1] ice: xsk: clear status_error0 for each allocated desc
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163827480898.28928.8800569496106543318.git-patchwork-notify@kernel.org>
-Date:   Tue, 30 Nov 2021 12:20:08 +0000
-References: <20211129231746.2767739-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20211129231746.2767739-1-anthony.l.nguyen@intel.com>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, maciej.fijalkowski@intel.com,
-        netdev@vger.kernel.org, magnus.karlsson@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, alexandr.lobakin@intel.com
+References: <CAKXUXMyEqSsA1Xez+6nbdQTqbKJZFUVGtzG6Xb2aDDcTHCe8sg@mail.gmail.com>
+In-Reply-To: <CAKXUXMyEqSsA1Xez+6nbdQTqbKJZFUVGtzG6Xb2aDDcTHCe8sg@mail.gmail.com>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Tue, 30 Nov 2021 14:57:21 +0100
+Message-ID: <CAM1=_QQBfO_RQuYFrhdvZeM+KbY+5w=YVHTfb-zZQsN4fiBMcw@mail.gmail.com>
+Subject: Re: Reference to non-existing symbol WAR_R10000 in arch/mips/net/bpf_jit_comp.h
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi Lukas,
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+On Mon, Nov 29, 2021 at 7:39 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Dear Johan,
+>
+> In arch/mips/net/bpf_jit_comp.h and introduced with commit commit
+> 72570224bb8f ("mips, bpf: Add JIT workarounds for CPU errata"), there
+> is an ifdef that refers to a non-existing symbol WAR_R10000. Did you
+> intend to refer to WAR_R10000_LLSC instead?
 
-On Mon, 29 Nov 2021 15:17:46 -0800 you wrote:
-> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> 
-> Fix a bug in which the receiving of packets can stop in the zero-copy
-> driver. Ice HW ignores 3 lower bits from QRX_TAIL register, which means
-> that tail is bumped only on intervals of 8. Currently with XSK RX
-> batching in place, ice_alloc_rx_bufs_zc() clears the status_error0 only
-> of the last descriptor that has been allocated/taken from the XSK buffer
-> pool. status_error0 includes DD bit that is looked upon by the
-> ice_clean_rx_irq_zc() to tell if a descriptor can be processed.
-> 
-> [...]
+You are right, that is a typo. I will prepare a patch with a fix.
 
-Here is the summary with links:
-  - [net,1/1] ice: xsk: clear status_error0 for each allocated desc
-    https://git.kernel.org/netdev/net/c/d1ec975f9fa6
+Thanks for catching!
+Johan
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> This issue was identified with the script ./scripts/checkkconfigsymbols.py.
+>
+> Best regards,
+>> Lukas
