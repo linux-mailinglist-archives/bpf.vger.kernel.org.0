@@ -2,89 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DE1463E37
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 19:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1FF463E55
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 20:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhK3S7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 13:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
+        id S234889AbhK3TFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 14:05:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239907AbhK3S7E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 13:59:04 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4B4C061574;
-        Tue, 30 Nov 2021 10:55:45 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id b13so15683982plg.2;
-        Tue, 30 Nov 2021 10:55:45 -0800 (PST)
+        with ESMTP id S234273AbhK3TFW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 14:05:22 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D80C061574
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 11:02:02 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id r130so21634228pfc.1
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 11:02:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Qv79wVTcK+nZ5LSvR3T9ntnRBhY6KehuqGBysRBPuRE=;
-        b=fNUaEzNSlII0Vfa59e+1be7oMLK8TQ7us7zeZxsLaU9dikgRXmTDdr1un4Eh3cwvuL
-         NABoPv86mfNDNV31zgWBztC5ZmiULBzdT53duK9FNI5G4JMR63bUgeiGc9E5HdK86ndo
-         zVOfiXoLajoPQSj97S8aNISyNTY6tQ0j4veaRKrQDUTsQCSTBikgoNwWo4/1JLYDnvJI
-         aPCRVuS86eY39RI0Jxny1nlohMCgeCfr/F88nOLJ4LPywgk3mLJDQikYGuv7Ul/g6cSe
-         OZf/3MVt1K33FmGUc86Mi3s2Pmru22CKasp02I56eLLmvd1vovHJKbn2Pd0TRQRnzYVS
-         o7OA==
+        bh=PxOK6KgKxlhnnXBi2Gfre4Ri99gW2e7GwwsCbng2odE=;
+        b=j+ReCkZ3MYdw7h3Tc8VG33CEGdG7UHBUFHzhSbHwDhc056S5rM2E6hlrlcxlHxHCx8
+         tUMCPQyPdZm5vpZMI0Ia76fRghc0svZmaR1qildnXh4GBUg78JbktAxDkIP4r97YMnU1
+         7ajrDYaJP8FKGgPr2/ant6rVbq6LmZghq7CsHVohwI1KaEyjPalA7yIDnNn2bLkC3fJd
+         snuUMRc+nfeMrN95OfIOxL9xcfsVJ+KIv/nZdNS5NGEAewlS3H+Bke3+0cKvW+5BZRGc
+         emsPN12jqLhWTjY0T2qH2DSRnp1FLfgHor2btqD5ZvDFvi5Zrwed7OeLtx+pQAacFlPc
+         uJRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Qv79wVTcK+nZ5LSvR3T9ntnRBhY6KehuqGBysRBPuRE=;
-        b=YP6qCgw06zkH5gAq+L6gAhS070OWlAkcv45dcm+Ufg+hxdAUs7G/HQgoioOqaeiJuo
-         esGPlvSV48B6/mvQlYQSTIrbMZZiYOCJ2E5X5mcGzk6AhY8UtjGHxOJtNHjJ98K6uPKL
-         94Bnw1XBeaFwA7T8NUwX0pGBMTegJ8/zs2mZviQYa+Gddmcxsl/d4jf4rFlgDQLN61qo
-         /4+lwRZbT+HKEvM6QqNZf0W5aVfec8Aosn5KkghxaGA4z+mVobwdanOWyXGdyFqeLyiG
-         3bDYmq3DyEnIfIE8ql/bvsyVy7dUA0aPu7PMqnA6C/E4fZOj55LdjxW+WJZ1ZuO3exhJ
-         Uigw==
-X-Gm-Message-State: AOAM531FO41M/8lUHDXfWiV2r+Jvz64/f3Mqyd6jUckFO8PikMrUCaGb
-        MoLauoPU3mZB26xrY8QVWvuBuL/Fe4uppEyo978=
-X-Google-Smtp-Source: ABdhPJyNnukIlGCEjBI/qU6SfJP5DjYZ5pJQl8SyGBTZLU+zruRWUvFKNCWKti6h2p/r8e103Xphua89ismzUHqqSuc=
-X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr972516pja.122.1638298544945;
- Tue, 30 Nov 2021 10:55:44 -0800 (PST)
+        bh=PxOK6KgKxlhnnXBi2Gfre4Ri99gW2e7GwwsCbng2odE=;
+        b=04/uxFOB0/bfvcoaQVSITGGDUp2zy7ujAMGAQCpBAstxAfHPtXwjD/tES1/Vj1e+c4
+         4wwlTuISrwjYiCfg+tUq4i/PtXtW+hfL48k4eu7rYP1vMOuITkiq/srtpfidDLLNPzRQ
+         3m5+wus949YZzKncOtx+ZnteBOYc7RyJlnbefejx/0dChnD9IR6450TkaC4r/Xr6Fu7B
+         HAsPuzz0IfX02Y3IrdX3XpszCWXkyv2JllFqMXrm9dDRWBofIWsg6xsq1uGe9CYA/YiM
+         rlvp7pHpDjZMbUp/Gv7GQzUnObtoPAi+g3Xp9MvqZJqVOOP3D0MxlvKhlYvzyomDe7ns
+         UxAQ==
+X-Gm-Message-State: AOAM530QXyVL6S0KI8M6k0+8FSFDQOhm/aVajqZkvDvm1s5UnnJxwDNs
+        Mjm2Fj6shqFcLVB1g2FJI+7yBhM2gEDOEnFBxm8=
+X-Google-Smtp-Source: ABdhPJzWC2tW+9YwZCIQ0RcIR83BPo9iYj3PUJYUTB1GmVUu+exPpl0+cOnuYDqlWnqlnbc209EQ5E3SenN/uYy/cc4=
+X-Received: by 2002:a05:6a00:1583:b0:49f:dc1c:a0fe with SMTP id
+ u3-20020a056a00158300b0049fdc1ca0femr900827pfk.46.1638298922086; Tue, 30 Nov
+ 2021 11:02:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20211119163215.971383-1-hch@lst.de>
-In-Reply-To: <20211119163215.971383-1-hch@lst.de>
+References: <20211130030622.4131246-1-joannekoong@fb.com>
+In-Reply-To: <20211130030622.4131246-1-joannekoong@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 30 Nov 2021 10:55:33 -0800
-Message-ID: <CAADnVQKymbNQw3U5YhO_f8Aecon4KXbx9HvuZz=syc1LgOCT1w@mail.gmail.com>
-Subject: Re: split up filter.rst v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+Date:   Tue, 30 Nov 2021 11:01:50 -0800
+Message-ID: <CAADnVQJ8Y64MBY2B-uLG5W_D0-Fwjp0NuL5ZE+b6qYEvLFb7rA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 0/4] Add bpf_loop helper
+To:     Joanne Koong <joannekoong@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:32 AM Christoph Hellwig <hch@lst.de> wrote:
+On Mon, Nov 29, 2021 at 7:07 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> Hi all,
+> This patchset add a new helper, bpf_loop.
 >
-> for historical reasons filter.rst not only documents the classic Berkely
-> Packet Filter, but also contains some of the most fundamental eBPF
-> documentation.  This series moves the actual eBPF documentation into newly
-> created files under Documentation/bpf/ instead.  Note that the instruction
-> set document is still a bit of a mess due to all the references to classic
-> BPF, but if this split goes through I plan to start on working to clean
-> that up as well.
+> One of the complexities of using for loops in bpf programs is that the verifier
+> needs to ensure that in every possibility of the loop logic, the loop will always
+> terminate. As such, there is a limit on how many iterations the loop can do.
 >
-> Changes since v1:
->  - rebased to the latest bpf-next
->  - just refernence BPF instead of eBPF in most code
->  - split the patches further up
->  - better link the BPF documentation from filter.rst
+> The bpf_loop helper moves the loop logic into the kernel and can thereby
+> guarantee that the loop will always terminate. The bpf_loop helper simplifies
+> a lot of the complexity the verifier needs to check, as well as removes the
+> constraint on the number of loops able to be run.
+>
+> From the test results, we see that using bpf_loop in place
+> of the traditional for loop led to a decrease in verification time
+> and number of bpf instructions by ~99%. The benchmark results show
+> that as the number of iterations increases, the overhead per iteration
+> decreases.
+>
+> The high-level overview of the patches -
+> Patch 1 - kernel-side + API changes for adding bpf_loop
+> Patch 2 - tests
+> Patch 3 - use bpf_loop in strobemeta + pyperf600 and measure verifier performance
+> Patch 4 - benchmark for throughput + latency of bpf_loop call
+>
+> v3 -> v4:
+> ~ Address nits: use usleep for triggering bpf programs, fix copyright style
 
 Applied. Thanks
