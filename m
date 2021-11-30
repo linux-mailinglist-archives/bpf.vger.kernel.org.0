@@ -2,147 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0777463AB8
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 16:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76700463B48
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 17:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242368AbhK3QAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 11:00:09 -0500
-Received: from mga07.intel.com ([134.134.136.100]:35902 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243120AbhK3QAA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 11:00:00 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="299636567"
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="299636567"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2021 07:56:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="540454492"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2021 07:56:30 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AUFuRh0006481;
-        Tue, 30 Nov 2021 15:56:27 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP stats
-Date:   Tue, 30 Nov 2021 16:56:12 +0100
-Message-Id: <20211130155612.594688-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211123163955.154512-1-alexandr.lobakin@intel.com>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+        id S243998AbhK3QNv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 11:13:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243846AbhK3QMP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 11:12:15 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D68FC06175B
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 08:08:34 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id t5so89302444edd.0
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 08:08:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NV4WFdl9vBrhP2G53aXnoMRhF2dXodBjxt5U+Ip4rB8=;
+        b=3xXPyB7Aiqx8xLJUoSqpNUON61nAzQudWtkcNRdkzXXAkALyBAGFebMzRqkXDIcjZV
+         uXv/m6Ky/8SGSgypXscEVH2EvLeOazslUCWDoJcUcjW7L4RrV5k8ItPGUgHwRbHSyi53
+         09vLub7QE+lfu8d83rp77Jh+P+sY7baLryo+WxDOtgBVgb6QW7jJYCvfrY2HW4zLt6X2
+         lsvxX6G5JMkWwmDrXVSa5+Hcs0szuWiTf1llLI6z9sKrUt/26j3IViKxI+ltDaCaMCsO
+         fGa37Ng7yD34YgBj3faMz1nQ4hh5uvmBWNy7DEWsXmq2mw4X2ag40bsPBhmEsZEBXCZy
+         X8fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NV4WFdl9vBrhP2G53aXnoMRhF2dXodBjxt5U+Ip4rB8=;
+        b=l1aAoqkuBbYDwLetHwP713KQ22+t5ZdWl2b1MDydNvNmDmGl3jcmly9F62j/seuD/z
+         8R62Cykd+ZZaeTIfopiUNasugzeZY6XY3/kpkUpvlwZ0bm0BkhkY3k2qvLzvkVXjNM1m
+         FUuepHZ+evh2FHHU+wbWT8BqZHUuuzdOiznyGgM5SEO8ex0cdFxqNqSTiewOREP/FLmP
+         dOk7cFA5zPjJ57HSjbMfA5Nk0XtrTRr2giceqkjm5RBuAbwlpO36RSa0ZKK9nv67wf/H
+         l+r1PNBcM9g8BE7hovc4KbuhqA+tatS1BHbtB3fohSlRuV/6TzN/1RRTMjfR1VWVBbEe
+         yYQQ==
+X-Gm-Message-State: AOAM532j+EWFsXcKLs31lWG6zsC7cy7YOGY5n+i7OSFbN87k4321potT
+        2vhF5/29F8Pf/afjPyIXJbYPAw==
+X-Google-Smtp-Source: ABdhPJxwwpemHUMHlxQMBA2L2tu2lgif0I249zRDyuDD08yGDvZYidCZDnnksXYGSN6B9KPfkl4fEQ==
+X-Received: by 2002:aa7:db8f:: with SMTP id u15mr84418812edt.47.1638288513259;
+        Tue, 30 Nov 2021 08:08:33 -0800 (PST)
+Received: from anpc2.lan ([62.119.107.74])
+        by smtp.gmail.com with ESMTPSA id sa3sm9301336ejc.113.2021.11.30.08.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Nov 2021 08:08:32 -0800 (PST)
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        paulburton@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        tsbogend@alpha.franken.de, bpf@vger.kernel.org,
+        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH bpf] mips, bpf: Fix reference to non-existing Kconfig symbol
+Date:   Tue, 30 Nov 2021 17:08:24 +0100
+Message-Id: <20211130160824.3781635-1-johan.almbladh@anyfinetworks.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexander Lobakin <alexandr.lobakin@intel.com>
-Date: Tue, 23 Nov 2021 17:39:29 +0100
+The Kconfig symbol for R10000 ll/sc errata workaround in the MIPS JIT was
+misspelled, causing the workaround to not take effect when enabled.
 
-Ok, open questions:
+Fixes: 72570224bb8f ("mips, bpf: Add JIT workarounds for CPU errata")
+Reported-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+---
+ arch/mips/net/bpf_jit_comp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1. Channels vs queues vs global.
+diff --git a/arch/mips/net/bpf_jit_comp.h b/arch/mips/net/bpf_jit_comp.h
+index 6f3a7b07294b..a37fe20818eb 100644
+--- a/arch/mips/net/bpf_jit_comp.h
++++ b/arch/mips/net/bpf_jit_comp.h
+@@ -98,7 +98,7 @@ do {								\
+ #define emit(...) __emit(__VA_ARGS__)
+ 
+ /* Workaround for R10000 ll/sc errata */
+-#ifdef CONFIG_WAR_R10000
++#ifdef CONFIG_WAR_R10000_LLSC
+ #define LLSC_beqz	beqzl
+ #else
+ #define LLSC_beqz	beqz
+-- 
+2.30.2
 
-Jakub: no per-channel.
-David (Ahern): it's worth it to separate as Rx/Tx.
-Toke is fine with globals at the end I think?
-
-My point was that for most of the systems we have 1:1 Rx:Tx
-(usually num_online_cpus()), so asking drivers separately for
-the number of RQs and then SQs would end up asking for the same
-number twice.
-But the main reason TBH was that most of the drivers store stats
-on a per-channel basis and I didn't want them to regress in
-functionality. I'm fine with reporting only netdev-wide if
-everyone are.
-
-In case if we keep per-channel: report per-channel only by request
-and cumulative globals by default to not flood the output?
-
-2. Count all errors as "drops" vs separately.
-
-Daniel: account everything as drops, plus errors should be
-reported as exceptions for tracing sub.
-Jesper: we shouldn't mix drops and errors.
-
-My point: we shouldn't, that's why there are patches for 2 drivers
-to give errors a separate counter.
-I provided an option either to report all errors together ('errors'
-in stats structure) or to provide individual counters for each of
-them (sonamed ctrs), but personally prefer detailed errors. However,
-they might "go detailed" under trace_xdp_exception() only, sound
-fine (OTOH in RTNL stats we have both "general" errors and detailed
-error counters).
-
-3. XDP and XSK ctrs separately or not.
-
-My PoV is that those are two quite different worlds.
-However, stats for actions on XSK really make a little sense since
-99% of time we have xskmap redirect. So I think it'd be fine to just
-expand stats structure with xsk_{rx,tx}_{packets,bytes} and count
-the rest (actions, errors) together with XDP.
-
-
-Rest:
- - don't create a separate `ip` command and report under `-s`;
- - save some RTNL skb space by skipping zeroed counters.
-
-Also, regarding that I count all on the stack and then add to the
-storage once in a polling cycle -- most drivers don't do that and
-just increment the values in the storage directly, but this can be
-less performant for frequently updated stats (or it's just my
-embedded past).
-Re u64 vs u64_stats_t -- the latter is more universal and
-architecture-friendly, the former is used directly in most of the
-drivers primarily because those drivers and the corresponding HW
-are being run on 64-bit systems in the vast majority of cases, and
-Ethtools stats themselves are not so critical to guard them with
-anti-tearing. Anyways, local64_t is cheap on ARM64/x86_64 I guess?
-
-Thanks,
-Al
