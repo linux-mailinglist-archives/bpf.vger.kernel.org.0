@@ -2,104 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D59B46436A
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 00:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3534A46439C
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 00:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241025AbhK3Xgf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 18:36:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41294 "EHLO
+        id S1345370AbhK3Xxf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 18:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240948AbhK3Xgf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 18:36:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E636C061574;
-        Tue, 30 Nov 2021 15:33:15 -0800 (PST)
+        with ESMTP id S230058AbhK3Xxc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 18:53:32 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC129C061574
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 15:50:12 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C626EB81DA8;
-        Tue, 30 Nov 2021 23:33:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73429C53FC7;
-        Tue, 30 Nov 2021 23:33:11 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E9D6CCE1D50
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 23:50:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1AE05C53FCB;
+        Tue, 30 Nov 2021 23:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638315192;
-        bh=o66XONlC1x/mhPbq0QtOTpAuom5KiJgE2R06gIbJ6u0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=InkOuhknGOxd8N5xl77GeDgAOnq+d/9pm5MdtGHWcXiD9sTnJVSC+xc4sEo3FJqoU
-         SyZx5MODcD6z7+PZw9QHimAh4jmTn7gyxrfNXZIcj37ch24ZM1h8jGTNC3FC5lnAXH
-         0F8nxyx+5p+7qYuwiB9PYTBuKi/MLq6gwYZ8zpDw0JVz1PN/gd6hDoDpydRQWDj55g
-         0o0KQQMPIRKqE5l8ybVeJ05iZ6or3HPiOHmsG3okEVrXRO6t8VEQ7/UWk2bNlRJKUw
-         c/YziQvI9SK7U1XmIa5haiobFs7H2BRYswgwTokBF+dDzKe9lkNtm3Jde2TIHgzsVg
-         zHwMa+ExPfWGg==
-Received: by mail-yb1-f172.google.com with SMTP id y68so57669987ybe.1;
-        Tue, 30 Nov 2021 15:33:11 -0800 (PST)
-X-Gm-Message-State: AOAM532gpiuM+CJouURZrwPageq/vXVEPPfzAFkWWr6YfYj4ALKW4Ezj
-        n+Ne9SBlpNlJEQpmFjO2PNcQ8k8oCflJo3C+CgU=
-X-Google-Smtp-Source: ABdhPJyjfnEFhglo0DbcwGwTognFvP2jCytpZFHG6zbtK0Q4Pbjy4fnci8JRQMgx7o6CZV/l6pxSis0dP8fUB6XZ4rc=
-X-Received: by 2002:a25:3bc3:: with SMTP id i186mr2912182yba.282.1638315190634;
- Tue, 30 Nov 2021 15:33:10 -0800 (PST)
+        s=k20201202; t=1638316209;
+        bh=yJoS2p9UnRByrr2pMgjELg9RQEx/iQrLh4J59KvcaiM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=UnL11+/bJ7PnMCDg0Anyi9sQaLFGhJARhnL04vJvVgLp9msci+fDygUWnTdILqxpR
+         V3Oajc6FwvGSp4GoDXiKeXkW2eUFJHneAv4EtJZznm1o2EShdGeFsQpCJdWvQkeRld
+         kCw8APC+gPaHeDwIZm/g2Hh3wddVGciT7dBaLCtIxSOnomlLDUArd12+H2xf2TWdT2
+         TEFHfLlN0ffCgN3wjdmqJ4LkvTSA1z0Ks14/s/vr9t6z7T/ezlELHAmSiAxnRiPbl0
+         BNN2cvIrJQ/kcOeMGPoS5efNr7B29BbBB19/r6PbcuOiPNOCgeKCeAdI7CWTGxgSxi
+         h69REXTrJTuNA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DAB3D60A50;
+        Tue, 30 Nov 2021 23:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211126204108.11530-1-xiyou.wangcong@gmail.com>
- <CAPhsuW4zR5Yuwuywd71fdfP1YXX5cw6uNmhqULHy8BhfcbEAAQ@mail.gmail.com> <YaU9Mdv+7kEa4JOJ@unknown>
-In-Reply-To: <YaU9Mdv+7kEa4JOJ@unknown>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 30 Nov 2021 15:32:59 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4M5Zf9ryWihNSc6DPnXAq0PDJReD2-exxNZp4PDvsSXQ@mail.gmail.com>
-Message-ID: <CAPhsuW4M5Zf9ryWihNSc6DPnXAq0PDJReD2-exxNZp4PDvsSXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: fix missing section "sk_skb/skb_verdict"
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v1 0/3] Apply suggestions for typeless/weak ksym
+ series
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163831620889.12085.4220989783187969990.git-patchwork-notify@kernel.org>
+Date:   Tue, 30 Nov 2021 23:50:08 +0000
+References: <20211122235733.634914-1-memxor@gmail.com>
+In-Reply-To: <20211122235733.634914-1-memxor@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 12:51 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Fri, Nov 26, 2021 at 04:20:34PM -0800, Song Liu wrote:
-> > On Fri, Nov 26, 2021 at 12:45 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > >
-> > > From: Cong Wang <cong.wang@bytedance.com>
-> > >
-> > > When BPF_SK_SKB_VERDICT was introduced, I forgot to add
-> > > a section mapping for it in libbpf.
-> > >
-> > > Fixes: a7ba4558e69a ("sock_map: Introduce BPF_SK_SKB_VERDICT")
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> >
-> > The patch looks good to me. But seems the selftests are OK without this. So,
-> > do we really need this?
-> >
->
-> Not sure if I understand this question.
->
-> At least BPF_SK_SKB_STREAM_PARSER and BPF_SK_SKB_STREAM_VERDICT are already
-> there, so either we should remove all of them or add BPF_SK_SKB_VERDICT for
-> completeness.
->
-> Or are you suggesting we should change it back in selftests too? Note, it was
-> changed by Andrii in commit 15669e1dcd75fe6d51e495f8479222b5884665b6:
->
-> -SEC("sk_skb/skb_verdict")
-> +SEC("sk_skb")
+Hello:
 
-Yes, I noticed that Andrii made the change, and it seems to work
-as-is. Therefore,
-I had the question "do we really need it".
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-If we do need to differentiate skb_verdict from just sk_skb, could you
-please add a
-case selftest for skb_verdict?
+On Tue, 23 Nov 2021 05:27:30 +0530 you wrote:
+> Three commits addressing comments for the typeless/weak ksym set. No functional
+> change intended. Hopefully this is simpler to read for kfunc as well.
+> 
+> Kumar Kartikeya Dwivedi (3):
+>   bpf: Change bpf_kallsyms_lookup_name size type to
+>     ARG_CONST_SIZE_OR_ZERO
+>   libbpf: Avoid double stores for success/failure case of ksym
+>     relocations
+>   libbpf: Avoid reload of imm for weak, unresolved, repeating ksym
+> 
+> [...]
 
-Also, maybe we can name it as "sk_skb/verdict" to avoid duplication?
+Here is the summary with links:
+  - [bpf-next,v1,1/3] bpf: Change bpf_kallsyms_lookup_name size type to ARG_CONST_SIZE_OR_ZERO
+    https://git.kernel.org/bpf/bpf-next/c/d4efb1708618
+  - [bpf-next,v1,2/3] libbpf: Avoid double stores for success/failure case of ksym relocations
+    https://git.kernel.org/bpf/bpf-next/c/0270090d396a
+  - [bpf-next,v1,3/3] libbpf: Avoid reload of imm for weak, unresolved, repeating ksym
+    https://git.kernel.org/bpf/bpf-next/c/d995816b77eb
 
-Thanks,
-Song
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
