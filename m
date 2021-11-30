@@ -2,110 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F44463EA9
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 20:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBA1463EC9
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 20:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbhK3Tg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 14:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        id S232253AbhK3Ttv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 14:49:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233740AbhK3Tg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 14:36:26 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAFFC061574;
-        Tue, 30 Nov 2021 11:33:06 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so19088938pja.1;
-        Tue, 30 Nov 2021 11:33:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j5j01hsMPKatw6J9LHgeBzeOI5eEAQWOSckfd+vDINY=;
-        b=iuZ6AuNS7MOGEn3ec90iQbwYyCJRaUKQ1YBAj1MNYztpNiGfeVdePuMNmt+e7GJNjh
-         iNX9vjRXuXknsNaenWk3zi0ucqxVMAr7sMSe6wra3ifAmFZDySVImiIs3wsvNX9fMwcC
-         cqxpXA81t/aTbqvBq4foIBWVO1cwBZowDSyg2f3OjAotJum5VcsiDUTCCZtpYJAY//xV
-         MJvRSH/qo6R5/SHx1fPtGVJebIz/LC5+uTW4eddBi0PjIkv0tHIOhatYr9nCVFWZmxdl
-         Eh7ae4pl1vZQrm/ihWgqIj38H4PAYzIbGLnqq+h2AX7g38yG9wcf8zIw/KGAtQi+PyF5
-         If/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j5j01hsMPKatw6J9LHgeBzeOI5eEAQWOSckfd+vDINY=;
-        b=dRSDq5uteO+WVOeB3kUEwGMh/LfGl9xwTA6v4vic7Ve7X5kw6oZaPtk+BS8hF+xK5I
-         HJZbCtnq9YsnGwQ0KKrQprAQySLtTAPpm4XXBqeaI/95jF3a37i7ERmmXezu9lQLxNih
-         wPdjB3hD3hwA8euSIdQK+YdusZqtERv7ffeDl5Fo+LUtc1ngty8X2mLXu+w0o/m1SZMX
-         j/saFR2q0A/wu9G/YjmRY/D3cf54x5w9PDBPjY/oDS/SGRyvbQ71LTLVD2hawNw8usGf
-         xGT+Ks5X+vvwW5/RdXCClFfBP9bPsDcepJ3CyWi6xL7F45c96ffGzIaMJed1+Y4+rCbA
-         b//A==
-X-Gm-Message-State: AOAM5310XJ2hyS28+w65Oe2nnYkA2uVeb0fHIXzunV/e9AVPlHj3qsJF
-        9/YjVDwtI0SN2J+IUh1OGXnqOZleGfYas4BE4wg=
-X-Google-Smtp-Source: ABdhPJxKJZ/Q+/rIlw1C7glnp2AXNKSBRuea6fJX6dqLGqUaXI33f583yqTPZWagtJf3Bo+J32GSO11HUmItts5/n1w=
-X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr1218321pja.122.1638300786367;
- Tue, 30 Nov 2021 11:33:06 -0800 (PST)
-MIME-Version: 1.0
-References: <20211102101536.2958763-1-houtao1@huawei.com> <915a9acd-1831-2470-1490-ec8af4770e28@huawei.com>
-In-Reply-To: <915a9acd-1831-2470-1490-ec8af4770e28@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 30 Nov 2021 11:32:54 -0800
-Message-ID: <CAADnVQJCBnxOoVC9H=73OvKFwTUv5+aKCLix25eU1Kg6pOkXtQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/2] clean-up for BPF_LOG_KERNEL log level
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        with ESMTP id S229905AbhK3Ttu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 14:49:50 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B48BC061574;
+        Tue, 30 Nov 2021 11:46:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id DD2F5CE1AF9;
+        Tue, 30 Nov 2021 19:46:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 740A3C53FC7;
+        Tue, 30 Nov 2021 19:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638301586;
+        bh=ApZc1+OcZnLq0/E95Na9o4zYk/Nz5een41TdSnFrjdQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UJX2bh+4xhNCn2QNWlJFipczmrFgKctmhXJ7Nz17F+8gO7gray2WfXcyTAilE0wBQ
+         49r2iTfeFnSSMq06q5ZgOg8ReXMaZLeRad2GqxdGlfXzlz6iIfRif/j2l+aJffEjmt
+         juOonOC8+vT9yjmM48WOyBIWl71TjKGBv+iay+GDPe+l28AcZ08clUbPWqvSNruXVI
+         xbvE+ucHkDg1hAIMV9mzO/873wdfxJm5ga/BfgDsyiB9bPsSC2nE5xPQZEjaoIBywm
+         AXzPCwrR//xXsBrnHzWd3ZMncm4gkZdXrMNyIuRFi4GMdhIfLfKYqP1aBCvMeVFWcq
+         z7VjsQNHR/1+A==
+Date:   Tue, 30 Nov 2021 11:46:24 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP
+ stats
+Message-ID: <20211130114624.5b1f5f61@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <18655462-c72e-1d26-5b59-d03eb993d832@gmail.com>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+        <20211130155612.594688-1-alexandr.lobakin@intel.com>
+        <20211130081207.228f42ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211130163454.595897-1-alexandr.lobakin@intel.com>
+        <20211130090449.58a8327d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <18655462-c72e-1d26-5b59-d03eb993d832@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 3:48 AM Hou Tao <houtao1@huawei.com> wrote:
->
-> Hi Alexei,
->
-> Could you please pick the patchset for v5.16 ?
+On Tue, 30 Nov 2021 10:38:14 -0700 David Ahern wrote:
+> On 11/30/21 10:04 AM, Jakub Kicinski wrote:
+> > On Tue, 30 Nov 2021 17:34:54 +0100 Alexander Lobakin wrote:  
+> >> I know about ETHTOOL_STAT_NOT_SET, but RTNL xstats doesn't use this,
+> >> does it?  
+> > 
+> > Not sure if you're asking me or Dave but no, to my knowledge RTNL does
+> > not use such semantics today. But the reason is mostly because there
+> > weren't many driver stats added there. Knowing if an error counter is
+> > not supported or supporter and 0 is important for monitoring. Even if
+> > XDP stats don't have a counter which may not be supported today it's
+> > not a good precedent to make IMO.
+> 
+> Today, stats are sent as a struct so skipping stats whose value is 0 is
+> not an option. When using individual attributes for the counters this
+> becomes an option. Given there is no value in sending '0' why do it?
 
-Sorry it got lost in patchwork.
-Please resubmit.
+To establish semantics of what it means that the statistic is not
+reported. If we need to save space we'd need an extra attr with 
+a bitmap of "these stats were skipped because they were zero".
+Or conversely some way of querying supported stats.
 
-> On 11/2/2021 6:15 PM, Hou Tao wrote:
-> > Hi,
-> >
-> > There are just two clean-up patches for BPF_LOG_KERNEL log level:
-> > patch #1 fixes the possible extra newline for bpf_log() and removes
-> > the unnecessary calculation and truncation, and patch #2 disallows
-> > BPF_LOG_KERNEL log level for bpf_btf_load().
-> >
-> > Comments are welcome.
-> >
-> > Regards,
-> > Tao
-> >
-> > Change Log:
-> > v3:
-> >   * rebased on bpf-next
-> >   * address comments from Daniel Borkmann:
-> >     patch #1: add prefix "BPF: " instead of "BPF:" for error message
-> >     patch #2: remove uncessary parenthesis, keep the max buffer length
-> >               setting of btf verifier, and add Fixes tag.
-> >
-> > v2: https://www.spinics.net/lists/bpf/msg48809.html
-> >   * rebased on bpf-next
-> >   * patch #1: add a trailing newline if needed (suggested by Martin)
-> >   * add patch #2
-> >
-> > v1: https://www.spinics.net/lists/bpf/msg48550.html
-> >
-> > Hou Tao (2):
-> >   bpf: clean-up bpf_verifier_vlog() for BPF_LOG_KERNEL log level
-> >   bpf: disallow BPF_LOG_KERNEL log level for bpf(BPF_BTF_LOAD)
-> >
-> >  include/linux/bpf_verifier.h |  7 +++++++
-> >  kernel/bpf/btf.c             |  3 +--
-> >  kernel/bpf/verifier.c        | 16 +++++++++-------
-> >  3 files changed, 17 insertions(+), 9 deletions(-)
-> >
->
+> Is your pushback that there should be a uapi to opt-in to this behavior?
+
+Not where I was going with it, but it is an option. If skipping 0s was
+controlled by a flag a dump without such flag set would basically serve
+as a way to query supported stats.
