@@ -2,445 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD204462AE8
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 04:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBC4462AF6
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 04:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237782AbhK3DKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 22:10:31 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27930 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237777AbhK3DKa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 29 Nov 2021 22:10:30 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1ATIlNoW001041
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 19:07:12 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=facebook;
- bh=Dr1OEgsXFdauNhKiduBqXeitGL2lF8QArm3AlrMhT8E=;
- b=Fxh0FyMjf5PY7tjReEP6+gbuA/h3o0QFFcOLAMMjpKEMhoJfyKg1EMGJrxtzghvs/vG9
- bjBcxdypase2Re0yz7qV9ZtncNlQBACJmLVHPXeIZL8eW6M1Ht7XljbT0AGQWUO3jzMZ
- VN3KVGSjYYxwlqOw23Suvd9Cz+Xmlf2+wAk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3cms5jyp5c-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 19:07:11 -0800
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 29 Nov 2021 19:07:08 -0800
-Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id 442BD572D0CB; Mon, 29 Nov 2021 19:06:59 -0800 (PST)
-From:   Joanne Koong <joannekoong@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH v4 bpf-next 4/4] selftest/bpf/benchs: Add bpf_loop benchmark
-Date:   Mon, 29 Nov 2021 19:06:22 -0800
-Message-ID: <20211130030622.4131246-5-joannekoong@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211130030622.4131246-1-joannekoong@fb.com>
-References: <20211130030622.4131246-1-joannekoong@fb.com>
+        id S229873AbhK3DUG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 22:20:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhK3DUG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 22:20:06 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08597C061574
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 19:16:48 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id x32so48247516ybi.12
+        for <bpf@vger.kernel.org>; Mon, 29 Nov 2021 19:16:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jtGinGJe8JdSQ4rZFVyNFHdaqAYJNm5eCirYrcgthL8=;
+        b=bYRbjinL+ZD9OtNtKbAWJ5k5DQgJRkQ84nWeceNJbIjBYXK8b+zOiYQz2zovk19z5c
+         tAiTGTFWwXEgA1FLR4mCKFtMoArHoLxUBll8lHuL6GK93UwWcufz4o7kS1o5ZbRJLAUg
+         NXh7F2Qkspro/YRZpJUkHqbjKLUOwnFwqEdz0LlhczkGpdS0gAAD9h29T9RtYvBPkMlY
+         w0wCzd0VznnS2/M0m1mOx9M6xOx7RbYDhgkkQoV4NmPIQrKNwVehHoatjM88BImpxLa4
+         VqnUrcuuI4aUZFuxZahPPWtrjCB1UE8HHAm25oWQAXtlrA23Bs1/dAuWYnptfXNrNdQU
+         6g5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jtGinGJe8JdSQ4rZFVyNFHdaqAYJNm5eCirYrcgthL8=;
+        b=MX/xcJXA1Fm0XTtUgfC84+EIeCvAOcSOEhKoBBY8Cgliv4PhWMPf99WLz63ttXLAzF
+         lAlbPI4cDDyEiD8LrQyrx+Irw30NzvRmZ70aKUQYI7YkRnMhP/lvKGU29Bp715IBZPo9
+         tarrZyIWJDWPWmQAQZy3aarF1vwMn1jokwrAf1goUQZihmqsDrOMN0fk74y9F6AS3Fmw
+         uDl9Vbv/n7t3/DZevXX7tgOqdgwaZdj+WWpBOe+st8rPhg4pJSL4jQQBI8sQTWnGAv71
+         6SztY1dU5hm3Df+z7B40Y3c+0HSkijo/5289QYXqnUrwnoAf9XEw8O0ATrdzVLJOs+//
+         XKJg==
+X-Gm-Message-State: AOAM530wnwRAW32X50p3yuj5wajbMttNI4ozQYNtvcLAUEwL7cu1fy1R
+        jXCCqYcjZfLZsM9MFGZu7JPOHqfvjFm4/wcZxGOBQkYbkS/HEw==
+X-Google-Smtp-Source: ABdhPJykh7yMWAfP4+reyvlsgWiF+thqrCVPkQel6XQAVYrJs6le8xer9at6tzF/TQXNAa9GdbDAfFTLWtdUz9j46Hc=
+X-Received: by 2002:a25:e617:: with SMTP id d23mr10409563ybh.555.1638242207236;
+ Mon, 29 Nov 2021 19:16:47 -0800 (PST)
 MIME-Version: 1.0
+References: <CAK-59YFPU3qO+_pXWOH+c1LSA=8WA1yabJZfREjOEXNHAqgXNg@mail.gmail.com>
+ <CAEf4BzZM480NkS+At2Cb=mJaj1FowgUTbepp5QPreXXDriTBLg@mail.gmail.com> <CAK-59YHxGKDvwoShORK5gDenS+yKKzjWdEmayzoCG043_PoyOg@mail.gmail.com>
+In-Reply-To: <CAK-59YHxGKDvwoShORK5gDenS+yKKzjWdEmayzoCG043_PoyOg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 29 Nov 2021 19:16:36 -0800
+Message-ID: <CAEf4Bzavv2wQ2OmxwQh3HtihBUfxNKs4C5ZixYz5+OfiZVec4g@mail.gmail.com>
+Subject: Re: Custom 'hello' BPF CO-RE example failed on Debian 10 again for
+ some reason
+To:     Pony Sew <poony20115@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: BQqIDK1fcpdEv4Il59Vldb9vA47iMQmt
-X-Proofpoint-GUID: BQqIDK1fcpdEv4Il59Vldb9vA47iMQmt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-30_03,2021-11-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- impostorscore=0 spamscore=0 suspectscore=0 clxscore=1015 bulkscore=0
- priorityscore=1501 adultscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111300017
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add benchmark to measure the throughput and latency of the bpf_loop
-call.
+On Mon, Nov 29, 2021 at 6:50 PM Pony Sew <poony20115@gmail.com> wrote:
+>
+> No worries, thanks for the update! You are probably busy with Libbpf proj=
+ect, so take your time. I think I'll try "const volatile" method.
+>
+> Best regards,
+> Poony.
+>
 
-Testing this on my dev machine on 1 thread, the data is as follows:
+Please don't top post when sending email to the mailing list.
 
-        nr_loops: 10
-bpf_loop - throughput: 198.519 =C2=B1 0.155 M ops/s, latency: 5.037 ns/op
+This issue was fixed (see [0]) and synced to Github. I forgot to CC
+you on the patch itself, sorry. If you update to latest libbpf
+version, the issue should be gone.
 
-        nr_loops: 100
-bpf_loop - throughput: 247.448 =C2=B1 0.305 M ops/s, latency: 4.041 ns/op
+  [0] https://github.com/libbpf/libbpf/commit/5c31bcf220f66e70f39fd141f5b0c=
+55c6ab65e8e
 
-        nr_loops: 500
-bpf_loop - throughput: 260.839 =C2=B1 0.380 M ops/s, latency: 3.834 ns/op
-
-        nr_loops: 1000
-bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3.805 ns/op
-
-        nr_loops: 5000
-bpf_loop - throughput: 264.211 =C2=B1 1.508 M ops/s, latency: 3.785 ns/op
-
-        nr_loops: 10000
-bpf_loop - throughput: 265.366 =C2=B1 3.054 M ops/s, latency: 3.768 ns/op
-
-        nr_loops: 50000
-bpf_loop - throughput: 235.986 =C2=B1 20.205 M ops/s, latency: 4.238 ns/o=
-p
-
-        nr_loops: 100000
-bpf_loop - throughput: 264.482 =C2=B1 0.279 M ops/s, latency: 3.781 ns/op
-
-        nr_loops: 500000
-bpf_loop - throughput: 309.773 =C2=B1 87.713 M ops/s, latency: 3.228 ns/o=
-p
-
-        nr_loops: 1000000
-bpf_loop - throughput: 262.818 =C2=B1 4.143 M ops/s, latency: 3.805 ns/op
-
-From this data, we can see that the latency per loop decreases as the
-number of loops increases. On this particular machine, each loop had an
-overhead of about ~4 ns, and we were able to run ~250 million loops
-per second.
-
-Signed-off-by: Joanne Koong <joannekoong@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/Makefile          |   4 +-
- tools/testing/selftests/bpf/bench.c           |  37 ++++++
- tools/testing/selftests/bpf/bench.h           |   2 +
- .../selftests/bpf/benchs/bench_bpf_loop.c     | 105 ++++++++++++++++++
- .../bpf/benchs/run_bench_bpf_loop.sh          |  15 +++
- .../selftests/bpf/benchs/run_common.sh        |  15 +++
- .../selftests/bpf/progs/bpf_loop_bench.c      |  26 +++++
- 7 files changed, 203 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_loop.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_loop=
-.sh
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_loop_bench.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-index 35684d61aaeb..a6c0e92c86a1 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -531,6 +531,7 @@ $(OUTPUT)/bench_trigger.o: $(OUTPUT)/trigger_bench.sk=
-el.h
- $(OUTPUT)/bench_ringbufs.o: $(OUTPUT)/ringbuf_bench.skel.h \
- 			    $(OUTPUT)/perfbuf_bench.skel.h
- $(OUTPUT)/bench_bloom_filter_map.o: $(OUTPUT)/bloom_filter_bench.skel.h
-+$(OUTPUT)/bench_bpf_loop.o: $(OUTPUT)/bpf_loop_bench.skel.h
- $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
- $(OUTPUT)/bench: LDLIBS +=3D -lm
- $(OUTPUT)/bench: $(OUTPUT)/bench.o \
-@@ -540,7 +541,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
- 		 $(OUTPUT)/bench_rename.o \
- 		 $(OUTPUT)/bench_trigger.o \
- 		 $(OUTPUT)/bench_ringbufs.o \
--		 $(OUTPUT)/bench_bloom_filter_map.o
-+		 $(OUTPUT)/bench_bloom_filter_map.o \
-+		 $(OUTPUT)/bench_bpf_loop.o
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
-=20
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
-s/bpf/bench.c
-index c75e7ee28746..3d6082b97a56 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -134,6 +134,39 @@ void hits_drops_report_final(struct bench_res res[],=
- int res_cnt)
- 	       total_ops_mean, total_ops_stddev);
- }
-=20
-+void ops_report_progress(int iter, struct bench_res *res, long delta_ns)
-+{
-+	double hits_per_sec, hits_per_prod;
-+
-+	hits_per_sec =3D res->hits / 1000000.0 / (delta_ns / 1000000000.0);
-+	hits_per_prod =3D hits_per_sec / env.producer_cnt;
-+
-+	printf("Iter %3d (%7.3lfus): ", iter, (delta_ns - 1000000000) / 1000.0)=
-;
-+
-+	printf("hits %8.3lfM/s (%7.3lfM/prod)\n", hits_per_sec, hits_per_prod);
-+}
-+
-+void ops_report_final(struct bench_res res[], int res_cnt)
-+{
-+	double hits_mean =3D 0.0, hits_stddev =3D 0.0;
-+	int i;
-+
-+	for (i =3D 0; i < res_cnt; i++)
-+		hits_mean +=3D res[i].hits / 1000000.0 / (0.0 + res_cnt);
-+
-+	if (res_cnt > 1)  {
-+		for (i =3D 0; i < res_cnt; i++)
-+			hits_stddev +=3D (hits_mean - res[i].hits / 1000000.0) *
-+				       (hits_mean - res[i].hits / 1000000.0) /
-+				       (res_cnt - 1.0);
-+
-+		hits_stddev =3D sqrt(hits_stddev);
-+	}
-+	printf("Summary: throughput %8.3lf \u00B1 %5.3lf M ops/s (%7.3lfM ops/p=
-rod), ",
-+	       hits_mean, hits_stddev, hits_mean / env.producer_cnt);
-+	printf("latency %8.3lf ns/op\n", 1000.0 / hits_mean * env.producer_cnt)=
-;
-+}
-+
- const char *argp_program_version =3D "benchmark";
- const char *argp_program_bug_address =3D "<bpf@vger.kernel.org>";
- const char argp_program_doc[] =3D
-@@ -171,10 +204,12 @@ static const struct argp_option opts[] =3D {
-=20
- extern struct argp bench_ringbufs_argp;
- extern struct argp bench_bloom_map_argp;
-+extern struct argp bench_bpf_loop_argp;
-=20
- static const struct argp_child bench_parsers[] =3D {
- 	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
- 	{ &bench_bloom_map_argp, 0, "Bloom filter map benchmark", 0 },
-+	{ &bench_bpf_loop_argp, 0, "bpf_loop helper benchmark", 0 },
- 	{},
- };
-=20
-@@ -373,6 +408,7 @@ extern const struct bench bench_bloom_update;
- extern const struct bench bench_bloom_false_positive;
- extern const struct bench bench_hashmap_without_bloom;
- extern const struct bench bench_hashmap_with_bloom;
-+extern const struct bench bench_bpf_loop;
-=20
- static const struct bench *benchs[] =3D {
- 	&bench_count_global,
-@@ -404,6 +440,7 @@ static const struct bench *benchs[] =3D {
- 	&bench_bloom_false_positive,
- 	&bench_hashmap_without_bloom,
- 	&bench_hashmap_with_bloom,
-+	&bench_bpf_loop,
- };
-=20
- static void setup_benchmark()
-diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftest=
-s/bpf/bench.h
-index 624c6b11501f..50785503756b 100644
---- a/tools/testing/selftests/bpf/bench.h
-+++ b/tools/testing/selftests/bpf/bench.h
-@@ -59,6 +59,8 @@ void hits_drops_report_progress(int iter, struct bench_=
-res *res, long delta_ns);
- void hits_drops_report_final(struct bench_res res[], int res_cnt);
- void false_hits_report_progress(int iter, struct bench_res *res, long de=
-lta_ns);
- void false_hits_report_final(struct bench_res res[], int res_cnt);
-+void ops_report_progress(int iter, struct bench_res *res, long delta_ns)=
-;
-+void ops_report_final(struct bench_res res[], int res_cnt);
-=20
- static inline __u64 get_time_ns() {
- 	struct timespec t;
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bpf_loop.c b/tools/=
-testing/selftests/bpf/benchs/bench_bpf_loop.c
-new file mode 100644
-index 000000000000..d0a6572bfab6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/bench_bpf_loop.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <argp.h>
-+#include "bench.h"
-+#include "bpf_loop_bench.skel.h"
-+
-+/* BPF triggering benchmarks */
-+static struct ctx {
-+	struct bpf_loop_bench *skel;
-+} ctx;
-+
-+static struct {
-+	__u32 nr_loops;
-+} args =3D {
-+	.nr_loops =3D 10,
-+};
-+
-+enum {
-+	ARG_NR_LOOPS =3D 4000,
-+};
-+
-+static const struct argp_option opts[] =3D {
-+	{ "nr_loops", ARG_NR_LOOPS, "nr_loops", 0,
-+		"Set number of loops for the bpf_loop helper"},
-+	{},
-+};
-+
-+static error_t parse_arg(int key, char *arg, struct argp_state *state)
-+{
-+	switch (key) {
-+	case ARG_NR_LOOPS:
-+		args.nr_loops =3D strtol(arg, NULL, 10);
-+		break;
-+	default:
-+		return ARGP_ERR_UNKNOWN;
-+	}
-+
-+	return 0;
-+}
-+
-+/* exported into benchmark runner */
-+const struct argp bench_bpf_loop_argp =3D {
-+	.options =3D opts,
-+	.parser =3D parse_arg,
-+};
-+
-+static void validate(void)
-+{
-+	if (env.consumer_cnt !=3D 1) {
-+		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
-+		exit(1);
-+	}
-+}
-+
-+static void *producer(void *input)
-+{
-+	while (true)
-+		/* trigger the bpf program */
-+		syscall(__NR_getpgid);
-+
-+	return NULL;
-+}
-+
-+static void *consumer(void *input)
-+{
-+	return NULL;
-+}
-+
-+static void measure(struct bench_res *res)
-+{
-+	res->hits =3D atomic_swap(&ctx.skel->bss->hits, 0);
-+}
-+
-+static void setup(void)
-+{
-+	struct bpf_link *link;
-+
-+	setup_libbpf();
-+
-+	ctx.skel =3D bpf_loop_bench__open_and_load();
-+	if (!ctx.skel) {
-+		fprintf(stderr, "failed to open skeleton\n");
-+		exit(1);
-+	}
-+
-+	link =3D bpf_program__attach(ctx.skel->progs.benchmark);
-+	if (!link) {
-+		fprintf(stderr, "failed to attach program!\n");
-+		exit(1);
-+	}
-+
-+	ctx.skel->bss->nr_loops =3D args.nr_loops;
-+}
-+
-+const struct bench bench_bpf_loop =3D {
-+	.name =3D "bpf-loop",
-+	.validate =3D validate,
-+	.setup =3D setup,
-+	.producer_thread =3D producer,
-+	.consumer_thread =3D consumer,
-+	.measure =3D measure,
-+	.report_progress =3D ops_report_progress,
-+	.report_final =3D ops_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bpf_loop.sh b/t=
-ools/testing/selftests/bpf/benchs/run_bench_bpf_loop.sh
-new file mode 100755
-index 000000000000..d4f5f73b356b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_bpf_loop.sh
-@@ -0,0 +1,15 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+source ./benchs/run_common.sh
-+
-+set -eufo pipefail
-+
-+for t in 1 4 8 12 16; do
-+for i in 10 100 500 1000 5000 10000 50000 100000 500000 1000000; do
-+subtitle "nr_loops: $i, nr_threads: $t"
-+	summarize_ops "bpf_loop: " \
-+	    "$($RUN_BENCH -p $t --nr_loops $i bpf-loop)"
-+	printf "\n"
-+done
-+done
-diff --git a/tools/testing/selftests/bpf/benchs/run_common.sh b/tools/tes=
-ting/selftests/bpf/benchs/run_common.sh
-index 9a16be78b180..6c5e6023a69f 100644
---- a/tools/testing/selftests/bpf/benchs/run_common.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_common.sh
-@@ -33,6 +33,14 @@ function percentage()
- 	echo "$*" | sed -E "s/.*Percentage\s=3D\s+([0-9]+\.[0-9]+).*/\1/"
- }
-=20
-+function ops()
-+{
-+	echo -n "throughput: "
-+	echo -n "$*" | sed -E "s/.*throughput\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]+\.=
-[0-9]+\sM\sops\/s).*/\1/"
-+	echo -n -e ", latency: "
-+	echo "$*" | sed -E "s/.*latency\s+([0-9]+\.[0-9]+\sns\/op).*/\1/"
-+}
-+
- function total()
- {
- 	echo "$*" | sed -E "s/.*total operations\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]=
-+\.[0-9]+M\/s).*/\1/"
-@@ -52,6 +60,13 @@ function summarize_percentage()
- 	printf "%-20s %s%%\n" "$bench" "$(percentage $summary)"
- }
-=20
-+function summarize_ops()
-+{
-+	bench=3D"$1"
-+	summary=3D$(echo $2 | tail -n1)
-+	printf "%-20s %s\n" "$bench" "$(ops $summary)"
-+}
-+
- function summarize_total()
- {
- 	bench=3D"$1"
-diff --git a/tools/testing/selftests/bpf/progs/bpf_loop_bench.c b/tools/t=
-esting/selftests/bpf/progs/bpf_loop_bench.c
-new file mode 100644
-index 000000000000..9dafdc244462
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_loop_bench.c
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+u32 nr_loops;
-+long hits;
-+
-+static int empty_callback(__u32 index, void *data)
-+{
-+	return 0;
-+}
-+
-+SEC("fentry/__x64_sys_getpgid")
-+int benchmark(void *ctx)
-+{
-+	for (int i =3D 0; i < 1000; i++) {
-+		bpf_loop(nr_loops, empty_callback, NULL, 0);
-+
-+		__sync_add_and_fetch(&hits, nr_loops);
-+	}
-+	return 0;
-+}
---=20
-2.30.2
-
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> =E6=96=BC 2021=E5=B9=B411=E6=
+=9C=8819=E6=97=A5 =E9=80=B1=E4=BA=94 06:39 =E5=AF=AB=E9=81=93=EF=BC=9A
+>>
+>> On Mon, Nov 15, 2021 at 1:48 AM Pony Sew <poony20115@gmail.com> wrote:
+>> >
+>> > Hello,
+>> > This (https://github.com/sartura/ebpf-core-sample) is the code I'm usi=
+ng.
+>> > But I add " #define BPF_NO_GLOBAL_DATA 1 " on 'hello.bpf.c' so that
+>> > Debian 10 is able to execute it.
+>> > Compiled on default Debian11 amd64 environment with clang package
+>> > installed from mirror source.
+>> > Both 'hello' and 'maps' used to work on Debian10 about a month ago.
+>> > But 'hello' now can't. I'd like to improve this result.
+>> > ----------------------------------------------------------------------=
+-------------------
+>> > This is how I compiled them in steps:
+>> >
+>> > # bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
+>> > # clang -g -O2 -target bpf -D__TARGET_ARCH_x86_64 -I . -c hello.bpf.c =
+-o
+>> > # hello.bpf.o
+>> > # bpftool gen skeleton hello.bpf.o > hello.skel.h
+>> > # clang -g -O2 -Wall -I . -c hello.c -o hello.o
+>> > # git clone https://github.com/libbpf/libbpf
+>> > # cd libbpf/src
+>> > # make BUILD_STATIC_ONLY=3D1 OBJDIR=3D../build/libbpf DESTDIR=3D../bui=
+ld
+>> > INCLUDEDIR=3D LIBDIR=3D UAPIDIR=3D install
+>> > # cd ../../
+>> > # clang -Wall -O2 -g hello.o libbpf/build/libbpf.a -lelf -lz -o hello
+>> >
+>> > There was only one warning message: "libbpf: elf: skipping
+>> > unrecognized data section(4) .rodata.str1.1", which appeared during
+>> > the generation of 'hello.skel.h'. There are no other warning and error
+>> > messages during this whole 'hello' and 'maps' compilation.
+>> > ----------------------------------------------------------------------=
+---------------------------------------------
+>> > Result of executing 'hello' on default amd64 Debian10 environment:
+>> >
+>> > libbpf: kernel doesn't support global data
+>>
+>> Sorry for the late reply, I didn't ignore or forget, I was trying to
+>> come up with the best solution.
+>>
+>> In short, I suspect it's because of the recent libbpf feature to
+>> support multiple .rodata.* sections. In your case, kernel is old and
+>> doesn't support those special maps, but Clang actually sometimes emits
+>> unused .rodata.strN.M sections. No code is referencing them, yet
+>> compiler stubbornly emits them. After recent changes libbpf will try
+>> to create a map for such sections which is causing "kernel doesn't
+>> support global data" error.
+>>
+>> I think I'm going to teach libbpf to recognize such maps that are not
+>> referenced from BPF program code and not create them, if kernel
+>> doesn't support global data. Will need to see how to do it in the
+>> least intrusive way, but I'm going to solve this before official 0.6
+>> release.
+>>
+>> Thanks for reporting. Stay tuned for the solution.
+>>
+>> > libbpf: failed to load object 'hello_bpf'
+>> > libbpf: failed to load BPF skeleton 'hello_bpf': -95
+>> > failed to load BPF object -95
+>> > ----------------------------------------------------------------------=
+---------------------------------------------
+>> > From what I can remember, That warning message used to appear even
+>> > when I'm executing 'hello' on Debian10. But the BPF program work just
+>> > fine then. Maybe there is something else I can do?
+>> >
+>> > Sincerely,
+>> > Poony.
