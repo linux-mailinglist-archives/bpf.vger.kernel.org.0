@@ -2,130 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37892463BE4
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 17:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76AE463C50
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 17:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244018AbhK3Qij (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 11:38:39 -0500
-Received: from mga02.intel.com ([134.134.136.20]:32903 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243583AbhK3Qii (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 11:38:38 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="223482950"
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="223482950"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2021 08:35:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="458897866"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga003.jf.intel.com with ESMTP; 30 Nov 2021 08:35:08 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AUGZ5mt017295;
-        Tue, 30 Nov 2021 16:35:05 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP stats
-Date:   Tue, 30 Nov 2021 17:34:54 +0100
-Message-Id: <20211130163454.595897-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211130081207.228f42ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com> <20211130155612.594688-1-alexandr.lobakin@intel.com> <20211130081207.228f42ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S242515AbhK3Q5Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 11:57:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37481 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238952AbhK3Q5X (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 30 Nov 2021 11:57:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638291243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ocy2sJNUXeifLL+bp5ixV8nOfxIcyJ07BwCL7C1Ip3I=;
+        b=JRGQS9nslNWAUyRO38u4VFFsfDsm8PAwwuXKlhd4b9SM4QW399MtEUVw89P7GZBKaadwSp
+        H5k7XDtogzMp5RjNqdteqVONPQ/yDrz+8A3ZaUmGRLlMROp0SQNR1qQAGClpp2P/Y6zuop
+        e0AYJTMr2x2WmJkCqWWr65a+Zgke/2c=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-148-itKLq9NHNuKCsfSvie4aug-1; Tue, 30 Nov 2021 11:54:02 -0500
+X-MC-Unique: itKLq9NHNuKCsfSvie4aug-1
+Received: by mail-ed1-f70.google.com with SMTP id m12-20020a056402430c00b003e9f10bbb7dso17473727edc.18
+        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 08:54:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=ocy2sJNUXeifLL+bp5ixV8nOfxIcyJ07BwCL7C1Ip3I=;
+        b=fK1LSm9Ceb+oCQac4QggCHG9FyToKjgHn7k1ynuowJLX/k56DCLRzSWRiehWI3B7l/
+         +ACUkH4wHof3T4F0cHRUVA8EURSQOw/C+dZKpyj3+dsTHguTGLmtWTVT58oHQQsjC36/
+         /lwU9U0phBfV89c7GtWJ19nYBzC8f2y/5umOdIs5Zr1MT1b64vL5pMjMhRv0SgElBJ1w
+         wIA08OdXsuPcu58GdkLzHn8sNBqCXzoDHv+5lN/Ssc9WWrMXhx4KOU6uRulmsJEUt0iL
+         PAjSRztokPj5j351WqXzfnaRQeBU7xZFBj9UxcUj9w2rWAUqWs7ty33hTknVksy8ru85
+         32ew==
+X-Gm-Message-State: AOAM532wLh4Gdb2Lm5ZM7Z1/wd3ULgHrOGT0wIgCM61SCf22SruLhW50
+        Sw2NgD4NkLKvGwUwdElG3nqFT5iM5uAsTH+LxZhEtmCPw+W5V2agyq0LylMZk5/r39UqVhAvWhT
+        awXiY8mWRyPH1
+X-Received: by 2002:a17:907:629b:: with SMTP id nd27mr356517ejc.24.1638291240282;
+        Tue, 30 Nov 2021 08:54:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx6F06O02wh6RN0hZFoTu8vnXqv50HabcEGhmSrMosZXOdJItecz/270Yq8DUdV0QOe52UkfA==
+X-Received: by 2002:a17:907:629b:: with SMTP id nd27mr356435ejc.24.1638291239486;
+        Tue, 30 Nov 2021 08:53:59 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id oz31sm9364349ejc.35.2021.11.30.08.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Nov 2021 08:53:58 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 09D1D1802A0; Tue, 30 Nov 2021 17:53:58 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Joanne Koong <joannekoong@fb.com>, bpf@vger.kernel.org
+Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        Kernel-team@fb.com, Joanne Koong <joannekoong@fb.com>
+Subject: Re: [PATCH v3 bpf-next 4/4] selftest/bpf/benchs: add bpf_loop
+ benchmark
+In-Reply-To: <20211129223725.2770730-5-joannekoong@fb.com>
+References: <20211129223725.2770730-1-joannekoong@fb.com>
+ <20211129223725.2770730-5-joannekoong@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 30 Nov 2021 17:53:58 +0100
+Message-ID: <87wnkp7ffd.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
-Date: Tue, 30 Nov 2021 08:12:07 -0800
+Joanne Koong <joannekoong@fb.com> writes:
 
-> On Tue, 30 Nov 2021 16:56:12 +0100 Alexander Lobakin wrote:
-> > 3. XDP and XSK ctrs separately or not.
-> > 
-> > My PoV is that those are two quite different worlds.
-> > However, stats for actions on XSK really make a little sense since
-> > 99% of time we have xskmap redirect. So I think it'd be fine to just
-> > expand stats structure with xsk_{rx,tx}_{packets,bytes} and count
-> > the rest (actions, errors) together with XDP.
-> > 
-> > 
-> > Rest:
-> >  - don't create a separate `ip` command and report under `-s`;
-> >  - save some RTNL skb space by skipping zeroed counters.
-> 
-> Let me ruin this point of clarity for you. I think that stats should 
-> be skipped when they are not collected (see ETHTOOL_STAT_NOT_SET).
-> If messages get large user should use the GETSTATS call and avoid 
-> the problem more effectively.
+> Add benchmark to measure the throughput and latency of the bpf_loop
+> call.
+>
+> Testing this on my dev machine on 1 thread, the data is as follows:
+>
+>         nr_loops: 10
+> bpf_loop - throughput: 198.519 =C2=B1 0.155 M ops/s, latency: 5.037 ns/op
+>
+>         nr_loops: 100
+> bpf_loop - throughput: 247.448 =C2=B1 0.305 M ops/s, latency: 4.041 ns/op
+>
+>         nr_loops: 500
+> bpf_loop - throughput: 260.839 =C2=B1 0.380 M ops/s, latency: 3.834 ns/op
+>
+>         nr_loops: 1000
+> bpf_loop - throughput: 262.806 =C2=B1 0.629 M ops/s, latency: 3.805 ns/op
+>
+>         nr_loops: 5000
+> bpf_loop - throughput: 264.211 =C2=B1 1.508 M ops/s, latency: 3.785 ns/op
+>
+>         nr_loops: 10000
+> bpf_loop - throughput: 265.366 =C2=B1 3.054 M ops/s, latency: 3.768 ns/op
+>
+>         nr_loops: 50000
+> bpf_loop - throughput: 235.986 =C2=B1 20.205 M ops/s, latency: 4.238 ns/op
+>
+>         nr_loops: 100000
+> bpf_loop - throughput: 264.482 =C2=B1 0.279 M ops/s, latency: 3.781 ns/op
+>
+>         nr_loops: 500000
+> bpf_loop - throughput: 309.773 =C2=B1 87.713 M ops/s, latency: 3.228 ns/op
+>
+>         nr_loops: 1000000
+> bpf_loop - throughput: 262.818 =C2=B1 4.143 M ops/s, latency: 3.805 ns/op
+>
+> From this data, we can see that the latency per loop decreases as the
+> number of loops increases. On this particular machine, each loop had an
+> overhead of about ~4 ns, and we were able to run ~250 million loops
+> per second.
+>
+> Signed-off-by: Joanne Koong <joannekoong@fb.com>
 
-Well, it was Dave's thought here: [0]
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-> Another thought on this patch: with individual attributes you could save
-> some overhead by not sending 0 counters to userspace. e.g., define a
-> helper that does:
-
-I know about ETHTOOL_STAT_NOT_SET, but RTNL xstats doesn't use this,
-does it?
-GETSTATS is another thing, and I'll use it, thanks.
-
-> 
-> > Also, regarding that I count all on the stack and then add to the
-> > storage once in a polling cycle -- most drivers don't do that and
-> > just increment the values in the storage directly, but this can be
-> > less performant for frequently updated stats (or it's just my
-> > embedded past).
-> > Re u64 vs u64_stats_t -- the latter is more universal and
-> > architecture-friendly, the former is used directly in most of the
-> > drivers primarily because those drivers and the corresponding HW
-> > are being run on 64-bit systems in the vast majority of cases, and
-> > Ethtools stats themselves are not so critical to guard them with
-> > anti-tearing. Anyways, local64_t is cheap on ARM64/x86_64 I guess?
-
-[0] https://lore.kernel.org/netdev/a4602b15-25b1-c388-73b4-1f97f6f0e555@gmail.com/
-
-Al
