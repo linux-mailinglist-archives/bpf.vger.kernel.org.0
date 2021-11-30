@@ -2,168 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6CB462A98
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 03:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 785C0462AD1
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 04:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhK3CkK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Nov 2021 21:40:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        id S233368AbhK3DFX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Nov 2021 22:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237668AbhK3CkJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Nov 2021 21:40:09 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11500C061746;
-        Mon, 29 Nov 2021 18:36:51 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so28240748otj.7;
-        Mon, 29 Nov 2021 18:36:51 -0800 (PST)
+        with ESMTP id S232638AbhK3DFW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Nov 2021 22:05:22 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69ECC061574;
+        Mon, 29 Nov 2021 19:02:03 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id m192so25269464qke.2;
+        Mon, 29 Nov 2021 19:02:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=D5Qw61WmuAj/yZDhi/A0/VNyCBrtN87SU10VbO44er4=;
-        b=SLylTV1/Dr/0glxOCuNvB4fRMnD9BGxXeIIOHxWZK64w7G3XgItLJqZdpP+qSZmfSD
-         S5dkB6jiCPz+DppG6cti58VcdaW8vVdhxPFOVUcAetqVc0Hni3wi0MowxGUNY27+JOMG
-         owALRhUgLgmswLCPVu0sQYwGG4Qv540iZZ49Oj8UbQxyffuonqioQvCtE+2EjqR/qsfT
-         AQWD3Vj7qbOZa0z41HMkSvsdVPC4qqUYxOqcSi9QOK2Tiy0Y35+YcJY6IaneYO/RpcC4
-         jGrj5IOfY5tAaK/I+/FLlQw4m7pgFfSxGktcaPLugOvQM5YTMY5rEQa7bgjEKlfWbkut
-         4Rlw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hilByPD8L3h9Ytyg6eTvXqp0WXWx+OL3wX2IRfH8TVI=;
+        b=Xo1NrVoBOqABaaCVvLLEZyjUAmGr5+STOyjB+Pl/KgnHbeqPB0r+ESX4feZTOYkB2q
+         aoweXGM9moAULJSK1z/msCYVpKpkCwdkqiyZNGpMWWv481qk8A19r1fU1siANLz0Hgn1
+         vKfwoyFzqm0Ai8EVILk3tVtyor84mNb1ryzwvrXiTnCII28eF/u7hesuFgSHxxVyZwCX
+         UAU0N60V6jiuC/x3h1E9V0VqtqaKb2D8va5yc3TskropS9N2TlDwZz8Ct8OdEMGXBz+D
+         /BikptCg66Nw8qd2stBC6QJQ2u1tQDQYaXDFqtm9suppBCUNCU5cJVmuoyvOKAHT1/B9
+         3xtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=D5Qw61WmuAj/yZDhi/A0/VNyCBrtN87SU10VbO44er4=;
-        b=lnJ0AYyKYeWXhj8do8VbtW15LO8FVqkYq8sNQMJzpb1BSBBVk0i7twl/782obUem+f
-         b+SlJXiWcHzA+90VGtlsr1tgQyYupbmazoDbzkyuoLKLe6u6z7PRiyLEvvGyVfvq2tan
-         4UR0scGJEgwx6VcRtGnFoBFFOsTnCEqXDZIYwSvOp6pg/sAMRRKxrA5vbdcjuuvW2JTh
-         T3K+CIs0MByk85EqegzMgqqRgyMRJiHlF2XFO9maR96FqgIzjb73I52AWMWjXD/0jBF3
-         SLfMEa1rg7734rpD8FOtl/fGEhdJaNKcGEq/TQeoNxv1mK3F/jrfDVGCq44suA+UWqq2
-         gB0g==
-X-Gm-Message-State: AOAM531BFL0j0GIoSCT97ujMzRSakNwM2QqGXHUyX3QBlGU5yO58ZyMr
-        3QLU9bhypyKOBodszDmLp80=
-X-Google-Smtp-Source: ABdhPJwAB8aer13liJpqkRyfHbeZSflBDN+Fnw2AzwkjsdSAtn1sPGJsHlQ3ZEokrCc1yFs+5fXVgA==
-X-Received: by 2002:a9d:6084:: with SMTP id m4mr35205706otj.324.1638239810501;
-        Mon, 29 Nov 2021 18:36:50 -0800 (PST)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id s9sm3056211otg.42.2021.11.29.18.36.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Nov 2021 18:36:49 -0800 (PST)
-Message-ID: <a4602b15-25b1-c388-73b4-1f97f6f0e555@gmail.com>
-Date:   Mon, 29 Nov 2021 19:36:46 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hilByPD8L3h9Ytyg6eTvXqp0WXWx+OL3wX2IRfH8TVI=;
+        b=hKG3bC/7Ic1ZX8mcUwxUunhkuZZneFu/VP3wKciq56yBHfhjUL14dbjQaeDKenDKSr
+         UDaIhIgm4b7gUgtmbDVlMkJgFk0s4zUXUfu+yMOIOZJUGgaR3qClLeZoDMUnPihRNFix
+         lQrwaTavaYw1dcEJ2mpRtDsL0MmzeVZVffRMsdJJBIutraDh3Gk3VNLVPnKACOgPuKRu
+         jNkewxN6LuXtkikaOOU2qb/GpfV+zvxD63LGTZcIoozPZ9tqSZruMJLgD8NhY040FU/R
+         tv/gpEDL+06y0DPBUJ+tjVX+janp1E2ubHy+6nG48G7w5iC5ENrhjpUyErujlmeAlkyr
+         1fFA==
+X-Gm-Message-State: AOAM532sRnlIdBAbTQBZPz4SIrhQ71j3KojDnwMmyjj4p6RZSNIbIHBX
+        8ZdoudzSpV2UOCOtvOX5VNo2H7c3Av4WxLjXquY=
+X-Google-Smtp-Source: ABdhPJyUj8zY9/gTmJm9gnBT3BhDDzchPwLsvCPELhO/9hrEsiUYremqHf1uk5r6y5RjtYcFFgfFfydWTIJYBrtoeSk=
+X-Received: by 2002:a05:620a:134a:: with SMTP id c10mr43400535qkl.207.1638241322873;
+ Mon, 29 Nov 2021 19:02:02 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH v2 net-next 01/26] rtnetlink: introduce generic XDP
- statistics
-Content-Language: en-US
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211123163955.154512-2-alexandr.lobakin@intel.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20211123163955.154512-2-alexandr.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211120112738.45980-1-laoar.shao@gmail.com> <20211120112738.45980-5-laoar.shao@gmail.com>
+ <20211129110140.733475f3@gandalf.local.home>
+In-Reply-To: <20211129110140.733475f3@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 30 Nov 2021 11:01:27 +0800
+Message-ID: <CALOAHbB-2ESG0QgESN_b=bXzESbq+UBP-dqttirKnt1c9TZHZA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] fs/binfmt_elf: replace open-coded string copy with get_task_comm
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Petr Mladek <pmladek@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/23/21 9:39 AM, Alexander Lobakin wrote:
-> +static bool rtnl_get_xdp_stats_xdpxsk(struct sk_buff *skb, u32 ch,
-> +				      const void *attr_data)
-> +{
-> +	const struct ifla_xdp_stats *xstats = attr_data;
-> +
-> +	xstats += ch;
-> +
-> +	if (nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_PACKETS, xstats->packets,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_BYTES, xstats->bytes,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_ERRORS, xstats->errors,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_ABORTED, xstats->aborted,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_DROP, xstats->drop,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_INVALID, xstats->invalid,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_PASS, xstats->pass,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_REDIRECT, xstats->redirect,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_REDIRECT_ERRORS,
-> +			      xstats->redirect_errors,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_TX, xstats->tx,
-> +			      IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_TX_ERRORS,
-> +			      xstats->tx_errors, IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_XMIT_PACKETS,
-> +			      xstats->xmit_packets, IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_XMIT_BYTES,
-> +			      xstats->xmit_bytes, IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_XMIT_ERRORS,
-> +			      xstats->xmit_errors, IFLA_XDP_XSTATS_UNSPEC) ||
-> +	    nla_put_u64_64bit(skb, IFLA_XDP_XSTATS_XMIT_FULL,
-> +			      xstats->xmit_full, IFLA_XDP_XSTATS_UNSPEC))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
+On Tue, Nov 30, 2021 at 12:01 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Sat, 20 Nov 2021 11:27:35 +0000
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > diff --git a/include/linux/elfcore-compat.h b/include/linux/elfcore-compat.h
+> > index e272c3d452ce..54feb64e9b5d 100644
+> > --- a/include/linux/elfcore-compat.h
+> > +++ b/include/linux/elfcore-compat.h
+> > @@ -43,6 +43,11 @@ struct compat_elf_prpsinfo
+> >       __compat_uid_t                  pr_uid;
+> >       __compat_gid_t                  pr_gid;
+> >       compat_pid_t                    pr_pid, pr_ppid, pr_pgrp, pr_sid;
+> > +     /*
+> > +      * The hard-coded 16 is derived from TASK_COMM_LEN, but it can't be
+> > +      * changed as it is exposed to userspace. We'd better make it hard-coded
+> > +      * here.
+>
+> Didn't I once suggest having a macro called something like:
+>
+>   TASK_COMM_LEN_16 ?
+>
+>
+> https://lore.kernel.org/all/20211014221409.5da58a42@oasis.local.home/
 
-Another thought on this patch: with individual attributes you could save
-some overhead by not sending 0 counters to userspace. e.g., define a
-helper that does:
+Hi Steven,
 
-static inline int nla_put_u64_if_set(struct sk_buff *skb, int attrtype,
-                                     u64 value, int padattr)
-{
-	if (value)
-		return nla_put_u64_64bit(skb, attrtype, value, padattr);
+TASK_COMM_LEN_16 is a good idea, but not all hard-coded 16 can be
+replaced by this macro (which is defined in include/sched.h).
+For example,  the comm[16] in include/uapi/linux/cn_proc.h can't be
+replaced as it is a uapi header which can't include  linux/sched.h.
+That's why I prefer to keep the hard-coded 16 as-is.
 
-	return 0;
-}
+There are three options,
+- option 1
+  comment on all the hard-coded 16 to explain why it is hard-coded
+- option 2
+  replace the hard-coded 16 that can be replaced and comment on the
+others which can't be replaced.
+- option 3
+   replace the hard-coded 16 that can be replaced and specifically
+define TASK_COMM_LEN_16 in other files which can't include
+linux/sched.h.
+
+Which one do you prefer ?
+
+
+>
+>
+> > +      */
+> >       char                            pr_fname[16];
+> >       char                            pr_psargs[ELF_PRARGSZ];
+> >  };
+> > diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
+> > index 957ebec35aad..746e081879a5 100644
+> > --- a/include/linux/elfcore.h
+> > +++ b/include/linux/elfcore.h
+> > @@ -65,6 +65,11 @@ struct elf_prpsinfo
+> >       __kernel_gid_t  pr_gid;
+> >       pid_t   pr_pid, pr_ppid, pr_pgrp, pr_sid;
+> >       /* Lots missing */
+> > +     /*
+> > +      * The hard-coded 16 is derived from TASK_COMM_LEN, but it can't be
+> > +      * changed as it is exposed to userspace. We'd better make it hard-coded
+> > +      * here.
+> > +      */
+> >       char    pr_fname[16];   /* filename of executable */
+> >       char    pr_psargs[ELF_PRARGSZ]; /* initial part of arg list */
+> >  };
+
+
+
+-- 
+Thanks
+Yafang
