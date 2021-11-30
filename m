@@ -2,74 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3459C4637AD
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 15:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E08463822
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 15:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhK3Ozd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 09:55:33 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:57988 "EHLO
+        id S243691AbhK3O6U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 09:58:20 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:58722 "EHLO
         sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242752AbhK3Oxb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 09:53:31 -0500
+        with ESMTP id S242880AbhK3O4X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 09:56:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 917EACE1A46;
-        Tue, 30 Nov 2021 14:50:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BF4F8C53FCD;
-        Tue, 30 Nov 2021 14:50:08 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 717A2CE1A70;
+        Tue, 30 Nov 2021 14:53:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42599C53FC7;
+        Tue, 30 Nov 2021 14:52:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638283808;
-        bh=qcjOVQoYFRDYhxbeEnbphJ1qf5WhO/w8g+E2V9S8hx8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QEet9Ij0cIhCmRLJmGwiC5Xn2i79YDy5XL1mGhKhQz55/j2OuD+kfLsaZUDquqHPD
-         hob6F45GYpkij5AM6OdYj2hQCFRf7hu2Jc6wp4Riw5IHZYluxTwQ4CO9iPquAOAyiZ
-         v+LIElmrnIWUshpDFSrVUR9CoyzVkMzLFD8+B9UKwU/NGaXU0lOIsM9+hFf1X7E1Dj
-         rNKxk8vqJSkHI+7PlsKiQREWXN9GB7QQfR0Xu1fXp4uzLfuaIFhRj6EOtHwQJxE+Bn
-         o4qVMV/fn9XU6mjfTWWdAz8LlOwhpAXQNDj84TajEp7PLiOvSJC1NCYVNSuwvS/xIx
-         IaVNqBXJazPvQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A907260A94;
-        Tue, 30 Nov 2021 14:50:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/2] Update non-RT users of migrate_disable().
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163828380868.32639.9644324450074262877.git-patchwork-notify@kernel.org>
-Date:   Tue, 30 Nov 2021 14:50:08 +0000
-References: <20211127163200.10466-1-bigeasy@linutronix.de>
-In-Reply-To: <20211127163200.10466-1-bigeasy@linutronix.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, peterz@infradead.org, corbet@lwn.net,
+        s=k20201202; t=1638283980;
+        bh=y8sSD1M0rmRs8aa71ZeIsNb3AxdnPDLqgJeWwCEXq7s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=q83jGDYnNRXge6TYofA5qtA+/CSZPmkWrR9Qs/niXywqPiPVWOn5ojPFqFVGylq/y
+         6Mv8FQDwWx4RlGHPZD22CLIuMNOFU6l4aoPGGKldfMfMpJu9ZON9NndPhV/76oAEk2
+         09VZYs9HG/Kg2d4scE0b3zzVSPfXcb2V3FvLXKxoNXLguNg4OPD3XVhACFfy7/WYmR
+         HB4NsRrPNdRfjAa+I0ZTYgssSmVQ0Zem4/T2S917758CaLnu5XxT1aN1goTvWlzwLq
+         NqDP4yBUhG5Zn+O5K43C7XFz+53gvLuTr9yejp36DefLVAbBiiBI8Oqmd0T5rIIRPT
+         OM87ScZLGvAuQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Li Zhijian <zhijianx.li@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, shuah@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, tglx@linutronix.de
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 08/17] selftests/tc-testings: Be compatible with newer tc output
+Date:   Tue, 30 Nov 2021 09:52:32 -0500
+Message-Id: <20211130145243.946407-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211130145243.946407-1-sashal@kernel.org>
+References: <20211130145243.946407-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+From: Li Zhijian <zhijianx.li@intel.com>
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+[ Upstream commit ac2944abe4d7732f29a79f063c9cae7df2a3e3cc ]
 
-On Sat, 27 Nov 2021 17:31:58 +0100 you wrote:
-> While browsing through code I noticed outdated code/ documentation
-> regarding migrate_disable() on non-PREEMPT_RT kernels.
-> 
-> Sebastian
+old tc(iproute2-5.9.0) output:
+ action order 1: bpf action.o:[action-ok] id 60 tag bcf7977d3b93787c jited default-action pipe
+newer tc(iproute2-5.14.0) output:
+ action order 1: bpf action.o:[action-ok] id 64 name tag bcf7977d3b93787c jited default-action pipe
 
-Here is the summary with links:
-  - [doc,1/2] Documentation/locking/locktypes: Update migrate_disable() bits.
-    https://git.kernel.org/bpf/bpf/c/6a631c0432dc
-  - [net,2/2] bpf: Make sure bpf_disable_instrumentation() is safe vs preemption.
-    https://git.kernel.org/bpf/bpf/c/79364031c5b4
+It can fix below errors:
+ # ok 260 f84a - Add cBPF action with invalid bytecode
+ # not ok 261 e939 - Add eBPF action with valid object-file
+ #       Could not match regex pattern. Verify command output:
+ # total acts 0
+ #
+ #       action order 1: bpf action.o:[action-ok] id 42 name  tag bcf7977d3b93787c jited default-action pipe
+ #        index 667 ref 1 bind 0
 
-You are awesome, thank you!
+Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json b/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json
+index 1a9b282dd0be2..7590f883d7edf 100644
+--- a/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json
++++ b/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json
+@@ -66,7 +66,7 @@
+         "cmdUnderTest": "$TC action add action bpf object-file $EBPFDIR/action.o section action-ok index 667",
+         "expExitCode": "0",
+         "verifyCmd": "$TC action get action bpf index 667",
+-        "matchPattern": "action order [0-9]*: bpf action.o:\\[action-ok\\] id [0-9]* tag [0-9a-f]{16}( jited)? default-action pipe.*index 667 ref",
++        "matchPattern": "action order [0-9]*: bpf action.o:\\[action-ok\\] id [0-9].* tag [0-9a-f]{16}( jited)? default-action pipe.*index 667 ref",
+         "matchCount": "1",
+         "teardown": [
+             "$TC action flush action bpf",
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.33.0
 
