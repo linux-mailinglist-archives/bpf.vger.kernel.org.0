@@ -2,93 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2556463604
-	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 15:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA601463616
+	for <lists+bpf@lfdr.de>; Tue, 30 Nov 2021 15:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241959AbhK3OIX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Nov 2021 09:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241969AbhK3OIS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Nov 2021 09:08:18 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94314C061574
-        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 06:04:56 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id r15so41610162uao.3
-        for <bpf@vger.kernel.org>; Tue, 30 Nov 2021 06:04:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BN93qTA5PyR3RsDTvrIEFE+wnbpkwaKBNgebUfy9kAc=;
-        b=ET8K6SVn050wLvzMK9MXrHizBc3QctkcemSfwYbhWUHk8yCPcywUP5pj82bggxz4et
-         QUWF6e3uiAZeENyGIOsz7YAaOdelmOqcTRACpE5Dh4kouA6fm+WRC6WkvutxkPwyoh3e
-         df9b80B2OHjYiq04npS3SOmlFAvSVygzGzDlo+ylsgCx6+DbVTBO1O7mPd7v2HTlc4gL
-         Nf3XAcCUy3qm3T811R9SXDH5qbktIiQgjHr+9BxL/Ob3emK7sqzDc3WoR/blJisrcNoK
-         f1OiMnWmbEGeESk9JJQVYgsOVQ7lXvU/OyiuMsJ+YR+N9K/4eALJ2CO6y80VcjMhf5P9
-         b3fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=BN93qTA5PyR3RsDTvrIEFE+wnbpkwaKBNgebUfy9kAc=;
-        b=cMpMeej3pxlL49qqdkbaRvJtlbI2rAH0wyzHVkTMxRYCs8cmPAD8FWIezrA4cLiC/N
-         dDQ8vyWJZzVTx4eMBhhOYW95sJqU30IEFs+NNavQvKCnOAXJ2IWqvfifNdtl9IUaG91r
-         P6E89gniBMr1zw4xkH7La+zB35a6yViVKABTF7vqJHUMUQ/APiamxl+bQ3ntmXyr1hUs
-         pUHxDMLw5SZ4Sf9tmKVcwT4coN2FzdVm4TupL3b9zMAwsinyEenvCPiRAtT86H8XsGUX
-         Z26UA4KTlWagNwYz41+RR9P9Q+qYrqqUXN9r3ot9xCpFwNvVU9cWF8Oad4paS4xTwby9
-         4Xqw==
-X-Gm-Message-State: AOAM531pFHZWd52ENqh78xt9JAjq9FT0t7Al733FsH5GtqZ2w8D1mkOg
-        hlt5h9ITfaOptdc5ujsCeX5QSDfke+WdUaxVrg==
-X-Google-Smtp-Source: ABdhPJzXX1Kk5fz+Bj9QejjmMVQ0k0gNt4h0C/iwOHcO0kn3wG7b0ZF5voMT1vJhKquF8Y9jop8Ei1vuDseBm5s5EJo=
-X-Received: by 2002:ab0:4adc:: with SMTP id t28mr57314731uae.4.1638281095249;
- Tue, 30 Nov 2021 06:04:55 -0800 (PST)
+        id S232168AbhK3OKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Nov 2021 09:10:22 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:27320 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233178AbhK3OKU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Nov 2021 09:10:20 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J3PCw13ytzbjBL;
+        Tue, 30 Nov 2021 22:06:52 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 30 Nov
+ 2021 22:06:58 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <houtao1@huawei.com>
+Subject: [PATCH bpf-next 0/5] introduce bpf_strncmp() helper
+Date:   Tue, 30 Nov 2021 22:22:10 +0800
+Message-ID: <20211130142215.1237217-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Received: by 2002:a9f:2005:0:0:0:0:0 with HTTP; Tue, 30 Nov 2021 06:04:54
- -0800 (PST)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishag8@gmail.com>
-Date:   Tue, 30 Nov 2021 06:04:54 -0800
-Message-ID: <CAMoG4bWSAfuPGtS50Vv7+xZMra0Lh7UcN7fEZ0j_XetoPmmq8A@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
- Dear Friend,
-I am Aisha Muammar Gaddafi, the only daughter of the embattled president of
-Libya, Hon. Muammar Gaddafi. I know my mail might come to you as a surprise
-because you don=E2=80=99t know me, but due to the unsolicited nature of my
-situation here in Refugee camp Ouagadougou Burkina Faso i decided to
-contact you for help. I have passed through pains and sorrowful moments
-since the death of my father. At the same time, my family is the target of
-Western nations led by Nato who want to destroy my father at all costs. Our
-investments and bank accounts in several countries are their targets to
-freeze.
+Hi,
 
-My Father of blessed memory deposited the sum of $27.5M (Twenty Seven
-Million Five Hundred Thousand Dollars) in a Bank at Burkina Faso which he
-used my name as the next of kin. I have been commissioned by the (BOA) bank
-to present an interested foreign investor/partner who can stand as my
-trustee and receive the fund in his account for a possible investment in
-his country due to my refugee status here in Burkina Faso.
+The motivation for introducing bpf_strncmp() helper comes from
+two aspects:
 
-I am in search of an honest and reliable person who will help me and stand
-as my trustee so that I will present him to the Bank for the transfer of
-the fund to his bank account overseas. I have chosen to contact you after
-my prayers and I believe that you will not betray my trust but rather take
-me as your own sister or daughter. If this transaction interests you, you
-don't have to disclose it to anybody because of what is going on with my
-entire family, if the United nation happens to know this account, they will
-freeze it as they freeze others, so please keep this transaction only to
-yourself until we finalize it.
+(1) clang doesn't always replace strncmp() automatically
+In tracing program, sometimes we need to using a home-made
+strncmp() to check whether or not the file name is expected.
 
-Sorry for my pictures. I will enclose it in my next mail and more about me
-when I hear from you okay.
+(2) the performance of home-made strncmp is not so good
+As shown in the benchmark in patch #4, the performance of
+bpf_strncmp() helper is 18% or 33% better than home-made strncmp()
+under x86-64 or arm64 when the compared string length is 64. When
+the string length grows to 4095, the performance win will be
+179% or 600% under x86-64 or arm64.
 
-Yours Sincerely
-Best Regard,
-Aisha Gaddafi
+The prototype of bpf_strncmp() has changed from
+
+  bpf_strncmp(const char *s1, const char *s2, u32 s2_sz)
+
+to
+
+  bpf_strncmp(const char *s1, u32 s1_sz, const char *s2)
+
+The main reason is readability and there is nearly no performance
+difference between these two APIs (refer to the data attached below
+[1]).
+
+Any comments are welcome.
+Regards,
+Tao
+
+Change Log:
+v1:
+ * change API to bpf_strncmp(const char *s1, u32 s1_sz, const char *s2)
+ * add benchmark refactor and benchmark between bpf_strncmp() and strncmp()
+
+RFC: https://lore.kernel.org/bpf/20211106132822.1396621-1-houtao1@huawei.com/
+
+[1] Performance difference between two APIs under x86-64:
+
+helper_rfc-X: use bpf_strncmp in RFC to compare X-sized string
+helper-Y: use bpf_strncmp in v1 to compare Y-sized string
+
+helper_rfc-1         3.482 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+helper-1             3.485 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+
+helper_rfc-8         3.428 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+helper-8             3.434 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+
+helper_rfc-32        3.253 ± 0.002M/s (drops 0.000 ± 0.000M/s)
+helper-32            3.234 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+
+helper_rfc-64        3.039 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+helper-64            3.042 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+
+helper_rfc-128       2.640 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+helper-128           2.633 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+
+helper_rfc-512       1.576 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+helper-512           1.574 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+
+helper_rfc-2048      0.602 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+helper-2048          0.602 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+
+helper_rfc-4095      0.328 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+helper-4095          0.328 ± 0.000M/s (drops 0.000 ± 0.000M/s)
+
+Hou Tao (5):
+  bpf: add bpf_strncmp helper
+  selftests/bpf: fix checkpatch error on empty function parameter
+  selftests/bpf: factor out common helpers for benchmarks
+  selftests/bpf: add benchmark for bpf_strncmp() helper
+  selftests/bpf: add test cases for bpf_strncmp()
+
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |  11 ++
+ kernel/bpf/helpers.c                          |  16 ++
+ tools/include/uapi/linux/bpf.h                |  11 ++
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/bench.c           |  21 ++-
+ tools/testing/selftests/bpf/bench.h           |  34 +++-
+ .../bpf/benchs/bench_bloom_filter_map.c       |  44 ++---
+ .../selftests/bpf/benchs/bench_count.c        |  16 +-
+ .../selftests/bpf/benchs/bench_rename.c       |  43 ++---
+ .../selftests/bpf/benchs/bench_ringbufs.c     |  21 +--
+ .../selftests/bpf/benchs/bench_strncmp.c      | 150 ++++++++++++++++
+ .../selftests/bpf/benchs/bench_trigger.c      |  79 ++++----
+ .../selftests/bpf/benchs/run_bench_strncmp.sh |  12 ++
+ .../selftests/bpf/prog_tests/test_strncmp.c   | 170 ++++++++++++++++++
+ .../selftests/bpf/progs/strncmp_bench.c       |  50 ++++++
+ .../selftests/bpf/progs/strncmp_test.c        |  59 ++++++
+ 17 files changed, 604 insertions(+), 138 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_strncmp.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_strncmp.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_strncmp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/strncmp_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/strncmp_test.c
+
+-- 
+2.29.2
+
