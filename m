@@ -2,107 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D2D46535A
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 17:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DBE465423
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 18:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243673AbhLAQxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 11:53:22 -0500
-Received: from mga12.intel.com ([192.55.52.136]:26944 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242868AbhLAQxW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 11:53:22 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10185"; a="216513901"
-X-IronPort-AV: E=Sophos;i="5.87,279,1631602800"; 
-   d="scan'208";a="216513901"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2021 08:50:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,279,1631602800"; 
-   d="scan'208";a="677324335"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga005.jf.intel.com with ESMTP; 01 Dec 2021 08:49:55 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1B1GnsGV021198;
-        Wed, 1 Dec 2021 16:49:54 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S241521AbhLARkm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 12:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231499AbhLARkl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 12:40:41 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E29CC061574;
+        Wed,  1 Dec 2021 09:37:20 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so290404pjb.5;
+        Wed, 01 Dec 2021 09:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SU/hycYSpFf1t+rfHmtzU74hh3zXq3CMqi0YestRe84=;
+        b=gfhF1Nk3oI52R42qw4/FDzh3xFuGL0bKVjl9RCpfcWVR4fjxnU6GkQs0CA5Li1N3yo
+         QfV9ktXcbD4TohBgDFT6ebXwGOTqnBt63vOVS3KNn3OHHuiZkhcKLSm7C/QVdHMYddFb
+         PI2sM4jXqrC1cucn33GL1C4rGKnVCQrFCBXUz1OYHDBMSmZpvCE2sc3XLEu8Tpx35X1v
+         Q+g9/sUb1uarkmceirhx3TK8nSjcVViogvI1tXz3lTn7pVjvFvj6/ekZUoCfGfac1Mo3
+         p+VasD1nqxLxVT5nPnE0RN0U1lhI4DdwALgLeXq6asH3C/xgAVduRGDPYC/H7oTY7OmV
+         Q0rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SU/hycYSpFf1t+rfHmtzU74hh3zXq3CMqi0YestRe84=;
+        b=x7nqENGt01LNpve4rObMdkNvKvmCb8l2Wm6MQUUwVXb/T6thD/ivxXrBQ28i7kLyVt
+         GI4QvB9iVBN90256P8Wb1VM5xFBxzIqc3V2x6qUn9vLWk25cZujGD3zwVi/tCBSPaTt/
+         Fpe9WTKpSPWEHWSYbNG94OvFdxLXSOm0zBYVAb3fKWwy4clQ1mVTGAMy3YYUyM8t5xwU
+         vi3lJ7ycVwH04MXgPxtjnfEEuQCVcrHbTGEdflRMyENYZq0G61JHxgttdmwJR13MreXk
+         X1lzUuY5CPNWCMnUzFw0PS9UqxnVuHv290voEcOHE+1Hu2d3fkGQsHdLEpWOTHSygo7B
+         ZiiQ==
+X-Gm-Message-State: AOAM532utux/dBmXdB/DkAxk1S/N+4l+TWiHsVlOwRDTkxEoyW4eNhgZ
+        7RU230xMkzxO08aGIP2hJj4vFLe5g9H0nE+XIdE=
+X-Google-Smtp-Source: ABdhPJz8W9WDxD5umtQTFbVGgcG3Mtm2mfoqjvBGqNA6YLcFyefgewxL/BJpDA75YleCCwK0SMZ52QD3HquiDhjXSx0=
+X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr9027361pja.122.1638380239855;
+ Wed, 01 Dec 2021 09:37:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20211118112455.475349-1-jolsa@kernel.org> <20211118112455.475349-7-jolsa@kernel.org>
+ <CAEf4Bza0UZv6EFdELpg30o=67-Zzs6ggZext4u40+if9a5oQDg@mail.gmail.com>
+ <YaPFEpAqIREeUMU7@krava> <CAEf4BzbauHaDDJvGpx4oCRddd4KWpb4PkxUiUJvx-CXqEN2sdQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbauHaDDJvGpx4oCRddd4KWpb4PkxUiUJvx-CXqEN2sdQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 1 Dec 2021 09:37:08 -0800
+Message-ID: <CAADnVQ+6iMkRh3YLjJpyoLtqgzU2Fwhdhbv3ue7ObWWoZTmFmw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 06/29] bpf: Add bpf_arg/bpf_ret_value helpers for
+ tracing programs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] samples: bpf: fix conflicting types in fds_example
-Date:   Wed,  1 Dec 2021 17:49:31 +0100
-Message-Id: <20211201164931.47357-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following samples/bpf build error appeared after the
-introduction of bpf_map_create() in libbpf:
+On Tue, Nov 30, 2021 at 11:13 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> Hm... I'd actually try to keep kprobe BTF-free. We have fentry for
+> cases where BTF is present and the function is simple enough (like <=6
+> args, etc). Kprobe is an escape hatch mechanism when all the BTF
+> fanciness just gets in the way (retsnoop being a primary example from
+> my side). What I meant here was that bpf_get_arg(int n) would read
+> correct fields from pt_regs that map to first N arguments passed in
+> the registers. What we currently have with PT_REGS_PARM macros in
+> bpf_tracing.h, but with a proper unified BPF helper.
 
-  CC  samples/bpf/fds_example.o
-samples/bpf/fds_example.c:49:12: error: static declaration of 'bpf_map_create' follows non-static declaration
-static int bpf_map_create(void)
-           ^
-samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: previous declaration is here
-LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
-               ^
-samples/bpf/fds_example.c:82:23: error: too few arguments to function call, expected 6, have 0
-                fd = bpf_map_create();
-                     ~~~~~~~~~~~~~~ ^
-samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: 'bpf_map_create' declared here
-LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
-               ^
-2 errors generated.
-
-fds_example by accident has a static function with the same name.
-It's not worth it to separate a single call into its own function,
-so just embed it.
-
-Fixes: 992c4225419a ("libbpf: Unify low-level map creation APIs w/ new bpf_map_create()")
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- samples/bpf/fds_example.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/samples/bpf/fds_example.c b/samples/bpf/fds_example.c
-index 59f45fef5110..9a7c1fd7a4a8 100644
---- a/samples/bpf/fds_example.c
-+++ b/samples/bpf/fds_example.c
-@@ -46,12 +46,6 @@ static void usage(void)
- 	printf("       -h          Display this help.\n");
- }
- 
--static int bpf_map_create(void)
--{
--	return bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(uint32_t),
--			      sizeof(uint32_t), 1024, 0);
--}
--
- static int bpf_prog_create(const char *object)
- {
- 	static struct bpf_insn insns[] = {
-@@ -79,7 +73,8 @@ static int bpf_do_map(const char *file, uint32_t flags, uint32_t key,
- 	int fd, ret;
- 
- 	if (flags & BPF_F_PIN) {
--		fd = bpf_map_create();
-+		fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(uint32_t),
-+				    sizeof(uint32_t), 1024, 0);
- 		printf("bpf: map fd:%d (%s)\n", fd, strerror(errno));
- 		assert(fd > 0);
- 
--- 
-2.33.1
-
+and these macros are arch specific.
+which means that it won't be a trivial patch to add bpf_get_arg()
+support for kprobes.
+Plenty of things to consider. Like should it return an error
+at run-time or verification time when a particular arch is not supported.
+Or argument 6 might be available on one arch, but not on the other.
+32-bit CPU regs vs 64-bit regs of BPF, etc.
+I wouldn't attempt to mix this work with current patches.
