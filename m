@@ -2,86 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3526846573D
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 21:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBAA465811
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 21:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352972AbhLAUl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 15:41:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352997AbhLAUkF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 15:40:05 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C263C061574;
-        Wed,  1 Dec 2021 12:36:40 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id b11so18596654pld.12;
-        Wed, 01 Dec 2021 12:36:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yBtyrgQgTcwj7GSArxFRQ9lJWzU4lnRaFr8P+y6Z3lk=;
-        b=TORDP2yvoTmQHQlYus5L8mrBh7nC/YS+DkGtMRhynIkjmrJ3b5z33la/FY9j3lFZdr
-         dbwdsRuOGits2zcqEc3U+xeapuHJxQi+8m97b71iCwtL/7TLUi27YdBckEoWAFbZqRfD
-         9GANQBOjmbJp72M2G37I2nRqBX1DWeQ9KJJxHoL0suAS/JGAfy+wHlEjlo32vU0+hrKy
-         V1lVhd2Rr0IbdVN/lxdl9XyN6fM+HARVr5+kkv9dR18g2JTYpzupERdzEnCxMMDyomUl
-         vJ6Xdzo59I+VsXwpNRD+LK7dGYEVBzFSczrylr30ucKMhmWzV3Ifo3ooMaQwX2ytsZ1r
-         5B2g==
+        id S235116AbhLAVCo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 16:02:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235502AbhLAVBC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Dec 2021 16:01:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638392260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ev55CeShxZMLjyR6AWvoqEYxO3dGwDYuTnrnWeS0i0Q=;
+        b=AUxBP6piZbOSJudxktLrA4t8r1TKVzARoyMQ13BhqQbz4xUIgiMkLQIJir8y68xSKO6hdz
+        OleSpQ3PnRZlcsG8vhmma6tKA5eEu1Bo75CEpafmoaELF6NMPttzBWJN5NlYQj9rOCVYRW
+        LcCpHuc74CLxmbO6o8e54B2WTSIdPqY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-392-I1f_dHRaNIinSYofsbaqGw-1; Wed, 01 Dec 2021 15:57:39 -0500
+X-MC-Unique: I1f_dHRaNIinSYofsbaqGw-1
+Received: by mail-ed1-f69.google.com with SMTP id m12-20020a056402430c00b003e9f10bbb7dso21434796edc.18
+        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 12:57:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yBtyrgQgTcwj7GSArxFRQ9lJWzU4lnRaFr8P+y6Z3lk=;
-        b=P+bvWFw8mXgSUds913Tua0UXEsaXk93m7ZWNnMeMuA5vlhp6IY2Ww3hHCCHBjBujiP
-         YyxLoNr6lIu/SUTX1eV1YFjloyZR8TFlKXcWIrDPUeSdxp+jxcPajeFCWH8VekpSIixr
-         Rk4ALhc3MsfhNliICB7rqIJqAJnPyHc/zMHjb6mqiIJ5bc4zttckHRh2AKbQ3Q+oKDPH
-         TsmOxIKFqPmFa3VM0dpDJqIqazVC98Ld2QpUdNXmhBbg7luTvIubYRmBjvcbQinsrL99
-         M0w2vfK8oeGz7PZUJdCACVwx6Fr2/Q3uFsMIEzol6ORMHwpcBkBvQSd9MMDaFgZZ/gyh
-         pung==
-X-Gm-Message-State: AOAM532fsooqa5DsJ1B1swgkrGG9rSYqnkW05ozWDhNpCL20W0TlRgwM
-        gu0fJY4TYDJU8c9UhQuiI5XgzKz6k3E48ak/MD4=
-X-Google-Smtp-Source: ABdhPJyF3wNU5906boaYjCZBSUXyq2AFtqmnSQa/tMv+zkOrgBKNJgDC5BA8yvyz0x+KfwIYvId4PstY/dz/ybwxgCk=
-X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr687102pjy.138.1638391000123;
- Wed, 01 Dec 2021 12:36:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20211118112455.475349-1-jolsa@kernel.org> <20211118112455.475349-7-jolsa@kernel.org>
- <CAEf4Bza0UZv6EFdELpg30o=67-Zzs6ggZext4u40+if9a5oQDg@mail.gmail.com>
- <YaPFEpAqIREeUMU7@krava> <CAEf4BzbauHaDDJvGpx4oCRddd4KWpb4PkxUiUJvx-CXqEN2sdQ@mail.gmail.com>
- <CAADnVQ+6iMkRh3YLjJpyoLtqgzU2Fwhdhbv3ue7ObWWoZTmFmw@mail.gmail.com> <CAEf4BzabQ9YU=d-F0ypA6W73YD534cAb2SkAkwYuyD6dk71LSQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzabQ9YU=d-F0ypA6W73YD534cAb2SkAkwYuyD6dk71LSQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 1 Dec 2021 12:36:29 -0800
-Message-ID: <CAADnVQKjOGr+v-xA6JP2wriha6BFFA0cs8cdUY-74ft2YYzXkg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 06/29] bpf: Add bpf_arg/bpf_ret_value helpers for
- tracing programs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Ev55CeShxZMLjyR6AWvoqEYxO3dGwDYuTnrnWeS0i0Q=;
+        b=3SvglKojMF9/qGLQ2c7vO6hLV+k2B82mtRuwVcc8p+96uGCnuZsfnBDyG0tbBsMLG4
+         6JtWcAT55nXLJYcDQzFPAvvOJZD4VLhBDgGEwr7mQwuVmgsDbKL1UdTnRGYUIl2AmArD
+         jkblHZRmzo3fehSLh0KVo+D6lKwRvVI0UksT3i01C3+9Oa5lQfOK2F9tdFL6HfqKQCDx
+         CpeEv6J1JD8IzpOG7OxAcysuylqWhuOT6ekagOB0fvPLCy5YM8SBq0KxUmClgDfIbOtM
+         CYSGC0qxKnroUw7/xzecBRQdSh/dTnZ8GIY4hoeEER3F2zlSWOQJW/elgDALj/3/Gtvz
+         XWXw==
+X-Gm-Message-State: AOAM532Yebv4A49foNM4bDAh1/nPKCx/YD8xs3wl5PmDEHZq8v3eSYrj
+        S/8Crq0L3bpFbCm/OmGqkO6IzkbMtDe7zPNsNe6U08o76BleI7L9BB/Ou73bY+yuehwZPvghkCI
+        c7aaQfgtP52Xk
+X-Received: by 2002:a05:6402:42:: with SMTP id f2mr12124024edu.204.1638392257495;
+        Wed, 01 Dec 2021 12:57:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzkFuY5Qu3gtYYCKqYKX5TiqOlyr4sCu/nky4225/b+rKH02PDkf84hbcaZAhuYG3e9lQc8EA==
+X-Received: by 2002:a05:6402:42:: with SMTP id f2mr12123906edu.204.1638392256495;
+        Wed, 01 Dec 2021 12:57:36 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id sc7sm505038ejc.50.2021.12.01.12.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Dec 2021 12:57:35 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1F8071802A0; Wed,  1 Dec 2021 21:57:35 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] samples: bpf: fix conflicting types in
+ fds_example
+In-Reply-To: <20211201164931.47357-1-alexandr.lobakin@intel.com>
+References: <20211201164931.47357-1-alexandr.lobakin@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 01 Dec 2021 21:57:35 +0100
+Message-ID: <87sfvc59hc.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 1, 2021 at 10:00 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> But you emphasized an important point, that it's probably good to
-> allow users to distinguish errors from reading actual value 0. There
-> are and will be situations where argument isn't available or some
-> combination of conditions are not supported. So I think, while it's a
-> bit more verbose, these forms are generally better:
->
-> int bpf_get_func_arg(int n, u64 *value);
-> int bpf_get_func_ret(u64 *value);
->
-> WDYT?
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-Makes sense to me.
-The verifier will be able to inline it just fine.
-Two extra insns only compared to direct return.
+> Fix the following samples/bpf build error appeared after the
+> introduction of bpf_map_create() in libbpf:
+>
+>   CC  samples/bpf/fds_example.o
+> samples/bpf/fds_example.c:49:12: error: static declaration of 'bpf_map_cr=
+eate' follows non-static declaration
+> static int bpf_map_create(void)
+>            ^
+> samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: previous declaration is=
+ here
+> LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+>                ^
+> samples/bpf/fds_example.c:82:23: error: too few arguments to function cal=
+l, expected 6, have 0
+>                 fd =3D bpf_map_create();
+>                      ~~~~~~~~~~~~~~ ^
+> samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: 'bpf_map_create' declar=
+ed here
+> LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+>                ^
+> 2 errors generated.
+>
+> fds_example by accident has a static function with the same name.
+> It's not worth it to separate a single call into its own function,
+> so just embed it.
+>
+> Fixes: 992c4225419a ("libbpf: Unify low-level map creation APIs w/ new bp=
+f_map_create()")
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
+I just ran into this today as well - thanks for the fix!
+
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
