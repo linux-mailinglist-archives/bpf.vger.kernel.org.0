@@ -2,114 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8AB465737
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 21:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3526846573D
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 21:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352944AbhLAUib (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 15:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46672 "EHLO
+        id S1352972AbhLAUl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 15:41:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352955AbhLAUiD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 15:38:03 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A904AC061756
-        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 12:34:36 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id x5so25792968pfr.0
-        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 12:34:36 -0800 (PST)
+        with ESMTP id S1352997AbhLAUkF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 15:40:05 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C263C061574;
+        Wed,  1 Dec 2021 12:36:40 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id b11so18596654pld.12;
+        Wed, 01 Dec 2021 12:36:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d3zifY62PAYZtUVi5OWBlQlDus7C9JKEjDNlCp6bCAU=;
-        b=Jab05EpQnKjBIlE4KQR6ZwU1HVVVaV9BB8djV8bxQHd9qb8VkZVumeSLhma9gZz927
-         R9mWzHFQ32JQ1enihxENMcxz4+VRilGR/fnOtWafVU7yF5cmjaTXQZhD/MZC3jxO7pqT
-         CWpJxv5QxOjIKd2sYjSffbvuikNzh+8z1j6esm9/lMJbWmsY8dNqQcugtT8DbEfeB/OX
-         G9swxjEAi8Jkxd8zPv+j2HFtnANJOdBBpWfS5854bXLjU4s1BJAuaXCL55OtWK7fSB0g
-         SaW7Zc9Cvw1AkmAv9KmN4h0nHR3bfFsI2/DJgE03mWzoeMmZF+Nvn86tJd505LFmXgiy
-         LevQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yBtyrgQgTcwj7GSArxFRQ9lJWzU4lnRaFr8P+y6Z3lk=;
+        b=TORDP2yvoTmQHQlYus5L8mrBh7nC/YS+DkGtMRhynIkjmrJ3b5z33la/FY9j3lFZdr
+         dbwdsRuOGits2zcqEc3U+xeapuHJxQi+8m97b71iCwtL/7TLUi27YdBckEoWAFbZqRfD
+         9GANQBOjmbJp72M2G37I2nRqBX1DWeQ9KJJxHoL0suAS/JGAfy+wHlEjlo32vU0+hrKy
+         V1lVhd2Rr0IbdVN/lxdl9XyN6fM+HARVr5+kkv9dR18g2JTYpzupERdzEnCxMMDyomUl
+         vJ6Xdzo59I+VsXwpNRD+LK7dGYEVBzFSczrylr30ucKMhmWzV3Ifo3ooMaQwX2ytsZ1r
+         5B2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d3zifY62PAYZtUVi5OWBlQlDus7C9JKEjDNlCp6bCAU=;
-        b=GDk3kFUkr7Wk/UVBetFzC/Ba8wdjSfm4AKRv8tfoD/xQ7zXn7CEd7bi0rdL5You+RV
-         8IUbkGU3ZZo7W7yru/eeCVBv04FJbXhvy5BXLP8GIAtrz0ub1tVGboY8A8V1T3EBN6z6
-         F+otWMS44rqNH4G4beLUWqs3BdGv9MvDUJUGFd6YIkc4UA5O0oS8nWiHPzruPmnxtwH1
-         6V+ZNasDcsodWylmgXaqkByfwBMYxBUmILe1HP67ogv3DhuG29AHUYzWF2PX8Edp86sA
-         VbZu0w3+wRIIyK6U34uzU+KjfUxCSw/1deL4w4PK2LsYiP6PAP0XquPiZUJG9NZo2Azn
-         6CsQ==
-X-Gm-Message-State: AOAM531/GZXA1ricqh/h96v+XaBTyoGg1j4loPdnz5lFUmtZuppuuSNw
-        7l0rjP7kX3n6VjLLz4zpg58=
-X-Google-Smtp-Source: ABdhPJzVMMUsNg8zVzHC7XcIjlEYqRLyGO3TWJVBLlgQt8j+r4nXKxeHFmOM7z3CJAeIeNP4ftqPsw==
-X-Received: by 2002:a05:6a00:2391:b0:4a2:cb64:2e01 with SMTP id f17-20020a056a00239100b004a2cb642e01mr8368762pfc.45.1638390876230;
-        Wed, 01 Dec 2021 12:34:36 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:620c])
-        by smtp.gmail.com with ESMTPSA id f185sm704175pfg.39.2021.12.01.12.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Dec 2021 12:34:35 -0800 (PST)
-Date:   Wed, 1 Dec 2021 12:34:33 -0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yBtyrgQgTcwj7GSArxFRQ9lJWzU4lnRaFr8P+y6Z3lk=;
+        b=P+bvWFw8mXgSUds913Tua0UXEsaXk93m7ZWNnMeMuA5vlhp6IY2Ww3hHCCHBjBujiP
+         YyxLoNr6lIu/SUTX1eV1YFjloyZR8TFlKXcWIrDPUeSdxp+jxcPajeFCWH8VekpSIixr
+         Rk4ALhc3MsfhNliICB7rqIJqAJnPyHc/zMHjb6mqiIJ5bc4zttckHRh2AKbQ3Q+oKDPH
+         TsmOxIKFqPmFa3VM0dpDJqIqazVC98Ld2QpUdNXmhBbg7luTvIubYRmBjvcbQinsrL99
+         M0w2vfK8oeGz7PZUJdCACVwx6Fr2/Q3uFsMIEzol6ORMHwpcBkBvQSd9MMDaFgZZ/gyh
+         pung==
+X-Gm-Message-State: AOAM532fsooqa5DsJ1B1swgkrGG9rSYqnkW05ozWDhNpCL20W0TlRgwM
+        gu0fJY4TYDJU8c9UhQuiI5XgzKz6k3E48ak/MD4=
+X-Google-Smtp-Source: ABdhPJyF3wNU5906boaYjCZBSUXyq2AFtqmnSQa/tMv+zkOrgBKNJgDC5BA8yvyz0x+KfwIYvId4PstY/dz/ybwxgCk=
+X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr687102pjy.138.1638391000123;
+ Wed, 01 Dec 2021 12:36:40 -0800 (PST)
+MIME-Version: 1.0
+References: <20211118112455.475349-1-jolsa@kernel.org> <20211118112455.475349-7-jolsa@kernel.org>
+ <CAEf4Bza0UZv6EFdELpg30o=67-Zzs6ggZext4u40+if9a5oQDg@mail.gmail.com>
+ <YaPFEpAqIREeUMU7@krava> <CAEf4BzbauHaDDJvGpx4oCRddd4KWpb4PkxUiUJvx-CXqEN2sdQ@mail.gmail.com>
+ <CAADnVQ+6iMkRh3YLjJpyoLtqgzU2Fwhdhbv3ue7ObWWoZTmFmw@mail.gmail.com> <CAEf4BzabQ9YU=d-F0ypA6W73YD534cAb2SkAkwYuyD6dk71LSQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzabQ9YU=d-F0ypA6W73YD534cAb2SkAkwYuyD6dk71LSQ@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Hao Luo <haoluo@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 1 Dec 2021 12:36:29 -0800
+Message-ID: <CAADnVQKjOGr+v-xA6JP2wriha6BFFA0cs8cdUY-74ft2YYzXkg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 06/29] bpf: Add bpf_arg/bpf_ret_value helpers for
+ tracing programs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next v2 8/9] bpf: Add MEM_RDONLY for helper args
- that are pointers to rdonly mem.
-Message-ID: <20211201203433.ioj3jsksaw3aoie2@ast-mbp.dhcp.thefacebook.com>
-References: <20211130012948.380602-1-haoluo@google.com>
- <20211130012948.380602-9-haoluo@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211130012948.380602-9-haoluo@google.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 05:29:47PM -0800, Hao Luo wrote:
->  
-> +
->  struct bpf_reg_types {
->  	const enum bpf_reg_type types[10];
->  	u32 *btf_id;
-> +
-> +	/* Certain types require customized type matching function. */
-> +	bool (*type_match_fn)(enum bpf_arg_type arg_type,
-> +			      enum bpf_reg_type type,
-> +			      enum bpf_reg_type expected);
->  };
->  
->  static const struct bpf_reg_types map_key_value_types = {
-> @@ -5013,6 +5019,19 @@ static const struct bpf_reg_types btf_id_sock_common_types = {
->  };
->  #endif
->  
-> +static bool mem_type_match(enum bpf_arg_type arg_type,
-> +			   enum bpf_reg_type type, enum bpf_reg_type expected)
-> +{
-> +	/* If arg_type is tagged with MEM_RDONLY, type is compatible with both
-> +	 * RDONLY and RDWR mem, fold the MEM_RDONLY flag in 'type' before
-> +	 * comparison.
-> +	 */
-> +	if ((arg_type & MEM_RDONLY) != 0)
-> +		type &= ~MEM_RDONLY;
-> +
-> +	return type == expected;
-> +}
-> +
->  static const struct bpf_reg_types mem_types = {
->  	.types = {
->  		PTR_TO_STACK,
-> @@ -5022,8 +5041,8 @@ static const struct bpf_reg_types mem_types = {
->  		PTR_TO_MAP_VALUE,
->  		PTR_TO_MEM,
->  		PTR_TO_BUF,
-> -		PTR_TO_BUF | MEM_RDONLY,
->  	},
-> +	.type_match_fn = mem_type_match,
+On Wed, Dec 1, 2021 at 10:00 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> But you emphasized an important point, that it's probably good to
+> allow users to distinguish errors from reading actual value 0. There
+> are and will be situations where argument isn't available or some
+> combination of conditions are not supported. So I think, while it's a
+> bit more verbose, these forms are generally better:
+>
+> int bpf_get_func_arg(int n, u64 *value);
+> int bpf_get_func_ret(u64 *value);
+>
+> WDYT?
 
-why add a callback for this logic?
-Isn't it a universal rule for MEM_RDONLY?
+Makes sense to me.
+The verifier will be able to inline it just fine.
+Two extra insns only compared to direct return.
