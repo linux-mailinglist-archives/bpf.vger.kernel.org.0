@@ -2,308 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE294654BD
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 19:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EBC4654C5
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 19:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351949AbhLASJj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 13:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
+        id S1352129AbhLASOP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 13:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244633AbhLASJh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 13:09:37 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03267C061574;
-        Wed,  1 Dec 2021 10:06:16 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id e136so65792036ybc.4;
-        Wed, 01 Dec 2021 10:06:15 -0800 (PST)
+        with ESMTP id S1352098AbhLASOG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 13:14:06 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB80C061756
+        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 10:10:43 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so2331808pjb.5
+        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 10:10:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nDftlED1JHWOwIY0c1q3Lh3qalRW5ur7uVqjd0m0XaU=;
-        b=q6A1D0TqJIoooMjygBBmSpTrEJWJvBonr2SU6p7OlmKLfe0YJgoCqXkrmZx4dZg+lq
-         z73EIn6A/C9MncVTamd8wBadF/tsDBl3rSCLENF5y/5rI1Cn/GO5ValAO1fapcLVn1JU
-         iXCOxLzrLmCemizhfVmKKDAmOF1sLjmomO1NAoCExkS2n+nbGXrxlRCgfcLoOtNDRUIx
-         UDdBQVK5WLu0vAW0m0Gmn28yeS90HuzVCyRQiOZmpayMdIUoN1QXztHIklwaa5IYwnsk
-         CWM/XtNNHm5U1Y4SPw7TYNeqi4KRCKPsBUCOhYXGIY+pf9D58MolV0wPf582/aO9MRon
-         7x5w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ti9K3fYiaLxPKKSCJ8HRx9mhZhZy1t7d7UBcpiq/0Z4=;
+        b=RVffyA11eiCGza2yOhH8T2g4fvsTkhzw/V8EdG0sqY/NlQrx7SqF6TqmegHPVODfEZ
+         syMlhrWu7TCTyy+0s2t3gISaHRuNuAK9NzNF105SdJDE8NWx5eyM6NrcMF3XSXu1F3LR
+         ddSa/m06a7kdmsPGN8+XZdXHBnR5IvVU5ws7PfJ61kzPlE1R7bprzTKOxgffpqq0Y6lY
+         8qUrDMs5YpMRO3K6DxEwSDXijYa3EQEoCEkHcCWU35e13QxQLjPWhbRf5LpNptlWZmry
+         y4JP4ehzLoWWpkCVj1kaKFlIGVJiCggvQDb2d5Sm4H5NCEsIbQ7Tqb7F+IDdoPn9+ZFk
+         /VAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nDftlED1JHWOwIY0c1q3Lh3qalRW5ur7uVqjd0m0XaU=;
-        b=OndLgWzG4a3r66rmULvVhZYORGaDy4Ob/tZ4xfJ9KfFgGu65PN+ouhJa2D0f+9btc4
-         NdFxlQaLdtgtYQ77cYO7kmf1v212RgBtt/sRPwUUANZVemB9GprPZYyMLVEuCaX85aE4
-         7Ktp5qcn5Vabx8GUFijS9dbH7vEl78VDkmqLaj8LYWtcLR8f+UpklcWxY9axte4pVbWN
-         R9c2AsV1wZmC/ZrWwHNcUb/NQgdDdCrlDQpIznWMccrCCGYEuh2Rk1N7sMb6AV9/RkAs
-         GwtRuOAQkGnhyoCLFiXh8Kle/stqHRx2AsNg9qQGh+Vc9H9y4noOW63e3abVF+AtEfJT
-         8cJQ==
-X-Gm-Message-State: AOAM532MODd4QJWAhULUYgYCXvtPGnusVth1H7N85I3yQWJISG/jKMfI
-        29huikBfW0bEL3wg9I0wq9SAYnk8sEQ5k6Hh4yU=
-X-Google-Smtp-Source: ABdhPJypBu7Aiw9YJv/mYNCu3Km6mxYSw370MDJoJFxL4MNaCSUzfN5mqpzyin5rWFzC4JN3zkP3zYsOAZHrQCANR5E=
-X-Received: by 2002:a25:54e:: with SMTP id 75mr8846537ybf.393.1638381974946;
- Wed, 01 Dec 2021 10:06:14 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ti9K3fYiaLxPKKSCJ8HRx9mhZhZy1t7d7UBcpiq/0Z4=;
+        b=345HzXff320BPNi1s3omwj1RsMLphQEU47JZw8w+XDMBHMLJsdwE3RQjUbKTONpB6y
+         iy5yGc/dptI85NkH7qJuhf3YCclw0plHk1Bq4lEggaQZ4M98MKzgIMJKWR3TMo2YbK/n
+         vF42kQxDDGlR5ia1DoRsm33DClmdMgXj5FH6o8axR2RZwvUXFoLxY+Kp3Mb64q5paYzM
+         xcxVG3etvaum54Z9uNSIviwmK4btTuf7E4Tz5XvBTZ8AqkYAfW7j199SDweYuBBk7X2t
+         BTAQtpr9jikWY02HuZgCol43Z+UC2So1OpVCMqEEJtEP4iQ6f/HldWu2MKsHOoRpT5gQ
+         2HBg==
+X-Gm-Message-State: AOAM532vzzyQguakAU/89lJ24N9E1zxDzPA9nuMvuWrDFVsuyZydG3uS
+        Vj5wFInRSbxDCV13Pi3OK4g=
+X-Google-Smtp-Source: ABdhPJzOVHfAsMZ7CwKp2UMcO/cwOd0gzsuf1Bl9IlLtRY1qUrOXLTUt0YgwRZxY8jK5uKhC4CfY+A==
+X-Received: by 2002:a17:903:249:b0:143:c077:59d3 with SMTP id j9-20020a170903024900b00143c07759d3mr9097048plh.26.1638382242631;
+        Wed, 01 Dec 2021 10:10:42 -0800 (PST)
+Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:620c])
+        by smtp.gmail.com with ESMTPSA id oa17sm5198pjb.37.2021.12.01.10.10.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Dec 2021 10:10:42 -0800 (PST)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v5 bpf-next 00/17] bpf: CO-RE support in the kernel
+Date:   Wed,  1 Dec 2021 10:10:23 -0800
+Message-Id: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211019144655.3483197-1-maximmi@nvidia.com> <20211019144655.3483197-10-maximmi@nvidia.com>
- <CACAyw9_MT-+n_b1pLYrU+m6OicgRcndEBiOwb5Kc1w0CANd_9A@mail.gmail.com>
- <87y26nekoc.fsf@toke.dk> <1901a631-25c0-158d-b37f-df6d23d8e8ab@nvidia.com>
- <103c5154-cc29-a5ab-3c30-587fc0fbeae2@fb.com> <1b9b3c40-f933-59c3-09e6-aa6c3dda438f@nvidia.com>
- <68a63a77-f856-1690-cb60-327fc753b476@fb.com> <3e673e1a-2711-320b-f0be-2432cf4bbe9c@nvidia.com>
- <f08fa9aa-8b0d-8217-1823-2830b2b2587c@fb.com> <cbd2e655-8113-e719-4b9d-b3987c398b04@nvidia.com>
- <ce2d9407-b141-6647-939f-0f679157fdf7@fb.com> <0a958197-67ab-8773-3611-f8156ebdb9e0@nvidia.com>
- <4f895364-a546-c7dd-b6d2-2a80628f2d9a@fb.com>
-In-Reply-To: <4f895364-a546-c7dd-b6d2-2a80628f2d9a@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Dec 2021 10:06:04 -0800
-Message-ID: <CAEf4Bzajt1Q-aYD1uecd9crtKcOxNe0_XsNcJ8VPX4fJ+D8JtA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 09/10] bpf: Add a helper to issue timestamp
- cookies in XDP
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Maxim Mikityanskiy <maximmi@nvidia.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Joe Stringer <joe@cilium.io>, Tariq Toukan <tariqt@nvidia.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 10:40 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 11/29/21 9:51 AM, Maxim Mikityanskiy wrote:
-> > On 2021-11-26 19:07, Yonghong Song wrote:
-> >>
-> >>
-> >> On 11/26/21 8:50 AM, Maxim Mikityanskiy wrote:
-> >>> On 2021-11-26 07:43, Yonghong Song wrote:
-> >>>>
-> >>>>
-> >>>> On 11/25/21 6:34 AM, Maxim Mikityanskiy wrote:
-> >>>>> On 2021-11-09 09:11, Yonghong Song wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> On 11/3/21 7:02 AM, Maxim Mikityanskiy wrote:
-> >>>>>>> On 2021-11-03 04:10, Yonghong Song wrote:
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> On 11/1/21 4:14 AM, Maxim Mikityanskiy wrote:
-> >>>>>>>>> On 2021-10-20 19:16, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >>>>>>>>>> Lorenz Bauer <lmb@cloudflare.com> writes:
-> >>>>>>>>>>
-> >>>>>>>>>>>> +bool cookie_init_timestamp_raw(struct tcphdr *th, __be32
-> >>>>>>>>>>>> *tsval, __be32 *tsecr)
-> >>>>>>>>>>>
-> >>>>>>>>>>> I'm probably missing context, Is there something in this
-> >>>>>>>>>>> function that
-> >>>>>>>>>>> means you can't implement it in BPF?
-> >>>>>>>>>>
-> >>>>>>>>>> I was about to reply with some other comments but upon closer
-> >>>>>>>>>> inspection
-> >>>>>>>>>> I ended up at the same conclusion: this helper doesn't seem to
-> >>>>>>>>>> be needed
-> >>>>>>>>>> at all?
-> >>>>>>>>>
-> >>>>>>>>> After trying to put this code into BPF (replacing the
-> >>>>>>>>> underlying ktime_get_ns with ktime_get_mono_fast_ns), I
-> >>>>>>>>> experienced issues with passing the verifier.
-> >>>>>>>>>
-> >>>>>>>>> In addition to comparing ptr to end, I had to add checks that
-> >>>>>>>>> compare ptr to data_end, because the verifier can't deduce that
-> >>>>>>>>> end <=3D data_end. More branches will add a certain slowdown (n=
-ot
-> >>>>>>>>> measured).
-> >>>>>>>>>
-> >>>>>>>>> A more serious issue is the overall program complexity. Even
-> >>>>>>>>> though the loop over the TCP options has an upper bound, and
-> >>>>>>>>> the pointer advances by at least one byte every iteration, I
-> >>>>>>>>> had to limit the total number of iterations artificially. The
-> >>>>>>>>> maximum number of iterations that makes the verifier happy is
-> >>>>>>>>> 10. With more iterations, I have the following error:
-> >>>>>>>>>
-> >>>>>>>>> BPF program is too large. Processed 1000001 insn
-> >>>>>>>>>
-> >>>>>>>>>                         processed 1000001 insns (limit 1000000)
-> >>>>>>>>> max_states_per_insn 29 total_states 35489 peak_states 596
-> >>>>>>>>> mark_read 45
-> >>>>>>>>>
-> >>>>>>>>> I assume that BPF_COMPLEXITY_LIMIT_INSNS (1 million) is the
-> >>>>>>>>> accumulated amount of instructions that the verifier can
-> >>>>>>>>> process in all branches, is that right? It doesn't look
-> >>>>>>>>> realistic that my program can run 1 million instructions in a
-> >>>>>>>>> single run, but it might be that if you take all possible flows
-> >>>>>>>>> and add up the instructions from these flows, it will exceed 1
-> >>>>>>>>> million.
-> >>>>>>>>>
-> >>>>>>>>> The limitation of maximum 10 TCP options might be not enough,
-> >>>>>>>>> given that valid packets are permitted to include more than 10
-> >>>>>>>>> NOPs. An alternative of using bpf_load_hdr_opt and calling it
-> >>>>>>>>> three times doesn't look good either, because it will be about
-> >>>>>>>>> three times slower than going over the options once. So maybe
-> >>>>>>>>> having a helper for that is better than trying to fit it into B=
-PF?
-> >>>>>>>>>
-> >>>>>>>>> One more interesting fact is the time that it takes for the
-> >>>>>>>>> verifier to check my program. If it's limited to 10 iterations,
-> >>>>>>>>> it does it pretty fast, but if I try to increase the number to
-> >>>>>>>>> 11 iterations, it takes several minutes for the verifier to
-> >>>>>>>>> reach 1 million instructions and print the error then. I also
-> >>>>>>>>> tried grouping the NOPs in an inner loop to count only 10 real
-> >>>>>>>>> options, and the verifier has been running for a few hours
-> >>>>>>>>> without any response. Is it normal?
-> >>>>>>>>
-> >>>>>>>> Maxim, this may expose a verifier bug. Do you have a reproducer
-> >>>>>>>> I can access? I would like to debug this to see what is the root
-> >>>>>>>> case. Thanks!
-> >>>>>>>
-> >>>>>>> Thanks, I appreciate your help in debugging it. The reproducer is
-> >>>>>>> based on the modified XDP program from patch 10 in this series.
-> >>>>>>> You'll need to apply at least patches 6, 7, 8 from this series to
-> >>>>>>> get new BPF helpers needed for the XDP program (tell me if that's
-> >>>>>>> a problem, I can try to remove usage of new helpers, but it will
-> >>>>>>> affect the program length and may produce different results in
-> >>>>>>> the verifier).
-> >>>>>>>
-> >>>>>>> See the C code of the program that passes the verifier (compiled
-> >>>>>>> with clang version 12.0.0-1ubuntu1) in the bottom of this email.
-> >>>>>>> If you increase the loop boundary from 10 to at least 11 in
-> >>>>>>> cookie_init_timestamp_raw(), it fails the verifier after a few
-> >>>>>>> minutes.
-> >>>>>>
-> >>>>>> I tried to reproduce with latest llvm (llvm-project repo),
-> >>>>>> loop boundary 10 is okay and 11 exceeds the 1M complexity limit.
-> >>>>>> For 10,
-> >>>>>> the number of verified instructions is 563626 (more than 0.5M) so
-> >>>>>> it is
-> >>>>>> totally possible that one more iteration just blows past the limit=
-.
-> >>>>>
-> >>>>> So, does it mean that the verifying complexity grows exponentially
-> >>>>> with increasing the number of loop iterations (options parsed)?
-> >>>>
-> >>>> Depending on verification time pruning results, it is possible
-> >>>> slightly increase number of branches could result quite some (2x,
-> >>>> 4x, etc.) of
-> >>>> to-be-verified dynamic instructions.
-> >>>
-> >>> Is it at least theoretically possible to make this coefficient below
-> >>> 2x? I.e. write a loop, so that adding another iteration will not
-> >>> double the number of verified instructions, but will have a smaller
-> >>> increase?
-> >>>
-> >>> If that's not possible, then it looks like BPF can't have loops
-> >>> bigger than ~19 iterations (2^20 > 1M), and this function is not
-> >>> implementable in BPF.
-> >>
-> >> This is the worst case. As I mentioned pruning plays a huge role in
-> >> verification. Effective pruning can add little increase of dynamic
-> >> instructions say from 19 iterations to 20 iterations. But we have
-> >> to look at verifier log to find out whether pruning is less effective =
-or
-> >> something else... Based on my experience, in most cases, pruning is
-> >> quite effective. But occasionally it is not... You can look at
-> >> verifier.c file to roughly understand how pruning work.
-> >>
-> >> Not sure whether in this case it is due to less effective pruning or
-> >> inherently we just have to go through all these dynamic instructions
-> >> for verification.
-> >>
-> >>>
-> >>>>>
-> >>>>> Is it a good enough reason to keep this code as a BPF helper,
-> >>>>> rather than trying to fit it into the BPF program?
-> >>>>
-> >>>> Another option is to use global function, which is verified separate=
-ly
-> >>>> from the main bpf program.
-> >>>
-> >>> Simply removing __always_inline didn't change anything. Do I need to
-> >>> make any other changes? Will it make sense to call a global function
-> >>> in a loop, i.e. will it increase chances to pass the verifier?
-> >>
-> >> global function cannot be static function. You can try
-> >> either global function inside the loop or global function
-> >> containing the loop. It probably more effective to put loops
-> >> inside the global function. You have to do some experiments
-> >> to see which one is better.
-> >
-> > Sorry for a probably noob question, but how can I pass data_end to a
-> > global function? I'm getting this error:
-> >
-> > Validating cookie_init_timestamp_raw() func#1...
-> > arg#4 reference type('UNKNOWN ') size cannot be determined: -22
-> > processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> > peak_states 0 mark_read 0
-> >
-> > When I removed data_end, I got another one:
-> >
-> > ; opcode =3D ptr[0];
-> > 969: (71) r8 =3D *(u8 *)(r0 +0)
-> >   R0=3Dmem(id=3D0,ref_obj_id=3D0,off=3D20,imm=3D0)
-> > R1=3Dmem(id=3D0,ref_obj_id=3D0,off=3D0,umin_value=3D4,umax_value=3D60,v=
-ar_off=3D(0x0;
-> > 0x3f),s32_min_value=3D0,s32_max_value=3D63,u32_max_value=3D63)
-> >   R2=3DinvP0 R3=3DinvP0 R4=3Dmem_or_null(id=3D6,ref_obj_id=3D0,off=3D0,=
-imm=3D0)
-> > R5=3DinvP0 R6=3Dmem_or_null(id=3D5,ref_obj_id=3D0,off=3D0,imm=3D0)
-> > R7=3Dmem(id=3D0,ref_obj_id=3D0,off=3D0,imm=3D0) R10=3Dfp0 fp
-> > -8=3D00000000 fp-16=3DinvP15
-> > invalid access to memory, mem_size=3D20 off=3D20 size=3D1
-> > R0 min value is outside of the allowed memory range
-> > processed 20 insns (limit 1000000) max_states_per_insn 0 total_states 2
-> > peak_states 2 mark_read 1
-> >
-> > It looks like pointers to the context aren't supported:
-> >
-> > https://www.spinics.net/lists/bpf/msg34907.html
-> >
-> >  > test_global_func11 - check that CTX pointer cannot be passed
-> >
-> > What is the standard way to pass packet data to a global function?
->
-> Since global function is separately verified, you need to pass the 'ctx'
-> to the global function and do the 'data_end' check again in the global
-> function. This will incur some packet re-parsing overhead similar to
-> tail calls.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Now that the bpf_loop() helper landed, it's another option for doing
-repeated work. Please see [0].
+v4->v5:
+. Reduce number of memory allocations in candidate cache logic
+. Fix couple UAF issues
+. Add Andrii's patch to cleanup struct bpf_core_cand
+. More thorough tests
+. Planned followups:
+  - support -v in lskel
+  - move struct bpf_core_spec out of bpf_core_apply_relo_insn to
+    reduce stack usage
+  - implement bpf_core_types_are_compat
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D587497&=
-state=3D*
+v3->v4:
+. complete refactor of find candidates logic.
+  Now it has small permanent cache.
+. Fix a bug in gen_loader related to attach_kind.
+. Fix BTF log size limit.
+. More tests.
 
->
-> >
-> > Thanks,
-> > Max
-> >
-> >>>
-> >>>>>
-> >>>>>>
-> >>>>>>> If you apply this tiny change, it fails the verifier after about
-> >>>>>>> 3 hours:
-> >>>>>>>
-> >>>> [...]
-> >>>
-> >
+v2->v3:
+. addressed Andrii's feedback in every patch.
+  New field in union bpf_attr changed from "core_relo" to "core_relos".
+. added one more test and checkpatch.pl-ed the set.
+
+v1->v2:
+. Refactor uapi to pass 'struct bpf_core_relo' from LLVM into libbpf and further
+into the kernel instead of bpf_core_apply_relo() bpf helper. Because of this
+change the CO-RE algorithm has an ability to log error and debug events through
+the standard bpf verifer log mechanism which was not possible with helper
+approach.
+. #define RELO_CORE macro was removed and replaced with btf_member_bit_offset() patch.
+
+This set introduces CO-RE support in the kernel.
+There are several reasons to add such support:
+1. It's a step toward signed BPF programs.
+2. It allows golang like languages that struggle to adopt libbpf
+   to take advantage of CO-RE powers.
+3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
+   by the verifier purely based on +10 offset. If R1 points to a union
+   the verifier picks one of the fields at this offset.
+   With CO-RE the kernel can disambiguate the field access.
+
+Alexei Starovoitov (16):
+  libbpf: Replace btf__type_by_id() with btf_type_by_id().
+  bpf: Rename btf_member accessors.
+  bpf: Prepare relo_core.c for kernel duty.
+  bpf: Define enum bpf_core_relo_kind as uapi.
+  bpf: Pass a set of bpf_core_relo-s to prog_load command.
+  bpf: Adjust BTF log size limit.
+  bpf: Add bpf_core_add_cands() and wire it into
+    bpf_core_apply_relo_insn().
+  libbpf: Use CO-RE in the kernel in light skeleton.
+  libbpf: Support init of inner maps in light skeleton.
+  libbpf: Clean gen_loader's attach kind.
+  selftests/bpf: Add lskel version of kfunc test.
+  selftests/bpf: Improve inner_map test coverage.
+  selftests/bpf: Convert map_ptr_kern test to use light skeleton.
+  selftests/bpf: Additional test for CO-RE in the kernel.
+  selftests/bpf: Revert CO-RE removal in test_ksyms_weak.
+  selftests/bpf: Add CO-RE relocations to verifier scale test.
+
+Andrii Nakryiko (1):
+  libbpf: Cleanup struct bpf_core_cand.
+
+ include/linux/bpf.h                           |   8 +
+ include/linux/btf.h                           |  89 +++-
+ include/uapi/linux/bpf.h                      |  78 +++-
+ kernel/bpf/Makefile                           |   4 +
+ kernel/bpf/bpf_struct_ops.c                   |   6 +-
+ kernel/bpf/btf.c                              | 396 +++++++++++++++++-
+ kernel/bpf/syscall.c                          |   2 +-
+ kernel/bpf/verifier.c                         |  76 ++++
+ net/ipv4/bpf_tcp_ca.c                         |   6 +-
+ tools/include/uapi/linux/bpf.h                |  78 +++-
+ tools/lib/bpf/bpf_gen_internal.h              |   4 +
+ tools/lib/bpf/btf.c                           |   2 +-
+ tools/lib/bpf/gen_loader.c                    |  72 +++-
+ tools/lib/bpf/libbpf.c                        | 147 ++++---
+ tools/lib/bpf/libbpf_internal.h               |   2 +-
+ tools/lib/bpf/relo_core.c                     | 179 +++++---
+ tools/lib/bpf/relo_core.h                     |  73 +---
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ .../selftests/bpf/prog_tests/core_kern.c      |  14 +
+ .../selftests/bpf/prog_tests/kfunc_call.c     |  24 ++
+ .../selftests/bpf/prog_tests/map_ptr.c        |  16 +-
+ tools/testing/selftests/bpf/progs/core_kern.c | 104 +++++
+ .../selftests/bpf/progs/map_ptr_kern.c        |  16 +-
+ .../selftests/bpf/progs/test_ksyms_weak.c     |   2 +-
+ .../selftests/bpf/progs/test_verif_scale2.c   |   4 +-
+ 25 files changed, 1179 insertions(+), 228 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/core_kern.c
+ create mode 100644 tools/testing/selftests/bpf/progs/core_kern.c
+
+-- 
+2.30.2
+
