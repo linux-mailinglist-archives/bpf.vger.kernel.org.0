@@ -2,162 +2,434 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268BA46477A
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 07:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F39624647AF
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 08:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237081AbhLAG66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 01:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54526 "EHLO
+        id S1347148AbhLAHRJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 02:17:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347043AbhLAG64 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 01:58:56 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE76BC061574;
-        Tue, 30 Nov 2021 22:55:35 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id d10so27501753ybn.0;
-        Tue, 30 Nov 2021 22:55:35 -0800 (PST)
+        with ESMTP id S240448AbhLAHQk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 02:16:40 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1DDC06174A;
+        Tue, 30 Nov 2021 23:13:20 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id q74so60463200ybq.11;
+        Tue, 30 Nov 2021 23:13:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ODGiWTQjsUXsYV6BLYMhLS5+XJpaRd+uTjnO8c+76tU=;
-        b=DvroZLxf73AdNDsf5bqPoN/OHoAuos8KZvoFsEs11StTcauIYvpqh9XJ/4Lbdf5qvf
-         zwjkQVg8hk7V+fq4jMP0Ysxk7DnUCVVZB6TxVEPus1WPhDzXbU0fP0o1jjD97lj+1Nyy
-         ozAfnnN8mHAd+/qtesCT+gdTlXaeYAosODsBInGh9QwZVEzsKreVAtmu49yzbM3fn3d3
-         M5zGOKqQm7+LakQKi0vjP8Kmy/w2bXJfB4CRUli0uOGO4Eo84h+HA8WpXJyoA70m0ZO3
-         X/m/hDIrD9jIDyLgUak97xN4oImkn/NReUGdlru3ZmYeurP/yYoK5vBL8cLMCOnxgaAp
-         vp0A==
+        bh=fXmyx4e5lrvh9vrOiD48sdwNXSmPQq2BWuvHslT1x4I=;
+        b=ZjbHx05C1tCLGdCNf+VuVBCeIR1RbWaDfDFNmaaNyHRvJ0AFmEySYLIFY79YbXA5BU
+         eDPNfufY3AsoJe3x6qHZEbSjXIHnha3POrHBOXvoPmfJfPYi6IGPF5AAlflI9bFeIbUR
+         sraRpL2tPPRv8d7KRjdxdf1ij92UjUbQjfA5BSIgyPp/vVpRvUL6U7xhyYMZWmo9XA0V
+         qwWZsPRlBoqL5RA58TZVXt341rfaVnHosDlMRfHXvS5NggKSEhETRF2uIh0ipSSumUEX
+         u/p2tPZ+tTd+PXN/ot8IC5lnp/KIAdqnu+7ozf8Z/ebIGhw/+kWZX/bJMR/IHrr13a8T
+         v0zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ODGiWTQjsUXsYV6BLYMhLS5+XJpaRd+uTjnO8c+76tU=;
-        b=2Zo2ZcqTIy4eKPoApgp+VogkqaSI07BcW0jND6q2EM2/PL5n7P7G1hWUzsU9jFmlnd
-         v78yB5KLii69gDzj4Sh0pG3phonXXFxi0O82rtXSioXPFnawd+EC/w3hZwXusVetNp/W
-         hItXG5yNBtfgiHiZF1Zziw2tBqwTNmK/yNVVO0aq2yV7rV24mebYE8bNCBBFW+HIRZeR
-         /XeNS8c+5t4JR0rqNBsKQvjMrpvX/5yacsOn9J9OC/FdVaf9mZaxQln8sl19eB4v/Me/
-         6Y6RE7Dd5WBlNGYj/6fExroxkzZcp240l8tJpK5wp+MTum4/xz5rm7q+lA4CcRAPTqhq
-         2zkw==
-X-Gm-Message-State: AOAM530eQ2hLSpko/ery7D0UOsPeYjwk2wXj0TEQIQrzKVp2zwckxTLz
-        WN9Zs8TNKR3ylHdEqungJVMQ7lN2ZSiohCKc8tE=
-X-Google-Smtp-Source: ABdhPJx41RsYCtAjJhZAU7Q6tVDvHQ9fpCHFmCRhDIrSzR/w0D3V7kELw2dXLqbW8hUphat7z0BpKsRcGdbVRkPFXQs=
-X-Received: by 2002:a25:84c1:: with SMTP id x1mr5336161ybm.690.1638341735081;
- Tue, 30 Nov 2021 22:55:35 -0800 (PST)
+        bh=fXmyx4e5lrvh9vrOiD48sdwNXSmPQq2BWuvHslT1x4I=;
+        b=bZ6PcTxgQakm0gxUGKhjMvh4G3zwx2AYs409qONCm4TJ9hRsdFu9zca/V5pbcS5Ewb
+         3T4vj1Cw4o44hDHyW7PaN+6YXyqe2X5pOnMiCxZHAzPMsKOuJYD/CHpCc4RuHjymFyvx
+         nPT+hq+4aFWqofalVC5/cww79gqC9Q0o72KXft3LcjFBfxTmBQozXCTklo0R8KC3KfbJ
+         LLItQb5cis0e4gwomCk3OHArmleXfIPvwEZSG+jTowy42O4PySO74GJk2Cwo+O9ZTN6n
+         Mp2Ri88xahoFyAmW8Baag6xW8+oQbhm/+/5eivqqigsznY6+9qYlSI6T4JmDylMJnH2n
+         RxqQ==
+X-Gm-Message-State: AOAM532eMYpZpPrgkt8KBy+JGkl1NidelgpOZGTeJ961b+ZeGLDwjyxf
+        QTXeNdfg3Wsr4kGpmTaIobFD2pbF+7yDIwpO9/k=
+X-Google-Smtp-Source: ABdhPJw3YNGAZ+H89W4nv97u4XK4fehLUhxu1IIpCS6QWzLWSdlwKajmb2oWpmH6FOSu0TGhhFhv0CC8YGYwN5E6q6U=
+X-Received: by 2002:a25:6d4:: with SMTP id 203mr5162980ybg.83.1638342799611;
+ Tue, 30 Nov 2021 23:13:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124084119.260239-1-jolsa@kernel.org> <20211124084119.260239-2-jolsa@kernel.org>
- <CAEf4Bzb5wyW=62fr-BzQsuFL+mt5s=+jGcdxKwZK0+AW18uD_Q@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb5wyW=62fr-BzQsuFL+mt5s=+jGcdxKwZK0+AW18uD_Q@mail.gmail.com>
+References: <20211118112455.475349-1-jolsa@kernel.org> <20211118112455.475349-7-jolsa@kernel.org>
+ <CAEf4Bza0UZv6EFdELpg30o=67-Zzs6ggZext4u40+if9a5oQDg@mail.gmail.com> <YaPFEpAqIREeUMU7@krava>
+In-Reply-To: <YaPFEpAqIREeUMU7@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Nov 2021 22:55:24 -0800
-Message-ID: <CAEf4BzaWkTXaVQ9nnrPc+8izE=XJuN0WBrizCAAivQbS1fzRxw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] perf/kprobe: Add support to create multiple probes
+Date:   Tue, 30 Nov 2021 23:13:08 -0800
+Message-ID: <CAEf4BzbauHaDDJvGpx4oCRddd4KWpb4PkxUiUJvx-CXqEN2sdQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 06/29] bpf: Add bpf_arg/bpf_ret_value helpers for
+ tracing programs
 To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 10:53 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Sun, Nov 28, 2021 at 10:06 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Wed, Nov 24, 2021 at 12:41 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> On Wed, Nov 24, 2021 at 01:43:22PM -0800, Andrii Nakryiko wrote:
+> > On Thu, Nov 18, 2021 at 3:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > Adding bpf_arg/bpf_ret_value helpers for tracing programs
+> > > that returns traced function arguments.
+> > >
+> > > Get n-th argument of the traced function:
+> > >   long bpf_arg(void *ctx, int n)
+> > >
+> > > Get return value of the traced function:
+> > >   long bpf_ret_value(void *ctx)
+> > >
+> > > The trampoline now stores number of arguments on ctx-8
+> > > address, so it's easy to verify argument index and find
+> > > return value argument.
+> > >
+> > > Moving function ip address on the trampoline stack behind
+> > > the number of functions arguments, so it's now stored
+> > > on ctx-16 address.
+> > >
+> > > Both helpers are inlined by verifier.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
 > >
-> > Adding support to create multiple probes within single perf event.
-> > This way we can associate single bpf program with multiple kprobes,
-> > because bpf program gets associated with the perf event.
+> > It would be great to land these changes separate from your huge patch
+> > set. There are some upcoming BPF trampoline related changes that will
+> > touch this (to add BPF cookie support for fentry/fexit progs), so
+> > would be nice to minimize the interdependencies. So maybe post this
+> > patch separately (probably after holidays ;) ).
+>
+> ok
+>
 > >
-> > The perf_event_attr is not extended, current fields for kprobe
-> > attachment are used for multi attachment.
+> > >  arch/x86/net/bpf_jit_comp.c    | 18 +++++++++++---
+> > >  include/uapi/linux/bpf.h       | 14 +++++++++++
+> > >  kernel/bpf/verifier.c          | 45 ++++++++++++++++++++++++++++++++--
+> > >  kernel/trace/bpf_trace.c       | 38 +++++++++++++++++++++++++++-
+> > >  tools/include/uapi/linux/bpf.h | 14 +++++++++++
+> > >  5 files changed, 122 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > > index 631847907786..67e8ac9aaf0d 100644
+> > > --- a/arch/x86/net/bpf_jit_comp.c
+> > > +++ b/arch/x86/net/bpf_jit_comp.c
+> > > @@ -1941,7 +1941,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+> > >                                 void *orig_call)
+> > >  {
+> > >         int ret, i, nr_args = m->nr_args;
+> > > -       int stack_size = nr_args * 8;
+> > > +       int stack_size = nr_args * 8 + 8 /* nr_args */;
+> >
+> > this /* nr_args */ next to 8 is super confusing, would be better to
+> > expand the comment; might be a good idea to have some sort of a
+> > description of possible stack layouts (e.g., fexit has some extra
+> > stuff on the stack, I think, but it's impossible to remember and need
+> > to recover that knowledge from the assembly code, basically).
+> >
+> > >         struct bpf_tramp_progs *fentry = &tprogs[BPF_TRAMP_FENTRY];
+> > >         struct bpf_tramp_progs *fexit = &tprogs[BPF_TRAMP_FEXIT];
+> > >         struct bpf_tramp_progs *fmod_ret = &tprogs[BPF_TRAMP_MODIFY_RETURN];
+> > > @@ -1987,12 +1987,22 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+> > >                 EMIT4(0x48, 0x83, 0xe8, X86_PATCH_SIZE);
+> > >                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -stack_size);
+> > >
+> > > -               /* Continue with stack_size for regs storage, stack will
+> > > -                * be correctly restored with 'leave' instruction.
+> > > -                */
+> > > +               /* Continue with stack_size for 'nr_args' storage */
+> >
+> > same, I don't think this comment really helps, just confuses some more
 >
-> I'm a bit concerned with complicating perf_event_attr further to
-> support this multi-attach. For BPF, at least, we now have
-> bpf_perf_link and corresponding BPF_LINK_CREATE command in bpf()
-> syscall which allows much simpler and cleaner API to do this. Libbpf
-> will actually pick bpf_link-based attachment if kernel supports it. I
-> think we should better do bpf_link-based approach from the get go.
+> ok, I'll put some more comments with list of possible the stack layouts
 >
-> Another thing I'd like you to keep in mind and think about is BPF
-> cookie. Currently kprobe/uprobe/tracepoint allow to associate
-> arbitrary user-provided u64 value which will be accessible from BPF
-> program with bpf_get_attach_cookie(). With multi-attach kprobes this
-> because extremely crucial feature to support, otherwise it's both
-> expensive, inconvenient and complicated to be able to distinguish
-> between different instances of the same multi-attach kprobe
-> invocation. So with that, what would be the interface to specify these
-> BPF cookies for this multi-attach kprobe, if we are going through
-> perf_event_attr. Probably picking yet another unused field and
-> union-izing it with a pointer. It will work, but makes the interface
-> even more overloaded. While for LINK_CREATE we can just add another
-> pointer to a u64[] with the same size as number of kfunc names and
-> offsets.
+> >
+> > >                 stack_size -= 8;
+> > >         }
+> > >
+> > > +       /* Store number of arguments of the traced function:
+> > > +        *   mov rax, nr_args
+> > > +        *   mov QWORD PTR [rbp - stack_size], rax
+> > > +        */
+> > > +       emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_args);
+> > > +       emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -stack_size);
+> > > +
+> > > +       /* Continue with stack_size for regs storage, stack will
+> > > +        * be correctly restored with 'leave' instruction.
+> > > +        */
+> > > +       stack_size -= 8;
+> >
+> > I think "stack_size" as a name outlived itself and it just makes
+> > everything harder to understand. It's used more like a stack offset
+> > (relative to rsp or rbp) for different things. Would it make code
+> > worse if we had few offset variables instead (or rather in addition,
+> > we still need to calculate a full stack_size; it's just it's constant
+> > re-adjustment is what's hard to keep track of), like regs_off,
+> > ret_ip_off, arg_cnt_off, etc?
+>
+> let's see, I'll try that
+>
+> >
+> > > +
+> > >         save_regs(m, &prog, nr_args, stack_size);
+> > >
+> > >         if (flags & BPF_TRAMP_F_CALL_ORIG) {
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index a69e4b04ffeb..fc8b344eecba 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -4957,6 +4957,18 @@ union bpf_attr {
+> > >   *             **-ENOENT** if *task->mm* is NULL, or no vma contains *addr*.
+> > >   *             **-EBUSY** if failed to try lock mmap_lock.
+> > >   *             **-EINVAL** for invalid **flags**.
+> > > + *
+> > > + * long bpf_arg(void *ctx, int n)
+> >
+> > __u32 n ?
+>
+> ok
+>
+> >
+> > > + *     Description
+> > > + *             Get n-th argument of the traced function (for tracing programs).
+> > > + *     Return
+> > > + *             Value of the argument.
+> >
+> > What about errors? those need to be documented.
+>
+> ok
+>
+> >
+> > > + *
+> > > + * long bpf_ret_value(void *ctx)
+> > > + *     Description
+> > > + *             Get return value of the traced function (for tracing programs).
+> > > + *     Return
+> > > + *             Return value of the traced function.
+> >
+> > Same, errors not documented. Also would be good to document what
+> > happens when ret_value is requested in the context where there is no
+> > ret value (e.g., fentry)
+>
+> ugh, that's not handled at the moment.. should we fail when
+> we see bpf_ret_value helper call in fentry program?
 
-Oh, and to be clear, I'm not proposing to bypass underlying perf
-infra. Rather use it directly as an internal API, not through
-perf_event_open syscall.
+Well, two options, really. Either return zero or detect at
+verification time and fail verifications. I find myself leaning
+towards less restrictions at verification time, so I'd probably go
+with runtime check and zero. This allows to have the same BPF
+subprogram that can be called both from fentry/fexit with a proper
+if() guard to not do anything with the result of bpf_ret_value (as one
+example).
 
 >
-> But other than that, I'm super happy that you are working on these
-> complicated multi-attach capabilities! It would be great to benchmark
-> one-by-one attachment vs multi-attach to the same set of kprobes once
-> you arrive at the final implementation.
+> >
+> > >   */
+> > >  #define __BPF_FUNC_MAPPER(FN)          \
+> > >         FN(unspec),                     \
+> > > @@ -5140,6 +5152,8 @@ union bpf_attr {
+> > >         FN(skc_to_unix_sock),           \
+> > >         FN(kallsyms_lookup_name),       \
+> > >         FN(find_vma),                   \
+> > > +       FN(arg),                        \
+> > > +       FN(ret_value),                  \
+> >
+> > We already have bpf_get_func_ip, so why not continue a tradition and
+> > call these bpf_get_func_arg() and bpf_get_func_ret(). Nice, short,
+> > clean, consistent.
+>
+> ok
 >
 > >
-> > For current kprobe atachment we use either:
-> >
-> >    kprobe_func (in config1) + probe_offset (in config2)
-> >
-> > to define kprobe by function name with offset, or:
-> >
-> >    kprobe_addr (in config2)
-> >
-> > to define kprobe with direct address value.
-> >
-> > For multi probe attach the same fields point to array of values
-> > with the same semantic. Each probe is defined as set of values
-> > with the same array index (idx) as:
-> >
-> >    kprobe_func[idx]  + probe_offset[idx]
-> >
-> > to define kprobe by function name with offset, or:
-> >
-> >    kprobe_addr[idx]
-> >
-> > to define kprobe with direct address value.
-> >
-> > The number of probes is passed in probe_cnt value, which shares
-> > the union with wakeup_events/wakeup_watermark values which are
-> > not used for kprobes.
-> >
-> > Since [1] it's possible to stack multiple probes events under
-> > one head event. Using the same code to allow that for probes
-> > defined under perf kprobe interface.
-> >
-> > [1] https://lore.kernel.org/lkml/156095682948.28024.14190188071338900568.stgit@devnote2/
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/perf_event.h |   1 +
-> >  kernel/trace/trace_event_perf.c | 106 ++++++++++++++++++++++++++++----
-> >  kernel/trace/trace_kprobe.c     |  47 ++++++++++++--
-> >  kernel/trace/trace_probe.c      |   2 +-
-> >  kernel/trace/trace_probe.h      |   3 +-
-> >  5 files changed, 138 insertions(+), 21 deletions(-)
-> >
+> > BTW, a wild thought. Wouldn't it be cool to have these functions work
+> > with kprobe/kretprobe as well? Do you think it's possible?
 >
-> [...]
+> right, bpf_get_func_ip already works for kprobes
+>
+> struct kprobe could have the btf_func_model of the traced function,
+> so in case we trace function directly on the entry point we could
+> read arguments registers based on the btf_func_model
+>
+> I'll check with Massami
+
+Hm... I'd actually try to keep kprobe BTF-free. We have fentry for
+cases where BTF is present and the function is simple enough (like <=6
+args, etc). Kprobe is an escape hatch mechanism when all the BTF
+fanciness just gets in the way (retsnoop being a primary example from
+my side). What I meant here was that bpf_get_arg(int n) would read
+correct fields from pt_regs that map to first N arguments passed in
+the registers. What we currently have with PT_REGS_PARM macros in
+bpf_tracing.h, but with a proper unified BPF helper.
+
+>
+> >
+> > >         /* */
+> > >
+> > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index fac0c3518add..d4249ef6ca7e 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -13246,11 +13246,52 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> > >                         continue;
+> > >                 }
+> > >
+> > > +               /* Implement bpf_arg inline. */
+> > > +               if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > > +                   insn->imm == BPF_FUNC_arg) {
+> > > +                       /* Load nr_args from ctx - 8 */
+> > > +                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > > +                       insn_buf[1] = BPF_JMP32_REG(BPF_JGE, BPF_REG_2, BPF_REG_0, 4);
+> > > +                       insn_buf[2] = BPF_ALU64_IMM(BPF_MUL, BPF_REG_2, 8);
+> > > +                       insn_buf[3] = BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1);
+> > > +                       insn_buf[4] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0);
+> > > +                       insn_buf[5] = BPF_JMP_A(1);
+> > > +                       insn_buf[6] = BPF_MOV64_IMM(BPF_REG_0, 0);
+> > > +
+> > > +                       new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 7);
+> > > +                       if (!new_prog)
+> > > +                               return -ENOMEM;
+> > > +
+> > > +                       delta    += 6;
+> > > +                       env->prog = prog = new_prog;
+> > > +                       insn      = new_prog->insnsi + i + delta;
+> > > +                       continue;
+> >
+> > nit: this whole sequence of steps and calculations seems like
+> > something that might be abstracted and hidden behind a macro or helper
+> > func? Not related to your change, though. But wouldn't it be easier to
+> > understand if it was just written as:
+> >
+> > PATCH_INSNS(
+> >     BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> >     BPF_JMP32_REG(BPF_JGE, BPF_REG_2, BPF_REG_0, 4);
+> >     BPF_ALU64_IMM(BPF_MUL, BPF_REG_2, 8);
+> >     BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1);
+> >     BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0);
+> >     BPF_JMP_A(1);
+> >     BPF_MOV64_IMM(BPF_REG_0, 0));
+> > continue;
+>
+> yep, looks better ;-) I'll check
+
+as Alexei mentioned, might not be possible, but if variadic
+implementation turns out to be not too ugly, I think it might work.
+Macro can assume that insn_buf and all the other variables are there,
+so there shouldn't be any increase in stack size use, I think.
+
+But this is just an item on a wishlist, so don't overstress about that.
+
+>
+> >
+> > ?
+> >
+> >
+> > > +               }
+> > > +
+> > > +               /* Implement bpf_ret_value inline. */
+> > > +               if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > > +                   insn->imm == BPF_FUNC_ret_value) {
+> > > +                       /* Load nr_args from ctx - 8 */
+> > > +                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, -8);
+> > > +                       insn_buf[1] = BPF_ALU64_IMM(BPF_MUL, BPF_REG_2, 8);
+> > > +                       insn_buf[2] = BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1);
+> > > +                       insn_buf[3] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0);
+> > > +
+> > > +                       new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 4);
+> > > +                       if (!new_prog)
+> > > +                               return -ENOMEM;
+> > > +
+> > > +                       delta    += 3;
+> > > +                       env->prog = prog = new_prog;
+> > > +                       insn      = new_prog->insnsi + i + delta;
+> > > +                       continue;
+> > > +               }
+> > > +
+> > >                 /* Implement bpf_get_func_ip inline. */
+> > >                 if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > >                     insn->imm == BPF_FUNC_get_func_ip) {
+> > > -                       /* Load IP address from ctx - 8 */
+> > > -                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > > +                       /* Load IP address from ctx - 16 */
+> > > +                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -16);
+> > >
+> > >                         new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 1);
+> > >                         if (!new_prog)
+> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > index 25ea521fb8f1..3844cfb45490 100644
+> > > --- a/kernel/trace/bpf_trace.c
+> > > +++ b/kernel/trace/bpf_trace.c
+> > > @@ -1012,7 +1012,7 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> > >  BPF_CALL_1(bpf_get_func_ip_tracing, void *, ctx)
+> > >  {
+> > >         /* This helper call is inlined by verifier. */
+> > > -       return ((u64 *)ctx)[-1];
+> > > +       return ((u64 *)ctx)[-2];
+> > >  }
+> > >
+> > >  static const struct bpf_func_proto bpf_get_func_ip_proto_tracing = {
+> > > @@ -1091,6 +1091,38 @@ static const struct bpf_func_proto bpf_get_branch_snapshot_proto = {
+> > >         .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
+> > >  };
+> > >
+> > > +BPF_CALL_2(bpf_arg, void *, ctx, int, n)
+> > > +{
+> > > +       /* This helper call is inlined by verifier. */
+> > > +       u64 nr_args = ((u64 *)ctx)[-1];
+> > > +
+> > > +       if ((u64) n >= nr_args)
+> > > +               return 0;
+> >
+> > We'll need bpf_get_func_arg_cnt() helper as well to be able to know
+> > the actual number of arguments traced function has. It's impossible to
+> > know whether the argument is zero or there is no argument, otherwise.
+>
+> my idea was that the program will call those helpers based
+> on get_func_ip with proper argument indexes
+
+see my comments on multi-attach kprobes, get_func_ip() is nice, but
+BPF cookies are often much better. So I wouldn't design everything
+with the assumption that user always has to use hashmap +
+get_func_ip().
+
+>
+> but with bpf_get_func_arg_cnt we could make a simple program
+> that would just print function with all its arguments easily, ok ;-)
+
+right, and many other more complicated functions that don't have to do
+runtime ip lookups ;)
+
+>
+> >
+> > > +       return ((u64 *)ctx)[n];
+> > > +}
+> > > +
+> > > +static const struct bpf_func_proto bpf_arg_proto = {
+> > > +       .func           = bpf_arg,
+> > > +       .gpl_only       = true,
+> > > +       .ret_type       = RET_INTEGER,
+> > > +       .arg1_type      = ARG_PTR_TO_CTX,
+> > > +       .arg1_type      = ARG_ANYTHING,
+> > > +};
+> > > +
+> > > +BPF_CALL_1(bpf_ret_value, void *, ctx)
+> > > +{
+> > > +       /* This helper call is inlined by verifier. */
+> > > +       u64 nr_args = ((u64 *)ctx)[-1];
+> > > +
+> > > +       return ((u64 *)ctx)[nr_args];
+> >
+> > we should return 0 for fentry or disable this helper for anything but
+> > fexit? It's going to return garbage otherwise.
+>
+> disabling seems like right choice to me
+>
+
+well, see above. I think we should prefer statically disabling
+something if it's harmful to enable otherwise, but for more
+flexibility and less headache with "proving to BPF verifier", I lean
+more and more towards runtime checks, if they are safe and not overly
+expensive or complicated.
+
+> thanks,
+> jirka
+>
