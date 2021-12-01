@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25B74654CE
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 19:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281894654CA
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 19:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352177AbhLASOb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 13:14:31 -0500
+        id S1352089AbhLASO2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 13:14:28 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242617AbhLASOO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 13:14:14 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8BEC061757
-        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 10:10:51 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id h24so18626104pjq.2
-        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 10:10:51 -0800 (PST)
+        with ESMTP id S1352138AbhLASOR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 13:14:17 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AF5C061748
+        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 10:10:54 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id x5so25393058pfr.0
+        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 10:10:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=47UpfwK0PMVJN253RoPR3lXOYWYN7tiiwPem+P8ZxD8=;
-        b=p2fc1j1Y1X1W/VMrZx/ZKrx7kCHt1HWSID1SQhBYshBMeijX1KM2IELTfkzmXkT42J
-         JH6S8p7g5/iJKe0h3hUyxVkGP0lu8qDpqhzCf+ZWy+0XwmOMd9L6+JPZLok21c243RCV
-         VvdTdkOO9mX89P1MhOE8w9CVaJdKI4qcK+8ew2zkDkPFy3p3qqs4BPdz9sfyzoT6zGL+
-         dV9s0B/UAbtIAtGhCc6s+UnFwjL2X2rE6dz9/7rPvi8GzDH33IWQrF1muW5roI10Q9oj
-         zXTdkdZV9EfFlrSuJwXOxbmjfHOQipdn6eMBYQ1WwswThwR1fEvanc7SEsiUpkqnPwIs
-         jLHw==
+        bh=CqXxlRTD+c9D13Xp00TLjNrdIazsbBfb4U09ANMUUoI=;
+        b=Vjihab6qgpKHgGPun1+bE+IkIdGVXH7Tif53ZafccCAaPJMa9yDFgvGz9BPqB6PHkQ
+         b3OJpBYCvIOYvCWc95e0TKwy2ZiVYftQt0qHMBo/K9gSAkpOxnG5qhzo+upIyY9aBuRs
+         Xpj7+dVXtl0o1uRQ1piXLMqzity3ro0Lh92T9WdmJd5U5vptRufDIoZ7YFtBUZjifnXP
+         UJUgiKblN2U78ITLFE1S1Wrq4rw0s9eJU5Xie4/gcDRx9oMQHXKSgY4TYaHc3WuVtY92
+         FiBrtAXI11ZJkp3yBbhBY+ENkZ+e8n7/YZcXq6v5p1V3dtkEU9LXc49rf56e0Eh/SEFr
+         edKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=47UpfwK0PMVJN253RoPR3lXOYWYN7tiiwPem+P8ZxD8=;
-        b=RHxhSa30R8aCfYA2tRU21Fqji/WaA9j8MoXQgd+5JK7h99nAgmPmqZVdl70dgKg3Wh
-         mDvqBUoXZWpC/uHXqi9Yn2r8kroPBfBjNmIkq/tirRoVyVR/vAgEse8tsH1iTi+sblvo
-         2Mf3lEGTHuXHCxqggFTrQnPXDU+YwEWHRftbw2QUjJe8jG6YircLZnayCMrI3EjPXe8p
-         IGA8Bu7mNatfPieUVXhtSfrg/aSVUW8C4B//oXMgZk0831iBqNzsRsFgAu7u831FtvT5
-         k/ZblG6z3kOAGw8pg5bEH3cm4liIDQy/2dunoJF80gwdqruJ9R7PNRISxttNBHxY6oAR
-         UcXg==
-X-Gm-Message-State: AOAM530iVWngmlaZvlBNjV7rJT0msNzLYvmsoDFyKuohXKc9/JVUzWNL
-        jVO9EiE11tVIzCnNBLz0OEWv/eCQZXw=
-X-Google-Smtp-Source: ABdhPJwTs7tV4vv99B57v6FogGPrnVPZzCt1Oq6STDYYMXAtMj+bsP7DIFdfTm+2PVCkeBwLxrXZjg==
-X-Received: by 2002:a17:902:7c88:b0:142:5f2f:182a with SMTP id y8-20020a1709027c8800b001425f2f182amr9331315pll.72.1638382250980;
-        Wed, 01 Dec 2021 10:10:50 -0800 (PST)
+        bh=CqXxlRTD+c9D13Xp00TLjNrdIazsbBfb4U09ANMUUoI=;
+        b=1MoPSX7jmdH2K2Q+3mDvoX9jCbwOHrdk2haXL8yUcoiuGpCsiP7FntGkPR+fTlrtda
+         ZYnqtBbDFkJmCWoishndZV4Z03KScPtxb6tApuIK/8ospiwCvbuczEuPsw4xij+bQomx
+         OPNwgR34kTdqMLs36ENiE8L1C9xMYl+KS7492Pkw8G7DOW57muiY7I8SiiuGlkNG1Jwm
+         hXcdjPrsL6ZsnrO21GMnblIKmQJiyYVuib8I9XtLkeglQM9nH4Weu95+u39pcAMpZp6T
+         VjpbfV2Sb2rC26o/bBsAfnxQI+51wzS1sbraEsd0yFwacZALVUj+FGa25LYyZLfdKiz+
+         sIBQ==
+X-Gm-Message-State: AOAM531tiaBdug0T0EZAOvN5EvDxmIiMWhgLl7dlEdu379ActRe1/eo4
+        nniWWhIQj9KJI2wrsf0QMuc=
+X-Google-Smtp-Source: ABdhPJwUVSwwt1oEi30j6rCzabkSnX7OGGI1t8CgGTm4rCfgRM+s6sYqAXxkb348Fc9adKLQ8Rzehg==
+X-Received: by 2002:a63:90c7:: with SMTP id a190mr5980974pge.526.1638382253783;
+        Wed, 01 Dec 2021 10:10:53 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:620c])
-        by smtp.gmail.com with ESMTPSA id p43sm487043pfw.4.2021.12.01.10.10.50
+        by smtp.gmail.com with ESMTPSA id p2sm943pja.55.2021.12.01.10.10.52
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 01 Dec 2021 10:10:50 -0800 (PST)
+        Wed, 01 Dec 2021 10:10:53 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v5 bpf-next 03/17] bpf: Prepare relo_core.c for kernel duty.
-Date:   Wed,  1 Dec 2021 10:10:26 -0800
-Message-Id: <20211201181040.23337-4-alexei.starovoitov@gmail.com>
+Subject: [PATCH v5 bpf-next 04/17] bpf: Define enum bpf_core_relo_kind as uapi.
+Date:   Wed,  1 Dec 2021 10:10:27 -0800
+Message-Id: <20211201181040.23337-5-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
 References: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
@@ -65,340 +65,329 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Make relo_core.c to be compiled for the kernel and for user space libbpf.
+enum bpf_core_relo_kind is generated by llvm and processed by libbpf.
+It's a de-facto uapi.
+With CO-RE in the kernel the bpf_core_relo_kind values become uapi de-jure.
+Also rename them with BPF_CORE_ prefix to distinguish from conflicting names in
+bpf_core_read.h. The enums bpf_field_info_kind, bpf_type_id_kind,
+bpf_type_info_kind, bpf_enum_value_kind are passing different values from bpf
+program into llvm.
 
-Note the patch is reducing BPF_CORE_SPEC_MAX_LEN from 64 to 32.
-This is the maximum number of nested structs and arrays.
-For example:
- struct sample {
-     int a;
-     struct {
-         int b[10];
-     };
- };
-
- struct sample *s = ...;
- int *y = &s->b[5];
-This field access is encoded as "0:1:0:5" and spec len is 4.
-
-The follow up patch might bump it back to 64.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/btf.h       | 81 +++++++++++++++++++++++++++++++++++++++
- kernel/bpf/Makefile       |  4 ++
- kernel/bpf/btf.c          | 26 +++++++++++++
- tools/lib/bpf/relo_core.c | 76 ++++++++++++++++++++++++++++++------
- 4 files changed, 176 insertions(+), 11 deletions(-)
+ include/uapi/linux/bpf.h       | 19 ++++++++
+ tools/include/uapi/linux/bpf.h | 19 ++++++++
+ tools/lib/bpf/libbpf.c         |  2 +-
+ tools/lib/bpf/relo_core.c      | 84 +++++++++++++++++-----------------
+ tools/lib/bpf/relo_core.h      | 18 +-------
+ 5 files changed, 82 insertions(+), 60 deletions(-)
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 956f70388f69..acef6ef28768 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -144,6 +144,53 @@ static inline bool btf_type_is_enum(const struct btf_type *t)
- 	return BTF_INFO_KIND(t->info) == BTF_KIND_ENUM;
- }
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 211b43afd0fb..9e66b1880020 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6374,4 +6374,23 @@ enum {
+ 	BTF_F_ZERO	=	(1ULL << 3),
+ };
  
-+static inline bool str_is_empty(const char *s)
-+{
-+	return !s || !s[0];
-+}
-+
-+static inline u16 btf_kind(const struct btf_type *t)
-+{
-+	return BTF_INFO_KIND(t->info);
-+}
-+
-+static inline bool btf_is_enum(const struct btf_type *t)
-+{
-+	return btf_kind(t) == BTF_KIND_ENUM;
-+}
-+
-+static inline bool btf_is_composite(const struct btf_type *t)
-+{
-+	u16 kind = btf_kind(t);
-+
-+	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
-+}
-+
-+static inline bool btf_is_array(const struct btf_type *t)
-+{
-+	return btf_kind(t) == BTF_KIND_ARRAY;
-+}
-+
-+static inline bool btf_is_int(const struct btf_type *t)
-+{
-+	return btf_kind(t) == BTF_KIND_INT;
-+}
-+
-+static inline bool btf_is_ptr(const struct btf_type *t)
-+{
-+	return btf_kind(t) == BTF_KIND_PTR;
-+}
-+
-+static inline u8 btf_int_offset(const struct btf_type *t)
-+{
-+	return BTF_INT_OFFSET(*(u32 *)(t + 1));
-+}
-+
-+static inline u8 btf_int_encoding(const struct btf_type *t)
-+{
-+	return BTF_INT_ENCODING(*(u32 *)(t + 1));
-+}
-+
- static inline bool btf_type_is_scalar(const struct btf_type *t)
- {
- 	return btf_type_is_int(t) || btf_type_is_enum(t);
-@@ -184,6 +231,11 @@ static inline u16 btf_type_vlen(const struct btf_type *t)
- 	return BTF_INFO_VLEN(t->info);
- }
- 
-+static inline u16 btf_vlen(const struct btf_type *t)
-+{
-+	return btf_type_vlen(t);
-+}
-+
- static inline u16 btf_func_linkage(const struct btf_type *t)
- {
- 	return BTF_INFO_VLEN(t->info);
-@@ -208,11 +260,40 @@ static inline u32 __btf_member_bitfield_size(const struct btf_type *struct_type,
- 					   : 0;
- }
- 
-+static inline struct btf_member *btf_members(const struct btf_type *t)
-+{
-+	return (struct btf_member *)(t + 1);
-+}
-+
-+static inline u32 btf_member_bit_offset(const struct btf_type *t, u32 member_idx)
-+{
-+	const struct btf_member *m = btf_members(t) + member_idx;
-+
-+	return __btf_member_bit_offset(t, m);
-+}
-+
-+static inline u32 btf_member_bitfield_size(const struct btf_type *t, u32 member_idx)
-+{
-+	const struct btf_member *m = btf_members(t) + member_idx;
-+
-+	return __btf_member_bitfield_size(t, m);
-+}
-+
- static inline const struct btf_member *btf_type_member(const struct btf_type *t)
- {
- 	return (const struct btf_member *)(t + 1);
- }
- 
-+static inline struct btf_array *btf_array(const struct btf_type *t)
-+{
-+	return (struct btf_array *)(t + 1);
-+}
-+
-+static inline struct btf_enum *btf_enum(const struct btf_type *t)
-+{
-+	return (struct btf_enum *)(t + 1);
-+}
-+
- static inline const struct btf_var_secinfo *btf_type_var_secinfo(
- 		const struct btf_type *t)
- {
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index cf6ca339f3cd..c1a9be6a4b9f 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -36,3 +36,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
- obj-${CONFIG_BPF_LSM} += bpf_lsm.o
- endif
- obj-$(CONFIG_BPF_PRELOAD) += preload/
-+
-+obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
-+$(obj)/relo_core.o: $(srctree)/tools/lib/bpf/relo_core.c FORCE
-+	$(call if_changed_rule,cc_o_c)
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index f4119a99da7b..c79595aad55b 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6413,3 +6413,29 @@ bool bpf_check_mod_kfunc_call(struct kfunc_btf_id_list *klist, u32 kfunc_id,
- 
- DEFINE_KFUNC_BTF_ID_LIST(bpf_tcp_ca_kfunc_list);
- DEFINE_KFUNC_BTF_ID_LIST(prog_test_kfunc_list);
-+
-+int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
-+			      const struct btf *targ_btf, __u32 targ_id)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static bool bpf_core_is_flavor_sep(const char *s)
-+{
-+	/* check X___Y name pattern, where X and Y are not underscores */
-+	return s[0] != '_' &&				      /* X */
-+	       s[1] == '_' && s[2] == '_' && s[3] == '_' &&   /* ___ */
-+	       s[4] != '_';				      /* Y */
-+}
-+
-+size_t bpf_core_essential_name_len(const char *name)
-+{
-+	size_t n = strlen(name);
-+	int i;
-+
-+	for (i = n - 5; i >= 0; i--) {
-+		if (bpf_core_is_flavor_sep(name + i))
-+			return i + 1;
-+	}
-+	return n;
-+}
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index c0904f4cb514..56dbe6d16664 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -1,6 +1,60 @@
- // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
- /* Copyright (c) 2019 Facebook */
- 
-+#ifdef __KERNEL__
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
-+#include <linux/string.h>
-+#include <linux/bpf_verifier.h>
-+#include "relo_core.h"
-+
-+static const char *btf_kind_str(const struct btf_type *t)
-+{
-+	return btf_type_str(t);
-+}
-+
-+static bool is_ldimm64_insn(struct bpf_insn *insn)
-+{
-+	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
-+}
-+
-+static const struct btf_type *
-+skip_mods_and_typedefs(const struct btf *btf, u32 id, u32 *res_id)
-+{
-+	return btf_type_skip_modifiers(btf, id, res_id);
-+}
-+
-+static const char *btf__name_by_offset(const struct btf *btf, u32 offset)
-+{
-+	return btf_name_by_offset(btf, offset);
-+}
-+
-+static s64 btf__resolve_size(const struct btf *btf, u32 type_id)
-+{
-+	const struct btf_type *t;
-+	int size;
-+
-+	t = btf_type_by_id(btf, type_id);
-+	t = btf_resolve_size(btf, t, &size);
-+	if (IS_ERR(t))
-+		return PTR_ERR(t);
-+	return size;
-+}
-+
-+enum libbpf_print_level {
-+	LIBBPF_WARN,
-+	LIBBPF_INFO,
-+	LIBBPF_DEBUG,
++/* bpf_core_relo_kind encodes which aspect of captured field/type/enum value
++ * has to be adjusted by relocations. It is emitted by llvm and passed to
++ * libbpf and later to the kernel.
++ */
++enum bpf_core_relo_kind {
++	BPF_CORE_FIELD_BYTE_OFFSET = 0,      /* field byte offset */
++	BPF_CORE_FIELD_BYTE_SIZE = 1,        /* field size in bytes */
++	BPF_CORE_FIELD_EXISTS = 2,           /* field existence in target kernel */
++	BPF_CORE_FIELD_SIGNED = 3,           /* field signedness (0 - unsigned, 1 - signed) */
++	BPF_CORE_FIELD_LSHIFT_U64 = 4,       /* bitfield-specific left bitshift */
++	BPF_CORE_FIELD_RSHIFT_U64 = 5,       /* bitfield-specific right bitshift */
++	BPF_CORE_TYPE_ID_LOCAL = 6,          /* type ID in local BPF object */
++	BPF_CORE_TYPE_ID_TARGET = 7,         /* type ID in target kernel */
++	BPF_CORE_TYPE_EXISTS = 8,            /* type existence in target kernel */
++	BPF_CORE_TYPE_SIZE = 9,              /* type size in bytes */
++	BPF_CORE_ENUMVAL_EXISTS = 10,        /* enum value existence in target kernel */
++	BPF_CORE_ENUMVAL_VALUE = 11,         /* enum value integer value */
 +};
 +
-+#undef pr_warn
-+#undef pr_info
-+#undef pr_debug
-+#define pr_warn(fmt, log, ...)	bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
-+#define pr_info(fmt, log, ...)	bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
-+#define pr_debug(fmt, log, ...)	bpf_log((void *)log, fmt, "", ##__VA_ARGS__)
-+#define libbpf_print(level, fmt, ...)	bpf_log((void *)prog_name, fmt, ##__VA_ARGS__)
-+#else
- #include <stdio.h>
- #include <string.h>
- #include <errno.h>
-@@ -12,8 +66,9 @@
- #include "btf.h"
- #include "str_error.h"
- #include "libbpf_internal.h"
-+#endif
+ #endif /* _UAPI__LINUX_BPF_H__ */
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 211b43afd0fb..9e66b1880020 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -6374,4 +6374,23 @@ enum {
+ 	BTF_F_ZERO	=	(1ULL << 3),
+ };
  
--#define BPF_CORE_SPEC_MAX_LEN 64
-+#define BPF_CORE_SPEC_MAX_LEN 32
- 
- /* represents BPF CO-RE field or array element accessor */
- struct bpf_core_accessor {
-@@ -150,7 +205,7 @@ static bool core_relo_is_enumval_based(enum bpf_core_relo_kind kind)
-  * Enum value-based relocations (ENUMVAL_EXISTS/ENUMVAL_VALUE) use access
-  * string to specify enumerator's value index that need to be relocated.
-  */
--static int bpf_core_parse_spec(const struct btf *btf,
-+static int bpf_core_parse_spec(const char *prog_name, const struct btf *btf,
- 			       __u32 type_id,
- 			       const char *spec_str,
- 			       enum bpf_core_relo_kind relo_kind,
-@@ -272,8 +327,8 @@ static int bpf_core_parse_spec(const struct btf *btf,
- 				return sz;
- 			spec->bit_offset += access_idx * sz * 8;
- 		} else {
--			pr_warn("relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
--				type_id, spec_str, i, id, btf_kind_str(t));
-+			pr_warn("prog '%s': relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
-+				prog_name, type_id, spec_str, i, id, btf_kind_str(t));
- 			return -EINVAL;
- 		}
++/* bpf_core_relo_kind encodes which aspect of captured field/type/enum value
++ * has to be adjusted by relocations. It is emitted by llvm and passed to
++ * libbpf and later to the kernel.
++ */
++enum bpf_core_relo_kind {
++	BPF_CORE_FIELD_BYTE_OFFSET = 0,      /* field byte offset */
++	BPF_CORE_FIELD_BYTE_SIZE = 1,        /* field size in bytes */
++	BPF_CORE_FIELD_EXISTS = 2,           /* field existence in target kernel */
++	BPF_CORE_FIELD_SIGNED = 3,           /* field signedness (0 - unsigned, 1 - signed) */
++	BPF_CORE_FIELD_LSHIFT_U64 = 4,       /* bitfield-specific left bitshift */
++	BPF_CORE_FIELD_RSHIFT_U64 = 5,       /* bitfield-specific right bitshift */
++	BPF_CORE_TYPE_ID_LOCAL = 6,          /* type ID in local BPF object */
++	BPF_CORE_TYPE_ID_TARGET = 7,         /* type ID in target kernel */
++	BPF_CORE_TYPE_EXISTS = 8,            /* type existence in target kernel */
++	BPF_CORE_TYPE_SIZE = 9,              /* type size in bytes */
++	BPF_CORE_ENUMVAL_EXISTS = 10,        /* enum value existence in target kernel */
++	BPF_CORE_ENUMVAL_VALUE = 11,         /* enum value integer value */
++};
++
+ #endif /* _UAPI__LINUX_BPF_H__ */
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 5a2f5a6ae2f9..9eaf2d9820e6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5523,7 +5523,7 @@ static int bpf_core_apply_relo(struct bpf_program *prog,
+ 		return -ENOTSUP;
  	}
-@@ -346,8 +401,6 @@ static int bpf_core_fields_are_compat(const struct btf *local_btf,
- 		targ_id = btf_array(targ_type)->type;
- 		goto recur;
- 	default:
--		pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
--			btf_kind(local_type), local_id, targ_id);
- 		return 0;
+ 
+-	if (relo->kind != BPF_TYPE_ID_LOCAL &&
++	if (relo->kind != BPF_CORE_TYPE_ID_LOCAL &&
+ 	    !hashmap__find(cand_cache, type_key, (void **)&cands)) {
+ 		cands = bpf_core_find_cands(prog->obj, local_btf, local_id);
+ 		if (IS_ERR(cands)) {
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index 56dbe6d16664..d194fb9306ed 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -113,18 +113,18 @@ static bool is_flex_arr(const struct btf *btf,
+ static const char *core_relo_kind_str(enum bpf_core_relo_kind kind)
+ {
+ 	switch (kind) {
+-	case BPF_FIELD_BYTE_OFFSET: return "byte_off";
+-	case BPF_FIELD_BYTE_SIZE: return "byte_sz";
+-	case BPF_FIELD_EXISTS: return "field_exists";
+-	case BPF_FIELD_SIGNED: return "signed";
+-	case BPF_FIELD_LSHIFT_U64: return "lshift_u64";
+-	case BPF_FIELD_RSHIFT_U64: return "rshift_u64";
+-	case BPF_TYPE_ID_LOCAL: return "local_type_id";
+-	case BPF_TYPE_ID_TARGET: return "target_type_id";
+-	case BPF_TYPE_EXISTS: return "type_exists";
+-	case BPF_TYPE_SIZE: return "type_size";
+-	case BPF_ENUMVAL_EXISTS: return "enumval_exists";
+-	case BPF_ENUMVAL_VALUE: return "enumval_value";
++	case BPF_CORE_FIELD_BYTE_OFFSET: return "byte_off";
++	case BPF_CORE_FIELD_BYTE_SIZE: return "byte_sz";
++	case BPF_CORE_FIELD_EXISTS: return "field_exists";
++	case BPF_CORE_FIELD_SIGNED: return "signed";
++	case BPF_CORE_FIELD_LSHIFT_U64: return "lshift_u64";
++	case BPF_CORE_FIELD_RSHIFT_U64: return "rshift_u64";
++	case BPF_CORE_TYPE_ID_LOCAL: return "local_type_id";
++	case BPF_CORE_TYPE_ID_TARGET: return "target_type_id";
++	case BPF_CORE_TYPE_EXISTS: return "type_exists";
++	case BPF_CORE_TYPE_SIZE: return "type_size";
++	case BPF_CORE_ENUMVAL_EXISTS: return "enumval_exists";
++	case BPF_CORE_ENUMVAL_VALUE: return "enumval_value";
+ 	default: return "unknown";
  	}
  }
-@@ -1045,7 +1098,7 @@ static int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
-  * [<type-id>] (<type-name>) + <raw-spec> => <offset>@<spec>,
-  * where <spec> is a C-syntax view of recorded field access, e.g.: x.a[3].b
-  */
--static void bpf_core_dump_spec(int level, const struct bpf_core_spec *spec)
-+static void bpf_core_dump_spec(const char *prog_name, int level, const struct bpf_core_spec *spec)
+@@ -132,12 +132,12 @@ static const char *core_relo_kind_str(enum bpf_core_relo_kind kind)
+ static bool core_relo_is_field_based(enum bpf_core_relo_kind kind)
  {
- 	const struct btf_type *t;
+ 	switch (kind) {
+-	case BPF_FIELD_BYTE_OFFSET:
+-	case BPF_FIELD_BYTE_SIZE:
+-	case BPF_FIELD_EXISTS:
+-	case BPF_FIELD_SIGNED:
+-	case BPF_FIELD_LSHIFT_U64:
+-	case BPF_FIELD_RSHIFT_U64:
++	case BPF_CORE_FIELD_BYTE_OFFSET:
++	case BPF_CORE_FIELD_BYTE_SIZE:
++	case BPF_CORE_FIELD_EXISTS:
++	case BPF_CORE_FIELD_SIGNED:
++	case BPF_CORE_FIELD_LSHIFT_U64:
++	case BPF_CORE_FIELD_RSHIFT_U64:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -147,10 +147,10 @@ static bool core_relo_is_field_based(enum bpf_core_relo_kind kind)
+ static bool core_relo_is_type_based(enum bpf_core_relo_kind kind)
+ {
+ 	switch (kind) {
+-	case BPF_TYPE_ID_LOCAL:
+-	case BPF_TYPE_ID_TARGET:
+-	case BPF_TYPE_EXISTS:
+-	case BPF_TYPE_SIZE:
++	case BPF_CORE_TYPE_ID_LOCAL:
++	case BPF_CORE_TYPE_ID_TARGET:
++	case BPF_CORE_TYPE_EXISTS:
++	case BPF_CORE_TYPE_SIZE:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -160,8 +160,8 @@ static bool core_relo_is_type_based(enum bpf_core_relo_kind kind)
+ static bool core_relo_is_enumval_based(enum bpf_core_relo_kind kind)
+ {
+ 	switch (kind) {
+-	case BPF_ENUMVAL_EXISTS:
+-	case BPF_ENUMVAL_VALUE:
++	case BPF_CORE_ENUMVAL_EXISTS:
++	case BPF_CORE_ENUMVAL_VALUE:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -624,7 +624,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+ 
+ 	*field_sz = 0;
+ 
+-	if (relo->kind == BPF_FIELD_EXISTS) {
++	if (relo->kind == BPF_CORE_FIELD_EXISTS) {
+ 		*val = spec ? 1 : 0;
+ 		return 0;
+ 	}
+@@ -637,7 +637,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+ 
+ 	/* a[n] accessor needs special handling */
+ 	if (!acc->name) {
+-		if (relo->kind == BPF_FIELD_BYTE_OFFSET) {
++		if (relo->kind == BPF_CORE_FIELD_BYTE_OFFSET) {
+ 			*val = spec->bit_offset / 8;
+ 			/* remember field size for load/store mem size */
+ 			sz = btf__resolve_size(spec->btf, acc->type_id);
+@@ -645,7 +645,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+ 				return -EINVAL;
+ 			*field_sz = sz;
+ 			*type_id = acc->type_id;
+-		} else if (relo->kind == BPF_FIELD_BYTE_SIZE) {
++		} else if (relo->kind == BPF_CORE_FIELD_BYTE_SIZE) {
+ 			sz = btf__resolve_size(spec->btf, acc->type_id);
+ 			if (sz < 0)
+ 				return -EINVAL;
+@@ -697,36 +697,36 @@ static int bpf_core_calc_field_relo(const char *prog_name,
+ 		*validate = !bitfield;
+ 
+ 	switch (relo->kind) {
+-	case BPF_FIELD_BYTE_OFFSET:
++	case BPF_CORE_FIELD_BYTE_OFFSET:
+ 		*val = byte_off;
+ 		if (!bitfield) {
+ 			*field_sz = byte_sz;
+ 			*type_id = field_type_id;
+ 		}
+ 		break;
+-	case BPF_FIELD_BYTE_SIZE:
++	case BPF_CORE_FIELD_BYTE_SIZE:
+ 		*val = byte_sz;
+ 		break;
+-	case BPF_FIELD_SIGNED:
++	case BPF_CORE_FIELD_SIGNED:
+ 		/* enums will be assumed unsigned */
+ 		*val = btf_is_enum(mt) ||
+ 		       (btf_int_encoding(mt) & BTF_INT_SIGNED);
+ 		if (validate)
+ 			*validate = true; /* signedness is never ambiguous */
+ 		break;
+-	case BPF_FIELD_LSHIFT_U64:
++	case BPF_CORE_FIELD_LSHIFT_U64:
+ #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 		*val = 64 - (bit_off + bit_sz - byte_off  * 8);
+ #else
+ 		*val = (8 - byte_sz) * 8 + (bit_off - byte_off * 8);
+ #endif
+ 		break;
+-	case BPF_FIELD_RSHIFT_U64:
++	case BPF_CORE_FIELD_RSHIFT_U64:
+ 		*val = 64 - bit_sz;
+ 		if (validate)
+ 			*validate = true; /* right shift is never ambiguous */
+ 		break;
+-	case BPF_FIELD_EXISTS:
++	case BPF_CORE_FIELD_EXISTS:
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+@@ -747,20 +747,20 @@ static int bpf_core_calc_type_relo(const struct bpf_core_relo *relo,
+ 	}
+ 
+ 	switch (relo->kind) {
+-	case BPF_TYPE_ID_TARGET:
++	case BPF_CORE_TYPE_ID_TARGET:
+ 		*val = spec->root_type_id;
+ 		break;
+-	case BPF_TYPE_EXISTS:
++	case BPF_CORE_TYPE_EXISTS:
+ 		*val = 1;
+ 		break;
+-	case BPF_TYPE_SIZE:
++	case BPF_CORE_TYPE_SIZE:
+ 		sz = btf__resolve_size(spec->btf, spec->root_type_id);
+ 		if (sz < 0)
+ 			return -EINVAL;
+ 		*val = sz;
+ 		break;
+-	case BPF_TYPE_ID_LOCAL:
+-	/* BPF_TYPE_ID_LOCAL is handled specially and shouldn't get here */
++	case BPF_CORE_TYPE_ID_LOCAL:
++	/* BPF_CORE_TYPE_ID_LOCAL is handled specially and shouldn't get here */
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+@@ -776,10 +776,10 @@ static int bpf_core_calc_enumval_relo(const struct bpf_core_relo *relo,
  	const struct btf_enum *e;
-@@ -1167,7 +1220,8 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
- 	if (str_is_empty(spec_str))
- 		return -EINVAL;
  
--	err = bpf_core_parse_spec(local_btf, local_id, spec_str, relo->kind, &local_spec);
-+	err = bpf_core_parse_spec(prog_name, local_btf, local_id, spec_str,
-+				  relo->kind, &local_spec);
- 	if (err) {
- 		pr_warn("prog '%s': relo #%d: parsing [%d] %s %s + %s failed: %d\n",
- 			prog_name, relo_idx, local_id, btf_kind_str(local_type),
-@@ -1178,7 +1232,7 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
- 
- 	pr_debug("prog '%s': relo #%d: kind <%s> (%d), spec is ", prog_name,
- 		 relo_idx, core_relo_kind_str(relo->kind), relo->kind);
--	bpf_core_dump_spec(LIBBPF_DEBUG, &local_spec);
-+	bpf_core_dump_spec(prog_name, LIBBPF_DEBUG, &local_spec);
+ 	switch (relo->kind) {
+-	case BPF_ENUMVAL_EXISTS:
++	case BPF_CORE_ENUMVAL_EXISTS:
+ 		*val = spec ? 1 : 0;
+ 		break;
+-	case BPF_ENUMVAL_VALUE:
++	case BPF_CORE_ENUMVAL_VALUE:
+ 		if (!spec)
+ 			return -EUCLEAN; /* request instruction poisoning */
+ 		t = btf_type_by_id(spec->btf, spec->spec[0].type_id);
+@@ -1236,7 +1236,7 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
  	libbpf_print(LIBBPF_DEBUG, "\n");
  
  	/* TYPE_ID_LOCAL relo is special and doesn't need candidate search */
-@@ -1204,14 +1258,14 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
- 		if (err < 0) {
- 			pr_warn("prog '%s': relo #%d: error matching candidate #%d ",
- 				prog_name, relo_idx, i);
--			bpf_core_dump_spec(LIBBPF_WARN, &cand_spec);
-+			bpf_core_dump_spec(prog_name, LIBBPF_WARN, &cand_spec);
- 			libbpf_print(LIBBPF_WARN, ": %d\n", err);
- 			return err;
- 		}
+-	if (relo->kind == BPF_TYPE_ID_LOCAL) {
++	if (relo->kind == BPF_CORE_TYPE_ID_LOCAL) {
+ 		targ_res.validate = true;
+ 		targ_res.poison = false;
+ 		targ_res.orig_val = local_spec.root_type_id;
+@@ -1302,7 +1302,7 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+ 	}
  
- 		pr_debug("prog '%s': relo #%d: %s candidate #%d ", prog_name,
- 			 relo_idx, err == 0 ? "non-matching" : "matching", i);
--		bpf_core_dump_spec(LIBBPF_DEBUG, &cand_spec);
-+		bpf_core_dump_spec(prog_name, LIBBPF_DEBUG, &cand_spec);
- 		libbpf_print(LIBBPF_DEBUG, "\n");
+ 	/*
+-	 * For BPF_FIELD_EXISTS relo or when used BPF program has field
++	 * For BPF_CORE_FIELD_EXISTS relo or when used BPF program has field
+ 	 * existence checks or kernel version/config checks, it's expected
+ 	 * that we might not find any candidates. In this case, if field
+ 	 * wasn't found in any candidate, the list of candidates shouldn't
+diff --git a/tools/lib/bpf/relo_core.h b/tools/lib/bpf/relo_core.h
+index 3b9f8f18346c..3d0b86e7f439 100644
+--- a/tools/lib/bpf/relo_core.h
++++ b/tools/lib/bpf/relo_core.h
+@@ -4,23 +4,7 @@
+ #ifndef __RELO_CORE_H
+ #define __RELO_CORE_H
  
- 		if (err == 0)
+-/* bpf_core_relo_kind encodes which aspect of captured field/type/enum value
+- * has to be adjusted by relocations.
+- */
+-enum bpf_core_relo_kind {
+-	BPF_FIELD_BYTE_OFFSET = 0,	/* field byte offset */
+-	BPF_FIELD_BYTE_SIZE = 1,	/* field size in bytes */
+-	BPF_FIELD_EXISTS = 2,		/* field existence in target kernel */
+-	BPF_FIELD_SIGNED = 3,		/* field signedness (0 - unsigned, 1 - signed) */
+-	BPF_FIELD_LSHIFT_U64 = 4,	/* bitfield-specific left bitshift */
+-	BPF_FIELD_RSHIFT_U64 = 5,	/* bitfield-specific right bitshift */
+-	BPF_TYPE_ID_LOCAL = 6,		/* type ID in local BPF object */
+-	BPF_TYPE_ID_TARGET = 7,		/* type ID in target kernel */
+-	BPF_TYPE_EXISTS = 8,		/* type existence in target kernel */
+-	BPF_TYPE_SIZE = 9,		/* type size in bytes */
+-	BPF_ENUMVAL_EXISTS = 10,	/* enum value existence in target kernel */
+-	BPF_ENUMVAL_VALUE = 11,		/* enum value integer value */
+-};
++#include <linux/bpf.h>
+ 
+ /* The minimum bpf_core_relo checked by the loader
+  *
 -- 
 2.30.2
 
