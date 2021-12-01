@@ -2,145 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8A84650A9
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 15:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0833465168
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 16:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhLAPDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 10:03:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        id S1350796AbhLAPYr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 10:24:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240633AbhLAPDB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 10:03:01 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD95C061748
-        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 06:59:40 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id u1so52884114wru.13
-        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 06:59:40 -0800 (PST)
+        with ESMTP id S234164AbhLAPYq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 10:24:46 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B28C061748
+        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 07:21:25 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id c3so31317322iob.6
+        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 07:21:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RS1vzmzmQeEBjKlSDlmgEppWunZ2lvwJs6T3YgQzeck=;
-        b=PADzr4eyzFeEVSKDETkultCMlz+18FGAcT2+wAOK1FssyF0X1L3HQ1tTsp8n/esGtf
-         oJIwQbQZJIfeuORQAE6fn+d8sBcoe7pzLMmyM7as0o3M/ZAsioDKYEp7zpeuWrAa+qol
-         uz9C5SV6r9cd2PQ3skbPjj6CIDhjl5LBBtYbcpO5TSOe3mtt0fd92JNyiq4cUIfMsiC8
-         ngcjmRFGr0TMe44bqGKuwtfYxI9CelQ5lOEkvJhLzW4NwTdSyN18PQImaeNdtVkrrJ5Y
-         ouKchDn6OAgX4ZfDbjW3ZdjmZ9UnkFGFxPSIiqDJrq/egTrf31/LzTWkphe77foOGJSj
-         HOZw==
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=MLUZwUEBzklOGib2Zk3PFAvxb+CbG+R1DuoQKaGE8gw=;
+        b=ZuxaIRAQw9xvNctBz60Nfj9NhxbsQHjyNOETRPbMvYnh6f1pkkzEwYLKASKsQkDBsX
+         cLxgvj4lcCVQwhetojQ9xZKtNbfvIHUUHXRXIUaDp7jCRfr9SAOQc+gyl9xFKXCnPeGQ
+         H9NZep0ZvpgVihUy0KR8fIAAvJ1Mqn+ZN01E17kxyRlAXR/wrc5tVVh2RqcsrvC7lTt0
+         TiyuS7VCsRmAr544lvRG/0BJNv1hD5xuPcyVZDknUo4F2sG8YNDlIhFfNWDQLJymasS6
+         +009TxLuUtj/Vy51v2ws2aP4nFTf0va4FAhv8hFG4z4HZq3b5/zTF8SFjy9h4JUhyXM/
+         l+wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=RS1vzmzmQeEBjKlSDlmgEppWunZ2lvwJs6T3YgQzeck=;
-        b=P/cV2+Nxk2iHSd4xbcRSHQmdFHu3E/Wb+uWmsI9oZShZE5cwM343qvM0HMcL42fQYl
-         mfP8lb8CEiGZbEnwbsjqQQsB9Dba4wdc9eg7fQ3VIuiyAliir9HETOvPEeyqJxC5HYrv
-         1K+ZL9GgPL3YhmLF0aX+SlQF9csCExTNW1mQl8H5tayA60PAAMHqXb/KhzrT7v1iVBtz
-         ztTUbbOnsgplJhL2Pk8JJzSof0S3vSvuH7RPYFNRSTe8HmaNO7tlN57+fPIyOudL34lw
-         CzZjw94evzXk3N8+YYHEpm7UjuLTofZe20Zjf6P0omg/XFxry/+eqIUu2k030XYo8o9i
-         lI+g==
-X-Gm-Message-State: AOAM5312UhMT3lddKnFyAODBOii6VzZYhE+63DaETFiKlHMF7CaLEww1
-        CRMGcP7zc8xYr3jhWRglY3Z2Yw==
-X-Google-Smtp-Source: ABdhPJzz8Jon5yKRGqvms3lrtF2W7TCzv4+iL+ICaMgjz8Dd5EA4Zg3K+dINCyAeL2BBg2cF6G5VlQ==
-X-Received: by 2002:adf:ef84:: with SMTP id d4mr7069949wro.175.1638370779228;
-        Wed, 01 Dec 2021 06:59:39 -0800 (PST)
-Received: from localhost.localdomain (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id a9sm46541wrt.66.2021.12.01.06.59.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Dec 2021 06:59:38 -0800 (PST)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        quentin@isovalent.com, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH v2 bpf-next] selftests/bpf: Build testing_helpers.o out of tree
-Date:   Wed,  1 Dec 2021 14:51:02 +0000
-Message-Id: <20211201145101.823159-1-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.34.0
+        bh=MLUZwUEBzklOGib2Zk3PFAvxb+CbG+R1DuoQKaGE8gw=;
+        b=g1ASAYfhrmU1Aep+1+YbWmbUfwsYCqPosHlxsUqVDdlo3ZPwjyVOx76bsbV2q4ktMk
+         NmhNwzAsW9+i5+fSQtqHz3n9+q/vZzIcZc/WhKDzXIScsF4oXoRTuwefNp3EkA6EXyHZ
+         gvYkh6vjNQdcl6VnNamM3BEbvyWxeLendsf7ocRSKB5OLm3B5dSMqminJ5h/3nIvwv0o
+         5DKr6zBrrmFATo1vLCZLEcGIIzVG0WxIYpX5O9LCyRwGRMPfLXdx3bDXZy0Czj+lj0PC
+         FP6hNU22QN06wn7AL59cw4E6Ok92l42KNbZG1GwAUiaG8RS5lbjQBTpj4OLGc4bOtZUQ
+         5O3w==
+X-Gm-Message-State: AOAM5307UNvd/fDqjO+fA+HObt36dRkRnFlWb7yWEB5tmlZwXFcVi2On
+        Yzz3Mgb/lIo0AgRq7NpISFpJ5w==
+X-Google-Smtp-Source: ABdhPJxtrTLI1AMMf1O0aIqny9q8Vj3DCKNibLPnD2qvc7DdypU9Rl593ilbA+ms0w9jlf6eGN7WkA==
+X-Received: by 2002:a05:6638:3711:: with SMTP id k17mr10967372jav.72.1638372085289;
+        Wed, 01 Dec 2021 07:21:25 -0800 (PST)
+Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-33-142-112-185-132.dsl.bell.ca. [142.112.185.132])
+        by smtp.googlemail.com with ESMTPSA id y15sm117996iow.44.2021.12.01.07.21.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Dec 2021 07:21:24 -0800 (PST)
+Message-ID: <8f9faf42-8a78-f383-3b93-a17fab4ed79b@mojatatu.com>
+Date:   Wed, 1 Dec 2021 10:21:21 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP
+ stats
+Content-Language: en-US
+To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211130155612.594688-1-alexandr.lobakin@intel.com>
+ <20211130081207.228f42ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211130163454.595897-1-alexandr.lobakin@intel.com>
+ <20211130090449.58a8327d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <18655462-c72e-1d26-5b59-d03eb993d832@gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+In-Reply-To: <18655462-c72e-1d26-5b59-d03eb993d832@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add $(OUTPUT) prefix to testing_helpers.o, so it can be built out of
-tree when necessary. At the moment, in addition to being built in-tree
-even when out-of-tree is required, testing_helpers.o is not built with
-the right recipe when cross-building.
+On 2021-11-30 12:38, David Ahern wrote:
+> Today, stats are sent as a struct so skipping stats whose value is 0 is
+> not an option. When using individual attributes for the counters this
+> becomes an option. Given there is no value in sending '0' why do it?
+> 
+> Is your pushback that there should be a uapi to opt-in to this behavior?
 
-For consistency the other helpers, cgroup_helpers and trace_helpers, can
-also be passed as objects instead of source. Use *_HELPERS variable to
-keep the Makefile readable.
+A filter in the netlink request should help pick what is user-preferred.
+You can default to not sending zeros.
 
-Fixes: f87c1930ac29 ("selftests/bpf: Merge test_stub.c into testing_helpers.c")
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
----
-v2: Homogenize cgroup_helpers and trace_helpers.
-v1: https://lore.kernel.org/bpf/20211129111508.404367-1-jean-philippe@linaro.org/
----
- tools/testing/selftests/bpf/Makefile | 40 +++++++++++++++-------------
- 1 file changed, 22 insertions(+), 18 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index a6c0e92c86a1..75799506a5d8 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -192,22 +192,26 @@ TEST_GEN_PROGS_EXTENDED += $(DEFAULT_BPFTOOL)
- 
- $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(BPFOBJ)
- 
--$(OUTPUT)/test_dev_cgroup: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_skb_cgroup_id_user: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_sock: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_sock_addr: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_sockmap: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_tcpnotify_user: cgroup_helpers.c trace_helpers.c testing_helpers.o
--$(OUTPUT)/get_cgroup_id_user: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_cgroup_storage: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_sock_fields: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_sysctl: cgroup_helpers.c testing_helpers.o
--$(OUTPUT)/test_tag: testing_helpers.o
--$(OUTPUT)/test_lirc_mode2_user: testing_helpers.o
--$(OUTPUT)/xdping: testing_helpers.o
--$(OUTPUT)/flow_dissector_load: testing_helpers.o
--$(OUTPUT)/test_maps: testing_helpers.o
--$(OUTPUT)/test_verifier: testing_helpers.o
-+CGROUP_HELPERS	:= $(OUTPUT)/cgroup_helpers.o
-+TESTING_HELPERS	:= $(OUTPUT)/testing_helpers.o
-+TRACE_HELPERS	:= $(OUTPUT)/trace_helpers.o
-+
-+$(OUTPUT)/test_dev_cgroup: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_skb_cgroup_id_user: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_sock: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_sock_addr: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_sockmap: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_tcpnotify_user: $(CGROUP_HELPERS) $(TESTING_HELPERS) $(TRACE_HELPERS)
-+$(OUTPUT)/get_cgroup_id_user: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_cgroup_storage: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_sock_fields: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_sysctl: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-+$(OUTPUT)/test_tag: $(TESTING_HELPERS)
-+$(OUTPUT)/test_lirc_mode2_user: $(TESTING_HELPERS)
-+$(OUTPUT)/xdping: $(TESTING_HELPERS)
-+$(OUTPUT)/flow_dissector_load: $(TESTING_HELPERS)
-+$(OUTPUT)/test_maps: $(TESTING_HELPERS)
-+$(OUTPUT)/test_verifier: $(TESTING_HELPERS)
- 
- BPFTOOL ?= $(DEFAULT_BPFTOOL)
- $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
-@@ -535,8 +539,8 @@ $(OUTPUT)/bench_bpf_loop.o: $(OUTPUT)/bpf_loop_bench.skel.h
- $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
- $(OUTPUT)/bench: LDLIBS += -lm
- $(OUTPUT)/bench: $(OUTPUT)/bench.o \
--		 $(OUTPUT)/testing_helpers.o \
--		 $(OUTPUT)/trace_helpers.o \
-+		 $(TESTING_HELPERS) \
-+		 $(TRACE_HELPERS) \
- 		 $(OUTPUT)/bench_count.o \
- 		 $(OUTPUT)/bench_rename.o \
- 		 $(OUTPUT)/bench_trigger.o \
--- 
-2.34.0
-
+cheers,
+jamal
