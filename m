@@ -2,128 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC79846590F
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 23:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F52B465945
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 23:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240229AbhLAWZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 17:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        id S1353650AbhLAWep (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 17:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235412AbhLAWZR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 17:25:17 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C0BC061574
-        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 14:21:55 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id t5so108122065edd.0
-        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 14:21:55 -0800 (PST)
+        with ESMTP id S1353632AbhLAWef (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 17:34:35 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C49C061574;
+        Wed,  1 Dec 2021 14:31:12 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id v138so67875177ybb.8;
+        Wed, 01 Dec 2021 14:31:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lCQwNQM8rrMxQXyeEOO7UYUuoyOy+1BPKKIhY77bUI4=;
-        b=tTXbinmHWSW2VS+rox0MD8Wc3V9t0cuzdeAarAAPw5rstqXwa3guk+3UR7TFB87JtY
-         RN0O8mhoqKv6j7KdpWz3QtRe5Doj8bqAvQtZQZspMwDr1mW6ExSYu4XYVjSInBQJYOWN
-         bHZcah89iTK/bdR27y3K+S3Y5bY9Usri3b7hEo8PxV+RPBvHOLz2wutrUtkXFXmN4bQo
-         qhWhPjI6ddylFoAvtBix6w1RBiHO9RYaNniMOdttNhpKG2vEa9iCCoulNaJekEGRaRIt
-         fjXEtkOYj1kgGI7WyDb70WJTIrf1XBt2qYCg5v9V3ovNlJTO5R0S07e3rFR01xYq6ECj
-         HvWg==
+        bh=E3jOCA6XzToDg8ZlfTZ3eGsABoN8CM2rnYNWMRgMrzk=;
+        b=HOEIgKwteYTFP0259sjPTjW8p3JbhVNRfhvh+9Jhz/m4rn3NohF0Rxd2g0///iXiLa
+         P3EepHhWvJXBTvu3u2hJ7I2l9C3sB+jlsiZjJZ8OyiSW65acN2XBzQazaf68imcacEGu
+         0g3LFqamnuNnE9i8bCnjtBnpgPSIe+qqsktBYF369wSb+yrOb8eN+QA6yhUkeL/SvHgH
+         SiLlASCg6zQgle/P8vcIbGG2ATNVxOih+RugcagCxY72oO/inXA0xzDFfZD4bTV4ueKf
+         6L+wH68R2ILAl08MxsRFBNhGMzPzwEKV6NElMVzeJ9AzYO9Cf3iw9srcVoB8S7W5AQ8o
+         yx+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lCQwNQM8rrMxQXyeEOO7UYUuoyOy+1BPKKIhY77bUI4=;
-        b=l3j7FSkcOh50KQgf6UU16F/4LhqLMCx/jNbQX0SiD+LfR9kfKdO42F1iM0N4V92oXY
-         q70dIypnjA8rKqrfC/N4Clz3ljpqCIAzFFgYzNabtLe+3LNw563HA5CcLnVuanJma9Kh
-         GaNia7Pn0Knw97MuQEMuMleFti74HQuyZI6x9Rkvr0TpTJue7L86E4W1Aq9J+KC/TIfQ
-         sYF2Q3rzrHzxtEvvbHlir3TWlbVSS2rRkXrpXzBRGU+mb21cmo3hcHVNcB7Glx4L8WMt
-         Y0yWZM5WMGk4ZbrqtNy+8hZ2IPF5s3AnH6rfliWop8cPdn0+XK5l+lcBdGSU/NdaezLd
-         q08A==
-X-Gm-Message-State: AOAM533uhbYcbgtAWdkSUoRCxGaRXC7sPHWi8UWLEicGRgHQaiioH5c8
-        4sUD6nbNI2uA6Tr9eyVMtDbSX3j0ANLaH85DdKuECw==
-X-Google-Smtp-Source: ABdhPJyB8ojsnOPGHyycLQhzYxe0jWJawgVgb98cMd/1djPtNiI8MbFN/5kw5ex6GMNTAEcoFzR1XGaVS8MHouf9irY=
-X-Received: by 2002:a50:e0c9:: with SMTP id j9mr12366783edl.336.1638397313813;
- Wed, 01 Dec 2021 14:21:53 -0800 (PST)
+        bh=E3jOCA6XzToDg8ZlfTZ3eGsABoN8CM2rnYNWMRgMrzk=;
+        b=LV5y3nP7bGbiXicy/XSY77LtjSWylGJ2zt/IppsVxZaA3IDjbdG8QAYqSJFrrDFikj
+         eqJXbO8tWLQSyGd9DhxgrmjiQAjaIAxbDggjkT4rhzf5yvieGz5UFvPmfeej+bD1y8u/
+         LTi70w66LaCmyZHHj8GOEkWyi4ESjHu1K8AVF52VSyrFnF+gn8YHtfHhYeipOdjGVdYb
+         JoEZEilWKOxwlADWMxTLYTM0sYulIbemB57uREND4sTCiu35cSFBVa9TnB5Bcd17UxcA
+         /tvV0fmMmqD+5wXWYw98qyLa3pPZWcwr1iYbJFfuaEvuh9iJOKsUumxuN1wFL07IzqY7
+         +q0A==
+X-Gm-Message-State: AOAM532wD4qn96tliRxDFUENM/Dzr3/qFZkHROfLkT4vtJxYos3WPZAh
+        PM7xYFmeHDOJQPCINZXYc5KoeYdPuv4+RNRTabI=
+X-Google-Smtp-Source: ABdhPJxJMz1sH2AdahfAuGRURSdKD+QHhb6t8Pa4kk0Ha/CBh90gwUa6BzYqDYbqVgdZPtoY1JcwUdkRIksyDMggU7M=
+X-Received: by 2002:a25:84c1:: with SMTP id x1mr11376590ybm.690.1638397871960;
+ Wed, 01 Dec 2021 14:31:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20211130012948.380602-1-haoluo@google.com> <20211130012948.380602-9-haoluo@google.com>
- <20211201203433.ioj3jsksaw3aoie2@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20211201203433.ioj3jsksaw3aoie2@ast-mbp.dhcp.thefacebook.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 1 Dec 2021 14:21:41 -0800
-Message-ID: <CA+khW7ggwH-kwZYk48xnb1akYcTjK5itWu1eLCjmpb36=NLBbA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 8/9] bpf: Add MEM_RDONLY for helper args
- that are pointers to rdonly mem.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20211201164931.47357-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20211201164931.47357-1-alexandr.lobakin@intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Dec 2021 14:31:00 -0800
+Message-ID: <CAEf4BzZOTmmhmiNoHUCVB215t8c_AaCJJkYAkA930NLCzM_Otg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] samples: bpf: fix conflicting types in fds_example
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 1, 2021 at 12:34 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Dec 1, 2021 at 8:50 AM Alexander Lobakin
+<alexandr.lobakin@intel.com> wrote:
 >
-> On Mon, Nov 29, 2021 at 05:29:47PM -0800, Hao Luo wrote:
-> >
-> > +
-> >  struct bpf_reg_types {
-> >       const enum bpf_reg_type types[10];
-> >       u32 *btf_id;
-> > +
-> > +     /* Certain types require customized type matching function. */
-> > +     bool (*type_match_fn)(enum bpf_arg_type arg_type,
-> > +                           enum bpf_reg_type type,
-> > +                           enum bpf_reg_type expected);
-> >  };
-> >
-> >  static const struct bpf_reg_types map_key_value_types = {
-> > @@ -5013,6 +5019,19 @@ static const struct bpf_reg_types btf_id_sock_common_types = {
-> >  };
-> >  #endif
-> >
-> > +static bool mem_type_match(enum bpf_arg_type arg_type,
-> > +                        enum bpf_reg_type type, enum bpf_reg_type expected)
-> > +{
-> > +     /* If arg_type is tagged with MEM_RDONLY, type is compatible with both
-> > +      * RDONLY and RDWR mem, fold the MEM_RDONLY flag in 'type' before
-> > +      * comparison.
-> > +      */
-> > +     if ((arg_type & MEM_RDONLY) != 0)
-> > +             type &= ~MEM_RDONLY;
-> > +
-> > +     return type == expected;
-> > +}
-> > +
-> >  static const struct bpf_reg_types mem_types = {
-> >       .types = {
-> >               PTR_TO_STACK,
-> > @@ -5022,8 +5041,8 @@ static const struct bpf_reg_types mem_types = {
-> >               PTR_TO_MAP_VALUE,
-> >               PTR_TO_MEM,
-> >               PTR_TO_BUF,
-> > -             PTR_TO_BUF | MEM_RDONLY,
-> >       },
-> > +     .type_match_fn = mem_type_match,
+> Fix the following samples/bpf build error appeared after the
+> introduction of bpf_map_create() in libbpf:
 >
-> why add a callback for this logic?
-> Isn't it a universal rule for MEM_RDONLY?
+>   CC  samples/bpf/fds_example.o
+> samples/bpf/fds_example.c:49:12: error: static declaration of 'bpf_map_create' follows non-static declaration
+> static int bpf_map_create(void)
+>            ^
+> samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: previous declaration is here
+> LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+>                ^
+> samples/bpf/fds_example.c:82:23: error: too few arguments to function call, expected 6, have 0
+>                 fd = bpf_map_create();
+>                      ~~~~~~~~~~~~~~ ^
+> samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: 'bpf_map_create' declared here
+> LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+>                ^
+> 2 errors generated.
+>
+> fds_example by accident has a static function with the same name.
+> It's not worth it to separate a single call into its own function,
+> so just embed it.
+>
+> Fixes: 992c4225419a ("libbpf: Unify low-level map creation APIs w/ new bpf_map_create()")
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  samples/bpf/fds_example.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+>
+> diff --git a/samples/bpf/fds_example.c b/samples/bpf/fds_example.c
+> index 59f45fef5110..9a7c1fd7a4a8 100644
+> --- a/samples/bpf/fds_example.c
+> +++ b/samples/bpf/fds_example.c
+> @@ -46,12 +46,6 @@ static void usage(void)
+>         printf("       -h          Display this help.\n");
+>  }
+>
+> -static int bpf_map_create(void)
+> -{
+> -       return bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(uint32_t),
+> -                             sizeof(uint32_t), 1024, 0);
+> -}
+> -
+>  static int bpf_prog_create(const char *object)
+>  {
+>         static struct bpf_insn insns[] = {
+> @@ -79,7 +73,8 @@ static int bpf_do_map(const char *file, uint32_t flags, uint32_t key,
+>         int fd, ret;
+>
+>         if (flags & BPF_F_PIN) {
+> -               fd = bpf_map_create();
+> +               fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(uint32_t),
+> +                                   sizeof(uint32_t), 1024, 0);
 
-Ah, good point, I didn't realize that. Maybe, not only MEM_RDONLY, but
-all flags can be checked in the same way? Like the following
+Would be even better to use bpf_map_create() API instead, but that's
+fine, I'm sending a big clean up patch for this and other uses of
+deprecated APIs in samples/bpf. Applied to bpf-next.
 
- static const struct bpf_reg_types int_ptr_types = {
-@@ -5097,6 +5116,13 @@ static int check_reg_type(struct
-bpf_verifier_env *env, u32 regno,
-                if (expected == NOT_INIT)
-                        break;
-
-+               flag = bpf_type_flag(arg_type);
-
--               if (type == expected)
-+               if ((type & ~flag) == expected)
-                        goto found;
-        }
+>                 printf("bpf: map fd:%d (%s)\n", fd, strerror(errno));
+>                 assert(fd > 0);
+>
+> --
+> 2.33.1
+>
