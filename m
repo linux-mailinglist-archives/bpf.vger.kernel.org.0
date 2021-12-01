@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B289E4654D0
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 19:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7664654DF
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 19:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242617AbhLASOe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 13:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
+        id S1352169AbhLASO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 13:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352169AbhLASO1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 13:14:27 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE6BC061574
-        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 10:11:06 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id b68so25340524pfg.11
-        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 10:11:06 -0800 (PST)
+        with ESMTP id S1352180AbhLASOb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 13:14:31 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109C4C061748
+        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 10:11:09 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id gt5so18615110pjb.1
+        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 10:11:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GiCRjm/pJ8Ja/A7zDPE+0BODLMV4x7Me8yMCdneF5Og=;
-        b=bXkBseGR2kKgODQFg52ailcFOvcdRJd0fVxLaFBsExU5IKfEepVPkzYoOYUwo2PIUQ
-         tdg9rJ/RbuV381svpOLOcKlEEY8C1M08UoIEhd1MGSG0YV0bafwkikexNluoW8JQ/J1y
-         vwwBPYi2xYEkm54v1qacxYBvaYb62bdfXCYcX2zk4dSPWqUfBkd4l6YstitqVFFnhXzT
-         PAlDTbW21iDuZ0zmvebEMgvmXGvubR0Zmw2jCt3zuXtrTqnc30kSOGUzNaSYf0bigX88
-         AUBJb09oY6BBdJdYocBNIEgxjyd5kUFeyeo6MDIv60EG+myHWF2UKi0zr8NPS4bGvSbR
-         NJLg==
+        bh=KH8+ESV24YZTjD2HLUC8jof2YIXdIvjexwdmRwD2YuE=;
+        b=oIumbOtE1yU2Y4vQP4JU2xxE8voi4jVnLeg9V9rkmzKaxnlb6r5lL+KESO+V6MUfMs
+         YBRN4gm5j10hqfETt6AL18GwjnqMna6Q9/H4/TgpkC6+O6617MvW657J67yUlFPl8Kt0
+         xQV3Cv5fy6JN71UNcEgIaddjU6dF9FxePVCHloerITPYD49J2F3GD/Jc4ZfMLXkTVRzo
+         A0y2Se7dJjDi/FNTnoRrX/jLR3i9kMqhPcpBJ3QkB8wqLZCcTx+sWTqZ9kESpSpgYIVa
+         epihKIUYgt+z+ADb3oEzji1H6/MQglnk5BasKYmoOi4GmH5q2bjGyk8njmzFniAEIyyQ
+         Ph6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GiCRjm/pJ8Ja/A7zDPE+0BODLMV4x7Me8yMCdneF5Og=;
-        b=UsF7LGXvRgXd2zU2oChmkJcsRB2yjL37FM8H+0eGIUrkwpM6FWekTRcfAKtaq9Fl1Z
-         6ZcuWyJmC/dljBevrQBSEj6ZmiNLcLzi9U3wSfTkysziawlLjUL76PsBlZkz9PSSitk3
-         P7Z8gfXQTKCAJaudjP1sqcaFdghcW+MjA1a6k5+8qizLykyGKMVbRG527WKjwGu+Gg1g
-         LrLbHdZkGVPFc4+zAC9wbY1tKi+qt+ZJzOyZJ1xgq6hh8Rya5W+TyUqR8BLwQdPsMrSF
-         jOYk8d2bjhOypMrbQttwWVEtxRI/Osw5ImY9bBF47Btuk+gmzfmwPYKwQfHkqkmikK3+
-         8hoQ==
-X-Gm-Message-State: AOAM532AfXT/xJYlrdH4XJQs+pE6SPP3L7IRP47+xetax65EoJcg6ETc
-        /jw/URDebJuGVg6nMgyOEsLWeAYs7gk=
-X-Google-Smtp-Source: ABdhPJxL4ModcRm2AAioC1G86nFYjoTJYjTU0iyLOO1A38jHHcCtzaYGuXanTMCCeghf+1/H+M5xSQ==
-X-Received: by 2002:a05:6a00:cc9:b0:49f:b439:8930 with SMTP id b9-20020a056a000cc900b0049fb4398930mr7658964pfv.86.1638382265792;
-        Wed, 01 Dec 2021 10:11:05 -0800 (PST)
+        bh=KH8+ESV24YZTjD2HLUC8jof2YIXdIvjexwdmRwD2YuE=;
+        b=xoZt5nwmzJafAmiYzz6ZNyph8bqCMssHn6AYvDWXnNRwVaNObt8KCqrXXKuGgqnK98
+         R+nfwD7vE7Q0ZmB2Y+nH9LPXCQ05QiDR4fS9Wz7PvoS9uIwy+Or07HMx4j+3dhiPNbx3
+         B9qkPywvlblfyPmZ2v4G+ZjYvPaMgeuqrxXDR+iBXbcwc4g8aqjIb1qbfCcfKDZ9KTL0
+         mB5oUnsFp7tgRdG4yxNpdk7WmUUas170GP1FtlJGni40mxDhw1WlCmSA48gAdSSyCt/e
+         tlnjya2Du3w/53JZUKcJcOq/VUk4o7hEh4KMM4EPJvhkSBeMeqJVFnA1vm6EJj9zWfyG
+         4qKQ==
+X-Gm-Message-State: AOAM5310ZQ6mgjNR2IhfmxDDmxNQDnB6wMOPq08FYBZyHv+PjoKNCLSU
+        dtxy4an5iBc4NqgU+FUeyBY=
+X-Google-Smtp-Source: ABdhPJzmPnA3tI9m93C0Ui28Tg9HhboYYygkuGnHPl321BXOVwrd/lDLC+6oNpyM9tqv5AQXAaT92g==
+X-Received: by 2002:a17:90a:690d:: with SMTP id r13mr9707568pjj.40.1638382268477;
+        Wed, 01 Dec 2021 10:11:08 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:620c])
-        by smtp.gmail.com with ESMTPSA id s19sm475924pfu.104.2021.12.01.10.11.04
+        by smtp.gmail.com with ESMTPSA id e6sm326253pgc.33.2021.12.01.10.11.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 01 Dec 2021 10:11:04 -0800 (PST)
+        Wed, 01 Dec 2021 10:11:08 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v5 bpf-next 08/17] bpf: Add bpf_core_add_cands() and wire it into bpf_core_apply_relo_insn().
-Date:   Wed,  1 Dec 2021 10:10:31 -0800
-Message-Id: <20211201181040.23337-9-alexei.starovoitov@gmail.com>
+Subject: [PATCH v5 bpf-next 09/17] libbpf: Use CO-RE in the kernel in light skeleton.
+Date:   Wed,  1 Dec 2021 10:10:32 -0800
+Message-Id: <20211201181040.23337-10-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
 References: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
@@ -65,420 +65,333 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Given BPF program's BTF root type name perform the following steps:
-. search in vmlinux candidate cache.
-. if (present in cache and candidate list >= 1) return candidate list.
-. do a linear search through kernel BTFs for possible candidates.
-. regardless of number of candidates found populate vmlinux cache.
-. if (candidate list >= 1) return candidate list.
-. search in module candidate cache.
-. if (present in cache) return candidate list (even if list is empty).
-. do a linear search through BTFs of all kernel modules
-  collecting candidates from all of them.
-. regardless of number of candidates found populate module cache.
-. return candidate list.
-Then wire the result into bpf_core_apply_relo_insn().
+Without lskel the CO-RE relocations are processed by libbpf before any other
+work is done. Instead, when lskel is needed, remember relocation as RELO_CORE
+kind. Then when loader prog is generated for a given bpf program pass CO-RE
+relos of that program to gen loader via bpf_gen__record_relo_core(). The gen
+loader will remember them as-is and pass it later as-is into the kernel.
 
-When BPF program is trying to CO-RE relocate a type
-that doesn't exist in either vmlinux BTF or in modules BTFs
-these steps will perform 2 cache lookups when cache is hit.
+The normal libbpf flow is to process CO-RE early before call relos happen. In
+case of gen_loader the core relos have to be added to other relos to be copied
+together when bpf static function is appended in different places to other main
+bpf progs. During the copy the append_subprog_relos() will adjust insn_idx for
+normal relos and for RELO_CORE kind too. When that is done each struct
+reloc_desc has good relos for specific main prog.
 
-Note the cache doesn't prevent the abuse by the program that might
-have lots of relocations that cannot be resolved. Hence cond_resched().
-
-CO-RE in the kernel requires CAP_BPF, since BTF loading requires it.
-
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/btf.c | 346 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 345 insertions(+), 1 deletion(-)
+ tools/lib/bpf/bpf_gen_internal.h |   3 +
+ tools/lib/bpf/gen_loader.c       |  41 +++++++++++-
+ tools/lib/bpf/libbpf.c           | 109 ++++++++++++++++++++++---------
+ 3 files changed, 120 insertions(+), 33 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index dbf1f389b1d3..ed4258cb0832 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -25,6 +25,7 @@
- #include <linux/kobject.h>
- #include <linux/sysfs.h>
- #include <net/sock.h>
-+#include "../tools/lib/bpf/relo_core.h"
+diff --git a/tools/lib/bpf/bpf_gen_internal.h b/tools/lib/bpf/bpf_gen_internal.h
+index ae7704deba30..9d57fa84664b 100644
+--- a/tools/lib/bpf/bpf_gen_internal.h
++++ b/tools/lib/bpf/bpf_gen_internal.h
+@@ -39,6 +39,8 @@ struct bpf_gen {
+ 	int error;
+ 	struct ksym_relo_desc *relos;
+ 	int relo_cnt;
++	struct bpf_core_relo *core_relos;
++	int core_relo_cnt;
+ 	char attach_target[128];
+ 	int attach_kind;
+ 	struct ksym_desc *ksyms;
+@@ -64,5 +66,6 @@ void bpf_gen__map_freeze(struct bpf_gen *gen, int map_idx);
+ void bpf_gen__record_attach_target(struct bpf_gen *gen, const char *name, enum bpf_attach_type type);
+ void bpf_gen__record_extern(struct bpf_gen *gen, const char *name, bool is_weak,
+ 			    bool is_typeless, int kind, int insn_idx);
++void bpf_gen__record_relo_core(struct bpf_gen *gen, const struct bpf_core_relo *core_relo);
  
- /* BTF (BPF Type Format) is the meta data format which describes
-  * the data types of BPF program/map.  Hence, it basically focus
-@@ -6169,6 +6170,8 @@ btf_module_read(struct file *file, struct kobject *kobj,
- 	return len;
+ #endif
+diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
+index 6f3790369463..87d385e892ab 100644
+--- a/tools/lib/bpf/gen_loader.c
++++ b/tools/lib/bpf/gen_loader.c
+@@ -829,6 +829,22 @@ static void emit_relo_ksym_btf(struct bpf_gen *gen, struct ksym_relo_desc *relo,
+ 	emit_ksym_relo_log(gen, relo, kdesc->ref);
  }
  
-+static void purge_cand_cache(struct btf *btf);
-+
- static int btf_module_notify(struct notifier_block *nb, unsigned long op,
- 			     void *module)
- {
-@@ -6203,6 +6206,7 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
- 			goto out;
- 		}
- 
-+		purge_cand_cache(NULL);
- 		mutex_lock(&btf_module_mutex);
- 		btf_mod->module = module;
- 		btf_mod->btf = btf;
-@@ -6245,6 +6249,7 @@ static int btf_module_notify(struct notifier_block *nb, unsigned long op,
- 			list_del(&btf_mod->list);
- 			if (btf_mod->sysfs_attr)
- 				sysfs_remove_bin_file(btf_kobj, btf_mod->sysfs_attr);
-+			purge_cand_cache(btf_mod->btf);
- 			btf_put(btf_mod->btf);
- 			kfree(btf_mod->sysfs_attr);
- 			kfree(btf_mod);
-@@ -6440,8 +6445,347 @@ size_t bpf_core_essential_name_len(const char *name)
- 	return n;
- }
- 
-+struct bpf_cand_cache {
-+	const char *name;
-+	u32 name_len;
-+	u16 kind;
-+	u16 cnt;
-+	struct {
-+		const struct btf *btf;
-+		u32 id;
-+	} cands[];
-+};
-+
-+static void bpf_free_cands(struct bpf_cand_cache *cands)
++void bpf_gen__record_relo_core(struct bpf_gen *gen,
++			       const struct bpf_core_relo *core_relo)
 +{
-+	if (!cands->cnt)
-+		/* empty candidate array was allocated on stack */
++	struct bpf_core_relo *relos;
++
++	relos = libbpf_reallocarray(gen->core_relos, gen->core_relo_cnt + 1, sizeof(*relos));
++	if (!relos) {
++		gen->error = -ENOMEM;
 +		return;
-+	kfree(cands);
-+}
-+
-+static void bpf_free_cands_from_cache(struct bpf_cand_cache *cands)
-+{
-+	kfree(cands->name);
-+	kfree(cands);
-+}
-+
-+#define VMLINUX_CAND_CACHE_SIZE 31
-+static struct bpf_cand_cache *vmlinux_cand_cache[VMLINUX_CAND_CACHE_SIZE];
-+
-+#define MODULE_CAND_CACHE_SIZE 31
-+static struct bpf_cand_cache *module_cand_cache[MODULE_CAND_CACHE_SIZE];
-+
-+static DEFINE_MUTEX(cand_cache_mutex);
-+
-+static void __print_cand_cache(struct bpf_verifier_log *log,
-+			       struct bpf_cand_cache **cache,
-+			       int cache_size)
-+{
-+	struct bpf_cand_cache *cc;
-+	int i, j;
-+
-+	for (i = 0; i < cache_size; i++) {
-+		cc = cache[i];
-+		if (!cc)
-+			continue;
-+		bpf_log(log, "[%d]%s(", i, cc->name);
-+		for (j = 0; j < cc->cnt; j++) {
-+			bpf_log(log, "%d", cc->cands[j].id);
-+			if (j < cc->cnt - 1)
-+				bpf_log(log, " ");
-+		}
-+		bpf_log(log, "), ");
 +	}
++	gen->core_relos = relos;
++	relos += gen->core_relo_cnt;
++	memcpy(relos, core_relo, sizeof(*relos));
++	gen->core_relo_cnt++;
 +}
 +
-+static void print_cand_cache(struct bpf_verifier_log *log)
-+{
-+	mutex_lock(&cand_cache_mutex);
-+	bpf_log(log, "vmlinux_cand_cache:");
-+	__print_cand_cache(log, vmlinux_cand_cache, VMLINUX_CAND_CACHE_SIZE);
-+	bpf_log(log, "\nmodule_cand_cache:");
-+	__print_cand_cache(log, module_cand_cache, MODULE_CAND_CACHE_SIZE);
-+	bpf_log(log, "\n");
-+	mutex_unlock(&cand_cache_mutex);
-+}
-+
-+static u32 hash_cands(struct bpf_cand_cache *cands)
-+{
-+	return jhash(cands->name, cands->name_len, 0);
-+}
-+
-+static struct bpf_cand_cache *check_cand_cache(struct bpf_cand_cache *cands,
-+					       struct bpf_cand_cache **cache,
-+					       int cache_size)
-+{
-+	struct bpf_cand_cache *cc = cache[hash_cands(cands) % cache_size];
-+
-+	if (cc && cc->name_len == cands->name_len &&
-+	    !strncmp(cc->name, cands->name, cands->name_len))
-+		return cc;
-+	return NULL;
-+}
-+
-+static size_t sizeof_cands(int cnt)
-+{
-+	return offsetof(struct bpf_cand_cache, cands[cnt]);
-+}
-+
-+static struct bpf_cand_cache *populate_cand_cache(struct bpf_cand_cache *cands,
-+						  struct bpf_cand_cache **cache,
-+						  int cache_size)
-+{
-+	struct bpf_cand_cache **cc = &cache[hash_cands(cands) % cache_size], *new_cands;
-+
-+	if (*cc) {
-+		bpf_free_cands_from_cache(*cc);
-+		*cc = NULL;
-+	}
-+	new_cands = kmalloc(sizeof_cands(cands->cnt), GFP_KERNEL);
-+	if (!new_cands) {
-+		bpf_free_cands(cands);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+	memcpy(new_cands, cands, sizeof_cands(cands->cnt));
-+	/* strdup the name, since it will stay in cache.
-+	 * the cands->name points to strings in prog's BTF and the prog can be unloaded.
-+	 */
-+	new_cands->name = kmemdup_nul(cands->name, cands->name_len, GFP_KERNEL);
-+	bpf_free_cands(cands);
-+	if (!new_cands->name) {
-+		kfree(new_cands);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+	*cc = new_cands;
-+	return new_cands;
-+}
-+
-+static void __purge_cand_cache(struct btf *btf, struct bpf_cand_cache **cache,
-+			       int cache_size)
-+{
-+	struct bpf_cand_cache *cc;
-+	int i, j;
-+
-+	for (i = 0; i < cache_size; i++) {
-+		cc = cache[i];
-+		if (!cc)
-+			continue;
-+		if (!btf) {
-+			/* when new module is loaded purge all of module_cand_cache,
-+			 * since new module might have candidates with the name
-+			 * that matches cached cands.
-+			 */
-+			bpf_free_cands_from_cache(cc);
-+			cache[i] = NULL;
-+			continue;
-+		}
-+		/* when module is unloaded purge cache entries
-+		 * that match module's btf
-+		 */
-+		for (j = 0; j < cc->cnt; j++)
-+			if (cc->cands[j].btf == btf) {
-+				bpf_free_cands_from_cache(cc);
-+				cache[i] = NULL;
-+				break;
-+			}
-+	}
-+
-+}
-+
-+static void purge_cand_cache(struct btf *btf)
-+{
-+	mutex_lock(&cand_cache_mutex);
-+	__purge_cand_cache(btf, module_cand_cache, MODULE_CAND_CACHE_SIZE);
-+	mutex_unlock(&cand_cache_mutex);
-+}
-+
-+static struct bpf_cand_cache *
-+bpf_core_add_cands(struct bpf_cand_cache *cands, const struct btf *targ_btf,
-+		   int targ_start_id)
-+{
-+	struct bpf_cand_cache *new_cands;
-+	const struct btf_type *t;
-+	const char *targ_name;
-+	size_t targ_essent_len;
-+	int n, i;
-+
-+	n = btf_nr_types(targ_btf);
-+	for (i = targ_start_id; i < n; i++) {
-+		t = btf_type_by_id(targ_btf, i);
-+		if (btf_kind(t) != cands->kind)
-+			continue;
-+
-+		targ_name = btf_name_by_offset(targ_btf, t->name_off);
-+		if (!targ_name)
-+			continue;
-+
-+		/* the resched point is before strncmp to make sure that search
-+		 * for non-existing name will have a chance to schedule().
-+		 */
-+		cond_resched();
-+
-+		if (strncmp(cands->name, targ_name, cands->name_len) != 0)
-+			continue;
-+
-+		targ_essent_len = bpf_core_essential_name_len(targ_name);
-+		if (targ_essent_len != cands->name_len)
-+			continue;
-+
-+		/* most of the time there is only one candidate for a given kind+name pair */
-+		new_cands = kmalloc(sizeof_cands(cands->cnt + 1), GFP_KERNEL);
-+		if (!new_cands) {
-+			bpf_free_cands(cands);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+
-+		memcpy(new_cands, cands, sizeof_cands(cands->cnt));
-+		bpf_free_cands(cands);
-+		cands = new_cands;
-+		cands->cands[cands->cnt].btf = targ_btf;
-+		cands->cands[cands->cnt].id = i;
-+		cands->cnt++;
-+	}
-+	return cands;
-+}
-+
-+static struct bpf_cand_cache *
-+bpf_core_find_cands(struct bpf_core_ctx *ctx, u32 local_type_id)
-+{
-+	struct bpf_cand_cache *cands, *cc, local_cand = {};
-+	const struct btf *local_btf = ctx->btf;
-+	const struct btf_type *local_type;
-+	const struct btf *main_btf;
-+	size_t local_essent_len;
-+	struct btf *mod_btf;
-+	const char *name;
-+	int id;
-+
-+	main_btf = bpf_get_btf_vmlinux();
-+	if (IS_ERR(main_btf))
-+		return (void *)main_btf;
-+
-+	local_type = btf_type_by_id(local_btf, local_type_id);
-+	if (!local_type)
-+		return ERR_PTR(-EINVAL);
-+
-+	name = btf_name_by_offset(local_btf, local_type->name_off);
-+	if (str_is_empty(name))
-+		return ERR_PTR(-EINVAL);
-+	local_essent_len = bpf_core_essential_name_len(name);
-+
-+	cands = &local_cand;
-+	cands->name = name;
-+	cands->kind = btf_kind(local_type);
-+	cands->name_len = local_essent_len;
-+
-+	cc = check_cand_cache(cands, vmlinux_cand_cache, VMLINUX_CAND_CACHE_SIZE);
-+	/* cands is a pointer to stack here */
-+	if (cc) {
-+		if (cc->cnt)
-+			return cc;
-+		goto check_modules;
-+	}
-+
-+	/* Attempt to find target candidates in vmlinux BTF first */
-+	cands = bpf_core_add_cands(cands, main_btf, 1);
-+	if (IS_ERR(cands))
-+		return cands;
-+
-+	/* cands is a pointer to kmalloced memory here if cands->cnt > 0 */
-+
-+	/* populate cache even when cands->cnt == 0 */
-+	cc = populate_cand_cache(cands, vmlinux_cand_cache, VMLINUX_CAND_CACHE_SIZE);
-+	if (IS_ERR(cc))
-+		return cc;
-+
-+	/* if vmlinux BTF has any candidate, don't go for module BTFs */
-+	if (cc->cnt)
-+		return cc;
-+
-+check_modules:
-+	/* cands is a pointer to stack here and cands->cnt == 0 */
-+	cc = check_cand_cache(cands, module_cand_cache, MODULE_CAND_CACHE_SIZE);
-+	if (cc)
-+		/* if cache has it return it even if cc->cnt == 0 */
-+		return cc;
-+
-+	/* If candidate is not found in vmlinux's BTF then search in module's BTFs */
-+	spin_lock_bh(&btf_idr_lock);
-+	idr_for_each_entry(&btf_idr, mod_btf, id) {
-+		if (!btf_is_module(mod_btf))
-+			continue;
-+		/* linear search could be slow hence unlock/lock
-+		 * the IDR to avoiding holding it for too long
-+		 */
-+		btf_get(mod_btf);
-+		spin_unlock_bh(&btf_idr_lock);
-+		cands = bpf_core_add_cands(cands, mod_btf, btf_nr_types(main_btf));
-+		if (IS_ERR(cands)) {
-+			btf_put(mod_btf);
-+			return cands;
-+		}
-+		spin_lock_bh(&btf_idr_lock);
-+		btf_put(mod_btf);
-+	}
-+	spin_unlock_bh(&btf_idr_lock);
-+	/* cands is a pointer to kmalloced memory here if cands->cnt > 0
-+	 * or pointer to stack if cands->cnd == 0.
-+	 * Copy it into the cache even when cands->cnt == 0 and
-+	 * return the result.
-+	 */
-+	return populate_cand_cache(cands, module_cand_cache, MODULE_CAND_CACHE_SIZE);
-+}
-+
- int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
- 		   int relo_idx, void *insn)
+ static void emit_relo(struct bpf_gen *gen, struct ksym_relo_desc *relo, int insns)
  {
--	return -EOPNOTSUPP;
-+	bool need_cands = relo->kind != BPF_CORE_TYPE_ID_LOCAL;
-+	struct bpf_core_cand_list cands = {};
-+	int err;
-+
-+	if (need_cands) {
-+		struct bpf_cand_cache *cc;
-+		int i;
-+
-+		mutex_lock(&cand_cache_mutex);
-+		cc = bpf_core_find_cands(ctx, relo->type_id);
-+		if (IS_ERR(cc)) {
-+			bpf_log(ctx->log, "target candidate search failed for %d\n",
-+				relo->type_id);
-+			err = PTR_ERR(cc);
-+			goto out;
-+		}
-+		if (cc->cnt) {
-+			cands.cands = kcalloc(cc->cnt, sizeof(*cands.cands), GFP_KERNEL);
-+			if (!cands.cands) {
-+				err = -ENOMEM;
-+				goto out;
-+			}
-+		}
-+		for (i = 0; i < cc->cnt; i++) {
-+			bpf_log(ctx->log,
-+				"CO-RE relocating %s %s: found target candidate [%d]\n",
-+				btf_kind_str[cc->kind], cc->name, cc->cands[i].id);
-+			cands.cands[i].btf = cc->cands[i].btf;
-+			cands.cands[i].id = cc->cands[i].id;
-+		}
-+		cands.len = cc->cnt;
-+		/* cand_cache_mutex needs to span the cache lookup and
-+		 * copy of btf pointer into bpf_core_cand_list,
-+		 * since module can be unloaded while bpf_core_apply_relo_insn
-+		 * is working with module's btf.
-+		 */
-+	}
-+
-+	err = bpf_core_apply_relo_insn((void *)ctx->log, insn, relo->insn_off / 8,
-+				       relo, relo_idx, ctx->btf, &cands);
-+out:
-+	if (need_cands) {
-+		kfree(cands.cands);
-+		mutex_unlock(&cand_cache_mutex);
-+		if (ctx->log->level & BPF_LOG_LEVEL2)
-+			print_cand_cache(ctx->log);
-+	}
-+	return err;
+ 	int insn;
+@@ -861,6 +877,15 @@ static void emit_relos(struct bpf_gen *gen, int insns)
+ 		emit_relo(gen, gen->relos + i, insns);
  }
+ 
++static void cleanup_core_relo(struct bpf_gen *gen)
++{
++	if (!gen->core_relo_cnt)
++		return;
++	free(gen->core_relos);
++	gen->core_relo_cnt = 0;
++	gen->core_relos = NULL;
++}
++
+ static void cleanup_relos(struct bpf_gen *gen, int insns)
+ {
+ 	int i, insn;
+@@ -888,6 +913,7 @@ static void cleanup_relos(struct bpf_gen *gen, int insns)
+ 		gen->relo_cnt = 0;
+ 		gen->relos = NULL;
+ 	}
++	cleanup_core_relo(gen);
+ }
+ 
+ void bpf_gen__prog_load(struct bpf_gen *gen,
+@@ -895,12 +921,13 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
+ 			const char *license, struct bpf_insn *insns, size_t insn_cnt,
+ 			struct bpf_prog_load_opts *load_attr, int prog_idx)
+ {
+-	int attr_size = offsetofend(union bpf_attr, fd_array);
+-	int prog_load_attr, license_off, insns_off, func_info, line_info;
++	int prog_load_attr, license_off, insns_off, func_info, line_info, core_relos;
++	int attr_size = offsetofend(union bpf_attr, core_relo_rec_size);
+ 	union bpf_attr attr;
+ 
+ 	memset(&attr, 0, attr_size);
+-	pr_debug("gen: prog_load: type %d insns_cnt %zd\n", prog_type, insn_cnt);
++	pr_debug("gen: prog_load: type %d insns_cnt %zd progi_idx %d\n",
++		 prog_type, insn_cnt, prog_idx);
+ 	/* add license string to blob of bytes */
+ 	license_off = add_data(gen, license, strlen(license) + 1);
+ 	/* add insns to blob of bytes */
+@@ -924,6 +951,11 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
+ 	line_info = add_data(gen, load_attr->line_info,
+ 			     attr.line_info_cnt * attr.line_info_rec_size);
+ 
++	attr.core_relo_rec_size = sizeof(struct bpf_core_relo);
++	attr.core_relo_cnt = gen->core_relo_cnt;
++	core_relos = add_data(gen, gen->core_relos,
++			     attr.core_relo_cnt * attr.core_relo_rec_size);
++
+ 	memcpy(attr.prog_name, prog_name,
+ 	       min((unsigned)strlen(prog_name), BPF_OBJ_NAME_LEN - 1));
+ 	prog_load_attr = add_data(gen, &attr, attr_size);
+@@ -940,6 +972,9 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
+ 	/* populate union bpf_attr with a pointer to line_info */
+ 	emit_rel_store(gen, attr_field(prog_load_attr, line_info), line_info);
+ 
++	/* populate union bpf_attr with a pointer to core_relos */
++	emit_rel_store(gen, attr_field(prog_load_attr, core_relos), core_relos);
++
+ 	/* populate union bpf_attr fd_array with a pointer to data where map_fds are saved */
+ 	emit_rel_store(gen, attr_field(prog_load_attr, fd_array), gen->fd_array);
+ 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 96792d6e6fc1..831c12e00813 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -230,13 +230,19 @@ enum reloc_type {
+ 	RELO_EXTERN_VAR,
+ 	RELO_EXTERN_FUNC,
+ 	RELO_SUBPROG_ADDR,
++	RELO_CORE,
+ };
+ 
+ struct reloc_desc {
+ 	enum reloc_type type;
+ 	int insn_idx;
+-	int map_idx;
+-	int sym_off;
++	union {
++		const struct bpf_core_relo *core_relo; /* used when type == RELO_CORE */
++		struct {
++			int map_idx;
++			int sym_off;
++		};
++	};
+ };
+ 
+ struct bpf_sec_def;
+@@ -5485,6 +5491,24 @@ static void *u32_as_hash_key(__u32 x)
+ 	return (void *)(uintptr_t)x;
+ }
+ 
++static int record_relo_core(struct bpf_program *prog,
++			    const struct bpf_core_relo *core_relo, int insn_idx)
++{
++	struct reloc_desc *relos, *relo;
++
++	relos = libbpf_reallocarray(prog->reloc_desc,
++				    prog->nr_reloc + 1, sizeof(*relos));
++	if (!relos)
++		return -ENOMEM;
++	relo = &relos[prog->nr_reloc];
++	relo->type = RELO_CORE;
++	relo->insn_idx = insn_idx;
++	relo->core_relo = core_relo;
++	prog->reloc_desc = relos;
++	prog->nr_reloc++;
++	return 0;
++}
++
+ static int bpf_core_apply_relo(struct bpf_program *prog,
+ 			       const struct bpf_core_relo *relo,
+ 			       int relo_idx,
+@@ -5521,10 +5545,12 @@ static int bpf_core_apply_relo(struct bpf_program *prog,
+ 		return -EINVAL;
+ 
+ 	if (prog->obj->gen_loader) {
+-		pr_warn("// TODO core_relo: prog %td insn[%d] %s kind %d\n",
++		const char *spec_str = btf__name_by_offset(local_btf, relo->access_str_off);
++
++		pr_debug("record_relo_core: prog %td insn[%d] %s %s %s final insn_idx %d\n",
+ 			prog - prog->obj->programs, relo->insn_off / 8,
+-			local_name, relo->kind);
+-		return -ENOTSUP;
++			btf_kind_str(local_type), local_name, spec_str, insn_idx);
++		return record_relo_core(prog, relo, insn_idx);
+ 	}
+ 
+ 	if (relo->kind != BPF_CORE_TYPE_ID_LOCAL &&
+@@ -5729,6 +5755,9 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
+ 		case RELO_CALL:
+ 			/* handled already */
+ 			break;
++		case RELO_CORE:
++			/* will be handled by bpf_program_record_relos() */
++			break;
+ 		default:
+ 			pr_warn("prog '%s': relo #%d: bad relo type %d\n",
+ 				prog->name, i, relo->type);
+@@ -6169,6 +6198,35 @@ bpf_object__free_relocs(struct bpf_object *obj)
+ 	}
+ }
+ 
++static int cmp_relocs(const void *_a, const void *_b)
++{
++	const struct reloc_desc *a = _a;
++	const struct reloc_desc *b = _b;
++
++	if (a->insn_idx != b->insn_idx)
++		return a->insn_idx < b->insn_idx ? -1 : 1;
++
++	/* no two relocations should have the same insn_idx, but ... */
++	if (a->type != b->type)
++		return a->type < b->type ? -1 : 1;
++
++	return 0;
++}
++
++static void bpf_object__sort_relos(struct bpf_object *obj)
++{
++	int i;
++
++	for (i = 0; i < obj->nr_programs; i++) {
++		struct bpf_program *p = &obj->programs[i];
++
++		if (!p->nr_reloc)
++			continue;
++
++		qsort(p->reloc_desc, p->nr_reloc, sizeof(*p->reloc_desc), cmp_relocs);
++	}
++}
++
+ static int
+ bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
+ {
+@@ -6183,6 +6241,8 @@ bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
+ 				err);
+ 			return err;
+ 		}
++		if (obj->gen_loader)
++			bpf_object__sort_relos(obj);
+ 	}
+ 
+ 	/* Before relocating calls pre-process relocations and mark
+@@ -6387,21 +6447,6 @@ static int bpf_object__collect_map_relos(struct bpf_object *obj,
+ 	return 0;
+ }
+ 
+-static int cmp_relocs(const void *_a, const void *_b)
+-{
+-	const struct reloc_desc *a = _a;
+-	const struct reloc_desc *b = _b;
+-
+-	if (a->insn_idx != b->insn_idx)
+-		return a->insn_idx < b->insn_idx ? -1 : 1;
+-
+-	/* no two relocations should have the same insn_idx, but ... */
+-	if (a->type != b->type)
+-		return a->type < b->type ? -1 : 1;
+-
+-	return 0;
+-}
+-
+ static int bpf_object__collect_relos(struct bpf_object *obj)
+ {
+ 	int i, err;
+@@ -6434,14 +6479,7 @@ static int bpf_object__collect_relos(struct bpf_object *obj)
+ 			return err;
+ 	}
+ 
+-	for (i = 0; i < obj->nr_programs; i++) {
+-		struct bpf_program *p = &obj->programs[i];
+-
+-		if (!p->nr_reloc)
+-			continue;
+-
+-		qsort(p->reloc_desc, p->nr_reloc, sizeof(*p->reloc_desc), cmp_relocs);
+-	}
++	bpf_object__sort_relos(obj);
+ 	return 0;
+ }
+ 
+@@ -6683,7 +6721,7 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
+ 	return ret;
+ }
+ 
+-static int bpf_program__record_externs(struct bpf_program *prog)
++static int bpf_program_record_relos(struct bpf_program *prog)
+ {
+ 	struct bpf_object *obj = prog->obj;
+ 	int i;
+@@ -6705,6 +6743,17 @@ static int bpf_program__record_externs(struct bpf_program *prog)
+ 					       ext->is_weak, false, BTF_KIND_FUNC,
+ 					       relo->insn_idx);
+ 			break;
++		case RELO_CORE: {
++			struct bpf_core_relo cr = {
++				.insn_off = relo->insn_idx * 8,
++				.type_id = relo->core_relo->type_id,
++				.access_str_off = relo->core_relo->access_str_off,
++				.kind = relo->core_relo->kind,
++			};
++
++			bpf_gen__record_relo_core(obj->gen_loader, &cr);
++			break;
++		}
+ 		default:
+ 			continue;
+ 		}
+@@ -6744,7 +6793,7 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
+ 				prog->name, prog->instances.nr);
+ 		}
+ 		if (obj->gen_loader)
+-			bpf_program__record_externs(prog);
++			bpf_program_record_relos(prog);
+ 		err = bpf_object_load_prog_instance(obj, prog,
+ 						    prog->insns, prog->insns_cnt,
+ 						    license, kern_ver, &fd);
 -- 
 2.30.2
 
