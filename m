@@ -2,88 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741D7465969
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 23:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0B346596C
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 23:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353652AbhLAWne (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 17:43:34 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:50098 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343789AbhLAWne (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 17:43:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 46A77CE2124;
-        Wed,  1 Dec 2021 22:40:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3B0D7C53FCD;
-        Wed,  1 Dec 2021 22:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638398409;
-        bh=iyRImMWZKjUPoVSXAV6vr3E3Dmt7P+9dd3G2itpMK1c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nOLrfWXT75rfBo/3YqE6EQOgRsODZ0llueA7sg7Fx6q6NjSBZ54wjmUsmfMopr/GU
-         qW/V1zL36XhUxOkFwrqQB6x78N/cCpCHGfDaWdLricOt8A6eVOcnBeMtfgE78mv6uA
-         q2e2FVVzvECzk7AAvkbMaCLMBNOq4zd09EGof8aG1WM5lvW6QJo2b0385YmCNap4sD
-         amm6czZYh+QgsGThuMqTl/E+fF802sS4OIyMPnDA6Znm8W5GPEr7hEAQlGeMU1ABCt
-         SBJmogXq3eLFu5yWM10iRpE6WdBykBMIbMFE97ho7Gr/rLtmWsdSvxC1vuSFujD7J9
-         zDEDQ+G9snxvA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 17B0960A4D;
-        Wed,  1 Dec 2021 22:40:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1343789AbhLAWnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 17:43:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353690AbhLAWnr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 17:43:47 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141EEC061748
+        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 14:40:25 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id v1so107951658edx.2
+        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 14:40:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hfIZoz2xAzJu9RJOcxVN05bOnQSiOzrtGJ6tZtujJ7k=;
+        b=ke/buHpkMGIU8nJsWW8PSZuSAK7uIWC/r6SbtBu4Uv/24qVZZSyRTxMKrkNWAo+i3H
+         +2GLeNy2KDcNTt+zsDwg3Xl3Qn55wJYq6MtvXm8NsvMKifW1b1JLwAfZe3oxyV2Ind6k
+         hBdnxEJm1cTSJJEcP8s2HMt4aPI/wqj7duhPdWsP9x2v+ckLuXImOh7veOQmW+706Ar7
+         91rrX9t2StQW4DQuSGmsk41e8ZwK3ghHxur5wu1qyQktK2BHkm4IDQQtldxyUNvaazFx
+         888Z+dIzEV0iz8xaZJ03qyzXpngU1jZ+btGXsb8LcJHznAuhYKPRcilr02kzELcylUbS
+         7nLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hfIZoz2xAzJu9RJOcxVN05bOnQSiOzrtGJ6tZtujJ7k=;
+        b=aBWHkNuy8QnHHF5EwFDkjT3X5kSCmUgXbla67lm8zH46DuKzT/hHo0gHduCYuqFiIl
+         wB6fFKflNsZxu8ie3jLY7MF0hWB5UyDKJBjtIkZefR6yZVDNGXI1UTVZhUQMCJXOHOMD
+         2aO2som3dDHQrG0wyKS92pf++DxfvWhgQLkWgwcXZRv2N/p/ojaZzQRLOZhEYzWtjDjT
+         ac94SkgBCbrc1MwH0k+PVH0828fyYdFzxH9cf7EapnZ5S99MlAlCrnvQwIVsVZsq8Msg
+         NFCnRRt2pSrlfyWLKjBKuJ3hdNvhyOZDVugxArVeW3PNsnnHG+4ajpp/c3pjpIasLG6j
+         ChCw==
+X-Gm-Message-State: AOAM533WIbrNKqkailyrsByLrb8H4xLhNYwZgVEiRYvjlwPAIiH4KnUk
+        E1lsra6UOCX3DtKnxs9LLC/H0Y5hmZqpEDJ3PxA8ag==
+X-Google-Smtp-Source: ABdhPJwcQm80JXZ9dN+4odxG+WqdpUV/QCphx+Zj2vxhdc55hbIzo8yH8LoaeH7WwX075CWWylAaJW1rMyEGBbFVJZA=
+X-Received: by 2002:a05:6402:1a27:: with SMTP id be7mr12352590edb.187.1638398423438;
+ Wed, 01 Dec 2021 14:40:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] samples: bpf: fix conflicting types in fds_example
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163839840909.19475.13073469862545446268.git-patchwork-notify@kernel.org>
-Date:   Wed, 01 Dec 2021 22:40:09 +0000
-References: <20211201164931.47357-1-alexandr.lobakin@intel.com>
-In-Reply-To: <20211201164931.47357-1-alexandr.lobakin@intel.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        michal.swiatkowski@linux.intel.com, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20211130012948.380602-1-haoluo@google.com> <20211130012948.380602-4-haoluo@google.com>
+ <20211201203046.saxv5hl7zz3wzyvv@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211201203046.saxv5hl7zz3wzyvv@ast-mbp.dhcp.thefacebook.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Wed, 1 Dec 2021 14:40:12 -0800
+Message-ID: <CA+khW7ibeg4fGz1D=aZ8yF6me0_yif_Hm_FHA=+RPxw+YnW=tA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 3/9] bpf: Replace RET_XXX_OR_NULL with
+ RET_XXX | PTR_MAYBE_NULL
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Dec 1, 2021 at 12:30 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Nov 29, 2021 at 05:29:42PM -0800, Hao Luo wrote:
+> >       /* update return register (already marked as written above) */
+> > -     if (fn->ret_type == RET_INTEGER) {
+> > +     ret_type = fn->ret_type;
+> > +     if (ret_type == RET_INTEGER) {
+> >               /* sets type to SCALAR_VALUE */
+> >               mark_reg_unknown(env, regs, BPF_REG_0);
+> > -     } else if (fn->ret_type == RET_VOID) {
+> > +     } else if (ret_type == RET_VOID) {
+> >               regs[BPF_REG_0].type = NOT_INIT;
+> > -     } else if (fn->ret_type == RET_PTR_TO_MAP_VALUE_OR_NULL ||
+> > -                fn->ret_type == RET_PTR_TO_MAP_VALUE) {
+> > +     } else if (BPF_BASE_TYPE(ret_type) == RET_PTR_TO_MAP_VALUE) {
+> >               /* There is no offset yet applied, variable or fixed */
+> >               mark_reg_known_zero(env, regs, BPF_REG_0);
+> >               /* remember map_ptr, so that check_map_access()
+> > @@ -6530,28 +6536,27 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >               }
+> >               regs[BPF_REG_0].map_ptr = meta.map_ptr;
+> >               regs[BPF_REG_0].map_uid = meta.map_uid;
+> > -             if (fn->ret_type == RET_PTR_TO_MAP_VALUE) {
+> > +             if (ret_type_may_be_null(fn->ret_type)) {
+>
+> it should have been ret_type here?
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Yes. I think fn->ret_type and ret_type are the same here. I can
+replace it with 'ret_type' in the next version.
 
-On Wed,  1 Dec 2021 17:49:31 +0100 you wrote:
-> Fix the following samples/bpf build error appeared after the
-> introduction of bpf_map_create() in libbpf:
-> 
->   CC  samples/bpf/fds_example.o
-> samples/bpf/fds_example.c:49:12: error: static declaration of 'bpf_map_create' follows non-static declaration
-> static int bpf_map_create(void)
->            ^
-> samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: previous declaration is here
-> LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
->                ^
-> samples/bpf/fds_example.c:82:23: error: too few arguments to function call, expected 6, have 0
->                 fd = bpf_map_create();
->                      ~~~~~~~~~~~~~~ ^
-> samples/bpf/libbpf/include/bpf/bpf.h:55:16: note: 'bpf_map_create' declared here
-> LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
->                ^
-> 2 errors generated.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] samples: bpf: fix conflicting types in fds_example
-    https://git.kernel.org/bpf/bpf-next/c/64b5b97b8cff
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> > +                     regs[BPF_REG_0].type = PTR_TO_MAP_VALUE_OR_NULL;
+> > +             } else {
+> >                       regs[BPF_REG_0].type = PTR_TO_MAP_VALUE;
