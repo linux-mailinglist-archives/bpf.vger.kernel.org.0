@@ -2,181 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2534464A33
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 09:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14952464B8A
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 11:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242305AbhLAI62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 03:58:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242263AbhLAI62 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 03:58:28 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DAFC06174A
-        for <bpf@vger.kernel.org>; Wed,  1 Dec 2021 00:55:07 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id x5so23731718pfr.0
-        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 00:55:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=mt/YlklWkFfS0yF9ibH5y9vze0Bq+Suaib2gnljcJYo=;
-        b=3YYZed+piS7K/gTSgnfvhD1SRxp2O7IBmLBWqi60Usump9lWTzvjKGhBpyRaYIJGMT
-         8WI0WRn1SntqS58r3pdn4TqHnedXJ4RYNxfOS34FM37un+RAtR5RWpvVFEkiX7KMoOSd
-         lJIdnUmny0O2GOtHJHIJ6i8z+u2whdfEdPFGrlosfRXerPzQfxOzgbxi7sHtui5sV5hk
-         U7dpxP56xs4y2Je+2pq50IOzkwE8QWKc7TqA8CyBx7tgjORnrdA+4UH4MFXGCK1sb4z/
-         hhwc9oJCn90yTp78hdeuhbPnxUsFrBTEphnswentIxkAwOOvFXIP1GJevkMY8PnRd8SR
-         MuiA==
+        id S1348592AbhLAK2d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 05:28:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22722 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348557AbhLAK2b (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Dec 2021 05:28:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638354309;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NUuEbHoZMvDjZ6xkgKYJQ/5wnlYmlybqTTOhVgFntb0=;
+        b=N6C3+r8ihG6LOtJrsQfPCzf4lLFsm2pHd5Lgi1MFtHUTFrIbr8/MIAmIGWLX7DmLJWv6F1
+        i+esgD1iNhoWP8rs+QjK2/CA6jpC8BwfSxAFuRZgwKJvPB4EWkoiV3T6OKAUelC8q8ylsD
+        0WpFdoxNODKIERZsnD1my7PH0ozO9Zw=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-430-S1BwKeXVO4mAgNywb5b0-Q-1; Wed, 01 Dec 2021 05:25:08 -0500
+X-MC-Unique: S1BwKeXVO4mAgNywb5b0-Q-1
+Received: by mail-ed1-f72.google.com with SMTP id q17-20020aa7da91000000b003e7c0641b9cso19855321eds.12
+        for <bpf@vger.kernel.org>; Wed, 01 Dec 2021 02:25:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=mt/YlklWkFfS0yF9ibH5y9vze0Bq+Suaib2gnljcJYo=;
-        b=O3KJ9NhmZeAoRre6blMvL5JmN6Smhj+jc17opgHbPtKJjs5wFc9J8nL2XLg35DQErH
-         ioA7owZZa3Dp2/TheBqFahhsagDSh+gwCZPZxMpdwfiME32xTWzcwNf2q8tEHw55yRi+
-         Ju5V5Q/xBGqgjdrZAWDUBUOYrlb0EkoFcWewkOvTPgr4i79y6zqLn6EF6waC2n2nR1Jk
-         DukxhmmyZOHpF3224DcvW2JsUo95wSbRuQXyf3JikCyUynAXaYkflyw0dfSg+yFfHgDE
-         5HM5tU/jPXd2M+Gf0tXRp1lzqWW5ZJdyMb8bXrll0jljIqvjRfGH6WgElliJxEcevZJl
-         O6uw==
-X-Gm-Message-State: AOAM531g7Z4PcY6T9ce2Tt+ucRGTTcAO6HEP0kL/dl6sC2cQOzOPlbZM
-        0OQfvpS86TPAFh1WVd+c5dIWmg==
-X-Google-Smtp-Source: ABdhPJyxyU1omAYWJhDtt9f1AO8aXE21k8E+M9SeJXuvKEvtelwSGmLKAIaotW2gqLUqGcAzMvNRKQ==
-X-Received: by 2002:a63:5f8d:: with SMTP id t135mr3615084pgb.610.1638348907287;
-        Wed, 01 Dec 2021 00:55:07 -0800 (PST)
-Received: from [10.86.117.166] ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id i185sm23314189pfg.80.2021.12.01.00.54.59
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=NUuEbHoZMvDjZ6xkgKYJQ/5wnlYmlybqTTOhVgFntb0=;
+        b=k9ljJhbkSUAqw8Tcum+lZvNL82fXZbuVzZgn0+dIf6miUy58lY1VKJu5OIkEP8cdcv
+         HQoC/guersn6idlwT7x9V2JHt2KJrughXC1xIAzZg0iP8KkH9D3aiAd5Dods71AaKjoa
+         yyqZ/nw/KVNXdinGZoWnX9/1AuO+V22GjM+ZOgtSmrAevZGMkGGESYnltGXAig9LyqH/
+         LxwM6HDOseOGgSlj5/l8cxm4Wak1DOpcjmUsbZBwBA662Ms7aMyb+7rbdOol1ZE3y8Wn
+         Mfsw5mQbwYlHBmHR7DFVV8gxjlTbLmlPo4cDPrTUbm9IV7Wsrq32rGcT2D/RKHdTqgoT
+         6Xuw==
+X-Gm-Message-State: AOAM531ICZzzUCRd2Bb8RWlEc6s2c2pfYALn+USwfSLivYJYNCUqYDvv
+        MHiLyjLt0n4tZWBXbg4BY3/ZhICOPnATIIvTW8+T2obGy2RpIzknv2AmBBBzY4wk14pbDOWySs7
+        0vrNHu0DbVdnh
+X-Received: by 2002:a05:6402:2814:: with SMTP id h20mr7208837ede.288.1638354307276;
+        Wed, 01 Dec 2021 02:25:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx7zWt7d2gxC7lYVybBM9KToK1+c4o6A1wxtmjadhCt1FFxFU/uPQVp+adHi1ddtzJRLjd+fg==
+X-Received: by 2002:a05:6402:2814:: with SMTP id h20mr7208804ede.288.1638354307090;
+        Wed, 01 Dec 2021 02:25:07 -0800 (PST)
+Received: from [192.168.2.13] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id gn16sm10716476ejc.67.2021.12.01.02.25.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Dec 2021 00:55:06 -0800 (PST)
-Message-ID: <e18fb59e-040f-7edf-bb15-37c75bbd28a8@bytedance.com>
-Date:   Wed, 1 Dec 2021 16:54:56 +0800
+        Wed, 01 Dec 2021 02:25:06 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <78c7dbae-ea41-5afc-bd13-66969145fbd1@redhat.com>
+Date:   Wed, 1 Dec 2021 11:25:05 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.2
-Subject: Re: [External] Re: [PATCH bpf-next] libbpf: Let any two INT/UNION
- compatible if their names and sizes match
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        zhouchengming@bytedance.com
-References: <20211201035450.31083-1-zhoufeng.zf@bytedance.com>
- <CAEf4BzZ5Q9QkRGsT2kW+3AW4s7=qixJYO84heeu64TLG9DP3+A@mail.gmail.com>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <CAEf4BzZ5Q9QkRGsT2kW+3AW4s7=qixJYO84heeu64TLG9DP3+A@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Cc:     brouer@redhat.com, netdev@vger.kernel.org, sasha.neftin@intel.com,
+        vitaly.lifshits@intel.com, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
+        andrii@kernel.org
+Subject: Re: [PATCH net-next 0/2][pull request] 1GbE Intel Wired LAN Driver
+ Updates 2021-11-30
+Content-Language: en-US
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>, davem@davemloft.net,
+        kuba@kernel.org
+References: <20211130175918.3705966-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20211130175918.3705966-1-anthony.l.nguyen@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2021/12/1 下午12:17, Andrii Nakryiko 写道:
-> On Tue, Nov 30, 2021 at 7:55 PM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> commit:67c0496e87d193b8356d2af49ab95e8a1b954b3c(kernfs: convert
->> kernfs_node->id from union kernfs_node_id to u64).
->>
->> The bpf program compiles on the kernel version after this commit and
->> then tries to run on the kernel before this commit, libbpf will report
->> an error. The reverse is also same.
->>
->> libbpf: prog 'tcp_retransmit_synack_tp': relo #4: kind <byte_off> (0),
->> spec is [342] struct kernfs_node.id (0:9 @ offset 104)
->> libbpf: prog 'tcp_retransmit_synack_tp': relo #4: non-matching candidate
->> libbpf: prog 'tcp_retransmit_synack_tp': relo #4: non-matching candidate
->> libbpf: prog 'tcp_retransmit_synack_tp': relo #4: no matching targets
->> found
->>
->> The type before this commit:
->>          union kernfs_node_id    id;
->>          union kernfs_node_id {
->>                  struct {
->>                          u32             ino;
->>                          u32             generation;
->>                  };
->>                  u64                     id;
->>          };
->>
->> The type after this commit:
->>          u64 id;
->>
->> We can find that the variable name and size have not changed except for
->> the type change.
->> So I added some judgment to let any two INT/UNION are compatible, if
->> their names and sizes match.
->>
->> Reported-by: Chengming Zhou <zhouchengming@bytedance.com>
->> Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
->> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->> ---
-> This should be handled by application, not by hacking libbpf's CO-RE
-> relocation logic. See [0] for how this should be done with existing
-> BPF CO-RE mechanisms.
->
->    [0] https://nakryiko.com/posts/bpf-core-reference-guide/#handling-incompatible-field-and-type-changes
 
-This is very useful to me, thank you very much.
+On 30/11/2021 18.59, Tony Nguyen wrote:
+> Jesper Dangaard Brouer says:
+> 
+> Changes to fix and enable XDP metadata to a specific Intel driver igc.
+> Tested with hardware i225 that uses driver igc, while testing AF_XDP
+> access to metadata area.
+> 
+> The following are changes since commit 196073f9c44be0b4758ead11e51bc2875f98df29:
+>    net: ixp4xx_hss: drop kfree for memory allocated with devm_kzalloc
+> and are available in the git repository at:
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue 1GbE
+> 
+> Jesper Dangaard Brouer (2):
+>    igc: AF_XDP zero-copy metadata adjust breaks SKBs on XDP_PASS
+>    igc: enable XDP metadata in driver
+> 
+>   drivers/net/ethernet/intel/igc/igc_main.c | 37 +++++++++++++++--------
+>   1 file changed, 25 insertions(+), 12 deletions(-)
 
->>   tools/lib/bpf/relo_core.c | 21 +++++++++++++++++----
->>   1 file changed, 17 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
->> index b5b8956a1be8..ff7f4e97bafb 100644
->> --- a/tools/lib/bpf/relo_core.c
->> +++ b/tools/lib/bpf/relo_core.c
->> @@ -294,6 +294,7 @@ static int bpf_core_parse_spec(const struct btf *btf,
->>    *   - any two FLOATs are always compatible;
->>    *   - for ARRAY, dimensionality is ignored, element types are checked for
->>    *     compatibility recursively;
->> + *   - any two INT/UNION are compatible, if their names and sizes match;
->>    *   - everything else shouldn't be ever a target of relocation.
->>    * These rules are not set in stone and probably will be adjusted as we get
->>    * more experience with using BPF CO-RE relocations.
->> @@ -313,8 +314,14 @@ static int bpf_core_fields_are_compat(const struct btf *local_btf,
->>
->>          if (btf_is_composite(local_type) && btf_is_composite(targ_type))
->>                  return 1;
->> -       if (btf_kind(local_type) != btf_kind(targ_type))
->> -               return 0;
->> +       if (btf_kind(local_type) != btf_kind(targ_type)) {
->> +               if (local_type->size == targ_type->size &&
->> +                   (btf_is_union(local_type) || btf_is_union(targ_type)) &&
->> +                   (btf_is_int(local_type) || btf_is_int(targ_type)))
->> +                       return 1;
->> +               else
->> +                       return 0;
->> +       }
->>
->>          switch (btf_kind(local_type)) {
->>          case BTF_KIND_PTR:
->> @@ -384,11 +391,17 @@ static int bpf_core_match_member(const struct btf *local_btf,
->>          targ_type = skip_mods_and_typedefs(targ_btf, targ_id, &targ_id);
->>          if (!targ_type)
->>                  return -EINVAL;
->> -       if (!btf_is_composite(targ_type))
->> -               return 0;
->>
->>          local_id = local_acc->type_id;
->>          local_type = btf__type_by_id(local_btf, local_id);
->> +       if (!btf_is_composite(targ_type)) {
->> +               if (local_type->size == targ_type->size &&
->> +                   btf_is_union(local_type) && btf_is_int(targ_type))
->> +                       return 1;
->> +               else
->> +                       return 0;
->> +       }
->> +
->>          local_member = btf_members(local_type) + local_acc->idx;
->>          local_name = btf__name_by_offset(local_btf, local_member->name_off);
->>
->> --
->> 2.11.0
->>
+
+Thanks Tony for taking care of these :-)
+The adjustments looks good to me.
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+--Jesper
 
