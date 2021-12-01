@@ -2,88 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD9A465446
-	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 18:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E4546549B
+	for <lists+bpf@lfdr.de>; Wed,  1 Dec 2021 19:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243513AbhLARyH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Dec 2021 12:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S1352058AbhLASDi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Dec 2021 13:03:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbhLARyG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Dec 2021 12:54:06 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143E4C061574;
-        Wed,  1 Dec 2021 09:50:45 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so320658pjb.5;
-        Wed, 01 Dec 2021 09:50:45 -0800 (PST)
+        with ESMTP id S1352217AbhLASDf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Dec 2021 13:03:35 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EA9C061757;
+        Wed,  1 Dec 2021 10:00:09 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id v203so65941798ybe.6;
+        Wed, 01 Dec 2021 10:00:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=V3raaT8C9wOT/pdQPVt8b1fbEFpeQjlqQ444DbTsRHg=;
-        b=SqGR8zp6Tf/aDJElUh0WfWCF8qhJIUnB463tOZNqMejXxD6HlPbitmCMfv8NTeWxHK
-         jBcJwrv8ab6Vgl2j27Ue2V0nydacF6UjWxJSUmn0/yH1p/CFEm559+ijeGsuDRHW4TyO
-         mWr/y/9lboL8wKr7UCaezesrcSrEN5M6aTndsq/TI90YgMU20pADd8pDBAkSMKPhzFQ9
-         nWMCn8ClIxYhECwhrSiwL7aL0FL+ZwFW+KIOvm76lqU49W9IKE5xKdXsFykUJnVA7dkk
-         7j9zmi3kKKpwZTOQ3KrTQktCX8kfi0MdVCZE9N/iJ7Kcxre/H4Q/J0YuhNfgv5/bpk7o
-         r22Q==
+        bh=HqmiQnDRTjj/jEX9dCcjQmmJFmf4eT5WJK3sC9iS/1U=;
+        b=b25MRS025CkdbGsudPrm5ePOwOP3Ej2cgctY29rzprzVbIXuToUk6/I6OnVd2zQAWr
+         XN16mBQmEbzU1IMczWLTlrhtXe1xJuSkJe4I+PPdUJcgELAMsMzPbv5U62K26qpJzBEk
+         I2l90aqQ6xu6ulnsCsaS4sRoON1CeP5IVUEWlqK0FTUN8VCV9GO8zVvsevG07f2lfsJO
+         1JyxqjbPzbPngZQCpVrXmzTr2flgnQ9grdGM6KBqSGn4Hdbqorcp4d4Gy5TBb3fEueah
+         lwEVoNH3u1N+piuK65drK3sZQ619EWg2Wh2XrOhr7zksuipF0YqEk+tAJA3f0zTu5f6w
+         08tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=V3raaT8C9wOT/pdQPVt8b1fbEFpeQjlqQ444DbTsRHg=;
-        b=PDWxxXobC36LV4X9JFRwKzTlFU3smt84P5NrFVVmIi54i1QHyYmeqyJhONvhLcgiAC
-         dGPlJNKUj8HJKYPmX35YpIlpwKReDvDrvucCNVEm/DxcYPV3dGcHT3/6HLwTLp9fgXlR
-         kPuO5Is2+n5iZPfuhuLQgfgIFxfKGiQKoSMBn9CzWi2KmlFHiWYMnGKP9b4hOO+J0t4V
-         FQwzN/LVZyowUKlvd31yDsCxO2tQuNzaU3QzpHC/XwINKL59ZMB6IFM2hxIP+b1IIneF
-         vSeaTv2l61mcb4EnydrgOdRsGmvTnUUOhzxgf3UcTkMEO3NeZ8f3Gf5SwrJSoN+qgFeA
-         I2Lg==
-X-Gm-Message-State: AOAM533WSSG/tGKO4PjFyJSO7yGB4H8351Ug4g+lhCxUfiQJEEoMjJcO
-        pRi5pS3A468Xdgr55oMUXXwr/dx/b2LmdC4cnl8=
-X-Google-Smtp-Source: ABdhPJxOdY1WyGUOgzHwlzaRW7sUgZdXT+JhrzXVYN365QjmaEShsGw0023vzaqTmO8p5byH0bQEvy4gqBC7Dms5VwU=
-X-Received: by 2002:a17:903:2306:b0:141:e52e:457d with SMTP id
- d6-20020a170903230600b00141e52e457dmr9233368plh.3.1638381044511; Wed, 01 Dec
- 2021 09:50:44 -0800 (PST)
+        bh=HqmiQnDRTjj/jEX9dCcjQmmJFmf4eT5WJK3sC9iS/1U=;
+        b=VFR6Z4H4V8LOTbP6OHBzInPl0rDSmFDEKkhGL4U2OppROlMCQ7/P7q/VFtNMuE4Lq5
+         px0EdCJCxZ3DZVwse3CpkF4t90q+YjHuTYuymVSsjDKGzpBVVQsfshx9e/SaFZcSh0Fa
+         t2YUgepEJIC3M0HpZcK6qgVLEi9IwbVB9Y/GrwsGr2Tc7ZNatspnzt80CNU0R5rxBh8k
+         PzgzSX+aLN5SKjQfVqUP+8WtYli0Bkdfx5vbXPpCkgAAGVAuEhjr/el6cMXchjyhINZT
+         Zp7Z+RDAOW71yccSKuRxarAhwcnI0lRdzha2xpq5Qu+biYUmKX1tNrjD1dI7SXXfFM1s
+         W3lw==
+X-Gm-Message-State: AOAM531o1OjkfCLQrPuq7szv3OYpgAVeQAsuSYi7JKxIOKoLneN1tGQX
+        6g4pyIEizXqEVMcnHGcwmPYDiOQcITYHojU19dU=
+X-Google-Smtp-Source: ABdhPJyggSwGuRRc6sc9wL5n4bByxZeHYKQWeYMY48A70Zuhc0n1G+2RI61BXXI9VGbRu8GM9kj0oF/yRGQRLW0m0A8=
+X-Received: by 2002:a25:2c92:: with SMTP id s140mr8849957ybs.308.1638381608888;
+ Wed, 01 Dec 2021 10:00:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20211201073458.2731595-1-houtao1@huawei.com> <20211201073458.2731595-2-houtao1@huawei.com>
-In-Reply-To: <20211201073458.2731595-2-houtao1@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 1 Dec 2021 09:50:33 -0800
-Message-ID: <CAADnVQJ7wMxfLKgQuPYE82dXOi5dO5r77PkZR=+17JpvJoBAVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/2] bpf: clean-up bpf_verifier_vlog() for
- BPF_LOG_KERNEL log level
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+References: <20211118112455.475349-1-jolsa@kernel.org> <20211118112455.475349-7-jolsa@kernel.org>
+ <CAEf4Bza0UZv6EFdELpg30o=67-Zzs6ggZext4u40+if9a5oQDg@mail.gmail.com>
+ <YaPFEpAqIREeUMU7@krava> <CAEf4BzbauHaDDJvGpx4oCRddd4KWpb4PkxUiUJvx-CXqEN2sdQ@mail.gmail.com>
+ <CAADnVQ+6iMkRh3YLjJpyoLtqgzU2Fwhdhbv3ue7ObWWoZTmFmw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+6iMkRh3YLjJpyoLtqgzU2Fwhdhbv3ue7ObWWoZTmFmw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Dec 2021 09:59:57 -0800
+Message-ID: <CAEf4BzabQ9YU=d-F0ypA6W73YD534cAb2SkAkwYuyD6dk71LSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 06/29] bpf: Add bpf_arg/bpf_ret_value helpers for
+ tracing programs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 11:19 PM Hou Tao <houtao1@huawei.com> wrote:
+On Wed, Dec 1, 2021 at 9:37 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> An extra newline will output for bpf_log() with BPF_LOG_KERNEL level
-> as shown below:
+> On Tue, Nov 30, 2021 at 11:13 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > Hm... I'd actually try to keep kprobe BTF-free. We have fentry for
+> > cases where BTF is present and the function is simple enough (like <=6
+> > args, etc). Kprobe is an escape hatch mechanism when all the BTF
+> > fanciness just gets in the way (retsnoop being a primary example from
+> > my side). What I meant here was that bpf_get_arg(int n) would read
+> > correct fields from pt_regs that map to first N arguments passed in
+> > the registers. What we currently have with PT_REGS_PARM macros in
+> > bpf_tracing.h, but with a proper unified BPF helper.
 >
-> [   52.095704] BPF:The function test_3 has 12 arguments. Too many.
-> [   52.095704]
-> [   52.096896] Error in parsing func ptr test_3 in struct bpf_dummy_ops
->
-> Now all bpf_log() are ended by newline, but not all btf_verifier_log()
-> are ended by newline, so checking whether or not the log message
-> has the trailing newline and adding a newline if not.
->
-> Also there is no need to calculate the left userspace buffer size
-> for kernel log output and to truncate the output by '\0' which
-> has already been done by vscnprintf(), so only do these for
-> userspace log output.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> and these macros are arch specific.
+> which means that it won't be a trivial patch to add bpf_get_arg()
+> support for kprobes.
 
-Applied this patch. Thanks
+no one suggested it would be trivial :) things worth doing are usually
+non-trivial, as can be evidenced by Jiri's patch set
+
+> Plenty of things to consider. Like should it return an error
+> at run-time or verification time when a particular arch is not supported.
+
+See my other replies to Jiri, I'm more and more convinced that dynamic
+is the way to go for things like this, where the safety of the kernel
+or BPF program are not compromised.
+
+But you emphasized an important point, that it's probably good to
+allow users to distinguish errors from reading actual value 0. There
+are and will be situations where argument isn't available or some
+combination of conditions are not supported. So I think, while it's a
+bit more verbose, these forms are generally better:
+
+int bpf_get_func_arg(int n, u64 *value);
+int bpf_get_func_ret(u64 *value);
+
+WDYT?
+
+> Or argument 6 might be available on one arch, but not on the other.
+> 32-bit CPU regs vs 64-bit regs of BPF, etc.
+> I wouldn't attempt to mix this work with current patches.
+
+Oh, I didn't suggest doing it as part of this already huge and
+complicated set. But I think it's good to think a bit ahead and design
+the helper API appropriately, at the very least.
+
+And again, I think bpf_get_func_arg/bpf_get_func_ret deserve their own
+patch set where we can discuss all this independently from
+multi-attach.
