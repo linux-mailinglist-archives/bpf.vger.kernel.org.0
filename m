@@ -2,124 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BDB465DAA
-	for <lists+bpf@lfdr.de>; Thu,  2 Dec 2021 06:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CDE466052
+	for <lists+bpf@lfdr.de>; Thu,  2 Dec 2021 10:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhLBFNt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Dec 2021 00:13:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhLBFNp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Dec 2021 00:13:45 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585F1C061574;
-        Wed,  1 Dec 2021 21:10:23 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id o4so26798849pfp.13;
-        Wed, 01 Dec 2021 21:10:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nYhvOFpnD+nATcij6pHFj/RlZs5yXdc5UYRL9Bv7hdA=;
-        b=igG5uKin/YSTcw0YoaxGhQ3fNMMy/FFFseT8g7XGwh6qtPPs+iMBMJHnn+l6dfDVsd
-         VYbFQUj/92Da0DLd3/XJgpv5F3P2a341NZDME8GFl4+J+9OhL5pou0Dhx3iYoIG5UKfA
-         XGpDYNdioRMGWm/RhuuyV+5SGoW9kFsDDlHirpZ6SjwveAK6nOX3lRKrKbWMhiSn0pBo
-         vo5QWmn5H53+u9YLVsCv0m5NP89cqTrHhnQ8aDo6xqqGFmyecP5Rkn6WbOMhrfRLFfSW
-         L1eDHRgQ8DzsHD7/uRS99ue+WtLW7KZgYUQjp5JOnBOgeVYLdBjRWc2+YBECiDfVqwQI
-         ZsTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nYhvOFpnD+nATcij6pHFj/RlZs5yXdc5UYRL9Bv7hdA=;
-        b=dlDQvaYouBpzlQw3dEdm9e6vKfLUf2vRdBTmA1PZHZacIWYglkwvMSNdqgXjZTOTQQ
-         CCTLmah91TW/5GZnuifdpIsKNW5J+ROCYtge76qpwKSmyM+DCh6QZCR3EHE7ncLj+yky
-         LALSShweFEzEHPIqkVLbI2pZLjU0efkTRbyFkdMg5ZYGnYakHBoZcQVJaWvVDFxbjj8s
-         z78iq3UYMySzZHbnuznxyByerxWYMlLObndZhIx9A2HdEGaYI71vdMBWnba0+BvMcUMq
-         MwlJ1uoOtRbnHOW2dqtbKElGsdldc810yH78vZB0h+eupxsOyVQUVM1fYMjk/yG6iVzs
-         m0mQ==
-X-Gm-Message-State: AOAM530OidGc1g6IOfcQwr/zCMtlWMrh2KP5fXREdu74dH98MKfxKvke
-        424GZfR0xL/bzLBn9MYqdJo+fD4vVqAfULs6uxloCUqdRWA=
-X-Google-Smtp-Source: ABdhPJy3xHjQer45zHTeWlFMZJmSYmh1eCEl5lkNepg7G+3DkiIDapz3rtXABRbc8iCwVyYY5YGKLntUwHu6Q5Lx4CA=
-X-Received: by 2002:a63:6881:: with SMTP id d123mr7798010pgc.497.1638421822722;
- Wed, 01 Dec 2021 21:10:22 -0800 (PST)
+        id S1356413AbhLBJaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Dec 2021 04:30:07 -0500
+Received: from www62.your-server.de ([213.133.104.62]:47796 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356377AbhLBJaG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Dec 2021 04:30:06 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1msiML-0003Cu-Rx; Thu, 02 Dec 2021 10:26:33 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1msiML-0007XR-FE; Thu, 02 Dec 2021 10:26:33 +0100
+Subject: Re: kernel-selftests: make run_tests -C bpf cost 5 hours
+To:     "Zhou, Jie2X" <jie2x.zhou@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Li, ZhijianX" <zhijianx.li@intel.com>,
+        "Ma, XinjianX" <xinjianx.ma@intel.com>, lkp <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>,
+        johan.almbladh@anyfinetworks.com
+References: <PH0PR11MB479271060FA116D87B95E12DC5669@PH0PR11MB4792.namprd11.prod.outlook.com>
+ <PH0PR11MB4792C2AC6C5185FBC95B9C21C5689@PH0PR11MB4792.namprd11.prod.outlook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <48bd2b51-485b-6b7a-3374-7239447f1efd@iogearbox.net>
+Date:   Thu, 2 Dec 2021 10:26:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20211124084119.260239-1-jolsa@kernel.org> <20211124084119.260239-2-jolsa@kernel.org>
- <CAEf4Bzb5wyW=62fr-BzQsuFL+mt5s=+jGcdxKwZK0+AW18uD_Q@mail.gmail.com> <Yafp193RdskXofbH@krava>
-In-Reply-To: <Yafp193RdskXofbH@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 1 Dec 2021 21:10:11 -0800
-Message-ID: <CAADnVQK2vEjnZVasTKASG6AmeWyyEF8Q3bpRfWvuJJ6_qHnEig@mail.gmail.com>
-Subject: Re: [PATCH 1/8] perf/kprobe: Add support to create multiple probes
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <PH0PR11MB4792C2AC6C5185FBC95B9C21C5689@PH0PR11MB4792.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26370/Wed Dec  1 10:29:47 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 1, 2021 at 1:32 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Nov 30, 2021 at 10:53:58PM -0800, Andrii Nakryiko wrote:
-> > On Wed, Nov 24, 2021 at 12:41 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > Adding support to create multiple probes within single perf event.
-> > > This way we can associate single bpf program with multiple kprobes,
-> > > because bpf program gets associated with the perf event.
-> > >
-> > > The perf_event_attr is not extended, current fields for kprobe
-> > > attachment are used for multi attachment.
-> >
-> > I'm a bit concerned with complicating perf_event_attr further to
-> > support this multi-attach. For BPF, at least, we now have
-> > bpf_perf_link and corresponding BPF_LINK_CREATE command in bpf()
-> > syscall which allows much simpler and cleaner API to do this. Libbpf
-> > will actually pick bpf_link-based attachment if kernel supports it. I
-> > think we should better do bpf_link-based approach from the get go.
-> >
-> > Another thing I'd like you to keep in mind and think about is BPF
-> > cookie. Currently kprobe/uprobe/tracepoint allow to associate
-> > arbitrary user-provided u64 value which will be accessible from BPF
-> > program with bpf_get_attach_cookie(). With multi-attach kprobes this
-> > because extremely crucial feature to support, otherwise it's both
-> > expensive, inconvenient and complicated to be able to distinguish
-> > between different instances of the same multi-attach kprobe
-> > invocation. So with that, what would be the interface to specify these
-> > BPF cookies for this multi-attach kprobe, if we are going through
-> > perf_event_attr. Probably picking yet another unused field and
-> > union-izing it with a pointer. It will work, but makes the interface
-> > even more overloaded. While for LINK_CREATE we can just add another
-> > pointer to a u64[] with the same size as number of kfunc names and
-> > offsets.
->
-> I'm not sure we could bypass perf event easily.. perhaps introduce
-> BPF_PROG_TYPE_RAW_KPROBE as we did for tracepoints or just new
-> type for multi kprobe attachment like BPF_PROG_TYPE_MULTI_KPROBE
-> that might be that way we'd have full control over the API
+On 12/1/21 7:54 AM, Zhou, Jie2X wrote:
+> ping
+> 
+> ________________________________________
+> From: Zhou, Jie2X
+> Sent: Monday, November 29, 2021 3:36 PM
+> To: ast@kernel.org; daniel@iogearbox.net; andrii@kernel.org; kafai@fb.com; songliubraving@fb.com; yhs@fb.com; john.fastabend@gmail.com; kpsingh@kernel.org
+> Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; linux-kernel@vger.kernel.org; Li, ZhijianX; Ma, XinjianX
+> Subject: kernel-selftests: make run_tests -C bpf cost 5 hours
+> 
+> hi,
+> 
+>     I have tested v5.16-rc1 kernel bpf function by make run_tests -C tools/testing/selftests/bpf.
+>     And found it cost above 5 hours.
+> 
+>     Check dmesg and found that lib/test_bpf.ko cost so much time.
+>     In tools/testing/selftests/bpf/test_kmod.sh insmod test_bpf.ko four times.
+>     It took 40 seconds for the first three times.
+> 
+>     When do 4th test among 1009 test cases from #812 ALU64_AND_K to  #936 JMP_JSET_K every test case cost above 1 min.
+>     Is it currently to cost so much time?
+> 
+> kern :info : [ 1127.985791] test_bpf: #811 ALU64_MOV_K: all immediate value magnitudes
+> kern :info : [ 1237.158485] test_bpf: #812 ALU64_AND_K: all immediate value magnitudes jited:1 127955 PASS
+> kern :info : [ 1341.638557] test_bpf: #813 ALU64_OR_K: all immediate value magnitudes jited:1 155039 PASS
+> kern :info : [ 1447.725483] test_bpf: #814 ALU64_XOR_K: all immediate value magnitudes jited:1 129621 PASS
+> kern :info : [ 1551.808683] test_bpf: #815 ALU64_ADD_K: all immediate value magnitudes jited:1 120428 PASS
+> kern :info : [ 1655.550594] test_bpf: #816 ALU64_SUB_K: all immediate value magnitudes jited:1 175712 PASS
+> ......
+> kern :info : [16725.824950] test_bpf: #931 JMP32_JLE_X: all register value magnitudes jited:1 216508 PASS
+> kern :info : [16911.555675] test_bpf: #932 JMP32_JSGT_X: all register value magnitudes jited:1 178367 PASS
+> kern :info : [17101.466163] test_bpf: #933 JMP32_JSGE_X: all register value magnitudes jited:1 191436 PASS
+> kern :info : [17288.359154] test_bpf: #934 JMP32_JSLT_X: all register value magnitudes jited:1 165714 PASS
+> kern :info : [17480.615048] test_bpf: #935 JMP32_JSLE_X: all register value magnitudes jited:1 172846 PASS
+> kern :info : [17667.472140] test_bpf: #936 JMP_JSET_K: imm = 0 -> never taken jited:1 14 PASS
+> 
+>     test_bpf.ko dmesg output is attached.
 
-Indeed. The existing kprobe prog type has this api:
- * Return: BPF programs always return an integer which is interpreted by
- * kprobe handler as:
- * 0 - return from kprobe (event is filtered out)
- * 1 - store kprobe event into ring buffer
+On my side, I'm seeing:
 
-that part we cannot change.
-No one was using that filtering feature. It often was in a way.
-New MULTI_KPROBE prog type should not have it.
+# time ./test_kmod.sh
+[ JIT enabled:0 hardened:0 ]
+[  107.182567] test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+[  107.200319] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+[  107.200379] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+[ JIT enabled:1 hardened:0 ]
+[  108.130568] test_bpf: Summary: 1009 PASSED, 0 FAILED, [997/997 JIT'ed]
+[  108.143447] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
+[  108.143510] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+[ JIT enabled:1 hardened:1 ]
+[  109.116727] test_bpf: Summary: 1009 PASSED, 0 FAILED, [997/997 JIT'ed]
+[  109.129915] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
+[  109.129979] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+[ JIT enabled:1 hardened:2 ]
+[ 6617.952848] test_bpf: Summary: 1009 PASSED, 0 FAILED, [948/997 JIT'ed]
+[ 6617.965936] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
+[ 6617.966004] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+real	108m32.833s
+user	0m0.031s
+sys	108m17.939s
+
+The hardened:2 run takes significantly longer due to excessive patching for the
+jit constant blinding code. Maybe the test cases can be reduced for the latter,
+otoh, it's good to know that they all pass as well.
+
+Thanks,
+Daniel
