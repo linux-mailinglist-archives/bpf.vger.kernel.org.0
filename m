@@ -2,124 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CDE466052
-	for <lists+bpf@lfdr.de>; Thu,  2 Dec 2021 10:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4EF9466222
+	for <lists+bpf@lfdr.de>; Thu,  2 Dec 2021 12:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356413AbhLBJaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Dec 2021 04:30:07 -0500
-Received: from www62.your-server.de ([213.133.104.62]:47796 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356377AbhLBJaG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Dec 2021 04:30:06 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1msiML-0003Cu-Rx; Thu, 02 Dec 2021 10:26:33 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1msiML-0007XR-FE; Thu, 02 Dec 2021 10:26:33 +0100
-Subject: Re: kernel-selftests: make run_tests -C bpf cost 5 hours
-To:     "Zhou, Jie2X" <jie2x.zhou@intel.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Li, ZhijianX" <zhijianx.li@intel.com>,
-        "Ma, XinjianX" <xinjianx.ma@intel.com>, lkp <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>,
-        johan.almbladh@anyfinetworks.com
-References: <PH0PR11MB479271060FA116D87B95E12DC5669@PH0PR11MB4792.namprd11.prod.outlook.com>
- <PH0PR11MB4792C2AC6C5185FBC95B9C21C5689@PH0PR11MB4792.namprd11.prod.outlook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <48bd2b51-485b-6b7a-3374-7239447f1efd@iogearbox.net>
-Date:   Thu, 2 Dec 2021 10:26:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1357217AbhLBLSH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Dec 2021 06:18:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234763AbhLBLSG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Dec 2021 06:18:06 -0500
+X-Greylist: delayed 2149 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Dec 2021 03:14:43 PST
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35D5C06174A;
+        Thu,  2 Dec 2021 03:14:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=6ZX4/rDyI9TC6fZAy8o9U/KWfl5nBYItNLL25UAVrsg=; b=DhAdne7fPcy62bDjH98bPlxMg/
+        zddh7n20+1xp+S9rgOZHz4iKc+4/KU3KbB1mIKlN4uvPLokHjkiBg39Sc2jLMQr6IP+NSbc3+2zUv
+        Yh2yS0ZYyrjnv4OBL4g1jb/sB8Ydb6BgR07htGaum4J7eCFEmtmjdzGOIJKwapSLFL0fM3IXGjfOl
+        QFlOGCoPqRzEBm8sTHSFbpTTKHXKlkaalEjveqe5HcPLPPu/e4N3jVs6yYTAXcORH6LyyYaQJgH1z
+        J9yVbYxy3clvBfR43CAid6ZBQWhtQ0Q3hB7Xe5Ls9+51pnrACzjbwgPTf9wAeyMRnrm40ynTAzHjc
+        lBo7DtrA==;
+Received: from celephais.dreamlands ([192.168.96.3] helo=azazel.net)
+        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1msjTn-00Cwc2-G8; Thu, 02 Dec 2021 10:38:19 +0000
+Date:   Thu, 2 Dec 2021 10:38:15 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Bixuan Cui <cuibixuan@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        leon@kernel.org, w@1wt.eu, keescook@chromium.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH -next] mm: delete oversized WARN_ON() in kvmalloc() calls
+Message-ID: <YaiiFxD7jfFT9cSR@azazel.net>
+References: <1638410784-48646-1-git-send-email-cuibixuan@linux.alibaba.com>
+ <20211201192643.ecb0586e0d53bf8454c93669@linux-foundation.org>
+ <10cb0382-012b-5012-b664-c29461ce4de8@linux.alibaba.com>
+ <20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <PH0PR11MB4792C2AC6C5185FBC95B9C21C5689@PH0PR11MB4792.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26370/Wed Dec  1 10:29:47 2021)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sT98d0V/FmLH+krX"
+Content-Disposition: inline
+In-Reply-To: <20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org>
+X-SA-Exim-Connect-IP: 192.168.96.3
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/1/21 7:54 AM, Zhou, Jie2X wrote:
-> ping
-> 
-> ________________________________________
-> From: Zhou, Jie2X
-> Sent: Monday, November 29, 2021 3:36 PM
-> To: ast@kernel.org; daniel@iogearbox.net; andrii@kernel.org; kafai@fb.com; songliubraving@fb.com; yhs@fb.com; john.fastabend@gmail.com; kpsingh@kernel.org
-> Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; linux-kernel@vger.kernel.org; Li, ZhijianX; Ma, XinjianX
-> Subject: kernel-selftests: make run_tests -C bpf cost 5 hours
-> 
-> hi,
-> 
->     I have tested v5.16-rc1 kernel bpf function by make run_tests -C tools/testing/selftests/bpf.
->     And found it cost above 5 hours.
-> 
->     Check dmesg and found that lib/test_bpf.ko cost so much time.
->     In tools/testing/selftests/bpf/test_kmod.sh insmod test_bpf.ko four times.
->     It took 40 seconds for the first three times.
-> 
->     When do 4th test among 1009 test cases from #812 ALU64_AND_K to  #936 JMP_JSET_K every test case cost above 1 min.
->     Is it currently to cost so much time?
-> 
-> kern :info : [ 1127.985791] test_bpf: #811 ALU64_MOV_K: all immediate value magnitudes
-> kern :info : [ 1237.158485] test_bpf: #812 ALU64_AND_K: all immediate value magnitudes jited:1 127955 PASS
-> kern :info : [ 1341.638557] test_bpf: #813 ALU64_OR_K: all immediate value magnitudes jited:1 155039 PASS
-> kern :info : [ 1447.725483] test_bpf: #814 ALU64_XOR_K: all immediate value magnitudes jited:1 129621 PASS
-> kern :info : [ 1551.808683] test_bpf: #815 ALU64_ADD_K: all immediate value magnitudes jited:1 120428 PASS
-> kern :info : [ 1655.550594] test_bpf: #816 ALU64_SUB_K: all immediate value magnitudes jited:1 175712 PASS
-> ......
-> kern :info : [16725.824950] test_bpf: #931 JMP32_JLE_X: all register value magnitudes jited:1 216508 PASS
-> kern :info : [16911.555675] test_bpf: #932 JMP32_JSGT_X: all register value magnitudes jited:1 178367 PASS
-> kern :info : [17101.466163] test_bpf: #933 JMP32_JSGE_X: all register value magnitudes jited:1 191436 PASS
-> kern :info : [17288.359154] test_bpf: #934 JMP32_JSLT_X: all register value magnitudes jited:1 165714 PASS
-> kern :info : [17480.615048] test_bpf: #935 JMP32_JSLE_X: all register value magnitudes jited:1 172846 PASS
-> kern :info : [17667.472140] test_bpf: #936 JMP_JSET_K: imm = 0 -> never taken jited:1 14 PASS
-> 
->     test_bpf.ko dmesg output is attached.
 
-On my side, I'm seeing:
+--sT98d0V/FmLH+krX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-# time ./test_kmod.sh
-[ JIT enabled:0 hardened:0 ]
-[  107.182567] test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
-[  107.200319] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
-[  107.200379] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-[ JIT enabled:1 hardened:0 ]
-[  108.130568] test_bpf: Summary: 1009 PASSED, 0 FAILED, [997/997 JIT'ed]
-[  108.143447] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
-[  108.143510] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-[ JIT enabled:1 hardened:1 ]
-[  109.116727] test_bpf: Summary: 1009 PASSED, 0 FAILED, [997/997 JIT'ed]
-[  109.129915] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
-[  109.129979] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-[ JIT enabled:1 hardened:2 ]
-[ 6617.952848] test_bpf: Summary: 1009 PASSED, 0 FAILED, [948/997 JIT'ed]
-[ 6617.965936] test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
-[ 6617.966004] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+On 2021-12-01, at 20:29:05 -0800, Andrew Morton wrote:
+> On Thu, 2 Dec 2021 12:05:15 +0800 Bixuan Cui wrote:
+> > =E5=9C=A8 2021/12/2 =E4=B8=8A=E5=8D=8811:26, Andrew Morton =E5=86=99=E9=
+=81=93:
+> > >> Delete the WARN_ON() and return NULL directly for oversized
+> > >> parameter in kvmalloc() calls.
+> > >> Also add unlikely().
+> > >>
+> > >> Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+> > >> Signed-off-by: Bixuan Cui<cuibixuan@linux.alibaba.com>
+> > >> ---
+> > >> There are a lot of oversize warnings and patches about kvmalloc()
+> > >> calls recently. Maybe these warnings are not very necessary.
+> > >
+> > > Or maybe they are.  Please let's take a look at these warnings,
+> > > one at a time.  If a large number of them are bogus then sure,
+> > > let's disable the runtime test.  But perhaps it's the case that
+> > > calling code has genuine issues and should be repaired.
+> >
+> > Such as=EF=BC=9A
+>
+> Thanks, that's helpful.
+>
+> Let's bring all these to the attention of the relevant developers.
+>
+> If the consensus is "the code's fine, the warning is bogus" then let's
+> consider retiring the warning.
+>
+> If the consensus is otherwise then hopefully they will fix their stuff!
+>
+> > https://syzkaller.appspot.com/bug?id=3D24452f89446639c901ac07379ccc7028=
+08471e8e
+>
+> (cc bpf@vger.kernel.org)
+>
+> > https://syzkaller.appspot.com/bug?id=3Df7c5a86e747f9b7ce333e7295875cd4e=
+de2c7a0d
+>
+> (cc netdev@vger.kernel.org, maintainers)
+>
+> > https://syzkaller.appspot.com/bug?id=3D8f306f3db150657a1f6bbe1927467084=
+531602c7
+>
+> (cc kvm@vger.kernel.org)
+>
+> > https://syzkaller.appspot.com/bug?id=3D6f30adb592d476978777a1125d1f680e=
+dfc23e00
+>
+> (cc netfilter-devel@vger.kernel.org)
 
-real	108m32.833s
-user	0m0.031s
-sys	108m17.939s
+The netfilter bug has since been fixed:
 
-The hardened:2 run takes significantly longer due to excessive patching for the
-jit constant blinding code. Maybe the test cases can be reduced for the latter,
-otoh, it's good to know that they all pass as well.
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?i=
+d=3D7bbc3d385bd813077acaf0e6fdb2a86a901f5382
 
-Thanks,
-Daniel
+> > https://syzkaller.appspot.com/bug?id=3D4c9ab8c7d0f8b551950db06559dc9cde=
+4119ac83
+>
+> (bpf again).
+
+J.
+
+--sT98d0V/FmLH+krX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmGoohAACgkQKYasCr3x
+BA1LEg/9EsWoxlPj8GB9UCjUy4vKBvWJalWrQpvWej9DHMbRhV2UH4SOMXMyEoro
+ukt29Co69KOMZ5HpPRGMmcjA0P+ZtCIk7zCD1c4wCmVssGpH9agykLfpgRzqyS8C
+21S94Uy7hJjK4j3LuYZHFBMacFATP5ejqx6xdgB7ANuqu/sMAKFcp3S6NxskrADc
+Kq+dCd0M5yhNodBn0STRP/91MeQNxFfAdzKGphyF3iRwratHJkjmuoevaa6lZEn1
+wND3FYczcWYROaKHdnWxORcwAPrveAwZNjnuDZIuDrws7jO58PCGh3E1wBla5u9A
+i77mqMC298p6+7ms2/H49illteoyo3+mVvMoECA7xf/B4VKCnw8kn+bA25tNNrNw
+gX0Q8KWNagQe7HPeKXvoHY5XgEauCHq6aOEORNgzm96Bi3HAQZxSHVgNmAkV2GBG
+TXia7IUAqoqoOuABryAWsO52NpjSXND6GuFixbbIrfXBDiic2Vimk1MSQcwSV7om
+ybTKdZWLyo6ARJzLx/yxFNiiWU63FJi/6twlOMgoQAFVBIY4UsgWYJYix8RD1E5o
+56m/B49uEaLI/Vdd9YanE0yIVIpAxMSzf5DmIj1pfOQ2g3NplmjR3TH2MCpwB5jt
+EN3oIIfoNunZPSh0rzPrzurSBX5nBSiA2vJgOeb1zZOPm1kJHNs=
+=z1bg
+-----END PGP SIGNATURE-----
+
+--sT98d0V/FmLH+krX--
