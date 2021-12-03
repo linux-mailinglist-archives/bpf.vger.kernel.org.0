@@ -2,107 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B122466EB0
-	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 01:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056E8466EE7
+	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 02:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347602AbhLCAuO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 2 Dec 2021 19:50:14 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5954 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238220AbhLCAuO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 2 Dec 2021 19:50:14 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B2JSahr004447
-        for <bpf@vger.kernel.org>; Thu, 2 Dec 2021 16:46:50 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cpr0pqyeb-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 02 Dec 2021 16:46:50 -0800
-Received: from intmgw002.46.prn1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 2 Dec 2021 16:46:48 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 20B6EB9EEA27; Thu,  2 Dec 2021 16:46:41 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] perf: mute libbpf API deprecations temporarily
-Date:   Thu, 2 Dec 2021 16:46:40 -0800
-Message-ID: <20211203004640.2455717-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S1347671AbhLCBEP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Dec 2021 20:04:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344077AbhLCBEP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Dec 2021 20:04:15 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65A0C06174A
+        for <bpf@vger.kernel.org>; Thu,  2 Dec 2021 17:00:51 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id v64so4529522ybi.5
+        for <bpf@vger.kernel.org>; Thu, 02 Dec 2021 17:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cfcxlzSzsV5GKbjPHqlVGs/FcWInLUY/J3DBJW7pb+4=;
+        b=bo4UrkIkBgdaS+KwXPI9zuGle7UtgkdaFqmix45iz4g7ZRO2TknM9NGTVF7Q8eJamJ
+         iuNSA3mTa1waDyI6rxJ/kMn1DJdmxVJrNE0GgGZgOD25dXjbZwHW6ytiD/YDpCw7ap0c
+         xX9Ut6gzBaGh78B88y5hsYMHmfbUIQWHtzu9AqHKt77dL2CwvEb+fcEMlH0s4aHkfQdR
+         rdqGKGBbL8q2JDD31fktlGWHMVcxgUMkWa80TxH4N2mN1wzFnx8OIXB/FS0BBv70KfM0
+         C7GQnteiDh4IdyXuP8xbr5j6iKP6shLM5lP4ZICrStl9aqgt+pmUSJC61A3D+IVthd5X
+         CcQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cfcxlzSzsV5GKbjPHqlVGs/FcWInLUY/J3DBJW7pb+4=;
+        b=LAsZddO8nGmBJfrnc/QRilBqUOIzZWRWrs15PsGmB8/zrW51tDPxdEHpqNT5s4aBO7
+         dFHh5yvLSAoFXBzehi+i9qk37k9k2Kto7+HUAd57nkpBborITAMPZOJy9zwpcn9MP3yd
+         1q/KkcA8jw6PJvsmmJU2sbwTZ6UUhjGI4u3rxat1VPH9REodsCdQ/coEh7TvH05MZ7G/
+         Y5QAs/tctz+0Dyceeg4SLoR4Edjt/ASJ5MLuGFXoobdJFvpbmu+WWc0s38e2w7R+c0Q2
+         YH90NA+f+bJ6ogRLs8tDL4kFafY7Y9Bmw5yt/qxtHiK9CeHm2mxdcpBqT5RJ8J37oB71
+         xc+Q==
+X-Gm-Message-State: AOAM5316qumuWE8/H6v4CyVbGZyU29sMcXmUL5zgnKLnr1Y7oZK9VwUO
+        IickTRKamUoIZlmsqyiJ1Y/snM4Yn3xDrKnsrVfVrYEzZl/jLg==
+X-Google-Smtp-Source: ABdhPJyMsXwiavgkTYR8Zxx6ZatxdVmdaG8DH/e3/2Z5TmbsM2PARFFo/yXBalzNWs/CHGlOzYt8vfzXh5dXvFLNQE8=
+X-Received: by 2002:a25:2c92:: with SMTP id s140mr18446409ybs.308.1638493251186;
+ Thu, 02 Dec 2021 17:00:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: dqsndcSxCkXagl_pM_FssBHtI7l-gdr7
-X-Proofpoint-ORIG-GUID: dqsndcSxCkXagl_pM_FssBHtI7l-gdr7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-02_16,2021-12-02_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
- phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 adultscore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112030004
-X-FB-Internal: deliver
+References: <20211203004640.2455717-1-andrii@kernel.org>
+In-Reply-To: <20211203004640.2455717-1-andrii@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 2 Dec 2021 17:00:40 -0800
+Message-ID: <CAEf4BzZe7bc6cRopJG4L6Et8OjCiGym8XzJPx_8NpyScwg_i=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] perf: mute libbpf API deprecations temporarily
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Libbpf development version was bumped to 0.7 in c93faaaf2f67
-("libbpf: Deprecate bpf_prog_load_xattr() API"), activating a bunch of
-previously scheduled deprecations. Most APIs are pretty straightforward
-to replace with newer APIs, but perf has a complicated mixed setup with
-libbpf used both as static and shared configurations, which makes it
-non-trivial to migrate the APIs.
+On Thu, Dec 2, 2021 at 4:46 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> Libbpf development version was bumped to 0.7 in c93faaaf2f67
+> ("libbpf: Deprecate bpf_prog_load_xattr() API"), activating a bunch of
+> previously scheduled deprecations. Most APIs are pretty straightforward
+> to replace with newer APIs, but perf has a complicated mixed setup with
+> libbpf used both as static and shared configurations, which makes it
+> non-trivial to migrate the APIs.
+>
+> Further, bpf_program__set_prep() needs more involved refactoring, which
+> will require help from Arnaldo and/or Jiri.
+>
+> So for now, mute deprecation warnings and work on migrating perf off of
+> deprecated APIs separately with the input from owners of the perf tool.
+>
+> Fixes: c93faaaf2f67 ("libbpf: Deprecate bpf_prog_load_xattr() API")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-Further, bpf_program__set_prep() needs more involved refactoring, which
-will require help from Arnaldo and/or Jiri.
+Stephen,
 
-So for now, mute deprecation warnings and work on migrating perf off of
-deprecated APIs separately with the input from owners of the perf tool.
+This patch (when applied to bpf-next) should fix the build failure you
+reported in your recent "linux-next: build failure after merge of the
+bpf-next tree" email (that I didn't get directly, but thankfully
+Alexei forwarded to me). Can you please also cc bpf@vger.kernel.orgfor
+future bpf-next tree issues, as that's a more directly related mailing
+list (ideally also cc me at andrii@kernel.org directly so that we
+don't rely on Gmail not dropping the email, I've, unfortunately, had
+multiple problems with this recently). Thanks for understanding!
 
-Fixes: c93faaaf2f67 ("libbpf: Deprecate bpf_prog_load_xattr() API")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/perf/tests/bpf.c       | 4 ++++
- tools/perf/util/bpf-loader.c | 3 +++
- 2 files changed, 7 insertions(+)
+Arnaldo, Jiri,
 
-diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-index 2bf146e49ce8..c52bf10f746e 100644
---- a/tools/perf/tests/bpf.c
-+++ b/tools/perf/tests/bpf.c
-@@ -312,9 +312,13 @@ static int check_env(void)
- 		return err;
- 	}
- 
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
- 	err = bpf_load_program(BPF_PROG_TYPE_KPROBE, insns,
- 			       sizeof(insns) / sizeof(insns[0]),
- 			       license, kver_int, NULL, 0);
-+#pragma GCC diagnostic pop
- 	if (err < 0) {
- 		pr_err("Missing basic BPF support, skip this test: %s\n",
- 		       strerror(errno));
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index fbb3c4057c30..528aeb0ab79d 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -29,6 +29,9 @@
- 
- #include <internal/xyarray.h>
- 
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-+
- static int libbpf_perf_print(enum libbpf_print_level level __attribute__((unused)),
- 			      const char *fmt, va_list args)
- {
--- 
-2.30.2
+Getting rid of most deprecations is pretty trivial, if not for the
+hybrid static/dynamic setup. Please advise on the path forward. Do I
+do __weak re-definitions of new APIs and switch the source code to new
+variants?
 
+As for bpf_program__set_prep(), assuming it's used to do program
+cloning, bpf_program__insns() is a more straightforward and cleaner
+way to do it now. But the logic seems to be more involved, so I'd like
+you guys to do this conversion, if that's not too much trouble.
+
+Regardless, let's work together to clean up perf's use of deprecated
+APIs. Thanks!
+
+>  tools/perf/tests/bpf.c       | 4 ++++
+>  tools/perf/util/bpf-loader.c | 3 +++
+>  2 files changed, 7 insertions(+)
+>
+> diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
+> index 2bf146e49ce8..c52bf10f746e 100644
+> --- a/tools/perf/tests/bpf.c
+> +++ b/tools/perf/tests/bpf.c
+> @@ -312,9 +312,13 @@ static int check_env(void)
+>                 return err;
+>         }
+>
+> +/* temporarily disable libbpf deprecation warnings */
+> +#pragma GCC diagnostic push
+> +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+>         err = bpf_load_program(BPF_PROG_TYPE_KPROBE, insns,
+>                                sizeof(insns) / sizeof(insns[0]),
+>                                license, kver_int, NULL, 0);
+> +#pragma GCC diagnostic pop
+>         if (err < 0) {
+>                 pr_err("Missing basic BPF support, skip this test: %s\n",
+>                        strerror(errno));
+> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> index fbb3c4057c30..528aeb0ab79d 100644
+> --- a/tools/perf/util/bpf-loader.c
+> +++ b/tools/perf/util/bpf-loader.c
+> @@ -29,6 +29,9 @@
+>
+>  #include <internal/xyarray.h>
+>
+> +/* temporarily disable libbpf deprecation warnings */
+> +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> +
+>  static int libbpf_perf_print(enum libbpf_print_level level __attribute__((unused)),
+>                               const char *fmt, va_list args)
+>  {
+> --
+> 2.30.2
+>
