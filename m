@@ -2,96 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07168466F3C
-	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 02:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8F9466F86
+	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 03:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhLCBu5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Dec 2021 20:50:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbhLCBu5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Dec 2021 20:50:57 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95D0C06174A
-        for <bpf@vger.kernel.org>; Thu,  2 Dec 2021 17:47:32 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        id S1377973AbhLCCKP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Dec 2021 21:10:15 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60092
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1377966AbhLCCKP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Dec 2021 21:10:15 -0500
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J4wgQ392hz4xR7;
-        Fri,  3 Dec 2021 12:47:30 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1638496050;
-        bh=odhTNYDTLdHXrJ2LzkRdOAoB8l2dgHzkW8CVc5SVGNU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R848chqek1lxcZFM2xAQ2+so6G/OTlTzQzh+z9M61A0Y6sTUMz6/1ffPxBUXyLd2c
-         trgAbFR/aeCUEsf9ukZYygAE/aA80NLw+YMCTOM66wVWg3rPHSE2Z9YG3IUvYhnqkh
-         6hj04Kh2ChJ8zM3fFFKM1wCjPa6kqQ0mGwm+BCqQBORDy0BcKQAQNU0hsex/AV3ATw
-         Lf37Oq68Fjs3CzDDEtElxJDjs1T7Mp9zxEB515vKUIlaS1PNI3HGlyR0YCgoYgOUFQ
-         w2DQ20sBQkuIP7nMwWn3mFukoozENcqPGsTiP/ZxZThZOaxq/LigJDgrJ04m/atYKx
-         2va+B+bcwbjlA==
-Date:   Fri, 3 Dec 2021 12:47:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8D5C840036
+        for <bpf@vger.kernel.org>; Fri,  3 Dec 2021 02:06:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1638497210;
+        bh=BrU2Q27F3zwyVziRmal9LmGlZ7G8dV/WLaFe+j0TIm4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=SnbyR14lswsqN9iwLGiAkB1Tlsx61fJPysUvALDysFkHUjOq47e1CDz/4M9eLpj3q
+         uNQPzudKgIYJEJmLosH1T7PmHfVZtLezkDTpLxDkUIFeo04kaeWdKqsXZMw8t+pbPP
+         Rs1y1onUSLP1p3pOScZiDnYffHDrG/JUwgJ3smhhVwwcJzYhpaU1XZ5OQljytRhXMq
+         iCcX72alYNulf1HPR2aHtSI33FsGlJ5kHUPW8Gemqb26lp4krn9159z4IhESoiGxQ7
+         Pef6RfDagi+Xnx5WCNOj1u5//6Qn0xMfvZf55bMoNjkWSncjDhM/JQA1rAHCQqb1qH
+         wJG839jfJR++Q==
+Received: by mail-qv1-f69.google.com with SMTP id kk1-20020a056214508100b003a9d1b987caso1794621qvb.4
+        for <bpf@vger.kernel.org>; Thu, 02 Dec 2021 18:06:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BrU2Q27F3zwyVziRmal9LmGlZ7G8dV/WLaFe+j0TIm4=;
+        b=sBoQ0jj1km9ZH8akgmkR+BZOlZ/11GGxXFZotlbvpfbGmI0edXwZsFZmNDp/HweYtd
+         RjdrHmThMDDum7OiPTRD/tJOeK9OVyxx6kTogjk4PB2BgW+iDa1vdRkQR+QptzSF26bt
+         iSOI6EjScV4xa1skV0LXTzvpBrmh0y+WblDAygn2R6TbYi6CewNDd3uX/6DGgkpNba4O
+         TMetj7mFvRF8yVS9iYnz3syYqVbKI/MupN9Zf/J9VtTKOJZ6rSWVke0mabuSiRwYIFQl
+         KzPn4BKH4A8+gOYIqIE/WiNPAA4MEygJ1cxpD6aXFF2uaGc2vld2ZiRjBXaDEC6kYaH2
+         BSRQ==
+X-Gm-Message-State: AOAM531/JIUU5RDR0DnGsqqu6G9fyBHnYn6v2jvv4myjaHYqWz8RYnpa
+        4nItOoTygGFF19T3m1s8ivruKPJe9WN7iPJppYMzfWkPg+I2996X53OCAtQCLsuY1yYuuKVxlcm
+        UGSDZlc73/HdQJ1KNt/ywuD2CSUG5xQ==
+X-Received: by 2002:a05:622a:1306:: with SMTP id v6mr18136641qtk.115.1638497209599;
+        Thu, 02 Dec 2021 18:06:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxqZPMGMVu6qVqXIsSCsiSzpXSoXA0wtn6y7tSEyAGLVQqcoKOtOntbdP/v48vwFGS89L77qg==
+X-Received: by 2002:a05:622a:1306:: with SMTP id v6mr18136626qtk.115.1638497209404;
+        Thu, 02 Dec 2021 18:06:49 -0800 (PST)
+Received: from lukenow-XPS-13-9380.attlocal.net (108-249-109-234.lightspeed.sndgca.sbcglobal.net. [108.249.109.234])
+        by smtp.gmail.com with ESMTPSA id v12sm1327227qtx.80.2021.12.02.18.06.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Dec 2021 18:06:49 -0800 (PST)
+From:   Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH bpf-next] perf: mute libbpf API deprecations temporarily
-Message-ID: <20211203124727.5a718792@canb.auug.org.au>
-In-Reply-To: <CAEf4BzZe7bc6cRopJG4L6Et8OjCiGym8XzJPx_8NpyScwg_i=A@mail.gmail.com>
-References: <20211203004640.2455717-1-andrii@kernel.org>
-        <CAEf4BzZe7bc6cRopJG4L6Et8OjCiGym8XzJPx_8NpyScwg_i=A@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v2] selftests/seccomp: Unconditionally define seccomp_metadata
+Date:   Thu,  2 Dec 2021 18:06:39 -0800
+Message-Id: <20211203020639.6773-1-luke.nowakowskikrijger@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/eye5sTTJEmLnp.ZjUOdi/zA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/eye5sTTJEmLnp.ZjUOdi/zA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Unconditonally define seccomp_metadata and remove the linux/ptrace.h
+include.
 
-Hi Andrii,
+There are conflicts between glibc system headers sys/ptrace.h and
+linux/ptrace.h that can likely cause seccomp_metadata to not be
+defined depending on what system header versions are installed,
+leading to compile errors. This fix makes this test more likely to
+compile on a wider variety of systems.
 
-On Thu, 2 Dec 2021 17:00:40 -0800 Andrii Nakryiko <andrii.nakryiko@gmail.co=
-m> wrote:
->
-> This patch (when applied to bpf-next) should fix the build failure you
-> reported in your recent "linux-next: build failure after merge of the
-> bpf-next tree" email (that I didn't get directly, but thankfully
-> Alexei forwarded to me). Can you please also cc bpf@vger.kernel.orgfor
-> future bpf-next tree issues, as that's a more directly related mailing
-> list (ideally also cc me at andrii@kernel.org directly so that we
-> don't rely on Gmail not dropping the email, I've, unfortunately, had
-> multiple problems with this recently). Thanks for understanding!
+Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
+---
+v2 + resend: 
+Added comment to explain why there is a header definiton being
+defined in the file and to suggest to future developers that they
+might have to do the same for future fixes for definition issues like
+this.
 
-Hopefully that patch will be applied soon :-)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-I have added the bpf list and you to my contacts for the bpf and
-bpf-next trees in linux-next.
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index d425688cf59c..19d0b448511c 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -26,7 +26,6 @@
+ #include <sys/ptrace.h>
+ #include <sys/user.h>
+ #include <linux/prctl.h>
+-#include <linux/ptrace.h>
+ #include <linux/seccomp.h>
+ #include <pthread.h>
+ #include <semaphore.h>
+@@ -171,12 +170,17 @@ struct seccomp_data {
+ 
+ #ifndef PTRACE_SECCOMP_GET_METADATA
+ #define PTRACE_SECCOMP_GET_METADATA	0x420d
++#endif
+ 
++/*
++ * There are conflicting definitions in ptrace system headers that lead to
++ * struct seccomp_metadata to not be defined. So until those conflicts get
++ * sorted out, we should rely on some of our own in-tree ptrace definitions.
++ */
+ struct seccomp_metadata {
+ 	__u64 filter_off;       /* Input: which filter */
+ 	__u64 flags;             /* Output: filter's flags */
+ };
+-#endif
+ 
+ #ifndef SECCOMP_FILTER_FLAG_NEW_LISTENER
+ #define SECCOMP_FILTER_FLAG_NEW_LISTENER	(1UL << 3)
+-- 
+2.32.0
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/eye5sTTJEmLnp.ZjUOdi/zA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGpdy8ACgkQAVBC80lX
-0Gy1ZAf/QqvJFdlxOR38WaAp621uDeSv/+3+Tty84LEdm3ddEVD2KYkO9pQ62Ys7
-9obQQt1VOSkEpQzk2ApRqBXPG0LsCqY2X0L4QimtlhBSZ3gnJAoX4MPt4jBeCLR2
-v1if4NxGRaY4XYBbMBVEslvudxEG9PxgyuKqw2lsXyiwVKSNn/MM2+d19RE4fE4l
-4LAQnY2sQu9/8xNbIU67jbIn2b49Zzz79uRYwIwGpmUjlgMwH+zCWEeTMAdXFyNR
-YiHgQXI85D6xk33oFV6/qi0DqoFqzpkDyjLlwjqzvwVAbTp/4YDXAYv/HQQ7s6Yy
-sQwlJVWi0oIGnXj5lV5HlAsBNtU7SQ==
-=fR9b
------END PGP SIGNATURE-----
-
---Sig_/eye5sTTJEmLnp.ZjUOdi/zA--
