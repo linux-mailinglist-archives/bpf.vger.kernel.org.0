@@ -2,124 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF76467E01
-	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 20:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A621467E03
+	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 20:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382780AbhLCTWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Dec 2021 14:22:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382775AbhLCTWJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Dec 2021 14:22:09 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7302FC061353
-        for <bpf@vger.kernel.org>; Fri,  3 Dec 2021 11:18:45 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id z6so2775919plk.6
-        for <bpf@vger.kernel.org>; Fri, 03 Dec 2021 11:18:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5+QDyD99nrD3ADXUvg78wF3TX6kXVvpODTR9S+z0VHA=;
-        b=GbJ9ycUQ042b+K6Sus+Xrd8sf0gxtthYett8ieZd/zgLOSNz9WfOZVm+GMw0tFqSwc
-         ufoLS65KBLhFjYWNdhacxKbxVLeZ1EEhO5R/JX4cQWbfdW21a1sLSsWxjUbyR6e8eemg
-         sz2DUeT/ordnxSNcFp6CrzPKutVjemyjNdvGbb+WX+bMzMHm5eMuIMj3be5/jN0B9a3V
-         rlnJJbOfbJSmIePxGjKMGFLZ4njGf4bDQh7VIvqFrmbk+zXkYMpU9xjMeI6y0iKCOHhy
-         l5bcw+50W7pbYzo/z1Lt1GasnhocGx4HDZvZ3PVcO7jAvwbTJkQ4ZHjLDkowefdWLwOT
-         gIQA==
+        id S1353354AbhLCTWN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Dec 2021 14:22:13 -0500
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:43885 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235267AbhLCTWN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Dec 2021 14:22:13 -0500
+Received: by mail-wr1-f41.google.com with SMTP id v11so7674544wrw.10;
+        Fri, 03 Dec 2021 11:18:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5+QDyD99nrD3ADXUvg78wF3TX6kXVvpODTR9S+z0VHA=;
-        b=2pebvMR1Xz1DnbXxD+6A+BncyLzeM7kKqb0a+qXVecgRFOThv6r0XfBxViAvXzMxUi
-         bkywFXLFm17NT6k3TI7hhnjjMg/o3hii6ljowO8h6Jn6X4mHh+Vuzxn91kwj6CqtfOMv
-         eABs7028YeVent8eF8dy3LmjOqcGhi+7kv+1Tmb/xt52XoEItiKLuGUK+rF5p8kSeH4w
-         gz8A00HH+QkOO/wgdCcrFnMdc01d1l2hPy9O0ITG0IsouFof/HvNldFBx6U/SP6YJt0i
-         BgMbswMr/HUKfuZP8wu5we7mEsByHnmBw4ekvwqHnSvzCk6ADRAiAIM2E8mKYPMJ75jt
-         rVCQ==
-X-Gm-Message-State: AOAM531o+3a7j23Je4YLWOcO5jm7ftG2OREJWEKoMlujs7/1UW1omgKO
-        572wUQeB03TUSmDiIYtUxKNXDjJb6DOmvXs9A1wBJ36HWhs=
-X-Google-Smtp-Source: ABdhPJxIG3rONTjOTCRRHPZ9KqYKRgh1OWSI6M8V1VQMlnIeb/DMloLcdkO/Spl0uBzzImgmS12VMACyoTyySMlUo28=
-X-Received: by 2002:a17:902:b588:b0:143:b732:834 with SMTP id
- a8-20020a170902b58800b00143b7320834mr25182795pls.22.1638559124808; Fri, 03
- Dec 2021 11:18:44 -0800 (PST)
-MIME-Version: 1.0
-References: <20211201181040.23337-1-alexei.starovoitov@gmail.com> <CAFnufp2sP_N57qxQPoEHoMqN-NQ3HwiqKvWOecbEvFwrgK8QRw@mail.gmail.com>
-In-Reply-To: <CAFnufp2sP_N57qxQPoEHoMqN-NQ3HwiqKvWOecbEvFwrgK8QRw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 3 Dec 2021 11:18:33 -0800
-Message-ID: <CAADnVQJDax2j0-7uyqdqFEnpB57om_z+Cqmi1O2QyLpHqkVKwA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 00/17] bpf: CO-RE support in the kernel
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     David Miller <davem@davemloft.net>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+KHxIUD5Ri3UfWfOOeIflcqc5lfKcQ9rateqQdRDovU=;
+        b=he8d3JX7QLGb20zAzhn7TQOOu75x6/42t/2XFR5Sya2hKN7dD4NEGhGD7Yu3HdQzVV
+         jR8BFhbVxB6zw9Xzy2OQNOU8858uspphuJnaH6d3j3Hv7AyK5MIf/ja6uGSwXEZ9Anbx
+         hhGhSQpIsROlETumReFUrfLNESlxIwPXEX5hK7grGNaUHSZ1BgM8nlbK65sAuEbfendF
+         pnH8TrqGIa8PPP6jBBdhKDJzlgVvJBr+sbiXEg4XHAz3V2zIaZ1xYtsXVU6a5VmATdRY
+         nomzQ9Fi+jOhmtPfpeIgyRfe7SIb+7HXhmXLhDD+RlODv+paaDEpix9WSzLwu3+cpu0J
+         kJ6g==
+X-Gm-Message-State: AOAM5302EZGUAgf1aviihDa79LwoWqnxGYwIDMDGcRyOT5BhaC1wtL1s
+        NwhS+ilSUvJeSBYtlGmvDPqdVDe2XA/7IQ==
+X-Google-Smtp-Source: ABdhPJw8lpV5j8xbV+wIGMFudjroFhtVkgHT/Y3lC+FMQQOo9XKN9yUwy2YHpJUyXmkWD993uKcQqA==
+X-Received: by 2002:a5d:59a2:: with SMTP id p2mr23800415wrr.252.1638559127619;
+        Fri, 03 Dec 2021 11:18:47 -0800 (PST)
+Received: from t490s.teknoraver.net (net-37-117-189-149.cust.vodafonedsl.it. [37.117.189.149])
+        by smtp.gmail.com with ESMTPSA id z14sm3472374wrp.70.2021.12.03.11.18.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Dec 2021 11:18:47 -0800 (PST)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Luca Boccassi <bluca@debian.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Subject: [PATCH bpf-next 0/3] bpf: add signature
+Date:   Fri,  3 Dec 2021 20:18:41 +0100
+Message-Id: <20211203191844.69709-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 2, 2021 at 10:45 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> On Wed, Dec 1, 2021 at 7:11 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > v4->v5:
-> > . Reduce number of memory allocations in candidate cache logic
-> > . Fix couple UAF issues
-> > . Add Andrii's patch to cleanup struct bpf_core_cand
-> > . More thorough tests
-> > . Planned followups:
-> >   - support -v in lskel
-> >   - move struct bpf_core_spec out of bpf_core_apply_relo_insn to
-> >     reduce stack usage
-> >   - implement bpf_core_types_are_compat
-> >
-> > v3->v4:
-> > . complete refactor of find candidates logic.
-> >   Now it has small permanent cache.
-> > . Fix a bug in gen_loader related to attach_kind.
-> > . Fix BTF log size limit.
-> > . More tests.
-> >
-> > v2->v3:
-> > . addressed Andrii's feedback in every patch.
-> >   New field in union bpf_attr changed from "core_relo" to "core_relos".
-> > . added one more test and checkpatch.pl-ed the set.
-> >
-> > v1->v2:
-> > . Refactor uapi to pass 'struct bpf_core_relo' from LLVM into libbpf and further
-> > into the kernel instead of bpf_core_apply_relo() bpf helper. Because of this
-> > change the CO-RE algorithm has an ability to log error and debug events through
-> > the standard bpf verifer log mechanism which was not possible with helper
-> > approach.
-> > . #define RELO_CORE macro was removed and replaced with btf_member_bit_offset() patch.
-> >
-> > This set introduces CO-RE support in the kernel.
-> > There are several reasons to add such support:
-> > 1. It's a step toward signed BPF programs.
-> > 2. It allows golang like languages that struggle to adopt libbpf
-> >    to take advantage of CO-RE powers.
-> > 3. Currently the field accessed by 'ldx [R1 + 10]' insn is recognized
-> >    by the verifier purely based on +10 offset. If R1 points to a union
-> >    the verifier picks one of the fields at this offset.
-> >    With CO-RE the kernel can disambiguate the field access.
-> >
->
-> Hi,
->
-> I ran my usual co-re test which was failing in the v1. Relocations
-> looks correct now:
+From: Matteo Croce <mcroce@microsoft.com>
 
-Matteo,
+This series add signature verification for BPF files.
+The first patch implements the signature validation in the kernel,
+the second patch optionally makes the signature mandatory,
+the third adds signature generation to bpftool.
 
-Thanks for testing.
-May I ask you to take a stab at implementing non-recursive
-bpf_core_types_are_compat ?
-The libbpf version cannot be used as-is in the kernel.
-Or maybe we can limit its recursion to a few steps?
-In practice the limit of 2 is probably more than enough.
+This only works with CO-RE programs.
+
+Matteo Croce (3):
+  bpf: add signature to eBPF instructions
+  bpf: add option to require BPF signature
+  bpftool: add signature in skeleton
+
+ crypto/asymmetric_keys/asymmetric_type.c |   1 +
+ crypto/asymmetric_keys/pkcs7_verify.c    |   7 +-
+ include/linux/verification.h             |   1 +
+ include/uapi/linux/bpf.h                 |   2 +
+ kernel/bpf/Kconfig                       |  14 ++
+ kernel/bpf/syscall.c                     |  51 +++++-
+ tools/bpf/bpftool/Makefile               |  14 +-
+ tools/bpf/bpftool/gen.c                  |  33 ++++
+ tools/bpf/bpftool/main.c                 |  28 +++
+ tools/bpf/bpftool/main.h                 |   7 +
+ tools/bpf/bpftool/sign.c                 | 218 +++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h           |   2 +
+ tools/lib/bpf/skel_internal.h            |   4 +
+ 13 files changed, 372 insertions(+), 10 deletions(-)
+ create mode 100644 tools/bpf/bpftool/sign.c
+
+-- 
+2.33.1
+
