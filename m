@@ -2,134 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72907467162
-	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 06:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF105467255
+	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 07:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbhLCFSK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Dec 2021 00:18:10 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:27338 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhLCFSK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Dec 2021 00:18:10 -0500
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J51GM6m5GzbjLJ;
-        Fri,  3 Dec 2021 13:14:35 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
- (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 3 Dec
- 2021 13:14:44 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <houtao1@huawei.com>
-Subject: [PATCH bpf-next v5] bpf: disallow BPF_LOG_KERNEL log level for bpf(BPF_BTF_LOAD)
-Date:   Fri, 3 Dec 2021 13:30:01 +0800
-Message-ID: <20211203053001.740945-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S1378741AbhLCHDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Dec 2021 02:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345605AbhLCHDH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Dec 2021 02:03:07 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77174C06174A;
+        Thu,  2 Dec 2021 22:59:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L9TEsOSb6kRI6cv6AHNLCgEMmFVJ2TwOFsBuT0mf2uI=; b=WJ8/zUe+SXuI4BfCR+BUL7Vkst
+        WOwpe629JqT5Ndyc5srczyQ4GFkF24TYiT9Ch+yu8WMHtIQ/kJXhe/tuz17Cebczq4jV8M3AysQi5
+        IgnYWA1kanCUQrzI2U5A3adQJk08pfuWgEJBtPO/lspAYfPYeqYQt8PgEhjJ0Qd/1dSX8qSaPZBFp
+        VDcLl0khw9Eoc+u80YauIiJ5fAb/cmt5z3dorT2qy/OKtIwbKJDwXRoiU0cYCt2N1MD16BOV5V7Ow
+        A1b7zYc8+EHrUAHlxpQL3ln0AcvSdc3xmv6xquHn5CofPFcYFWarkubJ7fDXuxOSQm8ryuWQcS3Se
+        gQvjr07w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mt2Xj-00EeJY-SA; Fri, 03 Dec 2021 06:59:39 +0000
+Date:   Thu, 2 Dec 2021 22:59:39 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        SeongJae Park <sj@kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>, axboe@kernel.dk,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, yuq825@gmail.com, robdclark@gmail.com,
+        sean@poorly.run, christian.koenig@amd.com, ray.huang@amd.com,
+        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, jingoohan1@gmail.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        krzysztof.kozlowski@canonical.com, mani@kernel.org,
+        pawell@cadence.com, rogerq@kernel.org, a-govindraju@ti.com,
+        gregkh@linuxfoundation.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        akpm@linux-foundation.org, thomas.hellstrom@linux.intel.com,
+        matthew.auld@intel.com, colin.king@intel.com, geert@linux-m68k.org,
+        linux-block@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH bpf v2] treewide: add missing includes masked by cgroup
+ -> bpf dependency
+Message-ID: <YanAW6KnyNQ1V34r@infradead.org>
+References: <20211202203400.1208663-1-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211202203400.1208663-1-kuba@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF_LOG_KERNEL is only used internally, so disallow bpf_btf_load()
-to set log level as BPF_LOG_KERNEL. The same checking has already
-been done in bpf_check(), so factor out a helper to check the
-validity of log attributes and use it in both places.
+Thanks, always good to see someone else helping to unwind our include
+dependency mess..
 
-Fixes: 8580ac9404f6 ("bpf: Process in-kernel BTF")
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Acked-by: Yonghong Song <yhs@fb.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
-v5:
-  * rebased on bpf-next
-  * patch #1 "bpf: Clean-up bpf_verifier_vlog() for BPF_LOG_KERNEL log level"
-    has been merged, so drop it
-  * doesn't pass max_total to bpf_verifier_log_attr_valid() because
-    now the max log buffer size of btf and verifier are the same.
-
-v4: https://www.spinics.net/lists/bpf/msg50807.html
-  * rebased on bpf-next
-  * add Acked-by tags
-
-v3: https://www.spinics.net/lists/bpf/msg48992.html
-  * rebased on bpf-next
-  * address comments from Daniel Borkmann:
-    patch #1: add prefix "BPF: " instead of "BPF:" for error message
-    patch #2: remove uncessary parenthesis, keep the max buffer length
-              setting of btf verifier, and add Fixes tag.
-
-v2: https://www.spinics.net/lists/bpf/msg48809.html
-  * rebased on bpf-next
-  * patch #1: add a trailing newline if needed (suggested by Martin)
-  * add patch #2
-
-v1: https://www.spinics.net/lists/bpf/msg48550.html
----
- include/linux/bpf_verifier.h | 7 +++++++
- kernel/bpf/btf.c             | 3 +--
- kernel/bpf/verifier.c        | 6 +++---
- 3 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index c8a78e830fca..182b16a91084 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -396,6 +396,13 @@ static inline bool bpf_verifier_log_needed(const struct bpf_verifier_log *log)
- 		 log->level == BPF_LOG_KERNEL);
- }
- 
-+static inline bool
-+bpf_verifier_log_attr_valid(const struct bpf_verifier_log *log)
-+{
-+	return log->len_total >= 128 && log->len_total <= UINT_MAX >> 2 &&
-+	       log->level && log->ubuf && !(log->level & ~BPF_LOG_MASK);
-+}
-+
- #define BPF_MAX_SUBPROGS 256
- 
- struct bpf_subprog_info {
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index ed4258cb0832..d442dc07a8a1 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4473,8 +4473,7 @@ static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
- 		log->len_total = log_size;
- 
- 		/* log attributes have to be sane */
--		if (log->len_total < 128 || log->len_total > UINT_MAX >> 2 ||
--		    !log->level || !log->ubuf) {
-+		if (!bpf_verifier_log_attr_valid(log)) {
- 			err = -EINVAL;
- 			goto errout;
- 		}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6522ffdea487..1126b75fe650 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14050,11 +14050,11 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
- 		log->ubuf = (char __user *) (unsigned long) attr->log_buf;
- 		log->len_total = attr->log_size;
- 
--		ret = -EINVAL;
- 		/* log attributes have to be sane */
--		if (log->len_total < 128 || log->len_total > UINT_MAX >> 2 ||
--		    !log->level || !log->ubuf || log->level & ~BPF_LOG_MASK)
-+		if (!bpf_verifier_log_attr_valid(log)) {
-+			ret = -EINVAL;
- 			goto err_unlock;
-+		}
- 	}
- 
- 	if (IS_ERR(btf_vmlinux)) {
--- 
-2.29.2
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
