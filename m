@@ -2,64 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2152468005
-	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 23:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C2E468026
+	for <lists+bpf@lfdr.de>; Sat,  4 Dec 2021 00:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbhLCWyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Dec 2021 17:54:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S1359667AbhLCXDe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Dec 2021 18:03:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhLCWym (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Dec 2021 17:54:42 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F72C061751
-        for <bpf@vger.kernel.org>; Fri,  3 Dec 2021 14:51:17 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 133so3540766wme.0
-        for <bpf@vger.kernel.org>; Fri, 03 Dec 2021 14:51:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=sMVXZmEK+H09avKUHH3w2S8Bcher2YrYywIf+YnGSP0=;
-        b=FDAoj/FnkrPXnU5GASnaNTTt23aLOAJ8d3QZ+KgtfCxjYU19adYU8vngLMw86ZMQ2R
-         bIzW/Oyy95ISWsbBIB5ynjMK9LPloLEQAA+0YG44gShb+p353oYZKXNjBcuGH8p7RZz+
-         xEFqamR3CWNQL2oWZapjYlhniSguBmTnXrTaqWWUaGEvTJ+rDAgkzAdt799/k1/AyInE
-         BDolQwhbuCLH+t44D5sKxDbd+OLnJiOKkBYUQcYAd+mF+FV9+aomwGVW5drwmfyizPIm
-         5x/gJW09KqNkqcLG4nkX2Sk861d4CIYd3rDiYr8DFbhLOTiaWAwJORI2AAB4ON61gg8M
-         9wPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=sMVXZmEK+H09avKUHH3w2S8Bcher2YrYywIf+YnGSP0=;
-        b=xD4ePyaetbs9I9Zmft2u48ly1YXt+I+VECmkhxFsfvmKDRr2ojmQuRveSJ7tpPadJF
-         GdYQyZ5w+psVNL169faFLOy56haGV1Kfgw4ZHVoeWhO9V5yPs4GZ8LexaKPDiqakKtY6
-         DYqs+SSk5P21T6O6xYQlbunkbIJN1hZ8+CUM4AZGiFDZtMWP8CCsildq0rr3oAAnNBHI
-         QBNdoX/UElF4qVvT0oktMqA1MlvFkyU113PrxPnNeWzM94TofWHgr3rjEVVOxbrpLR+O
-         pp9jcEx8RdY8emRad8+hSEldqUHESL/dsu7wbPd20pFcLcuvdFV7tWhwF5uR4Y0fovZS
-         Ovrw==
-X-Gm-Message-State: AOAM530KCjUY3BKsQIxIQAI5tkOv4Vi2QybodE71P+xn9kdc+IqZFbe9
-        bh1JigIt6A/5YD+TFwaG9vMWoYSxpIeqZLEmCrg=
-X-Google-Smtp-Source: ABdhPJwPGtw0neuM4qp4NJNcuG9LON/5gww9nF/Bv/wSGZvILQSz/Q01x0W2QbqlJDzabflULgUMyoxBBbg6RixeX5I=
-X-Received: by 2002:a1c:2d5:: with SMTP id 204mr18851688wmc.47.1638571876413;
- Fri, 03 Dec 2021 14:51:16 -0800 (PST)
+        with ESMTP id S233523AbhLCXDe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Dec 2021 18:03:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1582FC061751;
+        Fri,  3 Dec 2021 15:00:10 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C6C862D36;
+        Fri,  3 Dec 2021 23:00:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 05A46C53FCD;
+        Fri,  3 Dec 2021 23:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638572409;
+        bh=PRIzoZduL+FH2eXDCg1xVMlQjUQQpSiAYkeeKFxrpbU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mBpLFAQsly/O4ZH1amCQV5Hr/n+l/qXbg52aY4XnmjvSGv8VfDeHa0R5YLDcvPt1H
+         smeLLjD102JA28V/dtlikF9Zmr2w91pnroqr4esKpLdinsIM2KqKbw8uyWErK0wgr0
+         Zegc3nKuKU9HhxbMyP/mo89RqI/Y89mgwzLFOLF5bunZ6YqC5FVXsdKmSJmHPoruAq
+         vwzbqHV0CbQH1I5BnTmgRyB7sfsaXLzvrRT0KojOqlyZ8+YTaO0IXFkIIR1qYaD4SI
+         iUfAfnoH7x8lxo7Uf3iW6vJfrfDsoSzJEd/FEo/m/OttLOcKK9+hze+OQFZeA+ZhIU
+         FyP19AC07opPA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D83E360A50;
+        Fri,  3 Dec 2021 23:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:a7b:c00b:0:0:0:0:0 with HTTP; Fri, 3 Dec 2021 14:51:16 -0800 (PST)
-Reply-To: mrsbillchantal2022@mail.com
-From:   "Mrs. bill Chantal" <etimbukudo345@gmail.com>
-Date:   Fri, 3 Dec 2021 23:51:16 +0100
-Message-ID: <CAM63EMdej_QsE8PZZrrVtG9XOd2GOaFJ7p+3FRy3EB_NbgMbjQ@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: Fix the test_task_vma selftest to support output
+ shorter than 1 kB
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163857240888.22727.1341673704180599136.git-patchwork-notify@kernel.org>
+Date:   Fri, 03 Dec 2021 23:00:08 +0000
+References: <20211130181811.594220-1-maximmi@nvidia.com>
+In-Reply-To: <20211130181811.594220-1-maximmi@nvidia.com>
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org,
+        revest@chromium.org, davemarchevsky@fb.com,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 5.4 million dollars in this
-united nation the payment will be Issue into ATM visa card and send to
-you from the bank  we need your address, passport and your Whatsapp
-Number.
-Thanks
+Hello:
 
-Mrs.Bill Chantal
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Tue, 30 Nov 2021 20:18:11 +0200 you wrote:
+> The test for bpf_iter_task_vma assumes that the output will be longer
+> than 1 kB, as the comment above the loop says. Due to this assumption,
+> the loop becomes infinite if the output turns to be shorter than 1 kB.
+> The return value of read_fd_into_buffer is 0 when the end of file was
+> reached, and len isn't being increased any more.
+> 
+> This commit adds a break on EOF to handle short output correctly. For
+> the reference, this is the contents that I get when running test_progs
+> under vmtest.sh, and it's shorter than 1 kB:
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf] bpf: Fix the test_task_vma selftest to support output shorter than 1 kB
+    https://git.kernel.org/bpf/bpf-next/c/da54ab14953c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
