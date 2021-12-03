@@ -2,178 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F6D467F1A
-	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 22:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B03467F36
+	for <lists+bpf@lfdr.de>; Fri,  3 Dec 2021 22:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383172AbhLCVME (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Dec 2021 16:12:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
+        id S1353880AbhLCV0I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Dec 2021 16:26:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236111AbhLCVME (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Dec 2021 16:12:04 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7C9C061751
-        for <bpf@vger.kernel.org>; Fri,  3 Dec 2021 13:08:39 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id j18so8474105ljc.12
-        for <bpf@vger.kernel.org>; Fri, 03 Dec 2021 13:08:39 -0800 (PST)
+        with ESMTP id S1343604AbhLCV0I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Dec 2021 16:26:08 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D524AC061751
+        for <bpf@vger.kernel.org>; Fri,  3 Dec 2021 13:22:43 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id d10so13219335ybn.0
+        for <bpf@vger.kernel.org>; Fri, 03 Dec 2021 13:22:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2wzc+KKHAWDws9fh0Y0IZtWFtJ7npzM5S9JWp043qXc=;
-        b=ioh10zh2M2cDxOBCszqSskebb5dM34p/fn0fd/a2dqpZXDOHkexjrAZqIW5uIlc0JS
-         2dVZ1woVdQDEKe0slSOaXiI7BfHgaBleLvXaR7K+Rn5t1BYz0JL/ca5MxFyAk5xsUeHn
-         xMv1YhQexVRSQ5lk87+UF1yp5QQHOVvpfPXec=
+         :cc;
+        bh=BuVY+RFxwoXNJccbG2A8RHNwC1kfJYciHAbEmTXpIGc=;
+        b=hP5MkGZUDIzMDABVFYYlJTsigmch4gIuMZwgHwMhyW61K4v8RwH+DnjhABNmzEdfKl
+         OksvE30WO0W6UVfUXNubzqZWdb5tAIkuxpnqacgTL1Npa3e1ZARjdjwcO5BREDQMfvg4
+         I4w6xn8oF2m5D9WFlAcmnd0PRmIYU8xHDgj2PVrpRkNHj9Aelm1E+yEtqeAoFQgjowDn
+         m7tAaDt4xStQGon/FTAKrRnIyhPIEASQuJEe/1Z94zCH4hOvwg1a7tHVgvo4+QU6+P+Q
+         84HydHnQFJkpOnZjGl43iQ1wHqkYaYxudu0Sg3Ozo63m6ywMsWqpbYobkGFhGOt0oecX
+         M0Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2wzc+KKHAWDws9fh0Y0IZtWFtJ7npzM5S9JWp043qXc=;
-        b=CjrcZF4QVXohgB0M2p2ifhLRDXdRHpsvnXg8JNa2lxtFTc3P27Ewd4BrdSNW4QtVhR
-         QSqFsJCluufHxf0v2k1HbDT/X26LydHF2HOD5n+4yS8/h4sMsdRPDPLhZEO+Fg09b75C
-         eHFGOZhgE1DBMEjeC9rGgN8roQxerMzd5fcc47IDAYmBjWOTkejbMhWVgourtFGxKApX
-         5FvWonsaYP0aC+2c1jdxkFaKdfJeXt7KfD0HhJBg21Svt8XBjFUk+FRh4iYnbcv+E9VL
-         RB+O68UbarPqGWe9NdYypBm3sbBLPzrP0xfMd/B7bCr/oftKmzWAFo+HvJSzC9QkNSiO
-         TfkA==
-X-Gm-Message-State: AOAM530R16tg7bmnWGlbJTNrEME8ZTqvUqnpvY2LfuF+xnKdkzF0o10n
-        DIYlLTBMFbzdQuoOuWHudyM8Vm6qBDKsl1xYFSuYeA==
-X-Google-Smtp-Source: ABdhPJzOXUXBlcX70qYjo0HBAqRt5p6szLOBHIkBTHQXVdm1MkMFMMYp60Wedsv2efYX39BvHlXf2IoLJfMQ65ZZISo=
-X-Received: by 2002:a2e:151b:: with SMTP id s27mr20326119ljd.274.1638565717379;
- Fri, 03 Dec 2021 13:08:37 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=BuVY+RFxwoXNJccbG2A8RHNwC1kfJYciHAbEmTXpIGc=;
+        b=naYDatyw5CqsKaYXWsIgSt8/mN3oZyc5nH4nIVZb1aOOXMRpxmBpjyG1VLsqUGD1c4
+         +r9/eKstfL/N6fvAuxyKN2YzVY6ZjfydL+0wvPwiRotpy4e8xqwhXCyGwEKkwJfP0s+5
+         Nv3j6PW2yf0jQo1BIWH2rIQIy7RBo6fVGi4CvZqoI3/pZ6d2lfFXINFLEJKfDdolOgdS
+         jtQr7RjQb84Ys6Pv3Klnm70iwQTphsDRwGIkLDVjwP45PRSe+i4idjMKKac91KR1OCGv
+         YqI9SHP0SZKd9+XOJwN9RQo7DYLKBlZHIA/7X46a8IEo0dGvdgGfj2b5+2AcGEPyUxw5
+         vjiQ==
+X-Gm-Message-State: AOAM533jkWA+k5iKFfOy+/CqE7mQpbgzGT3w1VpWQvjVMGl8Lrgjx7JW
+        yH7GFiw06hjiKKEHnbkgxEkakZfWPV+HLiwVNXrxo7wP3Qk=
+X-Google-Smtp-Source: ABdhPJxKLWQzaLn7WB3OBVs21D+oC6SGWvwPycu5N8IqVRkHkF1507uPfIFnSqVBsEt1v9Ql9VgxiPEgHp65+UH0b+w=
+X-Received: by 2002:a05:6902:1006:: with SMTP id w6mr27804252ybt.252.1638566562423;
+ Fri, 03 Dec 2021 13:22:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20211116164208.164245-1-mauricio@kinvolk.io> <20211116164208.164245-5-mauricio@kinvolk.io>
- <CAEf4BzZ0pEXzEvArpzL=0qbVC65z=hmeVuP7cbLKk-0_Gv5Y+A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ0pEXzEvArpzL=0qbVC65z=hmeVuP7cbLKk-0_Gv5Y+A@mail.gmail.com>
-From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Date:   Fri, 3 Dec 2021 16:08:26 -0500
-Message-ID: <CAHap4ztw05d7gfko+bjOcgoGoJiW2rsnGar11TVO5au80LsfHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] libbpf: Expose CO-RE relocation results
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20211203182836.16646-1-alexei.starovoitov@gmail.com>
+ <CAEf4BzaYwWw1tCiu0Kk34YpEJeqDTLCKmrxgDCKr8fyZbTQYYw@mail.gmail.com> <CAADnVQJ8y6ZUw5L1TLwUrBviq5DFJShfi+EBjkgMnSb23QBd3Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJ8y6ZUw5L1TLwUrBviq5DFJShfi+EBjkgMnSb23QBd3Q@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 3 Dec 2021 13:22:31 -0800
+Message-ID: <CAEf4Bzbvvinya8dQFCBpAYazYEEa0Na=zaeYXay0MH33a9NQuA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Reduce bpf_core_apply_relo_insn() stack usage.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 12:25 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Dec 3, 2021 at 12:11 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Nov 16, 2021 at 8:42 AM Mauricio V=C3=A1squez <mauricio@kinvolk.i=
-o> wrote:
+> On Fri, Dec 3, 2021 at 12:08 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > The result of the CO-RE relocations can be useful for some use cases
-> > like BTFGen[0]. This commit adds a new =E2=80=98record_core_relos=E2=80=
-=99 option to
-> > save the result of such relocations and a couple of functions to access
-> > them.
+> > On Fri, Dec 3, 2021 at 10:28 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > Reduce bpf_core_apply_relo_insn() stack usage and bump
+> > > BPF_CORE_SPEC_MAX_LEN limit back to 64.
+> > >
+> > > Fixes: 29db4bea1d10 ("bpf: Prepare relo_core.c for kernel duty.")
+> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > ---
 > >
-> > [0]: https://github.com/kinvolk/btfgen/
+> > Looks good except for the three separate specs passed as an array.
+> > Let's do separate input args and it should be good to go. Thanks.
 > >
-> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> > ---
-> >  tools/lib/bpf/libbpf.c    | 63 ++++++++++++++++++++++++++++++++++++++-
-> >  tools/lib/bpf/libbpf.h    | 49 +++++++++++++++++++++++++++++-
-> >  tools/lib/bpf/libbpf.map  |  2 ++
-> >  tools/lib/bpf/relo_core.c | 28 +++++++++++++++--
-> >  tools/lib/bpf/relo_core.h | 21 ++-----------
-> >  5 files changed, 140 insertions(+), 23 deletions(-)
+> > >  kernel/bpf/btf.c          | 11 ++++++-
+> > >  tools/lib/bpf/libbpf.c    |  4 ++-
+> > >  tools/lib/bpf/relo_core.c | 60 +++++++++++----------------------------
+> > >  tools/lib/bpf/relo_core.h | 30 +++++++++++++++++++-
+> > >  4 files changed, 59 insertions(+), 46 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index ed4258cb0832..2a902a946f70 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -6742,8 +6742,16 @@ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+> > >  {
+> > >         bool need_cands = relo->kind != BPF_CORE_TYPE_ID_LOCAL;
+> > >         struct bpf_core_cand_list cands = {};
+> > > +       struct bpf_core_spec *specs;
+> > >         int err;
+> > >
+> > > +       /* ~4k of temp memory necessary to convert LLVM spec like "0:1:0:5"
+> > > +        * into arrays of btf_ids of struct fields and array indices.
+> > > +        */
+> > > +       specs = kcalloc(3, sizeof(*specs), GFP_KERNEL);
+> > > +       if (!specs)
+> > > +               return -ENOMEM;
+> > > +
+> > >         if (need_cands) {
+> > >                 struct bpf_cand_cache *cc;
+> > >                 int i;
+> > > @@ -6779,8 +6787,9 @@ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+> > >         }
+> > >
+> > >         err = bpf_core_apply_relo_insn((void *)ctx->log, insn, relo->insn_off / 8,
+> > > -                                      relo, relo_idx, ctx->btf, &cands);
+> > > +                                      relo, relo_idx, ctx->btf, &cands, specs);
+> > >  out:
+> > > +       kfree(specs);
+> > >         if (need_cands) {
+> > >                 kfree(cands.cands);
+> > >                 mutex_unlock(&cand_cache_mutex);
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index de260c94e418..1ad070b19bb4 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -5515,6 +5515,7 @@ static int bpf_core_apply_relo(struct bpf_program *prog,
+> > >                                const struct btf *local_btf,
+> > >                                struct hashmap *cand_cache)
+> > >  {
+> > > +       struct bpf_core_spec specs[3] = {};
 > >
+> > so I get why single kcalloc() is good on the kernel side, but there is
+> > no reason to do it here, please define three separate variables
+> >
+> > >         const void *type_key = u32_as_hash_key(relo->type_id);
+> > >         struct bpf_core_cand_list *cands = NULL;
+> > >         const char *prog_name = prog->name;
+> >
+> > [...]
+> >
+> > >  static bool is_flex_arr(const struct btf *btf,
+> > >                         const struct bpf_core_accessor *acc,
+> > >                         const struct btf_array *arr)
+> > > @@ -1200,9 +1173,10 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+> > >                              const struct bpf_core_relo *relo,
+> > >                              int relo_idx,
+> > >                              const struct btf *local_btf,
+> > > -                            struct bpf_core_cand_list *cands)
+> > > +                            struct bpf_core_cand_list *cands,
+> > > +                            struct bpf_core_spec *specs)
+> >
+> > same here, let's pass three separate arguments instead of having to
+> > remember which array element corresponds to which (local vs cand vs
+> > targ). It doesn't prevent kernel-side from using an array and just
+> > passing pointers.
 >
-> Ok, I've meditated on this patch set long enough. I still don't like
-> that libbpf will be doing all this just for the sake of BTFGen's use
-> case.
->
-> In the end, I think giving bpftool access to internal APIs of libbpf
-> is more appropriate, and it seems like it's pretty easy to achieve. It
-> might actually clean up gen_loader parts a bit as well. So we'll need
-> to coordinate all this with Alexei's current work on CO-RE for kernel
-> as well.
+> I don't understand the suggestion.
+> There is nothing to remember. It could have been just raw bytes
+> of appropriate size. It's temp data.
+> Passing them as 3 different args would make an impression
+> that they're actually meaningful. They're not. It's a scratch space.
 
-Fine for us. I followed the CO-RE in the kernel patch and I didn't
-spot any change that could complicate the BTFGen implementation.
-
-> But here's what I think could be done to keep libbpf internals simple.
-> We split bpf_core_apply_relo() into two parts: 1) calculating the
-> struct bpf_core_relo_res and
-
-For the BTFGen case we actually need "struct bpf_core_relo_res". I
-suppose it's not a big deal to move its definition to a header file
-that can be included by bpftool.
-
-> 2) patching the instruction. If you look
-> at bpf_core_apply_relo, it needs prog just for prog_name (which we can
-> just pass everywhere for logging purposes) and to extract one specific
-> instruction to be patched. This instruction is passed at the very end
-> to bpf_core_patch_insn() after bpf_core_relo_res is calculated. So I
-> propose to make those two explicitly separate steps done by libbpf. So
-> bpf_core_apply_relo() (which we should rename to bpf_core_calc_relo()
-> or something like that) won't do any modification to the program
-> instructions. bpf_object__relocate_core() will do bpf_core_calc_relo()
-> first, if that's successful, it will pass the result into
-> bpf_core_patch_insn(). Simple and clean, unless I missed some
-> complication (happens all the time, but..)
-
-While implementing a prototype of this idea I faced the following challenge=
-s:
-- bpf_core_apply_relo() requires a candidate cache. I think we can
-create two helpers functions to create / destroy a candidate cache so
-we don't have to worry about it's internals in bpftool.
-- we need to access obj->btf_ext in bpftool. It should be fine to
-create bpf_object__btf_ext() as part of the public libbpf api.
-- bpf_core_apply_relo() requires the bpf program as argument. Before
-Alexei's patches it was used only for logging and getting the
-instruction. Now it's also used to call record_relo_core(). Getting it
-from bpftool is not that easy, in order to do I had to expose
-bpf_program__sec_idx() and find_prog_by_sec_insn() to bpftool. We
-could find a way to avoid passing prog but I think it's important for
-the logs.
-- obj->btf_vmlinux_override needs to be set in order to calculate the
-core relocations. It's only set in bpf_object__relocate_core() but
-we're not using this function. I created and exposed a
-bpf_object_set_vmlinux_override() function to bpftool.
-- There are also some naming complications but we can discuss them
-when I send the patch.
-
-I'm going to polish a bit more and finish rebasing on top of "CO-RE in
-the kernel" changes to then send the patch. Please let me know if you
-have any big concerns regarding my points above.
-
-> At this point, we can teach bpftool to just take btf_ext (from BPF
-> object file), iterate over all CO-RE relos and call only
-> bpf_core_calc_relo() (no instruction patching). Using
-> bpf_core_relo_res bpftool will know types and fields that need to be
-> preserved and it will be able to construct minimal btf. So interface
-> for bpftool looks like this:
->
->    bpftool gen distill_btf (or whatever the name) <file.bpf.o>
-> <distilled_raw.btf>
->
-> BTFGen as a solution, then, can use bpftool to process each pair of
-> btf + bpf object.
->
-> Thoughts?
-
-I have the feeling that it could be easier to extend
-bpf_object__relocate_core() to be able to calculate the core
-relocations without patching the instructions (something similar to
-what we did in v1). bpftool could pass two parameters to gather this
-information and the normal libbpf workflow could just pass NULL to
-indicate the instructions should be actually patched. I think this
-could help specially with the difficulty to get the prog argument from
-bpftool (we are almost implementing the same logic present on
-bpf_object__relocate_core() to get sec_idx, prog and so on).  Does it
-make any sense to you?
-
-Thanks!
-
-> [...]
+Ok, fair enough. I've renamed specs to specs_scratch to make this more
+explicit and pushed to bpf-next.
