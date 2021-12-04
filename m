@@ -2,135 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC1D468382
-	for <lists+bpf@lfdr.de>; Sat,  4 Dec 2021 10:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5174683C7
+	for <lists+bpf@lfdr.de>; Sat,  4 Dec 2021 10:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384438AbhLDJV4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Dec 2021 04:21:56 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:49832 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384434AbhLDJVx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Dec 2021 04:21:53 -0500
-Received: by mail-io1-f72.google.com with SMTP id h16-20020a056602155000b005ec7daa8de5so4372731iow.16
-        for <bpf@vger.kernel.org>; Sat, 04 Dec 2021 01:18:28 -0800 (PST)
+        id S1384539AbhLDJ4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Dec 2021 04:56:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231345AbhLDJ4c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Dec 2021 04:56:32 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33710C061751;
+        Sat,  4 Dec 2021 01:53:07 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso4565926pjb.0;
+        Sat, 04 Dec 2021 01:53:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+JuXsVUnS+mGqaHxKyE0o/YKYrOHZGXxsAcg+PajcAw=;
+        b=iAXXWVOx9HNr6e7AStRCe78OXfyen74stssIx+IspwcnYxedIjo/XrtfOv1040hRjR
+         ImfCvgBr+l0CoPZ+nlbDKQui2IoZZE3KbqgpzcdOD9X0Y6O9Oc2W017XddVHTI/SY45S
+         i3iySAFhXUek0YFLJI9/O4UsrX64RNWBtLux+vCU7IsezQJ1H9Vto5cxfPwnEPNuVsuf
+         8ApKoHaJFIv/y5H4LXqVe9cSW/By8ffUGcnMi8XWIT6LAfrN1o7JSFeUf3Ov0J06WKKw
+         TYsxSBz/hNkNNdrbVBfuaf82Fj2rHB90VTgcEdkh/7QtHZoOgV6+mUAv2ApSssKR4Hfc
+         GA6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CUg3SKRRr5AZRrrRAfBqwmKAe9l+DABQvp0lKUAZGW4=;
-        b=CFy8cz3KpLEKsMFBTp+Q2Put19v/o146n629fBPrXUQ1t8ZIW25A8mQFfIdWr89G/V
-         Knidsz8y8boFx86JhbZgAu+TpISkgY+QwszLkSlkYMyxl7ioXTtPzhebFED0ek0BUlP6
-         2aL1SPgUNYtvjUKkC68LGAmUrXkJXmMFdGPkllRhN33agKZUj1Lh48Gk3X9i2BoRgV6s
-         iyvJA4WVrj5OTxr1syGuZeEp635aXQYGD7fiazmKo24bHpW2zOZEF8SeVvaVBqNIiWXz
-         m4bluAZfoobcIwPijgXoKxaqv4TozS484JA/mEVm/1RDIige6zuac3DSaBEMJTo5kISa
-         8ckA==
-X-Gm-Message-State: AOAM533IDy56eFQf2CcL8jIo7YxBmn+oFUcnCNYVktcdxNIVxfdaPzNo
-        4cOw1G0fA1237jknnNkkWv3nFF2F525+yg2lcID47x7NvuWK
-X-Google-Smtp-Source: ABdhPJzAficTU5yYxlsBfgJBI6iE30UopThIcBDgy4Jniw7LCPCs+V9xZYzu/6bHKQNczIo5WTUTgJ5bl1S+aT7AL2HCH+lLOjIV
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+JuXsVUnS+mGqaHxKyE0o/YKYrOHZGXxsAcg+PajcAw=;
+        b=XAHw1Yvrw5KgOQme+P6ndDemqLKxeiAicq9rO3MULhDp8jm9qAdC/pISXwNQwLGoll
+         MkG7pQYd7j46sFzALY3+jMWJXt6TE7sFf/+oQfvOVdaZ9vD29d8vXWu3qcWxAGLoMc8q
+         QrTkvNoJfUC/mETyp4WikkFXkwfDAMBSUmOIlNzAOynhUa2UuWnQmTGqkv8QtW8fhMVF
+         sAVaE5Jnb+irhn0LILzFodF5i6zk+d+JwMKPD/AkIVXlwHpxzjfWFoZiK1tVr9Bnwxtv
+         N1Q2DgakBpDp1sbp37OceBlQAGqrSdLcOJmqLc6Vl1KcMfX+rnQk7w3ThpDvR804b3oc
+         L2Dg==
+X-Gm-Message-State: AOAM533mGdpv+l8ZrPFhhcTM41tpeoTi8t0klsoDvxtCmoEnhUsOMo6a
+        ge8h9x4aBEihG8u8qGmitKA=
+X-Google-Smtp-Source: ABdhPJzaXGdpxyp5qIfx9US29iDUhZtFjsXlPg+SLpc8UsVegALcv/ZDWvLIdf1ITkI+JLfT1DRSEw==
+X-Received: by 2002:a17:90b:38c1:: with SMTP id nn1mr21160422pjb.91.1638611586767;
+        Sat, 04 Dec 2021 01:53:06 -0800 (PST)
+Received: from vultr.guest ([45.76.74.237])
+        by smtp.gmail.com with ESMTPSA id ms15sm4343198pjb.26.2021.12.04.01.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Dec 2021 01:53:06 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        keescook@chromium.org, pmladek@suse.com, david@redhat.com,
+        arnaldo.melo@gmail.com, andrii.nakryiko@gmail.com
+Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH -mm 0/5] Phase 2 of task comm cleanups
+Date:   Sat,  4 Dec 2021 09:52:51 +0000
+Message-Id: <20211204095256.78042-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7602:: with SMTP id g2mr24178579iom.37.1638609508327;
- Sat, 04 Dec 2021 01:18:28 -0800 (PST)
-Date:   Sat, 04 Dec 2021 01:18:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ab655805d24e814a@google.com>
-Subject: [syzbot] general protection fault in kernel_accept (3)
-From:   syzbot <syzbot+03655f787f231d1b7b6c@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+This is the followup work of task comm cleanups[1].
 
-syzbot found the following issue on:
+In this phase, the hard-coded 16 is replaced by either TASK_COMM_LEN or
+TASK_COMM_LEN_16, to make it grepable. The difference between this two 
+marcos is: 
+- TASK_COMM_LEN
+  The size should be same with the TASK_COMM_LEN defined in linux/sched.h.
+  For the src file which can't include linux/sched.h, a macro with the 
+  the same name is defined in this file specifically. 
+- TASK_COMM_LEN_16
+  The size must be a fixed-size 16. It may be exposed to userspace so we
+  can't change it. 
 
-HEAD commit:    d40ce48cb3a6 Merge branch 'af_unix-replace-unix_table_lock..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14b86465b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7cc851c2debde333
-dashboard link: https://syzkaller.appspot.com/bug?extid=03655f787f231d1b7b6c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+In order to include vmlinux.h in bpf progs under sample/bpf or
+tools/testing/selftests/bpf, some structs are renamed and some included
+headers are removed.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+1. https://lore.kernel.org/lkml/20211120112738.45980-1-laoar.shao@gmail.com/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+03655f787f231d1b7b6c@syzkaller.appspotmail.com
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Petr Mladek <pmladek@suse.com>
 
-general protection fault, probably for non-canonical address 0xdffffc0000000072: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000390-0x0000000000000397]
-CPU: 0 PID: 15597 Comm: kworker/u4:6 Not tainted 5.16.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: tipc_rcv tipc_topsrv_accept
-RIP: 0010:kernel_accept+0x56/0x350 net/socket.c:3417
-Code: c1 ea 03 80 3c 02 00 0f 85 90 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 18 49 8d bc 24 94 03 00 00 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 50
-RSP: 0018:ffffc90002fdfc30 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: ffffc90002fdfca8 RCX: 0000000000000000
-RDX: 0000000000000072 RSI: ffffffff87211fca RDI: 0000000000000394
-RBP: ffff888035524800 R08: 0000000000000001 R09: ffffffff8ff7bb3f
-R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
-R13: 0000000000000800 R14: ffff88802668f770 R15: ffff88802668f2c0
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f41e78fc1b8 CR3: 0000000021d55000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- tipc_topsrv_accept+0x197/0x280 net/tipc/topsrv.c:460
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-Modules linked in:
----[ end trace d8fc85c5be0bfa88 ]---
-RIP: 0010:kernel_accept+0x56/0x350 net/socket.c:3417
-Code: c1 ea 03 80 3c 02 00 0f 85 90 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 18 49 8d bc 24 94 03 00 00 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 50
-RSP: 0018:ffffc90002fdfc30 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: ffffc90002fdfca8 RCX: 0000000000000000
-RDX: 0000000000000072 RSI: ffffffff87211fca RDI: 0000000000000394
-RBP: ffff888035524800 R08: 0000000000000001 R09: ffffffff8ff7bb3f
-R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
-R13: 0000000000000800 R14: ffff88802668f770 R15: ffff88802668f2c0
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f93092d2000 CR3: 000000001bf56000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	c1 ea 03             	shr    $0x3,%edx
-   3:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   7:	0f 85 90 02 00 00    	jne    0x29d
-   d:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  14:	fc ff df
-  17:	4c 8b 65 18          	mov    0x18(%rbp),%r12
-  1b:	49 8d bc 24 94 03 00 	lea    0x394(%r12),%rdi
-  22:	00
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
-  2e:	48 89 f8             	mov    %rdi,%rax
-  31:	83 e0 07             	and    $0x7,%eax
-  34:	83 c0 01             	add    $0x1,%eax
-  37:	38 d0                	cmp    %dl,%al
-  39:	7c 08                	jl     0x43
-  3b:	84 d2                	test   %dl,%dl
-  3d:	0f                   	.byte 0xf
-  3e:	85                   	.byte 0x85
-  3f:	50                   	push   %rax
+Yafang Shao (5):
+  elfcore: replace old hard-code 16 with TASK_COMM_LEN_16
+  cn_proc: replaced old hard-coded 16 with TASK_COMM_LEN_16
+  samples/bpf/tracex2: replace hard-coded 16 with TASK_COMM_LEN
+  tools/perf: replace hard-coded 16 with TASK_COMM_LEN
+  bpf/progs: replace hard-coded 16 with TASK_COMM_LEN
 
+ include/linux/elfcore-compat.h                        |  8 ++------
+ include/linux/elfcore.h                               |  9 ++-------
+ include/linux/sched.h                                 |  5 +++++
+ include/uapi/linux/cn_proc.h                          |  4 +++-
+ samples/bpf/tracex2_kern.c                            |  3 ++-
+ samples/bpf/tracex2_user.c                            |  3 ++-
+ tools/perf/tests/evsel-tp-sched.c                     |  8 +++++---
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c      |  9 +++++----
+ .../testing/selftests/bpf/prog_tests/ringbuf_multi.c  |  8 +++++---
+ .../selftests/bpf/prog_tests/sk_storage_tracing.c     |  3 ++-
+ .../testing/selftests/bpf/prog_tests/test_overhead.c  |  3 ++-
+ .../selftests/bpf/prog_tests/trampoline_count.c       |  3 ++-
+ .../selftests/bpf/progs/test_core_reloc_kernel.c      | 11 +++++------
+ tools/testing/selftests/bpf/progs/test_ringbuf.c      |  8 ++++----
+ .../testing/selftests/bpf/progs/test_ringbuf_multi.c  |  8 ++++----
+ .../selftests/bpf/progs/test_sk_storage_tracing.c     |  4 ++--
+ 16 files changed, 52 insertions(+), 45 deletions(-)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+2.17.1
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
