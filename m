@@ -2,202 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0C24681B0
-	for <lists+bpf@lfdr.de>; Sat,  4 Dec 2021 02:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD834681E6
+	for <lists+bpf@lfdr.de>; Sat,  4 Dec 2021 03:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345009AbhLDBFS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Dec 2021 20:05:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        id S1384039AbhLDCGT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Dec 2021 21:06:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354451AbhLDBFS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Dec 2021 20:05:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC06C061751
-        for <bpf@vger.kernel.org>; Fri,  3 Dec 2021 17:01:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0742262C49
-        for <bpf@vger.kernel.org>; Sat,  4 Dec 2021 01:01:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678E4C341C2;
-        Sat,  4 Dec 2021 01:01:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638579712;
-        bh=Zu7d6vS0ZlrwRqiKFaq0q1PQYaF4YZl+2MKrcotkmNc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=afmYn0i/0Rt1n42GxRPBzKlJ0m+Uj7lZ+3Arq1rqbpPTgY6d7yqBZfK8jbZvv5QAt
-         wcRb3M+XkJKfdCfhEcbvmyfToQS3LFVq0Pp8PL89L8Vmek/Vffn9SGmvvOpPG/dzAr
-         FR/WwmNrMNW5LvFnA2ba9RGF6azUbtBqVea225HckiMb2ioOR6jWMWFGKMF431lRL9
-         t8AgjP+YNThvQnycrvcyr8I7z9hGE8O080X1TMrhGfOUCAaZGQFlH5YfM/PEPhTGwe
-         IHrJFqoA3QfI1rUAgLkmKeGIieETb59sAsNsJDKFQpUmgNd4YGfD0uu5p7S4AQ/xpw
-         0N5WslY3AS7bQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 21BBF5C0F91; Fri,  3 Dec 2021 17:01:52 -0800 (PST)
-Date:   Fri, 3 Dec 2021 17:01:52 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S231452AbhLDCGT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Dec 2021 21:06:19 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C92C061751;
+        Fri,  3 Dec 2021 18:02:54 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id o14so3295689plg.5;
+        Fri, 03 Dec 2021 18:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2dt/HhZYeQD2DFLA4IdY175U1ND++ujFbnP+5vOBlAA=;
+        b=oMU49gcdvOygLCTTI6gpAwDkcix9DcSHa68rySpeANCNScTY4LuMUSOdjzMKSqXJMm
+         /VU+XwE/YeYT7nuQf1SZWvINlgPBwndCcFAXjZMEFOxqnewOsRikwvecRqe20vTjOFTd
+         PzDRL8Si8W6avEeiybuWxUYrIsVtIi6Ynm2k9Cl2JNzjluyM8GqXN1YH6qBi6TVxVsvy
+         Okq3AmRWScnAxc8xIqAOd5I9cRnPcrsyhOg3GCrd1G7lmz/2+sk0H/DxKwSHUuNgXozY
+         ERkBGO36yDMwj+4HQqvyH3UKvBnfvtfVsPBqz+rKAJfXWqVYBPZk5xbX4PPemzQ+627i
+         1ywg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2dt/HhZYeQD2DFLA4IdY175U1ND++ujFbnP+5vOBlAA=;
+        b=3K71RtZ7Y8HZCOQcgFDpRp1xnFQezey3jCbbdWyzextXJNHO4BWjwrasvjEfno0dEu
+         8zmt1f0QuzVsWaCqakUL8Q6+kb32M8h5Ukkf2SRS2/ZSTdsJKJo7i7N1RtYmVXLPRJ9n
+         kmxdOunV3IM6kEe1fYAjLBeFrrYgv8+N49HNmLbxYU5hTpd99pKDr5PsdPfQ06sepDyy
+         l+rc6NYMH9j44a+HBFxmJpGGc2SyA1zK0W6Oz++KrNeFHephXUOxD0Et7b92ikYcdNU8
+         lApMFXxfplps6ECE99/MhXaWAXCbXJxZdlULr19v11oTMY5FJFlBw6H16Djlp7ZGEyzS
+         d7Lg==
+X-Gm-Message-State: AOAM531VtzsjKvhJWz+CxH3IJkHlJT/sda8Y7Ej+9VQACskUJGe/F/yq
+        b9sCI+QQ4lqym8cNAhNbYnXHdEK31HLQHKbpfRY=
+X-Google-Smtp-Source: ABdhPJyOnDkyHV7ofs6BxuWCzq095VA5AS4isx/p1BCSbvYO8OZef/xVLvN7N9eFsUeApSuCVgI2losG0qYZ1AW0a04=
+X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr19113499pjy.138.1638583374087;
+ Fri, 03 Dec 2021 18:02:54 -0800 (PST)
+MIME-Version: 1.0
+References: <20211203191844.69709-1-mcroce@linux.microsoft.com>
+ <CAADnVQLDEPxOvGn8CxwcG7phy26BKuOqpSQ5j7yZhZeEVoCC4w@mail.gmail.com>
+ <CAFnufp1_p8XCUf-RdHpByKnR9MfXQoDWw6Pvm_dtuH4nD6dZnQ@mail.gmail.com>
+ <CAADnVQ+DSGoF2YoTrp2kTLoFBNAgdU8KbcCupicrVGCWvdxZ7w@mail.gmail.com>
+ <86e70da74cb34b59c53b1e5e4d94375c1ef30aa1.camel@debian.org>
+ <CAADnVQLCmbUJD29y2ovD+SV93r8jon2-f+fJzJFp6qZOUTWA4w@mail.gmail.com> <CAFnufp2S7fPt7CKSjH+MBBvvFu9F9Yop_RAkX_3ZtgtZhRqrHw@mail.gmail.com>
+In-Reply-To: <CAFnufp2S7fPt7CKSjH+MBBvvFu9F9Yop_RAkX_3ZtgtZhRqrHw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 3 Dec 2021 18:02:43 -0800
+Message-ID: <CAADnVQ+WLGiQvaoTPwu_oRj54h4oMwh-z5RV0WAMFRA9Wco_iA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] bpf: add signature
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Luca Boccassi <bluca@debian.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
- sleepable programs
-Message-ID: <20211204010152.GA3967770@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
- <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1>
- <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
- <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1>
- <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ4VDMzp2ggtVL30xq+6Q2+2OqOLhuoi173=8mdyRbS+QQ@mail.gmail.com>
- <20211130023410.hmyw7fhxwpskf6ba@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ7+V=ui7kS-8u7zQoHPT3zZE6X3QuRROG3898Mai9JAcg@mail.gmail.com>
- <20211130225129.GB641268@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211130225129.GB641268@paulmck-ThinkPad-P17-Gen-1>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 02:51:29PM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 30, 2021 at 05:22:25PM +0100, KP Singh wrote:
-> > On Tue, Nov 30, 2021 at 3:34 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Fri, Dec 3, 2021 at 4:42 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> On Fri, Dec 3, 2021 at 11:20 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Dec 3, 2021 at 2:06 PM Luca Boccassi <bluca@debian.org> wrote:
 > > >
-> > > On Wed, Nov 24, 2021 at 11:20:40PM +0100, KP Singh wrote:
-> > > > On Tue, Nov 23, 2021 at 11:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > On Fri, 2021-12-03 at 11:37 -0800, Alexei Starovoitov wrote:
+> > > > On Fri, Dec 3, 2021 at 11:36 AM Matteo Croce
+> > > > <mcroce@linux.microsoft.com> wrote:
 > > > > >
-> > > > > On Tue, Nov 23, 2021 at 10:22:04AM -0800, Paul E. McKenney wrote:
-> > > > > > On Tue, Nov 23, 2021 at 06:11:14PM +0100, KP Singh wrote:
-> > > > > > > On Thu, Sep 2, 2021 at 6:45 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > > > > > I think the global lock will be an issue for the current non-sleepable
-> > > > > > > > netdev bpf-prog which could be triggered by external traffic,  so a flag
-> > > > > > > > is needed here to provide a fast path.  I suspect other non-prealloc map
-> > > > > > > > may need it in the future, so probably
-> > > > > > > > s/BPF_F_SLEEPABLE_STORAGE/BPF_F_SLEEPABLE/ instead.
+> > > > > On Fri, Dec 3, 2021 at 8:22 PM Alexei Starovoitov
+> > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > >
+> > > > > > On Fri, Dec 3, 2021 at 11:18 AM Matteo Croce
+> > > > > > <mcroce@linux.microsoft.com> wrote:
 > > > > > > >
-> > > > > > > I was re-working the patches and had a couple of questions.
+> > > > > > > From: Matteo Croce <mcroce@microsoft.com>
 > > > > > > >
-> > > > > > > There are two data structures that get freed under RCU here:
-> > > > > > >
-> > > > > > > struct bpf_local_storage
-> > > > > > > struct bpf_local_storage_selem
-> > > > > > >
-> > > > > > > We can choose to free the bpf_local_storage_selem under
-> > > > > > > call_rcu_tasks_trace based on
-> > > > > > > whether the map it belongs to is sleepable with something like:
-> > > > > > >
-> > > > > > > if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
-> > > > > Paul's current work (mentioned by his previous email) will improve the
-> > > > > performance of call_rcu_tasks_trace, so it probably can avoid the
-> > > > > new BPF_F_SLEEPABLE flag and make it easier to use.
+> > > > > > > This series add signature verification for BPF files.
+> > > > > > > The first patch implements the signature validation in the
+> > > > > > > kernel,
+> > > > > > > the second patch optionally makes the signature mandatory,
+> > > > > > > the third adds signature generation to bpftool.
+> > > > > >
+> > > > > > Matteo,
+> > > > > >
+> > > > > > I think I already mentioned that it's no-go as-is.
+> > > > > > We've agreed to go with John's suggestion.
 > > > > >
-> > > > > > >     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> > > > > > > else
-> > > > > > >     kfree_rcu(selem, rcu);
-> > > > > > >
-> > > > > > > Questions:
-> > > > > > >
-> > > > > > > * Can we free bpf_local_storage under kfree_rcu by ensuring it's
-> > > > > > >   always accessed in a  classical RCU critical section?
-> > > > > >>    Or maybe I am missing something and this also needs to be freed
-> > > > > > >   under trace RCU if any of the selems are from a sleepable map.
-> > > > > In the inode_storage_lookup() of this patch:
+> > > > > Hi,
 > > > > >
-> > > > > +#define bpf_local_storage_rcu_lock_held()                      \
-> > > > > +       (rcu_read_lock_held() || rcu_read_lock_trace_held() ||  \
-> > > > > +        rcu_read_lock_bh_held())
+> > > > > my previous attempt was loading a whole ELF file and parsing it in
+> > > > > kernel.
+> > > > > In this series I just validate the instructions against a
+> > > > > signature,
+> > > > > as with kernel CO-RE libbpf doesn't need to mangle it.
 > > > > >
-> > > > > @@ -44,7 +45,8 @@ static struct bpf_local_storage_data *inode_storage_lookup(struct inode *inode,
-> > > > >         if (!bsb)
-> > > > >                 return NULL;
-> > > > >
-> > > > > -       inode_storage = rcu_dereference(bsb->storage);
-> > > > > +       inode_storage = rcu_dereference_protected(bsb->storage,
-> > > > > +                                                 bpf_local_storage_rcu_lock_held());
-> > > > >
-> > > > > Thus, it is not always in classical RCU critical.
-> > > > >
-> > > > > > >
-> > > > > > > * There is an issue with nested raw spinlocks, e.g. in
-> > > > > > > bpf_inode_storage.c:bpf_inode_storage_free
-> > > > > > >
-> > > > > > >   hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > > > > > >   /* Always unlink from map before unlinking from
-> > > > > > >   * local_storage.
-> > > > > > >   */
-> > > > > > >   bpf_selem_unlink_map(selem);
-> > > > > > >   free_inode_storage = bpf_selem_unlink_storage_nolock(
-> > > > > > >                  local_storage, selem, false);
-> > > > > > >   }
-> > > > > > >   raw_spin_unlock_bh(&local_storage->lock);
-> > > > > > >
-> > > > > > > in bpf_selem_unlink_storage_nolock (if we add the above logic with the
-> > > > > > > flag in place of kfree_rcu)
-> > > > > > > call_rcu_tasks_trace grabs a spinlock and these cannot be nested in a
-> > > > > > > raw spin lock.
-> > > > > > >
-> > > > > > > I am moving the freeing code out of the spinlock, saving the selems on
-> > > > > > > a local list and then doing the free RCU (trace or normal) callbacks
-> > > > > > > at the end. WDYT?
-> > > > > There could be more than one selem to save.
+> > > > > Which suggestion? I think I missed this one..
 > > > >
-> > > > Yes, that's why I was saving them on a local list and then calling
-> > > > kfree_rcu or call_rcu_tasks_trace after unlocking the raw_spin_lock
-> > > >
-> > > > INIT_HLIST_HEAD(&free_list);
-> > > > raw_spin_lock_irqsave(&local_storage->lock, flags);
-> > > > hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
-> > > >     bpf_selem_unlink_map(selem);
-> > > >     free_local_storage = bpf_selem_unlink_storage_nolock(
-> > > >     local_storage, selem, false);
-> > > >     hlist_add_head(&selem->snode, &free_list);
-> > > > }
-> > > > raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> > > >
-> > > > /* The element needs to be freed outside the raw spinlock because spin
-> > > > * locks cannot nest inside a raw spin locks and call_rcu_tasks_trace
-> > > > * grabs a spinklock when the RCU code calls into the scheduler.
-> > > > *
-> > > > * free_local_storage should always be true as long as
-> > > > * local_storage->list was non-empty.
-> > > > */
-> > > > hlist_for_each_entry_safe(selem, n, &free_list, snode) {
-> > > >     if (selem->sdata.smap->map.map_flags & BPF_F_SLEEPABLE_STORAGE)
-> > > >         call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> > > >     else
-> > > >         kfree_rcu(selem, rcu);
-> > > > }
-> > > >
-> > > > But... we won't need this anymore.
-> > > Yep, Paul's work (thanks!) will make this piece simpler.
-> > 
-> > +100
-> > 
+> > > > This talk and discussion:
+> > > > https://linuxplumbersconf.org/event/11/contributions/947/
 > > >
-> > > KP, this set functionally does not depend on Paul's changes.
-> > > Do you want to spin a new version so that it can be reviewed in parallel?
-> > 
-> > Sure, I will fix the remaining issues (i.e. with RCU locks and renames) and
-> > spin a new version.
-> > 
-> > > When the rcu-task changes land in -next, it can probably
-> > > be merged into bpf-next first before landing the sleepable
-> > > bpf storage work.
-> 
-> And I just now got both the expand-queues and shrink-queues code at
-> least pretending to work, and it will be picked up in the next -next.
-> I was probably too late for today's edition, but there is always tomorrow.
-> 
-> There are probably still bugs, but it is passing much nastier tests than
-> a couple of weeks ago, so here is hoping...
+> > > Thanks for the link - but for those of us who don't have ~5 hours to
+> > > watch a video recording, would you mind sharing a one line summary,
+> > > please? Is there an alternative patch series implementing BPF signing
+> > > that you can link us so that we can look at it? Just a link or
+> > > googlable reference would be more than enough.
+> >
+> > It's not 5 hours and you have to read slides and watch
+> > John's presentation to follow the conversation.
+>
+> So, If I have understood correctly, the proposal is to validate the
+> tools which loads the BPF (e.g. perf, ip) with fs-verity, and only
+> allow BPF loading from those validated binaries?
+> That's nice, but I think that this could be complementary to the
+> instructions signature.
+> Imagine a validated binary being exploited somehow at runtime, that
+> could be vector of malicious BPF program load.
+> Can't we have both available, and use one or other, or even both
+> together depending on the use case?
 
-And this is now in -next.  Please let me know how it goes!
-
-								Thanx, Paul
+I'll let John comment.
