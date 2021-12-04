@@ -2,367 +2,303 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC154683D2
-	for <lists+bpf@lfdr.de>; Sat,  4 Dec 2021 10:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F764684D6
+	for <lists+bpf@lfdr.de>; Sat,  4 Dec 2021 13:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384607AbhLDJ4q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Dec 2021 04:56:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384564AbhLDJ4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Dec 2021 04:56:39 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B02C061A83;
-        Sat,  4 Dec 2021 01:53:14 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id f125so5605749pgc.0;
-        Sat, 04 Dec 2021 01:53:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=czJoVryBJuRcT/ehuX/TDIeW+lRJT86wq9/OvXnh70g=;
-        b=E6qLZya8+ifZxNJOIPiTCTofzYjJThBlfeuM51/2mqfsnjW5NtrNTz/6a0nEh7jmKU
-         VGTTs3/RbA7s8syhuDBh+k70qRK3hetMq9n8itSkvFJ+mtTIN0Uc+WJOANDPdKHwH8vs
-         k8udbqT/eL9Tzpjtsu+6e9o/SLIkzrLwPCDSvquIL+N5FwmpTXeP1wqnmE7nQK/1dJZO
-         ksP728T5KeU42m8NPGDNz1UCB83nn0OrhifZgrDL+dypJQ5KxuroJ3f30wEMYdTajgp1
-         tA72KBktvSwUiATQBi7Hc+gb1PlQJIXCz0eUPuwixg5JmBdOEYIRfpkwowmfkmIn30dq
-         VNVw==
+        id S1384934AbhLDMkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Dec 2021 07:40:51 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:38502 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233028AbhLDMkv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Dec 2021 07:40:51 -0500
+Received: by mail-wm1-f45.google.com with SMTP id p3-20020a05600c1d8300b003334fab53afso6922514wms.3;
+        Sat, 04 Dec 2021 04:37:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=czJoVryBJuRcT/ehuX/TDIeW+lRJT86wq9/OvXnh70g=;
-        b=KN0cAaCvFMtL9uhNfN9W6wPZotL0glCFfEQGFDqthn+N2v6LMTUqTUOvbwyKhw3fEs
-         QRgOew7yEGuOASD+t6Hi3W5F14xm+KUlTrvGjo/6lHx/WlFz+ysEYWRjfxIa+BfkeO8i
-         aESEtAXF4Rf1cSji95NHolZY/TI4RZzImrN5uRLEBmVt4kyFwqy0vmeSH2VNjk48qHdB
-         1Nx+P0QHcl6ohImJgTgEHbezpW8yscCsng1mhIVQrbefXQieKdSFndzx0U6KKbXJl/7Y
-         BNRDQrSzbg+6FccbHulfv/NMEn+MdfCuHJ9MRpDFJGJDtRdJwtXLOH8bvkJaRrZUiLTA
-         LjLg==
-X-Gm-Message-State: AOAM53300BVZIi/DEJ3OY307FecX0/xCLirwSu4SJSHwPpZIsAwrT2rx
-        nxle5PBYVMs5T73r2yuK9S8=
-X-Google-Smtp-Source: ABdhPJxzLifxgl4vQbzEDYn+z7ENKxXxDFCDs3LmIROFaOViZ6d6BbSiRJPdAV7fU9k00bDw17QoEA==
-X-Received: by 2002:a65:6790:: with SMTP id e16mr8839078pgr.112.1638611593497;
-        Sat, 04 Dec 2021 01:53:13 -0800 (PST)
-Received: from vultr.guest ([45.76.74.237])
-        by smtp.gmail.com with ESMTPSA id ms15sm4343198pjb.26.2021.12.04.01.53.12
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version;
+        bh=JMTGL4aDDh/oM5Lx+zdqid80CKODx8RvS35FK7rI+EY=;
+        b=H4ajX5UWNzjdxWMpVxmhRozj2oXBSk3z9XCMS0nZ74931GLkdQQANmP39D/EB6VnJ4
+         DJRKWC4Ip9/1u8vRhnv2YwkiBHY5ibnXYdjnxkNKZftHZR0nTHksjkyt+k7/6fsEh5Tn
+         ATafA8lfwIaHpCWRj6nxkU9LrSeTese+m8HSIeQJ6y1NFQ4jGwMYd17uTJ5DMhezKrPO
+         KZchPvE/LqFnEeKHWOaghehNXgdpzpRDdeYly0Ix+8ktUXq7NX+NSctbfpOJ4XNluChj
+         /DMnPg+kKj0SMN1kH4f0TBAAbXwQtm8fEk1Pl6A4lY19qr0w2DU8MmGXWhyQ0oX7JAmg
+         YviQ==
+X-Gm-Message-State: AOAM531wES9k86Vq4GSD7viywNnxSUvMqu1WzJIQ55rxnS29I8ZDmEvC
+        r6K6oqxXJ+MOmD5p0xcR2AE=
+X-Google-Smtp-Source: ABdhPJy9DoKeHpA1DLSMR1cWh3Ki+E8yerGb7AiYQQew+XoSLSaxSBFdbC1iKZ/nr+V+MiJtpSi+6Q==
+X-Received: by 2002:a1c:9d03:: with SMTP id g3mr22432138wme.143.1638621444563;
+        Sat, 04 Dec 2021 04:37:24 -0800 (PST)
+Received: from localhost ([2a01:4b00:f41a:3600:df86:cebc:8870:2184])
+        by smtp.gmail.com with ESMTPSA id n32sm9235060wms.1.2021.12.04.04.37.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Dec 2021 01:53:13 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        keescook@chromium.org, pmladek@suse.com, david@redhat.com,
-        arnaldo.melo@gmail.com, andrii.nakryiko@gmail.com
-Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Sat, 04 Dec 2021 04:37:23 -0800 (PST)
+Message-ID: <0079fd757676e62f45f28510a5fd13a9996870be.camel@debian.org>
+Subject: Re: [PATCH bpf-next 0/3] bpf: add signature
+From:   Luca Boccassi <bluca@debian.org>
+To:     John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH -mm 5/5] bpf/progs: replace hard-coded 16 with TASK_COMM_LEN
-Date:   Sat,  4 Dec 2021 09:52:56 +0000
-Message-Id: <20211204095256.78042-6-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211204095256.78042-1-laoar.shao@gmail.com>
-References: <20211204095256.78042-1-laoar.shao@gmail.com>
+        Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Date:   Sat, 04 Dec 2021 12:37:19 +0000
+In-Reply-To: <61aae2da8c7b0_68de0208dd@john.notmuch>
+References: <20211203191844.69709-1-mcroce@linux.microsoft.com>
+         <CAADnVQLDEPxOvGn8CxwcG7phy26BKuOqpSQ5j7yZhZeEVoCC4w@mail.gmail.com>
+         <CAFnufp1_p8XCUf-RdHpByKnR9MfXQoDWw6Pvm_dtuH4nD6dZnQ@mail.gmail.com>
+         <CAADnVQ+DSGoF2YoTrp2kTLoFBNAgdU8KbcCupicrVGCWvdxZ7w@mail.gmail.com>
+         <86e70da74cb34b59c53b1e5e4d94375c1ef30aa1.camel@debian.org>
+         <CAADnVQLCmbUJD29y2ovD+SV93r8jon2-f+fJzJFp6qZOUTWA4w@mail.gmail.com>
+         <CAFnufp2S7fPt7CKSjH+MBBvvFu9F9Yop_RAkX_3ZtgtZhRqrHw@mail.gmail.com>
+         <CAADnVQ+WLGiQvaoTPwu_oRj54h4oMwh-z5RV0WAMFRA9Wco_iA@mail.gmail.com>
+         <61aae2da8c7b0_68de0208dd@john.notmuch>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-crIOEqa5c+934Qzf2TlR"
+User-Agent: Evolution 3.42.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The comm used in these bpf progs should have the same size with the comm
-field in struct task_struct defined in linux/sched.h. We'd better define
-the size as TASK_COMM_LEN to make it more grepable.
 
-The bpf progs kernel code can inlcude vmlinux.h generated by BTF CO-RE
-to use TASK_COMM_LEN, while the userspace code can't include it so
-TASK_COMM_LEN is specifically defined in the userspace code.
+--=-crIOEqa5c+934Qzf2TlR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In order to fix redefinitions caused by the new included vmlinux.h, some
-headers are removed and some structs are renamed.
+On Fri, 2021-12-03 at 19:39 -0800, John Fastabend wrote:
+> Alexei Starovoitov wrote:
+> > On Fri, Dec 3, 2021 at 4:42 PM Matteo Croce
+> > <mcroce@linux.microsoft.com> wrote:
+> > >=20
+> > > On Fri, Dec 3, 2021 at 11:20 PM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >=20
+> > > > On Fri, Dec 3, 2021 at 2:06 PM Luca Boccassi <bluca@debian.org>
+> > > > wrote:
+> > > > >=20
+> > > > > On Fri, 2021-12-03 at 11:37 -0800, Alexei Starovoitov wrote:
+> > > > > > On Fri, Dec 3, 2021 at 11:36 AM Matteo Croce
+> > > > > > <mcroce@linux.microsoft.com> wrote:
+> > > > > > >=20
+> > > > > > > On Fri, Dec 3, 2021 at 8:22 PM Alexei Starovoitov
+> > > > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > > >=20
+> > > > > > > > On Fri, Dec 3, 2021 at 11:18 AM Matteo Croce
+> > > > > > > > <mcroce@linux.microsoft.com> wrote:
+> > > > > > > > >=20
+> > > > > > > > > From: Matteo Croce <mcroce@microsoft.com>
+> > > > > > > > >=20
+> > > > > > > > > This series add signature verification for BPF files.
+> > > > > > > > > The first patch implements the signature validation
+> > > > > > > > > in the
+> > > > > > > > > kernel,
+> > > > > > > > > the second patch optionally makes the signature
+> > > > > > > > > mandatory,
+> > > > > > > > > the third adds signature generation to bpftool.
+> > > > > > > >=20
+> > > > > > > > Matteo,
+> > > > > > > >=20
+> > > > > > > > I think I already mentioned that it's no-go as-is.
+> > > > > > > > We've agreed to go with John's suggestion.
+> > > > > > >=20
+> > > > > > > Hi,
+> > > > > > >=20
+> > > > > > > my previous attempt was loading a whole ELF file and
+> > > > > > > parsing it in
+> > > > > > > kernel.
+> > > > > > > In this series I just validate the instructions against a
+> > > > > > > signature,
+> > > > > > > as with kernel CO-RE libbpf doesn't need to mangle it.
+> > > > > > >=20
+> > > > > > > Which suggestion? I think I missed this one..
+> > > > > >=20
+> > > > > > This talk and discussion:
+> > > > > > https://linuxplumbersconf.org/event/11/contributions/947/
+> > > > >=20
+> > > > > Thanks for the link - but for those of us who don't have ~5
+> > > > > hours to
+> > > > > watch a video recording, would you mind sharing a one line
+> > > > > summary,
+> > > > > please? Is there an alternative patch series implementing BPF
+> > > > > signing
+> > > > > that you can link us so that we can look at it? Just a link
+> > > > > or
+> > > > > googlable reference would be more than enough.
+> > > >=20
+> > > > It's not 5 hours and you have to read slides and watch
+> > > > John's presentation to follow the conversation.
+> > >=20
+> > > So, If I have understood correctly, the proposal is to validate
+> > > the
+> > > tools which loads the BPF (e.g. perf, ip) with fs-verity, and
+> > > only
+> > > allow BPF loading from those validated binaries?
+> > > That's nice, but I think that this could be complementary to the
+> > > instructions signature.
+> > > Imagine a validated binary being exploited somehow at runtime,
+> > > that
+> > > could be vector of malicious BPF program load.
+> > > Can't we have both available, and use one or other, or even both
+> > > together depending on the use case?
+> >=20
+> > I'll let John comment.
+>=20
+> I'll give the outline of the argument here.
+>=20
+> I do not believe signing BPF instructions for real programs provides
+> much additional security. Given most real programs if the application
+> or loader is exploited at runtime we have all sorts of trouble. First
+> simply verifying the program doesn't prevent malicious use of the
+> program. If its in the network program this means DDOS, data
+> exfiltration,
+> mitm attacks, many other possibilities. If its enforcement program
+> most enforcement actions are programmed from this application so
+> system
+> security is lost already.=C2=A0 If its observability application simply
+> drops/manipulates observations that it wants. I don't know of any
+> useful programs that exist in isolation without user space input
+> and output as a critical component. If its not a privileged user,
+> well it better not be doing anything critical anyways or disabled
+> outright for the security focused.
+>=20
+> Many critical programs can't be signed by the nature of the program.
+> Optimizing network app generates optimized code at runtime.
+> Observability
+> tools JIT the code on the fly, similarly enforcement tools will do
+> the
+> same. I think the power of being able to optimize JIT the code in
+> application and give to the kernel is something we will see more and
+> more of. Saying I'm only going to accept signed programs, for a
+> distribution or something other than niche use case, is non starter
+> IMO because it breaks so many real use cases. We should encourage
+> these optimizing use cases as I see it as critical to performance
+> and keeping overhead low.
+>=20
+> From a purely security standpoint I believe you are better off
+> defining characteristics an application is allowed to have. For
+> example allowed to probe kernel memory, make these helpers calls,
+> have this many instructions, use this much memory, this much cpu,
+> etc. This lets you sandbox a BPF application (both user space and
+> kernel side) much nicer than any signing will allow.
+>=20
+> If we want to 'sign' programs we should do that from a BPF program
+> directly where other metadata can be included in the policy. For
+> example having a hash of the program loaded along with the calls
+> made and process allows for rich policy decisions. I have other
+> use cases that need a hash/signature for data blobs, so its on
+> my todo list but not at the top yet.=C2=A0 But, being able to verify
+> arbitrary blob of data from BPF feels like a useful operation to me
+> in general. The fact in your case its a set of eBPF insns and in
+> my case its some key in a network header shouldn't matter.
+>=20
+> The series as is, scanned commit descriptions, is going to break
+> lots of in-use-today programs if it was ever enabled. And
+> is not as flexible (can't support bpftrace, etc.) or powerful
+> (can't consider fine grained policy decisions) as above.
+>=20
+> Add a function we can hook after verify (or before up for
+> debate) and helpers to verify signatures and/or generate
+> hashes and we get a better more general solution. And it can
+> also solve your use case even if I believe its not useful and
+> may break many BPF users running bpftrace, libbpf, etc.
+>=20
+> Thanks,
+> John
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Petr Mladek <pmladek@suse.com>
----
- tools/testing/selftests/bpf/prog_tests/ringbuf.c      |  9 +++++----
- .../testing/selftests/bpf/prog_tests/ringbuf_multi.c  |  8 +++++---
- .../selftests/bpf/prog_tests/sk_storage_tracing.c     |  3 ++-
- .../testing/selftests/bpf/prog_tests/test_overhead.c  |  3 ++-
- .../selftests/bpf/prog_tests/trampoline_count.c       |  3 ++-
- .../selftests/bpf/progs/test_core_reloc_kernel.c      | 11 +++++------
- tools/testing/selftests/bpf/progs/test_ringbuf.c      |  8 ++++----
- .../testing/selftests/bpf/progs/test_ringbuf_multi.c  |  8 ++++----
- .../selftests/bpf/progs/test_sk_storage_tracing.c     |  4 ++--
- 9 files changed, 31 insertions(+), 26 deletions(-)
+Hello John,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index 9a80fe8a6427..39e43245db0a 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -15,14 +15,15 @@
- #include "test_ringbuf.lskel.h"
- 
- #define EDONE 7777
-+#define TASK_COMM_LEN 16
- 
- static int duration = 0;
- 
--struct sample {
-+struct sample_ringbuf {
- 	int pid;
- 	int seq;
- 	long value;
--	char comm[16];
-+	char comm[TASK_COMM_LEN];
- };
- 
- static int sample_cnt;
-@@ -39,7 +40,7 @@ static int atomic_xchg(int *cnt, int val)
- 
- static int process_sample(void *ctx, void *data, size_t len)
- {
--	struct sample *s = data;
-+	struct sample_ringbuf *s = data;
- 
- 	atomic_inc(&sample_cnt);
- 
-@@ -83,7 +84,7 @@ static void *poll_thread(void *input)
- 
- void test_ringbuf(void)
- {
--	const size_t rec_sz = BPF_RINGBUF_HDR_SZ + sizeof(struct sample);
-+	const size_t rec_sz = BPF_RINGBUF_HDR_SZ + sizeof(struct sample_ringbuf);
- 	pthread_t thread;
- 	long bg_ret = -1;
- 	int err, cnt, rb_fd;
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-index e945195b24c9..cb592555513f 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-@@ -4,19 +4,21 @@
- #include <sys/epoll.h>
- #include "test_ringbuf_multi.skel.h"
- 
-+#define TASK_COMM_LEN 16
-+
- static int duration = 0;
- 
--struct sample {
-+struct sample_ringbuf {
- 	int pid;
- 	int seq;
- 	long value;
--	char comm[16];
-+	char comm[TASK_COMM_LEN];
- };
- 
- static int process_sample(void *ctx, void *data, size_t len)
- {
- 	int ring = (unsigned long)ctx;
--	struct sample *s = data;
-+	struct sample_ringbuf *s = data;
- 
- 	switch (s->seq) {
- 	case 0:
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_storage_tracing.c b/tools/testing/selftests/bpf/prog_tests/sk_storage_tracing.c
-index 547ae53cde74..dbbdbf4400d7 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_storage_tracing.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_storage_tracing.c
-@@ -11,11 +11,12 @@
- 
- #define LO_ADDR6 "::1"
- #define TEST_COMM "test_progs"
-+#define TASK_COMM_LEN 16
- 
- struct sk_stg {
- 	__u32 pid;
- 	__u32 last_notclose_state;
--	char comm[16];
-+	char comm[TASK_COMM_LEN];
- };
- 
- static struct test_sk_storage_tracing *skel;
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-index 123c68c1917d..7fe60ec12fc4 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-@@ -6,6 +6,7 @@
- #include <test_progs.h>
- 
- #define MAX_CNT 100000
-+#define TASK_COMM_LEN 16
- 
- static __u64 time_get_ns(void)
- {
-@@ -67,7 +68,7 @@ void test_test_overhead(void)
- 	struct bpf_object *obj;
- 	struct bpf_link *link;
- 	int err, duration = 0;
--	char comm[16] = {};
-+	char comm[TASK_COMM_LEN] = {};
- 
- 	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
- 		return;
-diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-index fc146671b20a..da83f7408aa8 100644
---- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-@@ -5,6 +5,7 @@
- #include <test_progs.h>
- 
- #define MAX_TRAMP_PROGS 38
-+#define TASK_COMM_LEN 16
- 
- struct inst {
- 	struct bpf_object *obj;
-@@ -51,7 +52,7 @@ void serial_test_trampoline_count(void)
- 	int err, i = 0, duration = 0;
- 	struct bpf_object *obj;
- 	struct bpf_link *link;
--	char comm[16] = {};
-+	char comm[TASK_COMM_LEN] = {};
- 
- 	/* attach 'allowed' trampoline programs */
- 	for (i = 0; i < MAX_TRAMP_PROGS; i++) {
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c b/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-index 145028b52ad8..7b1bb73c3501 100644
---- a/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-@@ -1,8 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019 Facebook
- 
--#include <linux/bpf.h>
--#include <stdint.h>
-+#include <vmlinux.h>
- #include <stdbool.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_core_read.h>
-@@ -23,11 +22,11 @@ struct core_reloc_kernel_output {
- 	int comm_len;
- };
- 
--struct task_struct {
-+struct task_struct_reloc {
- 	int pid;
- 	int tgid;
--	char comm[16];
--	struct task_struct *group_leader;
-+	char comm[TASK_COMM_LEN];
-+	struct task_struct_reloc *group_leader;
- };
- 
- #define CORE_READ(dst, src) bpf_core_read(dst, sizeof(*(dst)), src)
-@@ -35,7 +34,7 @@ struct task_struct {
- SEC("raw_tracepoint/sys_enter")
- int test_core_kernel(void *ctx)
- {
--	struct task_struct *task = (void *)bpf_get_current_task();
-+	struct task_struct_reloc *task = (void *)bpf_get_current_task();
- 	struct core_reloc_kernel_output *out = (void *)&data.out;
- 	uint64_t pid_tgid = bpf_get_current_pid_tgid();
- 	uint32_t real_tgid = (uint32_t)pid_tgid;
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf.c b/tools/testing/selftests/bpf/progs/test_ringbuf.c
-index eaa7d9dba0be..45b28965f3a5 100644
---- a/tools/testing/selftests/bpf/progs/test_ringbuf.c
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf.c
-@@ -1,16 +1,16 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2020 Facebook
- 
--#include <linux/bpf.h>
-+#include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
- 
- char _license[] SEC("license") = "GPL";
- 
--struct sample {
-+struct sample_ringbuf {
- 	int pid;
- 	int seq;
- 	long value;
--	char comm[16];
-+	char comm[TASK_COMM_LEN];
- };
- 
- struct {
-@@ -39,7 +39,7 @@ SEC("fentry/__x64_sys_getpgid")
- int test_ringbuf(void *ctx)
- {
- 	int cur_pid = bpf_get_current_pid_tgid() >> 32;
--	struct sample *sample;
-+	struct sample_ringbuf *sample;
- 	int zero = 0;
- 
- 	if (cur_pid != pid)
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-index 197b86546dca..7c9db148f168 100644
---- a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-@@ -1,16 +1,16 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2020 Facebook
- 
--#include <linux/bpf.h>
-+#include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
- 
- char _license[] SEC("license") = "GPL";
- 
--struct sample {
-+struct sample_ringbuf {
- 	int pid;
- 	int seq;
- 	long value;
--	char comm[16];
-+	char comm[TASK_COMM_LEN];
- };
- 
- struct ringbuf_map {
-@@ -55,7 +55,7 @@ SEC("tp/syscalls/sys_enter_getpgid")
- int test_ringbuf(void *ctx)
- {
- 	int cur_pid = bpf_get_current_pid_tgid() >> 32;
--	struct sample *sample;
-+	struct sample_ringbuf *sample;
- 	void *rb;
- 	int zero = 0;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c b/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
-index 6dc1f28fc4b6..cc41a09e3130 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
-@@ -9,7 +9,7 @@
- struct sk_stg {
- 	__u32 pid;
- 	__u32 last_notclose_state;
--	char comm[16];
-+	char comm[TASK_COMM_LEN];
- };
- 
- struct {
-@@ -27,7 +27,7 @@ struct {
- 	__type(value, int);
- } del_sk_stg_map SEC(".maps");
- 
--char task_comm[16] = "";
-+char task_comm[TASK_COMM_LEN] = "";
- 
- SEC("tp_btf/inet_sock_set_state")
- int BPF_PROG(trace_inet_sock_set_state, struct sock *sk, int oldstate,
--- 
-2.17.1
+Thank you for the summary, this is much clearer.
 
+First of all, I think there's some misunderstanding: this series does
+not enable optional signatures by default, and does not enable
+mandatory signatures by default either. So I don't see how it would
+break existing use cases as you are saying? Unless I'm missing
+something?
+
+There's a kconfig to enable optional signatures - if they are there,
+they are verified, if they are not present then nothing different
+happens. Unless I am missing something, this should be backward
+compatible. This kconfig would likely be enabled in most use cases,
+just like optionally signed kernel modules are.
+
+Then there's a kconfig on top of that which makes signatures mandatory.
+I would not imagine this to be enabled in may cases, just in custom
+builds that have more stringent requirements. It certainly would not be
+enabled in generalist distros. Perhaps a more flexible way would be to
+introduce a sysctl, like fsverity has with
+'fs.verity.require_signatures'? That would be just fine for our use
+case. Matteo can we do that instead in the next revision?
+
+Secondly, I understand that for your use case signing programs would
+not be the best approach. That's fine, and I'm glad you are working on
+an alternative that better fits your model, it will be very interesting
+to see how it looks like once implemented. But that model doesn't fit
+all cases. In our case at Microsoft, we absolutely want to be able to
+pre-define at build time a list of BPF programs that are allowed to be
+loaded, and reject anything else. Userspace processes in our case are
+mostly old and crufty c++ programs that can most likely be pwned by
+looking at them sideways, so they get locked down hard with multiple
+redundant layers and so on and so forth. But right now for BPF you only
+have a "can load BPF" or "cannot load BPF" knob, and that's it. This is
+not good enough: we need to be able to define a list of allowed
+payloads, and be able to enforce it, so when (not if) said processes do
+get tricked into loading something else, it will fail, despite having
+the capability of calling bpf(). Trying to define heuristics is also
+not good enough for us - creative malicious actors have a tendency to
+come up with ways to chain things that individually are allowed and
+benign, but combined in a way that you just couldn't foresee. It would
+certainly cover a lot of cases, but not all. A strictly pre-defined
+list of what is allowed to run and what is not is what we need for our
+case, so that we always know exactly what is going to run and what is
+not, and can deal with the consequences accordingly, without nasty
+surprises waiting around the corner. Now in my naive view the best way
+to achieve this is via signatures and certs, as it's a well-understood
+system, with processes already in place to revoke/rotate/etc, and it's
+already used for kmods. An alternative would be hard-coding hashes I
+guess, but that would be terribly inflexible.
+
+Now in terms of _how_ the signatures are done and validated, I'm sure
+there are multiple ways, and if some are better than what this series
+implements, then that's not an issue, it can be reworked. But the core
+requirement for us is: offline pre-defined list of what is allowed to
+run and what is not, with ability for hard enforcement that cannot be
+bypassed. Yes, you lose some features like JIT and so on: we don't
+care, we don't need those for our use cases. If others have different
+needs that's fine, this is all intended to be optional, not mandatory.
+There are obviously trade-offs, as always when security is involved,
+and each user can decide what's best for them.
+
+Hope this makes sense. Thanks!
+
+--=20
+Kind regards,
+Luca Boccassi
+
+--=-crIOEqa5c+934Qzf2TlR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEE6g0RLAGYhL9yp9G8SylmgFB4UWIFAmGrYP8ACgkQSylmgFB4
+UWLJvAgAiNTM+Wuz9ey4Fwz7HSpZd3qNX0Peast5rARfdue2DsqYAHVTtb1ZjhiL
+glXQOA1YGhv8tEOG6Mg7jj8R9x716nwP34G5Y4yCueUOgsDnvz/xM7IUJDIAo+OZ
+cr4bu4YNeiRmMZ2yb86zFuqoB6CsSi0jks0VXm70Yf9zlCjlNjhq9levnrbYpDYN
+HFRb011hUY6NZIcnX75o2vu5Lt3N/csM9NuFkmh3pbuP/Mb5JdPOwEykAYCotyPp
+dTIWs57YozQacgnKJWALP8JUnsnfeqDV0FW07ImNsXfPszBdKXHE/gUf3n2jdfDY
+eSFrSF+HjgrynbpMoNsvFpdH9PU8lA==
+=rr01
+-----END PGP SIGNATURE-----
+
+--=-crIOEqa5c+934Qzf2TlR--
