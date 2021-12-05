@@ -2,123 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A1F4688F7
-	for <lists+bpf@lfdr.de>; Sun,  5 Dec 2021 04:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFFF468901
+	for <lists+bpf@lfdr.de>; Sun,  5 Dec 2021 04:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhLEDRC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Dec 2021 22:17:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59252 "EHLO
+        id S229612AbhLED4V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Dec 2021 22:56:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbhLEDRC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Dec 2021 22:17:02 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF10C061751;
-        Sat,  4 Dec 2021 19:13:35 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so5630252pjb.5;
-        Sat, 04 Dec 2021 19:13:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K0undT0YJyHWH56ofdmr45Mkquy1Ol6IKr8TfIm45MQ=;
-        b=alh+KS7FZNqGSxV+8P/PVttRyAnFMPPkSjin/9bJMU8hS7JmzzhS8j8eLur35oi55H
-         A75i8/kfuqCKHqAVU5laxdL6wLaUq9RFf+1HxT2OK0u5WU1oI4adsc9mtBfKTcNG/ocq
-         o86QB2wduzEsB9KSp8j8RhqWqzE6wRFttV7EPX6vbHqstHWUwotYmaBfBPjgjH4J601X
-         KvQYgjXLDxu8TTDp1PHm4vvx0INBpZQBzIRvDsB4Ld4NXwSa3xEr1Pl36oQwhIqFDIIl
-         UGUExDQQz18m2wdtcxNUzCWWm3cEn7ulnLmMTfruOlqsHWItjbH6f4xujPhKH0hCP2ym
-         2aBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K0undT0YJyHWH56ofdmr45Mkquy1Ol6IKr8TfIm45MQ=;
-        b=XKdCXuTuxG03g0/dbAKuKOLJbawNKw9nc4kYJQSiICLdL0hk0Gzoq49XL03Lz+qBop
-         oy65S4eigvvbTqF1IlEGQ1RJ3WeGJxsBIlWpilT31TglWvjzD7wg6KQSzocBCFh//ZEk
-         kPIavNa/zxCL6th2dInWpzbe/m3Ankko54mMmDnMCPMINC43LRhiAxuzEDSrmbIHb0+m
-         3VwixK+JQbF3guGzjmk66EUlAoJpOKarBcOfj1Y1kOM49IyoiPonaJMzWdrGXBw7BYny
-         SUqI3RtBXw0JJKiqRPILYMZyEGzVFXwafrbHY3cAhvQwYIxkbJHNk3nEFv5UwzV5GJIH
-         7aaA==
-X-Gm-Message-State: AOAM533fnWdYHAW3aErT6juWS9hyqIH/0qmz8qAYkwiGjo++UUVsNCwh
-        JwRql8HkJzxseVbcdDFm16xFJkSl4eOdlpS/tseP96e2
-X-Google-Smtp-Source: ABdhPJzEGDaefqbNDy2qcJS5gL32CblBVcy3B0f9LoefTt56iGEQdx3xk6vDHLa2iGvTaoQIEcoFiVGvqdiAb5BmAfg=
-X-Received: by 2002:a17:90b:4c03:: with SMTP id na3mr26426374pjb.62.1638674015106;
- Sat, 04 Dec 2021 19:13:35 -0800 (PST)
+        with ESMTP id S229520AbhLED4V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Dec 2021 22:56:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90383C061751
+        for <bpf@vger.kernel.org>; Sat,  4 Dec 2021 19:52:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 53167B80D34
+        for <bpf@vger.kernel.org>; Sun,  5 Dec 2021 03:52:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F553C341C5;
+        Sun,  5 Dec 2021 03:52:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638676372;
+        bh=jWrBOHScoDrsQvIYg4zsm8wvbxZgY3TZWa4J0gBl5o8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=URIi5tFE58OWDU0i02n1xlIaasTI0Xfu66db1JFkyCiJTE2vX3Fbmn9fleu//jeOG
+         whGp10nVyOG5s8NJ1gsm/chkPU/91feHB7o0hp5feGx7rE7ESsLHl2S5tglfGvuQKe
+         V28AouwX8bf8Q11YzfgvgDm0ORgh+XXE5uA8A4MAztQeE6Paz7C7YIzMDIjyyVv3dl
+         Sp2WX2IjUFhxnwEHX/rmSWgeQxog4qmZ9Wg4HJTp7bRYlqCKirtz+mPcPRTBDqee60
+         t7+8KWKY9z/w6NMMQnwTy0OPVOnPI0pMeZESzt10zNnKSO3Ue4uyRdx/rWMdBMwaKM
+         qJtk3pvNnoZmg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 783565C0FC9; Sat,  4 Dec 2021 19:52:51 -0800 (PST)
+Date:   Sat, 4 Dec 2021 19:52:51 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
+ sleepable programs
+Message-ID: <20211205035251.GY641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
+ <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ4VDMzp2ggtVL30xq+6Q2+2OqOLhuoi173=8mdyRbS+QQ@mail.gmail.com>
+ <20211130023410.hmyw7fhxwpskf6ba@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ7+V=ui7kS-8u7zQoHPT3zZE6X3QuRROG3898Mai9JAcg@mail.gmail.com>
+ <20211130225129.GB641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211204010152.GA3967770@paulmck-ThinkPad-P17-Gen-1>
+ <CACYkzJ5h+MaGxhYH-vhQQdqzbiVs4p2GVMnBWMjoA0xE9Tz_aw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211204095256.78042-1-laoar.shao@gmail.com> <20211204095256.78042-6-laoar.shao@gmail.com>
- <CAADnVQLS4Ev7xChqCMbbJiFZ_kYSB+rbiVT6AJotheFJb1f5=w@mail.gmail.com> <CALOAHbCud62ivvoRuz1SV-d3sL9Y9knEga0N-jiXnM3SYzWxNA@mail.gmail.com>
-In-Reply-To: <CALOAHbCud62ivvoRuz1SV-d3sL9Y9knEga0N-jiXnM3SYzWxNA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 4 Dec 2021 19:13:24 -0800
-Message-ID: <CAADnVQLu+RWSeMfOe5eBuTsp9gxPsFC_bRTXoWmvWP+Lv_rZzQ@mail.gmail.com>
-Subject: Re: [PATCH -mm 5/5] bpf/progs: replace hard-coded 16 with TASK_COMM_LEN
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ5h+MaGxhYH-vhQQdqzbiVs4p2GVMnBWMjoA0xE9Tz_aw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 4, 2021 at 6:45 PM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> On Sun, Dec 5, 2021 at 12:44 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On Sun, Dec 05, 2021 at 03:27:47AM +0100, KP Singh wrote:
+> On Sat, Dec 4, 2021 at 2:01 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > On Sat, Dec 4, 2021 at 1:53 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > >  static int process_sample(void *ctx, void *data, size_t len)
-> > >  {
-> > > -       struct sample *s = data;
-> > > +       struct sample_ringbuf *s = data;
+> > On Tue, Nov 30, 2021 at 02:51:29PM -0800, Paul E. McKenney wrote:
+> 
+> [...]
+> 
+> > > There are probably still bugs, but it is passing much nastier tests than
+> > > a couple of weeks ago, so here is hoping...
 > >
-> > This is becoming pointless churn.
-> > Nack.
-> >
-> > > index 145028b52ad8..7b1bb73c3501 100644
-> > > --- a/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-> > > +++ b/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-> > > @@ -1,8 +1,7 @@
-> > >  // SPDX-License-Identifier: GPL-2.0
-> > >  // Copyright (c) 2019 Facebook
-> > >
-> > > -#include <linux/bpf.h>
-> > > -#include <stdint.h>
-> > > +#include <vmlinux.h>
-> > >  #include <stdbool.h>
-> > >  #include <bpf/bpf_helpers.h>
-> > >  #include <bpf/bpf_core_read.h>
-> > > @@ -23,11 +22,11 @@ struct core_reloc_kernel_output {
-> > >         int comm_len;
-> > >  };
-> > >
-> > > -struct task_struct {
-> > > +struct task_struct_reloc {
-> >
-> > Churn that is not even compile tested.
->
-> It is strange that I have successfully compiled it....
-> Below is the compile log,
->
-> $ cat make.log | grep test_core_reloc_kernel
->   CLNG-BPF [test_maps] test_core_reloc_kernel.o
->   GEN-SKEL [test_progs] test_core_reloc_kernel.skel.h
->   CLNG-BPF [test_maps] test_core_reloc_kernel.o
->   GEN-SKEL [test_progs-no_alu32] test_core_reloc_kernel.skel.h
->
-> Also there's no error in the compile log.
+> > And this is now in -next.  Please let me know how it goes!
+> 
+> I was able to rebase this on linux-next which has Paul's changes and
+> ran it with:
+> 
+> root@kpsingh:~# cat /proc/cmdline
+> console=ttyS0,115200 root=/dev/sda rw nokaslr rcupdate.rcu_task_enqueue_lim=4
+> 
+> The warning about the nested spinlock in the raw spin locked section
+> is also gone and I don't
+> see any other warnings. Will send the rebased series after doing a few
+> more checks.
 
-and ran the tests too?
+Thank you, and here is hoping for continued testing success!  ;-)
+
+							Thanx, Paul
