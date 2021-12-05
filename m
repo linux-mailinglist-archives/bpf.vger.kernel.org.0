@@ -2,93 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFFF468901
-	for <lists+bpf@lfdr.de>; Sun,  5 Dec 2021 04:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7652946892C
+	for <lists+bpf@lfdr.de>; Sun,  5 Dec 2021 05:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhLED4V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Dec 2021 22:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
+        id S231596AbhLEEyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Dec 2021 23:54:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhLED4V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Dec 2021 22:56:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90383C061751
-        for <bpf@vger.kernel.org>; Sat,  4 Dec 2021 19:52:54 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 53167B80D34
-        for <bpf@vger.kernel.org>; Sun,  5 Dec 2021 03:52:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F553C341C5;
-        Sun,  5 Dec 2021 03:52:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638676372;
-        bh=jWrBOHScoDrsQvIYg4zsm8wvbxZgY3TZWa4J0gBl5o8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=URIi5tFE58OWDU0i02n1xlIaasTI0Xfu66db1JFkyCiJTE2vX3Fbmn9fleu//jeOG
-         whGp10nVyOG5s8NJ1gsm/chkPU/91feHB7o0hp5feGx7rE7ESsLHl2S5tglfGvuQKe
-         V28AouwX8bf8Q11YzfgvgDm0ORgh+XXE5uA8A4MAztQeE6Paz7C7YIzMDIjyyVv3dl
-         Sp2WX2IjUFhxnwEHX/rmSWgeQxog4qmZ9Wg4HJTp7bRYlqCKirtz+mPcPRTBDqee60
-         t7+8KWKY9z/w6NMMQnwTy0OPVOnPI0pMeZESzt10zNnKSO3Ue4uyRdx/rWMdBMwaKM
-         qJtk3pvNnoZmg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 783565C0FC9; Sat,  4 Dec 2021 19:52:51 -0800 (PST)
-Date:   Sat, 4 Dec 2021 19:52:51 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
- sleepable programs
-Message-ID: <20211205035251.GY641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210902044430.ltdhkl7vyrwndq2u@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ7OePr4Uf7tLR2OAy79sxZwJuXcOBqjEAzV7omOc792KA@mail.gmail.com>
- <20211123182204.GN641268@paulmck-ThinkPad-P17-Gen-1>
- <20211123222940.3x2hkrrgd4l2vuk7@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ4VDMzp2ggtVL30xq+6Q2+2OqOLhuoi173=8mdyRbS+QQ@mail.gmail.com>
- <20211130023410.hmyw7fhxwpskf6ba@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ7+V=ui7kS-8u7zQoHPT3zZE6X3QuRROG3898Mai9JAcg@mail.gmail.com>
- <20211130225129.GB641268@paulmck-ThinkPad-P17-Gen-1>
- <20211204010152.GA3967770@paulmck-ThinkPad-P17-Gen-1>
- <CACYkzJ5h+MaGxhYH-vhQQdqzbiVs4p2GVMnBWMjoA0xE9Tz_aw@mail.gmail.com>
+        with ESMTP id S231550AbhLEEyh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Dec 2021 23:54:37 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F941C061751;
+        Sat,  4 Dec 2021 20:51:10 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id y7so4913394plp.0;
+        Sat, 04 Dec 2021 20:51:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TIBsLuBe2Uw4GhA4NG4hs+lUD45TYma1E3udwdUPRts=;
+        b=bT/XDIRuZKP92ukFlMRwPi92FG5D08WZ+Fe4usE+t5FKFOSc5Ow0PyJwjyXfbIVLrH
+         FcRtwn7Nk/VM4Tg5mHU1eEiz7krf2kscUxWGd3B+G/Hpo+8euP6Npdy6oCBpT/PAfvmF
+         qECO8PmqDvcLRgUfxjDntEtymML+M0Y3NCWdE3OFUA/Mc/coAKZnQ4TSo+YDqzj/8Y4j
+         BhN8Um/WBSckqdwn1pVt58TQS7h7nWjAksLf2Kykhvw1Jf/LDR1CayeHkFCH1FgLaQFU
+         +NTLMdH7PAUTFKAOfgow5G3Eju4msIuDOp2xn4nbu5VDNbmO4pC9xO2LUVBKfT/kPq/y
+         AKBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TIBsLuBe2Uw4GhA4NG4hs+lUD45TYma1E3udwdUPRts=;
+        b=xPqowiO3fmsxLpSpQaAnT7ragClBXFIij1RV8/BpCezZ4TH7o6dslLRLJTsU3lEk+4
+         phfVC+BvVuTZEt11+8PLJJp4dvOQP7kH4NALoMiaPFJu7J3dqdGZ+qX9uOkJKabY3CTo
+         7jqhAnrtchNg9l9Na1VcIOidVe5wmoiFXbrKnMkdboeSJEotL7ppktcKMjb1rnzpWkOs
+         h2Tq3xjbzYbI9SInvo/2Zbmj9vll0nXms5lD/diBycVGNiZ9RXcW0sIdwdyW81vhVr8p
+         yCRfWt3CGlRUOJle0rpadh2jYo0rEJkPm+JCmkWsGMzfMa1cxqzhEtlp16QF/Ursm0Gl
+         pW2Q==
+X-Gm-Message-State: AOAM531VjI/WKWZCQO/G+3d//rQ5NGq/OQlJxr0Ki0edqeOPB+XtRabE
+        p6ACpWeJXjITu6ZJ/YUv1nKudGmNlYdBgQ==
+X-Google-Smtp-Source: ABdhPJy9sf/N2yXY9s21KBb3U1nM5gU0lmIkS2pD4d3RJDIiXVCy6lZYp6eLyx6gV7eon/bo4eUbgA==
+X-Received: by 2002:a17:90b:2409:: with SMTP id nr9mr26807369pjb.244.1638679870063;
+        Sat, 04 Dec 2021 20:51:10 -0800 (PST)
+Received: from localhost.localdomain ([139.155.25.230])
+        by smtp.gmail.com with ESMTPSA id d18sm305582pfv.0.2021.12.04.20.51.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Dec 2021 20:51:09 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, quentin@isovalent.com, cong.wang@bytedance.com,
+        liujian56@huawei.com, davemarchevsky@fb.com, sdf@google.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH] bpftool: add support of pin prog by name
+Date:   Sun,  5 Dec 2021 12:50:41 +0800
+Message-Id: <20211205045041.129716-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACYkzJ5h+MaGxhYH-vhQQdqzbiVs4p2GVMnBWMjoA0xE9Tz_aw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Dec 05, 2021 at 03:27:47AM +0100, KP Singh wrote:
-> On Sat, Dec 4, 2021 at 2:01 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Nov 30, 2021 at 02:51:29PM -0800, Paul E. McKenney wrote:
-> 
-> [...]
-> 
-> > > There are probably still bugs, but it is passing much nastier tests than
-> > > a couple of weeks ago, so here is hoping...
-> >
-> > And this is now in -next.  Please let me know how it goes!
-> 
-> I was able to rebase this on linux-next which has Paul's changes and
-> ran it with:
-> 
-> root@kpsingh:~# cat /proc/cmdline
-> console=ttyS0,115200 root=/dev/sda rw nokaslr rcupdate.rcu_task_enqueue_lim=4
-> 
-> The warning about the nested spinlock in the raw spin locked section
-> is also gone and I don't
-> see any other warnings. Will send the rebased series after doing a few
-> more checks.
+From: Menglong Dong <imagedong@tencent.com>
 
-Thank you, and here is hoping for continued testing success!  ;-)
+For now, the command 'bpftool prog loadall' use section name as the
+name of the pin file. However, once there are prog with the same
+section name in ELF file, this command will failed with the error
+'File Exist'.
 
-							Thanx, Paul
+So, add the support of pin prog by function name with the 'pinbyname'
+argument.
+
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+---
+ tools/bpf/bpftool/prog.c | 7 +++++++
+ tools/lib/bpf/libbpf.c   | 5 +++++
+ tools/lib/bpf/libbpf.h   | 2 ++
+ 3 files changed, 14 insertions(+)
+
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index e47e8b06cc3d..74e0aaebfefc 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1471,6 +1471,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 	unsigned int old_map_fds = 0;
+ 	const char *pinmaps = NULL;
+ 	struct bpf_object *obj;
++	bool pinbyname = false;
+ 	struct bpf_map *map;
+ 	const char *pinfile;
+ 	unsigned int i, j;
+@@ -1589,6 +1590,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 				goto err_free_reuse_maps;
+ 
+ 			pinmaps = GET_ARG();
++		} else if (is_prefix(*argv, "pinbyname")) {
++			pinbyname = true;
++			NEXT_ARG();
+ 		} else {
+ 			p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
+ 			      *argv);
+@@ -1616,6 +1620,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 				goto err_close_obj;
+ 		}
+ 
++		if (pinbyname)
++			bpf_program__set_pinname(pos,
++						 (char *)bpf_program__name(pos));
+ 		bpf_program__set_ifindex(pos, ifindex);
+ 		bpf_program__set_type(pos, prog_type);
+ 		bpf_program__set_expected_attach_type(pos, expected_attach_type);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index f6faa33c80fa..e8fc1d0fe16e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8119,6 +8119,11 @@ void bpf_program__set_ifindex(struct bpf_program *prog, __u32 ifindex)
+ 	prog->prog_ifindex = ifindex;
+ }
+ 
++void bpf_program__set_pinname(struct bpf_program *prog, char *name)
++{
++	prog->pin_name = name;
++}
++
+ const char *bpf_program__name(const struct bpf_program *prog)
+ {
+ 	return prog->name;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 4ec69f224342..107cf736c2bb 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -216,6 +216,8 @@ LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
+ LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
+ LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
+ 					 __u32 ifindex);
++LIBBPF_API void bpf_program__set_pinname(struct bpf_program *prog,
++					 char *name);
+ 
+ LIBBPF_API const char *bpf_program__name(const struct bpf_program *prog);
+ LIBBPF_API const char *bpf_program__section_name(const struct bpf_program *prog);
+-- 
+2.30.2
+
