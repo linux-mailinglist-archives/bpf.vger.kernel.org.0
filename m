@@ -2,124 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B358246A8C9
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 21:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1D846A8D6
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 21:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349825AbhLFUxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 15:53:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238973AbhLFUxH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 15:53:07 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243E2C061746;
-        Mon,  6 Dec 2021 12:49:38 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id r2so11550276ilb.10;
-        Mon, 06 Dec 2021 12:49:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=fr+myOspVKNuyatnaGOZFIgpe0q3Dw7jH0sivNq1jwY=;
-        b=O8X1P2Sk7R1pFlni8KOPK7OBbO091pL5AlntXhvY3RHmT1fhJM+mP6z18T4mULQZRM
-         i9qk3u42Hdbu+8WsN0VHrwIhcfb1bjXxVj4wF7yLtNhBBDYJVWHSiY5y3v6JBUoly08C
-         rLDYRd2kRsBaXDE4rCs2TpFM9dkLTQuMbvxauLGreobmGI4Nl9ePTKMYNHNwv+im76xi
-         cEsGyHxdX2gU94zHs9CGcTwOjaHow6tqAy+7Jj5cCu9s48hkocsP0CNR2hX8FVjZz38F
-         gz80/8bT5S7kh6L1NkUmTBfbVuaw7aA5mQ1UTD5j6BHlhqsW6gDVB2zCnxCwbOy23spc
-         rzUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=fr+myOspVKNuyatnaGOZFIgpe0q3Dw7jH0sivNq1jwY=;
-        b=XJtOar0GVq+njdOhhWeHhfZBXebj77xXmYLJpPG3VhfL7pn/ifydGjEGrQLnn25GFr
-         0ib4dsJ36gAZSplksbpa/aLF//MlbI71WOK3unhHQU8pEsPliovaobslWvDTIw68pzzD
-         /VGTHctQDpsmxgZEltMXKEKivsPSspj/yVZBC6LeuSpNmqq+32VV6TyqFXZJpok1PhIE
-         WD2ozbKbuaUtwZQo8121+cSXQkq3qaEk5Cclu8V5S4hNfWXqAWowFIndlXTGkHt6UUyf
-         uPVUgcK7nWf3KyNUrHq2UWl6M0yUvufwzI6+l/AN4XOQA8n+YW68GNTMQAVfkxRm/rWu
-         H1ZA==
-X-Gm-Message-State: AOAM531G2a9yx4mz3w56ZYDD+vsNnjxj0CMKiXHsM6O8vhcGaoQmMBIK
-        GNDAg52Pzzn+1d5RizmPaPA=
-X-Google-Smtp-Source: ABdhPJw1iFKdcZsW8f7cycMzONzU6yxUgEuZazhdPogGYK+F3RTgppqoM9HbNbtTNedEZ9JFoWPJHQ==
-X-Received: by 2002:a92:4a0a:: with SMTP id m10mr33586996ilf.160.1638823777601;
-        Mon, 06 Dec 2021 12:49:37 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id x7sm7090403ilq.86.2021.12.06.12.49.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 12:49:37 -0800 (PST)
-Date:   Mon, 06 Dec 2021 12:49:28 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Message-ID: <61ae775880778_106e0208ef@john.notmuch>
-In-Reply-To: <Ya5j9mtNyuyNf/MF@lore-desk>
-References: <cover.1638272238.git.lorenzo@kernel.org>
- <95151f4b8a25ce38243e82f0a82104d0f46fb33a.1638272238.git.lorenzo@kernel.org>
- <61ad7e4cbc69d_444e20888@john.notmuch>
- <Ya4oCkbOjBHFOHyS@lore-desk>
- <61ae427999a20_881820893@john.notmuch>
- <Ya5j9mtNyuyNf/MF@lore-desk>
-Subject: Re: [PATCH v19 bpf-next 03/23] net: mvneta: update mb bit before
- passing the xdp buffer to eBPF layer
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S242777AbhLFU6u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 15:58:50 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:42168 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238324AbhLFU6q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 15:58:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id AF52BCE184A;
+        Mon,  6 Dec 2021 20:55:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC0AC341C2;
+        Mon,  6 Dec 2021 20:55:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638824113;
+        bh=90p7cycvlHZGfxzaQIFCGfYcquCZTldPs0yaZp8RYKM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KONZ9f3NCQEtOeGnz7YgrzluHmar6+JyNGZJX5R8u1A8trnX/0nJGhZ9UFZtey+zl
+         1umAR3qZrXxe496Dv4m6bu+8Hqj+0VYWF4X8mlZOvxqFx6dcfUvM3d8qV+ohE+5/So
+         hlCb3VwaD6jeXXGTjO46DoET4NjSZCihwAbADLhBGiLQI8nCAAGhxOPpZdrZcJvxgz
+         dtNrQQtJeRAcfcw4zfzeHzl/BYXkvIR5W7T+PGCTSZ7RtIZnspIY+/kwsTbHKq+0au
+         5b7Y4O1M1r3D1RpRUSVXZw0qg7W0F6MB4leqy6yJSu4Fp9KqhyK26RuRR22gr6Zwxv
+         xgrVXxxvnNqgg==
+Date:   Mon, 6 Dec 2021 12:55:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Louis Amas <louis.amas@eho.link>
+Cc:     Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Emmanuel Deloget <emmanuel.deloget@eho.link>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v3 net 1/1] net: mvpp2: fix XDP rx queues registering
+Message-ID: <20211206125513.5e835155@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211206172220.602024-1-louis.amas@eho.link>
+References: <20211206172220.602024-1-louis.amas@eho.link>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi wrote:
-> > Lorenzo Bianconi wrote:
-> > > > Lorenzo Bianconi wrote:
-> > > > > Update multi-buffer bit (mb) in xdp_buff to notify XDP/eBPF layer and
-> > > > > XDP remote drivers if this is a "non-linear" XDP buffer. Access
-> > > > > skb_shared_info only if xdp_buff mb is set in order to avoid possible
-> > > > > cache-misses.
-> > > > > 
-> > > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > > 
-> > > > [...]
-> > > > 
-> > > > > @@ -2320,8 +2325,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
-> > > > >  		      struct xdp_buff *xdp, u32 desc_status)
-> > > > >  {
-> > > > >  	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> > > > > -	int i, num_frags = sinfo->nr_frags;
-> > > > >  	struct sk_buff *skb;
-> > > > > +	u8 num_frags;
-> > > > > +	int i;
-> > > > > +
-> > > > > +	if (unlikely(xdp_buff_is_mb(xdp)))
-> > > > > +		num_frags = sinfo->nr_frags;
-> > > > 
-> > > > Doesn't really need a respin IMO, but rather an observation. Its not
-> > > > obvious to me the unlikely/likely pair here is wanted. Seems it could
-> > > > be relatively common for some applications sending jumbo frames.
-> > > > 
-> > > > Maybe worth some experimenting in the future.
-> > > 
-> > > Probably for mvneta it will not make any difference but in general I tried to
-> > > avoid possible cache-misses here (accessing sinfo pointers). I will carry out
-> > > some comparison to see if I can simplify the code.
-> > 
-> > Agree, I'll predict for mvneta it doesn't make a difference either way and
-> > perhaps if you want to optimize small pkt benchmarks on a 100Gbps nic it would
-> > show a win.
-> > 
+On Mon,  6 Dec 2021 18:22:19 +0100 Louis Amas wrote:
+> The registration of XDP queue information is incorrect because the
+> RX queue id we use is invalid. When port->id == 0 it appears to works
+> as expected yet it's no longer the case when port->id != 0.
 > 
-> actually it makes a slightly difference on mvneta as well (~45-50Kpps).
-> I will keep the code as it is for the moment.
+> The problem arised while using a recent kernel version on the
+> MACCHIATOBin. This board has several ports:
+>  * eth0 and eth1 are 10Gbps interfaces ; both ports has port->id == 0;
+>  * eth2 is a 1Gbps interface with port->id != 0.
 
-OK works for me thanks for checking.
+Still doesn't apply to net/master [1]. Which tree is it based on?
+Perhaps you are sending this for the BPF tree? [2] Hm, doesn't apply
+there either...
 
-> 
-> Regards,
-> Lorenzo
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/
