@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0AA46A343
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 18:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A75846A374
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 18:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244740AbhLFRpz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 12:45:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
+        id S232142AbhLFRu6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 12:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244218AbhLFRpw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 12:45:52 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E57DC061D5F;
-        Mon,  6 Dec 2021 09:42:23 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id z26so13846745iod.10;
-        Mon, 06 Dec 2021 09:42:23 -0800 (PST)
+        with ESMTP id S229452AbhLFRu5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 12:50:57 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6DCC061746;
+        Mon,  6 Dec 2021 09:47:28 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id w4so11010300ilv.12;
+        Mon, 06 Dec 2021 09:47:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=C8/RDaniZ86S5c9Z/M5oMEJ9mpn6f+Z6Ax+hxsm2cKA=;
-        b=mrz41PLO0ref7/5psXNYlpA405dnTiYcRpibTvgYvIpopQhCmtd1CiQ9epj7W5zDoR
-         KdfT1pS6dG674KO3oMB6LqaDlyypIb0xPRdVTmXTvR0t0wTuFMciB51n2LjTiu6/1nAZ
-         PK7H7nEZZHzT3aiZNahdIFUdYxwXYEt9HwyRgzt5OPsSeqN0srLw6Umh5RwmpORQWbbQ
-         Vzqk07t1/lnPdoVkVZ3NpEmol7bHBvQPXsdANCKzo6md0mcn8n9MOqHSmXLQXhHM6lg9
-         4lq2f4vHb1/mezumYvNwp8WeOMLVcCEzPJx8367CE6zAwWGKv+Qodvfyc3G08CSZVIgn
-         3x5w==
+        bh=73aqN2s3B18yzSlLmgmT1PSw+QY0UCj/8HU8uTfT8us=;
+        b=TvwckwLoZVMueaSUAmB2+fyq+WsrEm31NRC+tyevYO9ZOuHuzHsVCw9R0Ecoe0J1tt
+         zhI3q7T2VLuD0ICYz0HYzgxMWD/ti6YsDphdHOMJ78DivXWZ9hodFV3qyU2IBeytQKMe
+         jlYLJwXZJxarl/bvtiQWvSmBEuKEV/ZjvCvz+Als5aSsqqtWzlOGMyg8LuDetcWjL6eg
+         3UYRYxcF7Wbze8+w6zXpz7y7vRL4uCgSNPrXwVWaU/NOU7nBGsDmrqG6R15eTq1D80+a
+         wOUOwTHDT8jBAzvxiX2bJfx4WoxlDMXEizSDdoB/fq+zfwPe6e1T8CroOmsKNFBxIzP0
+         flCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=C8/RDaniZ86S5c9Z/M5oMEJ9mpn6f+Z6Ax+hxsm2cKA=;
-        b=4q03NLjFFpNpkDRBzbf17n+j7Y1rtMZzrzeF+bdmCD+YuOnCfItsEc4GPAsAXJ/tuk
-         3ApNqtwLYQjprbW9KX6MAliuLcsiOc7ho7DL3hS3QRlD4wrHPJdpa7aAUeVujBRu20W4
-         tlmpZte4Ia0pRC/57LCba8HJV4mNSjFHvsx6YQD8xctF2YMiFkl3oxqnS3MAtrJNzWrw
-         APz8L3bBUH/o9kt4bSlEJi3VyRvb/LwrauuNG8K+xKrWKCzTg4+hL8QL4jnIEovpTisV
-         vL1MSH9SeYiLcttYDx7iHfSDmP8tbOksE/VkiOWEuNcAKKtjJLRA1sQ35d8DR6Zr/ZsK
-         rJkA==
-X-Gm-Message-State: AOAM531gLjhZKuq9YXQE9ktUAOgxzvbLMVb5Btk+0drmsppQFPUFLenW
-        NC+lvg2OwMG05gud5GMTsKwiKSJoK4woFQ==
-X-Google-Smtp-Source: ABdhPJy4P8U1nrSpAypRw6nnwqaPyKM2Fz8KOuDQbKUFDqaxy048B+SBv1ayg54kkBDztmDTS9CwlQ==
-X-Received: by 2002:a5e:c707:: with SMTP id f7mr35120068iop.188.1638812542936;
-        Mon, 06 Dec 2021 09:42:22 -0800 (PST)
+        bh=73aqN2s3B18yzSlLmgmT1PSw+QY0UCj/8HU8uTfT8us=;
+        b=ujwTY/nz6B/tC9FGf234mUOcCDMtrvbx6dDjTJwN21FfdMjOIxJ7hhhdUU0Ku8UGLn
+         hDsU24lv1bINEABP1FGjPkXzkpnYZXvbNalyJ/GGTuvsSBBqGnVgUqPUSnxIVvaDzl+0
+         WNl3v3G+uxCK0zsTdqC8bZfWA9hEmUiN9N+ufBfzzsnA7K+RXIVaU2z98hwTj11O53iR
+         7HX5zo82dth5ljqSg7B8OaR8rL7Y1CxFbtTm7tfyJL7bSUmZmxwjRHobvOzZcXt3nABN
+         SkJ/f08mxMUdYLCZy+oGxSlgQcceeVnGAC8YSQRrMrLEU8G9dEHWcZPoMIRgmtHJV6Nc
+         A2eA==
+X-Gm-Message-State: AOAM532foJkgWUZOURqPRYakvh9fS7T4INjGrA0Nwvib+pski1gaGv7j
+        njZwn6grx7SxWDQV2xNLCDorGbW/D3/CFw==
+X-Google-Smtp-Source: ABdhPJwgH7/ad5lTvhLOYhzDAC/BAM6x94CWUIGOkJNzG6DGD2xHI4Rtb9Df8W6b7lfWq7ojs4JM+g==
+X-Received: by 2002:a05:6e02:1a4e:: with SMTP id u14mr35590162ilv.121.1638812848251;
+        Mon, 06 Dec 2021 09:47:28 -0800 (PST)
 Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id h12sm7739520ila.81.2021.12.06.09.42.20
+        by smtp.gmail.com with ESMTPSA id x18sm7785088iow.53.2021.12.06.09.47.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 09:42:22 -0800 (PST)
-Date:   Mon, 06 Dec 2021 09:42:14 -0800
+        Mon, 06 Dec 2021 09:47:27 -0800 (PST)
+Date:   Mon, 06 Dec 2021 09:47:20 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
         netdev@vger.kernel.org
@@ -58,12 +58,12 @@ Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
         alexander.duyck@gmail.com, saeed@kernel.org,
         maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
         tirthendu.sarkar@intel.com, toke@redhat.com
-Message-ID: <61ae4b768d787_8818208f@john.notmuch>
-In-Reply-To: <15afc316a8727f171fd6e9ec93ab95ad23857b33.1638272239.git.lorenzo@kernel.org>
+Message-ID: <61ae4ca834fe6_881820890@john.notmuch>
+In-Reply-To: <d388fc02aa0c3cb031f832d98f305db878e3a6e6.1638272239.git.lorenzo@kernel.org>
 References: <cover.1638272238.git.lorenzo@kernel.org>
- <15afc316a8727f171fd6e9ec93ab95ad23857b33.1638272239.git.lorenzo@kernel.org>
-Subject: RE: [PATCH v19 bpf-next 19/23] bpf: generalise tail call map
- compatibility check
+ <d388fc02aa0c3cb031f832d98f305db878e3a6e6.1638272239.git.lorenzo@kernel.org>
+Subject: RE: [PATCH v19 bpf-next 18/23] libbpf: Add SEC name for xdp_mb
+ programs
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -73,34 +73,56 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Lorenzo Bianconi wrote:
-> From: Toke Hoiland-Jorgensen <toke@redhat.com>
+> Introduce support for the following SEC entries for XDP multi-buff
+> property:
+> - SEC("xdp_mb/")
+> - SEC("xdp_devmap_mb/")
+> - SEC("xdp_cpumap_mb/")
 > 
-> The check for tail call map compatibility ensures that tail calls only
-> happen between maps of the same type. To ensure backwards compatibility for
-> XDP multi-buffer we need a similar type of check for cpumap and devmap
-> programs, so move the state from bpf_array_aux into bpf_map, add xdp_mb to
-> the check, and apply the same check to cpumap and devmap.
-> 
-> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
 > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> Signed-off-by: Toke Hoiland-Jorgensen <toke@redhat.com>
 > ---
-
-...
-
-> -bool bpf_prog_array_compatible(struct bpf_array *array, const struct bpf_prog *fp);
-> +static inline bool map_type_contains_progs(struct bpf_map *map)
-
-Maybe map_type_check_needed()? Just noticing that devmap doesn't contain
-progs.
-
-> +{
-> +	return map->map_type == BPF_MAP_TYPE_PROG_ARRAY ||
-> +	       map->map_type == BPF_MAP_TYPE_DEVMAP ||
-> +	       map->map_type == BPF_MAP_TYPE_CPUMAP;
-> +}
+>  tools/lib/bpf/libbpf.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index b59fede08ba7..ddad9eb2826a 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -265,6 +265,8 @@ enum sec_def_flags {
+>  	SEC_SLEEPABLE = 8,
+>  	/* allow non-strict prefix matching */
+>  	SEC_SLOPPY_PFX = 16,
+> +	/* BPF program support XDP multi-buff */
+> +	SEC_XDP_MB = 32,
+>  };
+>  
+>  struct bpf_sec_def {
+> @@ -6505,6 +6507,9 @@ static int libbpf_preload_prog(struct bpf_program *prog,
+>  	if (def & SEC_SLEEPABLE)
+>  		opts->prog_flags |= BPF_F_SLEEPABLE;
+>  
+> +	if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_MB))
+> +		opts->prog_flags |= BPF_F_XDP_MB;
 > +
-> +bool bpf_prog_map_compatible(struct bpf_map *map, const struct bpf_prog *fp);
->  int bpf_prog_calc_tag(struct bpf_prog *fp);
+>  	if ((prog->type == BPF_PROG_TYPE_TRACING ||
+>  	     prog->type == BPF_PROG_TYPE_LSM ||
+>  	     prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+> @@ -8468,8 +8473,11 @@ static const struct bpf_sec_def section_defs[] = {
+>  	SEC_DEF("lsm.s/",		LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
+>  	SEC_DEF("iter/",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
+>  	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
+> +	SEC_DEF("xdp_devmap_mb/",	XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE | SEC_XDP_MB),
+>  	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+> +	SEC_DEF("xdp_cpumap_mb/",	XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE | SEC_XDP_MB),
+>  	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+> +	SEC_DEF("xdp_mb/",		XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX | SEC_XDP_MB),
+>  	SEC_DEF("xdp",			XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+>  	SEC_DEF("perf_event",		PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
+>  	SEC_DEF("lwt_in",		LWT_IN, 0, SEC_NONE | SEC_SLOPPY_PFX),
+> -- 
+> 2.31.1
+> 
 
-Otherwise LGTM.
+LGTM. Nice to see this got to a good solution.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
