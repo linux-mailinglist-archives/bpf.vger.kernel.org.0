@@ -2,214 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E40468FDF
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 05:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0714690D8
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 08:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhLFEqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Dec 2021 23:46:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhLFEqR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Dec 2021 23:46:17 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68393C0613F8;
-        Sun,  5 Dec 2021 20:42:49 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id j7so8951189ilk.13;
-        Sun, 05 Dec 2021 20:42:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Xa9v0ejh68fPBoT5GfktnnRqee583EcLBsEsuZrCA+g=;
-        b=h1sfPDZyR+XUrmY3wFoYrLnvYHUmQIiUe1LtVZCSf4cVH6Mr3vNXTqOGyQV0Yy4UBl
-         fQrL0DgelOM7225UvXcupbbt5X+9VmlnkWJ/IAwynLe2aanEKosK92/BJa8zhKslNlWq
-         fjEklTKpCzFVEsmDjQ2nJ2/ToQa8VZe7noNgH8nHTL/te5+6cM7MkeGgXBFmnfVzHVA2
-         EoQ2XR+ZzHKriePghfKQIC86foWQfbXiDxEyMVJf2YYYSDwz8Utxp1u5swpGXomOFX1C
-         kP/oYOhggkM3RIZ5C5ul7zHvWNqSts2R60/Ww0Gl6Flb1NvA0RPCGK+zy+BfsyJ8s1+m
-         neyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Xa9v0ejh68fPBoT5GfktnnRqee583EcLBsEsuZrCA+g=;
-        b=ha7bI7rEaQch7tO0F3XTNLzwruFbcDfcy/oDeWPIy+er+KSHnKc2+7s1VI7sb+chUE
-         m7XcYvhG9HM8X7R/ncm7FK+LuGlqdaDCCPJ+lnkW+7n0mCo3qWmOvdRP1Etlbe7xJimm
-         qnCUfoyLnXbAcHHmxUehsOfFd+jWcnSEFWPWAECJQGYcHwgFevKjFfBufNhtVj/9ZfMy
-         8+A3RzweIOFG/gGHtWyWeoFmIh8BkS8xS8xQHxvz/+N5U3K7P840fRP1tBJeQ5nNhBEA
-         3ZDy64Z5Q1oU0PVHaJlEdvBH4jTI2Z6hvXWh064Qlmb4F3AJtrFuRemx6ih7iX0A8kUh
-         n+/g==
-X-Gm-Message-State: AOAM5339BNDMO7MrqUe3x8lJo1G2pzXxRteqIaC/zcbf8cYFUovs1YP9
-        pYp01rjUTE6yNp8A8GBANf0=
-X-Google-Smtp-Source: ABdhPJwA2NL8z4ue6nUUEjRV+9073uYEuibCm0+7GEGwp7kkQOMprDM7Om3EBzz/ubt7kyudYRXacQ==
-X-Received: by 2002:a92:cf0d:: with SMTP id c13mr29630912ilo.319.1638765767488;
-        Sun, 05 Dec 2021 20:42:47 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id g15sm6605551ile.88.2021.12.05.20.42.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Dec 2021 20:42:46 -0800 (PST)
-Date:   Sun, 05 Dec 2021 20:42:37 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Message-ID: <61ad94bde1ea6_50c22081e@john.notmuch>
-In-Reply-To: <81319e52462c07361dbf99b9ec1748b41cdcf9fa.1638272238.git.lorenzo@kernel.org>
-References: <cover.1638272238.git.lorenzo@kernel.org>
- <81319e52462c07361dbf99b9ec1748b41cdcf9fa.1638272238.git.lorenzo@kernel.org>
-Subject: RE: [PATCH v19 bpf-next 12/23] bpf: add multi-buff support to the
- bpf_xdp_adjust_tail() API
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S235534AbhLFHhd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 02:37:33 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4852 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229652AbhLFHhc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 6 Dec 2021 02:37:32 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B67HUr0025383;
+        Mon, 6 Dec 2021 07:33:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=HkMSZMMkGG7qs/M6ldHGjZwCT5FBRbh/Mu0JItmT4HU=;
+ b=fuY7zAZS3YT9yFCz/+QlCqrR1JL3u1EAw0y1XAEG4kBfJew0D8VGyLXYLplIZT7e7/90
+ 3kbwcSaRvsjtOertzdaDPg4qlG7zsfC1iggg1ZkkKR6K+WC3ckDgvu1d0sunbtKC6Nsf
+ j0iQ2Dy6NelyxkdgKYBOxiHmlSAIiCDuKrD/R+2Z6UEqrJGNfnrsguhDePT0nszWzWDr
+ Yn0eA/yrIPu8IEN9D6FOsf5pvd4AP5av5Qw40iCvAHSXczLPi8+2SimoKrVNjqr3Qki7
+ 4fXk/x6hKsXru3Gz3AIZ2KBfujp413qm4oZpZiTxmD5qrWvsn/5V8o4YSR6Zw946MvDq eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cse0j07wj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Dec 2021 07:33:43 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1B67M9SL008384;
+        Mon, 6 Dec 2021 07:33:42 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cse0j07vj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Dec 2021 07:33:42 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1B67WbHH018385;
+        Mon, 6 Dec 2021 07:33:40 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 3cqykhsc2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Dec 2021 07:33:40 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1B67XaOP29360562
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Dec 2021 07:33:36 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 02E784C04E;
+        Mon,  6 Dec 2021 07:33:36 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D24F14C058;
+        Mon,  6 Dec 2021 07:33:29 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.39.249])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Dec 2021 07:33:29 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     acme@kernel.org, peterz@infradead.org, songliubraving@fb.com,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, davem@davemloft.net, kpsingh@kernel.org,
+        hawk@kernel.org, kuba@kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
+        rnsastry@linux.ibm.com, kjain@linux.ibm.com,
+        andrii.nakryiko@gmail.com
+Subject: [PATCH v4] bpf: Remove config check to enable bpf support for branch records
+Date:   Mon,  6 Dec 2021 13:03:15 +0530
+Message-Id: <20211206073315.77432-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ddqZnyNPzA3d_H6YK0T9qAXKQhnrCgL5
+X-Proofpoint-ORIG-GUID: 5VHbnfruROeutJ8Bs9NzMU1-zunweXEV
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-06_02,2021-12-06_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ spamscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112060045
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi wrote:
-> From: Eelco Chaudron <echaudro@redhat.com>
-> 
-> This change adds support for tail growing and shrinking for XDP multi-buff.
-> 
-> When called on a multi-buffer packet with a grow request, it will work
-> on the last fragment of the packet. So the maximum grow size is the
-> last fragments tailroom, i.e. no new buffer will be allocated.
-> A XDP mb capable driver is expected to set frag_size in xdp_rxq_info data
-> structure to notify the XDP core the fragment size. frag_size set to 0 is
-> interpreted by the XDP core as tail growing is not allowed.
-> Introduce __xdp_rxq_info_reg utility routine to initialize frag_size field.
-> 
-> When shrinking, it will work from the last fragment, all the way down to
-> the base buffer depending on the shrinking size. It's important to mention
-> that once you shrink down the fragment(s) are freed, so you can not grow
-> again to the original size.
-> 
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> ---
->  drivers/net/ethernet/marvell/mvneta.c |  3 +-
->  include/net/xdp.h                     | 16 ++++++-
->  net/core/filter.c                     | 67 +++++++++++++++++++++++++++
->  net/core/xdp.c                        | 12 +++--
->  4 files changed, 90 insertions(+), 8 deletions(-)
+Branch data available to bpf programs can be very useful to get
+stack traces out of userspace application.
 
-Some nits and one questiopn about offset > 0 on shrink.
+Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
+added bpf support to capture branch records in x86. Enable this feature
+for other architectures as well by removing check specific to x86.
 
->  void xdp_rxq_info_unreg(struct xdp_rxq_info *xdp_rxq);
->  void xdp_rxq_info_unused(struct xdp_rxq_info *xdp_rxq);
->  bool xdp_rxq_info_is_reg(struct xdp_rxq_info *xdp_rxq);
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index b9bfe6fac6df..ace67957e685 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3831,11 +3831,78 @@ static const struct bpf_func_proto bpf_xdp_adjust_head_proto = {
->  	.arg2_type	= ARG_ANYTHING,
->  };
->  
-> +static int bpf_xdp_mb_increase_tail(struct xdp_buff *xdp, int offset)
-> +{
-> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> +	skb_frag_t *frag = &sinfo->frags[sinfo->nr_frags - 1];
-> +	struct xdp_rxq_info *rxq = xdp->rxq;
-> +	int size, tailroom;
+Incase any architecture doesn't support branch records,
+bpf_read_branch_records still have appropriate checks and it
+will return error number -EINVAL in that scenario. But based on
+documentation there in include/uapi/linux/bpf.h file, incase of
+unsupported archs, this function should return -ENOENT. Hence update
+the appropriate checks to return -ENOENT instead.
 
-These could be 'unsized int'.
+Selftest 'perf_branches' result on power9 machine which has branch stacks
+support.
 
-> +
-> +	if (!rxq->frag_size || rxq->frag_size > xdp->frame_sz)
-> +		return -EOPNOTSUPP;
-> +
-> +	tailroom = rxq->frag_size - skb_frag_size(frag) - skb_frag_off(frag);
-> +	if (unlikely(offset > tailroom))
-> +		return -EINVAL;
-> +
-> +	size = skb_frag_size(frag);
-> +	memset(skb_frag_address(frag) + size, 0, offset);
-> +	skb_frag_size_set(frag, size + offset);
+Before this patch changes:
+[command]# ./test_progs -t perf_branches
+ #88/1 perf_branches/perf_branches_hw:FAIL
+ #88/2 perf_branches/perf_branches_no_hw:OK
+ #88 perf_branches:FAIL
+Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
 
-Could probably make this a helper skb_frag_grow() or something in
-skbuff.h we have sub, add, put_zero, etc. there.
+After this patch changes:
+[command]# ./test_progs -t perf_branches
+ #88/1 perf_branches/perf_branches_hw:OK
+ #88/2 perf_branches/perf_branches_no_hw:OK
+ #88 perf_branches:OK
+Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
 
-> +	sinfo->xdp_frags_size += offset;
-> +
-> +	return 0;
-> +}
-> +
-> +static int bpf_xdp_mb_shrink_tail(struct xdp_buff *xdp, int offset)
-> +{
-> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> +	int i, n_frags_free = 0, len_free = 0;
-> +
-> +	if (unlikely(offset > (int)xdp_get_buff_len(xdp) - ETH_HLEN))
-> +		return -EINVAL;
-> +
-> +	for (i = sinfo->nr_frags - 1; i >= 0 && offset > 0; i--) {
-> +		skb_frag_t *frag = &sinfo->frags[i];
-> +		int size = skb_frag_size(frag);
-> +		int shrink = min_t(int, offset, size);
-> +
-> +		len_free += shrink;
-> +		offset -= shrink;
-> +
-> +		if (unlikely(size == shrink)) {
+Selftest 'perf_branches' result on power9 machine which doesn't
+have branch stack report.
 
-not so sure about the unlikely.
+After this patch changes:
+[command]# ./test_progs -t perf_branches
+ #88/1 perf_branches/perf_branches_hw:SKIP
+ #88/2 perf_branches/perf_branches_no_hw:OK
+ #88 perf_branches:OK
+Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
 
-> +			struct page *page = skb_frag_page(frag);
-> +
-> +			__xdp_return(page_address(page), &xdp->rxq->mem,
-> +				     false, NULL);
-> +			n_frags_free++;
-> +		} else {
-> +			skb_frag_size_set(frag, size - shrink);
+Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+---
 
-skb_frag_size_sub() maybe, but you need to pull out size anyways
-so its not a big deal to me.
 
-> +			break;
-> +		}
-> +	}
-> +	sinfo->nr_frags -= n_frags_free;
-> +	sinfo->xdp_frags_size -= len_free;
-> +
-> +	if (unlikely(offset > 0)) {
+Tested this patch changes on power9 machine using selftest
+'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
+Add bpf_read_branch_records()")
 
-hmm whats the case for offset to != 0? Seems with initial unlikely
-check and shrinking while walking backwards through the frags it
-should be zero? Maybe a comment would help?
+Changelog:
+v3 -> v4
+- Make return type again as -EINVAL for invalid/unsupported
+  flags case as suggested by Daniel Borkmann.
 
-> +		xdp_buff_clear_mb(xdp);
-> +		xdp->data_end -= offset;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  BPF_CALL_2(bpf_xdp_adjust_tail, struct xdp_buff *, xdp, int, offset)
->  {
->  	void *data_hard_end = xdp_data_hard_end(xdp); /* use xdp->frame_sz */
->  	void *data_end = xdp->data_end + offset;
->  
-> +	if (unlikely(xdp_buff_is_mb(xdp))) { /* xdp multi-buffer */
-> +		if (offset < 0)
-> +			return bpf_xdp_mb_shrink_tail(xdp, -offset);
-> +
-> +		return bpf_xdp_mb_increase_tail(xdp, offset);
-> +	}
-> +
->  	/* Notice that xdp_data_hard_end have reserved some tailroom */
->  	if (unlikely(data_end > data_hard_end))
->  		return -EINVAL;
+- Link to the v3 patch: https://lkml.org/lkml/2021/11/23/248
 
-[...]
+v2 -> v3
+- Change the return error number for bpf_read_branch_records
+  function from -EINVAL to -ENOENT for appropriate checks
+  as suggested by Daniel Borkmann.
 
-Thanks,
-John
+- Link to the v2 patch: https://lkml.org/lkml/2021/11/18/510
+
+v1 -> v2
+- Inorder to add bpf support to capture branch record in
+  powerpc, rather then adding config for powerpc, entirely
+  remove config check from bpf_read_branch_records function
+  as suggested by Peter Zijlstra
+
+- Link to the v1 patch: https://lkml.org/lkml/2021/11/14/434
+
+ kernel/trace/bpf_trace.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index ae9755037b7e..e36d184615fb 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1400,9 +1400,6 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
+ BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+ 	   void *, buf, u32, size, u64, flags)
+ {
+-#ifndef CONFIG_X86
+-	return -ENOENT;
+-#else
+ 	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
+ 	struct perf_branch_stack *br_stack = ctx->data->br_stack;
+ 	u32 to_copy;
+@@ -1411,7 +1408,7 @@ BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+ 		return -EINVAL;
+ 
+ 	if (unlikely(!br_stack))
+-		return -EINVAL;
++		return -ENOENT;
+ 
+ 	if (flags & BPF_F_GET_BRANCH_RECORDS_SIZE)
+ 		return br_stack->nr * br_entry_size;
+@@ -1423,7 +1420,6 @@ BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+ 	memcpy(buf, br_stack->entries, to_copy);
+ 
+ 	return to_copy;
+-#endif
+ }
+ 
+ static const struct bpf_func_proto bpf_read_branch_records_proto = {
+-- 
+2.27.0
+
