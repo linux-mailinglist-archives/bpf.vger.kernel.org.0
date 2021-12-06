@@ -2,79 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFA34698FB
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 15:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD76469AB8
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 16:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344284AbhLFOdk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 09:33:40 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:48904 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242092AbhLFOdj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 09:33:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E75EDB810EE;
-        Mon,  6 Dec 2021 14:30:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9586CC341C2;
-        Mon,  6 Dec 2021 14:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638801008;
-        bh=jjnF6WfMx11qf6a05qyEgaVAkDfWWwe+75bjHsdGf9A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mahBsa0Ek1KA8EQxhWxLkePTbtGIB+5u1iK34nse0t0uZO/nP6gtbxY48fQGu1271
-         HMIUBfju9z765B+fVkV0Lm8ttCD6nLgtq5bNkS/TZPlVmmBwxrHrL9Mf5D9FM2gOx/
-         /tn50O0pDrTwtomi02jXV2+Mib50wAa2XcUpcLNyA8y/rwYnvF7X9AQN+2mfPHyTPe
-         IDIh1a8mgCksG1Guq0sdxGgrfcDRSyI9zPsOvKCgfx5N3PpCEKsJ7gw+X57QcNSDpn
-         rLhPjcSSgjXoayCHuHEFBeeXzagJIIS4G7/NWwCYchCUkOavlz4CBGSlDwYDWD5SA3
-         c/f+NZ1wCtxFQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 78F29604EB;
-        Mon,  6 Dec 2021 14:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1346844AbhLFPJo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 10:09:44 -0500
+Received: from www62.your-server.de ([213.133.104.62]:59714 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346843AbhLFPHn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 10:07:43 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1muFXJ-000Deo-4Y; Mon, 06 Dec 2021 16:04:13 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1muFXI-000WcB-Tk; Mon, 06 Dec 2021 16:04:12 +0100
+Subject: Re: [PATCH v3 net-next 2/2] bpf: let bpf_warn_invalid_xdp_action()
+ report more info
+To:     Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+References: <cover.1638189075.git.pabeni@redhat.com>
+ <ddb96bb975cbfddb1546cf5da60e77d5100b533c.1638189075.git.pabeni@redhat.com>
+ <1ac2941f-b751-9cf0-f0e3-ea0f245b7503@iogearbox.net>
+ <70c5f1a6ecdc67586d108ab5ebed4be6febf8423.camel@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1685fbab-e4e1-5116-5148-fa7cd8f5879b@iogearbox.net>
+Date:   Mon, 6 Dec 2021 16:04:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4] bpf: Remove config check to enable bpf support for branch
- records
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163880100849.9978.9385858982566868204.git-patchwork-notify@kernel.org>
-Date:   Mon, 06 Dec 2021 14:30:08 +0000
-References: <20211206073315.77432-1-kjain@linux.ibm.com>
-In-Reply-To: <20211206073315.77432-1-kjain@linux.ibm.com>
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        peterz@infradead.org, songliubraving@fb.com, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, davem@davemloft.net, kpsingh@kernel.org,
-        hawk@kernel.org, kuba@kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        rnsastry@linux.ibm.com, andrii.nakryiko@gmail.com
+In-Reply-To: <70c5f1a6ecdc67586d108ab5ebed4be6febf8423.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26375/Mon Dec  6 10:22:56 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon,  6 Dec 2021 13:03:15 +0530 you wrote:
-> Branch data available to bpf programs can be very useful to get
-> stack traces out of userspace application.
+On 12/6/21 11:20 AM, Paolo Abeni wrote:
+> On Fri, 2021-12-03 at 23:04 +0100, Daniel Borkmann wrote:
+>> Hi Paolo,
+>>
+>> Changes look good to me as well, we can route the series via bpf-next after tree
+>> resync, or alternatively ask David/Jakub to take it directly into net-next with our
+>> Ack given in bpf-next there is no drivers/net/ethernet/microsoft/mana/mana_bpf.c yet.
+>>
+>> On 11/30/21 11:08 AM, Paolo Abeni wrote:
+>> [...]> diff --git a/net/core/filter.c b/net/core/filter.c
+>>> index 5631acf3f10c..392838fa7652 100644
+>>> --- a/net/core/filter.c
+>>> +++ b/net/core/filter.c
+>>> @@ -8181,13 +8181,13 @@ static bool xdp_is_valid_access(int off, int size,
+>>>    	return __is_valid_xdp_access(off, size);
+>>>    }
+>>>    
+>>> -void bpf_warn_invalid_xdp_action(u32 act)
+>>> +void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act)
+>>>    {
+>>>    	const u32 act_max = XDP_REDIRECT;
+>>>    
+>>> -	pr_warn_once("%s XDP return value %u, expect packet loss!\n",
+>>> +	pr_warn_once("%s XDP return value %u on prog %s (id %d) dev %s, expect packet loss!\n",
+>>>    		     act > act_max ? "Illegal" : "Driver unsupported",
+>>> -		     act);
+>>> +		     act, prog->aux->name, prog->aux->id, dev ? dev->name : "");
+>>
+>> One tiny nit, but we could fix it up while applying I'd have is that for !dev case
+>> we should probably dump a "<n/a>" or so just to avoid a kernel log message like
+>> "dev , expect packet loss".
 > 
-> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
-> added bpf support to capture branch records in x86. Enable this feature
-> for other architectures as well by removing check specific to x86.
-> 
-> [...]
+> Yep, that would probably be better. Pleas let me know it you prefer a
+> formal new version for the patch.
 
-Here is the summary with links:
-  - [v4] bpf: Remove config check to enable bpf support for branch records
-    https://git.kernel.org/bpf/bpf-next/c/db52f57211b4
+Ok, I think no need, we can take care of it when applying.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
