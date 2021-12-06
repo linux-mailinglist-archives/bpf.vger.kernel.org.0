@@ -2,271 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F7F46A657
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7043A46A666
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349242AbhLFUBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 15:01:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48788 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349572AbhLFUAo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 6 Dec 2021 15:00:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638820634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sL3D1WB/9Yy1suI5mATprV109LO2M6XsXaqz/s17rxU=;
-        b=bXbdRkDtC2mxZkD7u3C8seG9cKotsZ1oUMjmREjrHdaUwGRuGBOmhDi9T1nmIHCnodLqBg
-        vguzIywcxKeBIgwTchJqDqugFXd0xoyPiWYNjyjZk5QEcDuKUHKx1kRhNttL5g5WVfn4df
-        0LQoBrwrb96ln92GKOT639plLlcrNvs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-84-v_soClTjPjiY5LqoSWMzLA-1; Mon, 06 Dec 2021 14:57:12 -0500
-X-MC-Unique: v_soClTjPjiY5LqoSWMzLA-1
-Received: by mail-wm1-f72.google.com with SMTP id 138-20020a1c0090000000b00338bb803204so6609184wma.1
-        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 11:57:12 -0800 (PST)
+        id S1349368AbhLFUB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 15:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349373AbhLFUBO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 15:01:14 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74149C0698CF
+        for <bpf@vger.kernel.org>; Mon,  6 Dec 2021 11:57:37 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso15051564otj.11
+        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 11:57:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
+        b=erwLQqURu+Z0eqHJlYLwFR8dLd2NY5mB6iXlNvj86722x9Pb1y2a1YOX4ieB/4ItAR
+         F/rtWx/Y6ePZSaOPQ7McD7zaa8u//OrT4BvpoGezt/G6UezcuzJcewg5Z0Rx+66w2tb4
+         FzmHLDeQR7sONBWPUfG6JZDEJG0dG1ZC55dX3GGUdM8/XUZt62FKn5mJlc6Dl1Tw/q5J
+         SC3tClspmLGZmOoIw10mKla5wRXJ/ruBbdxvjNw1STp+qJjhaybtmkboFTqtJXzw7qhw
+         bp4DEdHV/3DPbRMzlJJL18VoFvBfWYNqnUonYm9oVEOcvnEQG/iwT6V4RU4dxkMdVF+F
+         og3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sL3D1WB/9Yy1suI5mATprV109LO2M6XsXaqz/s17rxU=;
-        b=bGIpJb7w7EaoHFy4NCRUPsmkG1jblDYoqDoS6QHcKoItq6OGXe5hf/+OBeLI+wUOWw
-         64LQT8MyvAuKvM0EnMY02SQaBzDvh9vrMtAu8tuzD5l9TI71aqY/Qhk5dFRepeOnpLQe
-         mf6RY7lzBZ1kQ/vz7FJnM54ZV35D1ei7a/mQaZDFb4EKTMoBFZTNLtYQsHEo2xO3g3/d
-         XeYvQ20JVZtteBQMRKp1IY7rIf8dHbqvDmpESrbtcjD+kmxFfk9P+QsdwSwzYAOWSYQc
-         inv+BWbUPBul9LLOC8tS0AjUTT9LhDxKV6OWCXL9A+ymRSM+G++TT+Z2pETAaMdanE7s
-         ylWw==
-X-Gm-Message-State: AOAM533fCWnc4NAfX5gxIpAOZWxUlOlmfNR1syPUFsNDUMBNWXMHzEnR
-        howR5itd+LpChatGbu+qSOpO/yNSaUinnQ8UUrkhLeriynywKMvJRFT98a4Ouy7/NOOdV2SPY8E
-        NuRd1X8+fWbbV
-X-Received: by 2002:a1c:488:: with SMTP id 130mr815235wme.157.1638820631212;
-        Mon, 06 Dec 2021 11:57:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwwkVvGKJSs8kSbzJ5A4iK/zDTE+kdNiGmq8OfxslW/COEIFNXrj8aZjVD96TzfbqVMixCWwQ==
-X-Received: by 2002:a1c:488:: with SMTP id 130mr815183wme.157.1638820630882;
-        Mon, 06 Dec 2021 11:57:10 -0800 (PST)
-Received: from localhost (net-37-182-17-175.cust.vodafonedsl.it. [37.182.17.175])
-        by smtp.gmail.com with ESMTPSA id e8sm12038083wrr.26.2021.12.06.11.57.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 11:57:10 -0800 (PST)
-Date:   Mon, 6 Dec 2021 20:57:08 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v19 bpf-next 12/23] bpf: add multi-buff support to the
- bpf_xdp_adjust_tail() API
-Message-ID: <Ya5rFFqzXy5adxbs@lore-desk>
-References: <cover.1638272238.git.lorenzo@kernel.org>
- <81319e52462c07361dbf99b9ec1748b41cdcf9fa.1638272238.git.lorenzo@kernel.org>
- <61ad94bde1ea6_50c22081e@john.notmuch>
- <Ya4nI6DKPmGOpfMf@lore-desk>
- <61ae458a58d73_88182082b@john.notmuch>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
+        b=HlrVbq6+oVB6fs9Hmzp9BMLwG0pko2ZSS3nhDkq/ka7dQp6mjs/yLq4RyCWs+RuYZY
+         bKfUbrNk2abUKU5uGAgTkK9c56EjNeGSIHTCoAo0LI/40V6PsP9GxiXXFbsrAOYRKIVP
+         XHUHwPOOdKEb4SvZTZwsZAtupyE1fmPqyimzI6eslFP+K3aQD6x2ZCy4qdaiF5HEo2Vg
+         zTfiNxnl9Uo0Jf7yYvqY+2fDNT5gETAqx5rDVDms1dH+8rJF/4p3CnzxmEW7r+lSxX/u
+         wFDmxYqm4aytIjnbb5kr8KJ2DW7QlJdSpLQZN8KSQpaaDGmuMS6C44A3KaqXOac18P39
+         Jg3w==
+X-Gm-Message-State: AOAM5321Ow7nwfJiWDDNsQsJxJ3VOIC61PGiViYREbXqpK6lnMxfJziN
+        lxv2gOAkDwo/IbJzhfT79RgC7V1FT9pCDH41fko=
+X-Google-Smtp-Source: ABdhPJzyAuU38upZHZFOCTec0SIsAc5X4maOhEJ47R/1HfIqKoBH4k5JhExaiP2bDdIjvNFNGv5AG/n29otc+CG3Lak=
+X-Received: by 2002:a05:6830:1417:: with SMTP id v23mr31587329otp.367.1638820656622;
+ Mon, 06 Dec 2021 11:57:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hOQqi1YYOcr53TRN"
-Content-Disposition: inline
-In-Reply-To: <61ae458a58d73_88182082b@john.notmuch>
+Sender: blessmegod87@gmail.com
+Received: by 2002:a05:6838:9414:0:0:0:0 with HTTP; Mon, 6 Dec 2021 11:57:36
+ -0800 (PST)
+From:   DINA MCKENNA <dinamckennahowley@gmail.com>
+Date:   Mon, 6 Dec 2021 19:57:36 +0000
+X-Google-Sender-Auth: fuOhrAuh8A3rDmzbdJ7o8ItFZtI
+Message-ID: <CACOw96kFBkx3KZ=u_hD9GuY+f9qQdPoqiw+_+NQ5Ww+WQ=zBuA@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello my dear,
 
---hOQqi1YYOcr53TRN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs. Dina Howley Mckenna, a widow. I am
+suffering from a long time brain tumor, It has defiled all forms of
+medical treatment, and right now I have about a few months to leave,
+according to medical experts. The situation has gotten complicated
+recently with my inability to hear proper, am communicating with you
+with the help of the chief nurse herein the hospital, from all
+indication my conditions is really deteriorating and it is quite
+obvious that, according to my doctors they have advised me that I may
+not live too long, Because this illness has gotten to a very bad
+stage. I plead that you will not expose or betray this trust and
+confidence that I am about to repose on you for the mutual benefit of
+the orphans and the less privilege. I have some funds I inherited from
+my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
+Having known my condition, I decided to donate this fund to you
+believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works therein your country  for orphanages and gives justice
+and help to the poor, needy and widows says The Lord." Jeremiah
+22:15-16.=E2=80=9C and also build schools for less privilege that will be
+named after my late husband if possible and to promote the word of God
+and the effort that the house of God is maintained. I do not want a
+situation where this money will be used in an ungodly manner. That's
+why I'm taking this decision. I'm not afraid of death, so I know where
+I'm going. I accept this decision because I do not have any child who
+will inherit this money after I die.. Please I want your sincerely and
+urgent answer to know if you will be able to execute this project for
+the glory of God, and I will give you more information on how the fund
+will be transferred to your bank account.. May the grace, peace, love
+and the truth in the Word of God be with you and all those that you
+love and care for.
 
-> Lorenzo Bianconi wrote:
-> > > Lorenzo Bianconi wrote:
-> > > > From: Eelco Chaudron <echaudro@redhat.com>
-> > > >=20
-> > > > This change adds support for tail growing and shrinking for XDP mul=
-ti-buff.
-> > > >=20
-> > > > When called on a multi-buffer packet with a grow request, it will w=
-ork
-> > > > on the last fragment of the packet. So the maximum grow size is the
-> > > > last fragments tailroom, i.e. no new buffer will be allocated.
-> > > > A XDP mb capable driver is expected to set frag_size in xdp_rxq_inf=
-o data
-> > > > structure to notify the XDP core the fragment size. frag_size set t=
-o 0 is
-> > > > interpreted by the XDP core as tail growing is not allowed.
-> > > > Introduce __xdp_rxq_info_reg utility routine to initialize frag_siz=
-e field.
-> > > >=20
-> > > > When shrinking, it will work from the last fragment, all the way do=
-wn to
-> > > > the base buffer depending on the shrinking size. It's important to =
-mention
-> > > > that once you shrink down the fragment(s) are freed, so you can not=
- grow
-> > > > again to the original size.
-> > > >=20
-> > > > Acked-by: Jakub Kicinski <kuba@kernel.org>
-> > > > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > > Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> > > > ---
->=20
-> [...]
->=20
-> pasting full function here to help following along.
->=20
-> +
-> +static int bpf_xdp_mb_shrink_tail(struct xdp_buff *xdp, int offset)
-> +{
-> +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
-> +	int i, n_frags_free =3D 0, len_free =3D 0;
-> +
-> +	if (unlikely(offset > (int)xdp_get_buff_len(xdp) - ETH_HLEN))
-> +		return -EINVAL;
-> +
-> +	for (i =3D sinfo->nr_frags - 1; i >=3D 0 && offset > 0; i--) {
-> +		skb_frag_t *frag =3D &sinfo->frags[i];
-> +		int size =3D skb_frag_size(frag);
-> +		int shrink =3D min_t(int, offset, size);
-> +
-> +		len_free +=3D shrink;
-> +		offset -=3D shrink;
-> +
-> +		if (unlikely(size =3D=3D shrink)) {
-> +			struct page *page =3D skb_frag_page(frag);
-> +
-> +			__xdp_return(page_address(page), &xdp->rxq->mem,
-> +				     false, NULL);
-> +			n_frags_free++;
-> +		} else {
-> +			skb_frag_size_set(frag, size - shrink);
-> +			break;
-> +		}
-> +	}
-> +	sinfo->nr_frags -=3D n_frags_free;
-> +	sinfo->xdp_frags_size -=3D len_free;
-> +
-> +	if (unlikely(offset > 0)) {
-> +		xdp_buff_clear_mb(xdp);
-> +		xdp->data_end -=3D offset;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->=20
-> > >=20
-> > > hmm whats the case for offset to !=3D 0? Seems with initial unlikely
-> > > check and shrinking while walking backwards through the frags it
-> > > should be zero? Maybe a comment would help?
-> >=20
-> > Looking at the code, offset can be > 0 here whenever we reduce the mb f=
-rame to
-> > a legacy frame (so whenever offset will move the boundary into the line=
-ar
-> > area).
->=20
-> But still missing if we need to clear the mb bit or not when we shrink do=
-wn
-> to a single frag. I think its fine, but worth double checking. As an exam=
-ple
-> consider I shrink 2k from a 3k pkt with two frags, one full 2k and another
-> 1k extra,
->=20
-> On the first run through,
->=20
->  i =3D 1;
->  offset =3D 2k
->=20
-> +	for (i =3D sinfo->nr_frags - 1; i >=3D 0 && offset > 0; i--) {
-> +		skb_frag_t *frag =3D &sinfo->frags[i];
-> +		int size =3D skb_frag_size(frag);
-> +		int shrink =3D min_t(int, offset, size);
->=20
-> shrink =3D 1k; // min_t(int, offset, size) -> size
->=20
-> +
-> +		len_free +=3D shrink;
-> +		offset -=3D shrink;
->=20
-> offset =3D 1k
->=20
-> +		if (unlikely(size =3D=3D shrink)) {
-> +			struct page *page =3D skb_frag_page(frag);
-> +
-> +			__xdp_return(page_address(page), &xdp->rxq->mem,
-> +				     false, NULL);
-> +			n_frags_free++;
->=20
-> Will free the frag
->=20
-> Then next run through
->=20
-> i =3D 0;
-> offset =3D 1k;
->=20
-> +		skb_frag_t *frag =3D &sinfo->frags[i];
-> +		int size =3D skb_frag_size(frag);
-> +		int shrink =3D min_t(int, offset, size);
->=20
-> shrink =3D 1k; // min_t(int, offset, size) -> offset
->=20
-> +
-> +		len_free +=3D shrink;
-> +		offset -=3D shrink;
->=20
-> offset =3D 0k
->=20
-> +
-> +		if (unlikely(size =3D=3D shrink)) { ...
-> +		} else {
-> +			skb_frag_size_set(frag, size - shrink);
-> +			break;
-> +		}
->=20
-> Then later there is the check 'if (unlikely(offset > 0) { ...}', but that
-> wont hit this case and we shrunk it back to a single frag. Did we want
-> to clear the mb in this case? I'm not seeing how it harms things to have
-> the mb bit set just trying to follow code here.
+I'm waiting for your immediate reply..
 
-If I followed correctly your example, we will have sinfo->nr_frags =3D 1 at=
- the
-end of the processing (since the first fragment has 2k size), right?
-If so mb bit must be set to 1. Am I missing something?
-Re-looking at the code I guess we should clear mb bit using sinfo->nr_frags
-instead:
-
-	if (!sinfo->nr_frags)
-		xdp_buff_clear_mb(xdp);
-
-Agree?
-
-Regards,
-Lorenzo
-
->=20
-> Would offset > 0 indicate we weren't able to shrink the xdp buff enough
-> for some reason. Need some coffee perhaps.
->=20
-> Thanks,
-> John
->=20
-
---hOQqi1YYOcr53TRN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYa5rFAAKCRA6cBh0uS2t
-rAPmAQCw3qlOwQ4AECWUfuNGM+s/hDHQ3e5wt0RqbLpfSR9ThgD/XLRSBEG/jDXs
-05b1gtNYMwXk/OSCJM7ZmvEwRbVp6Q8=
-=bbI4
------END PGP SIGNATURE-----
-
---hOQqi1YYOcr53TRN--
-
+May God Bless you,
+Mrs. Dina Howley Mckenna.
