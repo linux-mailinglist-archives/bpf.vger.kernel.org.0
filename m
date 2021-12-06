@@ -2,80 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EBD468F13
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 03:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438B5468F82
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 04:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhLFCYd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Dec 2021 21:24:33 -0500
-Received: from mga04.intel.com ([192.55.52.120]:64204 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233372AbhLFCYc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Dec 2021 21:24:32 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10189"; a="235968995"
-X-IronPort-AV: E=Sophos;i="5.87,290,1631602800"; 
-   d="scan'208";a="235968995"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2021 18:21:04 -0800
-X-IronPort-AV: E=Sophos;i="5.87,290,1631602800"; 
-   d="scan'208";a="656846675"
-Received: from rongch2-desk.sh.intel.com (HELO [10.239.159.175]) ([10.239.159.175])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2021 18:21:02 -0800
-Message-ID: <576e09b1-eb25-955b-9a7c-53b1b56b8dbd@intel.com>
-Date:   Mon, 6 Dec 2021 10:21:00 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [kbuild-all] Re: [PATCH bpf] treewide: add missing includes
- masked by cgroup -> bpf dependency
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     bpf@vger.kernel.org, kbuild-all@lists.01.org, axboe@kernel.dk,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com
-References: <20211120035253.72074-1-kuba@kernel.org>
- <202111201602.tm0dlDfP-lkp@intel.com>
- <20211120073431.363c2819@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-In-Reply-To: <20211120073431.363c2819@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        id S235555AbhLFDKd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Dec 2021 22:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235402AbhLFDKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Dec 2021 22:10:32 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9664C0613F8;
+        Sun,  5 Dec 2021 19:07:04 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id m5so8801002ilh.11;
+        Sun, 05 Dec 2021 19:07:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=X55f6rIyxMAeTkg3TDveTFlB+gqqpA+K+Mun7+M717g=;
+        b=mknr1zSxDyDbvYIPNQQVYXP3WrHtVHy2+70P/ZIsDsoqtkDAtzuEYjDoIJkV1J73DA
+         bujhgI48w3dTh8yi+irxuVzCiJagWpFVlF5OTvv/VtpAw3q5ZDb7sD1bHZ32lJcqTMco
+         YzCbWSgJqs9x8KZoEk7jji2Z2XAZXoJj/Q1ph+x8111Oks0zvssR0NKQksxNGz8sDshX
+         i+FXsPAJUh6Yrc3md4//SS5wgd5h681kHo7d7leh9Pb4b4KZFvZQ4xt4f7Moku6lpv91
+         Sfzk/Vzt9wgyRm2SStVmIwUH4/XESnYm3ibbXN7kKTzkTP34xtIhBsZLHVEE7VkhYg3H
+         SVTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=X55f6rIyxMAeTkg3TDveTFlB+gqqpA+K+Mun7+M717g=;
+        b=CKlqCDp4E1Gp9L6az6yBnm2kduM+9G37ahjfgKo5jciVf2BiOjQDnqZNcmzrme/UOX
+         JrvIQ+0Br+NUB84/crE4OkafPFDk0oDNfWlCym7kZ9wpWl0cvmohNdGtD5Nj9qDVKm7n
+         C5v8GBZAvey2vdWKduMJ8a5DCYS9wXgBOD0T6LJp2NEwPOp5jMMQGHomV5vdx3Gp9Ul4
+         2DO9eSkwpfnIbuTwObCVC1kM6LkCDYPtihWbtSudRfw94hKFt1ZkOMCORLVlD1ZaTMwq
+         Q5Y6XzZEfYM8eqSqUSwdqfV1Mee9xXCnCBozi1aeGI6OdmssxRz9ytwmxwMe8q21qute
+         PAaw==
+X-Gm-Message-State: AOAM533tbvapWJUK/cgS2tnMDy9vyF7tmzK/OSpqi5KQjtCVuKfD+EK9
+        UE2EJMP0EIce71u4HtkjL/4=
+X-Google-Smtp-Source: ABdhPJxO5BUmaKTFICc1LNTGkVxjmfBxmj4LMsA1F93TMnKyH6vkrW94naPxPSDTye2MBNxetH91Zg==
+X-Received: by 2002:a92:c248:: with SMTP id k8mr27590450ilo.297.1638760024085;
+        Sun, 05 Dec 2021 19:07:04 -0800 (PST)
+Received: from localhost ([172.243.151.11])
+        by smtp.gmail.com with ESMTPSA id l3sm7138439ilv.37.2021.12.05.19.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Dec 2021 19:07:03 -0800 (PST)
+Date:   Sun, 05 Dec 2021 19:06:52 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Message-ID: <61ad7e4cbc69d_444e20888@john.notmuch>
+In-Reply-To: <95151f4b8a25ce38243e82f0a82104d0f46fb33a.1638272238.git.lorenzo@kernel.org>
+References: <cover.1638272238.git.lorenzo@kernel.org>
+ <95151f4b8a25ce38243e82f0a82104d0f46fb33a.1638272238.git.lorenzo@kernel.org>
+Subject: RE: [PATCH v19 bpf-next 03/23] net: mvneta: update mb bit before
+ passing the xdp buffer to eBPF layer
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Lorenzo Bianconi wrote:
+> Update multi-buffer bit (mb) in xdp_buff to notify XDP/eBPF layer and
+> XDP remote drivers if this is a "non-linear" XDP buffer. Access
+> skb_shared_info only if xdp_buff mb is set in order to avoid possible
+> cache-misses.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
+[...]
 
-On 11/20/21 23:34, Jakub Kicinski wrote:
-> On Sat, 20 Nov 2021 16:55:16 +0800 kernel test robot wrote:
->> Hi Jakub,
->>
->> I love your patch! Yet something to improve:
->>
->> [auto build test ERROR on bpf/master]
->>
->> url:    https://github.com/0day-ci/linux/commits/Jakub-Kicinski/treewide-add-missing-includes-masked-by-cgroup-bpf-dependency/20211120-115325
->> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
->> config: riscv-rv32_defconfig (attached as .config)
->> compiler: riscv32-linux-gcc (GCC) 11.2.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://github.com/0day-ci/linux/commit/e31b3bdd266ef8f63543f27cf7493e98112fd74a
->>          git remote add linux-review https://github.com/0day-ci/linux
->>          git fetch --no-tags linux-review Jakub-Kicinski/treewide-add-missing-includes-masked-by-cgroup-bpf-dependency/20211120-115325
->>          git checkout e31b3bdd266ef8f63543f27cf7493e98112fd74a
->>          # save the attached .config to linux build tree
->>          mkdir build_dir
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=riscv SHELL=/bin/bash
-> False positive, riscv seems to have a broken module.h so including
-> it in more places results in more of the same errors.
+> @@ -2320,8 +2325,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+>  		      struct xdp_buff *xdp, u32 desc_status)
+>  {
+>  	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+> -	int i, num_frags = sinfo->nr_frags;
+>  	struct sk_buff *skb;
+> +	u8 num_frags;
+> +	int i;
+> +
+> +	if (unlikely(xdp_buff_is_mb(xdp)))
+> +		num_frags = sinfo->nr_frags;
 
-Hi Jakub,
+Doesn't really need a respin IMO, but rather an observation. Its not
+obvious to me the unlikely/likely pair here is wanted. Seems it could
+be relatively common for some applications sending jumbo frames.
 
-Thanks for the feedback, the bot can't always find the first introduced 
-commit with the bisection method,
-we hope someone can fix the reported issues if interested.
+Maybe worth some experimenting in the future.
 
-Best Regards,
-Rong Chen
+>  
+>  	skb = build_skb(xdp->data_hard_start, PAGE_SIZE);
+>  	if (!skb)
+> @@ -2333,6 +2342,9 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+>  	skb_put(skb, xdp->data_end - xdp->data);
+>  	skb->ip_summed = mvneta_rx_csum(pp, desc_status);
+>  
+> +	if (likely(!xdp_buff_is_mb(xdp)))
+> +		goto out;
+> +
+>  	for (i = 0; i < num_frags; i++) {
+>  		skb_frag_t *frag = &sinfo->frags[i];
