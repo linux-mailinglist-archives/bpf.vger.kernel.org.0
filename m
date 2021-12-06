@@ -2,344 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4296246AB2E
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 23:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E866A46AB47
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 23:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353105AbhLFWHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 17:07:50 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48242 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232710AbhLFWHt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 6 Dec 2021 17:07:49 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B6HvS8v031338;
-        Mon, 6 Dec 2021 14:04:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=CzAdrTJ0KJ4KVS1l+lMM2ndFG1NlHRoGlfBDkNOdibE=;
- b=bVsrGjn6JzrE0u/ZZIOKzhnCSNDDKB2uPSZp3RWuPXpsJgBEXjpQC5xN9d7DpO2V+Hgk
- 1Ch35kcLxOLWb5U4Nxf+6MI42SqaEbFHRaqUdXYd/hn0QeRwYLv3+72sqE7w+NcjqsES
- 6WSIpKt5MbHVgZBEEqHJz14LkDTYnki45ck= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3csc985tem-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 06 Dec 2021 14:04:00 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 6 Dec 2021 14:03:58 -0800
+        id S1348166AbhLFWSP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 17:18:15 -0500
+Received: from mail-eopbgr20099.outbound.protection.outlook.com ([40.107.2.99]:43142
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1356335AbhLFWSO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 17:18:14 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O7wQp8aVgXTLGtD4H9wOKjcIsMe1WsFNYwEPYN97OdVmg2U0f9QdQb3rKCmCV+o58JNEcSvBJ23X/U9W0rj+OiI0TcdoQ/DfPVuKCAm2cfgx8cOsnWrumU3wpIaXate1Z3c4IDLxa83cSzGPjn9ZJJOBfO5qiifee+blID+y4J5xQxdrixMvlaAePwZ8wbIrGzs2nI9ceOZ55qwClGsNMtEB3zswv1RThOHh6mAVnJjsRfbAU3rKxSNfpMRFpLApwdWDileTrRcfJX8qEKuoIAfzyDxrmdy7avGuJWv+De1uoQJOUCW1TlT3oDn/3k6zbAdPh1JlytRsXSjsuwWNpw==
+ b=DfVgNQZ1AurXg8KWWWKsBqBCB+JUbLpa05qyWwNkwrk+lzDihzaa+RdavC4Dz1nxoB17u8q7MYgyOSFLQ37FgXY14adc3KSH58zbP6OrrAzkcouXtctae2A4KFR1mRwTSGNLgOTJUmssctJwQyhGnB2NIuGCzsldlCNN2AdqECsY2FIsYFDJPrt2wnzh4ruU1uCM6hTOQyb9XgyLTJUuN/6KqKzQVA7SvNsAcjOpmgM1DbZ+PQchZ8feNwbpQz0NkUGX6elwITX80mrynT84f0+t+hp1chmG4sOxkL2By+EZEvi2p3U+nMuMrNlPsmrWI7C6kURIvOJfQAtdkCFijA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CzAdrTJ0KJ4KVS1l+lMM2ndFG1NlHRoGlfBDkNOdibE=;
- b=JHpDjBOEfeMxY3MFk/3uG4H0+oimuP+aSdASZLZ8lLRc9JGg8Nl0dv+JKD3iuhTSpuVaRJUZcrQC6LEk/25CWwa/2FeCcksfHvCPTYAlk6XDgEg78nr7ZylUyKMjeZNMEJ6aZAAmNXjsr1ktpKXb4AM3sikFP1Bjq8y/g9l8Jg1ZJzg/ptX/PbcgOMZWfluqihGaPq70i+TzgA9bODOx6V/fCmR4K3DMbV3qguM7OhShGxgiOSKd5R4b6r+63IYxNW+sx9g4MtKLVBFj8i/EmVwV512GWm4ez7Zh00k4EHc67MWCCPBGQCa0Khuc+po+PJFhqb7Kqz6TDwfjDB8o0g==
+ bh=UsV7hYiOFkUWJ9dYybQLT4F21L+ouF0hhccum/9MhjY=;
+ b=JuUVYbgyKHpczD0SQwCIVBZ4w4fVurmXV4dTwkNOswhQdbaiyGMe7pNxl8yU2dYpPz+JPm3DeNvLZaQ1SKX/ZvcERt8U3j77zvx4UHlOA4qXM9DdB5NZhBbN2UAhkBij00TDzI/IPAWUcgbn7i0D6ckDy+xjfkU8bMKPL13fR949ESugL06OfdrR9Hfr5eyt69MLoG0L5mepkRq8rNgfcsGydGfNJHV6+Z5D6TlaGse+480w3PvSM0Z5UB/bz1zB7/R2v9dPa6S+He+y3Zk5S0JZfGkyjxdxlAjBIvTVVqYF2+Du8+Fr8lkfg+h1nuW59ecM8bm3rqAtk1aUkrdGsw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW3PR15MB3980.namprd15.prod.outlook.com (2603:10b6:303:48::23)
- by MW3PR15MB3995.namprd15.prod.outlook.com (2603:10b6:303:40::15) with
+ smtp.mailfrom=eho.link; dmarc=pass action=none header.from=eho.link;
+ dkim=pass header.d=eho.link; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eho.link; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UsV7hYiOFkUWJ9dYybQLT4F21L+ouF0hhccum/9MhjY=;
+ b=WfjVXwQULCoxWYLD29/ipQlHlvBuPH6UaN8KavVOtzaPqq+CTTGFfyHVkqDQZiv5TpQ2XwRmUabFN2CT42q2WYI0nz3xkvq2eyIJ3q/TnKZfNFEYvsLo2akTl1onbA56rQJrodU7rkZQbP3Mk/20qkT+83T5tqqCjouPM86yhmMxCl7sPFa+Stndus6Pkmw9ZO7Uc+Awap6OzEUHCDacw8KnKHDxnOS7e0PUtql0x5ZP7uffNYR/9/yYr7yYibAFJqZ2APg4A4mBtt8fYkKqCqxKGympL9enmFUcUvjk9BLrPNYYx9vGLc8TB/P1yhygUVswqBACpDTh0O+9AFkvEQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=eho.link;
+Received: from DB9PR06MB8058.eurprd06.prod.outlook.com (2603:10a6:10:26b::20)
+ by DB8PR06MB6108.eurprd06.prod.outlook.com (2603:10a6:10:107::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.21; Mon, 6 Dec
- 2021 22:03:57 +0000
-Received: from MW3PR15MB3980.namprd15.prod.outlook.com
- ([fe80::cdcf:702a:58e9:b0a6]) by MW3PR15MB3980.namprd15.prod.outlook.com
- ([fe80::cdcf:702a:58e9:b0a6%8]) with mapi id 15.20.4755.022; Mon, 6 Dec 2021
- 22:03:57 +0000
-Message-ID: <7df54ca3-1bae-4d54-e30f-c2474c48ede0@fb.com>
-Date:   Mon, 6 Dec 2021 14:03:54 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add tests for
- get_func_[arg|ret|arg_cnt] helpers
+ 2021 22:14:42 +0000
+Received: from DB9PR06MB8058.eurprd06.prod.outlook.com
+ ([fe80::4cbd:de68:6d34:9f5a]) by DB9PR06MB8058.eurprd06.prod.outlook.com
+ ([fe80::4cbd:de68:6d34:9f5a%9]) with mapi id 15.20.4755.022; Mon, 6 Dec 2021
+ 22:14:41 +0000
+Message-ID: <cfd7a6c3-dee9-e0ba-e332-46dc656ba531@eho.link>
+Date:   Mon, 6 Dec 2021 23:14:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v3 net 1/1] net: mvpp2: fix XDP rx queues registering
 Content-Language: en-US
-To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+To:     Jakub Kicinski <kuba@kernel.org>, Louis Amas <louis.amas@eho.link>
+Cc:     Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, <andrii@kernel.org>
-References: <20211204140700.396138-1-jolsa@kernel.org>
- <20211204140700.396138-4-jolsa@kernel.org>
-From:   Andrii Nakryiko <andriin@fb.com>
-In-Reply-To: <20211204140700.396138-4-jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        KP Singh <kpsingh@kernel.org>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20211206172220.602024-1-louis.amas@eho.link>
+ <20211206125513.5e835155@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Emmanuel Deloget <emmanuel.deloget@eho.link>
+In-Reply-To: <20211206125513.5e835155@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR08CA0038.namprd08.prod.outlook.com
- (2603:10b6:300:c0::12) To MW3PR15MB3980.namprd15.prod.outlook.com
- (2603:10b6:303:48::23)
+X-ClientProxiedBy: MR2P264CA0111.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:500:33::27) To DB9PR06MB8058.eurprd06.prod.outlook.com
+ (2603:10a6:10:26b::20)
 MIME-Version: 1.0
-Received: from [IPV6:2620:10d:c085:2103:b2:4e6a:72dd:1ddf] (2620:10d:c090:400::5:1d85) by MWHPR08CA0038.namprd08.prod.outlook.com (2603:10b6:300:c0::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.17 via Frontend Transport; Mon, 6 Dec 2021 22:03:56 +0000
+Received: from [IPV6:2a01:cb1c:80ae:d100:3374:b07f:907b:f9fa] (2a01:cb1c:80ae:d100:3374:b07f:907b:f9fa) by MR2P264CA0111.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500:33::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.20 via Frontend Transport; Mon, 6 Dec 2021 22:14:40 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bfdde200-f52e-40a3-4f86-08d9b9044d05
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3995:EE_
-X-Microsoft-Antispam-PRVS: <MW3PR15MB399593EE5D213F3C4911BAEAC66D9@MW3PR15MB3995.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:40;
+X-MS-Office365-Filtering-Correlation-Id: 0a8084c4-723c-437f-a9e9-08d9b905cd00
+X-MS-TrafficTypeDiagnostic: DB8PR06MB6108:EE_
+X-Microsoft-Antispam-PRVS: <DB8PR06MB6108D83D7DF60CBA51CD3CF0FA6D9@DB8PR06MB6108.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ktdi9XYSrWc/K+ZhFQBahLVkYwgl6Ia3wgO0P0V8OmuhE9UL3/WbT01j7gCuyyIxqoIpUOzSB5/yNZLVTcDKleGiKOAgkWAuPjpxU2/yIwRjnnpLzuXjzCdEIDs+2FONd5n73Z2d9kBcnZiZO2GZM9Y+oWrMpl9B/8sQ6g/3gbQWLcNUQI8XY8Ww4sz7ciaA8XWrymsc7osla/Q1l08zjwD4fbGUMfgLu59pASU9Eb2XcPYYG3vY8aaV6aKoIpQvuJqJhNMGL+dcS3iEpwDvnIHyDBjKbwEIkFBIxYKtEQtnMdpQKOt6MWWQtgN9NGpIx8foIj5gmWt8dZtM5i+98ZGh1TKGWg/ZX2XemqyO0tGBzy3jCxOTX4Zfp3H+YCP5WJWxhxi41Tt1GXq2mc25WPcNDNZrJkFmblZjQ9RNKsFiB/1tgHehb/FnTaHpcjDwtB3eZoRIRLWfVQjDayx968kIh22fh7UPVH3+CS0Kbvlctz6cgSjKHi/6p5dgGwAikgF9nYQYDoxUCJjgkMgnIJwy/E2uqhLMfdwx+dD6nlrDG4zFPsvqnYsyZ47oRYkeDCoXqhv7P11DpV/LI5jPzc/QVy8VAjPbpi9PqUBpFcfXe5htlB9GS/NJMykk9cvPmKzguskI8kFhTuAQ2AuX+8UdzSmeWary23+VzeD4rlPRyrwUvyDvLNQ7OPvb0yAnlTu/96Xa7Q/HieFRcvq53n+Ff3EsisjWrYh2s3iHw9Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3980.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(186003)(2616005)(38100700002)(6486002)(5660300002)(4326008)(54906003)(31696002)(31686004)(2906002)(36756003)(508600001)(86362001)(110136005)(8676002)(8936002)(66946007)(66476007)(66556008)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 8w67Ul+Bqewz+DNn+Aoro7lRiKq+uwgmaWcB7rgZTbjKMASU8rrdg4DscflS4hwxDKHd3ZEh4P7sQZSZD/d4aODla68pLwW3HfmuhT0g/XGL4EqdEXZl93mWtMaHq7v46DNV8gQG3Y528zs8fI7rZhSjY9i09ekWhhSczja8/sj/8axR655kh3BPqg8dtCrQNPktIOtk2lqofMPH4ARbvzjrwNx9jyiLrfiGnbvqgoZXt56ZQFWifoYn3JdAMHlYlmItZl0fnU/FeoC7s9QVRhTR0cO2ns5MWBCNpwqUxY7k2xmWag9BKgz0EeRcv8elFMvQmChsAWTsR1TzNFpJra9Rn3nZDgKlEpKAICenTdfqmuzWAfm3a8AGeKm8VvqsHsUdIckL4tsQKiPdfXiPe0e1HtlNBxuT1KIM7pQvt9Dsq92rg2/3s3cWXNhk0DPQCW+ZyB9Q07tLoU/bKXt5RgmQe3vgtxAx+fIiLbudEptgjK7MC3Oop3frzDDhX9F3iyzLMl5XNLQYzeqlnvGr0EX92/5MwOOm17aBIsZevnxiwuQBYofQCvTL3QIPGfH4ArBZc5C+LmYU16vdd5l51RpKI1w2+JdlW/OmPTd/MSNC/XeCYmV7I9TKMizV/DV+dj+fUvZBo0vUR5XwH0QfcXe9siNRPsH3z65MkLjWGPancXhSwaSjBIKe15vg6RjJT0j0hoi02NXN2QEgzPp73+SgyuHmD/38jzfZfWWRDiyPJMEon+PtbA3YRI8Tv7qpm86rrp1JQ+Qu/HkL+I9AIdyUQqlhieGBZ/N3Q59vmzr42ytdzH3PZRToB2V69KRR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR06MB8058.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39830400003)(396003)(136003)(366004)(376002)(44832011)(86362001)(38100700002)(508600001)(66476007)(66556008)(5660300002)(6636002)(186003)(53546011)(8676002)(66946007)(36756003)(2616005)(31686004)(4326008)(966005)(2906002)(52116002)(6486002)(110136005)(316002)(8936002)(54906003)(31696002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUVzd3RNZ0s5SlVMZEllUEdReWIvSjV2ZzZISTRIaXJaRnhkUmpKdGtmR1lI?=
- =?utf-8?B?bGdOdEg1blZLYlFxYmR1aEVHSWdQWFMvamxRTytrZmVvV05NM25QNVJ4Nlho?=
- =?utf-8?B?YU92U2k0bk5RWnBoNUk2VFBmMFhOU3pUZUhWTFpqN0JONXVMRldzek40T1ZI?=
- =?utf-8?B?VXVtMU8vd0JwSjNrTkNJQno2TkpnQ1J4UW1PU3QvVzJJWnpRV2hwUk02R2ta?=
- =?utf-8?B?bldta2I0NEl0M093UlRwQVVqc2VyZVhQNE5GL084clA4a0d3STQxM2pPNDFM?=
- =?utf-8?B?RWZsSSt1MFArZ2QrdWlLaFBFQlhkR1FSN084cHhaU1dOVzFLZDEwN0hINFdL?=
- =?utf-8?B?TkNHVml2MnVQbzdRaXBBbDYyMXY3WjFBZE03SUlEREthTC9LUkI4MEVpeGo5?=
- =?utf-8?B?d25DaHdaZDB1UWlldkd6Wmkwck5ZTE1QSmVKeWZ6cnY1eEowQTM1VEl5RGdl?=
- =?utf-8?B?QmxMYTkwT0c4dTZZaVJ6MWYxU2RKclNDenRWcDFqVlhaL2owWjdjajduSWNw?=
- =?utf-8?B?QlNtMlRVSnZPMCtuaDBNT003YWJMVVU3ODVIOTRkWUI1bmc5YWsvZ1pCOUlY?=
- =?utf-8?B?MmlyZEJYdU5rcVlta2oxdTFJcUtVRjAzTi9KQnliVEpGd1Y2ajNkZ0VWNVUw?=
- =?utf-8?B?bm03Zkc1SlZjYk1NWUtDQWRtVE8wRzJ2YTJxRGs5RG9tcnFtS2U0TFVvam9E?=
- =?utf-8?B?bHNQZXZZYkJqN3k5WEMrRHNhVXFoYStSaDZTZ2VCT2NCaERsN0dob3ZHVm1x?=
- =?utf-8?B?a29RNUppOWxxbitNT21Gdkl5MnJDREt4Ylk3RDdzYWxSWmFYUDROWnlIYm5q?=
- =?utf-8?B?K043OStLK0xxRWxSM2FSRXdkbXpNYzVqUUhZaWNpRG92Vm5vMFpXMGdiNm1I?=
- =?utf-8?B?YVFVL1I0N05mOGVlNVducXZzMlBBN0ppS3dvaVdKNi9ET0JyZ1pSVU42RkRa?=
- =?utf-8?B?LzE3Wm5hUWI4ajFtMkdBVHhlVGNPTm5pc3BSeEwxY1JicWdwV3dCWkRFSmps?=
- =?utf-8?B?VG1INU9wOWRXSGx4OVVSclNtc2ovajFKSnVmcW1jSjNMYnhYUkJkeWxoajZx?=
- =?utf-8?B?R0NlQ1ZDQ29SWWFSSWVnOHNoT2hwT204V2hNdjVac2c4UnRkSnMwamM5eWlL?=
- =?utf-8?B?c01pbmhxRFJrMEYxcUxEakZjN25wY0JSa1pYZkpqb2UwaVBhUWRONERZVjhN?=
- =?utf-8?B?MkVOQ3drRGJXVExmUXA1YXg0dWhySTZkaWlTcnZheWxDVFZVRzNWVjRvT1BS?=
- =?utf-8?B?VjVJUlAvdUdTemFacXp1bmlFRlJLK1FDaDk2RlJCQ1lCdm5MUHVFZHpZcS93?=
- =?utf-8?B?TW9xWmJjanhYdmN6NnlsdStEV2JETS84TDBxM0E2K3FvUjdEVmlXeE92UGFC?=
- =?utf-8?B?cGt1Tnp6WDFQekVyc1JTaUtYNStBa2xvbE56ZUl3TmcwM1ZiZ1J4bEowRmpv?=
- =?utf-8?B?SEp5UitRdWUxbkxMVTRjVUJTbVhYTFJIaFBwUmQwRVMrbmM5YU1RQU1LSkha?=
- =?utf-8?B?SWNhaFNnRmZ1VnZ6VW1QRUZudkNnVklHMkFNcG91Wjh0SjRMQ0NjbWJEVy9z?=
- =?utf-8?B?clZEV2o3a3plSk50YkFURnpDUGJSM1dJcGwrcjI1WkliaUlxaUx3Mjh0cDYz?=
- =?utf-8?B?Z2txWmJZbTRWZUF1VzVNNGc3eW9YU3VTZklMb2NWMWw4ZFQ0UXVVTDRVOHlt?=
- =?utf-8?B?T3NVRzlRK2N4a0xkdzBCd25nN2ladWExbDNnTitOcGNXcUo5aXNPZWtHSXdL?=
- =?utf-8?B?eHlldEFJeVpHc1FaUzBVZWt4M1RtMVFFb0dsM2VrZTNlSjIwb0N3S2twZWpH?=
- =?utf-8?B?cEZWRE16dm5TdlJiZnNWSk1SWFJaK1k0ZVpCdTd6c3I1RWdLQ0JteUhBcXc1?=
- =?utf-8?B?Rmpzd2FrSlV3VVgzSlBGQ1BYaVR0am1KTkUzRG16UXUraGZqaE1LTS8xeklZ?=
- =?utf-8?B?alNCRStYTE5JcEFLeDl0L2VTZ0FtVm04cmxsZGdtSUpSWENkeGRMU1BJUVVw?=
- =?utf-8?B?Qk0waDdGaGFob3BEZnMxN1RISmsweXBmL3g3UGE1WDZ3UlpwTVNPTU1MaWNO?=
- =?utf-8?B?b2JkTTZJS3pFK0NOUUtYR2gzNXNQWU5aa0lFL2xQOXIxTHc3UGtwRGRtdkxF?=
- =?utf-8?Q?RGr3EQLqcAAmZfQ3KV6syxfdG?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bfdde200-f52e-40a3-4f86-08d9b9044d05
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR15MB3980.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z3hZQ0VXUExMcithaGRnUWt1VG1ZN3FmNFQ1bmNPTHBXa0FPV3BldFFWekdJ?=
+ =?utf-8?B?UVNubGEycTRMaDg1dWk0LytrVVVRQ25JRzUzZU1heE1yWiszTGN3Y2Z1Mlcx?=
+ =?utf-8?B?c2hvRkR5dHNLdXo4VFcxbmFmOXBLRDhKTzFhWDU4eHIyc2VnLzRleGdFRGVs?=
+ =?utf-8?B?OCtoZWM1bm9vc01aQ2dPZXhFNHM2a3V3alBPckxzTkgxNzFtUkRRTmpIYkM0?=
+ =?utf-8?B?UmlIdVJXbGVwV21HRjQ4VDlUeFdCS25iNTJSOXBacHJMNmxpVXlLdXk0UTZr?=
+ =?utf-8?B?R1EwYkJXbHBnUm9TS2sranYwMVhJMjdla3NRNHVQQnhZZWhHVGxqTkl4bm1s?=
+ =?utf-8?B?aXZmaGUzVThra1ZPYWdIYzNNQVo1OWF2MUJMN2VheWhJRkN3cjJrTUc3OGJ1?=
+ =?utf-8?B?aUFCaERJTGFtdlhPbWpHc1hmbHJuTkJsWFdQOGtDbTBHZkpXSnFncnhodUtU?=
+ =?utf-8?B?ZWt3alpWUlRwM25PN1hIWU9Ia2Njb0oxdFN2STN0OEdYN1VpV0lCRnZqYnlY?=
+ =?utf-8?B?TkhpWjNIL0IvUERVbFRwbmpXbUg3MzBwVWkrU2tHdU9VTTJkWHpJSDdGdWZy?=
+ =?utf-8?B?c0sxRExPYVh3MmxUOU10U0t4cUJ4MkkrNXI0R0xVOGFqOTd2WEtpTHEwNWtF?=
+ =?utf-8?B?UjVCMWZkVWplVGllbkZIcE1haUVoeVpCM3dvV3VDbndTNGJ1TTQzMndPYXlL?=
+ =?utf-8?B?cGNjNVNvRWFQbnRSZ0JaMnhsajVEWWdnZU8vbEdVSmRPV0xOekswQ0tpVTd0?=
+ =?utf-8?B?TEtkdUdwczFUQTdzSEplVjE5OENDQXB4VUNpamtCUlFIQVB5RmVuSmFyc1VE?=
+ =?utf-8?B?Wk51UU9GUFJFM3NHUWxNL3Q1dElDb1NZWUdJUFJJTTBseDNGTjlycGFBWDM2?=
+ =?utf-8?B?cDlxOXI2UlJaNENua29NNGxKOXlnU0JhdzRURnBqRTVDbzY0eHltVU1kQXls?=
+ =?utf-8?B?aDlrWmJOa01QN3I5UGVjZnRUdCtNQVZQLys3ZERUMk5uUStKMXgxLyt4dUZV?=
+ =?utf-8?B?WkNmcU9jYklYalJtanRNaitpZ25sTEIvZEpmdEVsUmE2cDNJY3NucUF6ZmNx?=
+ =?utf-8?B?dVBueUJ1RDU0SmcrNnBNTnJqWFNRZHVsUXZiZi9ZMEtQcWsyc2xTbk5BeHhQ?=
+ =?utf-8?B?ZXp6MG1NbjZjUkNJS0ZUdG1nMjlYOWtvMGNoRDgwLzk3cUdoWkZiajlyRGY0?=
+ =?utf-8?B?YjM4akpGNGhhTVBzMzc5QVpnelE0MFdSa1NWK255UE9kTTBhb0crQ3pnQzRw?=
+ =?utf-8?B?bUl4a29nbXJBUk1rVU9LT1pJVUFaeCt5MFlyWWlWcThCRFZCb2VhL3ovQ0Zx?=
+ =?utf-8?B?R01YYXpGTFhlOVVxMXJjSVduUlV6dSt1UmxYOFdSL29yQVpib3M5eFdFdU1V?=
+ =?utf-8?B?dkR6dk1rUnhEVTFlMHpmeWpPdkd6bVRrL1F5NFdLQnFBZ1FTUTgxNnkvSkxQ?=
+ =?utf-8?B?cFZ1M2kwK3JRV29nT0hIbHhZYWY1WWp1bFhybUNCbmYxWUNoRGVpMlpIZFNB?=
+ =?utf-8?B?QVdkdEdVUnYzNm5HeU1aU0t2a1ZZZnF6amtMNzNhc1BGb254NTIwTFdsK1Rl?=
+ =?utf-8?B?U1dOTzFGRG9SN3JoYktXS09CcUJmU3Y0cTJEY0U0MFVzbHdtRzhSc2lvMzBw?=
+ =?utf-8?B?R1QrSUt3a0VxSFEzWkFTRExwZHFseFBYMXhRVktqc1MvSjVSNVpvZ0lqS1dn?=
+ =?utf-8?B?UGtuWGlwR1dTMTdmVlZwbTZIMno0dlVJdlNyN0xIRFlEd0QvaTJOYmFKUFlq?=
+ =?utf-8?B?RGpSS2p3RnpFS0w4L0lBczRITkpvbzdlcTBITE5iWmUwQXpBVzFoNDM4dFJO?=
+ =?utf-8?B?NmtWRmJqeXF4Vk4zRXFrNlNnYjVsd2RmNTBVdUN1dDJJek5kbTJUZXkrTkpJ?=
+ =?utf-8?B?cFJuSUFwUnc5YmFIUUpvK00vM3NYTFJWZTdLYmRpKy8xaEFiampKNEoxbThU?=
+ =?utf-8?B?dFR1UlZ2Zk8xbnpqSkxFcDdBV0dEM1B1M0NGR3dIZkw0VE9TcWdkWG1zRDVV?=
+ =?utf-8?B?dG1TWXpDeGIvRWd5SmM4bVF4Qy9hbXpMaVA3WE9heS9wRytocmtvNTFaOHRj?=
+ =?utf-8?B?OUc3bWNXU0ZUNEI1LzF0QkpxUG5rdzJTZ2xlakIvN1phTXQ2WDh0SFRKSjVV?=
+ =?utf-8?B?MVA0S3E3RklDY21WL05TSms4d1ptZ2FZMVFRSUZ4ZGQ0SFhwSmZ3VUc2amZH?=
+ =?utf-8?B?clJVZ2NiUnBJelZ5U3NFajk4VnZtS29GOGtMcFJ3SG81ZUcrcVQ3Y250SXFX?=
+ =?utf-8?B?ZTNBLzFjOTM5ajN6OUwzbG5UWVV4VGdzNENJemJoZTI5Nk5mK0Q1VmlXK2ZU?=
+ =?utf-8?B?b1E0d3R6aXUwV2x5MGl4M21xZHRFSVhFanIwTzJiTVhJSkxqRU5CNm1HdFU3?=
+ =?utf-8?Q?/j3OoUZcM7mWbkVs=3D?=
+X-OriginatorOrg: eho.link
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a8084c4-723c-437f-a9e9-08d9b905cd00
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR06MB8058.eurprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2021 22:03:57.4191
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2021 22:14:41.7114
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 924d502f-ff7e-4272-8fa5-f920518a3f4c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fa0nBMTtUi1zfbTm5P/SkF/GFsKhQIDn9aYruv5LzjIg0rnfE6ieDVBSXlInyuHw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3995
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: lovM-TKEL_cIKhNtfcynVZgeZjBhYzJy
-X-Proofpoint-ORIG-GUID: lovM-TKEL_cIKhNtfcynVZgeZjBhYzJy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-06_07,2021-12-06_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
- phishscore=0 adultscore=0 spamscore=0 impostorscore=0 bulkscore=0
- mlxlogscore=999 lowpriorityscore=0 mlxscore=0 clxscore=1011
- priorityscore=1501 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2112060135
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: J3SzpadITb1XRYUdahjWjUkig2ZzY3tVuATADnQ4lvyq7KoQY3vBRTZG/GLXdNnrR2SQSnIYj2PnB1eJCTIQduY+hooE7Fm7psHCAZW+KAU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR06MB6108
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
 
-On 12/4/21 6:07 AM, Jiri Olsa wrote:
-> Adding tests for get_func_[arg|ret|arg_cnt] helpers.
-> Using these helpers in fentry/fexit/fmod_ret programs.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->   .../bpf/prog_tests/get_func_args_test.c       |  38 ++++++
->   .../selftests/bpf/progs/get_func_args_test.c  | 112 ++++++++++++++++++
->   2 files changed, 150 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
->   create mode 100644 tools/testing/selftests/bpf/progs/get_func_args_test.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> new file mode 100644
-> index 000000000000..c24807ae4361
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include "get_func_args_test.skel.h"
-> +
-> +void test_get_func_args_test(void)
-> +{
-> +	struct get_func_args_test *skel = NULL;
-> +	__u32 duration = 0, retval;
-> +	int err, prog_fd;
-> +
-> +	skel = get_func_args_test__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "get_func_args_test__open_and_load"))
-> +		return;
-> +
-> +	err = get_func_args_test__attach(skel);
-> +	if (!ASSERT_OK(err, "get_func_args_test__attach"))
-> +		goto cleanup;
-> +
-> +	prog_fd = bpf_program__fd(skel->progs.test1);
-> +	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-> +				NULL, NULL, &retval, &duration);
-> +	ASSERT_OK(err, "test_run");
-> +	ASSERT_EQ(retval, 0, "test_run");
-> +
-> +	prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
-> +	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-> +				NULL, NULL, &retval, &duration);
-> +	ASSERT_OK(err, "test_run");
-> +	ASSERT_EQ(retval, 1234, "test_run");
+On 06/12/2021 21:55, Jakub Kicinski wrote:
+> On Mon,  6 Dec 2021 18:22:19 +0100 Louis Amas wrote:
+>> The registration of XDP queue information is incorrect because the
+>> RX queue id we use is invalid. When port->id == 0 it appears to works
+>> as expected yet it's no longer the case when port->id != 0.
+>>
+>> The problem arised while using a recent kernel version on the
+>> MACCHIATOBin. This board has several ports:
+>>   * eth0 and eth1 are 10Gbps interfaces ; both ports has port->id == 0;
+>>   * eth2 is a 1Gbps interface with port->id != 0.
+> 
+> Still doesn't apply to net/master [1]. Which tree is it based on?
+> Perhaps you are sending this for the BPF tree? [2] Hm, doesn't apply
+> there either...
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/
 
+Strange...
 
-are the other two programs executed implicitly during one of those test 
-runs? Can you please leave a small comment somewhere here if that's true?
+AFAIK the commit was added on top of net/master (as cloned at 
+approximately 17:30 CET). I'll check with Louis tomorrow morning. We may 
+have messed-up something.
 
-
-> +
-> +	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
-> +	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
-> +	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
-> +	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
-> +
-> +cleanup:
-> +	get_func_args_test__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/get_func_args_test.c b/tools/testing/selftests/bpf/progs/get_func_args_test.c
-> new file mode 100644
-> index 000000000000..0d0a67c849ae
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/get_func_args_test.c
-> @@ -0,0 +1,112 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <errno.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +__u64 test1_result = 0;
-> +SEC("fentry/bpf_fentry_test1")
-> +int BPF_PROG(test1)
-> +{
-> +	__u64 cnt = bpf_get_func_arg_cnt(ctx);
-> +	__u64 a = 0, z = 0, ret = 0;
-> +	__s64 err;
-> +
-> +	test1_result = cnt == 1;
-> +
-> +	/* valid arguments */
-> +	err = bpf_get_func_arg(ctx, 0, &a);
-> +	test1_result &= err == 0 && (int) a == 1;
-
-
-int cast unnecessary? but some ()'s wouldn't hurt...
-
-
-> +
-> +	/* not valid argument */
-> +	err = bpf_get_func_arg(ctx, 1, &z);
-> +	test1_result &= err == -EINVAL;
-> +
-> +	/* return value fails in fentry */
-> +	err = bpf_get_func_ret(ctx, &ret);
-> +	test1_result &= err == -EINVAL;
-> +	return 0;
-> +}
-> +
-> +__u64 test2_result = 0;
-> +SEC("fexit/bpf_fentry_test2")
-> +int BPF_PROG(test2)
-> +{
-> +	__u64 cnt = bpf_get_func_arg_cnt(ctx);
-> +	__u64 a = 0, b = 0, z = 0, ret = 0;
-> +	__s64 err;
-> +
-> +	test2_result = cnt == 2;
-> +
-> +	/* valid arguments */
-> +	err = bpf_get_func_arg(ctx, 0, &a);
-> +	test2_result &= err == 0 && (int) a == 2;
-> +
-> +	err = bpf_get_func_arg(ctx, 1, &b);
-> +	test2_result &= err == 0 && b == 3;
-> +
-> +	/* not valid argument */
-> +	err = bpf_get_func_arg(ctx, 2, &z);
-> +	test2_result &= err == -EINVAL;
-> +
-> +	/* return value */
-> +	err = bpf_get_func_ret(ctx, &ret);
-> +	test2_result &= err == 0 && ret == 5;
-> +	return 0;
-> +}
-> +
-> +__u64 test3_result = 0;
-> +SEC("fmod_ret/bpf_modify_return_test")
-> +int BPF_PROG(fmod_ret_test, int _a, int *_b, int _ret)
-> +{
-> +	__u64 cnt = bpf_get_func_arg_cnt(ctx);
-> +	__u64 a = 0, b = 0, z = 0, ret = 0;
-> +	__s64 err;
-> +
-> +	test3_result = cnt == 2;
-> +
-> +	/* valid arguments */
-> +	err = bpf_get_func_arg(ctx, 0, &a);
-> +	test3_result &= err == 0 && (int) a == 1;
-> +
-> +	err = bpf_get_func_arg(ctx, 1, &b);
-> +	test3_result &= err == 0;
-
-
-why no checking of b value here?
-
-
-> +
-> +	/* not valid argument */
-> +	err = bpf_get_func_arg(ctx, 2, &z);
-> +	test3_result &= err == -EINVAL;
-> +
-> +	/* return value */
-> +	err = bpf_get_func_ret(ctx, &ret);
-> +	test3_result &= err == 0 && ret == 0;
-> +	return 1234;
-> +}
-> +
-> +__u64 test4_result = 0;
-> +SEC("fexit/bpf_modify_return_test")
-> +int BPF_PROG(fexit_test, int _a, __u64 _b, int _ret)
-> +{
-> +	__u64 cnt = bpf_get_func_arg_cnt(ctx);
-> +	__u64 a = 0, b = 0, z = 0, ret = 0;
-> +	__s64 err;
-> +
-> +	test4_result = cnt == 2;
-> +
-> +	/* valid arguments */
-> +	err = bpf_get_func_arg(ctx, 0, &a);
-> +	test4_result &= err == 0 && (int) a == 1;
-> +
-> +	err = bpf_get_func_arg(ctx, 1, &b);
-> +	test4_result &= err == 0;
-
-
-same, for consistency, b should have been checked, no?
-
-
-> +
-> +	/* not valid argument */
-> +	err = bpf_get_func_arg(ctx, 2, &z);
-> +	test4_result &= err == -EINVAL;
-> +
-> +	/* return value */
-> +	err = bpf_get_func_ret(ctx, &ret);
-> +	test4_result &= err == 0 && ret == 1234;
-> +	return 0;
-> +}
+-- Emmanuel Deloget
