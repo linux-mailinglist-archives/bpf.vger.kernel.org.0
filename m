@@ -2,185 +2,271 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBB346A5CC
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F7F46A657
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347078AbhLFTmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 14:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346738AbhLFTmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 14:42:39 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4908C061746;
-        Mon,  6 Dec 2021 11:39:10 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id 15so11396505ilq.2;
-        Mon, 06 Dec 2021 11:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=7MNTPaPMAIedAFVlet93iaHAUg9zOwM18moopl7g9lc=;
-        b=nYSPhhiPqu87OH4ju8JFgjZqWw8aeeGoO/7Fd8uMBxWyDyCu5UDbAF/WXAFAOP84ts
-         hqr01P/cLnktZDpdIyxc2m9YnD8uTPwHy/4B1OZFqsKE8PZTeCP6Xke9V4kMHk4EKRrb
-         PzfQnXAH1sdxUkuhp832s8B3iNi4nrGtYLmgSoD9clrjIAw3fODUKg9J+ph97kylCEeZ
-         ySkUeXk83jfZ+dVqV9Ryh3UDnk5rcBWW4Uats+RHapQeNHtO00oa6f9DEVfmByrImIrU
-         GpH5cdPRsrirOAd/3pohp6zAQs/dFQCWQylZWQUSQLhY+9Hqq12Yzv3h0dvllKbW1cnF
-         AFLg==
+        id S1349242AbhLFUBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 15:01:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48788 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349572AbhLFUAo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 6 Dec 2021 15:00:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638820634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sL3D1WB/9Yy1suI5mATprV109LO2M6XsXaqz/s17rxU=;
+        b=bXbdRkDtC2mxZkD7u3C8seG9cKotsZ1oUMjmREjrHdaUwGRuGBOmhDi9T1nmIHCnodLqBg
+        vguzIywcxKeBIgwTchJqDqugFXd0xoyPiWYNjyjZk5QEcDuKUHKx1kRhNttL5g5WVfn4df
+        0LQoBrwrb96ln92GKOT639plLlcrNvs=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-84-v_soClTjPjiY5LqoSWMzLA-1; Mon, 06 Dec 2021 14:57:12 -0500
+X-MC-Unique: v_soClTjPjiY5LqoSWMzLA-1
+Received: by mail-wm1-f72.google.com with SMTP id 138-20020a1c0090000000b00338bb803204so6609184wma.1
+        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 11:57:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=7MNTPaPMAIedAFVlet93iaHAUg9zOwM18moopl7g9lc=;
-        b=4wZG7yyTOLajfNNV+MBhccIGxuefvNQAQ61jtYbfTKWJYMJhC2maRXslJeqpm4PCxC
-         Tgbe0NE9X7c12cjlX71HTqhumPVS212rp/j3Mtw2eNThIVqN+VMR/K13Y8ggLzseQCL8
-         ubdcMQD2vRaNjMoL6+jOipimDduNgWAx/ln/lv35kmJHoF5LZCFDIcv/lw3D3f1uk4fr
-         tHGLan3gNEdcV0j6EFrpwcaaOXM8CxCe0PCSBCmHgmB6xUlsbXhlMN2MBXHrmLCHoFt3
-         xsxHquS63AJdNfq3BGOmnfbIGGsec5NTDu+/uBcAjuhqJARygxndkspMt8V6CVJbKz1S
-         Y17w==
-X-Gm-Message-State: AOAM530CLw/dL0sPvmPywKhZGM1pPyegn9fGpOjzbG4h3DfObp0dDh2f
-        WjKT6tb6D8jDi/bM8m5zE+o=
-X-Google-Smtp-Source: ABdhPJyRVJb3T7/GILgACoemPGx7tzN28cpjZuZ283HVngRGTjQRmxPE8AUYjRhe8LT1DQVv5NMl8A==
-X-Received: by 2002:a92:b112:: with SMTP id t18mr32550371ilh.301.1638819550000;
-        Mon, 06 Dec 2021 11:39:10 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id s21sm7045509ioj.11.2021.12.06.11.39.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sL3D1WB/9Yy1suI5mATprV109LO2M6XsXaqz/s17rxU=;
+        b=bGIpJb7w7EaoHFy4NCRUPsmkG1jblDYoqDoS6QHcKoItq6OGXe5hf/+OBeLI+wUOWw
+         64LQT8MyvAuKvM0EnMY02SQaBzDvh9vrMtAu8tuzD5l9TI71aqY/Qhk5dFRepeOnpLQe
+         mf6RY7lzBZ1kQ/vz7FJnM54ZV35D1ei7a/mQaZDFb4EKTMoBFZTNLtYQsHEo2xO3g3/d
+         XeYvQ20JVZtteBQMRKp1IY7rIf8dHbqvDmpESrbtcjD+kmxFfk9P+QsdwSwzYAOWSYQc
+         inv+BWbUPBul9LLOC8tS0AjUTT9LhDxKV6OWCXL9A+ymRSM+G++TT+Z2pETAaMdanE7s
+         ylWw==
+X-Gm-Message-State: AOAM533fCWnc4NAfX5gxIpAOZWxUlOlmfNR1syPUFsNDUMBNWXMHzEnR
+        howR5itd+LpChatGbu+qSOpO/yNSaUinnQ8UUrkhLeriynywKMvJRFT98a4Ouy7/NOOdV2SPY8E
+        NuRd1X8+fWbbV
+X-Received: by 2002:a1c:488:: with SMTP id 130mr815235wme.157.1638820631212;
+        Mon, 06 Dec 2021 11:57:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwwkVvGKJSs8kSbzJ5A4iK/zDTE+kdNiGmq8OfxslW/COEIFNXrj8aZjVD96TzfbqVMixCWwQ==
+X-Received: by 2002:a1c:488:: with SMTP id 130mr815183wme.157.1638820630882;
+        Mon, 06 Dec 2021 11:57:10 -0800 (PST)
+Received: from localhost (net-37-182-17-175.cust.vodafonedsl.it. [37.182.17.175])
+        by smtp.gmail.com with ESMTPSA id e8sm12038083wrr.26.2021.12.06.11.57.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 11:39:09 -0800 (PST)
-Date:   Mon, 06 Dec 2021 11:39:00 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Message-ID: <61ae66d49f24f_c5bd208bf@john.notmuch>
-In-Reply-To: <20211204140700.396138-3-jolsa@kernel.org>
-References: <20211204140700.396138-1-jolsa@kernel.org>
- <20211204140700.396138-3-jolsa@kernel.org>
-Subject: RE: [PATCH bpf-next 2/3] bpf: Add get_func_[arg|ret|arg_cnt] helpers
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Mon, 06 Dec 2021 11:57:10 -0800 (PST)
+Date:   Mon, 6 Dec 2021 20:57:08 +0100
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: Re: [PATCH v19 bpf-next 12/23] bpf: add multi-buff support to the
+ bpf_xdp_adjust_tail() API
+Message-ID: <Ya5rFFqzXy5adxbs@lore-desk>
+References: <cover.1638272238.git.lorenzo@kernel.org>
+ <81319e52462c07361dbf99b9ec1748b41cdcf9fa.1638272238.git.lorenzo@kernel.org>
+ <61ad94bde1ea6_50c22081e@john.notmuch>
+ <Ya4nI6DKPmGOpfMf@lore-desk>
+ <61ae458a58d73_88182082b@john.notmuch>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hOQqi1YYOcr53TRN"
+Content-Disposition: inline
+In-Reply-To: <61ae458a58d73_88182082b@john.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa wrote:
-> Adding following helpers for tracing programs:
-> 
-> Get n-th argument of the traced function:
->   long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
-> 
-> Get return value of the traced function:
->   long bpf_get_func_ret(void *ctx, u64 *value)
-> 
-> Get arguments count of the traced funtion:
->   long bpf_get_func_arg_cnt(void *ctx)
-> 
-> The trampoline now stores number of arguments on ctx-8
-> address, so it's easy to verify argument index and find
-> return value argument's position.
-> 
-> Moving function ip address on the trampoline stack behind
-> the number of functions arguments, so it's now stored on
-> ctx-16 address if it's needed.
-> 
-> All helpers above are inlined by verifier.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c26871263f1f..d5a3791071d6 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -4983,6 +4983,31 @@ union bpf_attr {
->   *	Return
->   *		The number of loops performed, **-EINVAL** for invalid **flags**,
->   *		**-E2BIG** if **nr_loops** exceeds the maximum number of loops.
-> + *
-> + * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
-> + *	Description
-> + *		Get **n**-th argument (zero based) of the traced function (for tracing programs)
-> + *		returned in **value**.
-> + *
-> + *	Return
-> + *		0 on success.
-> + *		**-EINVAL** if n >= arguments count of traced function.
-> + *
-> + * long bpf_get_func_ret(void *ctx, u64 *value)
-> + *	Description
-> + *		Get return value of the traced function (for tracing programs)
-> + *		in **value**.
-> + *
-> + *	Return
-> + *		0 on success.
-> + *		**-EINVAL** for tracing programs other than BPF_TRACE_FEXIT or BPF_MODIFY_RETURN.
 
+--hOQqi1YYOcr53TRN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Can we just throw a verifier error if the program type doesn't support
-this? Then weget a void and ther is no error case.
-
-> + *
-> + * long bpf_get_func_arg_cnt(void *ctx)
-> + *	Description
-> + *		Get number of arguments of the traced function (for tracing programs).
-> + *
-> + *	Return
-> + *		The number of arguments of the traced function.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -5167,6 +5192,9 @@ union bpf_attr {
->  	FN(kallsyms_lookup_name),	\
->  	FN(find_vma),			\
->  	FN(loop),			\
-> +	FN(get_func_arg),		\
-> +	FN(get_func_ret),		\
-> +	FN(get_func_arg_cnt),		\
->  	/* */
->  
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 6522ffdea487..cf6853d3a8e9 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -12974,6 +12974,7 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env,
->  static int do_misc_fixups(struct bpf_verifier_env *env)
->  {
->  	struct bpf_prog *prog = env->prog;
-> +	enum bpf_attach_type eatype = prog->expected_attach_type;
->  	bool expect_blinding = bpf_jit_blinding_enabled(prog);
->  	enum bpf_prog_type prog_type = resolve_prog_type(prog);
->  	struct bpf_insn *insn = prog->insnsi;
-> @@ -13344,11 +13345,79 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->  			continue;
->  		}
->  
-
-[...]
-
-> +		/* Implement get_func_arg_cnt inline. */
-> +		if (prog_type == BPF_PROG_TYPE_TRACING &&
-> +		    insn->imm == BPF_FUNC_get_func_arg_cnt) {
-> +			/* Load nr_args from ctx - 8 */
-> +			insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> Lorenzo Bianconi wrote:
+> > > Lorenzo Bianconi wrote:
+> > > > From: Eelco Chaudron <echaudro@redhat.com>
+> > > >=20
+> > > > This change adds support for tail growing and shrinking for XDP mul=
+ti-buff.
+> > > >=20
+> > > > When called on a multi-buffer packet with a grow request, it will w=
+ork
+> > > > on the last fragment of the packet. So the maximum grow size is the
+> > > > last fragments tailroom, i.e. no new buffer will be allocated.
+> > > > A XDP mb capable driver is expected to set frag_size in xdp_rxq_inf=
+o data
+> > > > structure to notify the XDP core the fragment size. frag_size set t=
+o 0 is
+> > > > interpreted by the XDP core as tail growing is not allowed.
+> > > > Introduce __xdp_rxq_info_reg utility routine to initialize frag_siz=
+e field.
+> > > >=20
+> > > > When shrinking, it will work from the last fragment, all the way do=
+wn to
+> > > > the base buffer depending on the shrinking size. It's important to =
+mention
+> > > > that once you shrink down the fragment(s) are freed, so you can not=
+ grow
+> > > > again to the original size.
+> > > >=20
+> > > > Acked-by: Jakub Kicinski <kuba@kernel.org>
+> > > > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> > > > ---
+>=20
+> [...]
+>=20
+> pasting full function here to help following along.
+>=20
 > +
-> +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 1);
-> +			if (!new_prog)
-> +				return -ENOMEM;
-
-How does this handle the !x86 case? The code above only touches the x86
-jit? Perhaps its obvious with some code digging, but its not to me from
-the patch description and code here.
-
+> +static int bpf_xdp_mb_shrink_tail(struct xdp_buff *xdp, int offset)
+> +{
+> +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
+> +	int i, n_frags_free =3D 0, len_free =3D 0;
 > +
-> +			env->prog = prog = new_prog;
-> +			insn      = new_prog->insnsi + i + delta;
-> +			continue;
+> +	if (unlikely(offset > (int)xdp_get_buff_len(xdp) - ETH_HLEN))
+> +		return -EINVAL;
+> +
+> +	for (i =3D sinfo->nr_frags - 1; i >=3D 0 && offset > 0; i--) {
+> +		skb_frag_t *frag =3D &sinfo->frags[i];
+> +		int size =3D skb_frag_size(frag);
+> +		int shrink =3D min_t(int, offset, size);
+> +
+> +		len_free +=3D shrink;
+> +		offset -=3D shrink;
+> +
+> +		if (unlikely(size =3D=3D shrink)) {
+> +			struct page *page =3D skb_frag_page(frag);
+> +
+> +			__xdp_return(page_address(page), &xdp->rxq->mem,
+> +				     false, NULL);
+> +			n_frags_free++;
+> +		} else {
+> +			skb_frag_size_set(frag, size - shrink);
+> +			break;
 > +		}
+> +	}
+> +	sinfo->nr_frags -=3D n_frags_free;
+> +	sinfo->xdp_frags_size -=3D len_free;
 > +
+> +	if (unlikely(offset > 0)) {
+> +		xdp_buff_clear_mb(xdp);
+> +		xdp->data_end -=3D offset;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>=20
+> > >=20
+> > > hmm whats the case for offset to !=3D 0? Seems with initial unlikely
+> > > check and shrinking while walking backwards through the frags it
+> > > should be zero? Maybe a comment would help?
+> >=20
+> > Looking at the code, offset can be > 0 here whenever we reduce the mb f=
+rame to
+> > a legacy frame (so whenever offset will move the boundary into the line=
+ar
+> > area).
+>=20
+> But still missing if we need to clear the mb bit or not when we shrink do=
+wn
+> to a single frag. I think its fine, but worth double checking. As an exam=
+ple
+> consider I shrink 2k from a 3k pkt with two frags, one full 2k and another
+> 1k extra,
+>=20
+> On the first run through,
+>=20
+>  i =3D 1;
+>  offset =3D 2k
+>=20
+> +	for (i =3D sinfo->nr_frags - 1; i >=3D 0 && offset > 0; i--) {
+> +		skb_frag_t *frag =3D &sinfo->frags[i];
+> +		int size =3D skb_frag_size(frag);
+> +		int shrink =3D min_t(int, offset, size);
+>=20
+> shrink =3D 1k; // min_t(int, offset, size) -> size
+>=20
+> +
+> +		len_free +=3D shrink;
+> +		offset -=3D shrink;
+>=20
+> offset =3D 1k
+>=20
+> +		if (unlikely(size =3D=3D shrink)) {
+> +			struct page *page =3D skb_frag_page(frag);
+> +
+> +			__xdp_return(page_address(page), &xdp->rxq->mem,
+> +				     false, NULL);
+> +			n_frags_free++;
+>=20
+> Will free the frag
+>=20
+> Then next run through
+>=20
+> i =3D 0;
+> offset =3D 1k;
+>=20
+> +		skb_frag_t *frag =3D &sinfo->frags[i];
+> +		int size =3D skb_frag_size(frag);
+> +		int shrink =3D min_t(int, offset, size);
+>=20
+> shrink =3D 1k; // min_t(int, offset, size) -> offset
+>=20
+> +
+> +		len_free +=3D shrink;
+> +		offset -=3D shrink;
+>=20
+> offset =3D 0k
+>=20
+> +
+> +		if (unlikely(size =3D=3D shrink)) { ...
+> +		} else {
+> +			skb_frag_size_set(frag, size - shrink);
+> +			break;
+> +		}
+>=20
+> Then later there is the check 'if (unlikely(offset > 0) { ...}', but that
+> wont hit this case and we shrunk it back to a single frag. Did we want
+> to clear the mb in this case? I'm not seeing how it harms things to have
+> the mb bit set just trying to follow code here.
+
+If I followed correctly your example, we will have sinfo->nr_frags =3D 1 at=
+ the
+end of the processing (since the first fragment has 2k size), right?
+If so mb bit must be set to 1. Am I missing something?
+Re-looking at the code I guess we should clear mb bit using sinfo->nr_frags
+instead:
+
+	if (!sinfo->nr_frags)
+		xdp_buff_clear_mb(xdp);
+
+Agree?
+
+Regards,
+Lorenzo
+
+>=20
+> Would offset > 0 indicate we weren't able to shrink the xdp buff enough
+> for some reason. Need some coffee perhaps.
+>=20
+> Thanks,
+> John
+>=20
+
+--hOQqi1YYOcr53TRN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYa5rFAAKCRA6cBh0uS2t
+rAPmAQCw3qlOwQ4AECWUfuNGM+s/hDHQ3e5wt0RqbLpfSR9ThgD/XLRSBEG/jDXs
+05b1gtNYMwXk/OSCJM7ZmvEwRbVp6Q8=
+=bbI4
+-----END PGP SIGNATURE-----
+
+--hOQqi1YYOcr53TRN--
+
