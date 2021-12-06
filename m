@@ -2,148 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28CB46A5A3
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBB346A5CC
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348490AbhLFTaU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 14:30:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51717 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348487AbhLFTaU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 6 Dec 2021 14:30:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638818811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j2+2C8h376mvTUb+qonvFMLJqYg1Qp0hgW+LfzSktbI=;
-        b=MFG+7FkKoGKh6OGCs6XakI3MP3kk+oNfXOKtBVL4caXatufX3wYyWvTm2vJR8dgu8R4CUf
-        v+9+8eOJKSa1BAashoojy80hjrgGcDExYSQcRHdd3UxA2uE7j0K69WT8UmGIH1WQFrHvDr
-        cmlNxr4bRgqeKC8YGvm/lf/i7efSyl0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-492-Htztv6sCOEudABQscXaCmA-1; Mon, 06 Dec 2021 14:26:49 -0500
-X-MC-Unique: Htztv6sCOEudABQscXaCmA-1
-Received: by mail-wm1-f72.google.com with SMTP id m14-20020a05600c3b0e00b0033308dcc933so340250wms.7
-        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 11:26:49 -0800 (PST)
+        id S1347078AbhLFTmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 14:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346738AbhLFTmj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 14:42:39 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4908C061746;
+        Mon,  6 Dec 2021 11:39:10 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id 15so11396505ilq.2;
+        Mon, 06 Dec 2021 11:39:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=7MNTPaPMAIedAFVlet93iaHAUg9zOwM18moopl7g9lc=;
+        b=nYSPhhiPqu87OH4ju8JFgjZqWw8aeeGoO/7Fd8uMBxWyDyCu5UDbAF/WXAFAOP84ts
+         hqr01P/cLnktZDpdIyxc2m9YnD8uTPwHy/4B1OZFqsKE8PZTeCP6Xke9V4kMHk4EKRrb
+         PzfQnXAH1sdxUkuhp832s8B3iNi4nrGtYLmgSoD9clrjIAw3fODUKg9J+ph97kylCEeZ
+         ySkUeXk83jfZ+dVqV9Ryh3UDnk5rcBWW4Uats+RHapQeNHtO00oa6f9DEVfmByrImIrU
+         GpH5cdPRsrirOAd/3pohp6zAQs/dFQCWQylZWQUSQLhY+9Hqq12Yzv3h0dvllKbW1cnF
+         AFLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j2+2C8h376mvTUb+qonvFMLJqYg1Qp0hgW+LfzSktbI=;
-        b=iEe/1hrTCqhjbmUebcgHCsIpHoFdD1HgJnVuLptKpQU8eD9QH5NXAml+CQr3zYCRkl
-         TQLOzZp0Pv9loQxOPgACYfcVWW9XWwVHnzJv8aLnjqvVI8H3sGQsQ8pyCdsRBIc7rNff
-         n5pxgB7rvuhgPcXQV5P+KELCa130gvJmQJG3xwAdRp2gw7YNkh2kqoyVDwf5KqfQdLAe
-         cbUDspmlg5Vr+K7U2PVpIEZKSMsnINP6dO6VTnQbN/uDt9fHlhxCIMPflc2OXaLygO6K
-         MukZOlzpaRw3BcXlRbyS71AuWwo8P7dhRadyoyixzo/3AS7ZktglpJNUBODlqNYiVrBm
-         3yog==
-X-Gm-Message-State: AOAM5325EObS1Z2RQ+06TCBar7ZsuSfxE9Nf5udBBdhgkbaW/zrPJIsl
-        T1VUtFVv3BhuVJMLapHOL5gynXRTbuEPmrfX41Mj7TOnL7mhaPCXVMyr73lohj/uD9YYAzfcP+G
-        cTMAkXuh9qFx4
-X-Received: by 2002:adf:b34f:: with SMTP id k15mr47600428wrd.125.1638818808486;
-        Mon, 06 Dec 2021 11:26:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyCLmuTUtdoEc+SFqZCphspCU8j34nMB4voWNdRS2/KJEzDwcTbppDV2mkgRZ0LlZmHYnSvSw==
-X-Received: by 2002:adf:b34f:: with SMTP id k15mr47600392wrd.125.1638818808329;
-        Mon, 06 Dec 2021 11:26:48 -0800 (PST)
-Received: from localhost (net-37-182-17-175.cust.vodafonedsl.it. [37.182.17.175])
-        by smtp.gmail.com with ESMTPSA id d2sm262144wmb.31.2021.12.06.11.26.47
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=7MNTPaPMAIedAFVlet93iaHAUg9zOwM18moopl7g9lc=;
+        b=4wZG7yyTOLajfNNV+MBhccIGxuefvNQAQ61jtYbfTKWJYMJhC2maRXslJeqpm4PCxC
+         Tgbe0NE9X7c12cjlX71HTqhumPVS212rp/j3Mtw2eNThIVqN+VMR/K13Y8ggLzseQCL8
+         ubdcMQD2vRaNjMoL6+jOipimDduNgWAx/ln/lv35kmJHoF5LZCFDIcv/lw3D3f1uk4fr
+         tHGLan3gNEdcV0j6EFrpwcaaOXM8CxCe0PCSBCmHgmB6xUlsbXhlMN2MBXHrmLCHoFt3
+         xsxHquS63AJdNfq3BGOmnfbIGGsec5NTDu+/uBcAjuhqJARygxndkspMt8V6CVJbKz1S
+         Y17w==
+X-Gm-Message-State: AOAM530CLw/dL0sPvmPywKhZGM1pPyegn9fGpOjzbG4h3DfObp0dDh2f
+        WjKT6tb6D8jDi/bM8m5zE+o=
+X-Google-Smtp-Source: ABdhPJyRVJb3T7/GILgACoemPGx7tzN28cpjZuZ283HVngRGTjQRmxPE8AUYjRhe8LT1DQVv5NMl8A==
+X-Received: by 2002:a92:b112:: with SMTP id t18mr32550371ilh.301.1638819550000;
+        Mon, 06 Dec 2021 11:39:10 -0800 (PST)
+Received: from localhost ([172.243.151.11])
+        by smtp.gmail.com with ESMTPSA id s21sm7045509ioj.11.2021.12.06.11.39.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 11:26:47 -0800 (PST)
-Date:   Mon, 6 Dec 2021 20:26:46 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v19 bpf-next 03/23] net: mvneta: update mb bit before
- passing the xdp buffer to eBPF layer
-Message-ID: <Ya5j9mtNyuyNf/MF@lore-desk>
-References: <cover.1638272238.git.lorenzo@kernel.org>
- <95151f4b8a25ce38243e82f0a82104d0f46fb33a.1638272238.git.lorenzo@kernel.org>
- <61ad7e4cbc69d_444e20888@john.notmuch>
- <Ya4oCkbOjBHFOHyS@lore-desk>
- <61ae427999a20_881820893@john.notmuch>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="z+c/5q1B95l8TIpi"
-Content-Disposition: inline
-In-Reply-To: <61ae427999a20_881820893@john.notmuch>
+        Mon, 06 Dec 2021 11:39:09 -0800 (PST)
+Date:   Mon, 06 Dec 2021 11:39:00 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Message-ID: <61ae66d49f24f_c5bd208bf@john.notmuch>
+In-Reply-To: <20211204140700.396138-3-jolsa@kernel.org>
+References: <20211204140700.396138-1-jolsa@kernel.org>
+ <20211204140700.396138-3-jolsa@kernel.org>
+Subject: RE: [PATCH bpf-next 2/3] bpf: Add get_func_[arg|ret|arg_cnt] helpers
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Jiri Olsa wrote:
+> Adding following helpers for tracing programs:
+> 
+> Get n-th argument of the traced function:
+>   long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
+> 
+> Get return value of the traced function:
+>   long bpf_get_func_ret(void *ctx, u64 *value)
+> 
+> Get arguments count of the traced funtion:
+>   long bpf_get_func_arg_cnt(void *ctx)
+> 
+> The trampoline now stores number of arguments on ctx-8
+> address, so it's easy to verify argument index and find
+> return value argument's position.
+> 
+> Moving function ip address on the trampoline stack behind
+> the number of functions arguments, so it's now stored on
+> ctx-16 address if it's needed.
+> 
+> All helpers above are inlined by verifier.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index c26871263f1f..d5a3791071d6 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4983,6 +4983,31 @@ union bpf_attr {
+>   *	Return
+>   *		The number of loops performed, **-EINVAL** for invalid **flags**,
+>   *		**-E2BIG** if **nr_loops** exceeds the maximum number of loops.
+> + *
+> + * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
+> + *	Description
+> + *		Get **n**-th argument (zero based) of the traced function (for tracing programs)
+> + *		returned in **value**.
+> + *
+> + *	Return
+> + *		0 on success.
+> + *		**-EINVAL** if n >= arguments count of traced function.
+> + *
+> + * long bpf_get_func_ret(void *ctx, u64 *value)
+> + *	Description
+> + *		Get return value of the traced function (for tracing programs)
+> + *		in **value**.
+> + *
+> + *	Return
+> + *		0 on success.
+> + *		**-EINVAL** for tracing programs other than BPF_TRACE_FEXIT or BPF_MODIFY_RETURN.
 
---z+c/5q1B95l8TIpi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-> Lorenzo Bianconi wrote:
-> > > Lorenzo Bianconi wrote:
-> > > > Update multi-buffer bit (mb) in xdp_buff to notify XDP/eBPF layer a=
-nd
-> > > > XDP remote drivers if this is a "non-linear" XDP buffer. Access
-> > > > skb_shared_info only if xdp_buff mb is set in order to avoid possib=
-le
-> > > > cache-misses.
-> > > >=20
-> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > >=20
-> > > [...]
-> > >=20
-> > > > @@ -2320,8 +2325,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp=
-, struct page_pool *pool,
-> > > >  		      struct xdp_buff *xdp, u32 desc_status)
-> > > >  {
-> > > >  	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(x=
-dp);
-> > > > -	int i, num_frags =3D sinfo->nr_frags;
-> > > >  	struct sk_buff *skb;
-> > > > +	u8 num_frags;
-> > > > +	int i;
-> > > > +
-> > > > +	if (unlikely(xdp_buff_is_mb(xdp)))
-> > > > +		num_frags =3D sinfo->nr_frags;
-> > >=20
-> > > Doesn't really need a respin IMO, but rather an observation. Its not
-> > > obvious to me the unlikely/likely pair here is wanted. Seems it could
-> > > be relatively common for some applications sending jumbo frames.
-> > >=20
-> > > Maybe worth some experimenting in the future.
-> >=20
-> > Probably for mvneta it will not make any difference but in general I tr=
-ied to
-> > avoid possible cache-misses here (accessing sinfo pointers). I will car=
-ry out
-> > some comparison to see if I can simplify the code.
->=20
-> Agree, I'll predict for mvneta it doesn't make a difference either way and
-> perhaps if you want to optimize small pkt benchmarks on a 100Gbps nic it =
-would
-> show a win.
->=20
+Can we just throw a verifier error if the program type doesn't support
+this? Then weget a void and ther is no error case.
 
-actually it makes a slightly difference on mvneta as well (~45-50Kpps).
-I will keep the code as it is for the moment.
+> + *
+> + * long bpf_get_func_arg_cnt(void *ctx)
+> + *	Description
+> + *		Get number of arguments of the traced function (for tracing programs).
+> + *
+> + *	Return
+> + *		The number of arguments of the traced function.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5167,6 +5192,9 @@ union bpf_attr {
+>  	FN(kallsyms_lookup_name),	\
+>  	FN(find_vma),			\
+>  	FN(loop),			\
+> +	FN(get_func_arg),		\
+> +	FN(get_func_ret),		\
+> +	FN(get_func_arg_cnt),		\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6522ffdea487..cf6853d3a8e9 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -12974,6 +12974,7 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env,
+>  static int do_misc_fixups(struct bpf_verifier_env *env)
+>  {
+>  	struct bpf_prog *prog = env->prog;
+> +	enum bpf_attach_type eatype = prog->expected_attach_type;
+>  	bool expect_blinding = bpf_jit_blinding_enabled(prog);
+>  	enum bpf_prog_type prog_type = resolve_prog_type(prog);
+>  	struct bpf_insn *insn = prog->insnsi;
+> @@ -13344,11 +13345,79 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>  			continue;
+>  		}
+>  
 
-Regards,
-Lorenzo
+[...]
 
---z+c/5q1B95l8TIpi
-Content-Type: application/pgp-signature; name="signature.asc"
+> +		/* Implement get_func_arg_cnt inline. */
+> +		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> +		    insn->imm == BPF_FUNC_get_func_arg_cnt) {
+> +			/* Load nr_args from ctx - 8 */
+> +			insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> +
+> +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 1);
+> +			if (!new_prog)
+> +				return -ENOMEM;
 
------BEGIN PGP SIGNATURE-----
+How does this handle the !x86 case? The code above only touches the x86
+jit? Perhaps its obvious with some code digging, but its not to me from
+the patch description and code here.
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYa5j9gAKCRA6cBh0uS2t
-rNQ/APwM/ONIGJlt0RvwLFIfYQFXW1qMz9A3sHq0MOKGV+YZZAEA4lPUxnYcZCph
-ulFEG2pBcoqZcHbxICxCZnAdW5y32wA=
-=L49r
------END PGP SIGNATURE-----
-
---z+c/5q1B95l8TIpi--
-
+> +
+> +			env->prog = prog = new_prog;
+> +			insn      = new_prog->insnsi + i + delta;
+> +			continue;
+> +		}
+> +
