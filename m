@@ -2,222 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E3846A8C3
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 21:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398AD46A8C7
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 21:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349787AbhLFUsa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 15:48:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
+        id S1349817AbhLFUu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 15:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238973AbhLFUs3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 15:48:29 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AF6C061746
-        for <bpf@vger.kernel.org>; Mon,  6 Dec 2021 12:45:00 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id t13so22206327uad.9
-        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 12:45:00 -0800 (PST)
+        with ESMTP id S238973AbhLFUu6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 15:50:58 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B944C061746;
+        Mon,  6 Dec 2021 12:47:29 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id y16so14505911ioc.8;
+        Mon, 06 Dec 2021 12:47:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H1IWrexvZzmC3OlHyCwu3L3FMnddBhp4Xgye3o5A3H8=;
-        b=hQ+e8FVIFV4Em2HYS7NsvKAG5GvpM3i5W8e4qyJA0UVDhVnO9BAWniqKbWlxO1lO18
-         Kk/73Tj3k+DGd9OxJ73zMA/NY1N0vcUlidfir/894cwTl+X4PfE6ZZkkYek/38/bA3zC
-         +/wawsAEI4Lu8PW0XHmSCQJtiqWupQNjvRoYPNWJWjOgVBYY5pE70+eKvpY/VJHEVQ21
-         169NI9g6CFPtfPIOlobCFn9PXuvDUAane4LWxN4qVDTY6RjXV28i+Z1YbyJ8A0+xG4rZ
-         I+Pv0Pco6uuSQzk5bTf2+O4dA+lSpaQmD13XbXLkEjkJZlDrMq4Nc/zfFwgW0TexqLmm
-         MgNw==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=I1j4l6JJAiArBBcQQdaAOFz5tKrvVrjdkmOCMZ3ta4M=;
+        b=b+PZw9LQIT6kWHMtI9LHHPR5cDrQYm18zPoWaHgbEELTHIWwvt7Yfku2ryk0FHdkLF
+         m7ZIcu5BRmeH2a5yvGJPFStbYyHHY3scVpMqDnc69G0k85Qp2sIAcXmOiqjafvzJoybP
+         WC3DL7tgrFAzxmon6Ft+SVLKBj7Jjbkke+jbacs4nS3SewECt3ma1BukRVn7YhjvxIJ2
+         5VqOMyVcB9el7F/Hm4P9xybziD2OfjDbhaCpVK69lLbEOWejJeHW6K3hyqeanpNh0KSq
+         wEWWbr8yPD9EM42le/B1zGGzj68kzqS/Wfg1FElLD3vnnrHMA5I16UFrg7uoanPoZneM
+         gWIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H1IWrexvZzmC3OlHyCwu3L3FMnddBhp4Xgye3o5A3H8=;
-        b=LfDk+11AIH8g3qPDBIjyx9VRl+IXEmFgmby5hweuCItLmL0C3rGYcrlRmVEY45GjXf
-         SKqqxxWoKEYW15h14ng6/UeKbrdE9uFuGh2kzTCL9/wLjKgwjRdbVYLp038xS7dUcFJC
-         c1jdSYJU+Zi+xoJWGg3B5nsTO8kyIzUQ0fOVuZMVmpmTWOpELvcoMnEJ3hBtONSsZrX0
-         oySmgSTmwE+vLpnHNUm1hG4Mm5Hq8KspRxXY+/HYs7XgXGmG9E4siHSWZB7tYPPYbirc
-         RIWt7bRwn/ygMSd4LulSf7dVwIPALCvl+k5IUmpe+3RtwJze4LLAEEyXICVKYnqnwji0
-         qgeg==
-X-Gm-Message-State: AOAM532zwT0ysUpmFZ3cx1DYpVjwZZfzGvOlBwuB6v+g1waP5E7E8X52
-        gVdgmSFgrYi/hqvV/KeFe4oNVuE+6pbmQ0yPQ4c=
-X-Google-Smtp-Source: ABdhPJxB0xdkJzPAyWnBflk33/0gYgpcWb2jwd2jbAlt/UDcvN4b/3MK2Jf8Vsh5Dh+yP35nI3cwcb3q5pnEZy2gejQ=
-X-Received: by 2002:a05:6102:3ec9:: with SMTP id n9mr39381908vsv.67.1638823499189;
- Mon, 06 Dec 2021 12:44:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20211127210200.1104120-1-grantseltzer@gmail.com>
- <CAPhsuW6+LiLZf0SsGbOT+2BNHGB28TZazoEELwb6anbo5_mLPQ@mail.gmail.com> <CAEf4BzZa=xFdsWwqt0u_4u0jSwJErGUTcfXiswMWof=XnruK1g@mail.gmail.com>
-In-Reply-To: <CAEf4BzZa=xFdsWwqt0u_4u0jSwJErGUTcfXiswMWof=XnruK1g@mail.gmail.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Mon, 6 Dec 2021 15:44:47 -0500
-Message-ID: <CAO658oX9p9pq1cbH0b29Mxp2ocPPVev7jdk3EP3r3EPCQh76vA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add doc comments in libb.h
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Song Liu <song@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=I1j4l6JJAiArBBcQQdaAOFz5tKrvVrjdkmOCMZ3ta4M=;
+        b=55jCe9/b/ur/OdcEUc+1p2fJakDLmaog96Je5gYyDmRhiSWvxe9Phsw1wCDJEWxQqP
+         w4pdgdmg96OWvqBqybjt8rYU8LUFCTG+xm0I7e+QeHrKG18EgKvHyiiU5XOIMiWglSs3
+         e2h+5waXwb5gbPSYfrOJQ309EOa9ohrfUmS4EVzK4x7HbvcWQq7SId7lH+sPbyxw98+0
+         b+5QBaHnt8wPvKc/cwVQyQlOMCD9Lvy5n88cOl8r6O10s5f7RdG7R2Op7+D0nZtbFJKE
+         DKno85uEThxUNe/W+pp6oVpd1/LTkq/1l/z5wdqtwdwmfUCMsJPX7MJ2ZdjdLfqC+PzH
+         h7dw==
+X-Gm-Message-State: AOAM531JiE3Dha3jXfQ+GslDv+/MHgfun8llDgVJg79EF3dxUrcsDnc8
+        +al6X2JeqoPmY5IizXCCF7XPudscJVbL1Kbh
+X-Google-Smtp-Source: ABdhPJz69onW9Go4Fhlw2O4sfbjKelNnptiWZ9DgnHlr9IU/08u/ojwxcdEwAlNp9XDT0GvuPvFkbw==
+X-Received: by 2002:a05:6638:25c8:: with SMTP id u8mr47138703jat.23.1638823649063;
+        Mon, 06 Dec 2021 12:47:29 -0800 (PST)
+Received: from localhost ([172.243.151.11])
+        by smtp.gmail.com with ESMTPSA id x7sm7087812ilq.86.2021.12.06.12.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Dec 2021 12:47:28 -0800 (PST)
+Date:   Mon, 06 Dec 2021 12:47:20 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Message-ID: <61ae76d882a48_106e020844@john.notmuch>
+In-Reply-To: <Ya5rFFqzXy5adxbs@lore-desk>
+References: <cover.1638272238.git.lorenzo@kernel.org>
+ <81319e52462c07361dbf99b9ec1748b41cdcf9fa.1638272238.git.lorenzo@kernel.org>
+ <61ad94bde1ea6_50c22081e@john.notmuch>
+ <Ya4nI6DKPmGOpfMf@lore-desk>
+ <61ae458a58d73_88182082b@john.notmuch>
+ <Ya5rFFqzXy5adxbs@lore-desk>
+Subject: Re: [PATCH v19 bpf-next 12/23] bpf: add multi-buff support to the
+ bpf_xdp_adjust_tail() API
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 6:32 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Nov 27, 2021 at 1:28 PM Song Liu <song@kernel.org> wrote:
-> >
-> > On Sat, Nov 27, 2021 at 1:04 PM grantseltzer <grantseltzer@gmail.com> wrote:
-> > >
-> > > From: Grant Seltzer <grantseltzer@gmail.com>
-> > >
-> > > This adds comments above functions in libbpf.h which document
-> > > their uses. These comments are of a format that doxygen and sphinx
-> > > can pick up and render. These are rendered by libbpf.readthedocs.org
-> > >
-> > > These doc comments are for:
-> > >
-> > > - bpf_object__open_file()
-> > > - bpf_object__open_mem()
-> > > - bpf_program__attach_uprobe()
-> > > - bpf_program__attach_uprobe_opts()
-> > >
-> > > Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
-> >
-> > s/libb.h/libbpf.h/ in subject
-> >
-> > > ---
-> > >  tools/lib/bpf/libbpf.h | 45 ++++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 45 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > > index 4ec69f224342..acfb207e71d1 100644
-> > > --- a/tools/lib/bpf/libbpf.h
-> > > +++ b/tools/lib/bpf/libbpf.h
-> > > @@ -108,8 +108,26 @@ struct bpf_object_open_opts {
-> > >  #define bpf_object_open_opts__last_field btf_custom_path
-> > >
-> > >  LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
-> > > +
-> > > +/**
-> > > + * @brief **bpf_object__open_file()** creates a bpf_object by opening
-> > > + * the BPF object file pointed to by the passed path and loading it
->
-> Would be nice to mention that it's ELF, no? "BPF ELF object file", maybe?
->
-> > > + * into memory.
-> > > + * @param path BPF object file relative or absolute path
->
-> I started worrying about relative vs absolute paths after reading this
-> :) I think just stating "BPF object file path" should be totally fine.
-> Relative vs absolute works totally fine as expected with any API that
-> accepts file paths.
->
->
-> > > + * @param opts options for how to load the bpf object
->
-> let's mention that opts are optional (i.e., you can pass NULL)
->
-> > > + * @return pointer to the new bpf_object
-> >
-> > Please document return value on errors, i.e. libbpf_err_ptr(err)
-> > instead of NULL. Same for all functions here.
->
-> With libbpf 1.0 and forward APIs like this will return NULL on error,
-> so let's use that as the convention in documentation. So something
-> like "NULL is returned on error, error code is stored in errno"?
->
-> >
-> > > + */
-> > >  LIBBPF_API struct bpf_object *
-> > >  bpf_object__open_file(const char *path, const struct bpf_object_open_opts *opts);
-> > > +
-> > > +/**
-> > > + * @brief **bpf_object__open_mem()** creates a bpf_object by reading
-> > > + * the BPF objects raw bytes from an in memory buffer.
->
-> typo: "an in"? Also it's even more important to mention that those
-> bytes should be a valid BPF ELF object file?
->
-> > > + * @param obj_buf pointer to the buffer containing bpf object bytes
->
-> s/bpf object bytes/ELF file bytes/ ?
->
-> > > + * @param obj_buf_sz number of bytes in the buffer
-> > > + * @param opts options for how to load the bpf object
-> > > + * @return pointer to the new bpf_object
-> > > + */
-> > >  LIBBPF_API struct bpf_object *
-> > >  bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
-> > >                      const struct bpf_object_open_opts *opts);
-> > > @@ -344,10 +362,37 @@ struct bpf_uprobe_opts {
-> > >  };
-> > >  #define bpf_uprobe_opts__last_field retprobe
-> > >
-> > > +/**
-> > > + * @brief **bpf_program__attach_uprobe** attaches a BPF program
->
-> missing () after attach_uprobe
->
-> > > + * to the userspace function which is found by binary path and
-> > > + * offset. You can optionally specify a particular proccess to attach
-> > s/proccess/process/
-> >
-> > > + * to. You can also optionally attach the program to the function
-> > > + * exit instead of entry.
-> > > + *
-> > > + * @param prog BPF program to attach
-> > > + * @param retprobe Attach to function exit
-> > > + * @param pid Process ID to attach the uprobe to, -1 for all processes
->
-> There is also 0 for self (own process).
->
-> > > + * @param binary_path Path to binary that contains the function symbol
-> > > + * @param func_offset Offset within the binary of the function symbol
-> > > + * @return Reference to the newly created BPF link
->
-> or NULL on error (errno is set to error code).
->
-> > > + */
-> > >  LIBBPF_API struct bpf_link *
-> > >  bpf_program__attach_uprobe(const struct bpf_program *prog, bool retprobe,
-> > >                            pid_t pid, const char *binary_path,
-> > >                            size_t func_offset);
-> > > +
-> > > +/**
-> > > + * @brief **bpf_program__attach_uprobe_opts** is just like
->
-> () missing
->
-> > > + * bpf_program__attach_uprobe except with a options struct
->
-> (), let's use that around referenced to functions to make it clear
->
-> > > + * for various configurations.
-> > > + *
-> > > + * @param prog BPF program to attach
-> > > + * @param pid Process ID to attach the uprobe to, -1 for all processes
-> > > + * @param binary_path Path to binary that contains the function symbol
-> > > + * @param func_offset Offset within the binary of the function symbol
-> > > + * @param opts Options for altering program attachment
-> >
-> > Let's also document details about these options.
->
-> yep, but on uprobe_opts struct itself
+Lorenzo Bianconi wrote:
+> > Lorenzo Bianconi wrote:
+> > > > Lorenzo Bianconi wrote:
+> > > > > From: Eelco Chaudron <echaudro@redhat.com>
+> > > > > 
+> > > > > This change adds support for tail growing and shrinking for XDP multi-buff.
+> > > > > 
+> > > > > When called on a multi-buffer packet with a grow request, it will work
+> > > > > on the last fragment of the packet. So the maximum grow size is the
+> > > > > last fragments tailroom, i.e. no new buffer will be allocated.
+> > > > > A XDP mb capable driver is expected to set frag_size in xdp_rxq_info data
+> > > > > structure to notify the XDP core the fragment size. frag_size set to 0 is
+> > > > > interpreted by the XDP core as tail growing is not allowed.
+> > > > > Introduce __xdp_rxq_info_reg utility routine to initialize frag_size field.
+> > > > > 
+> > > > > When shrinking, it will work from the last fragment, all the way down to
+> > > > > the base buffer depending on the shrinking size. It's important to mention
+> > > > > that once you shrink down the fragment(s) are freed, so you can not grow
+> > > > > again to the original size.
+> > > > > 
+> > > > > Acked-by: Jakub Kicinski <kuba@kernel.org>
+> > > > > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > > Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
 
-I need to fix something with the configuration, the docs site
-currently isn't displaying structs.
+[...]
 
-Also I haven't forgotten about adding a check for libbpf docs
-generating properly. I'm working on a patch that I'll submit to the
-docs tree allowing `make htmldocs` to take an argument for which
-subsection to exclusively build.
+> > Then later there is the check 'if (unlikely(offset > 0) { ...}', but that
+> > wont hit this case and we shrunk it back to a single frag. Did we want
+> > to clear the mb in this case? I'm not seeing how it harms things to have
+> > the mb bit set just trying to follow code here.
+> 
+> If I followed correctly your example, we will have sinfo->nr_frags = 1 at the
+> end of the processing (since the first fragment has 2k size), right?
+> If so mb bit must be set to 1. Am I missing something?
+> Re-looking at the code I guess we should clear mb bit using sinfo->nr_frags
+> instead:
+> 
+> 	if (!sinfo->nr_frags)
+> 		xdp_buff_clear_mb(xdp);
+> 
+> Agree?
 
->
->
-> >
-> > > + * @return Reference to the newly created BPF link
-> > > + */
-> > >  LIBBPF_API struct bpf_link *
-> > >  bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
-> > >                                 const char *binary_path, size_t func_offset,
-> > > --
-> > > 2.31.1
-> > >
+Agree that is more correct. I maybe messed up my example a bit, but I think
+checking nr_frags clears it up.
+
+Thanks,
+John
+
+> 
+> Regards,
+> Lorenzo
