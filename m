@@ -2,88 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FDE46A585
-	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 925CD46A591
+	for <lists+bpf@lfdr.de>; Mon,  6 Dec 2021 20:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347799AbhLFTXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 14:23:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
+        id S1348417AbhLFTZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 14:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348367AbhLFTW6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 14:22:58 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7805AC061746;
-        Mon,  6 Dec 2021 11:19:27 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id j21so11334840ila.5;
-        Mon, 06 Dec 2021 11:19:27 -0800 (PST)
+        with ESMTP id S241452AbhLFTZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 14:25:16 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C303C0613F8
+        for <bpf@vger.kernel.org>; Mon,  6 Dec 2021 11:21:48 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id 8so11092139pfo.4
+        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 11:21:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=ZaQxkKeJd0tXRMJEXWjgYG+9FDOgizwyR3HGi44/I6g=;
-        b=n+sV/7qyhiOLFy/wNxZrmNJ1NW4dpFZ8sbYd0477/KDRP5kOexpEBYb1h5Ozy30Dmy
-         1j17V4GAcrEqi/R28mkdJ5pMKu0lym8IKru7UMFJ39yvaMKfc7yrD1t9k4FcxoIzLB0D
-         78He4lcX6cp9Pf5iHf82Cp/vWyEBW7nl8zbnW+rxdNNQeRz/WS6lOHyUIAXGj6cUadcR
-         s/E0PrLTtT8sHexoJsOqgmfCt/lQ+EIbg3CU/EYjJpCNVAww4PZqBc7bkOSaKMUCnMVE
-         sR/ntBQlwRamgrQJsFEdMsJhC9havc6HY42a0W2zfHtJG3SAoFWvntlFZy7IzXSJ7B1g
-         iEEQ==
+        d=riotgames.com; s=riotgames;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lsDthcgvaio6IGTjYDxSSKJq9fq5eFyA1KW+ahQyxME=;
+        b=C47LMa+VGIjfxrrwdw2t9WutG6DpFXNVE/qxd9lPYKcmBiojpon4ooC3HZ4hJV6UpX
+         w1oq60RaIe9H0n+SArGA6KM7d1K4+gCju/l56tkgoxMcO2eT2W+W1yaSvN4ZlYhr0yc+
+         /2wa6got3vuBLmsjQ1GZ9ydI7Mqu5DR8//Bhs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=ZaQxkKeJd0tXRMJEXWjgYG+9FDOgizwyR3HGi44/I6g=;
-        b=EBch7l0FoxG+6DbAE2XfOh7aAj0j8vuEKjo3FGb4HDH7Yg3NT+R7hCsk984xQbnDJm
-         r1s9kKszbMBQnKe7rFgSRv0Q6vdJzkJZzWdxU1QYZL5DgXKuxG2LGQv36c7MppBGNCBZ
-         25hjV0IWAJlSE3qYN5VzxvpPGfdfTWL+8BRuT759gSnCeEnCHzqQrToI1jonm45ZfDAU
-         kYPZnNLzArY59cEKNE8saMiuWi7F98Z+f3Bi4eQHOB1KZxi2FXZreEvXG0F3Y1Qa7qjO
-         FoJexHtXvd2p2pqoyz+sKVUJeLV+aqUv9lKGOPlJslPUiN6nP+9nV8WVbo4UtcZZehzi
-         51UQ==
-X-Gm-Message-State: AOAM5302IheQrAcNeFjvL/JNTkpl+nQnw/CaeQ4ur4BrdpfUzJP9qads
-        VqGlk5djZyWns4m3Cjgr70Q=
-X-Google-Smtp-Source: ABdhPJzlKlBNkrmjgf80NaSvg79RxA5c5VyskcoaYe9zXM5JlI6rJCa8LS95DMXftg6nF5Zt0s6hew==
-X-Received: by 2002:a05:6e02:1baa:: with SMTP id n10mr30728331ili.117.1638818366932;
-        Mon, 06 Dec 2021 11:19:26 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id 10sm8455412ilx.42.2021.12.06.11.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 11:19:26 -0800 (PST)
-Date:   Mon, 06 Dec 2021 11:19:18 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Message-ID: <61ae6236ded56_c5bd208df@john.notmuch>
-In-Reply-To: <20211204140700.396138-2-jolsa@kernel.org>
-References: <20211204140700.396138-1-jolsa@kernel.org>
- <20211204140700.396138-2-jolsa@kernel.org>
-Subject: RE: [PATCH bpf-next 1/3] bpf, x64: Replace some stack_size usage with
- offset variables
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lsDthcgvaio6IGTjYDxSSKJq9fq5eFyA1KW+ahQyxME=;
+        b=oTjqOdfFK0uZn94DTBbuYvdkZG+ZINZGfiIDzRTOD+Gt4YdsFWkvLJAkJT4mLR23hn
+         mBDFcw32baIuF8c6LWCE1J2jG7fc/phfF6v1bhTfRV6pmchZWzgP7H+QNVVbE2MWcNhO
+         lsNtp2tdB2Dz5PECl98GYsQPYBKRCpBdN1FDnUeIuPGbNjA8lFkz4mxJCWtVGh2ws3uP
+         7nB8MR56IpBMSZp3uYoh6qLazng9jmZMYz4WbFI/Fbz5Yq5OTaLCU2woUH25wV+uAQpK
+         c2EtywK33YuE0UY6TN07BoTvUG85f+Ji/6KEaqwedEOzXjvsoZHUwb9C/jfdur+R2/v4
+         u40g==
+X-Gm-Message-State: AOAM5305Gw70qfefmJofEWmUo5AZCJSxY1aL7fg1V68qEuhIFTz0xrux
+        xeJkvKREQrF0cUH76QMrgkvsR2Qg4owyWJ6s2WAn9g==
+X-Google-Smtp-Source: ABdhPJxVFTAS+BssVmAdeMvSGMreR3rP86V3xWFCBgpvPDRSr9XGLbJLVJduC1L3lSz+9mGJszffoYHm3xogTDewGxI=
+X-Received: by 2002:a62:4e0a:0:b0:4a0:4127:174b with SMTP id
+ c10-20020a624e0a000000b004a04127174bmr39203419pfb.41.1638818507548; Mon, 06
+ Dec 2021 11:21:47 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1638272238.git.lorenzo@kernel.org> <df855fe05b80746fa7f657fce78b24d582f133cb.1638272239.git.lorenzo@kernel.org>
+ <88f9b4e9-9074-a507-426d-7c947f1e2b13@redhat.com>
+In-Reply-To: <88f9b4e9-9074-a507-426d-7c947f1e2b13@redhat.com>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Mon, 6 Dec 2021 13:21:36 -0600
+Message-ID: <CAC1LvL1U1=Qb9Em5=uwC=RQw0pKPQ+dCdURgURbLgGAJkXm0eg@mail.gmail.com>
+Subject: Re: [PATCH v19 bpf-next 23/23] xdp: disable XDP_REDIRECT for xdp multi-buff
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, brouer@redhat.com,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, echaudro@redhat.com,
+        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa wrote:
-> As suggested by Andrii, adding variables for registers and ip
-> address offsets, which makes the code more clear, rather than
-> abusing single stack_size variable for everything.
-> 
-> Also describing the stack layout in the comment.
-> 
-> There is no function change.
-> 
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
+On Mon, Dec 6, 2021 at 11:11 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+> On 30/11/2021 12.53, Lorenzo Bianconi wrote:
+> > XDP_REDIRECT is not fully supported yet for xdp multi-buff since not
+> > all XDP capable drivers can map non-linear xdp_frame in ndo_xdp_xmit
+> > so disable it for the moment.
+> >
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >   net/core/filter.c | 7 +++++++
+> >   1 file changed, 7 insertions(+)
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index b70725313442..a87d835d1122 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -4189,6 +4189,13 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+> >       struct bpf_map *map;
+> >       int err;
+> >
+> > +     /* XDP_REDIRECT is not fully supported yet for xdp multi-buff since
+> > +      * not all XDP capable drivers can map non-linear xdp_frame in
+> > +      * ndo_xdp_xmit.
+> > +      */
+> > +     if (unlikely(xdp_buff_is_mb(xdp)))
+> > +             return -EOPNOTSUPP;
+> > +
+>
+> This approach also exclude 'cpumap' use-case, which you AFAIK have added
+> MB support for in this patchset.
+>
+> Generally this check is hopefully something we can remove again, once
+> drivers add MB ndo_xdp_xmit support.
+>
 
-LGTM.
+What happens in the future when a new driver is added without (in its intial
+version) MB ndo_xdp_xmit support? Is MB support for ndo_xdp_xmit going to be a
+requirement for a driver (with ndo_xdp_xmit) to be accepted to the kernel?
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+I'm not arguing against removing this check in the future, I'm just wondering
+if we need a different mechanism than outright prohibiting XDP_REDIRECT with MB
+to protect against the redirected device not having MB support?
+
+>
+> >       ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
+> >       ri->map_type = BPF_MAP_TYPE_UNSPEC;
+> >
+> >
+>
