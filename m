@@ -2,161 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97D646B21E
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 06:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877C646B293
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 06:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhLGFRE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 00:17:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        id S231128AbhLGFtE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 00:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbhLGFRC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Dec 2021 00:17:02 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114DFC061746;
-        Mon,  6 Dec 2021 21:13:33 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id y68so37739779ybe.1;
-        Mon, 06 Dec 2021 21:13:32 -0800 (PST)
+        with ESMTP id S231895AbhLGFtD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Dec 2021 00:49:03 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5E3C061746
+        for <bpf@vger.kernel.org>; Mon,  6 Dec 2021 21:45:33 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id j2so37742561ybg.9
+        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 21:45:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Kql1bBy1EgzVpsU/JwDkrMwOYaTG3KOCNskyPvT29v0=;
-        b=aLFhZdnZO5XIQF+AKgvGJSAmziQaa34WBCy3z5C/gPlNAgn4VyUP07KrdzczsfP0Nb
-         Y4c2ZU7udNStoUAcRg8sWUfWicbnOZkXD1aA6pZvK7d+aTq9uHLDoIKS+Uh4OzrK/zRX
-         BnIzYnZNVYsJMLU7z+8sKH87qfm9R7ubFPk+oGjL/Liirl5y9j/mVxRM5e0vhWPnFUly
-         3Rko9KL4E0FUTyP1VA9LGHVUcigBdBLiLkW5x1TaHGa8Vuail7+K6Core0odCdAp/rOv
-         8KOFSHw5P/xY7xNYbxeqDSmSBdM6lnZFrBG+kptH3OTIKWO/Y0ekg2Fzr/eT5Y9QV0G+
-         qqyA==
+         :cc;
+        bh=auvgvbvtYps+YfEa/1JaZT2Zglnk2z58rtb7mP8X0y0=;
+        b=UCvlKysKY5/tfL/DPjs6om0iwUZOp6aIh67LZC9NvqHi3aFLsgTJ5uyCNKL7H49JqI
+         X7hWxAm4iI2n/36u0LZkC3G6rKmsZSy6nqcUdbkJt+/rSJwPnIdy0TY6a9LjsinI/X4D
+         b5up+WgoOucbUlEg5D5CGwW7/RHD5TFrpsE/Mj/hYgkfY+td6lMXKZbnCZJdiagReutG
+         wsVomwQw72SEduinkyXlKQvIOpaUAfKpcQDN3OZsHiNo9LyMzntSU2RWkQtXh/ieHnsU
+         XORyLUVZZMQjFN+zBQygT/lBMEZgNk5hgotG/KKoPjAuRXW11m4ItpgmBitmD52Jy3KY
+         LT0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Kql1bBy1EgzVpsU/JwDkrMwOYaTG3KOCNskyPvT29v0=;
-        b=yl0Zdgi/vFqjXnrNyyL1iixJhLXxSLR0W0GblZPH9GO3nxGJiCV/HZaq2HsiOHTZVT
-         bpD9BGFuVJtfs5k5A2yN19pZket2GH51s/jWOKEGsBHzIB3DK6gPiiJfid8aV2Kd//+S
-         apr6FUXgbH4ZJiuT5GSUS9rT2dp1zb2HyEzCZT3y2DWznX1QDhyIcn8jZmBauSi7unMH
-         ezgIq9eZQ9GGztyYDQKxHGYJR7n1/jVr0DcBb7PfX9PD4dWqZBlLN6LDQM/qAMkKTgFW
-         EsZCnJxiKlVbWb1xRoMCIDyEQ8KrUHQzyvOX84oCA+VPzRpymfKkrLuXCC27KTzYTHL+
-         /9mQ==
-X-Gm-Message-State: AOAM5308+DWAR4WtUKRtcnBCgLiE+sjCIYNVA8h/+6NO1ipCc/hfzImw
-        DsadtC+dIRDRFCdHeyDsCI3ScKs7MlcVQZBF68whKrTKgwZdbQ==
-X-Google-Smtp-Source: ABdhPJxrmSbihGZEgETtrdNrlJPNMgiScKrO2WuWpaF7Tq412qlyNjHI4iy6tXltxxIDfGFmp6QGXK2A5udNOYx6DYM=
-X-Received: by 2002:a25:abaa:: with SMTP id v39mr47903087ybi.367.1638854011809;
- Mon, 06 Dec 2021 21:13:31 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=auvgvbvtYps+YfEa/1JaZT2Zglnk2z58rtb7mP8X0y0=;
+        b=Gc/GdxGFIkLN7rswXvCq3+YQZ2EuLGAnujct/tnLTUwZ8oG9SCLkjV2FvG+sjdwNqW
+         krzMGNoPanGe3ti2+HU/2hXgDOxAKgtA2FxQl9xA83HFH8Ar0DP+MDVvExCR/2b2/O72
+         f5PIuyGWa/d/vbxMcDbyvVZMtDT61ovhApxGmzypeDAvzb2Yw2NI2nCGeo0nKmTWhmQ0
+         9pc+t0tzSYQgotVHJKNYTXPxEZ95yn3Puwo3RPlEpHTMLhDkDjZbGHpxomXZHA5oIvtS
+         Ua7rM5nmO2OEZZgjrJoXrUr2h4TgIEn4MYgqWBmsHQoVM/LDxIE96eqvUxAjxtgVim9R
+         PgyA==
+X-Gm-Message-State: AOAM53082yII7qSPwFWtkeb8zKIOHZ/DeowX/589OmYiV3rzmkQj6CgI
+        k4DdRSNlfyobnyqV6IDzNeEISJ+ngGqs+t1I6gs=
+X-Google-Smtp-Source: ABdhPJys0PXjTiVJMB6zyHoX9Y/hYBsHC8j+t3Enq/Y0TJl2qaug2HiZJ5fclYFitbYVORZMptAh87QwDidveqcyqQE=
+X-Received: by 2002:a05:6902:1006:: with SMTP id w6mr51010443ybt.252.1638855932248;
+ Mon, 06 Dec 2021 21:45:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20211206230811.4131230-1-song@kernel.org> <CAEf4BzbaBcySm3bVumBTrkHMmVDWEVxckdVKvUk=4j9HhSsmBA@mail.gmail.com>
- <3221CDA7-F2EF-404A-9289-14F9DF6D01DA@fb.com>
-In-Reply-To: <3221CDA7-F2EF-404A-9289-14F9DF6D01DA@fb.com>
+References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-3-haoluo@google.com>
+In-Reply-To: <20211206232227.3286237-3-haoluo@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Dec 2021 21:13:20 -0800
-Message-ID: <CAEf4BzbN17eviD18-_C2UN+P5gMm4vFXVrdLd9UHx0ev+gJsjw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] perf/bpf_counter: use bpf_map_create instead of bpf_create_map
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Mon, 6 Dec 2021 21:45:21 -0800
+Message-ID: <CAEf4BzZUFZQvXm5uNCZ=Y_o2dak+c3jWANz0Q70wt_gyMUChQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/9] bpf: Replace ARG_XXX_OR_NULL with ARG_XXX
+ | PTR_MAYBE_NULL
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 6, 2021 at 8:32 PM Song Liu <songliubraving@fb.com> wrote:
+On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
 >
+> We have introduced a new type to make bpf_arg composable, by
+> reserving high bits of bpf_arg to represent flags of a type.
 >
+> One of the flags is PTR_MAYBE_NULL which indicates a pointer
+> may be NULL. When applying this flag to an arg_type, it means
+> the arg can take NULL pointer. This patch switches the
+> qualified arg_types to use this flag. The arg_types changed
+> in this patch include:
 >
-> > On Dec 6, 2021, at 6:37 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
- wrote:
-> >
-> > On Mon, Dec 6, 2021 at 3:08 PM Song Liu <song@kernel.org> wrote:
-> >>
-> >> bpf_create_map is deprecated. Replace it with bpf_map_create.
-> >>
-> >> Fixes: 992c4225419a ("libbpf: Unify low-level map creation APIs w/ new=
- bpf_map_create()")
-> >
-> > This is not a bug fix, it's an improvement. So I don't think "Fixes: "
-> > is warranted here, tbh.
+> 1. ARG_PTR_TO_MAP_VALUE_OR_NULL
+> 2. ARG_PTR_TO_MEM_OR_NULL
+> 3. ARG_PTR_TO_CTX_OR_NULL
+> 4. ARG_PTR_TO_SOCKET_OR_NULL
+> 5. ARG_PTR_TO_ALLOC_MEM_OR_NULL
+> 6. ARG_PTR_TO_STACK_OR_NULL
 >
-> I got compilation errors before this change, like
+> This patch does not eliminate the use of these arg_types, instead
+> it makes them an alias to the 'ARG_XXX | PTR_MAYBE_NULL'.
 >
-> util/bpf_counter.c: In function =E2=80=98bperf_lock_attr_map=E2=80=99:
-> util/bpf_counter.c:323:3: error: =E2=80=98bpf_create_map=E2=80=99 is depr=
-ecated: libbpf v0.7+: use bpf_map_create() instead [-Werror=3Ddeprecated-de=
-clarations]
->    map_fd =3D bpf_create_map(BPF_MAP_TYPE_HASH,
->    ^~~~~~
-> In file included from util/bpf_counter.h:7,
->                  from util/bpf_counter.c:15:
-> /data/users/songliubraving/kernel/linux-git/tools/lib/bpf/bpf.h:91:16: no=
-te: declared here
->  LIBBPF_API int bpf_create_map(enum bpf_map_type map_type, int key_size,
->                 ^~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
-> make[4]: *** [/data/users/songliubraving/kernel/linux-git/tools/build/Mak=
-efile.build:96: util/bpf_counter.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
-> make[3]: *** [/data/users/songliubraving/kernel/linux-git/tools/build/Mak=
-efile.build:139: util] Error 2
-> make[2]: *** [Makefile.perf:665: perf-in.o] Error 2
-> make[1]: *** [Makefile.perf:240: sub-make] Error 2
-> make: *** [Makefile:70: all] Error 2
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
+>  include/linux/bpf.h   | 15 +++++++++------
+>  kernel/bpf/verifier.c | 39 ++++++++++++++-------------------------
+>  2 files changed, 23 insertions(+), 31 deletions(-)
 >
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index d8e6f8cd78a2..b0d063972091 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -331,13 +331,11 @@ enum bpf_arg_type {
+>         ARG_PTR_TO_MAP_KEY,     /* pointer to stack used as map key */
+>         ARG_PTR_TO_MAP_VALUE,   /* pointer to stack used as map value */
+>         ARG_PTR_TO_UNINIT_MAP_VALUE,    /* pointer to valid memory used to store a map value */
+> -       ARG_PTR_TO_MAP_VALUE_OR_NULL,   /* pointer to stack used as map value or NULL */
+>
+>         /* the following constraints used to prototype bpf_memcmp() and other
+>          * functions that access data on eBPF program stack
+>          */
+>         ARG_PTR_TO_MEM,         /* pointer to valid memory (stack, packet, map value) */
+> -       ARG_PTR_TO_MEM_OR_NULL, /* pointer to valid memory or NULL */
+>         ARG_PTR_TO_UNINIT_MEM,  /* pointer to memory does not need to be initialized,
+>                                  * helper function must fill all bytes or clear
+>                                  * them in error case.
+> @@ -347,26 +345,31 @@ enum bpf_arg_type {
+>         ARG_CONST_SIZE_OR_ZERO, /* number of bytes accessed from memory or 0 */
+>
+>         ARG_PTR_TO_CTX,         /* pointer to context */
+> -       ARG_PTR_TO_CTX_OR_NULL, /* pointer to context or NULL */
+>         ARG_ANYTHING,           /* any (initialized) argument is ok */
+>         ARG_PTR_TO_SPIN_LOCK,   /* pointer to bpf_spin_lock */
+>         ARG_PTR_TO_SOCK_COMMON, /* pointer to sock_common */
+>         ARG_PTR_TO_INT,         /* pointer to int */
+>         ARG_PTR_TO_LONG,        /* pointer to long */
+>         ARG_PTR_TO_SOCKET,      /* pointer to bpf_sock (fullsock) */
+> -       ARG_PTR_TO_SOCKET_OR_NULL,      /* pointer to bpf_sock (fullsock) or NULL */
+>         ARG_PTR_TO_BTF_ID,      /* pointer to in-kernel struct */
+>         ARG_PTR_TO_ALLOC_MEM,   /* pointer to dynamically allocated memory */
+> -       ARG_PTR_TO_ALLOC_MEM_OR_NULL,   /* pointer to dynamically allocated memory or NULL */
+>         ARG_CONST_ALLOC_SIZE_OR_ZERO,   /* number of allocated bytes requested */
+>         ARG_PTR_TO_BTF_ID_SOCK_COMMON,  /* pointer to in-kernel sock_common or bpf-mirrored bpf_sock */
+>         ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
+>         ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
+> -       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
+> +       ARG_PTR_TO_STACK,       /* pointer to stack */
+>         ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
+>         ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
+>         __BPF_ARG_TYPE_MAX,
+>
+> +       /* Extended arg_types. */
+> +       ARG_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_MAP_VALUE,
+> +       ARG_PTR_TO_MEM_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_MEM,
+> +       ARG_PTR_TO_CTX_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_CTX,
+> +       ARG_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
+> +       ARG_PTR_TO_ALLOC_MEM_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_ALLOC_MEM,
+> +       ARG_PTR_TO_STACK_OR_NULL        = PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
+> +
+>         /* This must be the last entry. Its purpose is to ensure the enum is
+>          * wide enough to hold the higher bits reserved for bpf_type_flag.
+>          */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 0763cca139a7..b8fa88266af7 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -472,14 +472,9 @@ static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
+>         return type == ARG_PTR_TO_SOCK_COMMON;
+>  }
+>
+> -static bool arg_type_may_be_null(enum bpf_arg_type type)
+> +static bool type_may_be_null(u32 type)
+>  {
+> -       return type == ARG_PTR_TO_MAP_VALUE_OR_NULL ||
+> -              type == ARG_PTR_TO_MEM_OR_NULL ||
+> -              type == ARG_PTR_TO_CTX_OR_NULL ||
+> -              type == ARG_PTR_TO_SOCKET_OR_NULL ||
+> -              type == ARG_PTR_TO_ALLOC_MEM_OR_NULL ||
+> -              type == ARG_PTR_TO_STACK_OR_NULL;
+> +       return type & PTR_MAYBE_NULL;
+>  }
+>
+>  /* Determine whether the function releases some resources allocated by another
+> @@ -4932,9 +4927,8 @@ static int process_timer_func(struct bpf_verifier_env *env, int regno,
+>
+>  static bool arg_type_is_mem_ptr(enum bpf_arg_type type)
+>  {
+> -       return type == ARG_PTR_TO_MEM ||
+> -              type == ARG_PTR_TO_MEM_OR_NULL ||
+> -              type == ARG_PTR_TO_UNINIT_MEM;
+> +       return base_type(type) == ARG_PTR_TO_MEM ||
+> +              base_type(type) == ARG_PTR_TO_UNINIT_MEM;
+>  }
+>
+>  static bool arg_type_is_mem_size(enum bpf_arg_type type)
+> @@ -5071,31 +5065,26 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+>         [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
+>         [ARG_PTR_TO_MAP_VALUE]          = &map_key_value_types,
+>         [ARG_PTR_TO_UNINIT_MAP_VALUE]   = &map_key_value_types,
+> -       [ARG_PTR_TO_MAP_VALUE_OR_NULL]  = &map_key_value_types,
+>         [ARG_CONST_SIZE]                = &scalar_types,
+>         [ARG_CONST_SIZE_OR_ZERO]        = &scalar_types,
+>         [ARG_CONST_ALLOC_SIZE_OR_ZERO]  = &scalar_types,
+>         [ARG_CONST_MAP_PTR]             = &const_map_ptr_types,
+>         [ARG_PTR_TO_CTX]                = &context_types,
+> -       [ARG_PTR_TO_CTX_OR_NULL]        = &context_types,
+>         [ARG_PTR_TO_SOCK_COMMON]        = &sock_types,
+>  #ifdef CONFIG_NET
+>         [ARG_PTR_TO_BTF_ID_SOCK_COMMON] = &btf_id_sock_common_types,
+>  #endif
+>         [ARG_PTR_TO_SOCKET]             = &fullsock_types,
+> -       [ARG_PTR_TO_SOCKET_OR_NULL]     = &fullsock_types,
+>         [ARG_PTR_TO_BTF_ID]             = &btf_ptr_types,
+>         [ARG_PTR_TO_SPIN_LOCK]          = &spin_lock_types,
+>         [ARG_PTR_TO_MEM]                = &mem_types,
+> -       [ARG_PTR_TO_MEM_OR_NULL]        = &mem_types,
+>         [ARG_PTR_TO_UNINIT_MEM]         = &mem_types,
+>         [ARG_PTR_TO_ALLOC_MEM]          = &alloc_mem_types,
+> -       [ARG_PTR_TO_ALLOC_MEM_OR_NULL]  = &alloc_mem_types,
+>         [ARG_PTR_TO_INT]                = &int_ptr_types,
+>         [ARG_PTR_TO_LONG]               = &int_ptr_types,
+>         [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
+>         [ARG_PTR_TO_FUNC]               = &func_ptr_types,
+> -       [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
+> +       [ARG_PTR_TO_STACK]              = &stack_ptr_types,
+>         [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
+>         [ARG_PTR_TO_TIMER]              = &timer_types,
+>  };
+> @@ -5109,7 +5098,7 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+>         const struct bpf_reg_types *compatible;
+>         int i, j;
+>
+> -       compatible = compatible_reg_types[arg_type];
+> +       compatible = compatible_reg_types[base_type(arg_type)];
+>         if (!compatible) {
+>                 verbose(env, "verifier internal error: unsupported arg type %d\n", arg_type);
+>                 return -EFAULT;
+> @@ -5190,15 +5179,14 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                 return -EACCES;
+>         }
+>
+> -       if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+> -           arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+> -           arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+> +       if (base_type(arg_type) == ARG_PTR_TO_MAP_VALUE ||
+> +           base_type(arg_type) == ARG_PTR_TO_UNINIT_MAP_VALUE) {
+>                 err = resolve_map_arg_type(env, meta, &arg_type);
+>                 if (err)
+>                         return err;
+>         }
+>
+> -       if (register_is_null(reg) && arg_type_may_be_null(arg_type))
+> +       if (register_is_null(reg) && type_may_be_null(arg_type))
+>                 /* A NULL register has a SCALAR_VALUE type, so skip
+>                  * type checking.
+>                  */
+> @@ -5267,10 +5255,11 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                 err = check_helper_mem_access(env, regno,
+>                                               meta->map_ptr->key_size, false,
+>                                               NULL);
+> -       } else if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+> -                  (arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL &&
+> -                   !register_is_null(reg)) ||
+> -                  arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE) {
+> +       } else if (base_type(arg_type) == ARG_PTR_TO_MAP_VALUE ||
+> +                  base_type(arg_type) == ARG_PTR_TO_UNINIT_MAP_VALUE) {
+> +               if (type_may_be_null(arg_type) && register_is_null(reg))
+> +                       return err;
+> +
 
-Hmm.. is util/bpf_counter.h guarded behind some Makefile arguments?
-I've sent #pragma temporary workarounds just a few days ago ([0]), but
-this one didn't come up during the build.
+small nit: return 0 would make it clear that we successfully checked
+everything (err is going to be zero here, but you need to scroll quite
+a lot up to check this, so it's a bit annoying).
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20211203004640.2=
-455717-1-andrii@kernel.org/
-
-> Do we plan to remove bpf_create_map in the future? If not, we can probabl=
-y just
-> add '#pragma GCC diagnostic ignored "-Wdeprecated-declarations"' can call=
- it done?
-
-Yes, it will be removed in a few libbpf releases when we switch to the
-1.0 version. So suppressing a warning is a temporary work-around.
-
->
-> >
-> >> Signed-off-by: Song Liu <song@kernel.org>
-> >> ---
-> >> tools/perf/util/bpf_counter.c | 4 ++--
-> >> 1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_count=
-er.c
-> >> index c17d4a43ce065..ed150a9b3a0c0 100644
-> >> --- a/tools/perf/util/bpf_counter.c
-> >> +++ b/tools/perf/util/bpf_counter.c
-> >> @@ -320,10 +320,10 @@ static int bperf_lock_attr_map(struct target *ta=
-rget)
-> >>        }
-> >>
-> >>        if (access(path, F_OK)) {
-> >> -               map_fd =3D bpf_create_map(BPF_MAP_TYPE_HASH,
-> >> +               map_fd =3D bpf_map_create(BPF_MAP_TYPE_HASH, NULL,
-> >
-> > I think perf is trying to be linkable with libbpf as a shared library,
-> > so on some older versions of libbpf bpf_map_create() won't be (yet)
-> > available. So to make this work, I think you'll need to define your
-> > own weak bpf_map_create function that will use bpf_create_map().
->
-> Hmm... I didn't know the plan to link libbpf as shared library. In this c=
-ase,
-> maybe the #pragma solution is preferred?
-
-See "perf tools: Add more weak libbpf functions" sent by Jiri not so
-long ago about what they did with some other used APIs that are now
-marked deprecated.
-
->
-> Thanks,
-> Song
+>                 /* bpf_map_xxx(..., map_ptr, ..., value) call:
+>                  * check [value, value + map->value_size) validity
+>                  */
+> --
+> 2.34.1.400.ga245620fadb-goog
 >
