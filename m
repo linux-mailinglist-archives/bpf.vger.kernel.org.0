@@ -2,112 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF0946C521
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 21:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C9246C7B4
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 23:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbhLGVAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 16:00:10 -0500
-Received: from mga14.intel.com ([192.55.52.115]:44277 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231657AbhLGU75 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Dec 2021 15:59:57 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="237914267"
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; 
-   d="scan'208";a="237914267"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 12:56:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; 
-   d="scan'208";a="580160593"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Dec 2021 12:56:21 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1B7Ku9km018910;
-        Tue, 7 Dec 2021 20:56:20 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S242250AbhLGWuw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 17:50:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233594AbhLGWuw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Dec 2021 17:50:52 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188D1C061574;
+        Tue,  7 Dec 2021 14:47:21 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id q3so765243wru.5;
+        Tue, 07 Dec 2021 14:47:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O39HyWOFBZUdrPmreABJfrxuR9d3BPOym69qD3t0Fwo=;
+        b=OcdWNGmfAHOERVFlOngW3VtU4ZV4XYWa2nprnNgB1A7WDH1YEBnjmUXwmze98Ml97g
+         alEpF0pIToI6zohB0AzSPpA+LBoCFLLXdF+vGp4ZLjGqgqgtrTZ5y2AAhWDKqeAnsREa
+         R5zTj0Tz5wnuW9kN5hgl5Rs/RFxEWABPuQwissAEWrnH4+0Adwvo1GDeDQICsAJcUwfs
+         dw5gZHYhPYSx1FYn2g/wu8gjdnwiXVyv0A0h8Fj8sjQQQzpE12H4aQUFvO3IOfO1SXma
+         ARHmksmd6VUIhgPDQTt/WbPfAxVJQNDbFaWA3n7y+ECyQVl/4eZpWFA9ufXPEkdaPIhs
+         rMNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O39HyWOFBZUdrPmreABJfrxuR9d3BPOym69qD3t0Fwo=;
+        b=mSh9BfJv0pu/ZCc04ufhNRkcJo6LbwGqMKmnJwhkXQ7nvTdMRNOX/tABhzl9kQSVvF
+         uxEaPVXIzgonq1lDbx1BRMNwLnatZkLNY/3Zzz5wee9uxbzmio9vKRnNJpgT+Co5KayZ
+         CmuTV0TNWZ2JyrDpkJDoDCRZJbCmg68Pbr7rfTpGT0480tbV0PDZKFr7b8rJ+xJCqoAB
+         qHJVySHeVEA0Be+NOmjezXvGqFSJL/V20mshDnsVsa9k5DdxIZJy512Lp5+plFKAABvU
+         vY1QGsX17iU6OrPoax/kPRxv+gEMBKB3KtRC0LbA/8sO2cx3ysJ2TrXIdBaS9ERS+xlb
+         +8LQ==
+X-Gm-Message-State: AOAM532lhEa19uKOgd1Kpv/LqngNZeQGLxAccZcCRZTp2uFtYnkxEMig
+        e1GicTGHilRL+1U2xxf+mVo=
+X-Google-Smtp-Source: ABdhPJx2+OaO2LWLFBLWfvNhY8D1veAxwiPR8r2M7DRaBnJ/ivOXkM73424dltZuqjE1hNsreXmPcA==
+X-Received: by 2002:a5d:4008:: with SMTP id n8mr54191507wrp.489.1638917239718;
+        Tue, 07 Dec 2021 14:47:19 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id p27sm847440wmi.28.2021.12.07.14.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Dec 2021 14:47:19 -0800 (PST)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Andre Guedes <andre.guedes@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH v3 net-next 9/9] i40e: respect metadata on XSK Rx to skb
-Date:   Tue,  7 Dec 2021 21:55:36 +0100
-Message-Id: <20211207205536.563550-10-alexandr.lobakin@intel.com>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: remove redundant assignment to pointer t
+Date:   Tue,  7 Dec 2021 22:47:18 +0000
+Message-Id: <20211207224718.59593-1-colin.i.king@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211207205536.563550-1-alexandr.lobakin@intel.com>
-References: <20211207205536.563550-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For now, if the XDP prog returns XDP_PASS on XSK, the metadata will
-be lost as it doesn't get copied to the skb.
-Copy it along with the frame headers. Account its size on skb
-allocation, and when copying just treat it as a part of the frame
-and do a pull after to "move" it to the "reserved" zone.
-net_prefetch() xdp->data_meta and align the copy size to speed-up
-memcpy() a little and better match ixgbee_costruct_skb().
+The pointer t is being initialized with a value that is never read. The
+pointer is re-assigned a value a littler later on, hence the initialization
+is redundant and can be removed.
 
-Fixes: d0bcacd0a130 ("ixgbe: add AF_XDP zero-copy Rx support")
-Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Suggested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ kernel/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index db20dc4c2488..ec1e2da72676 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -209,19 +209,25 @@ bool ixgbe_alloc_rx_buffers_zc(struct ixgbe_ring *rx_ring, u16 count)
- static struct sk_buff *ixgbe_construct_skb_zc(struct ixgbe_ring *rx_ring,
- 					      const struct xdp_buff *xdp)
- {
-+	unsigned int totalsize = xdp->data_end - xdp->data_meta;
- 	unsigned int metasize = xdp->data - xdp->data_meta;
--	unsigned int datasize = xdp->data_end - xdp->data;
- 	struct sk_buff *skb;
- 
-+	net_prefetch(xdp->data_meta);
-+
- 	/* allocate a skb to store the frags */
--	skb = __napi_alloc_skb(&rx_ring->q_vector->napi, datasize,
-+	skb = __napi_alloc_skb(&rx_ring->q_vector->napi, totalsize,
- 			       GFP_ATOMIC | __GFP_NOWARN);
- 	if (unlikely(!skb))
- 		return NULL;
- 
--	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
--	if (metasize)
-+	memcpy(__skb_put(skb, totalsize), xdp->data_meta,
-+	       ALIGN(totalsize, sizeof(long)));
-+
-+	if (metasize) {
- 		skb_metadata_set(skb, metasize);
-+		__skb_pull(skb, metasize);
-+	}
- 
- 	return skb;
- }
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 48cdf5b425a7..c70f80055b8e 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -836,7 +836,7 @@ static const char *btf_show_name(struct btf_show *show)
+ 	const char *ptr_suffix = &ptr_suffixes[strlen(ptr_suffixes)];
+ 	const char *name = NULL, *prefix = "", *parens = "";
+ 	const struct btf_member *m = show->state.member;
+-	const struct btf_type *t = show->state.type;
++	const struct btf_type *t;
+ 	const struct btf_array *array;
+ 	u32 id = show->state.type_id;
+ 	const char *member = NULL;
 -- 
 2.33.1
 
