@@ -2,97 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9842446C1E9
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 18:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FB946C219
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 18:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240067AbhLGRkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 12:40:00 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:39629 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240062AbhLGRkA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Dec 2021 12:40:00 -0500
-Received: by mail-il1-f200.google.com with SMTP id d3-20020a056e021c4300b002a23bcd5ee7so12519854ilg.6
-        for <bpf@vger.kernel.org>; Tue, 07 Dec 2021 09:36:29 -0800 (PST)
+        id S230181AbhLGRxD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 12:53:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49184 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235368AbhLGRxC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Dec 2021 12:53:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638899371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+MB5vgB4lpR5cqAqUHi9YG29ue+1AEcuXdupv4jAGE4=;
+        b=Mt/tLlz2KcTW/f11Cmo0+dlr08qCbwn7ZA/k/NxM3PVvyO9Zp35FQCAW5eQD0OMaQfCIm/
+        0nSpE+K6SQ5tnXDGSY9zLW4JULydd7hhb44olU+T2uZWFY+AjKfFlkjKk8J7nL3O3T8cer
+        qgd+/ZfuFuVaIFiXt8x/C5T/RFAKGSQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-429-xNG5VK2UP9SBH6FdgET5ng-1; Tue, 07 Dec 2021 12:49:30 -0500
+X-MC-Unique: xNG5VK2UP9SBH6FdgET5ng-1
+Received: by mail-ed1-f72.google.com with SMTP id w18-20020a056402071200b003e61cbafdb4so12157005edx.4
+        for <bpf@vger.kernel.org>; Tue, 07 Dec 2021 09:49:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=1dQvezvp3iGWZ0YIb75qsQGcY3DEG/a8kpN3taG3XIQ=;
-        b=zjRwBkACal/XlUhRC8PM1mBqbTB8biI1yK3CmlNeiUmnZCpVZMEcsvJW7lnw6BP8/v
-         HIMs+rrUHZMAfj4K8ea4ZiHRDzREtR8zWQhGCYDuLrLWnP0QSlm3861vD6fRvrnNu4ce
-         ncr+xRHW8mY1VGxLoIe4/XGvQE1w+vLomPIKMogLD90eZARiTh0P73F11qQhz2AghhpU
-         2prZGr/pysB1I+unUcUCWKQ+h/aIWbihgsUCF1GuvHsvcAl4m3dlPm3eH5KlWaCONdlQ
-         6FW7jMc/9gEnTw1y6nN2mJJtq7mnNAae5CMQK4N66u+Ji1mnqdSlsYvvk4XjHlqZp/f6
-         0DNA==
-X-Gm-Message-State: AOAM530LQWP/9139uJCTZil7LML4eb2MtVUCY+TRbZ9yZW3Lm4jyi3fK
-        UlQdGZpFuav9dF4SRwp5PAS5/+JyzTx8VZYpGdnP84qRZnHC
-X-Google-Smtp-Source: ABdhPJxrY5ezv1MAc4b3hmpC2DiyVCa1ZBCuumVI4l2wVqyLJVseDqkqWYesgOImWu3+rPfrjLJrTeEt9WFpybMUWdvQ/3svPH4Z
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=+MB5vgB4lpR5cqAqUHi9YG29ue+1AEcuXdupv4jAGE4=;
+        b=HwiRiU3YTtMzjm4tuCL/lxvgIJcBcZBdEpW0u2SYhfQ82rSkZ4EXG/5Ui1vWXvBObr
+         F2GlkPTfN0ykL5MmhU2bfFnZ9hUvdPujJ68Igx8dKZNF/3QkR7YvGIumnXp/drY0n0Pa
+         nelzCsUos9kCUvQt8pSCg2k+1ZrRICbI2h0Vd1KNp82MAEYEekPHN+eFygf7NqilTRsO
+         /7Ufa7Eig1syHplWXLjtRV5z4oKAxAoqodxmGt3RoPyOmTE8ijC/LSKesmz0POXb7j0E
+         GTndg4sRbmDf+4yaPLkleJFwqw5xEQ+/o/izXqOTw61J1mc9rmb2CIYYW0Troo6wkedg
+         OKVA==
+X-Gm-Message-State: AOAM532ZaUVAwHYqC8vWi0Fh7KTrwRkHZJi4vFwyIqSakfR/bSGEZrjV
+        QKkcKKJORRwdf6HqTCj00OEszJyJOiXtcZFOq8ra51sBddaPkeSaolvATOuJabPwmW3/4W0I/dT
+        Lx9V2qxMAGNdD
+X-Received: by 2002:a05:6402:5206:: with SMTP id s6mr11386739edd.286.1638899367970;
+        Tue, 07 Dec 2021 09:49:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyRa5Ul9rNKJtolacBM15WQFhZ+Cq0ZZXeWX3QahjtAVpe7QYyBH9Pw7uTEdzk0EvCqckpWnw==
+X-Received: by 2002:a05:6402:5206:: with SMTP id s6mr11386233edd.286.1638899363884;
+        Tue, 07 Dec 2021 09:49:23 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id d10sm143510eja.4.2021.12.07.09.49.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Dec 2021 09:49:23 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 9072F180441; Tue,  7 Dec 2021 18:49:22 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: RE: [PATCH v19 bpf-next 19/23] bpf: generalise tail call map
+ compatibility check
+In-Reply-To: <61ae4b768d787_8818208f@john.notmuch>
+References: <cover.1638272238.git.lorenzo@kernel.org>
+ <15afc316a8727f171fd6e9ec93ab95ad23857b33.1638272239.git.lorenzo@kernel.org>
+ <61ae4b768d787_8818208f@john.notmuch>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 07 Dec 2021 18:49:22 +0100
+Message-ID: <87zgpcxq3h.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:16ca:: with SMTP id 10mr721658ilx.274.1638898589332;
- Tue, 07 Dec 2021 09:36:29 -0800 (PST)
-Date:   Tue, 07 Dec 2021 09:36:29 -0800
-In-Reply-To: <000000000000367c2205d2549cb9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003d78f805d291d061@google.com>
-Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in __bpf_prog_put
-From:   syzbot <syzbot+5027de09e0964fd78ce1@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+John Fastabend <john.fastabend@gmail.com> writes:
 
-HEAD commit:    1c5526968e27 net/smc: Clear memory when release and reuse ..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13a9eabdb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8e24e3a80e3875
-dashboard link: https://syzkaller.appspot.com/bug?extid=5027de09e0964fd78ce1
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b749a9b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170d7519b00000
+> Lorenzo Bianconi wrote:
+>> From: Toke Hoiland-Jorgensen <toke@redhat.com>
+>> 
+>> The check for tail call map compatibility ensures that tail calls only
+>> happen between maps of the same type. To ensure backwards compatibility for
+>> XDP multi-buffer we need a similar type of check for cpumap and devmap
+>> programs, so move the state from bpf_array_aux into bpf_map, add xdp_mb to
+>> the check, and apply the same check to cpumap and devmap.
+>> 
+>> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>> Signed-off-by: Toke Hoiland-Jorgensen <toke@redhat.com>
+>> ---
+>
+> ...
+>
+>> -bool bpf_prog_array_compatible(struct bpf_array *array, const struct bpf_prog *fp);
+>> +static inline bool map_type_contains_progs(struct bpf_map *map)
+>
+> Maybe map_type_check_needed()? Just noticing that devmap doesn't contain
+> progs.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5027de09e0964fd78ce1@syzkaller.appspotmail.com
+Ah, but it does :)
 
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in __bpf_prog_put.constprop.0+0x1dd/0x220 kernel/bpf/syscall.c:1812
-Read of size 8 at addr ffffc90001a16038 by task kworker/0:3/2934
+See: fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
 
-CPU: 0 PID: 2934 Comm: kworker/0:3 Not tainted 5.16.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events sk_psock_destroy
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xf/0x320 mm/kasan/report.c:247
- __kasan_report mm/kasan/report.c:433 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:450
- __bpf_prog_put.constprop.0+0x1dd/0x220 kernel/bpf/syscall.c:1812
- psock_set_prog include/linux/skmsg.h:477 [inline]
- psock_progs_drop include/linux/skmsg.h:495 [inline]
- sk_psock_destroy+0xad/0x620 net/core/skmsg.c:804
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
+Indeed this feature is why this check is needed, so I think the name is
+accurate...
 
-
-Memory state around the buggy address:
- ffffc90001a15f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90001a15f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc90001a16000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                        ^
- ffffc90001a16080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90001a16100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
+-Toke
 
