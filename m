@@ -2,184 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FC046C352
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 20:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BD646C3C7
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 20:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240833AbhLGTJj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 14:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        id S231629AbhLGToz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 14:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240851AbhLGTJj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Dec 2021 14:09:39 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8077AC061746
-        for <bpf@vger.kernel.org>; Tue,  7 Dec 2021 11:06:08 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id p19so77901qtw.12
-        for <bpf@vger.kernel.org>; Tue, 07 Dec 2021 11:06:08 -0800 (PST)
+        with ESMTP id S236311AbhLGToy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Dec 2021 14:44:54 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F90DC061574
+        for <bpf@vger.kernel.org>; Tue,  7 Dec 2021 11:41:23 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id m24so3212238pgn.7
+        for <bpf@vger.kernel.org>; Tue, 07 Dec 2021 11:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r6wtX8oRkE0II5AlCGiC7oLLyGh9CPLpmHfUwi1ajH0=;
-        b=HZyHVcgUuD2lcc1oTXvGBAUMap9UEzk62+HCdbYI60c12cMMNTlQaGdfrq93r2PVVA
-         Q/RhWHUd+CcLu/5CIIUXKyHyJY6hGEMVOmNEd4qiEXbQTk/6njaN9fy2kCBD36H6tMHY
-         e99JBBryOnwL/ROp8GLzGD8/aUtjjm9H7xLJTihpDT3MVGTZaPmPvoiFL4bnKheMH8Tf
-         mbisNXQbUjSQL4xNVMX02VhRU3uEs3L5m2iaMDus+Z6lmxRnb25MQVDG7QqTvw/LZYf5
-         T3HQG40kAF08F7nfQ5oZb3Rc8DMELRtKnCpRWPh4ToJfqohYphxkPeROf1vSb8RHxgV7
-         QFqA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XTDTPNKbsdXuyA97GMlxL0sQMVxWBPGxjgPgjKvtoWI=;
+        b=hpRzWalMVoeWytfF9eBFic5VaujhVSMVbLEx/jINLFXXj/oOFLImTWVewGjU+kQsQZ
+         iq7Hh2uGULCI7qWVwDgm4qwdxpGhWkkjts+tEs5YhdC72OC6v+ut1AjJSixK6Bp7/4id
+         Bf2SeW5+l7KgARj0ehu7HcdjBzys2fyit6b8sQ5bDWJ/zf10xDK4fRpupCkiuwpPvUkx
+         QzRjzS5Smi3MhX49qTo1ohCtZ0OYWIWvwqLgaSkIYdd6blDPQbSDJY53XkgTFxx1xKtL
+         rbf1u6547+r92pKkNFx4t1/TPHfgvAD5XCGZ6UqU5yiDa1DjZT3af2DB3xdP+Xr1GJo/
+         Z3yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r6wtX8oRkE0II5AlCGiC7oLLyGh9CPLpmHfUwi1ajH0=;
-        b=LITcSWh3FEYwUz12d9FGoD8NJc+CqK0kXcB7U9pUU0te14Pc75T0bcAKabtlHfaUeX
-         AUGf87LcFFy5AGxv/mkgzc1eYPabzzt6kaHAp2ob4GaCMIMKUW/wySUOS0CyhLAwwK4s
-         iCyH76RldajjYdg3be1y0+0f9Ydbzj6mhCDHtKRzshT+pKreohSS62y976nrA/U9zxM/
-         P3lYL0ttddXits2MskEmlsWsKLel3Ekhkv4doQZySwxZCbSjohD8ag4CFiKHBbr2bZlq
-         BUnqIOtTfZKcd4zxOtk6OQV4NNTVDGHAcVgjIMq6dGaRqmwQnKyKKmYVu87lWtRr6W0S
-         7pxQ==
-X-Gm-Message-State: AOAM531IptSDcO+87Cv6muwJe4VOKIuKquXuxcXwA9h7AyhtsHkeLck5
-        67f5HgS3Vpv2U+y136S2TqfXAIbmozNCEPZ0o6EQfA==
-X-Google-Smtp-Source: ABdhPJwkRMXrUtuoNV6EB6H3Dyq9Uv/XoJktCggsMmndi7d4/2q54ofQy8Do+RJkws7Ub8FwFk15QtvWJasVAX55q80=
-X-Received: by 2002:ac8:5b82:: with SMTP id a2mr1495072qta.519.1638903967298;
- Tue, 07 Dec 2021 11:06:07 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XTDTPNKbsdXuyA97GMlxL0sQMVxWBPGxjgPgjKvtoWI=;
+        b=ual+g+xWTCahW7glVtTIvIpyxkWQ8lOONpdBKZ361YnAhh428nGSSppnJ0iwn3Ko2D
+         ehuNOQ67ZXSTY3s9eyH1JWvXeNEdlYeIMwtqlFhjkhAUB9KxEJsJuM+rrpUnBhcKB/VV
+         4cq7RVQMu+yMNdeny01/4AVhH8ye94fBCNXWb2KWLUN73LOrPTnhrpzGRMkbJ/H3m3fz
+         1JjyWpp+bSoxfwhLA/lGkl8Q/einQrqAkH6uGJYKlVQz/iReI8SvyoRZnlwkOktq4jSB
+         Ft7JFljWeTVdz6Jo0RH0HDgPhRvzU0trTrZSaMs26kFH5GnXeGkz2UzpSzxH8I1vmn7c
+         r67g==
+X-Gm-Message-State: AOAM531mUKPbMzyKxhgmHGRJQfqEBKhdX5trmUDCYp64aKexAnSBLTaG
+        UA8UkYz9UT3sXOXlVzBlri5qoFvDca4=
+X-Google-Smtp-Source: ABdhPJzg0x95xnh2X/PuvgRRMqbXhts3McT2Ypx0SrCfdU48tQDfFb40mBXIFEeVxj6lVmcJmt2qjg==
+X-Received: by 2002:a65:4bc8:: with SMTP id p8mr25554932pgr.119.1638906082967;
+        Tue, 07 Dec 2021 11:41:22 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::209d])
+        by smtp.gmail.com with ESMTPSA id q17sm583634pfu.117.2021.12.07.11.41.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Dec 2021 11:41:22 -0800 (PST)
+Date:   Tue, 7 Dec 2021 11:41:20 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 06/11] libbpf: add per-program log buffer setter
+ and getter
+Message-ID: <20211207194120.2qfa5i6s43djdeqy@ast-mbp.dhcp.thefacebook.com>
+References: <20211205203234.1322242-1-andrii@kernel.org>
+ <20211205203234.1322242-7-andrii@kernel.org>
 MIME-Version: 1.0
-References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-4-haoluo@google.com>
- <CAEf4BzZShouPUqbjr6fzqSy=Lp3Y36KTkFm6OaNSE=N0V9+_Xw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZShouPUqbjr6fzqSy=Lp3Y36KTkFm6OaNSE=N0V9+_Xw@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 7 Dec 2021 11:05:56 -0800
-Message-ID: <CA+khW7ha6xCR8PGdrHpZRbkkFHCqT-V0kSXxzXR47zOz5e46WQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/9] bpf: Replace RET_XXX_OR_NULL with RET_XXX
- | PTR_MAYBE_NULL
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211205203234.1322242-7-andrii@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 6, 2021 at 9:51 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > We have introduced a new type to make bpf_ret composable, by
-> > reserving high bits to represent flags.
-> >
-> > One of the flag is PTR_MAYBE_NULL, which indicates a pointer
-> > may be NULL. When applying this flag to ret_types, it means
-> > the returned value could be a NULL pointer. This patch
-> > switches the qualified arg_types to use this flag.
-> > The ret_types changed in this patch include:
-> >
-> > 1. RET_PTR_TO_MAP_VALUE_OR_NULL
-> > 2. RET_PTR_TO_SOCKET_OR_NULL
-> > 3. RET_PTR_TO_TCP_SOCK_OR_NULL
-> > 4. RET_PTR_TO_SOCK_COMMON_OR_NULL
-> > 5. RET_PTR_TO_ALLOC_MEM_OR_NULL
-> > 6. RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL
-> > 7. RET_PTR_TO_BTF_ID_OR_NULL
-> >
-> > This patch doesn't eliminate the use of these names, instead
-> > it makes them aliases to 'RET_PTR_TO_XXX | PTR_MAYBE_NULL'.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >  include/linux/bpf.h   | 19 ++++++++++------
-> >  kernel/bpf/helpers.c  |  2 +-
-> >  kernel/bpf/verifier.c | 52 +++++++++++++++++++++----------------------
-> >  3 files changed, 39 insertions(+), 34 deletions(-)
-> >
->
-> [...]
->
-> > @@ -6570,28 +6570,28 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >                                 return -EINVAL;
-> >                         }
-> >                         regs[BPF_REG_0].type =
-> > -                               fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID ?
-> > -                               PTR_TO_MEM : PTR_TO_MEM_OR_NULL;
-> > +                               (ret_type & PTR_MAYBE_NULL) ?
-> > +                               PTR_TO_MEM_OR_NULL : PTR_TO_MEM;
->
-> nit: I expected something like (let's use the fact that those flags
-> are the same across different enums):
->
-> regs[BPF_REG_0].type = PTR_TO_MEM | (ret_type & PTR_MAYBE_NULL);
->
+On Sun, Dec 05, 2021 at 12:32:29PM -0800, Andrii Nakryiko wrote:
+>  
+> +	ret = bpf_prog_load(prog->type, prog_name, license, insns, insns_cnt, &load_attr);
+>  	if (ret >= 0) {
+> -		if (log_buf && load_attr.log_level) {
+> +		if (log_level && own_log_buf) {
+>  			pr_debug("prog '%s': -- BEGIN PROG LOAD LOG --\n%s-- END PROG LOAD LOG --\n",
+>  				 prog->name, log_buf);
+>  		}
+> @@ -6690,19 +6720,20 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
+>  		goto out;
+>  	}
+>  
+> -	if (!log_buf || errno == ENOSPC) {
+> -		log_buf_size = max((size_t)BPF_LOG_BUF_SIZE,
+> -				   log_buf_size << 1);
+> -		free(log_buf);
+> +	if (log_level == 0) {
+> +		log_level = 1;
+>  		goto retry_load;
+>  	}
 
-We haven't taught reg_type to recognize PTR_MAYBE_NULL until the next
-patch. Patch 4/9 does have the suggested conversion:
+I think the new log_level semantics makes sense,
+but can we do it only in one layer?
+The above piece of bpf_object_load_prog_instance() will change log_level,
+but then bpf_prog_load_v0_6_0() will do it again
+when log_buf != NULL.
+The latter will not malloc log_buf, but the former will.
+Though both change log_level.
+Can we somehow unify this logic and only do log_level adjustment and log_buf
+alloc in bpf_object_load_prog_instance() only ?
 
-regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> +	/* on ENOSPC, increase log buffer size, unless custom log_buf is specified */
+> +	if (own_log_buf && errno == ENOSPC && log_buf_size < UINT_MAX / 2)
+> +		goto retry_load;
 
->
-> >                         regs[BPF_REG_0].mem_size = tsize;
-> >                 } else {
-> >                         regs[BPF_REG_0].type =
-> > -                               fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID ?
-> > -                               PTR_TO_BTF_ID : PTR_TO_BTF_ID_OR_NULL;
-> > +                               (ret_type & PTR_MAYBE_NULL) ?
-> > +                               PTR_TO_BTF_ID_OR_NULL : PTR_TO_BTF_ID;
->
-> same as above
->
-> >                         regs[BPF_REG_0].btf = meta.ret_btf;
-> >                         regs[BPF_REG_0].btf_id = meta.ret_btf_id;
-> >                 }
-> > -       } else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL ||
-> > -                  fn->ret_type == RET_PTR_TO_BTF_ID) {
-> > +       } else if (base_type(ret_type) == RET_PTR_TO_BTF_ID) {
-> >                 int ret_btf_id;
-> >
-> >                 mark_reg_known_zero(env, regs, BPF_REG_0);
-> > -               regs[BPF_REG_0].type = fn->ret_type == RET_PTR_TO_BTF_ID ?
-> > -                                                    PTR_TO_BTF_ID :
-> > -                                                    PTR_TO_BTF_ID_OR_NULL;
-> > +               regs[BPF_REG_0].type = (ret_type & PTR_MAYBE_NULL) ?
-> > +                                                    PTR_TO_BTF_ID_OR_NULL :
-> > +                                                    PTR_TO_BTF_ID;
->
-> and here
->
->
-> >                 ret_btf_id = *fn->ret_btf_id;
-> >                 if (ret_btf_id == 0) {
-> > -                       verbose(env, "invalid return type %d of func %s#%d\n",
-> > -                               fn->ret_type, func_id_name(func_id), func_id);
-> > +                       verbose(env, "invalid return type %lu of func %s#%d\n",
-> > +                               base_type(ret_type), func_id_name(func_id),
->
-> base type returns u32, shouldn't it be %u then?
->
+The kernel allows buf_size <= UINT_MAX >> 2.
+Above condition will probably get to the same value, but it's not obvious.
+Maybe make it exactly as kernel?
 
-Ack, you are right. When writing this, I know '%lu' will work but
-didn't give it much thought. Will use '%u' in v2.
+> -	if (log_buf && log_buf[0] != '\0') {
+> +	if (own_log_buf && log_buf && log_buf[0] != '\0') {
+>  		pr_warn("prog '%s': -- BEGIN PROG LOAD LOG --\n%s-- END PROG LOAD LOG --\n",
+>  			prog->name, log_buf);
+>  	}
+> @@ -6712,7 +6743,8 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
+>  	}
+>  
+>  out:
+> -	free(log_buf);
+> +	if (own_log_buf)
+> +		free(log_buf);
 
-> > +                               func_id);
-> >                         return -EINVAL;
-> >                 }
-> >                 /* current BPF helper definitions are only coming from
-> > @@ -6600,8 +6600,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >                 regs[BPF_REG_0].btf = btf_vmlinux;
-> >                 regs[BPF_REG_0].btf_id = ret_btf_id;
-> >         } else {
-> > -               verbose(env, "unknown return type %d of func %s#%d\n",
-> > -                       fn->ret_type, func_id_name(func_id), func_id);
-> > +               verbose(env, "unknown return type %lu of func %s#%d\n",
-> > +                       base_type(ret_type), func_id_name(func_id), func_id);
->
-> same %u
->
-> >                 return -EINVAL;
-> >         }
-> >
-> > --
-> > 2.34.1.400.ga245620fadb-goog
-> >
+For lksel I'm thinking to pass allocated log_buf back.
+lskel has no ability to printf from inside of it, so log_buf has to be passed back.
+I wonder whether it would make sense for libbpf as well?
+The own_log_buf flag can be kept in bpf_program and caller can
+examine the log_buf instead of doing bpf_program__set_log_buf() below...
+
+> +int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log_size)
+> +{
+> +	if (log_size && !log_buf)
+> +		return -EINVAL;
+> +	if (prog->log_size > UINT_MAX)
+> +		return -EINVAL;
+> +	if (prog->obj->loaded)
+> +		return -EBUSY;
+> +
+> +	prog->log_buf = log_buf;
+> +	prog->log_size = log_size;
+> +	return 0;
+> +}
+
+The problem with this helper is that the user would have to malloc
+always even though the prog might load just fine.
+But there is a chance of load failure even in production,
+so the user would have to rely on libbpf printfs and override print func
+or do prog_load without bpf_program__set_log_buf() and then do it again on error
+or always do bpf_program__set_log_buf() with giant malloc.
+All of these 3 options are not that great.
+The 4th option is for libbpf to do a malloc in case of error and return it.
+That's the most convenient:
+err = ...prog_load(..)
+if (err) // user will check what's in the log.
+No need to override libbpf print, unconditionally allocated or do double load.
