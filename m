@@ -2,95 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7757646BCA0
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 14:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486E346BCA3
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 14:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbhLGNeq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 08:34:46 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:47611 "EHLO
+        id S237174AbhLGNes (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 08:34:48 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59097 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232505AbhLGNep (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Dec 2021 08:34:45 -0500
+        by vger.kernel.org with ESMTP id S232505AbhLGNer (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Dec 2021 08:34:47 -0500
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 485BA580169;
-        Tue,  7 Dec 2021 08:31:15 -0500 (EST)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 440A9580164;
+        Tue,  7 Dec 2021 08:31:17 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 07 Dec 2021 08:31:15 -0500
+  by compute4.internal (MEProxy); Tue, 07 Dec 2021 08:31:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dtucker.co.uk;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=YfwIM/Lk5oHhwshP/rQHys5GU+
-        ie4/b45j1GmoWHTuE=; b=ZETQjVbxtwrK5jkF3RoGvN1b40RdIkYHDmUpNF6/qz
-        wNZkEhoWxsSNQw5Zji3jkipyUfZTb+GujKkFzicpB+oCyHXfcXKcAeUGI1DI8NcC
-        Xh1c3JmDAJ7u9+J96rLI8/oquN6AQSpM7SwIPUhCSCMyr79WT/dHGbr0OjEb3shN
-        joz8yJoX5ckk/TfE2eCbLGU0w2/ESjTARC0uIvCsVk7+RTSprCPmFZW3K7Bz0pM5
-        e8z+6pvHBjWJrQYzRKA+7xzsPFkzadjLhEfMd9uKPX+q3fB7QpA4Sh/lPo4+G3bO
-        6PVx4gza29LZinmSbQXMI6eYDKZwm+ja+V/zBq7FvJIg==
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=xBsMwdxJivfuD
+        sKWwk3lW/DROqO3mg9/RPVY9GufXhY=; b=Isgoe1F2q24KmMIwmIoOnG9gDdapi
+        B2Ebf/mHtXBRpDy4HMmBXIzcsSE2RJuqzrh2l2EMJLMoodzB2c46N5SfdTq1+ia+
+        2sAF2OLGRvVgfBWSPrge1Qm+/h420Ykn8TF25mFxuniTDEYWZiG6alTMVHC2QkjX
+        BiUVOMZW5mnydSRSDKHt+lcDjVM5HTghzVdFuJWOD+zRefWjmW49fk0jUhfb7rsn
+        j1oA792/bYrJH/GSJR+IN/Ls2AS8JtRlSDxJqIlvDuyXHUA8N+cFXN+sE3njWlGA
+        5YyZbO7ud2MVS19liS+05N8PAg0HoBk8wL69aqBkzrABgnJLrPxRhKwZg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=YfwIM/Lk5oHhwshP/
-        rQHys5GU+ie4/b45j1GmoWHTuE=; b=FA4zCvULKHfFZvUmV1gzI71hgsJbXlbjG
-        zLta+JRjOho591+uShPvO3QSDY2GLWsdz76ajZhAM246Ok0ayjm6PoRxH26cs3J4
-        urUnJtArXvaH8FaY4fIj/bMQd6fCc2qSBS39jrA5aJBa4lwNLNL5+x37BciWHf4b
-        X697AWmjzV/xpMtK6olEVFmLFktETiLhEX1TPeyYPvGzqHvpeuWWJzB3+ySUX/eA
-        rWRGzpXiTxWwsW8+8N1fz+feCRTpbiWaxLB4bamFwD2y9TmgcgwLiGeIu9i9UmDy
-        KeSXFvrcZfkN8I0ecJNt/A/PvTJRhC8XoKQsDUm8CVXl1oljy6zzA==
-X-ME-Sender: <xms:I2KvYY1iKeAEfBKW2qLwd-iimHhC2tV79oB8B3w4wJODGYA3UhjQXQ>
-    <xme:I2KvYTHAGwjP3SC_a5b1vFr8HOB0S_IJIShDoXjs52TWe9Pop0f_iCc18etWFg2R5
-    FtVvD415xo1C_IUEg>
-X-ME-Received: <xmr:I2KvYQ4zCQWSNuiirl2MhAxoH6bUXUlTLtzVVnT8jNnzLswZWDaqouCtXQM5Ty-l4ZjlyDMw9g>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=xBsMwdxJivfuDsKWwk3lW/DROqO3mg9/RPVY9GufXhY=; b=Xnj03HyS
+        +bmMwJzIcMjwjQMRJhnfNCNmSiSz6SvR0eFUEjAugngGc4d7qo6Am7RZLepRtcKC
+        hrQVxGqFsEyYbC7TsTDmkhZquMvLv+9vOHjSH0K/47tKQefpekw9RgvKKns+serv
+        q+kccEX+M7VyV4/QWuK+xMipbJWCN+YB2kZ1cUbZUzRR7/ImXIE3mNWZ+v7IzLF5
+        CcnnKj6Y1lnaYw6zM2TNU37P4z5RGRrnqH/JBYH6VrLh1eBJiGf4mWfBuYEDMtZn
+        uXGA55HFQTGPHNOBOxa6br9x0EP4uaHSpG1qAfFa/p3Bv9NvO+8qvtiVX3Kydhtm
+        Gcs/e7wa5cR92Q==
+X-ME-Sender: <xms:JWKvYeWscEjT6pi1KSGK2e9QaNSvrVCZEhr5_CXy5H50uyVmiiH0VQ>
+    <xme:JWKvYal3YVT3hsX_ICcyVOAW28RgxWQKJvs46Dw-5baDsEaI7wlOhDRn69kmbvTCO
+    X3T5y90_TqgXWsXNA>
+X-ME-Received: <xmr:JWKvYSYhLlSDRbmUOXCU1gXfNLtu5GCFo4AEs2FWXfnb4AHFFU8xlk9LqC-fgQjIuEjTNLLcgw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrjeehgdehgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeffrghvvgcuvfhutghkvghruceouggrvhgvseguthhutghkvghrrdgt
-    ohdruhhkqeenucggtffrrghtthgvrhhnpeefvddtueelfefhuedtgfevfefhgedvkeegud
-    etvdfgueekudehtefghefhkeduudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
-    mhepmhgrihhlfhhrohhmpegurghvvgesughtuhgtkhgvrhdrtghordhukh
-X-ME-Proxy: <xmx:I2KvYR29lOIYzgLHvR8WRLR4ToOAUuNnOWBUIpAQqLnkUKRAFYZzrg>
-    <xmx:I2KvYbFXPNSPM_uzd7HPbGdltdZO9TKqsiuIJVQoH_11hV3kmnSQGw>
-    <xmx:I2KvYa_4jGr5S9FX1LRcwBOkZhhiPcDI9z5lsJFLxYujzkP2h3beIA>
-    <xmx:I2KvYSBfd19d4QEb-dOOoa7uE7jyw5Y_M1_fIpwp8tKIacUzH1MYsA>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpeffrghvvgcuvfhutghkvghruceouggrvhgvseguthhutghkvghr
+    rdgtohdruhhkqeenucggtffrrghtthgvrhhnpeevgfdtlefhheetvedtueevkeeuvddtie
+    eifefftdeigfevvedukeduvdeiueejgfenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpegurghvvgesughtuhgtkhgvrhdrtghordhukh
+X-ME-Proxy: <xmx:JWKvYVWtVxEvpzYjsPJV_c6b_pCIFVLE9ogEDUrF-h-P51_wqHvu8A>
+    <xmx:JWKvYYnvruQEPCcxw3fwoJbr21_rRCA7l2miBx6FVI-6uSpxOBFhqQ>
+    <xmx:JWKvYaev46ps5D0l3-EFNPAHg5yUbbMJ6Ja6kJ-8SLpwJNRs-9xh8Q>
+    <xmx:JWKvYVjNNp6Cdr__kkzCbg9nuaVsXkcTmOKibVF7AEzHTQ-Y8bLG9g>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Dec 2021 08:31:14 -0500 (EST)
+ 7 Dec 2021 08:31:16 -0500 (EST)
 From:   Dave Tucker <dave@dtucker.co.uk>
 To:     bpf@vger.kernel.org
 Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org,
         linux-doc@vger.kernel.org, Dave Tucker <dave@dtucker.co.uk>
-Subject: [PATCH v3 bpf-next 0/2] bpf, docs: Document BPF_MAP_TYPE_ARRAY
-Date:   Tue,  7 Dec 2021 13:31:09 +0000
-Message-Id: <cover.1638883067.git.dave@dtucker.co.uk>
+Subject: [PATCH v3 bpf-next 1/2] bpf, docs: add kernel version to map_cgroup_storage
+Date:   Tue,  7 Dec 2021 13:31:10 +0000
+Message-Id: <a0ba64336d9655021d7b752b8315833684dcf013.1638883067.git.dave@dtucker.co.uk>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <cover.1638883067.git.dave@dtucker.co.uk>
+References: <cover.1638883067.git.dave@dtucker.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This series is the beginning of my attempt to improve the BPF map and
-program type documentation. It expands the template from
-map_cgroup_storage to include the kernel version it was introduced.
-I then used this template to document BPF_MAP_TYPE_ARRAY and
-BPF_MAP_TYPE_PERCPU_ARRAY
+This adds the version at which this map became available to use in the
+documentation
 
-v2->v3:
-- wrap text to 80 chars and add newline at end of file
+Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
+---
+ Documentation/bpf/map_cgroup_storage.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-v1->v2:
-- point to selftests for functional examples
-- update examples to follow kernel style
-- add docs for BPF_F_MMAPABLE
-
-Dave Tucker (2):
-  bpf, docs: add kernel version to map_cgroup_storage
-  bpf, docs: document BPF_MAP_TYPE_ARRAY
-
- Documentation/bpf/map_array.rst          | 182 +++++++++++++++++++++++
- Documentation/bpf/map_cgroup_storage.rst |   2 +
- 2 files changed, 184 insertions(+)
- create mode 100644 Documentation/bpf/map_array.rst
-
+diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
+index cab9543017bf..b626cb068846 100644
+--- a/Documentation/bpf/map_cgroup_storage.rst
++++ b/Documentation/bpf/map_cgroup_storage.rst
+@@ -5,6 +5,8 @@
+ BPF_MAP_TYPE_CGROUP_STORAGE
+ ===========================
+ 
++.. note:: Introduced in Kernel version 4.19
++
+ The ``BPF_MAP_TYPE_CGROUP_STORAGE`` map type represents a local fix-sized
+ storage. It is only available with ``CONFIG_CGROUP_BPF``, and to programs that
+ attach to cgroups; the programs are made available by the same Kconfig. The
 -- 
 2.33.1
 
