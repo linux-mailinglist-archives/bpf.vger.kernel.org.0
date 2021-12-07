@@ -2,256 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6FC46B2DB
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 07:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1351B46B2EA
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 07:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbhLGG1i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 01:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbhLGG1h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Dec 2021 01:27:37 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23927C061746
-        for <bpf@vger.kernel.org>; Mon,  6 Dec 2021 22:24:08 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id v138so38032732ybb.8
-        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 22:24:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aCZSDfADJnwnYwXg3EHDG8a1CYtCScin8QCqwPv8cEo=;
-        b=Jv+NXxb8HoPiNfuyjeXWBTX8jFulGGnvRS70ovgKuniW2BBkMGpi1yWO5t1bp2I9mc
-         h7SjFHTwTHOM4SsbCJ4epjjbJqmtXr5UCf04Dxizjce+tjzrhzfgPzAQR2W1s8ejJWx8
-         IFXEfLklVdqD+2pJ6N/19DG4Tea8jwRlg0dkQczebcAxoP3KJyOWLffV8uY/zpmQz4cq
-         TU61OgiUr8rFM73fXcWbkCKGlEgI/650ipo7uI/ZC1FmOxqF78FSj7yUWTqaSjvGCxJR
-         Whr4p7XVvF6x0kYRJ31oX9I+bcha6YBhRI2IIep2VZvROt4N2Q4FjYvebbu+4+1t/3zb
-         Avwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aCZSDfADJnwnYwXg3EHDG8a1CYtCScin8QCqwPv8cEo=;
-        b=I85+EpXnojqqjGJT2d8kU51Zm0u8PLrAP2P8S+yA54b7jE+vybmvFPUckhakPZ3pB7
-         EwsVys+UndyC8Yx2AqND5BpCVUFFd9tiVWbQIDV+8bVfIqP4i2oIZHsigYsRA2gDhCyp
-         LXEjLHfnroR5o2Xn4LmxKSeeDbcUH08pTdIRxD1cuma1ckJCBuRGJdrMncjXlZ5kZvTm
-         2EJpNgOk+NxkXohady9qcDmRJAP2eBGBTMfdqrYqMLmDUJWPU+/KjommXcue3qSPG0rY
-         TkJQnYwMSH3GCeaZTm6ev7enKeesOmRuiRxA14E6GgBKUqOGfUMHHQQSi2pcJ+q+W0Ym
-         NLCg==
-X-Gm-Message-State: AOAM530qWcS5fMKnqxJrPIN85lPzFhcMZVumSU9gPkVTc4uixT5e9E/U
-        x1nDdm4M1mT0Qk6+a8iaWzJjg6fQ9DHrQNA0wOE=
-X-Google-Smtp-Source: ABdhPJygBKCGHmB9z9uG2oU7s3vrSsdr2LOLolFq83teNXT1xNJjpfbKKV2tPKXvcP5HbkTWKG5Mr0FPXbZUTL1mqqU=
-X-Received: by 2002:a25:e617:: with SMTP id d23mr46958645ybh.555.1638858247300;
- Mon, 06 Dec 2021 22:24:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-9-haoluo@google.com>
-In-Reply-To: <20211206232227.3286237-9-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Dec 2021 22:23:56 -0800
-Message-ID: <CAEf4Bzb3nyWbS4=e7M8Am5BvMSPbMhMzXPKvd3spk+D9vZg99g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 8/9] bpf: Add MEM_RDONLY for helper args that
- are pointers to rdonly mem.
-To:     Hao Luo <haoluo@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S235320AbhLGGd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 01:33:56 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49896 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234928AbhLGGdz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Dec 2021 01:33:55 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1B71h0YD028568;
+        Mon, 6 Dec 2021 22:30:25 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=5ASqIii2aXKE/pUQLPd3u0I+h+zbFPgh8nzoBeNXXH8=;
+ b=gTMwQrdI8/QSmop4m9VrzCREbW8LxQ8Ad7i97X0RgnZIm26APx93j6scjJGsJhd+5/jT
+ rZJ35ApAIoRIRm6gDBR8J6opr+15LbtpmWYUpHb5APC05HRR1tkpzN/HNXHals7JDvnF
+ Ys4a0U1nbWnU6UmQYC3Ej7Sp7C7SxeroG2w= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 3csx6ds6ae-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 06 Dec 2021 22:30:25 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 6 Dec 2021 22:30:24 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z7dOvRLJKtf4I7TjbteKtXG45wiUrXUHkOP+K1TIczXqATcJdjNJyOUACshy9KjP3IVrnpbm6cCuj2K1tnBZA2iV0S7mi6jJ5WT2A8O6OH1cTHIfMjHRSrFJFSA1Ixo2+wzQSKYWsluSmTuqJ6CcgFlpxjDcMv7tWgexRqT64a6WaMJl6MbHSSub35T2TrH4vrAZQtVkOfDm4jzxXmHvph64iSb4NElkEsoa6rduAW94Yr00wFJZfaNtLyTCalEG5VI7TD2VcUs8aLBgVtpY/4WsxyiPSwT+wEXPJ7OwyCXOsJlG0sI0If4yU/ke1JiODBuLnz50xLKp4LHwFybgAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5ASqIii2aXKE/pUQLPd3u0I+h+zbFPgh8nzoBeNXXH8=;
+ b=hflIC1DS83GvWn94uOyZxO7xOKpj/Ch9a6x2Gycb8do5R6Ey7nMxnfXblIDMdd/WLlCqcvRwd30xIhYc/N8JD0HJhJiTktAfq0o93dK/uKDNrIPdHLUJCTeMovPR0kLk3jhXdbJg4tWW6um71yfVRtnDxKfc95T/bNmrbiZFYAfMmadVfHhOb/1IfMV1PApdeiyeE0wzka9dN0fO8VtJCscuWwx/7BN8IVUiYjXthUc6ZdaYVrzULuN5CBK1FhWg3N5GHgXPN5EHjmqc0VVm84BrjnJpZjU+VOEIFbL7bfLvgoQx/sPD7P5VXwVL5YYapSSLDbLQxAezb88kTptKZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA1PR15MB5139.namprd15.prod.outlook.com (2603:10b6:806:233::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11; Tue, 7 Dec
+ 2021 06:30:22 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::f826:e515:ee1a:a33]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::f826:e515:ee1a:a33%4]) with mapi id 15.20.4755.022; Tue, 7 Dec 2021
+ 06:30:22 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Kernel Team" <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH bpf-next] perf/bpf_counter: use bpf_map_create instead of
+ bpf_create_map
+Thread-Topic: [PATCH bpf-next] perf/bpf_counter: use bpf_map_create instead of
+ bpf_create_map
+Thread-Index: AQHX6vYzhWKFIoT0wkePQg16MtlXfawmUPOAgAAf5QCAAAuIAIAAFYSA
+Date:   Tue, 7 Dec 2021 06:30:22 +0000
+Message-ID: <08EB4596-7788-4570-B0B0-DE3B710BBDD8@fb.com>
+References: <20211206230811.4131230-1-song@kernel.org>
+ <CAEf4BzbaBcySm3bVumBTrkHMmVDWEVxckdVKvUk=4j9HhSsmBA@mail.gmail.com>
+ <3221CDA7-F2EF-404A-9289-14F9DF6D01DA@fb.com>
+ <CAEf4BzbN17eviD18-_C2UN+P5gMm4vFXVrdLd9UHx0ev+gJsjw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbN17eviD18-_C2UN+P5gMm4vFXVrdLd9UHx0ev+gJsjw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3693.20.0.1.32)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: da281673-3d84-4771-5ea5-08d9b94b0c3a
+x-ms-traffictypediagnostic: SA1PR15MB5139:EE_
+x-microsoft-antispam-prvs: <SA1PR15MB51395875BAB4FA2F1CF09653B36E9@SA1PR15MB5139.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Svo1XfwR2fC9C/1FA9vKt808rSdQedAiMnaKuqjODd8F06VAkqcZOv2NCEPmYCs2zc03nfgjOZN0jZ0nal2cZZZVYoExj5x9SMdWKAWu267MNsuYOxN7M1hmpP+Aq0Z8BTN1Ti0SNLvKHci9psKauOB2U82nJH/taEYTFfqTXJDoWZgtrd9LP4ST/yBtEi9PryXAslvR89voLAeBT40X8MYqRQRi1MNIxF36Vi8xgALuJ3nkY0n1WlaGX3/uctaI+G6bKTLHLfoCISjaiFU0qObWHgdZ2nBlk9h58zfB8mFqxoSWOuaz07Zc2Gm0ee9f+aGrBbKSi9mWxk+D3hM9XNfhOYop/PYu+Z0WHuWxlL6RIfEBVTCiku1ZJqTmerUYhsKfzUcSyZ3atE3x2iy+GXNhI4m0D9gLuVmMvzpaWD2nrEZk/m2dc8IHRVS2ytu3HiKK79jJa48ozPd2d98lm0dTlWizOhSgWSahBlzNayTB5NWYeNsIIE6dqC5yXDEre5YUxUW3SqhXBa4h42xGliJzO16+vBm/Sng3PiKXmoLdbifQrh/yvGM/IRc2Yke6ZrQpeRxxHye6o2yX8ymynJoScsTn20Y9dD4ykZzF9LZA4xbgis1lS4fAZaSL53Smnb577NHSm/O8YC2Sea3oIb/7Rpf3Q6VPXVpVqHZbqQ4Qz0v73k8cLdH9BiWkdOsl3doEFdT/ZPuTKTZ17ZcgVyBSr2S05zVhR6eQ/N/w19BiOmRGkwUAW80HxVrUk07h+83MO4jre+TOenpQGM7cBzSYFRJsYuXZdz5tLP1mXdDXaCqfD1bVhl7Eln7p3y4ZAYkT9tYxke664f/P3o9MLg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(508600001)(83380400001)(33656002)(64756008)(66476007)(91956017)(8676002)(316002)(6506007)(66556008)(186003)(71200400001)(76116006)(36756003)(66946007)(122000001)(86362001)(2906002)(6486002)(38070700005)(6916009)(6512007)(2616005)(966005)(54906003)(5660300002)(8936002)(4326008)(66446008)(38100700002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TTZQbnl2Y1VMODlKa0RxWmJ2eG1iOVN0a3lkVG1jenNOZnd4M1MzdmVDVnl0?=
+ =?utf-8?B?Qjg0WVd4S1M1cGxjS0trTzJOZ0tKZjhPZEs3bVNGTUdtaEpjUDI0OHVKclhv?=
+ =?utf-8?B?V0VsRDUrTXJlS2RlN1IrVXpjYmhaUlFaNTBmRVNXcUh6emM4Y1ZFQ1JWY1dJ?=
+ =?utf-8?B?eEdXMjI4TlVWUERZSmVLQU4ybkdRcjBrdm1tSTE4UW5mVVZyOFNTRGF6TDhL?=
+ =?utf-8?B?VVBvMkZpQm84N056NDIwYnNtTmZCc3AycnljUnQvc3F3SDB0V3A0Zi9mZ0VG?=
+ =?utf-8?B?REZWd3MxZFJsQjBPMXduUSt4ZnJIRzFFY3hkL3ZUWUN0cXZlWVVNNk5xdlg0?=
+ =?utf-8?B?VmQwSVNSM3VvUTNKWUNiS3cybEw4SWJOWHVIeXdvTVFoajljZDlzZnpMVHJO?=
+ =?utf-8?B?MXVhRUUrVEVnOGVGSzFweFhqdThrOC81Q0RMUWw1bTZ3K2VPbWt6aFpMdzBt?=
+ =?utf-8?B?WHVGdWtGbUx3clR1VTJ5RnZhTUQ5TFR2SGV6K3l6VU9YQWFWajBzS2xXSkd6?=
+ =?utf-8?B?eUZqa0ppc1IybWNHanM4blFnOTNFN05IZHdINFpqeHFUVS9rSDBsU3lkSDB1?=
+ =?utf-8?B?MEVXckpUZVZGbFdEcFAraUhlZUo4M1hSQVJNWVhjL05WYXIzUkZwZXBKTG9k?=
+ =?utf-8?B?cXFEaHNOVWM2U2ljTmZydnI5VDJXMFB1QmE0MHlQUG9MU0R5Snp4MEE4NlBl?=
+ =?utf-8?B?SVVNdFZkd0FrenVNblhmV1lhOEU5enJ6cTVXMCtrMTBpRm03cmEyYUdQaDN5?=
+ =?utf-8?B?OHBwWjVPTmszK2dwSVV3SXpDZGxVd0F1cDh0ejRUeElJVlhuMVZzY2VQMXhz?=
+ =?utf-8?B?SFoyZkt0YXVoWjRBMEIvYmZ1cGNLb09xTFhNWk9PZEgzMUFPcEZRMFVBVDRY?=
+ =?utf-8?B?MU5QY21LcVE0bUZzYmd6MldJblJPMlJUOWZBZHFyR2FHQkJBRTJBZlVYTFVn?=
+ =?utf-8?B?QjBoMDlib2JYZStVNkhJaHh4V3F0RXdFWHZEZ2gyR2p5VmpaR1NBbE1FRGYw?=
+ =?utf-8?B?NVFCUktlQkhpUXZGMTR4ZFRvYlkxaHYybWFmLzUwL0V3ZWpBNDRObzhWOVF3?=
+ =?utf-8?B?bFdscm11U1ZvdHdrMWJEbXdkQ3RSVzkzWXVyeUxNd1FMUVNkUlBvekVyQ2Uv?=
+ =?utf-8?B?Umg1THBDSXpXd3JtY3pZZlhhOWZKYm9jcUZuZ3FDejQ4dVA1b1QrMUpKTnRP?=
+ =?utf-8?B?ZTZqRHREb0o5SUJRS0swS3VaVW42VEIzVHlFY3dvT28wVWU2aGFKZmFacjJX?=
+ =?utf-8?B?TStpWk1ZVGZNTmVBNjhYbVg4WmVhTDA3NHNxdk9GVFZzTjBxYklPcjczN1lw?=
+ =?utf-8?B?WmQvRnBBRVBLSmJpL3ZBOGp2aWEzNTk2NG9nQVMrQnNTWGs3VzhYeW9oVmxw?=
+ =?utf-8?B?TWdxeW11dHJEdDRZTDZOLzQ2ekxOWG9WbU5ZNGRIdTBYOHZYbHgvbmUzOGRv?=
+ =?utf-8?B?ZTh3REVYZ1FrSkhuMHlUc2xSWFFIZTNOVmlIRzQ5aHoyNDhFMVpJZFdibFdx?=
+ =?utf-8?B?RjJHOW9OUm55eFI4Q0JrQVN0WXh6NjcrT01aeFUrQzVTbEtOcXp4Q1poV3VX?=
+ =?utf-8?B?cmp5RVRGWjlkek1ZY0VRelU1WitQWi83bFd6MS95YkQ1RnQydXp0aFRQTUkx?=
+ =?utf-8?B?RHo2ZWFVV1RTV01qREdoSXdtQjNnb3BDdG5TZWdSWEpXUkdmejF0VTY5Y0w5?=
+ =?utf-8?B?WjdLYS91K3U0YnZUcy93R09XZ09XL2loUVo2NDM0QnZWc05qbExXZFVrMDd3?=
+ =?utf-8?B?b2dlQUU0NnBzR2hmdlZoU01iVDBiZk5FdHhjTEF2QW5FUmwrL0lZN3hVL2F1?=
+ =?utf-8?B?dW51UjU2WTUwMzFkRms4K0VtcDF4WlZaM2hMWDRBZlgrSG5wTnlqNDdFL2wy?=
+ =?utf-8?B?eHlvZExTd0dHNEZOamw4ZnVIV2JvbDVYZjIyRkdWaDF3ZXdEeHdyV25HUVho?=
+ =?utf-8?B?RXhkVnpaSWZMc2k5Y0pML2hUcXRaRnV0YVRNWXp4alhBQ0RPVm5vY0xQcEl2?=
+ =?utf-8?B?bjRMSXF6enJka2h3QXcvSlpIcDlmT21YYVhJNVJOa0puWTRROEJwZGZhTkVP?=
+ =?utf-8?B?c21lNHJKUGd0djhDRTJpQ1VtRW1xdGpKRFlDQmtXcGswaWFIejFnZ04vU2p1?=
+ =?utf-8?B?b0wxZGhMUzB3dEtQZUVqbGY3UnJLOVl3T1I5YVFiRDE3SWVRSEtaenhMeWVh?=
+ =?utf-8?B?VjFFWUtvcDhTUFdtZjVKUE1EamRHVEE2c2U3ZWpWZElCQkppdVFHMUd3RzV4?=
+ =?utf-8?B?UkRFajA5KzFtN3hxb29tUWloZG9BPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <593EC37D410ED14B9AFF91D47C394EE2@namprd15.prod.outlook.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da281673-3d84-4771-5ea5-08d9b94b0c3a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2021 06:30:22.7696
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4kgq+LKR0ieNPuNuJ5V7Eh5kWJ4A2CExoe0/N1hidPCiFThRFGg1JtnSRLtbKfsGAtww9ezkn+wCakjguxr9PQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5139
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: pQWJuQNW0blN0Clk3Xvk7Hh-qAtsO90T
+X-Proofpoint-ORIG-GUID: pQWJuQNW0blN0Clk3Xvk7Hh-qAtsO90T
+Content-Transfer-Encoding: base64
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-07_02,2021-12-06_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=999
+ clxscore=1015 spamscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112070036
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
->
-> Some helper functions may modify its arguments, for example,
-> bpf_d_path, bpf_get_stack etc. Previously, their argument types
-> were marked as ARG_PTR_TO_MEM, which is compatible with read-only
-> mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
-> to modify a read-only memory by passing it into one of such helper
-> functions.
->
-> This patch tags the bpf_args compatible with immutable memory with
-> MEM_RDONLY flag. The arguments that don't have this flag will be
-> only compatible with mutable memory types, preventing the helper
-> from modifying a read-only memory. The bpf_args that have
-> MEM_RDONLY are compatible with both mutable memory and immutable
-> memory.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->  include/linux/bpf.h      |  4 ++-
->  kernel/bpf/btf.c         |  2 +-
->  kernel/bpf/cgroup.c      |  2 +-
->  kernel/bpf/helpers.c     |  8 ++---
->  kernel/bpf/ringbuf.c     |  2 +-
->  kernel/bpf/syscall.c     |  2 +-
->  kernel/bpf/verifier.c    | 14 +++++++--
->  kernel/trace/bpf_trace.c | 26 ++++++++--------
->  net/core/filter.c        | 64 ++++++++++++++++++++--------------------
->  9 files changed, 67 insertions(+), 57 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 03418ab3f416..5151d6b1f392 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -311,7 +311,9 @@ enum bpf_type_flag {
->         /* PTR may be NULL. */
->         PTR_MAYBE_NULL          = BIT(0 + BPF_BASE_TYPE_BITS),
->
-> -       /* MEM is read-only. */
-> +       /* MEM is read-only. When applied on bpf_arg, it indicates the arg is
-> +        * compatible with both mutable and immutable memory.
-> +        */
->         MEM_RDONLY              = BIT(1 + BPF_BASE_TYPE_BITS),
->
->         __BPF_TYPE_LAST_FLAG    = MEM_RDONLY,
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 7adc099bb24b..e09b5a7bfdc3 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6350,7 +6350,7 @@ const struct bpf_func_proto bpf_btf_find_by_name_kind_proto = {
->         .func           = bpf_btf_find_by_name_kind,
->         .gpl_only       = false,
->         .ret_type       = RET_INTEGER,
-> -       .arg1_type      = ARG_PTR_TO_MEM,
-> +       .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg2_type      = ARG_CONST_SIZE,
->         .arg3_type      = ARG_ANYTHING,
->         .arg4_type      = ARG_ANYTHING,
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 2ca643af9a54..b8fe671af13c 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1789,7 +1789,7 @@ static const struct bpf_func_proto bpf_sysctl_set_new_value_proto = {
->         .gpl_only       = false,
->         .ret_type       = RET_INTEGER,
->         .arg1_type      = ARG_PTR_TO_CTX,
-> -       .arg2_type      = ARG_PTR_TO_MEM,
-> +       .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg3_type      = ARG_CONST_SIZE,
->  };
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index a5e349c9d3e3..66b466903a4e 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -530,7 +530,7 @@ const struct bpf_func_proto bpf_strtol_proto = {
->         .func           = bpf_strtol,
->         .gpl_only       = false,
->         .ret_type       = RET_INTEGER,
-> -       .arg1_type      = ARG_PTR_TO_MEM,
-> +       .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg2_type      = ARG_CONST_SIZE,
->         .arg3_type      = ARG_ANYTHING,
->         .arg4_type      = ARG_PTR_TO_LONG,
-> @@ -558,7 +558,7 @@ const struct bpf_func_proto bpf_strtoul_proto = {
->         .func           = bpf_strtoul,
->         .gpl_only       = false,
->         .ret_type       = RET_INTEGER,
-> -       .arg1_type      = ARG_PTR_TO_MEM,
-> +       .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg2_type      = ARG_CONST_SIZE,
->         .arg3_type      = ARG_ANYTHING,
->         .arg4_type      = ARG_PTR_TO_LONG,
-> @@ -630,7 +630,7 @@ const struct bpf_func_proto bpf_event_output_data_proto =  {
->         .arg1_type      = ARG_PTR_TO_CTX,
->         .arg2_type      = ARG_CONST_MAP_PTR,
->         .arg3_type      = ARG_ANYTHING,
-> -       .arg4_type      = ARG_PTR_TO_MEM,
-> +       .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg5_type      = ARG_CONST_SIZE_OR_ZERO,
->  };
->
-> @@ -1011,7 +1011,7 @@ const struct bpf_func_proto bpf_snprintf_proto = {
->         .arg1_type      = ARG_PTR_TO_MEM_OR_NULL,
->         .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
->         .arg3_type      = ARG_PTR_TO_CONST_STR,
-> -       .arg4_type      = ARG_PTR_TO_MEM_OR_NULL,
-> +       .arg4_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
->         .arg5_type      = ARG_CONST_SIZE_OR_ZERO,
->  };
->
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index 9e0c10c6892a..638d7fd7b375 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -444,7 +444,7 @@ const struct bpf_func_proto bpf_ringbuf_output_proto = {
->         .func           = bpf_ringbuf_output,
->         .ret_type       = RET_INTEGER,
->         .arg1_type      = ARG_CONST_MAP_PTR,
-> -       .arg2_type      = ARG_PTR_TO_MEM,
-> +       .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg3_type      = ARG_CONST_SIZE_OR_ZERO,
->         .arg4_type      = ARG_ANYTHING,
->  };
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 50f96ea4452a..301afb44e47f 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -4757,7 +4757,7 @@ static const struct bpf_func_proto bpf_sys_bpf_proto = {
->         .gpl_only       = false,
->         .ret_type       = RET_INTEGER,
->         .arg1_type      = ARG_ANYTHING,
-> -       .arg2_type      = ARG_PTR_TO_MEM,
-> +       .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg3_type      = ARG_CONST_SIZE,
->  };
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 44af65f07a82..a7c015a7b52d 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4966,6 +4966,7 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
->         return 0;
->  }
->
-> +
-
-nit: unnecessary extra empty line?
-
->  struct bpf_reg_types {
->         const enum bpf_reg_type types[10];
->         u32 *btf_id;
-> @@ -5012,7 +5013,6 @@ static const struct bpf_reg_types mem_types = {
->                 PTR_TO_MAP_VALUE,
->                 PTR_TO_MEM,
->                 PTR_TO_BUF,
-> -               PTR_TO_BUF | MEM_RDONLY,
->         },
->  };
->
-> @@ -5074,6 +5074,7 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
->         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
->         enum bpf_reg_type expected, type = reg->type;
->         const struct bpf_reg_types *compatible;
-> +       u32 compatible_flags;
->         int i, j;
->
->         compatible = compatible_reg_types[base_type(arg_type)];
-> @@ -5082,6 +5083,13 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
->                 return -EFAULT;
->         }
->
-> +       /* If arg_type is tagged with MEM_RDONLY, it's compatible with both
-> +        * RDONLY and non-RDONLY reg values. Therefore fold this flag before
-> +        * comparison. PTR_MAYBE_NULL is similar.
-> +        */
-> +       compatible_flags = arg_type & (MEM_RDONLY | PTR_MAYBE_NULL);
-> +       type &= ~compatible_flags;
-> +
-
-wouldn't
-
-type &= ~MEM_RDONLY; /* clear read-only flag, if any */
-type &= ~PTR_MAYBE_NULL; /* clear nullable flag, if any */
-
-be cleaner and more straightforward?
-
-
->         for (i = 0; i < ARRAY_SIZE(compatible->types); i++) {
->                 expected = compatible->types[i];
->                 if (expected == NOT_INIT)
-
-[...]
+DQoNCj4gT24gRGVjIDYsIDIwMjEsIGF0IDk6MTMgUE0sIEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlp
+Lm5ha3J5aWtvQGdtYWlsLmNvbT4gd3JvdGU6DQo+IA0KPiBPbiBNb24sIERlYyA2LCAyMDIxIGF0
+IDg6MzIgUE0gU29uZyBMaXUgPHNvbmdsaXVicmF2aW5nQGZiLmNvbT4gd3JvdGU6DQo+PiANCj4+
+IA0KPj4gDQo+Pj4gT24gRGVjIDYsIDIwMjEsIGF0IDY6MzcgUE0sIEFuZHJpaSBOYWtyeWlrbyA8
+YW5kcmlpLm5ha3J5aWtvQGdtYWlsLmNvbT4gd3JvdGU6DQo+Pj4gDQo+Pj4gT24gTW9uLCBEZWMg
+NiwgMjAyMSBhdCAzOjA4IFBNIFNvbmcgTGl1IDxzb25nQGtlcm5lbC5vcmc+IHdyb3RlOg0KPj4+
+PiANCj4+Pj4gYnBmX2NyZWF0ZV9tYXAgaXMgZGVwcmVjYXRlZC4gUmVwbGFjZSBpdCB3aXRoIGJw
+Zl9tYXBfY3JlYXRlLg0KPj4+PiANCj4+Pj4gRml4ZXM6IDk5MmM0MjI1NDE5YSAoImxpYmJwZjog
+VW5pZnkgbG93LWxldmVsIG1hcCBjcmVhdGlvbiBBUElzIHcvIG5ldyBicGZfbWFwX2NyZWF0ZSgp
+IikNCj4+PiANCj4+PiBUaGlzIGlzIG5vdCBhIGJ1ZyBmaXgsIGl0J3MgYW4gaW1wcm92ZW1lbnQu
+IFNvIEkgZG9uJ3QgdGhpbmsgIkZpeGVzOiAiDQo+Pj4gaXMgd2FycmFudGVkIGhlcmUsIHRiaC4N
+Cj4+IA0KPj4gSSBnb3QgY29tcGlsYXRpb24gZXJyb3JzIGJlZm9yZSB0aGlzIGNoYW5nZSwgbGlr
+ZQ0KPj4gDQo+PiB1dGlsL2JwZl9jb3VudGVyLmM6IEluIGZ1bmN0aW9uIOKAmGJwZXJmX2xvY2tf
+YXR0cl9tYXDigJk6DQo+PiB1dGlsL2JwZl9jb3VudGVyLmM6MzIzOjM6IGVycm9yOiDigJhicGZf
+Y3JlYXRlX21hcOKAmSBpcyBkZXByZWNhdGVkOiBsaWJicGYgdjAuNys6IHVzZSBicGZfbWFwX2Ny
+ZWF0ZSgpIGluc3RlYWQgWy1XZXJyb3I9ZGVwcmVjYXRlZC1kZWNsYXJhdGlvbnNdDQo+PiAgIG1h
+cF9mZCA9IGJwZl9jcmVhdGVfbWFwKEJQRl9NQVBfVFlQRV9IQVNILA0KPj4gICBefn5+fn4NCj4+
+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSB1dGlsL2JwZl9jb3VudGVyLmg6NywNCj4+ICAgICAgICAg
+ICAgICAgICBmcm9tIHV0aWwvYnBmX2NvdW50ZXIuYzoxNToNCj4+IC9kYXRhL3VzZXJzL3Nvbmds
+aXVicmF2aW5nL2tlcm5lbC9saW51eC1naXQvdG9vbHMvbGliL2JwZi9icGYuaDo5MToxNjogbm90
+ZTogZGVjbGFyZWQgaGVyZQ0KPj4gTElCQlBGX0FQSSBpbnQgYnBmX2NyZWF0ZV9tYXAoZW51bSBi
+cGZfbWFwX3R5cGUgbWFwX3R5cGUsIGludCBrZXlfc2l6ZSwNCj4+ICAgICAgICAgICAgICAgIF5+
+fn5+fn5+fn5+fn5+DQo+PiBjYzE6IGFsbCB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9y
+cw0KPj4gbWFrZVs0XTogKioqIFsvZGF0YS91c2Vycy9zb25nbGl1YnJhdmluZy9rZXJuZWwvbGlu
+dXgtZ2l0L3Rvb2xzL2J1aWxkL01ha2VmaWxlLmJ1aWxkOjk2OiB1dGlsL2JwZl9jb3VudGVyLm9d
+IEVycm9yIDENCj4+IG1ha2VbNF06ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlzaGVkIGpvYnMuLi4u
+DQo+PiBtYWtlWzNdOiAqKiogWy9kYXRhL3VzZXJzL3NvbmdsaXVicmF2aW5nL2tlcm5lbC9saW51
+eC1naXQvdG9vbHMvYnVpbGQvTWFrZWZpbGUuYnVpbGQ6MTM5OiB1dGlsXSBFcnJvciAyDQo+PiBt
+YWtlWzJdOiAqKiogW01ha2VmaWxlLnBlcmY6NjY1OiBwZXJmLWluLm9dIEVycm9yIDINCj4+IG1h
+a2VbMV06ICoqKiBbTWFrZWZpbGUucGVyZjoyNDA6IHN1Yi1tYWtlXSBFcnJvciAyDQo+PiBtYWtl
+OiAqKiogW01ha2VmaWxlOjcwOiBhbGxdIEVycm9yIDINCj4+IA0KPiANCj4gSG1tLi4gaXMgdXRp
+bC9icGZfY291bnRlci5oIGd1YXJkZWQgYmVoaW5kIHNvbWUgTWFrZWZpbGUgYXJndW1lbnRzPw0K
+PiBJJ3ZlIHNlbnQgI3ByYWdtYSB0ZW1wb3Jhcnkgd29ya2Fyb3VuZHMganVzdCBhIGZldyBkYXlz
+IGFnbyAoWzBdKSwgYnV0DQo+IHRoaXMgb25lIGRpZG4ndCBjb21lIHVwIGR1cmluZyB0aGUgYnVp
+bGQuDQo+IA0KPiAgWzBdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9uZXRk
+ZXZicGYvcGF0Y2gvMjAyMTEyMDMwMDQ2NDAuMjQ1NTcxNy0xLWFuZHJpaUBrZXJuZWwub3JnLw0K
+DQpJIGd1ZXNzIHRoZSBkZWZhdWx0IGJ1aWxkIHRlc3QgZG9lc24ndCBlbmFibGUgQlVJTERfQlBG
+X1NLRUw/IA0KDQo+IA0KPj4gRG8gd2UgcGxhbiB0byByZW1vdmUgYnBmX2NyZWF0ZV9tYXAgaW4g
+dGhlIGZ1dHVyZT8gSWYgbm90LCB3ZSBjYW4gcHJvYmFibHkganVzdA0KPj4gYWRkICcjcHJhZ21h
+IEdDQyBkaWFnbm9zdGljIGlnbm9yZWQgIi1XZGVwcmVjYXRlZC1kZWNsYXJhdGlvbnMiJyBjYW4g
+Y2FsbCBpdCBkb25lPw0KPiANCj4gWWVzLCBpdCB3aWxsIGJlIHJlbW92ZWQgaW4gYSBmZXcgbGli
+YnBmIHJlbGVhc2VzIHdoZW4gd2Ugc3dpdGNoIHRvIHRoZQ0KPiAxLjAgdmVyc2lvbi4gU28gc3Vw
+cHJlc3NpbmcgYSB3YXJuaW5nIGlzIGEgdGVtcG9yYXJ5IHdvcmstYXJvdW5kLg0KPiANCj4+IA0K
+Pj4+IA0KPj4+PiBTaWduZWQtb2ZmLWJ5OiBTb25nIExpdSA8c29uZ0BrZXJuZWwub3JnPg0KPj4+
+PiAtLS0NCj4+Pj4gdG9vbHMvcGVyZi91dGlsL2JwZl9jb3VudGVyLmMgfCA0ICsrLS0NCj4+Pj4g
+MSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4+Pj4gDQo+
+Pj4+IGRpZmYgLS1naXQgYS90b29scy9wZXJmL3V0aWwvYnBmX2NvdW50ZXIuYyBiL3Rvb2xzL3Bl
+cmYvdXRpbC9icGZfY291bnRlci5jDQo+Pj4+IGluZGV4IGMxN2Q0YTQzY2UwNjUuLmVkMTUwYTli
+M2EwYzAgMTAwNjQ0DQo+Pj4+IC0tLSBhL3Rvb2xzL3BlcmYvdXRpbC9icGZfY291bnRlci5jDQo+
+Pj4+ICsrKyBiL3Rvb2xzL3BlcmYvdXRpbC9icGZfY291bnRlci5jDQo+Pj4+IEBAIC0zMjAsMTAg
+KzMyMCwxMCBAQCBzdGF0aWMgaW50IGJwZXJmX2xvY2tfYXR0cl9tYXAoc3RydWN0IHRhcmdldCAq
+dGFyZ2V0KQ0KPj4+PiAgICAgICB9DQo+Pj4+IA0KPj4+PiAgICAgICBpZiAoYWNjZXNzKHBhdGgs
+IEZfT0spKSB7DQo+Pj4+IC0gICAgICAgICAgICAgICBtYXBfZmQgPSBicGZfY3JlYXRlX21hcChC
+UEZfTUFQX1RZUEVfSEFTSCwNCj4+Pj4gKyAgICAgICAgICAgICAgIG1hcF9mZCA9IGJwZl9tYXBf
+Y3JlYXRlKEJQRl9NQVBfVFlQRV9IQVNILCBOVUxMLA0KPj4+IA0KPj4+IEkgdGhpbmsgcGVyZiBp
+cyB0cnlpbmcgdG8gYmUgbGlua2FibGUgd2l0aCBsaWJicGYgYXMgYSBzaGFyZWQgbGlicmFyeSwN
+Cj4+PiBzbyBvbiBzb21lIG9sZGVyIHZlcnNpb25zIG9mIGxpYmJwZiBicGZfbWFwX2NyZWF0ZSgp
+IHdvbid0IGJlICh5ZXQpDQo+Pj4gYXZhaWxhYmxlLiBTbyB0byBtYWtlIHRoaXMgd29yaywgSSB0
+aGluayB5b3UnbGwgbmVlZCB0byBkZWZpbmUgeW91cg0KPj4+IG93biB3ZWFrIGJwZl9tYXBfY3Jl
+YXRlIGZ1bmN0aW9uIHRoYXQgd2lsbCB1c2UgYnBmX2NyZWF0ZV9tYXAoKS4NCj4+IA0KPj4gSG1t
+Li4uIEkgZGlkbid0IGtub3cgdGhlIHBsYW4gdG8gbGluayBsaWJicGYgYXMgc2hhcmVkIGxpYnJh
+cnkuIEluIHRoaXMgY2FzZSwNCj4+IG1heWJlIHRoZSAjcHJhZ21hIHNvbHV0aW9uIGlzIHByZWZl
+cnJlZD8NCj4gDQo+IFNlZSAicGVyZiB0b29sczogQWRkIG1vcmUgd2VhayBsaWJicGYgZnVuY3Rp
+b25zIiBzZW50IGJ5IEppcmkgbm90IHNvDQo+IGxvbmcgYWdvIGFib3V0IHdoYXQgdGhleSBkaWQg
+d2l0aCBzb21lIG90aGVyIHVzZWQgQVBJcyB0aGF0IGFyZSBub3cNCj4gbWFya2VkIGRlcHJlY2F0
+ZWQuDQoNCkRvIHlvdSBtZWFuIHNvbWV0aGluZyBsaWtlIHRoaXM/DQoNCmludCBfX3dlYWsNCmJw
+Zl9tYXBfY3JlYXRlKGVudW0gYnBmX21hcF90eXBlIG1hcF90eXBlLA0KICAgICAgICAgICAgICAg
+Y29uc3QgY2hhciAqbWFwX25hbWUgX19tYXliZV91bnVzZWQsDQogICAgICAgICAgICAgICBfX3Uz
+MiBrZXlfc2l6ZSwNCiAgICAgICAgICAgICAgIF9fdTMyIHZhbHVlX3NpemUsDQogICAgICAgICAg
+ICAgICBfX3UzMiBtYXhfZW50cmllcywNCiAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBicGZf
+bWFwX2NyZWF0ZV9vcHRzICpvcHRzIF9fbWF5YmVfdW51c2VkKQ0Kew0KI3ByYWdtYSBHQ0MgZGlh
+Z25vc3RpYyBwdXNoDQojcHJhZ21hIEdDQyBkaWFnbm9zdGljIGlnbm9yZWQgIi1XZGVwcmVjYXRl
+ZC1kZWNsYXJhdGlvbnMiDQogICAgICAgIHJldHVybiBicGZfY3JlYXRlX21hcChtYXBfdHlwZSwg
+a2V5X3NpemUsIHZhbHVlX3NpemUsIG1heF9lbnRyaWVzLCAwKTsNCiNwcmFnbWEgR0NDIGRpYWdu
+b3N0aWMgcG9wDQp9DQoNCkkgZ3Vlc3MgdGhpcyB3b24ndCB3b3JrIHdoZW4gYnBmX2NyZWF0ZV9t
+YXAoKSBpcyBldmVudHVhbGx5IHJlbW92ZWQsIGFzIA0KX193ZWFrIGZ1bmN0aW9uIGFyZSBzdGls
+bCBjb21waWxlZCwgbm8/DQoNClRoYW5rcywNClNvbmc=
