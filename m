@@ -2,176 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E38C46B058
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 02:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEBA46B0BF
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 03:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhLGCBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 21:01:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        id S229630AbhLGClh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 21:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhLGCBf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 21:01:35 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C312C061746;
-        Mon,  6 Dec 2021 17:58:06 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id z5so51080337edd.3;
-        Mon, 06 Dec 2021 17:58:06 -0800 (PST)
+        with ESMTP id S229504AbhLGClh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 21:41:37 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C636BC061746;
+        Mon,  6 Dec 2021 18:38:07 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id g17so36662586ybe.13;
+        Mon, 06 Dec 2021 18:38:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zNxM0TnCCI4+N6maswyUrhx++VXdxKrv5kQxG8am6OA=;
-        b=PdHFYs54vb5yFj6SkIYzXSB/rjqxhLfr+2KG6nFwaGzGsrj9YYuSY0QJ5RDLsY/H2v
-         Z8DyzvIGiLhBugZ2Nr2nK7NbwG37sDH0LK6pTtkfvpR9QiQcPHrl7L/JQICg8b8KF10A
-         NJCXuRDfH26gq/spmWQJM8PKqp1uy88VEpyVtYCIZTcuf0mz083oBwQRds6efQ5ieEX6
-         /gxguQ7TyvDoee6n2x6O1ROG2XYSv+ZklJxaBbfk/0A7B38vIRO4Gt/aZTCLrCPjHe20
-         ZVSrAVEdtM8xq69R3qFJfZMXUg32OBdDUbr2ptu8+5H7pXiftoSqdA2jAvvIqvMm5E+e
-         4zrw==
+        bh=INMJW+5EYKlIRvkqknDrxt9nVIm+nRcqXViKKvXHHy0=;
+        b=iZzFCdGqM3+ohqSYSSs6CbLiqcsUr7PZ89YdoEnq5mhtjykLt1cfpXk+ORWPHjkDvb
+         UK5lP8iUwrUZzCkpLHFhR4x3C9NeSecw0tNvvOFE7hkI/8y5dxeX677KQYWJ5s8Kc8mV
+         AfCflEiu+6G33fv9XDE5eELpISQ3EHyjteMhbepkDILrwvwVTaHncib+SQxpGuxWJ4Z0
+         eD7oNhixpiVth3Ndxle/LgFlw6Uc0F7ITGTZAxX6mSIzKU//8bybkkFSwiO/u8OP8eSu
+         tKbprr2njLcs5k9VRP1/puLnTQrm6z9Lfs/BLVaW9xxYM1ESt5Tw7eJ7VeaBVXya81ro
+         VaNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zNxM0TnCCI4+N6maswyUrhx++VXdxKrv5kQxG8am6OA=;
-        b=uchfNaqsM781AXvvsDu/KGZoCqvCat+kARdiixReSQNnKlZrivLTJnRayqiRScWMwA
-         rJN68mBpjMfk64teE1vcMeEixTu07ZRE7qq90huw7w67aeawnLQNipG/EHl5XVQIqcHH
-         LTeO6BX6a0mWS0jdy6wHus57NcmjfEfadTcmlNBOzOm/0WHTkDLDzM2FdH0kdQzZSNyJ
-         19ThNt30Gasob95Knk9w2sYkBNskez2/j61OFD8D5G1q23MfMunHJS6QuGOIi24HG9mw
-         NJhBO8tcOIQ34fsEZr3MwdqjrVjZaVTi3Zr6LRubWRi1E61U47UzsXwL+vxwCT27sD2b
-         QlRA==
-X-Gm-Message-State: AOAM5314Z3XTMHep1TU36W7LG/6zkMh0WvwY2gBwvd5+ct+05JGrMT5W
-        3FIboY0Y3C0zDe67r94KJQOgdJH38chr5gvlyqg=
-X-Google-Smtp-Source: ABdhPJwWlKAxgTrspUiJGcPjdMYN2NmpMxed1+oRVH1Rs0AWVo752Qk/ja0lS/gDpCtg2Wvb8kBody5BeorTldPJBJs=
-X-Received: by 2002:a05:6402:154:: with SMTP id s20mr4598396edu.148.1638842284779;
- Mon, 06 Dec 2021 17:58:04 -0800 (PST)
+        bh=INMJW+5EYKlIRvkqknDrxt9nVIm+nRcqXViKKvXHHy0=;
+        b=75iD1kYQ0o5t1lJTQ9JcnQhYQ0Kp+zEkwtFFLtKnbwEZ7jAaf/uHdV4FpL4pqwA1/S
+         z+57mxnCF3MbWqzzlPzZ/JL+JJW/huHbPrmSFALWlFAzpiP8vVKpKWQ9aIh289G8SHyq
+         LnIcon7eWVui4yLbokuWiBwUKXXFCtKvAO7iBGuK4eSLy2tUyXh6Q9zUfpoSOipZ77QD
+         1Fyo9qkiMQ2X3i0wdqN1vzoNqQz0QQd8c4ccYMezuKNfoiMiwTCROMW+DdY9MfHhI5gB
+         rhQUyOHdRj79APIMxd9qAhLOckK6rNHBs/oe9u1I4PGuCJEkEmivuHiuRxhLTMSur4IN
+         qdeA==
+X-Gm-Message-State: AOAM533F9ykBAQwDcf/J97ZoCSmG5Kr41iShKXkEJ+TJsHJFYaw81y+g
+        hoSafhXdnAWq5ovy5wrsjqLk9RTmJHh8dZT6QSc=
+X-Google-Smtp-Source: ABdhPJw26c8algIvgbQt6qRYPX2JmMn1/lWiequpmBsc7tfjt0NtbJMg9juL0kpEE2v55wYoE9xiwDZm+uFZ44Qhu0o=
+X-Received: by 2002:a25:b204:: with SMTP id i4mr45855083ybj.263.1638844687043;
+ Mon, 06 Dec 2021 18:38:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20211205045041.129716-1-imagedong@tencent.com> <CAEf4BzbqhccBOSiBRehnf6V35u48N+f67tmgYUR_EJhpv6HptA@mail.gmail.com>
-In-Reply-To: <CAEf4BzbqhccBOSiBRehnf6V35u48N+f67tmgYUR_EJhpv6HptA@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Tue, 7 Dec 2021 09:55:46 +0800
-Message-ID: <CADxym3ZS7u12-hjbH2n9zw+FwLwbqx0YmE+SG+OAcJ0osVhMxw@mail.gmail.com>
-Subject: Re: [PATCH] bpftool: add support of pin prog by name
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
+References: <20211206230811.4131230-1-song@kernel.org>
+In-Reply-To: <20211206230811.4131230-1-song@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 6 Dec 2021 18:37:55 -0800
+Message-ID: <CAEf4BzbaBcySm3bVumBTrkHMmVDWEVxckdVKvUk=4j9HhSsmBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] perf/bpf_counter: use bpf_map_create instead of bpf_create_map
+To:     Song Liu <song@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Cong Wang <cong.wang@bytedance.com>, liujian56@huawei.com,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Menglong Dong <imagedong@tencent.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 7, 2021 at 5:22 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Dec 6, 2021 at 3:08 PM Song Liu <song@kernel.org> wrote:
 >
-> On Sat, Dec 4, 2021 at 8:51 PM <menglong8.dong@gmail.com> wrote:
-> >
-> > From: Menglong Dong <imagedong@tencent.com>
-> >
-> > For now, the command 'bpftool prog loadall' use section name as the
-> > name of the pin file. However, once there are prog with the same
-> > section name in ELF file, this command will failed with the error
-> > 'File Exist'.
-> >
-> > So, add the support of pin prog by function name with the 'pinbyname'
-> > argument.
-> >
-> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > ---
+> bpf_create_map is deprecated. Replace it with bpf_map_create.
 >
-> Doesn't [0] do that already?
->
->   [0] https://patchwork.kernel.org/project/netdevbpf/patch/20211021214814.1236114-2-sdf@google.com/
->
+> Fixes: 992c4225419a ("libbpf: Unify low-level map creation APIs w/ new bpf_map_create()")
 
-Ops....Sorry, I didn't notice that patch :/
+This is not a bug fix, it's an improvement. So I don't think "Fixes: "
+is warranted here, tbh.
 
-> >  tools/bpf/bpftool/prog.c | 7 +++++++
-> >  tools/lib/bpf/libbpf.c   | 5 +++++
-> >  tools/lib/bpf/libbpf.h   | 2 ++
-> >  3 files changed, 14 insertions(+)
-> >
-> > diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> > index e47e8b06cc3d..74e0aaebfefc 100644
-> > --- a/tools/bpf/bpftool/prog.c
-> > +++ b/tools/bpf/bpftool/prog.c
-> > @@ -1471,6 +1471,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >         unsigned int old_map_fds = 0;
-> >         const char *pinmaps = NULL;
-> >         struct bpf_object *obj;
-> > +       bool pinbyname = false;
-> >         struct bpf_map *map;
-> >         const char *pinfile;
-> >         unsigned int i, j;
-> > @@ -1589,6 +1590,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >                                 goto err_free_reuse_maps;
-> >
-> >                         pinmaps = GET_ARG();
-> > +               } else if (is_prefix(*argv, "pinbyname")) {
-> > +                       pinbyname = true;
-> > +                       NEXT_ARG();
-> >                 } else {
-> >                         p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
-> >                               *argv);
-> > @@ -1616,6 +1620,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >                                 goto err_close_obj;
-> >                 }
-> >
-> > +               if (pinbyname)
-> > +                       bpf_program__set_pinname(pos,
-> > +                                                (char *)bpf_program__name(pos));
-> >                 bpf_program__set_ifindex(pos, ifindex);
-> >                 bpf_program__set_type(pos, prog_type);
-> >                 bpf_program__set_expected_attach_type(pos, expected_attach_type);
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index f6faa33c80fa..e8fc1d0fe16e 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -8119,6 +8119,11 @@ void bpf_program__set_ifindex(struct bpf_program *prog, __u32 ifindex)
-> >         prog->prog_ifindex = ifindex;
-> >  }
-> >
-> > +void bpf_program__set_pinname(struct bpf_program *prog, char *name)
-> > +{
-> > +       prog->pin_name = name;
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  tools/perf/util/bpf_counter.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> BPF maps have bpf_map__set_pin_path(), setting a full path is more
-> flexible approach, I think, so if we had to do something here, it's
-> better to add bpf_program__set_ping_path().
-
-Yeah, I think it's a good idea. I'll do something about it.
-
-Thanks!
-Menglong Dong
-
+> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> index c17d4a43ce065..ed150a9b3a0c0 100644
+> --- a/tools/perf/util/bpf_counter.c
+> +++ b/tools/perf/util/bpf_counter.c
+> @@ -320,10 +320,10 @@ static int bperf_lock_attr_map(struct target *target)
+>         }
 >
+>         if (access(path, F_OK)) {
+> -               map_fd = bpf_create_map(BPF_MAP_TYPE_HASH,
+> +               map_fd = bpf_map_create(BPF_MAP_TYPE_HASH, NULL,
+
+I think perf is trying to be linkable with libbpf as a shared library,
+so on some older versions of libbpf bpf_map_create() won't be (yet)
+available. So to make this work, I think you'll need to define your
+own weak bpf_map_create function that will use bpf_create_map().
+
+>                                         sizeof(struct perf_event_attr),
+>                                         sizeof(struct perf_event_attr_map_entry),
+> -                                       ATTR_MAP_SIZE, 0);
+> +                                       ATTR_MAP_SIZE, NULL);
+>                 if (map_fd < 0)
+>                         return -1;
 >
-> > +}
-> > +
-> >  const char *bpf_program__name(const struct bpf_program *prog)
-> >  {
-> >         return prog->name;
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index 4ec69f224342..107cf736c2bb 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -216,6 +216,8 @@ LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
-> >  LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
-> >  LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
-> >                                          __u32 ifindex);
-> > +LIBBPF_API void bpf_program__set_pinname(struct bpf_program *prog,
-> > +                                        char *name);
-> >
-> >  LIBBPF_API const char *bpf_program__name(const struct bpf_program *prog);
-> >  LIBBPF_API const char *bpf_program__section_name(const struct bpf_program *prog);
-> > --
-> > 2.30.2
-> >
+> --
+> 2.30.2
+>
