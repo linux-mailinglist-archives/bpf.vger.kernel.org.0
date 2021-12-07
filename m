@@ -2,104 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEBA46B0BF
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 03:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF01E46B11B
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 03:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhLGClh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Dec 2021 21:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
+        id S232178AbhLGC7R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Dec 2021 21:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhLGClh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Dec 2021 21:41:37 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C636BC061746;
-        Mon,  6 Dec 2021 18:38:07 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id g17so36662586ybe.13;
-        Mon, 06 Dec 2021 18:38:07 -0800 (PST)
+        with ESMTP id S230374AbhLGC7Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Dec 2021 21:59:16 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE75C061746;
+        Mon,  6 Dec 2021 18:55:47 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id d10so37112847ybn.0;
+        Mon, 06 Dec 2021 18:55:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=INMJW+5EYKlIRvkqknDrxt9nVIm+nRcqXViKKvXHHy0=;
-        b=iZzFCdGqM3+ohqSYSSs6CbLiqcsUr7PZ89YdoEnq5mhtjykLt1cfpXk+ORWPHjkDvb
-         UK5lP8iUwrUZzCkpLHFhR4x3C9NeSecw0tNvvOFE7hkI/8y5dxeX677KQYWJ5s8Kc8mV
-         AfCflEiu+6G33fv9XDE5eELpISQ3EHyjteMhbepkDILrwvwVTaHncib+SQxpGuxWJ4Z0
-         eD7oNhixpiVth3Ndxle/LgFlw6Uc0F7ITGTZAxX6mSIzKU//8bybkkFSwiO/u8OP8eSu
-         tKbprr2njLcs5k9VRP1/puLnTQrm6z9Lfs/BLVaW9xxYM1ESt5Tw7eJ7VeaBVXya81ro
-         VaNA==
+        bh=ZCtOCyGOYA2xwhMK8wszxpR3DunjyEVRQwp0RJOKkWk=;
+        b=E5cDIf9yUnHBsOQ5CokB8OF/+5i0LUthk1uI208iCOl3puYNzrNd1JKp1vRaE9bgd9
+         EiLqrOslz5C45cdgecnF2PBNZMP1snsRLUdtnvQY63TJ1hv3FwpjyOTIu9Vxnx0KaO4U
+         dku+hhjFCdRu+N5KCn2SaF6J5hhLJowQkBHg1tgbh8cFr55a6/vdX7dPcfv3RBjZEKaD
+         i9dQgzpD5PZawO921ZMlm/SzVAeW8cDFKKlPXqlODLmzA1JLAMehnv0T3DH5+Q0htReG
+         XeThrcTKmpXOdEjgQ9xFdkxSYxbSFHxvpY5tlXXABeh8oewJ4/XhHo+NWGEVMZG4A2Vp
+         Xjpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=INMJW+5EYKlIRvkqknDrxt9nVIm+nRcqXViKKvXHHy0=;
-        b=75iD1kYQ0o5t1lJTQ9JcnQhYQ0Kp+zEkwtFFLtKnbwEZ7jAaf/uHdV4FpL4pqwA1/S
-         z+57mxnCF3MbWqzzlPzZ/JL+JJW/huHbPrmSFALWlFAzpiP8vVKpKWQ9aIh289G8SHyq
-         LnIcon7eWVui4yLbokuWiBwUKXXFCtKvAO7iBGuK4eSLy2tUyXh6Q9zUfpoSOipZ77QD
-         1Fyo9qkiMQ2X3i0wdqN1vzoNqQz0QQd8c4ccYMezuKNfoiMiwTCROMW+DdY9MfHhI5gB
-         rhQUyOHdRj79APIMxd9qAhLOckK6rNHBs/oe9u1I4PGuCJEkEmivuHiuRxhLTMSur4IN
-         qdeA==
-X-Gm-Message-State: AOAM533F9ykBAQwDcf/J97ZoCSmG5Kr41iShKXkEJ+TJsHJFYaw81y+g
-        hoSafhXdnAWq5ovy5wrsjqLk9RTmJHh8dZT6QSc=
-X-Google-Smtp-Source: ABdhPJw26c8algIvgbQt6qRYPX2JmMn1/lWiequpmBsc7tfjt0NtbJMg9juL0kpEE2v55wYoE9xiwDZm+uFZ44Qhu0o=
-X-Received: by 2002:a25:b204:: with SMTP id i4mr45855083ybj.263.1638844687043;
- Mon, 06 Dec 2021 18:38:07 -0800 (PST)
+        bh=ZCtOCyGOYA2xwhMK8wszxpR3DunjyEVRQwp0RJOKkWk=;
+        b=EbpGlukcXgqM7sP/L2laDj+TgD4CwvXIpUENuXQUCOwo4AivwYabxZdhB8BCYzjJC+
+         xvZkJPgLUwtsoh44YgjXxEzuqYrGgI8MlqmJmE3bX5Jjij1Evi1+QblGWAZ1bFIyc7U1
+         MdqekJJ4H47AqWMUbrIA9qse2bkECsgwnbykF97PwBPjmRrO+foDxnKRNNrpqjfIg/iz
+         32j0BS+IvTAubIKHlTz3vG4o7EctC83VnqDN3X1LkCFmBoaOMxZXSEGL7yHznL/pMN5b
+         0DecwJglmOznR5Tere/B3bwJfsDgPpsr3sg8GBUtsCd6gj1Lro8xCoUveIOzEyoU+hRa
+         8L8A==
+X-Gm-Message-State: AOAM533N9Zk5SnfQhJbgFhUnEDzFuBWgThQXN+kE9NrurkQqQXeShtaZ
+        XbcEKrJCpaULtBvALPHHSanGcB3A09+O8LS4CS8=
+X-Google-Smtp-Source: ABdhPJyeChx9ojTWWwVGcl1nWTnkSRbhC+XsN5HsIdfgAJV6o/FFyd7RbG0wFX9J8B0emq5We8YREZjoY21K0unN0gs=
+X-Received: by 2002:a25:abaa:: with SMTP id v39mr47346320ybi.367.1638845746416;
+ Mon, 06 Dec 2021 18:55:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20211206230811.4131230-1-song@kernel.org>
-In-Reply-To: <20211206230811.4131230-1-song@kernel.org>
+References: <20211130142215.1237217-1-houtao1@huawei.com> <20211130142215.1237217-4-houtao1@huawei.com>
+In-Reply-To: <20211130142215.1237217-4-houtao1@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Dec 2021 18:37:55 -0800
-Message-ID: <CAEf4BzbaBcySm3bVumBTrkHMmVDWEVxckdVKvUk=4j9HhSsmBA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] perf/bpf_counter: use bpf_map_create instead of bpf_create_map
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 6 Dec 2021 18:55:35 -0800
+Message-ID: <CAEf4BzaODof7fHFLp79Knx4=QGMY0B3ODCnayAgOvOmWG6dr=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/5] selftests/bpf: factor out common helpers for benchmarks
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 6, 2021 at 3:08 PM Song Liu <song@kernel.org> wrote:
+On Tue, Nov 30, 2021 at 6:07 AM Hou Tao <houtao1@huawei.com> wrote:
 >
-> bpf_create_map is deprecated. Replace it with bpf_map_create.
+> Five helpers are factored out to reduce boilerplate for
+> benchmark tests: do_getpgid(), getpgid_loop_producer(),
+> assert_single_consumer(), assert_single_producer() and
+> noop_consumer().
 >
-> Fixes: 992c4225419a ("libbpf: Unify low-level map creation APIs w/ new bpf_map_create()")
-
-This is not a bug fix, it's an improvement. So I don't think "Fixes: "
-is warranted here, tbh.
-
-> Signed-off-by: Song Liu <song@kernel.org>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
->  tools/perf/util/bpf_counter.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> index c17d4a43ce065..ed150a9b3a0c0 100644
-> --- a/tools/perf/util/bpf_counter.c
-> +++ b/tools/perf/util/bpf_counter.c
-> @@ -320,10 +320,10 @@ static int bperf_lock_attr_map(struct target *target)
->         }
->
->         if (access(path, F_OK)) {
-> -               map_fd = bpf_create_map(BPF_MAP_TYPE_HASH,
-> +               map_fd = bpf_map_create(BPF_MAP_TYPE_HASH, NULL,
 
-I think perf is trying to be linkable with libbpf as a shared library,
-so on some older versions of libbpf bpf_map_create() won't be (yet)
-available. So to make this work, I think you'll need to define your
-own weak bpf_map_create function that will use bpf_create_map().
+Please drop this patch. All the stuff you are extracting into
+"reusable" helpers is so trivial that it's not worth it. It just makes
+it harder to follow each individual benchmark's setup.
 
->                                         sizeof(struct perf_event_attr),
->                                         sizeof(struct perf_event_attr_map_entry),
-> -                                       ATTR_MAP_SIZE, 0);
-> +                                       ATTR_MAP_SIZE, NULL);
->                 if (map_fd < 0)
->                         return -1;
+>  tools/testing/selftests/bpf/bench.c           | 13 +++++
+>  tools/testing/selftests/bpf/bench.h           | 25 +++++++++
+>  .../bpf/benchs/bench_bloom_filter_map.c       | 44 ++++-----------
+>  .../selftests/bpf/benchs/bench_count.c        | 14 +----
+>  .../selftests/bpf/benchs/bench_rename.c       | 27 +++------
+>  .../selftests/bpf/benchs/bench_ringbufs.c     |  7 +--
+>  .../selftests/bpf/benchs/bench_trigger.c      | 55 +++++++------------
+>  7 files changed, 81 insertions(+), 104 deletions(-)
 >
-> --
-> 2.30.2
->
+
+[...]
