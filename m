@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691C846B2CA
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 07:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6FC46B2DB
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 07:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhLGGWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 01:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S232798AbhLGG1i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 01:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233895AbhLGGV7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Dec 2021 01:21:59 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A864C061746
-        for <bpf@vger.kernel.org>; Mon,  6 Dec 2021 22:18:30 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id g17so37866327ybe.13
-        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 22:18:30 -0800 (PST)
+        with ESMTP id S232719AbhLGG1h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Dec 2021 01:27:37 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23927C061746
+        for <bpf@vger.kernel.org>; Mon,  6 Dec 2021 22:24:08 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id v138so38032732ybb.8
+        for <bpf@vger.kernel.org>; Mon, 06 Dec 2021 22:24:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mYmkMbI/81MsJiKCzbygW4wITSaX+zHmfUxFpekjRhc=;
-        b=dYnbT+IB/ZoZ2pnoNrApccd7t2i4Ou+UT5iXQ5VQZRkXzdja68xSj0EXZW3A5b9e6T
-         zKDEWTzGori3sxt+AZ6MOK0+/tt3zlH/C8il9gP/E/5OaIWOQiRhfkYExcR37qOS8B3u
-         QhiYOTUfYcZMQKFh6946QPnSoEXjFFbKH+06uO/G3k6DPPR7rDRtt9tUcxFnMmIfp3T3
-         2EcIEoLL0+JsohrIw6GEhoIA14HZxHf3qqEh9p6baTqKtQw5GlJ5Ts7fxsVVPH5nhl/L
-         CPBn6SPyjO/GK03mvTu0rAbb8KPKtMfdKeeaXbJQOs5A7pZp6VxpHJKn0oPB39ihz3Q+
-         6nLQ==
+        bh=aCZSDfADJnwnYwXg3EHDG8a1CYtCScin8QCqwPv8cEo=;
+        b=Jv+NXxb8HoPiNfuyjeXWBTX8jFulGGnvRS70ovgKuniW2BBkMGpi1yWO5t1bp2I9mc
+         h7SjFHTwTHOM4SsbCJ4epjjbJqmtXr5UCf04Dxizjce+tjzrhzfgPzAQR2W1s8ejJWx8
+         IFXEfLklVdqD+2pJ6N/19DG4Tea8jwRlg0dkQczebcAxoP3KJyOWLffV8uY/zpmQz4cq
+         TU61OgiUr8rFM73fXcWbkCKGlEgI/650ipo7uI/ZC1FmOxqF78FSj7yUWTqaSjvGCxJR
+         Whr4p7XVvF6x0kYRJ31oX9I+bcha6YBhRI2IIep2VZvROt4N2Q4FjYvebbu+4+1t/3zb
+         Avwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mYmkMbI/81MsJiKCzbygW4wITSaX+zHmfUxFpekjRhc=;
-        b=LoTqxVUkX+WMDPPNX3f+UGZAVU2LoZvlsRLsVSMGN5dA6bHXIsYSIVMb0C1LPG5IlE
-         e/Cjdn2mJ+qirQfImTA/ApgrAXDO03w1CMk+/qGwf30bZBmsZ8BmYaJsJYkDch+U4SHX
-         UpBtp4WDPh56ayk9vbZfdy/1hAD0uJIpfifwjR0dBZ/kK6IJFfN82pL7NnPtl0+dfxCO
-         /NjBO+LroogjAEoRq/eweS7zSIkDPlcoJiWNcbu2ZEcxdyfnsUILlo9krPufp8CyNST0
-         QML3Q3290q866q4Atu7NSjCAQ0oWL4Mfi+ADRDDs2Egl8LxTlpWYPv68oxlEhwufZZLv
-         qLlQ==
-X-Gm-Message-State: AOAM532/tMcSZhdJcjNyyGjchHfa/rXfysWht4a/VRdtzh31whJ3Oinm
-        Ne81b6/Y+Hm5peswURwpoyZrNRaTwXlB3AVKRzo=
-X-Google-Smtp-Source: ABdhPJyOGSzZiJ+U84kj5kPsvblXCwfC2B1OEKYY08JWC2Km1h5T3J+mmjo6HKbCZ8UBgffLysnyEA/uZDyC4W4XRDA=
-X-Received: by 2002:a25:84c1:: with SMTP id x1mr48881789ybm.690.1638857909385;
- Mon, 06 Dec 2021 22:18:29 -0800 (PST)
+        bh=aCZSDfADJnwnYwXg3EHDG8a1CYtCScin8QCqwPv8cEo=;
+        b=I85+EpXnojqqjGJT2d8kU51Zm0u8PLrAP2P8S+yA54b7jE+vybmvFPUckhakPZ3pB7
+         EwsVys+UndyC8Yx2AqND5BpCVUFFd9tiVWbQIDV+8bVfIqP4i2oIZHsigYsRA2gDhCyp
+         LXEjLHfnroR5o2Xn4LmxKSeeDbcUH08pTdIRxD1cuma1ckJCBuRGJdrMncjXlZ5kZvTm
+         2EJpNgOk+NxkXohady9qcDmRJAP2eBGBTMfdqrYqMLmDUJWPU+/KjommXcue3qSPG0rY
+         TkJQnYwMSH3GCeaZTm6ev7enKeesOmRuiRxA14E6GgBKUqOGfUMHHQQSi2pcJ+q+W0Ym
+         NLCg==
+X-Gm-Message-State: AOAM530qWcS5fMKnqxJrPIN85lPzFhcMZVumSU9gPkVTc4uixT5e9E/U
+        x1nDdm4M1mT0Qk6+a8iaWzJjg6fQ9DHrQNA0wOE=
+X-Google-Smtp-Source: ABdhPJygBKCGHmB9z9uG2oU7s3vrSsdr2LOLolFq83teNXT1xNJjpfbKKV2tPKXvcP5HbkTWKG5Mr0FPXbZUTL1mqqU=
+X-Received: by 2002:a25:e617:: with SMTP id d23mr46958645ybh.555.1638858247300;
+ Mon, 06 Dec 2021 22:24:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-8-haoluo@google.com>
-In-Reply-To: <20211206232227.3286237-8-haoluo@google.com>
+References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-9-haoluo@google.com>
+In-Reply-To: <20211206232227.3286237-9-haoluo@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Dec 2021 22:18:18 -0800
-Message-ID: <CAEf4BzbSA1+vE4vA6FSbJfUZDyYvyHJbiK1j5yD=vGbGA5EEhg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 7/9] bpf: Make per_cpu_ptr return rdonly PTR_TO_MEM.
+Date:   Mon, 6 Dec 2021 22:23:56 -0800
+Message-ID: <CAEf4Bzb3nyWbS4=e7M8Am5BvMSPbMhMzXPKvd3spk+D9vZg99g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 8/9] bpf: Add MEM_RDONLY for helper args that
+ are pointers to rdonly mem.
 To:     Hao Luo <haoluo@google.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -64,91 +65,193 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
 >
-> Tag the return type of {per, this}_cpu_ptr with RDONLY_MEM. The
-> returned value of this pair of helpers is kernel object, which
-> can not be updated by bpf programs. Previously these two helpers
-> return PTR_OT_MEM for kernel objects of scalar type, which allows
-> one to directly modify the memory. Now with RDONLY_MEM tagging,
-> the verifier will reject programs that writes into RDONLY_MEM.
+> Some helper functions may modify its arguments, for example,
+> bpf_d_path, bpf_get_stack etc. Previously, their argument types
+> were marked as ARG_PTR_TO_MEM, which is compatible with read-only
+> mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
+> to modify a read-only memory by passing it into one of such helper
+> functions.
 >
-> Fixes: 63d9b80dcf2c ("bpf: Introduce bpf_this_cpu_ptr()")
-> Fixes: eaa6bcb71ef6 ("bpf: Introduce bpf_per_cpu_ptr()")
-> Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
+> This patch tags the bpf_args compatible with immutable memory with
+> MEM_RDONLY flag. The arguments that don't have this flag will be
+> only compatible with mutable memory types, preventing the helper
+> from modifying a read-only memory. The bpf_args that have
+> MEM_RDONLY are compatible with both mutable memory and immutable
+> memory.
+>
 > Signed-off-by: Hao Luo <haoluo@google.com>
 > ---
->  kernel/bpf/helpers.c  |  4 ++--
->  kernel/bpf/verifier.c | 33 ++++++++++++++++++++++++++++-----
->  2 files changed, 30 insertions(+), 7 deletions(-)
+>  include/linux/bpf.h      |  4 ++-
+>  kernel/bpf/btf.c         |  2 +-
+>  kernel/bpf/cgroup.c      |  2 +-
+>  kernel/bpf/helpers.c     |  8 ++---
+>  kernel/bpf/ringbuf.c     |  2 +-
+>  kernel/bpf/syscall.c     |  2 +-
+>  kernel/bpf/verifier.c    | 14 +++++++--
+>  kernel/trace/bpf_trace.c | 26 ++++++++--------
+>  net/core/filter.c        | 64 ++++++++++++++++++++--------------------
+>  9 files changed, 67 insertions(+), 57 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 03418ab3f416..5151d6b1f392 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -311,7 +311,9 @@ enum bpf_type_flag {
+>         /* PTR may be NULL. */
+>         PTR_MAYBE_NULL          = BIT(0 + BPF_BASE_TYPE_BITS),
+>
+> -       /* MEM is read-only. */
+> +       /* MEM is read-only. When applied on bpf_arg, it indicates the arg is
+> +        * compatible with both mutable and immutable memory.
+> +        */
+>         MEM_RDONLY              = BIT(1 + BPF_BASE_TYPE_BITS),
+>
+>         __BPF_TYPE_LAST_FLAG    = MEM_RDONLY,
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 7adc099bb24b..e09b5a7bfdc3 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6350,7 +6350,7 @@ const struct bpf_func_proto bpf_btf_find_by_name_kind_proto = {
+>         .func           = bpf_btf_find_by_name_kind,
+>         .gpl_only       = false,
+>         .ret_type       = RET_INTEGER,
+> -       .arg1_type      = ARG_PTR_TO_MEM,
+> +       .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>         .arg2_type      = ARG_CONST_SIZE,
+>         .arg3_type      = ARG_ANYTHING,
+>         .arg4_type      = ARG_ANYTHING,
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 2ca643af9a54..b8fe671af13c 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -1789,7 +1789,7 @@ static const struct bpf_func_proto bpf_sysctl_set_new_value_proto = {
+>         .gpl_only       = false,
+>         .ret_type       = RET_INTEGER,
+>         .arg1_type      = ARG_PTR_TO_CTX,
+> -       .arg2_type      = ARG_PTR_TO_MEM,
+> +       .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>         .arg3_type      = ARG_CONST_SIZE,
+>  };
 >
 > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 293d9314ec7f..a5e349c9d3e3 100644
+> index a5e349c9d3e3..66b466903a4e 100644
 > --- a/kernel/bpf/helpers.c
 > +++ b/kernel/bpf/helpers.c
-> @@ -667,7 +667,7 @@ BPF_CALL_2(bpf_per_cpu_ptr, const void *, ptr, u32, cpu)
->  const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
->         .func           = bpf_per_cpu_ptr,
+> @@ -530,7 +530,7 @@ const struct bpf_func_proto bpf_strtol_proto = {
+>         .func           = bpf_strtol,
 >         .gpl_only       = false,
-> -       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | PTR_MAYBE_NULL,
-> +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | PTR_MAYBE_NULL | MEM_RDONLY,
->         .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
->         .arg2_type      = ARG_ANYTHING,
+>         .ret_type       = RET_INTEGER,
+> -       .arg1_type      = ARG_PTR_TO_MEM,
+> +       .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>         .arg2_type      = ARG_CONST_SIZE,
+>         .arg3_type      = ARG_ANYTHING,
+>         .arg4_type      = ARG_PTR_TO_LONG,
+> @@ -558,7 +558,7 @@ const struct bpf_func_proto bpf_strtoul_proto = {
+>         .func           = bpf_strtoul,
+>         .gpl_only       = false,
+>         .ret_type       = RET_INTEGER,
+> -       .arg1_type      = ARG_PTR_TO_MEM,
+> +       .arg1_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>         .arg2_type      = ARG_CONST_SIZE,
+>         .arg3_type      = ARG_ANYTHING,
+>         .arg4_type      = ARG_PTR_TO_LONG,
+> @@ -630,7 +630,7 @@ const struct bpf_func_proto bpf_event_output_data_proto =  {
+>         .arg1_type      = ARG_PTR_TO_CTX,
+>         .arg2_type      = ARG_CONST_MAP_PTR,
+>         .arg3_type      = ARG_ANYTHING,
+> -       .arg4_type      = ARG_PTR_TO_MEM,
+> +       .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>         .arg5_type      = ARG_CONST_SIZE_OR_ZERO,
 >  };
-> @@ -680,7 +680,7 @@ BPF_CALL_1(bpf_this_cpu_ptr, const void *, percpu_ptr)
->  const struct bpf_func_proto bpf_this_cpu_ptr_proto = {
->         .func           = bpf_this_cpu_ptr,
+>
+> @@ -1011,7 +1011,7 @@ const struct bpf_func_proto bpf_snprintf_proto = {
+>         .arg1_type      = ARG_PTR_TO_MEM_OR_NULL,
+>         .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
+>         .arg3_type      = ARG_PTR_TO_CONST_STR,
+> -       .arg4_type      = ARG_PTR_TO_MEM_OR_NULL,
+> +       .arg4_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
+>         .arg5_type      = ARG_CONST_SIZE_OR_ZERO,
+>  };
+>
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index 9e0c10c6892a..638d7fd7b375 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -444,7 +444,7 @@ const struct bpf_func_proto bpf_ringbuf_output_proto = {
+>         .func           = bpf_ringbuf_output,
+>         .ret_type       = RET_INTEGER,
+>         .arg1_type      = ARG_CONST_MAP_PTR,
+> -       .arg2_type      = ARG_PTR_TO_MEM,
+> +       .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>         .arg3_type      = ARG_CONST_SIZE_OR_ZERO,
+>         .arg4_type      = ARG_ANYTHING,
+>  };
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 50f96ea4452a..301afb44e47f 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4757,7 +4757,7 @@ static const struct bpf_func_proto bpf_sys_bpf_proto = {
 >         .gpl_only       = false,
-> -       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID,
-> +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | MEM_RDONLY,
->         .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
+>         .ret_type       = RET_INTEGER,
+>         .arg1_type      = ARG_ANYTHING,
+> -       .arg2_type      = ARG_PTR_TO_MEM,
+> +       .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+>         .arg3_type      = ARG_CONST_SIZE,
 >  };
 >
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f8b804918c35..44af65f07a82 100644
+> index 44af65f07a82..a7c015a7b52d 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -4296,16 +4296,32 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
->                                 mark_reg_unknown(env, regs, value_regno);
->                         }
->                 }
-> -       } else if (reg->type == PTR_TO_MEM) {
-> +       } else if (base_type(reg->type) == PTR_TO_MEM) {
-> +               bool rdonly_mem = type_is_rdonly_mem(reg->type);
+> @@ -4966,6 +4966,7 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
+>         return 0;
+>  }
+>
 > +
-> +               if (type_may_be_null(reg->type)) {
-> +                       verbose(env, "R%d invalid mem access '%s'\n", regno,
-> +                               reg_type_str(reg->type));
 
-see, here you'll get "invalid mem access 'ptr_to_mem'" while it's
-actually ptr_to_mem_or_null. Like verifier logs are not hard enough to
-follow, now they will be also misleading.
+nit: unnecessary extra empty line?
 
-> +                       return -EACCES;
-> +               }
+>  struct bpf_reg_types {
+>         const enum bpf_reg_type types[10];
+>         u32 *btf_id;
+> @@ -5012,7 +5013,6 @@ static const struct bpf_reg_types mem_types = {
+>                 PTR_TO_MAP_VALUE,
+>                 PTR_TO_MEM,
+>                 PTR_TO_BUF,
+> -               PTR_TO_BUF | MEM_RDONLY,
+>         },
+>  };
+>
+> @@ -5074,6 +5074,7 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+>         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+>         enum bpf_reg_type expected, type = reg->type;
+>         const struct bpf_reg_types *compatible;
+> +       u32 compatible_flags;
+>         int i, j;
+>
+>         compatible = compatible_reg_types[base_type(arg_type)];
+> @@ -5082,6 +5083,13 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+>                 return -EFAULT;
+>         }
+>
+> +       /* If arg_type is tagged with MEM_RDONLY, it's compatible with both
+> +        * RDONLY and non-RDONLY reg values. Therefore fold this flag before
+> +        * comparison. PTR_MAYBE_NULL is similar.
+> +        */
+> +       compatible_flags = arg_type & (MEM_RDONLY | PTR_MAYBE_NULL);
+> +       type &= ~compatible_flags;
 > +
-> +               if (t == BPF_WRITE && rdonly_mem) {
-> +                       verbose(env, "R%d cannot write into rdonly %s\n",
-> +                               regno, reg_type_str(reg->type));
-> +                       return -EACCES;
-> +               }
-> +
->                 if (t == BPF_WRITE && value_regno >= 0 &&
->                     is_pointer_value(env, value_regno)) {
->                         verbose(env, "R%d leaks addr into mem\n", value_regno);
->                         return -EACCES;
->                 }
-> +
->                 err = check_mem_region_access(env, regno, off, size,
->                                               reg->mem_size, false);
-> -               if (!err && t == BPF_READ && value_regno >= 0)
-> -                       mark_reg_unknown(env, regs, value_regno);
-> +               if (!err && value_regno >= 0)
-> +                       if (t == BPF_READ || rdonly_mem)
 
-why two nested ifs for one condition?
+wouldn't
 
-> +                               mark_reg_unknown(env, regs, value_regno);
->         } else if (reg->type == PTR_TO_CTX) {
->                 enum bpf_reg_type reg_type = SCALAR_VALUE;
->                 struct btf *btf = NULL;
+type &= ~MEM_RDONLY; /* clear read-only flag, if any */
+type &= ~PTR_MAYBE_NULL; /* clear nullable flag, if any */
+
+be cleaner and more straightforward?
+
+
+>         for (i = 0; i < ARRAY_SIZE(compatible->types); i++) {
+>                 expected = compatible->types[i];
+>                 if (expected == NOT_INIT)
 
 [...]
