@@ -2,350 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002F246C0A7
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 17:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6704746C1AC
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 18:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhLGQ2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 11:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhLGQ2M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Dec 2021 11:28:12 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDA9C061574;
-        Tue,  7 Dec 2021 08:24:41 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id y13so58979347edd.13;
-        Tue, 07 Dec 2021 08:24:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cal9mgrfJeOC1t+KTZvLGazz6Vso8H/zFO8jZhM8iBo=;
-        b=iE8IO3izriODdoUDlr44Meea61jxwybW6kVWqJKv30Nn85ei3+I8pXMc9cqh0TnTOg
-         UTqvL0zToFLtUX0kdrR77H6GsCC6Q9IhEDV3TAzVeA3MTWDcL+5SInvnOtmi0CDE/ZFJ
-         RK5r+Xmu8m+2SG/d+pZlFAhTICKLvkHDXL/6jbA5Q/4SyGYwITDnpmfp754j2t8mwsnw
-         8c1x+kNHCPzkKt8dFD+LstcrEk3K4MyA/7Ett9r5P0WM/TU4pPnGT2zYLzPFke2o/QLf
-         Cry3ildvBhV6FQ0mNSJbXEItmzM6SnbQpRl+dXkjzs9hFWsycRXqqMmAXD8ac+CDXWdz
-         vloQ==
+        id S240026AbhLGR0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 12:26:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47688 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240003AbhLGR0x (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Dec 2021 12:26:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638897802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tyZEAPx8uEp6BqLobkY95n81q55nTjqsaRONsnhv2WI=;
+        b=UZxbzt7Y7MzcGWvmpfRm7b6LrUS06YK9o7x8B1CwcCSHjLX2FB3L2gI62GStnGC4KTrQvn
+        jtQk5M6Tzh/eieQDu+ip+DxDkoxZSJ7wlzxjnQsmpIz094dy8bKee2BoUdWRXZQCOr/RW8
+        ub7BmA6v6fT3XhMIBZCmR41nu6ySqkU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-559-mWNgz4pVNkq3EBmS3OmNCQ-1; Tue, 07 Dec 2021 12:23:21 -0500
+X-MC-Unique: mWNgz4pVNkq3EBmS3OmNCQ-1
+Received: by mail-wr1-f70.google.com with SMTP id k8-20020a5d5248000000b001763e7c9ce5so3209967wrc.22
+        for <bpf@vger.kernel.org>; Tue, 07 Dec 2021 09:23:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cal9mgrfJeOC1t+KTZvLGazz6Vso8H/zFO8jZhM8iBo=;
-        b=VjXHRBnP8DwAi4YlsGg16dGDC7U7Q8ZlXwUZJdIeIESBqLWeFcgw0D9wDpu3ouMH2B
-         Ny1CRyaXzHUZzxP4EFxciCPsWrdbZRCjeMJWU0oGfVXDk8i0efR5ALJQzLj7I72ok1CO
-         sc6wkvoWwilfjAjnqpx1Rt5v0S2I7jPvz2XqvGvmYyP8HhFA5vB9ApJYnIQdYniUcVW+
-         jZCgyjj/Bvufv1qJpzQ1lDNDOtldDCJdnYFNVx+En6kMKF/HCQroCi0Wd1ne1FhaABo3
-         jHkNwe06Jy+ctLgLEuUUTuaXW9QybZSxL6gp9KbQ7b5uqNdY9IpuixMBSg3J/08tck6X
-         ce8Q==
-X-Gm-Message-State: AOAM532WjUTDvywUjR1tLJLd/XQE7ZOCOZ/yx0cgDuS/dT8a7u/PPxt0
-        ErSsXwnNkdMF+lac29KE9FxlWE1TpNChOQ==
-X-Google-Smtp-Source: ABdhPJxGZv56emhF1h6iMskn586AJ1Ae3K5o4Gl1fXpY3V5CvC+z3YrX4ofK6tXdhZyRxkcxjIf/Qw==
-X-Received: by 2002:a05:6402:3cd:: with SMTP id t13mr10602633edw.97.1638894279805;
-        Tue, 07 Dec 2021 08:24:39 -0800 (PST)
-Received: from localhost.localdomain ([2a02:a03f:c062:a800:5f01:482d:95e2:b968])
-        by smtp.gmail.com with ESMTPSA id i10sm6757ejw.48.2021.12.07.08.24.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tyZEAPx8uEp6BqLobkY95n81q55nTjqsaRONsnhv2WI=;
+        b=Y7+y2AzCsufVfciBSsNk8DU725EEgs/yQAsNvKjoHryJeb4LvGg1lSG5PlkTpff/r0
+         ZZzgNfbhxzBGds0VW+nhBXDhVjUE7zZ8VweXy4qTJ+L6XPs9QDbQ9NdBfEtS6YqTG17j
+         n4GfWfVEvDsuevTCsik8FctdfU562aXqQt8hwBOYteipRtBCvcFnw+u2zwFHcO0zI2JM
+         twyStNPkmxBxOG/DuiN7VXs1pV0N6NoROxo8ciNlALvVdmL7Ndn2/OXCKesA0+w8+roz
+         WoL9H5iPzOXZdWrNAppSX5sMZhVyUbJjP9Z3uEhVF9MSmQU+cTSet0pKJHFr6aoB4jXb
+         lYeQ==
+X-Gm-Message-State: AOAM530diabjA5H4wQl0BU6Tcm7CjUIbbmenWTEuTUvzYM8bqiTabJyg
+        p12bWfJ7ONaZuQv+4N4FzvSyYsIK9gH3SFfDftk6wCa0BfgeS1L+A/vJtM0mNG38aH31r+M7GeL
+        zFxEvTulfBugt
+X-Received: by 2002:a5d:6d0b:: with SMTP id e11mr53460660wrq.16.1638897799923;
+        Tue, 07 Dec 2021 09:23:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx2rWeOH7vHLSEtjqmJ7mx9kmtIWVUH9NqDQT3V9aQwFBWLJKXWEJeqFdInYPBG9EwhxYRkEQ==
+X-Received: by 2002:a5d:6d0b:: with SMTP id e11mr53460630wrq.16.1638897799701;
+        Tue, 07 Dec 2021 09:23:19 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id b197sm199745wmb.24.2021.12.07.09.23.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Dec 2021 08:24:39 -0800 (PST)
-From:   Mathieu Jadin <mathjadin@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Mathieu Jadin <mathjadin@gmail.com>,
+        Tue, 07 Dec 2021 09:23:18 -0800 (PST)
+Date:   Tue, 7 Dec 2021 18:23:12 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>, linux-kselftest@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Test for IPv6 ext header parsing
-Date:   Tue,  7 Dec 2021 17:22:49 +0100
-Message-Id: <20211207162249.301625-2-mathjadin@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211207162249.301625-1-mathjadin@gmail.com>
-References: <20211207162249.301625-1-mathjadin@gmail.com>
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add get_func_[arg|ret|arg_cnt] helpers
+Message-ID: <Ya+YgJta0JYBvxrB@krava>
+References: <20211204140700.396138-1-jolsa@kernel.org>
+ <20211204140700.396138-3-jolsa@kernel.org>
+ <f1cf12b9-01f5-f980-a349-1cbcd1124409@fb.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1638884270; l=7638; s=20211207; h=from:subject; bh=S9PpPGXrudTAXfgr3NRpH/1lgYiOVeZ/V9FOjs3vHDg=; b=bkjqSaNcM0gc6wbUMv+UdtJrBX5uE4NWu7v7wJq7tjZtOgJw1gjhH7HlsREREQ5cbOiZwsRzBpWX QCN4MRa8DMBiKX1KTjmAsd/skYxFiT19SRS6wwZqxPSpuoDGw6Xt
-X-Developer-Key: i=mathjadin@gmail.com; a=ed25519; pk=LX0wKHMKZralQziQacrPu4w5BceQsC7CocWV714TPRU=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1cf12b9-01f5-f980-a349-1cbcd1124409@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test creates a client and a server exchanging a single byte
-with a Segment Routing Header and the eBPF program saves
-the inner segment in a sk_storage. The test program checks that
-the segment is correct.
+On Mon, Dec 06, 2021 at 01:54:53PM -0800, Andrii Nakryiko wrote:
+> 
+> On 12/4/21 6:06 AM, Jiri Olsa wrote:
+> > Adding following helpers for tracing programs:
+> > 
+> > Get n-th argument of the traced function:
+> >    long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
+> > 
+> > Get return value of the traced function:
+> >    long bpf_get_func_ret(void *ctx, u64 *value)
+> > 
+> > Get arguments count of the traced funtion:
+> >    long bpf_get_func_arg_cnt(void *ctx)
+> > 
+> > The trampoline now stores number of arguments on ctx-8
+> > address, so it's easy to verify argument index and find
+> > return value argument's position.
+> > 
+> > Moving function ip address on the trampoline stack behind
+> > the number of functions arguments, so it's now stored on
+> > ctx-16 address if it's needed.
+> > 
+> > All helpers above are inlined by verifier.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> 
+> 
+> Please cc me at andrii@kernel.org email for future emails, you'll save a lot
+> of trouble with replying to your emails :) Thanks!
 
-Signed-off-by: Mathieu Jadin <mathjadin@gmail.com>
----
- .../bpf/prog_tests/tcp_ipv6_exthdr_srh.c      | 171 ++++++++++++++++++
- .../selftests/bpf/progs/tcp_ipv6_exthdr_srh.c |  78 ++++++++
- 2 files changed, 249 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_ipv6_exthdr_srh.c
- create mode 100644 tools/testing/selftests/bpf/progs/tcp_ipv6_exthdr_srh.c
+ugh, updated
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_ipv6_exthdr_srh.c b/tools/testing/selftests/bpf/prog_tests/tcp_ipv6_exthdr_srh.c
-new file mode 100644
-index 000000000000..70f7ee230975
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_ipv6_exthdr_srh.c
-@@ -0,0 +1,171 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <linux/seg6.h>
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+struct tcp_srh_storage {
-+	struct in6_addr inner_segment;
-+};
-+
-+static void send_byte(int fd)
-+{
-+	char b = 0x55;
-+
-+	if (CHECK_FAIL(send(fd, &b, sizeof(b), 0) != 1))
-+		perror("Failed to send single byte");
-+}
-+
-+static int verify_srh(int map_fd, int server_fd, struct ipv6_sr_hdr *client_srh)
-+{
-+	int err = 0;
-+	struct tcp_srh_storage val;
-+
-+	if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &server_fd, &val) < 0)) {
-+		perror("Failed to read socket storage");
-+		return -1;
-+	}
-+
-+	if (memcmp(&val.inner_segment, &client_srh->segments[1],
-+		   sizeof(struct in6_addr))) {
-+		log_err("The inner segment of the received SRH differs from the sent one");
-+		err++;
-+	}
-+
-+	return err;
-+}
-+
-+static int run_test(int cgroup_fd, int listen_fd)
-+{
-+	struct bpf_prog_load_attr attr = {
-+		.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+		.file = "./tcp_ipv6_exthdr_srh.o",
-+		.expected_attach_type = BPF_CGROUP_SOCK_OPS,
-+	};
-+	size_t srh_size = sizeof(struct ipv6_sr_hdr) +
-+		2 * sizeof(struct in6_addr);
-+	struct ipv6_sr_hdr *client_srh;
-+	struct bpf_object *obj;
-+	struct bpf_map *map;
-+	struct timeval tv;
-+	int client_fd;
-+	int server_fd;
-+	int prog_fd;
-+	int map_fd;
-+	char byte;
-+	int err;
-+
-+	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
-+	if (err) {
-+		log_err("Failed to load BPF object");
-+		return -1;
-+	}
-+
-+	map = bpf_object__next_map(obj, NULL);
-+	map_fd = bpf_map__fd(map);
-+
-+	err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_SOCK_OPS, 0);
-+	if (err) {
-+		log_err("Failed to attach BPF program");
-+		goto close_bpf_object;
-+	}
-+
-+	client_fd = connect_to_fd(listen_fd, 0);
-+	if (client_fd < 0) {
-+		err = -1;
-+		goto close_bpf_object;
-+	}
-+
-+	server_fd = accept(listen_fd, NULL, 0);
-+	if (server_fd < 0) {
-+		err = -1;
-+		goto close_client_fd;
-+	}
-+
-+	/* Set an SRH with ::1 as an intermediate segment on the client */
-+
-+	client_srh = calloc(1, srh_size);
-+	if (!client_srh) {
-+		log_err("Failed to create the SRH to send");
-+		goto close_server_fd;
-+	}
-+	client_srh->type = IPV6_SRCRT_TYPE_4;
-+	// We do not count the first 8 bytes (RFC 8200 Section 4.4)
-+	client_srh->hdrlen = (2 * sizeof(struct in6_addr)) >> 3;
-+	client_srh->segments_left = 1;
-+	client_srh->first_segment = 1;
-+	// client_srh->segments[0] is set by the kernel
-+	memcpy(&client_srh->segments[1], &in6addr_loopback,
-+	       sizeof(struct in6_addr));
-+
-+	if (setsockopt(client_fd, SOL_IPV6, IPV6_RTHDR, client_srh,
-+		       srh_size)) {
-+		log_err("Failed to set the SRH on the client");
-+		goto free_srh;
-+	}
-+
-+	/* Send traffic with this SRH
-+	 * and check its parsing on the server side
-+	 */
-+
-+	tv.tv_sec = 1;
-+	tv.tv_usec = 0;
-+	if (setsockopt(server_fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv,
-+		       sizeof(tv))) {
-+		log_err("Failed to set the receive timeout on the server");
-+		err = -1;
-+		goto free_srh;
-+	}
-+
-+	send_byte(client_fd);
-+	if (recv(server_fd, &byte, 1, 0) != 1) {
-+		log_err("Failed to get the byte under one second on the server 2");
-+		err = -1;
-+		goto free_srh;
-+	}
-+
-+	err += verify_srh(map_fd, server_fd, client_srh);
-+
-+free_srh:
-+	free(client_srh);
-+close_server_fd:
-+	close(server_fd);
-+close_client_fd:
-+	close(client_fd);
-+close_bpf_object:
-+	bpf_object__close(obj);
-+	return err;
-+}
-+
-+void test_tcp_ipv6_exthdr_srh(void)
-+{
-+	int server_fd, cgroup_fd;
-+
-+	cgroup_fd = test__join_cgroup("/tcp_ipv6_exthdr_srh");
-+	if (CHECK_FAIL(cgroup_fd < 0))
-+		return;
-+
-+	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+
-+	if (CHECK_FAIL(system("sysctl net.ipv6.conf.all.seg6_enabled=1")))
-+		goto close_server;
-+
-+	if (CHECK_FAIL(system("sysctl net.ipv6.conf.lo.seg6_enabled=1")))
-+		goto reset_sysctl;
-+
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd));
-+
-+	if (CHECK_FAIL(system("sysctl net.ipv6.conf.lo.seg6_enabled=0")))
-+		log_err("Cannot reset sysctl net.ipv6.conf.lo.seg6_enabled to 0");
-+
-+reset_sysctl:
-+	if (CHECK_FAIL(system("sysctl net.ipv6.conf.all.seg6_enabled=0")))
-+		log_err("Cannot reset sysctl net.ipv6.conf.all.seg6_enabled to 0");
-+
-+close_server:
-+	close(server_fd);
-+close_cgroup_fd:
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/tcp_ipv6_exthdr_srh.c b/tools/testing/selftests/bpf/progs/tcp_ipv6_exthdr_srh.c
-new file mode 100644
-index 000000000000..276bda8bbecb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tcp_ipv6_exthdr_srh.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/in6.h>
-+#include <linux/ipv6.h>
-+#include <linux/seg6.h>
-+#include <linux/bpf.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define NEXTHDR_ROUTING	43
-+
-+struct tcp_srh_storage {
-+	struct in6_addr inner_segment;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct tcp_srh_storage);
-+} socket_storage_map SEC(".maps");
-+
-+/* Check the header received from the active side */
-+static int read_incoming_srh(struct bpf_sock_ops *skops,
-+			     struct tcp_srh_storage *storage)
-+{
-+	__u32 seg_size = 2 * sizeof(struct in6_addr);
-+	struct ipv6_sr_hdr *srh;
-+	struct ipv6hdr *ip6;
-+	void *seg_list;
-+	int ret = 1;
-+
-+	ip6 = (struct ipv6hdr *)skops->skb_data;
-+	if (ip6 + 1 <= skops->skb_data_end && ip6->nexthdr == NEXTHDR_ROUTING) {
-+		srh = (struct ipv6_sr_hdr *)(ip6 + 1);
-+		if (srh + 1 <= skops->skb_data_end) {
-+			if (srh->type != IPV6_SRCRT_TYPE_4)
-+				return ret;
-+
-+			seg_list = (void *)(srh + 1);
-+			if (seg_list + seg_size <= skops->skb_data_end) {
-+				// This is an SRH with at least 2 segments
-+				storage->inner_segment = srh->segments[1];
-+				ret = 0;
-+			}
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+SEC("sockops")
-+int srh_read(struct bpf_sock_ops *skops)
-+{
-+	struct tcp_srh_storage *storage;
-+	int true_val = 1;
-+
-+	if (!skops->sk)
-+		return 1;
-+
-+	storage = bpf_sk_storage_get(&socket_storage_map, skops->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 1;
-+
-+	switch (skops->op) {
-+	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
-+	case BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB:
-+		bpf_sock_ops_cb_flags_set(skops, skops->bpf_sock_ops_cb_flags |
-+				  BPF_SOCK_OPS_PARSE_IPV6_HDR_CB_FLAG);
-+		break;
-+	case BPF_SOCK_OPS_PARSE_IPV6_HDR_CB:
-+		return read_incoming_srh(skops, storage);
-+	}
-+
-+	return 0;
-+}
--- 
-2.32.0
+
+SNIP
+ 
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index c26871263f1f..d5a3791071d6 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -4983,6 +4983,31 @@ union bpf_attr {
+> >    *	Return
+> >    *		The number of loops performed, **-EINVAL** for invalid **flags**,
+> >    *		**-E2BIG** if **nr_loops** exceeds the maximum number of loops.
+> > + *
+> > + * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
+> > + *	Description
+> > + *		Get **n**-th argument (zero based) of the traced function (for tracing programs)
+> > + *		returned in **value**.
+> > + *
+> > + *	Return
+> > + *		0 on success.
+> > + *		**-EINVAL** if n >= arguments count of traced function.
+> > + *
+> > + * long bpf_get_func_ret(void *ctx, u64 *value)
+> > + *	Description
+> > + *		Get return value of the traced function (for tracing programs)
+> > + *		in **value**.
+> > + *
+> > + *	Return
+> > + *		0 on success.
+> > + *		**-EINVAL** for tracing programs other than BPF_TRACE_FEXIT or BPF_MODIFY_RETURN.
+> 
+> 
+> -EOPNOTSUPP maybe?
+
+ok
+
+> 
+> 
+> > + *
+> > + * long bpf_get_func_arg_cnt(void *ctx)
+> > + *	Description
+> > + *		Get number of arguments of the traced function (for tracing programs).
+> > + *
+> > + *	Return
+> > + *		The number of arguments of the traced function.
+> >    */
+> >   #define __BPF_FUNC_MAPPER(FN)		\
+> >   	FN(unspec),			\
+> > @@ -5167,6 +5192,9 @@ union bpf_attr {
+> >   	FN(kallsyms_lookup_name),	\
+> >   	FN(find_vma),			\
+> >   	FN(loop),			\
+> > +	FN(get_func_arg),		\
+> > +	FN(get_func_ret),		\
+> > +	FN(get_func_arg_cnt),		\
+> >   	/* */
+> >   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 6522ffdea487..cf6853d3a8e9 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -12974,6 +12974,7 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env,
+> >   static int do_misc_fixups(struct bpf_verifier_env *env)
+> >   {
+> >   	struct bpf_prog *prog = env->prog;
+> > +	enum bpf_attach_type eatype = prog->expected_attach_type;
+> >   	bool expect_blinding = bpf_jit_blinding_enabled(prog);
+> >   	enum bpf_prog_type prog_type = resolve_prog_type(prog);
+> >   	struct bpf_insn *insn = prog->insnsi;
+> > @@ -13344,11 +13345,79 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> >   			continue;
+> >   		}
+> > +		/* Implement bpf_get_func_arg inline. */
+> > +		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > +		    insn->imm == BPF_FUNC_get_func_arg) {
+> > +			/* Load nr_args from ctx - 8 */
+> > +			insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +			insn_buf[1] = BPF_JMP32_REG(BPF_JGE, BPF_REG_2, BPF_REG_0, 6);
+> > +			insn_buf[2] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_2, 3);
+> > +			insn_buf[3] = BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1);
+> > +			insn_buf[4] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_2, 0);
+> > +			insn_buf[5] = BPF_STX_MEM(BPF_DW, BPF_REG_3, BPF_REG_0, 0);
+> > +			insn_buf[6] = BPF_MOV64_IMM(BPF_REG_0, 0);
+> > +			insn_buf[7] = BPF_JMP_A(1);
+> > +			insn_buf[8] = BPF_MOV64_IMM(BPF_REG_0, -EINVAL);
+> > +			cnt = 9;
+> > +
+> > +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> > +			if (!new_prog)
+> > +				return -ENOMEM;
+> > +
+> > +			delta    += cnt - 1;
+> > +			env->prog = prog = new_prog;
+> > +			insn      = new_prog->insnsi + i + delta;
+> > +			continue;
+> > +		}
+> > +
+> > +		/* Implement bpf_get_func_ret inline. */
+> > +		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > +		    insn->imm == BPF_FUNC_get_func_ret) {
+> > +			if (eatype == BPF_TRACE_FEXIT ||
+> > +			    eatype == BPF_MODIFY_RETURN) {
+> > +				/* Load nr_args from ctx - 8 */
+> > +				insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +				insn_buf[1] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_0, 3);
+> > +				insn_buf[2] = BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1);
+> > +				insn_buf[3] = BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_0, 0);
+> > +				insn_buf[4] = BPF_STX_MEM(BPF_DW, BPF_REG_2, BPF_REG_3, 0);
+> > +				insn_buf[5] = BPF_MOV64_IMM(BPF_REG_0, 0);
+> > +				cnt = 6;
+> > +			} else {
+> > +				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, -EINVAL);
+> > +				cnt = 1;
+> > +			}
+> > +
+> > +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> > +			if (!new_prog)
+> > +				return -ENOMEM;
+> > +
+> > +			delta    += cnt - 1;
+> > +			env->prog = prog = new_prog;
+> > +			insn      = new_prog->insnsi + i + delta;
+> > +			continue;
+> > +		}
+> > +
+> > +		/* Implement get_func_arg_cnt inline. */
+> > +		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > +		    insn->imm == BPF_FUNC_get_func_arg_cnt) {
+> > +			/* Load nr_args from ctx - 8 */
+> > +			insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +
+> > +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 1);
+> > +			if (!new_prog)
+> > +				return -ENOMEM;
+> > +
+> > +			env->prog = prog = new_prog;
+> > +			insn      = new_prog->insnsi + i + delta;
+> > +			continue;
+> > +		}
+> 
+> 
+> To be entirely honest, I'm not even sure we need to inline them. In programs
+> that care about performance they will be called at most once. In others it
+> doesn't matter. But even if they weren't, is the function call really such a
+> big overhead for tracing cases? I don't mind it either, I just can hardly
+> follow it.
+
+maybe just inline get_func_arg_cnt, because it's just one instruction,
+the other 2 I don't skipping the inline
+
+jirka
 
