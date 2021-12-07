@@ -2,234 +2,903 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1351B46B2EA
-	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 07:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CDE46B57C
+	for <lists+bpf@lfdr.de>; Tue,  7 Dec 2021 09:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235320AbhLGGd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Dec 2021 01:33:56 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49896 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234928AbhLGGdz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Dec 2021 01:33:55 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1B71h0YD028568;
-        Mon, 6 Dec 2021 22:30:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=5ASqIii2aXKE/pUQLPd3u0I+h+zbFPgh8nzoBeNXXH8=;
- b=gTMwQrdI8/QSmop4m9VrzCREbW8LxQ8Ad7i97X0RgnZIm26APx93j6scjJGsJhd+5/jT
- rZJ35ApAIoRIRm6gDBR8J6opr+15LbtpmWYUpHb5APC05HRR1tkpzN/HNXHals7JDvnF
- Ys4a0U1nbWnU6UmQYC3Ej7Sp7C7SxeroG2w= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3csx6ds6ae-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 06 Dec 2021 22:30:25 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 6 Dec 2021 22:30:24 -0800
+        id S230132AbhLGITC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Dec 2021 03:19:02 -0500
+Received: from mail-dm6nam10on2047.outbound.protection.outlook.com ([40.107.93.47]:62086
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231598AbhLGITB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Dec 2021 03:19:01 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z7dOvRLJKtf4I7TjbteKtXG45wiUrXUHkOP+K1TIczXqATcJdjNJyOUACshy9KjP3IVrnpbm6cCuj2K1tnBZA2iV0S7mi6jJ5WT2A8O6OH1cTHIfMjHRSrFJFSA1Ixo2+wzQSKYWsluSmTuqJ6CcgFlpxjDcMv7tWgexRqT64a6WaMJl6MbHSSub35T2TrH4vrAZQtVkOfDm4jzxXmHvph64iSb4NElkEsoa6rduAW94Yr00wFJZfaNtLyTCalEG5VI7TD2VcUs8aLBgVtpY/4WsxyiPSwT+wEXPJ7OwyCXOsJlG0sI0If4yU/ke1JiODBuLnz50xLKp4LHwFybgAA==
+ b=FM9IuRoaj4OW8gqUs/iXEzwBeHWt319RuZF7gyos7GwuMiYDhJNqVi0imJ0fr4wUldwiWD+X7Jc/cVHr+RXsIgkVFv3PsziXz6LU9YuhEKeAqChDxvnKZOx2MUIG4MooTvSMTx5IVsmyqNW8+WDwF4BDfId/tw6iK8u0zus4XKhSAAkk4KUJ/Kchcq3V+SzJLztHnyBde/rjkMW721ek2kb0ANXdE7OfogvPkEgCyIyZWvQ8pJ8QO840PYApTDsVPD8DRbbBU59EcjAQeqO9QFhj2M4Bk1xhlJauuY9iFv2zs4EFjckqQmfBFn7wF6TVJFtRdRTLm1q0vmWvApDqWQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5ASqIii2aXKE/pUQLPd3u0I+h+zbFPgh8nzoBeNXXH8=;
- b=hflIC1DS83GvWn94uOyZxO7xOKpj/Ch9a6x2Gycb8do5R6Ey7nMxnfXblIDMdd/WLlCqcvRwd30xIhYc/N8JD0HJhJiTktAfq0o93dK/uKDNrIPdHLUJCTeMovPR0kLk3jhXdbJg4tWW6um71yfVRtnDxKfc95T/bNmrbiZFYAfMmadVfHhOb/1IfMV1PApdeiyeE0wzka9dN0fO8VtJCscuWwx/7BN8IVUiYjXthUc6ZdaYVrzULuN5CBK1FhWg3N5GHgXPN5EHjmqc0VVm84BrjnJpZjU+VOEIFbL7bfLvgoQx/sPD7P5VXwVL5YYapSSLDbLQxAezb88kTptKZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5139.namprd15.prod.outlook.com (2603:10b6:806:233::5) with
+ bh=Q/b8t8GKdTs5USqfyHCphypRqU0mkUgg1JY4A6VEk24=;
+ b=XlxugzCbWa0h8t56d8V0beabo5asVmsbYwfyciZWE6FkMHDRgZyBZUZwULApE2HcNCk1AxYj82s8A2HCjrrle/9deVylJx+dW5fxFFpcYTyjL3C9y0opiZXtpOf7exduXmyIOpeqOIZFFTg5oRvDRMx3f6/304U5N46WJ67Xk/luPnzLmHT8OBTIcB2bjh2Y0EzkeYjtE1RYuj58dAa2QVFnmLGy3eP0AIzYKf9i+bbCLl8/8C55h2dVvM1bPFjJ3iu59CgK3TmtfYV1ieuW0WiratxP/bZ6vd7HqqD0kJjBHDZeZl39+iR0BiB98+zHI6WPrjxEjyZQBDU7Jezsng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q/b8t8GKdTs5USqfyHCphypRqU0mkUgg1JY4A6VEk24=;
+ b=qkAsI5aOkKSgyHycz8duJyfcAbYydOTtYgYQAyCFgFnx4IOItOv2btDHWwCbyoaOYFP8tKY23T8CRfKtjxyx/z31z/U7DZoOQc4IASrwA1pQI3GExMQnUjfww1PuDJroNvawXdWCtTHyI/Y7z5HO9osXLonp7gi3heRX5rs5r0ksmp64u+MYV3Rvlob/CRo20bSdPWLt4cVmbIoE8ygjlPu0GUW4FtWowZPNJomIAg3lRhCluUEaPph6dTKXsk1h0itQVF3lnJ/9LfCF02oDA91RgDL9IbeMths9h0ySFY6yb5tOBX0cvv8u2n/BOsFat+EjN1pOOV05Pbjf4oSyog==
+Received: from CO2PR04CA0179.namprd04.prod.outlook.com (2603:10b6:104:4::33)
+ by CY4PR12MB1270.namprd12.prod.outlook.com (2603:10b6:903:43::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11; Tue, 7 Dec
- 2021 06:30:22 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::f826:e515:ee1a:a33]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::f826:e515:ee1a:a33%4]) with mapi id 15.20.4755.022; Tue, 7 Dec 2021
- 06:30:22 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.21; Tue, 7 Dec
+ 2021 08:15:27 +0000
+Received: from CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:104:4:cafe::b7) by CO2PR04CA0179.outlook.office365.com
+ (2603:10b6:104:4::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.14 via Frontend
+ Transport; Tue, 7 Dec 2021 08:15:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ CO1NAM11FT059.mail.protection.outlook.com (10.13.174.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4755.13 via Frontend Transport; Tue, 7 Dec 2021 08:15:27 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 7 Dec
+ 2021 00:15:26 -0800
+Received: from vdi.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Tue, 7 Dec 2021 00:15:23 -0800
+From:   Maxim Mikityanskiy <maximmi@nvidia.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "Kernel Team" <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH bpf-next] perf/bpf_counter: use bpf_map_create instead of
- bpf_create_map
-Thread-Topic: [PATCH bpf-next] perf/bpf_counter: use bpf_map_create instead of
- bpf_create_map
-Thread-Index: AQHX6vYzhWKFIoT0wkePQg16MtlXfawmUPOAgAAf5QCAAAuIAIAAFYSA
-Date:   Tue, 7 Dec 2021 06:30:22 +0000
-Message-ID: <08EB4596-7788-4570-B0B0-DE3B710BBDD8@fb.com>
-References: <20211206230811.4131230-1-song@kernel.org>
- <CAEf4BzbaBcySm3bVumBTrkHMmVDWEVxckdVKvUk=4j9HhSsmBA@mail.gmail.com>
- <3221CDA7-F2EF-404A-9289-14F9DF6D01DA@fb.com>
- <CAEf4BzbN17eviD18-_C2UN+P5gMm4vFXVrdLd9UHx0ev+gJsjw@mail.gmail.com>
-In-Reply-To: <CAEf4BzbN17eviD18-_C2UN+P5gMm4vFXVrdLd9UHx0ev+gJsjw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3693.20.0.1.32)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: da281673-3d84-4771-5ea5-08d9b94b0c3a
-x-ms-traffictypediagnostic: SA1PR15MB5139:EE_
-x-microsoft-antispam-prvs: <SA1PR15MB51395875BAB4FA2F1CF09653B36E9@SA1PR15MB5139.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Svo1XfwR2fC9C/1FA9vKt808rSdQedAiMnaKuqjODd8F06VAkqcZOv2NCEPmYCs2zc03nfgjOZN0jZ0nal2cZZZVYoExj5x9SMdWKAWu267MNsuYOxN7M1hmpP+Aq0Z8BTN1Ti0SNLvKHci9psKauOB2U82nJH/taEYTFfqTXJDoWZgtrd9LP4ST/yBtEi9PryXAslvR89voLAeBT40X8MYqRQRi1MNIxF36Vi8xgALuJ3nkY0n1WlaGX3/uctaI+G6bKTLHLfoCISjaiFU0qObWHgdZ2nBlk9h58zfB8mFqxoSWOuaz07Zc2Gm0ee9f+aGrBbKSi9mWxk+D3hM9XNfhOYop/PYu+Z0WHuWxlL6RIfEBVTCiku1ZJqTmerUYhsKfzUcSyZ3atE3x2iy+GXNhI4m0D9gLuVmMvzpaWD2nrEZk/m2dc8IHRVS2ytu3HiKK79jJa48ozPd2d98lm0dTlWizOhSgWSahBlzNayTB5NWYeNsIIE6dqC5yXDEre5YUxUW3SqhXBa4h42xGliJzO16+vBm/Sng3PiKXmoLdbifQrh/yvGM/IRc2Yke6ZrQpeRxxHye6o2yX8ymynJoScsTn20Y9dD4ykZzF9LZA4xbgis1lS4fAZaSL53Smnb577NHSm/O8YC2Sea3oIb/7Rpf3Q6VPXVpVqHZbqQ4Qz0v73k8cLdH9BiWkdOsl3doEFdT/ZPuTKTZ17ZcgVyBSr2S05zVhR6eQ/N/w19BiOmRGkwUAW80HxVrUk07h+83MO4jre+TOenpQGM7cBzSYFRJsYuXZdz5tLP1mXdDXaCqfD1bVhl7Eln7p3y4ZAYkT9tYxke664f/P3o9MLg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(508600001)(83380400001)(33656002)(64756008)(66476007)(91956017)(8676002)(316002)(6506007)(66556008)(186003)(71200400001)(76116006)(36756003)(66946007)(122000001)(86362001)(2906002)(6486002)(38070700005)(6916009)(6512007)(2616005)(966005)(54906003)(5660300002)(8936002)(4326008)(66446008)(38100700002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TTZQbnl2Y1VMODlKa0RxWmJ2eG1iOVN0a3lkVG1jenNOZnd4M1MzdmVDVnl0?=
- =?utf-8?B?Qjg0WVd4S1M1cGxjS0trTzJOZ0tKZjhPZEs3bVNGTUdtaEpjUDI0OHVKclhv?=
- =?utf-8?B?V0VsRDUrTXJlS2RlN1IrVXpjYmhaUlFaNTBmRVNXcUh6emM4Y1ZFQ1JWY1dJ?=
- =?utf-8?B?eEdXMjI4TlVWUERZSmVLQU4ybkdRcjBrdm1tSTE4UW5mVVZyOFNTRGF6TDhL?=
- =?utf-8?B?VVBvMkZpQm84N056NDIwYnNtTmZCc3AycnljUnQvc3F3SDB0V3A0Zi9mZ0VG?=
- =?utf-8?B?REZWd3MxZFJsQjBPMXduUSt4ZnJIRzFFY3hkL3ZUWUN0cXZlWVVNNk5xdlg0?=
- =?utf-8?B?VmQwSVNSM3VvUTNKWUNiS3cybEw4SWJOWHVIeXdvTVFoajljZDlzZnpMVHJO?=
- =?utf-8?B?MXVhRUUrVEVnOGVGSzFweFhqdThrOC81Q0RMUWw1bTZ3K2VPbWt6aFpMdzBt?=
- =?utf-8?B?WHVGdWtGbUx3clR1VTJ5RnZhTUQ5TFR2SGV6K3l6VU9YQWFWajBzS2xXSkd6?=
- =?utf-8?B?eUZqa0ppc1IybWNHanM4blFnOTNFN05IZHdINFpqeHFUVS9rSDBsU3lkSDB1?=
- =?utf-8?B?MEVXckpUZVZGbFdEcFAraUhlZUo4M1hSQVJNWVhjL05WYXIzUkZwZXBKTG9k?=
- =?utf-8?B?cXFEaHNOVWM2U2ljTmZydnI5VDJXMFB1QmE0MHlQUG9MU0R5Snp4MEE4NlBl?=
- =?utf-8?B?SVVNdFZkd0FrenVNblhmV1lhOEU5enJ6cTVXMCtrMTBpRm03cmEyYUdQaDN5?=
- =?utf-8?B?OHBwWjVPTmszK2dwSVV3SXpDZGxVd0F1cDh0ejRUeElJVlhuMVZzY2VQMXhz?=
- =?utf-8?B?SFoyZkt0YXVoWjRBMEIvYmZ1cGNLb09xTFhNWk9PZEgzMUFPcEZRMFVBVDRY?=
- =?utf-8?B?MU5QY21LcVE0bUZzYmd6MldJblJPMlJUOWZBZHFyR2FHQkJBRTJBZlVYTFVn?=
- =?utf-8?B?QjBoMDlib2JYZStVNkhJaHh4V3F0RXdFWHZEZ2gyR2p5VmpaR1NBbE1FRGYw?=
- =?utf-8?B?NVFCUktlQkhpUXZGMTR4ZFRvYlkxaHYybWFmLzUwL0V3ZWpBNDRObzhWOVF3?=
- =?utf-8?B?bFdscm11U1ZvdHdrMWJEbXdkQ3RSVzkzWXVyeUxNd1FMUVNkUlBvekVyQ2Uv?=
- =?utf-8?B?Umg1THBDSXpXd3JtY3pZZlhhOWZKYm9jcUZuZ3FDejQ4dVA1b1QrMUpKTnRP?=
- =?utf-8?B?ZTZqRHREb0o5SUJRS0swS3VaVW42VEIzVHlFY3dvT28wVWU2aGFKZmFacjJX?=
- =?utf-8?B?TStpWk1ZVGZNTmVBNjhYbVg4WmVhTDA3NHNxdk9GVFZzTjBxYklPcjczN1lw?=
- =?utf-8?B?WmQvRnBBRVBLSmJpL3ZBOGp2aWEzNTk2NG9nQVMrQnNTWGs3VzhYeW9oVmxw?=
- =?utf-8?B?TWdxeW11dHJEdDRZTDZOLzQ2ekxOWG9WbU5ZNGRIdTBYOHZYbHgvbmUzOGRv?=
- =?utf-8?B?ZTh3REVYZ1FrSkhuMHlUc2xSWFFIZTNOVmlIRzQ5aHoyNDhFMVpJZFdibFdx?=
- =?utf-8?B?RjJHOW9OUm55eFI4Q0JrQVN0WXh6NjcrT01aeFUrQzVTbEtOcXp4Q1poV3VX?=
- =?utf-8?B?cmp5RVRGWjlkek1ZY0VRelU1WitQWi83bFd6MS95YkQ1RnQydXp0aFRQTUkx?=
- =?utf-8?B?RHo2ZWFVV1RTV01qREdoSXdtQjNnb3BDdG5TZWdSWEpXUkdmejF0VTY5Y0w5?=
- =?utf-8?B?WjdLYS91K3U0YnZUcy93R09XZ09XL2loUVo2NDM0QnZWc05qbExXZFVrMDd3?=
- =?utf-8?B?b2dlQUU0NnBzR2hmdlZoU01iVDBiZk5FdHhjTEF2QW5FUmwrL0lZN3hVL2F1?=
- =?utf-8?B?dW51UjU2WTUwMzFkRms4K0VtcDF4WlZaM2hMWDRBZlgrSG5wTnlqNDdFL2wy?=
- =?utf-8?B?eHlvZExTd0dHNEZOamw4ZnVIV2JvbDVYZjIyRkdWaDF3ZXdEeHdyV25HUVho?=
- =?utf-8?B?RXhkVnpaSWZMc2k5Y0pML2hUcXRaRnV0YVRNWXp4alhBQ0RPVm5vY0xQcEl2?=
- =?utf-8?B?bjRMSXF6enJka2h3QXcvSlpIcDlmT21YYVhJNVJOa0puWTRROEJwZGZhTkVP?=
- =?utf-8?B?c21lNHJKUGd0djhDRTJpQ1VtRW1xdGpKRFlDQmtXcGswaWFIejFnZ04vU2p1?=
- =?utf-8?B?b0wxZGhMUzB3dEtQZUVqbGY3UnJLOVl3T1I5YVFiRDE3SWVRSEtaenhMeWVh?=
- =?utf-8?B?VjFFWUtvcDhTUFdtZjVKUE1EamRHVEE2c2U3ZWpWZElCQkppdVFHMUd3RzV4?=
- =?utf-8?B?UkRFajA5KzFtN3hxb29tUWloZG9BPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <593EC37D410ED14B9AFF91D47C394EE2@namprd15.prod.outlook.com>
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da281673-3d84-4771-5ea5-08d9b94b0c3a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2021 06:30:22.7696
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4kgq+LKR0ieNPuNuJ5V7Eh5kWJ4A2CExoe0/N1hidPCiFThRFGg1JtnSRLtbKfsGAtww9ezkn+wCakjguxr9PQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5139
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: pQWJuQNW0blN0Clk3Xvk7Hh-qAtsO90T
-X-Proofpoint-ORIG-GUID: pQWJuQNW0blN0Clk3Xvk7Hh-qAtsO90T
-Content-Transfer-Encoding: base64
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+CC:     Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>
+Subject: [PATCH bpf] bpf: Add selftests to cover packet access corner cases
+Date:   Tue, 7 Dec 2021 10:15:21 +0200
+Message-ID: <20211207081521.41923-1-maximmi@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-07_02,2021-12-06_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=999
- clxscore=1015 spamscore=0 priorityscore=1501 phishscore=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112070036
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 38e63d09-c43f-40e3-f6e9-08d9b959ba2a
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1270:EE_
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1270FA198008090524471E37DC6E9@CY4PR12MB1270.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CK8BtKkoCe5fChbuyZ6se3osbIPJKGWdfZ1tXEen7FDf48y5siRAuAEqGTdwZTVuhSsKE2piydwbfwZ2wTxCpPTryHg93/mD2W6tUwl5Ufn3RNW4yJpXfEJuyiD1iihIdbQxsPjRn/kZX3RHfMMcrhj+p5Hcq/ZApqmKfw2Vh+TCkeTyqohqPy34TeU4oKjW97v1L+TfhO/E6JSuCBe2yoaykh5DFjxvNEF1Q+uxlZESqB2pIaYuFv2BI56DE8SQcO5AsH7SqEnCzcPspLE0M9+KjwcU1NCM3JTBzjdIPKpF31mCFFCcEWqMhSHw3JfaRPsLEitnCMmSsYiYWzstMN9APUFaIO+QF/9NxVzJ6L1QCl+79xzHvAdf53DcmTO2CZ4hX17cfeZPiKlXBspZNvjmsdKWV1JDLBz/JkxdSAcAjzhYd5f1sasZ/muFXsvf3+yDV4qohal21bgDS9iL9IhWbVA7OZsDye9TiX02rfCUz3rks0RCNN0k9lCo9Ucj3UtUkMli18VCfSLOfOvY9UMcIwtsJBgjBa3O1jzvtY/t80qmEesk6Pgfv7Urq+SPC+Pez66ciVM73T2AmzG3/PYJuVPFZ2OdtWGThep8qVsrKvcFoqq3aoiKGjg6hw2VByffWYjALteggAgyiIP833OuEg/eKJ17NjL08/l1UIJdDSizChTksK1NBDk3vhnqkA7MI7OZwz/mcKL+m0NAIQNe+wZTfFJ8HfeFQ/94PoMvYN2E99IDqaoyNoGMUdakVEYSZI7ZfUK7IywVoEGGxm7mvgrMkbFixdQ1riT70FI=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(40470700001)(4326008)(426003)(336012)(47076005)(7416002)(5660300002)(107886003)(8936002)(508600001)(36860700001)(86362001)(30864003)(2906002)(70586007)(70206006)(40460700001)(1076003)(186003)(26005)(7696005)(83380400001)(316002)(7636003)(356005)(54906003)(2616005)(36756003)(110136005)(82310400004)(34070700002)(8676002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2021 08:15:27.4904
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38e63d09-c43f-40e3-f6e9-08d9b959ba2a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1270
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gT24gRGVjIDYsIDIwMjEsIGF0IDk6MTMgUE0sIEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlp
-Lm5ha3J5aWtvQGdtYWlsLmNvbT4gd3JvdGU6DQo+IA0KPiBPbiBNb24sIERlYyA2LCAyMDIxIGF0
-IDg6MzIgUE0gU29uZyBMaXUgPHNvbmdsaXVicmF2aW5nQGZiLmNvbT4gd3JvdGU6DQo+PiANCj4+
-IA0KPj4gDQo+Pj4gT24gRGVjIDYsIDIwMjEsIGF0IDY6MzcgUE0sIEFuZHJpaSBOYWtyeWlrbyA8
-YW5kcmlpLm5ha3J5aWtvQGdtYWlsLmNvbT4gd3JvdGU6DQo+Pj4gDQo+Pj4gT24gTW9uLCBEZWMg
-NiwgMjAyMSBhdCAzOjA4IFBNIFNvbmcgTGl1IDxzb25nQGtlcm5lbC5vcmc+IHdyb3RlOg0KPj4+
-PiANCj4+Pj4gYnBmX2NyZWF0ZV9tYXAgaXMgZGVwcmVjYXRlZC4gUmVwbGFjZSBpdCB3aXRoIGJw
-Zl9tYXBfY3JlYXRlLg0KPj4+PiANCj4+Pj4gRml4ZXM6IDk5MmM0MjI1NDE5YSAoImxpYmJwZjog
-VW5pZnkgbG93LWxldmVsIG1hcCBjcmVhdGlvbiBBUElzIHcvIG5ldyBicGZfbWFwX2NyZWF0ZSgp
-IikNCj4+PiANCj4+PiBUaGlzIGlzIG5vdCBhIGJ1ZyBmaXgsIGl0J3MgYW4gaW1wcm92ZW1lbnQu
-IFNvIEkgZG9uJ3QgdGhpbmsgIkZpeGVzOiAiDQo+Pj4gaXMgd2FycmFudGVkIGhlcmUsIHRiaC4N
-Cj4+IA0KPj4gSSBnb3QgY29tcGlsYXRpb24gZXJyb3JzIGJlZm9yZSB0aGlzIGNoYW5nZSwgbGlr
-ZQ0KPj4gDQo+PiB1dGlsL2JwZl9jb3VudGVyLmM6IEluIGZ1bmN0aW9uIOKAmGJwZXJmX2xvY2tf
-YXR0cl9tYXDigJk6DQo+PiB1dGlsL2JwZl9jb3VudGVyLmM6MzIzOjM6IGVycm9yOiDigJhicGZf
-Y3JlYXRlX21hcOKAmSBpcyBkZXByZWNhdGVkOiBsaWJicGYgdjAuNys6IHVzZSBicGZfbWFwX2Ny
-ZWF0ZSgpIGluc3RlYWQgWy1XZXJyb3I9ZGVwcmVjYXRlZC1kZWNsYXJhdGlvbnNdDQo+PiAgIG1h
-cF9mZCA9IGJwZl9jcmVhdGVfbWFwKEJQRl9NQVBfVFlQRV9IQVNILA0KPj4gICBefn5+fn4NCj4+
-IEluIGZpbGUgaW5jbHVkZWQgZnJvbSB1dGlsL2JwZl9jb3VudGVyLmg6NywNCj4+ICAgICAgICAg
-ICAgICAgICBmcm9tIHV0aWwvYnBmX2NvdW50ZXIuYzoxNToNCj4+IC9kYXRhL3VzZXJzL3Nvbmds
-aXVicmF2aW5nL2tlcm5lbC9saW51eC1naXQvdG9vbHMvbGliL2JwZi9icGYuaDo5MToxNjogbm90
-ZTogZGVjbGFyZWQgaGVyZQ0KPj4gTElCQlBGX0FQSSBpbnQgYnBmX2NyZWF0ZV9tYXAoZW51bSBi
-cGZfbWFwX3R5cGUgbWFwX3R5cGUsIGludCBrZXlfc2l6ZSwNCj4+ICAgICAgICAgICAgICAgIF5+
-fn5+fn5+fn5+fn5+DQo+PiBjYzE6IGFsbCB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9y
-cw0KPj4gbWFrZVs0XTogKioqIFsvZGF0YS91c2Vycy9zb25nbGl1YnJhdmluZy9rZXJuZWwvbGlu
-dXgtZ2l0L3Rvb2xzL2J1aWxkL01ha2VmaWxlLmJ1aWxkOjk2OiB1dGlsL2JwZl9jb3VudGVyLm9d
-IEVycm9yIDENCj4+IG1ha2VbNF06ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlzaGVkIGpvYnMuLi4u
-DQo+PiBtYWtlWzNdOiAqKiogWy9kYXRhL3VzZXJzL3NvbmdsaXVicmF2aW5nL2tlcm5lbC9saW51
-eC1naXQvdG9vbHMvYnVpbGQvTWFrZWZpbGUuYnVpbGQ6MTM5OiB1dGlsXSBFcnJvciAyDQo+PiBt
-YWtlWzJdOiAqKiogW01ha2VmaWxlLnBlcmY6NjY1OiBwZXJmLWluLm9dIEVycm9yIDINCj4+IG1h
-a2VbMV06ICoqKiBbTWFrZWZpbGUucGVyZjoyNDA6IHN1Yi1tYWtlXSBFcnJvciAyDQo+PiBtYWtl
-OiAqKiogW01ha2VmaWxlOjcwOiBhbGxdIEVycm9yIDINCj4+IA0KPiANCj4gSG1tLi4gaXMgdXRp
-bC9icGZfY291bnRlci5oIGd1YXJkZWQgYmVoaW5kIHNvbWUgTWFrZWZpbGUgYXJndW1lbnRzPw0K
-PiBJJ3ZlIHNlbnQgI3ByYWdtYSB0ZW1wb3Jhcnkgd29ya2Fyb3VuZHMganVzdCBhIGZldyBkYXlz
-IGFnbyAoWzBdKSwgYnV0DQo+IHRoaXMgb25lIGRpZG4ndCBjb21lIHVwIGR1cmluZyB0aGUgYnVp
-bGQuDQo+IA0KPiAgWzBdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9uZXRk
-ZXZicGYvcGF0Y2gvMjAyMTEyMDMwMDQ2NDAuMjQ1NTcxNy0xLWFuZHJpaUBrZXJuZWwub3JnLw0K
-DQpJIGd1ZXNzIHRoZSBkZWZhdWx0IGJ1aWxkIHRlc3QgZG9lc24ndCBlbmFibGUgQlVJTERfQlBG
-X1NLRUw/IA0KDQo+IA0KPj4gRG8gd2UgcGxhbiB0byByZW1vdmUgYnBmX2NyZWF0ZV9tYXAgaW4g
-dGhlIGZ1dHVyZT8gSWYgbm90LCB3ZSBjYW4gcHJvYmFibHkganVzdA0KPj4gYWRkICcjcHJhZ21h
-IEdDQyBkaWFnbm9zdGljIGlnbm9yZWQgIi1XZGVwcmVjYXRlZC1kZWNsYXJhdGlvbnMiJyBjYW4g
-Y2FsbCBpdCBkb25lPw0KPiANCj4gWWVzLCBpdCB3aWxsIGJlIHJlbW92ZWQgaW4gYSBmZXcgbGli
-YnBmIHJlbGVhc2VzIHdoZW4gd2Ugc3dpdGNoIHRvIHRoZQ0KPiAxLjAgdmVyc2lvbi4gU28gc3Vw
-cHJlc3NpbmcgYSB3YXJuaW5nIGlzIGEgdGVtcG9yYXJ5IHdvcmstYXJvdW5kLg0KPiANCj4+IA0K
-Pj4+IA0KPj4+PiBTaWduZWQtb2ZmLWJ5OiBTb25nIExpdSA8c29uZ0BrZXJuZWwub3JnPg0KPj4+
-PiAtLS0NCj4+Pj4gdG9vbHMvcGVyZi91dGlsL2JwZl9jb3VudGVyLmMgfCA0ICsrLS0NCj4+Pj4g
-MSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4+Pj4gDQo+
-Pj4+IGRpZmYgLS1naXQgYS90b29scy9wZXJmL3V0aWwvYnBmX2NvdW50ZXIuYyBiL3Rvb2xzL3Bl
-cmYvdXRpbC9icGZfY291bnRlci5jDQo+Pj4+IGluZGV4IGMxN2Q0YTQzY2UwNjUuLmVkMTUwYTli
-M2EwYzAgMTAwNjQ0DQo+Pj4+IC0tLSBhL3Rvb2xzL3BlcmYvdXRpbC9icGZfY291bnRlci5jDQo+
-Pj4+ICsrKyBiL3Rvb2xzL3BlcmYvdXRpbC9icGZfY291bnRlci5jDQo+Pj4+IEBAIC0zMjAsMTAg
-KzMyMCwxMCBAQCBzdGF0aWMgaW50IGJwZXJmX2xvY2tfYXR0cl9tYXAoc3RydWN0IHRhcmdldCAq
-dGFyZ2V0KQ0KPj4+PiAgICAgICB9DQo+Pj4+IA0KPj4+PiAgICAgICBpZiAoYWNjZXNzKHBhdGgs
-IEZfT0spKSB7DQo+Pj4+IC0gICAgICAgICAgICAgICBtYXBfZmQgPSBicGZfY3JlYXRlX21hcChC
-UEZfTUFQX1RZUEVfSEFTSCwNCj4+Pj4gKyAgICAgICAgICAgICAgIG1hcF9mZCA9IGJwZl9tYXBf
-Y3JlYXRlKEJQRl9NQVBfVFlQRV9IQVNILCBOVUxMLA0KPj4+IA0KPj4+IEkgdGhpbmsgcGVyZiBp
-cyB0cnlpbmcgdG8gYmUgbGlua2FibGUgd2l0aCBsaWJicGYgYXMgYSBzaGFyZWQgbGlicmFyeSwN
-Cj4+PiBzbyBvbiBzb21lIG9sZGVyIHZlcnNpb25zIG9mIGxpYmJwZiBicGZfbWFwX2NyZWF0ZSgp
-IHdvbid0IGJlICh5ZXQpDQo+Pj4gYXZhaWxhYmxlLiBTbyB0byBtYWtlIHRoaXMgd29yaywgSSB0
-aGluayB5b3UnbGwgbmVlZCB0byBkZWZpbmUgeW91cg0KPj4+IG93biB3ZWFrIGJwZl9tYXBfY3Jl
-YXRlIGZ1bmN0aW9uIHRoYXQgd2lsbCB1c2UgYnBmX2NyZWF0ZV9tYXAoKS4NCj4+IA0KPj4gSG1t
-Li4uIEkgZGlkbid0IGtub3cgdGhlIHBsYW4gdG8gbGluayBsaWJicGYgYXMgc2hhcmVkIGxpYnJh
-cnkuIEluIHRoaXMgY2FzZSwNCj4+IG1heWJlIHRoZSAjcHJhZ21hIHNvbHV0aW9uIGlzIHByZWZl
-cnJlZD8NCj4gDQo+IFNlZSAicGVyZiB0b29sczogQWRkIG1vcmUgd2VhayBsaWJicGYgZnVuY3Rp
-b25zIiBzZW50IGJ5IEppcmkgbm90IHNvDQo+IGxvbmcgYWdvIGFib3V0IHdoYXQgdGhleSBkaWQg
-d2l0aCBzb21lIG90aGVyIHVzZWQgQVBJcyB0aGF0IGFyZSBub3cNCj4gbWFya2VkIGRlcHJlY2F0
-ZWQuDQoNCkRvIHlvdSBtZWFuIHNvbWV0aGluZyBsaWtlIHRoaXM/DQoNCmludCBfX3dlYWsNCmJw
-Zl9tYXBfY3JlYXRlKGVudW0gYnBmX21hcF90eXBlIG1hcF90eXBlLA0KICAgICAgICAgICAgICAg
-Y29uc3QgY2hhciAqbWFwX25hbWUgX19tYXliZV91bnVzZWQsDQogICAgICAgICAgICAgICBfX3Uz
-MiBrZXlfc2l6ZSwNCiAgICAgICAgICAgICAgIF9fdTMyIHZhbHVlX3NpemUsDQogICAgICAgICAg
-ICAgICBfX3UzMiBtYXhfZW50cmllcywNCiAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBicGZf
-bWFwX2NyZWF0ZV9vcHRzICpvcHRzIF9fbWF5YmVfdW51c2VkKQ0Kew0KI3ByYWdtYSBHQ0MgZGlh
-Z25vc3RpYyBwdXNoDQojcHJhZ21hIEdDQyBkaWFnbm9zdGljIGlnbm9yZWQgIi1XZGVwcmVjYXRl
-ZC1kZWNsYXJhdGlvbnMiDQogICAgICAgIHJldHVybiBicGZfY3JlYXRlX21hcChtYXBfdHlwZSwg
-a2V5X3NpemUsIHZhbHVlX3NpemUsIG1heF9lbnRyaWVzLCAwKTsNCiNwcmFnbWEgR0NDIGRpYWdu
-b3N0aWMgcG9wDQp9DQoNCkkgZ3Vlc3MgdGhpcyB3b24ndCB3b3JrIHdoZW4gYnBmX2NyZWF0ZV9t
-YXAoKSBpcyBldmVudHVhbGx5IHJlbW92ZWQsIGFzIA0KX193ZWFrIGZ1bmN0aW9uIGFyZSBzdGls
-bCBjb21waWxlZCwgbm8/DQoNClRoYW5rcywNClNvbmc=
+This commit adds BPF verifier selftests that cover all corner cases by
+packet boundary checks. Specifically, 8-byte packet reads are tested at
+the beginning of data and at the beginning of data_meta, using all kinds
+of boundary checks (all comparison operators: <, >, <=, >=; both
+permutations of operands: data + length compared to end, end compared to
+data + length). For each case there are three tests:
+
+1. Length is just enough for an 8-byte read. Length is either 7 or 8,
+   depending on the comparison.
+
+2. Length is increased by 1 - should still pass the verifier. These
+   cases are useful, because they failed before commit 2fa7d94afc1a
+   ("bpf: Fix the off-by-two error in range markings").
+
+3. Length is decreased by 1 - should be rejected by the verifier.
+
+Some existing tests are just renamed to avoid duplication.
+
+Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
+---
+ .../bpf/verifier/xdp_direct_packet_access.c   | 600 +++++++++++++++++-
+ 1 file changed, 584 insertions(+), 16 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/verifier/xdp_direct_packet_access.c b/tools/testing/selftests/bpf/verifier/xdp_direct_packet_access.c
+index de172a5b8754..b4ec228eb95d 100644
+--- a/tools/testing/selftests/bpf/verifier/xdp_direct_packet_access.c
++++ b/tools/testing/selftests/bpf/verifier/xdp_direct_packet_access.c
+@@ -35,7 +35,7 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ },
+ {
+-	"XDP pkt read, pkt_data' > pkt_end, good access",
++	"XDP pkt read, pkt_data' > pkt_end, corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -87,6 +87,41 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_data' > pkt_end, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data' > pkt_end, corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_end > pkt_data', good access",
+ 	.insns = {
+@@ -106,7 +141,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_end > pkt_data', bad access 1",
++	"XDP pkt read, pkt_end > pkt_data', corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -142,6 +177,42 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_end > pkt_data', corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_end > pkt_data', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_data' < pkt_end, good access",
+ 	.insns = {
+@@ -161,7 +232,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_data' < pkt_end, bad access 1",
++	"XDP pkt read, pkt_data' < pkt_end, corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -198,7 +269,43 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_end < pkt_data', good access",
++	"XDP pkt read, pkt_data' < pkt_end, corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data' < pkt_end, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_end < pkt_data', corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -250,6 +357,41 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_end < pkt_data', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_end < pkt_data', corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_data' >= pkt_end, good access",
+ 	.insns = {
+@@ -268,7 +410,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_data' >= pkt_end, bad access 1",
++	"XDP pkt read, pkt_data' >= pkt_end, corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -304,7 +446,41 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_end >= pkt_data', good access",
++	"XDP pkt read, pkt_data' >= pkt_end, corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data' >= pkt_end, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_end >= pkt_data', corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -359,7 +535,44 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_data' <= pkt_end, good access",
++	"XDP pkt read, pkt_end >= pkt_data', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_end >= pkt_data', corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data' <= pkt_end, corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -413,6 +626,43 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_data' <= pkt_end, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data' <= pkt_end, corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_end <= pkt_data', good access",
+ 	.insns = {
+@@ -431,7 +681,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_end <= pkt_data', bad access 1",
++	"XDP pkt read, pkt_end <= pkt_data', corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
+@@ -467,7 +717,41 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_meta' > pkt_data, good access",
++	"XDP pkt read, pkt_end <= pkt_data', corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_end <= pkt_data', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1,
++		    offsetof(struct xdp_md, data_end)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_meta' > pkt_data, corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -519,6 +803,41 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_meta' > pkt_data, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_meta' > pkt_data, corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_data > pkt_meta', good access",
+ 	.insns = {
+@@ -538,7 +857,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_data > pkt_meta', bad access 1",
++	"XDP pkt read, pkt_data > pkt_meta', corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -574,6 +893,42 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_data > pkt_meta', corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data > pkt_meta', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_meta' < pkt_data, good access",
+ 	.insns = {
+@@ -593,7 +948,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_meta' < pkt_data, bad access 1",
++	"XDP pkt read, pkt_meta' < pkt_data, corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -630,7 +985,43 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_data < pkt_meta', good access",
++	"XDP pkt read, pkt_meta' < pkt_data, corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_meta' < pkt_data, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data < pkt_meta', corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -682,6 +1073,41 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_data < pkt_meta', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data < pkt_meta', corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLT, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_meta' >= pkt_data, good access",
+ 	.insns = {
+@@ -700,7 +1126,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_meta' >= pkt_data, bad access 1",
++	"XDP pkt read, pkt_meta' >= pkt_data, corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -736,7 +1162,41 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_data >= pkt_meta', good access",
++	"XDP pkt read, pkt_meta' >= pkt_data, corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_meta' >= pkt_data, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data >= pkt_meta', corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -791,7 +1251,44 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_meta' <= pkt_data, good access",
++	"XDP pkt read, pkt_data >= pkt_meta', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data >= pkt_meta', corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JGE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_meta' <= pkt_data, corner case, good access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -845,6 +1342,43 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_meta' <= pkt_data, corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 9),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -9),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_meta' <= pkt_data, corner case -1, bad access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_1, BPF_REG_3, 1),
++	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.errstr = "R1 offset is outside of the packet",
++	.result = REJECT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+ {
+ 	"XDP pkt read, pkt_data <= pkt_meta', good access",
+ 	.insns = {
+@@ -863,7 +1397,7 @@
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+ {
+-	"XDP pkt read, pkt_data <= pkt_meta', bad access 1",
++	"XDP pkt read, pkt_data <= pkt_meta', corner case -1, bad access",
+ 	.insns = {
+ 	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
+ 		    offsetof(struct xdp_md, data_meta)),
+@@ -898,3 +1432,37 @@
+ 	.prog_type = BPF_PROG_TYPE_XDP,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
++{
++	"XDP pkt read, pkt_data <= pkt_meta', corner case, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 7),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -7),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
++{
++	"XDP pkt read, pkt_data <= pkt_meta', corner case +1, good access",
++	.insns = {
++	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,
++		    offsetof(struct xdp_md, data_meta)),
++	BPF_LDX_MEM(BPF_W, BPF_REG_3, BPF_REG_1, offsetof(struct xdp_md, data)),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_2),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 8),
++	BPF_JMP_REG(BPF_JLE, BPF_REG_3, BPF_REG_1, 1),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
++},
+-- 
+2.30.2
+
