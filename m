@@ -2,118 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F1246D94F
-	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 18:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1183246DB33
+	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 19:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237619AbhLHRQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 12:16:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S239018AbhLHSjO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 13:39:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234605AbhLHRQE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 12:16:04 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83264C061746;
-        Wed,  8 Dec 2021 09:12:32 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id z5so10751787edd.3;
-        Wed, 08 Dec 2021 09:12:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zi8oo1PZizw8wEpDiOLL07lx2GDHOYXRbCD0oQdOBv4=;
-        b=BvbrsObi+qT4Kh60LTdhZFPxy4nsurH4Zpy3l+ppSrSEFTInp/yHeMSoXY5b6lc/M9
-         J+R4VBjZy3DGBwwhXWPUZCQPIMr0oLsjZxdMxWUfHqrES8d2Dh2GnkDqOahaHPHhBeDl
-         UTZaSehEDXK8f+wG8PdThQ/f9/dCJQ0zTk6xRJka+IuAnfMYWpxuZIICvB8qYuvR4R0n
-         Kn63nmBw2CxgM9fJZNWBRwghp5A9FG/Kkrh/ZNSyz1T0Z1LLY5XLpNoO02AHAuj5bO4p
-         00YiP9tvZCkc2g4dxbYZ2r3X+05+MMMgxdNXs4+4CJUsAckaGSg+sSOAyvrNLSHdcFLD
-         ExuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zi8oo1PZizw8wEpDiOLL07lx2GDHOYXRbCD0oQdOBv4=;
-        b=tQD3mfXj5cwvRGWVNAOM+1MBr5QVpGZKCkEb3ecwqJfCZg9fwKdSEijH3UsAVgqkdh
-         1PAi+vy/1iF5uIa3qlZ1aTuTMq6EZLRzt4BFXVnXXRa8jag557tKNbXe1aR8EgGNmyqH
-         D6RzizxY7r2Eerw6nRT/p2mc6TdY8bDD6mq2aA4vtjdmfNFXhPoJbGgiAXD2Lg7KDoTc
-         GkvEEEkvDkwMbFOKBvNG4M5j0vISIbOHEURgNWsyeHmqJpnHpIZ0OMZCWvnhYxOGMoOf
-         R2/+M/3UgkfKQ9bswCe6j7MC7fH6vyELZBHZpNzpyiyDIS0vmVyCvoHmjGffBt61M5kz
-         iqFA==
-X-Gm-Message-State: AOAM5333BqImqm1HbokChaFNOgfhaCNLR9+epqoO5ryLceAKATrJwExj
-        3DFkksaA/btLcS1IZypORA==
-X-Google-Smtp-Source: ABdhPJxNH6F6yUOi+QCXoRNyaMIvWKHl4u8joVLBEhadTge3/FhO3F9gYXEejNUNqaDm2hD7Xi9IWQ==
-X-Received: by 2002:a17:907:6291:: with SMTP id nd17mr8993126ejc.194.1638983550551;
-        Wed, 08 Dec 2021 09:12:30 -0800 (PST)
-Received: from localhost.localdomain ([46.53.251.178])
-        by smtp.gmail.com with ESMTPSA id hx14sm1725391ejc.92.2021.12.08.09.12.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Dec 2021 09:12:30 -0800 (PST)
-Date:   Wed, 8 Dec 2021 20:12:27 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Xiu Jianfeng <xiujianfeng@huawei.com>
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        laniel_francis@privacyrequired.com,
-        andriy.shevchenko@linux.intel.com, linux@roeck-us.net,
-        andreyknvl@gmail.com, dja@axtens.net, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH -next 1/2] string.h: Introduce memset_range() for wiping
- members
-Message-ID: <YbDne/nYsVai5pCV@localhost.localdomain>
-References: <20211208030451.219751-1-xiujianfeng@huawei.com>
- <20211208030451.219751-2-xiujianfeng@huawei.com>
+        with ESMTP id S239011AbhLHSjN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 13:39:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387FEC061746;
+        Wed,  8 Dec 2021 10:35:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 005BEB8225D;
+        Wed,  8 Dec 2021 18:35:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8508CC00446;
+        Wed,  8 Dec 2021 18:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638988538;
+        bh=f0Wxhz3A50mdmo1JOAqxqkjeSrTNeYV6wNaASAItEPY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q3CNwXp7saaX0WEGY7R10UvsofC0mcSv/rjCjYowmMKJhOEMX5tzTKNDNO3TFFdAu
+         863vwoRg0y8yjqsk4j2XIiRcTfkUNUogrDQsiEFNTT5slYbR+QVKfhYm2YtN0FPrIL
+         n5eqizc1dxojF2UxioaOrOyvo3Onh3juy+/JzayYxPasUPTSJhkq9whbZZbeyHvX0J
+         ipy0Ej/skV186nd80Ecv4c1z723MtdGMtmmaf608Qsmu1D+hUP80RF2y98VTd2HDoL
+         qWZBvD/Um4AagnOkbfkIzsS2ENsiNkg6ccnRC02Sp03ikSeXrIMx51eWmAJt2NVHIw
+         xHxZ8gJugV4Hw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 07DB0406C1; Wed,  8 Dec 2021 15:35:35 -0300 (-03)
+Date:   Wed, 8 Dec 2021 15:35:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Domenico Andreoli <domenico.andreoli@linux.com>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Yonghong Song <yhs@fb.com>,
+        Douglas RAILLARD <douglas.raillard@arm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Matteo Croce <mcroce@microsoft.com>
+Subject: Re: ANNOUNCE: pahole v1.23 (BTF tags and alignment inference)
+Message-ID: <YbD696GWcp+KeMyg@kernel.org>
+References: <YSQSZQnnlIWAQ06v@kernel.org>
+ <YbC5MC+h+PkDZten@kernel.org>
+ <1587op7-6246-638r-5815-2ops848q5r4@vanv.qr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211208030451.219751-2-xiujianfeng@huawei.com>
+In-Reply-To: <1587op7-6246-638r-5815-2ops848q5r4@vanv.qr>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 08, 2021 at 11:04:50AM +0800, Xiu Jianfeng wrote:
-> Motivated by memset_after() and memset_startat(), introduce a new helper,
-> memset_range() that takes the target struct instance, the byte to write,
-> and two member names where zeroing should start and end.
+Em Wed, Dec 08, 2021 at 03:26:31PM +0100, Jan Engelhardt escreveu:
 > 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->  include/linux/string.h | 20 ++++++++++++++++++++
->  lib/memcpy_kunit.c     | 12 ++++++++++++
->  2 files changed, 32 insertions(+)
+> On Wednesday 2021-12-08 14:54, Arnaldo Carvalho de Melo wrote:
+> > 
+> >	The v1.23 release of pahole and its friends is out, this time
+> >the main new features are the ability to encode BTF tags, to carry
 > 
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index b6572aeca2f5..7f19863253f2 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -291,6 +291,26 @@ void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
->  	       sizeof(*(obj)) - offsetof(typeof(*(obj)), member));	\
->  })
->  
-> +/**
-> + * memset_range - Set a value ranging from member1 to member2, boundary included.
-> + *
-> + * @obj: Address of target struct instance
-> + * @v: Byte value to repeatedly write
-> + * @member1: struct member to start writing at
-> + * @member2: struct member where writing should stop
-> + *
-> + */
-> +#define memset_range(obj, v, member_1, member_2)			\
-> +({									\
-> +	u8 *__ptr = (u8 *)(obj);					\
-> +	typeof(v) __val = (v);						\
-> +	BUILD_BUG_ON(offsetof(typeof(*(obj)), member_1) >		\
-> +		     offsetof(typeof(*(obj)), member_2));		\
-> +	memset(__ptr + offsetof(typeof(*(obj)), member_1), __val,	\
-> +	       offsetofend(typeof(*(obj)), member_2) -			\
-> +	       offsetof(typeof(*(obj)), member_1));			\
-> +})
+> [    7s] /home/abuild/rpmbuild/BUILD/dwarves-1.23/btf_encoder.c:145:10: error: 'BTF_KIND_DECL_TAG' undeclared here (not in a function); did you mean 'BTF_KIND_FLOAT'?
+> 
+> libbpf-0.5.0 is present, since CMakeLists.txt checked for >= 0.4.0.
 
-"u8*" should be "void*" as kernel legitimises pointer arithmetic on void*
-and there is no dereference.
+My fault, knowing the flux that libbpf is in getting to 1.0 I should
+have retested with the perf tools container based tests.
 
-__val is redundant, just toss "v" into memset(), it will do the right
-thing. In fact, toss "__ptr" as well, it is simply unnecessary.
+Can you think about some fix for that? Lemme see if BTF_KIND_DECL_TAG is
+a define or an enum...
+ 
+> The 1.23 tag is missing from git.
 
-All previous memsets are the same...
+pushed out, thanks for pointing it out.
+
+> Is git://git.kernel.org/pub/scm/devel/pahole/pahole out of date? (Last commit
+> from October 2021)
+
+-- 
+
+- Arnaldo
