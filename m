@@ -2,218 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B6D46D8A4
-	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 17:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F1246D94F
+	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 18:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234458AbhLHQmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 11:42:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43906 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234717AbhLHQlv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Dec 2021 11:41:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638981499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3w5d+VyTnk5k7iQbsZq9TK6rK+JJNoE/0JGR0T2qY9s=;
-        b=Hv0EToF/BQTsE6JCCjdnOSYTG6Js3RI/895EerR/3l7+XD3FOrH8B6j046OUJQKikdtObc
-        o69ZvI2M1A159RiSiJSCSbGMJFMdxhclUfU2nx/+fScA3COP6Xo3fNZbO7Q9qgWFWFYvwk
-        UyYq1MgPNmuypq+53Bi/pP7ObENd7xA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-201-gl1D-5OmMCSV9As2yssWsg-1; Wed, 08 Dec 2021 11:38:18 -0500
-X-MC-Unique: gl1D-5OmMCSV9As2yssWsg-1
-Received: by mail-wm1-f70.google.com with SMTP id ay17-20020a05600c1e1100b0033f27b76819so1560876wmb.4
-        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 08:38:18 -0800 (PST)
+        id S237619AbhLHRQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 12:16:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234605AbhLHRQE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 12:16:04 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83264C061746;
+        Wed,  8 Dec 2021 09:12:32 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id z5so10751787edd.3;
+        Wed, 08 Dec 2021 09:12:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zi8oo1PZizw8wEpDiOLL07lx2GDHOYXRbCD0oQdOBv4=;
+        b=BvbrsObi+qT4Kh60LTdhZFPxy4nsurH4Zpy3l+ppSrSEFTInp/yHeMSoXY5b6lc/M9
+         J+R4VBjZy3DGBwwhXWPUZCQPIMr0oLsjZxdMxWUfHqrES8d2Dh2GnkDqOahaHPHhBeDl
+         UTZaSehEDXK8f+wG8PdThQ/f9/dCJQ0zTk6xRJka+IuAnfMYWpxuZIICvB8qYuvR4R0n
+         Kn63nmBw2CxgM9fJZNWBRwghp5A9FG/Kkrh/ZNSyz1T0Z1LLY5XLpNoO02AHAuj5bO4p
+         00YiP9tvZCkc2g4dxbYZ2r3X+05+MMMgxdNXs4+4CJUsAckaGSg+sSOAyvrNLSHdcFLD
+         ExuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3w5d+VyTnk5k7iQbsZq9TK6rK+JJNoE/0JGR0T2qY9s=;
-        b=YGHajWVDJLfSpbPItxRg2r3hGT/pLwmu8ebG1JYE/18T1wATaYwHSdkjAJMqR0gEEg
-         Nq/ZAO2c/k9E/Nz46ytc6McloqtUma/sbw4aa7WynRs2eFdhdTX7IZ2o4XAvaaZpp1Rw
-         Hjho/AQJDhFrwzszY6uF6gZze7AWVcOofadUAQh3/Ogy/fRKhCObx1C2jBMoinaG9A0Q
-         K2soJ8/9+wBH2Jr/I97iTmkwGOEvLHQpNvXRpayWDSkSP8vF5kd47CpX0pkBtN2P8Yvf
-         ocg6jFuuM5RyJq+j5bfHpSyvMUptvgcg0L90uRIys61bsuTcWWij+BKprqsefCpCpo/p
-         QCPQ==
-X-Gm-Message-State: AOAM533ri6JOqcd2vmmTcDcW/d+qeQmQeDGqbJrro5uT3JqZoeBlhYAp
-        y/ES+NS6cxDW3BGWTWA5k4z7s84zMZhMOQ65IMzxM4i3pMIfsPasjJlm5ApgYFZZl6hFigeeOKi
-        82TSJoQxLISgw
-X-Received: by 2002:a5d:59aa:: with SMTP id p10mr15396588wrr.1.1638981497258;
-        Wed, 08 Dec 2021 08:38:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxGeE3GYy7AvVm/hh/SIoFY65MkYEEB8o232bOiUIAgRW94/gAYUEE105B2sQUeWhDfqoc6og==
-X-Received: by 2002:a5d:59aa:: with SMTP id p10mr15396556wrr.1.1638981496983;
-        Wed, 08 Dec 2021 08:38:16 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id f7sm7855427wmg.6.2021.12.08.08.38.15
+        bh=zi8oo1PZizw8wEpDiOLL07lx2GDHOYXRbCD0oQdOBv4=;
+        b=tQD3mfXj5cwvRGWVNAOM+1MBr5QVpGZKCkEb3ecwqJfCZg9fwKdSEijH3UsAVgqkdh
+         1PAi+vy/1iF5uIa3qlZ1aTuTMq6EZLRzt4BFXVnXXRa8jag557tKNbXe1aR8EgGNmyqH
+         D6RzizxY7r2Eerw6nRT/p2mc6TdY8bDD6mq2aA4vtjdmfNFXhPoJbGgiAXD2Lg7KDoTc
+         GkvEEEkvDkwMbFOKBvNG4M5j0vISIbOHEURgNWsyeHmqJpnHpIZ0OMZCWvnhYxOGMoOf
+         R2/+M/3UgkfKQ9bswCe6j7MC7fH6vyELZBHZpNzpyiyDIS0vmVyCvoHmjGffBt61M5kz
+         iqFA==
+X-Gm-Message-State: AOAM5333BqImqm1HbokChaFNOgfhaCNLR9+epqoO5ryLceAKATrJwExj
+        3DFkksaA/btLcS1IZypORA==
+X-Google-Smtp-Source: ABdhPJxNH6F6yUOi+QCXoRNyaMIvWKHl4u8joVLBEhadTge3/FhO3F9gYXEejNUNqaDm2hD7Xi9IWQ==
+X-Received: by 2002:a17:907:6291:: with SMTP id nd17mr8993126ejc.194.1638983550551;
+        Wed, 08 Dec 2021 09:12:30 -0800 (PST)
+Received: from localhost.localdomain ([46.53.251.178])
+        by smtp.gmail.com with ESMTPSA id hx14sm1725391ejc.92.2021.12.08.09.12.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Dec 2021 08:38:16 -0800 (PST)
-Date:   Wed, 8 Dec 2021 17:38:14 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add tests for
- get_func_[arg|ret|arg_cnt] helpers
-Message-ID: <YbDfdiW3/uPT3J1O@krava>
-References: <20211204140700.396138-1-jolsa@kernel.org>
- <20211204140700.396138-4-jolsa@kernel.org>
- <7df54ca3-1bae-4d54-e30f-c2474c48ede0@fb.com>
- <Ya+kg3SPcBU4loIz@krava>
- <CAEf4BzbAVO-SGub8+haDayhnL_VLyYAof8eUB_d6Qp18yC2Adw@mail.gmail.com>
+        Wed, 08 Dec 2021 09:12:30 -0800 (PST)
+Date:   Wed, 8 Dec 2021 20:12:27 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        laniel_francis@privacyrequired.com,
+        andriy.shevchenko@linux.intel.com, linux@roeck-us.net,
+        andreyknvl@gmail.com, dja@axtens.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH -next 1/2] string.h: Introduce memset_range() for wiping
+ members
+Message-ID: <YbDne/nYsVai5pCV@localhost.localdomain>
+References: <20211208030451.219751-1-xiujianfeng@huawei.com>
+ <20211208030451.219751-2-xiujianfeng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbAVO-SGub8+haDayhnL_VLyYAof8eUB_d6Qp18yC2Adw@mail.gmail.com>
+In-Reply-To: <20211208030451.219751-2-xiujianfeng@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 07, 2021 at 02:54:33PM -0800, Andrii Nakryiko wrote:
-
-SNIP
-
-> > > > +__u64 test1_result = 0;
-> > > > +SEC("fentry/bpf_fentry_test1")
-> > > > +int BPF_PROG(test1)
-> > > > +{
-> > > > +   __u64 cnt = bpf_get_func_arg_cnt(ctx);
-> > > > +   __u64 a = 0, z = 0, ret = 0;
-> > > > +   __s64 err;
-> > > > +
-> > > > +   test1_result = cnt == 1;
-> > > > +
-> > > > +   /* valid arguments */
-> > > > +   err = bpf_get_func_arg(ctx, 0, &a);
-> > > > +   test1_result &= err == 0 && (int) a == 1;
-> > >
-> > >
-> > > int cast unnecessary? but some ()'s wouldn't hurt...
-> >
-> > it is, 'a' is int and trampoline saves it with 32-bit register like:
-> >
-> >   mov    %edi,-0x8(%rbp)
-> >
-> > so the upper 4 bytes are not zeroed
+On Wed, Dec 08, 2021 at 11:04:50AM +0800, Xiu Jianfeng wrote:
+> Motivated by memset_after() and memset_startat(), introduce a new helper,
+> memset_range() that takes the target struct instance, the byte to write,
+> and two member names where zeroing should start and end.
 > 
-> oh, this is definitely worth a comment, it's quite a big gotcha we'll
-> need to remember
-
-
-ok, will add comment for that
-
-jirka
-
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> ---
+>  include/linux/string.h | 20 ++++++++++++++++++++
+>  lib/memcpy_kunit.c     | 12 ++++++++++++
+>  2 files changed, 32 insertions(+)
 > 
-> 
-> >
-> > >
-> > >
-> > > > +
-> > > > +   /* not valid argument */
-> > > > +   err = bpf_get_func_arg(ctx, 1, &z);
-> > > > +   test1_result &= err == -EINVAL;
-> > > > +
-> > > > +   /* return value fails in fentry */
-> > > > +   err = bpf_get_func_ret(ctx, &ret);
-> > > > +   test1_result &= err == -EINVAL;
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +__u64 test2_result = 0;
-> > > > +SEC("fexit/bpf_fentry_test2")
-> > > > +int BPF_PROG(test2)
-> > > > +{
-> > > > +   __u64 cnt = bpf_get_func_arg_cnt(ctx);
-> > > > +   __u64 a = 0, b = 0, z = 0, ret = 0;
-> > > > +   __s64 err;
-> > > > +
-> > > > +   test2_result = cnt == 2;
-> > > > +
-> > > > +   /* valid arguments */
-> > > > +   err = bpf_get_func_arg(ctx, 0, &a);
-> > > > +   test2_result &= err == 0 && (int) a == 2;
-> > > > +
-> > > > +   err = bpf_get_func_arg(ctx, 1, &b);
-> > > > +   test2_result &= err == 0 && b == 3;
-> > > > +
-> > > > +   /* not valid argument */
-> > > > +   err = bpf_get_func_arg(ctx, 2, &z);
-> > > > +   test2_result &= err == -EINVAL;
-> > > > +
-> > > > +   /* return value */
-> > > > +   err = bpf_get_func_ret(ctx, &ret);
-> > > > +   test2_result &= err == 0 && ret == 5;
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +__u64 test3_result = 0;
-> > > > +SEC("fmod_ret/bpf_modify_return_test")
-> > > > +int BPF_PROG(fmod_ret_test, int _a, int *_b, int _ret)
-> > > > +{
-> > > > +   __u64 cnt = bpf_get_func_arg_cnt(ctx);
-> > > > +   __u64 a = 0, b = 0, z = 0, ret = 0;
-> > > > +   __s64 err;
-> > > > +
-> > > > +   test3_result = cnt == 2;
-> > > > +
-> > > > +   /* valid arguments */
-> > > > +   err = bpf_get_func_arg(ctx, 0, &a);
-> > > > +   test3_result &= err == 0 && (int) a == 1;
-> > > > +
-> > > > +   err = bpf_get_func_arg(ctx, 1, &b);
-> > > > +   test3_result &= err == 0;
-> > >
-> > >
-> > > why no checking of b value here?
-> >
-> > right, ok
-> >
-> > >
-> > > > +
-> > > > +   /* not valid argument */
-> > > > +   err = bpf_get_func_arg(ctx, 2, &z);
-> > > > +   test3_result &= err == -EINVAL;
-> > > > +
-> > > > +   /* return value */
-> > > > +   err = bpf_get_func_ret(ctx, &ret);
-> > > > +   test3_result &= err == 0 && ret == 0;
-> > > > +   return 1234;
-> > > > +}
-> > > > +
-> > > > +__u64 test4_result = 0;
-> > > > +SEC("fexit/bpf_modify_return_test")
-> > > > +int BPF_PROG(fexit_test, int _a, __u64 _b, int _ret)
-> > > > +{
-> > > > +   __u64 cnt = bpf_get_func_arg_cnt(ctx);
-> > > > +   __u64 a = 0, b = 0, z = 0, ret = 0;
-> > > > +   __s64 err;
-> > > > +
-> > > > +   test4_result = cnt == 2;
-> > > > +
-> > > > +   /* valid arguments */
-> > > > +   err = bpf_get_func_arg(ctx, 0, &a);
-> > > > +   test4_result &= err == 0 && (int) a == 1;
-> > > > +
-> > > > +   err = bpf_get_func_arg(ctx, 1, &b);
-> > > > +   test4_result &= err == 0;
-> > >
-> > >
-> > > same, for consistency, b should have been checked, no?
-> >
-> > ok
-> >
-> > thanks,
-> > jirka
-> >
-> 
+> diff --git a/include/linux/string.h b/include/linux/string.h
+> index b6572aeca2f5..7f19863253f2 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -291,6 +291,26 @@ void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
+>  	       sizeof(*(obj)) - offsetof(typeof(*(obj)), member));	\
+>  })
+>  
+> +/**
+> + * memset_range - Set a value ranging from member1 to member2, boundary included.
+> + *
+> + * @obj: Address of target struct instance
+> + * @v: Byte value to repeatedly write
+> + * @member1: struct member to start writing at
+> + * @member2: struct member where writing should stop
+> + *
+> + */
+> +#define memset_range(obj, v, member_1, member_2)			\
+> +({									\
+> +	u8 *__ptr = (u8 *)(obj);					\
+> +	typeof(v) __val = (v);						\
+> +	BUILD_BUG_ON(offsetof(typeof(*(obj)), member_1) >		\
+> +		     offsetof(typeof(*(obj)), member_2));		\
+> +	memset(__ptr + offsetof(typeof(*(obj)), member_1), __val,	\
+> +	       offsetofend(typeof(*(obj)), member_2) -			\
+> +	       offsetof(typeof(*(obj)), member_1));			\
+> +})
 
+"u8*" should be "void*" as kernel legitimises pointer arithmetic on void*
+and there is no dereference.
+
+__val is redundant, just toss "v" into memset(), it will do the right
+thing. In fact, toss "__ptr" as well, it is simply unnecessary.
+
+All previous memsets are the same...
