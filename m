@@ -2,121 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D99946D4D0
-	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 14:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FF546D4DF
+	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 14:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhLHNyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 08:54:19 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:28289 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232916AbhLHNyS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 08:54:18 -0500
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J8JTN75KGzbjNx;
-        Wed,  8 Dec 2021 21:50:32 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 8 Dec 2021 21:50:45 +0800
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add test cases for
- bpf_strncmp()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <20211130142215.1237217-1-houtao1@huawei.com>
- <20211130142215.1237217-6-houtao1@huawei.com>
- <CAEf4BzaZR84VXUSh-SkA32yTYXhz5vUxK7ysoGMgWsa0+d54vQ@mail.gmail.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <f39b4017-8f7e-474c-6497-7f6448c44911@huawei.com>
-Date:   Wed, 8 Dec 2021 21:50:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S234438AbhLHN6f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 08:58:35 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:44482 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhLHN6f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 08:58:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 1A8D2CE218E;
+        Wed,  8 Dec 2021 13:55:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24D69C00446;
+        Wed,  8 Dec 2021 13:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638971698;
+        bh=cEDXQeIeYpoFUpOU3IKFkwMae+ywV8Wwm9nSxohi4e8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qPxTF68+tOufg86FtiXdDh2k7dM6fG7kz0Qr1ovf6kNnW40gP4C9FDhcXbDBS42rZ
+         KxE1IIakvaH5rXiRomelB3WV7wfqa8ZBVoszH5d6iFxf/5RnZjTkNgX2Ig6uDX7uUK
+         MvNUG1uS0dBMnVN238iAyUKureBuNSX4UhX3Yrnn5zK/yCBJvR29pWlE3ZXdswTvYY
+         QxUhV7V2+Qv6RveyOMzZTtiupO9/HtHf5TOpacPyc2V69Yvk7eCoxK0z6vc2ufuj1F
+         GL5rCNafkkdJ5tiAh1p/ERr4BcWbS0LfmyOcQ9qylXhkf1DU7MwtxVhSt/bQxaYhrn
+         wrN7XCzwjrZuw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 34465406C1; Wed,  8 Dec 2021 10:54:56 -0300 (-03)
+Date:   Wed, 8 Dec 2021 10:54:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     dwarves@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <domenico.andreoli@linux.com>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Yonghong Song <yhs@fb.com>,
+        Douglas RAILLARD <douglas.raillard@arm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Matteo Croce <mcroce@microsoft.com>
+Subject: ANNOUNCE: pahole v1.23 (BTF tags and alignment inference)
+Message-ID: <YbC5MC+h+PkDZten@kernel.org>
+References: <YSQSZQnnlIWAQ06v@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaZR84VXUSh-SkA32yTYXhz5vUxK7ysoGMgWsa0+d54vQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSQSZQnnlIWAQ06v@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hi,
-On 12/7/2021 11:09 AM, Andrii Nakryiko wrote:
->> +static struct strncmp_test *strncmp_test_open_and_disable_autoload(void)
->> +{
->> +       struct strncmp_test *skel;
->> +       struct bpf_program *prog;
->> +
->> +       skel = strncmp_test__open();
->> +       if (libbpf_get_error(skel))
->> +               return skel;
->> +
->> +       bpf_object__for_each_program(prog, skel->obj)
->> +               bpf_program__set_autoload(prog, false);
-> I think this is a wrong "code economy". You save few lines of code,
-> but make tests harder to follow. Just do 4 lines of code for each
-> subtest:
->
-> skel = strncmp_test__open();
-> if (!ASSERT_OK_PTR(skel, "skel_open"))
->     return;
->
-> bpf_object__for_each_program(prog, skel->obj)
->     bpf_program__set_autoload(prog, false);
->
->
-> It makes tests more self-contained and easier to follow. Also if some
-> tests need to do something slightly different it's easier to modify
-> them, as they are not coupled to some common helper. DRY is good where
-> it makes sense, but it also increases code coupling and more "jumping
-> around" in code, so it shouldn't be applied blindly.
-Thanks for your suggestion on DRY topic. Will do in v2.
-> +
-> +static int trigger_strncmp(const struct strncmp_test *skel)
-> +{
-> +       struct timespec wait = {.tv_sec = 0, .tv_nsec = 1};
-> +
-> +       nanosleep(&wait, NULL);
-> all the other tests are just doing usleep(1), why using this more verbose way?
-Will do in v2.
->> +
->> +static __always_inline bool called_by_target_pid(void)
->> +{
->> +       __u32 pid = bpf_get_current_pid_tgid() >> 32;
->> +
->> +       return pid == target_pid;
->> +}
-> again, what's the point of this helper? it's used once and you'd
-> actually save the code by doing the following inline:
->
-> if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
->     return 0;
-Will do in v2.
->> +
->> +SEC("tp/syscalls/sys_enter_nanosleep")
->> +int do_strncmp(void *ctx)
->> +{
->> +       if (!called_by_target_pid())
->> +               return 0;
->> +
->> +       cmp_ret = bpf_strncmp(str, STRNCMP_STR_SZ, target);
->> +
->> +       return 0;
->> +}
->> +
->> +SEC("tp/syscalls/sys_enter_nanosleep")
->> +int strncmp_bad_not_const_str_size(void *ctx)
->> +{
-> probably worth leaving a short comment explaining that this program
-> should fail because ...
-OK. Will do in v2.
+ 
+	The v1.23 release of pahole and its friends is out, this time
+the main new features are the ability to encode BTF tags, to carry
+attributes to the kernel BPF verifier for further checks and the
+inference of struct member unnatural alignment (__attribute__(__aligned__(N)))
+to help in generating compileable headers matching the original type
+layout from BTF data.
 
-Regards,
-Tao
+Main git repo:
+
+   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+
+Mirror git repo:
+
+   https://github.com/acmel/dwarves.git
+
+tarball + gpg signature:
+
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.23.tar.xz
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.23.tar.bz2
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.23.tar.sign
+
+	Thanks a lot to all the contributors and distro packagers, you're on the
+CC list, I appreciate a lot the work you put into these tools,
+
+Best Regards,
+
+- Arnaldo
+
+DWARF loader:
+
+- Read DW_TAG_LLVM_annotation tags, associating it with variables, functions,
+  types. So far this is only being used by the BTF encoder, but the pretty
+  printer should use this as well in a future release, printing these
+  attributes when available.
+
+- Initial support for DW_TAG_skeleton_unit, so far just suggest looking up a
+  matching .dwo file to be used instead. Automagically doing this is in the
+  plans for a future release.
+
+- Fix heap overflow when accessing variable specification.
+
+BTF encoder:
+
+- Support the new BTF type tag attribute, encoding DW_TAG_LLVM_annotation DWARF
+  tags as BTF_KIND_TYPE_TAG and BTF_KIND_DECL_TAG.
+
+  This allows __attribute__((btf_type_tag("tag1"))) to be used for variables,
+  functions, typedefs, so that contextual information can be stored in BTF and
+  used by the kernel BPF verifier for more checks.
+
+  The --skip_encoding_btf_type_tag option can be used to suppress this.
+
+- Fix handling of percpu symbols on s390.
+
+BTF loader:
+
+- Use cacheline size to infer alignment.
+
+btfdiff:
+
+- Now that the BTF loader infers struct member alingment, and as that is just
+  an heuristic, suppress printing the alignment when pretty printing from BTF
+  info like is done when printing from DWARF.
+
+pahole:
+
+- Add --skip_missing so that we don't stop when not finding one of the types passed
+  to -C.
+
+Pretty printer:
+
+- Fix __attribute__((__aligned__(N)) printing alignment for struct members.
+
+- Fix nested __attribute__(__aligned__(N)) struct printing order, so that
+  rebuilding from the printed source circles back to the original source code
+  alignment semantics.
+
+Build:
+
+- No need to download libbpf source when using the system library (libbpf-devel).
+
+- Make python optional
