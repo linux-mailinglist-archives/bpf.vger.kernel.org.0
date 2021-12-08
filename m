@@ -2,56 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4CB46D59A
-	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 15:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0857546D615
+	for <lists+bpf@lfdr.de>; Wed,  8 Dec 2021 15:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235102AbhLHOaG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 09:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
+        id S233363AbhLHOxp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 09:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235101AbhLHOaG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 09:30:06 -0500
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F88C0617A1;
-        Wed,  8 Dec 2021 06:26:34 -0800 (PST)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id DD73058726E05; Wed,  8 Dec 2021 15:26:31 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id DAE3F60C42C5D;
-        Wed,  8 Dec 2021 15:26:31 +0100 (CET)
-Date:   Wed, 8 Dec 2021 15:26:31 +0100 (CET)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-cc:     dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Domenico Andreoli <domenico.andreoli@linux.com>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Yonghong Song <yhs@fb.com>,
-        Douglas RAILLARD <douglas.raillard@arm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Matteo Croce <mcroce@microsoft.com>
-Subject: Re: ANNOUNCE: pahole v1.23 (BTF tags and alignment inference)
-In-Reply-To: <YbC5MC+h+PkDZten@kernel.org>
-Message-ID: <1587op7-6246-638r-5815-2ops848q5r4@vanv.qr>
-References: <YSQSZQnnlIWAQ06v@kernel.org> <YbC5MC+h+PkDZten@kernel.org>
-User-Agent: Alpine 2.25 (LSU 592 2021-09-18)
+        with ESMTP id S231620AbhLHOxp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 09:53:45 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3FBC061746;
+        Wed,  8 Dec 2021 06:50:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 0C28ACE21D0;
+        Wed,  8 Dec 2021 14:50:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1EC12C341C3;
+        Wed,  8 Dec 2021 14:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638975009;
+        bh=daaTEf+M4v1zCy7DPdtO2FVb+KY803anfeGT1eC8lN4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=hiFyL9t/0LfISVFkcxu+pNwMil86jyYkRBfbcGyfWpLqAxqAzdl+tK8QNlr1V8VmX
+         aET6FTkKwxELJtKtCxWxjQRTH7tGN6xveAwjDDAKcRqwVSIY0f/IaWdxdSSm3Qczyd
+         sWf7SL4dfBajjdx+ZtiyfuSJxAS/UUiVA4+rXHT+QHz0tdrw+tXAfyvk+b1nrCcfZ8
+         IAzk891f230DYXGTCRVsR9f/JmFgl3VDo5ps3Z2C1sy+VuEBdaCgYmfQT9AOMdNEfq
+         WOdVCtUuGA/Qyoy6NR3e4uodmXu9DAOBXT+t+6iDm5KGfsDRZUMP6tQgVA21oWcKYE
+         uRSO8wpHp096A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 07CF260A36;
+        Wed,  8 Dec 2021 14:50:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: Add selftests to cover packet access corner cases
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163897500902.29831.2324466346269128478.git-patchwork-notify@kernel.org>
+Date:   Wed, 08 Dec 2021 14:50:09 +0000
+References: <20211207081521.41923-1-maximmi@nvidia.com>
+In-Reply-To: <20211207081521.41923-1-maximmi@nvidia.com>
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello:
 
-On Wednesday 2021-12-08 14:54, Arnaldo Carvalho de Melo wrote:
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Tue, 7 Dec 2021 10:15:21 +0200 you wrote:
+> This commit adds BPF verifier selftests that cover all corner cases by
+> packet boundary checks. Specifically, 8-byte packet reads are tested at
+> the beginning of data and at the beginning of data_meta, using all kinds
+> of boundary checks (all comparison operators: <, >, <=, >=; both
+> permutations of operands: data + length compared to end, end compared to
+> data + length). For each case there are three tests:
 > 
->	The v1.23 release of pahole and its friends is out, this time
->the main new features are the ability to encode BTF tags, to carry
+> [...]
 
-[    7s] /home/abuild/rpmbuild/BUILD/dwarves-1.23/btf_encoder.c:145:10: error: 'BTF_KIND_DECL_TAG' undeclared here (not in a function); did you mean 'BTF_KIND_FLOAT'?
+Here is the summary with links:
+  - [bpf] bpf: Add selftests to cover packet access corner cases
+    https://git.kernel.org/bpf/bpf/c/b560b21f71eb
 
-libbpf-0.5.0 is present, since CMakeLists.txt checked for >= 0.4.0.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-The 1.23 tag is missing from git.
-Is git://git.kernel.org/pub/scm/devel/pahole/pahole out of date? (Last commit
-from October 2021)
+
