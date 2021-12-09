@@ -2,83 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A5746E2F7
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 08:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EBE46E2F8
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 08:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhLIHNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 02:13:46 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:50734 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhLIHNp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Dec 2021 02:13:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 161FFCE24E3
-        for <bpf@vger.kernel.org>; Thu,  9 Dec 2021 07:10:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0EA82C004DD;
-        Thu,  9 Dec 2021 07:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639033809;
-        bh=BGr8DeMQ+XRK17TrAZgOPBMgYdn6UJOwGT9aYx+Aprw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hus0WEJGgmc5XXo0ujMtQt002ZY0+4k2XEOOIamw0UGJ4nfDzNN73+NRofWNW2FB+
-         kjfswsQP8IS4XbATVskXGik2FqhPYjTETdB42HbN/sHVKWVCeBLIfdrd57wpKTC6JM
-         GRqMt52WpemlB3a4OAIp6qmkjil//A78zDcZD80eD0U9XQz0iZWrluqipbHHxVLmgh
-         s3IO/L6GWYmCkbgmz/U91ASTW4f62eiJ2uBr+bk/Xsx6FXXlhkG3rcATcpCjuBMbbM
-         kLlCPAI+vFJC+XKNTdD2plM9vbpmNE7Q/5cD9grm6JlsvIH90hljCUn7YxKlumkgaW
-         xgIQRJxFzMoWA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E952A60A4D;
-        Thu,  9 Dec 2021 07:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233518AbhLIHN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 02:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231664AbhLIHN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 02:13:57 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2B4C061746;
+        Wed,  8 Dec 2021 23:10:24 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id e136so11524592ybc.4;
+        Wed, 08 Dec 2021 23:10:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V8/zQVMqJ3oaRLl2KbvluVtKang7j1BEzSF7SOiZ1qo=;
+        b=DKRS877Fdf15OnPM+rHpkTXlleysdJyVI5SFXfigVczW+VtE8G4ELiSec/rz+nJ1qT
+         qkwzSDjjpqhP90KqtW/ithyeCm8uzEIc89ZkD6+fGMEQYiYMhHt6eaIdlvv98kUHqEXb
+         eF1g5nSINV00wm6v9oK+JWCfQqw0yfdMAv3dchmGaio3e61iytKtQoPZX9NesGs9iQcO
+         1ruJPo0KswN7EQoMbUPTPU2EexSvcYsY1vm7UzjwKckWI0qrs5Y85jhFYTyIw6X3N7r5
+         yDmUUYVRKfCi7Kgl3HwPU1M1fxTNi49u80mwo7g45aGRcD4QXggirX8aoj86FeKT1B4k
+         mYGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V8/zQVMqJ3oaRLl2KbvluVtKang7j1BEzSF7SOiZ1qo=;
+        b=XQGDmuS8BsL2/kkpk56CoAwk0EO/FsIuLQcUpxk4Nm1bqX7dbD0iZdNlxWrqsXs62G
+         W7QZptHvBegei04KQVgPXsJnfnab3U7Cvhagp/6lQGxA5E18jol0tXz/pGN0itgJjCEv
+         wEQEoygqHDTr7ko3qaVKtfoxmTpWJOoVrvopzE7/1576U9yNnF6BQiKNDjwvp0anpFJb
+         1T+uBUf4PNiZC84IGi7uMmlL5DBb329g+fmcid+fcKebGT48gDN448M1AjWsX5P3fJfK
+         PwwQbnzCMDef+lm+V31e3yle+1qkrnq/KMmOKvoyqK8qrPee35Xf1Icaiq2Zx/wxktCQ
+         s9ew==
+X-Gm-Message-State: AOAM530fXU8JaE4ss/K+lPJgOMrHBJIlK6Y39KXlC+hJOwKqbBz31sGI
+        PE8YC0ZJVMQ4/SXeu9ZUwNcCvliDvtv/Fqj2agSCQpxtokE=
+X-Google-Smtp-Source: ABdhPJx04MnMs9lClxuYtJlPwMHvlp2/P4s1Lc40fGaBtkstwsUnSrMpgoLoHJNil/AatKlfFX1/7ycWYD8VK25IEcM=
+X-Received: by 2002:a25:e406:: with SMTP id b6mr4281128ybh.529.1639033823646;
+ Wed, 08 Dec 2021 23:10:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix a compilation warning
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163903380895.9212.6767669055885105398.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Dec 2021 07:10:08 +0000
-References: <20211209050403.1770836-1-yhs@fb.com>
-In-Reply-To: <20211209050403.1770836-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
+References: <20211208113408.45237-1-hanyihao@vivo.com>
+In-Reply-To: <20211208113408.45237-1-hanyihao@vivo.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Dec 2021 23:10:12 -0800
+Message-ID: <CAEf4BzZcMo0ud-9_58939G8NxYYFmro7kO2rguCAM4hgDXEpOA@mail.gmail.com>
+Subject: Re: [PATCH] samples/bpf: fix swap.cocci warning
+To:     Yihao Han <hanyihao@vivo.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Dec 8, 2021 at 3:34 AM Yihao Han <hanyihao@vivo.com> wrote:
+>
+> Fix following swap.cocci warning:
+> ./samples/bpf/xsk_fwd.c:660:22-23:
+> WARNING opportunity for swap()
+>
+> Signed-off-by: Yihao Han <hanyihao@vivo.com>
+> ---
+>  samples/bpf/xsk_fwd.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/samples/bpf/xsk_fwd.c b/samples/bpf/xsk_fwd.c
+> index 1cd97c84c337..e82582b225d3 100644
+> --- a/samples/bpf/xsk_fwd.c
+> +++ b/samples/bpf/xsk_fwd.c
+> @@ -653,9 +653,7 @@ static void swap_mac_addresses(void *data)
+>         struct ether_addr *dst_addr = (struct ether_addr *)&eth->ether_dhost;
+>         struct ether_addr tmp;
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+this variable needs to be removed as well then
 
-On Wed, 8 Dec 2021 21:04:03 -0800 you wrote:
-> The following warning is triggered when I used clang compiler
-> to build the selftest.
-> 
->   /.../prog_tests/btf_dedup_split.c:368:6: warning: variable 'btf2' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
->         if (!ASSERT_OK(err, "btf_dedup"))
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /.../prog_tests/btf_dedup_split.c:424:12: note: uninitialized use occurs here
->         btf__free(btf2);
->                   ^~~~
->   /.../prog_tests/btf_dedup_split.c:368:2: note: remove the 'if' if its condition is always false
->         if (!ASSERT_OK(err, "btf_dedup"))
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /.../prog_tests/btf_dedup_split.c:343:25: note: initialize the variable 'btf2' to silence this warning
->         struct btf *btf1, *btf2;
->                                ^
->                                 = NULL
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix a compilation warning
-    https://git.kernel.org/bpf/bpf-next/c/b540358e6c4d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> -       tmp = *src_addr;
+> -       *src_addr = *dst_addr;
+> -       *dst_addr = tmp;
+> +       swap(*src_addr, *dst_addr);
+>  }
+>
+>  static void *
+> --
+> 2.17.1
+>
