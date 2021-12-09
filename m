@@ -2,84 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918AA46E0F8
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 03:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C6846E0FD
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 03:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhLICnp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 21:43:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
+        id S230344AbhLICqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 21:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbhLICnp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 21:43:45 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70E5C061746;
-        Wed,  8 Dec 2021 18:40:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 917EBCE24BB;
-        Thu,  9 Dec 2021 02:40:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B591CC00446;
-        Thu,  9 Dec 2021 02:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639017608;
-        bh=F5gwZkpKQ0e3/OpRF6BpfUQQwwIuQH/TApGn7kHWp3E=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jxoHB653VwuEV4TUAb6PGXXlWbGj7BJJ0IFFAEhKJY1i9usNSgd8MRlF7S9Jjn825
-         dA/LrO8p+a2OOD99jGzD4A/2qaHVmRG620BZb58xWphPzwpjpcGbemWg+1DYNNhkY0
-         RT4NHJbAhheBxAnaCcVGw0nyczId/ITW1W5CEqSQBgXOLIehb/u59zlES6CqZj/ZHM
-         gd2iDOvrh0nUMnxLevCVFb2BWwD/Mh56zjQ8df6nh1JqiX8Aq2/yXOUS5upDUMbxql
-         kOQA+j0/5rEcaVDeIWvcXRQ4PzXX7vbd6T+TO1YVTQvjSLxFMfvE86cMR0PA/ZxQOY
-         xcR1jb7LWrsFQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8F99660A39;
-        Thu,  9 Dec 2021 02:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229455AbhLICqY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 21:46:24 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B1C061746;
+        Wed,  8 Dec 2021 18:42:51 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id w14so3847850qkf.5;
+        Wed, 08 Dec 2021 18:42:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ni8ukBhnwq4xfJn2KEfRGFk9CvW/EaamTsKpCF9U5jw=;
+        b=FledoWYccQAWv6FRpva8r4lIbEIfgQM+BjswBkDz+Ede5Wkeo8QjIZfKPDzFnpjhRl
+         QxEn1AjrahGgFvRzd0cqSJ2eUckDV58c4ITNjL0+zpwShqj3e3GzQEJJrRPRDFoVUbqy
+         o30GCFnGk5euP4CXUr97UvPvq8KYjwaf3iQZUJP4LvlcPSpLmp29dzjB+vLPQnYPOImv
+         5/62MrA1RYw6hgl+MJlK/vZBz7MfRRWvJC7nVMIx/grd+5AnrUm6g22228Or3MWIOGMV
+         FijRDzb8IFS4aOCXYGiqC2nBprxecfD8vuc9vHLcuwXLUJiobdQUv/tz+wefcirK74rv
+         ty3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ni8ukBhnwq4xfJn2KEfRGFk9CvW/EaamTsKpCF9U5jw=;
+        b=Lbw3tgFt8InLmhEHNUnCPaswAlqsyLIcnHNOoEYcVAPpIrUtC+2fS3qCcd7uxpjPmM
+         dYz761rGR4uPT8emYvNmblNu/0OpIXG70VqySy2StgN1heKXvddKH5HxuSrzvHRYWrQ0
+         5dLuj0Q3Fz9M08MQf+cJDuFZ49zEOKz7w304Tmf4zSc9wROj9aX4FMykV8i+Yvwm20Tb
+         WafM2yublUuKiQxVoGYMz0yZCz95bknV3vE4iRxhclwTsTvaM7uYGP7I5mkLeznbuxtu
+         eX2FIx9p9EoMg7Yz3F0Lg2DTAhm3J+IchyZN37K7nEyWP7V2z2tif8ZT3wokQlFT3usj
+         F9zw==
+X-Gm-Message-State: AOAM5327uNf5nweCk1Vg1hCBxxYnazr1eyLOvIlr2K3mlNITc7G3mI2x
+        mMPsSZm8SUEV6XYliycKF5tAUfY1EmDskdC7cUli2et6n5diekSU
+X-Google-Smtp-Source: ABdhPJzPyV2mTICg4ujehOAo8kaXJvx2de02S+39TMWQ8+kUht18v3fGS9QAWvbiXI0QEc1UOZ9N36zfY4aRtfuIbw0=
+X-Received: by 2002:a05:620a:2e3:: with SMTP id a3mr10866422qko.451.1639017771202;
+ Wed, 08 Dec 2021 18:42:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 net 1/1] net: mvpp2: fix XDP rx queues registering
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163901760858.2130.12295890768510315552.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Dec 2021 02:40:08 +0000
-References: <20211207143423.916334-1-louis.amas@eho.link>
-In-Reply-To: <20211207143423.916334-1-louis.amas@eho.link>
-To:     Louis Amas <louis.amas@eho.link>
-Cc:     mw@semihalf.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, mcroce@microsoft.com,
-        emmanuel.deloget@eho.link, brouer@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
+References: <20211204095256.78042-1-laoar.shao@gmail.com> <20211204095256.78042-5-laoar.shao@gmail.com>
+ <20211208134304.615abbbf@gandalf.local.home>
+In-Reply-To: <20211208134304.615abbbf@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 9 Dec 2021 10:42:15 +0800
+Message-ID: <CALOAHbAP7w95r_soihp+i1NjWxz4KVHGizARpX80wuL3ZLO7Uw@mail.gmail.com>
+Subject: Re: [PATCH -mm 4/5] tools/perf: replace hard-coded 16 with TASK_COMM_LEN
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Linux MM <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Dec 9, 2021 at 2:43 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Sat,  4 Dec 2021 09:52:55 +0000
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > @@ -43,7 +45,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
+> >               return -1;
+> >       }
+> >
+> > -     if (evsel__test_field(evsel, "prev_comm", 16, false))
+> > +     if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
+> >               ret = -1;
+> >
+> >       if (evsel__test_field(evsel, "prev_pid", 4, true))
+> > @@ -55,7 +57,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
+> >       if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
+> >               ret = -1;
+> >
+> > -     if (evsel__test_field(evsel, "next_comm", 16, false))
+> > +     if (evsel__test_field(evsel, "next_comm", TASK_COMM_LEN, false))
+> >               ret = -1;
+> >
+> >       if (evsel__test_field(evsel, "next_pid", 4, true))
+> > @@ -73,7 +75,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
+> >               return -1;
+> >       }
+> >
+> > -     if (evsel__test_field(evsel, "comm", 16, false))
+> > +     if (evsel__test_field(evsel, "comm", TASK_COMM_LEN, false))
+>
+> Shouldn't all these be TASK_COMM_LEN_16?
+>
 
-This patch was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+The value here must be the same with TASK_COMM_LEN, so I use TASK_COMM_LEN here.
+But we may also change the code as
+https://lore.kernel.org/lkml/20211101060419.4682-9-laoar.shao@gmail.com/
+if TASK_COMM_LEN is changed, so TASK_COMM_LEN_16 is also okay here.
+I will change it to TASK_COMM_LEN_16 in the next version.
 
-On Tue,  7 Dec 2021 15:34:22 +0100 you wrote:
-> The registration of XDP queue information is incorrect because the
-> RX queue id we use is invalid. When port->id == 0 it appears to works
-> as expected yet it's no longer the case when port->id != 0.
-> 
-> The problem arised while using a recent kernel version on the
-> MACCHIATOBin. This board has several ports:
->  * eth0 and eth1 are 10Gbps interfaces ; both ports has port->id == 0;
->  * eth2 is a 1Gbps interface with port->id != 0.
-> 
-> [...]
+>
+> >               ret = -1;
+> >
+> >       if (evsel__test_field(evsel, "pid", 4, true))
+>
 
-Here is the summary with links:
-  - [v5,net,1/1] net: mvpp2: fix XDP rx queues registering
-    https://git.kernel.org/netdev/net/c/a50e659b2a1b
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks
+Yafang
