@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B7646EC87
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 17:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E84D46ECD6
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 17:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236647AbhLIQJc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 11:09:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36513 "EHLO
+        id S229598AbhLIQOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 11:14:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51360 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236564AbhLIQJb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 11:09:31 -0500
+        by vger.kernel.org with ESMTP id S231481AbhLIQOX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 11:14:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639065957;
+        s=mimecast20190719; t=1639066249;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AZejQbQDCxehKZqduIxF41twQj65ihf/hPSBd0mgmYQ=;
-        b=Col+DTVplLZngBJH1u0C913k1C0R2r0FVeeB7oszZR2UsWd4udplEke0GVqdHQ2vaIAj3t
-        4nOg+4YbFAmXaDTs8P6NdBriBlgWHGhV4HtOVVOaf4mMr8+FaTMjPuluCeDKcFZOFCmsXO
-        +DIZij40fEwElAKS2YR7c4tU3kEulgM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=03wigj9pNJ1HRijvuYCSOkSBUBg4eArvedvK4ATStpc=;
+        b=LWR62zDq4Z4HeZn5lv+GkSitFYumSDI6Y/OyB0q8XuUDEttFMCcyzcXA8y4Ikr9leWurzn
+        ahfOoNXlpKTqn1DJjfGvoRH5fEurHKd5dCkDUoVbgmGqRX8JrePLJRZ7diHfvqDUYMyr3y
+        otNN+MjGqPQgiawPB4Jnbg7jiaz+BFA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-256-FOrAZZ-DOLyD2FnqGOxuqQ-1; Thu, 09 Dec 2021 11:05:56 -0500
-X-MC-Unique: FOrAZZ-DOLyD2FnqGOxuqQ-1
-Received: by mail-ed1-f71.google.com with SMTP id p4-20020aa7d304000000b003e7ef120a37so5623218edq.16
-        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 08:05:56 -0800 (PST)
+ us-mta-469-a54db-RQOsieFVoaedr9Nw-1; Thu, 09 Dec 2021 11:10:48 -0500
+X-MC-Unique: a54db-RQOsieFVoaedr9Nw-1
+Received: by mail-ed1-f69.google.com with SMTP id m12-20020a056402430c00b003e9f10bbb7dso5643171edc.18
+        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 08:10:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=AZejQbQDCxehKZqduIxF41twQj65ihf/hPSBd0mgmYQ=;
-        b=YDkuJBGISpnl6vG558rYFCWFIhk8yQeXAlkSvjX/4GdLxP/G2SArhV/h6qv9QSqNqP
-         KEWH2NizCoXXMGqf08NxeN0wsA8hGIGEKXsTC9sTVQdoSJ2B7IPZbvkPAAuU6JjWuGvg
-         Jy584sgttRahXTh9cbpFlyT8mcqj7lc72bahtkpB61StUK2a+ITSniP1MiWIZlEBZ8kr
-         RM/WkiwC7GwMj73ifrVbYmJNLEFgVNWscGBz6xUSfwYuUQJUBKW7qiaZsbPPw2xEUR3A
-         TQZlF83veEc4Z7HzALxFD4cpmRT7+cNL+g+woVU4ANsIEDFt+ZSorojCEnn5MEZeV9e0
-         1tEg==
-X-Gm-Message-State: AOAM533M/LMFas+Fg+4wekHCAz1HDBxoMJ9pwcFJo/HgE1V4hSl1ICtw
-        9/Xlyjm5SiNHr4+Ft+VEXZq3rXciCYLpsuWKmwzkXfzbgCY0x8XeE9InEf3SPvrtVwnzTZuWdJC
-        ADGPmGxflihmc
-X-Received: by 2002:aa7:c946:: with SMTP id h6mr30995702edt.190.1639065954382;
-        Thu, 09 Dec 2021 08:05:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJywPn7TyRBgssPXLO3mnJ5AguEajLMBmJ5OYDuwDzh1EfBliQ/j7l5loknTbVgPUAk23MYu/A==
-X-Received: by 2002:aa7:c946:: with SMTP id h6mr30995549edt.190.1639065953388;
-        Thu, 09 Dec 2021 08:05:53 -0800 (PST)
+        bh=03wigj9pNJ1HRijvuYCSOkSBUBg4eArvedvK4ATStpc=;
+        b=TQM+/kpgupwC9kNCwAnmQIdpIcJJf6lwPsqOEHoDHKMAeFgk/Zx0kVXh/qe+r2iB4N
+         bUevd9L1TnW1+wvb6RzpB8YioQdoAJFi78bUAZNvhefpvxj5B7HoPmv2SdwoDD9556Bp
+         ounXZAoiul1qqNW8jZL+3Ickb1UWsrOOEUhPUOofi4OvwxchgrdGA8jHTc25frXpC19o
+         SYfzq2TClFVKUXukBkSMvsDM3jn8dYygaHwx7G+vH0GzUAj2+zeqGtUPnc+UaCjzGEaI
+         ebNjdSnfeYXuyiQvchQ3yaHyFtb4S7MDbbV7Qu7dNn9MYiNI4n4tfQawgQeNgkQanBH+
+         a5bw==
+X-Gm-Message-State: AOAM531pT/y7klVLMP7rukXxluMA7MdR0HvBhrPnHwlCmSsOZJ58+PZF
+        eMaPHa2+nDiZduaTaQqULDN6yMbeX9eyoacaZ/WHdjk7LmEvpaS3dAkZr6qXn5NsypJRnlFO8gW
+        RqhgQQ/Yi1S1F
+X-Received: by 2002:a17:907:1b0d:: with SMTP id mp13mr16443072ejc.29.1639066246133;
+        Thu, 09 Dec 2021 08:10:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwInNrbAQjjnIncwpxFkzbcQkYtTdKIJGm7y6ekiIxr0NEdGb/FILOR7ty1pt0NJOqEp143Mw==
+X-Received: by 2002:a17:907:1b0d:: with SMTP id mp13mr16442946ejc.29.1639066245127;
+        Thu, 09 Dec 2021 08:10:45 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id gt18sm126238ejc.88.2021.12.09.08.05.52
+        by smtp.gmail.com with ESMTPSA id sd28sm173072ejc.37.2021.12.09.08.10.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Dec 2021 08:05:52 -0800 (PST)
+        Thu, 09 Dec 2021 08:10:44 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 355B8180471; Thu,  9 Dec 2021 17:05:52 +0100 (CET)
+        id 2ABAA180471; Thu,  9 Dec 2021 17:10:44 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -66,15 +66,15 @@ To:     John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: RE: [PATCH bpf-next 5/8] xdp: add xdp_do_redirect_frame() for
- pre-computed xdp_frames
-In-Reply-To: <61b14e4ae483b_979572082c@john.notmuch>
+Subject: RE: [PATCH bpf-next 6/8] bpf: Add XDP_REDIRECT support to XDP for
+ bpf_prog_run()
+In-Reply-To: <61b1537634e07_979572086f@john.notmuch>
 References: <20211202000232.380824-1-toke@redhat.com>
- <20211202000232.380824-6-toke@redhat.com>
- <61b14e4ae483b_979572082c@john.notmuch>
+ <20211202000232.380824-7-toke@redhat.com>
+ <61b1537634e07_979572086f@john.notmuch>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 09 Dec 2021 17:05:52 +0100
-Message-ID: <87wnkdwyov.fsf@toke.dk>
+Date:   Thu, 09 Dec 2021 17:10:44 +0100
+Message-ID: <87tufhwygr.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -85,39 +85,83 @@ X-Mailing-List: bpf@vger.kernel.org
 John Fastabend <john.fastabend@gmail.com> writes:
 
 > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Add an xdp_do_redirect_frame() variant which supports pre-computed
->> xdp_frame structures. This will be used in bpf_prog_run() to avoid having
->> to write to the xdp_frame structure when the XDP program doesn't modify =
-the
->> frame boundaries.
+>> This adds support for doing real redirects when an XDP program returns
+>> XDP_REDIRECT in bpf_prog_run(). To achieve this, we create a page pool
+>> instance while setting up the test run, and feed pages from that into the
+>> XDP program. The setup cost of this is amortised over the number of
+>> repetitions specified by userspace.
+>>=20
+>> To support performance testing use case, we further optimise the setup s=
+tep
+>> so that all pages in the pool are pre-initialised with the packet data, =
+and
+>> pre-computed context and xdp_frame objects stored at the start of each
+>> page. This makes it possible to entirely avoid touching the page content=
+ on
+>> each XDP program invocation, and enables sending up to 11.5 Mpps/core on=
+ my
+>> test box.
+>>=20
+>> Because the data pages are recycled by the page pool, and the test runner
+>> doesn't re-initialise them for each run, subsequent invocations of the X=
+DP
+>> program will see the packet data in the state it was after the last time=
+ it
+>> ran on that particular page. This means that an XDP program that modifies
+>> the packet before redirecting it has to be careful about which assumptio=
+ns
+>> it makes about the packet content, but that is only an issue for the most
+>> naively written programs.
+>>=20
+>> Previous uses of bpf_prog_run() for XDP returned the modified packet data
+>> and return code to userspace, which is a different semantic then this new
+>> redirect mode. For this reason, the caller has to set the new
+>> BPF_F_TEST_XDP_DO_REDIRECT flag when calling bpf_prog_run() to opt in to
+>> the different semantics. Enabling this flag is only allowed if not setti=
+ng
+>> ctx_out and data_out in the test specification, since it means frames wi=
+ll
+>> be redirected somewhere else, so they can't be returned.
 >>=20
 >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >> ---
->>  include/linux/filter.h |  4 ++++
->>  net/core/filter.c      | 28 +++++++++++++++++++++-------
->>  2 files changed, 25 insertions(+), 7 deletions(-)
->>=20
->> diff --git a/include/linux/filter.h b/include/linux/filter.h
->> index b6a216eb217a..845452c83e0f 100644
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -1022,6 +1022,10 @@ int xdp_do_generic_redirect(struct net_device *de=
-v, struct sk_buff *skb,
->>  int xdp_do_redirect(struct net_device *dev,
->>  		    struct xdp_buff *xdp,
->>  		    struct bpf_prog *prog);
->> +int xdp_do_redirect_frame(struct net_device *dev,
->> +			  struct xdp_buff *xdp,
->> +			  struct xdp_frame *xdpf,
->> +			  struct bpf_prog *prog);
 >
-> I don't really like that we are passing both the xdp_buff ptr and
-> xdp_frame *xdpf around when one is always null it looks like?
+> [...]
+>
+>> +static int bpf_test_run_xdp_redirect(struct bpf_test_timer *t,
+>> +				     struct bpf_prog *prog, struct xdp_buff *orig_ctx)
+>> +{
+>> +	void *data, *data_end, *data_meta;
+>> +	struct xdp_frame *frm;
+>> +	struct xdp_buff *ctx;
+>> +	struct page *page;
+>> +	int ret, err =3D 0;
+>> +
+>> +	page =3D page_pool_dev_alloc_pages(t->xdp.pp);
+>> +	if (!page)
+>> +		return -ENOMEM;
+>> +
+>> +	ctx =3D ctx_from_page(page);
+>> +	data =3D ctx->data;
+>> +	data_meta =3D ctx->data_meta;
+>> +	data_end =3D ctx->data_end;
+>> +
+>> +	ret =3D bpf_prog_run_xdp(prog, ctx);
+>> +	if (ret =3D=3D XDP_REDIRECT) {
+>> +		frm =3D (struct xdp_frame *)(ctx + 1);
+>> +		/* if program changed pkt bounds we need to update the xdp_frame */
+>
+> Because this reuses the frame repeatedly is there any issue with also
+> updating the ctx each time? Perhaps if the prog keeps shrinking
+> the pkt it might wind up with 0 len pkt? Just wanted to ask.
 
-Yeah, the problem is basically that AF_XDP uses xdp_buff all the way
-through, so we can't pass xdp_frame to that. I do agree that it's a bit
-ugly, though; maybe we can just do the XSK disambiguation in the caller;
-will take another look at this - thanks!
+Sure, it could. But the data buffer comes from userspace anyway, and
+there's nothing preventing userspace from passing a 0-length packet
+anyway, so I just mentally put this in the "don't do that, then" bucket :)
+
+At least I don't *think* there's actually any problem with this that we
+don't have already? A regular XDP program can also shrink an incoming
+packet to zero, then redirect it, no?
 
 -Toke
 
