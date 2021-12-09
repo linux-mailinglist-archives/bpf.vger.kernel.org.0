@@ -2,124 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825E746F414
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 20:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E6146F419
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 20:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbhLITmU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 9 Dec 2021 14:42:20 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55748 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229379AbhLITmT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 14:42:19 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B9IGnaZ004130
-        for <bpf@vger.kernel.org>; Thu, 9 Dec 2021 11:38:45 -0800
+        id S229703AbhLITmY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 9 Dec 2021 14:42:24 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21296 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229487AbhLITmX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 14:42:23 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B9HkijE021153
+        for <bpf@vger.kernel.org>; Thu, 9 Dec 2021 11:38:49 -0800
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cupxbrmnv-2
+        by mx0a-00082601.pphosted.com with ESMTP id 3cujg02vkd-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 11:38:45 -0800
-Received: from intmgw002.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 11:38:49 -0800
+Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
  mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 9 Dec 2021 11:38:43 -0800
+ 15.1.2308.20; Thu, 9 Dec 2021 11:38:48 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 2A4E5C6DAD7E; Thu,  9 Dec 2021 11:38:41 -0800 (PST)
+        id 32AACC6DAD80; Thu,  9 Dec 2021 11:38:43 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v3 bpf-next 00/12] Enhance and rework logging controls in libbpf
-Date:   Thu, 9 Dec 2021 11:38:28 -0800
-Message-ID: <20211209193840.1248570-1-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 01/12] libbpf: fix bpf_prog_load() log_buf logic for log_level 0
+Date:   Thu, 9 Dec 2021 11:38:29 -0800
+Message-ID: <20211209193840.1248570-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211209193840.1248570-1-andrii@kernel.org>
+References: <20211209193840.1248570-1-andrii@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: CO9cqBqrXoltTkYF4LNnPL7yNeF8U90d
-X-Proofpoint-ORIG-GUID: CO9cqBqrXoltTkYF4LNnPL7yNeF8U90d
+X-Proofpoint-ORIG-GUID: cjY3b2E_-m_FjGAQbb3xw90bNGmrl-gG
+X-Proofpoint-GUID: cjY3b2E_-m_FjGAQbb3xw90bNGmrl-gG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2021-12-09_09,2021-12-08_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 clxscore=1034
- malwarescore=0 bulkscore=0 adultscore=0 phishscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1015
+ phishscore=0 priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2112090101
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add new open options and per-program setters to control BTF and program
-loading log verboseness and allow providing custom log buffers to capture logs
-of interest. Note how custom log_buf and log_level are orthogonal, which
-matches previous (alas less customizable) behavior of libbpf, even though it
-sort of worked by accident: if someone specified log_level = 1 in
-bpf_object__load_xattr(), first attempt to load any BPF program resulted in
-wasted bpf() syscall with -EINVAL due to !!log_buf != !!log_level. Then on
-retry libbpf would allocated log_buffer and try again, after which prog
-loading would succeed and libbpf would print verbose program loading log
-through its print callback.
+To unify libbpf APIs behavior w.r.t. log_buf and log_level, fix
+bpf_prog_load() to follow the same logic as bpf_btf_load() and
+high-level bpf_object__load() API will follow in the subsequent patches:
+  - if log_level is 0 and non-NULL log_buf is provided by a user, attempt
+    load operation initially with no log_buf and log_level set;
+  - if successful, we are done, return new FD;
+  - on error, retry the load operation with log_level bumped to 1 and
+    log_buf set; this way verbose logging will be requested only when we
+    are sure that there is a failure, but will be fast in the
+    common/expected success case.
 
-This behavior is now documented and made more efficient, not wasting
-unnecessary syscall. But additionally, log_level can be controlled globally on
-a per-bpf_object level through bpf_object_open_opts, as well as on
-a per-program basis with bpf_program__set_log_buf() and
-bpf_program__set_log_level() APIs.
+Of course, user can still specify log_level > 0 from the very beginning
+to force log collection.
 
-Now that we have a more future-proof way to set log_level, deprecate
-bpf_object__load_xattr().
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/bpf.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
-v2->v3:
-  - added log_buf selftests for bpf_prog_load() and bpf_btf_load();
-  - fix !log_buf in bpf_prog_load (John);
-  - fix log_level==0 in bpf_btf_load (thanks selftest!);
-  
-v1->v2:
-  - fix log_level == 0 handling of bpf_prog_load, add as patch #1 (Alexei);
-  - add comments explaining log_buf_size overflow prevention (Alexei).
-
-
-Andrii Nakryiko (12):
-  libbpf: fix bpf_prog_load() log_buf logic for log_level 0
-  libbpf: add OPTS-based bpf_btf_load() API
-  libbpf: allow passing preallocated log_buf when loading BTF into
-    kernel
-  libbpf: allow passing user log setting through bpf_object_open_opts
-  libbpf: improve logging around BPF program loading
-  libbpf: preserve kernel error code and remove kprobe prog type
-    guessing
-  libbpf: add per-program log buffer setter and getter
-  libbpf: deprecate bpf_object__load_xattr()
-  selftests/bpf: replace all uses of bpf_load_btf() with bpf_btf_load()
-  selftests/bpf: add test for libbpf's custom log_buf behavior
-  selftests/bpf: remove the only use of deprecated
-    bpf_object__load_xattr()
-  bpftool: switch bpf_object__load_xattr() to bpf_object__load()
-
- tools/bpf/bpftool/gen.c                       |  11 +-
- tools/bpf/bpftool/prog.c                      |  24 +-
- tools/bpf/bpftool/struct_ops.c                |  15 +-
- tools/lib/bpf/bpf.c                           |  88 ++++--
- tools/lib/bpf/bpf.h                           |  22 +-
- tools/lib/bpf/btf.c                           |  78 +++--
- tools/lib/bpf/libbpf.c                        | 194 +++++++-----
- tools/lib/bpf/libbpf.h                        |  49 +++-
- tools/lib/bpf/libbpf.map                      |   3 +
- tools/lib/bpf/libbpf_internal.h               |   1 +
- tools/lib/bpf/libbpf_probes.c                 |   2 +-
- .../selftests/bpf/map_tests/sk_storage_map.c  |   2 +-
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |   6 +-
- tools/testing/selftests/bpf/prog_tests/btf.c  |  50 ++--
- .../selftests/bpf/prog_tests/log_buf.c        | 276 ++++++++++++++++++
- .../selftests/bpf/progs/test_log_buf.c        |  24 ++
- tools/testing/selftests/bpf/test_verifier.c   |   2 +-
- tools/testing/selftests/bpf/testing_helpers.c |  10 +-
- 18 files changed, 683 insertions(+), 174 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/log_buf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_log_buf.c
-
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 4e7836e1a7b5..3dc86342f0a0 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -303,10 +303,6 @@ int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+ 	if (log_level && !log_buf)
+ 		return libbpf_err(-EINVAL);
+ 
+-	attr.log_level = log_level;
+-	attr.log_buf = ptr_to_u64(log_buf);
+-	attr.log_size = log_size;
+-
+ 	func_info_rec_size = OPTS_GET(opts, func_info_rec_size, 0);
+ 	func_info = OPTS_GET(opts, func_info, NULL);
+ 	attr.func_info_rec_size = func_info_rec_size;
+@@ -321,6 +317,12 @@ int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+ 
+ 	attr.fd_array = ptr_to_u64(OPTS_GET(opts, fd_array, NULL));
+ 
++	if (log_level) {
++		attr.log_buf = ptr_to_u64(log_buf);
++		attr.log_size = log_size;
++		attr.log_level = log_level;
++	}
++
+ 	fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
+ 	if (fd >= 0)
+ 		return fd;
+@@ -366,16 +368,17 @@ int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+ 			goto done;
+ 	}
+ 
+-	if (log_level || !log_buf)
+-		goto done;
++	if (log_level == 0 && log_buf) {
++		/* log_level == 0 with non-NULL log_buf requires retrying on error
++		 * with log_level == 1 and log_buf/log_buf_size set, to get details of
++		 * failure
++		 */
++		attr.log_buf = ptr_to_u64(log_buf);
++		attr.log_size = log_size;
++		attr.log_level = 1;
+ 
+-	/* Try again with log */
+-	log_buf[0] = 0;
+-	attr.log_buf = ptr_to_u64(log_buf);
+-	attr.log_size = log_size;
+-	attr.log_level = 1;
+-
+-	fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
++		fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
++	}
+ done:
+ 	/* free() doesn't affect errno, so we don't need to restore it */
+ 	free(finfo);
 -- 
 2.30.2
 
