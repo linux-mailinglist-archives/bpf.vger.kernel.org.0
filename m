@@ -2,92 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F85546F22E
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 18:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C9B46F234
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 18:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237485AbhLIRju (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 12:39:50 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50084 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243112AbhLIRjr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 12:39:47 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B95shbi008353
-        for <bpf@vger.kernel.org>; Thu, 9 Dec 2021 09:36:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=OL9ILN8wkuVKjVHt46aQz/JSx8O6cyhcxMdhOOqS6cc=;
- b=B9YO/oLkE4OpADe9P/Rsgsmev9AvZ8oqtRs3177wLT56cpMFO32v9yi85AcN0inJbnEf
- 6GTa+yfRcCZ0lqx87nVb/ADHhZTfAdVitRCOYBY++ZrNYCawixERxPlaNktWOmbDJRVw
- NnOEP3Fi7si7nS3MV0liw0sXpv5fktNk9Dg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cuc2nv4u0-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 09:36:13 -0800
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 9 Dec 2021 09:36:12 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 68F3738B9D87; Thu,  9 Dec 2021 09:36:04 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        id S242448AbhLIRmP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 12:42:15 -0500
+Received: from mga14.intel.com ([192.55.52.115]:18787 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231476AbhLIRmP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 12:42:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1639071521; x=1670607521;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=GW8eLCzIYcPKkn65ZA+HWRTXMBZawug5TiMgnaXmBGc=;
+  b=jAbGeipF++vxB9r086USfv4fAzR9wUd7y5dhRn4aelBdtNgTJyU0yY0X
+   /4EV9+wed2oO1wzcIreu0F68zxyepnS6YxMNloO/C41/wHCSFOR0EnJsR
+   3euv4LdeTqrfZHX3ZZ6pibkOLSpED0THWwYKGu9w0E8Fu+gH4iFvQsIdy
+   Vlh0KQAGkVXg4YArMmrHxP33rgO2G/+a/uJWlDf2hlOfKkeZcZM57DOIl
+   qx4Ev+TgxT1WQsqOoJUOPFsloB69eKaquXDr2G8BLpI6VR4ejItVx1lYM
+   wVUuBaz77ULye4aea7j2f/92/kJCvb7gyKoDoNs1ectAzCTwIEKZgbOfM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10193"; a="238388305"
+X-IronPort-AV: E=Sophos;i="5.88,193,1635231600"; 
+   d="scan'208";a="238388305"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2021 09:38:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,193,1635231600"; 
+   d="scan'208";a="503581282"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga007.jf.intel.com with ESMTP; 09 Dec 2021 09:38:35 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1B9HcXEn013933;
+        Thu, 9 Dec 2021 17:38:33 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        intel-wired-lan@lists.osuosl.org, brouer@redhat.com,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        <kernel-team@fb.com>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: specify pahole version requirement for btf_tag test
-Date:   Thu, 9 Dec 2021 09:36:04 -0800
-Message-ID: <20211209173604.1529864-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211209173537.1525283-1-yhs@fb.com>
-References: <20211209173537.1525283-1-yhs@fb.com>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v4 net-next 2/9] i40e: respect metadata on XSK Rx to skb
+Date:   Thu,  9 Dec 2021 18:38:16 +0100
+Message-Id: <20211209173816.5157-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <2811b35a-9179-88ce-d87a-e1f824851494@redhat.com>
+References: <20211208140702.642741-1-alexandr.lobakin@intel.com> <20211208140702.642741-3-alexandr.lobakin@intel.com> <2811b35a-9179-88ce-d87a-e1f824851494@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: ya10NtIjFnlOrDiozMwNQUxLgicC9MC6
-X-Proofpoint-ORIG-GUID: ya10NtIjFnlOrDiozMwNQUxLgicC9MC6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-09_07,2021-12-08_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
- malwarescore=0 adultscore=0 mlxlogscore=928 spamscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0
- clxscore=1015 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2112090091
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Specify pahole version requirement (1.23) for btf_tag subtests
-btf_type_tag_user_{1, 2}.
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Date: Thu, 9 Dec 2021 09:27:37 +0100
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/README.rst | 1 +
- 1 file changed, 1 insertion(+)
+> On 08/12/2021 15.06, Alexander Lobakin wrote:
+> > For now, if the XDP prog returns XDP_PASS on XSK, the metadata will
+> > be lost as it doesn't get copied to the skb.
+> 
+> I have an urge to add a newline here, when reading this, as IMHO it is a 
+> paragraph with the problem statement.
+> 
+> > Copy it along with the frame headers. Account its size on skb
+> > allocation, and when copying just treat it as a part of the frame
+> > and do a pull after to "move" it to the "reserved" zone.
+> 
+> Also newline here, as next paragraph are some extra details, you felt a 
+> need to explain to the reader.
+> 
+> > net_prefetch() xdp->data_meta and align the copy size to speed-up
+> > memcpy() a little and better match i40e_costruct_skb().
+>                                       ^^^^^^xx^^^^^^^^^
+> 
+> You have a general misspelling of this function name in all of your 
+> commit messages.
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selft=
-ests/bpf/README.rst
-index 42ef250c7acc..eee6656de0e6 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -206,6 +206,7 @@ btf_tag test and Clang version
-=20
- The btf_tag selftest requires LLVM support to recognize the btf_decl_tag=
- and
- btf_type_tag attributes. They are introduced in `Clang 14` [0_, 1_].
-+The subtests ``btf_type_tag_user_{1, 2}`` also requires pahole version `=
-`1.23``.
-=20
- Without them, the btf_tag selftest will be skipped and you will observe:
-=20
---=20
-2.30.2
+Oh gosh, I thought I don't have attention deficit. Thanks, maybe
+Tony will fix it for me or I could send a follow-up (or resend if
+needed, I saw those were already applied to dev-queue).
 
+> 
+> --Jesper
+
+Al
