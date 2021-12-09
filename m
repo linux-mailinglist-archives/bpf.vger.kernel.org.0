@@ -2,205 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04B446F441
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 20:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6710346F48C
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 21:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhLITxV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 14:53:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40271 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229774AbhLITxU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 14:53:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639079386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z1VlNw/KZlHl5E8RLFnAf0s51nE1tAmTafxcQLW1VBY=;
-        b=YBAVDr4erUi5kaAlVRvZbWnXM7cW++10Fa8HwJROtWCLdz0qsK9J5PpM+UUf4wgks9OyRS
-        joHtecJ+2kALlv0hDkmD8rY/aes1GERnhEsbB0jZZQljcDbMtkCClgJQ0SAtxN/JIH6RiA
-        L84Cl+avwzVHJHunEAp+8FsiXj76BR8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-403-ynsQ93v1P_CqitD4Yn3bdQ-1; Thu, 09 Dec 2021 14:49:45 -0500
-X-MC-Unique: ynsQ93v1P_CqitD4Yn3bdQ-1
-Received: by mail-ed1-f71.google.com with SMTP id m17-20020aa7d351000000b003e7c0bc8523so6217862edr.1
-        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 11:49:45 -0800 (PST)
+        id S231447AbhLIUIE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 15:08:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhLIUID (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 15:08:03 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C291C061746
+        for <bpf@vger.kernel.org>; Thu,  9 Dec 2021 12:04:30 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id o29so5189257wms.2
+        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 12:04:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iG5PNVB7i1rl7VWt0dt7nlxQctDlSAH4wQC28xlNank=;
+        b=fIv9+BaDmOG+YaC5f5dPzqQ2fUK0C8j+ympsVHw3LGzz1MMmm/3SA4YAlGWb0w0l5x
+         NdRloDbZg7mLAjPtE8dMe7gU2NGV2MZV5AAUQCqKAC8In+dNcBb2GYiTkpu/cOyRiy0i
+         M2WIL6fHVEDExV5btt5p43dCYOWLfmz5m1VX3dqiWLruQHwhxZ30TFEeraQ11ZArKe4k
+         32vG1JbG5svVZqvaTVzK84xhBFFXv41ftlxnjNARfQ6DjDpk7WGIyH+fc0lwBz1Z7kE+
+         QlZh9rXtmX6AEyF0VlgypnKnT9XqIzc/IUjlBCjs31EFJ+9yDbh6V4Lwrq1atbL5DWlj
+         aj1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=z1VlNw/KZlHl5E8RLFnAf0s51nE1tAmTafxcQLW1VBY=;
-        b=zDd+ZNJ007nuhNM8AyifNX5V5f7MdC8Zn8o6K6HpN5IP6mOrsDzIL8Vq3eUV0kdHgA
-         yinvkCDmezAvA1UMYSgatbj03CR+jOksQgu1/YIR+UoQlcE0r1kfoUoyHk00fvAoYksE
-         nQtsZEE0UmUDL1BrfgWrXtlcCRiiYG1OeimVz4v4nuWVMfDiK254SBIB9OgvxPWSwewW
-         dR0cxBeB/R+86bnfMgOn+a8XqNleaAcndo5Nipj4HpeWXW1gBQFtx09fmeNztQpGLODt
-         CBxVuSflIi6G0rXk+vCfW9bL8+7PHx6zADi+6nekap0v00DXBRpNuoi4CxuxZz2ID9eG
-         dzzQ==
-X-Gm-Message-State: AOAM533F6xJt8VYwFOOtfIAFrmXkVXH2nc44ycCTqRtg+zE997T6QXv7
-        Q/D1oivjE9s62jGaoGvQN/+sqj0cxqwYoMUHAJlfr02zqWwAH9f39ZdX1yfrZ04qHCAERgvzafM
-        tI8seGv7PMkxk
-X-Received: by 2002:a17:907:e86:: with SMTP id ho6mr17437465ejc.197.1639079383349;
-        Thu, 09 Dec 2021 11:49:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyW9lMHqrOui27+mqNoup+jhzcEFsbMl9m+0Hq7Z6njxiI6S08BVr3PHdYZQcanRf2lUOd0rQ==
-X-Received: by 2002:a17:907:e86:: with SMTP id ho6mr17437354ejc.197.1639079382308;
-        Thu, 09 Dec 2021 11:49:42 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id e1sm360118edc.27.2021.12.09.11.49.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Dec 2021 11:49:41 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 22BBF180471; Thu,  9 Dec 2021 20:49:40 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iG5PNVB7i1rl7VWt0dt7nlxQctDlSAH4wQC28xlNank=;
+        b=6ThdCI6FRvCGpWMi1ucA2fzFmfU6iTIEwJ/zpTZOIcNJnQuqNitjvDrsW5ZDLBvHhY
+         ws8W9usf1Ec/A22E5XfL1L5N9cjJU7JBAVVxceTJdjj9AQ1U859nQ5WRXRlKMP2tZ6Gg
+         8MYWdfkpuqEZssv5lbUEAHqBWGMG405+9vGXY11doQTZL3IMEQGFTAWi6z8CreNRl2Pk
+         eEWzQXOtAL/9l+CCj5Af7kVjn5jyMyoZbsSOwpvWz8rdpJx/2VE4RNXePUZROLAOLZtf
+         TTOrUJJtmZAwgSonNsQ7d2YhJ89RLisFXSTUINzPYIgzDi6qZ7L3WWs0yXbw0RJ+E+z4
+         scbw==
+X-Gm-Message-State: AOAM532NxCuSx/0pilpUucSya/0rsXu5cWsq7psPpeVoevEt9NzXOynG
+        2yqBf35VBAjXoVM3HC/N8edvjapmJR7KGlcNLSPcbw==
+X-Google-Smtp-Source: ABdhPJxUge6ER2ziYtKCZxwBKjlUBmBcF0ESfO7EZUjTKTKNq3QVmpwTsovmV+m0xJbG8+cwUVCAT0Y9ugwEX5Lv2PI=
+X-Received: by 2002:a05:600c:4f14:: with SMTP id l20mr10015769wmq.164.1639080268291;
+ Thu, 09 Dec 2021 12:04:28 -0800 (PST)
+MIME-Version: 1.0
+References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-9-haoluo@google.com>
+ <CAEf4Bzb3nyWbS4=e7M8Am5BvMSPbMhMzXPKvd3spk+D9vZg99g@mail.gmail.com> <CA+khW7h3VM+7CESWeFgheMkg20JckbxidC6Quy-02_kFJL96tA@mail.gmail.com>
+In-Reply-To: <CA+khW7h3VM+7CESWeFgheMkg20JckbxidC6Quy-02_kFJL96tA@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 9 Dec 2021 12:04:17 -0800
+Message-ID: <CA+khW7g5P3-ipVLZ8KSZZUf=3_F4uMEY4FhbDH7J5kqL08ggYg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 8/9] bpf: Add MEM_RDONLY for helper args that
+ are pointers to rdonly mem.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: RE: [PATCH bpf-next 6/8] bpf: Add XDP_REDIRECT support to XDP for
- bpf_prog_run()
-In-Reply-To: <61b25147bc136_6bfb208c5@john.notmuch>
-References: <20211202000232.380824-1-toke@redhat.com>
- <20211202000232.380824-7-toke@redhat.com>
- <61b1537634e07_979572086f@john.notmuch> <87tufhwygr.fsf@toke.dk>
- <87r1alwwk4.fsf@toke.dk> <61b25147bc136_6bfb208c5@john.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 09 Dec 2021 20:49:40 +0100
-Message-ID: <87o85pwobv.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
-
-> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
->>=20
->> > John Fastabend <john.fastabend@gmail.com> writes:
->> >
->> >> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >>> This adds support for doing real redirects when an XDP program retur=
-ns
->> >>> XDP_REDIRECT in bpf_prog_run(). To achieve this, we create a page po=
-ol
->> >>> instance while setting up the test run, and feed pages from that int=
-o the
->> >>> XDP program. The setup cost of this is amortised over the number of
->> >>> repetitions specified by userspace.
->> >>>=20
->> >>> To support performance testing use case, we further optimise the set=
-up step
->> >>> so that all pages in the pool are pre-initialised with the packet da=
-ta, and
->> >>> pre-computed context and xdp_frame objects stored at the start of ea=
-ch
->> >>> page. This makes it possible to entirely avoid touching the page con=
-tent on
->> >>> each XDP program invocation, and enables sending up to 11.5 Mpps/cor=
-e on my
->> >>> test box.
->> >>>=20
->> >>> Because the data pages are recycled by the page pool, and the test r=
-unner
->> >>> doesn't re-initialise them for each run, subsequent invocations of t=
-he XDP
->> >>> program will see the packet data in the state it was after the last =
-time it
->> >>> ran on that particular page. This means that an XDP program that mod=
-ifies
->> >>> the packet before redirecting it has to be careful about which assum=
-ptions
->> >>> it makes about the packet content, but that is only an issue for the=
- most
->> >>> naively written programs.
->> >>>=20
->> >>> Previous uses of bpf_prog_run() for XDP returned the modified packet=
- data
->> >>> and return code to userspace, which is a different semantic then thi=
-s new
->> >>> redirect mode. For this reason, the caller has to set the new
->> >>> BPF_F_TEST_XDP_DO_REDIRECT flag when calling bpf_prog_run() to opt i=
-n to
->> >>> the different semantics. Enabling this flag is only allowed if not s=
-etting
->> >>> ctx_out and data_out in the test specification, since it means frame=
-s will
->> >>> be redirected somewhere else, so they can't be returned.
->> >>>=20
->> >>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >>> ---
->> >>
->> >> [...]
->> >>
->> >>> +static int bpf_test_run_xdp_redirect(struct bpf_test_timer *t,
->> >>> +				     struct bpf_prog *prog, struct xdp_buff *orig_ctx)
->> >>> +{
->> >>> +	void *data, *data_end, *data_meta;
->> >>> +	struct xdp_frame *frm;
->> >>> +	struct xdp_buff *ctx;
->> >>> +	struct page *page;
->> >>> +	int ret, err =3D 0;
->> >>> +
->> >>> +	page =3D page_pool_dev_alloc_pages(t->xdp.pp);
->> >>> +	if (!page)
->> >>> +		return -ENOMEM;
->> >>> +
->> >>> +	ctx =3D ctx_from_page(page);
->> >>> +	data =3D ctx->data;
->> >>> +	data_meta =3D ctx->data_meta;
->> >>> +	data_end =3D ctx->data_end;
->> >>> +
->> >>> +	ret =3D bpf_prog_run_xdp(prog, ctx);
->> >>> +	if (ret =3D=3D XDP_REDIRECT) {
->> >>> +		frm =3D (struct xdp_frame *)(ctx + 1);
->> >>> +		/* if program changed pkt bounds we need to update the xdp_frame =
-*/
->> >>
->> >> Because this reuses the frame repeatedly is there any issue with also
->> >> updating the ctx each time? Perhaps if the prog keeps shrinking
->> >> the pkt it might wind up with 0 len pkt? Just wanted to ask.
->> >
->> > Sure, it could. But the data buffer comes from userspace anyway, and
->> > there's nothing preventing userspace from passing a 0-length packet
->> > anyway, so I just mentally put this in the "don't do that, then" bucke=
-t :)
->> >
->> > At least I don't *think* there's actually any problem with this that we
->> > don't have already? A regular XDP program can also shrink an incoming
->> > packet to zero, then redirect it, no?
->>=20
->> Another thought is that we could of course do the opposite here: instead
->> of updating the xdp_frame when the program resizes the packet, just
->> reset the pointers so that the next invocation will get the original
->> size again? The data would still be changed, but maybe that behaviour is
->> less surprising? WDYT?
+On Tue, Dec 7, 2021 at 7:49 PM Hao Luo <haoluo@google.com> wrote:
 >
-> Should read my email from newest to oldest :)
+> On Mon, Dec 6, 2021 at 10:24 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > Some helper functions may modify its arguments, for example,
+> > > bpf_d_path, bpf_get_stack etc. Previously, their argument types
+> > > were marked as ARG_PTR_TO_MEM, which is compatible with read-only
+> > > mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
+> > > to modify a read-only memory by passing it into one of such helper
+> > > functions.
+> > >
+> > > This patch tags the bpf_args compatible with immutable memory with
+> > > MEM_RDONLY flag. The arguments that don't have this flag will be
+> > > only compatible with mutable memory types, preventing the helper
+> > > from modifying a read-only memory. The bpf_args that have
+> > > MEM_RDONLY are compatible with both mutable memory and immutable
+> > > memory.
+> > >
+> > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > ---
+> > >  include/linux/bpf.h      |  4 ++-
+> > >  kernel/bpf/btf.c         |  2 +-
+> > >  kernel/bpf/cgroup.c      |  2 +-
+> > >  kernel/bpf/helpers.c     |  8 ++---
+> > >  kernel/bpf/ringbuf.c     |  2 +-
+> > >  kernel/bpf/syscall.c     |  2 +-
+> > >  kernel/bpf/verifier.c    | 14 +++++++--
+> > >  kernel/trace/bpf_trace.c | 26 ++++++++--------
+> > >  net/core/filter.c        | 64 ++++++++++++++++++++--------------------
+> > >  9 files changed, 67 insertions(+), 57 deletions(-)
+> > >
+[...]
+> > > @@ -5074,6 +5074,7 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> > >         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> > >         enum bpf_reg_type expected, type = reg->type;
+> > >         const struct bpf_reg_types *compatible;
+> > > +       u32 compatible_flags;
+> > >         int i, j;
+> > >
+> > >         compatible = compatible_reg_types[base_type(arg_type)];
+> > > @@ -5082,6 +5083,13 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> > >                 return -EFAULT;
+> > >         }
+> > >
+> > > +       /* If arg_type is tagged with MEM_RDONLY, it's compatible with both
+> > > +        * RDONLY and non-RDONLY reg values. Therefore fold this flag before
+> > > +        * comparison. PTR_MAYBE_NULL is similar.
+> > > +        */
+> > > +       compatible_flags = arg_type & (MEM_RDONLY | PTR_MAYBE_NULL);
+> > > +       type &= ~compatible_flags;
+> > > +
+> >
+> > wouldn't
+> >
+> > type &= ~MEM_RDONLY; /* clear read-only flag, if any */
+> > type &= ~PTR_MAYBE_NULL; /* clear nullable flag, if any */
+> >
+> > be cleaner and more straightforward?
+> >
+> >
 >
-> I think resetting it back to the original size is less surprising. And
-> if I want to benchmark a helper that moves the pointers it will be
-> easier. For example benchmarking shrinking a packet with current
-> code wouldn't really work because eventually the packet will be 0
-> and my test will stop doing what I expect.
+> No problem. Sounds good to me.
+>
 
-Ah yes, good point!
+I just realized the suggested transformation is wrong. Whether to fold
+the flag depends on whether arg_type has the flag. So it should
+instead be
 
-> Lets do the reset back to original size.
+if (arg_type & MEM_RDONLY)
+  type &= ~MEM_RDONLY;
 
-Alright, will do; thanks! :)
+or
 
--Toke
+type &= ~(arg_type & MEM_RDONLY);
 
+> > >         for (i = 0; i < ARRAY_SIZE(compatible->types); i++) {
+> > >                 expected = compatible->types[i];
+> > >                 if (expected == NOT_INIT)
+> >
+> > [...]
