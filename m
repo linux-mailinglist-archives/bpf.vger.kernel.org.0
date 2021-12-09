@@ -2,107 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F172446E1BC
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 06:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F0746E1CE
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 06:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhLIFHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 00:07:48 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30344 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229676AbhLIFHr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 00:07:47 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B8MnIFx027063
-        for <bpf@vger.kernel.org>; Wed, 8 Dec 2021 21:04:14 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=LUG92XgGe0HpWFmbNnQLobG1GFcmHDFVRNeZKBuka34=;
- b=TpkY1jniF6B8G6GEF0Rw6lQWtkzDS2G1qSEl+4XBwQ0p5aM2hxl7tsD7jLXpr0l4VNGm
- b1RPUTY7fp/vZmGcLR8StylN46ZNiZ72Wl5nynNLwM3Tk3tLNXxS5j8pZ7tcv/h0E72J
- IIe6DkyvHI1ev76EgD3lsmWBnGf5VTeurA0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cu5u5sn36-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 21:04:14 -0800
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 8 Dec 2021 21:04:13 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id BEE22385AB8B; Wed,  8 Dec 2021 21:04:03 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix a compilation warning
-Date:   Wed, 8 Dec 2021 21:04:03 -0800
-Message-ID: <20211209050403.1770836-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S230332AbhLIFVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 00:21:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229680AbhLIFVT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 00:21:19 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D40C0617A2
+        for <bpf@vger.kernel.org>; Wed,  8 Dec 2021 21:17:46 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id k6-20020a17090a7f0600b001ad9d73b20bso3911026pjl.3
+        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 21:17:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4Isb6RngWyyYYY0h5iwHxhT4CUuYmE9K4Ijbwpppe/0=;
+        b=IL5y49lFnodstx6ZHbCevJ2A0UtuFWSB7P+SVQoyXjyMOzs1+g2szBeI+DT2GHyuoB
+         sxNW5XztebuX6XDOecmzcRc98qhQeVA6Jv41IJr50YrobsFlg7pt9tO9z0JIf3CgAlKI
+         y96bx9wMK/hD4Em4Kg1dEg6fBo5nVFa6NuJOg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4Isb6RngWyyYYY0h5iwHxhT4CUuYmE9K4Ijbwpppe/0=;
+        b=gRbMKuOP5jMV5JEvBMipT6y6qG4pYGGghIa8viY2+86DeoOiPkIYYwqnRBITouyKMU
+         JREmkDwwDzjv0CixmNNEWl6g2t8ho0+Va7Bw8x1MYzWSX7sxrxCDHiRSpfLEpDFM/xEL
+         LH144eFJBvsVLscqt4cIHVSeheqo98b9UGLL+MByaVk3KONyRICGt1l4hOpDk93uZQGA
+         P9/eRK70LDUkHIyNiueFf0JFIROVhICzu2K+zz1D6koYUf7AFuBATfpW3I4z1J98ar9j
+         lWb2+HlZhTf+VaDs1GssLfkMwzgPd/ERmeys4TLCLpd2g04B72Vf7uyHEzVpFfuVej4n
+         taFQ==
+X-Gm-Message-State: AOAM530w/VH2iyaZ7HERjFg0asy6gghAkhbJbssP85N6VpfLBxntG9Zx
+        CMhOb9lMMxH+qBIBjZ+Npw+9/A==
+X-Google-Smtp-Source: ABdhPJxeNFepnXXB/34L76N4vdRimSjaTfTVdfxtfwCC2tAYfw81FunJcFYhweowBzFuUyDf4LbXkA==
+X-Received: by 2002:a17:902:e5c9:b0:142:53c4:478d with SMTP id u9-20020a170902e5c900b0014253c4478dmr63375010plf.33.1639027066307;
+        Wed, 08 Dec 2021 21:17:46 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 66sm4266192pgg.63.2021.12.08.21.17.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Dec 2021 21:17:45 -0800 (PST)
+Date:   Wed, 8 Dec 2021 21:17:44 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     xiujianfeng <xiujianfeng@huawei.com>,
+        laniel_francis@privacyrequired.com,
+        andriy.shevchenko@linux.intel.com, adobriyan@gmail.com,
+        linux@roeck-us.net, andreyknvl@gmail.com, dja@axtens.net,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH -next 1/2] string.h: Introduce memset_range() for wiping
+ members
+Message-ID: <202112082111.14E796A23@keescook>
+References: <20211208030451.219751-1-xiujianfeng@huawei.com>
+ <20211208030451.219751-2-xiujianfeng@huawei.com>
+ <20211207202829.48d15f0ffa006e3656811784@linux-foundation.org>
+ <e2d5936d-8490-5871-b3d4-b286d256832a@huawei.com>
+ <20211208154437.01441d2dcf4cd812a9c58a7d@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: zcBd98QKriGHh8EOl6PApfsN3DAzgpfy
-X-Proofpoint-ORIG-GUID: zcBd98QKriGHh8EOl6PApfsN3DAzgpfy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-09_02,2021-12-08_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 mlxlogscore=767 bulkscore=0
- clxscore=1015 malwarescore=0 phishscore=0 impostorscore=0 spamscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112090026
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211208154437.01441d2dcf4cd812a9c58a7d@linux-foundation.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following warning is triggered when I used clang compiler
-to build the selftest.
+On Wed, Dec 08, 2021 at 03:44:37PM -0800, Andrew Morton wrote:
+> On Wed, 8 Dec 2021 18:30:26 +0800 xiujianfeng <xiujianfeng@huawei.com> wrote:
+> 
+> > 
+> > 在 2021/12/8 12:28, Andrew Morton 写道:
+> > > On Wed, 8 Dec 2021 11:04:50 +0800 Xiu Jianfeng <xiujianfeng@huawei.com> wrote:
+> > >
+> > >> Motivated by memset_after() and memset_startat(), introduce a new helper,
+> > >> memset_range() that takes the target struct instance, the byte to write,
+> > >> and two member names where zeroing should start and end.
+> > > Is this likely to have more than a single call site?
+> > There maybe more call site for this function, but I just use bpf as an 
+> > example.
+> > >
+> > >> ...
+> > >>
+> > >> --- a/include/linux/string.h
+> > >> +++ b/include/linux/string.h
+> > >> @@ -291,6 +291,26 @@ void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
+> > >>   	       sizeof(*(obj)) - offsetof(typeof(*(obj)), member));	\
+> > >>   })
+> > >>   
+> > >> +/**
+> > >> + * memset_range - Set a value ranging from member1 to member2, boundary included.
+> > > I'm not sure what "boundary included" means.
+> > I mean zeroing from member1 to member2(including position indicated by 
+> > member1 and member2)
+> > >
+> > >> + *
+> > >> + * @obj: Address of target struct instance
+> > >> + * @v: Byte value to repeatedly write
+> > >> + * @member1: struct member to start writing at
+> > >> + * @member2: struct member where writing should stop
+> > > Perhaps "struct member before which writing should stop"?
+> > memset_range should include position indicated by member2 as well
+> 
+> In that case we could say "struct member where writing should stop
+> (inclusive)", to make it very clear.
+> 
+> > >
+> > >> + *
+> > >> + */
+> > >> +#define memset_range(obj, v, member_1, member_2)			\
+> > >> +({									\
+> > >> +	u8 *__ptr = (u8 *)(obj);					\
+> > >> +	typeof(v) __val = (v);						\
+> > >> +	BUILD_BUG_ON(offsetof(typeof(*(obj)), member_1) >		\
+> > >> +		     offsetof(typeof(*(obj)), member_2));		\
+> > >> +	memset(__ptr + offsetof(typeof(*(obj)), member_1), __val,	\
+> > >> +	       offsetofend(typeof(*(obj)), member_2) -			\
+> > >> +	       offsetof(typeof(*(obj)), member_1));			\
+> > >> +})
+> > > struct a {
+> > > 	int b;
+> > > 	int c;
+> > > 	int d;
+> > > };
+> > >
+> > > How do I zero out `c' and `d'?
+> > if you want to zero out 'c' and 'd', you can use it like 
+> > memset_range(a_ptr, c, d);
+> 
+> But I don't think that's what the code does!
+> 
+> it expands to
+> 
+> 	memset(__ptr + offsetof(typeof(*(a)), c), __val,
+> 	       offsetofend(typeof(*(a)), d) -
+> 	       offsetof(typeof(*(a)), c));
+> 
+> which expands to
+> 
+> 	memset(__ptr + 4, __val,
+> 	       8 -
+> 	       4);
+> 
+> and `d' will not be written to.
 
-  /.../prog_tests/btf_dedup_split.c:368:6: warning: variable 'btf2' is us=
-ed uninitialized whenever 'if' condition is true [-Wsometimes-uninitializ=
-ed]
-        if (!ASSERT_OK(err, "btf_dedup"))
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  /.../prog_tests/btf_dedup_split.c:424:12: note: uninitialized use occur=
-s here
-        btf__free(btf2);
-                  ^~~~
-  /.../prog_tests/btf_dedup_split.c:368:2: note: remove the 'if' if its c=
-ondition is always false
-        if (!ASSERT_OK(err, "btf_dedup"))
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  /.../prog_tests/btf_dedup_split.c:343:25: note: initialize the variable=
- 'btf2' to silence this warning
-        struct btf *btf1, *btf2;
-                               ^
-                                =3D NULL
+Please don't add memset_range(): just use a struct_group() to capture
+the range and use memset() against the new substruct. This will allow
+for the range to be documented where it is defined in the struct (rather
+than deep in some code), keep any changes centralized instead of spread
+around in memset_range() calls, protect against accidental struct member
+reordering breaking things, and lets the compiler be able to examine
+the range explicitly and do all the correct bounds checking:
 
-Initialize local variable btf2 =3D NULL and the warning is gone.
+struct a {
+	int b;
+	struct_group(range,
+		int c;
+		int d;
+	);
+	int e;
+};
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+memset(&instance->range, 0, sizeof(instance->range));
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b/t=
-ools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-index 878a864dae3b..90aac437576d 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-@@ -340,7 +340,7 @@ static void btf_add_dup_struct_in_cu(struct btf *btf,=
- int start_id)
-=20
- static void test_split_dup_struct_in_cu()
- {
--	struct btf *btf1, *btf2;
-+	struct btf *btf1, *btf2 =3D NULL;
- 	int err;
-=20
- 	/* generate the base data.. */
---=20
-2.30.2
+memset_from/after() were added because of the very common case of "wipe
+from here to end", which stays tied to a single member, and addressed
+cases where struct_group() couldn't help (e.g. trailing padding).
 
+-- 
+Kees Cook
