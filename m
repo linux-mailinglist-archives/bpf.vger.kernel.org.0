@@ -2,212 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA64F46DF7B
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 01:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6639146DFB2
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 01:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238206AbhLIAes (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 19:34:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        id S241529AbhLIAwG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 19:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235334AbhLIAes (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 19:34:48 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B62C061746;
-        Wed,  8 Dec 2021 16:31:15 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id x10so4801020ioj.9;
-        Wed, 08 Dec 2021 16:31:15 -0800 (PST)
+        with ESMTP id S229846AbhLIAwF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 19:52:05 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524E4C061746
+        for <bpf@vger.kernel.org>; Wed,  8 Dec 2021 16:48:33 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id y68so10112398ybe.1
+        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 16:48:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=JsWYjBq5nTDhkhANVBgH4D3Tbd2QYmJXiBeLddZtISw=;
-        b=nlFKnB0KayIG3zU8Jw0+Ux5TF0kqV/NqzRoglnyEvgMRHPZEeiC2bSQ69rTiFESkCH
-         RWe3/yw32mGGa1ZOh5bZ8hbm1aY8kP1P/D/PDkHCcLyVL9qC5+4hZuBcDV9x5r2+dYOV
-         5ZOfQM5VMFZiK8S0K3MY5CffiQlYD9dama94PJJPnoC/JuPxnuVjujXlBcl30ssNLm3g
-         23bx0KZOqp0sG5RoZ1Iki/tGWqJMOTku8HebJ82z8QreEhkeJOe0c7B1lQfyIsHxaeUA
-         kLmnn/QhkbjLDPVrWDK21F7ObraoS35WMHt4I6taNkSNURcOAbb4Iys68Fo7WGQUKWe4
-         MGdw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HpE3CdZis6liFSsdwuIzIayZH6NXBEPId32QUCqLyrk=;
+        b=aS/vLKQY1LtQaCcQrPW4f1TL9eFWvx3f8uugfGHY8iCxLSAiStvguW3CUV/UYerkjp
+         7yf885WfNmsQxTq5n0CR/EF6G9ZULoLzfGqWOy6z4+n8Os3lU+a+t9BzYuitpf+3oElV
+         ZkgTIjQsg1WnfdZOS6ZyHzZG7PzGUkSMl6VluOAjfIk06NvHR/8FOn52EJhNcB5fFbrV
+         W4iLI7DPTFENMwjUjaXlg9RZJBsQi/NVlD08Nehec9sPUZiwwaeL+y9cUzhEGwT0LEMY
+         OHS4gxIOddJWUjBLvHHzytKwo9xyjl+Gj9l8+6InN7xVIU0oHW/P2sv+npH7lmzEQFu3
+         gxyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=JsWYjBq5nTDhkhANVBgH4D3Tbd2QYmJXiBeLddZtISw=;
-        b=ZyDhmCq44Btt2dDXR6/o8qASiNJke2wmjUiFbSpfHF+6FDew3e8CFRg6nH7Dm1tAe9
-         AMYsWlftPc8wprR85sR2IAqFPKmSmevPCh/bLJ1UTZk4gYDvMf27xsT64gX7DrW0i6kp
-         bLkukbD1BIQj0a2tGOTGBv97Eywjlh2npk+jx2y11WZIwGcux5eJ5nIFwUer76JS74mc
-         vmO77fa/ev+m3iQhCif3Alf7Bj6AFhdgp+uGx2XBxBMllRShUAMpuA6D8gXdRtNytzEJ
-         k6adWssWLsM4k8p+EMnh88z+7BJU8THU1/dsd3nPh8d9s4TZdtZZ3LtZCGw/xO7oJ+jm
-         f8sQ==
-X-Gm-Message-State: AOAM533ahqEHNi0S4Zc8MIfRTzlvO7aGOy27AnzZ6XCODOuWjqWPkflI
-        Zz2yBEI14nULqvAkK4KW7ng=
-X-Google-Smtp-Source: ABdhPJyD4NGpxGDHgvZoX3wYI7DY/5PGSU8PVemEoxv4Lw9FAiABazrUd+nWEYUNwwXwFBlyMFCtoA==
-X-Received: by 2002:a05:6602:15c9:: with SMTP id f9mr11150303iow.184.1639009874908;
-        Wed, 08 Dec 2021 16:31:14 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id x18sm2915740iow.53.2021.12.08.16.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Dec 2021 16:31:14 -0800 (PST)
-Date:   Wed, 08 Dec 2021 16:31:06 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HpE3CdZis6liFSsdwuIzIayZH6NXBEPId32QUCqLyrk=;
+        b=Xq85s4aD5ahiGihl1znvmnH8BNg7XOo9E3p4l4TpB/4GdzMxzuTf18TsJ0tkSgTtzA
+         zy2h9xSuOCX5sjvcHVtg1JGxn6br0MtoZJqcO81bScYtynmdkAitiJoLZOBxCFk5Cp7h
+         x/AtteYATFXQl7njXeGOTSnEZ/Yc0ZOw/97qBt+zIUl84GDRB2h56IzV7Psxp46jIsvJ
+         Ah6qxbaBZ43qwua49SdfR/2UnrnkmdUKBuzuTTNpRyz+B4Op83GVm9pPye9Yvyr1hCbJ
+         Ba5+5EcXx3eX3gEilqI2lpifu5GdorOuYNDLFbZTx5hhkBOQiiB3fmbwi50ljiMhIEs8
+         vcnQ==
+X-Gm-Message-State: AOAM532BRAQLqYVrGm5/vP0WY3CDtWJZ2dx3o1mdZ1+0uJWz0/rqa1Sc
+        yWzuAnybKL6/P2aJaFE4Jv6FhllZcjvCclXUdCeu2P0ZeQ0=
+X-Google-Smtp-Source: ABdhPJyRYHitJTTPysbqfD/OertCyIb+rvI7er6aWts8ho/EE0ieJNSS+h+P5ZCaKYB1in+NoBcOkGGMno110JlVZS0=
+X-Received: by 2002:a25:e90a:: with SMTP id n10mr2533338ybd.180.1639010912572;
+ Wed, 08 Dec 2021 16:48:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20211209003033.3962657-1-andrii@kernel.org>
+In-Reply-To: <20211209003033.3962657-1-andrii@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Dec 2021 16:48:20 -0800
+Message-ID: <CAEf4BzbqehpToeYRRQpZjFA71Puqde3CQFcpK424PGziaQO=HQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/12] Enhance and rework logging controls in libbpf
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <61b14e4ae483b_979572082c@john.notmuch>
-In-Reply-To: <20211202000232.380824-6-toke@redhat.com>
-References: <20211202000232.380824-1-toke@redhat.com>
- <20211202000232.380824-6-toke@redhat.com>
-Subject: RE: [PATCH bpf-next 5/8] xdp: add xdp_do_redirect_frame() for
- pre-computed xdp_frames
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Add an xdp_do_redirect_frame() variant which supports pre-computed
-> xdp_frame structures. This will be used in bpf_prog_run() to avoid havi=
-ng
-> to write to the xdp_frame structure when the XDP program doesn't modify=
- the
-> frame boundaries.
-> =
+On Wed, Dec 8, 2021 at 4:30 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> Add new open options and per-program setters to control BTF and program
+> loading log verboseness and allow providing custom log buffers to capture logs
+> of interest. Note how custom log_buf and log_level are orthogonal, which
+> matches previous (alas less customizable) behavior of libbpf, even though it
+> sort of worked by accident: if someone specified log_level = 1 in
+> bpf_object__load_xattr(), first attempt to load any BPF program resulted in
+> wasted bpf() syscall with -EINVAL due to !!log_buf != !!log_level. Then on
+> retry libbpf would allocated log_buffer and try again, after which prog
+> loading would succeed and libbpf would print verbose program loading log
+> through its print callback.
+>
+> This behavior is now documented and made more efficient, not wasting
+> unnecessary syscall. But additionally, log_level can be controlled globally on
+> a per-bpf_object level through bpf_object_open_opts, as well as on
+> a per-program basis with bpf_program__set_log_buf() and
+> bpf_program__set_log_level() APIs.
+>
+> Now that we have a more future-proof way to set log_level, deprecate
+> bpf_object__load_xattr().
+>
+> v1->v2:
+>   - fix log_level == 0 handling of bpf_prog_load, add as patch #1 (Alexei);
+>   - add comments explaining log_buf_size overflow prevention (Alexei).
+>
 
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  include/linux/filter.h |  4 ++++
->  net/core/filter.c      | 28 +++++++++++++++++++++-------
->  2 files changed, 25 insertions(+), 7 deletions(-)
-> =
+Oh, the patch set was supposed to be marked with v2. I'll resend with
+proper v2 tag, sorry for spam.
 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index b6a216eb217a..845452c83e0f 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -1022,6 +1022,10 @@ int xdp_do_generic_redirect(struct net_device *d=
-ev, struct sk_buff *skb,
->  int xdp_do_redirect(struct net_device *dev,
->  		    struct xdp_buff *xdp,
->  		    struct bpf_prog *prog);
-> +int xdp_do_redirect_frame(struct net_device *dev,
-> +			  struct xdp_buff *xdp,
-> +			  struct xdp_frame *xdpf,
-> +			  struct bpf_prog *prog);
-
-I don't really like that we are passing both the xdp_buff ptr and
-xdp_frame *xdpf around when one is always null it looks like?
-
->  void xdp_do_flush(void);
->  =
-
->  /* The xdp_do_flush_map() helper has been renamed to drop the _map suf=
-fix, as
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 1e86130a913a..d8fe74cc8b66 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3957,14 +3957,13 @@ u32 xdp_master_redirect(struct xdp_buff *xdp)
->  }
->  EXPORT_SYMBOL_GPL(xdp_master_redirect);
->  =
-
-> -int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
-> -		    struct bpf_prog *xdp_prog)
-> +static int __xdp_do_redirect(struct net_device *dev, struct xdp_buff *=
-xdp,
-> +			     struct xdp_frame *xdpf, struct bpf_prog *xdp_prog)
->  {
->  	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
->  	enum bpf_map_type map_type =3D ri->map_type;
->  	void *fwd =3D ri->tgt_value;
->  	u32 map_id =3D ri->map_id;
-> -	struct xdp_frame *xdpf;
->  	struct bpf_map *map;
->  	int err;
->  =
-
-> @@ -3976,10 +3975,12 @@ int xdp_do_redirect(struct net_device *dev, str=
-uct xdp_buff *xdp,
->  		goto out;
->  	}
->  =
-
-> -	xdpf =3D xdp_convert_buff_to_frame(xdp);
-> -	if (unlikely(!xdpf)) {
-> -		err =3D -EOVERFLOW;
-> -		goto err;
-> +	if (!xdpf) {
-> +		xdpf =3D xdp_convert_buff_to_frame(xdp);
-> +		if (unlikely(!xdpf)) {
-> +			err =3D -EOVERFLOW;
-> +			goto err;
-> +		}
-
-This is a bit ugly imo. Can we just decide what gets handed to the functi=
-on
-rather than having this mid function conversion?
-
-If we can't get consistency at least a xdpf_do_redirect() and then make
-a xdp_do_redirect( return xdpf_do_redirect(xdp_convert_buff_to_frame(xdp)=
-))
-that just does the conversion and passes it through.
-
-Or did I miss something?
-
->  	}
->  =
-
->  	switch (map_type) {
-> @@ -4024,8 +4025,21 @@ int xdp_do_redirect(struct net_device *dev, stru=
-ct xdp_buff *xdp,
->  	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map_type, map_id, ri-=
->tgt_index, err);
->  	return err;
->  }
-> +
-> +int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
-> +		    struct bpf_prog *xdp_prog)
-> +{
-> +	return __xdp_do_redirect(dev, xdp, NULL, xdp_prog);
-
-same here. Just do the conversion and call,
-
- __xdpf_do_redirect(dev, xdpf, xdp_prog)
-
-skipping the null pointr?
-
-> +}
->  EXPORT_SYMBOL_GPL(xdp_do_redirect);
->  =
-
-> +int xdp_do_redirect_frame(struct net_device *dev, struct xdp_buff *xdp=
-,
-> +			  struct xdp_frame *xdpf, struct bpf_prog *xdp_prog)
-> +{
-> +	return __xdp_do_redirect(dev, xdp, xdpf, xdp_prog);
-> +}
-> +EXPORT_SYMBOL_GPL(xdp_do_redirect_frame);
-> +
->  static int xdp_do_generic_redirect_map(struct net_device *dev,
->  				       struct sk_buff *skb,
->  				       struct xdp_buff *xdp,
-> -- =
-
-> 2.34.0
-> =
-
-
-Thanks,
-John
+> Andrii Nakryiko (12):
+>   libbpf: fix bpf_prog_load() log_buf logic for log_level 0
+>   libbpf: add OPTS-based bpf_btf_load() API
+>   libbpf: allow passing preallocated log_buf when loading BTF into
+>     kernel
+>   libbpf: allow passing user log setting through bpf_object_open_opts
+>   libbpf: improve logging around BPF program loading
+>   libbpf: preserve kernel error code and remove kprobe prog type
+>     guessing
+>   libbpf: add per-program log buffer setter and getter
+>   libbpf: deprecate bpf_object__load_xattr()
+>   selftests/bpf: replace all uses of bpf_load_btf() with bpf_btf_load()
+>   selftests/bpf: add test for libbpf's custom log_buf behavior
+>   selftests/bpf: remove the only use of deprecated
+>     bpf_object__load_xattr()
+>   bpftool: switch bpf_object__load_xattr() to bpf_object__load()
+>
+>  tools/bpf/bpftool/gen.c                       |  11 +-
+>  tools/bpf/bpftool/prog.c                      |  24 +--
+>  tools/bpf/bpftool/struct_ops.c                |  15 +-
+>  tools/lib/bpf/bpf.c                           |  88 ++++++--
+>  tools/lib/bpf/bpf.h                           |  22 +-
+>  tools/lib/bpf/btf.c                           |  78 ++++---
+>  tools/lib/bpf/libbpf.c                        | 194 ++++++++++++------
+>  tools/lib/bpf/libbpf.h                        |  49 ++++-
+>  tools/lib/bpf/libbpf.map                      |   3 +
+>  tools/lib/bpf/libbpf_internal.h               |   1 +
+>  tools/lib/bpf/libbpf_probes.c                 |   2 +-
+>  .../selftests/bpf/map_tests/sk_storage_map.c  |   2 +-
+>  .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |   6 +-
+>  tools/testing/selftests/bpf/prog_tests/btf.c  |  50 +++--
+>  .../selftests/bpf/prog_tests/log_buf.c        | 137 +++++++++++++
+>  .../selftests/bpf/progs/test_log_buf.c        |  24 +++
+>  tools/testing/selftests/bpf/test_verifier.c   |   2 +-
+>  tools/testing/selftests/bpf/testing_helpers.c |  10 +-
+>  18 files changed, 544 insertions(+), 174 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/log_buf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_log_buf.c
+>
+> --
+> 2.30.2
+>
