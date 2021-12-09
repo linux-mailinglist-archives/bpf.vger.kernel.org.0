@@ -2,59 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3DA46E2DA
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 08:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE73D46E2E5
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 08:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhLIHFJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 02:05:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42230 "EHLO
+        id S233461AbhLIHKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 02:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbhLIHFI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Dec 2021 02:05:08 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1140FC061746
-        for <bpf@vger.kernel.org>; Wed,  8 Dec 2021 23:01:36 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id v64so11477959ybi.5
-        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 23:01:36 -0800 (PST)
+        with ESMTP id S229919AbhLIHKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 02:10:32 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F38C061746
+        for <bpf@vger.kernel.org>; Wed,  8 Dec 2021 23:06:59 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id f9so11466341ybq.10
+        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 23:06:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gl46sy3Tp3/9p2Fz4Kl8JCRCuuyxdsKVd00JAcm+nq8=;
-        b=FlP2N1tH9bmmUrPPN3oJX+CZVmaTxgZVlEDXLKcv0T54OkGJHpYd5FwBcWiYtuILW5
-         J+PI/l/TFbYvBVh59ICUR1KZBiVtWEkHEmPclNxe0FFPMXMOxqP+Xggg+op6QMV/51vX
-         g7HXzOFJaJVaTMMKKionssNF8nvtgH8U1rALD0N6vc7NrqFdluC6nZiYZlB7Q5LqqcHe
-         GM8YLuW0ji0nLTFiYt0syPMeJr14WowqZqyIRJi7Vl6g5CYm86HFFyCdIRQl+AlzIGEB
-         VVajkcL7FCWnMAomKWaK10JkjWtIGdS2cDyUkQm2mGY7DQaCdIlaMUfRBqScAaNWCne/
-         EN5A==
+        bh=Bh7KiQx9BaUsPvjfimgMkq68BMARjRsaI0nKpdgB4T8=;
+        b=RqIyjTCl+R2tHrOPrR7w01v00TLY92K4SrCU9aaDRXXvD+ls5tK4w8kIgWazNbJK2q
+         1+Dux25VqTr1naB0f1hoMeMN6cREukaUJvJyGvRFsxz2csMe8hqL8bqxMjIGQ7FVPQr9
+         JystjwcX8tug20B2PI2lvirK9Q2xsTwPGdiW6xEzmmqWAFElHLvtN4WukNAVWI1nJQcP
+         hk1eaN4lALa9t8VEiGQEqiDod5mtSgOqPvcFwdDGVxVoOD8vqiv1oo3RHExWLnvhoOd2
+         i9AsPvLxqqFIXeZXNHwjSBM6hB9HPI1qKDlOVnvw+d/fzZu4bX+Q3WRsrdA8oAp3F2Ov
+         8YIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gl46sy3Tp3/9p2Fz4Kl8JCRCuuyxdsKVd00JAcm+nq8=;
-        b=YjuTlUS06VnWEKEah0nhHeIqLPYMbXqap7FfSybqsunZhYoJGA1n4AHYPh1u0qYVPy
-         AayjG5AP2Cosdbm63gG+R8iElp6NowdG5uqxeKDc4fDxJKGVe4MlbzsmGf4x/u2IztiG
-         r/JUbsPuEpmQKv5n/xifDwKn1+zd+99p162eSNjl9dKxU6t6En30CGO6BFio/UJdXpgy
-         ZI6qbUbeH8KDhQS/mpOSj5mqj/dZitTxAwmlkhCZVAQHrPQkC68v+BokVhBG1O2Bdkwt
-         RZUQRUYhNs4U0Xt+ilxNEWMzAiG5HdJJXF8JIMCP7XIIni17q64Rv7i+hWQtZCCg0d9P
-         YGeA==
-X-Gm-Message-State: AOAM530LbdkE7c2Zhix3zy98/9o5vkBxSgxDEFPPDm+ofrFiCFyVGci8
-        RFRdVSTe07iAqyYUalG8ksh+t7YuJ4lOzYAvyZA=
-X-Google-Smtp-Source: ABdhPJxsB+jNHQ/BahEhtqDDljBRWGQPvhopAV+swqe6Noe6sYenzRCjKcCJf5sOkDme4ErgN7fkZeKLJwY2hAcfxyc=
-X-Received: by 2002:a5b:1c2:: with SMTP id f2mr4563066ybp.150.1639033295192;
- Wed, 08 Dec 2021 23:01:35 -0800 (PST)
+        bh=Bh7KiQx9BaUsPvjfimgMkq68BMARjRsaI0nKpdgB4T8=;
+        b=Tp4JDtyIck5hfH+mtilXMnhdZPKOeTWmW5exqan350/dVgUT9zIy87rvKxDsdtQ0H1
+         hoPLEDcEqvh+GUwpnQ0pu5Cax+bhfbH5AT+FjqAw/PBN+bSuLtXn6NM4tTMd+s3gNc2b
+         TVZwWhPYN3PXBE+yU3IuInHy7P878+BNXypydjaCsQpbZQiFkGnizU1Y0O8D1ttZSsUv
+         a0xw7B19lm2W2XgsVwQEWTl28eDypCFn2IaQfAesQzqc2RHdxKY5wJFttK8vEcVMh+S2
+         QABGVoyAG0Uo9EJjMyjtm9KknO8uuIFk0Jj5p84kggglJYcDFHyjw0J73aCB2X3TIvVf
+         Eciw==
+X-Gm-Message-State: AOAM533nfqpd9V1Bbj6+5jOEnOo5Yuvu2G4iTwwpHWdi2pY7iaR5ZapT
+        QPAakdCotkvPSUqLP1OHAVLiqBQb5Bgnr9q6TJw=
+X-Google-Smtp-Source: ABdhPJwcA8B2C/iSuGMQA/ihYpDon5Y3AXBJWEreIkibtkJ5VL2KBdeM0yQ4Tn8TtK5uvIvr8StN8kWVxscU560pmSg=
+X-Received: by 2002:a25:cf46:: with SMTP id f67mr4189669ybg.362.1639033618497;
+ Wed, 08 Dec 2021 23:06:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20211209004920.4085377-1-andrii@kernel.org> <20211209004920.4085377-2-andrii@kernel.org>
- <61b1a1844d712_ae146208b@john.notmuch>
-In-Reply-To: <61b1a1844d712_ae146208b@john.notmuch>
+References: <20211209050403.1770836-1-yhs@fb.com>
+In-Reply-To: <20211209050403.1770836-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Dec 2021 23:01:23 -0800
-Message-ID: <CAEf4Bzb0Miw3uOfSDv3NRWHmMaQFFyZhOw1N8FoYYWjJ+kL1AQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 01/12] libbpf: fix bpf_prog_load() log_buf
- logic for log_level 0
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 8 Dec 2021 23:06:47 -0800
+Message-ID: <CAEf4BzZ7RmpE1k1+f-3AE=QN3p3Wqa78KPh8xC2Euzu-iua8PQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix a compilation warning
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -62,70 +60,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 8, 2021 at 10:26 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, Dec 8, 2021 at 9:04 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Andrii Nakryiko wrote:
-> > To unify libbpf APIs behavior w.r.t. log_buf and log_level, fix
-> > bpf_prog_load() to follow the same logic as bpf_btf_load() and
-> > high-level bpf_object__load() API will follow in the subsequent patches:
-> >   - if log_level is 0 and non-NULL log_buf is provided by a user, attempt
-> >     load operation initially with no log_buf and log_level set;
-> >   - if successful, we are done, return new FD;
-> >   - on error, retry the load operation with log_level bumped to 1 and
-> >     log_buf set; this way verbose logging will be requested only when we
-> >     are sure that there is a failure, but will be fast in the
-> >     common/expected success case.
-> >
-> > Of course, user can still specify log_level > 0 from the very beginning
-> > to force log collection.
-> >
-> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
+> The following warning is triggered when I used clang compiler
+> to build the selftest.
 >
-> [...]
+>   /.../prog_tests/btf_dedup_split.c:368:6: warning: variable 'btf2' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+>         if (!ASSERT_OK(err, "btf_dedup"))
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /.../prog_tests/btf_dedup_split.c:424:12: note: uninitialized use occurs here
+>         btf__free(btf2);
+>                   ^~~~
+>   /.../prog_tests/btf_dedup_split.c:368:2: note: remove the 'if' if its condition is always false
+>         if (!ASSERT_OK(err, "btf_dedup"))
+>         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /.../prog_tests/btf_dedup_split.c:343:25: note: initialize the variable 'btf2' to silence this warning
+>         struct btf *btf1, *btf2;
+>                                ^
+>                                 = NULL
 >
-> > @@ -366,16 +368,17 @@ int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
-> >                       goto done;
-> >       }
-> >
-> > -     if (log_level || !log_buf)
-> > -             goto done;
-> > +     if (log_level == 0 && !log_buf) {
->                               ^^^^^^^^
+> Initialize local variable btf2 = NULL and the warning is gone.
 >
-> with non-Null log buf? Seems comment and above are out of sync?
->
-> Should it be, if (log_level == 0 && log_buf) { ... }
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-Doh... yeah, it should. Apparently inverting a boolean expression is
-non-trivial :) I'll add low-level bpf_prog_load() (and maybe
-bpf_btf_load() while at it) log_buf tests to log_buf.c in selftests to
-catch something like this better, thanks for catching!
+Added:
 
+Fixes: 9a49afe6f5a5 ("selftests/bpf: Add btf_dedup case with
+duplicated structs within CU")
+
+and pushed to bpf-next. Thanks.
+
+>  tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> > +             /* log_level == 0 with non-NULL log_buf requires retrying on error
-> > +              * with log_level == 1 and log_buf/log_buf_size set, to get details of
-> > +              * failure
-> > +              */
-> > +             attr.log_buf = ptr_to_u64(log_buf);
-> > +             attr.log_size = log_size;
-> > +             attr.log_level = 1;
-> >
-> > -     /* Try again with log */
-> > -     log_buf[0] = 0;
-> > -     attr.log_buf = ptr_to_u64(log_buf);
-> > -     attr.log_size = log_size;
-> > -     attr.log_level = 1;
-> > -
-> > -     fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
-> > +             fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
-> > +     }
-> >  done:
-> >       /* free() doesn't affect errno, so we don't need to restore it */
-> >       free(finfo);
-> > --
-> > 2.30.2
-> >
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+> index 878a864dae3b..90aac437576d 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+> @@ -340,7 +340,7 @@ static void btf_add_dup_struct_in_cu(struct btf *btf, int start_id)
 >
+>  static void test_split_dup_struct_in_cu()
+>  {
+> -       struct btf *btf1, *btf2;
+> +       struct btf *btf1, *btf2 = NULL;
+>         int err;
+>
+>         /* generate the base data.. */
+> --
+> 2.30.2
 >
