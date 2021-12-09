@@ -2,212 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C205A46F426
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 20:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC7B46F435
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 20:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhLITmv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 9 Dec 2021 14:42:51 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27626 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230027AbhLITmt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 14:42:49 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B9Hkmoq021564
-        for <bpf@vger.kernel.org>; Thu, 9 Dec 2021 11:39:15 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cujfxawen-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 11:39:15 -0800
-Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 9 Dec 2021 11:39:14 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 8BDDFC6DAE7E; Thu,  9 Dec 2021 11:39:06 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v3 bpf-next 12/12] bpftool: switch bpf_object__load_xattr() to bpf_object__load()
-Date:   Thu, 9 Dec 2021 11:38:40 -0800
-Message-ID: <20211209193840.1248570-13-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211209193840.1248570-1-andrii@kernel.org>
-References: <20211209193840.1248570-1-andrii@kernel.org>
+        id S230357AbhLITsk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 14:48:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhLITsk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 14:48:40 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B58AC061746
+        for <bpf@vger.kernel.org>; Thu,  9 Dec 2021 11:45:06 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 131so16210527ybc.7
+        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 11:45:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z6A1pBLAI/+q+d47N0dS4qLy1KdbSGVNOCWIh561NQ0=;
+        b=PAIvnypVtRPUhZdLSK1Emy1yyZBlYss9xkCpz4kPgNybJkPGBEYzwd2ygyP1dthUG4
+         AKToNh3g3xKsmFlJ5Ks8LOvqmS34gdSASFAb+3i7rpYotATIkgS0CzWjaBYaimJPTZMw
+         BwBaWmJ1YtZYOrc9j9Nj9gxXdN5RLtx5rrn8djomPi4ooB5ScGo16YPh2bQE6qQBrXZV
+         WFayuNv9L94y+oHcbBToCzxGl38ZHIHWdjzgkfsH4cPhAFvm8lu9UuCPR52JLjWj+XKN
+         HYr2aK4+BseSGr1DmEC7wNOWYyreEMWMMO67uootIwZXrt0Wlbxhf9ec6CU395oyVuEM
+         CvbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z6A1pBLAI/+q+d47N0dS4qLy1KdbSGVNOCWIh561NQ0=;
+        b=Dn2aQ/Vow/2qov7UjkT2Nobpi7OedsIzV3nVjD+iPGITeAA9UBvhN5z110WH3M6L6K
+         x/71e32EXVt30oPn3T+p/1n3p+2H9jlILkCHL80iKU/hUWyXDwtWVL77rN9ZHhSxCCCW
+         SS8Nad7bfNGxqWg9bGLMgGCRgRnVbjjnDrX4ujfUlQ1moJTq19856ggRbBZ0Y0/s+uax
+         PvqnOacg4wr1aS24DBjYxR1hn/BEP6rWpqfkU0X7JIOYOCqYX/JkkniZ8jLI2jjkdqY8
+         DnPBDwRTXiGrNaMKFtDSrkpqjgJKZV3VRlnJq/c/ELQpfQkl97MOTiqBKSwZEGufZ2pb
+         5Qlg==
+X-Gm-Message-State: AOAM531GMA8d9PGr+SlFS0vwPYByf8aLg/YVIXv/bjucVXschV3P9VkK
+        BvDaOcV5Zt6AdnYHTTFQTQ/Myd/AYasFPmI8W8s=
+X-Google-Smtp-Source: ABdhPJxDcyCX/vyjpD/GU8kOba1PEBQ6s0HoZJaHmoGE3jEDnc9jxbT5WsriJ8v4PSY0bx6zfF97AL5rjZeVMZerAgI=
+X-Received: by 2002:a25:e406:: with SMTP id b6mr8845543ybh.529.1639079105498;
+ Thu, 09 Dec 2021 11:45:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: 8xQB1AfvDqbNROiLwv0ygrqzrKWW7j-E
-X-Proofpoint-GUID: 8xQB1AfvDqbNROiLwv0ygrqzrKWW7j-E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-09_09,2021-12-08_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
- impostorscore=0 bulkscore=0 spamscore=0 mlxscore=0 malwarescore=0
- adultscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2112090101
-X-FB-Internal: deliver
+References: <20211209004920.4085377-1-andrii@kernel.org> <20211209004920.4085377-2-andrii@kernel.org>
+ <61b1a1844d712_ae146208b@john.notmuch> <CAEf4Bzb0Miw3uOfSDv3NRWHmMaQFFyZhOw1N8FoYYWjJ+kL1AQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb0Miw3uOfSDv3NRWHmMaQFFyZhOw1N8FoYYWjJ+kL1AQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 9 Dec 2021 11:44:54 -0800
+Message-ID: <CAEf4BzaScCJK6kC1hh5gPxxTzvMDpN3VBJzp3RW0KyAMbx3dXw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 01/12] libbpf: fix bpf_prog_load() log_buf
+ logic for log_level 0
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch all the uses of to-be-deprecated bpf_object__load_xattr() into
-a simple bpf_object__load() calls with optional log_level passed through
-open_opts.kernel_log_level, if -d option is specified.
+On Wed, Dec 8, 2021 at 11:01 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Dec 8, 2021 at 10:26 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Andrii Nakryiko wrote:
+> > > To unify libbpf APIs behavior w.r.t. log_buf and log_level, fix
+> > > bpf_prog_load() to follow the same logic as bpf_btf_load() and
+> > > high-level bpf_object__load() API will follow in the subsequent patches:
+> > >   - if log_level is 0 and non-NULL log_buf is provided by a user, attempt
+> > >     load operation initially with no log_buf and log_level set;
+> > >   - if successful, we are done, return new FD;
+> > >   - on error, retry the load operation with log_level bumped to 1 and
+> > >     log_buf set; this way verbose logging will be requested only when we
+> > >     are sure that there is a failure, but will be fast in the
+> > >     common/expected success case.
+> > >
+> > > Of course, user can still specify log_level > 0 from the very beginning
+> > > to force log collection.
+> > >
+> > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> >
+> > [...]
+> >
+> > > @@ -366,16 +368,17 @@ int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+> > >                       goto done;
+> > >       }
+> > >
+> > > -     if (log_level || !log_buf)
+> > > -             goto done;
+> > > +     if (log_level == 0 && !log_buf) {
+> >                               ^^^^^^^^
+> >
+> > with non-Null log buf? Seems comment and above are out of sync?
+> >
+> > Should it be, if (log_level == 0 && log_buf) { ... }
+>
+> Doh... yeah, it should. Apparently inverting a boolean expression is
+> non-trivial :) I'll add low-level bpf_prog_load() (and maybe
+> bpf_btf_load() while at it) log_buf tests to log_buf.c in selftests to
+> catch something like this better, thanks for catching!
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/bpf/bpftool/gen.c        | 11 ++++-------
- tools/bpf/bpftool/prog.c       | 24 ++++++++++--------------
- tools/bpf/bpftool/struct_ops.c | 15 +++++++--------
- 3 files changed, 21 insertions(+), 29 deletions(-)
+I did write selftest and of course there was another bug in
+bpf_btf_load() (log_level wasn't set to 1 on retry). So yay tests.
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 997a2865e04a..b4695df2ea3d 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -486,7 +486,6 @@ static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
- 
- static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *header_guard)
- {
--	struct bpf_object_load_attr load_attr = {};
- 	DECLARE_LIBBPF_OPTS(gen_loader_opts, opts);
- 	struct bpf_map *map;
- 	char ident[256];
-@@ -496,12 +495,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 	if (err)
- 		return err;
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	err = bpf_object__load_xattr(&load_attr);
-+	err = bpf_object__load(obj);
- 	if (err) {
- 		p_err("failed to load object file");
- 		goto out;
-@@ -719,6 +713,9 @@ static int do_skeleton(int argc, char **argv)
- 	if (obj_name[0] == '\0')
- 		get_obj_name(obj_name, file);
- 	opts.object_name = obj_name;
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		opts.kernel_log_level = 1 + 2 + 4;
- 	obj = bpf_object__open_mem(obj_data, file_sz, &opts);
- 	err = libbpf_get_error(obj);
- 	if (err) {
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 45ccc254e69f..f874896c4154 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1464,7 +1464,6 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts,
- 		.relaxed_maps = relaxed_maps,
- 	);
--	struct bpf_object_load_attr load_attr = { 0 };
- 	enum bpf_attach_type expected_attach_type;
- 	struct map_replace *map_replace = NULL;
- 	struct bpf_program *prog = NULL, *pos;
-@@ -1598,6 +1597,10 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 
- 	set_max_rlimit();
- 
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		open_opts.kernel_log_level = 1 + 2 + 4;
-+
- 	obj = bpf_object__open_file(file, &open_opts);
- 	if (libbpf_get_error(obj)) {
- 		p_err("failed to open object file");
-@@ -1677,12 +1680,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 		goto err_close_obj;
- 	}
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	err = bpf_object__load_xattr(&load_attr);
-+	err = bpf_object__load(obj);
- 	if (err) {
- 		p_err("failed to load object file");
- 		goto err_close_obj;
-@@ -1809,7 +1807,6 @@ static int do_loader(int argc, char **argv)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
- 	DECLARE_LIBBPF_OPTS(gen_loader_opts, gen);
--	struct bpf_object_load_attr load_attr = {};
- 	struct bpf_object *obj;
- 	const char *file;
- 	int err = 0;
-@@ -1818,6 +1815,10 @@ static int do_loader(int argc, char **argv)
- 		return -1;
- 	file = GET_ARG();
- 
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		open_opts.kernel_log_level = 1 + 2 + 4;
-+
- 	obj = bpf_object__open_file(file, &open_opts);
- 	if (libbpf_get_error(obj)) {
- 		p_err("failed to open object file");
-@@ -1828,12 +1829,7 @@ static int do_loader(int argc, char **argv)
- 	if (err)
- 		goto err_close_obj;
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	err = bpf_object__load_xattr(&load_attr);
-+	err = bpf_object__load(obj);
- 	if (err) {
- 		p_err("failed to load object file");
- 		goto err_close_obj;
-diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
-index cbdca37a53f0..2f693b082bdb 100644
---- a/tools/bpf/bpftool/struct_ops.c
-+++ b/tools/bpf/bpftool/struct_ops.c
-@@ -479,7 +479,7 @@ static int do_unregister(int argc, char **argv)
- 
- static int do_register(int argc, char **argv)
- {
--	struct bpf_object_load_attr load_attr = {};
-+	LIBBPF_OPTS(bpf_object_open_opts, open_opts);
- 	const struct bpf_map_def *def;
- 	struct bpf_map_info info = {};
- 	__u32 info_len = sizeof(info);
-@@ -494,18 +494,17 @@ static int do_register(int argc, char **argv)
- 
- 	file = GET_ARG();
- 
--	obj = bpf_object__open(file);
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		open_opts.kernel_log_level = 1 + 2 + 4;
-+
-+	obj = bpf_object__open_file(file, &open_opts);
- 	if (libbpf_get_error(obj))
- 		return -1;
- 
- 	set_max_rlimit();
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	if (bpf_object__load_xattr(&load_attr)) {
-+	if (bpf_object__load(obj)) {
- 		bpf_object__close(obj);
- 		return -1;
- 	}
--- 
-2.30.2
+BTW, if anyone runs into problems like "why the error is returned from
+bpf() syscall if it shouldn't?", I highly recommend trying retsnoop
+([0]) to save lots of time trying to pinpoint what exactly is
+happening. In this case, just running
 
+sudo ./retsnoop -e '*sys_bpf' -a ':kernel/bpf/btf.c' -a
+':kernel/bpf/verifier.c' -v -n test_progs --lbr
+
+helped to pinpoint exact log_level + log_buf check in btf_parse() that
+was failing, saving tons of time and making libbpf bug obvious.
+
+If you don't know even roughly where the problem is, use `sudo
+./retsnoop -c bpf -v` (probably with --lbr to see through function
+inlining, if your kernel is recent enough), this will attach to tons
+of functions (1500+) and will take a bit longer to start up, but will
+give you wider coverage.
+
+  [0] https://github.com/anakryiko/retsnoop
+
+>
+> >
+> > > +             /* log_level == 0 with non-NULL log_buf requires retrying on error
+> > > +              * with log_level == 1 and log_buf/log_buf_size set, to get details of
+> > > +              * failure
+> > > +              */
+> > > +             attr.log_buf = ptr_to_u64(log_buf);
+> > > +             attr.log_size = log_size;
+> > > +             attr.log_level = 1;
+> > >
+> > > -     /* Try again with log */
+> > > -     log_buf[0] = 0;
+> > > -     attr.log_buf = ptr_to_u64(log_buf);
+> > > -     attr.log_size = log_size;
+> > > -     attr.log_level = 1;
+> > > -
+> > > -     fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
+> > > +             fd = sys_bpf_prog_load(&attr, sizeof(attr), attempts);
+> > > +     }
+> > >  done:
+> > >       /* free() doesn't affect errno, so we don't need to restore it */
+> > >       free(finfo);
+> > > --
+> > > 2.30.2
+> > >
+> >
+> >
