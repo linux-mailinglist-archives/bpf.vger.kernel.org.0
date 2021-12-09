@@ -2,34 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C23346F227
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 18:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D698C46F229
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 18:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243101AbhLIRjU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 12:39:20 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51094 "EHLO
+        id S243104AbhLIRj1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 12:39:27 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22018 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237428AbhLIRjT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 12:39:19 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B96umYf031579
-        for <bpf@vger.kernel.org>; Thu, 9 Dec 2021 09:35:46 -0800
+        by vger.kernel.org with ESMTP id S237485AbhLIRj1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 12:39:27 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B95tFMS008907
+        for <bpf@vger.kernel.org>; Thu, 9 Dec 2021 09:35:53 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=MHiYUrTSBNS/DVwufhBw+MD+OdylGab+aDrTgbF3SOQ=;
- b=NTZ7wFg/4z4MANRQFxriRee1dULU08ZSAYXCxec6H+gJbTuXY2crXF+4U6AynPgafRY0
- SdfbJ1QZ8eu3SRQIWkn3JvqsbOviCr200zva8fqBffFrPbBUbcQn5qj/gYOYvmfQpJnZ
- mPXyvelQ4OlsNSmw3WkLSSymh3258QnLByU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cucyduw7e-3
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=VIE8Rmhajdks4rPRsuVN3cxGrCQtlpT82R49vJX6/rs=;
+ b=kbNZyTInWZ4QB64SrH01yfJpIQuLsgTVZGhIi8nAiaU7mHMzsuCZf278/Br8LKhZMTFl
+ TL22SaH+uHpuvzyN1HFSY3Yyfwwb27ewt2sop5iRlfCR3sVjLe72VynFMisKYsqmXGKY
+ IkeWK+Dohagxd4dgqbcbPu5OMGGYgVlqwzA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cuc2nv4ms-14
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 09:35:45 -0800
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 09:35:53 -0800
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 9 Dec 2021 09:35:42 -0800
+ 15.1.2308.20; Thu, 9 Dec 2021 09:35:49 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 3D83F38B9CD0; Thu,  9 Dec 2021 09:35:37 -0800 (PST)
+        id 79C2738B9D06; Thu,  9 Dec 2021 09:35:43 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
@@ -38,25 +39,27 @@ To:     Alexei Starovoitov <ast@kernel.org>,
 CC:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
         "Jose E . Marchesi" <jose.marchesi@oracle.com>,
         <kernel-team@fb.com>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: bpf: add __user tagging support in vmlinux BTF
-Date:   Thu, 9 Dec 2021 09:35:37 -0800
-Message-ID: <20211209173537.1525283-1-yhs@fb.com>
+Subject: [PATCH bpf-next 1/5] compiler_types: define __user as __attribute__((btf_type_tag("user")))
+Date:   Thu, 9 Dec 2021 09:35:43 -0800
+Message-ID: <20211209173543.1526390-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211209173537.1525283-1-yhs@fb.com>
+References: <20211209173537.1525283-1-yhs@fb.com>
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: DxJ4zaJFQbjd-oHC93kvzrlZzBSxp5LH
-X-Proofpoint-ORIG-GUID: DxJ4zaJFQbjd-oHC93kvzrlZzBSxp5LH
+X-Proofpoint-GUID: 5yfsJT2fHYV9aKSCSiVXyoYMtylWToqa
+X-Proofpoint-ORIG-GUID: 5yfsJT2fHYV9aKSCSiVXyoYMtylWToqa
 Content-Transfer-Encoding: quoted-printable
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-09_08,2021-12-08_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1015
- lowpriorityscore=0 spamscore=0 mlxlogscore=891 suspectscore=0
- malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0 phishscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ definitions=2021-12-09_07,2021-12-08_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=989 spamscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0
+ clxscore=1015 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2110150000 definitions=main-2112090091
 X-FB-Internal: deliver
 Precedence: bulk
@@ -92,18 +95,35 @@ is implemented in clang ([4]). For example, if we have
   #define __user __attribute__((btf_type_tag("user")))
 during kernel compilation, the attribute "user" information will
 be preserved in dwarf. After pahole converting dwarf to BTF, __user
-information will be available in vmlinux BTF and such information
-can be used by bpf verifier, perf/probe or other use cases.
+information will be available in vmlinux BTF.
 
-Currently btf_type_tag is only supported in clang (>=3D clang14) and
+The following is an example with latest upstream clang (clang14) and
+pahole 1.23:
+
+  [$ ~] cat test.c
+  #define __user __attribute__((btf_type_tag("user")))
+  int foo(int __user *arg) {
+          return *arg;
+  }
+  [$ ~] clang -O2 -g -c test.c
+  [$ ~] pahole -JV test.o
+  ...
+  [1] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
+  [2] TYPE_TAG user type_id=3D1
+  [3] PTR (anon) type_id=3D2
+  [4] FUNC_PROTO (anon) return=3D1 args=3D(3 arg)
+  [5] FUNC foo type_id=3D4
+  [$ ~]
+
+You can see for the function argument "int __user *arg", its type is
+described as
+  PTR -> TYPE_TAG(user) -> INT
+The kernel can use this information for bpf verification or other
+use cases.
+
+Current btf_type_tag is only supported in clang (>=3D clang14) and
 pahole (>=3D 1.23). gcc support is also proposed and under development ([5]=
 ).
-
-In the rest of patch set, Patch 1 added support of __user btf_type_tag
-during compilation. Patch 2 added bpf verifier support to utilize __user
-tag information to reject bpf programs not using proper helper to access
-user memories. Patches 3-5 are for bpf selftests which demonstrate verifier
-can reject direct user memory accesses.
 
   [1] http://lkml.kernel.org/r/155789874562.26965.10836126971405890891.stgi=
 t@devnote2
@@ -114,32 +134,49 @@ t@devnote2
   [4] https://reviews.llvm.org/D111199
   [5] https://www.spinics.net/lists/bpf/msg45773.html
 
-Yonghong Song (5):
-  compiler_types: define __user as __attribute__((btf_type_tag("user")))
-  bpf: reject program if a __user tagged memory accessed in kernel way
-  selftests/bpf: rename btf_decl_tag.c to test_btf_decl_tag.c
-  selftests/bpf: add a selftest with __user tag
-  selftests/bpf: specify pahole version requirement for btf_tag test
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ include/linux/compiler_types.h | 3 +++
+ lib/Kconfig.debug              | 8 ++++++++
+ 2 files changed, 11 insertions(+)
 
- include/linux/bpf.h                           | 12 +++-
- include/linux/bpf_verifier.h                  |  1 +
- include/linux/btf.h                           |  5 ++
- include/linux/compiler_types.h                |  3 +
- kernel/bpf/btf.c                              | 40 +++++++++---
- kernel/bpf/verifier.c                         | 35 ++++++++---
- lib/Kconfig.debug                             |  8 +++
- net/bpf/bpf_dummy_struct_ops.c                |  6 +-
- net/ipv4/bpf_tcp_ca.c                         |  6 +-
- tools/testing/selftests/bpf/README.rst        |  1 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 18 ++++++
- .../selftests/bpf/prog_tests/btf_tag.c        | 63 +++++++++++++++++--
- .../selftests/bpf/progs/btf_type_tag_user.c   | 29 +++++++++
- .../{btf_decl_tag.c =3D> test_btf_decl_tag.c}   |  0
- 14 files changed, 200 insertions(+), 27 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/btf_type_tag_user.c
- rename tools/testing/selftests/bpf/progs/{btf_decl_tag.c =3D> test_btf_dec=
-l_tag.c} (100%)
-
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 1d32f4c03c9e..67e5d29cd2a1 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -31,6 +31,9 @@ static inline void __chk_io_ptr(const volatile void __iom=
+em *ptr) { }
+ # define __kernel
+ # ifdef STRUCTLEAK_PLUGIN
+ #  define __user	__attribute__((user))
++# elif defined(CONFIG_DEBUG_INFO_BTF) && defined(CONFIG_PAHOLE_HAS_BTF_TAG=
+) && \
++	__has_attribute(btf_type_tag)
++#  define __user	__attribute__((btf_type_tag("user")))
+ # else
+ #  define __user
+ # endif
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 9ef7ce18b4f5..2b7b0bcb494a 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -324,6 +324,14 @@ config DEBUG_INFO_BTF
+ config PAHOLE_HAS_SPLIT_BTF
+ 	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-=
+9]+)/\1\2/'` -ge "119")
+=20
++config PAHOLE_HAS_BTF_TAG
++	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-=
+9]+)/\1\2/'` -ge "123")
++	depends on CC_IS_CLANG
++	help
++	  Decide whether pahole emits btf_tag attributes (btf_type_tag and
++	  btf_decl_tag) or not. Currently only clang compiler implements
++	  these attributes, so make the config depend on CC_IS_CLANG.
++
+ config DEBUG_INFO_BTF_MODULES
+ 	def_bool y
+ 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
 --=20
 2.30.2
 
