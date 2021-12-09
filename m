@@ -2,94 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CF946F728
-	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 00:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D394046F757
+	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 00:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbhLIXHS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 18:07:18 -0500
-Received: from www62.your-server.de ([213.133.104.62]:60744 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbhLIXHR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Dec 2021 18:07:17 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mvSRw-00065Z-Vc; Fri, 10 Dec 2021 00:03:41 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mvSRw-000LQG-OQ; Fri, 10 Dec 2021 00:03:40 +0100
-Subject: Re: [PATCH] bpf: return EOPNOTSUPP when JIT is needed and not
- possible
-To:     Ido Schimmel <idosch@idosch.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        linux-kernel@vger.kernel.org, kuba@kernel.org
-References: <20211209134038.41388-1-cascardo@canonical.com>
- <61b2536e5161d_6bfb2089@john.notmuch> <YbJZoK+qBEiLAxxM@shredder>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b294e66b-0bac-008b-52b4-6f1a90215baa@iogearbox.net>
-Date:   Fri, 10 Dec 2021 00:03:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S234281AbhLIX0h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 18:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229760AbhLIX0h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 18:26:37 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CAEC061746
+        for <bpf@vger.kernel.org>; Thu,  9 Dec 2021 15:23:03 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id a24so6575632qvb.5
+        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 15:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ZyFZflVxMIPFk789obWfFVWoQojaiSoWwfUf9YgFwM=;
+        b=TpeS+E25ibFTo5OJPHVlR9u+qOVOZTemxUnSyZiicUH0zO/7kA6sPUDW+TlM16/0Wz
+         7UmOwRVqN6JQmeS43kPERRJsqAmPwa3BXe5+qMfaJInHjePMcK/ywi6tk+ztRIGNdeJq
+         lqhqD4qRhoxh7+g8oX53P+p7iDkDA+zQBXXHdekeQpTqNqgreA1Ry9x57X2aPxjLnloY
+         GPdartiGzNoPpVhzROwfrKP7QpujiXTE9anvkLDWvyRfdoLPNTqXdJB/zewGiHLGd34L
+         B3QGanMUI7uUpWQlzhG+iiEscHpnwZMDJgT2mErUmhSTgKYgmCz+R7qPT5/GDlRSk3Kh
+         YzEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ZyFZflVxMIPFk789obWfFVWoQojaiSoWwfUf9YgFwM=;
+        b=6wKWfjdHFUWaODAH3b7D0ofsYaB6D9zvmT7NfKPmPTpj+/r/+7X8FCgbQyM4b/vrrM
+         eCGbCBJHAmdeMCX36PM/5HWmtPEI8URsPnxusyNfsUOgAVlc8vtRyG6BcVIyNfj9v21l
+         p9KcdsMmKzcCaiShFq3SuMlUyuS7KEYWN87p2qjH4tmy46UUL7tZVrpLl6qhA4PWQmZJ
+         qm/Vdhrs9f8ccm/sZKy/6h9vq6bYDIWyZzT2qaT1NPCC7uVIiPkZu4izGOjnsCpYCJw5
+         Vxqi/e8rGOZWltyQtwZlc3Xw673FatSPYRR5lXrEQ+4o+3TtOHb3oYcLRokEAZkdG30h
+         I+Dw==
+X-Gm-Message-State: AOAM531/tw/MMu1FsLCVzhCmFFDEGRlNOq/pmlFmHaGfIJ9j0K9QQzvq
+        KH7X0Dja6MZjJs7RtzpOAY7APrcGVxd5thPg
+X-Google-Smtp-Source: ABdhPJyzDM0vjDCPKsqsLd5AYM3hDhD+iXeYvkAYLlsTCrBSub7k3vvJ3DSeETMWc/fSI/ISyqIjxg==
+X-Received: by 2002:a05:6214:2623:: with SMTP id gv3mr21240720qvb.63.1639092182062;
+        Thu, 09 Dec 2021 15:23:02 -0800 (PST)
+Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
+        by smtp.gmail.com with ESMTPSA id f12sm720459qtj.93.2021.12.09.15.22.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Dec 2021 15:23:00 -0800 (PST)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, grantseltzer@gmail.com
+Subject: [PATCH bpf-next] libbpf: Add doc comments for bpf_program__(un)pin()
+Date:   Thu,  9 Dec 2021 18:22:22 -0500
+Message-Id: <20211209232222.541733-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <YbJZoK+qBEiLAxxM@shredder>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26378/Thu Dec  9 10:21:16 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/9/21 8:31 PM, Ido Schimmel wrote:
-> On Thu, Dec 09, 2021 at 11:05:18AM -0800, John Fastabend wrote:
->> Thadeu Lima de Souza Cascardo wrote:
->>> When a CBPF program is JITed and CONFIG_BPF_JIT_ALWAYS_ON is enabled, and
->>> the JIT fails, it would return ENOTSUPP, which is not a valid userspace
->>> error code.  Instead, EOPNOTSUPP should be returned.
->>>
->>> Fixes: 290af86629b2 ("bpf: introduce BPF_JIT_ALWAYS_ON config")
->>> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
->>> ---
->>>   kernel/bpf/core.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->>> index de3e5bc6781f..5c89bae0d6f9 100644
->>> --- a/kernel/bpf/core.c
->>> +++ b/kernel/bpf/core.c
->>> @@ -1931,7 +1931,7 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
->>>   		fp = bpf_int_jit_compile(fp);
->>>   		bpf_prog_jit_attempt_done(fp);
->>>   		if (!fp->jited && jit_needed) {
->>> -			*err = -ENOTSUPP;
->>> +			*err = -EOPNOTSUPP;
->>>   			return fp;
->>>   		}
->>>   	} else {
->>
->> It seems BPF subsys returns ENOTSUPP in multiple places. This fixes one
->> paticular case and is user facing. Not sure we want to one-off fix them
->> here creating user facing changes over multiple kernel versions. On the
->> fence with this one curious to see what others think. Haven't apps
->> already adapted to the current convention or they don't care?
-> 
-> Similar issue was discussed in the past. See:
-> https://lore.kernel.org/netdev/20191204.125135.750458923752225025.davem@davemloft.net/
+From: Grant Seltzer <grantseltzer@gmail.com>
 
-With regards to ENOTSUPP exposure, if the consensus is that we should fix all
-occurences over to EOPNOTSUPP even if they've been exposed for quite some time
-(Jakub?), we could give this patch a try maybe via bpf-next and see if anyone
-complains.
+This adds doc comments for the two bpf_program pinning functions,
+bpf_program__pin() and bpf_program__unpin()
 
-Thadeu, I think you also need to fix up BPF selftests as test_verifier, to mention
-one example (there are also bunch of others under tools/testing/selftests/), is
-checking for ENOTSUPP specifically..
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+---
+ tools/lib/bpf/libbpf.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-Thanks,
-Daniel
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 4802c1e73..d6518f30a 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -299,7 +299,31 @@ LIBBPF_DEPRECATED_SINCE(0, 7, "multi-instance bpf_program support is deprecated"
+ LIBBPF_API int bpf_program__unpin_instance(struct bpf_program *prog,
+ 					   const char *path,
+ 					   int instance);
++
++/**
++ * @brief **bpf_program__pin()** pins the BPF program to a file
++ * in the BPFFS specified by a path. This increments the programs
++ * reference count, allowing it to stay loaded after the process
++ * which loaded it has exited.
++ *
++ * @param prog BPF program to pin, must already be loaded
++ * @param path filepath in a BPF Filesystem
++ * @return int error code, 0 if no error (errno is also set to error)
++ */
+ LIBBPF_API int bpf_program__pin(struct bpf_program *prog, const char *path);
++
++/**
++ * @brief **bpf_program__unpin()** unpins the BPF program from a file
++ * in the BPFFS specified by a path. This decrements the programs
++ * reference count.
++ *
++ * The file pinning the BPF program can also be unlinked by a different
++ * process in which case this function will return an error
++ *
++ * @param prog BPF program to unpin
++ * @param path filepath to the pin in a BPF Filesystem
++ * @return int error code, 0 if no error (errno is also set to error)
++ */
+ LIBBPF_API int bpf_program__unpin(struct bpf_program *prog, const char *path);
+ LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
+ 
+-- 
+2.33.1
+
