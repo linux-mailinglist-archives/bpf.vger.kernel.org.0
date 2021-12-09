@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FB346F41A
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 20:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE7346F41B
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 20:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhLITm1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 9 Dec 2021 14:42:27 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9958 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230001AbhLITm1 (ORCPT
+        id S229707AbhLITm2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 9 Dec 2021 14:42:28 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17652 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229943AbhLITm1 (ORCPT
         <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 14:42:27 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B9HlQ5j032029
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 1B9ICaA3030868
         for <bpf@vger.kernel.org>; Thu, 9 Dec 2021 11:38:53 -0800
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cuc2nw3ag-1
+        by m0089730.ppops.net with ESMTP id 3cupvj8mxc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 11:38:53 -0800
 Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.20; Thu, 9 Dec 2021 11:38:52 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 4F698C6DADCD; Thu,  9 Dec 2021 11:38:47 -0800 (PST)
+        id 2F1BAC6DADE3; Thu,  9 Dec 2021 11:38:49 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v3 bpf-next 03/12] libbpf: allow passing preallocated log_buf when loading BTF into kernel
-Date:   Thu, 9 Dec 2021 11:38:31 -0800
-Message-ID: <20211209193840.1248570-4-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 04/12] libbpf: allow passing user log setting through bpf_object_open_opts
+Date:   Thu, 9 Dec 2021 11:38:32 -0800
+Message-ID: <20211209193840.1248570-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211209193840.1248570-1-andrii@kernel.org>
 References: <20211209193840.1248570-1-andrii@kernel.org>
@@ -38,196 +38,170 @@ Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: En9JQjL8T5j5xbaVvY5MoOplt9TOe7Ax
-X-Proofpoint-ORIG-GUID: En9JQjL8T5j5xbaVvY5MoOplt9TOe7Ax
+X-Proofpoint-ORIG-GUID: IORwgeSlxQUrpDxtprH28n8VWw-oxDyc
+X-Proofpoint-GUID: IORwgeSlxQUrpDxtprH28n8VWw-oxDyc
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2021-12-09_09,2021-12-08_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0
- clxscore=1034 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
+ suspectscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 phishscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
+ spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2110150000 definitions=main-2112090101
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add libbpf-internal btf_load_into_kernel() that allows to pass
-preallocated log_buf and custom log_level to be passed into kernel
-during BPF_BTF_LOAD call. When custom log_buf is provided,
-btf_load_into_kernel() won't attempt an retry with automatically
-allocated internal temporary buffer to capture BTF validation log.
+Allow users to provide their own custom log_buf, log_size, and log_level
+at bpf_object level through bpf_object_open_opts. This log_buf will be
+used during BTF loading. Subsequent patch will use same log_buf during
+BPF program loading, unless overriden at per-bpf_program level.
 
-It's important to note the relation between log_buf and log_level, which
-slightly deviates from stricter kernel logic. From kernel's POV, if
-log_buf is specified, log_level has to be > 0, and vice versa. While
-kernel has good reasons to request such "sanity, this, in practice, is
-a bit unconvenient and restrictive for libbpf's high-level bpf_object APIs.
+When such custom log_buf is provided, libbpf won't be attempting
+retrying loading of BTF to try to provide its own log buffer to capture
+kernel's error log output. User is responsible to provide big enough
+buffer, otherwise they run a risk of getting -ENOSPC error from the
+bpf() syscall.
 
-So libbpf will allow to set non-NULL log_buf and log_level == 0. This is
-fine and means to attempt to load BTF without logging requested, but if
-it failes, retry the load with custom log_buf and log_level 1. Similar
-logic will be implemented for program loading. In practice this means
-that users can provide custom log buffer just in case error happens, but
-not really request slower verbose logging all the time. This is also
-consistent with libbpf behavior when custom log_buf is not set: libbpf
-first tries to load everything with log_level=0, and only if error
-happens allocates internal log buffer and retries with log_level=1.
-
-Also, while at it, make BTF validation log more obvious and follow the log
-pattern libbpf is using for dumping BPF verifier log during
-BPF_PROG_LOAD. BTF loading resulting in an error will look like this:
-
-libbpf: BTF loading error: -22
-libbpf: -- BEGIN BTF LOAD LOG ---
-magic: 0xeb9f
-version: 1
-flags: 0x0
-hdr_len: 24
-type_off: 0
-type_len: 1040
-str_off: 1040
-str_len: 2063598257
-btf_total_size: 1753
-Total section length too long
--- END BTF LOAD LOG --
-libbpf: Error loading .BTF into kernel: -22. BTF is optional, ignoring.
-
-This makes it much easier to find relevant parts in libbpf log output.
+See also comments in bpf_object_open_opts regarding log_level and
+log_buf interactions.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/btf.c             | 78 +++++++++++++++++++++++----------
- tools/lib/bpf/libbpf_internal.h |  1 +
- 2 files changed, 56 insertions(+), 23 deletions(-)
+ tools/lib/bpf/bpf.h    |  3 ++-
+ tools/lib/bpf/libbpf.c | 24 +++++++++++++++++++++++-
+ tools/lib/bpf/libbpf.h | 41 ++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 65 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 0d7b16eab569..e171424192ae 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1124,54 +1124,86 @@ struct btf *btf__parse_split(const char *path, struct btf *base_btf)
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 5f7d9636643d..94e553a0ff9d 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -195,8 +195,9 @@ struct bpf_load_program_attr {
+ /* Flags to direct loading requirements */
+ #define MAPS_RELAX_COMPAT	0x01
  
- static void *btf_get_raw_data(const struct btf *btf, __u32 *size, bool swap_endian);
+-/* Recommend log buffer size */
++/* Recommended log buffer size */
+ #define BPF_LOG_BUF_SIZE (UINT32_MAX >> 8) /* verifier maximum in kernels <= 5.1 */
++
+ LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_load() instead")
+ LIBBPF_API int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
+ 				      char *log_buf, size_t log_buf_sz);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6db0b5e8540e..38999e9c08e0 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -573,6 +573,11 @@ struct bpf_object {
+ 	size_t btf_module_cnt;
+ 	size_t btf_module_cap;
  
--int btf__load_into_kernel(struct btf *btf)
-+int btf_load_into_kernel(struct btf *btf, char *log_buf, size_t log_sz, __u32 log_level)
- {
--	__u32 log_buf_size = 0, raw_size;
--	char *log_buf = NULL;
-+	LIBBPF_OPTS(bpf_btf_load_opts, opts);
-+	__u32 buf_sz = 0, raw_size;
-+	char *buf = NULL, *tmp;
- 	void *raw_data;
- 	int err = 0;
++	/* optional log settings passed to BPF_BTF_LOAD and BPF_PROG_LOAD commands */
++	char *log_buf;
++	size_t log_size;
++	__u32 log_level;
++
+ 	void *priv;
+ 	bpf_object_clear_priv_t clear_priv;
  
- 	if (btf->fd >= 0)
- 		return libbpf_err(-EEXIST);
-+	if (log_sz && !log_buf)
-+		return libbpf_err(-EINVAL);
- 
--retry_load:
--	if (log_buf_size) {
--		log_buf = malloc(log_buf_size);
--		if (!log_buf)
--			return libbpf_err(-ENOMEM);
--
--		*log_buf = 0;
--	}
--
-+	/* cache native raw data representation */
- 	raw_data = btf_get_raw_data(btf, &raw_size, false);
- 	if (!raw_data) {
- 		err = -ENOMEM;
- 		goto done;
+@@ -3017,7 +3022,9 @@ static int bpf_object__sanitize_and_load_btf(struct bpf_object *obj)
+ 		 */
+ 		btf__set_fd(kern_btf, 0);
+ 	} else {
+-		err = btf__load_into_kernel(kern_btf);
++		/* currently BPF_BTF_LOAD only supports log_level 1 */
++		err = btf_load_into_kernel(kern_btf, obj->log_buf, obj->log_size,
++					   obj->log_level ? 1 : 0);
  	}
--	/* cache native raw data representation */
- 	btf->raw_size = raw_size;
- 	btf->raw_data = raw_data;
+ 	if (sanitize) {
+ 		if (!err) {
+@@ -6932,6 +6939,9 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+ 	struct bpf_object *obj;
+ 	char tmp_name[64];
+ 	int err;
++	char *log_buf;
++	size_t log_size;
++	__u32 log_level;
  
--	btf->fd = bpf_load_btf(raw_data, raw_size, log_buf, log_buf_size, false);
-+retry_load:
-+	/* if log_level is 0, we won't provide log_buf/log_size to the kernel,
-+	 * initially. Only if BTF loading fails, we bump log_level to 1 and
-+	 * retry, using either auto-allocated or custom log_buf. This way
-+	 * non-NULL custom log_buf provides a buffer just in case, but hopes
-+	 * for successful load and no need for log_buf.
+ 	if (elf_version(EV_CURRENT) == EV_NONE) {
+ 		pr_warn("failed to init libelf for %s\n",
+@@ -6954,10 +6964,22 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+ 		pr_debug("loading object '%s' from buffer\n", obj_name);
+ 	}
+ 
++	log_buf = OPTS_GET(opts, kernel_log_buf, NULL);
++	log_size = OPTS_GET(opts, kernel_log_size, 0);
++	log_level = OPTS_GET(opts, kernel_log_level, 0);
++	if (log_size > UINT_MAX)
++		return ERR_PTR(-EINVAL);
++	if (log_size && !log_buf)
++		return ERR_PTR(-EINVAL);
++
+ 	obj = bpf_object__new(path, obj_buf, obj_buf_sz, obj_name);
+ 	if (IS_ERR(obj))
+ 		return obj;
+ 
++	obj->log_buf = log_buf;
++	obj->log_size = log_size;
++	obj->log_level = log_level;
++
+ 	btf_tmp_path = OPTS_GET(opts, btf_custom_path, NULL);
+ 	if (btf_tmp_path) {
+ 		if (strlen(btf_tmp_path) >= PATH_MAX) {
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 4802c1e736c3..5c984c63859f 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -108,8 +108,47 @@ struct bpf_object_open_opts {
+ 	 * struct_ops, etc) will need actual kernel BTF at /sys/kernel/btf/vmlinux.
+ 	 */
+ 	const char *btf_custom_path;
++	/* Pointer to a buffer for storing kernel logs for applicable BPF
++	 * commands. Valid kernel_log_size has to be specified as well and are
++	 * passed-through to bpf() syscall. Keep in mind that kernel might
++	 * fail operation with -ENOSPC error if provided buffer is too small
++	 * to contain entire log output.
++	 * See the comment below for kernel_log_level for interaction between
++	 * log_buf and log_level settings.
++	 *
++	 * If specified, this log buffer will be passed for:
++	 *   - each BPF progral load (BPF_PROG_LOAD) attempt, unless overriden
++	 *     with bpf_program__set_log() on per-program level, to get
++	 *     BPF verifier log output.
++	 *   - during BPF object's BTF load into kernel (BPF_BTF_LOAD) to get
++	 *     BTF sanity checking log.
++	 *
++	 * Each BPF command (BPF_BTF_LOAD or BPF_PROG_LOAD) will overwrite
++	 * previous contents, so if you need more fine-grained control, set
++	 * per-program buffer with bpf_program__set_log_buf() to preserve each
++	 * individual program's verification log. Keep using kernel_log_buf
++	 * for BTF verification log, if necessary.
 +	 */
-+	if (log_level) {
-+		/* if caller didn't provide custom log_buf, we'll keep
-+		 * allocating our own progressively bigger buffers for BTF
-+		 * verification log
-+		 */
-+		if (!log_buf) {
-+			buf_sz = max((__u32)BPF_LOG_BUF_SIZE, buf_sz * 2);
-+			tmp = realloc(buf, buf_sz);
-+			if (!tmp) {
-+				err = -ENOMEM;
-+				goto done;
-+			}
-+			buf = tmp;
-+			buf[0] = '\0';
-+		}
++	char *kernel_log_buf;
++	size_t kernel_log_size;
++	/*
++	 * Log level can be set independently from log buffer. Log_level=0
++	 * means that libbpf will attempt loading BTF or program without any
++	 * logging requested, but will retry with either its own or custom log
++	 * buffer, if provided, and log_level=1 on any error.
++	 * And vice versa, setting log_level>0 will request BTF or prog
++	 * loading with verbose log from the first attempt (and as such also
++	 * for successfully loaded BTF or program), and the actual log buffer
++	 * could be either libbpf's own auto-allocated log buffer, if
++	 * kernel_log_buffer is NULL, or user-provided custom kernel_log_buf.
++	 * If user didn't provide custom log buffer, libbpf will emit captured
++	 * logs through its print callback.
++	 */
++	__u32 kernel_log_level;
 +
-+		opts.log_buf = log_buf ? log_buf : buf;
-+		opts.log_size = log_buf ? log_sz : buf_sz;
-+		opts.log_level = log_level;
-+	}
-+
-+	btf->fd = bpf_btf_load(raw_data, raw_size, &opts);
- 	if (btf->fd < 0) {
--		if (!log_buf || errno == ENOSPC) {
--			log_buf_size = max((__u32)BPF_LOG_BUF_SIZE,
--					   log_buf_size << 1);
--			free(log_buf);
-+		/* time to turn on verbose mode and try again */
-+		if (log_level == 0) {
-+			log_level = 1;
- 			goto retry_load;
- 		}
-+		/* only retry if caller didn't provide custom log_buf, but
-+		 * make sure we can never overflow buf_sz
-+		 */
-+		if (!log_buf && errno == ENOSPC && buf_sz <= UINT_MAX / 2)
-+			goto retry_load;
++	size_t :0;
+ };
+-#define bpf_object_open_opts__last_field btf_custom_path
++#define bpf_object_open_opts__last_field kernel_log_level
  
- 		err = -errno;
--		pr_warn("Error loading BTF: %s(%d)\n", strerror(errno), errno);
--		if (*log_buf)
--			pr_warn("%s\n", log_buf);
--		goto done;
-+		pr_warn("BTF loading error: %d\n", err);
-+		/* don't print out contents of custom log_buf */
-+		if (!log_buf && buf[0])
-+			pr_warn("-- BEGIN BTF LOAD LOG ---\n%s\n-- END BTF LOAD LOG --\n", buf);
- 	}
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
  
- done:
--	free(log_buf);
-+	free(buf);
- 	return libbpf_err(err);
- }
-+
-+int btf__load_into_kernel(struct btf *btf)
-+{
-+	return btf_load_into_kernel(btf, NULL, 0, 0);
-+}
-+
- int btf__load(struct btf *) __attribute__((alias("btf__load_into_kernel")));
- 
- int btf__fd(const struct btf *btf)
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 6f143e9e810c..355c41019aed 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -277,6 +277,7 @@ int parse_cpu_mask_str(const char *s, bool **mask, int *mask_sz);
- int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz);
- int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
- 			 const char *str_sec, size_t str_len);
-+int btf_load_into_kernel(struct btf *btf, char *log_buf, size_t log_sz, __u32 log_level);
- 
- struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf);
- void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
 -- 
 2.30.2
 
