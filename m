@@ -2,180 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4C546ED9F
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 17:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE36046F0F8
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 18:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241345AbhLIQze (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 11:55:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37432 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234550AbhLIQze (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 11:55:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639068720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QG01/RJqDDEw9ymjpQGPzqtzIKmpfXP+DB/cbpZfIiQ=;
-        b=IL8KDpoJW9tdSLVpGTF6tmrCGOrji9fclHBum83gtX/9SJ2HIXHsWblZvzykzwVVEQnDD+
-        B1OLvbahDZoo3Zvi2Q6js1hBe9g6KTlq9WrHtf7jWOhPDLYjreQjyUHLfns7sQxe4Rki+L
-        HhfR+sgWCJXymTLgsn7SOSHJSt7ZrEk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-33-uk5-1wsiP4yar18v3IKt0w-1; Thu, 09 Dec 2021 11:51:59 -0500
-X-MC-Unique: uk5-1wsiP4yar18v3IKt0w-1
-Received: by mail-ed1-f70.google.com with SMTP id c1-20020aa7c741000000b003e7bf1da4bcso5722788eds.21
-        for <bpf@vger.kernel.org>; Thu, 09 Dec 2021 08:51:59 -0800 (PST)
+        id S242408AbhLIRNH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 12:13:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239180AbhLIRNG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 12:13:06 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7FFC061746;
+        Thu,  9 Dec 2021 09:09:33 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id v19so4360315plo.7;
+        Thu, 09 Dec 2021 09:09:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7JNL+Wc+1xhZG0xbYS8UO1UpYjDPLiWp9xlSvuottUk=;
+        b=McDE++6edbVHFJKO26fHRM7jn5Uxy3ScZC+muILuZHQf9lRA5OS/IxvpSxF1gOxNg6
+         6pKpjEGRr4lzS7RMa6CIhod1w5Ebny97s/RizxaClPR2CaOxBdrzO0T+cPS+UMSL7LPb
+         MTEhxxi6fx3XSNjraBhAFfbCxhsYvdjFoeS/yBKR48tHkAAVTO5COYfmhfz4jIn+f/QX
+         pwlWyxvH0FJ9KWmENxm0OAOlTxSYAJfNKGEOyOqTE/152UiJEqYgvchCQpQGjNS7xxrz
+         cSZdwJ2BirzwF9QQlv+N9HeXmE7TYa7iqJXTX6jaJ2q2AlL697/1UMSR0Ws55FOh5WpR
+         RgLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=QG01/RJqDDEw9ymjpQGPzqtzIKmpfXP+DB/cbpZfIiQ=;
-        b=66tYDLrTF31qwtT0XAAPSdz2r6IC1WL5kXG6FgUbwJfxDqpYUFksmA2p7KXf+bk6xx
-         zDbxPVPnTPqiCzyMpUkzSrBjocSjc7VC7rFqJQmCp2iIxkO0B8p2gnV4nTvDJJpqXHKv
-         dQk8NKBEslN4dwiX0pUPAtF77a5Rcp5PGBwYKD94a9A/CC1EpDXuuEMddsENaGIjlHZZ
-         vebaI6eMTcNvchlRgtoN5Y4E+O9vzUfVzJCi+7AfI8Hmtcs0EN0/IwqXlqiXF69wCzvq
-         DGmvIhlAiuQh17YQFnQ+P+QdYZIWUiGP32S1Ofq5ESw2qOL+CHsEWzTNjPay74jdIZjX
-         UCYg==
-X-Gm-Message-State: AOAM533XfYjcfsjx/GmD3rHhlLYu9KW5b7KgqCF2wv6NL44TRW4YNr0E
-        HyinQ5Nu/sB+4zaxGeg+pDMit6v6XvgEEpPhS5N47QOuSfi0RJlFyTXyrW4FobFVEK0fkqUZAv/
-        m2um0C0FbQDCX
-X-Received: by 2002:a17:907:d9f:: with SMTP id go31mr17437666ejc.412.1639068717594;
-        Thu, 09 Dec 2021 08:51:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyh4kBjnbjbSprM3EBc3G6vs8Ux0b8jcgJz8EAUmI0eekyzp2C4MncuX++F6fLeLqG/dU9EWg==
-X-Received: by 2002:a17:907:d9f:: with SMTP id go31mr17437626ejc.412.1639068717204;
-        Thu, 09 Dec 2021 08:51:57 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id e4sm212730ejs.13.2021.12.09.08.51.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7JNL+Wc+1xhZG0xbYS8UO1UpYjDPLiWp9xlSvuottUk=;
+        b=skqW5k60QFTYQiLzdFIC4GovmrFvX8B/ZmxPMZwvQY1VlsdQGMZdSsnf4agYgtaluD
+         JvBtt04kFYWqjuiGRCco6yr0Q4k0cMeY6XVCBxlOO8reYtgBL4KyNdnXz5e3419t2ASB
+         iYBja6zTO0BZLvS6NokadPTj6lhSPd2B0lCb7OW72nf+//PnLcbKVlT8VsNTa8SW5gGT
+         KeOeSeBVsr8qiERIXEug05pvRrIXkHvbmlB89xV46CLFiYWdaMGhAmH8lYuSSshnlzg8
+         D9G1VhMzVe3wq7EaYsQErGkcLAa+b1djH4t9pV+Ti+xIDdfDCsYBwUeKvAC6noSkyO0J
+         umnA==
+X-Gm-Message-State: AOAM532xG+oLsfpb5eTMnbBiwSkwYV8cgrHOdx9y/0QDduKqvCOaC5nZ
+        71f7g9MMsJnOQX1rgzPjl7hrB2scEFk=
+X-Google-Smtp-Source: ABdhPJwm3aeU29ywUj3AzmhChOzHBB1i1NgJ69+U0Zl623FIrwFSWj+/uif1afxu3+rQrIVW6XSMYw==
+X-Received: by 2002:a17:90a:284f:: with SMTP id p15mr960177pjf.1.1639069772359;
+        Thu, 09 Dec 2021 09:09:32 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
+        by smtp.gmail.com with ESMTPSA id k15sm179229pgn.91.2021.12.09.09.09.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Dec 2021 08:51:56 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CEB08180471; Thu,  9 Dec 2021 17:51:55 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Thu, 09 Dec 2021 09:09:31 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: RE: [PATCH bpf-next 6/8] bpf: Add XDP_REDIRECT support to XDP for
- bpf_prog_run()
-In-Reply-To: <87tufhwygr.fsf@toke.dk>
-References: <20211202000232.380824-1-toke@redhat.com>
- <20211202000232.380824-7-toke@redhat.com>
- <61b1537634e07_979572086f@john.notmuch> <87tufhwygr.fsf@toke.dk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 09 Dec 2021 17:51:55 +0100
-Message-ID: <87r1alwwk4.fsf@toke.dk>
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/9] Introduce unstable CT lookup helpers
+Date:   Thu,  9 Dec 2021 22:39:20 +0530
+Message-Id: <20211209170929.3485242-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5329; h=from:subject; bh=2wAbs+O2N2WXsg37Hk0gMAiFUVaJTnu3lYSyHTO+aog=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhsjgGXzAgRCeePjiVglmVv/rET2v+dq5PgOK5y5AQ L3lFic6JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYbI4BgAKCRBM4MiGSL8RyrnWD/ 9JDWBFjlXThz4hO++83odRJd/7t4n4a1uX4Jk3vvcFomI9r3HUlNKxZD6531bo63WwFH1einhNCO4H g62SxFiX5shXx770/P79SEIvtUwBhw+y0nUDwSpCLe29+7Sxq8xbuc0I7v4/asFWWxhappzIXQ1SV0 ZkHtbIuLuNAJuy1ZLy3b3MaDzPwBVY2FmrJAlmZxb7T8y06kIcToIoIYiGatdHDN5dld/AghzQLkUt sp77RVcVaqydb2Hp6Ga+WleBfglnHjVv78E09yg/hk3wnlkDOd6RmbBoNdzmHWy3uS4c3xYb1HAwYS Ra4CXjxvMUpnlUG2Jb5qGvxSzl7jEukoLaXrLEI7i2oUCpCJlJqOMD8e1NNB428k2g9x44B3l9tPQ/ QUWK66pFwJwgeDc+MYnanP+fIWycJA/+p6+PRLP9caaW/wJo/1KVcqhhGIlmY9io1eG+edWt5B94qW cvvaNqwfyCU3s279de0xoYq25OzpeWFUdv4loAwnCAFCazzTR1eX45Pm0sunTmtvs3l/PylVGIpNZz sL7+zFkxwpCg9dFz9uyWX2QB8FvVABgHFCcZx7aF23TuXRpzVk9mvmAF7bQbyNsSIYcnVKG4gvbuzc O5yDSawm2UweafwXNY8V3HjBlqP+yx4IFyaOIO/H1vSM+0exCUjvzvU6jUwA==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+This series adds unstable conntrack lookup helpers using BPF kfunc support.  The
+patch adding the lookup helper is based off of Maxim's recent patch to aid in
+rebasing their series on top of this, all adjusted to work with module kfuncs [0].
 
-> John Fastabend <john.fastabend@gmail.com> writes:
->
->> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>> This adds support for doing real redirects when an XDP program returns
->>> XDP_REDIRECT in bpf_prog_run(). To achieve this, we create a page pool
->>> instance while setting up the test run, and feed pages from that into t=
-he
->>> XDP program. The setup cost of this is amortised over the number of
->>> repetitions specified by userspace.
->>>=20
->>> To support performance testing use case, we further optimise the setup =
-step
->>> so that all pages in the pool are pre-initialised with the packet data,=
- and
->>> pre-computed context and xdp_frame objects stored at the start of each
->>> page. This makes it possible to entirely avoid touching the page conten=
-t on
->>> each XDP program invocation, and enables sending up to 11.5 Mpps/core o=
-n my
->>> test box.
->>>=20
->>> Because the data pages are recycled by the page pool, and the test runn=
-er
->>> doesn't re-initialise them for each run, subsequent invocations of the =
-XDP
->>> program will see the packet data in the state it was after the last tim=
-e it
->>> ran on that particular page. This means that an XDP program that modifi=
-es
->>> the packet before redirecting it has to be careful about which assumpti=
-ons
->>> it makes about the packet content, but that is only an issue for the mo=
-st
->>> naively written programs.
->>>=20
->>> Previous uses of bpf_prog_run() for XDP returned the modified packet da=
-ta
->>> and return code to userspace, which is a different semantic then this n=
-ew
->>> redirect mode. For this reason, the caller has to set the new
->>> BPF_F_TEST_XDP_DO_REDIRECT flag when calling bpf_prog_run() to opt in to
->>> the different semantics. Enabling this flag is only allowed if not sett=
-ing
->>> ctx_out and data_out in the test specification, since it means frames w=
-ill
->>> be redirected somewhere else, so they can't be returned.
->>>=20
->>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>> ---
->>
->> [...]
->>
->>> +static int bpf_test_run_xdp_redirect(struct bpf_test_timer *t,
->>> +				     struct bpf_prog *prog, struct xdp_buff *orig_ctx)
->>> +{
->>> +	void *data, *data_end, *data_meta;
->>> +	struct xdp_frame *frm;
->>> +	struct xdp_buff *ctx;
->>> +	struct page *page;
->>> +	int ret, err =3D 0;
->>> +
->>> +	page =3D page_pool_dev_alloc_pages(t->xdp.pp);
->>> +	if (!page)
->>> +		return -ENOMEM;
->>> +
->>> +	ctx =3D ctx_from_page(page);
->>> +	data =3D ctx->data;
->>> +	data_meta =3D ctx->data_meta;
->>> +	data_end =3D ctx->data_end;
->>> +
->>> +	ret =3D bpf_prog_run_xdp(prog, ctx);
->>> +	if (ret =3D=3D XDP_REDIRECT) {
->>> +		frm =3D (struct xdp_frame *)(ctx + 1);
->>> +		/* if program changed pkt bounds we need to update the xdp_frame */
->>
->> Because this reuses the frame repeatedly is there any issue with also
->> updating the ctx each time? Perhaps if the prog keeps shrinking
->> the pkt it might wind up with 0 len pkt? Just wanted to ask.
->
-> Sure, it could. But the data buffer comes from userspace anyway, and
-> there's nothing preventing userspace from passing a 0-length packet
-> anyway, so I just mentally put this in the "don't do that, then" bucket :)
->
-> At least I don't *think* there's actually any problem with this that we
-> don't have already? A regular XDP program can also shrink an incoming
-> packet to zero, then redirect it, no?
+  [0]: https://lore.kernel.org/bpf/20211019144655.3483197-8-maximmi@nvidia.com
 
-Another thought is that we could of course do the opposite here: instead
-of updating the xdp_frame when the program resizes the packet, just
-reset the pointers so that the next invocation will get the original
-size again? The data would still be changed, but maybe that behaviour is
-less surprising? WDYT?
+To enable returning a reference to struct nf_conn, the verifier is extended to
+support reference tracking for PTR_TO_BTF_ID, and kfunc is extended with support
+for working as acquire/release functions, similar to existing BPF helpers. kfunc
+returning pointer (limited to PTR_TO_BTF_ID in the kernel) can also return a
+PTR_TO_BTF_ID_OR_NULL now, typically needed when acquiring a resource can fail.
+kfunc can also receive PTR_TO_CTX and PTR_TO_MEM (with some limitations) as
+arguments now. There is also support for passing a mem, len pair as argument
+to kfunc now. In such cases, passing pointer to unsized type (void) is also
+permitted.
 
--Toke
+Please see individual commits for details.
+
+Note 1: Patch 1 in this series makes the same change as b12f03104324 ("bpf: Fix
+bpf_check_mod_kfunc_call for built-in modules") in bpf tree, so there will be a
+conflict if patch 1 is applied against that commit. I incorporated the same diff
+change so that testing this set is possible (tests in patch 8 rely on it), but
+before applying this, I'll rebase and resend, after bpf tree is merged into
+bpf-next.
+
+Note 2: BPF CI needs to add the following to config to test the set. I did
+update the selftests config in patch 8, but not sure if that is enough.
+
+	CONFIG_NETFILTER=y
+	CONFIG_NF_DEFRAG_IPV4=y
+	CONFIG_NF_DEFRAG_IPV6=y
+	CONFIG_NF_CONNTRACK=y
+
+Changelog:
+----------
+
+RFC v1 -> v2:
+v1: https://lore.kernel.org/bpf/20211030144609.263572-1-memxor@gmail.com
+
+ * Limit PTR_TO_MEM support to pointer to scalar, or struct with scalars (Alexei)
+ * Use btf_id_set for checking acquire, release, ret type null (Alexei)
+ * Introduce opts struct for CT helpers, move int err parameter to it
+ * Add l4proto as parameter to CT helper's opts, remove separate tcp/udp helpers
+ * Add support for mem, len argument pair to kfunc
+ * Allow void * as pointer type for mem, len argument pair
+ * Extend selftests to cover new additions to kfuncs
+ * Copy ref_obj_id to PTR_TO_BTF_ID dst_reg on btf_struct_access, test it
+ * Fix other misc nits, bugs, and expand commit messages
+
+Kumar Kartikeya Dwivedi (9):
+  bpf: Refactor bpf_check_mod_kfunc_call
+  bpf: Remove DEFINE_KFUNC_BTF_ID_SET
+  bpf: Extend kfunc with PTR_TO_CTX, PTR_TO_MEM argument support
+  bpf: Introduce mem, size argument pair support for kfunc
+  bpf: Add reference tracking support to kfunc
+  bpf: Track provenance for pointers formed from referenced
+    PTR_TO_BTF_ID
+  net/netfilter: Add unstable CT lookup helpers for XDP and TC-BPF
+  selftests/bpf: Extend kfunc selftests
+  selftests/bpf: Add test for unstable CT lookup API
+
+ include/linux/bpf.h                           |  27 +-
+ include/linux/bpf_verifier.h                  |  12 +
+ include/linux/btf.h                           |  48 +++-
+ kernel/bpf/btf.c                              | 218 ++++++++++++---
+ kernel/bpf/verifier.c                         | 232 +++++++++++-----
+ net/bpf/test_run.c                            | 147 ++++++++++
+ net/core/filter.c                             |  27 ++
+ net/core/net_namespace.c                      |   1 +
+ net/ipv4/tcp_bbr.c                            |   5 +-
+ net/ipv4/tcp_cubic.c                          |   5 +-
+ net/ipv4/tcp_dctcp.c                          |   5 +-
+ net/netfilter/nf_conntrack_core.c             | 252 ++++++++++++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   5 +-
+ tools/testing/selftests/bpf/config            |   4 +
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  48 ++++
+ .../selftests/bpf/prog_tests/kfunc_call.c     |  28 ++
+ .../selftests/bpf/progs/kfunc_call_test.c     |  52 +++-
+ .../bpf/progs/kfunc_call_test_fail1.c         |  16 ++
+ .../bpf/progs/kfunc_call_test_fail2.c         |  16 ++
+ .../bpf/progs/kfunc_call_test_fail3.c         |  16 ++
+ .../bpf/progs/kfunc_call_test_fail4.c         |  16 ++
+ .../bpf/progs/kfunc_call_test_fail5.c         |  16 ++
+ .../bpf/progs/kfunc_call_test_fail6.c         |  16 ++
+ .../bpf/progs/kfunc_call_test_fail7.c         |  24 ++
+ .../bpf/progs/kfunc_call_test_fail8.c         |  22 ++
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 113 ++++++++
+ 26 files changed, 1259 insertions(+), 112 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail3.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail4.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail5.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail6.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail7.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_fail8.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_nf.c
+
+-- 
+2.34.1
 
