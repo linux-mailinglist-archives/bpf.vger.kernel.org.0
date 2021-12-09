@@ -2,76 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CA446DF6D
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 01:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D1646DF6E
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 01:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241470AbhLIAdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 19:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235439AbhLIAdp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 19:33:45 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD12C061746;
-        Wed,  8 Dec 2021 16:30:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E3ABBB82313;
-        Thu,  9 Dec 2021 00:30:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B004BC00446;
-        Thu,  9 Dec 2021 00:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639009809;
-        bh=ogftWMpqNYBxuUBslduVH4IFMYjcAAF8DLNMMzlsSU0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OhmSATsUARcLKIov3JLz7V6+11T0f1bibCsVpmxcjyHpCAGYnV4cklFU1bOErMzEk
-         lND7TwhIKaX8a2DjvR44KRw46+mSXntmqzixjfzFpCg7qYvZADRhti0d2tfRoxsJQu
-         7CNvxJ9KEp+wdNkk5uQMmQUic/n8KFWK1Xo2D4pqUTRvpVFeH/ZSfHAsmmd0DsWGNV
-         ikKbApgwuCblPrAinyzs+1I1GsRIKPX4MtbuhwBgbvL25PwI33C3DvwrEO0zxve+0H
-         5/sAB/bitIsHzMi5V3PBcI2MrirSFwVPgoitYXhyXdOFiYzXMmn6+84nzfrXIZ3iRz
-         HRX++WUxiXNOg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8F90060A3C;
-        Thu,  9 Dec 2021 00:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S241472AbhLIAeN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 8 Dec 2021 19:34:13 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54838 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235439AbhLIAeN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Dec 2021 19:34:13 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B8I6bXv004347
+        for <bpf@vger.kernel.org>; Wed, 8 Dec 2021 16:30:40 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3ctqvtp991-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 16:30:40 -0800
+Received: from intmgw002.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 8 Dec 2021 16:30:39 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id AC164C51D5DE; Wed,  8 Dec 2021 16:30:34 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 00/12] Enhance and rework logging controls in libbpf
+Date:   Wed, 8 Dec 2021 16:30:21 -0800
+Message-ID: <20211209003033.3962657-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf 2021-12-08
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163900980958.13240.10328840106514754059.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Dec 2021 00:30:09 +0000
-References: <20211208155125.11826-1-daniel@iogearbox.net>
-In-Reply-To: <20211208155125.11826-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: YqQWRA5k4nTOdbNKG0Y1ypRjKUk6pR68
+X-Proofpoint-ORIG-GUID: YqQWRA5k4nTOdbNKG0Y1ypRjKUk6pR68
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-08_08,2021-12-08_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1015
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 impostorscore=0 adultscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2112090000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Add new open options and per-program setters to control BTF and program
+loading log verboseness and allow providing custom log buffers to capture logs
+of interest. Note how custom log_buf and log_level are orthogonal, which
+matches previous (alas less customizable) behavior of libbpf, even though it
+sort of worked by accident: if someone specified log_level = 1 in
+bpf_object__load_xattr(), first attempt to load any BPF program resulted in
+wasted bpf() syscall with -EINVAL due to !!log_buf != !!log_level. Then on
+retry libbpf would allocated log_buffer and try again, after which prog
+loading would succeed and libbpf would print verbose program loading log
+through its print callback.
 
-This pull request was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+This behavior is now documented and made more efficient, not wasting
+unnecessary syscall. But additionally, log_level can be controlled globally on
+a per-bpf_object level through bpf_object_open_opts, as well as on
+a per-program basis with bpf_program__set_log_buf() and
+bpf_program__set_log_level() APIs.
 
-On Wed,  8 Dec 2021 16:51:25 +0100 you wrote:
-> Hi David, hi Jakub,
-> 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 12 non-merge commits during the last 22 day(s) which contain
-> a total of 29 files changed, 659 insertions(+), 80 deletions(-).
-> 
-> [...]
+Now that we have a more future-proof way to set log_level, deprecate
+bpf_object__load_xattr().
 
-Here is the summary with links:
-  - pull-request: bpf 2021-12-08
-    https://git.kernel.org/netdev/net/c/6efcdadc157f
+v1->v2:
+  - fix log_level == 0 handling of bpf_prog_load, add as patch #1 (Alexei);
+  - add comments explaining log_buf_size overflow prevention (Alexei).
 
-You are awesome, thank you!
+Andrii Nakryiko (12):
+  libbpf: fix bpf_prog_load() log_buf logic for log_level 0
+  libbpf: add OPTS-based bpf_btf_load() API
+  libbpf: allow passing preallocated log_buf when loading BTF into
+    kernel
+  libbpf: allow passing user log setting through bpf_object_open_opts
+  libbpf: improve logging around BPF program loading
+  libbpf: preserve kernel error code and remove kprobe prog type
+    guessing
+  libbpf: add per-program log buffer setter and getter
+  libbpf: deprecate bpf_object__load_xattr()
+  selftests/bpf: replace all uses of bpf_load_btf() with bpf_btf_load()
+  selftests/bpf: add test for libbpf's custom log_buf behavior
+  selftests/bpf: remove the only use of deprecated
+    bpf_object__load_xattr()
+  bpftool: switch bpf_object__load_xattr() to bpf_object__load()
+
+ tools/bpf/bpftool/gen.c                       |  11 +-
+ tools/bpf/bpftool/prog.c                      |  24 +--
+ tools/bpf/bpftool/struct_ops.c                |  15 +-
+ tools/lib/bpf/bpf.c                           |  88 ++++++--
+ tools/lib/bpf/bpf.h                           |  22 +-
+ tools/lib/bpf/btf.c                           |  78 ++++---
+ tools/lib/bpf/libbpf.c                        | 194 ++++++++++++------
+ tools/lib/bpf/libbpf.h                        |  49 ++++-
+ tools/lib/bpf/libbpf.map                      |   3 +
+ tools/lib/bpf/libbpf_internal.h               |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |   2 +-
+ .../selftests/bpf/map_tests/sk_storage_map.c  |   2 +-
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |   6 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c  |  50 +++--
+ .../selftests/bpf/prog_tests/log_buf.c        | 137 +++++++++++++
+ .../selftests/bpf/progs/test_log_buf.c        |  24 +++
+ tools/testing/selftests/bpf/test_verifier.c   |   2 +-
+ tools/testing/selftests/bpf/testing_helpers.c |  10 +-
+ 18 files changed, 544 insertions(+), 174 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/log_buf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_log_buf.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
