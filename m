@@ -2,212 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C60846DF7A
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 01:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA64F46DF7B
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 01:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241307AbhLIAep convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 8 Dec 2021 19:34:45 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54752 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238646AbhLIAen (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Dec 2021 19:34:43 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B8Mn2mb026694
-        for <bpf@vger.kernel.org>; Wed, 8 Dec 2021 16:31:10 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3cu5u5rgv0-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 16:31:10 -0800
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 8 Dec 2021 16:31:09 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 147EAC51D6F6; Wed,  8 Dec 2021 16:31:00 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 12/12] bpftool: switch bpf_object__load_xattr() to bpf_object__load()
-Date:   Wed, 8 Dec 2021 16:30:33 -0800
-Message-ID: <20211209003033.3962657-13-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211209003033.3962657-1-andrii@kernel.org>
-References: <20211209003033.3962657-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: 3W657t2B0lGW7uk7ePdbeJlRoV-BIv7i
-X-Proofpoint-ORIG-GUID: 3W657t2B0lGW7uk7ePdbeJlRoV-BIv7i
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-08_08,2021-12-08_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 malwarescore=0 phishscore=0 impostorscore=0 spamscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112090000
-X-FB-Internal: deliver
+        id S238206AbhLIAes (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 19:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235334AbhLIAes (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 19:34:48 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B62C061746;
+        Wed,  8 Dec 2021 16:31:15 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id x10so4801020ioj.9;
+        Wed, 08 Dec 2021 16:31:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=JsWYjBq5nTDhkhANVBgH4D3Tbd2QYmJXiBeLddZtISw=;
+        b=nlFKnB0KayIG3zU8Jw0+Ux5TF0kqV/NqzRoglnyEvgMRHPZEeiC2bSQ69rTiFESkCH
+         RWe3/yw32mGGa1ZOh5bZ8hbm1aY8kP1P/D/PDkHCcLyVL9qC5+4hZuBcDV9x5r2+dYOV
+         5ZOfQM5VMFZiK8S0K3MY5CffiQlYD9dama94PJJPnoC/JuPxnuVjujXlBcl30ssNLm3g
+         23bx0KZOqp0sG5RoZ1Iki/tGWqJMOTku8HebJ82z8QreEhkeJOe0c7B1lQfyIsHxaeUA
+         kLmnn/QhkbjLDPVrWDK21F7ObraoS35WMHt4I6taNkSNURcOAbb4Iys68Fo7WGQUKWe4
+         MGdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=JsWYjBq5nTDhkhANVBgH4D3Tbd2QYmJXiBeLddZtISw=;
+        b=ZyDhmCq44Btt2dDXR6/o8qASiNJke2wmjUiFbSpfHF+6FDew3e8CFRg6nH7Dm1tAe9
+         AMYsWlftPc8wprR85sR2IAqFPKmSmevPCh/bLJ1UTZk4gYDvMf27xsT64gX7DrW0i6kp
+         bLkukbD1BIQj0a2tGOTGBv97Eywjlh2npk+jx2y11WZIwGcux5eJ5nIFwUer76JS74mc
+         vmO77fa/ev+m3iQhCif3Alf7Bj6AFhdgp+uGx2XBxBMllRShUAMpuA6D8gXdRtNytzEJ
+         k6adWssWLsM4k8p+EMnh88z+7BJU8THU1/dsd3nPh8d9s4TZdtZZ3LtZCGw/xO7oJ+jm
+         f8sQ==
+X-Gm-Message-State: AOAM533ahqEHNi0S4Zc8MIfRTzlvO7aGOy27AnzZ6XCODOuWjqWPkflI
+        Zz2yBEI14nULqvAkK4KW7ng=
+X-Google-Smtp-Source: ABdhPJyD4NGpxGDHgvZoX3wYI7DY/5PGSU8PVemEoxv4Lw9FAiABazrUd+nWEYUNwwXwFBlyMFCtoA==
+X-Received: by 2002:a05:6602:15c9:: with SMTP id f9mr11150303iow.184.1639009874908;
+        Wed, 08 Dec 2021 16:31:14 -0800 (PST)
+Received: from localhost ([172.243.151.11])
+        by smtp.gmail.com with ESMTPSA id x18sm2915740iow.53.2021.12.08.16.31.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Dec 2021 16:31:14 -0800 (PST)
+Date:   Wed, 08 Dec 2021 16:31:06 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Message-ID: <61b14e4ae483b_979572082c@john.notmuch>
+In-Reply-To: <20211202000232.380824-6-toke@redhat.com>
+References: <20211202000232.380824-1-toke@redhat.com>
+ <20211202000232.380824-6-toke@redhat.com>
+Subject: RE: [PATCH bpf-next 5/8] xdp: add xdp_do_redirect_frame() for
+ pre-computed xdp_frames
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch all the uses of to-be-deprecated bpf_object__load_xattr() into
-a simple bpf_object__load() calls with optional log_level passed through
-open_opts.kernel_log_level, if -d option is specified.
+Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Add an xdp_do_redirect_frame() variant which supports pre-computed
+> xdp_frame structures. This will be used in bpf_prog_run() to avoid havi=
+ng
+> to write to the xdp_frame structure when the XDP program doesn't modify=
+ the
+> frame boundaries.
+> =
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/bpf/bpftool/gen.c        | 11 ++++-------
- tools/bpf/bpftool/prog.c       | 24 ++++++++++--------------
- tools/bpf/bpftool/struct_ops.c | 15 +++++++--------
- 3 files changed, 21 insertions(+), 29 deletions(-)
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  include/linux/filter.h |  4 ++++
+>  net/core/filter.c      | 28 +++++++++++++++++++++-------
+>  2 files changed, 25 insertions(+), 7 deletions(-)
+> =
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 997a2865e04a..b4695df2ea3d 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -486,7 +486,6 @@ static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
- 
- static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *header_guard)
- {
--	struct bpf_object_load_attr load_attr = {};
- 	DECLARE_LIBBPF_OPTS(gen_loader_opts, opts);
- 	struct bpf_map *map;
- 	char ident[256];
-@@ -496,12 +495,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 	if (err)
- 		return err;
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	err = bpf_object__load_xattr(&load_attr);
-+	err = bpf_object__load(obj);
- 	if (err) {
- 		p_err("failed to load object file");
- 		goto out;
-@@ -719,6 +713,9 @@ static int do_skeleton(int argc, char **argv)
- 	if (obj_name[0] == '\0')
- 		get_obj_name(obj_name, file);
- 	opts.object_name = obj_name;
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		opts.kernel_log_level = 1 + 2 + 4;
- 	obj = bpf_object__open_mem(obj_data, file_sz, &opts);
- 	err = libbpf_get_error(obj);
- 	if (err) {
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 45ccc254e69f..f874896c4154 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1464,7 +1464,6 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts,
- 		.relaxed_maps = relaxed_maps,
- 	);
--	struct bpf_object_load_attr load_attr = { 0 };
- 	enum bpf_attach_type expected_attach_type;
- 	struct map_replace *map_replace = NULL;
- 	struct bpf_program *prog = NULL, *pos;
-@@ -1598,6 +1597,10 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 
- 	set_max_rlimit();
- 
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		open_opts.kernel_log_level = 1 + 2 + 4;
-+
- 	obj = bpf_object__open_file(file, &open_opts);
- 	if (libbpf_get_error(obj)) {
- 		p_err("failed to open object file");
-@@ -1677,12 +1680,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 		goto err_close_obj;
- 	}
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	err = bpf_object__load_xattr(&load_attr);
-+	err = bpf_object__load(obj);
- 	if (err) {
- 		p_err("failed to load object file");
- 		goto err_close_obj;
-@@ -1809,7 +1807,6 @@ static int do_loader(int argc, char **argv)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
- 	DECLARE_LIBBPF_OPTS(gen_loader_opts, gen);
--	struct bpf_object_load_attr load_attr = {};
- 	struct bpf_object *obj;
- 	const char *file;
- 	int err = 0;
-@@ -1818,6 +1815,10 @@ static int do_loader(int argc, char **argv)
- 		return -1;
- 	file = GET_ARG();
- 
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		open_opts.kernel_log_level = 1 + 2 + 4;
-+
- 	obj = bpf_object__open_file(file, &open_opts);
- 	if (libbpf_get_error(obj)) {
- 		p_err("failed to open object file");
-@@ -1828,12 +1829,7 @@ static int do_loader(int argc, char **argv)
- 	if (err)
- 		goto err_close_obj;
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	err = bpf_object__load_xattr(&load_attr);
-+	err = bpf_object__load(obj);
- 	if (err) {
- 		p_err("failed to load object file");
- 		goto err_close_obj;
-diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
-index cbdca37a53f0..2f693b082bdb 100644
---- a/tools/bpf/bpftool/struct_ops.c
-+++ b/tools/bpf/bpftool/struct_ops.c
-@@ -479,7 +479,7 @@ static int do_unregister(int argc, char **argv)
- 
- static int do_register(int argc, char **argv)
- {
--	struct bpf_object_load_attr load_attr = {};
-+	LIBBPF_OPTS(bpf_object_open_opts, open_opts);
- 	const struct bpf_map_def *def;
- 	struct bpf_map_info info = {};
- 	__u32 info_len = sizeof(info);
-@@ -494,18 +494,17 @@ static int do_register(int argc, char **argv)
- 
- 	file = GET_ARG();
- 
--	obj = bpf_object__open(file);
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		open_opts.kernel_log_level = 1 + 2 + 4;
-+
-+	obj = bpf_object__open_file(file, &open_opts);
- 	if (libbpf_get_error(obj))
- 		return -1;
- 
- 	set_max_rlimit();
- 
--	load_attr.obj = obj;
--	if (verifier_logs)
--		/* log_level1 + log_level2 + stats, but not stable UAPI */
--		load_attr.log_level = 1 + 2 + 4;
--
--	if (bpf_object__load_xattr(&load_attr)) {
-+	if (bpf_object__load(obj)) {
- 		bpf_object__close(obj);
- 		return -1;
- 	}
--- 
-2.30.2
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index b6a216eb217a..845452c83e0f 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -1022,6 +1022,10 @@ int xdp_do_generic_redirect(struct net_device *d=
+ev, struct sk_buff *skb,
+>  int xdp_do_redirect(struct net_device *dev,
+>  		    struct xdp_buff *xdp,
+>  		    struct bpf_prog *prog);
+> +int xdp_do_redirect_frame(struct net_device *dev,
+> +			  struct xdp_buff *xdp,
+> +			  struct xdp_frame *xdpf,
+> +			  struct bpf_prog *prog);
 
+I don't really like that we are passing both the xdp_buff ptr and
+xdp_frame *xdpf around when one is always null it looks like?
+
+>  void xdp_do_flush(void);
+>  =
+
+>  /* The xdp_do_flush_map() helper has been renamed to drop the _map suf=
+fix, as
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 1e86130a913a..d8fe74cc8b66 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3957,14 +3957,13 @@ u32 xdp_master_redirect(struct xdp_buff *xdp)
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_master_redirect);
+>  =
+
+> -int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+> -		    struct bpf_prog *xdp_prog)
+> +static int __xdp_do_redirect(struct net_device *dev, struct xdp_buff *=
+xdp,
+> +			     struct xdp_frame *xdpf, struct bpf_prog *xdp_prog)
+>  {
+>  	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
+>  	enum bpf_map_type map_type =3D ri->map_type;
+>  	void *fwd =3D ri->tgt_value;
+>  	u32 map_id =3D ri->map_id;
+> -	struct xdp_frame *xdpf;
+>  	struct bpf_map *map;
+>  	int err;
+>  =
+
+> @@ -3976,10 +3975,12 @@ int xdp_do_redirect(struct net_device *dev, str=
+uct xdp_buff *xdp,
+>  		goto out;
+>  	}
+>  =
+
+> -	xdpf =3D xdp_convert_buff_to_frame(xdp);
+> -	if (unlikely(!xdpf)) {
+> -		err =3D -EOVERFLOW;
+> -		goto err;
+> +	if (!xdpf) {
+> +		xdpf =3D xdp_convert_buff_to_frame(xdp);
+> +		if (unlikely(!xdpf)) {
+> +			err =3D -EOVERFLOW;
+> +			goto err;
+> +		}
+
+This is a bit ugly imo. Can we just decide what gets handed to the functi=
+on
+rather than having this mid function conversion?
+
+If we can't get consistency at least a xdpf_do_redirect() and then make
+a xdp_do_redirect( return xdpf_do_redirect(xdp_convert_buff_to_frame(xdp)=
+))
+that just does the conversion and passes it through.
+
+Or did I miss something?
+
+>  	}
+>  =
+
+>  	switch (map_type) {
+> @@ -4024,8 +4025,21 @@ int xdp_do_redirect(struct net_device *dev, stru=
+ct xdp_buff *xdp,
+>  	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map_type, map_id, ri-=
+>tgt_index, err);
+>  	return err;
+>  }
+> +
+> +int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+> +		    struct bpf_prog *xdp_prog)
+> +{
+> +	return __xdp_do_redirect(dev, xdp, NULL, xdp_prog);
+
+same here. Just do the conversion and call,
+
+ __xdpf_do_redirect(dev, xdpf, xdp_prog)
+
+skipping the null pointr?
+
+> +}
+>  EXPORT_SYMBOL_GPL(xdp_do_redirect);
+>  =
+
+> +int xdp_do_redirect_frame(struct net_device *dev, struct xdp_buff *xdp=
+,
+> +			  struct xdp_frame *xdpf, struct bpf_prog *xdp_prog)
+> +{
+> +	return __xdp_do_redirect(dev, xdp, xdpf, xdp_prog);
+> +}
+> +EXPORT_SYMBOL_GPL(xdp_do_redirect_frame);
+> +
+>  static int xdp_do_generic_redirect_map(struct net_device *dev,
+>  				       struct sk_buff *skb,
+>  				       struct xdp_buff *xdp,
+> -- =
+
+> 2.34.0
+> =
+
+
+Thanks,
+John
