@@ -2,121 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B0846DFD2
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 01:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D5646E086
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 02:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhLIA6w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 19:58:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
+        id S229448AbhLIB6t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Dec 2021 20:58:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241817AbhLIA5p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 19:57:45 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA088C061746;
-        Wed,  8 Dec 2021 16:54:12 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id r2so3857867ilb.10;
-        Wed, 08 Dec 2021 16:54:12 -0800 (PST)
+        with ESMTP id S229489AbhLIB6s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Dec 2021 20:58:48 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400F8C0617A1;
+        Wed,  8 Dec 2021 17:55:14 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id u17so2777766plg.9;
+        Wed, 08 Dec 2021 17:55:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=LCcCVooHzvscTtO3fZNQNWs4LX1PgNMEkiJ+TaezqAk=;
-        b=n0o8l0lg6bHBZ0eND2jTi8Vwxke6VYM6+gUIxkephnlFc4WhqrNIX53TURLkwqnyH1
-         w4i9vMzOvFu8SJVDJwBvdd1baoUZu29bCS5Z6Sv+MWVOl11iNV4mhYg7I22N3O0jcF5t
-         M/CoY/twzrnLSfH4tbirp2CeeaioeV1ihqp8ZeacgDVVpNe1Ud3W7K9LI0hUPqPQpbTA
-         PwA/Te39MbwNGXNMd4QLhVpEGpgXvN5LWJ5ysnp6C+GrhvCmdCVQ+Jo9yWXH0vOl22kq
-         BKDFBvoF7ZsovO+lbPkq9EqSyZIZyLfjZyUztR/9UvJQHXmld5ud/dib3ti427a8KF3u
-         U4jg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YEXD1s+NFhBSKjutCA1VJqcOl+uAy1tfOQHHqha6RjM=;
+        b=YdkmMDfj7LPDAi0hTeZnxs0ThF5IgGjrkKMeJwG2DUO0m+RBFvFCEWw9BVr6nwSKfp
+         t7bu7XLM8EH1AN0q4gtNp+NgoE5cP/A0NVgTd1GDREtR9MCbjJewnLS2aXF+BxqAmtvC
+         THg7FRyMzKnYRSCAjE2pf5iGFuUSD9H6nG1VPqMo5PxJ9lk7teIYCCjtNlboVYeeFp9l
+         3Ihk2i+RNZZH6sALo1V6HBjr5byqQpB0xz+UpHtBocGSlDkp/uHzSsexWuKY4p1P2bLW
+         ochrgd2yyeCNgw+9W7p+volXFcSZudNsNkJyZtsc/UlWZo0P4jSb7vFMWXENoeWDxX/s
+         PKng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=LCcCVooHzvscTtO3fZNQNWs4LX1PgNMEkiJ+TaezqAk=;
-        b=yc16lG7d5EGcFYnIJdna7MXX1uT0ZLynsCLp3afaQxQ8LvmA7bUoy+NDD2VqsSlMRl
-         TNdOIGBDesu7r3hndG7m1/E7+JAtuPClpQnNsfjDrW8zvAb8C5I5VAQK5TLyVzXvZoR8
-         pWDWs0P5cXN4hFuJjkRuXR6FQnwtL5FEWbVSVh9Anu6cJOEaTV6IQF72BVjheApit5ul
-         QdEvNqNbVFivzlAe7dXE8eBfItkNoAARpCSJOI/59Gj+64N6AZXcURyRLHWkIpaOM00y
-         Uv/huyVZ5CUp/a6qmYP3Ni4MyoY1YWT/ZZa9ANi/d7tcSA+v/dzKSjBOcFZ3DMa9yzZa
-         b6xw==
-X-Gm-Message-State: AOAM5312II2gZHPt8063Kg9N8T1fP+OS/EJXQcm+gzF8JziQml3BrvZw
-        MBnRjmGHqSsYhqYb/IlXLy0=
-X-Google-Smtp-Source: ABdhPJwpoxkY7Z2mj90VgxwytJ8Y1o6D0NLHc6XLQJJwJOv4bkZYmsVbP4tHDg0aNrQmXaNUGMzxEg==
-X-Received: by 2002:a05:6e02:4c7:: with SMTP id f7mr10956083ils.232.1639011252230;
-        Wed, 08 Dec 2021 16:54:12 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id ay13sm3432440iob.37.2021.12.08.16.54.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YEXD1s+NFhBSKjutCA1VJqcOl+uAy1tfOQHHqha6RjM=;
+        b=Pvg18e78mkERqd7toL1sRx2BY7tiOBd74Ps1ylNxrj0WgM1sGjhjlKYITpEaX/tlz3
+         9x3vWiKaun+qE9H3rP2Gps2BkGhUnBxp1HVKXEckVSKJm+InSr6UoZijbzDix1Lnze1Y
+         fLL67JLzzTuz5VKkI1m2KjmqN5ikIIlRzieODfoRAMRmAKV/GBlKlv4OXHufi6rKIQla
+         jNRaj96b4GhhLb5OAmeVaEaDWIzrgXlRaDkWX7cLT1p34L1azao5TYbl0sbs4J46jpPU
+         xpzGSGbleFr/nDrVsnGc3fWR2S5RqOtFK7wdk8iIYSxPxntb21k/VmCZCdt5tCQ0Ugfa
+         rQBw==
+X-Gm-Message-State: AOAM533ykCmayZlpit1FiGguVtxob8GtMk71ni/X90hcNZTzwI9P1uti
+        DL1U3jJdEzJIscLgh+tPsNw=
+X-Google-Smtp-Source: ABdhPJz8L76/yvBRMCYjs5IFPo3cj1HP/cd4HoZRcMxcTrEo3nxoUApgKTwjyZtYg2vL+5Q0iI+qmw==
+X-Received: by 2002:a17:90b:2412:: with SMTP id nr18mr12297648pjb.233.1639014913760;
+        Wed, 08 Dec 2021 17:55:13 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id me7sm8799786pjb.9.2021.12.08.17.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Dec 2021 16:54:11 -0800 (PST)
-Date:   Wed, 08 Dec 2021 16:54:05 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <61b153ad856bb_9795720857@john.notmuch>
-In-Reply-To: <20211202000232.380824-1-toke@redhat.com>
-References: <20211202000232.380824-1-toke@redhat.com>
-Subject: RE: [PATCH bpf-next 0/8] Add support for transmitting packets using
- XDP in bpf_prog_run()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Wed, 08 Dec 2021 17:55:12 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cm>
+Subject: [PATCH] samples:bpf:remove unneeded variable
+Date:   Thu,  9 Dec 2021 01:55:05 +0000
+Message-Id: <20211209015505.409691-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> This series adds support for transmitting packets using XDP in
-> bpf_prog_run(), by enabling the xdp_do_redirect() callback so XDP progr=
-ams
-> can perform "real" redirects to devices or maps, using an opt-in flag w=
-hen
-> executing the program.
-> =
+From: chiminghao <chi.minghao@zte.com.cn>
 
-> The primary use case for this is testing the redirect map types and the=
+return value form directly instead of
+taking this in another redundant variable.
 
-> ndo_xdp_xmit driver operation without generating external traffic. But =
-it
-> turns out to also be useful for creating a programmable traffic generat=
-or.
-> The last patch adds a sample traffic generator to bpf/samples, which
-> can transmit up to 11.5 Mpps/core on my test machine.
-> =
+Reported-by: Zeal Robot <zealci@zte.com.cm>
+Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+---
+ samples/bpf/xdp_redirect_cpu.bpf.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> To transmit the frames, the new mode instantiates a page_pool structure=
- in
-> bpf_prog_run() and initialises the pages with the data passed in by
-> userspace. These pages can then be redirected using the normal redirect=
-ion
-> mechanism, and the existing page_pool code takes care of returning and
-> recycling them. The setup is optimised for high performance with a high=
+diff --git a/samples/bpf/xdp_redirect_cpu.bpf.c b/samples/bpf/xdp_redirect_cpu.bpf.c
+index f10fe3cf25f6..25e3a405375f 100644
+--- a/samples/bpf/xdp_redirect_cpu.bpf.c
++++ b/samples/bpf/xdp_redirect_cpu.bpf.c
+@@ -100,7 +100,6 @@ u16 get_dest_port_ipv4_udp(struct xdp_md *ctx, u64 nh_off)
+ 	void *data     = (void *)(long)ctx->data;
+ 	struct iphdr *iph = data + nh_off;
+ 	struct udphdr *udph;
+-	u16 dport;
+ 
+ 	if (iph + 1 > data_end)
+ 		return 0;
+@@ -111,8 +110,7 @@ u16 get_dest_port_ipv4_udp(struct xdp_md *ctx, u64 nh_off)
+ 	if (udph + 1 > data_end)
+ 		return 0;
+ 
+-	dport = bpf_ntohs(udph->dest);
+-	return dport;
++	return bpf_ntohs(udph->dest);
+ }
+ 
+ static __always_inline
+-- 
+2.25.1
 
-> number of repetitions to support stress testing and the traffic generat=
-or
-> use case; see patch 6 for details.
-> =
-
-> The series is structured as follows: Patches 1-2 adds a few features to=
-
-> page_pool that are needed for the usage in bpf_prog_run(). Similarly,
-> patches 3-5 performs a couple of preparatory refactorings of the XDP
-> redirect and memory management code. Patch 6 adds the support to
-> bpf_prog_run() itself, patch 7 adds a selftest, and patch 8 adds the
-> traffic generator example to samples/bpf.
-
-Overall looks pretty good. Couple questions in the series though.
-
-Thanks!
-John=
