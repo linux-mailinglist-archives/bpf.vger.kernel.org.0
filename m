@@ -2,69 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE73D46E2E5
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 08:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A5746E2F7
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 08:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhLIHKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 02:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhLIHKc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Dec 2021 02:10:32 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F38C061746
-        for <bpf@vger.kernel.org>; Wed,  8 Dec 2021 23:06:59 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id f9so11466341ybq.10
-        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 23:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bh7KiQx9BaUsPvjfimgMkq68BMARjRsaI0nKpdgB4T8=;
-        b=RqIyjTCl+R2tHrOPrR7w01v00TLY92K4SrCU9aaDRXXvD+ls5tK4w8kIgWazNbJK2q
-         1+Dux25VqTr1naB0f1hoMeMN6cREukaUJvJyGvRFsxz2csMe8hqL8bqxMjIGQ7FVPQr9
-         JystjwcX8tug20B2PI2lvirK9Q2xsTwPGdiW6xEzmmqWAFElHLvtN4WukNAVWI1nJQcP
-         hk1eaN4lALa9t8VEiGQEqiDod5mtSgOqPvcFwdDGVxVoOD8vqiv1oo3RHExWLnvhoOd2
-         i9AsPvLxqqFIXeZXNHwjSBM6hB9HPI1qKDlOVnvw+d/fzZu4bX+Q3WRsrdA8oAp3F2Ov
-         8YIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bh7KiQx9BaUsPvjfimgMkq68BMARjRsaI0nKpdgB4T8=;
-        b=Tp4JDtyIck5hfH+mtilXMnhdZPKOeTWmW5exqan350/dVgUT9zIy87rvKxDsdtQ0H1
-         hoPLEDcEqvh+GUwpnQ0pu5Cax+bhfbH5AT+FjqAw/PBN+bSuLtXn6NM4tTMd+s3gNc2b
-         TVZwWhPYN3PXBE+yU3IuInHy7P878+BNXypydjaCsQpbZQiFkGnizU1Y0O8D1ttZSsUv
-         a0xw7B19lm2W2XgsVwQEWTl28eDypCFn2IaQfAesQzqc2RHdxKY5wJFttK8vEcVMh+S2
-         QABGVoyAG0Uo9EJjMyjtm9KknO8uuIFk0Jj5p84kggglJYcDFHyjw0J73aCB2X3TIvVf
-         Eciw==
-X-Gm-Message-State: AOAM533nfqpd9V1Bbj6+5jOEnOo5Yuvu2G4iTwwpHWdi2pY7iaR5ZapT
-        QPAakdCotkvPSUqLP1OHAVLiqBQb5Bgnr9q6TJw=
-X-Google-Smtp-Source: ABdhPJwcA8B2C/iSuGMQA/ihYpDon5Y3AXBJWEreIkibtkJ5VL2KBdeM0yQ4Tn8TtK5uvIvr8StN8kWVxscU560pmSg=
-X-Received: by 2002:a25:cf46:: with SMTP id f67mr4189669ybg.362.1639033618497;
- Wed, 08 Dec 2021 23:06:58 -0800 (PST)
+        id S231706AbhLIHNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 02:13:46 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:50734 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231664AbhLIHNp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 02:13:45 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 161FFCE24E3
+        for <bpf@vger.kernel.org>; Thu,  9 Dec 2021 07:10:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0EA82C004DD;
+        Thu,  9 Dec 2021 07:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639033809;
+        bh=BGr8DeMQ+XRK17TrAZgOPBMgYdn6UJOwGT9aYx+Aprw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=hus0WEJGgmc5XXo0ujMtQt002ZY0+4k2XEOOIamw0UGJ4nfDzNN73+NRofWNW2FB+
+         kjfswsQP8IS4XbATVskXGik2FqhPYjTETdB42HbN/sHVKWVCeBLIfdrd57wpKTC6JM
+         GRqMt52WpemlB3a4OAIp6qmkjil//A78zDcZD80eD0U9XQz0iZWrluqipbHHxVLmgh
+         s3IO/L6GWYmCkbgmz/U91ASTW4f62eiJ2uBr+bk/Xsx6FXXlhkG3rcATcpCjuBMbbM
+         kLlCPAI+vFJC+XKNTdD2plM9vbpmNE7Q/5cD9grm6JlsvIH90hljCUn7YxKlumkgaW
+         xgIQRJxFzMoWA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E952A60A4D;
+        Thu,  9 Dec 2021 07:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix a compilation warning
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163903380895.9212.6767669055885105398.git-patchwork-notify@kernel.org>
+Date:   Thu, 09 Dec 2021 07:10:08 +0000
 References: <20211209050403.1770836-1-yhs@fb.com>
 In-Reply-To: <20211209050403.1770836-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Dec 2021 23:06:47 -0800
-Message-ID: <CAEf4BzZ7RmpE1k1+f-3AE=QN3p3Wqa78KPh8xC2Euzu-iua8PQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix a compilation warning
 To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 8, 2021 at 9:04 PM Yonghong Song <yhs@fb.com> wrote:
->
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Wed, 8 Dec 2021 21:04:03 -0800 you wrote:
 > The following warning is triggered when I used clang compiler
 > to build the selftest.
->
+> 
 >   /.../prog_tests/btf_dedup_split.c:368:6: warning: variable 'btf2' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
 >         if (!ASSERT_OK(err, "btf_dedup"))
 >             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,35 +69,16 @@ On Wed, Dec 8, 2021 at 9:04 PM Yonghong Song <yhs@fb.com> wrote:
 >         struct btf *btf1, *btf2;
 >                                ^
 >                                 = NULL
->
-> Initialize local variable btf2 = NULL and the warning is gone.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+> 
+> [...]
 
-Added:
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: fix a compilation warning
+    https://git.kernel.org/bpf/bpf-next/c/b540358e6c4d
 
-Fixes: 9a49afe6f5a5 ("selftests/bpf: Add btf_dedup case with
-duplicated structs within CU")
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-and pushed to bpf-next. Thanks.
 
->  tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-> index 878a864dae3b..90aac437576d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-> @@ -340,7 +340,7 @@ static void btf_add_dup_struct_in_cu(struct btf *btf, int start_id)
->
->  static void test_split_dup_struct_in_cu()
->  {
-> -       struct btf *btf1, *btf2;
-> +       struct btf *btf1, *btf2 = NULL;
->         int err;
->
->         /* generate the base data.. */
-> --
-> 2.30.2
->
