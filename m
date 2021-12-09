@@ -2,79 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF2946E316
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 08:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186F546E3A5
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 09:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233675AbhLIHXq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 02:23:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        id S229850AbhLIIEv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 03:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbhLIHXp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Dec 2021 02:23:45 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA715C061746;
-        Wed,  8 Dec 2021 23:20:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 03289CE24E6;
-        Thu,  9 Dec 2021 07:20:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2E30CC341CA;
-        Thu,  9 Dec 2021 07:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639034409;
-        bh=6/kEL/vxLq6HMreH4kJ6g4q4mgZ6JNAdEloe850tIfM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RwdkY9DKRqBHqV260LPI0X89FxrcMs4ulmEviSejHxM5ctCvgEWXiQ71BHm2xsRYQ
-         JSdgEzYDTuZoFyBKHNhRKz75p5UbZf8s0KT2e+4pat1PhBX1JeRtZTwE3kwWoBUSWr
-         FR62dXxOueJA+pJWzmeopBttm+3CEk7nrHoPSSlk8kTt4zJ7hZHe0gVLgBmCGfn4VH
-         dUhuG89xKynA/TzJpQhpDePe3896oQauTkKBEPJEWsYI/Slao2kho3Jiuz5+9TNijG
-         iPRj/fdT4FCFEoCpeSiB0CQLpSLk09U5SwonsNYGD1vDxBTiyHU64WkFh6n1vUF4A9
-         KAtnP+Gpby65A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1529C60A4D;
-        Thu,  9 Dec 2021 07:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229686AbhLIIEu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Dec 2021 03:04:50 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02894C061746;
+        Thu,  9 Dec 2021 00:01:18 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id k4so3286101plx.8;
+        Thu, 09 Dec 2021 00:01:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QfRJ3meNcEMg/hBc840EZK1vTCSuG9vpEpM34yNkkrE=;
+        b=QDOyQpnmpjp7JAZNDedIohyKhEj3k0F5OQ5OgJ7PWN9GMeFJZ9zLwNsh3uYEA49Pq/
+         70Arnmp+Q5mRhRkPH/lgsZPWHxqtQC5NxWoWbeG6mkUPHYzUAM07rSQv0Nnq6etmng6x
+         Xc3Mpbaywhms4wlqExRJnQQBTsamipCYGPDj5/tKoBskHc1SMg+FpcOJafvWm6mJ2M8F
+         f34CUfSNNGDyBtvHwd2hTOilx5JHK3nUiEKgDQqeraQvybVSadTiVyZe9Uz5yHtR7g1q
+         cyVZDwy46nZbajMBab5Ext1JJm5lPEZBV2nR46DRWezx/Vc/wWKIa4pRPo8Xw7/aLku5
+         7YIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QfRJ3meNcEMg/hBc840EZK1vTCSuG9vpEpM34yNkkrE=;
+        b=3CF+hh+8vdWpfl+r7wMLSsbjgFP4oRtZUGgFBIEKP6JXkhGzBWxJnJWaNFz5nBLodV
+         4J1M61enR9/AZThvQ3SqnWPu3oNBuzSbzjIRUJbaFrNp82YX1tamUJd4saurtXtfquWW
+         wEup+wljmn3aPvx0dXtrk9sph1o71gBP4eOHkcF7CHryGa5fwvioCJPss816y/zIAXON
+         5R19MJjSmnT0zXC6/f+10I1052TKlGoEP06FPaYFah5oVu5d8Pn24E/hRB8EZ3W5x7VO
+         Z+L23+b2Rwz1X++eQTIsJfKgNX27ow62DxJQTlqwwC7fOjMBjmpg28zX6L+LFM7FlnHT
+         l1tA==
+X-Gm-Message-State: AOAM533okux/BSYHkzN1+s0aCkP+CP17eVyoDZmB7P6d5cMqtOKzgEpO
+        hnClXReujDNgdEnKHw+tg/OKpvcmSCg=
+X-Google-Smtp-Source: ABdhPJyyQe7HdQxrvV1i6b8tnzpLKmPUt7sloM1aRGCMI4uQiuYu7l8f9I3yg1o4VPv0cEAQBxTqQw==
+X-Received: by 2002:a17:90a:1283:: with SMTP id g3mr13615242pja.174.1639036877529;
+        Thu, 09 Dec 2021 00:01:17 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h6sm5835126pfh.82.2021.12.09.00.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Dec 2021 00:01:17 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     andrii.nakryiko@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        cgel.zte@gmail.com, chi.minghao@zte.com.cn, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, yhs@fb.com, zealci@zte.com.cm
+Subject: [PATCHv2 bpf-next] samples/bpf:remove unneeded variable
+Date:   Thu,  9 Dec 2021 08:00:51 +0000
+Message-Id: <20211209080051.421844-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAEf4BzacuM8cR8Xuv5tdg7=KScVi26pZ3CjewAy=UuHouiRZdg@mail.gmail.com>
+References: <CAEf4BzacuM8cR8Xuv5tdg7=KScVi26pZ3CjewAy=UuHouiRZdg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: remove redundant assignment to pointer t
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163903440908.13982.14751517115928786084.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Dec 2021 07:20:09 +0000
-References: <20211207224718.59593-1-colin.i.king@gmail.com>
-In-Reply-To: <20211207224718.59593-1-colin.i.king@gmail.com>
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+return value form directly instead of
+taking this in another redundant variable.
 
-On Tue,  7 Dec 2021 22:47:18 +0000 you wrote:
-> The pointer t is being initialized with a value that is never read. The
-> pointer is re-assigned a value a littler later on, hence the initialization
-> is redundant and can be removed.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  kernel/bpf/btf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Reported-by: Zeal Robot <zealci@zte.com.cm>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+---
+ samples/bpf/xdp_redirect_cpu.bpf.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Here is the summary with links:
-  - bpf: remove redundant assignment to pointer t
-    https://git.kernel.org/bpf/bpf-next/c/73b6eae583f4
-
-You are awesome, thank you!
+diff --git a/samples/bpf/xdp_redirect_cpu.bpf.c b/samples/bpf/xdp_redirect_cpu.bpf.c
+index f10fe3cf25f6..25e3a405375f 100644
+--- a/samples/bpf/xdp_redirect_cpu.bpf.c
++++ b/samples/bpf/xdp_redirect_cpu.bpf.c
+@@ -100,7 +100,6 @@ u16 get_dest_port_ipv4_udp(struct xdp_md *ctx, u64 nh_off)
+ 	void *data     = (void *)(long)ctx->data;
+ 	struct iphdr *iph = data + nh_off;
+ 	struct udphdr *udph;
+-	u16 dport;
+ 
+ 	if (iph + 1 > data_end)
+ 		return 0;
+@@ -111,8 +110,7 @@ u16 get_dest_port_ipv4_udp(struct xdp_md *ctx, u64 nh_off)
+ 	if (udph + 1 > data_end)
+ 		return 0;
+ 
+-	dport = bpf_ntohs(udph->dest);
+-	return dport;
++	return bpf_ntohs(udph->dest);
+ }
+ 
+ static __always_inline
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
