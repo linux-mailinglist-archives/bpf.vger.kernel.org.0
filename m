@@ -2,123 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C6846E0FD
-	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 03:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F172446E1BC
+	for <lists+bpf@lfdr.de>; Thu,  9 Dec 2021 06:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhLICqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Dec 2021 21:46:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhLICqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Dec 2021 21:46:24 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B1C061746;
-        Wed,  8 Dec 2021 18:42:51 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id w14so3847850qkf.5;
-        Wed, 08 Dec 2021 18:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ni8ukBhnwq4xfJn2KEfRGFk9CvW/EaamTsKpCF9U5jw=;
-        b=FledoWYccQAWv6FRpva8r4lIbEIfgQM+BjswBkDz+Ede5Wkeo8QjIZfKPDzFnpjhRl
-         QxEn1AjrahGgFvRzd0cqSJ2eUckDV58c4ITNjL0+zpwShqj3e3GzQEJJrRPRDFoVUbqy
-         o30GCFnGk5euP4CXUr97UvPvq8KYjwaf3iQZUJP4LvlcPSpLmp29dzjB+vLPQnYPOImv
-         5/62MrA1RYw6hgl+MJlK/vZBz7MfRRWvJC7nVMIx/grd+5AnrUm6g22228Or3MWIOGMV
-         FijRDzb8IFS4aOCXYGiqC2nBprxecfD8vuc9vHLcuwXLUJiobdQUv/tz+wefcirK74rv
-         ty3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ni8ukBhnwq4xfJn2KEfRGFk9CvW/EaamTsKpCF9U5jw=;
-        b=Lbw3tgFt8InLmhEHNUnCPaswAlqsyLIcnHNOoEYcVAPpIrUtC+2fS3qCcd7uxpjPmM
-         dYz761rGR4uPT8emYvNmblNu/0OpIXG70VqySy2StgN1heKXvddKH5HxuSrzvHRYWrQ0
-         5dLuj0Q3Fz9M08MQf+cJDuFZ49zEOKz7w304Tmf4zSc9wROj9aX4FMykV8i+Yvwm20Tb
-         WafM2yublUuKiQxVoGYMz0yZCz95bknV3vE4iRxhclwTsTvaM7uYGP7I5mkLeznbuxtu
-         eX2FIx9p9EoMg7Yz3F0Lg2DTAhm3J+IchyZN37K7nEyWP7V2z2tif8ZT3wokQlFT3usj
-         F9zw==
-X-Gm-Message-State: AOAM5327uNf5nweCk1Vg1hCBxxYnazr1eyLOvIlr2K3mlNITc7G3mI2x
-        mMPsSZm8SUEV6XYliycKF5tAUfY1EmDskdC7cUli2et6n5diekSU
-X-Google-Smtp-Source: ABdhPJzPyV2mTICg4ujehOAo8kaXJvx2de02S+39TMWQ8+kUht18v3fGS9QAWvbiXI0QEc1UOZ9N36zfY4aRtfuIbw0=
-X-Received: by 2002:a05:620a:2e3:: with SMTP id a3mr10866422qko.451.1639017771202;
- Wed, 08 Dec 2021 18:42:51 -0800 (PST)
+        id S229686AbhLIFHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 00:07:48 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30344 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229676AbhLIFHr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 00:07:47 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B8MnIFx027063
+        for <bpf@vger.kernel.org>; Wed, 8 Dec 2021 21:04:14 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=LUG92XgGe0HpWFmbNnQLobG1GFcmHDFVRNeZKBuka34=;
+ b=TpkY1jniF6B8G6GEF0Rw6lQWtkzDS2G1qSEl+4XBwQ0p5aM2hxl7tsD7jLXpr0l4VNGm
+ b1RPUTY7fp/vZmGcLR8StylN46ZNiZ72Wl5nynNLwM3Tk3tLNXxS5j8pZ7tcv/h0E72J
+ IIe6DkyvHI1ev76EgD3lsmWBnGf5VTeurA0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cu5u5sn36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 08 Dec 2021 21:04:14 -0800
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 8 Dec 2021 21:04:13 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id BEE22385AB8B; Wed,  8 Dec 2021 21:04:03 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix a compilation warning
+Date:   Wed, 8 Dec 2021 21:04:03 -0800
+Message-ID: <20211209050403.1770836-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211204095256.78042-1-laoar.shao@gmail.com> <20211204095256.78042-5-laoar.shao@gmail.com>
- <20211208134304.615abbbf@gandalf.local.home>
-In-Reply-To: <20211208134304.615abbbf@gandalf.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 9 Dec 2021 10:42:15 +0800
-Message-ID: <CALOAHbAP7w95r_soihp+i1NjWxz4KVHGizARpX80wuL3ZLO7Uw@mail.gmail.com>
-Subject: Re: [PATCH -mm 4/5] tools/perf: replace hard-coded 16 with TASK_COMM_LEN
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Linux MM <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: zcBd98QKriGHh8EOl6PApfsN3DAzgpfy
+X-Proofpoint-ORIG-GUID: zcBd98QKriGHh8EOl6PApfsN3DAzgpfy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-09_02,2021-12-08_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=767 bulkscore=0
+ clxscore=1015 malwarescore=0 phishscore=0 impostorscore=0 spamscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112090026
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 9, 2021 at 2:43 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Sat,  4 Dec 2021 09:52:55 +0000
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> > @@ -43,7 +45,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
-> >               return -1;
-> >       }
-> >
-> > -     if (evsel__test_field(evsel, "prev_comm", 16, false))
-> > +     if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
-> >               ret = -1;
-> >
-> >       if (evsel__test_field(evsel, "prev_pid", 4, true))
-> > @@ -55,7 +57,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
-> >       if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
-> >               ret = -1;
-> >
-> > -     if (evsel__test_field(evsel, "next_comm", 16, false))
-> > +     if (evsel__test_field(evsel, "next_comm", TASK_COMM_LEN, false))
-> >               ret = -1;
-> >
-> >       if (evsel__test_field(evsel, "next_pid", 4, true))
-> > @@ -73,7 +75,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
-> >               return -1;
-> >       }
-> >
-> > -     if (evsel__test_field(evsel, "comm", 16, false))
-> > +     if (evsel__test_field(evsel, "comm", TASK_COMM_LEN, false))
->
-> Shouldn't all these be TASK_COMM_LEN_16?
->
+The following warning is triggered when I used clang compiler
+to build the selftest.
 
-The value here must be the same with TASK_COMM_LEN, so I use TASK_COMM_LEN here.
-But we may also change the code as
-https://lore.kernel.org/lkml/20211101060419.4682-9-laoar.shao@gmail.com/
-if TASK_COMM_LEN is changed, so TASK_COMM_LEN_16 is also okay here.
-I will change it to TASK_COMM_LEN_16 in the next version.
+  /.../prog_tests/btf_dedup_split.c:368:6: warning: variable 'btf2' is us=
+ed uninitialized whenever 'if' condition is true [-Wsometimes-uninitializ=
+ed]
+        if (!ASSERT_OK(err, "btf_dedup"))
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /.../prog_tests/btf_dedup_split.c:424:12: note: uninitialized use occur=
+s here
+        btf__free(btf2);
+                  ^~~~
+  /.../prog_tests/btf_dedup_split.c:368:2: note: remove the 'if' if its c=
+ondition is always false
+        if (!ASSERT_OK(err, "btf_dedup"))
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /.../prog_tests/btf_dedup_split.c:343:25: note: initialize the variable=
+ 'btf2' to silence this warning
+        struct btf *btf1, *btf2;
+                               ^
+                                =3D NULL
 
->
-> >               ret = -1;
-> >
-> >       if (evsel__test_field(evsel, "pid", 4, true))
->
+Initialize local variable btf2 =3D NULL and the warning is gone.
 
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Thanks
-Yafang
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b/t=
+ools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+index 878a864dae3b..90aac437576d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+@@ -340,7 +340,7 @@ static void btf_add_dup_struct_in_cu(struct btf *btf,=
+ int start_id)
+=20
+ static void test_split_dup_struct_in_cu()
+ {
+-	struct btf *btf1, *btf2;
++	struct btf *btf1, *btf2 =3D NULL;
+ 	int err;
+=20
+ 	/* generate the base data.. */
+--=20
+2.30.2
+
