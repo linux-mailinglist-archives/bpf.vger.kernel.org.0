@@ -2,171 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797EB4707EA
-	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 18:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAA74707FA
+	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 19:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235986AbhLJR7p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Dec 2021 12:59:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
+        id S244983AbhLJSEJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Dec 2021 13:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235577AbhLJR7p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Dec 2021 12:59:45 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67BAC061746
-        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 09:56:09 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id g17so22988110ybe.13
-        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 09:56:09 -0800 (PST)
+        with ESMTP id S235392AbhLJSEI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Dec 2021 13:04:08 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10676C061746;
+        Fri, 10 Dec 2021 10:00:33 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id t19so14303508oij.1;
+        Fri, 10 Dec 2021 10:00:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lT7glRwXHOFZngk6OUO7Jy4qtrgqUJqFSyFD7CFQWkU=;
-        b=jP0Hb2EBsk9l+zlsknHcL7nN9f/DlMAhodKyMOkDTiHEXirBdehZM50qmS2TcLp0ch
-         GutDFv/KofZP8trXH+MzEGm4L5pizyl5ItLoF52ID9vm0/afT9pC0IoAd+6WtSguz55L
-         PCFSJyDyX6cr7vNxudu+PZ9CDIHpg+upGrtCnmEpDSA1pBiTlxfJxa+e0cKjIDK2y+SI
-         0NKMMT4uJbLofjfxxmfpV0Ub8IT36kqJ6D0LoqqrQ86VJZOXS3tRvkttBI1vjOtZiKoV
-         V8X4z43+I5uaX1cK1yQQE8D1zUE3jX1fyP7e2Y0IRTbnpRFVK+DJUGTrxOBAvHEkA5tU
-         5NvQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=gAusYcjMSdi6ENjoyW2rmnebOZmH0DJmsAW1WGU5ejo=;
+        b=VXFJE1O848TGo7qIxz8zimyQdPxSmfi0z2tIFy191p8v3r7EiWlIfEfN0V2WropX4s
+         xKV0vrR/VLfSetqYDi3CdI7ATqxCt2uNv5ePs+5Ub0nCBVdBLw3ngHcHNLddAfImUHVY
+         fMouKQDAqTdb8Rbbg1WI9hNxAaFzNrUahfs+uCtS1bsHWWPfvT5jIS3q2mFGGwMM22Vj
+         YgJfPpAVJsa6V1F+QZ/jLVdCjtOBiklJarhBzVPnBD1tCbShz8BFFb8UaaHcNsFuDmG8
+         ecsAg6jyhZd30x3tiJhpnLhfWUrP62UZqwbk3vm9vyOdXRP+D6NovP3IEyeYuAvvbPMS
+         QLrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lT7glRwXHOFZngk6OUO7Jy4qtrgqUJqFSyFD7CFQWkU=;
-        b=0GPT+uvzNFtIfX5EXNJrjDco+AWBORxvAidtVIe8m9iQ5Wpwku9H8ohijTiNQF4Iqf
-         HTKWnyCZQEtGZHX01riydKsIUqKFYkQ+cqdnZFC4La+HjRenDcHy4W/C26XT7Sme81Zg
-         iHuUJFBAWYmYbBgPhyzB4B5paWT/66cBSKujyu7UzJ2Xzro4vRtjKLenMI7ZIqhIjwR9
-         Ku9zQ68MPjRLcG5PhGaavetkWsCliM+/X94ivNxcaiNmFM1va7aS14TIto9L2oT8yjEy
-         JmNZ0Q+EOO9PddeYNPXWSUjAOlrlI9umBj0eSvzF9IxynC9XWqj+SsrQivB6a19pA+59
-         ifDQ==
-X-Gm-Message-State: AOAM531FA4D4Pw2iQYhG40pDS8NGbXX8MJgUYaxBg6++zFgVW/BRZ/vX
-        E0WxVj8Gjt2oRmjmzRb3ZNzJwsaBYgL+ARWEIz0=
-X-Google-Smtp-Source: ABdhPJyzSJoBSknTvC56y9tKPPKdPOf55CsTpg+4fDBykfoswWtcehFUi6/33QXH+mDjjd52KWvdHxrUwRL70RAdEto=
-X-Received: by 2002:a25:e90a:: with SMTP id n10mr15616045ybd.180.1639158969022;
- Fri, 10 Dec 2021 09:56:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-9-haoluo@google.com>
- <CAEf4Bzb3nyWbS4=e7M8Am5BvMSPbMhMzXPKvd3spk+D9vZg99g@mail.gmail.com>
- <CA+khW7h3VM+7CESWeFgheMkg20JckbxidC6Quy-02_kFJL96tA@mail.gmail.com> <CA+khW7g5P3-ipVLZ8KSZZUf=3_F4uMEY4FhbDH7J5kqL08ggYg@mail.gmail.com>
-In-Reply-To: <CA+khW7g5P3-ipVLZ8KSZZUf=3_F4uMEY4FhbDH7J5kqL08ggYg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Dec 2021 09:55:58 -0800
-Message-ID: <CAEf4BzaxJjq9wyM=VpPBFcsBYYrhWy3AZ94o+0-pFhma32Vcmg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 8/9] bpf: Add MEM_RDONLY for helper args that
- are pointers to rdonly mem.
-To:     Hao Luo <haoluo@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=gAusYcjMSdi6ENjoyW2rmnebOZmH0DJmsAW1WGU5ejo=;
+        b=ttigJT0Pp8ORYgEqjrzimbpl+XXav61Uch1P7J9kXtKcDbcmVGzZx5R8jm/SIy8T7e
+         iWp7k4eE/1EhmlJKnhWlXMqxu4bkbtp0D+cppYjovZMLVTDFKcsg44O8QWP9w0Ae1kJD
+         oGwaa7Esmzt3dtRmDVLo3dy4ITNJbYZ+DJsjginFekK3cClsV0FZlw9/UiZy55vyrK8D
+         1DA7wYbVQr3UqwWACHeVgS8f08ilBM8kuUteb92+DCg1vE5LTgWAv5LAT6OwfiFTBOtw
+         JEK6TFjc6/RmY9yHBgdDtcnrHG8oFSkKWZLHw19DnS/JfLjeKswxs4MldXsvTf8GmtRI
+         3GXA==
+X-Gm-Message-State: AOAM533c98ko/XKcag1Z+J4VBRLgiktgSSeh8RlIC8Oz2M/RQUccmlnt
+        HY2Jboiav5Fq0ppWnFK9FsQeo7v/RuXErQ==
+X-Google-Smtp-Source: ABdhPJww+uZk2RQFNLxjbBx7wHU293+7KnyPm6xqnDALh2RMA3QUCzpAqBD4GbRy42e7bl6h5TRfQw==
+X-Received: by 2002:a54:4401:: with SMTP id k1mr14221689oiw.143.1639159232402;
+        Fri, 10 Dec 2021 10:00:32 -0800 (PST)
+Received: from localhost ([172.243.151.11])
+        by smtp.gmail.com with ESMTPSA id bq5sm917562oib.55.2021.12.10.10.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Dec 2021 10:00:32 -0800 (PST)
+Date:   Fri, 10 Dec 2021 10:00:26 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <61b395ba5cc03_2032520824@john.notmuch>
+In-Reply-To: <20211210111918.4904-1-danieltimlee@gmail.com>
+References: <20211210111918.4904-1-danieltimlee@gmail.com>
+Subject: RE: [PATCH] samples: bpf: fix tracex2 due to empty sys_write count
+ argument
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 9, 2021 at 12:04 PM Hao Luo <haoluo@google.com> wrote:
->
-> On Tue, Dec 7, 2021 at 7:49 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > On Mon, Dec 6, 2021 at 10:24 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
-> > > >
-> > > > Some helper functions may modify its arguments, for example,
-> > > > bpf_d_path, bpf_get_stack etc. Previously, their argument types
-> > > > were marked as ARG_PTR_TO_MEM, which is compatible with read-only
-> > > > mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
-> > > > to modify a read-only memory by passing it into one of such helper
-> > > > functions.
-> > > >
-> > > > This patch tags the bpf_args compatible with immutable memory with
-> > > > MEM_RDONLY flag. The arguments that don't have this flag will be
-> > > > only compatible with mutable memory types, preventing the helper
-> > > > from modifying a read-only memory. The bpf_args that have
-> > > > MEM_RDONLY are compatible with both mutable memory and immutable
-> > > > memory.
-> > > >
-> > > > Signed-off-by: Hao Luo <haoluo@google.com>
-> > > > ---
-> > > >  include/linux/bpf.h      |  4 ++-
-> > > >  kernel/bpf/btf.c         |  2 +-
-> > > >  kernel/bpf/cgroup.c      |  2 +-
-> > > >  kernel/bpf/helpers.c     |  8 ++---
-> > > >  kernel/bpf/ringbuf.c     |  2 +-
-> > > >  kernel/bpf/syscall.c     |  2 +-
-> > > >  kernel/bpf/verifier.c    | 14 +++++++--
-> > > >  kernel/trace/bpf_trace.c | 26 ++++++++--------
-> > > >  net/core/filter.c        | 64 ++++++++++++++++++++--------------------
-> > > >  9 files changed, 67 insertions(+), 57 deletions(-)
-> > > >
-> [...]
-> > > > @@ -5074,6 +5074,7 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> > > >         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-> > > >         enum bpf_reg_type expected, type = reg->type;
-> > > >         const struct bpf_reg_types *compatible;
-> > > > +       u32 compatible_flags;
-> > > >         int i, j;
-> > > >
-> > > >         compatible = compatible_reg_types[base_type(arg_type)];
-> > > > @@ -5082,6 +5083,13 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> > > >                 return -EFAULT;
-> > > >         }
-> > > >
-> > > > +       /* If arg_type is tagged with MEM_RDONLY, it's compatible with both
-> > > > +        * RDONLY and non-RDONLY reg values. Therefore fold this flag before
-> > > > +        * comparison. PTR_MAYBE_NULL is similar.
-> > > > +        */
-> > > > +       compatible_flags = arg_type & (MEM_RDONLY | PTR_MAYBE_NULL);
-> > > > +       type &= ~compatible_flags;
-> > > > +
-> > >
-> > > wouldn't
-> > >
-> > > type &= ~MEM_RDONLY; /* clear read-only flag, if any */
-> > > type &= ~PTR_MAYBE_NULL; /* clear nullable flag, if any */
-> > >
-> > > be cleaner and more straightforward?
-> > >
-> > >
-> >
-> > No problem. Sounds good to me.
-> >
->
-> I just realized the suggested transformation is wrong. Whether to fold
-> the flag depends on whether arg_type has the flag. So it should
-> instead be
->
-> if (arg_type & MEM_RDONLY)
->   type &= ~MEM_RDONLY;
->
-> or
->
-> type &= ~(arg_type & MEM_RDONLY);
+Daniel T. Lee wrote:
+> Currently from syscall entry, argument can't be fetched correctly as a
+> result of register cleanup.
+> 
+>     commit 6b8cf5cc9965 ("x86/entry/64/compat: Clear registers for compat syscalls, to reduce speculation attack surface")
+> 
+> For example in upper commit, registers are cleaned prior to syscall.
+> To be more specific, sys_write syscall has count size as a third argument.
+> But this can't be fetched from __x64_sys_enter/__s390x_sys_enter due to
+> register cleanup. (e.g. [x86] xorl %r8d, %r8d / [s390x] xgr %r7, %r7)
+> 
+> This commit fix this problem by modifying the trace event to ksys_write
+> instead of sys_write syscall entry.
+> 
+>     # Wrong example of 'write()' syscall argument fetching
+>     # ./tracex2
+>     ...
+>     pid 50909 cmd dd uid 0
+>            syscall write() stats
+>      byte_size       : count     distribution
+>        1 -> 1        : 4968837  |************************************* |
+> 
+>     # Successful example of 'write()' syscall argument fetching
+>     # (dd's write bytes at a time defaults to 512)
+>     # ./tracex2
+>     ...
+>     pid 3095 cmd dd uid 0
+>            syscall write() stats
+>      byte_size       : count     distribution
+>     ...
+>      256 -> 511      : 0        |                                      |
+>      512 -> 1023     : 4968844  |************************************* |
+> 
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+>  samples/bpf/tracex2_kern.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
+> index 5bc696bac27d..96dff3bea227 100644
+> --- a/samples/bpf/tracex2_kern.c
+> +++ b/samples/bpf/tracex2_kern.c
+> @@ -78,7 +78,7 @@ struct {
+>  	__uint(max_entries, 1024);
+>  } my_hist_map SEC(".maps");
+>  
+> -SEC("kprobe/" SYSCALL(sys_write))
+> +SEC("kprobe/ksys_write")
+>  int bpf_prog3(struct pt_regs *ctx)
+>  {
+>  	long write_size = PT_REGS_PARM3(ctx);
+> -- 
+> 2.32.0
+> 
 
-You are totally right. I think this deserves a big verbose comment
-explaining that:
+LGTM
 
-ARG_PTR_TO_MEM+RDONLY is compatible with PTR_TO_MEM and PTR_TO_MEM+RDONLY, but
-ARG_PTR_TO_MEM is compatible only with PTR_TO_MEM and NOT with PTR_TO_MEM+RDONLY
-
-Same for MAYBE_NULL:
-
-ARG_PTR_TO_MEM + MAYBE_NULL is compatible with PTR_TO_MEM and
-PTR_TO_MEM+MAYBE_NULL, but
-ARG_PTR_TO_MEM is compatible only with PTR_TO_MEM but NOT with
-PTR_TO_MEM+MAYBE_NULL
-
-It might not be true for other future modifiers, so I'd do each of
-RDONLY and MAYBE_NULL with a separate if and comment.
-
-Good catch, btw! (but hopefully selftests would have caught this? if
-not, we need better tests)
-
->
-> > > >         for (i = 0; i < ARRAY_SIZE(compatible->types); i++) {
-> > > >                 expected = compatible->types[i];
-> > > >                 if (expected == NOT_INIT)
-> > >
-> > > [...]
+Acked-by: John Fastabend <john.fastabend@gmail.com>
