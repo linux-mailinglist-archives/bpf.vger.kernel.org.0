@@ -2,212 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BB04708B8
-	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 19:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 194C64708F7
+	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 19:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237296AbhLJSc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Dec 2021 13:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
+        id S245465AbhLJSkg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Dec 2021 13:40:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237062AbhLJSc1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Dec 2021 13:32:27 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF261C061746;
-        Fri, 10 Dec 2021 10:28:51 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id f186so23303070ybg.2;
-        Fri, 10 Dec 2021 10:28:51 -0800 (PST)
+        with ESMTP id S245466AbhLJSkf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Dec 2021 13:40:35 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D160C0617A1
+        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 10:36:59 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso7706357wmh.0
+        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 10:36:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=F2fgbC4erWq9UsFudgbaV5qAPl0PQ6tDda7up6K0tTg=;
-        b=IaMoXPj4bsk9XqzlYSLlR81xzprUIJEhici3JOAjOoOQiQD5sIOJzOnTKexinUCnqw
-         fkw04JQNFkyFDXwvRfN0VnLQTU5PQ6ACmXfPOTI9FxQ/wAsTmr7M4zuUGoXKpiaixNh6
-         5LKpiVaJW+SIaEQDuTcIP1902HsjOgtLxd2cgR+uZ20W/Nl5pc5RCqbLDA0/DDiX0RnF
-         //aRahox+JjT8vW+3HhGfAaU0WnO4op03uPp1VklVhkLQ+BvH8xug0jToC9OtY5ie3eC
-         2ma25sB1JmoOq6OVn8ob/lmi6Pa2QCBI4TNjfnf+Hv6uWkxiBjA2798rmZl8pOSei0XZ
-         uoig==
+        bh=cxcfpAnzMKumz6aKHRLWzHDTvL2PzrtqBScRlCLL4ME=;
+        b=JBnwHVPmELZq0KQYnydp1hqhIy7jA4INjeCfOuUL7kdC/b4MMgW0clko9PV8NLHqMy
+         Y42MyE6eLhySGAfuMmoVJmYgWGiIzPi5CyWypTUd3XtkLez+rnDuANOpALOC0Wc/ipRE
+         UUJ128WOfLYNCiWWCuw1d/5w0QcfoQXIO01bXbMCfcWAh/eWFWS+hrhzTwzzcxZrlXDX
+         BmPGDDMKcFpQ+8nYMYd8Y4X7KtW8S2sIWT2qzyIkMJHMNp77jedLZQ9AAcMG3Z/6oHB8
+         h3dz68VlIh1P3KHFxAfrk982Sbzu7UE3PIoHPxksksc/2wabCH6i2oHwsLiT99xwqDws
+         RR9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=F2fgbC4erWq9UsFudgbaV5qAPl0PQ6tDda7up6K0tTg=;
-        b=4d9WIw78qmKpQKRl1oLPmayaHZF15xsqqjhCLZMEg3Kc2HUPd+TQLXemM4SIk04Zr7
-         0lPUvnt1+BNM61k25TVuNoCmP92HTvOvQJhK5neswbTVJ2g/xPNO2PZUJd9uCH3NBUcn
-         YTt3IiuWoSepNq1mgGvuSs0HNnGtNYf0J7vxjHffR+Zh7IVbNg50JPvQzhF243+nAu4d
-         tMm2LI/r1DidQR2OlTRPQOdqYCF5qzyX9QgiTvbbm5FpDdKTyQHD1fXiXnCVtRTnuG1Z
-         ZGqmpNub9jJfzdsMhzXiX5nbKzKKNuyNujHGssLDFJDvxVncSudQzXe9XPoojGPZWt1U
-         NgCQ==
-X-Gm-Message-State: AOAM532PlFK2DE+/ONVM78bAKY5h0Ktr4Xu4W/p2Ak1JfUnAPn1CLv50
-        OfSDAtgOmVMM50QdWnW3zKRKoCq4vUHRTJ/QKDU=
-X-Google-Smtp-Source: ABdhPJxzOmRVdJgVJ8ugMlkwCS3n3QBUZOwr7negMQlIqzto6w6mA4XRk02qNRD2WZui+lMa92nKQxpTauNAJiJGV54=
-X-Received: by 2002:a25:e406:: with SMTP id b6mr16688360ybh.529.1639160930856;
- Fri, 10 Dec 2021 10:28:50 -0800 (PST)
+        bh=cxcfpAnzMKumz6aKHRLWzHDTvL2PzrtqBScRlCLL4ME=;
+        b=flGm9Q5v3KEHVyAmpCUyinv2UBY4SFxNpPPmwm7UiO7yoX9bWyVjK+CRt0zdUoTzR8
+         QJUM7sMz5hrIncsow0gtRYrLACEI2zVJu1I3UXk5gcSNll/Eqep/Aek+JRhFxfZVf09W
+         /Smkjdpsxg3uOKbJ2vz3+xIXjEoptwnndPhBMKJ1/r/a1sCMnip06IjaZvdECu/gCuIy
+         /AdKUa8OyZ4EsR9nBe55ewMuIxmUb+rQfPO2UklDSCHC8k56MQDomMv6uPJmOhinsFgh
+         ZpMamXHlIcVlM5Uw6FkcPQwlJ1286dm4XVs3f5eyGLwJ92Xq425NEisbMfg1f9V9084V
+         iZqA==
+X-Gm-Message-State: AOAM530dZwvXk3SO9eZzPZVpiGUyO+CiXgqhepQKpxvFl8OZw9JwYLyU
+        GcR0hCc/rOaVon325B3o4YhIGVH41YjRoG1pH2D4lg==
+X-Google-Smtp-Source: ABdhPJzkjVrtORmapLyn3B9RuFcJHpq2VVchZhy+0eZSVFOcbRxXUQv+5gXoBGJSdjifs+IwLDKCWLV6HpINeHIwSNs=
+X-Received: by 2002:a05:600c:4f14:: with SMTP id l20mr18472564wmq.164.1639161417462;
+ Fri, 10 Dec 2021 10:36:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124084119.260239-1-jolsa@kernel.org> <20211124084119.260239-2-jolsa@kernel.org>
- <CAEf4Bzb5wyW=62fr-BzQsuFL+mt5s=+jGcdxKwZK0+AW18uD_Q@mail.gmail.com>
- <Yafp193RdskXofbH@krava> <CAEf4BzbmKffmcM3WhCthrgfbWZBZj52hGH0Ju0itXyJ=yD01NA@mail.gmail.com>
- <YbC4EXS3pyCbh7/i@krava> <YbNLPdrA80OMbzdS@krava>
-In-Reply-To: <YbNLPdrA80OMbzdS@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Dec 2021 10:28:39 -0800
-Message-ID: <CAEf4Bzb_qBVqCn-A=kP7FNLKQz1mvsr3wQfSMPOJ6_5M4zC+ig@mail.gmail.com>
-Subject: Re: [PATCH 1/8] perf/kprobe: Add support to create multiple probes
-To:     Jiri Olsa <jolsa@redhat.com>
+References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-8-haoluo@google.com>
+ <CAEf4BzbSA1+vE4vA6FSbJfUZDyYvyHJbiK1j5yD=vGbGA5EEhg@mail.gmail.com>
+ <CA+khW7jtOweO4it68=ggqbe7QbdhPukE+FkgmAiTs-PeR28AiQ@mail.gmail.com> <CAEf4BzbEQ5+iCuXk-gS133ignWZXB08tPrQmt8W3t3hz8B8B+w@mail.gmail.com>
+In-Reply-To: <CAEf4BzbEQ5+iCuXk-gS133ignWZXB08tPrQmt8W3t3hz8B8B+w@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 10 Dec 2021 10:36:46 -0800
+Message-ID: <CA+khW7iWaKQJOAZQJ_uGQg2NY3JKOhms9kDAPiYWYTn6tgh3Vg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 7/9] bpf: Make per_cpu_ptr return rdonly PTR_TO_MEM.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 10, 2021 at 4:42 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, Dec 10, 2021 at 9:42 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Wed, Dec 08, 2021 at 02:50:09PM +0100, Jiri Olsa wrote:
-> > On Mon, Dec 06, 2021 at 07:15:58PM -0800, Andrii Nakryiko wrote:
-> > > On Wed, Dec 1, 2021 at 1:32 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Tue, Nov 30, 2021 at 10:53:58PM -0800, Andrii Nakryiko wrote:
-> > > > > On Wed, Nov 24, 2021 at 12:41 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > > >
-> > > > > > Adding support to create multiple probes within single perf event.
-> > > > > > This way we can associate single bpf program with multiple kprobes,
-> > > > > > because bpf program gets associated with the perf event.
-> > > > > >
-> > > > > > The perf_event_attr is not extended, current fields for kprobe
-> > > > > > attachment are used for multi attachment.
-> > > > >
-> > > > > I'm a bit concerned with complicating perf_event_attr further to
-> > > > > support this multi-attach. For BPF, at least, we now have
-> > > > > bpf_perf_link and corresponding BPF_LINK_CREATE command in bpf()
-> > > > > syscall which allows much simpler and cleaner API to do this. Libbpf
-> > > > > will actually pick bpf_link-based attachment if kernel supports it. I
-> > > > > think we should better do bpf_link-based approach from the get go.
-> > > > >
-> > > > > Another thing I'd like you to keep in mind and think about is BPF
-> > > > > cookie. Currently kprobe/uprobe/tracepoint allow to associate
-> > > > > arbitrary user-provided u64 value which will be accessible from BPF
-> > > > > program with bpf_get_attach_cookie(). With multi-attach kprobes this
-> > > > > because extremely crucial feature to support, otherwise it's both
-> > > > > expensive, inconvenient and complicated to be able to distinguish
-> > > > > between different instances of the same multi-attach kprobe
-> > > > > invocation. So with that, what would be the interface to specify these
-> > > > > BPF cookies for this multi-attach kprobe, if we are going through
-> > > > > perf_event_attr. Probably picking yet another unused field and
-> > > > > union-izing it with a pointer. It will work, but makes the interface
-> > > > > even more overloaded. While for LINK_CREATE we can just add another
-> > > > > pointer to a u64[] with the same size as number of kfunc names and
-> > > > > offsets.
-> > > >
-> > > > I'm not sure we could bypass perf event easily.. perhaps introduce
-> > > > BPF_PROG_TYPE_RAW_KPROBE as we did for tracepoints or just new
-> > > > type for multi kprobe attachment like BPF_PROG_TYPE_MULTI_KPROBE
-> > > > that might be that way we'd have full control over the API
-> > >
-> > > Sure, new type works.
-> > >
-> > > >
-> > > > >
-> > > > > But other than that, I'm super happy that you are working on these
-> > > > > complicated multi-attach capabilities! It would be great to benchmark
-> > > > > one-by-one attachment vs multi-attach to the same set of kprobes once
-> > > > > you arrive at the final implementation.
-> > > >
-> > > > I have the change for bpftrace to use this and even though there's
-> > > > some speed up, it's not as substantial as for trampolines
-> > > >
-> > > > looks like we 'only' got rid of the multiple perf syscall overheads,
-> > > > compared to rcu syncs timeouts like we eliminated for trampolines
-> > >
-> > > if it's just eliminating a pretty small overhead of multiple syscalls,
-> > > then it would be quite disappointing to add a bunch of complexity just
-> > > for that.
+> On Tue, Dec 7, 2021 at 7:54 PM Hao Luo <haoluo@google.com> wrote:
 > >
-> > I meant it's not as huge save as for trampolines, but I expect some
-> > noticeable speedup, I'll make more becnhmarks with current patchset
+> > On Mon, Dec 6, 2021 at 10:18 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
+> > > >
+> > > > Tag the return type of {per, this}_cpu_ptr with RDONLY_MEM. The
+> > > > returned value of this pair of helpers is kernel object, which
+> > > > can not be updated by bpf programs. Previously these two helpers
+> > > > return PTR_OT_MEM for kernel objects of scalar type, which allows
+> > > > one to directly modify the memory. Now with RDONLY_MEM tagging,
+> > > > the verifier will reject programs that writes into RDONLY_MEM.
+> > > >
+> > > > Fixes: 63d9b80dcf2c ("bpf: Introduce bpf_this_cpu_ptr()")
 >
-> so with this approach there's noticable speedup, but it's not the
-> 'instant attachment speed' as for trampolines
+> BTW, our tooling complained about this one because in reality the
+> subject of the patch has a typo: "bpf: Introducte bpf_this_cpu_ptr()",
+> please fix as well (that is, re-introduce the typo :) )
 >
-> as a base I used bpftrace with change that allows to reuse bpf program
-> for multiple kprobes
->
-> bpftrace standard attach of 672 kprobes:
->
->   Performance counter stats for './src/bpftrace -vv -e kprobe:kvm* { @[kstack] += 1; }  i:ms:10 { printf("KRAVA\n"); exit() }':
->
->       70.548897815 seconds time elapsed
->
->        0.909996000 seconds user
->       50.622834000 seconds sys
->
->
-> bpftrace using interface from this patchset attach of 673 kprobes:
->
->   Performance counter stats for './src/bpftrace -vv -e kprobe:kvm* { @[kstack] += 1; }  i:ms:10 { printf("KRAVA\n"); exit() }':
->
->       36.947586803 seconds time elapsed
->
->        0.272585000 seconds user
->       30.900831000 seconds sys
->
->
-> so it's noticeable, but I wonder it's not enough ;-)
 
-Typical retsnoop run for BPF use case is attaching to ~1200 functions.
-Answer for yourself if you think the tool that takes 36 seconds to
-start up is a great user experience? ;)
+Ah, yes, thanks for the notice :). I do see that typo after sending
+out this version. I have it fixed in my local repo already.
 
->
-> jirka
->
-> >
-> > > Are there any reasons we can't use the same low-level ftrace
-> > > batch attach API to speed this up considerably? I assume it's only
-> > > possible if kprobe is attached at the beginning of the function (not
-> > > sure how kretprobe is treated here), so we can either say that this
-> > > new kprobe prog type can only be attached at the beginning of each
-> > > function and enforce that (probably would be totally reasonable
-> > > assumption as that's what's happening most frequently in practice).
-> > > Worst case, should be possible to split all requested attach targets
-> > > into two groups, one fast at function entry and all the rest.
-> > >
-> > > Am I too far off on this one? There might be some more complications
-> > > that I don't see.
-> >
-> > I'd need to check more on kprobes internals, but.. ;-)
-> >
-> > the new ftrace interface is special for 'direct' trampolines and
-> > I think that although kprobes can use ftrace for attaching, they
-> > use it in a different way
-> >
-> > also this current 'multi attach' approach is on top of current kprobe
-> > interface, if we wanted to use the new ftrace API we'd need to add new
-> > kprobe interface and change the kprobe attaching to use it (for cases
-> > it's attached at the function entry)
-> >
-> > jirka
-> >
-> > >
+> > > > Fixes: eaa6bcb71ef6 ("bpf: Introduce bpf_per_cpu_ptr()")
+> > > > Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
+> > > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > > ---
+> > > >  kernel/bpf/helpers.c  |  4 ++--
+> > > >  kernel/bpf/verifier.c | 33 ++++++++++++++++++++++++++++-----
+> > > >  2 files changed, 30 insertions(+), 7 deletions(-)
 > > > >
-> > > > I'll make full benchmarks once we have some final solution
+> > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > > index 293d9314ec7f..a5e349c9d3e3 100644
+> > > > --- a/kernel/bpf/helpers.c
+> > > > +++ b/kernel/bpf/helpers.c
+> > > > @@ -667,7 +667,7 @@ BPF_CALL_2(bpf_per_cpu_ptr, const void *, ptr, u32, cpu)
+> > > >  const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
+> > > >         .func           = bpf_per_cpu_ptr,
+> > > >         .gpl_only       = false,
+> > > > -       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | PTR_MAYBE_NULL,
+> > > > +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | PTR_MAYBE_NULL | MEM_RDONLY,
+> > > >         .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
+> > > >         .arg2_type      = ARG_ANYTHING,
+> > > >  };
+> > > > @@ -680,7 +680,7 @@ BPF_CALL_1(bpf_this_cpu_ptr, const void *, percpu_ptr)
+> > > >  const struct bpf_func_proto bpf_this_cpu_ptr_proto = {
+> > > >         .func           = bpf_this_cpu_ptr,
+> > > >         .gpl_only       = false,
+> > > > -       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID,
+> > > > +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | MEM_RDONLY,
+> > > >         .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
+> > > >  };
 > > > >
-> > > > jirka
-> > > >
+> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > > index f8b804918c35..44af65f07a82 100644
+> > > > --- a/kernel/bpf/verifier.c
+> > > > +++ b/kernel/bpf/verifier.c
+> > > > @@ -4296,16 +4296,32 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> > > >                                 mark_reg_unknown(env, regs, value_regno);
+> > > >                         }
+> > > >                 }
+> > > > -       } else if (reg->type == PTR_TO_MEM) {
+> > > > +       } else if (base_type(reg->type) == PTR_TO_MEM) {
+> > > > +               bool rdonly_mem = type_is_rdonly_mem(reg->type);
+> > > > +
+> > > > +               if (type_may_be_null(reg->type)) {
+> > > > +                       verbose(env, "R%d invalid mem access '%s'\n", regno,
+> > > > +                               reg_type_str(reg->type));
 > > >
+> > > see, here you'll get "invalid mem access 'ptr_to_mem'" while it's
+> > > actually ptr_to_mem_or_null. Like verifier logs are not hard enough to
+> > > follow, now they will be also misleading.
+> > >
+> >
+> > I think formatting string inside reg_type_str() can have this problem
+> > solved, preserving the previous behavior. I'll try that in v2.
+> >
+> > > > +                       return -EACCES;
+> > > > +               }
+> > > > +
+> > > > +               if (t == BPF_WRITE && rdonly_mem) {
+> > > > +                       verbose(env, "R%d cannot write into rdonly %s\n",
+> > > > +                               regno, reg_type_str(reg->type));
+> > > > +                       return -EACCES;
+> > > > +               }
+> > > > +
+> > > >                 if (t == BPF_WRITE && value_regno >= 0 &&
+> > > >                     is_pointer_value(env, value_regno)) {
+> > > >                         verbose(env, "R%d leaks addr into mem\n", value_regno);
+> > > >                         return -EACCES;
+> > > >                 }
+> > > > +
+> > > >                 err = check_mem_region_access(env, regno, off, size,
+> > > >                                               reg->mem_size, false);
+> > > > -               if (!err && t == BPF_READ && value_regno >= 0)
+> > > > -                       mark_reg_unknown(env, regs, value_regno);
+> > > > +               if (!err && value_regno >= 0)
+> > > > +                       if (t == BPF_READ || rdonly_mem)
+> > >
+> > > why two nested ifs for one condition?
+> > >
+> >
+> > No particular reason. I think it helped me understand the logic
+> > better. But I'm fine with combining them into one 'if'.
 >
+> Personally two nested ifs are way harder to follow as it implies that
+> there is some other sub-condition, while in reality it's one longer
+> condition.
+>
+>
+> >
+> > > > +                               mark_reg_unknown(env, regs, value_regno);
+> > > >         } else if (reg->type == PTR_TO_CTX) {
+> > > >                 enum bpf_reg_type reg_type = SCALAR_VALUE;
+> > > >                 struct btf *btf = NULL;
+> > >
+> > > [...]
