@@ -2,76 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96C946F913
-	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 03:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3C146F964
+	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 03:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235917AbhLJC12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 21:27:28 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:49804 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235867AbhLJC11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Dec 2021 21:27:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 51EDCB82644;
-        Fri, 10 Dec 2021 02:23:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A3CC004DD;
-        Fri, 10 Dec 2021 02:23:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639103030;
-        bh=sDvHbMkdEtVxoJxzEdCAcqFbVX6sMbRNns13Pf7NKvk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nzfYAcuT4yEEmborXhhfKAul2zMtptaLcsGMcspeh/QAd7192R/Y+gOpaEyMItYKj
-         Lhpu7pPupRUgweHOXgciUCWcMg8fu44rX9wWoXlVnv26jBxCeC5L81r9q2YSKVYyhM
-         IN6Dg6zgF5FZjj64OM6cVpGKSl5JSADEcbDwqEKmk0cX3wxAIuY/2k08+jZiwdSK6i
-         tg3QwAy3Z8wL78kHRKbTmdZjSpXo4oPFfiZwHxwG3B+fS3V2eYtnIpiJXtxZF7gTuW
-         GlaRcvF1mvIfkkSFkO1gRItxq0mS9phb8JzDthO+HTjlkw12owctJk6utZm09Ql4Gt
-         oDPFxU9Dr4qVw==
-Date:   Thu, 9 Dec 2021 18:23:49 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: return EOPNOTSUPP when JIT is needed and not
- possible
-Message-ID: <20211209182349.038ac2b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <b294e66b-0bac-008b-52b4-6f1a90215baa@iogearbox.net>
-References: <20211209134038.41388-1-cascardo@canonical.com>
-        <61b2536e5161d_6bfb2089@john.notmuch>
-        <YbJZoK+qBEiLAxxM@shredder>
-        <b294e66b-0bac-008b-52b4-6f1a90215baa@iogearbox.net>
+        id S236196AbhLJC5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 21:57:41 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:47936 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233693AbhLJC5l (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 21:57:41 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V-6w-uX_1639104844;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V-6w-uX_1639104844)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Dec 2021 10:54:05 +0800
+Date:   Fri, 10 Dec 2021 10:54:02 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 0/2] Introduce TCP_ULP option for
+ bpf_{set,get}sockopt
+Message-ID: <YbLBSrhFZ2l4cCxH@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <20211209090250.73927-1-tonylu@linux.alibaba.com>
+ <61b258ad273a9_6bfb2084d@john.notmuch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61b258ad273a9_6bfb2084d@john.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 10 Dec 2021 00:03:40 +0100 Daniel Borkmann wrote:
-> > Similar issue was discussed in the past. See:
-> > https://lore.kernel.org/netdev/20191204.125135.750458923752225025.davem@davemloft.net/  
+On Thu, Dec 09, 2021 at 11:27:41AM -0800, John Fastabend wrote:
+> Tony Lu wrote:
+> > This patch set introduces a new option TCP_ULP for bpf_{set,get}sockopt
+> > helper. The bpf prog can set and get TCP_ULP sock option on demand.
+> > 
+> > With this, the bpf prog can set TCP_ULP based on strategies when socket
+> > create or other's socket hook point. For example, the bpf prog can
+> > control which socket should use tls or smc (WIP) ULP modules without
+> > modifying the applications.
+> > 
+> > Patch 1 replaces if statement with switch to make it easy to extend.
+> > 
+> > Patch 2 introduces TCP_ULP sock option.
 > 
-> With regards to ENOTSUPP exposure, if the consensus is that we should fix all
-> occurences over to EOPNOTSUPP even if they've been exposed for quite some time
-> (Jakub?), 
-
-Did you mean me? :) In case you did - I think we should avoid it 
-for new code but changing existing now seems risky. Alexei and Andrii
-would know best but quick search of code bases at work reveals some
-scripts looking for ENOTSUPP.
-
-Thadeu, what motivated the change?
-
-If we're getting those changes fixes based on checkpatch output maybe 
-there is a way to mute the checkpatch warnings when it's not run on a 
-diff?
-
-> we could give this patch a try maybe via bpf-next and see if anyone complains.
+> Can you be a bit more specific on what ULP you are going to load on
+> demand here and how that would work? For TLS I can't see how this will
+> work, please elaborate. Because the user space side (e.g. openssl) behaves
+> differently if running in kTLS vs uTLS modes I don't think you can
+> from kernel side just flip it on? I'm a bit intrigued though on what
+> might happen if we do did do this on an active socket, but seems it
+> wouldn't be normal TLS with handshake and keys at that point? I'm
+> not sure we need to block it from happening, but struggling to see
+> how its useful at the moment.
 > 
-> Thadeu, I think you also need to fix up BPF selftests as test_verifier, to mention
-> one example (there are also bunch of others under tools/testing/selftests/), is
-> checking for ENOTSUPP specifically..
+> The smc case looks promising, but for that we need to get the order
+> correct and merge smc first and then this series.
+
+Yep, we are developing a set of patch to do with smc for transparent
+replacement. The smc provides the ability to be compatible with TCP,
+the applications can be replaced with smc without no side effects.
+In most cases, it is impossible to modify the compiled application
+binary or inject into applications' containers with LD_PRELOAD. So we
+are using smc ULP to replace TCP with smc when socket create.
+
+These patches will be sent out soon. I will send them after smc's
+patches. Thank you.
+
+> 
+> Also this will need a selftests.
+
+I will fix it.
+
+> 
+> Thanks,
+> John
+
+Thanks,
+Tony Lu
