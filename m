@@ -2,83 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3C146F964
-	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 03:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BC046F971
+	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 04:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236196AbhLJC5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Dec 2021 21:57:41 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:47936 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233693AbhLJC5l (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 21:57:41 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V-6w-uX_1639104844;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V-6w-uX_1639104844)
+        id S236246AbhLJDGS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Dec 2021 22:06:18 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55588 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234051AbhLJDGQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Dec 2021 22:06:16 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V-6w0j._1639105359;
+Received: from 30.225.28.43(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0V-6w0j._1639105359)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Dec 2021 10:54:05 +0800
-Date:   Fri, 10 Dec 2021 10:54:02 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/2] Introduce TCP_ULP option for
- bpf_{set,get}sockopt
-Message-ID: <YbLBSrhFZ2l4cCxH@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20211209090250.73927-1-tonylu@linux.alibaba.com>
- <61b258ad273a9_6bfb2084d@john.notmuch>
+          Fri, 10 Dec 2021 11:02:40 +0800
+Message-ID: <d15eb127-3d9b-25e3-9865-d8922f5ff889@linux.alibaba.com>
+Date:   Fri, 10 Dec 2021 11:02:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61b258ad273a9_6bfb2084d@john.notmuch>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH bpf-next] libbpf: Skip the pinning of global data map for
+ old kernels.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <9eb3216b-a785-9024-0f1d-e5a14dfb025b@linux.alibaba.com>
+ <CAEf4BzbtQGnGZTLbTdy1GHK54f5S7YNFQak7BuEfaqGEwqNNJA@mail.gmail.com>
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+In-Reply-To: <CAEf4BzbtQGnGZTLbTdy1GHK54f5S7YNFQak7BuEfaqGEwqNNJA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 09, 2021 at 11:27:41AM -0800, John Fastabend wrote:
-> Tony Lu wrote:
-> > This patch set introduces a new option TCP_ULP for bpf_{set,get}sockopt
-> > helper. The bpf prog can set and get TCP_ULP sock option on demand.
-> > 
-> > With this, the bpf prog can set TCP_ULP based on strategies when socket
-> > create or other's socket hook point. For example, the bpf prog can
-> > control which socket should use tls or smc (WIP) ULP modules without
-> > modifying the applications.
-> > 
-> > Patch 1 replaces if statement with switch to make it easy to extend.
-> > 
-> > Patch 2 introduces TCP_ULP sock option.
+
+
+On 12/10/21 1:26 AM, Andrii Nakryiko wrote:
+> On Thu, Dec 9, 2021 at 12:44 AM Shuyi Cheng
+> <chengshuyi@linux.alibaba.com> wrote:
+>>
+>>
+>> Fix error: "failed to pin map: Bad file descriptor, path:
+>> /sys/fs/bpf/_rodata_str1_1."
+>>
+>> In the old kernel, the global data map will not be created, see [0]. So
+>> we should skip the pinning of the global data map to avoid
+>> bpf_object__pin_maps returning error.
+>>
+>> [0]: https://lore.kernel.org/bpf/20211123200105.387855-1-andrii@kernel.org
+>>
+>> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+>> ---
+>>    tools/lib/bpf/libbpf.c | 4 ++++
+>>    1 file changed, 4 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 6db0b5e8540e..d96cf49cebab 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -7884,6 +7884,10 @@ int bpf_object__pin_maps(struct bpf_object *obj,
+>> const char *path)
+>>                  char *pin_path = NULL;
+>>                  char buf[PATH_MAX];
+>>
+>> +               if (bpf_map__is_internal(map) &&
+>> +                   !kernel_supports(obj, FEAT_GLOBAL_DATA))
 > 
-> Can you be a bit more specific on what ULP you are going to load on
-> demand here and how that would work? For TLS I can't see how this will
-> work, please elaborate. Because the user space side (e.g. openssl) behaves
-> differently if running in kTLS vs uTLS modes I don't think you can
-> from kernel side just flip it on? I'm a bit intrigued though on what
-> might happen if we do did do this on an active socket, but seems it
-> wouldn't be normal TLS with handshake and keys at that point? I'm
-> not sure we need to block it from happening, but struggling to see
-> how its useful at the moment.
 > 
-> The smc case looks promising, but for that we need to get the order
-> correct and merge smc first and then this series.
+> doing the same check in 3 different places sucks. Let's add "bool
+> skipped" to struct bpf_map, which will be set in one place (at the map
+> creation time) and then check during relocation and during pinning?
+>
 
-Yep, we are developing a set of patch to do with smc for transparent
-replacement. The smc provides the ability to be compatible with TCP,
-the applications can be replaced with smc without no side effects.
-In most cases, it is impossible to modify the compiled application
-binary or inject into applications' containers with LD_PRELOAD. So we
-are using smc ULP to replace TCP with smc when socket create.
+Agree, thanks.
 
-These patches will be sent out soon. I will send them after smc's
-patches. Thank you.
+regards,
+Shuyi
 
-> 
-> Also this will need a selftests.
 
-I will fix it.
 
-> 
-> Thanks,
-> John
-
-Thanks,
-Tony Lu
+>> +                       continue;
+>> +
+>>                  if (path) {
+>>                          int len;
+>>
+>> --
+>> 2.19.1.6.gb485710b
