@@ -2,116 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598A946FFB2
-	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 12:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D779470097
+	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 13:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237712AbhLJLXA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Dec 2021 06:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237710AbhLJLXA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Dec 2021 06:23:00 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A60C061746;
-        Fri, 10 Dec 2021 03:19:25 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id p18so6037070plf.13;
-        Fri, 10 Dec 2021 03:19:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kwY1VEJYtn6EcwuoRvcNTGc/ITcR071MZ71xACzBa7E=;
-        b=JqaNxKBRyYRNjkWHb4KB4MlHqiH/nBtS+xL+sTmy2s17+eUTNwNJ3aWfnnUjudYq6P
-         hwO3027g9XMt+dhzBLVf1FRm23P+ayxjvHvHqdn/aF4j3SQ9H5gHQPmaWwxS5yy/bIo9
-         l80t5ZbFcSkbzq3+3KAbQ/MoK83Q+gwhLbR+40X1zh51zEZile1/Cayd66mWFJpwPTnG
-         xAjxfO4q0Mkg5xWu6KAF+Qb/vZ/OjuqWiGSkFOz/LEUWXUgBRi6bovsMu7KNFg5tyKIR
-         RPH+8vQ4H1JF0/Xl94wpjHNCn2CTWeFlhmaHUUm4d8cmUgFg15qglSBODKR0gGlUKzfJ
-         pHXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kwY1VEJYtn6EcwuoRvcNTGc/ITcR071MZ71xACzBa7E=;
-        b=cCVyLttdbYvPu+FyIhiKzVJCAYH9kLsGKtwpduyfbwez1nUsaC7bJe9jqg3IBQfaSF
-         Tar8IJebiDYrlFxwxKHUeUj7VklbgZcB/l3O6Iyj6wMxDjeZMX6n3X/IYBzkdks6Hn9g
-         7AEH3TY/JnwGaPWQMqf2nbdHqobSMvqSDrFuO/yFhhiF0g+YkJWS+IdC9jKA9/eQ4K/z
-         moYksa/cRJsX+CpUSl4OGPQPplZaURzNyjUXFqXM2gTJOPhVYNoUtJH9U4vFywm+17tM
-         lxQZKvp7hHrAxAF9DeuMB5Rh0SZrOtZA1SnuBl5DrNslkKZ4DAErf3kqgrYJvwHrPdlo
-         s/qg==
-X-Gm-Message-State: AOAM533WsG6cz863LrmiU+FlcStpCSxSpjWNrYxJF49PjER5Axe6talz
-        5yjQTcAtFRfbRh2+KcCS0Q==
-X-Google-Smtp-Source: ABdhPJzjb13cgS6Gop9dqMs3tqx7PwRGIwgV+Ze2Tw44iMAuusqOVvTzvw+xyi/MpyrqbRjd7kfEgg==
-X-Received: by 2002:a17:902:ba84:b0:142:5514:8dd7 with SMTP id k4-20020a170902ba8400b0014255148dd7mr75348793pls.87.1639135165246;
-        Fri, 10 Dec 2021 03:19:25 -0800 (PST)
-Received: from u-u2110-5.. ([182.209.58.45])
-        by smtp.gmail.com with ESMTPSA id x6sm2529197pga.14.2021.12.10.03.19.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 03:19:24 -0800 (PST)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] samples: bpf: fix tracex2 due to empty sys_write count argument
-Date:   Fri, 10 Dec 2021 11:19:18 +0000
-Message-Id: <20211210111918.4904-1-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S240946AbhLJM1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Dec 2021 07:27:47 -0500
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:55734
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237629AbhLJM1r (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Dec 2021 07:27:47 -0500
+Received: from mussarela (1.general.cascardo.us.vpn [10.172.70.58])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EB79E40078;
+        Fri, 10 Dec 2021 12:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1639139050;
+        bh=oAEuyXSS+FfBE7IbC9Qm9bPmNR/CHY86PuhFfkuo8Ak=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=lHxFDgr55MI0m1wV2nQ4dpY/zmLA1P/LAcOtm6Mm55I4KYV7zYc+IzULPjY+vDZAC
+         6VYrll6fjoQ7hrkYBw+BQHESJLZqulswRcCTZX99WYpybGrLW7UTGcbDT1HmvCxQp+
+         l4OhYNBmupNm6DiR+bwXRkMa8RRJL/xTrc+6bAJMqsCIe1+dPyO9QU7MxP46vDvrbo
+         AT4z24d0Lmx6VK+KdG1qUaJx7V1LgQLPRmqTwFdqIBgf6xQg1IOG2yqyvr8CLk1B/q
+         MjsjuRm5Yc/cmgj1nYKqEprPIZKvnNIu9szc0lADAvIGbUGfRchb4YSkdI/SHYNwtH
+         yT3+6IO5qVbtA==
+Date:   Fri, 10 Dec 2021 09:24:04 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Ido Schimmel <idosch@idosch.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: return EOPNOTSUPP when JIT is needed and not
+ possible
+Message-ID: <YbNG5BliqnCyhs4J@mussarela>
+References: <20211209134038.41388-1-cascardo@canonical.com>
+ <61b2536e5161d_6bfb2089@john.notmuch>
+ <YbJZoK+qBEiLAxxM@shredder>
+ <b294e66b-0bac-008b-52b4-6f1a90215baa@iogearbox.net>
+ <20211209182349.038ac2b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211209182349.038ac2b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently from syscall entry, argument can't be fetched correctly as a
-result of register cleanup.
+On Thu, Dec 09, 2021 at 06:23:49PM -0800, Jakub Kicinski wrote:
+> On Fri, 10 Dec 2021 00:03:40 +0100 Daniel Borkmann wrote:
+> > > Similar issue was discussed in the past. See:
+> > > https://lore.kernel.org/netdev/20191204.125135.750458923752225025.davem@davemloft.net/  
+> > 
+> > With regards to ENOTSUPP exposure, if the consensus is that we should fix all
+> > occurences over to EOPNOTSUPP even if they've been exposed for quite some time
+> > (Jakub?), 
+> 
+> Did you mean me? :) In case you did - I think we should avoid it 
+> for new code but changing existing now seems risky. Alexei and Andrii
+> would know best but quick search of code bases at work reveals some
+> scripts looking for ENOTSUPP.
+> 
+> Thadeu, what motivated the change?
+> 
+> If we're getting those changes fixes based on checkpatch output maybe 
+> there is a way to mute the checkpatch warnings when it's not run on a 
+> diff?
+> 
 
-    commit 6b8cf5cc9965 ("x86/entry/64/compat: Clear registers for compat syscalls, to reduce speculation attack surface")
+It was not checkpatch that motivated me.
 
-For example in upper commit, registers are cleaned prior to syscall.
-To be more specific, sys_write syscall has count size as a third argument.
-But this can't be fetched from __x64_sys_enter/__s390x_sys_enter due to
-register cleanup. (e.g. [x86] xorl %r8d, %r8d / [s390x] xgr %r7, %r7)
+I was looking into the following commits as we hit a failed test.
 
-This commit fix this problem by modifying the trace event to ksys_write
-instead of sys_write syscall entry.
+be08815c5d3b ("bpf: add also cbpf long jump test cases with heavy expansion")
+050fad7c4534 ("bpf: fix truncated jump targets on heavy expansions") 
 
-    # Wrong example of 'write()' syscall argument fetching
-    # ./tracex2
-    ...
-    pid 50909 cmd dd uid 0
-           syscall write() stats
-     byte_size       : count     distribution
-       1 -> 1        : 4968837  |************************************* |
+Then, I realized that if given the right number of BPF_LDX | BPF_B | BPF_MSH
+instructions, it will pass the bpf_convert_filter stage, but fail at blinding.
+And if you have CONFIG_BPF_JIT_ALWAYS_ON, setting the filter will fail with
+ENOTSUPP, which should not be sent to userspace.
 
-    # Successful example of 'write()' syscall argument fetching
-    # (dd's write bytes at a time defaults to 512)
-    # ./tracex2
-    ...
-    pid 3095 cmd dd uid 0
-           syscall write() stats
-     byte_size       : count     distribution
-    ...
-     256 -> 511      : 0        |                                      |
-     512 -> 1023     : 4968844  |************************************* |
+I noticed other ENOTSUPP, but they seemed to be returned by helpers, and I was
+not sure this would be relayed to userspace. So, I went for fixing the observed
+case.
 
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
----
- samples/bpf/tracex2_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I will see if any of the tests I can run is broken by this change and submit it
+again with the tests fixed as well.
 
-diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
-index 5bc696bac27d..96dff3bea227 100644
---- a/samples/bpf/tracex2_kern.c
-+++ b/samples/bpf/tracex2_kern.c
-@@ -78,7 +78,7 @@ struct {
- 	__uint(max_entries, 1024);
- } my_hist_map SEC(".maps");
- 
--SEC("kprobe/" SYSCALL(sys_write))
-+SEC("kprobe/ksys_write")
- int bpf_prog3(struct pt_regs *ctx)
- {
- 	long write_size = PT_REGS_PARM3(ctx);
--- 
-2.32.0
+Cascardo.
 
+> > we could give this patch a try maybe via bpf-next and see if anyone complains.
+> > 
+> > Thadeu, I think you also need to fix up BPF selftests as test_verifier, to mention
+> > one example (there are also bunch of others under tools/testing/selftests/), is
+> > checking for ENOTSUPP specifically..
