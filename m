@@ -2,216 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7610C470779
-	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 18:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 785F747078D
+	for <lists+bpf@lfdr.de>; Fri, 10 Dec 2021 18:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238413AbhLJRl2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Dec 2021 12:41:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
+        id S242065AbhLJRqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Dec 2021 12:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238351AbhLJRl1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Dec 2021 12:41:27 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C9AC0617A1;
-        Fri, 10 Dec 2021 09:37:52 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id v203so22973648ybe.6;
-        Fri, 10 Dec 2021 09:37:52 -0800 (PST)
+        with ESMTP id S242020AbhLJRqM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Dec 2021 12:46:12 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBD6C061746
+        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 09:42:36 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id g17so22905002ybe.13
+        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 09:42:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rbDsL79OudshH/Pa1Nr6jNiPia/i/MwqyUuLxD54n8U=;
-        b=k8B1SGbxIqX3CJv6zv7/HSEoVou2QhPAqFyrJqn9ITy/M0Soa5H2+OkpfK1zj0PDiP
-         +8Rv+T0SDDMgQdOQrQeRj++rcwSabqlByk9Q2Hpnc/kiE/JMlNq5rnDaNbKl/UAjt6iN
-         0704HGrx2ll8XGw5ySeLqFfWCsmRjELxJB35DEsq9g2530iGVDAL9U2VwxJJgBmQWz4i
-         xPWG/VGZpLtbsR7HdJrJWfBPpseVOicSpWxqnbG1n20xsGzrqHm5MKaCseoqueISWKTQ
-         cIT5GJQswAVG8sXV+/bGAzu/M446Qkv1+xjRaOHqpzfurRuh2jG38SWbAVs/+vusnpYd
-         PNbw==
+        bh=fo/g3U+jDR3lYa8rRpiXmBpU0jUh17USUa9/S5Wnr3s=;
+        b=gVQf0DQwIxBHk6IA8/rxTWBuFSabDCyWCj8s7r5mSguBQo61BCtVJrXQN2o6WJ0Fz3
+         f+TmlhBXbb3yublSy0An4Eu9uQLUJxOaVDnUt2/PWL2zMowhWte9T4mQ3nlWFC6mNwET
+         DKvOR62aJIEql6Hd9S5diLgT19GyZbe8NnrOVoA4/92DQqrPC1ztMIsNIrIFBZfLHOgv
+         5bJ4e0vVmOZ2Htne9lAlfycu10a2Z0yOypQD17sWDdH19OyTQdAw3/WARu/atlrXeLEe
+         U+v4HacjomnY1MJzXnuzIF+QUzE7Ea8oSRLAqLZN9nEjBkKaKrQuKXXI+5ecAzsB4Efz
+         1Qmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rbDsL79OudshH/Pa1Nr6jNiPia/i/MwqyUuLxD54n8U=;
-        b=erhQ6Gdg3vlzsfvdSsHxyPf1aZtyaidgei4OO3k1pgwRIlyfQ+mWDU2nvxHXLKqJmf
-         lPAvd5mXIqYTzV+fYEXXAQASQUbR95N/lbJHgJURWdoWQ2tbPWxin21qJO1M8yFogIeK
-         Y+HeyBb4aDAIbLczRr8zokraBC/vY5Qkr1YSrlb6zeDTHFhOZwkzat3BVxwszPGXYhvW
-         OixouJZS4GUb6wZVClyp8R4LjoAbCijz4tQ3ley9va446I2gG4XHzRH7/rwLb90W6UTu
-         5t7toP8TZn6wFPoMMt0InDBt1puLOAW3UTA8/dMX1diovSK/iOZM7BjUj4MoxlCW30kX
-         t9VQ==
-X-Gm-Message-State: AOAM530rNs1ifIvqGraOPep8/IVuIhtigBVuR8iuIX9hkR8g1LSJH7c2
-        Hoi+pHyFRkYlJqCEGK9GgblSnDShRfvJiuFYSQ0=
-X-Google-Smtp-Source: ABdhPJzTmkWJaS8tlWJmvwoBriKbdM8BNPnF23BjxAmAPNGNlmbmNpHMPYdDAzdw7AmsaF2xg7Sl2PnF6MGDREGvqKE=
-X-Received: by 2002:a25:e90a:: with SMTP id n10mr15505738ybd.180.1639157871317;
- Fri, 10 Dec 2021 09:37:51 -0800 (PST)
+        bh=fo/g3U+jDR3lYa8rRpiXmBpU0jUh17USUa9/S5Wnr3s=;
+        b=NdeVi7GpGbDuvMRe7xC1YVUvJiBCh9qaATylJUF9+ROv0m0GTnY6M7bxO+7wDWCmiq
+         Apg4Sh0d/etjbDJmJTInd7tbpq1LUpkVw6XNNYmxX7Nom65bEcKGljY8ao2nj+GdYXvY
+         /oNuYoANFjmdZpl40VS55dEuJJ91I/+t3KuKxZOG3nidMkBfZjd6m+8AkLQ9UsGfg1Ly
+         tULKPjrCoHfA1LqqNOkQO5iLYZrdCyPL28aQDRFPjEw7oNG2qy+kdHcTJY7jG2O15veK
+         1Cw+0/huv5XG7KXwUk29XV/uZs78bPEz+DBuGzLBHuqhLiDFrZz+AGbArPSl/Of0Ebrj
+         ZUGw==
+X-Gm-Message-State: AOAM530vIAGwBgwQPtpOUVO8YQJ7SpW8y0ceATAoWXsSxsuZXQMEtbBG
+        gonL/e7l3LtfE/an6KjMvKZwsT+zk/+o15eHhnE=
+X-Google-Smtp-Source: ABdhPJwF+AD6ODdUNlzbG91pahAp54sWYwrKleKwcZKRMuKyod7vLMF4fw+dvBcHl8vKZcfkVNbofexk4Nc1lpL/eas=
+X-Received: by 2002:a25:4cc5:: with SMTP id z188mr15893697yba.248.1639158156199;
+ Fri, 10 Dec 2021 09:42:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20211209120327.551952-1-emmanuel.deloget@eho.link>
- <CAEf4BzYJ+GPpjcMMYQM_BfQ1-aq6dz_JbF-m5meiCZ=oPbrM=w@mail.gmail.com> <15676ff5-5c5c-fd06-308f-10611c01f6a9@eho.link>
-In-Reply-To: <15676ff5-5c5c-fd06-308f-10611c01f6a9@eho.link>
+References: <20211206232227.3286237-1-haoluo@google.com> <20211206232227.3286237-8-haoluo@google.com>
+ <CAEf4BzbSA1+vE4vA6FSbJfUZDyYvyHJbiK1j5yD=vGbGA5EEhg@mail.gmail.com> <CA+khW7jtOweO4it68=ggqbe7QbdhPukE+FkgmAiTs-PeR28AiQ@mail.gmail.com>
+In-Reply-To: <CA+khW7jtOweO4it68=ggqbe7QbdhPukE+FkgmAiTs-PeR28AiQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Dec 2021 09:37:40 -0800
-Message-ID: <CAEf4Bzb_f1FYkVre62ACTpEYq5=rPjZ-5BD-jHAez=oUmvC6yA@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf 1/1] libbpf: don't force user-supplied ifname
- string to be of fixed size
-To:     Emmanuel Deloget <emmanuel.deloget@eho.link>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Fri, 10 Dec 2021 09:42:24 -0800
+Message-ID: <CAEf4BzbEQ5+iCuXk-gS133ignWZXB08tPrQmt8W3t3hz8B8B+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 7/9] bpf: Make per_cpu_ptr return rdonly PTR_TO_MEM.
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 9, 2021 at 9:55 AM Emmanuel Deloget
-<emmanuel.deloget@eho.link> wrote:
+On Tue, Dec 7, 2021 at 7:54 PM Hao Luo <haoluo@google.com> wrote:
 >
-> Hello,
->
-> On 09/12/2021 18:17, Andrii Nakryiko wrote:
-> > On Thu, Dec 9, 2021 at 4:03 AM Emmanuel Deloget
-> > <emmanuel.deloget@eho.link> wrote:
-> >>
-> >> When calling either xsk_socket__create_shared() or xsk_socket__create()
-> >> the user supplies a const char *ifname which is implicitely supposed to
-> >> be a pointer to the start of a char[IFNAMSIZ] array. The internal
-> >> function xsk_create_ctx() then blindly copy IFNAMSIZ bytes from this
-> >> string into the xsk context.
-> >>
-> >> This is counter-intuitive and error-prone.
-> >>
-> >> For example,
-> >>
-> >>          int r = xsk_socket__create(..., "eth0", ...)
-> >>
-> >> may result in an invalid object because of the blind copy. The "eth0"
-> >> string might be followed by random data from the ro data section,
-> >> resulting in ctx->ifname being filled with the correct interface name
-> >> then a bunch and invalid bytes.
-> >>
-> >> The same kind of issue arises when the ifname string is located on the
-> >> stack:
-> >>
-> >>          char ifname[] = "eth0";
-> >>          int r = xsk_socket__create(..., ifname, ...);
-> >>
-> >> Or comes from the command line
-> >>
-> >>          const char *ifname = argv[n];
-> >>          int r = xsk_socket__create(..., ifname, ...);
-> >>
-> >> In both case we'll fill ctx->ifname with random data from the stack.
-> >>
-> >> In practice, we saw that this issue caused various small errors which,
-> >> in then end, prevented us to setup a valid xsk context that would have
-> >> allowed us to capture packets on our interfaces. We fixed this issue in
-> >> our code by forcing our char ifname[] to be of size IFNAMSIZ but that felt
-> >> weird and unnecessary.
+> On Mon, Dec 6, 2021 at 10:18 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > I might be missing something, but the eth0 example above would include
-> > terminating zero at the right place, so ifname will still have
-> > "eth0\0" which is a valid string. Yes there will be some garbage after
-> > that, but it shouldn't matter. It could cause ASAN to complain about
-> > reading beyond allocated memory, of course, but I'm curious what
-> > problems you actually ran into in practice.
->
-> I cannot be extremely precise on what was happening as I did not
-> investigate past this (and this fixes our issue) but I suspect that
-> having weird bytes in ctx->ifname polutes ifr.ifr_name as initialized in
-> xsk_get_max_queues(). ioctl(SIOCETHTOOL) was then giving us an error.
-> Now, I haven't looked how the kernel implements this ioctl() so I'm not
-> going to say that there is a problem here as well.
->
-> And since the issue is now about 2 weeks old it's now a bit murky - and
-> I don't have much time to put myself in the same setup in order to
-> produce a better investigation (sorry for that).
->
+> > On Mon, Dec 6, 2021 at 3:22 PM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > Tag the return type of {per, this}_cpu_ptr with RDONLY_MEM. The
+> > > returned value of this pair of helpers is kernel object, which
+> > > can not be updated by bpf programs. Previously these two helpers
+> > > return PTR_OT_MEM for kernel objects of scalar type, which allows
+> > > one to directly modify the memory. Now with RDONLY_MEM tagging,
+> > > the verifier will reject programs that writes into RDONLY_MEM.
+> > >
+> > > Fixes: 63d9b80dcf2c ("bpf: Introduce bpf_this_cpu_ptr()")
 
-Ok, fine, but I still don't see how memcpy() could have caused
-correctness errors. The string will be zero-terminated properly, so it
-is a valid C string. The only issue I see is reading past allocated
-memory (which might trigger SIGSEGV or will make ASAN complain).
-Anyways, let's try strncpy() and fix this. Please send it against
-bpf-next for the respin, please.
+BTW, our tooling complained about this one because in reality the
+subject of the patch has a typo: "bpf: Introducte bpf_this_cpu_ptr()",
+please fix as well (that is, re-introduce the typo :) )
 
-
-> >>
-> >> Fixes: 2f6324a3937f8 (libbpf: Support shared umems between queues and devices)
-> >> Signed-off-by: Emmanuel Deloget <emmanuel.deloget@eho.link>
-> >> ---
-> >>   tools/lib/bpf/xsk.c | 7 +++++--
-> >>   1 file changed, 5 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> >> index 81f8fbc85e70..8dda80bcefcc 100644
-> >> --- a/tools/lib/bpf/xsk.c
-> >> +++ b/tools/lib/bpf/xsk.c
-> >> @@ -944,6 +944,7 @@ static struct xsk_ctx *xsk_create_ctx(struct xsk_socket *xsk,
-> >>   {
-> >>          struct xsk_ctx *ctx;
-> >>          int err;
-> >> +       size_t ifnamlen;
-> >>
-> >>          ctx = calloc(1, sizeof(*ctx));
-> >>          if (!ctx)
-> >> @@ -965,8 +966,10 @@ static struct xsk_ctx *xsk_create_ctx(struct xsk_socket *xsk,
-> >>          ctx->refcount = 1;
-> >>          ctx->umem = umem;
-> >>          ctx->queue_id = queue_id;
-> >> -       memcpy(ctx->ifname, ifname, IFNAMSIZ - 1);
-> >> -       ctx->ifname[IFNAMSIZ - 1] = '\0';
-> >> +
-> >> +       ifnamlen = strnlen(ifname, IFNAMSIZ);
-> >> +       memcpy(ctx->ifname, ifname, ifnamlen);
+> > > Fixes: eaa6bcb71ef6 ("bpf: Introduce bpf_per_cpu_ptr()")
+> > > Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
+> > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > ---
+> > >  kernel/bpf/helpers.c  |  4 ++--
+> > >  kernel/bpf/verifier.c | 33 ++++++++++++++++++++++++++++-----
+> > >  2 files changed, 30 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > index 293d9314ec7f..a5e349c9d3e3 100644
+> > > --- a/kernel/bpf/helpers.c
+> > > +++ b/kernel/bpf/helpers.c
+> > > @@ -667,7 +667,7 @@ BPF_CALL_2(bpf_per_cpu_ptr, const void *, ptr, u32, cpu)
+> > >  const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
+> > >         .func           = bpf_per_cpu_ptr,
+> > >         .gpl_only       = false,
+> > > -       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | PTR_MAYBE_NULL,
+> > > +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | PTR_MAYBE_NULL | MEM_RDONLY,
+> > >         .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
+> > >         .arg2_type      = ARG_ANYTHING,
+> > >  };
+> > > @@ -680,7 +680,7 @@ BPF_CALL_1(bpf_this_cpu_ptr, const void *, percpu_ptr)
+> > >  const struct bpf_func_proto bpf_this_cpu_ptr_proto = {
+> > >         .func           = bpf_this_cpu_ptr,
+> > >         .gpl_only       = false,
+> > > -       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID,
+> > > +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID | MEM_RDONLY,
+> > >         .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
+> > >  };
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index f8b804918c35..44af65f07a82 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -4296,16 +4296,32 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> > >                                 mark_reg_unknown(env, regs, value_regno);
+> > >                         }
+> > >                 }
+> > > -       } else if (reg->type == PTR_TO_MEM) {
+> > > +       } else if (base_type(reg->type) == PTR_TO_MEM) {
+> > > +               bool rdonly_mem = type_is_rdonly_mem(reg->type);
+> > > +
+> > > +               if (type_may_be_null(reg->type)) {
+> > > +                       verbose(env, "R%d invalid mem access '%s'\n", regno,
+> > > +                               reg_type_str(reg->type));
 > >
-> > maybe use strncpy instead of strnlen + memcpy? keep the guaranteed
-> > zero termination (and keep '\0', why did you change it?)
+> > see, here you'll get "invalid mem access 'ptr_to_mem'" while it's
+> > actually ptr_to_mem_or_null. Like verifier logs are not hard enough to
+> > follow, now they will be also misleading.
+> >
 >
-> Well, strncpy() calls were replaced by memcpy() a while ago (see
-> 3015b500ae42 (libbpf: Use memcpy instead of strncpy to please GCC) for
-> example but there are a few other examples ; most of the changes were
-> made to please gcc8) so I thought that it would be a bad idea :). What
-> would be the consensus on this?
+> I think formatting string inside reg_type_str() can have this problem
+> solved, preserving the previous behavior. I'll try that in v2.
+>
+> > > +                       return -EACCES;
+> > > +               }
+> > > +
+> > > +               if (t == BPF_WRITE && rdonly_mem) {
+> > > +                       verbose(env, "R%d cannot write into rdonly %s\n",
+> > > +                               regno, reg_type_str(reg->type));
+> > > +                       return -EACCES;
+> > > +               }
+> > > +
+> > >                 if (t == BPF_WRITE && value_regno >= 0 &&
+> > >                     is_pointer_value(env, value_regno)) {
+> > >                         verbose(env, "R%d leaks addr into mem\n", value_regno);
+> > >                         return -EACCES;
+> > >                 }
+> > > +
+> > >                 err = check_mem_region_access(env, regno, off, size,
+> > >                                               reg->mem_size, false);
+> > > -               if (!err && t == BPF_READ && value_regno >= 0)
+> > > -                       mark_reg_unknown(env, regs, value_regno);
+> > > +               if (!err && value_regno >= 0)
+> > > +                       if (t == BPF_READ || rdonly_mem)
+> >
+> > why two nested ifs for one condition?
+> >
+>
+> No particular reason. I think it helped me understand the logic
+> better. But I'm fine with combining them into one 'if'.
 
-3015b500ae42 ("libbpf: Use memcpy instead of strncpy to please GCC")
-is different, there we are copying from properly sized array which our
-code controls. memcpy() is totally reasonable there. Here we can't do
-memcpy, unfortunately. Let's try strncpy(), if GCC will start
-complaining about this, then GCC is clearly wrong and we'll just
-disable this warning altogether (I don't remember if it ever found any
-real issues anyways).
+Personally two nested ifs are way harder to follow as it implies that
+there is some other sub-condition, while in reality it's one longer
+condition.
 
 
 >
-> Regarding '\0', I'll change that.
->
-> > Also, note that xsk.c is deprecated in libbpf and has been moved into
-> > libxdp, so please contribute a similar fix there.
->
-> Will do.
->
-> >> +       ctx->ifname[IFNAMSIZ - 1] = 0;
-> >>
-> >>          ctx->fill = fill;
-> >>          ctx->comp = comp;
-> >> --
-> >> 2.32.0
-> >>
->
-> BTW, is there a reason why this patch failed to pass the bpf/vmtest-bpf
-> test on patchwork?
->
-
-Unrelated bpftool-related check, that isn't supposed to pass on bpf
-tree. That one can be ignored.
-
-> Best regards,
->
-> -- Emmanuel Deloget
+> > > +                               mark_reg_unknown(env, regs, value_regno);
+> > >         } else if (reg->type == PTR_TO_CTX) {
+> > >                 enum bpf_reg_type reg_type = SCALAR_VALUE;
+> > >                 struct btf *btf = NULL;
+> >
+> > [...]
