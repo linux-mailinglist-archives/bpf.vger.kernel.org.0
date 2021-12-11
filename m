@@ -2,166 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84877470F4E
-	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 01:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65992470F82
+	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 01:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241396AbhLKAUf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Dec 2021 19:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240722AbhLKAUe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Dec 2021 19:20:34 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4008EC061714;
-        Fri, 10 Dec 2021 16:16:59 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id 7so15388485oip.12;
-        Fri, 10 Dec 2021 16:16:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=LPsEBllkti1Y/WFnvaprKAKcU70ku+EJ/zndB3NRcV4=;
-        b=CCqnhmWYXAbY0SLoWvB2AAc4cmOi2AdcDLsTQcb4eHH7jg9YjG6UMbmU1a4wXuWyMg
-         gzUFuJDverG65JpPqI+//PJDJ3qKxiW3QDIdIPvNGaUdg7VVJdMXF1Ez7+Rxyb2d5ROT
-         yVh+vMzfdIxnj1GerBJ20PdIQfWyMkjBpZw2Y4Ui68Vl7F5LHO6jaThSwUDkVEiIIr4a
-         O/sSxlqOn/uh3TW0LwDGd1cSQ7KSG5h3wamEiz+T0l6A+aIpp7oEAWGfXhDNN6xmJcpa
-         JUiaBl95yBQls+K1+lMYhNqGhNUzycyLT02xwaJt+w94oNgWfc2qDIfnbZv27RecdVDl
-         9b7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=LPsEBllkti1Y/WFnvaprKAKcU70ku+EJ/zndB3NRcV4=;
-        b=tzBMJbfiWcGOH03Xmi1rWnFtDgeYH6nNICHtnr+HuT9fQ4mcg2PuE8vvX/3EaQdzsE
-         Bal6eiPIiUw9W14Pz8lbF1t3i1j1JOSDoM5KAYjKlsXSQZxlW3v10+m4fLyK2GtWivtF
-         k8i9QmqZ16dMJEdbVFICAehTU0tRwL1D1Dxo+wfquFNNfpm4s/gZhuIsqmrIIfeCg2XR
-         rA+Mb5lMRrMZC+IQpaVkahddVmiRo1wV0CEgklkYOzdKBbByTDUxgXq+ld4+VyTZ+JMo
-         IhFh4cuuU+sg9dfz9jYyIuFUM6Wf0C/4FNe+KkxWseWknsHTGPZd9em0XhBXoNWiD6SZ
-         dfTw==
-X-Gm-Message-State: AOAM532VWbTpC4GxHSeP50zJl6eb3+OIs3NswuINwov8IaR+M+U/XKgB
-        N73/MVMYvAM1q2zIX1c6ilk=
-X-Google-Smtp-Source: ABdhPJy57y/3rG8iI5IVRwu/IgQEjLMHVCikBXPbAdBkaF/5cRnB6popLjFbhq5rCEy7a/0O3dBEzg==
-X-Received: by 2002:aca:5b87:: with SMTP id p129mr15382978oib.30.1639181818600;
-        Fri, 10 Dec 2021 16:16:58 -0800 (PST)
-Received: from localhost ([172.243.151.11])
-        by smtp.gmail.com with ESMTPSA id j187sm1057295oih.5.2021.12.10.16.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 16:16:57 -0800 (PST)
-Date:   Fri, 10 Dec 2021 16:16:51 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Message-ID: <61b3edf34d399_2c40320815@john.notmuch>
-In-Reply-To: <cover.1639162845.git.lorenzo@kernel.org>
-References: <cover.1639162845.git.lorenzo@kernel.org>
-Subject: RE: [PATCH v20 bpf-next 00/23] mvneta: introduce XDP multi-buffer
- support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S244279AbhLKAjy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Dec 2021 19:39:54 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13082 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237517AbhLKAjy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Dec 2021 19:39:54 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BAMKZNw028995
+        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 16:36:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=04EWUHyrieCpJ2+yRCBuJtm3ug+PhSiqMF0nd5DLYyM=;
+ b=asDS5PjjZIy1++wcz6OrDAmXfgPGzUTDIm08JlVxPZVT+gdYSdIvq61ugw1FlTs7r5/j
+ jfDjFGbBgh3eb4L/VvgDqr0M8nrUk4F6uHFJ3c7/x7OIAi1uewF5kSKhEAXHHgQBDAlk
+ +Rc8QNz1v0gr/S3p9KSK75hPHR1YV5C6tgM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cvch2a0ea-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 16:36:18 -0800
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 10 Dec 2021 16:36:17 -0800
+Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
+        id 6CA43F370DA; Fri, 10 Dec 2021 16:36:15 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <ast@kernel.org>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH v2 bpf-next 0/4] Stop using bpf_object__find_program_by_title API
+Date:   Fri, 10 Dec 2021 16:36:04 -0800
+Message-ID: <20211211003608.2764928-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: xqGy_8uaMVf6mSA9_zjkww6njWkHeG08
+X-Proofpoint-ORIG-GUID: xqGy_8uaMVf6mSA9_zjkww6njWkHeG08
 Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-10_09,2021-12-10_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=999
+ malwarescore=0 adultscore=0 spamscore=0 priorityscore=1501 clxscore=1015
+ mlxscore=0 bulkscore=0 suspectscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112110001
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi wrote:
-> This series introduce XDP multi-buffer support. The mvneta driver is
-> the first to support these new "non-linear" xdp_{buff,frame}. Reviewers=
+bpf_object__find_program_by_title is going to be deprecated since
+v0.7.  Replace all use cases with bpf_object__find_program_by_name if
+possible, or use bpf_object__for_each_program to iterate over
+programs, matching section names.
 
-> please focus on how these new types of xdp_{buff,frame} packets
-> traverse the different layers and the layout design. It is on purpose
-> that BPF-helpers are kept simple, as we don't want to expose the
-> internal layout to allow later changes.
-> =
+V2 fixes a compiling issue at part 1 and simplifies part 3 to declare
+multiple variables in one line. [v1]
 
-> The main idea for the new multi-buffer layout is to reuse the same
-> structure used for non-linear SKB. This rely on the "skb_shared_info"
-> struct at the end of the first buffer to link together subsequent
-> buffers. Keeping the layout compatible with SKBs is also done to ease
-> and speedup creating a SKB from an xdp_{buff,frame}.
-> Converting xdp_frame to SKB and deliver it to the network stack is show=
-n
-> in patch 05/18 (e.g. cpumaps).
-> =
+[v1] https://lore.kernel.org/bpf/20211210190855.1369060-1-kuifeng@fb.com/T/
 
-> A multi-buffer bit (mb) has been introduced in the flags field of xdp_{=
-buff,frame}
-> structure to notify the bpf/network layer if this is a xdp multi-buffer=
- frame
-> (mb =3D 1) or not (mb =3D 0).
-> The mb bit will be set by a xdp multi-buffer capable driver only for
-> non-linear frames maintaining the capability to receive linear frames
-> without any extra cost since the skb_shared_info structure at the end
-> of the first buffer will be initialized only if mb is set.
-> Moreover the flags field in xdp_{buff,frame} will be reused even for
-> xdp rx csum offloading in future series.
-> =
+Kui-Feng Lee (4):
+  selftests/bpf: Stop using bpf_object__find_program_by_title API.
+  samples/bpf: Stop using bpf_object__find_program_by_title API.
+  tools/perf: Stop using bpf_object__find_program_by_title API.
+  libbpf: Mark bpf_object__find_program_by_title API deprecated.
 
-> Typical use cases for this series are:
-> - Jumbo-frames
-> - Packet header split (please see Google=EF=BF=BD=EF=BF=BD=EF=BF=BDs us=
-e-case @ NetDevConf 0x14, [0])
-> - TSO/GRO for XDP_REDIRECT
-> =
+ samples/bpf/hbm.c                             | 11 ++-
+ samples/bpf/xdp_fwd_user.c                    | 12 ++-
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/perf/builtin-trace.c                    | 13 ++-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     |  4 +-
+ .../bpf/prog_tests/connect_force_port.c       | 18 ++---
+ .../selftests/bpf/prog_tests/core_reloc.c     | 79 +++++++++++++------
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 46 +++++------
+ .../bpf/prog_tests/get_stack_raw_tp.c         |  4 +-
+ .../bpf/prog_tests/sockopt_inherit.c          | 15 ++--
+ .../selftests/bpf/prog_tests/stacktrace_map.c |  4 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  4 +-
+ .../selftests/bpf/prog_tests/test_overhead.c  | 20 ++---
+ .../bpf/prog_tests/trampoline_count.c         |  6 +-
+ 14 files changed, 145 insertions(+), 92 deletions(-)
 
-> The three following ebpf helpers (and related selftests) has been intro=
-duced:
-> - bpf_xdp_load_bytes:
->   This helper is provided as an easy way to load data from a xdp buffer=
-. It
->   can be used to load len bytes from offset from the frame associated t=
-o
->   xdp_md, into the buffer pointed by buf.
-> - bpf_xdp_store_bytes:
->   Store len bytes from buffer buf into the frame associated to xdp_md, =
-at
->   offset.
-> - bpf_xdp_get_buff_len:
->   Return the total frame size (linear + paged parts)
-> =
+--=20
+2.30.2
 
-> bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take=
- into
-> account xdp multi-buff frames.
-> Moreover, similar to skb_header_pointer, we introduced bpf_xdp_pointer =
-utility
-> routine to return a pointer to a given position in the xdp_buff if the
-> requested area (offset + len) is contained in a contiguous memory area
-> otherwise it must be copied in a bounce buffer provided by the caller r=
-unning
-> bpf_xdp_copy_buf().
-> =
-
-> BPF_F_XDP_MB flag for bpf_attr has been introduced to notify the kernel=
- the
-> eBPF program fully support xdp multi-buffer.
-> SEC("xdp_mb/"), SEC_DEF("xdp_devmap_mb/") and SEC_DEF("xdp_cpumap_mb/" =
-have been
-> introduced to declare xdp multi-buffer support.
-> The NIC driver is expected to reject an eBPF program if it is running i=
-n XDP
-> multi-buffer mode and the program does not support XDP multi-buffer.
-> In the same way it is not possible to mix xdp multi-buffer and xdp lega=
-cy
-> programs in a CPUMAP/DEVMAP or tailcall a xdp multi-buffer/legacy progr=
-am from
-> a legacy/multi-buff one.
-> =
-
-> More info about the main idea behind this approach can be found here [1=
-][2].
-
-Thanks for sticking with this.
-
-OK for the series, I really want to see this on some other hardware thoug=
-h,
-preferably 40Gbps or more ASAP...
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>=
