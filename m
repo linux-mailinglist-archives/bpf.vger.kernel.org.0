@@ -2,185 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E940D4715C1
-	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 20:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734DC471712
+	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 23:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbhLKTgg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Dec 2021 14:36:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37573 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229642AbhLKTgg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 11 Dec 2021 14:36:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639251395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S3ukbNaa7Ocjbf8Z9trc2gR15CmHzngyLPAQDh53QQo=;
-        b=eEJytp1cfvqyAG02Kms2tQbCA30OUviWGPjtFdNaW0Y4WnGQFTwYplGt2I830kio1Fetis
-        Gj8MdSJnL1gn6HAO2Tk1vUd/ZKp50jV+y5EBeyV+MG3SgcEUt+r5A/nBeuCvI07ebXm2jU
-        +I62wZ0beQZN1swfiIwNmgUHmiYHgrU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-42-m7Ir6fsfPDG4ENUWzvYOeA-1; Sat, 11 Dec 2021 14:36:34 -0500
-X-MC-Unique: m7Ir6fsfPDG4ENUWzvYOeA-1
-Received: by mail-ed1-f71.google.com with SMTP id bx28-20020a0564020b5c00b003e7c42443dbso10787244edb.15
-        for <bpf@vger.kernel.org>; Sat, 11 Dec 2021 11:36:34 -0800 (PST)
+        id S229991AbhLKWEW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Dec 2021 17:04:22 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:34754 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhLKWEW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Dec 2021 17:04:22 -0500
+Received: by mail-il1-f197.google.com with SMTP id h10-20020a056e021b8a00b002a3f246adeaso12771915ili.1
+        for <bpf@vger.kernel.org>; Sat, 11 Dec 2021 14:04:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=S3ukbNaa7Ocjbf8Z9trc2gR15CmHzngyLPAQDh53QQo=;
-        b=UBOh1b8aky2TE+Lve8mU3IFSJfyxMl1nrSZyRMA8GAUBh0D/YnSa3KLlcvxs/BFgBm
-         LHeD0UQkBnZ3XziAJfQj69x5K+w8Ls2GvzMLN2+/ywRS+hVqqNr8mVlCLXmx1yPcsgyL
-         sNrsOVcrLVingVeZQmOrpt1Hv26mBZZ0XNdp4JzNPqOrL6jyco7ue9pcbhd8mtQUd/O3
-         t7dHsdL3aGX7yL6NrmbnasdorXOpa7DZdxtBsjBQo2mCt8ksGyL65o53ctH3eeOWiGR8
-         DDnB4Gi22GHX2zdpQXKysotPwN6KKbltlNACDU6olat/hfCz0IKSBKbevzMyFBjiHwCn
-         rVvQ==
-X-Gm-Message-State: AOAM533JCS7WQSUljyvOGMmJuWAO5EHNxrA7B2/cdt4WNz5Jxb8ErHVT
-        Pxc/fJmGaS/w4QmN+zwa0dDjvWRwEr7vUXNq3rNnhBjVEN09dVvnoGo1CR+jn5g3EJyTiWgV3bG
-        KRaMO6AsNIsSN
-X-Received: by 2002:a17:906:3a4a:: with SMTP id a10mr32539171ejf.253.1639251391657;
-        Sat, 11 Dec 2021 11:36:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzu0j74RZxWMt3G5rn6VoVmo3ynaEQJdLcdMa8otWZCbq8+eMX2pvfIua2fCGwZ0hbcpZFseQ==
-X-Received: by 2002:a17:906:3a4a:: with SMTP id a10mr32539103ejf.253.1639251390857;
-        Sat, 11 Dec 2021 11:36:30 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id eg8sm3493196edb.75.2021.12.11.11.36.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Dec 2021 11:36:30 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 836A1180471; Sat, 11 Dec 2021 20:36:29 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     andrii@kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 1/2] libbpf: auto-bump RLIMIT_MEMLOCK if
- kernel needs it for BPF
-In-Reply-To: <20211210201333.896276-2-andrii@kernel.org>
-References: <20211210201333.896276-1-andrii@kernel.org>
- <20211210201333.896276-2-andrii@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 11 Dec 2021 20:36:29 +0100
-Message-ID: <87ilvvue6a.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=31ZnY55RFUp+GSZ4GBgxn8B/M7nKKxdMX7CbhSvMYSI=;
+        b=sFa1xz24aGD7x+5O1yy5au9M3HjReY6lnW0pz8MllIjxtjauRQGBeGZ5992RjU3EeU
+         EuMWxDmdmlN9vyJX/VqGSgu18gvh3b38avq9fDlNwt5MiwcVaC5w8KnBdtwJW6ziCSiP
+         9528Ni/n1UTdn4f3wZNIi6lk4R2S5Yy0lGMx4LsKdboQR2GWC/kpn6FKp9cXSPk92WFL
+         0zCklNu+awbbcVfwQXcs2t12wWV35LzIb99VGPEfDO/2+nQ46X8LW9Cyc3w9Yb/F6x73
+         a5Pp7rEPHypakcMkqa23VKEtgyGXCZ02J6Tuw6WdGBB8cSLSEhZSmd8phQUqxFJrzUxu
+         1Pdg==
+X-Gm-Message-State: AOAM532EW3PtcwAONUgUI+jTcOObSP9L3o9kqzKAqcT18Y7qwWRz2hLV
+        QxJymaj4t+IggI0ldy6PAX+eHo0JIbXaWCdf4K+VRV1s6rJk
+X-Google-Smtp-Source: ABdhPJzUMJWKdauYpJPL8xZ4g221gRRdIbAR8sRmFOqXTCpVmPOeKmuzXgn75jEla4APahQV3JImixl9pqF4gd7D7xpGQQ5zFhvm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6602:218d:: with SMTP id b13mr27860356iob.19.1639260261717;
+ Sat, 11 Dec 2021 14:04:21 -0800 (PST)
+Date:   Sat, 11 Dec 2021 14:04:21 -0800
+In-Reply-To: <00000000000069e12f05d0b78c2d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000981d5005d2e60598@google.com>
+Subject: Re: [syzbot] BUG: MAX_LOCKDEP_CHAINS too low! (3)
+From:   syzbot <syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, andy@greyhouse.net,
+        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, glider@google.com, hawk@kernel.org,
+        j.vosburgh@gmail.com, john.fastabend@gmail.com,
+        john.ogness@linutronix.de, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pmladek@suse.com, rdunlap@infradead.org,
+        songliubraving@fb.com, swboyd@chromium.org,
+        syzkaller-bugs@googlegroups.com, vfalico@gmail.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii@kernel.org> writes:
+syzbot has found a reproducer for the following issue on:
 
-> The need to increase RLIMIT_MEMLOCK to do anything useful with BPF is
-> one of the first extremely frustrating gotchas that all new BPF users go
-> through and in some cases have to learn it a very hard way.
->
-> Luckily, starting with upstream Linux kernel version 5.11, BPF subsystem
-> dropped the dependency on memlock and uses memcg-based memory accounting
-> instead. Unfortunately, detecting memcg-based BPF memory accounting is
-> far from trivial (as can be evidenced by this patch), so in practice
-> most BPF applications still do unconditional RLIMIT_MEMLOCK increase.
->
-> As we move towards libbpf 1.0, it would be good to allow users to forget
-> about RLIMIT_MEMLOCK vs memcg and let libbpf do the sensible adjustment
-> automatically. This patch paves the way forward in this matter. Libbpf
-> will do feature detection of memcg-based accounting, and if detected,
-> will do nothing. But if the kernel is too old, just like BCC, libbpf
-> will automatically increase RLIMIT_MEMLOCK on behalf of user
-> application ([0]).
->
-> As this is technically a breaking change, during the transition period
-> applications have to opt into libbpf 1.0 mode by setting
-> LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK bit when calling
-> libbpf_set_strict_mode().
->
-> Libbpf allows to control the exact amount of set RLIMIT_MEMLOCK limit
-> with libbpf_set_memlock_rlim_max() API. Passing 0 will make libbpf do
-> nothing with RLIMIT_MEMLOCK. libbpf_set_memlock_rlim_max() has to be
-> called before the first bpf_prog_load(), bpf_btf_load(), or
-> bpf_object__load() call, otherwise it has no effect and will return
-> -EBUSY.
->
->   [0] Closes: https://github.com/libbpf/libbpf/issues/369
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+HEAD commit:    6f513529296f Merge tag 'for-5.16-rc4-tag' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a8954db00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=221ffc09e39ebbd1
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a249628ae32ea7de3a2
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12777551b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15a99a05b00000
 
-The probing approach breaks with out-of-order backports, I suppose.
-Hopefully no one will do those for that particular patch, though (it's
-not really a bugfix), and at least for RHEL we did backport them
-together.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8a249628ae32ea7de3a2@syzkaller.appspotmail.com
 
-Can't think of any better ways of doing the detection either, but maybe
-something to be aware of in the future (i.e., "don't change things in a
-way that can't be detected from userspace")?
-
-Anyway, with the nits below:
-
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 6b2407e12060..7c82136979bf 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-
-[...]
-
-> +	/* attempt loading freplace trying to use custom BTF */
-> +	memset(&attr, 0, bpf_load_attr_sz);
-> +	attr.prog_type =3D BPF_PROG_TYPE_TRACING;
-> +	attr.expected_attach_type =3D BPF_TRACE_FENTRY;
-
-This comment also seems to be disagreeing with the code it's commenting
-on?
-
-[...]
-
-> +static bool memlock_bumped;
-> +static rlim_t memlock_rlim_max =3D RLIM_INFINITY;
-> +
-> +int libbpf_set_memlock_rlim_max(size_t memlock_max)
-> +{
-> +	if (memlock_bumped)
-> +		return libbpf_err(-EBUSY);
-> +
-> +	memlock_rlim_max =3D memlock_max;
-> +	return 0;
-> +}
-> +
-> +int bump_rlimit_memlock(void)
-> +{
-> +	struct rlimit rlim;
-> +
-> +	/* this the default in libbpf 1.0, but for now user has to opt-in expli=
-citly */
-> +	if (!(libbpf_mode & LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK))
-> +		return 0;
-> +
-> +	/* if kernel supports memcg-based accounting, skip bumping RLIMIT_MEMLO=
-CK */
-> +	if (memlock_bumped || kernel_supports(NULL, FEAT_MEMCG_ACCOUNT))
-> +		return 0;
-> +
-> +	memlock_bumped =3D true;
-> +
-> +	/* zero memlock_rlim_max disables auto-bumping RLIMIT_MEMLOCK */
-> +	if (memlock_rlim_max =3D=3D 0)
-> +		return 0;
-> +
-> +	rlim.rlim_cur =3D rlim.rlim_max =3D memlock_rlim_max;
-> +	if (setrlimit(RLIMIT_MEMLOCK, &rlim))
-> +		return -errno;
-> +
-> +	return 0;
-> +}
-> +
-
-"rlim_max" seems to imply this will only ever increase the limit, but if
-I'm reading the code correctly it could actually end up lowering the
-effective limit?
-
--Toke
+BUG: MAX_LOCKDEP_CHAINS too low!
+turning off the locking correctness validator.
+CPU: 0 PID: 6709 Comm: kworker/u4:7 Not tainted 5.16.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bond1948 bond_netdev_notify_work
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ add_chain_cache kernel/locking/lockdep.c:3649 [inline]
+ lookup_chain_cache_add kernel/locking/lockdep.c:3748 [inline]
+ validate_chain kernel/locking/lockdep.c:3769 [inline]
+ __lock_acquire.cold+0x372/0x3ab kernel/locking/lockdep.c:5027
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ process_one_work+0x921/0x1690 kernel/workqueue.c:2274
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
 
