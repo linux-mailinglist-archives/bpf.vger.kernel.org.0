@@ -2,137 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FCD47122D
-	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 07:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AB4471237
+	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 07:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhLKGkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Dec 2021 01:40:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhLKGkG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Dec 2021 01:40:06 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CF7C061714;
-        Fri, 10 Dec 2021 22:40:05 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so9287726pjb.1;
-        Fri, 10 Dec 2021 22:40:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YOmWgj2DxdohruN6t1jhLzVebqIDyQ6/9OEYQxNzBg0=;
-        b=avF8g6XTx8SXtkscJO5GafrYodx7aduWYE3dYkSVMyLazEekKe1vVFk1AcFgyRBi6D
-         KLtMP+qE/Amw1XwaQT/yoZ7FOpLwpBIsjgKmZHipCkgkLFNTE6AqlpV1aH5qy7E7MmSl
-         Qm6JgY75X1B3qkf/H2k7QvWLl8G9yHb61vg4+ii+LxdBRZLuOVbmTGjafvriHmt9NNf2
-         C2Gdtyfny7jByIehwd+AyV30ha9OKEIw3yPh05v5AvFtaFqno5FojQ8vmgGFIAbxiGEE
-         h9szKpnk6ljwBnYCjFwml3+o+AVuPYrMIgmExUuBfP4zdOzo4zP83bUHVEc1hawnKN1j
-         56yA==
+        id S229622AbhLKGuE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Dec 2021 01:50:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43191 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229619AbhLKGuD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 11 Dec 2021 01:50:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639205402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5GGR6Yk8NIseTbnIhyrb7g88g2mKiujPf5SqxqWYHYM=;
+        b=ieDwajB8DU8tdwtF0k1lwxI7MwzwZdYa8qa0AFJntqqn6uidO4QpxVpIYJIs37rAmGkHTz
+        nMvWdFT89RT+yfEUmMd9qDSoyQkDjjb3yQ4usOCNzG1bETlsn6tg4HgXz58UlzTNQKcquP
+        SivgPBU/8CDOQD2rC1a7QSUfmz9dCo4=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-183-UN-26QSTNIKep0qJmeEf-A-1; Sat, 11 Dec 2021 01:50:01 -0500
+X-MC-Unique: UN-26QSTNIKep0qJmeEf-A-1
+Received: by mail-lf1-f71.google.com with SMTP id e23-20020a196917000000b0041bcbb80798so5127258lfc.3
+        for <bpf@vger.kernel.org>; Fri, 10 Dec 2021 22:50:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YOmWgj2DxdohruN6t1jhLzVebqIDyQ6/9OEYQxNzBg0=;
-        b=TMVBGicERsFuIKKy+F9Yu02a1zdhH5P1TCU8I0jOAhavTMQpYxO/EDws4oM+iv+Hwk
-         AJaLAsBmWYOkhR8jIxAWffEXa7UkDb+paYGSrLck2KHwC3Rykn2r8zOJODe6IvW/WK84
-         d9QE5Di+e4J/XsUnDKch9ZGiG6CRCerfFe/OPmXYuEWTRTMoiZ8PUh0zKn8Nq785AtjF
-         XsMwzG6NR1yC236ab1znuusAA5T6GG4H+nWYE9abRtuiqfZmZz599+HIRk+OcBXglhbC
-         yzTTldzORhwZsBviYDWOEVpOU/8jhlLFnv60AmHsrgasDxFyk+9C/ioKTSIr+Reh7AMs
-         Ov7Q==
-X-Gm-Message-State: AOAM533LrE/gW5/FbmOOKEAvn9Um+xwfN1ZuZebJ6tKN+dw99tkqcoM8
-        caw9zWviJuO74igYWgeKSSI=
-X-Google-Smtp-Source: ABdhPJyBEqkEghuO8KOI7906KYxsqu3siKTh85eWa5YxoDkG4ZEkClWkFiRCnC3BaaN4x8agFkpY0w==
-X-Received: by 2002:a17:90b:1b45:: with SMTP id nv5mr29250796pjb.120.1639204805586;
-        Fri, 10 Dec 2021 22:40:05 -0800 (PST)
-Received: from vultr.guest ([45.76.74.237])
-        by smtp.gmail.com with ESMTPSA id mr2sm869638pjb.25.2021.12.10.22.40.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 22:40:05 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        keescook@chromium.org, pmladek@suse.com, david@redhat.com,
-        arnaldo.melo@gmail.com, andrii.nakryiko@gmail.com,
-        alexei.starovoitov@gmail.com
-Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH -mm v2 3/3] tools/perf: replace old hard-coded 16 with TASK_COMM_LEN_16
-Date:   Sat, 11 Dec 2021 06:39:49 +0000
-Message-Id: <20211211063949.49533-4-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211211063949.49533-1-laoar.shao@gmail.com>
-References: <20211211063949.49533-1-laoar.shao@gmail.com>
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=5GGR6Yk8NIseTbnIhyrb7g88g2mKiujPf5SqxqWYHYM=;
+        b=WAryrgta3+IWIqqx3pUxoBchKJxOgPU6NBw8KPjY4PZfa7MQr1gAEqK+mg/XWNKgrd
+         Mv6QyX0Szj+HyCG1NbnF0D5UzSm10ccEkG/b+lTx5guEMrd/tvInxYgcv8rBD2CLRuVl
+         NaysMQiHnLuvZm0EGtVK2CjB+vw1LqfkOhJ2PbvYYEuQH8upbe3K8Gu51zqrlwq5BN+K
+         g+asJl1obcEs6mZLjlq4LkpKOfKWxFsZJLzhR0u31+gxKyphZkZ3GewgKaI+wpKxM0e7
+         Ex56Xo/MJxlPcuYbRJctbwHT5lM85dO7RXNF5Y5vuls2B6p2N2eF8gs82QBOY0tfG/26
+         2ZPA==
+X-Gm-Message-State: AOAM530EYw4C7FtSrbogmx3C7JgoSyAnb/QTpDnng4gGmnXoCdBaH9OM
+        H0nGcTTwLzYgPtXpG72uv/ZEg96Rc4OGfbdLbJvvICnP+oZu+pvOuOT1acubIHDaagw1txRMPn1
+        pn4tx9JsBrIzW
+X-Received: by 2002:a2e:530d:: with SMTP id h13mr17088876ljb.95.1639205399783;
+        Fri, 10 Dec 2021 22:49:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyabu8u398AkOeDvIjdTAMwe4DjCUEMSQhyd/hCvyqhhF33q3z0ei+lXyLKzAfL6cAYrDLWRw==
+X-Received: by 2002:a2e:530d:: with SMTP id h13mr17088859ljb.95.1639205399593;
+        Fri, 10 Dec 2021 22:49:59 -0800 (PST)
+Received: from [192.168.0.50] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
+        by smtp.gmail.com with ESMTPSA id u7sm527290lfo.251.2021.12.10.22.49.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Dec 2021 22:49:58 -0800 (PST)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <35b5bf44-3901-1d75-99d0-43c98def22b9@redhat.com>
+Date:   Sat, 11 Dec 2021 07:49:56 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Cc:     brouer@redhat.com, lorenzo.bianconi@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: Re: [PATCH v20 bpf-next 23/23] xdp: disable XDP_REDIRECT for xdp
+ multi-buff
+Content-Language: en-US
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <cover.1639162845.git.lorenzo@kernel.org>
+ <a6b33109dea5e82d975ea1ee229f7714d0ffdf77.1639162846.git.lorenzo@kernel.org>
+In-Reply-To: <a6b33109dea5e82d975ea1ee229f7714d0ffdf77.1639162846.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-evsel-tp-sched will verify the task comm len in sched:sched_switch
-and sched:sched_wakeup tracepoints. In order to make it grepable, we'd
-better replace the hard-coded 16 with TASK_COMM_LEN_16.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Petr Mladek <pmladek@suse.com>
----
- tools/perf/tests/evsel-tp-sched.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/tests/evsel-tp-sched.c b/tools/perf/tests/evsel-tp-sched.c
-index cf4da3d748c2..8be44b8e2b9c 100644
---- a/tools/perf/tests/evsel-tp-sched.c
-+++ b/tools/perf/tests/evsel-tp-sched.c
-@@ -5,6 +5,8 @@
- #include "tests.h"
- #include "debug.h"
- 
-+#define TASK_COMM_LEN_16 16
-+
- static int evsel__test_field(struct evsel *evsel, const char *name, int size, bool should_be_signed)
- {
- 	struct tep_format_field *field = evsel__field(evsel, name);
-@@ -43,7 +45,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
- 		return -1;
- 	}
- 
--	if (evsel__test_field(evsel, "prev_comm", 16, false))
-+	if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN_16, false))
- 		ret = -1;
- 
- 	if (evsel__test_field(evsel, "prev_pid", 4, true))
-@@ -55,7 +57,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
- 	if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
- 		ret = -1;
- 
--	if (evsel__test_field(evsel, "next_comm", 16, false))
-+	if (evsel__test_field(evsel, "next_comm", TASK_COMM_LEN_16, false))
- 		ret = -1;
- 
- 	if (evsel__test_field(evsel, "next_pid", 4, true))
-@@ -73,7 +75,7 @@ static int test__perf_evsel__tp_sched_test(struct test_suite *test __maybe_unuse
- 		return -1;
- 	}
- 
--	if (evsel__test_field(evsel, "comm", 16, false))
-+	if (evsel__test_field(evsel, "comm", TASK_COMM_LEN_16, false))
- 		ret = -1;
- 
- 	if (evsel__test_field(evsel, "pid", 4, true))
--- 
-2.17.1
+On 10/12/2021 20.14, Lorenzo Bianconi wrote:
+> XDP_REDIRECT is not fully supported yet for xdp multi-buff since not
+> all XDP capable drivers can map non-linear xdp_frame in ndo_xdp_xmit
+> so disable it for the moment.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+
+LGTM you addressed my last review comments.
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+I do expect followup patches that add support for ndo_xdp_xmit in drivers...
+
+
+>   net/core/filter.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 14860931733d..def6e9f451a7 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4186,6 +4186,13 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+>   	struct bpf_map *map;
+>   	int err;
+>   
+> +	/* XDP_REDIRECT is not fully supported yet for xdp multi-buff since
+> +	 * not all XDP capable drivers can map non-linear xdp_frame in
+> +	 * ndo_xdp_xmit.
+> +	 */
+> +	if (unlikely(xdp_buff_is_mb(xdp) && map_type != BPF_MAP_TYPE_CPUMAP))
+> +		return -EOPNOTSUPP;
+> +
+>   	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
+>   	ri->map_type = BPF_MAP_TYPE_UNSPEC;
+>   
+> 
 
