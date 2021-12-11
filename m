@@ -2,79 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE044710FA
-	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 03:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00B7471228
+	for <lists+bpf@lfdr.de>; Sat, 11 Dec 2021 07:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238582AbhLKCeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Dec 2021 21:34:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
+        id S229449AbhLKGkC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Dec 2021 01:40:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbhLKCeA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Dec 2021 21:34:00 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912AFC061714;
-        Fri, 10 Dec 2021 18:30:24 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 36BCEB82AA6;
-        Sat, 11 Dec 2021 02:30:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C81E0C00446;
-        Sat, 11 Dec 2021 02:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639189821;
-        bh=bYseClG6Ux01VKc220PLdCYmhyp9RwokMlUgwVtm+XY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lxy1ZKwDMBP+93PP6bJ9ktaHsEiFLzdnkMm+PotxldByFYHsRcnRRpTA78KnAUGXt
-         AuKmiyqfLC26/I7m//Tsi/MIeead+qK54VilqaUN0uYouWq5fgJvlGqSiMyGFlTXE/
-         zmUk6BSPCL+QB+IMM6pSCsXkW+93hs+dDcMhIahSSp1GU7IIrDcQXxIa1Fry0SVx25
-         9xrDfkMTVDf6cXPo8Zr6LLn55cmuwICuSYLIS8xfBIHMlAok0aoI9N/vH2ipPugOs1
-         giZWRK75StIUwVCeGQYKdhqmS/FPPCGi2hrP8lOMJV8ouYouSQH/9BlQJKRukemxtu
-         LA/lu0njvbzSg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B250D608FC;
-        Sat, 11 Dec 2021 02:30:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229461AbhLKGkC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Dec 2021 01:40:02 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4195C061714;
+        Fri, 10 Dec 2021 22:40:01 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id z6so7694499plk.6;
+        Fri, 10 Dec 2021 22:40:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6TTBLJjhklbgzaorxrN5YNkFqXZat3dzZj3OM3PWduE=;
+        b=FcBnjgd+cmQ5JxcCoDykVJaF4bZWiPRhpgAyOGgiCRi83+lVWgaSJT3Q8sxAI8b67L
+         a/Lu60kjlr8+hGGhtkbgIPtZL2KTOlobi3jaNj2/qw3MzZIItnxnJ9vYmZwfxuJgPOJS
+         0hY21zVD27Ah3/Fie+1utflqjviajWileOHP9lrwnnpgvrbCoYv+s7db9iohAJ0lK/q5
+         HSrvQBQtHjJraMcvMuAQpeskYpNIlBLayj0nOZeYk+oVG7IR5RyM97ITOj/1zdagzYUf
+         OoIlD0XJLwsihCddx/vUEu2NGGjFd11krwaJb936Y69OPgQ2KgDzXWIb2lNmwk7nnRui
+         ncaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6TTBLJjhklbgzaorxrN5YNkFqXZat3dzZj3OM3PWduE=;
+        b=zEPwJzx/tLw8VjFEjdy8ZItBIGZ6V26vbPjWviFselbzVPEofnUDEV74mnM1Qerm6w
+         1xkqSMeL2ju8zQU+S8iU6jVPK4YDWLI/5SGDAu6hAMF/OW5aCTgOEjB/dSKDKpT+R8qW
+         ABdZ/JVgyGvF7eMcEUBAOt3r+GzsLRRaoY0OdgiYRtKOjcEwfoERWdqjx5JL9fh0SpJM
+         7Z1KS3rEEIJzLObl8oduVAc3R1Toed2ByQRsta2qo6/Lvridtpe8p3Cq4Dkdu/dqwL3v
+         XZX3+LL8Lql2oxt+NccTiETFQoZyaZunp3dL4NEef7tsUNdGMz4uK/jYURTdoiGgVHAJ
+         EB7Q==
+X-Gm-Message-State: AOAM533wOfKk6bdVqf/QeuPoIrqG7YcknJNYW1JM4y1c3F1wg2drp8hr
+        QflcM2ajLrfXyL0LvbQgWRo=
+X-Google-Smtp-Source: ABdhPJwIh7sOCDWjFOxGKD2DybyXks0pbOAHtYI/ZjEXWDeEyOyf77V+kWHcehoxUrGeXkhT3oAauw==
+X-Received: by 2002:a17:902:e544:b0:144:e3fa:3c2e with SMTP id n4-20020a170902e54400b00144e3fa3c2emr81575705plf.17.1639204801449;
+        Fri, 10 Dec 2021 22:40:01 -0800 (PST)
+Received: from vultr.guest ([45.76.74.237])
+        by smtp.gmail.com with ESMTPSA id mr2sm869638pjb.25.2021.12.10.22.40.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Dec 2021 22:40:00 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        keescook@chromium.org, pmladek@suse.com, david@redhat.com,
+        arnaldo.melo@gmail.com, andrii.nakryiko@gmail.com,
+        alexei.starovoitov@gmail.com
+Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH -mm v2 0/3] Phase 2 of task comm cleanups 
+Date:   Sat, 11 Dec 2021 06:39:46 +0000
+Message-Id: <20211211063949.49533-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request v2: bpf-next 2021-12-10
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163918982172.1867.2851221184169760716.git-patchwork-notify@kernel.org>
-Date:   Sat, 11 Dec 2021 02:30:21 +0000
-References: <20211210234746.2100561-1-andrii@kernel.org>
-In-Reply-To: <20211210234746.2100561-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This is the followup work of task comm cleanups[1].
 
-This pull request was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+In this phase, the hard-coded 16 is replaced by TASK_COMM_LEN_16 to make
+it grepable. The difference between this two marcos is: 
+- TASK_COMM_LEN
+  The size should be same with the TASK_COMM_LEN defined in linux/sched.h.
+- TASK_COMM_LEN_16
+  The size must be a fixed-size 16 no matter what TASK_COMM_LEN is. It may
+  be exposed to userspace so we can't change it. 
 
-On Fri, 10 Dec 2021 15:47:46 -0800 you wrote:
-> Hi David, hi Jakub,
-> 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> There are three merge conflicts between bpf and bpf-next:
-> 
-> 1. Documentation/bpf/index.rst. Please Just drop the libbpf and BTF sections,
->    so that the resulting content is like this:
-> 
-> [...]
+1. https://lore.kernel.org/lkml/20211120112738.45980-1-laoar.shao@gmail.com/
 
-Here is the summary with links:
-  - pull-request v2: bpf-next 2021-12-10
-    https://git.kernel.org/netdev/net-next/c/be3158290db8
+Changes since v1:
+- use TASK_COMM_LEN_16 instead of TASK_COMM_LEN in patch #3 (Steven)
+- avoid changing samples/bpf and bpf/progs (Alexei)
 
-You are awesome, thank you!
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Petr Mladek <pmladek@suse.com>
+
+Yafang Shao (3):
+  elfcore: replace old hard-code 16 with TASK_COMM_LEN_16
+  cn_proc: replaced old hard-coded 16 with TASK_COMM_LEN_16
+  tools/perf: replace old hard-coded 16 with TASK_COMM_LEN_16
+
+ include/linux/elfcore-compat.h    | 8 ++------
+ include/linux/elfcore.h           | 9 ++-------
+ include/linux/sched.h             | 5 +++++
+ include/uapi/linux/cn_proc.h      | 4 +++-
+ tools/perf/tests/evsel-tp-sched.c | 8 +++++---
+ 5 files changed, 17 insertions(+), 17 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.17.1
 
