@@ -2,58 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A55471A7B
-	for <lists+bpf@lfdr.de>; Sun, 12 Dec 2021 14:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF07471A86
+	for <lists+bpf@lfdr.de>; Sun, 12 Dec 2021 14:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhLLNrm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Dec 2021 08:47:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
+        id S231317AbhLLN4W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 12 Dec 2021 08:56:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhLLNri (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Dec 2021 08:47:38 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F24EC0617A1
-        for <bpf@vger.kernel.org>; Sun, 12 Dec 2021 05:47:37 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id g14so43342306edb.8
-        for <bpf@vger.kernel.org>; Sun, 12 Dec 2021 05:47:37 -0800 (PST)
+        with ESMTP id S231319AbhLLN4W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 12 Dec 2021 08:56:22 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D946C061714;
+        Sun, 12 Dec 2021 05:56:22 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id o14so9404296plg.5;
+        Sun, 12 Dec 2021 05:56:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rK1kg3BdhZ6vLWzAC/NJououZjpKNDWOeE95mIOHLwM=;
-        b=ldSwe0RjVRHsN8mMDq8u31wWcE0Ai3OmoE/gzxo9Ee3YJREu6xjReDIro45Uk+mZC2
-         PUXywo8tMs4T/Z4qdwrFNYHQJqX33Vf94B7C+Cn2wILZncUXqKm2UaB9Ce3cBG94cD8Z
-         MGUbvOpVuxJxWf16wDm5LzPjN4vKr7vWLQSixfUtE/MPP5NYnx9RoVcl69krk4qWV7QO
-         RgZZ3FcjcJxFsmliE3cuLA0+KRzOzL2sKhDiiO5gaCX6X0dr2iAYBq6sTJd768vj0mT5
-         9fc5XLoSOOq31k7MYQg7DWH2doGIhUEuYsc5vrpgrU8K8yMOBdC7ZwhpHa5R8FAFNCDS
-         UEag==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=/gQUbvHkAhzPpWEAlaFTz49oyVa8obtsdC7ymHL+Scc=;
+        b=QlcyK7p51i6cmH6vldrRHaYWe/7z/wdWLBZ31Y6Fnfs2U+g7rKBJgvZDV7r4pH/J5+
+         b4EGprAxZxSsbkUf81T/azTYLP1Cr9n33WYqi56aU+ojpBIGxc5UgVFF7gDXKHkkavMp
+         YmEwhywR4wCchfpsfwh+OQ0Z0mE4dZphlJ7Wq1aKGVyrs8b70bjuEtd2DgrNWrmObW6U
+         tnJncEeaZNV6FsI7ZOTyP1z3FEAyeDTTAFbnHJqZoClRBowNeBjKHV8Xf2ownmm8yC/M
+         hG+iPS7Jn5nMIpNMcDumlw5OFAqn2mZuSY3rNPNVndouSTdBPNbVf/QMj5P9ZGxsOS+B
+         9mjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rK1kg3BdhZ6vLWzAC/NJououZjpKNDWOeE95mIOHLwM=;
-        b=BpTpgmxUyfmyHuJ8539Yn9w5ThKTrw+6zEPYROBGVrj3qS01NrpZY5UlepTDFzPLGq
-         Hg3xspZi21Xer32ZYqGU4CLttVKnFu19JiyQriEknGT0yIEaAGC+dOo5Zs1e1lFjyfA3
-         mcQRWe89z8Y76Ela/12gpyugOINS5AfrE4uXRzhUu6A+C4g9PnsMB9XewtMsYCM91dlp
-         Kr3OOAflymI+f7SxxJXgOVjOowULaRY419yIiTZaCPEJSKSpsGC3ju+N5IcUZwhLho72
-         AxA6sWgrK8nNy+chqiTjRQiMNCm4KX1pdDmYfv9TSMq2OYH48AvgWKMKtOcyPbwGmBBn
-         0P8w==
-X-Gm-Message-State: AOAM530m73k+Lbz8F73Gib8b2UHyv5fhioYimlM22kVFRzFFYE9h8AJf
-        XYFKvBwpWQRC6szjrO0lwZDkyg==
-X-Google-Smtp-Source: ABdhPJzjWwtlbpO7/42zB/Kq1uP/6C0lh8G/iFpj6GJmFlQsf7lZb5/ZwrXmB5hFGU/usI1ePolpfw==
-X-Received: by 2002:a50:e0c9:: with SMTP id j9mr56003635edl.336.1639316855926;
-        Sun, 12 Dec 2021 05:47:35 -0800 (PST)
-Received: from localhost ([104.245.96.202])
-        by smtp.gmail.com with ESMTPSA id i4sm4082449ejz.122.2021.12.12.05.47.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/gQUbvHkAhzPpWEAlaFTz49oyVa8obtsdC7ymHL+Scc=;
+        b=hcCnnmx34vOfUwZJta96fdWXR1AOBTaL32BtBgYJjS51RqLzWU5cWI5o4a3AAlkrxT
+         zh5xqdw0ikz85Aajs9rge973lgXPpo1/qrBVIaOM3DoOH1sxOYwdNqhkklM35Vmy8PGY
+         msXgJakRRpSU++jw9YuRq2E6BwpuO7dsUuWYhbL6eFkUtIzrBdNUTOiXkz9LYWrA5jkA
+         I6gux5LL/kx6eIy0rklL3LRFLDwHu4l3RIhrIspsFAUE8ZBQNOrepnCgPVmp3+UxUIw5
+         3CzJ/Y5z1GLXpVwJ9iwzbWrdVK6oBV5ybOKiR9O2M3+Q5eP1ZsRwbUOLIhijpkYd8UGO
+         I9mw==
+X-Gm-Message-State: AOAM533/uqYs0y1fAxGR6hoi12DuG3lQlS8AC2297W7j0xIT34dAQrhc
+        4Dqx0ICoOAhExFZmYNEj6PU=
+X-Google-Smtp-Source: ABdhPJwxH8RyIrWI0KeErRauDZVF7CcEaF9YzaKd84AS8nxZoJUUm/P41yvVHXzW4W41ZR3V6gHroQ==
+X-Received: by 2002:a17:902:9b95:b0:143:b899:5b12 with SMTP id y21-20020a1709029b9500b00143b8995b12mr87877211plp.13.1639317381565;
+        Sun, 12 Dec 2021 05:56:21 -0800 (PST)
+Received: from localhost.localdomain ([159.226.95.43])
+        by smtp.googlemail.com with ESMTPSA id m24sm7572001pgk.39.2021.12.12.05.56.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 05:47:35 -0800 (PST)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Sun, 12 Dec 2021 05:56:21 -0800 (PST)
+From:   Miaoqian Lin <linmq006@gmail.com>
+Cc:     linmq006@gmail.com, Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -62,79 +60,79 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 2/2] perf evlist: Don't run perf in non-root PID namespace when launch workload
-Date:   Sun, 12 Dec 2021 21:47:21 +0800
-Message-Id: <20211212134721.1721245-3-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211212134721.1721245-1-leo.yan@linaro.org>
-References: <20211212134721.1721245-1-leo.yan@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH] perf tools: Use IS_ERR_OR_NULL() to clean code and fix check
+Date:   Sun, 12 Dec 2021 13:56:09 +0000
+Message-Id: <20211212135613.20000-1-linmq006@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In function evlist__prepare_workload(), after perf forks a child process
-and launches a workload in the created process, it needs to retrieve
-process and namespace related info via '/proc/$PID/' node.
+Use IS_ERR_OR_NULL() to make the code cleaner.
+Also if the priv is NULL, it's improper to call PTR_ERR(priv).
 
-The process folders under 'proc' file system use the PID number from the
-root PID namespace, when perf tool runs in non-root PID namespace and
-creates new process for profiled program, this leads to the perf tool
-wrongly gather process info since it uses PID from non-root namespace to
-access nodes under '/proc'.
-
-Let's see an example:
-
-  unshare --fork --pid perf record -e cs_etm//u -a -- test_program
-
-This command runs perf tool and the profiled program 'test_program' in
-the non-root PID namespace.  When perf tool launches 'test_program',
-e.g. the forked PID number is 2, perf tool retrieves process info for
-'test_program' from the folder '/proc/2'.  But '/proc/2' is actually for
-a kernel thread so perf tool wrongly gather info for 'test_program'.
-
-To fix this issue, we don't allow perf tool runs in non-root PID
-namespace when it launches workload and reports error in this
-case.  This can notify users to run the perf tool in root PID namespace
-to gather correct info for profiled program.
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
 ---
- tools/perf/util/evlist.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tools/perf/util/bpf-loader.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 5f92319ce258..bdf79a97db66 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -11,6 +11,7 @@
- #include <poll.h>
- #include "cpumap.h"
- #include "util/mmap.h"
-+#include "util/namespaces.h"
- #include "thread_map.h"
- #include "target.h"
- #include "evlist.h"
-@@ -1364,6 +1365,12 @@ int evlist__prepare_workload(struct evlist *evlist, struct target *target, const
- 	int child_ready_pipe[2], go_pipe[2];
- 	char bf;
+diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+index fbb3c4057c30..22662fc85cc9 100644
+--- a/tools/perf/util/bpf-loader.c
++++ b/tools/perf/util/bpf-loader.c
+@@ -421,7 +421,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
+ 	size_t prologue_cnt = 0;
+ 	int i, err;
  
-+	if (!nsinfo__is_in_root_namespace()) {
-+		pr_err("Perf runs in non-root PID namespace; please run perf tool ");
-+		pr_err("in the root PID namespace for gathering process info.\n");
-+		return -EPERM;
-+	}
-+
- 	if (pipe(child_ready_pipe) < 0) {
- 		perror("failed to create 'ready' pipe");
- 		return -1;
+-	if (IS_ERR(priv) || !priv || priv->is_tp)
++	if (IS_ERR_OR_NULL(priv) || priv->is_tp)
+ 		goto errout;
+ 
+ 	pev = &priv->pev;
+@@ -570,7 +570,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
+ 	bool need_prologue = false;
+ 	int err, i;
+ 
+-	if (IS_ERR(priv) || !priv) {
++	if (IS_ERR_OR_NULL(priv)) {
+ 		pr_debug("Internal error when hook preprocessor\n");
+ 		return -BPF_LOADER_ERRNO__INTERNAL;
+ 	}
+@@ -642,8 +642,11 @@ int bpf__probe(struct bpf_object *obj)
+ 			goto out;
+ 
+ 		priv = bpf_program__priv(prog);
+-		if (IS_ERR(priv) || !priv) {
+-			err = PTR_ERR(priv);
++		if (IS_ERR_OR_NULL(priv)) {
++			if (!priv)
++				err = -BPF_LOADER_ERRNO__INTERNAL;
++			else
++				err = PTR_ERR(priv);
+ 			goto out;
+ 		}
+ 
+@@ -693,7 +696,7 @@ int bpf__unprobe(struct bpf_object *obj)
+ 		struct bpf_prog_priv *priv = bpf_program__priv(prog);
+ 		int i;
+ 
+-		if (IS_ERR(priv) || !priv || priv->is_tp)
++		if (IS_ERR_OR_NULL(priv) || priv->is_tp)
+ 			continue;
+ 
+ 		for (i = 0; i < priv->pev.ntevs; i++) {
+@@ -751,7 +754,7 @@ int bpf__foreach_event(struct bpf_object *obj,
+ 		struct perf_probe_event *pev;
+ 		int i, fd;
+ 
+-		if (IS_ERR(priv) || !priv) {
++		if (IS_ERR_OR_NULL(priv)) {
+ 			pr_debug("bpf: failed to get private field\n");
+ 			return -BPF_LOADER_ERRNO__INTERNAL;
+ 		}
 -- 
-2.25.1
+2.17.1
 
