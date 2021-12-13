@@ -2,133 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AEF4731CD
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 17:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4A247323F
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 17:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240222AbhLMQ2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 11:28:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52798 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236509AbhLMQ2b (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 11:28:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639412911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xFgMJS5OYLT6odUDPQrNQS9uxsTb4uqYrE9YvbeaGk0=;
-        b=e5SijWY6Ly3axe9TvyKuXWr4IbjeQ0sdHdeyCSwkeCZofpFSEpvv/UL3wCq/sqq0tRrpgw
-        usC9zppIGrD9faNWcHpOBV4Vpl4rx/wLiHmCSU71dH3UGgVVip5pq38Q/SK/tL8Ff45GHz
-        P0DCPgltBTvYIBFtLnVe6mFtVUMjVpk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-311-PZmjuq_RMAawswGGGwkLOA-1; Mon, 13 Dec 2021 11:28:30 -0500
-X-MC-Unique: PZmjuq_RMAawswGGGwkLOA-1
-Received: by mail-ed1-f70.google.com with SMTP id eg20-20020a056402289400b003eb56fcf6easo14352618edb.20
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 08:28:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=xFgMJS5OYLT6odUDPQrNQS9uxsTb4uqYrE9YvbeaGk0=;
-        b=bdeOrMVtp8lwbx6OL3g/k1jAz+RhaGI5WnijWwZKsAwCg4Hv/VhKGKkwfTHPW7HcA1
-         Zu/Ak+lxv5bJugL6JXH7kYkZNrn0gXjWuNXMAG4KLQtsOMw8Kj5Zyg0TqH8EP2skkSVa
-         mjeq7JYszi32ZCBpED4Ngfisd8lV1m57cv1ut/RwYtxXS6oucrAOvjzuwdE96awb/0+6
-         vHUGZgG+bi+yN6ThyufT4nxPIwCy85oWlgZxexuPneHYTbtkoJYkrplxdWT0Gh+OIY5H
-         VAZlcOEoYqUewDmCANZAQp0S4LyF+Ei/rJfwNd+LXLQ1837xj5ePnDvWJw+VnJpTTNFB
-         Tx9A==
-X-Gm-Message-State: AOAM533fEPPIC3iFj7bOIQnIM2MYaqVa+9LD7fM9Ph5qG31oqm3Cpty0
-        FOdawVclH1O0T0RgxB911tWVJV50fc0EeRfkp0YzXMw9aTluhy/8/C3DlHJpiG89sRakQ9OHDru
-        JokLkPvz+e0bw
-X-Received: by 2002:a17:906:11ce:: with SMTP id o14mr45416734eja.457.1639412908764;
-        Mon, 13 Dec 2021 08:28:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy+1Jri9oBR6QcOXdVO9FQbIa19fYz+o7TqfqBqmF1DCRiSzjfHSbvt13CDIvqX6QJnfcbNiQ==
-X-Received: by 2002:a17:906:11ce:: with SMTP id o14mr45416690eja.457.1639412908387;
-        Mon, 13 Dec 2021 08:28:28 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z8sm6706897edb.5.2021.12.13.08.28.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 08:28:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6330D18355A; Mon, 13 Dec 2021 17:28:27 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v3 8/8] samples/bpf: Add xdp_trafficgen sample
-In-Reply-To: <CAADnVQKiPgDtEUwg7WQ2YVByBUTRYuCZn-Y17td+XHazFXchaA@mail.gmail.com>
-References: <20211211184143.142003-1-toke@redhat.com>
- <20211211184143.142003-9-toke@redhat.com>
- <CAADnVQKiPgDtEUwg7WQ2YVByBUTRYuCZn-Y17td+XHazFXchaA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 13 Dec 2021 17:28:27 +0100
-Message-ID: <87r1ageafo.fsf@toke.dk>
+        id S238335AbhLMQwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 11:52:09 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:46334 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231563AbhLMQwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 11:52:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DCC2F61184;
+        Mon, 13 Dec 2021 16:52:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1929C34603;
+        Mon, 13 Dec 2021 16:52:07 +0000 (UTC)
+Date:   Mon, 13 Dec 2021 11:52:06 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Xiaoke Wang <xkernel.wang@foxmail.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] tracing: check the return value of kstrdup()
+Message-ID: <20211213115206.5a7b9f0c@gandalf.local.home>
+In-Reply-To: <tencent_B595FC0780AC301FE5EE719C50FC8553280A@qq.com>
+References: <tencent_B595FC0780AC301FE5EE719C50FC8553280A@qq.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On Mon, 13 Dec 2021 15:59:04 +0800
+Xiaoke Wang <xkernel.wang@foxmail.com> wrote:
 
-> On Sat, Dec 11, 2021 at 10:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->>
->> This adds an XDP-based traffic generator sample which uses the DO_REDIRE=
-CT
->> flag of bpf_prog_run(). It works by building the initial packet in
->> userspace and passing it to the kernel where an XDP program redirects the
->> packet to the target interface. The traffic generator supports two modes=
- of
->> operation: one that just sends copies of the same packet as fast as it c=
-an
->> without touching the packet data at all, and one that rewrites the
->> destination port number of each packet, making the generated traffic spa=
-n a
->> range of port numbers.
->>
->> The dynamic mode is included to demonstrate how the bpf_prog_run() facil=
-ity
->> enables building a completely programmable packet generator using XDP.
->> Using the dynamic mode has about a 10% overhead compared to the static
->> mode, because the latter completely avoids touching the page data.
->>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  samples/bpf/.gitignore            |   1 +
->>  samples/bpf/Makefile              |   4 +
->>  samples/bpf/xdp_redirect.bpf.c    |  34 +++
->>  samples/bpf/xdp_trafficgen_user.c | 421 ++++++++++++++++++++++++++++++
->>  4 files changed, 460 insertions(+)
->>  create mode 100644 samples/bpf/xdp_trafficgen_user.c
->
-> I think it deserves to be in tools/bpf/
-> samples/bpf/ bit rots too often now.
-> imo everything in there either needs to be converted to selftests/bpf
-> or deleted.
+> Note: Compare with the last email, this one is using my full name.
+> And I am sorry that yesterday I did not notice the bugs in trace_boot.c had been
+> already patched.
+> kstrdup() returns NULL when some internal memory errors happen, it is
+> better to check the return value of it.
 
-I think there's value in having a separate set of utilities that are
-more user-facing than the selftests. But I do agree that it's annoying
-they bit rot. So how about we fix that instead? Andrii suggested just
-integrating the build of samples/bpf into selftests[0], so I'll look
-into that after the holidays. But in the meantime I don't think there's
-any harm in adding this utility here?
+Can you please resend this as a normal patch, and not a reply to this email
+thread.
 
--Toke
+Thank you,
 
-[0] https://lore.kernel.org/r/CAEf4BzYv3ONhy-JnQUtknzgBSK0gpm9GBJYtbAiJQe50=
-_eX7Uw@mail.gmail.com
+-- Steve
+
+
+> 
+> Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+> ---
+>  kernel/trace/trace_uprobe.c | 5 +++++
+>  1 files changed, 5 insertions(+)
+> 
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 225ce56..173ff0f 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -1618,6 +1618,11 @@ create_local_trace_uprobe(char *name, unsigned long offs,
+>  	tu->path = path;
+>  	tu->ref_ctr_offset = ref_ctr_offset;
+>  	tu->filename = kstrdup(name, GFP_KERNEL);
+> +	if (!tu->filename) {
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+>  	init_trace_event_call(tu);
+>  
+>  	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
 
