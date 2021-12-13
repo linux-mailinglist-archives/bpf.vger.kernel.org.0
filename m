@@ -2,150 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85802472BFD
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 13:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6823E472CB5
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 14:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhLMMJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 07:09:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47956 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231405AbhLMMJn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 07:09:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639397382;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1a/bd6+FuUOJG/H4wd0T2lOdNMz9aPxRtEUk/VcsT3Y=;
-        b=ZhJU0Pc8VLMiSNIrHUcmVuIxyj8UPhYtON5X0u65dECNJfNPUDcmzisoRu4NVw1RljmSSL
-        zp8PmktZMBywD2PEX6it/YF1TKYy1bjHkSZ8c5oNf3aOC8dJTO6zhassSbp957JUoIYx+T
-        JksyEXPgYha4lUGUKJ0H3zf0gkyDGQQ=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-23-W7zfe0GNOWKQjhTRRmwpHQ-1; Mon, 13 Dec 2021 07:09:41 -0500
-X-MC-Unique: W7zfe0GNOWKQjhTRRmwpHQ-1
-Received: by mail-qt1-f197.google.com with SMTP id p7-20020a05622a00c700b002b2f6944e7dso22911532qtw.10
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 04:09:41 -0800 (PST)
+        id S236646AbhLMNAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 08:00:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231465AbhLMNAm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 08:00:42 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912C1C061574;
+        Mon, 13 Dec 2021 05:00:42 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id k6-20020a17090a7f0600b001ad9d73b20bso13255078pjl.3;
+        Mon, 13 Dec 2021 05:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QX8Aew80hIXRTchz8+FcQ8MQ/fpacOHED6ScaQzbTlY=;
+        b=LwC+k8Ww6UvhnLh6TjOJkJwCLLR9bPRPiZSmcyqIaGaKEZaXvsikX1yS5dywl4FkEZ
+         TIGz7YNKhmr60ZJ/NEx11alohtq6L2dsl5wmPl8/OY92SvO/XkvjPT8FSrZkjYSXH4wc
+         ifOuS2kwSJXTtTVUtG6/ZWIyxHq64fGiGDNLOTnSZIfRxpvjL/rjcO1CAlip2wfXZfmL
+         b4FxasCoFCzAq+gI3rVdC5mTMElm+m4d7br6yiyv/mdlVIx2o+9Kgq1Y/K3T6n4oOfTc
+         /N9KKzJaeZgVFGctBPHVHf9/FqdhQacE77PXfdDjObv5sZWR6uMZ78qKl5ZK0kxrOcVE
+         6Axg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=1a/bd6+FuUOJG/H4wd0T2lOdNMz9aPxRtEUk/VcsT3Y=;
-        b=pQBawaofOz37IjkA/pBr0vp1uvhHypRwihU5PoJP8iTn16C2ZIVSkdfSx6npXScIKg
-         UaCedVINGoTF9XhksxeXgaK1XNmKEOleLqv+0lIjkq6/qJbHCoJKCfxaxeJO/YIXpbS+
-         jveRvdzl5YtLwqW0k4f59U1cqsqxpyCl19kDc2ocDlREvmsIyaRq6J2zPUXBFCvez11Y
-         A5a7tjXcDG+/gQ012FD3E9o26+ObU2wcpMUELnWVeJnm+45I8352x2Q4KEPKmbLbTaVB
-         QJHCp3WvLXLiE6s/PLZoeSiJh5B7TvF+me21ss3i3JRxth/dYv4oEwCjytU+fhGcHs0j
-         S/Ew==
-X-Gm-Message-State: AOAM531ED3CcM1grtsVkS1dBHgafLJyrhvEFNQXuBd9Hinz4bjCDI1+T
-        Z7234qtYkuUOnBv2Gwp3We65VnuK5W/Nb1fMC+2+VYwQyHy0A8EHvyuVMIWzp8P28FZ2cwrjoc+
-        65jHQ2G0F7h34
-X-Received: by 2002:a05:620a:1904:: with SMTP id bj4mr32164861qkb.536.1639397380536;
-        Mon, 13 Dec 2021 04:09:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwUMjea4dS/GuZs2NBiHsvdQKAl1msbX4jKzb27GUcYuJ0+s3SA6OeCnzyR+/7myLc0P/iXYw==
-X-Received: by 2002:a05:620a:1904:: with SMTP id bj4mr32164837qkb.536.1639397380127;
-        Mon, 13 Dec 2021 04:09:40 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id n13sm6194857qkp.19.2021.12.13.04.09.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 04:09:39 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 845DC180496; Mon, 13 Dec 2021 13:09:35 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yihao Han <hanyihao@vivo.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, kernel@vivo.com
-Subject: Re: [PATCH v2] samples/bpf: xdpsock: fix swap.cocci warning
-In-Reply-To: <CAEf4BzYv3ONhy-JnQUtknzgBSK0gpm9GBJYtbAiJQe50_eX7Uw@mail.gmail.com>
-References: <20211209092250.56430-1-hanyihao@vivo.com>
- <877dccwn6x.fsf@toke.dk>
- <CAEf4Bza3a88pdhFEQdR-FnT_gBPqBh+KL-OP-1P3bVfXv=Gbaw@mail.gmail.com>
- <87sfuzuia3.fsf@toke.dk>
- <CAEf4BzYv3ONhy-JnQUtknzgBSK0gpm9GBJYtbAiJQe50_eX7Uw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 13 Dec 2021 13:09:35 +0100
-Message-ID: <87fsqwg0zk.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QX8Aew80hIXRTchz8+FcQ8MQ/fpacOHED6ScaQzbTlY=;
+        b=DTi/rtUn1nEKol5N8mhxnDU4pKSYBWm+cqDEkVqo8rTcHrRGjS3yz/B33HfIy8is/t
+         nNW3YOqlBymJJNq6T+aZgt5R9gtaPG6jFvPpJkuIc29vvSLUR4emX6dEpfS6KsKfUSun
+         mgN2/2yMrmOFDFNvB9CsEP81Gtne1qQ/bbioulS39HLGiVSxBKg4Bztr5HQm4ALwoZiw
+         470sAQYB8edXYPFHtflubIxYid0pMQx+amAGhkPxCrJMlJqABfbUmMdDmbGAzxmx+8vj
+         oZcb5z65Oy9OUiOtzGAG1g04Ca9aWeL+hGA7nq9+HY8CBjstjpGC8F5a3RhFnjGRity8
+         lHUg==
+X-Gm-Message-State: AOAM531wnxGMAJqFDH1x1O3Mq5nekZuuQuXLlpfvNt5GcfNQw6pCfssU
+        iurZHD0yX2/+I5UPUetwKojonQ+z9Edz1HEXOsmJxr+xZNeY8wsn
+X-Google-Smtp-Source: ABdhPJxh4/9NHemB2eiU2uTvyp3eJIa1vtxBJTB/Yhn6Mg1X1LbvgYbzmGO/yE4RBRMDwr5b8g1sdVty+0lahDgR1qo=
+X-Received: by 2002:a17:903:11c4:b0:143:d220:9161 with SMTP id
+ q4-20020a17090311c400b00143d2209161mr95330662plh.2.1639400442111; Mon, 13 Dec
+ 2021 05:00:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211210171511.11574-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20211210171511.11574-1-maciej.fijalkowski@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 13 Dec 2021 14:00:31 +0100
+Message-ID: <CAJ8uoz34a-ASbbd5YvwmHfA5zeicLVfZCeyv3+RC-vWrYozSGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: wipe out dead zero_copy_allocator declarations
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Sat, Dec 11, 2021 at 10:07 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Fri, Dec 10, 2021 at 6:26 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> Yihao Han <hanyihao@vivo.com> writes:
->> >>
->> >> > Fix following swap.cocci warning:
->> >> > ./samples/bpf/xdpsock_user.c:528:22-23:
->> >> > WARNING opportunity for swap()
->> >> >
->> >> > Signed-off-by: Yihao Han <hanyihao@vivo.com>
->> >>
->> >> Erm, did this get applied without anyone actually trying to compile
->> >> samples? I'm getting build errors as:
->> >
->> > Good news: I actually do build samples/bpf nowadays after fixing a
->> > bunch of compilation issues recently.
->>
->> Awesome!
->>
->> > Bad news: seems like I didn't pay too much attention after building
->> > samples/bpf for this particular patch, sorry about that. I've dropped
->> > this patch, samples/bpf builds for me. We should be good now.
->>
->> Yup, looks good, thanks!
->>
->> >>   CC  /home/build/linux/samples/bpf/xsk_fwd.o
->> >> /home/build/linux/samples/bpf/xsk_fwd.c: In function =E2=80=98swap_ma=
-c_addresses=E2=80=99:
->> >> /home/build/linux/samples/bpf/xsk_fwd.c:658:9: warning: implicit decl=
-aration of function =E2=80=98swap=E2=80=99; did you mean =E2=80=98swab=E2=
-=80=99? [-Wimplicit-function-declaration]
->> >>   658 |         swap(*src_addr, *dst_addr);
->> >>       |         ^~~~
->> >>       |         swab
->> >>
->> >> /usr/bin/ld: /home/build/linux/samples/bpf/xsk_fwd.o: in function `th=
-read_func':
->> >> xsk_fwd.c:(.text+0x440): undefined reference to `swap'
->> >> collect2: error: ld returned 1 exit status
->> >>
->> >>
->> >> Could we maybe get samples/bpf added to the BPF CI builds? :)
->> >
->> > Maybe we could, if someone dedicated their effort towards making this
->> > happen.
->>
->> Is it documented anywhere what that would entail? Is it just a matter of
->> submitting a change to https://github.com/kernel-patches/vmtest ?
+On Sat, Dec 11, 2021 at 3:02 AM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
 >
-> I think the right way would be to build samples/bpf from
-> selftests/bpf's Makefile. At the very least we should not require make
-> headers_install (I never understood that with samples/bpf, all those
-> up-to-date UAPI headers are right there in the same repo). Once that
-> is done, at the very least we'll build tests samples/bpf during CI
-> runs.
+> zero_copy_allocator has been removed back when Bjorn Topel introduced
+> xsk_buff_pool. Remove references to it that were dangling in the tree.
 
-Alright, sounds fair. I'll look into that, but probably before the
-holidays :)
+Thanks Maciej.
 
--Toke
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.h           | 1 -
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h | 2 --
+>  include/net/xdp_priv.h                               | 1 -
+>  3 files changed, 4 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.h b/drivers/net/ethernet/intel/i40e/i40e_xsk.h
+> index ea88f4597a07..bb962987f300 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.h
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.h
+> @@ -22,7 +22,6 @@
+>
+>  struct i40e_vsi;
+>  struct xsk_buff_pool;
+> -struct zero_copy_allocator;
+>
+>  int i40e_queue_pair_disable(struct i40e_vsi *vsi, int queue_pair);
+>  int i40e_queue_pair_enable(struct i40e_vsi *vsi, int queue_pair);
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> index a82533f21d36..bba3feaf3318 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> @@ -35,8 +35,6 @@ int ixgbe_xsk_pool_setup(struct ixgbe_adapter *adapter,
+>                          struct xsk_buff_pool *pool,
+>                          u16 qid);
+>
+> -void ixgbe_zca_free(struct zero_copy_allocator *alloc, unsigned long handle);
+> -
+>  bool ixgbe_alloc_rx_buffers_zc(struct ixgbe_ring *rx_ring, u16 cleaned_count);
+>  int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
+>                           struct ixgbe_ring *rx_ring,
+> diff --git a/include/net/xdp_priv.h b/include/net/xdp_priv.h
+> index a9d5b7603b89..a2d58b1a12e1 100644
+> --- a/include/net/xdp_priv.h
+> +++ b/include/net/xdp_priv.h
+> @@ -10,7 +10,6 @@ struct xdp_mem_allocator {
+>         union {
+>                 void *allocator;
+>                 struct page_pool *page_pool;
+> -               struct zero_copy_allocator *zc_alloc;
+>         };
+>         struct rhash_head node;
+>         struct rcu_head rcu;
+> --
+> 2.33.1
+>
