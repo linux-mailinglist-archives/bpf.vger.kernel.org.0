@@ -2,111 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF6447341A
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 19:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6A2473507
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 20:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233847AbhLMSdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 13:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
+        id S234427AbhLMTdN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 14:33:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbhLMSdo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 13:33:44 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21218C06173F
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 10:33:44 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id o20so55558189eds.10
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 10:33:44 -0800 (PST)
+        with ESMTP id S231772AbhLMTdM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 14:33:12 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1501CC061574;
+        Mon, 13 Dec 2021 11:33:12 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id d10so41035189ybn.0;
+        Mon, 13 Dec 2021 11:33:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l54QX6ZqsqzaIAhDWIb2TsE/J94vVTdX5D7itxHjGpQ=;
-        b=wqnOIeLzW77hxRGWI9MlgAopTLU9EwXk7wSC7XyJNrOKSP/fThhH6Svx7Ms04R3XCr
-         QfWyQIpGLQPnlOLLb9QztDr8j+QcuCniDCEInbix77Wf7y/ForeXYQvit2z/Qa/Ja7+M
-         V2EyQfq5Wcvj+OEKc/DOwKkTHBH49IYMvMjVxXF+Yqnq/I4Bn3FRgBvWvRNzCltQd+ui
-         8oHxMHtTmOnEizUCGlmH3e6YF3+cvniHXSATKNCQE783nvh6c5laNjuh8XrU8qzs5P/x
-         5sTxQE7UYL/a0rGU8y22cl0f1Ir0ImxIILXxueFQkq4RGxiBZvdm4n6RaLrGKGlVINze
-         WK/Q==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GyQXe7k/6WqlCtMNdMFwF2JLby24XGQu452pyWy5gvM=;
+        b=Lt1CZxNt29K/wifUNSFIZpbS7yWuiMb9eUKT+Bwvf8/vNyS6nTFzgYXT3khMZSJPHA
+         wQuPvblhdIarqJ38ESUTyxhaVZuYKeos41luKUhGPQIZxEjv5Oq528leJ3Ytn53jV27M
+         tcwd8kSM5doazZ1kziRBIpCtmxryEeAML29MeRW8JCBRJ08XYVYsAzfT6UZoYQQ1fZmr
+         RJfPl/ow9qm8tO4I70TQ37+NK6cwGf2WbfEZwZH+ci4wtWMVURFBVTEJEbwbZYbcD93a
+         nLMunTPbxk7Ddvs+ldeHwqR8vvNsBV9iHetxgiEu47pqB+R181q/OvmbvwA2vhRtty05
+         SsqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l54QX6ZqsqzaIAhDWIb2TsE/J94vVTdX5D7itxHjGpQ=;
-        b=prMbzXOFb+FM5tUJXKnRCjmhcEach/dNrpTWOSAL9eo21M+o73uVgn5tIuzPtjupvq
-         MlQlae587mtT9dwBvw1MZy8noTaiGGcjp6l8NkGFpxVQEnf+0I1aPluL24sQn2/xMoUO
-         gl02LXHetucTQNDaSwqeERYF9m0kfeUh0vPcSpyLFhYO2yyfNYsly2cduuAgknHWP4rC
-         vvZYncU800AOesVXWTXu7MnM8dGD22gcMuAai4TpbzrcT9FBJnsWAdl9H9eICmeokWMB
-         isyVYytHPIxGL4Z9NyV1iWUd/iXPgIO7CR/PtosspSnrIXaysILCKTduNDdbWRVTnhNK
-         dl+A==
-X-Gm-Message-State: AOAM532sCavCoBUyfPJT6O8+xXxj4kr1xL4Zd28rDHf+bdgnNVB6yMhD
-        0k5aGo71C/RslyH3lO9UO8gxqQ==
-X-Google-Smtp-Source: ABdhPJwKDgfD6khDlfnWbz+hSt8bhO+VKmwoRRH3J9d2xhRUXkZwJOxiB1Yvh+aNscusOPUQOg8DdA==
-X-Received: by 2002:a05:6402:27cd:: with SMTP id c13mr660743ede.236.1639420422445;
-        Mon, 13 Dec 2021 10:33:42 -0800 (PST)
-Received: from localhost.localdomain (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id sh33sm6316648ejc.56.2021.12.13.10.33.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 10:33:42 -0800 (PST)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     shuah@kernel.org, andrii@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix segfault in bpf_tcp_ca
-Date:   Mon, 13 Dec 2021 18:30:59 +0000
-Message-Id: <20211213183058.346066-1-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GyQXe7k/6WqlCtMNdMFwF2JLby24XGQu452pyWy5gvM=;
+        b=QY9A60bpDTO3LyOmOzcIU2//Rj1jcW6Xpo4/4oDIAY8aa4VaUGfBpJEchM25ZM0XEN
+         PkZ6Vasz02HZ0EN68whBu0KbJoEDJFKIwkNjy5KmSnjdF5ALGT9TvbkpyVn5QTo2uLQ/
+         AbUmPMiSbIEf93fyt/CeL4WesWsf9Qwwt8h/xDC4L+Auo5NdP6agq5RGH7gyRZ+Hr+MK
+         QLDWGNCoH9kmr7qCMI19ZN3AInFavJNK8kUe4hThO5i3lE9q86Ly4+2JU7EysrHlEri2
+         OscU3xC2aFR3XsrXB/01Xzm1pERiHPcBbWn2C34j7pB7fm9eNdjLrK/IuHp3eRvvtuXL
+         ZSIg==
+X-Gm-Message-State: AOAM531vuYM6icIcDvue/p4SRqO6E/wNZE4juaZaa8s0McoGpf3+yLlx
+        T7Rmv8T3uzXJhxsKmJqdBUpfkNblkcCO1SzNWQ8=
+X-Google-Smtp-Source: ABdhPJy8gSThjsBrvGkgAy/EBU6r2lKg5zfrb19Fg9URvnfKLqt6JHU22WWTLH7NfDYYCNXCb80WOjpD4UKNjpoJWoI=
+X-Received: by 2002:a25:2a89:: with SMTP id q131mr663563ybq.436.1639423991137;
+ Mon, 13 Dec 2021 11:33:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211212051816.20478-1-linmq006@gmail.com> <CAH-r-ZGri414YWumUs7U_ktvcv+BWOYfPTsB7So6kz5PNcK5tw@mail.gmail.com>
+In-Reply-To: <CAH-r-ZGri414YWumUs7U_ktvcv+BWOYfPTsB7So6kz5PNcK5tw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 13 Dec 2021 11:33:00 -0800
+Message-ID: <CAEf4BzZG7_ihS7m8e9KNcoO0WhFXqw4iK1=SNPr2u3bPmOmxLQ@mail.gmail.com>
+Subject: Re: [PATCH] bpftool: Fix NULL vs IS_ERR() checking for return value
+ of hashmap__new
+To:     =?UTF-8?B?5p6X5aaZ5YCp?= <linmq006@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since commit ad9a7f96445b ("libbpf: Improve logging around BPF program
-loading"), libbpf_debug_print() gets an additional prog_name parameter
-but doesn't pass it to printf(). Since the format string now expects two
-arguments, printf() may read uninitialized data and segfault. Pass
-prog_name through.
+On Mon, Dec 13, 2021 at 7:07 AM =E6=9E=97=E5=A6=99=E5=80=A9 <linmq006@gmail=
+.com> wrote:
+>
+> Sorry, I forgot to do compile testing. I will test it and let you know.
+>
+> Miaoqian Lin <linmq006@gmail.com> =E4=BA=8E2021=E5=B9=B412=E6=9C=8812=E6=
+=97=A5=E5=91=A8=E6=97=A5 13:18=E5=86=99=E9=81=93=EF=BC=9A
+>>
+>> The hashmap__new() function does not return NULL on errors. It returns
+>> ERR_PTR(-ENOMEM). Using IS_ERR() to check the return value to fix this.
+>>
+>> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+>> ---
 
-Fixes: ad9a7f96445b ("libbpf: Improve logging around BPF program loading")
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
----
- tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Please do test (not just compile test) and re-send all three patches
+as one patch set instead of three independent patches. Thanks.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 8daca0ac909f..8f7a1cef7d87 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -217,7 +217,7 @@ static bool found;
- static int libbpf_debug_print(enum libbpf_print_level level,
- 			      const char *format, va_list args)
- {
--	const char *log_buf;
-+	const char *prog_name, *log_buf;
- 
- 	if (level != LIBBPF_WARN ||
- 	    !strstr(format, "-- BEGIN PROG LOAD LOG --")) {
-@@ -225,15 +225,14 @@ static int libbpf_debug_print(enum libbpf_print_level level,
- 		return 0;
- 	}
- 
--	/* skip prog_name */
--	va_arg(args, char *);
-+	prog_name = va_arg(args, char *);
- 	log_buf = va_arg(args, char *);
- 	if (!log_buf)
- 		goto out;
- 	if (err_str && strstr(log_buf, err_str) != NULL)
- 		found = true;
- out:
--	printf(format, log_buf);
-+	printf(format, prog_name, log_buf);
- 	return 0;
- }
- 
--- 
-2.34.1
 
+>>  tools/bpf/bpftool/link.c | 2 +-
+>>  tools/bpf/bpftool/map.c  | 2 +-
+>>  tools/bpf/bpftool/pids.c | 2 +-
+>>  3 files changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+>> index 2c258db0d352..0dc402a89cd8 100644
+>> --- a/tools/bpf/bpftool/link.c
+>> +++ b/tools/bpf/bpftool/link.c
+>> @@ -306,7 +306,7 @@ static int do_show(int argc, char **argv)
+>>         if (show_pinned) {
+>>                 link_table =3D hashmap__new(hash_fn_for_key_as_id,
+>>                                           equal_fn_for_key_as_id, NULL);
+>> -               if (!link_table) {
+>> +               if (IS_ERR(link_table)) {
+>>                         p_err("failed to create hashmap for pinned paths=
+");
+>>                         return -1;
+>>                 }
+>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+>> index cae1f1119296..af83ae37d247 100644
+>> --- a/tools/bpf/bpftool/map.c
+>> +++ b/tools/bpf/bpftool/map.c
+>> @@ -698,7 +698,7 @@ static int do_show(int argc, char **argv)
+>>         if (show_pinned) {
+>>                 map_table =3D hashmap__new(hash_fn_for_key_as_id,
+>>                                          equal_fn_for_key_as_id, NULL);
+>> -               if (!map_table) {
+>> +               if (IS_ERR(map_table)) {
+>>                         p_err("failed to create hashmap for pinned paths=
+");
+>>                         return -1;
+>>                 }
+>> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+>> index 56b598eee043..6c4767e97061 100644
+>> --- a/tools/bpf/bpftool/pids.c
+>> +++ b/tools/bpf/bpftool/pids.c
+>> @@ -101,7 +101,7 @@ int build_obj_refs_table(struct hashmap **map, enum =
+bpf_obj_type type)
+>>         libbpf_print_fn_t default_print;
+>>
+>>         *map =3D hashmap__new(hash_fn_for_key_as_id, equal_fn_for_key_as=
+_id, NULL);
+>> -       if (!*map) {
+>> +       if (IS_ERR(*map)) {
+>>                 p_err("failed to create hashmap for PID references");
+>>                 return -1;
+>>         }
+>> --
+>> 2.17.1
+>>
