@@ -2,71 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38D4471F6A
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 03:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523DC47201D
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 05:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhLMCqK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Dec 2021 21:46:10 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:50049 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhLMCqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Dec 2021 21:46:09 -0500
-Received: by mail-io1-f70.google.com with SMTP id g16-20020a05660203d000b005f7b3b0642eso4064317iov.16
-        for <bpf@vger.kernel.org>; Sun, 12 Dec 2021 18:46:09 -0800 (PST)
+        id S230062AbhLMEuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 12 Dec 2021 23:50:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhLMEuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 12 Dec 2021 23:50:17 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540D5C06173F;
+        Sun, 12 Dec 2021 20:50:17 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id cq22-20020a17090af99600b001a9550a17a5so13774824pjb.2;
+        Sun, 12 Dec 2021 20:50:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K8UgjFbNrfoKG5dBtZR8yfwtf/X9x+T1OZqh+X+snqA=;
+        b=Pr+0E9PvCcaXhyQIJIxFqkyLoKq3NUn2bL1O/QvOsnrCctzkBMgLd/8ozElA6zNv63
+         MYcwRa4JNe+YWNolt4SlZrcQQKa84FbcdAMbF7NMCPJtOr882fsbaPl61NZ+R391Txxb
+         A6af1xnwNtyFgNO4sCIuPnWiCoxumQRNnzfaDnNriZIyyvJlzJAqebWi1MJyC0Dmhu3B
+         qGTo2ICGDBULzraAS0Y4LP3zbEJnurCk53yHUKthlj+lka35R2/sHA6UVchSTWpicRNA
+         S//1a8JPY5YVqvHKIOScpyGOKmrjzbiDIlSbu001Owevd0klKyt2/o50jks/fdRbjfGj
+         ahBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=2NuGDG85AfS9y7yRsPV78T4aS8gdf/qTEMMTGPv30Uo=;
-        b=0729xe9EbE5BEzpMf1GPWhvd5B70M11Qtaw3+s8CaQq6qqVz9cmvWm89VGViHtviUo
-         NzT7TqtFV+B6uP3AoXbXKAU9bdBydrsMsn5GyzV1wtsZt/LoQF2icsIzXtlwY2KYw8X9
-         YC/qphf8GLK3osNKWkfb8AwXMqdp3JfpuXYMuWzEAbkSj1vw1hRgDZJdXX4MVWcyzutH
-         JYPkM3LNHWyj4c/Ca3Sz53ZHZCxTz/hwKk2Z1hTfjsCutuswFjQdBo0Z4qieUieaxma6
-         PGVED9kaD7t1Qs6HyE1ahDfTZoVp5x3x9PFxfkrv6SJr/12c79+RGwIIndx1o7oGrfbF
-         Yw9g==
-X-Gm-Message-State: AOAM532uoIB9G+eNpFKflF9qxr5T4eONTUOPHOlrkSQbEOxWhL0hQWiz
-        4B0sP8wL5+gREb7mrlM7cIZucdnmJX+Ad0sG8SPa4IfWrfWN
-X-Google-Smtp-Source: ABdhPJxmIIniwyRI+oGKfh384pqZnwOTrq/uMCOdu+0TQNm3dbrB4E/IT0pkWUrcZ6DzAviv5fB5LypbSmb2oXE+b+tp75tbjAS/
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K8UgjFbNrfoKG5dBtZR8yfwtf/X9x+T1OZqh+X+snqA=;
+        b=4Pg9NCwOf5cNE4+65IR2NWJ9n/PeF6GWBSdT4Hj6Bn6TutjU3kGtFqxncVCA4rooiQ
+         FwfHwU8+Vp8j08OBpBF6MZ+SS0Y5RrwNjjHG+qe6lf8hDVzDNHbV7J8105BlC8mVKBVo
+         TPejHOcc+0Yyt/X6bXkkVnTwCEL31txQBSvcbu6/TpTMwj4pJBPeInGIcd99rNATx19s
+         vuJ7xYoyqVZb6hK9R8WOqUndhT4LxJRS8J06LwN6GUVAAQA/GMTknt6J+Mh8xI5Mqr9f
+         sMxnelFlQGeLvETCva6NdGdcSB6HQXuWqgeTwjfhkPEaw31xBD0LT/mE8nxEAw0aPpHw
+         C07w==
+X-Gm-Message-State: AOAM532fSuXZrTyisQ02oj4jn8cyMdM7Lecaj+nB5yscLPn7p8Gpj3jw
+        58351K4vAStIG+BUhLKsBgc=
+X-Google-Smtp-Source: ABdhPJwkRUeINSVoHWYgrbSKJiFZp8EU7zhrbl2rDNw8ESwNMvYKoTRCoHZpAzqHvXrOXgMlF5n66Q==
+X-Received: by 2002:a17:90b:3b4d:: with SMTP id ot13mr11293239pjb.196.1639371016597;
+        Sun, 12 Dec 2021 20:50:16 -0800 (PST)
+Received: from localhost.localdomain ([170.106.119.175])
+        by smtp.gmail.com with ESMTPSA id z22sm11259932pfe.93.2021.12.12.20.50.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Dec 2021 20:50:16 -0800 (PST)
+From:   mengensun8801@gmail.com
+X-Google-Original-From: mengensun@tencent.com
+To:     jasowang@redhat.com
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        mengensun <mengensun@tencent.com>,
+        MengLong Dong <imagedong@tencent.com>,
+        ZhengXiong Jiang <mungerjiang@tencent.com>
+Subject: [PATCH] virtio-net: make copy len check in xdp_linearize_page
+Date:   Mon, 13 Dec 2021 12:50:12 +0800
+Message-Id: <20211213045012.12757-1-mengensun@tencent.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b4a:: with SMTP id f10mr29103329ilu.281.1639363568731;
- Sun, 12 Dec 2021 18:46:08 -0800 (PST)
-Date:   Sun, 12 Dec 2021 18:46:08 -0800
-In-Reply-To: <00000000000033acbf05d1a969aa@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002c0bbf05d2fe1382@google.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in bpf
-From:   syzbot <syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        jiri@nvidia.com, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, leonro@nvidia.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this issue to:
+From: mengensun <mengensun@tencent.com>
 
-commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
-Author: Leon Romanovsky <leonro@nvidia.com>
-Date:   Thu Oct 21 14:16:14 2021 +0000
+xdp_linearize_page asume ring elem size is smaller then page size
+when copy the first ring elem, but, there may be a elem size bigger
+then page size.
 
-    devlink: Remove not-executed trap policer notifications
+add_recvbuf_mergeable may add a hole to ring elem, the hole size is
+not sure, according EWMA.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1465b449b00000
-start commit:   ee60e626d536 netdevsim: don't overwrite read only ethtool ..
-git tree:       net
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1665b449b00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1265b449b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=221ffc09e39ebbd1
-dashboard link: https://syzkaller.appspot.com/bug?extid=cecf5b7071a0dfb76530
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a14b55b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13375f75b00000
+so, fix it by check copy len,if checked failed, just dropped the
+whole frame, not make the memory dirty after the page.
 
-Reported-by: syzbot+cecf5b7071a0dfb76530@syzkaller.appspotmail.com
-Fixes: 22849b5ea595 ("devlink: Remove not-executed trap policer notifications")
+Signed-off-by: mengensun <mengensun@tencent.com>
+Reviewed-by: MengLong Dong <imagedong@tencent.com>
+Reviewed-by: ZhengXiong Jiang <mungerjiang@tencent.com>
+---
+ drivers/net/virtio_net.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 36a4b7c195d5..844bdbd67ff7 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -662,8 +662,12 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
+ 				       int page_off,
+ 				       unsigned int *len)
+ {
+-	struct page *page = alloc_page(GFP_ATOMIC);
++	struct page *page;
+ 
++	if (*len > PAGE_SIZE - page_off)
++		return NULL;
++
++	page = alloc_page(GFP_ATOMIC);
+ 	if (!page)
+ 		return NULL;
+ 
+-- 
+2.27.0
+
