@@ -2,79 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B22A47332A
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 18:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F844733E0
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 19:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236698AbhLMRpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 12:45:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234226AbhLMRpo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 12:45:44 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA30C061574;
-        Mon, 13 Dec 2021 09:45:44 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id 8so15585566pfo.4;
-        Mon, 13 Dec 2021 09:45:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wDIg8qQRsEJurGSar8uWJNI5AIPO1TB677IfJiB2JGs=;
-        b=a5hHhpMm3L5KN8vrmdGqTWjYLGdS3MK/iUdPjdkCB7C56avfxhBUtdt1uNnugpmc1a
-         AgPmWsi30t1e1MXy9PXGXr9za3huxZgxksRX61ifXCe83SCkenkFd/+EeeyPjekeFJSF
-         qhNv79gxk7SldsMXLLVEt8lo/ADtFKZQX+2FEfUQZCUmIQbrAkci9/OKO/xiRdhb3PWi
-         N9mOBkKAx49/R6dv8AxfXo0DJjBHzZAChPIn4pHXySPuMf8m5ivd7T03BzDir1lobI3R
-         H1V6G7mw+hGEQx2oVEKIZvS4B0HpqsGnihjEnp8Z7Qa3ek4jIiwXIXbnS8I8CfygOYBR
-         BXbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wDIg8qQRsEJurGSar8uWJNI5AIPO1TB677IfJiB2JGs=;
-        b=o15yQnJl4OoIqjIT1Z5xZF5l9tBpTnBm/2mkFJ+zb33C39Ln9IaOdqtc9rSoU+pe8J
-         VeHCPcXcOvrChl0frfW/wBsyujnJ1NdPZt+fAdrB2nUWx4UR8j6/dvCg9SlyVpmCEtV8
-         M/vttmUPBN49T8nH4JLZx+lFEhRZYi0x395nBRGPfTODyZjKQCrEotwgOXHbl1ocAHdI
-         RpFcrz0u2GBdIhNfdK0CjBdmgURYyYSFJbTToZilOuOBw6v4txsKlb8yQ67TdQRM/I1n
-         CrXqqhgGTklWpQRN0pYffzDNV9CqrpHyPNjQsbrcAzmx3jM0rgNp/I1sOr5ioVXl8bTM
-         o/9Q==
-X-Gm-Message-State: AOAM531+Acvz2mH+AqvcNVTUtjaS+uIwNClmdxHpfV6l7y9vWXZ+W+/i
-        4cN5WTEc+X9vb7IShxQRToN+C+/jhUs4zxHLZqGsbIKD
-X-Google-Smtp-Source: ABdhPJyYks0ELsrjgOHk4iKKv8dU9Wwv0CW588z3Xyz/czzNXgzI+SpCijJSNNRI8aKAV9V9B1n0Pfhl+jQbUVEcUxg=
-X-Received: by 2002:a63:6881:: with SMTP id d123mr8585pgc.497.1639417543778;
- Mon, 13 Dec 2021 09:45:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20211208193245.172141-1-jolsa@kernel.org> <20211208193245.172141-5-jolsa@kernel.org>
-In-Reply-To: <20211208193245.172141-5-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 13 Dec 2021 09:45:32 -0800
-Message-ID: <CAADnVQ+pKwpYJS-isP6zzybGbXc1rLTD0UqvJEUSWodqnGNJcQ@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 4/5] bpf: Add get_func_[arg|ret|arg_cnt] helpers
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S240849AbhLMSUf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 13:20:35 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:52718 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235476AbhLMSUe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 13:20:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 27DFAB8120C;
+        Mon, 13 Dec 2021 18:20:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE72FC34604;
+        Mon, 13 Dec 2021 18:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639419631;
+        bh=NqhADOz46JoKzAQFwiPf89sY/cliSz2oGKNXFw3TUVQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oxnTrCMh3/PJ6utpsuFIm6PbgK2e6EUzMl1KyGthiOe3plrZTY09A76kB2eRCCWiQ
+         glMmnXE77P0kj7qofXTRTSP+XOEupVm8fE1kAtHFGJyoB46ONhbihxnKMds697J4h+
+         yEhogH3CrAFyOHvJL3pAJNROor6SZpju35EbqgSnX1ETjp03eh85wTNgL3vLh9pild
+         ru1ArUyHwARvrOjhd0LfWO1YMkcXAvSSrYzwbdEYc4avX1OsnI47w4ee6m3qyrcwxS
+         5CKBqSZF9tIlSjgcNSUTNJEfLBDryJB+vSZOmGd4ZNmy2yR/v+kPni9d7ntU3Xcq6z
+         rrqyPTv0KeFfg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3426F405D8; Mon, 13 Dec 2021 15:20:30 -0300 (-03)
+Date:   Mon, 13 Dec 2021 15:20:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] perf namespaces: Add helper
+ nsinfo__is_in_root_namespace()
+Message-ID: <YbeO7sHHL0AvDl5g@kernel.org>
+References: <20211212134721.1721245-1-leo.yan@linaro.org>
+ <20211212134721.1721245-2-leo.yan@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211212134721.1721245-2-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 8, 2021 at 11:33 AM Jiri Olsa <jolsa@redhat.com> wrote:
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -5167,6 +5192,9 @@ union bpf_attr {
->         FN(kallsyms_lookup_name),       \
->         FN(find_vma),                   \
->         FN(loop),                       \
-> +       FN(get_func_arg),               \
-> +       FN(get_func_ret),               \
-> +       FN(get_func_arg_cnt),           \
->         /* */
+Em Sun, Dec 12, 2021 at 09:47:20PM +0800, Leo Yan escreveu:
+> Refactors code for gathering PID infos, it creates the function
+> nsinfo__get_nspid() to parse process 'status' node in folder '/proc'.
+> 
+> Base on the refactoring, this patch introduces a new helper
+> nsinfo__is_in_root_namespace(), it returns true when the caller runs in
+> the root PID namespace.
 
-I manually resolved conflicts and pushed to bpf-next.
-Thanks!
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/util/namespaces.c | 76 ++++++++++++++++++++++--------------
+>  tools/perf/util/namespaces.h |  2 +
+>  2 files changed, 48 insertions(+), 30 deletions(-)
+> 
+> diff --git a/tools/perf/util/namespaces.c b/tools/perf/util/namespaces.c
+> index 608b20c72a5c..48aa3217300b 100644
+> --- a/tools/perf/util/namespaces.c
+> +++ b/tools/perf/util/namespaces.c
+> @@ -60,17 +60,49 @@ void namespaces__free(struct namespaces *namespaces)
+>  	free(namespaces);
+>  }
+>  
+> +static int nsinfo__get_nspid(struct nsinfo *nsi, const char *path)
+> +{
+> +	FILE *f = NULL;
+> +	char *statln = NULL;
+> +	size_t linesz = 0;
+> +	char *nspid;
+> +
+> +	f = fopen(path, "r");
+> +	if (f == NULL)
+> +		return -1;
+> +
+> +	while (getline(&statln, &linesz, f) != -1) {
+> +		/* Use tgid if CONFIG_PID_NS is not defined. */
+> +		if (strstr(statln, "Tgid:") != NULL) {
+> +			nsi->tgid = (pid_t)strtol(strrchr(statln, '\t'),
+> +						     NULL, 10);
+> +			nsi->nstgid = nsi->tgid;
+> +		}
+> +
+> +		if (strstr(statln, "NStgid:") != NULL) {
+> +			nspid = strrchr(statln, '\t');
+> +			nsi->nstgid = (pid_t)strtol(nspid, NULL, 10);
+> +			/*
+> +			 * If innermost tgid is not the first, process is in a different
+> +			 * PID namespace.
+> +			 */
+> +			nsi->in_pidns = (statln + sizeof("NStgid:") - 1) != nspid;
+> +			break;
+> +		}
+> +	}
+> +
+> +	fclose(f);
+> +	free(statln);
+> +	return 0;
+> +}
+> +
+>  int nsinfo__init(struct nsinfo *nsi)
+>  {
+>  	char oldns[PATH_MAX];
+>  	char spath[PATH_MAX];
+>  	char *newns = NULL;
+> -	char *statln = NULL;
+> -	char *nspid;
+>  	struct stat old_stat;
+>  	struct stat new_stat;
+> -	FILE *f = NULL;
+> -	size_t linesz = 0;
+>  	int rv = -1;
+>  
+>  	if (snprintf(oldns, PATH_MAX, "/proc/self/ns/mnt") >= PATH_MAX)
+> @@ -100,34 +132,9 @@ int nsinfo__init(struct nsinfo *nsi)
+>  	if (snprintf(spath, PATH_MAX, "/proc/%d/status", nsi->pid) >= PATH_MAX)
+>  		goto out;
+>  
+> -	f = fopen(spath, "r");
+> -	if (f == NULL)
+> -		goto out;
+> -
+> -	while (getline(&statln, &linesz, f) != -1) {
+> -		/* Use tgid if CONFIG_PID_NS is not defined. */
+> -		if (strstr(statln, "Tgid:") != NULL) {
+> -			nsi->tgid = (pid_t)strtol(strrchr(statln, '\t'),
+> -						     NULL, 10);
+> -			nsi->nstgid = nsi->tgid;
+> -		}
+> -
+> -		if (strstr(statln, "NStgid:") != NULL) {
+> -			nspid = strrchr(statln, '\t');
+> -			nsi->nstgid = (pid_t)strtol(nspid, NULL, 10);
+> -			/* If innermost tgid is not the first, process is in a different
+> -			 * PID namespace.
+> -			 */
+> -			nsi->in_pidns = (statln + sizeof("NStgid:") - 1) != nspid;
+> -			break;
+> -		}
+> -	}
+> -	rv = 0;
+> +	rv = nsinfo__get_nspid(nsi, spath);
+>  
+>  out:
+> -	if (f != NULL)
+> -		(void) fclose(f);
+> -	free(statln);
+>  	free(newns);
+>  	return rv;
+>  }
+> @@ -299,3 +306,12 @@ int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi)
+>  
+>  	return ret;
+>  }
+> +
+> +bool nsinfo__is_in_root_namespace(void)
+> +{
+> +	struct nsinfo nsi;
+> +
+> +	memset(&nsi, 0x0, sizeof(nsi));
+> +	nsinfo__get_nspid(&nsi, "/proc/self/status");
+> +	return !nsi.in_pidns;
+> +}
+> diff --git a/tools/perf/util/namespaces.h b/tools/perf/util/namespaces.h
+> index ad9775db7b9c..9ceea9643507 100644
+> --- a/tools/perf/util/namespaces.h
+> +++ b/tools/perf/util/namespaces.h
+> @@ -59,6 +59,8 @@ void nsinfo__mountns_exit(struct nscookie *nc);
+>  char *nsinfo__realpath(const char *path, struct nsinfo *nsi);
+>  int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi);
+>  
+> +bool nsinfo__is_in_root_namespace(void);
+> +
+>  static inline void __nsinfo__zput(struct nsinfo **nsip)
+>  {
+>  	if (nsip) {
+> -- 
+> 2.25.1
+
+-- 
+
+- Arnaldo
