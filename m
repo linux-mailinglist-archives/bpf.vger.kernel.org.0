@@ -2,108 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523DC47201D
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 05:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F4C4721EC
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 08:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbhLMEuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Dec 2021 23:50:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhLMEuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Dec 2021 23:50:17 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540D5C06173F;
-        Sun, 12 Dec 2021 20:50:17 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id cq22-20020a17090af99600b001a9550a17a5so13774824pjb.2;
-        Sun, 12 Dec 2021 20:50:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K8UgjFbNrfoKG5dBtZR8yfwtf/X9x+T1OZqh+X+snqA=;
-        b=Pr+0E9PvCcaXhyQIJIxFqkyLoKq3NUn2bL1O/QvOsnrCctzkBMgLd/8ozElA6zNv63
-         MYcwRa4JNe+YWNolt4SlZrcQQKa84FbcdAMbF7NMCPJtOr882fsbaPl61NZ+R391Txxb
-         A6af1xnwNtyFgNO4sCIuPnWiCoxumQRNnzfaDnNriZIyyvJlzJAqebWi1MJyC0Dmhu3B
-         qGTo2ICGDBULzraAS0Y4LP3zbEJnurCk53yHUKthlj+lka35R2/sHA6UVchSTWpicRNA
-         S//1a8JPY5YVqvHKIOScpyGOKmrjzbiDIlSbu001Owevd0klKyt2/o50jks/fdRbjfGj
-         ahBg==
+        id S232579AbhLMHtJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 02:49:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47255 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232561AbhLMHtI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 02:49:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639381748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ajmFbDRx9BLe176bpdQggywBMmHI+LQFi36+JDBB49U=;
+        b=GubAAYSVly5HxpYNqmXDo1MSbZoNzceDDzp1yzTU4/gk1qsRtm74RZ3zHpsoWlh08nKhBj
+        szWKC0zqSIbNmN5g+ZJzIKjlUpS5IHsXl1B6vwcZsgkspQ+tpQMXpNZ6zX2osKGKNoxVjl
+        4C0uB1bJ4TMX5RQi4CmuoV9I2d/qtJU=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-363-AYXe-eiGMruVifY8Mq_AoA-1; Mon, 13 Dec 2021 02:49:06 -0500
+X-MC-Unique: AYXe-eiGMruVifY8Mq_AoA-1
+Received: by mail-lf1-f69.google.com with SMTP id w11-20020a05651234cb00b0041f93ca5812so5175533lfr.21
+        for <bpf@vger.kernel.org>; Sun, 12 Dec 2021 23:49:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K8UgjFbNrfoKG5dBtZR8yfwtf/X9x+T1OZqh+X+snqA=;
-        b=4Pg9NCwOf5cNE4+65IR2NWJ9n/PeF6GWBSdT4Hj6Bn6TutjU3kGtFqxncVCA4rooiQ
-         FwfHwU8+Vp8j08OBpBF6MZ+SS0Y5RrwNjjHG+qe6lf8hDVzDNHbV7J8105BlC8mVKBVo
-         TPejHOcc+0Yyt/X6bXkkVnTwCEL31txQBSvcbu6/TpTMwj4pJBPeInGIcd99rNATx19s
-         vuJ7xYoyqVZb6hK9R8WOqUndhT4LxJRS8J06LwN6GUVAAQA/GMTknt6J+Mh8xI5Mqr9f
-         sMxnelFlQGeLvETCva6NdGdcSB6HQXuWqgeTwjfhkPEaw31xBD0LT/mE8nxEAw0aPpHw
-         C07w==
-X-Gm-Message-State: AOAM532fSuXZrTyisQ02oj4jn8cyMdM7Lecaj+nB5yscLPn7p8Gpj3jw
-        58351K4vAStIG+BUhLKsBgc=
-X-Google-Smtp-Source: ABdhPJwkRUeINSVoHWYgrbSKJiFZp8EU7zhrbl2rDNw8ESwNMvYKoTRCoHZpAzqHvXrOXgMlF5n66Q==
-X-Received: by 2002:a17:90b:3b4d:: with SMTP id ot13mr11293239pjb.196.1639371016597;
-        Sun, 12 Dec 2021 20:50:16 -0800 (PST)
-Received: from localhost.localdomain ([170.106.119.175])
-        by smtp.gmail.com with ESMTPSA id z22sm11259932pfe.93.2021.12.12.20.50.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 20:50:16 -0800 (PST)
-From:   mengensun8801@gmail.com
-X-Google-Original-From: mengensun@tencent.com
-To:     jasowang@redhat.com
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ajmFbDRx9BLe176bpdQggywBMmHI+LQFi36+JDBB49U=;
+        b=lrZt3118VdHFq1UR1F5te+TJH6O49xvO6tnmq2fHC7WE7jbmORYdSc3Rri54cU9tAV
+         RUEl2VaQ2lWqfL7/0bqirZmnho1jPeLyV/0JaT+UszLwFMkJOOc5Rgz0b++upU4n+OIe
+         xcGFxSaXUMLCMdDFgADEKp0I0wluVV65loKMN6y+dCGpMggNQEln2Q42YXagapb12Gs2
+         p7GNmgGE1HMMZxNm1nOstCF1VBCFvjkqShKTFhkWsDgHUcJVTxTgO/SbwuTITl0TMH+Y
+         +PyC0Uq5TgjiAyRa2NKm2UN0onSlzhxScRQ/DGaUUbFIbg04RUtBJNeh8W39JwNubsMO
+         puBw==
+X-Gm-Message-State: AOAM530VWDTCe+5c1AYQshGybuH5UeQ9FLOx9LQiw7V1JmfBTAv1eMd3
+        DNvzyNQTACEWG85NxjUsvJ/yu0Z+sEXhTFzSkKGJjlpjahgq9HnKspMwPJVSwW5X440QE3OHk+C
+        I8YXRlBp42EQ8cR1pIY5fqfh0vAme
+X-Received: by 2002:a2e:b88d:: with SMTP id r13mr28041727ljp.362.1639381745319;
+        Sun, 12 Dec 2021 23:49:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy6Kho2IY5dIkx4dw7D65wn0As3tEagQCBwgaJDxLSQvZQN2qrKmtB5zWAMksvRMGbAAVFtrQQetSAmODA5C8k=
+X-Received: by 2002:a2e:b88d:: with SMTP id r13mr28041706ljp.362.1639381745081;
+ Sun, 12 Dec 2021 23:49:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20211213045012.12757-1-mengensun@tencent.com>
+In-Reply-To: <20211213045012.12757-1-mengensun@tencent.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 13 Dec 2021 15:48:53 +0800
+Message-ID: <CACGkMEtLso8QjvmjTQ=S_bbGxu11O_scRa8GT7z6MXfJbfzfRg@mail.gmail.com>
+Subject: Re: [PATCH] virtio-net: make copy len check in xdp_linearize_page
+To:     mengensun8801@gmail.com
+Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
         mengensun <mengensun@tencent.com>,
         MengLong Dong <imagedong@tencent.com>,
         ZhengXiong Jiang <mungerjiang@tencent.com>
-Subject: [PATCH] virtio-net: make copy len check in xdp_linearize_page
-Date:   Mon, 13 Dec 2021 12:50:12 +0800
-Message-Id: <20211213045012.12757-1-mengensun@tencent.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: mengensun <mengensun@tencent.com>
+On Mon, Dec 13, 2021 at 12:50 PM <mengensun8801@gmail.com> wrote:
+>
+> From: mengensun <mengensun@tencent.com>
+>
+> xdp_linearize_page asume ring elem size is smaller then page size
+> when copy the first ring elem, but, there may be a elem size bigger
+> then page size.
+>
+> add_recvbuf_mergeable may add a hole to ring elem, the hole size is
+> not sure, according EWMA.
 
-xdp_linearize_page asume ring elem size is smaller then page size
-when copy the first ring elem, but, there may be a elem size bigger
-then page size.
+The logic is to try to avoid dropping packets in this case, so I
+wonder if it's better to "fix" the add_recvbuf_mergeable().
 
-add_recvbuf_mergeable may add a hole to ring elem, the hole size is
-not sure, according EWMA.
+Or another idea is to switch to use XDP generic here where we can use
+skb_linearize() which should be more robust and we can drop the
+xdp_linearize_page() logic completely.
 
-so, fix it by check copy len,if checked failed, just dropped the
-whole frame, not make the memory dirty after the page.
+Thanks
 
-Signed-off-by: mengensun <mengensun@tencent.com>
-Reviewed-by: MengLong Dong <imagedong@tencent.com>
-Reviewed-by: ZhengXiong Jiang <mungerjiang@tencent.com>
----
- drivers/net/virtio_net.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 36a4b7c195d5..844bdbd67ff7 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -662,8 +662,12 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
- 				       int page_off,
- 				       unsigned int *len)
- {
--	struct page *page = alloc_page(GFP_ATOMIC);
-+	struct page *page;
- 
-+	if (*len > PAGE_SIZE - page_off)
-+		return NULL;
-+
-+	page = alloc_page(GFP_ATOMIC);
- 	if (!page)
- 		return NULL;
- 
--- 
-2.27.0
+>
+> so, fix it by check copy len,if checked failed, just dropped the
+> whole frame, not make the memory dirty after the page.
+>
+> Signed-off-by: mengensun <mengensun@tencent.com>
+> Reviewed-by: MengLong Dong <imagedong@tencent.com>
+> Reviewed-by: ZhengXiong Jiang <mungerjiang@tencent.com>
+> ---
+>  drivers/net/virtio_net.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 36a4b7c195d5..844bdbd67ff7 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -662,8 +662,12 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
+>                                        int page_off,
+>                                        unsigned int *len)
+>  {
+> -       struct page *page = alloc_page(GFP_ATOMIC);
+> +       struct page *page;
+>
+> +       if (*len > PAGE_SIZE - page_off)
+> +               return NULL;
+> +
+> +       page = alloc_page(GFP_ATOMIC);
+>         if (!page)
+>                 return NULL;
+>
+> --
+> 2.27.0
+>
 
