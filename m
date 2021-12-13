@@ -2,211 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F844733E0
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 19:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF904733E4
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 19:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240849AbhLMSUf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 13:20:35 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:52718 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235476AbhLMSUe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 13:20:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 27DFAB8120C;
-        Mon, 13 Dec 2021 18:20:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE72FC34604;
-        Mon, 13 Dec 2021 18:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639419631;
-        bh=NqhADOz46JoKzAQFwiPf89sY/cliSz2oGKNXFw3TUVQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oxnTrCMh3/PJ6utpsuFIm6PbgK2e6EUzMl1KyGthiOe3plrZTY09A76kB2eRCCWiQ
-         glMmnXE77P0kj7qofXTRTSP+XOEupVm8fE1kAtHFGJyoB46ONhbihxnKMds697J4h+
-         yEhogH3CrAFyOHvJL3pAJNROor6SZpju35EbqgSnX1ETjp03eh85wTNgL3vLh9pild
-         ru1ArUyHwARvrOjhd0LfWO1YMkcXAvSSrYzwbdEYc4avX1OsnI47w4ee6m3qyrcwxS
-         5CKBqSZF9tIlSjgcNSUTNJEfLBDryJB+vSZOmGd4ZNmy2yR/v+kPni9d7ntU3Xcq6z
-         rrqyPTv0KeFfg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3426F405D8; Mon, 13 Dec 2021 15:20:30 -0300 (-03)
-Date:   Mon, 13 Dec 2021 15:20:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf namespaces: Add helper
- nsinfo__is_in_root_namespace()
-Message-ID: <YbeO7sHHL0AvDl5g@kernel.org>
-References: <20211212134721.1721245-1-leo.yan@linaro.org>
- <20211212134721.1721245-2-leo.yan@linaro.org>
+        id S234208AbhLMSVm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 13:21:42 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20008 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232192AbhLMSVm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 13:21:42 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BDHAD9I031562
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 10:21:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=ea70dzxpP2LHEv3LlERISPb2o453oohTl7FnA1qFbOc=;
+ b=ZqGavV3dr3w9rGWo4fP5JTUa0O89YopSTgSLdAOv90xEn2MIHe8xMWjlBoXSYqlqQIpp
+ UWygpeaq9vnf/2SHKnzcLsTeAGXjFPp9xWuvobLj4mhIVgSA64s4yp2BYGUuiiBKgr4W
+ FXPR25TzuhNqXeexVqyJ1uzGLUkH8r+yHeg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cx9rp0v8v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 10:21:41 -0800
+Received: from intmgw001.27.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 13 Dec 2021 10:21:40 -0800
+Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
+        id 788C35379F5; Mon, 13 Dec 2021 10:21:38 -0800 (PST)
+From:   Christy Lee <christylee@fb.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
+CC:     <christylee@fb.com>, <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/3] Improve verifier log readability
+Date:   Mon, 13 Dec 2021 10:21:14 -0800
+Message-ID: <20211213182117.682461-1-christylee@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211212134721.1721245-2-leo.yan@linaro.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: 38sjXR-KHU7mwJkoPsBic0RGjG-2S9d1
+X-Proofpoint-GUID: 38sjXR-KHU7mwJkoPsBic0RGjG-2S9d1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-13_08,2021-12-13_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ suspectscore=0 mlxscore=0 mlxlogscore=649 malwarescore=0 bulkscore=0
+ priorityscore=1501 clxscore=1011 spamscore=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112130114
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sun, Dec 12, 2021 at 09:47:20PM +0800, Leo Yan escreveu:
-> Refactors code for gathering PID infos, it creates the function
-> nsinfo__get_nspid() to parse process 'status' node in folder '/proc'.
-> 
-> Base on the refactoring, this patch introduces a new helper
-> nsinfo__is_in_root_namespace(), it returns true when the caller runs in
-> the root PID namespace.
+Simplify verifier logs and improve readability.
 
-Thanks, applied.
+Christy Lee (3):
+  Only print scratched registers and stack slots to verifier logs
+  Right align verifier states in verifier logs
+  Only output backtracking information in log level 2
 
-- Arnaldo
+ include/linux/bpf_verifier.h |   9 +++
+ kernel/bpf/verifier.c        | 116 ++++++++++++++++++++++++++++++-----
+ 2 files changed, 111 insertions(+), 14 deletions(-)
 
- 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/namespaces.c | 76 ++++++++++++++++++++++--------------
->  tools/perf/util/namespaces.h |  2 +
->  2 files changed, 48 insertions(+), 30 deletions(-)
-> 
-> diff --git a/tools/perf/util/namespaces.c b/tools/perf/util/namespaces.c
-> index 608b20c72a5c..48aa3217300b 100644
-> --- a/tools/perf/util/namespaces.c
-> +++ b/tools/perf/util/namespaces.c
-> @@ -60,17 +60,49 @@ void namespaces__free(struct namespaces *namespaces)
->  	free(namespaces);
->  }
->  
-> +static int nsinfo__get_nspid(struct nsinfo *nsi, const char *path)
-> +{
-> +	FILE *f = NULL;
-> +	char *statln = NULL;
-> +	size_t linesz = 0;
-> +	char *nspid;
-> +
-> +	f = fopen(path, "r");
-> +	if (f == NULL)
-> +		return -1;
-> +
-> +	while (getline(&statln, &linesz, f) != -1) {
-> +		/* Use tgid if CONFIG_PID_NS is not defined. */
-> +		if (strstr(statln, "Tgid:") != NULL) {
-> +			nsi->tgid = (pid_t)strtol(strrchr(statln, '\t'),
-> +						     NULL, 10);
-> +			nsi->nstgid = nsi->tgid;
-> +		}
-> +
-> +		if (strstr(statln, "NStgid:") != NULL) {
-> +			nspid = strrchr(statln, '\t');
-> +			nsi->nstgid = (pid_t)strtol(nspid, NULL, 10);
-> +			/*
-> +			 * If innermost tgid is not the first, process is in a different
-> +			 * PID namespace.
-> +			 */
-> +			nsi->in_pidns = (statln + sizeof("NStgid:") - 1) != nspid;
-> +			break;
-> +		}
-> +	}
-> +
-> +	fclose(f);
-> +	free(statln);
-> +	return 0;
-> +}
-> +
->  int nsinfo__init(struct nsinfo *nsi)
->  {
->  	char oldns[PATH_MAX];
->  	char spath[PATH_MAX];
->  	char *newns = NULL;
-> -	char *statln = NULL;
-> -	char *nspid;
->  	struct stat old_stat;
->  	struct stat new_stat;
-> -	FILE *f = NULL;
-> -	size_t linesz = 0;
->  	int rv = -1;
->  
->  	if (snprintf(oldns, PATH_MAX, "/proc/self/ns/mnt") >= PATH_MAX)
-> @@ -100,34 +132,9 @@ int nsinfo__init(struct nsinfo *nsi)
->  	if (snprintf(spath, PATH_MAX, "/proc/%d/status", nsi->pid) >= PATH_MAX)
->  		goto out;
->  
-> -	f = fopen(spath, "r");
-> -	if (f == NULL)
-> -		goto out;
-> -
-> -	while (getline(&statln, &linesz, f) != -1) {
-> -		/* Use tgid if CONFIG_PID_NS is not defined. */
-> -		if (strstr(statln, "Tgid:") != NULL) {
-> -			nsi->tgid = (pid_t)strtol(strrchr(statln, '\t'),
-> -						     NULL, 10);
-> -			nsi->nstgid = nsi->tgid;
-> -		}
-> -
-> -		if (strstr(statln, "NStgid:") != NULL) {
-> -			nspid = strrchr(statln, '\t');
-> -			nsi->nstgid = (pid_t)strtol(nspid, NULL, 10);
-> -			/* If innermost tgid is not the first, process is in a different
-> -			 * PID namespace.
-> -			 */
-> -			nsi->in_pidns = (statln + sizeof("NStgid:") - 1) != nspid;
-> -			break;
-> -		}
-> -	}
-> -	rv = 0;
-> +	rv = nsinfo__get_nspid(nsi, spath);
->  
->  out:
-> -	if (f != NULL)
-> -		(void) fclose(f);
-> -	free(statln);
->  	free(newns);
->  	return rv;
->  }
-> @@ -299,3 +306,12 @@ int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi)
->  
->  	return ret;
->  }
-> +
-> +bool nsinfo__is_in_root_namespace(void)
-> +{
-> +	struct nsinfo nsi;
-> +
-> +	memset(&nsi, 0x0, sizeof(nsi));
-> +	nsinfo__get_nspid(&nsi, "/proc/self/status");
-> +	return !nsi.in_pidns;
-> +}
-> diff --git a/tools/perf/util/namespaces.h b/tools/perf/util/namespaces.h
-> index ad9775db7b9c..9ceea9643507 100644
-> --- a/tools/perf/util/namespaces.h
-> +++ b/tools/perf/util/namespaces.h
-> @@ -59,6 +59,8 @@ void nsinfo__mountns_exit(struct nscookie *nc);
->  char *nsinfo__realpath(const char *path, struct nsinfo *nsi);
->  int nsinfo__stat(const char *filename, struct stat *st, struct nsinfo *nsi);
->  
-> +bool nsinfo__is_in_root_namespace(void);
-> +
->  static inline void __nsinfo__zput(struct nsinfo **nsip)
->  {
->  	if (nsip) {
-> -- 
-> 2.25.1
+--=20
+2.30.2
 
--- 
-
-- Arnaldo
