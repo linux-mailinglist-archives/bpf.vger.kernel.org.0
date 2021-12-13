@@ -2,138 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6A2473507
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 20:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0C2473688
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 22:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbhLMTdN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 14:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbhLMTdM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 14:33:12 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1501CC061574;
-        Mon, 13 Dec 2021 11:33:12 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id d10so41035189ybn.0;
-        Mon, 13 Dec 2021 11:33:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GyQXe7k/6WqlCtMNdMFwF2JLby24XGQu452pyWy5gvM=;
-        b=Lt1CZxNt29K/wifUNSFIZpbS7yWuiMb9eUKT+Bwvf8/vNyS6nTFzgYXT3khMZSJPHA
-         wQuPvblhdIarqJ38ESUTyxhaVZuYKeos41luKUhGPQIZxEjv5Oq528leJ3Ytn53jV27M
-         tcwd8kSM5doazZ1kziRBIpCtmxryEeAML29MeRW8JCBRJ08XYVYsAzfT6UZoYQQ1fZmr
-         RJfPl/ow9qm8tO4I70TQ37+NK6cwGf2WbfEZwZH+ci4wtWMVURFBVTEJEbwbZYbcD93a
-         nLMunTPbxk7Ddvs+ldeHwqR8vvNsBV9iHetxgiEu47pqB+R181q/OvmbvwA2vhRtty05
-         SsqQ==
+        id S233723AbhLMVZo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 16:25:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42544 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232754AbhLMVZn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 16:25:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639430742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H8ZoXvqnTXyU+fSxcQb0nWRbuEnwE4j20xX1vRvBOX8=;
+        b=Tf4uRt2Pt4WIGiDYLPwFVK9qiEts7/XBNXpKx8XrWTyST9nmvOAJk4P3vGjNeoNTudgR8D
+        VcoY78P61gIhQGJc7J1yEYcR1NA1I/nAwyRzct/3GvOmGC8h9kqImxL/PcKizibepUvIGv
+        kSXe1P+jlxalkRxO4IcEG2aSQ+6Mgw0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-524-J6N8WQjMPKm-itsO0I4-jA-1; Mon, 13 Dec 2021 16:25:41 -0500
+X-MC-Unique: J6N8WQjMPKm-itsO0I4-jA-1
+Received: by mail-ed1-f70.google.com with SMTP id q17-20020aa7da91000000b003e7c0641b9cso15069837eds.12
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 13:25:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GyQXe7k/6WqlCtMNdMFwF2JLby24XGQu452pyWy5gvM=;
-        b=QY9A60bpDTO3LyOmOzcIU2//Rj1jcW6Xpo4/4oDIAY8aa4VaUGfBpJEchM25ZM0XEN
-         PkZ6Vasz02HZ0EN68whBu0KbJoEDJFKIwkNjy5KmSnjdF5ALGT9TvbkpyVn5QTo2uLQ/
-         AbUmPMiSbIEf93fyt/CeL4WesWsf9Qwwt8h/xDC4L+Auo5NdP6agq5RGH7gyRZ+Hr+MK
-         QLDWGNCoH9kmr7qCMI19ZN3AInFavJNK8kUe4hThO5i3lE9q86Ly4+2JU7EysrHlEri2
-         OscU3xC2aFR3XsrXB/01Xzm1pERiHPcBbWn2C34j7pB7fm9eNdjLrK/IuHp3eRvvtuXL
-         ZSIg==
-X-Gm-Message-State: AOAM531vuYM6icIcDvue/p4SRqO6E/wNZE4juaZaa8s0McoGpf3+yLlx
-        T7Rmv8T3uzXJhxsKmJqdBUpfkNblkcCO1SzNWQ8=
-X-Google-Smtp-Source: ABdhPJy8gSThjsBrvGkgAy/EBU6r2lKg5zfrb19Fg9URvnfKLqt6JHU22WWTLH7NfDYYCNXCb80WOjpD4UKNjpoJWoI=
-X-Received: by 2002:a25:2a89:: with SMTP id q131mr663563ybq.436.1639423991137;
- Mon, 13 Dec 2021 11:33:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20211212051816.20478-1-linmq006@gmail.com> <CAH-r-ZGri414YWumUs7U_ktvcv+BWOYfPTsB7So6kz5PNcK5tw@mail.gmail.com>
-In-Reply-To: <CAH-r-ZGri414YWumUs7U_ktvcv+BWOYfPTsB7So6kz5PNcK5tw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Dec 2021 11:33:00 -0800
-Message-ID: <CAEf4BzZG7_ihS7m8e9KNcoO0WhFXqw4iK1=SNPr2u3bPmOmxLQ@mail.gmail.com>
-Subject: Re: [PATCH] bpftool: Fix NULL vs IS_ERR() checking for return value
- of hashmap__new
-To:     =?UTF-8?B?5p6X5aaZ5YCp?= <linmq006@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=H8ZoXvqnTXyU+fSxcQb0nWRbuEnwE4j20xX1vRvBOX8=;
+        b=SDtLDa6lzx5E7J/8hddkGa0vE4J6KQM5t79RfanSRF4kPgeDA2AxPWEYQqka9PjHzU
+         hgoaJRJplS201vU/F4e9VK6FXvvVjbqo3aSA5+kh+90DL8Ha9n41Zg0Vu+/oA/E4WqGW
+         UCN1PaGIMvYQBB7GLqQ/LHzU4cv4SX2uAEiNDCjtujcG+NwKX5eNbHM6ICgcOi8Wzuv/
+         +FO0Sv/6k8dSSjHobz5wCbHvY9wlwcVs1tcJapzt5gM/RLQZBU39FfplMf42IkM/zO6f
+         7KbXBuaw7gGmflWJA+YJEw1RcUmbwn1DBkjAdz6iY7MoUg7SGMF3pEcRtZWycYKhaW+G
+         RnKA==
+X-Gm-Message-State: AOAM531UNIK6oxWCCjGBWEsosD3CbLSsoxj+hwOYCqtw0AbhcDvJxLRs
+        tsDuv7vxH/edNe3LnwydbxKhIxCesI2fcfiwIwdTTgcJxRnd8P4q+RJkftOigzDlYDHIM1aNxRM
+        dPTSWItLLPXTV
+X-Received: by 2002:a17:906:b785:: with SMTP id dt5mr900712ejb.515.1639430739598;
+        Mon, 13 Dec 2021 13:25:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx8q82txFC/iLUcmzva/RS0ZVHVyvAEWXIEByFJzlk88Br1P5RIVH1cuFavfwFtOUo5VBbGjg==
+X-Received: by 2002:a17:906:b785:: with SMTP id dt5mr900636ejb.515.1639430738730;
+        Mon, 13 Dec 2021 13:25:38 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id o17sm523086ejj.162.2021.12.13.13.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Dec 2021 13:25:37 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3619F183566; Mon, 13 Dec 2021 22:25:37 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 7/9] net/netfilter: Add unstable CT lookup
+ helpers for XDP and TC-BPF
+In-Reply-To: <YbT5DEmlkunw7cCo@salvia>
+References: <20211210130230.4128676-1-memxor@gmail.com>
+ <20211210130230.4128676-8-memxor@gmail.com> <YbNtmlaeqPuHHRgl@salvia>
+ <20211210153129.srb6p2ebzhl5yyzh@apollo.legion> <YbPcxjdsdqepEQAJ@salvia>
+ <87pmq3ugz5.fsf@toke.dk> <YbT5DEmlkunw7cCo@salvia>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 13 Dec 2021 22:25:37 +0100
+Message-ID: <87tufcyz72.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 7:07 AM =E6=9E=97=E5=A6=99=E5=80=A9 <linmq006@gmail=
-.com> wrote:
+Pablo Neira Ayuso <pablo@netfilter.org> writes:
+
+> On Sat, Dec 11, 2021 at 07:35:58PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Pablo Neira Ayuso <pablo@netfilter.org> writes:
+>>=20
+>> > On Fri, Dec 10, 2021 at 09:01:29PM +0530, Kumar Kartikeya Dwivedi wrot=
+e:
+>> >> On Fri, Dec 10, 2021 at 08:39:14PM IST, Pablo Neira Ayuso wrote:
+>> >> > On Fri, Dec 10, 2021 at 06:32:28PM +0530, Kumar Kartikeya Dwivedi w=
+rote:
+>> >> > [...]
+>> >> > >  net/netfilter/nf_conntrack_core.c | 252 ++++++++++++++++++++++++=
+++++++
+>> >> > >  7 files changed, 497 insertions(+), 1 deletion(-)
+>> >> > >
+>> >> > [...]
+>> >> > > diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf=
+_conntrack_core.c
+>> >> > > index 770a63103c7a..85042cb6f82e 100644
+>> >> > > --- a/net/netfilter/nf_conntrack_core.c
+>> >> > > +++ b/net/netfilter/nf_conntrack_core.c
+>> >> >
+>> >> > Please, keep this new code away from net/netfilter/nf_conntrack_cor=
+e.c
+>> >>=20
+>> >> Ok. Can it be a new file under net/netfilter, or should it live elsew=
+here?
+>> >
+>> > IPVS and OVS use conntrack for already quite a bit of time and they
+>> > keep their code in their respective folders.
+>>=20
+>> Those are users, though.
 >
-> Sorry, I forgot to do compile testing. I will test it and let you know.
+> OK, I see this as a yet user of the conntrack infrastructure.
+
+The users are the BPF programs; this series adds the exports. I.e., the
+code defines an API that BPF programs can hook into, and implements the
+validation and lifetime enforcement that is necessary for the particular
+data structures being exposed. This is very much something that the
+module doing the exports should be concerned with, so from that
+perspective it makes sense to keep it in the nf_conntrack kmod.
+
+>> This is adding a different set of exported functions, like a BPF
+>> version of EXPORT_SYMBOL(). We don't put those outside the module
+>> where the code lives either...
 >
-> Miaoqian Lin <linmq006@gmail.com> =E4=BA=8E2021=E5=B9=B412=E6=9C=8812=E6=
-=97=A5=E5=91=A8=E6=97=A5 13:18=E5=86=99=E9=81=93=EF=BC=9A
->>
->> The hashmap__new() function does not return NULL on errors. It returns
->> ERR_PTR(-ENOMEM). Using IS_ERR() to check the return value to fix this.
->>
->> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
->> ---
+> OVS and IPVS uses Kconfig to enable the conntrack module as a
+> dependency. Then, add module that is loaded when conntrack is used.
 
-Please do test (not just compile test) and re-send all three patches
-as one patch set instead of three independent patches. Thanks.
+BPF can't do that, though: all the core BPF code is always built into
+the kernel, so we can't have any dependencies on module code. Until now,
+this has meant that hooking into modules has been out of scope for BPF
+entirely. With kfuncs and the module BTF support this is now possible,
+but it's a bit "weird" (i.e., different) compared to what we're used to
+with kernel modules.
 
+This series represents the first instance of actually implementing BPF
+hooks into a module, BTW, so opinions on how to do it best are
+absolutely welcome. But I have a hard time seeing how this could be done
+without introducing *any* new code into the conntrack module...
 
->>  tools/bpf/bpftool/link.c | 2 +-
->>  tools/bpf/bpftool/map.c  | 2 +-
->>  tools/bpf/bpftool/pids.c | 2 +-
->>  3 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
->> index 2c258db0d352..0dc402a89cd8 100644
->> --- a/tools/bpf/bpftool/link.c
->> +++ b/tools/bpf/bpftool/link.c
->> @@ -306,7 +306,7 @@ static int do_show(int argc, char **argv)
->>         if (show_pinned) {
->>                 link_table =3D hashmap__new(hash_fn_for_key_as_id,
->>                                           equal_fn_for_key_as_id, NULL);
->> -               if (!link_table) {
->> +               if (IS_ERR(link_table)) {
->>                         p_err("failed to create hashmap for pinned paths=
-");
->>                         return -1;
->>                 }
->> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
->> index cae1f1119296..af83ae37d247 100644
->> --- a/tools/bpf/bpftool/map.c
->> +++ b/tools/bpf/bpftool/map.c
->> @@ -698,7 +698,7 @@ static int do_show(int argc, char **argv)
->>         if (show_pinned) {
->>                 map_table =3D hashmap__new(hash_fn_for_key_as_id,
->>                                          equal_fn_for_key_as_id, NULL);
->> -               if (!map_table) {
->> +               if (IS_ERR(map_table)) {
->>                         p_err("failed to create hashmap for pinned paths=
-");
->>                         return -1;
->>                 }
->> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
->> index 56b598eee043..6c4767e97061 100644
->> --- a/tools/bpf/bpftool/pids.c
->> +++ b/tools/bpf/bpftool/pids.c
->> @@ -101,7 +101,7 @@ int build_obj_refs_table(struct hashmap **map, enum =
-bpf_obj_type type)
->>         libbpf_print_fn_t default_print;
->>
->>         *map =3D hashmap__new(hash_fn_for_key_as_id, equal_fn_for_key_as=
-_id, NULL);
->> -       if (!*map) {
->> +       if (IS_ERR(*map)) {
->>                 p_err("failed to create hashmap for PID references");
->>                 return -1;
->>         }
->> --
->> 2.17.1
->>
+-Toke
+
