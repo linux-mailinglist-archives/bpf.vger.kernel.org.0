@@ -2,108 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B8A473851
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 00:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DCB473893
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 00:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244127AbhLMXPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 18:15:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244058AbhLMXPZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 18:15:25 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DB4C061574
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 15:15:25 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id f9so42111405ybq.10
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 15:15:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q3oWQzP90YpHeGgmHBSNT4PloLrBvVerWVX4c1HBjJU=;
-        b=Jp0xuSTk/shHcCUKvGaWXcYahFCVfAcDFKafV28hsA22UWvA/f1DAFWIE82N2Gm3vr
-         JROPiXTGNenjqE6XrfYzNtjW65742j8/HLok1AS9DCWAieaLutEQcNDVNTQRRLjhJEX1
-         +Cqw8+TYIKKXxRqUGtvvih42b+xdHC4SVc6/wLNZ9z7rcM7Ir5BZYIn/vBmEsJtzM/SH
-         MSBLMAQKWQ4cy8IuRclUvfbkwaTuDa7fPskd6P60j8Rfmx6rai5OZEP+zzpkjnBFf066
-         Gn82Ier56gfFIbK3s+nDKc16+UD/1GsKgkgkTbWxODr4xRNGduDx3Jojfm5fPgA4Q3aj
-         6Fnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q3oWQzP90YpHeGgmHBSNT4PloLrBvVerWVX4c1HBjJU=;
-        b=sTzsaOuIrT/SrDPI7/Mo0wR0JbxKHB+d+GpMKyVSMGRjIczHLqcqK4eWRQOEk7j1JZ
-         sBumpVZje5+nkA31SQhRBXg0E6SC5JvK8j2rk/DoLlZIIUoAl9PQf2E5QxCizIe9WvLe
-         bWX8E1afQdeeMCmFXuxvpZ2Hn3/Z0PtTCcK7pT43uTrC4JjAQp6pCSfW3MWfCbpzvw54
-         EtckQ99PhOeGgjp14W6/mw0Egg0yCumQmH4Y0XqaMWmoMqMu0YvN4Osfm0B8tMz6E8gN
-         1F24qIiH2f8++oB49sWZOgLIv/M+SzZp4RsRRunhMXpbo33AFLtnjylVurWbW8gryRm9
-         NQYA==
-X-Gm-Message-State: AOAM532lAzFXxyCVkbyvcxAghInC9hwySZNnGUp5PFr1ePjDIjW1bi6X
-        KDsHHca7brs4pVPfdJ+coMCH2JtZBO1PkF6kSew=
-X-Google-Smtp-Source: ABdhPJxfNXZYmlATefBhjpthOhxvy3E79eNcPsbyrzZIpTpPrW3R82YkGxCzlq5+tWu/EA7kzsgq0aYKKzq3phwovF0=
-X-Received: by 2002:a25:37cb:: with SMTP id e194mr1768345yba.449.1639437324355;
- Mon, 13 Dec 2021 15:15:24 -0800 (PST)
+        id S242671AbhLMXao (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 18:30:44 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:51344 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242230AbhLMXao (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 18:30:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 14C47612C7;
+        Mon, 13 Dec 2021 23:30:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 75663C34605;
+        Mon, 13 Dec 2021 23:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639438243;
+        bh=hPBajqcTL7kl3Wv5HUNpmv0VzbUlAc9DXWsyMgUyMGM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=W4HJXRI4Tl3uHTEeAZFy9H9YkNq+SHYfEzUMYHEjppoy/hvplX3whotT6Y2mHsVDq
+         tegW0BcXgf1DWHCB9JkGc/GkeT3gBGs9ge+5iVVpU83i2lqFafuguS55+agEkqsNam
+         /jVwwR7pIafHYIwb7DL/XuONjQBGNafTKL1lpzkTtzPs1WAIOVsp3fnRnm3cmhkAQ6
+         +cpDjudjpLu4B8bt7Nc3YcfndMJXOJGdb7jtVJfQEvRU65Li47N8+1/V+IM4KPkVsG
+         0Rqg5+y2VSPheM6X5CSbarujcFYTUXmnUuS/ZhneSpVMqDhxD6SzGa04CdqPLhLW6s
+         B/xPHhlF3Gvlg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5E91E6098C;
+        Mon, 13 Dec 2021 23:30:43 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAO658oUqd5=B3zkDhm2jVQxG+vEf=2CE7WimXHqgcH+m0P=k_Q@mail.gmail.com>
-In-Reply-To: <CAO658oUqd5=B3zkDhm2jVQxG+vEf=2CE7WimXHqgcH+m0P=k_Q@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Dec 2021 15:15:13 -0800
-Message-ID: <CAEf4Bzb5TMHkct=uh2OHnDaTtnvyLwvHjueN1Lm8vqTF6BDaSw@mail.gmail.com>
-Subject: Re: Question: `libbpf_err` vs `libbpf_err_errno`
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] xsk: wipe out dead zero_copy_allocator declarations
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163943824338.22239.7621324515753235885.git-patchwork-notify@kernel.org>
+Date:   Mon, 13 Dec 2021 23:30:43 +0000
+References: <20211210171511.11574-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20211210171511.11574-1-maciej.fijalkowski@intel.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, magnus.karlsson@intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 3:10 PM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
->
-> I'm using libbpf and want to make sure I'm properly handling errors.
->
-> I see that some functions (such as `bpf_map_batch_common`) return
-> error codes using `libbpf_err_errno()`. My understanding is that since
-> libbpf_err_errno() returns -errno, these function calls can just be
-> followed by checking the returned error code.
->
-> Some functions (such as `bpf_map__pin`) return `libbpf_err(int ret)`
-> which sets errno and returns the error code. In this case, does errno
-> even need to be checked?
->
+Hello:
 
-No it doesn't, checking directly returned error is enough. We set
-errno always for consistency with APIs that return pointers (like
-bpf_object__open_file(), for example). For the latter, on error NULL
-is going to be returned (in libbpf 1.0 mode), so the only way to get
-details about what failed is through errno.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-so doing:
+On Fri, 10 Dec 2021 18:15:11 +0100 you wrote:
+> zero_copy_allocator has been removed back when Bjorn Topel introduced
+> xsk_buff_pool. Remove references to it that were dangling in the tree.
+> 
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.h           | 1 -
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h | 2 --
+>  include/net/xdp_priv.h                               | 1 -
+>  3 files changed, 4 deletions(-)
 
-if (some_libbpf_api_with_error_return(...)) {
-  /* errno contains error */
-}
+Here is the summary with links:
+  - [bpf-next] xsk: wipe out dead zero_copy_allocator declarations
+    https://git.kernel.org/bpf/bpf-next/c/d27a66229096
 
-is the same as
-
-err = some_libbpf_api_with_error_return(...);
-if (err < 0) {
-
-}
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-But you only can use:
-
-ptr = some_libbpf_api_returning_ptr(...);
-if (!ptr) { /* errno has error */ }
-
-
-I plan to remove libbpf_get_error() in libbpf 1.0, btw. The pattern
-above will be the only one that could be used.
-
-
-> Why the inconsistency? I'd like to document this, so anything else
-> that you can add on error handling in libbpf is welcome. That includes
-> example usage.
->
-> Thanks!
