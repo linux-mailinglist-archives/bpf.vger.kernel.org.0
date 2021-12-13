@@ -2,181 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C311472F94
-	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 15:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0ED47307E
+	for <lists+bpf@lfdr.de>; Mon, 13 Dec 2021 16:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbhLMOls (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 09:41:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50059 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232641AbhLMOls (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 09:41:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639406507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7pRXXV0v9giuYsYC3tANypl3E9qVvVmrrv2MfnznAFU=;
-        b=ZlnhvW7OzpdeoHVFLVZRQwJoIa5ScdeGMoCo+dSMtOxliGIK2j1A9ZzBBl9xcfYhRPdcxJ
-        3QsJWQ1NOi3zye1nuw5wM+XaU7bb8lMiHySJyaME04M5B3QzdW+AymaBdxW2Bv59UWg3l8
-        RxDZe0bv+soBVdDtUpNqCOh5HWxtcvA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-550-CfiDLgXrNeiuvf6_2AbdAQ-1; Mon, 13 Dec 2021 09:41:46 -0500
-X-MC-Unique: CfiDLgXrNeiuvf6_2AbdAQ-1
-Received: by mail-wm1-f71.google.com with SMTP id r129-20020a1c4487000000b00333629ed22dso11671102wma.6
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 06:41:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=7pRXXV0v9giuYsYC3tANypl3E9qVvVmrrv2MfnznAFU=;
-        b=6ctxuWbK/kXMvDZKDXADU5+u7rhhmGpJ0nkS2EfJn9jUJA3kzuN43br3JBFtVwhEiL
-         QAGHDvaXNqoYri9iSXN+2iZqnKFTsLWiAWY3aSkvc2QdjjMtPV+0Iv6niUuy12EWOoiq
-         Byd5uDVPwnDuULMoEeX7Vn8CJI+28h9Cb5m+1dYV07V/GQwlb6R49CARBT0wAaUMjEWt
-         M81BDTDW4TO1DKOb6xkQNnaAXdk+jJeJ3bt2IAXo5PIofcp06a0xANwBOEsLjlHZstDn
-         g38QIIdog/wsjhzp0g7JZ/VPCQKtIQLjC2oylUHkjpm+/RXd+ITSRFpuHQ2/yzvAYfPg
-         GArg==
-X-Gm-Message-State: AOAM530fmEsNP4WmL2ziRdkpFqNMWHR8+3ITFdinidQKY7g2wjveYuwf
-        9Ks1/w/qtT3P9WxldXMPV1fsirF8yDfyBhnlBzf5vSH8DzbTmaPzlVQ0ul1VkQriRHqlOdyEmDN
-        iVpaWesj9IntJ
-X-Received: by 2002:a5d:58c5:: with SMTP id o5mr32290708wrf.15.1639406505602;
-        Mon, 13 Dec 2021 06:41:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPAxLL4xqt1e2lYLjiNAvw/yEFjfmet00BfOTBtz3NKFTpNLzYP5C8W/QeX/MZCf+tcLiyLA==
-X-Received: by 2002:a5d:58c5:: with SMTP id o5mr32290677wrf.15.1639406505341;
-        Mon, 13 Dec 2021 06:41:45 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c6276.dip0.t-ipconnect.de. [91.12.98.118])
-        by smtp.gmail.com with ESMTPSA id u13sm8658152wmq.14.2021.12.13.06.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Dec 2021 06:41:44 -0800 (PST)
-Message-ID: <b0539137-c91d-0787-721e-c6ed4ced69ec@redhat.com>
-Date:   Mon, 13 Dec 2021 15:41:43 +0100
+        id S235665AbhLMPb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 10:31:29 -0500
+Received: from mga04.intel.com ([192.55.52.120]:4850 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235627AbhLMPb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 10:31:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1639409487; x=1670945487;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=H7g9iSSe4v6lpuPhngwIAXIU8l1m2PxzKJzB5Ufiyh8=;
+  b=VXuLZpo/zEduiSECpR/jbZKSbR8IQH5kLb7OnuKL86M+IN72ddMOX01l
+   2l6ihAnGSBbtYF5N2eeRbyratyXgO2gncHZTkFZsIP7COzXVi21jKxC+x
+   rgfKraYl50QMR5Xb/cgclAwVQ0uKz+2kkuOEvHqlFGYR0TR6OyIRRVmsb
+   gA3fAxMB8ySn42WrpkiLmEF/X8RHC7UOovo+FdQ7kg0KRkNp+/xg8XMsK
+   Ds17zSJAb0fxd2ENDaemUXczbiHcEMBN46EM0rppUMnlnjFEFhoXE77Pp
+   VH15hiKWYJLt/Mp8oProJwJc1WN80M7invhRcvms3l2EBcz8IHdAum48d
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10196"; a="237490463"
+X-IronPort-AV: E=Sophos;i="5.88,202,1635231600"; 
+   d="scan'208";a="237490463"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2021 07:31:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,202,1635231600"; 
+   d="scan'208";a="613864707"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orsmga004.jf.intel.com with ESMTP; 13 Dec 2021 07:31:19 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        anthony.l.nguyen@intel.com, kuba@kernel.org, davem@davemloft.net,
+        magnus.karlsson@intel.com, elza.mathew@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v2 intel-net 0/6] ice: xsk: Rx processing fixes
+Date:   Mon, 13 Dec 2021 16:31:05 +0100
+Message-Id: <20211213153111.110877-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH -mm v2 1/3] elfcore: replace old hard-code 16 with
- TASK_COMM_LEN_16
-Content-Language: en-US
-To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
-        rostedt@goodmis.org, keescook@chromium.org, pmladek@suse.com,
-        arnaldo.melo@gmail.com, andrii.nakryiko@gmail.com,
-        alexei.starovoitov@gmail.com
-Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <20211211063949.49533-1-laoar.shao@gmail.com>
- <20211211063949.49533-2-laoar.shao@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211211063949.49533-2-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11.12.21 07:39, Yafang Shao wrote:
-> A new macro TASK_COMM_LEN_16 is introduced for the old hard-coded 16 to
-> make it more grepable. As explained above this marco, the difference
-> between TASK_COMM_LEN and TASK_COMM_LEN_16 is that TASK_COMM_LEN_16 must
-> be a fixed size 16 and can't be changed.
-> 
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Michal Miroslaw <mirq-linux@rere.qmqm.pl>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
->  include/linux/elfcore-compat.h | 8 ++------
->  include/linux/elfcore.h        | 9 ++-------
->  include/linux/sched.h          | 5 +++++
->  3 files changed, 9 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/elfcore-compat.h b/include/linux/elfcore-compat.h
-> index 54feb64e9b5d..69fa1a728964 100644
-> --- a/include/linux/elfcore-compat.h
-> +++ b/include/linux/elfcore-compat.h
-> @@ -5,6 +5,7 @@
->  #include <linux/elf.h>
->  #include <linux/elfcore.h>
->  #include <linux/compat.h>
-> +#include <linux/sched.h>
->  
->  /*
->   * Make sure these layouts match the linux/elfcore.h native definitions.
-> @@ -43,12 +44,7 @@ struct compat_elf_prpsinfo
->  	__compat_uid_t			pr_uid;
->  	__compat_gid_t			pr_gid;
->  	compat_pid_t			pr_pid, pr_ppid, pr_pgrp, pr_sid;
-> -	/*
-> -	 * The hard-coded 16 is derived from TASK_COMM_LEN, but it can't be
-> -	 * changed as it is exposed to userspace. We'd better make it hard-coded
-> -	 * here.
-> -	 */
-> -	char				pr_fname[16];
-> +	char				pr_fname[TASK_COMM_LEN_16];
->  	char				pr_psargs[ELF_PRARGSZ];
->  };
->  
-> diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
-> index 746e081879a5..d3bb4bd3c985 100644
-> --- a/include/linux/elfcore.h
-> +++ b/include/linux/elfcore.h
-> @@ -65,13 +65,8 @@ struct elf_prpsinfo
->  	__kernel_gid_t	pr_gid;
->  	pid_t	pr_pid, pr_ppid, pr_pgrp, pr_sid;
->  	/* Lots missing */
-> -	/*
-> -	 * The hard-coded 16 is derived from TASK_COMM_LEN, but it can't be
-> -	 * changed as it is exposed to userspace. We'd better make it hard-coded
-> -	 * here.
-> -	 */
-> -	char	pr_fname[16];	/* filename of executable */
-> -	char	pr_psargs[ELF_PRARGSZ];	/* initial part of arg list */
-> +	char	pr_fname[TASK_COMM_LEN_16];	/* filename of executable */
-> +	char	pr_psargs[ELF_PRARGSZ];		/* initial part of arg list */
->  };
->  
->  static inline void elf_core_copy_regs(elf_gregset_t *elfregs, struct pt_regs *regs)
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index c79bd7ee6029..8d963a50a2a8 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -279,6 +279,11 @@ struct task_group;
->   * BPF programs.
->   */
->  enum {
-> +	/*
-> +	 * For the old hard-coded 16, which is exposed to userspace and can't
-> +	 * be changed.
-> +	 */
-> +	TASK_COMM_LEN_16 = 16,
->  	TASK_COMM_LEN = 16,
->  };
->  
-> 
+Hi there,
+it seems that previous [0] Rx fix was not enough and there are still
+issues with AF_XDP Rx ZC support in ice driver. Elza reported that for
+multiple XSK sockets configured on a single netdev, some of them were
+becoming dead after a while. We have spotted more things that needed to
+be addressed this time. More of information can be found in particular
+commit messages.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+v2 has a diff around only patch 2:
+- use array_size() in memsets (Alexandr)
+- remove unnecessary ternary operator from ice_alloc_rx_buf{, _zc}()
+  (Alexandr)
+- respect RCT in ice_construct_skb_zc() (Alexandr)
+- fix kdoc issue (Anthony)
+
+It also carries Alexandr's patch that was sent previously which was
+overlapping with this set.
+
+Thanks,
+Maciej
+
+[0]: https://lore.kernel.org/bpf/20211129231746.2767739-1-anthony.l.nguyen@intel.com/
+
+Alexander Lobakin (1):
+  ice: remove dead store on XSK hotpath
+
+Maciej Fijalkowski (5):
+  ice: xsk: return xsk buffers back to pool when cleaning the ring
+  ice: xsk: allocate separate memory for XDP SW ring
+  ice: xsk: do not clear status_error0 for ntu + nb_buffs descriptor
+  ice: xsk: allow empty Rx descriptors on XSK ZC data path
+  ice: xsk: fix cleaned_count setting
+
+ drivers/net/ethernet/intel/ice/ice_base.c | 17 ++++++
+ drivers/net/ethernet/intel/ice/ice_txrx.c | 19 ++++---
+ drivers/net/ethernet/intel/ice/ice_txrx.h |  1 -
+ drivers/net/ethernet/intel/ice/ice_xsk.c  | 66 +++++++++++------------
+ 4 files changed, 62 insertions(+), 41 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.33.1
 
