@@ -2,121 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A7C474576
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 15:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C5E474591
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 15:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbhLNOqc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 09:46:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S232804AbhLNOuK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 09:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234989AbhLNOqb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 09:46:31 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A844C061574;
-        Tue, 14 Dec 2021 06:46:31 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id gj24so530234pjb.0;
-        Tue, 14 Dec 2021 06:46:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TIVCmsuAMVImfriiYow8c1qDhI05Ehf9vFjNjkmAmtM=;
-        b=gawJlSLJAMBNqBeAsSK57x0uKhwlYQRI8jtsSjQ0BDq9mHT6uHpzoyrBcy3D3BJVqA
-         /Ysvgur2G5iht8txUsgEZZ34c94dJSkL/W0CWJ5bUex9dekd2T61Za5TmuGuzv+MnrHe
-         mlnA/94cORuogMyWgMc3eOm6RYHtCbN8hrlEWxYdWprDXi9mdNicy2f8nGgaR/6ALtyJ
-         PvTIKyJiF6K/Fk/J16p4yCrq2YMD+RDTbfiXEQJTduUkkcj1fqiDq4wEIVQacrgtOgzb
-         vZIsC1HvF+XgQ01CPonvcLnRjVyKX7x8+HwWcvaJXvT2Y4h8EvlXF+wP+zjf1slCc8GP
-         t5iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TIVCmsuAMVImfriiYow8c1qDhI05Ehf9vFjNjkmAmtM=;
-        b=YbgQtSwhxbE/40fcRrjrsogHE3ZEDFEnt4Hm+OKfjdGrr8XRos+6lrxEJoFjqRm00+
-         auTjx9+PzWANuRYbDM7gLCcS1pPFrgdqgYLwzpZNpGamC952UG0ByMsTbXUZGdzesnoR
-         rjW5Bi9BZuaqXV53xcCD3uI93bLuWKk5OE4aZSh0Pq6FfrBJBBGqQVanwt9aUtY3eWZ5
-         dqaIZ5eHaRRLGG0USfJKcWXE18eyT+hjRtFHgbD3vxoUEe0eLOE82tSh2TOTHFrp7kQD
-         6tjx67oRl+tfaaYFQcUvwORC4+JRkw5Bq6UpNibIzhA6n8IkWU83N+CgW2SlqVX4fVyd
-         I9QA==
-X-Gm-Message-State: AOAM533wJd3triq7fuJIcuXMswb4CauUAfXIFVpAM2RC+NzCrthCgQEW
-        JLisUKNRWB1p8usXK0DFlG0O+mzxNTdrdsfaLuUgtxAU2km8TXWb
-X-Google-Smtp-Source: ABdhPJxVWeGKAMAekRtLG64jFT56xxyEr62immDtXUwhTaUHaatqeQEA8PlVYLwpgyLj/7nWlsLN3VbJgy7iLN2yU8Y=
-X-Received: by 2002:a17:90b:3b8d:: with SMTP id pc13mr5904614pjb.112.1639493190905;
- Tue, 14 Dec 2021 06:46:30 -0800 (PST)
+        with ESMTP id S230403AbhLNOuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Dec 2021 09:50:10 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D35C061574
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 06:50:10 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A891F61367
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 14:50:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 13C47C34601;
+        Tue, 14 Dec 2021 14:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639493409;
+        bh=uFiUahuGhv8D12j+UBrBqAePDfy8CE8xtV71b9l3vo8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bHPOlg5RlTsITP46Cka8UKYl7njvs1EL5ywZwlxeGWOG0UKOhRTcfJxPKzOcC0lmP
+         tM6b5n945fnqV5No4gL8ZpkyBCE2jMYV5oXs3XVl/3nKDPbx+ybns9ZjdvVAHOwbSl
+         MLfIrWCc9b5b7Y3nUFvSSbG2ANdFfhw0N2ahCEns/UxirP1k1W3SPh8hKjDtEXNwIB
+         HRC6BvpMCnKHa59B+/slJGObnVhEnbAQyHnZYa5U3FTaWcEtaKY4KNjh1sUZeG5jUA
+         vbKweh1xuamxQQla9IcXODvYhiUvmA/jiYgA7HfMGRh6MoRF0jQlUXuA4LdOLAVQYx
+         pGkGPC5VdY/ZQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E875B609F5;
+        Tue, 14 Dec 2021 14:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211213153111.110877-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20211213153111.110877-1-maciej.fijalkowski@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Tue, 14 Dec 2021 15:46:19 +0100
-Message-ID: <CAJ8uoz0Fb-hciySWAy79X2d_H=oUddbFGCm3RUAtRYhUQ5-K5w@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH v2 intel-net 0/6] ice: xsk: Rx
- processing fixes
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        elza.mathew@intel.com,
-        Network Development <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] libbpf: add sane strncpy alternative and use it
+ internally
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163949340894.7160.7599467135949464597.git-patchwork-notify@kernel.org>
+Date:   Tue, 14 Dec 2021 14:50:08 +0000
+References: <20211211004043.2374068-1-andrii@kernel.org>
+In-Reply-To: <20211211004043.2374068-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, emmanuel.deloget@eho.link
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 4:31 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> Hi there,
-> it seems that previous [0] Rx fix was not enough and there are still
-> issues with AF_XDP Rx ZC support in ice driver. Elza reported that for
-> multiple XSK sockets configured on a single netdev, some of them were
-> becoming dead after a while. We have spotted more things that needed to
-> be addressed this time. More of information can be found in particular
-> commit messages.
->
-> v2 has a diff around only patch 2:
-> - use array_size() in memsets (Alexandr)
-> - remove unnecessary ternary operator from ice_alloc_rx_buf{, _zc}()
->   (Alexandr)
-> - respect RCT in ice_construct_skb_zc() (Alexandr)
-> - fix kdoc issue (Anthony)
->
-> It also carries Alexandr's patch that was sent previously which was
-> overlapping with this set.
->
-> Thanks,
-> Maciej
->
-> [0]: https://lore.kernel.org/bpf/20211129231746.2767739-1-anthony.l.nguyen@intel.com/
+Hello:
 
-Thank you so much for all these fixes Maciej and Alexandr!
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-BTW, ice zero-copy support in bpf and bpf-next does not work at all
-without this patch set, so need to get this in as soon as possible.
-net and net-next might not work either, but have not tried.
+On Fri, 10 Dec 2021 16:40:43 -0800 you wrote:
+> strncpy() has a notoriously error-prone semantics which makes GCC
+> complain about it a lot (and quite often completely completely falsely
+> at that). Instead of pleasing GCC all the time (-Wno-stringop-truncation
+> is unfortunately only supported by GCC, so it's a bit too messy to just
+> enable it in Makefile), add libbpf-internal libbpf_strlcpy() helper
+> which follows what FreeBSD's strlcpy() does and what most people would
+> expect from strncpy(): copies up to N-1 first bytes from source string
+> into destination string and ensures zero-termination afterwards.
+> 
+> [...]
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Here is the summary with links:
+  - [bpf-next] libbpf: add sane strncpy alternative and use it internally
+    https://git.kernel.org/bpf/bpf-next/c/9fc205b413b3
 
-> Alexander Lobakin (1):
->   ice: remove dead store on XSK hotpath
->
-> Maciej Fijalkowski (5):
->   ice: xsk: return xsk buffers back to pool when cleaning the ring
->   ice: xsk: allocate separate memory for XDP SW ring
->   ice: xsk: do not clear status_error0 for ntu + nb_buffs descriptor
->   ice: xsk: allow empty Rx descriptors on XSK ZC data path
->   ice: xsk: fix cleaned_count setting
->
->  drivers/net/ethernet/intel/ice/ice_base.c | 17 ++++++
->  drivers/net/ethernet/intel/ice/ice_txrx.c | 19 ++++---
->  drivers/net/ethernet/intel/ice/ice_txrx.h |  1 -
->  drivers/net/ethernet/intel/ice/ice_xsk.c  | 66 +++++++++++------------
->  4 files changed, 62 insertions(+), 41 deletions(-)
->
-> --
-> 2.33.1
->
-> _______________________________________________
-> Intel-wired-lan mailing list
-> Intel-wired-lan@osuosl.org
-> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
