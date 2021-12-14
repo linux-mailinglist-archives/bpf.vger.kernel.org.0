@@ -2,81 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5369A474E72
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 00:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E83A474E7E
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 00:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238128AbhLNXKM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 18:10:12 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:60378 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238082AbhLNXKL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 18:10:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B2486171F
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 23:10:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B4113C34600;
-        Tue, 14 Dec 2021 23:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639523410;
-        bh=2tNshVfu3hsmn41uYSg5HUxR8qVF7udDJFc5cfD/Qnc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MxF2jhnQOJvMX73GUE0duFg6ZOa381kgoprQBVdaUoMh2mBQrv4fghP8QzK5bCC0y
-         UIeRfJr5uhxDcfOBNwnPtHqa8b5qUzcvRhLprxwIlZtRXqBhJDlV0ykmkSpUs8bJq+
-         ko5e1TpBN6a/2RJ7enwh/SCRsY1UMBL389e6z1GgS/+6kEMo2HrivLUE5PcZUSzBZD
-         Gdf/ZKZn4PSdzDdynwFmt3LekPoshelz0YKzeB4bTEgYtyj1MtfK9tpiFuHtD08FfF
-         a9cU4TbusYWedPPGmwtWKEUmlURovuTjGh4c+Fkepk0n0E3Umbkk0m7y07G8po9DH5
-         sGLp5z7ydYJaQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9766B609BA;
-        Tue, 14 Dec 2021 23:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S238196AbhLNXVF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Dec 2021 18:21:05 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9140 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231684AbhLNXVF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Dec 2021 18:21:05 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BELbRqp017649
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 15:21:04 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cxqrbegn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 15:21:04 -0800
+Received: from intmgw003.48.prn1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 14 Dec 2021 15:21:03 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 5D683D22F502; Tue, 14 Dec 2021 15:20:55 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] libbpf: avoid reading past ELF data section end when copying license
+Date:   Tue, 14 Dec 2021 15:20:54 -0800
+Message-ID: <20211214232054.3458774-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 bpf-next 0/4] Stop using bpf_object__find_program_by_title
- API
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163952341061.23710.11952187546156032545.git-patchwork-notify@kernel.org>
-Date:   Tue, 14 Dec 2021 23:10:10 +0000
-References: <20211214035931.1148209-1-kuifeng@fb.com>
-In-Reply-To: <20211214035931.1148209-1-kuifeng@fb.com>
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: j1IF2uemKKLW8QHpRZUmXmJz81VhnXzw
+X-Proofpoint-ORIG-GUID: j1IF2uemKKLW8QHpRZUmXmJz81VhnXzw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-14_07,2021-12-14_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1015 spamscore=0
+ mlxscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112140123
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Fix possible read beyond ELF "license" data section if the license
+string is not properly zero-terminated. Use the fact that libbpf_strlcpy
+never accesses the (N-1)st byte of the source string because it's
+replaced with '\0' anyways.
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+If this happens, it's a violation of contract between libbpf and a user,
+but not handling this more robustly upsets CIFuzz, so given the fix is
+trivial, let's fix the potential issue.
 
-On Mon, 13 Dec 2021 19:59:27 -0800 you wrote:
-> bpf_object__find_program_by_title is going to be deprecated since
-> v0.7.  Replace all use cases with bpf_object__find_program_by_name if
-> possible, or use bpf_object__for_each_program to iterate over
-> programs, matching section names.
-> 
-> V3 fixes a broken test case, fexit_bpf2bpf, in selftests/bpf, using
-> bpf_obj__for_each_program API instead.
-> 
-> [...]
+Fixes: 9fc205b413b3 ("libbpf: Add sane strncpy alternative and use it internally")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Here is the summary with links:
-  - [v4,bpf-next,1/4] selftests/bpf: Stop using bpf_object__find_program_by_title API.
-    https://git.kernel.org/bpf/bpf-next/c/a393ea80a22a
-  - [v4,bpf-next,2/4] samples/bpf: Stop using bpf_object__find_program_by_title API.
-    https://git.kernel.org/bpf/bpf-next/c/7490d5926816
-  - [v4,bpf-next,3/4] tools/perf: Stop using bpf_object__find_program_by_title API.
-    https://git.kernel.org/bpf/bpf-next/c/b098f33692d7
-  - [v4,bpf-next,4/4] libbpf: Mark bpf_object__find_program_by_title API deprecated.
-    https://git.kernel.org/bpf/bpf-next/c/0da2596f343c
-
-You are awesome, thank you!
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 684c34ce1a26..cf862a19222b 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1320,7 +1320,10 @@ static int bpf_object__check_endianness(struct bpf_object *obj)
+ static int
+ bpf_object__init_license(struct bpf_object *obj, void *data, size_t size)
+ {
+-	libbpf_strlcpy(obj->license, data, sizeof(obj->license));
++	/* libbpf_strlcpy() only copies first N - 1 bytes, so size + 1 won't
++	 * go over allowed ELF data section buffer
++	 */
++	libbpf_strlcpy(obj->license, data, min(size + 1, sizeof(obj->license)));
+ 	pr_debug("license of %s is %s\n", obj->path, obj->license);
+ 	return 0;
+ }
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
