@@ -2,72 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1352473DCD
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 08:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D574047406C
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 11:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhLNHwI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 02:52:08 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:47875 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhLNHwI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 02:52:08 -0500
-Received: by mail-il1-f199.google.com with SMTP id g14-20020a056e021e0e00b002a26cb56bd4so17062693ila.14
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 23:52:08 -0800 (PST)
+        id S231269AbhLNK0f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 05:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhLNK0f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Dec 2021 05:26:35 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA4CC061574;
+        Tue, 14 Dec 2021 02:26:35 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id a9so31529710wrr.8;
+        Tue, 14 Dec 2021 02:26:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/VGyRwF+8Rszd1IEhKwQkaBM8IPnn8NnVzK7EFHiQQI=;
+        b=MeomFovZoLezTR1tSnbnhyVLZK6yJCzBDSmkj/nBgqbUvsOhoByun/xXnue5ZYdI58
+         /nxkoa2ddfI7vFrfQWBbH4q9UDKBcbM68NlvitWX9Hvn82BCv9RXUe6El+nqswJpnaqg
+         0DKESmsXneed8P59QD23eYdcNB3RCbXJG+UCq7IKXxrgD72eG/FWoKXaxnRCjLSGXFDd
+         qw+sjvA+5PSiBTVEV2OmV0+KNvCo59GCGusfnCtgWe6Ta36FYfe6JDk4r1IW8OkACh4h
+         E5h68MKdReHs2JA+waMB7QXuGj/sAbA6dd94A3Au2mOKVKPm6K95jyzJFQs6xsli3S4g
+         L9dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=lcHNNorG/LTmBnlLDr9pzEUJIluh5yB8GkJuX9RkX+M=;
-        b=VwvGi6FW/l2+oCJ2U3fiD6tvnvaVUZi8on84MAQM5MYmw7LeM/66h4mfMhWTUEsdIT
-         O1HV9BSHmUMfE2AzN1GJMiX4jSKc+R7WHjBMwisyhTeq1WzNg7N1fzu3LMU4MZN653St
-         xe7YELcmPgkvqztKUcxt/cF7sd8ciJ74ZMrQTTKzCBZZFCqNvf9HrxDM0yKFGi644A5V
-         NCIZyc0+JjyioBeVMG26JhkK97InlpdN3l0zOSy/QvU1U7gqiv4Ym3Y7ANItn4BjOfDH
-         dMXd9AFKmLRYW98ui3rkxixsBbGhjeZtzMZN5LYUvLUVBfV2aLLElIGnRDRsPepeQyJt
-         ByGg==
-X-Gm-Message-State: AOAM532WBYibtpLmEtv3nPP4rJDQvoZ+NV6DsTxeWybTm1Ens1DZTBKI
-        V987m7J/TE6gWqloTp9mEqlCAgGrN+aCbK4UTaEkFdhXJx/V
-X-Google-Smtp-Source: ABdhPJwEb1jTTeln0/hF9lmMGIcFScozwQkTLG1gNHZuRcdvk+Do/KhhsRDbFnAX4Ve38aA1BAOAnDnAqmfbzVWtD9j1MFlBzJa9
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/VGyRwF+8Rszd1IEhKwQkaBM8IPnn8NnVzK7EFHiQQI=;
+        b=pLz171+v4YgaadibSwgl0fdHzvgUpxtjXxQq7c0MY3mk79yb+AblPHqMapmeJiXJEA
+         Ds82uPFzfZ9nev2ZpZvUm30fj2W7JZile9/RMJKbkSgdyqBfPGQ90Zzg2xHwNv6vgoQa
+         JKPN4wfmXSOtafz0ZZcFl2QjvqPjJMU325nHvvr6LIm220/p5agd9T91dqnu8FdzYUJz
+         akUTHhM4umbeGCbJm377UL+w/XYxsDwoOMo00u0Y/Of9BSKrlYGAQzCCajdGbtcKTG/V
+         6hxtEbUF0dDFaAYKgmBuI62ghgg4H2Zi8IkrK3163PFNO75vBnbtkUIzpOXNtp1EL/Wp
+         idJA==
+X-Gm-Message-State: AOAM5312/i9jaMOSkE8EZ69xvmrvvDfUxpi8VjW6N3Te90Jw5HL7LZke
+        Zu3sIMxeZLvufkhXLcbIG38=
+X-Google-Smtp-Source: ABdhPJzxIiqQNLAmcsI/Rqq1kNp8fxUliullKf6oqWJW5fL1PEPSOyNsqm/JeFoDYsiP1KczCoKlUA==
+X-Received: by 2002:adf:e482:: with SMTP id i2mr5107521wrm.284.1639477593618;
+        Tue, 14 Dec 2021 02:26:33 -0800 (PST)
+Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
+        by smtp.gmail.com with ESMTPSA id f7sm1958737wmg.6.2021.12.14.02.26.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Dec 2021 02:26:33 -0800 (PST)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com
+Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        Keith Wiles <keith.wiles@intel.com>
+Subject: [PATCH bpf] xsk: do not sleep in poll() when need_wakeup set
+Date:   Tue, 14 Dec 2021 11:26:07 +0100
+Message-Id: <20211214102607.7677-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:84eb:: with SMTP id f98mr1928730jai.743.1639468327923;
- Mon, 13 Dec 2021 23:52:07 -0800 (PST)
-Date:   Mon, 13 Dec 2021 23:52:07 -0800
-In-Reply-To: <0000000000005639cd05ce3a6d4d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004e75ca05d316779f@google.com>
-Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
-From:   syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>
-To:     alexandr.lobakin@intel.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        dvyukov@google.com, edumazet@google.com, hawk@kernel.org,
-        hdanton@sina.com, jesse.brandeburg@intel.com, joamaki@gmail.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, maximmi@nvidia.com,
-        netdev@vger.kernel.org, pabeni@redhat.com, saeedm@nvidia.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        toke@toke.dk, vladbu@nvidia.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-commit 0315a075f1343966ea2d9a085666a88a69ea6a3d
-Author: Alexander Lobakin <alexandr.lobakin@intel.com>
-Date:   Wed Nov 10 19:56:05 2021 +0000
+Do not sleep in poll() when the need_wakeup flag is set. When this
+flag is set, the application needs to explicitly wake up the driver
+with a syscall (poll, recvmsg, sendmsg, etc.) to guarantee that Rx
+and/or Tx processing will be processed promptly. But the current code
+in poll(), sleeps first then wakes up the driver. This means that no
+driver processing will occur (baring any interrupts) until the timeout
+has expired.
 
-    net: fix premature exit from NAPI state polling in napi_disable()
+Fix this by checking the need_wakeup flag first and if set, wake the
+driver and return to the application. Only if need_wakeup is not set
+should the process sleep if there is a timeout set in the poll() call.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=138dffbeb00000
-start commit:   911e3a46fb38 net: phy: Fix unsigned comparison with less t..
-git tree:       net-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d36d2402e8523638
-dashboard link: https://syzkaller.appspot.com/bug?extid=62e474dd92a35e3060d8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141592f2b00000
+Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
+Reported-by: Keith Wiles <keith.wiles@intel.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ net/xdp/xsk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-If the result looks correct, please mark the issue as fixed by replying with:
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index f16074eb53c7..7a466ea962c5 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -677,8 +677,6 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+ 	struct xdp_sock *xs = xdp_sk(sk);
+ 	struct xsk_buff_pool *pool;
+ 
+-	sock_poll_wait(file, sock, wait);
+-
+ 	if (unlikely(!xsk_is_bound(xs)))
+ 		return mask;
+ 
+@@ -690,6 +688,8 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+ 		else
+ 			/* Poll needs to drive Tx also in copy mode */
+ 			__xsk_sendmsg(sk);
++	} else {
++		sock_poll_wait(file, sock, wait);
+ 	}
+ 
+ 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
 
-#syz fix: net: fix premature exit from NAPI state polling in napi_disable()
+base-commit: 0be2516f865f5a876837184a8385163ff64a5889
+-- 
+2.29.0
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
