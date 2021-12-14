@@ -2,92 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C5D473C5B
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 06:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51F5473D09
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 07:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhLNFPS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 00:15:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhLNFPS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 00:15:18 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1598C061574
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 21:15:17 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id o4so16838989pfp.13
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 21:15:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jszANN8IKBRswJaX8j5QsurEt5UP0ve2Ij7Mp4jHWfE=;
-        b=Ibi0w5z+duHlxF5IPg7bqTUeDfnWzI2ymQIB9t/Qi1i/WMXToN7I+7A9GzaQdqtBeF
-         VTdDGe9DPnYtWJF9g9wgqRuVFJAJOE93/RKgydyoOygN1GApUtyCKUcSTRFg30GTy00I
-         /jEI1NmbkTqFu+3ZT7xBNeY/R4cPlj7Tu3lkzNkzxRtH+7a7olcu1fBkPnLVqQBQJ6Qa
-         BEd2meeNSXbFskwxMlv0pVHkWqck6tbVdqK//U+Ew/wE+UFxYEnE0lOMqEirEvBwXzAY
-         OyR1GJAtWJ3LymJ+QwFGKHTC+2LHzi36npkRQtq4Hda7lI84KrehqKE2YMDkW9NKoURh
-         FTkQ==
+        id S230370AbhLNGPO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 01:15:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60794 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230075AbhLNGPO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Dec 2021 01:15:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639462513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwugZBIsB9O3b1tEKG2yDl1lfnlqxf61JgJVJ0aWmUQ=;
+        b=Vk2++8tnyfBAP4YnUTj+Dm5WH1aP9yxSgCu5lPLv1iQisZFEJ2QU8AzLsldHM9XQfP9/9n
+        XNGMvo2VNxTwqU5KzsEsfCqp2/+vFGpmTrQXyixte8IlX9VFVihFgMwc1AR/Gkb6chkcpz
+        2RprZaKhno5bxeXV2GS95msHLpFksbE=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-520-xQZKywfXOyW2K8bTr_YLpg-1; Tue, 14 Dec 2021 01:15:11 -0500
+X-MC-Unique: xQZKywfXOyW2K8bTr_YLpg-1
+Received: by mail-lf1-f69.google.com with SMTP id k32-20020a0565123da000b0041643c6a467so8507240lfv.5
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 22:15:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jszANN8IKBRswJaX8j5QsurEt5UP0ve2Ij7Mp4jHWfE=;
-        b=qLtYX3dWvAwixRuUOEF/soRUI5h3cZXEiEMCtvsl/xnLXOURKxUEXItvccQVSUK8vt
-         BEADZTrZ9VdAX7AkWRG3qIRuKWBYQHJ8zzEqePqJyO5gQdUKw2M3CKmuHCU8CB6f8rSz
-         JJkVQVJUl8GC7rELIwGRBjoawn6y5HJ5PNQuKgL9hp0t5cpjhNnpnAyFDA3incIa/IS4
-         L39qndXogZOzg+azUuVGL7jxJfuZO0A7MVShL4KApfQ5P7LStk4i7ueNw3n6jItzIlu5
-         jzlgm/82uT1KBuBLgEuuJxtzdzt0EZN0JJuH99pt8/qvtJe1l+nchGHXeQdVhGhV8tIN
-         CJeA==
-X-Gm-Message-State: AOAM533vIBEjUjpluVzrSriQ5Lr/RC9eWNc16yeMUq4YpCzfARj1Ezpq
-        yxdTs5KWi/6ilWI5GaAKuMzoOnkT1TszalY2EnJQ/oGjqD8=
-X-Google-Smtp-Source: ABdhPJyPaU9ND61WRslhF4meIV5wV1oigUYwAZr91En4+iK6idfCcaNLQndv/0PuV3Alb27f7RA7Z5Uw+5WJXXLXlhk=
-X-Received: by 2002:a62:33c6:0:b0:4a0:3a81:3489 with SMTP id
- z189-20020a6233c6000000b004a03a813489mr2305062pfz.59.1639458917347; Mon, 13
- Dec 2021 21:15:17 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YwugZBIsB9O3b1tEKG2yDl1lfnlqxf61JgJVJ0aWmUQ=;
+        b=TKeX+HbRCwpTfDSUsIhIKHJx9/jFH1dpp6syyBPdHWsNODKj8+xXaoDmxPidDb+Llb
+         o87M5MoDYvuqkTzpZQZRVN7wQikMJyCmTHmfsQ+8v2ezaKYa7wwNMTIa0hmElWbM5uEq
+         HWUyE6vA+zxAMge5rVPehAdaAczcKNy574IUzXIzKzM2Tw93zKCIaxa5ViM/nEEuJpSf
+         bws5jPDBSeJlnQVp7Ofw8u30L6wKtzc1h+BMjqwj/3W9ijdEqJ8pkgD9GC6mNP6tRj3E
+         Ttr4ep2CpolS25ax6l1iSt6/XZ8hv6xaGVL14ISSjffVEFkOij1xVMBiRh14pUzcYzMe
+         cLvQ==
+X-Gm-Message-State: AOAM532qeM5aAAjt2PKrhxRtElcizD7Z3TkNJB9S5ZYXUk2qrs3vgHdS
+        dTKeiHh/39tIr4bYk8EEEYncBbCEbDkU6FwGup8M+bsgmXgamioElvExjh1jnz9RivzrcX+/y2b
+        2ciIzfPwiSZ5TEaArMFvf2SEQHqNF
+X-Received: by 2002:a2e:3012:: with SMTP id w18mr2978403ljw.217.1639462510177;
+        Mon, 13 Dec 2021 22:15:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwqenw88BrR2D6Qt+sGpTwBW3+xZwJrfzDxCVORbTErFH0MhwcnexNkpqOBvtu367RvJ0qUvX4Rn9Ui+iPKu5s=
+X-Received: by 2002:a2e:3012:: with SMTP id w18mr2978375ljw.217.1639462509908;
+ Mon, 13 Dec 2021 22:15:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20211213234223.356977-1-kuba@kernel.org> <20211213234223.356977-4-kuba@kernel.org>
-In-Reply-To: <20211213234223.356977-4-kuba@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 13 Dec 2021 21:15:06 -0800
-Message-ID: <CAADnVQ+6Qmm9b3Jf_BHCn_PFxs00NK71K235zQYc=_PufkOPAQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] bpf: create a header for struct bpf_link
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20211213045012.12757-1-mengensun@tencent.com> <CACGkMEtLso8QjvmjTQ=S_bbGxu11O_scRa8GT7z6MXfJbfzfRg@mail.gmail.com>
+ <CACGkMEukGbDcxJe3nGFkeBNenniJdMkFMRnrN4OOfDsCb7ZPuA@mail.gmail.com> <CA+K-gpUBSB0_gX2r7Xi7b6SxrbQApNpneQu_bLAR+e1ALOUwYw@mail.gmail.com>
+In-Reply-To: <CA+K-gpUBSB0_gX2r7Xi7b6SxrbQApNpneQu_bLAR+e1ALOUwYw@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 14 Dec 2021 14:14:59 +0800
+Message-ID: <CACGkMEtMcU6f+AD6+_cKuDpLTFgaBJura39j16PnKqGWB2fULA@mail.gmail.com>
+Subject: Re: [PATCH] virtio-net: make copy len check in xdp_linearize_page
+To:     =?UTF-8?B?5a2Z6JKZ5oGp?= <mengensun8801@gmail.com>
+Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        mengensun <mengensun@tencent.com>,
+        MengLong Dong <imagedong@tencent.com>,
+        ZhengXiong Jiang <mungerjiang@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 3:42 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Tue, Dec 14, 2021 at 11:48 AM =E5=AD=99=E8=92=99=E6=81=A9 <mengensun8801=
+@gmail.com> wrote:
 >
-> struct bpf_link needs to be embedded by cgroups.
-> Put it in its own header.
->
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->  include/linux/bpf-link.h | 23 +++++++++++++++++++++++
->  include/linux/bpf.h      | 10 +---------
->  2 files changed, 24 insertions(+), 9 deletions(-)
->  create mode 100644 include/linux/bpf-link.h
->
-> diff --git a/include/linux/bpf-link.h b/include/linux/bpf-link.h
-> new file mode 100644
-> index 000000000000..d20f049af51a
-> --- /dev/null
-> +++ b/include/linux/bpf-link.h
-> @@ -0,0 +1,23 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-> + */
-> +#ifndef _LINUX_BPF_MIN_H
-> +#define _LINUX_BPF_MIN_H 1
+> Jason Wang <jasowang@redhat.com> =E4=BA=8E2021=E5=B9=B412=E6=9C=8814=E6=
+=97=A5=E5=91=A8=E4=BA=8C 11:13=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Mon, Dec 13, 2021 at 5:14 PM =E5=AD=99=E8=92=99=E6=81=A9 <mengensun8=
+801@gmail.com> wrote:
+> > >
+> > > Jason Wang <jasowang@redhat.com> =E4=BA=8E2021=E5=B9=B412=E6=9C=8813=
+=E6=97=A5=E5=91=A8=E4=B8=80 15:49=E5=86=99=E9=81=93=EF=BC=9A
+> > > >
+> > > > On Mon, Dec 13, 2021 at 12:50 PM <mengensun8801@gmail.com> wrote:
+> > > > >
+> > > > > From: mengensun <mengensun@tencent.com>
+> > > > >
+> > > > > xdp_linearize_page asume ring elem size is smaller then page size
+> > > > > when copy the first ring elem, but, there may be a elem size bigg=
+er
+> > > > > then page size.
+> > > > >
+> > > > > add_recvbuf_mergeable may add a hole to ring elem, the hole size =
+is
+> > > > > not sure, according EWMA.
+> > > >
+> > > > The logic is to try to avoid dropping packets in this case, so I
+> > > > wonder if it's better to "fix" the add_recvbuf_mergeable().
+> > >
+> >
+> > Adding lists back.
+> >
+> > > turn to XDP generic is so difficulty for me, here can "fix" the
+> > > add_recvbuf_mergeable link follow:
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index 36a4b7c195d5..06ce8bb10b47 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -1315,6 +1315,7 @@ static int add_recvbuf_mergeable(struct virtnet=
+_info *vi,
+> > >                 alloc_frag->offset +=3D hole;
+> > >         }
+> > > +       len =3D min(len, PAGE_SIZE - room);
+> > >         sg_init_one(rq->sg, buf, len);
+> > >         ctx =3D mergeable_len_to_ctx(len, headroom);
+> >
+> > Then the truesize here is wrong.
+> many thanks!! i have  known i'm wrong immediately after click the
+> "send" botton , now, this problem seem not only about the *hole* but
+> the  EWMA, EWMA will give buff len bewteen min_buf_len and PAGE_SIZE,
+> while swith from no-attach-xdp to attach xdp, there may be some buff
+> already in ring and filled before xdp attach. xdp_linearize_page
+> assume buf size is PAGE_SIZE - VIRTIO_XDP_HEADROOM, and coped "len"
+> from the buff, while the buff may be **PAGE_SIZE**
 
-MIN_H ?
+So the issue I see is that though add_recvbuf_mergeable() tries to
+make the buffer size is PAGE_SIZE, XDP might requires more on the
+header which makes a single page is not sufficient.
 
-My understanding that patch 4 is the key.
-I think the bpf-link.h bpf-cgroup-types.h and bpf-cgroup-storage.h
-are too specific. We don't do a header file per type.
-Maybe combine them all into one bpf-cgroup-types.h ?
-That will still achieve the separation of cgroup from linux/bpf.h
+>
+> because we have no idear when the user attach xdp prog, so, i have no
+> idear except make all the buff have a "header hole" len of
+> VIRTIO_XDP_HEADROOM(128), but it seem so expensive for no-xdp-attach
+> virtio eth to aways leave 128 byte not used at all.
+
+That's an requirement for XDP header adjustment so far.
+
+>
+> this problem is found by review code, in really test, it seemed not so
+> may big frame. so here we can just "fix" the  xdp_linearize_page, make
+> it trying best to not drop frames for now?
+
+I think you can reproduce the issue by keeping sending large frames to
+guest and try to attach XDP in the middle.
+
+>
+> btw,  it seem no way to fix this thoroughly, except we drained all the
+> buff in the ring, and flush it all to "xdp buff" when attaching xdp
+> prog.
+>
+> is that some mistake i have makeed again? #^_^
+
+I see two ways to solve this:
+
+1) reverse more room (but not headerroom) to make sure PAGE_SIZE can
+work in the case of linearizing
+2) switch to use XDP genreic
+
+2) looks much more easier, you may refer tun_xdp_one() to see how it
+works, it's as simple as call do_xdp_generic()
+
+Thanks
+
+>
+> >
+> >
+> > >         err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, =
+gfp);
+> > >
+> > > it seems a rule that, length of elem giving to vring is away smaller
+> > > or equall then PAGE_SIZE
+> >
+> > It aims to be consistent to what EWMA tries to do:
+> >
+> >         len =3D hdr_len + clamp_t(unsigned int, ewma_pkt_len_read(avg_p=
+kt_len),
+> >                         rq->min_buf_len, PAGE_SIZE - hdr_len);
+> >
+> > Thanks
+> >
+> > >
+> > > >
+> > > > Or another idea is to switch to use XDP generic here where we can u=
+se
+> > > > skb_linearize() which should be more robust and we can drop the
+> > > > xdp_linearize_page() logic completely.
+> > > >
+> > > > Thanks
+> > > >
+> > > > >
+> > > > > so, fix it by check copy len,if checked failed, just dropped the
+> > > > > whole frame, not make the memory dirty after the page.
+> > > > >
+> > > > > Signed-off-by: mengensun <mengensun@tencent.com>
+> > > > > Reviewed-by: MengLong Dong <imagedong@tencent.com>
+> > > > > Reviewed-by: ZhengXiong Jiang <mungerjiang@tencent.com>
+> > > > > ---
+> > > > >  drivers/net/virtio_net.c | 6 +++++-
+> > > > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > index 36a4b7c195d5..844bdbd67ff7 100644
+> > > > > --- a/drivers/net/virtio_net.c
+> > > > > +++ b/drivers/net/virtio_net.c
+> > > > > @@ -662,8 +662,12 @@ static struct page *xdp_linearize_page(struc=
+t receive_queue *rq,
+> > > > >                                        int page_off,
+> > > > >                                        unsigned int *len)
+> > > > >  {
+> > > > > -       struct page *page =3D alloc_page(GFP_ATOMIC);
+> > > > > +       struct page *page;
+> > > > >
+> > > > > +       if (*len > PAGE_SIZE - page_off)
+> > > > > +               return NULL;
+> > > > > +
+> > > > > +       page =3D alloc_page(GFP_ATOMIC);
+> > > > >         if (!page)
+> > > > >                 return NULL;
+> > > > >
+> > > > > --
+> > > > > 2.27.0
+> > > > >
+> > > >
+> > >
+> >
+>
+
