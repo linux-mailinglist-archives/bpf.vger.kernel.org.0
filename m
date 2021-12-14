@@ -2,116 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435DA473BB7
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEA3473BD4
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhLNDtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 22:49:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhLNDtp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 22:49:45 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DF7C061574
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:49:45 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id n6so32816666uak.1
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wl+WzFLefhVOTvM1k8TvMp2OwB6CJA4EhHCy5Zfv6Nk=;
-        b=dB4iSbIRgpt4S/0UrIkPWD9qGyaXlI77mUyUeDIkECzbxRgqUOAFH9a4OEedmcD4s2
-         K5tQk+zwujTxP1yaqCpj+HQes9svPyL0W9TPcVs28QusZOsQrEgH83o1IIp5j4iciDDY
-         b2Ifueznzdm87Qw2DeM0rpI43XSv+cuuNsNA3C7uZ4OcJsiD38fXAFkDe9j53ph3zwWd
-         XABAwiTC6jyv+lLK0QpXACRZZNRgdO4t+8SGBs2PNXnAYwzMU9MPcPA7+fYdhILej3Em
-         pBATr0T3qAY4DUf2FVyL/9ClCxB+q61fRyVgaZkse+LtrPIXONYnzjNlGlHsRlOaXYL1
-         N97w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wl+WzFLefhVOTvM1k8TvMp2OwB6CJA4EhHCy5Zfv6Nk=;
-        b=WG9yi/G5ty85Yy+8c/NTvn58DCejQWih5TVHh5P9Ezqaiuiw/tdzxBKOGs+fQz2i3P
-         /0ueSZRHHspJsphzGEa+Gk6KDGXijWwKetP5n5bBvQ8KU9ONaRIslGiBpRaiBx++yEBU
-         bk3CRG2GSQUU5KjAx8K6Uy9WDcoAdxvNFOld7UXc4+Y8PhrNdi5Z/D15V/C2djwHvnZz
-         sKAV2UHhD0xOaUMVoqLFv9u38jGdrHZkUdVslHnBBwZOTBEhMJ726vJqlxjc4eaiK/P0
-         BEpP6a7nsKU+nPPtQbZfUQ/uI1xXlNirgpGrjApTgm0S5AMJdxObtfDbEEJSAcl/ES/5
-         4LmA==
-X-Gm-Message-State: AOAM531j4ULCXDoIPhAH7csX2iAhtzuoehoAAy3L0QIih2BI/4KHIRLK
-        rWqVLE8EzAOgVcONM5a8nrvxos6AD6ecVSVe6/k=
-X-Google-Smtp-Source: ABdhPJxxKTNnb9REwnSGNMn+C07ZeQ0xT2iePen+l/nTIgBnAxLi2+f6eneVwH6nKREAl5g0pHzEVfJcobwjTebLoec=
-X-Received: by 2002:a05:6102:3ec9:: with SMTP id n9mr3543807vsv.67.1639453784778;
- Mon, 13 Dec 2021 19:49:44 -0800 (PST)
+        id S229684AbhLND7h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 22:59:37 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38398 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229587AbhLND7g (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 22:59:36 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BDMjkbn024966
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:59:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=Xt/j2qCPr6eqR7ff2TQeM61XNYLEiBu/AL1DYjHwyk4=;
+ b=ahmEbllFVMr2MT3iyVykgAnKMRN4oCMo36eG7uLkJwpM7gfvNDREzJcKqcZbQteJ73JR
+ 1sKvwJk9uxs2GTsfCkOou07Wz2MwSswU1Mr2DShK9BpXuUMadfRXg4cfwspqswMFeMQQ
+ vuPb/7mgdic76Gy3TSOt/PuW6tHw5egtUmw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cx9rncdk7-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:59:36 -0800
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 13 Dec 2021 19:59:35 -0800
+Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
+        id 5A1ED1131797; Mon, 13 Dec 2021 19:59:33 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH v4 bpf-next 0/4] Stop using bpf_object__find_program_by_title API
+Date:   Mon, 13 Dec 2021 19:59:27 -0800
+Message-ID: <20211214035931.1148209-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: 1EmroK6hqQAW75wBEIzHK0_xrVZKCPeW
+X-Proofpoint-ORIG-GUID: 1EmroK6hqQAW75wBEIzHK0_xrVZKCPeW
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CAO658oUqd5=B3zkDhm2jVQxG+vEf=2CE7WimXHqgcH+m0P=k_Q@mail.gmail.com>
- <CAEf4Bzb5TMHkct=uh2OHnDaTtnvyLwvHjueN1Lm8vqTF6BDaSw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb5TMHkct=uh2OHnDaTtnvyLwvHjueN1Lm8vqTF6BDaSw@mail.gmail.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Mon, 13 Dec 2021 22:49:33 -0500
-Message-ID: <CAO658oXGs3R=mQZo=aOEvRgG6O-obFbwR54V+QSn36uecF0+=w@mail.gmail.com>
-Subject: Re: Question: `libbpf_err` vs `libbpf_err_errno`
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-14_01,2021-12-13_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
+ clxscore=1015 spamscore=0 priorityscore=1501 suspectscore=0
+ mlxlogscore=999 lowpriorityscore=0 malwarescore=0 adultscore=0
+ phishscore=0 bulkscore=0 impostorscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2112140019
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 6:15 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Dec 13, 2021 at 3:10 PM Grant Seltzer Richman
-> <grantseltzer@gmail.com> wrote:
-> >
-> > I'm using libbpf and want to make sure I'm properly handling errors.
-> >
-> > I see that some functions (such as `bpf_map_batch_common`) return
-> > error codes using `libbpf_err_errno()`. My understanding is that since
-> > libbpf_err_errno() returns -errno, these function calls can just be
-> > followed by checking the returned error code.
-> >
-> > Some functions (such as `bpf_map__pin`) return `libbpf_err(int ret)`
-> > which sets errno and returns the error code. In this case, does errno
-> > even need to be checked?
-> >
->
-> No it doesn't, checking directly returned error is enough. We set
-> errno always for consistency with APIs that return pointers (like
-> bpf_object__open_file(), for example). For the latter, on error NULL
-> is going to be returned (in libbpf 1.0 mode), so the only way to get
-> details about what failed is through errno.
->
-> so doing:
->
-> if (some_libbpf_api_with_error_return(...)) {
->   /* errno contains error */
-> }
->
-> is the same as
->
-> err = some_libbpf_api_with_error_return(...);
-> if (err < 0) {
->
-> }
->
->
-> But you only can use:
->
-> ptr = some_libbpf_api_returning_ptr(...);
-> if (!ptr) { /* errno has error */ }
->
->
-> I plan to remove libbpf_get_error() in libbpf 1.0, btw. The pattern
-> above will be the only one that could be used.
+bpf_object__find_program_by_title is going to be deprecated since
+v0.7.  Replace all use cases with bpf_object__find_program_by_name if
+possible, or use bpf_object__for_each_program to iterate over
+programs, matching section names.
 
-Thanks for the info! I think I have a couple instances of usage wrong
-in libbpfgo. I will submit a patch to document this accordingly.
+V3 fixes a broken test case, fexit_bpf2bpf, in selftests/bpf, using
+bpf_obj__for_each_program API instead.
 
->
->
-> > Why the inconsistency? I'd like to document this, so anything else
-> > that you can add on error handling in libbpf is welcome. That includes
-> > example usage.
-> >
-> > Thanks!
+[v2] https://lore.kernel.org/bpf/20211211003608.2764928-1-kuifeng@fb.com/
+[v1] https://lore.kernel.org/bpf/20211210190855.1369060-1-kuifeng@fb.com/T/
+
+Kui-Feng Lee (4):
+  selftests/bpf: Stop using bpf_object__find_program_by_title API.
+  samples/bpf: Stop using bpf_object__find_program_by_title API.
+  tools/perf: Stop using bpf_object__find_program_by_title API.
+  libbpf: Mark bpf_object__find_program_by_title API deprecated.
+
+ samples/bpf/hbm.c                             | 11 ++-
+ samples/bpf/xdp_fwd_user.c                    | 12 ++-
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/perf/builtin-trace.c                    | 13 ++-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     |  4 +-
+ .../bpf/prog_tests/connect_force_port.c       | 18 ++---
+ .../selftests/bpf/prog_tests/core_reloc.c     | 79 +++++++++++++------
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 17 +++-
+ .../bpf/prog_tests/get_stack_raw_tp.c         |  4 +-
+ .../bpf/prog_tests/sockopt_inherit.c          | 15 ++--
+ .../selftests/bpf/prog_tests/stacktrace_map.c |  4 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  4 +-
+ .../selftests/bpf/prog_tests/test_overhead.c  | 20 ++---
+ .../bpf/prog_tests/trampoline_count.c         |  6 +-
+ 14 files changed, 137 insertions(+), 71 deletions(-)
+
+--=20
+2.30.2
+
