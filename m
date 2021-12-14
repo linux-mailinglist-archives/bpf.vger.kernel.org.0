@@ -2,149 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA494739A7
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 01:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5385F4739C2
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 01:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbhLNAhf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 19:37:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25343 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234762AbhLNAhf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 19:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639442254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N7Q3e2ko+rvmCWDe27t5CmJ3VC5aNXn3jBycIN5bA28=;
-        b=NGAwESVxAGl1luPFvbTDY6czqORKSxUw1k/wd1cGVL0v0cKIy6KCDJXq+tCam9clQJmxmd
-        qeaGZDkxU/VX5wtbuvbVpKVpjwAYz7Q30s7md0dxPFIQhaEdGWGJ4joaz+hEblnBxSOlGC
-        Joaa+7O8bB0f1lzzx4TUdlBjJozCx6k=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-140-4XPhQhylO4WD-sJy0GGTAQ-1; Mon, 13 Dec 2021 19:37:33 -0500
-X-MC-Unique: 4XPhQhylO4WD-sJy0GGTAQ-1
-Received: by mail-ed1-f71.google.com with SMTP id b15-20020aa7c6cf000000b003e7cf0f73daso15399618eds.22
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 16:37:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=N7Q3e2ko+rvmCWDe27t5CmJ3VC5aNXn3jBycIN5bA28=;
-        b=XRGZXTJToA0Tg34D/TuEcuNUupr7b5YAKc1blQpaT5SwVzKIRxPLjjFA7nbewlZs9Y
-         LIIzw59cUX8Q+tJX0LaluQaaNEuxtXh5yx91jQEhS9H+nf6gsWYVwmnZVb0v7QzF5kfQ
-         UPGim9RVDU73JDDs0Kx/Zz57d9EVXFhF/ACii+Ew7hWh1EHSSEfu3qon0JAsHM6oozNn
-         5SiHaBFS7omludjeoWEeA4ueFlNnDN2N8BCjgi8RwTkZmxuT7nbJYgwsBbXwaoGCtIAp
-         KlxmiPQhkIIkacjE6BAHvlFlfBBg4ghqWFDXUWWMPf5R791/JV7nOiqph+wnhJqrOvYx
-         2LZA==
-X-Gm-Message-State: AOAM5300OSwsG6slE61jC7Zo+3m3PKPsCfJdsOyYukaKEcFdPuAxOp3b
-        C90infSxvkv5oNHO6FLSlR2r1f4W+BGJvNyUymDiqatZDQ2fnCXP4nZeKaMbhj7hHxY9rG3okMk
-        8qduKKXlHrtCr
-X-Received: by 2002:a17:907:7244:: with SMTP id ds4mr2047244ejc.55.1639442251519;
-        Mon, 13 Dec 2021 16:37:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx2tU817eooQh0uYasNGE4FLArqonKJkM54b6iWlphSMsTzuufG9DLiY2g6W4tDjSSJKaqrOg==
-X-Received: by 2002:a17:907:7244:: with SMTP id ds4mr2047134ejc.55.1639442250362;
-        Mon, 13 Dec 2021 16:37:30 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id k21sm6822217edo.87.2021.12.13.16.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 16:37:29 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3C966183566; Tue, 14 Dec 2021 01:37:29 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v3 8/8] samples/bpf: Add xdp_trafficgen sample
-In-Reply-To: <CAADnVQL6yL6hVGWL0cni-t+Lvpe91ST8moF69u5CwOLBKZT-GQ@mail.gmail.com>
-References: <20211211184143.142003-1-toke@redhat.com>
- <20211211184143.142003-9-toke@redhat.com>
- <CAADnVQKiPgDtEUwg7WQ2YVByBUTRYuCZn-Y17td+XHazFXchaA@mail.gmail.com>
- <87r1ageafo.fsf@toke.dk>
- <CAADnVQL6yL6hVGWL0cni-t+Lvpe91ST8moF69u5CwOLBKZT-GQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 14 Dec 2021 01:37:29 +0100
-Message-ID: <87czm0yqba.fsf@toke.dk>
+        id S233802AbhLNAtC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 13 Dec 2021 19:49:02 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47368 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231908AbhLNAtC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 19:49:02 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 1BDMcUuA031488
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 16:49:01 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3cx9rq3h88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 16:49:01 -0800
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 13 Dec 2021 16:48:59 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id B595AD01DF6E; Mon, 13 Dec 2021 16:48:57 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v3 bpf-next 0/2] libbpf: auto-bump RLIMIT_MEMLOCK on old kernels
+Date:   Mon, 13 Dec 2021 16:48:54 -0800
+Message-ID: <20211214004856.3785613-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: ZB3-bQ-XwWh_melZBbOCyZMwAoVfhc4_
+X-Proofpoint-GUID: ZB3-bQ-XwWh_melZBbOCyZMwAoVfhc4_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-13_14,2021-12-13_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ suspectscore=0 spamscore=0 impostorscore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=408 clxscore=1015 malwarescore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112140001
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Make libbpf bump RLIMIT_MEMLOCK, similarly to BCC, if kernel is old enough to
+use memcg-based memory accounting for BPF. Patch #2 drops explicit
+setrlimi(RLIMIT_MEMLOCK) calls in test_progs, test_maps, and test_verifier.
 
-> On Mon, Dec 13, 2021 at 8:28 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>
->> > On Sat, Dec 11, 2021 at 10:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
-e@redhat.com> wrote:
->> >>
->> >> This adds an XDP-based traffic generator sample which uses the DO_RED=
-IRECT
->> >> flag of bpf_prog_run(). It works by building the initial packet in
->> >> userspace and passing it to the kernel where an XDP program redirects=
- the
->> >> packet to the target interface. The traffic generator supports two mo=
-des of
->> >> operation: one that just sends copies of the same packet as fast as i=
-t can
->> >> without touching the packet data at all, and one that rewrites the
->> >> destination port number of each packet, making the generated traffic =
-span a
->> >> range of port numbers.
->> >>
->> >> The dynamic mode is included to demonstrate how the bpf_prog_run() fa=
-cility
->> >> enables building a completely programmable packet generator using XDP.
->> >> Using the dynamic mode has about a 10% overhead compared to the static
->> >> mode, because the latter completely avoids touching the page data.
->> >>
->> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> ---
->> >>  samples/bpf/.gitignore            |   1 +
->> >>  samples/bpf/Makefile              |   4 +
->> >>  samples/bpf/xdp_redirect.bpf.c    |  34 +++
->> >>  samples/bpf/xdp_trafficgen_user.c | 421 ++++++++++++++++++++++++++++=
-++
->> >>  4 files changed, 460 insertions(+)
->> >>  create mode 100644 samples/bpf/xdp_trafficgen_user.c
->> >
->> > I think it deserves to be in tools/bpf/
->> > samples/bpf/ bit rots too often now.
->> > imo everything in there either needs to be converted to selftests/bpf
->> > or deleted.
->>
->> I think there's value in having a separate set of utilities that are
->> more user-facing than the selftests. But I do agree that it's annoying
->> they bit rot. So how about we fix that instead? Andrii suggested just
->> integrating the build of samples/bpf into selftests[0], so I'll look
->> into that after the holidays. But in the meantime I don't think there's
->> any harm in adding this utility here?
->
-> I think samples/bpf building would help to stabilize bitroting,
-> but the question of the right home for this trafficgen tool remains.
-> I think it's best to keep it outside of the kernel tree.
-> It's not any more special than all other libbpf and bcc tools.
-> I think xdp-tools repo or bcc could be a home for it.
+v2->v3:
+  - use difference in fdinfo's memlock reporting to detect memcg;
+v1->v2:
+  - fix up out-of-sync comments (Toke).
 
-Alright, I'll drop it from the next version and put it into xdp-tools.
-I've been contemplating doing the same for some of the other tools
-(xdp_redirect* and xdp_monitor, for instance). Any opinion on that?
+Andrii Nakryiko (2):
+  libbpf: auto-bump RLIMIT_MEMLOCK if kernel needs it for BPF
+  selftests/bpf: remove explicit setrlimit(RLIMIT_MEMLOCK) in main
+    selftests
 
--Toke
+ tools/lib/bpf/bpf.c                           | 109 ++++++++++++++++++
+ tools/lib/bpf/bpf.h                           |   2 +
+ tools/lib/bpf/libbpf.c                        |  47 ++------
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_internal.h               |  39 +++++++
+ tools/lib/bpf/libbpf_legacy.h                 |  12 +-
+ tools/testing/selftests/bpf/bench.c           |  16 ---
+ tools/testing/selftests/bpf/prog_tests/btf.c  |   1 -
+ .../bpf/prog_tests/select_reuseport.c         |   1 -
+ .../selftests/bpf/prog_tests/sk_lookup.c      |   1 -
+ .../selftests/bpf/prog_tests/sock_fields.c    |   1 -
+ tools/testing/selftests/bpf/test_maps.c       |   1 -
+ tools/testing/selftests/bpf/test_progs.c      |   2 -
+ tools/testing/selftests/bpf/test_verifier.c   |   4 +-
+ 14 files changed, 174 insertions(+), 63 deletions(-)
+
+-- 
+2.30.2
 
