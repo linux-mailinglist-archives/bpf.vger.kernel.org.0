@@ -2,198 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC81473B7B
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB69473B86
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhLNDYu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 22:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
+        id S231722AbhLND3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 22:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbhLNDYs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 22:24:48 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94169C061751
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:24:48 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id l18so11542368pgj.9
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:24:48 -0800 (PST)
+        with ESMTP id S229744AbhLND3J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 22:29:09 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4409C061574;
+        Mon, 13 Dec 2021 19:29:08 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id o14so12610456plg.5;
+        Mon, 13 Dec 2021 19:29:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/FP25EAS0jWe9Bmq1xKTTtZhdfUiLLbdKe0jZzbjmTg=;
-        b=JjM/bjXFKsWhsVueD0GfNyJfbJKjzqPTfF/ptMJ3m+MFnQ/dlMCZMjSYyiCOXk1TiN
-         lyRxMDBc/hbhJAiB46dd/DM51W1AbpXTs4xyIcHCA4EdxN+JXwjqw80o8PMsotzboZ1L
-         9K9LuPB+DRXC22uUFXl5LGSuqRW/4vnNBdrxTAKHvsZvU5NZUAHfExbKC8arFiMcnyF9
-         8lbssUZJqfACm7bn8Q3t2x1k+a0Cwkrl5LmaMrIpqPO1l6R1lWM9fycG1NoDKOZzST5N
-         X6XlFpsGntjn5l9wJxVNLgR2JChtqOgsdDBS+407YEuufF0Ct1eTNNdydjD5EgKwKMS1
-         CBGA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+ssVFgBKjmVIJAolDkQX5NONW+ijNamJd/NwdyPKjV0=;
+        b=GRxFpSh/e9TAEjNBmbCynBmh5VwaVPIneZaPhsZV5UNIkQqWWtXMdT1cdC/tpDpRwr
+         4+/OiAVq6C6OIWd/C8PPbM65OC9J3IaMrXO0nDPzY2V2vFnn+dtLMqDC6V8cApXuAga5
+         WFk4Po2FaV/+e8mN1xoqELFrIXyttA/aZVx1v13cpjufo9jTZQO+C+t4ROOM71oyYsER
+         tFw7lAL585FhSYsmJl0DljEbRibaXfUGpo9EAiTmMAHivxKHCe3G1xvdDD8QaIWgNVpJ
+         2Z2ARL5JGTnldsJg7E6zt4CY9AlWtqYxqeaqS/QSUeu9ajNHmQe9VlHxieDifGHcR0N9
+         eVDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/FP25EAS0jWe9Bmq1xKTTtZhdfUiLLbdKe0jZzbjmTg=;
-        b=D3xmWd/4yWmt2Sp6SVGC5kpMsfzu/0hAGwjoEaeunl71LlVDipy29Q1OTubYZyTOd8
-         cFl+kG5FpR3dliPyPT+B5/04lIdY2/l+CPwqUklt7XhSYp/WmyMDH3sT+r4iqEcPRqx7
-         kysWMQ5gL1RRYkN5Ty3PN2m6b6RFEqp5YTXmaEgwCUWyOFHn8mDgl734/h+ct98YwliK
-         aI7vwvacXpkpWi+BA7pdBiXLyivp0ocv0CAQYnS+wWfs+QxCtkJ3RElHpU0peKz3li+m
-         vkPGSATCtN6hDKnmFejk+UzaDiVR/agdEwa/NgnIKQ2UA8alhv+eSq6e7xyk/yCECSAo
-         lpvQ==
-X-Gm-Message-State: AOAM533jtAt+xbp/DB1pNmqjhCDNFbrIQ2MDs4ceJ3XSH/oDKUfiLqjG
-        dFRIr7ThT1zSqEZ7FvfKmLwKZQ==
-X-Google-Smtp-Source: ABdhPJzGkMINKutzwLWAkv9ZT/ZuLyFvXUivYQOMJM0rW7WzL+i0zVRuVrlUPS+0PfxiYFMwS/SHVQ==
-X-Received: by 2002:a63:db17:: with SMTP id e23mr1940721pgg.420.1639452287590;
-        Mon, 13 Dec 2021 19:24:47 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id k15sm12876168pff.215.2021.12.13.19.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 19:24:47 -0800 (PST)
-Date:   Tue, 14 Dec 2021 11:24:36 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+ssVFgBKjmVIJAolDkQX5NONW+ijNamJd/NwdyPKjV0=;
+        b=5RWW3AMQ64Qu/8qzSztAsceA8q2DzkolqjtXPQ1vOcomsEEltRW+C0L1JCpc/HE+IZ
+         qoGQvWCz3ZRSsiPM7OGAh9w2rxRgtP9QlTM0+Td6aKkIlNKNQ6ZtQcwQYfV+xCC0PlPr
+         qqlq7TWcCNkJQaZU8XN5tI2HTlkMyecV0XnrYaIk5i3sjOWMw+kTrgGmaakGK67p01CL
+         H+KOh/FlU2Z8BoktsESw8fuOQHzPCt1Xm18tiXJbPvuE/5zIr9b9y/eWAD8ZOAgBjUUh
+         AxluzGArse9WYgrtMPJP8f42NVyFZKjsFZ2hSjQ8ZY/DsSH1FzLfm26AUqMaou+ZhsrL
+         lK+w==
+X-Gm-Message-State: AOAM533WOt3OH45otLiab9PA+tHUl31L9OqJAdOKCLUgYV94Q4Po/DCS
+        BzYZnt6y1K8Y4FT7LdzGiym9pBFsIL9TosajUnUtb1xe
+X-Google-Smtp-Source: ABdhPJxdLvdWfQnDKR8oEQPVlSpYAGmCAqXZN1ivSOU8D+cJ4iqJWPRMvwEaas1wN53MIB9VFi6SGJ5jCzxal+55b48=
+X-Received: by 2002:a17:902:b588:b0:143:b732:834 with SMTP id
+ a8-20020a170902b58800b00143b7320834mr2611006pls.22.1639452548228; Mon, 13 Dec
+ 2021 19:29:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20211211184143.142003-1-toke@redhat.com> <20211211184143.142003-9-toke@redhat.com>
+ <CAADnVQKiPgDtEUwg7WQ2YVByBUTRYuCZn-Y17td+XHazFXchaA@mail.gmail.com>
+ <87r1ageafo.fsf@toke.dk> <CAADnVQL6yL6hVGWL0cni-t+Lvpe91ST8moF69u5CwOLBKZT-GQ@mail.gmail.com>
+ <87czm0yqba.fsf@toke.dk>
+In-Reply-To: <87czm0yqba.fsf@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 13 Dec 2021 19:28:57 -0800
+Message-ID: <CAADnVQKM81Jf0b-m=VeuVES7K11uksVrzQtCksoyCq3mZ-=L5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 8/8] samples/bpf: Add xdp_trafficgen sample
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] perf evlist: Don't run perf in non-root PID
- namespace when launch workload
-Message-ID: <20211214032436.GA1884193@leoy-ThinkPad-X240s>
-References: <20211212134721.1721245-1-leo.yan@linaro.org>
- <20211212134721.1721245-3-leo.yan@linaro.org>
- <6cad0a2e-c4b8-9788-fa0d-05405453a0dd@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6cad0a2e-c4b8-9788-fa0d-05405453a0dd@arm.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi James,
+On Mon, Dec 13, 2021 at 4:37 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Mon, Dec 13, 2021 at 8:28 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >>
+> >> > On Sat, Dec 11, 2021 at 10:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <t=
+oke@redhat.com> wrote:
+> >> >>
+> >> >> This adds an XDP-based traffic generator sample which uses the DO_R=
+EDIRECT
+> >> >> flag of bpf_prog_run(). It works by building the initial packet in
+> >> >> userspace and passing it to the kernel where an XDP program redirec=
+ts the
+> >> >> packet to the target interface. The traffic generator supports two =
+modes of
+> >> >> operation: one that just sends copies of the same packet as fast as=
+ it can
+> >> >> without touching the packet data at all, and one that rewrites the
+> >> >> destination port number of each packet, making the generated traffi=
+c span a
+> >> >> range of port numbers.
+> >> >>
+> >> >> The dynamic mode is included to demonstrate how the bpf_prog_run() =
+facility
+> >> >> enables building a completely programmable packet generator using X=
+DP.
+> >> >> Using the dynamic mode has about a 10% overhead compared to the sta=
+tic
+> >> >> mode, because the latter completely avoids touching the page data.
+> >> >>
+> >> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> >> ---
+> >> >>  samples/bpf/.gitignore            |   1 +
+> >> >>  samples/bpf/Makefile              |   4 +
+> >> >>  samples/bpf/xdp_redirect.bpf.c    |  34 +++
+> >> >>  samples/bpf/xdp_trafficgen_user.c | 421 ++++++++++++++++++++++++++=
+++++
+> >> >>  4 files changed, 460 insertions(+)
+> >> >>  create mode 100644 samples/bpf/xdp_trafficgen_user.c
+> >> >
+> >> > I think it deserves to be in tools/bpf/
+> >> > samples/bpf/ bit rots too often now.
+> >> > imo everything in there either needs to be converted to selftests/bp=
+f
+> >> > or deleted.
+> >>
+> >> I think there's value in having a separate set of utilities that are
+> >> more user-facing than the selftests. But I do agree that it's annoying
+> >> they bit rot. So how about we fix that instead? Andrii suggested just
+> >> integrating the build of samples/bpf into selftests[0], so I'll look
+> >> into that after the holidays. But in the meantime I don't think there'=
+s
+> >> any harm in adding this utility here?
+> >
+> > I think samples/bpf building would help to stabilize bitroting,
+> > but the question of the right home for this trafficgen tool remains.
+> > I think it's best to keep it outside of the kernel tree.
+> > It's not any more special than all other libbpf and bcc tools.
+> > I think xdp-tools repo or bcc could be a home for it.
+>
+> Alright, I'll drop it from the next version and put it into xdp-tools.
+> I've been contemplating doing the same for some of the other tools
+> (xdp_redirect* and xdp_monitor, for instance). Any opinion on that?
 
-On Mon, Dec 13, 2021 at 01:54:33PM +0000, James Clark wrote:
-> 
-> 
-> On 12/12/2021 13:47, Leo Yan wrote:
-> > In function evlist__prepare_workload(), after perf forks a child process
-> > and launches a workload in the created process, it needs to retrieve
-> > process and namespace related info via '/proc/$PID/' node.
-> > 
-> > The process folders under 'proc' file system use the PID number from the
-> > root PID namespace, when perf tool runs in non-root PID namespace and
-> > creates new process for profiled program, this leads to the perf tool
-> > wrongly gather process info since it uses PID from non-root namespace to
-> > access nodes under '/proc'.
-> > 
-> > Let's see an example:
-> > 
-> >   unshare --fork --pid perf record -e cs_etm//u -a -- test_program
-> > 
-> > This command runs perf tool and the profiled program 'test_program' in
-> > the non-root PID namespace.  When perf tool launches 'test_program',
-> > e.g. the forked PID number is 2, perf tool retrieves process info for
-> > 'test_program' from the folder '/proc/2'.  But '/proc/2' is actually for
-> > a kernel thread so perf tool wrongly gather info for 'test_program'.
-> 
-> Hi Leo,
-> 
-> Which features aren't working exactly when you run in a non root namespace?
-
-When perf tool lanches workload, it needs to synthesize samples for
-PERF_RECORD_COMM and PERF_RECORD_NAMESPACES, this can make sure the
-thread info has been prepared ahead before we decode hardware trace
-data (e.g. using Arm CoreSight, SPE, or Intel PT, etc).
-
-Also please see the comment in perf record tool [1]:
-
-"Some H/W events are generated before COMM event
-* which is emitted during exec(), so perf script
-* cannot see a correct process name for those events.
-* Synthesize COMM event to prevent it."
-
-Unfortunately, when using the command "unshare --fork --pid perf
-record -e cs_etm//u --namespaces -a -- test_program", it uses
-the PID from non-root namespace to synthesize RECORD_COMM and
-RECORD_NAMESPACES events, but the PID number doesn't match with the
-process folders under /proc folder (which uses the root namespace's PID
-to create file node).  As result, perf tool uses pid 2 (from non-root
-namespace to capture a kernel thread info rather than the info for
-created workload:
-
-0x1ea90 [0x40]: event: 3
-.
-. ... raw event: size 64 bytes
-.  0000:  03 00 00 00 00 00 40 00 02 00 00 00 02 00 00 00  ......@.........
-.  0010:  6b 74 68 72 65 61 64 64 00 00 00 00 00 00 00 00  kthreadd........
-.  0020:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-.  0030:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-
-0 0 0x1ea90 [0x40]: PERF_RECORD_COMM: kthreadd:2/2
-
-0x1ead0 [0xa8]: event: 16
-.
-. ... raw event: size 168 bytes
-.  0000:  10 00 00 00 00 00 a8 00 02 00 00 00 02 00 00 00  ......?.........
-.  0010:  07 00 00 00 00 00 00 00 04 00 00 00 00 00 00 00  ................
-.  0020:  91 00 00 f0 00 00 00 00 04 00 00 00 00 00 00 00  ...?............
-.  0030:  fe ff ff ef 00 00 00 00 04 00 00 00 00 00 00 00  ????............
-.  0040:  ff ff ff ef 00 00 00 00 04 00 00 00 00 00 00 00  ????............
-.  0050:  fc ff ff ef 00 00 00 00 04 00 00 00 00 00 00 00  ????............
-.  0060:  fd ff ff ef 00 00 00 00 04 00 00 00 00 00 00 00  ????............
-.  0070:  00 00 00 f0 00 00 00 00 04 00 00 00 00 00 00 00  ...?............
-.  0080:  fb ff ff ef 00 00 00 00 00 00 00 00 00 00 00 00  ????............
-.  0090:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-.  00a0:  00 00 00 00 00 00 00 00                          ........        
-
-0 0 0x1ead0 [0xa8]: PERF_RECORD_NAMESPACES 2/2 - nr_namespaces: 7
-                [0/net: 4/0xf0000091, 1/uts: 4/0xeffffffe, 2/ipc: 4/0xefffffff, 3/pid: 4/0xeffffffc, 
-                 4/user: 4/0xeffffffd, 5/mnt: 4/0xf0000000, 6/cgroup: 4/0xeffffffb]
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/builtin-record.c#n1823
-
-> I did "perf record -- ls" and it seemed to be working for me. At least kernel
-> sampling would be working in a namespace, even if there was something wrong
-> with userspace.
-
-The issue is relevant with the hardware trace events.
-
-> I think causing a failure might be too restrictive and would prevent people
-> from using perf in a container. Maybe we could show a warning instead, but
-> I'm not sure exactly what's not working because I thought perf looked up stuff
-> based on the path of the process not the pid.
-
-Good point.  I am also worry that it is arbitrary to prevent perf to be
-used in the namespace, so this patch it doesn't forbid all cases for
-perf tool.  It only returns failure when perf tool tries to fork a
-new program.
-
-When perf tool runs in non-root PID namespace, since it still can access
-the process info from root file system's /proc node, this causes mess that
-the perf tool gathers process info from the root PID namespace.
-
-One thing I think I should dig deeper: can we dynamically update (or mount)
-/proc node when perf tool runs in non-root PID namespace so can ensure
-perf tool to only see the process nodes in the same non-root namespace?
-This can be a solution to avoid the perf tool gathers mess process info.
-If anyone know for this, also welcome suggestion, thanks a lot!
-
-Otherwise if we cannot find method to update '/proc' nodes, I think we
-still need this patch to return failure when detects perf running in
-non-root PID namespace.
-
-Thanks,
-Leo
+Please move them too if you don't mind.
+samples/ just doesn't have the right production quality vibe.
+Everything in there is a sample code. In other words a toy application.
+I hope xdp_trafficgen aims to be a solid maintained tool with
+a man page that distros will ship eventually.
+So starting with a good home is important.
