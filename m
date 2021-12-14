@@ -2,160 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5DC47419A
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 12:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A324741C9
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 12:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhLNLkd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 06:40:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhLNLkc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 06:40:32 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B63C061574;
-        Tue, 14 Dec 2021 03:40:32 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id o13so31823125wrs.12;
-        Tue, 14 Dec 2021 03:40:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=tZE9Uf/zO0inaZmRbvuRqxot+PIRh2tWu+dKPxMOdqc=;
-        b=m9ZSdvRme+HRMZ2GdsjLYHJY3mI4qBPxRvPckASgY8ZNCLIx3j11u0lFbdzoC40D+3
-         S7fSQdgzd6FROkrCjrj+G4fxwJl1YQ/pZiDgfHT3fxqgsSdIOmMtNj+sDUF4pm5dQ0ig
-         JcB+Wyw+RguWuWxVoEtahQun9JAEMwLtDGYIYMsh8w360m88MlzM0aNoOolnE/PfsARr
-         0rYTyxFUlHHB69NYPtuqx2cTpePfYt0KtsHU7pFtHC9o0c1puUglksQdwStcqi3KEwlE
-         VnQ1fVe5hMNYIOkPZ9OEIySwhSSvytpNFczjpgr4qIziwNFzMS2AOoX7h3xRYVK8cqo6
-         ENqw==
+        id S233724AbhLNLsF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 06:48:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55036 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233700AbhLNLsD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Dec 2021 06:48:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639482481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3RvtHCVmlMZy9Ar2QfnJIpooqhdOg1Edmr9vHxfSUd0=;
+        b=ThMhs4HGkvQsrZOR9KBa0zMqP9IfoeGRUdZgC8d1fm9PSdHnZzro4uSN6dXeDwjYQ3kTUh
+        owgWIcDYs8mgYb7+PdKx7e5YZUf4JkQoQlYoeUcdtiqlr6gS0ou9zp7xHBDOUC5uqkKT7w
+        +J18QO94BGL7tPoo3jyNNtsRj/pySUQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-596-Nlq83JcnOxKH2_qePNs1aw-1; Tue, 14 Dec 2021 06:47:00 -0500
+X-MC-Unique: Nlq83JcnOxKH2_qePNs1aw-1
+Received: by mail-ed1-f72.google.com with SMTP id m17-20020aa7d351000000b003e7c0bc8523so16765336edr.1
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 03:47:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=tZE9Uf/zO0inaZmRbvuRqxot+PIRh2tWu+dKPxMOdqc=;
-        b=l3FrIEb6RepgdxQ3hIZ3ocOUb/Bhgn99hURdc7MUaMqXsnbbCc7FWwEfIs7nHOPyZl
-         4EI4JX1a22QuWsssxNNHnALsvSYsQ8/96CNxb5dPaM5evAmCPYK/hV1BrGUIvQFWsXZO
-         nfbmMaiabyAhYRxY+5bSKkRvjKbeIBqYdXA14mKzKAB+WQhSJfQZFqrHortO7RaUNgm/
-         4+6LUP+xwXAN7fZDOr2XM520bf2bj9PjxmAc53d9L9KDBBaRadrishev7ss4AA9RJOu3
-         LUfwh0k59/5bqyUR64Sd9T7dPYhz9y56Ccq0iz+jjbp+U2MNKjzk8wIi1qvDy8lSYXAJ
-         Okxg==
-X-Gm-Message-State: AOAM532rDDq9VFwQUkYKXINju/Ouq4I4twid4/CotLkljbLrrRCfbDnv
-        MKAdxYoULeh/4HqaG8gOC5M=
-X-Google-Smtp-Source: ABdhPJxa/0zGOGZXPJd0U6H/QOjWyBxXx2O1XTJ6Cnuwc8L4zJpTPlFqlkO0yO4HCSu4RKWaL8RKTA==
-X-Received: by 2002:a05:6000:1625:: with SMTP id v5mr5217846wrb.196.1639482030683;
-        Tue, 14 Dec 2021 03:40:30 -0800 (PST)
-Received: from [192.168.43.77] (82-132-228-129.dab.02.net. [82.132.228.129])
-        by smtp.gmail.com with ESMTPSA id t189sm1852930wma.8.2021.12.14.03.40.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Dec 2021 03:40:30 -0800 (PST)
-Message-ID: <3f89041e-685a-efa5-6405-8ea6a6cf83f3@gmail.com>
-Date:   Tue, 14 Dec 2021 11:40:26 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v2] cgroup/bpf: fast path for not loaded skb BPF filtering
-Content-Language: en-US
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=3RvtHCVmlMZy9Ar2QfnJIpooqhdOg1Edmr9vHxfSUd0=;
+        b=7Ey/HnjiZGNyezOj+QiZuN25SHbqa2/EfqoxRKqIEsOeke9RnMfhKtlKkAR6r8Nch/
+         StyfXdqgSkNBOzj1KvAz2veWloaph8X1w55fVZ1NXTKIB0Htp2+AiCOZY0pXcqyqUGsk
+         ww7Po6C5U81tZQEmqujgypHclEZGq4ApJY/YPZCW/upxfpbyrOY1adqf5Fq9MnLIcYMQ
+         pbZ1iOyGatPg+xIcR/kqMwbdephXAFhwdaBF/ZAvMopp7nNhQ9c/C+THWgPGD9+jDgCF
+         B8tLLIrSas+ToIjPt0SLgUxkyR0fG8slTvQlZ+HfJ3TNr/N814G39jlXm4PoTVvWT8g4
+         mCoA==
+X-Gm-Message-State: AOAM533rsWRFH4myrI80pAh2UmDjbdbQaQCF2VD0lsmOl22g41AAqrAF
+        1tXavyXgee3XDZV4LUpZ9SN6ePacwBR5Bwex7SSboArHzsGhiYYtBNsK+VI7ygMUzY9Jh4WOygi
+        vhsEKDeZTCN/H
+X-Received: by 2002:aa7:cd8a:: with SMTP id x10mr7162153edv.3.1639482417853;
+        Tue, 14 Dec 2021 03:46:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzZNEPABW3x0WzZIWAhn1kMS0hIUA1n/NxBrALSeJRp+RasyTPS9tjpja95XnCjrc8hhifFSA==
+X-Received: by 2002:aa7:cd8a:: with SMTP id x10mr7162031edv.3.1639482416907;
+        Tue, 14 Dec 2021 03:46:56 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 26sm1291854ejk.138.2021.12.14.03.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Dec 2021 03:46:56 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B3A83183566; Tue, 14 Dec 2021 12:46:55 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-References: <d1b6d4756287c28faf9ad9ce824e1a62be9a5e84.1639200253.git.asml.silence@gmail.com>
- <20211214072716.jdemxmsavd6venci@kafai-mbp.dhcp.thefacebook.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20211214072716.jdemxmsavd6venci@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 6/8] bpf: Add XDP_REDIRECT support to XDP
+ for bpf_prog_run()
+In-Reply-To: <CAADnVQKRAFCqUj9J8B5cM4u=wS-0Kh9YZYR=QqT6GiiX3ZXXDQ@mail.gmail.com>
+References: <20211211184143.142003-1-toke@redhat.com>
+ <20211211184143.142003-7-toke@redhat.com>
+ <CAADnVQJYfyHs41H1x-1wR5WVSX+3ju69XMUQ4id5+1DLkTVDkg@mail.gmail.com>
+ <87tufceaid.fsf@toke.dk>
+ <CAADnVQJunh7KTKJe3F_tO0apqLHtOMFqGAB-V28ORh6o5JUTUQ@mail.gmail.com>
+ <87fsqwyqdf.fsf@toke.dk>
+ <CAADnVQKRAFCqUj9J8B5cM4u=wS-0Kh9YZYR=QqT6GiiX3ZXXDQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 14 Dec 2021 12:46:55 +0100
+Message-ID: <874k7bz9w0.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/14/21 07:27, Martin KaFai Lau wrote:
-> On Sat, Dec 11, 2021 at 07:17:49PM +0000, Pavel Begunkov wrote:
->> cgroup_bpf_enabled_key static key guards from overhead in cases where
->> no cgroup bpf program of a specific type is loaded in any cgroup. Turn
->> out that's not always good enough, e.g. when there are many cgroups but
->> ones that we're interesting in are without bpf. It's seen in server
->> environments, but the problem seems to be even wider as apparently
->> systemd loads some BPF affecting my laptop.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Mon, Dec 13, 2021 at 4:36 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
 >>
->> Profiles for small packet or zerocopy transmissions over fast network
->> show __cgroup_bpf_run_filter_skb() taking 2-3%, 1% of which is from
->> migrate_disable/enable(), and similarly on the receiving side. Also
->> got +4-5% of t-put for local testing.
-> What is t-put?  throughput?
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>> > On Mon, Dec 13, 2021 at 8:26 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>> >>
+>> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>> >>
+>> >> > On Sat, Dec 11, 2021 at 10:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <=
+toke@redhat.com> wrote:
+>> >> >> +
+>> >> >> +static void bpf_test_run_xdp_teardown(struct bpf_test_timer *t)
+>> >> >> +{
+>> >> >> +       struct xdp_mem_info mem =3D {
+>> >> >> +               .id =3D t->xdp.pp->xdp_mem_id,
+>> >> >> +               .type =3D MEM_TYPE_PAGE_POOL,
+>> >> >> +       };
+>> >> >
+>> >> > pls add a new line.
+>> >> >
+>> >> >> +       xdp_unreg_mem_model(&mem);
+>> >> >> +}
+>> >> >> +
+>> >> >> +static bool ctx_was_changed(struct xdp_page_head *head)
+>> >> >> +{
+>> >> >> +       return (head->orig_ctx.data !=3D head->ctx.data ||
+>> >> >> +               head->orig_ctx.data_meta !=3D head->ctx.data_meta =
+||
+>> >> >> +               head->orig_ctx.data_end !=3D head->ctx.data_end);
+>> >> >
+>> >> > redundant ()
+>> >> >
+>> >> >>         bpf_test_timer_enter(&t);
+>> >> >>         old_ctx =3D bpf_set_run_ctx(&run_ctx.run_ctx);
+>> >> >>         do {
+>> >> >>                 run_ctx.prog_item =3D &item;
+>> >> >> -               if (xdp)
+>> >> >> +               if (xdp && xdp_redirect) {
+>> >> >> +                       ret =3D bpf_test_run_xdp_redirect(&t, prog=
+, ctx);
+>> >> >> +                       if (unlikely(ret < 0))
+>> >> >> +                               break;
+>> >> >> +                       *retval =3D ret;
+>> >> >> +               } else if (xdp) {
+>> >> >>                         *retval =3D bpf_prog_run_xdp(prog, ctx);
+>> >> >
+>> >> > Can we do this unconditionally without introducing a new uapi flag?
+>> >> > I mean "return bpf_redirect()" was a nop under test_run.
+>> >> > What kind of tests might break if it stops being a nop?
+>> >>
+>> >> Well, I view the existing mode of bpf_prog_test_run() with XDP as a w=
+ay
+>> >> to write XDP unit tests: it allows you to submit a packet, run your X=
+DP
+>> >> program on it, and check that it returned the right value and did the
+>> >> right modifications. This means if you XDP program does 'return
+>> >> bpf_redirect()', userspace will still get the XDP_REDIRECT value and =
+so
+>> >> it can check correctness of your XDP program.
+>> >>
+>> >> With this flag the behaviour changes quite drastically, in that it wi=
+ll
+>> >> actually put packets on the wire instead of getting back the program
+>> >> return. So I think it makes more sense to make it a separate opt-in
+>> >> mode; the old behaviour can still be useful for checking XDP program
+>> >> behaviour.
+>> >
+>> > Ok that all makes sense.
+>>
+>> Great!
+>>
+>> > How about using prog_run to feed the data into proper netdev?
+>> > XDP prog may or may not attach to it (this detail is tbd) and
+>> > prog_run would use prog_fd and ifindex to trigger RX (yes, receive)
+>> > in that netdev. XDP prog will execute and will be able to perform
+>> > all actions (not only XDP_REDIRECT).
+>> > XDP_PASS would pass the packet to the stack, etc.
+>>
+>> Hmm, that's certainly an interesting idea! I don't think we can actually
+>> run the XDP hook on the netdev itself (since that is deep in the
+>> driver), but we can emulate it: we just need to do what this version of
+>> the patch is doing, but add handling of the other return codes.
+>>
+>> XDP_PASS could be supported by basically copying what cpumap is doing
+>> (turn the frames into skbs and call netif_receive_skb_list()), but
+>> XDP_TX would have to be implemented via ndo_xdp_xmit(), so it becomes
+>> equivalent to a REDIRECT back to the same interface. That's probably OK,
+>> though, right?
+>
+> Yep. Something like this.
+> imo the individual BPF_F_TEST_XDP_DO_REDIRECT knob doesn't look right.
+> It's tweaking the prog run from no side effects execution model
+> to partial side effects.
+> If we want to run xdp prog with side effects it probably should
+> behave like normal execution on the netdev when it receives the packet.
+> We might not even need to create a new netdev for that.
+> I can imagine a bpf_prog_run operating on eth0 with a packet prepared
+> by the user space.
+> Like injecting a packet right into the driver and xdp part of it.
+> If prog says XDP_PASS the packet will go up the stack like normal.
+> So this mechanism could be used to inject packets into the stack.
+> Obviously buffer management is an issue in the traditional NIC
+> when a packet doesn't come from the wire.
+> Also doing this in every driver would be a pain.
+> So we need some common infra to inject the user packet into a netdev
+> like it was received by this netdev. It could be a change for tuntap
+> or for veth or not related to netdev at all.
 
-yes
+What you're describing is basically what the cpumap code does; except it
+doesn't handle XDP_TX, and it doesn't do buffer management. But I
+already implemented the latter, and the former is straight-forward to do
+as a special-case XDP_REDIRECT. So my plan is to try this out and see
+what that looks like :)
 
-> Local testing means sending to lo/dummy?
+> After XDP_PASS it doesn't need to be fast. skb will get allocated
+> and the stack might see it as it arrived from ifindex=3DN regardless
+> of the HW of that netdev.
+> XDP_TX would xmit right out of that ifindex=3Dnetdev.
+> and XDP_REDIRECT would redirect to a different netdev.
+> At the end there will be less special cases and page_pool tweaks.
+> Thought the patches 1-5 look fine, it still feels a bit custom
+> just for this particular BPF_F_TEST_XDP_DO_REDIRECT use case.
+> With more generic bpf_run_prog(xdp_prog_fd, ifindex_of_netdev)
+> it might reduce custom handling.
 
-yes, it was dummy specifically
+Yup, totally makes sense!
 
-> 
-> [ ... ]
-> 
->> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
->> index 11820a430d6c..793e4f65ccb5 100644
->> --- a/include/linux/bpf-cgroup.h
->> +++ b/include/linux/bpf-cgroup.h
->> @@ -219,11 +219,28 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
->>   int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
->>   				     void *value, u64 flags);
->>   
->> +static inline bool
->> +__cgroup_bpf_prog_array_is_empty(struct cgroup_bpf *cgrp_bpf,
->> +				 enum cgroup_bpf_attach_type type)
-> Lets remove this.
-> 
->> +{
->> +	struct bpf_prog_array *array = rcu_access_pointer(cgrp_bpf->effective[type]);
->> +
->> +	return array == &empty_prog_array.hdr;
->> +}
->> +
->> +#define CGROUP_BPF_TYPE_ENABLED(sk, atype)				       \
-> and change cgroup.c to directly use this instead, so
-> everywhere holding a fullsock sk will use this instead
-> of having two helpers for empty check.
+-Toke
 
-Why? CGROUP_BPF_TYPE_ENABLED can't be a function atm because of header
-dependency hell, and so it'd kill some of typization, which doesn't add
-clarity. And also it imposes some extra overhead to *sockopt using
-the first helper directly.
-
-I think it's better with two of them. I could inline the second
-one, but it wouldn't have been pretty.
-
-> 
-> [ ... ]
-> 
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index 2405e39d800f..fedc7b44a1a9 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -1967,18 +1967,10 @@ static struct bpf_prog_dummy {
->>   	},
->>   };
->>   
->> -/* to avoid allocating empty bpf_prog_array for cgroups that
->> - * don't have bpf program attached use one global 'empty_prog_array'
->> - * It will not be modified the caller of bpf_prog_array_alloc()
->> - * (since caller requested prog_cnt == 0)
->> - * that pointer should be 'freed' by bpf_prog_array_free()
->> - */
->> -static struct {
->> -	struct bpf_prog_array hdr;
->> -	struct bpf_prog *null_prog;
->> -} empty_prog_array = {
->> +struct bpf_empty_prog_array empty_prog_array = {
->>   	.null_prog = NULL,
->>   };
->> +EXPORT_SYMBOL(empty_prog_array);
-> nit. Since it is exported, may be prefix it with 'bpf_'.
-
-yeah, sure
-
-
--- 
-Pavel Begunkov
