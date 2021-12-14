@@ -2,90 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA31473A6E
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 02:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C54B473B53
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhLNBsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 20:48:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhLNBsE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 20:48:04 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFC6C061574
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 17:48:04 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id p18so12443618plf.13
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 17:48:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AvGpVpm3G0nv5mjsTkEvNIL1349P2knoT5FvjJzb6dY=;
-        b=am3tpxnryz702pwMJivRAd8zyqHJLVRl2ogTCcgrMYZS37R5NBzMM82ZiSC3MeDXrD
-         qmWWSxm0XMuabSOsGmQHHGUmx0Jt0uQz8udrCin/nVGG0v/GTQwmM6omG4tugx6TNwZX
-         ZcgySdEut43QmzWBi7VT/BT9P1QBpwyl/0Vmp7WVii2aC1N15OUljdSIKSN676HZ8Zdo
-         yWPSRQYANHlH268Ujcn5fHPUhqLqhL/zWMZsUPE/Kw1l5F+k4HI8XYom1xmzSBoCRrC3
-         dbitwZVbB0bY7TidYACM/MWN2F+X55ozjiiRcY3DW0Yv9NqanKx5NTVqHafNqeXMFr+u
-         hAIQ==
+        id S235565AbhLNDNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 22:13:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53836 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235407AbhLNDNV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 22:13:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639451600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=99hHa+R8DxpGc57uFm6oCLjvQUYhFLts8EwSb1a/bxk=;
+        b=i98HusjQARCC5iXS0/CA/19lKvRRlbvvSg347gmDb2uCXUc/A0uhcpX+JdTnelivBLesyp
+        hDg5Gt2bB82trC0SFMjL2RC1E37MD0Gotq0i9BBQ7oc7RO4FxkU/oIvAyFmjT4DT9K7zMb
+        hwVA+Hfo9ahXCuiUkNi2aS3MD/eroZY=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-141-dJvq8BNTOpSxGS7rUWAH0Q-1; Mon, 13 Dec 2021 22:13:19 -0500
+X-MC-Unique: dJvq8BNTOpSxGS7rUWAH0Q-1
+Received: by mail-lf1-f72.google.com with SMTP id m1-20020ac24281000000b004162863a2fcso8351199lfh.14
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:13:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AvGpVpm3G0nv5mjsTkEvNIL1349P2knoT5FvjJzb6dY=;
-        b=Oj5iM5uhfpikwL8MeP2Tm1Fc1h8PoK8AH941RkJztcpBhJ3UcZb8TBIu1Iyu1ZCtti
-         M0Sp8Wwq//jWwOK5sF0986DL2li984Pzp67At5wK/rXa/pm5I+bRImaXEv7Qj08fqssW
-         yj2DJyZcWibNTNSerjx7NRA0W0MjA00a46BPTD6G227fU5y6z1Ri5IHKmoy8r2aTaSU7
-         L8+FVmEthmtW2UHCRXa6lKMJrNvZP3W+oLcwOTsXx1lYQzpxp//6ZTCiTwSivEMHM5mD
-         yxy9m3jSibxwAJlhHUj+BjJ8GfeXk2szLA5q/5GLonD96Y7dbMroEfcEcPI6EA/XEToq
-         t9Fg==
-X-Gm-Message-State: AOAM533bINzhG1jGwMwszke98zCgehnP8tAKkFB6ISpf7IkKTLb3jMvI
-        8VArfVEiGizFRLmvxTw90AyNbep12SM=
-X-Google-Smtp-Source: ABdhPJxkOoZzGHgAFUHzTSWCAElRncAiLF4S4zSXT70uFBIumwZnOK27WRZocuHFDJrfBa5x+MaRwQ==
-X-Received: by 2002:a17:903:1105:b0:143:a593:dc6e with SMTP id n5-20020a170903110500b00143a593dc6emr2117521plh.6.1639446483394;
-        Mon, 13 Dec 2021 17:48:03 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id p49sm12947136pfw.43.2021.12.13.17.48.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 17:48:03 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix OOB write in test_verifier
-Date:   Tue, 14 Dec 2021 07:18:00 +0530
-Message-Id: <20211214014800.78762-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=99hHa+R8DxpGc57uFm6oCLjvQUYhFLts8EwSb1a/bxk=;
+        b=zgXBBL4RH5JaaK1OdzfiKAMUaj/DV+yjAHEoLFhIJUdRJtw80kfl8ujbN9HykWFr26
+         9myTdtDu2YmNpR9hGph2RzZs1uS4pri2p2lsNp58V+1feZ4C10IA77uwQGaqd8wkX4+e
+         P9+uhSvYh+6d/vSUXSg6wcE8ic2IazqJ82rbde7Xn6+Us1DZGiItDYqPe5fyWSCAwu7S
+         Db19VGKrzuwFw5V99moDoNz8ce2M8H8znhBBhryP0JTsgV15pXfft/grj5aCuEl19RF7
+         YQ4gZyMGlUr+zNY7bloDV6gBpZ4nB3o3an3/WtaRVFbk+tFUqJh0N22KqIG7+xvweLUM
+         6GDw==
+X-Gm-Message-State: AOAM531X4KfvfcnA9dkgcbSSBjxMIPXauL+R0aYX0hGxE79iBdT6fwux
+        ySPzkhIoJI1QSCfk3TNMT7rMSDkEuIxqd0GM6liksjzfVApbt/x6oAo05ALB/kY9zrDXOK1V96u
+        qygvtMmuNmDzG3meGzJxtPpmzCXZo
+X-Received: by 2002:ac2:518b:: with SMTP id u11mr2321121lfi.498.1639451597761;
+        Mon, 13 Dec 2021 19:13:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwZ1HCIVLCKmLXdf3Yl2yAjouNx1OCPxPcR7jWZs3VxYTOSPUyURuqCGeB00yGBqOXmIWH1kqW4dvobsBNeN9Y=
+X-Received: by 2002:ac2:518b:: with SMTP id u11mr2321107lfi.498.1639451597577;
+ Mon, 13 Dec 2021 19:13:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211213045012.12757-1-mengensun@tencent.com> <CACGkMEtLso8QjvmjTQ=S_bbGxu11O_scRa8GT7z6MXfJbfzfRg@mail.gmail.com>
+In-Reply-To: <CACGkMEtLso8QjvmjTQ=S_bbGxu11O_scRa8GT7z6MXfJbfzfRg@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 14 Dec 2021 11:13:06 +0800
+Message-ID: <CACGkMEukGbDcxJe3nGFkeBNenniJdMkFMRnrN4OOfDsCb7ZPuA@mail.gmail.com>
+Subject: Re: [PATCH] virtio-net: make copy len check in xdp_linearize_page
+To:     mengensun8801@gmail.com
+Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        mengensun <mengensun@tencent.com>,
+        MengLong Dong <imagedong@tencent.com>,
+        ZhengXiong Jiang <mungerjiang@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit referenced below added fixup_map_timer support (to create a
-BPF map containing timers), but failed to increase the size of the
-map_fds array, leading to out of bounds write. Fix this by changing
-MAX_NR_MAPS to 22.
+On Mon, Dec 13, 2021 at 5:14 PM =E5=AD=99=E8=92=99=E6=81=A9 <mengensun8801@=
+gmail.com> wrote:
+>
+> Jason Wang <jasowang@redhat.com> =E4=BA=8E2021=E5=B9=B412=E6=9C=8813=E6=
+=97=A5=E5=91=A8=E4=B8=80 15:49=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Mon, Dec 13, 2021 at 12:50 PM <mengensun8801@gmail.com> wrote:
+> > >
+> > > From: mengensun <mengensun@tencent.com>
+> > >
+> > > xdp_linearize_page asume ring elem size is smaller then page size
+> > > when copy the first ring elem, but, there may be a elem size bigger
+> > > then page size.
+> > >
+> > > add_recvbuf_mergeable may add a hole to ring elem, the hole size is
+> > > not sure, according EWMA.
+> >
+> > The logic is to try to avoid dropping packets in this case, so I
+> > wonder if it's better to "fix" the add_recvbuf_mergeable().
+>
 
-Fixes: e60e6962c503 ("selftests/bpf: Add tests for restricted helpers")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/test_verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Adding lists back.
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index ad5d30bafd93..33e2ecb3bef9 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -54,7 +54,7 @@
- #define MAX_INSNS	BPF_MAXINSNS
- #define MAX_TEST_INSNS	1000000
- #define MAX_FIXUPS	8
--#define MAX_NR_MAPS	21
-+#define MAX_NR_MAPS	22
- #define MAX_TEST_RUNS	8
- #define POINTER_VALUE	0xcafe4all
- #define TEST_DATA_LEN	64
---
-2.34.1
+> turn to XDP generic is so difficulty for me, here can "fix" the
+> add_recvbuf_mergeable link follow:
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 36a4b7c195d5..06ce8bb10b47 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1315,6 +1315,7 @@ static int add_recvbuf_mergeable(struct virtnet_inf=
+o *vi,
+>                 alloc_frag->offset +=3D hole;
+>         }
+> +       len =3D min(len, PAGE_SIZE - room);
+>         sg_init_one(rq->sg, buf, len);
+>         ctx =3D mergeable_len_to_ctx(len, headroom);
+
+Then the truesize here is wrong.
+
+>         err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp)=
+;
+>
+> it seems a rule that, length of elem giving to vring is away smaller
+> or equall then PAGE_SIZE
+
+It aims to be consistent to what EWMA tries to do:
+
+        len =3D hdr_len + clamp_t(unsigned int, ewma_pkt_len_read(avg_pkt_l=
+en),
+                        rq->min_buf_len, PAGE_SIZE - hdr_len);
+
+Thanks
+
+>
+> >
+> > Or another idea is to switch to use XDP generic here where we can use
+> > skb_linearize() which should be more robust and we can drop the
+> > xdp_linearize_page() logic completely.
+> >
+> > Thanks
+> >
+> > >
+> > > so, fix it by check copy len,if checked failed, just dropped the
+> > > whole frame, not make the memory dirty after the page.
+> > >
+> > > Signed-off-by: mengensun <mengensun@tencent.com>
+> > > Reviewed-by: MengLong Dong <imagedong@tencent.com>
+> > > Reviewed-by: ZhengXiong Jiang <mungerjiang@tencent.com>
+> > > ---
+> > >  drivers/net/virtio_net.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index 36a4b7c195d5..844bdbd67ff7 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -662,8 +662,12 @@ static struct page *xdp_linearize_page(struct re=
+ceive_queue *rq,
+> > >                                        int page_off,
+> > >                                        unsigned int *len)
+> > >  {
+> > > -       struct page *page =3D alloc_page(GFP_ATOMIC);
+> > > +       struct page *page;
+> > >
+> > > +       if (*len > PAGE_SIZE - page_off)
+> > > +               return NULL;
+> > > +
+> > > +       page =3D alloc_page(GFP_ATOMIC);
+> > >         if (!page)
+> > >                 return NULL;
+> > >
+> > > --
+> > > 2.27.0
+> > >
+> >
+>
 
