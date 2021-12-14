@@ -2,104 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9305747465C
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 16:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A7447465E
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 16:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbhLNPXr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 10:23:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
+        id S232948AbhLNPY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 10:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232948AbhLNPXr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 10:23:47 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC67C061574
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 07:23:46 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id g14so63380214edb.8
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 07:23:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
-        b=XrZGipnCNcQSBb/bCOcdEult9uSJSFeSx7hr+bZ/cJUXsYSk5z+Ep+DSoyLLEMa8l7
-         KTfXxUOl0mdUY1BZOBQqA5VEhI6CwK13dkGR2XxdfWJ0Mpy+IXIF0cABsYj/xJR8tm5E
-         1fIWHJBGYc60MpoQVKfuJ+pwMr5pcJa/xKhhKYE9VKwL2UbEsSXPfpFJcsVKwW8kTePp
-         n8EB7RKqvCvk0flEpqZn2QUv4+X1fkuaIwL2yU5mpL1UWNSZ936dwh3rk3brEsCuX0ML
-         ho+njLztN1lz+uS9gek/00fYOxWde3938x/yjnEIqoNGvn2AaWXo23X1BbAd66YFgP2b
-         V8rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=Hp2wuf+GFIgPk2krY9oLPCwUDqecUtCiJ9IkJj6FAwY=;
-        b=EyQSyK/7Sj+3uYmODqLm18Qf0xsJDr7w5UpQo4LqKyMvEDDn19OYkPQ6vXh29Oz8wX
-         JBshDURORdI2md3ZLqyBpopTF3Hn39pNYFJ7PiPMaDlvH0wRoROaQV2oPNS2eLPMjBqp
-         km/sysy6qgoMyPSuZfTzTJh8+jtb+NovWvQfhfu2KwHfWALx5UPQtTskvT6/zjvop2ft
-         y/6nR8EqIukP8J8oz9zoMYgpBBun1SRJtnLyiF7gLpXIuWgGf60HQ+2ShMKILLapaf+g
-         gXSP2AI2PLQHpY2YSW4J2oAnR/l4Pd8KC94H00BB1sCIAnqvgHlQGovX2i3KBjNdp0j0
-         oDpg==
-X-Gm-Message-State: AOAM531neFvCue3FKOGqGMz1cGm/1UMdfp5Qj/Sk5wfA/DogmMdggIxn
-        k8AFG6DQh6dcufZOdl3khjnzcm642icvxM2gbKw=
-X-Google-Smtp-Source: ABdhPJxG7q2WKxhwdkCHhNoM6unxMHB/hOFsD3JQ9GqQwNgmy6POwHswoG1XtD0VBhVSlHXIZfdQasFFgYxtcL3eY+g=
-X-Received: by 2002:a05:6402:4251:: with SMTP id g17mr8641262edb.89.1639495425414;
- Tue, 14 Dec 2021 07:23:45 -0800 (PST)
+        with ESMTP id S232642AbhLNPY1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Dec 2021 10:24:27 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2F6C061574
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 07:24:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFEFA61584
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 15:24:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CE8BC34605;
+        Tue, 14 Dec 2021 15:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639495466;
+        bh=DnSTTSPo9KeljY389jiQbEFaXKiFOsvsmvup/5GiPX4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ePXweA4kloGZ2Q9t18JDHV7melrTHaj9a8Yxe3nawgmqQXbvwpIvx+HFSGSP3SsXK
+         z/WOYFXmLSuhfbis0fcHC/K2cRHVTsvpFiisg58e6Q/bvZsJ/TuIhYwCgxseEI066B
+         VA7h0emRVNnGAvu91dm4CE1reeHOljE2KPbIL11+6NTN/t50PjU3uXibCx7wU59siD
+         Q6Jr141aI4HRYro08uumqHXrKDnOHFmaDVOh/lm+m5UQWThy8O1n9x52CgXMnMT4i5
+         U4Ex3HcvSRC10RJR9E0c8UtziQFMBWyT/Ej6sOrwTx6EAmjN5fu5pgiLbs/XWLA7Dn
+         mkElcvBRBha9g==
+Date:   Tue, 14 Dec 2021 07:24:25 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] bpf: create a header for struct bpf_link
+Message-ID: <20211214072425.78fb24b3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211214071850.175707e5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211213234223.356977-1-kuba@kernel.org>
+        <20211213234223.356977-4-kuba@kernel.org>
+        <CAADnVQ+6Qmm9b3Jf_BHCn_PFxs00NK71K235zQYc=_PufkOPAQ@mail.gmail.com>
+        <20211214070435.7f07e2ac@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211214071850.175707e5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Sender: patriciajohnvan@gmail.com
-Received: by 2002:a17:906:99c3:0:0:0:0 with HTTP; Tue, 14 Dec 2021 07:23:44
- -0800 (PST)
-From:   DINA MCKENNA <dinamckennahowley@gmail.com>
-Date:   Tue, 14 Dec 2021 15:23:44 +0000
-X-Google-Sender-Auth: 5Q4LfrIHxG5IMLoT57mCxX7UotY
-Message-ID: <CAHqodhShzyZW-8qYRUPn5vsWZ1bD8wZR3aGYJrkODBg9NuZ4Pw@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello my dear,
+On Tue, 14 Dec 2021 07:18:50 -0800 Jakub Kicinski wrote:
+> The dependency tree is
+> 
+> 
+>          bpf-link.h  bpf-cgroup-types.h                                              
+>               ^       ^
+>               |      /                                  
+>  bpf.h     bpf-cgroup.h  
+>     ^           ^                             
+>     |           |                          
+>     |           |                          
+>   bpf-cgroup-storage.h
 
- I sent this mail praying it will get to you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day. I bring peace and love to you. It is by the grace of God, I
-had no choice than to do what is lawful and right in the sight of God
-for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
-y
-and glory upon my life. I am Mrs. Dina Howley Mckenna, a widow. I am
-suffering from a long time brain tumor, It has defiled all forms of
-medical treatment, and right now I have about a few months to leave,
-according to medical experts. The situation has gotten complicated
-recently with my inability to hear proper, am communicating with you
-with the help of the chief nurse herein the hospital, from all
-indication my conditions is really deteriorating and it is quite
-obvious that, according to my doctors they have advised me that I may
-not live too long, Because this illness has gotten to a very bad
-stage. I plead that you will not expose or betray this trust and
-confidence that I am about to repose on you for the mutual benefit of
-the orphans and the less privilege. I have some funds I inherited from
-my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
-Having known my condition, I decided to donate this fund to you
-believing that you will utilize it the way i am going to instruct
-herein. I need you to assist me and reclaim this money and use it for
-Charity works therein your country  for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of God
-and the effort that the house of God is maintained. I do not want a
-situation where this money will be used in an ungodly manner. That's
-why I'm taking this decision. I'm not afraid of death, so I know where
-I'm going. I accept this decision because I do not have any child who
-will inherit this money after I die.. Please I want your sincerely and
-urgent answer to know if you will be able to execute this project for
-the glory of God, and I will give you more information on how the fund
-will be transferred to your bank account.. May the grace, peace, love
-and the truth in the Word of God be with you and all those that you
-love and care for.
+ bpf-cgroup-types.h    bpf-link.h                                                
+    ^          ^        ^
+    |          |       /                                  
+  bpf.h     bpf-cgroup.h  
+     ^           ^                             
+     |           |                          
+     |           |                          
+  bpf-cgroup-storage.h
 
-I'm waiting for your immediate reply..
+To be exact, bpf.h include cgroup-types, but not bpf-link, doesn't
+change the question below, tho.
 
-May God Bless you,
-Mrs. Dina Howley Mckenna.
+> I can't merge bpf-cgroup-storage.h with the rest, it'd be a loop.
+> Should I leave that one be separate? Any other ideas?
+
