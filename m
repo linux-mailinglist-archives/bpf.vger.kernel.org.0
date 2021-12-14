@@ -2,158 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF35474A19
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 18:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17514474A23
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 18:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236745AbhLNRyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 12:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
+        id S236790AbhLNR5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 12:57:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236645AbhLNRyU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 12:54:20 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCFBC06173E
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 09:54:20 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id gf10-20020a056214250a00b003c08951ea03so27854039qvb.17
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 09:54:20 -0800 (PST)
+        with ESMTP id S236307AbhLNR5F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Dec 2021 12:57:05 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60131C061574
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 09:57:05 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id 35-20020a9d08a6000000b00579cd5e605eso21826089otf.0
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 09:57:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=x26zWPfrBQRxXuE5L7i13nFPpUxZ5JNoyR4YdrElef8=;
-        b=PDg+Mj8uBRzsS1XuMf6momFlNy4lNesGjwwCopXnBfIc3l4uoD3ZCDQpNPZ7glR949
-         fLcDzkwVYeDTl801lA002WrLVWNdg0NFttc8GPDGIeaxZ/OEU73XIQxX7gNXpkT7vNye
-         7pB7nqsJ2JRLIHCvK8FW384mKPUKvP6c11hMNuDgX6CBhhkkah8vOmiQ0mL4NYpC9Tbu
-         cmuRZTFSxHeJtl5nobY6Psiq3MLaH7llD/kEosxjOWSIYIdtWhIBhNA+hFd4loOde6mX
-         UCel3M48xQQQDyODI4ZqAHkcxkbFP1lDzcPiE8+oifSVnwccciK0ck94YNUUasumAUn/
-         Lo6A==
+        bh=/H7rX83HhVfXFvq1heK100p2q6fw7H+xxgOW7PvMyko=;
+        b=Aktbnj7mjAJP1MHWOzJ25kUD9Mh2ep/OfmcCIE8BxEenkMXYs27EbwYE8zrcsjhe8U
+         MSm85rH2WWgDxPWLUjaJe1JUwK0IxnIYKPtUxgHo7GLaOoUT659BFebFXrcz3pkI/jb8
+         VlOnjzTtCVTj+4OvTLnY+e3ITHz7DMCd0yMfVg7a/1r7S4zRaIJ3izM+XBvkPZ340MeU
+         q+SACwTyrTEmo4nVeYe4woeygAfDe4PUagcKAGYD0Ot/S2CIAIjfGGcbVUBK8V8lRoLS
+         kxPqcNK+I8ST3wT/OEscw0uiqfO3mmCo4sYy2Q9rIXgkuUcq7eXZrjx9UDK+DppnZE+T
+         6t0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=x26zWPfrBQRxXuE5L7i13nFPpUxZ5JNoyR4YdrElef8=;
-        b=Rop6YAx94UvPI6LUBnSW22vgiczrQrQJ9mAmv4HmlCbSL0YjpqYHh8XAkL2ZNxsrmR
-         N9AfZ1wnL8FCGWIzHC9KrhAurNY9z/eWUI6vnFjUQTtPXJsHSmT0jQIUIZ+CwHYIJxVj
-         YbsMF+CzGvJdqbAYK9wg5utpSCNhdKv2KWoellJYAzwPgm4Ab35StSWIQjZssXJvrPV6
-         jgtQZ8XWQut3FQD1x+f1OJuztdgpBbXYk6hHOAlaRqkKMTcubcQokDAzuqs8KHHZuOt/
-         HOOfjFQEH9zGvbxVH8MP5LPNDJ7mddrgQ1TQnptBMTFYH0vAqsdQcP5yL1/Z5S8fMbic
-         qOHQ==
-X-Gm-Message-State: AOAM530u6e+UohMxicU7zI6FO8riZLU/TlZW5RnXmplkPq7fO2KvDqlO
-        hbL4bFTW7BoPXhefgpmBvzryjL8=
-X-Google-Smtp-Source: ABdhPJxVUcQ+ZyXGp8x5drls3THNIAsUk+DiJ8nq5JpQIwuxFCwoK+V4rs4p1rkSdyrVwpGCm9Rx2ak=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:358b:a5f0:b6ba:1a07])
- (user=sdf job=sendgmr) by 2002:a05:622a:f:: with SMTP id x15mr7532957qtw.481.1639504459617;
- Tue, 14 Dec 2021 09:54:19 -0800 (PST)
-Date:   Tue, 14 Dec 2021 09:54:16 -0800
-In-Reply-To: <fa707ef9-d612-a3a4-1b2a-fc2b28a3ec5f@gmail.com>
-Message-Id: <YbjaSNBlW03rX6c7@google.com>
-Mime-Version: 1.0
-References: <d77b08bf757a8ea8dab3a495885c7de6ff6678da.1639102791.git.asml.silence@gmail.com>
- <20211211003838.7u4lcqghcq2gqvho@kafai-mbp.dhcp.thefacebook.com>
- <5f7d2f60-b833-04e5-7710-fdd2ef3b6f67@gmail.com> <20211211015656.tvufcnh5k4rrc7sw@kafai-mbp.dhcp.thefacebook.com>
- <fa707ef9-d612-a3a4-1b2a-fc2b28a3ec5f@gmail.com>
-Subject: Re: [BPF PATCH for-next] cgroup/bpf: fast path for not loaded skb BPF filtering
-From:   sdf@google.com
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/H7rX83HhVfXFvq1heK100p2q6fw7H+xxgOW7PvMyko=;
+        b=Vn4rg+AhN5LisovkPS0JI7aqiykW/DdPWlCwx8cNiRQwk7756trXCtTm9ZjOVyCgm0
+         kq3h3JK66zQy0FG3RwoVMXJKfKDHJodSBmU6bkn6EDbiEWL4WeBac+0siCCS3B82V9bp
+         2vd5U6UmebkahcZ6Cpg1WXp2EEsTUjzaX65gdqz5s/Gfg9TrXBt8k3Mj+ZltZqIof3tx
+         VNKoeQ/as+8+sIRl5EY7NnI7227f3HWTbT908cyuVjAVqnddm8gVSyuFOeWd2ua8R1ls
+         yeFpWLUHM3aw/VJxeBVmSOZrvRLLm3l3NJ9H81sL7NnnnkB8YLthjfKwxZhI5OmT+eet
+         I2xQ==
+X-Gm-Message-State: AOAM5300PchhloOjKSqE+Esi2XczG9Ywk70Tl7O7vr42H0jLMd4d6gLX
+        k7aYRV7ZpMFPNzUstIqGhcsbpl/bFMWu+C0oFg2gOQ==
+X-Google-Smtp-Source: ABdhPJxBM3VWKaTJZcCayvxWwcLTYZ1GEYJE9ZsUHd6Q1M9Jw5ZUfs5BTGrjSyGxRoRSlVPVob+OXiYG1PPrWwGIiAA=
+X-Received: by 2002:a9d:4f0e:: with SMTP id d14mr5500879otl.137.1639504624541;
+ Tue, 14 Dec 2021 09:57:04 -0800 (PST)
+MIME-Version: 1.0
+References: <0000000000005639cd05ce3a6d4d@google.com> <0000000000004e75ca05d316779f@google.com>
+In-Reply-To: <0000000000004e75ca05d316779f@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 14 Dec 2021 18:56:53 +0100
+Message-ID: <CACT4Y+bhSEMPO4wi+eS75G3FKBR-USF9a9EniLHFmg8rynBV3w@mail.gmail.com>
+Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
+To:     syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>
+Cc:     alexandr.lobakin@intel.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, hawk@kernel.org, hdanton@sina.com,
+        jesse.brandeburg@intel.com, joamaki@gmail.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, maximmi@nvidia.com,
+        netdev@vger.kernel.org, pabeni@redhat.com, saeedm@nvidia.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        toke@toke.dk, vladbu@nvidia.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/11, Pavel Begunkov wrote:
-> On 12/11/21 01:56, Martin KaFai Lau wrote:
-> > On Sat, Dec 11, 2021 at 01:15:05AM +0000, Pavel Begunkov wrote:
-> > > On 12/11/21 00:38, Martin KaFai Lau wrote:
-> > > > On Fri, Dec 10, 2021 at 02:23:34AM +0000, Pavel Begunkov wrote:
-> > > > > cgroup_bpf_enabled_key static key guards from overhead in cases  
-> where
-> > > > > no cgroup bpf program of a specific type is loaded in any cgroup.  
-> Turn
-> > > > > out that's not always good enough, e.g. when there are many  
-> cgroups but
-> > > > > ones that we're interesting in are without bpf. It's seen in  
-> server
-> > > > > environments, but the problem seems to be even wider as apparently
-> > > > > systemd loads some BPF affecting my laptop.
-> > > > >
-> > > > > Profiles for small packet or zerocopy transmissions over fast  
-> network
-> > > > > show __cgroup_bpf_run_filter_skb() taking 2-3%, 1% of which is  
-> from
-> > > > > migrate_disable/enable(), and similarly on the receiving side.  
-> Also
-> > > > > got +4-5% of t-put for local testing.
-> > > > >
-> > > > > Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> > > > > ---
-> > > > >    include/linux/bpf-cgroup.h | 24 +++++++++++++++++++++---
-> > > > >    kernel/bpf/cgroup.c        | 23 +++++++----------------
-> > > > >    2 files changed, 28 insertions(+), 19 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/bpf-cgroup.h  
-> b/include/linux/bpf-cgroup.h
-> > > > > index 11820a430d6c..99b01201d7db 100644
-> > > > > --- a/include/linux/bpf-cgroup.h
-> > > > > +++ b/include/linux/bpf-cgroup.h
-> > > > > @@ -141,6 +141,9 @@ struct cgroup_bpf {
-> > > > >    	struct list_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
-> > > > >    	u32 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
-> > > > > +	/* for each type tracks whether effective prog array is not  
-> empty */
-> > > > > +	unsigned long enabled_mask;
-> > > > > +
-> > > > >    	/* list of cgroup shared storages */
-> > > > >    	struct list_head storages;
-> > > > > @@ -219,11 +222,25 @@ int bpf_percpu_cgroup_storage_copy(struct  
-> bpf_map *map, void *key, void *value);
-> > > > >    int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void  
-> *key,
-> > > > >    				     void *value, u64 flags);
-> > > > > +static inline bool __cgroup_bpf_type_enabled(struct cgroup_bpf  
-> *cgrp_bpf,
-> > > > > +					     enum cgroup_bpf_attach_type atype)
-> > > > > +{
-> > > > > +	return test_bit(atype, &cgrp_bpf->enabled_mask);
-> > > > > +}
-> > > > > +
-> > > > > +#define CGROUP_BPF_TYPE_ENABLED(sk, atype)				       \
-> > > > > +({									       \
-> > > > > +	struct cgroup *__cgrp =  
-> sock_cgroup_ptr(&(sk)->sk_cgrp_data);	       \
-> > > > > +									       \
-> > > > > +	__cgroup_bpf_type_enabled(&__cgrp->bpf, (atype));		       \
-> > > > > +})
-> > > > I think it should directly test if the array is empty or not  
-> instead of
-> > > > adding another bit.
-> > > >
-> > > > Can the existing __cgroup_bpf_prog_array_is_empty(cgrp, ...) test  
-> be used instead?
-> > >
-> > > That was the first idea, but it's still heavier than I'd wish.  
-> 0.3%-0.7%
-> > > in profiles, something similar in reqs/s. rcu_read_lock/unlock() pair  
-> is
-> > > cheap but anyway adds 2 barrier()s, and with bitmasks we can inline
-> > > the check.
-> > It sounds like there is opportunity to optimize
-> > __cgroup_bpf_prog_array_is_empty().
-> >
-> > How about using rcu_access_pointer(), testing with  
-> &empty_prog_array.hdr,
-> > and then inline it?  The cgroup prog array cannot be all
-> > dummy_bpf_prog.prog.  If that could be the case, it should be replaced
-> > with &empty_prog_array.hdr earlier, so please check.
+On Tue, 14 Dec 2021 at 08:52, syzbot
+<syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 0315a075f1343966ea2d9a085666a88a69ea6a3d
+> Author: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Date:   Wed Nov 10 19:56:05 2021 +0000
+>
+>     net: fix premature exit from NAPI state polling in napi_disable()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=138dffbeb00000
+> start commit:   911e3a46fb38 net: phy: Fix unsigned comparison with less t..
+> git tree:       net-next
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d36d2402e8523638
+> dashboard link: https://syzkaller.appspot.com/bug?extid=62e474dd92a35e3060d8
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141592f2b00000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: net: fix premature exit from NAPI state polling in napi_disable()
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-> I'd need to expose and export empty_prog_array, but that should do.
-> Will try it out, thanks
 
-Note that we already use __cgroup_bpf_prog_array_is_empty in
-__cgroup_bpf_run_filter_setsockopt/__cgroup_bpf_run_filter_getsockopt
-for exactly the same purpose. If you happen to optimize it, pls
-update these places as well.
+Looks reasonable based on the subsystem:
+
+#syz fix: net: fix premature exit from NAPI state polling in napi_disable()
