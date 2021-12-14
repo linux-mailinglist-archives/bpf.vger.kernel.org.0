@@ -2,193 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E8D4742E3
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 13:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952724743F3
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 14:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhLNMq5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 07:46:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34400 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234109AbhLNMqx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Dec 2021 07:46:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639486013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zP9WPv2zcgiB2fBLCStTdij7J/n3WqYBCTnC2D/9kSY=;
-        b=QUG8vUrgXTMJuZzX39xjyYt9g7HH5+wGVc2UR0Id6c1GwxwIOHqwfLDsmRYdoMiV3Q4IgD
-        eaQo2h6sevSMu4CZMdVc3Dw1GazB7terq6PsshejZf4AeYfW8WfTYbY+j4EJUjaVZKt6bk
-        FM2Nz1Pp2uIJ4XYmBG5pM5Y4FzYhA8I=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-274-HbLjhru3Ouy-r18I9SOjXw-1; Tue, 14 Dec 2021 07:46:52 -0500
-X-MC-Unique: HbLjhru3Ouy-r18I9SOjXw-1
-Received: by mail-wm1-f70.google.com with SMTP id l34-20020a05600c1d2200b00344d34754e4so420399wms.7
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 04:46:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zP9WPv2zcgiB2fBLCStTdij7J/n3WqYBCTnC2D/9kSY=;
-        b=hpWjiF5yqmybbcVsRXqopr4T3Bv7Yt2oDTlq277FwF8zzuU3T/Pd5Et7KGGCzictBR
-         p4FXHFD74f9JoYgho5gxQb/ha6XB1NUY0iZAlyGH/sGXQUnaixcAs2mW8na35JocHUTo
-         khLBBLVMZkhDUI4aaOHjvxeP3ZY5Gw/CWhOtxSBJwWahk9Vvb9m+60c/pQSkXL4ZABew
-         3RlNU4phZT1saiizgrfzHvtfc6eAsVl+COA8VafxLbIVhz77GrSbuxzrNY+QTwpbgrDs
-         3LgSHs6IzjA0VRuYKbA7r2HJ1JATlOcJFU57dYnl8S/3OZjhU13hM1bdidG/SXKfBsO6
-         fQCA==
-X-Gm-Message-State: AOAM530qE1T9Z0ug7U6zuaCzLWNx+3eEbkiRes1ZQMBp8TqLQs95jxrS
-        ng3katouGsGo7YhezlNerOCPOtL2sQD5VoRGxdfjDBIpegDuLstJ0iZfaV4D5UellxFx5eqFkmB
-        J4KBemq0kE4T5+h4aNR+PJgcyWvBL
-X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr5785303wrw.36.1639486010712;
-        Tue, 14 Dec 2021 04:46:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxaNSOpTDyWfDloewyBzmx6JhH6oQqw90E95q9szrMniUzK7GxZjXpZHsjG6G3/CrFj2H30WaQOTuL5VRrJ/Hs=
-X-Received: by 2002:a5d:6a4d:: with SMTP id t13mr5785279wrw.36.1639486010447;
- Tue, 14 Dec 2021 04:46:50 -0800 (PST)
+        id S234587AbhLNNy4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 08:54:56 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15732 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230038AbhLNNyz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Dec 2021 08:54:55 -0500
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JD0DB42qtzZdQ0;
+        Tue, 14 Dec 2021 21:51:54 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 14 Dec 2021 21:54:53 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 14 Dec 2021 21:54:53 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <shuah@kernel.org>
+CC:     <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pulehui@huawei.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix building error when using userspace pt_regs
+Date:   Tue, 14 Dec 2021 21:55:55 +0800
+Message-ID: <20211214135555.125348-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <xunylf0o872l.fsf@redhat.com> <1639483040.nhfgn2cmvh.naveen@linux.ibm.com>
-In-Reply-To: <1639483040.nhfgn2cmvh.naveen@linux.ibm.com>
-From:   Yauheni Kaliuta <ykaliuta@redhat.com>
-Date:   Tue, 14 Dec 2021 14:46:34 +0200
-Message-ID: <CANoWswkVLUDzwivbkiJ28LKo8F2YZJ4sRR=76NNcYwpdncquwA@mail.gmail.com>
-Subject: Re: PPC jit and pseudo_btf_id
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.98]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi!
+When building bpf selftests on arm64, the following error will occur:
 
-On Tue, Dec 14, 2021 at 2:11 PM Naveen N. Rao
-<naveen.n.rao@linux.vnet.ibm.com> wrote:
->
-> Hi Yauheni,
->
->
-> Yauheni Kaliuta wrote:
-> > Hi!
-> >
-> > I get kernel oops on my setup due to unresolved pseudo_btf_id for
-> > ld_imm64 (see 4976b718c355 ("bpf: Introduce pseudo_btf_id")) for
-> > example for `test_progs -t for_each/hash_map` where callback
-> > address is passed to a bpf helper:
-> >
-> >
-> > [  425.853991] kernel tried to execute user page (100000014) - exploit attempt? (uid: 0)
-> > [  425.854173] BUG: Unable to handle kernel instruction fetch
-> > [  425.854255] Faulting instruction address: 0x100000014
+progs/loop2.c:20:7: error: incomplete definition of type 'struct
+user_pt_regs'
 
-[...]
+Some archs, like arm64 and riscv, use userspace pt_regs in
+bpf_tracing.h, which causes build failure when bpf prog use
+macro in bpf_tracing.h. So let's use vmlinux.h directly.
 
->
-> Thanks for the problem report. I noticed this recently and have prepared
-> a fix as part of a larger patchset.
->
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ tools/testing/selftests/bpf/progs/loop1.c     |  8 ++------
+ tools/testing/selftests/bpf/progs/loop2.c     |  8 ++------
+ tools/testing/selftests/bpf/progs/loop3.c     |  8 ++------
+ tools/testing/selftests/bpf/progs/loop6.c     | 20 ++++++-------------
+ .../selftests/bpf/progs/test_overhead.c       |  8 ++------
+ .../selftests/bpf/progs/test_probe_user.c     |  6 +-----
+ 6 files changed, 15 insertions(+), 43 deletions(-)
 
-Ah, cool! That was  actually my main question, do I miss the fix somewhere :)
-
-> >
-> > The simple patch fixes it for me:
-> >
-> > diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-> > index 90ce75f0f1e2..554c26480387 100644
-> > --- a/arch/powerpc/net/bpf_jit_comp.c
-> > +++ b/arch/powerpc/net/bpf_jit_comp.c
-> > @@ -201,8 +201,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-> >                */
-> >               bpf_jit_fixup_subprog_calls(fp, code_base, &cgctx, addrs);
-> >
-> > -             /* There is no need to perform the usual passes. */
-> > -             goto skip_codegen_passes;
-> > +             /* Due to pseudo_btf_id resolving, regenerate */
-> >       }
-> >
-> >       /* Code generation passes 1-2 */
-> > @@ -222,7 +221,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-> >                               proglen - (cgctx.idx * 4), cgctx.seen);
-> >       }
-> >
-> > -skip_codegen_passes:
-> >       if (bpf_jit_enable > 1)
-> >               /*
-> >                * Note that we output the base address of the code_base
-> >
-> >
-> >
-> > Do I miss something?
->
-> The problem with the above approach is that we generate variable number
-> of instructions for certain BPF instructions and so, unless we reserve
-> space for maximum number of powerpc instructions beforehand, we risk
-> writing past the end of the allocated buffer.
-
-Yes, agree.
-
-> Can you please check if the below patch fixes the issue for you?
-
-It does, thanks!
-
-I was actually thinking later about something similar and I wonder
-about naming. Should the function be renamed to more generic, and is
-it really for func_addr only or can be any generic value?
-
->
->
-> Thanks,
-> Naveen
->
->
-> ---
-> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-> index 463f99ecaa459e..e16d421ce22a65 100644
-> --- a/arch/powerpc/net/bpf_jit_comp.c
-> +++ b/arch/powerpc/net/bpf_jit_comp.c
-> @@ -66,7 +66,15 @@ static int bpf_jit_fixup_subprog_calls(struct bpf_prog *fp, u32 *image,
->                          * of the JITed sequence remains unchanged.
->                          */
->                         ctx->idx = tmp_idx;
-> +               } else if (insn[i].code == (BPF_LD | BPF_IMM | BPF_DW)) {
-> +                       func_addr = ((u64)(u32) insn[i].imm) | (((u64)(u32) insn[i+1].imm) << 32);
-> +                       tmp_idx = ctx->idx;
-> +                       ctx->idx = addrs[i] / 4;
-> +                       PPC_LI64(b2p[insn[i].dst_reg], func_addr);
-> +                       ctx->idx = tmp_idx;
-> +                       i++;
->                 }
-> +
->         }
->
->         return 0;
-> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-> index 74b465cc7a84d0..4d3973cd78b46f 100644
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -324,6 +324,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->                 u64 imm64;
->                 u32 true_cond;
->                 u32 tmp_idx;
-> +               int j;
->
->                 /*
->                  * addrs[] maps a BPF bytecode address into a real offset from
-> @@ -858,7 +859,11 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->                                     (((u64)(u32) insn[i+1].imm) << 32);
->                         /* Adjust for two bpf instructions */
->                         addrs[++i] = ctx->idx * 4;
-> +                       tmp_idx = ctx->idx;
->                         PPC_LI64(dst_reg, imm64);
-> +                       /* padding to allow full 5 instructions for later patching */
-> +                       for (j = ctx->idx - tmp_idx; j < 5; j++)
-> +                               EMIT(PPC_RAW_NOP());
->                         break;
->
->                 /*
->
-
-
+diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
+index 50e66772c046..ea04c035719c 100644
+--- a/tools/testing/selftests/bpf/progs/loop1.c
++++ b/tools/testing/selftests/bpf/progs/loop1.c
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2019 Facebook
+-#include <linux/sched.h>
+-#include <linux/ptrace.h>
+-#include <stdint.h>
+-#include <stddef.h>
+-#include <stdbool.h>
+-#include <linux/bpf.h>
++
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
+index 947bb7e988c2..edf07b1d310e 100644
+--- a/tools/testing/selftests/bpf/progs/loop2.c
++++ b/tools/testing/selftests/bpf/progs/loop2.c
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2019 Facebook
+-#include <linux/sched.h>
+-#include <linux/ptrace.h>
+-#include <stdint.h>
+-#include <stddef.h>
+-#include <stdbool.h>
+-#include <linux/bpf.h>
++
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
+index 76e93b31c14b..c8d2f2c55547 100644
+--- a/tools/testing/selftests/bpf/progs/loop3.c
++++ b/tools/testing/selftests/bpf/progs/loop3.c
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2019 Facebook
+-#include <linux/sched.h>
+-#include <linux/ptrace.h>
+-#include <stdint.h>
+-#include <stddef.h>
+-#include <stdbool.h>
+-#include <linux/bpf.h>
++
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+diff --git a/tools/testing/selftests/bpf/progs/loop6.c b/tools/testing/selftests/bpf/progs/loop6.c
+index 38de0331e6b4..17ac4da5664d 100644
+--- a/tools/testing/selftests/bpf/progs/loop6.c
++++ b/tools/testing/selftests/bpf/progs/loop6.c
+@@ -1,8 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+-#include <linux/ptrace.h>
+-#include <stddef.h>
+-#include <linux/bpf.h>
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+@@ -25,12 +23,6 @@ char _license[] SEC("license") = "GPL";
+ #define SG_CHAIN	0x01UL
+ #define SG_END		0x02UL
+ 
+-struct scatterlist {
+-	unsigned long   page_link;
+-	unsigned int    offset;
+-	unsigned int    length;
+-};
+-
+ #define sg_is_chain(sg)		((sg)->page_link & SG_CHAIN)
+ #define sg_is_last(sg)		((sg)->page_link & SG_END)
+ #define sg_chain_ptr(sg)	\
+@@ -61,8 +53,8 @@ static inline struct scatterlist *get_sgp(struct scatterlist **sgs, int i)
+ 	return sgp;
+ }
+ 
+-int config = 0;
+-int result = 0;
++int g_config = 0;
++int g_result = 0;
+ 
+ SEC("kprobe/virtqueue_add_sgs")
+ int BPF_KPROBE(trace_virtqueue_add_sgs, void *unused, struct scatterlist **sgs,
+@@ -72,7 +64,7 @@ int BPF_KPROBE(trace_virtqueue_add_sgs, void *unused, struct scatterlist **sgs,
+ 	__u64 length1 = 0, length2 = 0;
+ 	unsigned int i, n, len;
+ 
+-	if (config != 0)
++	if (g_config != 0)
+ 		return 0;
+ 
+ 	for (i = 0; (i < VIRTIO_MAX_SGS) && (i < out_sgs); i++) {
+@@ -93,7 +85,7 @@ int BPF_KPROBE(trace_virtqueue_add_sgs, void *unused, struct scatterlist **sgs,
+ 		}
+ 	}
+ 
+-	config = 1;
+-	result = length2 - length1;
++	g_config = 1;
++	g_result = length2 - length1;
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/testing/selftests/bpf/progs/test_overhead.c
+index abb7344b531f..df035e6a3143 100644
+--- a/tools/testing/selftests/bpf/progs/test_overhead.c
++++ b/tools/testing/selftests/bpf/progs/test_overhead.c
+@@ -1,14 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2019 Facebook */
+-#include <stdbool.h>
+-#include <stddef.h>
+-#include <linux/bpf.h>
+-#include <linux/ptrace.h>
++
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+-struct task_struct;
+-
+ SEC("kprobe/__set_task_comm")
+ int BPF_KPROBE(prog1, struct task_struct *tsk, const char *buf, bool exec)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/test_probe_user.c b/tools/testing/selftests/bpf/progs/test_probe_user.c
+index 8812a90da4eb..bf6c0b864ace 100644
+--- a/tools/testing/selftests/bpf/progs/test_probe_user.c
++++ b/tools/testing/selftests/bpf/progs/test_probe_user.c
+@@ -1,10 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+-#include <linux/ptrace.h>
+-#include <linux/bpf.h>
+-
+-#include <netinet/in.h>
+-
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
 -- 
-WBR, Yauheni
+2.25.1
 
