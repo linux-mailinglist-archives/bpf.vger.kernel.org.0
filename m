@@ -2,113 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9557C4738B0
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 00:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2207D473939
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 01:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244221AbhLMXml (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 18:42:41 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:53890 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244233AbhLMXml (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 18:42:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2218EB816E6
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 23:42:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2370C34615;
-        Mon, 13 Dec 2021 23:42:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639438958;
-        bh=Yhif4MF/BZX9oRk0V9GdftA13TztKqwgFVmF4zd71HU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lajj/C3aUW2zHM3eWwG5QxhQjZLMHgDU7rk/qzTTnOMRdnYrW8nbBcJLe4dYeOJ+r
-         MYaqBHtmwwj3Cc+PELVjoz36V/m1hTq3FJ+dvoLjsIUEcUdnO35Cpqe490FDAMgJtZ
-         W1kRVgztHWo9jmqFveEE81ugX2ZNluTM2ty4seJc69l4N+vHX7BgdtPXgSz3PCQl7f
-         zuU4fKAnO03jmfu0cSQL2is4fj/mh4Ig+/MVvZ5OTjSa7fVrn6/kacD/ndZlhkLuCP
-         BoAtBum6sunvSpJs5I5KnM0nseknueji7B0tzde0iHTVXRsfg6zu8MBIXLIqDJc1xL
-         pWKRjiDSna/jg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH bpf-next 5/5] bpf: push down the bpf-link include
-Date:   Mon, 13 Dec 2021 15:42:23 -0800
-Message-Id: <20211213234223.356977-6-kuba@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211213234223.356977-1-kuba@kernel.org>
-References: <20211213234223.356977-1-kuba@kernel.org>
+        id S244400AbhLNACt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 19:02:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244348AbhLNACs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Dec 2021 19:02:48 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE61C061574;
+        Mon, 13 Dec 2021 16:02:48 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id x5so16445663pfr.0;
+        Mon, 13 Dec 2021 16:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hC7TwJmEGObrCnKcK81iW0fnyel7wfMqp7zKvIm4raI=;
+        b=Bl3Boog1F/B9DU1oD9J62kDPWFJT30ka9yPFAXJUOWSYN8WkuA661qnO2MsaTV7/XC
+         kX3dsMV+6waQaTroeFuiB/CKWG7dQLTYmlmFTeIYMErJUE5VyGwBnKA0xeX4mzdSNAzk
+         CO0HBOhgFW4vn4xH8fVIg4J3ibolg41+D/q6lAlS01/jma9JFkdQ9DZqKFes4sAyUMfc
+         ZLRkQPrCzHISPtGazeLkawc2ENqJre0DY3vsUeXaZBHAHWyyp0EmjeljwFD4nLzEiqAp
+         4TUZZ9c+oac4JqSesfikaM1DyKJVdlI4Tr4tl18k9D/lj8zoRDpB4rtH7IALLDBzNg96
+         sy9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hC7TwJmEGObrCnKcK81iW0fnyel7wfMqp7zKvIm4raI=;
+        b=e0dUSG+2kqihdPQjqIKHzYzWG0R2AIt83rWI9GPvzDAAplJXgcpaa86FJcGQSAIPpY
+         Hi/Gv/GU7A/9zqCKl7buyyDRKwufc7HdikjWwFbBzEEZwZlp/Np4gA9LUm9V6RLkTs7o
+         Zd+mlFzLfqo/2Clihm8NauxcUWlT/WqxEDzD+JfJDqB6+jdDZ0Rs/1Vgr379FY9FCZUB
+         5Wl8rvqK0+Thbce8CEEndutMqoKM5v7no4G4ZOdlww8gbqC0y8YIDq+0fwiWNRiCjLxz
+         /9AgssbspHV7HWFfiQd3cGUS2uD+6F/12WGxAY2g5W5kCssoK6TGWmus+j/QP35HvwfM
+         vrbA==
+X-Gm-Message-State: AOAM532gLzpAsniNS7pmP7QUxSHbqAg0TxpXHIAicq9g7WbbUwbO/T4K
+        dymzG0OeLuXLC1BSKGGyXBj0M8Nrc1qM8F5id4wLc67l
+X-Google-Smtp-Source: ABdhPJwst6FoYHHucwupspxLIG2iNzbYH3BbhRsOpekDrmMeG+Vp+uQTPTSDq8pDW4In1jo+ST6nGB/AqA569HPdwDk=
+X-Received: by 2002:a05:6a00:1583:b0:49f:dc1c:a0fe with SMTP id
+ u3-20020a056a00158300b0049fdc1ca0femr1231313pfk.46.1639440167729; Mon, 13 Dec
+ 2021 16:02:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211211184143.142003-1-toke@redhat.com> <20211211184143.142003-7-toke@redhat.com>
+ <CAADnVQJYfyHs41H1x-1wR5WVSX+3ju69XMUQ4id5+1DLkTVDkg@mail.gmail.com> <87tufceaid.fsf@toke.dk>
+In-Reply-To: <87tufceaid.fsf@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 13 Dec 2021 16:02:36 -0800
+Message-ID: <CAADnVQJunh7KTKJe3F_tO0apqLHtOMFqGAB-V28ORh6o5JUTUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 6/8] bpf: Add XDP_REDIRECT support to XDP for bpf_prog_run()
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Turns out bpf_link is not dereferenced or embedded much.
-Since we have separated it out to its own header why not
-drop the include from bpf.h completely...
+On Mon, Dec 13, 2021 at 8:26 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Sat, Dec 11, 2021 at 10:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+> >> +
+> >> +static void bpf_test_run_xdp_teardown(struct bpf_test_timer *t)
+> >> +{
+> >> +       struct xdp_mem_info mem =3D {
+> >> +               .id =3D t->xdp.pp->xdp_mem_id,
+> >> +               .type =3D MEM_TYPE_PAGE_POOL,
+> >> +       };
+> >
+> > pls add a new line.
+> >
+> >> +       xdp_unreg_mem_model(&mem);
+> >> +}
+> >> +
+> >> +static bool ctx_was_changed(struct xdp_page_head *head)
+> >> +{
+> >> +       return (head->orig_ctx.data !=3D head->ctx.data ||
+> >> +               head->orig_ctx.data_meta !=3D head->ctx.data_meta ||
+> >> +               head->orig_ctx.data_end !=3D head->ctx.data_end);
+> >
+> > redundant ()
+> >
+> >>         bpf_test_timer_enter(&t);
+> >>         old_ctx =3D bpf_set_run_ctx(&run_ctx.run_ctx);
+> >>         do {
+> >>                 run_ctx.prog_item =3D &item;
+> >> -               if (xdp)
+> >> +               if (xdp && xdp_redirect) {
+> >> +                       ret =3D bpf_test_run_xdp_redirect(&t, prog, ct=
+x);
+> >> +                       if (unlikely(ret < 0))
+> >> +                               break;
+> >> +                       *retval =3D ret;
+> >> +               } else if (xdp) {
+> >>                         *retval =3D bpf_prog_run_xdp(prog, ctx);
+> >
+> > Can we do this unconditionally without introducing a new uapi flag?
+> > I mean "return bpf_redirect()" was a nop under test_run.
+> > What kind of tests might break if it stops being a nop?
+>
+> Well, I view the existing mode of bpf_prog_test_run() with XDP as a way
+> to write XDP unit tests: it allows you to submit a packet, run your XDP
+> program on it, and check that it returned the right value and did the
+> right modifications. This means if you XDP program does 'return
+> bpf_redirect()', userspace will still get the XDP_REDIRECT value and so
+> it can check correctness of your XDP program.
+>
+> With this flag the behaviour changes quite drastically, in that it will
+> actually put packets on the wire instead of getting back the program
+> return. So I think it makes more sense to make it a separate opt-in
+> mode; the old behaviour can still be useful for checking XDP program
+> behaviour.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
- include/linux/bpf.h   | 2 +-
- kernel/bpf/bpf_iter.c | 1 +
- kernel/bpf/syscall.c  | 1 +
- net/core/dev.c        | 1 +
- 4 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 64bdae62a594..0be6890f01ec 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -23,12 +23,12 @@
- #include <linux/slab.h>
- #include <linux/percpu-refcount.h>
- #include <linux/bpf-cgroup-types.h>
--#include <linux/bpf-link.h>
- #include <linux/bpfptr.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
- struct perf_event;
-+struct bpf_link;
- struct bpf_prog;
- struct bpf_prog_aux;
- struct bpf_map;
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index b7aef5b3416d..9e4d00446227 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -5,6 +5,7 @@
- #include <linux/anon_inodes.h>
- #include <linux/filter.h>
- #include <linux/bpf.h>
-+#include <linux/bpf-link.h>
- 
- struct bpf_iter_target_info {
- 	struct list_head list;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index ddd81d543203..9034bb833ec3 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -5,6 +5,7 @@
- #include <linux/bpf_trace.h>
- #include <linux/bpf_lirc.h>
- #include <linux/bpf_verifier.h>
-+#include <linux/bpf-link.h>
- #include <linux/btf.h>
- #include <linux/syscalls.h>
- #include <linux/slab.h>
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 4420086f3aeb..d8e51e826852 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -93,6 +93,7 @@
- #include <linux/skbuff.h>
- #include <linux/kthread.h>
- #include <linux/bpf.h>
-+#include <linux/bpf-link.h>
- #include <linux/bpf_trace.h>
- #include <net/net_namespace.h>
- #include <net/sock.h>
--- 
-2.31.1
-
+Ok that all makes sense.
+How about using prog_run to feed the data into proper netdev?
+XDP prog may or may not attach to it (this detail is tbd) and
+prog_run would use prog_fd and ifindex to trigger RX (yes, receive)
+in that netdev. XDP prog will execute and will be able to perform
+all actions (not only XDP_REDIRECT).
+XDP_PASS would pass the packet to the stack, etc.
