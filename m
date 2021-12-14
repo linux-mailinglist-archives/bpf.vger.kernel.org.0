@@ -2,149 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB69473B86
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4E9473BA4
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhLND3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 22:29:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhLND3J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Dec 2021 22:29:09 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4409C061574;
-        Mon, 13 Dec 2021 19:29:08 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id o14so12610456plg.5;
-        Mon, 13 Dec 2021 19:29:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+ssVFgBKjmVIJAolDkQX5NONW+ijNamJd/NwdyPKjV0=;
-        b=GRxFpSh/e9TAEjNBmbCynBmh5VwaVPIneZaPhsZV5UNIkQqWWtXMdT1cdC/tpDpRwr
-         4+/OiAVq6C6OIWd/C8PPbM65OC9J3IaMrXO0nDPzY2V2vFnn+dtLMqDC6V8cApXuAga5
-         WFk4Po2FaV/+e8mN1xoqELFrIXyttA/aZVx1v13cpjufo9jTZQO+C+t4ROOM71oyYsER
-         tFw7lAL585FhSYsmJl0DljEbRibaXfUGpo9EAiTmMAHivxKHCe3G1xvdDD8QaIWgNVpJ
-         2Z2ARL5JGTnldsJg7E6zt4CY9AlWtqYxqeaqS/QSUeu9ajNHmQe9VlHxieDifGHcR0N9
-         eVDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+ssVFgBKjmVIJAolDkQX5NONW+ijNamJd/NwdyPKjV0=;
-        b=5RWW3AMQ64Qu/8qzSztAsceA8q2DzkolqjtXPQ1vOcomsEEltRW+C0L1JCpc/HE+IZ
-         qoGQvWCz3ZRSsiPM7OGAh9w2rxRgtP9QlTM0+Td6aKkIlNKNQ6ZtQcwQYfV+xCC0PlPr
-         qqlq7TWcCNkJQaZU8XN5tI2HTlkMyecV0XnrYaIk5i3sjOWMw+kTrgGmaakGK67p01CL
-         H+KOh/FlU2Z8BoktsESw8fuOQHzPCt1Xm18tiXJbPvuE/5zIr9b9y/eWAD8ZOAgBjUUh
-         AxluzGArse9WYgrtMPJP8f42NVyFZKjsFZ2hSjQ8ZY/DsSH1FzLfm26AUqMaou+ZhsrL
-         lK+w==
-X-Gm-Message-State: AOAM533WOt3OH45otLiab9PA+tHUl31L9OqJAdOKCLUgYV94Q4Po/DCS
-        BzYZnt6y1K8Y4FT7LdzGiym9pBFsIL9TosajUnUtb1xe
-X-Google-Smtp-Source: ABdhPJxdLvdWfQnDKR8oEQPVlSpYAGmCAqXZN1ivSOU8D+cJ4iqJWPRMvwEaas1wN53MIB9VFi6SGJ5jCzxal+55b48=
-X-Received: by 2002:a17:902:b588:b0:143:b732:834 with SMTP id
- a8-20020a170902b58800b00143b7320834mr2611006pls.22.1639452548228; Mon, 13 Dec
- 2021 19:29:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20211211184143.142003-1-toke@redhat.com> <20211211184143.142003-9-toke@redhat.com>
- <CAADnVQKiPgDtEUwg7WQ2YVByBUTRYuCZn-Y17td+XHazFXchaA@mail.gmail.com>
- <87r1ageafo.fsf@toke.dk> <CAADnVQL6yL6hVGWL0cni-t+Lvpe91ST8moF69u5CwOLBKZT-GQ@mail.gmail.com>
- <87czm0yqba.fsf@toke.dk>
-In-Reply-To: <87czm0yqba.fsf@toke.dk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 13 Dec 2021 19:28:57 -0800
-Message-ID: <CAADnVQKM81Jf0b-m=VeuVES7K11uksVrzQtCksoyCq3mZ-=L5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 8/8] samples/bpf: Add xdp_trafficgen sample
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233077AbhLNDmK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 22:42:10 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23798 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230147AbhLNDmK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 22:42:10 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BDMd2Lb008739
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:42:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=Xt/j2qCPr6eqR7ff2TQeM61XNYLEiBu/AL1DYjHwyk4=;
+ b=VxDJN5I6Uud5SCpxaM/h+3XLlfeFv0/6QrFZ2M2rkUXhoNoHjoELOb6FzsDwziL5DhCj
+ ibUWhF839AjMa8A258q12wuSfSLB/soliFB1AH14YXzcKqaNBUvPwsVyOpvXR4TmEmaD
+ RpF0dK0ujmTSNFVJw9a+l+1aLu3S8+dIsPg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cx9rqvb2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:42:10 -0800
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 13 Dec 2021 19:42:08 -0800
+Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
+        id 54A63112FB9C; Mon, 13 Dec 2021 19:42:00 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH v3 bpf-next 0/4] Stop using bpf_object__find_program_by_title API
+Date:   Mon, 13 Dec 2021 19:41:43 -0800
+Message-ID: <20211214034147.1071682-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: 5n0oYC6H0jRBX321Q7xJXidqT_a2KFql
+X-Proofpoint-ORIG-GUID: 5n0oYC6H0jRBX321Q7xJXidqT_a2KFql
 Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-14_01,2021-12-13_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=999
+ spamscore=0 clxscore=1015 suspectscore=0 malwarescore=0 phishscore=0
+ impostorscore=0 bulkscore=0 mlxscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112140017
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 4:37 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> > On Mon, Dec 13, 2021 at 8:28 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
-> >>
-> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >>
-> >> > On Sat, Dec 11, 2021 at 10:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
-> >> >>
-> >> >> This adds an XDP-based traffic generator sample which uses the DO_R=
-EDIRECT
-> >> >> flag of bpf_prog_run(). It works by building the initial packet in
-> >> >> userspace and passing it to the kernel where an XDP program redirec=
-ts the
-> >> >> packet to the target interface. The traffic generator supports two =
-modes of
-> >> >> operation: one that just sends copies of the same packet as fast as=
- it can
-> >> >> without touching the packet data at all, and one that rewrites the
-> >> >> destination port number of each packet, making the generated traffi=
-c span a
-> >> >> range of port numbers.
-> >> >>
-> >> >> The dynamic mode is included to demonstrate how the bpf_prog_run() =
-facility
-> >> >> enables building a completely programmable packet generator using X=
-DP.
-> >> >> Using the dynamic mode has about a 10% overhead compared to the sta=
-tic
-> >> >> mode, because the latter completely avoids touching the page data.
-> >> >>
-> >> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >> >> ---
-> >> >>  samples/bpf/.gitignore            |   1 +
-> >> >>  samples/bpf/Makefile              |   4 +
-> >> >>  samples/bpf/xdp_redirect.bpf.c    |  34 +++
-> >> >>  samples/bpf/xdp_trafficgen_user.c | 421 ++++++++++++++++++++++++++=
-++++
-> >> >>  4 files changed, 460 insertions(+)
-> >> >>  create mode 100644 samples/bpf/xdp_trafficgen_user.c
-> >> >
-> >> > I think it deserves to be in tools/bpf/
-> >> > samples/bpf/ bit rots too often now.
-> >> > imo everything in there either needs to be converted to selftests/bp=
-f
-> >> > or deleted.
-> >>
-> >> I think there's value in having a separate set of utilities that are
-> >> more user-facing than the selftests. But I do agree that it's annoying
-> >> they bit rot. So how about we fix that instead? Andrii suggested just
-> >> integrating the build of samples/bpf into selftests[0], so I'll look
-> >> into that after the holidays. But in the meantime I don't think there'=
-s
-> >> any harm in adding this utility here?
-> >
-> > I think samples/bpf building would help to stabilize bitroting,
-> > but the question of the right home for this trafficgen tool remains.
-> > I think it's best to keep it outside of the kernel tree.
-> > It's not any more special than all other libbpf and bcc tools.
-> > I think xdp-tools repo or bcc could be a home for it.
->
-> Alright, I'll drop it from the next version and put it into xdp-tools.
-> I've been contemplating doing the same for some of the other tools
-> (xdp_redirect* and xdp_monitor, for instance). Any opinion on that?
+bpf_object__find_program_by_title is going to be deprecated since
+v0.7.  Replace all use cases with bpf_object__find_program_by_name if
+possible, or use bpf_object__for_each_program to iterate over
+programs, matching section names.
 
-Please move them too if you don't mind.
-samples/ just doesn't have the right production quality vibe.
-Everything in there is a sample code. In other words a toy application.
-I hope xdp_trafficgen aims to be a solid maintained tool with
-a man page that distros will ship eventually.
-So starting with a good home is important.
+V3 fixes a broken test case, fexit_bpf2bpf, in selftests/bpf, using
+bpf_obj__for_each_program API instead.
+
+[v2] https://lore.kernel.org/bpf/20211211003608.2764928-1-kuifeng@fb.com/
+[v1] https://lore.kernel.org/bpf/20211210190855.1369060-1-kuifeng@fb.com/T/
+
+Kui-Feng Lee (4):
+  selftests/bpf: Stop using bpf_object__find_program_by_title API.
+  samples/bpf: Stop using bpf_object__find_program_by_title API.
+  tools/perf: Stop using bpf_object__find_program_by_title API.
+  libbpf: Mark bpf_object__find_program_by_title API deprecated.
+
+ samples/bpf/hbm.c                             | 11 ++-
+ samples/bpf/xdp_fwd_user.c                    | 12 ++-
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/perf/builtin-trace.c                    | 13 ++-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     |  4 +-
+ .../bpf/prog_tests/connect_force_port.c       | 18 ++---
+ .../selftests/bpf/prog_tests/core_reloc.c     | 79 +++++++++++++------
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 17 +++-
+ .../bpf/prog_tests/get_stack_raw_tp.c         |  4 +-
+ .../bpf/prog_tests/sockopt_inherit.c          | 15 ++--
+ .../selftests/bpf/prog_tests/stacktrace_map.c |  4 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  4 +-
+ .../selftests/bpf/prog_tests/test_overhead.c  | 20 ++---
+ .../bpf/prog_tests/trampoline_count.c         |  6 +-
+ 14 files changed, 137 insertions(+), 71 deletions(-)
+
+--=20
+2.30.2
+
