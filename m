@@ -2,104 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA67D473BA7
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3F9473BA8
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 04:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233128AbhLNDnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Dec 2021 22:43:00 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2256 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230072AbhLNDm7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 22:42:59 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BDMcxBH008544
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:42:59 -0800
+        id S232741AbhLNDnH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Dec 2021 22:43:07 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44192 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230072AbhLNDnH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Dec 2021 22:43:07 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 1BDMeL1Y001554
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:43:06 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=nDnseGQQZAXRcPYJURETqGAZciJp5N121Z2dvHl4zKQ=;
- b=UI/24LDLIo356UT+uL3hwa+9zk9KKysknG2p3dFbrOm13+cJD1G09DX6v4lhwf9jFy4k
- YUlLK2osQ8QYnvpBtPRfRs4B+7btP6jyimW5hM8ET6poG5rLc9wgJlEUgjloA/wpqGnq
- HBN2WI/I8yZK7d/Mn/brcuCwpoE/F3r2YVQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cx9rqvb6m-1
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=JD2PCGky332YeXupqsPf651t+k+QAardVW41h4anoaM=;
+ b=o6JVkeHNPpID4kkRM3sMYof/YzChSsb0DNP+YI9Fv/XLcjNza2hFfHpYFvpvaZUL9FEp
+ boSMczOjn5lJ7cVAKgcnhJYqHuhDrcs5jKLcCc7iTRL+FVmZzS4NDPQgDuctYTKu/1WQ
+ 1u3F2JFai6s4iV+aSYRrboTC7kn2JP0BDyU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3cx9rn4bdx-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:42:59 -0800
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 13 Dec 2021 19:43:06 -0800
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 13 Dec 2021 19:42:58 -0800
+ 15.1.2308.20; Mon, 13 Dec 2021 19:43:01 -0800
 Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
-        id 2C8D3112FDEA; Mon, 13 Dec 2021 19:42:53 -0800 (PST)
+        id EFB98112FE3E; Mon, 13 Dec 2021 19:42:58 -0800 (PST)
 From:   Kui-Feng Lee <kuifeng@fb.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <andrii@kernel.org>
 CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH v3 bpf-next 3/4] tools/perf: Stop using bpf_object__find_program_by_title API.
-Date:   Mon, 13 Dec 2021 19:41:46 -0800
-Message-ID: <20211214034147.1071682-4-kuifeng@fb.com>
+Subject: [PATCH v3 bpf-next 4/4] libbpf: Mark bpf_object__find_program_by_title API deprecated.
+Date:   Mon, 13 Dec 2021 19:41:47 -0800
+Message-ID: <20211214034147.1071682-5-kuifeng@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211214034147.1071682-1-kuifeng@fb.com>
 References: <20211214034147.1071682-1-kuifeng@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: O_gdcxBVrkdhccBrwEjez_mYYKNKyZI0
-X-Proofpoint-ORIG-GUID: O_gdcxBVrkdhccBrwEjez_mYYKNKyZI0
+X-Proofpoint-ORIG-GUID: zwB-dFEHpl767A1gtrBUakmooNZUz0pj
+X-Proofpoint-GUID: zwB-dFEHpl767A1gtrBUakmooNZUz0pj
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2021-12-14_01,2021-12-13_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=967
- spamscore=0 clxscore=1015 suspectscore=0 malwarescore=0 phishscore=0
- impostorscore=0 bulkscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112140018
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
+ mlxlogscore=825 clxscore=1015 suspectscore=0 mlxscore=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112140017
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_obj__find_program_by_title() in libbpf is going to be deprecated.
-Call bpf_object_for_each_program to find a program in the section with
-a given name instead.
+Deprecate this API since v0.7.  All callers should move to
+bpf_object__find_program_by_name if possible, otherwise use
+bpf_object__for_each_program to find a program out from a given
+section.
+
+[0] Closes: https://github.com/libbpf/libbpf/issues/292
 
 Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 ---
- tools/perf/builtin-trace.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 624ea12ce5ca..7c7278e434a0 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -3253,10 +3253,21 @@ static void trace__set_bpf_map_syscalls(struct tr=
-ace *trace)
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 4802c1e736c3..cd9dec4def41 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -187,6 +187,7 @@ struct btf;
+ LIBBPF_API struct btf *bpf_object__btf(const struct bpf_object *obj);
+ LIBBPF_API int bpf_object__btf_fd(const struct bpf_object *obj);
 =20
- static struct bpf_program *trace__find_bpf_program_by_title(struct trace=
- *trace, const char *name)
- {
-+	struct bpf_program *pos, *prog =3D NULL;
-+	const char *sec_name;
-+
- 	if (trace->bpf_obj =3D=3D NULL)
- 		return NULL;
-=20
--	return bpf_object__find_program_by_title(trace->bpf_obj, name);
-+	bpf_object__for_each_program(pos, trace->bpf_obj) {
-+		sec_name =3D bpf_program__section_name(pos);
-+		if (sec_name && !strcmp(sec_name, name)) {
-+			prog =3D pos;
-+			break;
-+		}
-+	}
-+
-+	return prog;
- }
-=20
- static struct bpf_program *trace__find_syscall_bpf_prog(struct trace *tr=
-ace, struct syscall *sc,
++LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_object__find_program_by_name() inst=
+ead")
+ LIBBPF_API struct bpf_program *
+ bpf_object__find_program_by_title(const struct bpf_object *obj,
+ 				  const char *title);
 --=20
 2.30.2
 
