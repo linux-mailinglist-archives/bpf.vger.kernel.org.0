@@ -2,85 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B435847453A
-	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 15:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65B7474559
+	for <lists+bpf@lfdr.de>; Tue, 14 Dec 2021 15:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhLNOf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Dec 2021 09:35:57 -0500
-Received: from www62.your-server.de ([213.133.104.62]:57542 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234921AbhLNOf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Dec 2021 09:35:56 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mx8uE-000BLw-Sj; Tue, 14 Dec 2021 15:35:50 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mx8uE-000Eo7-LN; Tue, 14 Dec 2021 15:35:50 +0100
-Subject: Re: [PATCH bpf-next] xsk: add test for tx_writeable to batched path
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-References: <20211214102647.7734-1-magnus.karlsson@gmail.com>
- <Ybip7mXZuCXYTlwn@boxer>
- <CAJ8uoz1ioNtZyCRG2b3OH4pGh8b2CwHeXKC=M+4Xtf0OouxORw@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <029c16c2-f344-7089-a941-079d0a293189@iogearbox.net>
-Date:   Tue, 14 Dec 2021 15:35:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S231248AbhLNOkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 09:40:11 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:50894 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230514AbhLNOkL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Dec 2021 09:40:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 55ABAB819E2
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 14:40:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 28A25C34606;
+        Tue, 14 Dec 2021 14:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639492809;
+        bh=PwYEZEfT5JVVLFWpOxeigBBVWocBV1lbnd9X8q5jzNQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=eBiOu5dF1N0Ab+24uIZY+YHelcivNfFtpoQ6YIzK7O4jtK80UQYYi6QeKZYCnhRfo
+         7hqpoep3s7a8DnzCq+X8hvBDX2Eml1G0X/UkNu2HuXMMD3vVl+2CnyrU5Zw25F6TVg
+         nh+Nhd2SiwwTGKi0ACGWUfgA7A1x3YTMyUFzAX+RXqilHy4tEDq8U/RL7oJpyVFzu4
+         Ab7Qbc26biWTfY6tG8jIaKinefBnHSm+M6quruPqWf7H59bzaOjnkKooS6cCjQQDJz
+         h0dLD4vFXMJev9yOZQxCXoxrf98FuPl29LdlnRrFgZv+PfVXXyk/isRa8GDZQDLcXr
+         4VESyveIcBl7Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0C4BA609BA;
+        Tue, 14 Dec 2021 14:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAJ8uoz1ioNtZyCRG2b3OH4pGh8b2CwHeXKC=M+4Xtf0OouxORw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26387/Tue Dec 14 10:33:30 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] libbpf: fix potential uninit memory read
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163949280904.1632.11298824485639622358.git-patchwork-notify@kernel.org>
+Date:   Tue, 14 Dec 2021 14:40:09 +0000
+References: <20211214010032.3843804-1-andrii@kernel.org>
+In-Reply-To: <20211214010032.3843804-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/14/21 3:29 PM, Magnus Karlsson wrote:
-> On Tue, Dec 14, 2021 at 3:28 PM Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
->> On Tue, Dec 14, 2021 at 11:26:47AM +0100, Magnus Karlsson wrote:
->>> From: Magnus Karlsson <magnus.karlsson@intel.com>
->>>
->>> Add a test for the tx_writeable condition to the batched Tx processing
->>> path. This test is in the skb and non-batched code paths but not in the
->>> batched code path. So add it there. This test makes sure that a
->>> process is not woken up until there are a sufficiently large number of
->>> free entries in the Tx ring. Currently, any driver using the batched
->>> interface will be woken up even if there is only one free entry,
->>> impacting performance negatively.
->>
->> I gave this patch a shot on ice driver with the Tx batching patch that i'm
->> about to send which is using the xsk_tx_peek_release_desc_batch(). I ran
->> the 2 core setup with no busy poll and it turned out that this change has
->> a negative impact on performance - it degrades by 5%.
->>
->> After a short chat with Magnus he said it's due to the touch to the global
->> state of a ring that xsk_tx_writeable() is doing.
->>
->> So maintainers, please do not apply this yet, we'll come up with a
->> solution.
->>
->> Also, should this be sent to bpf tree (not bpf-next) ?
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Mon, 13 Dec 2021 17:00:32 -0800 you wrote:
+> In case of BPF_CORE_TYPE_ID_LOCAL we fill out target result explicitly.
+> But targ_res itself isn't initialized in such a case, and subsequent
+> call to bpf_core_patch_insn() might read uninitialized field (like
+> fail_memsz_adjust in this case). So ensure that targ_res is
+> zero-initialized for BPF_CORE_TYPE_ID_LOCAL case.
 > 
-> It is just a performance fix, so I would say bpf-next.
+> This was reported by Coverity static analyzer.
+> 
+> [...]
 
-Ok, np. I'm tossing it from patchwork in that case now, and wait for a v2.
-Given the fix is a two-liner, I'll leave it up to you which tree you think
-it would be best.
+Here is the summary with links:
+  - [bpf-next] libbpf: fix potential uninit memory read
+    https://git.kernel.org/bpf/bpf-next/c/4581e676d3be
 
-Thanks,
-Daniel
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
