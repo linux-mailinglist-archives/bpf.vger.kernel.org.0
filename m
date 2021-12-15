@@ -2,86 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E83A474E7E
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 00:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2C5475078
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 02:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238196AbhLNXVF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Dec 2021 18:21:05 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9140 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231684AbhLNXVF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Dec 2021 18:21:05 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BELbRqp017649
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 15:21:04 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cxqrbegn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 15:21:04 -0800
-Received: from intmgw003.48.prn1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        id S238706AbhLOBUl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Dec 2021 20:20:41 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:29131 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233336AbhLOBUl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Dec 2021 20:20:41 -0500
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JDHRR1NWMz1DK4k;
+        Wed, 15 Dec 2021 09:17:39 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 14 Dec 2021 15:21:03 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 5D683D22F502; Tue, 14 Dec 2021 15:20:55 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: avoid reading past ELF data section end when copying license
-Date:   Tue, 14 Dec 2021 15:20:54 -0800
-Message-ID: <20211214232054.3458774-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+ 15.1.2308.20; Wed, 15 Dec 2021 09:20:34 +0800
+Received: from [10.67.109.184] (10.67.109.184) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 15 Dec 2021 09:20:34 +0800
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix building error when using
+ userspace pt_regs
+To:     Daniel Borkmann <daniel@iogearbox.net>, <ast@kernel.org>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <shuah@kernel.org>
+CC:     <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211214135555.125348-1-pulehui@huawei.com>
+ <9063be69-fbd9-c0a5-9271-c6d4281c71ef@iogearbox.net>
+From:   Pu Lehui <pulehui@huawei.com>
+Message-ID: <30aa8ea2-3752-d711-50f8-4b3d49cad56f@huawei.com>
+Date:   Wed, 15 Dec 2021 09:20:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: j1IF2uemKKLW8QHpRZUmXmJz81VhnXzw
-X-Proofpoint-ORIG-GUID: j1IF2uemKKLW8QHpRZUmXmJz81VhnXzw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-14_07,2021-12-14_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1015 spamscore=0
- mlxscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112140123
-X-FB-Internal: deliver
+In-Reply-To: <9063be69-fbd9-c0a5-9271-c6d4281c71ef@iogearbox.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix possible read beyond ELF "license" data section if the license
-string is not properly zero-terminated. Use the fact that libbpf_strlcpy
-never accesses the (N-1)st byte of the source string because it's
-replaced with '\0' anyways.
-
-If this happens, it's a violation of contract between libbpf and a user,
-but not handling this more robustly upsets CIFuzz, so given the fix is
-trivial, let's fix the potential issue.
-
-Fixes: 9fc205b413b3 ("libbpf: Add sane strncpy alternative and use it internally")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 684c34ce1a26..cf862a19222b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1320,7 +1320,10 @@ static int bpf_object__check_endianness(struct bpf_object *obj)
- static int
- bpf_object__init_license(struct bpf_object *obj, void *data, size_t size)
- {
--	libbpf_strlcpy(obj->license, data, sizeof(obj->license));
-+	/* libbpf_strlcpy() only copies first N - 1 bytes, so size + 1 won't
-+	 * go over allowed ELF data section buffer
-+	 */
-+	libbpf_strlcpy(obj->license, data, min(size + 1, sizeof(obj->license)));
- 	pr_debug("license of %s is %s\n", obj->path, obj->license);
- 	return 0;
- }
--- 
-2.30.2
-
+On 2021/12/15 4:01, Daniel Borkmann wrote:
+> On 12/14/21 2:55 PM, Pu Lehui wrote:
+>> When building bpf selftests on arm64, the following error will occur:
+>>
+>> progs/loop2.c:20:7: error: incomplete definition of type 'struct
+>> user_pt_regs'
+>>
+>> Some archs, like arm64 and riscv, use userspace pt_regs in
+>> bpf_tracing.h, which causes build failure when bpf prog use
+>> macro in bpf_tracing.h. So let's use vmlinux.h directly.
+>>
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> 
+> Looks like this lets CI fail, did you run the selftests also with 
+> vmtest.sh to
+> double check?
+> 
+> https://github.com/kernel-patches/bpf/runs/4521708490?check_suite_focus=true 
+> :
+> 
+> [...]
+> #189 verif_scale_loop6:FAIL
+> libbpf: prog 'trace_virtqueue_add_sgs': BPF program load failed: 
+> Argument list too long
+> libbpf: prog 'trace_virtqueue_add_sgs': -- BEGIN PROG LOAD LOG --
+> R1 type=ctx expected=fp
+> BPF program is too large. Processed 1000001 insn
+> verification time 12250995 usec
+> stack depth 88
+> processed 1000001 insns (limit 1000000) max_states_per_insn 107 
+> total_states 21739 peak_states 2271 mark_read 6
+> -- END PROG LOAD LOG --
+> libbpf: failed to load program 'trace_virtqueue_add_sgs'
+> libbpf: failed to load object 'loop6.o'
+> scale_test:FAIL:expect_success unexpected error: -7 (errno 7)
+> Summary: 221/986 PASSED, 8 SKIPPED, 1 FAILED
+> [...]
+> 
+> Please take a look and fix in your patch, thanks!
+> .
+Sorry for my negligence, I'll take a look and fix it.
