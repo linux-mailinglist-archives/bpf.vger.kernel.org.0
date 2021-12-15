@@ -2,169 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E19147609B
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 19:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6294760A1
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 19:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245585AbhLOSWZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 13:22:25 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:54182 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343684AbhLOSWZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 13:22:25 -0500
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C278420B717B;
-        Wed, 15 Dec 2021 10:22:24 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C278420B717B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1639592544;
-        bh=1yoFqk1NIOkk1E9u0o3iSqiMDfatwHvp5iTqOCmKgtY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bf0H/kwsMKg63IRp8BW+THyjUdhxTHL5yS9FiikFL0udxs17+DTmIYjI4r1wWMtv/
-         O76T/ruJSnjKcOPFC9ei+mSDpncazi2yFC1mU+TCz4r5AeR76kd9h5pNB3pQu8dfqu
-         Cu6YkXKRABB9k05EjaPv0WSEs2hvLK9DLa/9hkMY=
-Received: by mail-pl1-f177.google.com with SMTP id b13so17218529plg.2;
-        Wed, 15 Dec 2021 10:22:24 -0800 (PST)
-X-Gm-Message-State: AOAM5312SNDj/Tq7TPn8Gi+zd/gb/mCkl+4bLnehTwyUgZMQ6dPorQol
-        NGZMlyDfac7DtjT4JdvupVl3ryj6EVZ5dM1IjqI=
-X-Google-Smtp-Source: ABdhPJxsssypnvz2ZNv9Io3lsaJWpF0ZvHLmzNTjwbRdVDkBnOjhXXBGyg7j1DosghtsK9FYLquvc576DMDU3SMikKc=
-X-Received: by 2002:a17:90a:aa88:: with SMTP id l8mr1194298pjq.20.1639592544248;
- Wed, 15 Dec 2021 10:22:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20211210172034.13614-1-mcroce@linux.microsoft.com>
- <CAADnVQJRVpL0HL=Lz8_e-ZU5y0WrQ_Z0KvQXF2w8rE660Jr62g@mail.gmail.com>
- <CAFnufp33Dm_5gffiFYQ+Maf4Bj9fE3WLMpFf3cJ=F5mm71mTEQ@mail.gmail.com> <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 15 Dec 2021 19:21:48 +0100
-X-Gmail-Original-Message-ID: <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
-Message-ID: <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: limit bpf_core_types_are_compat() recursion
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1343701AbhLOSY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 13:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245221AbhLOSY3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 13:24:29 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBDFC061574
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 10:24:28 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id l28-20020a25b31c000000b005c27dd4987bso44897439ybj.18
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 10:24:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc:content-transfer-encoding;
+        bh=xJI5EdwovLjkYqJ4qqI2SnNcs8iB8guxmTYndVvJUQQ=;
+        b=Ct/AC0OBbFoa0TM04Vmgnm5ceUlUK/P0vpY5Jr8k0zShdwRkNjuL3WfMPsz8dG55be
+         nSt4Qua7JfIhSTFjmbuI3FDN/HLzIjZ3LUv81SSAbFNg+oYNZnlfC376DMh6dt9RfNm+
+         dztyjD4eWOBbrHPyXNmwsWwedh6MJTCBXMJIstuMLpp4FqkcPTAJzT36JPkgSO3RT1r6
+         Vo7nQgzVj4xCmF5l6RyF5Hicz9wJ09mfoGmVY+gaFuHIRGkie/HEvgXKD0Ax47i7CMHZ
+         gYdGzTiSo46TqWeI1dZfd9WVuL+VcsT8my23lQ4y4gOIWwYLl3yNx42IzHVNWjmjLBbf
+         a0xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=xJI5EdwovLjkYqJ4qqI2SnNcs8iB8guxmTYndVvJUQQ=;
+        b=MbVnCEJvGtiyTjab1UFFvgkfRqfF0cFQDRVNDwYqT3dyJ0JkjREKyCbv0zHRjlQ2kr
+         cVe15Hrz348UsWiZnSG0sRqwkuLuaAJc5R9mbkjiWsRc7xMzuVm+WjaMQfvRCw/AVD2M
+         Ckf7xjkFNsNSnpwoQSQyCOuHok06GRBFcPZze7Wr5iRP6GHEZaojewzjk4VbN73o3EV4
+         Qb/I+Ko4SauPbld9/Lc6LPd5F63fHL5mPfVqjQBzuJDFozuAOzSWwdJiHiB05dynIQuG
+         Bx8yBnIoTMYR70BOP1Fw0YKEkhgoavVyKT9xjpGiXHmKFKRA7nfoHPn013knpkZfXCy1
+         DEog==
+X-Gm-Message-State: AOAM532OGPTmlhfnybnr0IK0HdLT53SCVrLXfAI9qJVIewp6BHf9b2+L
+        9bA4uNGCKePrDpzSf/07rqByUI8=
+X-Google-Smtp-Source: ABdhPJxiUSapot8BkfCreYvqxut3YGFSlrSfzX4Kwry/rWuBLllzC5m4eNPqu7GLdHjLteustdhlYYw=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:fc03:a91c:4fe0:3b78])
+ (user=sdf job=sendgmr) by 2002:a25:cad5:: with SMTP id a204mr7846609ybg.234.1639592668264;
+ Wed, 15 Dec 2021 10:24:28 -0800 (PST)
+Date:   Wed, 15 Dec 2021 10:24:25 -0800
+In-Reply-To: <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
+Message-Id: <Yboy2WwaREgo95dy@google.com>
+Mime-Version: 1.0
+References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
+ <Yboc/G18R1Vi1eQV@google.com> <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
+ <Ybom69OyOjsR7kmZ@google.com> <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
+Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
+From:   sdf@google.com
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 6:29 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Dec 15, 2021 at 6:54 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> > >
-> > > Maybe do a level check here?
-> > > Since calling it and immediately returning doesn't conserve
-> > > the stack.
-> > > If it gets called it can finish fine, but
-> > > calling it again would be too much.
-> > > In other words checking the level here gives us
-> > > room for one more frame.
-> > >
-> >
-> > I thought that the compiler was smart enough to return before
-> > allocating most of the frame.
-> > I tried and this is true only with gcc, not with clang.
->
-> Interesting. That's a surprise.
-> Could you share the asm that gcc generates?
->
-
-Sure,
-
-This is the gcc x86_64 asm on a stripped down
-bpf_core_types_are_compat() with a 1k struct on the stack:
-
-bpf_core_types_are_compat:
-test esi, esi
-jle .L69
-push r15
-push r14
-push r13
-push r12
-push rbp
-mov rbp, rdi
-push rbx
-mov ebx, esi
-sub rsp, 9112
-[...]
-.L69:
-or eax, -1
-ret
-
-This latest clang:
-
-bpf_core_types_are_compat: # @bpf_core_types_are_compat
-push rbp
-push r15
-push r14
-push rbx
-sub rsp, 1000
-mov r14d, -1
-test esi, esi
-jle .LBB0_7
-[...]
-.LBB0_7:
-mov eax, r14d
-add rsp, 1000
-pop rbx
-pop r14
-pop r15
-pop rbp
-ret
-
-> > > > +                       err = __bpf_core_types_are_compat(local_btf, local_id,
-> > > > +                                                         targ_btf, targ_id,
-> > > > +                                                         level - 1);
-> > > > +                       if (err <= 0)
-> > > > +                               return err;
-> > > > +               }
-> > > > +
-> > > > +               /* tail recurse for return type check */
-> > > > +               btf_type_skip_modifiers(local_btf, local_type->type, &local_id);
-> > > > +               btf_type_skip_modifiers(targ_btf, targ_type->type, &targ_id);
-> > > > +               goto recur;
-> > > > +       }
-> > > > +       default:
-> > > > +               pr_warn("unexpected kind %s relocated, local [%d], target [%d]\n",
-> > > > +                       btf_type_str(local_type), local_id, targ_id);
-> > >
-> > > That should be bpf_log() instead.
-> > >
-> >
-> > To do that I need a struct bpf_verifier_log, which is not present
-> > there, neither in bpf_core_spec_match() or bpf_core_apply_relo_insn().
->
-> It is there. See:
->         err = bpf_core_apply_relo_insn((void *)ctx->log, insn, ...
->
-> > Should we drop the message at all?
->
-> Passing it into bpf_core_spec_match() and further into
-> bpf_core_types_are_compat() is probably unnecessary.
-> All callers have an error check with a log right after.
-> So I think we won't lose anything if we drop this log.
->
-
-Nice.
-
-> >
-> > > > +               return 0;
-> > > > +       }
-> > > > +}
-> > >
-> > > Please add tests that exercise this logic by enabling
-> > > additional lskels and a new test that hits the recursion limit.
-> > > I suspect we don't have such case in selftests.
-> > >
-> > > Thanks!
-> >
-> > Will do!
->
-> Thanks!
-
-
-
--- 
-per aspera ad upstream
+T24gMTIvMTUsIFBhdmVsIEJlZ3Vua292IHdyb3RlOg0KPiBPbiAxMi8xNS8yMSAxNzozMywgc2Rm
+QGdvb2dsZS5jb20gd3JvdGU6DQo+ID4gT24gMTIvMTUsIFBhdmVsIEJlZ3Vua292IHdyb3RlOg0K
+PiA+ID4gT24gMTIvMTUvMjEgMTY6NTEsIHNkZkBnb29nbGUuY29tIHdyb3RlOg0KPiA+ID4gPiBP
+biAxMi8xNSwgUGF2ZWwgQmVndW5rb3Ygd3JvdGU6DQo+ID4gPiA+ID4g77+9IC8qIFdyYXBwZXJz
+IGZvciBfX2Nncm91cF9icGZfcnVuX2ZpbHRlcl9za2IoKSBndWFyZGVkIGJ5ICANCj4gY2dyb3Vw
+X2JwZl9lbmFibGVkLiAqLw0KPiA+ID4gPiA+IO+/vSAjZGVmaW5lIEJQRl9DR1JPVVBfUlVOX1BS
+T0dfSU5FVF9JTkdSRVNTKHNrLCAgDQo+IHNrYinvv73vv73vv73vv73vv73vv73vv73vv73vv73v
+v73vv73vv73vv73vv73vv73vv73vv70gXA0KPiA+ID4gPiA+IO+/vSAoe++/ve+/ve+/ve+/ve+/
+ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/
+ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+
+ID4gPiA+ID4g77+977+977+977+977+9IGludCBfX3JldCA9IDA777+977+977+977+977+977+9
+77+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+9
+77+977+977+977+977+977+977+977+9IFwNCj4gPiA+ID4gPiAt77+977+977+9IGlmIChjZ3Jv
+dXBfYnBmX2VuYWJsZWQoQ0dST1VQX0lORVRfSU5HUkVTUykp77+977+977+977+977+977+977+9
+77+977+977+977+977+977+9IFwNCj4gPiA+ID4gPiAr77+977+977+9IGlmIChjZ3JvdXBfYnBm
+X2VuYWJsZWQoQ0dST1VQX0lORVRfSU5HUkVTUykgJiYgc2sgIA0KPiAmJu+/ve+/ve+/ve+/ve+/
+ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4gPiA+ID4gK++/ve+/ve+/ve+/ve+/ve+/
+ve+/vSBDR1JPVVBfQlBGX1RZUEVfRU5BQkxFRCgoc2spLCAgDQo+IENHUk9VUF9JTkVUX0lOR1JF
+U1MpKe+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4gPiA+DQo+ID4gPiA+IFdo
+eSBub3QgYWRkIHRoaXMgX19jZ3JvdXBfYnBmX3J1bl9maWx0ZXJfc2tiIGNoZWNrIHRvDQo+ID4g
+PiA+IF9fY2dyb3VwX2JwZl9ydW5fZmlsdGVyX3NrYj8gUmVzdWx0IG9mIHNvY2tfY2dyb3VwX3B0
+cigpIGlzIGFscmVhZHkgIA0KPiB0aGVyZQ0KPiA+ID4gPiBhbmQgeW91IGNhbiB1c2UgaXQuIE1h
+eWJlIG1vdmUgdGhlIHRoaW5ncyBhcm91bmQgaWYgeW91IHdhbnQNCj4gPiA+ID4gaXQgdG8gaGFw
+cGVuIGVhcmxpZXIuDQo+ID4NCj4gPiA+IEZvciBpbmxpbmluZy4gSnVzdCB3YW50ZWQgdG8gZ2V0
+IGl0IGRvbmUgcmlnaHQsIG90aGVyd2lzZSBJJ2xsIGxpa2VseSAgDQo+IGJlDQo+ID4gPiByZXR1
+cm5pbmcgdG8gaXQgYmFjayBpbiBhIGZldyBtb250aHMgY29tcGxhaW5pbmcgdGhhdCBJIHNlZSBt
+ZWFzdXJhYmxlDQo+ID4gPiBvdmVyaGVhZCBmcm9tIHRoZSBmdW5jdGlvbiBjYWxsIDopDQo+ID4N
+Cj4gPiBEbyB5b3UgZXhwZWN0IHRoYXQgZGlyZWN0IGNhbGwgdG8gYnJpbmcgYW55IHZpc2libGUg
+b3ZlcmhlYWQ/DQo+ID4gV291bGQgYmUgbmljZSB0byBjb21wYXJlIHRoYXQgaW5saW5lZCBjYXNl
+IHZzDQo+ID4gX19jZ3JvdXBfYnBmX3Byb2dfYXJyYXlfaXNfZW1wdHkgaW5zaWRlIG9mIF9fY2dy
+b3VwX2JwZl9ydW5fZmlsdGVyX3NrYg0KPiA+IHdoaWxlIHlvdSdyZSBhdCBpdCAocGx1cyBtb3Zl
+IG9mZnNldCBpbml0aWFsaXphdGlvbiBkb3duPykuDQoNCj4gU29ycnkgYnV0IHRoYXQgd291bGQg
+YmUgd2FzdGUgb2YgdGltZS4gSSBuYWl2ZWx5IGhvcGUgaXQgd2lsbCBiZSB2aXNpYmxlDQo+IHdp
+dGggbmV0IGF0IHNvbWUgbW9tZW50IChpZiBub3QgYWxyZWFkeSksIHRoYXQncyBob3cgaXQgd2Fz
+IHdpdGggaW9fdXJpbmcsDQo+IHRoYXQncyB3aGF0IEkgc2VlIGluIHRoZSBibG9jayBsYXllci4g
+QW5kIGluIGFueXdheSwgaWYganVzdCBvbmUgaW5saW5lZA0KPiB3b24ndCBtYWtlIGEgZGlmZmVy
+ZW5jZSwgdGhlbiAxMCB3aWxsLg0KDQpJIGNhbiBwcm9iYWJseSBkbyBtb3JlIGV4cGVyaW1lbnRz
+IG9uIG15IHNpZGUgb25jZSB5b3VyIHBhdGNoIGlzDQphY2NlcHRlZC4gSSdtIG1vc3RseSBjb25j
+ZXJuZWQgd2l0aCBnZXRzb2Nrb3B0KFRDUF9aRVJPQ09QWV9SRUNFSVZFKS4NCklmIHlvdSBjbGFp
+bSB0aGVyZSBpcyB2aXNpYmxlIG92ZXJoZWFkIGZvciBhIGRpcmVjdCBjYWxsIHRoZW4gdGhlcmUN
+CnNob3VsZCBiZSB2aXNpYmxlIGJlbmVmaXQgdG8gdXNpbmcgQ0dST1VQX0JQRl9UWVBFX0VOQUJM
+RUQgdGhlcmUgYXMNCndlbGwuDQo=
