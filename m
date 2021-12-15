@@ -2,109 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DB947619A
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 20:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B61476210
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 20:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238768AbhLOTWy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 14:22:54 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49348 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234497AbhLOTWx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Dec 2021 14:22:53 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BFIA0sT007886
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:22:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=KrpxOaqHtMfiTB7lDbjujjGAiKhZbFGqNgWzrSGDZKc=;
- b=hySYY50w7AmO+ZzmeLr2QOR8sL5b17zWeZt8Tktr7RTZ5cm5GSw0aYHhQwlvSh8L98h7
- uDrKeD3RPaa+dRJZ86obKdRtYy9uxz7k2AaxFQXK8XSO8uR2Oyw33en6HK2Viw3ha80+
- PO2vIGMFxoPqcK/yBoldrESy2ojUxTBt3gI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cyeadc01h-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:22:52 -0800
-Received: from intmgw002.46.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 15 Dec 2021 11:22:51 -0800
-Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id AD4306B96C8; Wed, 15 Dec 2021 11:22:49 -0800 (PST)
-From:   Christy Lee <christylee@fb.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
-CC:     <bpf@vger.kernel.org>, <kernel-team@fb.com>, <christylee@fb.com>,
-        <christyc.y.lee@gmail.com>
-Subject: [PATCH v2 bpf-next 3/3] Only output backtracking information in log level 2
-Date:   Wed, 15 Dec 2021 11:22:25 -0800
-Message-ID: <20211215192225.1278237-4-christylee@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211215192225.1278237-1-christylee@fb.com>
-References: <20211215192225.1278237-1-christylee@fb.com>
+        id S229804AbhLOTrj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 14:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhLOTrj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 14:47:39 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C34C061574
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:47:39 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id a23so16379512pgm.4
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:47:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/nzJKUAXJanUv0iziYPtlESzABqvnZMe5y0XLDWJrKw=;
+        b=aENYMKT1+mzFUHFfqzywKw81KTQDiyqGvfnKdxYQ6t5bAoxzqLjdlYuAgmStgNUDT/
+         XQrT5IQxMlrAf6t9STOESR2pdoWM6igTQDC5Lpgyb2wz6zZ4/ZspKmtXKoeuiAtDeImH
+         UfsergFD2YkSMZTQ7E1LhZPARZeeJi+x2LN31mchVhP0v2AYXnIH5lOmUSlRb7y0e2LM
+         KaTG8OUQH2Ft2bg8WO3C5gm7vwZIqnaeV3/nlkgsx+GnkoToImxU2sjNHFmBkFXAzJOI
+         bdm5SB3VgvsDIYJnHNMviSKEFyWcXRPspq9AvPc0RhIMnVBdyEAwnfbGvw4tON7lZQn5
+         a/qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/nzJKUAXJanUv0iziYPtlESzABqvnZMe5y0XLDWJrKw=;
+        b=ZbOBJulga7c+zAHekcMY4XVDc2Qo2igN3uT5/ArQyzvR5wP8Tv/qh5FSqKRrlibbix
+         HvKTll8Q9uMEXSFKQz38BmvrED7akQ53EbsPmqrzSHihFe5kY7XOnJXRpAo5xnCGkg/O
+         enPR1g/ygeA5fvcfOs6/7nGOSvERgxto4juz4wncuiCY15DwUWBO2kjaZBBOaN7jCPOn
+         6DQU0wF4VKkRukHd6n3GRrkGWYgda4Pl++NYnQ9RmCrg5JHYpWI/oS5SVqpc1vW4WUcn
+         foIzkHIuQzE18olkEFGVZ/rcZmY1v+OlRYHHHhBigX87yMPxbz1RzQXatmYHHCpWsMdQ
+         GOMA==
+X-Gm-Message-State: AOAM530PnMZgL596gyydHeu4GSqYNVLJaP9qDJ9GL8Psqu03AAG92nN6
+        E6+zYLGIdELmIeTp7JkxWZxml24aiTQ=
+X-Google-Smtp-Source: ABdhPJz9VSOQ4vqdHy1RUAvnYCs4hVAtfB5xdOvT0vn/cCVnw2nCSzSBdMBqWA5zmkaZQVdgB2RqJQ==
+X-Received: by 2002:a05:6a00:7cc:b0:49f:9cf1:2969 with SMTP id n12-20020a056a0007cc00b0049f9cf12969mr10610359pfu.12.1639597658469;
+        Wed, 15 Dec 2021 11:47:38 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::1:58b5])
+        by smtp.gmail.com with ESMTPSA id s24sm3226508pfm.100.2021.12.15.11.47.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Dec 2021 11:47:38 -0800 (PST)
+Date:   Wed, 15 Dec 2021 11:47:36 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 0/3] bpf: remove the cgroup -> bpf header
+ dependecy
+Message-ID: <20211215194736.oil2sn5eun4dfp44@ast-mbp.dhcp.thefacebook.com>
+References: <20211215181231.1053479-1-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: Z97aEpOmULawsXkhJ2hGJa4P0hMGdNrZ
-X-Proofpoint-GUID: Z97aEpOmULawsXkhJ2hGJa4P0hMGdNrZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-15_11,2021-12-14_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
- malwarescore=0 phishscore=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 spamscore=0 priorityscore=1501 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2112150107
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211215181231.1053479-1-kuba@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Backtracking information is very verbose, don't print it in log
-level 1 to improve readability.
+On Wed, Dec 15, 2021 at 10:12:28AM -0800, Jakub Kicinski wrote:
+> Changes to bpf.h tend to clog up our build systems. The netdev/bpf
+> build bot does incremental builds to save time (reusing the build
+> directory to only rebuild changed objects).
+> 
+> This is the rough breakdown of how many objects needs to be rebuilt
+> based on file touched:
+> 
+> kernel.h      40633
+> bpf.h         17881
+> bpf-cgroup.h  17875
+> skbuff.h      10696
+> bpf-netns.h    7604
+> netdevice.h    7452
+> filter.h       5003
+> tcp.h          4048
+> sock.h         4959
+> 
+> As the stats show touching bpf.h is _very_ expensive.
+> 
+> Bulk of the objects get rebuilt because MM includes cgroup headers.
+> Luckily bpf-cgroup.h does not fundamentally depend on bpf.h so we
+> can break that dependency and reduce the number of objects.
+> 
+> With the patches applied touching bpf.h causes 5019 objects to be rebuilt
+> (17881 / 5019 = 3.56x). That's pretty much down to filter.h plus noise.
+> 
+> v2:
+> Try to make the new headers wider in scope. Collapse bpf-link and
+> bpf-cgroup-types into one header, which may serve as "BPF kernel
+> API" header in the future if needed. Rename bpf-cgroup-storage.h
+> to bpf-inlines.h.
+> 
+> Add a fix for the s390 build issue.
+> 
+> v3: https://lore.kernel.org/all/20211215061916.715513-1-kuba@kernel.org/
+> Merge bpf-includes.h into bpf.h.
+> Remember to git format-patch after fixing build issues.
+> 
+> v4:
+> Change course - break off cgroup instead of breaking off bpf.
 
-Signed-off-by: Christy Lee <christylee@fb.com>
----
- kernel/bpf/verifier.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a8f1426b0367..2cb86972ed35 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2398,7 +2398,7 @@ static int backtrack_insn(struct bpf_verifier_env *=
-env, int idx,
-=20
- 	if (insn->code =3D=3D 0)
- 		return 0;
--	if (env->log.level & BPF_LOG_LEVEL) {
-+	if (env->log.level & BPF_LOG_LEVEL2) {
- 		verbose(env, "regs=3D%x stack=3D%llx before ", *reg_mask, *stack_mask)=
-;
- 		verbose(env, "%d: ", idx);
- 		print_bpf_insn(&cbs, insn, env->allow_ptr_leaks);
-@@ -2656,7 +2656,7 @@ static int __mark_chain_precision(struct bpf_verifi=
-er_env *env, int regno,
- 		DECLARE_BITMAP(mask, 64);
- 		u32 history =3D st->jmp_history_cnt;
-=20
--		if (env->log.level & BPF_LOG_LEVEL)
-+		if (env->log.level & BPF_LOG_LEVEL2)
- 			verbose(env, "last_idx %d first_idx %d\n", last_idx, first_idx);
- 		for (i =3D last_idx;;) {
- 			if (skip_first) {
-@@ -2743,7 +2743,7 @@ static int __mark_chain_precision(struct bpf_verifi=
-er_env *env, int regno,
- 				new_marks =3D true;
- 			reg->precise =3D true;
- 		}
--		if (env->log.level & BPF_LOG_LEVEL) {
-+		if (env->log.level & BPF_LOG_LEVEL2) {
- 			mark_verifier_state_scratched(env);
- 			verbose(env, "parent %s regs=3D%x stack=3D%llx marks:",
- 				new_marks ? "didn't have" : "already had",
---=20
-2.30.2
-
+Nice. I think this approach is the best so far.
+I'll wait a bit for 0-bot to test it with different configs
+and BPF CI to catch up.
