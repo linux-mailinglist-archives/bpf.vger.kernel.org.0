@@ -2,151 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A4F475F64
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 18:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BEE475F75
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 18:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhLORde (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 12:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
+        id S234245AbhLORiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 12:38:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhLORde (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 12:33:34 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EDCC06173F
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 09:33:34 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id g25-20020a25b119000000b005c5e52a0574so44408434ybj.5
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 09:33:33 -0800 (PST)
+        with ESMTP id S234176AbhLORiM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 12:38:12 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE72C061574;
+        Wed, 15 Dec 2021 09:38:11 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id b7so18266568edd.6;
+        Wed, 15 Dec 2021 09:38:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=TLYfAwTCY3nUPUOTqfI7ivvRfXZ7qJuak8zLmgSwgRk=;
-        b=PeNlBNvFeF2xQvXn2cVOEsciww6JuUuZD2YvcXaGqCYH+U/b/7MxBWNQ8shZQf+odw
-         C2oR7OJ1q3Ktn4/SiPlHCKj15a5Hl6GwrXto/6IQoGwZ9GRdpUIiRlFxOCk5vc2hXfOP
-         FbI2Z334IrG+kmEvvXaGkRucrle8rasJp3eugalWod9SIGNIp0Eypkqc6DnpOIwr8j4e
-         GYXE6acSkKtNEZ1/q9uNgTrr46WcuHdZtM3y3bjWYPyvcvtrAooFMSv6WldqR6Sm+KfL
-         +woj1+6/+DhH25DhCEg8M2vlKWsKdLh4qQgZrrB/Fhv+FpcJ7zFSQKXK7znqDbBVKVsL
-         5aBg==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=wHSJEvMaIsTc7h8la2YQGbQodwQPApyf7+yKRFnENBc=;
+        b=SvfxzpsSVLXLCVbHRcbcFqim4+B8PHmRbgdhfb3ZkOA6mSuf81cmjdAy20H6QU0VxC
+         HZDWkzGV00rcnyCeTpaQTt4s8y/GWRilVHP0foY/JH+XfdOqIg3aZPprZWVb3tInSpfp
+         tu8lRgcN/vpsCzi6YSwJCdukNAgStQhgGRRyXkwa23Ji+uOkRdUHEqQSITp/VUFxFiuY
+         6MzlvhnyDoeOoFE9oMseORKmecnGojMzr+99on6yVmkikK6YB1M27uKqrIMFJWo1cBlq
+         z0fyT00pedHwXgZhtU1bk1Uyn2MtxdRNicc0PhufPqyfPMsVj6xWKMKoWw6DVh2brELS
+         vQZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=TLYfAwTCY3nUPUOTqfI7ivvRfXZ7qJuak8zLmgSwgRk=;
-        b=2DkfCq4O+ilKCl98tQQhyXSzmn1l3JPnngfsUdPVc8fQZUA976v15X0e8tSS/ADHz3
-         BEUyr+74fJ6ELrUxsg9jI6bSC6637Oe/QqMPb/tL9aGskVou1ml3rGJaq2U3uoH5orrN
-         LwazGgnwbQJe2ooJkbMF7fQRcVLp0Ws4NZI0VOKAJoz6qEyhZsQVO0L57yxOp/fY1BFa
-         rl5Ae5l/TKxv+sfdDiLQ/lqN6opfFxyLxg3hkj7Fesgdk3VDJSBBZG/D2T5M7Pa+pBNh
-         /qQPeQEGLhqG/DAdRgtaLDgrX8Rm4QJ2PEvCLVD6KnYxNr+W06vumeD1YMeUOw8V+C4e
-         nFUA==
-X-Gm-Message-State: AOAM530EJDdYWiOb9MMz5Hs7XA1CGVR/gd7894c/7fpNLUhc7hlh+hjI
-        /Ne+dcelbg6yRimdO+XEchbHHtg=
-X-Google-Smtp-Source: ABdhPJyWRz0GZtpsabukbGJ4akWefyDgiz3hJPvFUkcl5WJZO/YKJT6CqzjPbZF83Io+fiZrHmnL6OM=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:fc03:a91c:4fe0:3b78])
- (user=sdf job=sendgmr) by 2002:a25:af85:: with SMTP id g5mr7797356ybh.636.1639589613151;
- Wed, 15 Dec 2021 09:33:33 -0800 (PST)
-Date:   Wed, 15 Dec 2021 09:33:31 -0800
-In-Reply-To: <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
-Message-Id: <Ybom69OyOjsR7kmZ@google.com>
-Mime-Version: 1.0
-References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
- <Yboc/G18R1Vi1eQV@google.com> <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wHSJEvMaIsTc7h8la2YQGbQodwQPApyf7+yKRFnENBc=;
+        b=7VaU/xqlSFPpbJgV3hndfAME1jO1w5bwRngwTcYpvhSxx29bmT98idMeq3rjA2JPnu
+         mBlbA6CxZNGmCX6M04TcsLjUMY1da8QPxultcSF3sxasJHl6eecowy1k4WK1zLYME1zL
+         nwJlG9Mb029lsvwMBqjv40FzWtP69N3vPWGjV0sNpLT/COJYsU/bxp3TQ9hrP3GxvudK
+         DwzP0+yPagFOwMJIcraimuP3AhvyhXsFj5qNQWCTY4LCO+eGMBzsTqOBJi1IVbKCynzU
+         E5duKo19Fm7048z5qcObtL9YD9ovaAIRNyrGCO9OoF2HbWLIL4k+c5uZ73ANbpGtgiGT
+         zZ/g==
+X-Gm-Message-State: AOAM531TgQK2Whi36VR5ZMcpU2AqHXHZtF2n+p9Jh7eAXPvxzN+IBMnA
+        aK/EvTnySIxPnR3b2f8/euc=
+X-Google-Smtp-Source: ABdhPJwPUrVkuRn/jLs6O1tnQcz+kCgl1GjfXkTsJh49QFe6B89Oftb8NzEjD/DNLWecFav6qeoOPA==
+X-Received: by 2002:a17:906:7191:: with SMTP id h17mr11600753ejk.643.1639589890530;
+        Wed, 15 Dec 2021 09:38:10 -0800 (PST)
+Received: from [192.168.8.198] ([148.252.129.75])
+        by smtp.gmail.com with ESMTPSA id l16sm1364085edb.59.2021.12.15.09.38.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Dec 2021 09:38:10 -0800 (PST)
+Message-ID: <6406f753-180a-7896-6df2-c187cb0e975f@gmail.com>
+Date:   Wed, 15 Dec 2021 17:38:11 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
 Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
-From:   sdf@google.com
-To:     Pavel Begunkov <asml.silence@gmail.com>
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
+References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
+ <20211215084044.064e6861@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20211215084044.064e6861@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTIvMTUsIFBhdmVsIEJlZ3Vua292IHdyb3RlOg0KPiBPbiAxMi8xNS8yMSAxNjo1MSwgc2Rm
-QGdvb2dsZS5jb20gd3JvdGU6DQo+ID4gT24gMTIvMTUsIFBhdmVsIEJlZ3Vua292IHdyb3RlOg0K
-PiA+ID4gQWRkIHBlciBzb2NrZXQgZmFzdCBwYXRoIGZvciBub3QgZW5hYmxlZCBCUEYgc2tiIGZp
-bHRlcmluZywgd2hpY2ggIA0KPiBzaGVkcw0KPiA+ID4gYSBuaWNlIGNodW5rIG9mIHNlbmQvcmVj
-diBvdmVyaGVhZCB3aGVuIGFmZmVjdGVkLiBUZXN0aW5nIHVkcCB3aXRoIDEyOA0KPiA+ID4gYnl0
-ZSBwYXlsb2FkIGFuZC9vciB6ZXJvY29weSB3aXRoIGFueSBwYXlsb2FkIHNpemUgc2hvd2VkIDIt
-MyUNCj4gPiA+IGltcHJvdmVtZW50IGluIHJlcXVlc3RzL3Mgb24gdGhlIHR4IHNpZGUgdXNpbmcg
-ZmFzdCBOSUNzIGFjcm9zcyAgDQo+IG5ldHdvcmssDQo+ID4gPiBhbmQgYXJvdW5kIDQlIGZvciBk
-dW1teSBkZXZpY2UuIFNhbWUgZ29lcyBmb3IgcngsIG5vdCBtZWFzdXJlZCwgYnV0DQo+ID4gPiBu
-dW1iZXJzIHNob3VsZCBiZSByZWxhdGFibGUuDQo+ID4gPiBJbiBteSB1bmRlcnN0YW5kaW5nLCB0
-aGlzIHNob3VsZCBhZmZlY3QgYSBnb29kIHNoYXJlIG9mIG1hY2hpbmVzLCBhbmQgIA0KPiBhdA0K
-PiA+ID4gbGVhc3QgaXQgaW5jbHVkZXMgbXkgbGFwdG9wcyBhbmQgc29tZSBjaGVja2VkIHNlcnZl
-cnMuDQo+ID4NCj4gPiA+IFRoZSBjb3JlIG9mIHRoZSBwcm9ibGVtIGlzIHRoYXQgZXZlbiB0aG91
-Z2ggdGhlcmUgaXMNCj4gPiA+IGNncm91cF9icGZfZW5hYmxlZF9rZXkgZ3VhcmRpbmcgZnJvbSBf
-X2Nncm91cF9icGZfcnVuX2ZpbHRlcl9za2IoKQ0KPiA+ID4gb3ZlcmhlYWQsIHRoZXJlIGFyZSBj
-YXNlcyB3aGVyZSB3ZSBoYXZlIHNldmVyYWwgY2dyb3VwcyBhbmQgbG9hZGluZyBhDQo+ID4gPiBC
-UEYgcHJvZ3JhbSB0byBvbmUgYWxzbyBtYWtlcyBhbGwgb3RoZXJzIHRvIGdvIHRocm91Z2ggdGhl
-IHNsb3cgcGF0aA0KPiA+ID4gZXZlbiB3aGVuIHRoZXkgZG9uJ3QgaGF2ZSBhbnkgQlBGIGF0dGFj
-aGVkLiBJdCdzIGV2ZW4gd29yc2UsIGJlY2F1c2UNCj4gPiA+IGFwcGFyZW50bHkgc3lzdGVtZCBv
-ciBzb21lIG90aGVyIGVhcmx5IGluaXQgbG9hZHMgc29tZSBCUEYgYW5kIHNvDQo+ID4gPiB0cmln
-Z2VycyBleGFjdGx5IHRoaXMgc2l0dWF0aW9uIGZvciBub3JtYWwgbmV0d29ya2luZy4NCj4gPg0K
-PiA+ID4gU2lnbmVkLW9mZi1ieTogUGF2ZWwgQmVndW5rb3YgPGFzbWwuc2lsZW5jZUBnbWFpbC5j
-b20+DQo+ID4gPiAtLS0NCj4gPg0KPiA+ID4gdjI6IHJlcGxhY2UgYml0bWFzayBhcHBvYWNoIHdp
-dGggZW1wdHlfcHJvZ19hcnJheSAoc3VnZ2VzdGVkIGJ5ICANCj4gTWFydGluKQ0KPiA+ID4gdjM6
-IGFkZCAiYnBmXyIgcHJlZml4IHRvIGVtcHR5X3Byb2dfYXJyYXkgKE1hcnRpbikNCj4gPg0KPiA+
-ID4g77+9IGluY2x1ZGUvbGludXgvYnBmLWNncm91cC5oIHwgMjQgKysrKysrKysrKysrKysrKysr
-KysrLS0tDQo+ID4gPiDvv70gaW5jbHVkZS9saW51eC9icGYuaO+/ve+/ve+/ve+/ve+/ve+/ve+/
-vSB8IDEzICsrKysrKysrKysrKysNCj4gPiA+IO+/vSBrZXJuZWwvYnBmL2Nncm91cC5j77+977+9
-77+977+977+977+977+9IHwgMTggKystLS0tLS0tLS0tLS0tLS0tDQo+ID4gPiDvv70ga2VybmVs
-L2JwZi9jb3JlLmPvv73vv73vv73vv73vv73vv73vv73vv73vv70gfCAxNiArKysrLS0tLS0tLS0t
-LS0tDQo+ID4gPiDvv70gNCBmaWxlcyBjaGFuZ2VkLCA0MCBpbnNlcnRpb25zKCspLCAzMSBkZWxl
-dGlvbnMoLSkNCj4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvYnBmLWNncm91
-cC5oIGIvaW5jbHVkZS9saW51eC9icGYtY2dyb3VwLmgNCj4gPiA+IGluZGV4IDExODIwYTQzMGQ2
-Yy4uYzZkYWNkYmRmNTY1IDEwMDY0NA0KPiA+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9icGYtY2dy
-b3VwLmgNCj4gPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvYnBmLWNncm91cC5oDQo+ID4gPiBAQCAt
-MjE5LDExICsyMTksMjggQEAgaW50IGJwZl9wZXJjcHVfY2dyb3VwX3N0b3JhZ2VfY29weShzdHJ1
-Y3QgIA0KPiBicGZfbWFwICptYXAsIHZvaWQgKmtleSwgdm9pZCAqdmFsdWUpOw0KPiA+ID4g77+9
-IGludCBicGZfcGVyY3B1X2Nncm91cF9zdG9yYWdlX3VwZGF0ZShzdHJ1Y3QgYnBmX21hcCAqbWFw
-LCB2b2lkICprZXksDQo+ID4gPiDvv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73v
-v73vv73vv73vv73vv73vv73vv73vv73vv73vv70gdm9pZCAqdmFsdWUsIHU2NCBmbGFncyk7DQo+
-ID4NCj4gPiA+ICtzdGF0aWMgaW5saW5lIGJvb2wNCj4gPiA+ICtfX2Nncm91cF9icGZfcHJvZ19h
-cnJheV9pc19lbXB0eShzdHJ1Y3QgY2dyb3VwX2JwZiAqY2dycF9icGYsDQo+ID4gPiAr77+977+9
-77+977+977+977+977+977+977+977+977+977+977+977+977+977+9IGVudW0gY2dyb3VwX2Jw
-Zl9hdHRhY2hfdHlwZSB0eXBlKQ0KPiA+ID4gK3sNCj4gPiA+ICvvv73vv73vv70gc3RydWN0IGJw
-Zl9wcm9nX2FycmF5ICphcnJheSA9ICANCj4gcmN1X2FjY2Vzc19wb2ludGVyKGNncnBfYnBmLT5l
-ZmZlY3RpdmVbdHlwZV0pOw0KPiA+ID4gKw0KPiA+ID4gK++/ve+/ve+/vSByZXR1cm4gYXJyYXkg
-PT0gJmJwZl9lbXB0eV9wcm9nX2FycmF5LmhkcjsNCj4gPiA+ICt9DQo+ID4gPiArDQo+ID4gPiAr
-I2RlZmluZSBDR1JPVVBfQlBGX1RZUEVfRU5BQkxFRChzaywgYXR5cGUp77+977+977+977+977+9
-77+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+9IFwNCj4g
-PiA+ICsoe++/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4gPiAr77+977+977+9IHN0cnVjdCBjZ3JvdXAgKl9f
-Y2dycCA9ICANCj4gc29ja19jZ3JvdXBfcHRyKCYoc2spLT5za19jZ3JwX2RhdGEpO++/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4gPiAr77+977+977+977+977+977+977+977+9
-77+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+9
-77+977+977+977+977+977+977+977+977+977+977+977+977+977+977+9IFwNCj4gPiA+ICvv
-v73vv73vv70gIV9fY2dyb3VwX2JwZl9wcm9nX2FycmF5X2lzX2VtcHR5KCZfX2NncnAtPmJwZiwg
-IA0KPiAoYXR5cGUpKTvvv73vv73vv73vv73vv73vv73vv73vv73vv73vv70gXA0KPiA+ID4gK30p
-DQo+ID4gPiArDQo+ID4gPiDvv70gLyogV3JhcHBlcnMgZm9yIF9fY2dyb3VwX2JwZl9ydW5fZmls
-dGVyX3NrYigpIGd1YXJkZWQgYnkgIA0KPiBjZ3JvdXBfYnBmX2VuYWJsZWQuICovDQo+ID4gPiDv
-v70gI2RlZmluZSBCUEZfQ0dST1VQX1JVTl9QUk9HX0lORVRfSU5HUkVTUyhzaywgc2tiKe+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4gPiDv
-v70gKHvvv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73v
-v73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv73v
-v73vv73vv73vv73vv70gXA0KPiA+ID4g77+977+977+977+977+9IGludCBfX3JldCA9IDA777+9
-77+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+9
-77+977+977+977+977+977+977+977+977+977+977+977+977+9IFwNCj4gPiA+IC3vv73vv73v
-v70gaWYgKGNncm91cF9icGZfZW5hYmxlZChDR1JPVVBfSU5FVF9JTkdSRVNTKSnvv73vv73vv73v
-v73vv73vv73vv73vv73vv73vv73vv73vv73vv70gXA0KPiA+ID4gK++/ve+/ve+/vSBpZiAoY2dy
-b3VwX2JwZl9lbmFibGVkKENHUk9VUF9JTkVUX0lOR1JFU1MpICYmIHNrICANCj4gJibvv73vv73v
-v73vv73vv73vv73vv73vv73vv73vv73vv73vv73vv70gXA0KPiA+ID4gK++/ve+/ve+/ve+/ve+/
-ve+/ve+/vSBDR1JPVVBfQlBGX1RZUEVfRU5BQkxFRCgoc2spLCAgDQo+IENHUk9VUF9JTkVUX0lO
-R1JFU1MpKe+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4NCj4gPiBXaHkgbm90
-IGFkZCB0aGlzIF9fY2dyb3VwX2JwZl9ydW5fZmlsdGVyX3NrYiBjaGVjayB0bw0KPiA+IF9fY2dy
-b3VwX2JwZl9ydW5fZmlsdGVyX3NrYj8gUmVzdWx0IG9mIHNvY2tfY2dyb3VwX3B0cigpIGlzIGFs
-cmVhZHkgIA0KPiB0aGVyZQ0KPiA+IGFuZCB5b3UgY2FuIHVzZSBpdC4gTWF5YmUgbW92ZSB0aGUg
-dGhpbmdzIGFyb3VuZCBpZiB5b3Ugd2FudA0KPiA+IGl0IHRvIGhhcHBlbiBlYXJsaWVyLg0KDQo+
-IEZvciBpbmxpbmluZy4gSnVzdCB3YW50ZWQgdG8gZ2V0IGl0IGRvbmUgcmlnaHQsIG90aGVyd2lz
-ZSBJJ2xsIGxpa2VseSBiZQ0KPiByZXR1cm5pbmcgdG8gaXQgYmFjayBpbiBhIGZldyBtb250aHMg
-Y29tcGxhaW5pbmcgdGhhdCBJIHNlZSBtZWFzdXJhYmxlDQo+IG92ZXJoZWFkIGZyb20gdGhlIGZ1
-bmN0aW9uIGNhbGwgOikNCg0KRG8geW91IGV4cGVjdCB0aGF0IGRpcmVjdCBjYWxsIHRvIGJyaW5n
-IGFueSB2aXNpYmxlIG92ZXJoZWFkPw0KV291bGQgYmUgbmljZSB0byBjb21wYXJlIHRoYXQgaW5s
-aW5lZCBjYXNlIHZzDQpfX2Nncm91cF9icGZfcHJvZ19hcnJheV9pc19lbXB0eSBpbnNpZGUgb2Yg
-X19jZ3JvdXBfYnBmX3J1bl9maWx0ZXJfc2tiDQp3aGlsZSB5b3UncmUgYXQgaXQgKHBsdXMgbW92
-ZSBvZmZzZXQgaW5pdGlhbGl6YXRpb24gZG93bj8pLg0K
+On 12/15/21 16:40, Jakub Kicinski wrote:
+> On Wed, 15 Dec 2021 14:49:18 +0000 Pavel Begunkov wrote:
+>> +static inline bool
+>> +__cgroup_bpf_prog_array_is_empty(struct cgroup_bpf *cgrp_bpf,
+>> +				 enum cgroup_bpf_attach_type type)
+>> +{
+>> +	struct bpf_prog_array *array = rcu_access_pointer(cgrp_bpf->effective[type]);
+>> +
+>> +	return array == &bpf_empty_prog_array.hdr;
+>> +}
+>> +
+>> +#define CGROUP_BPF_TYPE_ENABLED(sk, atype)				       \
+>> +({									       \
+>> +	struct cgroup *__cgrp = sock_cgroup_ptr(&(sk)->sk_cgrp_data);	       \
+>> +									       \
+>> +	!__cgroup_bpf_prog_array_is_empty(&__cgrp->bpf, (atype));	       \
+>> +})
+>> +
+> 
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index e7a163a3146b..0d2195c6fb2a 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1161,6 +1161,19 @@ struct bpf_prog_array {
+>>   	struct bpf_prog_array_item items[];
+>>   };
+>>   
+>> +struct bpf_empty_prog_array {
+>> +	struct bpf_prog_array hdr;
+>> +	struct bpf_prog *null_prog;
+>> +};
+>> +
+>> +/* to avoid allocating empty bpf_prog_array for cgroups that
+>> + * don't have bpf program attached use one global 'bpf_empty_prog_array'
+>> + * It will not be modified the caller of bpf_prog_array_alloc()
+>> + * (since caller requested prog_cnt == 0)
+>> + * that pointer should be 'freed' by bpf_prog_array_free()
+>> + */
+>> +extern struct bpf_empty_prog_array bpf_empty_prog_array;
+> 
+> mumble mumble, this adds more "fun" dependencies [1] Maybe I'm going
+
+Header dependencies? It's declared right after struct bpf_prog_array,
+and the other member is a pointer, so not sure what can go wrong.
+
+
+> about this all wrong, maybe I should be pulling out struct cgroup_bpf
+> so that cgroup.h does not need bpf-cgroup, not breaking bpf <-> bpf-cgroup.
+> Alexei, WDYT?
+> 
+> [1] https://lore.kernel.org/all/20211215061916.715513-2-kuba@kernel.org/
+> 
+
+-- 
+Pavel Begunkov
