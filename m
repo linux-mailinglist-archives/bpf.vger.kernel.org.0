@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBFE4750F6
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 03:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16F74750FA
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 03:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235326AbhLOCbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S235381AbhLOCbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 14 Dec 2021 21:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235193AbhLOCbv (ORCPT <rfc822;bpf@vger.kernel.org>);
+Received: from dfw.source.kernel.org ([139.178.84.217]:50960 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235251AbhLOCbv (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 14 Dec 2021 21:31:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E531CC061574
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 18:31:50 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 80F696179F
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 02:31:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABFE6C3460D;
-        Wed, 15 Dec 2021 02:31:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 265A4617B4;
+        Wed, 15 Dec 2021 02:31:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16F37C3460E;
+        Wed, 15 Dec 2021 02:31:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639535509;
-        bh=cCTLnOSDMiTu9pWEs/PeBoBxdZB4leyPkdVnN7/DQhU=;
+        s=k20201202; t=1639535510;
+        bh=2wZ+UURKbZvHgojJB88tl5FRcu4BOxSu67wzI+vjpGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q1aa+Drc9q1ziMIGGkq6sRxyG8fZMnQfNAbggELXAGDJsdar8/OHElXxB6XWmOa3D
-         Y9kv0d1KeNdznDvBjfLq/Xaym1APkQXscuv2R+dO2/CuPfUCNzqjx0AcNM/rx8JFqc
-         azFqXGpOQR7INcMcJs1iplkLYMyjMFXptU81leQCT8Ny2zZLZzfDG+QMZxmPcsY5uu
-         TTT2PiQL/TdF4keCHBNL+Eb+joVFlfVfSV5LM9j3gUqfGIfwHT/EIUnHZ6NcHO0gmH
-         POFueR7DengLRxKFk60Y3jwEJs8gEo+moBXl678Td8fU5zeXMdhp0fSe+JTvd1xVMz
-         39HMDHpT6sM1Q==
+        b=nYgReUjkcRSOvU23BK1Lgznx3Lo2FvicBcb/7FkbUjji5AwjqcCjD2OVtlZ2ByTsf
+         SKP81dj9Eg8P4smVy9xIv3t2uMWgwyY1RJwqIdATL2rOLOHKKicEYkSN3n5IMBhWii
+         PWYV3KbJBe5qnHtGMA7Jl0GBXxL/c4f05Dv/qbfcIJfZ3L9Aquk2tmkTWj7BrYieUA
+         Klvuto06CiKX/i6gnMxaBbarqR4E7AcI+jMsMtQwW1ISYHV3cZUymJqoRzssOSLo+w
+         5c0anW1JHM28IU7ZyqrLxcQhDwVzH6vSp/9LEq4t3QV8nO4ZawnBpAXZvIgtDPfjUf
+         oRVeYJiJzJ4qA==
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH bpf-next v2 2/4] bpf: create a header for inline helpers
-Date:   Tue, 14 Dec 2021 18:31:24 -0800
-Message-Id: <20211215023126.659200-3-kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@linux.ibm.com,
+        agordeev@linux.ibm.com, akpm@linux-foundation.org,
+        peterx@redhat.com, linux-s390@vger.kernel.org
+Subject: [PATCH bpf-next v2 3/4] add includes masked by cgroup -> bpf dependency
+Date:   Tue, 14 Dec 2021 18:31:25 -0800
+Message-Id: <20211215023126.659200-4-kuba@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211215023126.659200-1-kuba@kernel.org>
 References: <20211215023126.659200-1-kuba@kernel.org>
@@ -46,89 +46,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-static inlines are notorious for creating inter-header dependencies.
-Create a dedicated header where we can place include-heavy inlines
-for bpf.
-
-Put cgroup_storage_type() there. It needs to deference bpf_map and
-access cgroup types thus creating a dependency between cgroup and
-bpf.
+cgroup pulls in BPF which pulls in a lot of includes.
+We're about to break that chain so fix those who were
+depending on it.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- include/linux/bpf-cgroup.h  |  9 ---------
- include/linux/bpf-inlines.h | 17 +++++++++++++++++
- kernel/bpf/helpers.c        |  1 +
- kernel/bpf/local_storage.c  |  1 +
- 4 files changed, 19 insertions(+), 9 deletions(-)
- create mode 100644 include/linux/bpf-inlines.h
+CC: hca@linux.ibm.com
+CC: gor@linux.ibm.com
+CC: borntraeger@linux.ibm.com
+CC: agordeev@linux.ibm.com
+CC: akpm@linux-foundation.org
+CC: peterx@redhat.com
+CC: linux-s390@vger.kernel.org
+---
+ arch/s390/mm/hugetlbpage.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 11820a430d6c..12474516e0be 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -194,15 +194,6 @@ int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
- 					    int optname, void *optval,
- 					    int *optlen, int retval);
+diff --git a/arch/s390/mm/hugetlbpage.c b/arch/s390/mm/hugetlbpage.c
+index da36d13ffc16..082793d497ec 100644
+--- a/arch/s390/mm/hugetlbpage.c
++++ b/arch/s390/mm/hugetlbpage.c
+@@ -9,6 +9,7 @@
+ #define KMSG_COMPONENT "hugetlb"
+ #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
  
--static inline enum bpf_cgroup_storage_type cgroup_storage_type(
--	struct bpf_map *map)
--{
--	if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
--		return BPF_CGROUP_STORAGE_PERCPU;
--
--	return BPF_CGROUP_STORAGE_SHARED;
--}
--
- struct bpf_cgroup_storage *
- cgroup_storage_lookup(struct bpf_cgroup_storage_map *map,
- 		      void *key, bool locked);
-diff --git a/include/linux/bpf-inlines.h b/include/linux/bpf-inlines.h
-new file mode 100644
-index 000000000000..73d8429d22f1
---- /dev/null
-+++ b/include/linux/bpf-inlines.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BPF_INLINES_H
-+#define _BPF_INLINES_H
-+
-+#include <linux/bpf.h>
-+#include <linux/bpf-cgroup.h>
-+
-+static inline enum bpf_cgroup_storage_type cgroup_storage_type(
-+	struct bpf_map *map)
-+{
-+	if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
-+		return BPF_CGROUP_STORAGE_PERCPU;
-+
-+	return BPF_CGROUP_STORAGE_SHARED;
-+}
-+
-+#endif
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 8babae03d30a..d33216287b4d 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-  */
- #include <linux/bpf.h>
-+#include <linux/bpf-inlines.h>
- #include <linux/rcupdate.h>
- #include <linux/random.h>
- #include <linux/smp.h>
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index 035e9e3a7132..bc8cfe03a37e 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -1,5 +1,6 @@
- //SPDX-License-Identifier: GPL-2.0
- #include <linux/bpf-cgroup.h>
-+#include <linux/bpf-inlines.h>
- #include <linux/bpf.h>
- #include <linux/bpf_local_storage.h>
- #include <linux/btf.h>
++#include <asm/pgalloc.h>
+ #include <linux/mm.h>
+ #include <linux/hugetlb.h>
+ #include <linux/mman.h>
 -- 
 2.31.1
 
