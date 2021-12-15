@@ -2,93 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6C0475B21
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 15:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D824B475B63
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 16:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243570AbhLOO4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 09:56:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237581AbhLOO4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 09:56:24 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B46C061574;
-        Wed, 15 Dec 2021 06:56:24 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A0E261926;
-        Wed, 15 Dec 2021 14:56:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45D04C34606;
-        Wed, 15 Dec 2021 14:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639580183;
-        bh=q+PAwVA3hA+XAhkskemgn4L0uXS+xZdMC81JEaAee+U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B/iDNpR6h+hL0e1YRBM881u2j27FMncSdty5BhYRunWFI0uML8+Yr4JjUH75DFFOI
-         1r2G1MDosuXV/qyo8ZYJSvMuSEdF0yZHubAYSbXqCeVvgCQuBDUv/6VjiIno3rDdtY
-         ODWiEa2O/1N5YOcTGAeldswmqvC5/GKtbhXGn25QKXgHP41Ew27vi12CRW6Xygs+Un
-         FCk+n2E0vkPhD1E6WyNGI7PmUlXRd+IJW0qyvSuH4kjIX1N+EnTQFYNtjXfCmlvIFt
-         wpV2s+K9uIsg0OtN+hbwl8IghINcrlLJ/+wtmZGh665ibD6eZ5X3YsSqQ27ui/uE0L
-         1h19IxIbsZtZw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C81C6405D8; Wed, 15 Dec 2021 11:56:19 -0300 (-03)
-Date:   Wed, 15 Dec 2021 11:56:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <domenico.andreoli@linux.com>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Yonghong Song <yhs@fb.com>,
-        Douglas RAILLARD <douglas.raillard@arm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Matteo Croce <mcroce@microsoft.com>
-Subject: Re: ANNOUNCE: pahole v1.23 (BTF tags and alignment inference)
-Message-ID: <YboCE3zig9papNQW@kernel.org>
-References: <YSQSZQnnlIWAQ06v@kernel.org>
- <YbC5MC+h+PkDZten@kernel.org>
- <YbkTAPn3EEu6BUYR@archlinux-ax161>
+        id S243652AbhLOPFv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 10:05:51 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43397 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230271AbhLOPFv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Dec 2021 10:05:51 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BFEFgdo002642
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 15:05:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=m346anBmWRg6gCXlMJoRkpzygWgXKtqpKZwDuGtDse4=;
+ b=iAkGmGcr9UEKDW7ZAfzWDYZgqIfDASUCpMHeyEzBYwH3CNQZJBo3arzaYlgcY+ZF/L6Y
+ VcD8SjXvMQkCvsNzzz/JyCZ+46KY6j9yNe72qGldGHxAOwG3a62260OQseEVm5DlQ37u
+ IJW5EsPdSC3lRoRa9fc7VHO7SGSkbOtK/v7YWjMkk4pqPBnTqz+7KeyKU/b4huRD4Be6
+ svCs0JU9bi0fdcN8L7ODgf8Ph/LtwRK6zbO4zLHBZS616bn+pNx5RyM3MD0kJwWHf22w
+ syyoUmT1zYVfDpp6p/SMJS301TndAB3mW6XXmZwTZD1E6qIY6mALcXbkNJq/rJaTyzPq mQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cyhyk16hn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 15:05:50 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1BFEpDQX024601
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 15:05:49 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cyhyk16h3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Dec 2021 15:05:49 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1BFF2frq025371;
+        Wed, 15 Dec 2021 15:05:48 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 3cy7jqx9y6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Dec 2021 15:05:48 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1BFF5jCo33161486
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Dec 2021 15:05:45 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3AAA2A4E1B;
+        Wed, 15 Dec 2021 14:48:15 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B563BA4DEC;
+        Wed, 15 Dec 2021 14:48:14 +0000 (GMT)
+Received: from localhost (unknown [9.43.122.198])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Dec 2021 14:48:14 +0000 (GMT)
+Date:   Wed, 15 Dec 2021 20:18:13 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: PPC jit and pseudo_btf_id
+To:     Yauheni Kaliuta <ykaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>
+References: <xunylf0o872l.fsf@redhat.com>
+        <1639483040.nhfgn2cmvh.naveen@linux.ibm.com>
+        <CANoWswkVLUDzwivbkiJ28LKo8F2YZJ4sRR=76NNcYwpdncquwA@mail.gmail.com>
+In-Reply-To: <CANoWswkVLUDzwivbkiJ28LKo8F2YZJ4sRR=76NNcYwpdncquwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YbkTAPn3EEu6BUYR@archlinux-ax161>
-X-Url:  http://acmel.wordpress.com
+User-Agent: astroid/v0.16-1-g4d6b06ad (https://github.com/astroidmail/astroid)
+Message-Id: <1639577374.grloptq1hq.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: a_638EOFoYJ5Dw-S4C97WF0c1LmpW6Ys
+X-Proofpoint-ORIG-GUID: hqPQEV0yQssfmxClVHJZQXV3QTSlo4HB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-15_10,2021-12-14_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ mlxlogscore=594 mlxscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 suspectscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112150086
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Dec 14, 2021 at 02:56:16PM -0700, Nathan Chancellor escreveu:
-> Hi Arnaldo,
-> 
-> On Wed, Dec 08, 2021 at 10:54:56AM -0300, Arnaldo Carvalho de Melo wrote:
-> > - Initial support for DW_TAG_skeleton_unit, so far just suggest looking up a
-> >   matching .dwo file to be used instead. Automagically doing this is in the
-> >   plans for a future release.
-> 
-> This change [1] appears to break building on older distributions for me,
-> which I use in containers for access to older versions of GCC. I see the
-> error with Debian Stretch and Ubuntu Xenial, which have an older
-> libelf-dev.  Is this expected? I don't mind sticking with 1.22 for
-> those, I just want to be sure!
+Yauheni Kaliuta wrote:
+>> Can you please check if the below patch fixes the issue for you?
+>=20
+> It does, thanks!
+>=20
+> I was actually thinking later about something similar and I wonder
+> about naming. Should the function be renamed to more generic, and is
+> it really for func_addr only or can be any generic value?
 
-Nope, not expected, I'll reproduce here, fix and push, thanks for the
-report.
+Good point. Looking at jit_subprogs(), it looks like the extra pass=20
+fixes up addresses of subprog calls, as well as that of other bpf=20
+functions.  So, I agree that it makes sense to change the function name. =20
+func_addr looks to still be correct though.
 
-- Arnaldo
- 
-> /tmp/dwarves-1.23/dwarf_loader.c: In function 'die__process':
-> /tmp/dwarves-1.23/dwarf_loader.c:2529:13: error: 'DW_TAG_skeleton_unit' undeclared (first use in this function)
->   if (tag == DW_TAG_skeleton_unit) {
->              ^
-> 
-> [1]: https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=0135ccd632796ab3aff65b7c99b374c4682c2bcf
-> 
-> Cheers,
-> Nathan
+Thanks for testing this. I will update this patch and post it along with=20
+a few other fixes.
 
--- 
 
-- Arnaldo
+Regards,
+Naveen
+
