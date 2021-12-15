@@ -2,121 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18F54752EE
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 07:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB61A4754BD
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 09:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbhLOGTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 01:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51324 "EHLO
+        id S236249AbhLOI45 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 03:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhLOGTd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 01:19:33 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B3DC061574
-        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 22:19:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EF203B81EA5
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 06:19:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A118C3460C;
-        Wed, 15 Dec 2021 06:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639549170;
-        bh=mLv9DZS2/wWGp/5zUTY6fgckzNlihTw0Waj7w81ShbY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T0ZTZgb2Is5rCj6BO1egA5e7TFmVI5BUb3wU/uoNs/MwG/JbfU0mEbVeesrocwJCS
-         K3nSTiEtZMPd0R/LmFBkeXMuo278/GWiileywsTYvRkon4UVKtWF58LhVSczkt5uOd
-         yVlW2F2f7vFHpyRhiqMRIMazPc5o/lmRw2T7rA//2vD3364lcWUpKZSqtglOPZi33l
-         Y8O1pWjn67Q7/BL7XZk7YbHcZbuikW2eodEQTijYcSOA/o47U9tUZvkpJuVGct9DPl
-         fgAPBmIoqNJF7P80zbXvFbAsFOLYlK1NDB0/UAnz2oDNWgSbJ85+xFvLtpFb8L9IOb
-         org5JwikZkTfg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH bpf-next v3 3/3] bpf: remove the cgroup -> bpf header dependecy
-Date:   Tue, 14 Dec 2021 22:19:16 -0800
-Message-Id: <20211215061916.715513-4-kuba@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211215061916.715513-1-kuba@kernel.org>
-References: <20211215061916.715513-1-kuba@kernel.org>
+        with ESMTP id S233803AbhLOI44 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 03:56:56 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AE3C061574;
+        Wed, 15 Dec 2021 00:56:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zR4ncSMvnhcpSMcAgLrlN/BmBmXWpxmJfYrn39NbIdo=; b=Cb7ooSr5ebxYBp8GjQy3WeEvdU
+        eD7GCO4y/SsY4OdYJILgm0MPSRWD8e/pD+Dd05yfJrFP0pPKG8AKnkhDzrQmKhOqF0CPzEQGaCUx2
+        Pk1TpnjKnqu+UlwZ17IAOKj3sa2JrgL6zXe1cI68SsLjp1sM3XISdWrpTgzqscW+NNZlAyFcMq7Le
+        xER8TYrcY3vrUjOmytm4Fu2lnds5/QYaZiAjlhLcYXnYu2i7UuDjeKMYQxDXJj9ijG5c3eA/tBzKG
+        BTYzvohHFCZPpVMc4BuNzSiw3eRBe7/VCy9wsV0PGGxi8MjdA53diUSWBFfYyVy82OE8KjAtRzG1c
+        YnzblK2g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mxQ5c-001Taq-AM; Wed, 15 Dec 2021 08:56:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D3DB3300348;
+        Wed, 15 Dec 2021 09:56:42 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B935E2B3206CF; Wed, 15 Dec 2021 09:56:42 +0100 (CET)
+Date:   Wed, 15 Dec 2021 09:56:42 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, x86@kernel.org,
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH v2 bpf-next 2/7] bpf: use bytes instead of pages for
+ bpf_jit_[charge|uncharge]_modmem
+Message-ID: <YbmtyiGpGLug1x5u@hirez.programming.kicks-ass.net>
+References: <20211215060102.3793196-1-song@kernel.org>
+ <20211215060102.3793196-3-song@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211215060102.3793196-3-song@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove the dependency from cgroup.h to bpf.h. This reduces
-the incremental build size of x86 allmodconfig after bpf.h
-was touched from ~17k objects rebuilt to ~5k objects.
-bpf.h is 2.2kLoC and is modified relatively often.
+On Tue, Dec 14, 2021 at 10:00:57PM -0800, Song Liu wrote:
+> From: Song Liu <songliubraving@fb.com>
+> 
+> This enables sub-page memory charge and allocation.
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  include/linux/bpf.h     |  4 ++--
+>  kernel/bpf/core.c       | 19 +++++++++----------
+>  kernel/bpf/trampoline.c |  6 +++---
+>  3 files changed, 14 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 965fffaf0308..adcdda0019f1 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -775,8 +775,8 @@ void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym);
+>  void bpf_image_ksym_del(struct bpf_ksym *ksym);
+>  void bpf_ksym_add(struct bpf_ksym *ksym);
+>  void bpf_ksym_del(struct bpf_ksym *ksym);
+> -int bpf_jit_charge_modmem(u32 pages);
+> -void bpf_jit_uncharge_modmem(u32 pages);
+> +int bpf_jit_charge_modmem(u32 size);
+> +void bpf_jit_uncharge_modmem(u32 size);
+>  bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
+>  #else
+>  static inline int bpf_trampoline_link_prog(struct bpf_prog *prog,
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index de3e5bc6781f..495e3b2c36ff 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -808,7 +808,7 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+>  	return slot;
+>  }
+>  
+> -static atomic_long_t bpf_jit_current;
+> +static atomic64_t bpf_jit_current;
 
-cgroup_storage_type() needs to be moved to bpf.h because
-it dereferences struct bpf_map.
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
- include/linux/bpf-cgroup.h | 12 ++----------
- include/linux/bpf.h        |  9 +++++++++
- 2 files changed, 11 insertions(+), 10 deletions(-)
-
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 11820a430d6c..d966b3dc7666 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -2,7 +2,7 @@
- #ifndef _BPF_CGROUP_H
- #define _BPF_CGROUP_H
- 
--#include <linux/bpf.h>
-+#include <linux/bpf-cgroup-types.h>
- #include <linux/errno.h>
- #include <linux/jump_label.h>
- #include <linux/percpu.h>
-@@ -16,6 +16,7 @@ struct cgroup;
- struct sk_buff;
- struct bpf_map;
- struct bpf_prog;
-+struct bpf_prog_aux;
- struct bpf_sock_ops_kern;
- struct bpf_cgroup_storage;
- struct ctl_table;
-@@ -194,15 +195,6 @@ int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
- 					    int optname, void *optval,
- 					    int *optlen, int retval);
- 
--static inline enum bpf_cgroup_storage_type cgroup_storage_type(
--	struct bpf_map *map)
--{
--	if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
--		return BPF_CGROUP_STORAGE_PERCPU;
--
--	return BPF_CGROUP_STORAGE_SHARED;
--}
--
- struct bpf_cgroup_storage *
- cgroup_storage_lookup(struct bpf_cgroup_storage_map *map,
- 		      void *key, bool locked);
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 1e16243623fe..8ea70c26acb5 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -288,6 +288,15 @@ static inline bool bpf_map_support_seq_show(const struct bpf_map *map)
- 		map->ops->map_seq_show_elem;
- }
- 
-+static inline enum bpf_cgroup_storage_type cgroup_storage_type(
-+	struct bpf_map *map)
-+{
-+	if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
-+		return BPF_CGROUP_STORAGE_PERCPU;
-+
-+	return BPF_CGROUP_STORAGE_SHARED;
-+}
-+
- int map_check_no_btf(const struct bpf_map *map,
- 		     const struct btf *btf,
- 		     const struct btf_type *key_type,
--- 
-2.31.1
-
+atomic64_t is atrocious crap on much of 32bit. I suppose it doesn't
+matter since this is slow path accounting?
