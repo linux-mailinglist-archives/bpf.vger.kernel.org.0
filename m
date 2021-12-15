@@ -2,128 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BEE475F75
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 18:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D640B475FE5
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 18:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhLORiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 12:38:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S238806AbhLORxo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 12:53:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234176AbhLORiM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 12:38:12 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE72C061574;
-        Wed, 15 Dec 2021 09:38:11 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id b7so18266568edd.6;
-        Wed, 15 Dec 2021 09:38:11 -0800 (PST)
+        with ESMTP id S238803AbhLORxn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 12:53:43 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B2FC061574;
+        Wed, 15 Dec 2021 09:53:42 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id t5so77512190edd.0;
+        Wed, 15 Dec 2021 09:53:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=wHSJEvMaIsTc7h8la2YQGbQodwQPApyf7+yKRFnENBc=;
-        b=SvfxzpsSVLXLCVbHRcbcFqim4+B8PHmRbgdhfb3ZkOA6mSuf81cmjdAy20H6QU0VxC
-         HZDWkzGV00rcnyCeTpaQTt4s8y/GWRilVHP0foY/JH+XfdOqIg3aZPprZWVb3tInSpfp
-         tu8lRgcN/vpsCzi6YSwJCdukNAgStQhgGRRyXkwa23Ji+uOkRdUHEqQSITp/VUFxFiuY
-         6MzlvhnyDoeOoFE9oMseORKmecnGojMzr+99on6yVmkikK6YB1M27uKqrIMFJWo1cBlq
-         z0fyT00pedHwXgZhtU1bk1Uyn2MtxdRNicc0PhufPqyfPMsVj6xWKMKoWw6DVh2brELS
-         vQZw==
+        bh=dj9STCW35+KV4XMZV8rynGnxwCmpuT57Z/AN2A/co+Y=;
+        b=hZDTC2mwYNLPIX0WGNjZtZ/fgBJXfQHoePIkB/vl5StCCmvt3rauRKLaE6kz9R3Xy9
+         8ewaZQIj6hbXttzELjKv9kyUrk07EwD/DXsPNikwaDEo7EZ4Fy8vQN27riP5eMMo0GKe
+         kbMDP6rXhOb9HR7GRv/gCj5+9A+rZ1dQ5A9Aa6+Ys6FdBVVRFX21CJIxwuY7XebALQUH
+         zVAeI+DnCDMDm7dQwFqp8XDszutG97H+VPQox1nYCJ7XPKc98tgZbnBTP3CpzCzBsc74
+         Utvz/R6BcOCsmwpywzapl4NVMoxDvHAZVSDfswMHMQSmyoZYUX1bHrd0lobwjXJf7xmy
+         6uUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=wHSJEvMaIsTc7h8la2YQGbQodwQPApyf7+yKRFnENBc=;
-        b=7VaU/xqlSFPpbJgV3hndfAME1jO1w5bwRngwTcYpvhSxx29bmT98idMeq3rjA2JPnu
-         mBlbA6CxZNGmCX6M04TcsLjUMY1da8QPxultcSF3sxasJHl6eecowy1k4WK1zLYME1zL
-         nwJlG9Mb029lsvwMBqjv40FzWtP69N3vPWGjV0sNpLT/COJYsU/bxp3TQ9hrP3GxvudK
-         DwzP0+yPagFOwMJIcraimuP3AhvyhXsFj5qNQWCTY4LCO+eGMBzsTqOBJi1IVbKCynzU
-         E5duKo19Fm7048z5qcObtL9YD9ovaAIRNyrGCO9OoF2HbWLIL4k+c5uZ73ANbpGtgiGT
-         zZ/g==
-X-Gm-Message-State: AOAM531TgQK2Whi36VR5ZMcpU2AqHXHZtF2n+p9Jh7eAXPvxzN+IBMnA
-        aK/EvTnySIxPnR3b2f8/euc=
-X-Google-Smtp-Source: ABdhPJwPUrVkuRn/jLs6O1tnQcz+kCgl1GjfXkTsJh49QFe6B89Oftb8NzEjD/DNLWecFav6qeoOPA==
-X-Received: by 2002:a17:906:7191:: with SMTP id h17mr11600753ejk.643.1639589890530;
-        Wed, 15 Dec 2021 09:38:10 -0800 (PST)
+        bh=dj9STCW35+KV4XMZV8rynGnxwCmpuT57Z/AN2A/co+Y=;
+        b=Uj9/4m8PQ5fa3/UqeCgFfMeKS23N68DWoFDSFnb60fBGlhMXq1ckvKcqprrOu4TPu3
+         CbwptYTlTQNjPWMwnsVBw6kH9dsY/xP3iDhyBcXA3FnZJ5aFPf9DzzMMZVzKYz0OASAo
+         6xFBdArrSoMJK9SKG66mGZciiPiSsnR8S+GAtREd4XsY1P4q1R0DUKR9Tw/EsrrF6kfR
+         z9pDVZD/7jtPeFPJv+ev5i1Al5hpCo7Qop92+qtBO82xHKkTzdIhYVQg8Ru1xw/mGMP+
+         UPoyra4x/p6uFVI8ZF+4MmWwR8bELjn9Q61ltjqBUPosISr34NwdlMqKUDbBsMXL3w9C
+         SI5A==
+X-Gm-Message-State: AOAM533Tpp6ww6J1NyOHrGPYSGaHEwYAhVy/515fQ9NKjrudAQ09FBhe
+        0v+GeuimND7RPEMrOYjD1FM=
+X-Google-Smtp-Source: ABdhPJzKgF3EyroFIel5bWr74myfZL7WZCg8AM9F5DBSP21L60xAz7uimsnTvb711pXLosRbAHMFng==
+X-Received: by 2002:a05:6402:270a:: with SMTP id y10mr16336123edd.152.1639590821591;
+        Wed, 15 Dec 2021 09:53:41 -0800 (PST)
 Received: from [192.168.8.198] ([148.252.129.75])
-        by smtp.gmail.com with ESMTPSA id l16sm1364085edb.59.2021.12.15.09.38.09
+        by smtp.gmail.com with ESMTPSA id hs8sm1033737ejc.53.2021.12.15.09.53.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Dec 2021 09:38:10 -0800 (PST)
-Message-ID: <6406f753-180a-7896-6df2-c187cb0e975f@gmail.com>
-Date:   Wed, 15 Dec 2021 17:38:11 +0000
+        Wed, 15 Dec 2021 09:53:41 -0800 (PST)
+Message-ID: <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
+Date:   Wed, 15 Dec 2021 17:53:42 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.2
 Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
 Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
+To:     sdf@google.com
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
 References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
- <20211215084044.064e6861@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <Yboc/G18R1Vi1eQV@google.com>
+ <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
+ <Ybom69OyOjsR7kmZ@google.com>
 From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20211215084044.064e6861@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <Ybom69OyOjsR7kmZ@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/15/21 16:40, Jakub Kicinski wrote:
-> On Wed, 15 Dec 2021 14:49:18 +0000 Pavel Begunkov wrote:
->> +static inline bool
->> +__cgroup_bpf_prog_array_is_empty(struct cgroup_bpf *cgrp_bpf,
->> +				 enum cgroup_bpf_attach_type type)
->> +{
->> +	struct bpf_prog_array *array = rcu_access_pointer(cgrp_bpf->effective[type]);
->> +
->> +	return array == &bpf_empty_prog_array.hdr;
->> +}
->> +
->> +#define CGROUP_BPF_TYPE_ENABLED(sk, atype)				       \
->> +({									       \
->> +	struct cgroup *__cgrp = sock_cgroup_ptr(&(sk)->sk_cgrp_data);	       \
->> +									       \
->> +	!__cgroup_bpf_prog_array_is_empty(&__cgrp->bpf, (atype));	       \
->> +})
->> +
+On 12/15/21 17:33, sdf@google.com wrote:
+> On 12/15, Pavel Begunkov wrote:
+>> On 12/15/21 16:51, sdf@google.com wrote:
+>> > On 12/15, Pavel Begunkov wrote:
+>> > > � /* Wrappers for __cgroup_bpf_run_filter_skb() guarded by cgroup_bpf_enabled. */
+>> > > � #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)����������������� \
+>> > > � ({����������������������������������������� \
+>> > > ����� int __ret = 0;��������������������������������� \
+>> > > -��� if (cgroup_bpf_enabled(CGROUP_INET_INGRESS))������������� \
+>> > > +��� if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) && sk &&������������� \
+>> > > +������� CGROUP_BPF_TYPE_ENABLED((sk), CGROUP_INET_INGRESS))���������� \
+>> >
+>> > Why not add this __cgroup_bpf_run_filter_skb check to
+>> > __cgroup_bpf_run_filter_skb? Result of sock_cgroup_ptr() is already there
+>> > and you can use it. Maybe move the things around if you want
+>> > it to happen earlier.
 > 
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index e7a163a3146b..0d2195c6fb2a 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -1161,6 +1161,19 @@ struct bpf_prog_array {
->>   	struct bpf_prog_array_item items[];
->>   };
->>   
->> +struct bpf_empty_prog_array {
->> +	struct bpf_prog_array hdr;
->> +	struct bpf_prog *null_prog;
->> +};
->> +
->> +/* to avoid allocating empty bpf_prog_array for cgroups that
->> + * don't have bpf program attached use one global 'bpf_empty_prog_array'
->> + * It will not be modified the caller of bpf_prog_array_alloc()
->> + * (since caller requested prog_cnt == 0)
->> + * that pointer should be 'freed' by bpf_prog_array_free()
->> + */
->> +extern struct bpf_empty_prog_array bpf_empty_prog_array;
+>> For inlining. Just wanted to get it done right, otherwise I'll likely be
+>> returning to it back in a few months complaining that I see measurable
+>> overhead from the function call :)
 > 
-> mumble mumble, this adds more "fun" dependencies [1] Maybe I'm going
+> Do you expect that direct call to bring any visible overhead?
+> Would be nice to compare that inlined case vs
+> __cgroup_bpf_prog_array_is_empty inside of __cgroup_bpf_run_filter_skb
+> while you're at it (plus move offset initialization down?).
 
-Header dependencies? It's declared right after struct bpf_prog_array,
-and the other member is a pointer, so not sure what can go wrong.
-
-
-> about this all wrong, maybe I should be pulling out struct cgroup_bpf
-> so that cgroup.h does not need bpf-cgroup, not breaking bpf <-> bpf-cgroup.
-> Alexei, WDYT?
-> 
-> [1] https://lore.kernel.org/all/20211215061916.715513-2-kuba@kernel.org/
-> 
+Sorry but that would be waste of time. I naively hope it will be visible
+with net at some moment (if not already), that's how it was with io_uring,
+that's what I see in the block layer. And in anyway, if just one inlined
+won't make a difference, then 10 will.
 
 -- 
 Pavel Begunkov
