@@ -2,262 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDB847605E
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 19:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E19147609B
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 19:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241885AbhLOSMh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 13:12:37 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:40532 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237730AbhLOSMg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 13:12:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 10A9561A15;
-        Wed, 15 Dec 2021 18:12:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0911AC36AE4;
-        Wed, 15 Dec 2021 18:12:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639591955;
-        bh=1Y4PcUqeg02UGJ8ATK+MLlEQzKo7NaDhqBzMT7gQnfk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nOfHbzCwnrOlpm3PQfqJmsvYwhK/Ql2nMF7LBJ5Uss8zklDHvD4eKAm9HrlqA0dzU
-         gzP/6F3BnWCIqB7iJRphIbwTPQPoZ9FrRodW2UdA4zE4/GB3otSVK+c1k+yjvNB+9B
-         lvc58ttju6UjNIK+H7sstYW5kQ6omgA9pRcQrgR9nPiyjYcaMzZJDiK4ZmtEtNOPGQ
-         IbRXc6o7jSpdX/tu4dkybKSeMMjSTntwENdYFGwb3uMNHcXK04mnJ39vdz26xpG5EL
-         zpKIvFt12Z6TOZo6XocLWp3g4US9bjV6iMXI/0aSAoBvEPJiuXaDeLjPq3WV7+4O2N
-         8ofEYoNPCdWqA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org
-Subject: [PATCH bpf-next v4 3/3] bpf: remove the cgroup -> bpf header dependecy
-Date:   Wed, 15 Dec 2021 10:12:31 -0800
-Message-Id: <20211215181231.1053479-4-kuba@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211215181231.1053479-1-kuba@kernel.org>
-References: <20211215181231.1053479-1-kuba@kernel.org>
+        id S245585AbhLOSWZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 13:22:25 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54182 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343684AbhLOSWZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 13:22:25 -0500
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C278420B717B;
+        Wed, 15 Dec 2021 10:22:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C278420B717B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1639592544;
+        bh=1yoFqk1NIOkk1E9u0o3iSqiMDfatwHvp5iTqOCmKgtY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bf0H/kwsMKg63IRp8BW+THyjUdhxTHL5yS9FiikFL0udxs17+DTmIYjI4r1wWMtv/
+         O76T/ruJSnjKcOPFC9ei+mSDpncazi2yFC1mU+TCz4r5AeR76kd9h5pNB3pQu8dfqu
+         Cu6YkXKRABB9k05EjaPv0WSEs2hvLK9DLa/9hkMY=
+Received: by mail-pl1-f177.google.com with SMTP id b13so17218529plg.2;
+        Wed, 15 Dec 2021 10:22:24 -0800 (PST)
+X-Gm-Message-State: AOAM5312SNDj/Tq7TPn8Gi+zd/gb/mCkl+4bLnehTwyUgZMQ6dPorQol
+        NGZMlyDfac7DtjT4JdvupVl3ryj6EVZ5dM1IjqI=
+X-Google-Smtp-Source: ABdhPJxsssypnvz2ZNv9Io3lsaJWpF0ZvHLmzNTjwbRdVDkBnOjhXXBGyg7j1DosghtsK9FYLquvc576DMDU3SMikKc=
+X-Received: by 2002:a17:90a:aa88:: with SMTP id l8mr1194298pjq.20.1639592544248;
+ Wed, 15 Dec 2021 10:22:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211210172034.13614-1-mcroce@linux.microsoft.com>
+ <CAADnVQJRVpL0HL=Lz8_e-ZU5y0WrQ_Z0KvQXF2w8rE660Jr62g@mail.gmail.com>
+ <CAFnufp33Dm_5gffiFYQ+Maf4Bj9fE3WLMpFf3cJ=F5mm71mTEQ@mail.gmail.com> <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 15 Dec 2021 19:21:48 +0100
+X-Gmail-Original-Message-ID: <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
+Message-ID: <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: limit bpf_core_types_are_compat() recursion
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove the dependency from cgroup-defs.h to bpf-cgroup.h and bpf.h.
-This reduces the incremental build size of x86 allmodconfig after
-bpf.h was touched from ~17k objects rebuilt to ~5k objects.
-bpf.h is 2.2kLoC and is modified relatively often.
+On Wed, Dec 15, 2021 at 6:29 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Dec 15, 2021 at 6:54 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > >
+> > > Maybe do a level check here?
+> > > Since calling it and immediately returning doesn't conserve
+> > > the stack.
+> > > If it gets called it can finish fine, but
+> > > calling it again would be too much.
+> > > In other words checking the level here gives us
+> > > room for one more frame.
+> > >
+> >
+> > I thought that the compiler was smart enough to return before
+> > allocating most of the frame.
+> > I tried and this is true only with gcc, not with clang.
+>
+> Interesting. That's a surprise.
+> Could you share the asm that gcc generates?
+>
 
-We need a new header with just the definition of struct cgroup_bpf
-and enum cgroup_bpf_attach_type, this is akin to cgroup-defs.h.
+Sure,
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: ast@kernel.org
-CC: daniel@iogearbox.net
-CC: andrii@kernel.org
-CC: kafai@fb.com
-CC: songliubraving@fb.com
-CC: yhs@fb.com
-CC: john.fastabend@gmail.com
-CC: kpsingh@kernel.org
-CC: tj@kernel.org
-CC: lizefan.x@bytedance.com
-CC: hannes@cmpxchg.org
-CC: bpf@vger.kernel.org
-CC: cgroups@vger.kernel.org
----
- include/linux/bpf-cgroup-defs.h | 70 +++++++++++++++++++++++++++++++++
- include/linux/bpf-cgroup.h      | 57 +--------------------------
- include/linux/cgroup-defs.h     |  2 +-
- 3 files changed, 72 insertions(+), 57 deletions(-)
- create mode 100644 include/linux/bpf-cgroup-defs.h
+This is the gcc x86_64 asm on a stripped down
+bpf_core_types_are_compat() with a 1k struct on the stack:
 
-diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
-new file mode 100644
-index 000000000000..695d1224a71b
---- /dev/null
-+++ b/include/linux/bpf-cgroup-defs.h
-@@ -0,0 +1,70 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BPF_CGROUP_DEFS_H
-+#define _BPF_CGROUP_DEFS_H
-+
-+#ifdef CONFIG_CGROUP_BPF
-+
-+#include <linux/list.h>
-+#include <linux/percpu-refcount.h>
-+#include <linux/workqueue.h>
-+
-+struct bpf_prog_array;
-+
-+enum cgroup_bpf_attach_type {
-+	CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
-+	CGROUP_INET_INGRESS = 0,
-+	CGROUP_INET_EGRESS,
-+	CGROUP_INET_SOCK_CREATE,
-+	CGROUP_SOCK_OPS,
-+	CGROUP_DEVICE,
-+	CGROUP_INET4_BIND,
-+	CGROUP_INET6_BIND,
-+	CGROUP_INET4_CONNECT,
-+	CGROUP_INET6_CONNECT,
-+	CGROUP_INET4_POST_BIND,
-+	CGROUP_INET6_POST_BIND,
-+	CGROUP_UDP4_SENDMSG,
-+	CGROUP_UDP6_SENDMSG,
-+	CGROUP_SYSCTL,
-+	CGROUP_UDP4_RECVMSG,
-+	CGROUP_UDP6_RECVMSG,
-+	CGROUP_GETSOCKOPT,
-+	CGROUP_SETSOCKOPT,
-+	CGROUP_INET4_GETPEERNAME,
-+	CGROUP_INET6_GETPEERNAME,
-+	CGROUP_INET4_GETSOCKNAME,
-+	CGROUP_INET6_GETSOCKNAME,
-+	CGROUP_INET_SOCK_RELEASE,
-+	MAX_CGROUP_BPF_ATTACH_TYPE
-+};
-+
-+struct cgroup_bpf {
-+	/* array of effective progs in this cgroup */
-+	struct bpf_prog_array __rcu *effective[MAX_CGROUP_BPF_ATTACH_TYPE];
-+
-+	/* attached progs to this cgroup and attach flags
-+	 * when flags == 0 or BPF_F_ALLOW_OVERRIDE the progs list will
-+	 * have either zero or one element
-+	 * when BPF_F_ALLOW_MULTI the list can have up to BPF_CGROUP_MAX_PROGS
-+	 */
-+	struct list_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
-+	u32 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
-+
-+	/* list of cgroup shared storages */
-+	struct list_head storages;
-+
-+	/* temp storage for effective prog array used by prog_attach/detach */
-+	struct bpf_prog_array *inactive;
-+
-+	/* reference counter used to detach bpf programs after cgroup removal */
-+	struct percpu_ref refcnt;
-+
-+	/* cgroup_bpf is released using a work queue */
-+	struct work_struct release_work;
-+};
-+
-+#else /* CONFIG_CGROUP_BPF */
-+struct cgroup_bpf {};
-+#endif /* CONFIG_CGROUP_BPF */
-+
-+#endif
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 11820a430d6c..b525d8cdc25b 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -3,10 +3,10 @@
- #define _BPF_CGROUP_H
- 
- #include <linux/bpf.h>
-+#include <linux/bpf-cgroup-defs.h>
- #include <linux/errno.h>
- #include <linux/jump_label.h>
- #include <linux/percpu.h>
--#include <linux/percpu-refcount.h>
- #include <linux/rbtree.h>
- #include <uapi/linux/bpf.h>
- 
-@@ -23,33 +23,6 @@ struct ctl_table_header;
- struct task_struct;
- 
- #ifdef CONFIG_CGROUP_BPF
--enum cgroup_bpf_attach_type {
--	CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
--	CGROUP_INET_INGRESS = 0,
--	CGROUP_INET_EGRESS,
--	CGROUP_INET_SOCK_CREATE,
--	CGROUP_SOCK_OPS,
--	CGROUP_DEVICE,
--	CGROUP_INET4_BIND,
--	CGROUP_INET6_BIND,
--	CGROUP_INET4_CONNECT,
--	CGROUP_INET6_CONNECT,
--	CGROUP_INET4_POST_BIND,
--	CGROUP_INET6_POST_BIND,
--	CGROUP_UDP4_SENDMSG,
--	CGROUP_UDP6_SENDMSG,
--	CGROUP_SYSCTL,
--	CGROUP_UDP4_RECVMSG,
--	CGROUP_UDP6_RECVMSG,
--	CGROUP_GETSOCKOPT,
--	CGROUP_SETSOCKOPT,
--	CGROUP_INET4_GETPEERNAME,
--	CGROUP_INET6_GETPEERNAME,
--	CGROUP_INET4_GETSOCKNAME,
--	CGROUP_INET6_GETSOCKNAME,
--	CGROUP_INET_SOCK_RELEASE,
--	MAX_CGROUP_BPF_ATTACH_TYPE
--};
- 
- #define CGROUP_ATYPE(type) \
- 	case BPF_##type: return type
-@@ -127,33 +100,6 @@ struct bpf_prog_list {
- 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
- };
- 
--struct bpf_prog_array;
--
--struct cgroup_bpf {
--	/* array of effective progs in this cgroup */
--	struct bpf_prog_array __rcu *effective[MAX_CGROUP_BPF_ATTACH_TYPE];
--
--	/* attached progs to this cgroup and attach flags
--	 * when flags == 0 or BPF_F_ALLOW_OVERRIDE the progs list will
--	 * have either zero or one element
--	 * when BPF_F_ALLOW_MULTI the list can have up to BPF_CGROUP_MAX_PROGS
--	 */
--	struct list_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
--	u32 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
--
--	/* list of cgroup shared storages */
--	struct list_head storages;
--
--	/* temp storage for effective prog array used by prog_attach/detach */
--	struct bpf_prog_array *inactive;
--
--	/* reference counter used to detach bpf programs after cgroup removal */
--	struct percpu_ref refcnt;
--
--	/* cgroup_bpf is released using a work queue */
--	struct work_struct release_work;
--};
--
- int cgroup_bpf_inherit(struct cgroup *cgrp);
- void cgroup_bpf_offline(struct cgroup *cgrp);
- 
-@@ -451,7 +397,6 @@ int cgroup_bpf_prog_query(const union bpf_attr *attr,
- 			  union bpf_attr __user *uattr);
- #else
- 
--struct cgroup_bpf {};
- static inline int cgroup_bpf_inherit(struct cgroup *cgrp) { return 0; }
- static inline void cgroup_bpf_offline(struct cgroup *cgrp) {}
- 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index db2e147e069f..411684c80cf3 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -19,7 +19,7 @@
- #include <linux/percpu-rwsem.h>
- #include <linux/u64_stats_sync.h>
- #include <linux/workqueue.h>
--#include <linux/bpf-cgroup.h>
-+#include <linux/bpf-cgroup-defs.h>
- #include <linux/psi_types.h>
- 
- #ifdef CONFIG_CGROUPS
+bpf_core_types_are_compat:
+test esi, esi
+jle .L69
+push r15
+push r14
+push r13
+push r12
+push rbp
+mov rbp, rdi
+push rbx
+mov ebx, esi
+sub rsp, 9112
+[...]
+.L69:
+or eax, -1
+ret
+
+This latest clang:
+
+bpf_core_types_are_compat: # @bpf_core_types_are_compat
+push rbp
+push r15
+push r14
+push rbx
+sub rsp, 1000
+mov r14d, -1
+test esi, esi
+jle .LBB0_7
+[...]
+.LBB0_7:
+mov eax, r14d
+add rsp, 1000
+pop rbx
+pop r14
+pop r15
+pop rbp
+ret
+
+> > > > +                       err = __bpf_core_types_are_compat(local_btf, local_id,
+> > > > +                                                         targ_btf, targ_id,
+> > > > +                                                         level - 1);
+> > > > +                       if (err <= 0)
+> > > > +                               return err;
+> > > > +               }
+> > > > +
+> > > > +               /* tail recurse for return type check */
+> > > > +               btf_type_skip_modifiers(local_btf, local_type->type, &local_id);
+> > > > +               btf_type_skip_modifiers(targ_btf, targ_type->type, &targ_id);
+> > > > +               goto recur;
+> > > > +       }
+> > > > +       default:
+> > > > +               pr_warn("unexpected kind %s relocated, local [%d], target [%d]\n",
+> > > > +                       btf_type_str(local_type), local_id, targ_id);
+> > >
+> > > That should be bpf_log() instead.
+> > >
+> >
+> > To do that I need a struct bpf_verifier_log, which is not present
+> > there, neither in bpf_core_spec_match() or bpf_core_apply_relo_insn().
+>
+> It is there. See:
+>         err = bpf_core_apply_relo_insn((void *)ctx->log, insn, ...
+>
+> > Should we drop the message at all?
+>
+> Passing it into bpf_core_spec_match() and further into
+> bpf_core_types_are_compat() is probably unnecessary.
+> All callers have an error check with a log right after.
+> So I think we won't lose anything if we drop this log.
+>
+
+Nice.
+
+> >
+> > > > +               return 0;
+> > > > +       }
+> > > > +}
+> > >
+> > > Please add tests that exercise this logic by enabling
+> > > additional lskels and a new test that hits the recursion limit.
+> > > I suspect we don't have such case in selftests.
+> > >
+> > > Thanks!
+> >
+> > Will do!
+>
+> Thanks!
+
+
+
 -- 
-2.31.1
-
+per aspera ad upstream
