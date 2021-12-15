@@ -2,149 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F09476165
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 20:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EE8476199
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 20:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344132AbhLOTPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 14:15:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344126AbhLOTPS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 14:15:18 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874D1C06173F
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:15:17 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id t11so22918715qtw.3
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:15:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UpI3HneaoGVJ5KkM2LMcsXRbLjNuK02QifkoMFbXRvo=;
-        b=bnQTMrKXW384szCu/GV6keyGIzOCqPl91frCICxMNaGpzZ4ExMnasu/Mtsdi20VBZu
-         sZYgteWV9QLoRk8fXbwWTAjTa2i/ZmUoII332QM+Y9QFxmsc5/746d9Gh+STvh4R1sUq
-         3ZR+kP3lA4cr2IhqqthdAUBX02fj9O58D2kZ9OSksp0UnPXmgL3UQNr7syF1FQEkx7nU
-         xzEtYkxTtRJ3LxEWwZo9TeP9YVhY3KYk+ZyC7Y9KmRYflL5tl9jzU3sv5PWayToSuQpT
-         wNownxU1t4RSuVZWwtwhHx0ogIEn5HhWM3G4ZrC8xFqtyYOOVXavBVZa20YOnAm7TuFv
-         n+/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UpI3HneaoGVJ5KkM2LMcsXRbLjNuK02QifkoMFbXRvo=;
-        b=gb/8x2+qOnMWOOPUx8RoP0QIpt6hYW5lE4MxGJxMUi2LoDMyUNYWpQuLV5cU0hpydd
-         jbeiGqATiWlL9mirIPLGwJLl8lfIVXE/DrrGSfWPSKqXpAZkIgev3EJmuxdh2rlr2JEL
-         lAKzRr8MLVGyb4zI99v4OY0cwgk5IXgTBKUDz5tNgB/8hBOB0TNQzFBLthX/fBL3xSXc
-         MN0F7ehqUtFQyqgzH+2koYlN0SA4d8jnKhd6CaHbGAH0enA357EO22R7ojg+0bvBYxI+
-         Yh+3ghvRvAYM1PwP13w5VN2su0P2R9d3Hw6Gh7T5xeDkC8u1ap1I/qLUeo2YEKdNFQhZ
-         jWUA==
-X-Gm-Message-State: AOAM531nEhOemFVQ6sa4+mR0CN0MDXFrgC/3xY1t2V8gQ6IEJqbLCQI8
-        mxZCNLzwf4NBKIEj9naxdcc71kmEwUWsyjPYiiiiAA==
-X-Google-Smtp-Source: ABdhPJxSj0kHaySeDZCkpMe2D6Xf7GnXEwDu6v7OTt3DCVmc7SS7f3nBBhy0SgE5CCrfoN0Tr+vwcKDBqrEienrmBFw=
-X-Received: by 2002:a05:622a:609:: with SMTP id z9mr13474939qta.243.1639595716346;
- Wed, 15 Dec 2021 11:15:16 -0800 (PST)
-MIME-Version: 1.0
-References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
- <Yboc/G18R1Vi1eQV@google.com> <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
- <Ybom69OyOjsR7kmZ@google.com> <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
- <Yboy2WwaREgo95dy@google.com> <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
-In-Reply-To: <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 15 Dec 2021 11:15:05 -0800
-Message-ID: <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
-Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S235331AbhLOTWt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 14:22:49 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55492 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234497AbhLOTWs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Dec 2021 14:22:48 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BFIA3fQ030297
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:22:48 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=d5EvIozOcZEBn8N2xzH/mHHjdBKZ06xoIvAbP1NvHKg=;
+ b=nT+qK8DMa6r8n4aDr9Dsi/RNUqxw1cfbuxsHB9uODD4GlLgkVrD+Qxk5W7keGHSbz1Vv
+ oUpTDO9qUMZSQFkQc7RusDEY3vycGpD4w22MtnNCd2wVj+yTGPA3YDLX4FcER1aF3y7W
+ iudHXcmnP+0Cys541FC7+CHQaKE+R3lbbZ4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cybm7cydn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 11:22:48 -0800
+Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 15 Dec 2021 11:22:44 -0800
+Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
+        id 0AA6C6B96B3; Wed, 15 Dec 2021 11:22:43 -0800 (PST)
+From:   Christy Lee <christylee@fb.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
+CC:     <bpf@vger.kernel.org>, <kernel-team@fb.com>, <christylee@fb.com>,
+        <christyc.y.lee@gmail.com>
+Subject: [PATCH v2 bpf-next 0/3] Improve verifier log readability
+Date:   Wed, 15 Dec 2021 11:22:22 -0800
+Message-ID: <20211215192225.1278237-1-christylee@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: pHlKjHzJiRNMFWJIcJX4Uqwi0rOtWTX5
+X-Proofpoint-ORIG-GUID: pHlKjHzJiRNMFWJIcJX4Uqwi0rOtWTX5
 Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-15_11,2021-12-14_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=990
+ clxscore=1015 adultscore=0 bulkscore=0 impostorscore=0 spamscore=0
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2112150107
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 10:54 AM Pavel Begunkov <asml.silence@gmail.com> wr=
-ote:
->
-> On 12/15/21 18:24, sdf@google.com wrote:
-> > On 12/15, Pavel Begunkov wrote:
-> >> On 12/15/21 17:33, sdf@google.com wrote:
-> >> > On 12/15, Pavel Begunkov wrote:
-> >> > > On 12/15/21 16:51, sdf@google.com wrote:
-> >> > > > On 12/15, Pavel Begunkov wrote:
-> >> > > > > =EF=BF=BD /* Wrappers for __cgroup_bpf_run_filter_skb() guarde=
-d by cgroup_bpf_enabled. */
-> >> > > > > =EF=BF=BD #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
- \
-> >> > > > > =EF=BF=BD ({=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD \
-> >> > > > > =EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD int __ret =3D 0;=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD \
-> >> > > > > -=EF=BF=BD=EF=BF=BD=EF=BF=BD if (cgroup_bpf_enabled(CGROUP_INE=
-T_INGRESS))=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD \
-> >> > > > > +=EF=BF=BD=EF=BF=BD=EF=BF=BD if (cgroup_bpf_enabled(CGROUP_INE=
-T_INGRESS) && sk &&=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD \
-> >> > > > > +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
-=BD CGROUP_BPF_TYPE_ENABLED((sk), CGROUP_INET_INGRESS))=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD \
-> >> > > >
-> >> > > > Why not add this __cgroup_bpf_run_filter_skb check to
-> >> > > > __cgroup_bpf_run_filter_skb? Result of sock_cgroup_ptr() is alre=
-ady there
-> >> > > > and you can use it. Maybe move the things around if you want
-> >> > > > it to happen earlier.
-> >> >
-> >> > > For inlining. Just wanted to get it done right, otherwise I'll lik=
-ely be
-> >> > > returning to it back in a few months complaining that I see measur=
-able
-> >> > > overhead from the function call :)
-> >> >
-> >> > Do you expect that direct call to bring any visible overhead?
-> >> > Would be nice to compare that inlined case vs
-> >> > __cgroup_bpf_prog_array_is_empty inside of __cgroup_bpf_run_filter_s=
-kb
-> >> > while you're at it (plus move offset initialization down?).
-> >
-> >> Sorry but that would be waste of time. I naively hope it will be visib=
-le
-> >> with net at some moment (if not already), that's how it was with io_ur=
-ing,
-> >> that's what I see in the block layer. And in anyway, if just one inlin=
-ed
-> >> won't make a difference, then 10 will.
-> >
-> > I can probably do more experiments on my side once your patch is
-> > accepted. I'm mostly concerned with getsockopt(TCP_ZEROCOPY_RECEIVE).
-> > If you claim there is visible overhead for a direct call then there
-> > should be visible benefit to using CGROUP_BPF_TYPE_ENABLED there as
-> > well.
->
-> Interesting, sounds getsockopt might be performance sensitive to
-> someone.
->
-> FWIW, I forgot to mention that for testing tx I'm using io_uring
-> (for both zc and not) with good submission batching.
+Simplify verifier logs and improve readability.
 
-Yeah, last time I saw 2-3% as well, but it was due to kmalloc, see
-more details in 9cacf81f8161, it was pretty visible under perf.
-That's why I'm a bit skeptical of your claims of direct calls being
-somehow visible in these 2-3% (even skb pulls/pushes are not 2-3%?).
-But tbf I don't understand how it all plays out with the io_uring.
+Changelog:
+----------
+v1 -> v2:
+v1: https://lore.kernel.org/bpf/20211213182117.682461-1-christylee@fb.com/
 
-(mostly trying to understand where there is some gain left on the
-table for TCP_ZEROCOPY_RECEIVE).
+Patch 2/3:
+* Verifier will skip insn_idx when the insn is longer than 8 bytes,
+  example:
+  0000000000000000 <good_prog>:
+       0:	18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00	r2 =3D 0 ll
+       2:	63 12 00 00 00 00 00 00	*(u32 *)(r2 + 0) =3D r1
+       3:	61 20 04 00 00 00 00 00	r0 =3D *(u32 *)(r2 + 4)
+       4:	95 00 00 00 00 00 00 00	exit
+  It's incorrect to check that prev_insn_idx =3D insn_idx - 1, skip this
+  check and print the verifier state on the correct line.
+  Before:
+  0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  ; a[0] =3D (int)(long)ctx;
+  0: (18) r2 =3D 0xffffc900006de000
+  2: R2_w=3Dmap_value(id=3D0,off=3D0,ks=3D4,vs=3D16,imm=3D0)
+  2: (63) *(u32 *)(r2 +0) =3D r1
+  After:
+  0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  ; a[0] =3D (int)(long)ctx;
+  0: (18) r2 =3D 0xffffc900006de000 ; R2_w=3Dmap_value(id=3D0,off=3D0,ks=3D=
+4,vs=3D16,imm=3D0)
+  2: (63) *(u32 *)(r2 +0) =3D r1
+* Track previous line logging length in env, allow aligning intsruction
+  from anywhere in the verifier
+* Fixed bug where the verifier printed verifier state after checking
+  source memory access but before check destination memory access,
+  this ensures the aligned verifier state contains all scratched
+  registers
+
+Patch 3/3:
+* Added one more case where we should only log in log_level=3D2
+
+Christy Lee (3):
+  Only print scratched registers and stack slots to verifier logs
+  Right align verifier states in verifier logs
+  Only output backtracking information in log level 2
+
+ include/linux/bpf_verifier.h                  |  10 +
+ kernel/bpf/verifier.c                         | 131 +++++++++--
+ .../testing/selftests/bpf/prog_tests/align.c  | 214 +++++++++---------
+ 3 files changed, 232 insertions(+), 123 deletions(-)
+
+--
+2.30.2
