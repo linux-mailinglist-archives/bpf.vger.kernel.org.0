@@ -2,177 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9B1475253
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 06:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C5847525C
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 07:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhLOF5D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 00:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhLOF5C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 00:57:02 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8B4C061574;
-        Tue, 14 Dec 2021 21:57:02 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so19374771pja.1;
-        Tue, 14 Dec 2021 21:57:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vlxui2q+F6FmPOSAyat+UUCwygwUTGs6rH4JQWaB0To=;
-        b=liZVPZ1/q97CZjgWg9BYL0T8jK/FaSLkqc0HKLirKofHXwpLE7Z/WKNmlltQ0B3nTO
-         KSzvphAAHmsTSV/28kk5LS3AClDyXYkbIBetUiYGPxDbxTilDdTyt7tAM97sMEkiROnK
-         gZq/8WSxhg6uwzKfi+IFsz3JovFjy6I26ZDFSkLYsBWzEzU+55jfAfK67NfkUA/J6OJ+
-         mFXag12+RPrbfBr1zGCqr3iCOuLejdEnyGas1qC9jEhW6NSDIzelrtk6VSGKOCcsheyt
-         fu5750jknHgh7Iv8cYxrcOEhA0hvFU2HZRoAcg1Fwjc1yB/RgzwOQKIVc9d75wgSUgNB
-         WXWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vlxui2q+F6FmPOSAyat+UUCwygwUTGs6rH4JQWaB0To=;
-        b=RFqNutI2KfEgYpT2J13eTrTS3r94u/AxPnRsxkPV3PvTw/zbSlvR0wjp85L3mBNCXu
-         gsuzYr/GKDdx65xtI2qDfQSMxPx2KJBqFCmipCTtLcBd5VVbrk1ULU9kUsZEnfWBJyBD
-         DQP4i6pbzyI4chT5jAgVTcA5BM1ngTjEDT6oTb2LpJAGDqjRzL5hvGM9eJG2n9Nnkg+F
-         LvJWnO20N6J6dscJqj/sTnkVx23E/ZfV0Qte9bidLvkhQULbPkUVVAtOb+zKDE/ksdwm
-         KTzV14DnKoOuJrw0f3aErkbhOlC5U2cqq7O2EXg41fqh+JJFCxmnsbzFUIp2JH8bKFqy
-         /Y8Q==
-X-Gm-Message-State: AOAM530eodzAcy+8PoeuqM60fcHHCRj2x/vAAWrp5NpCO3E+MJxxCd5D
-        tQfbxEMRZnyE9XE54TjTAlXAII7yJFWvGruGKoXFY8Ij5ms=
-X-Google-Smtp-Source: ABdhPJxvGudOLccb8aIK6vKg1BRpVqsLl8YKL7XjEPIouQbInIJoreQWRBMsd6G7zofWd2wpnSyWokvfeZyOK75cowM=
-X-Received: by 2002:a17:902:c111:b0:148:ab3d:7d44 with SMTP id
- 17-20020a170902c11100b00148ab3d7d44mr590286pli.126.1639547821858; Tue, 14 Dec
- 2021 21:57:01 -0800 (PST)
+        id S235812AbhLOGBZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 15 Dec 2021 01:01:25 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51594 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231228AbhLOGBX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Dec 2021 01:01:23 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BF3qTiV014433
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 22:01:22 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cy8tyrqmw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 14 Dec 2021 22:01:22 -0800
+Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 14 Dec 2021 22:01:21 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 984A926045B20; Tue, 14 Dec 2021 22:01:19 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <peterz@infradead.org>, <x86@kernel.org>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v2 bpf-next 0/7] bpf_prog_pack allocator
+Date:   Tue, 14 Dec 2021 22:00:55 -0800
+Message-ID: <20211215060102.3793196-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211210172034.13614-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20211210172034.13614-1-mcroce@linux.microsoft.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 14 Dec 2021 21:56:50 -0800
-Message-ID: <CAADnVQJRVpL0HL=Lz8_e-ZU5y0WrQ_Z0KvQXF2w8rE660Jr62g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: limit bpf_core_types_are_compat() recursion
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: DAcalFnM1PsjXSXHte-vR6XxsZx9E1QM
+X-Proofpoint-GUID: DAcalFnM1PsjXSXHte-vR6XxsZx9E1QM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-15_05,2021-12-14_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 spamscore=0 lowpriorityscore=0
+ mlxscore=0 impostorscore=0 priorityscore=1501 clxscore=1015 adultscore=0
+ mlxlogscore=622 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112150035
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 10, 2021 at 9:20 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> From: Matteo Croce <mcroce@microsoft.com>
->
-> In userspace, bpf_core_types_are_compat() is a recursive function which
-> can't be put in the kernel as is.
-> Limit the recursion depth to 2, to avoid potential stack overflows
-> in kernel.
->
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+Changes v1 => v2:
+1. Use text_poke instead of writing through linear mapping. (Peter)
+2. Avoid making changes to non-x86_64 code.
 
-Thank you for taking a stab at it!
+Most BPF programs are small, but they consume a page each. For systems
+with busy traffic and many BPF programs, this could also add significant
+pressure to instruction TLB.
 
-> +#define MAX_TYPES_ARE_COMPAT_DEPTH 2
-> +
-> +static
-> +int __bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
-> +                               const struct btf *targ_btf, __u32 targ_id,
-> +                               int level)
-> +{
-> +       const struct btf_type *local_type, *targ_type;
-> +       int depth = 32; /* max recursion depth */
-> +
-> +       if (level <= 0)
-> +               return -EINVAL;
-> +
-> +       /* caller made sure that names match (ignoring flavor suffix) */
-> +       local_type = btf_type_by_id(local_btf, local_id);
-> +       targ_type = btf_type_by_id(targ_btf, targ_id);
-> +       if (btf_kind(local_type) != btf_kind(targ_type))
-> +               return 0;
-> +
-> +recur:
-> +       depth--;
-> +       if (depth < 0)
-> +               return -EINVAL;
-> +
-> +       local_type = btf_type_skip_modifiers(local_btf, local_id, &local_id);
-> +       targ_type = btf_type_skip_modifiers(targ_btf, targ_id, &targ_id);
-> +       if (!local_type || !targ_type)
-> +               return -EINVAL;
-> +
-> +       if (btf_kind(local_type) != btf_kind(targ_type))
-> +               return 0;
-> +
-> +       switch (btf_kind(local_type)) {
-> +       case BTF_KIND_UNKN:
-> +       case BTF_KIND_STRUCT:
-> +       case BTF_KIND_UNION:
-> +       case BTF_KIND_ENUM:
-> +       case BTF_KIND_FWD:
-> +               return 1;
-> +       case BTF_KIND_INT:
-> +               /* just reject deprecated bitfield-like integers; all other
-> +                * integers are by default compatible between each other
-> +                */
-> +               return btf_int_offset(local_type) == 0 && btf_int_offset(targ_type) == 0;
-> +       case BTF_KIND_PTR:
-> +               local_id = local_type->type;
-> +               targ_id = targ_type->type;
-> +               goto recur;
-> +       case BTF_KIND_ARRAY:
-> +               local_id = btf_array(local_type)->type;
-> +               targ_id = btf_array(targ_type)->type;
-> +               goto recur;
-> +       case BTF_KIND_FUNC_PROTO: {
-> +               struct btf_param *local_p = btf_params(local_type);
-> +               struct btf_param *targ_p = btf_params(targ_type);
-> +               __u16 local_vlen = btf_vlen(local_type);
-> +               __u16 targ_vlen = btf_vlen(targ_type);
-> +               int i, err;
-> +
-> +               if (local_vlen != targ_vlen)
-> +                       return 0;
-> +
-> +               for (i = 0; i < local_vlen; i++, local_p++, targ_p++) {
-> +                       btf_type_skip_modifiers(local_btf, local_p->type, &local_id);
-> +                       btf_type_skip_modifiers(targ_btf, targ_p->type, &targ_id);
+This set tries to solve this problem with customized allocator that pack
+multiple programs into a huge page.
 
+Patches 1-5 prepare the work. Patch 6 contains key logic of the allocator.
+Patch 7 uses this allocator in x86_64 jit compiler.
 
-Maybe do a level check here?
-Since calling it and immediately returning doesn't conserve
-the stack.
-If it gets called it can finish fine, but
-calling it again would be too much.
-In other words checking the level here gives us
-room for one more frame.
+Song Liu (7):
+  x86/Kconfig: select HAVE_ARCH_HUGE_VMALLOC with HAVE_ARCH_HUGE_VMAP
+  bpf: use bytes instead of pages for bpf_jit_[charge|uncharge]_modmem
+  bpf: use size instead of pages in bpf_binary_header
+  bpf: add a pointer of bpf_binary_header to bpf_prog
+  x86/alternative: introduce text_poke_jit
+  bpf: introduce bpf_prog_pack allocator
+  bpf, x86_64: use bpf_prog_pack allocator
 
-> +                       err = __bpf_core_types_are_compat(local_btf, local_id,
-> +                                                         targ_btf, targ_id,
-> +                                                         level - 1);
-> +                       if (err <= 0)
-> +                               return err;
-> +               }
-> +
-> +               /* tail recurse for return type check */
-> +               btf_type_skip_modifiers(local_btf, local_type->type, &local_id);
-> +               btf_type_skip_modifiers(targ_btf, targ_type->type, &targ_id);
-> +               goto recur;
-> +       }
-> +       default:
-> +               pr_warn("unexpected kind %s relocated, local [%d], target [%d]\n",
-> +                       btf_type_str(local_type), local_id, targ_id);
+ arch/x86/Kconfig                     |   1 +
+ arch/x86/include/asm/text-patching.h |   1 +
+ arch/x86/kernel/alternative.c        |  28 ++++
+ arch/x86/net/bpf_jit_comp.c          |  93 ++++++++++--
+ include/linux/bpf.h                  |   4 +-
+ include/linux/filter.h               |  23 ++-
+ kernel/bpf/core.c                    | 213 ++++++++++++++++++++++++---
+ kernel/bpf/trampoline.c              |   6 +-
+ 8 files changed, 328 insertions(+), 41 deletions(-)
 
-That should be bpf_log() instead.
-
-> +               return 0;
-> +       }
-> +}
-
-Please add tests that exercise this logic by enabling
-additional lskels and a new test that hits the recursion limit.
-I suspect we don't have such case in selftests.
-
-Thanks!
+--
+2.30.2
