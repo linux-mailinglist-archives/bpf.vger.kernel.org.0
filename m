@@ -2,109 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6294760A1
-	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 19:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87654760B5
+	for <lists+bpf@lfdr.de>; Wed, 15 Dec 2021 19:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343701AbhLOSY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 13:24:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        id S238893AbhLOS2U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 13:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245221AbhLOSY3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 13:24:29 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBDFC061574
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 10:24:28 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id l28-20020a25b31c000000b005c27dd4987bso44897439ybj.18
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 10:24:28 -0800 (PST)
+        with ESMTP id S231138AbhLOS2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 13:28:16 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9132EC061574;
+        Wed, 15 Dec 2021 10:28:16 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id g19so21441765pfb.8;
+        Wed, 15 Dec 2021 10:28:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=xJI5EdwovLjkYqJ4qqI2SnNcs8iB8guxmTYndVvJUQQ=;
-        b=Ct/AC0OBbFoa0TM04Vmgnm5ceUlUK/P0vpY5Jr8k0zShdwRkNjuL3WfMPsz8dG55be
-         nSt4Qua7JfIhSTFjmbuI3FDN/HLzIjZ3LUv81SSAbFNg+oYNZnlfC376DMh6dt9RfNm+
-         dztyjD4eWOBbrHPyXNmwsWwedh6MJTCBXMJIstuMLpp4FqkcPTAJzT36JPkgSO3RT1r6
-         Vo7nQgzVj4xCmF5l6RyF5Hicz9wJ09mfoGmVY+gaFuHIRGkie/HEvgXKD0Ax47i7CMHZ
-         gYdGzTiSo46TqWeI1dZfd9WVuL+VcsT8my23lQ4y4gOIWwYLl3yNx42IzHVNWjmjLBbf
-         a0xw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ljp+r2/uwwJFUdX/+JTcBmL6u7/IlJQzL4z/nVQyjLQ=;
+        b=DMRQ5tYS8xfdjkB/0Bu6POtAC9xPB3oOWHQ3zp+tyyxHvPYs/QTZTi3zPJX4A6Y5F3
+         nGEdDCNDIi88nqZqirGia2JnkFbUNdlY3RGfvIBjp9s6OD2sYnPeP4Q7r5Wed7PJZ0Y3
+         +AMiAEx2pHtnQ/86Qy4BtgxnoumB1K+ZkR+Ym9t5p0kW4ZzIe2uRaD9LdVAlS8XcMKOW
+         Ll37jAXwZgET3DQMqrmd6+YoemVFMwBYKaoP467YQ5LUTNKJxMRyFqPsqRwjbXsNw1aN
+         txz/TDUtfF4BADU1sWh7PR9Gc3AvMFIeHeTVSpfp3mDwV7xLtbDNTUMwKHEkl9hBRrb+
+         TYag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=xJI5EdwovLjkYqJ4qqI2SnNcs8iB8guxmTYndVvJUQQ=;
-        b=MbVnCEJvGtiyTjab1UFFvgkfRqfF0cFQDRVNDwYqT3dyJ0JkjREKyCbv0zHRjlQ2kr
-         cVe15Hrz348UsWiZnSG0sRqwkuLuaAJc5R9mbkjiWsRc7xMzuVm+WjaMQfvRCw/AVD2M
-         Ckf7xjkFNsNSnpwoQSQyCOuHok06GRBFcPZze7Wr5iRP6GHEZaojewzjk4VbN73o3EV4
-         Qb/I+Ko4SauPbld9/Lc6LPd5F63fHL5mPfVqjQBzuJDFozuAOzSWwdJiHiB05dynIQuG
-         Bx8yBnIoTMYR70BOP1Fw0YKEkhgoavVyKT9xjpGiXHmKFKRA7nfoHPn013knpkZfXCy1
-         DEog==
-X-Gm-Message-State: AOAM532OGPTmlhfnybnr0IK0HdLT53SCVrLXfAI9qJVIewp6BHf9b2+L
-        9bA4uNGCKePrDpzSf/07rqByUI8=
-X-Google-Smtp-Source: ABdhPJxiUSapot8BkfCreYvqxut3YGFSlrSfzX4Kwry/rWuBLllzC5m4eNPqu7GLdHjLteustdhlYYw=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:fc03:a91c:4fe0:3b78])
- (user=sdf job=sendgmr) by 2002:a25:cad5:: with SMTP id a204mr7846609ybg.234.1639592668264;
- Wed, 15 Dec 2021 10:24:28 -0800 (PST)
-Date:   Wed, 15 Dec 2021 10:24:25 -0800
-In-Reply-To: <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
-Message-Id: <Yboy2WwaREgo95dy@google.com>
-Mime-Version: 1.0
-References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
- <Yboc/G18R1Vi1eQV@google.com> <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
- <Ybom69OyOjsR7kmZ@google.com> <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
-Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
-From:   sdf@google.com
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ljp+r2/uwwJFUdX/+JTcBmL6u7/IlJQzL4z/nVQyjLQ=;
+        b=HoRZfAN3eb6iWpuolTunvpyvTSDGHs2L52VntpN67flwLTSudxPKa/XviOoMLqEQlB
+         3YNNj+JBMsotAYJC7YluqfnJuIB1hpty6AQ812eZNPeGUAJbfgVqL/5yTsvGHSIQRI4B
+         8U0d+XiOn7RFq91Max9I2xgaE8GjFCLce5nzCV3Z1bIGgM92hOKAVunHJIB+MfUH27sk
+         W9JrLKDOcCVj/5mMP/IkUuKtfFOkadFiZcgz4nMYNBST08dFZv9HNAGMenwfaroFQwvx
+         xHj7Nud4iMf6szV5XtZfrsp1TvVPr7mjMLZrl4diVw6ZHIHuF06ND/wgSel9178WkMvs
+         Eyxg==
+X-Gm-Message-State: AOAM533YSPdON91sTU5E0Zx9J4YBVQ60NW/i4U0kTAmQC7HBrJ5/pgoS
+        +JvGfWgAMawy5at0JwhQWq4=
+X-Google-Smtp-Source: ABdhPJx8gJqM3Sl9c9Tcn5jfoWFOx30/5A2bh9SJMye4DepATryrjx2PnUq/V3OU+0j6rSODVlG8Fg==
+X-Received: by 2002:a62:1614:0:b0:4a2:fa59:c1ad with SMTP id 20-20020a621614000000b004a2fa59c1admr10090808pfw.80.1639592895935;
+        Wed, 15 Dec 2021 10:28:15 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id np1sm7404824pjb.22.2021.12.15.10.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Dec 2021 10:28:15 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 15 Dec 2021 08:28:14 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, rostedt@goodmis.org,
+        mingo@redhat.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        jmorris@namei.org, serge@hallyn.com, cgroups@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 2/3] add missing bpf-cgroup.h includes
+Message-ID: <YbozvuaPMu58RqU2@slm.duckdns.org>
+References: <20211215181231.1053479-1-kuba@kernel.org>
+ <20211215181231.1053479-3-kuba@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211215181231.1053479-3-kuba@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTIvMTUsIFBhdmVsIEJlZ3Vua292IHdyb3RlOg0KPiBPbiAxMi8xNS8yMSAxNzozMywgc2Rm
-QGdvb2dsZS5jb20gd3JvdGU6DQo+ID4gT24gMTIvMTUsIFBhdmVsIEJlZ3Vua292IHdyb3RlOg0K
-PiA+ID4gT24gMTIvMTUvMjEgMTY6NTEsIHNkZkBnb29nbGUuY29tIHdyb3RlOg0KPiA+ID4gPiBP
-biAxMi8xNSwgUGF2ZWwgQmVndW5rb3Ygd3JvdGU6DQo+ID4gPiA+ID4g77+9IC8qIFdyYXBwZXJz
-IGZvciBfX2Nncm91cF9icGZfcnVuX2ZpbHRlcl9za2IoKSBndWFyZGVkIGJ5ICANCj4gY2dyb3Vw
-X2JwZl9lbmFibGVkLiAqLw0KPiA+ID4gPiA+IO+/vSAjZGVmaW5lIEJQRl9DR1JPVVBfUlVOX1BS
-T0dfSU5FVF9JTkdSRVNTKHNrLCAgDQo+IHNrYinvv73vv73vv73vv73vv73vv73vv73vv73vv73v
-v73vv73vv73vv73vv73vv73vv73vv70gXA0KPiA+ID4gPiA+IO+/vSAoe++/ve+/ve+/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+
-ID4gPiA+ID4g77+977+977+977+977+9IGludCBfX3JldCA9IDA777+977+977+977+977+977+9
-77+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+977+9
-77+977+977+977+977+977+977+977+9IFwNCj4gPiA+ID4gPiAt77+977+977+9IGlmIChjZ3Jv
-dXBfYnBmX2VuYWJsZWQoQ0dST1VQX0lORVRfSU5HUkVTUykp77+977+977+977+977+977+977+9
-77+977+977+977+977+977+9IFwNCj4gPiA+ID4gPiAr77+977+977+9IGlmIChjZ3JvdXBfYnBm
-X2VuYWJsZWQoQ0dST1VQX0lORVRfSU5HUkVTUykgJiYgc2sgIA0KPiAmJu+/ve+/ve+/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4gPiA+ID4gK++/ve+/ve+/ve+/ve+/ve+/
-ve+/vSBDR1JPVVBfQlBGX1RZUEVfRU5BQkxFRCgoc2spLCAgDQo+IENHUk9VUF9JTkVUX0lOR1JF
-U1MpKe+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/ve+/vSBcDQo+ID4gPiA+DQo+ID4gPiA+IFdo
-eSBub3QgYWRkIHRoaXMgX19jZ3JvdXBfYnBmX3J1bl9maWx0ZXJfc2tiIGNoZWNrIHRvDQo+ID4g
-PiA+IF9fY2dyb3VwX2JwZl9ydW5fZmlsdGVyX3NrYj8gUmVzdWx0IG9mIHNvY2tfY2dyb3VwX3B0
-cigpIGlzIGFscmVhZHkgIA0KPiB0aGVyZQ0KPiA+ID4gPiBhbmQgeW91IGNhbiB1c2UgaXQuIE1h
-eWJlIG1vdmUgdGhlIHRoaW5ncyBhcm91bmQgaWYgeW91IHdhbnQNCj4gPiA+ID4gaXQgdG8gaGFw
-cGVuIGVhcmxpZXIuDQo+ID4NCj4gPiA+IEZvciBpbmxpbmluZy4gSnVzdCB3YW50ZWQgdG8gZ2V0
-IGl0IGRvbmUgcmlnaHQsIG90aGVyd2lzZSBJJ2xsIGxpa2VseSAgDQo+IGJlDQo+ID4gPiByZXR1
-cm5pbmcgdG8gaXQgYmFjayBpbiBhIGZldyBtb250aHMgY29tcGxhaW5pbmcgdGhhdCBJIHNlZSBt
-ZWFzdXJhYmxlDQo+ID4gPiBvdmVyaGVhZCBmcm9tIHRoZSBmdW5jdGlvbiBjYWxsIDopDQo+ID4N
-Cj4gPiBEbyB5b3UgZXhwZWN0IHRoYXQgZGlyZWN0IGNhbGwgdG8gYnJpbmcgYW55IHZpc2libGUg
-b3ZlcmhlYWQ/DQo+ID4gV291bGQgYmUgbmljZSB0byBjb21wYXJlIHRoYXQgaW5saW5lZCBjYXNl
-IHZzDQo+ID4gX19jZ3JvdXBfYnBmX3Byb2dfYXJyYXlfaXNfZW1wdHkgaW5zaWRlIG9mIF9fY2dy
-b3VwX2JwZl9ydW5fZmlsdGVyX3NrYg0KPiA+IHdoaWxlIHlvdSdyZSBhdCBpdCAocGx1cyBtb3Zl
-IG9mZnNldCBpbml0aWFsaXphdGlvbiBkb3duPykuDQoNCj4gU29ycnkgYnV0IHRoYXQgd291bGQg
-YmUgd2FzdGUgb2YgdGltZS4gSSBuYWl2ZWx5IGhvcGUgaXQgd2lsbCBiZSB2aXNpYmxlDQo+IHdp
-dGggbmV0IGF0IHNvbWUgbW9tZW50IChpZiBub3QgYWxyZWFkeSksIHRoYXQncyBob3cgaXQgd2Fz
-IHdpdGggaW9fdXJpbmcsDQo+IHRoYXQncyB3aGF0IEkgc2VlIGluIHRoZSBibG9jayBsYXllci4g
-QW5kIGluIGFueXdheSwgaWYganVzdCBvbmUgaW5saW5lZA0KPiB3b24ndCBtYWtlIGEgZGlmZmVy
-ZW5jZSwgdGhlbiAxMCB3aWxsLg0KDQpJIGNhbiBwcm9iYWJseSBkbyBtb3JlIGV4cGVyaW1lbnRz
-IG9uIG15IHNpZGUgb25jZSB5b3VyIHBhdGNoIGlzDQphY2NlcHRlZC4gSSdtIG1vc3RseSBjb25j
-ZXJuZWQgd2l0aCBnZXRzb2Nrb3B0KFRDUF9aRVJPQ09QWV9SRUNFSVZFKS4NCklmIHlvdSBjbGFp
-bSB0aGVyZSBpcyB2aXNpYmxlIG92ZXJoZWFkIGZvciBhIGRpcmVjdCBjYWxsIHRoZW4gdGhlcmUN
-CnNob3VsZCBiZSB2aXNpYmxlIGJlbmVmaXQgdG8gdXNpbmcgQ0dST1VQX0JQRl9UWVBFX0VOQUJM
-RUQgdGhlcmUgYXMNCndlbGwuDQo=
+On Wed, Dec 15, 2021 at 10:12:30AM -0800, Jakub Kicinski wrote:
+> We're about to break the cgroup-defs.h -> bpf-cgroup.h dependency,
+> make sure those who actually need more than the definition of
+> struct cgroup_bpf include bpf-cgroup.h explicitly.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
