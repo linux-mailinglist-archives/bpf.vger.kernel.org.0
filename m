@@ -2,147 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D0F477C4B
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 20:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91206477C50
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 20:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240843AbhLPTQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 14:16:33 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43938 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236663AbhLPTQd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Dec 2021 14:16:33 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BGHaY2h013165
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:16:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=QW+kKEporWo1JVYWxK0aSW7YSKHZeJx4tAUIa6PZjxU=;
- b=ZmX1lZiWPhI5SHmokukrIETGJq26kqLoBVBpV0L1hMKth3l4bzmhzKIcOmSU9o9ravKu
- OIscA48U09gxT6exVEzqEheOBZqLfiHLwywaCnx2j72vjPau6T1kfHdUUSUByTA6zCZ3
- +Z0x25n0cePpp9EvNQgArs5BjMpqB3TQX3M= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cyyrr575n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:16:33 -0800
-Received: from twshared7460.02.ash7.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 16 Dec 2021 11:16:32 -0800
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 638E63FED855; Thu, 16 Dec 2021 11:16:30 -0800 (PST)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf] bpf: selftests: Fix racing issue in btf_skc_cls_ingress test
-Date:   Thu, 16 Dec 2021 11:16:30 -0800
-Message-ID: <20211216191630.466151-1-kafai@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S236663AbhLPTRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 14:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240892AbhLPTRK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 14:17:10 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6BEC061574
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:17:10 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id l22so51557417lfg.7
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:17:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CeAbDqQVJZTM66ES85ssc7ES4kZBm5FRz8B7DywloJM=;
+        b=cgSRgD5OaZuIdQHRi+e9iJl7q/tVHZ57Aiq8kaW7oU4t59vV3SFFGs0eD7w91qjr7p
+         nDB2IXbxJS4aBWHlR6S6GY331p5vxKfC5RNqpBJm58WX4PY/4cM+ZoE/Ep/aihJ2bZPO
+         fw3pxy/Xbsz6hcjlS5Ao6Yd9qLHb37rpb/Lw2jHjocu2KvdNWDwXfQTl46VGr9kXfVjn
+         a7Updw+c2G5XsT1rAxBbmyhCac9OD1OyQK1mHGJxX5h+cPshAjRL4WefvbqUJDR12TbW
+         I2bRY+OIjM5Em5OP0H6rCcLhq0AFG/5pLvmqYD12598mhOlrX83juKNeXuI+R3kVE3XJ
+         Av4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CeAbDqQVJZTM66ES85ssc7ES4kZBm5FRz8B7DywloJM=;
+        b=eTUa+mmx0p14iGYsgeVGirupWVFa/0/BbtzOawXa1jRMtHb0te2aDSyEKn4b8htPUV
+         360ECqNLcDXFxtCmJvmf01ryjTCZSAHw/BlHyu60mFdxlFCmCqY92XGotlJ7r+guY+Vi
+         iSexvFbSqt3hN8oEcogPKB5ysjN3g4fr4BXJf2KTjHOD9jng1Ny4C+xJIS889QHpNZKN
+         X8KuB4n2ohSEfhcVhi5oYGZde+JEWghXYEgkBlwYJTLzXynw6B2H4Jj3DHCrFw9kMv1e
+         WWiI7RTV4xgHh4uf+PCYkk9r3QrMfEGBoFDb5fzj3+MssdOQqy73SMO1SIsd+LVt/PA6
+         yItA==
+X-Gm-Message-State: AOAM532J+tLH0D94E7ouu3MiUj163P11+0KZSnlAVJErq6aqBDX2lgj8
+        ZVTkLoTdj2C7suANBltAJ50x0WJ+IM9m34hHDKSHQA==
+X-Google-Smtp-Source: ABdhPJzQ7775nxrt1oIiY3S+R+5BbjqeTRLcI9Ct5YM1KdXk4rl0d0yKyysga4uDHO/bnJSEbiJZ8X4DkE0MUH9ALeY=
+X-Received: by 2002:ac2:4db3:: with SMTP id h19mr5742153lfe.82.1639682228050;
+ Thu, 16 Dec 2021 11:17:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: VS6dYnDhZEzW56CxpRuPsvai-4KFL7w0
-X-Proofpoint-ORIG-GUID: VS6dYnDhZEzW56CxpRuPsvai-4KFL7w0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-16_07,2021-12-16_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
- impostorscore=0 mlxscore=0 suspectscore=0 bulkscore=0 clxscore=1015
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 adultscore=0
- spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112160106
-X-FB-Internal: deliver
+References: <20211216163842.829836-1-jean-philippe@linaro.org> <20211216163842.829836-2-jean-philippe@linaro.org>
+In-Reply-To: <20211216163842.829836-2-jean-philippe@linaro.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 16 Dec 2021 11:16:56 -0800
+Message-ID: <CAKwvOdmLYKV9UEg4_NV2EdPqF6VqboaY0gVDw1WEkmrvES8jvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/6] tools: Help cross-building with clang
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        shuah@kernel.org, nathan@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, quentin@isovalent.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The libbpf CI reported occasional failure in btf_skc_cls_ingress:
+On Thu, Dec 16, 2021 at 8:50 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> Cross-compilation with clang uses the -target parameter rather than a
+> toolchain prefix. Just like the kernel Makefile, add that parameter to
+> CFLAGS when CROSS_COMPILE is set.
+>
+> Unlike the kernel Makefile, we use the --sysroot and --gcc-toolchain
+> options because unlike the kernel, tools require standard libraries.
+> Commit c91d4e47e10e ("Makefile: Remove '--gcc-toolchain' flag") provides
+> some background about --gcc-toolchain. Normally clang finds on its own
+> the additional utilities and libraries that it needs (for example GNU ld
+> or glibc). On some systems however, this autodetection doesn't work.
+> There, our only recourse is asking GCC directly, and pass the result to
+> --sysroot and --gcc-toolchain. Of course that only works when a cross
+> GCC is available.
+>
+> Autodetection worked fine on Debian, but to use the aarch64-linux-gnu
+> toolchain from Archlinux I needed both --sysroot (for crt1.o) and
+> --gcc-toolchain (for crtbegin.o, -lgcc). The --prefix parameter wasn't
+> needed there, but it might be useful on other distributions.
+>
+> Use the CLANG_CROSS_FLAGS variable instead of CLANG_FLAGS because it
+> allows tools such as bpftool, that need to build both host and target
+> binaries, to easily filter out the cross-build flags from CFLAGS.
+>
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> ---
+> Most tools I looked at needed additional changes to support cross-build
+> with clang. I've only done the work for bpf tools.
+> ---
+>  tools/scripts/Makefile.include | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+> index 071312f5eb92..b0be5f40a3f1 100644
+> --- a/tools/scripts/Makefile.include
+> +++ b/tools/scripts/Makefile.include
+> @@ -87,7 +87,18 @@ LLVM_STRIP   ?= llvm-strip
+>
+>  ifeq ($(CC_NO_CLANG), 1)
+>  EXTRA_WARNINGS += -Wstrict-aliasing=3
+> -endif
+> +
+> +else ifneq ($(CROSS_COMPILE),)
+> +CLANG_CROSS_FLAGS := --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)gcc))
+> +ifneq ($(GCC_TOOLCHAIN_DIR),)
+> +CLANG_CROSS_FLAGS += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> +CLANG_CROSS_FLAGS += --sysroot=$(shell $(CROSS_COMPILE)gcc -print-sysroot)
 
-test_syncookie:FAIL:Unexpected syncookie states gen_cookie:80326634 recv_=
-cookie:0
-bpf prog error at line 97
+^ this is a neat trick; it does rely on having $(CROSS_COMPILE)gcc
+installed though. Technically only the header include path is needed
+and the path to the cross libc shared object.  I think we should take
+this patch&series as a starting point, but there might be future
+revisions here to support environments that don't have
+$(CROSS_COMPILE)gcc (such as Android's build env).
 
-"error at line 97" means the bpf prog cannot find the listening socket
-when the final ack is received.  It then skipped processing
-the syncookie in the final ack which then led to "recv_cookie:0".
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-The problem is the userspace program did not do accept() and went ahead
-to close(listen_fd) before the kernel (and the bpf prog) had
-a chance to process the final ack.
+Thanks for the series!
 
-The fix is to add accept() call so that the userspace
-will wait for the kernel to finish processing the final
-ack first before close()-ing everything.
+> +CLANG_CROSS_FLAGS += --gcc-toolchain=$(realpath $(GCC_TOOLCHAIN_DIR)/..)
+> +endif # GCC_TOOLCHAIN_DIR
+> +CFLAGS += $(CLANG_CROSS_FLAGS)
+> +AFLAGS += $(CLANG_CROSS_FLAGS)
+> +endif # CROSS_COMPILE
+>
+>  # Hack to avoid type-punned warnings on old systems such as RHEL5:
+>  # We should be changing CFLAGS and checking gcc version, but this
+> --
+> 2.34.1
+>
 
-Fixes: 9a856cae2217 ("bpf: selftest: Add test_btf_skc_cls_ingress")
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- .../bpf/prog_tests/btf_skc_cls_ingress.c         | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c=
- b/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
-index 762f6a9da8b5..664ffc0364f4 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
-@@ -90,7 +90,7 @@ static void print_err_line(void)
-=20
- static void test_conn(void)
- {
--	int listen_fd =3D -1, cli_fd =3D -1, err;
-+	int listen_fd =3D -1, cli_fd =3D -1, srv_fd =3D -1, err;
- 	socklen_t addrlen =3D sizeof(srv_sa6);
- 	int srv_port;
-=20
-@@ -112,6 +112,10 @@ static void test_conn(void)
- 	if (CHECK_FAIL(cli_fd =3D=3D -1))
- 		goto done;
-=20
-+	srv_fd =3D accept(listen_fd, NULL, NULL);
-+	if (CHECK_FAIL(srv_fd =3D=3D -1))
-+		goto done;
-+
- 	if (CHECK(skel->bss->listen_tp_sport !=3D srv_port ||
- 		  skel->bss->req_sk_sport !=3D srv_port,
- 		  "Unexpected sk src port",
-@@ -134,11 +138,13 @@ static void test_conn(void)
- 		close(listen_fd);
- 	if (cli_fd !=3D -1)
- 		close(cli_fd);
-+	if (srv_fd !=3D -1)
-+		close(srv_fd);
- }
-=20
- static void test_syncookie(void)
- {
--	int listen_fd =3D -1, cli_fd =3D -1, err;
-+	int listen_fd =3D -1, cli_fd =3D -1, srv_fd =3D -1, err;
- 	socklen_t addrlen =3D sizeof(srv_sa6);
- 	int srv_port;
-=20
-@@ -161,6 +167,10 @@ static void test_syncookie(void)
- 	if (CHECK_FAIL(cli_fd =3D=3D -1))
- 		goto done;
-=20
-+	srv_fd =3D accept(listen_fd, NULL, NULL);
-+	if (CHECK_FAIL(srv_fd =3D=3D -1))
-+		goto done;
-+
- 	if (CHECK(skel->bss->listen_tp_sport !=3D srv_port,
- 		  "Unexpected tp src port",
- 		  "listen_tp_sport:%u expected:%u\n",
-@@ -188,6 +198,8 @@ static void test_syncookie(void)
- 		close(listen_fd);
- 	if (cli_fd !=3D -1)
- 		close(cli_fd);
-+	if (srv_fd !=3D -1)
-+		close(srv_fd);
- }
-=20
- struct test {
---=20
-2.30.2
-
+-- 
+Thanks,
+~Nick Desaulniers
